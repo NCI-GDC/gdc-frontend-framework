@@ -1,13 +1,18 @@
 # Cohort Management
 
-The user should be able to define and modify cohorts.  
+A cohort is a collection of cases. The user should be able to define and modify cohorts.  
 
 ## Cohort Types
+
+The GDC has multiple constructs that effectively represent a collection of cases:
 
 - Program
 - Project
 - Study
 - Case Set
+
+For the new portal, we can think of these as pre-built cohorts.
+
 - New Cohort Model TBD
 
 ## Cohort Operations

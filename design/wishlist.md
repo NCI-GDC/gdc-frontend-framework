@@ -6,6 +6,8 @@
 
 ## Component Library
 
+### Basic UI components
+
 Use an existing library to start
 
 - material ui
@@ -20,6 +22,14 @@ Requirements
 - i18n is optional
 - a11y is required.  508c required.  wcag probably good
 
+### GDC Feature components
+
+Feature components encapsulate a GDC-specific feature and make that feature reusable
+throughout the site. Examples:
+
+- Entity Viewer - For a given entity, display the relevant information. Then, any entity could be inspected to give the user additional details.
+- File Download - For a given file or set of files, download them. The set of files may be an unresolved expression. For example, a user may want the STAR - Counts gene expression files for the current cohort.
+  
 ## a11y
 
 - <https://www.section508.gov/create/applicability-conformance>
