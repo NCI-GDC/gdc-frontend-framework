@@ -10,9 +10,13 @@ import {
   MergeProps,
   Options,
 } from "react-redux";
+import { cohortReducer } from "./features/cohort/cohortSlice";
+import { sessionReducer } from "./features/session/sessionSlice";
 
 export const coreStore = configureStore({
   reducer: {
+    cohort: cohortReducer,
+    session: sessionReducer,
   },
 });
 
