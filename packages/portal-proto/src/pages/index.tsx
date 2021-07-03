@@ -1,16 +1,13 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
+import { Layout } from "../components/Layout";
 
 import Counter from "../features/counter/Counter";
 
 const IndexPage: NextPage = () => {
   return (
-    <div className="container mx-auto min-h-screen">
-      <Head>
-        <title>GDC Portal Prototype</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <Layout>
       <div className="flex flex-col content-center">
         <Image src="/logo.svg" alt="logo" width="300em" height="300em" />
         <Counter />
@@ -56,7 +53,7 @@ const IndexPage: NextPage = () => {
           </a>
         </span>
       </div>
-    </div>
+    </Layout>
   );
 };
 
