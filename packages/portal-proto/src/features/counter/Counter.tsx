@@ -9,7 +9,6 @@ import {
   incrementIfOdd,
   selectCount,
 } from './counterSlice'
-import styles from './Counter.module.css'
 
 function Counter() {
   const dispatch = useAppDispatch()
@@ -19,45 +18,45 @@ function Counter() {
   const incrementValue = Number(incrementAmount) || 0
 
   return (
-    <div>
-      <div className={styles.row}>
+    <div className="flex flex-col gap-y-2">
+      <div className="flex flex-row justify-center">
         <button
-          className={styles.button}
+          className="w-12 h-12 bg-purple-200 text-2xl"
           aria-label="Decrement value"
           onClick={() => dispatch(decrement())}
         >
           -
         </button>
-        <span className={styles.value}>{count}</span>
+        <span className="w-12 h-12 text-5xl text-center">{count}</span>
         <button
-          className={styles.button}
+          className="w-12 h-12 bg-purple-200 text-2xl"
           aria-label="Increment value"
           onClick={() => dispatch(increment())}
         >
           +
         </button>
       </div>
-      <div className={styles.row}>
+      <div className="flex flex-row justify-center gap-x-2">
         <input
-          className={styles.textbox}
+          className="text-2xl w-16 p-4"
           aria-label="Set increment amount"
           value={incrementAmount}
           onChange={(e) => setIncrementAmount(e.target.value)}
         />
         <button
-          className={styles.button}
+          className="bg-purple-200 text-2xl text-purple-600 p-4"
           onClick={() => dispatch(incrementByAmount(incrementValue))}
         >
           Add Amount
         </button>
         <button
-          className={styles.asyncButton}
+          className="bg-purple-200 text-2xl text-purple-600 p-4"
           onClick={() => dispatch(incrementAsync(incrementValue))}
         >
           Add Async
         </button>
         <button
-          className={styles.button}
+          className="bg-purple-200 text-2xl text-purple-600 p-4"
           onClick={() => dispatch(incrementIfOdd(incrementValue))}
         >
           Add If Odd

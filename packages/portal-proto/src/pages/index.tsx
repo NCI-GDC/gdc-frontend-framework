@@ -1,26 +1,26 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
+import type { NextPage } from "next";
+import Head from "next/head";
+import Image from "next/image";
 
-import Counter from '../features/counter/Counter'
-import styles from '../styles/Home.module.css'
+import Counter from "../features/counter/Counter";
 
 const IndexPage: NextPage = () => {
   return (
-    <div className={styles.container}>
+    <div className="container mx-auto min-h-screen">
       <Head>
-        <title>Redux Toolkit</title>
+        <title>GDC Portal Prototype</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <header className={styles.header}>
-        <img src="/logo.svg" className={styles.logo} alt="logo" />
+      <div className="flex flex-col content-center">
+        <Image src="/logo.svg" alt="logo" width="300em" height="300em" />
         <Counter />
-        <p>
+        <span className="text-center">
           Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
+        </span>
+        <span className="text-center">
           <span>Learn </span>
           <a
-            className={styles.link}
+            className="text-purple-500"
             href="https://reactjs.org/"
             target="_blank"
             rel="noopener noreferrer"
@@ -29,7 +29,7 @@ const IndexPage: NextPage = () => {
           </a>
           <span>, </span>
           <a
-            className={styles.link}
+            className="text-purple-500"
             href="https://redux.js.org/"
             target="_blank"
             rel="noopener noreferrer"
@@ -38,7 +38,7 @@ const IndexPage: NextPage = () => {
           </a>
           <span>, </span>
           <a
-            className={styles.link}
+            className="text-purple-500"
             href="https://redux-toolkit.js.org/"
             target="_blank"
             rel="noopener noreferrer"
@@ -47,7 +47,7 @@ const IndexPage: NextPage = () => {
           </a>
           ,<span> and </span>
           <a
-            className={styles.link}
+            className="text-purple-500"
             href="https://react-redux.js.org/"
             target="_blank"
             rel="noopener noreferrer"
@@ -55,9 +55,9 @@ const IndexPage: NextPage = () => {
             React Redux
           </a>
         </span>
-      </header>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default IndexPage
+export default IndexPage;
