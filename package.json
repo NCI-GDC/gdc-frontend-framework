@@ -1,0 +1,20 @@
+{
+  "name": "gdc-frontend-framework",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "version": "0.0.1",
+  "description": "The GDC Frontend Framework",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NCI-GDC/gdc-frontend-framework.git"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/NCI-GDC/gdc-frontend-framework#readme"
+}
