@@ -1,10 +1,6 @@
 import type { NextPage } from "next";
-import Head from "next/head";
-import Image from "next/image";
-import { Layout } from "../components/Layout";
-import { Facet } from "../components/Facet";
-
-import Counter from "../features/counter/Counter";
+import { Layout } from "../features/layout/Layout";
+import { Facet } from "../features/facets/Facet";
 
 const IndexPage: NextPage = () => {
   return (
