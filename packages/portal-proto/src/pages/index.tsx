@@ -18,7 +18,6 @@ const IndexPage: NextPage = () => {
           <Facet field="samples.tissue_type" />
           <Facet field="diagnoses.tissue_or_organ_of_origin" />
         </div>
-        <Image src="/logo.svg" alt="logo" width="300em" height="300em" />
       </div>
     </Layout>
   );
