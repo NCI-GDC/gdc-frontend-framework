@@ -9,7 +9,9 @@
   "scripts": {
     "clean": "rimraf dist",
     "compile": "tsc",
-    "build": "npm run clean && npm run compile && rollup --config rollup.config.ts --configPlugin typescript",
+    "build": "rollup --config rollup.config.ts --configPlugin typescript",
+    "build:clean": "npm run clean && npm run compile && rollup --config rollup.config.ts --configPlugin typescript",
+    "build:watch": "npm run build -- --watch",
     "test": "jest",
     "test:watch": "jest --watch"
   },
@@ -33,6 +35,7 @@
     "rimraf": "^3.0.2",
     "rollup": "^2.52.7",
     "rollup-plugin-dts": "^3.0.2",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-terser": "^7.0.2",
     "ts-jest": "^27.0.3",
     "typescript": "^4.3.4"

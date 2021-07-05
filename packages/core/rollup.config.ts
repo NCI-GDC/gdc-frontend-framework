@@ -2,6 +2,14 @@ import babel from "@rollup/plugin-babel";
 import typescript from "@rollup/plugin-typescript";
 import { terser } from "rollup-plugin-terser";
 import dts from "rollup-plugin-dts";
+import peerDepsExternal from "rollup-plugin-peer-deps-external";
+
+const globals = {
+  react: "React",
+  "react-redux": "reactRedux",
+  "@reduxjs/toolkit": "toolkit",
+  "@reduxjs/toolkit/dist/query": "query",
+};
 
 const config = [
   {
@@ -16,11 +24,13 @@ const config = [
         format: "iife",
         name: "gffCore",
         plugins: [terser()],
+        globals,
       },
       {
         file: "dist/index.umd.js",
         format: "umd",
         name: "gffCore",
+        globals,
       },
       {
         file: "dist/index.esm.js",
@@ -29,6 +39,7 @@ const config = [
       },
     ],
     plugins: [
+      peerDepsExternal(),
       typescript(),
       babel({
         presets: ["@babel/preset-react"],
