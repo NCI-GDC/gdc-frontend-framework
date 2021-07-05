@@ -2,6 +2,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { Layout } from "../components/Layout";
+import { Facet } from "../components/Facet";
 
 import Counter from "../features/counter/Counter";
 
@@ -9,49 +10,15 @@ const IndexPage: NextPage = () => {
   return (
     <Layout>
       <div className="flex flex-col content-center">
+        <div className="grid grid-cols-3 gap-4">
+          <Facet field="primary_site" />
+          <Facet field="demographic.gender" />
+          <Facet field="disease_type" />
+          <Facet field="samples.sample_type" />
+          <Facet field="samples.tissue_type" />
+          <Facet field="diagnoses.tissue_or_organ_of_origin" />
+        </div>
         <Image src="/logo.svg" alt="logo" width="300em" height="300em" />
-        <Counter />
-        <span className="text-center">
-          Edit <code>src/App.tsx</code> and save to reload.
-        </span>
-        <span className="text-center">
-          <span>Learn </span>
-          <a
-            className="text-purple-500"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="text-purple-500"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="text-purple-500"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="text-purple-500"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
       </div>
     </Layout>
   );
