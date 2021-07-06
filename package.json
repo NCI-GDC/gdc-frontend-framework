@@ -16,5 +16,9 @@
   },
   "author": "",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/NCI-GDC/gdc-frontend-framework#readme"
+  "homepage": "https://github.com/NCI-GDC/gdc-frontend-framework#readme",
+  "dependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  }
 }

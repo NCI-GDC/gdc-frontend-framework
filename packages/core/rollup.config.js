@@ -9,6 +9,7 @@ const globals = {
   "react-redux": "reactRedux",
   "@reduxjs/toolkit": "toolkit",
   "@reduxjs/toolkit/dist/query": "query",
+  "uuid": "uuid",
 };
 
 const config = [
