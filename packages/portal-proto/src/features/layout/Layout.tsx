@@ -7,13 +7,13 @@ import Image from "next/image";
  */
 export const Layout: React.FC = ({ children }) => {
   return (
-    <div className="container mx-auto min-h-screen">
+    <div className="container mx-auto min-h-screen flex flex-col">
       <Head>
         <title>GDC Portal Prototype</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      <main>{children}</main>
+      <main className="flex-grow">{children}</main>
       <Footer />
     </div>
   );
@@ -30,8 +30,8 @@ const Header: React.FC = () => {
             objectFit="contain"
           />
         </div>
-        <div className="flex-grow">middle stuff</div>
-        <div className="flex-none">right stuff</div>
+        <div className="flex-grow">{/* middle section of header */}</div>
+        <div className="flex-none">{/* right section of header */}</div>
       </div>
     </header>
   );
@@ -42,7 +42,10 @@ const Footer: React.FC = () => {
     <footer>
       <div className="flex flex-col bg-gray-200 justify-center text-center">
         <div>Site Home | Policies | Accessibility | FOIA | Support</div>
-        <div>U.S. Department of Health and Human Services | National Institutes of Health | National Cancer Institute | USA.gov</div>
+        <div>
+          U.S. Department of Health and Human Services | National Institutes of
+          Health | National Cancer Institute | USA.gov
+        </div>
         <div>NIH... Turning Discovery Into Health ®</div>
       </div>
     </footer>

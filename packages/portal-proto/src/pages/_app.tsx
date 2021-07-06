@@ -6,7 +6,12 @@ import { CoreProvider } from "@gff/core";
 
 import store from "../app/store";
 
-function MyApp({ Component, pageProps }: AppProps) {
+// import gdc apps here. 
+// their default exports will trigger registration.
+import "../features/demoApp1/DemoApp";
+import "../features/demoApp2/DemoApp";
+
+function PortalApp({ Component, pageProps }: AppProps) {
   return (
     <CoreProvider>
       <Provider store={store}>
@@ -16,4 +21,4 @@ function MyApp({ Component, pageProps }: AppProps) {
   );
 }
 
-export default MyApp;
+export default PortalApp;

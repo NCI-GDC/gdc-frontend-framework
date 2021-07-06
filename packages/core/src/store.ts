@@ -10,14 +10,18 @@ import {
 import { cohortReducer } from "./features/cohort/cohortSlice";
 import { sessionReducer } from "./features/session/sessionSlice";
 import { facetsReducer } from "./features/facets/facetSlice";
+import { gdcAppReducer } from "./features/gdcapps/gdcAppsSlice";
 
 export const coreStore = configureStore({
   reducer: {
     cohort: cohortReducer,
     session: sessionReducer,
     facets: facetsReducer,
+    gdcApps: gdcAppReducer,
   },
-  devTools: true,
+  devTools: {
+    name: "@gff/core",
+  },
 });
 
 export type CoreDispatch = typeof coreStore.dispatch;
