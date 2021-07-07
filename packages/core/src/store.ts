@@ -11,6 +11,7 @@ import { cohortReducer } from "./features/cohort/cohortSlice";
 import { sessionReducer } from "./features/session/sessionSlice";
 import { facetsReducer } from "./features/facets/facetSlice";
 import { gdcAppReducer } from "./features/gdcapps/gdcAppsSlice";
+import { filesReducer } from "./features/files/filesSlice";
 
 export const coreStore = configureStore({
   reducer: {
@@ -18,6 +19,7 @@ export const coreStore = configureStore({
     session: sessionReducer,
     facets: facetsReducer,
     gdcApps: gdcAppReducer,
+    files: filesReducer,
   },
   devTools: {
     name: "@gff/core",
@@ -41,7 +43,8 @@ export type CoreState = ReturnType<typeof coreStore.getState>;
 export const CoreContext = React.createContext(
   undefined as unknown as ReactReduxContextValue<CoreState, AnyAction>
 );
-export const useCoreSelector: TypedUseSelectorHook<CoreState> = createSelectorHook(CoreContext);
+export const useCoreSelector: TypedUseSelectorHook<CoreState> =
+  createSelectorHook(CoreContext);
 export const useCoreDispatch = createDispatchHook(CoreContext);
 export const useCoreStore = createStoreHook(CoreContext);
 
