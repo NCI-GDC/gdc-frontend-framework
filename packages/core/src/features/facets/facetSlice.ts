@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { CoreDispatch, CoreState } from "../../store";
+import { GdcApiResponse } from "../gdcapi/gdcapi";
 import * as api from "./facetApi";
 
 export const fetchFacetByName = createAsyncThunk<
-  api.GdcApiResponse,
+  GdcApiResponse,
   string,
   { dispatch: CoreDispatch; state: CoreState }
 >("facet/fetchFacetByName", async (name: string) => {
@@ -33,34 +34,40 @@ const slice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchFacetByName.fulfilled, (state, action) => {
-      const response = action.payload;
+    builder
+      .addCase(fetchFacetByName.fulfilled, (state, action) => {
+        const response = action.payload;
 
-      if (response.warnings && Object.keys(response.warnings).length > 0) {
-        state.cases[action.meta.arg].status = "rejected";
-        state.cases[action.meta.arg].error = response.warnings.facets;
-      }
+        if (response.warnings && Object.keys(response.warnings).length > 0) {
+          state.cases[action.meta.arg].status = "rejected";
+          state.cases[action.meta.arg].error = response.warnings.facets;
+        }
 
-      if (!response.data.aggregations) {
-        return state;
-      }
+        if (!response.data.aggregations) {
+          return state;
+        }
 
-      Object.entries(response.data.aggregations).forEach(([field, buckets]) => {
-        const facet = state.cases[field];
-        facet.status = "fulfilled";
-        facet.buckets = buckets.buckets.reduce((facetBuckets, apiBucket) => {
-          facetBuckets[apiBucket.key] = apiBucket.doc_count;
-          return facetBuckets;
-        }, {} as Record<string, number>);
-      });
-    }),
-      builder.addCase(fetchFacetByName.pending, (state, action) => {
+        Object.entries(response.data.aggregations).forEach(
+          ([field, buckets]) => {
+            const facet = state.cases[field];
+            facet.status = "fulfilled";
+            facet.buckets = buckets.buckets.reduce(
+              (facetBuckets, apiBucket) => {
+                facetBuckets[apiBucket.key] = apiBucket.doc_count;
+                return facetBuckets;
+              },
+              {} as Record<string, number>
+            );
+          }
+        );
+      })
+      .addCase(fetchFacetByName.pending, (state, action) => {
         const field = action.meta.arg;
         state.cases[field] = {
           status: "pending",
         };
-      }),
-      builder.addCase(fetchFacetByName.rejected, (state, action) => {
+      })
+      .addCase(fetchFacetByName.rejected, (state, action) => {
         const field = action.meta.arg;
         state.cases[field] = {
           status: "rejected",
