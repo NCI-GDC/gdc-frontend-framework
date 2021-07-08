@@ -12,6 +12,7 @@
     "moduleResolution": "node",
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "noImplicitReturns": true,
     "strict": true,
     "target": "esnext",
     "lib": ["dom", "esnext"]
