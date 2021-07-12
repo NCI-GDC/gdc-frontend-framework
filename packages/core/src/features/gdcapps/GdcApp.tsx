@@ -34,7 +34,7 @@ export const createGdcApp = (options: CreateGdcAppOptions) => {
   // click app link
   const store = configureStore({
     // TODO allow user to pass in a reducer in CreateGdcAppOptions?
-    reducer: {},
+    reducer: (state) => state,
     devTools: {
       name: `${nameVersion}::${id}`,
     },
