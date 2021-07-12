@@ -1,10 +1,10 @@
 import { NextPage } from "next";
-import { Layout } from "../features/layout/Layout";
+import { SimpleLayout } from "../features/layout/Simple";
 import { Facet } from "../features/facets/Facet";
 
 const FacetsPage: NextPage = () => {
   return (
-    <Layout>
+    <SimpleLayout>
       <div className="flex flex-col content-center">
         <div className="grid grid-cols-3 gap-4">
           <Facet field="primary_site" />
@@ -15,7 +15,7 @@ const FacetsPage: NextPage = () => {
           <Facet field="diagnoses.tissue_or_organ_of_origin" />
         </div>
       </div>
-    </Layout>
+    </SimpleLayout>
   );
 };
 
