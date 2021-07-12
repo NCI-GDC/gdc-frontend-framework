@@ -1,16 +1,47 @@
-import type { NextPage } from "next";
-import { Layout } from "../features/layout/Layout";
-import Link from 'next/link'
+import { NextPage } from "next";
+import { SimpleLayout } from "../features/layout/Simple";
+import Link from "next/link";
+
+interface HoverLinkProps {
+  readonly href: string;
+}
+
+const HoverLink: React.FC<HoverLinkProps> = ({ href, children }) => {
+  return (
+    <span className="hover:text-blue-600">
+      <Link href={href}>{children}</Link>
+    </span>
+  );
+};
 
 const IndexPage: NextPage = () => {
   return (
-    <Layout>
-      <div className="flex flex-col content-center">
-        <div>Prototypes:</div>
-        <Link href="/apps">Apps</Link>
-        <Link href="/facets">Facets</Link>
+    <SimpleLayout>
+      <div className="flex flex-col">
+        <div className="border border-gray-200 p-4">
+          User Flow Prototypes:
+          <ul className="list-disc list-inside">
+            <li>Most Pages</li>
+            <li>More Pages</li>
+            <li>Fewer Pages</li>
+            <li>
+              <HoverLink href="/user-flow-fewest-pages">Fewest Pages</HoverLink>
+            </li>
+          </ul>
+        </div>
+        <div className="border border-gray-200 p-4">
+          Misc Prototypes:
+          <ul className="list-disc list-inside">
+            <li>
+              <HoverLink href="/apps">Apps</HoverLink>
+            </li>
+            <li>
+              <HoverLink href="/facets">Facets</HoverLink>
+            </li>
+          </ul>
+        </div>
       </div>
-    </Layout>
+    </SimpleLayout>
   );
 };
 

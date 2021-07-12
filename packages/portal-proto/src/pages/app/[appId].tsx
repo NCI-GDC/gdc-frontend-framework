@@ -5,7 +5,7 @@ import {
 } from "@gff/core";
 import { NextPage } from "next";
 import { NextRouter, useRouter } from "next/dist/client/router";
-import { Layout } from "../../features/layout/Layout";
+import { SimpleLayout } from "../../features/layout/Simple";
 
 const AppsPage: NextPage = () => {
   const router = useRouter();
@@ -16,7 +16,7 @@ const AppsPage: NextPage = () => {
   const GdcApp = useCoreSelector(() => selectGdcAppById(appId));
 
   return (
-    <Layout>
+    <SimpleLayout>
       <div className="flex flex-col content-center gap-y-4">
         {metadata && (
           <div key={metadata.id} className="border-2 p-4">
@@ -34,7 +34,7 @@ const AppsPage: NextPage = () => {
           </div>
         )}
       </div>
-    </Layout>
+    </SimpleLayout>
   );
 };
 

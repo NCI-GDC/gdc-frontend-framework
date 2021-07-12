@@ -2,12 +2,12 @@ import { useCoreSelector, selectAllGdcAppMetadata } from "@gff/core";
 import { NextPage } from "next";
 import Link from "next/link";
 
-import { Layout } from "../features/layout/Layout";
+import { SimpleLayout } from "../features/layout/Simple";
 
 const AppsPage: NextPage = () => {
   const allMetadata = useCoreSelector(selectAllGdcAppMetadata);
   return (
-    <Layout>
+    <SimpleLayout>
       <div className="flex flex-col content-center gap-y-4">
         {allMetadata.map((metadata) => {
           return (
@@ -20,7 +20,7 @@ const AppsPage: NextPage = () => {
           );
         })}
       </div>
-    </Layout>
+    </SimpleLayout>
   );
 };
 
