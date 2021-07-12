@@ -1,10 +1,11 @@
 import { coreStore } from "../../store";
 import { v5 as uuidv5 } from "uuid";
-import { addGdcApp, EntityType } from "./gdcAppsSlice";
+import { addGdcAppMetadata, EntityType } from "./gdcAppsSlice";
 import { configureStore } from "@reduxjs/toolkit";
 import { ComponentType, useEffect } from "react";
 import { Provider } from "react-redux";
 import React from "react";
+import { registerGdcApp } from "./gdcAppRegistry";
 
 // using a random uuid v4 as the namespace
 const GDC_APP_NAMESPACE = "0bd921a8-e5a7-4e73-a63c-e3f872798061";
@@ -53,14 +54,14 @@ export const createGdcApp = (options: CreateGdcAppOptions) => {
 
   // add the app to the store
   coreStore.dispatch(
-    addGdcApp({
+    addGdcAppMetadata({
       id,
       name,
       version,
       requiredEntityTypes,
-      GdcApp: GdcAppWrapper,
     })
   );
+  registerGdcApp(id, GdcAppWrapper);
 
   return GdcAppWrapper;
 };
