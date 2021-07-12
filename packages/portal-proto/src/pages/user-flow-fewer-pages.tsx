@@ -1,5 +1,6 @@
 import { NextPage } from "next";
 import {
+  Button,
   UserFlowVariedPages,
   CohortManager,
   Graph,
@@ -54,24 +55,5 @@ const CohortGraphs: React.FC<unknown> = () => {
         <Graph />
       </div>
     </div>
-  );
-};
-
-interface ButtonProps {
-  readonly color?: string;
-}
-
-const Button: React.FC<ButtonProps> = ({ color = "gray", children }) => {
-  return (
-    <button
-      className={`
-        px-2 py-1 
-        border rounded
-        border-${color}-300 hover:border-${color}-400
-        bg-${color}-200 hover:bg-${color}-300 
-      `}
-    >
-      {children}
-    </button>
   );
 };
