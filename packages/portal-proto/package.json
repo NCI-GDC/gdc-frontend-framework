@@ -11,6 +11,7 @@
   "dependencies": {
     "@gff/core": "0.0.1",
     "@reduxjs/toolkit": "^1.6.0",
+    "@tailwindcss/forms": "^0.3.3",
     "next": "^11.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
