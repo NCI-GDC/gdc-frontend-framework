@@ -41,25 +41,21 @@ const slice = createSlice({
         if (response.warnings && Object.keys(response.warnings).length > 0) {
           state.cases[action.meta.arg].status = "rejected";
           state.cases[action.meta.arg].error = response.warnings.facets;
-        }
-
-        if (!response.data.aggregations) {
-          return state;
-        }
-
-        Object.entries(response.data.aggregations).forEach(
-          ([field, buckets]) => {
-            const facet = state.cases[field];
-            facet.status = "fulfilled";
-            facet.buckets = buckets.buckets.reduce(
-              (facetBuckets, apiBucket) => {
-                facetBuckets[apiBucket.key] = apiBucket.doc_count;
-                return facetBuckets;
-              },
-              {} as Record<string, number>
+        } else {
+          response.data.aggregations &&
+            Object.entries(response.data.aggregations).forEach(
+              ([field, buckets]) => {
+                state.cases[field].status = "fulfilled";
+                state.cases[field].buckets = buckets.buckets.reduce(
+                  (facetBuckets, apiBucket) => {
+                    facetBuckets[apiBucket.key] = apiBucket.doc_count;
+                    return facetBuckets;
+                  },
+                  {} as Record<string, number>
+                );
+              }
             );
-          }
-        );
+        }
       })
       .addCase(fetchFacetByName.pending, (state, action) => {
         const field = action.meta.arg;
