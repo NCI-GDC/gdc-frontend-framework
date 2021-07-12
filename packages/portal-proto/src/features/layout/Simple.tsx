@@ -2,10 +2,15 @@ import Head from "next/head";
 import Image from "next/image";
 
 /**
+ * This file represents a simple layout for the prototype. This is just to make things look nice.
+ * Once we settle on a user flow, we can update these.
+ */
+
+/**
  * Top-level layout for GDC pages. This can be used to wrap every page.
  * @returns
  */
-export const Layout: React.FC = ({ children }) => {
+export const SimpleLayout: React.FC = ({ children }) => {
   return (
     <div className="container mx-auto min-h-screen flex flex-col">
       <Head>

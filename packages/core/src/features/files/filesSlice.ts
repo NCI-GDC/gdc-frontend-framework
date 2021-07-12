@@ -125,8 +125,7 @@ export const fetchFiles = createAsyncThunk("files/fetchFiles", async () => {
   return await filesApi.fetchFiles();
 });
 
-const initialState: FilesState = {
-};
+const initialState: FilesState = {};
 
 const slice = createSlice({
   name: "files",
@@ -137,35 +136,33 @@ const slice = createSlice({
       .addCase(fetchFiles.fulfilled, (state, action) => {
         const response = action.payload;
         if (response.warnings && Object.keys(response.warnings).length > 0) {
-          return {
-            files: [],
-            status: "rejected",
-            error: Object.values(response.warnings)[0], // TODO add better warnings parsing
-          };
+          state.files = [];
+          state.status = "rejected";
+          state.error = Object.values(response.warnings)[0]; // TODO add better warnings parsing
+        } else {
+          state.files = response.data.hits.map((hit) => ({
+            id: hit.id,
+            submitterId: hit.submitter_id,
+            access: hit.access,
+            acl: hit.acl,
+            createDatetime: hit.create_datetime,
+            updatedDatetime: hit.updated_datetime,
+            dataCategory: hit.data_category,
+            dataFormat: hit.data_format,
+            dataRelease: hit.data_release,
+            dataType: hit.data_type,
+            fileId: hit.file_id,
+            fileName: hit.file_name,
+            fileSize: hit.file_size,
+            md5sum: hit.md5sum,
+            state: hit.state,
+            type: hit.type,
+            version: hit.version,
+            experimentalStrategy: hit.experimental_strategy,
+          }));
+          state.status = "fulfilled";
+          state.error = undefined;
         }
-
-        state.files = response.data.hits.map((hit) => ({
-          id: hit.id,
-          submitterId: hit.submitter_id,
-          access: hit.access,
-          acl: hit.acl,
-          createDatetime: hit.create_datetime,
-          updatedDatetime: hit.updated_datetime,
-          dataCategory: hit.data_category,
-          dataFormat: hit.data_format,
-          dataRelease: hit.data_release,
-          dataType: hit.data_type,
-          fileId: hit.file_id,
-          fileName: hit.file_name,
-          fileSize: hit.file_size,
-          md5sum: hit.md5sum,
-          state: hit.state,
-          type: hit.type,
-          version: hit.version,
-          experimentalStrategy: hit.experimental_strategy,
-        }));
-        state.status = "fulfilled";
-        state.error = undefined;
       })
       .addCase(fetchFiles.pending, (state, _) => {
         state.files = [];
