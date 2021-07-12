@@ -26,7 +26,6 @@ const slice = createSlice({
   reducers: {
     addGdcAppMetadata: (state, action: PayloadAction<GdcAppMetadata>) => {
       const {id, requiredEntityTypes} = action.payload;
-        action.payload;
 
       state.gdcApps[id] = {
         ...action.payload,
