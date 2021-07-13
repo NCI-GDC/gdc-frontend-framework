@@ -31,7 +31,7 @@ const Header: React.FC<HeaderProps> = ({ headerElements }) => {
       <div className="flex flex-row divide-x divide-gray-300">
         {headerElements.map((element, i) => (
           <div key={i} className="px-2">
-            {element}
+            {typeof element === "string" ? <span className="font-semibold">{element}</span> : element}
           </div>
         ))}
       </div>
