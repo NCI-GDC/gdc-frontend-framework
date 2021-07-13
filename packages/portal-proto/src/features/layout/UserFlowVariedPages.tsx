@@ -1,14 +1,17 @@
 import { ReactNode } from "react";
 
 interface UserFlowVariedPagesProps {
-  readonly headerElements: ReadonlyArray<ReactNode>
+  readonly headerElements: ReadonlyArray<ReactNode>;
 }
 
-export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({ headerElements, children }) => {
+export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
+  headerElements,
+  children,
+}) => {
   return (
     <div className="flex flex-col min-h-screen min-w-full">
       <header className="flex-none">
-        <Header {...{headerElements}}/>
+        <Header {...{ headerElements }} />
       </header>
       <main className="flex-grow">{children}</main>
       <footer className="flex-none">
@@ -19,14 +22,18 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({ header
 };
 
 interface HeaderProps {
-  readonly headerElements: ReadonlyArray<ReactNode>
+  readonly headerElements: ReadonlyArray<ReactNode>;
 }
 
-const Header: React.FC<HeaderProps> = ({headerElements}) => {
+const Header: React.FC<HeaderProps> = ({ headerElements }) => {
   return (
     <div className="p-4">
       <div className="flex flex-row divide-x divide-gray-300">
-        {headerElements.map((element, i) => <div key={i} className="px-2">{element}</div>)}
+        {headerElements.map((element, i) => (
+          <div key={i} className="px-2">
+            {element}
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -56,6 +63,38 @@ export const CohortManager: React.FC<unknown> = () => {
   );
 };
 
+export interface CohortGraphs {
+  readonly showSummary?: boolean;
+  readonly showCase?: boolean;
+  readonly showAnalysis?: boolean;
+  readonly showFiles?: boolean;
+}
+
+export const CohortGraphs: React.FC<CohortGraphs> = ({
+  showAnalysis = false,
+  showCase = false,
+  showFiles = false,
+  showSummary = false,
+}) => {
+  return (
+    <div className="flex flex-col gap-y-4">
+      <div className="flex flex-row gap-x-4">
+        {showSummary && <Button>Summary</Button>}
+        {showCase && <Button>Case</Button>}
+        {showAnalysis && <Button>Analysis</Button>}
+        {showFiles && <Button>Files</Button>}
+      </div>
+      <div className="flex flex-row flex-wrap gap-4">
+        <Graph />
+        <Graph />
+        <Graph />
+        <Graph />
+        <Graph />
+        <Graph />
+      </div>
+    </div>
+  );
+};
 
 export const Graph: React.FC<unknown> = () => {
   return <div className="w-52 h-52 border text-center">graph</div>;
@@ -78,4 +117,8 @@ export const Button: React.FC<ButtonProps> = ({ color = "gray", children }) => {
       {children}
     </button>
   );
+};
+
+export const CohortExpressionsAndBuilder: React.FC<unknown> = () => {
+  return <div className="h-96 text-center">Expressions + Cohort Builder</div>;
 };
