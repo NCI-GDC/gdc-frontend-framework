@@ -122,3 +122,26 @@ export const Button: React.FC<ButtonProps> = ({ color = "gray", children }) => {
 export const CohortExpressionsAndBuilder: React.FC<unknown> = () => {
   return <div className="h-96 text-center">Expressions + Cohort Builder</div>;
 };
+
+export interface AppProps {
+  readonly name?: ReactNode;
+}
+
+export const App: React.FC<AppProps> = ({ name }) => {
+  return (
+    <div className="w-72 h-52 border px-4 pt-2 pb-4 flex flex-col gap-y-2">
+      <div className="text-center">
+        {name ? name : <LinePlaceholer length={6} />}
+      </div>
+      <div className="flex-grow border bg-gray-100"></div>
+    </div>
+  );
+};
+
+export const LinePlaceholer: React.FC<{ length: number }> = ({ length }) => {
+  return (
+    <div className="flex flex-row justify-center">
+      <div className={`w-${length * 4} h-6 bg-gray-200 rounded-md`} />
+    </div>
+  );
+};

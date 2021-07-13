@@ -1,5 +1,5 @@
 import { NextPage } from "next";
-import { Button, UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
+import { Button, LinePlaceholer, UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -84,11 +84,4 @@ const Study: React.FC<StudyProps> = ({ name }) => {
   );
 };
 
-const LinePlaceholer = ({ length }) => {
-  return (
-    <div className="flex flex-row justify-center">
-      <div className={`w-${length * 4} h-6 bg-gray-200 rounded-md`} />
-    </div>
-  );
-};
 export default StudiesPage;
