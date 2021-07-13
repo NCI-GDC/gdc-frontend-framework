@@ -24,7 +24,7 @@ const StudiesPage: NextPage = () => {
         <div className="flex flex-row justify-end">
           <ExploreStudies />
         </div>
-        <div className="flex flex-row flex-wrap gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
           <Study name="TCGA-BRCA" />
           <Study name="TARGET" />
           <Study name="CPTAC-3" />
@@ -54,7 +54,7 @@ const StudiesPage: NextPage = () => {
 const Search = () => {
   return (
     <div className="flex flex-row justify-center">
-      <div className="w-1/2 rounded-full border border-gray-600 flex flex-row pr-4">
+      <div className="sm:w-1/2  rounded-full border border-gray-600 flex flex-row pr-4">
         <div className="flex flex-none fill-current text-black align-text-bottom pl-2">
           <Image src="/Search_Icon.svg" width={16} height={16} />
         </div>
@@ -78,7 +78,7 @@ interface StudyProps {
 
 const Study: React.FC<StudyProps> = ({ name }) => {
   return (
-    <div className="flex flex-col border border-gray-500 px-4 pt-2 pb-4 w-52 h-40 gap-y-2">
+    <div className="flex flex-col border border-gray-500 px-4 pt-2 pb-4 w-full h-52 gap-y-2">
       <div className="flex-none text-center">
         {name ? name : <LinePlaceholer length={6} />}
       </div>
