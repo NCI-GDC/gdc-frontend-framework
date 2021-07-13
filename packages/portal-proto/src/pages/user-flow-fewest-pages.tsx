@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 import Link from "next/link";
-import { UserFlowVariedPages, CohortManager, Graph } from "../features/layout/UserFlowVariedPages";
+import { UserFlowVariedPages, CohortManager, CohortGraphs } from "../features/layout/UserFlowVariedPages";
 
 const UserFlowFewestPagesPage: NextPage = () => {
   const headerElements = [
@@ -33,19 +33,6 @@ export default UserFlowFewestPagesPage;
 
 const CohortExpressions: React.FC<unknown> = () => {
   return <div className="h-40 text-center">cohort expressions</div>;
-};
-
-const CohortGraphs: React.FC<unknown> = () => {
-  return (
-    <div className="flex flex-row flex-wrap gap-4">
-      <Graph />
-      <Graph />
-      <Graph />
-      <Graph />
-      <Graph />
-      <Graph />
-    </div>
-  );
 };
 
 const Apps: React.FC<unknown> = () => {

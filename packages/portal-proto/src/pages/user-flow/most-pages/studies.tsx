@@ -7,9 +7,9 @@ const StudiesPage: NextPage = () => {
   const headerElements = [
     <Link href="/">Home</Link>,
     "Studies",
-    <Link href="/user-flow-fewer-pages">Explorations</Link>,
-    <Link href="/user-flow-fewer-pages">Analysis</Link>,
-    <Link href="/user-flow-fewer-pages">Repository</Link>,
+    <Link href="/user-flow/most-pages/exploration">Explorations</Link>,
+    <Link href="/user-flow/most-pages/analysis">Analysis</Link>,
+    <Link href="/user-flow/most-pages/repository">Repository</Link>,
   ];
 
   return (

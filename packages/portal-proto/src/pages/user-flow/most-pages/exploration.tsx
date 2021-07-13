@@ -1,22 +1,24 @@
 import { NextPage } from "next";
+import Link from "next/link";
 import {
-  UserFlowVariedPages,
   CohortManager,
   CohortExpressionsAndBuilder,
-  CohortGraphs
-} from "../features/layout/UserFlowVariedPages";
-import Link from "next/link";
+  CohortGraphs,
+  UserFlowVariedPages,
+} from "../../../features/layout/UserFlowVariedPages";
 
-const UserFlowFewerPagesPage: NextPage = () => {
+const ExplorationPage: NextPage = () => {
   const headerElements = [
     <Link href="/">Home</Link>,
-    <Link href="/not-implemented-yet">Studies</Link>,
-    <Link href="/user-flow-fewer-pages">Explorations</Link>,
+    <Link href="/user-flow/most-pages/studies">Studies</Link>,
+    "Explorations",
+    <Link href="/user-flow/most-pages/analysis">Analysis</Link>,
+    <Link href="/user-flow/most-pages/repository">Repository</Link>,
   ];
 
   return (
     <UserFlowVariedPages {...{ headerElements }}>
-      <div className="flex flex-col gap-y-4 px-4">
+      <div className="flex flex-col p-4 gap-y-4">
         <div className="border p-4 border-gray-400">
           <CohortManager />
         </div>
@@ -24,11 +26,11 @@ const UserFlowFewerPagesPage: NextPage = () => {
           <CohortExpressionsAndBuilder />
         </div>
         <div className="border p-4 border-gray-400">
-          <CohortGraphs showAnalysis showCase showFiles showSummary/>
+          <CohortGraphs showSummary showCase/>
         </div>
       </div>
     </UserFlowVariedPages>
   );
 };
 
-export default UserFlowFewerPagesPage;
+export default ExplorationPage;
