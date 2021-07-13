@@ -28,7 +28,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ headerElements }) => {
   return (
     <div className="p-4">
-      <div className="flex flex-row divide-x divide-gray-300">
+      <div className="flex flex-row flex-wrap divide-x divide-gray-300">
         {headerElements.map((element, i) => (
           <div key={i} className="px-2">
             {typeof element === "string" ? <span className="font-semibold">{element}</span> : element}
