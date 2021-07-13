@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 import Link from "next/link";
-import { UserFlowVariedPages, CohortManager, CohortGraphs } from "../features/layout/UserFlowVariedPages";
+import { App, UserFlowVariedPages, CohortManager, CohortGraphs } from "../features/layout/UserFlowVariedPages";
 
 const UserFlowFewestPagesPage: NextPage = () => {
   const headerElements = [
@@ -50,10 +50,3 @@ const Apps: React.FC<unknown> = () => {
   );
 };
 
-interface AppProps {
-  readonly name: string;
-}
-
-const App: React.FC<AppProps> = ({ name }) => {
-  return <div className="w-72 h-52 border text-center">{name}</div>;
-};
