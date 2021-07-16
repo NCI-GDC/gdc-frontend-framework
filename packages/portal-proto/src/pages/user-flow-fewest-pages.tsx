@@ -4,8 +4,8 @@ import { App, UserFlowVariedPages, CohortManager, CohortGraphs } from "../featur
 
 const UserFlowFewestPagesPage: NextPage = () => {
   const headerElements = [
-    <Link href="/">Home</Link>,
-    <Link href="/user-flow-fewest-pages">Explorations</Link>,
+    <Link key="Home" href="/">Home</Link>,
+    <Link key="Exploration" href="/user-flow-fewest-pages">Exploration</Link>,
   ];
 
   return (
@@ -49,4 +49,3 @@ const Apps: React.FC<unknown> = () => {
     </div>
   );
 };
-

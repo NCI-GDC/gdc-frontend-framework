@@ -8,10 +8,10 @@ import {
 
 const RepositoryPage: NextPage = () => {
   const headerElements = [
-    <Link href="/">Home</Link>,
-    <Link href="/user-flow/most-pages/studies">Studies</Link>,
-    <Link href="/user-flow/most-pages/exploration">Exploration</Link>,
-    <Link href="/user-flow/most-pages/analysis">Analysis</Link>,
+    <Link key="Home" href="/">Home</Link>,
+    <Link key="Studies" href="/user-flow/most-pages/studies">Studies</Link>,
+    <Link key="Exploration" href="/user-flow/most-pages/exploration">Exploration</Link>,
+    <Link key="Analysis" href="/user-flow/most-pages/analysis">Analysis</Link>,
     "Repository",
   ];
 

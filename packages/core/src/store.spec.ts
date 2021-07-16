@@ -1,7 +1,7 @@
-import { coreStore } from "./store";
+import { CoreState, coreStore } from "./store";
 
-export const getInitialCoreState = () => coreStore.getState();
+export const getInitialCoreState = (): CoreState => coreStore.getState();
 
 test("placeholder", () => {
-
+  expect(true).toBeTruthy();
 });

@@ -1,12 +1,13 @@
 import { NextPage } from "next";
 import { SimpleLayout } from "../features/layout/Simple";
 import Link from "next/link";
+import { PropsWithChildren } from "react";
 
 interface HoverLinkProps {
   readonly href: string;
 }
 
-const HoverLink: React.FC<HoverLinkProps> = ({ href, children }) => {
+const HoverLink: React.FC<HoverLinkProps> = ({ href, children }: PropsWithChildren<HoverLinkProps>) => {
   return (
     <span className="hover:text-blue-600">
       <Link href={href}>{children}</Link>

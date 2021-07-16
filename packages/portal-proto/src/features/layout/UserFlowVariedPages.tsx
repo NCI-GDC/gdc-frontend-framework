@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { PropsWithChildren, ReactNode } from "react";
 
 interface UserFlowVariedPagesProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
@@ -7,7 +7,7 @@ interface UserFlowVariedPagesProps {
 export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
   headerElements,
   children,
-}) => {
+}: PropsWithChildren<UserFlowVariedPagesProps>) => {
   return (
     <div className="flex flex-col min-h-screen min-w-full">
       <header className="flex-none">
@@ -25,7 +25,7 @@ interface HeaderProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
 }
 
-const Header: React.FC<HeaderProps> = ({ headerElements }) => {
+const Header: React.FC<HeaderProps> = ({ headerElements }: HeaderProps) => {
   return (
     <div className="p-4">
       <div className="flex flex-row flex-wrap divide-x divide-gray-300">
@@ -75,7 +75,7 @@ export const CohortGraphs: React.FC<CohortGraphs> = ({
   showCase = false,
   showFiles = false,
   showSummary = false,
-}) => {
+}: CohortGraphs) => {
   return (
     <div className="flex flex-col gap-y-4">
       <div className="flex flex-row gap-x-4">
@@ -104,7 +104,7 @@ export interface ButtonProps {
   readonly color?: string;
 }
 
-export const Button: React.FC<ButtonProps> = ({ color = "gray", children }) => {
+export const Button: React.FC<ButtonProps> = ({ color = "gray", children }: PropsWithChildren<ButtonProps>) => {
   return (
     <button
       className={`
@@ -127,7 +127,7 @@ export interface AppProps {
   readonly name?: ReactNode;
 }
 
-export const App: React.FC<AppProps> = ({ name }) => {
+export const App: React.FC<AppProps> = ({ name }: AppProps) => {
   return (
     <div className="w-72 h-52 border px-4 pt-2 pb-4 flex flex-col gap-y-2">
       <div className="text-center">
@@ -138,7 +138,11 @@ export const App: React.FC<AppProps> = ({ name }) => {
   );
 };
 
-export const LinePlaceholer: React.FC<{ length: number }> = ({ length }) => {
+interface LinePlaceholerProps {
+  readonly length: number;
+}
+
+export const LinePlaceholer: React.FC<LinePlaceholerProps> = ({ length }: LinePlaceholerProps) => {
   return (
     <div className="flex flex-row justify-center">
       <div className={`w-${length * 4} h-6 bg-gray-200 rounded-md`} />

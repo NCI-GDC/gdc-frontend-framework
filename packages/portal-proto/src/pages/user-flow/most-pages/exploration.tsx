@@ -9,11 +9,11 @@ import {
 
 const ExplorationPage: NextPage = () => {
   const headerElements = [
-    <Link href="/">Home</Link>,
-    <Link href="/user-flow/most-pages/studies">Studies</Link>,
+    <Link key="Home" href="/">Home</Link>,
+    <Link key="Studies" href="/user-flow/most-pages/studies">Studies</Link>,
     "Explorations",
-    <Link href="/user-flow/most-pages/analysis">Analysis</Link>,
-    <Link href="/user-flow/most-pages/repository">Repository</Link>,
+    <Link key="Analysis" href="/user-flow/most-pages/analysis">Analysis</Link>,
+    <Link key="Repository" href="/user-flow/most-pages/repository">Repository</Link>,
   ];
 
   return (
