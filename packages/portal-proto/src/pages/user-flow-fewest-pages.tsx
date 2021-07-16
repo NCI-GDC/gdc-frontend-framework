@@ -1,11 +1,20 @@
 import { NextPage } from "next";
 import Link from "next/link";
-import { App, UserFlowVariedPages, CohortManager, CohortGraphs } from "../features/layout/UserFlowVariedPages";
+import {
+  App,
+  UserFlowVariedPages,
+  CohortManager,
+  CohortGraphs,
+} from "../features/layout/UserFlowVariedPages";
 
 const UserFlowFewestPagesPage: NextPage = () => {
   const headerElements = [
-    <Link key="Home" href="/">Home</Link>,
-    <Link key="Exploration" href="/user-flow-fewest-pages">Exploration</Link>,
+    <Link key="Home" href="/">
+      Home
+    </Link>,
+    <Link key="Exploration" href="/user-flow-fewest-pages">
+      Exploration
+    </Link>,
   ];
 
   return (
@@ -29,7 +38,6 @@ const UserFlowFewestPagesPage: NextPage = () => {
 };
 
 export default UserFlowFewestPagesPage;
-
 
 const CohortExpressions: React.FC<unknown> = () => {
   return <div className="h-40 text-center">cohort expressions</div>;

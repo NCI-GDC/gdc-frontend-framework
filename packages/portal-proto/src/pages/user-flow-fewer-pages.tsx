@@ -3,15 +3,21 @@ import {
   UserFlowVariedPages,
   CohortManager,
   CohortExpressionsAndBuilder,
-  CohortGraphs
+  CohortGraphs,
 } from "../features/layout/UserFlowVariedPages";
 import Link from "next/link";
 
 const UserFlowFewerPagesPage: NextPage = () => {
   const headerElements = [
-    <Link key="Home" href="/">Home</Link>,
-    <Link key="Studies" href="/not-implemented-yet">Studies</Link>,
-    <Link key="Exploration" href="/user-flow-fewer-pages">Exploration</Link>,
+    <Link key="Home" href="/">
+      Home
+    </Link>,
+    <Link key="Studies" href="/not-implemented-yet">
+      Studies
+    </Link>,
+    <Link key="Exploration" href="/user-flow-fewer-pages">
+      Exploration
+    </Link>,
   ];
 
   return (
@@ -24,7 +30,7 @@ const UserFlowFewerPagesPage: NextPage = () => {
           <CohortExpressionsAndBuilder />
         </div>
         <div className="border p-4 border-gray-400">
-          <CohortGraphs showAnalysis showCase showFiles showSummary/>
+          <CohortGraphs showAnalysis showCase showFiles showSummary />
         </div>
       </div>
     </UserFlowVariedPages>

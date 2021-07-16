@@ -6,7 +6,7 @@ import { CoreProvider } from "@gff/core";
 
 import store from "../app/store";
 
-// import gdc apps here. 
+// import gdc apps here.
 // their default exports will trigger registration.
 import "../features/demoApp1/DemoApp";
 import "../features/demoApp2/DemoApp";

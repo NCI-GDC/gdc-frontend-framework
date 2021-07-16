@@ -40,5 +40,5 @@ Cohort Definition
 
 Integrity
 
-- The single cohort ensures that data is requested for the same collection of cases, which 
+- The single cohort ensures that data is requested for the same collection of cases, which
   helps maintain integrity across the two data sets.

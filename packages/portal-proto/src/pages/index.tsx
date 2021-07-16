@@ -7,7 +7,10 @@ interface HoverLinkProps {
   readonly href: string;
 }
 
-const HoverLink: React.FC<HoverLinkProps> = ({ href, children }: PropsWithChildren<HoverLinkProps>) => {
+const HoverLink: React.FC<HoverLinkProps> = ({
+  href,
+  children,
+}: PropsWithChildren<HoverLinkProps>) => {
   return (
     <span className="hover:text-blue-600">
       <Link href={href}>{children}</Link>

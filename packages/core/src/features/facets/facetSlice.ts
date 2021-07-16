@@ -51,9 +51,9 @@ const slice = createSlice({
                     facetBuckets[apiBucket.key] = apiBucket.doc_count;
                     return facetBuckets;
                   },
-                  {} as Record<string, number>
+                  {} as Record<string, number>,
                 );
-              }
+              },
             );
         }
       })
@@ -74,9 +74,13 @@ const slice = createSlice({
 
 export const facetsReducer = slice.reducer;
 
-export const selectCases = (state: CoreState): Record<string, FacetBuckets> => state.facets.cases;
+export const selectCases = (state: CoreState): Record<string, FacetBuckets> =>
+  state.facets.cases;
 
-export const selectCasesFacetByField = (state: CoreState, field: string): FacetBuckets => {
+export const selectCasesFacetByField = (
+  state: CoreState,
+  field: string,
+): FacetBuckets => {
   const cases = state.facets.cases;
   return cases[field];
 };

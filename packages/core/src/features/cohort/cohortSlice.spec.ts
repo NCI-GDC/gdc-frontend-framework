@@ -22,7 +22,7 @@ describe("cohortSlice reducer", () => {
   test("clearCurrentCohort action should unset the current cohort", () => {
     const state = cohortReducer(
       { currentCohort: "cohort-2" },
-      clearCurrentCohort()
+      clearCurrentCohort(),
     );
     expect(state.currentCohort).toBeUndefined();
   });

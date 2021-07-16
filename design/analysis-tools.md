@@ -19,14 +19,12 @@ Shape
 - Gene Id
 - Expression Mean
 - Expression Standard Deviation
-  
+
 Required Inputs
 
 - Set of Cases
 - Set of Genes
-  
+
 Data Type: Expressio
 
 Request gene expression for case and gene cohort
-
-

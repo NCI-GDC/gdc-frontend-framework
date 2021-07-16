@@ -19,7 +19,7 @@ interface UseCaseFacetResponse {
 const useCaseFacet = (field: string): UseCaseFacetResponse => {
   const coreDispatch = useCoreDispatch();
   const facet: FacetBuckets = useCoreSelector((state) =>
-    selectCasesFacetByField(state, field)
+    selectCasesFacetByField(state, field),
   );
 
   useEffect(() => {
@@ -35,7 +35,7 @@ const useCaseFacet = (field: string): UseCaseFacetResponse => {
     isFetching: facet?.status === "pending",
     isSuccess: facet?.status === "fulfilled",
     isError: facet?.status === "rejected",
-  }
+  };
 };
 
 interface FacetProps {
@@ -43,7 +43,8 @@ interface FacetProps {
 }
 
 export const Facet: React.FC<FacetProps> = ({ field }: FacetProps) => {
-  const {data, error, isUninitialized, isFetching, isSuccess, isError} = useCaseFacet(field);
+  const { data, error, isUninitialized, isFetching, isSuccess, isError } =
+    useCaseFacet(field);
 
   if (isUninitialized) {
     return <div>Initializing facet...</div>;
@@ -52,11 +53,11 @@ export const Facet: React.FC<FacetProps> = ({ field }: FacetProps) => {
   if (isFetching) {
     return <div>Fetching facet...</div>;
   }
-  
+
   if (isError) {
     return <div>Failed to fetch facet: {error}</div>;
   }
-  
+
   const maxValuesToDisplay = 10;
   const showAll = false;
 
@@ -91,8 +92,8 @@ export const Facet: React.FC<FacetProps> = ({ field }: FacetProps) => {
 };
 
 const convertFieldToName = (field: string): string => {
-  const property = field.split('.').pop();
-  const tokens = property.split('_');
-  const capitalizedTokens = tokens.map(s => s[0].toUpperCase() + s.substr(1));
-  return capitalizedTokens.join(' ');
+  const property = field.split(".").pop();
+  const tokens = property.split("_");
+  const capitalizedTokens = tokens.map((s) => s[0].toUpperCase() + s.substr(1));
+  return capitalizedTokens.join(" ");
 };

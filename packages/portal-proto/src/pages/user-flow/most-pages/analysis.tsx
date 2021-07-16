@@ -9,11 +9,19 @@ import {
 
 const AnalysisPage: NextPage = () => {
   const headerElements = [
-    <Link key="Home" href="/">Home</Link>,
-    <Link key="Studies" href="/user-flow/most-pages/studies">Studies</Link>,
-    <Link key="Exploration" href="/user-flow/most-pages/exploration">Exploration</Link>,
+    <Link key="Home" href="/">
+      Home
+    </Link>,
+    <Link key="Studies" href="/user-flow/most-pages/studies">
+      Studies
+    </Link>,
+    <Link key="Exploration" href="/user-flow/most-pages/exploration">
+      Exploration
+    </Link>,
     "Analysis",
-    <Link key="Repository" href="/user-flow/most-pages/repository">Repository</Link>,
+    <Link key="Repository" href="/user-flow/most-pages/repository">
+      Repository
+    </Link>,
   ];
 
   return (

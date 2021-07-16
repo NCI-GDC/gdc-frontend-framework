@@ -41,7 +41,7 @@ export type CoreState = ReturnType<typeof coreStore.getState>;
  * correct opinionated type.
  */
 export const CoreContext = React.createContext(
-  undefined as unknown as ReactReduxContextValue<CoreState, AnyAction>
+  undefined as unknown as ReactReduxContextValue<CoreState, AnyAction>,
 );
 export const useCoreSelector: TypedUseSelectorHook<CoreState> =
   createSelectorHook(CoreContext);

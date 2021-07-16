@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import { SimpleLayout } from "../features/layout/Simple";
-import Link from 'next/link'
+import Link from "next/link";
 
 const ExamplesPage: NextPage = () => {
   return (

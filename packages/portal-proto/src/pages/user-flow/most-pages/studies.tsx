@@ -9,10 +9,16 @@ import Image from "next/image";
 
 const StudiesPage: NextPage = () => {
   const headerElements = [
-    <Link key="Home" href="/">Home</Link>,
+    <Link key="Home" href="/">
+      Home
+    </Link>,
     "Studies",
-    <Link key="Analysis" href="/user-flow/most-pages/analysis">Analysis</Link>,
-    <Link key="Repository" href="/user-flow/most-pages/repository">Repository</Link>,
+    <Link key="Analysis" href="/user-flow/most-pages/analysis">
+      Analysis
+    </Link>,
+    <Link key="Repository" href="/user-flow/most-pages/repository">
+      Repository
+    </Link>,
   ];
 
   return (
@@ -82,7 +88,9 @@ const Study: React.FC<StudyProps> = ({ name }: StudyProps) => {
       <div className="flex-none text-center">
         {name ? name : <LinePlaceholer length={6} />}
       </div>
-      <div className="flex-grow"><Card/></div>
+      <div className="flex-grow">
+        <Card />
+      </div>
     </div>
   );
 };
@@ -93,7 +101,8 @@ const Card = () => {
   // styles for the SVG X from https://stackoverflow.com/a/56557106
   const color = "gray";
   return (
-    <div className="h-full w-full border border-gray-500"
+    <div
+      className="h-full w-full border border-gray-500"
       style={{
         background: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 100 100'><line x1='0' y1='0' x2='100' y2='100' stroke='${color}' vector-effect='non-scaling-stroke'/><line x1='0' y1='100' x2='100' y2='0' stroke='${color}' vector-effect='non-scaling-stroke'/></svg>")`,
         backgroundRepeat: "no-repeat",

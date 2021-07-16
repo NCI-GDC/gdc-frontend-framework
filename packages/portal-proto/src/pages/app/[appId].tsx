@@ -11,7 +11,7 @@ const AppsPage: NextPage = () => {
   const router = useRouter();
   const appId = getAppId(router);
   const metadata = useCoreSelector((state) =>
-    selectGdcAppMetadataById(state, appId)
+    selectGdcAppMetadataById(state, appId),
   );
   const GdcApp = useCoreSelector(() => selectGdcAppById(appId));
 
