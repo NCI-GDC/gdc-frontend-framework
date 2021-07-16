@@ -1,6 +1,6 @@
 # Cohort Management
 
-A cohort is a collection of cases. The user should be able to define and modify cohorts.  
+A cohort is a collection of cases. The user should be able to define and modify cohorts.
 
 ## Cohort Types
 
@@ -46,7 +46,6 @@ Ideally, we would track the changes that are made to a cohort. This cohort histo
 
 We can also track who (a user) or what (a tool) modified the cohort.
 
-
 ## Cohort Model
 
 The cohort model should be immutable. This will allow us to reliably track history.
@@ -68,7 +67,7 @@ The idea is that we could re-apply filters after a data release, compare the new
 Re-applying filters can get complex quickly in the context of cohort history.
 
 - Should re-applying happen at every step of the history?
-- Do filters describe the complete filtering or just the difference from the previous cohort in history?  
+- Do filters describe the complete filtering or just the difference from the previous cohort in history?
 - Does re-applying create a new copy of the cohorts and it's history? Or does it mutate in-place? (which violates immutablilty)? Or do we maintain case id history too?
 - Filtering performed by analysis tools probably cannot be automatically applied. This would require the user to manually re-do their analysis. How do we facilitate this interaction, if at all?
 
@@ -76,6 +75,6 @@ Re-applying filters can get complex quickly in the context of cohort history.
 
 If cohorts are sharable, we need to check data access permissions for the entities in the cohort to ensure that users are not seeing data that they are not allowed to view.
 
-We may also need to detect when changes in access for a cohort?  For example, the data could change from open to controlled, or a user could lose dbGaP access to controlled-access data.
+We may also need to detect when changes in access for a cohort? For example, the data could change from open to controlled, or a user could lose dbGaP access to controlled-access data.
 
 Likewise, data can be redacted or deleted. We need to handle that as well.

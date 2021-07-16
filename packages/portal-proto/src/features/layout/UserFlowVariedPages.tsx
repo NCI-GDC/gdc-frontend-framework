@@ -31,7 +31,11 @@ const Header: React.FC<HeaderProps> = ({ headerElements }: HeaderProps) => {
       <div className="flex flex-row flex-wrap divide-x divide-gray-300">
         {headerElements.map((element, i) => (
           <div key={i} className="px-2">
-            {typeof element === "string" ? <span className="font-semibold">{element}</span> : element}
+            {typeof element === "string" ? (
+              <span className="font-semibold">{element}</span>
+            ) : (
+              element
+            )}
           </div>
         ))}
       </div>
@@ -104,7 +108,10 @@ export interface ButtonProps {
   readonly color?: string;
 }
 
-export const Button: React.FC<ButtonProps> = ({ color = "gray", children }: PropsWithChildren<ButtonProps>) => {
+export const Button: React.FC<ButtonProps> = ({
+  color = "gray",
+  children,
+}: PropsWithChildren<ButtonProps>) => {
   return (
     <button
       className={`
@@ -142,7 +149,9 @@ interface LinePlaceholerProps {
   readonly length: number;
 }
 
-export const LinePlaceholer: React.FC<LinePlaceholerProps> = ({ length }: LinePlaceholerProps) => {
+export const LinePlaceholer: React.FC<LinePlaceholerProps> = ({
+  length,
+}: LinePlaceholerProps) => {
   return (
     <div className="flex flex-row justify-center">
       <div className={`w-${length * 4} h-6 bg-gray-200 rounded-md`} />

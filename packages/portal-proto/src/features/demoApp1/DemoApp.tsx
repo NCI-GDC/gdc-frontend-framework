@@ -1,10 +1,6 @@
 import { createGdcApp } from "@gff/core";
 
-const Demo = () => (
-  <div>
-    Demo App 1
-  </div>
-);
+const Demo = () => <div>Demo App 1</div>;
 
 export default createGdcApp({
   App: Demo,

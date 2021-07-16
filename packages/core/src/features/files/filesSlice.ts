@@ -181,4 +181,6 @@ export const filesReducer = slice.reducer;
 
 export const selectFilesState = (state: CoreState): FilesState => state.files;
 
-export const selectFiles = (state: CoreState): ReadonlyArray<GdcFile> | undefined => state.files.files;
+export const selectFiles = (
+  state: CoreState,
+): ReadonlyArray<GdcFile> | undefined => state.files.files;

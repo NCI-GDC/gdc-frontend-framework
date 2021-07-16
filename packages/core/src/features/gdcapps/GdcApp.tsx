@@ -59,7 +59,7 @@ export const createGdcApp = (options: CreateGdcAppOptions) => {
       name,
       version,
       requiredEntityTypes,
-    })
+    }),
   );
   registerGdcApp(id, GdcAppWrapper);
 

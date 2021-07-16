@@ -8,10 +8,18 @@ import {
 
 const RepositoryPage: NextPage = () => {
   const headerElements = [
-    <Link key="Home" href="/">Home</Link>,
-    <Link key="Studies" href="/user-flow/most-pages/studies">Studies</Link>,
-    <Link key="Exploration" href="/user-flow/most-pages/exploration">Exploration</Link>,
-    <Link key="Analysis" href="/user-flow/most-pages/analysis">Analysis</Link>,
+    <Link key="Home" href="/">
+      Home
+    </Link>,
+    <Link key="Studies" href="/user-flow/most-pages/studies">
+      Studies
+    </Link>,
+    <Link key="Exploration" href="/user-flow/most-pages/exploration">
+      Exploration
+    </Link>,
+    <Link key="Analysis" href="/user-flow/most-pages/analysis">
+      Analysis
+    </Link>,
     "Repository",
   ];
 
@@ -67,7 +75,7 @@ const Files = () => {
     <div className="overflow-y-auto h-96">
       <table
         className="table-auto border-collapse border-gray-400 w-full"
-        style={{ borderSpacing: "4em", }}
+        style={{ borderSpacing: "4em" }}
       >
         <thead>
           <tr className="bg-gray-400">
@@ -83,7 +91,7 @@ const Files = () => {
         </thead>
         <tbody>
           {filenames.map((filename, i) => (
-            <tr key={filename} className={i % 2 == 0 ? "bg-gray-200": ""}>
+            <tr key={filename} className={i % 2 == 0 ? "bg-gray-200" : ""}>
               <td className="px-2 break-all">{filename}</td>
               <td className="px-2">XXXX</td>
               <td className="px-2">XXXX</td>

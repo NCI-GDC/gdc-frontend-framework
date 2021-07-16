@@ -12,10 +12,14 @@ const AppsPage: NextPage = () => {
         {allMetadata.map((metadata) => {
           return (
             <div key={metadata.id} className="border-2 p-4">
-              <div>id: <Link href={`/app/${metadata.id}`}>{metadata.id}</Link></div>
+              <div>
+                id: <Link href={`/app/${metadata.id}`}>{metadata.id}</Link>
+              </div>
               <div>name: {metadata.name}</div>
               <div>version: {metadata.version}</div>
-              <div>required entities: {metadata.requiredEntityTypes.join(",")}</div>
+              <div>
+                required entities: {metadata.requiredEntityTypes.join(",")}
+              </div>
             </div>
           );
         })}

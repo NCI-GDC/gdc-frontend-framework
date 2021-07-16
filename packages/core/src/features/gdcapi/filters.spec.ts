@@ -8,7 +8,7 @@ import {
 type Scenario = {
   readonly name: string;
   readonly op: Operation;
-  readonly  gqlOp: GqlOperation;
+  readonly gqlOp: GqlOperation;
 };
 
 const equals: Scenario = {

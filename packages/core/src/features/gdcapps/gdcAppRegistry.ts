@@ -1,8 +1,8 @@
 import { ReactNode } from "react";
 
 /**
- * A registry for the GDC Apps.  
- * 
+ * A registry for the GDC Apps.
+ *
  * These references to React components cannot live in the redux store
  * because they are complex objects. This registry is a workaround.
  */
@@ -14,4 +14,4 @@ export const registerGdcApp = (id: string, gdcApp: ReactNode) => {
 
 export const lookupGdcApp = (id: string) => {
   return REGISTRY[id];
-}
+};

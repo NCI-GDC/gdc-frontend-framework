@@ -97,7 +97,7 @@ export interface OperationHandler<T> {
 
 export const handleOperation = <T>(
   handler: OperationHandler<T>,
-  op: Operation
+  op: Operation,
 ): T => {
   switch (op.operator) {
     case "=":
@@ -252,7 +252,7 @@ export interface GqlOperationHandler<T> {
 
 export const handleGqlOperation = <T>(
   handler: GqlOperationHandler<T>,
-  op: GqlOperation
+  op: GqlOperation,
 ): T => {
   switch (op.op) {
     case "=":
@@ -321,7 +321,7 @@ class ToGqlOperationHandlder implements OperationHandler<GqlOperation> {
     },
   });
   handleGreaterThanOrEquals = (
-    op: GreaterThanOrEquals
+    op: GreaterThanOrEquals,
   ): GqlGreaterThanOrEquals => ({
     op: ">=",
     content: {
@@ -397,7 +397,7 @@ class ToOperationHandler implements GqlOperationHandler<Operation> {
     operand: op.content.value,
   });
   handleGreaterThanOrEquals = (
-    op: GqlGreaterThanOrEquals
+    op: GqlGreaterThanOrEquals,
   ): GreaterThanOrEquals => ({
     operator: ">=",
     field: op.content.field,
@@ -431,7 +431,9 @@ class ToOperationHandler implements GqlOperationHandler<Operation> {
   });
 }
 
-export const convertGqlFilterToFilter = (gqlFilter: GqlOperation): Operation => {
+export const convertGqlFilterToFilter = (
+  gqlFilter: GqlOperation,
+): Operation => {
   const handler: GqlOperationHandler<Operation> = new ToOperationHandler();
   return handleGqlOperation(handler, gqlFilter);
 };

@@ -16,4 +16,3 @@ Analysis Tool
 
 - specify type of data
 - specify type of entities
-  
