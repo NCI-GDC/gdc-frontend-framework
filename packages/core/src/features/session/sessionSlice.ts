@@ -23,4 +23,5 @@ export const sessionReducer = slice.reducer;
 
 export const { setSessionId } = slice.actions;
 
-export const selectSessionId = (state: CoreState) => state.session.sessionId;
+export const selectSessionId = (state: CoreState): string =>
+  state.session.sessionId;

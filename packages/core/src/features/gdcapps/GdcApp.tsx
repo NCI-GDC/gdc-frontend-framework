@@ -17,7 +17,7 @@ export interface CreateGdcAppOptions {
   readonly requiredEntityTypes: ReadonlyArray<EntityType>;
 }
 
-export const createGdcApp = (options: CreateGdcAppOptions) => {
+export const createGdcApp = (options: CreateGdcAppOptions): React.ReactNode => {
   const { App, name, version, requiredEntityTypes } = options;
 
   // create a stable id for this app

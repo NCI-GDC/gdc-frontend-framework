@@ -164,12 +164,12 @@ const slice = createSlice({
           state.error = undefined;
         }
       })
-      .addCase(fetchFiles.pending, (state, _) => {
+      .addCase(fetchFiles.pending, (state) => {
         state.files = [];
         state.status = "pending";
         state.error = undefined;
       })
-      .addCase(fetchFiles.rejected, (state, _) => {
+      .addCase(fetchFiles.rejected, (state) => {
         state.files = [];
         state.status = "rejected";
         state.error = undefined; // TODO - extract error message from object or error

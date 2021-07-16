@@ -46,8 +46,4 @@ const getAppId = (router: NextRouter): string => {
   return "UNKNOWN_APP_ID";
 };
 
-const isString = (x: any): x is string => {
-  return typeof x === "string";
-};
-
 export default AppsPage;

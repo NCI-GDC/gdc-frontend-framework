@@ -1,12 +1,8 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 
-export function makeStore() {
-  return configureStore({
-    reducer: (state) => state,
-  });
-}
-
-const store = makeStore();
+const store = configureStore({
+  reducer: (state) => state,
+});
 
 export type AppState = ReturnType<typeof store.getState>;
 
