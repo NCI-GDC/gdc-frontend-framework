@@ -9,10 +9,10 @@ import Image from "next/image";
 
 const StudiesPage: NextPage = () => {
   const headerElements = [
-    <Link href="/">Home</Link>,
+    <Link key="Home" href="/">Home</Link>,
     "Studies",
-    <Link href="/user-flow/most-pages/analysis">Analysis</Link>,
-    <Link href="/user-flow/most-pages/repository">Repository</Link>,
+    <Link key="Analysis" href="/user-flow/most-pages/analysis">Analysis</Link>,
+    <Link key="Repository" href="/user-flow/most-pages/repository">Repository</Link>,
   ];
 
   return (
@@ -76,7 +76,7 @@ interface StudyProps {
   readonly name?: string;
 }
 
-const Study: React.FC<StudyProps> = ({ name }) => {
+const Study: React.FC<StudyProps> = ({ name }: StudyProps) => {
   return (
     <div className="flex flex-col border border-gray-500 px-4 pt-2 pb-4 w-full h-52 gap-y-2">
       <div className="flex-none text-center">

@@ -42,7 +42,7 @@ interface FacetProps {
   readonly field: string;
 }
 
-export const Facet: React.FC<FacetProps> = ({ field }) => {
+export const Facet: React.FC<FacetProps> = ({ field }: FacetProps) => {
   const {data, error, isUninitialized, isFetching, isSuccess, isError} = useCaseFacet(field);
 
   if (isUninitialized) {

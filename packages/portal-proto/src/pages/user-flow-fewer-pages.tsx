@@ -9,9 +9,9 @@ import Link from "next/link";
 
 const UserFlowFewerPagesPage: NextPage = () => {
   const headerElements = [
-    <Link href="/">Home</Link>,
-    <Link href="/not-implemented-yet">Studies</Link>,
-    <Link href="/user-flow-fewer-pages">Explorations</Link>,
+    <Link key="Home" href="/">Home</Link>,
+    <Link key="Studies" href="/not-implemented-yet">Studies</Link>,
+    <Link key="Exploration" href="/user-flow-fewer-pages">Exploration</Link>,
   ];
 
   return (

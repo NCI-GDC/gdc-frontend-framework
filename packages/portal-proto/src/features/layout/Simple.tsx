@@ -1,5 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
+import { PropsWithChildren } from "react";
 
 /**
  * This file represents a simple layout for the prototype. This is just to make things look nice.
@@ -10,7 +11,7 @@ import Image from "next/image";
  * Top-level layout for GDC pages. This can be used to wrap every page.
  * @returns
  */
-export const SimpleLayout: React.FC = ({ children }) => {
+export const SimpleLayout: React.FC<unknown> = ({ children }: PropsWithChildren<unknown>) => {
   return (
     <div className="container mx-auto min-h-screen flex flex-col">
       <Head>
