@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import React from "react";
 import { CoreState } from "../../store";
 import { lookupGdcApp } from "./gdcAppRegistry";
 
@@ -40,13 +41,17 @@ export const gdcAppReducer = slice.reducer;
 
 export const { addGdcAppMetadata } = slice.actions;
 
-export const selectGdcAppIds = (state: CoreState) =>
+export const selectGdcAppIds = (state: CoreState): ReadonlyArray<string> =>
   Object.keys(state.gdcApps.gdcApps);
 
-export const selectAllGdcAppMetadata = (state: CoreState) =>
-  Object.values(state.gdcApps.gdcApps);
+export const selectAllGdcAppMetadata = (
+  state: CoreState,
+): ReadonlyArray<GdcAppMetadata> => Object.values(state.gdcApps.gdcApps);
 
-export const selectGdcAppMetadataById = (state: CoreState, appId: string) =>
-  state.gdcApps.gdcApps[appId];
+export const selectGdcAppMetadataById = (
+  state: CoreState,
+  appId: string,
+): GdcAppMetadata => state.gdcApps.gdcApps[appId];
 
-export const selectGdcAppById = (appId: string) => lookupGdcApp(appId);
+export const selectGdcAppById = (appId: string): React.ReactNode =>
+  lookupGdcApp(appId);

@@ -11,7 +11,7 @@ import store from "../app/store";
 import "../features/demoApp1/DemoApp";
 import "../features/demoApp2/DemoApp";
 
-function PortalApp({ Component, pageProps }: AppProps) {
+const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   return (
     <CoreProvider>
       <Provider store={store}>
@@ -19,6 +19,6 @@ function PortalApp({ Component, pageProps }: AppProps) {
       </Provider>
     </CoreProvider>
   );
-}
+};
 
 export default PortalApp;
