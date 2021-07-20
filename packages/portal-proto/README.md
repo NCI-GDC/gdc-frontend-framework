@@ -1,23 +1,18 @@
-# Redux Toolkit TypeScript Example
+# Portal Prototype
 
-This example shows how to integrate Next.js with [Redux Toolkit](https://redux-toolkit.js.org).
+This prototype is built with React v17, Next.js v11, and Tailwind CSS v2. It also makes use of Redux-Toolkit and TypeScript.
 
-The **Redux Toolkit** is a standardized way to write Redux logic (create actions and reducers, setup the store with some default middlewares like redux devtools extension). This example demonstrates each of these features with Next.js
+The minimum node version is currently set to v14 for LTS reasons. The actual minimum for Next.js is v12.
 
-## Deploy your own
+## Installation
 
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example):
+Install from the root of this multi-workspace repository. Installing from the individual workspaces will introduce duplicate
+dependencies, which will cause problems with React.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/vercel/next.js/tree/canary/examples/with-redux-toolkit-typescript&project-name=with-redux-toolkit&repository-name=with-redux-toolkit)
+## Development
 
-## How to use
-
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init) or [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) to bootstrap the example:
+To start a dev server on port 3000, run:
 
 ```bash
-npx create-next-app --example with-redux-toolkit-typescript with-redux-toolkit-app
-# or
-yarn create next-app --example with-redux-toolkit-typescript with-redux-toolkit-app
+npm run dev
 ```
-
-Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
