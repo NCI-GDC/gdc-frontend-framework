@@ -26,7 +26,7 @@ const useCaseFacet = (field: string): UseCaseFacetResponse => {
     if (!facet) {
       coreDispatch(fetchFacetByName(field));
     }
-  }, [facet]);
+  }, [coreDispatch, facet, field]);
 
   return {
     data: facet?.buckets,

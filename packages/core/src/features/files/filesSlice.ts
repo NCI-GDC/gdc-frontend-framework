@@ -2,115 +2,208 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { CoreState } from "../../store";
 import * as filesApi from "./filesApi";
 
-export type AccessType = "open" | "controlled";
+const accessTypes = ["open", "controlled"] as const;
 
-export type FileType =
-  | "annotated_somatic_mutation"
-  | "simple_somatic_mutation"
-  | "aligned_reads"
-  | "gene_expression"
-  | "copy_number_segment"
-  | "copy_number_estimate"
-  | "slide_image"
-  | "mirna_expression"
-  | "biospecimen_supplement"
-  | "clinical_supplement"
-  | "methylation_beta_value"
-  | "structural_variation"
-  | "aggregated_somatic_mutation"
-  | "masked_somatic_mutation"
-  | "secondary_expression_analysis";
+export type AccessType = typeof accessTypes[number];
 
-export type DataCategory =
-  | "simple nucleotide variation"
-  | "copy number variation"
-  | "transcriptome profiling"
-  | "sequencing reads"
-  | "biospecimen"
-  | "clinical"
-  | "dna methylation"
-  | "structural variation"
-  | "somatic structural variation"
-  | "combined nucleotide variation";
+const isAccessType = (x: unknown): x is AccessType => {
+  return accessTypes.some((t) => t === x);
+};
 
-export type DataFormat =
-  | "txt"
-  | "vcf"
-  | "bam"
-  | "maf"
-  | "svs"
-  | "bcr xml"
-  | "tsv"
-  | "bcr ssf xml"
-  | "bedpe"
-  | "bcr auxiliary xml"
-  | "bcr omf xml"
-  | "bcr biotab"
-  | "bcr pps xml"
-  | "cdc json"
-  | "xlsx"
-  | "mex"
-  | "hdf5";
+const asAccessType = (x: unknown): AccessType => {
+  if (isAccessType(x)) {
+    return x;
+  } else {
+    throw new Error(`${x} is not a valid access type`);
+  }
+};
 
-export type DataType =
-  | "Aggregated Somatic Mutation"
-  | "Aligned Reads"
-  | "Allele-specific Copy Number Segment"
-  | "Annotated Somatic Mutation"
-  | "Biospecimen Supplement"
-  | "Clinical Supplement"
-  | "Copy Number Segment"
-  | "Differential Gene Expression"
-  | "Gene Expression Quantification"
-  | "Gene Level Copy Number Scores"
-  | "Gene Level Copy Number"
-  | "Isoform Expression Quantification"
-  | "Masked Annotated Somatic Mutation"
-  | "Masked Copy Number Segment"
-  | "Masked Somatic Mutation"
-  | "Methylation Beta Value"
-  | "Raw CGI Variant"
-  | "Raw Simple Somatic Mutation"
-  | "Single Cell Analysis"
-  | "Slide Image"
-  | "Splice Junction Quantification"
-  | "Structural Rearrangement"
-  | "Transcript Fusion"
-  | "miRNA Expression Quantification";
+const fileTypes = [
+  "annotated_somatic_mutation",
+  "simple_somatic_mutation",
+  "aligned_reads",
+  "gene_expression",
+  "copy_number_segment",
+  "copy_number_estimate",
+  "slide_image",
+  "mirna_expression",
+  "biospecimen_supplement",
+  "clinical_supplement",
+  "methylation_beta_value",
+  "structural_variation",
+  "aggregated_somatic_mutation",
+  "masked_somatic_mutation",
+  "secondary_expression_analysis",
+] as const;
 
-export type ExperimentalStrategy =
-  | "ATAC-Seq"
-  | "Diagnostic Slide"
-  | "Genotyping Array"
-  | "Methylation Array"
-  | "RNA-Seq"
-  | "Targeted Sequencing"
-  | "Tissue Slide"
-  | "WGS"
-  | "WXS"
-  | "miRNA-Seq"
-  | "scRNA-Seq"
-  | "_missing";
+export type FileType = typeof fileTypes[number];
+
+const isFileType = (x: unknown): x is FileType => {
+  return fileTypes.some((t) => t === x);
+};
+
+const asFileType = (x: unknown): FileType => {
+  if (isFileType(x)) {
+    return x;
+  } else {
+    throw new Error(`${x} is not a valid file type`);
+  }
+};
+
+const dataCategories: ReadonlyArray<string> = [
+  "Simple Nucleotide Variation",
+  "Copy Number Variation",
+  "Transcriptome Profiling",
+  "Sequencing Reads",
+  "Biospecimen",
+  "Clinical",
+  "DNA Methylation",
+  "Structural Variation",
+  "Somatic Structural Variation",
+  "Combined Nucleotide Variation",
+] as const;
+
+export type DataCategory = typeof dataCategories[number];
+
+const isDataCategory = (x: unknown): x is DataCategory => {
+  return dataCategories.some((t) => t === x);
+};
+
+const asDataCategory = (x: unknown): DataCategory => {
+  if (isDataCategory(x)) {
+    return x;
+  } else {
+    throw new Error(`${x} is not a valid data category`);
+  }
+};
+
+const dataFormats = [
+  "TXT",
+  "VCF",
+  "BAM",
+  "MAF",
+  "SVS",
+  "BCR XML",
+  "TSV",
+  "BCR SSF XML",
+  "BEDPE",
+  "BCR AUXILIARY XML",
+  "BCR OMF XML",
+  "BCR BIOTAB",
+  "BCR PPS XML",
+  "CDC JSON",
+  "XLSX",
+  "MEX",
+  "HDF5",
+] as const;
+
+export type DataFormat = typeof dataFormats[number];
+
+const isDataFormat = (x: unknown): x is DataFormat => {
+  return dataFormats.some((t) => t === x);
+};
+
+const asDataFormat = (x: unknown): DataFormat => {
+  if (isDataFormat(x)) {
+    return x;
+  } else {
+    throw new Error(`${x} is not a valid data format`);
+  }
+};
+
+const dataTypes = [
+  "Aggregated Somatic Mutation",
+  "Aligned Reads",
+  "Allele-specific Copy Number Segment",
+  "Annotated Somatic Mutation",
+  "Biospecimen Supplement",
+  "Clinical Supplement",
+  "Copy Number Segment",
+  "Differential Gene Expression",
+  "Gene Expression Quantification",
+  "Gene Level Copy Number Scores",
+  "Gene Level Copy Number",
+  "Isoform Expression Quantification",
+  "Masked Annotated Somatic Mutation",
+  "Masked Copy Number Segment",
+  "Masked Somatic Mutation",
+  "Methylation Beta Value",
+  "Raw CGI Variant",
+  "Raw Simple Somatic Mutation",
+  "Single Cell Analysis",
+  "Slide Image",
+  "Splice Junction Quantification",
+  "Structural Rearrangement",
+  "Transcript Fusion",
+  "miRNA Expression Quantification",
+] as const;
+
+export type DataType = typeof dataTypes[number];
+
+const isDataType = (x: unknown): x is DataType => {
+  return dataTypes.some((t) => t === x);
+};
+
+const asDataType = (x: unknown): DataType => {
+  if (isDataType(x)) {
+    return x;
+  } else {
+    throw new Error(`${x} is not a valid data type`);
+  }
+};
+
+const experimentalStrategies = [
+  "ATAC-Seq",
+  "Diagnostic Slide",
+  "Genotyping Array",
+  "Methylation Array",
+  "RNA-Seq",
+  "Targeted Sequencing",
+  "Tissue Slide",
+  "WGS",
+  "WXS",
+  "miRNA-Seq",
+  "scRNA-Seq",
+  "_missing",
+] as const;
+
+export type ExperimentalStrategy = typeof experimentalStrategies[number];
+
+const isExperimentalStrategy = (x: unknown): x is ExperimentalStrategy => {
+  return experimentalStrategies.some((t) => t === x);
+};
+
+const asExperimentalStrategy = (x: unknown): ExperimentalStrategy | undefined => {
+  if (x === undefined) {
+    return undefined;
+  }
+
+  if (isExperimentalStrategy(x)) {
+    return x;
+  } 
+  
+  throw new Error(`${x} is not a valid experimental strategy`);
+};
 
 export interface GdcFile {
-  id: string;
-  submitterId: string;
-  access: AccessType;
-  acl: ReadonlyArray<string>;
-  createDatetime: string;
-  updatedDatetime: string;
-  dataCategory: DataCategory;
-  dataFormat: DataFormat;
-  dataRelease: string;
-  dataType: DataType;
-  fileId: string;
-  fileName: string;
-  fileSize: number;
-  md5sum: string;
-  state: string;
-  type: FileType;
-  version: string;
-  experimentalStrategy: ExperimentalStrategy;
+  readonly id: string;
+  readonly submitterId: string;
+  readonly access: AccessType;
+  readonly acl: ReadonlyArray<string>;
+  readonly createDatetime: string;
+  readonly updatedDatetime: string;
+  readonly dataCategory: DataCategory;
+  readonly dataFormat: DataFormat;
+  readonly dataRelease: string;
+  readonly dataType: DataType;
+  readonly fileId: string;
+  readonly fileName: string;
+  readonly fileSize: number;
+  readonly md5sum: string;
+  readonly state: string;
+  readonly fileType: FileType;
+  readonly version: string;
+  readonly experimentalStrategy?: ExperimentalStrategy;
 }
 
 export type Status = "pending" | "fulfilled" | "rejected";
@@ -143,22 +236,24 @@ const slice = createSlice({
           state.files = response.data.hits.map((hit) => ({
             id: hit.id,
             submitterId: hit.submitter_id,
-            access: hit.access,
-            acl: hit.acl,
+            access: asAccessType(hit.access),
+            acl: [...hit.acl],
             createDatetime: hit.create_datetime,
             updatedDatetime: hit.updated_datetime,
-            dataCategory: hit.data_category,
-            dataFormat: hit.data_format,
+            dataCategory: asDataCategory(hit.data_category),
+            dataFormat: asDataFormat(hit.data_format),
             dataRelease: hit.data_release,
-            dataType: hit.data_type,
+            dataType: asDataType(hit.data_type),
             fileId: hit.file_id,
             fileName: hit.file_name,
             fileSize: hit.file_size,
             md5sum: hit.md5sum,
             state: hit.state,
-            type: hit.type,
+            fileType: asFileType(hit.type),
             version: hit.version,
-            experimentalStrategy: hit.experimental_strategy,
+            experimentalStrategy: asExperimentalStrategy(
+              hit.experimental_strategy,
+            ),
           }));
           state.status = "fulfilled";
           state.error = undefined;
