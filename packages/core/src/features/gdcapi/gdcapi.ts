@@ -1,9 +1,9 @@
-export interface GdcApiResponse {
-  readonly data: GdcApiData;
+export interface GdcApiResponse<H = EsDocument> {
+  readonly data: GdcApiData<H>;
   readonly warnings: Record<string, string>;
 }
 
-export type EsDocument = Record<string, any>;
+export type EsDocument = Record<string, unknown>;
 
 export interface Bucket {
   readonly doc_count: number;
@@ -24,8 +24,8 @@ export interface Pagination {
   readonly pages: number;
 }
 
-export interface GdcApiData {
-  readonly hits: ReadonlyArray<EsDocument>;
+export interface GdcApiData<H> {
+  readonly hits: ReadonlyArray<H>;
   readonly aggregations?: Record<string, Buckets>;
   readonly pagination: Pagination;
 }

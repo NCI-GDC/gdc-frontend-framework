@@ -13,7 +13,8 @@
     "build:clean": "npm run clean && npm run compile && rollup --config rollup.config.js",
     "build:watch": "npm run compile && npm run build -- --watch",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "dev": "npm run build:watch"
   },
   "author": "",
   "license": "Apache-2.0",
