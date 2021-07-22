@@ -38,8 +38,7 @@ const useFetchFiles = (): UseFetchFilesResponse => {
 };
 
 const Demo: React.FC = () => {
-  const { data, error, isUninitialized, isFetching, isSuccess, isError } =
-    useFetchFiles();
+  const { data, error, isUninitialized, isFetching, isError } = useFetchFiles();
 
   if (isUninitialized) {
     return <div>Initializing files...</div>;

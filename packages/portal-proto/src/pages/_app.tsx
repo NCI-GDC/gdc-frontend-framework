@@ -10,6 +10,9 @@ import store from "../app/store";
 // their default exports will trigger registration.
 import "../features/demoApp1/DemoApp";
 import "../features/demoApp2/DemoApp";
+import ReactModal from "react-modal";
+
+ReactModal.setAppElement("#__next");
 
 const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   return (

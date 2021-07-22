@@ -13,7 +13,9 @@ import {
   useCoreDispatch,
   useCoreSelector,
 } from "@gff/core";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import ReactModal from "react-modal";
 
 interface UseProjectsResponse {
   readonly data?: ReadonlyArray<Project>;
@@ -45,7 +47,10 @@ const useProjects = (): UseProjectsResponse => {
 };
 
 const StudiesPage: NextPage = () => {
+  const router = useRouter();
   const { data, error, isUninitialized, isFetching, isError } = useProjects();
+  const [showModal, setShowModal] = useState(false);
+  const [selectedProjectId, setSelectedProjectId] = useState("");
 
   if (isUninitialized) {
     return <div>Initializing projects...</div>;
@@ -72,18 +77,44 @@ const StudiesPage: NextPage = () => {
     </Link>,
   ];
 
+  const SingleStudyModal = () => {
+    return (
+      <ReactModal isOpen={showModal} onRequestClose={() => setShowModal(false)}>
+        <div className="flex flex-col h-full gap-y-4">
+          <div className="text-center">{selectedProjectId}</div>
+          <div className="flex-grow">
+            <Card />
+          </div>
+          <div>
+            <Button className="float-right" onClick={() => setShowModal(false)}>
+              Close
+            </Button>
+          </div>
+        </div>
+      </ReactModal>
+    );
+  };
+
   return (
     <UserFlowVariedPages {...{ headerElements }}>
+      {SingleStudyModal()}
       <div className="flex flex-col p-4 gap-y-4">
         <div>
           <Search />
         </div>
         <div className="flex flex-row justify-end">
-          <ExploreStudies />
+          <ExploreStudies onClick={() => router.push("analysis")} />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
           {data.map((project) => (
-            <Study name={project.projectId} key={project.projectId} />
+            <Study
+              name={project.projectId}
+              key={project.projectId}
+              onClick={() => {
+                setSelectedProjectId(project.projectId);
+                setShowModal(true);
+              }}
+            />
           ))}
         </div>
       </div>
@@ -108,24 +139,31 @@ const Search = () => {
   );
 };
 
-const ExploreStudies = () => {
-  return <Button>Explore Studies</Button>;
+interface ExploreStudiesProps {
+  readonly onClick: () => void;
+}
+const ExploreStudies = (props: ExploreStudiesProps) => {
+  return <Button onClick={props.onClick}>Explore Studies</Button>;
 };
 
 interface StudyProps {
   readonly name?: string;
+  readonly onClick: () => void;
 }
 
-const Study: React.FC<StudyProps> = ({ name }: StudyProps) => {
+const Study: React.FC<StudyProps> = ({ name, onClick }: StudyProps) => {
   return (
-    <div className="flex flex-col border border-gray-500 px-4 pt-2 pb-4 w-full h-52 gap-y-2">
-      <div className="flex-none text-center">
+    <button
+      className="flex flex-col border border-gray-500 px-4 pt-2 pb-4 w-full h-52 gap-y-2"
+      onClick={onClick}
+    >
+      <div className="flex-none w-full text-center">
         {name ? name : <LinePlaceholer length={6} />}
       </div>
-      <div className="flex-grow">
+      <div className="flex-grow w-full">
         <Card />
       </div>
-    </div>
+    </button>
   );
 };
 

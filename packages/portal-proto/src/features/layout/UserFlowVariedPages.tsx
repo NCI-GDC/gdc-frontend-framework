@@ -106,10 +106,16 @@ export const Graph: React.FC<unknown> = () => {
 
 export interface ButtonProps {
   readonly color?: string;
+  readonly onClick?: () => void;
+  readonly className?: string;
 }
 
 export const Button: React.FC<ButtonProps> = ({
   color = "gray",
+  onClick = () => {
+    return;
+  },
+  className = "",
   children,
 }: PropsWithChildren<ButtonProps>) => {
   return (
@@ -119,7 +125,9 @@ export const Button: React.FC<ButtonProps> = ({
         border rounded
         border-${color}-300 hover:border-${color}-400
         bg-${color}-200 hover:bg-${color}-300 
+        ${className}
       `}
+      onClick={onClick}
     >
       {children}
     </button>

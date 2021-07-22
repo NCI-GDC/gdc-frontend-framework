@@ -173,15 +173,17 @@ const isExperimentalStrategy = (x: unknown): x is ExperimentalStrategy => {
   return experimentalStrategies.some((t) => t === x);
 };
 
-const asExperimentalStrategy = (x: unknown): ExperimentalStrategy | undefined => {
+const asExperimentalStrategy = (
+  x: unknown,
+): ExperimentalStrategy | undefined => {
   if (x === undefined) {
     return undefined;
   }
 
   if (isExperimentalStrategy(x)) {
     return x;
-  } 
-  
+  }
+
   throw new Error(`${x} is not a valid experimental strategy`);
 };
 
