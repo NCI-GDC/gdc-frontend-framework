@@ -10,8 +10,13 @@ import store from "../app/store";
 // their default exports will trigger registration.
 import "../features/demoApp1/DemoApp";
 import "../features/demoApp2/DemoApp";
-import ReactModal from "react-modal";
 
+// import the react tab styles once
+import "react-tabs/style/react-tabs.css";
+
+// ReactModal needs the app element set for a11y reasons.
+// It hides the main application from screen readers while modals are open.
+import ReactModal from "react-modal";
 ReactModal.setAppElement("#__next");
 
 const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
