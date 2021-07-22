@@ -1,4 +1,5 @@
 import { PropsWithChildren, ReactNode } from "react";
+import Image from "next/image";
 
 interface UserFlowVariedPagesProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
@@ -56,13 +57,33 @@ const Footer: React.FC<unknown> = () => {
   );
 };
 
-export const CohortManager: React.FC<unknown> = () => {
+export interface CohortManagerProps {
+  onClick?: () => void;
+}
+
+export const CohortManager: React.FC<CohortManagerProps> = ({onClick = () => {return}}: PropsWithChildren<CohortManagerProps>) => {
   return (
-    <div className="flex flex-row">
+    <div className="flex flex-row gap-x-4 items-center">
       <select name="currentCohort" id="current-cohort-select">
         <option value="ALL_GDC">All GDC Cases</option>
         <option value="TCGA-BRCA">TCGA BCRA</option>
       </select>
+      <div className="h-10 w-10">
+        <Card />
+      </div>
+      <div className="h-10 w-10">
+        <Card />
+      </div>
+      <div className="h-10 w-10">
+        <Card />
+      </div>
+      <div className="flex-grow"></div>
+      <div>
+        <Button>2,345 Cases</Button>
+      </div>
+      <div>
+        <Image src="/expand-svgrepo-com.svg" width="32rem" height="32rem" onClick={onClick}/>
+      </div>
     </div>
   );
 };
@@ -101,7 +122,7 @@ export const CohortGraphs: React.FC<CohortGraphs> = ({
 };
 
 export const Graph: React.FC<unknown> = () => {
-  return <div className="w-52 h-52 border text-center">graph</div>;
+  return <div className="h-52 border text-center">graph</div>;
 };
 
 export interface ButtonProps {
@@ -140,16 +161,25 @@ export const CohortExpressionsAndBuilder: React.FC<unknown> = () => {
 
 export interface AppProps {
   readonly name?: ReactNode;
+  readonly onClick?: () => void;
 }
 
-export const App: React.FC<AppProps> = ({ name }: AppProps) => {
+export const App: React.FC<AppProps> = ({
+  name,
+  onClick = () => {
+    return;
+  },
+}: AppProps) => {
   return (
-    <div className="w-72 h-52 border px-4 pt-2 pb-4 flex flex-col gap-y-2">
-      <div className="text-center">
+    <button
+      className="h-52 border border-gray-500 px-4 pt-2 pb-4 flex flex-col gap-y-2"
+      onClick={onClick}
+    >
+      <div className="text-center w-full">
         {name ? name : <LinePlaceholer length={6} />}
       </div>
-      <div className="flex-grow border bg-gray-100"></div>
-    </div>
+      <Card />
+    </button>
   );
 };
 
@@ -164,5 +194,21 @@ export const LinePlaceholer: React.FC<LinePlaceholerProps> = ({
     <div className="flex flex-row justify-center">
       <div className={`w-${length * 4} h-6 bg-gray-200 rounded-md`} />
     </div>
+  );
+};
+
+export const Card: React.FC<unknown> = () => {
+  // styles for the SVG X from https://stackoverflow.com/a/56557106
+  const color = "gray";
+  return (
+    <div
+      className="h-full w-full border border-gray-500"
+      style={{
+        background: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 100 100'><line x1='0' y1='0' x2='100' y2='100' stroke='${color}' vector-effect='non-scaling-stroke'/><line x1='0' y1='100' x2='100' y2='0' stroke='${color}' vector-effect='non-scaling-stroke'/></svg>")`,
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center center",
+        backgroundSize: "100% 100%, auto",
+      }}
+    ></div>
   );
 };

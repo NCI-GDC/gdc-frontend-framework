@@ -1,6 +1,7 @@
 import { NextPage } from "next";
 import {
   Button,
+  Card,
   LinePlaceholer,
   UserFlowVariedPages,
 } from "../../../features/layout/UserFlowVariedPages";
@@ -168,19 +169,3 @@ const Study: React.FC<StudyProps> = ({ name, onClick }: StudyProps) => {
 };
 
 export default StudiesPage;
-
-const Card = () => {
-  // styles for the SVG X from https://stackoverflow.com/a/56557106
-  const color = "gray";
-  return (
-    <div
-      className="h-full w-full border border-gray-500"
-      style={{
-        background: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 100 100'><line x1='0' y1='0' x2='100' y2='100' stroke='${color}' vector-effect='non-scaling-stroke'/><line x1='0' y1='100' x2='100' y2='0' stroke='${color}' vector-effect='non-scaling-stroke'/></svg>")`,
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: "center center",
-        backgroundSize: "100% 100%, auto",
-      }}
-    ></div>
-  );
-};

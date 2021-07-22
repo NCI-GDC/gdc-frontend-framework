@@ -14,9 +14,6 @@ const RepositoryPage: NextPage = () => {
     <Link key="Studies" href="/user-flow/most-pages/studies">
       Studies
     </Link>,
-    <Link key="Exploration" href="/user-flow/most-pages/exploration">
-      Exploration
-    </Link>,
     <Link key="Analysis" href="/user-flow/most-pages/analysis">
       Analysis
     </Link>,
