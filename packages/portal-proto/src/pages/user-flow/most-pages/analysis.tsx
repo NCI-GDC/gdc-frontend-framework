@@ -4,19 +4,31 @@ import { useState } from "react";
 import ReactModal from "react-modal";
 import {
   App,
+  Button,
   Card,
-  CohortManager,
   Graph,
   UserFlowVariedPages,
 } from "../../../features/layout/UserFlowVariedPages";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
+import Select from "react-select";
+import Image from "next/image";
+import { CohortManager } from "../../../features/user-flow/most-pages/cohort";
+import classNames from "classnames";
 
 const AnalysisPage: NextPage = () => {
   const [showCohortBuilderModal, setShowCohortBuilderModal] = useState(false);
 
   const [showAppModal, setShowAppModal] = useState(false);
   const [selectedApp, setSelectedApp] = useState("");
+
+  const options = [
+    { value: "cb-modal", label: "Cohort Buidler Modal" },
+    { value: "cb-expand", label: "Cohort Builder Expand" },
+  ];
+
+  const [protoOption, setProtoOption] = useState(options[0]);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const headerElements = [
     <Link key="Home" href="/">
@@ -30,6 +42,16 @@ const AnalysisPage: NextPage = () => {
       Repository
     </Link>,
   ];
+
+  const Options = () => (
+    <Select
+      inputId="analysis-proto-options"
+      isSearchable={false}
+      value={protoOption}
+      options={options}
+      onChange={(v) => setProtoOption(v)}
+    />
+  );
 
   const Apps = () => {
     return (
@@ -57,41 +79,56 @@ const AnalysisPage: NextPage = () => {
     );
   };
 
+  interface CohortBuilderProps {
+    readonly show?: boolean;
+  }
+  const CohortBuilder: React.FC<CohortBuilderProps> = ({
+    show = true,
+  }: CohortBuilderProps) => {
+    return (
+      <div
+        className={classNames("flex-col gap-y-4 overflow-y-auto", {
+          hidden: !show,
+          flex: show,
+        })}
+      >
+        <div className="border p-4">
+          Expressions + Builder
+          <div className="h-96"></div>
+        </div>
+        <div className="border p-4">
+          <Tabs>
+            <TabList>
+              <Tab>Summary</Tab>
+              <Tab>Cases</Tab>
+            </TabList>
+
+            <TabPanel>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
+                <Graph />
+                <Graph />
+                <Graph />
+                <Graph />
+                <Graph />
+                <Graph />
+              </div>
+            </TabPanel>
+            <TabPanel>
+              <Cases />
+            </TabPanel>
+          </Tabs>
+        </div>
+      </div>
+    );
+  };
+
   const CohortBuilderModal = () => {
     return (
       <ReactModal
         isOpen={showCohortBuilderModal}
         onRequestClose={() => setShowCohortBuilderModal(false)}
       >
-        <div className="flex flex-col gap-y-4 overflow-y-auto">
-          <div>Cohort Builder</div>
-          <div className="border p-4">
-            Expressions + Builder
-            <div className="h-96"></div>
-          </div>
-          <div className="border p-4">
-            <Tabs>
-              <TabList>
-                <Tab>Summary</Tab>
-                <Tab>Cases</Tab>
-              </TabList>
-
-              <TabPanel>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
-                  <Graph />
-                  <Graph />
-                  <Graph />
-                  <Graph />
-                  <Graph />
-                  <Graph />
-                </div>
-              </TabPanel>
-              <TabPanel>
-                <Cases />
-              </TabPanel>
-            </Tabs>
-          </div>
-        </div>
+        <CohortBuilder />
       </ReactModal>
     );
   };
@@ -112,13 +149,40 @@ const AnalysisPage: NextPage = () => {
     );
   };
 
+  const ActionElement = () => {
+    if (protoOption.value === "cb-modal") {
+      return (
+        <Image
+          src="/expand-svgrepo-com.svg"
+          width="32rem"
+          height="32rem"
+          onClick={() => setShowCohortBuilderModal(true)}
+        />
+      );
+    } else {
+      // TODO use expand/collapse icons
+      if (isExpanded) {
+        return <Button onClick={() => setIsExpanded(false)}>^</Button>;
+      } else {
+        return <Button onClick={() => setIsExpanded(true)}>v</Button>;
+      }
+    }
+  };
+
+  const ExpandElement = () => {
+    return <CohortBuilder show={isExpanded} />;
+  };
+
   return (
-    <UserFlowVariedPages {...{ headerElements }}>
+    <UserFlowVariedPages {...{ headerElements, Options }}>
       <CohortBuilderModal />
       <AppModal />
       <div className="flex flex-col p-4 gap-y-4">
         <div className="border p-4 border-gray-400">
-          <CohortManager onClick={() => setShowCohortBuilderModal(true)} />
+          <CohortManager
+            ActionElement={ActionElement}
+            ExpandElement={ExpandElement}
+          />
         </div>
         <div className="border p-4 border-gray-400">
           <Apps />

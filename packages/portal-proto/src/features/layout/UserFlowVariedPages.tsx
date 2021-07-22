@@ -1,18 +1,19 @@
 import { PropsWithChildren, ReactNode } from "react";
-import Image from "next/image";
 
 interface UserFlowVariedPagesProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
+  readonly Options?: React.FC<unknown>;
 }
 
 export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
   headerElements,
+  Options,
   children,
 }: PropsWithChildren<UserFlowVariedPagesProps>) => {
   return (
     <div className="flex flex-col min-h-screen min-w-full">
       <header className="flex-none">
-        <Header {...{ headerElements }} />
+        <Header {...{ headerElements, Options }} />
       </header>
       <main className="flex-grow">{children}</main>
       <footer className="flex-none">
@@ -24,9 +25,13 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
 
 interface HeaderProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
+  readonly Options?: React.FC<unknown>;
 }
 
-const Header: React.FC<HeaderProps> = ({ headerElements }: HeaderProps) => {
+const Header: React.FC<HeaderProps> = ({
+  headerElements,
+  Options = () => <div />,
+}: HeaderProps) => {
   return (
     <div className="p-4">
       <div className="flex flex-row flex-wrap divide-x divide-gray-300">
@@ -39,6 +44,10 @@ const Header: React.FC<HeaderProps> = ({ headerElements }: HeaderProps) => {
             )}
           </div>
         ))}
+        <div className="flex-grow"></div>
+        <div className="w-64">
+          <Options />
+        </div>
       </div>
     </div>
   );
@@ -53,37 +62,6 @@ const Footer: React.FC<unknown> = () => {
         Health | National Cancer Institute | USA.gov
       </div>
       <div>NIH... Turning Discovery Into Health ®</div>
-    </div>
-  );
-};
-
-export interface CohortManagerProps {
-  onClick?: () => void;
-}
-
-export const CohortManager: React.FC<CohortManagerProps> = ({onClick = () => {return}}: PropsWithChildren<CohortManagerProps>) => {
-  return (
-    <div className="flex flex-row gap-x-4 items-center">
-      <select name="currentCohort" id="current-cohort-select">
-        <option value="ALL_GDC">All GDC Cases</option>
-        <option value="TCGA-BRCA">TCGA BCRA</option>
-      </select>
-      <div className="h-10 w-10">
-        <Card />
-      </div>
-      <div className="h-10 w-10">
-        <Card />
-      </div>
-      <div className="h-10 w-10">
-        <Card />
-      </div>
-      <div className="flex-grow"></div>
-      <div>
-        <Button>2,345 Cases</Button>
-      </div>
-      <div>
-        <Image src="/expand-svgrepo-com.svg" width="32rem" height="32rem" onClick={onClick}/>
-      </div>
     </div>
   );
 };
