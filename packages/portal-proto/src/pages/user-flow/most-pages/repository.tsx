@@ -1,12 +1,36 @@
 import { NextPage } from "next";
 import Link from "next/link";
-import {
-  CohortGraphs,
-  UserFlowVariedPages,
-} from "../../../features/layout/UserFlowVariedPages";
+import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
 import { CohortManager } from "../../../features/user-flow/most-pages/cohort";
+import Select from "react-select";
+import { useState } from "react";
 
 const RepositoryPage: NextPage = () => {
+  const options = [
+    { value: "cb-modal", label: "Cohort Buidler Modal" },
+    { value: "cb-expand", label: "Cohort Builder Expand" },
+  ];
+
+  const [protoOption, setProtoOption] = useState(options[0]);
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const [showCohortBuilderModal, setShowCohortBuilderModal] = useState(false);
+
+  const Options = () => (
+    <Select
+      inputId="analysis-proto-options"
+      isSearchable={false}
+      value={protoOption}
+      options={options}
+      onChange={(v) => {
+        if (v.value != "cb-expand") {
+          setIsExpanded(false);
+        }
+        setProtoOption(v);
+      }}
+    />
+  );
+
   const headerElements = [
     <Link key="Home" href="/">
       Home
@@ -21,10 +45,17 @@ const RepositoryPage: NextPage = () => {
   ];
 
   return (
-    <UserFlowVariedPages {...{ headerElements }}>
+    <UserFlowVariedPages {...{ headerElements, Options }}>
       <div className="flex flex-col p-4 gap-y-4">
         <div className="border p-4 border-gray-400">
-          <CohortManager />
+          <CohortManager
+            setIsModalOpen={setShowCohortBuilderModal}
+            setIsExpanded={setIsExpanded}
+            isExpanded={isExpanded}
+            mode={protoOption}
+            isOpen={showCohortBuilderModal}
+            closeModal={() => setShowCohortBuilderModal(false)}
+          />
         </div>
         <div className="border p-4 border-gray-400">
           <div className="text-center">
@@ -33,9 +64,6 @@ const RepositoryPage: NextPage = () => {
         </div>
         <div className="border p-4 border-gray-400">
           <Files />
-        </div>
-        <div className="border p-4 border-gray-400">
-          <CohortGraphs />
         </div>
       </div>
     </UserFlowVariedPages>
