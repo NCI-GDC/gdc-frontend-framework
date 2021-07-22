@@ -43,7 +43,7 @@ interface FacetProps {
 }
 
 export const Facet: React.FC<FacetProps> = ({ field }: FacetProps) => {
-  const { data, error, isUninitialized, isFetching, isSuccess, isError } =
+  const { data, error, isUninitialized, isFetching, isError } =
     useCaseFacet(field);
 
   if (isUninitialized) {
