@@ -1,10 +1,10 @@
 import { NextPage } from "next";
 import Link from "next/link";
 import {
-  CohortManager,
   CohortGraphs,
   UserFlowVariedPages,
 } from "../../../features/layout/UserFlowVariedPages";
+import { CohortManager } from "../../../features/user-flow/most-pages/cohort";
 
 const RepositoryPage: NextPage = () => {
   const headerElements = [
