@@ -31,8 +31,9 @@ const IndexPage: NextPage = () => {
               </HoverLink>
             </li>
             <li className="text-gray-400">More Pages</li>
-            <li>
-              <HoverLink href="/user-flow-fewer-pages">Fewer Pages</HoverLink>
+            <li className="text-gray-400">
+              Fewer Pages
+              {/* <HoverLink href="/user-flow-fewer-pages">Fewer Pages</HoverLink> */}
             </li>
             <li>
               <HoverLink href="/user-flow-fewest-pages">Fewest Pages</HoverLink>
