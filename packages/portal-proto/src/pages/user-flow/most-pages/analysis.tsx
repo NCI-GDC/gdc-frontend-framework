@@ -100,7 +100,7 @@ const AnalysisPage: NextPage = () => {
       <div className="flex flex-col p-4 gap-y-4">
         <div className="border p-4 border-gray-400">
           <CohortManager
-            setIsModalOpen={setShowAppModal}
+            setIsModalOpen={setShowCohortBuilderModal}
             setIsExpanded={setIsExpanded}
             isExpanded={isExpanded}
             mode={protoOption}

@@ -100,7 +100,16 @@ export const CohortGraphs: React.FC<CohortGraphs> = ({
 };
 
 export const Graph: React.FC<unknown> = () => {
-  return <div className="h-52 border text-center">graph</div>;
+  return (
+    <div className="h-52 border pt-2 px-4 pb-4">
+      <div className="flex flex-col h-full gap-y-2">
+        <span className="text-center">Graph</span>
+        <div className="flex-grow">
+          <Card />
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export interface ButtonProps {

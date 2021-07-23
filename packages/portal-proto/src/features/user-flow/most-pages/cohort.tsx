@@ -5,7 +5,7 @@ import classNames from "classnames";
 import Image from "next/image";
 import ReactModal from "react-modal";
 
-export type CohortManagerProps = ModalOrExpandProps &
+export type CohortManagerProps = Partial<ModalOrExpandProps> &
   Partial<CohortBuilderModalProps>;
 
 export const CohortManager: React.FC<CohortManagerProps> = ({
@@ -131,13 +131,15 @@ export const ModalOrExpand: React.FC<ModalOrExpandProps> = (
         onClick={() => setIsModalOpen(true)}
       />
     );
-  } else {
+  } else if (mode.value === "cb-expand") {
     // TODO use expand/collapse icons
     if (isExpanded) {
       return <Button onClick={() => setIsExpanded(false)}>^</Button>;
     } else {
       return <Button onClick={() => setIsExpanded(true)}>v</Button>;
     }
+  } else {
+    return null;
   }
 };
 
