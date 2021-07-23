@@ -7,45 +7,10 @@ import {
 } from "../../../features/layout/UserFlowVariedPages";
 import Link from "next/link";
 import Image from "next/image";
-import {
-  fetchProjects,
-  Project,
-  selectProjectsState,
-  useCoreDispatch,
-  useCoreSelector,
-} from "@gff/core";
-import { useEffect, useState } from "react";
+import { useProjects } from "@gff/core";
+import { useState } from "react";
 import { useRouter } from "next/router";
 import ReactModal from "react-modal";
-
-interface UseProjectsResponse {
-  readonly data?: ReadonlyArray<Project>;
-  readonly error?: string;
-  readonly isUninitialized: boolean;
-  readonly isFetching: boolean;
-  readonly isSuccess: boolean;
-  readonly isError: boolean;
-}
-
-const useProjects = (): UseProjectsResponse => {
-  const coreDispatch = useCoreDispatch();
-  const { projects, status, error } = useCoreSelector(selectProjectsState);
-
-  useEffect(() => {
-    if (!projects || Object.keys(projects).length == 0) {
-      coreDispatch(fetchProjects());
-    }
-  }, [coreDispatch, projects]);
-
-  return {
-    data: Object.values(projects),
-    error: error,
-    isUninitialized: projects === undefined || projects == {},
-    isFetching: status === "pending",
-    isSuccess: status === "fulfilled",
-    isError: status === "rejected",
-  };
-};
 
 const StudiesPage: NextPage = () => {
   const router = useRouter();

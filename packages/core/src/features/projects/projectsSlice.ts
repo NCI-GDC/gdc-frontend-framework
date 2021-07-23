@@ -1,4 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { StateStatus } from "../../dataAcess";
+import { CoreDataSelectorResponse } from "../../dataAcess";
 import { CoreDispatch, CoreState } from "../../store";
 import { GdcApiResponse } from "../gdcapi/gdcapi";
 import * as api from "./projectsApi";
@@ -19,12 +21,13 @@ export const fetchProjects = createAsyncThunk<
 export interface ProjectsState {
   // projects by project id
   readonly projects: Record<string, Project>;
-  readonly status?: string;
+  readonly status: StateStatus;
   readonly error?: string;
 }
 
 const initialState: ProjectsState = {
   projects: {},
+  status: "uninitialized",
 };
 
 const slice = createSlice({
@@ -76,4 +79,14 @@ export const selectProjectsState = (state: CoreState): ProjectsState =>
 
 export const selectProjects = (state: CoreState): ReadonlyArray<Project> => {
   return Object.values(state.projects.projects);
+};
+
+export const selectProjectsData = (
+  state: CoreState,
+): CoreDataSelectorResponse<ReadonlyArray<Project>> => {
+  return {
+    data: Object.values(state.projects.projects),
+    status: state.projects.status,
+    error: state.projects.error,
+  };
 };
