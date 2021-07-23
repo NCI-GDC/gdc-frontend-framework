@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { CoreDataSelectorResponse, StateStatus } from "../../dataAcess";
 import { CoreState } from "../../store";
 import * as filesApi from "./filesApi";
 
@@ -208,11 +209,9 @@ export interface GdcFile {
   readonly experimentalStrategy?: ExperimentalStrategy;
 }
 
-export type Status = "pending" | "fulfilled" | "rejected";
-
 export interface FilesState {
   readonly files?: ReadonlyArray<GdcFile>;
-  readonly status?: string;
+  readonly status: StateStatus;
   readonly error?: string;
 }
 
@@ -220,7 +219,9 @@ export const fetchFiles = createAsyncThunk("files/fetchFiles", async () => {
   return await filesApi.fetchFiles();
 });
 
-const initialState: FilesState = {};
+const initialState: FilesState = {
+  status: "uninitialized",
+};
 
 const slice = createSlice({
   name: "files",
@@ -281,3 +282,13 @@ export const selectFilesState = (state: CoreState): FilesState => state.files;
 export const selectFiles = (
   state: CoreState,
 ): ReadonlyArray<GdcFile> | undefined => state.files.files;
+
+export const selectFilesData = (
+  state: CoreState,
+): CoreDataSelectorResponse<ReadonlyArray<GdcFile> | undefined> => {
+  return {
+    data: state.files.files,
+    status: state.files.status,
+    error: state.files.error,
+  };
+};
