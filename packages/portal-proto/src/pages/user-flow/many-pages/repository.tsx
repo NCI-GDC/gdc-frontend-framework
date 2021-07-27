@@ -10,7 +10,7 @@ const RepositoryPage: NextPage = () => {
   const { data } = useFiles();
 
   const options = [
-    { value: "cb-modal", label: "Cohort Buidler Modal" },
+    { value: "cb-modal", label: "Cohort Builder Modal" },
     { value: "cb-expand", label: "Cohort Builder Expand" },
   ];
 
