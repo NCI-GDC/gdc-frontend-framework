@@ -1,5 +1,6 @@
 import { PropsWithChildren, ReactNode } from "react";
-
+import Image from "next/image";
+import Link from "next/link";
 interface UserFlowVariedPagesProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
   readonly Options?: React.FC<unknown>;
@@ -11,8 +12,8 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
   children,
 }: PropsWithChildren<UserFlowVariedPagesProps>) => {
   return (
-    <div className="flex flex-col min-h-screen min-w-full">
-      <header className="flex-none">
+    <div className="flex flex-col min-h-screen min-w-full bg-gray-100">
+      <header className="flex-none bg-gray-200">
         <Header {...{ headerElements, Options }} />
       </header>
       <main className="flex-grow">{children}</main>
@@ -33,8 +34,17 @@ const Header: React.FC<HeaderProps> = ({
   Options = () => <div />,
 }: HeaderProps) => {
   return (
-    <div className="p-4">
-      <div className="flex flex-row flex-wrap divide-x divide-gray-300">
+    <div className="px-4 py-2">
+      <div className="flex flex-row flex-wrap divide-x divide-gray-300 items-center">
+        <div className="flex-none w-64 h-12 mr-2 relative">
+          <Link href="/">
+            <Image
+              src="/NIH_GDC_DataPortal-logo.svg"
+              layout="fill"
+              objectFit="contain"
+            />
+          </Link>
+        </div>
         {headerElements.map((element, i) => (
           <div key={i} className="px-2">
             {typeof element === "string" ? (
@@ -101,7 +111,7 @@ export const CohortGraphs: React.FC<CohortGraphs> = ({
 
 export const Graph: React.FC<unknown> = () => {
   return (
-    <div className="h-52 border pt-2 px-4 pb-4">
+    <div className="h-52 border pt-2 px-4 pb-4 bg-white">
       <div className="flex flex-col h-full gap-y-2">
         <span className="text-center">Graph</span>
         <div className="flex-grow">
@@ -159,7 +169,7 @@ export const App: React.FC<AppProps> = ({
 }: AppProps) => {
   return (
     <button
-      className="h-52 border border-gray-500 px-4 pt-2 pb-4 flex flex-col gap-y-2"
+      className="h-52 border border-gray-500 px-4 pt-2 pb-4 flex flex-col gap-y-2 bg-white"
       onClick={onClick}
     >
       <div className="text-center w-full">

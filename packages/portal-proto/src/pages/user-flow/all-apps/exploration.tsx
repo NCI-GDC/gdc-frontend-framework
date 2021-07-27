@@ -1,5 +1,4 @@
 import { NextPage } from "next";
-import Link from "next/link";
 import {
   App,
   UserFlowVariedPages,
@@ -15,12 +14,7 @@ const UserFlowFewestPagesPage: NextPage = () => {
   const [isExpressionsCollapsed, setIsExpressionsCollapsed] = useState(false);
   const [isSummaryCollapsed, setIsSummaryCollapsed] = useState(false);
 
-  const headerElements = [
-    <Link key="Home" href="/">
-      Home
-    </Link>,
-    "Exploration",
-  ];
+  const headerElements = ["Exploration"];
 
   const CohortExpressions: React.FC<unknown> = () => {
     const Top = () => <div className="text-center">Expressions</div>;
@@ -57,13 +51,17 @@ const UserFlowFewestPagesPage: NextPage = () => {
 
   return (
     <UserFlowVariedPages {...{ headerElements }}>
-      <div className="flex flex-col gap-y-4 px-4">
-        <div className="border p-4 border-gray-400">
+      <div className="flex flex-col gap-y-4 p-4">
+        <div className="border p-4 border-gray-400 bg-white">
           <CohortManager />
         </div>
-        <CohortExpressions />
-        <CohortSummary />
-        <div className="border p-4 border-gray-400">
+        <div className="bg-white">
+          <CohortExpressions />
+        </div>
+        <div className="bg-white">
+          <CohortSummary />
+        </div>
+        <div className="border p-4 border-gray-400 bg-white">
           <Apps />
         </div>
       </div>

@@ -25,9 +25,6 @@ const AnalysisPage: NextPage = () => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const headerElements = [
-    <Link key="Home" href="/">
-      Home
-    </Link>,
     <Link key="Studies" href="/user-flow/many-pages/studies">
       Studies
     </Link>,
@@ -54,7 +51,7 @@ const AnalysisPage: NextPage = () => {
 
   const Apps = () => {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 bg-gray-100">
         {[
           "OncoGrid",
           "Gene Expression",
@@ -102,7 +99,7 @@ const AnalysisPage: NextPage = () => {
     <UserFlowVariedPages {...{ headerElements, Options }}>
       <AppModal />
       <div className="flex flex-col p-4 gap-y-4">
-        <div className="border p-4 border-gray-400">
+        <div className="border p-4 border-gray-400 bg-white">
           <CohortManager
             setIsModalOpen={setShowCohortBuilderModal}
             setIsExpanded={setIsExpanded}
@@ -112,9 +109,7 @@ const AnalysisPage: NextPage = () => {
             closeModal={() => setShowCohortBuilderModal(false)}
           />
         </div>
-        <div className="border p-4 border-gray-400">
-          <Apps />
-        </div>
+        <Apps />
       </div>
     </UserFlowVariedPages>
   );
