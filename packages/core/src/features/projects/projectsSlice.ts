@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { StateStatus } from "../../dataAcess";
+import { DataStatus } from "../../dataAcess";
 import { CoreDataSelectorResponse } from "../../dataAcess";
 import { CoreDispatch, CoreState } from "../../store";
 import { GdcApiResponse } from "../gdcapi/gdcapi";
@@ -21,7 +21,7 @@ export const fetchProjects = createAsyncThunk<
 export interface ProjectsState {
   // projects by project id
   readonly projects: Record<string, Project>;
-  readonly status: StateStatus;
+  readonly status: DataStatus;
   readonly error?: string;
 }
 

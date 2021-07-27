@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CoreDataSelectorResponse, StateStatus } from "../../dataAcess";
+import { CoreDataSelectorResponse, DataStatus } from "../../dataAcess";
 import { CoreState } from "../../store";
 import * as filesApi from "./filesApi";
 
@@ -211,7 +211,7 @@ export interface GdcFile {
 
 export interface FilesState {
   readonly files?: ReadonlyArray<GdcFile>;
-  readonly status: StateStatus;
+  readonly status: DataStatus;
   readonly error?: string;
 }
 
