@@ -1,10 +1,10 @@
 import { NextPage } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import ReactModal from "react-modal";
 import {
   App,
-  Card,
   UserFlowVariedPages,
 } from "../../../features/layout/UserFlowVariedPages";
 import Select from "react-select";
@@ -85,9 +85,13 @@ const AnalysisPage: NextPage = () => {
         onRequestClose={() => setShowAppModal(false)}
       >
         <div className="flex flex-col h-full">
-          <div>App: {selectedApp}</div>
-          <div className="flex-grow">
-            <Card />
+          <div className="flex-grow overflow-y-auto">
+            <Image
+              src="/user-flow/oncogrid-mock-up.png"
+              layout="responsive"
+              width="100%"
+              height="100%"
+            ></Image>
           </div>
         </div>
       </ReactModal>
