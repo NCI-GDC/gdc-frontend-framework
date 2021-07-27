@@ -1,3 +1,5 @@
+import { isObject } from "../../ts-utils";
+
 export type UnknownJson = Record<string, unknown>;
 export interface GdcApiResponse<H = UnknownJson> {
   readonly data: GdcApiData<H>;
@@ -20,6 +22,10 @@ export interface Bucket {
 }
 
 export interface Stats {
+  readonly stats: Statistics;
+}
+
+export interface Statistics {
   readonly count: number;
   readonly min?: number;
   readonly max?: number;
@@ -37,10 +43,14 @@ export interface Pagination {
   readonly pages: number;
 }
 
-export const isBucketsAggregation = (aggregation: Buckets | Stats): aggregation is Buckets => {
-  return typeof aggregation === "object" && "buckets" in aggregation;
-}
+export const isBucketsAggregation = (
+  aggregation: unknown,
+): aggregation is Buckets => {
+  return isObject(aggregation) && "buckets" in aggregation;
+};
 
-export const isStatsAggregation = (aggregation: Buckets | Stats): aggregation is Stats => {
-  return typeof aggregation === "object" && "count" in aggregation && "sum" in aggregation;
-}
+export const isStatsAggregation = (
+  aggregation: unknown,
+): aggregation is Stats => {
+  return isObject(aggregation) && "stats" in aggregation;
+};

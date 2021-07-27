@@ -1,5 +1,5 @@
 import { GdcApiResponse } from "../gdcapi/gdcapi";
-
+import "isomorphic-fetch";
 export interface ProjectHit {
   readonly project_id: string;
   readonly name: string;

@@ -6,7 +6,10 @@
     "build": "next build",
     "start": "next start",
     "type-check": "tsc",
-    "test": "jest"
+    "test": "jest unit",
+    "test:watch": "jest unit --watch",
+    "test:int": "echo No integrations tests yet",
+    "test:all": "jest"
   },
   "dependencies": {
     "@gff/core": "0.0.1",
