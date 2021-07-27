@@ -35,9 +35,6 @@ const RepositoryPage: NextPage = () => {
   );
 
   const headerElements = [
-    <Link key="Home" href="/">
-      Home
-    </Link>,
     <Link key="Studies" href="/user-flow/many-pages/studies">
       Studies
     </Link>,
@@ -50,7 +47,7 @@ const RepositoryPage: NextPage = () => {
   return (
     <UserFlowVariedPages {...{ headerElements, Options }}>
       <div className="flex flex-col p-4 gap-y-4">
-        <div className="border p-4 border-gray-400">
+        <div className="border p-4 border-gray-400 bg-white">
           <CohortManager
             setIsModalOpen={setShowCohortBuilderModal}
             setIsExpanded={setIsExpanded}
@@ -60,12 +57,12 @@ const RepositoryPage: NextPage = () => {
             closeModal={() => setShowCohortBuilderModal(false)}
           />
         </div>
-        <div className="border p-4 border-gray-400">
+        <div className="border p-4 border-gray-400 bg-white">
           <div className="text-center">
             Some repo-specific actions, e.g. download, etc. here.
           </div>
         </div>
-        <div className="border p-4 border-gray-400">
+        <div className="border border-gray-400 bg-white">
           <Files files={data} />
         </div>
       </div>

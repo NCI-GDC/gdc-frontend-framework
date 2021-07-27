@@ -31,9 +31,6 @@ const StudiesPage: NextPage = () => {
   }
 
   const headerElements = [
-    <Link key="Home" href="/">
-      Home
-    </Link>,
     "Studies",
     <Link key="Analysis" href="/user-flow/many-pages/analysis">
       Analysis
@@ -90,7 +87,7 @@ const StudiesPage: NextPage = () => {
 const Search = () => {
   return (
     <div className="flex flex-row justify-center">
-      <div className="sm:w-1/2  rounded-full border border-gray-600 flex flex-row pr-4">
+      <div className="sm:w-1/2  rounded-full border border-gray-600 flex flex-row pr-4 bg-white">
         <div className="flex flex-none fill-current text-black align-text-bottom pl-2">
           <Image src="/Search_Icon.svg" width={16} height={16} />
         </div>
@@ -119,7 +116,7 @@ interface StudyProps {
 const Study: React.FC<StudyProps> = ({ name, onClick }: StudyProps) => {
   return (
     <button
-      className="flex flex-col border border-gray-500 px-4 pt-2 pb-4 w-full h-52 gap-y-2"
+      className="flex flex-col border border-gray-500 px-4 pt-2 pb-4 w-full h-52 gap-y-2 bg-white"
       onClick={onClick}
     >
       <div className="flex-none w-full text-center">
