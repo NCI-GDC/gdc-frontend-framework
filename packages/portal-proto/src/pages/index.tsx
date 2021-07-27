@@ -26,17 +26,14 @@ const IndexPage: NextPage = () => {
           User Flow Prototypes:
           <ul className="list-disc list-inside">
             <li>
-              <HoverLink href="/user-flow/most-pages/studies">
-                Most Pages
+              <HoverLink href="/user-flow/many-pages/studies">
+                Many Pages
               </HoverLink>
             </li>
-            <li className="text-gray-400">More Pages</li>
-            <li className="text-gray-400">
-              Fewer Pages
-              {/* <HoverLink href="/user-flow-fewer-pages">Fewer Pages</HoverLink> */}
-            </li>
             <li>
-              <HoverLink href="/user-flow-fewest-pages">Fewest Pages</HoverLink>
+              <HoverLink href="/user-flow/all-apps/exploration">
+                All Apps
+              </HoverLink>
             </li>
           </ul>
         </div>

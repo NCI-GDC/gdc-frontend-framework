@@ -35,10 +35,10 @@ const StudiesPage: NextPage = () => {
       Home
     </Link>,
     "Studies",
-    <Link key="Analysis" href="/user-flow/most-pages/analysis">
+    <Link key="Analysis" href="/user-flow/many-pages/analysis">
       Analysis
     </Link>,
-    <Link key="Repository" href="/user-flow/most-pages/repository">
+    <Link key="Repository" href="/user-flow/many-pages/repository">
       Repository
     </Link>,
   ];
@@ -47,14 +47,13 @@ const StudiesPage: NextPage = () => {
     return (
       <ReactModal isOpen={showModal} onRequestClose={() => setShowModal(false)}>
         <div className="flex flex-col h-full gap-y-4">
-          <div className="text-center">{selectedProjectId}</div>
-          <div className="flex-grow">
-            <Card />
-          </div>
-          <div>
-            <Button className="float-right" onClick={() => setShowModal(false)}>
-              Close
-            </Button>
+          <div className="flex-grow overflow-y-scroll">
+            <Image
+              src="/user-flow/studies-mock-up.png"
+              layout="responsive"
+              width="100%"
+              height="100%"
+            ></Image>
           </div>
         </div>
       </ReactModal>

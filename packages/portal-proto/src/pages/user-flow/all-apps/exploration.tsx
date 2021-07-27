@@ -5,8 +5,8 @@ import {
   UserFlowVariedPages,
   Graph,
   Button,
-} from "../features/layout/UserFlowVariedPages";
-import { CohortManager } from "../features/user-flow/most-pages/cohort";
+} from "../../../features/layout/UserFlowVariedPages";
+import { CohortManager } from "../../../features/user-flow/many-pages/cohort";
 import classNames from "classnames";
 import { PropsWithChildren } from "react";
 import { useState } from "react";

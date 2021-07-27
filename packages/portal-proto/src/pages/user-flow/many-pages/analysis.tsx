@@ -8,7 +8,7 @@ import {
   UserFlowVariedPages,
 } from "../../../features/layout/UserFlowVariedPages";
 import Select from "react-select";
-import { CohortManager } from "../../../features/user-flow/most-pages/cohort";
+import { CohortManager } from "../../../features/user-flow/many-pages/cohort";
 
 const AnalysisPage: NextPage = () => {
   const [showCohortBuilderModal, setShowCohortBuilderModal] = useState(false);
@@ -28,11 +28,11 @@ const AnalysisPage: NextPage = () => {
     <Link key="Home" href="/">
       Home
     </Link>,
-    <Link key="Studies" href="/user-flow/most-pages/studies">
+    <Link key="Studies" href="/user-flow/many-pages/studies">
       Studies
     </Link>,
     "Analysis",
-    <Link key="Repository" href="/user-flow/most-pages/repository">
+    <Link key="Repository" href="/user-flow/many-pages/repository">
       Repository
     </Link>,
   ];
