@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import Link from "next/link";
 import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
-import { CohortManager } from "../../../features/user-flow/most-pages/cohort";
+import { CohortManager } from "../../../features/user-flow/many-pages/cohort";
 import Select from "react-select";
 import { useState } from "react";
 import { GdcFile, useFiles } from "@gff/core";
@@ -38,10 +38,10 @@ const RepositoryPage: NextPage = () => {
     <Link key="Home" href="/">
       Home
     </Link>,
-    <Link key="Studies" href="/user-flow/most-pages/studies">
+    <Link key="Studies" href="/user-flow/many-pages/studies">
       Studies
     </Link>,
-    <Link key="Analysis" href="/user-flow/most-pages/analysis">
+    <Link key="Analysis" href="/user-flow/many-pages/analysis">
       Analysis
     </Link>,
     "Repository",
