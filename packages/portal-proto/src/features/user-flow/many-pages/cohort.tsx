@@ -79,9 +79,13 @@ export const CohortBuilder: React.FC<CohortBuilderProps> = ({
         flex: show,
       })}
     >
-      <div className="border p-4">
-        Expressions + Builder
-        <div className="h-96"></div>
+      <div className="">
+        <Image
+          src="/user-flow/cohort-builder-mock-up.png"
+          layout="responsive"
+          width="100%"
+          height="100%"
+        ></Image>
       </div>
       <div className="border p-4">
         <Tabs>
