@@ -47,7 +47,7 @@ const StudiesPage: NextPage = () => {
     return (
       <ReactModal isOpen={showModal} onRequestClose={() => setShowModal(false)}>
         <div className="flex flex-col h-full gap-y-4">
-          <div className="flex-grow overflow-y-scroll">
+          <div className="flex-grow overflow-y-auto">
             <Image
               src="/user-flow/studies-mock-up.png"
               layout="responsive"
