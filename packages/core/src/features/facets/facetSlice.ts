@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { DataStatus } from "../../dataAcess";
 import { CoreDispatch, CoreState } from "../../store";
-import { GdcApiResponse } from "../gdcapi/gdcapi";
+import { GdcApiResponse, isBucketsAggregation } from "../gdcapi/gdcapi";
 import * as api from "./facetApi";
 
 export const fetchFacetByName = createAsyncThunk<
@@ -12,7 +13,7 @@ export const fetchFacetByName = createAsyncThunk<
 });
 
 export interface FacetBuckets {
-  readonly status: "pending" | "fulfilled" | "rejected";
+  readonly status: DataStatus;
   readonly error?: string;
   readonly buckets?: Record<string, number>;
 }
@@ -44,15 +45,19 @@ const slice = createSlice({
         } else {
           response.data.aggregations &&
             Object.entries(response.data.aggregations).forEach(
-              ([field, buckets]) => {
-                state.cases[field].status = "fulfilled";
-                state.cases[field].buckets = buckets.buckets.reduce(
-                  (facetBuckets, apiBucket) => {
-                    facetBuckets[apiBucket.key] = apiBucket.doc_count;
-                    return facetBuckets;
-                  },
-                  {} as Record<string, number>,
-                );
+              ([field, aggregation]) => {
+                if (isBucketsAggregation(aggregation)) {
+                  state.cases[field].status = "fulfilled";
+                  state.cases[field].buckets = aggregation.buckets.reduce(
+                    (facetBuckets, apiBucket) => {
+                      facetBuckets[apiBucket.key] = apiBucket.doc_count;
+                      return facetBuckets;
+                    },
+                    {} as Record<string, number>,
+                  );
+                } else {
+                  // Unhandled aggregation
+                }
               },
             );
         }

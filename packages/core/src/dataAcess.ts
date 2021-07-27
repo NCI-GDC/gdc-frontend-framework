@@ -6,7 +6,17 @@ import { useEffect } from "react";
 import { useCoreDispatch, useCoreSelector } from "./hooks";
 import { CoreState } from "./store";
 
-export type StateStatus =
+/**
+ * The status of asynchronous data fetching is a state machine.
+ * - Before data is fetched, the status is "uninitialized".
+ * - Once a data request is started, the status transitions from 
+ * "uninitialized" to "pending".
+ * - If the data request successfully complets, then the status 
+ * transitions from "pending" to "fulfilled".
+ * - If the data request fails for any reason, then the status
+ * transitions from "pending" to "rejected". 
+ */
+export type DataStatus =
   | "uninitialized"
   | "pending"
   | "fulfilled"
