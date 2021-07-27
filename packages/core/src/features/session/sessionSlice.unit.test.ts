@@ -1,4 +1,4 @@
-import { getInitialCoreState } from "../../store.spec";
+import { getInitialCoreState } from "../../store.unit.test";
 import { selectSessionId } from "./sessionSlice";
 
 describe("sessionSlice", () => {

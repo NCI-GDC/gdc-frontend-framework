@@ -72,3 +72,34 @@ Run prettier for all of the workspaces:
 ```bash
 npm run format
 ```
+
+## Testing
+
+This project uses `jest` for testing.
+
+### Naming Convention
+
+| Test Type   | Filename         |
+| ----------- | ---------------- |
+| Unit        | `*.unit.test.ts` |
+| Integration | `*.int.test.ts`  |
+
+### Locations
+
+Tests should live in the same directory as if a single module is under test. Since unit tests should only test a single module, they should also live in the directory.
+For example,
+
+```
++ /src
+| - monarch.ts
+| - monarch.unit.ts
+| - monarch.int.ts
+```
+
+### Running tests
+
+`npm run test` will run unit tests.
+
+`npm run test:int` will run integration tests.
+
+`npm run test:all` will run both unit and integration tests.

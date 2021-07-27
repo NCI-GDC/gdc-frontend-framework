@@ -12,8 +12,10 @@
     "build": "rollup --config rollup.config.js",
     "build:clean": "npm run clean && npm run compile && rollup --config rollup.config.js",
     "build:watch": "npm run compile && npm run build -- --watch",
-    "test": "jest",
-    "test:watch": "jest --watch",
+    "test": "jest unit",
+    "test:watch": "jest unit --watch",
+    "test:int": "jest int",
+    "test:all": "jest",
     "dev": "npm run build:watch"
   },
   "author": "",
