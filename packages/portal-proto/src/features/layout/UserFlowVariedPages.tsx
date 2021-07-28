@@ -37,12 +37,20 @@ const Header: React.FC<HeaderProps> = ({
     <div className="px-4 py-2">
       <div className="flex flex-row flex-wrap divide-x divide-gray-300 items-center">
         <div className="flex-none w-64 h-12 mr-2 relative">
+          {/* There's some oddities going on here that need to be explained.  When a
+          <Link> wraps an <Image>, react complains it's expecting a reference to be
+          passed along. A popular fix is to wrap the child with an empty anchor tag.  
+          This causes an accessibility problem because empty anchors confuse screen
+          readers. The button tag satisfies both react's requirements and a11y 
+          requirements.  */}
           <Link href="/">
-            <Image
-              src="/NIH_GDC_DataPortal-logo.svg"
-              layout="fill"
-              objectFit="contain"
-            />
+            <button>
+              <Image
+                src="/NIH_GDC_DataPortal-logo.svg"
+                layout="fill"
+                objectFit="contain"
+              />
+            </button>
           </Link>
         </div>
         {headerElements.map((element, i) => (
