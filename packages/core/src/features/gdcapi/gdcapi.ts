@@ -119,6 +119,27 @@ export interface FieldDetails {
   readonly type: FieldType;
 }
 
+export interface FetchError {
+  readonly url: string;
+  readonly status: number;
+  readonly statusText: string;
+  readonly text: string;
+  readonly gdcApiReq?: GdcApiRequest;
+}
+
+const buildFetchError = async (
+  res: Response,
+  gdcApiReq?: GdcApiRequest,
+): Promise<FetchError> => {
+  return {
+    url: res.url,
+    status: res.status,
+    statusText: res.statusText,
+    text: await res.text(),
+    gdcApiReq,
+  };
+};
+
 export const fetchGdcCasesMapping = async (): Promise<GdcApiMapping> => {
   const res = await fetch("https://api.gdc.cancer.gov/cases/_mapping");
 
@@ -126,8 +147,7 @@ export const fetchGdcCasesMapping = async (): Promise<GdcApiMapping> => {
     return res.json();
   }
 
-  // TODO make a better error with request info
-  throw Error(await res.text());
+  throw await buildFetchError(res);
 };
 
 export const fetchGdcCases = async (
@@ -138,15 +158,18 @@ export const fetchGdcCases = async (
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(request),
+    body: JSON.stringify({
+      ...request,
+      fields: request?.fields?.join(","),
+      expand: request?.expand?.join(","),
+    }),
   });
 
   if (res.ok) {
     return res.json();
   }
 
-  // TODO make a better error with request info
-  throw Error(await res.text());
+  throw await buildFetchError(res, request);
 };
 
 /**
@@ -154,4 +177,5 @@ export const fetchGdcCases = async (
  * - use requested fields to define response shape.
  *   - use _mapping default as the default fields for a request
  *   - convert mapping field to nested structure
+ * - add auth header
  */
