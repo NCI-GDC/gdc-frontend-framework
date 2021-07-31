@@ -130,8 +130,32 @@ describe("GDC API", () => {
       expect(cases.data.pagination.from).toEqual(100);
     });
 
-    test.skip("can specify sort", async () => {
-      fail("not implemented yet");
+    test("can specify sort", async () => {
+      const cases = await fetchGdcCases({
+        sortBy: [
+          { field: "primary_site", direction: "asc" },
+          { field: "case_id", direction: "desc" },
+        ],
+      });
+
+      expect(cases.data.hits.length).toEqual(10);
+
+      const primary_sites = cases.data.hits.map((hit) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const gdcCase = hit as Record<string, any>;
+        return gdcCase["primary_site"];
+      });
+      const sorted_primary_sites = [...primary_sites].sort();
+      expect(primary_sites).toEqual(sorted_primary_sites);
+
+      const case_ids = cases.data.hits.map((hit) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const gdcCase = hit as Record<string, any>;
+        return gdcCase["case_id"];
+      });
+      // case ids should be in descending order.  ascending sort, then reverse to get descending
+      const sorted_case_ids = [...case_ids].sort().reverse();
+      expect(case_ids).toEqual(sorted_case_ids);
     });
 
     test.skip("can specify facets", async () => {

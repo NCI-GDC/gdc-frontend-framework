@@ -74,11 +74,16 @@ export interface GdcApiRequest {
   readonly fields?: ReadonlyArray<string>;
   readonly expand?: ReadonlyArray<string>;
   readonly format?: "JSON" | "TSV" | "XML";
-  readonly pretty?: boolean;
+  // readonly pretty?: boolean;  // omitting this for now. machines don't need it
   readonly size?: number;
   readonly from?: number;
-  readonly sort?: string;
+  readonly sortBy?: ReadonlyArray<SortBy>;
   readonly facets?: ReadonlyArray<string>;
+}
+
+export interface SortBy {
+  readonly field: string;
+  readonly direction: "asc" | "desc";
 }
 
 export interface GdcApiMapping {
@@ -162,6 +167,9 @@ export const fetchGdcCases = async (
       ...request,
       fields: request?.fields?.join(","),
       expand: request?.expand?.join(","),
+      sort: request?.sortBy
+        ?.map((by) => `${by.field}:${by.direction}`)
+        .join(","),
     }),
   });
 
