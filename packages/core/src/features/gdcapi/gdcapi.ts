@@ -170,6 +170,7 @@ export const fetchGdcCases = async (
       sort: request?.sortBy
         ?.map((by) => `${by.field}:${by.direction}`)
         .join(","),
+      facets: request?.facets?.join(","),
     }),
   });
 

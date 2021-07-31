@@ -4,6 +4,8 @@ import {
   fetchGdcCasesMapping,
   FieldTypes,
   GdcApiMapping,
+  isBucketsAggregation,
+  isStatsAggregation,
 } from "./gdcapi";
 
 describe("GDC API", () => {
@@ -158,8 +160,23 @@ describe("GDC API", () => {
       expect(case_ids).toEqual(sorted_case_ids);
     });
 
-    test.skip("can specify facets", async () => {
-      fail("not implemented yet");
+    test("can specify facets", async () => {
+      const cases = await fetchGdcCases({
+        facets: ["primary_site", "index_date", "demographic.days_to_death"],
+      });
+
+      expect(cases.data.aggregations).toBeDefined();
+      expect(
+        isBucketsAggregation(cases.data.aggregations?.["primary_site"]),
+      ).toBeTruthy();
+      expect(
+        isBucketsAggregation(cases.data.aggregations?.["index_date"]),
+      ).toBeTruthy();
+      expect(
+        isStatsAggregation(
+          cases.data.aggregations?.["demographic.days_to_death"],
+        ),
+      ).toBeTruthy();
     });
   });
 
