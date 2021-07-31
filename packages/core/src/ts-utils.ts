@@ -5,3 +5,7 @@ export const isNotDefined = (x: unknown): x is undefined => {
 export const isObject = (x: unknown): x is Record<string, unknown> => {
   return typeof x === "object";
 };
+
+export const isArray = (x: unknown): x is ReadonlyArray<unknown> => {
+  return Array.isArray(x);
+};
