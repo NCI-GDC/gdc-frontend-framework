@@ -9,10 +9,14 @@ import { CohortManager } from "../../../features/user-flow/many-pages/cohort";
 import classNames from "classnames";
 import { PropsWithChildren } from "react";
 import { useState } from "react";
+import { CasesTable, Studies } from "../../../features/user-flow/common";
+import { useProjects } from "@gff/core";
 
 const UserFlowFewestPagesPage: NextPage = () => {
   const [isExpressionsCollapsed, setIsExpressionsCollapsed] = useState(false);
   const [isSummaryCollapsed, setIsSummaryCollapsed] = useState(false);
+  const [currentApp, setCurrentApp] = useState("appSelector");
+  const { data } = useProjects();
 
   const headerElements = ["Exploration"];
 
@@ -62,7 +66,20 @@ const UserFlowFewestPagesPage: NextPage = () => {
           <CohortSummary />
         </div>
         <div className="border p-4 border-gray-400 bg-white">
-          <Apps />
+          {currentApp === "cohort-viewer" ? (
+            <CohortViewer goBack={() => setCurrentApp("appSelector")} />
+          ) : currentApp === "studies" ? (
+            <div className="flex flex-col gap-y-4">
+              <div className="flex flex-row">
+                <button onClick={() => setCurrentApp("appSelector")}>
+                  &lt; All Apps
+                </button>
+              </div>
+              <Studies projectIds={data.map((d) => d.projectId)} />
+            </div>
+          ) : (
+            <Apps setCurrentApp={setCurrentApp} />
+          )}
         </div>
       </div>
     </UserFlowVariedPages>
@@ -71,7 +88,13 @@ const UserFlowFewestPagesPage: NextPage = () => {
 
 export default UserFlowFewestPagesPage;
 
-const Apps: React.FC<unknown> = () => {
+interface AppsProps {
+  readonly setCurrentApp: (string) => void;
+}
+
+const Apps: React.FC<AppsProps> = ({
+  setCurrentApp,
+}: PropsWithChildren<AppsProps>) => {
   return (
     <div className="flex flex-col gap-y-4">
       <div className="flex flex-row gap-x-4">
@@ -80,18 +103,40 @@ const Apps: React.FC<unknown> = () => {
         <Button>Ipsum</Button>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
-        <App name="Clinical" />
-        <App name="Biospecimen" />
+        <App name="Studies" onClick={() => setCurrentApp("studies")} />
+        <App name="Clinical Filters" />
+        <App name="Biospecimen Filters" />
+        <App name="File Filters" />
         <App name="Somatic Mutations" />
-        <App name="Repository" />
         <App name="Gene Expression" />
         <App name="Copy Number Variations" />
-        <App name="Cohort Viewer" />
-        <App name="Studies" />
+        <App
+          name="Cohort Viewer"
+          onClick={() => setCurrentApp("cohort-viewer")}
+        />
+        <App name="Repository" />
       </div>
     </div>
   );
 };
+
+interface CohortViewerProps {
+  readonly goBack: () => void;
+}
+
+const CohortViewer: React.FC<CohortViewerProps> = ({
+  goBack,
+}: PropsWithChildren<CohortViewerProps>) => {
+  return (
+    <div className="flex flex-col gap-y-4">
+      <div className="flex flex-row">
+        <button onClick={goBack}>&lt; All Apps</button>
+      </div>
+      <CasesTable />
+    </div>
+  );
+};
+
 interface CollapsibleContainerProps {
   readonly isCollapsed: boolean;
   readonly toggle: () => void;

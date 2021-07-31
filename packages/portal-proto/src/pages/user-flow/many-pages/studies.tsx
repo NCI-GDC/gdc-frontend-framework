@@ -1,8 +1,6 @@
 import { NextPage } from "next";
 import {
   Button,
-  Card,
-  LinePlaceholer,
   UserFlowVariedPages,
 } from "../../../features/layout/UserFlowVariedPages";
 import Link from "next/link";
@@ -11,6 +9,7 @@ import { useProjects } from "@gff/core";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import ReactModal from "react-modal";
+import { Studies } from "../../../features/user-flow/common";
 
 const StudiesPage: NextPage = () => {
   const router = useRouter();
@@ -67,18 +66,13 @@ const StudiesPage: NextPage = () => {
         <div className="flex flex-row justify-end">
           <ExploreStudies onClick={() => router.push("analysis")} />
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
-          {data.map((project) => (
-            <Study
-              name={project.projectId}
-              key={project.projectId}
-              onClick={() => {
-                setSelectedProjectId(project.projectId);
-                setShowModal(true);
-              }}
-            />
-          ))}
-        </div>
+        <Studies
+          projectIds={data.map((d) => d.projectId)}
+          onClickStudy={(projectId) => {
+            setSelectedProjectId(projectId);
+            setShowModal(true);
+          }}
+        />
       </div>
     </UserFlowVariedPages>
   );
@@ -106,27 +100,6 @@ interface ExploreStudiesProps {
 }
 const ExploreStudies = (props: ExploreStudiesProps) => {
   return <Button onClick={props.onClick}>Explore Studies</Button>;
-};
-
-interface StudyProps {
-  readonly name?: string;
-  readonly onClick: () => void;
-}
-
-const Study: React.FC<StudyProps> = ({ name, onClick }: StudyProps) => {
-  return (
-    <button
-      className="flex flex-col border border-gray-500 px-4 pt-2 pb-4 w-full h-52 gap-y-2 bg-white"
-      onClick={onClick}
-    >
-      <div className="flex-none w-full text-center">
-        {name ? name : <LinePlaceholer length={6} />}
-      </div>
-      <div className="flex-grow w-full">
-        <Card />
-      </div>
-    </button>
-  );
 };
 
 export default StudiesPage;

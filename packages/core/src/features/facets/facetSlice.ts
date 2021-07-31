@@ -1,7 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { DataStatus } from "../../dataAcess";
 import { CoreDispatch, CoreState } from "../../store";
-import { fetchGdcCases, GdcApiResponse, isBucketsAggregation } from "../gdcapi/gdcapi";
+import {
+  fetchGdcCases,
+  GdcApiResponse,
+  isBucketsAggregation,
+} from "../gdcapi/gdcapi";
 
 export const fetchFacetByName = createAsyncThunk<
   GdcApiResponse<unknown>,
@@ -9,9 +13,9 @@ export const fetchFacetByName = createAsyncThunk<
   { dispatch: CoreDispatch; state: CoreState }
 >("facet/fetchFacetByName", async (name: string) => {
   return await fetchGdcCases({
-    size:0,
+    size: 0,
     facets: [name],
-  })
+  });
 });
 
 export interface FacetBuckets {
