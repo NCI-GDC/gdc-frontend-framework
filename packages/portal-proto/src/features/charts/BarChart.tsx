@@ -7,7 +7,7 @@ interface BarChartProps {
 const BarChart: React.FC<BarChartProps> = ({ data }: BarChartProps) => {
 
 const chartData = {
-    ...data.data,
+    ...data,
     textinfo: "label+percent",
     uniformtext_mode: 'hide',
     title: null,
@@ -21,13 +21,14 @@ const chartData = {
     textposition: "outside",
     automargin: true,
     insidetextorientation: 'horizontal',
+    type: 'bar'
 
   };
 
   const layout = {
     uniformtext: { mode: 'hide', minsize: 12 },
     autosize: true,
-    width: "100%", height: "900px", title: data.title,
+    title: chartData.title,
 
     titlefont: {
       family: 'Arial, sans-serif',
@@ -66,7 +67,7 @@ const chartData = {
   if (data.x.length > 6) {
     layout.xaxis.tickangle = 45;
   }
-  var config = {responsive: true,
+  const config = {responsive: true,
     toImageButtonOptions: {
       format: 'png', // one of png, svg, jpeg, webp
       filename: data.filename,

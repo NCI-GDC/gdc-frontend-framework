@@ -6,7 +6,11 @@ import {
   useCoreDispatch,
 } from "@gff/core";
 import { useEffect } from "react";
-import BarChart from "./BarChart";
+import dynamic from 'next/dynamic'
+
+const BarChartWithNoSSR = dynamic(() => import('./BarChart'), {
+  ssr: false
+})
 
 interface UseCaseFacetResponse {
   readonly data?: FacetBuckets;
@@ -43,13 +47,16 @@ interface FacetProps {
   readonly field: string;
 }
 
-const processChartData = (data:Record<string, any>, maxBins = 100) => {
+const processChartData = (data:Record<string, any>, field: string, maxBins = 100) => {
   const results : Record<string, any> = {
     x: Object.keys(data).slice(0, maxBins),
     y: Object.values(data).slice(0, maxBins),
     tickmode: 'array',
     tickvals: Object.keys(data).slice(0, maxBins).map(x => processLabel(x)),
-    tecktext: Object.keys(data).slice(0, maxBins).map(x => processLabel(x))
+    ticktext: Object.keys(data).slice(0, maxBins).map(x => processLabel(x)),
+    title: convertFieldToName(field),
+    filename: `${field}.svg`,
+    yAxisTitle: "# of Cases"
   }
   return results;
 }
@@ -72,11 +79,11 @@ export const FacetChart: React.FC<FacetProps> = ({ field }: FacetProps) => {
 
   const maxValuesToDisplay = 10;
 
-  const chart_data = processChartData(data, maxValuesToDisplay);
+  const chart_data = processChartData(data, field, maxValuesToDisplay);
 
   return (
     <div className="flex flex-col border-2 p-4 ">
-      <BarChart data={chart_data}></BarChart>
+      <BarChartWithNoSSR data={chart_data}></BarChartWithNoSSR>
     </div>
   );
 };
@@ -89,7 +96,7 @@ const convertFieldToName = (field: string): string => {
 };
 
 const processLabel = (label: string): string => {
-  const tokens = label.split("_");
+  const tokens = label.split(" ");
   const capitalizedTokens = tokens.map((s) => s[0].toUpperCase() + s.substr(1));
   return capitalizedTokens.join(" ");
 };
