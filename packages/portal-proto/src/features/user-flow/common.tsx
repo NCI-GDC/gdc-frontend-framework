@@ -1,5 +1,6 @@
 import { PropsWithChildren } from "react";
 import { Card, LinePlaceholer } from "../layout/UserFlowVariedPages";
+import Image from "next/image";
 
 export const CasesTable: React.FC<unknown> = () => {
   const cases = [
@@ -945,6 +946,23 @@ export const Study: React.FC<StudyProps> = ({ name, onClick }: StudyProps) => {
         <Card />
       </div>
     </button>
+  );
+};
+
+export const Search: React.FC<unknown> = () => {
+  return (
+    <div className="flex flex-row justify-center">
+      <div className="sm:w-1/2  rounded-full border border-gray-600 flex flex-row pr-4 bg-white">
+        <div className="flex flex-none fill-current text-black align-text-bottom pl-2">
+          <Image src="/Search_Icon.svg" width={16} height={16} />
+        </div>
+        <input
+          type="text"
+          placeholder="search"
+          className="flex-grow form-input pl-2 pr-0 border-none h-6 focus:ring-0"
+        />
+      </div>
+    </div>
   );
 };
 

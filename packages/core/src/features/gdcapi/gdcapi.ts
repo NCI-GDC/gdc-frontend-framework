@@ -155,9 +155,35 @@ export const fetchGdcCasesMapping = async (): Promise<GdcApiMapping> => {
   throw await buildFetchError(res);
 };
 
+export interface CaseDefaults {
+  readonly case_id: string;
+  readonly submitter_id: string;
+
+  readonly consent_type?: string;
+  readonly days_to_consent?: number;
+  readonly days_to_lost_to_followup?: number;
+  readonly disease_type?: string;
+  readonly index_date?: string;
+  readonly lost_to_followup?: string;
+  readonly primary_site?: string;
+
+  readonly aliquot_ids?: ReadonlyArray<string>;
+  readonly analyte_ids?: ReadonlyArray<string>;
+  readonly diagnosis_ids?: ReadonlyArray<string>;
+  readonly portion_ids?: ReadonlyArray<string>;
+  readonly sample_ids?: ReadonlyArray<string>;
+  readonly slide_ids?: ReadonlyArray<string>;
+  readonly submitter_aliquot_ids?: ReadonlyArray<string>;
+  readonly submitter_analyte_ids?: ReadonlyArray<string>;
+  readonly submitter_diagnosis_ids?: ReadonlyArray<string>;
+  readonly submitter_portion_ids?: ReadonlyArray<string>;
+  readonly submitter_sample_ids?: ReadonlyArray<string>;
+  readonly submitter_slide_ids?: ReadonlyArray<string>;
+}
+
 export const fetchGdcCases = async (
   request?: GdcApiRequest,
-): Promise<GdcApiResponse<unknown>> => {
+): Promise<GdcApiResponse<CaseDefaults>> => {
   const res = await fetch("https://api.gdc.cancer.gov/cases", {
     method: "POST",
     headers: {

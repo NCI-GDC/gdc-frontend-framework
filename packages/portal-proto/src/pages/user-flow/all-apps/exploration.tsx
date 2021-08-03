@@ -9,14 +9,14 @@ import { CohortManager } from "../../../features/user-flow/many-pages/cohort";
 import classNames from "classnames";
 import { PropsWithChildren } from "react";
 import { useState } from "react";
-import { CasesTable, Studies } from "../../../features/user-flow/common";
-import { useProjects } from "@gff/core";
+import { CasesTable } from "../../../features/user-flow/common";
+import { ContextualStudiesView } from "../../../features/studies/StudiesView";
+import { StudyView } from "../../../features/studies/StudyView";
 
 const UserFlowFewestPagesPage: NextPage = () => {
   const [isExpressionsCollapsed, setIsExpressionsCollapsed] = useState(false);
   const [isSummaryCollapsed, setIsSummaryCollapsed] = useState(false);
   const [currentApp, setCurrentApp] = useState("appSelector");
-  const { data } = useProjects();
 
   const headerElements = ["Exploration"];
 
@@ -69,15 +69,11 @@ const UserFlowFewestPagesPage: NextPage = () => {
           {currentApp === "cohort-viewer" ? (
             <CohortViewer goBack={() => setCurrentApp("appSelector")} />
           ) : currentApp === "studies" ? (
-            <div className="flex flex-col gap-y-4">
-              <div className="flex flex-row">
-                <button onClick={() => setCurrentApp("appSelector")}>
-                  &lt; All Apps
-                </button>
-              </div>
-              <Studies projectIds={data.map((d) => d.projectId)} />
-            </div>
+            <ContextualStudiesView setView={setCurrentApp} />
+          ) : currentApp == "study-view" ? (
+            <StudyView setView={setCurrentApp} />
           ) : (
+            // app selector
             <Apps setCurrentApp={setCurrentApp} />
           )}
         </div>

@@ -9,7 +9,7 @@ import { useProjects } from "@gff/core";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import ReactModal from "react-modal";
-import { Studies } from "../../../features/user-flow/common";
+import { Search, Studies } from "../../../features/user-flow/common";
 
 const StudiesPage: NextPage = () => {
   const router = useRouter();
@@ -75,23 +75,6 @@ const StudiesPage: NextPage = () => {
         />
       </div>
     </UserFlowVariedPages>
-  );
-};
-
-const Search = () => {
-  return (
-    <div className="flex flex-row justify-center">
-      <div className="sm:w-1/2  rounded-full border border-gray-600 flex flex-row pr-4 bg-white">
-        <div className="flex flex-none fill-current text-black align-text-bottom pl-2">
-          <Image src="/Search_Icon.svg" width={16} height={16} />
-        </div>
-        <input
-          type="text"
-          placeholder="search"
-          className="flex-grow form-input pl-2 pr-0 border-none h-6 focus:ring-0"
-        />
-      </div>
-    </div>
   );
 };
 
