@@ -16,9 +16,11 @@
     "@reduxjs/toolkit": "^1.6.0",
     "@tailwindcss/forms": "^0.3.3",
     "next": "^11.0.1",
+    "plotly.js": "^2.3.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-modal": "^3.14.3",
+    "react-plotly.js": "^2.5.1",
     "react-redux": "^7.2.0",
     "react-select": "^4.3.1",
     "react-tabs": "^3.2.2"
