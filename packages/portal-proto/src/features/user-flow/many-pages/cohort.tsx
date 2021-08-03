@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from "react";
+import React, { PropsWithChildren, useState } from "react";
 import { Button, Card, Graph } from "../../layout/UserFlowVariedPages";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import classNames from "classnames";
@@ -24,6 +24,8 @@ export const CohortManager: React.FC<CohortManagerProps> = ({
     return;
   },
 }: PropsWithChildren<CohortManagerProps>) => {
+  const [showCases, setShowCases] = useState(false);
+
   const cohortOptions = [
     { value: "all-gdc", label: "All GDC Cases" },
     { value: "custom-cohort-1", label: "Custom Test Cohort" },
@@ -50,7 +52,7 @@ export const CohortManager: React.FC<CohortManagerProps> = ({
         </div>
         <div className="flex-grow"></div>
         <div>
-          <Button>2,345 Cases</Button>
+          <Button onClick={() => setShowCases(!showCases)}>2,345 Cases</Button>
         </div>
         <ModalOrExpand
           mode={mode}
@@ -61,10 +63,31 @@ export const CohortManager: React.FC<CohortManagerProps> = ({
       </div>
       <CohortBuilderModal isOpen={isOpen} closeModal={closeModal} />
       <CollapsibleCohortBuilder isCollapsed={!isExpanded} />
+      <CollapsibleCases show={showCases} />
     </div>
   );
 };
 
+interface CollapsibleCasesProps {
+  readonly show: boolean;
+}
+
+const CollapsibleCases: React.FC<CollapsibleCasesProps> = (
+  props: CollapsibleCasesProps,
+) => {
+  const { show } = props;
+
+  return (
+    <div
+      className={classNames("flex-col gap-y-4 h-96 overflow-y-auto", {
+        hidden: !show,
+        flex: show,
+      })}
+    >
+      <CasesTable />
+    </div>
+  );
+};
 interface CollapsibleCohortBuilderProps {
   readonly isCollapsed: boolean;
 }
