@@ -5,6 +5,7 @@ import classNames from "classnames";
 import Image from "next/image";
 import ReactModal from "react-modal";
 import { CasesTable } from "../common";
+import Select from "react-select";
 
 export type CohortManagerProps = Partial<ModalOrExpandProps> &
   Partial<CohortBuilderModalProps>;
@@ -23,13 +24,21 @@ export const CohortManager: React.FC<CohortManagerProps> = ({
     return;
   },
 }: PropsWithChildren<CohortManagerProps>) => {
+  const cohortOptions = [
+    { value: "all-gdc", label: "All GDC Cases" },
+    { value: "custom-cohort-1", label: "Custom Test Cohort" },
+  ];
+
   return (
     <div className="flex flex-col gap-y-4">
       <div className="flex flex-row gap-x-4 items-center">
-        <select name="currentCohort" id="current-cohort-select">
-          <option value="ALL_GDC">All GDC Cases</option>
-          <option value="TCGA-BRCA">TCGA BRCA</option>
-        </select>
+        <div className="w-48">
+          <Select
+            inputId="cohort-manager__cohort-select"
+            options={cohortOptions}
+            defaultValue={cohortOptions[0]}
+          />
+        </div>
         <div className="h-10 w-10">
           <Card />
         </div>

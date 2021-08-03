@@ -12,6 +12,7 @@ import { useState } from "react";
 import { CasesTable } from "../../../features/user-flow/common";
 import { ContextualStudiesView } from "../../../features/studies/StudiesView";
 import { StudyView } from "../../../features/studies/StudyView";
+import Image from "next/image";
 
 const UserFlowFewestPagesPage: NextPage = () => {
   const [isExpressionsCollapsed, setIsExpressionsCollapsed] = useState(false);
@@ -28,7 +29,13 @@ const UserFlowFewestPagesPage: NextPage = () => {
         isCollapsed={isExpressionsCollapsed}
         toggle={() => setIsExpressionsCollapsed(!isExpressionsCollapsed)}
       >
-        <div className="h-32"></div>
+        <div className="h-48 relative">
+          <Image
+            src="/user-flow/expressions-mock-up.png"
+            layout="fill"
+            objectFit="contain"
+          />
+        </div>
       </CollapsibleContainer>
     );
   };
