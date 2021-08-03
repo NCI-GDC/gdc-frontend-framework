@@ -48,12 +48,14 @@ interface FacetProps {
 }
 
 const processChartData = (data:Record<string, any>, field: string, maxBins = 100) => {
+  const xindex = Array.from({length: Object.keys(data).slice(0, maxBins).length}, (_, i) => i + 1)
+  const xvals = Object.keys(data).slice(0, maxBins).map(x =>x);
+  const xlabels = Object.keys(data).slice(0, maxBins).map(x => processLabel(x, 12));
   const results : Record<string, any> = {
-    x: Object.keys(data).slice(0, maxBins),
+    x: xvals,
     y: Object.values(data).slice(0, maxBins),
-    tickmode: 'array',
-    tickvals: Object.keys(data).slice(0, maxBins).map(x => processLabel(x)),
-    ticktext: Object.keys(data).slice(0, maxBins).map(x => processLabel(x)),
+    tickvals: xvals,
+    ticktext: xlabels,
     title: convertFieldToName(field),
     filename: `${field}.svg`,
     yAxisTitle: "# of Cases"
@@ -77,7 +79,7 @@ export const FacetChart: React.FC<FacetProps> = ({ field }: FacetProps) => {
     return <div>Failed to fetch facet: {error}</div>;
   }
 
-  const maxValuesToDisplay = 10;
+  const maxValuesToDisplay =12;
 
   const chart_data = processChartData(data, field, maxValuesToDisplay);
 
@@ -95,8 +97,17 @@ const convertFieldToName = (field: string): string => {
   return capitalizedTokens.join(" ");
 };
 
-const processLabel = (label: string): string => {
+
+function truncateString(str, n) {
+  if (str.length > n) {
+    return str.substring(0, n) + "...";
+  } else {
+    return str;
+  }
+}
+
+const processLabel = (label: string, shorten=100): string => {
   const tokens = label.split(" ");
   const capitalizedTokens = tokens.map((s) => s[0].toUpperCase() + s.substr(1));
-  return capitalizedTokens.join(" ");
+  return truncateString(capitalizedTokens.join(" "), shorten);
 };
