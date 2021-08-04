@@ -63,7 +63,7 @@ export const Facet: React.FC<FacetProps> = ({ field }: FacetProps) => {
   const total = Object.entries(data).length;
 
   return (
-    <div className="flex flex-col border-2 px-2 pt-0 ">
+    <div className="flex flex-col border-2 px-0 ">
       <div className="flex items-center justify-between flex-wrap bg-gray-100 p-1.5">
         {convertFieldToName(field)}
         <button
@@ -79,7 +79,7 @@ export const Facet: React.FC<FacetProps> = ({ field }: FacetProps) => {
 
         if (!showAll && i == maxValuesToDisplay) {
           return (
-            <div key="show-more" className="text-left">
+            <div key="show-more" className="text-left px-2">
               {total - maxValuesToDisplay} more
             </div>
           );
@@ -88,7 +88,7 @@ export const Facet: React.FC<FacetProps> = ({ field }: FacetProps) => {
         if (!showAll && i > maxValuesToDisplay) return null;
 
         return (
-          <div key={`${field}-${value}`} className="flex flex-row gap-x-2 ">
+          <div key={`${field}-${value}`} className="flex flex-row gap-x-2 px-2">
             <div className="flex-none">
               <input type="checkbox" />
             </div>

@@ -57,7 +57,7 @@ const chartData = {
       l: 80,
       r: 40,
       b: 100,
-      t: 0,
+      t: 30,
       pad: 4
     },
   };
@@ -80,7 +80,7 @@ const chartData = {
   };
   return (<div>
     <Plot data={[chartData]} layout={layout} config={config} useResizeHandler={true}
-          style={{width: "100%", height: "100%"}}/>
+           style={{width: "100%", height: "100%"}}/>
   </div>);
 
 };
