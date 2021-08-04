@@ -60,17 +60,27 @@ export const Facet: React.FC<FacetProps> = ({ field }: FacetProps) => {
 
   const maxValuesToDisplay = 10;
   const showAll = false;
+  const total = Object.entries(data).length;
 
   return (
-    <div className="flex flex-col border-2 p-4 ">
-      <div className="font-bold">{convertFieldToName(field)}</div>
+    <div className="flex flex-col border-2 px-2 pt-0 ">
+      <div className="flex items-center justify-between flex-wrap bg-gray-100 p-1.5">
+        {convertFieldToName(field)}
+        <button
+          className="bg-grey-light hover:bg-grey text-grey-darkest font-bold py-2 px-4 rounded inline-flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        </button>
+      </div>
+      <div className="flex items-center justify-between flex-wrap bg-gray-50 ">
+      </div>
+
       {Object.entries(data).map(([value, count], i) => {
         if (value === "_missing") return null;
 
         if (!showAll && i == maxValuesToDisplay) {
           return (
-            <div key="show-more" className="text-right">
-              Show more...
+            <div key="show-more" className="text-left">
+              {total - maxValuesToDisplay} more
             </div>
           );
         }
@@ -78,7 +88,7 @@ export const Facet: React.FC<FacetProps> = ({ field }: FacetProps) => {
         if (!showAll && i > maxValuesToDisplay) return null;
 
         return (
-          <div key={`${field}-${value}`} className="flex flex-row gap-x-2">
+          <div key={`${field}-${value}`} className="flex flex-row gap-x-2 ">
             <div className="flex-none">
               <input type="checkbox" />
             </div>

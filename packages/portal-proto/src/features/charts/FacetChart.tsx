@@ -7,6 +7,7 @@ import {
 } from "@gff/core";
 import { useEffect } from "react";
 import dynamic from 'next/dynamic'
+import './FacetChart.module.css'
 
 const BarChartWithNoSSR = dynamic(() => import('./BarChart'), {
   ssr: false
@@ -83,11 +84,12 @@ export const FacetChart: React.FC<FacetProps> = ({ field }: FacetProps) => {
 
   const chart_data = processChartData(data, field, maxValuesToDisplay);
 
-  return (
-    <div className="flex flex-col border-2 p-4 ">
-      <BarChartWithNoSSR data={chart_data}></BarChartWithNoSSR>
+  return <div className="flex flex-col border-2 ">
+    <div className="flex items-center justify-between flex-wrap bg-gray-100 p-1.5">
+      {convertFieldToName(field)}
     </div>
-  );
+    <BarChartWithNoSSR data={chart_data}></BarChartWithNoSSR>
+  </div>;
 };
 
 const convertFieldToName = (field: string): string => {

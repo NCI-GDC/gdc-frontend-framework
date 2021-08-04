@@ -25,12 +25,6 @@ const chartData = {
   const layout = {
     uniformtext: { mode: 'show', minsize: 12 },
     autosize: true,
-    title: data.title,
-
-    titlefont: {
-      family: 'Arial, sans-serif',
-      size: 22,
-    },
     xaxis: {
       tickson: "labels",
       automargin: true,
@@ -53,11 +47,19 @@ const chartData = {
         family: 'Arial, sans-serif',
         size: 18,
       },
+
       tickfont: {
         size: 14,
         color: 'rgb(107, 107, 107)'
       },
-    }
+    },
+    margin: {
+      l: 80,
+      r: 40,
+      b: 100,
+      t: 0,
+      pad: 4
+    },
   };
 
   if (data.x.length > 6) {
@@ -78,7 +80,7 @@ const chartData = {
   };
   return (<div>
     <Plot data={[chartData]} layout={layout} config={config} useResizeHandler={true}
-          style={{width: "100%", height: "100%"},  {displaylogo: false}}/>
+          style={{width: "100%", height: "100%"}}/>
   </div>);
 
 };
