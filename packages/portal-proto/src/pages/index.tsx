@@ -47,6 +47,9 @@ const IndexPage: NextPage = () => {
               <HoverLink href="/facets">Facets</HoverLink>
             </li>
             <li>
+              <HoverLink href="/charts">Charts</HoverLink>
+            </li>
+            <li>
               <HoverLink href="/molecular">Molecular</HoverLink>
             </li>
           </ul>
