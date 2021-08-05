@@ -47,9 +47,11 @@ const useCaseFacet = (field: string): UseCaseFacetResponse => {
 interface FacetProps {
   readonly field: string;
 }
+// from https://stackoverflow.com/questions/33053310/remove-value-from-object-without-mutation
+const removeKey = (key, {[key]: _, ...rest}) => rest;
 
-const processChartData = (data:Record<string, any>, field: string, maxBins = 100) => {
-  const xindex = Array.from({length: Object.keys(data).slice(0, maxBins).length}, (_, i) => i + 1)
+const processChartData = (facetData:Record<string, any>, field: string, maxBins = 100) => {
+  const data = removeKey('_missing', facetData);
   const xvals = Object.keys(data).slice(0, maxBins).map(x =>x);
   const xlabels = Object.keys(data).slice(0, maxBins).map(x => processLabel(x, 12));
   const results : Record<string, any> = {
