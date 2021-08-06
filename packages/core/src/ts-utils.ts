@@ -9,3 +9,7 @@ export const isObject = (x: unknown): x is Record<string, unknown> => {
 export const isArray = (x: unknown): x is ReadonlyArray<unknown> => {
   return Array.isArray(x);
 };
+
+export const isString = (x: unknown): x is string => {
+  return typeof x === "string";
+};

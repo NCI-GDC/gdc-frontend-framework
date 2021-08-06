@@ -63,7 +63,7 @@ const UserFlowFewestPagesPage: NextPage = () => {
   return (
     <UserFlowVariedPages {...{ headerElements }}>
       <div className="flex flex-col gap-y-4 p-4">
-        <div className="border p-4 border-gray-400 bg-white">
+        <div className="border p-4 border-nci-gray-lighter bg-white">
           <CohortManager />
         </div>
         <div className="bg-white">
@@ -118,6 +118,24 @@ const Apps: React.FC<AppsProps> = ({
           onClick={() => setCurrentApp("cohort-viewer")}
         />
         <App name="Repository" />
+        <App name="scRNA-Seq">
+          <div className="w-full h-full relative">
+            <Image
+              src="/user-flow/scRnaSeqViz.png"
+              layout="fill"
+              objectFit="contain"
+            />
+          </div>
+        </App>
+        <App name="OncoGrid">
+          <div className="w-full h-full relative">
+            <Image
+              src="/user-flow/oncogrid.png"
+              layout="fill"
+              objectFit="contain"
+            />
+          </div>
+        </App>
       </div>
     </div>
   );

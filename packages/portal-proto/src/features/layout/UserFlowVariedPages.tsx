@@ -1,6 +1,8 @@
 import { PropsWithChildren, ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { isString } from "@gff/core";
+
 interface UserFlowVariedPagesProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
   readonly Options?: React.FC<unknown>;
@@ -12,8 +14,8 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
   children,
 }: PropsWithChildren<UserFlowVariedPagesProps>) => {
   return (
-    <div className="flex flex-col min-h-screen min-w-full bg-gray-100">
-      <header className="flex-none bg-gray-200">
+    <div className="flex flex-col min-h-screen min-w-full bg-nci-gray-lightest">
+      <header className="flex-none bg-white">
         <Header {...{ headerElements, Options }} />
       </header>
       <main className="flex-grow">{children}</main>
@@ -34,9 +36,9 @@ const Header: React.FC<HeaderProps> = ({
   Options = () => <div />,
 }: HeaderProps) => {
   return (
-    <div className="px-4 py-2">
+    <div className="px-6 py-3">
       <div className="flex flex-row flex-wrap divide-x divide-gray-300 items-center">
-        <div className="flex-none w-64 h-12 mr-2 relative">
+        <div className="flex-none w-64 h-nci-logo mr-2 relative">
           {/* There's some oddities going on here that need to be explained.  When a
           <Link> wraps an <Image>, react complains it's expecting a reference to be
           passed along. A popular fix is to wrap the child with an empty anchor tag.  
@@ -73,7 +75,7 @@ const Header: React.FC<HeaderProps> = ({
 
 const Footer: React.FC<unknown> = () => {
   return (
-    <div className="flex flex-col bg-gray-200 justify-center text-center p-4">
+    <div className="flex flex-col bg-nci-blumine justify-center text-center p-4 text-white">
       <div>Site Home | Policies | Accessibility | FOIA | Support</div>
       <div>
         U.S. Department of Health and Human Services | National Institutes of
@@ -137,7 +139,6 @@ export interface ButtonProps {
 }
 
 export const Button: React.FC<ButtonProps> = ({
-  color = "gray",
   onClick = () => {
     return;
   },
@@ -148,9 +149,9 @@ export const Button: React.FC<ButtonProps> = ({
     <button
       className={`
         px-2 py-1 
-        border rounded
-        border-${color}-300 hover:border-${color}-400
-        bg-${color}-200 hover:bg-${color}-300 
+        border rounded border-nci-blumine
+        bg-nci-blumine hover:bg-nci-blumine-lightest
+        text-white hover:text-nci-blumine-darker
         ${className}
       `}
       onClick={onClick}
@@ -170,20 +171,26 @@ export interface AppProps {
 }
 
 export const App: React.FC<AppProps> = ({
-  name,
+  name = <LinePlaceholer length={6} />,
+  children,
   onClick = () => {
     return;
   },
-}: AppProps) => {
+}: PropsWithChildren<AppProps>) => {
+  if (!children) {
+    if (isString(name)) {
+      children = <Initials name={name} />;
+    } else {
+      children = <Card />;
+    }
+  }
   return (
     <button
-      className="h-52 border border-gray-500 px-4 pt-2 pb-4 flex flex-col gap-y-2 bg-white"
+      className="h-52 border border-nci-gray-lighter px-4 pt-2 pb-4 flex flex-col gap-y-2 bg-white shadow-md hover:shadow-lg hover:border-nci-blumine-darker hover:border-2"
       onClick={onClick}
     >
-      <div className="text-center w-full">
-        {name ? name : <LinePlaceholer length={6} />}
-      </div>
-      <Card />
+      <div className="text-center w-full text-lg">{name}</div>
+      {children}
     </button>
   );
 };
@@ -207,7 +214,7 @@ export const Card: React.FC<unknown> = () => {
   const color = "gray";
   return (
     <div
-      className="h-full w-full border border-gray-500"
+      className="h-full w-full border border-nci-gray-light"
       style={{
         background: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 100 100'><line x1='0' y1='0' x2='100' y2='100' stroke='${color}' vector-effect='non-scaling-stroke'/><line x1='0' y1='100' x2='100' y2='0' stroke='${color}' vector-effect='non-scaling-stroke'/></svg>")`,
         backgroundRepeat: "no-repeat",
@@ -215,5 +222,21 @@ export const Card: React.FC<unknown> = () => {
         backgroundSize: "100% 100%, auto",
       }}
     ></div>
+  );
+};
+
+export interface InitialsProps {
+  readonly name: string;
+}
+
+export const Initials: React.FC<InitialsProps> = ({ name }: InitialsProps) => {
+  const initials = name
+    .split(" ")
+    .map((s) => s[0])
+    .join("");
+  return (
+    <div className="flex flex-row justify-content-center items-center w-full h-full">
+      <div className="flex-grow text-8xl text-nci-cyan">{initials}</div>
+    </div>
   );
 };

@@ -2,6 +2,7 @@ export * from "./store";
 export * from "./provider";
 export * from "./hooks";
 export * from "./dataAcess";
+export * from "./ts-utils";
 export * from "./features/gdcapi/gdcapi";
 export * from "./features/facets/facetSlice";
 export * from "./features/gdcapps/gdcAppsSlice";

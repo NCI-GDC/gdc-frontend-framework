@@ -52,10 +52,38 @@ const AnalysisPage: NextPage = () => {
   const Apps = () => {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 bg-gray-100">
+        <App
+          name="OncoGrid"
+          onClick={() => {
+            setSelectedApp("OncoGrid");
+            setShowAppModal(true);
+          }}
+        >
+          <div className="w-full h-full relative">
+            <Image
+              src="/user-flow/oncogrid.png"
+              layout="fill"
+              objectFit="contain"
+            />
+          </div>
+        </App>
+        <App
+          name="scRNA-Seq"
+          onClick={() => {
+            setSelectedApp("scRNA-Seq");
+            setShowAppModal(true);
+          }}
+        >
+          <div className="w-full h-full relative">
+            <Image
+              src="/user-flow/scRnaSeqViz.png"
+              layout="fill"
+              objectFit="contain"
+            />
+          </div>
+        </App>
         {[
-          "OncoGrid",
           "Gene Expression",
-          undefined,
           undefined,
           undefined,
           undefined,
