@@ -13,7 +13,7 @@ export const StudyView: React.FC<StudyViewProps> = ({
         <button className="absolute" onClick={() => setView("appSelector")}>
           &lt; All Apps
         </button>
-        <div className="flex-grow text-center">Single Study</div>
+        <div className="flex-grow text-center">Single Cohort</div>
       </div>
       <div className="flex-grow overflow-y-auto">
         <Image

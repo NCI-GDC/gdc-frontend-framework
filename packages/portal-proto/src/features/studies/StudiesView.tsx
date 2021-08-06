@@ -77,7 +77,7 @@ export const StudiesView: React.FC<StudiesViewProps> = ({
         <button className="absolute" onClick={() => setView("appSelector")}>
           &lt; All Apps
         </button>
-        <div className="flex-grow text-center">Studies</div>
+        <div className="flex-grow text-center">Cohorts</div>
       </div>
       <div>
         <Search />
