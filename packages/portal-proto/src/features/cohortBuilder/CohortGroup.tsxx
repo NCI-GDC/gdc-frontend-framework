@@ -1,0 +1,65 @@
+import { useState } from "react";
+import Select from '@material-ui/core/Select';
+import { CollapsibleContainer} from '../../pages/user-flow/all-apps/exploration';
+import { Button } from "../layout/UserFlowVariedPages";
+import FormControl from "@material-ui/core/FormControl";
+import MenuItem from "@material-ui/core/MenuItem";
+import ClearIcon from "@material-ui/icons/Clear";
+
+
+
+const Top : React.FC<unknown> = () => {
+  return (
+  <div className="flex flex-row items-center h-16 bg-white">
+    <div className="font-bold px-4">Current Cohort</div>
+    <div className="border-opacity-0">
+      <FormControl className="bg-white w-36 min-w-full">
+        <Select
+          disableUnderline
+          value="any_of"
+          className="px-2"
+        >
+          <MenuItem value="any_of">is any of</MenuItem>
+          <MenuItem value="all_of">is all of</MenuItem>
+          <MenuItem value="none_of">is none of</MenuItem>
+        </Select>
+      </FormControl>
+    </div>
+<div className="ml-auto">
+  <Button className="px-4">84,609 Cases</Button>
+  <Button color="none" className="px-4 border-opacity-0"><ClearIcon/></Button>
+</div>
+  </div>
+  );
+};
+
+const CohortGroup: React.FC<unknown> = () => {
+  const [isGroupCollapsed, setIsGroupCollapsed] = useState(true);
+
+  return (
+    <CollapsibleContainer
+      Top={Top}
+      isCollapsed={isGroupCollapsed}
+      toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
+    >
+      <div className="h-64 bg-white"></div>
+    </CollapsibleContainer>
+  )
+};
+
+const SummaryCharts: React.FC<unknown> = () => {
+  const [isGroupCollapsed, setIsGroupCollapsed] = useState(true);
+
+  return (
+    <CollapsibleContainer
+      Top={SummaryStatsTop}
+  isCollapsed={isGroupCollapsed}
+  toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
+>
+  <div className="h-64 bg-white"></div>
+    </CollapsibleContainer>
+)
+};
+
+
+export default CohortGroup;
