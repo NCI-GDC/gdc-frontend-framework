@@ -4,6 +4,8 @@ import {
   Button,
 } from "../../../features/layout/UserFlowVariedPages";
 import { CohortManager } from "../../../features/user-flow/many-pages/cohort";
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import classNames from "classnames";
 import { PropsWithChildren, useRef } from "react";
 import { useState } from "react";
@@ -221,7 +223,7 @@ interface CollapsibleContainerProps {
   readonly Top: React.FC<unknown>;
 }
 
-const CollapsibleContainer: React.FC<CollapsibleContainerProps> = (
+export const CollapsibleContainer: React.FC<CollapsibleContainerProps> = (
   props: PropsWithChildren<CollapsibleContainerProps>,
 ) => {
   const { Top, isCollapsed, toggle, children } = props;
@@ -236,7 +238,7 @@ const CollapsibleContainer: React.FC<CollapsibleContainerProps> = (
           <Top />
         </div>
         <div>
-          <Button onClick={toggle}>{isCollapsed ? "v" : "^"}</Button>
+          <Button onClick={toggle}>{isCollapsed ? <ExpandMoreIcon/> : <ExpandLessIcon/>}</Button>
         </div>
       </div>
       <div className={childrenClassNames}>{children}</div>

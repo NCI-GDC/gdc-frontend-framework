@@ -86,7 +86,7 @@ export const FacetChart: React.FC<FacetProps> = ({ field, showXLabels = true, he
     return <div>Failed to fetch facet: {error}</div>;
   }
 
-  const maxValuesToDisplay =12;
+  const maxValuesToDisplay =7;
 
   const chart_data = processChartData(data, field, maxValuesToDisplay, showXLabels);
 

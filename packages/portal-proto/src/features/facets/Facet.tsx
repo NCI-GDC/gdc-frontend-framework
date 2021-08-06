@@ -58,12 +58,12 @@ export const Facet: React.FC<FacetProps> = ({ field }: FacetProps) => {
     return <div>Failed to fetch facet: {error}</div>;
   }
 
-  const maxValuesToDisplay = 10;
+  const maxValuesToDisplay = 6;
   const showAll = false;
   const total = Object.entries(data).length;
 
   return (
-    <div className="flex flex-col border-2 px-0 ">
+    <div className="flex flex-col border-2 px-0 bg-white">
       <div className="flex items-center justify-between flex-wrap bg-gray-100 p-1.5">
         {convertFieldToName(field)}
         <button
