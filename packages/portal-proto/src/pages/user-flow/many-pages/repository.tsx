@@ -36,7 +36,7 @@ const RepositoryPage: NextPage = () => {
 
   const headerElements = [
     <Link key="Studies" href="/user-flow/many-pages/studies">
-      Studies
+      Cohorts
     </Link>,
     <Link key="Analysis" href="/user-flow/many-pages/analysis">
       Analysis
@@ -80,11 +80,11 @@ const Files: React.FC<FilesProps> = ({ files }: FilesProps) => {
   return (
     <div className="overflow-y-auto h-96">
       <table
-        className="table-auto border-collapse border-gray-400 w-full"
+        className="table-auto border-collapse border-nci-gray w-full"
         style={{ borderSpacing: "4em" }}
       >
         <thead>
-          <tr className="bg-gray-400">
+          <tr className="bg-nci-blue text-white">
             <th className="px-2">File</th>
             <th className="px-2">Access</th>
             <th className="px-2">Experimental Strategy</th>

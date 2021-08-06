@@ -30,7 +30,7 @@ const StudiesPage: NextPage = () => {
   }
 
   const headerElements = [
-    "Studies",
+    "Cohorts",
     <Link key="Analysis" href="/user-flow/many-pages/analysis">
       Analysis
     </Link>,

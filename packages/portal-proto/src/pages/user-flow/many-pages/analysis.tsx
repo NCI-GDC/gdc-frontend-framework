@@ -26,7 +26,7 @@ const AnalysisPage: NextPage = () => {
 
   const headerElements = [
     <Link key="Studies" href="/user-flow/many-pages/studies">
-      Studies
+      Cohorts
     </Link>,
     "Analysis",
     <Link key="Repository" href="/user-flow/many-pages/repository">
@@ -82,14 +82,25 @@ const AnalysisPage: NextPage = () => {
             />
           </div>
         </App>
-        {[
-          "Gene Expression",
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-        ].map((name, i) => (
+        <App name="Gene Expression">
+          <div className="w-full h-full relative">
+            <Image
+              src="/user-flow/gene-expression.png"
+              layout="fill"
+              objectFit="contain"
+            />
+          </div>
+        </App>
+        <App name="ProteinPaint">
+          <div className="w-full h-full relative">
+            <Image
+              src="/user-flow/proteinpaint.png"
+              layout="fill"
+              objectFit="contain"
+            />
+          </div>
+        </App>
+        {[undefined, undefined, undefined, undefined].map((name, i) => (
           <App
             key={`${name}-${i}`}
             name={name}

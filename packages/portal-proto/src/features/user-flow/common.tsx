@@ -899,11 +899,11 @@ export const CasesTable: React.FC<unknown> = () => {
 
   return (
     <table
-      className="table-auto border-collapse border-gray-400 w-full"
+      className="table-auto border-collapse w-full"
       style={{ borderSpacing: "4em" }}
     >
       <thead>
-        <tr className="bg-gray-400">
+        <tr className="bg-nci-blue text-white">
           <th className="px-2">Case</th>
           <th className="px-2">Project</th>
           <th className="px-2">Primary Site</th>
@@ -914,7 +914,7 @@ export const CasesTable: React.FC<unknown> = () => {
       </thead>
       <tbody>
         {cases.map((c, i) => (
-          <tr key={c.id} className={i % 2 == 0 ? "bg-gray-200" : ""}>
+          <tr key={c.id} className={i % 2 == 0 ? "bg-nci-gray-lightest" : ""}>
             <td className="px-2 break-all">{c.submitter_id}</td>
             <td className="px-2 whitespace-nowrap">{c.project_id}</td>
             <td className="px-2">{c.primary_site}</td>
