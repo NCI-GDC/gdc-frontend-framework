@@ -93,7 +93,7 @@ export const Facet: React.FC<FacetProps> = ({ field }: FacetProps) => {
               <input type="checkbox" />
             </div>
             <div className="flex-grow truncate ...">{value}</div>
-            <div className="flex-none text-right">{count}</div>
+            <div className="flex-none text-right">{count.toLocaleString()}</div>
           </div>
         );
       })}

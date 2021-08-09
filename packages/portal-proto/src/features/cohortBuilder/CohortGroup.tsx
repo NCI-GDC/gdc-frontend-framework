@@ -10,6 +10,13 @@ import { FacetChart } from "../charts/FacetChart";
 
 
 const Top : React.FC<unknown> = () => {
+
+  const [groupType, setGroupTop] = useState('any_of');
+
+  const handleChange = (event) => {
+    setGroupTop(event.target.value);
+  };
+
   return (
   <div className="flex flex-row items-center h-16 bg-gray-300">
     <div className="font-bold px-4">Current Cohort</div>
@@ -17,7 +24,8 @@ const Top : React.FC<unknown> = () => {
       <FormControl className="bg-white w-32 min-w-full">
         <Select
           disableUnderline
-          value="any_of"
+          value={groupType}
+          onChange={handleChange}
           className="px-2"
         >
           <MenuItem value="any_of">is any of</MenuItem>
@@ -60,7 +68,6 @@ const SummaryStatsTop : React.FC<unknown> = () => {
   </div>
 );
 };
-
 
 export const SummaryCharts: React.FC<unknown> = () => {
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(false);

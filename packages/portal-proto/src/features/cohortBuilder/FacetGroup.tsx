@@ -1,5 +1,9 @@
 import { Facet } from "../facets/Facet";
-import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
+import { Tab, TabProps, TabList, TabPanel, Tabs } from "react-tabs";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import { PropsWithChildren, useState } from "react";
 
 interface FacetGroupProps {
   readonly facetNames: Array<string>;
@@ -28,15 +32,55 @@ const clinicalFacets = [
   "demographic.race"
 ];
 
+const clinicalSubcategories = [ "All", "Demographic"];
+
+interface FacetTabWithSubmenuProps extends TabProps {
+   subtypes: Array<string>;
+}
+
+const FacetTabWithSubmenu : React.FC<FacetTabWithSubmenuProps> = ({ subtypes, children, ...otherProps } : PropsWithChildren<FacetTabWithSubmenuProps>) => {
+  const [subtype, setSubtype] = useState(subtypes[0]);
+
+  const handleChange = (event) => {
+    setSubtype(event.target.value);
+  };
+
+  return (
+    <Tab {...otherProps}>
+      <div className="flex flex-row items-center justify-center">
+        {children}
+        <div >
+          <FormControl className="bg-white w-36 min-w-full">
+            <Select
+              disableUnderline
+              value={subtype}
+              onChange={handleChange}
+              className="px-2"
+            >
+              {subtypes.map((n) => {
+                return (<MenuItem key={n} value={n}>{n}</MenuItem>);
+              })
+              }
+            </Select>
+          </FormControl>
+        </div>
+        </div>
+    </Tab>
+  )
+
+};
+FacetTabWithSubmenu.tabsRole = 'Tab';
+
 export const CohortTabbedFacets: React.FC<unknown> = () => {
   return (
-    <div className="flex flex-col items-center justify-left bg-white border-none px-4 w-100">
+    <div className="flex flex-col items-center justify-left bg-white border-black px-2 w-100">
     <Tabs>
       <TabList>
-        <Tab>Clinical</Tab>
-        <Tab>Biospecimen</Tab>
-        <Tab>Molecular</Tab>
+        <FacetTabWithSubmenu subtypes={clinicalSubcategories}>Clinical</FacetTabWithSubmenu>
+        <FacetTabWithSubmenu subtypes={clinicalSubcategories}>Biospecimen</FacetTabWithSubmenu>
+        <FacetTabWithSubmenu subtypes={clinicalSubcategories}>Molecular</FacetTabWithSubmenu>
     </TabList>
+      <div className="w-100 h-12 bg-blue-600"></div>
       <TabPanel><FacetGroup facetNames={clinicalFacets}/></TabPanel>
       <TabPanel>[insert Biospecimen facets here]</TabPanel>
       <TabPanel>[insert Molecular facets here]</TabPanel>
