@@ -237,7 +237,7 @@ export const CollapsibleContainer: React.FC<CollapsibleContainerProps> = (
         <div className="flex-grow">
           <Top />
         </div>
-        <div>
+        <div className="flex items-stretch">
           <Button onClick={toggle}>{isCollapsed ? <ExpandMoreIcon/> : <ExpandLessIcon/>}</Button>
         </div>
       </div>

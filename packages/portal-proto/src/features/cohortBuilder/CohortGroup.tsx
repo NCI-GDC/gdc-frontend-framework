@@ -7,6 +7,8 @@ import MenuItem from "@material-ui/core/MenuItem";
 import ClearIcon from "@material-ui/icons/Clear";
 import SettingsIcon from '@material-ui/icons/Settings';
 import { FacetChart } from "../charts/FacetChart";
+import { nanoid } from "@reduxjs/toolkit";
+import { selectCurrentCohort } from "@gff/core";
 
 
 const Top : React.FC<unknown> = () => {
@@ -36,14 +38,31 @@ const Top : React.FC<unknown> = () => {
     </div>
 <div className="ml-auto">
   <Button className="px-4">84,609 Cases</Button>
-  <Button color="none" className="px-4 border-opacity-0"><ClearIcon/></Button>
+  <Button className="px-4 bg-opacity-0"><ClearIcon/></Button>
 </div>
   </div>
   );
 };
 
-export const CohortGroup: React.FC<unknown> = () => {
-  const [isGroupCollapsed, setIsGroupCollapsed] = useState(true);
+
+
+interface CohortFacetElementProps {
+  readonly element: Record<string, any>;
+}
+
+
+export const CohortFacetElement: React.FC<CohortFacetElementProps>= ({ element } : CohortFacetElementProps) => {
+  return (
+    <div className="flex flex-row bg-green-200 ">{element.name} {elment.op} {element.value}</div>
+  );
+}
+
+interface CohortGroupProps {
+  readonly facets_with_values: [CohortFacetElementProps];
+}
+
+export const CohortGroup: React.FC<CohortGroupProps> = ({ facets_with_values } : CohortGroupProps) => {
+  const [isGroupCollapsed, setIsGroupCollapsed] = useState(false);
 
   return (
     <CollapsibleContainer
@@ -51,10 +70,17 @@ export const CohortGroup: React.FC<unknown> = () => {
       isCollapsed={isGroupCollapsed}
       toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
     >
-      <div className="h-64 bg-white"></div>
+      <div className="h-32 bg-white">
+        { facets_with_values.map((facet) => {
+         <CohortFacetElement key={nanoid()} element={facet}></CohortFacetElement>
+        })}
+
+      </div>
     </CollapsibleContainer>
   )
 };
+
+CohortGroup.defaultProps = { facets_with_values: [] };
 
 const SummaryStatsTop : React.FC<unknown> = () => {
   return (
@@ -62,7 +88,7 @@ const SummaryStatsTop : React.FC<unknown> = () => {
     <div className="px-4">Summary Statistics</div>
 
   <div className="ml-auto">
-  <Button color="none" className="px-4 border-opacity-0"><SettingsIcon/></Button>
+  <Button className="bg-opacity-0"><SettingsIcon/></Button>
     </div>
 
   </div>
