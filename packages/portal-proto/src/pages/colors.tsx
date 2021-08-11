@@ -35,7 +35,7 @@ interface ColorPaletteProps {
 const ColorPalette = ({ org, name, colors, grades }: ColorPaletteProps) => {
   return (
     <div className="flex flex-col gap-y-2">
-      <div className="font-bold">{name}</div>
+      <h2 className="text-lg">{name}</h2>
       <div className="grid grid-cols-11 w-4/5 gap-y-2">
         {colors.map((color) => (
           <>
@@ -77,7 +77,11 @@ const ColorPalette = ({ org, name, colors, grades }: ColorPaletteProps) => {
 const ColorsPage: NextPage = () => {
   return (
     <SimpleLayout>
-      <div className="flex flex-col gap-y-8">
+      <div className="flex flex-col gap-y-4 py-4">
+        <div>
+          <h1 className="text-2xl">Official NCI Colors</h1>
+          The following colors are based on the NCI digital design guide.
+        </div>
         <ColorPalette
           org="nci"
           name="NCI Primary Color Palette"
@@ -88,6 +92,26 @@ const ColorsPage: NextPage = () => {
           name="NCI Secondary Color Palette"
           colors={nciSecondaryColors}
         />
+        <div>
+          <h1 className="text-2xl">Accessible GDC Colors</h1>
+          The following colors come from the USWDS. They are the close
+          approximations to the NCI color palette. The{" "}
+          <a
+            target="_blank"
+            href="https://designsystem.digital.gov/design-tokens/color/overview/"
+            rel="noopener noreferrer"
+            className="text-gdc-blue"
+          >
+            USWDS colors
+          </a>{" "}
+          are designed to meet the accessibility contrast requirements as defined
+          by WCAG 2.0 AA. Each color has a magic number. Colors with the same
+          magic number have the same luminence. To meet the accessibility
+          contrast requirements, colors must be 50 points apart. The default
+          variations of each color have a magic number of 50. This means that
+          they can be used against pure white (magic number = 0) and pure black
+          (magic number = 100) backgrounds.
+        </div>
         <ColorPalette
           org="gdc"
           name="GDC Primary Color Palette"

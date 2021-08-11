@@ -49,12 +49,42 @@ const UserFlowFewestPagesPage: NextPage = () => {
         toggle={() => setIsSummaryCollapsed(!isSummaryCollapsed)}
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
-          <FacetChart field="primary_site" />
-          <FacetChart field="demographic.gender" />
-          <FacetChart field="disease_type" />
-          <FacetChart field="samples.sample_type" />
-          <FacetChart field="samples.tissue_type" />
-          <FacetChart field="diagnoses.tissue_or_organ_of_origin" />
+          <FacetChart
+            field="primary_site"
+            height={200}
+            marginBottom={30}
+            showXLabels={false}
+          />
+          <FacetChart
+            field="demographic.gender"
+            height={200}
+            marginBottom={30}
+            showXLabels={false}
+          />
+          <FacetChart
+            field="disease_type"
+            height={200}
+            marginBottom={30}
+            showXLabels={false}
+          />
+          <FacetChart
+            field="samples.sample_type"
+            height={200}
+            marginBottom={30}
+            showXLabels={false}
+          />
+          <FacetChart
+            field="samples.tissue_type"
+            height={200}
+            marginBottom={30}
+            showXLabels={false}
+          />
+          <FacetChart
+            field="diagnoses.tissue_or_organ_of_origin"
+            height={200}
+            marginBottom={30}
+            showXLabels={false}
+          />
         </div>
       </CollapsibleContainer>
     );
