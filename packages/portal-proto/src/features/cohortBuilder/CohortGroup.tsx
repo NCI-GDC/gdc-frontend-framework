@@ -8,7 +8,6 @@ import ClearIcon from "@material-ui/icons/Clear";
 import SettingsIcon from '@material-ui/icons/Settings';
 import { FacetChart } from "../charts/FacetChart";
 import { nanoid } from "@reduxjs/toolkit";
-import { selectCurrentCohort } from "@gff/core";
 
 
 const Top : React.FC<unknown> = () => {
@@ -44,24 +43,44 @@ const Top : React.FC<unknown> = () => {
   );
 };
 
-
-
-interface CohortFacetElementProps {
-  readonly element: Record<string, any>;
+interface FacetElementProp {
+  readonly filter: Record<string, any>
 }
 
+const CohortFacetElement: React.FC<FacetElementProp>= ( { filter } : FacetElementProp) => {
+  const {  name, op, value  } = filter;
+  const [groupType, setGroupTop] = useState('any_of');
 
-export const CohortFacetElement: React.FC<CohortFacetElementProps>= ({ element } : CohortFacetElementProps) => {
+  const handleChange = (event) => {
+    setGroupTop(event.target.value);
+  };
+
+
   return (
-    <div className="flex flex-row bg-green-200 ">{element.name} {elment.op} {element.value}</div>
+    <div  className=" flex flex-row items-center bg-gray-100 p-3 rounded-full text-black border-gray-300 border-2 w-auto ">{name} is
+      <div className="pt-0.5">
+        <FormControl className="p-4">
+          <Select
+            disableUnderline
+            value={groupType}
+            onChange={handleChange}
+            className="pl-2"
+          >
+            <MenuItem value="any_of">any of</MenuItem>
+            <MenuItem value="all_of">all of</MenuItem>
+            <MenuItem value="none_of">none of</MenuItem>
+          </Select>
+        </FormControl>
+      </div>
+      {value} </div>
   );
 }
 
 interface CohortGroupProps {
-  readonly facets_with_values: [CohortFacetElementProps];
+  readonly facet_filters: [Record<string, any>] | [];
 }
 
-export const CohortGroup: React.FC<CohortGroupProps> = ({ facets_with_values } : CohortGroupProps) => {
+export const CohortGroup: React.FC<CohortGroupProps> = ({ facet_filters = []} : CohortGroupProps) => {
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(false);
 
   return (
@@ -70,17 +89,15 @@ export const CohortGroup: React.FC<CohortGroupProps> = ({ facets_with_values } :
       isCollapsed={isGroupCollapsed}
       toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
     >
-      <div className="h-32 bg-white">
-        { facets_with_values.map((facet) => {
-         <CohortFacetElement key={nanoid()} element={facet}></CohortFacetElement>
+      <div className="flex flex-row items-start m-4 bg-gray-200 rounded-b-sm">
+        { facet_filters.map((facet) => {
+         return <CohortFacetElement key={nanoid()}  filter={facet}/>
         })}
 
       </div>
     </CollapsibleContainer>
   )
 };
-
-CohortGroup.defaultProps = { facets_with_values: [] };
 
 const SummaryStatsTop : React.FC<unknown> = () => {
   return (

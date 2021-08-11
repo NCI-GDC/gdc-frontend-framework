@@ -4,10 +4,14 @@ import  { CohortGroup, SummaryCharts }  from "../features/cohortBuilder/CohortGr
 import  MetaSearch from "../features/cohortBuilder/MetaSearch";
 import  CohortTabbedFacets from "../features/cohortBuilder/FacetGroup";
 
+const filters = [
+  { name:"Primary Site", op:"any_of", value: "lung"},
+]
+
 const CohortBuilder: NextPage = () => {
   return (
     <UserFlowVariedPages headerElements={[]}>
-      <CohortGroup></CohortGroup>
+      <CohortGroup facet_filters={filters}></CohortGroup>
       <MetaSearch></MetaSearch>
       <CohortTabbedFacets></CohortTabbedFacets>
       <SummaryCharts/>
