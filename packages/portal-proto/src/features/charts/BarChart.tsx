@@ -1,10 +1,14 @@
+import { Config, Layout } from 'plotly.js';
 import Plot from 'react-plotly.js';
 
 interface BarChartProps {
   readonly data: Record<string, any>;
+  // if defined, this determines the height of the chart. Otherwise, autosizing is used.
+  readonly height?: number;
+  readonly marginBottom?: number;
 }
 
-const BarChart: React.FC<BarChartProps> = ({ data }: BarChartProps) => {
+const BarChart: React.FC<BarChartProps> = ({ data, height, marginBottom }: BarChartProps) => {
 
 const chartData = {
     x: data.x,
@@ -18,13 +22,10 @@ const chartData = {
       },
     },
     type: 'bar',
-
-
   };
 
-  const layout = {
+  const layout: Partial<Layout> = {
     uniformtext: { mode: 'show', minsize: 12 },
-    autosize: true,
     xaxis: {
       tickson: "labels",
       automargin: true,
@@ -56,18 +57,24 @@ const chartData = {
     margin: {
       l: 80,
       r: 40,
-      b: 100,
+      b: marginBottom !== undefined ? marginBottom : 100,
       t: 30,
       pad: 4
     },
   };
+
+  if (height !== undefined) {
+    layout.height = height;
+  } else {
+    layout.autosize = true;
+  } 
 
   if (data.x.length > 6) {
     layout.xaxis.tickangle = 35;
   }
 
 
-  const config = {responsive: true,
+  const config: Partial<Config> = {responsive: true,
     toImageButtonOptions: {
       format: 'png', // one of png, svg, jpeg, webp
       filename: data.filename,
