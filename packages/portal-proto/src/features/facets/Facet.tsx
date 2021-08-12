@@ -4,9 +4,13 @@ import {
   fetchFacetByName,
   useCoreSelector,
   useCoreDispatch,
+  selectCurrentCohort
 } from "@gff/core";
+
+
 import { useEffect, useState } from "react";
 import { Button } from "../layout/UserFlowVariedPages";
+import 'lodash';
 
 interface UseCaseFacetResponse {
   readonly data?: FacetBuckets;
@@ -45,7 +49,7 @@ interface FacetProps {
 
 export const Facet: React.FC<FacetProps> = ({ field }: FacetProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
-
+  const [isSearching, setIsSearching] = useState(false);
   const { data, error, isUninitialized, isFetching, isError } =
     useCaseFacet(field);
 
@@ -65,13 +69,24 @@ export const Facet: React.FC<FacetProps> = ({ field }: FacetProps) => {
   const showAll = isGroupExpanded ? true : false;
   const total = Object.entries(data).length;
 
+  const handleChange = (e) => {
+    const  { value, checked } = e.target;
+
+  };
+
+  const toggleSearch = () => {
+    setIsSearching(!isSearching);
+  }
+
+
   return (
     <div>
       <div className="flex flex-col border-2 px-0 bg-white">
         <div className="flex items-center justify-between flex-wrap bg-gray-300 p-1.5">
           {convertFieldToName(field)}
           <button
-            className="bg-grey-light hover:bg-grey text-grey-darkest font-bold py-2 px-4 rounded inline-flex items-center">
+            className="bg-grey-light hover:bg-grey text-grey-darkest font-bold py-2 px-4 rounded inline-flex items-center"
+            onClick={toggleSearch}>
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
               <path d="M0 0h24v24H0V0z" fill="none" />
               <path
@@ -89,7 +104,7 @@ export const Facet: React.FC<FacetProps> = ({ field }: FacetProps) => {
               return (
                 <div key={`${field}-${value}`} className="flex flex-row gap-x-2 px-2">
                   <div className="flex-none">
-                    <input type="checkbox" />
+                    <input type="checkbox" value={`${field}:${value}`} onChange={handleChange}/>
                   </div>
                   <div className="flex-grow truncate ...">{value}</div>
                   <div className="flex-none text-right">{count.toLocaleString()}</div>
@@ -99,6 +114,7 @@ export const Facet: React.FC<FacetProps> = ({ field }: FacetProps) => {
           </div>
         </div>
       </div>
+      <div>
       {total - maxValuesToDisplay > 0 ? !showAll ?
           <Button key="show-more"
                   className="text-left p-2 w-auto text-blue-600  hover:text-black"
@@ -113,6 +129,7 @@ export const Facet: React.FC<FacetProps> = ({ field }: FacetProps) => {
           </Button>
         : null
       }
+      </div>
     </div>
   );
 };

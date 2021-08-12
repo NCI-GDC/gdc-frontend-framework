@@ -33,7 +33,7 @@ const clinicalFacets = [
 ];
 
 const clinicalSubcategories = [
-  "All",
+  " ",
   "Cases",
   "Demographic",
   "Diagnosis",
@@ -54,7 +54,7 @@ const biospecimenFacets = [
 ];
 
 const biospecimenSubcategories = [
-  "All",
+  " ",
   "Aliquot",
   "Analyte",
   "Portion",
@@ -65,7 +65,7 @@ const biospecimenSubcategories = [
 const molecularFacets = [];
 
 const molecularSubcategories = [
-  "All",
+  " ",
   "Gene Expression",
   "Simple Mutation"
 ];
