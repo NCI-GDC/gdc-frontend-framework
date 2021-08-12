@@ -5,6 +5,7 @@ import { facetsReducer } from "./features/facets/facetSlice";
 import { gdcAppReducer } from "./features/gdcapps/gdcAppsSlice";
 import { filesReducer } from "./features/files/filesSlice";
 import { projectsReducer } from "./features/projects/projectsSlice";
+import { casesReducer } from "./features/cases/casesSlice";
 
 export const coreStore = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const coreStore = configureStore({
     gdcApps: gdcAppReducer,
     files: filesReducer,
     projects: projectsReducer,
+    cases: casesReducer,
   },
   devTools: {
     name: "@gff/core",

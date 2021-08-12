@@ -28,8 +28,8 @@ export interface UseCoreDataResponse<T> {
 }
 
 export interface CoreDataSelectorResponse<T> {
-  readonly data: T;
-  readonly status: "uninitialized" | "pending" | "fulfilled" | "rejected";
+  readonly data?: T;
+  readonly status: DataStatus;
   readonly error?: string;
 }
 

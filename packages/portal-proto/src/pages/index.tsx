@@ -12,17 +12,23 @@ const HoverLink: React.FC<HoverLinkProps> = ({
   children,
 }: PropsWithChildren<HoverLinkProps>) => {
   return (
-    <span className="hover:text-blue-600">
+    <span className="hover:text-nci-blue">
       <Link href={href}>{children}</Link>
     </span>
   );
+};
+
+const Section: React.FC<unknown> = ({
+  children,
+}: PropsWithChildren<unknown>) => {
+  return <div className="border border-nci-gray-lighter p-4">{children}</div>;
 };
 
 const IndexPage: NextPage = () => {
   return (
     <SimpleLayout>
       <div className="flex flex-col">
-        <div className="border border-gray-200 p-4">
+        <Section>
           User Flow Prototypes:
           <ul className="list-disc list-inside">
             <li>
@@ -36,8 +42,8 @@ const IndexPage: NextPage = () => {
               </HoverLink>
             </li>
           </ul>
-        </div>
-        <div className="border border-gray-200 p-4">
+        </Section>
+        <Section>
           Misc Prototypes:
           <ul className="list-disc list-inside">
             <li>
@@ -52,8 +58,11 @@ const IndexPage: NextPage = () => {
             <li>
               <HoverLink href="/molecular">Molecular</HoverLink>
             </li>
+            <li>
+              <HoverLink href="/colors">Colors</HoverLink>
+            </li>
           </ul>
-        </div>
+        </Section>
       </div>
     </SimpleLayout>
   );
