@@ -132,8 +132,10 @@ const Apps: React.FC<AppsProps> = ({
     <div className="flex flex-col gap-y-4">
       <div className="flex flex-row gap-x-4">
         <Button>All</Button>
-        <Button>Lorem</Button>
-        <Button>Ipsum</Button>
+        <Button>Cohort Tools</Button>
+        <Button>Cohort Filters</Button>
+        <Button>Genomic Analysis</Button>
+        <Button>File Tools</Button>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
         <App name="Cohorts" onClick={() => setCurrentApp("studies")} />
@@ -182,6 +184,17 @@ const Apps: React.FC<AppsProps> = ({
           name="Cohort Viewer"
           onClick={() => setCurrentApp("cohort-viewer")}
         />
+        <App name="Set Operations">
+          <div className="w-full h-full relative">
+            <Image
+              src="/user-flow/set-operations.png"
+              layout="fill"
+              objectFit="contain"
+            />
+          </div>
+        </App>
+        <App name="Cohort Comparison" />
+        <App name="Clinical Data Analysis" />
         <App name="Repository" />
       </div>
     </div>
