@@ -100,7 +100,19 @@ const AnalysisPage: NextPage = () => {
             />
           </div>
         </App>
-        {[undefined, undefined, undefined, undefined].map((name, i) => (
+        <App name="Set Operations">
+          <div className="w-full h-full relative">
+            <Image
+              src="/user-flow/set-operations.png"
+              layout="fill"
+              objectFit="contain"
+            />
+          </div>
+        </App>
+        <App name="Cohort Comparison" />
+        <App name="Clinical Data Analysis" />
+
+        {/* {[undefined, undefined, undefined].map((name, i) => (
           <App
             key={`${name}-${i}`}
             name={name}
@@ -109,7 +121,7 @@ const AnalysisPage: NextPage = () => {
               setShowAppModal(true);
             }}
           />
-        ))}
+        ))} */}
       </div>
     );
   };
