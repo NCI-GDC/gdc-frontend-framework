@@ -6,6 +6,8 @@ import Image from "next/image";
 import ReactModal from "react-modal";
 import { CasesTable } from "../common";
 import Select from "react-select";
+import { ContextualCasesView } from "../../cases/CasesView";
+import { ContextualFilesView } from "../../files/FilesView";
 
 export type CohortManagerProps = Partial<ModalOrExpandProps> &
   Partial<CohortBuilderModalProps>;
@@ -25,6 +27,7 @@ export const CohortManager: React.FC<CohortManagerProps> = ({
   },
 }: PropsWithChildren<CohortManagerProps>) => {
   const [showCases, setShowCases] = useState(false);
+  const [showFiles, setShowFiles] = useState(false);
 
   const cohortOptions = [
     { value: "all-gdc", label: "All GDC Cases" },
@@ -52,7 +55,24 @@ export const CohortManager: React.FC<CohortManagerProps> = ({
         </div>
         <div className="flex-grow"></div>
         <div>
-          <Button onClick={() => setShowCases(!showCases)}>2,345 Cases</Button>
+          <Button
+            onClick={() => {
+              setShowCases(!showCases);
+              setShowFiles(false);
+            }}
+          >
+            2,345 Cases
+          </Button>
+        </div>
+        <div>
+          <Button
+            onClick={() => {
+              setShowFiles(!showFiles);
+              setShowCases(false);
+            }}
+          >
+            8,322 Files
+          </Button>
         </div>
         <ModalOrExpand
           mode={mode}
@@ -64,6 +84,7 @@ export const CohortManager: React.FC<CohortManagerProps> = ({
       <CohortBuilderModal isOpen={isOpen} closeModal={closeModal} />
       <CollapsibleCohortBuilder isCollapsed={!isExpanded} />
       <CollapsibleCases show={showCases} />
+      <CollapsibleFiles show={showFiles} />
     </div>
   );
 };
@@ -84,10 +105,32 @@ const CollapsibleCases: React.FC<CollapsibleCasesProps> = (
         flex: show,
       })}
     >
-      <CasesTable />
+      <ContextualCasesView />
     </div>
   );
 };
+
+interface CollapsibleFilesProps {
+  readonly show: boolean;
+}
+
+const CollapsibleFiles: React.FC<CollapsibleFilesProps> = (
+  props: CollapsibleFilesProps,
+) => {
+  const { show } = props;
+
+  return (
+    <div
+      className={classNames("flex-col gap-y-4 h-96 overflow-y-auto", {
+        hidden: !show,
+        flex: show,
+      })}
+    >
+      <ContextualFilesView />
+    </div>
+  );
+};
+
 interface CollapsibleCohortBuilderProps {
   readonly isCollapsed: boolean;
 }

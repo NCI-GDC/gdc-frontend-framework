@@ -179,6 +179,9 @@ export interface CaseDefaults {
   readonly submitter_portion_ids?: ReadonlyArray<string>;
   readonly submitter_sample_ids?: ReadonlyArray<string>;
   readonly submitter_slide_ids?: ReadonlyArray<string>;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
 }
 
 export const fetchGdcCases = async (
