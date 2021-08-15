@@ -1,6 +1,6 @@
 import { GdcFile, useFiles } from "@gff/core";
 
-export const ContextualFilesView: React.FC<never> = () => {
+export const ContextualFilesView: React.FC<unknown> = () => {
   const { data } = useFiles();
   return <FilesView files={data} />;
 };

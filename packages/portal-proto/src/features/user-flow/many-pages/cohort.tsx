@@ -1,10 +1,13 @@
 import React, { PropsWithChildren, useState } from "react";
-import { Button, Card, Graph } from "../../layout/UserFlowVariedPages";
+import {
+  Button,
+  CardPlaceholder,
+  Graph,
+} from "../../layout/UserFlowVariedPages";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import classNames from "classnames";
 import Image from "next/image";
 import ReactModal from "react-modal";
-import { CasesTable } from "../common";
 import Select from "react-select";
 import { ContextualCasesView } from "../../cases/CasesView";
 import { ContextualFilesView } from "../../files/FilesView";
@@ -45,13 +48,13 @@ export const CohortManager: React.FC<CohortManagerProps> = ({
           />
         </div>
         <div className="h-10 w-10">
-          <Card />
+          <CardPlaceholder />
         </div>
         <div className="h-10 w-10">
-          <Card />
+          <CardPlaceholder />
         </div>
         <div className="h-10 w-10">
-          <Card />
+          <CardPlaceholder />
         </div>
         <div className="flex-grow"></div>
         <div>
@@ -242,7 +245,7 @@ const CohortBuilderModal: React.FC<CohortBuilderModalProps> = ({
 const Cases = () => {
   return (
     <div className="overflow-y-auto h-96">
-      <CasesTable />
+      <ContextualCasesView />
     </div>
   );
 };

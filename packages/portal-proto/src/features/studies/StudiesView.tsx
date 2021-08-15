@@ -1,35 +1,39 @@
 import { PropsWithChildren } from "react";
 import Select from "react-select";
-import { useProjects } from "@gff/core";
+import { Project, useProjects } from "@gff/core";
 import { Search, Studies } from "../user-flow/common";
-
-export interface Project {
-  readonly projectId: string;
-}
 
 export interface ContextualStudiesViewProps {
   // TODO setView will eventually be replaced with an action to update the context
-  readonly setView: (string) => void;
+  readonly setView: (name: string) => void;
+  readonly setCurrentStudy: (name: string) => void;
 }
-export const ContextualStudiesView: React.FC<ContextualStudiesViewProps> = (
-  props: ContextualStudiesViewProps,
-) => {
+export const ContextualStudiesView: React.FC<ContextualStudiesViewProps> = ({
+  setView,
+  setCurrentStudy,
+}: ContextualStudiesViewProps) => {
   const { data } = useProjects();
 
-  return <StudiesView projects={data} setView={props.setView} />;
+  return (
+    <StudiesView
+      projects={data}
+      setView={setView}
+      setCurrentStudy={setCurrentStudy}
+    />
+  );
 };
 
 export interface StudiesViewProps {
   readonly projects: ReadonlyArray<Project>;
-  readonly setView: (string) => void;
+  readonly setView: (name: string) => void;
+  readonly setCurrentStudy: (name: string) => void;
 }
 
 export const StudiesView: React.FC<StudiesViewProps> = ({
   projects,
   setView,
+  setCurrentStudy,
 }: PropsWithChildren<StudiesViewProps>) => {
-  const projectIds = projects.map((p) => p.projectId);
-
   const filter1Options = [
     {
       value: "one",
@@ -90,10 +94,7 @@ export const StudiesView: React.FC<StudiesViewProps> = ({
         <div className="w-40">{sortFilter}</div>
       </div>
       <div className="flex-grow">
-        <Studies
-          projectIds={projectIds}
-          onClickStudy={() => setView("study-view")}
-        />
+        <Studies projects={projects} onClickStudy={setCurrentStudy} />
       </div>
     </div>
   );

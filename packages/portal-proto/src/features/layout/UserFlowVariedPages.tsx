@@ -125,7 +125,7 @@ export const Graph: React.FC<unknown> = () => {
       <div className="flex flex-col h-full gap-y-2">
         <span className="text-center">Graph</span>
         <div className="flex-grow">
-          <Card />
+          <CardPlaceholder />
         </div>
       </div>
     </div>
@@ -181,7 +181,7 @@ export const App: React.FC<AppProps> = ({
     if (isString(name)) {
       children = <Initials name={name} />;
     } else {
-      children = <Card />;
+      children = <CardPlaceholder />;
     }
   }
   return (
@@ -209,7 +209,7 @@ export const LinePlaceholer: React.FC<LinePlaceholerProps> = ({
   );
 };
 
-export const Card: React.FC<unknown> = () => {
+export const CardPlaceholder: React.FC<unknown> = () => {
   // styles for the SVG X from https://stackoverflow.com/a/56557106
   const color = "gray";
   return (
@@ -231,6 +231,7 @@ export interface InitialsProps {
 
 export const Initials: React.FC<InitialsProps> = ({ name }: InitialsProps) => {
   const initials = name
+    .replace(/\W/g, " ")
     .split(" ")
     .map((s) => s[0])
     .join("");

@@ -2,6 +2,7 @@ import { isArray, isObject } from "../../ts-utils";
 import {
   fetchGdcCases,
   fetchGdcCasesMapping,
+  fetchGdcProjects,
   FieldTypes,
   GdcApiMapping,
   isBucketsAggregation,
@@ -207,6 +208,17 @@ describe("GDC API", () => {
 
     test("should define fields", () => {
       expect(mapping?.fields?.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe("Fetch projects", () => {
+    test("can retrieve defaults", async () => {
+      const projects = await fetchGdcProjects();
+      expect(projects?.data?.hits?.length).toEqual(10);
+      expect(projects?.data?.pagination?.count).toEqual(10);
+      projects.data.hits.forEach((project) =>
+        expect(project.project_id).toBeDefined(),
+      );
     });
   });
 });

@@ -13,7 +13,9 @@ import { Search, Studies } from "../../../features/user-flow/common";
 
 const StudiesPage: NextPage = () => {
   const router = useRouter();
-  const { data, error, isUninitialized, isFetching, isError } = useProjects();
+  const { data, error, isUninitialized, isFetching, isError } = useProjects({
+    size: 100,
+  });
   const [showModal, setShowModal] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState("");
 
@@ -67,7 +69,7 @@ const StudiesPage: NextPage = () => {
           <ExploreStudies onClick={() => router.push("analysis")} />
         </div>
         <Studies
-          projectIds={data.map((d) => d.projectId)}
+          projects={data}
           onClickStudy={(projectId) => {
             setSelectedProjectId(projectId);
             setShowModal(true);

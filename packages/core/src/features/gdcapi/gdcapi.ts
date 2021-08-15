@@ -187,7 +187,28 @@ export interface CaseDefaults {
 export const fetchGdcCases = async (
   request?: GdcApiRequest,
 ): Promise<GdcApiResponse<CaseDefaults>> => {
-  const res = await fetch("https://api.gdc.cancer.gov/cases", {
+  return fetchGdcEntities("cases", request);
+};
+
+export interface ProjectDefaults {
+  readonly dbgap_accession_number: string;
+  readonly disease_type: ReadonlyArray<string>;
+  readonly name: string;
+  readonly primary_site: ReadonlyArray<string>;
+  readonly project_id: string;
+}
+
+export const fetchGdcProjects = async (
+  request?: GdcApiRequest,
+): Promise<GdcApiResponse<ProjectDefaults>> => {
+  return fetchGdcEntities("projects", request);
+};
+
+export const fetchGdcEntities = async <T>(
+  endpoint: string,
+  request?: GdcApiRequest,
+): Promise<GdcApiResponse<T>> => {
+  const res = await fetch(`https://api.gdc.cancer.gov/${endpoint}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

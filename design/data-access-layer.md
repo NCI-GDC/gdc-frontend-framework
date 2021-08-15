@@ -124,44 +124,46 @@ contextual consumer. contexts should probably be inherited by other contextual c
 are invoked. Seems like we should be able to achieve this with a dynamic react context:
 https://reactjs.org/docs/context.html#dynamic-context
 
-
 use cases
+
 - fetches and returns cases
-  
+
 use cases(fields)
+
 - fetches and returns cases with specfic fields
 
 use cases(filters)
+
 - fetches and returns cases based on given filters
 
 use cases(req)
-- uses req as key for data cache or fetch.  returns cases
+
+- uses req as key for data cache or fetch. returns cases
 
 use contextual cases
+
 - fetches and return cases based on current case filters and cohort id
 
-
 case filters
-  
-cohort
-  current
-    type: "cohort" | "project" | "caseSet"
-    id
 
+cohort
+current
+type: "cohort" | "project" | "caseSet"
+id
 
 field filter
-  field name
-  and | or
-  values
+field name
+and | or
+values
 
 field group
-  and | or
-  field filters
-
+and | or
+field filters
 
 what does multi-context look like?
 
 what does two-cohort comparison look like?
+
 - in-app comparison requires two cohorts
   - sounds like custom selection for app
 - side-by-side comparison
@@ -176,78 +178,82 @@ what does two-cohort comparison look like?
       - current cohort
       - current app
 
-
-
 contexts
+
 - id: context
 
 context
+
 - current cohort
 - current app
 
 get current cohort
-  context = get context
-  get current cohort(context)
-    
+context = get context
+get current cohort(context)
 
 #### Scenario: Get cases from all of gdc
 
-* fetch from cases endpoint 
+- fetch from cases endpoint
 
 #### Scenario: Get cases for current cohort
 
-* select current cohort
-* fetch from cases endpoint
-  
+- select current cohort
+- fetch from cases endpoint
+
 #### Scenario: Get cases from all of gdc with a filter
 
-* get filters
-  * this could be passed in as an argument
-  * this could be page-scoped filter
-  * this could be an application-scoped filter
-  * this could be a globally scoped filter
-  * NOTE: seems that filter scoping is an application concern. not a framework concern
-  * NOTE: can dyanmic contexts abstract this scoping problems?
-* fetch from cases endpoint with filters
+- get filters
+  - this could be passed in as an argument
+  - this could be page-scoped filter
+  - this could be an application-scoped filter
+  - this could be a globally scoped filter
+  - NOTE: seems that filter scoping is an application concern. not a framework concern
+  - NOTE: can dyanmic contexts abstract this scoping problems?
+- fetch from cases endpoint with filters
+
 #### Scenario: Get cases from a cohort with a filter
 
-* get filters (see above scenario)
-* get cohort
-  * this could be the current cohort
-  * this could be passed in as an argument
-  * this could be any of the *-scope levels
-* compose filters and cohort
-* fetch from cases endpoing with composed filters
-* NOTE: our filter models and utils should provide composition
+- get filters (see above scenario)
+- get cohort
+  - this could be the current cohort
+  - this could be passed in as an argument
+  - this could be any of the \*-scope levels
+- compose filters and cohort
+- fetch from cases endpoing with composed filters
+- NOTE: our filter models and utils should provide composition
 
 #### Scenario: Get cases for a project
-  
+
 Same as above, but the cohort is a project id.
+
 #### Scenario: Get cases from a case set
 
 Same as above, but the cohort is a case set id or a collection of case ids.
+
 #### Scenario: Get cases for a study (TBD)
 
 Need to determine study behavior. With the current implementation, then
-a cohort will be a filter.  Will we need to expose a study id?
+a cohort will be a filter. Will we need to expose a study id?
+
 #### Scenario: Get cases from two cohorts
 
 Two options here:
-* model a "current cohort" and a "second cohort".  this implies that we
-may need to duplicate many other properties as "second *".  this might be
-ok if the "second" has a subset of functionality.  but that seems like an
-inflexible or hard to maintain design choice, regardless of the application
-logic.
-* mode a "context" that encapsulates all of the cohort related state.  then
-we allow the contexts to be referencable during data requests. this would allow
-the correct filters, etc to be select at data access time. this is a powerful,
-flexbile option.  however, it has the potential to get complex and cumbersome
-if not designed well.  finding the proper abstraction will be very important
-here.  (NOTE: this sounds like the better option)
+
+- model a "current cohort" and a "second cohort". this implies that we
+  may need to duplicate many other properties as "second \*". this might be
+  ok if the "second" has a subset of functionality. but that seems like an
+  inflexible or hard to maintain design choice, regardless of the application
+  logic.
+- mode a "context" that encapsulates all of the cohort related state. then
+  we allow the contexts to be referencable during data requests. this would allow
+  the correct filters, etc to be select at data access time. this is a powerful,
+  flexbile option. however, it has the potential to get complex and cumbersome
+  if not designed well. finding the proper abstraction will be very important
+  here. (NOTE: this sounds like the better option)
 
 #### Example: Cases View
 
-For a given cohort, show the cases. 
+For a given cohort, show the cases.
 Allow the cases to be sorted and filtered.
 
 ### Dynamic Context

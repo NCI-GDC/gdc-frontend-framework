@@ -2,8 +2,12 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { DataStatus } from "../../dataAcess";
 import { CoreDataSelectorResponse } from "../../dataAcess";
 import { CoreDispatch, CoreState } from "../../store";
-import { GdcApiResponse } from "../gdcapi/gdcapi";
-import * as api from "./projectsApi";
+import {
+  fetchGdcProjects,
+  GdcApiRequest,
+  GdcApiResponse,
+  ProjectDefaults,
+} from "../gdcapi/gdcapi";
 
 export interface Project {
   readonly name: string;
@@ -11,11 +15,11 @@ export interface Project {
 }
 
 export const fetchProjects = createAsyncThunk<
-  GdcApiResponse<api.ProjectHit>,
-  string,
+  GdcApiResponse<ProjectDefaults>,
+  GdcApiRequest,
   { dispatch: CoreDispatch; state: CoreState }
->("facet/fetchProjects", async () => {
-  return await api.fetchProjects();
+>("facet/fetchProjects", async (request?: GdcApiRequest) => {
+  return await fetchGdcProjects(request);
 });
 
 export interface ProjectsState {
@@ -45,7 +49,7 @@ const slice = createSlice({
         } else {
           if (response.data.hits) {
             state.projects = response.data.hits.reduce(
-              (projects: Record<string, Project>, hit: api.ProjectHit) => {
+              (projects: Record<string, Project>, hit: ProjectDefaults) => {
                 projects[hit.project_id] = {
                   name: hit.name,
                   projectId: hit.project_id,

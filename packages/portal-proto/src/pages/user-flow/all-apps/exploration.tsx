@@ -8,16 +8,18 @@ import { CohortManager } from "../../../features/user-flow/many-pages/cohort";
 import classNames from "classnames";
 import { PropsWithChildren } from "react";
 import { useState } from "react";
-import { CasesTable } from "../../../features/user-flow/common";
 import { ContextualStudiesView } from "../../../features/studies/StudiesView";
 import { StudyView } from "../../../features/studies/StudyView";
 import Image from "next/image";
 import { FacetChart } from "../../../features/charts/FacetChart";
+import ReactModal from "react-modal";
+import { ContextualCasesView } from "../../../features/cases/CasesView";
 
 const UserFlowFewestPagesPage: NextPage = () => {
   const [isExpressionsCollapsed, setIsExpressionsCollapsed] = useState(false);
   const [isSummaryCollapsed, setIsSummaryCollapsed] = useState(false);
   const [currentApp, setCurrentApp] = useState("appSelector");
+  const [isStudyModalOpen, setStudyModalOpen] = useState(false);
 
   const headerElements = ["Exploration"];
 
@@ -106,15 +108,21 @@ const UserFlowFewestPagesPage: NextPage = () => {
           {currentApp === "cohort-viewer" ? (
             <CohortViewer goBack={() => setCurrentApp("appSelector")} />
           ) : currentApp === "studies" ? (
-            <ContextualStudiesView setView={setCurrentApp} />
-          ) : currentApp == "study-view" ? (
-            <StudyView setView={setCurrentApp} />
+            <ContextualStudiesView
+              setView={setCurrentApp}
+              setCurrentStudy={() => setStudyModalOpen(true)}
+            />
           ) : (
             // app selector
             <Apps setCurrentApp={setCurrentApp} />
           )}
         </div>
       </div>
+      <StudyModal
+        isOpen={isStudyModalOpen}
+        closeModal={() => setStudyModalOpen(false)}
+        setView={setCurrentApp}
+      />
     </UserFlowVariedPages>
   );
 };
@@ -213,7 +221,7 @@ const CohortViewer: React.FC<CohortViewerProps> = ({
       <div className="flex flex-row">
         <button onClick={goBack}>&lt; All Apps</button>
       </div>
-      <CasesTable />
+      <ContextualCasesView />
     </div>
   );
 };
@@ -246,3 +254,41 @@ const CollapsibleContainer: React.FC<CollapsibleContainerProps> = (
     </div>
   );
 };
+
+interface StudyModalProps {
+  readonly isOpen: boolean;
+  readonly closeModal: () => void;
+  readonly setView: (name: string) => void;
+}
+
+const StudyModal: React.FC<StudyModalProps> = ({
+  isOpen,
+  closeModal,
+  setView,
+}: StudyModalProps) => {
+  return (
+    <ReactModal isOpen={isOpen} onRequestClose={closeModal}>
+      <StudyView setView={setView} />
+    </ReactModal>
+  );
+};
+
+/**
+ * single entity modal
+ * < prev  ID   next >
+ * single entity view
+ *
+ * ---
+ *
+ * collection of entities view
+ * - show collection of entities
+ * - filters entities
+ * - sorts entities
+ *
+ * select entities
+ * set filter
+ * set sort
+ *
+ * click entity -> set current entity
+ *
+ */
