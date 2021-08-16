@@ -1,7 +1,8 @@
 import { PropsWithChildren } from "react";
 import { Project, useProjects } from "@gff/core";
 import { Search, Studies } from "../user-flow/common";
-import { Select } from "../../components/Select";
+import { Select, SelectProps } from "../../components/Select";
+import { GroupTypeBase } from "react-select";
 
 const DLBCL: Project = {
   projectId: "DLBCL",
@@ -168,7 +169,9 @@ export const StudiesView: React.FC<StudiesViewProps> = ({
     />
   );
 
-  const primarySiteOptions = [
+  type Option = {value: string, label: string};
+
+  const primarySiteOptions: ReadonlyArray<Option> = [
     { value: "adrenal gland", label: "adrenal gland" },
     { value: "anus and anal canal", label: "anus and anal canal" },
     { value: "base of tongue", label: "base of tongue" },
@@ -309,12 +312,17 @@ export const StudiesView: React.FC<StudiesViewProps> = ({
     { value: "vagina", label: "vagina" },
     { value: "vulva", label: "vulva" },
   ];
+
+  const primarySiteProps: SelectProps<Option, true, GroupTypeBase<Option>> = {
+    inputId: "studies-view__primary-site",
+    options: primarySiteOptions,
+    isMulti: true,
+    placeholder: "Select Primary Sites",
+  }
+
   const primarySiteFilter = (
     <Select
-      inputId="studies-view__primary-site"
-      options={primarySiteOptions}
-      isMulti={true}
-      placeholder="Select Primary Sites"
+      {...primarySiteProps}
     />
   );
 
@@ -350,6 +358,7 @@ export const StudiesView: React.FC<StudiesViewProps> = ({
       inputId="studies-view__sort"
       options={sortOptions}
       placeholder="Sort"
+      isMulti={false}
     />
   );
 
