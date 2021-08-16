@@ -7,7 +7,7 @@ import {
   App,
   UserFlowVariedPages,
 } from "../../../features/layout/UserFlowVariedPages";
-import Select from "react-select";
+import { Select } from "../../../components/Select";
 import { CohortManager } from "../../../features/user-flow/many-pages/cohort";
 
 const AnalysisPage: NextPage = () => {

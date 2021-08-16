@@ -8,7 +8,7 @@ import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import classNames from "classnames";
 import Image from "next/image";
 import ReactModal from "react-modal";
-import Select from "react-select";
+import { Select } from "../../../components/Select";
 import { ContextualCasesView } from "../../cases/CasesView";
 import { ContextualFilesView } from "../../files/FilesView";
 
@@ -40,7 +40,7 @@ export const CohortManager: React.FC<CohortManagerProps> = ({
   return (
     <div className="flex flex-col gap-y-4">
       <div className="flex flex-row gap-x-4 items-center">
-        <div className="w-48">
+        <div className="w-60">
           <Select
             inputId="cohort-manager__cohort-select"
             options={cohortOptions}

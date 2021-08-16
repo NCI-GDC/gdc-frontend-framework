@@ -237,7 +237,7 @@ export const Initials: React.FC<InitialsProps> = ({ name }: InitialsProps) => {
     .join("");
   return (
     <div className="flex flex-row justify-content-center items-center w-full h-full">
-      <div className="flex-grow text-8xl text-nci-cyan">{initials}</div>
+      <div className="flex-grow text-8xl text-gdc-blue">{initials}</div>
     </div>
   );
 };
