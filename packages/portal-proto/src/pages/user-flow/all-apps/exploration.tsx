@@ -36,6 +36,31 @@ import {
 } from "../../../features/apps/Apps";
 import { ContextualFilesView } from "../../../features/files/FilesView";
 
+import {  GeneTable, MutationTable } from "../../../features/genomic/Genomic";
+import { FacetGroup } from "../../../features/cohortBuilder/FacetGroup";
+import { get_facets } from "../../../features/cohortBuilder/dictionary";
+
+export interface AppViewProps {
+  readonly title: string;
+  readonly setView: (string) => void;
+}
+
+export const AppView :  React.FC<AppViewProps> = ({title, setView, children} : PropsWithChildren<AppViewProps>) => {
+  return (
+    <div className="flex flex-col gap-y-4">
+      <div className="flex flex-row">
+        <button className="absolute" onClick={() => setView("appSelector")}>
+          &lt; All Apps
+        </button>
+        <div className="flex-grow text-center">{title}</div>
+      </div>
+      <div className="flex-grow overflow-y-auto">
+        {children}
+      </div>
+    </div>);
+}
+
+
 const UserFlowFewestPagesPage: NextPage = () => {
   const [isExpressionsCollapsed, setIsExpressionsCollapsed] = useState(false);
   const [isSummaryCollapsed, setIsSummaryCollapsed] = useState(false);
@@ -144,7 +169,18 @@ const UserFlowFewestPagesPage: NextPage = () => {
             <AllAppsUncleGrid
               returnToAllApps={() => setCurrentApp("appSelector")}
             />
-          ) : (
+          ) : currentApp == "somatic-mutations" ? (
+            <AppView title="Somatic Mutations" setView={setCurrentApp}>
+              <div className="flex flex-row">
+                <GeneTable width="0"/>
+                <MutationTable width="0"/>
+              </div>
+             </AppView >
+            ) : currentApp == "clinical-filters" ? (
+            <AppView title="Clinical Filters" setView={setCurrentApp}> <FacetGroup facetNames={get_facets('Clinical','All')}/></AppView >
+          ) : currentApp == "biospecimen-filters" ? (
+            <AppView title="Biospecimen Filters" setView={setCurrentApp}> <FacetGroup facetNames={get_facets('Biospecimen','All')}/></AppView >
+          ) :((
             // app selector
             <Apps
               setCurrentApp={(name) => {
@@ -154,6 +190,7 @@ const UserFlowFewestPagesPage: NextPage = () => {
             />
           )}
         </div>
+
       </div>
       <StudyModal
         isOpen={isStudyModalOpen}
@@ -183,10 +220,10 @@ const Apps: React.FC<AppsProps> = ({
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
         <Cohorts onClick={() => setCurrentApp("studies")} />
-        <ClinicalFilters />
-        <BiospecimenFilters />
+        <ClinicalFilters onClick={() => setCurrentApp("clinical-filters")} />
+        <BiospecimenFilters onClick={() => setCurrentApp("biospecimen-filters")}/>
         <DownloadableFileFilters />
-        <SomaticMutations />
+        <SomaticMutations onClick={() => setCurrentApp("somatic-mutations")}/>
         <CopyNumberVariations />
         <SingleCellRnaSeq onClick={() => setCurrentApp("unclegrid")} />
         <OncoGrid onClick={() => setCurrentApp("unclegrid")} />

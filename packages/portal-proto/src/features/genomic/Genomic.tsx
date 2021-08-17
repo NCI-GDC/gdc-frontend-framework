@@ -1,14 +1,26 @@
 import GeneData from "./genes.json";
 import MutationData from "./mutations.json";
+import { PropsWithChildren } from "react";
+import { MdSearch, MdSort as SortIcon } from "react-icons/md";
 
 interface GeneProps {
   readonly data?: Array<Record<string, any>>;
+  readonly width?: string;
 }
 
 
-export const GeneTable: React.FC<GeneProps> = ({ data = GeneData["MostFrequentGenes"] }: GeneProps) => {
+export const GeneTable: React.FC<GeneProps> = ({ data = GeneData["MostFrequentGenes"], width="64" }: GeneProps) => {
   return (
-    <div className="overflow-y-auto h-96 px-64">
+    <div className={`border-2 border-nci-gray-lighter pt-2 mx-${width}`}>
+      <div className="flex flex-row justify-center">
+      <div className="relative p-2"><input type="text"
+                                       className="h-2 w-64 pr-8 pl-5 border-nci-gray-light rounded-full z-0 focus:shadow focus:outline-none"
+                                       placeholder={`Search Genes`} />
+        <div className="absolute top-3 right-3 h-4" ><MdSearch size="1.25em"/>
+        </div>
+      </div>
+      </div>
+    <div className="overflow-y-auto h-96">
       <table
         className="table-fixed border-collapse border-nci-gray w-full"
         style={{ borderSpacing: "4em" }}
@@ -16,8 +28,9 @@ export const GeneTable: React.FC<GeneProps> = ({ data = GeneData["MostFrequentGe
         <thead>
         <tr className="bg-nci-blue text-white">
           <th align="left" className="w-1/2 px-2">Gene</th>
-          <th align="right" className="w-1/4 px-2">Cases</th>
-          <th align="right" className="w-1/4 px-2">Frequency</th>
+          <th align="right" className="w-1/4 px-2"><div className="flex flex-row items-center justify-end"><SortIcon scale="1.5em"/><p className={"px-2"}>Cases</p></div></th>
+          <th align="right" className="w-1/4 px-2"><div className="flex flex-row items-center justify-end"><SortIcon scale="1.5em"/><p className={"px-2"}>Frequency</p></div></th>
+
         </tr>
         </thead>
         <tbody>
@@ -33,12 +46,23 @@ export const GeneTable: React.FC<GeneProps> = ({ data = GeneData["MostFrequentGe
         </tbody>
       </table>
     </div>
+    </div>
   );
 };
 
-export const MutationTable: React.FC<GeneProps> = ({ data = MutationData["MostFrequentMutation"] }: GeneProps) => {
+
+export const MutationTable: React.FC<GeneProps> = ({ data = MutationData["MostFrequentMutation"], width = "64" }: GeneProps) => {
   return (
-    <div className="overflow-y-auto h-96 px-64">
+    <div className={`border-2 border-nci-gray-lighter pt-2 mx-${width}`}>
+      <div className="flex flex-row justify-center">
+        <div className="relative p-2"><input type="text"
+                                             className="h-2 w-64 pr-8 pl-5 border-nci-gray-light rounded-full z-0 focus:shadow focus:outline-none"
+                                             placeholder={`Search Mutations`} />
+          <div className="absolute top-3 right-3 h-4" ><MdSearch size="1.25em"/>
+          </div>
+        </div>
+      </div>
+    <div className="overflow-y-auto h-96">
       <table
         className="table-fixed border-collapse border-nci-gray w-full"
         style={{ borderSpacing: "4em" }}
@@ -47,8 +71,8 @@ export const MutationTable: React.FC<GeneProps> = ({ data = MutationData["MostFr
         <tr className="bg-nci-blue text-white">
           <th align="left" className="w-1/4 px-2">Mutation</th>
           <th align="left" className="w-1/4 px-2">DNA Change</th>
-          <th align="right" className="w-1/4 px-2">Cases</th>
-          <th align="right" className="w-1/4 px-2">Frequency</th>
+          <th align="right" className="w-1/4 px-2"><div className="flex flex-row items-center justify-end"><SortIcon scale="1.5em"/><p className={"px-2"}>Cases</p></div></th>
+          <th align="right" className="w-1/4 px-2"><div className="flex flex-row items-center justify-end"><SortIcon scale="1.5em"/><p className={"px-2"}>Frequency</p></div></th>
         </tr>
         </thead>
         <tbody>
@@ -64,6 +88,7 @@ export const MutationTable: React.FC<GeneProps> = ({ data = MutationData["MostFr
         ))}
         </tbody>
       </table>
+    </div>
     </div>
   );
 };

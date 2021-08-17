@@ -9,7 +9,7 @@ interface FacetGroupProps {
   readonly facetNames: Array<Record<string, any>>;
 }
 
-const FacetGroup: React.FC<FacetGroupProps> = ({ facetNames }: FacetGroupProps) => {
+export const FacetGroup: React.FC<FacetGroupProps> = ({ facetNames }: FacetGroupProps) => {
 
   return ( <div className="flex flex-col border-2 h-screen/1.5 overflow-y-scroll">
     <div className="grid grid-cols-4 gap-4">
@@ -70,7 +70,7 @@ const FacetTabWithSubmenu : React.FC<FacetTabWithSubmenuProps> = ({ category, su
           options={menu_items}
           defaultValue={subCategory}
           onChange={handleChange}
-          className="px-2 w-40 bg-opacity-0 border-opacity-0"
+          className="px-2 w-48 bg-opacity-0 border-opacity-0"
         />
         </div>
     </Tab>
