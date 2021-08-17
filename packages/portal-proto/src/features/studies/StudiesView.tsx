@@ -1,7 +1,6 @@
-import { PropsWithChildren } from "react";
 import { Project, useProjects } from "@gff/core";
 import { Search, Studies } from "../user-flow/common";
-import { Select, SelectProps } from "../../components/Select";
+import { Option, Select, SelectProps } from "../../components/Select";
 import { GroupTypeBase } from "react-select";
 
 const DLBCL: Project = {
@@ -10,36 +9,32 @@ const DLBCL: Project = {
 };
 
 export interface ContextualStudiesViewProps {
-  // TODO setView will eventually be replaced with an action to update the context
-  readonly setView: (name: string) => void;
   readonly setCurrentStudy: (name: string) => void;
+  readonly exploreLeft?: React.ReactNode;
+  readonly exploreRight?: React.ReactNode;
 }
-export const ContextualStudiesView: React.FC<ContextualStudiesViewProps> = ({
-  setView,
-  setCurrentStudy,
-}: ContextualStudiesViewProps) => {
+
+export const ContextualStudiesView: React.FC<ContextualStudiesViewProps> = (
+  props: ContextualStudiesViewProps,
+) => {
   const { data } = useProjects({ size: 100 });
 
-  return (
-    <StudiesView
-      projects={data ? [DLBCL, ...data] : []}
-      setView={setView}
-      setCurrentStudy={setCurrentStudy}
-    />
-  );
+  return <StudiesView projects={data ? [DLBCL, ...data] : []} {...props} />;
 };
 
 export interface StudiesViewProps {
   readonly projects: ReadonlyArray<Project>;
-  readonly setView: (name: string) => void;
   readonly setCurrentStudy: (name: string) => void;
+  readonly exploreLeft?: React.ReactNode;
+  readonly exploreRight?: React.ReactNode;
 }
 
 export const StudiesView: React.FC<StudiesViewProps> = ({
   projects,
-  setView,
   setCurrentStudy,
-}: PropsWithChildren<StudiesViewProps>) => {
+  exploreLeft,
+  exploreRight,
+}: StudiesViewProps) => {
   const diseaseTypeOptions = [
     { value: "acinar cell neoplasms", label: "acinar cell neoplasms" },
     {
@@ -168,8 +163,6 @@ export const StudiesView: React.FC<StudiesViewProps> = ({
       placeholder="Select Disease Types"
     />
   );
-
-  type Option = {value: string, label: string};
 
   const primarySiteOptions: ReadonlyArray<Option> = [
     { value: "adrenal gland", label: "adrenal gland" },
@@ -318,13 +311,9 @@ export const StudiesView: React.FC<StudiesViewProps> = ({
     options: primarySiteOptions,
     isMulti: true,
     placeholder: "Select Primary Sites",
-  }
+  };
 
-  const primarySiteFilter = (
-    <Select
-      {...primarySiteProps}
-    />
-  );
+  const primarySiteFilter = <Select {...primarySiteProps} />;
 
   const experimentalStrategyOptions = [
     { value: "ATAC-Seq", label: "ATAC-Seq" },
@@ -364,12 +353,6 @@ export const StudiesView: React.FC<StudiesViewProps> = ({
 
   return (
     <div className="flex flex-col gap-y-4">
-      <div className="flex flex-row">
-        <button className="absolute" onClick={() => setView("appSelector")}>
-          &lt; All Apps
-        </button>
-        <div className="flex-grow text-center">Cohorts</div>
-      </div>
       <div>
         <Search />
       </div>
@@ -378,7 +361,12 @@ export const StudiesView: React.FC<StudiesViewProps> = ({
         <div className="w-72">{primarySiteFilter}</div>
         <div className="w-72">{experimentalStrategyFilter}</div>
         <div className="flex-grow" />
+      </div>
+      <div className="flex flex-row gap-x-4">
         <div className="w-40">{sortFilter}</div>
+        <div className="flex-grow" />
+        <div className="">{exploreLeft}</div>
+        <div className="">{exploreRight}</div>
       </div>
       <div className="flex-grow">
         <Studies projects={projects} onClickStudy={setCurrentStudy} />

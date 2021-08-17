@@ -108,9 +108,9 @@ const UserFlowFewestPagesPage: NextPage = () => {
           {currentApp === "cohort-viewer" ? (
             <CohortViewer goBack={() => setCurrentApp("appSelector")} />
           ) : currentApp === "studies" ? (
-            <ContextualStudiesView
-              setView={setCurrentApp}
-              setCurrentStudy={() => setStudyModalOpen(true)}
+            <AllAppsStudies
+              returnToAllApps={() => setCurrentApp("appSelector")}
+              viewStudy={() => setStudyModalOpen(true)}
             />
           ) : (
             // app selector
@@ -121,7 +121,6 @@ const UserFlowFewestPagesPage: NextPage = () => {
       <StudyModal
         isOpen={isStudyModalOpen}
         closeModal={() => setStudyModalOpen(false)}
-        setView={setCurrentApp}
       />
     </UserFlowVariedPages>
   );
@@ -258,18 +257,42 @@ const CollapsibleContainer: React.FC<CollapsibleContainerProps> = (
 interface StudyModalProps {
   readonly isOpen: boolean;
   readonly closeModal: () => void;
-  readonly setView: (name: string) => void;
 }
 
 const StudyModal: React.FC<StudyModalProps> = ({
   isOpen,
   closeModal,
-  setView,
 }: StudyModalProps) => {
   return (
     <ReactModal isOpen={isOpen} onRequestClose={closeModal}>
-      <StudyView setView={setView} />
+      <StudyView />
     </ReactModal>
+  );
+};
+
+interface AllAppsStudiesProps {
+  readonly returnToAllApps: () => void;
+  readonly viewStudy: (name: string) => void;
+}
+
+const AllAppsStudies = (props: AllAppsStudiesProps) => {
+  const { returnToAllApps, viewStudy } = props;
+
+  return (
+    <div className="flex flex-col gap-y-4">
+      <div className="flex flex-row">
+        <button className="absolute" onClick={returnToAllApps}>
+          &lt; All Apps
+        </button>
+        <div className="flex-grow text-center">Cohorts</div>
+      </div>
+      <ContextualStudiesView
+        setCurrentStudy={viewStudy}
+        exploreRight={
+          <Button onClick={returnToAllApps}>Explore Studies</Button>
+        }
+      />
+    </div>
   );
 };
 

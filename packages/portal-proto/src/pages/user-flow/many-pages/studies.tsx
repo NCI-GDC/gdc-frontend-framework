@@ -5,31 +5,15 @@ import {
 } from "../../../features/layout/UserFlowVariedPages";
 import Link from "next/link";
 import Image from "next/image";
-import { useProjects } from "@gff/core";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import ReactModal from "react-modal";
-import { Search, Studies } from "../../../features/user-flow/common";
+import { ContextualStudiesView } from "../../../features/studies/StudiesView";
 
 const StudiesPage: NextPage = () => {
   const router = useRouter();
-  const { data, error, isUninitialized, isFetching, isError } = useProjects({
-    size: 100,
-  });
   const [showModal, setShowModal] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState("");
-
-  if (isUninitialized) {
-    return <div>Initializing projects...</div>;
-  }
-
-  if (isFetching) {
-    return <div>Fetching projects...</div>;
-  }
-
-  if (isError) {
-    return <div>Failed to fetch projects: {error}</div>;
-  }
 
   const headerElements = [
     "Cohorts",
@@ -60,31 +44,27 @@ const StudiesPage: NextPage = () => {
 
   return (
     <UserFlowVariedPages {...{ headerElements }}>
-      {SingleStudyModal()}
       <div className="flex flex-col p-4 gap-y-4">
-        <div>
-          <Search />
-        </div>
-        <div className="flex flex-row justify-end">
-          <ExploreStudies onClick={() => router.push("analysis")} />
-        </div>
-        <Studies
-          projects={data}
-          onClickStudy={(projectId) => {
+        {SingleStudyModal()}
+        <ContextualStudiesView
+          setCurrentStudy={(projectId) => {
             setSelectedProjectId(projectId);
             setShowModal(true);
           }}
+          exploreLeft={
+            <Button onClick={() => router.push("analysis")}>
+              Explore Studies in Analysis
+            </Button>
+          }
+          exploreRight={
+            <Button onClick={() => router.push("repository")}>
+              Explore Studies in Repository
+            </Button>
+          }
         />
       </div>
     </UserFlowVariedPages>
   );
-};
-
-interface ExploreStudiesProps {
-  readonly onClick: () => void;
-}
-const ExploreStudies = (props: ExploreStudiesProps) => {
-  return <Button onClick={props.onClick}>Explore Studies</Button>;
 };
 
 export default StudiesPage;

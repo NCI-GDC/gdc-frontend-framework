@@ -27,18 +27,26 @@ const theme = (theme: Theme): Theme => {
   };
 };
 
-// NOTE: The IsMulti generic in the react-select typings is odd, as it enforces a values, not a type.  
+export interface Option {
+  readonly value: string;
+  readonly label: string;
+}
+
+// NOTE: The IsMulti generic in the react-select typings is odd, as it enforces a values, not a type.
 // We may want to abstract this by creating MultiSelect and SingleSelect components.
 
-export interface SelectProps<O, M extends boolean, G extends GroupTypeBase<O>> extends Props<O, M, G> {
+export interface SelectProps<O, M extends boolean, G extends GroupTypeBase<O>>
+  extends Props<O, M, G> {
   // inputId is required to make ssr work correctly.  otherwise, react-select will generate a random id
   readonly inputId: string;
-  readonly isMulti: M,
+  readonly isMulti: M;
 }
 
 /**
  * A themed version of react-select
  */
-export const Select = <O, M extends boolean, G extends GroupTypeBase<O>>(props: PropsWithChildren<SelectProps<O, M, G>>): JSX.Element => {
+export const Select = <O, M extends boolean, G extends GroupTypeBase<O>>(
+  props: PropsWithChildren<SelectProps<O, M, G>>,
+): JSX.Element => {
   return <RSSelect<O, M, G> {...{ theme, ...props }} />;
 };
