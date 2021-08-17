@@ -135,7 +135,7 @@ export const ClinicalFilters: React.FC<Clickable> = (props: Clickable) => {
     <App name="Clinical Filters" onClick={props.onClick}>
       <div className="w-full h-full">
         <div className="w-full h-full relative group-hover:hidden">
-          <Initials name="Clinical Filters" />;
+          <Initials name="Clinical Filters" />
         </div>
         <div className="w-full h-full hidden group-hover:block">
         Use clinical (e.g demographic and diagnosis) information to refine the cases in your cohort.
@@ -150,7 +150,7 @@ export const Cohorts: React.FC<Clickable> = (props: Clickable) => {
     <App name="Cohorts" onClick={props.onClick}>
       <div className="w-full h-full">
         <div className="w-full h-full relative group-hover:hidden">
-          <Initials name="Cohorts" />;
+          <Initials name="Cohorts" />
         </div>
         <div className="w-full h-full hidden group-hover:block">
         Explore the GDC's collection of cohorts. Select one or more to form your custom cohort.
@@ -165,7 +165,7 @@ export const BiospecimenFilters: React.FC<Clickable> = (props: Clickable) => {
     <App name="Biospecimen Filters" onClick={props.onClick}>
       <div className="w-full h-full">
         <div className="w-full h-full relative group-hover:hidden">
-          <Initials name="Biospecimen Filters" />;
+          <Initials name="Biospecimen Filters" />
         </div>
         <div className="w-full h-full hidden group-hover:block">
         Use biospecimen (e.g. sample) information to refine the cases in your cohort.
@@ -180,7 +180,7 @@ export const DownloadableFileFilters: React.FC<Clickable> = (props: Clickable) =
     <App name="Downloadable File Filters" onClick={props.onClick}>
       <div className="w-full h-full">
         <div className="w-full h-full relative group-hover:hidden">
-          <Initials name="Downloadable File Filters" />;
+          <Initials name="Downloadable File Filters" />
         </div>
         <div className="w-full h-full hidden group-hover:block">
         Use the properties of associated files to refine the cases in your cohort.
@@ -195,7 +195,7 @@ export const SomaticMutations: React.FC<Clickable> = (props: Clickable) => {
     <App name="Somatic Mutations" onClick={props.onClick}>
       <div className="w-full h-full">
         <div className="w-full h-full relative group-hover:hidden">
-          <Initials name="Somatic Mutations" />;
+          <Initials name="Somatic Mutations" />
         </div>
         <div className="w-full h-full hidden group-hover:block">
         Refine your cohort based on specific somatic mutations or mutations in genes.
@@ -210,7 +210,7 @@ export const CopyNumberVariations: React.FC<Clickable> = (props: Clickable) => {
     <App name="Copy Number Variations" onClick={props.onClick}>
       <div className="w-full h-full">
         <div className="w-full h-full relative group-hover:hidden">
-          <Initials name="Copy Number Variations" />;
+          <Initials name="Copy Number Variations" />
         </div>
         <div className="w-full h-full hidden group-hover:block">
         Refine your cohort based on per-gene copy number variations.
@@ -225,7 +225,7 @@ export const Repository: React.FC<Clickable> = (props: Clickable) => {
     <App name="Repository" onClick={props.onClick}>
       <div className="w-full h-full">
         <div className="w-full h-full relative group-hover:hidden">
-          <Initials name="Repository" />;
+          <Initials name="Repository" />
         </div>
         <div className="w-full h-full hidden group-hover:block">
         Browse and download the files associated with your cohort.
@@ -240,7 +240,7 @@ export const CohortViewerApp: React.FC<Clickable> = (props: Clickable) => {
     <App name="Cohort Viewer" onClick={props.onClick}>
       <div className="w-full h-full">
         <div className="w-full h-full relative group-hover:hidden">
-          <Initials name="Cohort Viewer" />;
+          <Initials name="Cohort Viewer" />
         </div>
         <div className="w-full h-full hidden group-hover:block">
         View details about the cases in your cohort.

@@ -177,8 +177,7 @@ const Apps: React.FC<AppsProps> = ({
         <OncoGrid />
         <GeneExpression />
         <ProteinPaint />
-        <CohortViewerApp onClick={() => setCurrentApp("cohort-viewer")}
-        />
+        <CohortViewerApp onClick={() => setCurrentApp("cohort-viewer")} />
         <SetOperations />
         <CohortComparison />
         <ClinicalDataAnalysis />
