@@ -33,8 +33,8 @@ export const CohortManager: React.FC<CohortManagerProps> = ({
   const [showFiles, setShowFiles] = useState(false);
 
   const cohortOptions = [
+    { value: "custom-cohort-1", label: "New Custom Cohort" },
     { value: "all-gdc", label: "All GDC Cases" },
-    { value: "custom-cohort-1", label: "Custom Test Cohort" },
   ];
 
   return (
