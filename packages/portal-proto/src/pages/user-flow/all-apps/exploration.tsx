@@ -15,12 +15,20 @@ import { FacetChart } from "../../../features/charts/FacetChart";
 import ReactModal from "react-modal";
 import { ContextualCasesView } from "../../../features/cases/CasesView";
 import {
-  ClincialFilters,
+  ClinicalFilters,
   GeneExpression,
   OncoGrid,
   ProteinPaint,
   SetOperations,
   SingleCellRnaSeq,
+  Cohorts,
+  BiospecimenFilters,
+  DownloadableFileFilters,
+  SomaticMutations,
+  CopyNumberVariations,
+  CohortComparison,
+  ClinicalDataAnalysis,
+  Repository
 } from "../../../features/apps/Apps";
 import { ContextualFilesView } from "../../../features/files/FilesView";
 
@@ -158,12 +166,12 @@ const Apps: React.FC<AppsProps> = ({
         <Button>File Tools</Button>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
-        <App name="Cohorts" onClick={() => setCurrentApp("studies")} />
-        <ClincialFilters />
-        <App name="Biospecimen Filters" />
-        <App name="Downloadable File Filters" />
-        <App name="Somatic Mutations" />
-        <App name="Copy Number Variations" />
+        <Cohorts onClick={() => setCurrentApp("studies")} />
+        <ClinicalFilters />
+        <BiospecimenFilters />
+        <DownloadableFileFilters />
+        <SomaticMutations />
+        <CopyNumberVariations/>
         <SingleCellRnaSeq />
         <OncoGrid />
         <GeneExpression />
@@ -173,9 +181,9 @@ const Apps: React.FC<AppsProps> = ({
           onClick={() => setCurrentApp("cohort-viewer")}
         />
         <SetOperations />
-        <App name="Cohort Comparison" />
-        <App name="Clinical Data Analysis" />
-        <App name="Repository" onClick={() => setCurrentApp("repository")} />
+        <CohortComparison />
+        <ClinicalDataAnalysis />
+        <Repository onClick={() => setCurrentApp("repository")} />
       </div>
     </div>
   );

@@ -15,6 +15,8 @@ import {
   ProteinPaint,
   SetOperations,
   SingleCellRnaSeq,
+  CohortComparison,
+  ClinicalDataAnalysis
 } from "../../../features/apps/Apps";
 
 const AnalysisPage: NextPage = () => {
@@ -75,8 +77,8 @@ const AnalysisPage: NextPage = () => {
         <GeneExpression />
         <ProteinPaint />
         <SetOperations />
-        <App name="Cohort Comparison" />
-        <App name="Clinical Data Analysis" />
+        <CohortComparison />
+        <ClinicalDataAnalysis />
 
         {/* {[undefined, undefined, undefined].map((name, i) => (
           <App
