@@ -74,11 +74,37 @@ const AnalysisPage: NextPage = () => {
             setShowAppModal(true);
           }}
         />
-        <GeneExpression />
-        <ProteinPaint />
-        <SetOperations />
-        <CohortComparison />
-        <ClinicalDataAnalysis />
+        <GeneExpression 
+          onClick={() => {
+            setSelectedApp("Gene Expression");
+            setShowAppModal(true);
+          }}
+        />
+        <ProteinPaint 
+          onClick={() => {
+            setSelectedApp("ProteinPaint");
+            setShowAppModal(true);
+          }}
+        />
+
+        <SetOperations 
+          onClick={() => {
+            setSelectedApp("Set Operations");
+            setShowAppModal(true);
+          }}
+        />
+        <CohortComparison 
+          onClick={() => {
+            setSelectedApp("Cohort Comparison");
+            setShowAppModal(true);
+          }}
+        />
+        <ClinicalDataAnalysis 
+          onClick={() => {
+            setSelectedApp("Clinical Data Analysis");
+            setShowAppModal(true);
+          }}
+        />
 
         {/* {[undefined, undefined, undefined].map((name, i) => (
           <App
