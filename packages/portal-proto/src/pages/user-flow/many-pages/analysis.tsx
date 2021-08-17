@@ -9,6 +9,13 @@ import {
 } from "../../../features/layout/UserFlowVariedPages";
 import { Select } from "../../../components/Select";
 import { CohortManager } from "../../../features/user-flow/many-pages/cohort";
+import {
+  GeneExpression,
+  OncoGrid,
+  ProteinPaint,
+  SetOperations,
+  SingleCellRnaSeq,
+} from "../../../features/apps/Apps";
 
 const AnalysisPage: NextPage = () => {
   const [showCohortBuilderModal, setShowCohortBuilderModal] = useState(false);
@@ -37,6 +44,7 @@ const AnalysisPage: NextPage = () => {
   const Options = () => (
     <Select
       inputId="analysis-proto-options"
+      isMulti={false}
       isSearchable={false}
       value={protoOption}
       options={options}
@@ -52,63 +60,21 @@ const AnalysisPage: NextPage = () => {
   const Apps = () => {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 bg-gray-100">
-        <App
-          name="OncoGrid"
+        <OncoGrid
           onClick={() => {
             setSelectedApp("OncoGrid");
             setShowAppModal(true);
           }}
-        >
-          <div className="w-full h-full relative">
-            <Image
-              src="/user-flow/oncogrid.png"
-              layout="fill"
-              objectFit="contain"
-            />
-          </div>
-        </App>
-        <App
-          name="scRNA-Seq"
+        />
+        <SingleCellRnaSeq
           onClick={() => {
             setSelectedApp("scRNA-Seq");
             setShowAppModal(true);
           }}
-        >
-          <div className="w-full h-full relative">
-            <Image
-              src="/user-flow/scRnaSeqViz.png"
-              layout="fill"
-              objectFit="contain"
-            />
-          </div>
-        </App>
-        <App name="Gene Expression">
-          <div className="w-full h-full relative">
-            <Image
-              src="/user-flow/gene-expression.png"
-              layout="fill"
-              objectFit="contain"
-            />
-          </div>
-        </App>
-        <App name="ProteinPaint">
-          <div className="w-full h-full relative">
-            <Image
-              src="/user-flow/proteinpaint.png"
-              layout="fill"
-              objectFit="contain"
-            />
-          </div>
-        </App>
-        <App name="Set Operations">
-          <div className="w-full h-full relative">
-            <Image
-              src="/user-flow/set-operations.png"
-              layout="fill"
-              objectFit="contain"
-            />
-          </div>
-        </App>
+        />
+        <GeneExpression />
+        <ProteinPaint />
+        <SetOperations />
         <App name="Cohort Comparison" />
         <App name="Clinical Data Analysis" />
 

@@ -14,6 +14,14 @@ import Image from "next/image";
 import { FacetChart } from "../../../features/charts/FacetChart";
 import ReactModal from "react-modal";
 import { ContextualCasesView } from "../../../features/cases/CasesView";
+import {
+  ClincialFilters,
+  GeneExpression,
+  OncoGrid,
+  ProteinPaint,
+  SetOperations,
+  SingleCellRnaSeq,
+} from "../../../features/apps/Apps";
 
 const UserFlowFewestPagesPage: NextPage = () => {
   const [isExpressionsCollapsed, setIsExpressionsCollapsed] = useState(false);
@@ -146,60 +154,20 @@ const Apps: React.FC<AppsProps> = ({
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
         <App name="Cohorts" onClick={() => setCurrentApp("studies")} />
-        <App name="Clinical Filters" />
+        <ClincialFilters />
         <App name="Biospecimen Filters" />
         <App name="Downloadable File Filters" />
         <App name="Somatic Mutations" />
         <App name="Copy Number Variations" />
-        <App name="scRNA-Seq">
-          <div className="w-full h-full relative">
-            <Image
-              src="/user-flow/scRnaSeqViz.png"
-              layout="fill"
-              objectFit="contain"
-            />
-          </div>
-        </App>
-        <App name="OncoGrid">
-          <div className="w-full h-full relative">
-            <Image
-              src="/user-flow/oncogrid.png"
-              layout="fill"
-              objectFit="contain"
-            />
-          </div>
-        </App>
-        <App name="Gene Expression">
-          <div className="w-full h-full relative">
-            <Image
-              src="/user-flow/gene-expression.png"
-              layout="fill"
-              objectFit="contain"
-            />
-          </div>
-        </App>
-        <App name="ProteinPaint">
-          <div className="w-full h-full relative">
-            <Image
-              src="/user-flow/proteinpaint.png"
-              layout="fill"
-              objectFit="contain"
-            />
-          </div>
-        </App>
+        <SingleCellRnaSeq />
+        <OncoGrid />
+        <GeneExpression />
+        <ProteinPaint />
         <App
           name="Cohort Viewer"
           onClick={() => setCurrentApp("cohort-viewer")}
         />
-        <App name="Set Operations">
-          <div className="w-full h-full relative">
-            <Image
-              src="/user-flow/set-operations.png"
-              layout="fill"
-              objectFit="contain"
-            />
-          </div>
-        </App>
+        <SetOperations />
         <App name="Cohort Comparison" />
         <App name="Clinical Data Analysis" />
         <App name="Repository" />
