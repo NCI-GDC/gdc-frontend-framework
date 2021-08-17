@@ -1,8 +1,6 @@
-import { useState} from "react";
-import SearchIcon from '@material-ui/icons/search';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
+import { useState } from "react";
+import { MdSearch } from 'react-icons/md'
+import Select from "react-select";
 
 type SearchFunction = {
   (term: string): Record<string, any>;
@@ -10,44 +8,49 @@ type SearchFunction = {
 
 interface MetaSearchProp {
   readonly handler: SearchFunction;
+  readonly onChange: (string) => void;
 }
 
-export const MetaSearch: React.FC<unknown> = () => {
-  const [searchScope, setSearchScope] = useState('All');
+const searchCategories = [
+  { value: "All", label: "All" },
+  { value: "Clinical", label: "Clinical" },
+  { value: "Biospecimen", label: "Biospecimen" },
+  { value: "Molecular", label: "Molecular" },
+  { value: "Files", label: "Files" },
+];
 
-  const handleChange = (event) => {
-    setSearchScope(event.target.value);
+export const MetaSearch: React.FC<MetaSearchProp> = ({ onChange } ) => {
+  const [searchScope, setSearchScope] = useState(searchCategories[0]);
+
+  const handleChange = (value) => {
+    setSearchScope(value);
   };
-
 
   return (
     <div className="flex flex-row items-center justify-center w-full p-2">
-
-    <div className="bg-white flex items-center ">
-      <div className="flex items-center border-1 h-2">
-      <FormControl className="bg-white w-36 min-w-full">
-        <Select
-          disableUnderline
-          value={searchScope}
-          onChange={handleChange}
-          displayEmpty
-          className="px-2"
-        >
-          <MenuItem value={"All"}>All</MenuItem>
-          <MenuItem value={"Clinical"}>Clinical</MenuItem>
-          <MenuItem value={"Biospecimen"}>Biospecimen</MenuItem>
-        </Select>
-      </FormControl>
-      </div>
-      <div className="relative"><input type="text"
-                                       className="h-10 w-96 pr-8 pl-5 rounded z-0 focus:shadow focus:outline-none"
-                                       placeholder={`Search ${searchScope.toLocaleLowerCase()}...`}/>
-        <div className="absolute top-2 right-3"><SearchIcon></SearchIcon>
+      <div className="bg-white flex items-center ">
+        <div className="flex items-center border-1 h-2">
+          <Select
+            components={{
+              IndicatorSeparator: () => null
+            }}
+            inputId="cohort-manager__meta_search"
+            options={searchCategories}
+            defaultValue={searchCategories[0]}
+            className="border-nci-gray-light w-36"
+            onChange={handleChange}
+          />
         </div>
-      </div>
+        <div className="relative"><input type="text"
+                                         className="h-10 w-96 pr-8 pl-5 border-nci-gray-light rounded-r-full z-0 focus:shadow focus:outline-none"
+                                         placeholder={`Search ${searchScope.label.toLocaleLowerCase()}...`}
+                                         onChange={(e) => {onChange ( e.target.value)}}/>
+          <div className="absolute top-2 right-3 h-4" ><MdSearch size="1.5em"/>
+          </div>
+        </div>
 
-    </div>
-  </div>);
+      </div>
+    </div>);
 
 };
 

@@ -1,91 +1,96 @@
 import { useState } from "react";
-import Select from '@material-ui/core/Select';
 import { CollapsibleContainer} from '../../pages/user-flow/all-apps/exploration';
 import { Button } from "../layout/UserFlowVariedPages";
-import FormControl from "@material-ui/core/FormControl";
-import MenuItem from "@material-ui/core/MenuItem";
-import ClearIcon from "@material-ui/icons/Clear";
-import SettingsIcon from '@material-ui/icons/Settings';
-import EditIcon from "@material-ui/icons/Edit";
-import SaveIcon from "@material-ui/icons/Save";
-import AddIcon from "@material-ui/icons/Add";
-import DeleteIcon from '@material-ui/icons/Delete';
-import UploadIcon from '@material-ui/icons/Publish';
-import DownloadIcon from '@material-ui/icons/GetApp';
+import Select from 'react-select';
+import {
+  MdClose as ClearIcon,
+  MdSettings as SettingsIcon,
+  MdEdit as EditIcon,
+  MdSave as SaveIcon,
+  MdAdd as AddIcon,
+  MdAdd as DeleteIcon,
+  MdFileUpload as UploadIcon,
+  MdFileDownload as DownloadIcon,
+  MdArrowDropDown as DropDownIcon
+}  from "react-icons/md";
 import { FacetChart } from "../charts/FacetChart";
 import { nanoid } from "@reduxjs/toolkit";
-import InputLabel from "@material-ui/core/InputLabel";
 
 const CohortGroupSelect : React.FC<unknown> = () => {
 
-  const [groupType, setGroupTop] = useState('any_of');
+  const menu_items = [
+    { value: "any_of", label: "is any of" },
+    { value: "all_of", label: "is all of" },
+    { value: "none_of", label: "is none of" },
+  ]
+  const [groupType, setGroupTop] = useState(menu_items[0]);
 
-  const handleChange = (event) => {
-    setGroupTop(event.target.value);
+
+  const handleChange = (value) => {
+    setGroupTop(value);
   };
 
   return (
     <div className="border-opacity-0 pl-4">
-      <FormControl className="bg-white w-32 min-w-full">
-        <Select
-          disableUnderline
-          value={groupType}
-          onChange={handleChange}
-          className="px-2"
-        >
-          <MenuItem value="any_of">is any of</MenuItem>
-          <MenuItem value="all_of">is all of</MenuItem>
-          <MenuItem value="none_of">is none of</MenuItem>
-        </Select>
-      </FormControl>
+      <Select
+        options={menu_items}
+        defaultValue={menu_items[0]}
+        className="border-nci-gray-light w-36"
+        onChange={handleChange}
+        components={{
+          IndicatorSeparator: () => null
+        }}
+      />
     </div>
   );
 };
 
 interface CohortBarProps {
-    readonly cohort_names: [string];
+    readonly cohort_names: string[];
     onSelectionChanged: (number) => void;
+    defaultIdx: number;
+    case_count: string;
 }
 
-const CohortBar : React.FC<CohortBarProps> = ({cohort_names, onSelectionChanged} : CohortBarProps) => {
-  const [currentCohort, setCurrentCohort] = useState(0);
+const CohortBar : React.FC<CohortBarProps> = ({cohort_names, onSelectionChanged, defaultIdx, case_count = "84,609"} : CohortBarProps) => {
+  const menu_items = cohort_names.map((x, index) => {
+    return { value: index, label: x }
+  });
+
+  const [currentCohort, setCurrentCohort] = useState(menu_items[defaultIdx]);
 
   return (
-    <div className="flex flex-row items-center pl-4 h-16 bg-gray-300">
+    <div className="flex flex-row items-center pl-4 h-14 bg-nci-gray-light">
       <div className="border-opacity-0">
-        <FormControl className="bg-white w-auto min-w-full">
-          <InputLabel className="font-bold px-4">
-            Current Cohort:
-          </InputLabel>
-          <Select
-            disableUnderline
-            value={currentCohort}
-            onChange={(event: Record<string, any>) => {
-              setCurrentCohort(event.target.value);
-              onSelectionChanged(event.target.value);
-            }}
-            className="px-7"
-          >
-            { cohort_names.map((x, index) => {
-              return  <MenuItem key={nanoid()} value={index}>{x}</MenuItem>
-            })}
-          </Select>
-        </FormControl>
+        <Select
+          inputId="cohort-bar_cohort_select"
+          components={{
+            IndicatorSeparator: () => null
+          }}
+          options={menu_items}
+          isSearchable={false}
+          isClearable={false}
+          value={currentCohort}
+          onChange={(x) => {
+             setCurrentCohort(x);
+            onSelectionChanged(x.value);
+          }}
+          className="border-nci-gray-light w-40 p-0"
+        />
       </div>
       <CohortGroupSelect></CohortGroupSelect>
-      <div className="ml-auto">
-        <Button className="px-1">84,609 Cases</Button>
-        <Button className="px-1 bg-opacity-0"><EditIcon/></Button>
-        <Button className="px-1 bg-opacity-0"><SaveIcon/></Button>
-        <Button className="px-1 bg-opacity-0"><AddIcon/></Button>
-        <Button className="px-1 bg-opacity-0"><DeleteIcon/></Button>
-        <Button className="px-1 bg-opacity-0"><UploadIcon/></Button>
-        <Button className="px-1 bg-opacity-0"><DownloadIcon/></Button>
+      <div className="flex flex-row items-center">
+        <Button className="mx-1">{case_count} Cases</Button>
+        <Button className="mx-1 "><EditIcon size="1.5em"/></Button>
+        <Button className="mx-2 "><SaveIcon size="1.5em"/></Button>
+        <Button className="mx-2 "><AddIcon size="1.5em" /></Button>
+        <Button className="mx-2 "><DeleteIcon size="1.5em"/></Button>
+        <Button className="mx-2 "><UploadIcon size="1.5em"/></Button>
+        <Button className="mx-2 "><DownloadIcon size="1.5em" /></Button>
       </div>
     </div>
   );
 };
-
 
 const Top : React.FC<unknown> = () => {
 
@@ -95,22 +100,24 @@ const Top : React.FC<unknown> = () => {
     setGroupTop(event.target.value);
   };
 
+  const menu_items = [
+    { value: "any_of", label: "is any of" },
+    { value: "all_of", label: "is all of" },
+    { value: "none_of", label: "is none of" },
+  ];
+
   return (
   <div className="flex flex-row items-center h-16 bg-gray-300">
     <div className="font-bold px-4">Current Cohort</div>
     <div className="border-opacity-0">
-      <FormControl className="bg-white w-32 min-w-full">
-        <Select
-          disableUnderline
-          value={groupType}
-          onChange={handleChange}
-          className="px-2"
-        >
-          <MenuItem value="any_of">is any of</MenuItem>
-          <MenuItem value="all_of">is all of</MenuItem>
-          <MenuItem value="none_of">is none of</MenuItem>
-        </Select>
-      </FormControl>
+      <Select
+        components={{
+          IndicatorSeparator: () => null
+        }}
+        options={menu_items}
+        defaultValue={menu_items[0]}
+        className="px-7"
+      />
     </div>
 <div className="ml-auto">
   <Button className="px-4">84,609 Cases</Button>
@@ -132,43 +139,50 @@ const CohortFacetElement: React.FC<FacetElementProp>= ( { filter } : FacetElemen
     setGroupTop(event.target.value);
   };
 
+  const menu_items = [
+    { value: "any_of", label: "any of" },
+    { value: "all_of", label: "all of" },
+    { value: "none_of", label: "none of" },
+    { value: "between", label: "between" },
+  ];
+
+  const customStyles = {
+    control: (base, state) => ({
+      ...base,
+      background: "#6a9dc1",
+      // match with the menu
+    })
+  };
+
   return (
-    <div  className="flex flex-row items-center bg-gray-100 p-1 rounded-full text-black border-gray-300 border-2">{name} is
-      <div className="pt-0.5">
-        <FormControl className="px-4 py-2">
-          <Select
-            disableUnderline
-            value={groupType}
-            onChange={handleChange}
-            className="pl-2"
-          >
-            <MenuItem value="any_of">any of</MenuItem>
-            <MenuItem value="all_of">all of</MenuItem>
-            <MenuItem value="none_of">none of</MenuItem>
-            <MenuItem value="between">between</MenuItem>
-          </Select>
-        </FormControl>
+    <div className="m-1 px-2 rounded-full bg-nci-blue-lighter text-black border-nci-blue-lighter border-2">
+      <div className="flex flex-row items-center flex-grow truncate ... ">
+        <ClearIcon className="pr-1"/>{name} is <span className="px-1 underline">{op}</span> {value}<DropDownIcon/></div>
       </div>
-      {value} </div>
   );
 }
 
 interface CohortGroupProps {
   readonly cohorts: [{
     readonly name: string,
-    readonly facets: [Record<string, any>]
+    readonly facets: [Record<string, any>],
+    readonly case_count: string
   }]
+
 }
 
 export const CohortGroup: React.FC<CohortGroupProps> = ({ cohorts } : CohortGroupProps) => {
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(false);
   const [currentFacets, setCurrentFacets] = useState(cohorts[0].facets);
-
+  const [currentIndex, setCurrentIndex] = useState(0)
   const handleCohortSelection = (idx) => {
     setCurrentFacets(cohorts[idx].facets);
+    setCurrentIndex(idx);
   }
 
-  const CohortBarWithProps = () => <CohortBar cohort_names={cohorts.map(o => o.name)} onSelectionChanged={handleCohortSelection}/>
+  const CohortBarWithProps = () => <CohortBar cohort_names={cohorts.map(o => o.name)}
+                                              onSelectionChanged={handleCohortSelection}
+                                              defaultIdx={currentIndex} case_count={cohorts[currentIndex].case_count}/>
 
   return (
     <CollapsibleContainer
@@ -176,7 +190,7 @@ export const CohortGroup: React.FC<CohortGroupProps> = ({ cohorts } : CohortGrou
       isCollapsed={isGroupCollapsed}
       toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
     >
-      <div className="flex flex-row w-100">
+      <div className="flex flex-row flex-wrap w-100 p-2 bg-nci-yellow-lightest border-b-2 border-r-2 border-l-2 rounded border-nci-gray-lighter">
         {
           currentFacets.map((facet) => {
             return <CohortFacetElement key={nanoid()} filter={facet} />
@@ -189,11 +203,11 @@ export const CohortGroup: React.FC<CohortGroupProps> = ({ cohorts } : CohortGrou
 
 const SummaryStatsTop : React.FC<unknown> = () => {
   return (
-    <div className="flex flex-row items-center h-16 bg-gray-300 w-100">
+    <div className="flex flex-row items-center h-16 bg-nci-gray-lighter w-100">
     <div className="px-4">Summary Statistics</div>
 
   <div className="ml-auto">
-  <Button className="bg-opacity-0"><SettingsIcon/></Button>
+  <Button className="mx-2 bg-nci-gray-lighter "> <SettingsIcon size="1.5em"/></Button>
     </div>
 
   </div>
@@ -209,17 +223,32 @@ export const SummaryCharts: React.FC<unknown> = () => {
   isCollapsed={isGroupCollapsed}
   toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
 >
-  <div className="h-72 bg-white">
-  <div className="flex flex-col content-center">
-  <div className="grid grid-cols-4 gap-2">
-  <FacetChart field="primary_site" />
-  <FacetChart field="demographic.gender" />
-  <FacetChart field="disease_type" />
-  <FacetChart field="diagnoses.tissue_or_organ_of_origin" />
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4">
+      <FacetChart
+        field="primary_site"
+        height={200}
+        marginBottom={30}
+        showXLabels={false}
+      />
+      <FacetChart
+        field="demographic.gender"
+        height={200}
+        marginBottom={30}
+        showXLabels={false}
+      />
+      <FacetChart
+        field="disease_type"
+        height={200}
+        marginBottom={30}
+        showXLabels={false}
+      />
+      <FacetChart
+        field="diagnoses.tissue_or_organ_of_origin"
+        height={200}
+        marginBottom={30}
+        showXLabels={false}
+      />
     </div>
-    </div>
-    </div>
-
     </CollapsibleContainer>
 )
 };

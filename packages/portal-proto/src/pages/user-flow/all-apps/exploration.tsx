@@ -4,8 +4,10 @@ import {
   Button,
 } from "../../../features/layout/UserFlowVariedPages";
 import { CohortManager } from "../../../features/user-flow/many-pages/cohort";
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import {
+  MdExpandMore as ExpandMoreIcon,
+  MdExpandLess as ExpandLessIcon
+} from 'react-icons/md';
 import classNames from "classnames";
 import { PropsWithChildren, useRef } from "react";
 import { useState } from "react";

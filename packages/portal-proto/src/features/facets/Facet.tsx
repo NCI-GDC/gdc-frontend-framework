@@ -4,13 +4,14 @@ import {
   fetchFacetByName,
   useCoreSelector,
   useCoreDispatch,
-  selectCurrentCohort
 } from "@gff/core";
-
 
 import { useEffect, useState } from "react";
 import { Button } from "../layout/UserFlowVariedPages";
-import 'lodash';
+import {
+  MdSortByAlpha as AlphaSortIcon,
+  MdSort as SortIcon
+}  from "react-icons/md";
 
 interface UseCaseFacetResponse {
   readonly data?: FacetBuckets;
@@ -45,9 +46,10 @@ const useCaseFacet = (field: string): UseCaseFacetResponse => {
 
 interface FacetProps {
   readonly field: string;
+  readonly description?: string;
 }
 
-export const Facet: React.FC<FacetProps> = ({ field }: FacetProps) => {
+export const Facet: React.FC<FacetProps> = ({ field, description }: FacetProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const { data, error, isUninitialized, isFetching, isError } =
@@ -71,21 +73,23 @@ export const Facet: React.FC<FacetProps> = ({ field }: FacetProps) => {
 
   const handleChange = (e) => {
     const  { value, checked } = e.target;
-
   };
 
   const toggleSearch = () => {
     setIsSearching(!isSearching);
   }
 
-
   return (
     <div>
-      <div className="flex flex-col border-2 px-0 bg-white">
-        <div className="flex items-center justify-between flex-wrap bg-gray-300 p-1.5">
-          {convertFieldToName(field)}
+
+      <div className="flex flex-col border-r-2  border-b-0 border-l-2  bg-white">
+        <div >
+        <div className="flex items-center justify-between flex-wrap bg-nci-gray-lighter px-1.5">
+          <div className="has-tooltip">{convertFieldToName(field)}
+          <div className='inline-block tooltip w-1/4 border-b-2 border-nci-cyan-lightest rounded shadow-lg p-2 bg-gray-100 text-nci-blue-darkest mt-8 absolute'>{description}</div>
+          </div>
           <button
-            className="bg-grey-light hover:bg-grey text-grey-darkest font-bold py-2 px-4 rounded inline-flex items-center"
+            className="bg-nci-gray-lighter hover:bg-grey text-grey-darkest font-bold py-2 px-4 rounded inline-flex items-center"
             onClick={toggleSearch}>
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
               <path d="M0 0h24v24H0V0z" fill="none" />
@@ -94,10 +98,13 @@ export const Facet: React.FC<FacetProps> = ({ field }: FacetProps) => {
             </svg>
           </button>
         </div>
-        <div className="flex items-center justify-between flex-wrap bg-gray-50 ">
+
+        </div>
+        <div className="flex flex-row items-center justify-between flex-wrap bg-white mb-1 p-2 border-b-2 border-nci-gray-lighter">
+          <AlphaSortIcon scale="1.5em"/> <div className={"flex flex-row items-center "}><SortIcon scale="1.5em"/> Cases</div>
         </div>
         <div>
-          <div className={showAll ? "flex-none h-96 overflow-scroll" : "overflow-hidden"}>
+          <div className={showAll ? "flex-none h-96 overflow-y-scroll" : "overflow-hidden"}>
             {Object.entries(data).map(([value, count], i) => {
               if (value === "_missing") return null;
               if (!showAll && i > maxValuesToDisplay) return null;
@@ -107,7 +114,8 @@ export const Facet: React.FC<FacetProps> = ({ field }: FacetProps) => {
                     <input type="checkbox" value={`${field}:${value}`} onChange={handleChange}/>
                   </div>
                   <div className="flex-grow truncate ...">{value}</div>
-                  <div className="flex-none text-right">{count.toLocaleString()}</div>
+                  <div className="flex-none text-right w-12">{count.toLocaleString()}</div>
+                  <div className="flex-none text-right w-18">({((count/84609)*100).toFixed(2).toLocaleString()}%)</div>
                 </div>
               );
             })}
@@ -115,20 +123,22 @@ export const Facet: React.FC<FacetProps> = ({ field }: FacetProps) => {
         </div>
       </div>
       <div>
+        <div className="bg-white border-b-2 border-r-2 border-l-2 p-1.5">
       {total - maxValuesToDisplay > 0 ? !showAll ?
           <Button key="show-more"
-                  className="text-left p-2 w-auto text-blue-600  hover:text-black"
+                  className="text-left p-2 w-auto hover:text-black"
                   onClick={() => setIsGroupExpanded(!isGroupExpanded)}>
             {total - maxValuesToDisplay} more
           </Button>
           :
           <Button key="show-less"
-                  className="text-left p-2 w-auto text-blue-600  hover:text-black"
+                  className="text-left p-2 w-auto hover:text-black"
                   onClick={() => setIsGroupExpanded(!isGroupExpanded)}>
             Show less
           </Button>
         : null
       }
+      </div>
       </div>
     </div>
   );
