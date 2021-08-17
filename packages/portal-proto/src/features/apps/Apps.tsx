@@ -234,3 +234,18 @@ export const Repository: React.FC<Clickable> = (props: Clickable) => {
     </App>
   );
 };
+
+export const CohortViewerApp: React.FC<Clickable> = (props: Clickable) => {
+  return (
+    <App name="Cohort Viewer" onClick={props.onClick}>
+      <div className="w-full h-full">
+        <div className="w-full h-full relative group-hover:hidden">
+          <Initials name="Cohort Viewer" />;
+        </div>
+        <div className="w-full h-full hidden group-hover:block">
+        View details about the cases in your cohort.
+        </div>
+      </div>
+    </App>
+  );
+};

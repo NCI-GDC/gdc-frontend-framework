@@ -28,7 +28,8 @@ import {
   CopyNumberVariations,
   CohortComparison,
   ClinicalDataAnalysis,
-  Repository
+  Repository,
+  CohortViewerApp
 } from "../../../features/apps/Apps";
 import { ContextualFilesView } from "../../../features/files/FilesView";
 
@@ -176,9 +177,7 @@ const Apps: React.FC<AppsProps> = ({
         <OncoGrid />
         <GeneExpression />
         <ProteinPaint />
-        <App
-          name="Cohort Viewer"
-          onClick={() => setCurrentApp("cohort-viewer")}
+        <CohortViewerApp onClick={() => setCurrentApp("cohort-viewer")}
         />
         <SetOperations />
         <CohortComparison />
