@@ -22,6 +22,7 @@ import {
   SetOperations,
   SingleCellRnaSeq,
 } from "../../../features/apps/Apps";
+import { ContextualFilesView } from "../../../features/files/FilesView";
 
 const UserFlowFewestPagesPage: NextPage = () => {
   const [isExpressionsCollapsed, setIsExpressionsCollapsed] = useState(false);
@@ -120,6 +121,10 @@ const UserFlowFewestPagesPage: NextPage = () => {
               returnToAllApps={() => setCurrentApp("appSelector")}
               viewStudy={() => setStudyModalOpen(true)}
             />
+          ) : currentApp === "repository" ? (
+            <AllAppsRepository
+              returnToAllApps={() => setCurrentApp("appSelector")}
+            />
           ) : (
             // app selector
             <Apps setCurrentApp={setCurrentApp} />
@@ -170,7 +175,7 @@ const Apps: React.FC<AppsProps> = ({
         <SetOperations />
         <App name="Cohort Comparison" />
         <App name="Clinical Data Analysis" />
-        <App name="Repository" />
+        <App name="Repository" onClick={() => setCurrentApp("repository")} />
       </div>
     </div>
   );
@@ -260,6 +265,26 @@ const AllAppsStudies = (props: AllAppsStudiesProps) => {
           <Button onClick={returnToAllApps}>Explore Studies</Button>
         }
       />
+    </div>
+  );
+};
+
+interface AllAppsRepositoryProps {
+  readonly returnToAllApps: () => void;
+}
+
+const AllAppsRepository = (props: AllAppsRepositoryProps) => {
+  const { returnToAllApps } = props;
+
+  return (
+    <div className="flex flex-col gap-y-4">
+      <div className="flex flex-row">
+        <button className="absolute" onClick={returnToAllApps}>
+          &lt; All Apps
+        </button>
+        <div className="flex-grow text-center">Repository</div>
+      </div>
+      <ContextualFilesView />
     </div>
   );
 };
