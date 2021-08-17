@@ -2,7 +2,8 @@ import { Facet } from "../facets/Facet";
 import { Tab, TabProps, TabList, TabPanel, Tabs } from "react-tabs";
 import { useState } from "react";
 import Select from "react-select";
-import { get_facet_subcategories, get_facets, search_facets } from "./dictionary";
+import { get_facet_subcategories, get_facets } from "./dictionary";
+import { GeneTable, MutationTable} from "../genomic/Genomic";
 
 interface FacetGroupProps {
   readonly facetNames: Array<Record<string, any>>;
@@ -36,7 +37,6 @@ const downloadableSubcategories = [
 ];
 const visualizableFacets = [];
 const visualizableSubcategories = [
-  " ",
   "Gene Expression",
   "Simple Mutation"
 ];
@@ -85,16 +85,16 @@ interface CohortTabbedFacetsProps {
 
 export const CohortTabbedFacets: React.FC<CohortTabbedFacetsProps> = ( {  searchTerm } : CohortTabbedFacetsProps) => {
    const [searchResults, setSearchResults ] = useState({ });
-   const [subcategories, setSubcategories] = useState({ 'Clinical': 'All' ,'Biospecimen': 'All' });
+   const [subcategories, setSubcategories] = useState({ 'Clinical': 'All' ,'Biospecimen': 'All', 'Visualizable Data': 'Gene Expression' });
    const handleSubcategoryChanged = (category:string, subcategory:string) => {
      const state = { ...subcategories };
      state[category] = subcategory;
      setSubcategories(state);
   }
 
-  const results = search_facets(searchTerm);
-   if (results.length > 0) {
-     // have search results select only those facets withing the results
+   if (searchTerm.length > 0) {
+     // have search results select only those facets within the results
+     console.log(searchTerm);
    }
 
   return (
@@ -108,7 +108,7 @@ export const CohortTabbedFacets: React.FC<CohortTabbedFacetsProps> = ( {  search
                              subCategories={get_facet_subcategories('Biospecimen')}
                              onSubcategoryChange={handleSubcategoryChanged}></FacetTabWithSubmenu>
         <FacetTabWithSubmenu category="Visualizable Data"
-                             subCategories={visualizableSubcategories}
+                             subCategories={molecularSubcategories}
                              onSubcategoryChange={handleSubcategoryChanged}></FacetTabWithSubmenu>
         <FacetTabWithSubmenu category="Downloadable Data"
                              subCategories={downloadableSubcategories}
@@ -116,7 +116,7 @@ export const CohortTabbedFacets: React.FC<CohortTabbedFacetsProps> = ( {  search
     </TabList>
       <TabPanel><FacetGroup facetNames={get_facets('Clinical',subcategories['Clinical'])}/></TabPanel>
       <TabPanel><FacetGroup facetNames={get_facets('Biospecimen',subcategories['Biospecimen'])}/></TabPanel>
-      <TabPanel><FacetGroup facetNames={visualizableFacets}/></TabPanel>
+      <TabPanel><div className="flex flex-col" > {(subcategories['Visualizable Data'] === 'Gene Expression')  ? <GeneTable/> : <MutationTable/> }</div></TabPanel>
       <TabPanel><FacetGroup facetNames={downloadableFacets}/></TabPanel>
     </Tabs>
     </div>

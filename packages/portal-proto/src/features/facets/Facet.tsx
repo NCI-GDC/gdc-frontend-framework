@@ -101,7 +101,7 @@ export const Facet: React.FC<FacetProps> = ({ field, description }: FacetProps) 
 
         </div>
         <div className="flex flex-row items-center justify-between flex-wrap bg-white mb-1 p-2 border-b-2 border-nci-gray-lighter">
-          <AlphaSortIcon scale="1.5em"/> <div className={"flex flex-row items-center "}><SortIcon scale="1.5em"/> Cases</div>
+          <AlphaSortIcon scale="1.5em"/> <div className={"flex flex-row items-center"}><SortIcon scale="1.5em"/> <p className="px-2">Cases</p></div>
         </div>
         <div>
           <div className={showAll ? "flex-none h-96 overflow-y-scroll" : "overflow-hidden"}>

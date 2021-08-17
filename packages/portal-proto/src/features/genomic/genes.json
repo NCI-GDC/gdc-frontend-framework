@@ -1,0 +1,204 @@
+{
+  "MostFrequentGenes": [
+    {
+      "gene_label": "TP53",
+      "count": "4,796",
+      "percent": "5.67%"
+    },
+    {
+      "gene_label": "TTN",
+      "count": "4,572",
+      "percent": "5.40%"
+    },
+    {
+      "gene_label": "MUC16",
+      "count": "2,873",
+      "percent": "3.40%"
+    },
+    {
+      "gene_label": "CSMD3",
+      "count": "1,953",
+      "percent": "2.31%"
+    },
+    {
+      "gene_label": "RYR2",
+      "count": "1,894",
+      "percent": "2.24%"
+    },
+    {
+      "gene_label": "SYNE1",
+      "count": "1,848",
+      "percent": "2.18%"
+    },
+    {
+      "gene_label": "LRP1B",
+      "count": "1,778",
+      "percent": "2.10%"
+    },
+    {
+      "gene_label": "USH2A",
+      "count": "1,674",
+      "percent": "1.98%"
+    },
+    {
+      "gene_label": "FLG",
+      "count": "1,622",
+      "percent": "1.92%"
+    },
+    {
+      "gene_label": "PIK3CA",
+      "count": "1,621",
+      "percent": "1.92%"
+    },
+    {
+      "gene_label": "PCLO",
+      "count": "1,599",
+      "percent": "1.89%"
+    },
+    {
+      "gene_label": "OBSCN",
+      "count": "1,574",
+      "percent": "1.86%"
+    },
+    {
+      "gene_label": "ZFHX4",
+      "count": "1,550",
+      "percent": "1.83%"
+    },
+    {
+      "gene_label": "DNAH5",
+      "count": "1,481",
+      "percent": "1.75%"
+    },
+    {
+      "gene_label": "MUC4",
+      "count": "1,444",
+      "percent": "1.71%"
+    },
+    {
+      "gene_label": "FAT4",
+      "count": "1,415",
+      "percent": "1.67%"
+    },
+    {
+      "gene_label": "CSMD1",
+      "count": "1,411",
+      "percent": "1.67%"
+    },
+    {
+      "gene_label": "FAT3",
+      "count": "1,398",
+      "percent": "1.65%"
+    },
+    {
+      "gene_label": "DST",
+      "count": "1,384",
+      "percent": "1.64%"
+    },
+    {
+      "gene_label": "XIRP2",
+      "count": "1,372",
+      "percent": "1.62%"
+    },
+    {
+      "gene_label": "HMCN1",
+      "count": "1,362",
+      "percent": "1.61%"
+    },
+    {
+      "gene_label": "RYR1",
+      "count": "1,344",
+      "percent": "1.59%"
+    },
+    {
+      "gene_label": "KRAS",
+      "count": "1,333",
+      "percent": "1.58%"
+    },
+    {
+      "gene_label": "KMT2D",
+      "count": "1,310",
+      "percent": "1.55%"
+    },
+    {
+      "gene_label": "SPTA1",
+      "count": "1,286",
+      "percent": "1.52%"
+    },
+    {
+      "gene_label": "MUC17",
+      "count": "1,271",
+      "percent": "1.50%"
+    },
+    {
+      "gene_label": "RYR3",
+      "count": "1,263",
+      "percent": "1.49%"
+    },
+    {
+      "gene_label": "APOB",
+      "count": "1,263",
+      "percent": "1.49%"
+    },
+    {
+      "gene_label": "PCDH15",
+      "count": "1,216",
+      "percent": "1.44%"
+    },
+    {
+      "gene_label": "MACF1",
+      "count": "1,216",
+      "percent": "1.44%"
+    },
+    {
+      "gene_label": "NEB",
+      "count": "1,208",
+      "percent": "1.43%"
+    },
+    {
+      "gene_label": "PTEN",
+      "count": "1,205",
+      "percent": "1.42%"
+    },
+    {
+      "gene_label": "MUC5B",
+      "count": "1,178",
+      "percent": "1.39%"
+    },
+    {
+      "gene_label": "AHNAK2",
+      "count": "1,168",
+      "percent": "1.38%"
+    },
+    {
+      "gene_label": "ADGRV1",
+      "count": "1,164",
+      "percent": "1.38%"
+    },
+    {
+      "gene_label": "LRP2",
+      "count": "1,160",
+      "percent": "1.37%"
+    },
+    {
+      "gene_label": "DNAH9",
+      "count": "1,138",
+      "percent": "1.35%"
+    },
+    {
+      "gene_label": "KMT2C",
+      "count": "1,137",
+      "percent": "1.34%"
+    },
+    {
+      "gene_label": "ABCA13",
+      "count": "1,135",
+      "percent": "1.34%"
+    },
+    {
+      "gene_label": "DMD",
+      "count": "1,121",
+      "percent": "1.32%"
+    }
+  ]
+}

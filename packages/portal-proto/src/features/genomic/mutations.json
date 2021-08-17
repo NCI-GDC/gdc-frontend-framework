@@ -1,0 +1,244 @@
+{
+  "MostFrequentMutation": [
+    {
+      "gene_label": "BRAF V600E",
+      "count": "618",
+      "percent": "4.78%",
+      "dna_change": "chr7:g.140753336A>T"
+    },
+    {
+      "gene_label": "IDH1 R132H",
+      "count": "395",
+      "percent": "3.06%",
+      "dna_change": "chr2:g.208248388C>T"
+    },
+    {
+      "gene_label": "KRAS G12D",
+      "count": "327",
+      "percent": "2.53%",
+      "dna_change": "chr12:g.25245350C>T"
+    },
+    {
+      "gene_label": "PIK3CA E545K",
+      "count": "294",
+      "percent": "2.28%",
+      "dna_change": "chr3:g.179218303G>A"
+    },
+    {
+      "gene_label": "PIK3CA H1047R",
+      "count": "278",
+      "percent": "2.15%",
+      "dna_change": "chr3:g.179234297A>G"
+    },
+    {
+      "gene_label": "KRAS G12V",
+      "count": "258",
+      "percent": "2.00%",
+      "dna_change": "chr12:g.25245350C>A"
+    },
+    {
+      "gene_label": "PIK3CA E542K",
+      "count": "188",
+      "percent": "1.45%",
+      "dna_change": "chr3:g.179218294G>A"
+    },
+    {
+      "gene_label": "TP53 R175H",
+      "count": "187",
+      "percent": "1.45%",
+      "dna_change": "chr17:g.7675088C>T"
+    },
+    {
+      "gene_label": "NRAS Q61R",
+      "count": "181",
+      "percent": "1.40%",
+      "dna_change": "chr1:g.114713908T>C"
+    },
+    {
+      "gene_label": "TP53 R248Q",
+      "count": "146",
+      "percent": "1.13%",
+      "dna_change": "chr17:g.7674220C>T"
+    },
+    {
+      "gene_label": "TP53 R273C",
+      "count": "142",
+      "percent": "1.10%",
+      "dna_change": "chr17:g.7673803G>A"
+    },
+    {
+      "gene_label": "NRAS Q61K",
+      "count": "122",
+      "percent": "0.94%",
+      "dna_change": "chr1:g.114713909G>T"
+    },
+    {
+      "gene_label": "KRAS G12C",
+      "count": "122",
+      "percent": "0.94%",
+      "dna_change": "chr12:g.25245351C>A"
+    },
+    {
+      "gene_label": "MEIS1 None",
+      "count": "120",
+      "percent": "0.93%",
+      "dna_change": "chr2:g.66568967delT"
+    },
+    {
+      "gene_label": "RP11-113D6.10 None",
+      "count": "120",
+      "percent": "0.93%",
+      "dna_change": "chr11:g.18210242delT"
+    },
+    {
+      "gene_label": "KRAS G13D",
+      "count": "119",
+      "percent": "0.92%",
+      "dna_change": "chr12:g.25245347C>T"
+    },
+    {
+      "gene_label": "RPL22 K15Rfs*5",
+      "count": "116",
+      "percent": "0.90%",
+      "dna_change": "chr1:g.6197725delT"
+    },
+    {
+      "gene_label": "TP53 R273H",
+      "count": "114",
+      "percent": "0.88%",
+      "dna_change": "chr17:g.7673802C>T"
+    },
+    {
+      "gene_label": "TP53 R248W",
+      "count": "111",
+      "percent": "0.86%",
+      "dna_change": "chr17:g.7674221G>A"
+    },
+    {
+      "gene_label": "RNF43 G659Vfs*41",
+      "count": "111",
+      "percent": "0.86%",
+      "dna_change": "chr17:g.58357800delC"
+    },
+    {
+      "gene_label": "SETD1B H8Tfs*27",
+      "count": "107",
+      "percent": "0.83%",
+      "dna_change": "chr12:g.121804752delC"
+    },
+    {
+      "gene_label": "TP53 R282W",
+      "count": "104",
+      "percent": "0.80%",
+      "dna_change": "chr17:g.7673776G>A"
+    },
+    {
+      "gene_label": "SCN2B None",
+      "count": "102",
+      "percent": "0.79%",
+      "dna_change": "chr11:g.118176520delA"
+    },
+    {
+      "gene_label": "ACVR2A K437Rfs*5",
+      "count": "102",
+      "percent": "0.79%",
+      "dna_change": "chr2:g.147926117delA"
+    },
+    {
+      "gene_label": "PPIC None",
+      "count": "99",
+      "percent": "0.77%",
+      "dna_change": "chr5:g.123023773delA"
+    },
+    {
+      "gene_label": "DOCK3 P1852Qfs*45",
+      "count": "99",
+      "percent": "0.77%",
+      "dna_change": "chr3:g.51380173delC"
+    },
+    {
+      "gene_label": "ZBTB20 P692Lfs*43",
+      "count": "97",
+      "percent": "0.75%",
+      "dna_change": "chr3:g.114339156delG"
+    },
+    {
+      "gene_label": "XYLT2 G529Afs*78",
+      "count": "93",
+      "percent": "0.72%",
+      "dna_change": "chr17:g.50356606delC"
+    },
+    {
+      "gene_label": "SLC3A2 K301Rfs*31",
+      "count": "93",
+      "percent": "0.72%",
+      "dna_change": "chr11:g.62882057delA"
+    },
+    {
+      "gene_label": "HNRNPR None",
+      "count": "91",
+      "percent": "0.70%",
+      "dna_change": "chr1:g.23310382delT"
+    },
+    {
+      "gene_label": "TP53 R213*",
+      "count": "90",
+      "percent": "0.70%",
+      "dna_change": "chr17:g.7674894G>A"
+    },
+    {
+      "gene_label": "SEPT7 None",
+      "count": "89",
+      "percent": "0.69%",
+      "dna_change": "chr7:g.35904427delT"
+    },
+    {
+      "gene_label": "OIT3 None",
+      "count": "89",
+      "percent": "0.69%",
+      "dna_change": "chr10:g.72893711delA"
+    },
+    {
+      "gene_label": "FGFR1OP None",
+      "count": "86",
+      "percent": "0.67%",
+      "dna_change": "chr6:g.167003333delT"
+    },
+    {
+      "gene_label": "KRAS Q61H",
+      "count": "83",
+      "percent": "0.64%",
+      "dna_change": "chr12:g.25227341T>G"
+    },
+    {
+      "gene_label": "ZBTB43 None",
+      "count": "83",
+      "percent": "0.64%",
+      "dna_change": "chr9:g.126834019delA"
+    },
+    {
+      "gene_label": "YTHDC1 None",
+      "count": "82",
+      "percent": "0.63%",
+      "dna_change": "chr4:g.68314042delA"
+    },
+    {
+      "gene_label": "ZBTB18 None",
+      "count": "81",
+      "percent": "0.63%",
+      "dna_change": "chr1:g.244056272delA"
+    },
+    {
+      "gene_label": "TP53 Y220C",
+      "count": "81",
+      "percent": "0.63%",
+      "dna_change": "chr17:g.7674872T>C"
+    },
+    {
+      "gene_label": "PTEN None",
+      "count": "80",
+      "percent": "0.62%",
+      "dna_change": "chr10:g.87965537delT"
+    }
+  ]
+}
