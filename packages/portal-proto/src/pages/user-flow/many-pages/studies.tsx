@@ -43,7 +43,9 @@ const StudiesPage: NextPage = () => {
   };
 
   return (
-    <UserFlowVariedPages {...{ headerElements }}>
+    <UserFlowVariedPages
+      {...{ indexPath: "/user-flow/many-pages", headerElements }}
+    >
       <div className="flex flex-col p-4 gap-y-4">
         {SingleStudyModal()}
         <ContextualStudiesView
