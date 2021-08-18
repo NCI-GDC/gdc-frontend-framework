@@ -16,7 +16,7 @@ import {
   SetOperations,
   SingleCellRnaSeq,
   CohortComparison,
-  ClinicalDataAnalysis
+  ClinicalDataAnalysis,
 } from "../../../features/apps/Apps";
 
 const AnalysisPage: NextPage = () => {
@@ -74,32 +74,32 @@ const AnalysisPage: NextPage = () => {
             setShowAppModal(true);
           }}
         />
-        <GeneExpression 
+        <GeneExpression
           onClick={() => {
             setSelectedApp("Gene Expression");
             setShowAppModal(true);
           }}
         />
-        <ProteinPaint 
+        <ProteinPaint
           onClick={() => {
             setSelectedApp("ProteinPaint");
             setShowAppModal(true);
           }}
         />
 
-        <SetOperations 
+        <SetOperations
           onClick={() => {
             setSelectedApp("Set Operations");
             setShowAppModal(true);
           }}
         />
-        <CohortComparison 
+        <CohortComparison
           onClick={() => {
             setSelectedApp("Cohort Comparison");
             setShowAppModal(true);
           }}
         />
-        <ClinicalDataAnalysis 
+        <ClinicalDataAnalysis
           onClick={() => {
             setSelectedApp("Clinical Data Analysis");
             setShowAppModal(true);
