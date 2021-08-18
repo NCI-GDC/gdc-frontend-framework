@@ -7,7 +7,6 @@ import {
 } from "@gff/core";
 import { useEffect } from "react";
 import dynamic from 'next/dynamic'
-import './FacetChart.module.css'
 
 const BarChartWithNoSSR = dynamic(() => import('./BarChart'), {
   ssr: false
@@ -86,7 +85,7 @@ export const FacetChart: React.FC<FacetProps> = ({ field, showXLabels = true, he
     return <div>Failed to fetch facet: {error}</div>;
   }
 
-  const maxValuesToDisplay =12;
+  const maxValuesToDisplay =7;
 
   const chart_data = processChartData(data, field, maxValuesToDisplay, showXLabels);
 

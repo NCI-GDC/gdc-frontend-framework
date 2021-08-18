@@ -46,11 +46,11 @@ const chartData = {
       title: data.yAxisTitle,
       titlefont: {
         family: 'Arial, sans-serif',
-        size: 18,
+        size: 14,
       },
 
       tickfont: {
-        size: 14,
+        size: 12,
         color: 'rgb(107, 107, 107)'
       },
     },
@@ -87,7 +87,7 @@ const chartData = {
   };
   return (<div>
     <Plot data={[chartData]} layout={layout} config={config} useResizeHandler={true}
-           style={{width: "100%", height: "100%"}}/>
+           style={{width: "100%", height: "240px"}}/>
   </div>);
 
 };

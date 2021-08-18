@@ -41,6 +41,11 @@ const IndexPage: NextPage = () => {
                 All Apps
               </HoverLink>
             </li>
+            <li>
+              <HoverLink href="/cohort-builder">
+                Cohort Builder
+              </HoverLink>
+            </li>
           </ul>
         </Section>
         <Section>
