@@ -45,7 +45,9 @@ const RepositoryPage: NextPage = () => {
   ];
 
   return (
-    <UserFlowVariedPages {...{ headerElements, Options }}>
+    <UserFlowVariedPages
+      {...{ indexPath: "/user-flow/many-pages", headerElements, Options }}
+    >
       <div className="flex flex-col p-4 gap-y-4">
         <div className="border p-4 border-gray-400 bg-white">
           <CohortManager

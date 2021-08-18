@@ -6,8 +6,8 @@ import {
 import { CohortManager } from "../../../features/user-flow/many-pages/cohort";
 import {
   MdExpandMore as ExpandMoreIcon,
-  MdExpandLess as ExpandLessIcon
-} from 'react-icons/md';
+  MdExpandLess as ExpandLessIcon,
+} from "react-icons/md";
 import classNames from "classnames";
 import { PropsWithChildren, useRef } from "react";
 import { useState } from "react";
@@ -36,12 +36,9 @@ import {
 } from "../../../features/apps/Apps";
 import { ContextualFilesView } from "../../../features/files/FilesView";
 
-import {  GeneTable, MutationTable } from "../../../features/genomic/Genomic";
+import { GeneTable, MutationTable } from "../../../features/genomic/Genomic";
 import { FacetGroup } from "../../../features/cohortBuilder/FacetGroup";
 import { get_facets } from "../../../features/cohortBuilder/dictionary";
-
-
-
 
 const UserFlowFewestPagesPage: NextPage = () => {
   const [isExpressionsCollapsed, setIsExpressionsCollapsed] = useState(false);
@@ -124,7 +121,9 @@ const UserFlowFewestPagesPage: NextPage = () => {
   };
 
   return (
-    <UserFlowVariedPages {...{ headerElements }}>
+    <UserFlowVariedPages
+      {...{ indexPath: "/user-flow/all-apps", headerElements }}
+    >
       <div className="flex flex-col gap-y-4 p-4">
         <div className="border p-4 border-nci-gray-lighter bg-white">
           <CohortManager />
@@ -154,15 +153,21 @@ const UserFlowFewestPagesPage: NextPage = () => {
           ) : currentApp == "somatic-mutations" ? (
             <AllAppViewer title="Somatic Mutations" setView={setCurrentApp}>
               <div className="flex flex-row">
-                <GeneTable width="0"/>
-                <MutationTable width="0"/>
+                <GeneTable width="0" />
+                <MutationTable width="0" />
               </div>
-             </AllAppViewer >
-            ) : currentApp == "clinical-filters" ? (
-            <AllAppViewer title="Clinical Filters" setView={setCurrentApp}> <FacetGroup facetNames={get_facets('Clinical','All')}/></AllAppViewer >
+            </AllAppViewer>
+          ) : currentApp == "clinical-filters" ? (
+            <AllAppViewer title="Clinical Filters" setView={setCurrentApp}>
+              {" "}
+              <FacetGroup facetNames={get_facets("Clinical", "All")} />
+            </AllAppViewer>
           ) : currentApp == "biospecimen-filters" ? (
-            <AllAppViewer title="Biospecimen Filters" setView={setCurrentApp}> <FacetGroup facetNames={get_facets('Biospecimen','All')}/></AllAppViewer >
-          ) :(
+            <AllAppViewer title="Biospecimen Filters" setView={setCurrentApp}>
+              {" "}
+              <FacetGroup facetNames={get_facets("Biospecimen", "All")} />
+            </AllAppViewer>
+          ) : (
             // app selector
             <Apps
               setCurrentApp={(name) => {
@@ -172,7 +177,6 @@ const UserFlowFewestPagesPage: NextPage = () => {
             />
           )}
         </div>
-
       </div>
       <StudyModal
         isOpen={isStudyModalOpen}
@@ -203,9 +207,11 @@ const Apps: React.FC<AppsProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
         <Cohorts onClick={() => setCurrentApp("studies")} />
         <ClinicalFilters onClick={() => setCurrentApp("clinical-filters")} />
-        <BiospecimenFilters onClick={() => setCurrentApp("biospecimen-filters")}/>
+        <BiospecimenFilters
+          onClick={() => setCurrentApp("biospecimen-filters")}
+        />
         <DownloadableFileFilters />
-        <SomaticMutations onClick={() => setCurrentApp("somatic-mutations")}/>
+        <SomaticMutations onClick={() => setCurrentApp("somatic-mutations")} />
         <CopyNumberVariations />
         <SingleCellRnaSeq onClick={() => setCurrentApp("unclegrid")} />
         <OncoGrid onClick={() => setCurrentApp("unclegrid")} />
@@ -256,10 +262,12 @@ export const CollapsibleContainer: React.FC<CollapsibleContainerProps> = (
     <div className="flex flex-col border border-gray-400 p-4">
       <div className="flex flex-row">
         <div className="flex-grow">
-          <Top  />
+          <Top />
         </div>
         <div className="flex items-stretch">
-          <Button onClick={toggle}>{isCollapsed ? <ExpandMoreIcon/> : <ExpandLessIcon/>}</Button>
+          <Button onClick={toggle}>
+            {isCollapsed ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+          </Button>
         </div>
       </div>
       <div className={childrenClassNames}>{children}</div>
@@ -362,7 +370,11 @@ export interface AppViewProps {
   readonly setView: (string) => void;
 }
 
-export const AllAppViewer :  React.FC<AppViewProps> = ({title, setView, children} : PropsWithChildren<AppViewProps>) => {
+export const AllAppViewer: React.FC<AppViewProps> = ({
+  title,
+  setView,
+  children,
+}: PropsWithChildren<AppViewProps>) => {
   return (
     <div className="flex flex-col gap-y-4">
       <div className="flex flex-row">
@@ -371,11 +383,10 @@ export const AllAppViewer :  React.FC<AppViewProps> = ({title, setView, children
         </button>
         <div className="flex-grow text-center">{title}</div>
       </div>
-      <div className="flex-grow overflow-y-auto">
-        {children}
-      </div>
-    </div>);
-}
+      <div className="flex-grow overflow-y-auto">{children}</div>
+    </div>
+  );
+};
 
 /**
  * single entity modal

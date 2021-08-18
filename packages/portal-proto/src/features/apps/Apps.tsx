@@ -157,7 +157,7 @@ export const Cohorts: React.FC<Clickable> = (props: Clickable) => {
           <Initials name="Cohorts" />
         </div>
         <div className="w-full h-full hidden group-hover:block">
-          Explore the GDC's collection of cohorts. Select one or more to form
+          Explore the GDC&apos;s collection of cohorts. Select one or more to form
           your custom cohort.
         </div>
       </div>

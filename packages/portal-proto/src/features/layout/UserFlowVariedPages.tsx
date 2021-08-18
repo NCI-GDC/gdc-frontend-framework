@@ -5,18 +5,20 @@ import { isString } from "@gff/core";
 
 interface UserFlowVariedPagesProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
+  readonly indexPath?: string;
   readonly Options?: React.FC<unknown>;
 }
 
 export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
   headerElements,
+  indexPath = "/",
   Options,
   children,
 }: PropsWithChildren<UserFlowVariedPagesProps>) => {
   return (
     <div className="flex flex-col min-h-screen min-w-full bg-nci-gray-lightest">
       <header className="flex-none bg-white">
-        <Header {...{ headerElements, Options }} />
+        <Header {...{ headerElements, indexPath, Options }} />
       </header>
       <main className="flex-grow">{children}</main>
       <footer className="flex-none">
@@ -28,11 +30,13 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
 
 interface HeaderProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
+  readonly indexPath: string;
   readonly Options?: React.FC<unknown>;
 }
 
 const Header: React.FC<HeaderProps> = ({
   headerElements,
+  indexPath,
   Options = () => <div />,
 }: HeaderProps) => {
   return (
@@ -45,7 +49,7 @@ const Header: React.FC<HeaderProps> = ({
           This causes an accessibility problem because empty anchors confuse screen
           readers. The button tag satisfies both react's requirements and a11y 
           requirements.  */}
-          <Link href="/">
+          <Link href={indexPath}>
             <button>
               <Image
                 src="/NIH_GDC_DataPortal-logo.svg"
