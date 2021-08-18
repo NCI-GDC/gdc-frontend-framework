@@ -50,9 +50,10 @@ interface CohortBarProps {
     onSelectionChanged: (number) => void;
     defaultIdx: number;
     case_count: string;
+    hide_controls?: boolean;
 }
 
-const CohortBar : React.FC<CohortBarProps> = ({cohort_names, onSelectionChanged, defaultIdx, case_count = "84,609"} : CohortBarProps) => {
+const CohortBar : React.FC<CohortBarProps> = ({cohort_names, onSelectionChanged, defaultIdx, case_count = "84,609", hide_controls=false} : CohortBarProps) => {
   const menu_items = cohort_names.map((x, index) => {
     return { value: index, label: x }
   });
@@ -62,6 +63,7 @@ const CohortBar : React.FC<CohortBarProps> = ({cohort_names, onSelectionChanged,
   return (
     <div className="flex flex-row items-center pl-4 h-14 bg-nci-gray-light">
       <div className="border-opacity-0">
+        { !hide_controls ?
         <Select
           inputId="cohort-bar_cohort_select"
           components={{
@@ -76,54 +78,39 @@ const CohortBar : React.FC<CohortBarProps> = ({cohort_names, onSelectionChanged,
             onSelectionChanged(x.value);
           }}
           className="border-nci-gray-light w-40 p-0"
-        />
+        /> : <div><h2>{currentCohort.label}</h2></div>
+        }
       </div>
       <CohortGroupSelect></CohortGroupSelect>
-      <div className="flex flex-row items-center">
-        <Button className="mx-1">{case_count} Cases</Button>
-        <Button className="mx-1 "><EditIcon size="1.5em"/></Button>
-        <Button className="mx-2 "><SaveIcon size="1.5em"/></Button>
-        <Button className="mx-2 "><AddIcon size="1.5em" /></Button>
-        <Button className="mx-2 "><DeleteIcon size="1.5em"/></Button>
-        <Button className="mx-2 "><UploadIcon size="1.5em"/></Button>
-        <Button className="mx-2 "><DownloadIcon size="1.5em" /></Button>
-      </div>
+      { !hide_controls ?
+        <div className="flex flex-row items-center">
+          <Button className="mx-1">{case_count} Cases</Button>
+          <Button className="mx-1 "><EditIcon size="1.5em" /></Button>
+          <Button className="mx-2 "><SaveIcon size="1.5em" /></Button>
+          <Button className="mx-2 "><AddIcon size="1.5em" /></Button>
+          <Button className="mx-2 "><DeleteIcon size="1.5em" /></Button>
+          <Button className="mx-2 "><UploadIcon size="1.5em" /></Button>
+          <Button className="mx-2 "><DownloadIcon size="1.5em" /></Button>
+        </div> : <div/>
+      }
     </div>
   );
 };
 
-const Top : React.FC<unknown> = () => {
+interface SimpleCohortBarProps {
+  readonly cohort_name: string;
+  readonly case_count: string;
+}
 
-  const [groupType, setGroupTop] = useState('any_of');
-
-  const handleChange = (event) => {
-    setGroupTop(event.target.value);
-  };
-
-  const menu_items = [
-    { value: "any_of", label: "is any of" },
-    { value: "all_of", label: "is all of" },
-    { value: "none_of", label: "is none of" },
-  ];
+const SimpleCohortBar : React.FC<SimpleCohortBarProps> = ({cohort_name, case_count } : SimpleCohortBarProps) => {
 
   return (
-  <div className="flex flex-row items-center h-16 bg-gray-300">
-    <div className="font-bold px-4">Current Cohort</div>
-    <div className="border-opacity-0">
-      <Select
-        components={{
-          IndicatorSeparator: () => null
-        }}
-        options={menu_items}
-        defaultValue={menu_items[0]}
-        className="px-7"
-      />
+    <div className="flex flex-row items-center pl-4 h-14 bg-nci-gray-light">
+      <div className="border-opacity-0">
+        <div><h2>{cohort_name}</h2></div>
+      </div>
+      <p className="px-1">is any of</p>
     </div>
-<div className="ml-auto">
-  <Button className="px-4">84,609 Cases</Button>
-  <Button className="px-4 bg-opacity-0"><ClearIcon/></Button>
-</div>
-  </div>
   );
 };
 
@@ -134,7 +121,7 @@ interface FacetElementProp {
 const CohortFacetElement: React.FC<FacetElementProp>= ( { filter } : FacetElementProp) => {
   const {  name, op, value  } = filter;
   const [groupType, setGroupTop] = useState(op);
-
+  
   const handleChange = (event) => {
     setGroupTop(event.target.value);
   };
@@ -162,27 +149,26 @@ const CohortFacetElement: React.FC<FacetElementProp>= ( { filter } : FacetElemen
   );
 }
 
-interface CohortGroupProps {
-  readonly cohorts: {
+export interface CohortGroupProps {
+  readonly cohorts: Array<{
     readonly name: string,
-    readonly facets: [Record<string, any>],
+    readonly facets: Array<Record<string, any> >,
     readonly case_count: string
-  }[]
-
+  }>
+  readonly simpleMode?:boolean;
 }
 
-export const CohortGroup: React.FC<CohortGroupProps> = ({ cohorts } : CohortGroupProps) => {
+export const CohortGroup: React.FC<CohortGroupProps> = ({ cohorts,simpleMode=false } : CohortGroupProps) => {
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(false);
-  const [currentFacets, setCurrentFacets] = useState(cohorts[0].facets);
   const [currentIndex, setCurrentIndex] = useState(0)
   const handleCohortSelection = (idx) => {
-    setCurrentFacets(cohorts[idx].facets);
     setCurrentIndex(idx);
   }
 
   const CohortBarWithProps = () => <CohortBar cohort_names={cohorts.map(o => o.name)}
                                               onSelectionChanged={handleCohortSelection}
-                                              defaultIdx={currentIndex} case_count={cohorts[currentIndex].case_count}/>
+                                              defaultIdx={currentIndex} case_count={cohorts[currentIndex].case_count}
+                                              hide_controls={simpleMode}/>
 
   return (
     <CollapsibleContainer
@@ -192,7 +178,7 @@ export const CohortGroup: React.FC<CohortGroupProps> = ({ cohorts } : CohortGrou
     >
       <div className="flex flex-row flex-wrap w-100 p-2 bg-nci-yellow-lightest border-b-2 border-r-2 border-l-2 rounded border-nci-gray-lighter">
         {
-          currentFacets.map((facet) => {
+          cohorts[currentIndex].facets.map((facet) => {
             return <CohortFacetElement key={nanoid()} filter={facet} />
           })}
 
