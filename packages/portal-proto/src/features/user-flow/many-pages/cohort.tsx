@@ -2,8 +2,18 @@ import React, { PropsWithChildren, useState } from "react";
 import {
   Button,
   CardPlaceholder,
-  Graph,
 } from "../../layout/UserFlowVariedPages";
+import {
+  MdClose as ClearIcon,
+  MdSettings as SettingsIcon,
+  MdEdit as EditIcon,
+  MdSave as SaveIcon,
+  MdAdd as AddIcon,
+  MdDelete as DeleteIcon,
+  MdFileUpload as UploadIcon,
+  MdFileDownload as DownloadIcon,
+  MdArrowDropDown as DropDownIcon,
+} from "react-icons/md"
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import classNames from "classnames";
 import Image from "next/image";
@@ -11,6 +21,9 @@ import ReactModal from "react-modal";
 import { Select } from "../../../components/Select";
 import { ContextualCasesView } from "../../cases/CasesView";
 import { ContextualFilesView } from "../../files/FilesView";
+import { CohortGroup, SummaryCharts } from "../../cohortBuilder/CohortGroup";
+import { MetaSearch} from "../../cohortBuilder/MetaSearch";
+import { CohortTabbedFacets } from "../../cohortBuilder/FacetGroup";
 
 export type CohortManagerProps = Partial<ModalOrExpandProps> &
   Partial<CohortBuilderModalProps>;
@@ -32,10 +45,50 @@ export const CohortManager: React.FC<CohortManagerProps> = ({
   const [showCases, setShowCases] = useState(false);
   const [showFiles, setShowFiles] = useState(false);
 
+
   const cohortOptions = [
     { value: "custom-cohort-1", label: "New Custom Cohort" },
     { value: "all-gdc", label: "All GDC Cases" },
   ];
+
+  const COHORTS = [
+    { name: 'New Custom Cohort',
+      facets : [  ],
+      case_count: "84,609",
+      file_count: "618,198"
+    },
+    { name: 'Current Cohort',
+      facets : [ { name:"Primary Site", op:"any of", value: "bronchus and lung"} ],
+      case_count: "12,027",
+      file_count: "52,234"
+    },
+    {
+      name: "Baily's Cohort",
+      facets: [
+        { name: "Primary Site", op: "any of", value: "bronchus and lung" },
+        { name: "Age of Diagnosis", op: "between", value: "65 and 89" },
+      ],
+      case_count: "2,425",
+      file_count: "29,074"
+    },
+    { name: " Final Cohort",
+      facets : [
+        { name:"Primary Site", op:"any of ", value: "bronchus and lung"},
+        { name:"Primary Diagnosis", op:"any_of", value: "squamous cell carcinoma, nos / squamous cell carcinoma, keratinizing, nos / basaloid squamous cell car…"},
+        { name:"Age of Diagnosis", op:"between", value: "65 and 89"},
+        { name:"Gene", op:"any of", value: "TP53,KMT2D,PIK3CA,NFE2L2,CDH8,KEAP1,PTEN,ADCY8,PTPRT,CALCR,GRM8,FBXW7,RB1,CDKN2A"}
+
+      ],
+      case_count: "179",
+      file_count: "2,198"
+    }
+  ]
+
+  const menu_items = COHORTS.map((x, index) => {
+    return { value: index, label: x.name }
+  });
+
+  const [currentIndex, setCurrentIndex] = useState(0)
 
   return (
     <div className="flex flex-col gap-y-4">
@@ -43,19 +96,21 @@ export const CohortManager: React.FC<CohortManagerProps> = ({
         <div className="w-60">
           <Select
             inputId="cohort-manager__cohort-select"
-            options={cohortOptions}
-            defaultValue={cohortOptions[0]}
+            options={menu_items}
+            defaultValue={menu_items[0]}
             isMulti={false}
+            onChange={(x) => {
+              setCurrentIndex(x.value);
+            }}
           />
         </div>
-        <div className="h-10 w-10">
-          <CardPlaceholder />
-        </div>
-        <div className="h-10 w-10">
-          <CardPlaceholder />
-        </div>
-        <div className="h-10 w-10">
-          <CardPlaceholder />
+        <div className="flex flex-row items-center">
+          <Button className="mx-1 "><EditIcon size="1.5em" /></Button>
+          <Button className="mx-2 "><SaveIcon size="1.5em" /></Button>
+          <Button className="mx-2 "><AddIcon size="1.5em" /></Button>
+          <Button className="mx-2 "><DeleteIcon size="1.5em" /></Button>
+          <Button className="mx-2 "><UploadIcon size="1.5em" /></Button>
+          <Button className="mx-2 "><DownloadIcon size="1.5em" /></Button>
         </div>
         <div className="flex-grow"></div>
         <div>
@@ -65,7 +120,7 @@ export const CohortManager: React.FC<CohortManagerProps> = ({
               setShowFiles(false);
             }}
           >
-            2,345 Cases
+            {COHORTS[currentIndex].case_count} Cases
           </Button>
         </div>
         <div>
@@ -75,7 +130,7 @@ export const CohortManager: React.FC<CohortManagerProps> = ({
               setShowCases(false);
             }}
           >
-            8,322 Files
+            {COHORTS[currentIndex].file_count} Files
           </Button>
         </div>
         <ModalOrExpand
@@ -85,8 +140,8 @@ export const CohortManager: React.FC<CohortManagerProps> = ({
           setIsExpanded={setIsExpanded}
         />
       </div>
-      <CohortBuilderModal isOpen={isOpen} closeModal={closeModal} />
-      <CollapsibleCohortBuilder isCollapsed={!isExpanded} />
+      <CohortBuilderModal isOpen={isOpen} closeModal={closeModal} cohort={[COHORTS[currentIndex]]} />
+      <CollapsibleCohortBuilder isCollapsed={!isExpanded} cohort={[COHORTS[currentIndex]]}/>
       <CollapsibleCases show={showCases} />
       <CollapsibleFiles show={showFiles} />
     </div>
@@ -137,20 +192,25 @@ const CollapsibleFiles: React.FC<CollapsibleFilesProps> = (
 
 interface CollapsibleCohortBuilderProps {
   readonly isCollapsed: boolean;
+  readonly cohort: Array<any>;
 }
 
 const CollapsibleCohortBuilder: React.FC<CollapsibleCohortBuilderProps> = ({
   isCollapsed,
+  cohort
 }: CollapsibleCohortBuilderProps) => {
-  return <CohortBuilder show={!isCollapsed} />;
+  return <CohortBuilder show={!isCollapsed} cohort={cohort} />;
 };
 
 export interface CohortBuilderProps {
   readonly show?: boolean;
+  readonly cohort: Array<any>;
 }
 
 export const CohortBuilder: React.FC<CohortBuilderProps> = ({
+  cohort,
   show = true,
+
 }: CohortBuilderProps) => {
   return (
     <div
@@ -160,12 +220,9 @@ export const CohortBuilder: React.FC<CohortBuilderProps> = ({
       })}
     >
       <div className="">
-        <Image
-          src="/user-flow/cohort-builder-mock-up.png"
-          layout="responsive"
-          width="100%"
-          height="100%"
-        ></Image>
+        <CohortGroup cohorts={cohort} simpleMode={true}></CohortGroup>
+        <MetaSearch onChange={(r) => r }></MetaSearch>
+        <CohortTabbedFacets  searchResults={[]}></CohortTabbedFacets>
       </div>
       <div className="pt-4">
         <Tabs>
@@ -175,14 +232,7 @@ export const CohortBuilder: React.FC<CohortBuilderProps> = ({
           </TabList>
 
           <TabPanel>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 p-4 gap-4 bg-gray-100">
-              <Graph />
-              <Graph />
-              <Graph />
-              <Graph />
-              <Graph />
-              <Graph />
-            </div>
+            <SummaryCharts/>
           </TabPanel>
           <TabPanel>
             <Cases />
@@ -230,15 +280,21 @@ export const ModalOrExpand: React.FC<ModalOrExpandProps> = (
 interface CohortBuilderModalProps {
   readonly isOpen: boolean;
   readonly closeModal: () => void;
+  readonly cohort: Array<any>;
 }
 
 const CohortBuilderModal: React.FC<CohortBuilderModalProps> = ({
   isOpen,
   closeModal,
+  cohort
 }: CohortBuilderModalProps) => {
   return (
     <ReactModal isOpen={isOpen} onRequestClose={closeModal}>
-      <CohortBuilder />
+      <div>
+        <CohortGroup cohorts={cohort} simpleMode={true}></CohortGroup>
+        <MetaSearch onChange={(r) => r }></MetaSearch>
+        <CohortTabbedFacets  searchResults={[]}></CohortTabbedFacets>
+      </div>
     </ReactModal>
   );
 };
