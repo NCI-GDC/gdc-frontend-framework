@@ -40,25 +40,7 @@ import {  GeneTable, MutationTable } from "../../../features/genomic/Genomic";
 import { FacetGroup } from "../../../features/cohortBuilder/FacetGroup";
 import { get_facets } from "../../../features/cohortBuilder/dictionary";
 
-export interface AppViewProps {
-  readonly title: string;
-  readonly setView: (string) => void;
-}
 
-export const AppView :  React.FC<AppViewProps> = ({title, setView, children} : PropsWithChildren<AppViewProps>) => {
-  return (
-    <div className="flex flex-col gap-y-4">
-      <div className="flex flex-row">
-        <button className="absolute" onClick={() => setView("appSelector")}>
-          &lt; All Apps
-        </button>
-        <div className="flex-grow text-center">{title}</div>
-      </div>
-      <div className="flex-grow overflow-y-auto">
-        {children}
-      </div>
-    </div>);
-}
 
 
 const UserFlowFewestPagesPage: NextPage = () => {
@@ -170,17 +152,17 @@ const UserFlowFewestPagesPage: NextPage = () => {
               returnToAllApps={() => setCurrentApp("appSelector")}
             />
           ) : currentApp == "somatic-mutations" ? (
-            <AppView title="Somatic Mutations" setView={setCurrentApp}>
+            <AllAppViewer title="Somatic Mutations" setView={setCurrentApp}>
               <div className="flex flex-row">
                 <GeneTable width="0"/>
                 <MutationTable width="0"/>
               </div>
-             </AppView >
+             </AllAppViewer >
             ) : currentApp == "clinical-filters" ? (
-            <AppView title="Clinical Filters" setView={setCurrentApp}> <FacetGroup facetNames={get_facets('Clinical','All')}/></AppView >
+            <AllAppViewer title="Clinical Filters" setView={setCurrentApp}> <FacetGroup facetNames={get_facets('Clinical','All')}/></AllAppViewer >
           ) : currentApp == "biospecimen-filters" ? (
-            <AppView title="Biospecimen Filters" setView={setCurrentApp}> <FacetGroup facetNames={get_facets('Biospecimen','All')}/></AppView >
-          ) :((
+            <AllAppViewer title="Biospecimen Filters" setView={setCurrentApp}> <FacetGroup facetNames={get_facets('Biospecimen','All')}/></AllAppViewer >
+          ) :(
             // app selector
             <Apps
               setCurrentApp={(name) => {
@@ -371,6 +353,29 @@ const AllAppsUncleGrid = ({ returnToAllApps }: AllAppsUncleGridProps) => {
     </div>
   );
 };
+
+/**
+ * Generic AppView
+ */
+export interface AppViewProps {
+  readonly title: string;
+  readonly setView: (string) => void;
+}
+
+export const AllAppViewer :  React.FC<AppViewProps> = ({title, setView, children} : PropsWithChildren<AppViewProps>) => {
+  return (
+    <div className="flex flex-col gap-y-4">
+      <div className="flex flex-row">
+        <button className="absolute" onClick={() => setView("appSelector")}>
+          &lt; All Apps
+        </button>
+        <div className="flex-grow text-center">{title}</div>
+      </div>
+      <div className="flex-grow overflow-y-auto">
+        {children}
+      </div>
+    </div>);
+}
 
 /**
  * single entity modal
