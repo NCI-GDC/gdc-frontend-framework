@@ -1,12 +1,11 @@
 import { NextPage } from "next";
 import {
-  App,
   UserFlowVariedPages,
   Button,
 } from "../../../features/layout/UserFlowVariedPages";
 import { CohortManager } from "../../../features/user-flow/many-pages/cohort";
 import classNames from "classnames";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useRef } from "react";
 import { useState } from "react";
 import { ContextualStudiesView } from "../../../features/studies/StudiesView";
 import { StudyView } from "../../../features/studies/StudyView";
@@ -38,6 +37,9 @@ const UserFlowFewestPagesPage: NextPage = () => {
   const [isSummaryCollapsed, setIsSummaryCollapsed] = useState(false);
   const [currentApp, setCurrentApp] = useState("appSelector");
   const [isStudyModalOpen, setStudyModalOpen] = useState(false);
+
+  // used to scroll to top of apps section
+  const topOfApps = useRef(null);
 
   const headerElements = ["Exploration"];
 
@@ -122,7 +124,7 @@ const UserFlowFewestPagesPage: NextPage = () => {
         <div className="bg-white">
           <CohortSummary />
         </div>
-        <div className="border p-4 border-gray-400 bg-white">
+        <div className="border p-4 border-gray-400 bg-white" ref={topOfApps}>
           {currentApp === "cohort-viewer" ? (
             <CohortViewer goBack={() => setCurrentApp("appSelector")} />
           ) : currentApp === "studies" ? (
@@ -134,9 +136,18 @@ const UserFlowFewestPagesPage: NextPage = () => {
             <AllAppsRepository
               returnToAllApps={() => setCurrentApp("appSelector")}
             />
+          ) : currentApp === "unclegrid" ? (
+            <AllAppsUncleGrid
+              returnToAllApps={() => setCurrentApp("appSelector")}
+            />
           ) : (
             // app selector
-            <Apps setCurrentApp={setCurrentApp} />
+            <Apps
+              setCurrentApp={(name) => {
+                setCurrentApp(name);
+                topOfApps.current.scrollIntoView();
+              }}
+            />
           )}
         </div>
       </div>
@@ -173,12 +184,12 @@ const Apps: React.FC<AppsProps> = ({
         <DownloadableFileFilters />
         <SomaticMutations />
         <CopyNumberVariations />
-        <SingleCellRnaSeq />
-        <OncoGrid />
-        <GeneExpression />
-        <ProteinPaint />
+        <SingleCellRnaSeq onClick={() => setCurrentApp("unclegrid")} />
+        <OncoGrid onClick={() => setCurrentApp("unclegrid")} />
+        <GeneExpression onClick={() => setCurrentApp("unclegrid")} />
+        <ProteinPaint onClick={() => setCurrentApp("unclegrid")} />
         <CohortViewerApp onClick={() => setCurrentApp("cohort-viewer")} />
-        <SetOperations />
+        <SetOperations onClick={() => setCurrentApp("unclegrid")} />
         <CohortComparison />
         <ClinicalDataAnalysis />
         <Repository onClick={() => setCurrentApp("repository")} />
@@ -291,6 +302,31 @@ const AllAppsRepository = (props: AllAppsRepositoryProps) => {
         <div className="flex-grow text-center">Repository</div>
       </div>
       <ContextualFilesView />
+    </div>
+  );
+};
+
+interface AllAppsUncleGridProps {
+  readonly returnToAllApps: () => void;
+}
+
+const AllAppsUncleGrid = ({ returnToAllApps }: AllAppsUncleGridProps) => {
+  return (
+    <div className="flex flex-col gap-y-4">
+      <div className="flex flex-row">
+        <button className="absolute" onClick={returnToAllApps}>
+          &lt; All Apps
+        </button>
+        <div className="flex-grow text-center">OncoGrid</div>
+      </div>
+      <div className="flex-grow overflow-y-auto">
+        <Image
+          src="/user-flow/oncogrid-mock-up.png"
+          layout="responsive"
+          width="100%"
+          height="100%"
+        ></Image>
+      </div>
     </div>
   );
 };
