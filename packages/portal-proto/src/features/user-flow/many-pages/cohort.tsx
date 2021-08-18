@@ -45,6 +45,7 @@ export const CohortManager: React.FC<CohortManagerProps> = ({
             inputId="cohort-manager__cohort-select"
             options={cohortOptions}
             defaultValue={cohortOptions[0]}
+            isMulti={false}
           />
         </div>
         <div className="h-10 w-10">

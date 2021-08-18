@@ -2,7 +2,7 @@ import { Project, useProjects } from "@gff/core";
 import { Option, Select, SelectProps } from "../../components/Select";
 import { GroupTypeBase } from "react-select";
 import Image from "next/image";
-import { App } from "../layout/UserFlowVariedPages";
+import { App, Initials } from "../layout/UserFlowVariedPages";
 
 const DLBCL: Project = {
   projectId: "DLBCL",
@@ -409,7 +409,26 @@ const Study: React.FC<StudyProps> = (props: StudyProps) => {
   const { projectId } = props.project;
   const { onClick } = props;
 
-  return <App name={projectId} onClick={onClick} />;
+  return (
+    <App name={projectId} onClick={onClick}>
+      <div className="flex flex-col w-full h-full">
+        <div className="flex-grow">
+          <Initials name={projectId} />
+        </div>
+        <div className="flex flex-row justify-center">
+          <div />
+          <div
+            className="flex flex-row items-center gap-x-2"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <input type="checkbox" id={`select-${projectId}`} />
+            <label htmlFor={`select-${projectId}`}>Select</label>
+          </div>
+          <div />
+        </div>
+      </div>
+    </App>
+  );
 };
 
 const Search: React.FC<unknown> = () => {
