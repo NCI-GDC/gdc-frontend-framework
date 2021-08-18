@@ -242,6 +242,7 @@ module.exports = {
     extend: {
       borderWidth: ["hover"],
       boxShadow: ["hover"],
+      display: ["group-hover"],
     },
   },
   plugins: [require("@tailwindcss/forms")],

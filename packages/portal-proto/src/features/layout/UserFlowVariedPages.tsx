@@ -125,7 +125,7 @@ export const Graph: React.FC<unknown> = () => {
       <div className="flex flex-col h-full gap-y-2">
         <span className="text-center">Graph</span>
         <div className="flex-grow">
-          <Card />
+          <CardPlaceholder />
         </div>
       </div>
     </div>
@@ -181,12 +181,12 @@ export const App: React.FC<AppProps> = ({
     if (isString(name)) {
       children = <Initials name={name} />;
     } else {
-      children = <Card />;
+      children = <CardPlaceholder />;
     }
   }
   return (
     <button
-      className="h-52 border border-nci-gray-lighter px-4 pt-2 pb-4 flex flex-col gap-y-2 bg-white shadow-md hover:shadow-lg hover:border-nci-blumine-darker hover:border-2"
+      className="group h-52 border border-nci-gray-lighter px-4 pt-2 pb-4 flex flex-col gap-y-2 bg-white shadow-md hover:shadow-lg hover:border-nci-blumine-darker hover:border-2"
       onClick={onClick}
     >
       <div className="text-center w-full text-lg">{name}</div>
@@ -209,7 +209,7 @@ export const LinePlaceholer: React.FC<LinePlaceholerProps> = ({
   );
 };
 
-export const Card: React.FC<unknown> = () => {
+export const CardPlaceholder: React.FC<unknown> = () => {
   // styles for the SVG X from https://stackoverflow.com/a/56557106
   const color = "gray";
   return (
@@ -231,12 +231,13 @@ export interface InitialsProps {
 
 export const Initials: React.FC<InitialsProps> = ({ name }: InitialsProps) => {
   const initials = name
+    .replace(/\W/g, " ")
     .split(" ")
     .map((s) => s[0])
     .join("");
   return (
     <div className="flex flex-row justify-content-center items-center w-full h-full">
-      <div className="flex-grow text-8xl text-nci-cyan">{initials}</div>
+      <div className="flex-grow text-8xl text-gdc-blue">{initials}</div>
     </div>
   );
 };

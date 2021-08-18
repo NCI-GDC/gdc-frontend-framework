@@ -1,23 +1,45 @@
 import { NextPage } from "next";
 import {
-  App,
   UserFlowVariedPages,
   Button,
 } from "../../../features/layout/UserFlowVariedPages";
 import { CohortManager } from "../../../features/user-flow/many-pages/cohort";
 import classNames from "classnames";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useRef } from "react";
 import { useState } from "react";
-import { CasesTable } from "../../../features/user-flow/common";
 import { ContextualStudiesView } from "../../../features/studies/StudiesView";
 import { StudyView } from "../../../features/studies/StudyView";
 import Image from "next/image";
 import { FacetChart } from "../../../features/charts/FacetChart";
+import ReactModal from "react-modal";
+import { ContextualCasesView } from "../../../features/cases/CasesView";
+import {
+  ClinicalFilters,
+  GeneExpression,
+  OncoGrid,
+  ProteinPaint,
+  SetOperations,
+  SingleCellRnaSeq,
+  Cohorts,
+  BiospecimenFilters,
+  DownloadableFileFilters,
+  SomaticMutations,
+  CopyNumberVariations,
+  CohortComparison,
+  ClinicalDataAnalysis,
+  Repository,
+  CohortViewerApp,
+} from "../../../features/apps/Apps";
+import { ContextualFilesView } from "../../../features/files/FilesView";
 
 const UserFlowFewestPagesPage: NextPage = () => {
   const [isExpressionsCollapsed, setIsExpressionsCollapsed] = useState(false);
   const [isSummaryCollapsed, setIsSummaryCollapsed] = useState(false);
   const [currentApp, setCurrentApp] = useState("appSelector");
+  const [isStudyModalOpen, setStudyModalOpen] = useState(false);
+
+  // used to scroll to top of apps section
+  const topOfApps = useRef(null);
 
   const headerElements = ["Exploration"];
 
@@ -102,19 +124,37 @@ const UserFlowFewestPagesPage: NextPage = () => {
         <div className="bg-white">
           <CohortSummary />
         </div>
-        <div className="border p-4 border-gray-400 bg-white">
+        <div className="border p-4 border-gray-400 bg-white" ref={topOfApps}>
           {currentApp === "cohort-viewer" ? (
             <CohortViewer goBack={() => setCurrentApp("appSelector")} />
           ) : currentApp === "studies" ? (
-            <ContextualStudiesView setView={setCurrentApp} />
-          ) : currentApp == "study-view" ? (
-            <StudyView setView={setCurrentApp} />
+            <AllAppsStudies
+              returnToAllApps={() => setCurrentApp("appSelector")}
+              viewStudy={() => setStudyModalOpen(true)}
+            />
+          ) : currentApp === "repository" ? (
+            <AllAppsRepository
+              returnToAllApps={() => setCurrentApp("appSelector")}
+            />
+          ) : currentApp === "unclegrid" ? (
+            <AllAppsUncleGrid
+              returnToAllApps={() => setCurrentApp("appSelector")}
+            />
           ) : (
             // app selector
-            <Apps setCurrentApp={setCurrentApp} />
+            <Apps
+              setCurrentApp={(name) => {
+                setCurrentApp(name);
+                topOfApps.current.scrollIntoView();
+              }}
+            />
           )}
         </div>
       </div>
+      <StudyModal
+        isOpen={isStudyModalOpen}
+        closeModal={() => setStudyModalOpen(false)}
+      />
     </UserFlowVariedPages>
   );
 };
@@ -138,64 +178,21 @@ const Apps: React.FC<AppsProps> = ({
         <Button>File Tools</Button>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
-        <App name="Cohorts" onClick={() => setCurrentApp("studies")} />
-        <App name="Clinical Filters" />
-        <App name="Biospecimen Filters" />
-        <App name="Downloadable File Filters" />
-        <App name="Somatic Mutations" />
-        <App name="Copy Number Variations" />
-        <App name="scRNA-Seq">
-          <div className="w-full h-full relative">
-            <Image
-              src="/user-flow/scRnaSeqViz.png"
-              layout="fill"
-              objectFit="contain"
-            />
-          </div>
-        </App>
-        <App name="OncoGrid">
-          <div className="w-full h-full relative">
-            <Image
-              src="/user-flow/oncogrid.png"
-              layout="fill"
-              objectFit="contain"
-            />
-          </div>
-        </App>
-        <App name="Gene Expression">
-          <div className="w-full h-full relative">
-            <Image
-              src="/user-flow/gene-expression.png"
-              layout="fill"
-              objectFit="contain"
-            />
-          </div>
-        </App>
-        <App name="ProteinPaint">
-          <div className="w-full h-full relative">
-            <Image
-              src="/user-flow/proteinpaint.png"
-              layout="fill"
-              objectFit="contain"
-            />
-          </div>
-        </App>
-        <App
-          name="Cohort Viewer"
-          onClick={() => setCurrentApp("cohort-viewer")}
-        />
-        <App name="Set Operations">
-          <div className="w-full h-full relative">
-            <Image
-              src="/user-flow/set-operations.png"
-              layout="fill"
-              objectFit="contain"
-            />
-          </div>
-        </App>
-        <App name="Cohort Comparison" />
-        <App name="Clinical Data Analysis" />
-        <App name="Repository" />
+        <Cohorts onClick={() => setCurrentApp("studies")} />
+        <ClinicalFilters />
+        <BiospecimenFilters />
+        <DownloadableFileFilters />
+        <SomaticMutations />
+        <CopyNumberVariations />
+        <SingleCellRnaSeq onClick={() => setCurrentApp("unclegrid")} />
+        <OncoGrid onClick={() => setCurrentApp("unclegrid")} />
+        <GeneExpression onClick={() => setCurrentApp("unclegrid")} />
+        <ProteinPaint onClick={() => setCurrentApp("unclegrid")} />
+        <CohortViewerApp onClick={() => setCurrentApp("cohort-viewer")} />
+        <SetOperations onClick={() => setCurrentApp("unclegrid")} />
+        <CohortComparison />
+        <ClinicalDataAnalysis />
+        <Repository onClick={() => setCurrentApp("repository")} />
       </div>
     </div>
   );
@@ -213,7 +210,7 @@ const CohortViewer: React.FC<CohortViewerProps> = ({
       <div className="flex flex-row">
         <button onClick={goBack}>&lt; All Apps</button>
       </div>
-      <CasesTable />
+      <ContextualCasesView />
     </div>
   );
 };
@@ -246,3 +243,110 @@ const CollapsibleContainer: React.FC<CollapsibleContainerProps> = (
     </div>
   );
 };
+
+interface StudyModalProps {
+  readonly isOpen: boolean;
+  readonly closeModal: () => void;
+}
+
+const StudyModal: React.FC<StudyModalProps> = ({
+  isOpen,
+  closeModal,
+}: StudyModalProps) => {
+  return (
+    <ReactModal isOpen={isOpen} onRequestClose={closeModal}>
+      <StudyView />
+    </ReactModal>
+  );
+};
+
+interface AllAppsStudiesProps {
+  readonly returnToAllApps: () => void;
+  readonly viewStudy: (name: string) => void;
+}
+
+const AllAppsStudies = (props: AllAppsStudiesProps) => {
+  const { returnToAllApps, viewStudy } = props;
+
+  return (
+    <div className="flex flex-col gap-y-4">
+      <div className="flex flex-row">
+        <button className="absolute" onClick={returnToAllApps}>
+          &lt; All Apps
+        </button>
+        <div className="flex-grow text-center">Cohorts</div>
+      </div>
+      <ContextualStudiesView
+        setCurrentStudy={viewStudy}
+        exploreRight={
+          <Button onClick={returnToAllApps}>Explore Studies</Button>
+        }
+      />
+    </div>
+  );
+};
+
+interface AllAppsRepositoryProps {
+  readonly returnToAllApps: () => void;
+}
+
+const AllAppsRepository = (props: AllAppsRepositoryProps) => {
+  const { returnToAllApps } = props;
+
+  return (
+    <div className="flex flex-col gap-y-4">
+      <div className="flex flex-row">
+        <button className="absolute" onClick={returnToAllApps}>
+          &lt; All Apps
+        </button>
+        <div className="flex-grow text-center">Repository</div>
+      </div>
+      <ContextualFilesView />
+    </div>
+  );
+};
+
+interface AllAppsUncleGridProps {
+  readonly returnToAllApps: () => void;
+}
+
+const AllAppsUncleGrid = ({ returnToAllApps }: AllAppsUncleGridProps) => {
+  return (
+    <div className="flex flex-col gap-y-4">
+      <div className="flex flex-row">
+        <button className="absolute" onClick={returnToAllApps}>
+          &lt; All Apps
+        </button>
+        <div className="flex-grow text-center">OncoGrid</div>
+      </div>
+      <div className="flex-grow overflow-y-auto">
+        <Image
+          src="/user-flow/oncogrid-mock-up.png"
+          layout="responsive"
+          width="100%"
+          height="100%"
+        ></Image>
+      </div>
+    </div>
+  );
+};
+
+/**
+ * single entity modal
+ * < prev  ID   next >
+ * single entity view
+ *
+ * ---
+ *
+ * collection of entities view
+ * - show collection of entities
+ * - filters entities
+ * - sorts entities
+ *
+ * select entities
+ * set filter
+ * set sort
+ *
+ * click entity -> set current entity
+ *
+ */

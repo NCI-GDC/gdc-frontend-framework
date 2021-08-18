@@ -104,9 +104,9 @@ const ColorsPage: NextPage = () => {
           >
             USWDS colors
           </a>{" "}
-          are designed to meet the accessibility contrast requirements as defined
-          by WCAG 2.0 AA. Each color has a magic number. Colors with the same
-          magic number have the same luminence. To meet the accessibility
+          are designed to meet the accessibility contrast requirements as
+          defined by WCAG 2.0 AA. Each color has a magic number. Colors with the
+          same magic number have the same luminence. To meet the accessibility
           contrast requirements, colors must be 50 points apart. The default
           variations of each color have a magic number of 50. This means that
           they can be used against pure white (magic number = 0) and pure black

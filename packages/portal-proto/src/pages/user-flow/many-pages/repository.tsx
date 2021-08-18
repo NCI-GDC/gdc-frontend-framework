@@ -2,7 +2,7 @@ import { NextPage } from "next";
 import Link from "next/link";
 import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
 import { CohortManager } from "../../../features/user-flow/many-pages/cohort";
-import Select from "react-select";
+import { Select } from "../../../components/Select";
 import { useState } from "react";
 import { GdcFile, useFiles } from "@gff/core";
 
