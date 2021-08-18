@@ -2,8 +2,18 @@ import React, { PropsWithChildren, useState } from "react";
 import {
   Button,
   CardPlaceholder,
-  Graph,
 } from "../../layout/UserFlowVariedPages";
+import {
+  MdClose as ClearIcon,
+  MdSettings as SettingsIcon,
+  MdEdit as EditIcon,
+  MdSave as SaveIcon,
+  MdAdd as AddIcon,
+  MdDelete as DeleteIcon,
+  MdFileUpload as UploadIcon,
+  MdFileDownload as DownloadIcon,
+  MdArrowDropDown as DropDownIcon,
+} from "react-icons/md"
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import classNames from "classnames";
 import Image from "next/image";
@@ -94,14 +104,13 @@ export const CohortManager: React.FC<CohortManagerProps> = ({
             }}
           />
         </div>
-        <div className="h-10 w-10">
-          <CardPlaceholder />
-        </div>
-        <div className="h-10 w-10">
-          <CardPlaceholder />
-        </div>
-        <div className="h-10 w-10">
-          <CardPlaceholder />
+        <div className="flex flex-row items-center">
+          <Button className="mx-1 "><EditIcon size="1.5em" /></Button>
+          <Button className="mx-2 "><SaveIcon size="1.5em" /></Button>
+          <Button className="mx-2 "><AddIcon size="1.5em" /></Button>
+          <Button className="mx-2 "><DeleteIcon size="1.5em" /></Button>
+          <Button className="mx-2 "><UploadIcon size="1.5em" /></Button>
+          <Button className="mx-2 "><DownloadIcon size="1.5em" /></Button>
         </div>
         <div className="flex-grow"></div>
         <div>
