@@ -29,7 +29,7 @@ import {
   CohortComparison,
   ClinicalDataAnalysis,
   Repository,
-  CohortViewerApp
+  CohortViewerApp,
 } from "../../../features/apps/Apps";
 import { ContextualFilesView } from "../../../features/files/FilesView";
 
@@ -172,13 +172,12 @@ const Apps: React.FC<AppsProps> = ({
         <BiospecimenFilters />
         <DownloadableFileFilters />
         <SomaticMutations />
-        <CopyNumberVariations/>
+        <CopyNumberVariations />
         <SingleCellRnaSeq />
         <OncoGrid />
         <GeneExpression />
         <ProteinPaint />
-        <CohortViewerApp onClick={() => setCurrentApp("cohort-viewer")}
-        />
+        <CohortViewerApp onClick={() => setCurrentApp("cohort-viewer")} />
         <SetOperations />
         <CohortComparison />
         <ClinicalDataAnalysis />
