@@ -6,6 +6,10 @@ import  MetaSearch from "../features/cohortBuilder/MetaSearch";
 import  CohortTabbedFacets from "../features/cohortBuilder/FacetGroup";
 
 const COHORTS = [
+  { name: 'New Cohort',
+    facets : [  ],
+    case_count: "84,609"
+  },
   { name: 'Current Cohort',
     facets : [ { name:"Primary Site", op:"any of", value: "breast"} ],
     case_count: "9,115"
@@ -32,13 +36,13 @@ const COHORTS = [
 
 const CohortBuilder: NextPage = () => {
 
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
 
   return (
     <UserFlowVariedPages headerElements={[]}>
       <CohortGroup cohorts={COHORTS}></CohortGroup>
-      <MetaSearch onChange={(e) => setSearchTerm(e)}></MetaSearch>
-      <CohortTabbedFacets  searchTerm={searchTerm}></CohortTabbedFacets>
+      <MetaSearch onChange={(r) => setSearchResults(r)}></MetaSearch>
+      <CohortTabbedFacets  searchResults={searchResults}></CohortTabbedFacets>
       <SummaryCharts/>
     </UserFlowVariedPages>
   );

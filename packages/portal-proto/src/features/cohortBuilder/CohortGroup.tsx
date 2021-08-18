@@ -8,7 +8,7 @@ import {
   MdEdit as EditIcon,
   MdSave as SaveIcon,
   MdAdd as AddIcon,
-  MdAdd as DeleteIcon,
+  MdDelete as DeleteIcon,
   MdFileUpload as UploadIcon,
   MdFileDownload as DownloadIcon,
   MdArrowDropDown as DropDownIcon
@@ -163,11 +163,11 @@ const CohortFacetElement: React.FC<FacetElementProp>= ( { filter } : FacetElemen
 }
 
 interface CohortGroupProps {
-  readonly cohorts: [{
+  readonly cohorts: {
     readonly name: string,
     readonly facets: [Record<string, any>],
     readonly case_count: string
-  }]
+  }[]
 
 }
 

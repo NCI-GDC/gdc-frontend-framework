@@ -8,7 +8,6 @@ type SearchFunction = {
 };
 
 interface MetaSearchProp {
-  readonly handler: SearchFunction;
   readonly onChange: (any) => void;
 }
 

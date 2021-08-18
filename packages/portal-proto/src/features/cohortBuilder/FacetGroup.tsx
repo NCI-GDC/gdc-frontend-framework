@@ -28,7 +28,7 @@ const molecularFmolecularFacets = [];
 
 const molecularSubcategories = [
   " ",
-  "Gene Expression",
+  "Mutated Genes",
   "Simple Mutation"
 ];
 
@@ -80,11 +80,10 @@ const FacetTabWithSubmenu : React.FC<FacetTabWithSubmenuProps> = ({ category, su
 FacetTabWithSubmenu.tabsRole = 'Tab';
 
 interface CohortTabbedFacetsProps {
-  readonly searchTerm: string;
+  readonly searchResults: [ Record<string, unknown> ];
 }
 
-export const CohortTabbedFacets: React.FC<CohortTabbedFacetsProps> = ( {  searchTerm } : CohortTabbedFacetsProps) => {
-   const [searchResults, setSearchResults ] = useState({ });
+export const CohortTabbedFacets: React.FC<CohortTabbedFacetsProps> = ( {  searchResults } : CohortTabbedFacetsProps) => {
    const [subcategories, setSubcategories] = useState({ 'Clinical': 'All' ,'Biospecimen': 'All', 'Visualizable Data': 'Gene Expression' });
    const handleSubcategoryChanged = (category:string, subcategory:string) => {
      const state = { ...subcategories };
@@ -92,10 +91,18 @@ export const CohortTabbedFacets: React.FC<CohortTabbedFacetsProps> = ( {  search
      setSubcategories(state);
   }
 
-   if (searchTerm.length > 0) {
+
+  /** ----
+   if (searchResults.length > 0) {
      // have search results select only those facets within the results
-     console.log(searchTerm);
+     console.log(searchResults);
+     const clinicaCount = get_facet_subcategories("Clinical").reduce((result, key) => {
+       result[key] = 0;
+       return result;
+     }, {});
+
    }
+   --- */
 
   return (
     <div className="w-100">
