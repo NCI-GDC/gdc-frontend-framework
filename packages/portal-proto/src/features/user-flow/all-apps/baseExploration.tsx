@@ -7,7 +7,7 @@ import { StudyView } from "../../studies/StudyView";
 import Image from "next/image";
 import { FacetChart } from "../../charts/FacetChart";
 import ReactModal from "react-modal";
-import { ContextualCasesView } from "../../cases/CasesView";
+import { Case, ContextualCasesView } from "../../cases/CasesView";
 import {
   ClinicalFilters,
   GeneExpression,
@@ -32,6 +32,7 @@ import { FacetGroup } from "../../cohortBuilder/FacetGroup";
 import { get_facets } from "../../cohortBuilder/dictionary";
 import { FileModal } from "../../files/FileView";
 import { GdcFile } from "@gff/core";
+import { CaseModal } from "../../cases/CaseView";
 
 export interface BaseExplorationPageProps {
   readonly headerElements: ReadonlyArray<React.ReactNode>;
@@ -51,6 +52,9 @@ export const BaseExplorationPage: React.FC<BaseExplorationPageProps> = ({
 
   const [isFileModalOpen, setFileModalOpen] = useState(false);
   const [currentFile, setCurrentFile] = useState(undefined as GdcFile);
+
+  const [isCaseModalOpen, setCaseModalOpen] = useState(false);
+  const [currentCase, setCurrentCase] = useState(undefined as Case);
 
   // used to scroll to top of apps section
   const topOfApps = useRef(null);
@@ -133,6 +137,10 @@ export const BaseExplorationPage: React.FC<BaseExplorationPageProps> = ({
               setCurrentFile(file);
               setFileModalOpen(true);
             }}
+            handleCaseSelected={(patient: Case) => {
+              setCurrentCase(patient);
+              setCaseModalOpen(true);
+            }}
           />
         </div>
         <div className="bg-white">
@@ -143,7 +151,13 @@ export const BaseExplorationPage: React.FC<BaseExplorationPageProps> = ({
         </div>
         <div className="border p-4 border-gray-400 bg-white" ref={topOfApps}>
           {currentApp === "cohort-viewer" ? (
-            <CohortViewer goBack={() => setCurrentApp("appSelector")} />
+            <CohortViewer
+              goBack={() => setCurrentApp("appSelector")}
+              handleCaseSelected={(patient: Case) => {
+                setCurrentCase(patient);
+                setCaseModalOpen(true);
+              }}
+            />
           ) : currentApp === "studies" ? (
             <AllAppsStudies
               returnToAllApps={() => setCurrentApp("appSelector")}
@@ -199,6 +213,11 @@ export const BaseExplorationPage: React.FC<BaseExplorationPageProps> = ({
         closeModal={() => setFileModalOpen(false)}
         file={currentFile}
       />
+      <CaseModal
+        isOpen={isCaseModalOpen}
+        closeModal={() => setCaseModalOpen(false)}
+        patient={currentCase}
+      />
     </UserFlowVariedPages>
   );
 };
@@ -248,17 +267,19 @@ const Apps: React.FC<AppsProps> = ({
 
 interface CohortViewerProps {
   readonly goBack: () => void;
+  readonly handleCaseSelected?: (patient: Case) => void;
 }
 
 const CohortViewer: React.FC<CohortViewerProps> = ({
   goBack,
+  handleCaseSelected,
 }: PropsWithChildren<CohortViewerProps>) => {
   return (
     <div className="flex flex-col gap-y-4">
       <div className="flex flex-row">
         <button onClick={goBack}>&lt; All Apps</button>
       </div>
-      <ContextualCasesView />
+      <ContextualCasesView handleCaseSelected={handleCaseSelected} />
     </div>
   );
 };

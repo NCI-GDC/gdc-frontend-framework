@@ -46,13 +46,10 @@ const AnalysisPage: NextPage = () => {
   const [currentCase, setCurrentCase] = useState(undefined as Case);
 
   const headerElements = [
-    <Link key="Studies" href="/user-flow/many-pages/studies">
+    <Link key="Studies" href="/user-flow/many-pages-v2/studies">
       Cohorts
     </Link>,
     "Analysis",
-    <Link key="Repository" href="/user-flow/many-pages/repository">
-      Repository
-    </Link>,
   ];
 
   const Options = () => (
@@ -154,7 +151,7 @@ const AnalysisPage: NextPage = () => {
 
   return (
     <UserFlowVariedPages
-      {...{ indexPath: "/user-flow/many-pages", headerElements, Options }}
+      {...{ indexPath: "/user-flow/many-pages-v2", headerElements, Options }}
     >
       <AppModal />
       <div className="flex flex-col p-4 gap-y-4">

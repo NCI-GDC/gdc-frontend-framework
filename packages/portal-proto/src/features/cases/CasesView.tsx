@@ -12,9 +12,16 @@ export interface Case {
 
 export interface CasesViewProps {
   readonly cases?: ReadonlyArray<Case>;
+  readonly handleCaseSelected?: (patient: Case) => void;
 }
 
-export const ContextualCasesView: React.FC<unknown> = () => {
+export interface ContextualCasesViewProps {
+  readonly handleCaseSelected?: (patient: Case) => void;
+}
+
+export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
+  props: ContextualCasesViewProps,
+) => {
   // TODO useContextualCases() that filters based on the context
   const { data } = useCases({
     fields: [
@@ -41,11 +48,13 @@ export const ContextualCasesView: React.FC<unknown> = () => {
     tissueOrOrganOfOrigin: datum.diagnoses?.[0]?.tissue_or_organ_of_origin,
   }));
 
-  return <CasesView cases={cases} />;
+  return (
+    <CasesView cases={cases} handleCaseSelected={props.handleCaseSelected} />
+  );
 };
 
 export const CasesView: React.FC<CasesViewProps> = (props: CasesViewProps) => {
-  const { cases } = props;
+  const { cases, handleCaseSelected = () => void 0 } = props;
 
   return (
     <table
@@ -65,7 +74,11 @@ export const CasesView: React.FC<CasesViewProps> = (props: CasesViewProps) => {
       <tbody>
         {cases?.map((c, i) => (
           <tr key={c.id} className={i % 2 == 0 ? "bg-nci-gray-lightest" : ""}>
-            <td className="px-2 break-all">{c.submitterId}</td>
+            <td className="px-2 break-all">
+              <button onClick={() => handleCaseSelected(c)}>
+                {c.submitterId}
+              </button>
+            </td>
             <td className="px-2 whitespace-nowrap">{c.projectId}</td>
             <td className="px-2">{c.primarySite}</td>
             <td className="px-2">{c.gender}</td>

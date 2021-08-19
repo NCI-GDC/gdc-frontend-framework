@@ -1,18 +1,39 @@
-import { CaseDefaults } from "@gff/core";
-import { PropsWithChildren } from "react";
+import React, { PropsWithChildren } from "react";
+import Image from "next/image";
+import { Case } from "./CasesView";
+import ReactModal from "react-modal";
 
 export interface CaseViewProps {
-  readonly c: CaseDefaults;
+  readonly patient?: Case;
 }
 
 export const CaseView: React.FC<CaseViewProps> = ({
-  c,
+  patient,
 }: PropsWithChildren<CaseViewProps>) => {
   return (
-    <div className="flex flex-col">
-      <div>Case Id: {c.case_id}</div>
-      <div>Submitter Id: {c.submitter_id}</div>
-      <div>Primary Site: {c.primary_site}</div>
+    <div>
+      <Image
+        src="/user-flow/single-case.png"
+        layout="responsive"
+        width="2259"
+        height="5422"
+      />
     </div>
+  );
+};
+
+export interface CaseModalProps {
+  readonly isOpen: boolean;
+  readonly closeModal: () => void;
+  readonly patient?: Case;
+}
+
+export const CaseModal: React.FC<CaseModalProps> = (props: CaseModalProps) => {
+  const { isOpen, closeModal, patient } = props;
+
+  return (
+    <ReactModal isOpen={isOpen} onRequestClose={closeModal}>
+      <CaseView patient={patient} />
+    </ReactModal>
   );
 };
