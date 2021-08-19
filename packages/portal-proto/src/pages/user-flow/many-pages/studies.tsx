@@ -55,12 +55,12 @@ const StudiesPage: NextPage = () => {
           }}
           exploreLeft={
             <Button onClick={() => router.push("analysis")}>
-              Analyze Selected Studies
+              Analyze Selected Cohorts
             </Button>
           }
           exploreRight={
             <Button onClick={() => router.push("repository")}>
-              Download Files From Selected Studies
+              Download Files From Selected Cohorts
             </Button>
           }
         />
