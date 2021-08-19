@@ -7,8 +7,8 @@ export const StudyView: React.FC<unknown> = () => {
         <Image
           src="/user-flow/studies-mock-up.png"
           layout="responsive"
-          width="100%"
-          height="100%"
+          height="1064"
+          width="1172"
         ></Image>
       </div>
     </div>

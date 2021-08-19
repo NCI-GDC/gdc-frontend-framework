@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CollapsibleContainer } from "../../pages/user-flow/all-apps/exploration";
+import { CollapsibleContainer } from "../../components/CollapsibleContainer";
 import { Button } from "../layout/UserFlowVariedPages";
 import Select from "react-select";
 import {
