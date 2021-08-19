@@ -25,8 +25,8 @@ const AnalysisPage: NextPage = () => {
   const [selectedApp, setSelectedApp] = useState("");
 
   const options = [
-    { value: "cb-modal", label: "Cohort Builder Modal" },
     { value: "cb-expand", label: "Cohort Builder Expand" },
+    { value: "cb-modal", label: "Cohort Builder Modal" },
   ];
 
   const [protoOption, setProtoOption] = useState(options[0]);
