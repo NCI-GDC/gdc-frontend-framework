@@ -17,6 +17,8 @@ import {
 } from "../../../features/apps/Apps";
 import { FileModal } from "../../../features/files/FileView";
 import { GdcFile } from "@gff/core";
+import { CaseModal } from "../../../features/cases/CaseView";
+import { Case } from "../../../features/cases/CasesView";
 
 const AnalysisPage: NextPage = () => {
   const [showCohortBuilderModal, setShowCohortBuilderModal] = useState(false);
@@ -39,6 +41,9 @@ const AnalysisPage: NextPage = () => {
   // pretty much a hook that acts as a HOC.
   const [isFileModalOpen, setFileModalOpen] = useState(false);
   const [currentFile, setCurrentFile] = useState(undefined as GdcFile);
+
+  const [isCaseModalOpen, setCaseModalOpen] = useState(false);
+  const [currentCase, setCurrentCase] = useState(undefined as Case);
 
   const headerElements = [
     <Link key="Studies" href="/user-flow/many-pages/studies">
@@ -165,6 +170,10 @@ const AnalysisPage: NextPage = () => {
               setCurrentFile(file);
               setFileModalOpen(true);
             }}
+            handleCaseSelected={(patient: Case) => {
+              setCurrentCase(patient);
+              setCaseModalOpen(true);
+            }}
           />
         </div>
         <Apps />
@@ -173,6 +182,11 @@ const AnalysisPage: NextPage = () => {
         isOpen={isFileModalOpen}
         closeModal={() => setFileModalOpen(false)}
         file={currentFile}
+      />
+      <CaseModal
+        isOpen={isCaseModalOpen}
+        closeModal={() => setCaseModalOpen(false)}
+        patient={currentCase}
       />
     </UserFlowVariedPages>
   );

@@ -7,7 +7,7 @@ import { StudyView } from "../../studies/StudyView";
 import Image from "next/image";
 import { FacetChart } from "../../charts/FacetChart";
 import ReactModal from "react-modal";
-import { ContextualCasesView } from "../../cases/CasesView";
+import { Case, ContextualCasesView } from "../../cases/CasesView";
 import {
   ClinicalFilters,
   GeneExpression,
@@ -32,6 +32,7 @@ import { FacetGroup } from "../../cohortBuilder/FacetGroup";
 import { get_facets } from "../../cohortBuilder/dictionary";
 import { FileModal } from "../../files/FileView";
 import { GdcFile } from "@gff/core";
+import { CaseModal } from "../../cases/CaseView";
 
 export interface BaseExplorationPageProps {
   readonly headerElements: ReadonlyArray<React.ReactNode>;
@@ -51,6 +52,9 @@ export const BaseExplorationPage: React.FC<BaseExplorationPageProps> = ({
 
   const [isFileModalOpen, setFileModalOpen] = useState(false);
   const [currentFile, setCurrentFile] = useState(undefined as GdcFile);
+
+  const [isCaseModalOpen, setCaseModalOpen] = useState(false);
+  const [currentCase, setCurrentCase] = useState(undefined as Case);
 
   // used to scroll to top of apps section
   const topOfApps = useRef(null);
@@ -133,6 +137,10 @@ export const BaseExplorationPage: React.FC<BaseExplorationPageProps> = ({
               setCurrentFile(file);
               setFileModalOpen(true);
             }}
+            handleCaseSelected={(patient: Case) => {
+              setCurrentCase(patient);
+              setCaseModalOpen(true);
+            }}
           />
         </div>
         <div className="bg-white">
@@ -198,6 +206,11 @@ export const BaseExplorationPage: React.FC<BaseExplorationPageProps> = ({
         isOpen={isFileModalOpen}
         closeModal={() => setFileModalOpen(false)}
         file={currentFile}
+      />
+      <CaseModal
+        isOpen={isCaseModalOpen}
+        closeModal={() => setCaseModalOpen(false)}
+        patient={currentCase}
       />
     </UserFlowVariedPages>
   );

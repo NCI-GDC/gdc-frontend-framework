@@ -7,6 +7,8 @@ import { useState } from "react";
 import { GdcFile, useFiles } from "@gff/core";
 import { FilesView } from "../../../features/files/FilesView";
 import { FileModal } from "../../../features/files/FileView";
+import { CaseModal } from "../../../features/cases/CaseView";
+import { Case } from "../../../features/cases/CasesView";
 
 const RepositoryPage: NextPage = () => {
   const { data } = useFiles();
@@ -20,8 +22,12 @@ const RepositoryPage: NextPage = () => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const [showCohortBuilderModal, setShowCohortBuilderModal] = useState(false);
+
   const [isFileModalOpen, setFileModalOpen] = useState(false);
   const [currentFile, setCurrentFile] = useState(undefined as GdcFile);
+
+  const [isCaseModalOpen, setCaseModalOpen] = useState(false);
+  const [currentCase, setCurrentCase] = useState(undefined as Case);
 
   const Options = () => (
     <Select
@@ -66,6 +72,10 @@ const RepositoryPage: NextPage = () => {
               setCurrentFile(file);
               setFileModalOpen(true);
             }}
+            handleCaseSelected={(patient: Case) => {
+              setCurrentCase(patient);
+              setCaseModalOpen(true);
+            }}
           />
         </div>
         <div className="border p-4 border-gray-400 bg-white">
@@ -87,6 +97,11 @@ const RepositoryPage: NextPage = () => {
         isOpen={isFileModalOpen}
         closeModal={() => setFileModalOpen(false)}
         file={currentFile}
+      />
+      <CaseModal
+        isOpen={isCaseModalOpen}
+        closeModal={() => setCaseModalOpen(false)}
+        patient={currentCase}
       />
     </UserFlowVariedPages>
   );
