@@ -26,23 +26,26 @@ import { ContextualFilesView } from "../../files/FilesView";
 import { CohortGroup, SummaryCharts } from "../../cohortBuilder/CohortGroup";
 import { MetaSearch} from "../../cohortBuilder/MetaSearch";
 import { CohortTabbedFacets } from "../../cohortBuilder/FacetGroup";
+import { GdcFile } from "@gff/core";
 
+// this is an example of where composition makes it hards to read and understand the code
 export type CohortManagerProps = Partial<ModalOrExpandProps> &
-  Partial<CohortBuilderModalProps>;
+  Partial<CohortBuilderModalProps> & {
+    readonly handleFileSelected?: (file: GdcFile) => void;
+  }
 
 export const CohortManager: React.FC<CohortManagerProps> = ({
   mode = { value: "" },
-  setIsModalOpen = () => {
-    return;
-  },
+  setIsModalOpen = () => void 0,
   isExpanded = false,
-  setIsExpanded = () => {
-    return;
-  },
+  setIsExpanded = () => void 0,
   isOpen = false,
-  closeModal = () => {
-    return;
-  },
+  closeModal = () => void 0,
+  // this handler is an example of a prop that gets passed multiple levels deep.
+  // this needs to be refactored.  two options come to mind:
+  // - use the redux store. then we can use a selector or data hook to get the relevant data
+  // - use a react context provider/consumer to pass this data down.
+  handleFileSelected = () => void 0,
 }: PropsWithChildren<CohortManagerProps>) => {
   const [showCases, setShowCases] = useState(false);
   const [showFiles, setShowFiles] = useState(false);
@@ -145,7 +148,7 @@ export const CohortManager: React.FC<CohortManagerProps> = ({
       <CohortBuilderModal isOpen={isOpen} closeModal={closeModal} cohort={[COHORTS[currentIndex]]} />
       <CollapsibleCohortBuilder isCollapsed={!isExpanded} cohort={[COHORTS[currentIndex]]}/>
       <CollapsibleCases show={showCases} />
-      <CollapsibleFiles show={showFiles} />
+      <CollapsibleFiles show={showFiles} handleFileSelected={handleFileSelected}/>
     </div>
   );
 };
@@ -173,12 +176,13 @@ const CollapsibleCases: React.FC<CollapsibleCasesProps> = (
 
 interface CollapsibleFilesProps {
   readonly show: boolean;
+  readonly handleFileSelected?: (file: GdcFile) => void;
 }
 
 const CollapsibleFiles: React.FC<CollapsibleFilesProps> = (
   props: CollapsibleFilesProps,
 ) => {
-  const { show } = props;
+  const { show, handleFileSelected } = props;
 
   return (
     <div
@@ -187,7 +191,7 @@ const CollapsibleFiles: React.FC<CollapsibleFilesProps> = (
         flex: show,
       })}
     >
-      <ContextualFilesView />
+      <ContextualFilesView handleFileSelected={handleFileSelected}/>
     </div>
   );
 };

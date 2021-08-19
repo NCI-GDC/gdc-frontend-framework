@@ -1,16 +1,24 @@
 import { GdcFile, useFiles } from "@gff/core";
 
-export const ContextualFilesView: React.FC<unknown> = () => {
+export interface ContextualFilesViewProps {
+  readonly handleFileSelected?: (file: GdcFile) => void;
+}
+
+export const ContextualFilesView: React.FC<ContextualFilesViewProps> = ({
+  handleFileSelected,
+}: ContextualFilesViewProps) => {
   const { data } = useFiles();
-  return <FilesView files={data} />;
+  return <FilesView files={data} handleFileSelected={handleFileSelected} />;
 };
 
 export interface FilesViewProps {
   readonly files?: ReadonlyArray<GdcFile>;
+  readonly handleFileSelected?: (file: GdcFile) => void;
 }
 
 export const FilesView: React.FC<FilesViewProps> = ({
-  files,
+  files = [],
+  handleFileSelected = () => void 0,
 }: FilesViewProps) => {
   return (
     <table
@@ -19,6 +27,9 @@ export const FilesView: React.FC<FilesViewProps> = ({
     >
       <thead>
         <tr className="bg-nci-blue text-white">
+          <th className="px-2">
+            <input type="checkbox" />
+          </th>
           <th className="px-2">File</th>
           <th className="px-2">Access</th>
           <th className="px-2">Experimental Strategy</th>
@@ -28,17 +39,23 @@ export const FilesView: React.FC<FilesViewProps> = ({
         </tr>
       </thead>
       <tbody>
-        {files &&
-          files.map((file, i) => (
-            <tr key={file.id} className={i % 2 == 0 ? "bg-gray-200" : ""}>
-              <td className="px-2 break-all">{file.fileName}</td>
-              <td className="px-2">{file.access}</td>
-              <td className="px-2">{file.experimentalStrategy}</td>
-              <td className="px-2">{file.dataCategory}</td>
-              <td className="px-2">{file.dataFormat}</td>
-              <td className="px-2">{file.fileSize}</td>
-            </tr>
-          ))}
+        {files.map((file, i) => (
+          <tr key={file.id} className={i % 2 == 0 ? "bg-gray-200" : ""}>
+            <td className="px-2">
+              <input type="checkbox" />
+            </td>
+            <td className="px-2 break-all">
+              <button onClick={() => handleFileSelected(file)}>
+                {file.fileName}
+              </button>
+            </td>
+            <td className="px-2">{file.access}</td>
+            <td className="px-2">{file.experimentalStrategy}</td>
+            <td className="px-2">{file.dataCategory}</td>
+            <td className="px-2">{file.dataFormat}</td>
+            <td className="px-2">{file.fileSize}</td>
+          </tr>
+        ))}
       </tbody>
     </table>
   );
