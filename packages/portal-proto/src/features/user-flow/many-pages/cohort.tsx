@@ -13,6 +13,8 @@ import {
   MdFileUpload as UploadIcon,
   MdFileDownload as DownloadIcon,
   MdArrowDropDown as DropDownIcon,
+  MdExpandMore as ExpandMoreIcon,
+  MdExpandLess as ExpandLessIcon,
 } from "react-icons/md"
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import classNames from "classnames";
@@ -268,9 +270,9 @@ export const ModalOrExpand: React.FC<ModalOrExpandProps> = (
   } else if (mode.value === "cb-expand") {
     // TODO use expand/collapse icons
     if (isExpanded) {
-      return <Button onClick={() => setIsExpanded(false)}>^</Button>;
+      return <Button onClick={() => setIsExpanded(false)}><ExpandLessIcon/></Button>;
     } else {
-      return <Button onClick={() => setIsExpanded(true)}>v</Button>;
+      return <Button onClick={() => setIsExpanded(true)}><ExpandMoreIcon/></Button>;
     }
   } else {
     return null;

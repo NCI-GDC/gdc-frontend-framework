@@ -10,8 +10,8 @@ const RepositoryPage: NextPage = () => {
   const { data } = useFiles();
 
   const options = [
-    { value: "cb-modal", label: "Cohort Builder Modal" },
     { value: "cb-expand", label: "Cohort Builder Expand" },
+    { value: "cb-modal", label: "Cohort Builder Modal" },
   ];
 
   const [protoOption, setProtoOption] = useState(options[0]);
@@ -22,6 +22,7 @@ const RepositoryPage: NextPage = () => {
   const Options = () => (
     <Select
       inputId="analysis-proto-options"
+      isMulti={false}
       isSearchable={false}
       value={protoOption}
       options={options}
