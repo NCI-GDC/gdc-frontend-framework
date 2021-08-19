@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useState } from "react";
 import ReactModal from "react-modal";
 import {
-  App,
   UserFlowVariedPages,
 } from "../../../features/layout/UserFlowVariedPages";
 import { Select } from "../../../components/Select";

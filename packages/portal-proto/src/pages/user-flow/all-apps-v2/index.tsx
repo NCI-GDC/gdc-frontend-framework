@@ -5,14 +5,17 @@ import Link from "next/link";
 
 const IndexPage: NextPage = () => {
   const headerElements = [
-    <Link key="exploration" href="/user-flow/all-apps/exploration">
+    <Link key="cohorts" href="/user-flow/all-apps-v2/cohorts">
+      Cohorts
+    </Link>,
+    <Link key="exploration" href="/user-flow/all-apps-v2/exploration">
       Exploration
     </Link>,
   ];
 
   return (
     <UserFlowVariedPages
-      {...{ indexPath: "/user-flow/all-apps", headerElements }}
+      {...{ indexPath: "/user-flow/all-apps-v2", headerElements }}
     >
       <div className="flex flex-row p-4 gap-x-4 h-full">
         <div className="flex-grow p-4 border border-gdc-grey-lighter bg-white w-1/2 self-center">
@@ -25,11 +28,16 @@ const IndexPage: NextPage = () => {
           culpa qui officia deserunt mollit anim id est laborum.
           <p />
           <span className="text-gdc-blue">
-            <Link href="/user-flow/all-apps/exploration">Exploration</Link>
+            <Link href="/user-flow/all-apps-v2/exploration">Exploration</Link>
           </span>
         </div>
         <div className="border border-gdc-grey-lighter bg-white w-1/2">
-          <Image src="/user-flow/body-plot.png" layout="responsive" height={500} width={600} />
+          <Image
+            src="/user-flow/body-plot.png"
+            layout="responsive"
+            height="968"
+            width="1180"
+          />
         </div>
       </div>
     </UserFlowVariedPages>

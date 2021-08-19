@@ -34,8 +34,8 @@ const IndexPage: NextPage = () => {
             <Link href="/user-flow/many-pages/studies">Cohorts</Link>
           </span>
         </div>
-        <div className="border border-gdc-grey-lighter bg-white">
-          <Image src="/user-flow/body-plot.png" height={500} width={600} />
+        <div className="border border-gdc-grey-lighter bg-white w-1/2">
+          <Image src="/user-flow/body-plot.png" layout="responsive" height={500} width={600} />
         </div>
       </div>
     </UserFlowVariedPages>
