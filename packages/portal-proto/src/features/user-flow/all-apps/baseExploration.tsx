@@ -151,7 +151,13 @@ export const BaseExplorationPage: React.FC<BaseExplorationPageProps> = ({
         </div>
         <div className="border p-4 border-gray-400 bg-white" ref={topOfApps}>
           {currentApp === "cohort-viewer" ? (
-            <CohortViewer goBack={() => setCurrentApp("appSelector")} />
+            <CohortViewer
+              goBack={() => setCurrentApp("appSelector")}
+              handleCaseSelected={(patient: Case) => {
+                setCurrentCase(patient);
+                setCaseModalOpen(true);
+              }}
+            />
           ) : currentApp === "studies" ? (
             <AllAppsStudies
               returnToAllApps={() => setCurrentApp("appSelector")}
@@ -261,17 +267,19 @@ const Apps: React.FC<AppsProps> = ({
 
 interface CohortViewerProps {
   readonly goBack: () => void;
+  readonly handleCaseSelected?: (patient: Case) => void;
 }
 
 const CohortViewer: React.FC<CohortViewerProps> = ({
   goBack,
+  handleCaseSelected,
 }: PropsWithChildren<CohortViewerProps>) => {
   return (
     <div className="flex flex-col gap-y-4">
       <div className="flex flex-row">
         <button onClick={goBack}>&lt; All Apps</button>
       </div>
-      <ContextualCasesView />
+      <ContextualCasesView handleCaseSelected={handleCaseSelected} />
     </div>
   );
 };
