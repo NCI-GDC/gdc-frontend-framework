@@ -1,16 +1,21 @@
 import { NextPage } from "next";
-import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
+import {
+  Button,
+  UserFlowVariedPages,
+} from "../../../features/layout/UserFlowVariedPages";
 import Link from "next/link";
 import { ContextualStudiesView } from "../../../features/studies/StudiesView";
 import ReactModal from "react-modal";
 import { StudyView } from "../../../features/studies/StudyView";
 import { useState } from "react";
+import { useRouter } from "next/router";
 
 const CohortsPage: NextPage = () => {
+  const router = useRouter();
   const [isStudyModalOpen, setStudyModalOpen] = useState(false);
-  
+
   const headerElements = [
-      "Cohorts",
+    "Cohorts",
     <Link key="exploration" href="/user-flow/all-apps-v2/exploration">
       Exploration
     </Link>,
@@ -21,8 +26,21 @@ const CohortsPage: NextPage = () => {
       {...{ indexPath: "/user-flow/all-apps-v2", headerElements }}
     >
       <div className="flex flex-col p-4">
-      <ContextualStudiesView setCurrentStudy={() => setStudyModalOpen(true)}/></div>
-      <StudyModal isOpen={isStudyModalOpen} closeModal={() => setStudyModalOpen(false)}/>
+        <ContextualStudiesView
+          setCurrentStudy={() => setStudyModalOpen(true)}
+          exploreRight={
+            <Button
+              onClick={() => router.push("/user-flow/all-apps-v2/exploration")}
+            >
+              Explore Selected Cohorts
+            </Button>
+          }
+        />
+      </div>
+      <StudyModal
+        isOpen={isStudyModalOpen}
+        closeModal={() => setStudyModalOpen(false)}
+      />
     </UserFlowVariedPages>
   );
 };
