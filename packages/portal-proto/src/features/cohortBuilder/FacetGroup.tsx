@@ -84,7 +84,7 @@ interface CohortTabbedFacetsProps {
 }
 
 export const CohortTabbedFacets: React.FC<CohortTabbedFacetsProps> = ( {  searchResults } : CohortTabbedFacetsProps) => {
-   const [subcategories, setSubcategories] = useState({ 'Clinical': 'All' ,'Biospecimen': 'All', 'Visualizable Data': 'Gene Expression' });
+   const [subcategories, setSubcategories] = useState({ 'Clinical': 'All' ,'Biospecimen': 'All', 'Visualizable Data': 'Mutated Genes' });
    const handleSubcategoryChanged = (category:string, subcategory:string) => {
      const state = { ...subcategories };
      state[category] = subcategory;
@@ -123,7 +123,7 @@ export const CohortTabbedFacets: React.FC<CohortTabbedFacetsProps> = ( {  search
     </TabList>
       <TabPanel><FacetGroup facetNames={get_facets('Clinical',subcategories['Clinical'])}/></TabPanel>
       <TabPanel><FacetGroup facetNames={get_facets('Biospecimen',subcategories['Biospecimen'])}/></TabPanel>
-      <TabPanel><div className="flex flex-col" > {(subcategories['Visualizable Data'] === 'Gene Expression')  ? <GeneTable/> : <MutationTable/> }</div></TabPanel>
+      <TabPanel><div className="flex flex-col" > {(subcategories['Visualizable Data'] === 'Mutated Genes')  ? <GeneTable/> : <MutationTable/> }</div></TabPanel>
       <TabPanel><FacetGroup facetNames={downloadableFacets}/></TabPanel>
     </Tabs>
     </div>
