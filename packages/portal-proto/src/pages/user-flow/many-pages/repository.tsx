@@ -5,6 +5,8 @@ import { CohortManager } from "../../../features/user-flow/many-pages/cohort";
 import { Select } from "../../../components/Select";
 import { useState } from "react";
 import { GdcFile, useFiles } from "@gff/core";
+import { FilesView } from "../../../features/files/FilesView";
+import { FileModal } from "../../../features/files/FileView";
 
 const RepositoryPage: NextPage = () => {
   const { data } = useFiles();
@@ -18,6 +20,8 @@ const RepositoryPage: NextPage = () => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const [showCohortBuilderModal, setShowCohortBuilderModal] = useState(false);
+  const [isFileModalOpen, setFileModalOpen] = useState(false);
+  const [currentFile, setCurrentFile] = useState(undefined as GdcFile);
 
   const Options = () => (
     <Select
@@ -58,6 +62,10 @@ const RepositoryPage: NextPage = () => {
             mode={protoOption}
             isOpen={showCohortBuilderModal}
             closeModal={() => setShowCohortBuilderModal(false)}
+            handleFileSelected={(file: GdcFile) => {
+              setCurrentFile(file);
+              setFileModalOpen(true);
+            }}
           />
         </div>
         <div className="border p-4 border-gray-400 bg-white">
@@ -66,50 +74,22 @@ const RepositoryPage: NextPage = () => {
           </div>
         </div>
         <div className="border border-gray-400 bg-white">
-          <Files files={data} />
+          <FilesView
+            files={data}
+            handleFileSelected={(file: GdcFile) => {
+              setCurrentFile(file);
+              setFileModalOpen(true);
+            }}
+          />
         </div>
       </div>
+      <FileModal
+        isOpen={isFileModalOpen}
+        closeModal={() => setFileModalOpen(false)}
+        file={currentFile}
+      />
     </UserFlowVariedPages>
   );
 };
 
 export default RepositoryPage;
-
-interface FilesProps {
-  readonly files: ReadonlyArray<GdcFile>;
-}
-
-const Files: React.FC<FilesProps> = ({ files }: FilesProps) => {
-  return (
-    <div className="overflow-y-auto h-96">
-      <table
-        className="table-auto border-collapse border-nci-gray w-full"
-        style={{ borderSpacing: "4em" }}
-      >
-        <thead>
-          <tr className="bg-nci-blue text-white">
-            <th className="px-2">File</th>
-            <th className="px-2">Access</th>
-            <th className="px-2">Experimental Strategy</th>
-            <th className="px-2">Data Category</th>
-            <th className="px-2">Data Format</th>
-            <th className="px-2">File Size</th>
-          </tr>
-        </thead>
-        <tbody>
-          {files &&
-            files.map((file, i) => (
-              <tr key={file.id} className={i % 2 == 0 ? "bg-gray-200" : ""}>
-                <td className="px-2 break-all">{file.fileName}</td>
-                <td className="px-2">{file.access}</td>
-                <td className="px-2">{file.experimentalStrategy}</td>
-                <td className="px-2">{file.dataCategory}</td>
-                <td className="px-2">{file.dataFormat}</td>
-                <td className="px-2">{file.fileSize}</td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
-    </div>
-  );
-};

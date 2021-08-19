@@ -30,6 +30,8 @@ import { CollapsibleContainer } from "../../../components/CollapsibleContainer";
 import { GeneTable, MutationTable } from "../../genomic/Genomic";
 import { FacetGroup } from "../../cohortBuilder/FacetGroup";
 import { get_facets } from "../../cohortBuilder/dictionary";
+import { FileModal } from "../../files/FileView";
+import { GdcFile } from "@gff/core";
 
 export interface BaseExplorationPageProps {
   readonly headerElements: ReadonlyArray<React.ReactNode>;
@@ -46,6 +48,9 @@ export const BaseExplorationPage: React.FC<BaseExplorationPageProps> = ({
   const [isSummaryCollapsed, setIsSummaryCollapsed] = useState(false);
   const [currentApp, setCurrentApp] = useState("appSelector");
   const [isStudyModalOpen, setStudyModalOpen] = useState(false);
+
+  const [isFileModalOpen, setFileModalOpen] = useState(false);
+  const [currentFile, setCurrentFile] = useState(undefined as GdcFile);
 
   // used to scroll to top of apps section
   const topOfApps = useRef(null);
@@ -123,7 +128,12 @@ export const BaseExplorationPage: React.FC<BaseExplorationPageProps> = ({
     <UserFlowVariedPages {...{ indexPath, headerElements }}>
       <div className="flex flex-col gap-y-4 p-4">
         <div className="border p-4 border-nci-gray-lighter bg-white">
-          <CohortManager />
+          <CohortManager
+            handleFileSelected={(file: GdcFile) => {
+              setCurrentFile(file);
+              setFileModalOpen(true);
+            }}
+          />
         </div>
         <div className="bg-white">
           <CohortExpressions />
@@ -142,6 +152,10 @@ export const BaseExplorationPage: React.FC<BaseExplorationPageProps> = ({
           ) : currentApp === "repository" ? (
             <AllAppsRepository
               returnToAllApps={() => setCurrentApp("appSelector")}
+              handleFileSelected={(file: GdcFile) => {
+                setCurrentFile(file);
+                setFileModalOpen(true);
+              }}
             />
           ) : currentApp === "unclegrid" ? (
             <AllAppsUncleGrid
@@ -179,6 +193,11 @@ export const BaseExplorationPage: React.FC<BaseExplorationPageProps> = ({
       <StudyModal
         isOpen={isStudyModalOpen}
         closeModal={() => setStudyModalOpen(false)}
+      />
+      <FileModal
+        isOpen={isFileModalOpen}
+        closeModal={() => setFileModalOpen(false)}
+        file={currentFile}
       />
     </UserFlowVariedPages>
   );
@@ -288,10 +307,11 @@ const AllAppsStudies = (props: AllAppsStudiesProps) => {
 
 interface AllAppsRepositoryProps {
   readonly returnToAllApps: () => void;
+  readonly handleFileSelected?: (file: GdcFile) => void;
 }
 
 const AllAppsRepository = (props: AllAppsRepositoryProps) => {
-  const { returnToAllApps } = props;
+  const { returnToAllApps, handleFileSelected } = props;
 
   return (
     <div className="flex flex-col gap-y-4">
@@ -301,7 +321,7 @@ const AllAppsRepository = (props: AllAppsRepositoryProps) => {
         </button>
         <div className="flex-grow text-center">Repository</div>
       </div>
-      <ContextualFilesView />
+      <ContextualFilesView handleFileSelected={handleFileSelected} />
     </div>
   );
 };

@@ -3,9 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import ReactModal from "react-modal";
-import {
-  UserFlowVariedPages,
-} from "../../../features/layout/UserFlowVariedPages";
+import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
 import { Select } from "../../../components/Select";
 import { CohortManager } from "../../../features/user-flow/many-pages/cohort";
 import {
@@ -17,6 +15,8 @@ import {
   CohortComparison,
   ClinicalDataAnalysis,
 } from "../../../features/apps/Apps";
+import { FileModal } from "../../../features/files/FileView";
+import { GdcFile } from "@gff/core";
 
 const AnalysisPage: NextPage = () => {
   const [showCohortBuilderModal, setShowCohortBuilderModal] = useState(false);
@@ -31,6 +31,14 @@ const AnalysisPage: NextPage = () => {
 
   const [protoOption, setProtoOption] = useState(options[0]);
   const [isExpanded, setIsExpanded] = useState(false);
+
+  // the next two state hooks are used for a single components. what's a good
+  // way to organize the code to encapsulate or at least group these?
+  // and we have to repeat ourselves in every page where we use this modal.
+  // perhaps we could create a hook to create the states and the component.
+  // pretty much a hook that acts as a HOC.
+  const [isFileModalOpen, setFileModalOpen] = useState(false);
+  const [currentFile, setCurrentFile] = useState(undefined as GdcFile);
 
   const headerElements = [
     <Link key="Studies" href="/user-flow/many-pages/studies">
@@ -153,10 +161,19 @@ const AnalysisPage: NextPage = () => {
             mode={protoOption}
             isOpen={showCohortBuilderModal}
             closeModal={() => setShowCohortBuilderModal(false)}
+            handleFileSelected={(file: GdcFile) => {
+              setCurrentFile(file);
+              setFileModalOpen(true);
+            }}
           />
         </div>
         <Apps />
       </div>
+      <FileModal
+        isOpen={isFileModalOpen}
+        closeModal={() => setFileModalOpen(false)}
+        file={currentFile}
+      />
     </UserFlowVariedPages>
   );
 };
