@@ -45,7 +45,7 @@ export const BaseExplorationPage: React.FC<BaseExplorationPageProps> = ({
   indexPath,
   isCohortAppDisplayed,
 }: BaseExplorationPageProps) => {
-  const [isExpressionsCollapsed, setIsExpressionsCollapsed] = useState(false);
+  const [isExpressionsCollapsed, setIsExpressionsCollapsed] = useState(true);
   const [isSummaryCollapsed, setIsSummaryCollapsed] = useState(false);
   const [currentApp, setCurrentApp] = useState("appSelector");
   const [isStudyModalOpen, setStudyModalOpen] = useState(false);
@@ -67,11 +67,12 @@ export const BaseExplorationPage: React.FC<BaseExplorationPageProps> = ({
         isCollapsed={isExpressionsCollapsed}
         toggle={() => setIsExpressionsCollapsed(!isExpressionsCollapsed)}
       >
-        <div className="h-48 relative">
+        <div>
           <Image
-            src="/user-flow/expressions-mock-up.png"
-            layout="fill"
-            objectFit="contain"
+            src="/user-flow/cohort-criteria.png"
+            layout="responsive"
+            height={142}
+            width={3836}
           />
         </div>
       </CollapsibleContainer>
