@@ -78,12 +78,7 @@ const RepositoryPage: NextPage = () => {
             }}
           />
         </div>
-        <div className="border p-4 border-gray-400 bg-white">
-          <div className="text-center">
-            Some repo-specific actions, e.g. download, etc. here.
-          </div>
-        </div>
-        <div className="border border-gray-400 bg-white">
+        <div className="border border-gray-400 bg-white p-4">
           <FilesView
             files={data}
             handleFileSelected={(file: GdcFile) => {
