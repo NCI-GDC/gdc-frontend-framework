@@ -52,7 +52,7 @@ const StudiesPage: NextPage = () => {
           }}
           exploreRight={
             <Button onClick={() => router.push("analysis")}>
-              Analyze Selected Studies
+              Analyze Selected Cohorts
             </Button>
           }
         />
