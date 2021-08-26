@@ -6,7 +6,7 @@ import {
   useCoreDispatch,
 } from "@gff/core";
 
-import { useEffect, useState } from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
 import { Button } from "../layout/UserFlowVariedPages";
 import {
   MdSortByAlpha as AlphaSortIcon,
@@ -53,7 +53,7 @@ interface FacetProps {
 }
 
 
-const FacetHeader: React.FC<FacetProps> = ({ field, description} : FacetProps) => {
+const FacetHeader: React.FC<FacetProps> = ({ field, description }: PropsWithChildren<FacetProps>) => {
   const [isSearching, setIsSearching] = useState(false);
   const [isFacetView, setIsFacetView] = useState(true);
 
@@ -88,9 +88,8 @@ const FacetHeader: React.FC<FacetProps> = ({ field, description} : FacetProps) =
         </div>
       </div>
     </div>
-  )
-}
-
+  );
+};
 
 
 export const Facet: React.FC<FacetProps> = ({ field, description }: FacetProps) => {
@@ -130,49 +129,78 @@ export const Facet: React.FC<FacetProps> = ({ field, description }: FacetProps) 
 
   return (
     <div>
-      <div className="flex flex-col border-r-2  border-b-0 border-l-2  bg-white">
-        <div >
-          <FacetHeader field={field} description={description}/>
-
-        </div>
-        <div className="flex flex-row items-center justify-between flex-wrap bg-white mb-1 p-2 border-b-2 border-nci-gray-lighter">
-          <AlphaSortIcon scale="1.5em"/> <div className={"flex flex-row items-center"}><SortIcon scale="1.5em"/> <p className="px-2">Cases</p></div>
-        </div>
+      <div className="relative flex  flex-col border-r-2  border-b-0 border-l-2  bg-white">
         <div>
-          <div className={showAll ? "flex-none h-96 overflow-y-scroll" : "overflow-hidden"}>
-            {Object.entries(data).map(([value, count], i) => {
-              if (value === "_missing") return null;
-              if (!showAll && i > maxValuesToDisplay) return null;
-              return (
-                <div key={`${field}-${value}`} className="flex flex-row gap-x-2 px-2">
-                  <div className="flex-none">
-                    <input type="checkbox" value={`${field}:${value}`} onChange={handleChange}/>
-                  </div>
-                  <div className="flex-grow truncate ...">{value}</div>
-                  <div className="flex-none text-right w-12">{count.toLocaleString()}</div>
-                  <div className="flex-none text-right w-18">({((count/84609)*100).toFixed(2).toLocaleString()}%)</div>
-                </div>
-              );
-            })}
+          <div className="flex items-center justify-between flex-wrap bg-nci-gray-lighter px-1.5">
+            <div className="has-tooltip">{convertFieldToName(field)}
+              <div
+                className="inline-block tooltip w-1/4 border-b-2 border-nci-cyan-lightest rounded shadow-lg p-2 bg-gray-100 text-nci-blue-darkest mt-8 absolute">{description}</div>
+            </div>
+            <div className="flex flex-row">
+              <button
+                className="bg-nci-gray-lighter hover:bg-grey text-grey-darkest font-bold py-2 px-4 rounded inline-flex items-center"
+                onClick={toggleSearch}>
+                <SearchIcon />
+              </button>
+              <button
+                className="bg-nci-gray-lighter hover:bg-grey text-grey-darkest font-bold py-2 px-4 rounded inline-flex items-center"
+                onClick={toggleFlip}>
+                <FlipIcon />
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-      <div>
-        <div className="bg-white border-b-2 border-r-2 border-l-2 p-1.5">
-      {total - maxValuesToDisplay > 0 ? !showAll ?
-          <Button key="show-more"
-                  className="text-left p-2 w-auto hover:text-black"
-                  onClick={() => setIsGroupExpanded(!isGroupExpanded)}>
-            {total - maxValuesToDisplay} more
-          </Button>
-          :
-          <Button key="show-less"
-                  className="text-left p-2 w-auto hover:text-black"
-                  onClick={() => setIsGroupExpanded(!isGroupExpanded)}>
-            Show less
-          </Button>
-        : null
-      }
+        <div className="flex-auto">
+        <div className={isFacetView ? "flip-card" : "flip-card flip-card-flipped"}>
+          <div className="card-face">
+          <div >
+            <div
+              className="flex flex-row items-center justify-between flex-wrap bg-white mb-1 p-2 border-b-2 border-nci-gray-lighter">
+              <AlphaSortIcon scale="1.5em" />
+              <div className={"flex flex-row items-center"}><SortIcon scale="1.5em" /> <p className="px-2">Cases</p>
+              </div>
+            </div>
+
+            <div className={showAll ? "flex-none h-96 overflow-y-scroll" : "overflow-hidden"}>
+              {Object.entries(data).map(([value, count], i) => {
+                if (value === "_missing") return null;
+                if (!showAll && i > maxValuesToDisplay) return null;
+                return (
+                  <div key={`${field}-${value}`} className="flex flex-row gap-x-2 px-2">
+                    <div className="flex-none">
+                      <input type="checkbox" value={`${field}:${value}`} onChange={handleChange} />
+                    </div>
+                    <div className="flex-grow truncate ...">{value}</div>
+                    <div className="flex-none text-right w-12">{count.toLocaleString()}</div>
+                    <div className="flex-none text-right w-18">({((count / 84609) * 100).toFixed(2).toLocaleString()}%)
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+        <div>
+          <div className="bg-white border-b-2 border-r-2 border-l-2 p-1.5">
+            {total - maxValuesToDisplay > 0 ? !showAll ?
+                <Button key="show-more"
+                        className="text-left p-2 w-auto hover:text-black"
+                        onClick={() => setIsGroupExpanded(!isGroupExpanded)}>
+                  {total - maxValuesToDisplay} more
+                </Button>
+                :
+                <Button key="show-less"
+                        className="text-left p-2 w-auto hover:text-black"
+                        onClick={() => setIsGroupExpanded(!isGroupExpanded)}>
+                  Show less
+                </Button>
+              : null
+            }
+          </div>
+        </div>
+        </div>
+          <div className="card-face card-back"> Ijfsdklfsdklfjsdklfsdfkljsd </div>
+        </div>
       </div>
       </div>
     </div>
