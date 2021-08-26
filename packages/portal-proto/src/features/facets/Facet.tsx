@@ -15,6 +15,7 @@ import {
   MdFlip as FlipIcon,
 
 } from "react-icons/md";
+import { FacetChart } from "../charts/FacetChart";
 
 interface UseCaseFacetResponse {
   readonly data?: FacetBuckets;
@@ -129,7 +130,7 @@ export const Facet: React.FC<FacetProps> = ({ field, description }: FacetProps) 
 
   return (
     <div>
-      <div className="relative flex  flex-col border-r-2  border-b-0 border-l-2  bg-white">
+      <div className=" flex  flex-col border-r-2  border-b-0 border-l-2  bg-white relative">
         <div>
           <div className="flex items-center justify-between flex-wrap bg-nci-gray-lighter px-1.5">
             <div className="has-tooltip">{convertFieldToName(field)}
@@ -150,10 +151,10 @@ export const Facet: React.FC<FacetProps> = ({ field, description }: FacetProps) 
             </div>
           </div>
         </div>
-        <div className="flex-auto">
+        <div >
         <div className={isFacetView ? "flip-card" : "flip-card flip-card-flipped"}>
           <div className="card-face">
-          <div >
+          <div>
             <div
               className="flex flex-row items-center justify-between flex-wrap bg-white mb-1 p-2 border-b-2 border-nci-gray-lighter">
               <AlphaSortIcon scale="1.5em" />
@@ -199,7 +200,15 @@ export const Facet: React.FC<FacetProps> = ({ field, description }: FacetProps) 
           </div>
         </div>
         </div>
-          <div className="card-face card-back"> Ijfsdklfsdklfjsdklfsdfkljsd </div>
+          <div className="card-face card-back">
+            <FacetChart
+              field={field}
+              height={200}
+              marginBottom={0}
+              showXLabels={false}
+              showTitle={false}
+            />
+          </div>
         </div>
       </div>
       </div>
