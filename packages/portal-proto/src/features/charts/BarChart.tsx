@@ -6,9 +6,10 @@ interface BarChartProps {
   // if defined, this determines the height of the chart. Otherwise, autosizing is used.
   readonly height?: number;
   readonly marginBottom?: number;
+  readonly orientation?: string;
 }
 
-const BarChart: React.FC<BarChartProps> = ({ data, height, marginBottom }: BarChartProps) => {
+const BarChart: React.FC<BarChartProps> = ({ data, height, marginBottom, orientation='v' }: BarChartProps) => {
 
 const chartData = {
     x: data.x,
@@ -22,6 +23,7 @@ const chartData = {
       },
     },
     type: 'bar',
+    orientation: 'v'
   };
 
   const layout: Partial<Layout> = {
@@ -67,7 +69,7 @@ const chartData = {
     layout.height = height;
   } else {
     layout.autosize = true;
-  } 
+  }
 
   if (data.x.length > 6) {
     layout.xaxis.tickangle = 35;
