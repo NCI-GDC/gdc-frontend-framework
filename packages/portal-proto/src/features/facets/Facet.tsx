@@ -113,8 +113,7 @@ export const Facet: React.FC<FacetProps> = ({ field, description }: FacetProps) 
   }
 
   const maxValuesToDisplay = 6;
-  const showAll = isGroupExpanded ? true : false;
-  const total = Object.entries(data).length;
+  const total = Object.entries(data).filter(data => data[0] != "_missing" ).length;
 
   const handleChange = (e) => {
     const { value, checked } = e.target;
@@ -128,6 +127,10 @@ export const Facet: React.FC<FacetProps> = ({ field, description }: FacetProps) 
     setIsFacetView(!isFacetView);
   };
 
+  const cardHeight = (total - maxValuesToDisplay) > 16 ? 96 : (total - maxValuesToDisplay) > 0 ? Math.min(96, (total - maxValuesToDisplay) * 5 + 40): 24;
+
+  const cardStyle = isGroupExpanded && isFacetView ? `flex-none h-${cardHeight} overflow-y-scroll` : "overflow-hidden pr-3.5";
+  console.log("card_style", cardStyle );
   return (
     <div>
       <div className=" flex  flex-col border-r-2  border-b-0 border-l-2  bg-white relative">
@@ -153,7 +156,7 @@ export const Facet: React.FC<FacetProps> = ({ field, description }: FacetProps) 
         </div>
         <div >
         <div className={isFacetView ? "flip-card" : "flip-card flip-card-flipped"}>
-          <div className="card-face">
+          <div className="card-face bg-white">
           <div>
             <div
               className="flex flex-row items-center justify-between flex-wrap bg-white mb-1 p-2 border-b-2 border-nci-gray-lighter">
@@ -162,12 +165,11 @@ export const Facet: React.FC<FacetProps> = ({ field, description }: FacetProps) 
               </div>
             </div>
 
-            <div className={showAll ? "flex-none h-96 overflow-y-scroll" : "overflow-hidden"}>
-              {Object.entries(data).map(([value, count], i) => {
-                if (value === "_missing") return null;
-                if (!showAll && i > maxValuesToDisplay) return null;
+            <div className={cardStyle}>
+              {Object.entries(data).filter(data => data[0] != "_missing" ).map(([value, count], i) => {
+                if (!isGroupExpanded && i >= maxValuesToDisplay) return null;
                 return (
-                  <div key={`${field}-${value}`} className="flex flex-row gap-x-2 px-2">
+                  <div key={`${field}-${value}`} className="flex flex-row gap-x-1 px-2">
                     <div className="flex-none">
                       <input type="checkbox" value={`${field}:${value}`} onChange={handleChange} />
                     </div>
@@ -183,7 +185,7 @@ export const Facet: React.FC<FacetProps> = ({ field, description }: FacetProps) 
 
         <div>
           <div className="bg-white border-b-2 border-r-2 border-l-2 p-1.5">
-            {total - maxValuesToDisplay > 0 ? !showAll ?
+            {total - maxValuesToDisplay > 0 ? !isGroupExpanded ?
                 <Button key="show-more"
                         className="text-left p-2 w-auto hover:text-black"
                         onClick={() => setIsGroupExpanded(!isGroupExpanded)}>
@@ -200,12 +202,12 @@ export const Facet: React.FC<FacetProps> = ({ field, description }: FacetProps) 
           </div>
         </div>
         </div>
-          <div className="card-face card-back">
+          <div className="card-face card-back bg-white">
             <FacetChart
               field={field}
               height={200}
-              marginBottom={0}
-              showXLabels={false}
+              marginBottom={50}
+              showXLabels={true}
               showTitle={false}
             />
           </div>

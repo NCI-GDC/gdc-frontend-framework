@@ -12,6 +12,8 @@ const BarChartWithNoSSR = dynamic(() => import('./BarChart'), {
   ssr: false
 })
 
+const maxValuesToDisplay =7;
+
 interface UseCaseFacetResponse {
   readonly data?: FacetBuckets;
   readonly error?: string;
@@ -49,6 +51,7 @@ interface FacetProps {
   readonly height?: number;
   readonly marginBottom?: number;
   readonly showTitle?: boolean;
+  readonly maxBins?: number;
 }
 
 // from https://stackoverflow.com/questions/33053310/remove-value-from-object-without-mutation
@@ -70,7 +73,7 @@ const processChartData = (facetData:Record<string, any>, field: string, maxBins 
   return results;
 }
 
-export const FacetChart: React.FC<FacetProps> = ({ field, showXLabels = true, height, marginBottom, showTitle = true }: FacetProps) => {
+export const FacetChart: React.FC<FacetProps> = ({ field, showXLabels = true, height, marginBottom, showTitle = true, maxBins = maxValuesToDisplay}: FacetProps) => {
   const { data, error, isUninitialized, isFetching, isError } =
     useCaseFacet(field);
 
@@ -86,11 +89,11 @@ export const FacetChart: React.FC<FacetProps> = ({ field, showXLabels = true, he
     return <div>Failed to fetch facet: {error}</div>;
   }
 
-  const maxValuesToDisplay =7;
 
-  const chart_data = processChartData(data, field, maxValuesToDisplay, showXLabels);
 
-  return <div className="flex flex-col border-2 ">
+  const chart_data = processChartData(data, field, maxBins, showXLabels);
+
+  return <div className="flex flex-col border-2 bg-white ">
     {showTitle ?
       <div className="flex items-center justify-between flex-wrap bg-gray-100 p-1.5">
         {convertFieldToName(field)}

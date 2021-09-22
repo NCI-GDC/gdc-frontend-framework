@@ -9,13 +9,15 @@ interface BarChartProps {
   readonly orientation?: string;
 }
 
-const BarChart: React.FC<BarChartProps> = ({ data, height, marginBottom, orientation='v' }: BarChartProps) => {
+const BarChart: React.FC<BarChartProps> = ({ data, height, marginBottom, orientation='h' }: BarChartProps) => {
 
 const chartData = {
-    x: data.x,
-    y: data.y,
+    y: data.x,
+    x: data.y,
     textinfo: "label+percent",
     showlegend: false,
+    uniformtext_mode: 'hide',
+    title: null,
     marker: {
       line: {
         color: '#4f4b4b',
@@ -23,28 +25,30 @@ const chartData = {
       },
     },
     type: 'bar',
-    orientation: 'v'
+    orientation: orientation,
+  textposition: "outside",
+  automargin: true,
+  insidetextorientation: 'horizontal'
+
   };
 
   const layout: Partial<Layout> = {
-    uniformtext: { mode: 'show', minsize: 12 },
-    xaxis: {
-      tickson: "labels",
+    yaxis: {
       automargin: true,
       ticks:"outside",
       tickwidth:2,
       tickcolor:'#aaaaaa',
       ticklen:2,
-      tickmode: 'array',
       tickvals: data.tickvals,
       ticktext: data.ticktext,
+      autorange:"reversed",
       tickfont: {
         size: 12,
         color: 'rgb(107, 107, 107)'
       }
 
     },
-    yaxis: {
+    xaxis: {
       title: data.yAxisTitle,
       titlefont: {
         family: 'Arial, sans-serif',
@@ -57,23 +61,23 @@ const chartData = {
       },
     },
     margin: {
-      l: 80,
-      r: 40,
+      l: 100,
+      r: 20,
       b: marginBottom !== undefined ? marginBottom : 100,
       t: 30,
       pad: 4
     },
   };
 
-  if (height !== undefined) {
-    layout.height = height;
-  } else {
+ // if (height !== undefined) {
+ //   layout.height = height;
+//  } else {
     layout.autosize = true;
-  }
+//  }
 
-  if (data.x.length > 6) {
-    layout.xaxis.tickangle = 35;
-  }
+ // if (data.x.length > 6) {
+  //  layout.yaxis.tickangle = 35;
+  //}
 
 
   const config: Partial<Config> = {responsive: true,
