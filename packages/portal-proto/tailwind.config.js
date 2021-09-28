@@ -1,3 +1,4 @@
+const plugin = require('tailwindcss/plugin');
 module.exports = {
   purge: [
     "./pages/**/*.{js,ts,jsx,tsx}",
@@ -241,6 +242,9 @@ module.exports = {
         "screen/4": "calc(100vh / 4)",
         "screen/5": "calc(100vh / 5)",
       },
+      gridTemplateColumns: {
+        '2flex1': '1fr auto',
+      }
     },
   },
   variants: {
@@ -250,5 +254,18 @@ module.exports = {
       display: ["group-hover"],
     },
   },
-  plugins: [require("@tailwindcss/forms")],
+  plugins: [
+    require("@tailwindcss/forms"),
+    plugin(function({ addUtilities }) {
+      const newUtilities = {
+        '.nextImageFillFix' : {
+          width: 'auto !important',
+          right: 'auto !important',
+          'min-width': '0 !important',
+        },
+      }
+
+      addUtilities(newUtilities)
+    })
+  ],
 };

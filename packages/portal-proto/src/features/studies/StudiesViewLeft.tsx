@@ -2,9 +2,7 @@ import { Project, useProjects } from "@gff/core";
 import { Option, Select, SelectProps } from "../../components/Select";
 import { GroupTypeBase } from "react-select";
 import Image from "next/image";
-import { App, Initials, Button } from "../layout/UserFlowVariedPages";
-import { MdFlip } from "react-icons/md";
-import { BsQuestionCircleFill } from "react-icons/bs";
+import { App, Initials } from "../layout/UserFlowVariedPages";
 
 const DLBCL: Project = {
   projectId: "DLBCL",
@@ -21,6 +19,7 @@ export const ContextualStudiesView: React.FC<ContextualStudiesViewProps> = (
   props: ContextualStudiesViewProps,
 ) => {
   const { data } = useProjects({ size: 100 });
+
   return <StudiesView projects={data ? [DLBCL, ...data] : []} {...props} />;
 };
 
@@ -37,6 +36,7 @@ export const StudiesView: React.FC<StudiesViewProps> = ({
   exploreLeft,
   exploreRight,
 }: StudiesViewProps) => {
+  
   const diseaseTypeOptions = [
     { value: "acinar cell neoplasms", label: "acinar cell neoplasms" },
     {
@@ -354,24 +354,61 @@ export const StudiesView: React.FC<StudiesViewProps> = ({
   );
 
   return (
-    <div className="flex flex-col gap-y-4">
-      <div>
-        <Search />
-      </div>
-      <div className="flex flex-row gap-x-4">
-        <div className="w-72">{diseaseTypeFilter}</div>
+    <div className="flex flex-row gap-y-4">
+      <div className="flex-initial bg-white border border-black p-2 pt-4 max-w-sm">
+        {/*<div className="w-72">{diseaseTypeFilter}</div>
         <div className="w-72">{primarySiteFilter}</div>
-        <div className="w-72">{experimentalStrategyFilter}</div>
-        <div className="flex-grow" />
+        <div className="w-72">{experimentalStrategyFilter}</div>*/}
+        <div className="flex-grow">
+          <label>
+            <span className="block">Program</span>
+            <Image 
+              src="/user-flow/filterbox-open.png" 
+              width={316} 
+              height={294} />
+          </label>
+        </div>
+        <div className="flex-grow">
+          <label>
+          <span className="block">Primary Site</span>
+            <Image 
+              src="/user-flow/filterbox-open.png" 
+              width={316} 
+              height={294} />
+          </label>
+        </div>
+        <div className="flex-grow">
+          <label>
+          <span className="block">Disease Type</span>
+            <Image 
+              src="/user-flow/filterbox-open.png" 
+              width={316} 
+              height={294} />
+          </label>
+        </div>
+        <div className="flex-grow">
+          <label>
+          <span className="block">Experimental Strategy</span>
+            <Image 
+              src="/user-flow/filterbox-open.png" 
+              width={316} 
+              height={294} />
+          </label>
+        </div>
       </div>
-      <div className="flex flex-row gap-x-4">
-        <div className="w-40">{sortFilter}</div>
-        <div className="flex-grow" />
-        <div className="">{exploreLeft}</div>
-        <div className="">{exploreRight}</div>
-      </div>
-      <div className="flex-grow">
-        <Studies projects={projects} onClickStudy={setCurrentStudy} />
+      <div className="flex-col">
+        <div>
+          <Search />
+        </div>
+        <div className="flex flex-row gap-x-4">
+          <div className="w-40">{sortFilter}</div>
+          <div className="flex-grow" />
+          <div className="">{exploreLeft}</div>
+          <div className="">{exploreRight}</div>
+        </div>
+        <div className="flex-grow">
+          <Studies projects={projects} onClickStudy={setCurrentStudy} />
+        </div>
       </div>
     </div>
   );
@@ -389,7 +426,7 @@ const Studies: React.FC<StudiesProps> = ({
   },
 }: StudiesProps) => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
       {projects?.map((project) => (
         <Study
           project={project}
@@ -408,62 +445,27 @@ interface StudyProps {
 
 const Study: React.FC<StudyProps> = (props: StudyProps) => {
   const { projectId } = props.project;
-  //const { onClick } = props;
-  const onClick = ()=>{
-    console.log(props);
-  }
-  
+  const { onClick } = props;
+
   return (
-    <div name={projectId} className="group h-250 border border-nci-gray-lighter flex flex-col gap-y-2 bg-white shadow-md">
-      <div className="bg-nci-gray-lightest flex flex-row">
-        <div className="flex-grow text-center pl-4">
-          {props.project.name}
+    <App name={projectId} onClick={onClick}>
+      <div className="flex flex-col w-full h-full">
+        <div className="flex-grow">
+          <Initials name={projectId} />
         </div>
-        <button className="p-2">
-            <MdFlip title="Flip Card"/>
-        </button>
-        <button className="p-2 has-tooltip">
-            <BsQuestionCircleFill />
-            <div className='inline-block tooltip absolute'>Tooltip text</div>
-        </button>
-      </div>
-      <div className="grid grid-cols-2flex1 m-4 mt-2">
-        <div className="max-h-40 relative">
-          <Image src={`/GENIE.png`} layout="fill" alt={`${props.project.projectId} logo`} objectFit="contain" className="nextImageFillFix"/>
-        </div>
-
-        <label className="p-4">
-          <input type="checkbox" className="mx-2"/>
-          <span className="pt-2">Select</span>
-        </label>
-        <div className="flex flex-col">
-          <div className="py-4">
-            {props.project.disease_type?.length > 0 ? 
-              (props.project.disease_type.length === 1 ? 
-                props.project.disease_type[0] :
-                `${props.project.disease_type.length} Disease Types`)
-            : ''}
+        <div className="flex flex-row justify-center">
+          <div />
+          <div
+            className="flex flex-row items-center gap-x-2"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <input type="checkbox" id={`select-${projectId}`} />
+            <label htmlFor={`select-${projectId}`}>Select</label>
           </div>
-
-          <div className="">
-            {props.project.primary_site?.length > 0 ? 
-              (props.project.primary_site.length === 1 ? 
-                props.project.primary_site[0] :
-                `${props.project.primary_site.length} Primary Sites`)
-            : ''}
-          </div>
-        </div>
-        <div className="flex flex-col justify-center px-4">
-          <Button className="m-1
-            border-nci-gray
-            bg-nci-gray 
-            hover:bg-nci-gray-lightest">
-              1,098 Cases
-          </Button>
-          <Button className="m-1">33,766 Files</Button>
+          <div />
         </div>
       </div>
-    </div>
+    </App>
   );
 };
 
