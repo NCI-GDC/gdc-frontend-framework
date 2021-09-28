@@ -127,10 +127,11 @@ export const Facet: React.FC<FacetProps> = ({ field, description }: FacetProps) 
     setIsFacetView(!isFacetView);
   };
 
-  const cardHeight = (total - maxValuesToDisplay) > 16 ? 96 : (total - maxValuesToDisplay) > 0 ? Math.min(96, (total - maxValuesToDisplay) * 5 + 40): 24;
+  const visibleValues = (total - maxValuesToDisplay);
+  const cardHeight = visibleValues > 16 ? 96 : visibleValues > 0 ? Math.min(96, visibleValues * 5 + 40): 24;
 
-  const cardStyle = isGroupExpanded && isFacetView ? `flex-none h-${cardHeight} overflow-y-scroll` : "overflow-hidden pr-3.5";
-  console.log("card_style", cardStyle );
+  const cardStyle = isGroupExpanded ? `flex-none h-${cardHeight} overflow-y-scroll` : "overflow-hidden pr-3.5";
+  console.log("card_style", cardHeight * 4.33 );
   return (
     <div>
       <div className=" flex  flex-col border-r-2  border-b-0 border-l-2  bg-white relative">
@@ -205,10 +206,12 @@ export const Facet: React.FC<FacetProps> = ({ field, description }: FacetProps) 
           <div className="card-face card-back bg-white">
             <FacetChart
               field={field}
-              height={200}
-              marginBottom={50}
+              marginBottom={40}
               showXLabels={true}
               showTitle={false}
+              height={ isGroupExpanded ? cardHeight * 4.88 : 200}
+              orientation='h'
+              maxBins={Math.min(isGroupExpanded ? 16 : Math.min(6, total))}
             />
           </div>
         </div>

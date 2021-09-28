@@ -52,6 +52,7 @@ interface FacetProps {
   readonly marginBottom?: number;
   readonly showTitle?: boolean;
   readonly maxBins?: number;
+  readonly orientation?: string;
 }
 
 // from https://stackoverflow.com/questions/33053310/remove-value-from-object-without-mutation
@@ -73,7 +74,7 @@ const processChartData = (facetData:Record<string, any>, field: string, maxBins 
   return results;
 }
 
-export const FacetChart: React.FC<FacetProps> = ({ field, showXLabels = true, height, marginBottom, showTitle = true, maxBins = maxValuesToDisplay}: FacetProps) => {
+export const FacetChart: React.FC<FacetProps> = ({ field, showXLabels = true, height, marginBottom, showTitle = true, maxBins = maxValuesToDisplay, orientation='v'}: FacetProps) => {
   const { data, error, isUninitialized, isFetching, isError } =
     useCaseFacet(field);
 
@@ -89,8 +90,6 @@ export const FacetChart: React.FC<FacetProps> = ({ field, showXLabels = true, he
     return <div>Failed to fetch facet: {error}</div>;
   }
 
-
-
   const chart_data = processChartData(data, field, maxBins, showXLabels);
 
   return <div className="flex flex-col border-2 bg-white ">
@@ -99,7 +98,7 @@ export const FacetChart: React.FC<FacetProps> = ({ field, showXLabels = true, he
         {convertFieldToName(field)}
       </div> : null
     }
-    <BarChartWithNoSSR data={chart_data} height={height} marginBottom={marginBottom}></BarChartWithNoSSR>
+    <BarChartWithNoSSR data={chart_data} height={height} marginBottom={marginBottom} orientation={orientation}></BarChartWithNoSSR>
   </div>;
 };
 
