@@ -131,7 +131,7 @@ export const Facet: React.FC<FacetProps> = ({ field, description }: FacetProps) 
   const cardHeight = visibleValues > 16 ? 96 : visibleValues > 0 ? Math.min(96, visibleValues * 5 + 40): 24;
 
   const cardStyle = isGroupExpanded ? `flex-none h-${cardHeight} overflow-y-scroll` : "overflow-hidden pr-3.5";
-  console.log("card_style", cardHeight * 4.33 );
+;
   return (
     <div>
       <div className=" flex  flex-col border-r-2  border-b-0 border-l-2  bg-white relative">

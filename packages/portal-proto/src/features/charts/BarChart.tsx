@@ -114,7 +114,6 @@ const vertical_layout: Partial<Layout> = {
       t: 40,
       pad: 4
     },
-    autosize: false,
   };
 
   if (height !== undefined) {

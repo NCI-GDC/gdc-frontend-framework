@@ -9,7 +9,7 @@ interface BarChartProps {
   readonly orientation?: string;
 }
 
-const BarChart: React.FC<BarChartProps> = ({ data, height, marginBottom, orientation='h' }: BarChartProps) => {
+const BarChart: React.FC<BarChartProps> = ({ data, height, marginBottom, orientation='v' }: BarChartProps) => {
 
 const chartData = {
     y: data.x,
@@ -26,9 +26,7 @@ const chartData = {
     },
     type: 'bar',
     orientation: orientation,
-  textposition: "outside",
-  automargin: true,
-  insidetextorientation: 'horizontal'
+
 
   };
 
