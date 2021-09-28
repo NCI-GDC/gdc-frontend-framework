@@ -12,6 +12,8 @@ import {
 export interface Project {
   readonly name: string;
   readonly projectId: string;
+  readonly disease_type: Array<string>;
+  readonly primary_site: Array<string>;
 }
 
 export const fetchProjects = createAsyncThunk<
@@ -53,6 +55,8 @@ const slice = createSlice({
                 projects[hit.project_id] = {
                   name: hit.name,
                   projectId: hit.project_id,
+                  disease_type: [...hit.disease_type],
+                  primary_site: [...hit.primary_site],
                 };
                 return projects;
               },
