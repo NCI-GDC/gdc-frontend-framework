@@ -7,15 +7,19 @@ import { GeneTable, MutationTable} from "../genomic/Genomic";
 
 interface FacetGroupProps {
   readonly facetNames: Array<Record<string, any>>;
+  onUpdateSummaryChart: (op:string, field:string) => void;
+
 }
 
-export const FacetGroup: React.FC<FacetGroupProps> = ({ facetNames }: FacetGroupProps) => {
+export const FacetGroup: React.FC<FacetGroupProps> = ({ facetNames, onUpdateSummaryChart }: FacetGroupProps) => {
 
   return ( <div className="flex flex-col border-2 h-screen/1.5 overflow-y-scroll">
     <div className="grid grid-cols-4 gap-4">
 
     {facetNames.map((x, index) => {
-      return (<Facet key={`${x.facet_filter}-${index}`} field={x.facet_filter} description={x.description} />);
+      return (<Facet key={`${x.facet_filter}-${index}`} field={x.facet_filter} description={x.description}
+                     onUpdateSummaryChart={onUpdateSummaryChart}
+      />);
     })
     }
     </div>
@@ -78,9 +82,10 @@ FacetTabWithSubmenu.tabsRole = 'Tab';
 
 interface CohortTabbedFacetsProps {
   readonly searchResults: [ Record<string, unknown> ];
+  onUpdateSummaryChart: (op:string, field:string) => void;
 }
 
-export const CohortTabbedFacets: React.FC<CohortTabbedFacetsProps> = ( {  searchResults } : CohortTabbedFacetsProps) => {
+export const CohortTabbedFacets: React.FC<CohortTabbedFacetsProps> = ( {  searchResults, onUpdateSummaryChart } : CohortTabbedFacetsProps) => {
    const [subcategories, setSubcategories] = useState({ 'Clinical': 'All' ,'Biospecimen': 'All', 'Visualizable Data': 'Somatic Mutations' });
    const handleSubcategoryChanged = (category:string, subcategory:string) => {
      const state = { ...subcategories };
@@ -118,13 +123,16 @@ export const CohortTabbedFacets: React.FC<CohortTabbedFacetsProps> = ( {  search
                              subCategories={downloadableSubcategories}
                              onSubcategoryChange={handleSubcategoryChanged}></FacetTabWithSubmenu>
     </TabList>
-      <TabPanel><FacetGroup facetNames={get_facets('Clinical',subcategories['Clinical'])}/></TabPanel>
-      <TabPanel><FacetGroup facetNames={get_facets('Biospecimen',subcategories['Biospecimen'])}/></TabPanel>
+      <TabPanel><FacetGroup onUpdateSummaryChart={onUpdateSummaryChart}
+        facetNames={get_facets('Clinical',subcategories['Clinical']) }/></TabPanel>
+      <TabPanel><FacetGroup
+        onUpdateSummaryChart={onUpdateSummaryChart}
+        facetNames={get_facets('Biospecimen',subcategories['Biospecimen'])}/></TabPanel>
       <TabPanel>
         {(subcategories['Visualizable Data'] === 'Somatic Mutations')  ?
           <div className="flex flex-row" > <GeneTable width="0"/>  <MutationTable width="0"/> </div> : <div/> }
       </TabPanel>
-      <TabPanel><FacetGroup facetNames={downloadableFacets}/></TabPanel>
+      <TabPanel><FacetGroup onUpdateSummaryChart={onUpdateSummaryChart}  facetNames={downloadableFacets}/></TabPanel>
     </Tabs>
     </div>
   )

@@ -8,6 +8,7 @@ import {
 import { useEffect } from "react";
 import dynamic from 'next/dynamic'
 
+
 const BarChartWithNoSSR = dynamic(() => import('./BarChart'), {
   ssr: false
 })
@@ -67,6 +68,7 @@ const processChartData = (facetData:Record<string, any>, field: string, maxBins 
     y: Object.values(data).slice(0, maxBins),
     tickvals: showXLabels ? xvals : [],
     ticktext: showXLabels ? xlabels : [],
+    label_text: Object.keys(data).slice(0, maxBins).map(x => processLabel(x, 100)),
     title: convertFieldToName(field),
     filename: `${field}.svg`,
     yAxisTitle: "# of Cases"

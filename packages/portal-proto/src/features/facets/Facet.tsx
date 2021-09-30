@@ -51,6 +51,7 @@ const useCaseFacet = (field: string): UseCaseFacetResponse => {
 interface FacetProps {
   readonly field: string;
   readonly description?: string;
+  onUpdateSummaryChart: (op:string, field:string) => void;
 }
 
 
@@ -70,9 +71,9 @@ const FacetHeader: React.FC<FacetProps> = ({ field, description }: PropsWithChil
     <div className="flex flex-col border-r-2  border-b-0 border-l-2  bg-white">
       <div>
         <div className="flex items-center justify-between flex-wrap bg-nci-gray-lighter px-1.5">
-          <div className="has-tooltip">{convertFieldToName(field)}
+          <div className="has-tooltip"  >{convertFieldToName(field) }
             <div
-              className="inline-block tooltip w-1/4 border-b-2 border-nci-cyan-lightest rounded shadow-lg p-2 bg-gray-100 text-nci-blue-darkest mt-8 absolute">{description}</div>
+              className="inline-block tooltip w-1/2 border-b-2 border-nci-cyan-lightest rounded shadow-lg p-2 bg-gray-100 text-nci-blue-darkest mt-8 absolute">{description}</div>
           </div>
           <div className="flex flex-row">
             <button
@@ -93,7 +94,7 @@ const FacetHeader: React.FC<FacetProps> = ({ field, description }: PropsWithChil
 };
 
 
-export const Facet: React.FC<FacetProps> = ({ field, description }: FacetProps) => {
+export const Facet: React.FC<FacetProps> = ({ field, description, onUpdateSummaryChart }: FacetProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [isFacetView, setIsFacetView] = useState(true);
@@ -127,6 +128,12 @@ export const Facet: React.FC<FacetProps> = ({ field, description }: FacetProps) 
     setIsFacetView(!isFacetView);
   };
 
+  const handleUpdateSummaryChart = () => {
+    console.log(field);
+    onUpdateSummaryChart("add", field)
+  };
+
+
   const visibleValues = (total - maxValuesToDisplay);
   const cardHeight = visibleValues > 16 ? 96 : visibleValues > 0 ? Math.min(96, visibleValues * 5 + 40): 24;
 
@@ -136,10 +143,10 @@ export const Facet: React.FC<FacetProps> = ({ field, description }: FacetProps) 
     <div>
       <div className=" flex  flex-col border-r-2  border-b-0 border-l-2  bg-white relative">
         <div>
-          <div className="flex items-center justify-between flex-wrap bg-nci-gray-lighter px-1.5">
-            <div className="has-tooltip">{convertFieldToName(field)}
+          <div className="flex items-center justify-between flex-wrap bg-nci-gray-lighter px-1.5" onDoubleClick={handleUpdateSummaryChart} >
+            <div className="has-tooltip"  >{convertFieldToName(field) }
               <div
-                className="inline-block tooltip w-1/4 border-b-2 border-nci-cyan-lightest rounded shadow-lg p-2 bg-gray-100 text-nci-blue-darkest mt-8 absolute">{description}</div>
+                className="inline-block tooltip w-full border-b-2 border-nci-cyan-lightest rounded shadow-lg p-2 bg-gray-100 text-nci-blue-darkest mt-8 absolute">{description}</div>
             </div>
             <div className="flex flex-row">
               <button

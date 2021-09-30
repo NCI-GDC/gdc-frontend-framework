@@ -14,7 +14,9 @@ const BarChart: React.FC<BarChartProps> = ({ data, height, marginBottom, orienta
 const chartData = {
     x: orientation === "v" ? data.x : data.y,
     y: orientation  === "v" ? data.y : data.x,
-    textinfo: "label+percent",
+    hoverinfo: "text",
+    text: data.label_text,
+    textposition: 'none',
     showlegend: false,
     uniformtext_mode: 'hide',
     title: null,
@@ -26,13 +28,13 @@ const chartData = {
     },
     type: 'bar',
     orientation: orientation,
-  bargap:0.50,
- // textposition: "outside",
- // automargin: true,
- // insidetextorientation: 'horizontal'
+    bargap: 0.50,
   };
 const vertical_layout: Partial<Layout> = {
-    uniformtext: { mode: 'show', minsize: 12 },
+    uniformtext: {
+      mode: 'show',
+      minsize: 10
+    },
     xaxis: {
       tickson: "labels",
       automargin: true,
@@ -80,6 +82,10 @@ const vertical_layout: Partial<Layout> = {
   }
 
   const horizontal_layout: Partial<Layout> = {
+    uniformtext: {
+      mode: 'show',
+      minsize: 10
+    },
     yaxis: {
       automargin: true,
       ticks:"outside",
