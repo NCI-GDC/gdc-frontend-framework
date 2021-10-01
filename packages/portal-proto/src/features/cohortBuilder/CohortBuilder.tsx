@@ -3,13 +3,11 @@ import  { CohortGroup, CohortGroupProps }  from "./CohortGroup";
 import { SummaryCharts } from "./SummaryCharts"
 import  MetaSearch from "./MetaSearch";
 import  CohortTabbedFacets from "./FacetGroup";
-import dynamic from 'next/dynamic'
 
 
 const FullCohortBuilder: React.FC<CohortGroupProps> = ( { cohorts, simpleMode = false} : CohortGroupProps ) => {
 
   const [searchResults, setSearchResults] = useState([]);
- // const { summaryFields, setSummaryFields } = useContext(CohortBuilderSummaryContext);
 
   const updateSummaryCharts = (op, field) => {
     if (op === "add")
