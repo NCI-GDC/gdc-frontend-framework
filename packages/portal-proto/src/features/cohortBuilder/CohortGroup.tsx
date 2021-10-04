@@ -4,8 +4,6 @@ import { Button } from "../layout/UserFlowVariedPages";
 import Select from "react-select";
 import {
   MdClose as ClearIcon,
-  MdSettings as SettingsIcon,
-  MdEdit as EditIcon,
   MdSave as SaveIcon,
   MdAdd as AddIcon,
   MdDelete as DeleteIcon,
@@ -13,7 +11,6 @@ import {
   MdFileDownload as DownloadIcon,
   MdArrowDropDown as DropDownIcon,
 } from "react-icons/md";
-import { FacetChart } from "../charts/FacetChart";
 import { nanoid } from "@reduxjs/toolkit";
 
 const CohortGroupSelect: React.FC<unknown> = () => {

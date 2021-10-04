@@ -36,6 +36,7 @@ const molecularSubcategories = [
 
 const downloadableFacets = [];
 const downloadableSubcategories = [
+  "All"
 ];
 const visualizableFacets = [];
 const visualizableSubcategories = [
@@ -86,7 +87,7 @@ interface CohortTabbedFacetsProps {
 }
 
 export const CohortTabbedFacets: React.FC<CohortTabbedFacetsProps> = ( {  searchResults, onUpdateSummaryChart } : CohortTabbedFacetsProps) => {
-   const [subcategories, setSubcategories] = useState({ 'Clinical': 'All' ,'Biospecimen': 'All', 'Visualizable Data': 'Somatic Mutations' });
+   const [subcategories, setSubcategories] = useState({ 'Clinical': 'All' ,'Biospecimen': 'All', 'Visualizable Data': 'Somatic Mutations', "Downloadable": "All" });
    const handleSubcategoryChanged = (category:string, subcategory:string) => {
      const state = { ...subcategories };
      state[category] = subcategory;
