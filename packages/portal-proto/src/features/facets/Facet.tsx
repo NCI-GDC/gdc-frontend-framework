@@ -97,6 +97,7 @@ const FacetHeader: React.FC<FacetProps> = ({ field, description }: PropsWithChil
 export const Facet: React.FC<FacetProps> = ({ field, description, onUpdateSummaryChart }: FacetProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
+  const [isSortedByCases, setIsSortedByCases] = useState(false);
   const [isFacetView, setIsFacetView] = useState(true);
   const { data, error, isUninitialized, isFetching, isError } =
     useCaseFacet(field);
@@ -129,7 +130,6 @@ export const Facet: React.FC<FacetProps> = ({ field, description, onUpdateSummar
   };
 
   const handleUpdateSummaryChart = () => {
-    console.log(field);
     onUpdateSummaryChart("add", field)
   };
 
@@ -138,7 +138,7 @@ export const Facet: React.FC<FacetProps> = ({ field, description, onUpdateSummar
   const cardHeight = visibleValues > 16 ? 96 : visibleValues > 0 ? Math.min(96, visibleValues * 5 + 40): 24;
 
   const cardStyle = isGroupExpanded ? `flex-none h-${cardHeight} overflow-y-scroll` : "overflow-hidden pr-3.5";
-;
+
   return (
     <div>
       <div className=" flex  flex-col border-r-2  border-b-0 border-l-2  bg-white relative">
@@ -167,27 +167,34 @@ export const Facet: React.FC<FacetProps> = ({ field, description, onUpdateSummar
           <div className="card-face bg-white">
           <div>
             <div
-              className="flex flex-row items-center justify-between flex-wrap bg-white mb-1 p-2 border-b-2 border-nci-gray-lighter">
-              <AlphaSortIcon scale="1.5em" />
-              <div className={"flex flex-row items-center"}><SortIcon scale="1.5em" /> <p className="px-2">Cases</p>
+              className="flex flex-row items-center justify-between flex-wrap border">
+              <button className={"ml-2 border rounded border-nci-blumine bg-nci-blumine hover:bg-nci-blumine-lightest text-white hover:text-nci-blumine-darker"}>
+              <AlphaSortIcon onClick={() => setIsSortedByCases(false)} scale="1.5em" />
+            </button>
+              <div className={"flex flex-row items-center "}>
+                <button onClick={() => setIsSortedByCases(true)} className={"border rounded border-nci-blumine bg-nci-blumine hover:bg-nci-blumine-lightest text-white hover:text-nci-blumine-darker"}>
+                  <SortIcon scale="1.5em" /></button> <p className="px-2 mr-3">Cases</p>
               </div>
             </div>
 
             <div className={cardStyle}>
-              {Object.entries(data).filter(data => data[0] != "_missing" ).map(([value, count], i) => {
-                if (!isGroupExpanded && i >= maxValuesToDisplay) return null;
-                return (
-                  <div key={`${field}-${value}`} className="flex flex-row gap-x-1 px-2">
-                    <div className="flex-none">
-                      <input type="checkbox" value={`${field}:${value}`} onChange={handleChange} />
+              {
+                Object.entries(data).filter(data => data[0] != "_missing" ).sort(isSortedByCases ? ([,a],[,b]) => b-a : ([a],[b]) =>  a.localeCompare(b)
+                ).map(([value, count], i) => {
+                  if (!isGroupExpanded && i >= maxValuesToDisplay) return null;
+                  return (
+                    <div key={`${field}-${value}`} className="flex flex-row gap-x-1 px-2">
+                      <div className="flex-none">
+                        <input type="checkbox" value={`${field}:${value}`} onChange={handleChange} />
+                      </div>
+                      <div className="flex-grow truncate ...">{value}</div>
+                      <div className="flex-none text-right w-12">{count.toLocaleString()}</div>
+                      <div className="flex-none text-right w-18">({((count / 84609) * 100).toFixed(2).toLocaleString()}%)
+                      </div>
                     </div>
-                    <div className="flex-grow truncate ...">{value}</div>
-                    <div className="flex-none text-right w-12">{count.toLocaleString()}</div>
-                    <div className="flex-none text-right w-18">({((count / 84609) * 100).toFixed(2).toLocaleString()}%)
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })
+              }
             </div>
           </div>
 

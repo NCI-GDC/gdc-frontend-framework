@@ -91,7 +91,6 @@ const CohortBar: React.FC<CohortBarProps> = ({
       {!hide_controls ?
         <div className="flex flex-row items-center">
           <Button className="mx-1">{case_count} Cases</Button>
-          <Button className="mx-1 "><EditIcon size="1.5em" /></Button>
           <Button className="mx-2 "><SaveIcon size="1.5em" /></Button>
           <Button className="mx-2 "><AddIcon size="1.5em" /></Button>
           <Button className="mx-2 "><DeleteIcon size="1.5em" /></Button>
