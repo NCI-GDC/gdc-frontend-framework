@@ -53,7 +53,7 @@ export const MetaSearch: React.FC<MetaSearchProp> = ({ onChange }: MetaSearchPro
           </div>
         </div>
       </div>
-        <div className={`${searchResults.length == 0 ? "hidden" : ""} flex-col border-2 mt-14 absolute z-20 bg-white w-1/2 m-16 p-4 drop-shadow ${searchResults.length > 6 ? "h-48 overflow-y-auto" : ""} `}> {
+        <div className={`${searchResults.length == 0 ? "hidden" : ""} flex-col border-2 mt-14 absolute z-20 bg-gray-100 w-1/2 m-16 p-4 drop-shadow ${searchResults.length > 6 ? "h-48 overflow-y-auto" : ""} `}> {
           searchResults.map((x, index) => {
             return (
               <div key={`${x.name}_${index}`} className="flex flex-row items-center">{x.category}

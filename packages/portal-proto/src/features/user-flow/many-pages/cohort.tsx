@@ -111,9 +111,6 @@ export const CohortManager: React.FC<CohortManagerProps> = ({
           />
         </div>
         <div className="flex flex-row items-center">
-          <Button className="mx-1 ">
-            <EditIcon size="1.5em" />
-          </Button>
           <Button className="mx-2 ">
             <SaveIcon size="1.5em" />
           </Button>

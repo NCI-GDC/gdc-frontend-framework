@@ -141,7 +141,7 @@ export const Facet: React.FC<FacetProps> = ({ field, description, onUpdateSummar
 
   return (
     <div>
-      <div className=" flex  flex-col border-r-2  border-b-0 border-l-2  bg-white relative">
+      <div className="flex flex-col border-2 bg-white p-1  relative drop-shadow-md border-nci-blumine-lighter">
         <div>
           <div className="flex items-center justify-between flex-wrap bg-nci-gray-lighter px-1.5" onDoubleClick={handleUpdateSummaryChart} >
             <div className="has-tooltip"  >{convertFieldToName(field) }
@@ -167,7 +167,7 @@ export const Facet: React.FC<FacetProps> = ({ field, description, onUpdateSummar
           <div className="card-face bg-white">
           <div>
             <div
-              className="flex flex-row items-center justify-between flex-wrap border">
+              className="flex flex-row items-center justify-between flex-wrap border p-1">
               <button className={"ml-2 border rounded border-nci-blumine bg-nci-blumine hover:bg-nci-blumine-lightest text-white hover:text-nci-blumine-darker"}>
               <AlphaSortIcon onClick={() => setIsSortedByCases(false)} scale="1.5em" />
             </button>
@@ -188,7 +188,7 @@ export const Facet: React.FC<FacetProps> = ({ field, description, onUpdateSummar
                         <input type="checkbox" value={`${field}:${value}`} onChange={handleChange} />
                       </div>
                       <div className="flex-grow truncate ...">{value}</div>
-                      <div className="flex-none text-right w-12">{count.toLocaleString()}</div>
+                      <div className="flex-none text-right w-14">{count.toLocaleString()}</div>
                       <div className="flex-none text-right w-18">({((count / 84609) * 100).toFixed(2).toLocaleString()}%)
                       </div>
                     </div>
@@ -198,23 +198,27 @@ export const Facet: React.FC<FacetProps> = ({ field, description, onUpdateSummar
             </div>
           </div>
 
-        <div>
-          <div className="bg-white border-b-2 border-r-2 border-l-2 p-1.5">
-            {total - maxValuesToDisplay > 0 ? !isGroupExpanded ?
+        <div className={"mt-3"}>
+
+            {visibleValues > 0 ? !isGroupExpanded ?
+              <div className="bg-white border-2  p-1.5">
                 <Button key="show-more"
                         className="text-left p-2 w-auto hover:text-black"
                         onClick={() => setIsGroupExpanded(!isGroupExpanded)}>
-                  {total - maxValuesToDisplay} more
+                  {visibleValues} more
                 </Button>
+              </div>
                 :
+              <div className="bg-white border-2  p-1.5">
                 <Button key="show-less"
-                        className="text-left p-2 w-auto hover:text-black"
+                        className="text-left border-2 p-1.5 w-auto hover:text-black"
                         onClick={() => setIsGroupExpanded(!isGroupExpanded)}>
                   Show less
                 </Button>
+              </div>
               : null
             }
-          </div>
+
         </div>
         </div>
           <div className="card-face card-back bg-white">
@@ -223,7 +227,7 @@ export const Facet: React.FC<FacetProps> = ({ field, description, onUpdateSummar
               marginBottom={40}
               showXLabels={true}
               showTitle={false}
-              height={ isGroupExpanded ? cardHeight * 4.88 : 200}
+              height={ isGroupExpanded ? cardHeight * 4.88 :220}
               orientation='h'
               maxBins={Math.min(isGroupExpanded ? 16 : Math.min(6, total))}
             />
