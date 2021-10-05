@@ -4,12 +4,16 @@ import { useState } from "react";
 import Select from "react-select";
 import { get_facet_subcategories, get_facets } from "./dictionary";
 import { GeneTable, MutationTable} from "../genomic/Genomic";
+import MutationFacet from "./MutationFacet";
+import {BIOTYPE, VARIANT_CALLER, VEP_IMPACT, CONSEQUENCE_TYPE, SIFT_IMPACT} from "./gene_mutation_facets"
 
 interface FacetGroupProps {
   readonly facetNames: Array<Record<string, any>>;
   onUpdateSummaryChart: (op:string, field:string) => void;
 
 }
+
+
 
 export const FacetGroup: React.FC<FacetGroupProps> = ({ facetNames, onUpdateSummaryChart }: FacetGroupProps) => {
 
@@ -130,10 +134,23 @@ export const CohortTabbedFacets: React.FC<CohortTabbedFacetsProps> = ( {  search
         onUpdateSummaryChart={onUpdateSummaryChart}
         facetNames={get_facets('Biospecimen',subcategories['Biospecimen'])}/></TabPanel>
       <TabPanel>
-        {(subcategories['Visualizable Data'] === 'Somatic Mutations')  ?
-          <div className="flex flex-row" >
-            <GeneTable width="0"/>
-            <MutationTable width="0"/> </div> : <div/> }
+        {(subcategories['Visualizable Data'] === 'Somatic Mutations') ?
+          <div className="flex flex-row">
+            <div className="flex flex-col">
+              <GeneTable width="0" />
+              <MutationFacet field={"Biotype"} description={""} data={BIOTYPE} type={"Genes"} />
+            </div>
+            <div className="flex flex-col">
+              <MutationTable width="0" />
+              <div className="grid grid-cols-2 gap-4">
+              <MutationFacet field={"VEP Impact"} description={""} data={VEP_IMPACT}  />
+              <MutationFacet field={"Variant Caller"} description={""} data={VARIANT_CALLER}  />
+              <MutationFacet field={"Consequence Type"} description={""} data={CONSEQUENCE_TYPE}  />
+              <MutationFacet field={"SIFT Impact"} description={""} data={SIFT_IMPACT}  />
+              </div>
+            </div>
+          </div> : <div/>
+        }
       </TabPanel>
       <TabPanel><FacetGroup onUpdateSummaryChart={onUpdateSummaryChart}
                             facetNames={get_facets('Downloadable',subcategories['Downloadable'])}/></TabPanel>
