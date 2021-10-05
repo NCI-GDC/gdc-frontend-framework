@@ -97,7 +97,7 @@ const FacetHeader: React.FC<FacetProps> = ({ field, description }: PropsWithChil
 export const Facet: React.FC<FacetProps> = ({ field, description, onUpdateSummaryChart }: FacetProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
-  const [isSortedByCases, setIsSortedByCases] = useState(false);
+  const [isSortedByCases, setIsSortedByCases] = useState(true);
   const [isFacetView, setIsFacetView] = useState(true);
   const { data, error, isUninitialized, isFetching, isError } =
     useCaseFacet(field);

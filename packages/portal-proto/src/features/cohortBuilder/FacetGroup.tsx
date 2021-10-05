@@ -108,7 +108,7 @@ export const CohortTabbedFacets: React.FC<CohortTabbedFacetsProps> = ( {  search
    --- */
 
   return (
-    <div className="w-100">
+    <div className="w-100 px-10">
     <Tabs>
       <TabList>
         <FacetTabWithSubmenu category="Clinical"
@@ -131,9 +131,12 @@ export const CohortTabbedFacets: React.FC<CohortTabbedFacetsProps> = ( {  search
         facetNames={get_facets('Biospecimen',subcategories['Biospecimen'])}/></TabPanel>
       <TabPanel>
         {(subcategories['Visualizable Data'] === 'Somatic Mutations')  ?
-          <div className="flex flex-row" > <GeneTable width="0"/>  <MutationTable width="0"/> </div> : <div/> }
+          <div className="flex flex-row" >
+            <GeneTable width="0"/>
+            <MutationTable width="0"/> </div> : <div/> }
       </TabPanel>
-      <TabPanel><FacetGroup onUpdateSummaryChart={onUpdateSummaryChart}  facetNames={downloadableFacets}/></TabPanel>
+      <TabPanel><FacetGroup onUpdateSummaryChart={onUpdateSummaryChart}
+                            facetNames={get_facets('Downloadable',subcategories['Downloadable'])}/></TabPanel>
     </Tabs>
     </div>
   )
