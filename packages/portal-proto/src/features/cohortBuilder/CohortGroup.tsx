@@ -4,8 +4,6 @@ import { Button } from "../layout/UserFlowVariedPages";
 import Select from "react-select";
 import {
   MdClose as ClearIcon,
-  MdSettings as SettingsIcon,
-  MdEdit as EditIcon,
   MdSave as SaveIcon,
   MdAdd as AddIcon,
   MdDelete as DeleteIcon,
@@ -13,7 +11,6 @@ import {
   MdFileDownload as DownloadIcon,
   MdArrowDropDown as DropDownIcon,
 } from "react-icons/md";
-import { FacetChart } from "../charts/FacetChart";
 import { nanoid } from "@reduxjs/toolkit";
 
 const CohortGroupSelect: React.FC<unknown> = () => {
@@ -91,7 +88,6 @@ const CohortBar: React.FC<CohortBarProps> = ({
       {!hide_controls ?
         <div className="flex flex-row items-center">
           <Button className="mx-1">{case_count} Cases</Button>
-          <Button className="mx-1 "><EditIcon size="1.5em" /></Button>
           <Button className="mx-2 "><SaveIcon size="1.5em" /></Button>
           <Button className="mx-2 "><AddIcon size="1.5em" /></Button>
           <Button className="mx-2 "><DeleteIcon size="1.5em" /></Button>
@@ -194,56 +190,7 @@ export const CohortGroup: React.FC<CohortGroupProps> = ({ cohorts, simpleMode = 
   }
 };
 
-const SummaryStatsTop: React.FC<unknown> = () => {
-  return (
-    <div className="flex flex-row items-center h-16 bg-nci-gray-lighter w-100">
-      <div className="px-4">Summary Statistics</div>
 
-      <div className="ml-auto">
-        <Button className="mx-2 bg-nci-gray-lighter "> <SettingsIcon size="1.5em" /></Button>
-      </div>
 
-    </div>
-  );
-};
 
-export const SummaryCharts: React.FC<unknown> = () => {
-  const [isGroupCollapsed, setIsGroupCollapsed] = useState(false);
-
-  return (
-    <CollapsibleContainer
-      Top={SummaryStatsTop}
-      isCollapsed={isGroupCollapsed}
-      toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
-    >
-      <div
-        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4">
-        <FacetChart
-          field="primary_site"
-          height={200}
-          marginBottom={30}
-          showXLabels={false}
-        />
-        <FacetChart
-          field="demographic.gender"
-          height={200}
-          marginBottom={30}
-          showXLabels={false}
-        />
-        <FacetChart
-          field="disease_type"
-          height={200}
-          marginBottom={30}
-          showXLabels={false}
-        />
-        <FacetChart
-          field="diagnoses.tissue_or_organ_of_origin"
-          height={200}
-          marginBottom={30}
-          showXLabels={false}
-        />
-      </div>
-    </CollapsibleContainer>
-  );
-};
 

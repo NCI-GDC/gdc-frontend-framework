@@ -19,26 +19,34 @@ export const get_facets = (category: string, subcategory:string) : Array< Record
 
 const get_facets_as_documents = (category: string) : Array< Record<any, any> >  => {
   const root = GDC_Dictionary.dictionary[category];
-  const subcategory = Object.keys(root).map(subcategory => { return { subcategory: subcategory, category: category, facets: Object.keys(root[subcategory]).filter(x => root[subcategory][x].facet_type === 'enum').map(x =>  { return { name:x, facet: root[subcategory][x]} })}})
-  const flattened =  subcategory.map(x => x.facets.map(y => { return { name: y.name, subcategory: x.subcategory, category: x.category, id:y.facet.facet_filter, description:y.facet.description } })).flat();
+  const subcategory = Object.keys(root).filter(subcategory => subcategory != "All").map(subcategory => { return { subcategory: subcategory, category: category, facets: Object.keys(root[subcategory]).filter(x => root[subcategory][x].facet_type === 'enum').map(x =>  { return { name:x, facet: root[subcategory][x]} })}})
+  const flattened =  subcategory.map(x => x.facets.map(y => { return {  name: y.name, enum: y.facet.enum,  subcategory: x.subcategory, category: x.category, id:y.facet.facet_filter, description:y.facet.description } })).flat();
+  return flattened;
+}
+
+const get_facets_enums_as_documents = (category: string) : Array< Record<any, any> >  => {
+  const root = GDC_Dictionary.dictionary[category];
+  const subcategory = Object.keys(root).filter(subcategory => subcategory === "All").map(subcategory => { return { subcategory: subcategory, category: category, facets: Object.keys(root[subcategory]).filter(x => root[subcategory][x].facet_type === 'enum').map(x =>  { return { name:x, facet: root[subcategory][x]} })}})
+  const flattened =  subcategory.map(x => x.facets.filter(x => x.name === 'Primary Site' ||  x.name === 'Disease Type' ).map(y => { return {  name: y.name, enum: y.facet.enum,  subcategory: x.subcategory, category: x.category, id:`all_${y.facet.facet_filter}`, description:y.facet.description } } )).flat();
   return flattened;
 }
 
 
 export const miniSearch = new MiniSearch({
-  fields: ['name','description'], // fields to index for full-text search
+  fields: ['name','description','enum'], // fields to index for full-text search
   storeFields: ['name', 'category', "subcategory", "description"] // fields to return with search results
 })
 
 export const init_search_index = () => {
   miniSearch.addAll(get_facets_as_documents('Clinical'));
+  miniSearch.addAll(get_facets_enums_as_documents('Clinical'));
   miniSearch.addAll(get_facets_as_documents('Biospecimen'));
 
   return miniSearch;
 }
 
 export const search_facets = (s:string) => {
-  return miniSearch.search(s, { prefix: true});
+  return miniSearch.search(s, { prefix: true, combineWith: 'AND' });
 }
 
 init_search_index();
