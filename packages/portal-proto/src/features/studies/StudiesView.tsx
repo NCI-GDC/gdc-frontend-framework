@@ -412,6 +412,21 @@ const Study: React.FC<StudyProps> = (props: StudyProps) => {
   const onClick = ()=>{
     console.log(props);
   }
+  const mainProject = props.project.projectId.split('-')[0];
+  let projectLogoPath = `/logos/${mainProject}_logo.png`;
+
+  /* thoughts on checking if images exist 
+  try {
+    fetch(projectLogoPath, {method: 'HEAD'})
+      .then((response)=>{
+        if (response.status !== 200) {
+          projectLogoPath = null;
+        }
+      });
+  }  catch (err) {
+    projectLogoPath = null;
+  }
+  */
   
   return (
     <div name={projectId} className="group h-250 border border-nci-gray-lighter flex flex-col gap-y-2 bg-white shadow-md">
@@ -422,15 +437,17 @@ const Study: React.FC<StudyProps> = (props: StudyProps) => {
         <button className="p-2">
             <MdFlip title="Flip Card"/>
         </button>
-        <button className="p-2 has-tooltip">
+        <button className="p-2 has-tooltip relative">
             <BsQuestionCircleFill />
-            <div className='inline-block tooltip absolute'>Tooltip text</div>
+            <div className='inline-block tooltip absolute bg-white p-4 border rounded top-0'>Tooltip text</div>
         </button>
       </div>
       <div className="grid grid-cols-2flex1 m-4 mt-2">
-        <div className="max-h-40 relative">
-          <Image src={`/GENIE.png`} layout="fill" alt={`${props.project.projectId} logo`} objectFit="contain" className="nextImageFillFix"/>
-        </div>
+        { projectLogoPath ?
+          <div className="max-h-40 relative">
+            <Image src={projectLogoPath} layout="fill" alt={`${props.project.projectId} logo`} objectFit="contain" className="nextImageFillFix"/>
+          </div> : null
+        }
 
         <label className="p-4">
           <input type="checkbox" className="mx-2"/>
@@ -454,13 +471,22 @@ const Study: React.FC<StudyProps> = (props: StudyProps) => {
           </div>
         </div>
         <div className="flex flex-col justify-center px-4">
-          <Button className="m-1
-            border-nci-gray
-            bg-nci-gray 
-            hover:bg-nci-gray-lightest">
+          <Button stylingOff={true} className="
+            px-2 py-1 m-1
+            rounded
+            text-white
+            bg-nci-gray-lighter
+            hover:bg-nci-gray-lightest
+            hover:text-black">
               1,098 Cases
           </Button>
-          <Button className="m-1">33,766 Files</Button>
+          <Button stylingOff={true} className="
+            px-2 py-1 m-1
+            rounded
+            text-white
+            bg-nci-gray
+            hover:bg-nci-gray-lightest
+            hover:text-black">33,766 Files</Button>
         </div>
       </div>
     </div>

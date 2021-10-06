@@ -140,6 +140,7 @@ export interface ButtonProps {
   readonly color?: string;
   readonly onClick?: () => void;
   readonly className?: string;
+  readonly stylingOff?: boolean;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -148,16 +149,17 @@ export const Button: React.FC<ButtonProps> = ({
   },
   className = "",
   children,
+  stylingOff = false,
 }: PropsWithChildren<ButtonProps>) => {
+  const classNames = stylingOff ? className : `
+    px-2 py-1 
+    border rounded border-nci-blumine
+    bg-nci-blumine hover:bg-nci-blumine-lightest
+    text-white hover:text-nci-blumine-darker
+    ${className}`;
   return (
     <button
-      className={`
-        px-2 py-1 
-        border rounded border-nci-blumine
-        bg-nci-blumine hover:bg-nci-blumine-lightest
-        text-white hover:text-nci-blumine-darker
-        ${className}
-      `}
+      className={classNames}
       onClick={onClick}
     >
       {children}
