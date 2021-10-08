@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { MdSearch, MdArrowForward, MdClear } from "react-icons/md";
-import Select from "react-select";
-import { useSelect } from "react-select-search";
 import { search_facets } from "./dictionary";
 
 
