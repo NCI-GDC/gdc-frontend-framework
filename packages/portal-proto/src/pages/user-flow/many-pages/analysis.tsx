@@ -6,6 +6,7 @@ import ReactModal from "react-modal";
 import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
 import { Select } from "../../../components/Select";
 import { CohortManager } from "../../../features/user-flow/many-pages/cohort";
+import SomaticApp from "../../../features/genomic/SonamicApp"
 import {
   GeneExpression,
   OncoGrid,
@@ -117,6 +118,7 @@ const AnalysisPage: NextPage = () => {
             setShowAppModal(true);
           }}
         />
+
 
         {/* {[undefined, undefined, undefined].map((name, i) => (
           <App
