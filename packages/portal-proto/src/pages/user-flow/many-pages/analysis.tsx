@@ -15,6 +15,7 @@ import {
   SingleCellRnaSeq,
   CohortComparison,
   ClinicalDataAnalysis,
+  SomaticMutations
 } from "../../../features/apps/Apps";
 import { FileModal } from "../../../features/files/FileView";
 import { GdcFile } from "@gff/core";
@@ -118,6 +119,11 @@ const AnalysisPage: NextPage = () => {
             setShowAppModal(true);
           }}
         />
+
+        <SomaticMutations  onClick={() => {
+          setSelectedApp("Somatic Mutations");
+          setShowAppModal(true);
+        }} />
 
 
         {/* {[undefined, undefined, undefined].map((name, i) => (
