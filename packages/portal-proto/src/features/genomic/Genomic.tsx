@@ -1,6 +1,5 @@
 import GeneData from "./genes.json";
 import MutationData from "./mutations.json";
-import { PropsWithChildren } from "react";
 import { MdSearch, MdSort as SortIcon } from "react-icons/md";
 
 interface GeneProps {
