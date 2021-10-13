@@ -25,12 +25,7 @@ const GeneMutationChart = ({which} ) => {
     textinfo: "label+percent",
     uniformtext_mode: 'hide',
     title: null,
-    margin: {
-      t: 10,
-      b: 10,
-      l: 10,
-      r: 10,
-    },
+
     showlegend: false,
     marker: {
       line: {
@@ -39,14 +34,16 @@ const GeneMutationChart = ({which} ) => {
       },
     },
     textposition: "outside",
-    automargin: false,
     insidetextorientation: 'horizontal',
 
   };
 
    const layout = {
+
     uniformtext: { mode: 'hide', minsize: 8 } ,
-    width: "100%", height: "100%", title: chart_data.chart_title,
+    width: "100%",
+     height:380,
+     title: chart_data.chart_title,
     titlefont: {
       family: 'Arial, sans-serif',
       size: 24,
@@ -55,7 +52,7 @@ const GeneMutationChart = ({which} ) => {
       dividerwidth: 2,
       tickangle: 45,
       tickfont: {
-        size: 12,
+        size: 10,
         color: 'rgb(107, 107, 107)'
       },
     },
@@ -69,7 +66,15 @@ const GeneMutationChart = ({which} ) => {
         size: 16,
         color: 'rgb(107, 107, 107)'
       },
-    }
+    },
+     autosize: true,
+     margin: {
+       l: 100,
+       r: 10,
+       b: 90,
+       t: 50,
+       pad: 4
+     },
   };
   const config = {responsive: false,
     toImageButtonOptions: {

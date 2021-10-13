@@ -26,7 +26,7 @@ const MutationFacetHeader: React.FC<MutationFacetProps> = ({ field, description,
 export const MutationFacet: React.FC<MutationFacetDataProps> = ({  data, field, description, type  }: MutationFacetDataProps) => {
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(true);
   return (
-    <div className=" flex flex-col border-2  border-b-0 border-l-2  bg-white relative">
+    <div className=" flex flex-col border-2  border-b-0 bg-white relative">
       <CollapsibleContainer isCollapsed={isGroupCollapsed}
                             toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
                             Top={ () => <MutationFacetHeader {...{field , description, type}} /> } >
