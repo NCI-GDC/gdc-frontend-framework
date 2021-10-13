@@ -36,7 +36,7 @@ export const SummaryCharts: React.FC<SummaryChartsProps> = ({ fields} :  Summary
             field={name}
             height={200}
             marginBottom={30}
-            showXLabels={false}
+            showXLabels={true}
             key={`summary-chart-${index}`}
           />)
         })

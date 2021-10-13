@@ -8,22 +8,33 @@ import {
   VEP_IMPACT,
 } from "../cohortBuilder/gene_mutation_facets";
 import GeneData from "./genes.json";
+import dynamic from "next/dynamic";
 
 interface SomaticAppPropsProps {
   readonly gene_data?: Array<Record<string, any>>;
   readonly mutations_data?: Array<Record<string, any>>;
   readonly description?: string;
-
 }
+
+const GeneChartWithNoSSR = dynamic(() => import('./Charts'), {
+  ssr: false
+})
 
 const SomanticMutationFilter: React.FC<SomaticAppPropsProps> = ({ gene_data = GeneData["MostFrequentGenes"] }: SomaticAppPropsProps) => {
   return (
     <div className="flex flex-row">
       <div className="flex flex-col">
+        <div className="flex flex-row justify-center bg-white border-2 border-nci-blumine-lighter">
+          <GeneChartWithNoSSR which="gene" />
+        </div>
         <GeneTable data={gene_data} width="0" />
         <MutationFacet field={"Biotype"} description={""} data={BIOTYPE} type={"Genes"} />
+
       </div>
       <div className="flex flex-col">
+        <div className="flex flex-row justify-center bg-white border-2 border-nci-blumine-lighter">
+          <GeneChartWithNoSSR which="mutation" />
+        </div>
         <MutationTable width="0" />
         <div className="grid grid-cols-2 gap-4">
           <MutationFacet field={"VEP Impact"} description={""} data={VEP_IMPACT} />

@@ -282,19 +282,7 @@ export const CohortBuilder: React.FC<CohortBuilderProps> = ({
         <CohortTabbedFacets searchResults={[]}  onUpdateSummaryChart={updateSummaryCharts} ></CohortTabbedFacets>
       </div>
       <div className="pt-4">
-        <Tabs>
-          <TabList>
-            <Tab>Summary</Tab>
-            <Tab>Cases</Tab>
-          </TabList>
-
-          <TabPanel>
-            <SummaryCharts fields={summaryFields} />
-          </TabPanel>
-          <TabPanel>
-            <Cases handleCaseSelected={handleCaseSelected} />
-          </TabPanel>
-        </Tabs>
+        <SummaryCharts fields={summaryFields} />
       </div>
     </div>
   );
