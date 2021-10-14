@@ -1,5 +1,5 @@
 import { Project, useProjects } from "@gff/core";
-import { Option, SelectBox, SelectProps } from "../../components/SelectBox";
+import { Option, Select, SelectProps } from "../../components/Select";
 import Image from "next/image";
 import { Button } from "../layout/UserFlowVariedPages";
 import { MdFlip, MdSearch } from "react-icons/md";
@@ -374,7 +374,7 @@ export const StudiesView: React.FC<StudiesViewProps> = ({
     { value: "z-a", label: "Sort: Z-A" },
   ];
   const sortFilter = (
-    <SelectBox
+    <Select
       inputId="studies-view__sort"
       options={sortOptions}
       placeholder="Sort"
