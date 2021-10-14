@@ -30,8 +30,9 @@ const SomanticMutationFilterFixedVersion: React.FC<SomaticAppProps> = ({
     <div className="flex flex-row">
       <div className="flex flex-col">
         <div className="flex flex-col">
-          <div className="h-44">
+          <div  className="grid grid-cols-1 gap-3">
             <MutationFacet field={"Biotype"} description={""} data={BIOTYPE} type={"Genes"} />
+            <div className="p-10"></div>
           </div>
           <div className="flex flex-row justify-center bg-white border-r-2  border-nci-gray-light">
             <GeneChartWithNoSSR which="gene" />
@@ -52,7 +53,7 @@ const SomanticMutationFilterFixedVersion: React.FC<SomaticAppProps> = ({
       <div className="flex flex-col relative ">
         <div className="flex flex-col">
 
-          <div className="h-44">
+          <div>
             <div className="grid grid-cols-2 gap-2">
               <MutationFacet field={"VEP Impact"} description={""} data={VEP_IMPACT} />
               <MutationFacet field={"Variant Caller"} description={""} data={VARIANT_CALLER} />
@@ -60,7 +61,7 @@ const SomanticMutationFilterFixedVersion: React.FC<SomaticAppProps> = ({
               <MutationFacet field={"SIFT Impact"} description={""} data={SIFT_IMPACT} />
             </div>
           </div>
-            <div className="flex flex-row justify-center bg-white">
+            <div className="flex flex-row justify-center bg-white mt-2">
               <GeneChartWithNoSSR which="mutation" />
             </div>
             <div className="flex flex-row justify-center items-center w-full ">
