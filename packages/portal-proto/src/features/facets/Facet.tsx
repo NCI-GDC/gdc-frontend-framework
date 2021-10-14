@@ -6,12 +6,16 @@ import {
   useCoreDispatch,
 } from "@gff/core";
 
-import { useEffect, useState } from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
 import { Button } from "../layout/UserFlowVariedPages";
 import {
   MdSortByAlpha as AlphaSortIcon,
-  MdSort as SortIcon
-}  from "react-icons/md";
+  MdSort as SortIcon,
+  MdSearch as SearchIcon,
+  MdFlip as FlipIcon,
+
+} from "react-icons/md";
+import { FacetChart } from "../charts/FacetChart";
 
 interface UseCaseFacetResponse {
   readonly data?: FacetBuckets;
@@ -47,11 +51,54 @@ const useCaseFacet = (field: string): UseCaseFacetResponse => {
 interface FacetProps {
   readonly field: string;
   readonly description?: string;
+  onUpdateSummaryChart: (op:string, field:string) => void;
 }
 
-export const Facet: React.FC<FacetProps> = ({ field, description }: FacetProps) => {
+
+const FacetHeader: React.FC<FacetProps> = ({ field, description }: PropsWithChildren<FacetProps>) => {
+  const [isSearching, setIsSearching] = useState(false);
+  const [isFacetView, setIsFacetView] = useState(true);
+
+  const toggleSearch = () => {
+    setIsSearching(!isSearching);
+  };
+
+  const toggleFlip = () => {
+    setIsFacetView(!isFacetView);
+  };
+
+  return (
+    <div className="flex flex-col border-r-2  border-b-0 border-l-2  bg-white">
+      <div>
+        <div className="flex items-center justify-between flex-wrap bg-nci-gray-lighter px-1.5">
+          <div className="has-tooltip"  >{convertFieldToName(field) }
+            <div
+              className="inline-block tooltip w-1/2 border-b-2 border-nci-cyan-lightest rounded shadow-lg p-2 bg-gray-100 text-nci-blue-darkest mt-8 absolute">{description}</div>
+          </div>
+          <div className="flex flex-row">
+            <button
+              className="bg-nci-gray-lighter hover:bg-grey text-grey-darkest font-bold py-2 px-4 rounded inline-flex items-center"
+              onClick={toggleSearch}>
+              <SearchIcon />
+            </button>
+            <button
+              className="bg-nci-gray-lighter hover:bg-grey text-grey-darkest font-bold py-2 px-4 rounded inline-flex items-center"
+              onClick={toggleFlip}>
+              <FlipIcon />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
+export const Facet: React.FC<FacetProps> = ({ field, description, onUpdateSummaryChart }: FacetProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
+  const [isSortedByCases, setIsSortedByCases] = useState(true);
+  const [isFacetView, setIsFacetView] = useState(true);
   const { data, error, isUninitialized, isFetching, isError } =
     useCaseFacet(field);
 
@@ -68,76 +115,124 @@ export const Facet: React.FC<FacetProps> = ({ field, description }: FacetProps) 
   }
 
   const maxValuesToDisplay = 6;
-  const showAll = isGroupExpanded ? true : false;
-  const total = Object.entries(data).length;
+  const total = Object.entries(data).filter(data => data[0] != "_missing" ).length;
 
   const handleChange = (e) => {
-    const  { value, checked } = e.target;
+    const { value, checked } = e.target;
   };
 
   const toggleSearch = () => {
     setIsSearching(!isSearching);
-  }
+  };
+
+  const toggleFlip = () => {
+    setIsFacetView(!isFacetView);
+  };
+
+  const handleUpdateSummaryChart = () => {
+    onUpdateSummaryChart("add", field)
+  };
+
+
+  const visibleValues = (total - maxValuesToDisplay);
+  const cardHeight = visibleValues > 16 ? 96 : visibleValues > 0 ? Math.min(96, visibleValues * 5 + 40): 24;
+
+  const cardStyle = isGroupExpanded ? `flex-none h-${cardHeight} overflow-y-scroll` : "overflow-hidden pr-3.5";
 
   return (
     <div>
-
-      <div className="flex flex-col border-r-2  border-b-0 border-l-2  bg-white">
-        <div >
-        <div className="flex items-center justify-between flex-wrap bg-nci-gray-lighter px-1.5">
-          <div className="has-tooltip">{convertFieldToName(field)}
-          <div className='inline-block tooltip w-1/4 border-b-2 border-nci-cyan-lightest rounded shadow-lg p-2 bg-gray-100 text-nci-blue-darkest mt-8 absolute'>{description}</div>
-          </div>
-          <button
-            className="bg-nci-gray-lighter hover:bg-grey text-grey-darkest font-bold py-2 px-4 rounded inline-flex items-center"
-            onClick={toggleSearch}>
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
-              <path d="M0 0h24v24H0V0z" fill="none" />
-              <path
-                d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
-            </svg>
-          </button>
-        </div>
-
-        </div>
-        <div className="flex flex-row items-center justify-between flex-wrap bg-white mb-1 p-2 border-b-2 border-nci-gray-lighter">
-          <AlphaSortIcon scale="1.5em"/> <div className={"flex flex-row items-center"}><SortIcon scale="1.5em"/> <p className="px-2">Cases</p></div>
-        </div>
+      <div className="flex flex-col border-2 bg-white p-1  relative drop-shadow-md border-nci-blumine-lighter">
         <div>
-          <div className={showAll ? "flex-none h-96 overflow-y-scroll" : "overflow-hidden"}>
-            {Object.entries(data).map(([value, count], i) => {
-              if (value === "_missing") return null;
-              if (!showAll && i > maxValuesToDisplay) return null;
-              return (
-                <div key={`${field}-${value}`} className="flex flex-row gap-x-2 px-2">
-                  <div className="flex-none">
-                    <input type="checkbox" value={`${field}:${value}`} onChange={handleChange}/>
-                  </div>
-                  <div className="flex-grow truncate ...">{value}</div>
-                  <div className="flex-none text-right w-12">{count.toLocaleString()}</div>
-                  <div className="flex-none text-right w-18">({((count/84609)*100).toFixed(2).toLocaleString()}%)</div>
-                </div>
-              );
-            })}
+          <div className="flex items-center justify-between flex-wrap bg-nci-gray-lighter px-1.5" onDoubleClick={handleUpdateSummaryChart} >
+            <div className="has-tooltip"  >{convertFieldToName(field) }
+              <div
+                className="inline-block tooltip w-full border-b-2 border-nci-cyan-lightest rounded shadow-lg p-2 bg-gray-100 text-nci-blue-darkest mt-8 absolute">{description}</div>
+            </div>
+            <div className="flex flex-row">
+              <button
+                className="bg-nci-gray-lighter hover:bg-grey text-grey-darkest font-bold py-2 px-4 rounded inline-flex items-center"
+                onClick={toggleSearch}>
+                <SearchIcon />
+              </button>
+              <button
+                className="bg-nci-gray-lighter hover:bg-grey text-grey-darkest font-bold py-2 px-4 rounded inline-flex items-center"
+                onClick={toggleFlip}>
+                <FlipIcon />
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-      <div>
-        <div className="bg-white border-b-2 border-r-2 border-l-2 p-1.5">
-      {total - maxValuesToDisplay > 0 ? !showAll ?
-          <Button key="show-more"
-                  className="text-left p-2 w-auto hover:text-black"
-                  onClick={() => setIsGroupExpanded(!isGroupExpanded)}>
-            {total - maxValuesToDisplay} more
-          </Button>
-          :
-          <Button key="show-less"
-                  className="text-left p-2 w-auto hover:text-black"
-                  onClick={() => setIsGroupExpanded(!isGroupExpanded)}>
-            Show less
-          </Button>
-        : null
-      }
+        <div >
+        <div className={isFacetView ? "flip-card" : "flip-card flip-card-flipped"}>
+          <div className="card-face bg-white">
+          <div>
+            <div
+              className="flex flex-row items-center justify-between flex-wrap border p-1">
+              <button className={"ml-2 border rounded border-nci-blumine bg-nci-blumine hover:bg-nci-blumine-lightest text-white hover:text-nci-blumine-darker"}>
+              <AlphaSortIcon onClick={() => setIsSortedByCases(false)} scale="1.5em" />
+            </button>
+              <div className={"flex flex-row items-center "}>
+                <button onClick={() => setIsSortedByCases(true)} className={"border rounded border-nci-blumine bg-nci-blumine hover:bg-nci-blumine-lightest text-white hover:text-nci-blumine-darker"}>
+                  <SortIcon scale="1.5em" /></button> <p className="px-2 mr-3">Cases</p>
+              </div>
+            </div>
+
+            <div className={cardStyle}>
+              {
+                Object.entries(data).filter(data => data[0] != "_missing" ).sort(isSortedByCases ? ([,a],[,b]) => b-a : ([a],[b]) =>  a.localeCompare(b)
+                ).map(([value, count], i) => {
+                  if (!isGroupExpanded && i >= maxValuesToDisplay) return null;
+                  return (
+                    <div key={`${field}-${value}`} className="flex flex-row gap-x-1 px-2">
+                      <div className="flex-none">
+                        <input type="checkbox" value={`${field}:${value}`} onChange={handleChange} />
+                      </div>
+                      <div className="flex-grow truncate ...">{value}</div>
+                      <div className="flex-none text-right w-14">{count.toLocaleString()}</div>
+                      <div className="flex-none text-right w-18">({((count / 84609) * 100).toFixed(2).toLocaleString()}%)
+                      </div>
+                    </div>
+                  );
+                })
+              }
+            </div>
+          </div>
+
+        <div className={"mt-3"}>
+
+            {visibleValues > 0 ? !isGroupExpanded ?
+              <div className="bg-white border-2  p-1.5">
+                <Button key="show-more"
+                        className="text-left p-2 w-auto hover:text-black"
+                        onClick={() => setIsGroupExpanded(!isGroupExpanded)}>
+                  {visibleValues} more
+                </Button>
+              </div>
+                :
+              <div className="bg-white border-2  p-1.5">
+                <Button key="show-less"
+                        className="text-left border-2 p-1.5 w-auto hover:text-black"
+                        onClick={() => setIsGroupExpanded(!isGroupExpanded)}>
+                  Show less
+                </Button>
+              </div>
+              : null
+            }
+
+        </div>
+        </div>
+          <div className="card-face card-back bg-white">
+            <FacetChart
+              field={field}
+              marginBottom={40}
+              showXLabels={true}
+              showTitle={false}
+              height={ isGroupExpanded ? cardHeight * 4.88 :220}
+              orientation='h'
+              maxBins={Math.min(isGroupExpanded ? 16 : Math.min(6, total))}
+            />
+          </div>
+        </div>
       </div>
       </div>
     </div>

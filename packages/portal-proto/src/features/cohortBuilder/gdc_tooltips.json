@@ -15064,6 +15064,52 @@
           "description": "no description"
         }
       }
+    },
+    "Downloadable":  {
+      "All": {
+        "Data Type": {
+          "facet_filter": "files.data_type",
+          "facet_type": "enum",
+          "description": "",
+          "enum": [
+          ]
+        },
+        "Data Category": {
+          "facet_filter": "files.data_category",
+          "facet_type": "enum",
+          "description": "",
+          "enum": [
+          ]
+        },
+        "Experimental Strategy": {
+          "facet_filter": "files.experimental_strategy",
+          "facet_type": "enum",
+          "description": "",
+          "enum": [
+          ]
+        },
+        "Workflow Type": {
+          "facet_filter": "files.analysis.workflow_type",
+          "facet_type": "enum",
+          "description": "",
+          "enum": [
+          ]
+        },
+        "Platform": {
+          "facet_filter": "files.platform",
+          "facet_type": "enum",
+          "description": "",
+          "enum": [
+          ]
+        },
+        "Access": {
+          "facet_filter": "files.access",
+          "facet_type": "enum",
+          "description": "",
+          "enum": [
+          ]
+        }
+      }
     }
   }
 }
