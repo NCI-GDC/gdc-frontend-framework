@@ -186,7 +186,6 @@ const AnalysisPage: NextPage = () => {
   }
 
   const AppModal = (  ) => {
-    console.log("AppModal ", appsAsModal)
     return (
       (selectedApp !== "") ?
       <ModalOrInline modal={appsAsModal}>
@@ -213,9 +212,10 @@ const AnalysisPage: NextPage = () => {
         );
   };
 
+  const empty =  () => {return (<div></div>) }
   return (
     <UserFlowVariedPages
-      {...{ indexPath: "/user-flow/many-pages", headerElements, Options }}
+      {...{ indexPath: "/user-flow/many-pages", headerElements, empty}}
     >
 
       <div className="flex flex-col p-4 gap-y-4">
@@ -238,7 +238,7 @@ const AnalysisPage: NextPage = () => {
           />
         </div>
         {(selectedApp) ?
-          <AppModal modal={appsAsModal} /> :
+          <AppModal /> :
           <Apps />
         }
       </div>

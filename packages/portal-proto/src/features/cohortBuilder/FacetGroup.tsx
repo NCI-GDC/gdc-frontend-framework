@@ -21,7 +21,7 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({ facetNames, onUpdateSumm
     <div className="grid grid-cols-4 gap-4">
 
     {facetNames.map((x, index) => {
-      return (<Facet key={`${x.facet_filter}-${index}`} field={x.facet_filter} description={x.description}
+      return (<Facet key={`${x.facet_filter}-${index}`} field={x.facet_filter} facetName={x.name} description={x.description}
                      onUpdateSummaryChart={onUpdateSummaryChart}
       />);
     })
@@ -91,7 +91,7 @@ interface CohortTabbedFacetsProps {
 }
 
 export const CohortTabbedFacets: React.FC<CohortTabbedFacetsProps> = ( {  searchResults, onUpdateSummaryChart } : CohortTabbedFacetsProps) => {
-   const [subcategories, setSubcategories] = useState({ 'Clinical': 'All' ,'Biospecimen': 'All', 'Visualizable Data': 'Somatic Mutations', "Downloadable": "All" });
+   const [subcategories, setSubcategories] = useState({ 'Clinical': 'All' ,'Biospecimen': 'All', "Downloadable": "All" });
    const handleSubcategoryChanged = (category:string, subcategory:string) => {
      const state = { ...subcategories };
      state[category] = subcategory;
@@ -121,9 +121,6 @@ export const CohortTabbedFacets: React.FC<CohortTabbedFacetsProps> = ( {  search
         <FacetTabWithSubmenu category="Biospecimen"
                              subCategories={get_facet_subcategories('Biospecimen')}
                              onSubcategoryChange={handleSubcategoryChanged}></FacetTabWithSubmenu>
-        <FacetTabWithSubmenu category="Visualizable Data"
-                             subCategories={visualizableSubcategories}
-                             onSubcategoryChange={handleSubcategoryChanged}></FacetTabWithSubmenu>
         <FacetTabWithSubmenu category="Downloadable Data"
                              subCategories={downloadableSubcategories}
                              onSubcategoryChange={handleSubcategoryChanged}></FacetTabWithSubmenu>
@@ -133,25 +130,6 @@ export const CohortTabbedFacets: React.FC<CohortTabbedFacetsProps> = ( {  search
       <TabPanel><FacetGroup
         onUpdateSummaryChart={onUpdateSummaryChart}
         facetNames={get_facets('Biospecimen',subcategories['Biospecimen'])}/></TabPanel>
-      <TabPanel>
-        {(subcategories['Visualizable Data'] === 'Somatic Mutations') ?
-          <div className="flex flex-row">
-            <div className="flex flex-col">
-              <GeneTable width="0" />
-              <MutationFacet field={"Biotype"} description={""} data={BIOTYPE} type={"Genes"} />
-            </div>
-            <div className="flex flex-col">
-              <MutationTable width="0" />
-              <div className="grid grid-cols-2 gap-4">
-              <MutationFacet field={"VEP Impact"} description={""} data={VEP_IMPACT}  />
-              <MutationFacet field={"Variant Caller"} description={""} data={VARIANT_CALLER}  />
-              <MutationFacet field={"Consequence Type"} description={""} data={CONSEQUENCE_TYPE}  />
-              <MutationFacet field={"SIFT Impact"} description={""} data={SIFT_IMPACT}  />
-              </div>
-            </div>
-          </div> : <div/>
-        }
-      </TabPanel>
       <TabPanel><FacetGroup onUpdateSummaryChart={onUpdateSummaryChart}
                             facetNames={get_facets('Downloadable',subcategories['Downloadable'])}/></TabPanel>
     </Tabs>

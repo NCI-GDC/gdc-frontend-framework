@@ -20,7 +20,7 @@ const SummaryStatsTop: React.FC<unknown> = () => {
 interface SummaryChartsProps {
   fields:  string[];
 }
-export const SummaryCharts: React.FC<SummaryChartsProps> = ({ fields} :  SummaryChartsProps) => {
+export const SummaryCharts: React.FC<SummaryChartsProps> =  ({ fields} :  SummaryChartsProps) => {
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(false);
 
   return (

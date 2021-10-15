@@ -1,3 +1,4 @@
+import {useRef} from "react";
 import {
   FacetBuckets,
   selectCasesFacetByField,
@@ -51,11 +52,12 @@ const useCaseFacet = (field: string): UseCaseFacetResponse => {
 interface FacetProps {
   readonly field: string;
   readonly description?: string;
+  readonly facetName?:string;
   onUpdateSummaryChart: (op:string, field:string) => void;
 }
 
 
-const FacetHeader: React.FC<FacetProps> = ({ field, description }: PropsWithChildren<FacetProps>) => {
+const FacetHeader: React.FC<FacetProps> = ({ field, description, facetName = null }: PropsWithChildren<FacetProps>) => {
   const [isSearching, setIsSearching] = useState(false);
   const [isFacetView, setIsFacetView] = useState(true);
 
@@ -71,7 +73,7 @@ const FacetHeader: React.FC<FacetProps> = ({ field, description }: PropsWithChil
     <div className="flex flex-col border-r-2  border-b-0 border-l-2  bg-white">
       <div>
         <div className="flex items-center justify-between flex-wrap bg-nci-gray-lighter px-1.5">
-          <div className="has-tooltip"  >{convertFieldToName(field) }
+          <div className="has-tooltip"  >{(facetName === null) ? convertFieldToName(field) : facetName}
             <div
               className="inline-block tooltip w-1/2 border-b-2 border-nci-cyan-lightest rounded shadow-lg p-2 bg-gray-100 text-nci-blue-darkest mt-8 absolute">{description}</div>
           </div>
@@ -94,11 +96,12 @@ const FacetHeader: React.FC<FacetProps> = ({ field, description }: PropsWithChil
 };
 
 
-export const Facet: React.FC<FacetProps> = ({ field, description, onUpdateSummaryChart }: FacetProps) => {
+export const Facet: React.FC<FacetProps> = ({ field, description, onUpdateSummaryChart, facetName = null }: FacetProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [isSortedByCases, setIsSortedByCases] = useState(false);
   const [isFacetView, setIsFacetView] = useState(true);
+
   const { data, error, isUninitialized, isFetching, isError } =
     useCaseFacet(field);
 
@@ -144,7 +147,8 @@ export const Facet: React.FC<FacetProps> = ({ field, description, onUpdateSummar
       <div className="flex flex-col border-2 bg-white p-1  relative drop-shadow-md border-nci-blumine-lighter">
         <div>
           <div className="flex items-center justify-between flex-wrap bg-nci-gray-lighter px-1.5" onDoubleClick={handleUpdateSummaryChart} >
-            <div className="has-tooltip"  >{convertFieldToName(field) }
+
+            <div className="has-tooltip"  >{(facetName === null) ? convertFieldToName(field) : facetName }
               <div
                 className="inline-block tooltip w-full border-b-2 border-nci-cyan-lightest rounded shadow-lg p-2 bg-gray-100 text-nci-blue-darkest mt-8 absolute">{description}</div>
             </div>
