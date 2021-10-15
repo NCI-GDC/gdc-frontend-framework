@@ -526,14 +526,14 @@ const Study: React.FC<StudyProps> = (props: StudyProps) => {
           </div>
         </div>
         <div className="card-face card-back bg-white">
-          <FacetChart
+          {/*<FacetChart
             field={'test'}
             marginBottom={40}
             showXLabels={true}
             showTitle={false}
             orientation='h'
             maxBins={16}
-          />
+          />*/}
         </div>
       </div>
     </div>
