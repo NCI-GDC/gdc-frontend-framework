@@ -7,7 +7,7 @@ import  CohortTabbedFacets from "./FacetGroup";
 
 const FullCohortBuilder: React.FC<CohortGroupProps> = ( { cohorts, simpleMode = false} : CohortGroupProps ) => {
 
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchResults, setSearchResults] = useState([] as Array<Record<string, unknown>>);
 
   const updateSummaryCharts = (op, field) => {
     if (op === "add")
@@ -26,7 +26,7 @@ const FullCohortBuilder: React.FC<CohortGroupProps> = ( { cohorts, simpleMode = 
    <div>
       <CohortGroup cohorts={cohorts} simpleMode={simpleMode}></CohortGroup>
       <MetaSearch onChange={(r) => setSearchResults(r)}></MetaSearch>
-      <CohortTabbedFacets  searchResults={searchResults} onUpdateSummaryChart={updateSummaryCharts}></CohortTabbedFacets>
+      <CohortTabbedFacets searchResults={searchResults} onUpdateSummaryChart={updateSummaryCharts}></CohortTabbedFacets>
       <SummaryCharts fields={summaryFields} />
     </div>
   );

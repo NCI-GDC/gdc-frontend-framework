@@ -53,5 +53,5 @@ export const selectGdcAppMetadataById = (
   appId: string,
 ): GdcAppMetadata => state.gdcApps.gdcApps[appId];
 
-export const selectGdcAppById = (appId: string): React.ReactNode =>
+export const selectGdcAppById = (appId: string): React.FC<unknown> =>
   lookupGdcApp(appId);

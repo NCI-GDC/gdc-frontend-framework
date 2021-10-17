@@ -319,9 +319,6 @@ const AllAppsStudies = (props: AllAppsStudiesProps) => {
       </div>
       <ContextualStudiesView
         setCurrentStudy={viewStudy}
-        exploreRight={
-          <Button onClick={returnToAllApps}>Explore Selected Cohorts</Button>
-        }
       />
     </div>
   );

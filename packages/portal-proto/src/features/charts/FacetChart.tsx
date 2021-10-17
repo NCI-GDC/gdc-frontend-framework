@@ -16,7 +16,7 @@ const BarChartWithNoSSR = dynamic(() => import('./BarChart'), {
 const maxValuesToDisplay =7;
 
 interface UseCaseFacetResponse {
-  readonly data?: FacetBuckets;
+  readonly data?: Record<string, number>;
   readonly error?: string;
   readonly isUninitialized: boolean;
   readonly isFetching: boolean;

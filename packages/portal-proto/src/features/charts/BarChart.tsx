@@ -69,7 +69,7 @@ const vertical_layout: Partial<Layout> = {
       t: 30,
       pad: 4
     },
-  };
+  } as Partial<Layout>; // plotly.js typings are incomplete
 
   if (height !== undefined) {
     vertical_layout.height = height;
@@ -120,7 +120,7 @@ const vertical_layout: Partial<Layout> = {
       t: 40,
       pad: 4
     },
-  };
+  } as Partial<Layout>; // plotly.js typings are incomplete
 
   if (height !== undefined) {
     horizontal_layout.height = height;

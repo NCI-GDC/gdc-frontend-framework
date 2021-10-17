@@ -1,6 +1,5 @@
 import { NextPage } from "next";
 import {
-  Button,
   UserFlowVariedPages,
 } from "../../../features/layout/UserFlowVariedPages";
 import Link from "next/link";
@@ -11,7 +10,6 @@ import ReactModal from "react-modal";
 import { ContextualStudiesView } from "../../../features/studies/StudiesView";
 
 const StudiesPage: NextPage = () => {
-  const router = useRouter();
   const [showModal, setShowModal] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState("");
 
@@ -53,16 +51,6 @@ const StudiesPage: NextPage = () => {
             setSelectedProjectId(projectId);
             setShowModal(true);
           }}
-          exploreLeft={
-            <Button onClick={() => router.push("analysis")}>
-              Analyze Selected Cohorts
-            </Button>
-          }
-          exploreRight={
-            <Button onClick={() => router.push("repository")}>
-              Download Files From Selected Cohorts
-            </Button>
-          }
         />
       </div>
     </UserFlowVariedPages>

@@ -442,6 +442,19 @@ const Studies: React.FC<StudiesProps> = ({
   );
 };
 
+const hasLogo = (program: string): boolean => {
+  return [
+    "CMI",
+    "CPTAC",
+    "FM",
+    "GENIE",
+    "HCMI",
+    "MMRF",
+    "OHSU",
+    "TCGA",
+  ].includes(program);
+};
+
 interface StudyProps {
   readonly project: Project;
   readonly onClick: () => void;
@@ -453,8 +466,10 @@ const Study: React.FC<StudyProps> = (props: StudyProps) => {
   const onClick = ()=>{
     console.log(props);
   }
-  const mainProject = props.project.projectId.split('-')[0];
-  let projectLogoPath = `/logos/${mainProject}_logo.png`;
+  const program = props.project.projectId.split("-")[0];
+  const projectLogoPath = hasLogo(program)
+    ? `/logos/${program}_logo.png`
+    : undefined;
 
   /* thoughts on checking if images exist 
   try {
@@ -474,7 +489,7 @@ const Study: React.FC<StudyProps> = (props: StudyProps) => {
   }
 
   return (
-    <div name={projectId} className={"group h-250 border border-nci-gray-lighter flex flex-col bg-white shadow-md"}>
+    <div id={projectId} className={"group h-250 border border-nci-gray-lighter flex flex-col bg-white shadow-md"}>
       <div className="bg-nci-gray-lightest flex flex-row">
         <div className="flex-grow text-center pl-4">
           {props.project.name}
@@ -492,7 +507,7 @@ const Study: React.FC<StudyProps> = (props: StudyProps) => {
           { projectLogoPath ?
             <div className="max-h-40 relative">
               <Image src={projectLogoPath} layout="fill" alt={`${props.project.projectId} logo`} objectFit="contain" className="nextImageFillFix"/>
-            </div> : null
+            </div> : <div className="text-2xl text-gdc-blue font-semibold">{program}</div>
           }
           <label className="p-4">
             <input type="checkbox" className="mx-2"/>

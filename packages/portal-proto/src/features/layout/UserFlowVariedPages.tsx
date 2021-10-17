@@ -191,13 +191,16 @@ export const App: React.FC<AppProps> = ({
     }
   }
   return (
-    <button
+    // todo add key event listener for a11y
+    <div
+      role="button"
       className="group h-52 border border-nci-gray-lighter px-4 pt-2 pb-4 flex flex-col gap-y-2 bg-white shadow-md hover:shadow-lg hover:border-nci-blumine-darker hover:border-2"
       onClick={onClick}
+      tabIndex={0}
     >
       <div className="text-center w-full text-lg">{name}</div>
       {children}
-    </button>
+    </div>
   );
 };
 

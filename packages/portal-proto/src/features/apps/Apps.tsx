@@ -8,7 +8,7 @@ export interface Clickable {
 export const OncoGrid: React.FC<Clickable> = (props: Clickable) => {
   return (
     <App name="OncoGrid" onClick={props.onClick}>
-      <div className="w-full h-full flex ml-2">
+      <div className="w-full h-full flex gap-x-4">
         <div className="w-full h-full relative group-hover:hidden">
           <Image
             src="/user-flow/oncogrid.png"
@@ -17,21 +17,17 @@ export const OncoGrid: React.FC<Clickable> = (props: Clickable) => {
           />
         </div>
         <div className="group-hover:hidden h-full">
-          <div className="flex flex-wrap">
-            <div className="flex flex-row w-full">
-              <div className="text-xs my-1 w-full content-center">
-                <button className="border border-black rounded p-1">Variant Analysis</button>
-              </div>
+          <div className="flex flex-wrap gap-2">
+            <div className="text-xs content-center">
+              <button className="border border-black rounded p-1">
+                Variant Analysis
+              </button>
             </div>
-            <div className="flex flex-row w-full">
-              <div className="text-xs my-1 w-full content-center">
-                <button className="border border-black rounded p-1">CNV</button>
-              </div>
+            <div className="text-xs content-center">
+              <button className="border border-black rounded p-1">CNV</button>
             </div>
-            <div className="flex flex-row w-full">
-              <div className="text-xs my-1 w-full content-center">
-                <button className="border border-black rounded p-1">SSM</button>
-              </div>
+            <div className="text-xs content-center">
+              <button className="border border-black rounded p-1">SSM</button>
             </div>
           </div>
         </div>
@@ -40,9 +36,11 @@ export const OncoGrid: React.FC<Clickable> = (props: Clickable) => {
           mutations in your cohort.
         </div>
       </div>
-      <div className="w-full content-center text-sm border-t-2">
+      <div className="w-full text-sm border-t-2 flex flex-row justify-center">
         <div className="mt-2">
-          <span className="border border-black border-opacity-100 p-0.5 bg-nci-yellow">1215 Cases</span>
+          <span className="border border-black border-opacity-100 p-0.5 bg-nci-yellow">
+            1215 Cases
+          </span>
         </div>
       </div>
     </App>
@@ -52,7 +50,7 @@ export const OncoGrid: React.FC<Clickable> = (props: Clickable) => {
 export const SingleCellRnaSeq: React.FC<Clickable> = (props: Clickable) => {
   return (
     <App name="scRNA-Seq" onClick={props.onClick}>
-      <div className="w-full h-full flex">
+      <div className="w-full h-full flex gap-x-4">
         <div className="w-full h-full relative group-hover:hidden">
           <Image
             src="/user-flow/scRnaSeqViz.png"
@@ -61,17 +59,21 @@ export const SingleCellRnaSeq: React.FC<Clickable> = (props: Clickable) => {
           />
         </div>
         <div className="group-hover:hidden h-full">
-          <div className="text-xs my-5 ml-4">
-            <button className="border border-black rounded p-px">Gene Expression</button>
+          <div className="text-xs">
+            <button className="border border-black rounded p-px">
+              Gene Expression
+            </button>
           </div>
         </div>
         <div className="w-full h-full hidden group-hover:block">
           Visualize patterns in single-cell gene expression in your cohort.
         </div>
       </div>
-      <div className="w-full content-center text-sm border-t-2">
+      <div className="w-full text-sm border-t-2 flex flex-row justify-center">
         <div className="mt-2">
-          <span className="border border-black border-opacity-100 p-0.5 bg-nci-yellow">94 Cases</span>
+          <span className="border border-black border-opacity-100 p-0.5 bg-nci-yellow">
+            94 Cases
+          </span>
         </div>
       </div>
     </App>
@@ -81,7 +83,7 @@ export const SingleCellRnaSeq: React.FC<Clickable> = (props: Clickable) => {
 export const GeneExpression: React.FC<Clickable> = (props: Clickable) => {
   return (
     <App name="Gene Expression" onClick={props.onClick}>
-      <div className="w-full h-full flex mr-10">
+      <div className="w-full h-full flex gap-x-4">
         <div className="w-full h-full relative group-hover:hidden">
           <Image
             src="/user-flow/gene-expression.png"
@@ -90,17 +92,21 @@ export const GeneExpression: React.FC<Clickable> = (props: Clickable) => {
           />
         </div>
         <div className="group-hover:hidden h-full">
-          <div className="text-xs my-5">
-            <button className="border border-black rounded p-px">Gene Expression</button>
+          <div className="text-xs">
+            <button className="border border-black rounded p-px">
+              Gene Expression
+            </button>
           </div>
         </div>
         <div className="w-full h-full hidden group-hover:block">
           Visualize patterns in gene expression in your cohort.
         </div>
       </div>
-      <div className="w-full content-center text-sm border-t-2">
+      <div className="w-full text-sm border-t-2 flex flex-row justify-center">
         <div className="mt-2">
-          <span className="border border-black p-0.5 border-opacity-100 bg-nci-yellow">411 Cases</span>
+          <span className="border border-black p-0.5 border-opacity-100 bg-nci-yellow">
+            411 Cases
+          </span>
         </div>
       </div>
     </App>
@@ -110,7 +116,7 @@ export const GeneExpression: React.FC<Clickable> = (props: Clickable) => {
 export const ProteinPaint: React.FC<Clickable> = (props: Clickable) => {
   return (
     <App name="ProteinPaint" onClick={props.onClick}>
-      <div className="w-full h-full flex mr-4">
+      <div className="w-full h-full flex gap-x-4">
         <div className="w-full h-full relative group-hover:hidden">
           <Image
             src="/user-flow/proteinpaint.png"
@@ -119,14 +125,16 @@ export const ProteinPaint: React.FC<Clickable> = (props: Clickable) => {
           />
         </div>
         <div className="group-hover:hidden h-full">
-          <div className="flex flex-wrap my-5 ml-1">
+          <div className="flex flex-wrap gap-2">
             <div className="flex flex-row w-full">
-              <div className="text-xs my-1 w-full content-center">
-                <button className="border border-black rounded p-1">Variant Analysis</button>
+              <div className="text-xs w-full content-center">
+                <button className="border border-black rounded p-1">
+                  Variant Analysis
+                </button>
               </div>
             </div>
             <div className="flex flex-row w-full">
-              <div className="text-xs my-1 w-full content-center">
+              <div className="text-xs w-full content-center">
                 <button className="border border-black rounded p-1">SSM</button>
               </div>
             </div>
@@ -136,9 +144,11 @@ export const ProteinPaint: React.FC<Clickable> = (props: Clickable) => {
           Visualize mutations in protein-coding genes.
         </div>
       </div>
-      <div className="w-full content-center text-sm border-t-2">
+      <div className="w-full text-sm border-t-2 flex flex-row justify-center">
         <div className="mt-2">
-          <span className="border border-black border-opacity-100 p-0.5 bg-nci-yellow">1622 Cases</span>
+          <span className="border border-black border-opacity-100 p-0.5 bg-nci-yellow">
+            1622 Cases
+          </span>
         </div>
       </div>
     </App>
@@ -148,7 +158,7 @@ export const ProteinPaint: React.FC<Clickable> = (props: Clickable) => {
 export const SetOperations: React.FC<Clickable> = (props: Clickable) => {
   return (
     <App name="Set Operations" onClick={props.onClick}>
-      <div className="w-full h-full flex">
+      <div className="w-full h-full flex gap-x-4">
         <div className="w-full h-full relative group-hover:hidden">
           <Image
             src="/user-flow/set-operations.png"
@@ -157,8 +167,10 @@ export const SetOperations: React.FC<Clickable> = (props: Clickable) => {
           />
         </div>
         <div className="group-hover:hidden h-full">
-          <div className="text-xs my-5">
-            <button className="border border-black rounded p-0.5">General Utility</button>
+          <div className="text-xs">
+            <button className="border border-black rounded p-0.5">
+              General Utility
+            </button>
           </div>
         </div>
         <div className="w-full h-full hidden group-hover:block">
@@ -167,8 +179,7 @@ export const SetOperations: React.FC<Clickable> = (props: Clickable) => {
         </div>
       </div>
       <div className="w-full content-center text-sm border-t-2">
-        <div className="mt-7">
-        </div>
+        <div className="mt-7"></div>
       </div>
     </App>
   );
@@ -177,7 +188,7 @@ export const SetOperations: React.FC<Clickable> = (props: Clickable) => {
 export const CohortComparison: React.FC<Clickable> = (props: Clickable) => {
   return (
     <App name="Cohort Comparison" onClick={props.onClick}>
-      <div className="w-full h-full flex">
+      <div className="w-full h-full flex gap-x-4">
         <div className="w-full h-full relative group-hover:hidden">
           <Image
             src="/user-flow/cohort-comparison.png"
@@ -186,8 +197,10 @@ export const CohortComparison: React.FC<Clickable> = (props: Clickable) => {
           />
         </div>
         <div className="group-hover:hidden h-full">
-          <div className="text-xs my-5 ml-1">
-            <button className="border border-black rounded">Clinical Analysis</button>
+          <div className="text-xs">
+            <button className="border border-black rounded">
+              Clinical Analysis
+            </button>
           </div>
         </div>
         <div className="w-full h-full hidden group-hover:block">
@@ -195,9 +208,11 @@ export const CohortComparison: React.FC<Clickable> = (props: Clickable) => {
           characteristics such as gender, vital status and age at diagnosis.
         </div>
       </div>
-      <div className="w-full content-center text-sm border-t-2">
+      <div className="w-full text-sm border-t-2 flex flex-row justify-center">
         <div className="mt-2">
-          <span className="border border-black border-opacity-100 p-0.5 bg-nci-yellow">3148 Cases</span>
+          <span className="border border-black border-opacity-100 p-0.5 bg-nci-yellow">
+            3148 Cases
+          </span>
         </div>
       </div>
     </App>
@@ -207,7 +222,7 @@ export const CohortComparison: React.FC<Clickable> = (props: Clickable) => {
 export const ClinicalDataAnalysis: React.FC<Clickable> = (props: Clickable) => {
   return (
     <App name="Clinical Data Analysis" onClick={props.onClick}>
-      <div className="w-full h-full flex">
+      <div className="w-full h-full flex gap-x-4">
         <div className="w-full h-full relative group-hover:hidden">
           <Image
             // className="flex"
@@ -217,17 +232,21 @@ export const ClinicalDataAnalysis: React.FC<Clickable> = (props: Clickable) => {
           />
         </div>
         <div className="group-hover:hidden h-full">
-          <div className="text-xs my-5 ml-1">
-            <button className="border border-black rounded">Clinical Analysis</button>
+          <div className="text-xs">
+            <button className="border border-black rounded">
+              Clinical Analysis
+            </button>
           </div>
         </div>
         <div className="w-full h-full hidden group-hover:block">
           Display basic statistical analyses for your cohort.
         </div>
       </div>
-      <div className="w-full content-center text-sm border-t-2">
+      <div className="w-full text-sm border-t-2 flex flex-row justify-center">
         <div className="mt-2">
-          <span className="border border-black border-opacity-100 p-0.5 bg-nci-yellow">3148 Cases</span>
+          <span className="border border-black border-opacity-100 p-0.5 bg-nci-yellow">
+            3148 Cases
+          </span>
         </div>
       </div>
     </App>
@@ -237,7 +256,7 @@ export const ClinicalDataAnalysis: React.FC<Clickable> = (props: Clickable) => {
 export const SequenceReads: React.FC<Clickable> = (props: Clickable) => {
   return (
     <App name="Sequence Reads" onClick={props.onClick}>
-      <div className="w-full h-full flex">
+      <div className="w-full h-full flex gap-x-4">
         <div className="w-full h-full relative group-hover:hidden">
           <Image
             src="/user-flow/sequence-reads.png"
@@ -246,22 +265,26 @@ export const SequenceReads: React.FC<Clickable> = (props: Clickable) => {
           />
         </div>
         <div className="group-hover:hidden h-full">
-          <div className="text-xs my-5">
-            <button className="border border-black rounded p-0.5">Sequence Analysis</button>
+          <div className="text-xs">
+            <button className="border border-black rounded p-0.5">
+              Sequence Analysis
+            </button>
           </div>
         </div>
         <div className="w-full h-full hidden group-hover:block">
           Visualize sequencing reads.
         </div>
       </div>
-      <div className="w-full content-center text-sm border-t-2">
+      <div className="w-full text-sm border-t-2 flex flex-row justify-center">
         <div className="mt-2">
-          <span className="border border-black border-opacity-100 p-0.5 bg-nci-yellow">1622 Cases</span>
+          <span className="border border-black border-opacity-100 p-0.5 bg-nci-yellow">
+            1622 Cases
+          </span>
         </div>
       </div>
     </App>
-  )
-}
+  );
+};
 
 export const ClinicalFilters: React.FC<Clickable> = (props: Clickable) => {
   return (
@@ -287,8 +310,8 @@ export const Cohorts: React.FC<Clickable> = (props: Clickable) => {
           <Initials name="Cohorts" />
         </div>
         <div className="w-full h-full hidden group-hover:block">
-          Explore the GDC&apos;s collection of cohorts. Select one or more to form
-          your custom cohort.
+          Explore the GDC&apos;s collection of cohorts. Select one or more to
+          form your custom cohort.
         </div>
       </div>
     </App>
@@ -332,7 +355,7 @@ export const DownloadableFileFilters: React.FC<Clickable> = (
 export const SomaticMutations: React.FC<Clickable> = (props: Clickable) => {
   return (
     <App name="Somatic Mutations" onClick={props.onClick}>
-      <div className="w-full h-full flex">
+      <div className="w-full h-full flex gap-x-4">
         <div className="w-full h-full relative group-hover:hidden">
           <Image
             src="/user-flow/somatic-mutations.png"
@@ -341,26 +364,31 @@ export const SomaticMutations: React.FC<Clickable> = (props: Clickable) => {
           />
         </div>
         <div className="group-hover:hidden h-full">
-          <div className="flex flex-wrap my-5 ml-1">
+          <div className="flex flex-wrap gap-2">
             <div className="flex flex-row w-full">
-              <div className="text-xs my-1 w-full content-center">
-                <button className="border border-black rounded p-1">Variant Analysis</button>
+              <div className="text-xs w-full content-center">
+                <button className="border border-black rounded p-1">
+                  Variant Analysis
+                </button>
               </div>
             </div>
             <div className="flex flex-row w-full">
-              <div className="text-xs my-1 w-full content-center">
+              <div className="text-xs w-full content-center">
                 <button className="border border-black rounded p-1">SSM</button>
               </div>
             </div>
           </div>
         </div>
         <div className="w-full h-full hidden group-hover:block">
-          Visualize most frequently mutated genes and most frequent somatic mutations.
+          Visualize most frequently mutated genes and most frequent somatic
+          mutations.
         </div>
       </div>
-      <div className="w-full content-center text-sm border-t-2">
+      <div className="w-full text-sm border-t-2 flex flex-row justify-center">
         <div className="mt-2">
-          <span className="border border-black border-opacity-100 p-0.5 bg-nci-yellow">1622 Cases</span>
+          <span className="border border-black border-opacity-100 p-0.5 bg-nci-yellow">
+            1622 Cases
+          </span>
         </div>
       </div>
     </App>

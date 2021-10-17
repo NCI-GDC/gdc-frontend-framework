@@ -43,6 +43,7 @@
     "@types/react-select": "^4.0.17",
     "@types/react-tabs": "^2.3.3",
     "autoprefixer": "^10.2.6",
+    "eslint-config-next": "^11.1.2",
     "jest": "^26.0.0",
     "jest-css-modules-transform": "^4.2.0",
     "postcss": "^8.3.5",

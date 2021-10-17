@@ -9,13 +9,13 @@ import {BIOTYPE, VARIANT_CALLER, VEP_IMPACT, CONSEQUENCE_TYPE, SIFT_IMPACT} from
 
 interface FacetGroupProps {
   readonly facetNames: Array<Record<string, any>>;
-  onUpdateSummaryChart: (op:string, field:string) => void;
+  onUpdateSummaryChart?: (op:string, field:string) => void;
 
 }
 
 
 
-export const FacetGroup: React.FC<FacetGroupProps> = ({ facetNames, onUpdateSummaryChart }: FacetGroupProps) => {
+export const FacetGroup: React.FC<FacetGroupProps> = ({ facetNames, onUpdateSummaryChart = () => undefined }: FacetGroupProps) => {
 
   return ( <div className="flex flex-col border-2 h-screen/1.5 overflow-y-scroll">
     <div className="grid grid-cols-4 gap-4">
@@ -53,7 +53,11 @@ interface FacetTabWithSubmenuProps extends TabProps {
    onSubcategoryChange: (c:string, sc:string) => void;
 }
 
-const FacetTabWithSubmenu : React.FC<FacetTabWithSubmenuProps> = ({ category, subCategories, onSubcategoryChange,...otherProps } : FacetTabWithSubmenuProps) => {
+export interface CustomTab<T> extends React.FC<T> {
+  tabsRole: string;
+}
+
+const FacetTabWithSubmenu : CustomTab<FacetTabWithSubmenuProps> = ({ category, subCategories, onSubcategoryChange,...otherProps } : FacetTabWithSubmenuProps) => {
 
   const menu_items = subCategories.map((n, index) => {
     return {label: n, value:index}
@@ -66,10 +70,11 @@ const FacetTabWithSubmenu : React.FC<FacetTabWithSubmenuProps> = ({ category, su
   };
 
   return (
-    <Tab {...otherProps}>
+    <Tab className={otherProps?.className} disabled={otherProps?.disabled} disabledClassName={otherProps?.disabledClassName} selectedClassName={otherProps?.selectedClassName} tabIndex={otherProps?.tabIndex}>
       <div className="flex flex-row items-center justify-center">
         {category}
         <Select
+          inputId={category}
           components={{
             IndicatorSeparator: () => null
           }}
@@ -86,11 +91,11 @@ const FacetTabWithSubmenu : React.FC<FacetTabWithSubmenuProps> = ({ category, su
 FacetTabWithSubmenu.tabsRole = 'Tab';
 
 interface CohortTabbedFacetsProps {
-  readonly searchResults: [ Record<string, unknown> ];
-  onUpdateSummaryChart: (op:string, field:string) => void;
+  readonly searchResults: Array<Record<string, unknown>>;
+  onUpdateSummaryChart?: (op:string, field:string) => void;
 }
 
-export const CohortTabbedFacets: React.FC<CohortTabbedFacetsProps> = ( {  searchResults, onUpdateSummaryChart } : CohortTabbedFacetsProps) => {
+export const CohortTabbedFacets: React.FC<CohortTabbedFacetsProps> = ( {  searchResults, onUpdateSummaryChart = () => undefined } : CohortTabbedFacetsProps) => {
    const [subcategories, setSubcategories] = useState({ 'Clinical': 'All' ,'Biospecimen': 'All', 'Visualizable Data': 'Somatic Mutations', "Downloadable": "All" });
    const handleSubcategoryChanged = (category:string, subcategory:string) => {
      const state = { ...subcategories };

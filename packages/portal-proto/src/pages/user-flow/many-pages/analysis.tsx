@@ -15,7 +15,7 @@ import {
   CohortComparison,
   ClinicalDataAnalysis,
   SequenceReads,
-  SomaticMutations
+  SomaticMutations,
 } from "../../../features/apps/Apps";
 import { FileModal } from "../../../features/files/FileView";
 import { GdcFile } from "@gff/core";
@@ -74,14 +74,15 @@ const AnalysisPage: NextPage = () => {
   );
 
   const Apps = () => {
-
     const sortOptions = [
       { value: "a-z", label: "Sort: A-Z" },
       { value: "z-a", label: "Sort: Z-A" },
     ];
     // const tagStyles = "truncate px-2 py-1 text-xs m-1.5 border rounded border-nci-blumine bg-nci-blumine-lightest hover:bg-nci-blumine text-nci-blumine-darker hover:text-white"
-    const inactiveStyling = "truncate px-2 py-1 text-xs m-1.5 border rounded border-black bg-white hover:bg-nci-blue text-black hover:text-white"
-    const activeStyling = "truncate px-2 py-1 text-xs m-1.5 border rounded border-black bg-nci-blumine-darker hover:bg-nci-blumine-lightest text-white hover:text-nci-blumine-darker"
+    const inactiveStyling =
+      "truncate px-2 py-1 text-xs m-1.5 border rounded border-black bg-white hover:bg-nci-blue text-black hover:text-white";
+    const activeStyling =
+      "truncate px-2 py-1 text-xs m-1.5 border rounded border-black bg-nci-blumine-darker hover:bg-nci-blumine-lightest text-white hover:text-nci-blumine-darker";
 
     const defaultTagStyles = {
       clinicalAnalysis: false,
@@ -90,7 +91,7 @@ const AnalysisPage: NextPage = () => {
       variantAnalysis: false,
       cnv: false,
       geneExpression: false,
-      ssm: false
+      ssm: false,
     };
 
     const analysisArr = [
@@ -102,10 +103,13 @@ const AnalysisPage: NextPage = () => {
       { name: "ScRNA-Seq", tags: ["geneExpression"] },
       { name: "Sequence Reads", tags: ["sequenceAnalysis"] },
       { name: "Set Operations", tags: ["generalUtility"] },
-      { name: "Somatic Mutations", tags: ["variantAnalysis", "ssm"] }
-    ]
+      { name: "Somatic Mutations", tags: ["variantAnalysis", "ssm"] },
+    ];
     const [appView, setAppView] = useState(() => analysisArr);
-    const [nameVal, setNameVal] = useState({ value: "a-z", label: "Sort: A-Z" });
+    const [nameVal, setNameVal] = useState({
+      value: "a-z",
+      label: "Sort: A-Z",
+    });
     const [activeTags, setActiveTags] = useState([]);
     const [tagStyling, setTagStyling] = useState(() => defaultTagStyles);
 
@@ -114,137 +118,155 @@ const AnalysisPage: NextPage = () => {
         case "Clinical Data Analysis":
           return (
             <ClinicalDataAnalysis
+              key={name}
               onClick={() => {
                 setSelectedApp("Clinical Data Analysis");
                 setShowAppModal(true);
               }}
             />
-          )
+          );
         case "Cohort Comparison":
           return (
             <CohortComparison
+              key={name}
               onClick={() => {
                 setSelectedApp("Cohort Comparison");
                 setShowAppModal(true);
               }}
             />
-          )
+          );
         case "Gene Expression":
           return (
             <GeneExpression
+              key={name}
               onClick={() => {
                 setSelectedApp("Gene Expression");
                 setShowAppModal(true);
               }}
             />
-          )
+          );
         case "OncoGrid":
           return (
             <OncoGrid
+              key={name}
               onClick={() => {
                 setSelectedApp("OncoGrid");
                 setShowAppModal(true);
               }}
             />
-          )
+          );
         case "ProteinPaint":
           return (
             <ProteinPaint
+              key={name}
               onClick={() => {
                 setSelectedApp("ProteinPaint");
                 setShowAppModal(true);
               }}
             />
-          )
+          );
         case "ScRNA-Seq":
           return (
             <SingleCellRnaSeq
+              key={name}
               onClick={() => {
                 setSelectedApp("scRNA-Seq");
                 setShowAppModal(true);
               }}
             />
-          )
+          );
         case "Sequence Reads":
           return (
             <SequenceReads
+              key={name}
               onClick={() => {
                 setSelectedApp("Sequence Reads");
                 setShowAppModal(true);
               }}
             />
-          )
+          );
         case "Set Operations":
           return (
             <SetOperations
+              key={name}
               onClick={() => {
                 setSelectedApp("Set Operations");
                 setShowAppModal(true);
               }}
             />
-          )
+          );
         case "Somatic Mutations":
           return (
             <SomaticMutations
+              key={name}
               onClick={() => {
                 setSelectedApp("Somatic Mutations");
                 setShowAppModal(true);
               }}
             />
-          )
+          );
+        default:
+          console.log(`Unknown App: {name}`);
+          return <div>Unknown App: {name}</div>;
       }
-    }
+    };
 
     const descendingOrd = (param) => {
       return appView.sort((a, b) => {
         if (a[param] < b[param]) {
-          return -1
+          return -1;
         } else if (a[param] > b[param]) {
-          return 1
+          return 1;
         } else {
-          return 0
+          return 0;
         }
-      })
-    }
+      });
+    };
 
     const ascendingOrd = (param) => {
       return appView.sort((a, b) => {
         if (b[param] < a[param]) {
-          return -1
+          return -1;
         } else if (b[param] > a[param]) {
-          return 1
+          return 1;
         } else {
-          return 0
+          return 0;
         }
-      })
-    }
+      });
+    };
 
     const sortAlphabetically = (direction, category) => {
-      let sortedApps = direction === "a-z" ?
-        descendingOrd(category) : ascendingOrd(category)
+      const sortedApps =
+        direction === "a-z" ? descendingOrd(category) : ascendingOrd(category);
       // console.log('sortedApps', sortedApps);
       return sortedApps;
-    }
+    };
 
     const handleTagFilter = (tagName) => {
-      let styleClone = { ...tagStyling, [tagName]: !tagStyling[tagName] }
+      const styleClone = { ...tagStyling, [tagName]: !tagStyling[tagName] };
       setTagStyling(styleClone);
-      let tagArrClone = [...activeTags];
+      const tagArrClone = [...activeTags];
       // console.log('original array', analysisArr);
       const tagIndex = tagArrClone.indexOf(tagName);
-      tagIndex < 0 ? tagArrClone.push(tagName) : tagArrClone.splice(tagIndex, 1);
+      tagIndex < 0
+        ? tagArrClone.push(tagName)
+        : tagArrClone.splice(tagIndex, 1);
       setActiveTags(tagArrClone);
       // console.log('the clone', tagArrClone);
-      const filteredTags = analysisArr.filter(element => element.tags.some(tag => tagArrClone.includes(tag)));
-      filteredTags.length === 0 ? setAppView(analysisArr) : setAppView(filteredTags);
-    }
+      const filteredTags = analysisArr.filter((element) =>
+        element.tags.some((tag) => tagArrClone.includes(tag)),
+      );
+      filteredTags.length === 0
+        ? setAppView(analysisArr)
+        : setAppView(filteredTags);
+    };
 
     const clearTags = () => {
       setTagStyling(defaultTagStyles);
       setNameVal({ value: "a-z", label: "Sort: A-Z" });
       setActiveTags([]);
-      setAppView(analysisArr); 
-    }
+      setAppView(analysisArr);
+    };
 
     const sortFilter = (
       <Select
@@ -255,8 +277,8 @@ const AnalysisPage: NextPage = () => {
         value={nameVal}
         isMulti={false}
         onChange={(e) => {
-          setNameVal(sortOptions.filter(op => op.value === e.value)[0])
-          setAppView(sortAlphabetically(e.value, "name"))
+          setNameVal(sortOptions.filter((op) => op.value === e.value)[0]);
+          setAppView(sortAlphabetically(e.value, "name"));
         }}
       />
     );
@@ -269,104 +291,92 @@ const AnalysisPage: NextPage = () => {
             <div className="flex">
               <div className="flex flex-wrap">
                 <div className="flex flex-row">
-                  <button className={`${tagStyling.clinicalAnalysis ? activeStyling : inactiveStyling}`} onClick={() => handleTagFilter("clinicalAnalysis")}>
+                  <button
+                    className={`${
+                      tagStyling.clinicalAnalysis
+                        ? activeStyling
+                        : inactiveStyling
+                    }`}
+                    onClick={() => handleTagFilter("clinicalAnalysis")}
+                  >
                     Clinical Analysis
                   </button>
-                  <button className={`${tagStyling.generalUtility ? activeStyling : inactiveStyling}`} onClick={() => handleTagFilter("generalUtility")}>
+                  <button
+                    className={`${
+                      tagStyling.generalUtility
+                        ? activeStyling
+                        : inactiveStyling
+                    }`}
+                    onClick={() => handleTagFilter("generalUtility")}
+                  >
                     General Utility
                   </button>
-                  <button className={`${tagStyling.sequenceAnalysis ? activeStyling : inactiveStyling}`} onClick={() => handleTagFilter("sequenceAnalysis")}>
+                  <button
+                    className={`${
+                      tagStyling.sequenceAnalysis
+                        ? activeStyling
+                        : inactiveStyling
+                    }`}
+                    onClick={() => handleTagFilter("sequenceAnalysis")}
+                  >
                     Sequence Analysis
                   </button>
                 </div>
                 <div className="flex flex-row">
-                  <button className={`${tagStyling.variantAnalysis ? activeStyling : inactiveStyling}`} onClick={() => handleTagFilter("variantAnalysis")}>
+                  <button
+                    className={`${
+                      tagStyling.variantAnalysis
+                        ? activeStyling
+                        : inactiveStyling
+                    }`}
+                    onClick={() => handleTagFilter("variantAnalysis")}
+                  >
                     Variant Analysis
                   </button>
-                  <button className={`${tagStyling.cnv ? activeStyling : inactiveStyling}`} onClick={() => handleTagFilter("cnv")}>
+                  <button
+                    className={`${
+                      tagStyling.cnv ? activeStyling : inactiveStyling
+                    }`}
+                    onClick={() => handleTagFilter("cnv")}
+                  >
                     CNV
                   </button>
-                  <button className={`${tagStyling.geneExpression ? activeStyling : inactiveStyling}`} onClick={() => handleTagFilter("geneExpression")}>
+                  <button
+                    className={`${
+                      tagStyling.geneExpression
+                        ? activeStyling
+                        : inactiveStyling
+                    }`}
+                    onClick={() => handleTagFilter("geneExpression")}
+                  >
                     Gene Expression
                   </button>
-                  <button className={`${tagStyling.ssm ? activeStyling : inactiveStyling}`} onClick={() => handleTagFilter("ssm")}>
+                  <button
+                    className={`${
+                      tagStyling.ssm ? activeStyling : inactiveStyling
+                    }`}
+                    onClick={() => handleTagFilter("ssm")}
+                  >
                     SSM
                   </button>
                 </div>
               </div>
-              <div className="flex w-14 p-2 content-center"><button onClick={() => clearTags()} className="text-nci-blumine-darker text-sm bold">Clear</button></div>
+              <div className="flex w-14 p-2 content-center">
+                <button
+                  onClick={() => clearTags()}
+                  className="text-nci-blumine-darker text-sm bold"
+                >
+                  Clear
+                </button>
+              </div>
             </div>
           </div>
         </div>
         <div className="w-40">{sortFilter}</div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 bg-gray-100">
-          {appView.map(element => {
-            return componentArrayMapping(element.name)
+          {appView.map((element) => {
+            return componentArrayMapping(element.name);
           })}
-          {/* <ClinicalDataAnalysis
-            onClick={() => {
-              setSelectedApp("Clinical Data Analysis");
-              setShowAppModal(true);
-            }}
-          />
-          <CohortComparison
-            onClick={() => {
-              setSelectedApp("Cohort Comparison");
-              setShowAppModal(true);
-            }}
-          />
-          <GeneExpression
-            onClick={() => {
-              setSelectedApp("Gene Expression");
-              setShowAppModal(true);
-            }}
-          />
-          <OncoGrid
-            onClick={() => {
-              setSelectedApp("OncoGrid");
-              setShowAppModal(true);
-            }}
-          />
-          <ProteinPaint
-            onClick={() => {
-              setSelectedApp("ProteinPaint");
-              setShowAppModal(true);
-            }}
-          />
-          <SingleCellRnaSeq
-            onClick={() => {
-              setSelectedApp("scRNA-Seq");
-              setShowAppModal(true);
-            }}
-          />
-          <SequenceReads
-            onClick={() => {
-              setSelectedApp("Sequence Reads");
-              setShowAppModal(true);
-            }}
-          />
-          <SetOperations
-            onClick={() => {
-              setSelectedApp("Set Operations");
-              setShowAppModal(true);
-            }}
-          />
-          <SomaticMutations
-            onClick={() => {
-              setSelectedApp("Somatic Mutations");
-              setShowAppModal(true);
-            }}
-          /> */}
-          {/* {[undefined, undefined, undefined].map((name, i) => (
-          <App
-            key={`${name}-${i}`}
-            name={name}
-            onClick={() => {
-              setSelectedApp(name);
-              setShowAppModal(true);
-            }}
-          />
-        ))} */}
         </div>
       </>
     );

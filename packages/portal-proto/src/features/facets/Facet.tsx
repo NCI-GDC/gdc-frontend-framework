@@ -18,7 +18,7 @@ import {
 import { FacetChart } from "../charts/FacetChart";
 
 interface UseCaseFacetResponse {
-  readonly data?: FacetBuckets;
+  readonly data?: Record<string, number>;
   readonly error?: string;
   readonly isUninitialized: boolean;
   readonly isFetching: boolean;
@@ -26,7 +26,7 @@ interface UseCaseFacetResponse {
   readonly isError: boolean;
 }
 
-const useCaseFacet = (field: string): UseCaseFacetResponse => {
+export const useCaseFacet = (field: string): UseCaseFacetResponse => {
   const coreDispatch = useCoreDispatch();
   const facet: FacetBuckets = useCoreSelector((state) =>
     selectCasesFacetByField(state, field),
@@ -51,7 +51,7 @@ const useCaseFacet = (field: string): UseCaseFacetResponse => {
 interface FacetProps {
   readonly field: string;
   readonly description?: string;
-  onUpdateSummaryChart: (op:string, field:string) => void;
+  onUpdateSummaryChart?: (op:string, field:string) => void;
 }
 
 
@@ -94,7 +94,7 @@ const FacetHeader: React.FC<FacetProps> = ({ field, description }: PropsWithChil
 };
 
 
-export const Facet: React.FC<FacetProps> = ({ field, description, onUpdateSummaryChart }: FacetProps) => {
+export const Facet: React.FC<FacetProps> = ({ field, description, onUpdateSummaryChart = () => undefined }: FacetProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [isSortedByCases, setIsSortedByCases] = useState(true);

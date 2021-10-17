@@ -1,11 +1,11 @@
 import { NextPage } from "next";
 import {
   UserFlowVariedPages,
-  CohortManager,
   CohortExpressionsAndBuilder,
   CohortGraphs,
 } from "../features/layout/UserFlowVariedPages";
 import Link from "next/link";
+import { CohortManager } from "../features/user-flow/many-pages/cohort";
 
 const UserFlowFewerPagesPage: NextPage = () => {
   const headerElements = [
