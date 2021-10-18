@@ -9,14 +9,14 @@ export const OncoGrid: React.FC<Clickable> = (props: Clickable) => {
   return (
     <App name="OncoGrid" onClick={props.onClick}>
       <div className="w-full h-full flex gap-x-4">
-        <div className="w-full h-full relative group-hover:hidden">
+        <div className="w-3/4 h-full relative group-hover:hidden">
           <Image
             src="/user-flow/oncogrid.png"
             layout="fill"
             objectFit="contain"
           />
         </div>
-        <div className="group-hover:hidden h-full">
+        <div className="w-1/4 group-hover:hidden h-full">
           <div className="flex flex-wrap gap-2">
             <div className="text-xs content-center">
               <button className="border border-black rounded p-1">
@@ -51,16 +51,16 @@ export const SingleCellRnaSeq: React.FC<Clickable> = (props: Clickable) => {
   return (
     <App name="scRNA-Seq" onClick={props.onClick}>
       <div className="w-full h-full flex gap-x-4">
-        <div className="w-full h-full relative group-hover:hidden">
+        <div className="w-3/4 h-full relative group-hover:hidden">
           <Image
             src="/user-flow/scRnaSeqViz.png"
             layout="fill"
             objectFit="contain"
           />
         </div>
-        <div className="group-hover:hidden h-full">
+        <div className="w-1/4 group-hover:hidden h-full">
           <div className="text-xs">
-            <button className="border border-black rounded p-px">
+            <button className="border border-black rounded p-1">
               Gene Expression
             </button>
           </div>
@@ -84,16 +84,16 @@ export const GeneExpression: React.FC<Clickable> = (props: Clickable) => {
   return (
     <App name="Gene Expression" onClick={props.onClick}>
       <div className="w-full h-full flex gap-x-4">
-        <div className="w-full h-full relative group-hover:hidden">
+        <div className="w-3/4 h-full relative group-hover:hidden">
           <Image
             src="/user-flow/gene-expression.png"
             layout="fill"
             objectFit="contain"
           />
         </div>
-        <div className="group-hover:hidden h-full">
+        <div className="w-1/4 group-hover:hidden h-full">
           <div className="text-xs">
-            <button className="border border-black rounded p-px">
+            <button className="border border-black rounded p-1">
               Gene Expression
             </button>
           </div>
@@ -117,14 +117,14 @@ export const ProteinPaint: React.FC<Clickable> = (props: Clickable) => {
   return (
     <App name="ProteinPaint" onClick={props.onClick}>
       <div className="w-full h-full flex gap-x-4">
-        <div className="w-full h-full relative group-hover:hidden">
+        <div className="w-3/4 h-full relative group-hover:hidden">
           <Image
             src="/user-flow/proteinpaint.png"
             layout="fill"
             objectFit="contain"
           />
         </div>
-        <div className="group-hover:hidden h-full">
+        <div className="w-1/4 group-hover:hidden h-full">
           <div className="flex flex-wrap gap-2">
             <div className="flex flex-row w-full">
               <div className="text-xs w-full content-center">
@@ -159,16 +159,16 @@ export const SetOperations: React.FC<Clickable> = (props: Clickable) => {
   return (
     <App name="Set Operations" onClick={props.onClick}>
       <div className="w-full h-full flex gap-x-4">
-        <div className="w-full h-full relative group-hover:hidden">
+        <div className="w-3/4 h-full relative group-hover:hidden">
           <Image
             src="/user-flow/set-operations.png"
             layout="fill"
             objectFit="contain"
           />
         </div>
-        <div className="group-hover:hidden h-full">
+        <div className="w-1/4 group-hover:hidden h-full">
           <div className="text-xs">
-            <button className="border border-black rounded p-0.5">
+            <button className="border border-black rounded p-1">
               General Utility
             </button>
           </div>
@@ -189,16 +189,16 @@ export const CohortComparison: React.FC<Clickable> = (props: Clickable) => {
   return (
     <App name="Cohort Comparison" onClick={props.onClick}>
       <div className="w-full h-full flex gap-x-4">
-        <div className="w-full h-full relative group-hover:hidden">
+        <div className="w-3/4 h-full relative group-hover:hidden">
           <Image
             src="/user-flow/cohort-comparison.png"
             layout="fill"
             objectFit="contain"
           />
         </div>
-        <div className="group-hover:hidden h-full">
+        <div className="w-1/4 group-hover:hidden h-full">
           <div className="text-xs">
-            <button className="border border-black rounded">
+            <button className="border border-black rounded p-1">
               Clinical Analysis
             </button>
           </div>
@@ -223,7 +223,7 @@ export const ClinicalDataAnalysis: React.FC<Clickable> = (props: Clickable) => {
   return (
     <App name="Clinical Data Analysis" onClick={props.onClick}>
       <div className="w-full h-full flex gap-x-4">
-        <div className="w-full h-full relative group-hover:hidden">
+        <div className="w-3/4 h-full relative group-hover:hidden">
           <Image
             // className="flex"
             src="/user-flow/clinical-data-analysis.png"
@@ -231,11 +231,13 @@ export const ClinicalDataAnalysis: React.FC<Clickable> = (props: Clickable) => {
             objectFit="contain"
           />
         </div>
-        <div className="group-hover:hidden h-full">
-          <div className="text-xs">
-            <button className="border border-black rounded">
-              Clinical Analysis
-            </button>
+        <div className="w-1/4 group-hover:hidden h-full">
+          <div className="flex flex-wrap gap-2">
+            <div className="text-xs content-center">
+              <button className="border border-black rounded p-1">
+                Clinical Analysis
+              </button>
+            </div>
           </div>
         </div>
         <div className="w-full h-full hidden group-hover:block">
@@ -257,16 +259,16 @@ export const SequenceReads: React.FC<Clickable> = (props: Clickable) => {
   return (
     <App name="Sequence Reads" onClick={props.onClick}>
       <div className="w-full h-full flex gap-x-4">
-        <div className="w-full h-full relative group-hover:hidden">
+        <div className="w-3/4 h-full relative group-hover:hidden">
           <Image
             src="/user-flow/sequence-reads.png"
             layout="fill"
             objectFit="contain"
           />
         </div>
-        <div className="group-hover:hidden h-full">
+        <div className="w-1/4 group-hover:hidden h-full">
           <div className="text-xs">
-            <button className="border border-black rounded p-0.5">
+            <button className="border border-black rounded p-1">
               Sequence Analysis
             </button>
           </div>
@@ -356,14 +358,14 @@ export const SomaticMutations: React.FC<Clickable> = (props: Clickable) => {
   return (
     <App name="Somatic Mutations" onClick={props.onClick}>
       <div className="w-full h-full flex gap-x-4">
-        <div className="w-full h-full relative group-hover:hidden">
+        <div className="w-3/4 h4full relative group-hover:hidden">
           <Image
             src="/user-flow/somatic-mutations.png"
             layout="fill"
             objectFit="contain"
           />
         </div>
-        <div className="group-hover:hidden h-full">
+        <div className="w-1/4 group-hover:hidden h-full">
           <div className="flex flex-wrap gap-2">
             <div className="flex flex-row w-full">
               <div className="text-xs w-full content-center">
