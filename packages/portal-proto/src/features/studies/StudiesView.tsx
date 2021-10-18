@@ -464,9 +464,7 @@ const hasLogo = (program: string): boolean => {
     "CPTAC",
     "FM",
     "GENIE",
-    "HCMI",
     "MMRF",
-    "OHSU",
     "TCGA",
   ].includes(program);
 };
