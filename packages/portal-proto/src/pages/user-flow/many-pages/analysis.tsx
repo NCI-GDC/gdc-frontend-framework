@@ -79,9 +79,9 @@ const AnalysisPage: NextPage = () => {
       { value: "a-z", label: "Sort: A-Z" },
       { value: "z-a", label: "Sort: Z-A" },
     ];
-    // const tagStyles = "truncate px-2 py-1 text-xs m-1.5 border rounded border-nci-blumine bg-nci-blumine-lightest hover:bg-nci-blumine text-nci-blumine-darker hover:text-white"
-    const inactiveStyling = "truncate px-2 py-1 text-xs m-1.5 border rounded border-black bg-white hover:bg-nci-blue text-black hover:text-white"
-    const activeStyling = "truncate px-2 py-1 text-xs m-1.5 border rounded border-black bg-nci-blumine-darker hover:bg-nci-blumine-lightest text-white hover:text-nci-blumine-darker"
+
+    const inactiveTag = "truncate px-2 py-1 text-xs m-1.5 border rounded border-black bg-white hover:bg-nci-blue text-black hover:text-white"
+    const activeTag = "truncate px-2 py-1 text-xs m-1.5 border rounded border-black bg-nci-blumine-darker hover:bg-nci-blumine-lightest text-white hover:text-nci-blumine-darker"
 
     const defaultTagStyles = {
       clinicalAnalysis: false,
@@ -220,30 +220,30 @@ const AnalysisPage: NextPage = () => {
     }
 
     const sortAlphabetically = (direction, category) => {
-      let sortedApps = direction === "a-z" ?
-        descendingOrd(category) : ascendingOrd(category)
-      // console.log('sortedApps', sortedApps);
-      return sortedApps;
+      return direction === "a-z" ? descendingOrd(category) : ascendingOrd(category)
     }
 
     const handleTagFilter = (tagName) => {
-      let styleClone = { ...tagStyling, [tagName]: !tagStyling[tagName] }
-      setTagStyling(styleClone);
-      let tagArrClone = [...activeTags];
-      // console.log('original array', analysisArr);
-      const tagIndex = tagArrClone.indexOf(tagName);
-      tagIndex < 0 ? tagArrClone.push(tagName) : tagArrClone.splice(tagIndex, 1);
-      setActiveTags(tagArrClone);
-      // console.log('the clone', tagArrClone);
-      const filteredTags = analysisArr.filter(element => element.tags.some(tag => tagArrClone.includes(tag)));
-      filteredTags.length === 0 ? setAppView(analysisArr) : setAppView(filteredTags);
+      // update tag style
+      let tagUpdate = { ...tagStyling, [tagName]: !tagStyling[tagName] }
+      setTagStyling(tagUpdate);
+
+      // update array of tags active
+      let tagArr = [...activeTags];
+      const tagIndex = tagArr.indexOf(tagName);
+      tagIndex < 0 ? tagArr.push(tagName) : tagArr.splice(tagIndex, 1);
+      setActiveTags(tagArr);
+
+      // filter apps based off tags
+      const filteredApps = analysisArr.filter(element => element.tags.some(tag => tagArr.includes(tag)));
+      filteredApps.length === 0 ? setAppView(analysisArr) : setAppView(filteredApps);
     }
 
     const clearTags = () => {
       setTagStyling(defaultTagStyles);
       setNameVal({ value: "a-z", label: "Sort: A-Z" });
       setActiveTags([]);
-      setAppView(analysisArr); 
+      setAppView(analysisArr);
     }
 
     const sortFilter = (
@@ -269,27 +269,27 @@ const AnalysisPage: NextPage = () => {
             <div className="flex">
               <div className="flex flex-wrap">
                 <div className="flex flex-row">
-                  <button className={`${tagStyling.clinicalAnalysis ? activeStyling : inactiveStyling}`} onClick={() => handleTagFilter("clinicalAnalysis")}>
+                  <button className={`${tagStyling.clinicalAnalysis ? activeTag : inactiveTag}`} onClick={() => handleTagFilter("clinicalAnalysis")}>
                     Clinical Analysis
                   </button>
-                  <button className={`${tagStyling.generalUtility ? activeStyling : inactiveStyling}`} onClick={() => handleTagFilter("generalUtility")}>
+                  <button className={`${tagStyling.generalUtility ? activeTag : inactiveTag}`} onClick={() => handleTagFilter("generalUtility")}>
                     General Utility
                   </button>
-                  <button className={`${tagStyling.sequenceAnalysis ? activeStyling : inactiveStyling}`} onClick={() => handleTagFilter("sequenceAnalysis")}>
+                  <button className={`${tagStyling.sequenceAnalysis ? activeTag : inactiveTag}`} onClick={() => handleTagFilter("sequenceAnalysis")}>
                     Sequence Analysis
                   </button>
                 </div>
                 <div className="flex flex-row">
-                  <button className={`${tagStyling.variantAnalysis ? activeStyling : inactiveStyling}`} onClick={() => handleTagFilter("variantAnalysis")}>
+                  <button className={`${tagStyling.variantAnalysis ? activeTag : inactiveTag}`} onClick={() => handleTagFilter("variantAnalysis")}>
                     Variant Analysis
                   </button>
-                  <button className={`${tagStyling.cnv ? activeStyling : inactiveStyling}`} onClick={() => handleTagFilter("cnv")}>
+                  <button className={`${tagStyling.cnv ? activeTag : inactiveTag}`} onClick={() => handleTagFilter("cnv")}>
                     CNV
                   </button>
-                  <button className={`${tagStyling.geneExpression ? activeStyling : inactiveStyling}`} onClick={() => handleTagFilter("geneExpression")}>
+                  <button className={`${tagStyling.geneExpression ? activeTag : inactiveTag}`} onClick={() => handleTagFilter("geneExpression")}>
                     Gene Expression
                   </button>
-                  <button className={`${tagStyling.ssm ? activeStyling : inactiveStyling}`} onClick={() => handleTagFilter("ssm")}>
+                  <button className={`${tagStyling.ssm ? activeTag : inactiveTag}`} onClick={() => handleTagFilter("ssm")}>
                     SSM
                   </button>
                 </div>
@@ -303,70 +303,6 @@ const AnalysisPage: NextPage = () => {
           {appView.map(element => {
             return componentArrayMapping(element.name)
           })}
-          {/* <ClinicalDataAnalysis
-            onClick={() => {
-              setSelectedApp("Clinical Data Analysis");
-              setShowAppModal(true);
-            }}
-          />
-          <CohortComparison
-            onClick={() => {
-              setSelectedApp("Cohort Comparison");
-              setShowAppModal(true);
-            }}
-          />
-          <GeneExpression
-            onClick={() => {
-              setSelectedApp("Gene Expression");
-              setShowAppModal(true);
-            }}
-          />
-          <OncoGrid
-            onClick={() => {
-              setSelectedApp("OncoGrid");
-              setShowAppModal(true);
-            }}
-          />
-          <ProteinPaint
-            onClick={() => {
-              setSelectedApp("ProteinPaint");
-              setShowAppModal(true);
-            }}
-          />
-          <SingleCellRnaSeq
-            onClick={() => {
-              setSelectedApp("scRNA-Seq");
-              setShowAppModal(true);
-            }}
-          />
-          <SequenceReads
-            onClick={() => {
-              setSelectedApp("Sequence Reads");
-              setShowAppModal(true);
-            }}
-          />
-          <SetOperations
-            onClick={() => {
-              setSelectedApp("Set Operations");
-              setShowAppModal(true);
-            }}
-          />
-          <SomaticMutations
-            onClick={() => {
-              setSelectedApp("Somatic Mutations");
-              setShowAppModal(true);
-            }}
-          /> */}
-          {/* {[undefined, undefined, undefined].map((name, i) => (
-          <App
-            key={`${name}-${i}`}
-            name={name}
-            onClick={() => {
-              setSelectedApp(name);
-              setShowAppModal(true);
-            }}
-          />
-        ))} */}
         </div>
       </>
     );
