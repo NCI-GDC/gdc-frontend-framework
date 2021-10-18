@@ -103,3 +103,17 @@ For example,
 `npm run test:int` will run integration tests.
 
 `npm run test:all` will run both unit and integration tests.
+
+## Production
+
+To build for production, run:
+
+```
+npm run build
+```
+
+Once this is done, start the prototype in production mode with:
+
+```
+npm run start:proto
+```

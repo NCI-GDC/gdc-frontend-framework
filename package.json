@@ -14,7 +14,9 @@
     "test": "npm run test --workspaces",
     "test:int": "npm run test:int --workspaces",
     "test:all": "npm run test:all --workspaces",
-    "dev": "lerna run --parallel dev"
+    "dev": "lerna run --parallel dev",
+    "build": "npm run build:clean --workspaces",
+    "start:proto": "npm run start -w portal-proto"
   },
   "repository": {
     "type": "git",

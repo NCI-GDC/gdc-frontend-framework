@@ -2,8 +2,10 @@
   "name": "portal-proto",
   "version": "1.0.0",
   "scripts": {
+    "clean": "rimraf .next",
     "dev": "next",
     "build": "next build",
+    "build:clean": "npm run clean && npm run build",
     "start": "next start",
     "type-check": "tsc",
     "test": "jest unit",
