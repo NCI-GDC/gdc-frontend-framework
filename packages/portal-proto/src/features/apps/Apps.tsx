@@ -16,25 +16,6 @@ export const OncoGrid: React.FC<Clickable> = (props: Clickable) => {
             objectFit="contain"
           />
         </div>
-        <div className="group-hover:hidden h-full">
-          <div className="flex flex-wrap">
-            <div className="flex flex-row w-full">
-              <div className="text-xs my-1 w-full content-center">
-                <button className="border border-black rounded p-1">Variant Analysis</button>
-              </div>
-            </div>
-            <div className="flex flex-row w-full">
-              <div className="text-xs my-1 w-full content-center">
-                <button className="border border-black rounded p-1">CNV</button>
-              </div>
-            </div>
-            <div className="flex flex-row w-full">
-              <div className="text-xs my-1 w-full content-center">
-                <button className="border border-black rounded p-1">SSM</button>
-              </div>
-            </div>
-          </div>
-        </div>
         <div className="w-full h-full hidden group-hover:block">
           Visualize the top most mutated cases and genes affected by high impact
           mutations in your cohort.
@@ -60,11 +41,6 @@ export const SingleCellRnaSeq: React.FC<Clickable> = (props: Clickable) => {
             objectFit="contain"
           />
         </div>
-        <div className="group-hover:hidden h-full">
-          <div className="text-xs my-5 ml-4">
-            <button className="border border-black rounded p-px">Gene Expression</button>
-          </div>
-        </div>
         <div className="w-full h-full hidden group-hover:block">
           Visualize patterns in single-cell gene expression in your cohort.
         </div>
@@ -88,11 +64,6 @@ export const GeneExpression: React.FC<Clickable> = (props: Clickable) => {
             layout="fill"
             objectFit="contain"
           />
-        </div>
-        <div className="group-hover:hidden h-full">
-          <div className="text-xs my-5">
-            <button className="border border-black rounded p-px">Gene Expression</button>
-          </div>
         </div>
         <div className="w-full h-full hidden group-hover:block">
           Visualize patterns in gene expression in your cohort.
@@ -118,20 +89,6 @@ export const ProteinPaint: React.FC<Clickable> = (props: Clickable) => {
             objectFit="contain"
           />
         </div>
-        <div className="group-hover:hidden h-full">
-          <div className="flex flex-wrap my-5 ml-1">
-            <div className="flex flex-row w-full">
-              <div className="text-xs my-1 w-full content-center">
-                <button className="border border-black rounded p-1">Variant Analysis</button>
-              </div>
-            </div>
-            <div className="flex flex-row w-full">
-              <div className="text-xs my-1 w-full content-center">
-                <button className="border border-black rounded p-1">SSM</button>
-              </div>
-            </div>
-          </div>
-        </div>
         <div className="w-full h-full hidden group-hover:block">
           Visualize mutations in protein-coding genes.
         </div>
@@ -156,11 +113,6 @@ export const SetOperations: React.FC<Clickable> = (props: Clickable) => {
             objectFit="contain"
           />
         </div>
-        <div className="group-hover:hidden h-full">
-          <div className="text-xs my-5">
-            <button className="border border-black rounded p-0.5">General Utility</button>
-          </div>
-        </div>
         <div className="w-full h-full hidden group-hover:block">
           Display Venn diagram and find intersection or union, etc. of your
           cohorts.
@@ -184,11 +136,6 @@ export const CohortComparison: React.FC<Clickable> = (props: Clickable) => {
             layout="fill"
             objectFit="contain"
           />
-        </div>
-        <div className="group-hover:hidden h-full">
-          <div className="text-xs my-5 ml-1">
-            <button className="border border-black rounded">Clinical Analysis</button>
-          </div>
         </div>
         <div className="w-full h-full hidden group-hover:block">
           Display the survival analysis of your case sets and compare
@@ -216,11 +163,6 @@ export const ClinicalDataAnalysis: React.FC<Clickable> = (props: Clickable) => {
             objectFit="contain"
           />
         </div>
-        <div className="group-hover:hidden h-full">
-          <div className="text-xs my-5 ml-1">
-            <button className="border border-black rounded">Clinical Analysis</button>
-          </div>
-        </div>
         <div className="w-full h-full hidden group-hover:block">
           Display basic statistical analyses for your cohort.
         </div>
@@ -244,11 +186,6 @@ export const SequenceReads: React.FC<Clickable> = (props: Clickable) => {
             layout="fill"
             objectFit="contain"
           />
-        </div>
-        <div className="group-hover:hidden h-full">
-          <div className="text-xs my-5">
-            <button className="border border-black rounded p-0.5">Sequence Analysis</button>
-          </div>
         </div>
         <div className="w-full h-full hidden group-hover:block">
           Visualize sequencing reads.
@@ -339,20 +276,6 @@ export const SomaticMutations: React.FC<Clickable> = (props: Clickable) => {
             layout="fill"
             objectFit="contain"
           />
-        </div>
-        <div className="group-hover:hidden h-full">
-          <div className="flex flex-wrap my-5 ml-1">
-            <div className="flex flex-row w-full">
-              <div className="text-xs my-1 w-full content-center">
-                <button className="border border-black rounded p-1">Variant Analysis</button>
-              </div>
-            </div>
-            <div className="flex flex-row w-full">
-              <div className="text-xs my-1 w-full content-center">
-                <button className="border border-black rounded p-1">SSM</button>
-              </div>
-            </div>
-          </div>
         </div>
         <div className="w-full h-full hidden group-hover:block">
           Visualize most frequently mutated genes and most frequent somatic mutations.
