@@ -8,4 +8,31 @@
 .has-tooltip:hover .tooltip {
     @apply visible z-50 }
 
+.flip-card {
+    transition: transform 1s;
+    transform-style: preserve-3d;
+}
+
+.flip-card-flipped {
+    transform: rotateY(180deg);
+}
+
+.card-face {
+
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+.card-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    -webkit-transform: rotateY(-180deg);
+    transform: rotateY(-180deg);
+}
+
 @tailwind utilities;

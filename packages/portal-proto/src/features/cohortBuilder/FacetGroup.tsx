@@ -4,18 +4,26 @@ import { useState } from "react";
 import Select from "react-select";
 import { get_facet_subcategories, get_facets } from "./dictionary";
 import { GeneTable, MutationTable} from "../genomic/Genomic";
+import MutationFacet from "./MutationFacet";
+import {BIOTYPE, VARIANT_CALLER, VEP_IMPACT, CONSEQUENCE_TYPE, SIFT_IMPACT} from "./gene_mutation_facets"
 
 interface FacetGroupProps {
   readonly facetNames: Array<Record<string, any>>;
+  onUpdateSummaryChart: (op:string, field:string) => void;
+
 }
 
-export const FacetGroup: React.FC<FacetGroupProps> = ({ facetNames }: FacetGroupProps) => {
+
+
+export const FacetGroup: React.FC<FacetGroupProps> = ({ facetNames, onUpdateSummaryChart }: FacetGroupProps) => {
 
   return ( <div className="flex flex-col border-2 h-screen/1.5 overflow-y-scroll">
     <div className="grid grid-cols-4 gap-4">
 
     {facetNames.map((x, index) => {
-      return (<Facet key={`${x.facet_filter}-${index}`} field={x.facet_filter} description={x.description} />);
+      return (<Facet key={`${x.facet_filter}-${index}`} field={x.facet_filter} facetName={x.name} description={x.description}
+                     onUpdateSummaryChart={onUpdateSummaryChart}
+      />);
     })
     }
     </div>
@@ -32,6 +40,7 @@ const molecularSubcategories = [
 
 const downloadableFacets = [];
 const downloadableSubcategories = [
+  "All"
 ];
 const visualizableFacets = [];
 const visualizableSubcategories = [
@@ -78,10 +87,11 @@ FacetTabWithSubmenu.tabsRole = 'Tab';
 
 interface CohortTabbedFacetsProps {
   readonly searchResults: [ Record<string, unknown> ];
+  onUpdateSummaryChart: (op:string, field:string) => void;
 }
 
-export const CohortTabbedFacets: React.FC<CohortTabbedFacetsProps> = ( {  searchResults } : CohortTabbedFacetsProps) => {
-   const [subcategories, setSubcategories] = useState({ 'Clinical': 'All' ,'Biospecimen': 'All', 'Visualizable Data': 'Somatic Mutations' });
+export const CohortTabbedFacets: React.FC<CohortTabbedFacetsProps> = ( {  searchResults, onUpdateSummaryChart } : CohortTabbedFacetsProps) => {
+   const [subcategories, setSubcategories] = useState({ 'Clinical': 'All' ,'Biospecimen': 'All', "Downloadable": "All" });
    const handleSubcategoryChanged = (category:string, subcategory:string) => {
      const state = { ...subcategories };
      state[category] = subcategory;
@@ -102,7 +112,7 @@ export const CohortTabbedFacets: React.FC<CohortTabbedFacetsProps> = ( {  search
    --- */
 
   return (
-    <div className="w-100">
+    <div className="w-100 px-10">
     <Tabs>
       <TabList>
         <FacetTabWithSubmenu category="Clinical"
@@ -111,20 +121,17 @@ export const CohortTabbedFacets: React.FC<CohortTabbedFacetsProps> = ( {  search
         <FacetTabWithSubmenu category="Biospecimen"
                              subCategories={get_facet_subcategories('Biospecimen')}
                              onSubcategoryChange={handleSubcategoryChanged}></FacetTabWithSubmenu>
-        <FacetTabWithSubmenu category="Visualizable Data"
-                             subCategories={visualizableSubcategories}
-                             onSubcategoryChange={handleSubcategoryChanged}></FacetTabWithSubmenu>
         <FacetTabWithSubmenu category="Downloadable Data"
                              subCategories={downloadableSubcategories}
                              onSubcategoryChange={handleSubcategoryChanged}></FacetTabWithSubmenu>
     </TabList>
-      <TabPanel><FacetGroup facetNames={get_facets('Clinical',subcategories['Clinical'])}/></TabPanel>
-      <TabPanel><FacetGroup facetNames={get_facets('Biospecimen',subcategories['Biospecimen'])}/></TabPanel>
-      <TabPanel>
-        {(subcategories['Visualizable Data'] === 'Somatic Mutations')  ?
-          <div className="flex flex-row" > <GeneTable width="0"/>  <MutationTable width="0"/> </div> : <div/> }
-      </TabPanel>
-      <TabPanel><FacetGroup facetNames={downloadableFacets}/></TabPanel>
+      <TabPanel><FacetGroup onUpdateSummaryChart={onUpdateSummaryChart}
+        facetNames={get_facets('Clinical',subcategories['Clinical']) }/></TabPanel>
+      <TabPanel><FacetGroup
+        onUpdateSummaryChart={onUpdateSummaryChart}
+        facetNames={get_facets('Biospecimen',subcategories['Biospecimen'])}/></TabPanel>
+      <TabPanel><FacetGroup onUpdateSummaryChart={onUpdateSummaryChart}
+                            facetNames={get_facets('Downloadable',subcategories['Downloadable'])}/></TabPanel>
     </Tabs>
     </div>
   )
