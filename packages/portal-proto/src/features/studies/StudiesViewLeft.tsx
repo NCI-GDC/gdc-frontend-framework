@@ -384,26 +384,35 @@ export const StudiesView: React.FC<StudiesViewProps> = ({
   );
 
   return (
-    <div className="flex flex-col gap-y-4">
-      <div className="flex flex-row gap-x-4">
-        <div className="w-72">{programFilter}</div>
-        <div className="w-72">{diseaseTypeFilter}</div>
-        <div className="w-72">{primarySiteFilter}</div>
-        <div className="w-72">{experimentalStrategyFilter}</div>
-        <div className="flex-grow" />
+    <div className="flex flex-row gap-y-4">
+      <div className="flex-initial bg-white border border-black p-2 pt-4 max-w-sm">
+        <div className="flex-grow">
+          {programFilter}
+        </div>
+        <div className="flex-grow">
+          {diseaseTypeFilter}
+        </div>
+        <div className="flex-grow">
+          {primarySiteFilter}
+        </div>
+        <div className="flex-grow">
+          {experimentalStrategyFilter}
+        </div>
       </div>
-      <div className="flex flex-col w-72 gap-y-4">
-        <Button>Selected Cohorts: None</Button>
-        <Button className="px-2 py-1 
-    border rounded
-    bg-nci-gray-lighter text-nci-gray" stylingOff={true}>Explore Selected Cohorts In...</Button>
-      </div>
-      <div className="flex flex-row gap-x-4">
-        <div className="w-40">{sortFilter}</div>
-        <div className="flex-grow"><Search /></div>
-      </div>
-      <div className="flex-grow">
-        <Studies projects={projects} onClickStudy={setCurrentStudy} />
+      <div className="flex-col">
+        <div className="flex-grow">
+          <Button>Selected Cohorts: None</Button>
+          <Button className="px-2 py-1 border rounded bg-nci-gray-lighter text-nci-gray float-right" stylingOff={true}>Explore Selected Cohorts In...</Button>
+        </div>
+
+        <div className="flex flex-row gap-x-4">
+          <div className="flex-grow"><Search /></div>
+          <div className="w-40">{sortFilter}</div>
+        </div>
+        
+        <div className="flex-grow">
+          <Studies projects={projects} onClickStudy={setCurrentStudy} />
+        </div>
       </div>
     </div>
   );
@@ -421,7 +430,7 @@ const Studies: React.FC<StudiesProps> = ({
   },
 }: StudiesProps) => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4">
       {projects?.map((project) => (
         <Study
           project={project}
