@@ -1,11 +1,12 @@
 import { NextPage } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import React, { PropsWithChildren, ReactNode, useState } from "react";
 import ReactModal from "react-modal";
 import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
 import { Select } from "../../../components/Select";
 import { CohortManager } from "../../../features/user-flow/many-pages/cohort";
+import SomanticMutationFilterFixedVersion from '../../../features/genomic/SomanticMutationFilter';
 import {
   GeneExpression,
   OncoGrid,
@@ -17,6 +18,10 @@ import {
   SequenceReads,
   SomaticMutations
 } from "../../../features/apps/Apps";
+import {
+  MdClose as CloseIcon,
+} from "react-icons/md";
+
 import { FileModal } from "../../../features/files/FileView";
 import { GdcFile } from "@gff/core";
 import { CaseModal } from "../../../features/cases/CaseView";
@@ -24,16 +29,23 @@ import { Case } from "../../../features/cases/CasesView";
 
 const AnalysisPage: NextPage = () => {
   const [showCohortBuilderModal, setShowCohortBuilderModal] = useState(false);
+  const [appsAsModal, setAppsAsModal] = useState(false);
 
   const [showAppModal, setShowAppModal] = useState(false);
   const [selectedApp, setSelectedApp] = useState("");
 
-  const options = [
+  const cohort_options = [
     { value: "cb-expand", label: "Cohort Builder Expand" },
     { value: "cb-modal", label: "Cohort Builder Modal" },
   ];
 
-  const [protoOption, setProtoOption] = useState(options[0]);
+  const app_options = [
+    { value: "app-expand", label: "Apps Expand" },
+    { value: "app-modal", label: "Apps Modal" },
+  ];
+
+  const [protoOption, setProtoOption] = useState(cohort_options[0]);
+  const [appProtoOption, setAppProtoOption] = useState(app_options[0]);
   const [isExpanded, setIsExpanded] = useState(false);
 
   // the next two state hooks are used for a single components. what's a good
@@ -58,19 +70,36 @@ const AnalysisPage: NextPage = () => {
   ];
 
   const Options = () => (
-    <Select
-      inputId="analysis-proto-options"
-      isMulti={false}
-      isSearchable={false}
-      value={protoOption}
-      options={options}
-      onChange={(v) => {
-        if (v.value != "cb-expand") {
-          setIsExpanded(false);
-        }
-        setProtoOption(v);
-      }}
-    />
+    <div className="flex flex-col mb-2 ">
+      <Select
+        inputId="analysis-proto-options"
+        isMulti={false}
+        isSearchable={false}
+        value={protoOption}
+        options={cohort_options}
+        onChange={(v) => {
+          if (v.value != "cb-expand") {
+            setIsExpanded(false);
+          }
+          setProtoOption(v);
+        }}
+      />
+      <Select
+        inputId="analysis-app-proto-options"
+        isMulti={false}
+        isSearchable={false}
+        value={appProtoOption}
+        options={app_options}
+        onChange={(v) => {
+          if (v.value != "app-expand") {
+            setAppsAsModal(true);
+          } else {
+            setAppsAsModal(false);
+          }
+          setAppProtoOption(v);
+        }}
+      />
+    </div>
   );
 
   const Apps = () => {
@@ -305,34 +334,58 @@ const AnalysisPage: NextPage = () => {
           })}
         </div>
       </>
-    );
-  };
+    )
+  }
+
+  interface ModalOrInlineProps {
+    readonly modal?: boolean
+  }
+
+  const ModalOrInline: React.FC<ModalOrInlineProps> = ({ children, modal = true }: PropsWithChildren<ModalOrInlineProps>) => {
+    return (
+      (modal === true) ?
+        <ReactModal isOpen={showAppModal}
+          onRequestClose={() => setShowAppModal(false)} >
+          {children}
+        </ReactModal> : <div>
+          {children}
+        </div>
+    )
+  }
 
   const AppModal = () => {
     return (
-      <ReactModal
-        isOpen={showAppModal}
-        onRequestClose={() => setShowAppModal(false)}
-      >
-        <div className="flex flex-col h-full">
-          <div className="flex-grow overflow-y-auto">
-            <Image
-              src="/user-flow/oncogrid-mock-up.png"
-              layout="responsive"
-              width="100%"
-              height="100%"
-            ></Image>
+      (selectedApp !== "") ?
+        <ModalOrInline modal={appsAsModal}>
+          <div className="flex flex-col border-nci-gray-light border-2 h-full">
+            <div className="w-full border-1 border-b-2 border-nci-blue-lighter" >
+              <button className="flex flex-row" onClick={() => {
+                setSelectedApp("")
+              }}><CloseIcon className="bg-nci-blue-lighter mr-2" size="1.5em" /> Analysis</button>
+            </div>
+            <div className="flex-grow overflow-y-auto">
+              {(selectedApp === "Somatic Mutations") ?
+                <SomanticMutationFilterFixedVersion />
+                :
+                <Image
+                  src="/user-flow/oncogrid-mock-up.png"
+                  layout="responsive"
+                  width="100%"
+                  height="100%"
+                ></Image>
+              }
+            </div>
           </div>
-        </div>
-      </ReactModal>
+        </ModalOrInline> : null
     );
   };
 
+  const empty = () => { return (<div></div>) }
   return (
     <UserFlowVariedPages
-      {...{ indexPath: "/user-flow/many-pages", headerElements, Options }}
+      {...{ indexPath: "/user-flow/many-pages", headerElements, empty }}
     >
-      <AppModal />
+
       <div className="flex flex-col p-4 gap-y-4">
         <div className="border p-4 border-gray-400 bg-white">
           <CohortManager
@@ -352,7 +405,10 @@ const AnalysisPage: NextPage = () => {
             }}
           />
         </div>
-        <Apps />
+        {(selectedApp) ?
+          <AppModal /> :
+          <Apps />
+        }
       </div>
       <FileModal
         isOpen={isFileModalOpen}

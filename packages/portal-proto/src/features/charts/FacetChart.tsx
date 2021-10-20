@@ -8,9 +8,12 @@ import {
 import { useEffect } from "react";
 import dynamic from 'next/dynamic'
 
+
 const BarChartWithNoSSR = dynamic(() => import('./BarChart'), {
   ssr: false
 })
+
+const maxValuesToDisplay =7;
 
 interface UseCaseFacetResponse {
   readonly data?: FacetBuckets;
@@ -48,6 +51,9 @@ interface FacetProps {
   readonly showXLabels?: boolean;
   readonly height?: number;
   readonly marginBottom?: number;
+  readonly showTitle?: boolean;
+  readonly maxBins?: number;
+  readonly orientation?: string;
 }
 
 // from https://stackoverflow.com/questions/33053310/remove-value-from-object-without-mutation
@@ -62,6 +68,7 @@ const processChartData = (facetData:Record<string, any>, field: string, maxBins 
     y: Object.values(data).slice(0, maxBins),
     tickvals: showXLabels ? xvals : [],
     ticktext: showXLabels ? xlabels : [],
+    label_text: Object.keys(data).slice(0, maxBins).map(x => processLabel(x, 100)),
     title: convertFieldToName(field),
     filename: `${field}.svg`,
     yAxisTitle: "# of Cases"
@@ -69,7 +76,7 @@ const processChartData = (facetData:Record<string, any>, field: string, maxBins 
   return results;
 }
 
-export const FacetChart: React.FC<FacetProps> = ({ field, showXLabels = true, height, marginBottom }: FacetProps) => {
+export const FacetChart: React.FC<FacetProps> = ({ field, showXLabels = true, height, marginBottom, showTitle = true, maxBins = maxValuesToDisplay, orientation='v'}: FacetProps) => {
   const { data, error, isUninitialized, isFetching, isError } =
     useCaseFacet(field);
 
@@ -85,15 +92,15 @@ export const FacetChart: React.FC<FacetProps> = ({ field, showXLabels = true, he
     return <div>Failed to fetch facet: {error}</div>;
   }
 
-  const maxValuesToDisplay =7;
+  const chart_data = processChartData(data, field, maxBins, showXLabels);
 
-  const chart_data = processChartData(data, field, maxValuesToDisplay, showXLabels);
-
-  return <div className="flex flex-col border-2 ">
-    <div className="flex items-center justify-between flex-wrap bg-gray-100 p-1.5">
-      {convertFieldToName(field)}
-    </div>
-    <BarChartWithNoSSR data={chart_data} height={height} marginBottom={marginBottom}></BarChartWithNoSSR>
+  return <div className="flex flex-col border-2 bg-white ">
+    {showTitle ?
+      <div className="flex items-center justify-between flex-wrap bg-gray-100 p-1.5">
+        {convertFieldToName(field)}
+      </div> : null
+    }
+    <BarChartWithNoSSR data={chart_data} height={height} marginBottom={marginBottom} orientation={orientation}></BarChartWithNoSSR>
   </div>;
 };
 

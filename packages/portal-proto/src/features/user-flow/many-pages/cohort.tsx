@@ -20,7 +20,8 @@ import ReactModal from "react-modal";
 import { Select } from "../../../components/Select";
 import { Case, ContextualCasesView } from "../../cases/CasesView";
 import { ContextualFilesView } from "../../files/FilesView";
-import { CohortGroup, SummaryCharts } from "../../cohortBuilder/CohortGroup";
+import { CohortGroup } from "../../cohortBuilder/CohortGroup";
+import { SummaryCharts } from "../../cohortBuilder/SummaryCharts";
 import { MetaSearch } from "../../cohortBuilder/MetaSearch";
 import { CohortTabbedFacets } from "../../cohortBuilder/FacetGroup";
 import { GdcFile } from "@gff/core";
@@ -81,7 +82,7 @@ export const CohortManager: React.FC<CohortManagerProps> = ({
       ],
       case_count: "179",
       file_count: "2,198"
-    }, 
+    },
     { name: 'All GDC Cases',
       facets : [  ],
       case_count: "84,609",
@@ -110,9 +111,6 @@ export const CohortManager: React.FC<CohortManagerProps> = ({
           />
         </div>
         <div className="flex flex-row items-center">
-          <Button className="mx-1 ">
-            <EditIcon size="1.5em" />
-          </Button>
           <Button className="mx-2 ">
             <SaveIcon size="1.5em" />
           </Button>
@@ -254,6 +252,23 @@ export const CohortBuilder: React.FC<CohortBuilderProps> = ({
   show = true,
   handleCaseSelected,
 }: CohortBuilderProps) => {
+
+  const [searchResults, setSearchResults] = useState([]);
+
+  const updateSummaryCharts = (op, field) => {
+    if (op === "add")
+      setSummaryFields([...summaryFields, field])
+    if (op === "remove")
+      setSummaryFields(summaryFields.filter((x) => x !== field))
+  }
+
+  const [summaryFields, setSummaryFields] = useState([
+    "primary_site",
+    "demographic.gender",
+    "disease_type",
+    "diagnoses.tissue_or_organ_of_origin"
+  ]);
+
   return (
     <div
       className={classNames("flex-col gap-y-4 overflow-y-auto", {
@@ -264,22 +279,10 @@ export const CohortBuilder: React.FC<CohortBuilderProps> = ({
       <div className="">
         <CohortGroup cohorts={cohort} simpleMode={true}></CohortGroup>
         <MetaSearch onChange={(r) => r}></MetaSearch>
-        <CohortTabbedFacets searchResults={[]}></CohortTabbedFacets>
+        <CohortTabbedFacets searchResults={[]}  onUpdateSummaryChart={updateSummaryCharts} ></CohortTabbedFacets>
       </div>
       <div className="pt-4">
-        <Tabs>
-          <TabList>
-            <Tab>Summary</Tab>
-            <Tab>Cases</Tab>
-          </TabList>
-
-          <TabPanel>
-            <SummaryCharts />
-          </TabPanel>
-          <TabPanel>
-            <Cases handleCaseSelected={handleCaseSelected} />
-          </TabPanel>
-        </Tabs>
+        <SummaryCharts fields={summaryFields} />
       </div>
     </div>
   );

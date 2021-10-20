@@ -1,25 +1,17 @@
 import GeneData from "./genes.json";
 import MutationData from "./mutations.json";
-import { PropsWithChildren } from "react";
 import { MdSearch, MdSort as SortIcon } from "react-icons/md";
 
 interface GeneProps {
   readonly data?: Array<Record<string, any>>;
   readonly width?: string;
+  readonly
 }
 
 
 export const GeneTable: React.FC<GeneProps> = ({ data = GeneData["MostFrequentGenes"], width="64" }: GeneProps) => {
   return (
     <div className={`border-2 border-nci-gray-lighter pt-2 mx-${width}`}>
-      <div className="flex flex-row justify-center">
-      <div className="relative p-2"><input type="text"
-                                       className="h-2 w-64 pr-8 pl-5 border-nci-gray-light rounded-full z-0 focus:shadow focus:outline-none"
-                                       placeholder={`Search Genes`} />
-        <div className="absolute top-3 right-3 h-4" ><MdSearch size="1.25em"/>
-        </div>
-      </div>
-      </div>
     <div className="overflow-y-auto h-96">
       <table
         className="table-fixed border-collapse border-nci-gray w-full"
@@ -54,14 +46,6 @@ export const GeneTable: React.FC<GeneProps> = ({ data = GeneData["MostFrequentGe
 export const MutationTable: React.FC<GeneProps> = ({ data = MutationData["MostFrequentMutation"], width = "64" }: GeneProps) => {
   return (
     <div className={`border-2 border-nci-gray-lighter pt-2 mx-${width}`}>
-      <div className="flex flex-row justify-center">
-        <div className="relative p-2"><input type="text"
-                                             className="h-2 w-64 pr-8 pl-5 border-nci-gray-light rounded-full z-0 focus:shadow focus:outline-none"
-                                             placeholder={`Search Mutations`} />
-          <div className="absolute top-3 right-3 h-4" ><MdSearch size="1.25em"/>
-          </div>
-        </div>
-      </div>
     <div className="overflow-y-auto h-96">
       <table
         className="table-fixed border-collapse border-nci-gray w-full"
