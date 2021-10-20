@@ -146,6 +146,16 @@
             "Not Applicable"
           ]
         },
+        "Project": {
+          "facet_filter": "project.project_id",
+          "facet_type": "string",
+          "description": "no description"
+        },
+        "Program": {
+          "facet_filter": "project.program.name",
+          "facet_type": "string",
+          "description": "no description"
+        },
         "Tissue or organ of origin": {
           "facet_filter": "diagnoses.tissue_or_organ_of_origin",
           "facet_type": "enum",
@@ -5743,6 +5753,18 @@
           "facet_filter": "demographic.year_of_death",
           "facet_type": "integer",
           "description": "Numeric value to represent the year of the death of an individual."
+        }
+      },
+      "Case" : {
+        "Project": {
+          "facet_filter": "project.project_id",
+          "facet_type": "string",
+          "description": "no description"
+        },
+        "Program": {
+          "facet_filter": "project.program.name",
+          "facet_type": "string",
+          "description": "no description"
         }
       },
       "Family History": {},
@@ -15062,6 +15084,52 @@
           "facet_filter": "case.updated_datetime",
           "facet_type": "oneOf",
           "description": "no description"
+        }
+      }
+    },
+    "Downloadable":  {
+      "All": {
+        "Data Type": {
+          "facet_filter": "files.data_type",
+          "facet_type": "enum",
+          "description": "",
+          "enum": [
+          ]
+        },
+        "Data Category": {
+          "facet_filter": "files.data_category",
+          "facet_type": "enum",
+          "description": "",
+          "enum": [
+          ]
+        },
+        "Experimental Strategy": {
+          "facet_filter": "files.experimental_strategy",
+          "facet_type": "enum",
+          "description": "",
+          "enum": [
+          ]
+        },
+        "Workflow Type": {
+          "facet_filter": "files.analysis.workflow_type",
+          "facet_type": "enum",
+          "description": "",
+          "enum": [
+          ]
+        },
+        "Platform": {
+          "facet_filter": "files.platform",
+          "facet_type": "enum",
+          "description": "",
+          "enum": [
+          ]
+        },
+        "Access": {
+          "facet_filter": "files.access",
+          "facet_type": "enum",
+          "description": "",
+          "enum": [
+          ]
         }
       }
     }
