@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import { useSpring, animated } from 'react-spring';
-import { useRef } from "react";
-import useMeasure from 'react-use-measure'
+import useMeasure from 'react-use-measure';
+// import { useRef } from "react";
 
 
 // interface BarProps {
@@ -30,22 +30,22 @@ const Bar: NextPage = () => {
     ];
 
     const mockData = [
-        100, 500, 1000, 600, 75, 150, 200, 800
-    ]
+        60, 200, 150, 300, 75, 120, 130, 20
+    ];
 
     const horizontalSpring = (data) => {
         return useSpring({
             to: { height: 50, width: data, borderRadius: 5 },
             from: { width: 50, height: 50, borderRadius: 5 }
         })
-    }
+    };
 
     const verticalSpring = (data) => {
         return useSpring({
+            from: { width: 50, height: 50, borderRadius: 5 },
             to: { height: data, width: 50, borderRadius: 5 },
-            from: { width: 50, height: 50, borderRadius: 5 }
         })
-    }
+    };
 
     const innerCircle = useSpring({
         to: { height: 150, width: 150, borderRadius: 75 },
@@ -61,16 +61,19 @@ const Bar: NextPage = () => {
         // todo
         to: { height: 50, width: 50 },
         from: { width: 50, height: 50 }
-    })
+    });
+    
 
     return (
         <>
             <h1 className="m-5 font-medium">Bars</h1>
+            <div className="flex flex-row">
             {mockData.map((element, i) => {
                 return (
-                    <animated.div className={`${colorList[i]} m-5`} ref={ref} style={horizontalSpring(element)}></animated.div>
+                    <animated.div className={`${colorList[i]} m-2 h-screen mt-auto`} ref={ref} style={verticalSpring(element)}></animated.div>
                 )
             })}
+            </div>
             <h1 className="m-5 font-medium">Rings</h1>
             <div className="flex flex-row">
                 {colorList.map((color, i) => {
