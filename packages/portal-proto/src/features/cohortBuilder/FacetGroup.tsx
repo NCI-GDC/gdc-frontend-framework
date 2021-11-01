@@ -98,19 +98,6 @@ export const CohortTabbedFacets: React.FC<CohortTabbedFacetsProps> = ( {  search
      setSubcategories(state);
   }
 
-
-  /** ----
-   if (searchResults.length > 0) {
-     // have search results select only those facets within the results
-     console.log(searchResults);
-     const clinicaCount = get_facet_subcategories("Clinical").reduce((result, key) => {
-       result[key] = 0;
-       return result;
-     }, {});
-
-   }
-   --- */
-
   return (
     <div className="w-100 px-10">
     <Tabs>
@@ -125,7 +112,7 @@ export const CohortTabbedFacets: React.FC<CohortTabbedFacetsProps> = ( {  search
                              subCategories={downloadableSubcategories}
                              onSubcategoryChange={handleSubcategoryChanged}></FacetTabWithSubmenu>
     </TabList>
-      <TabPanel><FacetGroup onUpdateSummaryChart={onUpdateSummaryChart}
+      <TabPanel ><FacetGroup onUpdateSummaryChart={onUpdateSummaryChart}
         facetNames={get_facets('Clinical',subcategories['Clinical']) }/></TabPanel>
       <TabPanel><FacetGroup
         onUpdateSummaryChart={onUpdateSummaryChart}
