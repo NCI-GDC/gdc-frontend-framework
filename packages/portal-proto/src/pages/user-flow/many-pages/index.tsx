@@ -2,8 +2,6 @@ import { NextPage } from "next";
 import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
 import Image from "next/image";
 import Link from "next/link";
-import counter from "../../api/counter";
-import { MdClear, MdSearch } from "react-icons/md";
 
 interface SummaryStatsItemProp {
   readonly title: string;
