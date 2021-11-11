@@ -244,7 +244,10 @@ module.exports = {
       },
       gridTemplateColumns: {
         '2flex1': '1fr auto',
-      }
+      },
+      fontFamily: {
+        heading: ["Montserrat", "sans-serif"]
+      },
     },
   },
   variants: {
