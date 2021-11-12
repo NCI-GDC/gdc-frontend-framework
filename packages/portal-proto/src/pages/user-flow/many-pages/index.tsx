@@ -78,14 +78,25 @@ const ActionButtonBar = () => {
 
 const IndexPage: NextPage = () => {
   const headerElements = [
-    <Link key="Studies" href="/user-flow/many-pages/studies">
-      Cohorts
+    <Link key="BuildCohort" href="/cohort-builder">
+      <div className="text-sm font-heading  hover:bg-nci-blue-lighter text-nci-gray-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md ">
+        <Image src={"/user-flow/icons/build.svg"} width={24} height={24}/> <span className="px-2"> Build Cohort </span>
+      </div>
+    </Link>,
+    <Link key="ViewCohort" href="/user-flow/many-pages/studies">
+      <div className="text-sm font-heading  hover:bg-nci-blue-lighter text-nci-gray-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md ">
+        <Image src={"/user-flow/icons/crowd-of-users.svg"} width={24} height={24}/> <span className="px-2"> View Cohorts </span>
+      </div>
     </Link>,
     <Link key="Analysis" href="/user-flow/many-pages/analysis">
-      Analysis
+      <div className="text-sm font-heading  hover:bg-nci-blue-lighter text-nci-gray-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md ">
+        <Image src={"/user-flow/icons/dna.svg"} width={24} height={24}/> <span className="px-2"> Analyze Data </span>
+      </div>
     </Link>,
     <Link key="Repository" href="/user-flow/many-pages/repository">
-      Repository
+      <div className="text-sm font-heading hover:bg-nci-blue-lighter text-nci-gray-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md ">
+      <Image src={"/user-flow/icons/database.svg"} width={24} height={24}/> <span className="px-2"> Download Data </span>
+      </div>
     </Link>,
   ];
 
@@ -99,7 +110,6 @@ const IndexPage: NextPage = () => {
             <div className="flex flex-col w-100">
               <div className="font-heading text-nci-gray-lightest text-md pt-5 pb-2">Harmonized Cancer Datasets</div>
               <div className="font-heading text-nci-gray-lightest text-2xl pb-5">Genomic Data Commons Data Portal</div>
-              <ActionButtonBar />
             </div>
             <div className="flex items-center w-100 pb-5">
               <div className="w-full"><input type="text"

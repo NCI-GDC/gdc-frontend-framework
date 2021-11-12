@@ -18,7 +18,7 @@
    inkscape:version="1.0.2 (e86c8708, 2021-01-15)"><metadata
    id="metadata38188"><rdf:RDF><cc:Work
        rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title /></cc:Work></rdf:RDF></metadata><defs
    id="defs38186"><filter
      style="color-interpolation-filters:sRGB;"
      inkscape:label="Greyscale"
@@ -279,7 +279,227 @@
        id="feColorMatrix39067" /><feColorMatrix
        id="feColorMatrix39069"
        values="0.21 0.72 0.072 0 0 0.21 0.72 0.072 0 0 0.21 0.72 0.072 0 0 0 0 0 1 0 "
-       in="fbSourceGraphic" /></filter></defs><sodipodi:namedview
+       in="fbSourceGraphic" /></filter><filter
+     style="color-interpolation-filters:sRGB;"
+     inkscape:label="Color Shift"
+     id="filter44732"><feColorMatrix
+       type="hueRotate"
+       values="338"
+       result="color1"
+       id="feColorMatrix44728" /><feColorMatrix
+       type="saturate"
+       values="0.856287"
+       result="color2"
+       id="feColorMatrix44730" /></filter><filter
+     style="color-interpolation-filters:sRGB;"
+     inkscape:label="Color Shift"
+     id="filter44738"><feColorMatrix
+       type="hueRotate"
+       values="338"
+       result="color1"
+       id="feColorMatrix44734" /><feColorMatrix
+       type="saturate"
+       values="0.856287"
+       result="color2"
+       id="feColorMatrix44736" /></filter><filter
+     style="color-interpolation-filters:sRGB;"
+     inkscape:label="Color Shift"
+     id="filter44744"><feColorMatrix
+       type="hueRotate"
+       values="338"
+       result="color1"
+       id="feColorMatrix44740" /><feColorMatrix
+       type="saturate"
+       values="0.856287"
+       result="color2"
+       id="feColorMatrix44742" /></filter><filter
+     style="color-interpolation-filters:sRGB;"
+     inkscape:label="Color Shift"
+     id="filter44750"><feColorMatrix
+       type="hueRotate"
+       values="338"
+       result="color1"
+       id="feColorMatrix44746" /><feColorMatrix
+       type="saturate"
+       values="0.856287"
+       result="color2"
+       id="feColorMatrix44748" /></filter><filter
+     style="color-interpolation-filters:sRGB;"
+     inkscape:label="Color Shift"
+     id="filter44756"><feColorMatrix
+       type="hueRotate"
+       values="338"
+       result="color1"
+       id="feColorMatrix44752" /><feColorMatrix
+       type="saturate"
+       values="0.856287"
+       result="color2"
+       id="feColorMatrix44754" /></filter><filter
+     style="color-interpolation-filters:sRGB;"
+     inkscape:label="Color Shift"
+     id="filter44762"><feColorMatrix
+       type="hueRotate"
+       values="338"
+       result="color1"
+       id="feColorMatrix44758" /><feColorMatrix
+       type="saturate"
+       values="0.856287"
+       result="color2"
+       id="feColorMatrix44760" /></filter><filter
+     style="color-interpolation-filters:sRGB;"
+     inkscape:label="Color Shift"
+     id="filter44768"><feColorMatrix
+       type="hueRotate"
+       values="338"
+       result="color1"
+       id="feColorMatrix44764" /><feColorMatrix
+       type="saturate"
+       values="0.856287"
+       result="color2"
+       id="feColorMatrix44766" /></filter><filter
+     style="color-interpolation-filters:sRGB;"
+     inkscape:label="Color Shift"
+     id="filter44774"><feColorMatrix
+       type="hueRotate"
+       values="338"
+       result="color1"
+       id="feColorMatrix44770" /><feColorMatrix
+       type="saturate"
+       values="0.856287"
+       result="color2"
+       id="feColorMatrix44772" /></filter><filter
+     style="color-interpolation-filters:sRGB;"
+     inkscape:label="Color Shift"
+     id="filter44780"><feColorMatrix
+       type="hueRotate"
+       values="338"
+       result="color1"
+       id="feColorMatrix44776" /><feColorMatrix
+       type="saturate"
+       values="0.856287"
+       result="color2"
+       id="feColorMatrix44778" /></filter><filter
+     style="color-interpolation-filters:sRGB;"
+     inkscape:label="Color Shift"
+     id="filter44786"><feColorMatrix
+       type="hueRotate"
+       values="338"
+       result="color1"
+       id="feColorMatrix44782" /><feColorMatrix
+       type="saturate"
+       values="0.856287"
+       result="color2"
+       id="feColorMatrix44784" /></filter><filter
+     style="color-interpolation-filters:sRGB;"
+     inkscape:label="Color Shift"
+     id="filter44792"><feColorMatrix
+       type="hueRotate"
+       values="338"
+       result="color1"
+       id="feColorMatrix44788" /><feColorMatrix
+       type="saturate"
+       values="0.856287"
+       result="color2"
+       id="feColorMatrix44790" /></filter><filter
+     style="color-interpolation-filters:sRGB;"
+     inkscape:label="Color Shift"
+     id="filter44798"><feColorMatrix
+       type="hueRotate"
+       values="338"
+       result="color1"
+       id="feColorMatrix44794" /><feColorMatrix
+       type="saturate"
+       values="0.856287"
+       result="color2"
+       id="feColorMatrix44796" /></filter><filter
+     style="color-interpolation-filters:sRGB;"
+     inkscape:label="Color Shift"
+     id="filter44804"><feColorMatrix
+       type="hueRotate"
+       values="338"
+       result="color1"
+       id="feColorMatrix44800" /><feColorMatrix
+       type="saturate"
+       values="0.856287"
+       result="color2"
+       id="feColorMatrix44802" /></filter><filter
+     style="color-interpolation-filters:sRGB;"
+     inkscape:label="Color Shift"
+     id="filter44810"><feColorMatrix
+       type="hueRotate"
+       values="338"
+       result="color1"
+       id="feColorMatrix44806" /><feColorMatrix
+       type="saturate"
+       values="0.856287"
+       result="color2"
+       id="feColorMatrix44808" /></filter><filter
+     style="color-interpolation-filters:sRGB;"
+     inkscape:label="Color Shift"
+     id="filter44816"><feColorMatrix
+       type="hueRotate"
+       values="338"
+       result="color1"
+       id="feColorMatrix44812" /><feColorMatrix
+       type="saturate"
+       values="0.856287"
+       result="color2"
+       id="feColorMatrix44814" /></filter><filter
+     style="color-interpolation-filters:sRGB;"
+     inkscape:label="Color Shift"
+     id="filter44822"><feColorMatrix
+       type="hueRotate"
+       values="338"
+       result="color1"
+       id="feColorMatrix44818" /><feColorMatrix
+       type="saturate"
+       values="0.856287"
+       result="color2"
+       id="feColorMatrix44820" /></filter><filter
+     style="color-interpolation-filters:sRGB;"
+     inkscape:label="Color Shift"
+     id="filter44828"><feColorMatrix
+       type="hueRotate"
+       values="338"
+       result="color1"
+       id="feColorMatrix44824" /><feColorMatrix
+       type="saturate"
+       values="0.856287"
+       result="color2"
+       id="feColorMatrix44826" /></filter><filter
+     style="color-interpolation-filters:sRGB;"
+     inkscape:label="Color Shift"
+     id="filter44834"><feColorMatrix
+       type="hueRotate"
+       values="338"
+       result="color1"
+       id="feColorMatrix44830" /><feColorMatrix
+       type="saturate"
+       values="0.856287"
+       result="color2"
+       id="feColorMatrix44832" /></filter><filter
+     style="color-interpolation-filters:sRGB;"
+     inkscape:label="Color Shift"
+     id="filter44840"><feColorMatrix
+       type="hueRotate"
+       values="338"
+       result="color1"
+       id="feColorMatrix44836" /><feColorMatrix
+       type="saturate"
+       values="0.856287"
+       result="color2"
+       id="feColorMatrix44838" /></filter><filter
+     style="color-interpolation-filters:sRGB;"
+     inkscape:label="Color Shift"
+     id="filter44846"><feColorMatrix
+       type="hueRotate"
+       values="338"
+       result="color1"
+       id="feColorMatrix44842" /><feColorMatrix
+       type="saturate"
+       values="0.856287"
+       result="color2"
+       id="feColorMatrix44844" /></filter></defs><sodipodi:namedview
    pagecolor="#ffffff"
    bordercolor="#666666"
    borderopacity="1"
@@ -293,19 +513,20 @@
    id="namedview38184"
    showgrid="false"
    inkscape:zoom="13.867925"
-   inkscape:cx="28.8"
+   inkscape:cx="14.919048"
    inkscape:cy="37.568708"
-   inkscape:window-x="51"
-   inkscape:window-y="25"
+   inkscape:window-x="-17"
+   inkscape:window-y="143"
    inkscape:window-maximized="0"
-   inkscape:current-layer="Capa_1" />
+   inkscape:current-layer="Capa_1"
+   inkscape:document-rotation="0" />
 <path
-   style="fill:#424A60;filter:url(#filter38989)"
+   style="fill:#424A60;filter:url(#filter44846)"
    d="M50.455,8L50.455,8C49.724,3.538,39.281,0,26.5,0S3.276,3.538,2.545,8l0,0H2.5v0.5V20v0.5V21v11v0.5  V33v12h0.045c0.731,4.461,11.175,8,23.955,8s23.224-3.539,23.955-8H50.5V33v-0.5V32V21v-0.5V20V8.5V8H50.455z"
    id="path38125" />
 <g
    id="g38133"
-   style="filter:url(#filter38985)">
+   style="filter:url(#filter44840)">
 	<path
    style="fill:#424A60;"
    d="M26.5,41c-13.255,0-24-3.806-24-8.5V45h0.045c0.731,4.461,11.175,8,23.955,8s23.224-3.539,23.955-8   H50.5V32.5C50.5,37.194,39.755,41,26.5,41z"
@@ -321,7 +542,7 @@
 </g>
 <g
    id="g38141"
-   style="filter:url(#filter38981)">
+   style="filter:url(#filter44834)">
 	<path
    style="fill:#556080;"
    d="M26.5,29c-13.255,0-24-3.806-24-8.5V33h0.045c0.731,4.461,11.175,8,23.955,8s23.224-3.539,23.955-8   H50.5V20.5C50.5,25.194,39.755,29,26.5,29z"
@@ -336,7 +557,7 @@
    id="path38139" />
 </g>
 <ellipse
-   style="fill:#7FABDA;filter:url(#filter38977)"
+   style="fill:#7FABDA;filter:url(#filter44828)"
    cx="26.5"
    cy="8.5"
    rx="24"
@@ -344,7 +565,7 @@
    id="ellipse38143" />
 <g
    id="g38151"
-   style="filter:url(#filter38973)">
+   style="filter:url(#filter44822)">
 	<path
    style="fill:#7383BF;"
    d="M26.5,17c-13.255,0-24-3.806-24-8.5V21h0.045c0.731,4.461,11.175,8,23.955,8s23.224-3.539,23.955-8   H50.5V8.5C50.5,13.194,39.755,17,26.5,17z"
@@ -360,62 +581,62 @@
 </g>
 <g
    id="g38153"
-   style="filter:url(#filter38969)">
+   style="filter:url(#filter44816)">
 </g>
 <g
    id="g38155"
-   style="filter:url(#filter38965)">
+   style="filter:url(#filter44810)">
 </g>
 <g
    id="g38157"
-   style="filter:url(#filter38961)">
+   style="filter:url(#filter44804)">
 </g>
 <g
    id="g38159"
-   style="filter:url(#filter38957)">
+   style="filter:url(#filter44798)">
 </g>
 <g
    id="g38161"
-   style="filter:url(#filter38953)">
+   style="filter:url(#filter44792)">
 </g>
 <g
    id="g38163"
-   style="filter:url(#filter38949)">
+   style="filter:url(#filter44786)">
 </g>
 <g
    id="g38165"
-   style="filter:url(#filter38945)">
+   style="filter:url(#filter44780)">
 </g>
 <g
    id="g38167"
-   style="filter:url(#filter38941)">
+   style="filter:url(#filter44774)">
 </g>
 <g
    id="g38169"
-   style="filter:url(#filter38937)">
+   style="filter:url(#filter44768)">
 </g>
 <g
    id="g38171"
-   style="filter:url(#filter38933)">
+   style="filter:url(#filter44762)">
 </g>
 <g
    id="g38173"
-   style="filter:url(#filter38929)">
+   style="filter:url(#filter44756)">
 </g>
 <g
    id="g38175"
-   style="filter:url(#filter38925)">
+   style="filter:url(#filter44750)">
 </g>
 <g
    id="g38177"
-   style="filter:url(#filter38921)">
+   style="filter:url(#filter44744)">
 </g>
 <g
    id="g38179"
-   style="filter:url(#filter38917)">
+   style="filter:url(#filter44738)">
 </g>
 <g
    id="g38181"
-   style="filter:url(#filter38913)">
+   style="filter:url(#filter44732)">
 </g>
 </svg>

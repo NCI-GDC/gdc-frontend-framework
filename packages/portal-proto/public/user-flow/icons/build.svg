@@ -23,7 +23,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -58,16 +58,17 @@
      id="namedview34721"
      showgrid="false"
      inkscape:zoom="1.44"
-     inkscape:cx="81.052783"
+     inkscape:cx="25.180774"
      inkscape:cy="132.62222"
-     inkscape:window-x="153"
-     inkscape:window-y="108"
+     inkscape:window-x="189"
+     inkscape:window-y="158"
      inkscape:window-maximized="0"
      inkscape:current-layer="Layer_5"
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
-     fit-margin-bottom="0" />
+     fit-margin-bottom="0"
+     inkscape:document-rotation="0" />
   <circle
      style="opacity:0.998;fill:#918f8e;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.888963;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
      id="path36108"
@@ -79,11 +80,11 @@
      cy="2.8156598"
      r="1.2088749"
      id="circle35298"
-     style="fill:#3e3327;fill-opacity:1;stroke:#000000;stroke-width:0.125;stroke-opacity:1" />
+     style="fill:#6dbcd7;fill-opacity:1;stroke:#000000;stroke-width:0.125;stroke-opacity:1" />
   <path
      d="m 26.714214,4.106909 h -1.02575 c -0.8535,0 -1.547875,0.694625 -1.547875,1.54775 v 1.254625 l 0.0033,0.01962 0.08625,0.027 c 0.8145,0.254375 1.522125,0.339375 2.104375,0.339375 1.137625,0 1.796872,-0.324375 1.837622,-0.345 l 0.0807,-0.041 h 0.008 V 5.654654 c 3.8e-4,-0.853375 -0.693872,-1.54775 -1.547122,-1.54775 z"
      id="path35306"
-     style="fill:#3e3327;fill-opacity:1;stroke:#000000;stroke-width:0.125;stroke-opacity:1" />
+     style="fill:#6dbcd7;fill-opacity:1;stroke:#000000;stroke-width:0.125;stroke-opacity:1" />
   <g
      id="g36113-1"
      transform="translate(-94.154864,-6.1340271)"
@@ -99,11 +100,11 @@
        cy="24.748299"
        r="1.2088749"
        id="circle35298-1"
-       style="fill:#3e3327;fill-opacity:1;stroke:#000000;stroke-width:0.125;stroke-opacity:1" />
+       style="fill:#6dbcd7;fill-opacity:1;stroke:#000000;stroke-width:0.125;stroke-opacity:1" />
     <path
        d="m 98.733658,26.039548 h -1.02575 c -0.8535,0 -1.547875,0.694625 -1.547875,1.54775 v 1.254625 l 0.0033,0.01962 0.08625,0.027 c 0.8145,0.254375 1.522125,0.339375 2.104375,0.339375 1.137625,0 1.796872,-0.324375 1.837622,-0.345 l 0.0807,-0.041 h 0.008 v -1.254625 c 3.8e-4,-0.853375 -0.693872,-1.54775 -1.547122,-1.54775 z"
        id="path35306-6"
-       style="fill:#3e3327;fill-opacity:1;stroke:#000000;stroke-width:0.125;stroke-opacity:1" />
+       style="fill:#6dbcd7;fill-opacity:1;stroke:#000000;stroke-width:0.125;stroke-opacity:1" />
   </g>
   <circle
      style="opacity:0.998;fill:#918f8e;fill-rule:evenodd;stroke:#000000;stroke-width:1.02587;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;fill-opacity:1"
@@ -114,13 +115,13 @@
   <circle
      cx="17.510139"
      cy="14.113482"
-     r="2.1089566"
      id="circle35298-1-8"
-     style="fill:#3e3327;stroke-width:0.21807;stroke:#000000;stroke-opacity:1;fill-opacity:1" />
+     style="fill:#6dbcd7;fill-opacity:1;stroke:#000000;stroke-width:0.21807;stroke-opacity:1"
+     r="2.1089566" />
   <path
      d="m 18.404658,16.366147 h -1.789484 c -1.488984,0 -2.700364,1.211816 -2.700364,2.700145 v 2.18877 l 0.0058,0.03423 0.150469,0.0471 c 1.420945,0.443773 2.655441,0.59206 3.671211,0.59206 1.984657,0 3.134754,-0.565892 3.205845,-0.601873 l 0.140786,-0.07153 h 0.01396 v -2.188771 c 6.63e-4,-1.488765 -1.210503,-2.700145 -2.69905,-2.700145 z"
      id="path35306-6-6"
-     style="fill:#3e3327;stroke-width:0.21807;stroke:#000000;stroke-opacity:1;fill-opacity:1" />
+     style="fill:#6dbcd7;stroke-width:0.21807;stroke:#000000;stroke-opacity:1;fill-opacity:1" />
   <circle
      style="opacity:0.998;fill:#918f8e;fill-rule:evenodd;stroke:#000000;stroke-width:0.663375;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;fill-opacity:1"
      id="path36184"
@@ -137,7 +138,7 @@
      transform="translate(-65.782562,-16.476333)"
      style="fill:#918f8e;fill-opacity:1;stroke:#000000;stroke-opacity:1">
     <circle
-       style="opacity:0.998;fill:#918f8e;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.663375;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="opacity:0.998;fill:#6dbcd7;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.663375;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path36184-5"
        cx="77.734375"
        cy="19.921875"
@@ -176,7 +177,7 @@
      id="path36186-1-2"
      sodipodi:nodetypes="cc" />
   <circle
-     style="opacity:0.998;fill:#918f8e;fill-rule:evenodd;stroke:#000000;stroke-width:0.663375;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;fill-opacity:1"
+     style="opacity:0.998;fill:#6dbcd7;fill-rule:evenodd;stroke:#000000;stroke-width:0.663375;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;fill-opacity:1"
      id="path36184-17"
      cx="-16.031027"
      cy="-30.436794"
@@ -192,7 +193,7 @@
      transform="rotate(151.3644,52.394593,15.580205)"
      style="fill:#918f8e;fill-opacity:1;stroke:#000000;stroke-opacity:1">
     <circle
-       style="opacity:0.998;fill:#918f8e;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.663375;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="opacity:0.998;fill:#6dbcd7;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.663375;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path36184-5-7"
        cx="77.734375"
        cy="19.921875"
@@ -204,7 +205,7 @@
        sodipodi:nodetypes="cc" />
   </g>
   <circle
-     style="opacity:0.998;fill:#918f8e;fill-rule:evenodd;stroke:#000000;stroke-width:0.663375;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;fill-opacity:1"
+     style="opacity:0.998;fill:#6dbcd7;fill-rule:evenodd;stroke:#000000;stroke-width:0.663375;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;fill-opacity:1"
      id="path36184-17-1"
      cx="-3.449019"
      cy="-33.562309"
