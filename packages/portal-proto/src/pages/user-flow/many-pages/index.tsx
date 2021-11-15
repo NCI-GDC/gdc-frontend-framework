@@ -52,25 +52,25 @@ const ActionButtonBar = () => {
       <button
         className="text-sm bg-nci-yellow-lighter hover:bg-nci-yellow-lightest text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex flex-nowrap items-center shadow-md bg-opacity-80">
         <Image src={"/user-flow/icons/build.svg"} width={32} height={32}/>
-        <span className="px-2 whitespace-nowrap">Build Cohort</span>
+        <span className="px-2 whitespace-nowrap">Build</span>
       </button>
       </Link>
       <Link key="Studies" href="/user-flow/many-pages/studies">
       <button
         className="bg-nci-orange-lighter hover:bg-nci-orange-lightest hover:bg-nci-yellow-lightest text-nci-gray-darkest  font-bold  mx-4 p-2 rounded inline-flex items-center shadow-md bg-opacity-80">
-        <Image src={"/user-flow/icons/crowd-of-users.svg"} width={32} height={32}/> <span className="px-2"> View Cohort </span>
+        <Image src={"/user-flow/icons/crowd-of-users.svg"} width={32} height={32}/> <span className="px-2"> View </span>
       </button>
       </Link>
       <Link key="Analysis" href="/user-flow/many-pages/analysis">
       <button
         className="bg-nci-purple-lighter hover:bg-nci-purple-lightest text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md bg-opacity-80">
-        <Image src={"/user-flow/icons/dna.svg"} width={32} height={32}/> <span className="px-2"> Analyze Data </span>
+        <Image src={"/user-flow/icons/dna.svg"} width={32} height={32}/> <span className="px-2"> Analyze </span>
       </button>
       </Link>
       <Link key="Repository" href="/user-flow/many-pages/repository">
       <button
         className="bg-nci-red-lighter hover:bg-nci-red-lightest text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md bg-opacity-80">
-        <Image src={"/user-flow/icons/database.svg"} width={32} height={32}/> <span className="px-2"> Download Data </span>
+        <Image src={"/user-flow/icons/database.svg"} width={32} height={32}/> <span className="px-2"> Download </span>
       </button>
       </Link>
     </div>
@@ -88,6 +88,7 @@ const IndexPage: NextPage = () => {
             <div className="flex flex-col w-100">
               <div className="font-heading text-nci-gray-lightest text-md pt-5 pb-2">Harmonized Cancer Datasets</div>
               <div className="font-heading text-nci-gray-lightest text-2xl pb-5">Genomic Data Commons Data Portal</div>
+              <ActionButtonBar ></ActionButtonBar>
             </div>
             <div className="flex items-center w-100 pb-5">
               <div className="w-full"><input type="text"
