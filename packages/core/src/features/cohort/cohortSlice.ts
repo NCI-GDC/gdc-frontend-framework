@@ -3,9 +3,10 @@ import { CoreState } from "../../store";
 
 export interface CohortState {
   readonly currentCohort?: string;
+  readonly filters:string[];
 }
 
-const initialState: CohortState = {};
+const initialState: CohortState = { filters: []};
 
 const slice = createSlice({
   name: "cohort",
@@ -17,13 +18,22 @@ const slice = createSlice({
     clearCurrentCohort: (state) => {
       state.currentCohort = undefined;
     },
+    addFilter: (state, action: PayloadAction<string>) => {
+      state.filters = state.filters.concat(action.payload)
+    },
+    clearFilters: (state) => {
+      state.filters = [];
+    },
   },
   extraReducers: {},
 });
 
 export const cohortReducer = slice.reducer;
 
-export const { setCurrentCohort, clearCurrentCohort } = slice.actions;
+export const { setCurrentCohort, clearCurrentCohort, addFilter, clearFilters } = slice.actions;
 
 export const selectCurrentCohort = (state: CoreState): string | undefined =>
   state.cohort.currentCohort;
+
+export const selectCurrentCohortFilters = (state: CoreState): string[]  =>
+  state.cohort.filters;
