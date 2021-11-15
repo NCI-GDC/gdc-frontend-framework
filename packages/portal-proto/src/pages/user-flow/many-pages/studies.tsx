@@ -9,21 +9,12 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import ReactModal from "react-modal";
 import { ContextualStudiesView } from "../../../features/studies/StudiesView";
+import { headerElements } from "./navigation-utils";
 
 const StudiesPage: NextPage = () => {
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState("");
-
-  const headerElements = [
-    "Cohorts",
-    <Link key="Analysis" href="/user-flow/many-pages/analysis">
-      Analysis
-    </Link>,
-    <Link key="Repository" href="/user-flow/many-pages/repository">
-      Repository
-    </Link>,
-  ];
 
   const SingleStudyModal = () => {
     return (

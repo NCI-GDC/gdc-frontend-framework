@@ -9,6 +9,7 @@ import { FilesView } from "../../../features/files/FilesView";
 import { FileModal } from "../../../features/files/FileView";
 import { CaseModal } from "../../../features/cases/CaseView";
 import { Case } from "../../../features/cases/CasesView";
+import { headerElements } from "./navigation-utils";
 
 const RepositoryPage: NextPage = () => {
   const { data } = useFiles();
@@ -44,16 +45,6 @@ const RepositoryPage: NextPage = () => {
       }}
     />
   );
-
-  const headerElements = [
-    <Link key="Studies" href="/user-flow/many-pages/studies">
-      Cohorts
-    </Link>,
-    <Link key="Analysis" href="/user-flow/many-pages/analysis">
-      Analysis
-    </Link>,
-    "Repository",
-  ];
 
   return (
     <UserFlowVariedPages
