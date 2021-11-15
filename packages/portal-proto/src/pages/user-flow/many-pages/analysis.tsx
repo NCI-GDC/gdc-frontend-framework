@@ -7,6 +7,7 @@ import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPage
 import { Select } from "../../../components/Select";
 import { CohortManager } from "../../../features/user-flow/many-pages/cohort";
 import SomanticMutationFilterFixedVersion from '../../../features/genomic/SomanticMutationFilter';
+import { headerElements } from "./navigation-utils";
 import {
   GeneExpression,
   OncoGrid,
@@ -58,16 +59,6 @@ const AnalysisPage: NextPage = () => {
 
   const [isCaseModalOpen, setCaseModalOpen] = useState(false);
   const [currentCase, setCurrentCase] = useState(undefined as Case);
-
-  const headerElements = [
-    <Link key="Studies" href="/user-flow/many-pages/studies">
-      Cohorts
-    </Link>,
-    "Analysis",
-    <Link key="Repository" href="/user-flow/many-pages/repository">
-      Repository
-    </Link>,
-  ];
 
   const Options = () => (
     <div className="flex flex-col mb-2 ">

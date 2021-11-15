@@ -1,6 +1,7 @@
 import { NextPage } from "next";
 import { UserFlowVariedPages } from "../features/layout/UserFlowVariedPages";
 import FullCohortBuilder from "../features/cohortBuilder/CohortBuilder";
+import { headerElements } from "./user-flow/many-pages/navigation-utils";
 
 const COHORTS = [
   { name: 'New Custom Cohort',
@@ -37,7 +38,7 @@ const COHORTS = [
 
 const CohortBuilder: NextPage = () => {
   return (
-    <UserFlowVariedPages headerElements={[]}>
+    <UserFlowVariedPages headerElements={headerElements}>
       <FullCohortBuilder cohorts={COHORTS}/>
     </UserFlowVariedPages>
   );
