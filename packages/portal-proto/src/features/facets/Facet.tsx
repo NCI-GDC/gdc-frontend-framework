@@ -1,10 +1,13 @@
 import {useRef} from "react";
 import {
   FacetBuckets,
+  EnumFilter,
   selectCasesFacetByField,
   fetchFacetByName,
   useCoreSelector,
   useCoreDispatch,
+  selectCurrentCohortFiltersByName,
+  addCohortFilter,
 } from "@gff/core";
 
 import { PropsWithChildren, useEffect, useState } from "react";
@@ -17,6 +20,7 @@ import {
 
 } from "react-icons/md";
 import { FacetChart } from "../charts/FacetChart";
+
 
 interface UseCaseFacetResponse {
   readonly data?: FacetBuckets;
@@ -48,6 +52,17 @@ const useCaseFacet = (field: string): UseCaseFacetResponse => {
     isError: facet?.status === "rejected",
   };
 };
+
+interface UseCohortFacetFilterResponse {
+  readonly selected:Record<string, string>;
+}
+
+const useCohortFacetFilter = (field : string) : Record<string, string> => {
+  const enumFilters: EnumFilter  = useCoreSelector((state) =>
+    selectCurrentCohortFiltersByName(state, field) as EnumFilter,
+  );
+  return enumFilters ?  enumFilters.fields.reduce((a, v) => ({ ...a, [v]: v}), {})  : { } ;
+}
 
 interface FacetProps {
   readonly field: string;
@@ -101,9 +116,17 @@ export const Facet: React.FC<FacetProps> = ({ field, description, onUpdateSummar
   const [isSearching, setIsSearching] = useState(false);
   const [isSortedByCases, setIsSortedByCases] = useState(false);
   const [isFacetView, setIsFacetView] = useState(true);
+  const [selectedEnums, setSelectedEnums] = useState( useCohortFacetFilter(field) )
 
   const { data, error, isUninitialized, isFetching, isError } =
     useCaseFacet(field);
+
+  const coreDispatch = useCoreDispatch();
+
+  useEffect(() => {
+    coreDispatch(addCohortFilter({ op:"in", field: field, values: Object.keys(selectedEnums) }))
+  }, [selectedEnums] )
+
 
   if (isUninitialized) {
     return <div>Initializing facet...</div>;
@@ -117,11 +140,20 @@ export const Facet: React.FC<FacetProps> = ({ field, description, onUpdateSummar
     return <div>Failed to fetch facet: {error}</div>;
   }
 
+
   const maxValuesToDisplay = 6;
   const total = Object.entries(data).filter(data => data[0] != "_missing" ).length;
 
   const handleChange = (e) => {
     const { value, checked } = e.target;
+
+    if (checked) {
+      const updated = {  ...selectedEnums, [value] : value }
+      setSelectedEnums(updated);
+    } else {
+      const { [value]: _, ...updated} = selectedEnums;
+      setSelectedEnums(updated);
+    }
   };
 
   const toggleSearch = () => {
@@ -189,7 +221,7 @@ export const Facet: React.FC<FacetProps> = ({ field, description, onUpdateSummar
                   return (
                     <div key={`${field}-${value}`} className="flex flex-row gap-x-1 px-2">
                       <div className="flex-none">
-                        <input type="checkbox" value={`${field}:${value}`} onChange={handleChange} />
+                        <input type="checkbox" value={value} onChange={handleChange} checked={  value in selectedEnums } />
                       </div>
                       <div className="flex-grow truncate ...">{value}</div>
                       <div className="flex-none text-right w-14">{count.toLocaleString()}</div>
