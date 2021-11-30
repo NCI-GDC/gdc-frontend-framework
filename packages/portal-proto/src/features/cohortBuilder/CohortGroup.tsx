@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CollapsibleContainer } from "../../components/CollapsibleContainer";
 import { Button } from "../layout/UserFlowVariedPages";
 import Select from "react-select";
@@ -12,6 +12,18 @@ import {
   MdArrowDropDown as DropDownIcon,
 } from "react-icons/md";
 import { nanoid } from "@reduxjs/toolkit";
+import {
+  useCoreDispatch,
+  useCoreSelector,
+  selectCurrentCohortFilters,
+  handleGqlOperation,
+  FilterSet,
+  CohortFilter,
+  CohortFilterHandler,
+  EnumFilter,
+  RangeFilter, removeCohortFilter,
+} from "@gff/core";
+import { convertFieldToName } from "../facets/utils";
 
 const CohortGroupSelect: React.FC<unknown> = () => {
 
@@ -119,18 +131,71 @@ const CohortFacetElement: React.FC<FacetElementProp> = ({ filter }: FacetElement
     { value: "between", label: "between" },
   ];
 
-  const customStyles = {
-    control: (base, state) => ({
-      ...base,
-      background: "#6a9dc1",
-      // match with the menu
-    }),
+  return (
+    <div className="m-1 px-2 rounded-full bg-nci-blue-lighter text-black border-nci-blue-lighter border-2">
+      <div key={nanoid()} className="flex flex-row items-center flex-grow truncate ... ">
+        <ClearIcon className="pr-1" />{name} is <span className="px-1 underline">{op}</span> {value}<DropDownIcon />
+      </div>
+    </div>
+  );
+};
+
+interface EnumFilterProps {
+  readonly filter: EnumFilter;
+}
+
+const CohortEnumFilterElement: React.FC<EnumFilterProps> = ({ filter }: EnumFilterProps) => {
+  const [groupType, setGroupTop] = useState(filter.op);
+
+  const handleChange = (event) => {
+    setGroupTop(event.target.value);
   };
+
+  const menu_items = [
+    { value: "any_of", label: "any of" },
+    { value: "all_of", label: "all of" },
+    { value: "none_of", label: "none of" },
+  ];
+
+  const coreDispatch = useCoreDispatch();
+
+  const handleRemoveFilter = () => {
+    coreDispatch(removeCohortFilter(filter.field));
+  };
+
+  return (
+    <div className="m-1 px-2 font- rounded-xl bg-nci-blue-lightest text-nci-gray-darkest border-nci-gray-light border-2">
+      <div key={nanoid()} className="flex flex-row items-center">
+        {convertFieldToName(filter.field)} is <span className="px-1 underline">{"any of"}</span>
+        <div className="flex truncate ... max-w-sm px-2 border-l-2 border-nci-gray-light ">{filter.values.join(",")}</div>
+        <DropDownIcon size="1.5em" />
+        <Button stylingOff={true}><ClearIcon onClick={handleRemoveFilter} size="1.5em"
+                                             className="pl-1 border-l-2 border-nci-gray-light " /></Button>
+      </div>
+    </div>
+  );
+};
+
+interface RangeFilterProps {
+  readonly filter: RangeFilter;
+}
+
+const CohortRangeFilterElement: React.FC<RangeFilterProps> = ({ filter }: RangeFilterProps) => {
+  const [groupType, setGroupTop] = useState(filter.op);
+
+  const handleChange = (event) => {
+    setGroupTop(event.target.value);
+  };
+
+  const menu_items = [
+    { value: "between", label: "between" },
+  ];
 
   return (
     <div className="m-1 px-2 rounded-full bg-nci-blue-lighter text-black border-nci-blue-lighter border-2">
       <div className="flex flex-row items-center flex-grow truncate ... ">
-        <ClearIcon className="pr-1" />{name} is <span className="px-1 underline">{op}</span> {value}<DropDownIcon />
+        <ClearIcon className="pr-1" />{filter.field} <span className="px-1 underline">{filter.op}</span>
+        {filter.from} and {filter.to}<DropDownIcon />
       </div>
     </div>
   );
@@ -145,12 +210,32 @@ export interface CohortGroupProps {
   readonly simpleMode?: boolean;
 }
 
+const useCohortFacetFilters = (): FilterSet => {
+  const filters: FilterSet = useCoreSelector((state) =>
+    selectCurrentCohortFilters(state),
+  );
+  return filters;
+};
+
+class CohortFilterToComponent implements CohortFilterHandler<JSX.Element> {
+  handleEnum = (f: EnumFilter) => <CohortEnumFilterElement filter={f} />;
+  handleRange = (f: RangeFilter) => <CohortRangeFilterElement filter={f} />;
+}
+
+const convertFilterToComponent = (filter: CohortFilter): JSX.Element => {
+  const handler: CohortFilterHandler<JSX.Element> = new CohortFilterToComponent();
+  return handleGqlOperation(handler, filter);
+};
+
+
 export const CohortGroup: React.FC<CohortGroupProps> = ({ cohorts, simpleMode = false }: CohortGroupProps) => {
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const handleCohortSelection = (idx) => {
     setCurrentIndex(idx);
   };
+
+  const filters = useCohortFacetFilters();
 
   const CohortBarWithProps = () => <CohortBar cohort_names={cohorts.map(o => o.name)}
                                               onSelectionChanged={handleCohortSelection}
@@ -162,8 +247,8 @@ export const CohortGroup: React.FC<CohortGroupProps> = ({ cohorts, simpleMode = 
       <div
         className="flex flex-row flex-wrap w-100 p-2 bg-nci-yellow-lightest border-2 rounded border-nci-gray-lighter">
         {
-          cohorts[currentIndex].facets.map((facet) => {
-            return <CohortFacetElement key={nanoid()} filter={facet} />;
+          Object.keys(filters.root).map((k) => {
+            return convertFilterToComponent(filters.root[k]);
           })}
 
       </div>
@@ -180,8 +265,8 @@ export const CohortGroup: React.FC<CohortGroupProps> = ({ cohorts, simpleMode = 
         <div
           className="flex flex-row flex-wrap w-100 p-2 bg-nci-yellow-lightest border-b-2 border-r-2 border-l-2 rounded border-nci-gray-lighter">
           {
-            cohorts[currentIndex].facets.map((facet) => {
-              return <CohortFacetElement key={nanoid()} filter={facet} />;
+            Object.keys(filters.root).map((k) => {
+              return convertFilterToComponent(filters.root[k]);
             })}
 
         </div>

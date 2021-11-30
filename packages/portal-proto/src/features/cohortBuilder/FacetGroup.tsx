@@ -13,8 +13,6 @@ interface FacetGroupProps {
 
 }
 
-
-
 export const FacetGroup: React.FC<FacetGroupProps> = ({ facetNames, onUpdateSummaryChart }: FacetGroupProps) => {
 
   return ( <div className="flex flex-col border-2 h-screen/1.5 overflow-y-scroll">
