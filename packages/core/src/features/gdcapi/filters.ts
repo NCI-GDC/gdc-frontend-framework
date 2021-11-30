@@ -133,6 +133,8 @@ const assertNever = (x: never): never => {
   throw Error(`Exhaustive comparison did not handle: ${x}`);
 };
 
+
+
 export type GqlOperation =
   | GqlEquals
   | GqlNotEquals
@@ -437,3 +439,4 @@ export const convertGqlFilterToFilter = (
   const handler: GqlOperationHandler<Operation> = new ToOperationHandler();
   return handleGqlOperation(handler, gqlFilter);
 };
+
