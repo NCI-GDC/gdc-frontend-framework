@@ -14,3 +14,4 @@ export * from "./features/projects/projectsHooks";
 export * from "./features/annotations/annotationsSlice";
 export * from "./features/annotations/annotationsHooks";
 export * from "./features/cases/casesSlice";
+export * from "./features/cohort/cohortSlice";
