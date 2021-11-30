@@ -133,7 +133,11 @@ const buildCohortGqlOperator = (fs: FilterSet | undefined): GqlOperation | undef
 
 export const cohortReducer = slice.reducer;
 
+<<<<<<< HEAD
 export const { setCurrentCohort, clearCurrentCohort, updateCohortFilter, removeCohortFilter, clearCohortFilters } = slice.actions;
+=======
+export const { setCurrentCohort, clearCurrentCohort, addCohortFilter, removeCohortFilter, clearCohortFilters } = slice.actions;
+>>>>>>> bfc7f87 (initial working facet filters)
 
 export const selectCurrentCohort = (state: CoreState): string | undefined =>
   state.cohort.currentCohort;

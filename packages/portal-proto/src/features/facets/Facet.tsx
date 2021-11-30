@@ -200,6 +200,7 @@ export const Facet: React.FC<FacetProps> = ({
   };
 
 
+
   const remainingValues = (total - maxValuesToDisplay);
   const cardHeight = remainingValues > 16 ? 96 : remainingValues > 0 ? Math.min(96, remainingValues * 5 + 40) : 24;
   const cardStyle = isGroupExpanded ? `flex-none  h-${cardHeight} overflow-y-scroll ` : `overflow-hidden pr-3.5`;
