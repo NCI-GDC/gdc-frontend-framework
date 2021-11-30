@@ -1,4 +1,3 @@
-import { useRef } from "react";
 import {
   FacetBuckets,
   EnumFilter,
@@ -22,11 +21,23 @@ import {
   MdFlip as FlipIcon,
 
 } from "react-icons/md";
+import { convertFieldToName } from "./utils";
 import { FacetChart } from "../charts/FacetChart";
 
+/**
+ * Selector for the facet values (if any)
+ * @param field
+ */
+const useCohortFacetFilterByName = (field: string): string[] | undefined => {
+  const enumFilters: EnumFilter = useCoreSelector((state) =>
+    selectCurrentCohortFiltersByName(state, field) as EnumFilter,
+  );
+  return enumFilters ? enumFilters.values : undefined;
+};
 
 interface UseCaseFacetResponse {
   readonly data?: FacetBuckets;
+  readonly enumFilters: string [] | undefined;
   readonly error?: string;
   readonly isUninitialized: boolean;
   readonly isFetching: boolean;
@@ -41,7 +52,7 @@ const useCaseFacet = (field: string): UseCaseFacetResponse => {
   );
 
   const selectFacetFilter = useCohortFacetFilter();
-
+  const enumFilters = useCohortFacetFilterByName(field);
   useEffect(() => {
     if (!facet) {
       coreDispatch(fetchFacetByName(field));
@@ -54,6 +65,7 @@ const useCaseFacet = (field: string): UseCaseFacetResponse => {
 
   return {
     data: facet?.buckets,
+    enumFilters: enumFilters,
     error: facet?.error,
     isUninitialized: facet === undefined,
     isFetching: facet?.status === "pending",
@@ -63,16 +75,7 @@ const useCaseFacet = (field: string): UseCaseFacetResponse => {
 };
 
 
-/**
- * Selector for the facet values (if any)
- * @param field
- */
-const useCohortFacetFilterByName = (field: string): string[] | undefined => {
-  const enumFilters: EnumFilter = useCoreSelector((state) =>
-    selectCurrentCohortFiltersByName(state, field) as EnumFilter,
-  );
-  return enumFilters ? enumFilters.values : undefined;
-};
+
 
 /**
  * Filter selector for all of the facet filters
@@ -130,35 +133,6 @@ const FacetHeader: React.FC<FacetProps> = ({ field, description, facetName = nul
   );
 };
 
-
-interface FacetLoadingProps {
-  readonly field: string;
-  readonly facetName?: string;
-}
-
-const FacetLoading: React.FC<FacetLoadingProps> = ({
-                                                     field,
-                                                     facetName = null,
-                                                   }: PropsWithChildren<FacetLoadingProps>) => {
-  const circleCommonClasses = "h-2.5 w-2.5 bg-current   rounded-full";
-
-  return (
-    <div className="flex flex-col border-r-2  border-b-0 border-l-2  bg-white">
-      <div>
-        <div className="flex items-center justify-between flex-wrap bg-nci-gray-lighter px-1.5">
-          {(facetName === null) ? convertFieldToName(field) : facetName}
-        </div>
-      </div>
-      <div className="flex flex-row">
-        <div className={`${circleCommonClasses} mr-1 animate-bounce`} />
-        <div className={`${circleCommonClasses} mr-1 animate-bounce200`} />
-        <div className={`${circleCommonClasses} animate-bounce400`} />
-      </div>
-    </div>
-  );
-};
-
-
 export const Facet: React.FC<FacetProps> = ({
                                               field,
                                               description,
@@ -169,12 +143,16 @@ export const Facet: React.FC<FacetProps> = ({
   const [isSearching, setIsSearching] = useState(false);
   const [isSortedByCases, setIsSortedByCases] = useState(false);
   const [isFacetView, setIsFacetView] = useState(true);
-  const [selectedEnums, setSelectedEnums] = useState(useCohortFacetFilterByName(field));
 
-  const { data, error, isUninitialized, isFetching, isError, isSuccess } =
+  const { data, enumFilters, error, isUninitialized, isFetching, isError, isSuccess  } =
     useCaseFacet(field);
 
+  const [selectedEnums, setSelectedEnums] = useState(enumFilters);
   const coreDispatch = useCoreDispatch();
+
+  useEffect(() => {
+    setSelectedEnums(enumFilters);
+  } ,[enumFilters]);
 
   useEffect(() => {
     /**
@@ -190,19 +168,6 @@ export const Facet: React.FC<FacetProps> = ({
     }
   }, [selectedEnums]);
 
-/*
-  if (isUninitialized) {
-    return <FacetLoading field={field} facetName={facetName} />;
-  }
-
-  if (isFetching) {
-    return <FacetLoading field={field} facetName={facetName} />;
-  }
-
-  if (isError) {
-    return <FacetLoading field={field} facetName={facetName} />;
-  }
-*/
   const maxValuesToDisplay = 6;
   const total = isSuccess ? Object.entries(data).filter(data => data[0] != "_missing").length : 6;
 
@@ -347,10 +312,5 @@ export const Facet: React.FC<FacetProps> = ({
   );
 };
 
-const convertFieldToName = (field: string): string => {
-  const property = field.split(".").pop();
-  const tokens = property.split("_");
-  const capitalizedTokens = tokens.map((s) => s[0].toUpperCase() + s.substr(1));
-  return capitalizedTokens.join(" ");
-};
+
 
