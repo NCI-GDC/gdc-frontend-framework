@@ -15,12 +15,6 @@ export const fetchFacetByName = createAsyncThunk<
   { dispatch: CoreDispatch; state: CoreState }
 >("facet/fetchFacetByName", async (name: string, thunkAPI) => {
   const filters = selectCurrentCohortGqlFilters(thunkAPI.getState());
-  // const res = {
-  //   size: 0,
-  //   ...(filters? {filters: filters}: {}),
-  //  facets: [name],
-  // }
-  // console.log("fetchFacetByName: ",res );
   return await fetchGdcCases({
     size: 0,
     ...(filters? {filters: filters}: {}),

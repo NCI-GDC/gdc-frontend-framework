@@ -16,7 +16,7 @@ interface FacetGroupProps {
 export const FacetGroup: React.FC<FacetGroupProps> = ({ facetNames, onUpdateSummaryChart }: FacetGroupProps) => {
 
   return ( <div className="flex flex-col border-r-2 border-l-2 border-b-2 border-t-0 border-nci-cyan-darker p-3 h-screen/1.5 overflow-y-scroll">
-    <div className="grid grid-cols-4 gap-4">
+    <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
 
     {facetNames.map((x, index) => {
       return (<Facet key={`${x.facet_filter}-${index}`} field={x.facet_filter} facetName={x.name} description={x.description}
@@ -63,24 +63,23 @@ const FacetTabWithSubmenu : React.FC<FacetTabWithSubmenuProps> = ({ category, su
     onSubcategoryChange(category, x.label)
   };
 
-  return (
-    <Tab {...otherProps} >
-      <div className="flex flex-row items-center justify-center ">
-        {category}
-        <Select
-          components={{
-            IndicatorSeparator: () => null
-          }}
-          options={menu_items}
-          defaultValue={subCategory}
-          onChange={handleChange}
-          className="px-2 w-48 bg-opacity-0 border-opacity-0"
-        />
-        </div>
-    </Tab>
-  )
+  return <Tab {...otherProps} >
+    <div className="flex flex-row items-center justify-center ">
+      {category}
+      <Select
+        components={{
+          IndicatorSeparator: () => null
+        }}
+        options={menu_items}
+        defaultValue={subCategory}
+        onChange={handleChange}
+        className="px-2 w-48 bg-opacity-0 border-opacity-0"
+      />
+      </div>
+  </Tab>
 
 };
+
 FacetTabWithSubmenu.tabsRole = 'Tab';
 
 interface CohortTabbedFacetsProps {
