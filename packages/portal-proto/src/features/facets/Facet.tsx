@@ -144,7 +144,7 @@ export const Facet: React.FC<FacetProps> = ({
   const [isFacetView, setIsFacetView] = useState(true);
   const [ visibleItems, setVisibleItems] = useState(6);
 
-  const { data, enumFilters, error, isUninitialized, isFetching, isError, isSuccess  } =
+  const { data, enumFilters,  isError, isSuccess  } =
     useCaseFacet(field);
 
   const [selectedEnums, setSelectedEnums] = useState(enumFilters);
@@ -203,8 +203,8 @@ export const Facet: React.FC<FacetProps> = ({
   };
 
 
-  const visibleValues = (total - maxValuesToDisplay);
-  const cardHeight = visibleValues > 16 ? 96 : visibleValues > 0 ? Math.min(96, visibleValues * 5 + 40) : 24;
+  const remainingValues = (total - maxValuesToDisplay);
+  const cardHeight = remainingValues > 16 ? 96 : remainingValues > 0 ? Math.min(96, remainingValues * 5 + 40) : 24;
   const cardStyle = isGroupExpanded ? `flex-none h-${cardHeight} overflow-y-scroll` : "overflow-hidden pr-3.5";
   const numberOfLines = (total - maxValuesToDisplay) < 0 ? total : isGroupExpanded ? 16 : maxValuesToDisplay;
   return (
@@ -272,8 +272,9 @@ export const Facet: React.FC<FacetProps> = ({
                         );
                       }) :
                       <div>
-                        {
+                        { // unnitialized, loading, error
                           Array.from(Array(numberOfLines)).map((_, index) => {
+                           // const grayBar = "flex-none h-4 align-center justify-center mt-1 w-10 bg-nci-gray-light rounded-b-sm animate-pulse";
                             return (
                               <div key={`${field}-${index}`} className="flex flex-row items-center px-2">
                                 <div className="flex-none">
@@ -291,10 +292,10 @@ export const Facet: React.FC<FacetProps> = ({
               </div>
               {
                 <div className="mt-3 m-1">
-                  {visibleValues > 0 ? !isGroupExpanded ?
+                  {remainingValues > 0 ? !isGroupExpanded ?
                       <div className="flex flex-row justify-end items-center border-t-2 p-1.5">
                           <MoreIcon key="show-more" size="1.5em" className="text-nci-cyan-darkest"  onClick={() => setIsGroupExpanded(!isGroupExpanded)}/>
-                        <div className="pl-1 text-nci-cyan-darkest"> {isSuccess ? visibleItems : "..."} more </div>
+                        <div className="pl-1 text-nci-cyan-darkest"> {isSuccess ? remainingValues : "..."} more </div>
                       </div>
                       :
                         <div className="flex flex-row justify-end items-center border-t-2 border-b-0 border-r-0 border-l-0 p-1.5">

@@ -21,9 +21,10 @@ import {
   CohortFilter,
   CohortFilterHandler,
   EnumFilter,
-  RangeFilter, removeCohortFilter,
+  RangeFilter, removeCohortFilter, useCases,
 } from "@gff/core";
 import { convertFieldToName } from "../facets/utils";
+import { Facet } from "../facets/Facet";
 
 const CohortGroupSelect: React.FC<unknown> = () => {
 
@@ -131,6 +132,7 @@ const CohortFacetElement: React.FC<FacetElementProp> = ({ filter }: FacetElement
   ];
 
   return (
+
     <div className="m-1 px-2 rounded-full bg-nci-blue-lighter text-black border-nci-blue-lighter border-2">
       <div key={nanoid()} className="flex flex-row items-center flex-grow truncate ... ">
         <ClearIcon className="pr-1" />{name} is <span className="px-1 underline">{op}</span> {value}<DropDownIcon />
@@ -145,6 +147,7 @@ interface EnumFilterProps {
 
 const CohortEnumFilterElement: React.FC<EnumFilterProps> = ({ filter }: EnumFilterProps) => {
   const [groupType, setGroupTop] = useState(filter.op);
+  const [showPopup, setShowpopup] = useState(false);
 
   const handleChange = (event) => {
     setGroupTop(event.target.value);
@@ -162,17 +165,21 @@ const CohortEnumFilterElement: React.FC<EnumFilterProps> = ({ filter }: EnumFilt
     coreDispatch(removeCohortFilter(filter.field));
   };
 
+  const handlePopupFacet = () => {
+    setShowpopup(!showPopup);
+  };
+
   return (
     <div className="m-1 px-2 font-heading shadow-md font-medium text-sm rounded-xl bg-nci-yellow-lightest text-nci-gray-darkest border-nci-gray-light border-1">
       <div key={nanoid()} className="flex flex-row items-center">
         {convertFieldToName(filter.field)} is <span className="px-1 underline">{"any of"}</span>
         <div className="flex truncate ... max-w-sm px-2 border-l-2 border-nci-gray-light ">{filter.values.join(",")}</div>
-        <DropDownIcon size="1.5em" />
+        <DropDownIcon size="1.5em" onClick={handlePopupFacet} />
         <Button stylingOff={true}><ClearIcon onClick={handleRemoveFilter} size="1.5em"
                                              className="pl-1 border-l-2 border-nci-gray-light " /></Button>
       </div>
     </div>
-  );
+  )
 };
 
 interface RangeFilterProps {
@@ -235,6 +242,8 @@ export const CohortGroup: React.FC<CohortGroupProps> = ({ cohorts, simpleMode = 
   };
 
   const filters = useCohortFacetFilters();
+
+  const cases = useCases();
 
   const CohortBarWithProps = () => <CohortBar cohort_names={cohorts.map(o => o.name)}
                                               onSelectionChanged={handleCohortSelection}
