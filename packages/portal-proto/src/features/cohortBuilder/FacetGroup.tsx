@@ -15,7 +15,7 @@ interface FacetGroupProps {
 
 export const FacetGroup: React.FC<FacetGroupProps> = ({ facetNames, onUpdateSummaryChart }: FacetGroupProps) => {
 
-  return ( <div className="flex flex-col border-2 h-screen/1.5 overflow-y-scroll">
+  return ( <div className="flex flex-col border-r-2 border-l-2 border-b-2 border-t-0 border-nci-cyan-darker p-3 h-screen/1.5 overflow-y-scroll">
     <div className="grid grid-cols-4 gap-4">
 
     {facetNames.map((x, index) => {
@@ -64,8 +64,8 @@ const FacetTabWithSubmenu : React.FC<FacetTabWithSubmenuProps> = ({ category, su
   };
 
   return (
-    <Tab {...otherProps}>
-      <div className="flex flex-row items-center justify-center">
+    <Tab {...otherProps} >
+      <div className="flex flex-row items-center justify-center ">
         {category}
         <Select
           components={{

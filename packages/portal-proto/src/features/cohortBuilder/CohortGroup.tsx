@@ -76,7 +76,7 @@ const CohortBar: React.FC<CohortBarProps> = ({
   const [currentCohort, setCurrentCohort] = useState(menu_items[defaultIdx]);
 
   return (
-    <div className="flex flex-row items-center pl-4 h-14 bg-nci-gray-light">
+    <div className="flex flex-row items-center justify-start pl-4 h-12 shadow-md bg-nci-cyan-light rounded-lg rounded-b-none rounded-r-none">
       <div className="border-opacity-0">
         {!hide_controls ?
           <Select
@@ -92,19 +92,18 @@ const CohortBar: React.FC<CohortBarProps> = ({
               setCurrentCohort(x);
               onSelectionChanged(x.value);
             }}
-            className="border-nci-gray-light w-40 p-0"
+            className="border-nci-gray-light w-80 p-0"
           /> : <div><h2>{currentCohort.label}</h2></div>
         }
       </div>
-      <CohortGroupSelect></CohortGroupSelect>
       {!hide_controls ?
-        <div className="flex flex-row items-center">
-          <Button className="mx-1">{case_count} Cases</Button>
-          <Button className="mx-2 "><SaveIcon size="1.5em" /></Button>
-          <Button className="mx-2 "><AddIcon size="1.5em" /></Button>
-          <Button className="mx-2 "><DeleteIcon size="1.5em" /></Button>
-          <Button className="mx-2 "><UploadIcon size="1.5em" /></Button>
-          <Button className="mx-2 "><DownloadIcon size="1.5em" /></Button>
+        <div className="flex flex-row items-center ml-auto">
+          <Button className="mx-1 font-heading font-medium bg-nci-teal-darker ">{case_count} Cases</Button>
+          <Button className="mx-1 bg-nci-teal-darker"><SaveIcon size="1.5em" /></Button>
+          <Button className="mx-1 bg-nci-teal-darker"><AddIcon size="1.5em" /></Button>
+          <Button className="mx-1 bg-nci-teal-darker"><DeleteIcon size="1.5em" /></Button>
+          <Button className="mx-1 bg-nci-teal-darker"><UploadIcon size="1.5em" /></Button>
+          <Button className="mx-1 bg-nci-teal-darker"><DownloadIcon size="1.5em" /></Button>
         </div> : <div />
       }
     </div>
@@ -164,7 +163,7 @@ const CohortEnumFilterElement: React.FC<EnumFilterProps> = ({ filter }: EnumFilt
   };
 
   return (
-    <div className="m-1 px-2 font- rounded-xl bg-nci-blue-lightest text-nci-gray-darkest border-nci-gray-light border-2">
+    <div className="m-1 px-2 font-heading shadow-md font-medium text-sm rounded-xl bg-nci-yellow-lightest text-nci-gray-darkest border-nci-gray-light border-1">
       <div key={nanoid()} className="flex flex-row items-center">
         {convertFieldToName(filter.field)} is <span className="px-1 underline">{"any of"}</span>
         <div className="flex truncate ... max-w-sm px-2 border-l-2 border-nci-gray-light ">{filter.values.join(",")}</div>
@@ -192,7 +191,7 @@ const CohortRangeFilterElement: React.FC<RangeFilterProps> = ({ filter }: RangeF
   ];
 
   return (
-    <div className="m-1 px-2 rounded-full bg-nci-blue-lighter text-black border-nci-blue-lighter border-2">
+    <div className="m-1 px-2 rounded-full bg-nci-blue-lighter font-heading text-black border-nci-blue-lighter border-width">
       <div className="flex flex-row items-center flex-grow truncate ... ">
         <ClearIcon className="pr-1" />{filter.field} <span className="px-1 underline">{filter.op}</span>
         {filter.from} and {filter.to}<DropDownIcon />
@@ -218,8 +217,8 @@ const useCohortFacetFilters = (): FilterSet => {
 };
 
 class CohortFilterToComponent implements CohortFilterHandler<JSX.Element> {
-  handleEnum = (f: EnumFilter) => <CohortEnumFilterElement filter={f} />;
-  handleRange = (f: RangeFilter) => <CohortRangeFilterElement filter={f} />;
+  handleEnum = (f: EnumFilter) => <CohortEnumFilterElement key={nanoid()} filter={f} />;
+  handleRange = (f: RangeFilter) => <CohortRangeFilterElement key={nanoid()} filter={f} />;
 }
 
 const convertFilterToComponent = (filter: CohortFilter): JSX.Element => {
@@ -263,7 +262,7 @@ export const CohortGroup: React.FC<CohortGroupProps> = ({ cohorts, simpleMode = 
         toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
       >
         <div
-          className="flex flex-row flex-wrap w-100 p-2 bg-nci-yellow-lightest border-b-2 border-r-2 border-l-2 rounded border-nci-gray-lighter">
+          className="flex flex-row flex-wrap w-100 p-2 bg-nci-cyan-lightest border-b-2 border-r-2 border-l-2 rounded-lg rounded-t-none border-nci-gray-lighter">
           {
             Object.keys(filters.root).map((k) => {
               return convertFilterToComponent(filters.root[k]);
