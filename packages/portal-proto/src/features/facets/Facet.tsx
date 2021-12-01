@@ -1,30 +1,27 @@
 import {
-  FacetBuckets,
+  addCohortFilter,
   EnumFilter,
-  FilterSet,
-  selectCasesFacetByField,
+  FacetBuckets,
   fetchFacetByName,
-  useCoreSelector,
-  useCoreDispatch,
+  FilterSet,
+  removeCohortFilter,
+  selectCasesFacetByField,
   selectCurrentCohortFilters,
   selectCurrentCohortFiltersByName,
-  addCohortFilter,
-  removeCohortFilter,
+  useCoreDispatch,
+  useCoreSelector,
 } from "@gff/core";
 
 import { PropsWithChildren, useEffect, useState } from "react";
-import { Button } from "../layout/UserFlowVariedPages";
 import {
-  MdSortByAlpha as AlphaSortIcon,
-  MdSort as SortIcon,
-  MdSearch as SearchIcon,
-  MdFlip as FlipIcon,
   MdAddCircle as MoreIcon,
+  MdFlip as FlipIcon,
   MdRemoveCircle as LessIcon,
-
+  MdSearch as SearchIcon,
+  MdSort as SortIcon,
+  MdSortByAlpha as AlphaSortIcon,
 } from "react-icons/md";
 import { convertFieldToName } from "./utils";
-import { FacetChart } from "../charts/FacetChart";
 
 /**
  * Selector for the facet values (if any)
@@ -205,11 +202,11 @@ export const Facet: React.FC<FacetProps> = ({
 
   const remainingValues = (total - maxValuesToDisplay);
   const cardHeight = remainingValues > 16 ? 96 : remainingValues > 0 ? Math.min(96, remainingValues * 5 + 40) : 24;
-  const cardStyle = isGroupExpanded ? `flex-none h-${cardHeight} overflow-y-scroll` : "overflow-hidden pr-3.5";
+  const cardStyle = isGroupExpanded ? `flex-none  h-${cardHeight} overflow-y-scroll ` : `overflow-hidden pr-3.5`;
   const numberOfLines = (total - maxValuesToDisplay) < 0 ? total : isGroupExpanded ? 16 : maxValuesToDisplay;
   return (
-    <div>
-      <div className="flex flex-col bg-white relative shadow-md border-nci-cyan-darker border-2 rounded-b-md">
+
+      <div className="flex flex-col bg-white relative shadow-md border-nci-cyan-darker border-2 rounded-b-md ">
         <div>
           <div className="flex items-center justify-between flex-wrap bg-nci-cyan-darker shadow-md px-1.5">
 
@@ -310,7 +307,7 @@ export const Facet: React.FC<FacetProps> = ({
           </div>
         </div>
       </div>
-    </div>
+
   );
 };
 
