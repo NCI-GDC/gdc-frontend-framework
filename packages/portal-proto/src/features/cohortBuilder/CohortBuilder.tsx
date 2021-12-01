@@ -23,7 +23,7 @@ const FullCohortBuilder: React.FC<CohortGroupProps> = ( { cohorts, simpleMode = 
     "diagnoses.tissue_or_organ_of_origin"
   ]);
   return (
-   <div>
+   <div  className="bg-gradient-to-b from-nci-blue-lightest to-nci-teal-lightest">
       <CohortGroup cohorts={cohorts} simpleMode={simpleMode}></CohortGroup>
       <MetaSearch onChange={(r) => setSearchResults(r)}></MetaSearch>
       <CohortTabbedFacets  searchResults={searchResults} onUpdateSummaryChart={updateSummaryCharts}></CohortTabbedFacets>

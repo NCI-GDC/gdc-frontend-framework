@@ -2,8 +2,8 @@ import { PropsWithChildren } from "react";
 import classNames from "classnames";
 import { Button } from "../features/layout/UserFlowVariedPages";
 import {
-  MdExpandMore as ExpandMoreIcon,
-  MdExpandLess as ExpandLessIcon,
+  MdChevronRight as ExpandMoreIcon,
+  MdExpandMore as ExpandLessIcon,
 } from "react-icons/md";
 
 export interface CollapsibleContainerProps {
@@ -21,14 +21,14 @@ export const CollapsibleContainer: React.FC<CollapsibleContainerProps> = (
     block: !isCollapsed,
   });
   return (
-    <div className="flex flex-col border border-gray-400 p-4">
+    <div className="flex flex-col p-4">
       <div className="flex flex-row">
         <div className="flex-grow">
           <Top />
         </div>
         <div className="flex items-stretch">
-          <Button onClick={toggle}>
-            {isCollapsed ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+          <Button stylingOff={true} className="bg-nci-cyan-light hover:bg-nci-cyan-darkest hover:text-nci-blue-lightest rounded-lg rounded-l-none rounded-b-none border-0 bg-nci-blue-dark border-l-2  px-5 " onClick={toggle}>
+            {isCollapsed ? <ExpandMoreIcon size="1.75em" /> : <ExpandLessIcon  size="1.75em" />}
           </Button>
         </div>
       </div>
