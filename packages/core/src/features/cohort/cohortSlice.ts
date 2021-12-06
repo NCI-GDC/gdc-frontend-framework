@@ -44,7 +44,7 @@ const slice = createSlice({
     clearCurrentCohort: (state) => {
       state.currentCohort = undefined;
     },
-    addCohortFilter: (state, action: PayloadAction<CohortFilter>) => {
+    updateCohortFilter: (state, action: PayloadAction<CohortFilter>) => {
        return {
          ...state,
          currentFilters: {
@@ -133,7 +133,7 @@ const buildCohortGqlOperator = (fs: FilterSet | undefined): GqlOperation | undef
 
 export const cohortReducer = slice.reducer;
 
-export const { setCurrentCohort, clearCurrentCohort, addCohortFilter, removeCohortFilter, clearCohortFilters } = slice.actions;
+export const { setCurrentCohort, clearCurrentCohort, updateCohortFilter, removeCohortFilter, clearCohortFilters } = slice.actions;
 
 export const selectCurrentCohort = (state: CoreState): string | undefined =>
   state.cohort.currentCohort;
