@@ -1,5 +1,5 @@
 import {
-  addCohortFilter,
+  updateCohortFilter,
   EnumFilter,
   FacetBuckets,
   fetchFacetByName,
@@ -166,8 +166,8 @@ export const Facet: React.FC<FacetProps> = ({
     if (selectedEnums === undefined)
       return;
     if (selectedEnums.length > 0) {
-      coreDispatch(addCohortFilter({ type: "enum", op: "in", field: field, values: selectedEnums }));
-    } else {
+      coreDispatch(updateCohortFilter({ type: "enum", op: "in", field: field, values: selectedEnums }));
+    } else { // completely remove the field
       coreDispatch(removeCohortFilter(field));
     }
   }, [selectedEnums]);
