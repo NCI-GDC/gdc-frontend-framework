@@ -40,8 +40,8 @@ export const MetaSearch: React.FC<MetaSearchProp> = ({ onChange }: MetaSearchPro
 
   return (
     <div className="flex flex-col items-center relative z-10">
-      <div className="flex flex-row items-center justify-center w-full  p-2">
-        <div className="bg-none  flex items-center w-1/2 ">
+      <div className="flex flex-row items-center justify-center w-full p-2">
+        <div className="bg-none flex items-center w-1/2 ">
           <div className="relative w-full "><input type="text"
                                            className="h-10 pr-8 w-full pl-5  shadow-md  border-nci-gray-light rounded-full focus:ring-nci-cyan-light focus:border-nci-teal-light hover:shadow-lg hover:border-nci-teal-lighter"
                                            placeholder={`Search ...`} value={searchTerm}

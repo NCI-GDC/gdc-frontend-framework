@@ -22,6 +22,7 @@ const chartData = {
     uniformtext_mode: 'hide',
     title: null,
     marker: {
+      color: 'rgb(34, 121, 145)',
       line: {
         color: '#4f4b4b',
         width: 2,
@@ -70,6 +71,13 @@ const vertical_layout: Partial<Layout> = {
       t: 30,
       pad: 4
     },
+      transition: {
+        duration: 500,
+        easing: 'cubic-in-out'
+      },
+      frame: {
+        duration: 500
+      }
   };
 
   if (height !== undefined) {
@@ -121,6 +129,13 @@ const vertical_layout: Partial<Layout> = {
       t: 40,
       pad: 4
     },
+    transition: {
+      duration: 500,
+      easing: 'cubic-in-out'
+    },
+    frame: {
+      duration: 500
+    }
   };
 
   if (height !== undefined) {

@@ -50,26 +50,26 @@ const ActionButtonBar = () => {
     <div className="flex flex-grow flex-row align-center pb-4 text-sm ">
       <Link key="CohortBuilder" href="/cohort-builder">
       <button
-        className="text-sm bg-nci-yellow-lighter hover:bg-nci-yellow-lightest text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex flex-nowrap items-center shadow-md bg-opacity-80">
+        className="text-sm bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest hover:text-white font-bold mx-4 p-2 rounded inline-flex flex-nowrap items-center shadow-md">
         <Image src={"/user-flow/icons/build.svg"} width={32} height={32}/>
         <span className="px-2 whitespace-nowrap">Build</span>
       </button>
       </Link>
       <Link key="Studies" href="/user-flow/many-pages/studies">
       <button
-        className="bg-nci-orange-lighter hover:bg-nci-orange-lightest hover:bg-nci-yellow-lightest text-nci-gray-darkest  font-bold  mx-4 p-2 rounded inline-flex items-center shadow-md bg-opacity-80">
+        className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest  font-bold  mx-4 p-2 rounded inline-flex items-center shadow-md ">
         <Image src={"/user-flow/icons/crowd-of-users.svg"} width={32} height={32}/> <span className="px-2"> View </span>
       </button>
       </Link>
       <Link key="Analysis" href="/user-flow/many-pages/analysis">
       <button
-        className="bg-nci-purple-lighter hover:bg-nci-purple-lightest text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md bg-opacity-80">
+        className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md ">
         <Image src={"/user-flow/icons/dna.svg"} width={32} height={32}/> <span className="px-2"> Analyze </span>
       </button>
       </Link>
       <Link key="Repository" href="/user-flow/many-pages/repository">
       <button
-        className="bg-nci-red-lighter hover:bg-nci-red-lightest text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md bg-opacity-80">
+        className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md ">
         <Image src={"/user-flow/icons/database.svg"} width={32} height={32}/> <span className="px-2"> Download </span>
       </button>
       </Link>
