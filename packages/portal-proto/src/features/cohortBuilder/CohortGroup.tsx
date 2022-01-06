@@ -26,6 +26,25 @@ import {
 import { convertFieldToName } from "../facets/utils";
 import { Facet } from "../facets/Facet";
 
+const enum_menu_items = [
+  { value: "any_of", label: "includes at least one:" },
+  { value: "all_of", label: "includes all:" },
+  { value: "none_of", label: "excludes:" },
+  { value: "between", label: "between" },
+];
+
+const filter_set_label_v1 = {
+  "any_of": "any of:",
+  "all_of": "all:",
+  "none_of": "none:",
+};
+
+const filter_set_label_v2 = {
+  "any_of": "includes at least one:",
+  "all_of": "includes all:",
+  "none_of": "excludes:",
+};
+
 const CohortGroupSelect: React.FC<unknown> = () => {
 
   const menu_items = [
@@ -77,7 +96,7 @@ const CohortBar: React.FC<CohortBarProps> = ({
   const [currentCohort, setCurrentCohort] = useState(menu_items[defaultIdx]);
 
   return (
-    <div className="flex flex-row items-center justify-start pl-4 h-12 shadow-md bg-nci-cyan-light rounded-lg rounded-b-none rounded-r-none">
+    <div className="flex flex-row items-center justify-start pl-4 h-12 shadow-md bg-nci-blue-lighter rounded-lg rounded-b-none rounded-r-none">
       <div className="border-opacity-0">
         {!hide_controls ?
           <Select
@@ -124,12 +143,7 @@ const CohortFacetElement: React.FC<FacetElementProp> = ({ filter }: FacetElement
     setGroupTop(event.target.value);
   };
 
-  const menu_items = [
-    { value: "any_of", label: "any of" },
-    { value: "all_of", label: "all of" },
-    { value: "none_of", label: "none of" },
-    { value: "between", label: "between" },
-  ];
+
 
   return (
 
@@ -170,9 +184,9 @@ const CohortEnumFilterElement: React.FC<EnumFilterProps> = ({ filter }: EnumFilt
   };
 
   return (
-    <div className="m-1 px-2 font-heading shadow-md font-medium text-sm rounded-xl bg-nci-yellow-lightest text-nci-gray-darkest border-nci-gray-light border-1">
+    <div className="m-1 px-2 font-heading shadow-md font-medium text-sm rounded-xl bg-nci-blue-lighter text-nci-gray-darkest border-nci-gray-light border-1">
       <div key={nanoid()} className="flex flex-row items-center">
-        {convertFieldToName(filter.field)} is <span className="px-1 underline">{"any of"}</span>
+        {convertFieldToName(filter.field)} is <span className="px-1 underline">{filter_set_label_v1["any_of"]}</span>
         <div className="flex truncate ... max-w-sm px-2 border-l-2 border-nci-gray-light ">{filter.values.join(",")}</div>
         <DropDownIcon size="1.5em" onClick={handlePopupFacet} />
         <Button stylingOff={true}><ClearIcon onClick={handleRemoveFilter} size="1.5em"
@@ -243,11 +257,11 @@ export const CohortGroup: React.FC<CohortGroupProps> = ({ cohorts, simpleMode = 
 
   const filters = useCohortFacetFilters();
 
-  const cases = useCases();
+  const { data, enumFilters,  isError, isSuccess  } = useCases();
 
   const CohortBarWithProps = () => <CohortBar cohort_names={cohorts.map(o => o.name)}
                                               onSelectionChanged={handleCohortSelection}
-                                              defaultIdx={currentIndex} case_count={cohorts[currentIndex].case_count}
+                                              defaultIdx={currentIndex} case_count={"85415"}
                                               hide_controls={simpleMode} />;
 
   if (simpleMode) {

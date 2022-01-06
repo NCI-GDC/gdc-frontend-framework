@@ -205,7 +205,6 @@ export const Facet: React.FC<FacetProps> = ({
   const cardStyle = isGroupExpanded ? `flex-none  h-${cardHeight} overflow-y-scroll ` : `overflow-hidden pr-3.5`;
   const numberOfLines = (total - maxValuesToDisplay) < 0 ? total : isGroupExpanded ? 16 : maxValuesToDisplay;
   return (
-
       <div className="flex flex-col bg-white relative shadow-md border-nci-cyan-darker border-2 rounded-b-md ">
         <div>
           <div className="flex items-center justify-between flex-wrap bg-nci-cyan-darker shadow-md px-1.5">
@@ -269,9 +268,8 @@ export const Facet: React.FC<FacetProps> = ({
                         );
                       }) :
                       <div>
-                        { // unnitialized, loading, error
+                        { // uninitialized, loading, error
                           Array.from(Array(numberOfLines)).map((_, index) => {
-                           // const grayBar = "flex-none h-4 align-center justify-center mt-1 w-10 bg-nci-gray-light rounded-b-sm animate-pulse";
                             return (
                               <div key={`${field}-${index}`} className="flex flex-row items-center px-2">
                                 <div className="flex-none">
@@ -280,7 +278,6 @@ export const Facet: React.FC<FacetProps> = ({
                                 <div className="flex-grow h-4 align-center justify-center mt-1 ml-1 mr-8 bg-nci-gray-light rounded-b-sm animate-pulse"></div>
                                 <div className="flex-none h-4 align-center justify-center mt-1 w-10 bg-nci-gray-light rounded-b-sm animate-pulse"></div>
                               </div>);
-
                           })
                         }
                       </div>

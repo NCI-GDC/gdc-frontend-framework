@@ -5,7 +5,7 @@ import {
   useCoreSelector,
   useCoreDispatch,
 } from "@gff/core";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import dynamic from 'next/dynamic'
 
 
@@ -77,9 +77,19 @@ const processChartData = (facetData:Record<string, any>, field: string, maxBins 
 }
 
 export const FacetChart: React.FC<FacetProps> = ({ field, showXLabels = true, height, marginBottom, showTitle = true, maxBins = maxValuesToDisplay, orientation='v'}: FacetProps) => {
-  const { data, error, isUninitialized, isFetching, isError } =
+  const { data, error, isUninitialized, isFetching, isError, isSuccess } =
     useCaseFacet(field);
 
+  const [ chart_data, setChartData ]  = useState(processChartData( { label_text:["","","","","",""], x:["0","1","2","3","4","5"], y:[0,0,0,0,0,0] }, field, maxBins, showXLabels))
+
+  useEffect(() => {
+    if (isSuccess) {
+      const cd = processChartData(data, field, maxBins, showXLabels);
+      console.log(cd);
+      setChartData(cd);
+    }
+  } ,[data, isSuccess]);
+/*
   if (isUninitialized) {
     return <div>Initializing facet...</div>;
   }
@@ -91,8 +101,8 @@ export const FacetChart: React.FC<FacetProps> = ({ field, showXLabels = true, he
   if (isError) {
     return <div>Failed to fetch facet: {error}</div>;
   }
-
-  const chart_data = processChartData(data, field, maxBins, showXLabels);
+*/
+  // const chart_data = isSuccess ? processChartData(data, field, maxBins, showXLabels) : { x:[0,1,2,3,4,5], y:[0,0,0,0,0,0] };
 
   return <div className="flex flex-col border-2 bg-white ">
     {showTitle ?
@@ -100,7 +110,12 @@ export const FacetChart: React.FC<FacetProps> = ({ field, showXLabels = true, he
         {convertFieldToName(field)}
       </div> : null
     }
-    <BarChartWithNoSSR data={chart_data} height={height} marginBottom={marginBottom} orientation={orientation}></BarChartWithNoSSR>
+
+      <BarChartWithNoSSR data={chart_data} height={height}
+                         marginBottom={marginBottom}
+                         orientation={orientation}></BarChartWithNoSSR>
+
+
   </div>;
 };
 
