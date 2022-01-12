@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import React from "react";
 import { FixedSizeList } from "react-window";
-import { useTable, useBlockLayout } from 'react-table'
+import { useTable, useBlockLayout } from 'react-table';
 
 
 const TablesPage: NextPage = () => {
@@ -106,11 +106,11 @@ const TablesPage: NextPage = () => {
                         {...row.getRowProps({
                             style,
                         })}
-                        className="tr"
+                        className={`tr ${index % 2 === 1 ? 'bg-blue-100': 'bg-white'}`}
                     >
                         {row.cells.map(cell => {
                             return (
-                                <div {...cell.getCellProps()} className="td rounded-sm">
+                                <div {...cell.getCellProps()} className="td rounded-sm p-1.5 text-center">
                                     {cell.render('Cell')}
                                 </div>
                             )
@@ -120,15 +120,15 @@ const TablesPage: NextPage = () => {
             },
             [prepareRow, rows]
         )
-        // border-separate border-bottom-2 border-blue-200 rounded-sm
+        
         return (
             <div className="p-10">
                 <div {...getTableProps()} className="table inline-block">
-                    <div>
+                    <div className="bg-blue-800 rounded-md">
                         {headerGroups.map(headerGroup => (
                             <div {...headerGroup.getHeaderGroupProps()} className="tr"> 
                                 {headerGroup.headers.map(column => (
-                                    <div {...column.getHeaderProps()} className="th">
+                                    <div {...column.getHeaderProps()} className="th border border-gray p-1 text-white text-center">
                                         {column.render('Header')}
                                     </div>
                                 ))}

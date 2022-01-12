@@ -43,16 +43,16 @@ export const MetaSearch: React.FC<MetaSearchProp> = ({ onChange }: MetaSearchPro
       <div className="flex flex-row items-center justify-center w-full  p-2">
         <div className="bg-white flex items-center w-1/2 ">
           <div className="relative w-full "><input type="text"
-                                           className="h-10 pr-8 w-full pl-5 border-nci-gray-light rounded-full  focus:shadow focus:outline-none"
-                                           placeholder={`Search ...`} value={searchTerm}
-                                           onChange={onSearchChanged} />
-            <div className="absolute top-2 right-3 h-4">{ searchTerm.length == 0 ? <MdSearch size="1.5em" /> : <MdClear size="1.5em" onClick={() => clearSearch()} /> }
+            className="h-10 pr-8 w-full pl-5 border-nci-gray-light rounded-full  focus:shadow focus:outline-none"
+            placeholder={`Search ...`} value={searchTerm}
+            onChange={onSearchChanged} />
+            <div className="absolute top-2 right-3 h-4">{searchTerm.length == 0 ? <MdSearch size="1.5em" /> : <MdClear size="1.5em" onClick={() => clearSearch()} />}
             </div>
           </div>
         </div>
       </div>
-        <div className={`${searchResults.length == 0 ? "hidden" : ""} flex-col border-2 mt-14 absolute z-20 bg-nci-teal-lightest w-1/2 m-16 py-4 px-1 drop-shadow ${searchResults.length > 6 ? "h-48 overflow-y-auto" : ""} `}>
-          <div className="w-full border-b-2 border-nci-gray ">{searchResults.length} {searchResults.length === 1 ? "result" : "results" } found for <em>{ searchTerm }</em>:</div>{
+      <div className={`${searchResults.length == 0 ? "hidden" : ""} flex-col border-2 mt-14 absolute z-20 bg-nci-teal-lightest w-1/2 m-16 py-4 px-1 drop-shadow ${searchResults.length > 6 ? "h-48 overflow-y-auto" : ""} `}>
+        <div className="w-full border-b-2 border-nci-gray ">{searchResults.length} {searchResults.length === 1 ? "result" : "results"} found for <em>{searchTerm}</em>:</div>{
           searchResults.map((x, index) => {
             return (
               <div key={`${x.name}_${index}`} className="flex flex-row items-center hover:bg-nci-blue-lighter px-4">{x.category}
