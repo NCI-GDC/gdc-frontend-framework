@@ -19,7 +19,7 @@ const FacetsPage: NextPage = () => {
       <div className="flex flex-col content-center">
         <div className="grid grid-cols-3 gap-4">
           <Facet field="diagnoses.age_at_diagnosis" />
-
+          <Facet field="demographic.gender" />
         </div>
       </div>
     </SimpleLayout>

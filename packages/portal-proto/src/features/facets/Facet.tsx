@@ -1,20 +1,11 @@
-import {useRef} from "react";
-import {
-  FacetBuckets,
-  selectCasesFacetByField,
-  fetchFacetByName,
-  useCoreSelector,
-  useCoreDispatch,
-} from "@gff/core";
-
 import { PropsWithChildren, useEffect, useState } from "react";
+import { FacetBuckets, fetchFacetByName, selectCasesFacetByField, useCoreDispatch, useCoreSelector } from "@gff/core";
 import { Button } from "../layout/UserFlowVariedPages";
 import {
-  MdSortByAlpha as AlphaSortIcon,
-  MdSort as SortIcon,
-  MdSearch as SearchIcon,
   MdFlip as FlipIcon,
-
+  MdSearch as SearchIcon,
+  MdSort as SortIcon,
+  MdSortByAlpha as AlphaSortIcon,
 } from "react-icons/md";
 import { FacetChart } from "../charts/FacetChart";
 
@@ -95,8 +86,12 @@ const FacetHeader: React.FC<FacetProps> = ({ field, description, facetName = nul
   );
 };
 
-
-export const Facet: React.FC<FacetProps> = ({ field, description, onUpdateSummaryChart, facetName = null }: FacetProps) => {
+export const Facet: React.FC<FacetProps> = ({
+                                              field,
+                                              description,
+                                              onUpdateSummaryChart,
+                                              facetName = null,
+                                            }: FacetProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [isSortedByCases, setIsSortedByCases] = useState(false);
@@ -139,15 +134,13 @@ export const Facet: React.FC<FacetProps> = ({ field, description, onUpdateSummar
 
   const visibleValues = (total - maxValuesToDisplay);
   const cardHeight = visibleValues > 16 ? 96 : visibleValues > 0 ? Math.min(96, visibleValues * 5 + 40): 24;
-
   const cardStyle = isGroupExpanded ? `flex-none h-${cardHeight} overflow-y-scroll` : "overflow-hidden pr-3.5";
 
   return (
     <div>
-      <div className="flex flex-col border-2 bg-white p-1  relative drop-shadow-md border-nci-blumine-lighter">
+      <div className="flex flex-col border-2 bg-white p-1 relative drop-shadow-md border-nci-blumine-lighter">
         <div>
-          <div className="flex items-center justify-between flex-wrap bg-nci-gray-lighter px-1.5" onDoubleClick={handleUpdateSummaryChart} >
-
+          <div className="flex items-center justify-between flex-wrap bg-nci-gray-lighter px-1.5"  >
             <div className="has-tooltip"  >{(facetName === null) ? convertFieldToName(field) : facetName }
               <div
                 className="inline-block tooltip w-full border-b-2 border-nci-cyan-lightest rounded shadow-lg p-2 bg-gray-100 text-nci-blue-darkest mt-8 absolute">{description}</div>
@@ -203,7 +196,6 @@ export const Facet: React.FC<FacetProps> = ({ field, description, onUpdateSummar
           </div>
 
         <div className={"mt-3"}>
-
             {visibleValues > 0 ? !isGroupExpanded ?
               <div className="bg-white border-2  p-1.5">
                 <Button key="show-more"

@@ -1,4 +1,5 @@
 import { Facet } from "../facets/Facet";
+import NumericRangeFacet  from "../facets/NumericRangeFacet";
 import { Tab, TabProps, TabList, TabPanel, Tabs } from "react-tabs";
 import { useState } from "react";
 import Select from "react-select";
@@ -13,17 +14,24 @@ interface FacetGroupProps {
 
 }
 
-
-
 export const FacetGroup: React.FC<FacetGroupProps> = ({ facetNames, onUpdateSummaryChart }: FacetGroupProps) => {
 
+  console.log(facetNames);
   return ( <div className="flex flex-col border-2 h-screen/1.5 overflow-y-scroll">
     <div className="grid grid-cols-4 gap-4">
 
     {facetNames.map((x, index) => {
-      return (<Facet key={`${x.facet_filter}-${index}`} field={x.facet_filter} facetName={x.name} description={x.description}
-                     onUpdateSummaryChart={onUpdateSummaryChart}
-      />);
+      if (x.facet_type === "enum")
+        return (<Facet key={`${x.facet_filter}-${index}`} field={x.facet_filter} facetName={x.name} description={x.description}
+                       onUpdateSummaryChart={onUpdateSummaryChart}
+        />);
+      if (["year", "age", 'numeric', 'integer'].includes(x.facet_type)) {
+        return (<NumericRangeFacet key={`${x.facet_filter}-${index}`}
+                                   field={x.facet_filter}
+                                   facetName={x.name} description={x.description}
+                       facet_type={x.facet_type} minimum={x.minimum} maximum={x.minimum}
+        />);
+      }
     })
     }
     </div>

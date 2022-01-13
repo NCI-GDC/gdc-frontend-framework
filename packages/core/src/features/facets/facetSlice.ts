@@ -5,6 +5,7 @@ import {
   fetchGdcCases,
   GdcApiResponse,
   isBucketsAggregation,
+  isStatsAggregation,
 } from "../gdcapi/gdcapi";
 
 export const fetchFacetByName = createAsyncThunk<
@@ -17,6 +18,13 @@ export const fetchFacetByName = createAsyncThunk<
     facets: [name],
   });
 });
+
+export enum FacetBucketType {
+  NotSet,
+  Enum,
+  Value
+
+}
 
 export interface FacetBuckets {
   readonly status: DataStatus;
@@ -61,6 +69,10 @@ const slice = createSlice({
                     },
                     {} as Record<string, number>,
                   );
+                } else if (isStatsAggregation(aggregation)) {  //TODO: This seems dependent on the type of
+                                                               //  the facet, which is not known here
+                  state.cases[field].status = "fulfilled";
+                  state.cases[field].buckets = { "count": aggregation.stats.count }
                 } else {
                   // Unhandled aggregation
                 }

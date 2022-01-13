@@ -1,11 +1,10 @@
 const plugin = require('tailwindcss/plugin');
 module.exports = {
-  purge: [
-    "./pages/**/*.{js,ts,jsx,tsx}",
-    "./components/**/*.{js,ts,jsx,tsx}",
-    "./features/**/*.{js,ts,jsx,tsx}",
+  content: [
+    "./src/pages/**/*.{js,ts,jsx,tsx}",
+    "./src/components/**/*.{js,ts,jsx,tsx}",
+    "./src/features/**/*.{js,ts,jsx,tsx}",
   ],
-  darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
       colors: {
@@ -250,13 +249,6 @@ module.exports = {
       },
     },
   },
-  variants: {
-    extend: {
-      borderWidth: ["hover"],
-      boxShadow: ["hover"],
-      display: ["group-hover"],
-    },
-  },
   plugins: [
     require("@tailwindcss/forms"),
     plugin(function({ addUtilities }) {
@@ -267,7 +259,6 @@ module.exports = {
           'min-width': '0 !important',
         },
       }
-
       addUtilities(newUtilities)
     })
   ],
