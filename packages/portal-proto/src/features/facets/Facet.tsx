@@ -144,7 +144,7 @@ export const Facet: React.FC<FacetProps> = ({
             <div className="has-tooltip"  >{(facetName === null) ? convertFieldToName(field) : facetName }
               <div
                 className="inline-block tooltip w-full border-b-2 border-nci-cyan-lightest rounded shadow-lg p-2 bg-gray-100 text-nci-blue-darkest mt-8 absolute">{description}</div>
-            </div>
+              </div>
             <div className="flex flex-row">
               <button
                 className="bg-nci-gray-lighter hover:bg-grey text-grey-darkest font-bold py-2 px-4 rounded inline-flex items-center"

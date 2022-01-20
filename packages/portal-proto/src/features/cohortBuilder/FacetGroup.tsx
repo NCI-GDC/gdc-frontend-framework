@@ -16,7 +16,6 @@ interface FacetGroupProps {
 
 export const FacetGroup: React.FC<FacetGroupProps> = ({ facetNames, onUpdateSummaryChart }: FacetGroupProps) => {
 
-  console.log(facetNames);
   return ( <div className="flex flex-col border-2 h-screen/1.5 overflow-y-scroll">
     <div className="grid grid-cols-4 gap-4">
 
@@ -25,11 +24,12 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({ facetNames, onUpdateSumm
         return (<Facet key={`${x.facet_filter}-${index}`} field={x.facet_filter} facetName={x.name} description={x.description}
                        onUpdateSummaryChart={onUpdateSummaryChart}
         />);
-      if (["year", "age", 'numeric', 'integer'].includes(x.facet_type)) {
+      if (["year", "years", "age", 'numeric', 'integer','percent'].includes(x.facet_type)) {
+        console.log(x);
         return (<NumericRangeFacet key={`${x.facet_filter}-${index}`}
                                    field={x.facet_filter}
                                    facetName={x.name} description={x.description}
-                       facet_type={x.facet_type} minimum={x.minimum} maximum={x.minimum}
+                       facet_type={x.facet_type} minimum={x.minimum} maximum={x.maximum}
         />);
       }
     })

@@ -31,6 +31,8 @@
   },
   "license": "Apache-2",
   "devDependencies": {
+    "@iconify/icons-mdi": "^1.1.42",
+    "@iconify/react": "^3.1.2",
     "@tailwindcss/aspect-ratio": "^0.4.0",
     "@tailwindcss/forms": "^0.4.0",
     "@tailwindcss/line-clamp": "^0.3.1",
