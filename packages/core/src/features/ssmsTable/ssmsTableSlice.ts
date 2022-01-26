@@ -128,8 +128,32 @@ const graphqlAPI = async <T>(query: string, variables: Record<string, any>): Pro
   throw await buildGraphQLFetchError(res, variables);
 };
 
+export interface SSMSConsequence {
+  readonly id:string;
+  readonly aa_change: string;
+  readonly annotation: {
+    readonly polyphen_impact: string;
+    readonly polyphen_score: number;
+    readonly shift_impact: string;
+    readonly sift_score: string;
+    readonly vep_impact: string;
+  },
+  consequence_type : string,
+  readonly gene : {
+    readonly gene_id: string;
+    readonly symbol: string;
+  }
+  readonly is_canonical: boolean;
+}
 export interface SSMSData {
   readonly ssm_id: string;
+  readonly occurrence: number;
+  readonly filteredOccurrences: number;
+  readonly id: string;
+  readonly score: number;
+  readonly genomic_dna_change: string;
+  readonly mutation_subtype: string;
+  readonly consequence: ReadonlyArray<SSMSConsequence>;
 }
 
 export interface GDCSsmsTable {
@@ -293,9 +317,25 @@ const slice = createSlice({
         const data = action.payload.data.viewer.explore;
         state.ssms.cases = data.cases.hits.total;
         state.ssms.filteredCases = data.filteredCases.hits.total;
-        state.ssms.ssms = data.ssms.hits.edges.map((x: Record<any, any>): SSMSData => {
+        state.ssms.ssms = data.ssms.hits.edges.map(( { node } : Record<any, any>): SSMSData => {
           return {
-            ssm_id: x.ssm_id,
+            ssm_id : node.ssm_id,
+            score : node.score,
+            id: node.id,
+            mutation_subtype: node.mutation_subtype,
+            genomic_dna_change: node.genomic_dna_change,
+            occurrence: node.occurrence.hits.total,
+            filteredOccurrences: node.filteredOccurences.hits.total,
+            consequence: node.consequence.hits.edges.map( (y:Record<any, any>)  => {
+              const transcript = y.node.transcript;
+              return {
+                id : y.node.id,
+                is_canonical: transcript.is_canonical,
+                aa_change : transcript.aa_change,
+                annotation: {...transcript.annotation},
+                gene: { ...transcript.gene}
+              }
+            }),
           };
         });
 
