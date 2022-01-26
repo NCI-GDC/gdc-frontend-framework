@@ -7,7 +7,7 @@ import { filesReducer } from "./features/files/filesSlice";
 import { projectsReducer } from "./features/projects/projectsSlice";
 import { annotationsReducer } from "./features/annotations/annotationsSlice";
 import { casesReducer } from "./features/cases/casesSlice";
-import { ssmsableReducer } from "./features/ssmsTable/ssmsTableSlice";
+import { ssmsTableReducer } from "./features/ssmsTable/ssmsTableSlice";
 
 export const coreStore = configureStore({
   reducer: {
@@ -19,7 +19,7 @@ export const coreStore = configureStore({
     projects: projectsReducer,
     annotations: annotationsReducer,
     cases: casesReducer,
-    ssmsTable: ssmsableReducer,
+    ssmsTable: ssmsTableReducer,
   },
   devTools: {
     name: "@gff/core",

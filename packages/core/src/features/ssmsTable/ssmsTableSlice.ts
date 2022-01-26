@@ -1,13 +1,8 @@
-
-import {
-  createAsyncThunk,
-  createSlice
-} from "@reduxjs/toolkit";
-import {  GdcApiResponse } from "../gdcapi/gdcapi";
-import { CoreDataSelectorResponse, createUseCoreDataHook } from "../../dataAcess";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { CoreDataSelectorResponse, createUseCoreDataHook, DataStatus } from "../../dataAcess";
 import { castDraft } from "immer";
-import { fetchCases } from "../cases/casesSlice";
-import { CoreState } from "../../store";
+import { CoreDispatch, CoreState } from "../../store";
+
 
 
 export interface GraphQLFetchError {
@@ -106,14 +101,26 @@ $sort: [Sort]
   }
 }`;
 
+export type AnyJson = Record<string, any>;
 
-const graphqlAPI = async <T>( query:string, variables:Record<string, any> ) : Promise<GdcApiResponse<T>> =>  {
+export interface GraphQLApiResponse<H = AnyJson> {
+  readonly data: H;
+  readonly warnings: Record<string, string>;
+}
+
+
+const graphqlAPI = async <T>(query: string, variables: Record<string, any>): Promise<GraphQLApiResponse<T>> => {
   const res = await fetch("https://api.gdc.cancer.gov/v0/graphql", {
-  method: "POST",
-  body: JSON.stringify({
-    query,
-    variables
-  })});
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    method: "POST",
+    body: JSON.stringify({
+      query,
+      variables,
+    }),
+  });
 
   if (res.ok)
     return res.json();
@@ -121,23 +128,41 @@ const graphqlAPI = async <T>( query:string, variables:Record<string, any> ) : Pr
   throw await buildGraphQLFetchError(res, variables);
 };
 
+export interface SSMSData {
+  readonly ssm_id: string;
+}
 
-interface SsmsTableRequest {
-  readonly pagesize: number;
+export interface GDCSsmsTable {
+  readonly cases: number;
+  readonly filteredCases: number;
+  readonly ssmsTotal: number;
+  readonly ssms: ReadonlyArray<SSMSData>;
+  readonly pageSize: number;
   readonly offset: number;
 }
 
-export const fetchSsmsTable = createAsyncThunk("ssmsTable", async (request: SsmsTableRequest) : Promise<GdcApiResponse<SsmsTableDefaults>> => {
-    const graphQlFilters = {
-      "ssmTested": {
-        "content": [
-          {
-            "content": {
-              "field": "cases.available_variation_data",
-              "value": [
-                "ssm"
-              ]
-            },
+interface SsmsTableRequest {
+  readonly pageSize: number;
+  readonly offset: number;
+}
+
+export const fetchSsmsTable = createAsyncThunk <
+  GraphQLApiResponse,
+  SsmsTableRequest,
+  { dispatch: CoreDispatch; state: CoreState }
+  > (
+  "ssmsTable",
+  async ({ pageSize, offset} : SsmsTableRequest): Promise<GraphQLApiResponse> => {
+  const graphQlFilters = {
+    "ssmTested": {
+      "content": [
+        {
+          "content": {
+            "field": "cases.available_variation_data",
+            "value": [
+              "ssm",
+            ],
+          },
             "op": "in"
           }
         ],
@@ -175,7 +200,7 @@ export const fetchSsmsTable = createAsyncThunk("ssmsTable", async (request: Ssms
         ],
         "op": "and"
       },
-      "ssmsTable_size": request.pagesize,
+      "ssmsTable_size": pageSize,
       "consequenceFilters": {
         "content": [
           {
@@ -190,7 +215,7 @@ export const fetchSsmsTable = createAsyncThunk("ssmsTable", async (request: Ssms
         ],
         "op": "and"
       },
-      "ssmsTable_offset": request.offset,
+      "ssmsTable_offset": offset,
       "ssmsTable_filters": {
         "op": "and",
         "content": [
@@ -231,21 +256,24 @@ export const fetchSsmsTable = createAsyncThunk("ssmsTable", async (request: Ssms
   }
 );
 
-export interface SsmsTableDefaults {
-  readonly caseTotal: number;
-  readonly pageSize: number;
-  readonly offset: number;
-}
+
 
 export interface SsmsTableState {
-  readonly smsTableData: CoreDataSelectorResponse<SsmsTableDefaults>;
+  readonly ssms: GDCSsmsTable;
+  readonly status: DataStatus;
+  readonly error?: string;
 }
 
-
 const initialState: SsmsTableState = {
-  smsTableData: {
-    status: "uninitialized",
+  ssms: {
+    cases: 0,
+    filteredCases: 0,
+    ssmsTotal: 0,
+    ssms: [],
+    pageSize: 0,
+    offset: 0,
   },
+  status: "uninitialized",
 };
 
 
@@ -256,36 +284,51 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchSsmsTable.fulfilled, (state, action) => {
-        state.smsTableData.data = castDraft(action.payload.data);
-        state.smsTableData.status = "fulfilled";
-        state.smsTableData.error = undefined;
-        return state;
-      })
-      .addCase(fetchCases.pending, (state) => {
-        state.smsTableData = {
-          status: "pending",
-        };
-        return state;
-      })
-      .addCase(fetchCases.rejected, (state, action) => {
-        state.smsTableData = {
-          status: "rejected",
-        };
-        if (action.error) {
-          state.smsTableData.error = action.error.message;
+        const response = action.payload;
+        if (response.warnings) {
+          state = castDraft(initialState);
+          state.status = "rejected";
+          state.error = response.warnings.filters;
         }
+        const data = action.payload.data.viewer.explore;
+        state.ssms.cases = data.cases.hits.total;
+        state.ssms.filteredCases = data.filteredCases.hits.total;
+        state.ssms.ssms = data.ssms.hits.edges.map((x: Record<any, any>): SSMSData => {
+          return {
+            ssm_id: x.ssm_id,
+          };
+        });
 
+        state.status = "fulfilled";
+        state.error = undefined;
+        return state;
+      })
+      .addCase(fetchSsmsTable.pending, (state) => {
+        state.status = "pending";
+        return state;
+      })
+      .addCase(fetchSsmsTable.rejected, (state, action) => {
+        state.status = "rejected";
+        if (action.error) {
+          state.error = action.error.message;
+        }
         return state;
       });
   },
 });
 
-export const ssmsableReducer = slice.reducer;
+export const ssmsTableReducer = slice.reducer;
+
+export const selectSsmsTableState = (state: CoreState): GDCSsmsTable => state.ssmsTable.ssms;
 
 export const selectSsmsTableData = (
   state: CoreState,
-): CoreDataSelectorResponse<SsmsTableDefaults> => {
-  return state.ssmsTable.smsTableData;
+): CoreDataSelectorResponse<SsmsTableState> => {
+  return {
+    data: state.ssmsTable,
+    status: state.ssmsTable.status,
+    error: state.ssmsTable.error,
+  };
 };
 
 export const useSsmsTable = createUseCoreDataHook(fetchSsmsTable, selectSsmsTableData);
