@@ -127,7 +127,7 @@ export const fetchGenesTable = createAsyncThunk <
           "content": {
             "field": "cases.primary_site",
             "value": [
-              "brain"
+              "kidney"
             ]
           }
         },
@@ -182,7 +182,7 @@ export const fetchGenesTable = createAsyncThunk <
           "content": {
             "field": "cases.primary_site",
             "value": [
-              "brain"
+              "kidney"
             ]
           }
         },
@@ -229,7 +229,7 @@ export const fetchGenesTable = createAsyncThunk <
           "content": {
             "field": "cases.primary_site",
             "value": [
-              "brain"
+              "kidney"
             ]
           }
         },
@@ -261,7 +261,7 @@ export const fetchGenesTable = createAsyncThunk <
           "content": {
             "field": "cases.primary_site",
             "value": [
-              "brain"
+              "kidney"
             ]
           }
         },
@@ -302,7 +302,7 @@ export const fetchGenesTable = createAsyncThunk <
           "content": {
             "field": "cases.primary_site",
             "value": [
-              "brain"
+              "kidney"
             ]
           }
         },

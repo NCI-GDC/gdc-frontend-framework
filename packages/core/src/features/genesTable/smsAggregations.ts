@@ -34,14 +34,13 @@ export interface KeyCount {
   readonly doc_count: number;
 }
 
-export interface SMSAggregations {
-  readonly keyvalues: ReadonlyArray<KeyCount>;
-}
 
 interface SMSAggregationsQueryProps {
   readonly field?: string;
   readonly ids: ReadonlyArray<string>;
 }
+
+export type SMSAggregations = Record<string, number>;
 
 
 export const fetchSmsAggregations = createAsyncThunk <
@@ -92,13 +91,13 @@ export const fetchSmsAggregations = createAsyncThunk <
 
 
 export interface SSMSAggregationsState {
-  readonly aggregations: SMSAggregations;
+  readonly aggregations: Record<string, number>;
   readonly status: DataStatus;
   readonly error?: string;
 }
 
 const initialState: SSMSAggregationsState = {
-  aggregations: { keyvalues:  [] },
+  aggregations: { },
   status: "uninitialized",
 };
 
@@ -116,10 +115,16 @@ const slice = createSlice({
           state.status = "rejected";
           state.error = response.warnings.filters;
         }
-        console.log(response);
+        console.log(action);
         const data = response.data.ssmsAggregationsViewer.explore.ssms.aggregations.consequence__transcript__gene__gene_id;
         //  Note: change this to the field parameter
-        state.aggregations = data.buckets;
+        state.aggregations = data.buckets.reduce(
+          (counts : Record<string, number>, apiBucket : Record<string, any>) => {
+            counts[apiBucket.key] = apiBucket.doc_count;
+            return counts;
+          },
+          {} as Record<string, number>,
+        );
          state.status = "fulfilled";
         state.error = undefined;
         return state;
