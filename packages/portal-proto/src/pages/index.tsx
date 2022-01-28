@@ -74,6 +74,9 @@ const IndexPage: NextPage = () => {
             <li>
               <HoverLink href="/ssmsTable">Molecular Table</HoverLink>
             </li>
+            <li>
+              <HoverLink href="/genesTable">Genes Table</HoverLink>
+            </li>
           </ul>
         </Section>
       </div>

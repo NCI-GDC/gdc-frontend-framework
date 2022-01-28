@@ -8,6 +8,8 @@ import { projectsReducer } from "./features/projects/projectsSlice";
 import { annotationsReducer } from "./features/annotations/annotationsSlice";
 import { casesReducer } from "./features/cases/casesSlice";
 import { ssmsTableReducer } from "./features/ssmsTable/ssmsTableSlice";
+import { genesTableReducer } from "./features/genesTable/genesTableSlice";
+import { ssmsAggregationsReducer } from "./features/genesTable/smsAggregations";
 
 export const coreStore = configureStore({
   reducer: {
@@ -20,6 +22,8 @@ export const coreStore = configureStore({
     annotations: annotationsReducer,
     cases: casesReducer,
     ssmsTable: ssmsTableReducer,
+    genesTable: genesTableReducer,
+    ssmsAggregations: ssmsAggregationsReducer,
   },
   devTools: {
     name: "@gff/core",

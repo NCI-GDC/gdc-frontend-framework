@@ -5,7 +5,6 @@ import {
   fetchSsmsTable,
   GDCSsmsTable,
   selectSsmsTableData,
-  FacetBuckets,
 } from "@gff/core";
 
 interface SSMSTableResponce {
@@ -27,7 +26,6 @@ const useSSMSTable = (pageSize:number, offset:number): SSMSTableResponce => {
   useEffect(() => {
     console.log(table);
     if (table.status === "uninitialized") {
-      console.log("dispatch table");
       coreDispatch(fetchSsmsTable({ pageSize:pageSize, offset:offset }));
     }
   }, [coreDispatch, table, pageSize, offset]);

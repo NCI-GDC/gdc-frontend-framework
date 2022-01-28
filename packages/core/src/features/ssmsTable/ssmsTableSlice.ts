@@ -2,29 +2,12 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { CoreDataSelectorResponse, createUseCoreDataHook, DataStatus } from "../../dataAcess";
 import { castDraft } from "immer";
 import { CoreDispatch, CoreState } from "../../store";
+import {
+  GraphQLApiResponse,
+  graphqlAPI,
+  TablePageOffsetProps,
+} from "../gdcapi/gdcgraphql";
 
-
-
-export interface GraphQLFetchError {
-  readonly url: string;
-  readonly status: number;
-  readonly statusText: string;
-  readonly text: string;
-  readonly variables?: Record<string, any>;
-}
-
-const buildGraphQLFetchError = async (
-  res: Response,
-  variables?: Record<string, any>,
-): Promise<GraphQLFetchError> => {
-  return {
-    url: res.url,
-    status: res.status,
-    statusText: res.statusText,
-    text: await res.text(),
-    variables: variables,
-  };
-};
 
 const SSMSTableGraphQLQuery = `query SsmsTable_relayQuery(
   $ssmTested: FiltersArgument
@@ -101,32 +84,7 @@ $sort: [Sort]
   }
 }`;
 
-export type AnyJson = Record<string, any>;
 
-export interface GraphQLApiResponse<H = AnyJson> {
-  readonly data: H;
-  readonly warnings: Record<string, string>;
-}
-
-
-const graphqlAPI = async <T>(query: string, variables: Record<string, any>): Promise<GraphQLApiResponse<T>> => {
-  const res = await fetch("https://api.gdc.cancer.gov/v0/graphql", {
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    method: "POST",
-    body: JSON.stringify({
-      query,
-      variables,
-    }),
-  });
-
-  if (res.ok)
-    return res.json();
-
-  throw await buildGraphQLFetchError(res, variables);
-};
 
 export interface SSMSConsequence {
   readonly id:string;
@@ -165,18 +123,13 @@ export interface GDCSsmsTable {
   readonly offset: number;
 }
 
-interface SsmsTableRequest {
-  readonly pageSize: number;
-  readonly offset: number;
-}
-
 export const fetchSsmsTable = createAsyncThunk <
   GraphQLApiResponse,
-  SsmsTableRequest,
+  TablePageOffsetProps,
   { dispatch: CoreDispatch; state: CoreState }
   > (
   "ssmsTable",
-  async ({ pageSize, offset} : SsmsTableRequest): Promise<GraphQLApiResponse> => {
+  async ({ pageSize, offset} : TablePageOffsetProps): Promise<GraphQLApiResponse> => {
   const graphQlFilters = {
     "ssmTested": {
       "content": [
