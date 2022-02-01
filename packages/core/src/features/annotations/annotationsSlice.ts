@@ -61,7 +61,6 @@ const slice = createSlice({
           } else {
             state.annotations = {};
           }
-          console.log('state.annotations', state.annotations);
           state.status = "fulfilled";
         }
       })

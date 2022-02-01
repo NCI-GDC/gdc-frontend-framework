@@ -269,9 +269,7 @@ export const fetchGdcEntities = async <T>(
   });
 
   if (res.ok) {
-    const temp1 = res.json();
-    console.log('temp1', temp1);
-    return temp1;
+    return res.json();
   }
 
   throw await buildFetchError(res, request);
