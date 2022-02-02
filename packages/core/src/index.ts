@@ -17,4 +17,5 @@ export * from "./features/annotations/annotationsHooks";
 export * from "./features/cases/casesSlice";
 export * from "./features/ssmsTable/ssmsTableSlice";
 export * from "./features/genesTable/genesTableSlice";
-export * from "./features/genesTable/smsAggregations";
+export * from "./features/genesTable/genesFrequencyChartSlice";
+export * from "./features/survival/survivalSlice";

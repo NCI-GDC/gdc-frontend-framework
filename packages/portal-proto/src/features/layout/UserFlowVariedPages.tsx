@@ -9,6 +9,11 @@ interface UserFlowVariedPagesProps {
   readonly Options?: React.FC<unknown>;
 }
 
+import {
+  MdOutlineLogin as LoginIcon,
+  MdShoppingCart as CartIcon
+} from "react-icons/md";
+
 export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
   headerElements,
   indexPath = "/",
@@ -45,9 +50,9 @@ const Header: React.FC<HeaderProps> = ({
         <div className="flex-none w-64 h-nci-logo mr-2 relative">
           {/* There's some oddities going on here that need to be explained.  When a
           <Link> wraps an <Image>, react complains it's expecting a reference to be
-          passed along. A popular fix is to wrap the child with an empty anchor tag.  
+          passed along. A popular fix is to wrap the child with an empty anchor tag.
           This causes an accessibility problem because empty anchors confuse screen
-          readers. The button tag satisfies both react's requirements and a11y 
+          readers. The button tag satisfies both react's requirements and a11y
           requirements.  */}
           <Link href={indexPath}>
             <button>
@@ -71,6 +76,10 @@ const Header: React.FC<HeaderProps> = ({
         <div className="flex-grow"></div>
         <div className="w-64">
           <Options />
+        </div>
+        <div className="flex flex-row flex-nowrap">
+          <span className={"flex flex-row  items-center mx-2 "}><LoginIcon size="28px" /> Login </span>
+          <span className={"flex flex-row  items-center mx-2"}><CartIcon size="28px" /> Cart </span>
         </div>
       </div>
     </div>

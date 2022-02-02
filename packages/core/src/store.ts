@@ -9,7 +9,8 @@ import { annotationsReducer } from "./features/annotations/annotationsSlice";
 import { casesReducer } from "./features/cases/casesSlice";
 import { ssmsTableReducer } from "./features/ssmsTable/ssmsTableSlice";
 import { genesTableReducer } from "./features/genesTable/genesTableSlice";
-import { ssmsAggregationsReducer } from "./features/genesTable/smsAggregations";
+import { geneFrequencyChartReducer } from "./features/genesTable/genesFrequencyChartSlice";
+import { survivalReducer } from "./features/survival/survivalSlice";
 
 export const coreStore = configureStore({
   reducer: {
@@ -23,7 +24,9 @@ export const coreStore = configureStore({
     cases: casesReducer,
     ssmsTable: ssmsTableReducer,
     genesTable: genesTableReducer,
-    ssmsAggregations: ssmsAggregationsReducer,
+    geneFrequencyChart: geneFrequencyChartReducer,
+    survival: survivalReducer,
+
   },
   devTools: {
     name: "@gff/core",

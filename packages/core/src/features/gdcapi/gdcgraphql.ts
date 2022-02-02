@@ -15,8 +15,8 @@ export interface GraphQLApiResponse<H = AnyJson> {
 }
 
 export interface TablePageOffsetProps {
-  readonly pageSize: number;
-  readonly offset: number;
+  readonly pageSize?: number;
+  readonly offset?: number;
 }
 
 const buildGraphQLFetchError = async (

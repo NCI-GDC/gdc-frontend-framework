@@ -1,14 +1,9 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CoreDataSelectorResponse, createUseCoreDataHook, DataStatus } from "../../dataAcess";
-import { castDraft } from "immer";
-import { CoreDispatch, CoreState } from "../../store";
 import {
   GraphQLApiResponse,
   graphqlAPI,
 } from "../gdcapi/gdcgraphql";
 
-
-const SSMSAggregationsQuery = `
+export const SSMSAggregationsQuery = `
 query SsmsAggregations (
   $ssmCountsfilters: FiltersArgument
 ) {
@@ -40,15 +35,53 @@ interface SMSAggregationsQueryProps {
   readonly ids: ReadonlyArray<string>;
 }
 
-export type SMSAggregations = Record<string, number>;
+export type SmsAggregationsApi = Record<string, number>;
 
+export const fetchSmsAggregations2 = async ({  ids, field = "consequence.transcript.gene.gene_id"} : SMSAggregationsQueryProps): Promise<GraphQLApiResponse> => {
+  const graphQlFilters = {
+    "ssmCountsfilters": {
+      "content": [
+        {
+          "op": "in",
+          "content": {
+            "field": "cases.primary_site",
+            "value": [
+              "kidney"
+            ]
+          }
+        },
+        {
+          "content": {
+            "field": field,
+            "value": ids,
+          },
+          "op": "in"
+        },
+        {
+          "content": {
+            "field": "genes.is_cancer_gene_census",
+            "value": [
+              "true"
+            ]
+          },
+          "op": "in"
+        }
+      ],
+      "op": "and"
+    }
 
+  };
+
+  return await graphqlAPI(SSMSAggregationsQuery, graphQlFilters);
+};
+
+/* ---
 export const fetchSmsAggregations = createAsyncThunk <
   GraphQLApiResponse,
   SMSAggregationsQueryProps,
   { dispatch: CoreDispatch; state: CoreState }
   > (
-  "ssmsAggregations",
+  "genes/ssmsAggregations",
   async ({  ids, field = "consequence.transcript.gene.gene_id"} : SMSAggregationsQueryProps): Promise<GraphQLApiResponse> => {
   const graphQlFilters = {
       "ssmCountsfilters": {
@@ -103,7 +136,7 @@ const initialState: SSMSAggregationsState = {
 
 
 const slice = createSlice({
-  name: "ssmsAggregations",
+  name: "genes/ssmsAggregations",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -115,7 +148,6 @@ const slice = createSlice({
           state.status = "rejected";
           state.error = response.warnings.filters;
         }
-        console.log(action);
         const data = response.data.ssmsAggregationsViewer.explore.ssms.aggregations.consequence__transcript__gene__gene_id;
         //  Note: change this to the field parameter
         state.aggregations = data.buckets.reduce(
@@ -145,11 +177,11 @@ const slice = createSlice({
 
 export const ssmsAggregationsReducer = slice.reducer;
 
-export const selectSSMSAggregationState = (state: CoreState): SMSAggregations => state.ssmsAggregations.aggregations;
+export const selectSSMSAggregationState = (state: CoreState): SSMSAggregationsState => state.ssmsAggregations;
 
 export const selectSSMSAggregationData = (
   state: CoreState,
-): CoreDataSelectorResponse<SMSAggregations> => {
+): CoreDataSelectorResponse<SmsAggregationsSlice> => {
   return {
     data: state.ssmsAggregations.aggregations,
     status: state.ssmsAggregations.status,
@@ -158,3 +190,4 @@ export const selectSSMSAggregationData = (
 };
 
 export const useSSMSAggregations = createUseCoreDataHook(fetchSmsAggregations, selectSSMSAggregationData);
+*/

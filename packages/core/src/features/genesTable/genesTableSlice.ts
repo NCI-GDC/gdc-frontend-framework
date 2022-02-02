@@ -7,6 +7,7 @@ import {
   graphqlAPI,
   TablePageOffsetProps,
 } from "../gdcapi/gdcgraphql";
+import { fetchSmsAggregations2 } from "./smsAggregationsApi";
 
 
 const GenesTableGraphQLQuery = `
@@ -108,6 +109,7 @@ export interface GDCGenesTable {
   readonly filteredCases: number;
   readonly genes: ReadonlyArray<GeneRowInfo>;
   readonly genes_total: number;
+  readonly mutationCounts?: Record<string, string>
 }
 
 
@@ -116,7 +118,7 @@ export const fetchGenesTable = createAsyncThunk <
   TablePageOffsetProps,
   { dispatch: CoreDispatch; state: CoreState }
   > (
-  "genesTable",
+  "genes/genesTable",
   async ({ pageSize, offset} : TablePageOffsetProps): Promise<GraphQLApiResponse> => {
   const graphQlFilters = {
       "genesTable_filters": {
@@ -327,8 +329,26 @@ export const fetchGenesTable = createAsyncThunk <
       ]
     }
     };
+    // get the TableData
 
-    return await graphqlAPI(GenesTableGraphQLQuery, graphQlFilters);
+    const results:GraphQLApiResponse<any> =  await graphqlAPI(GenesTableGraphQLQuery, graphQlFilters)
+    if (!results.warnings) {
+      const geneIds = results.data.genesTableViewer.explore.genes.hits.edges.map(( { node } :  Record<string, any>) => node.gene_id);
+      const counts = await fetchSmsAggregations2({  ids: geneIds });
+
+
+        const countsData = counts.data.ssmsAggregationsViewer.explore.ssms.aggregations.consequence__transcript__gene__gene_id;
+        results.data.genesTableViewer['mutationCounts'] = countsData.buckets.reduce(
+          (counts : Record<string, number>, apiBucket : Record<string, any>) => {
+            counts[apiBucket.key] = apiBucket.doc_count;
+            return counts;
+          },
+          {} as Record<string, number>,
+        );
+      console.log("resultsv ", results)
+      }
+
+    return results;
   }
 );
 
@@ -347,13 +367,37 @@ const initialState: GenesTableState = {
     cnvCases: 0,
     genes: [],
     genes_total: 0,
+
   },
   status: "uninitialized",
 };
 
 
+// interface GeneNode {
+//   readonly node: {
+//       readonly gene: {
+//         readonly gene_id: string;
+//       }
+//   }
+// }
+
+// interface GeneResponseNode {
+//   readonly biotype: string;
+//   readonly gene_id: string;
+//   readonly id: string;
+//   readonly is_cancer_gene_census: boolean;
+//   readonly name: string;
+//   readonly numCases: number;
+//   readonly symbol: string;
+// }
+//
+// interface GeneResponseEdge {
+//   readonly node: GeneResponseNode;
+// }
+
+
 const slice = createSlice({
-  name: "genesTable",
+  name: "genes/genesTable",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -370,8 +414,8 @@ const slice = createSlice({
         state.genes.cnvCases = data.cnvCases.hits.total;
         state.genes.filteredCases = data.filteredCases.hits.total;
         state.genes.genes_total = data.genes.hits.total;
-
-        state.genes.genes = data.genes.hits.edges.map(( { node } : Record<any, any>): GeneRowInfo => {
+        state.genes.mutationCounts = action.payload.data.genesTableViewer.mutationCounts;
+        state.genes.genes = data.genes.hits.edges.map(( { node } : Record<string, any> ): GeneRowInfo => {
           const {biotype, cytoband, gene_id, id, is_cancer_gene_census, name, num_cases, symbol } = node;
           return {
             biotype,

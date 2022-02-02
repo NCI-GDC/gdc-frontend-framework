@@ -8,13 +8,13 @@ import {
   selectGenesTableData,
   selectSSMSAggregationData,
   TablePageOffsetProps,
-} from "@gff/core";
-import { setState } from "expect/build/jestMatchersObject";
-import { SMSAggregations } from "@gff/core/dist/dts";
+  useSSMSAggregations,
 
-interface GenesTableResponce {
+} from "@gff/core";
+
+interface GenesTableResponse {
   readonly data?: GDCGenesTable;
-  readonly mutationsCount?: SMSAggregations;
+  readonly mutationsCount?: Record<string, number>;
   readonly error?: string;
   readonly isUninitialized: boolean;
   readonly isFetching: boolean;
@@ -23,45 +23,30 @@ interface GenesTableResponce {
 }
 
 
-const useGenesTable = (pageSize:number, offset:number): GenesTableResponce => {
+const useGenesTable = (pageSize:number, offset:number) : GenesTableResponse => {
   const coreDispatch = useCoreDispatch();
   const table = useCoreSelector((state) =>
     selectGenesTableData(state),
   );
-  const mutationCounts = useCoreSelector((state) =>
-    selectSSMSAggregationData(state),
-  ); // mutation counts are not returned in the GenesTable, we must use the returned
-     // gene_ids to get the mutation counts
-
   useEffect(() => { // fetch table information when pageSize or Offset (and eventually filters) changes
       coreDispatch(fetchGenesTable({ pageSize:pageSize, offset:offset }));
-  }, [pageSize, offset]);
-
-  useEffect(() => { // get mutation counts when table changes
-      const genes = table.data.genes.genes.map((x) => x.gene_id);
-      coreDispatch(fetchSmsAggregations({ ids: genes }));
-  }, [table.data.genes]);
-
-
-  return {
+  }, [ pageSize, offset]);
+   return {
     data: { ...table?.data.genes },
-    mutationsCount: mutationCounts,
     error: table?.error,
     isUninitialized: table === undefined,
     isFetching: table?.status === "pending",
     isSuccess: table?.status === "fulfilled",
     isError: table?.status === "rejected",
-  };
-};
-
-
+   };
+ };
 
 const GenesTable : React.FC<TablePageOffsetProps> = ({ pageSize, offset } : TablePageOffsetProps) => {
 
   const [poffset, setOffset] = useState(0);
 
-  const { data, mutationsCount, error, isUninitialized, isFetching, isError } =
-    useGenesTable(10, poffset);
+  const { data, error, isUninitialized, isFetching, isError } =
+    useGenesTable(  pageSize, poffset   );
 
   if (isUninitialized) {
     return <div>Initializing table...</div>;
@@ -78,8 +63,6 @@ const GenesTable : React.FC<TablePageOffsetProps> = ({ pageSize, offset } : Tabl
   const handleClick = () => {
     setOffset(poffset + 2);
   }
-
-  console.log("mutationsCount ", mutationsCount);
 
   return (
     <div className="flex flex-col w-100">
@@ -103,7 +86,7 @@ const GenesTable : React.FC<TablePageOffsetProps> = ({ pageSize, offset } : Tabl
             <span>{x.ssm_case} / {data.cases} </span>
             <span>{x.case_cnv_gain} / {data.cnvCases} </span>
             <span>{x.case_cnv_loss} / {data.cnvCases} </span>
-            <span>{mutationsCount.data[x.gene_id]} </span>
+            <span>{data.mutationCounts  ? data.mutationCounts[x.gene_id] : " loading"} </span>
             <span>A</span>
             <span>S</span>
           </div>);
