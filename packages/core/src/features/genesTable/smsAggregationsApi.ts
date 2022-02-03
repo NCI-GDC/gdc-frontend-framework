@@ -1,7 +1,4 @@
-import {
-  GraphQLApiResponse,
-  graphqlAPI,
-} from "../gdcapi/gdcgraphql";
+import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
 
 export const SSMSAggregationsQuery = `
 query SsmsAggregations (
@@ -24,170 +21,43 @@ query SsmsAggregations (
 }
 `;
 
-export interface KeyCount {
-  readonly key: string;
-  readonly doc_count: number;
-}
-
-
 interface SMSAggregationsQueryProps {
   readonly field?: string;
   readonly ids: ReadonlyArray<string>;
 }
 
-export type SmsAggregationsApi = Record<string, number>;
-
-export const fetchSmsAggregations2 = async ({  ids, field = "consequence.transcript.gene.gene_id"} : SMSAggregationsQueryProps): Promise<GraphQLApiResponse> => {
+export const fetchSmsAggregations = async ({
+  ids,
+  field = "consequence.transcript.gene.gene_id",
+}: SMSAggregationsQueryProps): Promise<GraphQLApiResponse> => {
   const graphQlFilters = {
-    "ssmCountsfilters": {
-      "content": [
+    ssmCountsfilters: {
+      content: [
         {
-          "op": "in",
-          "content": {
-            "field": "cases.primary_site",
-            "value": [
-              "kidney"
-            ]
-          }
+          op: "in",
+          content: {
+            field: "cases.primary_site",
+            value: ["kidney"],
+          },
         },
         {
-          "content": {
-            "field": field,
-            "value": ids,
+          content: {
+            field: field,
+            value: ids,
           },
-          "op": "in"
+          op: "in",
         },
         {
-          "content": {
-            "field": "genes.is_cancer_gene_census",
-            "value": [
-              "true"
-            ]
+          content: {
+            field: "genes.is_cancer_gene_census",
+            value: ["true"],
           },
-          "op": "in"
-        }
+          op: "in",
+        },
       ],
-      "op": "and"
-    }
-
+      op: "and",
+    },
   };
 
   return await graphqlAPI(SSMSAggregationsQuery, graphQlFilters);
 };
-
-/* ---
-export const fetchSmsAggregations = createAsyncThunk <
-  GraphQLApiResponse,
-  SMSAggregationsQueryProps,
-  { dispatch: CoreDispatch; state: CoreState }
-  > (
-  "genes/ssmsAggregations",
-  async ({  ids, field = "consequence.transcript.gene.gene_id"} : SMSAggregationsQueryProps): Promise<GraphQLApiResponse> => {
-  const graphQlFilters = {
-      "ssmCountsfilters": {
-      "content": [
-        {
-          "op": "in",
-          "content": {
-            "field": "cases.primary_site",
-            "value": [
-              "kidney"
-            ]
-          }
-        },
-        {
-          "content": {
-            "field": field,
-            "value": ids,
-          },
-          "op": "in"
-        },
-        {
-          "content": {
-            "field": "genes.is_cancer_gene_census",
-            "value": [
-              "true"
-            ]
-          },
-          "op": "in"
-        }
-      ],
-        "op": "and"
-    }
-
-    };
-
-    return await graphqlAPI(SSMSAggregationsQuery, graphQlFilters);
-  }
-);
-
-
-
-export interface SSMSAggregationsState {
-  readonly aggregations: Record<string, number>;
-  readonly status: DataStatus;
-  readonly error?: string;
-}
-
-const initialState: SSMSAggregationsState = {
-  aggregations: { },
-  status: "uninitialized",
-};
-
-
-const slice = createSlice({
-  name: "genes/ssmsAggregations",
-  initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchSmsAggregations.fulfilled, (state, action) => {
-        const response = action.payload;
-        if (response.warnings) {
-          state = castDraft(initialState);
-          state.status = "rejected";
-          state.error = response.warnings.filters;
-        }
-        const data = response.data.ssmsAggregationsViewer.explore.ssms.aggregations.consequence__transcript__gene__gene_id;
-        //  Note: change this to the field parameter
-        state.aggregations = data.buckets.reduce(
-          (counts : Record<string, number>, apiBucket : Record<string, any>) => {
-            counts[apiBucket.key] = apiBucket.doc_count;
-            return counts;
-          },
-          {} as Record<string, number>,
-        );
-         state.status = "fulfilled";
-        state.error = undefined;
-        return state;
-      })
-      .addCase(fetchSmsAggregations.pending, (state) => {
-        state.status = "pending";
-        return state;
-      })
-      .addCase(fetchSmsAggregations.rejected, (state, action) => {
-        state.status = "rejected";
-        if (action.error) {
-          state.error = action.error.message;
-        }
-        return state;
-      });
-  },
-});
-
-export const ssmsAggregationsReducer = slice.reducer;
-
-export const selectSSMSAggregationState = (state: CoreState): SSMSAggregationsState => state.ssmsAggregations;
-
-export const selectSSMSAggregationData = (
-  state: CoreState,
-): CoreDataSelectorResponse<SmsAggregationsSlice> => {
-  return {
-    data: state.ssmsAggregations.aggregations,
-    status: state.ssmsAggregations.status,
-    error: state.ssmsAggregations.error,
-  };
-};
-
-export const useSSMSAggregations = createUseCoreDataHook(fetchSmsAggregations, selectSSMSAggregationData);
-*/

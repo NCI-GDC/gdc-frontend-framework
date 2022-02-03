@@ -78,8 +78,8 @@ const Header: React.FC<HeaderProps> = ({
           <Options />
         </div>
         <div className="flex flex-row flex-nowrap">
-          <span className={"flex flex-row  items-center mx-2 "}><LoginIcon size="28px" /> Login </span>
-          <span className={"flex flex-row  items-center mx-2"}><CartIcon size="28px" /> Cart </span>
+          <div className={"flex flex-row opacity-60 hover:opacity-100 transition-opacity items-center mx-2 "}><LoginIcon size="28px" /> Login </div>
+          <div className={"flex flex-row opacity-60 hover:opacity-100 transition-opacity  items-center mx-2"}><CartIcon size="28px" /> Cart </div>
         </div>
       </div>
     </div>

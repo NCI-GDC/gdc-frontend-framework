@@ -6,7 +6,7 @@ const GenesTablePage: NextPage = () => {
   return (
     <SimpleLayout>
       <div >
-          <GenesTable pageSize={10} offset={0} />
+          <GenesTable/>
       </div>
     </SimpleLayout>
   );

@@ -1,5 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CoreDataSelectorResponse, createUseCoreDataHook, DataStatus } from "../../dataAcess";
+import {
+  CoreDataSelectorResponse,
+  createUseCoreDataHook,
+  DataStatus,
+} from "../../dataAcess";
 import { castDraft } from "immer";
 import { CoreDispatch, CoreState } from "../../store";
 import {
@@ -7,7 +11,6 @@ import {
   graphqlAPI,
   TablePageOffsetProps,
 } from "../gdcapi/gdcgraphql";
-
 
 const SSMSTableGraphQLQuery = `query SsmsTable_relayQuery(
   $ssmTested: FiltersArgument
@@ -84,10 +87,8 @@ $sort: [Sort]
   }
 }`;
 
-
-
 export interface SSMSConsequence {
-  readonly id:string;
+  readonly id: string;
   readonly aa_change: string;
   readonly annotation: {
     readonly polyphen_impact: string;
@@ -95,12 +96,12 @@ export interface SSMSConsequence {
     readonly shift_impact: string;
     readonly sift_score: string;
     readonly vep_impact: string;
-  },
-  consequence_type : string,
-  readonly gene : {
+  };
+  consequence_type: string;
+  readonly gene: {
     readonly gene_id: string;
     readonly symbol: string;
-  }
+  };
   readonly is_canonical: boolean;
 }
 export interface SSMSData {
@@ -123,117 +124,104 @@ export interface GDCSsmsTable {
   readonly offset: number;
 }
 
-export const fetchSsmsTable = createAsyncThunk <
+export const fetchSsmsTable = createAsyncThunk<
   GraphQLApiResponse,
   TablePageOffsetProps,
   { dispatch: CoreDispatch; state: CoreState }
-  > (
+>(
   "ssmsTable",
-  async ({ pageSize, offset} : TablePageOffsetProps): Promise<GraphQLApiResponse> => {
-  const graphQlFilters = {
-    "ssmTested": {
-      "content": [
+  async ({
+    pageSize,
+    offset,
+  }: TablePageOffsetProps): Promise<GraphQLApiResponse> => {
+    const graphQlFilters = {
+      ssmTested: {
+        content: [
+          {
+            content: {
+              field: "cases.available_variation_data",
+              value: ["ssm"],
+            },
+            op: "in",
+          },
+        ],
+        op: "and",
+      },
+      ssmCaseFilter: {
+        content: [
+          {
+            content: {
+              field: "available_variation_data",
+              value: ["ssm"],
+            },
+            op: "in",
+          },
+          {
+            op: "in",
+            content: {
+              field: "cases.primary_site",
+              value: ["breast"],
+            },
+          },
+          {
+            content: {
+              field: "genes.is_cancer_gene_census",
+              value: ["true"],
+            },
+            op: "in",
+          },
+        ],
+        op: "and",
+      },
+      ssmsTable_size: pageSize,
+      consequenceFilters: {
+        content: [
+          {
+            content: {
+              field: "consequence.transcript.is_canonical",
+              value: ["true"],
+            },
+            op: "in",
+          },
+        ],
+        op: "and",
+      },
+      ssmsTable_offset: offset,
+      ssmsTable_filters: {
+        op: "and",
+        content: [
+          {
+            op: "in",
+            content: {
+              field: "cases.primary_site",
+              value: ["breast"],
+            },
+          },
+          {
+            content: {
+              field: "genes.is_cancer_gene_census",
+              value: ["true"],
+            },
+            op: "in",
+          },
+        ],
+      },
+      score: "occurrence.case.project.project_id",
+      sort: [
         {
-          "content": {
-            "field": "cases.available_variation_data",
-            "value": [
-              "ssm",
-            ],
-          },
-            "op": "in"
-          }
-        ],
-        "op": "and"
-      },
-      "ssmCaseFilter": {
-        "content": [
-          {
-            "content": {
-              "field": "available_variation_data",
-              "value": [
-                "ssm"
-              ]
-            },
-            "op": "in"
-          },
-          {
-            "op": "in",
-            "content": {
-              "field": "cases.primary_site",
-              "value": [
-                "breast"
-              ]
-            }
-          },
-          {
-            "content": {
-              "field": "genes.is_cancer_gene_census",
-              "value": [
-                "true"
-              ]
-            },
-            "op": "in"
-          }
-        ],
-        "op": "and"
-      },
-      "ssmsTable_size": pageSize,
-      "consequenceFilters": {
-        "content": [
-          {
-            "content": {
-              "field": "consequence.transcript.is_canonical",
-              "value": [
-                "true"
-              ]
-            },
-            "op": "in"
-          }
-        ],
-        "op": "and"
-      },
-      "ssmsTable_offset": offset,
-      "ssmsTable_filters": {
-        "op": "and",
-        "content": [
-          {
-            "op": "in",
-            "content": {
-              "field": "cases.primary_site",
-              "value": [
-                "breast"
-              ]
-            }
-          },
-          {
-            "content": {
-              "field": "genes.is_cancer_gene_census",
-              "value": [
-                "true"
-              ]
-            },
-            "op": "in"
-          }
-        ]
-      },
-      "score": "occurrence.case.project.project_id",
-      "sort": [
-        {
-          "field": "_score",
-          "order": "desc"
+          field: "_score",
+          order: "desc",
         },
         {
-          "field": "_uid",
-          "order": "asc"
-        }
-      ]
-    }
+          field: "_uid",
+          order: "asc",
+        },
+      ],
+    };
 
     return await graphqlAPI(SSMSTableGraphQLQuery, graphQlFilters);
-  }
+  },
 );
-
-
 
 export interface SsmsTableState {
   readonly ssms: GDCSsmsTable;
@@ -253,7 +241,6 @@ const initialState: SsmsTableState = {
   status: "uninitialized",
 };
 
-
 const slice = createSlice({
   name: "ssmsTable",
   initialState,
@@ -270,27 +257,31 @@ const slice = createSlice({
         const data = action.payload.data.viewer.explore;
         state.ssms.cases = data.cases.hits.total;
         state.ssms.filteredCases = data.filteredCases.hits.total;
-        state.ssms.ssms = data.ssms.hits.edges.map(( { node } : Record<any, any>): SSMSData => {
-          return {
-            ssm_id : node.ssm_id,
-            score : node.score,
-            id: node.id,
-            mutation_subtype: node.mutation_subtype,
-            genomic_dna_change: node.genomic_dna_change,
-            occurrence: node.occurrence.hits.total,
-            filteredOccurrences: node.filteredOccurences.hits.total,
-            consequence: node.consequence.hits.edges.map( (y:Record<any, any>)  => {
-              const transcript = y.node.transcript;
-              return {
-                id : y.node.id,
-                is_canonical: transcript.is_canonical,
-                aa_change : transcript.aa_change,
-                annotation: {...transcript.annotation},
-                gene: { ...transcript.gene}
-              }
-            }),
-          };
-        });
+        state.ssms.ssms = data.ssms.hits.edges.map(
+          ({ node }: Record<any, any>): SSMSData => {
+            return {
+              ssm_id: node.ssm_id,
+              score: node.score,
+              id: node.id,
+              mutation_subtype: node.mutation_subtype,
+              genomic_dna_change: node.genomic_dna_change,
+              occurrence: node.occurrence.hits.total,
+              filteredOccurrences: node.filteredOccurences.hits.total,
+              consequence: node.consequence.hits.edges.map(
+                (y: Record<any, any>) => {
+                  const transcript = y.node.transcript;
+                  return {
+                    id: y.node.id,
+                    is_canonical: transcript.is_canonical,
+                    aa_change: transcript.aa_change,
+                    annotation: { ...transcript.annotation },
+                    gene: { ...transcript.gene },
+                  };
+                },
+              ),
+            };
+          },
+        );
 
         state.status = "fulfilled";
         state.error = undefined;
@@ -312,7 +303,8 @@ const slice = createSlice({
 
 export const ssmsTableReducer = slice.reducer;
 
-export const selectSsmsTableState = (state: CoreState): GDCSsmsTable => state.ssmsTable.ssms;
+export const selectSsmsTableState = (state: CoreState): GDCSsmsTable =>
+  state.ssmsTable.ssms;
 
 export const selectSsmsTableData = (
   state: CoreState,
@@ -324,4 +316,7 @@ export const selectSsmsTableData = (
   };
 };
 
-export const useSsmsTable = createUseCoreDataHook(fetchSsmsTable, selectSsmsTableData);
+export const useSsmsTable = createUseCoreDataHook(
+  fetchSsmsTable,
+  selectSsmsTableData,
+);

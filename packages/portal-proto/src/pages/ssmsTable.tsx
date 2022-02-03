@@ -6,7 +6,7 @@ const SSMSTablePage: NextPage = () => {
   return (
     <SimpleLayout>
       <div >
-          <MutationTable pageSize={10} offset={0} />
+          <MutationTable />
       </div>
     </SimpleLayout>
   );

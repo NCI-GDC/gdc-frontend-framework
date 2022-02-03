@@ -1,14 +1,17 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CoreDataSelectorResponse, createUseCoreDataHook, DataStatus } from "../../dataAcess";
+import {
+  CoreDataSelectorResponse,
+  createUseCoreDataHook,
+  DataStatus,
+} from "../../dataAcess";
 import { castDraft } from "immer";
 import { CoreDispatch, CoreState } from "../../store";
+import { fetchSmsAggregations } from "./smsAggregationsApi";
 import {
   GraphQLApiResponse,
   graphqlAPI,
   TablePageOffsetProps,
 } from "../gdcapi/gdcgraphql";
-import { fetchSmsAggregations2 } from "./smsAggregationsApi";
-
 
 const GenesTableGraphQLQuery = `
           query GenesTable_relayQuery(
@@ -87,7 +90,6 @@ const GenesTableGraphQLQuery = `
           }
 `;
 
-
 export interface GeneRowInfo {
   readonly biotype: string;
   readonly case_cnv_gain: number;
@@ -109,250 +111,227 @@ export interface GDCGenesTable {
   readonly filteredCases: number;
   readonly genes: ReadonlyArray<GeneRowInfo>;
   readonly genes_total: number;
-  readonly mutationCounts?: Record<string, string>
+  readonly mutationCounts?: Record<string, string>;
 }
 
-
-export const fetchGenesTable = createAsyncThunk <
+export const fetchGenesTable = createAsyncThunk<
   GraphQLApiResponse,
   TablePageOffsetProps,
   { dispatch: CoreDispatch; state: CoreState }
-  > (
+>(
   "genes/genesTable",
-  async ({ pageSize, offset} : TablePageOffsetProps): Promise<GraphQLApiResponse> => {
-  const graphQlFilters = {
-      "genesTable_filters": {
-      "op": "and",
-        "content": [
-        {
-          "op": "in",
-          "content": {
-            "field": "cases.primary_site",
-            "value": [
-              "kidney"
-            ]
-          }
-        },
-        {
-          "content": {
-            "field": "genes.is_cancer_gene_census",
-            "value": [
-              "true"
-            ]
+  async ({
+    pageSize,
+    offset,
+  }: TablePageOffsetProps): Promise<GraphQLApiResponse> => {
+    const graphQlFilters = {
+      genesTable_filters: {
+        op: "and",
+        content: [
+          {
+            op: "in",
+            content: {
+              field: "cases.primary_site",
+              value: ["kidney"],
+            },
           },
-          "op": "in"
-        }
-      ]
-    },
-      "genesTable_size": pageSize,
-      "genesTable_offset": offset,
-      "score": "case.project.project_id",
-      "ssmCase": {
-      "op": "and",
-        "content": [
-        {
-          "op": "in",
-          "content": {
-            "field": "cases.available_variation_data",
-            "value": [
-              "ssm"
-            ]
-          }
-        },
-        {
-          "op": "NOT",
-          "content": {
-            "field": "genes.case.ssm.observation.observation_id",
-            "value": "MISSING"
-          }
-        }
-      ]
-    },
-      "geneCaseFilter": {
-      "content": [
-        {
-          "content": {
-            "field": "cases.available_variation_data",
-            "value": [
-              "ssm"
-            ]
+          {
+            content: {
+              field: "genes.is_cancer_gene_census",
+              value: ["true"],
+            },
+            op: "in",
           },
-          "op": "in"
-        },
-        {
-          "op": "in",
-          "content": {
-            "field": "cases.primary_site",
-            "value": [
-              "kidney"
-            ]
-          }
-        },
-        {
-          "content": {
-            "field": "genes.is_cancer_gene_census",
-            "value": [
-              "true"
-            ]
+        ],
+      },
+      genesTable_size: pageSize,
+      genesTable_offset: offset,
+      score: "case.project.project_id",
+      ssmCase: {
+        op: "and",
+        content: [
+          {
+            op: "in",
+            content: {
+              field: "cases.available_variation_data",
+              value: ["ssm"],
+            },
           },
-          "op": "in"
-        }
-      ],
-        "op": "and"
-    },
-      "ssmTested": {
-      "content": [
-        {
-          "content": {
-            "field": "cases.available_variation_data",
-            "value": [
-              "ssm"
-            ]
+          {
+            op: "NOT",
+            content: {
+              field: "genes.case.ssm.observation.observation_id",
+              value: "MISSING",
+            },
           },
-          "op": "in"
-        }
-      ],
-        "op": "and"
-    },
-      "cnvTested": {
-      "op": "and",
-        "content": [
-        {
-          "content": {
-            "field": "cases.available_variation_data",
-            "value": [
-              "cnv"
-            ]
+        ],
+      },
+      geneCaseFilter: {
+        content: [
+          {
+            content: {
+              field: "cases.available_variation_data",
+              value: ["ssm"],
+            },
+            op: "in",
           },
-          "op": "in"
-        },
-        {
-          "op": "in",
-          "content": {
-            "field": "cases.primary_site",
-            "value": [
-              "kidney"
-            ]
-          }
-        },
-        {
-          "content": {
-            "field": "genes.is_cancer_gene_census",
-            "value": [
-              "true"
-            ]
+          {
+            op: "in",
+            content: {
+              field: "cases.primary_site",
+              value: ["kidney"],
+            },
           },
-          "op": "in"
-        }
-      ]
-    },
-      "cnvGainFilters": {
-      "op": "and",
-        "content": [
-        {
-          "content": {
-            "field": "cases.available_variation_data",
-            "value": [
-              "cnv"
-            ]
+          {
+            content: {
+              field: "genes.is_cancer_gene_census",
+              value: ["true"],
+            },
+            op: "in",
           },
-          "op": "in"
-        },
-        {
-          "op": "in",
-          "content": {
-            "field": "cases.primary_site",
-            "value": [
-              "kidney"
-            ]
-          }
-        },
-        {
-          "content": {
-            "field": "cnvs.cnv_change",
-            "value": [
-              "Gain"
-            ]
+        ],
+        op: "and",
+      },
+      ssmTested: {
+        content: [
+          {
+            content: {
+              field: "cases.available_variation_data",
+              value: ["ssm"],
+            },
+            op: "in",
           },
-          "op": "in"
-        },
-        {
-          "content": {
-            "field": "genes.is_cancer_gene_census",
-            "value": [
-              "true"
-            ]
+        ],
+        op: "and",
+      },
+      cnvTested: {
+        op: "and",
+        content: [
+          {
+            content: {
+              field: "cases.available_variation_data",
+              value: ["cnv"],
+            },
+            op: "in",
           },
-          "op": "in"
-        }
-      ]
-    },
-      "cnvLossFilters": {
-      "op": "and",
-        "content": [
-        {
-          "content": {
-            "field": "cases.available_variation_data",
-            "value": [
-              "cnv"
-            ]
+          {
+            op: "in",
+            content: {
+              field: "cases.primary_site",
+              value: ["kidney"],
+            },
           },
-          "op": "in"
-        },
-        {
-          "op": "in",
-          "content": {
-            "field": "cases.primary_site",
-            "value": [
-              "kidney"
-            ]
-          }
-        },
-        {
-          "content": {
-            "field": "cnvs.cnv_change",
-            "value": [
-              "Loss"
-            ]
+          {
+            content: {
+              field: "genes.is_cancer_gene_census",
+              value: ["true"],
+            },
+            op: "in",
           },
-          "op": "in"
-        },
-        {
-          "content": {
-            "field": "genes.is_cancer_gene_census",
-            "value": [
-              "true"
-            ]
+        ],
+      },
+      cnvGainFilters: {
+        op: "and",
+        content: [
+          {
+            content: {
+              field: "cases.available_variation_data",
+              value: ["cnv"],
+            },
+            op: "in",
           },
-          "op": "in"
-        }
-      ]
-    }
+          {
+            op: "in",
+            content: {
+              field: "cases.primary_site",
+              value: ["kidney"],
+            },
+          },
+          {
+            content: {
+              field: "cnvs.cnv_change",
+              value: ["Gain"],
+            },
+            op: "in",
+          },
+          {
+            content: {
+              field: "genes.is_cancer_gene_census",
+              value: ["true"],
+            },
+            op: "in",
+          },
+        ],
+      },
+      cnvLossFilters: {
+        op: "and",
+        content: [
+          {
+            content: {
+              field: "cases.available_variation_data",
+              value: ["cnv"],
+            },
+            op: "in",
+          },
+          {
+            op: "in",
+            content: {
+              field: "cases.primary_site",
+              value: ["kidney"],
+            },
+          },
+          {
+            content: {
+              field: "cnvs.cnv_change",
+              value: ["Loss"],
+            },
+            op: "in",
+          },
+          {
+            content: {
+              field: "genes.is_cancer_gene_census",
+              value: ["true"],
+            },
+            op: "in",
+          },
+        ],
+      },
     };
     // get the TableData
 
-    const results:GraphQLApiResponse<any> =  await graphqlAPI(GenesTableGraphQLQuery, graphQlFilters)
+    const results: GraphQLApiResponse<any> = await graphqlAPI(
+      GenesTableGraphQLQuery,
+      graphQlFilters,
+    );
+    // if we have valid data from the table, need to query the mutation counts
     if (!results.warnings) {
-      const geneIds = results.data.genesTableViewer.explore.genes.hits.edges.map(( { node } :  Record<string, any>) => node.gene_id);
-      const counts = await fetchSmsAggregations2({  ids: geneIds });
-
-
-        const countsData = counts.data.ssmsAggregationsViewer.explore.ssms.aggregations.consequence__transcript__gene__gene_id;
-        results.data.genesTableViewer['mutationCounts'] = countsData.buckets.reduce(
-          (counts : Record<string, number>, apiBucket : Record<string, any>) => {
-            counts[apiBucket.key] = apiBucket.doc_count;
-            return counts;
-          },
-          {} as Record<string, number>,
+      // extract the gene ids and user it for the call to
+      const geneIds =
+        results.data.genesTableViewer.explore.genes.hits.edges.map(
+          ({ node }: Record<string, any>) => node.gene_id,
         );
-      console.log("resultsv ", results)
+      const counts = await fetchSmsAggregations({ ids: geneIds });
+      if (!counts.warnings) {
+        const countsData =
+          counts.data.ssmsAggregationsViewer.explore.ssms.aggregations
+            .consequence__transcript__gene__gene_id;
+        results.data.genesTableViewer["mutationCounts"] =
+          countsData.buckets.reduce(
+            (
+              counts: Record<string, number>,
+              apiBucket: Record<string, any>,
+            ) => {
+              counts[apiBucket.key] = apiBucket.doc_count;
+              return counts;
+            },
+            {} as Record<string, number>,
+          );
       }
+    }
 
     return results;
-  }
+  },
 );
-
-
 
 export interface GenesTableState {
   readonly genes: GDCGenesTable;
@@ -367,11 +346,9 @@ const initialState: GenesTableState = {
     cnvCases: 0,
     genes: [],
     genes_total: 0,
-
   },
   status: "uninitialized",
 };
-
 
 // interface GeneNode {
 //   readonly node: {
@@ -395,7 +372,6 @@ const initialState: GenesTableState = {
 //   readonly node: GeneResponseNode;
 // }
 
-
 const slice = createSlice({
   name: "genes/genesTable",
   initialState,
@@ -414,24 +390,36 @@ const slice = createSlice({
         state.genes.cnvCases = data.cnvCases.hits.total;
         state.genes.filteredCases = data.filteredCases.hits.total;
         state.genes.genes_total = data.genes.hits.total;
-        state.genes.mutationCounts = action.payload.data.genesTableViewer.mutationCounts;
-        state.genes.genes = data.genes.hits.edges.map(( { node } : Record<string, any> ): GeneRowInfo => {
-          const {biotype, cytoband, gene_id, id, is_cancer_gene_census, name, num_cases, symbol } = node;
-          return {
-            biotype,
-            cytoband,
-            gene_id,
-            id,
-            is_cancer_gene_census,
-            name,
-            num_cases,
-            symbol,
-            cnv_case: node.cnv_case.hits.total,
-            case_cnv_loss: node.case_cnv_loss.hits.total,
-            case_cnv_gain: node.case_cnv_gain.hits.total,
-            ssm_case: node.ssm_case.hits.total,
-          }
-        });
+        state.genes.mutationCounts =
+          action.payload.data.genesTableViewer.mutationCounts;
+        state.genes.genes = data.genes.hits.edges.map(
+          ({ node }: Record<string, any>): GeneRowInfo => {
+            const {
+              biotype,
+              cytoband,
+              gene_id,
+              id,
+              is_cancer_gene_census,
+              name,
+              num_cases,
+              symbol,
+            } = node;
+            return {
+              biotype,
+              cytoband,
+              gene_id,
+              id,
+              is_cancer_gene_census,
+              name,
+              num_cases,
+              symbol,
+              cnv_case: node.cnv_case.hits.total,
+              case_cnv_loss: node.case_cnv_loss.hits.total,
+              case_cnv_gain: node.case_cnv_gain.hits.total,
+              ssm_case: node.ssm_case.hits.total,
+            };
+          },
+        );
 
         state.status = "fulfilled";
         state.error = undefined;
@@ -453,7 +441,8 @@ const slice = createSlice({
 
 export const genesTableReducer = slice.reducer;
 
-export const selectGenesTableState = (state: CoreState): GDCGenesTable => state.genesTable.genes;
+export const selectGenesTableState = (state: CoreState): GDCGenesTable =>
+  state.genesTable.genes;
 
 export const selectGenesTableData = (
   state: CoreState,
@@ -465,4 +454,7 @@ export const selectGenesTableData = (
   };
 };
 
-export const useGenesTable = createUseCoreDataHook(fetchGenesTable, selectGenesTableData);
+export const useGenesTable = createUseCoreDataHook(
+  fetchGenesTable,
+  selectGenesTableData,
+);

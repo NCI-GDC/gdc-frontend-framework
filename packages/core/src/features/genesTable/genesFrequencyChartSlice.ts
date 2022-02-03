@@ -1,5 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CoreDataSelectorResponse, createUseCoreDataHook, DataStatus } from "../../dataAcess";
+import {
+  CoreDataSelectorResponse,
+  createUseCoreDataHook,
+  DataStatus,
+} from "../../dataAcess";
 import { castDraft } from "immer";
 import { CoreDispatch, CoreState } from "../../store";
 import {
@@ -8,8 +12,7 @@ import {
   TablePageOffsetProps,
 } from "../gdcapi/gdcgraphql";
 
-
-const GeneMuatationFrequenceQuery  = `
+const GeneMuatationFrequenceQuery = `
     query GeneMutationFrequency (
       $genesTable_filters: FiltersArgument
       $genesTable_size: Int
@@ -56,45 +59,43 @@ export interface GenesFrequencyChart {
   readonly genesTotal: number;
 }
 
-
-export const fetchGeneFrequencies = createAsyncThunk <
+export const fetchGeneFrequencies = createAsyncThunk<
   GraphQLApiResponse,
   TablePageOffsetProps,
   { dispatch: CoreDispatch; state: CoreState }
-  > (
+>(
   "genes/geneFrequencyChart",
-  async ({ pageSize = 20, offset = 0 } : TablePageOffsetProps): Promise<GraphQLApiResponse> => {
-  const graphQlVariables = {
-    "genesTable_filters": {
-      "op": "and",
-      "content":  [
-        {
-          "op": "in",
-          "content": {
-            "field": "cases.primary_site",
-            "value": [
-              "kidney"
-            ]
-          }
-        },
-        {
-          "content": {
-            "field": "genes.is_cancer_gene_census",
-            "value": [
-              "true"
-            ]
+  async ({
+    pageSize = 20,
+    offset = 0,
+  }: TablePageOffsetProps): Promise<GraphQLApiResponse> => {
+    const graphQlVariables = {
+      genesTable_filters: {
+        op: "and",
+        content: [
+          {
+            op: "in",
+            content: {
+              field: "cases.primary_site",
+              value: ["kidney"],
+            },
           },
-          "op": "in"
-        }
-      ]
-    },
-    "genesTable_size": pageSize,
-    "genesTable_offset": offset,
-    "score": "case.project.project_id"
-  };
+          {
+            content: {
+              field: "genes.is_cancer_gene_census",
+              value: ["true"],
+            },
+            op: "in",
+          },
+        ],
+      },
+      genesTable_size: pageSize,
+      genesTable_offset: offset,
+      score: "case.project.project_id",
+    };
 
     return await graphqlAPI(GeneMuatationFrequenceQuery, graphQlVariables);
-  }
+  },
 );
 
 export interface GeneFrequencyChartState {
@@ -104,7 +105,7 @@ export interface GeneFrequencyChartState {
 }
 
 const initialState: GeneFrequencyChartState = {
-  frequencies: {  casesTotal: 0, genesTotal: 0, geneCounts : [] },
+  frequencies: { casesTotal: 0, genesTotal: 0, geneCounts: [] },
   status: "uninitialized",
 };
 
@@ -125,8 +126,13 @@ const slice = createSlice({
         //  Note: change this to the field parameter
         state.frequencies.casesTotal = data.cases.hits.total;
         state.frequencies.genesTotal = data.genes.hits.total;
-        state.frequencies.geneCounts = data.genes.hits.edges.map(({ node } : Record<string, never> ) =>
-          (({ gene_id, numCases, symbol }) => ({ gene_id, numCases, symbol }))(node)
+        state.frequencies.geneCounts = data.genes.hits.edges.map(
+          ({ node }: Record<string, never>) =>
+            (({ gene_id, numCases, symbol }) => ({
+              gene_id,
+              numCases,
+              symbol,
+            }))(node),
         );
         state.status = "fulfilled";
         state.error = undefined;
@@ -146,9 +152,11 @@ const slice = createSlice({
   },
 });
 
-export const geneFrequencyChartReducer= slice.reducer;
+export const geneFrequencyChartReducer = slice.reducer;
 
-export const selectGeneFrequencyChartState = (state: CoreState): GeneFrequencyChartState => state.geneFrequencyChart;
+export const selectGeneFrequencyChartState = (
+  state: CoreState,
+): GeneFrequencyChartState => state.geneFrequencyChart;
 
 export const selectGeneFrequencyChartData = (
   state: CoreState,
@@ -160,4 +168,7 @@ export const selectGeneFrequencyChartData = (
   };
 };
 
-export const useGeneFrequencyChart = createUseCoreDataHook(fetchGeneFrequencies, selectGeneFrequencyChartData);
+export const useGeneFrequencyChart = createUseCoreDataHook(
+  fetchGeneFrequencies,
+  selectGeneFrequencyChartData,
+);
