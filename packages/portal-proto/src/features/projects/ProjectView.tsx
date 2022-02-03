@@ -66,7 +66,7 @@ export const ProjectView: React.FC<ProjectViewProps> = ({
         {projectData.summary?.case_count?
           <SummaryComponent 
             title={'Cases'} 
-            value={projectData.summary.case_count.toLocaleString()}
+            count={projectData.summary.case_count.toLocaleString()}
             buttonAction={()=>{alert('Cases click')}}
             icon={<FaUser/>}
           />:null
@@ -74,14 +74,14 @@ export const ProjectView: React.FC<ProjectViewProps> = ({
         {projectData.summary?.file_count?
           <SummaryComponent 
             title={'Files'} 
-            value={projectData.summary.file_count.toLocaleString()}
+            count={projectData.summary.file_count.toLocaleString()}
             icon={<FaFile/>}
           />:null
         }
         {projectData.annotationCount?
           <SummaryComponent 
             title={'Annotations'} 
-            value={projectData.annotationCount.toLocaleString()}
+            count={projectData.annotationCount.toLocaleString()}
             buttonAction={()=>{alert('Annotations click')}}
             icon={<FaEdit/>}
           />:null

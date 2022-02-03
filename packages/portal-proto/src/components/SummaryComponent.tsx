@@ -2,7 +2,7 @@ import { MouseEventHandler } from "react";
 
 export interface SummaryComponentProps {
   readonly title: string;
-  readonly value: string;
+  readonly count: string;
   readonly buttonAction?: MouseEventHandler;
   readonly icon: JSX.Element;
 }
@@ -19,10 +19,10 @@ const SummaryComponent = (
           onClick={props.buttonAction}
           className="text-nci-blue underline"
         >
-          {props.value}
+          {props.count}
         </button>);
     } else {
-      return (props.value);
+      return (props.count);
     }
   }
   return <div className="bg-white p-2 mb-4 flex items-center max-w-xs">
