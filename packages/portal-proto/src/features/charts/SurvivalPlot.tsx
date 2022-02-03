@@ -14,38 +14,6 @@ const BarChartWithNoSSR = dynamic(() => import('./BarChart'), {
   ssr: false
 });
 
-// interface GDCDataResponseStatus {
-//   readonly error?: string;
-//   readonly isUninitialized: boolean;
-//   readonly isFetching: boolean;
-//   readonly isSuccess: boolean;
-//   readonly isError: boolean;
-// }
-//
-// interface UseSurvivalResponse extends GDCDataResponseStatus {
-//   readonly data?: Survival;
-// }
-//
-// const useSurvivalPlot = () : UseSurvivalResponse => {
-//   const coreDispatch = useCoreDispatch();
-//   const chart = useCoreSelector((state) =>
-//     selectSurvivalData(state),
-//   );
-//
-//   useEffect(() => {
-//     if (chart.status === "uninitialized") {
-//       coreDispatch(fetchSurvival({}));
-//     }
-//   }, [coreDispatch, chart]);
-//   return {
-//     data: chart?.data,
-//     error: chart?.error,
-//     isUninitialized: chart === undefined,
-//     isFetching: chart?.status === "pending",
-//     isSuccess: chart?.status === "fulfilled",
-//     isError: chart?.status === "rejected",
-//   };
-// };
 
 export const SurvivalPlot = ( height, marginBottom, showXLabels = true, showTitle = true, maxBins = 20, orientation='v') => {
   const { data, error, isUninitialized, isFetching, isError } =
