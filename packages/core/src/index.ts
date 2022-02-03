@@ -11,4 +11,6 @@ export * from "./features/files/filesSlice";
 export * from "./features/files/filesHooks";
 export * from "./features/projects/projectsSlice";
 export * from "./features/projects/projectsHooks";
+export * from "./features/annotations/annotationsSlice";
+export * from "./features/annotations/annotationsHooks";
 export * from "./features/cases/casesSlice";

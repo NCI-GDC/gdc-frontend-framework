@@ -196,12 +196,56 @@ export interface ProjectDefaults {
   readonly name: string;
   readonly primary_site: ReadonlyArray<string>;
   readonly project_id: string;
+  readonly summary?: {
+    readonly case_count: number;
+    readonly file_count: number;
+    readonly file_size: number;
+    readonly data_categories?: ReadonlyArray<{
+      readonly case_count: number;
+      readonly data_category: string;
+      readonly file_count: number;
+    }>
+    readonly experimental_strategies?: ReadonlyArray<{
+      readonly case_count: number;
+      readonly experimental_strategy: string;
+      readonly file_count: number;
+    }>
+  };
+  readonly program?: {
+    readonly dbgap_accession_number: string;
+    readonly name: string;
+    readonly program_id: string;
+  };
+}
+
+export interface AnnotationDefaults {
+  readonly id: string;
+  readonly entity_submitter_id: string;
+  readonly notes: string;
+  readonly submitter_id: string;
+  readonly classification: string;
+  readonly entity_id: string;
+  readonly created_datetime: string;
+  readonly annotation_id: string;
+  readonly entity_type: string;
+  readonly updated_datetime: string;
+  readonly case_id: string;
+  readonly state: string;
+  readonly category: string;
+  readonly case_submitter_id: string;
+  readonly status: string;
 }
 
 export const fetchGdcProjects = async (
   request?: GdcApiRequest,
 ): Promise<GdcApiResponse<ProjectDefaults>> => {
   return fetchGdcEntities("projects", request);
+};
+
+export const fetchGdcAnnotations = async (
+  request?: GdcApiRequest,
+): Promise<GdcApiResponse<AnnotationDefaults>> => {
+  return fetchGdcEntities("annotations", request);
 };
 
 export const fetchGdcEntities = async <T>(
