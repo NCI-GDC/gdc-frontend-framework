@@ -1,5 +1,5 @@
 import { Project, useProjects, useAnnotations } from "@gff/core";
-import SummaryComponent from "../../components/SummaryComponent";
+import SummaryCount from "../../components/SummaryCount";
 import { FaUser, FaFile, FaEdit } from "react-icons/fa";
 
 export interface ContextualProjectViewProps {
@@ -61,10 +61,13 @@ export const ProjectView: React.FC<ProjectViewProps> = ({
 }: ProjectViewProps) => {
 
   return (
-    <div className="text-nci-gray">
-      <div className="">
+    <div className="text-nci-gray flex">
+      <div className="flex-auto">
+
+      </div>
+      <div className="flex-initial w-1/4 max-w-xs ">
         {projectData.summary?.case_count?
-          <SummaryComponent 
+          <SummaryCount 
             title={'Cases'} 
             count={projectData.summary.case_count.toLocaleString()}
             buttonAction={()=>{alert('Cases click')}}
@@ -72,14 +75,14 @@ export const ProjectView: React.FC<ProjectViewProps> = ({
           />:null
         }
         {projectData.summary?.file_count?
-          <SummaryComponent 
+          <SummaryCount 
             title={'Files'} 
             count={projectData.summary.file_count.toLocaleString()}
             icon={<FaFile/>}
           />:null
         }
         {projectData.annotationCount?
-          <SummaryComponent 
+          <SummaryCount 
             title={'Annotations'} 
             count={projectData.annotationCount.toLocaleString()}
             buttonAction={()=>{alert('Annotations click')}}

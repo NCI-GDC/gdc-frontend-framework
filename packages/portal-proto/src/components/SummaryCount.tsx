@@ -1,6 +1,6 @@
 import { MouseEventHandler } from "react";
 
-export interface SummaryComponentProps {
+export interface SummaryCountProps {
   readonly title: string;
   readonly count: string;
   readonly buttonAction?: MouseEventHandler;
@@ -10,8 +10,8 @@ export interface SummaryComponentProps {
 /**
  * Summary Component for displaying summery data with icon and possible click event 
  */
-const SummaryComponent = (
-  props: SummaryComponentProps,
+const SummaryCount = (
+  props: SummaryCountProps,
 ): JSX.Element => {
   const addLinkValue = () => {
     if (props.buttonAction) {
@@ -38,4 +38,4 @@ const SummaryComponent = (
   </div>;
 };
 
-export default SummaryComponent;
+export default SummaryCount;
