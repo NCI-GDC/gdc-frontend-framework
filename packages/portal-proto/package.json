@@ -2,9 +2,9 @@
   "name": "portal-proto",
   "version": "1.0.0",
   "scripts": {
-    "dev": "next",
+    "dev": "next --port 6500",
     "build": "next build",
-    "start": "next start",
+    "start": "next start ",
     "type-check": "tsc",
     "test": "jest unit",
     "test:watch": "jest unit --watch",
@@ -13,10 +13,13 @@
   },
   "dependencies": {
     "@gff/core": "0.0.1",
+    "@oncojs/react-survivalplot": "^0.6.0",
+    "@oncojs/survivalplot": "^0.8.3",
     "@reduxjs/toolkit": "^1.6.0",
     "@tailwindcss/forms": "^0.3.3",
     "minisearch": "^3.0.4",
     "next": "^11.0.1",
+    "next-transpile-modules": "^9.0.0",
     "plotly.js": "^2.3.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -27,8 +30,7 @@
     "react-select": "^4.3.1",
     "react-select-search": "^3.0.8",
     "react-tabs": "^3.2.2",
-    "typeface-montserrat": "^1.1.13",
-    "use-double-click": "^1.0.5"
+    "typeface-montserrat": "^1.1.13"
   },
   "license": "Apache-2",
   "devDependencies": {
