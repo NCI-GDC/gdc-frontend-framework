@@ -9,7 +9,7 @@ import {
   MdDownload as DownloadIcon,
   MdRestartAlt as ResetIcon,
 } from "react-icons/md";
-import { SurvivalApiResponse } from "@gff/core/dist/dts";
+import wrapSvg from "./wrapSVG";
 
 
 const textColors = [
@@ -123,28 +123,33 @@ export const SurvivalPlot = (showTitle = true) => {
   }
 
   const legend = buildLegend(data, "Explorer")
-  return <div className="flex flex-col border-2 bg-white ">
-    {showTitle ?
-      <div className="flex items-center justify-center flex-wrap items-center bg-gray-100 p-1.5">
-        {"Overall Survival Plot"}
+  return (<div className="flex flex-col border-2 bg-white ">
+      <div className="flex flex-row w-100 items-center justify-center flex-wrap items-center  p-1.5">
+        <div className="flex ml-auto text-montserrat text-lg text-nci-gray-dark ">{"Overall Survival Plot"}</div>
         <div className="flex flex-row items-center ml-auto ">
-          <button className="mx-2" onClick={() => setXDomain(undefined)}><DownloadIcon></DownloadIcon></button>
-          <button className="mx-2" onClick={() => setXDomain(undefined)}><ResetIcon></ResetIcon></button>
+          <button className="mx-2 border-2 rounded-md border-nci-gray-light px-4 py-2 hover:bg-nci-blue transition-colors" onClick={() => setXDomain(undefined)}><DownloadIcon color="bg-nci-blue " size="1.5rem"></DownloadIcon></button>
+          <button className="mx-2 border-2 rounded-md border-nci-gray-light px-4 py-2 hover:bg-nci-blue transition-colors" onClick={() => setXDomain(undefined)}><ResetIcon size="1.5rem"></ResetIcon></button>
         </div>
-      </div> : null
-    }
-    <div className="flex flex-col border-2">
+      </div>
+    <div className="flex flex-col">
+      <div className="flex flex-row justify-center">
       {
         legend.map((x) => {
-          return <div key={x.key}>{x.value}</div>
+          return <div className="text-nci-blue"key={x.key}>{x.value}</div>
         })
       }
+      </div>
+      <div
+        className={`flex flex-row justify-end text-sm text-nci-gray mb-[${-SVG_MARGINS.top}px] mr-[${SVG_MARGINS.right}px] no-print`}
+      >
+        drag to zoom
+      </div>
     </div>
 
     <div className="survival-plot"  ref={container}>
     </div>
 
 
-  </div>
+  </div>)
 };
 

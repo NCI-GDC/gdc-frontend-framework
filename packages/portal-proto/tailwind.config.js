@@ -246,7 +246,8 @@ module.exports = {
         '2flex1': '1fr auto',
       },
       fontFamily: {
-        heading: ["Montserrat", "sans-serif"]
+        montserrat: ["Montserrat", "sans-serif"],
+        sans: ["Source Sans Pro", "sans-serif"],
       },
     },
   },
