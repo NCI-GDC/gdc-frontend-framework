@@ -3,6 +3,8 @@ import "../styles/globals.css";
 import { Provider } from "react-redux";
 import type { AppProps } from "next/app";
 import { CoreProvider } from "@gff/core";
+import { TourProvider } from "@reactour/tour";
+import { Badge } from "@mantine/core";
 
 import store from "../app/store";
 
@@ -19,11 +21,28 @@ import "react-tabs/style/react-tabs.css";
 import ReactModal from "react-modal";
 ReactModal.setAppElement("#__next");
 
+const steps = [
+  {
+    selector: '#build-header-button',
+    content: 'Create a cohort group',
+  },
+  {
+    selector: '#view-header-button',
+    content: 'View studies'
+  }
+];
+
+function CustomBadge({ children }) {
+  return (<Badge>{children}</Badge>)
+}
+
 const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   return (
     <CoreProvider>
       <Provider store={store}>
-        <Component {...pageProps} />
+        <TourProvider steps={steps} components={{ Badge: CustomBadge }}>
+          <Component {...pageProps} />
+        </TourProvider>
       </Provider>
     </CoreProvider>
   );

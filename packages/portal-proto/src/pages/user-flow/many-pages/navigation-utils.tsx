@@ -3,12 +3,12 @@ import Image from "next/image";
 
 export const headerElements = [
   <Link key="BuildCohort" href="/cohort-builder">
-    <div className="text-sm font-heading  hover:bg-nci-blue-lighter text-nci-gray-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md ">
+    <div className="text-sm font-heading  hover:bg-nci-blue-lighter text-nci-gray-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md " id="build-header-button">
       <Image src={"/user-flow/icons/build.svg"} width={24} height={24}/> <span className="px-2">Build</span>
     </div>
   </Link>,
   <Link key="ViewCohort" href="/user-flow/many-pages/studies">
-    <div className="text-sm font-heading  hover:bg-nci-blue-lighter text-nci-gray-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md ">
+    <div className="text-sm font-heading  hover:bg-nci-blue-lighter text-nci-gray-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md "  id="view-header-button">
       <Image src={"/user-flow/icons/crowd-of-users.svg"} width={24} height={24}/> <span className="px-2">View</span>
     </div>
   </Link>,

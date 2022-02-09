@@ -50,6 +50,7 @@ const ActionButtonBar = () => {
     <div className="flex flex-grow flex-row align-center pb-4 text-sm ">
       <Link key="CohortBuilder" href="/cohort-builder">
       <button
+        id="build-action-button"
         className="text-sm bg-nci-yellow-lighter hover:bg-nci-yellow-lightest text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex flex-nowrap items-center shadow-md bg-opacity-80">
         <Image src={"/user-flow/icons/build.svg"} width={32} height={32}/>
         <span className="px-2 whitespace-nowrap">Build</span>
