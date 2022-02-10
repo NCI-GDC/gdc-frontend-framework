@@ -5,7 +5,6 @@ import  MetaSearch from "./MetaSearch";
 import  CohortTabbedFacets from "./FacetGroup";
 
 
-
 const FullCohortBuilder: React.FC<CohortGroupProps> = ( { cohorts, simpleMode = false} : CohortGroupProps ) => {
 
   const [searchResults, setSearchResults] = useState([]);
@@ -16,6 +15,7 @@ const FullCohortBuilder: React.FC<CohortGroupProps> = ( { cohorts, simpleMode = 
     if (op === "remove")
       setSummaryFields(summaryFields.filter((x) => x !== field))
   }
+
   const [summaryFields, setSummaryFields] = useState([
     "primary_site",
     "demographic.gender",

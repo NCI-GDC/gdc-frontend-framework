@@ -21,8 +21,6 @@ import "react-tabs/style/react-tabs.css";
 import ReactModal from "react-modal";
 ReactModal.setAppElement("#__next");
 
-
-
 const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   return (
     <CoreProvider>
