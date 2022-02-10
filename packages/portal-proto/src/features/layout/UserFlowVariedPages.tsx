@@ -2,6 +2,8 @@ import { PropsWithChildren, ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { isString } from "@gff/core";
+import { useTour } from '@reactour/tour';
+
 
 interface UserFlowVariedPagesProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
@@ -39,6 +41,8 @@ const Header: React.FC<HeaderProps> = ({
   indexPath,
   Options = () => <div />,
 }: HeaderProps) => {
+  const { setIsOpen } = useTour();
+
   return (
     <div className="px-6 py-3">
       <div className="flex flex-row flex-wrap divide-x divide-gray-300 items-center">
@@ -68,6 +72,7 @@ const Header: React.FC<HeaderProps> = ({
             )}
           </div>
         ))}
+        <Button onClick={() => setIsOpen(true)}>Start Tour</Button>
         <div className="flex-grow"></div>
         <div className="w-64">
           <Options />
