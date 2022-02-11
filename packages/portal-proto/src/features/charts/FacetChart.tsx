@@ -7,6 +7,7 @@ import {
 } from "@gff/core";
 import { useEffect } from "react";
 import dynamic from 'next/dynamic'
+import DownloadOptions from './DownloadOptions';
 
 
 const BarChartWithNoSSR = dynamic(() => import('./BarChart'), {
@@ -70,15 +71,22 @@ const processChartData = (facetData:Record<string, any>, field: string, maxBins 
     ticktext: showXLabels ? xlabels : [],
     label_text: Object.keys(data).slice(0, maxBins).map(x => processLabel(x, 100)),
     title: convertFieldToName(field),
-    filename: `${field}.svg`,
+    filename: field,
     yAxisTitle: "# of Cases"
   }
   return results;
 }
 
+const processJSONData = (facetData: Record<string, any>) => {
+  return Object.entries(facetData).map(e => ({ label: e[0], value: e[1] }));
+}
+
 export const FacetChart: React.FC<FacetProps> = ({ field, showXLabels = true, height, marginBottom, showTitle = true, maxBins = maxValuesToDisplay, orientation='v'}: FacetProps) => {
   const { data, error, isUninitialized, isFetching, isError } =
     useCaseFacet(field);
+
+  // Create unique ID for this chart
+  const chartDivId = `${field}_${Math.floor(Math.random() * 100)}`;
 
   if (isUninitialized) {
     return <div>Initializing facet...</div>;
@@ -95,12 +103,11 @@ export const FacetChart: React.FC<FacetProps> = ({ field, showXLabels = true, he
   const chart_data = processChartData(data, field, maxBins, showXLabels);
 
   return <div className="flex flex-col border-2 bg-white ">
-    {showTitle ?
-      <div className="flex items-center justify-between flex-wrap bg-gray-100 p-1.5">
-        {convertFieldToName(field)}
-      </div> : null
-    }
-    <BarChartWithNoSSR data={chart_data} height={height} marginBottom={marginBottom} orientation={orientation}></BarChartWithNoSSR>
+    <div className="flex items-center justify-between flex-wrap bg-gray-100 p-1.5">
+      {showTitle ? convertFieldToName(field) : null}
+      <DownloadOptions chartDivId={chartDivId} chartName={field} jsonData={processJSONData(data)} />
+    </div>
+    <BarChartWithNoSSR data={chart_data} height={height} marginBottom={marginBottom} orientation={orientation} divId={chartDivId}></BarChartWithNoSSR>
   </div>;
 };
 
