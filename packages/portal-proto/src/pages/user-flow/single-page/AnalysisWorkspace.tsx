@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Chips, Chip, Card, Grid } from "@mantine/core";
+import { Chips, Chip, Card, Grid, Breadcrumbs } from "@mantine/core";
 import AnalysisCard from "./AnalysisCard";
 const ActiveAnalysisToolNoSSR = dynamic(() => import('./ActiveAnalysisTool'), {
   ssr: false
@@ -46,7 +46,7 @@ const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : Analys
         <Grid>
         { recommendedApps.map((x: AppRegistrationEntry) =>
           <Grid.Col key={x.name} span={3} style={{ minHeight: 80 }}>
-            <AnalysisCard  {...{  applicable: true, ...x }} />
+            <AnalysisCard  {...{  applicable: true, onClick: handleOpenAppClicked, ...x }} />
           </Grid.Col>
         )}
       </Grid>
@@ -65,14 +65,17 @@ const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : Analys
   )
 }
 
-
-
 const AnalysisWorkspace = () => {
   const [selectedApp, setSelectedApp] = useState(undefined);
 
   return (
       <div> { (selectedApp) ?
-        <ActiveAnalysisToolNoSSR appId={selectedApp} />
+        <div className="flex flex-col">
+          <Breadcrumbs>
+            <h2>Analysis</h2>
+          </Breadcrumbs>
+          <ActiveAnalysisToolNoSSR appId={selectedApp} />
+        </div>
         :
         <AnalysisGrid onAppSelected={setSelectedApp} />
       }
