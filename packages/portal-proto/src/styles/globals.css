@@ -35,7 +35,18 @@
     transform: rotateY(-180deg);
 }
 
-
-
-
 @tailwind utilities;
+
+.theme-startup {
+    --color-primary: 255 115 179;
+    --color-secondary: 111 114 185;
+    /* ... */
+}
+
+.root {
+    --color-primary: #706f6f;
+    --color-secondary: #484848;
+    /* ... */
+}
+
+@tailwind varients;

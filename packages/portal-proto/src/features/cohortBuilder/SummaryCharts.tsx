@@ -1,8 +1,5 @@
 import { useState } from "react";
-import { CollapsibleContainer } from "../../components/CollapsibleContainer";
 import { FacetChart } from "../charts/FacetChart";
-import { Button } from "../layout/UserFlowVariedPages";
-import { MdSettings as SettingsIcon } from "react-icons/md";
 
 const SummaryStatsTop: React.FC<unknown> = () => {
   return (
@@ -14,26 +11,21 @@ const SummaryStatsTop: React.FC<unknown> = () => {
 
 interface SummaryChartsProps {
   fields:  string[];
+  chartHeight?: number;
 }
-export const SummaryCharts: React.FC<SummaryChartsProps> =  ({ fields} :  SummaryChartsProps) => {
+export const SummaryCharts: React.FC<SummaryChartsProps> =  ({ fields, chartHeight = 100} :  SummaryChartsProps) => {
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(false);
 
   return (
-    /*
-    <CollapsibleContainer
-      Top={SummaryStatsTop}
-      isCollapsed={isGroupCollapsed}
-      toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
-    >
-     */
+
     <div className="mx-10 border-2 border-nci-teal-lightest p-1.5">
       <div
         className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4">
         {fields.map((name, index) => {
           return (<FacetChart
             field={name}
-            height={180}
-            marginBottom={10}
+            height={chartHeight}
+            marginBottom={0}
             showXLabels={false}
             key={`summary-chart-${index}`}
           />)

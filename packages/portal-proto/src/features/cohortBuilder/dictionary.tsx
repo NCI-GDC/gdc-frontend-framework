@@ -1,5 +1,5 @@
 import GDC_Dictionary from "./gdc_tooltips.json";
-import MiniSearch from 'minisearch';
+import MiniSearch from "minisearch";
 
 export const get_facet_list = (category: string) : Array <Record<string, never> > | null => {
   return (category in GDC_Dictionary.dictionary) ? GDC_Dictionary.dictionary[category] : null ;
@@ -19,15 +19,31 @@ export const get_facets = (category: string, subcategory:string) : Array< Record
 const get_facets_as_documents = (category: string) : Array< Record<any, any> >  => {
   const root = GDC_Dictionary.dictionary[category];
   const subcategory = Object.keys(root).filter(subcategory => subcategory != "All").map(subcategory => { return { subcategory: subcategory, category: category, facets: Object.keys(root[subcategory]).filter(x => root[subcategory][x].facet_type === 'enum').map(x =>  { return { name:x, facet: root[subcategory][x]} })}})
-  const flattened =  subcategory.map(x => x.facets.map(y => { return {  name: y.name, enum: y.facet.enum,  subcategory: x.subcategory, category: x.category, id:y.facet.facet_filter, description:y.facet.description } })).flat();
-  return flattened;
+  return subcategory.map(x => x.facets.map(y => {
+    return {
+      name: y.name,
+      enum: y.facet.enum,
+      subcategory: x.subcategory,
+      category: x.category,
+      id: y.facet.facet_filter,
+      description: y.facet.description
+    }
+  })).flat();
 }
 
 const get_facets_enums_as_documents = (category: string) : Array< Record<any, any> >  => {
   const root = GDC_Dictionary.dictionary[category];
   const subcategory = Object.keys(root).filter(subcategory => subcategory === "All").map(subcategory => { return { subcategory: subcategory, category: category, facets: Object.keys(root[subcategory]).filter(x => root[subcategory][x].facet_type === 'enum').map(x =>  { return { name:x, facet: root[subcategory][x]} })}})
-  const flattened =  subcategory.map(x => x.facets.filter(x => x.name === 'Primary Site' ||  x.name === 'Disease Type' ).map(y => { return {  name: y.name, enum: y.facet.enum,  subcategory: x.subcategory, category: x.category, id:`all_${y.facet.facet_filter}`, description:y.facet.description } } )).flat();
-  return flattened;
+  return subcategory.map(x => x.facets.filter(x => x.name === 'Primary Site' || x.name === 'Disease Type').map(y => {
+    return {
+      name: y.name,
+      enum: y.facet.enum,
+      subcategory: x.subcategory,
+      category: x.category,
+      id: `all_${y.facet.facet_filter}`,
+      description: y.facet.description
+    }
+  })).flat();
 }
 
 

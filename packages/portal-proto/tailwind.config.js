@@ -1,11 +1,20 @@
 const plugin = require('tailwindcss/plugin');
+
+function withOpacityValue(variable) {
+  return ({ opacityValue }) => {
+    if (opacityValue === undefined) {
+      return `rgb(var(${variable}))`
+    }
+    return `rgb(var(${variable}) / ${opacityValue})`
+  }
+}
+
 module.exports = {
-  purge: [
-    "./pages/**/*.{js,ts,jsx,tsx}",
-    "./components/**/*.{js,ts,jsx,tsx}",
-    "./features/**/*.{js,ts,jsx,tsx}",
+  content: [
+    "./src/pages/**/*.{js,ts,jsx,tsx}",
+    "./src/components/**/*.{js,ts,jsx,tsx}",
+    "./src/features/**/*.{js,ts,jsx,tsx}",
   ],
-  darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
       colors: {
@@ -20,6 +29,11 @@ module.exports = {
          * lighter, lightest, dark, darker, and darkest modifiers. Each one
          * maps to a every third shade.
          */
+        // theming support
+        primary: withOpacityValue('--color-primary'),
+        secondary: withOpacityValue('--color-secondary'),
+        tertiary: withOpacityValue('--color-tertiary'),
+        highlight: withOpacityValue('--color-highlight'),
         // NCI Primary Palette
         "nci-gray": {
           lightest: "#f1f1f1",
@@ -261,17 +275,14 @@ module.exports = {
       transitionProperty: {
         height: 'height'
       },
-    },
-  },
-  variants: {
-    extend: {
-      borderWidth: ["hover"],
-      boxShadow: ["hover"],
-      display: ["group-hover"],
+      variants: {
+        extend: {},
+      },
     },
   },
   plugins: [
     require("@tailwindcss/forms"),
+    require("@tailwindcss/typography"),
     plugin(function({ addUtilities }) {
       const newUtilities = {
         '.nextImageFillFix' : {

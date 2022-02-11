@@ -1,6 +1,7 @@
 import { PropsWithChildren } from "react";
 import classNames from "classnames";
-import { Button } from "../features/layout/UserFlowVariedPages";
+//import { Button } from "../features/layout/UserFlowVariedPages";
+import { Button, Collapse } from '@mantine/core';
 import {
   MdChevronRight as ExpandMoreIcon,
   MdExpandMore as ExpandLessIcon,
@@ -26,13 +27,15 @@ export const CollapsibleContainer: React.FC<CollapsibleContainerProps> = (
         <div className="flex-grow">
           <Top />
         </div>
-        <div className="flex items-stretch">
-          <Button stylingOff={true} className="bg-nci-blue-lighter hover:bg-nci-blue-darkest hover:text-nci-blue-lightest rounded-lg rounded-l-none rounded-b-none border-0 border-l-2  px-5 " onClick={toggle}>
+        <div className="flex flex-row items-center bg-nci-gray-lighter hover:bg-nci-gray-dark hover:text-nci-gray-lightest rounded-lg rounded-l-none rounded-b-none border-0 border-l-2" >
+          <Button className="hover:bg-nci-gray-dark hover:text-nci-gray-lightest" onClick={toggle}>
             {isCollapsed ? <ExpandMoreIcon size="1.75em" /> : <ExpandLessIcon  size="1.75em" />}
           </Button>
         </div>
       </div>
-      <div className={childrenClassNames}>{children}</div>
+      <Collapse in={!isCollapsed} transitionDuration={200} transitionTimingFunction="linear">
+      {children}
+      </Collapse>
     </div>
   );
 };

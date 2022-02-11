@@ -1,5 +1,4 @@
 import {
-  updateCohortFilter,
   EnumFilter,
   FacetBuckets,
   fetchFacetByName,
@@ -8,6 +7,7 @@ import {
   selectCasesFacetByField,
   selectCurrentCohortFilters,
   selectCurrentCohortFiltersByName,
+  updateCohortFilter,
   useCoreDispatch,
   useCoreSelector,
 } from "@gff/core";
@@ -77,17 +77,15 @@ const useCaseFacet = (field: string): UseCaseFacetResponse => {
  * Filter selector for all of the facet filters
  */
 const useCohortFacetFilter = (): FilterSet => {
-  const cohortFilters: FilterSet = useCoreSelector((state) =>
+  return useCoreSelector((state) =>
     selectCurrentCohortFilters(state),
   );
-  return cohortFilters;
 };
 
-interface FacetProps {
+export interface FacetProps {
   readonly field: string;
   readonly description?: string;
   readonly facetName?: string;
-  onUpdateSummaryChart: (op: string, field: string) => void;
 }
 
 
@@ -132,7 +130,6 @@ const FacetHeader: React.FC<FacetProps> = ({ field, description, facetName = nul
 export const Facet: React.FC<FacetProps> = ({
                                               field,
                                               description,
-                                              onUpdateSummaryChart,
                                               facetName = null,
                                             }: FacetProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
@@ -276,8 +273,8 @@ export const Facet: React.FC<FacetProps> = ({
                                 <div className="flex-none">
                                   <input type="checkbox" className="bg-nci-cyan-lightest hover:bg-nci-cyan-darkest text-nci-cyan-darkest"/>
                                 </div>
-                                <div className="flex-grow h-4 align-center justify-center mt-1 ml-1 mr-8 bg-nci-gray-light rounded-b-sm animate-pulse"></div>
-                                <div className="flex-none h-4 align-center justify-center mt-1 w-10 bg-nci-gray-light rounded-b-sm animate-pulse"></div>
+                                <div className="flex-grow h-4 align-center justify-center mt-1 ml-1 mr-8 bg-nci-gray-light rounded-b-sm animate-pulse"/>
+                                <div className="flex-none h-4 align-center justify-center mt-1 w-10 bg-nci-gray-light rounded-b-sm animate-pulse"/>
                               </div>);
                           })
                         }

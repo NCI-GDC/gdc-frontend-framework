@@ -7,6 +7,7 @@ import {
 } from "@gff/core";
 import { useEffect, useState } from "react";
 import dynamic from 'next/dynamic'
+import { Loader } from '@mantine/core';
 
 
 const BarChartWithNoSSR = dynamic(() => import('./BarChart'), {
@@ -80,7 +81,8 @@ export const FacetChart: React.FC<FacetProps> = ({ field, showXLabels = true, he
   const { data, error, isUninitialized, isFetching, isError, isSuccess } =
     useCaseFacet(field);
 
-  const [ chart_data, setChartData ]  = useState(processChartData( { label_text:["","","","","",""], x:["0","1","2","3","4","5"], y:[0,0,0,0,0,0] }, field, maxBins, showXLabels))
+  // const [ chart_data, setChartData ]  = useState(processChartData( { label_text:["","","","","",""], x:["0","1","2","3","4","5"], y:[0,0,0,0,0,0] }, field, maxBins, showXLabels))
+   const [ chart_data, setChartData ]  = useState(undefined)
 
   useEffect(() => {
     if (isSuccess) {
@@ -89,6 +91,8 @@ export const FacetChart: React.FC<FacetProps> = ({ field, showXLabels = true, he
       setChartData(cd);
     }
   } ,[data, isSuccess]);
+
+
 /*
   if (isUninitialized) {
     return <div>Initializing facet...</div>;
@@ -111,12 +115,16 @@ export const FacetChart: React.FC<FacetProps> = ({ field, showXLabels = true, he
       </div> : null
     }
 
-      <BarChartWithNoSSR data={chart_data} height={height}
-                         marginBottom={marginBottom}
-                         orientation={orientation}></BarChartWithNoSSR>
-
-
-  </div>;
+    {  chart_data && isSuccess ?
+    <BarChartWithNoSSR data={chart_data} height={height}
+                       marginBottom={marginBottom}
+                       orientation={orientation} />
+      :
+      <div className="flex flex-row justify-center w-100">
+        <Loader size={height} />
+      </div>
+    }
+  </div>
 };
 
 const convertFieldToName = (field: string): string => {

@@ -4,13 +4,13 @@ import { search_facets } from "./dictionary";
 
 
 type SearchFunction = {
-  (term: string): Record<string, any>;
+  (term: string): Record<string, unknown>;
 };
 
 interface MetaSearchProp {
   readonly onChange: (any) => void;
+  // search_function: (string) => ReadonlyArray<Record<any, any>>
 }
-
 
 export const MetaSearch: React.FC<MetaSearchProp> = ({ onChange }: MetaSearchProp) => {
 
@@ -31,7 +31,6 @@ export const MetaSearch: React.FC<MetaSearchProp> = ({ onChange }: MetaSearchPro
       setSearchResults([]);
     } else {
       const searchRes = results.map(x => {
-
         return (({ category, subcategory, name }) => ({ category, subcategory, name }))(x);
       });
       setSearchResults(searchRes);

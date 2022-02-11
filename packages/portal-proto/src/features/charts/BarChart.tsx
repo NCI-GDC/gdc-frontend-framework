@@ -70,13 +70,7 @@ const vertical_layout: Partial<Layout> = {
       t: 30,
       pad: 4
     },
-      transition: {
-        duration: 500,
-        easing: 'cubic-in-out'
-      },
-      frame: {
-        duration: 500
-      }
+
   };
 
   if (height !== undefined) {
@@ -128,13 +122,6 @@ const vertical_layout: Partial<Layout> = {
       t: 40,
       pad: 4
     },
-    transition: {
-      duration: 500,
-      easing: 'cubic-in-out'
-    },
-    frame: {
-      duration: 500
-    }
   };
 
   if (height !== undefined) {
@@ -157,7 +144,7 @@ const vertical_layout: Partial<Layout> = {
   };
   return (<div>
     <Plot data={[chartData]} layout={ orientation==='v' ? vertical_layout : horizontal_layout } config={config} useResizeHandler={true}
-           style={{width: "100%", height: "240px"}}/>
+           style={{width: "100%"}}/>
   </div>);
 
 };

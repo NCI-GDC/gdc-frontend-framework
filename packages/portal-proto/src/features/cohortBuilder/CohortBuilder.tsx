@@ -26,7 +26,7 @@ const FullCohortBuilder: React.FC<CohortGroupProps> = ( { cohorts, simpleMode = 
    <div  className="bg-white">
       <CohortGroup cohorts={cohorts} simpleMode={simpleMode}></CohortGroup>
       <MetaSearch onChange={(r) => setSearchResults(r)}></MetaSearch>
-     <SummaryCharts fields={summaryFields} />
+      <SummaryCharts fields={summaryFields} />
       <CohortTabbedFacets  searchResults={searchResults} onUpdateSummaryChart={updateSummaryCharts}></CohortTabbedFacets>
 
     </div>

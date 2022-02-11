@@ -1,4 +1,4 @@
-import { Facet } from "../facets/Facet";
+import { Facet, FacetProps } from "../facets/Facet";
 import { Tab, TabProps, TabList, TabPanel, Tabs } from "react-tabs";
 import { useState } from "react";
 import Select from "react-select";
@@ -7,11 +7,9 @@ import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 
 interface FacetGroupProps {
   readonly facetNames: Array<Record<string, any>>;
-  onUpdateSummaryChart: (op: string, field: string) => void;
-
 }
 
-export const FacetGroup: React.FC<FacetGroupProps> = ({ facetNames, onUpdateSummaryChart }: FacetGroupProps) => {
+export const FacetGroup: React.FC<FacetGroupProps> = ({ facetNames }: FacetGroupProps) => {
 
   return (<div
       className="flex flex-col border-r-2 border-l-2 border-b-2 border-t-0 border-nci-cyan-darker p-3 h-screen/1.5 overflow-y-scroll">
@@ -20,7 +18,6 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({ facetNames, onUpdateSumm
           {facetNames.map((x, index) => {
             return (<Facet key={`${x.facet_filter}-${index}`} field={x.facet_filter} facetName={x.name}
                            description={x.description}
-                           onUpdateSummaryChart={onUpdateSummaryChart}
             />);
           })
           }
@@ -89,14 +86,10 @@ const FacetTabWithSubmenu: React.FC<FacetTabWithSubmenuProps> = ({
 FacetTabWithSubmenu.tabsRole = "Tab";
 
 interface CohortTabbedFacetsProps {
-  readonly searchResults: [Record<string, unknown>];
-  onUpdateSummaryChart: (op: string, field: string) => void;
+  readonly searchResults?: [Record<string, unknown>];
 }
 
-export const CohortTabbedFacets: React.FC<CohortTabbedFacetsProps> = ({
-                                                                        searchResults,
-                                                                        onUpdateSummaryChart,
-                                                                      }: CohortTabbedFacetsProps) => {
+export const CohortTabbedFacets = () => {
   const [subcategories, setSubcategories] = useState({
     "Clinical": "All",
     "Biospecimen": "All",
@@ -122,13 +115,10 @@ export const CohortTabbedFacets: React.FC<CohortTabbedFacetsProps> = ({
                                subCategories={downloadableSubcategories}
                                onSubcategoryChange={handleSubcategoryChanged}></FacetTabWithSubmenu>
         </TabList>
-        <TabPanel><FacetGroup onUpdateSummaryChart={onUpdateSummaryChart}
-                              facetNames={get_facets("Clinical", subcategories["Clinical"])} /></TabPanel>
+        <TabPanel><FacetGroup facetNames={get_facets("Clinical", subcategories["Clinical"])} /></TabPanel>
         <TabPanel><FacetGroup
-          onUpdateSummaryChart={onUpdateSummaryChart}
           facetNames={get_facets("Biospecimen", subcategories["Biospecimen"])} /></TabPanel>
-        <TabPanel><FacetGroup onUpdateSummaryChart={onUpdateSummaryChart}
-                              facetNames={get_facets("Downloadable", subcategories["Downloadable"])} /></TabPanel>
+        <TabPanel><FacetGroup  facetNames={get_facets("Downloadable", subcategories["Downloadable"])} /></TabPanel>
       </Tabs>
     </div>
   );

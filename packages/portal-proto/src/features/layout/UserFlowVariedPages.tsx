@@ -2,6 +2,7 @@ import { PropsWithChildren, ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { isString } from "@gff/core";
+import {  Button  } from '@mantine/core';
 
 interface UserFlowVariedPagesProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
@@ -45,9 +46,9 @@ const Header: React.FC<HeaderProps> = ({
         <div className="flex-none w-64 h-nci-logo mr-2 relative">
           {/* There's some oddities going on here that need to be explained.  When a
           <Link> wraps an <Image>, react complains it's expecting a reference to be
-          passed along. A popular fix is to wrap the child with an empty anchor tag.  
+          passed along. A popular fix is to wrap the child with an empty anchor tag.
           This causes an accessibility problem because empty anchors confuse screen
-          readers. The button tag satisfies both react's requirements and a11y 
+          readers. The button tag satisfies both react's requirements and a11y
           requirements.  */}
           <Link href={indexPath}>
             <button>
@@ -143,29 +144,29 @@ export interface ButtonProps {
   readonly stylingOff?: boolean;
 }
 
-export const Button: React.FC<ButtonProps> = ({
-  onClick = () => {
-    return;
-  },
-  className = "",
-  children,
-  stylingOff = false,
-}: PropsWithChildren<ButtonProps>) => {
-  const classNames = stylingOff ? className : `
-    px-2 py-1 
-    border rounded border-nci-blumine
-    bg-nci-blumine hover:bg-nci-blumine-lightest
-    text-white hover:text-nci-blumine-darker
-    ${className}`;
-  return (
-    <button
-      className={classNames}
-      onClick={onClick}
-    >
-      {children}
-    </button>
-  );
-};
+// export const Button: React.FC<ButtonProps> = ({
+//   onClick = () => {
+//     return;
+//   },
+//   className = "",
+//   children,
+//   stylingOff = false,
+// }: PropsWithChildren<ButtonProps>) => {
+//   const classNames = stylingOff ? className : `
+//     px-2 py-1
+//     border rounded border-nci-blumine
+//     bg-nci-blumine hover:bg-nci-blumine-lightest
+//     text-white hover:text-nci-blumine-darker
+//     ${className}`;
+//   return (
+//     <button
+//       className={classNames}
+//       onClick={onClick}
+//     >
+//       {children}
+//     </button>
+//   );
+// };
 
 export const CohortExpressionsAndBuilder: React.FC<unknown> = () => {
   return <div className="h-96 text-center">Expressions + Cohort Builder</div>;
