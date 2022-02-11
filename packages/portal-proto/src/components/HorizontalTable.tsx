@@ -41,7 +41,6 @@ export interface HorizontalTableProps {
 export const HorizontalTable = (
   props: HorizontalTableProps,
 ): JSX.Element => {
-  console.log('tableData', props.tableData);
   return <table className="bg-white w-full text-left text-nci-gray-darker">
     <tbody>
       {props.tableData.map((obj, rowIndex: number):JSX.Element=>{
