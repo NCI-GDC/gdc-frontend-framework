@@ -1,4 +1,5 @@
 import React, { Suspense, lazy, useEffect, useState }  from "react";
+import { Loader } from '@mantine/core';
 
 const importApplication = app =>
   lazy(() =>
@@ -29,7 +30,9 @@ const ActiveAnalysisTool : React.FC<AnalysisToolInfo>  = ( { appId } : AnalysisT
 
   console.log(analysisApp);
   return (
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={
+        <div className="inline-block justify-center w-100 h-24"><Loader size={100} /></div>
+      }>
         {analysisApp}
       </Suspense>
   )

@@ -39,11 +39,12 @@ export const REGISTERED_APPS = [
     icon: "clinical-data-analysis.png",
     tags: ["clinicalAnalysis"],
     hasDemo: false,
+    id: "CDave",
   },
   {
     name: "Cohort Builder",
     icon: "clinical-data-analysis.png",
-    tags: [],
+    tags: ["generalUtility"],
     hasDemo: false,
     id: "CohortBuilder",
   },
@@ -52,24 +53,30 @@ export const REGISTERED_APPS = [
     icon: "cohort-comparison.png",
     tags: ["clinicalAnalysis"],
     hasDemo: false,
+    id: "CohortComparison",
   },
   {
     name: "Gene Expression",
     icon: "gene-expression.png",
     tags: ["geneExpression"],
     hasDemo: false,
+    id: "GeneExpression",
   },
   {
     name: "Onco Grid",
     icon: "oncogrid.png",
     tags: ["variantAnalysis", "cnv", "ssm"],
     hasDemo: false,
+    id: "OncoGrid",
   },
 ];
 
 export const APPTAGS =  [
   "clinicalAnalysis",
   "generalUtility",
+  "variantAnalysis",
+  "geneExpression",
+  "sequenceAnalysis",
   "cnv",
   "ssm",
 ];

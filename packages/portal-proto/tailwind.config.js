@@ -260,6 +260,7 @@ module.exports = {
         '2flex1': '1fr auto',
       },
       fontFamily: {
+        montserrat: ["Montserrat", "sans-serif"],
         heading: ["Montserrat", "sans-serif"]
       },
       borderWidth: {

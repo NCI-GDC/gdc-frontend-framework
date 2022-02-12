@@ -3,7 +3,7 @@ import {
   selectCasesFacetByField,
   fetchFacetByName,
   useCoreSelector,
-  useCoreDispatch,
+  useCoreDispatch, EnumFilter, selectCurrentCohortFiltersByName, FilterSet, selectCurrentCohortFilters,
 } from "@gff/core";
 import { useEffect, useState } from "react";
 import dynamic from 'next/dynamic'
@@ -18,6 +18,7 @@ const maxValuesToDisplay =7;
 
 interface UseCaseFacetResponse {
   readonly data?: FacetBuckets;
+  readonly enumFilters: string [] | undefined;
   readonly error?: string;
   readonly isUninitialized: boolean;
   readonly isFetching: boolean;
@@ -25,17 +26,40 @@ interface UseCaseFacetResponse {
   readonly isError: boolean;
 }
 
+/**
+ * Filter selector for all of the facet filters
+ */
+const useCohortFacetFilter = (): FilterSet => {
+  return useCoreSelector((state) =>
+    selectCurrentCohortFilters(state),
+  );
+};
+
+
+const useCohortFacetFilterByName = (field: string): string[] | undefined => {
+  const enumFilters: EnumFilter = useCoreSelector((state) =>
+    selectCurrentCohortFiltersByName(state, field) as EnumFilter,
+  );
+  return enumFilters ? enumFilters.values : undefined;
+};
+
 const useCaseFacet = (field: string): UseCaseFacetResponse => {
   const coreDispatch = useCoreDispatch();
   const facet: FacetBuckets = useCoreSelector((state) =>
     selectCasesFacetByField(state, field),
   );
+  const selectFacetFilter = useCohortFacetFilter();
+  const enumFilters = useCohortFacetFilterByName(field);
 
   useEffect(() => {
     if (!facet) {
       coreDispatch(fetchFacetByName(field));
     }
   }, [coreDispatch, facet, field]);
+
+  useEffect(() => {
+    coreDispatch(fetchFacetByName(field));
+  }, [selectFacetFilter]);
 
   return {
     data: facet?.buckets,
@@ -80,33 +104,16 @@ const processChartData = (facetData:Record<string, any>, field: string, maxBins 
 export const FacetChart: React.FC<FacetProps> = ({ field, showXLabels = true, height, marginBottom, showTitle = true, maxBins = maxValuesToDisplay, orientation='v'}: FacetProps) => {
   const { data, error, isUninitialized, isFetching, isError, isSuccess } =
     useCaseFacet(field);
-
-  // const [ chart_data, setChartData ]  = useState(processChartData( { label_text:["","","","","",""], x:["0","1","2","3","4","5"], y:[0,0,0,0,0,0] }, field, maxBins, showXLabels))
-   const [ chart_data, setChartData ]  = useState(undefined)
+    const [ chart_data, setChartData ]  = useState(undefined)
 
   useEffect(() => {
     if (isSuccess) {
       const cd = processChartData(data, field, maxBins, showXLabels);
-      console.log(cd);
       setChartData(cd);
+      console.log("chart data " , cd);
     }
   } ,[data, isSuccess]);
 
-
-/*
-  if (isUninitialized) {
-    return <div>Initializing facet...</div>;
-  }
-
-  if (isFetching) {
-    return <div>Fetching facet...</div>;
-  }
-
-  if (isError) {
-    return <div>Failed to fetch facet: {error}</div>;
-  }
-*/
-  // const chart_data = isSuccess ? processChartData(data, field, maxBins, showXLabels) : { x:[0,1,2,3,4,5], y:[0,0,0,0,0,0] };
 
   return <div className="flex flex-col border-2 bg-white ">
     {showTitle ?
@@ -121,7 +128,7 @@ export const FacetChart: React.FC<FacetProps> = ({ field, showXLabels = true, he
                        orientation={orientation} />
       :
       <div className="flex flex-row justify-center w-100">
-        <Loader size={height} />
+        <Loader color="gray" size={height} />
       </div>
     }
   </div>

@@ -46,6 +46,8 @@
 .root {
     --color-primary: #706f6f;
     --color-secondary: #484848;
+    --color-tertiary: #222222;
+    --color-highlight: #FEFEFE;
     /* ... */
 }
 

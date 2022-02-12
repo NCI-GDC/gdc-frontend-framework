@@ -22,6 +22,7 @@ import {
   MdSortByAlpha as AlphaSortIcon,
 } from "react-icons/md";
 import { convertFieldToName } from "./utils";
+import { Tooltip } from '@mantine/core';
 
 /**
  * Selector for the facet values (if any)
@@ -196,29 +197,38 @@ export const Facet: React.FC<FacetProps> = ({
     setIsFacetView(!isFacetView);
   };
 
-
-
   const remainingValues = (total - maxValuesToDisplay);
   const cardHeight = remainingValues > 16 ? 96 : remainingValues > 0 ? Math.min(96, remainingValues * 5 + 40) : 24;
   const cardStyle = isGroupExpanded ? `flex-none  h-${cardHeight} overflow-y-scroll ` : `overflow-hidden pr-3.5`;
   const numberOfLines = (total - maxValuesToDisplay) < 0 ? total : isGroupExpanded ? 16 : maxValuesToDisplay;
   return (
-      <div className="flex flex-col bg-white relative shadow-md border-nci-cyan-darker border-2 rounded-b-md ">
+      <div className="flex flex-col bg-white relative shadow-md border-secondary border-2 rounded-b-md ">
         <div>
           <div className="flex items-center justify-between flex-wrap bg-nci-cyan-darker shadow-md px-1.5">
 
+            <Tooltip label={description}
+                     classNames={{
+                       arrow: "bg-nci-gray-lightest",
+                       body: "bg-white text-nci-gray-dark"
+                     }}
+                     position="bottom"
+                     placement="start"
+                     wrapLines
+                     width={220}
+                     withArrow
+                     transition="fade"
+                     transitionDuration={200}>
             <div className="has-tooltip text-nci-gray-lightest font-heading font-medium text-md">{(facetName === null) ? convertFieldToName(field) : facetName}
-              <div
-                className="inline-block tooltip w-full border-b-2 border-nci-cyan-lightest rounded shadow-lg p-2 bg-gray-100 text-nci-blue-darkest mt-8 absolute">{description}</div>
-            </div>
+             </div>
+            </Tooltip>
             <div className="flex flex-row">
               <button
-                className="bg-nci-cyan-darker hover:bg-grey text-nci-gray-lightest font-bold py-2 px-1 rounded inline-flex items-center"
+                className="bg-nci-gray-darker hover:bg-grey text-nci-gray-lightest font-bold py-2 px-1 rounded inline-flex items-center"
                 onClick={toggleSearch}>
                 <SearchIcon size="1.5em" />
               </button>
               <button
-                className="bg-nci-cyan-darker hover:bg-grey text-nci-gray-lightest font-bold py-2 px-1 rounded inline-flex items-center"
+                className="bg-nci-gray-darker hover:bg-grey text-nci-gray-lightest font-bold py-2 px-1 rounded inline-flex items-center"
                 onClick={toggleFlip}>
                 <FlipIcon size="1.15em"  />
               </button>
@@ -232,12 +242,12 @@ export const Facet: React.FC<FacetProps> = ({
                 <div
                   className="flex flex-row items-center justify-between flex-wrap border p-1">
                   <button
-                    className={"ml-0.5 border rounded-sm border-nci-cyan-darkest bg-nci-cyan hover:bg-nci-cyan-lightest text-white hover:text-nci-cyan-darker"}>
+                    className={"ml-0.5 border rounded-sm border-nci-gray-darkest bg-nci-cyan hover:bg-nci-cyan-lightest text-white hover:text-nci-cyan-darker"}>
                     <AlphaSortIcon onClick={() => setIsSortedByCases(false)} scale="1.5em" />
                   </button>
                   <div className={"flex flex-row items-center "}>
                     <button onClick={() => setIsSortedByCases(true)}
-                            className={"border ∂rounded-sm border-nci-cyan-darkest bg-nci-cyan hover:bg-nci-cyan-lightest text-white hover:text-nci-cyan-darker"}>
+                            className={"border rounded-sm border-nci-cyan-darkest bg-nci-cyan hover:bg-nci-cyan-lightest text-white hover:text-nci-cyan-darker"}>
                       <SortIcon scale="1.5em" /></button>
                     <p className="px-2 mr-3">Cases</p>
                   </div>

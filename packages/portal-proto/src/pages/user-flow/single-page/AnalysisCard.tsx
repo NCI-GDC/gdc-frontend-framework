@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import { AppRegistrationEntry } from "./utils"
+import { Button, Card, Group, Badge } from '@mantine/core';
 
 export interface AnalysisCardProps extends AppRegistrationEntry {
   applicable: boolean;
@@ -9,8 +10,9 @@ export interface AnalysisCardProps extends AppRegistrationEntry {
 
 const AnalysisCard : React.FC<AnalysisCardProps> = ( entry: AnalysisCardProps ) => {
   return (
-
-    <div className="flex flex-col items-center mx-4 border-2 shadow-lg">
+    <Card shadow="sm" padding="lg">
+      <Group position="center" direction="column">
+      <Card.Section>
       <div className="font-heading text-lg mb-2">{entry.name}</div>
       <button onClick={() => entry.onClick(entry.id)} >
         <div className="flex flex-row items-center">
@@ -21,7 +23,13 @@ const AnalysisCard : React.FC<AnalysisCardProps> = ( entry: AnalysisCardProps ) 
             />
         </div>
       </button>
-    </div>
+      </Card.Section>
+      <div className="flex-auto">
+         <Badge># Cases</Badge>
+        { entry.hasDemo ? <Button>Demo</Button> : null }
+      </div>
+      </Group>
+    </Card>
 
   )
 }

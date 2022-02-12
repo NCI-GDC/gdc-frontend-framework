@@ -171,6 +171,7 @@ const CohortEnumFilterElement: React.FC<EnumFilterProps> = ({ filter }: EnumFilt
   const coreDispatch = useCoreDispatch();
 
   const handleRemoveFilter = () => {
+    console.log("remove filter");
     coreDispatch(removeCohortFilter(filter.field));
   };
 
@@ -180,7 +181,7 @@ const CohortEnumFilterElement: React.FC<EnumFilterProps> = ({ filter }: EnumFilt
 
   return (
     <div className="m-1 px-2 font-heading shadow-md font-medium text-sm rounded-xl bg-nci-gray-lighter text-nci-gray-darkest border-nci-gray-light border-1">
-      <div key={nanoid()} className="flex flex-row items-center">
+      <div className="flex flex-row items-center">
         {convertFieldToName(filter.field)} is <span className="px-1 underline">{filter_set_label_v1["any_of"]}</span>
         <div className="flex truncate ... max-w-sm px-2 border-l-2 border-nci-gray-light ">{filter.values.join(",")}</div>
         <DropDownIcon size="1.5em" onClick={handlePopupFacet} />
@@ -264,7 +265,7 @@ export const CohortGroup: React.FC<CohortGroupProps> = ({ cohorts }: CohortGroup
         toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
       >
         <div
-          className="flex flex-row flex-wrap w-100 p-2 bg-nci-cyan-lightest border-b-2 border-r-2 border-l-2 rounded-lg rounded-t-none border-nci-gray-lighter">
+          className="flex flex-row flex-wrap w-100 p-2 bg-nci-gray-lightest border-b-2 border-r-2 border-l-2 rounded-lg rounded-t-none border-nci-gray-lighter">
           {
             Object.keys(filters.root).map((k) => {
               return convertFilterToComponent(filters.root[k]);
