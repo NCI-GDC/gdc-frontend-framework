@@ -149,3 +149,5 @@ export const selectCurrentCohortGqlFilters = (state: CoreState): GqlOperation | 
 export const selectCurrentCohortFiltersByName = (state: CoreState, name: string): CohortFilter | undefined =>
   state.cohort.currentFilters?.root[name];
 
+
+
