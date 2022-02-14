@@ -1,4 +1,4 @@
-import { Project, useProjects, useAnnotations } from "@gff/core";
+import { useProjects, useAnnotations } from "@gff/core";
 import SummaryCount from "../../components/SummaryCount";
 import { HorizontalTable, HorizontalTableProps } from "../../components/HorizontalTable";
 import { FaUser, FaFile, FaEdit, FaTable } from "react-icons/fa";

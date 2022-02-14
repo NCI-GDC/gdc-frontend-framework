@@ -1,12 +1,12 @@
 import React, {useState} from 'react';
 
-export interface ColapsableTableItemsProps {
-  readonly expandBtnText: String;
-  readonly keyId: String;
+export interface CollapsableTableItemsProps {
+  readonly expandBtnText: string;
+  readonly keyId: string;
   readonly values: ReadonlyArray<string>;
 }
-export const ColapsableTableItems = (
-  props: ColapsableTableItemsProps,
+export const CollapsableTableItems = (
+  props: CollapsableTableItemsProps,
 ): JSX.Element => {
   const [toggle, setToggle] = useState(true);
 
@@ -30,7 +30,7 @@ export const ColapsableTableItems = (
  */
 export interface HorizontalTableProps {
   readonly tableData: {
-    readonly headerName: String;
+    readonly headerName: string;
     readonly values: ReadonlyArray<string 
     | ReadonlyArray<string> 
     | boolean
@@ -55,21 +55,17 @@ export const HorizontalTable = (
                 case 'undefined':
                   return tdObject('');
                 case 'object':
-                  if (Array.isArray(value)) {
-                    if (value.length === 1) {
-                      return tdObject(value[0]);
-                    } else if (value.length > 1) {
-                      //colapsible list
-                      return tdObject(<ColapsableTableItems
-                        expandBtnText={`${obj.headerName}s`}
-                        keyId={'a'}
-                        values={value}
-                      />);
-                    }
+                  if (Array.isArray(value) && value.length > 1) {
+                    //colapsible list
+                    return tdObject(<CollapsableTableItems
+                      expandBtnText={`${obj.headerName}s`}
+                      keyId={`${obj.headerName}-${index}`}
+                      values={value}
+                    />);
                   }
-                default:
-                  return tdObject(value.toString());
               }
+              // if not caught by switch statement
+              return tdObject(value.toString());
             })}
           </tr>
         );
