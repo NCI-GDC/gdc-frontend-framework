@@ -71,14 +71,14 @@ const CountsGraphQLQuery = `
   }
 }`;
 
-export const fetchCohortCounts = createAsyncThunk<
+export const fetchCohortCaseCounts = createAsyncThunk<
   GraphQLApiResponse,
   unknown,
   { dispatch: CoreDispatch; state: CoreState }
   >(
   "cohort/counts",
   async ( _, thunkAPI): Promise<GraphQLApiResponse> => {
-    const cohortFilters = selectCurrentCohortGqlFilters(thunkAPI.getState());
+    const cohortFilters = selectCurrentCohortGqlFilters(thunkAPI.getState(), "cases.");
 
     const graphQlFilters = cohortFilters? {filters: cohortFilters}: {}
     const results: GraphQLApiResponse<any> = await graphqlAPI(
@@ -95,7 +95,7 @@ const slice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchCohortCounts.fulfilled, (state, action) => {
+      .addCase(fetchCohortCaseCounts.fulfilled, (state, action) => {
         const response = action.payload;
 
         if (response.warnings && Object.keys(response.warnings).length > 0) {
@@ -114,10 +114,10 @@ const slice = createSlice({
         }
         return state;
       })
-      .addCase(fetchCohortCounts.pending, (state) => {
+      .addCase(fetchCohortCaseCounts.pending, (state) => {
         state.status = "pending";
       })
-      .addCase(fetchCohortCounts.rejected, (state) => {
+      .addCase(fetchCohortCaseCounts.rejected, (state) => {
         state.status = "rejected";
       });
   },
@@ -142,7 +142,7 @@ export const selectCohortCountsByName = (state: CoreState, name : string) => {
   return counts[name];
 }
 
-export const useCohortCounts = createUseCoreDataHook(fetchCohortCounts, selectCohortCountsData);
+export const useCohortCounts = createUseCoreDataHook(fetchCohortCaseCounts, selectCohortCountsData);
 
 
 

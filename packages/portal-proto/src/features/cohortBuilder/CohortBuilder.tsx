@@ -9,12 +9,6 @@ const FullCohortBuilder: React.FC<CohortGroupProps> = ( { cohorts, simpleMode = 
 
   const [searchResults, setSearchResults] = useState([]);
 
-  const updateSummaryCharts = (op, field) => {
-    if (op === "add")
-      setSummaryFields([...summaryFields, field])
-    if (op === "remove")
-      setSummaryFields(summaryFields.filter((x) => x !== field))
-  }
 
   const [summaryFields, setSummaryFields] = useState([
     "primary_site",
@@ -27,7 +21,7 @@ const FullCohortBuilder: React.FC<CohortGroupProps> = ( { cohorts, simpleMode = 
       <CohortGroup cohorts={cohorts} simpleMode={simpleMode}></CohortGroup>
       <MetaSearch onChange={(r) => setSearchResults(r)}></MetaSearch>
       <SummaryCharts fields={summaryFields} />
-      <CohortTabbedFacets  searchResults={searchResults} onUpdateSummaryChart={updateSummaryCharts}></CohortTabbedFacets>
+      <CohortTabbedFacets  searchResults={searchResults}></CohortTabbedFacets>
 
     </div>
   );

@@ -4,8 +4,7 @@ import {
   useCoreDispatch,
   useCoreSelector,
   selectCurrentCohortFilters,
-  selectCohortCounts,
-  fetchCohortCounts, FacetBuckets, selectCohortCountsData
+  fetchCohortCaseCounts, selectCohortCountsData
 } from "@gff/core";
 
 interface UseCurrentCohortCountsResponse {
@@ -26,13 +25,13 @@ const useCurrentCohortCounts = () : UseCurrentCohortCountsResponse => {
   const selectFacetFilter = useCoreSelector((state) => selectCurrentCohortFilters(state));
   useEffect(() => {
     if (!counts) {
-      coreDispatch(fetchCohortCounts());
+      coreDispatch(fetchCohortCaseCounts());
     }
   }, [coreDispatch, counts]);
 
 
   useEffect(() => {
-    coreDispatch(fetchCohortCounts());
+    coreDispatch(fetchCohortCaseCounts());
   }, [selectFacetFilter ]);
 
   return {

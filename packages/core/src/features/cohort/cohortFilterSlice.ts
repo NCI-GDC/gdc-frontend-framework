@@ -106,7 +106,7 @@ export const convertFacetFilterToGqlFilter = (filter: CohortFilter): GqlOperatio
   return handleGqlOperation(handler, filter);
 };
 
-const buildCohortGqlOperator = (fs: FilterSet | undefined): GqlOperation | undefined => {
+const buildCohortGqlOperator = (fs: FilterSet | undefined, prepend = ""): GqlOperation | undefined => {
 
   if (!fs)
     return undefined;
@@ -116,7 +116,8 @@ const buildCohortGqlOperator = (fs: FilterSet | undefined): GqlOperation | undef
         (Object.keys(fs.root).length == 0) ? undefined :
         {
           op: "and", content: Object.keys(fs.root).map((k): GqlOperation => {
-            return convertFacetFilterToGqlFilter(fs.root[k]);
+            const filter = {  ...fs.root[k], field: `${prepend}${fs.root[k].field}`};
+            return convertFacetFilterToGqlFilter(filter);
           }),
         }
       );
@@ -130,7 +131,18 @@ export const { updateCohortFilter, removeCohortFilter, clearCohortFilters } = sl
 export const selectCurrentCohortFilters = (state: CoreState): FilterSet | undefined =>
   state.cohort.currentFilters.currentFilters;
 
-export const selectCurrentCohortGqlFilters = (state: CoreState): GqlOperation | undefined => {
+/**
+ * selectCurrentCohortGqlFilters: returns an object representing the filters in the
+ * current cohort. Note that the GraphQL filtere require "cases." or "repository." prepended
+ * to the filters. This will likely be deprecated once the REST API's are available.
+ * @param state
+ * @param prepend
+ */
+export const selectCurrentCohortGqlFilters = (state: CoreState, prepend=""): GqlOperation | undefined => {
+  return buildCohortGqlOperator(state.cohort.currentFilters.currentFilters, prepend);
+};
+
+export const selectCurrentCohortCaseGqlFilters = (state: CoreState): GqlOperation | undefined => {
   return buildCohortGqlOperator(state.cohort.currentFilters.currentFilters);
 };
 
