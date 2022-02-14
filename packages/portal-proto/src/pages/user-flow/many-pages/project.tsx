@@ -11,11 +11,9 @@ const ProjectPage: NextPage = () => {
     <UserFlowVariedPages
       {...{ indexPath: "/user-flow/many-pages", headerElements }}
     >
-      <div className="flex flex-col p-4 gap-y-4">
-        <ContextualProjectView
-          setCurrentProject={'TCGA-BRCA'}
-        />
-      </div>
+      <ContextualProjectView
+        setCurrentProject={'TCGA-BRCA'}
+      />
     </UserFlowVariedPages>
   );
 };

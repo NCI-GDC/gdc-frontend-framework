@@ -121,38 +121,46 @@ export const ProjectView: React.FC<ProjectViewProps> = ({
     }, []);
   };
   return (
-    <div className="text-nci-gray flex">
-      <div className="flex-auto">
-        <SummaryCard
-          title={"Summary"}
-          message={(<>The project has controlled access data which requires dbGaP Access. See instructions for <a href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data" className="text-nci-blue underline">Obtaining Access to Controlled Data.</a></>)}
-          tableData={formatDataForSummery()}
-        />
+    <div>
+      <div className="bg-white py-4 px-8 shadow-lg">
+        <span className="rounded-full bg-nci-blue-darker text-white p-1 align-text-bottom mr-2">PR</span>
+        <span className="text-2xl text-nci-blue-darker">{projectData.projectId}</span>
       </div>
-      <div className="flex-initial w-1/4 max-w-xs ">
-        {projectData.summary?.case_count?
-          <SummaryCount 
-            title={'Cases'} 
-            count={projectData.summary.case_count.toLocaleString()}
-            buttonAction={()=>{alert('Cases click')}}
-            icon={<FaUser/>}
-          />:null
-        }
-        {projectData.summary?.file_count?
-          <SummaryCount 
-            title={'Files'} 
-            count={projectData.summary.file_count.toLocaleString()}
-            icon={<FaFile/>}
-          />:null
-        }
-        {projectData.annotationCount?
-          <SummaryCount 
-            title={'Annotations'} 
-            count={projectData.annotationCount.toLocaleString()}
-            buttonAction={()=>{alert('Annotations click')}}
-            icon={<FaEdit/>}
-          />:null
-        }
+      <div className="p-4">
+        <div className="text-nci-gray flex">
+          <div className="flex-auto">
+            <SummaryCard
+              title={"Summary"}
+              message={(<>The project has controlled access data which requires dbGaP Access. See instructions for <a href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data" className="text-nci-blue underline">Obtaining Access to Controlled Data.</a></>)}
+              tableData={formatDataForSummery()}
+            />
+          </div>
+          <div className="flex-initial w-1/4 max-w-xs ">
+            {projectData.summary?.case_count?
+              <SummaryCount 
+                title={'Cases'} 
+                count={projectData.summary.case_count.toLocaleString()}
+                buttonAction={()=>{alert('Cases click')}}
+                icon={<FaUser/>}
+              />:null
+            }
+            {projectData.summary?.file_count?
+              <SummaryCount 
+                title={'Files'} 
+                count={projectData.summary.file_count.toLocaleString()}
+                icon={<FaFile/>}
+              />:null
+            }
+            {projectData.annotationCount?
+              <SummaryCount 
+                title={'Annotations'} 
+                count={projectData.annotationCount.toLocaleString()}
+                buttonAction={()=>{alert('Annotations click')}}
+                icon={<FaEdit/>}
+              />:null
+            }
+          </div>
+        </div>
       </div>
     </div>
   );

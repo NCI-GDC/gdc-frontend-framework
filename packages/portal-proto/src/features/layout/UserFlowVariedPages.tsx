@@ -40,7 +40,7 @@ const Header: React.FC<HeaderProps> = ({
   Options = () => <div />,
 }: HeaderProps) => {
   return (
-    <div className="px-6 py-3">
+    <div className="px-6 py-3 border-b border-gdc-grey-lightest">
       <div className="flex flex-row flex-wrap divide-x divide-gray-300 items-center">
         <div className="flex-none w-64 h-nci-logo mr-2 relative">
           {/* There's some oddities going on here that need to be explained.  When a
