@@ -7,7 +7,7 @@ import {
   isBucketsAggregation,
 } from "../gdcapi/gdcapi";
 
-import { selectCurrentCohortGqlFilters } from "../cohort/cohortSlice";
+import { selectCurrentCohortGqlFilters } from "../cohort/cohortFilterSlice";
 
 export const fetchFacetByName = createAsyncThunk<
   GdcApiResponse<unknown>,

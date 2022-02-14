@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CollapsibleContainer } from "../../components/CollapsibleContainer";
 
 import { Button } from '@mantine/core';
@@ -24,8 +24,12 @@ import {
   CohortFilterHandler,
   EnumFilter,
   RangeFilter, removeCohortFilter,
+  useCohortCounts, FacetBuckets, selectCasesFacetByField, fetchFacetByName,
+  fetchCohortCounts, selectCohortCountsData, selectCurrentCohortFiltersByName,
 } from "@gff/core";
 import { convertFieldToName } from "../facets/utils";
+import CountButton from "./CountButton";
+
 
 const enum_menu_items = [
   { value: "any_of", label: "includes at least one:" },
@@ -116,7 +120,8 @@ export const CohortBar: React.FC<CohortBarProps> = ({
       </div>
       {!hide_controls ?
         <div className="flex flex-row items-center ml-auto">
-          <Button className="mx-1 font-heading font-medium bg-nci-teal-darker ">{case_count} Cases</Button>
+          <CountButton countName="caseCounts" label="Cases" className="px-2" />
+          <CountButton countName="fileCounts" label="Files" className="px-2" />
           <Button className="mx-1 bg-nci-teal-darker"><SaveIcon size="1.5em" /></Button>
           <Button className="mx-1 bg-nci-teal-darker"><AddIcon size="1.5em" /></Button>
           <Button className="mx-1 bg-nci-teal-darker"><DeleteIcon size="1.5em" /></Button>
@@ -171,7 +176,6 @@ const CohortEnumFilterElement: React.FC<EnumFilterProps> = ({ filter }: EnumFilt
   const coreDispatch = useCoreDispatch();
 
   const handleRemoveFilter = () => {
-    console.log("remove filter");
     coreDispatch(removeCohortFilter(filter.field));
   };
 

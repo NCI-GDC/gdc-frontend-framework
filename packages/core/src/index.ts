@@ -15,3 +15,6 @@ export * from "./features/annotations/annotationsSlice";
 export * from "./features/annotations/annotationsHooks";
 export * from "./features/cases/casesSlice";
 export * from "./features/cohort/cohortSlice";
+export * from "./features/cohort/cohortFilterSlice";
+export * from "./features/cohort/cohortNameSlice";
+export * from "./features/cohort/countSlice";

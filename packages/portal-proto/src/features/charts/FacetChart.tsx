@@ -110,7 +110,6 @@ export const FacetChart: React.FC<FacetProps> = ({ field, showXLabels = true, he
     if (isSuccess) {
       const cd = processChartData(data, field, maxBins, showXLabels);
       setChartData(cd);
-      console.log("chart data " , cd);
     }
   } ,[data, isSuccess]);
 

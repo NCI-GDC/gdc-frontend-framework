@@ -9,9 +9,8 @@ import {
   GraphQLApiResponse,
   graphqlAPI,
 } from "../gdcapi/gdcgraphql";
-import { selectCurrentCohortGqlFilters } from "./cohortSlice";
-import { CaseDefaults } from "../gdcapi/gdcapi";
-import { fetchCases } from "../cases/casesSlice";
+import { selectCurrentCohortGqlFilters } from "./cohortFilterSlice";
+
 
 export interface CasesFilesCounts {
   readonly caseCounts: number;
@@ -20,8 +19,8 @@ export interface CasesFilesCounts {
   readonly mutationCounts: number;
 }
 
-export interface CountsState {
-  counts: CasesFilesCounts;
+export interface CountsState  {
+  readonly counts: Record<string, number>;
   readonly status: DataStatus;
   readonly error?: string;
 
@@ -80,10 +79,9 @@ export const fetchCohortCounts = createAsyncThunk<
   "cohort/counts",
   async ( _, thunkAPI): Promise<GraphQLApiResponse> => {
     const cohortFilters = selectCurrentCohortGqlFilters(thunkAPI.getState());
-    const graphQlFilters = {
-      "filters": cohortFilters
-    };
-    const results: GraphQLApiResponse<never> = await graphqlAPI(
+
+    const graphQlFilters = cohortFilters? {filters: cohortFilters}: {}
+    const results: GraphQLApiResponse<any> = await graphqlAPI(
       CountsGraphQLQuery,
       graphQlFilters,
     );
@@ -100,28 +98,21 @@ const slice = createSlice({
       .addCase(fetchCohortCounts.fulfilled, (state, action) => {
         const response = action.payload;
 
-        if (response.warnings) {
-          if (Object.keys(response.warnings).length > 0) {
+        if (response.warnings && Object.keys(response.warnings).length > 0) {
             state.status = "rejected";
-            state.error = response.warnings.facets;
-          } else {
-            // copy the counts for explore and repository
-            state.counts.caseCounts = response.data.viewer.explore.cases.hits;
-            state.counts.genesCounts = response.data.viewer.explore.genes.hits;
-            state.counts.mutationCounts = response.data.viewer.explore.ssms.hits;
-            state.counts.fileCounts = response.data.viewer.repository.files.hits;
-            state.status = "fulfilled";
-            state.error = undefined;
-          }
+            state.error = response.warnings.counts;
         } else {
           // copy the counts for explore and repository
-          state.counts.caseCounts = response.data.viewer.explore.cases.hits;
-          state.counts.genesCounts = response.data.viewer.explore.genes.hits;
-          state.counts.mutationCounts = response.data.viewer.explore.ssms.hits;
-          state.counts.fileCounts = response.data.viewer.repository.files.hits;
+          state.counts = {
+            caseCounts : response.data.viewer.explore.cases.hits.total,
+            genesCounts : response.data.viewer.explore.genes.hits.total,
+            mutationCounts : response.data.viewer.explore.ssms.hits.total,
+            fileCounts : response.data.viewer.repository.files.hits.total,
+          };
           state.status = "fulfilled";
           state.error = undefined;
         }
+        return state;
       })
       .addCase(fetchCohortCounts.pending, (state) => {
         state.status = "pending";
@@ -136,11 +127,22 @@ export const cohortCountsReducer = slice.reducer;
 
 export const selectCohortCountsData = (
   state: CoreState,
-): CoreDataSelectorResponse<ReadonlyArray<CasesFilesCounts>> => {
-  return state.cohort.counts;
+): CoreDataSelectorResponse<Record<string, number>> => {
+  return {
+    data: state.cohort.counts.counts,
+    status: state.cohort.counts.status,
+    error: state.cohort.counts.error,
+  };
 };
 
-export const useCases = createUseCoreDataHook(fetchCohortCounts, selectCohortCountsData);
+export const selectCohortCounts = (state: CoreState) => state.cohort.counts.counts;
+
+export const selectCohortCountsByName = (state: CoreState, name : string) => {
+  const counts = state.cohort.counts.counts;
+  return counts[name];
+}
+
+export const useCohortCounts = createUseCoreDataHook(fetchCohortCounts, selectCohortCountsData);
 
 
 

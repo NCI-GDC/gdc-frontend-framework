@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { cohortReducer } from "./features/cohort/cohortSlice";
+import { cohortReducers } from "./features/cohort/cohortSlice";
 import { sessionReducer } from "./features/session/sessionSlice";
 import { facetsReducer } from "./features/facets/facetSlice";
 import { gdcAppReducer } from "./features/gdcapps/gdcAppsSlice";
@@ -10,7 +10,7 @@ import { casesReducer } from "./features/cases/casesSlice";
 
 export const coreStore = configureStore({
   reducer: {
-    cohort: cohortReducer,
+    cohort: cohortReducers,
     session: sessionReducer,
     facets: facetsReducer,
     gdcApps: gdcAppReducer,
