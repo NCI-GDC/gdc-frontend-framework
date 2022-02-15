@@ -1,8 +1,10 @@
 import { PropsWithChildren, ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { MdViewModule as MenuIcon, MdOutlineTour as TourIcon } from "react-icons/md";
+import { Menu } from "@mantine/core";
 import { isString } from "@gff/core";
-import { useTour } from '@reactour/tour';
+import { useTour } from "@reactour/tour";
 
 
 interface UserFlowVariedPagesProps {
@@ -72,11 +74,15 @@ const Header: React.FC<HeaderProps> = ({
             )}
           </div>
         ))}
-        <Button onClick={() => setIsOpen(true)}>Start Tour</Button>
         <div className="flex-grow"></div>
         <div className="w-64">
           <Options />
         </div>
+        <Menu withArrow control={<button><MenuIcon size={"1.5em"} /></button>}>
+          <Menu.Item onClick={() => setIsOpen(true)}>
+            <TourIcon size="3em"/><div className="text-center text-sm pt-1">{'Tour'}</div>
+          </Menu.Item>
+        </Menu>
       </div>
     </div>
   );
