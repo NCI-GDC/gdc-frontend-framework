@@ -4,7 +4,6 @@ import { Provider } from "react-redux";
 import type { AppProps } from "next/app";
 import { CoreProvider } from "@gff/core";
 import { TourProvider } from "@reactour/tour";
-import steps from "../features/tour/steps";
 import { CustomBadge as Badge } from "../features/tour/CustomBadge";
 import store from "../app/store";
 
@@ -25,7 +24,7 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   return (
     <CoreProvider>
       <Provider store={store}>
-        <TourProvider steps={steps} components={{ Badge }}>
+        <TourProvider steps={[]} components={{ Badge }}>
           <Component {...pageProps} />
         </TourProvider>
       </Provider>

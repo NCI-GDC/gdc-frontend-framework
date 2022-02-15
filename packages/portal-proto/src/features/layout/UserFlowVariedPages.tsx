@@ -1,10 +1,12 @@
-import { PropsWithChildren, ReactNode } from "react";
+import { PropsWithChildren, ReactNode, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from 'next/router'
 import { MdViewModule as MenuIcon, MdOutlineTour as TourIcon } from "react-icons/md";
 import { Menu } from "@mantine/core";
 import { isString } from "@gff/core";
 import { useTour } from "@reactour/tour";
+import steps from '../../features/tour/steps';
 
 
 interface UserFlowVariedPagesProps {
@@ -19,6 +21,13 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
   Options,
   children,
 }: PropsWithChildren<UserFlowVariedPagesProps>) => {
+  const { setSteps } = useTour();
+  const router = useRouter();
+
+  useEffect(() => {
+    setSteps(steps[router.pathname]);
+  }, []);
+
   return (
     <div className="flex flex-col min-h-screen min-w-full bg-nci-gray-lightest">
       <header className="flex-none bg-white">
