@@ -1,9 +1,17 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { VariableSizeList as List } from "react-window";
-import { useTable, useBlockLayout } from 'react-table'; //useSortBy, 
+import { useTable, useBlockLayout} from 'react-table'; //useSortBy, useColumnOrder 
 import { Button } from "../layout/UserFlowVariedPages";
 import _ from "lodash";
 import { Select } from "../../components/Select";
+import { DragDropContext, Droppable, Draggable, resetServerContext } from 'react-beautiful-dnd';
+import { 
+    getAscendingOrderArray, 
+    getDescendingOrderArray, 
+    getAllColumnHeaderOptions, 
+    convertArrayToString,
+    getDisplayEntryOptions
+ } from "./common_utils";
 
 interface DiseaseType {
     readonly diseaseType: string
@@ -27,7 +35,11 @@ interface PrimarySiteTableProps {
 // { sites }: PrimarySiteTableProps
 
 const PrimarySiteTable = (sites) => {
-
+    const actualColumns = [
+        { id: "1", value: "primarySite", label: "Primary Site" },
+        { id: "2", value: "diseaseType", label: "Disease Type" },
+        { id: "3", value: "cases", label: "Cases" }
+    ];
     const [typeDisplay, setTypeDisplay] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [primarySites, setPrimarySites] = useState(sites["sites"]);
@@ -39,43 +51,45 @@ const PrimarySiteTable = (sites) => {
     const [rowHeights, setRowHeights] = useState([]);
     const [numOfEntries, setNumOfEntries] = useState({ value: 5, label: "5" });
     const [scrollItem, setScrollItem] = useState(1);
+    const [allColumns, setAllColumns] = useState(actualColumns);
+    const [invisibleColumns, setInvisibleColumns] = useState([]);
+    const [visibleColumns, setVisibleColumns] = useState([]);
+    const [displayOptions, setDisplayOptions] = useState(() => getDisplayEntryOptions(sites["sites"].length));
 
     const fetchPrimarySites = async () => {
         // get response from a fetch catch error
         // if response set primary sites to response
     }
 
-    const descendingOrd = (param) => {
-        return filteredSites.sort((a, b) => {
-            if (a[param] < b[param]) {
-                return -1
-            } else if (a[param] > b[param]) {
-                return 1
-            } else {
-                return 0
-            }
-        })
-    }
+    // const displayOptions = [
+    //     { value: 5, label: "5" },
+    //     { value: 10, label: "10" },
+    //     { value: 20, label: "20" },
+    //     { value: 40, label: "40" },
+    //     { value: primarySites.length, label: "All" }
+    // ];
 
-    const ascendingOrd = (param) => {
-        return filteredSites.sort((a, b) => {
-            if (b[param] < a[param]) {
-                return -1
-            } else if (b[param] > a[param]) {
-                return 1
-            } else {
-                return 0
-            }
-        })
-    }
+    const getColumnOptions = () => {
+        // console.log('sites', sites);
+        return [
+            { id: 1, value: "primarySite", label: "Primary Site" },
+            { id: 2, value: "diseaseType", label: "Disease Type" },
+            { id: 3, value: "cases", label: "Cases" }
+        ]
+    };
 
-    const displayOptions = [
-        { value: 5, label: "5" },
-        { value: 10, label: "10" },
-        { value: 20, label: "20" },
-        { value: 40, label: "40" },
-        { value: primarySites.length, label: "All"}
-    ]
+    // const toggleColumns = (values) => {
+    //     console.log('inside toggle columns', values);
+    //     setVisibleColumns(values);
+    // }
+
+    const handleColumnChange = (visCols) => {
+        const filteredColumns = visCols.slice(0, visCols.length - 2);
+        console.log('visible columns', visCols.slice(0, visCols.length - 2));
+        console.log('filteredColumns', filteredColumns);
+        // setColumnOrder(filteredColumns.map(d => d.id));
+        setInvisibleColumns(['cases']);
+    }
 
     const handleDisplayChange = (num) => {
         setNumOfEntries(displayOptions.filter(op => op.value === num)[0])
@@ -94,39 +108,82 @@ const PrimarySiteTable = (sites) => {
         setScrollItem(1);
     }
 
-
-
-
     const handleSort = (param) => {
-        if (sorted === 'asc') {
-            setDisplayedSites(_(ascendingOrd(param)).slice(0).take(numOfEntries.value).value())
-            setSorted('desc');
+        if (sorted === "asc") {
+            setDisplayedSites(_(getAscendingOrderArray(param, filteredSites)).slice(0).take(numOfEntries.value).value())
+            setSorted("desc");
             setCurrentPage(1);
-        } else if (sorted === 'desc') {
-            setDisplayedSites(_(descendingOrd(param)).slice(0).take(numOfEntries.value).value())
-            setSorted('asc');
+            setScrollItem(1);
+        } else if (sorted === "desc") {
+            setDisplayedSites(_(getDescendingOrderArray(param, filteredSites)).slice(0).take(numOfEntries.value).value())
+            setSorted("asc");
             setCurrentPage(1);
+            setScrollItem(1);
         }
     }
 
     const handlePageChange = (page) => {
         console.log('page', page);
-        setDisplayedSites(_(filteredSites).slice((page - 1) * numOfEntries.value).take(numOfEntries.value).value());
+        console.log('filteredSites', filteredSites);
+        console.log('pre display sites', displayedSites);
+        setDisplayedSites(_(filteredSites).slice(((page - 1) * numOfEntries.value)).take(numOfEntries.value).value()); // inside slice() -> (page - 1) * numOfEntries.value
+        // filteredSites.length - (page * numOfEntries.value)
+        console.log('post display sites', displayedSites);
         setCurrentPage(page);
-        setScrollItem(1); 
         initializeTypeDisplay();
         setRowHeights(Array.from({ length: sites["sites"].length }, (_, i) => 80));
     }
+
+    const handleFocus = (param) => {
+        // console.log('param', param);
+        // console.log(document.getElementById(param).focus());
+        setTimeout(() => document.getElementById(param).focus());
+    }
+
+    const displayFilter = (
+        <Select
+            label="Number of Displayed Entries"
+            inputId="primary-sites-displayed"
+            options={displayOptions}
+            value={numOfEntries}
+            isMulti={false}
+            onChange={(e) => {
+                handleDisplayChange(e.value)
+            }}
+        />
+    );
+
+    // const columnFilter = (
+    //     <Select
+    //         label="Displayed Columns"
+    //         inputId="columns-displayed"
+    //         options={getColumnOptions()}
+    //         value={visibleColumns}
+    //         isMulti={true}
+    //         onChange={(e) => {
+    //             toggleColumns(e);
+    //         }}
+    //     />
+    // );
 
     // const handleRowHeightChange = (rowIdx) => {
     //     console.log('currentPage', currentPage);
     //     console.log('currPg * pageSize', 5 * currentPage);
     //     console.log('rowHeights', rowHeights);
     // }
+    const handleOnDragEnd = (result) => {
+        if (!result.destination) return;
+        const items = Array.from(allColumns);
+        const [reorderedItem] = items.splice(result.source.index, 1);
+        items.splice(result.destination.index, 0, reorderedItem);
+        setAllColumns(items);
+    }
+
 
     useEffect(() => {
         initializeTypeDisplay();
         setPrimarySites(sites["sites"]);
+        getAllColumnHeaderOptions(sites["sites"][0]);
         setRowHeights(Array.from({ length: sites["sites"].length }, (_, i) => 80));
 
         // const pageSize = 5;
@@ -135,6 +192,7 @@ const PrimarySiteTable = (sites) => {
         setPages(pageNums);
         const paginated = _(primarySites).slice(0).take(numOfEntries.value).value();
         setDisplayedSites(paginated);
+        resetServerContext();
     }, [sites]);
 
     const handleFilter = (term) => {
@@ -181,94 +239,93 @@ const PrimarySiteTable = (sites) => {
         const updateDisplay = [...typeDisplay];
         updateDisplay[idx] = !updateDisplay[idx];
         setTypeDisplay(updateDisplay);
-
-        const elementNum = row.original.id;
-        setScrollItem(elementNum - ((currentPage - 1) * numOfEntries.value));
+        const elementNum = row.id;
+        console.log('elementNum:', elementNum, 'currentPage:', currentPage, "numOfEntries.value:", numOfEntries.value, 'newScrollResult:', elementNum - ((currentPage - 1) * numOfEntries.value), 'potentialScroll:', (filteredSites.length - elementNum + 1) - ((currentPage - 1) * numOfEntries.value));
+        console.log('filteredSites', filteredSites.length);
+        setScrollItem(Number(elementNum) + 1); // - ((currentPage - 1) * numOfEntries.value)
     }
 
-    const iterateDiseaseType = (diseaseArr, idx) => {
-        let tableStr = "";
-        diseaseArr.forEach(disease => {
-            tableStr += disease + ", "
-        });
-        return tableStr.substring(0, tableStr.length - 2)
+    const defaultColumns = [
+        // {
+        //     Header: 'id',
+        //     accessor: 'id'
+        // },
+        {
+            Header: 'Primary Site',
+            accessor: 'primarySite',
+            width: 200
+        },
+        {
+            Header: "Disease Type",
+            accessor: 'diseaseType',
+            // <span>{iterateDiseaseType(value, i)}</span>
+            Cell: ({ value, row }) => (<>
+                {typeDisplay[row.index] && <><button onClick={() => toggleDisplay(row.index, value, false, row)}><div className="flex flex-row">{convertArrayToString(value)}</div><div className="flex flex-row justify-center">&#9650;</div></button></>}
+                {!typeDisplay[row.index] && <><button onClick={() => toggleDisplay(row.index, value, true, row)}><div className="flex flex-row"> {value.length} Disease Types <span>&#9660;</span></div></button></>}
+            </>),
+            width: 425
+        },
+        {
+            Header: 'Cases',
+            accessor: 'cases',
+            width: 50
+        },
+        {
+            Header: 'Available Data Cases Per Category',
+            columns: [
+                {
+                    Header: 'Seq',
+                    accessor: 'seq',
+                    width: 45,
+                },
+                {
+                    Header: 'Exp',
+                    accessor: 'exp',
+                    width: 45,
+                },
+                {
+                    Header: 'SNV',
+                    accessor: 'snv',
+                    width: 45
+                },
+                {
+                    Header: 'CNV',
+                    accessor: 'cnv',
+                    width: 45
+                },
+                {
+                    Header: 'Meth',
+                    accessor: 'meth',
+                    width: 50
+                },
+                {
+                    Header: 'Clinical',
+                    accessor: 'clinical',
+                    width: 70
+                },
+                {
+                    Header: 'Bio',
+                    accessor: 'bio',
+                    width: 45
+                }
+            ],
+        },
+        {
+            Header: 'Files',
+            accessor: 'files'
+        },
+        // {
+        //     Header: 'Explore',
+        //     accessor: 'explore'
+        // }
+    ];
+
+    const generateColumns = () => {
+        return defaultColumns
     }
 
     const columns = useMemo(
-        () => [
-            // {
-            //     Header: 'id',
-            //     accessor: 'id'
-            // },
-            {
-                Header: 'Primary Site',
-                accessor: 'primarySite',
-                width: 200
-            },
-            {
-                Header: "Disease Type",
-                accessor: 'diseaseType',
-                // <span>{iterateDiseaseType(value, i)}</span>
-                Cell: ({ value, row }) => (<>
-                    {typeDisplay[row.index] && <><button onClick={() => toggleDisplay(row.index, value, false, row)}><div className="flex flex-row">{iterateDiseaseType(value, row.index)}</div><div className="flex flex-row justify-center">&#9650;</div></button></>}
-                    {!typeDisplay[row.index] && <><button onClick={() => toggleDisplay(row.index, value, true, row)}><div> {value.length} Disease Types <span>&#9660;</span></div></button></>}
-                </>),
-                width: 425
-            },
-            {
-                Header: 'Cases',
-                accessor: 'cases',
-                width: 50
-            },
-            {
-                Header: 'Available Data Cases Per Category',
-                columns: [
-                    {
-                        Header: 'Seq',
-                        accessor: 'seq',
-                        width: 45,
-                    },
-                    {
-                        Header: 'Exp',
-                        accessor: 'exp',
-                        width: 45,
-                    },
-                    {
-                        Header: 'SNV',
-                        accessor: 'snv',
-                        width: 45
-                    },
-                    {
-                        Header: 'CNV',
-                        accessor: 'cnv',
-                        width: 45
-                    },
-                    {
-                        Header: 'Meth',
-                        accessor: 'meth',
-                        width: 50
-                    },
-                    {
-                        Header: 'Clinical',
-                        accessor: 'clinical',
-                        width: 70
-                    },
-                    {
-                        Header: 'Bio',
-                        accessor: 'bio',
-                        width: 45
-                    }
-                ],
-            },
-            {
-                Header: 'Files',
-                accessor: 'files'
-            },
-            // {
-            //     Header: 'Explore',
-            //     accessor: 'explore'
-            // }
-        ],
+        () => generateColumns(),
         [typeDisplay]
     );
     // const [primarySites, setPrimarySites] = useState(sites["sites"]);
@@ -290,8 +347,8 @@ const PrimarySiteTable = (sites) => {
     // const primaryData = useMemo(() => [...primarySites], [primarySites]);
 
 
-    const handleExplore = (id) => {
-        console.log('explore id', id);
+    const handleExplore = (row) => {
+        console.log('explore row', row);
     }
 
     const tableAction = (action) => {
@@ -301,7 +358,7 @@ const PrimarySiteTable = (sites) => {
                 id: "Explore",
                 Header: "",
                 Cell: ({ row }) => (
-                    <Button className="mt-1" onClick={() => handleExplore(row.value)}>
+                    <Button className="mt-1" onClick={() => handleExplore(row)}>
                         Explore
                     </Button>
                 ),
@@ -310,7 +367,7 @@ const PrimarySiteTable = (sites) => {
     }
 
 
-    const Table = ({ columns, data, handleSort, handlePageChange, currPg, rowHeightArr, handleDisplayChange, scrollItem }) => {
+    const Table = ({ columns, data, handleSort, handlePageChange, currPg, rowHeightArr, handleDisplayChange, scrollItem, invisibleColumns, handleColumnChange }) => {
 
         const [currentPage, setCurrentPage] = useState(currPg);
 
@@ -321,21 +378,6 @@ const PrimarySiteTable = (sites) => {
             []
         );
 
-       
-
-        const displayFilter = (
-        <Select
-          label="Number of Displayed Entries"
-          inputId="primary-sites-displayed"
-          options={displayOptions}
-          value={numOfEntries}
-          isMulti={false}
-          onChange={(e) => {
-            handleDisplayChange(e.value)
-          }}
-        />
-      );
-
         const {
             getTableProps,
             getTableBodyProps,
@@ -343,14 +385,20 @@ const PrimarySiteTable = (sites) => {
             rows,
             page,
             totalColumnsWidth,
-            prepareRow
+            prepareRow,
+            // setColumnOrder,
+            visibleColumns
         } = useTable(
             {
                 columns,
                 data,
                 defaultColumn,
+                initialState: {
+                    hiddenColumns: invisibleColumns
+                }
             },
             useBlockLayout,
+            // useColumnOrder,
             tableAction
         );
 
@@ -360,7 +408,7 @@ const PrimarySiteTable = (sites) => {
                 // console.log('ROW', row, 'INDEX', index, 'ROWS', rows);
                 // console.log('row original ID??', row.original.id);
                 prepareRow(row)
-         
+
 
                 return (
                     <div
@@ -372,7 +420,7 @@ const PrimarySiteTable = (sites) => {
                     >
                         {row.cells.map((cell, idx) => {
                             return (
-                                <div {...cell.getCellProps()}  className={`td rounded-sm p-1.5 text-center h-7`}>
+                                <div {...cell.getCellProps()} className={`td rounded-sm p-1.5 text-center h-7`}>
                                     {cell.render('Cell')}
                                 </div>
                             )
@@ -383,25 +431,22 @@ const PrimarySiteTable = (sites) => {
             [prepareRow, rows]
         )
 
-        const handleFocus = (param) => {
-            // console.log('param', param);
-            // console.log(document.getElementById(param).focus());
-            setTimeout(() => document.getElementById(param).focus());
-        }
+
 
         const getItemSize = (index) => {
             return rowHeightArr[index];
         }
 
-        let listRef : any = React.createRef();
+        let listRef: any = React.createRef();
 
         useEffect(() => {
             listRef.current.scrollToItem(scrollItem, "smart");
-        }, [scrollItem])
+            // console.log('scrollItem', scrollItem);
+        }, [scrollItem, invisibleColumns])
 
         return (
-            <div className="p-1">
-                <div className="flex flex-row">
+            <div className="p-2">
+                {/* <div className="flex flex-row">
                 <div className="w-20">{displayFilter}</div>
                 {pages.length > 1 && (<><button className="ml-2 mb-8 p-1" id="first-page-button" disabled={currentPage === 1} onClick={() => {
                     setCurrentPage(1);
@@ -434,7 +479,8 @@ const PrimarySiteTable = (sites) => {
                     handlePageChange(pages.length);
                     handleFocus("last-page-button");
                 }}><span className="text-sm p-2 border-2 bg-white text-nci-blue">{">>"}</span></button></>)}
-                </div>
+                </div> */}
+                {/* <button onClick={() => handleColumnChange(visibleColumns)}>Change Column Order</button> */}
                 <div {...getTableProps()} className="table inline-block">
                     <div className="bg-white rounded-md">
                         {headerGroups.map((headerGroup, idx) => (
@@ -470,11 +516,70 @@ const PrimarySiteTable = (sites) => {
 
     return (
         <>
-            <div>
-                <div className="p-2"></div>
-                <input type="text" className="ml-8 mr-8 p-2 w-1/3 float-left" placeholder="Search By Primary Site or Disease Type" value={searchTerm} onChange={(e) => handleFilter(e.target.value)}></input>
+            <div className="flex flex-row w-max">
+                {/* <div className="p-2"></div> */}
+                {/* <div className="w-max"> */}
+                    <div className="flex flex-row">
+                    <input type="text" className="ml-8 mr-8 p-2 w-max h-10 float-left" placeholder="Search By Primary Site or Disease Type" value={searchTerm} onChange={(e) => handleFilter(e.target.value)}></input>
+                    <div className="w-30">{displayFilter}</div>
+                    {/* <div className="w-30">{columnFilter}</div> */}
+                    <div className="flex flex-row">
+                        {pages.length > 1 && (<><button className="ml-2 mb-8 p-1" id="first-page-button" disabled={currentPage === 1} onClick={() => {
+                            setCurrentPage(1);
+                            handlePageChange(1);
+                            handleFocus("first-page-button");
+                        }}><span className="text-sm p-2 border-2 bg-white text-nci-blue">{"<<"}</span></button>
+                            <button className="ml-2 mb-8 p-1" disabled={currentPage === 1} id="previous-page-button" onClick={() => {
+                                setCurrentPage(currentPage - 1);
+                                handlePageChange(currentPage - 1);
+                                handleFocus("previous-page-button");
+                            }}><span className="p-2 border-2 bg-white text-nci-blue">{"<"}</span></button></>)}
+                        <ul className="w-max ml-2 mb-8">
+                            {pages.length === 1 ? <ul className="ml-2 mb-10"></ul> :
+                                pages.map((page, idx) => (
+                                    <button id={`page-button-${idx}`} key={`page-key-${idx}`} className="page-link p-1" onClick={() => {
+                                        setCurrentPage(page);
+                                        handlePageChange(page);
+                                        handleFocus(`page-button-${idx}`);
+                                    }}><span className={`${page === currentPage ? `p-2 border-2 bg-nci-blue text-white` : `p-2 border-2 bg-white text-nci-blue`}`}>{page}</span></button>
+                                ))
+                            }
+                        </ul>
+                        {pages.length > 1 && (<><button id="next-page-button" className="ml-2 mb-8 p-1" disabled={currentPage === pages.length} onClick={() => {
+                            setCurrentPage(currentPage + 1);
+                            handlePageChange(currentPage + 1);
+                            handleFocus("next-page-button");
+                        }}><span className="text-sm p-2 border-2 bg-white text-nci-blue">{">"}</span></button>
+                            <button id="last-page-button" className="ml-2 mb-8 p-1" disabled={currentPage === pages.length} onClick={() => {
+                                setCurrentPage(pages.length);
+                                handlePageChange(pages.length);
+                                handleFocus("last-page-button");
+                            }}><span className="p-2 border-2 bg-white text-nci-blue">{">>"}</span></button></>)}
+                    </div>
+                    {/* </div> */}
+                </div>
+                <DragDropContext onDragEnd={handleOnDragEnd}>
+                        <Droppable droppableId="column-filter">
+                            {(provided) => (
+                                <ul className="column-filter" {...provided.droppableProps} ref={provided.innerRef}>
+                                    {allColumns.map(({ id, label, value }, index) => {
+                                        return (
+                                            <Draggable key={id} draggableId={id} index={index}>
+                                                {(provided) => (
+                                                    <li ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                                                        {label}
+                                                    </li>
+                                                )}
+                                            </Draggable>
+                                        )
+                                    })}
+                                    {provided.placeholder}
+                                </ul>
+                            )}
+                        </Droppable>
+                    </DragDropContext>
             </div>
-            <Table columns={columns} data={displayedSites} handleSort={handleSort} handlePageChange={handlePageChange} currPg={currentPage} rowHeightArr={rowHeights} handleDisplayChange={handleDisplayChange} scrollItem={scrollItem}></Table>
+            <Table columns={columns} data={displayedSites} handleSort={handleSort} handlePageChange={handlePageChange} currPg={currentPage} rowHeightArr={rowHeights} handleDisplayChange={handleDisplayChange} scrollItem={scrollItem} invisibleColumns={invisibleColumns} handleColumnChange={handleColumnChange}></Table>
         </>
     )
     // handleRowHeightChange={handleRowHeightChange} 
