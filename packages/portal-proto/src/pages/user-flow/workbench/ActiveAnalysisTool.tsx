@@ -28,10 +28,9 @@ const ActiveAnalysisTool : React.FC<AnalysisToolInfo>  = ( { appId } : AnalysisT
     loadApp().then(setAnalysisApp);
   }, [appId]);
 
-  console.log(analysisApp);
   return (
       <Suspense fallback={
-        <div className="inline-block justify-center w-100 h-24"><Loader size={100} /></div>
+        <div className="flex flex-row items-center justify-center w-100 h-64"><Loader size={100} /></div>
       }>
         {analysisApp}
       </Suspense>

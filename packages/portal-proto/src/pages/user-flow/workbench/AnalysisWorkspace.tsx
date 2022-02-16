@@ -30,7 +30,10 @@ const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : Analys
   const filterAppsByTags = () => {
     // filter apps based off tags
     const filteredApps = remainingApps.filter(element =>  element.tags.some(tag => activeTags.includes(tag)));
-    filteredApps.length === 0 ? setActiveApps(remainingApps) : setActiveApps(filteredApps);
+    if (!activeTags.length) // no active tags
+     setActiveApps(remainingApps)
+    else
+      setActiveApps(filteredApps);
   }
 
   useEffect(() => {
@@ -47,14 +50,14 @@ const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : Analys
       <h2 className="ml-6"> Filter Tools</h2>
       <Chips className="p-1" multiple value={activeTags} onChange={setActiveTags}>
         {
-          appTags.map((x) => <Chip key={x} value={x}>{x}</Chip>)
+          appTags.map((x) => <Chip key={x.value} value={x.value}>{x.name}</Chip>)
         }
       </Chips>
       </div>
       <div  className="m-2 bg-nci-cyan-darker" >
         <Grid className="px-12">
         { recommendedApps.map((x: AppRegistrationEntry) =>
-          <Grid.Col key={x.name} span={3} style={{ minHeight: 80 }}>
+          <Grid.Col key={x.name} span={3} style={{ minHeight: 64 }}>
             <AnalysisCard  {...{  applicable: true, onClick: handleOpenAppClicked, ...x }} />
           </Grid.Col>
         )}
@@ -74,14 +77,20 @@ const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : Analys
   )
 }
 
-const AnalysisWorkspace = () => {
+interface AnalysisWorkspaceProps {
+  readonly app: string | undefined;
+}
+const AnalysisWorkspace : React.FC<AnalysisWorkspaceProps> = ({ app } : AnalysisWorkspaceProps ) => {
   const [selectedApp, setSelectedApp] = useState(undefined);
 
+  useEffect(() => {
+    setSelectedApp(app)
+  }, [app])
   return (
       <div> { (selectedApp) ?
         <div className="flex flex-col mx-2">
           <div className="flex flex-row items-center">
-            <div onClick={() => setSelectedApp(undefined)} className="bg-nci-gray-lighter hover:bg-nci-gray-light font-montserrat tracking-widest uppercase rounded-md shadow-md p-1 px-2">Analysis</div>
+            <button  onClick={() => setSelectedApp(undefined)} className="bg-nci-gray-lighter hover:bg-nci-gray-light font-montserrat tracking-widest uppercase rounded-md shadow-md p-1 px-2">Analysis</button>
             <div className=" mx-3 font-montserrat">/</div>
             <div className="bg-nci-gray-lighter font-montserrat uppercase rounded-md shadow-md p-1 px-2">{selectedApp}</div>
           </div>

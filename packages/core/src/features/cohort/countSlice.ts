@@ -73,12 +73,12 @@ const CountsGraphQLQuery = `
 
 export const fetchCohortCaseCounts = createAsyncThunk<
   GraphQLApiResponse,
-  unknown,
+  undefined,
   { dispatch: CoreDispatch; state: CoreState }
   >(
   "cohort/counts",
   async ( _, thunkAPI): Promise<GraphQLApiResponse> => {
-    const cohortFilters = selectCurrentCohortGqlFilters(thunkAPI.getState(), "cases.");
+    const cohortFilters = selectCurrentCohortGqlFilters(thunkAPI.getState(), "");
 
     const graphQlFilters = cohortFilters? {filters: cohortFilters}: {}
     const results: GraphQLApiResponse<any> = await graphqlAPI(

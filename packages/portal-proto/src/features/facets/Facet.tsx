@@ -22,6 +22,7 @@ import {
   MdSortByAlpha as AlphaSortIcon,
 } from "react-icons/md";
 import { convertFieldToName } from "./utils";
+import { FacetChart } from "../charts/FacetChart";
 import { Tooltip } from '@mantine/core';
 
 /**
@@ -164,14 +165,13 @@ export const Facet: React.FC<FacetProps> = ({
     if (selectedEnums === undefined)
       return;
     if (selectedEnums.length > 0) {
-      coreDispatch(updateCohortFilter({ type: "enum", op: "in", field: field, values: selectedEnums }));
+      coreDispatch(updateCohortFilter({ type: "enum", op: "in", field: `${field}`, values: selectedEnums }));
     } else { // completely remove the field
       coreDispatch(removeCohortFilter(field));
     }
   }, [selectedEnums]);
 
   const maxValuesToDisplay = 6;
- // const total = isSuccess ? Object.entries(data).filter(data => data[0] != "_missing").length : 6;
   const total = visibleItems;
   if (total == 0) {
     return null; // nothing to render if total == 0
@@ -208,7 +208,7 @@ export const Facet: React.FC<FacetProps> = ({
 
             <Tooltip label={description}
                      classNames={{
-                       arrow: "bg-nci-gray-lightest",
+                       arrow: "bg-nci-gray-light",
                        body: "bg-white text-nci-gray-dark"
                      }}
                      position="bottom"
@@ -223,12 +223,12 @@ export const Facet: React.FC<FacetProps> = ({
             </Tooltip>
             <div className="flex flex-row">
               <button
-                className="bg-nci-gray-darker hover:bg-grey text-nci-gray-lightest font-bold py-2 px-1 rounded inline-flex items-center"
+                className="hover:bg-grey text-nci-gray-lightest font-bold py-2 px-1 rounded inline-flex items-center"
                 onClick={toggleSearch}>
                 <SearchIcon size="1.5em" />
               </button>
               <button
-                className="bg-nci-gray-darker hover:bg-grey text-nci-gray-lightest font-bold py-2 px-1 rounded inline-flex items-center"
+                className="hover:bg-grey text-nci-gray-lightest font-bold py-2 px-1 rounded inline-flex items-center"
                 onClick={toggleFlip}>
                 <FlipIcon size="1.15em"  />
               </button>
@@ -269,7 +269,7 @@ export const Facet: React.FC<FacetProps> = ({
                             <div className="flex-grow truncate ... font-heading text-md pt-0.5">{value}</div>
                             <div className="flex-none text-right w-14 ">{count.toLocaleString()}</div>
                             <div
-                              className="flex-none text-right w-18 ">({((count / 84609) * 100).toFixed(2).toLocaleString()}%)
+                              className="flex-none text-right w-18 ">({((count / 85415) * 100).toFixed(2).toLocaleString()}%)
                             </div>
 
                           </div>

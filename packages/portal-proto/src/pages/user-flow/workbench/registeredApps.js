@@ -36,24 +36,35 @@ export const COHORTS = [
 export const REGISTERED_APPS = [
   {
     name: "Clinical Data Analysis",
-    icon: "clinical-data-analysis.png",
+    icon: "icons/apps/cdave.svg",
     tags: ["clinicalAnalysis"],
-    hasDemo: false,
+    hasDemo: true,
     id: "CDave",
+    description: "Display basic statistical analyses for the selected case set."
   },
   {
     name: "Cohort Builder",
-    icon: "clinical-data-analysis.png",
+    icon: "icons/build.svg",
     tags: ["generalUtility"],
     hasDemo: false,
     id: "CohortBuilder",
+    description: "Allows users to explore data in the GDC using advanced filters/facets, which includes those on a gene and mutation level."
+  },
+  {
+    name: "Downloads",
+    icon: "icons/database.svg",
+    tags: ["files"],
+    hasDemo: false,
+    id: "Downloads",
+    description: "Download files"
   },
   {
     name: "Cohort Comparison",
     icon: "cohort-comparison.png",
     tags: ["clinicalAnalysis"],
-    hasDemo: false,
+    hasDemo: true,
     id: "CohortComparison",
+    description: "Display the survival analysis of your case sets and compare characteristics such as gender, vital status and age at diagnosis."
   },
   {
     name: "Gene Expression",
@@ -61,6 +72,13 @@ export const REGISTERED_APPS = [
     tags: ["geneExpression"],
     hasDemo: false,
     id: "GeneExpression",
+  },
+  {
+    name: "Set Operations",
+    icon: "icons/apps/setOps.svg",
+    tags: ["variantAnalysis", "cnv", "ssm"],
+    hasDemo: true,
+    id: "SetOperations",
   },
   {
     name: "Onco Grid",
@@ -72,12 +90,12 @@ export const REGISTERED_APPS = [
 ];
 
 export const APPTAGS =  [
-  "clinicalAnalysis",
-  "generalUtility",
-  "variantAnalysis",
-  "geneExpression",
-  "sequenceAnalysis",
-  "cnv",
-  "ssm",
+  { value: "clinicalAnalysis", name: "Clinical Analysis" },
+  { value: "generalUtility",name: "General Utility" },
+  { value: "variantAnalysis",name: "Variant Analysis" },
+  { value: "geneExpression",name: "Gene Expression" },
+  { value: "sequenceAnalysis",name: "Sequence Analysis" },
+  { value: "cnv",name: "cnv" },
+  { value: "ssm",name: "ssm" },
 ];
 

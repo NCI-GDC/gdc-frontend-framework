@@ -1,10 +1,16 @@
 import { useState } from "react";
 import { CollapsibleContainer } from "../../components/CollapsibleContainer";
 import { Tabs } from '@mantine/core';
+import { ContextualCasesView } from "../cases/CasesView";
 import { CohortGroupProps,
   CohortBar,
   convertFilterToComponent,
-  useCohortFacetFilters} from "./CohortGroup";
+  useCohortFacetFilters
+} from "./CohortGroup";
+
+import {
+  MdInsertChartOutlined as SummaryChartIcon,
+  MdOutlineViewComfy as TableIcon} from "react-icons/md";
 
 import SummaryCharts from "./SummaryCharts";
 
@@ -34,9 +40,9 @@ import SummaryCharts from "./SummaryCharts";
       isCollapsed={isGroupCollapsed}
       toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
     >
-      <div className="flex flex-col">
+      <div className="flex flex-col bg-white rounded-md shadow-md">
         <div
-          className="flex flex-row flex-wrap w-100 p-2 border-b-2 border-r-2 border-l-2 rounded-lg rounded-t-none border-nci-gray-lighter">
+          className="flex flex-row flex-wrap w-100 p-2 bg-nci-gray-lightest ">
           {
             Object.keys(filters.root).map((k) => {
               return convertFilterToComponent(filters.root[k]);
@@ -44,9 +50,9 @@ import SummaryCharts from "./SummaryCharts";
 
         </div>
         <Tabs position="right" variant="pills" >
-          <Tabs.Tab label="Summary"><SummaryCharts fields={summaryFields}/></Tabs.Tab>
-          <Tabs.Tab label="Case Table"><div className="bg-secondary h-96 ">
-            Cases Table
+          <Tabs.Tab label="Summary View" icon={<SummaryChartIcon size="1.5rem"/>}><SummaryCharts fields={summaryFields}/></Tabs.Tab>
+          <Tabs.Tab  label="Table View" icon={<TableIcon size="1.5rem"/>}><div className="bg-secondary">
+            <ContextualCasesView />
           </div>
           </Tabs.Tab>
         </Tabs>
@@ -54,6 +60,5 @@ import SummaryCharts from "./SummaryCharts";
     </CollapsibleContainer>
   );
 };
-
 
  export default ContextBar;

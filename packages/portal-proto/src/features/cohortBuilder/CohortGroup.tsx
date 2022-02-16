@@ -269,7 +269,7 @@ export const CohortGroup: React.FC<CohortGroupProps> = ({ cohorts }: CohortGroup
         toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
       >
         <div
-          className="flex flex-row flex-wrap w-100 p-2 bg-nci-gray-lightest border-b-2 border-r-2 border-l-2 rounded-lg rounded-t-none border-nci-gray-lighter">
+          className="flex flex-row flex-wrap w-100 p-2 bg-nci-gray-lightest ">
           {
             Object.keys(filters.root).map((k) => {
               return convertFilterToComponent(filters.root[k]);

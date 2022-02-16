@@ -1,5 +1,5 @@
 import { useCases } from "@gff/core";
-
+import { Table } from "@mantine/core";
 export interface Case {
   readonly id: string;
   readonly submitterId: string;
@@ -33,7 +33,7 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
       "diagnoses.primary_diagnosis",
       "diagnoses.tissue_or_organ_of_origin",
     ],
-    size: 100,
+    size: 10,
   });
 
   // this mapping logic should get moved to a selector.  and the
@@ -57,10 +57,7 @@ export const CasesView: React.FC<CasesViewProps> = (props: CasesViewProps) => {
   const { cases, handleCaseSelected = () => void 0 } = props;
 
   return (
-    <table
-      className="table-auto border-collapse w-full"
-      style={{ borderSpacing: "4em" }}
-    >
+    <Table verticalSpacing="xs" striped highlightOnHover>
       <thead>
         <tr className="bg-nci-blue text-white">
           <th className="px-2">Case</th>
@@ -87,6 +84,6 @@ export const CasesView: React.FC<CasesViewProps> = (props: CasesViewProps) => {
           </tr>
         ))}
       </tbody>
-    </table>
+    </Table>
   );
 };

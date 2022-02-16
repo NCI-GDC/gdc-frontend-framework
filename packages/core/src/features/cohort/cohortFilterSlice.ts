@@ -106,7 +106,7 @@ export const convertFacetFilterToGqlFilter = (filter: CohortFilter): GqlOperatio
   return handleGqlOperation(handler, filter);
 };
 
-const buildCohortGqlOperator = (fs: FilterSet | undefined, prepend = ""): GqlOperation | undefined => {
+const buildCohortGqlOperator = (fs: FilterSet | undefined): GqlOperation | undefined => {
 
   if (!fs)
     return undefined;
@@ -116,7 +116,7 @@ const buildCohortGqlOperator = (fs: FilterSet | undefined, prepend = ""): GqlOpe
         (Object.keys(fs.root).length == 0) ? undefined :
         {
           op: "and", content: Object.keys(fs.root).map((k): GqlOperation => {
-            const filter = {  ...fs.root[k], field: `${prepend}${fs.root[k].field}`};
+            const filter = {  ...fs.root[k], field: fs.root[k].field};
             return convertFacetFilterToGqlFilter(filter);
           }),
         }
@@ -138,8 +138,8 @@ export const selectCurrentCohortFilters = (state: CoreState): FilterSet | undefi
  * @param state
  * @param prepend
  */
-export const selectCurrentCohortGqlFilters = (state: CoreState, prepend=""): GqlOperation | undefined => {
-  return buildCohortGqlOperator(state.cohort.currentFilters.currentFilters, prepend);
+export const selectCurrentCohortGqlFilters = (state: CoreState): GqlOperation | undefined => {
+  return buildCohortGqlOperator(state.cohort.currentFilters.currentFilters);
 };
 
 export const selectCurrentCohortCaseGqlFilters = (state: CoreState): GqlOperation | undefined => {

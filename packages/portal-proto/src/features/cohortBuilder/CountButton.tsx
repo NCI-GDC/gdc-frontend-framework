@@ -54,7 +54,7 @@ const CountButton : React.FC<CountButtonProp> = ({countName, label, className = 
   const cohortCounts = useCurrentCohortCounts();
 
   return (
-    <div className={className}>{(cohortCounts.isSuccess) ?`${cohortCounts.data[countName].toLocaleString()} ${label}` :  <Loader></Loader>}</div>
+    <div className={className}><div className="flex flex-row flex-nowrap items-center" >{(cohortCounts.isSuccess) ?`${cohortCounts.data[countName].toLocaleString()} ${label}` :  <><Loader color="gray" size="xs" className="mr-2"/> {label} </> }</div></div>
   )
 }
 

@@ -1,5 +1,10 @@
 import { GdcFile, useFiles } from "@gff/core";
-import { Button } from "../layout/UserFlowVariedPages";
+import { Table, Button, } from "@mantine/core";
+import fileSize from "filesize";
+import {
+  MdLock as LockedIcon,
+  MdLockOpen as OpenIcon
+} from "react-icons/md";
 
 export interface ContextualFilesViewProps {
   readonly handleFileSelected?: (file: GdcFile) => void;
@@ -23,15 +28,12 @@ export const FilesView: React.FC<FilesViewProps> = ({
 }: FilesViewProps) => {
   return (
     <div className="flex flex-col gap-y-4">
-      <div>
-        <Button>Download Manifest</Button>
+      <div className="flex flex-row">
+        <Button className="bg-">Download Manifest</Button>
       </div>
-      <table
-        className="table-auto border-collapse border-nci-gray w-full"
-        style={{ borderSpacing: "4em" }}
-      >
+      <Table verticalSpacing="xs" striped highlightOnHover>
         <thead>
-          <tr className="bg-nci-blue text-white">
+          <tr className="bg-nci-gray text-white text-md text-montserrat border border-nci-gray-light">
             <th className="px-2">
               <input type="checkbox" />
             </th>
@@ -45,24 +47,24 @@ export const FilesView: React.FC<FilesViewProps> = ({
         </thead>
         <tbody>
           {files.map((file, i) => (
-            <tr key={file.id} className={i % 2 == 0 ? "bg-gray-200" : ""}>
+            <tr key={file.id} >
               <td className="px-2">
                 <input type="checkbox" />
               </td>
+              <td className="flex flex-row items-center flex-nowrap"><LockedIcon className="pr-1"/> {file.access}</td>
               <td className="px-2 break-all">
                 <button onClick={() => handleFileSelected(file)}>
                   {file.fileName}
                 </button>
               </td>
-              <td className="px-2">{file.access}</td>
               <td className="px-2">{file.experimentalStrategy}</td>
               <td className="px-2">{file.dataCategory}</td>
               <td className="px-2">{file.dataFormat}</td>
-              <td className="px-2">{file.fileSize}</td>
+              <td className="px-2">{fileSize(file.fileSize)}</td>
             </tr>
           ))}
         </tbody>
-      </table>
+      </Table>
     </div>
   );
 };

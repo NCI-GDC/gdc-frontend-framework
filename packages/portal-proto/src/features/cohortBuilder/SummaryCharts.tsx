@@ -13,12 +13,10 @@ interface SummaryChartsProps {
   fields:  string[];
   chartHeight?: number;
 }
-export const SummaryCharts: React.FC<SummaryChartsProps> =  ({ fields, chartHeight = 100} :  SummaryChartsProps) => {
-  const [isGroupCollapsed, setIsGroupCollapsed] = useState(false);
+export const SummaryCharts: React.FC<SummaryChartsProps> =  ({ fields, chartHeight = 120} :  SummaryChartsProps) => {
 
   return (
-
-    <div className="mx-10 border-2 border-nci-teal-lightest p-1.5">
+    <div className="p-1.5">
       <div
         className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4">
         {fields.map((name, index) => {
