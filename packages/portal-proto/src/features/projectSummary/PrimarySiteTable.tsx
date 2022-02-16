@@ -1,17 +1,17 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { VariableSizeList as List } from "react-window";
-import { useTable, useBlockLayout} from 'react-table'; //useSortBy, useColumnOrder 
+import { useTable, useBlockLayout } from 'react-table';
 import { Button } from "../layout/UserFlowVariedPages";
 import _ from "lodash";
 import { Select } from "../../components/Select";
 import { DragDropContext, Droppable, Draggable, resetServerContext } from 'react-beautiful-dnd';
-import { 
-    getAscendingOrderArray, 
-    getDescendingOrderArray, 
-    getAllColumnHeaderOptions, 
+import {
+    getAscendingOrderArray,
+    getDescendingOrderArray,
+    getAllColumnHeaderOptions,
     convertArrayToString,
     getDisplayEntryOptions
- } from "./common_utils";
+} from "./common_utils";
 
 interface DiseaseType {
     readonly diseaseType: string
@@ -31,8 +31,6 @@ interface PrimarySiteTableProps {
         readonly fileCount: number
     }>
 }
-// const PrimarySiteTable : React.FC<PrimarySiteTableProps> 
-// { sites }: PrimarySiteTableProps
 
 const PrimarySiteTable = (sites) => {
     const actualColumns = [
@@ -56,21 +54,8 @@ const PrimarySiteTable = (sites) => {
     const [visibleColumns, setVisibleColumns] = useState([]);
     const [displayOptions, setDisplayOptions] = useState(() => getDisplayEntryOptions(sites["sites"].length));
 
-    const fetchPrimarySites = async () => {
-        // get response from a fetch catch error
-        // if response set primary sites to response
-    }
-
-    // const displayOptions = [
-    //     { value: 5, label: "5" },
-    //     { value: 10, label: "10" },
-    //     { value: 20, label: "20" },
-    //     { value: 40, label: "40" },
-    //     { value: primarySites.length, label: "All" }
-    // ];
 
     const getColumnOptions = () => {
-        // console.log('sites', sites);
         return [
             { id: 1, value: "primarySite", label: "Primary Site" },
             { id: 2, value: "diseaseType", label: "Disease Type" },
@@ -79,25 +64,17 @@ const PrimarySiteTable = (sites) => {
     };
 
     // const toggleColumns = (values) => {
-    //     console.log('inside toggle columns', values);
     //     setVisibleColumns(values);
     // }
 
     const handleColumnChange = (visCols) => {
         const filteredColumns = visCols.slice(0, visCols.length - 2);
-        console.log('visible columns', visCols.slice(0, visCols.length - 2));
-        console.log('filteredColumns', filteredColumns);
         // setColumnOrder(filteredColumns.map(d => d.id));
         setInvisibleColumns(['cases']);
     }
 
     const handleDisplayChange = (num) => {
         setNumOfEntries(displayOptions.filter(op => op.value === num)[0])
-        // setDisplayedSites(_(filteredSites).slice(0).take(num).value());
-        // console.log(primarySites.slice(0).take(num).value());
-        // setDisplayedSites(primarySites.slice(0).take(num).value());
-        // const newHeights = rowHeights.slice();
-
         const displayChange = _(filteredSites).slice(0).take(num).value()
         displayChange.length > 1 ? setDisplayedSites(displayChange) : setDisplayedSites(filteredSites);
 
@@ -123,20 +100,13 @@ const PrimarySiteTable = (sites) => {
     }
 
     const handlePageChange = (page) => {
-        console.log('page', page);
-        console.log('filteredSites', filteredSites);
-        console.log('pre display sites', displayedSites);
-        setDisplayedSites(_(filteredSites).slice(((page - 1) * numOfEntries.value)).take(numOfEntries.value).value()); // inside slice() -> (page - 1) * numOfEntries.value
-        // filteredSites.length - (page * numOfEntries.value)
-        console.log('post display sites', displayedSites);
+        setDisplayedSites(_(filteredSites).slice(((page - 1) * numOfEntries.value)).take(numOfEntries.value).value());
         setCurrentPage(page);
         initializeTypeDisplay();
         setRowHeights(Array.from({ length: sites["sites"].length }, (_, i) => 80));
     }
 
     const handleFocus = (param) => {
-        // console.log('param', param);
-        // console.log(document.getElementById(param).focus());
         setTimeout(() => document.getElementById(param).focus());
     }
 
@@ -153,24 +123,6 @@ const PrimarySiteTable = (sites) => {
         />
     );
 
-    // const columnFilter = (
-    //     <Select
-    //         label="Displayed Columns"
-    //         inputId="columns-displayed"
-    //         options={getColumnOptions()}
-    //         value={visibleColumns}
-    //         isMulti={true}
-    //         onChange={(e) => {
-    //             toggleColumns(e);
-    //         }}
-    //     />
-    // );
-
-    // const handleRowHeightChange = (rowIdx) => {
-    //     console.log('currentPage', currentPage);
-    //     console.log('currPg * pageSize', 5 * currentPage);
-    //     console.log('rowHeights', rowHeights);
-    // }
     const handleOnDragEnd = (result) => {
         if (!result.destination) return;
         const items = Array.from(allColumns);
@@ -183,10 +135,7 @@ const PrimarySiteTable = (sites) => {
     useEffect(() => {
         initializeTypeDisplay();
         setPrimarySites(sites["sites"]);
-        getAllColumnHeaderOptions(sites["sites"][0]);
         setRowHeights(Array.from({ length: sites["sites"].length }, (_, i) => 80));
-
-        // const pageSize = 5;
         const pageCount = primarySites ? Math.ceil(primarySites.length / numOfEntries.value) : 0;
         const pageNums = _.range(1, pageCount + 1);
         setPages(pageNums);
@@ -198,20 +147,13 @@ const PrimarySiteTable = (sites) => {
     const handleFilter = (term) => {
         const filtered = sites["sites"].filter(elem => elem.primarySite.toLowerCase().includes(term.toLowerCase()));
         setSearchTerm(term);
-        // console.log(sites["sites"].filter(element => element.diseaseArr.includes(e.target.value.toLowerCase()) || element.primarySite.toLowerCase().includes(e.target.value.toLowerCase())))
-        // console.log(sites["sites"][0].primarySite.toLowerCase().includes(e.target.value.toLowerCase()));
-        // console.log(sites["sites"].filter(elem => elem.primarySite.toLowerCase().includes(e.target.value.toLowerCase())));
-        // setPrimarySites(filtered);
         setFilteredSites(filtered);
         setDisplayedSites(_(filtered).slice(0).take(numOfEntries.value).value());
         const pageCount = filtered ? Math.ceil(filtered.length / numOfEntries.value) : 0;
-        // if (pageCount === 1) return null;
         const pageNums = _.range(1, pageCount + 1);
         setPages(pageNums);
         setCurrentPage(1);
     }
-
-    // const primaryData = useMemo(() => [...primarySites], [primarySites]);
 
     const initializeTypeDisplay = () => {
         const bools = new Array(sites["sites"].length).fill(false);
@@ -220,36 +162,23 @@ const PrimarySiteTable = (sites) => {
 
     const toggleDisplay = (idx, value, expand, row) => {
         const space = value.length > 4 ? (10 * value.length) : 10
-        // console.log('inside toggle display', rowHeights);
-        // console.log('index', idx);
         const updateHeights = rowHeights.slice();
         if (expand) {
             updateHeights[idx] = updateHeights[idx] + space + 10;
-            console.log('updateHeights expand', updateHeights);
             setRowHeights(updateHeights);
-            // console.log('test', rowHeights.slice(idx));
-            // rowHeights[idx] = rowHeights[idx] + space + 10;
-            // setRowHeights()
         } else {
             updateHeights[idx] = updateHeights[idx] - space - 10;
             setRowHeights(updateHeights);
         }
-        // console.log('after toggle conditional:', rowHeights )
 
         const updateDisplay = [...typeDisplay];
         updateDisplay[idx] = !updateDisplay[idx];
         setTypeDisplay(updateDisplay);
         const elementNum = row.id;
-        console.log('elementNum:', elementNum, 'currentPage:', currentPage, "numOfEntries.value:", numOfEntries.value, 'newScrollResult:', elementNum - ((currentPage - 1) * numOfEntries.value), 'potentialScroll:', (filteredSites.length - elementNum + 1) - ((currentPage - 1) * numOfEntries.value));
-        console.log('filteredSites', filteredSites.length);
-        setScrollItem(Number(elementNum) + 1); // - ((currentPage - 1) * numOfEntries.value)
+        setScrollItem(Number(elementNum) + 1);
     }
 
     const defaultColumns = [
-        // {
-        //     Header: 'id',
-        //     accessor: 'id'
-        // },
         {
             Header: 'Primary Site',
             accessor: 'primarySite',
@@ -258,10 +187,17 @@ const PrimarySiteTable = (sites) => {
         {
             Header: "Disease Type",
             accessor: 'diseaseType',
-            // <span>{iterateDiseaseType(value, i)}</span>
             Cell: ({ value, row }) => (<>
-                {typeDisplay[row.index] && <><button onClick={() => toggleDisplay(row.index, value, false, row)}><div className="flex flex-row">{convertArrayToString(value)}</div><div className="flex flex-row justify-center">&#9650;</div></button></>}
-                {!typeDisplay[row.index] && <><button onClick={() => toggleDisplay(row.index, value, true, row)}><div className="flex flex-row"> {value.length} Disease Types <span>&#9660;</span></div></button></>}
+                {typeDisplay[row.index] && (<>
+                    <button onClick={() => toggleDisplay(row.index, value, false, row)}>
+                        <div className="flex flex-row">{convertArrayToString(value)}</div>
+                        <div className="flex flex-row justify-center">&#9650;</div>
+                    </button></>)}
+                {!typeDisplay[row.index] && (<>
+                    <button onClick={() => toggleDisplay(row.index, value, true, row)}>
+                        <div className="flex flex-row"> {value.length} Disease Types <span>&#9660;</span></div>
+                    </button>
+                </>)}
             </>),
             width: 425
         },
@@ -313,11 +249,7 @@ const PrimarySiteTable = (sites) => {
         {
             Header: 'Files',
             accessor: 'files'
-        },
-        // {
-        //     Header: 'Explore',
-        //     accessor: 'explore'
-        // }
+        }
     ];
 
     const generateColumns = () => {
@@ -328,27 +260,9 @@ const PrimarySiteTable = (sites) => {
         () => generateColumns(),
         [typeDisplay]
     );
-    // const [primarySites, setPrimarySites] = useState(sites["sites"]);
-
-    // const fetchPrimarySites = async () => {
-    //     // get response from a fetch catch error
-    //     // if response set primary sites to response
-    // }
-
-    // useEffect(() => {
-    //     console.log('sites', sites);
-    //     // fetchPrimarySites()
-    //     initializeTypeDisplay();
-    //     setPrimarySites(sites["sites"]);
-    // }, []);
-
-
-
-    // const primaryData = useMemo(() => [...primarySites], [primarySites]);
-
 
     const handleExplore = (row) => {
-        console.log('explore row', row);
+        // console.log(row);
     }
 
     const tableAction = (action) => {
@@ -367,7 +281,17 @@ const PrimarySiteTable = (sites) => {
     }
 
 
-    const Table = ({ columns, data, handleSort, handlePageChange, currPg, rowHeightArr, handleDisplayChange, scrollItem, invisibleColumns, handleColumnChange }) => {
+    const Table = ({
+        columns,
+        data,
+        handleSort,
+        handlePageChange,
+        handleDisplayChange,
+        currPg,
+        rowHeightArr,
+        scrollItem,
+        invisibleColumns,
+        handleColumnChange }) => {
 
         const [currentPage, setCurrentPage] = useState(currPg);
 
@@ -386,7 +310,6 @@ const PrimarySiteTable = (sites) => {
             page,
             totalColumnsWidth,
             prepareRow,
-            // setColumnOrder,
             visibleColumns
         } = useTable(
             {
@@ -398,15 +321,12 @@ const PrimarySiteTable = (sites) => {
                 }
             },
             useBlockLayout,
-            // useColumnOrder,
             tableAction
         );
 
         const RenderRow = useCallback(
             ({ index, style }) => {
                 const row = rows[index]
-                // console.log('ROW', row, 'INDEX', index, 'ROWS', rows);
-                // console.log('row original ID??', row.original.id);
                 prepareRow(row)
 
 
@@ -441,46 +361,10 @@ const PrimarySiteTable = (sites) => {
 
         useEffect(() => {
             listRef.current.scrollToItem(scrollItem, "smart");
-            // console.log('scrollItem', scrollItem);
         }, [scrollItem, invisibleColumns])
 
         return (
             <div className="p-2">
-                {/* <div className="flex flex-row">
-                <div className="w-20">{displayFilter}</div>
-                {pages.length > 1 && (<><button className="ml-2 mb-8 p-1" id="first-page-button" disabled={currentPage === 1} onClick={() => {
-                    setCurrentPage(1);
-                    handlePageChange(1);
-                    handleFocus("first-page-button");
-                }}><span className="text-sm p-2 border-2 bg-white text-nci-blue">{"<<"}</span></button>
-                <button className="ml-2 mb-8 p-1" disabled={currentPage === 1} id="previous-page-button" onClick={() => {
-                    setCurrentPage(currentPage - 1);
-                    handlePageChange(currentPage - 1);
-                    handleFocus("previous-page-button");
-                }}><span className="text-sm p-2 border-2 bg-white text-nci-blue">{"<"}</span></button></>)}
-                <ul className="pagination ml-2 mb-8">
-                    {pages.length === 1 ? <ul className="ml-2 mb-10"></ul> :
-                            pages.map((page, idx) => (
-                            <button id={`page-button-${idx}`} key={`page-key-${idx}`} className="page-link p-2" onClick={() => {
-                                setCurrentPage(page);
-                                handlePageChange(page);
-                                handleFocus(`page-button-${idx}`);
-                            }}><span className={`${page === currentPage ? `p-2 border-2 bg-nci-blue text-white` : `p-2 border-2 bg-white text-nci-blue`}`}>{page}</span></button>
-                        ))
-                    }
-                </ul>
-                {pages.length > 1 && (<><button id="next-page-button" className="ml-2 mb-8 p-1" disabled={currentPage === pages.length} onClick={() => {
-                    setCurrentPage(currentPage + 1);
-                    handlePageChange(currentPage + 1);
-                    handleFocus("next-page-button");
-                }}><span className="text-sm p-2 border-2 bg-white text-nci-blue">{">"}</span></button>
-                <button id="last-page-button" className="ml-2 mb-8 p-1" disabled={currentPage === pages.length} onClick={() => {
-                    setCurrentPage(pages.length);
-                    handlePageChange(pages.length);
-                    handleFocus("last-page-button");
-                }}><span className="text-sm p-2 border-2 bg-white text-nci-blue">{">>"}</span></button></>)}
-                </div> */}
-                {/* <button onClick={() => handleColumnChange(visibleColumns)}>Change Column Order</button> */}
                 <div {...getTableProps()} className="table inline-block">
                     <div className="bg-white rounded-md">
                         {headerGroups.map((headerGroup, idx) => (
@@ -517,12 +401,9 @@ const PrimarySiteTable = (sites) => {
     return (
         <>
             <div className="flex flex-row w-max">
-                {/* <div className="p-2"></div> */}
-                {/* <div className="w-max"> */}
-                    <div className="flex flex-row">
+                <div className="flex flex-row">
                     <input type="text" className="ml-8 mr-8 p-2 w-max h-10 float-left" placeholder="Search By Primary Site or Disease Type" value={searchTerm} onChange={(e) => handleFilter(e.target.value)}></input>
                     <div className="w-30">{displayFilter}</div>
-                    {/* <div className="w-30">{columnFilter}</div> */}
                     <div className="flex flex-row">
                         {pages.length > 1 && (<><button className="ml-2 mb-8 p-1" id="first-page-button" disabled={currentPage === 1} onClick={() => {
                             setCurrentPage(1);
@@ -556,33 +437,31 @@ const PrimarySiteTable = (sites) => {
                                 handleFocus("last-page-button");
                             }}><span className="p-2 border-2 bg-white text-nci-blue">{">>"}</span></button></>)}
                     </div>
-                    {/* </div> */}
                 </div>
                 <DragDropContext onDragEnd={handleOnDragEnd}>
-                        <Droppable droppableId="column-filter">
-                            {(provided) => (
-                                <ul className="column-filter" {...provided.droppableProps} ref={provided.innerRef}>
-                                    {allColumns.map(({ id, label, value }, index) => {
-                                        return (
-                                            <Draggable key={id} draggableId={id} index={index}>
-                                                {(provided) => (
-                                                    <li ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                                                        {label}
-                                                    </li>
-                                                )}
-                                            </Draggable>
-                                        )
-                                    })}
-                                    {provided.placeholder}
-                                </ul>
-                            )}
-                        </Droppable>
-                    </DragDropContext>
+                    <Droppable droppableId="column-filter">
+                        {(provided) => (
+                            <ul className="column-filter" {...provided.droppableProps} ref={provided.innerRef}>
+                                {allColumns.map(({ id, label, value }, index) => {
+                                    return (
+                                        <Draggable key={id} draggableId={id} index={index}>
+                                            {(provided) => (
+                                                <li ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                                                    {label}
+                                                </li>
+                                            )}
+                                        </Draggable>
+                                    )
+                                })}
+                                {provided.placeholder}
+                            </ul>
+                        )}
+                    </Droppable>
+                </DragDropContext>
             </div>
             <Table columns={columns} data={displayedSites} handleSort={handleSort} handlePageChange={handlePageChange} currPg={currentPage} rowHeightArr={rowHeights} handleDisplayChange={handleDisplayChange} scrollItem={scrollItem} invisibleColumns={invisibleColumns} handleColumnChange={handleColumnChange}></Table>
         </>
     )
-    // handleRowHeightChange={handleRowHeightChange} 
 }
 
 export default PrimarySiteTable;

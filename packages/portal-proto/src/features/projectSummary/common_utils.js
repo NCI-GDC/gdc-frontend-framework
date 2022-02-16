@@ -62,8 +62,7 @@ export const getAllColumnListOptions = (rowObj) => {
         if (typeof rowObj[key] === 'number') {
             columnListArr.push(key);
         }
-    })
-    console.log('columnListArr', columnListArr);
+    });
 }
 
 export const getAllColumnHeaderOptions = (rowObj) => {
@@ -71,7 +70,6 @@ export const getAllColumnHeaderOptions = (rowObj) => {
     const headerKeys = Object.keys(removeObjectId(keyObj));
     headerKeys.forEach(key => {
         if (typeof rowObj[key] === 'number') {
-            console.log(key);
         }
     })
 }

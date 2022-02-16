@@ -47,8 +47,6 @@ const BarStack = ({ numFill, numSpace, color }) => {
 
     return (
         <>
-            {/* render 2 divs for most happy paths */}
-            {/* add styling so divs are on same line */}
             <animated.div style={container} className={`flex flex-row`}>
                 <animated.div>
                     <animated.div style={filled}></animated.div>
