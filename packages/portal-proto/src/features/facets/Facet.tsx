@@ -1,4 +1,5 @@
 import {
+  updateCohortFilter,
   EnumFilter,
   FacetBuckets,
   fetchFacetByName,
@@ -7,7 +8,6 @@ import {
   selectCasesFacetByField,
   selectCurrentCohortFilters,
   selectCurrentCohortFiltersByName,
-  updateCohortFilter,
   useCoreDispatch,
   useCoreSelector,
 } from "@gff/core";

@@ -25,7 +25,7 @@ import {
   EnumFilter,
   RangeFilter, removeCohortFilter,
   useCohortCounts, FacetBuckets, selectCasesFacetByField, fetchFacetByName,
-  fetchCohortCounts, selectCohortCountsData, selectCurrentCohortFiltersByName,
+  selectCohortCountsData, selectCurrentCohortFiltersByName,
 } from "@gff/core";
 import { convertFieldToName } from "../facets/utils";
 import CountButton from "./CountButton";
@@ -240,8 +240,8 @@ export const useCohortFacetFilters = (): FilterSet => {
 };
 
 class CohortFilterToComponent implements CohortFilterHandler<JSX.Element> {
-  handleEnum = (f: EnumFilter) => <CohortEnumFilterElement key={f.filter} filter={f} />;
-  handleRange = (f: RangeFilter) => <CohortRangeFilterElement key={f.filter} filter={f} />;
+  handleEnum = (f: EnumFilter) => <CohortEnumFilterElement key={f.field} filter={f} />;
+  handleRange = (f: RangeFilter) => <CohortRangeFilterElement key={f.field} filter={f} />;
 }
 
 export const convertFilterToComponent = (filter: CohortFilter): JSX.Element => {

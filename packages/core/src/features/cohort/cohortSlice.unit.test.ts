@@ -1,15 +1,19 @@
 import { getInitialCoreState } from "../../store.unit.test";
 import {
   FilterSet,
-  clearCurrentCohort,
-  cohortReducer,
-  selectCurrentCohort,
-  setCurrentCohort,
   selectCurrentCohortFilters,
   selectCurrentCohortFiltersByName,
   updateCohortFilter,
   removeCohortFilter,
-} from "./cohortSlice";
+  cohortFilterReducer,
+} from "./cohortFilterSlice";
+import {
+  clearCurrentCohort,
+  selectCurrentCohort,
+  setCurrentCohort,
+  cohortNameReducer,
+} from "./cohortNameSlice";
+
 
 const state = getInitialCoreState();
 
@@ -54,18 +58,17 @@ const TwoPopulatedFilters =
 
 describe("cohortSlice reducer", () => {
   test("should return the default state for unknown actions", () => {
-    const state = cohortReducer(undefined, { type: "asdf" });
+    const state = cohortNameReducer(undefined, { type: "asdf" });
     expect(state).toEqual({ currentFilters: initialFilters });
   });
 
   test("setCurrentCohort action should set the current cohort", () => {
-    const state = cohortReducer({ currentFilters: initialFilters }, setCurrentCohort("my-cohort-1"));
+    const state = cohortNameReducer(undefined, setCurrentCohort("my-cohort-1"));
     expect(state.currentCohort).toEqual("my-cohort-1");
   });
 
   test("clearCurrentCohort action should unset the current cohort", () => {
-    const state = cohortReducer(
-      { currentCohort: "cohort-2", currentFilters: initialFilters },
+    const state = cohortNameReducer({ currentCohort: "cohort-2" },
       clearCurrentCohort(),
     );
     expect(state.currentCohort).toBeUndefined();
@@ -76,13 +79,39 @@ describe("selectCurrentCohort", () => {
   test("should return the current cohort when it's defined", () => {
     const currentCohort = selectCurrentCohort({
       ...state,
-      cohort: { currentCohort: "asdf", currentFilters: initialFilters },
+      cohort: {
+        currentCohort: { currentCohort: "asdf"} ,
+        currentFilters: { currentFilters: initialFilters },
+        counts: {
+          counts: {
+              caseCounts: -1,
+              fileCounts: -1,
+              genesCounts: -1,
+              mutationCounts: -1,
+            },
+            status: "uninitialized"
+          }
+        },
     });
     expect(currentCohort).toEqual("asdf");
   });
 
   test("should return undefined when the current cohort is not set", () => {
-    const currentCohort = selectCurrentCohort({ ...state, cohort: { currentFilters: initialFilters } });
+    const currentCohort = selectCurrentCohort({ ...state,
+      cohort: {
+       currentCohort: {currentCohort: undefined},
+        currentFilters: { currentFilters: initialFilters },
+        counts: {
+          counts: {
+            caseCounts: -1,
+            fileCounts: -1,
+            genesCounts: -1,
+            mutationCounts: -1,
+          },
+          status: "uninitialized"
+        }
+      }
+    });
     expect(currentCohort).toBeUndefined();
   });
 });
@@ -91,7 +120,19 @@ describe("selectCurrentCohortFilters", () => {
   test("should return the current cohort filters", () => {
     const currentCohortFilters = selectCurrentCohortFilters({
       ...state,
-      cohort: { currentCohort: "asdf", currentFilters: populatedFilters as FilterSet },
+      cohort: {
+        currentCohort: { currentCohort: "asdf" },
+        currentFilters: { currentFilters: populatedFilters as FilterSet },
+        counts: {
+          counts: {
+            caseCounts: -1,
+            fileCounts: -1,
+            genesCounts: -1,
+            mutationCounts: -1,
+          },
+          status: "uninitialized"
+        }
+      }
     });
     expect(currentCohortFilters).toEqual(populatedFilters);
   });
@@ -103,7 +144,21 @@ describe("selectCurrentCohortFilters", () => {
 
   test("should return a field's filters", () => {
     const currentCohortFilters = selectCurrentCohortFiltersByName({ ...state,
-      cohort: { currentCohort: "asdf", currentFilters: populatedFilters as FilterSet }
+      cohort: {
+        currentCohort: { currentCohort: "asdf" },
+        currentFilters: {
+          currentFilters: populatedFilters as FilterSet
+        },
+        counts: {
+          counts: {
+            caseCounts: -1,
+            fileCounts: -1,
+            genesCounts: -1,
+            mutationCounts: -1,
+          },
+          status: "uninitialized"
+        }
+    }
     }, 'primary_site');
     expect(currentCohortFilters).toEqual( populatedFilters.root.primary_site );
   });
@@ -112,7 +167,7 @@ describe("selectCurrentCohortFilters", () => {
 
 describe("addFilter", () => {
   test("should add a filter to the current cohort", () => {
-    const currentCohortFilters = cohortReducer({ currentFilters: initialFilters },
+    const currentCohortFilters = cohortFilterReducer({ currentFilters: initialFilters },
       updateCohortFilter(
       {
           type: "enum",
@@ -126,7 +181,7 @@ describe("addFilter", () => {
     expect(currentCohortFilters).toEqual({ currentFilters: populatedFilters });
   });
   test("should add another filter to the current cohort", () => {
-    const currentCohortFilters = cohortReducer({ currentFilters: populatedFilters as FilterSet },
+    const currentCohortFilters = cohortFilterReducer({ currentFilters: populatedFilters as FilterSet },
       updateCohortFilter(
         {
           type: "enum",
@@ -141,7 +196,7 @@ describe("addFilter", () => {
   });
 
   test("should remove filter from the current cohort", () => {
-    const currentCohortFilters = cohortReducer({ currentFilters: TwoPopulatedFilters as FilterSet },
+    const currentCohortFilters = cohortFilterReducer({ currentFilters: TwoPopulatedFilters as FilterSet },
       removeCohortFilter("disease_type"));
     expect(currentCohortFilters).toEqual({ currentFilters: populatedFilters });
   });

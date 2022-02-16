@@ -1,20 +1,29 @@
 import {
+  EnumFilter,
   FacetBuckets,
-  selectCasesFacetByField,
   fetchFacetByName,
+  FilterSet,
+  selectCasesFacetByField,
+  selectCurrentCohortFilters,
+  selectCurrentCohortFiltersByName,
+  useCoreDispatch,
   useCoreSelector,
-  useCoreDispatch, EnumFilter, selectCurrentCohortFiltersByName, FilterSet, selectCurrentCohortFilters,
 } from "@gff/core";
 import { useEffect, useState } from "react";
-import dynamic from 'next/dynamic'
-import { Loader } from '@mantine/core';
+import dynamic from "next/dynamic";
+import { Loader } from "@mantine/core";
+//import DownloadOptions from './DownloadOptions';
 
 
-const BarChartWithNoSSR = dynamic(() => import('./BarChart'), {
-  ssr: false
-})
+const BarChartWithNoSSR = dynamic(() => import("./BarChart"), {
+  ssr: false,
+});
 
-const maxValuesToDisplay =7;
+const DownloadOptions = dynamic(() => import("./DownloadOptions"), {
+  ssr: false,
+});
+
+const maxValuesToDisplay = 7;
 
 interface UseCaseFacetResponse {
   readonly data?: FacetBuckets;
@@ -95,38 +104,56 @@ const processChartData = (facetData:Record<string, any>, field: string, maxBins 
     ticktext: showXLabels ? xlabels : [],
     label_text: Object.keys(data).slice(0, maxBins).map(x => processLabel(x, 100)),
     title: convertFieldToName(field),
-    filename: `${field}.svg`,
-    yAxisTitle: "# of Cases"
+    filename: field,
+    yAxisTitle: "# of Cases",
   }
   return results;
 }
 
-export const FacetChart: React.FC<FacetProps> = ({ field, showXLabels = true, height, marginBottom, showTitle = true, maxBins = maxValuesToDisplay, orientation='v'}: FacetProps) => {
+const processJSONData = (facetData: Record<string, any>) => {
+  return Object.entries(facetData).map(e => ({ label: e[0], value: e[1] }));
+};
+
+export const FacetChart: React.FC<FacetProps> = ({
+                                                   field,
+                                                   showXLabels = true,
+                                                   height,
+                                                   marginBottom,
+                                                   showTitle = true,
+                                                   maxBins = maxValuesToDisplay,
+                                                   orientation = "v",
+                                                 }: FacetProps) => {
   const { data, error, isUninitialized, isFetching, isError, isSuccess } =
     useCaseFacet(field);
-    const [ chart_data, setChartData ]  = useState(undefined)
+  const [chart_data, setChartData] = useState(undefined);
 
   useEffect(() => {
     if (isSuccess) {
       const cd = processChartData(data, field, maxBins, showXLabels);
       setChartData(cd);
     }
-  } ,[data, isSuccess]);
+  }, [data, isSuccess]);
 
+  // Create unique ID for this chart
+  const chartDivId = `${field}_${Math.floor(Math.random() * 100)}`;
 
   return <div className="flex flex-col border-2 bg-white ">
     {showTitle ?
       <div className="flex items-center justify-between flex-wrap bg-gray-100 p-1.5">
         {convertFieldToName(field)}
+        {chart_data && isSuccess ?
+          <DownloadOptions chartDivId={chartDivId} chartName={field} jsonData={processJSONData(data)} /> : null
+        }
       </div> : null
     }
 
     {  chart_data && isSuccess ?
-    <BarChartWithNoSSR data={chart_data} height={height}
-                       marginBottom={marginBottom}
-                       orientation={orientation} />
+      <div className="flex flex-col border-2 bg-white ">
+        <BarChartWithNoSSR data={chart_data} height={height} marginBottom={marginBottom} orientation={orientation}
+                           divId={chartDivId}></BarChartWithNoSSR>
+      </div>
       :
-      <div className="flex flex-row justify-center w-100">
+      <div className="flex flex-row items-center justify-center w-100">
         <Loader color="gray" size={height} />
       </div>
     }
@@ -149,7 +176,7 @@ function truncateString(str, n) {
   }
 }
 
-const processLabel = (label: string, shorten=100): string => {
+export const processLabel = (label: string, shorten = 100): string => {
   const tokens = label.split(" ");
   const capitalizedTokens = tokens.map((s) => s[0].toUpperCase() + s.substr(1));
   return truncateString(capitalizedTokens.join(" "), shorten);

@@ -10,6 +10,11 @@ interface UserFlowVariedPagesProps {
   readonly Options?: React.FC<unknown>;
 }
 
+import {
+  MdOutlineLogin as LoginIcon,
+  MdShoppingCart as CartIcon
+} from "react-icons/md";
+
 export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
   headerElements,
   indexPath = "/",
@@ -72,6 +77,10 @@ const Header: React.FC<HeaderProps> = ({
         <div className="flex-grow"></div>
         <div className="w-64">
           <Options />
+        </div>
+        <div className="flex flex-row flex-nowrap">
+          <div className={"flex flex-row opacity-60 hover:opacity-100 transition-opacity items-center mx-2 "}><LoginIcon size="28px" /> Login </div>
+          <div className={"flex flex-row opacity-60 hover:opacity-100 transition-opacity  items-center mx-2"}><CartIcon size="28px" /> Cart </div>
         </div>
       </div>
     </div>

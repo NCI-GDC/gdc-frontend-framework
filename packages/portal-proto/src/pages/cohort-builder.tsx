@@ -3,6 +3,9 @@ import { UserFlowVariedPages } from "../features/layout/UserFlowVariedPages";
 import FullCohortBuilder from "../features/cohortBuilder/CohortBuilder";
 import { headerElements } from "./user-flow/many-pages/navigation-utils";
 
+
+
+
 const COHORTS = [
   { name: 'New Custom Cohort',
     facets : [  ],
@@ -36,9 +39,19 @@ const COHORTS = [
   }
 ]
 
+const Actions = () => {
+  return (
+
+    `<div className="flex flex-row">
+      <LoginIcon> Login </LoginIcon>
+      <CartIcon> Cart </CartIcon>
+    </div>`
+  )
+}
+
 const CohortBuilder: NextPage = () => {
   return (
-    <UserFlowVariedPages headerElements={headerElements}>
+    <UserFlowVariedPages headerElements={headerElements} >
       <FullCohortBuilder cohorts={COHORTS}/>
     </UserFlowVariedPages>
   );
