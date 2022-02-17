@@ -51,6 +51,14 @@ export const REGISTERED_APPS = [
     description: "Allows users to explore data in the GDC using advanced filters/facets, which includes those on a gene and mutation level."
   },
   {
+    name: "Mutations Frequency",
+    icon: "icons/apps/mutations.svg",
+    tags: ["ssm"],
+    hasDemo: false,
+    id: "MutationFrequencyApp",
+    description: "Download files"
+  },
+  {
     name: "Downloads",
     icon: "icons/database.svg",
     tags: ["files"],

@@ -4,8 +4,9 @@ import {
   useCoreDispatch,
   fetchGenesTable,
   GDCGenesTable,
-  selectGenesTableData,
+  selectGenesTableData, selectCohortCountsByName,
 } from "@gff/core";
+import { Pagination, Select, Table } from "@mantine/core";
 
 interface GenesTableResponse {
   readonly data?: GDCGenesTable;
@@ -40,84 +41,105 @@ const useGenesTable = (
 const GenesTable = () => {
   const [pageSize, setPageSize] = useState(10);
   const [offset, setOffset] = useState(0);
-
-  const { data, error, isUninitialized, isFetching, isError } = useGenesTable(
+  const [activePage, setPage] = useState(1);
+  const [pages, setPages] = useState(10);
+  const { data, isSuccess } = useGenesTable(
     pageSize,
     offset,
   ); // using the local useGenesTable hook defined above
 
-  /* these should be replaced with a spinner */
-  if (isUninitialized) {
-    return <div>Initializing table...</div>;
+  useEffect(() => {
+    setPages(Math.ceil(data.filteredCases/pageSize));
+  },[data, pageSize]);
+
+  const handlePageSizeChange = (x:string) => {
+    setPageSize(parseInt(x));
   }
 
-  if (isFetching) {
-    return <div>Fetching table...</div>;
+  const handlePageChange = (x:number) => {
+    setOffset(x * pageSize)
   }
-  /* end of spinner */
-  if (isError) {
-    return <div>Failed to fetch table: {error}</div>;
-  }
-
-  const nextPage = () => {
-    setOffset(offset + pageSize);
-  };
-
-  const prevPage = () => {
-    setOffset(Math.max(offset - pageSize, 0));
-  };
+  if (!isSuccess)
+    return (<div>Loading...</div>)
 
   return (
     <div className="flex flex-col w-100">
-      <div className={"grid grid-cols-9 gap-x-8"}>
-        <span>Symbol</span>
-        <span>Name </span>
-        <span># SSMS Affected Cases in Cohort </span>
-        <span># SSMS Affected Cases Across the GDC </span>
-        <span>CNV Gain </span>
-        <span>CNV Loss </span>
-        <span>Mutations</span>
-        <span>Annotations</span>
-        <span>Survival</span>
-      </div>
-      {data.genes.map((x, index) => {
-        return (
-          <div
-            className={`grid grid-cols-9 gap-x-8 ${
-              index % 2 == 0 ? "bg-nci-cyan-lighter" : "bg-nci-teal-light"
-            }`}
-            key={x.id}
-          >
-            <span>{x.symbol} </span>
-            <span>{x.name}</span>
-            <span>
-              {x.cnv_case} / {data.filteredCases}{" "}
-            </span>
-            <span>
-              {x.ssm_case} / {data.cases}{" "}
-            </span>
-            <span>
-              {x.case_cnv_gain} / {data.cnvCases}{" "}
-            </span>
-            <span>
-              {x.case_cnv_loss} / {data.cnvCases}{" "}
-            </span>
-            <span>
-              {data.mutationCounts
-                ? data.mutationCounts[x.gene_id]
-                : " loading"}{" "}
-            </span>
-            <span>A</span>
-            <span>S</span>
-          </div>
-        );
-      })}
-      <div className="flex flex-row w-2/3 justify-center gap-x-3">
-        <button className="bg-nci-gray-light hover:bg-nci-gray-dark" onClick={prevPage}>Prev 10</button>
-        <button className="bg-nci-gray-light hover:bg-nci-gray-dark" onClick={nextPage}>Next 10</button>
+      <GenesTableSimple data={data}></GenesTableSimple>
+      <div className="flex flex-row items-center justify-start border-t border-nci-gray-light">
+        <p className="px-2">Page Size:</p>
+        <Select size="sm" radius="md"
+                onChange={handlePageSizeChange}
+                value={pageSize.toString()}
+                data={[
+                  { value: '10', label: '10' },
+                  { value: '20', label: '20' },
+                  { value: '40', label: '40' },
+                  { value: '100', label: '100' },
+
+                ]}
+        />
+        <Pagination
+          classNames={{
+            active: "bg-nci-gray"
+          }}
+          size="sm"
+          radius="md"
+          color="gray"
+          className="ml-auto"
+          page={activePage}
+          onChange={(x) => handlePageChange(x-1)}
+          total={pages} />
       </div>
     </div>
   );
 };
+
+const GenesTableSimple: React.FC<GDCGenesTable> = ({ data }: GDCGenesTable) => {
+
+  const handleGenesSelected = (c) => {
+
+  };
+
+  return (
+    <Table verticalSpacing="xs" striped highlightOnHover >
+      <thead>
+      <tr className="bg-nci-gray-lighter text-white">
+        <th>Symbol</th>
+        <th>Name</th>
+        <th># SSMS Affected Cases in Cohort</th>
+        <th># SSMS Affected Cases Across the GDC</th>
+        <th>CNV Gain</th>
+        <th>CNV Loss</th>
+        <th>Mutations</th>
+        <th>Annotations</th>
+        <th>Survival</th>
+      </tr>
+      </thead>
+      <tbody>
+      {
+        data.genes?.map((x, i) => (
+        <tr key={x.id} >
+          <td className="px-2 break-all">
+            <button onClick={() => handleGenesSelected(x)}>
+              {x.symbol}
+            </button>
+          </td>
+          <td className="px-2 whitespace-nowrap">{x.name}</td>
+          <td className="px-2"> {x.cnv_case} / {data.filteredCases}</td>
+          <td className="px-2"> {x.ssm_case} / {data.cases}</td>
+          <td className="px-2"> {x.case_cnv_gain} / {data.cnvCases}</td>
+          <td className="px-2"> {x.case_cnv_loss} / {data.cnvCases}</td>
+          <td className="px-2"> {data.mutationCounts
+            ? data.mutationCounts[x.gene_id]
+            : " loading"}{" "}</td>
+          <td className="px-2">A</td>
+          <td className="px-2">S</td>
+        </tr>
+      ))}
+      </tbody>
+    </Table>
+  );
+};
+
 
 export default GenesTable;
