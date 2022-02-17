@@ -6,11 +6,15 @@ interface BarChartProps {
   // if defined, this determines the height of the chart. Otherwise, autosizing is used.
   readonly height?: number;
   readonly marginBottom?: number;
+  readonly marginTop?: number;
+  readonly padding?: number;
   readonly orientation?: string;
   readonly divId?: string;
 }
 
-const BarChart: React.FC<BarChartProps> = ({ data, height, marginBottom, orientation='v', divId }: BarChartProps) => {
+const BarChart: React.FC<BarChartProps> = ({ data, height,
+                                             marginBottom, marginTop = 30, padding = 4,
+                                             orientation='v', divId }: BarChartProps) => {
 
 const chartData = {
     x: orientation === "v" ? data.x : data.y,
@@ -39,7 +43,7 @@ const vertical_layout: Partial<Layout> = {
     },
     xaxis: {
       tickson: "labels",
-      automargin: true,
+      automargin: false,
       ticks:"outside",
       tickwidth:2,
       tickcolor:'#aaaaaa',
@@ -68,21 +72,26 @@ const vertical_layout: Partial<Layout> = {
       l: 80,
       r: 40,
       b: marginBottom !== undefined ? marginBottom : 100,
-      t: 30,
-      pad: 4
+      t: marginTop,
+      pad: padding
     },
+    width: undefined,
+    height: undefined,
+  autosize:true,
 
   };
 
-  if (height !== undefined) {
-    vertical_layout.height = height;
-  } else {
-    vertical_layout.autosize = true;
-  }
+  // if (height !== undefined) {
+  //   vertical_layout.height = height;
+  // } else {
+  //   vertical_layout.autosize = true;
+  // }
 
   if (data.x.length > 6) {
     vertical_layout.xaxis.tickangle = 35;
   }
+
+  // vertical_layout.autosize = true;
 
   const horizontal_layout: Partial<Layout> = {
     uniformtext: {
@@ -90,7 +99,7 @@ const vertical_layout: Partial<Layout> = {
       minsize: 10
     },
     yaxis: {
-      automargin: true,
+      automargin: false,
       ticks:"outside",
       tickwidth:2,
       tickcolor:'#aaaaaa',
@@ -120,25 +129,32 @@ const vertical_layout: Partial<Layout> = {
       l: 120,
       r: 10,
       b: marginBottom !== undefined ? marginBottom : 100,
-      t: 40,
-      pad: 4
+      t: marginTop,
+      pad: padding
     },
+
+    autosize:true,
   };
 
-  if (height !== undefined) {
-    horizontal_layout.height = height;
-  } else {
-    horizontal_layout.autosize = true;
-  }
+  // if (height !== undefined) {
+  //   horizontal_layout.height = height;
+  // } else {
+  //   horizontal_layout.autosize = true;
+  // }
+  // horizontal_layout.autosize = true;
 
-  const config: Partial<Config> = {responsive: true,
+  const config: Partial<Config> = {
+    responsive: true,
     "displaylogo": false,
     'modeBarButtonsToRemove': ['zoom2d', 'pan2d', 'select2d', 'lasso2d', 'zoomIn2d', 'zoomOut2d', 'autoScale2d', 'resetScale2d', 'toImage']
   };
-  return (<div>
-    <Plot divId={divId} data={[chartData]} layout={ orientation==='v' ? vertical_layout : horizontal_layout } config={config} useResizeHandler={true}
-           style={{width: "100%"}}/>
-  </div>);
+  return (
+    <Plot divId={divId} data={[chartData]}
+          layout={ orientation==='v' ? vertical_layout : horizontal_layout }
+          config={config}
+          useResizeHandler={true}
+          style={{width: "100", height: "99%"}}/>
+);
 
 };
 

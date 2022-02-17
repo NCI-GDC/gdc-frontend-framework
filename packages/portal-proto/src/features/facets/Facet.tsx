@@ -1,5 +1,4 @@
 import {
-  updateCohortFilter,
   EnumFilter,
   FacetBuckets,
   fetchFacetByName,
@@ -8,11 +7,12 @@ import {
   selectCasesFacetByField,
   selectCurrentCohortFilters,
   selectCurrentCohortFiltersByName,
+  updateCohortFilter,
   useCoreDispatch,
   useCoreSelector,
 } from "@gff/core";
 
-import { PropsWithChildren, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   MdAddCircle as MoreIcon,
   MdFlip as FlipIcon,
@@ -23,7 +23,7 @@ import {
 } from "react-icons/md";
 import { convertFieldToName } from "./utils";
 import { FacetChart } from "../charts/FacetChart";
-import { Tooltip } from '@mantine/core';
+import { Tooltip } from "@mantine/core";
 
 /**
  * Selector for the facet values (if any)
@@ -88,51 +88,15 @@ export interface FacetProps {
   readonly field: string;
   readonly description?: string;
   readonly facetName?: string;
+  readonly showSearch?: boolean;
 }
 
-
-const FacetHeader: React.FC<FacetProps> = ({ field, description, facetName = null }: PropsWithChildren<FacetProps>) => {
-  const [isSearching, setIsSearching] = useState(false);
-  const [isFacetView, setIsFacetView] = useState(true);
-
-  const toggleSearch = () => {
-    setIsSearching(!isSearching);
-  };
-
-  const toggleFlip = () => {
-    setIsFacetView(!isFacetView);
-  };
-
-  return (
-    <div className="flex flex-col border-r-2  border-b-0 border-l-2  bg-white">
-      <div>
-        <div className="flex items-center justify-between flex-wrap bg-nci-gray-lighter px-1.5">
-          <div className="has-tooltip">{(facetName === null) ? convertFieldToName(field) : facetName}
-            <div
-              className="inline-block tooltip w-1/2 border-b-2 border-nci-cyan-lightest rounded shadow-lg p-2 bg-gray-100 text-nci-blue-darkest mt-8 absolute">{description}</div>
-          </div>
-          <div className="flex flex-row">
-            <button
-              className="bg-nci-gray-lighter hover:bg-grey text-grey-darkest font-bold py-2 px-4 rounded inline-flex items-center"
-              onClick={toggleSearch}>
-              <SearchIcon />
-            </button>
-            <button
-              className="bg-nci-gray-lighter hover:bg-grey text-grey-darkest font-bold py-2 px-4 rounded inline-flex items-center"
-              onClick={toggleFlip}>
-              <FlipIcon />
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 export const Facet: React.FC<FacetProps> = ({
                                               field,
                                               description,
                                               facetName = null,
+                                              showSearch = true,
                                             }: FacetProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
@@ -140,7 +104,7 @@ export const Facet: React.FC<FacetProps> = ({
   const [isFacetView, setIsFacetView] = useState(true);
   const [ visibleItems, setVisibleItems] = useState(6);
 
-  const { data, enumFilters,  isError, isSuccess  } =
+  const { data, enumFilters, isSuccess } =
     useCaseFacet(field);
 
   const [selectedEnums, setSelectedEnums] = useState(enumFilters);
@@ -201,6 +165,7 @@ export const Facet: React.FC<FacetProps> = ({
   const cardHeight = remainingValues > 16 ? 96 : remainingValues > 0 ? Math.min(96, remainingValues * 5 + 40) : 24;
   const cardStyle = isGroupExpanded ? `flex-none  h-${cardHeight} overflow-y-scroll ` : `overflow-hidden pr-3.5`;
   const numberOfLines = (total - maxValuesToDisplay) < 0 ? total : isGroupExpanded ? 16 : maxValuesToDisplay;
+  const chartHeight = [0, 60, 60, 115, 135, 165, 190];
   return (
       <div className="flex flex-col bg-white relative shadow-md border-secondary border-2 rounded-b-md ">
         <div>
@@ -222,11 +187,12 @@ export const Facet: React.FC<FacetProps> = ({
              </div>
             </Tooltip>
             <div className="flex flex-row">
-              <button
+              {showSearch ? <button
                 className="hover:bg-grey text-nci-gray-lightest font-bold py-2 px-1 rounded inline-flex items-center"
                 onClick={toggleSearch}>
                 <SearchIcon size="1.5em" />
-              </button>
+              </button> : null
+              }
               <button
                 className="hover:bg-grey text-nci-gray-lightest font-bold py-2 px-1 rounded inline-flex items-center"
                 onClick={toggleFlip}>
@@ -296,19 +262,36 @@ export const Facet: React.FC<FacetProps> = ({
                 <div className="mt-3 m-1">
                   {remainingValues > 0 ? !isGroupExpanded ?
                       <div className="flex flex-row justify-end items-center border-t-2 p-1.5">
-                          <MoreIcon key="show-more" size="1.5em" className="text-nci-cyan-darkest"  onClick={() => setIsGroupExpanded(!isGroupExpanded)}/>
-                        <div className="pl-1 text-nci-cyan-darkest"> {isSuccess ? remainingValues : "..."} more </div>
+                        <MoreIcon key="show-more" size="1.5em" className="text-nci-cyan-darkest"
+                                  onClick={() => setIsGroupExpanded(!isGroupExpanded)} />
+                        <div className="pl-1 text-nci-cyan-darkest"> {isSuccess ? remainingValues : "..."} more</div>
                       </div>
                       :
-                        <div className="flex flex-row justify-end items-center border-t-2 border-b-0 border-r-0 border-l-0 p-1.5">
-                          <LessIcon key="show-less" size="1.5em" className="text-nci-cyan-darkest"  onClick={() => setIsGroupExpanded(!isGroupExpanded)}/>
-                          <div className="pl-1 text-nci-cyan-darkest"> show less </div>
-                        </div>
+                      <div
+                        className="flex flex-row justify-end items-center border-t-2 border-b-0 border-r-0 border-l-0 p-1.5">
+                        <LessIcon key="show-less" size="1.5em" className="text-nci-cyan-darkest"
+                                  onClick={() => setIsGroupExpanded(!isGroupExpanded)} />
+                        <div className="pl-1 text-nci-cyan-darkest"> show less</div>
+                      </div>
                     : null
                   }
                 </div>
               }
             </div>
+
+            <div className="card-face card-back bg-white">
+              <FacetChart
+                field={field}
+                marginBottom={40}
+                marginTop={5} padding={1}
+                showXLabels={true}
+                showTitle={false}
+                height={isGroupExpanded ? cardHeight * 4.88 : chartHeight[total]}
+                orientation="h"
+                maxBins={Math.min(isGroupExpanded ? 16 : Math.min(6, total))}
+              />
+            </div>
+
           </div>
         </div>
       </div>

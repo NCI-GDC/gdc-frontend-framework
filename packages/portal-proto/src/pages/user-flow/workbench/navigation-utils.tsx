@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export const headerElements = [
   <Link key="Cohort" href={{
-    pathname: "/user-flow/single-page/single_page",
+    pathname: "/user-flow/workbench/analysis_page",
     query: { app: 'CohortBuilder' },
   }}>
     <div className="text-sm font-heading  hover:bg-nci-blue-lighter text-nci-gray-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md ">
@@ -11,7 +11,7 @@ export const headerElements = [
     </div>
   </Link>,
   <Link key="Analysis" href={{
-    pathname: "/user-flow/single-page/single_page",
+    pathname: "/user-flow/workbench/analysis_page",
     query: { app: undefined },
   }}>
     <div className="text-sm font-heading  hover:bg-nci-blue-lighter text-nci-gray-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md ">
@@ -19,7 +19,7 @@ export const headerElements = [
     </div>
   </Link>,
   <Link key="Download" href={{
-    pathname: "/user-flow/single-page/single_page",
+    pathname: "/user-flow/workbench/analysis_page",
     query: { app: "Downloads" },
   }}>
     <div className="text-sm font-heading hover:bg-nci-blue-lighter text-nci-gray-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md ">

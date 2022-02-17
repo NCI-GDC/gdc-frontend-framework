@@ -60,7 +60,7 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Cohort Comparison",
-    icon: "cohort-comparison.png",
+    icon: "icons/apps/cohortComparison.svg",
     tags: ["clinicalAnalysis"],
     hasDemo: true,
     id: "CohortComparison",
@@ -68,7 +68,7 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Gene Expression",
-    icon: "gene-expression.png",
+    icon: "icons/apps/heatMap.svg",
     tags: ["geneExpression"],
     hasDemo: false,
     id: "GeneExpression",

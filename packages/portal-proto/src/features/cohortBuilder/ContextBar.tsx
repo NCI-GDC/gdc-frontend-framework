@@ -12,7 +12,7 @@ import {
   MdInsertChartOutlined as SummaryChartIcon,
   MdOutlineViewComfy as TableIcon} from "react-icons/md";
 
-import SummaryCharts from "./SummaryCharts";
+import SummaryFacets from "./SummaryFacets";
 
  const ContextBar: React.FC<CohortGroupProps> = ({ cohorts }: CohortGroupProps) => {
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(false);
@@ -23,9 +23,9 @@ import SummaryCharts from "./SummaryCharts";
 
    const [summaryFields, setSummaryFields] = useState([
      "primary_site",
-     "demographic.gender",
      "disease_type",
-     "diagnoses.tissue_or_organ_of_origin"
+     "project.project_id",
+     "project.program.name"
    ]);
 
 
@@ -50,7 +50,7 @@ import SummaryCharts from "./SummaryCharts";
 
         </div>
         <Tabs position="right" variant="pills" >
-          <Tabs.Tab label="Summary View" icon={<SummaryChartIcon size="1.5rem"/>}><SummaryCharts fields={summaryFields}/></Tabs.Tab>
+          <Tabs.Tab label="Summary View" icon={<SummaryChartIcon size="1.5rem"/>}><SummaryFacets fields={summaryFields}/></Tabs.Tab>
           <Tabs.Tab  label="Table View" icon={<TableIcon size="1.5rem"/>}><div className="bg-secondary">
             <ContextualCasesView />
           </div>

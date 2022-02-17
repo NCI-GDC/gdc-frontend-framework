@@ -1,5 +1,13 @@
-import { useCases } from "@gff/core";
+import {
+  fetchCases, fetchFacetByName, FilterSet, selectCasesFacetByField,
+  selectCurrentCohortCaseGqlFilters, selectCurrentCohortFilters,
+  useCases, useCoreDispatch, selectCasesData,
+  useCoreSelector,
+} from "@gff/core";
 import { Table } from "@mantine/core";
+import { useEffect, useState } from "react";
+import { GqlOperation } from "@gff/core/dist/dts/features/gdcapi/filters";
+
 export interface Case {
   readonly id: string;
   readonly submitterId: string;
@@ -19,22 +27,85 @@ export interface ContextualCasesViewProps {
   readonly handleCaseSelected?: (patient: Case) => void;
 }
 
+const useCohortFacetFilter = (): GqlOperation => {
+  return useCoreSelector((state) =>
+    selectCurrentCohortCaseGqlFilters(state),
+  );
+};
+
+const useCohortCases = (pageSize = 10) => {
+  const coreDispatch = useCoreDispatch();
+  const cohortFilters = useCohortFacetFilter();
+  const cases =  useCoreSelector((state) =>
+    selectCasesData(state),
+  );
+
+  // cohortFilters is generated each time, use string representation
+  // to control when useEffects are called
+  const filters = JSON.stringify(cohortFilters)
+
+  useEffect(() => {
+    if (cases.status === "uninitialized") {
+      coreDispatch(fetchCases(
+        {
+          fields: [
+            "case_id",
+            "submitter_id",
+            "primary_site",
+            "project.project_id",
+            "demographic.gender",
+            "diagnoses.primary_diagnosis",
+            "diagnoses.tissue_or_organ_of_origin",
+          ],
+          filters: cohortFilters,
+          size: pageSize,
+        }
+      ));
+    }
+  }, [coreDispatch]);
+
+  useEffect(() => {
+      coreDispatch(fetchCases(
+        {
+          fields: [
+            "case_id",
+            "submitter_id",
+            "primary_site",
+            "project.project_id",
+            "demographic.gender",
+            "diagnoses.primary_diagnosis",
+            "diagnoses.tissue_or_organ_of_origin",
+          ],
+          filters: cohortFilters,
+          size: pageSize,
+        }
+      ));
+
+  }, [filters]);
+
+  return {
+    data: cases.data,
+    error: cases?.error,
+    isUninitialized: cases === undefined,
+    isFetching: cases?.status === "pending",
+    isSuccess: cases?.status === "fulfilled",
+    isError: cases?.status === "rejected",
+  };
+};
+
+const LoadingTable = (pageSize) => {
+
+}
+
 export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
   props: ContextualCasesViewProps,
 ) => {
   // TODO useContextualCases() that filters based on the context
-  const { data } = useCases({
-    fields: [
-      "case_id",
-      "submitter_id",
-      "primary_site",
-      "project.project_id",
-      "demographic.gender",
-      "diagnoses.primary_diagnosis",
-      "diagnoses.tissue_or_organ_of_origin",
-    ],
-    size: 10,
-  });
+  const [pageSize, setPageSize] = useState(10);
+  const { data, isSuccess } = useCohortCases(pageSize);
+
+  if (!isSuccess)
+    return (<div>Loading...</div>)
 
   // this mapping logic should get moved to a selector.  and the
   // case model probably needs to be generalized or generated.
@@ -59,7 +130,7 @@ export const CasesView: React.FC<CasesViewProps> = (props: CasesViewProps) => {
   return (
     <Table verticalSpacing="xs" striped highlightOnHover>
       <thead>
-        <tr className="bg-nci-blue text-white">
+        <tr className="bg-nci-gray-light text-white">
           <th className="px-2">Case</th>
           <th className="px-2">Project</th>
           <th className="px-2">Primary Site</th>

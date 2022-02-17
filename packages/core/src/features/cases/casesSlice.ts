@@ -3,8 +3,8 @@ import {
   CoreDataSelectorResponse,
   createUseCoreDataHook,
 } from "../../dataAcess";
-import { CoreState } from "../../store";
-import { CaseDefaults, fetchGdcCases, GdcApiRequest } from "../gdcapi/gdcapi";
+import { CoreDispatch, CoreState } from "../../store";
+import { CaseDefaults, fetchGdcCases, GdcApiRequest, GdcApiResponse } from "../gdcapi/gdcapi";
 import { castDraft } from "immer";
 
 export interface CasesState {
@@ -20,9 +20,14 @@ const initialState: CasesState = {
 /**
  * The requests argument may go away as the contextual data model is built out.
  */
-export const fetchCases = createAsyncThunk(
+export const fetchCases = createAsyncThunk<
+  GdcApiResponse<Record<string, unknown>>,
+  GdcApiRequest,
+  { dispatch: CoreDispatch; state: CoreState }
+  > (
   "cases/fetchCases",
   async (request?: GdcApiRequest) => {
+    console.log("fetchCases: ", request);
     return fetchGdcCases(request);
   },
 );

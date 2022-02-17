@@ -12,8 +12,6 @@ import {
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { Loader } from "@mantine/core";
-//import DownloadOptions from './DownloadOptions';
-
 
 const BarChartWithNoSSR = dynamic(() => import("./BarChart"), {
   ssr: false,
@@ -58,7 +56,6 @@ const useCaseFacet = (field: string): UseCaseFacetResponse => {
     selectCasesFacetByField(state, field),
   );
   const selectFacetFilter = useCohortFacetFilter();
-  const enumFilters = useCohortFacetFilterByName(field);
 
   useEffect(() => {
     if (!facet) {
@@ -85,6 +82,8 @@ interface FacetProps {
   readonly showXLabels?: boolean;
   readonly height?: number;
   readonly marginBottom?: number;
+  readonly marginTop?: number;
+  readonly padding?: number;
   readonly showTitle?: boolean;
   readonly maxBins?: number;
   readonly orientation?: string;
@@ -119,11 +118,12 @@ export const FacetChart: React.FC<FacetProps> = ({
                                                    showXLabels = true,
                                                    height,
                                                    marginBottom,
+                                                   marginTop=30, padding=4,
                                                    showTitle = true,
                                                    maxBins = maxValuesToDisplay,
                                                    orientation = "v",
                                                  }: FacetProps) => {
-  const { data, error, isUninitialized, isFetching, isError, isSuccess } =
+  const { data, isSuccess } =
     useCaseFacet(field);
   const [chart_data, setChartData] = useState(undefined);
 
@@ -137,7 +137,7 @@ export const FacetChart: React.FC<FacetProps> = ({
   // Create unique ID for this chart
   const chartDivId = `${field}_${Math.floor(Math.random() * 100)}`;
 
-  return <div className="flex flex-col border-2 bg-white ">
+  return <>
     {showTitle ?
       <div className="flex items-center justify-between flex-wrap bg-gray-100 p-1.5">
         {convertFieldToName(field)}
@@ -148,16 +148,16 @@ export const FacetChart: React.FC<FacetProps> = ({
     }
 
     {  chart_data && isSuccess ?
-      <div className="flex flex-col border-2 bg-white ">
-        <BarChartWithNoSSR data={chart_data} height={height} marginBottom={marginBottom} orientation={orientation}
+
+        <BarChartWithNoSSR data={chart_data} height={height} marginBottom={marginBottom}
+                           marginTop={marginTop} padding={padding} orientation={orientation}
                            divId={chartDivId}></BarChartWithNoSSR>
-      </div>
       :
       <div className="flex flex-row items-center justify-center w-100">
-        <Loader color="gray" size={height} />
+        <Loader color="gray" size={height ? height : 24} />
       </div>
     }
-  </div>
+  </>
 };
 
 const convertFieldToName = (field: string): string => {

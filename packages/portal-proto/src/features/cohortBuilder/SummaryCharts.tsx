@@ -32,7 +32,6 @@ export const SummaryCharts: React.FC<SummaryChartsProps> =  ({ fields, chartHeig
 
       </div>
   </div>
-
   );
 };
 
