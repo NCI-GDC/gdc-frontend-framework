@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Chips, Chip, Badge, Grid, Breadcrumbs } from "@mantine/core";
+import { Button, Chips, Chip, Badge, Grid } from "@mantine/core";
 import AnalysisCard from "./AnalysisCard";
 const ActiveAnalysisToolNoSSR = dynamic(() => import('./ActiveAnalysisTool'), {
   ssr: false
@@ -46,7 +46,7 @@ const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : Analys
 
   return (
     <div className="flex flex-col">
-      <div className="mx-4 bg-white rounded-md shadow-md">
+      <div className="mx-4 mt-2 bg-white rounded-md shadow-md">
       <h2 className="ml-6"> Filter Tools</h2>
       <Chips className="p-1" multiple value={activeTags} onChange={setActiveTags}>
         {

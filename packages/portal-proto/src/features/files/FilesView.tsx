@@ -1,10 +1,11 @@
 import { GdcFile, useFiles } from "@gff/core";
-import { Table, Button, } from "@mantine/core";
+import { Table, Button, Select, Pagination } from "@mantine/core";
 import fileSize from "filesize";
 import {
   MdLock as LockedIcon,
   MdLockOpen as OpenIcon
 } from "react-icons/md";
+import { useState } from "react";
 
 export interface ContextualFilesViewProps {
   readonly handleFileSelected?: (file: GdcFile) => void;
@@ -26,10 +27,17 @@ export const FilesView: React.FC<FilesViewProps> = ({
   files = [],
   handleFileSelected = () => void 0,
 }: FilesViewProps) => {
+
+  const [pageSize, setPageSize] = useState(10);
+  const [activePage, setPage] = useState(1);
+  const [pages, setPages] = useState(10);
+  const handlePageSizeChange = (x:string) => {
+    setPageSize(parseInt(x));
+  }
   return (
-    <div className="flex flex-col gap-y-4">
+    <div className="flex flex-col gap-y-4 mt-2">
       <div className="flex flex-row">
-        <Button className="bg-">Download Manifest</Button>
+        <Button className="bg-nci-gray-light">Download Manifest</Button>
       </div>
       <Table verticalSpacing="xs" striped highlightOnHover>
         <thead>
@@ -51,7 +59,11 @@ export const FilesView: React.FC<FilesViewProps> = ({
               <td className="px-2">
                 <input type="checkbox" />
               </td>
-              <td className="flex flex-row items-center flex-nowrap"><LockedIcon className="pr-1"/> {file.access}</td>
+              <td className="flex flex-row items-center flex-nowrap">
+                {file.access === "open" ? <OpenIcon className="pr-1" /> :
+                  <LockedIcon className="pr-1" /> }
+                {file.access}
+              </td>
               <td className="px-2 break-all">
                 <button onClick={() => handleFileSelected(file)}>
                   {file.fileName}
@@ -65,6 +77,32 @@ export const FilesView: React.FC<FilesViewProps> = ({
           ))}
         </tbody>
       </Table>
+      <div className="flex flex-row items-center justify-start border-t border-nci-gray-light">
+        <p className="px-2">Page Size:</p>
+        <Select size="sm" radius="md"
+                onChange={handlePageSizeChange}
+                value={pageSize.toString()}
+                data={[
+                  { value: '10', label: '10' },
+                  { value: '20', label: '20' },
+                  { value: '40', label: '40' },
+                  { value: '100', label: '100' },
+
+                ]}
+        />
+        <Pagination
+          classNames={{
+            active: "bg-nci-gray"
+          }}
+          size="sm"
+          radius="md"
+          color="gray"
+          className="ml-auto"
+          page={activePage}
+          onChange={setPage}
+          total={pages} />
+      </div>
+
     </div>
   );
 };

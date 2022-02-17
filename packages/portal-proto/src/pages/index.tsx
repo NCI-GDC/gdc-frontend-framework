@@ -1,6 +1,7 @@
 import { NextPage } from "next";
 import { SimpleLayout } from "../features/layout/Simple";
 import Link from "next/link";
+import { Button, Card, Chip, Badge, Grid } from "@mantine/core";
 import { PropsWithChildren } from "react";
 
 interface HoverLinkProps {
@@ -30,6 +31,7 @@ const IndexPage: NextPage = () => {
       <div className="flex flex-col">
         <Section>
           User Flow Prototypes:
+
           <ul className="list-disc list-inside">
             <li>
               <HoverLink href="/user-flow/many-pages/">Many Pages</HoverLink>
@@ -47,7 +49,11 @@ const IndexPage: NextPage = () => {
                 All Apps Variant
               </HoverLink>
             </li>
-
+            <li>
+              <HoverLink href="/user-flow/workbench/">
+                Workbench
+              </HoverLink>
+            </li>
           </ul>
         </Section>
         <Section>

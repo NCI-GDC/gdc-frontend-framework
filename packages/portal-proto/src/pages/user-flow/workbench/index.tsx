@@ -24,7 +24,7 @@ const SummaryStatsItem: React.FC<SummaryStatsItemProp> = ({ title, icon, count, 
 
 const SummaryStatsPanel = () => {
   return (
-    <div className="flex flex-col bg-white border-primary border-t-8 border-0 p-4 opacity-90 shadow-md hover:shadow-lg  ">
+    <div className="flex flex-col bg-white border-nci-blue-lighter border-t-8 border-0 p-4 opacity-90 shadow-md hover:shadow-lg  ">
       <div className="flex flex-row items-end justify-items-end">
         <p className="font-heading text-lg text-gdc-grey-darker">Data Portal Summary</p>
         <a className="text-xs px-4 pb-1 text-gdc-blue"
@@ -48,20 +48,29 @@ const SummaryStatsPanel = () => {
 const ActionButtonBar = () => {
   return (
     <div className="flex flex-grow flex-row align-center pb-4 text-sm ">
-      <Link key="CohortBuilder" href="/cohort-builder">
+      <Link key="CohortBuilder" href={{
+        pathname: "/user-flow/workbench/analysis_page",
+        query: { app: 'CohortBuilder' },
+      }}>
       <button
         className="text-sm bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest hover:text-white font-bold mx-4 p-2 rounded inline-flex flex-nowrap items-center shadow-md">
         <Image src={"/user-flow/icons/build.svg"} width={32} height={32}/>
         <span className="px-2 whitespace-nowrap">Cohort Builder</span>
       </button>
       </Link>
-      <Link key="Analysis" href="/user-flow/single-page/single-page">
+      <Link key="Analysis" href={{
+        pathname: "/user-flow/workbench/analysis_page",
+        query: { app: undefined },
+      }}>
       <button
         className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md ">
         <Image src={"/user-flow/icons/dna.svg"} width={32} height={32}/> <span className="px-2">Analyze</span>
       </button>
       </Link>
-      <Link key="Repository" href="/user-flow/many-pages/repository">
+      <Link key="Repository" href={{
+        pathname: "/user-flow/workbench/analysis_page",
+        query: { app: "Downloads" },
+      }}>
       <button
         className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md ">
         <Image src={"/user-flow/icons/database.svg"} width={32} height={32}/> <span className="px-2"> Download </span>
@@ -76,7 +85,7 @@ const IndexPage: NextPage = () => {
     <UserFlowVariedPages
       {...{ indexPath: "/user-flow/single-page", headerElements }}
     >
-      <div className="flex flex-col w-100 h-100 bg-white">
+      <div className="flex flex-col w-100 h-100 bg-gradient-to-r from-nci-gray-light  to-nci-gray">
         <div className="flex flex-row mb-auto">
           <div className="flex flex-col pl-10">
             <div className="flex flex-col w-100">

@@ -167,7 +167,7 @@ export const Facet: React.FC<FacetProps> = ({
   const numberOfLines = (total - maxValuesToDisplay) < 0 ? total : isGroupExpanded ? 16 : maxValuesToDisplay;
   const chartHeight = [0, 60, 60, 115, 135, 165, 190];
   return (
-      <div className="flex flex-col bg-white relative shadow-md border-secondary border-2 rounded-b-md ">
+      <div className="flex flex-col bg-white relative shadow-lg border-nci-gray-lightest border-1 rounded-b-md ">
         <div>
           <div className="flex items-center justify-between flex-wrap bg-nci-cyan-darker shadow-md px-1.5">
 
