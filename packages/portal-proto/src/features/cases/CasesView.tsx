@@ -45,26 +45,26 @@ const useCohortCases = (pageSize = 10, offset = 0) => {
   // to control when useEffects are called
   const filters = JSON.stringify(cohortFilters)
 
-  useEffect(() => {
-    if (cases.status === "uninitialized") {
-      coreDispatch(fetchCases(
-        {
-          fields: [
-            "case_id",
-            "submitter_id",
-            "primary_site",
-            "project.project_id",
-            "demographic.gender",
-            "diagnoses.primary_diagnosis",
-            "diagnoses.tissue_or_organ_of_origin",
-          ],
-          filters: cohortFilters,
-          size: pageSize,
-          from: offset * pageSize,
-        }
-      ));
-    }
-  }, [coreDispatch]);
+  // useEffect(() => {
+  //   if (cases.status === "uninitialized") {
+  //     coreDispatch(fetchCases(
+  //       {
+  //         fields: [
+  //           "case_id",
+  //           "submitter_id",
+  //           "primary_site",
+  //           "project.project_id",
+  //           "demographic.gender",
+  //           "diagnoses.primary_diagnosis",
+  //           "diagnoses.tissue_or_organ_of_origin",
+  //         ],
+  //         filters: cohortFilters,
+  //         size: pageSize,
+  //         from: offset * pageSize,
+  //       }
+  //     ));
+  //   }
+  // }, [coreDispatch]);
 
   useEffect(() => {
       coreDispatch(fetchCases(
@@ -106,9 +106,9 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
   // TODO useContextualCases() that filters based on the context
   const [pageSize, setPageSize] = useState(10);
   const [activePage, setPage] = useState(1);
-  const { data, isSuccess } = useCohortCases(pageSize, activePage);
+  const {data, isSuccess } = useCohortCases(pageSize, activePage);
   const [pages, setPages] = useState(10);
-  const coreDispatch = useCoreDispatch();
+
   const caseCounts = useCoreSelector((state) =>
     selectCohortCountsByName(state, "caseCounts")
   );
@@ -161,7 +161,7 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
           color="gray"
           className="ml-auto"
           page={activePage}
-          onChange={setPage}
+          onChange={(x) => setPage(x-1)}
           total={pages} />
       </div>
     </div>

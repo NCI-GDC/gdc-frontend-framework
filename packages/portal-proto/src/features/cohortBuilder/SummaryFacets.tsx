@@ -14,6 +14,8 @@ export const SummaryFacets: React.FC<SummaryFacetProps> =  ({ fields } :  Summar
         {fields.map((name, index) => {
           return (<Facet
             field={name}
+            showSearch={false}
+            startShowingData={false}
             key={`summary-chart-${index}`}
           />)
         })

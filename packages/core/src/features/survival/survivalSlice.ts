@@ -1,8 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { CoreDataSelectorResponse, createUseCoreDataHook, DataStatus } from "../../dataAcess";
 import { CoreDispatch, CoreState } from "../../store";
-import { castDraft } from "immer";
 import { buildFetchError, GdcApiRequest } from "../gdcapi/gdcapi";
+
+export const MINIMUM_CASES = 10;
+export const MAXIMUM_CURVES = 5;
+export const DAYS_IN_YEAR = 365.25;
 
 export interface SurvivalDonor {
   readonly time: number;
@@ -19,21 +22,21 @@ export interface SurvivalApiResponse {
   readonly warnings: Record<string, string>;
 }
 
-
-
 export interface Survival {
     readonly meta: string;
     readonly donors: ReadonlyArray<SurvivalDonor>;
 }
 
 export interface SurvivalState {
-  readonly survival: ReadonlyArray<Survival>;
+  readonly survivalData: ReadonlyArray<Survival>;
   readonly status: DataStatus;
   readonly error?: string;
 }
 
+
+
 const initialState: SurvivalState = {
-  survival: [],
+  survivalData: [],
   status: "uninitialized",
 };
 
@@ -57,13 +60,14 @@ export const fetchSurvivalAnalysis = async (
   throw await buildFetchError(res, request);
 };
 
+
 export const fetchSurvival = createAsyncThunk <
   SurvivalApiResponse,
   GdcApiRequest,
   { dispatch: CoreDispatch; state: CoreState }
   >
 (
-  "analysis/survival",
+  "analysis/survivalData",
   async (request?: GdcApiRequest) => {
     return fetchSurvivalAnalysis(request);
   },
@@ -84,9 +88,21 @@ const slice = createSlice({
           state.error = response.warnings.facets;
         } else {
           if (response.results) {
-            state.survival = castDraft(response.results);
+
+
+
+            // build the legend string
+            // while this could be done the component
+
+            state.survivalData = response.results.map(r => ({
+              ...r,
+              donors: r.donors.map(d => ({
+                ...d,
+                time: d.time / DAYS_IN_YEAR, // convert days to years
+              })),
+            }))
           } else {
-            state.survival = [];
+            state.survivalData = [];
           }
           state.status = "fulfilled";
         }
@@ -109,14 +125,14 @@ export const selectSurvivalState = (state: CoreState): SurvivalState =>
   state.survival;
 
 export const selectSurvival = (state: CoreState): ReadonlyArray<Survival> => {
-  return state.survival.survival;
+  return state.survival.survivalData;
 };
 
 export const selectSurvivalData = (
   state: CoreState,
 ): CoreDataSelectorResponse<ReadonlyArray<Survival>> => {
   return {
-    data: state.survival.survival,
+    data: state.survival.survivalData,
     status: state.survival.status,
     error: state.survival.error,
   };

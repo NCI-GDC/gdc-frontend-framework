@@ -33,7 +33,9 @@
     "react-select-search": "^3.0.8",
     "react-tabs": "^3.2.2",
     "typeface-montserrat": "^1.1.13",
-    "use-double-click": "^1.0.5"
+    "@oncojs/react-survivalplot": "^0.6.0",
+    "@oncojs/survivalplot": "^0.8.3",
+    "next-transpile-modules": "^9.0.0"
   },
   "license": "Apache-2",
   "devDependencies": {

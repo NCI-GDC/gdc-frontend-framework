@@ -12,6 +12,7 @@ import {
   graphqlAPI,
   TablePageOffsetProps,
 } from "../gdcapi/gdcgraphql";
+import { selectCurrentCohortCaseGqlFilters } from "../cohort/cohortFilterSlice";
 
 const GenesTableGraphQLQuery = `
           query GenesTable_relayQuery(
@@ -123,7 +124,9 @@ export const fetchGenesTable = createAsyncThunk<
   async ({
     pageSize,
     offset,
-  }: TablePageOffsetProps): Promise<GraphQLApiResponse> => {
+  }: TablePageOffsetProps, thunkAPI): Promise<GraphQLApiResponse> => {
+    const currentFilters =  selectCurrentCohortCaseGqlFilters(thunkAPI.getState());
+    console.log(currentFilters);
     const graphQlFilters = {
       genesTable_filters: {
         op: "and",

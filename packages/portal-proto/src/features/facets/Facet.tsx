@@ -89,6 +89,7 @@ export interface FacetProps {
   readonly description?: string;
   readonly facetName?: string;
   readonly showSearch?: boolean;
+  readonly startShowingData?: boolean;
 }
 
 
@@ -97,11 +98,12 @@ export const Facet: React.FC<FacetProps> = ({
                                               description,
                                               facetName = null,
                                               showSearch = true,
+                                              startShowingData = true
                                             }: FacetProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [isSortedByCases, setIsSortedByCases] = useState(false);
-  const [isFacetView, setIsFacetView] = useState(true);
+  const [isFacetView, setIsFacetView] = useState(startShowingData);
   const [ visibleItems, setVisibleItems] = useState(6);
 
   const { data, enumFilters, isSuccess } =

@@ -149,8 +149,12 @@ export const FacetChart: React.FC<FacetProps> = ({
 
     {  chart_data && isSuccess ?
 
-        <BarChartWithNoSSR data={chart_data} height={height} marginBottom={marginBottom}
-                           marginTop={marginTop} padding={padding} orientation={orientation}
+        <BarChartWithNoSSR data={chart_data}
+                           height={height}
+                           marginBottom={marginBottom}
+                           marginTop={marginTop}
+                           padding={padding}
+                           orientation={orientation}
                            divId={chartDivId}></BarChartWithNoSSR>
       :
       <div className="flex flex-row items-center justify-center w-100">

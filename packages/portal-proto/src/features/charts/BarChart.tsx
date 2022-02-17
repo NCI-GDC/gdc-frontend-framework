@@ -26,10 +26,10 @@ const chartData = {
     uniformtext_mode: 'hide',
     title: null,
     marker: {
-      color: 'rgb(34, 121, 145)',
+      color: 'rgb(145,145,145)',
       line: {
-        color: '#4f4b4b',
-        width: 2,
+        color: '#bebebe',
+        width: 1,
       },
     },
     type: 'bar',
@@ -54,7 +54,6 @@ const vertical_layout: Partial<Layout> = {
         size: 12,
         color: 'rgb(107, 107, 107)'
       }
-
     },
     yaxis: {
       title: data.yAxisTitle,
@@ -62,7 +61,6 @@ const vertical_layout: Partial<Layout> = {
         family: 'Arial, sans-serif',
         size: 14,
       },
-
       tickfont: {
         size: 12,
         color: 'rgb(107, 107, 107)'
@@ -80,12 +78,6 @@ const vertical_layout: Partial<Layout> = {
   autosize:true,
 
   };
-
-  // if (height !== undefined) {
-  //   vertical_layout.height = height;
-  // } else {
-  //   vertical_layout.autosize = true;
-  // }
 
   if (data.x.length > 6) {
     vertical_layout.xaxis.tickangle = 35;
@@ -135,13 +127,6 @@ const vertical_layout: Partial<Layout> = {
 
     autosize:true,
   };
-
-  // if (height !== undefined) {
-  //   horizontal_layout.height = height;
-  // } else {
-  //   horizontal_layout.autosize = true;
-  // }
-  // horizontal_layout.autosize = true;
 
   const config: Partial<Config> = {
     responsive: true,
