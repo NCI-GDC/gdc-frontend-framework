@@ -1,15 +1,21 @@
 import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
+import { SurvivalPlot } from "../charts/SurvivalPlot";
 import GenesTable from "../genesTable/GenesTable";
+import MutationTable from "../mutationTable/MutationTable";
 
-const SomanticMutations : React.FC = () => {
+const MutationFrequency: React.FC = () => {
   return (
-    <div className="flex flex-col w-100">
-      <div className="flex flex-row">
+    <div className="flex flex-row">
+      <div className="flex flex-col">
         <GeneFrequencyChart></GeneFrequencyChart>
+        <GenesTable></GenesTable>
       </div>
-      <GenesTable></GenesTable>
+      <div className="flex flex-col">
+        <SurvivalPlot  height={200} marginBottom={30}></SurvivalPlot>
+        <MutationTable></MutationTable>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default SomanticMutations;
+export default MutationFrequency;
