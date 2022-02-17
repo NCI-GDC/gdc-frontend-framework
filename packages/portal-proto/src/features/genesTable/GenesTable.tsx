@@ -124,7 +124,7 @@ const GenesTableSimple: React.FC<GDCGenesTable> = ({ data }: GDCGenesTable) => {
               {x.symbol}
             </button>
           </td>
-          <td className="px-2 whitespace-nowrap">{x.name}</td>
+          <td className="px-2">{x.name}</td>
           <td className="px-2"> {x.cnv_case} / {data.filteredCases}</td>
           <td className="px-2"> {x.ssm_case} / {data.cases}</td>
           <td className="px-2"> {x.case_cnv_gain} / {data.cnvCases}</td>

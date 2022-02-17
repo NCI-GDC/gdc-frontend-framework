@@ -5,14 +5,23 @@ import MutationTable from "../mutationTable/MutationTable";
 
 const MutationFrequency: React.FC = () => {
   return (
-    <div className="flex flex-row">
+
       <div className="flex flex-col">
+        <div className="flex flex-row">
+          <div className="w-1/2">
         <GeneFrequencyChart></GeneFrequencyChart>
-        <GenesTable></GenesTable>
+          </div>
+          <div className="w-1/2 h-96">
+          <SurvivalPlot  marginBottom={30}></SurvivalPlot>
       </div>
-      <div className="flex flex-col">
-        <SurvivalPlot  height={200} marginBottom={30}></SurvivalPlot>
+      </div>
+      <div className="flex flex-row">
+        <div className="m-4">
+        <GenesTable ></GenesTable>
+        </div>
+        <div className="m-4">
         <MutationTable></MutationTable>
+        </div>
       </div>
     </div>
   );
