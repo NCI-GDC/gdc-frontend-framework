@@ -83,9 +83,9 @@ const slice = createSlice({
       .addCase(fetchCohortCaseCounts.fulfilled, (state, action) => {
         const response = action.payload;
 
-        if (response.warnings && Object.keys(response.warnings).length > 0) {
+        if (response.errors && Object.keys(response.errors).length > 0) {
             state.status = "rejected";
-            state.error = response.warnings.counts;
+            state.error = response.errors.counts;
         } else {
           // copy the counts for explore and repository
           state.counts = {
