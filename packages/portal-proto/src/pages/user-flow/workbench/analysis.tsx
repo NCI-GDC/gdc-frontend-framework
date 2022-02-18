@@ -245,11 +245,11 @@ const AnalysisPage: NextPage = () => {
 
     const handleTagFilter = (tagName) => {
       // update tag style
-      let tagUpdate = { ...tagStyling, [tagName]: !tagStyling[tagName] }
+      const tagUpdate = { ...tagStyling, [tagName]: !tagStyling[tagName] }
       setTagStyling(tagUpdate);
 
       // update array of tags active
-      let tagArr = [...activeTags];
+      const tagArr = [...activeTags];
       const tagIndex = tagArr.indexOf(tagName);
       tagIndex < 0 ? tagArr.push(tagName) : tagArr.splice(tagIndex, 1);
       setActiveTags(tagArr);

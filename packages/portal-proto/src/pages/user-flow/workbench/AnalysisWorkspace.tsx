@@ -41,7 +41,7 @@ const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : Analys
   }, [activeTags]);
 
   const handleOpenAppClicked = (x) => {
-    onAppSelected(x);
+    onAppSelected(x.id);
   }
 
   return (
@@ -90,7 +90,7 @@ const AnalysisWorkspace : React.FC<AnalysisWorkspaceProps> = ({ app } : Analysis
       <div> { (selectedApp) ?
         <div className="flex flex-col mx-2">
           <div className="flex flex-row items-center">
-            <button  onClick={() => setSelectedApp(undefined)} className="bg-nci-gray-lighter hover:bg-nci-gray-light font-montserrat tracking-widest uppercase rounded-md shadow-md p-1 px-2">Analysis</button>
+            <button  onClick={() => setSelectedApp(undefined)} className="bg-nci-gray-lighter hover:bg-nci-gray-light font-montserrat tracking-widest uppercase rounded-md shadow-md p-1 px-2">Applications</button>
             <div className=" mx-3 font-montserrat">/</div>
             <div className="bg-nci-gray-lighter font-montserrat uppercase rounded-md shadow-md p-1 px-2">{selectedApp}</div>
           </div>

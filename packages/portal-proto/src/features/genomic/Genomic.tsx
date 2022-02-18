@@ -2,14 +2,14 @@ import GeneData from "./genes.json";
 import MutationData from "./mutations.json";
 import { MdSearch, MdSort as SortIcon } from "react-icons/md";
 
-interface GeneProps {
+interface GeneFacetProps {
   readonly data?: Array<Record<string, any>>;
   readonly width?: string;
   readonly
 }
 
 
-export const GeneTable: React.FC<GeneProps> = ({ data = GeneData["MostFrequentGenes"], width="64" }: GeneProps) => {
+export const GeneFacet: React.FC<GeneFacetProps> = ({ data = GeneData["MostFrequentGenes"], width="64" }: GeneFacetProps) => {
   return (
     <div className={`border-2 border-nci-gray-lighter pt-2 mx-${width}`}>
     <div className="overflow-y-auto h-96">
@@ -43,7 +43,7 @@ export const GeneTable: React.FC<GeneProps> = ({ data = GeneData["MostFrequentGe
 };
 
 
-export const MutationTable: React.FC<GeneProps> = ({ data = MutationData["MostFrequentMutation"], width = "64" }: GeneProps) => {
+export const MutationFacet: React.FC<GeneFacetProps> = ({ data = MutationData["MostFrequentMutation"], width = "64" }: GeneFacetProps) => {
   return (
     <div className={`border-2 border-nci-gray-lighter pt-2 mx-${width}`}>
     <div className="overflow-y-auto h-96">

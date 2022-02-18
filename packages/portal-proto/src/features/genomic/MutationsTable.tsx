@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Pagination, Select, Table } from "@mantine/core";
+import { Pagination, Select, Table, Checkbox } from "@mantine/core";
 import { fetchSsmsTable, GDCSsmsTable, useCoreDispatch, useSsmsTable } from "@gff/core";
 
-const MutationTable: React.FC<unknown> = () => {
+const MutationsTable: React.FC<unknown> = () => {
   const [pageSize, setPageSize] = useState(10);
   const [offset, setOffset] = useState(0);
   const [activePage, setPage] = useState(1);
@@ -25,7 +25,8 @@ const MutationTable: React.FC<unknown> = () => {
   }
 
   const handlePageChange = (x:number) => {
-    setOffset(x * pageSize)
+    setOffset((x-1) * pageSize)
+    setPage(x);
   }
   if (!isSuccess)
     return (<div>Loading...</div>)
@@ -43,7 +44,6 @@ const MutationTable: React.FC<unknown> = () => {
                   { value: '20', label: '20' },
                   { value: '40', label: '40' },
                   { value: '100', label: '100' },
-
                 ]}
         />
         <Pagination
@@ -55,7 +55,7 @@ const MutationTable: React.FC<unknown> = () => {
           color="gray"
           className="ml-auto"
           page={activePage}
-          onChange={(x) => handlePageChange(x-1)}
+          onChange={(x) => handlePageChange(x)}
           total={pages} />
       </div>
 
@@ -66,7 +66,7 @@ const MutationTable: React.FC<unknown> = () => {
 const MutationTableSimple: React.FC<GDCSsmsTable> = ({ data }: GDCSsmsTable) => {
 
   return (
-    <Table verticalSpacing="xs" striped highlightOnHover >
+    <Table verticalSpacing={5} striped highlightOnHover >
       <thead>
       <tr className="bg-nci-gray-lighter text-white">
         <th>DNA Change</th>
@@ -81,7 +81,7 @@ const MutationTableSimple: React.FC<GDCSsmsTable> = ({ data }: GDCSsmsTable) => 
       <tbody>
       { data.ssms.ssms.map((x, index) => (
           <tr key={x.id}>
-            <td>{x.genomic_dna_change} </td>
+            <td> <Checkbox label={x.genomic_dna_change} /></td>
             <td>{x.mutation_subtype}</td>
             <td>{x.consequence[0].gene.symbol} {x.consequence[0].aa_change}</td>
             <td>{x.filteredOccurrences} / {data.ssms.filteredCases}</td>
@@ -95,4 +95,4 @@ const MutationTableSimple: React.FC<GDCSsmsTable> = ({ data }: GDCSsmsTable) => 
   );
 };
 
-export default MutationTable;
+export default MutationsTable;

@@ -9,7 +9,7 @@ import {
   MdDownload as DownloadIcon,
   MdRestartAlt as ResetIcon,
 } from "react-icons/md";
-import wrapSvg from "./wrapSVG";
+// import wrapSvg from "./wrapSVG"; //TODO: add this function
 
 
 const textColors = [
@@ -123,8 +123,8 @@ export const SurvivalPlot = (showTitle = true) => {
   }
 
   const legend = buildLegend(data, "Explorer")
-  return (<div className="flex flex-col border-2 bg-white ">
-      <div className="flex flex-row w-100 items-center justify-center flex-wrap items-center  p-1.5">
+  return (<div className="flex flex-col bg-white ">
+      <div className="flex flex-row w-100 items-center justify-center flex-wrap items-center">
         <div className="flex ml-auto text-montserrat text-lg text-nci-gray-dark ">{"Overall Survival Plot"}</div>
         <div className="flex flex-row items-center ml-auto ">
           <button className="mx-2 border-2 rounded-md border-nci-gray-light px-4 py-2 hover:bg-nci-blue transition-colors" onClick={() => setXDomain(undefined)}><DownloadIcon color="bg-nci-blue " size="1.5rem"></DownloadIcon></button>
@@ -140,7 +140,7 @@ export const SurvivalPlot = (showTitle = true) => {
       }
       </div>
       <div
-        className={`flex flex-row justify-end text-sm text-nci-gray no-print`}
+        className={`flex flex-row justify-end text-sm mr-8 text-nci-gray no-print`}
       >
         drag to zoom
       </div>

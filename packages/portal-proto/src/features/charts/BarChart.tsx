@@ -10,11 +10,12 @@ interface BarChartProps {
   readonly padding?: number;
   readonly orientation?: string;
   readonly divId?: string;
+  readonly title?: string;
 }
 
 const BarChart: React.FC<BarChartProps> = ({ data, height,
                                              marginBottom, marginTop = 30, padding = 4,
-                                             orientation='v', divId }: BarChartProps) => {
+                                             orientation='v', divId, title }: BarChartProps) => {
 
 const chartData = {
     x: orientation === "v" ? data.x : data.y,
@@ -24,7 +25,7 @@ const chartData = {
     textposition: 'none',
     showlegend: false,
     uniformtext_mode: 'hide',
-    title: null,
+    title: title,
     marker: {
       color: 'rgb(145,145,145)',
       line: {

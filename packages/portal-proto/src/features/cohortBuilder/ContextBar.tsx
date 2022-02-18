@@ -50,7 +50,9 @@ import SummaryFacets from "./SummaryFacets";
 
         </div>
         <Tabs position="right" variant="pills" >
-          <Tabs.Tab label="Summary View" icon={<SummaryChartIcon size="1.5rem"/>}><SummaryFacets fields={summaryFields}/></Tabs.Tab>
+          <Tabs.Tab label="Summary View" icon={<SummaryChartIcon size="1.5rem"/>}>
+            <SummaryFacets fields={summaryFields}/>
+          </Tabs.Tab>
           <Tabs.Tab  label="Table View" icon={<TableIcon size="1.5rem"/>}><div className="bg-secondary">
             <ContextualCasesView />
           </div>

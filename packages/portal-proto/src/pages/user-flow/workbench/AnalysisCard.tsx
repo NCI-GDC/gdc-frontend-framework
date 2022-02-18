@@ -14,7 +14,7 @@ const AnalysisCard : React.FC<AnalysisCardProps> = ( entry: AnalysisCardProps ) 
       <Group position="center" direction="column">
       <Card.Section>
       <div className="font-heading text-lg mb-2">{entry.name}</div>
-      <button onClick={() => entry.onClick(entry.id)} >
+      <button onClick={() => entry.onClick(entry)} >
         <div className="flex flex-row items-center">
             <Image
               className="m-auto"

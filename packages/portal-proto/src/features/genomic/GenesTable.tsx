@@ -6,7 +6,7 @@ import {
   GDCGenesTable,
   selectGenesTableData, selectCohortCountsByName,
 } from "@gff/core";
-import { Pagination, Select, Table } from "@mantine/core";
+import { Pagination, Select, Table, Checkbox } from "@mantine/core";
 
 interface GenesTableResponse {
   readonly data?: GDCGenesTable;
@@ -57,7 +57,8 @@ const GenesTable = () => {
   }
 
   const handlePageChange = (x:number) => {
-    setOffset(x * pageSize)
+    setOffset((x-1) * pageSize)
+    setPage(x);
   }
   if (!isSuccess)
     return (<div>Loading...</div>)
@@ -87,7 +88,7 @@ const GenesTable = () => {
           color="gray"
           className="ml-auto"
           page={activePage}
-          onChange={(x) => handlePageChange(x-1)}
+          onChange={(x) => handlePageChange(x)}
           total={pages} />
       </div>
     </div>
@@ -101,7 +102,7 @@ const GenesTableSimple: React.FC<GDCGenesTable> = ({ data }: GDCGenesTable) => {
   };
 
   return (
-    <Table verticalSpacing="xs" striped highlightOnHover >
+    <Table verticalSpacing={5} striped highlightOnHover >
       <thead>
       <tr className="bg-nci-gray-lighter text-white">
         <th>Symbol</th>
@@ -120,9 +121,7 @@ const GenesTableSimple: React.FC<GDCGenesTable> = ({ data }: GDCGenesTable) => {
         data.genes?.map((x, i) => (
         <tr key={x.id} >
           <td className="px-2 break-all">
-            <button onClick={() => handleGenesSelected(x)}>
-              {x.symbol}
-            </button>
+            <Checkbox onClick={() => handleGenesSelected(x)} label={x.symbol}/>
           </td>
           <td className="px-2">{x.name}</td>
           <td className="px-2"> {x.cnv_case} / {data.filteredCases}</td>

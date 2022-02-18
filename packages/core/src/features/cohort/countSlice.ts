@@ -59,7 +59,7 @@ const CountsGraphQLQuery = `
 
 export const fetchCohortCaseCounts = createAsyncThunk<
   GraphQLApiResponse,
-  undefined,
+  void,
   { dispatch: CoreDispatch; state: CoreState }
   >(
   "cohort/counts",

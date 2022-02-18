@@ -5,7 +5,7 @@ import {
 
 import dynamic from 'next/dynamic'
 
-const BarChartWithNoSSR = dynamic(() => import('./BarChart'), {
+const BarChart = dynamic(() => import('./BarChart'), {
   ssr: false
 });
 
@@ -43,13 +43,21 @@ export const GeneFrequencyChart = ( height, marginBottom, showXLabels = true, sh
   }
 
   const chart_data = processChartData(data);
-  return <div className="flex flex-col border-2 bg-white ">
+  return <>
     {showTitle ?
-      <div className="flex items-center justify-between flex-wrap bg-gray-100 p-1.5">
+      <div className="flex items-center justify-between bg-white flex-wrap text-montserrat text-nci-gray-dark p-6 p-1.5">
         {"Distribution of Most Frequently Mutated Genes"}
       </div> : null
     }
-    <BarChartWithNoSSR data={chart_data} height={height} marginBottom={marginBottom} orientation={orientation}></BarChartWithNoSSR>
-  </div>;
+    <div className="h-5/6">
+    <BarChart data={chart_data}
+              height={undefined}
+              marginBottom={marginBottom}
+              marginTop={0}
+              orientation={orientation}
+    />
+
+    </div>
+  </>;
 };
 
