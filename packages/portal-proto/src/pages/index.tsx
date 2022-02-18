@@ -70,6 +70,9 @@ const IndexPage: NextPage = () => {
             <li>
               <HoverLink href="/colors">Colors</HoverLink>
             </li>
+            <li>
+              <HoverLink href="/set-operation">Set Operation Demo</HoverLink>
+            </li>
           </ul>
         </Section>
       </div>
