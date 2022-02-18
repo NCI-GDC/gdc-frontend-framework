@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import {
-  useCoreSelector,
   useCoreDispatch,
   fetchGenesTable,
   GDCGenesTable,
-  selectGenesTableData,
+  useGenesTable
 } from "@gff/core";
+import HorizontalTable from "../../components/HorizontalTable";
+import { Select } from "../../components/Select";
 
 interface GenesTableResponse {
   readonly data?: GDCGenesTable;
@@ -17,34 +18,59 @@ interface GenesTableResponse {
   readonly isError: boolean;
 }
 
-const useGenesTable = (
-  pageSize: number,
-  offset: number,
-): GenesTableResponse => {
+const GenesTable: React.FC<unknown> = () => {
+  const [pageSize, setPageSize] = useState(10);
+  const [pageSizeDisplay, setPageSizeDisplay] = useState( { value: 10, label: "10" });
+  const [offset, setOffset] = useState(0);
+  const [displayOptions, setDisplayOptions] = useState([
+    { value: 10, label: "10" },
+    { value: 20, label: "20" }, 
+    { value: 40, label: "40" }, 
+    { value: 60, label: "60" }, 
+    { value: 80, label: "80" }, 
+    { value: 100, label: "100" }
+  ]);
   const coreDispatch = useCoreDispatch();
-  const table = useCoreSelector((state) => selectGenesTableData(state));
+
+  // using the useSsmsTable from core and the associated useEffect hook
+  // exploring different ways to dispatch the pageSize/offset changes
+  const { data, error, isUninitialized, isFetching, isError } = useGenesTable({
+    pageSize: pageSize,
+    offset: offset,
+  });
+
   useEffect(() => {
-    // fetch table information when pageSize or Offset (and eventually filters) changes
     coreDispatch(fetchGenesTable({ pageSize: pageSize, offset: offset }));
   }, [pageSize, offset]);
-  return {
-    data: { ...table?.data.genes },
-    error: table?.error,
-    isUninitialized: table === undefined,
-    isFetching: table?.status === "pending",
-    isSuccess: table?.status === "fulfilled",
-    isError: table?.status === "rejected",
-  };
-};
 
-const GenesTable = () => {
-  const [pageSize, setPageSize] = useState(10);
-  const [offset, setOffset] = useState(0);
+  const getTableFormatData = (data) => {
+    if (data.status === 'fulfilled') {
+      const tableRows = [];
+      data.genes.genes.forEach(element => {
+        tableRows.push({
+          symbol: element.symbol,
+          name: element.name,
+          ssmsAffectedCasesInCohort: `${element.cnv_case + ' / ' + data.genes.filteredCases}`,
+          ssmsAffectedCasesAcrossTheGdc: `${element.ssm_case + ' / ' + data.genes.cases}`,
+          cnvGain: `${element.case_cnv_gain + ' / ' + data.genes.cnvCases}`,
+          cnvLoss: `${element.case_cnv_loss + ' / ' + data.genes.cnvCases}`,
+          mutations: data.genes.mutationCounts[element.gene_id],
+          annotations: "A",
+          survival: "S"
+        })
+      })
+      return tableRows
+    }
+  }
 
-  const { data, error, isUninitialized, isFetching, isError } = useGenesTable(
-    pageSize,
-    offset,
-  ); // using the local useGenesTable hook defined above
+  const handleDisplayChange = (displayChange) => {
+    setPageSize(displayChange);
+    setPageSizeDisplay(displayOptions.filter(op => op.value === displayChange)[0]);
+  }
+
+  useEffect(() => {
+    getTableFormatData(data);
+  }, [data]);
 
   /* these should be replaced with a spinner */
   if (isUninitialized) {
@@ -67,54 +93,24 @@ const GenesTable = () => {
     setOffset(Math.max(offset - pageSize, 0));
   };
 
+  const displayFilter = (<Select
+  label="Number of Displayed Entries"
+  inputId="primary-sites-displayed"
+  options={displayOptions}
+  value={pageSizeDisplay}
+  isMulti={false}
+  onChange={(e) => {
+      handleDisplayChange(e.value)
+  }}
+/>);
+
   return (
     <div className="flex flex-col w-100">
-      <div className={"grid grid-cols-9 gap-x-8"}>
-        <span>Symbol</span>
-        <span>Name </span>
-        <span># SSMS Affected Cases in Cohort </span>
-        <span># SSMS Affected Cases Across the GDC </span>
-        <span>CNV Gain </span>
-        <span>CNV Loss </span>
-        <span>Mutations</span>
-        <span>Annotations</span>
-        <span>Survival</span>
-      </div>
-      {data.genes.map((x, index) => {
-        return (
-          <div
-            className={`grid grid-cols-9 gap-x-8 ${
-              index % 2 == 0 ? "bg-nci-cyan-lighter" : "bg-nci-teal-light"
-            }`}
-            key={x.id}
-          >
-            <span>{x.symbol} </span>
-            <span>{x.name}</span>
-            <span>
-              {x.cnv_case} / {data.filteredCases}{" "}
-            </span>
-            <span>
-              {x.ssm_case} / {data.cases}{" "}
-            </span>
-            <span>
-              {x.case_cnv_gain} / {data.cnvCases}{" "}
-            </span>
-            <span>
-              {x.case_cnv_loss} / {data.cnvCases}{" "}
-            </span>
-            <span>
-              {data.mutationCounts
-                ? data.mutationCounts[x.gene_id]
-                : " loading"}{" "}
-            </span>
-            <span>A</span>
-            <span>S</span>
-          </div>
-        );
-      })}
+      <HorizontalTable inputData={getTableFormatData(data)}></HorizontalTable>
       <div className="flex flex-row w-2/3 justify-center gap-x-3">
-        <button className="bg-nci-gray-light hover:bg-nci-gray-dark" onClick={prevPage}>Prev 10</button>
-        <button className="bg-nci-gray-light hover:bg-nci-gray-dark" onClick={nextPage}>Next 10</button>
+        <div className="w-20">{displayFilter}</div>
+        <button className="bg-nci-gray-light hover:bg-nci-gray-dark" onClick={prevPage}>Prev {pageSize}</button>
+        <button className="bg-nci-gray-light hover:bg-nci-gray-dark" onClick={nextPage}>Next {pageSize}</button>
       </div>
     </div>
   );
