@@ -85,8 +85,6 @@ const useCaseFacet = (field: string): EnumFacetResponse => {
   };
 };
 
-
-
 export interface FacetProps {
   readonly field: string;
   readonly description?: string;
@@ -112,22 +110,26 @@ const updateEnumFilters = (dispatch, enumerationFilters, field ) => {
   }
 }
 
-export const Facet: React.FC<FacetProps> = ({
+export const EnumFacet :  React.FC<EnumFacetProps> = ( props: EnumFacetProps) => {
+  return <EnumFacetComponent
+}
+
+export const EnumFacetComponent: React.FC<EnumFacetProps> = ({
                                               field,
-                                              description,
+                                              description, dataHook, updateEnumFilters,
                                               facetName = null,
                                               showSearch = true,
                                               showFlip=true,
                                               startShowingData = true,
                                               valueLabel = "Cases"
-                                            }: FacetProps) => {
+                                            }: EnumFacetProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [isSortedByValue, setIsSortedByValue] = useState(false);
   const [isFacetView, setIsFacetView] = useState(startShowingData);
   const [visibleItems, setVisibleItems] = useState(6);
 
-  const { data, enumFilters, isSuccess } = useCaseFacet(field);
+  const { data, enumFilters, isSuccess } = dataHook(field);
   const [selectedEnums, setSelectedEnums] = useState(enumFilters);
   const coreDispatch = useCoreDispatch();
 
@@ -141,19 +143,12 @@ export const Facet: React.FC<FacetProps> = ({
     }
   } ,[isSuccess]);
 
-
   useEffect(() => {
     /**
      * Logic here: if the facet never sets a filter then return,
      * if a filter was added: update, if all are removed: remove the filter from the cohort
      */
-    if (selectedEnums === undefined)
-      return;
-    if (selectedEnums.length > 0) {
-      coreDispatch(updateCohortFilter({ type: "enum", op: "in", field: `${field}`, values: selectedEnums }));
-    } else { // completely remove the field
-      coreDispatch(removeCohortFilter(field));
-    }
+    updateEnumFilters(coreDispatch, selectedEnums, field);
   }, [selectedEnums]);
 
   const maxValuesToDisplay = 6;

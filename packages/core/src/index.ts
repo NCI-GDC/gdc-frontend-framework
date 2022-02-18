@@ -5,7 +5,7 @@ export * from "./dataAcess";
 export * from "./ts-utils";
 export * from "./features/gdcapi/gdcapi";
 export * from "./features/gdcapi/gdcgraphql";
-export * from "./features/facets/facetSlice";
+export * from "./features/facets/facetSliceGQL";
 export * from "./features/gdcapps/gdcAppsSlice";
 export * from "./features/gdcapps/GdcApp";
 export * from "./features/files/filesSlice";

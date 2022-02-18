@@ -307,14 +307,14 @@ export const fetchGenesTable = createAsyncThunk<
       graphQlFilters,
     );
     // if we have valid data from the table, need to query the mutation counts
-    if (!results.warnings) {
+    if (!results.errors) {
       // extract the gene ids and user it for the call to
       const geneIds =
         results.data.genesTableViewer.explore.genes.hits.edges.map(
           ({ node }: Record<string, any>) => node.gene_id,
         );
       const counts = await fetchSmsAggregations({ ids: geneIds });
-      if (!counts.warnings) {
+      if (!counts.errors) {
         const countsData =
           counts.data.ssmsAggregationsViewer.explore.ssms.aggregations
             .consequence__transcript__gene__gene_id;
@@ -383,10 +383,10 @@ const slice = createSlice({
     builder
       .addCase(fetchGenesTable.fulfilled, (state, action) => {
         const response = action.payload;
-        if (response.warnings) {
+        if (response.errors) {
           state = castDraft(initialState);
           state.status = "rejected";
-          state.error = response.warnings.filters;
+          state.error = response.errors.filters;
         }
         const data = action.payload.data.genesTableViewer.explore;
         state.genes.cases = data.cases.hits.total;

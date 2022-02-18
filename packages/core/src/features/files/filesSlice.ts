@@ -234,7 +234,7 @@ const slice = createSlice({
         if (response.warnings && Object.keys(response.warnings).length > 0) {
           state.files = [];
           state.status = "rejected";
-          state.error = Object.values(response.warnings)[0]; // TODO add better warnings parsing
+          state.error = Object.values(response.warnings)[0]; // TODO add better errors parsing
         } else {
           state.files = response.data.hits.map((hit) => ({
             id: hit.id,

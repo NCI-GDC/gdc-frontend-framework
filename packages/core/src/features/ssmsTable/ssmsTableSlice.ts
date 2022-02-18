@@ -249,10 +249,10 @@ const slice = createSlice({
     builder
       .addCase(fetchSsmsTable.fulfilled, (state, action) => {
         const response = action.payload;
-        if (response.warnings) {
+        if (response.errors) {
           state = castDraft(initialState);
           state.status = "rejected";
-          state.error = response.warnings.filters;
+          state.error = response.errors.filters;
         }
         const data = action.payload.data.viewer.explore;
         state.ssms.cases = data.cases.hits.total;

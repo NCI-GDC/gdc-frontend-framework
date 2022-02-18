@@ -117,10 +117,10 @@ const slice = createSlice({
     builder
       .addCase(fetchGeneFrequencies.fulfilled, (state, action) => {
         const response = action.payload;
-        if (response.warnings) {
+        if (response.errors) {
           state = castDraft(initialState);
           state.status = "rejected";
-          state.error = response.warnings.filters;
+          state.error = response.errors.filters;
         }
         const data = response.data.genesTableViewer.explore;
         //  Note: change this to the field parameter
