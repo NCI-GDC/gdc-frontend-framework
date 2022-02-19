@@ -89,7 +89,7 @@ const slice = createSlice({
         } else {
           // copy the counts for explore and repository
           state.counts = {
-            caseCounts : response.data.viewer.explore.cases.hits.total,
+            caseCounts : response.data.viewer.repository.cases.hits.total,
             genesCounts : response.data.viewer.explore.genes.hits.total,
             mutationCounts : response.data.viewer.explore.ssms.hits.total,
             fileCounts : response.data.viewer.repository.files.hits.total,

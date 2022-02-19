@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { cohortReducers } from "./features/cohort/cohortSlice";
 import { sessionReducer } from "./features/session/sessionSlice";
-import { facetsReducer } from "./features/facets/facetSliceGQL";
+import { fileCaseFacetReducers } from "./features/facets/facetSliceGQL";
 import { gdcAppReducer } from "./features/gdcapps/gdcAppsSlice";
 import { filesReducer } from "./features/files/filesSlice";
 import { projectsReducer } from "./features/projects/projectsSlice";
@@ -16,7 +16,7 @@ export const coreStore = configureStore({
   reducer: {
     cohort: cohortReducers,
     session: sessionReducer,
-    facets: facetsReducer,
+    facets: fileCaseFacetReducers,
     gdcApps: gdcAppReducer,
     files: filesReducer,
     projects: projectsReducer,

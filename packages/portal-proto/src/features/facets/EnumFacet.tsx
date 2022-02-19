@@ -10,6 +10,8 @@ import {
   updateCohortFilter,
   useCoreDispatch,
   useCoreSelector,
+  fetchFileFacetByName,
+  selectFilesFacetByField,
 } from "@gff/core";
 
 import { useEffect, useState } from "react";
@@ -56,22 +58,22 @@ interface EnumFacetResponse {
   readonly isError: boolean;
 }
 
-const useCaseFacet = (field: string): EnumFacetResponse => {
+const useFilesFacet = (field: string): EnumFacetResponse => {
   const coreDispatch = useCoreDispatch();
   const facet: FacetBuckets = useCoreSelector((state) =>
-    selectCasesFacetByField(state, field),
+    selectFilesFacetByField(state, field),
   );
 
   const selectFacetFilter = useCohortFacetFilter();
   const enumFilters = useCohortFacetFilterByName(field);
   useEffect(() => {
     if (!facet) {
-      coreDispatch(fetchFacetByName(field));
+      coreDispatch(fetchFileFacetByName(field));
     }
   }, [coreDispatch, facet, field]);
 
   useEffect(() => {
-    coreDispatch(fetchFacetByName(field));
+    coreDispatch(fetchFileFacetByName(field));
   }, [selectFacetFilter]);
 
   return {
@@ -91,6 +93,7 @@ export interface FacetProps {
   readonly facetName?: string;
   readonly showSearch?: boolean;
   readonly showFlip?:boolean;
+  readonly showPercent?: boolean;
   readonly startShowingData?: boolean;
   readonly valueLabel?: string;
 }
@@ -110,8 +113,27 @@ const updateEnumFilters = (dispatch, enumerationFilters, field ) => {
   }
 }
 
-export const EnumFacet :  React.FC<EnumFacetProps> = ( props: EnumFacetProps) => {
-  return <EnumFacetComponent
+export const FileEnumFacet :  React.FC<FacetProps> = ( {
+                                                         field,
+                                                         description,
+                                                         facetName = null,
+                                                         showSearch = true,
+                                                         showFlip=true,
+                                                         startShowingData = true,
+
+                                                           }: FacetProps) => {
+
+
+  return <EnumFacetComponent field={field}
+                             description={description}
+                             facetName={facetName}
+                             showSearch={showSearch}
+                             showFlip={showFlip}
+                             startShowingData={startShowingData}
+                             dataHook={useFilesFacet}
+                             updateEnumFilters={updateEnumFilters}
+                             valueLabel="Files" showPercent={false}
+                             />
 }
 
 export const EnumFacetComponent: React.FC<EnumFacetProps> = ({
@@ -121,6 +143,7 @@ export const EnumFacetComponent: React.FC<EnumFacetProps> = ({
                                               showSearch = true,
                                               showFlip=true,
                                               startShowingData = true,
+                                              showPercent = true,
                                               valueLabel = "Cases"
                                             }: EnumFacetProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
@@ -251,9 +274,10 @@ export const EnumFacetComponent: React.FC<EnumFacetProps> = ({
                             </div>
                             <div className="flex-grow truncate ... font-heading text-md pt-0.5">{value}</div>
                             <div className="flex-none text-right w-14 ">{count.toLocaleString()}</div>
-                            <div
+                            {showPercent ? <div
                               className="flex-none text-right w-18 ">({((count / 85415) * 100).toFixed(2).toLocaleString()}%)
-                            </div>
+                            </div> : null
+                            }
 
                           </div>
                         );

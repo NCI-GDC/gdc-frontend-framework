@@ -6,16 +6,72 @@ import {
   MdLockOpen as OpenIcon
 } from "react-icons/md";
 import { useState } from "react";
+import { FileEnumFacet } from "../facets/EnumFacet";
 
 export interface ContextualFilesViewProps {
   readonly handleFileSelected?: (file: GdcFile) => void;
 }
 
+const FileFacetNames = [
+  {
+    facet_filter: "data_category",
+    name: "Data Category",
+    description: "No description",
+  },
+  {
+    facet_filter: "data_type",
+    name: "Data Type",
+    description: "No description",
+  },
+  {
+    facet_filter: "experimental_strategy",
+    name: "Experimental Strategy",
+    description: "No description",
+  },
+  {
+    facet_filter: "analysis__workflow_type",
+    name: "Analysis Workflow Type",
+    description: "No description",
+  },
+  {
+    facet_filter: "data_format",
+    name: "Data Format",
+    description: "No description",
+  },
+  {
+    facet_filter: "platform",
+    name: "Platform",
+    description: "No description",
+  },
+  {
+    facet_filter: "access",
+    name: "Access",
+    description: "No description",
+  },
+];
+
 export const ContextualFilesView: React.FC<ContextualFilesViewProps> = ({
   handleFileSelected,
 }: ContextualFilesViewProps) => {
   const { data } = useFiles();
-  return <FilesView files={data} handleFileSelected={handleFileSelected} />;
+  return (
+    <div className="flex flex-col mt-4 ">
+    <div className="flex flex-row m-2">
+      <Button className="bg-nci-gray-light">Download Manifest</Button>
+    </div>
+    <div className="flex flex-row mx-3">
+      <div className="flex flex-col gap-y-4 mr-3">
+        {FileFacetNames.map((x, index) => {
+          return (<FileEnumFacet key={`${x.facet_filter}-${index}`} field={`${x.facet_filter}`} facetName={x.name}
+                         description={x.description}
+          />);
+        })
+        }
+      </div>
+      <FilesView files={data} handleFileSelected={handleFileSelected} />
+    </div>
+    </div>
+  )
 };
 
 export interface FilesViewProps {
@@ -35,10 +91,8 @@ export const FilesView: React.FC<FilesViewProps> = ({
     setPageSize(parseInt(x));
   }
   return (
-    <div className="flex flex-col gap-y-4 mt-2">
-      <div className="flex flex-row">
-        <Button className="bg-nci-gray-light">Download Manifest</Button>
-      </div>
+    <div className="flex flex-col gap-y-4">
+
       <Table verticalSpacing="xs" striped highlightOnHover>
         <thead>
           <tr className="bg-nci-gray text-white text-md text-montserrat border border-nci-gray-light">
