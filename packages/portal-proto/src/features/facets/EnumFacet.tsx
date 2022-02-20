@@ -1,20 +1,12 @@
+import { useEffect, useState } from "react";
 import {
-  EnumFilter,
-  FacetBuckets,
-  fetchFacetByName,
-  FilterSet,
-  removeCohortFilter,
-  selectCasesFacetByField,
-  selectCurrentCohortFilters,
-  selectCurrentCohortFiltersByName,
-  updateCohortFilter,
   useCoreDispatch,
-  useCoreSelector,
-  fetchFileFacetByName,
-  selectFilesFacetByField,
 } from "@gff/core";
 
-import { useEffect, useState } from "react";
+import {
+  updateEnumFilters,
+  FacetDataHooks
+} from "./hooks";
 
 import {
   MdAddCircle as MoreIcon,
@@ -25,70 +17,12 @@ import {
   MdSortByAlpha as AlphaSortIcon,
 } from "react-icons/md";
 import { convertFieldToName } from "./utils";
-import { FacetChart } from "../charts/FacetChart";
+import { EnumFacetChart } from "../charts/EnumFacetChart";
 import { Tooltip } from "@mantine/core";
 
-/**
- * Filter selector for all of the facet filters
- */
-const useCohortFacetFilter = (): FilterSet => {
-  return useCoreSelector((state) =>
-    selectCurrentCohortFilters(state),
-  );
-};
-
-/**
- * Selector for the facet values (if any)
- * @param field
- */
-const useCohortFacetFilterByName = (field: string): string[] | undefined => {
-  const enumFilters: EnumFilter = useCoreSelector((state) =>
-    selectCurrentCohortFiltersByName(state, field) as EnumFilter,
-  );
-  return enumFilters ? enumFilters.values : undefined;
-};
-
-interface EnumFacetResponse {
-  readonly data?: FacetBuckets;
-  readonly enumFilters: string [] | undefined;
-  readonly error?: string;
-  readonly isUninitialized: boolean;
-  readonly isFetching: boolean;
-  readonly isSuccess: boolean;
-  readonly isError: boolean;
-}
-
-const useFilesFacet = (field: string): EnumFacetResponse => {
-  const coreDispatch = useCoreDispatch();
-  const facet: FacetBuckets = useCoreSelector((state) =>
-    selectFilesFacetByField(state, field),
-  );
-
-  const selectFacetFilter = useCohortFacetFilter();
-  const enumFilters = useCohortFacetFilterByName(field);
-  useEffect(() => {
-    if (!facet) {
-      coreDispatch(fetchFileFacetByName(field));
-    }
-  }, [coreDispatch, facet, field]);
-
-  useEffect(() => {
-    coreDispatch(fetchFileFacetByName(field));
-  }, [selectFacetFilter]);
-
-  return {
-    data: facet?.buckets,
-    enumFilters: enumFilters,
-    error: facet?.error,
-    isUninitialized: facet === undefined,
-    isFetching: facet?.status === "pending",
-    isSuccess: facet?.status === "fulfilled",
-    isError: facet?.status === "rejected",
-  };
-};
-
-export interface FacetProps {
+export interface EnumFacetProps {
   readonly field: string;
+  readonly type: string;
   readonly description?: string;
   readonly facetName?: string;
   readonly showSearch?: boolean;
@@ -98,47 +32,11 @@ export interface FacetProps {
   readonly valueLabel?: string;
 }
 
-export interface EnumFacetProps extends FacetProps {
-  readonly dataHook : (string) => EnumFacetResponse;
-  readonly updateEnumFilters: (d, filters, field) => void;
-}
 
-const updateEnumFilters = (dispatch, enumerationFilters, field ) => {
-  if (enumerationFilters === undefined)
-    return;
-  if (enumerationFilters.length > 0) {
-    dispatch(updateCohortFilter({ type: "enum", op: "in", field: `${field}`, values: enumerationFilters }));
-  } else { // completely remove the field
-    dispatch(removeCohortFilter(field));
-  }
-}
-
-export const FileEnumFacet :  React.FC<FacetProps> = ( {
-                                                         field,
-                                                         description,
-                                                         facetName = null,
-                                                         showSearch = true,
-                                                         showFlip=true,
-                                                         startShowingData = true,
-
-                                                           }: FacetProps) => {
-
-
-  return <EnumFacetComponent field={field}
-                             description={description}
-                             facetName={facetName}
-                             showSearch={showSearch}
-                             showFlip={showFlip}
-                             startShowingData={startShowingData}
-                             dataHook={useFilesFacet}
-                             updateEnumFilters={updateEnumFilters}
-                             valueLabel="Files" showPercent={false}
-                             />
-}
-
-export const EnumFacetComponent: React.FC<EnumFacetProps> = ({
+export const EnumFacet: React.FC<EnumFacetProps> = ({
                                               field,
-                                              description, dataHook, updateEnumFilters,
+                                              type,
+                                              description,
                                               facetName = null,
                                               showSearch = true,
                                               showFlip=true,
@@ -152,7 +50,7 @@ export const EnumFacetComponent: React.FC<EnumFacetProps> = ({
   const [isFacetView, setIsFacetView] = useState(startShowingData);
   const [visibleItems, setVisibleItems] = useState(6);
 
-  const { data, enumFilters, isSuccess } = dataHook(field);
+  const { data, enumFilters, isSuccess } = FacetDataHooks[type](field);
   const [selectedEnums, setSelectedEnums] = useState(enumFilters);
   const coreDispatch = useCoreDispatch();
 
@@ -164,7 +62,7 @@ export const EnumFacetComponent: React.FC<EnumFacetProps> = ({
     if (isSuccess) {
       setVisibleItems(Object.entries(data).filter(data => data[0] != "_missing").length)
     }
-  } ,[isSuccess]);
+  } ,[data, isSuccess]);
 
   useEffect(() => {
     /**
@@ -321,14 +219,16 @@ export const EnumFacetComponent: React.FC<EnumFacetProps> = ({
             </div>
 
             <div className="card-face card-back bg-white">
-              <FacetChart
+              <EnumFacetChart
                 field={field}
+                type={type}
                 marginBottom={40}
                 marginTop={5} padding={1}
                 showXLabels={true}
                 showTitle={false}
                 height={isGroupExpanded ? cardHeight * 4.88 : chartHeight[total]}
                 orientation="h"
+                valueLabel={valueLabel}
                 maxBins={Math.min(isGroupExpanded ? 16 : Math.min(6, total))}
               />
             </div>

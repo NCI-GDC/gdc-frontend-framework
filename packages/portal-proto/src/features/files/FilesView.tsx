@@ -6,7 +6,7 @@ import {
   MdLockOpen as OpenIcon
 } from "react-icons/md";
 import { useState } from "react";
-import { FileEnumFacet } from "../facets/EnumFacet";
+import { EnumFacet } from "../facets/EnumFacet";
 
 export interface ContextualFilesViewProps {
   readonly handleFileSelected?: (file: GdcFile) => void;
@@ -62,8 +62,13 @@ export const ContextualFilesView: React.FC<ContextualFilesViewProps> = ({
     <div className="flex flex-row mx-3">
       <div className="flex flex-col gap-y-4 mr-3">
         {FileFacetNames.map((x, index) => {
-          return (<FileEnumFacet key={`${x.facet_filter}-${index}`} field={`${x.facet_filter}`} facetName={x.name}
-                         description={x.description}
+          return (<EnumFacet key={`${x.facet_filter}-${index}`}
+                             field={`${x.facet_filter}`}
+                             facetName={x.name}
+                             type="files"
+                             showPercent={false}
+                             valueLabel="Files"
+                             description={x.description}
           />);
         })
         }

@@ -63,9 +63,10 @@ const GenesTable = () => {
   if (!isSuccess)
     return (<div>Loading...</div>)
 
+  console.log(data);
   return (
     <div className="flex flex-col w-100">
-      <GenesTableSimple data={data}></GenesTableSimple>
+      <GenesTableSimple {...data}/>
       <div className="flex flex-row items-center justify-start border-t border-nci-gray-light">
         <p className="px-2">Page Size:</p>
         <Select size="sm" radius="md"
@@ -95,11 +96,13 @@ const GenesTable = () => {
   );
 };
 
-const GenesTableSimple: React.FC<GDCGenesTable> = ({ data }: GDCGenesTable) => {
+const GenesTableSimple: React.FC<GDCGenesTable> = ({ genes,
+                                                     filteredCases,
+                                                     cases,
+                                                     cnvCases,
+                                                     mutationCounts} : GDCGenesTable) => {
 
-  const handleGenesSelected = (c) => {
-
-  };
+  const handleGenesSelected = (c) => {};
 
   return (
     <Table verticalSpacing={5} striped highlightOnHover >
@@ -118,18 +121,18 @@ const GenesTableSimple: React.FC<GDCGenesTable> = ({ data }: GDCGenesTable) => {
       </thead>
       <tbody>
       {
-        data.genes?.map((x, i) => (
+        genes?.map((x, i) => (
         <tr key={x.id} >
           <td className="px-2 break-all">
             <Checkbox onClick={() => handleGenesSelected(x)} label={x.symbol}/>
           </td>
           <td className="px-2">{x.name}</td>
-          <td className="px-2"> {x.cnv_case} / {data.filteredCases}</td>
-          <td className="px-2"> {x.ssm_case} / {data.cases}</td>
-          <td className="px-2"> {x.case_cnv_gain} / {data.cnvCases}</td>
-          <td className="px-2"> {x.case_cnv_loss} / {data.cnvCases}</td>
-          <td className="px-2"> {data.mutationCounts
-            ? data.mutationCounts[x.gene_id]
+          <td className="px-2"> {x.cnv_case} / {filteredCases}</td>
+          <td className="px-2"> {x.ssm_case} / {cases}</td>
+          <td className="px-2"> {x.case_cnv_gain} / {cnvCases}</td>
+          <td className="px-2"> {x.case_cnv_loss} / {cnvCases}</td>
+          <td className="px-2"> {mutationCounts
+            ? mutationCounts[x.gene_id]
             : " loading"}{" "}</td>
           <td className="px-2">A</td>
           <td className="px-2">S</td>

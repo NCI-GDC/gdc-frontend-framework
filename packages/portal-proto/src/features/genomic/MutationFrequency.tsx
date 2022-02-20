@@ -6,7 +6,21 @@ import { Tabs } from '@mantine/core';
 import { MdInsertChartOutlined as SummaryChartIcon } from "react-icons/md";
 import SomanticMutationFilterFixedVersion from "../genomic/SomanticMutationFilter"
 import MutationFacet from "../cohortBuilder/MutationFacet";
-import { CONSEQUENCE_TYPE, SIFT_IMPACT, VARIANT_CALLER, VEP_IMPACT } from "../cohortBuilder/gene_mutation_facets";
+import { EnumFacet } from "../facets/EnumFacet";
+
+const GenesFacetNames = [
+  {
+    facet_filter: "biotype",
+    name: "Biotype",
+    description: "No description",
+  },
+  {
+    facet_filter: "is_cancer_gene_census",
+    name: "Is Cancer Gene Census",
+    description: "No description",
+  }
+];
+
 
 const SideBySideCharts : React.FC = () => {
   return (
@@ -27,11 +41,18 @@ const MutationFrequency: React.FC = () => {
         <Tabs position="right" variant="pills" >
           <Tabs.Tab label="Genes">
             <div className="flex flex-row">
-              <div className="flex flex-col justify-end">
-                <MutationFacet field={"VEP Impact"} description={""} data={VEP_IMPACT} />
-                <MutationFacet field={"Variant Caller"} description={""} data={VARIANT_CALLER} />
-                <MutationFacet field={"Consequence Type"} description={""} data={CONSEQUENCE_TYPE} />
-                <MutationFacet field={"SIFT Impact"} description={""} data={SIFT_IMPACT} />
+              <div className="flex flex-col gap-y-4 mr-3">
+                {GenesFacetNames.map((x, index) => {
+                  return (<EnumFacet key={`${x.facet_filter}-${index}`}
+                                     field={`${x.facet_filter}`}
+                                     facetName={x.name}
+                                     type="genes"
+                                     showPercent={false}
+                                     valueLabel="Genes"
+                                     description={x.description}
+                  />);
+                })
+                }
               </div>
               <div className="flex flex-col">
                   <SideBySideCharts />
