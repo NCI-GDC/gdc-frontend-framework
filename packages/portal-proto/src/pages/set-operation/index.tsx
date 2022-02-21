@@ -9,7 +9,7 @@ const VennDiagram = dynamic(() => import("../../features/charts/VennDiagram"), {
 });
 import demoData from "./demo_data.json";
 
-const tableOrder = [
+const setData = [
   { label: "( S1 ∩ S2 ∩ S3 )", key: "S1_intersect_S2_intersect_S3" },
   { label: "( S1 ∩ S2 ) - ( S3 )", key: "S1_intersect_S2_minus_S3" },
   { label: "( S2 ∩ S3 ) - ( S1 )", key: "S2_intersect_S3_minus_S1" },
@@ -21,7 +21,7 @@ const tableOrder = [
 
 const IndexPage: NextPage = () => {
   const [selectedSets, setSelectedSets] = useState(
-    Object.fromEntries(tableOrder.map((set) => [set.key, false])),
+    Object.fromEntries(setData.map((set) => [set.key, false])),
   );
 
   const flattenedSetOperations = Object.fromEntries(
@@ -31,13 +31,14 @@ const IndexPage: NextPage = () => {
     ]),
   );
 
-  const tableData = tableOrder.map((set) => ({
+  const tableData = setData.map((set) => ({
     ...set,
     value: flattenedSetOperations[set.key],
   }));
 
-  const chartData = tableOrder.map((set) => ({
+  const chartData = setData.map((set) => ({
     key: set.key,
+    hoverLabel: set.label,
     value: flattenedSetOperations[set.key],
     highlighted: selectedSets[set.key],
   }));
