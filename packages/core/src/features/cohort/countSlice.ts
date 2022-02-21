@@ -65,7 +65,6 @@ export const fetchCohortCaseCounts = createAsyncThunk<
   "cohort/counts",
   async ( _, thunkAPI): Promise<GraphQLApiResponse> => {
     const cohortFilters = selectCurrentCohortGqlFilters(thunkAPI.getState());
-
     const graphQlFilters = cohortFilters? {filters: cohortFilters}: {}
     return await graphqlAPI(
       CountsGraphQLQuery,
@@ -89,10 +88,11 @@ const slice = createSlice({
         } else {
           // copy the counts for explore and repository
           state.counts = {
-            caseCounts : response.data.viewer.repository.cases.hits.total,
+            caseCounts : response.data.viewer.explore.cases.hits.total,
             genesCounts : response.data.viewer.explore.genes.hits.total,
             mutationCounts : response.data.viewer.explore.ssms.hits.total,
             fileCounts : response.data.viewer.repository.files.hits.total,
+            repositoryCaseCounts : response.data.viewer.repository.cases.hits.total,
           };
           state.status = "fulfilled";
           state.error = undefined;

@@ -20,22 +20,22 @@ const GenesFacetNames = [
 
 const MutationFacetNames = [
   {
-    facet_filter: "consequence__transcript__annotation__vep_impact",
+    facet_filter: "consequence.transcript.annotation.vep_impact",
     name: "VEP Impact",
     description: "No description",
   },
   {
-    facet_filter: "consequence__transcript__annotation__sift_impact",
+    facet_filter: "consequence.transcript.annotation.sift_impact",
     name: "SIFT Impact",
     description: "No description",
   },
   {
-    facet_filter: "consequence__transcript__annotation__polyphen_impact",
+    facet_filter: "consequence.transcript.annotation.polyphen_impact",
     name: "Polyphen Impact",
     description: "No description",
   },
   {
-    facet_filter: "consequence__transcript__consequence_type",
+    facet_filter: "consequence.transcript.consequence_type",
     name: "Consequence Type",
     description: "No description",
   },

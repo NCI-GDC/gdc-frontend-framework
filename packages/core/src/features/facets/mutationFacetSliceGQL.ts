@@ -8,7 +8,7 @@ import {
   GraphQLApiResponse
 } from "../gdcapi/gdcgraphql";
 
-import { FacetBuckets, buildGraphGLBucketQuery } from "./facetApiGQL";
+import { FacetBuckets, buildGraphGLBucketQuery, normalizeGQLFacetName } from "./facetApiGQL";
 
 import { isBucketsAggregation } from "../gdcapi/gdcapi";
 import { selectCurrentCohortGqlFilters } from "../cohort/cohortFilterSlice";
@@ -46,21 +46,21 @@ const slice = createSlice({
           state[action.meta.arg].status = "rejected";
           state[action.meta.arg].error = response.errors.facets;
         } else {
-          const aggregations = Object(response).data.viewer.explore.genes.aggregations;
+          const aggregations = Object(response).data.viewer.explore.ssms.aggregations;
            aggregations &&
             Object.entries(aggregations).forEach(
               ([field, aggregation]) => {
-                // const normalizedField = normalizeGQLFacetName(field)
-                const normalizedField = field;
+                const normalizedField = normalizeGQLFacetName(field)
                 if (isBucketsAggregation(aggregation)) {
                   state[normalizedField].status = "fulfilled";
                   state[normalizedField].buckets = aggregation.buckets.reduce(
                     (facetBuckets, apiBucket) => {
-                      facetBuckets[apiBucket.key] = apiBucket.doc_count;
+                      if (apiBucket.key.length > 0)
+                        facetBuckets[apiBucket.key] = apiBucket.doc_count;
                       return facetBuckets;
                     },
                     {} as Record<string, number>,
-                  );
+                  )
                 } else {
                   // Unhandled aggregation
                 }

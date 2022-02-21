@@ -11,6 +11,7 @@ import {
   graphqlAPI,
   TablePageOffsetProps,
 } from "../gdcapi/gdcgraphql";
+import { selectCurrentCohortCaseGqlFilters } from "../cohort/cohortFilterSlice";
 
 const SSMSTableGraphQLQuery = `query SsmsTable_relayQuery(
   $ssmTested: FiltersArgument
@@ -133,7 +134,10 @@ export const fetchSsmsTable = createAsyncThunk<
   async ({
     pageSize,
     offset,
-  }: TablePageOffsetProps): Promise<GraphQLApiResponse> => {
+  }: TablePageOffsetProps, thunkAPI): Promise<GraphQLApiResponse> => {
+    const filters =  selectCurrentCohortCaseGqlFilters(thunkAPI.getState());
+    const filterContents = filters?.content ? Object(filters?.content) : [];
+
     const graphQlFilters = {
       ssmTested: {
         content: [
@@ -149,27 +153,13 @@ export const fetchSsmsTable = createAsyncThunk<
       },
       ssmCaseFilter: {
         content: [
-          {
+          ...[{
             content: {
               field: "available_variation_data",
               value: ["ssm"],
             },
             op: "in",
-          },
-          {
-            op: "in",
-            content: {
-              field: "cases.primary_site",
-              value: ["breast"],
-            },
-          },
-          {
-            content: {
-              field: "genes.is_cancer_gene_census",
-              value: ["true"],
-            },
-            op: "in",
-          },
+          }], ...filterContents
         ],
         op: "and",
       },
@@ -187,25 +177,7 @@ export const fetchSsmsTable = createAsyncThunk<
         op: "and",
       },
       ssmsTable_offset: offset,
-      ssmsTable_filters: {
-        op: "and",
-        content: [
-          {
-            op: "in",
-            content: {
-              field: "cases.primary_site",
-              value: ["breast"],
-            },
-          },
-          {
-            content: {
-              field: "genes.is_cancer_gene_census",
-              value: ["true"],
-            },
-            op: "in",
-          },
-        ],
-      },
+      ssmsTable_filters: filters? filters: {},
       score: "occurrence.case.project.project_id",
       sort: [
         {

@@ -3,17 +3,6 @@ import { SimpleLayout } from "../features/layout/Simple";
 import { EnumFacet } from "../features/facets/EnumFacet";
 
 const FacetsPage: NextPage = () => {
-  /*
-            <!--
-          <Facet field="primary_site" />
-          <Facet field="demographic.gender" />
-          <Facet field="disease_type" />
-          <Facet field="samples.sample_type" />
-          <Facet field="samples.tissue_type" />
-          <Facet field="diagnoses.tissue_or_organ_of_origin" />
-          -->
-
-   */
   return (
     <SimpleLayout>
       <div className="flex flex-col content-center">

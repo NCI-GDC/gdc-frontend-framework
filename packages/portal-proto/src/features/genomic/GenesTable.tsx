@@ -18,14 +18,6 @@ interface GenesTableResponse {
   readonly isError: boolean;
 }
 
-/**
- * Filter selector for all of the facet filters
- */
-const useCohortFacetFilter = (): FilterSet => {
-  return useCoreSelector((state) =>
-    selectCurrentCohortFilters(state),
-  );
-};
 
 const useGenesTable = (
   pageSize: number,
@@ -33,7 +25,7 @@ const useGenesTable = (
 ): GenesTableResponse => {
   const coreDispatch = useCoreDispatch();
   const table = useCoreSelector((state) => selectGenesTableData(state));
-  const cohortFilters = useCohortFacetFilter();
+  const cohortFilters =  useCoreSelector((state) => selectCurrentCohortFilters(state));
 
   useEffect(() => {
     coreDispatch(fetchGenesTable({ pageSize: pageSize, offset: offset }));

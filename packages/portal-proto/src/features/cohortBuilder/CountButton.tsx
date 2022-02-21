@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {  Loader} from "@mantine/core";
 import {
   useCoreDispatch,
   useCoreSelector,
   selectCurrentCohortFilters,
-  fetchCohortCaseCounts, selectCohortCountsData
+  fetchCohortCaseCounts,
+  selectCohortCountsData,
 } from "@gff/core";
 
 interface UseCurrentCohortCountsResponse {
@@ -32,7 +33,7 @@ const useCurrentCohortCounts = () : UseCurrentCohortCountsResponse => {
 
   useEffect(() => {
     coreDispatch(fetchCohortCaseCounts());
-  }, [selectFacetFilter ]);
+  }, [coreDispatch, selectFacetFilter ]);
 
   return {
     data: counts?.data,

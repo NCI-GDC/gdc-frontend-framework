@@ -129,6 +129,6 @@ function truncateString(str, n) {
 
 export const processLabel = (label: string, shorten = 100): string => {
   const tokens = label.split(" ");
-  const capitalizedTokens = tokens.map((s) => s[0].toUpperCase() + s.substr(1));
+  const capitalizedTokens = tokens.map((s) => capitalize(s));
   return truncateString(capitalizedTokens.join(" "), shorten);
 };
