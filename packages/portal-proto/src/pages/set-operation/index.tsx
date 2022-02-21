@@ -2,48 +2,62 @@ import { useState } from "react";
 import { NextPage } from "next";
 import dynamic from "next/dynamic";
 import { MdSave as SaveIcon, MdDownload as DownloadIcon } from "react-icons/md";
-import { pickBy } from 'lodash';
+import { pickBy } from "lodash";
 import { SimpleLayout } from "../../features/layout/Simple";
-const VennDiagram = dynamic(() => import("../../features/charts/VennDiagram"), { ssr: false });
+const VennDiagram = dynamic(() => import("../../features/charts/VennDiagram"), {
+  ssr: false,
+});
 import demoData from "./demo_data.json";
 
-const setOperationsConfig = [
-  { label: "( S1 ∩ S2 ∩ S3 )", key: "S1_intersect_S2_intersect_S3", tableOrder: 0, chartOrder: 6 },
-  { label: "( S1 ∩ S2 ) - ( S3 )", key: "S1_intersect_S2_minus_S3", tableOrder: 1, chartOrder: 3 },
-  { label: "( S2 ∩ S3 ) - ( S1 )", key: "S2_intersect_S3_minus_S1", tableOrder: 2, chartOrder: 5 },
-  { label: "( S1 ∩ S3 ) - ( S2 )", key: "S1_intersect_S3_minus_S2", tableOrder: 3, chartOrder: 4 },
-  { label: "( S1 ) - ( S2 ∪ S3 )", key: "S1_minus_S2_union_S3", tableOrder: 4, chartOrder: 0 },
-  { label: "( S2 ) - ( S1 ∪ S3 )", key: "S2_minus_S1_union_S3", tableOrder: 5, chartOrder: 1 },
-  { label: "( S3 ) - ( S1 ∪ S2 )", key: "S3_minus_S1_union_S2", tableOrder: 6, chartOrder: 2 },
+const tableOrder = [
+  { label: "( S1 ∩ S2 ∩ S3 )", key: "S1_intersect_S2_intersect_S3" },
+  { label: "( S1 ∩ S2 ) - ( S3 )", key: "S1_intersect_S2_minus_S3" },
+  { label: "( S2 ∩ S3 ) - ( S1 )", key: "S2_intersect_S3_minus_S1" },
+  { label: "( S1 ∩ S3 ) - ( S2 )", key: "S1_intersect_S3_minus_S2" },
+  { label: "( S1 ) - ( S2 ∪ S3 )", key: "S1_minus_S2_union_S3" },
+  { label: "( S2 ) - ( S1 ∪ S3 )", key: "S2_minus_S1_union_S3" },
+  { label: "( S3 ) - ( S1 ∪ S2 )", key: "S3_minus_S1_union_S2" },
 ];
 
 const IndexPage: NextPage = () => {
-  const [selectedSets, setSelectedSets] = useState(Object.fromEntries(setOperationsConfig.map(set => ([set.key, false]))));
+  const [selectedSets, setSelectedSets] = useState(
+    Object.fromEntries(tableOrder.map((set) => [set.key, false])),
+  );
 
-  const tableData = setOperationsConfig.sort((a, b) => a.tableOrder - b.tableOrder).map(set => ({
+  const flattenedSetOperations = Object.fromEntries(
+    demoData.set_operations.map((set) => [
+      Object.keys(set)[0],
+      Object.values(set)[0].data?.viewer?.explore?.ssms?.hits?.total,
+    ]),
+  );
+
+  const tableData = tableOrder.map((set) => ({
     ...set,
-    value: demoData.set_operations.find(entry => Object.keys(entry)[0] === set.key)[set.key].data?.viewer?.explore?.ssms?.hits?.total,
+    value: flattenedSetOperations[set.key],
   }));
 
-  const chartData = setOperationsConfig.sort((a, b) => a.chartOrder - b.chartOrder).map((set, idx) => ({
+  const chartData = tableOrder.map((set) => ({
     key: set.key,
-    value: demoData.set_operations.find(entry => Object.keys(entry)[0] === set.key)[set.key].data?.viewer?.explore?.ssms?.hits?.total,
-    highlighted: selectedSets[set.key], 
+    value: flattenedSetOperations[set.key],
+    highlighted: selectedSets[set.key],
   }));
 
   const totalSelectedSets = () => {
-    const selectedRows = Object.keys(pickBy(selectedSets, v => v));
-    if (selectedRows.length === 0 ) {
+    const selectedRows = Object.keys(pickBy(selectedSets, (v) => v));
+    if (selectedRows.length === 0) {
       return 0;
-    }
-    else {
-      return selectedRows.map(key => tableData.find(entry => entry.key === key).value).reduce((a, b) => a + b);
+    } else {
+      return selectedRows
+        .map((key) => flattenedSetOperations[key])
+        .reduce((a, b) => a + b);
     }
   };
 
-  const onClickHandler = (clickedRegion : string) => {
-    console.log(clickedRegion);
-    setSelectedSets({...selectedSets, [clickedRegion]: !selectedSets[clickedRegion]});
+  const onClickHandler = (clickedKey: string) => {
+    setSelectedSets({
+      ...selectedSets,
+      [clickedKey]: !selectedSets[clickedKey],
+    });
   };
 
   return (
@@ -51,7 +65,10 @@ const IndexPage: NextPage = () => {
       <div className="flex flex-col">
         <div>
           <h1 className="text-2xl">Set Operations</h1>
-          <p>Demo showing high impact mutations overlap in Bladder between Mutect, Varscan and Muse pipelines.</p>
+          <p>
+            Demo showing high impact mutations overlap in Bladder between
+            Mutect, Varscan and Muse pipelines.
+          </p>
         </div>
         <div className="flex flex-row pt-2">
           <VennDiagram
@@ -71,7 +88,10 @@ const IndexPage: NextPage = () => {
               </thead>
               <tbody>
                 {demoData.summary.map((item, idx) => (
-                  <tr key={item.alias} className={idx % 2 ? null : "bg-gdc-blue-warm-lightest"}>
+                  <tr
+                    key={item.alias}
+                    className={idx % 2 ? null : "bg-gdc-blue-warm-lightest"}
+                  >
                     <td>{item?.alias}</td>
                     <td>{item?.type}</td>
                     <td>{item?.names.join(", ")}</td>
@@ -91,22 +111,34 @@ const IndexPage: NextPage = () => {
               </thead>
               <tbody>
                 {tableData.map((item, idx) => (
-                  <tr key={item.key} className={selectedSets[item.key] ? "bg-gdc-yellow-lightest" : (idx % 2 ? null : "bg-gdc-blue-warm-lightest")}>
+                  <tr
+                    key={item.key}
+                    className={
+                      selectedSets[item.key]
+                        ? "bg-gdc-yellow-lightest"
+                        : idx % 2
+                        ? null
+                        : "bg-gdc-blue-warm-lightest"
+                    }
+                  >
                     <td>
                       <input
                         type="checkbox"
                         checked={selectedSets[item.key]}
-                        onChange={e => setSelectedSets({...selectedSets, [e.target.value]: !selectedSets[e.target.value] })}
-                        value={item.key}/>
+                        onChange={(e) =>
+                          setSelectedSets({
+                            ...selectedSets,
+                            [e.target.value]: !selectedSets[e.target.value],
+                          })
+                        }
+                        value={item.key}
+                      />
                     </td>
-                    <td>
-                      {item.label}
-                    </td>
-                    <td>
-                      {item.value}
-                    </td>
+                    <td>{item.label}</td>
+                    <td>{item.value}</td>
                     <td className="flex">
-                      <SaveIcon /><DownloadIcon />  
+                      <SaveIcon />
+                      <DownloadIcon />
                     </td>
                   </tr>
                 ))}
