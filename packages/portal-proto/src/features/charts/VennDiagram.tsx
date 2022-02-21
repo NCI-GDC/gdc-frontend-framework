@@ -244,24 +244,28 @@ const VennDiagram: React.FC<VennDiagramProps> = ({
   const dataLabelPositions = [
     { key: "S1_minus_S2_union_S3", x: 1.5, y: 3.25 },
     { key: "S2_minus_S1_union_S3", x: 3.5, y: 3.25 },
-    { key: "S3_minus_S1_union_S2", x: 2.5, y: 1.75 },
+    { key: "S3_minus_S1_union_S2", x: 2.5, y: 1.6 },
     { key: "S1_intersect_S2_minus_S3", x: 2.5, y: 3.25 },
     { key: "S1_intersect_S3_minus_S2", x: 2, y: 2.25 },
     { key: "S2_intersect_S3_minus_S1", x: 3, y: 2.25 },
-    { key: "S1_intersect_S2_intersect_S3", x: 2.5, y: 2.5 },
+    { key: "S1_intersect_S2_intersect_S3", x: 2.5, y: 2.6 },
   ];
 
   const innerLabels = {
     x: [...dataLabelPositions.map((d) => d.x)],
     y: [...dataLabelPositions.map((d) => d.y)],
     type: "scatter",
-    mode: "text",
+    mode: "text+markers",
     text: [...sortedChartData.map((d) => d.value)],
     customdata: [...sortedChartData.map((d) => d.hoverLabel)],
     hovertemplate: "%{customdata}<extra></extra>",
     hoverlabel: {
       bgcolor: "#f1f1f1",
       align: "left",
+    },
+    marker: {
+      size: 30,
+      opacity: 0,
     },
     showlegend: false,
   };
