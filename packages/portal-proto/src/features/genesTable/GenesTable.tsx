@@ -7,6 +7,7 @@ import {
 } from "@gff/core";
 import HorizontalTable from "../../components/HorizontalTable";
 import { Select } from "../../components/Select";
+import RingLoader from "react-spinners/RingLoader";
 
 interface GenesTableResponse {
   readonly data?: GDCGenesTable;
@@ -50,10 +51,10 @@ const GenesTable: React.FC<unknown> = () => {
         tableRows.push({
           symbol: element.symbol,
           name: element.name,
-          ssmsAffectedCasesInCohort: `${element.cnv_case + ' / ' + data.genes.filteredCases}`,
-          ssmsAffectedCasesAcrossTheGdc: `${element.ssm_case + ' / ' + data.genes.cases}`,
-          cnvGain: `${element.case_cnv_gain + ' / ' + data.genes.cnvCases}`,
-          cnvLoss: `${element.case_cnv_loss + ' / ' + data.genes.cnvCases}`,
+          SSMSAffectedCasesInCohort: `${element.cnv_case + ' / ' + data.genes.filteredCases}`,
+          SSMSAffectedCasesAcrossTheGDC: `${element.ssm_case + ' / ' + data.genes.cases}`,
+          CNVGain: `${element.case_cnv_gain + ' / ' + data.genes.cnvCases}`,
+          CNVLoss: `${element.case_cnv_loss + ' / ' + data.genes.cnvCases}`,
           mutations: data.genes.mutationCounts[element.gene_id],
           annotations: "A",
           survival: "S"
@@ -68,17 +69,21 @@ const GenesTable: React.FC<unknown> = () => {
     setPageSizeDisplay(displayOptions.filter(op => op.value === displayChange)[0]);
   }
 
-  useEffect(() => {
-    getTableFormatData(data);
-  }, [data]);
-
   /* these should be replaced with a spinner */
   if (isUninitialized) {
-    return <div>Initializing table...</div>;
+    return (
+      <div className="w-max m-auto mt-40">
+        <RingLoader color={"lightblue"} loading={true} size={150} />
+      </div>
+    );
   }
 
   if (isFetching) {
-    return <div>Fetching table...</div>;
+    return (
+      <div className="w-max m-auto mt-40">
+        <RingLoader color={"lightblue"} loading={true} size={150} />
+      </div>
+    );
   }
   /* end of spinner */
   if (isError) {

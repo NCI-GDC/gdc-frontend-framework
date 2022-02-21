@@ -2,17 +2,18 @@ import React, { useEffect, useState } from "react";
 import { fetchSsmsTable, useCoreDispatch, useSsmsTable } from "@gff/core";
 import HorizontalTable from "../../components/HorizontalTable";
 import { Select } from "../../components/Select";
+import RingLoader from "react-spinners/RingLoader";
 
 const MutationTable: React.FC<unknown> = () => {
   const [pageSize, setPageSize] = useState(10);
-  const [pageSizeDisplay, setPageSizeDisplay] = useState( { value: 10, label: "10" });
+  const [pageSizeDisplay, setPageSizeDisplay] = useState({ value: 10, label: "10" });
   const [offset, setOffset] = useState(0);
   const [displayOptions, setDisplayOptions] = useState([
     { value: 10, label: "10" },
-    { value: 20, label: "20" }, 
-    { value: 40, label: "40" }, 
-    { value: 60, label: "60" }, 
-    { value: 80, label: "80" }, 
+    { value: 20, label: "20" },
+    { value: 40, label: "40" },
+    { value: 60, label: "60" },
+    { value: 80, label: "80" },
     { value: 100, label: "100" }
   ]);
   const coreDispatch = useCoreDispatch();
@@ -28,16 +29,46 @@ const MutationTable: React.FC<unknown> = () => {
     coreDispatch(fetchSsmsTable({ pageSize: pageSize, offset: offset }));
   }, [pageSize, offset]);
 
+  const truncateAfterMarker = (
+    term,
+    markers,
+    length,
+    omission = '…'
+  ) => {
+    const markersByIndex = markers.reduce(
+      (acc, marker) => {
+        const index = term.indexOf(marker);
+        if (index !== -1) {
+          return { index, marker };
+        }
+        return acc;
+      },
+      { index: -1, marker: '' }
+    );
+    const { index, marker } = markersByIndex;
+    if (index !== -1 && term.length > index + marker.length + 8) {
+      return `${term.substring(0, index + marker.length + 8)}${omission}`;
+    }
+    return term;
+  };
+
+  const DNA_CHANGE_MARKERS = [
+    'del',
+    'ins',
+    '>',
+  ];
+
   const getTableFormatData = (data) => {
     if (data.status === 'fulfilled') {
       const tableRows = [];
+      const averageLengths = [];
       data.ssms.ssms.forEach(element => {
         tableRows.push({
-          dnaChange: element.genomic_dna_change,
+          DNAChange: truncateAfterMarker(element.genomic_dna_change, DNA_CHANGE_MARKERS, 8),
           type: element.mutation_subtype,
           consequences: element.consequence[0].gene.symbol + ' ' + element.consequence[0].aa_change,
           affectedCasesInCohort: `${element.filteredOccurrences + ' / ' + data.ssms.filteredCases}`,
-          affectedCasesAcrossTheGdc:  `${element.occurrence + ' / ' + data.ssms.cases}`,
+          affectedCasesAcrossTheGDC: `${element.occurrence + ' / ' + data.ssms.cases}`,
           impact: 'Impact',
           survival: 'S'
         })
@@ -66,17 +97,25 @@ const MutationTable: React.FC<unknown> = () => {
     value={pageSizeDisplay}
     isMulti={false}
     onChange={(e) => {
-        handleDisplayChange(e.value)
+      handleDisplayChange(e.value)
     }}
   />);
-  
+
 
   if (isUninitialized) {
-    return <div>Initializing table...</div>;
+    return (
+      <div className="w-max m-auto mt-40">
+        <RingLoader color={"lightblue"} loading={true} size={150} />
+      </div>
+    );
   }
 
   if (isFetching) {
-    return <div>Fetching table...</div>;
+    return (
+      <div className="w-max m-auto mt-40">
+        <RingLoader color={"lightblue"} loading={true} size={150} />
+      </div>
+    );
   }
 
   if (isError) {
@@ -87,7 +126,7 @@ const MutationTable: React.FC<unknown> = () => {
     <div className="flex flex-col w-100">
       <HorizontalTable inputData={getTableFormatData(data)}></HorizontalTable>
       <div className="flex flex-row w-2/3 justify-center gap-x-3">
-      <div className="w-20">{displayFilter}</div>
+        <div className="w-20">{displayFilter}</div>
         <button className="bg-nci-gray-light hover:bg-nci-gray-dark" onClick={prevPage}>Prev {pageSize}</button>
         <button className="bg-nci-gray-light hover:bg-nci-gray-dark" onClick={nextPage}>Next {pageSize}</button>
       </div>
