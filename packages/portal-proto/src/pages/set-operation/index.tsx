@@ -96,7 +96,7 @@ const IndexPage: NextPage = () => {
                     <td>{item?.alias}</td>
                     <td>{item?.type}</td>
                     <td>{item?.names.join(", ")}</td>
-                    <td>{item?.total}</td>
+                    <td><a href="#" className="underline text-gdc-blue">{item?.total}</a></td>
                   </tr>
                 ))}
               </tbody>
@@ -136,7 +136,7 @@ const IndexPage: NextPage = () => {
                       />
                     </td>
                     <td>{item.label}</td>
-                    <td>{item.value}</td>
+                    <td><a href="#" className="underline text-gdc-blue">{item?.value}</a></td>
                     <td className="flex">
                       <SaveIcon />
                       <DownloadIcon />
