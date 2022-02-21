@@ -25,7 +25,6 @@ export const fetchCaseFacetByName = createAsyncThunk<
   { dispatch: CoreDispatch; state: CoreState }
 >("facet/fetchCasesFacetByName", async (field: string, thunkAPI) => {
   const filters = selectCurrentCohortGqlFilters(thunkAPI.getState());
-
   const queryGQL = buildGraphGLBucketQuery("cases", field)
 
   const filtersGQL =

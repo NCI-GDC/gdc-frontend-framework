@@ -38,7 +38,7 @@ const useCohortFacetFilterByName = (field: string): string[] | undefined => {
 
 interface EnumFacetResponse {
   readonly data?: FacetBuckets;
-  readonly enumFilters: string [] | undefined;
+  readonly enumFilters?: string [] | undefined;
   readonly error?: string;
   readonly isUninitialized: boolean;
   readonly isFetching: boolean;
@@ -56,7 +56,7 @@ const useCasesFacet = (field: string): EnumFacetResponse => {
   );
 
   const selectFacetFilter = useCohortFacetFilter();
-  const enumFilters = useCohortFacetFilterByName(field);
+  const enumFilters = useCohortFacetFilterByName(`cases.${field}`);
   useEffect(() => {
     if (!facet) {
       coreDispatch(fetchCaseFacetByName(field));
@@ -88,7 +88,7 @@ const useFilesFacet = (field: string): EnumFacetResponse => {
   );
 
   const selectFacetFilter = useCohortFacetFilter();
-  const enumFilters = useCohortFacetFilterByName(field);
+  const enumFilters = useCohortFacetFilterByName(`files.${field}`);
   useEffect(() => {
     if (!facet) {
       coreDispatch(fetchFileFacetByName(field));
@@ -120,7 +120,7 @@ const useGenesFacet = (field: string): EnumFacetResponse => {
   );
 
   const selectFacetFilter = useCohortFacetFilter();
-  const enumFilters = useCohortFacetFilterByName(field);
+  const enumFilters = useCohortFacetFilterByName(`genes.${field}`);
   useEffect(() => {
     if (!facet) {
       coreDispatch(fetchGenesFacetByName(field));
@@ -152,7 +152,7 @@ const useMutationsFacet = (field: string): EnumFacetResponse => {
   );
 
   const selectFacetFilter = useCohortFacetFilter();
-  const enumFilters = useCohortFacetFilterByName(field);
+  const enumFilters = useCohortFacetFilterByName(`ssms.${field}`);
   useEffect(() => {
     if (!facet) {
       coreDispatch(fetchMutationsFacetByName(field));
@@ -174,13 +174,13 @@ const useMutationsFacet = (field: string): EnumFacetResponse => {
   };
 };
 
-export const updateEnumFilters = (dispatch, enumerationFilters, field ) => {
+export const updateEnumFilters = (dispatch, enumerationFilters, field, prefix="" ) => {
   if (enumerationFilters === undefined)
     return;
   if (enumerationFilters.length > 0) {
-    dispatch(updateCohortFilter({ type: "enum", op: "in", field: `${field}`, values: enumerationFilters }));
+    dispatch(updateCohortFilter({ type: "enum", op: "in", field: `${prefix}${field}`, values: enumerationFilters }));
   } else { // completely remove the field
-    dispatch(removeCohortFilter(field));
+    dispatch(removeCohortFilter( `${prefix}${field}`));
   }
 }
 
@@ -188,5 +188,5 @@ export const FacetDataHooks = {
   "cases" : useCasesFacet,
   "files" : useFilesFacet,
   "genes" : useGenesFacet,
-  "mutation" : useMutationsFacet,
+  "ssms" : useMutationsFacet,
 }

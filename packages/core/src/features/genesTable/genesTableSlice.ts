@@ -101,7 +101,7 @@ export interface GeneRowInfo {
   readonly id: string;
   readonly is_cancer_gene_census: boolean;
   readonly name: string;
-  readonly num_cases: number;
+  readonly numCases: number;
   readonly ssm_case: number;
   readonly symbol: string;
 }
@@ -125,28 +125,11 @@ export const fetchGenesTable = createAsyncThunk<
     pageSize,
     offset,
   }: TablePageOffsetProps, thunkAPI): Promise<GraphQLApiResponse> => {
-    const currentFilters =  selectCurrentCohortCaseGqlFilters(thunkAPI.getState());
-    console.log(currentFilters);
+    const filters =  selectCurrentCohortCaseGqlFilters(thunkAPI.getState());
+
+    const filterContents = filters?.content ? Object(filters?.content) : [];
     const graphQlFilters = {
-      genesTable_filters: {
-        op: "and",
-        content: [
-          {
-            op: "in",
-            content: {
-              field: "cases.primary_site",
-              value: ["kidney"],
-            },
-          },
-          {
-            content: {
-              field: "genes.is_cancer_gene_census",
-              value: ["true"],
-            },
-            op: "in",
-          },
-        ],
-      },
+      genesTable_filters: filters? filters: {},
       genesTable_size: pageSize,
       genesTable_offset: offset,
       score: "case.project.project_id",
@@ -171,27 +154,16 @@ export const fetchGenesTable = createAsyncThunk<
       },
       geneCaseFilter: {
         content: [
+          ...[
           {
             content: {
               field: "cases.available_variation_data",
               value: ["ssm"],
             },
             op: "in",
-          },
-          {
-            op: "in",
-            content: {
-              field: "cases.primary_site",
-              value: ["kidney"],
-            },
-          },
-          {
-            content: {
-              field: "genes.is_cancer_gene_census",
-              value: ["true"],
-            },
-            op: "in",
-          },
+          }
+          ],
+          ...filterContents
         ],
         op: "and",
       },
@@ -210,45 +182,25 @@ export const fetchGenesTable = createAsyncThunk<
       cnvTested: {
         op: "and",
         content: [
+          ...[
           {
             content: {
               field: "cases.available_variation_data",
               value: ["cnv"],
             },
             op: "in",
-          },
-          {
-            op: "in",
-            content: {
-              field: "cases.primary_site",
-              value: ["kidney"],
-            },
-          },
-          {
-            content: {
-              field: "genes.is_cancer_gene_census",
-              value: ["true"],
-            },
-            op: "in",
-          },
+          }], ...filterContents
         ],
       },
       cnvGainFilters: {
         op: "and",
         content: [
-          {
+          ...[{
             content: {
               field: "cases.available_variation_data",
               value: ["cnv"],
             },
             op: "in",
-          },
-          {
-            op: "in",
-            content: {
-              field: "cases.primary_site",
-              value: ["kidney"],
-            },
           },
           {
             content: {
@@ -257,19 +209,13 @@ export const fetchGenesTable = createAsyncThunk<
             },
             op: "in",
           },
-          {
-            content: {
-              field: "genes.is_cancer_gene_census",
-              value: ["true"],
-            },
-            op: "in",
-          },
+          ], ...filterContents
         ],
       },
       cnvLossFilters: {
         op: "and",
         content: [
-          {
+          ...[{
             content: {
               field: "cases.available_variation_data",
               value: ["cnv"],
@@ -277,31 +223,16 @@ export const fetchGenesTable = createAsyncThunk<
             op: "in",
           },
           {
-            op: "in",
-            content: {
-              field: "cases.primary_site",
-              value: ["kidney"],
-            },
-          },
-          {
             content: {
               field: "cnvs.cnv_change",
               value: ["Loss"],
             },
             op: "in",
-          },
-          {
-            content: {
-              field: "genes.is_cancer_gene_census",
-              value: ["true"],
-            },
-            op: "in",
-          },
+          } ], ...filterContents
         ],
       },
     };
     // get the TableData
-
     const results: GraphQLApiResponse<any> = await graphqlAPI(
       GenesTableGraphQLQuery,
       graphQlFilters,
@@ -313,7 +244,7 @@ export const fetchGenesTable = createAsyncThunk<
         results.data.genesTableViewer.explore.genes.hits.edges.map(
           ({ node }: Record<string, any>) => node.gene_id,
         );
-      const counts = await fetchSmsAggregations({ ids: geneIds });
+      const counts = await fetchSmsAggregations({ ids: geneIds, filters: filterContents });
       if (!counts.errors) {
         const countsData =
           counts.data.ssmsAggregationsViewer.explore.ssms.aggregations
@@ -353,27 +284,6 @@ const initialState: GenesTableState = {
   status: "uninitialized",
 };
 
-// interface GeneNode {
-//   readonly node: {
-//       readonly gene: {
-//         readonly gene_id: string;
-//       }
-//   }
-// }
-
-// interface GeneResponseNode {
-//   readonly biotype: string;
-//   readonly gene_id: string;
-//   readonly id: string;
-//   readonly is_cancer_gene_census: boolean;
-//   readonly name: string;
-//   readonly numCases: number;
-//   readonly symbol: string;
-// }
-//
-// interface GeneResponseEdge {
-//   readonly node: GeneResponseNode;
-// }
 
 const slice = createSlice({
   name: "genes/genesTable",
@@ -404,7 +314,7 @@ const slice = createSlice({
               id,
               is_cancer_gene_census,
               name,
-              num_cases,
+              numCases,
               symbol,
             } = node;
             return {
@@ -414,7 +324,7 @@ const slice = createSlice({
               id,
               is_cancer_gene_census,
               name,
-              num_cases,
+              numCases,
               symbol,
               cnv_case: node.cnv_case.hits.total,
               case_cnv_loss: node.case_cnv_loss.hits.total,

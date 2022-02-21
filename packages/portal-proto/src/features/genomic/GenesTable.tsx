@@ -4,7 +4,7 @@ import {
   useCoreDispatch,
   fetchGenesTable,
   GDCGenesTable,
-  selectGenesTableData, selectCohortCountsByName,
+  selectGenesTableData, FilterSet, selectCurrentCohortFilters,
 } from "@gff/core";
 import { Pagination, Select, Table, Checkbox } from "@mantine/core";
 
@@ -18,16 +18,26 @@ interface GenesTableResponse {
   readonly isError: boolean;
 }
 
+/**
+ * Filter selector for all of the facet filters
+ */
+const useCohortFacetFilter = (): FilterSet => {
+  return useCoreSelector((state) =>
+    selectCurrentCohortFilters(state),
+  );
+};
+
 const useGenesTable = (
   pageSize: number,
   offset: number,
 ): GenesTableResponse => {
   const coreDispatch = useCoreDispatch();
   const table = useCoreSelector((state) => selectGenesTableData(state));
+  const cohortFilters = useCohortFacetFilter();
+
   useEffect(() => {
-    // fetch table information when pageSize or Offset (and eventually filters) changes
     coreDispatch(fetchGenesTable({ pageSize: pageSize, offset: offset }));
-  }, [pageSize, offset]);
+  }, [coreDispatch, pageSize, offset, cohortFilters]);
   return {
     data: { ...table?.data.genes },
     error: table?.error,
@@ -127,7 +137,7 @@ const GenesTableSimple: React.FC<GDCGenesTable> = ({ genes,
             <Checkbox onClick={() => handleGenesSelected(x)} label={x.symbol}/>
           </td>
           <td className="px-2">{x.name}</td>
-          <td className="px-2"> {x.cnv_case} / {filteredCases}</td>
+          <td className="px-2"> {x.numCases} / {filteredCases}</td>
           <td className="px-2"> {x.ssm_case} / {cases}</td>
           <td className="px-2"> {x.case_cnv_gain} / {cnvCases}</td>
           <td className="px-2"> {x.case_cnv_loss} / {cnvCases}</td>

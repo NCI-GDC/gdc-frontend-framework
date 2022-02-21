@@ -1,9 +1,14 @@
 import {
   GenesFrequencyChart,
-  useGeneFrequencyChart
+  fetchGeneFrequencies,
+  useCoreSelector,
+  selectCurrentCohortFilters,
+  useCoreDispatch,
+  selectGeneFrequencyChartData
 } from "@gff/core";
 
 import dynamic from 'next/dynamic'
+import { useEffect } from "react";
 
 const BarChart = dynamic(() => import('./BarChart'), {
   ssr: false
@@ -26,21 +31,47 @@ const processChartData = (chartData:GenesFrequencyChart, title = "Distribution o
   return results;
 }
 
+
+
+interface GenesFrequencyResponse {
+  readonly data?: GenesFrequencyChart;
+  readonly error?: string;
+  readonly isUninitialized: boolean;
+  readonly isFetching: boolean;
+  readonly isSuccess: boolean;
+  readonly isError: boolean;
+}
+
+
+
+const useGeneFrequencyChart = (): GenesFrequencyResponse => {
+  const coreDispatch = useCoreDispatch();
+  const chartData = useCoreSelector((state) => selectGeneFrequencyChartData(state));
+  const cohortFilters = useCoreSelector((state) => selectCurrentCohortFilters(state));
+
+  useEffect(() => {
+    coreDispatch(fetchGeneFrequencies( { pageSize:20, offset: 0}));
+  }, [coreDispatch, cohortFilters]);
+  return {
+    data: { ...chartData?.data },
+    error: chartData?.error,
+    isUninitialized: chartData === undefined,
+    isFetching: chartData?.status === "pending",
+    isSuccess: chartData?.status === "fulfilled",
+    isError: chartData?.status === "rejected",
+  };
+};
+
+
 export const GeneFrequencyChart = ( height, marginBottom, showXLabels = true, showTitle = true, maxBins = 20, orientation='v') => {
-  const { data, error, isUninitialized, isFetching, isError } =
-    useGeneFrequencyChart({ pageSize:maxBins, offset: 0});
-
-  if (isUninitialized) {
-    return <div>Initializing facet...</div>;
-  }
-
-  if (isFetching) {
-    return <div>Fetching facet...</div>;
-  }
+  const { data, error,  isError, isSuccess } = useGeneFrequencyChart();
 
   if (isError) {
     return <div>Failed to fetch facet: {error}</div>;
   }
+
+  if (!isSuccess)
+    return "Loading"
 
   const chart_data = processChartData(data);
   return <>

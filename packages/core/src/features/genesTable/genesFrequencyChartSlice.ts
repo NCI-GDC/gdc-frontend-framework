@@ -11,6 +11,7 @@ import {
   graphqlAPI,
   TablePageOffsetProps,
 } from "../gdcapi/gdcgraphql";
+import { selectCurrentCohortCaseGqlFilters } from "../cohort/cohortFilterSlice";
 
 const GeneMuatationFrequenceQuery = `
     query GeneMutationFrequency (
@@ -68,27 +69,10 @@ export const fetchGeneFrequencies = createAsyncThunk<
   async ({
     pageSize = 20,
     offset = 0,
-  }: TablePageOffsetProps): Promise<GraphQLApiResponse> => {
+  }: TablePageOffsetProps, thunkAPI): Promise<GraphQLApiResponse> => {
+    const filters = selectCurrentCohortCaseGqlFilters(thunkAPI.getState());
     const graphQlVariables = {
-      genesTable_filters: {
-        op: "and",
-        content: [
-          {
-            op: "in",
-            content: {
-              field: "cases.primary_site",
-              value: ["kidney"],
-            },
-          },
-          {
-            content: {
-              field: "genes.is_cancer_gene_census",
-              value: ["true"],
-            },
-            op: "in",
-          },
-        ],
-      },
+      genesTable_filters: filters? filters: {},
       genesTable_size: pageSize,
       genesTable_offset: offset,
       score: "case.project.project_id",

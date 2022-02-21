@@ -65,12 +65,8 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
   } ,[data, isSuccess]);
 
   useEffect(() => {
-    /**
-     * Logic here: if the facet never sets a filter then return,
-     * if a filter was added: update, if all are removed: remove the filter from the cohort
-     */
-    updateEnumFilters(coreDispatch, selectedEnums, field);
-  }, [selectedEnums]);
+    updateEnumFilters(coreDispatch, selectedEnums, field, `${type}.`);
+  }, [ coreDispatch, selectedEnums, field, type] );
 
   const maxValuesToDisplay = 6;
   const total = visibleItems;
@@ -159,6 +155,7 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
 
                 <div className={cardStyle}>
                   {
+
                     isSuccess ?
                       Object.entries(data).filter(data => data[0] != "_missing").sort(isSortedByValue ? ([, a], [, b]) => b - a : ([a], [b]) => a.localeCompare(b),
                       ).map(([value, count], i) => {
@@ -168,7 +165,7 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                             <div className="flex-none">
                               <input type="checkbox" value={value} onChange={handleChange}
                                      className="bg-nci-cyan-lightest hover:bg-nci-cyan-darkest text-nci-cyan-darkest"
-                                     checked={selectedEnums && selectedEnums.includes(value)} />
+                                     checked={!!(selectedEnums && selectedEnums.includes(value))} />
                             </div>
                             <div className="flex-grow truncate ... font-heading text-md pt-0.5">{value}</div>
                             <div className="flex-none text-right w-14 ">{count.toLocaleString()}</div>

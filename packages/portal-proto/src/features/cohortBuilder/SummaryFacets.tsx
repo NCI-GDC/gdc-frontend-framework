@@ -1,5 +1,4 @@
-
-import { Facet } from "../facets/Facet";
+import { EnumFacet } from "../facets/EnumFacet";
 
 
 interface SummaryFacetProps {
@@ -12,8 +11,8 @@ export const SummaryFacets: React.FC<SummaryFacetProps> =  ({ fields } :  Summar
       <div
         className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4">
         {fields.map((name, index) => {
-          return (<Facet
-            field={name}
+          return (<EnumFacet
+            field={name} type={"cases"}
             showSearch={false}
             startShowingData={false}
             key={`summary-chart-${index}`}

@@ -1,4 +1,5 @@
-import { Facet, FacetProps } from "../facets/Facet";
+import {  FacetProps } from "../facets/Facet";
+import { EnumFacet} from "../facets/EnumFacet";
 import { Tab, TabProps, TabList, TabPanel, Tabs } from "react-tabs";
 import { useState } from "react";
 import Select from "react-select";
@@ -16,7 +17,10 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({ facetNames }: FacetGroup
       <ResponsiveMasonry columnsCountBreakPoints={{ 350: 2, 750: 3, 900: 4, 1400: 5, 2200: 6 }}>
         <Masonry gutter="0.5em">
           {facetNames.map((x, index) => {
-            return (<Facet key={`${x.facet_filter}-${index}`} field={`${x.facet_filter}`} facetName={x.name}
+            return (<EnumFacet key={`${x.facet_filter}-${index}`}
+                               type="cases"
+                               field={`${x.facet_filter}`}
+                               facetName={x.name}
                            description={x.description}
             />);
           })

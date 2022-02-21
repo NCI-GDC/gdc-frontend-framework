@@ -3,9 +3,6 @@ import { SurvivalPlot } from "../charts/SurvivalPlot";
 import GenesTable from "./GenesTable";
 import MutationsTable from "./MutationsTable";
 import { Tabs } from '@mantine/core';
-import { MdInsertChartOutlined as SummaryChartIcon } from "react-icons/md";
-import SomanticMutationFilterFixedVersion from "../genomic/SomanticMutationFilter"
-import MutationFacet from "../cohortBuilder/MutationFacet";
 import { EnumFacet } from "../facets/EnumFacet";
 
 const GenesFacetNames = [
@@ -21,6 +18,34 @@ const GenesFacetNames = [
   }
 ];
 
+const MutationFacetNames = [
+  {
+    facet_filter: "consequence__transcript__annotation__vep_impact",
+    name: "VEP Impact",
+    description: "No description",
+  },
+  {
+    facet_filter: "consequence__transcript__annotation__sift_impact",
+    name: "SIFT Impact",
+    description: "No description",
+  },
+  {
+    facet_filter: "consequence__transcript__annotation__polyphen_impact",
+    name: "Polyphen Impact",
+    description: "No description",
+  },
+  {
+    facet_filter: "consequence__transcript__consequence_type",
+    name: "Consequence Type",
+    description: "No description",
+  },
+  {
+    facet_filter: "mutation_subtype",
+    name: "Type",
+    description: "No description",
+  }
+];
+
 
 const SideBySideCharts : React.FC = () => {
   return (
@@ -29,7 +54,7 @@ const SideBySideCharts : React.FC = () => {
       <GeneFrequencyChart />
     </div>
     <div className="w-1/2">
-      <SurvivalPlot  marginBottom={30}></SurvivalPlot>
+      <SurvivalPlot/>
     </div>
   </div>
     );
@@ -56,16 +81,30 @@ const MutationFrequency: React.FC = () => {
               </div>
               <div className="flex flex-col">
                   <SideBySideCharts />
-                  <GenesTable ></GenesTable>
+                  <GenesTable />
               </div>
             </div>
           </Tabs.Tab>
           <Tabs.Tab label="Mutations">
-            <div className="flex flex-col">
+            <div className="flex flex-row">
+              <div className="flex flex-col gap-y-4 mr-3">
+                {MutationFacetNames.map((x, index) => {
+                  return (<EnumFacet key={`${x.facet_filter}-${index}`}
+                                     field={`${x.facet_filter}`}
+                                     facetName={x.name}
+                                     type="ssms"
+                                     showPercent={false}
+                                     valueLabel="Mutations"
+                                     description={x.description}
+                  />);
+                })
+                }
+              </div>
 
-              <SurvivalPlot  marginBottom={30}></SurvivalPlot>
-
+              <div className="flex flex-col">
+              <SurvivalPlot />
               <MutationsTable />
+            </div>
             </div>
           </Tabs.Tab>
         </Tabs>

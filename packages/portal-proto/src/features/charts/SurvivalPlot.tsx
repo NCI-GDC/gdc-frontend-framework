@@ -102,7 +102,7 @@ const buildLegend = (data, name) => {
 }
 
 
-export const SurvivalPlot = (showTitle = true) => {
+export const SurvivalPlot = () => {
   const { data, error, isUninitialized, isFetching, isError } =
     useSurvivalPlot();
   // handle the current range of the xAxis set to underfined to reset

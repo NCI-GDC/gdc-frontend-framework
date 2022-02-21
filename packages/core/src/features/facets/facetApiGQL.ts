@@ -6,7 +6,7 @@ export const normalizeGQLFacetName = (x:string) => x.replaceAll('__', '.')
 
 export const buildGraphGLBucketQuery = ( what: string, facetName: string, type = "explore" ) : string => {
   const queryGQL = `
-  query ExploreCasesPies($filters_0: FiltersArgument!) {
+  query QueryBucketCounts($filters_0: FiltersArgument!) {
       viewer {
           ${type} {
             ${what} {
@@ -14,7 +14,7 @@ export const buildGraphGLBucketQuery = ( what: string, facetName: string, type =
                 filters: $filters_0
                 aggregations_filter_themselves: false
               ) {
-                ${facetName} {
+                ${convertFacetNameToGQL(facetName)} {
                   buckets {
                     doc_count
                     key

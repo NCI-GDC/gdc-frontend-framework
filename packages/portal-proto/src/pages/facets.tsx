@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 import { SimpleLayout } from "../features/layout/Simple";
-import { Facet } from "../features/facets/Facet";
+import { EnumFacet } from "../features/facets/EnumFacet";
 
 const FacetsPage: NextPage = () => {
   /*
@@ -18,8 +18,7 @@ const FacetsPage: NextPage = () => {
     <SimpleLayout>
       <div className="flex flex-col content-center">
         <div className="grid grid-cols-3 gap-4">
-          <Facet field="diagnoses.age_at_diagnosis" />
-
+          <EnumFacet type="cases" field="primary_site" />
         </div>
       </div>
     </SimpleLayout>
