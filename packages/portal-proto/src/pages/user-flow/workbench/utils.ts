@@ -8,11 +8,11 @@ export interface AppRegistrationEntry {
   readonly description?: string;
 }
 
-const descendingOrd = (array, param) => {
+const descendingOrd = (array) => {
   return array.sort((a, b) => {
-    if (a[param] < b[param]) {
+    if (a < b) {
       return -1
-    } else if (a[param] > b[param]) {
+    } else if (a > b) {
       return 1
     } else {
       return 0
@@ -20,11 +20,11 @@ const descendingOrd = (array, param) => {
   })
 }
 
-const ascendingOrd = (array, param) => {
+const ascendingOrd = (array) => {
   return array.sort((a, b) => {
-    if (b[param] < a[param]) {
+    if (b < a) {
       return -1
-    } else if (b[param] > a[param]) {
+    } else if (b > a) {
       return 1
     } else {
       return 0
@@ -32,7 +32,7 @@ const ascendingOrd = (array, param) => {
   })
 }
 
-export const sortAlphabetically = (array, direction, category) => {
-  return direction === "a-z" ? descendingOrd(array, category) : ascendingOrd(array, category)
+export const sortAlphabetically = (array, direction ) => {
+  return direction === "a-z" ? descendingOrd(array) : ascendingOrd(array)
 }
 

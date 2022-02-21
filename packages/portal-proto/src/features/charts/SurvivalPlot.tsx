@@ -2,6 +2,10 @@ import { useState } from "react";
 import {
   useSurvivalPlot,
   Survival,
+  useCoreDispatch,
+  useCoreSelector,
+  selectCurrentCohortFilters,
+  fetchSurvival, selectSurvivalData
 } from "@gff/core";
 import { useEffect, useRef } from "react";
 import { renderPlot } from '@oncojs/survivalplot';
@@ -9,6 +13,7 @@ import {
   MdDownload as DownloadIcon,
   MdRestartAlt as ResetIcon,
 } from "react-icons/md";
+import { SurvivalState } from "@gff/core/dist/dts";
 // import wrapSvg from "./wrapSVG"; //TODO: add this function
 
 
@@ -41,6 +46,8 @@ export const MAXIMUM_CURVES = 5;
 export const useSurvival = (data, xDomain, setXDomain) => {
   const ref =useRef();
 
+  console.log(data);
+
   useEffect(() => {
     ref.current ?
     renderPlot({
@@ -65,7 +72,7 @@ export const useSurvival = (data, xDomain, setXDomain) => {
       ),
       }
     ) : null;
-  }, [data, xDomain]);
+  }, [data, xDomain, setXDomain]);
   return ref;
 }
 
@@ -101,26 +108,44 @@ const buildLegend = (data, name) => {
   return legend;
 }
 
+interface SurvivalResponse {
+  readonly data?: SurvivalState;
+  readonly error?: string;
+  readonly isUninitialized: boolean;
+  readonly isFetching: boolean;
+  readonly isSuccess: boolean;
+  readonly isError: boolean;
+}
+
+const useSurvivalChart = (): SurvivalResponse => {
+  const coreDispatch = useCoreDispatch();
+  const chartData = useCoreSelector((state) => selectSurvivalData(state));
+  const cohortFilters = useCoreSelector((state) => selectCurrentCohortFilters(state));
+
+  useEffect(() => {
+    coreDispatch(fetchSurvival());
+  }, [coreDispatch, cohortFilters]);
+  return {
+    data: { ...chartData?.data },
+    error: chartData?.error,
+    isUninitialized: chartData === undefined,
+    isFetching: chartData?.status === "pending",
+    isSuccess: chartData?.status === "fulfilled",
+    isError: chartData?.status === "rejected",
+  };
+};
+
 
 export const SurvivalPlot = () => {
-  const { data, error, isUninitialized, isFetching, isError } =
+  const { data,  isSuccess } =
     useSurvivalPlot();
-  // handle the current range of the xAxis set to underfined to reset
+  // handle the current range of the xAxis set to undefined to reset
   const [xDomain, setXDomain] = useState(undefined);
   // hook to call renderSurvivalPlot
   const container = useSurvival(data, xDomain, setXDomain);
 
-  if (isUninitialized) {
-    return <div>Initializing facet...</div>;
-  }
-
-  if (isFetching) {
-    return <div>Fetching facet...</div>;
-  }
-
-  if (isError) {
-    return <div>Failed to fetch facet: {error}</div>;
-  }
+  if (!isSuccess)
+    return <div>Loading</div>
 
   const legend = buildLegend(data, "Explorer")
   return (<div className="flex flex-col bg-white ">

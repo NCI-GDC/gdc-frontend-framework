@@ -1,7 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CoreDataSelectorResponse, createUseCoreDataHook, DataStatus } from "../../dataAcess";
+import {
+  CoreDataSelectorResponse,
+  createUseFiltersCoreDataHook,
+  DataStatus,
+} from "../../dataAcess";
 import { CoreDispatch, CoreState } from "../../store";
 import { buildFetchError, GdcApiRequest } from "../gdcapi/gdcapi";
+import { selectCurrentCohortGqlFilters, selectCurrentCohortFilters } from "../cohort/cohortFilterSlice";
+
+
 
 export const MINIMUM_CASES = 10;
 export const MAXIMUM_CURVES = 5;
@@ -41,17 +48,14 @@ const initialState: SurvivalState = {
 };
 
 export const fetchSurvivalAnalysis = async (
-  request?: GdcApiRequest,
+  request: GdcApiRequest,
 ): Promise<SurvivalApiResponse> => {
-  const res = await fetch(`https://api.gdc.cancer.gov/analysis/survival`, {
-    method: "POST",
+  const parameters = request.filters ? `?filters=${encodeURIComponent(JSON.stringify(request.filters))}` : "";
+  const res = await fetch(`https://api.gdc.cancer.gov/analysis/survival${parameters}`, {
+    method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      ...request,
-      fields: request?.fields?.join(","),
-    }),
   });
   if (res.ok) {
     return res.json();
@@ -63,16 +67,16 @@ export const fetchSurvivalAnalysis = async (
 
 export const fetchSurvival = createAsyncThunk <
   SurvivalApiResponse,
-  GdcApiRequest,
+  void,
   { dispatch: CoreDispatch; state: CoreState }
   >
 (
   "analysis/survivalData",
-  async (request?: GdcApiRequest) => {
-    return fetchSurvivalAnalysis(request);
+  async (_: void, thunkAPI) => {
+    const filters = selectCurrentCohortGqlFilters(thunkAPI.getState());
+    return fetchSurvivalAnalysis({  filters: filters });
   },
 );
-
 
 const slice = createSlice({
   name: "analysis/survival",
@@ -88,12 +92,8 @@ const slice = createSlice({
           state.error = response.warnings.facets;
         } else {
           if (response.results) {
-
-
-
             // build the legend string
             // while this could be done the component
-
             state.survivalData = response.results.map(r => ({
               ...r,
               donors: r.donors.map(d => ({
@@ -138,4 +138,8 @@ export const selectSurvivalData = (
   };
 };
 
-export const useSurvivalPlot = createUseCoreDataHook(fetchSurvival, selectSurvivalData);
+/**
+ * Trying out a possible way to create a hook that
+ * handles when the filters are updated
+ */
+export const useSurvivalPlot = createUseFiltersCoreDataHook(fetchSurvival, selectSurvivalData, selectCurrentCohortFilters);

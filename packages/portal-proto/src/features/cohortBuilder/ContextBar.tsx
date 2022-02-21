@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { CollapsibleContainer } from "../../components/CollapsibleContainer";
-import { Tabs } from '@mantine/core';
+import { Button, Tabs } from '@mantine/core';
 import { ContextualCasesView } from "../cases/CasesView";
+import CountButton from "./CountButton";
 import { CohortGroupProps,
   CohortBar,
   convertFilterToComponent,
@@ -9,6 +10,7 @@ import { CohortGroupProps,
 } from "./CohortGroup";
 
 import {
+  MdDownload as DownloadIcon,
   MdInsertChartOutlined as SummaryChartIcon,
   MdOutlineViewComfy as TableIcon} from "react-icons/md";
 
@@ -32,7 +34,7 @@ import SummaryFacets from "./SummaryFacets";
   const filters = useCohortFacetFilters();
   const CohortBarWithProps = () => <CohortBar cohort_names={cohorts.map(o => o.name)}
                                               onSelectionChanged={handleCohortSelection}
-                                              defaultIdx={currentIndex} case_count={"85415"}
+                                              defaultIdx={currentIndex}
   />;
   return (
     <CollapsibleContainer
@@ -49,6 +51,13 @@ import SummaryFacets from "./SummaryFacets";
             })}
 
         </div>
+        <div className="relative">
+        <div className="absolute z-20 ml-2 mt-2 ">
+          <Button className="bg-nci-gray-light hover:bg-nci-gray transition-colors">
+            <DownloadIcon size="1.5rem"/>
+            <CountButton  countName="fileCounts" label="Files" className="px-2"/>
+          </Button>
+        </div>
         <Tabs position="right" variant="pills" >
           <Tabs.Tab label="Summary View" icon={<SummaryChartIcon size="1.5rem"/>}>
             <SummaryFacets fields={summaryFields}/>
@@ -58,6 +67,7 @@ import SummaryFacets from "./SummaryFacets";
           </div>
           </Tabs.Tab>
         </Tabs>
+        </div>
       </div>
     </CollapsibleContainer>
   );

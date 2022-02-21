@@ -48,7 +48,7 @@ const SingleAppsPage: NextPage = () => {
 
   return (
     <UserFlowVariedPages
-      {...{ indexPath: "/user-flow/single-page", headerElements }}
+      {...{ indexPath: "/user-flow/workbench", headerElements }}
     >
     <ContextBar cohorts={COHORTS} />
       <AnalysisWorkspace app={app && app.length > 0 ? app.toString() : undefined} />

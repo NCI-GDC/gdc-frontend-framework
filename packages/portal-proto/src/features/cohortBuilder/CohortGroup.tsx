@@ -1,31 +1,29 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { CollapsibleContainer } from "../../components/CollapsibleContainer";
 
-import { Button } from '@mantine/core';
-import { NativeSelect } from '@mantine/core';
+import { Button, NativeSelect } from "@mantine/core";
 import Select from "react-select";
 import {
-  MdClose as ClearIcon,
-  MdSave as SaveIcon,
   MdAdd as AddIcon,
-  MdDelete as DeleteIcon,
-  MdFileUpload as UploadIcon,
-  MdFileDownload as DownloadIcon,
   MdArrowDropDown as DropDownIcon,
+  MdClose as ClearIcon,
+  MdDelete as DeleteIcon,
+  MdFileDownload as DownloadIcon,
+  MdFileUpload as UploadIcon,
+  MdSave as SaveIcon,
 } from "react-icons/md";
 import { nanoid } from "@reduxjs/toolkit";
 import {
-  useCoreDispatch,
-  useCoreSelector,
-  selectCurrentCohortFilters,
-  handleGqlOperation,
-  FilterSet,
   CohortFilter,
   CohortFilterHandler,
   EnumFilter,
-  RangeFilter, removeCohortFilter,
-  useCohortCounts, FacetBuckets, selectCasesFacetByField, fetchFacetByName,
-  selectCohortCountsData, selectCurrentCohortFiltersByName,
+  FilterSet,
+  handleGqlOperation,
+  RangeFilter,
+  removeCohortFilter,
+  selectCurrentCohortFilters,
+  useCoreDispatch,
+  useCoreSelector,
 } from "@gff/core";
 import { convertFieldToName } from "../facets/utils";
 import CountButton from "./CountButton";
@@ -80,15 +78,13 @@ export interface CohortBarProps {
   readonly cohort_names: string[];
   onSelectionChanged: (number) => void;
   defaultIdx: number;
-  case_count: string;
   hide_controls?: boolean;
 }
 
 export const CohortBar: React.FC<CohortBarProps> = ({
                                                cohort_names,
                                                onSelectionChanged,
-                                               defaultIdx,
-                                               case_count = "84,609",
+                                               defaultIdx, 609",
                                                hide_controls = false,
                                              }: CohortBarProps) => {
   const menu_items = cohort_names.map((x, index) => {
@@ -97,8 +93,10 @@ export const CohortBar: React.FC<CohortBarProps> = ({
 
   const [currentCohort, setCurrentCohort] = useState(menu_items[defaultIdx]);
 
+  const buttonStyle = "mx-1 bg-nci-gray-light hover:bg-nci-gray transition-colors";
   return (
     <div className="flex flex-row items-center justify-start pl-4 h-12 shadow-lg bg-nci-gray-lighter rounded-lg rounded-b-none rounded-r-none">
+      <CountButton countName="caseCounts" label="Cases" className="px-2" />
       <div className="border-opacity-0">
         {!hide_controls ?
           <Select
@@ -114,19 +112,17 @@ export const CohortBar: React.FC<CohortBarProps> = ({
               setCurrentCohort(x);
               onSelectionChanged(x.value);
             }}
-            className="border-nci-gray-light w-80 p-0"
+            className="border-nci-gray-light w-80 p-0 z-100"
           /> : <div><h2>{currentCohort.label}</h2></div>
         }
       </div>
       {!hide_controls ?
         <div className="flex flex-row items-center ml-auto">
-          <CountButton countName="caseCounts" label="Cases" className="px-2" />
-          <CountButton countName="fileCounts" label="Files" className="px-2" />
-          <Button className="mx-1 bg-nci-teal-darker"><SaveIcon size="1.5em" /></Button>
-          <Button className="mx-1 bg-nci-teal-darker"><AddIcon size="1.5em" /></Button>
-          <Button className="mx-1 bg-nci-teal-darker"><DeleteIcon size="1.5em" /></Button>
-          <Button className="mx-1 bg-nci-teal-darker"><UploadIcon size="1.5em" /></Button>
-          <Button className="mx-1 bg-nci-teal-darker"><DownloadIcon size="1.5em" /></Button>
+          <Button className={buttonStyle}><SaveIcon size="1.5em" /></Button>
+          <Button className={buttonStyle}><AddIcon size="1.5em" /></Button>
+          <Button className={buttonStyle}><DeleteIcon size="1.5em" /></Button>
+          <Button className={buttonStyle}><UploadIcon size="1.5em" /></Button>
+          <Button className={buttonStyle}><DownloadIcon size="1.5em" /></Button>
         </div> : <div />
       }
     </div>
@@ -221,22 +217,20 @@ const CohortRangeFilterElement: React.FC<RangeFilterProps> = ({ filter }: RangeF
   );
 };
 
-interface CohortCounts {
+interface PersistentCohort {
   readonly name: string,
   readonly facets: Array<Record<string, any>>,
-  readonly case_count: string
 }
 
 export interface CohortGroupProps {
-  readonly cohorts: ReadonlyArray<CohortCounts>;
+  readonly cohorts: ReadonlyArray<PersistentCohort>;
   readonly simpleMode?: boolean;
 }
 
 export const useCohortFacetFilters = (): FilterSet => {
-  const filters: FilterSet = useCoreSelector((state) =>
+  return useCoreSelector((state) =>
     selectCurrentCohortFilters(state),
   );
-  return filters;
 };
 
 class CohortFilterToComponent implements CohortFilterHandler<JSX.Element> {
@@ -260,7 +254,7 @@ export const CohortGroup: React.FC<CohortGroupProps> = ({ cohorts }: CohortGroup
   const filters = useCohortFacetFilters();
   const CohortBarWithProps = () => <CohortBar cohort_names={cohorts.map(o => o.name)}
                                               onSelectionChanged={handleCohortSelection}
-                                              defaultIdx={currentIndex} case_count={"85415"}
+                                              defaultIdx={currentIndex}
                                               />;
     return (
       <CollapsibleContainer

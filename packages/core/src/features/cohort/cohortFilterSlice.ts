@@ -131,6 +131,7 @@ export const { updateCohortFilter, removeCohortFilter, clearCohortFilters } = sl
 export const selectCurrentCohortFilters = (state: CoreState): FilterSet | undefined =>
   state.cohort.currentFilters.currentFilters;
 
+
 /**
  * selectCurrentCohortGqlFilters: returns an object representing the filters in the
  * current cohort. Note that the GraphQL filtere require "cases." or "repository." prepended

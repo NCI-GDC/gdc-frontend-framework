@@ -100,7 +100,7 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
   const numberOfLines = (total - maxValuesToDisplay) < 0 ? total : isGroupExpanded ? 16 : maxValuesToDisplay;
   const chartHeight = [0, 60, 60, 115, 135, 165, 190];
   return (
-      <div className="flex flex-col bg-white relative shadow-lg border-nci-gray-lightest border-1 rounded-b-md ">
+      <div className="flex flex-col bg-white relative shadow-lg border-nci-gray-lightest border-1 rounded-b-md text-xs ">
         <div>
           <div className="flex items-center justify-between flex-wrap bg-nci-cyan-darker shadow-md px-1.5">
 
@@ -161,7 +161,7 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                       ).map(([value, count], i) => {
                         if (!isGroupExpanded && i >= maxValuesToDisplay) return null;
                         return (
-                          <div key={`${field}-${value}`} className="flex flex-row gap-x-1 px-2">
+                          <div key={`${field}-${value}`} className="flex flex-row gap-x-1 px-2 ">
                             <div className="flex-none">
                               <input type="checkbox" value={value} onChange={handleChange}
                                      className="bg-nci-cyan-lightest hover:bg-nci-cyan-darkest text-nci-cyan-darkest"
@@ -170,7 +170,7 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                             <div className="flex-grow truncate ... font-heading text-md pt-0.5">{value}</div>
                             <div className="flex-none text-right w-14 ">{count.toLocaleString()}</div>
                             {showPercent ? <div
-                              className="flex-none text-right w-18 ">({((count / 85415) * 100).toFixed(2).toLocaleString()}%)
+                              className="flex-none text-right w-18 ">({((count as number / 85415) * 100).toFixed(2).toLocaleString()}%)
                             </div> : null
                             }
 
@@ -182,11 +182,9 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                           Array.from(Array(numberOfLines)).map((_, index) => {
                             return (
                               <div key={`${field}-${index}`} className="flex flex-row items-center px-2">
-                                <div className="flex-none">
                                   <input type="checkbox" className="bg-nci-cyan-lightest hover:bg-nci-cyan-darkest text-nci-cyan-darkest"/>
-                                </div>
-                                <div className="flex-grow h-4 align-center justify-center mt-1 ml-1 mr-8 bg-nci-gray-light rounded-b-sm animate-pulse"/>
-                                <div className="flex-none h-4 align-center justify-center mt-1 w-10 bg-nci-gray-light rounded-b-sm animate-pulse"/>
+                                <div className="flex-grow h-3.5 align-center justify-center mt-1 ml-1 mr-8 bg-nci-gray-light rounded-b-sm animate-pulse"/>
+                                <div className="flex-none h-3.5 align-center justify-center mt-1 w-10 bg-nci-gray-light rounded-b-sm animate-pulse"/>
                               </div>);
                           })
                         }

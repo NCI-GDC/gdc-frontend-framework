@@ -42,8 +42,6 @@ interface GenesFrequencyResponse {
   readonly isError: boolean;
 }
 
-
-
 const useGeneFrequencyChart = (): GenesFrequencyResponse => {
   const coreDispatch = useCoreDispatch();
   const chartData = useCoreSelector((state) => selectGeneFrequencyChartData(state));
