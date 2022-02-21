@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Config, Layout, Shape, PlotMouseEvent } from "plotly.js";
 import Plot from "react-plotly.js";
-import { useEffect } from "react";
 
 // Coordinates where circles intersect, calculated with this: https://gist.github.com/jupdike/bfe5eb23d1c395d8a0a1a4ddd94882ac
 const c1c2I = [
