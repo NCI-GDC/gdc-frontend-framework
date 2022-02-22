@@ -7,12 +7,13 @@ import {
 } from "@gff/core";
 import { useEffect, useState } from "react";
 import dynamic from 'next/dynamic'
-import DownloadOptions from './DownloadOptions';
-
 
 const BarChartWithNoSSR = dynamic(() => import('./BarChart'), {
   ssr: false
 })
+const DownloadOptions = dynamic(() => import("./DownloadOptions"), {
+  ssr: false,
+});
 
 const maxValuesToDisplay =7;
 
