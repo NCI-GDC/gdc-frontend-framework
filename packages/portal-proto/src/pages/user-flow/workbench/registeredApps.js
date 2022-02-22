@@ -2,8 +2,6 @@
 export const COHORTS = [
   { name: 'New Custom Cohort',
     facets : [  ],
-    case_count: "84,609",
-    file_count: "618,198"
   },
   { name: 'Current Cohort',
     facets : [ { name:"Primary Site", op:"any of", value: "bronchus and lung"} ],
@@ -48,7 +46,7 @@ export const REGISTERED_APPS = [
     tags: ["generalUtility"],
     hasDemo: false,
     id: "CohortBuilder",
-    description: "Allows users to explore data in the GDC using advanced filters/facets, which includes those on a gene and mutation level."
+    description: "Build and define your custom cohorts using a variety of clinical and biospecimen features."
   },
   {
     name: "Mutations Frequency",
@@ -56,7 +54,7 @@ export const REGISTERED_APPS = [
     tags: ["ssm"],
     hasDemo: false,
     id: "MutationFrequencyApp",
-    description: "Download files"
+    description: "Visualize most frequently mutated genes and most frequent somatic mutations."
   },
   {
     name: "Downloads",
@@ -64,7 +62,7 @@ export const REGISTERED_APPS = [
     tags: ["files"],
     hasDemo: false,
     id: "Downloads",
-    description: "Download files"
+    description: "Browse and download the files associated with your cohort for more sophisticated analysis."
   },
   {
     name: "Cohort Comparison",
@@ -76,16 +74,18 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Gene Expression",
-    icon: "icons/apps/heatMap.svg",
+    icon: "gene-expression.png",
     tags: ["geneExpression"],
     hasDemo: false,
     id: "GeneExpression",
+    description: "Visualize patterns in gene expression in your cohort."
   },
   {
     name: "Set Operations",
     icon: "icons/apps/setOps.svg",
     tags: ["variantAnalysis", "cnv", "ssm"],
     hasDemo: true,
+    description: "Display Venn diagram and find intersection or union, etc. of your cohorts.",
     id: "SetOperations",
   },
   {
@@ -93,7 +93,32 @@ export const REGISTERED_APPS = [
     icon: "oncogrid.png",
     tags: ["variantAnalysis", "cnv", "ssm"],
     hasDemo: false,
+    description: "Visualize the top most mutated cases and genes affected by high impact mutations in your cohort.",
     id: "OncoGrid",
+  },
+  {
+    name: "Sequence Reads",
+    icon: "oncogrid.png",
+    tags: ["sequenceAnalysis"],
+    hasDemo: false,
+    description: "Visualize sequencing reads.",
+    id: "SequenceReads",
+  },
+  {
+    name: "Protein Paint",
+    icon: "oncogrid.png",
+    tags: ["variantAnalysis","ssm" ],
+    hasDemo: false,
+    description:  "Visualize mutations in protein-coding genes.",
+    id: "ProteinPaint",
+  },
+  {
+    name: "sc-RnaSeq",
+    icon: "oncogrid.png",
+    tags: ["geneExpression"],
+    hasDemo: false,
+    description:  "Visualize patterns in single-cell gene expression in your cohort.",
+    id: "SingleCellRnaSeq",
   },
 ];
 

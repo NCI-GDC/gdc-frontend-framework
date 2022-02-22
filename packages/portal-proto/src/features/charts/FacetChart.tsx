@@ -70,6 +70,7 @@ const useCaseFacet = (field: string): UseCaseFacetResponse => {
   return {
     data: facet?.buckets,
     error: facet?.error,
+    enumFilters: facet?.enumFilters,
     isUninitialized: facet === undefined,
     isFetching: facet?.status === "pending",
     isSuccess: facet?.status === "fulfilled",

@@ -102,12 +102,12 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
   return (
       <div className="flex flex-col bg-white relative shadow-lg border-nci-gray-lightest border-1 rounded-b-md text-xs ">
         <div>
-          <div className="flex items-center justify-between flex-wrap bg-nci-cyan-darker shadow-md px-1.5">
+          <div className="flex items-center justify-between flex-wrap bg-nci-gray-lighter shadow-md px-1.5">
 
             <Tooltip label={description}
                      classNames={{
                        arrow: "bg-nci-gray-light",
-                       body: "bg-white text-nci-gray-dark"
+                       body: "bg-white text-nci-gray-darkest"
                      }}
                      position="bottom"
                      placement="start"
@@ -116,20 +116,20 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                      withArrow
                      transition="fade"
                      transitionDuration={200}>
-            <div className="has-tooltip text-nci-gray-lightest font-heading font-medium text-md">{(facetName === null) ? convertFieldToName(field) : facetName}
+            <div className="has-tooltip text-nci-gray font-heading font-semibold text-md">{(facetName === null) ? convertFieldToName(field) : facetName}
              </div>
             </Tooltip>
             <div className="flex flex-row">
               {showSearch ? <button
-                className="hover:bg-grey text-nci-gray-lightest font-bold py-2 px-1 rounded inline-flex items-center"
+                className="hover:bg-nci-grey-darker text-nci-gray font-bold py-2 px-1 rounded inline-flex items-center"
                 onClick={toggleSearch}>
-                <SearchIcon size="1.5em" />
+                <SearchIcon size="1.25em" />
               </button> : null
               }
               {showFlip ? <button
-                className="hover:bg-grey text-nci-gray-lightest font-bold py-2 px-1 rounded inline-flex items-center"
+                className="hover:bg-nci-grey-darker text-nci-gray font-bold py-2 px-1 rounded inline-flex items-center"
                 onClick={toggleFlip}>
-                <FlipIcon size="1.15em" />
+                <FlipIcon size="1.25em" />
               </button> : null
               }
             </div>
@@ -157,7 +157,7 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                   {
 
                     isSuccess ?
-                      Object.entries(data).filter(data => data[0] != "_missing").sort(isSortedByValue ? ([, a], [, b]) => b - a : ([a], [b]) => a.localeCompare(b),
+                      Object.entries(data).filter(data => data[0] != "_missing").sort(isSortedByValue ? ([, a], [, b]) => (b as number) - (a as number) : ([a], [b]) => a.localeCompare(b),
                       ).map(([value, count], i) => {
                         if (!isGroupExpanded && i >= maxValuesToDisplay) return null;
                         return (
@@ -182,7 +182,9 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                           Array.from(Array(numberOfLines)).map((_, index) => {
                             return (
                               <div key={`${field}-${index}`} className="flex flex-row items-center px-2">
+                                <div className="flex-none">
                                   <input type="checkbox" className="bg-nci-cyan-lightest hover:bg-nci-cyan-darkest text-nci-cyan-darkest"/>
+                                </div>
                                 <div className="flex-grow h-3.5 align-center justify-center mt-1 ml-1 mr-8 bg-nci-gray-light rounded-b-sm animate-pulse"/>
                                 <div className="flex-none h-3.5 align-center justify-center mt-1 w-10 bg-nci-gray-light rounded-b-sm animate-pulse"/>
                               </div>);

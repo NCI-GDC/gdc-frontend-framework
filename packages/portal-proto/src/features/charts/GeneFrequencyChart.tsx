@@ -60,8 +60,16 @@ const useGeneFrequencyChart = (): GenesFrequencyResponse => {
   };
 };
 
+interface GeneFrequencyChartProps {
+  readonly height?: number;
+  readonly marginBottom?: number;
+  readonly showXLabels?: boolean;
+  readonly showTitle?: boolean;
+  readonly maxBins?:number;
+  readonly orientation?:string;
+}
 
-export const GeneFrequencyChart = ( height, marginBottom, showXLabels = true, showTitle = true, maxBins = 20, orientation='v') => {
+export const GeneFrequencyChart:React.FC<GeneFrequencyChartProps> = ( { height, marginBottom, showXLabels = true, showTitle = true, maxBins = 20, orientation='v'} : GeneFrequencyChartProps) => {
   const { data, error,  isError, isSuccess } = useGeneFrequencyChart();
 
   if (isError) {
@@ -69,10 +77,10 @@ export const GeneFrequencyChart = ( height, marginBottom, showXLabels = true, sh
   }
 
   if (!isSuccess)
-    return "Loading"
+    return <div>Loading</div>
 
   const chart_data = processChartData(data);
-  return <>
+  return ( <div>
     {showTitle ?
       <div className="flex items-center justify-between bg-white flex-wrap text-montserrat text-nci-gray-dark p-6 p-1.5">
         {"Distribution of Most Frequently Mutated Genes"}
@@ -87,6 +95,6 @@ export const GeneFrequencyChart = ( height, marginBottom, showXLabels = true, sh
     />
 
     </div>
-  </>;
+  </div>)
 };
 

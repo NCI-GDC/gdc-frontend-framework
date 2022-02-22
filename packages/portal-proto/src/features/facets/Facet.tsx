@@ -75,7 +75,7 @@ const useCaseFacet = (field: string): EnumFacetResponse => {
   }, [selectFacetFilter]);
 
   return {
-    data: facet?.buckets,
+    data: facet,
     enumFilters: enumFilters,
     error: facet?.error,
     isUninitialized: facet === undefined,

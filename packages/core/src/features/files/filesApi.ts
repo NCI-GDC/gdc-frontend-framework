@@ -1,4 +1,7 @@
 import { GdcApiResponse } from "../gdcapi/gdcapi";
+import {
+  GqlOperation,
+} from "../gdcapi/filters";
 
 export interface GdcApiFile {
   readonly id: string;
@@ -21,8 +24,9 @@ export interface GdcApiFile {
   readonly experimental_strategy: string;
 }
 
-export const fetchFiles = async (): Promise<GdcApiResponse<GdcApiFile>> => {
-  const response = await fetch("https://api.gdc.cancer.gov/files?size=20");
+export const fetchFiles = async (filters :  GqlOperation | undefined): Promise<GdcApiResponse<GdcApiFile>> => {
+  const parameters = filters ? `&filters=${encodeURIComponent(JSON.stringify(filters))}` : "";
+  const response = await fetch(`https://api.gdc.cancer.gov/files?size=20${parameters}`);
   if (response.ok) {
     return response.json();
   }

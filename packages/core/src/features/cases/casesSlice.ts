@@ -21,13 +21,12 @@ const initialState: CasesState = {
  * The requests argument may go away as the contextual data model is built out.
  */
 export const fetchCases = createAsyncThunk<
-  GdcApiResponse<Record<string, unknown>>,
+  GdcApiResponse<CaseDefaults>,
   GdcApiRequest,
   { dispatch: CoreDispatch; state: CoreState }
   > (
   "cases/fetchCases",
   async (request?: GdcApiRequest) => {
-    console.log("fetchCases: ", request);
     return fetchGdcCases(request);
   },
 );

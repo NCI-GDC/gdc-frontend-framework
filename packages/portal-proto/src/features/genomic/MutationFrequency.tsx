@@ -51,7 +51,7 @@ const SideBySideCharts : React.FC = () => {
   return (
   <div className="flex flex-row justify-items-end">
     <div className="w-1/2 ">
-      <GeneFrequencyChart />
+      <GeneFrequencyChart marginBottom={100} />
     </div>
     <div className="w-1/2">
       <SurvivalPlot/>

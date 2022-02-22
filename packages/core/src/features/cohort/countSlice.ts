@@ -18,6 +18,7 @@ const initialState: CountsState = {
     fileCounts: -1,
     genesCounts: -1,
     mutationCounts: -1,
+    casesMax: -1
   },
   status: "uninitialized",
 };
@@ -93,6 +94,7 @@ const slice = createSlice({
             mutationCounts : response.data.viewer.explore.ssms.hits.total,
             fileCounts : response.data.viewer.repository.files.hits.total,
             repositoryCaseCounts : response.data.viewer.repository.cases.hits.total,
+            casesMax: Math.max(response.data.viewer.explore.cases.hits.total, response.data.viewer.repository.cases.hits.total )
           };
           state.status = "fulfilled";
           state.error = undefined;

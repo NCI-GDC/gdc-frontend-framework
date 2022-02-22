@@ -18,10 +18,10 @@ const FullCohortBuilder: React.FC<CohortGroupProps> = ( { cohorts, simpleMode = 
   ]);
   return (
    <div  className="bg-white">
-      <CohortGroup cohorts={cohorts} simpleMode={simpleMode}></CohortGroup>
-      <MetaSearch onChange={(r) => setSearchResults(r)}></MetaSearch>
+      <CohortGroup cohorts={cohorts} simpleMode={simpleMode}/>
+      <MetaSearch onChange={(r) => setSearchResults(r)}/>
       <SummaryCharts fields={summaryFields} />
-      <CohortTabbedFacets  searchResults={searchResults}></CohortTabbedFacets>
+      <CohortTabbedFacets />
 
     </div>
   );

@@ -3,6 +3,7 @@ import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPage
 import Image from "next/image";
 import Link from "next/link";
 import { headerElements } from "./navigation-utils";
+import { Tooltip } from "@mantine/core";
 
 interface SummaryStatsItemProp {
   readonly title: string;
@@ -46,36 +47,54 @@ const SummaryStatsPanel = () => {
 }
 
 const ActionButtonBar = () => {
+
+  const buttonStyle = "bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md transition-colors"
   return (
-    <div className="flex flex-grow flex-row align-center pb-4 text-sm ">
-      <Link key="CohortBuilder" href={{
-        pathname: "/user-flow/workbench/analysis_page",
-        query: { app: 'CohortBuilder' },
-      }}>
-      <button
-        className="text-sm bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest hover:text-white font-bold mx-4 p-2 rounded inline-flex flex-nowrap items-center shadow-md">
-        <Image src={"/user-flow/icons/build.svg"} width={32} height={32}/>
-        <span className="px-2 whitespace-nowrap">Cohort Builder</span>
-      </button>
-      </Link>
-      <Link key="Analysis" href={{
-        pathname: "/user-flow/workbench/analysis_page",
-        query: { app: undefined },
-      }}>
-      <button
-        className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md ">
-        <Image src={"/user-flow/icons/dna.svg"} width={32} height={32}/> <span className="px-2">Analyze</span>
-      </button>
-      </Link>
-      <Link key="Repository" href={{
-        pathname: "/user-flow/workbench/analysis_page",
-        query: { app: "Downloads" },
-      }}>
-      <button
-        className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md ">
-        <Image src={"/user-flow/icons/database.svg"} width={32} height={32}/> <span className="px-2"> Download </span>
-      </button>
-      </Link>
+
+    <div className="flex flex-col p-4 rounded-md justify-center align-center pb-4 text-sm ">
+      <div className="flex flex-grow flex-row justify-center pb-4 text-sm ">
+        <Link key="Analysis" href={{
+          pathname: "/user-flow/workbench/analysis_page",
+          query: { app: undefined },
+        }}>
+          <button
+            className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md ">
+            <Image src={"/user-flow/icons/dna.svg"} width={42} height={42} /> <span
+            className="px-2">Research Workbench</span>
+          </button>
+        </Link>
+      </div>
+      <div className="flex flex-grow flex-row justify-center  align-center pb-4 text-sm ">
+        <Link key="Studies" href={{
+          pathname: "/user-flow/workbench/analysis_page",
+          query: { app: "Studies" },
+        }}>
+          <button
+            className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md ">
+            <Image src={"/user-flow/icons/crowd-of-users.svg"} width={36} height={36} /> <span> </span>
+          </button>
+        </Link>
+        <Link key="CohortBuilder" href={{
+          pathname: "/user-flow/workbench/analysis_page",
+          query: { app: "CohortBuilder" },
+        }}>
+          <button
+            className="text-sm bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest hover:text-white font-bold mx-4 p-2 rounded inline-flex flex-nowrap items-center shadow-md">
+            <Image src={"/user-flow/icons/build.svg"} width={36} height={36} />
+            <span></span>
+          </button>
+        </Link>
+
+        <Link key="Repository" href={{
+          pathname: "/user-flow/workbench/analysis_page",
+          query: { app: "Downloads" },
+        }}>
+          <button
+            className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md ">
+            <Image src={"/user-flow/icons/database.svg"} width={36} height={36} /> <span> </span>
+          </button>
+        </Link>
+      </div>
     </div>
   )
 }
@@ -85,13 +104,17 @@ const IndexPage: NextPage = () => {
     <UserFlowVariedPages
       {...{ indexPath: "/user-flow/single-page", headerElements }}
     >
-      <div className="flex flex-col w-100 h-100 bg-gradient-to-r from-nci-gray-light  to-nci-gray">
-        <div className="flex flex-row mb-auto">
-          <div className="flex flex-col pl-10">
-            <div className="flex flex-col w-100">
-              <div className="font-heading text-nci-gray-lightest text-md pt-5 pb-2">Harmonized Cancer Datasets</div>
-              <div className="font-heading text-nci-gray-lightest text-2xl pb-5">Genomic Data Commons Data Portal</div>
-              <ActionButtonBar ></ActionButtonBar>
+      <div className="flex flex-col w-100 h-100 bg-gradient-to-r from-nci-gray-lightest  to-nci-gray-lighter">
+        <div className="flex flex-row ">
+          <div className="flex flex-col w-1/2 pl-10">
+            <div className="flex flex-col w-100 bg-nci-gray p-4 rounded-md shadow-lg mt-2  ">
+              <div className="font-montserrat text-nci-gray-lightest text-md pt-5 pb-2">Harmonized Cancer Datasets</div>
+              <div className="font-montserrat text-nci-gray-lightest text-2xl pb-5">Genomic Data Commons Data Portal
+              </div>
+            </div>
+            <div className="flex flex-row">
+              <div className="flex-auto w-36 m-4 p-4 items-center font-montserrat text-nci-gray-darkest bg-nci-gray-lighter">A repository and knowledge base for cancer researchers who need to understand cancer, its clinical progression, and response to therapy.</div>
+              <ActionButtonBar></ActionButtonBar>
             </div>
             <div className="flex items-center w-100 pb-5">
               <div className="w-full"><input type="text"

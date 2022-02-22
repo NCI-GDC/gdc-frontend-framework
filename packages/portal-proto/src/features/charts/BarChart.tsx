@@ -38,12 +38,7 @@ const chartData = {
     bargap: 0.50,
   };
 const vertical_layout: Partial<Layout> = {
-    uniformtext: {
-      mode: 'show',
-      minsize: 10
-    },
     xaxis: {
-      tickson: "labels",
       automargin: false,
       ticks:"outside",
       tickwidth:2,
@@ -87,10 +82,6 @@ const vertical_layout: Partial<Layout> = {
   // vertical_layout.autosize = true;
 
   const horizontal_layout: Partial<Layout> = {
-    uniformtext: {
-      mode: 'show',
-      minsize: 10
-    },
     yaxis: {
       automargin: false,
       ticks:"outside",
@@ -126,6 +117,8 @@ const vertical_layout: Partial<Layout> = {
       pad: padding
     },
 
+    width: undefined,
+    height: undefined,
     autosize:true,
   };
 
@@ -139,7 +132,7 @@ const vertical_layout: Partial<Layout> = {
           layout={ orientation==='v' ? vertical_layout : horizontal_layout }
           config={config}
           useResizeHandler={true}
-          style={{width: "100", height: "99%"}}/>
+          style={{width: "100%", height: "99%"}}/>
 );
 
 };

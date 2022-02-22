@@ -1,28 +1,45 @@
 import React from "react";
 import Image from "next/image";
-import { AppRegistrationEntry } from "./utils"
-import { Button, Card, Group, Badge } from '@mantine/core';
+import { AppRegistrationEntry } from "./utils";
+import { Badge, Button, Card, Group, Tooltip } from "@mantine/core";
 
 export interface AnalysisCardProps extends AppRegistrationEntry {
   applicable: boolean;
   readonly onClick?: (x) => void;
 }
 
-const AnalysisCard : React.FC<AnalysisCardProps> = ( entry: AnalysisCardProps ) => {
+const AnalysisCard: React.FC<AnalysisCardProps> = (entry: AnalysisCardProps) => {
   return (
-    <Card shadow="sm" padding="md">
+    <Card shadow="sm" padding="md" className="bg-white hover:bg-nci-gray-lightest">
       <Group position="center" direction="column">
-      <Card.Section>
-      <div className="font-heading text-lg mb-2">{entry.name}</div>
-      <button onClick={() => entry.onClick(entry)} >
-        <div className="flex flex-row items-center">
-            <Image
-              className="m-auto"
-              src={`/user-flow/${entry.icon}`}
-              height="64" width="64"
-            />
-        </div>
-      </button>
+        <Card.Section>
+          <Tooltip
+            label={entry.description}
+            classNames={{
+              wrapper: "shadow-lg",
+              body: "shadow-lg bg-white text-nci-gray-darkest"
+            }}
+            position="right"
+            placement="start"
+            wrapLines
+            width={220}
+          >
+
+          <div className="flex flex-col items-center">
+
+            <div className="font-heading text-lg mb-2">{entry.name}</div>
+
+            <button onClick={() => entry.onClick(entry)}>
+
+              <Image
+                className="m-auto"
+                src={`/user-flow/${entry.icon}`}
+                height="64" width="64"
+              />
+            </button>
+
+          </div>
+          </Tooltip>
       </Card.Section>
       <div className="flex-auto">
          <Badge  size="sm"># Cases</Badge>

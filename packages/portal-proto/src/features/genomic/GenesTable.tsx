@@ -4,7 +4,7 @@ import {
   useCoreDispatch,
   fetchGenesTable,
   GDCGenesTable,
-  selectGenesTableData, FilterSet, selectCurrentCohortFilters,
+  selectGenesTableData, selectCurrentCohortFilters,
 } from "@gff/core";
 import { Pagination, Select, Table, Checkbox } from "@mantine/core";
 
@@ -104,7 +104,6 @@ const GenesTableSimple: React.FC<GDCGenesTable> = ({ genes,
                                                      cnvCases,
                                                      mutationCounts} : GDCGenesTable) => {
 
-  const handleGenesSelected = (c) => {};
 
   return (
     <Table verticalSpacing={5} striped highlightOnHover >
@@ -126,7 +125,7 @@ const GenesTableSimple: React.FC<GDCGenesTable> = ({ genes,
         genes?.map((x, i) => (
         <tr key={x.id} >
           <td className="px-2 break-all">
-            <Checkbox onClick={() => handleGenesSelected(x)} label={x.symbol}/>
+            <Checkbox label={x.symbol}/>
           </td>
           <td className="px-2">{x.name}</td>
           <td className="px-2"> {x.numCases} / {filteredCases}</td>

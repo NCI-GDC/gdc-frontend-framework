@@ -70,8 +70,8 @@ const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : Analys
               appTags.map((x) => <Chip key={x.value} value={x.value}>{x.name}</Chip>)
             }
           </Chips>
-          <div className="flex flex-row items-center ml-8 mb-1.5">
-            <button className="bg-nci-gray-lighter h-6 rounded-full hover:bg-nci-gray" onClick={()=>setActiveTags([])}>
+          <div className="flex flex-row items-end ml-8 mb-1.5">
+            <button className="bg-nci-gray-lighter h-6 rounded-full hover:bg-nci-gray mb-2 " onClick={()=>setActiveTags([])}>
               <Clear size="1.5rem" />
             </button>
             <Select data={sortOptions} className="ml-4"

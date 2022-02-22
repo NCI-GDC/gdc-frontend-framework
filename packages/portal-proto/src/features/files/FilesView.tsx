@@ -1,9 +1,11 @@
-import { GdcFile, useFiles } from "@gff/core";
+import { GdcFile, useFilteredFiles } from "@gff/core";
 import { Table, Button, Select, Pagination } from "@mantine/core";
 import fileSize from "filesize";
 import {
   MdLock as LockedIcon,
-  MdLockOpen as OpenIcon
+  MdLockOpen as OpenIcon,
+  MdDownload as DownloadIcon,
+  MdShoppingCart as CartIcon,
 } from "react-icons/md";
 import { useState } from "react";
 import { EnumFacet } from "../facets/EnumFacet";
@@ -50,14 +52,18 @@ const FileFacetNames = [
   },
 ];
 
+const buttonStyle = "mx-1 bg-nci-gray-light hover:bg-nci-gray transition-colors";
+
 export const ContextualFilesView: React.FC<ContextualFilesViewProps> = ({
   handleFileSelected,
 }: ContextualFilesViewProps) => {
-  const { data } = useFiles();
+  const { data } = useFilteredFiles();
   return (
     <div className="flex flex-col mt-4 ">
-    <div className="flex flex-row m-2">
-      <Button className="bg-nci-gray-light">Download Manifest</Button>
+    <div className="flex flex-row justify-end m-2">
+      <Button className={buttonStyle}><CartIcon size={"1.5rem"}/>Add All Files to Cart</Button>
+      <Button className={buttonStyle}><DownloadIcon size={"1.5rem"}/>Manifest</Button>
+      <Button className={buttonStyle}>View Images</Button>
     </div>
     <div className="flex flex-row mx-3">
       <div className="flex flex-col gap-y-4 mr-3">
@@ -100,16 +106,16 @@ export const FilesView: React.FC<FilesViewProps> = ({
 
       <Table verticalSpacing="xs" striped highlightOnHover>
         <thead>
-          <tr className="bg-nci-gray text-white text-md text-montserrat border border-nci-gray-light">
+          <tr className="bg-nci-gray-light text-white text-md text-montserrat border border-nci-gray-light">
             <th className="px-2">
               <input type="checkbox" />
             </th>
-            <th className="px-2">File</th>
-            <th className="px-2">Access</th>
-            <th className="px-2">Experimental Strategy</th>
-            <th className="px-2">Data Category</th>
-            <th className="px-2">Data Format</th>
-            <th className="px-2">File Size</th>
+            <th className="px-2 th-nci-gray-lightest" style={{color: "#FFFFFF"}} >File</th>
+            <th className="px-2 " style={{color: "#FFFFFF"}} >Access</th>
+            <th className="px-2" style={{color: "#FFFFFF"}} >Experimental Strategy</th>
+            <th className="px-2" style={{color: "#FFFFFF"}} >Data Category</th>
+            <th className="px-2" style={{color: "#FFFFFF"}} >Data Format</th>
+            <th className="px-2" style={{color: "#FFFFFF"}} >File Size</th>
           </tr>
         </thead>
         <tbody>

@@ -70,6 +70,8 @@ const FacetTabWithSubmenu: React.FC<FacetTabWithSubmenuProps> = ({
     onSubcategoryChange(category, x.label);
   };
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   return <Tab {...otherProps} >
     <div className="flex flex-row items-center justify-center ">
       {category}
@@ -87,6 +89,8 @@ const FacetTabWithSubmenu: React.FC<FacetTabWithSubmenuProps> = ({
 
 };
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 FacetTabWithSubmenu.tabsRole = "Tab";
 
 interface CohortTabbedFacetsProps {

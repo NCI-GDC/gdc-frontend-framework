@@ -13,7 +13,8 @@ interface UserFlowVariedPagesProps {
 import {
   MdOutlineLogin as LoginIcon,
   MdShoppingCart as CartIcon,
-  MdApps as AppsIcon
+  MdApps as AppsIcon,
+  MdSearch as SearchIcon,
 } from "react-icons/md";
 
 export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
@@ -79,7 +80,9 @@ const Header: React.FC<HeaderProps> = ({
         <div className="w-64">
           <Options />
         </div>
+
         <div className="flex flex-row flex-nowrap">
+          <div className={"flex flex-row   opacity-60 hover:opacity-100 transition-opacity items-center mx-2 "}><SearchIcon size="24px" /> </div>
           <div className={"flex flex-row opacity-60 hover:opacity-100 transition-opacity items-center mx-2 "}><LoginIcon size="24px" /> Login </div>
           <div className={"flex flex-row opacity-60 hover:opacity-100 transition-opacity  items-center mx-2"}><CartIcon size="24px" /> Cart </div>
           <div className={"flex flex-row opacity-60 hover:opacity-100 transition-opacity  items-center mx-2"}><AppsIcon size="24px" /> </div>

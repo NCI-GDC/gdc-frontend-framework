@@ -84,7 +84,7 @@ export interface CohortBarProps {
 export const CohortBar: React.FC<CohortBarProps> = ({
                                                cohort_names,
                                                onSelectionChanged,
-                                               defaultIdx, 609",
+                                               defaultIdx,
                                                hide_controls = false,
                                              }: CohortBarProps) => {
   const menu_items = cohort_names.map((x, index) => {
@@ -96,7 +96,7 @@ export const CohortBar: React.FC<CohortBarProps> = ({
   const buttonStyle = "mx-1 bg-nci-gray-light hover:bg-nci-gray transition-colors";
   return (
     <div className="flex flex-row items-center justify-start pl-4 h-12 shadow-lg bg-nci-gray-lighter rounded-lg rounded-b-none rounded-r-none">
-      <CountButton countName="caseCounts" label="Cases" className="px-2" />
+      <CountButton countName="casesMax" label="Cases" className="px-2 ml-20 " />
       <div className="border-opacity-0">
         {!hide_controls ?
           <Select
@@ -112,7 +112,7 @@ export const CohortBar: React.FC<CohortBarProps> = ({
               setCurrentCohort(x);
               onSelectionChanged(x.value);
             }}
-            className="border-nci-gray-light w-80 p-0 z-100"
+            className="border-nci-gray-light w-80 p-0"
           /> : <div><h2>{currentCohort.label}</h2></div>
         }
       </div>

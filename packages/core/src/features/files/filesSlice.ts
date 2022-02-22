@@ -1,7 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { CoreDataSelectorResponse, DataStatus } from "../../dataAcess";
-import { CoreState } from "../../store";
+import { CoreDispatch, CoreState } from "../../store";
 import * as filesApi from "./filesApi";
+import { selectCurrentCohortGqlFilters } from "../cohort/cohortFilterSlice";
+import { GdcApiResponse } from "../gdcapi/gdcapi";
+import { GdcApiFile } from "./filesApi";
 
 const accessTypes = ["open", "controlled"] as const;
 
@@ -215,8 +218,13 @@ export interface FilesState {
   readonly error?: string;
 }
 
-export const fetchFiles = createAsyncThunk("files/fetchFiles", async () => {
-  return await filesApi.fetchFiles();
+export const fetchFiles = createAsyncThunk<
+  GdcApiResponse<GdcApiFile>,
+  void,
+  { dispatch: CoreDispatch; state: CoreState }
+    >("files/fetchFiles", async (_, thunkAPI) => {
+  const filters = selectCurrentCohortGqlFilters(thunkAPI.getState());
+  return await filesApi.fetchFiles(filters);
 });
 
 const initialState: FilesState = {
@@ -292,3 +300,4 @@ export const selectFilesData = (
     error: state.files.error,
   };
 };
+
