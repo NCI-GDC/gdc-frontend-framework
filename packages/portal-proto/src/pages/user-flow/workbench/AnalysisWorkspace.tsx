@@ -127,8 +127,6 @@ const AnalysisWorkspace : React.FC<AnalysisWorkspaceProps> = ({ app } : Analysis
     setSelectedApp(app)
   }, [app])
 
-
-
   return (
       <div> { (selectedApp) ?
         <div className="flex flex-col mx-2">

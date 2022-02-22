@@ -25,7 +25,6 @@ const maxValuesToDisplay = 7;
 
 interface UseCaseFacetResponse {
   readonly data?: FacetBuckets;
-  readonly enumFilters: string [] | undefined;
   readonly error?: string;
   readonly isUninitialized: boolean;
   readonly isFetching: boolean;
@@ -68,9 +67,8 @@ const useCaseFacet = (field: string): UseCaseFacetResponse => {
   }, [selectFacetFilter]);
 
   return {
-    data: facet?.buckets,
+    data: facet,
     error: facet?.error,
-    enumFilters: facet?.enumFilters,
     isUninitialized: facet === undefined,
     isFetching: facet?.status === "pending",
     isSuccess: facet?.status === "fulfilled",

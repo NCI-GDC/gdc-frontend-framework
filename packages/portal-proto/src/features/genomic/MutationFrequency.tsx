@@ -49,13 +49,9 @@ const MutationFacetNames = [
 
 const SideBySideCharts : React.FC = () => {
   return (
-  <div className="flex flex-row justify-items-end">
-    <div className="w-1/2 ">
+  <div className="grid grid-cols-2">
       <GeneFrequencyChart marginBottom={100} />
-    </div>
-    <div className="w-1/2">
       <SurvivalPlot/>
-    </div>
   </div>
     );
 }

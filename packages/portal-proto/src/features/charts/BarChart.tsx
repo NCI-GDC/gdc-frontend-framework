@@ -71,8 +71,7 @@ const vertical_layout: Partial<Layout> = {
     },
     width: undefined,
     height: undefined,
-  autosize:true,
-
+    autosize:true,
   };
 
   if (data.x.length > 6) {

@@ -80,21 +80,20 @@ export const GeneFrequencyChart:React.FC<GeneFrequencyChartProps> = ( { height, 
     return <div>Loading</div>
 
   const chart_data = processChartData(data);
-  return ( <div>
+  return ( <>
+    <div className="flex flex-col">
     {showTitle ?
       <div className="flex items-center justify-between bg-white flex-wrap text-montserrat text-nci-gray-dark p-6 p-1.5">
         {"Distribution of Most Frequently Mutated Genes"}
       </div> : null
     }
-    <div className="h-5/6">
+
     <BarChart data={chart_data}
-              height={undefined}
               marginBottom={marginBottom}
               marginTop={0}
               orientation={orientation}
     />
-
     </div>
-  </div>)
+  </>)
 };
 

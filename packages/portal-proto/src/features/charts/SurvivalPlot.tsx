@@ -1,11 +1,7 @@
 import { useState } from "react";
 import {
   useSurvivalPlot,
-  Survival,
-  useCoreDispatch,
-  useCoreSelector,
-  selectCurrentCohortFilters,
-  fetchSurvival, selectSurvivalData
+  Survival
 } from "@gff/core";
 import { useEffect, useRef } from "react";
 import { renderPlot } from '@oncojs/survivalplot';
@@ -116,25 +112,6 @@ interface SurvivalResponse {
   readonly isSuccess: boolean;
   readonly isError: boolean;
 }
-
-const useSurvivalChart = (): SurvivalResponse => {
-  const coreDispatch = useCoreDispatch();
-  const chartData = useCoreSelector((state) => selectSurvivalData(state));
-  const cohortFilters = useCoreSelector((state) => selectCurrentCohortFilters(state));
-
-  useEffect(() => {
-    coreDispatch(fetchSurvival());
-  }, [coreDispatch, cohortFilters]);
-  return {
-    data: { ...chartData?.data },
-    error: chartData?.error,
-    isUninitialized: chartData === undefined,
-    isFetching: chartData?.status === "pending",
-    isSuccess: chartData?.status === "fulfilled",
-    isError: chartData?.status === "rejected",
-  };
-};
-
 
 export const SurvivalPlot = () => {
   const { data,  isSuccess } =
