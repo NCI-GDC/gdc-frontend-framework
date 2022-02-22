@@ -90,7 +90,8 @@ export const REGISTERED_APPS = [
   },
   {
     name: "OncoGrid",
-    icon: "oncogrid.png",
+    icon: "icons/apps/oncogrid.svg",
+    iconSize: { width: 124, height: 64},
     tags: ["variantAnalysis", "cnv", "ssm"],
     hasDemo: false,
     description: "Visualize the top most mutated cases and genes affected by high impact mutations in your cohort.",
@@ -98,7 +99,7 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Sequence Reads",
-    icon: "oncogrid.png",
+    icon: "sequence-reads.png",
     tags: ["sequenceAnalysis"],
     hasDemo: false,
     description: "Visualize sequencing reads.",
@@ -106,7 +107,8 @@ export const REGISTERED_APPS = [
   },
   {
     name: "ProteinPaint",
-    icon: "oncogrid.png",
+    icon: "proteinpaint.png",
+    iconSize: { width: 124, height: 64},
     tags: ["variantAnalysis","ssm" ],
     hasDemo: false,
     description:  "Visualize mutations in protein-coding genes.",
@@ -114,7 +116,7 @@ export const REGISTERED_APPS = [
   },
   {
     name: "RNA-Seq",
-    icon: "oncogrid.png",
+    icon: "scRnaSeqViz.png",
     tags: ["geneExpression"],
     hasDemo: false,
     description:  "Visualize patterns in single-cell gene expression in your cohort.",

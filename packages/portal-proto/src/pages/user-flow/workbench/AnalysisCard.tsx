@@ -10,7 +10,7 @@ export interface AnalysisCardProps extends AppRegistrationEntry {
 
 const AnalysisCard: React.FC<AnalysisCardProps> = (entry: AnalysisCardProps) => {
   return (
-    <Card shadow="sm" padding="md" className="bg-white hover:bg-nci-gray-lightest">
+    <Card shadow="sm" padding="sm" className="bg-white hover:bg-nci-gray-lightest">
       <Group position="center" direction="column">
         <Card.Section>
           <Tooltip
@@ -31,11 +31,18 @@ const AnalysisCard: React.FC<AnalysisCardProps> = (entry: AnalysisCardProps) => 
 
             <button onClick={() => entry.onClick(entry)}>
 
-              <Image
-                className="m-auto"
-                src={`/user-flow/${entry.icon}`}
-                height="64" width="64"
-              />
+              {entry.iconSize ?
+                <Image
+                  className="m-auto"
+                  src={`/user-flow/${entry.icon}`}
+                  height={entry.iconSize.height} width={entry.iconSize.width}
+                /> :
+                <Image
+                  className="m-auto"
+                  src={`/user-flow/${entry.icon}`}
+                  height="64" width="64"
+                />
+              }
             </button>
 
           </div>

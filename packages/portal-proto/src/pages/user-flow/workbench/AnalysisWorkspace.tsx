@@ -65,23 +65,28 @@ const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : Analys
       <div className="mx-4 mt-2 bg-white rounded-md shadow-md">
       <h2 className="ml-6"> Filter Tools</h2>
         <div className="flex flex-row">
-          <Chips className="p-1 w-1/3" multiple noWrap={false} value={activeTags} onChange={setActiveTags}>
+          <Chips className="py-1 pr-0 w-1/3" style={{ paddingRight: 0 }} multiple noWrap={false} value={activeTags} onChange={setActiveTags}>
             {
               appTags.map((x) => <Chip key={x.value} value={x.value}>{x.name}</Chip>)
             }
           </Chips>
-          <div className="flex flex-row items-end ml-8 mb-1.5">
-            <button className="bg-nci-gray-lighter h-6 rounded-full hover:bg-nci-gray mb-2 " onClick={()=>setActiveTags([])}>
+          <div className="flex flex-row items-end mb-1.5">
+            <button className="bg-nci-gray-lighter h-6 rounded-full hover:bg-nci-gray" onClick={()=>setActiveTags([])}>
               <Clear size="1.5rem" />
             </button>
-            <Select data={sortOptions} className="ml-4"
-                    label="Sort"
+            <div className="flex flex-row items-center ml-96">
+              <p className="font-montserrat mr-2">Sort:</p>
+            <Select data={sortOptions}
+                    classNames={{
+                         input: "border border-nci-gray-lighter round-md"
+                    }}
                     placeholder="Applications Sort"
                     transition="pop-top-left"
                     transitionDuration={80}
                     transitionTimingFunction="ease"
                     onChange={(v) => setSortType(v)}
             />
+            </div>
           </div>
         </div>
       </div>

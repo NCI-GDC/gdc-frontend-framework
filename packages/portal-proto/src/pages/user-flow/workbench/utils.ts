@@ -1,4 +1,9 @@
 
+export interface IconSize {
+  readonly width: number;
+  readonly height: number;
+}
+
 export interface AppRegistrationEntry {
   readonly name: string;
   readonly icon?: string;
@@ -6,6 +11,7 @@ export interface AppRegistrationEntry {
   readonly hasDemo?: boolean;
   readonly id?: string;
   readonly description?: string;
+  readonly iconSize?: IconSize;
 }
 
 const descendingOrd = (array) => {
