@@ -7,12 +7,13 @@ import {
 } from "@gff/core";
 import { useEffect } from "react";
 import dynamic from 'next/dynamic'
-import DownloadOptions from './DownloadOptions';
-
 
 const BarChartWithNoSSR = dynamic(() => import('./BarChart'), {
   ssr: false
 })
+const DownloadOptions = dynamic(() => import("./DownloadOptions"), {
+  ssr: false,
+});
 
 const maxValuesToDisplay =7;
 
@@ -127,7 +128,7 @@ function truncateString(str, n) {
   }
 }
 
-const processLabel = (label: string, shorten=100): string => {
+export const processLabel = (label: string, shorten=100): string => {
   const tokens = label.split(" ");
   const capitalizedTokens = tokens.map((s) => s[0].toUpperCase() + s.substr(1));
   return truncateString(capitalizedTokens.join(" "), shorten);

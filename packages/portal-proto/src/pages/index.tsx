@@ -47,14 +47,15 @@ const IndexPage: NextPage = () => {
                 All Apps Variant
               </HoverLink>
             </li>
-            <li>
-              <HoverLink href="/cohort-builder">Cohort Builder</HoverLink>
-            </li>
+
           </ul>
         </Section>
         <Section>
           Misc Prototypes:
           <ul className="list-disc list-inside">
+            <li>
+              <HoverLink href="/cohort-builder">Cohort Builder</HoverLink>
+            </li>
             <li>
               <HoverLink href="/apps">Apps</HoverLink>
             </li>
@@ -69,6 +70,12 @@ const IndexPage: NextPage = () => {
             </li>
             <li>
               <HoverLink href="/colors">Colors</HoverLink>
+            </li>
+            <li>
+              <HoverLink href="/ssmsTable">Molecular Table</HoverLink>
+            </li>
+            <li>
+              <HoverLink href="/genesTable">Genes Table</HoverLink>
             </li>
             <li>
               <HoverLink href="/set-operation">Set Operation Demo</HoverLink>
