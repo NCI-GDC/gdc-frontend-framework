@@ -89,7 +89,7 @@ export const REGISTERED_APPS = [
     id: "SetOperations",
   },
   {
-    name: "Onco Grid",
+    name: "OncoGrid",
     icon: "oncogrid.png",
     tags: ["variantAnalysis", "cnv", "ssm"],
     hasDemo: false,
@@ -105,7 +105,7 @@ export const REGISTERED_APPS = [
     id: "SequenceReads",
   },
   {
-    name: "Protein Paint",
+    name: "ProteinPaint",
     icon: "oncogrid.png",
     tags: ["variantAnalysis","ssm" ],
     hasDemo: false,
@@ -113,7 +113,7 @@ export const REGISTERED_APPS = [
     id: "ProteinPaint",
   },
   {
-    name: "sc-RnaSeq",
+    name: "RNA-Seq",
     icon: "oncogrid.png",
     tags: ["geneExpression"],
     hasDemo: false,

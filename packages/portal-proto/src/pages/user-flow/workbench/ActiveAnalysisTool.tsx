@@ -14,7 +14,6 @@ export interface AnalysisToolInfo {
 const ActiveAnalysisTool : React.FC<AnalysisToolInfo>  = ( { appId } : AnalysisToolInfo) => {
 
   const [ analysisApp, setAnalysisApp] = useState(undefined);
-  console.log(appId);
   useEffect(() => {
 
     async function loadApp() {

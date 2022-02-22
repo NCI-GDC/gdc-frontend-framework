@@ -48,7 +48,6 @@ const SummaryStatsPanel = () => {
 
 const ActionButtonBar = () => {
 
-  const buttonStyle = "bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md transition-colors"
   return (
 
     <div className="flex flex-col p-4 rounded-md justify-center align-center pb-4 text-sm ">
@@ -57,11 +56,23 @@ const ActionButtonBar = () => {
           pathname: "/user-flow/workbench/analysis_page",
           query: { app: undefined },
         }}>
+          <Tooltip
+            label="Explore and analyze harmonized high-quality clinical and genomics data from cancer genomic studies with the tools in the Research Workbench."
+            classNames={{
+              wrapper: "shadow-lg",
+              body: "shadow-lg bg-white text-nci-gray-darkest"
+            }}
+            position="right"
+            placement="start"
+            wrapLines
+            width={220}
+          >
           <button
-            className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md ">
+            className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md transition-colors ">
             <Image src={"/user-flow/icons/dna.svg"} width={42} height={42} /> <span
             className="px-2">Research Workbench</span>
           </button>
+          </Tooltip>
         </Link>
       </div>
       <div className="flex flex-grow flex-row justify-center  align-center pb-4 text-sm ">
@@ -69,30 +80,66 @@ const ActionButtonBar = () => {
           pathname: "/user-flow/workbench/analysis_page",
           query: { app: "Studies" },
         }}>
+          <Tooltip
+            label="View the Studies available within the GDC and select them for further exploration and analysis."
+            classNames={{
+              wrapper: "shadow-lg",
+              body: "shadow-lg bg-white text-nci-gray-darkest"
+            }}
+            position="bottom"
+            placement="start"
+            wrapLines
+            width={220}
+          >
           <button
-            className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md ">
+            className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md transition-colors">
             <Image src={"/user-flow/icons/crowd-of-users.svg"} width={36} height={36} /> <span> </span>
           </button>
+          </Tooltip>
         </Link>
         <Link key="CohortBuilder" href={{
           pathname: "/user-flow/workbench/analysis_page",
           query: { app: "CohortBuilder" },
         }}>
+          <Tooltip
+            label="Build and define your custom cohorts using a variety of clinical and biospecimen features."
+            classNames={{
+              wrapper: "shadow-lg",
+              body: "shadow-lg bg-white text-nci-gray-darkest"
+            }}
+            position="bottom"
+            placement="start"
+            wrapLines
+            width={220}
+          >
           <button
-            className="text-sm bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest hover:text-white font-bold mx-4 p-2 rounded inline-flex flex-nowrap items-center shadow-md">
+            className="text-sm bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest hover:text-white transition-colors font-bold mx-4 p-2 rounded inline-flex flex-nowrap items-center shadow-md">
             <Image src={"/user-flow/icons/build.svg"} width={36} height={36} />
-            <span></span>
+            <span/>
           </button>
+          </Tooltip>
         </Link>
 
         <Link key="Repository" href={{
           pathname: "/user-flow/workbench/analysis_page",
           query: { app: "Downloads" },
         }}>
+          <Tooltip
+            label="Browse and download the files associated with your cohort for more sophisticated analysis."
+            classNames={{
+              wrapper: "shadow-lg",
+              body: "shadow-lg bg-white text-nci-gray-darkest"
+            }}
+            position="bottom"
+            placement="start"
+            wrapLines
+            width={220}
+          >
           <button
-            className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md ">
+            className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md transition-colors">
             <Image src={"/user-flow/icons/database.svg"} width={36} height={36} /> <span> </span>
           </button>
+          </Tooltip>
         </Link>
       </div>
     </div>
@@ -114,7 +161,7 @@ const IndexPage: NextPage = () => {
             </div>
             <div className="flex flex-row">
               <div className="flex-auto w-36 m-4 p-4 items-center font-montserrat text-nci-gray-darkest bg-nci-gray-lighter">A repository and knowledge base for cancer researchers who need to understand cancer, its clinical progression, and response to therapy.</div>
-              <ActionButtonBar></ActionButtonBar>
+              <ActionButtonBar/>
             </div>
             <div className="flex items-center w-100 pb-5">
               <div className="w-full"><input type="text"
