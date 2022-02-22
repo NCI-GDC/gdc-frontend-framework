@@ -58,17 +58,25 @@ const MutationTable: React.FC<unknown> = () => {
     '>',
   ];
 
+  const filterMutationType = (typeText) => {
+    const splitStr = typeText.split(" ");
+    const operation = splitStr[splitStr.length - 1];
+    return operation.charAt(0).toUpperCase() + operation.slice(1);
+  }
+
   const getTableFormatData = (data) => {
+    // pass 'width' from size of container
     if (data.status === 'fulfilled') {
       const tableRows = [];
       const averageLengths = [];
       data.ssms.ssms.forEach(element => {
         tableRows.push({
-          DNAChange: truncateAfterMarker(element.genomic_dna_change, DNA_CHANGE_MARKERS, 8),
-          type: element.mutation_subtype,
+          // add checkbox to left
+          DNAChange: truncateAfterMarker(element.genomic_dna_change, DNA_CHANGE_MARKERS, 10),
+          type: filterMutationType(element.mutation_subtype),
           consequences: element.consequence[0].gene.symbol + ' ' + element.consequence[0].aa_change,
-          affectedCasesInCohort: `${element.filteredOccurrences + ' / ' + data.ssms.filteredCases}`,
-          affectedCasesAcrossTheGDC: `${element.occurrence + ' / ' + data.ssms.cases}`,
+          affectedCasesInCohort: `${element.filteredOccurrences + ' / ' + data.ssms.filteredCases} (${(100 * element.filteredOccurrences / data.ssms.filteredCases).toFixed(2)}%)`,
+          affectedCasesAcrossTheGDC: `${element.occurrence + ' / ' + data.ssms.cases} (${(100 * element.occurrence / data.ssms.cases).toFixed(2)}%)`,
           impact: 'Impact',
           survival: 'S'
         })

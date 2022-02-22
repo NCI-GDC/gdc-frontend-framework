@@ -51,13 +51,13 @@ const GenesTable: React.FC<unknown> = () => {
         tableRows.push({
           symbol: element.symbol,
           name: element.name,
-          SSMSAffectedCasesInCohort: `${element.cnv_case + ' / ' + data.genes.filteredCases}`,
-          SSMSAffectedCasesAcrossTheGDC: `${element.ssm_case + ' / ' + data.genes.cases}`,
-          CNVGain: `${element.case_cnv_gain + ' / ' + data.genes.cnvCases}`,
-          CNVLoss: `${element.case_cnv_loss + ' / ' + data.genes.cnvCases}`,
+          SSMSAffectedCasesInCohort: `${element.cnv_case + ' / ' + data.genes.filteredCases} (${(100 * element.cnv_case  / data.genes.filteredCases).toFixed(2)}%)`,
+          SSMSAffectedCasesAcrossTheGDC: `${element.ssm_case + ' / ' + data.genes.cases} (${(100 * element.ssm_case  / data.genes.cases).toFixed(2)}%)`,
+          CNVGain: `${element.case_cnv_gain + ' / ' + data.genes.cnvCases} (${(100 * element.case_cnv_gain  / data.genes.cnvCases).toFixed(2)}%)`,
+          CNVLoss: `${element.case_cnv_loss + ' / ' + data.genes.cnvCases} (${(100 * element.case_cnv_loss / data.genes.cnvCases).toFixed(2)}%)`, 
           mutations: data.genes.mutationCounts[element.gene_id],
-          annotations: "A",
-          survival: "S"
+          annotations: "A", // show icon
+          survival: "S"    // show icon
         })
       })
       return tableRows
