@@ -38,7 +38,6 @@ const IndexPage: NextPage = () => {
 
   const chartData = setData.map((set) => ({
     key: set.key,
-    hoverLabel: set.label,
     value: flattenedSetOperations[set.key],
     highlighted: selectedSets[set.key],
   }));

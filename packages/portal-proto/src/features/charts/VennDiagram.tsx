@@ -151,7 +151,6 @@ interface chartData {
   readonly key: string;
   readonly value: number;
   readonly highlighted: boolean;
-  readonly hoverLabel: string;
 }
 
 interface VennDiagramProps {
@@ -256,12 +255,7 @@ const VennDiagram: React.FC<VennDiagramProps> = ({
     type: "scatter",
     mode: "text+markers",
     text: [...sortedChartData.map((d) => d.value)],
-    customdata: [...sortedChartData.map((d) => d.hoverLabel)],
-    hovertemplate: "%{customdata}<extra></extra>",
-    hoverlabel: {
-      bgcolor: "#f1f1f1",
-      align: "left",
-    },
+    hoverinfo: "none",
     marker: {
       size: 30,
       opacity: 0,
