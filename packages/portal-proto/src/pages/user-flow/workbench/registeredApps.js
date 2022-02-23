@@ -55,6 +55,7 @@ export const REGISTERED_APPS = [
     hasDemo: true,
     id: "MutationFrequencyApp",
     description: "Visualize most frequently mutated genes and most frequent somatic mutations."
+
   },
   {
     name: "Repository",
@@ -86,12 +87,14 @@ export const REGISTERED_APPS = [
     tags: ["geneExpression"],
     hasDemo: true,
     id: "GeneExpression",
-    description: "Visualize patterns in gene expression in your cohort."
+    description: "Visualize patterns in gene expression in your cohort.",
+    caseCounts: 0.11,
+    optimizeRules: ["something == something"]
   },
   {
     name: "Set Operations",
     icon: "icons/apps/setOps.svg",
-    tags: ["variantAnalysis", "cnv", "ssm"],
+    tags: ["generalUtility"],
     hasDemo: true,
     description: "Display Venn diagram and find intersection or union, etc. of your cohorts.",
     id: "SetOperations",
@@ -104,6 +107,7 @@ export const REGISTERED_APPS = [
     hasDemo: true,
     description: "Visualize the top most mutated cases and genes affected by high impact mutations in your cohort.",
     id: "OncoGrid",
+    optimizeRules: ["available data = ssm or cnv"]
   },
   {
     name: "Sequence Reads",
@@ -112,6 +116,7 @@ export const REGISTERED_APPS = [
     hasDemo: true,
     description: "Visualize sequencing reads.",
     id: "SequenceReads",
+    optimizeRules: ["data format = BAM"]
   },
   {
     name: "ProteinPaint",
@@ -121,6 +126,8 @@ export const REGISTERED_APPS = [
     hasDemo: true,
     description:  "Visualize mutations in protein-coding genes.",
     id: "ProteinPaint",
+    caseCounts: 0.25,
+    optimizeRules: ["available data = ssm"]
   },
   {
     name: "scRNA-Seq",
@@ -129,6 +136,8 @@ export const REGISTERED_APPS = [
     hasDemo: true,
     description:  "Visualize patterns in single-cell gene expression in your cohort.",
     id: "SingleCellRnaSeq",
+    caseCounts: 0.1,
+    optimizeRules: ["experimental_strategy === scrna-seq"]
   },
 ];
 

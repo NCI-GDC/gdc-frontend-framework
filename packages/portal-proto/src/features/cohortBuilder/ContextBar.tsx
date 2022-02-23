@@ -13,7 +13,7 @@ import { CohortGroupProps,
 import {
   MdDownload as DownloadIcon,
   MdInsertChartOutlined as SummaryChartIcon,
-  MdOutlineViewComfy as TableIcon} from "react-icons/md";
+  MdOutlineViewComfy as TableIcon, MdFileCopy as FilesIcon} from "react-icons/md";
 import { FaCartPlus as AddToCartIcon } from "react-icons/fa";
 
 import SummaryFacets from "./SummaryFacets";
@@ -26,16 +26,17 @@ import SummaryFacets from "./SummaryFacets";
   };
 
    const [summaryFields, setSummaryFields] = useState([
-     "primary_site",
-     "disease_type",
-     "project.project_id",
-     "project.program.name",
-     "demographic.gender",
-     "demographic.vital_status"
+     { field: "primary_site", name: "Primary Site" },
+     { field: "disease_type", name: "Disease Type" },
+     { field: "project.project_id", name: "Project" },
+     { field: "project.program.name", name: "Program Name" },
+     { field: "demographic.gender", name: "Gender" },
+     { field: "demographic.vital_status", name: "Vital Status" },
    ]);
 
 
   const filters = useCohortFacetFilters();
+   // eslint-disable-next-line react/prop-types
   const CohortBarWithProps = () => <CohortBar cohort_names={cohorts.map(o => o.name)}
                                               onSelectionChanged={handleCohortSelection}
                                               defaultIdx={currentIndex}
@@ -70,7 +71,7 @@ import SummaryFacets from "./SummaryFacets";
           </Menu>
           <Menu control={
             <Button className="ml-2 bg-nci-gray-light hover:bg-nci-gray transition-colors">
-              <DownloadIcon size="1.5rem" />
+              <FilesIcon size="1.5rem" className="mr-1"/> Metadata
             </Button>
           } >
             <Menu.Item >Biospecimen</Menu.Item>

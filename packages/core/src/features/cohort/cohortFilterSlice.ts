@@ -134,8 +134,8 @@ export const selectCurrentCohortFilters = (state: CoreState): FilterSet | undefi
 
 /**
  * selectCurrentCohortGqlFilters: returns an object representing the filters in the
- * current cohort. Note that the GraphQL filtere require "cases." or "repository." prepended
- * to the filters. This will likely be deprecated once the REST API's are available.
+ * current cohort. Note that the GraphQL filters require "cases." etc. prepended
+ * to the filters.
  * @param state
  * @param prepend
  */

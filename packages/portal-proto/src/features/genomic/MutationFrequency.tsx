@@ -58,23 +58,34 @@ const SideBySideCharts : React.FC = () => {
 
 const MutationFrequency: React.FC = () => {
   return (
-      <div className="flex flex-col">
+      <div className="flex flex-row">
+        <div className="flex flex-col gap-y-4 mr-3 mt-12">
+          {GenesFacetNames.map((x, index) => {
+            return (<EnumFacet key={`${x.facet_filter}-${index}`}
+                               field={`${x.facet_filter}`}
+                               facetName={x.name}
+                               type="genes"
+                               showPercent={false}
+                               valueLabel="Genes"
+                               description={x.description}
+            />);
+          })
+          }
+          {MutationFacetNames.map((x, index) => {
+            return (<EnumFacet key={`${x.facet_filter}-${index}`}
+                               field={`${x.facet_filter}`}
+                               facetName={x.name}
+                               type="ssms"
+                               showPercent={false}
+                               valueLabel="Mutations"
+                               description={x.description}
+            />);
+          })
+          }
+        </div>
         <Tabs position="right" variant="pills" >
           <Tabs.Tab label="Genes">
             <div className="flex flex-row">
-              <div className="flex flex-col gap-y-4 mr-3">
-                {GenesFacetNames.map((x, index) => {
-                  return (<EnumFacet key={`${x.facet_filter}-${index}`}
-                                     field={`${x.facet_filter}`}
-                                     facetName={x.name}
-                                     type="genes"
-                                     showPercent={false}
-                                     valueLabel="Genes"
-                                     description={x.description}
-                  />);
-                })
-                }
-              </div>
               <div className="flex flex-col">
                   <SideBySideCharts />
                   <GenesTable />
@@ -83,19 +94,7 @@ const MutationFrequency: React.FC = () => {
           </Tabs.Tab>
           <Tabs.Tab label="Mutations">
             <div className="flex flex-row">
-              <div className="flex flex-col gap-y-4 mr-3">
-                {MutationFacetNames.map((x, index) => {
-                  return (<EnumFacet key={`${x.facet_filter}-${index}`}
-                                     field={`${x.facet_filter}`}
-                                     facetName={x.name}
-                                     type="ssms"
-                                     showPercent={false}
-                                     valueLabel="Mutations"
-                                     description={x.description}
-                  />);
-                })
-                }
-              </div>
+
 
               <div className="flex flex-col">
               <SurvivalPlot />

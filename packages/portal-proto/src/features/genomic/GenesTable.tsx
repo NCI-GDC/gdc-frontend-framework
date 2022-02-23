@@ -7,6 +7,7 @@ import {
   selectGenesTableData, selectCurrentCohortFilters,
 } from "@gff/core";
 import { Pagination, Select, Table, Checkbox } from "@mantine/core";
+import { MdCheck as CheckboxIcon} from "react-icons/md";
 
 interface GenesTableResponse {
   readonly data?: GDCGenesTable;
@@ -65,7 +66,6 @@ const GenesTable = () => {
   if (!isSuccess)
     return (<div>Loading...</div>)
 
-  console.log(data);
   return (
     <div className="flex flex-col w-100">
       <GenesTableSimple {...data}/>
@@ -125,7 +125,7 @@ const GenesTableSimple: React.FC<GDCGenesTable> = ({ genes,
         genes?.map((x, i) => (
         <tr key={x.id} >
           <td className="px-2 break-all">
-            <Checkbox label={x.symbol}/>
+            <Checkbox icon={CheckboxIcon} label={x.symbol}/>
           </td>
           <td className="px-2">{x.name}</td>
           <td className="px-2"> {x.numCases} / {filteredCases} ({((x.numCases / filteredCases) * 100).toFixed(2).toLocaleString()}%)</td>

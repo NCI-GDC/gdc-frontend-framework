@@ -9,6 +9,7 @@ import {
   useCoreDispatch,
   useCoreSelector,
 } from "@gff/core";
+import { BiLineChartDown as SurvivalPlotIcon } from "react-icons/bi";
 
 interface SsmsTableResponse {
   readonly data?: GDCSsmsTable;
@@ -123,7 +124,7 @@ console.log(data);
             <td>{x.filteredOccurrences} / {data.filteredCases} ({((x.filteredOccurrences / data.filteredCases) * 100).toFixed(2).toLocaleString()}%)</td>
             <td>{x.occurrence} / {data.cases} ({((x.occurrence / data.cases) * 100).toFixed(2).toLocaleString()}%)</td>
             <td>Impact</td>
-            <td>S</td>
+            <td><SurvivalPlotIcon size="1.25rem"/></td>
           </tr>
         ))}
        </tbody>

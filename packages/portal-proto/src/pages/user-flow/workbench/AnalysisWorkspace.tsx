@@ -17,9 +17,7 @@ const sortOptions = [
 ];
 
 const initialApps = REGISTERED_APPS.reduce((obj, item) => (obj[item.id] = item, obj) ,{});
-
 const ALL_OTHER_APPS = Object.keys(initialApps).filter((x) => !RECOMMENDED_APPS.includes(x));
-console.log(ALL_OTHER_APPS)
 
 interface AnalysisGridProps {
   readonly onAppSelected?: (id:string, name: string) => void;
@@ -63,8 +61,8 @@ const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : Analys
 
   return (
     <div className="flex flex-col mb-6 ">
-      <div className="flex flex-row mx-4 my-2 p-2 border border-nci-gray-lighter rounded-md shadow-lg">
-        <div className="flex flex-col w-1/3">
+      <div className="flex flex-row justify-center items-center mx-4 my-2 p-2 border border-nci-gray-lighter rounded-md shadow-lg">
+        <div className="flex flex-col w-96">
           <h2 className="ml-6"> Filter Tools</h2>
           <div className="flex flex-row">
             <Chips className="py-1 pr-0" style={{ paddingRight: 0 }} multiple noWrap={false} value={activeTags}
@@ -80,7 +78,7 @@ const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : Analys
               </button> : null
             }
           </div>
-          <div className="flex flex-row  items-center mt-3">
+          <div className=" mt-3">
             <Select data={sortOptions}
                     value={sortType}
                     classNames={{
@@ -94,10 +92,10 @@ const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : Analys
           </div>
         </div>
 
-      <div className="flex-grow" >
+      <div className="flex flex-" >
         <Grid className="mx-2"  >
         { recommendedApps.map(k => initialApps[k]).map((x: AppRegistrationEntry) => {
-          return (<Grid.Col key={x.name} span={4} style={{ minHeight: 120 }}>
+          return (<Grid.Col key={x.name} span={4} style={{ maxWidth: 180, minWidth: 180}}>
             <AnalysisCard  entry={{...{  applicable: true,  ...x }}} onClick={handleOpenAppClicked} />
           </Grid.Col>)
           }

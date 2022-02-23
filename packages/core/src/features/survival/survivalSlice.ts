@@ -40,8 +40,6 @@ export interface SurvivalState {
   readonly error?: string;
 }
 
-
-
 const initialState: SurvivalState = {
   survivalData: [],
   status: "uninitialized",

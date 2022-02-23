@@ -169,7 +169,7 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                           <div key={`${field}-${value}`} className="flex flex-row gap-x-1 px-2 ">
                             <div className="flex-none">
                               { (field === "is_cancer_gene_census") ? // TODO: Remove after Feb 2022 MR review
-                                <input type="checkbox" value={value} onChange={handleChange}
+                                <v value={value} onChange={handleChange}
                                 className="bg-nci-gray-lightest hover:bg-nci-gray-darkest text-nci-gray-darkest"
                                 checked={!!(selectedEnums && selectedEnums.includes(true))} />
                                 :

@@ -1,9 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CoreDataSelectorResponse, createUseCoreDataHook, DataStatus } from "../../dataAcess";
+import {
+  CoreDataSelectorResponse,
+  createUseCoreDataHook,
+  createUseFiltersCoreDataHook,
+  DataStatus,
+} from "../../dataAcess";
 
 import { CoreDispatch, CoreState } from "../../store";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
-import { selectCurrentCohortGqlFilters } from "./cohortFilterSlice";
+import { selectCurrentCohortFilters, selectCurrentCohortGqlFilters } from "./cohortFilterSlice";
 
 export interface CountsState  {
   readonly counts: Record<string, number>;
@@ -131,5 +136,6 @@ export const selectCohortCountsByName = (state: CoreState, name : string) : numb
 
 export const useCohortCounts = createUseCoreDataHook(fetchCohortCaseCounts, selectCohortCountsData);
 
+export const useFilteredCohortCounts = createUseFiltersCoreDataHook(fetchCohortCaseCounts, selectCohortCountsData, selectCurrentCohortFilters);
 
 
