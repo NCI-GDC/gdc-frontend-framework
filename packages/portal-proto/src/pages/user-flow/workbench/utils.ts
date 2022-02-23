@@ -9,9 +9,11 @@ export interface AppRegistrationEntry {
   readonly icon?: string;
   readonly tags: ReadonlyArray<string>;
   readonly hasDemo?: boolean;
+  readonly demoMode?: boolean;
   readonly id?: string;
   readonly description?: string;
   readonly iconSize?: IconSize;
+  readonly caseCounts?: number; // Added for MR Demo TODO: Compute real values
 }
 
 const descendingOrd = (array) => {

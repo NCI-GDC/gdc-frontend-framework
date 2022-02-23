@@ -1,5 +1,4 @@
 import { NextPage } from "next";
-import Link from "next/link";
 import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
 import { CohortManager } from "../../../features/user-flow/many-pages/cohort";
 import { Select } from "../../../components/Select";

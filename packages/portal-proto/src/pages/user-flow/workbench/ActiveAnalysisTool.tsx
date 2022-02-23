@@ -18,7 +18,6 @@ const ActiveAnalysisTool : React.FC<AnalysisToolInfo>  = ( { appId } : AnalysisT
 
     async function loadApp() {
       const AnalysisApp = await importApplication(appId);
-
       return (
         <AnalysisApp />
       );

@@ -3,12 +3,12 @@ import Image from "next/image";
 import { AppRegistrationEntry } from "./utils";
 import { Badge, Button, Card, Group, Tooltip } from "@mantine/core";
 
-export interface AnalysisCardProps extends AppRegistrationEntry {
-  applicable: boolean;
-  readonly onClick?: (x) => void;
+export interface AnalysisCardProps  {
+  entry: AppRegistrationEntry;
+  readonly onClick?: (x:AppRegistrationEntry) => void;
 }
 
-const AnalysisCard: React.FC<AnalysisCardProps> = (entry: AnalysisCardProps) => {
+const AnalysisCard: React.FC<AnalysisCardProps> = ( { entry, onClick } : AnalysisCardProps) => {
   return (
     <Card shadow="sm" padding="sm" className="bg-white hover:bg-nci-gray-lightest">
       <Group position="center" direction="column">
@@ -29,7 +29,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = (entry: AnalysisCardProps) => 
 
             <div className="font-heading text-lg mb-2">{entry.name}</div>
 
-            <button onClick={() => entry.onClick(entry)}>
+            <button onClick={() => onClick(entry)}>
 
               {entry.iconSize ?
                 <Image
@@ -50,7 +50,10 @@ const AnalysisCard: React.FC<AnalysisCardProps> = (entry: AnalysisCardProps) => 
       </Card.Section>
       <div className="flex-auto">
          <Badge  size="sm"># Cases</Badge>
-        { entry.hasDemo ? <Button  compact size="xs" radius="xl" className="ml-2 bg-nci-gray-light hover:bg-nci-gray border-r-lg">Demo</Button> : null }
+        { entry.hasDemo ? <Button  onClick={() => onClick({ ...entry, name: `${entry.name} Demo`, id: `${entry.id}Demo` })}
+          compact size="xs"
+          radius="xl"
+          className="ml-2 bg-nci-gray-light hover:bg-nci-gray border-r-lg">Demo</Button> : null }
       </div>
       </Group>
     </Card>

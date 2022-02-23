@@ -57,7 +57,7 @@ export const REGISTERED_APPS = [
     description: "Visualize most frequently mutated genes and most frequent somatic mutations."
   },
   {
-    name: "Downloads",
+    name: "Repository",
     icon: "icons/database.svg",
     tags: ["files"],
     hasDemo: false,
@@ -115,7 +115,7 @@ export const REGISTERED_APPS = [
     id: "ProteinPaint",
   },
   {
-    name: "RNA-Seq",
+    name: "scRNA-Seq",
     icon: "scRnaSeqViz.png",
     tags: ["geneExpression"],
     hasDemo: false,

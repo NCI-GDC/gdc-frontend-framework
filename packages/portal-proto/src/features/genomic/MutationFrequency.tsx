@@ -50,7 +50,7 @@ const MutationFacetNames = [
 const SideBySideCharts : React.FC = () => {
   return (
   <div className="grid grid-cols-2">
-      <GeneFrequencyChart marginBottom={100} />
+      <GeneFrequencyChart marginBottom={90} />
       <SurvivalPlot/>
   </div>
     );

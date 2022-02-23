@@ -78,8 +78,13 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
     const { value, checked } = e.target;
 
     if (checked) {
-      const updated = selectedEnums ? [...selectedEnums, value] : [value];
-      setSelectedEnums(updated);
+      if (field === "is_cancer_gene_census") {
+        const updated = selectedEnums ? [...selectedEnums, checked as boolean ] : [checked as boolean ];
+        setSelectedEnums(updated);
+      } else {
+        const updated = selectedEnums ? [...selectedEnums, value] : [value];
+        setSelectedEnums(updated);
+      }
     } else {
       const updated = selectedEnums.filter((x) => x != value);
       setSelectedEnums(updated);
@@ -163,9 +168,15 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                         return (
                           <div key={`${field}-${value}`} className="flex flex-row gap-x-1 px-2 ">
                             <div className="flex-none">
+                              { (field === "is_cancer_gene_census") ?
+                                <input type="checkbox" value={value} onChange={handleChange}
+                                className="bg-nci-cyan-lightest hover:bg-nci-cyan-darkest text-nci-cyan-darkest"
+                                checked={!!(selectedEnums && selectedEnums.includes(true))} />
+                                :
                               <input type="checkbox" value={value} onChange={handleChange}
                                      className="bg-nci-cyan-lightest hover:bg-nci-cyan-darkest text-nci-cyan-darkest"
                                      checked={!!(selectedEnums && selectedEnums.includes(value))} />
+                              }
                             </div>
                             <div className="flex-grow truncate ... font-heading text-md pt-0.5">{value}</div>
                             <div className="flex-none text-right w-14 ">{count.toLocaleString()}</div>

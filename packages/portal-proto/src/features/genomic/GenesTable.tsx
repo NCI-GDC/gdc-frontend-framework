@@ -128,10 +128,10 @@ const GenesTableSimple: React.FC<GDCGenesTable> = ({ genes,
             <Checkbox label={x.symbol}/>
           </td>
           <td className="px-2">{x.name}</td>
-          <td className="px-2"> {x.numCases} / {filteredCases}</td>
+          <td className="px-2"> {x.numCases} / {filteredCases} ({((x.numCases / filteredCases) * 100).toFixed(2).toLocaleString()}%)</td>
           <td className="px-2"> {x.ssm_case} / {cases}</td>
-          <td className="px-2"> {x.case_cnv_gain} / {cnvCases}</td>
-          <td className="px-2"> {x.case_cnv_loss} / {cnvCases}</td>
+          <td className="px-2"> {x.case_cnv_gain} / {cnvCases} ({((x.case_cnv_gain / cnvCases) * 100).toFixed(2).toLocaleString()}%)</td>
+          <td className="px-2"> {x.case_cnv_loss} / {cnvCases} ({((x.case_cnv_loss / cnvCases) * 100).toFixed(2).toLocaleString()}%)</td>
           <td className="px-2"> {mutationCounts
             ? mutationCounts[x.gene_id]
             : " loading"}{" "}</td>

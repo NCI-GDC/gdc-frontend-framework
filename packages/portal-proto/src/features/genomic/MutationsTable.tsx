@@ -120,8 +120,8 @@ console.log(data);
             <td> <Checkbox label={x.genomic_dna_change} /></td>
             <td>{x.mutation_subtype}</td>
             <td>{x.consequence[0].gene.symbol} {x.consequence[0].aa_change}</td>
-            <td>{x.filteredOccurrences} / {data.filteredCases}</td>
-            <td>{x.occurrence} / {data.cases}</td>
+            <td>{x.filteredOccurrences} / {data.filteredCases} ({((x.filteredOccurrences / data.filteredCases) * 100).toFixed(2).toLocaleString()}%)</td>
+            <td>{x.occurrence} / {data.cases} ({((x.occurrence / data.cases) * 100).toFixed(2).toLocaleString()}%)</td>
             <td>Impact</td>
             <td>S</td>
           </tr>

@@ -5,6 +5,7 @@ import AnalysisCard from "./AnalysisCard";
 import {  REGISTERED_APPS, APPTAGS } from "./registeredApps"
 import { AppRegistrationEntry, sortAlphabetically } from "./utils";
 import dynamic from "next/dynamic";
+import { ALL } from "dns";
 
 const ActiveAnalysisToolNoSSR = dynamic(() => import('./ActiveAnalysisTool'), {
   ssr: false
@@ -20,8 +21,13 @@ const initialApps = REGISTERED_APPS.reduce((obj, item) => (obj[item.id] = item, 
 // the default order of the apps
 const initialOrder = Object.keys(initialApps);
 
+const RECOMMENDED_APPS = ["CohortBuilder", "Downloads", "MutationFrequencyApp"];
+
+const ALL_OTHER_APPS = Object.keys(initialApps).filter((x) => !RECOMMENDED_APPS.includes(x));
+console.log(ALL_OTHER_APPS)
+
 interface AnalysisGridProps {
-  readonly onAppSelected?: (x) => void;
+  readonly onAppSelected?: (id:string, name: string) => void;
 }
 
 const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : AnalysisGridProps) => {
@@ -33,9 +39,9 @@ const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : Analys
   // TODO: build app registration and tags will be handled here
   const [activeTags, setActiveTags] = useState([]); // set of selected tags
   const [sortType, setSortType] = useState("default");
-  const [recommendedApps, setRecommendedApps] = useState([]); // recommended apps based on Context
-  const [remainingApps, setRemainingApps] = useState([...initialOrder]); // all other apps
-  const [activeApps, setActiveApps] = useState([...initialOrder] ); // set of active apps i.e. not recommended but filterable/dimmable
+  const [recommendedApps, setRecommendedApps] = useState([...RECOMMENDED_APPS]); // recommended apps based on Context
+  const [remainingApps, setRemainingApps] = useState([...ALL_OTHER_APPS]); // all other apps
+  const [activeApps, setActiveApps] = useState([...ALL_OTHER_APPS] ); // set of active apps i.e. not recommended but filterable/dimmable
 
   const sortTools = (arr, st) => {
     if (st === "default")
@@ -56,8 +62,8 @@ const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : Analys
     filterAppsByTagsAndSort();
   }, [activeTags, sortType]);
 
-  const handleOpenAppClicked = (x) => {
-    onAppSelected(x.id);
+  const handleOpenAppClicked = (x:AppRegistrationEntry ) => {
+    onAppSelected( x.id, x.name);
   }
 
   return (
@@ -90,11 +96,11 @@ const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : Analys
           </div>
         </div>
       </div>
-      <div  className="m-2 bg-nci-cyan-darker" >
+      <div  className="mx-4 mt-2 bg-white rounded-md shadow-md" >
         <Grid className="px-12">
-        { recommendedApps.map((x: AppRegistrationEntry) => {
+        { recommendedApps.map(k => initialApps[k]).map((x: AppRegistrationEntry) => {
           return (<Grid.Col key={x.name} span={3} style={{ minHeight: 64 }}>
-            <AnalysisCard  {...{  applicable: true, onClick: handleOpenAppClicked, ...x }} />
+            <AnalysisCard  entry={{...{  applicable: true,  ...x }}} onClick={handleOpenAppClicked} />
           </Grid.Col>)
           }
         )}
@@ -105,8 +111,8 @@ const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : Analys
         <Grid className="mx-2" >
           { activeApps.map(k => initialApps[k]).map((x: AppRegistrationEntry) => {
               return(
-              <Grid.Col key={x.name} span={3} style={{ minHeight: 80 }}>
-                <AnalysisCard  {...{ applicable: true, onClick: handleOpenAppClicked, ...x }} />
+              <Grid.Col key={x.name} span={3} style={{ minHeight: 64 }}>
+                <AnalysisCard  entry={{...{  applicable: true,  ...x }}} onClick={handleOpenAppClicked} />
               </Grid.Col>
               )
             }
@@ -122,9 +128,16 @@ interface AnalysisWorkspaceProps {
 }
 const AnalysisWorkspace : React.FC<AnalysisWorkspaceProps> = ({ app } : AnalysisWorkspaceProps ) => {
   const [selectedApp, setSelectedApp] = useState(undefined);
+  const [selectedAppName, setSelectedAppName] = useState(undefined);
+
+  const handleAppSelected = (id:string, name:string) => {
+    setSelectedApp(id);
+    setSelectedAppName(name);
+  }
 
   useEffect(() => {
     setSelectedApp(app)
+    setSelectedAppName(undefined); // will use the registered app name
   }, [app])
 
   return (
@@ -133,12 +146,12 @@ const AnalysisWorkspace : React.FC<AnalysisWorkspaceProps> = ({ app } : Analysis
           <div className="flex flex-row items-center">
             <button  onClick={() => setSelectedApp(undefined)} className="bg-nci-gray-lighter hover:bg-nci-gray-light font-montserrat tracking-widest uppercase rounded-md shadow-md p-1 px-2">Applications</button>
             <div className=" mx-3 font-montserrat">/</div>
-            <div className="bg-nci-gray-lighter font-montserrat uppercase rounded-md shadow-md p-1 px-2">{initialApps[selectedApp].name}</div>
+            <div className="bg-nci-gray-lighter font-montserrat uppercase rounded-md shadow-md p-1 px-2">{selectedAppName ? selectedAppName :  initialApps[selectedApp].name}</div>
           </div>
           <ActiveAnalysisToolNoSSR appId={selectedApp} />
         </div>
         :
-        <AnalysisGrid onAppSelected={setSelectedApp} />
+        <AnalysisGrid onAppSelected={handleAppSelected} />
       }
       </div>
   )
