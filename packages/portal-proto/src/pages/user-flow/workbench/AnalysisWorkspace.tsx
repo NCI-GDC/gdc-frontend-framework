@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { Button, Chips, Chip, Select, Grid } from "@mantine/core";
+import React, { useEffect, useState } from "react";
+import { Chip, Chips, Grid, Select } from "@mantine/core";
 import { MdClear as Clear } from "react-icons/md";
 import AnalysisCard from "./AnalysisCard";
-import {  REGISTERED_APPS, APPTAGS } from "./registeredApps"
+import { APPTAGS, REGISTERED_APPS } from "./registeredApps";
 import { AppRegistrationEntry, sortAlphabetically } from "./utils";
 import dynamic from "next/dynamic";
-import { ALL } from "dns";
 
-const ActiveAnalysisToolNoSSR = dynamic(() => import('./ActiveAnalysisTool'), {
-  ssr: false
-})
+const ActiveAnalysisToolNoSSR = dynamic(() => import("./ActiveAnalysisTool"), {
+  ssr: false,
+});
 
 const sortOptions = [
   { value: "default", label: "Default"},
@@ -38,7 +37,7 @@ const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : Analys
   const [appTags] = useState(APPTAGS); // set of tags to classify and App with.
   // TODO: build app registration and tags will be handled here
   const [activeTags, setActiveTags] = useState([]); // set of selected tags
-  const [sortType, setSortType] = useState("default");
+  const [sortType, setSortType] = useState("a-z");
   const [recommendedApps, setRecommendedApps] = useState([...RECOMMENDED_APPS]); // recommended apps based on Context
   const [remainingApps, setRemainingApps] = useState([...ALL_OTHER_APPS]); // all other apps
   const [activeApps, setActiveApps] = useState([...ALL_OTHER_APPS] ); // set of active apps i.e. not recommended but filterable/dimmable
@@ -68,45 +67,48 @@ const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : Analys
 
   return (
     <div className="flex flex-col">
-      <div className="mx-4 mt-2 bg-white rounded-md shadow-md">
-      <h2 className="ml-6"> Filter Tools</h2>
-        <div className="flex flex-row">
-          <Chips className="py-1 pr-0 w-1/3" style={{ paddingRight: 0 }} multiple noWrap={false} value={activeTags} onChange={setActiveTags}>
-            {
-              appTags.map((x) => <Chip key={x.value} value={x.value}>{x.name}</Chip>)
+      <div className="flex flex-row mx-4 mt-2 p-2 bg-white rounded-md shadow-md">
+        <div className="flex flex-col w-1/3">
+          <h2 className="ml-6"> Filter Tools</h2>
+          <div className="flex flex-row">
+            <Chips className="py-1 pr-0" style={{ paddingRight: 0 }} multiple noWrap={false} value={activeTags}
+                   onChange={setActiveTags}>
+              {
+                appTags.map((x) => <Chip key={x.value} value={x.value}>{x.name}</Chip>)
+              }
+            </Chips>
+            {activeTags.length ?
+              <button className="bg-nci-gray-lighter h-6 rounded-full hover:bg-nci-gray"
+                      onClick={() => setActiveTags([])}>
+                <Clear size="1.5rem" />
+              </button> : null
             }
-          </Chips>
-          <div className="flex flex-row items-end mb-1.5">
-            <button className="bg-nci-gray-lighter h-6 rounded-full hover:bg-nci-gray" onClick={()=>setActiveTags([])}>
-              <Clear size="1.5rem" />
-            </button>
-            <div className="flex flex-row items-center ml-96">
-              <p className="font-montserrat mr-2">Sort:</p>
+          </div>
+          <div className="flex flex-row  items-center">
             <Select data={sortOptions}
+                    value={sortType}
                     classNames={{
-                         input: "border border-nci-gray-lighter round-md"
+                      input: "border border-nci-gray-lighter round-md",
                     }}
-                    placeholder="Applications Sort"
                     transition="pop-top-left"
                     transitionDuration={80}
                     transitionTimingFunction="ease"
                     onChange={(v) => setSortType(v)}
             />
-            </div>
           </div>
         </div>
-      </div>
-      <div  className="mx-4 mt-2 bg-white rounded-md shadow-md" >
-        <Grid className="px-12">
+
+      <div className="flex-grow" >
+        <Grid className="mx-2"  >
         { recommendedApps.map(k => initialApps[k]).map((x: AppRegistrationEntry) => {
-          return (<Grid.Col key={x.name} span={3} style={{ minHeight: 64 }}>
+          return (<Grid.Col key={x.name} span={4} style={{ minHeight: 120 }}>
             <AnalysisCard  entry={{...{  applicable: true,  ...x }}} onClick={handleOpenAppClicked} />
           </Grid.Col>)
           }
         )}
       </Grid>
       </div>
-
+      </div>
       <div className="my-2">
         <Grid className="mx-2" >
           { activeApps.map(k => initialApps[k]).map((x: AppRegistrationEntry) => {

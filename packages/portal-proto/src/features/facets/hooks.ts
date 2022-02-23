@@ -37,7 +37,7 @@ const useCohortFacetFilterByName = (field: string): string[] | undefined => {
 };
 
 interface EnumFacetResponse {
-  readonly data?: FacetBuckets;
+  readonly data?: Record<string, number>;
   readonly enumFilters?: string [] | undefined;
   readonly error?: string;
   readonly isUninitialized: boolean;
@@ -68,7 +68,7 @@ const useCasesFacet = (field: string): EnumFacetResponse => {
   }, [selectFacetFilter]);
 
   return {
-    data: facet,
+    data: facet?.buckets,
     enumFilters: enumFilters,
     error: facet?.error,
     isUninitialized: facet === undefined,
@@ -100,7 +100,7 @@ const useFilesFacet = (field: string): EnumFacetResponse => {
   }, [selectFacetFilter]);
 
   return {
-    data: facet,
+    data: facet?.buckets,
     enumFilters: enumFilters,
     error: facet?.error,
     isUninitialized: facet === undefined,
@@ -132,7 +132,7 @@ const useGenesFacet = (field: string): EnumFacetResponse => {
   }, [selectFacetFilter]);
 
   return {
-    data: facet,
+    data: facet?.buckets,
     enumFilters: enumFilters,
     error: facet?.error,
     isUninitialized: facet === undefined,
@@ -164,7 +164,7 @@ const useMutationsFacet = (field: string): EnumFacetResponse => {
   }, [selectFacetFilter]);
 
   return {
-    data: facet,
+    data: facet?.buckets,
     enumFilters: enumFilters,
     error: facet?.error,
     isUninitialized: facet === undefined,

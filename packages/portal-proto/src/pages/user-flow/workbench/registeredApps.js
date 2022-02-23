@@ -52,7 +52,7 @@ export const REGISTERED_APPS = [
     name: "Mutations Frequency",
     icon: "icons/apps/mutations.svg",
     tags: ["ssm"],
-    hasDemo: false,
+    hasDemo: true,
     id: "MutationFrequencyApp",
     description: "Visualize most frequently mutated genes and most frequent somatic mutations."
   },
@@ -63,6 +63,14 @@ export const REGISTERED_APPS = [
     hasDemo: false,
     id: "Downloads",
     description: "Browse and download the files associated with your cohort for more sophisticated analysis."
+  },
+  {
+    name: "Studies",
+    icon: "icons/crowd-of-users.svg",
+    tags: [],
+    hasDemo: false,
+    id: "Studies",
+    description: "View the Studies available within the GDC and select them for further exploration and analysis."
   },
   {
     name: "Cohort Comparison",
@@ -76,7 +84,7 @@ export const REGISTERED_APPS = [
     name: "Gene Expression",
     icon: "gene-expression.png",
     tags: ["geneExpression"],
-    hasDemo: false,
+    hasDemo: true,
     id: "GeneExpression",
     description: "Visualize patterns in gene expression in your cohort."
   },
@@ -93,7 +101,7 @@ export const REGISTERED_APPS = [
     icon: "icons/apps/oncogrid.svg",
     iconSize: { width: 124, height: 64},
     tags: ["variantAnalysis", "cnv", "ssm"],
-    hasDemo: false,
+    hasDemo: true,
     description: "Visualize the top most mutated cases and genes affected by high impact mutations in your cohort.",
     id: "OncoGrid",
   },
@@ -101,7 +109,7 @@ export const REGISTERED_APPS = [
     name: "Sequence Reads",
     icon: "sequence-reads.png",
     tags: ["sequenceAnalysis"],
-    hasDemo: false,
+    hasDemo: true,
     description: "Visualize sequencing reads.",
     id: "SequenceReads",
   },
@@ -110,7 +118,7 @@ export const REGISTERED_APPS = [
     icon: "proteinpaint.png",
     iconSize: { width: 124, height: 64},
     tags: ["variantAnalysis","ssm" ],
-    hasDemo: false,
+    hasDemo: true,
     description:  "Visualize mutations in protein-coding genes.",
     id: "ProteinPaint",
   },
@@ -118,7 +126,7 @@ export const REGISTERED_APPS = [
     name: "scRNA-Seq",
     icon: "scRnaSeqViz.png",
     tags: ["geneExpression"],
-    hasDemo: false,
+    hasDemo: true,
     description:  "Visualize patterns in single-cell gene expression in your cohort.",
     id: "SingleCellRnaSeq",
   },
