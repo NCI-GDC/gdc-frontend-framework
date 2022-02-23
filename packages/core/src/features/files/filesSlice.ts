@@ -38,6 +38,7 @@ const fileTypes = [
   "aggregated_somatic_mutation",
   "masked_somatic_mutation",
   "secondary_expression_analysis",
+  "masked_methylation_array",
 ] as const;
 
 export type FileType = typeof fileTypes[number];
@@ -87,6 +88,7 @@ const dataFormats = [
   "BAM",
   "MAF",
   "SVS",
+  "IDAT",
   "BCR XML",
   "TSV",
   "BCR SSF XML",
@@ -139,6 +141,7 @@ const dataTypes = [
   "Splice Junction Quantification",
   "Structural Rearrangement",
   "Transcript Fusion",
+  "Masked Intensities",
   "miRNA Expression Quantification",
 ] as const;
 

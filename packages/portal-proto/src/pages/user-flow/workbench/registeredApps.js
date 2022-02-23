@@ -51,7 +51,7 @@ export const REGISTERED_APPS = [
   {
     name: "Mutations Frequency",
     icon: "icons/apps/mutations.svg",
-    tags: ["ssm"],
+    tags: ["variantAnalysis", "ssm"],
     hasDemo: true,
     id: "MutationFrequencyApp",
     description: "Visualize most frequently mutated genes and most frequent somatic mutations."
