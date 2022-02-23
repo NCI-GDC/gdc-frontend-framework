@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Chip, Chips, Grid, Select } from "@mantine/core";
 import { MdClear as Clear } from "react-icons/md";
 import AnalysisCard from "./AnalysisCard";
-import { APPTAGS, REGISTERED_APPS } from "./registeredApps";
+import { APPTAGS, REGISTERED_APPS, RECOMMENDED_APPS } from "./registeredApps";
 import { AppRegistrationEntry, sortAlphabetically } from "./utils";
 import dynamic from "next/dynamic";
 
@@ -17,10 +17,6 @@ const sortOptions = [
 ];
 
 const initialApps = REGISTERED_APPS.reduce((obj, item) => (obj[item.id] = item, obj) ,{});
-// the default order of the apps
-const initialOrder = Object.keys(initialApps);
-
-const RECOMMENDED_APPS = ["CohortBuilder", "Downloads", "MutationFrequencyApp"];
 
 const ALL_OTHER_APPS = Object.keys(initialApps).filter((x) => !RECOMMENDED_APPS.includes(x));
 console.log(ALL_OTHER_APPS)
@@ -38,8 +34,8 @@ const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : Analys
   // TODO: build app registration and tags will be handled here
   const [activeTags, setActiveTags] = useState([]); // set of selected tags
   const [sortType, setSortType] = useState("a-z");
-  const [recommendedApps, setRecommendedApps] = useState([...RECOMMENDED_APPS]); // recommended apps based on Context
-  const [remainingApps, setRemainingApps] = useState([...ALL_OTHER_APPS]); // all other apps
+  const [recommendedApps] = useState([...RECOMMENDED_APPS]); // recommended apps based on Context
+  const [remainingApps] = useState([...ALL_OTHER_APPS]); // all other apps
   const [activeApps, setActiveApps] = useState([...ALL_OTHER_APPS] ); // set of active apps i.e. not recommended but filterable/dimmable
 
   const sortTools = (arr, st) => {
@@ -66,8 +62,8 @@ const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : Analys
   }
 
   return (
-    <div className="flex flex-col">
-      <div className="flex flex-row mx-4 mt-2 p-2 bg-white rounded-md shadow-md">
+    <div className="flex flex-col mb-6 ">
+      <div className="flex flex-row mx-4 my-2 p-2 border border-nci-gray-lighter rounded-md shadow-lg">
         <div className="flex flex-col w-1/3">
           <h2 className="ml-6"> Filter Tools</h2>
           <div className="flex flex-row">
@@ -84,7 +80,7 @@ const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : Analys
               </button> : null
             }
           </div>
-          <div className="flex flex-row  items-center">
+          <div className="flex flex-row  items-center mt-3">
             <Select data={sortOptions}
                     value={sortType}
                     classNames={{
@@ -113,7 +109,7 @@ const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : Analys
         <Grid className="mx-2" >
           { activeApps.map(k => initialApps[k]).map((x: AppRegistrationEntry) => {
               return(
-              <Grid.Col key={x.name} span={3} style={{ minHeight: 64 }}>
+              <Grid.Col key={x.name} sm={6} md={4} lg={3} xl={2} style={{ minHeight: 64 }}>
                 <AnalysisCard  entry={{...{  applicable: true,  ...x }}} onClick={handleOpenAppClicked} />
               </Grid.Col>
               )

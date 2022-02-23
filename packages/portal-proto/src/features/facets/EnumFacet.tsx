@@ -78,7 +78,7 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
     const { value, checked } = e.target;
 
     if (checked) {
-      if (field === "is_cancer_gene_census") { // TODO: remove after MR and boolean facets are supportted
+      if (field === "is_cancer_gene_census") { // TODO: remove after MR and boolean facets are supported
         const updated = selectedEnums ? [...selectedEnums, checked as boolean ] : [checked as boolean ];
         setSelectedEnums(updated);
       } else {
@@ -147,12 +147,12 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                 <div
                   className="flex flex-row items-center justify-between flex-wrap border p-1">
                   <button
-                    className={"ml-0.5 border rounded-sm border-nci-gray-darkest bg-nci-cyan hover:bg-nci-cyan-lightest text-white hover:text-nci-cyan-darker"}>
+                    className={"ml-0.5 border rounded-sm border-nci-gray-darkest bg-nci-gray hover:bg-nci-gray-lightest text-white hover:text-nci-gray-darker"}>
                     <AlphaSortIcon onClick={() => setIsSortedByValue(false)} scale="1.5em" />
                   </button>
                   <div className={"flex flex-row items-center "}>
                     <button onClick={() => setIsSortedByValue(true)}
-                            className={"border rounded-sm border-nci-cyan-darkest bg-nci-cyan hover:bg-nci-cyan-lightest text-white hover:text-nci-cyan-darker"}>
+                            className={"border rounded-sm border-nci-gray-darkest bg-nci-gray hover:bg-nci-gray-lightest text-white hover:text-nci-gray-darker transition-colors"}>
                       <SortIcon scale="1.5em" /></button>
                     <p className="px-2 mr-3">{valueLabel}</p>
                   </div>
@@ -168,13 +168,13 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                         return (
                           <div key={`${field}-${value}`} className="flex flex-row gap-x-1 px-2 ">
                             <div className="flex-none">
-                              { (field === "is_cancer_gene_census") ?
+                              { (field === "is_cancer_gene_census") ? // TODO: Remove after Feb 2022 MR review
                                 <input type="checkbox" value={value} onChange={handleChange}
-                                className="bg-nci-cyan-lightest hover:bg-nci-cyan-darkest text-nci-cyan-darkest"
+                                className="bg-nci-gray-lightest hover:bg-nci-gray-darkest text-nci-gray-darkest"
                                 checked={!!(selectedEnums && selectedEnums.includes(true))} />
                                 :
                               <input type="checkbox" value={value} onChange={handleChange}
-                                     className="bg-nci-cyan-lightest hover:bg-nci-cyan-darkest text-nci-cyan-darkest"
+                                     className="bg-nci-gray-lightest hover:bg-nci-gray-darkest text-nci-gray-darkest"
                                      checked={!!(selectedEnums && selectedEnums.includes(value))} />
                               }
                             </div>
@@ -194,7 +194,7 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                             return (
                               <div key={`${field}-${index}`} className="flex flex-row items-center px-2">
                                 <div className="flex-none">
-                                  <input type="checkbox" className="bg-nci-cyan-lightest hover:bg-nci-cyan-darkest text-nci-cyan-darkest"/>
+                                  <input type="checkbox" className="bg-nci-gray-lightest hover:bg-nci-gray-darkest text-nci-gray-darkest"/>
                                 </div>
                                 <div className="flex-grow h-3.5 align-center justify-center mt-1 ml-1 mr-8 bg-nci-gray-light rounded-b-sm animate-pulse"/>
                                 <div className="flex-none h-3.5 align-center justify-center mt-1 w-10 bg-nci-gray-light rounded-b-sm animate-pulse"/>
@@ -209,16 +209,16 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                 <div className="mt-3 m-1">
                   {remainingValues > 0 ? !isGroupExpanded ?
                       <div className="flex flex-row justify-end items-center border-t-2 p-1.5">
-                        <MoreIcon key="show-more" size="1.5em" className="text-nci-cyan-darkest"
+                        <MoreIcon key="show-more" size="1.5em" className="text-nci-gray-darkest"
                                   onClick={() => setIsGroupExpanded(!isGroupExpanded)} />
-                        <div className="pl-1 text-nci-cyan-darkest"> {isSuccess ? remainingValues : "..."} more</div>
+                        <div className="pl-1 text-nci-gray-darkest"> {isSuccess ? remainingValues : "..."} more</div>
                       </div>
                       :
                       <div
                         className="flex flex-row justify-end items-center border-t-2 border-b-0 border-r-0 border-l-0 p-1.5">
-                        <LessIcon key="show-less" size="1.5em" className="text-nci-cyan-darkest"
+                        <LessIcon key="show-less" size="1.5em" className="text-nci-gray-darkest"
                                   onClick={() => setIsGroupExpanded(!isGroupExpanded)} />
-                        <div className="pl-1 text-nci-cyan-darkest"> show less</div>
+                        <div className="pl-1 text-nci-gray-darkest"> show less</div>
                       </div>
                     : null
                   }

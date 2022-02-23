@@ -142,3 +142,5 @@ export const APPTAGS =  [
   { value: "ssm",name: "ssm" },
 ];
 
+export const RECOMMENDED_APPS = ["Studies", "CohortBuilder", "Downloads", ];
+

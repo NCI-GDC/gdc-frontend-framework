@@ -160,7 +160,7 @@ const IndexPage: NextPage = () => {
               </div>
             </div>
             <div className="flex flex-row">
-              <div className="flex-auto w-36 m-4 p-4 items-center font-montserrat text-nci-gray-darkest bg-nci-gray-lighter">A repository and knowledge base for cancer researchers who need to understand cancer, its clinical progression, and response to therapy.</div>
+              <div className="flex-auto w-36 m-4 p-4 items-center font-montserrat text-nci-gray-darkest rounded-md shadow-inner">A repository and knowledge base for cancer researchers who need to understand cancer, its clinical progression, and response to therapy.</div>
               <ActionButtonBar/>
             </div>
             <div className="flex items-center w-100 pb-5">
