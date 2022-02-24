@@ -10,10 +10,10 @@ export const get_facet_subcategories = (category: string) : string[]  => {
     Object.keys(GDC_Dictionary.dictionary[category]) : [];
 }
 
-export const get_facets = (category: string, subcategory:string) : Array< Record<any, any> >  => {
+export const get_facets = (category: string, subcategory:string, limit = 100) : Array< Record<any, any> >  => {
     const root = GDC_Dictionary.dictionary[category][subcategory];
     return Object.keys(root)
-      .filter(x => (root[x].facet_type === 'enum' || x === "Program" || x === "Project")) .map(x => { return { name: x, ...root[x] }});
+      .filter((x, index) => ((root[x].facet_type === 'enum' || x === "Program" || x === "Project") && index < limit)) .map(x => { return { name: x, ...root[x] }});
 }
 
 const get_facets_as_documents = (category: string) : Array< Record<any, any> >  => {

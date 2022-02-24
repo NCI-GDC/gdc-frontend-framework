@@ -123,7 +123,7 @@ export const CohortTabbedFacets = () => {
                                subCategories={downloadableSubcategories}
                                onSubcategoryChange={handleSubcategoryChanged}></FacetTabWithSubmenu>
         </TabList>
-        <TabPanel><FacetGroup facetNames={get_facets("Clinical", subcategories["Clinical"])} /></TabPanel>
+        <TabPanel><FacetGroup facetNames={get_facets("Clinical", subcategories["Clinical"], 25)} /></TabPanel>
         <TabPanel><FacetGroup
           facetNames={get_facets("Biospecimen", subcategories["Biospecimen"])} /></TabPanel>
         <TabPanel><FacetGroup  facetNames={get_facets("Downloadable", subcategories["Downloadable"])} /></TabPanel>

@@ -15,6 +15,8 @@ const maxValuesToDisplay = 7;
 
 interface FacetChartProps {
   readonly field: string;
+  readonly data: Record<string, number>;
+  readonly isSuccess: boolean;
   readonly type: string;
   readonly showXLabels?: boolean;
   readonly height?: number;
@@ -57,6 +59,7 @@ const processJSONData = (facetData: Record<string, any>) => {
 
 export const EnumFacetChart: React.FC<FacetChartProps> = ({
                                                      field,
+                                                     data, isSuccess,
                                                      type,
                                                      height,
                                                      marginBottom,
@@ -67,7 +70,7 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
                                                      valueLabel = "Cases",
                                                      orientation = "v",
                                                    }: FacetChartProps) => {
-  const { data, isSuccess } = FacetDataHooks[type](field);
+ //  const { data, isSuccess } = FacetDataHooks[type](field);
   const [chart_data, setChartData] = useState(undefined);
 
   useEffect(() => {

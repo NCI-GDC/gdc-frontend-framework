@@ -95,7 +95,7 @@ const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : Analys
       <div className="flex flex-" >
         <Grid className="mx-2"  >
         { recommendedApps.map(k => initialApps[k]).map((x: AppRegistrationEntry) => {
-          return (<Grid.Col key={x.name} span={4} style={{ maxWidth: 180, minWidth: 180}}>
+          return (<Grid.Col key={x.name} span={4} style={{ maxWidth: 240, minWidth: 240}}>
             <AnalysisCard  entry={{...{  applicable: true,  ...x }}} onClick={handleOpenAppClicked} />
           </Grid.Col>)
           }

@@ -21,6 +21,7 @@ import { EnumFacetChart } from "../charts/EnumFacetChart";
 import { Tooltip } from "@mantine/core";
 
 export interface EnumFacetProps {
+
   readonly field: string;
   readonly type: string;
   readonly description?: string;
@@ -169,7 +170,7 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                           <div key={`${field}-${value}`} className="flex flex-row gap-x-1 px-2 ">
                             <div className="flex-none">
                               { (field === "is_cancer_gene_census") ? // TODO: Remove after Feb 2022 MR review
-                                <v value={value} onChange={handleChange}
+                                <input type="checkbox" value={value} onChange={handleChange}
                                 className="bg-nci-gray-lightest hover:bg-nci-gray-darkest text-nci-gray-darkest"
                                 checked={!!(selectedEnums && selectedEnums.includes(true))} />
                                 :
@@ -227,8 +228,11 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
             </div>
 
             <div className="card-face card-back bg-white">
+
               <EnumFacetChart
                 field={field}
+                data={data}
+                isSuccess={isSuccess}
                 type={type}
                 marginBottom={40}
                 marginTop={5} padding={1}
@@ -239,6 +243,7 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                 valueLabel={valueLabel}
                 maxBins={Math.min(isGroupExpanded ? 16 : Math.min(6, total))}
               />
+
             </div>
 
           </div>
