@@ -62,18 +62,18 @@ const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : Analys
   return (
     <div className="flex flex-col mb-6 ">
       <div className="flex flex-row justify-center items-center mx-4 my-2 p-2 border border-nci-gray-lighter rounded-md shadow-lg">
-        <div className="flex flex-col w-96">
-          <h2 className="ml-6"> Filter Tools</h2>
+        <div className="flex flex-col w-1/2">
+          <h2 className="ml-6"> Tools</h2>
           <div className="flex flex-row">
-            <Chips className="py-1 pr-0" style={{ paddingRight: 0 }} multiple noWrap={false} value={activeTags}
+            <Chips  className="py-1 pr-0" style={{ paddingRight: 0 }} multiple noWrap={false} value={activeTags}
                    onChange={setActiveTags}>
               {
-                appTags.map((x) => <Chip key={x.value} value={x.value}>{x.name}</Chip>)
+                appTags.map((x) => <Chip size="sm" key={x.value} value={x.value}>{x.name}</Chip>)
               }
             </Chips>
             {activeTags.length ?
               <button className="bg-nci-gray-lighter h-6 rounded-full hover:bg-nci-gray"
-                      onClick={() => setActiveTags([])}>
+                      onClick={() => setActiveTags([])} aria-label="Tools filter clear button">
                 <Clear size="1.5rem" />
               </button> : null
             }
@@ -82,20 +82,21 @@ const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : Analys
             <Select data={sortOptions}
                     value={sortType}
                     classNames={{
-                      input: "border border-nci-gray-lighter round-md",
+                      input: "border border-nci-gray-lighter round-md ml-4 text-sm max-w-[20%] ",
                     }}
                     transition="pop-top-left"
                     transitionDuration={80}
                     transitionTimingFunction="ease"
                     onChange={(v) => setSortType(v)}
+                    aria-label="Select tools sort"
             />
           </div>
         </div>
 
-      <div className="flex flex-" >
+      <div className="flex flex-row" >
         <Grid className="mx-2"  >
         { recommendedApps.map(k => initialApps[k]).map((x: AppRegistrationEntry) => {
-          return (<Grid.Col key={x.name} span={4} style={{ maxWidth: 240, minWidth: 240}}>
+          return (<Grid.Col key={x.name} xs={12} sm={6} md={4} lg={3} xl={2} style={{ minHeight: 64, maxWidth: 220 }}>
             <AnalysisCard  entry={{...{  applicable: true,  ...x }}} onClick={handleOpenAppClicked} />
           </Grid.Col>)
           }
@@ -107,7 +108,7 @@ const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : Analys
         <Grid className="mx-2" >
           { activeApps.map(k => initialApps[k]).map((x: AppRegistrationEntry) => {
               return(
-              <Grid.Col key={x.name} sm={6} md={4} lg={3} xl={2} style={{ minHeight: 64 }}>
+              <Grid.Col key={x.name} xs={12} sm={6} md={4} lg={3} xl={2} style={{ minHeight: 48, maxWidth: 180 }}>
                 <AnalysisCard  entry={{...{  applicable: true,  ...x }}} onClick={handleOpenAppClicked} />
               </Grid.Col>
               )

@@ -45,27 +45,6 @@ const useCohortCases = (pageSize = 10, offset = 0) => {
   // to control when useEffects are called
   const filters = JSON.stringify(cohortFilters)
 
-  // useEffect(() => {
-  //   if (cases.status === "uninitialized") {
-  //     coreDispatch(fetchCases(
-  //       {
-  //         fields: [
-  //           "case_id",
-  //           "submitter_id",
-  //           "primary_site",
-  //           "project.project_id",
-  //           "demographic.gender",
-  //           "diagnoses.primary_diagnosis",
-  //           "diagnoses.tissue_or_organ_of_origin",
-  //         ],
-  //         filters: cohortFilters,
-  //         size: pageSize,
-  //         from: offset * pageSize,
-  //       }
-  //     ));
-  //   }
-  // }, [coreDispatch]);
-
   useEffect(() => {
       coreDispatch(fetchCases(
         {
@@ -95,10 +74,6 @@ const useCohortCases = (pageSize = 10, offset = 0) => {
     isError: cases?.status === "rejected",
   };
 };
-
-const LoadingTable = (pageSize) => {
-
-}
 
 export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
   props: ContextualCasesViewProps,
@@ -174,13 +149,13 @@ export const CasesView: React.FC<CasesViewProps> = (props: CasesViewProps) => {
   return (
     <Table verticalSpacing="xs" striped highlightOnHover >
       <thead>
-        <tr className="bg-nci-gray-light text-white">
-          <th className="px-2">Case</th>
-          <th className="px-2">Project</th>
-          <th className="px-2">Primary Site</th>
-          <th className="px-2">Gender</th>
-          <th className="px-2">Primary Diagnosis</th>
-          <th className="px-2 whitespace-nowrap">Tissue/Organ of Origin</th>
+        <tr className="bg-nci-gray-lighter ">
+          <th className="px-2 text-nci-gray-darkest">Case</th>
+          <th className="px-2 text-nci-gray-darkest">Project</th>
+          <th className="px-2 text-nci-gray-darkest">Primary Site</th>
+          <th className="px-2 text-nci-gray-darkest">Gender</th>
+          <th className="px-2 text-nci-gray-darkest">Primary Diagnosis</th>
+          <th className="px-2 text-nci-gray-darkest whitespace-nowrap">Tissue/Organ of Origin</th>
         </tr>
       </thead>
       <tbody>

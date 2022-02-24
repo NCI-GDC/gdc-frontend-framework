@@ -33,19 +33,13 @@ import { useCoreDispatch, setCurrentCohort, clearCurrentCohort, clearCohortFilte
 
   const setCohort = (idx:number) => {
 
-    if (cohorts[idx].facets) {
+    if (cohorts[idx].facets)
       if (cohorts[idx].facets.length == 0) {
         coreDispatch(clearCohortFilters());
-      }
-
-      cohorts[idx].facets.map(x => {
-        updateEnumFilters(coreDispatch, x.value, x.field);
-      })
-    }
-    if (cohorts[idx].dimmedApps) {
-        coreDispatch( setCurrentCohort(cohorts[idx].dimmedApps))
       } else {
-        coreDispatch(clearCurrentCohort());
+        cohorts[idx].facets.map(x => {
+          updateEnumFilters(coreDispatch, x.value, x.field);
+        })
       }
   }
 

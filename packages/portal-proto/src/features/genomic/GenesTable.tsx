@@ -108,7 +108,7 @@ const GenesTableSimple: React.FC<GDCGenesTable> = ({ genes,
   return (
     <Table verticalSpacing={5} striped highlightOnHover >
       <thead>
-      <tr className="bg-nci-gray-lighter text-white">
+      <tr className="bg-nci-gray-lighter text-nci-gray-darkest">
         <th>Symbol</th>
         <th>Name</th>
         <th># SSMS Affected Cases in Cohort</th>

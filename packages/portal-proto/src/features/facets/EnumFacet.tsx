@@ -109,7 +109,6 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
       <div className="flex flex-col bg-white relative shadow-lg border-nci-gray-lightest border-1 rounded-b-md text-xs ">
         <div>
           <div className="flex items-center justify-between flex-wrap bg-nci-gray-lighter shadow-md px-1.5">
-
             <Tooltip label={description}
                      classNames={{
                        arrow: "bg-nci-gray-light",
@@ -122,19 +121,23 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                      withArrow
                      transition="fade"
                      transitionDuration={200}>
-            <div className="has-tooltip text-nci-gray font-heading font-semibold text-md">{(facetName === null) ? convertFieldToName(field) : facetName}
+            <div className="has-tooltip text-nci-gray-darkest font-heading font-semibold text-md">{(facetName === null) ? convertFieldToName(field) : facetName}
              </div>
             </Tooltip>
             <div className="flex flex-row">
               {showSearch ? <button
                 className="hover:bg-nci-grey-darker text-nci-gray font-bold py-2 px-1 rounded inline-flex items-center"
-                onClick={toggleSearch}>
+                onClick={toggleSearch}
+                aria-label="Search"
+              >
                 <SearchIcon size="1.25em" />
               </button> : null
               }
               {showFlip ? <button
                 className="hover:bg-nci-grey-darker text-nci-gray font-bold py-2 px-1 rounded inline-flex items-center"
-                onClick={toggleFlip}>
+                onClick={toggleFlip}
+                aria-label="Flip between form and chart"
+              >
                 <FlipIcon size="1.25em" />
               </button> : null
               }
@@ -148,12 +151,16 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                 <div
                   className="flex flex-row items-center justify-between flex-wrap border p-1">
                   <button
-                    className={"ml-0.5 border rounded-sm border-nci-gray-darkest bg-nci-gray hover:bg-nci-gray-lightest text-white hover:text-nci-gray-darker"}>
-                    <AlphaSortIcon onClick={() => setIsSortedByValue(false)} scale="1.5em" />
+                    className={"ml-0.5 border rounded-sm border-nci-gray-darkest bg-nci-gray hover:bg-nci-gray-lightest text-white hover:text-nci-gray-darker"}
+                    aria-label="Sort alphabetically"
+                  >
+                    <AlphaSortIcon onClick={() => setIsSortedByValue(false)} scale="1.5em"  />
                   </button>
                   <div className={"flex flex-row items-center "}>
                     <button onClick={() => setIsSortedByValue(true)}
-                            className={"border rounded-sm border-nci-gray-darkest bg-nci-gray hover:bg-nci-gray-lightest text-white hover:text-nci-gray-darker transition-colors"}>
+                            className={"border rounded-sm border-nci-gray-darkest bg-nci-gray hover:bg-nci-gray-lightest text-white hover:text-nci-gray-darker transition-colors"}
+                            aria-label="Sort numerically"
+                    >
                       <SortIcon scale="1.5em" /></button>
                     <p className="px-2 mr-3">{valueLabel}</p>
                   </div>
@@ -170,13 +177,19 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                           <div key={`${field}-${value}`} className="flex flex-row gap-x-1 px-2 ">
                             <div className="flex-none">
                               { (field === "is_cancer_gene_census") ? // TODO: Remove after Feb 2022 MR review
-                                <input type="checkbox" value={value} onChange={handleChange}
-                                className="bg-nci-gray-lightest hover:bg-nci-gray-darkest text-nci-gray-darkest"
-                                checked={!!(selectedEnums && selectedEnums.includes(true))} />
-                                :
-                              <input type="checkbox" value={value} onChange={handleChange}
-                                     className="bg-nci-gray-lightest hover:bg-nci-gray-darkest text-nci-gray-darkest"
-                                     checked={!!(selectedEnums && selectedEnums.includes(value))} />
+                                <input type="checkbox"
+                                       value={value}
+                                       onChange={handleChange}
+                                       aria-label={`checkbox for ${field}`}
+                                        className="bg-nci-gray-lightest hover:bg-nci-gray-darkest text-nci-gray-darkest"
+                                        checked={!!(selectedEnums && selectedEnums.includes(true))} />
+                                        :
+                                        <input type="checkbox"
+                                               value={value}
+                                               onChange={handleChange}
+                                               aria-label={`checkbox for ${field}`}
+                                               className="bg-nci-gray-lightest hover:bg-nci-gray-darkest text-nci-gray-darkest"
+                                               checked={!!(selectedEnums && selectedEnums.includes(value))} />
                               }
                             </div>
                             <div className="flex-grow truncate ... font-heading text-md pt-0.5">{value}</div>

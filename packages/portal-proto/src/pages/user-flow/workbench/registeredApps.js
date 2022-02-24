@@ -7,8 +7,7 @@ export const COHORTS = [
     name: "Baily's Cohort",
     facets: [
       { field: "cases.primary_site", value: ["breast", "bronchus and lung"] },
-    ],
-    dimmedApps: "SetOperations,SingleCellRnaSeq"
+    ]
   }
 ];
 
@@ -86,7 +85,7 @@ export const REGISTERED_APPS = [
   {
     name: "OncoGrid",
     icon: "icons/apps/oncogrid.svg",
-    iconSize: { width: 124, height: 64},
+    iconSize: { width: 100, height: 48},
     tags: ["variantAnalysis", "cnv", "ssm"],
     hasDemo: true,
     description: "Visualize the top most mutated cases and genes affected by high impact mutations in your cohort.",
@@ -105,7 +104,7 @@ export const REGISTERED_APPS = [
   {
     name: "ProteinPaint",
     icon: "proteinpaint.png",
-    iconSize: { width: 124, height: 64},
+    iconSize: { width: 100, height: 48},
     tags: ["variantAnalysis","ssm" ],
     hasDemo: true,
     description:  "Visualize mutations in protein-coding genes.",

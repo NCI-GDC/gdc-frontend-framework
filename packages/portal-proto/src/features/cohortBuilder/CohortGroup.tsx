@@ -113,16 +113,17 @@ export const CohortBar: React.FC<CohortBarProps> = ({
               onSelectionChanged(x.value);
             }}
             className="border-nci-gray-light w-80 p-0"
+            aria-label="Select cohort"
           /> : <div><h2>{currentCohort.label}</h2></div>
         }
       </div>
       {!hide_controls ?
         <div className="flex flex-row items-center ml-auto">
-          <Button className={buttonStyle}><SaveIcon size="1.5em" /></Button>
-          <Button className={buttonStyle}><AddIcon size="1.5em" /></Button>
-          <Button className={buttonStyle}><DeleteIcon size="1.5em" /></Button>
-          <Button className={buttonStyle}><UploadIcon size="1.5em" /></Button>
-          <Button className={buttonStyle}><DownloadIcon size="1.5em" /></Button>
+          <Button className={buttonStyle}><SaveIcon size="1.5em" aria-label="Save cohort"/></Button>
+          <Button className={buttonStyle}><AddIcon size="1.5em" aria-label="Add cohort"/></Button>
+          <Button className={buttonStyle}><DeleteIcon size="1.5em" aria-label="Delete cohort"/></Button>
+          <Button className={buttonStyle}><UploadIcon size="1.5em" aria-label="Upload cohort"/></Button>
+          <Button className={buttonStyle}><DownloadIcon size="1.5em"  aria-label="Download cohort"/></Button>
         </div> : <div />
       }
     </div>
@@ -220,7 +221,6 @@ const CohortRangeFilterElement: React.FC<RangeFilterProps> = ({ filter }: RangeF
 interface PersistentCohort {
   readonly name: string;
   readonly facets?: Array<Record<string, string>>;
-  readonly dimmedApps?:string;
 }
 
 export interface CohortGroupProps {

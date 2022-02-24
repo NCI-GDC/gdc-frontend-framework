@@ -14,7 +14,7 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({ facetNames }: FacetGroup
 
   return (<div
       className="flex flex-col border-r-2 border-l-2 border-b-2 border-t-0 border-nci-cyan-darker p-3 h-screen/1.5 overflow-y-scroll">
-      <ResponsiveMasonry columnsCountBreakPoints={{ 350: 2, 750: 3, 900: 4, 1400: 5, 2200: 6 }}>
+      <ResponsiveMasonry columnsCountBreakPoints={{ 350: 2, 750: 3, 900: 4, 1400: 5, 1800: 6, 2200: 7 }}>
         <Masonry gutter="0.5em">
           {facetNames.map((x, index) => {
             return (<EnumFacet key={`${x.facet_filter}-${index}`}
@@ -83,6 +83,7 @@ const FacetTabWithSubmenu: React.FC<FacetTabWithSubmenuProps> = ({
         defaultValue={subCategory}
         onChange={handleChange}
         className="px-2 w-48 bg-opacity-0 border-opacity-0"
+        aria-label={`Select ${category} subcategory`}
       />
     </div>
   </Tab>;

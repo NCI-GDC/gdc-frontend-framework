@@ -19,7 +19,7 @@ export const headerElements = [
       width={220}
     >
     <div className="text-sm font-heading  hover:bg-nci-blue-lighter transition-colors text-nci-gray-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md ">
-      <Image src={"/user-flow/icons/dna.svg"} width={24} height={24}/>
+      <Image src={"/user-flow/icons/dna.svg"} alt="Analysis logo" width={24} height={24}/>
     </div>
     </Tooltip>
   </Link>,
@@ -39,7 +39,7 @@ export const headerElements = [
       width={220}
     >
     <div className="text-sm font-heading  hover:bg-nci-blue-lighter transition-colors text-nci-gray-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md ">
-      <Image src={"/user-flow/icons/crowd-of-users.svg"} width={24} height={24}/>
+      <Image src={"/user-flow/icons/crowd-of-users.svg"} alt="Studies logo" width={24} height={24}/>
     </div>
     </Tooltip>
   </Link>,
@@ -59,7 +59,7 @@ export const headerElements = [
       width={220}
     >
     <div className="text-sm font-heading  hover:bg-nci-blue-lighter transition-colors text-nci-gray-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md ">
-      <Image src={"/user-flow/icons/build.svg"} width={24} height={24}/>
+      <Image src={"/user-flow/icons/build.svg"} alt="Cohort logo" width={24} height={24}/>
     </div>
     </Tooltip>
   </Link>,
@@ -79,7 +79,7 @@ export const headerElements = [
       width={220}
     >
     <div className="text-sm font-heading hover:bg-nci-blue-lighter transition-colors text-nci-gray-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md ">
-      <Image src={"/user-flow/icons/database.svg"} width={24} height={24}/>
+      <Image src={"/user-flow/icons/database.svg"} alt="Downloads logo" width={24} height={24}/>
     </div>
     </Tooltip>
   </Link>
