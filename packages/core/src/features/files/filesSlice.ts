@@ -1,7 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { CoreDataSelectorResponse, DataStatus } from "../../dataAcess";
-import { CoreState } from "../../store";
-import * as filesApi from "./filesApi";
+import { CoreDispatch, CoreState } from "../../store";
+import {
+  fetchGdcFiles,
+  GdcApiRequest,
+  GdcApiResponse,
+  FileDefaults,
+} from "../gdcapi/gdcapi";
 
 const accessTypes = ["open", "controlled"] as const;
 
@@ -215,9 +220,14 @@ export interface FilesState {
   readonly error?: string;
 }
 
-export const fetchFiles = createAsyncThunk("files/fetchFiles", async () => {
-  return await filesApi.fetchFiles();
+export const fetchFiles = createAsyncThunk<
+  GdcApiResponse<FileDefaults>,
+  GdcApiRequest,
+  { dispatch: CoreDispatch; state: CoreState }
+>("files/fetchFiles", async (request?: GdcApiRequest) => {
+  return await fetchGdcFiles(request);
 });
+
 
 const initialState: FilesState = {
   status: "uninitialized",

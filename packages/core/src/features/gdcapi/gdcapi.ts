@@ -236,6 +236,27 @@ export interface AnnotationDefaults {
   readonly status: string;
 }
 
+export interface FileDefaults {
+  readonly id: string;
+  readonly submitter_id: string;
+  readonly access: string;
+  readonly acl: ReadonlyArray<string>;
+  readonly create_datetime: string;
+  readonly updated_datetime: string;
+  readonly data_category: string;
+  readonly data_format: string;
+  readonly data_release: string;
+  readonly data_type: string;
+  readonly file_id: string;
+  readonly file_name: string;
+  readonly file_size: number;
+  readonly md5sum: string;
+  readonly state: string;
+  readonly type: string;
+  readonly version: string;
+  readonly experimental_strategy: string;
+}
+
 export const fetchGdcProjects = async (
   request?: GdcApiRequest,
 ): Promise<GdcApiResponse<ProjectDefaults>> => {
@@ -246,6 +267,12 @@ export const fetchGdcAnnotations = async (
   request?: GdcApiRequest,
 ): Promise<GdcApiResponse<AnnotationDefaults>> => {
   return fetchGdcEntities("annotations", request);
+};
+
+export const fetchGdcFiles = async (
+  request?: GdcApiRequest,
+): Promise<GdcApiResponse<FileDefaults>> => {
+  return fetchGdcEntities("files", request);
 };
 
 export const fetchGdcEntities = async <T>(
