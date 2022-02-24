@@ -6,8 +6,9 @@ export const COHORTS = [
   {
     name: "Baily's Cohort",
     facets: [
-      { name: "Primary Site", op: "in", value: "bronchus and lung" },
+      { field: "cases.primary_site", value: ["breast", "bronchus and lung"] },
     ],
+    dimmedApps: "SetOperations,SingleCellRnaSeq"
   }
 ];
 
@@ -78,6 +79,7 @@ export const REGISTERED_APPS = [
     icon: "icons/apps/setOps.svg",
     tags: ["generalUtility"],
     hasDemo: true,
+    hideCounts: true,
     description: "Display Venn diagram and find intersection or union, etc. of your cohorts.",
     id: "SetOperations",
   },

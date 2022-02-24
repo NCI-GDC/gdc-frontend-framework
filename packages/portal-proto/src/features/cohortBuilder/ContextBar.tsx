@@ -17,13 +17,37 @@ import {
 import { FaCartPlus as AddToCartIcon } from "react-icons/fa";
 
 import SummaryFacets from "./SummaryFacets";
+import { updateEnumFilters } from "../facets/hooks";
+import { useCoreDispatch, setCurrentCohort, clearCurrentCohort, clearCohortFilters } from "@gff/core";
 
  const ContextBar: React.FC<CohortGroupProps> = ({ cohorts }: CohortGroupProps) => {
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const handleCohortSelection = (idx) => {
     setCurrentIndex(idx);
+    setCohort(idx);
   };
+
+   const coreDispatch = useCoreDispatch();
+
+
+  const setCohort = (idx:number) => {
+
+    if (cohorts[idx].facets) {
+      if (cohorts[idx].facets.length == 0) {
+        coreDispatch(clearCohortFilters());
+      }
+
+      cohorts[idx].facets.map(x => {
+        updateEnumFilters(coreDispatch, x.value, x.field);
+      })
+    }
+    if (cohorts[idx].dimmedApps) {
+        coreDispatch( setCurrentCohort(cohorts[idx].dimmedApps))
+      } else {
+        coreDispatch(clearCurrentCohort());
+      }
+  }
 
    const [summaryFields, setSummaryFields] = useState([
      { field: "primary_site", name: "Primary Site" },

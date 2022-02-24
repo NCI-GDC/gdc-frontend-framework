@@ -218,8 +218,9 @@ const CohortRangeFilterElement: React.FC<RangeFilterProps> = ({ filter }: RangeF
 };
 
 interface PersistentCohort {
-  readonly name: string,
-  readonly facets: Array<Record<string, any>>,
+  readonly name: string;
+  readonly facets?: Array<Record<string, string>>;
+  readonly dimmedApps?:string;
 }
 
 export interface CohortGroupProps {
@@ -252,6 +253,7 @@ export const CohortGroup: React.FC<CohortGroupProps> = ({ cohorts }: CohortGroup
   };
 
   const filters = useCohortFacetFilters();
+  // eslint-disable-next-line react/prop-types
   const CohortBarWithProps = () => <CohortBar cohort_names={cohorts.map(o => o.name)}
                                               onSelectionChanged={handleCohortSelection}
                                               defaultIdx={currentIndex}

@@ -4,8 +4,10 @@ import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPage
 import ContextBar from "../../../features/cohortBuilder/ContextBar";
 import { headerElements } from "./navigation-utils";
 import AnalysisWorkspace from "./AnalysisWorkspace";
+import { COHORTS } from "./registeredApps";
 
 //// Mocked Data
+/*
 const COHORTS = [
   { name: 'New Custom Cohort',
     facets : [  ],
@@ -38,7 +40,7 @@ const COHORTS = [
     file_count: "2,198"
   }
 ]
-
+*/
 
 const SingleAppsPage: NextPage = () => {
   const router = useRouter()

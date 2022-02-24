@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { AppRegistrationEntry } from "./utils";
 import { Badge, Button, Card, Group, Loader, Tooltip } from "@mantine/core";
 import { FaUserCog as OptimizeIcon } from "react-icons/fa";
-import { useFilteredCohortCounts}  from "@gff/core";
+import { useFilteredCohortCounts, selectCurrentCohort, useCoreSelector } from "@gff/core";
 
 export interface AnalysisCardProps  {
   entry: AppRegistrationEntry;
@@ -12,9 +12,16 @@ export interface AnalysisCardProps  {
 
 const AnalysisCard: React.FC<AnalysisCardProps> = ( { entry, onClick } : AnalysisCardProps) => {
   const cohortCounts = useFilteredCohortCounts();
+  const [dimmed, setDimmed] = useState(false);
+
+  const cohortName = useCoreSelector((state) => selectCurrentCohort(state));
+
+  useEffect(() => {
+      setDimmed((cohortName) && (cohortName.indexOf(entry.id) >=0))
+  }, [cohortName]);
 
   return (
-    <Card shadow="sm" padding="sm" className="bg-white hover:bg-nci-gray-lightest">
+    <Card shadow="sm" padding="sm" className={ `bg-white hover:bg-nci-gray-lightest ${dimmed ? "opacity-30" : ""}`}>
       <Group position="center" direction="column">
         <Card.Section>
           <Tooltip
@@ -53,16 +60,17 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ( { entry, onClick } : Analysi
         { entry.optimizeRules ? <Button compact size="xs" radius="xl" className="bg-nci-gray-light hover:bg-nci-gray border-r-lg mr-2">
           <OptimizeIcon size="1.25rem" />
         </Button> : null }
+        { entry.hideCounts ? null :
          <Badge variant="outline" size="md" className="border-nci-gray-light text-nci-gray-darker">
            {
-             (cohortCounts.isSuccess) ? `${ entry.caseCounts ?
-               Math.round(cohortCounts.data["caseCounts"] * entry.caseCounts).toLocaleString()
+             (cohortCounts.isSuccess) ? `${entry.caseCounts ?
+               Math.round(cohortCounts.data["caseCounts"] * entry.caseCounts * (((!dimmed) as unknown) as number)  ).toLocaleString()
                :
-               cohortCounts.data["caseCounts"].toLocaleString() } Cases` : <><Loader
+               cohortCounts.data["caseCounts"].toLocaleString()} Cases` : <><Loader
                color="gray" size="xs" className="mr-2" />Cases</>
            }
-
          </Badge>
+        }
         { entry.hasDemo ? <Button  onClick={() => onClick({ ...entry, name: `${entry.name} Demo`, id: `${entry.id}Demo` })}
           compact size="xs"
           radius="xl"

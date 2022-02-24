@@ -101,7 +101,6 @@ const MutationsTable: React.FC<unknown> = () => {
 };
 
 const MutationTableSimple: React.FC<GDCSsmsTable> = ( data : GDCSsmsTable) => {
-console.log(data);
   return (
     <Table verticalSpacing={5} striped highlightOnHover >
       <thead>

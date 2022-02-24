@@ -42,8 +42,6 @@ export const MAXIMUM_CURVES = 5;
 export const useSurvival = (data, xDomain, setXDomain) => {
   const ref =useRef();
 
-  console.log(data);
-
   useEffect(() => {
     ref.current ?
     renderPlot({
