@@ -5,11 +5,10 @@ import {
   GraphQLApiResponse
 } from "../gdcapi/gdcgraphql";
 
-import { isBucketsAggregation } from "../gdcapi/gdcapi";
 import { selectCurrentCohortGqlFilters } from "../cohort/cohortFilterSlice";
 import {
   FacetBuckets,
-  buildGraphGLBucketQuery
+  buildGraphGLBucketQuery, processBuckets,
 } from "./facetApiGQL";
 
 /**
@@ -46,25 +45,7 @@ const filesSlice = createSlice({
           state[action.meta.arg].error = response.errors.facets;
         } else {
           const aggregations = Object(response).data.viewer.repository.files.aggregations;
-           aggregations &&
-            Object.entries(aggregations).forEach(
-              ([field, aggregation]) => {
-                // const normalizedField = normalizeGQLFacetName(field)
-                const normalizedField = field;
-                if (isBucketsAggregation(aggregation)) {
-                  state[normalizedField].status = "fulfilled";
-                  state[normalizedField].buckets = aggregation.buckets.reduce(
-                    (facetBuckets, apiBucket) => {
-                      facetBuckets[apiBucket.key] = apiBucket.doc_count;
-                      return facetBuckets;
-                    },
-                    {} as Record<string, number>,
-                  );
-                } else {
-                  // Unhandled aggregation
-                }
-              },
-            );
+           aggregations && processBuckets(aggregations, state);
         }
       })
       .addCase(fetchFileFacetByName.pending, (state, action) => {

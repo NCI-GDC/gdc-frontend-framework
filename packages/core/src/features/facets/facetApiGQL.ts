@@ -1,5 +1,5 @@
 import { DataStatus } from "../../dataAcess";
-
+import { isBucketsAggregation } from "../gdcapi/gdcapi";
 
 export const convertFacetNameToGQL = (x:string) => x.replaceAll('.', '__')
 export const normalizeGQLFacetName = (x:string) => x.replaceAll('__', '.')
@@ -38,4 +38,25 @@ export interface FacetBuckets {
   readonly status: DataStatus;
   readonly error?: string;
   readonly buckets?: Record<string, number>;
+}
+
+export const processBuckets = (aggregations:Record<string, unknown>, state: {[index: string] :  Record<string, unknown>} ) => {
+  Object.entries(aggregations).forEach(
+    ([field, aggregation]) => {
+      const normalizedField = normalizeGQLFacetName(field)
+      if (isBucketsAggregation(aggregation)) {
+        state[normalizedField].status = "fulfilled";
+        state[normalizedField].buckets = aggregation.buckets.reduce(
+          (facetBuckets, apiBucket) => {
+            facetBuckets[apiBucket.key] = apiBucket.doc_count;
+            return facetBuckets;
+          },
+          {} as Record<string, number>,
+        );
+      } else {
+        // Unhandled aggregation
+      }
+    },
+  );
+  return state;
 }

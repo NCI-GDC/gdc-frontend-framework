@@ -8,9 +8,7 @@ import {
   GraphQLApiResponse
 } from "../gdcapi/gdcgraphql";
 
-import { FacetBuckets, buildGraphGLBucketQuery } from "./facetApiGQL";
-
-import { isBucketsAggregation } from "../gdcapi/gdcapi";
+import { FacetBuckets, buildGraphGLBucketQuery, processBuckets } from "./facetApiGQL";
 import { selectCurrentCohortGqlFilters } from "../cohort/cohortFilterSlice";
 
 export const fetchGenesFacetByName = createAsyncThunk<
@@ -44,25 +42,7 @@ const slice = createSlice({
           state[action.meta.arg].error = response.errors.facets;
         } else {
           const aggregations = Object(response).data.viewer.explore.genes.aggregations;
-           aggregations &&
-            Object.entries(aggregations).forEach(
-              ([field, aggregation]) => {
-                // const normalizedField = normalizeGQLFacetName(field)
-                const normalizedField = field;
-                if (isBucketsAggregation(aggregation)) {
-                  state[normalizedField].status = "fulfilled";
-                  state[normalizedField].buckets = aggregation.buckets.reduce(
-                    (facetBuckets, apiBucket) => {
-                      facetBuckets[apiBucket.key] = apiBucket.doc_count;
-                      return facetBuckets;
-                    },
-                    {} as Record<string, number>,
-                  );
-                } else {
-                  // Unhandled aggregation
-                }
-              },
-            );
+           aggregations && processBuckets(aggregations, state);
         }
       })
       .addCase(fetchGenesFacetByName.pending, (state, action) => {

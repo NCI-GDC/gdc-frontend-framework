@@ -9,12 +9,11 @@ import {
   graphqlAPI,
   GraphQLApiResponse
 } from "../gdcapi/gdcgraphql";
+import { processBuckets } from "./facetApiGQL";
 
-import { isBucketsAggregation } from "../gdcapi/gdcapi";
 import { selectCurrentCohortGqlFilters } from "../cohort/cohortFilterSlice";
 import {
   FacetBuckets,
-  normalizeGQLFacetName,
   buildGraphGLBucketQuery
 } from "./facetApiGQL";
 
@@ -34,6 +33,8 @@ export const fetchCaseFacetByName = createAsyncThunk<
 
   return await graphqlAPI(queryGQL, filtersGQL);
 });
+
+
 
 
 // these top-level properties should match the gdcapi indices.
@@ -58,24 +59,7 @@ const casesSlice = createSlice({
           state[action.meta.arg].error = response.errors.facets;
         } else {
           const aggregations = Object(response).data.viewer.explore.cases.aggregations;
-          aggregations &&
-          Object.entries(aggregations).forEach(
-            ([field, aggregation]) => {
-              const normalizedField = normalizeGQLFacetName(field)
-              if (isBucketsAggregation(aggregation)) {
-                state[normalizedField].status = "fulfilled";
-                state[normalizedField].buckets = aggregation.buckets.reduce(
-                  (facetBuckets, apiBucket) => {
-                    facetBuckets[apiBucket.key] = apiBucket.doc_count;
-                    return facetBuckets;
-                  },
-                  {} as Record<string, number>,
-                );
-              } else {
-                // Unhandled aggregation
-              }
-            },
-          );
+          aggregations && processBuckets(aggregations, state);
         }
       })
       .addCase(fetchCaseFacetByName.pending, (state, action) => {
