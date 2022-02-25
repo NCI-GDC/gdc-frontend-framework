@@ -251,10 +251,23 @@ export interface FileDefaults {
   readonly file_name: string;
   readonly file_size: number;
   readonly md5sum: string;
+  readonly platform: string;
   readonly state: string;
   readonly type: string;
   readonly version: string;
   readonly experimental_strategy: string;
+  readonly cases?: ReadonlyArray<{
+    readonly project?: {
+      readonly dbgap_accession_number: null;
+      readonly disease_type: string;
+      readonly name: string;
+      readonly primary_site: string;
+      readonly project_id: string;
+      readonly releasable: boolean;
+      readonly released: boolean;
+      readonly state: string;
+    }
+  }>;
 }
 
 export const fetchGdcProjects = async (

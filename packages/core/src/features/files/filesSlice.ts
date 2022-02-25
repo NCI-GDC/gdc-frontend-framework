@@ -208,10 +208,12 @@ export interface GdcFile {
   readonly fileName: string;
   readonly fileSize: number;
   readonly md5sum: string;
+  readonly platform: string;
   readonly state: string;
   readonly fileType: FileType;
   readonly version: string;
   readonly experimentalStrategy?: ExperimentalStrategy;
+  readonly project_id?: string;
 }
 
 export interface FilesState {
@@ -261,12 +263,14 @@ const slice = createSlice({
             fileName: hit.file_name,
             fileSize: hit.file_size,
             md5sum: hit.md5sum,
+            platform: hit.platform,
             state: hit.state,
             fileType: asFileType(hit.type),
             version: hit.version,
             experimentalStrategy: asExperimentalStrategy(
               hit.experimental_strategy,
             ),
+            project_id: hit?.cases?.[0]?.project?.project_id,
           }));
           state.status = "fulfilled";
           state.error = undefined;
