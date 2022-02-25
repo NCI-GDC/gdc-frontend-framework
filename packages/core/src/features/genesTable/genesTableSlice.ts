@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   CoreDataSelectorResponse,
-  createUseCoreDataHook,
+  createUseFiltersCoreDataHook,
   DataStatus,
 } from "../../dataAcess";
 import { castDraft } from "immer";
@@ -12,7 +12,9 @@ import {
   graphqlAPI,
   TablePageOffsetProps,
 } from "../gdcapi/gdcgraphql";
-import { selectCurrentCohortCaseGqlFilters } from "../cohort/cohortFilterSlice";
+import { selectCurrentCohortFilters,
+  selectCurrentCohortCaseGqlFilters } from "../cohort/cohortFilterSlice";
+
 
 const GenesTableGraphQLQuery = `
           query GenesTable_relayQuery(
@@ -367,7 +369,7 @@ export const selectGenesTableData = (
   };
 };
 
-export const useGenesTable = createUseCoreDataHook(
-  fetchGenesTable,
+export const useGenesTable = createUseFiltersCoreDataHook(fetchGenesTable,
   selectGenesTableData,
-);
+  selectCurrentCohortFilters);
+

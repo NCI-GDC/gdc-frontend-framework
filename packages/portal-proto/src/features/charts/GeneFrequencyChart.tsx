@@ -1,14 +1,9 @@
 import {
   GenesFrequencyChart,
-  fetchGeneFrequencies,
-  useCoreSelector,
-  selectCurrentCohortFilters,
-  useCoreDispatch,
-  selectGeneFrequencyChartData
+  useGeneFrequencyChart
 } from "@gff/core";
 
 import dynamic from 'next/dynamic'
-import { useEffect } from "react";
 
 const BarChart = dynamic(() => import('./BarChart'), {
   ssr: false
@@ -31,35 +26,6 @@ const processChartData = (chartData:GenesFrequencyChart, title = "Distribution o
   return results;
 }
 
-
-
-interface GenesFrequencyResponse {
-  readonly data?: GenesFrequencyChart;
-  readonly error?: string;
-  readonly isUninitialized: boolean;
-  readonly isFetching: boolean;
-  readonly isSuccess: boolean;
-  readonly isError: boolean;
-}
-
-const useGeneFrequencyChart = (): GenesFrequencyResponse => {
-  const coreDispatch = useCoreDispatch();
-  const chartData = useCoreSelector((state) => selectGeneFrequencyChartData(state));
-  const cohortFilters = useCoreSelector((state) => selectCurrentCohortFilters(state));
-
-  useEffect(() => {
-    coreDispatch(fetchGeneFrequencies( { pageSize:20, offset: 0}));
-  }, [coreDispatch, cohortFilters]);
-  return {
-    data: { ...chartData?.data },
-    error: chartData?.error,
-    isUninitialized: chartData === undefined,
-    isFetching: chartData?.status === "pending",
-    isSuccess: chartData?.status === "fulfilled",
-    isError: chartData?.status === "rejected",
-  };
-};
-
 interface GeneFrequencyChartProps {
   readonly height?: number;
   readonly marginBottom?: number;
@@ -70,7 +36,7 @@ interface GeneFrequencyChartProps {
 }
 
 export const GeneFrequencyChart:React.FC<GeneFrequencyChartProps> = ( { height, marginBottom, showXLabels = true, showTitle = true, maxBins = 20, orientation='v'} : GeneFrequencyChartProps) => {
-  const { data, error,  isError, isSuccess } = useGeneFrequencyChart();
+  const { data, error,  isError, isSuccess } = useGeneFrequencyChart( { pageSize: 20, offset: 0 } );
 
   if (isError) {
     return <div>Failed to fetch facet: {error}</div>;

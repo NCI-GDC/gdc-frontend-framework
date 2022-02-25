@@ -1,8 +1,10 @@
 import {
-  fetchCases, fetchFacetByName, FilterSet, selectCasesFacetByField,
-  selectCurrentCohortCaseGqlFilters, selectCurrentCohortFilters, selectCohortCountsByName,
-  useCohortCounts, useCoreDispatch, selectCasesData,
-  useCoreSelector, selectCohortCountsData,
+  fetchCases,
+  selectCurrentCohortCaseGqlFilters,
+  selectCohortCountsByName,
+  useCoreDispatch,
+  selectCasesData,
+  useCoreSelector,
 } from "@gff/core";
 import { Table, Pagination, Select } from "@mantine/core";
 import { useEffect, useState } from "react";
@@ -34,6 +36,11 @@ const useCohortFacetFilter = (): GqlOperation => {
   );
 };
 
+/**
+ * TODO: This needs to move to core
+ * @param pageSize
+ * @param offset
+ */
 const useCohortCases = (pageSize = 10, offset = 0) => {
   const coreDispatch = useCoreDispatch();
   const cohortFilters = useCohortFacetFilter();

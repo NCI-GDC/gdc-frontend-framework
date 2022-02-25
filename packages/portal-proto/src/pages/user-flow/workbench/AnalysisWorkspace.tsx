@@ -63,7 +63,7 @@ const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : Analys
     <div className="flex flex-col mb-6 ">
       <div className="flex flex-row justify-center items-center mx-4 my-2 p-2 border border-nci-gray-lighter rounded-md shadow-lg">
         <div className="flex flex-col w-1/2">
-          <h2 className="ml-6"> Tools</h2>
+          <h2 className="ml-6">Filter Tools</h2>
           <div className="flex flex-row">
             <Chips  className="py-1 pr-0" style={{ paddingRight: 0 }} multiple noWrap={false} value={activeTags}
                    onChange={setActiveTags}>
@@ -82,7 +82,7 @@ const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : Analys
             <Select data={sortOptions}
                     value={sortType}
                     classNames={{
-                      input: "border border-nci-gray-lighter round-md ml-4 text-sm max-w-[20%] ",
+                      root: "border border-nci-gray-lighter round-md ml-4 text-sm max-w-[20%] ",
                     }}
                     transition="pop-top-left"
                     transitionDuration={80}

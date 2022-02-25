@@ -1,45 +1,10 @@
 import React, { useEffect, useState } from "react";
 import {
-  useCoreSelector,
-  useCoreDispatch,
-  fetchGenesTable,
   GDCGenesTable,
-  selectGenesTableData, selectCurrentCohortFilters,
+  useGenesTable
 } from "@gff/core";
 import { Pagination, Select, Table, Checkbox } from "@mantine/core";
 import { MdCheck as CheckboxIcon} from "react-icons/md";
-
-interface GenesTableResponse {
-  readonly data?: GDCGenesTable;
-  readonly mutationsCount?: Record<string, number>;
-  readonly error?: string;
-  readonly isUninitialized: boolean;
-  readonly isFetching: boolean;
-  readonly isSuccess: boolean;
-  readonly isError: boolean;
-}
-
-
-const useGenesTable = (
-  pageSize: number,
-  offset: number,
-): GenesTableResponse => {
-  const coreDispatch = useCoreDispatch();
-  const table = useCoreSelector((state) => selectGenesTableData(state));
-  const cohortFilters =  useCoreSelector((state) => selectCurrentCohortFilters(state));
-
-  useEffect(() => {
-    coreDispatch(fetchGenesTable({ pageSize: pageSize, offset: offset }));
-  }, [coreDispatch, pageSize, offset, cohortFilters]);
-  return {
-    data: { ...table?.data.genes },
-    error: table?.error,
-    isUninitialized: table === undefined,
-    isFetching: table?.status === "pending",
-    isSuccess: table?.status === "fulfilled",
-    isError: table?.status === "rejected",
-  };
-};
 
 const GenesTable = () => {
   const [pageSize, setPageSize] = useState(10);
@@ -47,12 +12,11 @@ const GenesTable = () => {
   const [activePage, setPage] = useState(1);
   const [pages, setPages] = useState(10);
   const { data, isSuccess } = useGenesTable(
-    pageSize,
-    offset,
-  ); // using the local useGenesTable hook defined above
+    { pageSize: pageSize, offset: offset }
+  );
 
   useEffect(() => {
-    setPages(Math.ceil(data.filteredCases/pageSize));
+    setPages(Math.ceil(data.genes.filteredCases/pageSize));
   },[data, pageSize]);
 
   const handlePageSizeChange = (x:string) => {
@@ -68,7 +32,7 @@ const GenesTable = () => {
 
   return (
     <div className="flex flex-col w-100">
-      <GenesTableSimple {...data}/>
+      <GenesTableSimple {...data.genes}/>
       <div className="flex flex-row items-center justify-start border-t border-nci-gray-light">
         <p className="px-2">Page Size:</p>
         <Select size="sm" radius="md"
@@ -143,6 +107,5 @@ const GenesTableSimple: React.FC<GDCGenesTable> = ({ genes,
     </Table>
   );
 };
-
 
 export default GenesTable;

@@ -1,7 +1,11 @@
+/**
+ * A BarChart for Enumerated Facets. The as the chart is wrapped from EnumFacet it does not
+ * use the Core Data hooks.
+ */
+
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { Loader } from "@mantine/core";
-import { FacetDataHooks } from "../facets/hooks";
 
 const BarChart = dynamic(() => import("./BarChart"), {
   ssr: false,
@@ -70,7 +74,7 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
                                                      valueLabel = "Cases",
                                                      orientation = "v",
                                                    }: FacetChartProps) => {
- //  const { data, isSuccess } = FacetDataHooks[type](field);
+
   const [chart_data, setChartData] = useState(undefined);
 
   useEffect(() => {
@@ -78,7 +82,7 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
       const cd = processChartData(data, field, maxBins, showXLabels, valueLabel);
       setChartData(cd);
     }
-  }, [data, isSuccess]);
+  }, [data, field, isSuccess, maxBins, showXLabels, valueLabel]);
 
   // Create unique ID for this chart
   const chartDivId = `${field}_${Math.floor(Math.random() * 100)}`;

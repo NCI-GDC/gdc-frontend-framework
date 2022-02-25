@@ -1,3 +1,7 @@
+/**
+ * A Facet Chart which will soon be deprecated in favor of EnumFacetChart.
+ */
+
 import {
   EnumFilter,
   FacetBuckets,

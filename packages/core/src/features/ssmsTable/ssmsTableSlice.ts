@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   CoreDataSelectorResponse,
-  createUseCoreDataHook,
+  createUseFiltersCoreDataHook,
   DataStatus,
 } from "../../dataAcess";
 import { castDraft } from "immer";
@@ -11,7 +11,7 @@ import {
   graphqlAPI,
   TablePageOffsetProps,
 } from "../gdcapi/gdcgraphql";
-import { selectCurrentCohortCaseGqlFilters } from "../cohort/cohortFilterSlice";
+import { selectCurrentCohortCaseGqlFilters, selectCurrentCohortFilters } from "../cohort/cohortFilterSlice";
 
 const SSMSTableGraphQLQuery = `query SsmsTable_relayQuery(
   $ssmTested: FiltersArgument
@@ -288,7 +288,8 @@ export const selectSsmsTableData = (
   };
 };
 
-export const useSsmsTable = createUseCoreDataHook(
+export const useSsmsTable = createUseFiltersCoreDataHook(
   fetchSsmsTable,
   selectSsmsTableData,
-);
+  selectCurrentCohortFilters
+  )

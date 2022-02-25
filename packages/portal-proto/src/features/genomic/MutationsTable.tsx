@@ -1,61 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Pagination, Select, Table, Checkbox } from "@mantine/core";
 import {
-  fetchSsmsTable,
   GDCSsmsTable,
-  selectCurrentCohortFilters,
-  useSsmsTable,
-  selectSsmsTableData,
-  useCoreDispatch,
-  useCoreSelector,
+  useSsmsTable
 } from "@gff/core";
 import { BiLineChartDown as SurvivalPlotIcon } from "react-icons/bi";
-
-interface SsmsTableResponse {
-  readonly data?: GDCSsmsTable;
-  readonly error?: string;
-  readonly isUninitialized: boolean;
-  readonly isFetching: boolean;
-  readonly isSuccess: boolean;
-  readonly isError: boolean;
-}
-
-
-const useMutationTable = (
-  pageSize: number,
-  offset: number,
-): SsmsTableResponse => {
-  const coreDispatch = useCoreDispatch();
-  const table = useCoreSelector((state) => selectSsmsTableData(state));
-  const cohortFilters =  useCoreSelector((state) => selectCurrentCohortFilters(state));
-
-  useEffect(() => {
-    coreDispatch(fetchSsmsTable({ pageSize: pageSize, offset: offset }));
-  }, [coreDispatch, pageSize, offset, cohortFilters]);
-  return {
-    data: { ...table?.data.ssms },
-    error: table?.error,
-    isUninitialized: table === undefined,
-    isFetching: table?.status === "pending",
-    isSuccess: table?.status === "fulfilled",
-    isError: table?.status === "rejected",
-  };
-};
 
 const MutationsTable: React.FC<unknown> = () => {
   const [pageSize, setPageSize] = useState(10);
   const [offset, setOffset] = useState(0);
   const [activePage, setPage] = useState(1);
   const [pages, setPages] = useState(10);
-  const coreDispatch = useCoreDispatch();
-  const cohortFilters =  useCoreSelector((state) => selectCurrentCohortFilters(state));
-  // using the useSsmsTable from core and the associated useEffect hook
+  // using the useCohortSsmsTable from core and the associated useEffect hook
   // exploring different ways to dispatch the pageSize/offset changes
-  const { data, isSuccess } = useMutationTable( pageSize, offset );
-
-  useEffect(() => {
-    coreDispatch(fetchSsmsTable({ pageSize: pageSize, offset: offset }));
-  }, [coreDispatch, pageSize, offset, cohortFilters]);
+  const { data, isSuccess } = useSsmsTable({ pageSize: pageSize, offset: offset });
 
   const handlePageSizeChange = (x:string) => {
     setPageSize(parseInt(x));
@@ -70,7 +28,7 @@ const MutationsTable: React.FC<unknown> = () => {
 
   return (
     <div className="flex flex-col w-100">
-      <MutationTableSimple {...data}/>
+      <MutationTableSimple {...data.ssms}/>
       <div className="flex flex-row items-center justify-start border-t border-nci-gray-light">
         <p className="px-2">Page Size:</p>
         <Select size="sm" radius="md"
