@@ -1,6 +1,8 @@
-import { Project, useProjects, useAnnotations } from "@gff/core";
+import { useProjects, useAnnotations } from "@gff/core";
 import SummaryCount from "../../components/SummaryCount";
-import { FaUser, FaFile, FaEdit } from "react-icons/fa";
+import { HorizontalTable, HorizontalTableProps } from "../../components/HorizontalTable";
+import { FaUser, FaFile, FaEdit, FaTable } from "react-icons/fa";
+import {get} from 'lodash';
 
 export interface ContextualProjectViewProps {
   readonly setCurrentProject: string;
@@ -56,39 +58,109 @@ export interface ProjectViewProps {
   }
 }
 
+export interface SummaryCardProps {
+  readonly title: string;
+  readonly message: JSX.Element;
+  readonly tableData: HorizontalTableProps["tableData"];
+}
+
+export const SummaryCard: React.FC<SummaryCardProps> = (SummaryCardProps) => {
+  return (<div>
+    <h2 className="bg-white p-2 text-lg mx-4">
+      <FaTable className="inline-block mr-2 align-baseline"/>
+      {SummaryCardProps.title}
+    </h2>
+    <div className="mx-4 text-sm">
+      {SummaryCardProps.message}
+    </div>
+    {
+      //TODO NoResultsMessage if no data
+    }
+    <div className="p-4">
+      <HorizontalTable tableData={SummaryCardProps.tableData}/>
+    </div>
+  </div>);
+};
+
 export const ProjectView: React.FC<ProjectViewProps> = ({
   projectData,
 }: ProjectViewProps) => {
-
+  const formatDataForSummery = (): HorizontalTableProps["tableData"] => {
+    //Headers for table
+    const headersConfig = [
+      {
+        "field": "projectId",
+        "name": "Project ID"
+      },{
+        "field": "program.dbgap_accession_number",
+        "name": "dbGaP Study Accession"
+      },{
+        "field": "name",
+        "name": "Project Name"
+      },{
+        "field": "disease_type",
+        "name": "Disease Type"
+      },{
+        "field": "primary_site",
+        "name": "Primary Site"
+      },{
+        "field": "program.name",
+        "name": "Program"
+      }
+    ];
+    //match headers with available properties
+    return headersConfig.reduce((output, obj)=>{
+      const value = get(projectData, obj.field);
+      if (value) {
+        output.push({
+          headerName: obj.name,
+          values: [value]
+        });
+      }
+      return output;
+    }, []);
+  };
   return (
-    <div className="text-nci-gray flex">
-      <div className="flex-auto">
-
+    <div>
+      <div className="bg-white py-4 px-8 shadow-lg">
+        <span className="rounded-full bg-nci-blue-darker text-white p-1 align-text-bottom mr-2">PR</span>
+        <span className="text-2xl text-nci-blue-darker">{projectData.projectId}</span>
       </div>
-      <div className="flex-initial w-1/4 max-w-xs ">
-        {projectData.summary?.case_count?
-          <SummaryCount 
-            title={'Cases'} 
-            count={projectData.summary.case_count.toLocaleString()}
-            buttonAction={()=>{alert('Cases click')}}
-            icon={<FaUser/>}
-          />:null
-        }
-        {projectData.summary?.file_count?
-          <SummaryCount 
-            title={'Files'} 
-            count={projectData.summary.file_count.toLocaleString()}
-            icon={<FaFile/>}
-          />:null
-        }
-        {projectData.annotationCount?
-          <SummaryCount 
-            title={'Annotations'} 
-            count={projectData.annotationCount.toLocaleString()}
-            buttonAction={()=>{alert('Annotations click')}}
-            icon={<FaEdit/>}
-          />:null
-        }
+      <div className="p-4">
+        <div className="text-nci-gray flex">
+          <div className="flex-auto">
+            <SummaryCard
+              title={"Summary"}
+              message={(<>The project has controlled access data which requires dbGaP Access. See instructions for <a href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data" className="text-nci-blue underline">Obtaining Access to Controlled Data.</a></>)}
+              tableData={formatDataForSummery()}
+            />
+          </div>
+          <div className="flex-initial w-1/4 max-w-xs ">
+            {projectData.summary?.case_count?
+              <SummaryCount 
+                title={'Cases'} 
+                count={projectData.summary.case_count.toLocaleString()}
+                buttonAction={()=>{alert('Cases click')}}
+                icon={<FaUser/>}
+              />:null
+            }
+            {projectData.summary?.file_count?
+              <SummaryCount 
+                title={'Files'} 
+                count={projectData.summary.file_count.toLocaleString()}
+                icon={<FaFile/>}
+              />:null
+            }
+            {projectData.annotationCount?
+              <SummaryCount 
+                title={'Annotations'} 
+                count={projectData.annotationCount.toLocaleString()}
+                buttonAction={()=>{alert('Annotations click')}}
+                icon={<FaEdit/>}
+              />:null
+            }
+          </div>
+        </div>
       </div>
     </div>
   );

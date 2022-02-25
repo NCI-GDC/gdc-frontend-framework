@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "@types/isomorphic-fetch": "^0.0.35",
+    "@types/lodash": "^4.14.178",
     "@types/plotly.js": "^1.54.14",
     "@typescript-eslint/eslint-plugin": "^4.28.3",
     "@typescript-eslint/parser": "^4.28.3",
