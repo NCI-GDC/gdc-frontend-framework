@@ -7,9 +7,10 @@ interface BarChartProps {
   readonly height?: number;
   readonly marginBottom?: number;
   readonly orientation?: string;
+  readonly divId?: string;
 }
 
-const BarChart: React.FC<BarChartProps> = ({ data, height, marginBottom, orientation='v' }: BarChartProps) => {
+const BarChart: React.FC<BarChartProps> = ({ data, height, marginBottom, orientation='v', divId }: BarChartProps) => {
 
 const chartData = {
     x: orientation === "v" ? data.x : data.y,
@@ -129,18 +130,11 @@ const vertical_layout: Partial<Layout> = {
   }
 
   const config: Partial<Config> = {responsive: true,
-    toImageButtonOptions: {
-      format: 'png', // one of png, svg, jpeg, webp
-      filename: data.filename,
-      height: 500,
-      width: 700,
-      scale: 1 // Multiply title/legend/axis/canvas sizes by this factor
-    },
     "displaylogo": false,
-    'modeBarButtonsToRemove': ['zoom2d', 'pan2d', 'select2d', 'lasso2d', 'zoomIn2d', 'zoomOut2d', 'autoScale2d', 'resetScale2d']
+    'modeBarButtonsToRemove': ['zoom2d', 'pan2d', 'select2d', 'lasso2d', 'zoomIn2d', 'zoomOut2d', 'autoScale2d', 'resetScale2d', 'toImage']
   };
   return (<div>
-    <Plot data={[chartData]} layout={ orientation==='v' ? vertical_layout : horizontal_layout } config={config} useResizeHandler={true}
+    <Plot divId={divId} data={[chartData]} layout={ orientation==='v' ? vertical_layout : horizontal_layout } config={config} useResizeHandler={true}
            style={{width: "100%", height: "240px"}}/>
   </div>);
 

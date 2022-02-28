@@ -1,6 +1,8 @@
 import { NextPage } from "next";
 import { SimpleLayout } from "../features/layout/Simple";
 import { FacetChart } from "../features/charts/FacetChart";
+import { GeneFrequencyChart } from "../features/charts/GeneFrequencyChart";
+import { SurvivalPlot } from "../features/charts/SurvivalPlot";
 
 const FacetsPage: NextPage = () => {
   return (
@@ -26,6 +28,8 @@ const FacetsPage: NextPage = () => {
           <FacetChart field="diagnoses.tissue_or_organ_of_origin" height={200} marginBottom={30} showXLabels={false}/>
         </div>
       </div>
+      <GeneFrequencyChart height={200} marginBottom={30} />
+      <SurvivalPlot height={200} marginBottom={30} />
     </SimpleLayout>
   );
 };
