@@ -11,6 +11,8 @@ import { ssmsTableReducer } from "./features/ssmsTable/ssmsTableSlice";
 import { genesTableReducer } from "./features/genesTable/genesTableSlice";
 import { geneFrequencyChartReducer } from "./features/genesTable/genesFrequencyChartSlice";
 import { survivalReducer } from "./features/survival/survivalSlice";
+import { smssPlotReducer } from "./features/genesTable/smssPlot";
+import { cnvPlotReducer } from "./features/genesTable/cnvPlot";
 
 export const coreStore = configureStore({
   reducer: {
@@ -25,6 +27,8 @@ export const coreStore = configureStore({
     ssmsTable: ssmsTableReducer,
     genesTable: genesTableReducer,
     geneFrequencyChart: geneFrequencyChartReducer,
+    smssPlot: smssPlotReducer,
+    cnvPlot: cnvPlotReducer,
     survival: survivalReducer,
 
   },
