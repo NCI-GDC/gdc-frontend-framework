@@ -3,7 +3,8 @@ import "../styles/globals.css";
 import { Provider } from "react-redux";
 import type { AppProps } from "next/app";
 import { CoreProvider } from "@gff/core";
-
+import { TourProvider } from "@reactour/tour";
+import { CustomBadge as Badge } from "../features/tour/CustomBadge";
 import store from "../app/store";
 
 // import gdc apps here.
@@ -23,7 +24,9 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   return (
     <CoreProvider>
       <Provider store={store}>
-        <Component {...pageProps} />
+        <TourProvider steps={[]} components={{ Badge }}>
+          <Component {...pageProps} />
+        </TourProvider>
       </Provider>
     </CoreProvider>
   );
