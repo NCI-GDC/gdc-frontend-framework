@@ -7,7 +7,7 @@ import {
 import { CoreState } from "../../store";
 import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
 
-const graphQLQuery = `query CancerDistribution(
+const graphQLQuery = `query CancerDistributionCNV(
   $cnvAll: FiltersArgument,
   $cnvGain: FiltersArgument,
   $cnvLoss: FiltersArgument,

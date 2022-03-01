@@ -31,11 +31,10 @@ return (
 	  </Button>
 	  {downloadMenuOpen && (
 	    <div className="z-10 w-44 absolute bg-white rounded shadow-md">
-	      <ul className="py-1" aria-role="menu">
-	        <li>
+	      <ul className="py-1" role="menu">
+	        <li role="menuitem">
 	          <span
 	            tabIndex={0}
-							aria-role="menuitem"
 	            onClick={() => downloadImage("svg")}
 	            onKeyPress={(e) =>
 	              e.key === "Enter" ? downloadImage("svg") : undefined
@@ -45,10 +44,9 @@ return (
 	            SVG
 	          </span>
 	        </li>
-	        <li>
+	        <li role="menuitem">
 	          <span
 	            tabIndex={0}
-							aria-role="menuitem"
 	            onClick={() => downloadImage("png")}
 	            onKeyPress={(e) =>
 	              e.key === "Enter" ? downloadImage("png") : undefined
@@ -58,14 +56,13 @@ return (
 	            PNG
 	          </span>
 	        </li>
-	        <li>
+	        <li role="menuitem">
 	          <a
 	            href={`data:text/json;charset=utf-8, ${encodeURIComponent(
 	              JSON.stringify(jsonData),
 	            )}`}
 	            download={`${chartName}.json`}
 	            className="block py-2 px-4 text-sm text-nci-gray-darker hover:bg-nci-gray-lightest "
-							aria-role="menuitem"
 	          >
 	            JSON
 	          </a>
