@@ -7,9 +7,7 @@ const BarChart = dynamic(() => import("./BarChart"), {
 });
 
 interface CNVPlotProps {
-  readonly page: "gene" | "ssms";
-  readonly gene?: string;
-  readonly ssms?: string;
+  readonly gene: string;
 }
 
 const hovertemplate =
@@ -17,9 +15,7 @@ const hovertemplate =
 const sortByPercent = (a, b) => (a.percent < b.percent ? 1 : -1);
 
 const CNVPlot: React.FC<CNVPlotProps> = ({
-  page,
   gene,
-  ssms,
 }: CNVPlotProps) => {
   const router = useRouter();
   const [gainChecked, setGainChecked] = useState(true);
@@ -41,10 +37,11 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
     return <div>Failed to fetch chart: {error}</div>;
   }
 
-  const title =
-    page === "gene"
-      ? `${data.caseTotal} CASES AFFECTED BY ${data.mutationTotal} MUTATIONS ACROSS ${data.cases.length} PROJECTS`
-      : `THIS MUTATION AFFECTS ${data.caseTotal} ACROSS ${data.length} PROJECTS`;
+  if (data.cases.length <= 5) {
+    return null;
+  }
+
+  const title = `${data.caseTotal} CASES AFFECTED BY ${data.mutationTotal} MUTATIONS ACROSS ${data.cases.length} PROJECTS`;
 
   let datasets = [
     {

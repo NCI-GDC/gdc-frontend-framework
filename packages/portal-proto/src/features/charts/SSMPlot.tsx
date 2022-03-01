@@ -20,6 +20,7 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
 
   const { data, error, isUninitialized, isFetching, isError } = useSmssPlot({
     gene,
+    ssms,
   });
 
   if (isUninitialized) {
@@ -34,15 +35,24 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
     return <div>Failed to fetch chart: {error}</div>;
   }
 
-  const title = `${data.cases
-    .map((d) => d.smssCount)
-    .reduce((a, b) => a + b, 0)} CASES AFFECTED BY ${
-    data.smssCount
-  } MUTATIONS ACROSS ${data.cases.length} PROJECTS`;
+  if (data.cases.length <= 5) {
+    return null;
+  }
+
   const sortedData = data.cases
     .map((d) => ({ ...d, percent: (d.smssCount / d.totalCount) * 100 }))
     .sort((a, b) => (a.percent < b.percent ? 1 : -1))
     .slice(0, 20);
+
+
+  const caseCount = data.cases
+    .map((d) => d.smssCount)
+    .reduce((a, b) => a + b, 0);
+
+  const title =
+    page === "gene"
+      ? `${caseCount} CASES AFFECTED BY ${data.smssCount} MUTATIONS ACROSS ${data.cases.length} PROJECTS`
+      : `THIS MUTATION AFFECTS ${caseCount} CASES ACROSS ${data.cases.length} PROJECTS`;
 
   const chartData = {
     datasets: [
@@ -50,7 +60,7 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
         x: sortedData.map((d) => d.project),
         y: sortedData.map((d) => d.percent),
         customdata: sortedData.map((d) => [d.smssCount, d.totalCount]),
-        hoverTemplate:
+        hovertemplate:
           "%{customdata[0]} Cases Affected in <b>%{x}</b><br />%{customdata[0]} / %{customdata[1]} (%{y:.2f}%)  <extra></extra>",
       },
     ],

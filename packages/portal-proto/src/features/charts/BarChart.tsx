@@ -1,4 +1,4 @@
-import { Config, Layout, PlotMouseEvent } from 'plotly.js';
+import { Config, Layout, PlotMouseEvent, PlotData } from 'plotly.js';
 import Plot from 'react-plotly.js';
 import dynamic from 'next/dynamic'
 const DownloadOptions = dynamic(() => import("./DownloadOptions"), {
@@ -6,8 +6,10 @@ const DownloadOptions = dynamic(() => import("./DownloadOptions"), {
 });
 
 interface BarChartData {
-  datasets: Record<string, any>,
+  datasets: Record<string, any>[],
   yAxisTitle?: string;
+  tickvals?: any;
+  ticktext?: any;
 }
 
 interface BarChartProps {

@@ -3,11 +3,10 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { SimpleLayout } from "../../features/layout/Simple";
 import SSMPlot from "../../features/charts/SSMPlot";
-import CNVPlot from "../../features/charts/CNVPlot";
 
-const GenesPage: NextPage = () => {
+const MutationsPage: NextPage = () => {
   const router = useRouter();
-  const gene = router.asPath.split('/')[2];
+  const ssms = router.asPath.split('/')[2];
 
   const [ready, setReady] = useState(false);
 
@@ -23,8 +22,7 @@ const GenesPage: NextPage = () => {
       <div >
         {ready && (
           <>
-            <SSMPlot page={'gene'} gene={gene} />
-            <CNVPlot gene={gene} />
+            <SSMPlot page={'ssms'} ssms={ssms} />
           </>
         )}
       </div>
@@ -32,4 +30,4 @@ const GenesPage: NextPage = () => {
   );
 };
 
-export default GenesPage;
+export default MutationsPage;
