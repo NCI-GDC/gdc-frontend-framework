@@ -74,7 +74,7 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
   return (
     <BarChart
       data={chartData}
-      field={"cancer-distribution-bar-chart"}
+      filename={"cancer-distribution-bar-chart"}
       title={title}
       onClickHandler={onClickHandler}
     />

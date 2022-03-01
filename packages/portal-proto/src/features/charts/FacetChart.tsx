@@ -63,14 +63,14 @@ const processChartData = (facetData:Record<string, any>, field: string, maxBins 
   const data = removeKey('_missing', facetData);
   const xvals = Object.keys(data).slice(0, maxBins).map(x =>x);
   const xlabels = Object.keys(data).slice(0, maxBins).map(x => processLabel(x, 12));
-  const results : Record<string, any> = {
+  const results = {
     datasets: [{
       x: xvals,
       y: Object.values(data).slice(0, maxBins),
+      label_text: Object.keys(data).slice(0, maxBins).map(x => processLabel(x, 100)),
     }],
     tickvals: showXLabels ? xvals : [],
     ticktext: showXLabels ? xlabels : [],
-    label_text: Object.keys(data).slice(0, maxBins).map(x => processLabel(x, 100)),
     title: convertFieldToName(field),
     filename: field,
     yAxisTitle: "# of Cases"
@@ -99,7 +99,7 @@ export const FacetChart: React.FC<FacetProps> = ({ field, showXLabels = true, he
   }
 
   const chart_data = processChartData(data, field, maxBins, showXLabels);
-    const title = showTitle ? convertFieldToName(field) : null;
+  const title = showTitle ? convertFieldToName(field) : null;
 
   return (
     <div className="flex flex-col border-2 bg-white ">
@@ -109,7 +109,7 @@ export const FacetChart: React.FC<FacetProps> = ({ field, showXLabels = true, he
         marginBottom={marginBottom}
         orientation={orientation}
         title={title}
-        field={field}
+        filename={field}
         jsonData={processJSONData(data)}>
       </BarChartWithNoSSR>
     </div>

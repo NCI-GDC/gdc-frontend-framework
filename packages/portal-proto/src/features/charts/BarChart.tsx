@@ -20,12 +20,12 @@ interface BarChartProps {
   readonly orientation?: string;
   readonly title?: string;
   readonly jsonData?: Record<string, any>;
-  readonly field: string;
+  readonly filename: string;
   readonly onClickHandler?: (mouseEvent: PlotMouseEvent) => void;
   readonly stacked?: boolean;
 }
 
-const BarChart: React.FC<BarChartProps> = ({ data, height, marginBottom, orientation='v', title, jsonData, field, onClickHandler, stacked=false }: BarChartProps) => {
+const BarChart: React.FC<BarChartProps> = ({ data, height, marginBottom, orientation='v', title, jsonData, filename, onClickHandler, stacked=false }: BarChartProps) => {
 
 const chartData = data.datasets.map(dataset => ({
     x: orientation === "v" ? dataset.x : dataset.y,
@@ -67,8 +67,7 @@ const vertical_layout: Partial<Layout> = {
       tickfont: {
         size: 12,
         color: 'rgb(107, 107, 107)'
-      }
-
+      },
     },
     yaxis: {
       title: data.yAxisTitle,
@@ -119,8 +118,7 @@ const vertical_layout: Partial<Layout> = {
       tickfont: {
         size: 12,
         color: 'rgb(107, 107, 107)'
-      }
-
+      },
     },
     xaxis: {
       title: data.yAxisTitle,
@@ -156,13 +154,13 @@ const vertical_layout: Partial<Layout> = {
   };
 
   // Create unique ID for this chart
-  const divId = `${field}_${Math.floor(Math.random() * 100)}`;
+  const divId = `${filename}_${Math.floor(Math.random() * 100)}`;
 
   return (
     <div>
     <div className="flex items-center justify-between flex-wrap bg-gray-100 p-1.5">
       {title}
-      <DownloadOptions chartDivId={divId} chartName={field} jsonData={jsonData} />
+      <DownloadOptions chartDivId={divId} chartName={filename} jsonData={jsonData} />
     </div>
     <Plot divId={divId} data={chartData} layout={ orientation==='v' ? vertical_layout : horizontal_layout } config={config} useResizeHandler={true}
            style={{width: "100%", height: "240px"}} onClick={onClickHandler} />
