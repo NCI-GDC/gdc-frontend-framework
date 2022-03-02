@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import { useSmssPlot } from "@gff/core";
+import { useSsmPlot } from "@gff/core";
 const BarChart = dynamic(() => import("./BarChart"), {
   ssr: false,
 });
@@ -18,7 +18,7 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
 }: SSMPlotProps) => {
   const router = useRouter();
 
-  const { data, error, isUninitialized, isFetching, isError } = useSmssPlot({
+  const { data, error, isUninitialized, isFetching, isError } = useSsmPlot({
     gene,
     ssms,
   });
@@ -40,18 +40,18 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
   }
 
   const sortedData = data.cases
-    .map((d) => ({ ...d, percent: (d.smssCount / d.totalCount) * 100 }))
+    .map((d) => ({ ...d, percent: (d.ssmCount / d.totalCount) * 100 }))
     .sort((a, b) => (a.percent < b.percent ? 1 : -1))
     .slice(0, 20);
 
 
   const caseCount = data.cases
-    .map((d) => d.smssCount)
+    .map((d) => d.ssmCount)
     .reduce((a, b) => a + b, 0);
 
   const title =
     page === "gene"
-      ? `${caseCount} CASES AFFECTED BY ${data.smssCount} MUTATIONS ACROSS ${data.cases.length} PROJECTS`
+      ? `${caseCount} CASES AFFECTED BY ${data.ssmCount} MUTATIONS ACROSS ${data.cases.length} PROJECTS`
       : `THIS MUTATION AFFECTS ${caseCount} CASES ACROSS ${data.cases.length} PROJECTS`;
 
   const chartData = {
@@ -59,7 +59,7 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
       {
         x: sortedData.map((d) => d.project),
         y: sortedData.map((d) => d.percent),
-        customdata: sortedData.map((d) => [d.smssCount, d.totalCount]),
+        customdata: sortedData.map((d) => [d.ssmCount, d.totalCount]),
         hovertemplate:
           "%{customdata[0]} Cases Affected in <b>%{x}</b><br />%{customdata[0]} / %{customdata[1]} (%{y:.2f}%)  <extra></extra>",
       },

@@ -38,7 +38,7 @@ const CNVPlot: React.FC<CNVPlotProps> = ({ gene }: CNVPlotProps) => {
     return null;
   }
 
-  const title = `${data.caseTotal} CASES AFFECTED BY ${data.mutationTotal} MUTATIONS ACROSS ${data.cases.length} PROJECTS`;
+  const title = `${data.caseTotal} CASES AFFECTED BY ${data.mutationTotal} CNV EVENTS ACROSS ${data.cases.length} PROJECTS`;
 
   let filteredData = [];
 

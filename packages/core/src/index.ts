@@ -18,6 +18,6 @@ export * from "./features/cases/casesSlice";
 export * from "./features/ssmsTable/ssmsTableSlice";
 export * from "./features/genesTable/genesTableSlice";
 export * from "./features/genesTable/genesFrequencyChartSlice";
-export * from "./features/genesTable/smssPlot";
-export * from "./features/genesTable/cnvPlot";
+export * from "./features/cancerDistribution/ssmPlot";
+export * from "./features/cancerDistribution/cnvPlot";
 export * from "./features/survival/survivalSlice";

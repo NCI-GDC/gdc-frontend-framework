@@ -20,7 +20,7 @@ interface BarChartProps {
   readonly orientation?: string;
   readonly title?: string;
   readonly jsonData?: Record<string, any>;
-  readonly filename: string;
+  readonly filename?: string;
   readonly onClickHandler?: (mouseEvent: PlotMouseEvent) => void;
   readonly stacked?: boolean;
 }

@@ -38,7 +38,7 @@ const graphqlQuery = `query CancerDistribution($caseAggsFilters: FiltersArgument
 }
 `;
 
-const fetchSmssAnalysisQuery = async (gene: string, ssms: string) => {
+const fetchSsmAnalysisQuery = async (gene: string, ssms: string) => {
   const graphqlFilters = gene
     ? {
         caseAggsFilters: {
@@ -141,32 +141,32 @@ const fetchSmssAnalysisQuery = async (gene: string, ssms: string) => {
   return results;
 };
 
-export const fetchSmssPlot = createAsyncThunk(
-  "genes/smssPlot",
+export const fetchSsmPlot = createAsyncThunk(
+  "cancerDistribution/ssmPlot",
   async ({ gene, ssms} : ({ gene: string, ssms: string})) => {
-    return await fetchSmssAnalysisQuery(gene, ssms);
+    return await fetchSsmAnalysisQuery(gene, ssms);
   },
 );
 
-interface SmssPlotPoint {
+interface SsmPlotPoint {
   readonly project: string;
-  readonly smssCount: number;
+  readonly ssmCount: number;
   readonly totalCount: number;
 }
 
-interface smsCaseData {
-  readonly cases: SmssPlotPoint[];
-  readonly smssCount: number;
+export interface SsmPlotData {
+  readonly cases: SsmPlotPoint[];
+  readonly ssmCount: number;
 }
 
-export interface SMSPlotState {
-  readonly smss: smsCaseData;
+export interface SsmPlotState {
+  readonly ssm: SsmPlotData;
   readonly status: DataStatus;
   readonly error?: string;
 }
 
-const initialState: SMSPlotState = {
-  smss: { cases: [], smssCount: 0 },
+const initialState: SsmPlotState = {
+  ssm: { cases: [], ssmCount: 0 },
   status: "uninitialized",
 };
 
@@ -176,40 +176,42 @@ interface GraphQLDoc {
 }
 
 const slice = createSlice({
-  name: "genes/smssPlot",
+  name: "cancerDistribution/ssmPlot",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchSmssPlot.fulfilled, (state, action) => {
+      .addCase(fetchSsmPlot.fulfilled, (state, action) => {
         const response = action.payload;
-        const smss =
+        console.log(response);
+
+        const ssm =
           response?.data?.viewer?.explore?.cases?.ssmFiltered?.project__project_id?.buckets.map(
-            (d : GraphQLDoc) => ({ smssCount: d.doc_count, project: d.key }),
+            (d : GraphQLDoc) => ({ ssmCount: d.doc_count, project: d.key }),
           ) || [];
         const total =
           response?.data?.viewer?.explore?.cases?.total?.project__project_id?.buckets.map(
             (d : GraphQLDoc) => ({ totalCount: d.doc_count, project: d.key }),
           );
 
-        const merged = smss.map((d : SmssPlotPoint) => ({
+        const merged = ssm.map((d : SsmPlotPoint) => ({
           ...d,
-          ...total.find((t : SmssPlotPoint) => t.project === d.project),
+          ...total.find((t : SsmPlotPoint) => t.project === d.project),
         }));
         state = {
-          smss: {
+          ssm: {
             cases: merged,
-            smssCount: response?.data?.viewer?.explore?.ssms?.hits?.total,
+            ssmCount: response?.data?.viewer?.explore?.ssms?.hits?.total,
           },
           status: "fulfilled",
         };
         return state;
       })
-      .addCase(fetchSmssPlot.pending, (state) => {
+      .addCase(fetchSsmPlot.pending, (state) => {
         state.status = "pending";
         return state;
       })
-      .addCase(fetchSmssPlot.rejected, (state, action) => {
+      .addCase(fetchSsmPlot.rejected, (state, action) => {
         state.status = "rejected";
         if (action.error) {
           state.error = action.error.message;
@@ -219,19 +221,19 @@ const slice = createSlice({
   },
 });
 
-export const smssPlotReducer = slice.reducer;
+export const ssmPlotReducer = slice.reducer;
 
-export const selectSmssPlotData = (
+export const selectSsmPlotData = (
   state: CoreState,
-): CoreDataSelectorResponse<any> => {
+): CoreDataSelectorResponse<SsmPlotData> => {
   return {
-    data: state.smssPlot.smss,
-    status: state.smssPlot.status,
-    error: state.smssPlot.error,
+    data: state.ssmPlot.ssm,
+    status: state.ssmPlot.status,
+    error: state.ssmPlot.error,
   };
 };
 
-export const useSmssPlot = createUseCoreDataHook(
-  fetchSmssPlot,
-  selectSmssPlotData,
+export const useSsmPlot = createUseCoreDataHook(
+  fetchSsmPlot,
+  selectSsmPlotData,
 );

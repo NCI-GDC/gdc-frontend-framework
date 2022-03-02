@@ -176,7 +176,7 @@ const fetchCnvAnalysisQuery = async (
 };
 
 export const fetchCnvPlot = createAsyncThunk(
-  "genes/cnvPlot",
+  "cancerDistribution/cnvPlot",
   async ({ gene }: { gene: string }) : Promise<GraphQLApiResponse> => {
     return await fetchCnvAnalysisQuery(gene);
   },
@@ -212,7 +212,7 @@ interface GraphQLDoc {
 }
 
 const slice = createSlice({
-  name: "genes/cnvPlot",
+  name: "cancerDistribution/cnvPlot",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -267,7 +267,7 @@ export const cnvPlotReducer = slice.reducer;
 
 export const selectCnvPlotData = (
   state: CoreState,
-): CoreDataSelectorResponse<any> => {
+): CoreDataSelectorResponse<CNVData> => {
   return {
     data: state.cnvPlot.cnv,
     status: state.cnvPlot.status,
