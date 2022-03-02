@@ -44,7 +44,6 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
     .sort((a, b) => (a.percent < b.percent ? 1 : -1))
     .slice(0, 20);
 
-
   const caseCount = data.cases
     .map((d) => d.ssmCount)
     .reduce((a, b) => a + b, 0);

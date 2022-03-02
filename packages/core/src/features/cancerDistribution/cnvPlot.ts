@@ -177,7 +177,7 @@ const fetchCnvAnalysisQuery = async (
 
 export const fetchCnvPlot = createAsyncThunk(
   "cancerDistribution/cnvPlot",
-  async ({ gene }: { gene: string }) : Promise<GraphQLApiResponse> => {
+  async ({ gene }: { gene: string }): Promise<GraphQLApiResponse> => {
     return await fetchCnvAnalysisQuery(gene);
   },
 );
@@ -219,15 +219,15 @@ const slice = createSlice({
     builder
       .addCase(fetchCnvPlot.fulfilled, (state, action) => {
         const response = action.payload;
-        const gain : CNVPlotPoint[] =
+        const gain: CNVPlotPoint[] =
           response?.data?.viewer?.explore?.cases?.gain?.project__project_id?.buckets.map(
             (doc: GraphQLDoc) => ({ gain: doc.doc_count, project: doc.key }),
           ) || [];
-        const loss : CNVPlotPoint[] =
+        const loss: CNVPlotPoint[] =
           response?.data?.viewer?.explore?.cases?.loss?.project__project_id?.buckets.map(
             (doc: GraphQLDoc) => ({ loss: doc.doc_count, project: doc.key }),
           ) || [];
-        const total : CNVPlotPoint[] =
+        const total: CNVPlotPoint[] =
           response?.data?.viewer?.explore?.cases?.cnvTotal?.project__project_id?.buckets.map(
             (doc: GraphQLDoc) => ({ total: doc.doc_count, project: doc.key }),
           );

@@ -143,7 +143,7 @@ const fetchSsmAnalysisQuery = async (gene: string, ssms: string) => {
 
 export const fetchSsmPlot = createAsyncThunk(
   "cancerDistribution/ssmPlot",
-  async ({ gene, ssms} : ({ gene: string, ssms: string})) => {
+  async ({ gene, ssms }: { gene: string; ssms: string }) => {
     return await fetchSsmAnalysisQuery(gene, ssms);
   },
 );
@@ -187,16 +187,16 @@ const slice = createSlice({
 
         const ssm =
           response?.data?.viewer?.explore?.cases?.ssmFiltered?.project__project_id?.buckets.map(
-            (d : GraphQLDoc) => ({ ssmCount: d.doc_count, project: d.key }),
+            (d: GraphQLDoc) => ({ ssmCount: d.doc_count, project: d.key }),
           ) || [];
         const total =
           response?.data?.viewer?.explore?.cases?.total?.project__project_id?.buckets.map(
-            (d : GraphQLDoc) => ({ totalCount: d.doc_count, project: d.key }),
+            (d: GraphQLDoc) => ({ totalCount: d.doc_count, project: d.key }),
           );
 
-        const merged = ssm.map((d : SsmPlotPoint) => ({
+        const merged = ssm.map((d: SsmPlotPoint) => ({
           ...d,
-          ...total.find((t : SsmPlotPoint) => t.project === d.project),
+          ...total.find((t: SsmPlotPoint) => t.project === d.project),
         }));
         state = {
           ssm: {
