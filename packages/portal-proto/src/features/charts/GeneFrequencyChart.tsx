@@ -9,16 +9,33 @@ const BarChart = dynamic(() => import('./BarChart'), {
   ssr: false
 });
 
-const processChartData = (chartData:GenesFrequencyChart, title = "Distribution of Most Frequently Mutated Genes", maxBins = 100, showXLabels = true) => {
-  const data = chartData;
+const processChartData = (chartData:GenesFrequencyChart,
+                          title = "Distribution of Most Frequently Mutated Genes",
+                          showXLabels = true) => {
+  if (!chartData) return null;
+
   const xvals = chartData.geneCounts.map((i) => i.symbol)
-  const xlabels = chartData.geneCounts.map((i) => i.symbol)
-  const results : Record<string, any> = {
+  const results : Record<string, unknown> = {
     x: xvals,
     y: chartData.geneCounts.map((i) => i.numCases),
     tickvals: showXLabels ? xvals : [],
-    ticktext: showXLabels ? xlabels : [],
-    label_text: xlabels,
+    ticktext: showXLabels ? xvals : [],
+    label_text: xvals,
+    title: title,
+    filename: `${title}.svg`,
+    yAxisTitle: "# of Cases"
+  }
+  return results;
+}
+
+const processDummyData = (title = "Distribution of Most Frequently Mutated Genes" ) => {
+  const xvals =  Array(20).fill("..");
+  const results : Record<string, unknown> = {
+    x: xvals,
+    y: Array(20).fill(0),
+    tickvals:  [],
+    ticktext:  [],
+    label_text: xvals,
     title: title,
     filename: `${title}.svg`,
     yAxisTitle: "# of Cases"
@@ -35,21 +52,20 @@ interface GeneFrequencyChartProps {
   readonly orientation?:string;
 }
 
-export const GeneFrequencyChart:React.FC<GeneFrequencyChartProps> = ( { height, marginBottom, showXLabels = true, showTitle = true, maxBins = 20, orientation='v'} : GeneFrequencyChartProps) => {
-  const { data, error,  isError, isSuccess } = useGeneFrequencyChart( { pageSize: 20, offset: 0 } );
 
-  if (isError) {
-    return <div>Failed to fetch facet: {error}</div>;
-  }
 
-  if (!isSuccess)
-    return <div>Loading</div>
-
-  const chart_data = processChartData(data);
-  return ( <>
-    <div className="flex flex-col">
+export const GeneFrequencyChart:React.FC<GeneFrequencyChartProps> = ( { height = undefined,
+                                                                        marginBottom = 40,
+                                                                        showXLabels = true,
+                                                                        showTitle = true,
+                                                                        maxBins = 20,
+                                                                        orientation='v'} : GeneFrequencyChartProps) => {
+  const { data, isSuccess } = useGeneFrequencyChart( { pageSize: maxBins, offset: 0 } );
+  const chart_data =  processChartData(data);
+  return (
+      <div className="relative ">
     {showTitle ?
-      <div className="flex items-center justify-between bg-white flex-wrap text-montserrat text-nci-gray-dark p-6 p-1.5">
+      <div className=" items-center justify-between bg-white flex-wrap text-montserrat text-nci-gray-dark p-6 p-1.5">
         {"Distribution of Most Frequently Mutated Genes"}
       </div> : null
     }
@@ -57,9 +73,10 @@ export const GeneFrequencyChart:React.FC<GeneFrequencyChartProps> = ( { height, 
     <BarChart data={chart_data}
               marginBottom={marginBottom}
               marginTop={0}
+              height={height}
               orientation={orientation}
     />
-    </div>
-  </>)
+  </div>
+)
 };
 

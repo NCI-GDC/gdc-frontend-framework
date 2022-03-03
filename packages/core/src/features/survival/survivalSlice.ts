@@ -9,7 +9,6 @@ import { buildFetchError, GdcApiRequest } from "../gdcapi/gdcapi";
 import { selectCurrentCohortGqlFilters, selectCurrentCohortFilters } from "../cohort/cohortFilterSlice";
 
 
-
 export const MINIMUM_CASES = 10;
 export const MAXIMUM_CURVES = 5;
 export const DAYS_IN_YEAR = 365.25;

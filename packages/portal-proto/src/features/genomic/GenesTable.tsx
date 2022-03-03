@@ -3,7 +3,7 @@ import {
   GDCGenesTable,
   useGenesTable
 } from "@gff/core";
-import { Pagination, Select, Table, Checkbox } from "@mantine/core";
+import { LoadingOverlay, Pagination, Select, Table, Checkbox } from "@mantine/core";
 import { MdCheck as CheckboxIcon} from "react-icons/md";
 
 const GenesTable = () => {
@@ -27,11 +27,10 @@ const GenesTable = () => {
     setOffset((x-1) * pageSize)
     setPage(x);
   }
-  if (!isSuccess)
-    return (<div>Loading...</div>)
 
   return (
     <div className="flex flex-col w-100">
+      <LoadingOverlay  visible={data.genes.genes == undefined } />
       <GenesTableSimple {...data.genes}/>
       <div className="flex flex-row items-center justify-start border-t border-nci-gray-light">
         <p className="px-2">Page Size:</p>

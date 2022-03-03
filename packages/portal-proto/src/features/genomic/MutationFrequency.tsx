@@ -1,9 +1,14 @@
 import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
-import { SurvivalPlot } from "../charts/SurvivalPlot";
 import GenesTable from "./GenesTable";
 import MutationsTable from "./MutationsTable";
 import { Tabs } from '@mantine/core';
 import { EnumFacet } from "../facets/EnumFacet";
+import dynamic from "next/dynamic";
+
+const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
+  ssr: false,
+});
+
 
 const GenesFacetNames = [
   {
@@ -49,9 +54,13 @@ const MutationFacetNames = [
 
 const SideBySideCharts : React.FC = () => {
   return (
-  <div className="grid grid-cols-2">
-      <GeneFrequencyChart marginBottom={90} />
+  <div className="flex flex-row">
+    <div className="w-1/2">
+      <GeneFrequencyChart marginBottom={95} />
+    </div>
+    <div className="w-1/2 bg-white ">
       <SurvivalPlot/>
+    </div>
   </div>
     );
 }
@@ -59,7 +68,7 @@ const SideBySideCharts : React.FC = () => {
 const MutationFrequency: React.FC = () => {
   return (
       <div className="flex flex-row">
-        <div className="flex flex-col gap-y-4 mr-3 mt-12">
+        <div className="flex flex-col gap-y-4 mr-3 mt-12 w-min-64 w-max-64">
           {GenesFacetNames.map((x, index) => {
             return (<EnumFacet key={`${x.facet_filter}-${index}`}
                                field={`${x.facet_filter}`}
@@ -83,7 +92,7 @@ const MutationFrequency: React.FC = () => {
           })
           }
         </div>
-        <Tabs position="right" variant="pills" >
+        <Tabs>
           <Tabs.Tab label="Genes">
             <div className="flex flex-row">
               <div className="flex flex-col">
@@ -94,10 +103,10 @@ const MutationFrequency: React.FC = () => {
           </Tabs.Tab>
           <Tabs.Tab label="Mutations">
             <div className="flex flex-row">
-
-
               <div className="flex flex-col">
-              <SurvivalPlot />
+                <div className="w-3/4 h-auto bg-white ">
+                  <SurvivalPlot />
+                </div>
               <MutationsTable />
             </div>
             </div>

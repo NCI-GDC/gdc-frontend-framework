@@ -45,6 +45,9 @@ export const processBuckets = (aggregations:Record<string, unknown>, state: {[in
     ([field, aggregation]) => {
       const normalizedField = normalizeGQLFacetName(field)
       if (isBucketsAggregation(aggregation)) {
+        if (!(normalizedField in state)) {
+          console.log("found:", normalizedField);
+        }
         state[normalizedField].status = "fulfilled";
         state[normalizedField].buckets = aggregation.buckets.reduce(
           (facetBuckets, apiBucket) => {

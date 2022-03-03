@@ -1,3 +1,4 @@
+
 import { Config, Layout } from 'plotly.js';
 import Plot from 'react-plotly.js';
 
@@ -5,6 +6,7 @@ interface BarChartProps {
   readonly data: Record<string, any>;
   // if defined, this determines the height of the chart. Otherwise, autosizing is used.
   readonly height?: number;
+  readonly width?: number,
   readonly marginBottom?: number;
   readonly marginTop?: number;
   readonly padding?: number;
@@ -13,9 +15,15 @@ interface BarChartProps {
   readonly title?: string;
 }
 
-const BarChart: React.FC<BarChartProps> = ({ data, height,
-                                             marginBottom, marginTop = 30, padding = 4,
-                                             orientation='v', divId, title }: BarChartProps) => {
+const BarChart: React.FC<BarChartProps> = ({ data,
+                                             marginBottom,
+                                             marginTop = 30,
+                                             padding = 4,
+                                             orientation='v',
+                                             height = undefined,
+                                             width = undefined,
+                                             divId,
+                                             title }: BarChartProps) => {
 
 const chartData = {
     x: orientation === "v" ? data.x : data.y,
@@ -37,8 +45,10 @@ const chartData = {
     orientation: orientation,
     bargap: 0.50,
   };
-const vertical_layout: Partial<Layout> = {
-    xaxis: {
+
+
+const layout: Partial<Layout> =  orientation==='v' ? {
+    xaxis: { // (bars are vertical)
       automargin: false,
       ticks:"outside",
       tickwidth:2,
@@ -49,7 +59,8 @@ const vertical_layout: Partial<Layout> = {
       tickfont: {
         size: 12,
         color: 'rgb(107, 107, 107)'
-      }
+      },
+      tickangle: data.x.length > 6 ? 35 : undefined
     },
     yaxis: {
       title: data.yAxisTitle,
@@ -69,18 +80,8 @@ const vertical_layout: Partial<Layout> = {
       t: marginTop,
       pad: padding
     },
-    width: undefined,
-    height: undefined,
-    autosize:true,
-  };
-
-  if (data.x.length > 6) {
-    vertical_layout.xaxis.tickangle = 35;
-  }
-
-  // vertical_layout.autosize = true;
-
-  const horizontal_layout: Partial<Layout> = {
+    autosize: true,
+  } : {  // (bars are horizontal)
     yaxis: {
       automargin: false,
       ticks:"outside",
@@ -102,7 +103,6 @@ const vertical_layout: Partial<Layout> = {
         family: 'Arial, sans-serif',
         size: 14,
       },
-
       tickfont: {
         size: 12,
         color: 'rgb(107, 107, 107)'
@@ -115,23 +115,20 @@ const vertical_layout: Partial<Layout> = {
       t: marginTop,
       pad: padding
     },
-
-    width: undefined,
-    height: undefined,
-    autosize:true,
+    autosize: true,
   };
 
   const config: Partial<Config> = {
-    responsive: true,
     "displaylogo": false,
     'modeBarButtonsToRemove': ['zoom2d', 'pan2d', 'select2d', 'lasso2d', 'zoomIn2d', 'zoomOut2d', 'autoScale2d', 'resetScale2d', 'toImage']
   };
   return (
-    <Plot divId={divId} data={[chartData]}
-          layout={ orientation==='v' ? vertical_layout : horizontal_layout }
+    <Plot divId={divId}
+          data={chartData ? [chartData] : []}
+          layout={layout}
           config={config}
           useResizeHandler={true}
-          style={{width: "100%", height: "99%"}}/>
+          className="w-full h-full"/>
 );
 
 };

@@ -31,7 +31,7 @@ const FileFacetNames = [
     description: "No description",
   },
   {
-    facet_filter: "analysis__workflow_type",
+    facet_filter: "analysis.workflow_type",
     name: "Analysis Workflow Type",
     description: "No description",
   },

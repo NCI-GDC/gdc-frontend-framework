@@ -136,6 +136,8 @@ export const selectCohortCountsByName = (state: CoreState, name : string) : numb
 
 export const useCohortCounts = createUseCoreDataHook(fetchCohortCaseCounts, selectCohortCountsData);
 
-export const useFilteredCohortCounts = createUseFiltersCoreDataHook(fetchCohortCaseCounts, selectCohortCountsData, selectCurrentCohortFilters);
+export const useFilteredCohortCounts = createUseFiltersCoreDataHook(fetchCohortCaseCounts,
+  selectCohortCountsData,
+  selectCurrentCohortFilters);
 
 

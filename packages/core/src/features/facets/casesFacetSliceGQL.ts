@@ -1,7 +1,5 @@
 /**
  * Drop in replacement for facetSlice which uses the GraphQL API.
- * This was done as genes/mutation filters do not seem to be supported by
- * the REST API.
  */
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { CoreDispatch, CoreState } from "../../store";
@@ -33,9 +31,6 @@ export const fetchCaseFacetByName = createAsyncThunk<
 
   return await graphqlAPI(queryGQL, filtersGQL);
 });
-
-
-
 
 // these top-level properties should match the gdcapi indices.
 // however, this implementation detail should not be exposed to the portal

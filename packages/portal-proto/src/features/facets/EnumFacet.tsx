@@ -18,7 +18,7 @@ import {
 } from "react-icons/md";
 import { convertFieldToName } from "./utils";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
-import { Tooltip } from "@mantine/core";
+import { LoadingOverlay, Tooltip } from "@mantine/core";
 
 export interface EnumFacetProps {
 
@@ -104,9 +104,8 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
   const cardHeight = remainingValues > 16 ? 96 : remainingValues > 0 ? Math.min(96, remainingValues * 5 + 40) : 24;
   const cardStyle = isGroupExpanded ? `flex-none  h-${cardHeight} overflow-y-scroll ` : `overflow-hidden pr-3.5`;
   const numberOfLines = (total - maxValuesToDisplay) < 0 ? total : isGroupExpanded ? 16 : maxValuesToDisplay;
-  const chartHeight = [0, 60, 60, 115, 135, 165, 190];
   return (
-      <div className="flex flex-col bg-white relative shadow-lg border-nci-gray-lightest border-1 rounded-b-md text-xs ">
+      <div className="flex flex-col w-64 bg-white relative shadow-lg border-nci-gray-lightest border-1 rounded-b-md text-xs transition ">
         <div>
           <div className="flex items-center justify-between flex-wrap bg-nci-gray-lighter shadow-md px-1.5">
             <Tooltip label={description}
@@ -167,8 +166,8 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                 </div>
 
                 <div className={cardStyle}>
+                  <LoadingOverlay visible={!isSuccess} />
                   {
-
                     isSuccess ?
                       Object.entries(data).filter(data => data[0] != "_missing").sort(isSortedByValue ? ([, a], [, b]) => (b as number) - (a as number) : ([a], [b]) => a.localeCompare(b),
                       ).map(([value, count], i) => {
@@ -251,7 +250,7 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                 marginTop={5} padding={1}
                 showXLabels={true}
                 showTitle={false}
-                height={isGroupExpanded ? cardHeight * 4.88 : chartHeight[total]}
+                height={undefined}
                 orientation="h"
                 valueLabel={valueLabel}
                 maxBins={Math.min(isGroupExpanded ? 16 : Math.min(6, total))}

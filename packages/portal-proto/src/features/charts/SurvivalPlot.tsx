@@ -1,15 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   useSurvivalPlot,
   Survival
 } from "@gff/core";
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import { renderPlot } from '@oncojs/survivalplot';
 import {
   MdDownload as DownloadIcon,
   MdRestartAlt as ResetIcon,
 } from "react-icons/md";
-import { SurvivalState } from "@gff/core/dist/dts";
+import { Button } from "@mantine/core";
 // import wrapSvg from "./wrapSVG"; //TODO: add this function
 
 
@@ -40,11 +40,12 @@ export const MINIMUM_CASES = 10;
 export const MAXIMUM_CURVES = 5;
 
 export const useSurvival = (data, xDomain, setXDomain) => {
-  const ref =useRef();
+  const ref =useRef(undefined);
 
   useEffect(() => {
     ref.current ?
     renderPlot({
+      height: 0,
       container: ref.current,
       palette: textColors,
       margins: SVG_MARGINS,
@@ -102,40 +103,27 @@ const buildLegend = (data, name) => {
   return legend;
 }
 
-interface SurvivalResponse {
-  readonly data?: SurvivalState;
-  readonly error?: string;
-  readonly isUninitialized: boolean;
-  readonly isFetching: boolean;
-  readonly isSuccess: boolean;
-  readonly isError: boolean;
-}
-
-export const SurvivalPlot = () => {
-  const { data,  isSuccess } =
-    useSurvivalPlot();
+const SurvivalPlot = () => {
+  const { data,  isSuccess } = useSurvivalPlot();
   // handle the current range of the xAxis set to undefined to reset
   const [xDomain, setXDomain] = useState(undefined);
   // hook to call renderSurvivalPlot
   const container = useSurvival(data, xDomain, setXDomain);
-
-  if (!isSuccess)
-    return <div>Loading</div>
-
   const legend = buildLegend(data, "Explorer")
-  return (<div className="flex flex-col bg-white ">
+  return (
+    <div className="flex flex-col overflow-hidden relative">
       <div className="flex flex-row w-100 items-center justify-center flex-wrap items-center">
         <div className="flex ml-auto text-montserrat text-lg text-nci-gray-dark ">{"Overall Survival Plot"}</div>
-        <div className="flex flex-row items-center ml-auto ">
-          <button className="mx-2 border-2 rounded-md border-nci-gray-light px-4 py-2 hover:bg-nci-blue transition-colors" onClick={() => setXDomain(undefined)}><DownloadIcon color="bg-nci-blue " size="1.5rem"></DownloadIcon></button>
-          <button className="mx-2 border-2 rounded-md border-nci-gray-light px-4 py-2 hover:bg-nci-blue transition-colors" onClick={() => setXDomain(undefined)}><ResetIcon size="1.5rem"></ResetIcon></button>
+        <div className="flex flex-row items-center ml-auto mt-2 ">
+          <Button className="mx-2 px-4 py-2 bg-nci-gray-light hover:bg-nci-blue transition-colors" onClick={() => setXDomain(undefined)}><DownloadIcon color="bg-nci-blue " size="1.15rem"></DownloadIcon></Button>
+          <Button className="mx-2 px-4 py-2 bg-nci-gray-light hover:bg-nci-blue transition-colors" onClick={() => setXDomain(undefined)}><ResetIcon size="1.15rem"></ResetIcon></Button>
         </div>
       </div>
-    <div className="flex flex-col">
+    <div className="flex flex-col ">
       <div className="flex flex-row justify-center">
       {
         legend.map((x) => {
-          return <div className="text-nci-blue"key={x.key}>{x.value}</div>
+          return <div className="text-nci-blue" key={x.key}>{x.value}</div>
         })
       }
       </div>
@@ -145,11 +133,10 @@ export const SurvivalPlot = () => {
         drag to zoom
       </div>
     </div>
-
-    <div className="survival-plot"  ref={container}>
+        <div className="survival-plot"  ref={container}></div>
     </div>
-
-
-  </div>)
+    )
 };
+
+export default SurvivalPlot;
 

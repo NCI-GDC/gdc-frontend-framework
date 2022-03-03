@@ -23,8 +23,6 @@ const MutationsTable: React.FC<unknown> = () => {
     setOffset((x-1) * pageSize)
     setPage(x);
   }
-  if (!isSuccess)
-    return (<div>Loading...</div>)
 
   return (
     <div className="flex flex-col w-100">
