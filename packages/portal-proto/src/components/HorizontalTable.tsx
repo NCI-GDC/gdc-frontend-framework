@@ -2,29 +2,57 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useTable, useBlockLayout } from 'react-table';
 import { FixedSizeList as List } from "react-window";
 import _ from "lodash";
+import { ReactSortable, Sortable } from "react-sortablejs";
 
-const HorizontalTable = (inputData) => {
-    const [arrayData, setArrayData] = useState(inputData.inputData);
 
-    const tableData = useMemo(() => [...arrayData], [arrayData]);
+const HorizontalTable = ({ inputData, tableFunc, customCellKeys, customGridMapping, sortableOptions, selectableRow = false }) => {
+    const [columnListOptions, setColumnListOptions] = useState([]);
+    const tableData = useMemo(() => [...inputData], [inputData]);
 
-    const generateColumnHeadings = (obj) => {
+    const rearrangeColumns = (columnChange) => {
+        setColumnListOptions(columnChange);
+    }
+
+    const generateColumnHeadings = (obj, customCellKeys) => {
         const columnHeadings = [];
         const keysArr = Object.keys(obj);
         keysArr.forEach(key => {
+            customCellKeys.includes(key) ? 
+            columnHeadings.push(customGridMapping(key)) : 
             columnHeadings.push({
                 "Header": _.startCase(key),
                 "accessor": key,
-                "width": (obj[key].length < 10 || typeof obj[key] === 'number') ? 100 : 210
-            })
+                "width": (obj[key].length < 10 || typeof obj[key] === 'number') ? 70 : 180,
+            });
         });
+        setColumnListOptions(keysArr);
         return columnHeadings
     }
 
-    useEffect(() => {
-    }, [inputData])
+    const tableAction = (action) => {
+        action.visibleColumns.push((columns) => [
+            {
+                id: "Checkbox",
+                Header: "",
+                Cell: ({ row }) => (
+                    <input type="checkbox"/>
+                ),
+                "width": 30
+            },
+            ...columns
+        ]) 
+    }; 
 
-    const tableColumns = useMemo(() => generateColumnHeadings(inputData.inputData[0]), [inputData]);
+    useEffect(() => {
+        // tableFunc();
+    }, [inputData]);
+
+    useEffect(() => {
+
+    }, [selectableRow])
+
+
+    const tableColumns = useMemo(() => generateColumnHeadings(inputData[0], customCellKeys), [inputData]);
 
     const Table = ({ columns, data }) => {
 
@@ -41,7 +69,8 @@ const HorizontalTable = (inputData) => {
                 columns,
                 data,
             },
-            useBlockLayout
+            useBlockLayout,
+            selectableRow ? tableAction : null
         );
 
         const RenderRow = useCallback(
@@ -100,7 +129,12 @@ const HorizontalTable = (inputData) => {
 
     return (
         <>
-            <Table columns={tableColumns} data={arrayData}></Table>
+              <ReactSortable list={columnListOptions} setList={rearrangeColumns} {...sortableOptions}>
+              {columnListOptions.map((option, idx) => (
+                <div key={idx}>{option}</div>
+                ))}
+              </ReactSortable>
+            <Table columns={tableColumns} data={tableData}></Table>
         </>
     )
 }
