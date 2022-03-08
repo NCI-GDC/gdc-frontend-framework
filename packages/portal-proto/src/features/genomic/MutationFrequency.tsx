@@ -60,7 +60,7 @@ const MutationFacetNames = [
 
 const MutationFrequency: React.FC = () => {
   const [ geneAdditionalSurvival, setGeneAdditionalSurvival ] = useState(undefined)
-  const { data  } = useSurvivalPlot(geneAdditionalSurvival);
+  const { data  } = useSurvivalPlot();
 
 
   const handleSurvivalPlotToggled = (symbol : string) => {

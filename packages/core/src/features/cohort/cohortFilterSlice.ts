@@ -1,26 +1,28 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CoreState } from "../../store";
 import {
-  Operation,
+  GqlGreaterThan,
+  GqlIncludes,
   GqlOperation,
-  convertFilterToGqlFilter,
 } from "../gdcapi/filters";
 
-
-
-export interface CohortFilterOperation  {
-  readonly field: string;
-  readonly operation: Operation;
-}
-
-export interface EnumFilter extends  CohortFilterOperation{
+/**
+ * Higher level abstractions for filters
+ */
+export interface EnumFilter {
   type: "enum";
+  readonly field: string;
+  readonly op: string;
+  readonly values: string[];
 }
 
-export interface RangeFilter extends  CohortFilterOperation  {
+export interface RangeFilter {
   type: "range";
+  readonly field: string;
+  readonly op: string;
+  readonly lower: number;
+  readonly upper: number;
 }
-
 
 export type CohortFilter = EnumFilter | RangeFilter;
 
@@ -63,10 +65,9 @@ const slice = createSlice({
   extraReducers: {},
 });
 
-
 export interface CohortFilterHandler<T> {
-  handleEnum: (filter: EnumFilter) => T;
-  handleRange: (filter: RangeFilter) => T;
+  handleEnum: (op: EnumFilter) => T;
+  handleRange: (op: RangeFilter) => T;
 }
 
 const assertNever = (x: never): never => {
@@ -88,15 +89,26 @@ export const handleGqlOperation = <T>(
 };
 
 class CohortFilterToGqlOperationHandler implements CohortFilterHandler<GqlOperation> {
-  handleEnum = (filter: EnumFilter): GqlOperation  => convertFilterToGqlFilter(filter.operation);
-  handleRange = (filter: RangeFilter): GqlOperation => convertFilterToGqlFilter(filter.operation);
+  handleEnum = (op: EnumFilter): GqlIncludes => ({
+    op: "in",
+    content: {
+      field: op.field,
+      value: op.values,
+    },
+  });
+  handleRange = (op: RangeFilter): GqlGreaterThan => ({
+    op: ">",
+    content: {
+      field: op.field,
+      value: op.lower,
+    },
+  });
 }
 
 export const convertFacetFilterToGqlFilter = (filter: CohortFilter): GqlOperation => {
   const handler: CohortFilterHandler<GqlOperation> = new CohortFilterToGqlOperationHandler();
   return handleGqlOperation(handler, filter);
 };
-
 
 export const buildCohortGqlOperator = (fs: FilterSet | undefined): GqlOperation | undefined => {
 
@@ -109,7 +121,7 @@ export const buildCohortGqlOperator = (fs: FilterSet | undefined): GqlOperation 
         {
           op: "and", content: Object.keys(fs.root).map((k): GqlOperation => {
             const filter = {  ...fs.root[k], field: fs.root[k].field};
-            return convertFilterToGqlFilter(filter.operation);
+            return convertFacetFilterToGqlFilter(filter);
           }),
         }
       );
