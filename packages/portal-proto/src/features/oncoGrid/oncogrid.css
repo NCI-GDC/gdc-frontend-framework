@@ -1,0 +1,58 @@
+.og-selection-region {
+  fill: #1693c0;
+}
+.oncogrid-wrapper .background {
+  fill: #fff;
+  stroke: grey;
+  stroke-width: 1;
+  stroke-opacity: 0.5;
+}
+.oncogrid-wrapper line {
+  stroke: grey;
+  stroke-opacity: .3;
+}
+.oncogrid-wrapper .og-highlight {
+  stroke: green;
+  stroke-width: 1;
+  z-index: 100;
+}
+.oncogrid-wrapper .og-histogram-axis {
+  stroke: black;
+  stroke-opacity: .5;
+}
+.oncogrid-wrapper .og-gene-label {
+  cursor: move;
+}
+.oncogrid-wrapper text.og-label-text-font {
+  font-size: 0.9rem;
+}
+.oncogrid-wrapper text.og-track-label {
+  font-size: 0.9rem;
+}
+.oncogrid-wrapper .og-sortable-rect:hover {
+  stroke: red;
+  stroke-width: 2;
+}
+.oncogrid-wrapper .og-remove-gene {
+  cursor: pointer;
+  font-size: 0.98rem;
+  font-family: sans-serif;
+  fill: red;
+  stroke: red;
+}
+.oncogrid-wrapper .og-horizontal-cross {
+  stroke: black;
+}
+.oncogrid-wrapper .og-vertical-cross {
+  stroke: black;
+}
+
+.oncogrid-mutation-legend {
+  margin-bottom: 15px;
+}
+
+.oncogrid-mutation-legend h3,
+.oncogrid-cnv-legend h3 {
+  margin-top: 0;
+  margin-bottom: 5px;
+}

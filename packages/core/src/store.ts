@@ -11,6 +11,7 @@ import { ssmsTableReducer } from "./features/ssmsTable/ssmsTableSlice";
 import { genesTableReducer } from "./features/genesTable/genesTableSlice";
 import { geneFrequencyChartReducer } from "./features/genesTable/genesFrequencyChartSlice";
 import { survivalReducer } from "./features/survival/survivalSlice";
+import { oncoGridReducer } from "./features/oncoGrid";
 
 export const coreStore = configureStore({
   reducer: {
@@ -26,7 +27,7 @@ export const coreStore = configureStore({
     genesTable: genesTableReducer,
     geneFrequencyChart: geneFrequencyChartReducer,
     survival: survivalReducer,
-
+    oncogrid: oncoGridReducer,
   },
   devTools: {
     name: "@gff/core",

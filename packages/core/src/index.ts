@@ -19,3 +19,4 @@ export * from "./features/ssmsTable/ssmsTableSlice";
 export * from "./features/genesTable/genesTableSlice";
 export * from "./features/genesTable/genesFrequencyChartSlice";
 export * from "./features/survival/survivalSlice";
+export * from "./features/oncoGrid";
