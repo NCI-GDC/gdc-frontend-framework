@@ -1,24 +1,26 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CoreState } from "../../store";
 import {
-  GqlGreaterThan,  GqlIncludes,
+  Operation,
   GqlOperation,
+  convertFilterToGqlFilter,
 } from "../gdcapi/filters";
 
-export interface EnumFilter {
-  type: "enum";
+
+
+export interface CohortFilterOperation  {
   readonly field: string;
-  readonly op: string;
-  readonly values: string[];
+  readonly operation: Operation;
 }
 
-export interface RangeFilter {
-  type: "range";
-  readonly field: string;
-  readonly op: string;
-  readonly from: number;
-  readonly to: number;
+export interface EnumFilter extends  CohortFilterOperation{
+  type: "enum";
 }
+
+export interface RangeFilter extends  CohortFilterOperation  {
+  type: "range";
+}
+
 
 export type CohortFilter = EnumFilter | RangeFilter;
 
@@ -61,9 +63,10 @@ const slice = createSlice({
   extraReducers: {},
 });
 
+
 export interface CohortFilterHandler<T> {
-  handleEnum: (op: EnumFilter) => T;
-  handleRange: (op: RangeFilter) => T;
+  handleEnum: (filter: EnumFilter) => T;
+  handleRange: (filter: RangeFilter) => T;
 }
 
 const assertNever = (x: never): never => {
@@ -85,20 +88,8 @@ export const handleGqlOperation = <T>(
 };
 
 class CohortFilterToGqlOperationHandler implements CohortFilterHandler<GqlOperation> {
-  handleEnum = (op: EnumFilter): GqlIncludes => ({
-    op: "in",
-    content: {
-      field: op.field,
-      value: op.values,
-    },
-  });
-  handleRange = (op: RangeFilter): GqlGreaterThan => ({
-    op: ">",
-    content: {
-      field: op.field,
-      value: op.from,
-    },
-  });
+  handleEnum = (filter: EnumFilter): GqlOperation  => convertFilterToGqlFilter(filter.operation);
+  handleRange = (filter: RangeFilter): GqlOperation => convertFilterToGqlFilter(filter.operation);
 }
 
 export const convertFacetFilterToGqlFilter = (filter: CohortFilter): GqlOperation => {
@@ -106,7 +97,8 @@ export const convertFacetFilterToGqlFilter = (filter: CohortFilter): GqlOperatio
   return handleGqlOperation(handler, filter);
 };
 
-const buildCohortGqlOperator = (fs: FilterSet | undefined): GqlOperation | undefined => {
+
+export const buildCohortGqlOperator = (fs: FilterSet | undefined): GqlOperation | undefined => {
 
   if (!fs)
     return undefined;
@@ -117,7 +109,7 @@ const buildCohortGqlOperator = (fs: FilterSet | undefined): GqlOperation | undef
         {
           op: "and", content: Object.keys(fs.root).map((k): GqlOperation => {
             const filter = {  ...fs.root[k], field: fs.root[k].field};
-            return convertFacetFilterToGqlFilter(filter);
+            return convertFilterToGqlFilter(filter.operation);
           }),
         }
       );
@@ -141,6 +133,10 @@ export const selectCurrentCohortFilters = (state: CoreState): FilterSet | undefi
  */
 export const selectCurrentCohortGqlFilters = (state: CoreState): GqlOperation | undefined => {
   return buildCohortGqlOperator(state.cohort.currentFilters.currentFilters);
+};
+
+export const selectCurrentCohortFilterSet = (state: CoreState): FilterSet | undefined => {
+  return state.cohort.currentFilters.currentFilters;
 };
 
 export const selectCurrentCohortCaseGqlFilters = (state: CoreState): GqlOperation | undefined => {

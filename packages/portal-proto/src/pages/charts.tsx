@@ -2,7 +2,7 @@ import { NextPage } from "next";
 import { SimpleLayout } from "../features/layout/Simple";
 import { FacetChart } from "../features/charts/FacetChart";
 import { GeneFrequencyChart } from "../features/charts/GeneFrequencyChart";
-import { SurvivalPlot } from "../features/charts/SurvivalPlot";
+
 
 const FacetsPage: NextPage = () => {
   return (
@@ -29,7 +29,7 @@ const FacetsPage: NextPage = () => {
         </div>
       </div>
       <GeneFrequencyChart height={200} marginBottom={30} />
-      <SurvivalPlot height={200} marginBottom={30} />
+
     </SimpleLayout>
   );
 };

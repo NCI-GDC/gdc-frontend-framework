@@ -23,12 +23,11 @@ const populatedFilters =
   mode: "and",
   root: {
     primary_site: {
-      type: "enum",
-      op: "in",
-      field: "primary_site",
-      values: [
-        "bronchus and lung",
-      ],
+        operator: "includes",
+        field: "primary_site",
+        operands: [
+          "bronchus and lung",
+        ],
     },
   },
 };
@@ -38,18 +37,16 @@ const TwoPopulatedFilters =
     mode: "and",
     root: {
       primary_site: {
-        type: "enum",
-        op: "in",
+        operator: "includes",
         field: "primary_site",
-        values: [
+        operands: [
           "bronchus and lung",
         ],
       },
       disease_type: {
-        type: 'enum',
-        op: 'in',
+        operator: "includes",
         field: 'disease_type',
-        values: [
+        operands: [
           'ductal and lobular neoplasms'
         ]
       },
@@ -59,7 +56,7 @@ const TwoPopulatedFilters =
 describe("cohortSlice reducer", () => {
   test("should return the default state for unknown actions", () => {
     const state = cohortNameReducer(undefined, { type: "asdf" });
-    expect(state).toEqual({ currentFilters: initialFilters });
+    expect(state).toEqual({ currentCohort: "New Cohort" });
   });
 
   test("setCurrentCohort action should set the current cohort", () => {
@@ -169,13 +166,13 @@ describe("addFilter", () => {
   test("should add a filter to the current cohort", () => {
     const currentCohortFilters = cohortFilterReducer({ currentFilters: initialFilters },
       updateCohortFilter(
-      {
-          type: "enum",
-          op: "in",
+      { field: "primary_site", operation : {
+          operator: "includes",
           field: "primary_site",
-          values: [
+          operands: [
             "bronchus and lung",
           ]
+        }
       }
     ));
     expect(currentCohortFilters).toEqual({ currentFilters: populatedFilters });
@@ -184,12 +181,13 @@ describe("addFilter", () => {
     const currentCohortFilters = cohortFilterReducer({ currentFilters: populatedFilters as FilterSet },
       updateCohortFilter(
         {
-          type: "enum",
-          op: "in",
-          field: "disease_type",
-          values: [
-            "ductal and lobular neoplasms",
-          ]
+          field: "disease_type", operation: {
+            operator: "includes",
+            field: "disease_type",
+            operands: [
+              "ductal and lobular neoplasms",
+            ]
+          }
         }
       ));
     expect(currentCohortFilters).toEqual({ currentFilters: TwoPopulatedFilters });

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  useSurvivalPlot,
   Survival
 } from "@gff/core";
 import { useLayoutEffect, useRef } from "react";
@@ -10,8 +9,14 @@ import {
   MdRestartAlt as ResetIcon,
 } from "react-icons/md";
 import { Button } from "@mantine/core";
-// import wrapSvg from "./wrapSVG"; //TODO: add this function
+import dynamic from "next/dynamic";
+import { processJSONData } from "./utils";
 
+const DownloadOptions = dynamic(() => import("./DownloadOptions"), {
+  ssr: false,
+});
+
+const CHART_NAME = "survival-plot";
 
 const textColors = [
   // based on schemeCategory10
@@ -45,7 +50,7 @@ export const useSurvival = (data, xDomain, setXDomain) => {
   useEffect(() => {
     ref.current ?
     renderPlot({
-      height: 0,
+      height: 380, // TODO: Figure out how to fix size of Survival Plot without setting this.
       container: ref.current,
       palette: textColors,
       margins: SVG_MARGINS,
@@ -103,8 +108,12 @@ const buildLegend = (data, name) => {
   return legend;
 }
 
-const SurvivalPlot = () => {
-  const { data,  isSuccess } = useSurvivalPlot();
+export interface SurvivalPlotProps {
+  readonly data: ReadonlyArray<Survival>;
+}
+
+const SurvivalPlot : React.FC<SurvivalPlotProps> = ( { data } : SurvivalPlotProps) => {
+  const [downloadMenuOpen, setDownloadMenuOpen] = useState(false);
   // handle the current range of the xAxis set to undefined to reset
   const [xDomain, setXDomain] = useState(undefined);
   // hook to call renderSurvivalPlot
@@ -115,8 +124,11 @@ const SurvivalPlot = () => {
       <div className="flex flex-row w-100 items-center justify-center flex-wrap items-center">
         <div className="flex ml-auto text-montserrat text-lg text-nci-gray-dark ">{"Overall Survival Plot"}</div>
         <div className="flex flex-row items-center ml-auto mt-2 ">
-          <Button className="mx-2 px-4 py-2 bg-nci-gray-light hover:bg-nci-blue transition-colors" onClick={() => setXDomain(undefined)}><DownloadIcon color="bg-nci-blue " size="1.15rem"></DownloadIcon></Button>
-          <Button className="mx-2 px-4 py-2 bg-nci-gray-light hover:bg-nci-blue transition-colors" onClick={() => setXDomain(undefined)}><ResetIcon size="1.15rem"></ResetIcon></Button>
+          <button
+            className="px-1.5 min-h-[28px] nim-w-[40px] mx-1 border-nci-gray-light border rounded-[4px] transition-colors "
+            onClick={() => setDownloadMenuOpen(!downloadMenuOpen)}
+          ><DownloadIcon size="1.25em" /></button>
+          <button className="px-1.5 min-h-[28px] nim-w-[40px] border-nci-gray-light border rounded-[4px] transition-colors " onClick={() => setXDomain(undefined)}><ResetIcon size="1.15rem"></ResetIcon></button>
         </div>
       </div>
     <div className="flex flex-col ">

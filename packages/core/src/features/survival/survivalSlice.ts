@@ -6,7 +6,11 @@ import {
 } from "../../dataAcess";
 import { CoreDispatch, CoreState } from "../../store";
 import { buildFetchError, GdcApiRequest } from "../gdcapi/gdcapi";
-import { selectCurrentCohortGqlFilters, selectCurrentCohortFilters } from "../cohort/cohortFilterSlice";
+import {
+  selectCurrentCohortFilters,
+  selectCurrentCohortFilterSet,
+  buildCohortGqlOperator,
+  FilterSet } from "../cohort/cohortFilterSlice";
 
 
 export const MINIMUM_CASES = 10;
@@ -64,14 +68,19 @@ export const fetchSurvivalAnalysis = async (
 
 export const fetchSurvival = createAsyncThunk <
   SurvivalApiResponse,
-  void,
+  { filters?: FilterSet },
   { dispatch: CoreDispatch; state: CoreState }
   >
 (
   "analysis/survivalData",
-  async (_: void, thunkAPI) => {
-    const filters = selectCurrentCohortGqlFilters(thunkAPI.getState());
-    return fetchSurvivalAnalysis({  filters: filters });
+  async (args, thunkAPI) => {
+    const cohort_filters = selectCurrentCohortFilterSet(thunkAPI.getState());
+    const filters = {
+      mode: cohort_filters?.mode,
+      root: { ...cohort_filters?.root, ...args?.filters?.root }
+  } as FilterSet;
+
+    return fetchSurvivalAnalysis({  filters: buildCohortGqlOperator(filters) });
   },
 );
 

@@ -3,10 +3,16 @@ import {
   GDCGenesTable,
   useGenesTable
 } from "@gff/core";
-import { LoadingOverlay, Pagination, Select, Table, Checkbox } from "@mantine/core";
+import { LoadingOverlay, Pagination, Select, Table, Checkbox, Tooltip } from "@mantine/core";
 import { MdCheck as CheckboxIcon} from "react-icons/md";
+import { SiMicrogenetics as GeneAnnotationIcon } from "react-icons/si";
+import { BiLineChartDown as SurvivalPlotIcon } from "react-icons/bi";
 
-const GenesTable = () => {
+interface GenesTableProps {
+  readonly handleSurvivalPlotToggled?: (string) => void;
+}
+
+const GenesTable: React.FC<GenesTableProps> = ( { handleSurvivalPlotToggled } : GenesTableProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [offset, setOffset] = useState(0);
   const [activePage, setPage] = useState(1);
@@ -31,7 +37,7 @@ const GenesTable = () => {
   return (
     <div className="flex flex-col w-100">
       <LoadingOverlay  visible={data.genes.genes == undefined } />
-      <GenesTableSimple {...data.genes}/>
+      <GenesTableSimple {...data.genes} handleSurvivalPlotToggled={handleSurvivalPlotToggled}/>
       <div className="flex flex-row items-center justify-start border-t border-nci-gray-light">
         <p className="px-2">Page Size:</p>
         <Select size="sm" radius="md"
@@ -61,11 +67,19 @@ const GenesTable = () => {
   );
 };
 
-const GenesTableSimple: React.FC<GDCGenesTable> = ({ genes,
+interface GenesTableSimpleProps extends GDCGenesTable {
+  readonly handleSurvivalPlotToggled : (s) => void;
+}
+
+const GenesTableSimple: React.FC<GenesTableSimpleProps> = ({ genes,
                                                      filteredCases,
                                                      cases,
                                                      cnvCases,
-                                                     mutationCounts} : GDCGenesTable) => {
+                                                     mutationCounts,
+                                                     handleSurvivalPlotToggled
+                                                   }
+                                                     : GenesTableSimpleProps,
+                                                   ) => {
 
 
   return (
@@ -98,8 +112,14 @@ const GenesTableSimple: React.FC<GDCGenesTable> = ({ genes,
           <td className="px-2"> {mutationCounts
             ? mutationCounts[x.gene_id]
             : " loading"}{" "}</td>
-          <td className="px-2">A</td>
-          <td className="px-2">S</td>
+          <td className="px-2">{ x.is_cancer_gene_census ? <Tooltip label="Is Cancer Census"> <GeneAnnotationIcon size="1.15rem" /> </Tooltip>: null }</td>
+          <td className="px-2">
+            <Tooltip label={`Click icon to plot ${x.symbol}`}>
+              <button onClick={() => handleSurvivalPlotToggled(x.symbol)} >
+              <SurvivalPlotIcon size="1.15rem"/>
+              </button>
+            </Tooltip>
+            </td>
         </tr>
       ))}
       </tbody>

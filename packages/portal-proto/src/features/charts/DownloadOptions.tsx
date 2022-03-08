@@ -23,10 +23,10 @@ const DownloadOptions: React.FC<ChartDownloadProps> = ({ chartDivId, chartName, 
   return (
     <div>
       <button
-        className="mx-2 "
-        onClick={() => setDownloadMenuOpen(!downloadMenuOpen)}
+              className="px-1.5 min-h-[28px] nim-w-[40px] border-nci-gray-light border rounded-[4px] "
+              onClick={() => setDownloadMenuOpen(!downloadMenuOpen)}
       >
-        <DownloadIcon size="1.5em" />
+        <DownloadIcon size="1.25em" />
       </button>
       {downloadMenuOpen && (
         <div className="z-10 w-44 absolute bg-white rounded shadow-md">

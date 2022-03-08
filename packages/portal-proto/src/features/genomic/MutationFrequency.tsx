@@ -1,9 +1,16 @@
+import { useState } from "react";
 import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
 import GenesTable from "./GenesTable";
 import MutationsTable from "./MutationsTable";
-import { Tabs } from '@mantine/core';
+import { Grid, Tabs } from '@mantine/core';
 import { EnumFacet } from "../facets/EnumFacet";
 import dynamic from "next/dynamic";
+import { FilterSet, EnumFilter } from  "@gff/core";
+
+import {
+  useSurvivalPlot,
+  Survival
+} from "@gff/core";
 
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
   ssr: false,
@@ -51,21 +58,18 @@ const MutationFacetNames = [
   }
 ];
 
-
-const SideBySideCharts : React.FC = () => {
-  return (
-  <div className="flex flex-row">
-    <div className="w-1/2">
-      <GeneFrequencyChart marginBottom={95} />
-    </div>
-    <div className="w-1/2 bg-white ">
-      <SurvivalPlot/>
-    </div>
-  </div>
-    );
-}
-
 const MutationFrequency: React.FC = () => {
+  const [ geneAdditionalSurvival, setGeneAdditionalSurvival ] = useState(undefined)
+  const { data  } = useSurvivalPlot(geneAdditionalSurvival);
+
+
+  const handleSurvivalPlotToggled = (symbol : string) => {
+    console.log("survival toggled ", symbol);
+    if (geneAdditionalSurvival === symbol) {
+      setGeneAdditionalSurvival(undefined)
+    } else setGeneAdditionalSurvival(symbol)
+  }
+
   return (
       <div className="flex flex-row">
         <div className="flex flex-col gap-y-4 mr-3 mt-12 w-min-64 w-max-64">
@@ -96,8 +100,15 @@ const MutationFrequency: React.FC = () => {
           <Tabs.Tab label="Genes">
             <div className="flex flex-row">
               <div className="flex flex-col">
-                  <SideBySideCharts />
-                  <GenesTable />
+                <Grid className="mx-2 bg-white"  >
+                  <Grid.Col span={6}>
+                    <GeneFrequencyChart marginBottom={95} />
+                  </Grid.Col>
+                  <Grid.Col span={6}>
+                    <SurvivalPlot data={data}/>
+                  </Grid.Col>
+                </Grid>
+                  <GenesTable handleSurvivalPlotToggled={handleSurvivalPlotToggled} />
               </div>
             </div>
           </Tabs.Tab>
@@ -105,7 +116,7 @@ const MutationFrequency: React.FC = () => {
             <div className="flex flex-row">
               <div className="flex flex-col">
                 <div className="w-3/4 h-auto bg-white ">
-                  <SurvivalPlot />
+                  <SurvivalPlot   data={data}/>
                 </div>
               <MutationsTable />
             </div>

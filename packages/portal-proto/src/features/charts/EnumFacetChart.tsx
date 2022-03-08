@@ -6,6 +6,7 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { Loader } from "@mantine/core";
+import { processJSONData } from "./utils"
 
 const BarChart = dynamic(() => import("./BarChart"), {
   ssr: false,
@@ -57,9 +58,7 @@ const processChartData = (facetData: Record<string, any>,
   return results;
 };
 
-const processJSONData = (facetData: Record<string, any>) => {
-  return Object.entries(facetData).map(e => ({ label: e[0], value: e[1] }));
-};
+
 
 export const EnumFacetChart: React.FC<FacetChartProps> = ({
                                                      field,
