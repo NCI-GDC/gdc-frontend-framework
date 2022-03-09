@@ -11,7 +11,7 @@ import { ssmsTableReducer } from "./features/ssmsTable/ssmsTableSlice";
 import { genesTableReducer } from "./features/genesTable/genesTableSlice";
 import { geneFrequencyChartReducer } from "./features/genesTable/genesFrequencyChartSlice";
 import { survivalReducer } from "./features/survival/survivalSlice";
-import { oncoGridReducer } from "./features/oncoGrid";
+import { oncoGridReducer } from "./features/oncoGrid/oncoGridSlice";
 
 export const coreStore = configureStore({
   reducer: {
