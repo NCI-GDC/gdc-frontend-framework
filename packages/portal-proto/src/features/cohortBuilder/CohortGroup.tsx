@@ -14,12 +14,13 @@ import {
 } from "react-icons/md";
 import { nanoid } from "@reduxjs/toolkit";
 import {
-  CohortFilter,
-  CohortFilterHandler,
-  EnumFilter,
   FilterSet,
-  handleGqlOperation,
-  RangeFilter,
+  Operation,
+  OperationValue,
+  Includes,
+  Equals,
+  handleOperation,
+  OperationHandler,
   removeCohortFilter,
   selectCurrentCohortFilters,
   useCoreDispatch,
@@ -153,12 +154,14 @@ const CohortFacetElement: React.FC<FacetElementProp> = ({ filter }: FacetElement
 };
 
 interface EnumFilterProps {
-  readonly filter: EnumFilter;
+  readonly op: string;
+  readonly field: string;
+  readonly values: OperationValue;
 }
 
-const CohortEnumFilterElement: React.FC<EnumFilterProps> = ({ filter }: EnumFilterProps) => {
-  const [groupType, setGroupTop] = useState(filter.op);
-  const [showPopup, setShowpopup] = useState(false);
+const CohortEnumFilterElement: React.FC<EnumFilterProps> = ({ field, op, values }: EnumFilterProps) => {
+  const [groupType, setGroupTop] = useState(op);
+  const [showPopup, setShowPopup] = useState(false);
 
   const handleChange = (event) => {
     setGroupTop(event.target.value);
@@ -173,18 +176,18 @@ const CohortEnumFilterElement: React.FC<EnumFilterProps> = ({ filter }: EnumFilt
   const coreDispatch = useCoreDispatch();
 
   const handleRemoveFilter = () => {
-    coreDispatch(removeCohortFilter(filter.field));
+    coreDispatch(removeCohortFilter(field));
   };
 
   const handlePopupFacet = () => {
-    setShowpopup(!showPopup);
+    setShowPopup(!showPopup);
   };
 
   return (
     <div className="m-1 px-2 font-heading shadow-md font-medium text-sm rounded-xl bg-nci-gray-lighter text-nci-gray-darkest border-nci-gray-light border-1">
       <div className="flex flex-row items-center">
-        {convertFieldToName(filter.field)} is <span className="px-1 underline">{filter_set_label_v1["any_of"]}</span>
-        <div className="flex truncate ... max-w-sm px-2 border-l-2 border-nci-gray-light ">{filter.values.join(",")}</div>
+        {convertFieldToName(field)} is <span className="px-1 underline">{filter_set_label_v1["any_of"]}</span>
+        <div className="flex truncate ... max-w-sm px-2 border-l-2 border-nci-gray-light ">{values.join(",")}</div>
         <DropDownIcon size="1.5em" onClick={handlePopupFacet} />
         <button ><ClearIcon onClick={handleRemoveFilter} size="1.5em"
                                              className="pl-1 border-l-2 border-nci-gray-light " /></button>
@@ -194,7 +197,7 @@ const CohortEnumFilterElement: React.FC<EnumFilterProps> = ({ filter }: EnumFilt
 };
 
 interface RangeFilterProps {
-  readonly filter: RangeFilter;
+  readonly filter: Operation;
 }
 
 const CohortRangeFilterElement: React.FC<RangeFilterProps> = ({ filter }: RangeFilterProps) => {
@@ -234,14 +237,18 @@ export const useCohortFacetFilters = (): FilterSet => {
   );
 };
 
-class CohortFilterToComponent implements CohortFilterHandler<JSX.Element> {
-  handleEnum = (f: EnumFilter) => <CohortEnumFilterElement key={f.field} filter={f} />;
-  handleRange = (f: RangeFilter) => <CohortRangeFilterElement key={f.field} filter={f} />;
+
+/**
+ *  Processes a Filter into a component representation
+ */
+class CohortFilterToComponent implements OperationHandler<JSX.Element> {
+  handleIncludes = (f:Includes) => <CohortEnumFilterElement key={f.field} field={f.field} op={f.operation} values={f.operands} />;
+  handleEquals = (f:Equals) => <CohortEnumFilterElement key={f.field} field={f.field} op={f.operation} values={f.operand} />;
 }
 
-export const convertFilterToComponent = (filter: CohortFilter): JSX.Element => {
-  const handler: CohortFilterHandler<JSX.Element> = new CohortFilterToComponent();
-  return handleGqlOperation(handler, filter);
+export const convertFilterToComponent = (filter: Operation): JSX.Element => {
+  const handler: OperationHandler<JSX.Element> = new CohortFilterToComponent();
+  return handleOperation(handler, filter);
 };
 
 
@@ -268,6 +275,7 @@ export const CohortGroup: React.FC<CohortGroupProps> = ({ cohorts }: CohortGroup
           className="flex flex-row flex-wrap w-100 p-2 bg-nci-gray-lightest ">
           {
             Object.keys(filters.root).map((k) => {
+              console.log(filters.root[k]);
               return convertFilterToComponent(filters.root[k]);
             })}
 

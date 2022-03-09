@@ -133,8 +133,6 @@ const assertNever = (x: never): never => {
   throw Error(`Exhaustive comparison did not handle: ${x}`);
 };
 
-
-
 export type GqlOperation =
   | GqlEquals
   | GqlNotEquals
@@ -286,7 +284,7 @@ export const handleGqlOperation = <T>(
   }
 };
 
-class ToGqlOperationHandlder implements OperationHandler<GqlOperation> {
+class ToGqlOperationHandler implements OperationHandler<GqlOperation> {
   handleEquals = (op: Equals): GqlEquals => ({
     op: "=",
     content: {
@@ -368,7 +366,7 @@ class ToGqlOperationHandlder implements OperationHandler<GqlOperation> {
 }
 
 export const convertFilterToGqlFilter = (filter: Operation): GqlOperation => {
-  const handler: OperationHandler<GqlOperation> = new ToGqlOperationHandlder();
+  const handler: OperationHandler<GqlOperation> = new ToGqlOperationHandler();
   return handleOperation(handler, filter);
 };
 

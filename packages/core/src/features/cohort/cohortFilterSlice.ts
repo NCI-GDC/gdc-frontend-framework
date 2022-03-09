@@ -1,38 +1,32 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CoreState } from "../../store";
 import {
-  GqlGreaterThan,
-  GqlIncludes,
+  Operation,
   GqlOperation,
+  convertFilterToGqlFilter,
+  OperationHandler,
+  Equals,
+  GreaterThanOrEquals,
+  GreaterThan,
+  LessThan,
+  LessThanOrEquals,
+  Excludes,
+  Includes,
+  Exists,
+  Missing,
+  NotEquals,
+  Intersection,
+  Union
+
 } from "../gdcapi/filters";
 
-/**
- * Higher level abstractions for filters
- */
-export interface EnumFilter {
-  type: "enum";
-  readonly field: string;
-  readonly op: string;
-  readonly values: string[];
-}
-
-export interface RangeFilter {
-  type: "range";
-  readonly field: string;
-  readonly op: string;
-  readonly lower: number;
-  readonly upper: number;
-}
-
-export type CohortFilter = EnumFilter | RangeFilter;
-
 export interface FilterSet {
-  readonly root: Record<string, CohortFilter>;
+  readonly root: Record<string, Operation>;
   readonly mode: string;
 }
 
 export interface CohortFilterState {
-  readonly currentFilters: FilterSet;
+  readonly currentFilters: FilterSet;  // TODO: should be array of FilterSets
 }
 
 const initialState: CohortFilterState = { currentFilters: { mode: "and", root: {} } };
@@ -41,12 +35,12 @@ const slice = createSlice({
   name: "cohort/filters",
   initialState,
   reducers: {
-    updateCohortFilter: (state, action: PayloadAction<CohortFilter>) => {
+    updateCohortFilter: (state, action: PayloadAction<{  field:string, operation:Operation }>) => {
        return {
          ...state,
          currentFilters: {
         mode: "and",
-        root: { ...state.currentFilters.root, [action.payload.field]: action.payload },
+        root: { ...state.currentFilters.root, [action.payload.field]: action.payload.operation },
       }};
     },
     removeCohortFilter: (state, action: PayloadAction<string>)  => {
@@ -65,50 +59,23 @@ const slice = createSlice({
   extraReducers: {},
 });
 
-export interface CohortFilterHandler<T> {
-  handleEnum: (op: EnumFilter) => T;
-  handleRange: (op: RangeFilter) => T;
+export type OperandValue = ReadonlyArray<string> | ReadonlyArray<number> | string | number | string[] | number [] | undefined;
+
+export class ValueExtractorHandler implements OperationHandler<OperandValue> {
+  handleEquals = (op: Equals) => op.operand;
+  handleNotEquals = (op: NotEquals) => op.operand;
+  handleExcludes = (op: Excludes) => op.operands;
+  handleIncludes = (op: Includes) => op.operands;
+  handleGreaterThanOrEquals = (op: GreaterThanOrEquals) => op.operand;
+  handleGreaterThan = (op: GreaterThan) => op.operand;
+  handleLessThan = (op: LessThan) => op.operand;
+  handleLessThanOrEquals = (op: LessThanOrEquals) => op.operand;
+  handleMissing = (_: Missing) => undefined;
+  handleExists= (_: Exists) => undefined;
+  handleIntersection= (_: Intersection) => undefined;
+  handleUnion= (_: Union) => undefined;
 }
 
-const assertNever = (x: never): never => {
-  throw Error(`Exhaustive comparison did not handle: ${x}`);
-};
-
-export const handleGqlOperation = <T>(
-  handler: CohortFilterHandler<T>,
-  filter: CohortFilter,
-): T => {
-  switch (filter.type) {
-    case "enum":
-      return handler.handleEnum(filter);
-    case "range":
-      return handler.handleRange(filter);
-    default:
-      return assertNever(filter);
-  }
-};
-
-class CohortFilterToGqlOperationHandler implements CohortFilterHandler<GqlOperation> {
-  handleEnum = (op: EnumFilter): GqlIncludes => ({
-    op: "in",
-    content: {
-      field: op.field,
-      value: op.values,
-    },
-  });
-  handleRange = (op: RangeFilter): GqlGreaterThan => ({
-    op: ">",
-    content: {
-      field: op.field,
-      value: op.lower,
-    },
-  });
-}
-
-export const convertFacetFilterToGqlFilter = (filter: CohortFilter): GqlOperation => {
-  const handler: CohortFilterHandler<GqlOperation> = new CohortFilterToGqlOperationHandler();
-  return handleGqlOperation(handler, filter);
-};
 
 export const buildCohortGqlOperator = (fs: FilterSet | undefined): GqlOperation | undefined => {
 
@@ -118,10 +85,11 @@ export const buildCohortGqlOperator = (fs: FilterSet | undefined): GqlOperation 
     case "and":
       return (
         (Object.keys(fs.root).length == 0) ? undefined :
-        {
+        { // TODO: this need a redesign root is not always a top level "op"
+          //  but can also be an array of Operators
           op: "and", content: Object.keys(fs.root).map((k): GqlOperation => {
-            const filter = {  ...fs.root[k], field: fs.root[k].field};
-            return convertFacetFilterToGqlFilter(filter);
+           // const filter = {  ...fs.root[k], field: fs.root[k].field};
+            return convertFilterToGqlFilter( fs.root[k]);
           }),
         }
       );
@@ -141,7 +109,6 @@ export const selectCurrentCohortFilters = (state: CoreState): FilterSet | undefi
  * current cohort. Note that the GraphQL filters require "cases." etc. prepended
  * to the filters.
  * @param state
- * @param prepend
  */
 export const selectCurrentCohortGqlFilters = (state: CoreState): GqlOperation | undefined => {
   return buildCohortGqlOperator(state.cohort.currentFilters.currentFilters);
@@ -155,7 +122,7 @@ export const selectCurrentCohortCaseGqlFilters = (state: CoreState): GqlOperatio
   return buildCohortGqlOperator(state.cohort.currentFilters.currentFilters);
 };
 
-export const selectCurrentCohortFiltersByName = (state: CoreState, name: string): CohortFilter | undefined =>
+export const selectCurrentCohortFiltersByName = (state: CoreState, name: string): Operation | undefined =>
   state.cohort.currentFilters.currentFilters?.root[name];
 
 

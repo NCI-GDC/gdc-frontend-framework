@@ -1,10 +1,15 @@
 import {
-  EnumFilter,
+  Operation,
+  ValueExtractorHandler,
+  OperationValue,
   FacetBuckets,
+  handleOperation,
   fetchCaseFacetByName,
   fetchFileFacetByName,
-  fetchGenesFacetByName, fetchMutationsFacetByName,
-  FilterSet, removeCohortFilter,
+  fetchGenesFacetByName,
+  fetchMutationsFacetByName,
+  FilterSet,
+  removeCohortFilter,
   selectCaseFacetByField,
   selectCurrentCohortFilters,
   selectCurrentCohortFiltersByName,
@@ -16,6 +21,7 @@ import {
 } from "@gff/core";
 import { useEffect } from "react";
 
+
 /**
  * Filter selector for all of the facet filters
  */
@@ -25,20 +31,25 @@ const useCohortFacetFilter = (): FilterSet => {
   );
 };
 
+export const extractValue = (op: Operation): OperationValue => {
+  const handler =  new ValueExtractorHandler();
+  return handleOperation(handler, op);
+};
+
 /**
  * Selector for the facet values (if any)
  * @param field
  */
-const useCohortFacetFilterByName = (field: string): string[] | undefined => {
-  const enumFilters: EnumFilter = useCoreSelector((state) =>
-    selectCurrentCohortFiltersByName(state, field) as EnumFilter,
+const useCohortFacetFilterByName = (field: string): OperationValue => {
+  const enumFilters: Operation = useCoreSelector((state) =>
+    selectCurrentCohortFiltersByName(state, field)
   );
-  return enumFilters ? enumFilters.values : undefined;
+  return enumFilters ? extractValue(enumFilters) : undefined;
 };
 
 interface EnumFacetResponse {
   readonly data?: Record<string, number>;
-  readonly enumFilters?: string [] | undefined;
+  readonly enumFilters?: string [] | number [] | undefined;
   readonly error?: string;
   readonly isUninitialized: boolean;
   readonly isFetching: boolean;
@@ -174,11 +185,21 @@ const useMutationsFacet = (field: string): EnumFacetResponse => {
   };
 };
 
+/**
+ * Adds a enumeration filter to cohort filters
+ * @param dispatch
+ * @param enumerationFilters
+ * @param field
+ * @param prefix
+ */
 export const updateEnumFilters = (dispatch, enumerationFilters, field, prefix="" ) => {
   if (enumerationFilters === undefined)
     return;
   if (enumerationFilters.length > 0) {
-    dispatch(updateCohortFilter({ type: "enum", op: "in", field: `${prefix}${field}`, values: enumerationFilters }));
+    dispatch(updateCohortFilter({  field: `${prefix}${field}`, operation: { operator: "includes",
+                                                                                    field: `${prefix}${field}`,
+                                                                                    operands: enumerationFilters }
+                                        }));
   } else { // completely remove the field
     dispatch(removeCohortFilter( `${prefix}${field}`));
   }
