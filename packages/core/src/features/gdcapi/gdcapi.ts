@@ -252,9 +252,7 @@ export const fetchGdcEntities = async <T>(
   endpoint: string,
   request?: GdcApiRequest,
   paginate = false,
-  previousResponse: GdcApiResponse<T> = {
-    data: { hits: [] },
-  } as GdcApiResponse<T>,
+  previousHits : Record<string, any>[] = [],
 ): Promise<GdcApiResponse<T>> => {
   const res = await fetch(`https://api.gdc.cancer.gov/${endpoint}`, {
     method: "POST",
@@ -283,7 +281,7 @@ export const fetchGdcEntities = async <T>(
           ...responseData,
           data: {
             hits: [
-              ...previousResponse?.data?.hits,
+              ...previousHits,
               ...responseData?.data?.hits,
             ],
             pagination: responseData?.data?.pagination,
@@ -293,13 +291,13 @@ export const fetchGdcEntities = async <T>(
       });
 
       if (
-        fullResponse.data.pagination.page != fullResponse.data.pagination.pages
+        fullResponse?.data?.pagination?.page != fullResponse?.data?.pagination?.pages
       ) {
         return fetchGdcEntities(
           endpoint,
           { ...request, from: (request?.from || 0) + (request?.size || 0) },
           true,
-          fullResponse,
+          [...fullResponse.data.hits],
         );
       }
 

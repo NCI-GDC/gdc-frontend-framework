@@ -4,6 +4,7 @@ import {
   fetchGdcCasesMapping,
   fetchGdcProjects,
   fetchGdcAnnotations,
+  fetchGdcEntities,
   FieldTypes,
   GdcApiMapping,
   isBucketsAggregation,
@@ -229,6 +230,45 @@ describe("GDC API", () => {
       expect(annotations?.data?.hits?.length).toEqual(10);
       expect(annotations?.data?.pagination?.count).toEqual(10);
       expect(annotations?.data?.pagination?.total).toBeDefined();
+    });
+  });
+
+  describe("Fetch entities", () => {
+    test("does not paginate by default", async () => {
+      const entities = await fetchGdcEntities(
+        "analysis/top_mutated_genes_by_project",
+        {
+          filters: {
+            op: "in",
+            content: {
+              field: "genes.gene_id",
+              value: ["ENSG00000141510", "ENSG00000133703"],
+            },
+          },
+          from: 0,
+          size: 1,
+        },
+      );
+      expect(entities?.data?.hits?.length).toEqual(1);
+    });
+
+    test("can paginate", async () => {
+      const entities = await fetchGdcEntities(
+        "analysis/top_mutated_genes_by_project",
+        {
+          filters: {
+            op: "in",
+            content: {
+              field: "genes.gene_id",
+              value: ["ENSG00000141510", "ENSG00000133703"],
+            },
+          },
+          from: 0,
+          size: 1,
+        },
+        true,
+      );
+      expect(entities?.data?.hits?.length).toBeGreaterThan(1);
     });
   });
 });

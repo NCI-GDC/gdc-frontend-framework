@@ -1,6 +1,6 @@
 import { fetchGdcEntities, GdcApiResponse } from "../gdcapi/gdcapi";
 
-export const fetchCases = async (genes: string[]) : Promise<GdcApiResponse> => {
+export const fetchCases = async (genes: string[], consequenceTypeFilters : string[]): Promise<GdcApiResponse> => {
   return fetchGdcEntities("analysis/top_mutated_cases_by_gene", {
     fields: [
       "demographic.days_to_death",
@@ -44,13 +44,7 @@ export const fetchCases = async (genes: string[]) : Promise<GdcApiResponse> => {
           op: "in",
           content: {
             field: "ssms.consequence.transcript.consequence_type",
-            value: [
-              "missense_variant",
-              "frameshift_variant",
-              "start_lost",
-              "stop_lost",
-              "stop_gained",
-            ],
+            value: consequenceTypeFilters,
           },
         },
       ],

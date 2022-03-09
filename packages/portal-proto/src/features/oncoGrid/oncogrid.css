@@ -9,7 +9,7 @@
 }
 .oncogrid-wrapper line {
   stroke: grey;
-  stroke-opacity: .3;
+  stroke-opacity: 0.3;
 }
 .oncogrid-wrapper .og-highlight {
   stroke: green;
@@ -18,7 +18,7 @@
 }
 .oncogrid-wrapper .og-histogram-axis {
   stroke: black;
-  stroke-opacity: .5;
+  stroke-opacity: 0.5;
 }
 .oncogrid-wrapper .og-gene-label {
   cursor: move;
