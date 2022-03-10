@@ -132,7 +132,7 @@ export interface FetchError {
   readonly gdcApiReq?: GdcApiRequest;
 }
 
-const buildFetchError = async (
+export const buildFetchError = async (
   res: Response,
   gdcApiReq?: GdcApiRequest,
 ): Promise<FetchError> => {
