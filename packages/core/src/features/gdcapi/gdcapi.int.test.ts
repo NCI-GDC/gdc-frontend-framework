@@ -234,7 +234,7 @@ describe("GDC API", () => {
   });
 
   describe("Fetch entities", () => {
-    test("does not paginate by default", async () => {
+    test("does not fetch all by default", async () => {
       const entities = await fetchGdcEntities(
         "analysis/top_mutated_genes_by_project",
         {
@@ -252,7 +252,7 @@ describe("GDC API", () => {
       expect(entities?.data?.hits?.length).toEqual(1);
     });
 
-    test("can paginate", async () => {
+    test("can fetch all", async () => {
       const entities = await fetchGdcEntities(
         "analysis/top_mutated_genes_by_project",
         {

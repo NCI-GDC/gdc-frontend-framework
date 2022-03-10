@@ -251,7 +251,7 @@ export const fetchGdcAnnotations = async (
 export const fetchGdcEntities = async <T>(
   endpoint: string,
   request?: GdcApiRequest,
-  paginate = false,
+  fetchAll = false,
   previousHits : Record<string, any>[] = [],
 ): Promise<GdcApiResponse<T>> => {
   const res = await fetch(`https://api.gdc.cancer.gov/${endpoint}`, {
@@ -273,7 +273,7 @@ export const fetchGdcEntities = async <T>(
   if (res.ok) {
     const resPromise = res.json();
 
-    if (paginate) {
+    if (fetchAll) {
       let fullResponse = {} as GdcApiResponse<T>;
 
       const updatedPromise = await resPromise.then((responseData) => {
@@ -291,11 +291,11 @@ export const fetchGdcEntities = async <T>(
       });
 
       if (
-        fullResponse?.data?.pagination?.page != fullResponse?.data?.pagination?.pages
+        fullResponse?.data?.pagination?.page <= fullResponse?.data?.pagination?.pages
       ) {
         return fetchGdcEntities(
           endpoint,
-          { ...request, from: (request?.from || 0) + (request?.size || 0) },
+          { ...request, from: (request?.from || 0) + (request?.size || 10) },
           true,
           [...fullResponse.data.hits],
         );

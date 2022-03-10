@@ -64,7 +64,6 @@ const slice = createSlice({
     builder
       .addCase(fetchOncoGrid.fulfilled, (state, action) => {
         state.status = "fulfilled";
-        console.log(action);
         state.data = action.payload;
         state.error = undefined;
         return state;
@@ -75,7 +74,6 @@ const slice = createSlice({
       })
       .addCase(fetchOncoGrid.rejected, (state, action) => {
         state.status = "rejected";
-        console.log(action);
 
         if (action.error) {
           state.error = action.error.message;
