@@ -16,7 +16,7 @@ export const ContextualFileView: React.FC<ContextualFileViewProps> = (
         value: props.setCurrentFile,
       }
     },
-    expand: ['cases.project'],
+    expand: ['cases', 'cases.annotations', 'cases.project', 'cases.samples', 'cases.samples.portions', 'cases.samples.portions.analytes', 'cases.samples.portions.slides', 'cases.samples.portions.analytes.aliquots', 'analysis', 'analysis.input_files', 'downstream_analyses', 'downstream_analyses.output_files'],
     size: 1
   });
   const fileName = data?.[0]?.fileName;
@@ -27,9 +27,7 @@ export const ContextualFileView: React.FC<ContextualFileViewProps> = (
         <span className="rounded-full bg-nci-blue-darker text-white p-1 align-text-bottom mr-2">FL</span>
         <span className="text-2xl text-nci-blue-darker">{fileName}</span>
       </div>
-      <div className="p-4">
-        {data?.[0] ? <FileView file={data[0]} />:null}
-      </div>
+      {data?.[0] ? <FileView file={data[0]} />:null}
     </div>
   );
 };

@@ -257,8 +257,13 @@ export interface FileDefaults {
   readonly version: string;
   readonly experimental_strategy: string;
   readonly cases?: ReadonlyArray<{
+    readonly case_id: string;
+    readonly submitter_id: string;
+    readonly annotations?: ReadonlyArray<{
+      readonly annotation_id: string;
+    }>;
     readonly project?: {
-      readonly dbgap_accession_number: null;
+      readonly dbgap_accession_number?: string;
       readonly disease_type: string;
       readonly name: string;
       readonly primary_site: string;
@@ -267,6 +272,42 @@ export interface FileDefaults {
       readonly released: boolean;
       readonly state: string;
     }
+    readonly samples?: ReadonlyArray<{
+      readonly sample_id: string;
+      readonly sample_type: string;
+      readonly tissue_type: string;
+      readonly submitter_id: string;
+      readonly portions?: ReadonlyArray<{
+        readonly submitter_id: string;
+        readonly analytes?: ReadonlyArray<{
+          readonly analyte_id: string;
+          readonly analyte_type: string;
+          readonly submitter_id: string;
+        }>;
+        readonly slides?: ReadonlyArray<{
+          readonly slide_id: string;
+          readonly section_location: string;
+          readonly submitter_id: string;
+        }>;
+      }>;
+    }>;
+  }>;
+  readonly analysis?: {
+    readonly workflow_type: string;
+    readonly updated_datetime: string;
+    readonly input_files?: ReadonlyArray<{
+      readonly file_id: string;
+    }>;
+  };
+  readonly downstream_analyses?: ReadonlyArray<{
+    readonly workflow_type: string;
+    readonly output_files?: ReadonlyArray<{
+      readonly file_name: string;
+      readonly data_category: string;
+      readonly data_type: string;
+      readonly data_format: string;
+      readonly file_size: number;
+    }>;
   }>;
 }
 
