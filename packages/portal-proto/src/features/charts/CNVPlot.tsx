@@ -38,28 +38,27 @@ const CNVPlot: React.FC<CNVPlotProps> = ({ gene }: CNVPlotProps) => {
     return null;
   }
 
-  const title = `${data.caseTotal} CASES AFFECTED BY ${data.mutationTotal} CNV EVENTS ACROSS ${data.cases.length} PROJECTS`;
+  let caseData = data.cases.filter(d => d.gain !== undefined || d.loss !== undefined);
+  const title = `${data.caseTotal} CASES AFFECTED BY ${data.mutationTotal} CNV EVENTS ACROSS ${caseData.length} PROJECTS`;
 
-  let filteredData = [];
-
+  let chartData;
   if (gainChecked && lossChecked) {
-    filteredData = data.cases.map((d) => ({
+    chartData = caseData
+      .map((d) => ({
       ...d,
       percent: (((d.gain || 0) + (d.loss || 0)) / d.total) * 100,
     }));
   } else if (gainChecked) {
-    filteredData = data.cases
-      .filter((d) => d.gain !== undefined)
+    chartData = caseData.filter(d => d.gain !== undefined)
       .map((d) => ({ ...d, percent: (d.gain / d.total) * 100 }));
   } else if (lossChecked) {
-    filteredData = data.cases
-      .filter((d) => d.loss !== undefined)
+    chartData = caseData.filter(d => d.loss !== undefined)
       .map((d) => ({ ...d, percent: (d.loss / d.total) * 100 }));
   } else {
-    filteredData = [...data.cases];
+    chartData = [...caseData];
   }
 
-  const sortedData = filteredData
+  const sortedData = chartData
     .sort((a, b) => (a.percent < b.percent ? 1 : -1))
     .slice(0, 20);
 
@@ -90,7 +89,7 @@ const CNVPlot: React.FC<CNVPlotProps> = ({ gene }: CNVPlotProps) => {
 
   if (!lossChecked && !gainChecked) {
     const emptyData = orderBy(
-      filteredData.map((d) => ({ gain: 0, loss: 0, ...d })),
+      chartData.map((d) => ({ gain: 0, loss: 0, ...d })),
       ["gain", "loss"],
       ["desc", "desc"],
     ).slice(0, 20);
@@ -100,7 +99,7 @@ const CNVPlot: React.FC<CNVPlotProps> = ({ gene }: CNVPlotProps) => {
     });
   }
 
-  const chartData = {
+  const chartConfig = {
     yAxisTitle: "% of Cases Affected",
     datasets,
   };
@@ -112,7 +111,7 @@ const CNVPlot: React.FC<CNVPlotProps> = ({ gene }: CNVPlotProps) => {
   return (
     <>
       <BarChart
-        data={chartData}
+        data={chartConfig}
         filename={"cancer-distribution-bar-chart"}
         title={title}
         onClickHandler={onClickHandler}
