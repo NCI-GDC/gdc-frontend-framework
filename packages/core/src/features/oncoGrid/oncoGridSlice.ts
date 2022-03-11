@@ -1,6 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { isEmpty } from "lodash";
 import { CoreState } from "../../store";
-import { createUseCoreDataHook, CoreDataSelectorResponse, DataStatus } from "../../dataAcess";
+import { GdcApiData, GdcApiResponse } from "../gdcapi/gdcapi";
+import {
+  createUseCoreDataHook,
+  CoreDataSelectorResponse,
+  DataStatus,
+} from "../../dataAcess";
 import { fetchGenes } from "./genesApi";
 import { fetchSSMOccurrences } from "./ssmOccurrencesApi";
 import { fetchCNVOccurrences } from "./cnvOccurrencesApi";
@@ -11,38 +17,59 @@ interface OncoGridParams {
   readonly cnvFilters: string[];
 }
 
+interface OncoGridResponse extends GdcApiResponse {
+  readonly ssmData?: GdcApiData<any>;
+  readonly cnvData?: GdcApiData<any>;
+  readonly caseData?: GdcApiData<any>;
+}
+
 export const fetchOncoGrid = createAsyncThunk(
   "oncogrid/fetchAll",
-  async ({ consequenceTypeFilters, cnvFilters }: OncoGridParams) => {
-    const geneData = await fetchGenes(consequenceTypeFilters);
-    const geneIds = geneData.data.hits.map((d) => d.gene_id) as string[];
-    const caseData = await fetchCases(geneIds, consequenceTypeFilters);
-    const caseIds = caseData.data.hits.map((d) => d.case_id) as string[];
+  async ({
+    consequenceTypeFilters,
+    cnvFilters,
+  }: OncoGridParams): Promise<OncoGridResponse> => {
+    const geneResponse = await fetchGenes(consequenceTypeFilters);
 
-    let cnvOccurrences;
-    let ssmOccurrences;
+    if (!isEmpty(geneResponse.warnings)) {
+      return geneResponse;
+    }
 
-    await Promise.all([
+    const geneIds = geneResponse.data.hits.map((d) => d.gene_id) as string[];
+    const caseResponse = await fetchCases(geneIds, consequenceTypeFilters);
+
+    if (!isEmpty(caseResponse.warnings)) {
+      return caseResponse;
+    }
+    const caseIds = caseResponse.data.hits.map((d) => d.case_id) as string[];
+
+    return Promise.all([
       fetchCNVOccurrences(geneIds, caseIds, cnvFilters),
       fetchSSMOccurrences(geneIds, caseIds, consequenceTypeFilters),
-    ]).then((values) => {
-      cnvOccurrences = values[0].data.hits;
-      ssmOccurrences = values[1].data.hits;
+    ]).then(([cnvResponse, ssmResponse]) => {
+      const warnings = cnvResponse.warnings || ssmResponse.warnings;
+      return {
+        warnings,
+        data: geneResponse.data,
+        ssmData: ssmResponse.data,
+        cnvData: cnvResponse.data,
+        caseData: caseResponse.data,
+      };
     });
-
-    return {
-      genes: geneData.data.hits,
-      cases: geneData.data.hits,
-      cnvOccurrences,
-      ssmOccurrences,
-    };
   },
 );
 
+interface OncoGridData {
+  readonly genes?: Record<any, any>[];
+  readonly cases?: Record<any, any>[];
+  readonly ssmOccurrences?: Record<any, any>[];
+  readonly cnvOccurrences?: Record<any, any>[];
+}
+
 export interface OncoGridState {
-  data: any;
-  status: DataStatus;
-  error?: string;
+  readonly data: OncoGridData;
+  readonly status: DataStatus;
+  readonly error?: string;
 }
 
 const initialState: OncoGridState = {
@@ -50,21 +77,30 @@ const initialState: OncoGridState = {
     genes: [],
     cases: [],
     ssmOccurrences: [],
-    cnvOccurences: [],
+    cnvOccurrences: [],
   },
   status: "uninitialized",
-  error: "",
 };
 
 const slice = createSlice({
-  name: "cases",
+  name: "oncogrid",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchOncoGrid.fulfilled, (state, action) => {
+        const response = action.payload;
+        if (!isEmpty(response.warnings)) {
+          state.data = {};
+          state.status = "rejected";
+          state.error = response.warnings.filters;
+          return state;
+        }
         state.status = "fulfilled";
-        state.data = action.payload;
+        state.data.genes = [...response.data.hits];
+        state.data.cases = [...(response.caseData?.hits || [])];
+        state.data.ssmOccurrences = [...(response.ssmData?.hits || [])];
+        state.data.cnvOccurrences = [...(response.cnvData?.hits || [])];
         state.error = undefined;
         return state;
       })
@@ -86,7 +122,7 @@ const slice = createSlice({
 
 export const selectOncoGridData = (
   state: CoreState,
-): CoreDataSelectorResponse<OncoGridState> => {
+): CoreDataSelectorResponse<OncoGridData> => {
   return {
     data: state.oncogrid.data,
     status: state.oncogrid.status,
