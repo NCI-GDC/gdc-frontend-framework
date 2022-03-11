@@ -46,7 +46,7 @@ export const HorizontalTable = (
       {props.tableData.map((obj, rowIndex: number):JSX.Element=>{
         return (
           <tr key={`row-${obj.headerName}`} className={rowIndex%2?'':'bg-gdc-blue-warm-lightest'}>
-            <th className="w-4/12 align-top" key={`head-${obj.headerName}`}>{obj.headerName}</th>
+            <th className="w-4/12 align-top pl-1 pr-8 whitespace-nowrap" key={`head-${obj.headerName}`}>{obj.headerName}</th>
             {obj.values.map((value, index):JSX.Element=>{
               const tdObject = (item: string|JSX.Element):JSX.Element => {
                 return (<td key={`${obj.headerName}-${index}`}>{item}</td>);

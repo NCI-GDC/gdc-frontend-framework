@@ -4,6 +4,7 @@ import {
   fetchGdcCasesMapping,
   fetchGdcProjects,
   fetchGdcAnnotations,
+  fetchGdcFiles,
   FieldTypes,
   GdcApiMapping,
   isBucketsAggregation,
@@ -229,6 +230,17 @@ describe("GDC API", () => {
       expect(annotations?.data?.hits?.length).toEqual(10);
       expect(annotations?.data?.pagination?.count).toEqual(10);
       expect(annotations?.data?.pagination?.total).toBeDefined();
+    });
+  });
+
+  describe("Fetch files", () => {
+    test("can retrieve defaults", async () => {
+      const projects = await fetchGdcFiles();
+      expect(projects?.data?.hits?.length).toEqual(10);
+      expect(projects?.data?.pagination?.count).toEqual(10);
+      projects.data.hits.forEach((project) =>
+        expect(project.id).toBeDefined(),
+      );
     });
   });
 });

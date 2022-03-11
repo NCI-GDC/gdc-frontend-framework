@@ -8,7 +8,7 @@ export interface ContextualFilesViewProps {
 export const ContextualFilesView: React.FC<ContextualFilesViewProps> = ({
   handleFileSelected,
 }: ContextualFilesViewProps) => {
-  const { data } = useFiles();
+  const { data } = useFiles({ size: 20 });
   return <FilesView files={data} handleFileSelected={handleFileSelected} />;
 };
 
