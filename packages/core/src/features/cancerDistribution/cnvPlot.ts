@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { castDraft } from "immer";
 import {
   CoreDataSelectorResponse,
   createUseCoreDataHook,
@@ -219,6 +220,12 @@ const slice = createSlice({
     builder
       .addCase(fetchCnvPlot.fulfilled, (state, action) => {
         const response = action.payload;
+        if (response.warnings) {
+          state = castDraft(initialState);
+          state.status = "rejected";
+          state.error = response.warnings.filters;
+        }
+
         const gain: CNVPlotPoint[] =
           response?.data?.viewer?.explore?.cases?.gain?.project__project_id?.buckets.map(
             (doc: GraphQLDoc) => ({ gain: doc.doc_count, project: doc.key }),

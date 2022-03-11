@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { castDraft } from "immer";
 import {
   CoreDataSelectorResponse,
   createUseCoreDataHook,
@@ -183,7 +184,11 @@ const slice = createSlice({
     builder
       .addCase(fetchSsmPlot.fulfilled, (state, action) => {
         const response = action.payload;
-        console.log(response);
+        if (response.warnings) {
+          state = castDraft(initialState);
+          state.status = "rejected";
+          state.error = response.warnings.filters;
+        }
 
         const ssm =
           response?.data?.viewer?.explore?.cases?.ssmFiltered?.project__project_id?.buckets.map(
