@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import {
-  Survival
+  Survival,
 } from "@gff/core";
 import { useLayoutEffect, useRef } from "react";
 import { renderPlot } from '@oncojs/survivalplot';

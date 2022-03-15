@@ -48,6 +48,7 @@ const initialState: SurvivalState = {
   status: "uninitialized",
 };
 
+
 export const fetchSurvivalAnalysis = async (
   request: GdcApiRequest,
 ): Promise<SurvivalApiResponse> => {
@@ -74,7 +75,7 @@ export const fetchSurvival = createAsyncThunk <
 (
   "analysis/survivalData",
   async (args, thunkAPI) => {
-    const cohort_filters = selectCurrentCohortFilterSet(thunkAPI.getState());
+   const cohort_filters = selectCurrentCohortFilterSet(thunkAPI.getState());
     const filters = {
       mode: cohort_filters?.mode,
       root: { ...cohort_filters?.root, ...args?.filters?.root }

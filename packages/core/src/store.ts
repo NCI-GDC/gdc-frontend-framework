@@ -1,4 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
+import { setupListeners } from '@reduxjs/toolkit/query'
 import { cohortReducers } from "./features/cohort/cohortSlice";
 import { sessionReducer } from "./features/session/sessionSlice";
 import { facetsReducer} from "./features/facets/facetSlice";
@@ -12,6 +13,7 @@ import { ssmsTableReducer } from "./features/ssmsTable/ssmsTableSlice";
 import { genesTableReducer } from "./features/genesTable/genesTableSlice";
 import { geneFrequencyChartReducer } from "./features/genesTable/genesFrequencyChartSlice";
 import { survivalReducer } from "./features/survival/survivalSlice";
+import { genomicReducers } from "./features/genomic/genomicSlice";
 
 export const coreStore = configureStore({
   reducer: {
@@ -28,12 +30,14 @@ export const coreStore = configureStore({
     genesTable: genesTableReducer,
     geneFrequencyChart: geneFrequencyChartReducer,
     survival: survivalReducer,
-
+    genomic: genomicReducers,
   },
   devTools: {
     name: "@gff/core",
   },
 });
+
+setupListeners(coreStore.dispatch)
 
 export type CoreDispatch = typeof coreStore.dispatch;
 export type CoreState = ReturnType<typeof coreStore.getState>;

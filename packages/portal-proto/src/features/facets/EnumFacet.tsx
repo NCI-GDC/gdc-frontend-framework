@@ -5,7 +5,8 @@ import {
 
 import {
   updateEnumFilters,
-  FacetDataHooks
+  FacetEnumHooks,
+  UpdateEnums,
 } from "./hooks";
 
 import {
@@ -33,7 +34,20 @@ export interface EnumFacetProps {
   readonly valueLabel?: string;
 }
 
-
+/**
+ *  Enumeration facet filters handle display and selection of
+ *  enumerated fields.
+ * @param field
+ * @param type
+ * @param description
+ * @param facetName
+ * @param showSearch
+ * @param showFlip
+ * @param startShowingData
+ * @param showPercent
+ * @param valueLabel
+ * @constructor
+ */
 export const EnumFacet: React.FC<EnumFacetProps> = ({
                                               field,
                                               type,
@@ -51,9 +65,11 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
   const [isFacetView, setIsFacetView] = useState(startShowingData);
   const [visibleItems, setVisibleItems] = useState(6);
 
-  const { data, enumFilters, isSuccess } = FacetDataHooks[type](field);
+  const { data, enumFilters, isSuccess } = FacetEnumHooks[type](field);
   const [selectedEnums, setSelectedEnums] = useState(enumFilters);
   const coreDispatch = useCoreDispatch();
+
+  const updateFilters = UpdateEnums[type];
 
   useEffect(() => {
     setSelectedEnums(enumFilters);
@@ -66,7 +82,7 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
   } ,[data, isSuccess]);
 
   useEffect(() => {
-    updateEnumFilters(coreDispatch, selectedEnums, field, `${type}.`);
+    updateFilters(coreDispatch, selectedEnums, field, `${type}.`);
   }, [ coreDispatch, selectedEnums, field, type] );
 
   const maxValuesToDisplay = 6;

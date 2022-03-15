@@ -9,15 +9,14 @@ import {
 } from "../gdcapi/gdcgraphql";
 
 import { FacetBuckets, buildGraphGLBucketQuery, processBuckets } from "./facetApiGQL";
-
-import { selectCurrentCohortGqlFilters } from "../cohort/cohortFilterSlice";
+import { selectGenomicAndCohortGqlFilters } from "../genomic/genomicFilters";
 
 export const fetchMutationsFacetByName = createAsyncThunk<
   GraphQLApiResponse<Record<string, unknown>>,
   string,
   { dispatch: CoreDispatch; state: CoreState }
 >("facet/fetchMutationsFacetByName", async (name: string, thunkAPI) => {
-  const filters = selectCurrentCohortGqlFilters(thunkAPI.getState());
+  const filters = selectGenomicAndCohortGqlFilters(thunkAPI.getState());
   const queryGQL = buildGraphGLBucketQuery("ssms", name);
   const filtersGQL =
     {

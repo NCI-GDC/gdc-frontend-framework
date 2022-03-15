@@ -5,11 +5,8 @@ import MutationsTable from "./MutationsTable";
 import { Grid, Tabs } from '@mantine/core';
 import { EnumFacet } from "../facets/EnumFacet";
 import dynamic from "next/dynamic";
-import { FilterSet, EnumFilter } from  "@gff/core";
-
 import {
   useSurvivalPlot,
-  Survival
 } from "@gff/core";
 
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {

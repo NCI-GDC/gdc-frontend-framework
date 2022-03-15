@@ -107,8 +107,8 @@ const GenesTableSimple: React.FC<GenesTableSimpleProps> = ({ genes,
           <td className="px-2">{x.name}</td>
           <td className="px-2"> {x.numCases} / {filteredCases} ({((x.numCases / filteredCases) * 100).toFixed(2).toLocaleString()}%)</td>
           <td className="px-2"> {x.ssm_case} / {cases}</td>
-          <td className="px-2"> {x.case_cnv_gain} / {cnvCases} ({((x.case_cnv_gain / cnvCases) * 100).toFixed(2).toLocaleString()}%)</td>
-          <td className="px-2"> {x.case_cnv_loss} / {cnvCases} ({((x.case_cnv_loss / cnvCases) * 100).toFixed(2).toLocaleString()}%)</td>
+          <td className="px-2"> {x.case_cnv_gain} / {cnvCases} ({cnvCases > 0 ? ((x.case_cnv_gain / cnvCases) * 100).toFixed(2).toLocaleString() : 0.0}%)</td>
+          <td className="px-2"> {x.case_cnv_loss} / {cnvCases} ({cnvCases > 0 ? ((x.case_cnv_loss / cnvCases) * 100).toFixed(2).toLocaleString() : 0.0}%)</td>
           <td className="px-2"> {mutationCounts
             ? mutationCounts[x.gene_id]
             : " loading"}{" "}</td>

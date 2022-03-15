@@ -78,7 +78,7 @@ describe("selectCurrentCohort", () => {
       ...state,
       cohort: {
         currentCohort: { currentCohort: "asdf"} ,
-        currentFilters: { currentFilters: initialFilters },
+        currentFilters: { filters: initialFilters },
         counts: {
           counts: {
               caseCounts: -1,
@@ -97,7 +97,7 @@ describe("selectCurrentCohort", () => {
     const currentCohort = selectCurrentCohort({ ...state,
       cohort: {
        currentCohort: {currentCohort: undefined},
-        currentFilters: { currentFilters: initialFilters },
+        currentFilters: { filters: initialFilters },
         counts: {
           counts: {
             caseCounts: -1,
@@ -119,7 +119,7 @@ describe("selectCurrentCohortFilters", () => {
       ...state,
       cohort: {
         currentCohort: { currentCohort: "asdf" },
-        currentFilters: { currentFilters: populatedFilters as FilterSet },
+        currentFilters: { filters: populatedFilters as FilterSet },
         counts: {
           counts: {
             caseCounts: -1,
@@ -144,7 +144,7 @@ describe("selectCurrentCohortFilters", () => {
       cohort: {
         currentCohort: { currentCohort: "asdf" },
         currentFilters: {
-          currentFilters: populatedFilters as FilterSet
+          filters: populatedFilters as FilterSet
         },
         counts: {
           counts: {
@@ -164,7 +164,7 @@ describe("selectCurrentCohortFilters", () => {
 
 describe("addFilter", () => {
   test("should add a filter to the current cohort", () => {
-    const currentCohortFilters = cohortFilterReducer({ currentFilters: initialFilters },
+    const currentCohortFilters = cohortFilterReducer({ filters: initialFilters },
       updateCohortFilter(
       { field: "primary_site", operation : {
           operator: "includes",
@@ -178,7 +178,7 @@ describe("addFilter", () => {
     expect(currentCohortFilters).toEqual({ currentFilters: populatedFilters });
   });
   test("should add another filter to the current cohort", () => {
-    const currentCohortFilters = cohortFilterReducer({ currentFilters: populatedFilters as FilterSet },
+    const currentCohortFilters = cohortFilterReducer({ filters: populatedFilters as FilterSet },
       updateCohortFilter(
         {
           field: "disease_type", operation: {
@@ -194,7 +194,7 @@ describe("addFilter", () => {
   });
 
   test("should remove filter from the current cohort", () => {
-    const currentCohortFilters = cohortFilterReducer({ currentFilters: TwoPopulatedFilters as FilterSet },
+    const currentCohortFilters = cohortFilterReducer({ filters: TwoPopulatedFilters as FilterSet },
       removeCohortFilter("disease_type"));
     expect(currentCohortFilters).toEqual({ currentFilters: populatedFilters });
   });

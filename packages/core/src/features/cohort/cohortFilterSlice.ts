@@ -26,10 +26,10 @@ export interface FilterSet {
 }
 
 export interface CohortFilterState {
-  readonly currentFilters: FilterSet;  // TODO: should be array of FilterSets
+  readonly filters: FilterSet;  // TODO: should be array of FilterSets
 }
 
-const initialState: CohortFilterState = { currentFilters: { mode: "and", root: {} } };
+const initialState: CohortFilterState = { filters: { mode: "and", root: {} } };
 
 const slice = createSlice({
   name: "cohort/filters",
@@ -38,22 +38,22 @@ const slice = createSlice({
     updateCohortFilter: (state, action: PayloadAction<{  field:string, operation:Operation }>) => {
        return {
          ...state,
-         currentFilters: {
+         filters: {
         mode: "and",
-        root: { ...state.currentFilters.root, [action.payload.field]: action.payload.operation },
+        root: { ...state.filters.root, [action.payload.field]: action.payload.operation },
       }};
     },
     removeCohortFilter: (state, action: PayloadAction<string>)  => {
-      const { [action.payload]: _, ...updated} = state.currentFilters.root;
+      const { [action.payload]: _, ...updated} = state.filters.root;
       return {
         ...state,
-        currentFilters: {
+        filters: {
           mode: "and",
           root: updated,
         }};
     },
     clearCohortFilters: (state) => {
-      state.currentFilters = { mode: "and", root: {} };
+      state.filters = { mode: "and", root: {} };
     },
   },
   extraReducers: {},
@@ -78,17 +78,14 @@ export class ValueExtractorHandler implements OperationHandler<OperandValue> {
 
 
 export const buildCohortGqlOperator = (fs: FilterSet | undefined): GqlOperation | undefined => {
-
   if (!fs)
     return undefined;
   switch (fs.mode) {
     case "and":
       return (
         (Object.keys(fs.root).length == 0) ? undefined :
-        { // TODO: this need a redesign root is not always a top level "op"
-          //  but can also be an array of Operators
+        {
           op: "and", content: Object.keys(fs.root).map((k): GqlOperation => {
-           // const filter = {  ...fs.root[k], field: fs.root[k].field};
             return convertFilterToGqlFilter( fs.root[k]);
           }),
         }
@@ -101,29 +98,33 @@ export const cohortFilterReducer = slice.reducer;
 export const { updateCohortFilter, removeCohortFilter, clearCohortFilters } = slice.actions;
 
 export const selectCurrentCohortFilters = (state: CoreState): FilterSet | undefined =>
-  state.cohort.currentFilters.currentFilters;
+  state.cohort.currentFilters.filters;
 
 
 /**
  * selectCurrentCohortGqlFilters: returns an object representing the filters in the
- * current cohort. Note that the GraphQL filters require "cases." etc. prepended
- * to the filters.
+ * current cohort.
  * @param state
  */
 export const selectCurrentCohortGqlFilters = (state: CoreState): GqlOperation | undefined => {
-  return buildCohortGqlOperator(state.cohort.currentFilters.currentFilters);
+  return buildCohortGqlOperator(state.cohort.currentFilters.filters);
 };
 
 export const selectCurrentCohortFilterSet = (state: CoreState): FilterSet | undefined => {
-  return state.cohort.currentFilters.currentFilters;
+  return state.cohort.currentFilters.filters;
 };
 
 export const selectCurrentCohortCaseGqlFilters = (state: CoreState): GqlOperation | undefined => {
-  return buildCohortGqlOperator(state.cohort.currentFilters.currentFilters);
+  return buildCohortGqlOperator(state.cohort.currentFilters.filters);
 };
 
 export const selectCurrentCohortFiltersByName = (state: CoreState, name: string): Operation | undefined =>
-  state.cohort.currentFilters.currentFilters?.root[name];
+  state.cohort.currentFilters.filters?.root[name];
+
+export const joinFilters = (a:FilterSet, b:FilterSet): FilterSet =>  {
+  return { mode: a.mode, root: { ...a.root, ...b.root}}
+}
+
 
 
 
