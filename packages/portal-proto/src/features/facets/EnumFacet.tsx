@@ -4,7 +4,6 @@ import {
 } from "@gff/core";
 
 import {
-  updateEnumFilters,
   FacetEnumHooks,
   UpdateEnums,
 } from "./hooks";
@@ -32,6 +31,7 @@ export interface EnumFacetProps {
   readonly showPercent?: boolean;
   readonly startShowingData?: boolean;
   readonly valueLabel?: string;
+  readonly hideIfEmpty?: boolean;
 }
 
 /**
@@ -57,7 +57,8 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                                               showFlip=true,
                                               startShowingData = true,
                                               showPercent = true,
-                                              valueLabel = "Cases"
+                                              valueLabel = "Cases",
+                                              hideIfEmpty = true
                                             }: EnumFacetProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
@@ -87,7 +88,7 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
 
   const maxValuesToDisplay = 6;
   const total = visibleItems;
-  if (total == 0) {
+  if (total == 0 && hideIfEmpty) {
     return null; // nothing to render if total == 0
   }
 
@@ -184,6 +185,7 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                 <div className={cardStyle}>
                   <LoadingOverlay visible={!isSuccess} />
                   {
+                    (total == 0) ? <div className="mx-4">No data for this field</div> :
                     isSuccess ?
                       Object.entries(data).filter(data => data[0] != "_missing").sort(isSortedByValue ? ([, a], [, b]) => (b as number) - (a as number) : ([a], [b]) => a.localeCompare(b),
                       ).map(([value, count], i) => {

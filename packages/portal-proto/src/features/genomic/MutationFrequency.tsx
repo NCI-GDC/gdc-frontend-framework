@@ -77,6 +77,7 @@ const MutationFrequency: React.FC = () => {
                                type="genes"
                                showPercent={false}
                                valueLabel="Genes"
+                               hideIfEmpty={false}
                                description={x.description}
             />);
           })
@@ -88,6 +89,7 @@ const MutationFrequency: React.FC = () => {
                                type="ssms"
                                showPercent={false}
                                valueLabel="Mutations"
+                               hideIfEmpty={false}
                                description={x.description}
             />);
           })

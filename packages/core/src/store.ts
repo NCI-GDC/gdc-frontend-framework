@@ -10,8 +10,8 @@ import { projectsReducer } from "./features/projects/projectsSlice";
 import { annotationsReducer } from "./features/annotations/annotationsSlice";
 import { casesReducer } from "./features/cases/casesSlice";
 import { ssmsTableReducer } from "./features/ssmsTable/ssmsTableSlice";
-import { genesTableReducer } from "./features/genesTable/genesTableSlice";
-import { geneFrequencyChartReducer } from "./features/genesTable/genesFrequencyChartSlice";
+//import { genesTableReducer } from "./features/genesTable/genesTableSlice";
+//import { geneFrequencyChartReducer } from "./features/genesTable/genesFrequencyChartSlice";
 import { survivalReducer } from "./features/survival/survivalSlice";
 import { genomicReducers } from "./features/genomic/genomicSlice";
 
@@ -27,8 +27,6 @@ export const coreStore = configureStore({
     annotations: annotationsReducer,
     cases: casesReducer,
     ssmsTable: ssmsTableReducer,
-    genesTable: genesTableReducer,
-    geneFrequencyChart: geneFrequencyChartReducer,
     survival: survivalReducer,
     genomic: genomicReducers,
   },
