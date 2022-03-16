@@ -1,13 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
 import GenesTable from "./GenesTable";
 import MutationsTable from "./MutationsTable";
-import { Grid, Tabs } from '@mantine/core';
+import { Grid, Tabs } from "@mantine/core";
 import { EnumFacet } from "../facets/EnumFacet";
 import dynamic from "next/dynamic";
 import {
+  GqlOperation,
+  selectCurrentCohortCaseGqlFilters, useCoreDispatch,
+  useCoreSelector,
   useSurvivalPlot,
+  fetchSurvival,
 } from "@gff/core";
+
+
 
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
   ssr: false,
@@ -52,30 +58,72 @@ const MutationFacetNames = [
     facet_filter: "mutation_subtype",
     name: "Type",
     description: "No description",
-  }
+  },
 ];
 
+const mergeFilters = (cohortFilters: GqlOperation, symbol: string) : ReadonlyArray<GqlOperation> => {
+  /**
+   * given the contents, add two filters, one with the gene and one without
+   */
+
+  if (symbol === undefined)
+    return [];
+
+  return ([{
+    "op": "and",
+    content:
+      [...(cohortFilters ? cohortFilters.content as any  : []), {
+        "op": "excludeifany",
+        "content": {
+          "field": "gene.symbol",
+          "value": symbol,
+        },
+      }],
+  },
+    {
+      op: "and", content:
+        [ ...(cohortFilters ? cohortFilters.content as any  : []) , {
+          "op": "=",
+          "content": {
+            "field": "gene.symbol",
+            "value": symbol,
+          },
+        }],
+    },
+  ]);
+
+};
+
 const MutationFrequency: React.FC = () => {
-  const [ geneAdditionalSurvival, setGeneAdditionalSurvival ] = useState(undefined)
-  const { data  } = useSurvivalPlot();
+  const coreDispatch = useCoreDispatch();
+  const [geneAdditionalSurvival, setGeneAdditionalSurvival] = useState(undefined);
+  const { data } = useSurvivalPlot();
+  const cohortFilters = useCoreSelector((state) => selectCurrentCohortCaseGqlFilters(state));
 
 
-  const handleSurvivalPlotToggled = (symbol : string) => {
-    console.log("survival toggled ", symbol);
-    if (geneAdditionalSurvival === symbol) {
-      setGeneAdditionalSurvival(undefined)
-    } else setGeneAdditionalSurvival(symbol)
-  }
+  const handleSurvivalPlotToggled = (symbol: string) => {
+
+    if (geneAdditionalSurvival === symbol) { // remove toggle
+      setGeneAdditionalSurvival(undefined);
+    } else {
+      setGeneAdditionalSurvival(symbol);
+    }
+  };
+
+  useEffect(() => {
+      const filters = mergeFilters(cohortFilters, geneAdditionalSurvival);
+      coreDispatch(fetchSurvival(geneAdditionalSurvival ? {  filters: filters } : undefined));
+  }, [geneAdditionalSurvival]);
 
   return (
-      <div className="flex flex-row">
-        <div className="flex flex-col gap-y-4 mr-3 mt-12 w-min-64 w-max-64">
-          {GenesFacetNames.map((x, index) => {
-            return (<EnumFacet key={`${x.facet_filter}-${index}`}
-                               field={`${x.facet_filter}`}
-                               facetName={x.name}
-                               type="genes"
-                               showPercent={false}
+    <div className="flex flex-row">
+      <div className="flex flex-col gap-y-4 mr-3 mt-12 w-min-64 w-max-64">
+        {GenesFacetNames.map((x, index) => {
+          return (<EnumFacet key={`${x.facet_filter}-${index}`}
+                             field={`${x.facet_filter}`}
+                             facetName={x.name}
+                             type="genes"
+                             showPercent={false}
                                valueLabel="Genes"
                                hideIfEmpty={false}
                                description={x.description}

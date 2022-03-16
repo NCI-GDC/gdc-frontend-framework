@@ -20,11 +20,12 @@ const processChartData = (chartData:GenesFrequencyChart,
                           showXLabels = true) => {
   if (!chartData) return null;
 
+  const xindex =  chartData.geneCounts.map((_i, index) => index)
   const xvals = chartData.geneCounts.map((i) => i.symbol)
   const results : Record<string, unknown> = {
-    x: xvals,
+    x: xindex,
     y: chartData.geneCounts.map((i) => i.numCases),
-    tickvals: showXLabels ? xvals : [],
+    tickvals: showXLabels ? xindex : [],
     ticktext: showXLabels ? xvals : [],
     label_text: xvals,
     title: title,

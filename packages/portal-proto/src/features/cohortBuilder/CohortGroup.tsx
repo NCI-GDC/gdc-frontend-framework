@@ -275,7 +275,6 @@ export const CohortGroup: React.FC<CohortGroupProps> = ({ cohorts }: CohortGroup
           className="flex flex-row flex-wrap w-100 p-2 bg-nci-gray-lightest ">
           {
             Object.keys(filters.root).map((k) => {
-              console.log(filters.root[k]);
               return convertFilterToComponent(filters.root[k]);
             })}
 

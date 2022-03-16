@@ -92,7 +92,6 @@ export const createGdcAppWithOwnStore = (options: CreateGdcAppWithStoreOptions) 
   };
 
   // add the app to the store
-  console.log("createGdcAppWithOwnStore")
   coreStore.dispatch(
     addGdcAppMetadata({
       id,
@@ -142,7 +141,6 @@ export const createGdcApp = (options: CreateGdcAppOptions): React.ReactNode => {
   };
 
   // add the app to the store
-  console.log("createGdcApp")
   coreStore.dispatch(
     addGdcAppMetadata({
       id,

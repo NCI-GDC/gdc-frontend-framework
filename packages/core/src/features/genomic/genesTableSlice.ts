@@ -362,9 +362,9 @@ export const selectGenesTableData = (
   state: CoreState,
 ): CoreDataSelectorResponse<GenesTableState> => {
   return {
-    data: state.genesTable,
-    status: state.genesTable.status,
-    error: state.genesTable.error,
+    data: state.genomic.genesTable,
+    status: state.genomic.genesTable.status,
+    error: state.genomic.genesTable.error,
   };
 };
 

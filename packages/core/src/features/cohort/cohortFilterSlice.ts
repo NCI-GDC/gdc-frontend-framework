@@ -11,6 +11,7 @@ import {
   LessThan,
   LessThanOrEquals,
   Excludes,
+  ExcludesIfAny,
   Includes,
   Exists,
   Missing,
@@ -65,6 +66,7 @@ export class ValueExtractorHandler implements OperationHandler<OperandValue> {
   handleEquals = (op: Equals) => op.operand;
   handleNotEquals = (op: NotEquals) => op.operand;
   handleExcludes = (op: Excludes) => op.operands;
+  handleExcludesIfAny = (op: ExcludesIfAny) => op.operands;
   handleIncludes = (op: Includes) => op.operands;
   handleGreaterThanOrEquals = (op: GreaterThanOrEquals) => op.operand;
   handleGreaterThan = (op: GreaterThan) => op.operand;
@@ -85,7 +87,8 @@ export const buildCohortGqlOperator = (fs: FilterSet | undefined): GqlOperation 
       return (
         (Object.keys(fs.root).length == 0) ? undefined :
         {
-          op: "and", content: Object.keys(fs.root).map((k): GqlOperation => {
+          // TODO: Replace fixed AND with cohort top level operation
+          op: fs.mode, content: Object.keys(fs.root).map((k): GqlOperation => {
             return convertFilterToGqlFilter( fs.root[k]);
           }),
         }

@@ -5,13 +5,12 @@ import {
   DataStatus,
 } from "../../dataAcess";
 import { CoreDispatch, CoreState } from "../../store";
-import { buildFetchError, GdcApiRequest } from "../gdcapi/gdcapi";
 import {
   selectCurrentCohortFilters,
   selectCurrentCohortFilterSet,
   buildCohortGqlOperator,
-  FilterSet } from "../cohort/cohortFilterSlice";
-
+} from "../cohort/cohortFilterSlice";
+import { GqlOperation} from "../gdcapi/filters";
 
 export const MINIMUM_CASES = 10;
 export const MAXIMUM_CURVES = 5;
@@ -48,9 +47,36 @@ const initialState: SurvivalState = {
   status: "uninitialized",
 };
 
+/**
+ *  Survival API Specialization of API Request and Errors
+ */
+export interface GdcSurvivalApiRequest {
+  filters?: ReadonlyArray<GqlOperation>;
+}
+
+export interface SurvivalFetchError {
+  readonly url: string;
+  readonly status: number;
+  readonly statusText: string;
+  readonly text: string;
+  readonly gdcSurvivalApiReq?: GdcSurvivalApiRequest;
+}
+
+export const buildSurvivalFetchError = async (
+  res: Response,
+  gdcSurvivalApiReq?: GdcSurvivalApiRequest,
+): Promise<SurvivalFetchError> => {
+  return {
+    url: res.url,
+    status: res.status,
+    statusText: res.statusText,
+    text: await res.text(),
+    gdcSurvivalApiReq,
+  };
+}
 
 export const fetchSurvivalAnalysis = async (
-  request: GdcApiRequest,
+  request: GdcSurvivalApiRequest,
 ): Promise<SurvivalApiResponse> => {
   const parameters = request.filters ? `?filters=${encodeURIComponent(JSON.stringify(request.filters))}` : "";
   const res = await fetch(`https://api.gdc.cancer.gov/analysis/survival${parameters}`, {
@@ -63,25 +89,29 @@ export const fetchSurvivalAnalysis = async (
     return res.json();
   }
 
-  throw await buildFetchError(res, request);
+  throw await buildSurvivalFetchError(res, request);
 };
 
-
+/**
+ * fetch Survival Plot data from the GDC Analytics API
+ * The API will use the passed filters if defined
+ * otherwise it will use the current cohort filters.
+ */
 export const fetchSurvival = createAsyncThunk <
   SurvivalApiResponse,
-  { filters?: FilterSet },
+  { filters?: ReadonlyArray<GqlOperation> },
   { dispatch: CoreDispatch; state: CoreState }
   >
 (
   "analysis/survivalData",
   async (args, thunkAPI) => {
-   const cohort_filters = selectCurrentCohortFilterSet(thunkAPI.getState());
-    const filters = {
-      mode: cohort_filters?.mode,
-      root: { ...cohort_filters?.root, ...args?.filters?.root }
-  } as FilterSet;
+   if (args?.filters) { // passing filter overrides using the cohort filters.
+     return fetchSurvivalAnalysis({ filters: args?.filters });
 
-    return fetchSurvivalAnalysis({  filters: buildCohortGqlOperator(filters) });
+   }
+    // use the current cohort filters
+    const cohort_filters = buildCohortGqlOperator(selectCurrentCohortFilterSet(thunkAPI.getState()));
+    return fetchSurvivalAnalysis({  filters: cohort_filters ? [cohort_filters] : undefined });
   },
 );
 

@@ -216,7 +216,6 @@ const useMutationsFacet = (field: string): EnumFacetResponse => {
  * @param prefix
  */
 export const updateEnumFilters = (dispatch: CoreDispatch , enumerationFilters: OperationValue, field: string, prefix="" ) => {
-  console.log("updateEnumFilters:", enumerationFilters);
   if (enumerationFilters === undefined)
     return;
   if (enumerationFilters.length > 0) {

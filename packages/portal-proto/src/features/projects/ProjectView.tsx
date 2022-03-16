@@ -9,7 +9,7 @@ export interface ContextualProjectViewProps {
 export const ContextualProjectView: React.FC<ContextualProjectViewProps> = (
   props: ContextualProjectViewProps,
 ) => {
-  const projectData = useProjects({ 
+  const projectData = useProjects({
     filters: {
       op: "=",
       content: {
@@ -19,7 +19,7 @@ export const ContextualProjectView: React.FC<ContextualProjectViewProps> = (
     },
     expand: ['summary', 'summary.data_categories', 'summary.experimental_strategies', 'program']
   });
-  const annotationCount  = useAnnotations({ 
+  const annotationCount  = useAnnotations({
       filters: {
         op: "=",
         content: {
@@ -30,9 +30,6 @@ export const ContextualProjectView: React.FC<ContextualProjectViewProps> = (
       size: 0
     });
   const projectWithAnnotation = {...projectData.data[0], ...annotationCount.data[0]};
-
-  //console.log('projectWithAnnotation', projectWithAnnotation);
-
   return <ProjectView projectData={projectWithAnnotation} />;
 };
 
@@ -67,23 +64,23 @@ export const ProjectView: React.FC<ProjectViewProps> = ({
       </div>
       <div className="flex-initial w-1/4 max-w-xs ">
         {projectData.summary?.case_count?
-          <SummaryCount 
-            title={'Cases'} 
+          <SummaryCount
+            title={'Cases'}
             count={projectData.summary.case_count.toLocaleString()}
             buttonAction={()=>{alert('Cases click')}}
             icon={<FaUser/>}
           />:null
         }
         {projectData.summary?.file_count?
-          <SummaryCount 
-            title={'Files'} 
+          <SummaryCount
+            title={'Files'}
             count={projectData.summary.file_count.toLocaleString()}
             icon={<FaFile/>}
           />:null
         }
         {projectData.annotationCount?
-          <SummaryCount 
-            title={'Annotations'} 
+          <SummaryCount
+            title={'Annotations'}
             count={projectData.annotationCount.toLocaleString()}
             buttonAction={()=>{alert('Annotations click')}}
             icon={<FaEdit/>}

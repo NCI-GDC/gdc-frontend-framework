@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   CoreDataSelectorResponse,
-  createUseFiltersCoreDataHook,
+  createUseMultipleFiltersCoreDataHook,
   DataStatus,
 } from "../../dataAcess";
 import { castDraft } from "immer";
@@ -12,7 +12,7 @@ import {
   TablePageOffsetProps,
 } from "../gdcapi/gdcgraphql";
 import { selectCurrentCohortFilters } from "../cohort/cohortFilterSlice";
-import { selectGenomicAndCohortGqlFilters } from "./genomicFilters";
+import { selectGenomicAndCohortGqlFilters, selectGenomicFilters } from "./genomicFilters";
 
 const SSMSTableGraphQLQuery = `query SsmsTable_relayQuery(
   $ssmTested: FiltersArgument
@@ -283,14 +283,15 @@ export const selectSsmsTableData = (
   state: CoreState,
 ): CoreDataSelectorResponse<SsmsTableState> => {
   return {
-    data: state.ssmsTable,
-    status: state.ssmsTable.status,
-    error: state.ssmsTable.error,
+    data: state.genomic.ssmsTable,
+    status: state.genomic.ssmsTable.status,
+    error: state.genomic.ssmsTable.error,
   };
 };
 
-export const useSsmsTable = createUseFiltersCoreDataHook(
+export const useSsmsTable = createUseMultipleFiltersCoreDataHook(
   fetchSsmsTable,
   selectSsmsTableData,
-  selectCurrentCohortFilters
+  selectCurrentCohortFilters,
+  selectGenomicFilters
   )
