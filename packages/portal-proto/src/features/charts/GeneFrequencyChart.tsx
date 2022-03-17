@@ -14,12 +14,14 @@ const processChartData = (chartData:GenesFrequencyChart, title = "Distribution o
   const data = chartData;
   const xvals = chartData.geneCounts.map((i) => i.symbol)
   const xlabels = chartData.geneCounts.map((i) => i.symbol)
-  const results : Record<string, any> = {
-    x: xvals,
-    y: chartData.geneCounts.map((i) => i.numCases),
+  const results = {
+    datasets: [{
+      x: xvals,
+      y: chartData.geneCounts.map((i) => i.numCases),
+      label_text: xlabels,
+    }],
     tickvals: showXLabels ? xvals : [],
     ticktext: showXLabels ? xlabels : [],
-    label_text: xlabels,
     title: title,
     filename: `${title}.svg`,
     yAxisTitle: "# of Cases"
