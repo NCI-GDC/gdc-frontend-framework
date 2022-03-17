@@ -5,7 +5,7 @@ import Plotly from "plotly.js";
 interface ChartDownloadProps {
   readonly chartDivId: string;
   readonly chartName: string;
-  readonly jsonData: any;
+  readonly jsonData: Record<string, unknown>;
 }
 
 const DownloadOptions: React.FC<ChartDownloadProps> = ({
@@ -21,22 +21,22 @@ const DownloadOptions: React.FC<ChartDownloadProps> = ({
       height: 500,
       width: 700,
       filename: chartName,
-    });
+    }).then(r => r);
   };
 
   return (
     <div>
-      <Button
-        className="mx-2 "
+      <button
+        className="px-1.5 min-h-[28px] nim-w-[40px] border-nci-gray-light border rounded-[4px] "
         onClick={() => setDownloadMenuOpen(!downloadMenuOpen)}
       >
-        <DownloadIcon size="1.5em" />
-      </Button>
+        <DownloadIcon size="1.25em" />
+      </button>
       {downloadMenuOpen && (
         <div className="z-10 w-44 absolute bg-white rounded shadow-md">
           <ul className="py-1" role="menu">
-            <li role="menuitem">
-              <span
+            <li >
+              <span role="menuitem"
                 tabIndex={0}
                 onClick={() => downloadImage("svg")}
                 onKeyPress={(e) =>
@@ -47,9 +47,8 @@ const DownloadOptions: React.FC<ChartDownloadProps> = ({
                 SVG
               </span>
             </li>
-            <li role="menuitem">
-              <span
-                tabIndex={0}
+            <li>
+              <span role="menuitem" tabIndex={0}
                 onClick={() => downloadImage("png")}
                 onKeyPress={(e) =>
                   e.key === "Enter" ? downloadImage("png") : undefined
@@ -59,14 +58,14 @@ const DownloadOptions: React.FC<ChartDownloadProps> = ({
                 PNG
               </span>
             </li>
-            <li role="menuitem">
+            <li>
               <a
                 href={`data:text/json;charset=utf-8, ${encodeURIComponent(
                   JSON.stringify(jsonData),
                 )}`}
                 download={`${chartName}.json`}
                 className="block py-2 px-4 text-sm text-nci-gray-darker hover:bg-nci-gray-lightest "
-                aria-role="menuitem"
+                role="menuitem"
               >
                 JSON
               </a>

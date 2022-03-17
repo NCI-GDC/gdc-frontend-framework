@@ -1,12 +1,13 @@
 /**
  * A BarChart for Enumerated Facets. The as the chart is wrapped from EnumFacet it does not
- * use the Core Data hooks.
+ * require the Core Data hooks.
  */
 
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { Loader } from "@mantine/core";
 import { processJSONData } from "./utils"
+import ChartTitleBar from "./ChartTitleBar";
 
 const BarChart = dynamic(() => import("./BarChart"), {
   ssr: false,
@@ -45,20 +46,19 @@ const processChartData = (facetData: Record<string, any>,
   const data = removeKey("_missing", facetData);
   const xvals = Object.keys(data).slice(0, maxBins).map(x => x);
   const xlabels = Object.keys(data).slice(0, maxBins).map(x => processLabel(x, 12));
-  const results: Record<string, any> = {
-    x: xvals,
-    y: Object.values(data).slice(0, maxBins),
+  const results = {
+    datasets: [{
+      x: xvals,
+      y: Object.values(data).slice(0, maxBins),
+    }],
     tickvals: showXLabels ? xvals : [],
     ticktext: showXLabels ? xlabels : [],
-    label_text: Object.keys(data).slice(0, maxBins).map(x => processLabel(x, 100)),
     title: convertFieldToName(field),
     filename: field,
     yAxisTitle: `# of ${valueLabel}`,
-  };
+  }
   return results;
 };
-
-
 
 export const EnumFacetChart: React.FC<FacetChartProps> = ({
                                                      field,
@@ -88,12 +88,10 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
 
   return <>
     {showTitle ?
-      <div className="flex items-center justify-between flex-wrap bg-gray-100 p-1.5">
-        {convertFieldToName(field)}
-        {chart_data && isSuccess ?
-          <DownloadOptions chartDivId={chartDivId} chartName={field} jsonData={processJSONData(data)} /> : null
-        }
-      </div> : null
+      <ChartTitleBar title={convertFieldToName(field)}
+                     divId={chartDivId}
+                     filename={field}
+                     jsonData={{  }} /> : null
     }
 
     {chart_data && isSuccess ?

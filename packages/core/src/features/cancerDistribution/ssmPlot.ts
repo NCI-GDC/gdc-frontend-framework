@@ -134,12 +134,11 @@ const fetchSsmAnalysisQuery = async (gene: string, ssms: string) => {
         },
       };
 
-  const results: GraphQLApiResponse<any> = await graphqlAPI(
+  return await graphqlAPI(
     graphqlQuery,
     graphqlFilters,
-  );
+  ) as GraphQLApiResponse<Record<string, any>>
 
-  return results;
 };
 
 export const fetchSsmPlot = createAsyncThunk(
@@ -184,10 +183,10 @@ const slice = createSlice({
     builder
       .addCase(fetchSsmPlot.fulfilled, (state, action) => {
         const response = action.payload;
-        if (response.warnings) {
+        if (response.errors) {
           state = castDraft(initialState);
           state.status = "rejected";
-          state.error = response.warnings.filters;
+          state.error = response.errors.message;
         }
 
         const ssm =

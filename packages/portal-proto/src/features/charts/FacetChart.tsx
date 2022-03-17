@@ -16,6 +16,7 @@ import {
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { Loader } from "@mantine/core";
+import ChartTitleBar from "./ChartTitleBar";
 
 const BarChartWithNoSSR = dynamic(() => import('./BarChart'), {
   ssr: false
@@ -100,7 +101,6 @@ const processChartData = (facetData:Record<string, any>, field: string, maxBins 
     datasets: [{
       x: xvals,
       y: Object.values(data).slice(0, maxBins),
-      label_text: Object.keys(data).slice(0, maxBins).map(x => processLabel(x, 100)),
     }],
     tickvals: showXLabels ? xvals : [],
     ticktext: showXLabels ? xlabels : [],
@@ -141,14 +141,11 @@ export const FacetChart: React.FC<FacetProps> = ({
 
   return <>
     {showTitle ?
-      <div className="flex items-center justify-between flex-wrap bg-gray-100 p-1.5">
-        {convertFieldToName(field)}
-        {chart_data && isSuccess ?
-          <DownloadOptions chartDivId={chartDivId} chartName={field} jsonData={processJSONData(data)} /> : null
-        }
-      </div> : null
+      <ChartTitleBar title={convertFieldToName(field)}
+                     divId={chartDivId}
+                     filename={field}
+                     jsonData={{  }} /> : null
     }
-
     {  chart_data && isSuccess ?
 
         <BarChartWithNoSSR data={chart_data}
