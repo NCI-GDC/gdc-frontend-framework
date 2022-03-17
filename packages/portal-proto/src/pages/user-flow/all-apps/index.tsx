@@ -6,7 +6,7 @@ import Link from "next/link";
 const IndexPage: NextPage = () => {
   const headerElements = [
     <Link key="exploration" href="/user-flow/all-apps/exploration">
-      Exploration
+      <div id="exploration-header-button">Exploration</div>
     </Link>,
   ];
 

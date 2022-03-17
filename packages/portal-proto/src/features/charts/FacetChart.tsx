@@ -17,13 +17,10 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { Loader } from "@mantine/core";
 
-const BarChartWithNoSSR = dynamic(() => import("./BarChart"), {
-  ssr: false,
-});
+const BarChartWithNoSSR = dynamic(() => import('./BarChart'), {
+  ssr: false
+})
 
-const DownloadOptions = dynamic(() => import("./DownloadOptions"), {
-  ssr: false,
-});
 
 const maxValuesToDisplay = 7;
 
@@ -99,12 +96,14 @@ const processChartData = (facetData:Record<string, any>, field: string, maxBins 
   const data = removeKey('_missing', facetData);
   const xvals = Object.keys(data).slice(0, maxBins).map(x =>x);
   const xlabels = Object.keys(data).slice(0, maxBins).map(x => processLabel(x, 12));
-  const results : Record<string, any> = {
-    x: xvals,
-    y: Object.values(data).slice(0, maxBins),
+  const results = {
+    datasets: [{
+      x: xvals,
+      y: Object.values(data).slice(0, maxBins),
+      label_text: Object.keys(data).slice(0, maxBins).map(x => processLabel(x, 100)),
+    }],
     tickvals: showXLabels ? xvals : [],
     ticktext: showXLabels ? xlabels : [],
-    label_text: Object.keys(data).slice(0, maxBins).map(x => processLabel(x, 100)),
     title: convertFieldToName(field),
     filename: field,
     yAxisTitle: "# of Cases",

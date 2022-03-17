@@ -11,7 +11,7 @@ import { Case } from "../../../features/cases/CasesView";
 import { headerElements } from "./navigation-utils";
 
 const RepositoryPage: NextPage = () => {
-  const { data } = useFiles();
+  const { data } = useFiles({ size: 20 });
 
   const options = [
     { value: "cb-expand", label: "Cohort Builder Expand" },

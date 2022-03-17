@@ -1,8 +1,13 @@
-import { PropsWithChildren, ReactNode } from "react";
+import { PropsWithChildren, ReactNode, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from 'next/router'
+import { MdViewModule as MenuIcon, MdOutlineTour as TourIcon } from "react-icons/md";
+import { Menu } from "@mantine/core";
 import { isString } from "@gff/core";
 import {  Button  } from '@mantine/core';
+import { useTour } from "@reactour/tour";
+import steps from '../../features/tour/steps';
 
 interface UserFlowVariedPagesProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
@@ -23,6 +28,13 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
   Options,
   children,
 }: PropsWithChildren<UserFlowVariedPagesProps>) => {
+  const { setSteps } = useTour();
+  const router = useRouter();
+
+  useEffect(() => {
+    setSteps(steps[router.pathname]);
+  }, []);
+
   return (
     <div className="flex flex-col min-h-screen min-w-full bg-nci-gray-lightest">
       <header className="flex-none bg-white">
@@ -47,8 +59,10 @@ const Header: React.FC<HeaderProps> = ({
   indexPath,
   Options = () => <div />,
 }: HeaderProps) => {
+  const { setIsOpen } = useTour();
+
   return (
-    <div className="px-6 py-3">
+    <div className="px-6 py-3 border-b border-gdc-grey-lightest">
       <div className="flex flex-row flex-wrap divide-x divide-gray-300 items-center">
         <div className="flex-none w-64 h-nci-logo mr-2 relative">
           {/* There's some oddities going on here that need to be explained.  When a
@@ -88,6 +102,11 @@ const Header: React.FC<HeaderProps> = ({
           <div className={"flex flex-row opacity-60 hover:opacity-100 transition-opacity  items-center mx-2"}><AppsIcon size="24px" /> </div>
 
         </div>
+        <Menu withArrow control={<button><MenuIcon size={"1.5em"} /></button>}>
+          <Menu.Item onClick={() => setIsOpen(true)}>
+            <TourIcon size="3em"/><div className="text-center text-sm pt-1">{'Tour'}</div>
+          </Menu.Item>
+        </Menu>
       </div>
     </div>
   );

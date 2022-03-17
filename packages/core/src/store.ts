@@ -14,6 +14,8 @@ import { casesReducer } from "./features/cases/casesSlice";
 //import { geneFrequencyChartReducer } from "./features/genesTable/genesFrequencyChartSlice";
 import { survivalReducer } from "./features/survival/survivalSlice";
 import { genomicReducers } from "./features/genomic/genomicSlice";
+import { ssmPlotReducer } from "./features/cancerDistribution/ssmPlot";
+import { cnvPlotReducer } from "./features/cancerDistribution/cnvPlot";
 
 export const coreStore = configureStore({
   reducer: {
@@ -26,6 +28,8 @@ export const coreStore = configureStore({
     projects: projectsReducer,
     annotations: annotationsReducer,
     cases: casesReducer,
+    ssmPlot: ssmPlotReducer,
+    cnvPlot: cnvPlotReducer,
     survival: survivalReducer,
     genomic: genomicReducers,
   },

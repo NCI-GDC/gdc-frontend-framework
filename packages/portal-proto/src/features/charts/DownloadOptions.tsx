@@ -8,7 +8,11 @@ interface ChartDownloadProps {
   readonly jsonData: any;
 }
 
-const DownloadOptions: React.FC<ChartDownloadProps> = ({ chartDivId, chartName, jsonData }: ChartDownloadProps) => {
+const DownloadOptions: React.FC<ChartDownloadProps> = ({
+  chartDivId,
+  chartName,
+  jsonData,
+}: ChartDownloadProps) => {
   const [downloadMenuOpen, setDownloadMenuOpen] = useState(false);
 
   const downloadImage = (filetype: "svg" | "png") => {
@@ -22,42 +26,40 @@ const DownloadOptions: React.FC<ChartDownloadProps> = ({ chartDivId, chartName, 
 
   return (
     <div>
-      <button
-              className="px-1.5 min-h-[28px] nim-w-[40px] border-nci-gray-light border rounded-[4px] "
-              onClick={() => setDownloadMenuOpen(!downloadMenuOpen)}
+      <Button
+        className="mx-2 "
+        onClick={() => setDownloadMenuOpen(!downloadMenuOpen)}
       >
-        <DownloadIcon size="1.25em" />
-      </button>
+        <DownloadIcon size="1.5em" />
+      </Button>
       {downloadMenuOpen && (
         <div className="z-10 w-44 absolute bg-white rounded shadow-md">
-          <ul className="py-1" aria-role="menu">
-            <li>
-	          <span
-              tabIndex={0}
-              aria-role="menuitem"
-              onClick={() => downloadImage("svg")}
-              onKeyPress={(e) =>
-                e.key === "Enter" ? downloadImage("svg") : undefined
-              }
-              className="cursor-pointer block py-2 px-4 text-sm text-nci-gray-darker hover:bg-nci-gray-lightest "
-            >
-	            SVG
-	          </span>
+          <ul className="py-1" role="menu">
+            <li role="menuitem">
+              <span
+                tabIndex={0}
+                onClick={() => downloadImage("svg")}
+                onKeyPress={(e) =>
+                  e.key === "Enter" ? downloadImage("svg") : undefined
+                }
+                className="cursor-pointer block py-2 px-4 text-sm text-nci-gray-darker hover:bg-nci-gray-lightest "
+              >
+                SVG
+              </span>
             </li>
-            <li>
-	          <span
-              tabIndex={0}
-              aria-role="menuitem"
-              onClick={() => downloadImage("png")}
-              onKeyPress={(e) =>
-                e.key === "Enter" ? downloadImage("png") : undefined
-              }
-              className="cursor-pointer block py-2 px-4 text-sm text-nci-gray-darker hover:bg-nci-gray-lightest "
-            >
-	            PNG
-	          </span>
+            <li role="menuitem">
+              <span
+                tabIndex={0}
+                onClick={() => downloadImage("png")}
+                onKeyPress={(e) =>
+                  e.key === "Enter" ? downloadImage("png") : undefined
+                }
+                className="cursor-pointer block py-2 px-4 text-sm text-nci-gray-darker hover:bg-nci-gray-lightest "
+              >
+                PNG
+              </span>
             </li>
-            <li>
+            <li role="menuitem">
               <a
                 href={`data:text/json;charset=utf-8, ${encodeURIComponent(
                   JSON.stringify(jsonData),
