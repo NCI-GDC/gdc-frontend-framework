@@ -60,6 +60,32 @@ The hook returns the following:
 In order to add query support, the hook needs to take a parameter. For the gdc api, the parameter would
 end up populating the `filter` parameter of the api.
 
+Example:
+
+```jsx
+import { useProjects } from "@gff/core";
+
+const myComponent = () => {
+  const { data, error, isUninitialized, isFetching, isSuccess, isError } =
+    useProjects({ 
+      filters: {
+        op: "=",
+        content: {
+          field: "project_id",
+          value: props.setCurrentProject,
+        }
+      },
+      expand: ['summary', 'program']
+    });
+  return (
+    <ul>
+      {data.map((project) => (
+        <li key={project.project_id}>{project.project_id}</li>
+      ))}
+    </ul>
+  );
+};
+```
 ### Cache invaldiation
 
 Cache invalidation will need to be performed when certain data changes. For example, with facets, when the filters
