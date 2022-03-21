@@ -19,20 +19,8 @@ import {
 import { convertFieldToName } from "./utils";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
 import { LoadingOverlay, Tooltip } from "@mantine/core";
+import { EnumFacetProps } from "./types";
 
-export interface EnumFacetProps {
-
-  readonly field: string;
-  readonly type: string;
-  readonly description?: string;
-  readonly facetName?: string;
-  readonly showSearch?: boolean;
-  readonly showFlip?:boolean;
-  readonly showPercent?: boolean;
-  readonly startShowingData?: boolean;
-  readonly valueLabel?: string;
-  readonly hideIfEmpty?: boolean;
-}
 
 /**
  *  Enumeration facet filters handle display and selection of

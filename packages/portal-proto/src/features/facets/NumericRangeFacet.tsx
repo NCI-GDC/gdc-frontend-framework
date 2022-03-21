@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
-import { convertFieldToName, FacetProps, useCaseFacet } from "./utility";
+import { convertFieldToName } from "./utils";
+import { useCasesFacet } from "./hooks"
 import { MdFlip as FlipIcon,
   MdSort as SortIcon,
   MdSortByAlpha as AlphaSortIcon,
@@ -9,11 +10,11 @@ import Select from "react-select";
 import { Button } from "@mantine/core";
 import RadioButtonGroup from "../../components/RadioButtonGroup";
 import { Icon } from '@iconify/react';
+import { EnumFacetProps } from "./types";
 
 const BUCKETS_TO_SHOW = 6;
 
-interface NumericFacetProps extends FacetProps {
-  readonly facet_type: string;
+interface NumericFacetProps extends EnumFacetProps {
   readonly minimum?: number;
   readonly maximum?: number;
 }
@@ -327,14 +328,14 @@ const PercentRange: React.FC<FacetData> = ({ field, data, minimum=undefined, max
 const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                                                           field,
                                                           description,
-                                                          facet_type,
+                                                          type,
                                                           minimum = undefined,
                                                           maximum = undefined,
                                                           facetName = null,
                                                         }: NumericFacetProps) => {
 
   const { data, error, isUninitialized, isFetching, isError } =
-    useCaseFacet(field);
+    useCasesFacet(field);
 
   const [isSearching, setIsSearching] = useState(false);
   const [isFacetView, setIsFacetView] = useState(true);
@@ -383,7 +384,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
           "numeric": <NumericRange field={field} data={data}  minimum={minimum} maximum={maximum} />,
           "percent": <PercentRange field={field} data={data}  minimum={minimum} maximum={maximum} />,
           "integer": <NumericRange field={field} data={data}  minimum={minimum} maximum={maximum} />,
-        }[facet_type]
+        }[type]
         }
       </div>
 
