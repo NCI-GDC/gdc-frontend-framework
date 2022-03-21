@@ -23,7 +23,7 @@ import {
   useCoreDispatch,
   useCoreSelector,
   selectGenomicFilters,
-  selectGenomicFiltersByName,
+  selectGenomicFiltersByName, selectCasesFacetByField, fetchFacetByName,
 } from "@gff/core";
 import { useEffect } from "react";
 
@@ -255,3 +255,25 @@ export const FacetEnumHooks = {
   "genes" : useGenesFacet,
   "ssms" : useMutationsFacet,
 }
+
+export const useCaseFacet = (field: string): UseCaseFacetResponse => {
+  const coreDispatch = useCoreDispatch();
+  const facet: FacetBuckets = useCoreSelector((state) =>
+    selectCasesFacetByField(state, field),
+  );
+
+  useEffect(() => {
+    if (!facet) {
+      coreDispatch(fetchFacetByName(field));
+    }
+  }, [coreDispatch, facet, field]);
+
+  return {
+    data: facet?.buckets,
+    error: facet?.error,
+    isUninitialized: facet === undefined,
+    isFetching: facet?.status === "pending",
+    isSuccess: facet?.status === "fulfilled",
+    isError: facet?.status === "rejected",
+  };
+};
