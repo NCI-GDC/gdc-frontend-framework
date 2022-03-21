@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { convertFieldToName } from "./utils";
-import { useCaseFacet } from "./hooks"
+import { useCasesFacet } from "./hooks"
 import { MdFlip as FlipIcon,
   MdSort as SortIcon,
   MdSortByAlpha as AlphaSortIcon,
@@ -15,6 +15,7 @@ import { EnumFacetProps } from "./types";
 const BUCKETS_TO_SHOW = 6;
 
 interface NumericFacetProps extends EnumFacetProps {
+  readonly facet_type: string;
   readonly minimum?: number;
   readonly maximum?: number;
 }
@@ -328,14 +329,14 @@ const PercentRange: React.FC<FacetData> = ({ field, data, minimum=undefined, max
 const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                                                           field,
                                                           description,
-                                                          type,
+                                                          facet_type,
                                                           minimum = undefined,
                                                           maximum = undefined,
                                                           facetName = null,
                                                         }: NumericFacetProps) => {
 
   const { data, error, isUninitialized, isFetching, isError } =
-    useCaseFacet(field);
+    useCasesFacet(field);
 
   const [isSearching, setIsSearching] = useState(false);
   const [isFacetView, setIsFacetView] = useState(true);
@@ -384,7 +385,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
           "numeric": <NumericRange field={field} data={data}  minimum={minimum} maximum={maximum} />,
           "percent": <PercentRange field={field} data={data}  minimum={minimum} maximum={maximum} />,
           "integer": <NumericRange field={field} data={data}  minimum={minimum} maximum={maximum} />,
-        }[type]
+        }[facet_type]
         }
       </div>
 

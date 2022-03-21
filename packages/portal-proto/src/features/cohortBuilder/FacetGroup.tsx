@@ -1,5 +1,6 @@
-import {  FacetProps } from "../facets/Facet";
+
 import { EnumFacet} from "../facets/EnumFacet";
+import NumericRangeFacet from "../facets/NumericRangeFacet";
 import { Tab, TabProps, TabList, TabPanel, Tabs } from "react-tabs";
 import { useState } from "react";
 import Select from "react-select";
@@ -7,22 +8,33 @@ import { get_facet_subcategories, get_facets } from "./dictionary";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 
 interface FacetGroupProps {
+  readonly type: string;
   readonly facetNames: Array<Record<string, any>>;
 }
 
-export const FacetGroup: React.FC<FacetGroupProps> = ({ facetNames }: FacetGroupProps) => {
+export const FacetGroup: React.FC<FacetGroupProps> = ({ type, facetNames }: FacetGroupProps) => {
 
   return (<div
       className="flex flex-col border-r-2 border-l-2 border-b-2 border-t-0 border-nci-cyan-darker p-3 h-screen/1.5 overflow-y-scroll">
       <ResponsiveMasonry columnsCountBreakPoints={{ 350: 2, 750: 3, 900: 4, 1400: 5, 1800: 6, 2200: 7 }}>
         <Masonry gutter="0.5em">
           {facetNames.map((x, index) => {
+            if (x.facet_type === "enum")
             return (<EnumFacet key={`${x.facet_filter}-${index}`}
-                               type="cases"
+                               type={type}
                                field={`${x.facet_filter}`}
                                facetName={x.name}
                            description={x.description}
             />);
+            if (["year", "years", "age", 'numeric', 'integer','percent'].includes(x.facet_type)) {
+              console.log(x);
+              return (<NumericRangeFacet key={`${x.facet_filter}-${index}`}
+                                         field={x.facet_filter}
+                                         type="cases"
+                                         facetName={x.name} description={x.description}
+                                         facet_type={x.facet_type} minimum={x.minimum} maximum={x.maximum}
+              />);
+            }
           })
           }
         </Masonry>
@@ -124,10 +136,10 @@ export const CohortTabbedFacets = () => {
                                subCategories={downloadableSubcategories}
                                onSubcategoryChange={handleSubcategoryChanged}></FacetTabWithSubmenu>
         </TabList>
-        <TabPanel><FacetGroup facetNames={get_facets("Clinical", subcategories["Clinical"], 25)} /></TabPanel>
-        <TabPanel><FacetGroup
+        <TabPanel><FacetGroup type="cases" facetNames={get_facets("Clinical", subcategories["Clinical"], 25)} /></TabPanel>
+        <TabPanel><FacetGroup  type="cases"
           facetNames={get_facets("Biospecimen", subcategories["Biospecimen"])} /></TabPanel>
-        <TabPanel><FacetGroup  facetNames={get_facets("Downloadable", subcategories["Downloadable"])} /></TabPanel>
+        <TabPanel><FacetGroup   type="files" facetNames={get_facets("Downloadable", subcategories["Downloadable"])} /></TabPanel>
       </Tabs>
     </div>
   );
