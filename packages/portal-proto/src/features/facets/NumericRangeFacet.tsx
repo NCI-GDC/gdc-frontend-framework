@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { convertFieldToName } from "./utils";
-import { useCasesFacet } from "./hooks"
+import { useCaseFacet } from "./hooks"
 import { MdFlip as FlipIcon,
-  MdSort as SortIcon,
-  MdSortByAlpha as AlphaSortIcon,
-  MdSearch as SearchIcon } from "react-icons/md";
+  MdAddCircle as MoreIcon,
+  MdRemoveCircle as LessIcon} from "react-icons/md";
 
 import Select from "react-select";
 import { Button } from "@mantine/core";
@@ -46,9 +45,9 @@ interface FacetItemListHeaderProps {
   readonly items: ItemElement[]
 }
 
-const FacetItemListHeader : React.FC<FacetItemListHeaderProps> = ( { items } : FacetItemListHeaderProps ) => {
+const FacetItemListHeader : React.FC<FacetItemListHeaderProps> = ( { items = [] } : FacetItemListHeaderProps ) => {
   return (
-    <div className="flex flex-row items-center flex-nowrap border-2">
+    <div className="flex flex-row items-center flex-nowrap border-t-2 py-2">
       { items.map((x,  index,  {length} ) => {
         const lastItem = length == 1 ? "" : index + 1 == length ? "ml-auto" : "";
         return (
@@ -87,20 +86,20 @@ const FromTo : React.FC <FromToProps> = ( { minimum, maximum, units= "years"} : 
         />
         <input type="number" placeholder={`eg. ${minimum}${unitsLabel} `}
                min={minimum} max={maximum}
-               className="h-8 w-1/2 mr-auto border-nci-gray-light rounded-md focus:shadow focus:outline-none" />
+               className="h-8 w-1/2 mr-auto border-nci-gray-light rounded-md  text-[0.75rem]  focus:shadow focus:outline-none" />
         <div className="mx-1 h-8"></div>
       </div>
-      <div className="flex flex-row mt-1 items-center flex-nowrap">
+      <div className="flex flex-row mt-1 items-center text-xs flex-nowrap">
         <div className="float-right w-1/5">To:</div>
-        <Select className="w-8 mr-1"
+        <Select className="w-8 mr-1 "
                 options={less_items}
                 defaultValue={less_items[0]}
                 components={{ DropdownIndicator:() => null, IndicatorSeparator:() => null }}
         />
         <input type="number" placeholder={`eg. ${maximum}${unitsLabel} `}
                min={minimum} max={maximum}
-               className="h-8 w-1/2  border-nci-gray-light rounded-md  focus:shadow focus:outline-none" />
-        <Button className="mx-1 h-8 mr-auto">Ok</Button>
+               className="h-8 w-1/2  border-nci-gray-light rounded-md text-[0.75rem] focus:shadow focus:outline-none" />
+        <Button className="mx-1 h-8 mr-auto text-xs bg-nci-gray-light hover:bg-nci-gray">Ok</Button>
       </div>
     </div>
   )
@@ -115,24 +114,20 @@ interface FacetExpanderProps {
 
 
 const FacetExpander : React.FC<FacetExpanderProps> = ({ remainingValues, isGroupExpanded, onShowChanged} : FacetExpanderProps) => {
-
   return (
-    <div className={"mt-3"}>
+    <div className={"mt-3 border-t-2 "}>
       {!isGroupExpanded ?
-        <div className="bg-white border-2  p-1.5">
-          <Button key="show-more"
-                  className="text-left p-2 w-auto hover:text-black"
-                  onClick={() => onShowChanged(!isGroupExpanded)}>
+        <div className="flex flex-row justify-end items-center p-1.5">
+          <MoreIcon key="show-more" size="1.5em" className="text-nci-gray-darkest"
+                  onClick={() => onShowChanged(!isGroupExpanded)}/>
             {remainingValues} more
-          </Button>
         </div>
         :
-        <div className="bg-white border-2  p-1.5">
-          <Button key="show-less"
-                  className="text-left border-2 p-1.5 w-auto hover:text-black"
-                  onClick={() => onShowChanged(!isGroupExpanded)}>
+        <div className="flex flex-row justify-end items-center p-1.5">
+          <LessIcon key="show-less" size="1.5em"
+                    className="text-nci-gray-darkest"
+                  onClick={() => onShowChanged(!isGroupExpanded)} />
             Show less
-          </Button>
         </div>
       }
 
@@ -161,7 +156,7 @@ const DaysOrYears: React.FC<FacetData> = ({ field, data, minimum=undefined, maxi
   }
 
   const handleRadioSelection = (e) => {
-    console.log(e);
+    null;
   }
 
   return (
@@ -172,17 +167,14 @@ const DaysOrYears: React.FC<FacetData> = ({ field, data, minimum=undefined, maxi
         <FromTo minimum={adjMinimum} maximum={adjMaximum} units={units} />
       </div>
       <div className="flex flex-col">
-          <FacetItemListHeader  items={ [
-            {  icon:"mdi:sort", onClick: handleSearch},
-            { }
-          ] }/>
-            <div role="group" >
+          <FacetItemListHeader  items={ [] }/>
+        <div role="group" >
           {
             [...Array(bucketsToShow)].map((_, i) => {
               const low = (minimum + i * 3652.5) / (units == "years"? 365.25 : 1);
               const high = (minimum + (i+1)* 3652.5) / (units == "years"? 365.25 : 1);
               return (
-                <div key={`${field}_${i}`} className="flex flex-row justify-start items-center form-check" >
+                <div key={`${field}_${i}`} className="flex flex-row justify-start items-center form-check  pt-0.5" >
                   <input type="radio" id={`${field}_${i}`} name={`${field}_age_range_selection`} className="form-radio mr-4"  /><span>From {"\u2265"} {low} to  {"<"} {high} {units} </span>
                 </div>
               )
@@ -221,14 +213,14 @@ const Year: React.FC<FacetData> = ({ field, data, minimum=undefined, maximum=und
 
       </div>
       <div className="flex flex-col">
-        <FacetItemListHeader  items={ [ {  icon:"mdi:sort", onClick: handleSearch} ] }/>
+        <FacetItemListHeader  items={ [  ] }/>
         <div role="group" >
           {
             [...Array(bucketsToShow)].map((_, i) => {
               const low = minimum + i * 10;
               const high = minimum + (i+1)* 10;
               return (
-                <div key={`${field}_${i}`} className="flex flex-row justify-start items-center form-check" >
+                <div key={`${field}_${i}`} className="flex flex-row justify-start items-center  pt-0.5 form-check" >
                   <input type="radio" id={`${field}_${i}`}  name={`${field}_year_range_selection`} className="form-radio mr-4"  /><span>From {"\u2265"} {low} to  {"<"} {high} </span>
                 </div>
               )
@@ -252,7 +244,7 @@ const Years: React.FC<FacetData> = ({ field, data, minimum=undefined, maximum=un
   }
   return (
     <div>
-      <FacetItemListHeader  items={ [ {  icon:"mdi:sort", onClick: handleSearch} ] }/>
+      <FacetItemListHeader  items={ [  ] }/>
     </div>
   );
 };
@@ -287,7 +279,7 @@ const PercentRange: React.FC<FacetData> = ({ field, data, minimum=undefined, max
         <FromTo minimum={adjMinimum} maximum={adjMaximum} units="%" />
       </div>
       <div className="flex flex-col">
-        <FacetItemListHeader  items={ [ {  icon:"mdi:sort", onClick: handleSearch} ] }/>
+        <FacetItemListHeader  items={ [  ] }/>
         <div role="group" >
           {
             [...Array(bucketsToShow)].map((_, i) => {
@@ -336,7 +328,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                                                         }: NumericFacetProps) => {
 
   const { data, error, isUninitialized, isFetching, isError } =
-    useCasesFacet(field);
+    useCaseFacet(field);
 
   const [isSearching, setIsSearching] = useState(false);
   const [isFacetView, setIsFacetView] = useState(true);
@@ -363,7 +355,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
 
   return (
     <div>
-      <div className="flex flex-col  border-2 bg-white p-1 relative drop-shadow-md border-nci-blumine-lighter">
+      <div className="flex flex-col w-64 bg-white relative shadow-lg border-nci-gray-lightest border-1 rounded-b-md text-xs transition ">
         <div className="flex items-center justify-between flex-wrap bg-nci-gray-lighter px-1.5">
           <div className="has-tooltip">{(facetName === null) ? convertFieldToName(field) : facetName}
             <div

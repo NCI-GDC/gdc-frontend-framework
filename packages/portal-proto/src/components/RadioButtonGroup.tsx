@@ -33,7 +33,7 @@ const RadioButtonGroup : React.FC<RadioSquareButtonGroupProps> = ({items, checke
                   <input type="radio" checked={x == selected} name="radio_group_member" id={`${fieldId}-${index}`}
                          className="peer hidden" value={x} onChange={() => handleSelected(x)} />
                   <label htmlFor={`${fieldId}-${index}`}
-                         className={`${border} inline-block px-6 py-2.5 peer-checked:bg-nci-cyan-dark bg-nci-cyan-lighter text-white font-medium text-xs leading-tight uppercase hover:bg-nci-cyan focus:bg-nci-cyan focus:outline-none focus:ring-0 transition duration-150 ease-in-out`}>{x}
+                         className={`${border} inline-block px-4 py-1.5 peer-checked:bg-nci-gray-dark bg-nci-gray-lighter text-white font-medium text-xs leading-tight uppercase hover:bg-nci-gray focus:bg-nci-gray focus:outline-none focus:ring-0 transition duration-150 ease-in-out`}>{x}
                   </label>
                 </div>
               );

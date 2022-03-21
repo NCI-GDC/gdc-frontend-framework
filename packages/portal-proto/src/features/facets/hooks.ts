@@ -256,6 +256,15 @@ export const FacetEnumHooks = {
   "ssms" : useMutationsFacet,
 }
 
+interface UseCaseFacetResponse {
+  readonly data?: FacetBuckets;
+  readonly error?: string;
+  readonly isUninitialized: boolean;
+  readonly isFetching: boolean;
+  readonly isSuccess: boolean;
+  readonly isError: boolean;
+}
+
 export const useCaseFacet = (field: string): UseCaseFacetResponse => {
   const coreDispatch = useCoreDispatch();
   const facet: FacetBuckets = useCoreSelector((state) =>
