@@ -78,7 +78,7 @@ interface EnumFacetResponse {
 /**
  * Case Facet Selector using GQL
  */
-const useCasesFacet = (field: string): EnumFacetResponse => {
+export const useCasesFacet = (field: string): EnumFacetResponse => {
   const coreDispatch = useCoreDispatch();
   const facet: FacetBuckets = useCoreSelector((state) =>
     selectCaseFacetByField(state, field),

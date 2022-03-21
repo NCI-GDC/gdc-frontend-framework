@@ -1,6 +1,6 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { convertFieldToName } from "./utils";
-import { useCasesFacet } from "./hooks"
+import { useCaseFacet } from "./hooks"
 import { MdFlip as FlipIcon,
   MdSort as SortIcon,
   MdSortByAlpha as AlphaSortIcon,
@@ -335,7 +335,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                                                         }: NumericFacetProps) => {
 
   const { data, error, isUninitialized, isFetching, isError } =
-    useCasesFacet(field);
+    useCaseFacet(field);
 
   const [isSearching, setIsSearching] = useState(false);
   const [isFacetView, setIsFacetView] = useState(true);
