@@ -6,14 +6,9 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { Loader } from "@mantine/core";
-import { processJSONData } from "./utils"
 import ChartTitleBar from "./ChartTitleBar";
 
 const BarChart = dynamic(() => import("./BarChart"), {
-  ssr: false,
-});
-
-const DownloadOptions = dynamic(() => import("./DownloadOptions"), {
   ssr: false,
 });
 

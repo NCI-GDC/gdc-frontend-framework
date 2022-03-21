@@ -13,7 +13,7 @@ export interface ChartTitleBarProps {
 
 const ChartTitleBar : React.FC<ChartTitleBarProps> = ( { divId, title, filename, jsonData} : ChartTitleBarProps) => {
   return (
-  <div className="flex items-center justify-between flex-wrap bg-gray-100 p-1.5">
+  <div className="flex items-center justify-between flex-wrap p-1.5">
     {title}
       <DownloadOptions chartDivId={divId} chartName={filename} jsonData={jsonData} />
   </div>

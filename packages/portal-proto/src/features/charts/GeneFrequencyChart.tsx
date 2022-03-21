@@ -1,11 +1,14 @@
+import React from "react";
+import { LoadingOverlay } from "@mantine/core";
+
 import dynamic from 'next/dynamic'
 import {
   GenesFrequencyChart,
   useGeneFrequencyChart
 } from "@gff/core";
 
-import { LoadingOverlay } from "@mantine/core";
-import React from "react";
+
+import ChartTitleBar from "./ChartTitleBar";
 
 const CHART_NAME = "most-frequently-mutated-genes-bar-chart";
 
@@ -58,12 +61,9 @@ export const GeneFrequencyChart:React.FC<GeneFrequencyChartProps> = ( { height =
 
 
   return (
-    <div className="relative ">
+    <div className="relative pr-2 border-r-2">
     {title ?
-      <div className="flex flex-row flex-nowrap w-100 justify-end bg-white ">
-        <span className="text-montserrat font-light text-nci-gray-dark mx-auto"> {"Distribution of Most Frequently Mutated Genes"} </span>
-        <DownloadOptions chartDivId={CHART_NAME} chartName={CHART_NAME} jsonData={ {} } />
-      </div> : null
+      <ChartTitleBar title={title} divId={CHART_NAME} filename={CHART_NAME} jsonData={{}} /> : null
     }
     <div className="w-100 h-100">
     <LoadingOverlay  visible={!isSuccess } />
