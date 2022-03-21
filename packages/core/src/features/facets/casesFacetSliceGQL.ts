@@ -32,12 +32,6 @@ export const fetchCaseFacetByName = createAsyncThunk<
   return await graphqlAPI(queryGQL, filtersGQL);
 });
 
-// these top-level properties should match the gdcapi indices.
-// however, this implementation detail should not be exposed to the portal
-// export interface FacetsState {
-//   readonly cases: Record<string, FacetBuckets>;
-// }
-
 const initialState: Record<string, FacetBuckets> = {};
 
 const casesSlice = createSlice({

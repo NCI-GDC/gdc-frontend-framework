@@ -4,7 +4,7 @@ import { CoreDispatch, CoreState } from "../../store";
 import {
   fetchGdcCases,
   GdcApiResponse,
-  isBucketsAggregation,
+  isBucketsAggregation, isStatsAggregation,
 } from "../gdcapi/gdcapi";
 
 import { selectCurrentCohortGqlFilters } from "../cohort/cohortFilterSlice";
@@ -54,22 +54,26 @@ const slice = createSlice({
           state.cases[action.meta.arg].error = response.warnings.facets;
         } else {
           response.data.aggregations &&
-            Object.entries(response.data.aggregations).forEach(
-              ([field, aggregation]) => {
-                if (isBucketsAggregation(aggregation)) {
-                  state.cases[field].status = "fulfilled";
-                  state.cases[field].buckets = aggregation.buckets.reduce(
-                    (facetBuckets, apiBucket) => {
-                      facetBuckets[apiBucket.key] = apiBucket.doc_count;
-                      return facetBuckets;
-                    },
-                    {} as Record<string, number>,
-                  );
-                } else {
-                  // Unhandled aggregation
-                }
-              },
-            );
+          Object.entries(response.data.aggregations).forEach(
+            ([field, aggregation]) => {
+              if (isBucketsAggregation(aggregation)) {
+                state.cases[field].status = "fulfilled";
+                state.cases[field].buckets = aggregation.buckets.reduce(
+                  (facetBuckets, apiBucket) => {
+                    facetBuckets[apiBucket.key] = apiBucket.doc_count;
+                    return facetBuckets;
+                  },
+                  {} as Record<string, number>,
+                );
+              } else if (isStatsAggregation(aggregation)) {
+                //TODO: This seems dependent on the type of the facet, which is not known here
+                state.cases[field].status = "fulfilled";
+                state.cases[field].buckets = { "count": aggregation.stats.count }
+              } else {
+                // Unhandled aggregation
+              }
+            },
+          );
         }
       })
       .addCase(fetchFacetByName.pending, (state, action) => {
