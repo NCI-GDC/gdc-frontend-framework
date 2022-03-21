@@ -95,18 +95,19 @@ const Header: React.FC<HeaderProps> = ({
           <Options />
         </div>
 
-        <div className="flex flex-row flex-nowrap">
+        <div className="flex flex-row items-center  flex-nowrap">
           <div className={"flex flex-row   opacity-60 hover:opacity-100 transition-opacity items-center mx-2 "}><SearchIcon size="24px" /> </div>
           <div className={"flex flex-row opacity-60 hover:opacity-100 transition-opacity items-center mx-2 "}><LoginIcon size="24px" /> Login </div>
           <div className={"flex flex-row opacity-60 hover:opacity-100 transition-opacity  items-center mx-2"}><CartIcon size="24px" /> Cart </div>
-          <div className={"flex flex-row opacity-60 hover:opacity-100 transition-opacity  items-center mx-2"}><AppsIcon size="24px" /> </div>
 
-        </div>
-        <Menu withArrow control={<button><MenuIcon size={"1.5em"} /></button>}>
+        <Menu withArrow className={"flex flex-row opacity-60 hover:opacity-100 transition-opacity  mx-2"} control={<button className="p-0"><AppsIcon size={"24px"} /></button>}>
           <Menu.Item onClick={() => setIsOpen(true)}>
             <TourIcon size="3em"/><div className="text-center text-sm pt-1">{'Tour'}</div>
           </Menu.Item>
         </Menu>
+
+
+        </div>
       </div>
     </div>
   );
