@@ -3,7 +3,11 @@ export interface Track {
   readonly name: string;
 }
 
-export const sortInt = (field: string) => {
+export interface ColorMap {
+  [key: string]: string | Record<string, string>;
+}
+
+export const sortInt = (field: string): ((a: Track, b: Track) => void) => {
   return (a, b) => {
     if (b[field] !== a[field]) {
       return b[field] - a[field];
@@ -13,7 +17,7 @@ export const sortInt = (field: string) => {
   };
 };
 
-export const sortBool = (field: string) => {
+export const sortBool = (field: string): ((a: Track, b: Track) => void) => {
   return (a, b) => {
     if (a[field] && !b[field]) {
       return -1;
@@ -25,7 +29,7 @@ export const sortBool = (field: string) => {
   };
 };
 
-export const sortByString = (field: string) => {
+export const sortByString = (field: string): ((a: Track, b: Track) => void) => {
   return (a, b) => {
     if (a[field] > b[field]) {
       return 1;
@@ -55,10 +59,10 @@ const colorPalette = [
 export const getColorMap = (
   raceValues: string[],
   ethnicityValues: string[],
-) => ({
+): ColorMap => ({
   age: "#638f56",
   totalDonors: "#9370db",
-  cgc: " #013220",
+  cgc: "#006400",
   "Transcriptome Profiling": " #3cb371",
   "Copy Number Variation": "#e9967a",
   "Simple Nucleotide Variation": "#bdb76b",
@@ -78,7 +82,7 @@ export const getColorMap = (
   ethnicity: { ...getColorsForValues(ethnicityValues) },
 });
 
-const getColorsForValues = (values: string[]) => {
+const getColorsForValues = (values: string[]): Record<string, string> => {
   const colorMap = {};
   values.sort().forEach((value, idx) => {
     colorMap[value] = colorPalette[idx];
