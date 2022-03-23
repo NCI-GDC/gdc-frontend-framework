@@ -5,7 +5,7 @@ import { HorizontalTable } from "../../components/HorizontalTable";
 import { get } from 'lodash';
 import dynamic from 'next/dynamic'
 import { SlideDetailButton } from "../../components/SlideDetailButton";
-import { formatDataForTable } from "./utils";
+import { formatDataForTable, parseSlideDetailsInfo } from "./utils";
 const ImageViewer = dynamic(() => import("../../components/ImageViewer"), {
   ssr: false,
 });
@@ -75,8 +75,7 @@ export const FileView: React.FC<FileViewProps> = ({ file }: FileViewProps) => {
           <div className="bg-white w-full mt-4">
             <h2 className="p-2 text-lg mx-4">Slide Image Viewer</h2>
             {/*TODO Slide Image Viewer see PEAR-167 */}
-            {console.log("FILE: ", file)}
-            <SlideDetailButton file={file} />
+            <SlideDetailButton tableData={parseSlideDetailsInfo(file)} />
             <ImageViewer imageId={file?.fileId} />
             <div>slide ids for first case, sample, portion: <ul>{file?.cases?.[0]?.samples?.[0]?.portions?.[0]?.slides?.map(slide => (<li key={slide.slide_id}>{slide.slide_id}</li>))}</ul></div>
           </div>) : null

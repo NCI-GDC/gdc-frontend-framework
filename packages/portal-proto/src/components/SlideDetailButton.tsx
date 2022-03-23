@@ -1,14 +1,8 @@
 import * as React from 'react'
-import { GdcFile } from '@gff/core';
-import { parseSlideDetailsInfo } from '../features/files/utils';
-import { HorizontalTable } from './HorizontalTable'
+import { HorizontalTable, HorizontalTableProps } from './HorizontalTable'
 import { Popover, Button } from '@mantine/core';
 
-interface SlideDetailButtonProps {
-    readonly file: GdcFile;
-}
-
-export const SlideDetailButton = ({ file }: SlideDetailButtonProps) => {
+export const SlideDetailButton = ({ tableData }: HorizontalTableProps) => {
     const [showDetails, setShowDetails] = React.useState(false)
 
     return (
@@ -29,7 +23,7 @@ export const SlideDetailButton = ({ file }: SlideDetailButtonProps) => {
             style={{ position: 'absolute', bottom: 0, top: -12 }}
         >
             <div style={{ display: 'flex' }}>
-                <HorizontalTable tableData={parseSlideDetailsInfo(file)} />
+                <HorizontalTable tableData={tableData} />
             </div>
         </Popover>
     )
