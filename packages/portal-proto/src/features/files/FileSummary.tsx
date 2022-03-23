@@ -20,7 +20,7 @@ export const ContextualFileView: React.FC<ContextualFileViewProps> = (
     size: 1
   });
   const fileName = data?.[0]?.fileName;
-
+console.log("DATAAA: ", data)
   return (
     <div>
       <div className="bg-white py-4 px-8 shadow-lg">

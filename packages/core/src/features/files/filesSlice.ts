@@ -236,9 +236,24 @@ export interface GdcFile {
           readonly submitter_id: string;
         }>;
         readonly slides?: ReadonlyArray<{
-          readonly slide_id: string;
-          readonly section_location: string;
-          readonly submitter_id: string;
+          readonly created_datetime: string | null
+          readonly number_proliferating_cells: number | null
+          readonly percent_eosinophil_infiltration: number | null
+          readonly percent_granulocyte_infiltration: number | null
+          readonly percent_inflam_infiltration: number | null
+          readonly percent_lymphocyte_infiltration: number | null
+          readonly percent_monocyte_infiltration: number | null
+          readonly percent_neutrophil_infiltration: number | null
+          readonly percent_necrosis: number | null
+          readonly percent_normal_cells: number | null
+          readonly percent_stromal_cells: number | null
+          readonly percent_tumor_cells: number | null
+          readonly percent_tumor_nuclei: number | null
+          readonly section_location: string | null
+          readonly slide_id: string | null
+          readonly state: string | null
+          readonly submitter_id: string | null
+          readonly updated_datetime: string | null
         }>;
       }>;
     }>;
@@ -318,43 +333,58 @@ const slice = createSlice({
               project_id: hit.cases?.[0]?.project?.project_id,
               cases: hit.cases?.map((caseObj) => {
                 return {
-                    case_id: caseObj.case_id,
-                    submitter_id: caseObj.submitter_id,
-                    annotations: caseObj.annotations?.map((annotation)=> annotation.annotation_id),
-                    samples: caseObj.samples?.map((sample)=> {
-                      return {
-                        sample_id: sample.sample_id,
-                        sample_type: sample.sample_type,
-                        submitter_id: sample.submitter_id,
-                        tissue_type: sample.tissue_type,
-                        portions: sample.portions?.map((portion) => {
-                          return {
-                            submitter_id: portion.submitter_id,
-                            analytes: portion.analytes?.map((analyte) => {
-                              return {
-                                analyte_id: analyte.analyte_id,
-                                analyte_type: analyte.analyte_type,
-                                submitter_id: analyte.submitter_id,
-                              };
-                            }),
-                            slides: portion.slides?.map((slide) => {
-                              return {
-                                slide_id: slide.slide_id,
-                                section_location: slide.section_location,
-                                submitter_id: slide.submitter_id,
-                              }
-                            }),
-                          };
-                        }),
-                      };
-                    }),
-                  };
+                  case_id: caseObj.case_id,
+                  submitter_id: caseObj.submitter_id,
+                  annotations: caseObj.annotations?.map((annotation) => annotation.annotation_id),
+                  samples: caseObj.samples?.map((sample) => {
+                    return {
+                      sample_id: sample.sample_id,
+                      sample_type: sample.sample_type,
+                      submitter_id: sample.submitter_id,
+                      tissue_type: sample.tissue_type,
+                      portions: sample.portions?.map((portion) => {
+                        return {
+                          submitter_id: portion.submitter_id,
+                          analytes: portion.analytes?.map((analyte) => {
+                            return {
+                              analyte_id: analyte.analyte_id,
+                              analyte_type: analyte.analyte_type,
+                              submitter_id: analyte.submitter_id,
+                            };
+                          }),
+                          slides: portion.slides?.map((slide) => {
+                            return {
+                              number_proliferating_cells: slide.number_proliferating_cells,
+                              percent_eosinophil_infiltration: slide.percent_eosinophil_infiltration,
+                              percent_granulocyte_infiltration: slide.percent_granulocyte_infiltration,
+                              percent_inflam_infiltration: slide.percent_inflam_infiltration,
+                              percent_lymphocyte_infiltration: slide.percent_lymphocyte_infiltration,
+                              percent_monocyte_infiltration: slide.percent_monocyte_infiltration,
+                              percent_necrosis: slide.percent_necrosis,
+                              percent_neutrophil_infiltration: slide.percent_neutrophil_infiltration,
+                              percent_normal_cells: slide.percent_normal_cells,
+                              percent_stromal_cells: slide.percent_stromal_cells,
+                              percent_tumor_cells: slide.percent_tumor_cells,
+                              percent_tumor_nuclei: slide.percent_tumor_nuclei,
+                              section_location: slide.section_location,
+                              slide_id: slide.slide_id,
+                              state: slide.state,
+                              submitter_id: slide.submitter_id,
+                              updated_datetime: slide.updated_datetime,
+                              created_datetime : slide.created_datetime
+                            }
+                          }),
+                        };
+                      }),
+                    };
+                  }),
+                };
               }),
               analysis: hit.analysis ? {
                 workflow_type: hit.analysis.workflow_type,
                 updated_datetime: hit.analysis.updated_datetime,
                 input_files: hit.analysis.input_files?.map((file) => file.file_id),
-              }: undefined,
+              } : undefined,
               downstream_analyses: hit.downstream_analyses?.map((analysis) => {
                 return {
                   workflow_type: analysis.workflow_type,
@@ -370,7 +400,7 @@ const slice = createSlice({
                 };
               }),
             });
-        });
+          });
           state.status = "fulfilled";
           state.error = undefined;
         }

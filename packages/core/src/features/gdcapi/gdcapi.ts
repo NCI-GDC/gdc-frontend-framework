@@ -109,16 +109,16 @@ export type FieldType = typeof FieldTypes[number];
 export interface FieldDetails {
   readonly description: string;
   readonly doc_type:
-    | "annotations"
-    | "case_centrics"
-    | "cases"
-    | "cnv_centrics"
-    | "cnv_occurrence_centrics"
-    | "files"
-    | "gene_centric"
-    | "projects"
-    | "ssm_centrics"
-    | "ssm_occurrence_centrics";
+  | "annotations"
+  | "case_centrics"
+  | "cases"
+  | "cnv_centrics"
+  | "cnv_occurrence_centrics"
+  | "files"
+  | "gene_centric"
+  | "projects"
+  | "ssm_centrics"
+  | "ssm_occurrence_centrics";
   readonly field: string;
   readonly full: string;
   readonly type: FieldType;
@@ -285,9 +285,24 @@ export interface FileDefaults {
           readonly submitter_id: string;
         }>;
         readonly slides?: ReadonlyArray<{
-          readonly slide_id: string;
-          readonly section_location: string;
-          readonly submitter_id: string;
+          readonly created_datetime: string | null
+          readonly number_proliferating_cells: number | null
+          readonly percent_eosinophil_infiltration: number | null
+          readonly percent_granulocyte_infiltration: number | null
+          readonly percent_inflam_infiltration: number | null
+          readonly percent_lymphocyte_infiltration: number | null
+          readonly percent_monocyte_infiltration: number | null
+          readonly percent_neutrophil_infiltration: number | null
+          readonly percent_necrosis: number | null
+          readonly percent_normal_cells: number | null
+          readonly percent_stromal_cells: number | null
+          readonly percent_tumor_cells: number | null
+          readonly percent_tumor_nuclei: number | null
+          readonly section_location: string | null
+          readonly slide_id: string | null
+          readonly state: string | null
+          readonly submitter_id: string | null
+          readonly updated_datetime: string | null
         }>;
       }>;
     }>;
