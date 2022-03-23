@@ -25,7 +25,7 @@ interface Domain {
   symbol?: string;
 }
 
-const OncoGridWrapper = () => {
+const OncoGridWrapper: React.FC = () => {
   const gridContainer = useRef(null);
   const gridObject = useRef(null);
   const [isHeatmap, setIsHeatmap] = useState(false);
@@ -51,56 +51,76 @@ const OncoGridWrapper = () => {
       // Safari support: https://developer.mozilla.org/en-US/docs/Web/API/Element/requestFullScreen#browser_compatibility
       gridContainer.current.webkitRequestFullScreen();
     }
-  };
 
-  const maxDaysToDeath = Math.max(...donors.map((d) => d.daysToDeath));
-  const maxAgeAtDiagnosis = Math.max(...donors.map((d) => d.age));
-  const maxDonorsAffected = Math.max(...genes.map((g) => g.totalDonors));
-
-  const donorOpacityFunc = ({ fieldName, value } : { fieldName: string, value: string | number}) => {
-    switch (fieldName) {
-      case "vitalStatus":
-        return !value || value === "not reported" ? 0 : 1;
-      case "gender":
-      case "ethnicity":
-      case "race":
-        return 1;
-      case "daysToDeath":
-        return value / maxDaysToDeath;
-      case "age":
-        return value / maxAgeAtDiagnosis;
-      default:
-        return value ? 1 : 0;
-    }
-  };
-
-  const geneOpacityFunc = ({ fieldName, value }) => {
-    switch (fieldName) {
-      case "totalDonors":
-        return value / maxDonorsAffected;
-      case "cgc":
-        return value ? 1 : 0;
-      default:
-        return 1;
-    }
-  };
-
-  const colorMap = getColorMap(
-    Array.from(new Set(donors.map((d) => d.race))),
-    Array.from(new Set(donors.map((d) => d.ethnicity))),
-  );
-
-  const fillFunc = ({ fieldName, value }) => {
-    if (
-      typeof value === "string" &&
-      colorMap?.[fieldName]?.[value] !== undefined
-    ) {
-      return colorMap[fieldName][value];
-    }
-    return colorMap[fieldName];
+    //gridObject.current.resize(680, 150);
   };
 
   useEffect(() => {
+    const maxDaysToDeath = Math.max(...donors.map((d) => d.daysToDeath));
+    const maxAgeAtDiagnosis = Math.max(...donors.map((d) => d.age));
+    const maxDonorsAffected = Math.max(...genes.map((g) => g.totalDonors));
+
+    const donorOpacityFunc = ({
+      fieldName,
+      value,
+    }: {
+      fieldName: string;
+      value: string | number;
+    }): number => {
+      switch (fieldName) {
+        case "vitalStatus":
+          return !value || value === "not reported" ? 0 : 1;
+        case "gender":
+        case "ethnicity":
+        case "race":
+          return 1;
+        case "daysToDeath":
+          return (value as number) / maxDaysToDeath;
+        case "age":
+          return (value as number) / maxAgeAtDiagnosis;
+        default:
+          return value ? 1 : 0;
+      }
+    };
+
+    const geneOpacityFunc = ({
+      fieldName,
+      value,
+    }: {
+      fieldName: string;
+      value: string | number;
+    }): number => {
+      switch (fieldName) {
+        case "totalDonors":
+          return (value as number) / maxDonorsAffected;
+        case "cgc":
+          return value ? 1 : 0;
+        default:
+          return 1;
+      }
+    };
+
+    const colorMap = getColorMap(
+      Array.from(new Set(donors.map((d) => d.race))),
+      Array.from(new Set(donors.map((d) => d.ethnicity))),
+    );
+
+    const fillFunc = ({
+      fieldName,
+      value,
+    }: {
+      fieldName: string;
+      value: string | number;
+    }): string => {
+      if (
+        typeof value === "string" &&
+        colorMap?.[fieldName]?.[value] !== undefined
+      ) {
+        return colorMap[fieldName][value];
+      }
+      return colorMap[fieldName] as string;
+    };
+
     const params = {
       element: gridContainer.current,
       donors,
@@ -176,7 +196,7 @@ const OncoGridWrapper = () => {
         />,
       ),
     );
-    grid.on("trackMouseOut", () => {
+    grid.on("trackLegendMouseOut", () => {
       setTooltipContent(null);
     });
 
@@ -254,7 +274,7 @@ const OncoGridWrapper = () => {
     gridObject.current = grid;
 
     return () => gridObject.current.destroy();
-  }, []);
+  }, [setTracksModal, setTooltipContent, setIsLoading]);
 
   useEffect(() => {
     // Make sure the loading overlay is up long enough to cover heatmap transition graphics
@@ -271,6 +291,10 @@ const OncoGridWrapper = () => {
     () => gridObject.current.setCrosshair(showCrosshairs),
     [showCrosshairs],
   );
+
+  useEffect(() => {
+    //gridObject.current.resize(650, 180);
+  }, [gridContainer]);
 
   return (
     <>

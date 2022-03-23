@@ -1,29 +1,25 @@
 import { useMantineTheme, ColorSwatch } from "@mantine/core";
-import { clinicalTracks, dataTypesTrack } from "./trackConfig";
+import { clinicalTracks, dataTypesTrack, ColorMap } from "./trackConfig";
 
 interface GradientProps {
-  readonly fieldName: string;
-  readonly colorMap: Record<string, string>;
+  readonly color: string;
 }
 
-const Gradient: React.FC<GradientProps> = ({
-  fieldName,
-  colorMap,
-}: GradientProps) => {
+const Gradient: React.FC<GradientProps> = ({ color }: GradientProps) => {
   const theme = useMantineTheme();
   return (
     <div className="flex flex-row">
       <div className="px-1">
-        <ColorSwatch color={theme.fn.lighten(colorMap[fieldName], 0.95)} />
+        <ColorSwatch color={theme.fn.lighten(color, 0.95)} />
       </div>
       <div className="px-1">
-        <ColorSwatch color={theme.fn.lighten(colorMap[fieldName], 0.6)} />
+        <ColorSwatch color={theme.fn.lighten(color, 0.6)} />
       </div>
       <div className="px-1">
-        <ColorSwatch color={theme.fn.lighten(colorMap[fieldName], 0.3)} />
+        <ColorSwatch color={theme.fn.lighten(color, 0.3)} />
       </div>
       <div className="px-1">
-        <ColorSwatch color={colorMap[fieldName]} />
+        <ColorSwatch color={color} />
       </div>
     </div>
   );
@@ -31,7 +27,7 @@ const Gradient: React.FC<GradientProps> = ({
 
 interface TrackLegendProps {
   readonly track: string;
-  readonly colorMap: Record<string, string>;
+  readonly colorMap: ColorMap;
   readonly maxDaysToDeath: number;
   readonly maxAge: number;
   readonly maxDonors: number;
@@ -60,7 +56,7 @@ const TrackLegend: React.FC<TrackLegendProps> = ({
               {track.type === "continuous" ? (
                 <div className="pl-1 flex flex-row">
                   {0}
-                  <Gradient colorMap={colorMap} fieldName={track.fieldName} />
+                  <Gradient color={colorMap[track.fieldName] as string} />
                   {maxValues[track.fieldName]}
                 </div>
               ) : (
@@ -89,7 +85,7 @@ const TrackLegend: React.FC<TrackLegendProps> = ({
           <b>Available Data Types:</b>
           {dataTypesTrack.map((track) => (
             <div key={track.name} className={"flex flex-row py-1"}>
-              <ColorSwatch color={colorMap[track.name]}></ColorSwatch>
+              <ColorSwatch color={colorMap[track.name] as string}></ColorSwatch>
               <div className="pl-1">{track.fieldName}</div>
             </div>
           ))}
@@ -100,7 +96,7 @@ const TrackLegend: React.FC<TrackLegendProps> = ({
         <div className="p-2 flex flex-col">
           <b>Gene Sets:</b>
           <div className="flex flex-row">
-            <ColorSwatch color={colorMap["cgc"]}></ColorSwatch>
+            <ColorSwatch color={colorMap["cgc"] as string}></ColorSwatch>
             <div className="w-40 pl-1">
               {"Gene belongs to Cancer Gene Census"}
             </div>
@@ -113,7 +109,7 @@ const TrackLegend: React.FC<TrackLegendProps> = ({
           <b># cases Affected:</b>
           <div className="pl-1 flex flex-row">
             {0}
-            <Gradient colorMap={colorMap} fieldName={"totalDonors"} />
+            <Gradient color={colorMap["totalDonors"] as string} />
             {maxDonors}
           </div>
         </div>

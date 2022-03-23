@@ -3,7 +3,7 @@ import OncoGrid from "../features/oncoGrid/OncoGridWrapper";
 
 const OncoGridPage: NextPage = () => {
   return (
-    <div className="p-16">
+    <div className="p-4">
       <OncoGrid></OncoGrid>
     </div>
   );

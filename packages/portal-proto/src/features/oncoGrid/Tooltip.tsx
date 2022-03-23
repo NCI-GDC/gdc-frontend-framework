@@ -1,5 +1,5 @@
+import { useEffect, useState, useRef } from "react";
 import ReactDOM from "react-dom";
-import { useLayoutEffect, useState, useRef } from "react";
 
 interface TooltipProps {
   readonly content: JSX.Element;
@@ -7,54 +7,35 @@ interface TooltipProps {
 
 const Tooltip: React.FC<TooltipProps> = ({ content }: TooltipProps) => {
   const tooltipRef = useRef(null);
-  //const [x, setX] = useState(0);
-  // Using refs instead of state because we don't want to trigger rerenders
-  const x = useRef(0);
-  const y = useRef(0);
-  //const [y, setY] = useState(0);
-  const transform = useRef(null);
+  const [x, setX] = useState(0);
+  const [y, setY] = useState(0);
+  const [arrowPosition, setArrowPosition] = useState("bottom");
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const eventListener = (event) => {
-      let tempX =
-        event.pageX - tooltipRef.current.getBoundingClientRect().width / 2;
+      let tempX = event.pageX - 18;
       let tempY =
-        event.pageY - tooltipRef.current.getBoundingClientRect().height - 10;
-      let tempTransform;
+        event.pageY -
+        (tooltipRef.current?.getBoundingClientRect().height || 0) -
+        15;
+      let tempArrowPosition = "bottom";
 
-      if (tooltipRef.current.getBoundingClientRect().left < 0) {
-        tempTransform = `translate(${
-          tooltipRef.current.getBoundingClientRect().width / 2
-        }px, 0)`;
-      }
-
+      // Reposition if tooltip is cutoff
       if (
-        tooltipRef.current.getBoundingClientRect().right >= window.innerWidth
+        tempX + tooltipRef.current?.getBoundingClientRect().width >
+        window.innerWidth
       ) {
-        tempTransform = `translate(-${
-          tooltipRef.current.getBoundingClientRect().width / 2
-        }px, 0)`;
+        tempX =
+          event.pageX -
+          (tooltipRef.current?.getBoundingClientRect().width || 0) -
+          15;
+        tempY = event.pageY - 18;
+        tempArrowPosition = "right";
       }
 
-      if (tooltipRef.current.getBoundingClientRect().top < 0) {
-        tempTransform = `translate(0, ${
-          tooltipRef.current.getBoundingClientRect().height / 2
-        }px)`;
-      }
-
-      if (
-        tooltipRef.current.getBoundingClientRect().bottom > window.innerHeight
-      ) {
-        tempTransform = `translate(0, -${
-          tooltipRef.current.getBoundingClientRect().height / 2
-        }px)`;
-      }
-
-      //setX(tempX);
-      //setY(tempY);
-      y.current = tempY;
-      x.current = tempX;
-      transform.current = tempTransform;
+      setX(tempX);
+      setY(tempY);
+      setArrowPosition(tempArrowPosition);
     };
 
     window.addEventListener("mousemove", eventListener);
@@ -63,13 +44,15 @@ const Tooltip: React.FC<TooltipProps> = ({ content }: TooltipProps) => {
   }, []);
 
   return ReactDOM.createPortal(
-    <div
-      className="inline-block absolute bg-white rounded-lg shadow-sm text-sm"
-      style={{ left: x.current, top: y.current, transform: transform.current }}
-      ref={(ref) => (tooltipRef.current = ref)}
-    >
-      {content}
-    </div>,
+    content ? (
+      <div
+        className={`inline-block bg-white rounded-lg shadow-sm text-sm border-2 border-nci-gray-light tooltip-arrow-${arrowPosition}`}
+        style={{ left: x, top: y, position: "absolute" }}
+        ref={(ref) => (tooltipRef.current = ref)}
+      >
+        {content}
+      </div>
+    ) : null,
     document.body,
   );
 };
