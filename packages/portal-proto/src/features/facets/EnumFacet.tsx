@@ -121,7 +121,11 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                      position="bottom"
                      placement="start"
                      wrapLines
+<<<<<<< HEAD
                      width="auto"
+=======
+                     width={220}
+>>>>>>> develop
                      withArrow
                      transition="fade"
                      transitionDuration={200}>
