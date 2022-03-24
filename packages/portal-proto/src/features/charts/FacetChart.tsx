@@ -11,9 +11,7 @@ import dynamic from 'next/dynamic'
 const BarChartWithNoSSR = dynamic(() => import('./BarChart'), {
   ssr: false
 })
-const DownloadOptions = dynamic(() => import("./DownloadOptions"), {
-  ssr: false,
-});
+
 
 const maxValuesToDisplay =7;
 
@@ -65,12 +63,14 @@ const processChartData = (facetData:Record<string, any>, field: string, maxBins 
   const data = removeKey('_missing', facetData);
   const xvals = Object.keys(data).slice(0, maxBins).map(x =>x);
   const xlabels = Object.keys(data).slice(0, maxBins).map(x => processLabel(x, 12));
-  const results : Record<string, any> = {
-    x: xvals,
-    y: Object.values(data).slice(0, maxBins),
+  const results = {
+    datasets: [{
+      x: xvals,
+      y: Object.values(data).slice(0, maxBins),
+      label_text: Object.keys(data).slice(0, maxBins).map(x => processLabel(x, 100)),
+    }],
     tickvals: showXLabels ? xvals : [],
     ticktext: showXLabels ? xlabels : [],
-    label_text: Object.keys(data).slice(0, maxBins).map(x => processLabel(x, 100)),
     title: convertFieldToName(field),
     filename: field,
     yAxisTitle: "# of Cases"
@@ -86,9 +86,6 @@ export const FacetChart: React.FC<FacetProps> = ({ field, showXLabels = true, he
   const { data, error, isUninitialized, isFetching, isError } =
     useCaseFacet(field);
 
-  // Create unique ID for this chart
-  const chartDivId = `${field}_${Math.floor(Math.random() * 100)}`;
-
   if (isUninitialized) {
     return <div>Initializing facet...</div>;
   }
@@ -102,14 +99,21 @@ export const FacetChart: React.FC<FacetProps> = ({ field, showXLabels = true, he
   }
 
   const chart_data = processChartData(data, field, maxBins, showXLabels);
+  const title = showTitle ? convertFieldToName(field) : null;
 
-  return <div className="flex flex-col border-2 bg-white ">
-    <div className="flex items-center justify-between flex-wrap bg-gray-100 p-1.5">
-      {showTitle ? convertFieldToName(field) : null}
-      <DownloadOptions chartDivId={chartDivId} chartName={field} jsonData={processJSONData(data)} />
+  return (
+    <div className="flex flex-col border-2 bg-white ">
+      <BarChartWithNoSSR
+        data={chart_data}
+        height={height}
+        marginBottom={marginBottom}
+        orientation={orientation}
+        title={title}
+        filename={field}
+        jsonData={processJSONData(data)}>
+      </BarChartWithNoSSR>
     </div>
-    <BarChartWithNoSSR data={chart_data} height={height} marginBottom={marginBottom} orientation={orientation} divId={chartDivId}></BarChartWithNoSSR>
-  </div>;
+  );
 };
 
 const convertFieldToName = (field: string): string => {
