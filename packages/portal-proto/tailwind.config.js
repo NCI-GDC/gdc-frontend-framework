@@ -1,11 +1,20 @@
 const plugin = require('tailwindcss/plugin');
+
+function withOpacityValue(variable) {
+  return ({ opacityValue }) => {
+    if (opacityValue === undefined) {
+      return `rgb(var(${variable}))`
+    }
+    return `rgb(var(${variable}) / ${opacityValue})`
+  }
+}
+
 module.exports = {
-  purge: [
-    "./pages/**/*.{js,ts,jsx,tsx}",
-    "./components/**/*.{js,ts,jsx,tsx}",
-    "./features/**/*.{js,ts,jsx,tsx}",
+  content: [
+    "./src/pages/**/*.{js,ts,jsx,tsx}",
+    "./src/components/**/*.{js,ts,jsx,tsx}",
+    "./src/features/**/*.{js,ts,jsx,tsx}",
   ],
-  darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
       colors: {
@@ -20,6 +29,11 @@ module.exports = {
          * lighter, lightest, dark, darker, and darkest modifiers. Each one
          * maps to a every third shade.
          */
+        // theming support
+        primary: withOpacityValue('--color-primary'),
+        secondary: withOpacityValue('--color-secondary'),
+        tertiary: withOpacityValue('--color-tertiary'),
+        highlight: withOpacityValue('--color-highlight'),
         // NCI Primary Palette
         "nci-gray": {
           lightest: "#f1f1f1",
@@ -246,19 +260,30 @@ module.exports = {
         '2flex1': '1fr auto',
       },
       fontFamily: {
+        montserrat: ["Montserrat", "sans-serif"],
         heading: ["Montserrat", "sans-serif"]
       },
-    },
-  },
-  variants: {
-    extend: {
-      borderWidth: ["hover"],
-      boxShadow: ["hover"],
-      display: ["group-hover"],
+      borderWidth: {
+        DEFAULT: '1px',
+        '0': '0',
+        '1' :'1px',
+        '2': '2px',
+        '3': '3px',
+        '4': '4px',
+        '6': '6px',
+        '8': '8px',
+      },
+      transitionProperty: {
+        height: 'height'
+      },
+      variants: {
+        extend: {},
+      },
     },
   },
   plugins: [
     require("@tailwindcss/forms"),
+    require("@tailwindcss/typography"),
     plugin(function({ addUtilities }) {
       const newUtilities = {
         '.nextImageFillFix' : {

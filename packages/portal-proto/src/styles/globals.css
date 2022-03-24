@@ -35,4 +35,67 @@
     transform: rotateY(-180deg);
 }
 
+.survival-plot .axis path,
+.survival-plot .axis line {
+    fill: none;
+    stroke: #e6dede;
+    shape-rendering: crispEdges;
+}
+.survival-plot .axis .tick text {
+    fill: #888;
+    font-size: 0.75rem;
+}
+.survival-plot .axis .axis-label {
+    color: rgb(107, 98, 98);
+    font-size: 0.8rem;
+    fill: rgb(107, 98, 98);
+    font-weight: 500;
+}
+.survival-plot .line {
+    fill: none;
+    stroke-width: 1.5px;
+}
+.survival-plot .serie .point {
+    r: 3;
+    transition: all 0.1s;
+    cursor: pointer;
+    stroke-width: none;
+}
+.survival-plot .serie .point:hover,
+.survival-plot .serie .point:active {
+    r: 5;
+}
+.survival-plot .serie .point[status='alive'] {
+    opacity: 0.5;
+}
+.survival-plot .serie .point[status='deceased'] {
+    opacity: 0;
+    transition: r 0.3s, opacity 0.3s;
+    r: 5;
+}
+.survival-plot .serie .point[status='deceased']:hover,
+.survival-plot .serie .point[status='deceased']:active {
+    opacity: 1;
+    r: 2;
+}
+.survival-plot .serie .point-line {
+    cursor: pointer;
+}
+.survival-plot .serie .point-line[status='deceased'] {
+    opacity: 0;
+}
+.survival-plot .brush .extent {
+    stroke: #fff;
+    fill: #edf8ff;
+    shape-rendering: crispEdges;
+    pointer-events: none;
+}
+
+.survival-plot.exported-svg-class div {
+    position: static !important;
+    display: block !important;
+}
+
+
 @tailwind utilities;
+@tailwind varients;

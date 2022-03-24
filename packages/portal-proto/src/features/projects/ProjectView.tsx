@@ -11,7 +11,7 @@ export interface ContextualProjectViewProps {
 export const ContextualProjectView: React.FC<ContextualProjectViewProps> = (
   props: ContextualProjectViewProps,
 ) => {
-  const projectData = useProjects({ 
+  const projectData = useProjects({
     filters: {
       op: "=",
       content: {
@@ -21,7 +21,7 @@ export const ContextualProjectView: React.FC<ContextualProjectViewProps> = (
     },
     expand: ['summary', 'summary.data_categories', 'summary.experimental_strategies', 'program']
   });
-  const annotationCount  = useAnnotations({ 
+  const annotationCount  = useAnnotations({
       filters: {
         op: "=",
         content: {
@@ -32,9 +32,6 @@ export const ContextualProjectView: React.FC<ContextualProjectViewProps> = (
       size: 0
     });
   const projectWithAnnotation = {...projectData.data[0], ...annotationCount.data[0]};
-
-  //console.log('projectWithAnnotation', projectWithAnnotation);
-
   return <ProjectView projectData={projectWithAnnotation} />;
 };
 

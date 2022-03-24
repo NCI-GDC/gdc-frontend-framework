@@ -220,10 +220,10 @@ const slice = createSlice({
     builder
       .addCase(fetchCnvPlot.fulfilled, (state, action) => {
         const response = action.payload;
-        if (response.warnings) {
+        if (response.errors) {
           state = castDraft(initialState);
           state.status = "rejected";
-          state.error = response.warnings.filters;
+          state.error = response.errors.message;
         }
 
         const gain: CNVPlotPoint[] =

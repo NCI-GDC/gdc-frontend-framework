@@ -1,9 +1,8 @@
 import { NextPage } from "next";
 import {
-  Button,
   UserFlowVariedPages,
 } from "../../../features/layout/UserFlowVariedPages";
-import Link from "next/link";
+import { Button } from "@mantine/core";
 import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/router";
@@ -45,12 +44,13 @@ const StudiesPage: NextPage = () => {
             setShowModal(true);
           }}
           exploreLeft={
-            <Button onClick={() => router.push("analysis")}>
+            <Button onClick={() => router.push("analysis")}
+                    className="bg-nci-gray-light hover:bg-nci-gray-dark text-nci-gray-lightest transition-colors">
               Analyze Selected Cohorts
             </Button>
           }
           exploreRight={
-            <Button onClick={() => router.push("repository")}>
+            <Button onClick={() => router.push("repository")}  className="bg-nci-gray-light hover:bg-nci-gray-dark text-nci-gray-lightest transition-colors">
               Download Files From Selected Cohorts
             </Button>
           }
