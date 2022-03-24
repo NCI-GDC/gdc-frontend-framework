@@ -4,13 +4,13 @@ import { search_facets } from "./dictionary";
 
 
 type SearchFunction = {
-  (term: string): Record<string, any>;
+  (term: string): Record<string, unknown>;
 };
 
 interface MetaSearchProp {
   readonly onChange: (any) => void;
+  // search_function: (string) => ReadonlyArray<Record<any, any>>
 }
-
 
 export const MetaSearch: React.FC<MetaSearchProp> = ({ onChange }: MetaSearchProp) => {
 
@@ -31,7 +31,6 @@ export const MetaSearch: React.FC<MetaSearchProp> = ({ onChange }: MetaSearchPro
       setSearchResults([]);
     } else {
       const searchRes = results.map(x => {
-
         return (({ category, subcategory, name }) => ({ category, subcategory, name }))(x);
       });
       setSearchResults(searchRes);
@@ -40,10 +39,10 @@ export const MetaSearch: React.FC<MetaSearchProp> = ({ onChange }: MetaSearchPro
 
   return (
     <div className="flex flex-col items-center relative z-10">
-      <div className="flex flex-row items-center justify-center w-full  p-2">
-        <div className="bg-white flex items-center w-1/2 ">
+      <div className="flex flex-row items-center justify-center w-full p-2">
+        <div className="bg-none flex items-center w-1/2 ">
           <div className="relative w-full "><input type="text"
-                                           className="h-10 pr-8 w-full pl-5 border-nci-gray-light rounded-full  focus:shadow focus:outline-none"
+                                           className="h-10 pr-8 w-full pl-5  shadow-md  border-nci-gray-light rounded-full focus:ring-nci-cyan-light focus:border-nci-teal-light hover:shadow-lg hover:border-nci-teal-lighter"
                                            placeholder={`Search ...`} value={searchTerm}
                                            onChange={onSearchChanged} />
             <div className="absolute top-2 right-3 h-4">{ searchTerm.length == 0 ? <MdSearch size="1.5em" /> : <MdClear size="1.5em" onClick={() => clearSearch()} /> }

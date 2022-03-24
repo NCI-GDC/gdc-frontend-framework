@@ -3,10 +3,12 @@ import { orderBy } from "lodash";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useCnvPlot } from "@gff/core";
+import ChartTitleBar from "./ChartTitleBar";
 const BarChart = dynamic(() => import("./BarChart"), {
   ssr: false,
 });
 
+const CHART_NAME = "cancer-distribution-bar-chart-cnv";
 interface CNVPlotProps {
   readonly gene: string;
 }
@@ -38,7 +40,7 @@ const CNVPlot: React.FC<CNVPlotProps> = ({ gene }: CNVPlotProps) => {
     return null;
   }
 
-  let caseData = data.cases.filter(d => d.gain !== undefined || d.loss !== undefined);
+  const caseData = data.cases.filter(d => d.gain !== undefined || d.loss !== undefined);
   const title = `${data.caseTotal} CASES AFFECTED BY ${data.mutationTotal} CNV EVENTS ACROSS ${caseData.length} PROJECTS`;
 
   let chartData;
@@ -107,13 +109,15 @@ const CNVPlot: React.FC<CNVPlotProps> = ({ gene }: CNVPlotProps) => {
   const onClickHandler = (mouseEvent) => {
     router.push(`/projects/${mouseEvent.points[0].x}`);
   };
-
+  const chartDivId = `${CHART_NAME}_${Math.floor(Math.random() * 100)}`;
   return (
     <>
+      <div>
+        <ChartTitleBar title={title} filename={CHART_NAME} divId={chartDivId} jsonData={{}} />
+      </div>
       <BarChart
+        divId={chartDivId}
         data={chartConfig}
-        filename={"cancer-distribution-bar-chart"}
-        title={title}
         onClickHandler={onClickHandler}
         stacked
       />

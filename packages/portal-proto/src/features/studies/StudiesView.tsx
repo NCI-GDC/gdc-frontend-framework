@@ -1,7 +1,7 @@
 import { Project, useProjects } from "@gff/core";
 import { Option, Select, SelectProps } from "../../components/Select";
 import Image from "next/image";
-import { Button } from "../layout/UserFlowVariedPages";
+import { Button } from "@mantine/core";
 import { MdFlip, MdSearch } from "react-icons/md";
 import { BsQuestionCircleFill, BsFillTriangleFill } from "react-icons/bs";
 import { useState } from "react";
@@ -394,9 +394,9 @@ export const StudiesView: React.FC<StudiesViewProps> = ({
       </div>
       <div className="flex flex-col w-72 gap-y-4">
         <Button>Selected Cohorts: None</Button>
-        <Button className="px-2 py-1 
+        <Button className="px-2 py-1
     border rounded
-    bg-nci-gray-lighter text-nci-gray" stylingOff={true}>Explore Selected Cohorts In...</Button>
+    bg-nci-gray-lighter text-nci-gray" >Explore Selected Cohorts In...</Button>
       </div>
       <div className="flex flex-row gap-x-4">
         <div className="w-40">{sortFilter}</div>
@@ -445,9 +445,9 @@ const Study: React.FC<StudyProps> = (props: StudyProps) => {
     console.log(props);
   }
   const mainProject = props.project.projectId.split('-')[0];
-  let projectLogoPath = `/logos/${mainProject}_logo.png`;
+  const projectLogoPath = `/logos/${mainProject}_logo.png`;
 
-  /* thoughts on checking if images exist 
+  /* thoughts on checking if images exist
   try {
     fetch(projectLogoPath, {method: 'HEAD'})
       .then((response)=>{
@@ -465,7 +465,7 @@ const Study: React.FC<StudyProps> = (props: StudyProps) => {
   }
 
   return (
-    <div name={projectId} className={"group h-250 border border-nci-gray-lighter flex flex-col bg-white shadow-md"}>
+    <div key={projectId} className={"group h-250 border border-nci-gray-lighter flex flex-col bg-white shadow-md"}>
       <div className="bg-nci-gray-lightest flex flex-row">
         <div className="flex-grow text-center pl-4">
           {props.project.name}
@@ -491,23 +491,23 @@ const Study: React.FC<StudyProps> = (props: StudyProps) => {
           </label>
           <div className="flex flex-col">
             <div className="py-4">
-              {props.project.disease_type?.length > 0 ? 
-                (props.project.disease_type.length === 1 ? 
+              {props.project.disease_type?.length > 0 ?
+                (props.project.disease_type.length === 1 ?
                   props.project.disease_type[0] :
                   `${props.project.disease_type.length} Disease Types`)
               : ''}
             </div>
 
             <div className="">
-              {props.project.primary_site?.length > 0 ? 
-                (props.project.primary_site.length === 1 ? 
+              {props.project.primary_site?.length > 0 ?
+                (props.project.primary_site.length === 1 ?
                   props.project.primary_site[0] :
                   `${props.project.primary_site.length} Primary Sites`)
               : ''}
             </div>
           </div>
           <div className="flex flex-col justify-center px-4">
-            <Button stylingOff={true} className="
+            <Button  className="
               px-2 py-1 m-1
               rounded
               text-white
@@ -516,7 +516,7 @@ const Study: React.FC<StudyProps> = (props: StudyProps) => {
               hover:text-black">
                 1,098 Cases
             </Button>
-            <Button stylingOff={true} className="
+            <Button  className="
               px-2 py-1 m-1
               rounded
               text-white

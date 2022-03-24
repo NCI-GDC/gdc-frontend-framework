@@ -24,7 +24,7 @@ const MutationFacetHeader: React.FC<MutationFacetProps> = ({ field, description,
 }
 
 export const MutationFacet: React.FC<MutationFacetDataProps> = ({  data, field, description, type  }: MutationFacetDataProps) => {
-  const [isGroupCollapsed, setIsGroupCollapsed] = useState(true);
+  const [isGroupCollapsed, setIsGroupCollapsed] = useState(false);
   return (
     <div className=" flex flex-col border-2 border-b-0 bg-white relative">
       <CollapsibleContainer isCollapsed={isGroupCollapsed}
@@ -32,7 +32,7 @@ export const MutationFacet: React.FC<MutationFacetDataProps> = ({  data, field, 
                             Top={ () => <MutationFacetHeader {...{field , description, type}} /> } >
         {data.map(({ value, count }) => {
             return (
-              <div key={`${field}-${value}`} className="flex flex-row gap-x-1 px-2">
+              <div key={`${field}-${value}`} className="flex flex-row gap-x-1 px-2 text-sm ">
                 <div className="flex-none">
                   <input type="checkbox" value={`${field}:${value}`} />
                 </div>
