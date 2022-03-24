@@ -1,2 +1,2 @@
-const withTM = require('next-transpile-modules')(['oncogrid']);
+const withTM = require('next-transpile-modules')(['@oncojs/survivalplot', '@oncojs/react-survivalplot', 'oncogrid']);
 module.exports = withTM({});

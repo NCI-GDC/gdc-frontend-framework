@@ -24,36 +24,25 @@ query SsmsAggregations (
 interface SMSAggregationsQueryProps {
   readonly field?: string;
   readonly ids: ReadonlyArray<string>;
+  readonly filters: ReadonlyArray<Record<string, unknown>>
 }
 
 export const fetchSmsAggregations = async ({
   ids,
   field = "consequence.transcript.gene.gene_id",
+  filters,
 }: SMSAggregationsQueryProps): Promise<GraphQLApiResponse> => {
+
   const graphQlFilters = {
     ssmCountsfilters: {
       content: [
-        {
-          op: "in",
-          content: {
-            field: "cases.primary_site",
-            value: ["kidney"],
-          },
-        },
-        {
+        ...[ {
           content: {
             field: field,
             value: ids,
           },
           op: "in",
-        },
-        {
-          content: {
-            field: "genes.is_cancer_gene_census",
-            value: ["true"],
-          },
-          op: "in",
-        },
+        }], ...filters
       ],
       op: "and",
     },
