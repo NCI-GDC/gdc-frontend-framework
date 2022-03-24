@@ -1,8 +1,9 @@
 import { GdcFile } from "@gff/core";
 import { get, omit } from 'lodash'
 import { HorizontalTableProps } from "../../components/HorizontalTable";
+import { JSONObject } from "../types";
 
-export const formatDataForTable = (file: Object, headersConfig: ReadonlyArray<{
+export const formatDataForTable = (file: GdcFile | JSONObject, headersConfig: ReadonlyArray<{
     readonly field: string;
     readonly name: string;
   }>): HorizontalTableProps["tableData"] => {
