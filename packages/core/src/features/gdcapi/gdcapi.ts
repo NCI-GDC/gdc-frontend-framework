@@ -204,12 +204,12 @@ export interface ProjectDefaults {
       readonly case_count: number;
       readonly data_category: string;
       readonly file_count: number;
-    }>
+    }>;
     readonly experimental_strategies?: ReadonlyArray<{
       readonly case_count: number;
       readonly experimental_strategy: string;
       readonly file_count: number;
-    }>
+    }>;
   };
   readonly program?: {
     readonly dbgap_accession_number: string;
@@ -332,6 +332,8 @@ export const fetchGdcFiles = async (
 export const fetchGdcEntities = async <T>(
   endpoint: string,
   request?: GdcApiRequest,
+  fetchAll = false,
+  previousHits : Record<string, any>[] = [],
 ): Promise<GdcApiResponse<T>> => {
   const res = await fetch(`https://api.gdc.cancer.gov/${endpoint}`, {
     method: "POST",
@@ -350,7 +352,40 @@ export const fetchGdcEntities = async <T>(
   });
 
   if (res.ok) {
-    return res.json();
+    const resPromise = res.json();
+
+    if (fetchAll) {
+      let fullResponse = {} as GdcApiResponse<T>;
+
+      const updatedPromise = await resPromise.then((responseData) => {
+        fullResponse = {
+          ...responseData,
+          data: {
+            hits: [
+              ...previousHits,
+              ...responseData?.data?.hits,
+            ],
+            pagination: responseData?.data?.pagination,
+          },
+        };
+        return fullResponse;
+      });
+
+      if (
+        fullResponse?.data?.pagination?.page <= fullResponse?.data?.pagination?.pages
+      ) {
+        return fetchGdcEntities(
+          endpoint,
+          { ...request, from: (request?.from || 0) + (request?.size || 10) },
+          true,
+          [...fullResponse.data.hits],
+        );
+      }
+
+      return updatedPromise;
+    }
+
+    return resPromise;
   }
 
   throw await buildFetchError(res, request);

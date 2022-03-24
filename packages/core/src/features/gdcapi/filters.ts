@@ -217,6 +217,7 @@ export interface GqlExists {
   readonly op: "not";
   readonly content: {
     readonly field: string;
+    readonly value?: string;
   };
 }
 

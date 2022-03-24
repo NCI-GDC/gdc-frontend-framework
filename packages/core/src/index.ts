@@ -32,4 +32,4 @@ export * from "./features/genomic/genomicFilters";
 export * from "./features/cancerDistribution/ssmPlot";
 export * from "./features/cancerDistribution/cnvPlot";
 export * from "./features/survival/survivalSlice";
-export * from "./features/cohort/cohortSlice";
+export * from "./features/oncoGrid/oncoGridSlice";
