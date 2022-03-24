@@ -1,6 +1,10 @@
 export interface Track {
   readonly fieldName: string;
   readonly name: string;
+  readonly sort: (field: string) => void;
+  readonly group: string;
+  readonly collapsed?: boolean;
+  readonly type?: string;
 }
 
 export interface ColorMap {
@@ -91,7 +95,7 @@ const getColorsForValues = (values: string[]): Record<string, string> => {
   return colorMap;
 };
 
-export const clinicalTracks = [
+export const clinicalTracks : Track[] = [
   {
     name: "Gender",
     fieldName: "gender",
@@ -134,7 +138,7 @@ export const clinicalTracks = [
   },
 ];
 
-export const dataTypesTrack = [
+export const dataTypesTrack : Track[] = [
   {
     name: "Clinical",
     fieldName: "Clinical",
@@ -175,7 +179,7 @@ export const dataTypesTrack = [
 
 export const donorTracks = [...clinicalTracks, ...dataTypesTrack];
 
-export const geneTracks = [
+export const geneTracks : Track[] = [
   {
     name: "# Cases affected",
     fieldName: "totalDonors",

@@ -25,13 +25,20 @@ interface Domain {
   symbol?: string;
 }
 
+interface DocumentWithWebkit extends Document {
+  readonly webkitExitFullscreen: () => void;
+  readonly webkitFullscreenElement: Element;
+}
+
 const OncoGridWrapper: React.FC = () => {
   const gridContainer = useRef(null);
+  const fullOncoGridContainer = useRef(null);
   const gridObject = useRef(null);
   const [isHeatmap, setIsHeatmap] = useState(false);
   const [hasGridlines, setHasGridlines] = useState(false);
   const [showCrosshairs, setShowCrosshairs] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false)
   const [tooltipContent, setTooltipContent] = useState(null);
   const [tracksModal, setTracksModal] = useState(null);
 
@@ -44,16 +51,37 @@ const OncoGridWrapper: React.FC = () => {
     setTimeout(() => setIsLoading(false), 1000);
   };
 
-  const fullScreen = async () => {
-    if (gridContainer.current.requestFullscreen) {
-      await gridContainer.current.requestFullscreen();
-    } else if (gridContainer.current.webkitRequestFullScreen) {
-      // Safari support: https://developer.mozilla.org/en-US/docs/Web/API/Element/requestFullScreen#browser_compatibility
-      gridContainer.current.webkitRequestFullScreen();
+  const toggleFullscreen = async () => {
+    // Webkit vendor prefix for Safari support: https://developer.mozilla.org/en-US/docs/Web/API/Element/requestFullScreen#browser_compatibility
+    if (!isFullscreen) {
+      if (fullOncoGridContainer.current.requestFullscreen) {
+        await fullOncoGridContainer.current.requestFullscreen();
+      } else if (fullOncoGridContainer.current.webkitRequestFullScreen) {
+        fullOncoGridContainer.current.webkitRequestFullScreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        await document.exitFullscreen();
+      } else if ((document as DocumentWithWebkit).webkitExitFullscreen) {
+        (document as DocumentWithWebkit).webkitExitFullscreen();
+      }
+    }
+  };
+
+  useEffect(() => {
+    const eventListener = () => {
+      setIsFullscreen(document?.fullscreenElement !== null || (document as DocumentWithWebkit)?.webkitFullscreenElement !== null);
     }
 
-    //gridObject.current.resize(680, 150);
-  };
+    window.addEventListener("fullscreenchange", eventListener);
+    window.addEventListener("webkitfullscreenchange", eventListener);
+
+
+    return () => {
+      window.removeEventListener("fullscreenschange", eventListener);
+      window.removeEventListener("webkitfullscreenschange", eventListener);
+    }
+  }, []);
 
   useEffect(() => {
     const maxDaysToDeath = Math.max(...donors.map((d) => d.daysToDeath));
@@ -292,12 +320,11 @@ const OncoGridWrapper: React.FC = () => {
     [showCrosshairs],
   );
 
-  useEffect(() => {
-    //gridObject.current.resize(650, 180);
-  }, [gridContainer]);
-
   return (
-    <>
+    <div
+      ref={(ref) => (fullOncoGridContainer.current = ref)}
+      className={`bg-white p-4 ${isFullscreen ? "overflow-scroll" : ""}`}
+    >
       <div className="flex pb-8">
         <div className="basis-1/2">{`200 Most Mutated Cases and Top 50 Mutated Genes by SSM`}</div>
         <div className="flex basis-1/2 ml-auto">
@@ -345,8 +372,8 @@ const OncoGridWrapper: React.FC = () => {
             <FaCrosshairs />
           </ActionIcon>
           <ActionIcon
-            variant={"outline"}
-            onClick={() => fullScreen()}
+            variant={isFullscreen ? "filled" : "outline"}
+            onClick={() => toggleFullscreen()}
             classNames={{ root: "mx-1" }}
           >
             <MdFullscreen />
@@ -362,7 +389,7 @@ const OncoGridWrapper: React.FC = () => {
           className={"oncogrid-wrapper bg-white"}
         ></div>
       </div>
-    </>
+    </div>
   );
 };
 
