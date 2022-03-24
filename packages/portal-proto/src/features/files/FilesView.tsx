@@ -21,8 +21,8 @@ export const FilesView: React.FC<FilesViewProps> = ({
   files = [],
   handleFileSelected = () => void 0,
 }: FilesViewProps) => {
-  console.log('FILES: ', files)
-  console.log('handleFileSelected: ', handleFileSelected)
+  console.log("FILES: ", files);
+  console.log("handleFileSelected: ", handleFileSelected);
   return (
     <div className="flex flex-col gap-y-4">
       <div>

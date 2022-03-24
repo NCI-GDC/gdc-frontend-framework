@@ -1,30 +1,29 @@
-import * as React from 'react'
-import { HorizontalTable, HorizontalTableProps } from './HorizontalTable'
-import { Popover, Button } from '@mantine/core';
+import * as React from "react";
+import { HorizontalTable, HorizontalTableProps } from "./HorizontalTable";
+import { Popover, Button } from "@mantine/core";
 
 export const SlideDetailButton = ({ tableData }: HorizontalTableProps) => {
-    const [showDetails, setShowDetails] = React.useState(false)
+  const [showDetails, setShowDetails] = React.useState(false);
 
-    return (
-        <Popover
-            opened={showDetails}
-            onClose={() => setShowDetails(false)}
-            target={<Button onClick={() => setShowDetails((o) => !o)} style={{
-                background: 'rgb(0, 80, 131)',
-                color: 'white',
-                borderRadius: '5px',
-                maxWidth: '70px',
-                height: '25px',
-                padding: '3px 10px',
-                textAlign: 'center',
-            }}>Details</Button>}
-            position="bottom"
-            id="details-button"
-            style={{ position: 'absolute', bottom: 0, top: -12 }}
+  return (
+    <Popover
+      opened={showDetails}
+      onClose={() => setShowDetails(false)}
+      target={
+        <Button
+          onClick={() => setShowDetails((o) => !o)}
+          className="h-6 bg-nci-blue-dark w-20 py-1 px-0 rounded-md"
         >
-            <div style={{ display: 'flex' }}>
-                <HorizontalTable tableData={tableData} />
-            </div>
-        </Popover>
-    )
-}
+          Details
+        </Button>
+      }
+      position="bottom"
+      id="details-button"
+      className="absolute -top-3"
+    >
+      <div className="flex">
+        <HorizontalTable tableData={tableData} />
+      </div>
+    </Popover>
+  );
+};

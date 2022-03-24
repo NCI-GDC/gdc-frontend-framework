@@ -1,4 +1,4 @@
-const plugin = require('tailwindcss/plugin');
+const plugin = require("tailwindcss/plugin");
 module.exports = {
   purge: [
     "./pages/**/*.{js,ts,jsx,tsx}",
@@ -241,12 +241,13 @@ module.exports = {
         "screen/3": "calc(100vh / 3)",
         "screen/4": "calc(100vh / 4)",
         "screen/5": "calc(100vh / 5)",
+        "img-viewer": "550px",
       },
       gridTemplateColumns: {
-        '2flex1': '1fr auto',
+        "2flex1": "1fr auto",
       },
       fontFamily: {
-        heading: ["Montserrat", "sans-serif"]
+        heading: ["Montserrat", "sans-serif"],
       },
     },
   },
@@ -259,16 +260,16 @@ module.exports = {
   },
   plugins: [
     require("@tailwindcss/forms"),
-    plugin(function({ addUtilities }) {
+    plugin(function ({ addUtilities }) {
       const newUtilities = {
-        '.nextImageFillFix' : {
-          width: 'auto !important',
-          right: 'auto !important',
-          'min-width': '0 !important',
+        ".nextImageFillFix": {
+          width: "auto !important",
+          right: "auto !important",
+          "min-width": "0 !important",
         },
-      }
+      };
 
-      addUtilities(newUtilities)
-    })
+      addUtilities(newUtilities);
+    }),
   ],
 };

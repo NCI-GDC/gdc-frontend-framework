@@ -2,8 +2,8 @@ import React from "react";
 import { GdcFile } from "@gff/core";
 import ReactModal from "react-modal";
 import { HorizontalTable } from "../../components/HorizontalTable";
-import { get } from 'lodash';
-import dynamic from 'next/dynamic'
+import { get } from "lodash";
+import dynamic from "next/dynamic";
 import { SlideDetailButton } from "../../components/SlideDetailButton";
 import { formatDataForTable, parseSlideDetailsInfo } from "./utils";
 const ImageViewer = dynamic(() => import("../../components/ImageViewer"), {
@@ -15,71 +15,112 @@ export interface FileViewProps {
 }
 
 export const FileView: React.FC<FileViewProps> = ({ file }: FileViewProps) => {
-  
+  const [imageId, setImageId] = React.useState(file?.fileId);
+
   return (
     <div className="p-4 text-nci-gray">
       <div className="flex">
         <div className="flex-auto bg-white mr-4">
           <h2 className="p-2 text-lg mx-4">File Properties</h2>
-          <HorizontalTable tableData={formatDataForTable(file, [
-            {
-              "field": "fileName",
-              "name": "Name"
-            }, {
-              "field": "access",
-              "name": "Access"
-            }, {
-              "field": "id",
-              "name": "UUID"
-            }, {
-              "field": "dataFormat",
-              "name": "Data Format"
-            }, {
-              "field": "fileSize",
-              "name": "Size"
-            }, {
-              "field": "md5sum",
-              "name": "MD5 Checksum"
-            }, {
-              "field": "state",
-              "name": "State"
-            }, {
-              "field": "project_id",
-              "name": "Project"
-            }
-          ])}
+          <HorizontalTable
+            tableData={formatDataForTable(file, [
+              {
+                field: "fileName",
+                name: "Name",
+              },
+              {
+                field: "access",
+                name: "Access",
+              },
+              {
+                field: "id",
+                name: "UUID",
+              },
+              {
+                field: "dataFormat",
+                name: "Data Format",
+              },
+              {
+                field: "fileSize",
+                name: "Size",
+              },
+              {
+                field: "md5sum",
+                name: "MD5 Checksum",
+              },
+              {
+                field: "state",
+                name: "State",
+              },
+              {
+                field: "project_id",
+                name: "Project",
+              },
+            ])}
           />
         </div>
         <div className="w-1/3 bg-white h-full">
           <h2 className="p-2 text-lg mx-4">Data Information</h2>
-          <HorizontalTable tableData={formatDataForTable(file, [
-            {
-              "field": "dataCategory",
-              "name": "Data Category"
-            }, {
-              "field": "dataType",
-              "name": "Data Type"
-            }, {
-              "field": "experimentalStrategy",
-              "name": "Experimental Strategy"
-            }, {
-              "field": "platform",
-              "name": "Platform"
-            }
-          ])}
+          <HorizontalTable
+            tableData={formatDataForTable(file, [
+              {
+                field: "dataCategory",
+                name: "Data Category",
+              },
+              {
+                field: "dataType",
+                name: "Data Type",
+              },
+              {
+                field: "experimentalStrategy",
+                name: "Experimental Strategy",
+              },
+              {
+                field: "platform",
+                name: "Platform",
+              },
+            ])}
           />
         </div>
+
       </div>
-      {
-        get(file, "dataType") === "Slide Image" ? (
-          <div className="bg-white w-full mt-4">
-            <h2 className="p-2 text-lg mx-4">Slide Image Viewer</h2>
-            {/*TODO Slide Image Viewer see PEAR-167 */}
-            <SlideDetailButton tableData={parseSlideDetailsInfo(file)} />
-            <ImageViewer imageId={file?.fileId} />
-            <div>slide ids for first case, sample, portion: <ul>{file?.cases?.[0]?.samples?.[0]?.portions?.[0]?.slides?.map(slide => (<li key={slide.slide_id}>{slide.slide_id}</li>))}</ul></div>
-          </div>) : null
-      }
+
+      {/* TODO: remove the div defined below once the other screen gets made */}
+      <div>
+        <strong>This is just for trial, Image details wont change as of yet!!!</strong>
+        <br />
+        <button
+          onClick={() => setImageId("f069ce05-03eb-48ac-b974-a4660a4d5de2")}
+          className='bg-nci-blue text-white mr-4'
+        >
+          Change Image 1
+        </button>
+        <button
+          onClick={() => setImageId("6e63430a-4a44-4ba8-a1f9-f24871c8f08a")}
+          className='bg-nci-blue text-white'
+        >
+          Change Image 2
+        </button>
+      </div>
+
+      {get(file, "dataType") === "Slide Image" ? (
+        <div className="bg-white w-full mt-4">
+          <h2 className="p-2 text-lg mx-4">Slide Image Viewer</h2>
+          {/*TODO Slide Image Viewer see PEAR-167 */}
+
+          <ImageViewer imageId={imageId} file={file} />
+          <div>
+            slide ids for first case, sample, portion:{" "}
+            <ul>
+              {file?.cases?.[0]?.samples?.[0]?.portions?.[0]?.slides?.map(
+                (slide) => (
+                  <li key={slide.slide_id}>{slide.slide_id}</li>
+                ),
+              )}
+            </ul>
+          </div>
+        </div>
+      ) : null}
       <div className="bg-white w-full mt-4">
         <h2 className="p-2 text-lg mx-4">Associated Cases/Biospecimens</h2>
         {/*
@@ -140,24 +181,28 @@ export const FileView: React.FC<FileViewProps> = ({ file }: FileViewProps) => {
       </div>
       <div className="bg-white w-full mt-4">
         <h2 className="p-2 text-lg mx-4">Analysis</h2>
-        <HorizontalTable tableData={formatDataForTable(file, [
-          {
-            "field": "analysis.workflow_type",
-            "name": "Workflow Type"
-          }, {
-            "field": "analysis.updated_datetime",
-            "name": "Workflow Completion Date"
-          }, {
-            "field": "analysis.input_files.length",
-            "name": "Source Files"
-          }
-        ])}
+        <HorizontalTable
+          tableData={formatDataForTable(file, [
+            {
+              field: "analysis.workflow_type",
+              name: "Workflow Type",
+            },
+            {
+              field: "analysis.updated_datetime",
+              name: "Workflow Completion Date",
+            },
+            {
+              field: "analysis.input_files.length",
+              name: "Source Files",
+            },
+          ])}
         />
       </div>
       <div className="bg-white w-full mt-4">
         <h2 className="p-2 text-lg mx-4">Downstream Analyses Files</h2>
         {false ? (
-          {/* Data somthing like 
+          {
+            /* Data somthing like 
           downstream_analyses.?[0]?.output_files?.[0]?.[0]?.
         <[
             {
@@ -180,9 +225,12 @@ export const FileView: React.FC<FileViewProps> = ({ file }: FileViewProps) => {
               "name": "Size"
             }
           ])}
-        />*/}
+        />*/
+          }
         ) : (
-          <h3 className="p-2 mx-4 text-nci-gray-darker">No Downstream Analysis files found.</h3>
+          <h3 className="p-2 mx-4 text-nci-gray-darker">
+            No Downstream Analysis files found.
+          </h3>
         )}
       </div>
       <div className="bg-white w-full mt-4">
