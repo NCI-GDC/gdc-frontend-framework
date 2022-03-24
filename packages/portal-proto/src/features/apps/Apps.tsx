@@ -42,7 +42,7 @@ export const SingleCellRnaSeq: React.FC<Clickable> = (props: Clickable) => {
           />
         </div>
         <div className="w-full h-full hidden group-hover:block">
-          Visualize patterns in single-cell gene expression in your cohort.
+
         </div>
       </div>
       <div className="w-full content-center text-sm border-t-2">

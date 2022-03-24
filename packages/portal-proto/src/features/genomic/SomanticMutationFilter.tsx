@@ -1,4 +1,5 @@
-import { GeneTable, MutationTable } from "./Genomic";
+import GenesTable from "./GenesTable";
+import MutationsTable from "./GenesTable";
 import MutationFacet from "../cohortBuilder/MutationFacet";
 import {
   BIOTYPE,
@@ -47,7 +48,7 @@ const SomanticMutationFilterFixedVersion: React.FC<SomaticAppProps> = ({
               </div>
             </div>
           </div>
-          <GeneTable data={gene_data} width="0" />
+          <GenesTable/>
         </div>
       </div>
       <div className="flex flex-col relative ">
@@ -74,8 +75,7 @@ const SomanticMutationFilterFixedVersion: React.FC<SomaticAppProps> = ({
                 </div>
               </div>
             </div>
-            <MutationTable data={mutations_data} width="0" />
-
+            <MutationsTable />
           </div>
         </div>
 

@@ -1,19 +1,29 @@
+/**
+ * A Facet Chart which will soon be deprecated in favor of EnumFacetChart.
+ */
+
 import {
+  EnumFilter,
   FacetBuckets,
-  selectCasesFacetByField,
   fetchFacetByName,
-  useCoreSelector,
+  FilterSet,
+  selectCasesFacetByField,
+  selectCurrentCohortFilters,
+  selectCurrentCohortFiltersByName,
   useCoreDispatch,
+  useCoreSelector,
 } from "@gff/core";
-import { useEffect } from "react";
-import dynamic from 'next/dynamic'
+import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
+import { Loader } from "@mantine/core";
+import ChartTitleBar from "./ChartTitleBar";
 
 const BarChartWithNoSSR = dynamic(() => import('./BarChart'), {
   ssr: false
 })
 
 
-const maxValuesToDisplay =7;
+const maxValuesToDisplay = 7;
 
 interface UseCaseFacetResponse {
   readonly data?: FacetBuckets;
@@ -24,11 +34,29 @@ interface UseCaseFacetResponse {
   readonly isError: boolean;
 }
 
+/**
+ * Filter selector for all of the facet filters
+ */
+const useCohortFacetFilter = (): FilterSet => {
+  return useCoreSelector((state) =>
+    selectCurrentCohortFilters(state),
+  );
+};
+
+
+const useCohortFacetFilterByName = (field: string): string[] | undefined => {
+  const enumFilters: EnumFilter = useCoreSelector((state) =>
+    selectCurrentCohortFiltersByName(state, field) as EnumFilter,
+  );
+  return enumFilters ? enumFilters.values : undefined;
+};
+
 const useCaseFacet = (field: string): UseCaseFacetResponse => {
   const coreDispatch = useCoreDispatch();
   const facet: FacetBuckets = useCoreSelector((state) =>
     selectCasesFacetByField(state, field),
   );
+  const selectFacetFilter = useCohortFacetFilter();
 
   useEffect(() => {
     if (!facet) {
@@ -36,8 +64,12 @@ const useCaseFacet = (field: string): UseCaseFacetResponse => {
     }
   }, [coreDispatch, facet, field]);
 
+  useEffect(() => {
+    coreDispatch(fetchFacetByName(field));
+  }, [selectFacetFilter]);
+
   return {
-    data: facet?.buckets,
+    data: facet,
     error: facet?.error,
     isUninitialized: facet === undefined,
     isFetching: facet?.status === "pending",
@@ -51,6 +83,8 @@ interface FacetProps {
   readonly showXLabels?: boolean;
   readonly height?: number;
   readonly marginBottom?: number;
+  readonly marginTop?: number;
+  readonly padding?: number;
   readonly showTitle?: boolean;
   readonly maxBins?: number;
   readonly orientation?: string;
@@ -67,53 +101,66 @@ const processChartData = (facetData:Record<string, any>, field: string, maxBins 
     datasets: [{
       x: xvals,
       y: Object.values(data).slice(0, maxBins),
-      label_text: Object.keys(data).slice(0, maxBins).map(x => processLabel(x, 100)),
     }],
     tickvals: showXLabels ? xvals : [],
     ticktext: showXLabels ? xlabels : [],
     title: convertFieldToName(field),
     filename: field,
-    yAxisTitle: "# of Cases"
+    yAxisTitle: "# of Cases",
   }
   return results;
 }
 
 const processJSONData = (facetData: Record<string, any>) => {
   return Object.entries(facetData).map(e => ({ label: e[0], value: e[1] }));
-}
+};
 
-export const FacetChart: React.FC<FacetProps> = ({ field, showXLabels = true, height, marginBottom, showTitle = true, maxBins = maxValuesToDisplay, orientation='v'}: FacetProps) => {
-  const { data, error, isUninitialized, isFetching, isError } =
+export const FacetChart: React.FC<FacetProps> = ({
+                                                   field,
+                                                   showXLabels = true,
+                                                   height,
+                                                   marginBottom,
+                                                   marginTop=30, padding=4,
+                                                   showTitle = true,
+                                                   maxBins = maxValuesToDisplay,
+                                                   orientation = "v",
+                                                 }: FacetProps) => {
+  const { data, isSuccess } =
     useCaseFacet(field);
+  const [chart_data, setChartData] = useState(undefined);
 
-  if (isUninitialized) {
-    return <div>Initializing facet...</div>;
-  }
+  useEffect(() => {
+    if (isSuccess) {
+      const cd = processChartData(data, field, maxBins, showXLabels);
+      setChartData(cd);
+    }
+  }, [data, isSuccess]);
 
-  if (isFetching) {
-    return <div>Fetching facet...</div>;
-  }
+  // Create unique ID for this chart
+  const chartDivId = `${field}_${Math.floor(Math.random() * 100)}`;
 
-  if (isError) {
-    return <div>Failed to fetch facet: {error}</div>;
-  }
+  return <>
+    {showTitle ?
+      <ChartTitleBar title={convertFieldToName(field)}
+                     divId={chartDivId}
+                     filename={field}
+                     jsonData={{  }} /> : null
+    }
+    {  chart_data && isSuccess ?
 
-  const chart_data = processChartData(data, field, maxBins, showXLabels);
-  const title = showTitle ? convertFieldToName(field) : null;
-
-  return (
-    <div className="flex flex-col border-2 bg-white ">
-      <BarChartWithNoSSR
-        data={chart_data}
-        height={height}
-        marginBottom={marginBottom}
-        orientation={orientation}
-        title={title}
-        filename={field}
-        jsonData={processJSONData(data)}>
-      </BarChartWithNoSSR>
-    </div>
-  );
+        <BarChartWithNoSSR data={chart_data}
+                           height={height}
+                           marginBottom={marginBottom}
+                           marginTop={marginTop}
+                           padding={padding}
+                           orientation={orientation}
+                           divId={chartDivId}></BarChartWithNoSSR>
+      :
+      <div className="flex flex-row items-center justify-center w-100">
+        <Loader color="gray" size={height ? height : 24} />
+      </div>
+    }
+  </>
 };
 
 const convertFieldToName = (field: string): string => {
@@ -132,7 +179,7 @@ function truncateString(str, n) {
   }
 }
 
-export const processLabel = (label: string, shorten=100): string => {
+export const processLabel = (label: string, shorten = 100): string => {
   const tokens = label.split(" ");
   const capitalizedTokens = tokens.map((s) => s[0].toUpperCase() + s.substr(1));
   return truncateString(capitalizedTokens.join(" "), shorten);

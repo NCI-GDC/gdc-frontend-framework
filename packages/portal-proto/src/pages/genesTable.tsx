@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 import { SimpleLayout } from "../features/layout/Simple";
-import GenesTable from "../features/genesTable/GenesTable";
+import GenesTable from "../features/genomic/GenesTable";
 
 const GenesTablePage: NextPage = () => {
   return (

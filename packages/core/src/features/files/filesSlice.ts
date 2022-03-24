@@ -40,6 +40,7 @@ const fileTypes = [
   "aggregated_somatic_mutation",
   "masked_somatic_mutation",
   "secondary_expression_analysis",
+  "masked_methylation_array",
   "protein_expression",
 ] as const;
 
@@ -91,6 +92,7 @@ const dataFormats = [
   "BAM",
   "MAF",
   "SVS",
+  "IDAT",
   "BCR XML",
   "TSV",
   "BCR SSF XML",
@@ -145,6 +147,7 @@ const dataTypes = [
   "Splice Junction Quantification",
   "Structural Rearrangement",
   "Transcript Fusion",
+  "Masked Intensities",
   "miRNA Expression Quantification",
 ] as const;
 
@@ -305,7 +308,7 @@ const slice = createSlice({
         if (response.warnings && Object.keys(response.warnings).length > 0) {
           state.files = [];
           state.status = "rejected";
-          state.error = Object.values(response.warnings)[0]; // TODO add better warnings parsing
+          state.error = Object.values(response.warnings)[0]; // TODO add better errors parsing
         } else {
           state.files = response.data.hits.map((hit) => {
             return ({
@@ -435,3 +438,4 @@ export const selectFilesData = (
     error: state.files.error,
   };
 };
+
