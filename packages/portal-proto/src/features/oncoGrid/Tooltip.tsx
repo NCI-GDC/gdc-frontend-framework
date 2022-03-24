@@ -20,9 +20,9 @@ const Tooltip: React.FC<TooltipProps> = ({ content }: TooltipProps) => {
         15;
       let tempArrowPosition = "bottom";
 
-      // Reposition if tooltip is cutoff
+      // Reposition if tooltip would be cutoff
       if (
-        tempX + tooltipRef.current?.getBoundingClientRect().width >
+        event.pageX + (tooltipRef.current?.getBoundingClientRect().width || 0) >
         window.innerWidth
       ) {
         tempX =
