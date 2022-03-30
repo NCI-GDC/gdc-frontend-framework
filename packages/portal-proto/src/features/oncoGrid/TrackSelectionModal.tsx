@@ -15,7 +15,7 @@ const TrackSelectionModal: React.FC<TrackSelectionModalProps> = ({
 }: TrackSelectionModalProps) => {
   const [selectedTracks, setSelectedTracks] = useState([]);
 
-  const toggleSelectedTracks = (track : Track) => {
+  const toggleSelectedTracks = (track: Track) => {
     if (!selectedTracks.includes(track)) {
       setSelectedTracks([...selectedTracks, track]);
     } else {

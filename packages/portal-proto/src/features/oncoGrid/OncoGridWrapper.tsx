@@ -1,7 +1,7 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import dynamic from "next/dynamic";
 import OncoGrid from "oncogrid";
-import { ActionIcon, LoadingOverlay } from "@mantine/core";
+import { ActionIcon, LoadingOverlay, Tooltip as MTooltip, Menu } from "@mantine/core";
 import { FaCrosshairs, FaFire, FaSortAmountDown } from "react-icons/fa";
 import {
   MdColorLens,
@@ -10,10 +10,13 @@ import {
   MdGridOn,
   MdRefresh,
 } from "react-icons/md";
+import { useOncoGrid } from "@gff/core";
 import { donorTracks, geneTracks, getColorMap } from "./trackConfig";
-import { donors, genes, ssmObservations, cnvObservations } from "./fixture";
 import TrackLegend from "./TrackLegend";
+import MutationFilters from "./MutationFilters";
 import TrackSelectionModal from "./TrackSelectionModal";
+import { consequenceTypes, defaultColorMap } from "./constants";
+import useOncoGridDisplayData from "./useOncoGridDisplayData";
 const Tooltip = dynamic(() => import("./Tooltip"), { ssr: false });
 
 interface Domain {
@@ -30,6 +33,9 @@ interface DocumentWithWebkit extends Document {
   readonly webkitFullscreenElement: Element;
 }
 
+const heatMapColor = "#2E7D32";
+
+
 const OncoGridWrapper: React.FC = () => {
   const gridContainer = useRef(null);
   const fullOncoGridContainer = useRef(null);
@@ -38,9 +44,26 @@ const OncoGridWrapper: React.FC = () => {
   const [hasGridlines, setHasGridlines] = useState(false);
   const [showCrosshairs, setShowCrosshairs] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isFullscreen, setIsFullscreen] = useState(false)
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const [tooltipContent, setTooltipContent] = useState(null);
   const [tracksModal, setTracksModal] = useState(null);
+  const [consequenceTypeFilters, setConsequenceTypeFilters] =
+    useState(consequenceTypes);
+  const [cnvFilters, setCnvFilters] = useState(["loss", "gain"]);
+
+  const { data, isFetching } = useOncoGrid({
+    consequenceTypeFilters,
+    cnvFilters,
+  });
+
+  useEffect(() => {
+    setIsLoading(isFetching);
+  }, [isFetching]);
+
+  const { donors, genes, ssmObservations, cnvObservations } =
+    useOncoGridDisplayData(data);
+
+  console.log(ssmObservations);
 
   const resetGrid = () => {
     setIsHeatmap(false);
@@ -70,17 +93,19 @@ const OncoGridWrapper: React.FC = () => {
 
   useEffect(() => {
     const eventListener = () => {
-      setIsFullscreen(document?.fullscreenElement !== null || (document as DocumentWithWebkit)?.webkitFullscreenElement !== null);
-    }
+      setIsFullscreen(
+        document?.fullscreenElement !== null ||
+          (document as DocumentWithWebkit)?.webkitFullscreenElement !== null,
+      );
+    };
 
     window.addEventListener("fullscreenchange", eventListener);
     window.addEventListener("webkitfullscreenchange", eventListener);
 
-
     return () => {
       window.removeEventListener("fullscreenschange", eventListener);
       window.removeEventListener("webkitfullscreenschange", eventListener);
-    }
+    };
   }, []);
 
   useEffect(() => {
@@ -128,7 +153,7 @@ const OncoGridWrapper: React.FC = () => {
       }
     };
 
-    const colorMap = getColorMap(
+    const fillColorMap = getColorMap(
       Array.from(new Set(donors.map((d) => d.race))),
       Array.from(new Set(donors.map((d) => d.ethnicity))),
     );
@@ -142,14 +167,14 @@ const OncoGridWrapper: React.FC = () => {
     }): string => {
       if (
         typeof value === "string" &&
-        colorMap?.[fieldName]?.[value] !== undefined
+        fillColorMap?.[fieldName]?.[value] !== undefined
       ) {
-        return colorMap[fieldName][value];
+        return fillColorMap[fieldName][value];
       }
-      return colorMap[fieldName] as string;
+      return fillColorMap[fieldName] as string;
     };
 
-    const params = {
+    const oncoGridParams = {
       element: gridContainer.current,
       donors,
       genes,
@@ -164,7 +189,7 @@ const OncoGridWrapper: React.FC = () => {
       height: 150,
       width: 680,
       scaleToFit: true,
-      heatMap: false,
+      heatMap: isHeatmap,
       grid: false,
       minCellHeight: 8,
       trackHeight: 12,
@@ -172,25 +197,12 @@ const OncoGridWrapper: React.FC = () => {
       leftTextWidth: 120,
       trackPadding: 30,
       expandableGroups: ["Clinical"],
-      heatMapColor: "#2E7D32",
-      colorMap: {
-        cnv: {
-          Gain: "#e76a6a",
-          Loss: "#64b5f6",
-        },
-        mutation: {
-          frameshift_variant: "#2E7D32",
-          missense_variant: "#2E7D32",
-          start_lost: "#2E7D32",
-          stop_gained: "#2E7D32",
-          stop_lost: "#2E7D32",
-        },
-      },
+      heatMapColor,
+      colorMap: defaultColorMap,
       trackLegendLabel:
         '<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M504 256c0 136.997-111.043 248-248 248S8 392.997 8 256C8 119.083 119.043 8 256 8s248 111.083 248 248zM262.655 90c-54.497 0-89.255 22.957-116.549 63.758-3.536 5.286-2.353 12.415 2.715 16.258l34.699 26.31c5.205 3.947 12.621 3.008 16.665-2.122 17.864-22.658 30.113-35.797 57.303-35.797 20.429 0 45.698 13.148 45.698 32.958 0 14.976-12.363 22.667-32.534 33.976C247.128 238.528 216 254.941 216 296v4c0 6.627 5.373 12 12 12h56c6.627 0 12-5.373 12-12v-1.333c0-28.462 83.186-29.647 83.186-106.667 0-58.002-60.165-102-116.531-102zM256 338c-25.365 0-46 20.635-46 46 0 25.364 20.635 46 46 46s46-20.636 46-46c0-25.365-20.635-46-46-46z"></path></svg>',
     };
-
-    const grid = new OncoGrid(params);
+    const grid = new OncoGrid(oncoGridParams);
 
     grid.on("render:all:start", () => {
       setIsLoading(true);
@@ -217,7 +229,7 @@ const OncoGridWrapper: React.FC = () => {
       setTooltipContent(
         <TrackLegend
           track={group}
-          colorMap={colorMap}
+          colorMap={fillColorMap}
           maxDaysToDeath={maxDaysToDeath}
           maxAge={maxAgeAtDiagnosis}
           maxDonors={maxDonorsAffected}
@@ -302,7 +314,15 @@ const OncoGridWrapper: React.FC = () => {
     gridObject.current = grid;
 
     return () => gridObject.current.destroy();
-  }, [setTracksModal, setTooltipContent, setIsLoading]);
+  }, [
+    setTracksModal,
+    setTooltipContent,
+    setIsLoading,
+    JSON.stringify(ssmObservations),
+    JSON.stringify(cnvObservations),
+    JSON.stringify(donors),
+    JSON.stringify(genes),
+  ]);
 
   useEffect(() => {
     // Make sure the loading overlay is up long enough to cover heatmap transition graphics
@@ -326,67 +346,103 @@ const OncoGridWrapper: React.FC = () => {
       className={`bg-white p-4 ${isFullscreen ? "overflow-scroll" : ""}`}
     >
       <div className="flex pb-8">
-        <div className="basis-1/2">{`200 Most Mutated Cases and Top 50 Mutated Genes by SSM`}</div>
-        <div className="flex basis-1/2 ml-auto">
-          <ActionIcon variant={"outline"} classNames={{ root: "mx-1" }}>
-            <MdColorLens />
-          </ActionIcon>
-          <ActionIcon variant={"outline"} classNames={{ root: "mx-1" }}>
-            <MdDownload />
-          </ActionIcon>
-          <ActionIcon
-            variant={"outline"}
-            onClick={resetGrid}
-            classNames={{ root: "mx-1" }}
-          >
-            <MdRefresh />
-          </ActionIcon>
-          <ActionIcon
-            variant={"outline"}
-            onClick={() => gridObject.current.cluster()}
-            classNames={{ root: "mx-1" }}
-          >
-            <FaSortAmountDown />
-          </ActionIcon>
-          <ActionIcon
-            variant={isHeatmap ? "filled" : "outline"}
-            onClick={() => {
-              setIsHeatmap(!isHeatmap);
-            }}
-            classNames={{ root: "mx-1" }}
-          >
-            <FaFire />
-          </ActionIcon>
-          <ActionIcon
-            variant={hasGridlines ? "filled" : "outline"}
-            onClick={() => setHasGridlines(!hasGridlines)}
-            classNames={{ root: "mx-1" }}
-          >
-            <MdGridOn />
-          </ActionIcon>
-          <ActionIcon
-            variant={showCrosshairs ? "filled" : "outline"}
-            onClick={() => setShowCrosshairs(!showCrosshairs)}
-            classNames={{ root: "mx-1" }}
-          >
-            <FaCrosshairs />
-          </ActionIcon>
-          <ActionIcon
-            variant={isFullscreen ? "filled" : "outline"}
-            onClick={() => toggleFullscreen()}
-            classNames={{ root: "mx-1" }}
-          >
-            <MdFullscreen />
-          </ActionIcon>
+        <div className="basis-1/2">{`${donors.length} Most Mutated Cases and Top ${genes.length} Mutated Genes by SSM`}</div>
+        <div className="flex basis-1/2 justify-end">
+          <MTooltip label={"Customize Colors"} withArrow>
+            <Menu control={
+            <ActionIcon variant={"outline"} classNames={{ root: "mx-1" }}>
+              <MdColorLens />
+            </ActionIcon>
+            }>
+              <Menu.Item>Customize color</Menu.Item>
+              <Menu.Item>Reset to default</Menu.Item>
+            </Menu>
+          </MTooltip>
+          <MTooltip label={"Download"} withArrow>
+            <ActionIcon variant={"outline"} classNames={{ root: "mx-1" }}>
+              <MdDownload />
+            </ActionIcon>
+          </MTooltip>
+          <MTooltip label={"Reload Grid"} withArrow>
+            <ActionIcon
+              variant={"outline"}
+              onClick={resetGrid}
+              classNames={{ root: "mx-1" }}
+            >
+              <MdRefresh />
+            </ActionIcon>
+          </MTooltip>
+          <MTooltip label={"Cluster Data"} withArrow>
+            <ActionIcon
+              variant={"outline"}
+              onClick={() => gridObject.current.cluster()}
+              classNames={{ root: "mx-1" }}
+            >
+              <FaSortAmountDown />
+            </ActionIcon>
+          </MTooltip>
+          <MTooltip label={"Toggle Heatmap View"} withArrow>
+            <ActionIcon
+              variant={isHeatmap ? "filled" : "outline"}
+              onClick={() => {
+                setIsHeatmap(!isHeatmap);
+              }}
+              classNames={{ root: "mx-1" }}
+            >
+              <FaFire />
+            </ActionIcon>
+          </MTooltip>
+          <MTooltip label={"Toggle Gridlines"} withArrow>
+            <ActionIcon
+              variant={hasGridlines ? "filled" : "outline"}
+              onClick={() => setHasGridlines(!hasGridlines)}
+              classNames={{ root: "mx-1" }}
+            >
+              <MdGridOn />
+            </ActionIcon>
+          </MTooltip>
+          <MTooltip label={"Toggle Crosshairs"} withArrow>
+            <ActionIcon
+              variant={showCrosshairs ? "filled" : "outline"}
+              onClick={() => setShowCrosshairs(!showCrosshairs)}
+              classNames={{ root: "mx-1" }}
+            >
+              <FaCrosshairs />
+            </ActionIcon>
+          </MTooltip>
+          <MTooltip label={"Fullscreen "} withArrow>
+            <ActionIcon
+              variant={isFullscreen ? "filled" : "outline"}
+              onClick={() => toggleFullscreen()}
+              classNames={{ root: "mx-1" }}
+            >
+              <MdFullscreen />
+            </ActionIcon>
+          </MTooltip>
         </div>
       </div>
+      <MutationFilters
+        colorMap={defaultColorMap}
+        heatmapColor={heatMapColor}
+        heatmapMode={isHeatmap}
+        ssmFilters={consequenceTypeFilters}
+        setSsmFilters={setConsequenceTypeFilters}
+        cnvFilters={cnvFilters}
+        setCnvFilters={setCnvFilters}
+      ></MutationFilters>
       <Tooltip content={tooltipContent} />
       {tracksModal}
       <div>
         <LoadingOverlay visible={isLoading} overlayOpacity={0.9} />
+        {consequenceTypeFilters.length === 0 && (
+          <>
+            The current selection has no results. Please select more mutation
+            types or reload the page to continue exploration.
+          </>
+        )}
         <div
           ref={(ref) => (gridContainer.current = ref)}
-          className={"oncogrid-wrapper bg-white"}
+          className={`oncogrid-wrapper bg-white ${consequenceTypeFilters.length === 0 ? 'invisible' : 'visible'}`}
         ></div>
       </div>
     </div>

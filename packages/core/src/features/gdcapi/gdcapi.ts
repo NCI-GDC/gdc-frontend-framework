@@ -372,7 +372,8 @@ export const fetchGdcEntities = async <T>(
       });
 
       if (
-        fullResponse?.data?.pagination?.page <= fullResponse?.data?.pagination?.pages
+        fullResponse?.data?.pagination?.page <= fullResponse?.data?.pagination?.pages &&
+        fullResponse?.data.pagination.pages !== 0
       ) {
         return fetchGdcEntities(
           endpoint,

@@ -1,29 +1,6 @@
-import { useMantineTheme, ColorSwatch } from "@mantine/core";
+import { ColorSwatch } from "@mantine/core";
 import { clinicalTracks, dataTypesTrack, ColorMap } from "./trackConfig";
-
-interface GradientProps {
-  readonly color: string;
-}
-
-const Gradient: React.FC<GradientProps> = ({ color }: GradientProps) => {
-  const theme = useMantineTheme();
-  return (
-    <div className="flex flex-row">
-      <div className="px-1">
-        <ColorSwatch color={theme.fn.lighten(color, 0.95)} />
-      </div>
-      <div className="px-1">
-        <ColorSwatch color={theme.fn.lighten(color, 0.6)} />
-      </div>
-      <div className="px-1">
-        <ColorSwatch color={theme.fn.lighten(color, 0.3)} />
-      </div>
-      <div className="px-1">
-        <ColorSwatch color={color} />
-      </div>
-    </div>
-  );
-};
+import Gradient from "./Gradient";
 
 interface TrackLegendProps {
   readonly track: string;
@@ -42,7 +19,7 @@ const TrackLegend: React.FC<TrackLegendProps> = ({
 }: TrackLegendProps) => {
   const maxValues = {
     daysToDeath: maxDaysToDeath,
-    age: maxAge,
+    age: Math.ceil(maxAge / 365.25),
   };
 
   switch (track) {

@@ -95,7 +95,7 @@ const getColorsForValues = (values: string[]): Record<string, string> => {
   return colorMap;
 };
 
-export const clinicalTracks : Track[] = [
+export const clinicalTracks: Track[] = [
   {
     name: "Gender",
     fieldName: "gender",
@@ -138,7 +138,7 @@ export const clinicalTracks : Track[] = [
   },
 ];
 
-export const dataTypesTrack : Track[] = [
+export const dataTypesTrack: Track[] = [
   {
     name: "Clinical",
     fieldName: "Clinical",
@@ -179,7 +179,7 @@ export const dataTypesTrack : Track[] = [
 
 export const donorTracks = [...clinicalTracks, ...dataTypesTrack];
 
-export const geneTracks : Track[] = [
+export const geneTracks: Track[] = [
   {
     name: "# Cases affected",
     fieldName: "totalDonors",
