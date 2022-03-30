@@ -1,16 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { CoreDataSelectorResponse, createUseCoreDataHook, DataStatus } from "../../dataAcess";
 import { CoreDispatch, CoreState } from "../../store";
-import { fetchSlideImages } from "./imageDetailsApi";
-
-export interface ImageMetadataResponse {
-  readonly Format: string;
-  readonly Height: string;
-  readonly Width: string;
-  readonly Overlap: string;
-  readonly TileSize: string;
-  readonly uuid: string;
-}
+import { fetchSlideImages, ImageMetadataResponse } from "./imageDetailsApi";
 
 export const fetchImageDetails = createAsyncThunk<
   ImageMetadataResponse,

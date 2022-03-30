@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import OpenSeadragon from "openseadragon";
 import { SlideDetailButton } from "./SlideDetailButton";
 import { parseSlideDetailsInfo } from "../features/files/utils";
@@ -12,7 +12,6 @@ interface ImageViewerProp {
 const ImageViewer = ({ imageId, file }: ImageViewerProp) => {
   const [viewer, setViewer] = useState(null);
   const [hasError, setHasError] = useState(false);
-  const detailsButtonRef = useRef(null)
   const coreDispatch = useCoreDispatch();
 
   const InitOpenseadragon = async () => {
@@ -43,9 +42,6 @@ const ImageViewer = ({ imageId, file }: ImageViewerProp) => {
       },
     });
 
-    // detailsButtonRef && view.addControl(detailsButtonRef.current, {
-    //   anchor: OpenSeadragon.ControlAnchor.TOP_LEFT,
-    // });
     view.addControl(document.querySelector("#details-button"), {
       anchor: OpenSeadragon.ControlAnchor.TOP_LEFT,
     });
@@ -91,7 +87,7 @@ const ImageViewer = ({ imageId, file }: ImageViewerProp) => {
         <div className="flex bg-white h-img-viewer">Image is not available</div>
       ) : (
         <div id="osd" className="flex bg-black h-img-viewer">
-          <SlideDetailButton ref={detailsButtonRef} tableData={parseSlideDetailsInfo(file)} />
+          <SlideDetailButton tableData={parseSlideDetailsInfo(file)} />
         </div>
       )}
     </>

@@ -85,7 +85,7 @@ export const FileView: React.FC<FileViewProps> = ({ file }: FileViewProps) => {
 
       </div>
 
-      {/* TODO: remove the div defined below once the other screen gets made */}
+      {/* TODO (Pari): remove the div defined below once the other screen gets made */}
       <div>
         <strong>This is just for trial, Image details wont change as of yet!!!</strong>
         <br />

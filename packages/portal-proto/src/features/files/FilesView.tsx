@@ -94,8 +94,6 @@ export const FilesView: React.FC<FilesViewProps> = ({
   files = [],
   handleFileSelected = () => void 0,
 }: FilesViewProps) => {
-  console.log("FILES: ", files);
-  console.log("handleFileSelected: ", handleFileSelected);
 
   const [pageSize, setPageSize] = useState(10);
   const [activePage, setPage] = useState(1);
