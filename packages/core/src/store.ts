@@ -2,7 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from '@reduxjs/toolkit/query'
 import { cohortReducers } from "./features/cohort/cohortSlice";
 import { sessionReducer } from "./features/session/sessionSlice";
-import { facetsReducer} from "./features/facets/facetSlice";
+import { facetsReducer } from "./features/facets/facetSlice";
 import { fileCaseGenesMutationsFacetReducers } from "./features/facets/facetSliceGQL";
 import { gdcAppReducer } from "./features/gdcapps/gdcAppsSlice";
 import { filesReducer } from "./features/files/filesSlice";
@@ -16,6 +16,7 @@ import { survivalReducer } from "./features/survival/survivalSlice";
 import { genomicReducers } from "./features/genomic/genomicSlice";
 import { ssmPlotReducer } from "./features/cancerDistribution/ssmPlot";
 import { cnvPlotReducer } from "./features/cancerDistribution/cnvPlot";
+import { imageDetailsReducer } from './features/imageDetails/imageDetailsSlice'
 
 export const coreStore = configureStore({
   reducer: {
@@ -32,6 +33,7 @@ export const coreStore = configureStore({
     cnvPlot: cnvPlotReducer,
     survival: survivalReducer,
     genomic: genomicReducers,
+    imageDetails: imageDetailsReducer
   },
   devTools: {
     name: "@gff/core",

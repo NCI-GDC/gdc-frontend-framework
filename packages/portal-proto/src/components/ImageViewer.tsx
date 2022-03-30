@@ -1,8 +1,8 @@
-import * as React from "react";
+import { useEffect, useRef, useState } from "react";
 import OpenSeadragon from "openseadragon";
 import { SlideDetailButton } from "./SlideDetailButton";
 import { parseSlideDetailsInfo } from "../features/files/utils";
-import { GdcFile } from "@gff/core";
+import { GdcFile, fetchImageDetails, useCoreDispatch } from "@gff/core";
 
 interface ImageViewerProp {
   imageId: string;
@@ -10,19 +10,20 @@ interface ImageViewerProp {
 }
 
 const ImageViewer = ({ imageId, file }: ImageViewerProp) => {
-  const [viewer, setViewer] = React.useState(null);
-  const [hasError, setHasError] = React.useState(false);
-  const InitOpenseadragon = async () => {
-    const response = await fetch(
-      `https://api.gdc.cancer.gov/tile/metadata/${imageId}`,
-    );
-    const body = await response.json();
+  const [viewer, setViewer] = useState(null);
+  const [hasError, setHasError] = useState(false);
+  const detailsButtonRef = useRef(null)
+  const coreDispatch = useCoreDispatch();
 
-    if (!body.Format) {
+  const InitOpenseadragon = async () => {
+
+    const imageDetails = await coreDispatch(fetchImageDetails(imageId)).unwrap()
+
+    if (!imageDetails.Format) {
       setHasError(true);
       return;
     }
-    // const body = fetchImageDetails(imageId)
+
     viewer && viewer.destroy();
     const view = OpenSeadragon({
       id: "osd",
@@ -32,23 +33,26 @@ const ImageViewer = ({ imageId, file }: ImageViewerProp) => {
       showNavigator: true,
       minZoomLevel: 0,
       tileSources: {
-        height: Number(body.Height),
-        width: Number(body.Width),
-        tileSize: Number(body.TileSize),
-        tileOverlap: Number(body.Overlap),
+        height: Number(imageDetails.Height),
+        width: Number(imageDetails.Width),
+        tileSize: Number(imageDetails.TileSize),
+        tileOverlap: Number(imageDetails.Overlap),
         getTileUrl: (level, x, y) => {
           return `https://api.gdc.cancer.gov/tile/${imageId}?level=${level}&x=${x}&y=${y}`;
         },
       },
     });
 
+    // detailsButtonRef && view.addControl(detailsButtonRef.current, {
+    //   anchor: OpenSeadragon.ControlAnchor.TOP_LEFT,
+    // });
     view.addControl(document.querySelector("#details-button"), {
       anchor: OpenSeadragon.ControlAnchor.TOP_LEFT,
     });
     setViewer(view);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     InitOpenseadragon();
 
     return () => {
@@ -56,14 +60,11 @@ const ImageViewer = ({ imageId, file }: ImageViewerProp) => {
     };
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const reFetchNewImage = async () => {
-      const response = await fetch(
-        `https://api.gdc.cancer.gov/tile/metadata/${imageId}`,
-      );
-      const body = await response.json();
+      const imageDetails = await coreDispatch(fetchImageDetails(imageId)).unwrap()
 
-      if (!body.Format) {
+      if (!imageDetails.Format) {
         viewer && viewer.destroy();
         setHasError(true);
         return;
@@ -71,10 +72,10 @@ const ImageViewer = ({ imageId, file }: ImageViewerProp) => {
 
       if (imageId && viewer) {
         viewer.open({
-          height: Number(body.Height),
-          width: Number(body.Width),
-          tileSize: Number(body.TileSize),
-          tileOverlap: Number(body.Overlap),
+          height: Number(imageDetails.Height),
+          width: Number(imageDetails.Width),
+          tileSize: Number(imageDetails.TileSize),
+          tileOverlap: Number(imageDetails.Overlap),
           getTileUrl: (level, x, y) => {
             return `https://api.gdc.cancer.gov/tile/${imageId}?level=${level}&x=${x}&y=${y}`;
           },
@@ -90,7 +91,7 @@ const ImageViewer = ({ imageId, file }: ImageViewerProp) => {
         <div className="flex bg-white h-img-viewer">Image is not available</div>
       ) : (
         <div id="osd" className="flex bg-black h-img-viewer">
-          <SlideDetailButton tableData={parseSlideDetailsInfo(file)} />
+          <SlideDetailButton ref={detailsButtonRef} tableData={parseSlideDetailsInfo(file)} />
         </div>
       )}
     </>

@@ -7,7 +7,7 @@ export * from "./features/gdcapi/gdcapi";
 export * from "./features/gdcapi/filters";
 export * from "./features/gdcapi/gdcgraphql";
 export * from "./features/facets/facetSlice";
-
+export * from "./features/imageDetails/imageDetailsSlice";
 export * from "./features/facets/casesFacetSliceGQL";
 export * from "./features/facets/filesFacetSliceGQL";
 export * from "./features/facets/genesFacetSliceGQL";
