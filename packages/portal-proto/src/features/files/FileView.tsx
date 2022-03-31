@@ -107,8 +107,8 @@ export const FileView: React.FC<FileViewProps> = ({ file }: FileViewProps) => {
         <div className="bg-white w-full mt-4">
           <h2 className="p-2 text-lg mx-4">Slide Image Viewer</h2>
           {/*TODO Slide Image Viewer see PEAR-167 */}
-
-          <ImageViewer imageId={imageId} file={file} />
+          <SlideDetailButton tableData={parseSlideDetailsInfo(file)} />
+          <ImageViewer imageId={imageId} />
           <div>
             slide ids for first case, sample, portion:{" "}
             <ul>

@@ -1,28 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import OpenSeadragon from "openseadragon";
-import { SlideDetailButton } from "./SlideDetailButton";
-import { parseSlideDetailsInfo } from "../features/files/utils";
-import { GdcFile, fetchImageDetails, useCoreDispatch } from "@gff/core";
+import { useImageDetails } from "@gff/core";
+import { LoadingOverlay } from "@mantine/core";
 
 interface ImageViewerProp {
   imageId: string;
-  file: GdcFile;
 }
 
-const ImageViewer = ({ imageId, file }: ImageViewerProp) => {
+const ImageViewer = ({ imageId }: ImageViewerProp) => {
   const [viewer, setViewer] = useState(null);
-  const [hasError, setHasError] = useState(false);
-  const coreDispatch = useCoreDispatch();
+  const { data: imageDetails, isFetching, isError } = useImageDetails(imageId);
 
-  const InitOpenseadragon = async () => {
-
-    const imageDetails = await coreDispatch(fetchImageDetails(imageId)).unwrap()
-
-    if (!imageDetails.Format) {
-      setHasError(true);
-      return;
-    }
-
+  const InitOpenseadragon = () => {
     viewer && viewer.destroy();
     const view = OpenSeadragon({
       id: "osd",
@@ -31,18 +20,12 @@ const ImageViewer = ({ imageId, file }: ImageViewerProp) => {
       visibilityRatio: 1,
       showNavigator: true,
       minZoomLevel: 0,
-      tileSources: {
-        height: Number(imageDetails.Height),
-        width: Number(imageDetails.Width),
-        tileSize: Number(imageDetails.TileSize),
-        tileOverlap: Number(imageDetails.Overlap),
-        getTileUrl: (level, x, y) => {
-          return `https://api.gdc.cancer.gov/tile/${imageId}?level=${level}&x=${x}&y=${y}`;
-        },
-      },
+      tileSources: {},
     });
 
-    view.addControl(document.querySelector("#details-button"), {
+    const detailButton = document.querySelector("#details-button")
+
+    detailButton && view.addControl(detailButton, {
       anchor: OpenSeadragon.ControlAnchor.TOP_LEFT,
     });
     setViewer(view);
@@ -57,16 +40,9 @@ const ImageViewer = ({ imageId, file }: ImageViewerProp) => {
   }, []);
 
   useEffect(() => {
-    const reFetchNewImage = async () => {
-      const imageDetails = await coreDispatch(fetchImageDetails(imageId)).unwrap()
+    const reFetchNewImage = () => {
 
-      if (!imageDetails.Format) {
-        viewer && viewer.destroy();
-        setHasError(true);
-        return;
-      }
-
-      if (imageId && viewer) {
+      if (imageId && viewer && imageDetails) {
         viewer.open({
           height: Number(imageDetails.Height),
           width: Number(imageDetails.Width),
@@ -79,17 +55,24 @@ const ImageViewer = ({ imageId, file }: ImageViewerProp) => {
       }
     };
     reFetchNewImage();
-  }, [imageId]);
+  }, [imageId, viewer, imageDetails]);
 
   return (
     <>
-      {hasError ? (
-        <div className="flex bg-white h-img-viewer">Image is not available</div>
-      ) : (
-        <div id="osd" className="flex bg-black h-img-viewer">
-          <SlideDetailButton tableData={parseSlideDetailsInfo(file)} />
-        </div>
-      )}
+      {
+        isFetching ? (
+          <div>
+            <LoadingOverlay visible />
+          </div>
+        )
+          :
+          isError ? (
+            <div id="osd" className="flex bg-white h-img-viewer">Image is not available</div>
+          ) : (
+            <div id="osd" className="flex bg-black h-img-viewer" />
+
+          )
+      }
     </>
   );
 };
