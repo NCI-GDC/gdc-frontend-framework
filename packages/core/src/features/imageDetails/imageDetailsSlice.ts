@@ -37,8 +37,6 @@ const slice = createSlice({
     builder.addCase(fetchImageDetails.fulfilled, (state, action) => {
       const response = action.payload
 
-      console.log("response: ", response)
-
       state.details = {
         Height: response.Height,
         Width: response.Width,
