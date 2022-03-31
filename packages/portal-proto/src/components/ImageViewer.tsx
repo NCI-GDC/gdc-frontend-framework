@@ -70,7 +70,6 @@ const ImageViewer = ({ imageId }: ImageViewerProp) => {
             <div id="osd" className="flex bg-white h-img-viewer">Image is not available</div>
           ) : (
             <div id="osd" className="flex bg-black h-img-viewer" />
-
           )
       }
     </>
