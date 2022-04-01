@@ -8,26 +8,26 @@ interface ImageViewerProp {
 }
 
 const ImageViewer = ({ imageId }: ImageViewerProp) => {
-  const [viewer, setViewer] = useState(null);
+  const [viewer, setViewer] = useState<OpenSeadragon.Viewer>(null);
   const { data: imageDetails, isFetching, isError } = useImageDetails(imageId);
 
   const InitOpenseadragon = () => {
     viewer && viewer.destroy();
-    const view = OpenSeadragon({
+    const options: OpenSeadragon.Options = {
       id: "osd",
       prefixUrl:
         "https://cdn.jsdelivr.net/npm/openseadragon@3.0/build/openseadragon/images/",
       visibilityRatio: 1,
       showNavigator: true,
       minZoomLevel: 0,
-      tileSources: {},
-    });
+    }
+    const view: OpenSeadragon.Viewer = OpenSeadragon(options)
 
     const detailButton = document.querySelector("#details-button")
-
     detailButton && view.addControl(detailButton, {
       anchor: OpenSeadragon.ControlAnchor.TOP_LEFT,
     });
+
     setViewer(view);
   };
 
@@ -41,7 +41,6 @@ const ImageViewer = ({ imageId }: ImageViewerProp) => {
 
   useEffect(() => {
     const reFetchNewImage = () => {
-
       if (imageId && viewer && imageDetails) {
         viewer.open({
           height: Number(imageDetails.Height),
@@ -54,6 +53,7 @@ const ImageViewer = ({ imageId }: ImageViewerProp) => {
         });
       }
     };
+    
     reFetchNewImage();
   }, [imageId, viewer, imageDetails]);
 

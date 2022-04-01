@@ -1,32 +1,26 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import { HorizontalTable, HorizontalTableProps } from "./HorizontalTable";
-import { Popover, Button } from "@mantine/core";
+import { Button } from "@mantine/core";
+import useOutsideClickAlert from "../hooks/useOutsideClickAlert";
 
 export const SlideDetailButton = ({ tableData }: HorizontalTableProps) => {
-  const [showDetails, setShowDetails] = React.useState(false);
+  const [showDetails, setShowDetails] = useState(false);
+  const wrapperRef = useRef(null);
+  useOutsideClickAlert(wrapperRef, () => setShowDetails(false));
 
   return (
-      <Popover
-        opened={showDetails}
-        onClose={() => setShowDetails(false)}
-        target={
-          <Button
-            onClick={() => setShowDetails((o) => !o)}
-            className="h-6 bg-nci-blue-dark w-20 py-1 px-0 rounded-md"
-          >
-            Details
-          </Button>
-        }
-        position="bottom"
-        id="details-button"
-        className="absolute -top-3"
-        spacing='md'
-        placement="start"
-        children={
-          <div className="flex">
-            <HorizontalTable tableData={tableData} />
-          </div>
-        }
-      />
+    <div ref={wrapperRef} id="details-button" className="absolute -top-3" >
+      <Button
+        onClick={() => setShowDetails((o) => !o)}
+        className="h-6 bg-nci-blue-dark w-20 py-1 px-0 rounded-md"
+      >
+        Details
+      </Button>
+      {
+        showDetails &&
+        <HorizontalTable tableData={tableData} />
+      }
+    </div >
+
   );
 };
