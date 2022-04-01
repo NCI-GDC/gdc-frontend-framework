@@ -2,11 +2,11 @@ import { useMemo } from "react";
 import { consequenceTypes } from "./constants";
 
 const consequencePriorityOrder = [
-  'missense_variant',
-  'start_lost',
-  'stop_lost',
-  'stop_gained',
-  'frameshift_variant',
+  "missense_variant",
+  "start_lost",
+  "stop_lost",
+  "stop_gained",
+  "frameshift_variant",
 ];
 
 interface Donor {
@@ -15,9 +15,9 @@ interface Donor {
   readonly race: string;
   readonly ethnicity: string;
   readonly age: number;
-  readonly vitalStatus: 'not reported' | 'Alive' | 'Dead';
+  readonly vitalStatus: "not reported" | "Alive" | "Dead";
   readonly daysToDeath: number;
-};
+}
 
 interface Gene {
   readonly id: string;
@@ -34,13 +34,13 @@ interface OncoGridDisplayData {
   readonly cnvObservations: any[];
 }
 
-const useOncoGridDisplayData = (data : any) : OncoGridDisplayData =>
+const useOncoGridDisplayData = (data: any): OncoGridDisplayData =>
   useMemo(() => {
     const cnvObservations = data?.cnvOccurrences.map((occ) => ({
       donorId: occ.case.case_id,
       geneId: occ?.cnv?.consequence?.[0]?.gene.gene_id,
       ids: [occ.cnv_occurrence_id],
-      cnvChange: occ.cnv.cnv_change,
+      cnvChange: occ.cnv.cnv_change.toLowerCase(),
       type: "cnv",
     }));
 
@@ -95,17 +95,19 @@ const useOncoGridDisplayData = (data : any) : OncoGridDisplayData =>
     data?.ssmOccurrences
       .filter((occ) => caseIds.has(occ.case.case_id))
       .forEach((obv) => {
-        const consequences = obv.ssm.consequence.filter((c) =>
-          consequenceTypes.includes(c.transcript.consequence_type) && 
-          c?.transcript?.annotation?.vep_impact && 
-          geneIdToSymbol[c.transcript.gene.gene_id]
+        const consequences = obv.ssm.consequence.filter(
+          (c) =>
+            Object.keys(consequenceTypes).includes(
+              c.transcript.consequence_type,
+            ) &&
+            c?.transcript?.annotation?.vep_impact &&
+            geneIdToSymbol[c.transcript.gene.gene_id],
         );
         consequences.forEach((c) => {
           const key = `${c.transcript.gene.gene_id}_${obv.case.case_id}_${c.transcript.consequence_type}`;
           if (
             !ssmMap[key] ||
             (ssmMap[key] && !ssmMap[key]?.ids.includes(obv.ssm.ssm_id))
-            
           ) {
             ssmMap[key] = {
               ids: [...(ssmMap[key]?.ids || []), obv.ssm.ssm_id],
@@ -120,12 +122,12 @@ const useOncoGridDisplayData = (data : any) : OncoGridDisplayData =>
         });
       });
 
-    const ssmObservations = Object.values(ssmMap).sort((a, b) => (
+    const ssmObservations = Object.values(ssmMap).sort(
+      (a, b) =>
         consequencePriorityOrder.indexOf(a.consequence) -
-        consequencePriorityOrder.indexOf(b.consequence)
-      )
+        consequencePriorityOrder.indexOf(b.consequence),
     );
- 
+
     return { donors, genes, ssmObservations, cnvObservations };
   }, [JSON.stringify(data)]);
 

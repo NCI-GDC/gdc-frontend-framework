@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import ReactDOM from "react-dom";
+import { Tooltip as MTooltip } from "@mantine/core";
 
 interface TooltipProps {
   readonly content: JSX.Element;
@@ -9,33 +10,25 @@ const Tooltip: React.FC<TooltipProps> = ({ content }: TooltipProps) => {
   const tooltipRef = useRef(null);
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
-  const [arrowPosition, setArrowPosition] = useState("bottom");
+  const [position, setPosition] = useState<"top" | "right">("top");
 
   useEffect(() => {
     const eventListener = (event) => {
-      let tempX = event.pageX - 18;
-      let tempY =
-        event.pageY -
-        (tooltipRef.current?.getBoundingClientRect().height || 0) -
-        15;
-      let tempArrowPosition = "bottom";
+      let tempX = event.pageX;
+      let tempY = event.pageY;
+      let tempPosition : "top" | "right" = "top";
 
       // Reposition if tooltip would be cutoff
       if (
         event.pageX + (tooltipRef.current?.getBoundingClientRect().width || 0) >
         window.innerWidth
-      ) {
-        tempX =
-          event.pageX -
-          (tooltipRef.current?.getBoundingClientRect().width || 0) -
-          15;
-        tempY = event.pageY - 18;
-        tempArrowPosition = "right";
+      ) { 
+        tempPosition = "right";
       }
 
       setX(tempX);
       setY(tempY);
-      setArrowPosition(tempArrowPosition);
+      setPosition(tempPosition);
     };
 
     window.addEventListener("mousemove", eventListener);
@@ -45,13 +38,19 @@ const Tooltip: React.FC<TooltipProps> = ({ content }: TooltipProps) => {
 
   return ReactDOM.createPortal(
     content ? (
-      <div
-        className={`inline-block bg-white rounded-lg shadow-sm text-sm border-2 border-nci-gray-light tooltip-arrow-${arrowPosition}`}
+      <MTooltip
+        label={content}  
+        color={"gray"}
         style={{ left: x, top: y, position: "absolute" }}
-        ref={(ref) => (tooltipRef.current = ref)}
+        tooltipRef={(ref) => (tooltipRef.current = ref)}
+        opened={content !== null}
+        withinPortal
+        withArrow
+        positionDependencies={[x, y]}
+        position={position}
       >
-        {content}
-      </div>
+        <></>
+      </MTooltip>
     ) : null,
     document.body,
   );

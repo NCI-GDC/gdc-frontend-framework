@@ -1,7 +1,12 @@
-import { useEffect, useState, useRef, useMemo } from "react";
+import { useEffect, useState, useRef } from "react";
 import dynamic from "next/dynamic";
 import OncoGrid from "oncogrid";
-import { ActionIcon, LoadingOverlay, Tooltip as MTooltip, Menu } from "@mantine/core";
+import {
+  ActionIcon,
+  LoadingOverlay,
+  Tooltip as MTooltip,
+  Menu,
+} from "@mantine/core";
 import { FaCrosshairs, FaFire, FaSortAmountDown } from "react-icons/fa";
 import {
   MdColorLens,
@@ -11,12 +16,14 @@ import {
   MdRefresh,
 } from "react-icons/md";
 import { useOncoGrid } from "@gff/core";
-import { donorTracks, geneTracks, getColorMap } from "./trackConfig";
+import { donorTracks, geneTracks, getFillColorMap } from "./trackConfig";
 import TrackLegend from "./TrackLegend";
 import MutationFilters from "./MutationFilters";
 import TrackSelectionModal from "./TrackSelectionModal";
-import { consequenceTypes, defaultColorMap } from "./constants";
+import { consequenceTypes, defaultColorMap, heatMapColor } from "./constants";
 import useOncoGridDisplayData from "./useOncoGridDisplayData";
+import { ssmObservations, cnvObservations, donors, genes } from "./fixture";
+import ColorPaletteModal from "./ColorPaletteModal";
 const Tooltip = dynamic(() => import("./Tooltip"), { ssr: false });
 
 interface Domain {
@@ -33,9 +40,6 @@ interface DocumentWithWebkit extends Document {
   readonly webkitFullscreenElement: Element;
 }
 
-const heatMapColor = "#2E7D32";
-
-
 const OncoGridWrapper: React.FC = () => {
   const gridContainer = useRef(null);
   const fullOncoGridContainer = useRef(null);
@@ -47,9 +51,12 @@ const OncoGridWrapper: React.FC = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [tooltipContent, setTooltipContent] = useState(null);
   const [tracksModal, setTracksModal] = useState(null);
-  const [consequenceTypeFilters, setConsequenceTypeFilters] =
-    useState(consequenceTypes);
+  const [consequenceTypeFilters, setConsequenceTypeFilters] = useState(
+    Object.keys(consequenceTypes),
+  );
   const [cnvFilters, setCnvFilters] = useState(["loss", "gain"]);
+  const [showColorModal, setShowColorModal] = useState(false);
+  const [colorMap, setColorMap] = useState(defaultColorMap);
 
   const { data, isFetching } = useOncoGrid({
     consequenceTypeFilters,
@@ -57,13 +64,18 @@ const OncoGridWrapper: React.FC = () => {
   });
 
   useEffect(() => {
+    const customColorTheme = localStorage.getItem("oncogridActiveTheme");
+    if (customColorTheme) {
+      setColorMap(JSON.parse(customColorTheme));
+    }
+  }, []);
+
+  useEffect(() => {
     setIsLoading(isFetching);
   }, [isFetching]);
 
   const { donors, genes, ssmObservations, cnvObservations } =
     useOncoGridDisplayData(data);
-
-  console.log(ssmObservations);
 
   const resetGrid = () => {
     setIsHeatmap(false);
@@ -153,7 +165,7 @@ const OncoGridWrapper: React.FC = () => {
       }
     };
 
-    const fillColorMap = getColorMap(
+    const fillColorMap = getFillColorMap(
       Array.from(new Set(donors.map((d) => d.race))),
       Array.from(new Set(donors.map((d) => d.ethnicity))),
     );
@@ -198,7 +210,7 @@ const OncoGridWrapper: React.FC = () => {
       trackPadding: 30,
       expandableGroups: ["Clinical"],
       heatMapColor,
-      colorMap: defaultColorMap,
+      colorMap,
       trackLegendLabel:
         '<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M504 256c0 136.997-111.043 248-248 248S8 392.997 8 256C8 119.083 119.043 8 256 8s248 111.083 248 248zM262.655 90c-54.497 0-89.255 22.957-116.549 63.758-3.536 5.286-2.353 12.415 2.715 16.258l34.699 26.31c5.205 3.947 12.621 3.008 16.665-2.122 17.864-22.658 30.113-35.797 57.303-35.797 20.429 0 45.698 13.148 45.698 32.958 0 14.976-12.363 22.667-32.534 33.976C247.128 238.528 216 254.941 216 296v4c0 6.627 5.373 12 12 12h56c6.627 0 12-5.373 12-12v-1.333c0-28.462 83.186-29.647 83.186-106.667 0-58.002-60.165-102-116.531-102zM256 338c-25.365 0-46 20.635-46 46 0 25.364 20.635 46 46 46s46-20.636 46-46c0-25.365-20.635-46-46-46z"></path></svg>',
     };
@@ -317,6 +329,7 @@ const OncoGridWrapper: React.FC = () => {
   }, [
     setTracksModal,
     setTooltipContent,
+    colorMap,
     setIsLoading,
     JSON.stringify(ssmObservations),
     JSON.stringify(cnvObservations),
@@ -349,13 +362,27 @@ const OncoGridWrapper: React.FC = () => {
         <div className="basis-1/2">{`${donors.length} Most Mutated Cases and Top ${genes.length} Mutated Genes by SSM`}</div>
         <div className="flex basis-1/2 justify-end">
           <MTooltip label={"Customize Colors"} withArrow>
-            <Menu control={
-            <ActionIcon variant={"outline"} classNames={{ root: "mx-1" }}>
-              <MdColorLens />
-            </ActionIcon>
-            }>
-              <Menu.Item>Customize color</Menu.Item>
-              <Menu.Item>Reset to default</Menu.Item>
+            <Menu
+              control={
+                <ActionIcon variant={"outline"} classNames={{ root: "mx-1" }}>
+                  <MdColorLens />
+                </ActionIcon>
+              }
+            >
+              <Menu.Item onClick={() => setShowColorModal(true)}>
+                Customize color
+              </Menu.Item>
+              <Menu.Item
+                onClick={() => {
+                  localStorage.setItem(
+                    "oncogridActiveTheme",
+                    JSON.stringify(defaultColorMap),
+                  );
+                  setColorMap(defaultColorMap);
+                }}
+              >
+                Reset to default
+              </Menu.Item>
             </Menu>
           </MTooltip>
           <MTooltip label={"Download"} withArrow>
@@ -422,15 +449,20 @@ const OncoGridWrapper: React.FC = () => {
         </div>
       </div>
       <MutationFilters
-        colorMap={defaultColorMap}
-        heatmapColor={heatMapColor}
+        colorMap={colorMap}
         heatmapMode={isHeatmap}
-        ssmFilters={consequenceTypeFilters}
-        setSsmFilters={setConsequenceTypeFilters}
+        consequenceTypeFilters={consequenceTypeFilters}
+        setConsequenceTypeFilters={setConsequenceTypeFilters}
         cnvFilters={cnvFilters}
         setCnvFilters={setCnvFilters}
       ></MutationFilters>
       <Tooltip content={tooltipContent} />
+      <ColorPaletteModal
+        opened={showColorModal}
+        closeModal={() => setShowColorModal(false)}
+        colorMap={colorMap}
+        setNewColorMap={setColorMap}
+      />
       {tracksModal}
       <div>
         <LoadingOverlay visible={isLoading} overlayOpacity={0.9} />
@@ -442,7 +474,9 @@ const OncoGridWrapper: React.FC = () => {
         )}
         <div
           ref={(ref) => (gridContainer.current = ref)}
-          className={`oncogrid-wrapper bg-white ${consequenceTypeFilters.length === 0 ? 'invisible' : 'visible'}`}
+          className={`oncogrid-wrapper bg-white ${
+            consequenceTypeFilters.length === 0 ? "invisible" : "visible"
+          }`}
         ></div>
       </div>
     </div>

@@ -60,7 +60,7 @@ const colorPalette = [
   "#17becf",
 ];
 
-export const getColorMap = (
+export const getFillColorMap = (
   raceValues: string[],
   ethnicityValues: string[],
 ): ColorMap => ({

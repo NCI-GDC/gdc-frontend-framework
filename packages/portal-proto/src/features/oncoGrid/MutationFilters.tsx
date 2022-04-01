@@ -1,30 +1,30 @@
-import { Checkbox } from "@mantine/core";
+import { consequenceTypes, cnvTypes, heatMapColor, ColorMapType } from "./constants";
 import Gradient from "./Gradient";
 
 interface MutationFiltersProps {
   readonly heatmapMode: boolean;
-  readonly ssmFilters: string[];
-  readonly setSsmFilters: (filters: string[]) => void;
+  readonly consequenceTypeFilters: string[];
+  readonly setConsequenceTypeFilters: (filters: string[]) => void;
   readonly cnvFilters: string[];
   readonly setCnvFilters: (filters: string[]) => void;
-  readonly heatmapColor: string;
-  readonly colorMap: any;
+  readonly colorMap: ColorMapType;
 }
 
 const MutationFilters: React.FC<MutationFiltersProps> = ({
   heatmapMode,
-  ssmFilters,
-  setSsmFilters,
+  consequenceTypeFilters,
+  setConsequenceTypeFilters,
   cnvFilters,
   setCnvFilters,
-  heatmapColor,
   colorMap,
 }: MutationFiltersProps) => {
-  const updateSSMFilters = (value) => {
-    if (ssmFilters.includes(value)) {
-      setSsmFilters(ssmFilters.filter((v) => v !== value));
+  const updateConsequenceTypeFilters = (value) => {
+    if (consequenceTypeFilters.includes(value)) {
+      setConsequenceTypeFilters(
+        consequenceTypeFilters.filter((v) => v !== value),
+      );
     } else {
-      setSsmFilters([...ssmFilters, value]);
+      setConsequenceTypeFilters([...consequenceTypeFilters, value]);
     }
   };
 
@@ -36,23 +36,17 @@ const MutationFilters: React.FC<MutationFiltersProps> = ({
     }
   };
 
-  const selectDeselectSSM = () => {
-    if (ssmFilters.length === 0) {
-      setSsmFilters([
-        "missense_variant",
-        "frameshift_variant",
-        "start_lost",
-        "stop_lost",
-        "stop_gained",
-      ]);
+  const selectDeselectconsequenceTypeType = () => {
+    if (consequenceTypeFilters.length === 0) {
+      setConsequenceTypeFilters(Object.keys(consequenceTypes));
     } else {
-      setSsmFilters([]);
+      setConsequenceTypeFilters([]);
     }
   };
 
   const selectDeselectCnv = () => {
     if (cnvFilters.length === 0) {
-      setCnvFilters(["loss", "gain"]);
+      setCnvFilters(Object.keys(cnvTypes));
     } else {
       setCnvFilters([]);
     }
@@ -67,92 +61,52 @@ const MutationFilters: React.FC<MutationFiltersProps> = ({
             <div>
               <input
                 type="checkbox"
-                checked={ssmFilters.length !== 0}
-                onChange={() => selectDeselectSSM()}
+                checked={consequenceTypeFilters.length !== 0}
+                onChange={() => selectDeselectconsequenceTypeType()}
                 className={"text-nci-gray"}
+                id={"consequence_filter_all"}
               ></input>
-              <label className="px-2 align-middle">Show Mutations</label>
+              <label
+                className="px-2 align-middle"
+                htmlFor={"consequence_filter_all"}
+              >
+                Show Mutations
+              </label>
             </div>
             {heatmapMode && (
               <div className="flex">
                 {"Less"}
-                <Gradient color={heatmapColor} />
+                <Gradient color={heatMapColor} />
                 {"More"}
               </div>
             )}
           </div>
           <hr className="m-1" />
           <div className="grid grid-cols-3">
-            <div>
-              <input
-                type="checkbox"
-                value="missense_variant"
-                checked={ssmFilters.includes("missense_variant")}
-                onChange={(event) => updateSSMFilters(event.target.value)}
-                style={{
-                  color: heatmapMode
-                    ? heatmapColor
-                    : colorMap.mutation.missense_variant,
-                }}
-              ></input>
-              <label className="px-2 align-middle">Missense</label>
-            </div>
-            <div>
-              <input
-                type="checkbox"
-                value="start_lost"
-                checked={ssmFilters.includes("start_lost")}
-                onChange={(event) => updateSSMFilters(event.target.value)}
-                style={{
-                  color: heatmapMode
-                    ? heatmapColor
-                    : colorMap.mutation.start_lost,
-                }}
-              ></input>
-              <label className="px-2 align-middle">Start Lost</label>
-            </div>
-            <div>
-              <input
-                type="checkbox"
-                value="stop_gained"
-                checked={ssmFilters.includes("stop_gained")}
-                onChange={(event) => updateSSMFilters(event.target.value)}
-                style={{
-                  color: heatmapMode
-                    ? heatmapColor
-                    : colorMap.mutation.stop_gained,
-                }}
-              ></input>
-              <label className="px-2 align-middle">Stop Gained</label>
-            </div>
-            <div>
-              <input
-                type="checkbox"
-                value="frameshift_variant"
-                checked={ssmFilters.includes("frameshift_variant")}
-                onChange={(event) => updateSSMFilters(event.target.value)}
-                style={{
-                  color: heatmapMode
-                    ? heatmapColor
-                    : colorMap.mutation.frameshift_variant,
-                }}
-              ></input>
-              <label className="px-2 align-middle">Frameshift</label>
-            </div>
-            <div>
-              <input
-                type="checkbox"
-                value="stop_lost"
-                checked={ssmFilters.includes("stop_lost")}
-                onChange={(event) => updateSSMFilters(event.target.value)}
-                style={{
-                  color: heatmapMode
-                    ? heatmapColor
-                    : colorMap.mutation.stop_lost,
-                }}
-              ></input>
-              <label className="px-2 align-middle">Stop Lost</label>
-            </div>
+            {Object.entries(consequenceTypes).map(([value, label]) => (
+              <div key={`consequence_filter_${value}`}>
+                <input
+                  type="checkbox"
+                  value={value}
+                  id={`consequence_filter_${value}`}
+                  checked={consequenceTypeFilters.includes(value)}
+                  onChange={(event) =>
+                    updateConsequenceTypeFilters(event.target.value)
+                  }
+                  style={{
+                    color: heatmapMode
+                      ? heatMapColor
+                      : colorMap.mutation[value],
+                  }}
+                ></input>
+                <label
+                  className="px-2 align-middle"
+                  htmlFor={`consequence_filter_${value}`}
+                >
+                  {label}
+                </label>
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -165,31 +119,30 @@ const MutationFilters: React.FC<MutationFiltersProps> = ({
               checked={cnvFilters.length !== 0}
               onChange={() => selectDeselectCnv()}
               className={"text-nci-gray"}
+              id={"cnv_filter_all"}
             ></input>
-            <label className="px-2 align-middle">
+            <label className="px-2 align-middle" htmlFor={"cnv_filter_all"}>
               Show Copy Number Variations
             </label>
             <hr className="m-1" />
-            <div>
-              <input
-                type="checkbox"
-                value="loss"
-                checked={cnvFilters.includes("loss")}
-                onChange={(event) => updateCnvFilters(event.target.value)}
-                style={{ color: colorMap.cnv.Loss }}
-              ></input>
-              <label className="px-2 align-middle">Loss</label>
-            </div>
-            <div>
-              <input
-                type="checkbox"
-                value="gain"
-                checked={cnvFilters.includes("gain")}
-                onChange={(event) => updateCnvFilters(event.target.value)}
-                style={{ color: colorMap.cnv.Gain }}
-              ></input>
-              <label className="px-2 align-middle">Gain</label>
-            </div>
+            {Object.entries(cnvTypes).map(([value, label]) => (
+              <div key={`cnv_filter_${value}`}>
+                <input
+                  type="checkbox"
+                  value={value}
+                  id={`cnv_filter_${value}`}
+                  checked={cnvFilters.includes(value)}
+                  onChange={(event) => updateCnvFilters(event.target.value)}
+                  style={{ color: colorMap.cnv[value] }}
+                ></input>
+                <label
+                  className="px-2 align-middle"
+                  htmlFor={`cnv_filter_${value}`}
+                >
+                  {label}
+                </label>
+              </div>
+            ))}
           </div>
         </div>
       )}

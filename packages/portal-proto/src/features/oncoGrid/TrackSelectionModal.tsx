@@ -26,7 +26,7 @@ const TrackSelectionModal: React.FC<TrackSelectionModalProps> = ({
   };
 
   return (
-    <Modal opened onClose={() => closeModal()} title="Select Tracks to Add">
+    <Modal opened onClose={closeModal} title="Select Tracks to Add">
       <div className="flex flex-col p-2">
         {hiddenTracks.map((track) => (
           <div key={track.fieldName}>
@@ -47,7 +47,7 @@ const TrackSelectionModal: React.FC<TrackSelectionModalProps> = ({
         >
           Add Tracks
         </Button>
-        <Button variant={"outline"} onClick={() => closeModal()}>
+        <Button variant={"outline"} onClick={closeModal}>
           Cancel
         </Button>
       </div>

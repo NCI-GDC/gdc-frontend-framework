@@ -16,6 +16,7 @@ module.exports = {
     "./src/features/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
+
     extend: {
       colors: {
         /* These colors come from the NCI color palette. The palette defines
@@ -263,15 +264,6 @@ module.exports = {
         montserrat: ["Montserrat", "sans-serif"],
         heading: ["Montserrat", "sans-serif"]
       },
-      tooltipArrows: theme => ({
-        'tooltip-arrow': {
-            borderColor: theme("colors.nci-gray.light"),
-            borderWidth: 2,
-            backgroundColor: theme('colors.white'),
-            size: 6,
-            offset: 10
-        },
-    }),
     },
   },
   variants: {
@@ -311,6 +303,5 @@ module.exports = {
 
       addUtilities(newUtilities)
     }),
-    require('tailwindcss-tooltip-arrow-after')()
   ],
 };
