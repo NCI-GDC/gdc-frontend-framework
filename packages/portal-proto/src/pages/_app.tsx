@@ -13,7 +13,6 @@ import store from "../app/store";
 // their default exports will trigger registration.
 import "../features/demoApp1/DemoApp";
 import "../features/demoApp2/DemoApp";
-import "../features/demoAppStore/DemoApp";
 
 // import the react tab styles once
 import "react-tabs/style/react-tabs.css";
