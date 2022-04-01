@@ -12,13 +12,13 @@ export const SlideDetailButton = ({ tableData }: HorizontalTableProps) => {
     <div ref={wrapperRef} id="details-button" className="absolute -top-3" >
       <Button
         onClick={() => setShowDetails((o) => !o)}
-        className="h-6 bg-nci-blue-dark w-20 py-1 px-0 rounded-md"
+        className="h-6 bg-nci-blue-dark w-20 py-1 mb-3 px-0 rounded-md"
       >
         Details
       </Button>
       {
         showDetails &&
-        <HorizontalTable tableData={tableData} />
+        <HorizontalTable tableData={tableData} customContainerStyles="border-3 border-grey"/>
       }
     </div >
 

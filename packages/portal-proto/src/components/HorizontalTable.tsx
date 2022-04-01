@@ -38,12 +38,18 @@ export interface HorizontalTableProps {
       string | ReadonlyArray<string> | boolean | number | JSX.Element
     >;
   }[];
+  customContainerStyles?: string
 }
-export const HorizontalTable = (props: HorizontalTableProps): JSX.Element => {
+export const HorizontalTable = ({ tableData, customContainerStyles }: HorizontalTableProps): JSX.Element => {
+
+  const containerClassName = 'bg-white w-full text-left text-nci-gray-darker'
+
+  const updatedContainerClassName = customContainerStyles ? containerClassName + ` ${customContainerStyles}` : containerClassName
+
   return (
-    <table className="bg-white w-full text-left text-nci-gray-darker">
+    <table className={updatedContainerClassName}>
       <tbody>
-        {props.tableData.map((obj, rowIndex: number): JSX.Element => {
+        {tableData.map((obj, rowIndex: number): JSX.Element => {
           return (
             <tr
               key={`row-${obj.headerName}`}
