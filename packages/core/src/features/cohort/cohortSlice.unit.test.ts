@@ -175,7 +175,7 @@ describe("addFilter", () => {
         }
       }
     ));
-    expect(currentCohortFilters).toEqual({ currentFilters: populatedFilters });
+    expect(currentCohortFilters).toEqual({ filters: populatedFilters });
   });
   test("should add another filter to the current cohort", () => {
     const currentCohortFilters = cohortFilterReducer({ filters: populatedFilters as FilterSet },
@@ -190,13 +190,13 @@ describe("addFilter", () => {
           }
         }
       ));
-    expect(currentCohortFilters).toEqual({ currentFilters: TwoPopulatedFilters });
+    expect(currentCohortFilters).toEqual({ filters: TwoPopulatedFilters });
   });
 
   test("should remove filter from the current cohort", () => {
     const currentCohortFilters = cohortFilterReducer({ filters: TwoPopulatedFilters as FilterSet },
       removeCohortFilter("disease_type"));
-    expect(currentCohortFilters).toEqual({ currentFilters: populatedFilters });
+    expect(currentCohortFilters).toEqual({ filters: populatedFilters });
   });
 
 });
