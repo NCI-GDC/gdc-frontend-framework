@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import OpenSeadragon from "openseadragon";
 import { useImageDetails } from "@gff/core";
 import { LoadingOverlay } from "@mantine/core";
-import screenfull from 'screenfull';
+import { toggleFullScreen } from "../features/files/utils";
 
 interface ImageViewerProp {
   imageId: string;
@@ -12,17 +12,6 @@ const ImageViewer = ({ imageId }: ImageViewerProp) => {
   const [viewer, setViewer] = useState<OpenSeadragon.Viewer>(null);
   const { data: imageDetails, isFetching, isError } = useImageDetails(imageId);
   const osdContainerRef = useRef(null)
-
-  const toggleFullScreen = async () => {
-    // if nativeAPI's fullscreenEnabled
-    if (screenfull.isEnabled) {
-      if (!screenfull.isFullscreen) {
-        await screenfull.request(osdContainerRef.current);
-      } else {
-        await screenfull.exit()
-      }
-    }
-  }
 
   const InitOpenseadragon = () => {
     viewer && viewer.destroy();
@@ -43,7 +32,7 @@ const ImageViewer = ({ imageId }: ImageViewerProp) => {
       srcGroup: 'https://raw.githubusercontent.com/openseadragon/openseadragon/master/images/fullpage_grouphover.png',
       srcHover: 'https://raw.githubusercontent.com/openseadragon/openseadragon/master/images/fullpage_hover.png',
       srcDown: 'https://raw.githubusercontent.com/openseadragon/openseadragon/master/images/fullpage_pressed.png',
-      onClick: toggleFullScreen,
+      onClick: () => toggleFullScreen(osdContainerRef),
     });
 
     view.addControl(fullPageButton.element, {
