@@ -20,12 +20,12 @@ jobs:
 
       - name: Compilation/Type Check for core
         run : |
-          cd ${{GITHUB_WORKSPACE}}/packages/core
+          cd ${{github.workspace}}/packages/core
           npm run compile
 
       - name: Compilation/Type Check for portal-proto
         run : |
-          cd ${{GITHUB_WORKSPACE}}/packages/portal-proto
+          cd ${{github.workspace}}/packages/portal-proto
           npm run compile
 
 
