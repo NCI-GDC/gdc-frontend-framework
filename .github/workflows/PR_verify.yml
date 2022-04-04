@@ -12,11 +12,11 @@ jobs:
 
       - uses: actions/setup-node@v3
 
-      - name: Run Prettier Check
-        run: npm run format:check
-
       - name: Install Packages
         run: npm install
+        
+      - name: Run Prettier Check
+        run: npm run format:check
 
       - name: Check for unit tests
         run: npm test
