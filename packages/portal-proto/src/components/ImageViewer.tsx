@@ -6,7 +6,7 @@ import { toggleFullScreen } from "../features/files/utils";
 import { SlideDetailButton } from "./SlideDetailButton";
 import { HorizontalTableProps } from "./HorizontalTable";
 
-interface ImageViewerProp extends HorizontalTableProps {
+export interface ImageViewerProp extends HorizontalTableProps {
   imageId: string;
 }
 
