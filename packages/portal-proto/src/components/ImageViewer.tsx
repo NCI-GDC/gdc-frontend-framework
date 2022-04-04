@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import OpenSeadragon from "openseadragon";
 import { useImageDetails } from "@gff/core";
 import { LoadingOverlay } from "@mantine/core";
+import screenfull from 'screenfull';
 
 interface ImageViewerProp {
   imageId: string;
@@ -10,6 +11,18 @@ interface ImageViewerProp {
 const ImageViewer = ({ imageId }: ImageViewerProp) => {
   const [viewer, setViewer] = useState<OpenSeadragon.Viewer>(null);
   const { data: imageDetails, isFetching, isError } = useImageDetails(imageId);
+  const osdContainerRef = useRef(null)
+
+  const toggleFullScreen = async () => {
+    // if nativeAPI's fullscreenEnabled
+    if (screenfull.isEnabled) {
+      if (!screenfull.isFullscreen) {
+        await screenfull.request(osdContainerRef.current);
+      } else {
+        await screenfull.exit()
+      }
+    }
+  }
 
   const InitOpenseadragon = () => {
     viewer && viewer.destroy();
@@ -20,10 +33,25 @@ const ImageViewer = ({ imageId }: ImageViewerProp) => {
       visibilityRatio: 1,
       showNavigator: true,
       minZoomLevel: 0,
+      showFullPageControl: false,
     }
     const view: OpenSeadragon.Viewer = OpenSeadragon(options)
 
+    const fullPageButton = new OpenSeadragon.Button({
+      tooltip: 'Toggle Full Page',
+      srcRest: 'https://raw.githubusercontent.com/openseadragon/openseadragon/master/images/fullpage_rest.png',
+      srcGroup: 'https://raw.githubusercontent.com/openseadragon/openseadragon/master/images/fullpage_grouphover.png',
+      srcHover: 'https://raw.githubusercontent.com/openseadragon/openseadragon/master/images/fullpage_hover.png',
+      srcDown: 'https://raw.githubusercontent.com/openseadragon/openseadragon/master/images/fullpage_pressed.png',
+      onClick: toggleFullScreen,
+    });
+
+    view.addControl(fullPageButton.element, {
+      anchor: OpenSeadragon.ControlAnchor.TOP_LEFT,
+    });
+
     const detailButton = document.querySelector("#details-button")
+
     detailButton && view.addControl(detailButton, {
       anchor: OpenSeadragon.ControlAnchor.TOP_LEFT,
     });
@@ -53,7 +81,7 @@ const ImageViewer = ({ imageId }: ImageViewerProp) => {
         });
       }
     };
-    
+
     reFetchNewImage();
   }, [imageId, viewer, imageDetails]);
 
@@ -69,7 +97,7 @@ const ImageViewer = ({ imageId }: ImageViewerProp) => {
           isError ? (
             <div id="osd" className="flex bg-white h-img-viewer">Image is not available</div>
           ) : (
-            <div id="osd" className="flex bg-black h-img-viewer" />
+            <div ref={osdContainerRef} id="osd" className="flex bg-black h-img-viewer" />
           )
       }
     </>

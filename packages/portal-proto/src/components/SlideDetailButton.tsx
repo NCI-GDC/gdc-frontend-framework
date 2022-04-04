@@ -18,7 +18,7 @@ export const SlideDetailButton = ({ tableData }: HorizontalTableProps) => {
       </Button>
       {
         showDetails &&
-        <HorizontalTable tableData={tableData} customContainerStyles="border-3 border-grey"/>
+        <HorizontalTable tableData={tableData} customContainerStyles="border-3 border-grey" />
       }
     </div >
 
