@@ -3,16 +3,18 @@ import OpenSeadragon from "openseadragon";
 import { useImageDetails } from "@gff/core";
 import { LoadingOverlay } from "@mantine/core";
 import { toggleFullScreen } from "../features/files/utils";
+import { SlideDetailButton } from "./SlideDetailButton";
+import { HorizontalTableProps } from "./HorizontalTable";
 
-interface ImageViewerProp {
+interface ImageViewerProp extends HorizontalTableProps {
   imageId: string;
-  buttonRef: React.MutableRefObject<HTMLDivElement>;
 }
 
-const ImageViewer = ({ imageId, buttonRef }: ImageViewerProp) => {
+const ImageViewer = ({ imageId, tableData }: ImageViewerProp) => {
   const [viewer, setViewer] = useState<OpenSeadragon.Viewer>(null);
   const { data: imageDetails, isFetching, isError } = useImageDetails(imageId);
   const osdContainerRef = useRef(null)
+  const detailsButtonWrapperRef = useRef(null)
 
   const InitOpenseadragon = () => {
     viewer && viewer.destroy();
@@ -40,7 +42,7 @@ const ImageViewer = ({ imageId, buttonRef }: ImageViewerProp) => {
       anchor: OpenSeadragon.ControlAnchor.TOP_LEFT,
     });
 
-    buttonRef.current && view.addControl(buttonRef.current, {
+    detailsButtonWrapperRef.current && view.addControl(detailsButtonWrapperRef.current, {
       anchor: OpenSeadragon.ControlAnchor.TOP_LEFT,
     });
 
@@ -88,6 +90,7 @@ const ImageViewer = ({ imageId, buttonRef }: ImageViewerProp) => {
             <div ref={osdContainerRef} id="osd" className="flex bg-black h-img-viewer" />
           )
       }
+      <SlideDetailButton ref={detailsButtonWrapperRef} tableData={tableData} />
     </>
   );
 };

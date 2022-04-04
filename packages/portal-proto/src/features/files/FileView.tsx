@@ -1,10 +1,9 @@
-import React, {useRef} from "react";
+import React, { useState } from "react";
 import { GdcFile } from "@gff/core";
 import ReactModal from "react-modal";
 import { HorizontalTable } from "../../components/HorizontalTable";
 import { get } from "lodash";
 import dynamic from "next/dynamic";
-import { SlideDetailButton } from "../../components/SlideDetailButton";
 import { formatDataForTable, parseSlideDetailsInfo } from "./utils";
 const ImageViewer = dynamic(() => import("../../components/ImageViewer"), {
   ssr: false,
@@ -15,8 +14,7 @@ export interface FileViewProps {
 }
 
 export const FileView: React.FC<FileViewProps> = ({ file }: FileViewProps) => {
-  const [imageId, setImageId] = React.useState(file?.fileId);
-  const detailsButtonRef = useRef(null)
+  const [imageId, setImageId] = useState(file?.fileId);
 
   return (
     <div className="p-4 text-nci-gray">
@@ -108,8 +106,7 @@ export const FileView: React.FC<FileViewProps> = ({ file }: FileViewProps) => {
         <div className="bg-white w-full mt-4">
           <h2 className="p-2 text-lg mx-4">Slide Image Viewer</h2>
           {/*TODO Slide Image Viewer see PEAR-167 */}
-          <SlideDetailButton ref={detailsButtonRef} tableData={parseSlideDetailsInfo(file)} />
-          <ImageViewer buttonRef={detailsButtonRef} imageId={imageId} />
+          <ImageViewer imageId={imageId} tableData={parseSlideDetailsInfo(file)} />
           <div>
             slide ids for first case, sample, portion:{" "}
             <ul>
