@@ -105,7 +105,7 @@ const buildOnePlotLegend = (data, name) => {
   const hasEnoughData = hasMultipleCurves
     ? enoughDataOnSomeCurves(data)
     : enoughData(data);
-  const legend = hasEnoughData
+  return hasEnoughData
     ? name && [
     {
       key: name,
@@ -118,8 +118,6 @@ const buildOnePlotLegend = (data, name) => {
         value: "Not enough survival data",
       },
     ];
-
-  return legend;
 }
 
 const buildTwoPlotLegend  = (data, name: string, plotType:string) =>  {
