@@ -26,10 +26,4 @@ jobs:
       - name: Compilation/Type Check for portal-proto
         run : |
           cd ${{github.workspace}}/packages/portal-proto
-          npm run compile
-
-
-            
-
-
-       
+          npm run compile       
