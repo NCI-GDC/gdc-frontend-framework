@@ -78,6 +78,9 @@ const IndexPage: NextPage = () => {
               <HoverLink href="/colors">Colors</HoverLink>
             </li>
             <li>
+              <HoverLink href="/icons">Colors</HoverLink>
+            </li>
+            <li>
               <HoverLink href="/ssmsTable">Molecular Table</HoverLink>
             </li>
             <li>
