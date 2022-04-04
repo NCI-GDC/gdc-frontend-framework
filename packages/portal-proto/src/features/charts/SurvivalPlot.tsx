@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Survival, SurvivalElement } from "@gff/core";
 import { renderPlot } from "@oncojs/survivalplot";
 import { MdDownload as DownloadIcon, MdRestartAlt as ResetIcon } from "react-icons/md";
-import { Tooltip } from "@mantine/core";
+import { FloatingTooltip, Tooltip } from "@mantine/core";
 import dynamic from "next/dynamic";
 import { isNumber } from "lodash";
 
@@ -72,7 +72,7 @@ export const useSurvival = (data, xDomain, setXDomain, setTooltip = (x?) => null
           time = 0,
         }) => {
           setTooltip(
-            <span>
+            <div className="font-montserrat text-xs text-nci-gray-darkest">
             {`Case ID: ${project_id} / ${submitter_id}`}
               <br />
               {`Survival Rate: ${Math.round(survivalEstimate * 100)}%`}
@@ -80,10 +80,10 @@ export const useSurvival = (data, xDomain, setXDomain, setTooltip = (x?) => null
               {censored
                 ? `Interval of last follow-up: ${time.toLocaleString()} years`
                 : `Time of Death: ${time.toLocaleString()} years`}
-          </span>
+          </div>
           );
         },
-        onMouseLeaveDonor: () => setTooltip(),
+        onMouseLeaveDonor: () => setTooltip(undefined),
 
       }
     ) : null;
@@ -200,16 +200,23 @@ export interface SurvivalPlotProps {
   readonly names?: ReadonlyArray<string>
 }
 
+
+const setSurvivalPlotLineTooltip = (label) => {
+
+}
+
+
 const SurvivalPlot : React.FC<SurvivalPlotProps> = ( { data, names = [] } : SurvivalPlotProps) => {
   const [downloadMenuOpen, setDownloadMenuOpen] = useState(false);
   // handle the current range of the xAxis set to undefined to reset
   const [xDomain, setXDomain] = useState(undefined);
+  const [survivalPlotLineTooltipContent, setSurvivalPlotLineTooltipContent] = useState(undefined)
 
   const pValue = data.overallStats.pValue;
   const plotData = data.survivalData;
 
   // hook to call renderSurvivalPlot
-  const container = useSurvival(plotData, xDomain, setXDomain);
+  const container = useSurvival(plotData, xDomain, setXDomain, setSurvivalPlotLineTooltipContent);
 
   const legend = plotData.length == 1 ? buildOnePlotLegend(plotData, "Explorer") : buildTwoPlotLegend(plotData, names[0], "mutation");
   return (
@@ -226,7 +233,7 @@ const SurvivalPlot : React.FC<SurvivalPlotProps> = ( { data, names = [] } : Surv
     <div className="flex flex-col items-center ">
       {
         legend.map((x, idx) => {
-          return <p key={`${x.key}-${idx}`}>{x.value}</p>
+          return <div key={`${x.key}-${idx}`}>{x.value}</div>
         })
       }
         <div>
@@ -255,7 +262,15 @@ const SurvivalPlot : React.FC<SurvivalPlotProps> = ( { data, names = [] } : Surv
         drag to zoom
       </div>
     </div>
+      <FloatingTooltip
+        label={survivalPlotLineTooltipContent}
+        disabled={!survivalPlotLineTooltipContent}
+        classNames={{
+          body: "bg-white shadow-md"
+        }}
+      >
           <div className="survival-plot"  ref={container} />
+        </FloatingTooltip>
     </div>
     )
 };

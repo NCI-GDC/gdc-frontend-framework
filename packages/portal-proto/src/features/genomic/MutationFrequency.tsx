@@ -97,18 +97,17 @@ const mergeFilters = (cohortFilters: GqlOperation, symbol: string) : ReadonlyArr
 const MutationFrequency: React.FC = () => {
   const coreDispatch = useCoreDispatch();
   const [geneAdditionalSurvival, setGeneAdditionalSurvival] = useState(undefined);
-  const { data: survivalPlotData, isSuccess :survivalPlotReady } = useSurvivalPlot();
   const cohortFilters = useCoreSelector((state) => selectCurrentCohortCaseGqlFilters(state));
+  const { data: survivalPlotData, isSuccess :survivalPlotReady } = useSurvivalPlot();
 
   const handleSurvivalPlotToggled = (symbol: string) => {
     if (geneAdditionalSurvival === symbol) { // remove toggle
       setGeneAdditionalSurvival(undefined);
+      coreDispatch(fetchSurvival(undefined));
     } else {
       setGeneAdditionalSurvival(symbol);
+      coreDispatch(fetchSurvival({  filters: mergeFilters(cohortFilters, symbol) } ));
     }
-
-    const filters = mergeFilters(cohortFilters, symbol);
-    coreDispatch(fetchSurvival(symbol ? {  filters: filters } : undefined));
   };
 
   return (
@@ -139,7 +138,11 @@ const MutationFrequency: React.FC = () => {
           })
           }
         </div>
-        <Tabs>
+        <Tabs classNames = {{
+          root: "mt-4",
+          tabLabel: "text-nci-gray-darkest",
+          tabActive: "bg-nci-gray-lighter text-nci-gray-lightest"
+        }}>
           <Tabs.Tab label="Genes">
             <div className="flex flex-row">
               <div className="flex flex-col">
