@@ -1,0 +1,35 @@
+name: Pull Request Verify
+on:
+  pull_request:
+    branch: 'develop'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+
+      - uses: actions/setup-node@v3
+
+      - name: Install Packages
+        run: npm install
+
+      - name: Check for unit tests
+        run: npm test
+
+      - name: Compilation/Type Check for core
+        run : |
+          cd ${{GITHUB_WORKSPACE}}/packages/core
+          npm run compile
+
+      - name: Compilation/Type Check for portal-proto
+        run : |
+          cd ${{GITHUB_WORKSPACE}}/packages/portal-proto
+          npm run compile
+
+
+            
+
+
+       
