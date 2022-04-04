@@ -14,12 +14,6 @@ jobs:
 
       - name: Install Packages
         run: npm install
-        
-      - name: Run Prettier Check
-        run: npm run format:check
-
-      - name: Check for unit tests
-        run: npm test
 
       - name: Compilation/Type Check for core
         run : |
@@ -29,4 +23,10 @@ jobs:
       - name: Compilation/Type Check for portal-proto
         run : |
           cd ${{github.workspace}}/packages/portal-proto
-          npm run compile       
+          npm run compile 
+
+      - name: Run Prettier Check
+        run: npm run format:check
+
+      - name: Check for unit tests
+        run: npm test      
