@@ -1,10 +1,11 @@
 import { fetchGdcEntities, GdcApiResponse } from "../gdcapi/gdcapi";
+import { CNVOccurrence } from "./types";
 
 export const fetchCNVOccurrences = async (
   genes: string[],
   cases: string[],
   cnvFilters: string[],
-): Promise<GdcApiResponse> => {
+): Promise<GdcApiResponse<CNVOccurrence>> => {
   return fetchGdcEntities(
     "cnv_occurrences",
     {

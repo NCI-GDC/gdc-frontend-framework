@@ -7,7 +7,7 @@ export interface Track {
   readonly type?: string;
 }
 
-export interface ColorMap {
+export interface FillMap {
   [key: string]: string | Record<string, string>;
 }
 
@@ -63,7 +63,7 @@ const colorPalette = [
 export const getFillColorMap = (
   raceValues: string[],
   ethnicityValues: string[],
-): ColorMap => ({
+): FillMap => ({
   age: "#638f56",
   totalDonors: "#9370db",
   cgc: "#006400",

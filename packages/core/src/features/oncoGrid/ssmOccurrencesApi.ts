@@ -1,10 +1,11 @@
 import { fetchGdcEntities, GdcApiResponse } from "../gdcapi/gdcapi";
+import { SSMOccurrence } from "./types";
 
 export const fetchSSMOccurrences = async (
   genes: string[],
   cases: string[],
   consequenceTypeFilters: string[],
-): Promise<GdcApiResponse> => {
+): Promise<GdcApiResponse<SSMOccurrence>> => {
   return fetchGdcEntities(
     "ssm_occurrences",
     {

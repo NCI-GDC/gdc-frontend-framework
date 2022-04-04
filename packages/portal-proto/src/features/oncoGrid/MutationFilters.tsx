@@ -18,7 +18,7 @@ const MutationFilters: React.FC<MutationFiltersProps> = ({
   setCnvFilters,
   colorMap,
 }: MutationFiltersProps) => {
-  const updateConsequenceTypeFilters = (value) => {
+  const updateConsequenceTypeFilters = (value : string) => {
     if (consequenceTypeFilters.includes(value)) {
       setConsequenceTypeFilters(
         consequenceTypeFilters.filter((v) => v !== value),
@@ -28,7 +28,7 @@ const MutationFilters: React.FC<MutationFiltersProps> = ({
     }
   };
 
-  const updateCnvFilters = (value) => {
+  const updateCnvFilters = (value : string) => {
     if (cnvFilters.includes(value)) {
       setCnvFilters(cnvFilters.filter((v) => v !== value));
     } else {

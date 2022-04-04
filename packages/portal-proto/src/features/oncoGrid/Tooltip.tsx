@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef } from "react";
-import ReactDOM from "react-dom";
 import { Tooltip as MTooltip } from "@mantine/core";
 
 interface TooltipProps {
@@ -14,8 +13,6 @@ const Tooltip: React.FC<TooltipProps> = ({ content }: TooltipProps) => {
 
   useEffect(() => {
     const eventListener = (event) => {
-      let tempX = event.pageX;
-      let tempY = event.pageY;
       let tempPosition : "top" | "right" = "top";
 
       // Reposition if tooltip would be cutoff
@@ -26,8 +23,8 @@ const Tooltip: React.FC<TooltipProps> = ({ content }: TooltipProps) => {
         tempPosition = "right";
       }
 
-      setX(tempX);
-      setY(tempY);
+      setX(event.pageX);
+      setY(event.pageY);
       setPosition(tempPosition);
     };
 
@@ -36,7 +33,7 @@ const Tooltip: React.FC<TooltipProps> = ({ content }: TooltipProps) => {
     return () => window.removeEventListener("mousemove", eventListener);
   }, []);
 
-  return ReactDOM.createPortal(
+  return ( 
     content ? (
       <MTooltip
         label={content}  
@@ -44,15 +41,14 @@ const Tooltip: React.FC<TooltipProps> = ({ content }: TooltipProps) => {
         style={{ left: x, top: y, position: "absolute" }}
         tooltipRef={(ref) => (tooltipRef.current = ref)}
         opened={content !== null}
-        withinPortal
         withArrow
+        withinPortal
         positionDependencies={[x, y]}
         position={position}
       >
         <></>
       </MTooltip>
-    ) : null,
-    document.body,
+    ) : null
   );
 };
 

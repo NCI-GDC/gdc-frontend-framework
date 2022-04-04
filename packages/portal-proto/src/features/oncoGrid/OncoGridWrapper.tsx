@@ -20,9 +20,8 @@ import { donorTracks, geneTracks, getFillColorMap } from "./trackConfig";
 import TrackLegend from "./TrackLegend";
 import MutationFilters from "./MutationFilters";
 import TrackSelectionModal from "./TrackSelectionModal";
-import { consequenceTypes, defaultColorMap, heatMapColor } from "./constants";
+import { cnvTypes, consequenceTypes, defaultColorMap, heatMapColor } from "./constants";
 import useOncoGridDisplayData from "./useOncoGridDisplayData";
-import { ssmObservations, cnvObservations, donors, genes } from "./fixture";
 import ColorPaletteModal from "./ColorPaletteModal";
 const Tooltip = dynamic(() => import("./Tooltip"), { ssr: false });
 
@@ -47,18 +46,18 @@ const OncoGridWrapper: React.FC = () => {
   const [isHeatmap, setIsHeatmap] = useState(false);
   const [hasGridlines, setHasGridlines] = useState(false);
   const [showCrosshairs, setShowCrosshairs] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [tooltipContent, setTooltipContent] = useState(null);
   const [tracksModal, setTracksModal] = useState(null);
   const [consequenceTypeFilters, setConsequenceTypeFilters] = useState(
     Object.keys(consequenceTypes),
   );
-  const [cnvFilters, setCnvFilters] = useState(["loss", "gain"]);
+  const [cnvFilters, setCnvFilters] = useState(Object.keys(cnvTypes));
   const [showColorModal, setShowColorModal] = useState(false);
   const [colorMap, setColorMap] = useState(defaultColorMap);
 
-  const { data, isFetching } = useOncoGrid({
+  const { data, isUninitialized, isFetching } = useOncoGrid({
     consequenceTypeFilters,
     cnvFilters,
   });
@@ -216,11 +215,6 @@ const OncoGridWrapper: React.FC = () => {
     };
     const grid = new OncoGrid(oncoGridParams);
 
-    grid.on("render:all:start", () => {
-      setIsLoading(true);
-    });
-    grid.on("render:all:end", () => setIsLoading(false));
-
     grid.on("trackMouseOver", ({ domain }: { domain: Domain }) => {
       setTooltipContent(
         <div className="p-4">
@@ -241,7 +235,7 @@ const OncoGridWrapper: React.FC = () => {
       setTooltipContent(
         <TrackLegend
           track={group}
-          colorMap={fillColorMap}
+          fillMap={fillColorMap}
           maxDaysToDeath={maxDaysToDeath}
           maxAge={maxAgeAtDiagnosis}
           maxDonors={maxDonorsAffected}
@@ -327,21 +321,23 @@ const OncoGridWrapper: React.FC = () => {
 
     return () => gridObject.current.destroy();
   }, [
+    isHeatmap,
     setTracksModal,
     setTooltipContent,
     colorMap,
-    setIsLoading,
-    JSON.stringify(ssmObservations),
-    JSON.stringify(cnvObservations),
-    JSON.stringify(donors),
-    JSON.stringify(genes),
+    ssmObservations,
+    cnvObservations,
+    donors,
+    genes,
   ]);
 
   useEffect(() => {
-    // Make sure the loading overlay is up long enough to cover heatmap transition graphics
-    setIsLoading(true);
-    setTimeout(() => gridObject.current.setHeatmap(isHeatmap), 200);
-    setTimeout(() => setIsLoading(false), 1000);
+    if (!isUninitialized) {
+      // Make sure the loading overlay is up long enough to cover heatmap transition graphics
+      setIsLoading(true);
+      setTimeout(() => gridObject.current.setHeatmap(isHeatmap), 200);
+      setTimeout(() => setIsLoading(false), 1000);
+    }
   }, [isHeatmap]);
 
   useEffect(

@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { OncoGridData } from "@gff/core";
 import { consequenceTypes } from "./constants";
 
 const consequencePriorityOrder = [
@@ -17,6 +18,7 @@ interface Donor {
   readonly age: number;
   readonly vitalStatus: "not reported" | "Alive" | "Dead";
   readonly daysToDeath: number;
+  readonly cnv: number;
 }
 
 interface Gene {
@@ -27,21 +29,39 @@ interface Gene {
   readonly cnv: number;
 }
 
+interface CNVObservation {
+  readonly donorId: string;
+  readonly geneId: string;
+  readonly ids: string[];
+  readonly cnvChange: string;
+  readonly type: "cnv";
+}
+
+interface SSMObservation {
+  readonly ids: string[];
+  readonly donorId: string;
+  readonly geneId: string;
+  readonly consequence: string;
+  readonly type: "mutation";
+  readonly geneSymbol: string;
+  readonly functionalImpact: string;
+}
+
 interface OncoGridDisplayData {
   readonly donors: Donor[];
   readonly genes: Gene[];
-  readonly ssmObservations: any[];
-  readonly cnvObservations: any[];
+  readonly ssmObservations: SSMObservation[];
+  readonly cnvObservations: CNVObservation[];
 }
 
-const useOncoGridDisplayData = (data: any): OncoGridDisplayData =>
+const useOncoGridDisplayData = (data: OncoGridData): OncoGridDisplayData =>
   useMemo(() => {
     const cnvObservations = data?.cnvOccurrences.map((occ) => ({
       donorId: occ.case.case_id,
       geneId: occ?.cnv?.consequence?.[0]?.gene.gene_id,
       ids: [occ.cnv_occurrence_id],
       cnvChange: occ.cnv.cnv_change.toLowerCase(),
-      type: "cnv",
+      type: "cnv" as const,
     }));
 
     const donors = data?.cases
@@ -90,31 +110,31 @@ const useOncoGridDisplayData = (data: any): OncoGridDisplayData =>
       genes.map((g) => [g.id, g.symbol]),
     );
 
-    // TODO - something ain't right here
-    const ssmMap = {};
+    const ssmMap = {} as Record<string, SSMObservation>;
     data?.ssmOccurrences
       .filter((occ) => caseIds.has(occ.case.case_id))
       .forEach((obv) => {
         const consequences = obv.ssm.consequence.filter(
           (c) =>
             Object.keys(consequenceTypes).includes(
-              c.transcript.consequence_type,
+              c?.transcript?.consequence_type,
             ) &&
             c?.transcript?.annotation?.vep_impact &&
-            geneIdToSymbol[c.transcript.gene.gene_id],
+            geneIdToSymbol[c?.transcript?.gene?.gene_id] &&
+            c?.transcript.is_canonical
         );
         consequences.forEach((c) => {
           const key = `${c.transcript.gene.gene_id}_${obv.case.case_id}_${c.transcript.consequence_type}`;
           if (
             !ssmMap[key] ||
-            (ssmMap[key] && !ssmMap[key]?.ids.includes(obv.ssm.ssm_id))
+            (ssmMap[key] && !ssmMap[key].ids.includes(obv.ssm.ssm_id))
           ) {
             ssmMap[key] = {
-              ids: [...(ssmMap[key]?.ids || []), obv.ssm.ssm_id],
+              ids: [...ssmMap[key]?.ids || [], obv.ssm.ssm_id],
               donorId: obv.case.case_id,
               geneId: c.transcript.gene.gene_id,
               consequence: c.transcript.consequence_type,
-              type: "mutation",
+              type: "mutation" as const,
               geneSymbol: geneIdToSymbol[c.transcript.gene.gene_id],
               functionalImpact: c.transcript.annotation.vep_impact,
             };
@@ -129,6 +149,6 @@ const useOncoGridDisplayData = (data: any): OncoGridDisplayData =>
     );
 
     return { donors, genes, ssmObservations, cnvObservations };
-  }, [JSON.stringify(data)]);
+  }, [data.cases, data.cnvOccurrences, data.genes, data.ssmOccurrences]);
 
 export default useOncoGridDisplayData;
