@@ -6,9 +6,10 @@ import { toggleFullScreen } from "../features/files/utils";
 
 interface ImageViewerProp {
   imageId: string;
+  buttonRef: React.MutableRefObject<HTMLDivElement>;
 }
 
-const ImageViewer = ({ imageId }: ImageViewerProp) => {
+const ImageViewer = ({ imageId, buttonRef }: ImageViewerProp) => {
   const [viewer, setViewer] = useState<OpenSeadragon.Viewer>(null);
   const { data: imageDetails, isFetching, isError } = useImageDetails(imageId);
   const osdContainerRef = useRef(null)
@@ -39,9 +40,7 @@ const ImageViewer = ({ imageId }: ImageViewerProp) => {
       anchor: OpenSeadragon.ControlAnchor.TOP_LEFT,
     });
 
-    const detailButton = document.querySelector("#details-button")
-
-    detailButton && view.addControl(detailButton, {
+    buttonRef.current && view.addControl(buttonRef.current, {
       anchor: OpenSeadragon.ControlAnchor.TOP_LEFT,
     });
 

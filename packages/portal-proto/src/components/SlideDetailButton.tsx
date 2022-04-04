@@ -1,11 +1,10 @@
-import React, { useState, useRef } from "react";
+import React, { useState, forwardRef } from "react";
 import { HorizontalTable, HorizontalTableProps } from "./HorizontalTable";
 import { Button } from "@mantine/core";
 import useOutsideClickAlert from "../hooks/useOutsideClickAlert";
 
-export const SlideDetailButton = ({ tableData }: HorizontalTableProps) => {
+export const SlideDetailButton = forwardRef<HTMLDivElement, HorizontalTableProps>(({ tableData }: HorizontalTableProps, wrapperRef) => {
   const [showDetails, setShowDetails] = useState(false);
-  const wrapperRef = useRef(null);
   useOutsideClickAlert(wrapperRef, () => setShowDetails(false));
 
   return (
@@ -21,6 +20,5 @@ export const SlideDetailButton = ({ tableData }: HorizontalTableProps) => {
         <HorizontalTable tableData={tableData} customContainerStyles="border-3 border-grey" />
       }
     </div >
-
   );
-};
+});
