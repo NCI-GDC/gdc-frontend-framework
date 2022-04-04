@@ -61,7 +61,7 @@ const MutationFacetNames = [
   },
 ];
 
-const mergeFilters = (cohortFilters: GqlOperation, symbol: string) : ReadonlyArray<GqlOperation> => {
+const mergeFilters = (cohortFilters: GqlOperation, symbol: string, field: string) : ReadonlyArray<GqlOperation> => {
   /**
    * given the contents, add two filters, one with the gene and one without
    */
@@ -75,7 +75,7 @@ const mergeFilters = (cohortFilters: GqlOperation, symbol: string) : ReadonlyArr
       [...(cohortFilters ? cohortFilters.content as any  : []), {
         "op": "excludeifany",
         "content": {
-          "field": "gene.symbol",
+          "field": field,
           "value": symbol,
         },
       }],
@@ -85,7 +85,7 @@ const mergeFilters = (cohortFilters: GqlOperation, symbol: string) : ReadonlyArr
         [ ...(cohortFilters ? cohortFilters.content as any  : []) , {
           "op": "=",
           "content": {
-            "field": "gene.symbol",
+            "field": field,
             "value": symbol,
           },
         }],
@@ -96,19 +96,24 @@ const mergeFilters = (cohortFilters: GqlOperation, symbol: string) : ReadonlyArr
 
 const MutationFrequency: React.FC = () => {
   const coreDispatch = useCoreDispatch();
-  const [geneAdditionalSurvival, setGeneAdditionalSurvival] = useState(undefined);
+  const [additionalSurvival, setAdditionalSurvival] = useState(undefined);
   const cohortFilters = useCoreSelector((state) => selectCurrentCohortCaseGqlFilters(state));
   const { data: survivalPlotData, isSuccess :survivalPlotReady } = useSurvivalPlot();
 
-  const handleSurvivalPlotToggled = (symbol: string) => {
-    if (geneAdditionalSurvival === symbol) { // remove toggle
-      setGeneAdditionalSurvival(undefined);
+  const handleSurvivalPlotToggled = (symbol: string, name: string, field: string) => {
+    if (additionalSurvival && additionalSurvival.symbol === symbol) { // remove toggle
+      setAdditionalSurvival(undefined);
       coreDispatch(fetchSurvival(undefined));
     } else {
-      setGeneAdditionalSurvival(symbol);
-      coreDispatch(fetchSurvival({  filters: mergeFilters(cohortFilters, symbol) } ));
+      setAdditionalSurvival({ symbol: symbol, name: name });
+      coreDispatch(fetchSurvival({  filters: mergeFilters(cohortFilters, symbol, field) } ));
     }
   };
+
+  const handleTabChanged = () => {
+    setAdditionalSurvival(undefined);
+    coreDispatch(fetchSurvival(undefined));
+  }
 
   return (
     <div className="flex flex-row">
@@ -142,7 +147,9 @@ const MutationFrequency: React.FC = () => {
           root: "mt-4",
           tabLabel: "text-nci-gray-darkest",
           tabActive: "bg-nci-gray-lighter text-nci-gray-lightest"
-        }}>
+        }}
+              onTabChange={ () => {handleTabChanged() }}
+        >
           <Tabs.Tab label="Genes">
             <div className="flex flex-row">
               <div className="flex flex-col">
@@ -152,20 +159,21 @@ const MutationFrequency: React.FC = () => {
                   </Grid.Col>
                   <Grid.Col span={6} className="relative">
                     <LoadingOverlay visible={!survivalPlotReady} />
-                    <SurvivalPlot data={survivalPlotData} names={geneAdditionalSurvival ? [geneAdditionalSurvival] : []}/>
+                    <SurvivalPlot data={survivalPlotData} names={!survivalPlotReady ? [] :  additionalSurvival ? [additionalSurvival.name] : []}/>
                   </Grid.Col>
                 </Grid>
-                  <GenesTable handleSurvivalPlotToggled={handleSurvivalPlotToggled} />
+                  <GenesTable handleSurvivalPlotToggled={(symbol: string ,name: string ) => handleSurvivalPlotToggled(symbol, name, "gene.symbol")} />
               </div>
             </div>
           </Tabs.Tab>
           <Tabs.Tab label="Mutations">
             <div className="flex flex-row">
               <div className="flex flex-col">
-                <div className="w-3/4 h-auto bg-white ">
-                  <SurvivalPlot data={survivalPlotData}/>
+                <div className="w-3/4 h-auto bg-white relative">
+                  <LoadingOverlay visible={!survivalPlotReady} />
+                  <SurvivalPlot data={survivalPlotData} names={!survivalPlotReady ? [] : additionalSurvival ? [additionalSurvival.name] : []}/>
                 </div>
-              <MutationsTable />
+              <MutationsTable handleSurvivalPlotToggled={(symbol: string ,name: string  ) => handleSurvivalPlotToggled(symbol, name, "gene.ssm.ssm_id")} />
             </div>
             </div>
           </Tabs.Tab>

@@ -7,12 +7,9 @@ import { LoadingOverlay, Pagination, Select, Table, Checkbox, Tooltip } from "@m
 import { MdCheck as CheckboxIcon} from "react-icons/md";
 import { SiMicrogenetics as GeneAnnotationIcon } from "react-icons/si";
 import { BiLineChartDown as SurvivalPlotIcon } from "react-icons/bi";
+import { GenomicTableProps } from "./types";
 
-interface GenesTableProps {
-  readonly handleSurvivalPlotToggled?: (string) => void;
-}
-
-const GenesTable: React.FC<GenesTableProps> = ( { handleSurvivalPlotToggled } : GenesTableProps) => {
+const GenesTable: React.FC<GenomicTableProps> = ( { handleSurvivalPlotToggled } : GenomicTableProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [offset, setOffset] = useState(0);
   const [activePage, setPage] = useState(1);
@@ -68,7 +65,7 @@ const GenesTable: React.FC<GenesTableProps> = ( { handleSurvivalPlotToggled } : 
 };
 
 interface GenesTableSimpleProps extends GDCGenesTable {
-  readonly handleSurvivalPlotToggled : (s) => void;
+  readonly handleSurvivalPlotToggled : (symbol:string, name: string) => void;
 }
 
 const GenesTableSimple: React.FC<GenesTableSimpleProps> = ({ genes,
@@ -115,7 +112,7 @@ const GenesTableSimple: React.FC<GenesTableSimpleProps> = ({ genes,
           <td className="px-2">{ x.is_cancer_gene_census ? <Tooltip label="Is Cancer Census"> <GeneAnnotationIcon size="1.15rem" /> </Tooltip>: null }</td>
           <td className="px-2">
             <Tooltip label={`Click icon to plot ${x.symbol}`}>
-              <button onClick={() => handleSurvivalPlotToggled(x.symbol)} >
+              <button onClick={() => handleSurvivalPlotToggled(x.symbol, x.name)} >
               <SurvivalPlotIcon size="1.15rem"/>
               </button>
             </Tooltip>
