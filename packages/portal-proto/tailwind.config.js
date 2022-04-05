@@ -16,7 +16,6 @@ module.exports = {
     "./src/features/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-
     extend: {
       colors: {
         /* These colors come from the NCI color palette. The palette defines
@@ -265,10 +264,6 @@ module.exports = {
         montserrat: ["Montserrat", "sans-serif"],
         heading: ["Montserrat", "sans-serif"]
       },
-    },
-  },
-  variants: {
-    extend: {
       borderWidth: {
         DEFAULT: '1px',
         '0': '0',
@@ -299,11 +294,7 @@ module.exports = {
         },
       };
 
-<<<<<<< HEAD
-      addUtilities(newUtilities)
-=======
       addUtilities(newUtilities);
->>>>>>> develop
     }),
   ],
 };
