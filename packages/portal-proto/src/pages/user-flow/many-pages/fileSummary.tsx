@@ -12,7 +12,7 @@ const FileSummary: NextPage = () => {
       {...{ indexPath: "/user-flow/many-pages", headerElements }}
     >
       <ContextualFileView
-        setCurrentFile={"2b8e79ba-705d-4f0e-a2f2-1a8ed747c85d"}
+        setCurrentFile={"6e63430a-4a44-4ba8-a1f9-f24871c8f08a"}
       />
       {/*
       List of test file uuids:
