@@ -16,6 +16,8 @@ import {
   MdRefresh,
 } from "react-icons/md";
 import { useOncoGrid } from "@gff/core";
+import { DocumentWithWebkit } from "../types";
+import { toggleFullScreen } from "../../utils";
 import { donorTracks, geneTracks, getFillColorMap } from "./trackConfig";
 import TrackLegend from "./TrackLegend";
 import MutationFilters from "./MutationFilters";
@@ -32,11 +34,6 @@ interface Domain {
   fieldName: string;
   count: number;
   symbol?: string;
-}
-
-interface DocumentWithWebkit extends Document {
-  readonly webkitExitFullscreen: () => void;
-  readonly webkitFullscreenElement: Element;
 }
 
 const OncoGridWrapper: React.FC = () => {
@@ -83,23 +80,6 @@ const OncoGridWrapper: React.FC = () => {
     setIsLoading(true);
     setTimeout(() => gridObject.current.reload(), 200);
     setTimeout(() => setIsLoading(false), 1000);
-  };
-
-  const toggleFullscreen = async () => {
-    // Webkit vendor prefix for Safari support: https://developer.mozilla.org/en-US/docs/Web/API/Element/requestFullScreen#browser_compatibility
-    if (!isFullscreen) {
-      if (fullOncoGridContainer.current.requestFullscreen) {
-        await fullOncoGridContainer.current.requestFullscreen();
-      } else if (fullOncoGridContainer.current.webkitRequestFullScreen) {
-        fullOncoGridContainer.current.webkitRequestFullScreen();
-      }
-    } else {
-      if (document.exitFullscreen) {
-        await document.exitFullscreen();
-      } else if ((document as DocumentWithWebkit).webkitExitFullscreen) {
-        (document as DocumentWithWebkit).webkitExitFullscreen();
-      }
-    }
   };
 
   useEffect(() => {
@@ -436,7 +416,7 @@ const OncoGridWrapper: React.FC = () => {
           <MTooltip label={"Fullscreen "} withArrow>
             <ActionIcon
               variant={isFullscreen ? "filled" : "outline"}
-              onClick={() => toggleFullscreen()}
+              onClick={() => toggleFullScreen(fullOncoGridContainer)}
               classNames={{ root: "mx-1" }}
             >
               <MdFullscreen />
