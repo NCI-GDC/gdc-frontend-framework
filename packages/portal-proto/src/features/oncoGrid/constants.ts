@@ -40,8 +40,3 @@ export const defaultColorMap = {
 };
 
 export const heatMapColor = "#2E7D32";
-
-export interface ColorMapType {
-  readonly cnv: Record<string, string>;
-  readonly mutation: Record<string, string>;
-}

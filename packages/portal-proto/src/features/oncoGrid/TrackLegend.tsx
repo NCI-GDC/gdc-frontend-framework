@@ -74,9 +74,7 @@ const TrackLegend: React.FC<TrackLegendProps> = ({
           <b>Gene Sets:</b>
           <div className="flex flex-row">
             <ColorSwatch color={fillMap["cgc"] as string}></ColorSwatch>
-            <div className="pl-1">
-              {"Gene belongs to Cancer Gene Census"}
-            </div>
+            <div className="pl-1">{"Gene belongs to Cancer Gene Census"}</div>
           </div>
         </div>
       );

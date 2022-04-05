@@ -1,7 +1,7 @@
 import { GdcFile } from "@gff/core";
 import { get, omit } from "lodash";
 import { HorizontalTableProps } from "../../components/HorizontalTable";
-import { DocumentWithWebkit, JSONObject } from "../types";
+import { JSONObject } from "../types";
 
 export const formatDataForTable = (
   file: GdcFile | JSONObject,

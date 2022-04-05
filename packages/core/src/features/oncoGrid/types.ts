@@ -15,14 +15,16 @@ export interface Donor {
     vital_status?: string;
     days_to_death?: number;
   };
-  readonly diagnoses: Array<{ age_at_diagnoses: number }>;
+  readonly diagnoses: Array<{ age_at_diagnosis: number }>;
   readonly project: {
     project_id: string;
   };
-  readonly summary: Array<{
-    filecount: number;
-    data_category: string;
-  }>;
+  readonly summary: {
+    data_categories: Array<{
+      filecount: number;
+      data_category: string;
+    }>
+};
 }
 
 export interface SSMOccurrence {
@@ -60,4 +62,5 @@ export interface CNVOccurrence {
   readonly case: {
     case_id: string;
   };
+  readonly cnv_occurrence_id: string;
 }

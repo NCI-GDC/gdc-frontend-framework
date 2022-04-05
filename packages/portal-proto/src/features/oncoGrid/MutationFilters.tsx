@@ -1,4 +1,5 @@
-import { consequenceTypes, cnvTypes, heatMapColor, ColorMapType } from "./constants";
+import { consequenceTypes, cnvTypes, heatMapColor } from "./constants";
+import { ColorMap } from "./types";
 import Gradient from "./Gradient";
 
 interface MutationFiltersProps {
@@ -7,7 +8,7 @@ interface MutationFiltersProps {
   readonly setConsequenceTypeFilters: (filters: string[]) => void;
   readonly cnvFilters: string[];
   readonly setCnvFilters: (filters: string[]) => void;
-  readonly colorMap: ColorMapType;
+  readonly colorMap: ColorMap;
 }
 
 const MutationFilters: React.FC<MutationFiltersProps> = ({
@@ -18,7 +19,7 @@ const MutationFilters: React.FC<MutationFiltersProps> = ({
   setCnvFilters,
   colorMap,
 }: MutationFiltersProps) => {
-  const updateConsequenceTypeFilters = (value : string) => {
+  const updateConsequenceTypeFilters = (value: string) => {
     if (consequenceTypeFilters.includes(value)) {
       setConsequenceTypeFilters(
         consequenceTypeFilters.filter((v) => v !== value),
@@ -28,7 +29,7 @@ const MutationFilters: React.FC<MutationFiltersProps> = ({
     }
   };
 
-  const updateCnvFilters = (value : string) => {
+  const updateCnvFilters = (value: string) => {
     if (cnvFilters.includes(value)) {
       setCnvFilters(cnvFilters.filter((v) => v !== value));
     } else {

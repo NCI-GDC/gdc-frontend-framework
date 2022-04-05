@@ -7,7 +7,8 @@ import {
   ColorPicker,
   Popover,
 } from "@mantine/core";
-import { consequenceTypes, cnvTypes, suggestedColorMap, ColorMapType } from "./constants";
+import { consequenceTypes, cnvTypes, suggestedColorMap } from "./constants";
+import { ColorMap } from "./types";
 
 interface ColorPickerButtonProps {
   readonly label: string;
@@ -56,7 +57,7 @@ const ColorPickerButton: React.FC<ColorPickerButtonProps> = ({
 interface ColorPaletteModalProps {
   readonly closeModal: () => void;
   readonly opened: boolean;
-  readonly colorMap: ColorMapType;
+  readonly colorMap: ColorMap;
   readonly setNewColorMap: (colorMap) => void;
 }
 

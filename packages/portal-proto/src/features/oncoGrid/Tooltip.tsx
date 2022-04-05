@@ -13,13 +13,13 @@ const Tooltip: React.FC<TooltipProps> = ({ content }: TooltipProps) => {
 
   useEffect(() => {
     const eventListener = (event) => {
-      let tempPosition : "top" | "right" = "top";
+      let tempPosition: "top" | "right" = "top";
 
       // Reposition if tooltip would be cutoff
       if (
         event.pageX + (tooltipRef.current?.getBoundingClientRect().width || 0) >
         window.innerWidth
-      ) { 
+      ) {
         tempPosition = "right";
       }
 
@@ -33,23 +33,21 @@ const Tooltip: React.FC<TooltipProps> = ({ content }: TooltipProps) => {
     return () => window.removeEventListener("mousemove", eventListener);
   }, []);
 
-  return ( 
-    content ? (
-      <MTooltip
-        label={content}  
-        color={"gray"}
-        style={{ left: x, top: y, position: "absolute" }}
-        tooltipRef={(ref) => (tooltipRef.current = ref)}
-        opened={content !== null}
-        withArrow
-        withinPortal
-        positionDependencies={[x, y]}
-        position={position}
-      >
-        <></>
-      </MTooltip>
-    ) : null
-  );
+  return content ? (
+    <MTooltip
+      label={content}
+      color={"gray"}
+      style={{ left: x, top: y, position: "absolute" }}
+      tooltipRef={(ref) => (tooltipRef.current = ref)}
+      opened={content !== null}
+      withArrow
+      withinPortal
+      positionDependencies={[x, y]}
+      position={position}
+    >
+      <></>
+    </MTooltip>
+  ) : null;
 };
 
 export default Tooltip;

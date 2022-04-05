@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { OncoGridData } from "@gff/core";
 import { consequenceTypes } from "./constants";
+import { Donor, Gene, SSMObservation, CNVObservation } from "./types";
 
 const consequencePriorityOrder = [
   "missense_variant",
@@ -9,43 +10,6 @@ const consequencePriorityOrder = [
   "stop_gained",
   "frameshift_variant",
 ];
-
-interface Donor {
-  readonly id: string;
-  readonly gender: string;
-  readonly race: string;
-  readonly ethnicity: string;
-  readonly age: number;
-  readonly vitalStatus: "not reported" | "Alive" | "Dead";
-  readonly daysToDeath: number;
-  readonly cnv: number;
-}
-
-interface Gene {
-  readonly id: string;
-  readonly symbol: string;
-  readonly totalDonors: number;
-  readonly cgc: boolean;
-  readonly cnv: number;
-}
-
-interface CNVObservation {
-  readonly donorId: string;
-  readonly geneId: string;
-  readonly ids: string[];
-  readonly cnvChange: string;
-  readonly type: "cnv";
-}
-
-interface SSMObservation {
-  readonly ids: string[];
-  readonly donorId: string;
-  readonly geneId: string;
-  readonly consequence: string;
-  readonly type: "mutation";
-  readonly geneSymbol: string;
-  readonly functionalImpact: string;
-}
 
 interface OncoGridDisplayData {
   readonly donors: Donor[];
@@ -71,7 +35,7 @@ const useOncoGridDisplayData = (data: OncoGridData): OncoGridDisplayData =>
           race = "not reported",
           ethnicity = "not reported",
           days_to_death,
-          vital_status: vitalStatus = "not reported",
+          vital_status: vitalStatus = "not reported" as const,
         } = donor?.demographic || {};
         const age_at_diagnosis = donor?.diagnoses?.[0].age_at_diagnosis;
 
@@ -121,7 +85,7 @@ const useOncoGridDisplayData = (data: OncoGridData): OncoGridDisplayData =>
             ) &&
             c?.transcript?.annotation?.vep_impact &&
             geneIdToSymbol[c?.transcript?.gene?.gene_id] &&
-            c?.transcript.is_canonical
+            c?.transcript.is_canonical,
         );
         consequences.forEach((c) => {
           const key = `${c.transcript.gene.gene_id}_${obv.case.case_id}_${c.transcript.consequence_type}`;
@@ -130,7 +94,7 @@ const useOncoGridDisplayData = (data: OncoGridData): OncoGridDisplayData =>
             (ssmMap[key] && !ssmMap[key].ids.includes(obv.ssm.ssm_id))
           ) {
             ssmMap[key] = {
-              ids: [...ssmMap[key]?.ids || [], obv.ssm.ssm_id],
+              ids: [...(ssmMap[key]?.ids || []), obv.ssm.ssm_id],
               donorId: obv.case.case_id,
               geneId: c.transcript.gene.gene_id,
               consequence: c.transcript.consequence_type,
