@@ -5,14 +5,18 @@
 import { useEffect, useRef } from "react";
 import { useCoreDispatch, useCoreSelector } from "./hooks";
 import { CoreState } from "./store";
+<<<<<<< HEAD
 import { isEqual } from "lodash";
+=======
+import isEqual from "lodash/isEqual";
+>>>>>>> develop
 
 /**
  * The status of asynchronous data fetching is a state machine.
  * - Before data is fetched, the status is "uninitialized".
  * - Once a data request is started, the status transitions from
  * "uninitialized" to "pending".
- * - If the data request successfully complets, then the status
+ * - If the data request successfully completes, then the status
  * transitions from "pending" to "fulfilled".
  * - If the data request fails for any reason, then the status
  * transitions from "pending" to "rejected".

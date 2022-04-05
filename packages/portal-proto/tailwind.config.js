@@ -256,9 +256,10 @@ module.exports = {
         "screen/3": "calc(100vh / 3)",
         "screen/4": "calc(100vh / 4)",
         "screen/5": "calc(100vh / 5)",
+        "img-viewer": "550px",
       },
       gridTemplateColumns: {
-        '2flex1': '1fr auto',
+        "2flex1": "1fr auto",
       },
       fontFamily: {
         montserrat: ["Montserrat", "sans-serif"],
@@ -268,9 +269,6 @@ module.exports = {
   },
   variants: {
     extend: {
-      borderWidth: ["hover"],
-      boxShadow: ["hover"],
-      display: ["group-hover"],
       borderWidth: {
         DEFAULT: '1px',
         '0': '0',
@@ -294,14 +292,18 @@ module.exports = {
     require("@tailwindcss/typography"),
     plugin(function({ addUtilities }) {
       const newUtilities = {
-        '.nextImageFillFix' : {
-          width: 'auto !important',
-          right: 'auto !important',
-          'min-width': '0 !important',
+        ".nextImageFillFix": {
+          width: "auto !important",
+          right: "auto !important",
+          "min-width": "0 !important",
         },
-      }
+      };
 
+<<<<<<< HEAD
       addUtilities(newUtilities)
+=======
+      addUtilities(newUtilities);
+>>>>>>> develop
     }),
   ],
 };
