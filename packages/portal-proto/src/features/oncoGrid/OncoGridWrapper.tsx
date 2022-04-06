@@ -132,6 +132,7 @@ const OncoGridWrapper: React.FC = () => {
                   <MdColorLens />
                 </ActionIcon>
               }
+              withinPortal={false}
             >
               <Menu.Item onClick={() => setShowColorModal(true)}>
                 Customize color

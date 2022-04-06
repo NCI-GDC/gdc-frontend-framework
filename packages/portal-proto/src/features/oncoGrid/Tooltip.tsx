@@ -41,7 +41,7 @@ const Tooltip: React.FC<TooltipProps> = ({ content }: TooltipProps) => {
       tooltipRef={(ref) => (tooltipRef.current = ref)}
       opened={content !== null}
       withArrow
-      withinPortal
+      withinPortal={false}
       positionDependencies={[x, y]}
       position={position}
     >

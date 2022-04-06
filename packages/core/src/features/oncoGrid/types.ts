@@ -23,8 +23,8 @@ export interface Donor {
     data_categories: Array<{
       filecount: number;
       data_category: string;
-    }>
-};
+    }>;
+  };
 }
 
 export interface SSMOccurrence {

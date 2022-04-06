@@ -1,7 +1,12 @@
 import { ReactNode, useEffect, useRef } from "react";
 import OncoGrid from "oncogrid";
 import { heatMapColor } from "./constants";
-import { donorTracks, geneTracks, getFillColorMap } from "./trackConfig";
+import {
+  donorTracks,
+  geneTracks,
+  dataTypesTrack,
+  getFillColorMap,
+} from "./trackConfig";
 import TrackLegend from "./TrackLegend";
 import TrackSelectionModal from "./TrackSelectionModal";
 import { Donor, Gene, SSMObservation, CNVObservation, ColorMap } from "./types";
@@ -138,13 +143,22 @@ const useOncoGridObject = ({
     const grid = new OncoGrid(oncoGridParams);
 
     grid.on("trackMouseOver", ({ domain }: { domain: Domain }) => {
+      let displayValue = domain.displayValue;
+
+      if (dataTypesTrack.map((t) => t.fieldName).includes(domain.fieldName)) {
+        displayValue = `${displayValue ? displayValue : 0} files`;
+      } else {
+        if (typeof domain.displayValue === "number" && domain.fieldName === "age") {
+          displayValue = `${Math.ceil(domain.displayValue / 365.25)} years`;
+        } else {
+          displayValue = domain.displayValue.toString();
+        }
+      }
+
       setTooltipContent(
         <div className="p-4">
           {domain.displayId} <br />
-          {domain.displayName}:{" "}
-          {domain.fieldName === "age" && typeof domain.displayValue === "number"
-            ? `${Math.ceil(domain.displayValue / 365.25)} years`
-            : domain.displayValue.toString()}
+          {domain.displayName}: {displayValue}
         </div>,
       );
     });

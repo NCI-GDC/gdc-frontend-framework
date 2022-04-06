@@ -26,7 +26,12 @@ const TrackSelectionModal: React.FC<TrackSelectionModalProps> = ({
   };
 
   return (
-    <Modal opened onClose={closeModal} title="Select Tracks to Add">
+    <Modal
+      opened
+      withinPortal={false}
+      onClose={closeModal}
+      title="Select Tracks to Add"
+    >
       <div className="flex flex-col p-2">
         {hiddenTracks.map((track) => (
           <div key={track.fieldName}>

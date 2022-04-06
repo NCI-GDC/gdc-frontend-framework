@@ -30,6 +30,7 @@ const ColorPickerButton: React.FC<ColorPickerButtonProps> = ({
       opened={colorPickerOpen}
       onClose={() => setColorPickerOpen(false)}
       position={"bottom"}
+      withinPortal={false}
       target={
         <div>
           <Tooltip label={"Click to adjust color"} withArrow>
@@ -84,6 +85,7 @@ const ColorPaletteModal: React.FC<ColorPaletteModalProps> = ({
         body: "px-16",
       }}
       size={800}
+      withinPortal={false}
     >
       Select the colors to display for each element on the OncoGrid. To change a
       color, click on the square and select the color of interest.

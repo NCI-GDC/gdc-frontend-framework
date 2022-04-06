@@ -100,7 +100,7 @@ const slice = createSlice({
           return state;
         }
         state.status = "fulfilled";
-        state.data.genes = [...response.geneData?.hits || []];
+        state.data.genes = [...(response.geneData?.hits || [])];
         state.data.cases = [...(response.caseData?.hits || [])];
         state.data.ssmOccurrences = [...(response.ssmData?.hits || [])];
         state.data.cnvOccurrences = [...(response.cnvData?.hits || [])];
