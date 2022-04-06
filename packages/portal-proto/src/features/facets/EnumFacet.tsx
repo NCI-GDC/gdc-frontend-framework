@@ -78,7 +78,7 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
 
   useEffect(() => {
     if (isSuccess) {
-      setVisibleItems(Object.entries(data).filter(data => data[0] != "_missing").length)
+      setVisibleItems(Object.entries(data).filter(data => (data[0] != "_missing" && data[0] != "")).length)
     }
   } ,[data, isSuccess]);
 
@@ -187,7 +187,7 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                   {
                     (total == 0) ? <div className="mx-4">No data for this field</div> :
                     isSuccess ?
-                      Object.entries(data).filter(data => data[0] != "_missing").sort(isSortedByValue ? ([, a], [, b]) => (b as number) - (a as number) : ([a], [b]) => a.localeCompare(b),
+                      Object.entries(data).filter(data => (data[0] != "_missing" && data[0] != "")).sort(isSortedByValue ? ([, a], [, b]) => (b as number) - (a as number) : ([a], [b]) => a.localeCompare(b),
                       ).map(([value, count], i) => {
                         if (!isGroupExpanded && i >= maxValuesToDisplay) return null;
                         return (
