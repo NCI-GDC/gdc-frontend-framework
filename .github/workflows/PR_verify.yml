@@ -1,7 +1,7 @@
 name: Pull Request Verify
 on:
   pull_request:
-    branch: 'develop'
+    branch: "develop"
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,17 +16,20 @@ jobs:
         run: npm install
 
       - name: Compilation/Type Check for core
-        run : |
+        run: |
           cd ${{github.workspace}}/packages/core
           npm run compile
 
       - name: Compilation/Type Check for portal-proto
-        run : |
+        run: |
           cd ${{github.workspace}}/packages/portal-proto
-          npm run compile 
+          npm run compile
+
+      - name: Run link check
+        run: npm run lint
 
       - name: Run Prettier Check
         run: npm run format:check
 
       - name: Check for unit tests
-        run: npm test      
+        run: npm test
