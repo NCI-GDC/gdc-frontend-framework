@@ -4,7 +4,7 @@ import { renderPlot } from "@oncojs/survivalplot";
 import { MdDownload as DownloadIcon, MdRestartAlt as ResetIcon } from "react-icons/md";
 import { Tooltip } from "@mantine/core";
 import dynamic from "next/dynamic";
-import { isNumber } from "lodash";
+import isNumber from "lodash/isNumber";
 
 const DownloadOptions = dynamic(() => import("./DownloadOptions"), {
   ssr: false,
