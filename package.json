@@ -24,6 +24,7 @@
   "license": "Apache-2.0",
   "homepage": "https://github.com/NCI-GDC/gdc-frontend-framework#readme",
   "dependencies": {
+    "@mantine/core": "^4.0.9",
     "@reactour/tour": "^2.9.0",
     "classnames": "^2.3.1",
     "isomorphic-fetch": "^3.0.0",
