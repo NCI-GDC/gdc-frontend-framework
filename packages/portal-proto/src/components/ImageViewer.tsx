@@ -10,7 +10,7 @@ interface ImageViewerProp extends HorizontalTableProps {
   imageId: string;
 }
 
-const ImageViewer = ({ imageId, tableData }: ImageViewerProp) => {
+const ImageViewer = ({ imageId, tableData }: ImageViewerProp): JSX.Element => {
   const [viewer, setViewer] = useState<OpenSeadragon.Viewer>(null);
   const { data: imageDetails, isFetching, isError } = useImageDetails(imageId);
   const osdContainerRef = useRef(null);
