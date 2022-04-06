@@ -59,7 +59,7 @@
     r: 3;
     transition: all 0.1s;
     cursor: pointer;
-    stroke-width: none;
+    stroke-width: 0px;
 }
 .survival-plot .serie .point:hover,
 .survival-plot .serie .point:active {
@@ -94,6 +94,18 @@
 .survival-plot.exported-svg-class div {
     position: static !important;
     display: block !important;
+}
+
+.number {
+    display: block;
+    text-align: right;
+    overflow: auto;
+}
+
+.decimal {
+    width: 100px;
+    float: right;
+    text-align: left;
 }
 
 

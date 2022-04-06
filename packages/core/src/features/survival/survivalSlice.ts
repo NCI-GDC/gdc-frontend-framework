@@ -25,25 +25,35 @@ export interface SurvivalDonor {
   readonly project_id: string;
 }
 
-export interface SurvivalApiResponse {
-  readonly results: ReadonlyArray<Survival>;
-  readonly overallStats?: Record<string, never>;
-  readonly warnings: Record<string, string>;
-}
 
-export interface Survival {
+
+export interface SurvivalElement {
     readonly meta: string;
     readonly donors: ReadonlyArray<SurvivalDonor>;
 }
 
+export interface Survival {
+  readonly survivalData: ReadonlyArray<SurvivalElement>;
+  readonly overallStats: Record<string, number>;
+}
+
+export interface SurvivalApiResponse {
+  readonly results: ReadonlyArray<SurvivalElement>;
+  readonly overallStats: Record<string, number>;
+  readonly warnings: Record<string, string>;
+}
+
 export interface SurvivalState {
-  readonly survivalData: ReadonlyArray<Survival>;
+  readonly data: Survival;
   readonly status: DataStatus;
   readonly error?: string;
 }
 
 const initialState: SurvivalState = {
-  survivalData: [],
+  data: {
+    survivalData: [],
+    overallStats: {}
+  },
   status: "uninitialized",
 };
 
@@ -129,17 +139,19 @@ const slice = createSlice({
           state.error = response.warnings.facets;
         } else {
           if (response.results) {
-            // build the legend string
-            // while this could be done the component
-            state.survivalData = response.results.map(r => ({
+            state.data.survivalData = response.results.map(r => ({
               ...r,
               donors: r.donors.map(d => ({
                 ...d,
                 time: d.time / DAYS_IN_YEAR, // convert days to years
               })),
             }))
+            state.data.overallStats = response.overallStats;
           } else {
-            state.survivalData = [];
+            state.data = {
+              survivalData: [],
+              overallStats: {}
+            };
           }
           state.status = "fulfilled";
         }
@@ -161,15 +173,15 @@ export const survivalReducer = slice.reducer;
 export const selectSurvivalState = (state: CoreState): SurvivalState =>
   state.survival;
 
-export const selectSurvival = (state: CoreState): ReadonlyArray<Survival> => {
-  return state.survival.survivalData;
+export const selectSurvival = (state: CoreState):Survival => {
+  return state.survival.data;
 };
 
 export const selectSurvivalData = (
   state: CoreState,
-): CoreDataSelectorResponse<ReadonlyArray<Survival>> => {
+): CoreDataSelectorResponse<Survival> => {
   return {
-    data: state.survival.survivalData,
+    data: state.survival.data,
     status: state.survival.status,
     error: state.survival.error,
   };
