@@ -212,7 +212,7 @@ const SurvivalPlot : React.FC<SurvivalPlotProps> = ( { data, names = [] } : Surv
 
   const legend = plotData.length == 1 ? buildOnePlotLegend(plotData, "Explorer") : buildTwoPlotLegend(plotData, names[0], "mutation");
   return (
-    <div className="flex flex-col overflow-hidden relative">
+    <div className="flex flex-col">
       <div className="flex flex-row w-100 items-center justify-center flex-wrap items-center">
         <div className="flex ml-auto text-montserrat text-lg text-nci-gray-dark ">{"Overall Survival Plot"}</div>
         <div className="flex flex-row items-center ml-auto mt-2 ">
@@ -254,17 +254,22 @@ const SurvivalPlot : React.FC<SurvivalPlotProps> = ( { data, names = [] } : Surv
         drag to zoom
       </div>
     </div>
-      <FloatingTooltip
+
+      <Tooltip
+        coordinates={{x:100, y:100}}
         label={survivalPlotLineTooltipContent}
         disabled={!survivalPlotLineTooltipContent}
+        withArrow={true}
         classNames={{
           body: "bg-white shadow-md"
         }}
       >
           <div className="survival-plot"  ref={container} />
-        </FloatingTooltip>
+        </Tooltip>
     </div>
     )
+
+
 };
 
 export default SurvivalPlot;
