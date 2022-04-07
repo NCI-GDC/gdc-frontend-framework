@@ -5,9 +5,8 @@ import { MdDownload as DownloadIcon, MdRestartAlt as ResetIcon } from "react-ico
 import { Tooltip, FloatingTooltip } from "@mantine/core";
 import dynamic from "next/dynamic";
 import isNumber from "lodash/isNumber";
-
-
-import { useMouse } from '@mantine/hooks';
+import ReactTooltip from 'react-tooltip';
+const CTooltip = dynamic(() => import("./Tooltip"), { ssr: false });
 
 
 const DownloadOptions = dynamic(() => import("./DownloadOptions"), {
@@ -76,7 +75,7 @@ export const useSurvival = (data, xDomain, setXDomain, setTooltip = (x?) => null
           time = 0,
         }) => {
           setTooltip(
-            <div className="font-montserrat text-xs text-nci-gray-darkest">
+            <div className="font-montserrat text-xs text-nci-gray-darkest shadow-md">
             {`Case ID: ${project_id} / ${submitter_id}`}
               <br />
               {`Survival Rate: ${Math.round(survivalEstimate * 100)}%`}
@@ -207,7 +206,6 @@ const SurvivalPlot : React.FC<SurvivalPlotProps> = ( { data, names = [] } : Surv
   // handle the current range of the xAxis set to undefined to reset
   const [xDomain, setXDomain] = useState(undefined);
   const [survivalPlotLineTooltipContent, setSurvivalPlotLineTooltipContent] = useState(undefined)
-  const { ref, x, y } = useMouse();
 
   const pValue = data.overallStats.pValue;
   const plotData = data.survivalData;
@@ -260,19 +258,12 @@ const SurvivalPlot : React.FC<SurvivalPlotProps> = ( { data, names = [] } : Surv
       </div>
     </div>
 
-      <FloatingTooltip
-        label={survivalPlotLineTooltipContent}
-        disabled={!survivalPlotLineTooltipContent}
-        coordinates = { {x:x, y:y}}
-        classNames={{
-          body: "bg-white shadow-md"
-        }}
-      >
-        <div ref={ref}>
+        <div data-tip='' data-for="survivalPlot">
+        <ReactTooltip className="survival-plot-tooltip" id="survivalPlot"  effect='solid'  >
+          {survivalPlotLineTooltipContent  }
+        </ReactTooltip>
           <div className="survival-plot"  ref={container} />
         </div>
-        { console.log(`{ x: ${x}, y: ${y} }`)}
-      </FloatingTooltip>
     </div>
     )
 
