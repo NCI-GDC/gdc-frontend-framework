@@ -181,7 +181,7 @@ export const donorTracks = [...clinicalTracks, ...dataTypesTrack];
 
 export const geneTracks: Track[] = [
   {
-    name: "# Cases affected",
+    name: "# Cases Affected",
     fieldName: "totalDonors",
     sort: sortInt,
     group: "GDC",
