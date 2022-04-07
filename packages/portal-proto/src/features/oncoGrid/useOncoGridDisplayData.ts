@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { OncoGridData } from "@gff/core";
 import { consequenceTypes } from "./constants";
-import { Donor, Gene, SSMObservation, CNVObservation } from "./types";
+import {Donor, Gene, SSMObservation, CNVObservation} from "./types";
 
 const consequencePriorityOrder = [
   "missense_variant",
@@ -43,7 +43,7 @@ const useOncoGridDisplayData = (data: OncoGridData): OncoGridDisplayData =>
           gender,
           race,
           ethnicity,
-          vitalStatus,
+          vitalStatus: vitalStatus.toLowerCase(),
           id: donor.case_id,
           displayId: `${donor.project.project_id} / ${donor.submitter_id}`,
           // The oncogrid library uses -777 as a special null value, don't ask me why :(

@@ -1,10 +1,10 @@
 import { fetchGdcEntities, GdcApiResponse } from "../gdcapi/gdcapi";
-import { Donor } from "./types";
+import { OncoGridDonor } from "./types";
 
 export const fetchCases = async (
   genes: string[],
   consequenceTypeFilters: string[],
-): Promise<GdcApiResponse<Donor>> => {
+): Promise<GdcApiResponse<OncoGridDonor>> => {
   return fetchGdcEntities("analysis/top_mutated_cases_by_gene", {
     fields: [
       "demographic.days_to_death",

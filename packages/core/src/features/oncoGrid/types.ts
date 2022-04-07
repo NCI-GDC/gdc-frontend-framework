@@ -5,7 +5,7 @@ export interface Gene {
   readonly _score: number;
 }
 
-export interface Donor {
+export interface OncoGridDonor {
   readonly case_id: string;
   readonly submitter_id: string;
   readonly demographic: {

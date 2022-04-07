@@ -1,11 +1,5 @@
 import { fetchGdcEntities, GdcApiResponse } from "../gdcapi/gdcapi";
-
-interface Gene {
-  readonly gene_id: string;
-  readonly is_cancer_gene_census: boolean;
-  readonly symbol: string;
-  readonly _score: number;
-}
+import { Gene } from "./types";
 
 export const fetchGenes = (
   consequenceTypeFilters: string[],

@@ -38,6 +38,9 @@ const ColorPickerButton: React.FC<ColorPickerButtonProps> = ({
               variant="outline"
               color="gray"
               onClick={() => setColorPickerOpen(true)}
+              classNames={{
+                root: "min-w-[150px]"
+              }}
             >
               <ColorSwatch color={color} />
               <div className="pl-1">{label}</div>
@@ -87,8 +90,7 @@ const ColorPaletteModal: React.FC<ColorPaletteModalProps> = ({
       size={800}
       withinPortal={false}
     >
-      Select the colors to display for each element on the OncoGrid. To change a
-      color, click on the square and select the color of interest.
+      Select the colors to display for each element on the OncoGrid. Click on an element below to choose a color for that element, or apply a suggested theme.
       <h3 className="my-4">Customize Mutation Colors</h3>
       <div className="flex flex-wrap gap-4">
         {Object.entries(consequenceTypes).map(([value, label]) => (
@@ -106,7 +108,7 @@ const ColorPaletteModal: React.FC<ColorPaletteModalProps> = ({
       <h3 className="my-4">Suggested Mutation Theme</h3>
       <div className="border rounded flex flex-wrap gap-4 p-3">
         {Object.entries(consequenceTypes).map(([value, label]) => (
-          <div className="flex my-auto" key={value}>
+          <div className="flex my-auto min-w-[150px]" key={value}>
             <ColorSwatch color={suggestedColorMap.mutation[value]} />
             <div className="pl-2">{label}</div>
           </div>
@@ -136,7 +138,7 @@ const ColorPaletteModal: React.FC<ColorPaletteModalProps> = ({
       <h3 className="my-4">Suggested CNV Theme</h3>
       <div className="border rounded flex flex-wrap gap-4 p-3">
         {Object.entries(cnvTypes).map(([value, label]) => (
-          <div className="flex my-auto" key={value}>
+          <div className="flex my-auto min-w-[150px]" key={value}>
             <ColorSwatch color={suggestedColorMap.cnv[value]} />
             <div className="pl-2">{label}</div>
           </div>

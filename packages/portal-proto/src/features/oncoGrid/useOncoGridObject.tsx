@@ -149,7 +149,7 @@ const useOncoGridObject = ({
         displayValue = `${displayValue ? displayValue : 0} files`;
       } else {
         if (typeof domain.displayValue === "number" && domain.fieldName === "age") {
-          displayValue = `${Math.ceil(domain.displayValue / 365.25)} years`;
+          displayValue = `${Math.ceil(domain.displayValue / 365.25)} years (${domain.displayValue} days)`;
         } else {
           displayValue = domain.displayValue.toString();
         }

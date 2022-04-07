@@ -19,7 +19,7 @@ const TrackLegend: React.FC<TrackLegendProps> = ({
 }: TrackLegendProps) => {
   const maxValues = {
     daysToDeath: maxDaysToDeath,
-    age: Math.ceil(maxAge / 365.25),
+    age: `${Math.ceil(maxAge / 365.25)} years`,
   };
 
   switch (track) {
@@ -81,13 +81,17 @@ const TrackLegend: React.FC<TrackLegendProps> = ({
     case "GDC":
       return (
         <div className="p-2">
-          <b># cases Affected:</b>
+          <b># Cases Affected:</b>
           <div className="pl-1 flex flex-row">
             {0}
             <Gradient color={fillMap["totalDonors"] as string} />
             {maxDonors}
           </div>
         </div>
+      );
+    default:
+      return(
+        <div className="p-2"></div>
       );
   }
 };

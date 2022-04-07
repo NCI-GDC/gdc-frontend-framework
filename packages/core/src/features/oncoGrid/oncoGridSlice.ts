@@ -11,7 +11,7 @@ import { fetchGenes } from "./genesApi";
 import { fetchSSMOccurrences } from "./ssmOccurrencesApi";
 import { fetchCNVOccurrences } from "./cnvOccurrencesApi";
 import { fetchCases } from "./casesApi";
-import { Gene, Donor, CNVOccurrence, SSMOccurrence } from "./types";
+import { Gene, OncoGridDonor, CNVOccurrence, SSMOccurrence } from "./types";
 
 interface OncoGridParams {
   readonly consequenceTypeFilters: string[];
@@ -64,7 +64,7 @@ export const fetchOncoGrid = createAsyncThunk(
 
 export interface OncoGridData {
   readonly genes?: Gene[];
-  readonly cases?: Donor[];
+  readonly cases?: OncoGridDonor[];
   readonly ssmOccurrences?: SSMOccurrence[];
   readonly cnvOccurrences?: CNVOccurrence[];
 }

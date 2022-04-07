@@ -11,17 +11,17 @@ export interface FillMap {
   [key: string]: string | Record<string, string>;
 }
 
-export const sortInt = (field: string): ((a: Track, b: Track) => void) => {
+export const sortInt = (field: string): ((a: Record<string, any>, b: Record<string, any>) => void) => {
   return (a, b) => {
     if (b[field] !== a[field]) {
-      return b[field] - a[field];
+      return (b[field] || 0) - (a[field] || 0);
     } else {
       return defaultSort(a, b);
     }
   };
 };
 
-export const sortBool = (field: string): ((a: Track, b: Track) => void) => {
+export const sortBool = (field: string): ((a: Record<string, any>, b: Record<string, any>) => void) => {
   return (a, b) => {
     if (a[field] && !b[field]) {
       return -1;
@@ -33,7 +33,7 @@ export const sortBool = (field: string): ((a: Track, b: Track) => void) => {
   };
 };
 
-export const sortByString = (field: string): ((a: Track, b: Track) => void) => {
+export const sortByString = (field: string): ((a: Record<string, any>, b: Record<string, any>) => void) => {
   return (a, b) => {
     if (a[field] > b[field]) {
       return 1;
@@ -78,8 +78,8 @@ export const getFillColorMap = (
     female: "#DC609C",
   },
   vitalStatus: {
-    Alive: "#1693c0",
-    Dead: "#8b0000",
+    alive: "#1693c0",
+    dead: "#8b0000",
   },
   daysToDeath: "#0000FF",
   race: { ...getColorsForValues(raceValues) },
