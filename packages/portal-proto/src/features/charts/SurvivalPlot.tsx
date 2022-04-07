@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { Survival, SurvivalElement } from "@gff/core";
 import { renderPlot } from "@oncojs/survivalplot";
 import { MdDownload as DownloadIcon, MdRestartAlt as ResetIcon } from "react-icons/md";
-import { FloatingTooltip, Tooltip } from "@mantine/core";
+import { Tooltip as MTooltip} from "@mantine/core";
+import Tooltip from "./Tooltip";
 import dynamic from "next/dynamic";
 import isNumber from "lodash/isNumber";
 
@@ -229,7 +230,7 @@ const SurvivalPlot : React.FC<SurvivalPlotProps> = ( { data, names = [] } : Surv
         })
       }
         <div>
-          <Tooltip
+          <MTooltip
             label={
               pValue === 0 && (
                 <div>
@@ -246,7 +247,7 @@ const SurvivalPlot : React.FC<SurvivalPlotProps> = ( { data, names = [] } : Surv
             {isNumber(pValue) &&
             `Log-Rank Test P-Value = ${pValue.toExponential(2)}`}
           </div>
-          </Tooltip>
+          </MTooltip>
       </div>
       <div
         className={`flex flex-row w-full justify-end text-xs mr-8 text-nci-gray no-print`}
@@ -256,13 +257,7 @@ const SurvivalPlot : React.FC<SurvivalPlotProps> = ( { data, names = [] } : Surv
     </div>
 
       <Tooltip
-        coordinates={{x:100, y:100}}
-        label={survivalPlotLineTooltipContent}
-        disabled={!survivalPlotLineTooltipContent}
-        withArrow={true}
-        classNames={{
-          body: "bg-white shadow-md"
-        }}
+        content={survivalPlotLineTooltipContent}
       >
           <div className="survival-plot"  ref={container} />
         </Tooltip>
