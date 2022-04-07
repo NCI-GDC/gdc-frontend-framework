@@ -2,10 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import { Survival, SurvivalElement } from "@gff/core";
 import { renderPlot } from "@oncojs/survivalplot";
 import { MdDownload as DownloadIcon, MdRestartAlt as ResetIcon } from "react-icons/md";
-import { Tooltip as MTooltip} from "@mantine/core";
-import Tooltip from "./Tooltip";
+import { Tooltip, FloatingTooltip } from "@mantine/core";
 import dynamic from "next/dynamic";
 import isNumber from "lodash/isNumber";
+
+
+import { useMouse } from '@mantine/hooks';
+
 
 const DownloadOptions = dynamic(() => import("./DownloadOptions"), {
   ssr: false,
@@ -204,6 +207,7 @@ const SurvivalPlot : React.FC<SurvivalPlotProps> = ( { data, names = [] } : Surv
   // handle the current range of the xAxis set to undefined to reset
   const [xDomain, setXDomain] = useState(undefined);
   const [survivalPlotLineTooltipContent, setSurvivalPlotLineTooltipContent] = useState(undefined)
+  const { ref, x, y } = useMouse();
 
   const pValue = data.overallStats.pValue;
   const plotData = data.survivalData;
@@ -230,7 +234,7 @@ const SurvivalPlot : React.FC<SurvivalPlotProps> = ( { data, names = [] } : Surv
         })
       }
         <div>
-          <MTooltip
+          <Tooltip
             label={
               pValue === 0 && (
                 <div>
@@ -247,7 +251,7 @@ const SurvivalPlot : React.FC<SurvivalPlotProps> = ( { data, names = [] } : Surv
             {isNumber(pValue) &&
             `Log-Rank Test P-Value = ${pValue.toExponential(2)}`}
           </div>
-          </MTooltip>
+          </Tooltip>
       </div>
       <div
         className={`flex flex-row w-full justify-end text-xs mr-8 text-nci-gray no-print`}
@@ -256,11 +260,19 @@ const SurvivalPlot : React.FC<SurvivalPlotProps> = ( { data, names = [] } : Surv
       </div>
     </div>
 
-      <Tooltip
-        content={survivalPlotLineTooltipContent}
+      <FloatingTooltip
+        label={survivalPlotLineTooltipContent}
+        disabled={!survivalPlotLineTooltipContent}
+        coordinates = { {x:x, y:y}}
+        classNames={{
+          body: "bg-white shadow-md"
+        }}
       >
+        <div ref={ref}>
           <div className="survival-plot"  ref={container} />
-        </Tooltip>
+        </div>
+        { console.log(`{ x: ${x}, y: ${y} }`)}
+      </FloatingTooltip>
     </div>
     )
 
