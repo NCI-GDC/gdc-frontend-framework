@@ -1,8 +1,17 @@
+/** @module API **/
+
 import { isObject } from "../../ts-utils";
 import { GqlOperation } from "./filters";
 import "isomorphic-fetch";
 
 export type UnknownJson = Record<string, unknown>;
+
+/**
+ * The response for a call the GDC Rest API
+ * @field data - json data returned
+ * @field warnings - any warning messages from the API call. Is used to determine if the a fetch is successful
+ * @memberOf API
+ */
 export interface GdcApiResponse<H = UnknownJson> {
   readonly data: GdcApiData<H>;
   readonly warnings: Record<string, string>;
@@ -14,10 +23,19 @@ export interface GdcApiData<H> {
   readonly pagination: Pagination;
 }
 
+/**
+ * Array of buckets returned from a call to the GDC API
+ */
 export interface Buckets {
   readonly buckets: ReadonlyArray<Bucket>;
 }
 
+/**
+ * Bucket element in a GDC API response
+ *
+ * @field key: key or label
+ * @field doc_count: the number of documents (counts) for the key
+ */
 export interface Bucket {
   readonly doc_count: number;
   readonly key: string;
@@ -27,6 +45,9 @@ export interface Stats {
   readonly stats: Statistics;
 }
 
+/**
+ * The statistics section in the GDC API response.
+ */
 export interface Statistics {
   readonly count: number;
   readonly min?: number;
@@ -35,6 +56,9 @@ export interface Statistics {
   readonly sum: number;
 }
 
+/**
+ * The pagination section in the GDC API response.
+ */
 export interface Pagination {
   readonly count: number;
   readonly total: number;
@@ -57,6 +81,9 @@ export const isStatsAggregation = (
   return isObject(aggregation) && "stats" in aggregation;
 };
 
+/**
+ * Supported GDC REST API endpoints
+ */
 export type gdcEndpoint =
   | "annotations"
   | "case_ssms"
@@ -69,6 +96,18 @@ export type gdcEndpoint =
   | "ssm_occurrences"
   | "ssms";
 
+/**
+ * Defines the parameters of a GDC API search/retrieval. All parameters
+ * are optional
+ * @property filters - specifies the search terms for the query
+ * @property fields - specifies the which data elements should be returned in the response, if available
+ * @property expand - Returns multiple related fields
+ * @property format - Specifies the API response format: JSON, XML, or TSV
+ * @property size - Specifies the number of results to return
+ * @property from - 	Specifies the first record to return from a set of search results
+ * @property sortBy - Specifies sorting for the search results ("asc" | "desc")
+ * @property facets - Provides all existing values for a given field and the number of records having this value
+ */
 export interface GdcApiRequest {
   readonly filters?: GqlOperation;
   readonly fields?: ReadonlyArray<string>;
@@ -344,6 +383,14 @@ export const fetchGdcFiles = async (
   return fetchGdcEntities("files", request);
 };
 
+/**
+ * Request an entity from the GDC API. This call can be used to create custom
+ * calls to the
+ * @param endpoint which endpoint to request from, {@link gdcEndpoint}
+ * @param request: the parameters to a GDC API call
+ * @param fetchAll: returns all of the "pages" for this call
+ * @param previousHits: list of previous data returned from the API, used if fetch all is true
+ */
 export const fetchGdcEntities = async <T>(
   endpoint: string,
   request?: GdcApiRequest,

@@ -1,3 +1,4 @@
+/** @module API **/
 
 export interface GraphQLFetchError {
   readonly url: string;
@@ -32,6 +33,15 @@ const buildGraphQLFetchError = async (
   };
 };
 
+/**
+ * Fetches data from the GDC GraphQL API. Can be used to call any GraphQL query supported
+ * by the API.
+ * @typeParam T - datatype of the GraphQLApiResponse data member
+ * @param query - GraphQL query represented as string
+ * @param variables - used in the query.
+ * @returns  response - is a GraphQLApiResponse structure.
+ * @memberOf API
+ */
 export const graphqlAPI = async <T>(query: string, variables: Record<string, unknown>): Promise<GraphQLApiResponse<T>> => {
   const res = await fetch("https://api.gdc.cancer.gov/v0/graphql", {
     headers: {
