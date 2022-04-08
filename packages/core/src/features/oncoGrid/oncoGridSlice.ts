@@ -23,7 +23,7 @@ interface OncoGridResponse {
   readonly geneData?: GdcApiData<Gene>;
   readonly ssmData?: GdcApiData<SSMOccurrence>;
   readonly cnvData?: GdcApiData<CNVOccurrence>;
-  readonly caseData?: GdcApiData<Donor>;
+  readonly caseData?: GdcApiData<OncoGridDonor>;
 }
 
 export const fetchOncoGrid = createAsyncThunk(
