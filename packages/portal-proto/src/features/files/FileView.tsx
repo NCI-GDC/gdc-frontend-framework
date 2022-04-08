@@ -5,7 +5,7 @@ import { HorizontalTable } from "../../components/HorizontalTable";
 import { get } from "lodash";
 import dynamic from "next/dynamic";
 import { formatDataForTable, parseSlideDetailsInfo } from "./utils";
-// import { MultipleImageViewer } from "../../components/MultipleImageViewer";
+import { MultipleImageViewer } from "../../components/MultipleImageViewer";
 const ImageViewer = dynamic(() => import("../../components/ImageViewer"), {
   ssr: false,
 });
@@ -105,10 +105,10 @@ export const FileView: React.FC<FileViewProps> = ({ file }: FileViewProps) => {
 
       {get(file, "dataType") === "Slide Image" ? (
         <div className="bg-white w-full mt-4">
-          <h2 className="p-2 text-lg mx-4">Slide Image Viewer</h2>
+          {/* <h2 className="p-2 text-lg mx-4">Slide Image Viewer</h2> */}
           {/*TODO Slide Image Viewer see PEAR-167 */}
-          {/* <MultipleImageViewer imageId={imageId} tableData={parseSlideDetailsInfo(file)} /> */}
-          <ImageViewer imageId={imageId} tableData={parseSlideDetailsInfo(file)} />
+          <MultipleImageViewer imageId={imageId} tableData={parseSlideDetailsInfo(file)} />
+          {/* <ImageViewer imageId={imageId} tableData={parseSlideDetailsInfo(file)} /> */}
           <div>
             slide ids for first case, sample, portion:{" "}
             <ul>
