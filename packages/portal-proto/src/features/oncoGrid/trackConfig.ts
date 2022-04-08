@@ -11,7 +11,9 @@ export interface FillMap {
   [key: string]: string | Record<string, string>;
 }
 
-export const sortInt = (field: string): ((a: Record<string, any>, b: Record<string, any>) => void) => {
+export const sortInt = (
+  field: string,
+): ((a: Record<string, any>, b: Record<string, any>) => void) => {
   return (a, b) => {
     if (b[field] !== a[field]) {
       return (b[field] || 0) - (a[field] || 0);
@@ -21,7 +23,9 @@ export const sortInt = (field: string): ((a: Record<string, any>, b: Record<stri
   };
 };
 
-export const sortBool = (field: string): ((a: Record<string, any>, b: Record<string, any>) => void) => {
+export const sortBool = (
+  field: string,
+): ((a: Record<string, any>, b: Record<string, any>) => void) => {
   return (a, b) => {
     if (a[field] && !b[field]) {
       return -1;
@@ -33,7 +37,9 @@ export const sortBool = (field: string): ((a: Record<string, any>, b: Record<str
   };
 };
 
-export const sortByString = (field: string): ((a: Record<string, any>, b: Record<string, any>) => void) => {
+export const sortByString = (
+  field: string,
+): ((a: Record<string, any>, b: Record<string, any>) => void) => {
   return (a, b) => {
     if (a[field] > b[field]) {
       return 1;

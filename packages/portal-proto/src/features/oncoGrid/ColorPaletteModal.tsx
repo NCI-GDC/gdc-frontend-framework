@@ -32,21 +32,21 @@ const ColorPickerButton: React.FC<ColorPickerButtonProps> = ({
       position={"bottom"}
       withinPortal={false}
       target={
-        <div>
+        <>
           <Tooltip label={"Click to adjust color"} withArrow>
             <Button
               variant="outline"
               color="gray"
               onClick={() => setColorPickerOpen(true)}
               classNames={{
-                root: "min-w-[150px]"
+                root: "min-w-[150px]",
               }}
             >
               <ColorSwatch color={color} />
               <div className="pl-1">{label}</div>
             </Button>
           </Tooltip>
-        </div>
+        </>
       }
     >
       <ColorPicker
@@ -79,6 +79,21 @@ const ColorPaletteModal: React.FC<ColorPaletteModalProps> = ({
     setCnvPalette(colorMap.cnv);
   }, [colorMap]);
 
+  const savePalette = () => {
+    localStorage.setItem(
+      "oncogridActiveTheme",
+      JSON.stringify({ mutation: mutationPalette, cnv: cnvPalette }),
+    );
+    setNewColorMap({ mutation: mutationPalette, cnv: cnvPalette });
+    closeModal();
+  };
+
+  const closeWithSaving = () => {
+    setMutationPalette(colorMap.mutation);
+    setCnvPalette(colorMap.cnv);
+    closeModal();
+  };
+
   return (
     <Modal
       opened={opened}
@@ -90,7 +105,9 @@ const ColorPaletteModal: React.FC<ColorPaletteModalProps> = ({
       size={800}
       withinPortal={false}
     >
-      Select the colors to display for each element on the OncoGrid. Click on an element below to choose a color for that element, or apply a suggested theme.
+      Select the colors to display for each element on the OncoGrid. Click on an
+      element below to choose a color for that element, or apply a suggested
+      theme.
       <h3 className="my-4">Customize Mutation Colors</h3>
       <div className="flex flex-wrap gap-4">
         {Object.entries(consequenceTypes).map(([value, label]) => (
@@ -153,19 +170,8 @@ const ColorPaletteModal: React.FC<ColorPaletteModalProps> = ({
       </div>
       <hr className="m-4" />
       <div className="flex justify-end gap-x-2">
-        <Button onClick={closeModal}>Cancel</Button>
-        <Button
-          onClick={() => {
-            localStorage.setItem(
-              "oncogridActiveTheme",
-              JSON.stringify({ mutation: mutationPalette, cnv: cnvPalette }),
-            );
-            setNewColorMap({ mutation: mutationPalette, cnv: cnvPalette });
-            closeModal();
-          }}
-        >
-          Save
-        </Button>
+        <Button onClick={closeWithSaving}>Cancel</Button>
+        <Button onClick={savePalette}>Save</Button>
       </div>
     </Modal>
   );

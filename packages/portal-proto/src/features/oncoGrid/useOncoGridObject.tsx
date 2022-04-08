@@ -148,8 +148,13 @@ const useOncoGridObject = ({
       if (dataTypesTrack.map((t) => t.fieldName).includes(domain.fieldName)) {
         displayValue = `${displayValue ? displayValue : 0} files`;
       } else {
-        if (typeof domain.displayValue === "number" && domain.fieldName === "age") {
-          displayValue = `${Math.ceil(domain.displayValue / 365.25)} years (${domain.displayValue} days)`;
+        if (
+          typeof domain.displayValue === "number" &&
+          domain.fieldName === "age"
+        ) {
+          displayValue = `${Math.ceil(domain.displayValue / 365.25)} years (${
+            domain.displayValue
+          } days)`;
         } else {
           displayValue = domain.displayValue.toString();
         }

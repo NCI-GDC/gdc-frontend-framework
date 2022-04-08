@@ -127,7 +127,12 @@ const OncoGridWrapper: React.FC = () => {
       <div className="flex pb-8">
         <div className="basis-1/2">{`${donors.length} Most Mutated Cases and Top ${genes.length} Mutated Genes by SSM`}</div>
         <div className="flex basis-1/2 justify-end">
-          <MTooltip withinPortal={false} position="top" label={"Customize Colors"} withArrow>
+          <MTooltip
+            withinPortal={false}
+            position="top"
+            label={"Customize Colors"}
+            withArrow
+          >
             <Menu
               control={
                 <ActionIcon variant={"outline"} classNames={{ root: "mx-1" }}>
@@ -152,7 +157,12 @@ const OncoGridWrapper: React.FC = () => {
               </Menu.Item>
             </Menu>
           </MTooltip>
-          <MTooltip label={"Download"} withinPortal={false} position="top" withArrow>
+          <MTooltip
+            label={"Download"}
+            withinPortal={false}
+            position="top"
+            withArrow
+          >
             <ActionIcon variant={"outline"} classNames={{ root: "mx-1" }}>
               <MdDownload />
             </ActionIcon>
@@ -166,7 +176,12 @@ const OncoGridWrapper: React.FC = () => {
               <MdRefresh />
             </ActionIcon>
           </MTooltip>
-          <MTooltip label={"Cluster Data"} withinPortal={false} position="top" withArrow>
+          <MTooltip
+            label={"Cluster Data"}
+            withinPortal={false}
+            position="top"
+            withArrow
+          >
             <ActionIcon
               variant={"outline"}
               onClick={() => gridObject.current.cluster()}
@@ -175,7 +190,12 @@ const OncoGridWrapper: React.FC = () => {
               <FaSortAmountDown />
             </ActionIcon>
           </MTooltip>
-          <MTooltip label={"Toggle Heatmap View"} withinPortal={false} position="top" withArrow>
+          <MTooltip
+            label={"Toggle Heatmap View"}
+            withinPortal={false}
+            position="top"
+            withArrow
+          >
             <ActionIcon
               variant={isHeatmap ? "filled" : "outline"}
               onClick={() => {
@@ -186,7 +206,12 @@ const OncoGridWrapper: React.FC = () => {
               <FaFire />
             </ActionIcon>
           </MTooltip>
-          <MTooltip label={"Toggle Gridlines"} withinPortal={false} position="top" withArrow>
+          <MTooltip
+            label={"Toggle Gridlines"}
+            withinPortal={false}
+            position="top"
+            withArrow
+          >
             <ActionIcon
               variant={hasGridlines ? "filled" : "outline"}
               onClick={() => setHasGridlines(!hasGridlines)}
@@ -195,7 +220,12 @@ const OncoGridWrapper: React.FC = () => {
               <MdGridOn />
             </ActionIcon>
           </MTooltip>
-          <MTooltip label={"Toggle Crosshairs"} withinPortal={false} position="top" withArrow>
+          <MTooltip
+            label={"Toggle Crosshairs"}
+            withinPortal={false}
+            position="top"
+            withArrow
+          >
             <ActionIcon
               variant={showCrosshairs ? "filled" : "outline"}
               onClick={() => setShowCrosshairs(!showCrosshairs)}
@@ -204,7 +234,12 @@ const OncoGridWrapper: React.FC = () => {
               <FaCrosshairs />
             </ActionIcon>
           </MTooltip>
-          <MTooltip label={"Fullscreen "} withinPortal={false} position="top" withArrow>
+          <MTooltip
+            label={"Fullscreen "}
+            withinPortal={false}
+            position="top"
+            withArrow
+          >
             <ActionIcon
               variant={isFullscreen ? "filled" : "outline"}
               onClick={() => toggleFullScreen(fullOncoGridContainer)}
@@ -222,7 +257,7 @@ const OncoGridWrapper: React.FC = () => {
         setConsequenceTypeFilters={setConsequenceTypeFilters}
         cnvFilters={cnvFilters}
         setCnvFilters={setCnvFilters}
-      ></MutationFilters>
+      />
       <Tooltip content={tooltipContent} />
       <ColorPaletteModal
         opened={showColorModal}
@@ -242,7 +277,9 @@ const OncoGridWrapper: React.FC = () => {
         <div
           ref={(ref) => (gridContainer.current = ref)}
           className={`oncogrid-wrapper bg-white ${
-            consequenceTypeFilters.length === 0 ? "invisible" : "visible"
+            consequenceTypeFilters.length === 0 || isLoading
+              ? "invisible"
+              : "visible"
           }`}
         ></div>
       </div>

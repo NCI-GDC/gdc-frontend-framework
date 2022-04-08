@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { OncoGridData } from "@gff/core";
 import { consequenceTypes } from "./constants";
-import {Donor, Gene, SSMObservation, CNVObservation} from "./types";
+import { Donor, Gene, SSMObservation, CNVObservation } from "./types";
 
 const consequencePriorityOrder = [
   "missense_variant",
