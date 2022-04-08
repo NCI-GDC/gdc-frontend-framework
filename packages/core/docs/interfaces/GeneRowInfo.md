@@ -27,7 +27,7 @@
 
 #### Defined in
 
-[packages/core/src/features/genomic/genesTableSlice.ts:96](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/genomic/genesTableSlice.ts#L96)
+[packages/core/src/features/genomic/genesTableSlice.ts:96](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/genomic/genesTableSlice.ts#L96)
 
 ___
 
@@ -37,7 +37,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/genomic/genesTableSlice.ts:97](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/genomic/genesTableSlice.ts#L97)
+[packages/core/src/features/genomic/genesTableSlice.ts:97](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/genomic/genesTableSlice.ts#L97)
 
 ___
 
@@ -47,7 +47,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/genomic/genesTableSlice.ts:98](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/genomic/genesTableSlice.ts#L98)
+[packages/core/src/features/genomic/genesTableSlice.ts:98](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/genomic/genesTableSlice.ts#L98)
 
 ___
 
@@ -57,7 +57,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/genomic/genesTableSlice.ts:99](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/genomic/genesTableSlice.ts#L99)
+[packages/core/src/features/genomic/genesTableSlice.ts:99](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/genomic/genesTableSlice.ts#L99)
 
 ___
 
@@ -67,7 +67,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/genomic/genesTableSlice.ts:100](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/genomic/genesTableSlice.ts#L100)
+[packages/core/src/features/genomic/genesTableSlice.ts:100](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/genomic/genesTableSlice.ts#L100)
 
 ___
 
@@ -77,7 +77,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/genomic/genesTableSlice.ts:101](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/genomic/genesTableSlice.ts#L101)
+[packages/core/src/features/genomic/genesTableSlice.ts:101](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/genomic/genesTableSlice.ts#L101)
 
 ___
 
@@ -87,7 +87,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/genomic/genesTableSlice.ts:102](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/genomic/genesTableSlice.ts#L102)
+[packages/core/src/features/genomic/genesTableSlice.ts:102](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/genomic/genesTableSlice.ts#L102)
 
 ___
 
@@ -97,7 +97,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/genomic/genesTableSlice.ts:103](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/genomic/genesTableSlice.ts#L103)
+[packages/core/src/features/genomic/genesTableSlice.ts:103](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/genomic/genesTableSlice.ts#L103)
 
 ___
 
@@ -107,7 +107,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/genomic/genesTableSlice.ts:104](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/genomic/genesTableSlice.ts#L104)
+[packages/core/src/features/genomic/genesTableSlice.ts:104](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/genomic/genesTableSlice.ts#L104)
 
 ___
 
@@ -117,7 +117,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/genomic/genesTableSlice.ts:105](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/genomic/genesTableSlice.ts#L105)
+[packages/core/src/features/genomic/genesTableSlice.ts:105](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/genomic/genesTableSlice.ts#L105)
 
 ___
 
@@ -127,7 +127,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/genomic/genesTableSlice.ts:106](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/genomic/genesTableSlice.ts#L106)
+[packages/core/src/features/genomic/genesTableSlice.ts:106](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/genomic/genesTableSlice.ts#L106)
 
 ___
 
@@ -137,4 +137,4 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/genomic/genesTableSlice.ts:107](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/genomic/genesTableSlice.ts#L107)
+[packages/core/src/features/genomic/genesTableSlice.ts:107](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/genomic/genesTableSlice.ts#L107)

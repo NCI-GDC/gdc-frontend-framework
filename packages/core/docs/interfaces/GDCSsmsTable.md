@@ -21,7 +21,7 @@
 
 #### Defined in
 
-[packages/core/src/features/genomic/ssmsTableSlice.ts:121](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/genomic/ssmsTableSlice.ts#L121)
+[packages/core/src/features/genomic/ssmsTableSlice.ts:121](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/genomic/ssmsTableSlice.ts#L121)
 
 ___
 
@@ -31,7 +31,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/genomic/ssmsTableSlice.ts:122](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/genomic/ssmsTableSlice.ts#L122)
+[packages/core/src/features/genomic/ssmsTableSlice.ts:122](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/genomic/ssmsTableSlice.ts#L122)
 
 ___
 
@@ -41,7 +41,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/genomic/ssmsTableSlice.ts:126](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/genomic/ssmsTableSlice.ts#L126)
+[packages/core/src/features/genomic/ssmsTableSlice.ts:126](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/genomic/ssmsTableSlice.ts#L126)
 
 ___
 
@@ -51,7 +51,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/genomic/ssmsTableSlice.ts:125](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/genomic/ssmsTableSlice.ts#L125)
+[packages/core/src/features/genomic/ssmsTableSlice.ts:125](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/genomic/ssmsTableSlice.ts#L125)
 
 ___
 
@@ -61,7 +61,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/genomic/ssmsTableSlice.ts:124](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/genomic/ssmsTableSlice.ts#L124)
+[packages/core/src/features/genomic/ssmsTableSlice.ts:124](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/genomic/ssmsTableSlice.ts#L124)
 
 ___
 
@@ -71,4 +71,4 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/genomic/ssmsTableSlice.ts:123](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/genomic/ssmsTableSlice.ts#L123)
+[packages/core/src/features/genomic/ssmsTableSlice.ts:123](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/genomic/ssmsTableSlice.ts#L123)

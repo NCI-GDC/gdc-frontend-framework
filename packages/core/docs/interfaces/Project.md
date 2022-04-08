@@ -21,7 +21,7 @@
 
 #### Defined in
 
-[packages/core/src/features/projects/projectsSlice.ts:15](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/projects/projectsSlice.ts#L15)
+[packages/core/src/features/projects/projectsSlice.ts:15](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/projects/projectsSlice.ts#L15)
 
 ___
 
@@ -31,7 +31,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/projects/projectsSlice.ts:13](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/projects/projectsSlice.ts#L13)
+[packages/core/src/features/projects/projectsSlice.ts:13](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/projects/projectsSlice.ts#L13)
 
 ___
 
@@ -41,7 +41,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/projects/projectsSlice.ts:16](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/projects/projectsSlice.ts#L16)
+[packages/core/src/features/projects/projectsSlice.ts:16](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/projects/projectsSlice.ts#L16)
 
 ___
 
@@ -59,7 +59,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/projects/projectsSlice.ts:22](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/projects/projectsSlice.ts#L22)
+[packages/core/src/features/projects/projectsSlice.ts:22](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/projects/projectsSlice.ts#L22)
 
 ___
 
@@ -69,7 +69,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/projects/projectsSlice.ts:14](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/projects/projectsSlice.ts#L14)
+[packages/core/src/features/projects/projectsSlice.ts:14](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/projects/projectsSlice.ts#L14)
 
 ___
 
@@ -87,4 +87,4 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/projects/projectsSlice.ts:17](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/projects/projectsSlice.ts#L17)
+[packages/core/src/features/projects/projectsSlice.ts:17](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/projects/projectsSlice.ts#L17)

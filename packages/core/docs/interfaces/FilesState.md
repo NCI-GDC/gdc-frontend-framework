@@ -18,7 +18,7 @@
 
 #### Defined in
 
-[packages/core/src/features/files/filesSlice.ts:284](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/files/filesSlice.ts#L284)
+[packages/core/src/features/files/filesSlice.ts:284](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/files/filesSlice.ts#L284)
 
 ___
 
@@ -28,7 +28,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/files/filesSlice.ts:282](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/files/filesSlice.ts#L282)
+[packages/core/src/features/files/filesSlice.ts:282](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/files/filesSlice.ts#L282)
 
 ___
 
@@ -38,4 +38,4 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/files/filesSlice.ts:283](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/files/filesSlice.ts#L283)
+[packages/core/src/features/files/filesSlice.ts:283](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/files/filesSlice.ts#L283)

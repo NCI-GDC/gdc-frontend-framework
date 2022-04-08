@@ -18,7 +18,7 @@
 
 #### Defined in
 
-[packages/core/src/features/cohort/countSlice.ts:14](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/cohort/countSlice.ts#L14)
+[packages/core/src/features/cohort/countSlice.ts:14](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/cohort/countSlice.ts#L14)
 
 ___
 
@@ -28,7 +28,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/cohort/countSlice.ts:16](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/cohort/countSlice.ts#L16)
+[packages/core/src/features/cohort/countSlice.ts:16](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/cohort/countSlice.ts#L16)
 
 ___
 
@@ -38,4 +38,4 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/cohort/countSlice.ts:15](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/cohort/countSlice.ts#L15)
+[packages/core/src/features/cohort/countSlice.ts:15](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/cohort/countSlice.ts#L15)

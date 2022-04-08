@@ -18,7 +18,7 @@
 
 #### Defined in
 
-[packages/core/src/features/genomic/genesFrequencyChartSlice.ts:54](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/genomic/genesFrequencyChartSlice.ts#L54)
+[packages/core/src/features/genomic/genesFrequencyChartSlice.ts:54](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/genomic/genesFrequencyChartSlice.ts#L54)
 
 ___
 
@@ -28,7 +28,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/genomic/genesFrequencyChartSlice.ts:55](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/genomic/genesFrequencyChartSlice.ts#L55)
+[packages/core/src/features/genomic/genesFrequencyChartSlice.ts:55](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/genomic/genesFrequencyChartSlice.ts#L55)
 
 ___
 
@@ -38,4 +38,4 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/genomic/genesFrequencyChartSlice.ts:56](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/genomic/genesFrequencyChartSlice.ts#L56)
+[packages/core/src/features/genomic/genesFrequencyChartSlice.ts:56](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/genomic/genesFrequencyChartSlice.ts#L56)

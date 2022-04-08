@@ -17,7 +17,8 @@
     "test:int": "jest int",
     "test:all": "jest",
     "dev": "npm run build:watch",
-    "doc": "typedoc --plugin typedoc-plugin-markdown --out docs src"
+    "doc": "typedoc --plugin typedoc-plugin-markdown --out docs src",
+    "docHtml": "typedoc --plugin none --out docs_html src"
   },
   "author": "",
   "license": "Apache-2.0",

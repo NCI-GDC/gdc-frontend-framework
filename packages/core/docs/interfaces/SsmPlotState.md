@@ -18,7 +18,7 @@
 
 #### Defined in
 
-[packages/core/src/features/cancerDistribution/ssmPlot.ts:165](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/cancerDistribution/ssmPlot.ts#L165)
+[packages/core/src/features/cancerDistribution/ssmPlot.ts:165](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/cancerDistribution/ssmPlot.ts#L165)
 
 ___
 
@@ -28,7 +28,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/cancerDistribution/ssmPlot.ts:163](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/cancerDistribution/ssmPlot.ts#L163)
+[packages/core/src/features/cancerDistribution/ssmPlot.ts:163](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/cancerDistribution/ssmPlot.ts#L163)
 
 ___
 
@@ -38,4 +38,4 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/cancerDistribution/ssmPlot.ts:164](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/cancerDistribution/ssmPlot.ts#L164)
+[packages/core/src/features/cancerDistribution/ssmPlot.ts:164](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/cancerDistribution/ssmPlot.ts#L164)

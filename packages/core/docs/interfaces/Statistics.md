@@ -22,7 +22,7 @@ The statistics section in the GDC API response.
 
 #### Defined in
 
-[packages/core/src/features/gdcapi/gdcapi.ts:55](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/gdcapi/gdcapi.ts#L55)
+[packages/core/src/features/gdcapi/gdcapi.ts:55](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/gdcapi/gdcapi.ts#L55)
 
 ___
 
@@ -32,7 +32,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/gdcapi/gdcapi.ts:52](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/gdcapi/gdcapi.ts#L52)
+[packages/core/src/features/gdcapi/gdcapi.ts:52](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/gdcapi/gdcapi.ts#L52)
 
 ___
 
@@ -42,7 +42,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/gdcapi/gdcapi.ts:54](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/gdcapi/gdcapi.ts#L54)
+[packages/core/src/features/gdcapi/gdcapi.ts:54](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/gdcapi/gdcapi.ts#L54)
 
 ___
 
@@ -52,7 +52,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/gdcapi/gdcapi.ts:53](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/gdcapi/gdcapi.ts#L53)
+[packages/core/src/features/gdcapi/gdcapi.ts:53](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/gdcapi/gdcapi.ts#L53)
 
 ___
 
@@ -62,4 +62,4 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/gdcapi/gdcapi.ts:56](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/gdcapi/gdcapi.ts#L56)
+[packages/core/src/features/gdcapi/gdcapi.ts:56](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/gdcapi/gdcapi.ts#L56)

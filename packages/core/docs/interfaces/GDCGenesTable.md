@@ -21,7 +21,7 @@
 
 #### Defined in
 
-[packages/core/src/features/genomic/genesTableSlice.ts:111](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/genomic/genesTableSlice.ts#L111)
+[packages/core/src/features/genomic/genesTableSlice.ts:111](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/genomic/genesTableSlice.ts#L111)
 
 ___
 
@@ -31,7 +31,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/genomic/genesTableSlice.ts:112](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/genomic/genesTableSlice.ts#L112)
+[packages/core/src/features/genomic/genesTableSlice.ts:112](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/genomic/genesTableSlice.ts#L112)
 
 ___
 
@@ -41,7 +41,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/genomic/genesTableSlice.ts:113](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/genomic/genesTableSlice.ts#L113)
+[packages/core/src/features/genomic/genesTableSlice.ts:113](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/genomic/genesTableSlice.ts#L113)
 
 ___
 
@@ -51,7 +51,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/genomic/genesTableSlice.ts:114](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/genomic/genesTableSlice.ts#L114)
+[packages/core/src/features/genomic/genesTableSlice.ts:114](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/genomic/genesTableSlice.ts#L114)
 
 ___
 
@@ -61,7 +61,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/genomic/genesTableSlice.ts:115](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/genomic/genesTableSlice.ts#L115)
+[packages/core/src/features/genomic/genesTableSlice.ts:115](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/genomic/genesTableSlice.ts#L115)
 
 ___
 
@@ -71,4 +71,4 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/genomic/genesTableSlice.ts:116](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/genomic/genesTableSlice.ts#L116)
+[packages/core/src/features/genomic/genesTableSlice.ts:116](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/genomic/genesTableSlice.ts#L116)

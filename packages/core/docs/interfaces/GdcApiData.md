@@ -24,7 +24,7 @@
 
 #### Defined in
 
-[packages/core/src/features/gdcapi/gdcapi.ts:22](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/gdcapi/gdcapi.ts#L22)
+[packages/core/src/features/gdcapi/gdcapi.ts:22](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/gdcapi/gdcapi.ts#L22)
 
 ___
 
@@ -34,7 +34,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/gdcapi/gdcapi.ts:21](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/gdcapi/gdcapi.ts#L21)
+[packages/core/src/features/gdcapi/gdcapi.ts:21](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/gdcapi/gdcapi.ts#L21)
 
 ___
 
@@ -44,4 +44,4 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/gdcapi/gdcapi.ts:23](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/gdcapi/gdcapi.ts#L23)
+[packages/core/src/features/gdcapi/gdcapi.ts:23](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/gdcapi/gdcapi.ts#L23)

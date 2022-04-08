@@ -18,7 +18,7 @@
 
 #### Defined in
 
-[packages/core/src/features/annotations/annotationsSlice.ts:28](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/annotations/annotationsSlice.ts#L28)
+[packages/core/src/features/annotations/annotationsSlice.ts:28](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/annotations/annotationsSlice.ts#L28)
 
 ___
 
@@ -28,7 +28,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/annotations/annotationsSlice.ts:30](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/annotations/annotationsSlice.ts#L30)
+[packages/core/src/features/annotations/annotationsSlice.ts:30](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/annotations/annotationsSlice.ts#L30)
 
 ___
 
@@ -38,4 +38,4 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/annotations/annotationsSlice.ts:29](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/annotations/annotationsSlice.ts#L29)
+[packages/core/src/features/annotations/annotationsSlice.ts:29](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/annotations/annotationsSlice.ts#L29)

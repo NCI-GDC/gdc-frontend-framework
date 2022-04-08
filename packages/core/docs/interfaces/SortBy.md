@@ -17,7 +17,7 @@
 
 #### Defined in
 
-[packages/core/src/features/gdcapi/gdcapi.ts:125](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/gdcapi/gdcapi.ts#L125)
+[packages/core/src/features/gdcapi/gdcapi.ts:125](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/gdcapi/gdcapi.ts#L125)
 
 ___
 
@@ -27,4 +27,4 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/gdcapi/gdcapi.ts:124](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/gdcapi/gdcapi.ts#L124)
+[packages/core/src/features/gdcapi/gdcapi.ts:124](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/gdcapi/gdcapi.ts#L124)

@@ -20,7 +20,7 @@
 
 #### Defined in
 
-[packages/core/src/features/survival/survivalSlice.ts:72](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/survival/survivalSlice.ts#L72)
+[packages/core/src/features/survival/survivalSlice.ts:72](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/survival/survivalSlice.ts#L72)
 
 ___
 
@@ -30,7 +30,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/survival/survivalSlice.ts:69](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/survival/survivalSlice.ts#L69)
+[packages/core/src/features/survival/survivalSlice.ts:69](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/survival/survivalSlice.ts#L69)
 
 ___
 
@@ -40,7 +40,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/survival/survivalSlice.ts:70](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/survival/survivalSlice.ts#L70)
+[packages/core/src/features/survival/survivalSlice.ts:70](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/survival/survivalSlice.ts#L70)
 
 ___
 
@@ -50,7 +50,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/survival/survivalSlice.ts:71](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/survival/survivalSlice.ts#L71)
+[packages/core/src/features/survival/survivalSlice.ts:71](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/survival/survivalSlice.ts#L71)
 
 ___
 
@@ -60,4 +60,4 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/survival/survivalSlice.ts:68](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/survival/survivalSlice.ts#L68)
+[packages/core/src/features/survival/survivalSlice.ts:68](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/survival/survivalSlice.ts#L68)

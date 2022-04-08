@@ -17,7 +17,7 @@
 
 #### Defined in
 
-[packages/core/src/features/imageDetails/imageDetailsSlice.ts:15](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/imageDetails/imageDetailsSlice.ts#L15)
+[packages/core/src/features/imageDetails/imageDetailsSlice.ts:15](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/imageDetails/imageDetailsSlice.ts#L15)
 
 ___
 
@@ -27,4 +27,4 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/imageDetails/imageDetailsSlice.ts:16](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/imageDetails/imageDetailsSlice.ts#L16)
+[packages/core/src/features/imageDetails/imageDetailsSlice.ts:16](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/imageDetails/imageDetailsSlice.ts#L16)

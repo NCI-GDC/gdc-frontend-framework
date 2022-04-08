@@ -23,7 +23,7 @@
 
 #### Defined in
 
-[packages/core/src/features/gdcapi/gdcgraphql.ts:14](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/gdcapi/gdcgraphql.ts#L14)
+[packages/core/src/features/gdcapi/gdcgraphql.ts:14](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/gdcapi/gdcgraphql.ts#L14)
 
 ___
 
@@ -33,4 +33,4 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/gdcapi/gdcgraphql.ts:15](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/gdcapi/gdcgraphql.ts#L15)
+[packages/core/src/features/gdcapi/gdcgraphql.ts:15](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/gdcapi/gdcgraphql.ts#L15)

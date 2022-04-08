@@ -17,7 +17,7 @@
 
 #### Defined in
 
-[packages/core/src/features/facets/facetSlice.ts:34](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/facets/facetSlice.ts#L34)
+[packages/core/src/features/facets/facetSlice.ts:34](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/facets/facetSlice.ts#L34)
 
 ___
 
@@ -27,4 +27,4 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/facets/facetSlice.ts:35](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/facets/facetSlice.ts#L35)
+[packages/core/src/features/facets/facetSlice.ts:35](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/facets/facetSlice.ts#L35)

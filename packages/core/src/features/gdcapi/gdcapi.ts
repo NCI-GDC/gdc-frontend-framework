@@ -1,4 +1,4 @@
-/** @module API **/
+/** @module gdcAPI */
 
 import { isObject } from "../../ts-utils";
 import { GqlOperation } from "./filters";

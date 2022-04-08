@@ -26,7 +26,7 @@
 
 #### Defined in
 
-[packages/core/src/features/gdcapps/GdcApp.tsx:34](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/gdcapps/GdcApp.tsx#L34)
+[packages/core/src/features/gdcapps/GdcApp.tsx:34](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/gdcapps/GdcApp.tsx#L34)
 
 ___
 
@@ -40,7 +40,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/gdcapps/GdcApp.tsx:31](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/gdcapps/GdcApp.tsx#L31)
+[packages/core/src/features/gdcapps/GdcApp.tsx:31](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/gdcapps/GdcApp.tsx#L31)
 
 ___
 
@@ -54,7 +54,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/gdcapps/GdcApp.tsx:35](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/gdcapps/GdcApp.tsx#L35)
+[packages/core/src/features/gdcapps/GdcApp.tsx:35](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/gdcapps/GdcApp.tsx#L35)
 
 ___
 
@@ -64,7 +64,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/gdcapps/GdcApp.tsx:33](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/gdcapps/GdcApp.tsx#L33)
+[packages/core/src/features/gdcapps/GdcApp.tsx:33](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/gdcapps/GdcApp.tsx#L33)
 
 ___
 
@@ -78,4 +78,4 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/gdcapps/GdcApp.tsx:32](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/gdcapps/GdcApp.tsx#L32)
+[packages/core/src/features/gdcapps/GdcApp.tsx:32](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/gdcapps/GdcApp.tsx#L32)

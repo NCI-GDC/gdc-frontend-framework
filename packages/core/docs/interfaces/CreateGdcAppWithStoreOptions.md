@@ -21,7 +21,7 @@
 
 #### Defined in
 
-[packages/core/src/features/gdcapps/GdcApp.tsx:42](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/gdcapps/GdcApp.tsx#L42)
+[packages/core/src/features/gdcapps/GdcApp.tsx:42](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/gdcapps/GdcApp.tsx#L42)
 
 ___
 
@@ -31,7 +31,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/gdcapps/GdcApp.tsx:44](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/gdcapps/GdcApp.tsx#L44)
+[packages/core/src/features/gdcapps/GdcApp.tsx:44](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/gdcapps/GdcApp.tsx#L44)
 
 ___
 
@@ -41,7 +41,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/gdcapps/GdcApp.tsx:39](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/gdcapps/GdcApp.tsx#L39)
+[packages/core/src/features/gdcapps/GdcApp.tsx:39](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/gdcapps/GdcApp.tsx#L39)
 
 ___
 
@@ -51,7 +51,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/gdcapps/GdcApp.tsx:41](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/gdcapps/GdcApp.tsx#L41)
+[packages/core/src/features/gdcapps/GdcApp.tsx:41](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/gdcapps/GdcApp.tsx#L41)
 
 ___
 
@@ -61,7 +61,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/gdcapps/GdcApp.tsx:43](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/gdcapps/GdcApp.tsx#L43)
+[packages/core/src/features/gdcapps/GdcApp.tsx:43](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/gdcapps/GdcApp.tsx#L43)
 
 ___
 
@@ -71,4 +71,4 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/gdcapps/GdcApp.tsx:40](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/gdcapps/GdcApp.tsx#L40)
+[packages/core/src/features/gdcapps/GdcApp.tsx:40](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/gdcapps/GdcApp.tsx#L40)

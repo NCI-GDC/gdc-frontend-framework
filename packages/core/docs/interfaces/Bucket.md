@@ -23,7 +23,7 @@ Bucket element in a GDC API response
 
 #### Defined in
 
-[packages/core/src/features/gdcapi/gdcapi.ts:40](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/gdcapi/gdcapi.ts#L40)
+[packages/core/src/features/gdcapi/gdcapi.ts:40](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/gdcapi/gdcapi.ts#L40)
 
 ___
 
@@ -33,4 +33,4 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/gdcapi/gdcapi.ts:41](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/gdcapi/gdcapi.ts#L41)
+[packages/core/src/features/gdcapi/gdcapi.ts:41](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/gdcapi/gdcapi.ts#L41)

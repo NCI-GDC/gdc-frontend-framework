@@ -24,7 +24,7 @@
 
 #### Defined in
 
-[packages/core/src/dataAcess.ts:32](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/dataAcess.ts#L32)
+[packages/core/src/dataAcess.ts:32](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/dataAcess.ts#L32)
 
 ___
 
@@ -34,7 +34,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/dataAcess.ts:34](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/dataAcess.ts#L34)
+[packages/core/src/dataAcess.ts:34](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/dataAcess.ts#L34)
 
 ___
 
@@ -44,4 +44,4 @@ ___
 
 #### Defined in
 
-[packages/core/src/dataAcess.ts:33](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/dataAcess.ts#L33)
+[packages/core/src/dataAcess.ts:33](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/dataAcess.ts#L33)

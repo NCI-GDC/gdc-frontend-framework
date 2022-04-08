@@ -17,7 +17,7 @@
 
 #### Defined in
 
-[packages/core/src/features/survival/survivalSlice.ts:32](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/survival/survivalSlice.ts#L32)
+[packages/core/src/features/survival/survivalSlice.ts:32](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/survival/survivalSlice.ts#L32)
 
 ___
 
@@ -27,4 +27,4 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/survival/survivalSlice.ts:31](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/survival/survivalSlice.ts#L31)
+[packages/core/src/features/survival/survivalSlice.ts:31](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/survival/survivalSlice.ts#L31)

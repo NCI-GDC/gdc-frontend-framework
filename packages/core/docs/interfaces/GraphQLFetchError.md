@@ -2,6 +2,8 @@
 
 # Interface: GraphQLFetchError
 
+**`namespace`** API
+
 ## Table of contents
 
 ### Properties
@@ -20,7 +22,7 @@
 
 #### Defined in
 
-[packages/core/src/features/gdcapi/gdcgraphql.ts:5](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/gdcapi/gdcgraphql.ts#L5)
+[packages/core/src/features/gdcapi/gdcgraphql.ts:5](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/gdcapi/gdcgraphql.ts#L5)
 
 ___
 
@@ -30,7 +32,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/gdcapi/gdcgraphql.ts:6](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/gdcapi/gdcgraphql.ts#L6)
+[packages/core/src/features/gdcapi/gdcgraphql.ts:6](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/gdcapi/gdcgraphql.ts#L6)
 
 ___
 
@@ -40,7 +42,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/gdcapi/gdcgraphql.ts:7](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/gdcapi/gdcgraphql.ts#L7)
+[packages/core/src/features/gdcapi/gdcgraphql.ts:7](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/gdcapi/gdcgraphql.ts#L7)
 
 ___
 
@@ -50,7 +52,7 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/gdcapi/gdcgraphql.ts:4](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/gdcapi/gdcgraphql.ts#L4)
+[packages/core/src/features/gdcapi/gdcgraphql.ts:4](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/gdcapi/gdcgraphql.ts#L4)
 
 ___
 
@@ -60,4 +62,4 @@ ___
 
 #### Defined in
 
-[packages/core/src/features/gdcapi/gdcgraphql.ts:8](https://github.com/NCI-GDC/gdc-frontend-framework/blob/036b468/packages/core/src/features/gdcapi/gdcgraphql.ts#L8)
+[packages/core/src/features/gdcapi/gdcgraphql.ts:8](https://github.com/NCI-GDC/gdc-frontend-framework/blob/5235625/packages/core/src/features/gdcapi/gdcgraphql.ts#L8)

@@ -1,4 +1,4 @@
-/** @module API **/
+/** @module API */
 
 export interface GraphQLFetchError {
   readonly url: string;
