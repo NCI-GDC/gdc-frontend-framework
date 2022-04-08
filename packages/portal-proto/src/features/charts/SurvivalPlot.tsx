@@ -2,16 +2,25 @@ import { useEffect, useRef, useState } from "react";
 import { Survival, SurvivalElement } from "@gff/core";
 import { renderPlot } from "@oncojs/survivalplot";
 import { MdDownload as DownloadIcon, MdRestartAlt as ResetIcon } from "react-icons/md";
-import { Tooltip, FloatingTooltip } from "@mantine/core";
+import { Box, Popover, Popper, Tooltip, FloatingTooltip } from "@mantine/core";
 import dynamic from "next/dynamic";
 import isNumber from "lodash/isNumber";
 import ReactTooltip from 'react-tooltip';
-const CTooltip = dynamic(() => import("./Tooltip"), { ssr: false });
-
+import { useMouse } from '@mantine/hooks';
+import { usePopper } from 'react-popper'
 
 const DownloadOptions = dynamic(() => import("./DownloadOptions"), {
   ssr: false,
 });
+
+const Popper2 = dynamic(() => import("./Popper"), {
+  ssr: false,
+});
+
+const MTooltip = dynamic(() => import("./Tooltip"), {
+  ssr: false,
+});
+
 
 const CHART_NAME = "survival-plot";
 
@@ -206,6 +215,15 @@ const SurvivalPlot : React.FC<SurvivalPlotProps> = ( { data, names = [] } : Surv
   // handle the current range of the xAxis set to undefined to reset
   const [xDomain, setXDomain] = useState(undefined);
   const [survivalPlotLineTooltipContent, setSurvivalPlotLineTooltipContent] = useState(undefined)
+  const { ref: mouseRef, x, y } = useMouse();
+  const tooltipRef = useRef(null);
+
+  const [referenceElement, setReferenceElement] = useState(null);
+  const [popperElement, setPopperElement] = useState(null);
+  const [arrowElement, setArrowElement] = useState(null);
+  const { styles, attributes } = usePopper(referenceElement, popperElement, {
+    modifiers: [{ name: 'arrow', options: { element: arrowElement } }],
+  });
 
   const pValue = data.overallStats.pValue;
   const plotData = data.survivalData;
@@ -257,17 +275,59 @@ const SurvivalPlot : React.FC<SurvivalPlotProps> = ( { data, names = [] } : Surv
         drag to zoom
       </div>
     </div>
-
-        <div data-tip='' data-for="survivalPlot">
-        <ReactTooltip className="survival-plot-tooltip" id="survivalPlot"  effect='solid'  >
+      {/**
+        <div data-tip='' data-for="survival-plot-tooltip">
+        <ReactTooltip class="survival-plot-tooltip" id="survival-plot-tooltip" >
           {survivalPlotLineTooltipContent  }
         </ReactTooltip>
           <div className="survival-plot"  ref={container} />
         </div>
+        */}
+
+      { /**
+        <div ref={ref} className="relative">
+          <Box sx={{ left: x, top: y, position: "absolute" }}>
+            {survivalPlotLineTooltipContent}
+          </Box>
+          <div className="survival-plot" ref={container} />
+        </div>
+      */}
+
+      <FloatingTooltip
+        withArrow={true}
+        placement="center"
+        label={survivalPlotLineTooltipContent}
+        disabled={!survivalPlotLineTooltipContent}
+        tooltipRef={container}
+        withinPortal={true}
+        coordinates={{x:x, y:y}}
+      >
+        <div className="survival-plot"  ref={container} />
+      </FloatingTooltip>
+
+
+
+      {/*<div ref={ref} className="relative">
+      <Tooltip
+        label={survivalPlotLineTooltipContent}
+        color={"gray"}
+        style={{ left: x, top: y, position: "absolute" }}
+        tooltipRef={(ref) => (tooltipRef.current = ref)}
+        opened={survivalPlotLineTooltipContent !== null}
+        withArrow
+        withinPortal={false}
+        positionDependencies={[x, y]}
+        position="right"
+        classNames={{
+          body: "bg-white shadow-md"
+        }}>
+      <div className="survival-plot"  ref={container} />
+      </Tooltip>
     </div>
-    )
+    */}
 
-
+    </div>
+  )
 };
 
 export default SurvivalPlot;
