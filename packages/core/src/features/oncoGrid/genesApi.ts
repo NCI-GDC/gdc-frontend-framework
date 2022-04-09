@@ -1,8 +1,9 @@
 import { fetchGdcEntities, GdcApiResponse } from "../gdcapi/gdcapi";
+import { Gene } from "./types";
 
 export const fetchGenes = (
   consequenceTypeFilters: string[],
-): Promise<GdcApiResponse> => {
+): Promise<GdcApiResponse<Gene>> => {
   return fetchGdcEntities("analysis/top_mutated_genes_by_project", {
     fields: ["gene_id", "symbol", "is_cancer_gene_census"],
     size: 50,

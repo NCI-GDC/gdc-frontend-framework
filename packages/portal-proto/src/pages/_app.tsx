@@ -1,8 +1,10 @@
 import "../styles/globals.css";
+import "../styles/oncogrid.css";
 
 import { Provider } from "react-redux";
 import type { AppProps } from "next/app";
 import { CoreProvider } from "@gff/core";
+import { MantineProvider } from "@mantine/core";
 import { TourProvider } from "@reactour/tour";
 import { CustomBadge as Badge } from "../features/tour/CustomBadge";
 import store from "../app/store";
@@ -24,9 +26,12 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   return (
     <CoreProvider>
       <Provider store={store}>
+      {/* Prevents style conflicts between Mantine and Tailwind by loading Mantine second */}
+      <MantineProvider emotionOptions={{ key: 'mantine', prepend: false }}>
         <TourProvider steps={[]} components={{ Badge }}>
           <Component {...pageProps} />
         </TourProvider>
+        </MantineProvider>
       </Provider>
     </CoreProvider>
   );
