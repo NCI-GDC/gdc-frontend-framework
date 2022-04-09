@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
 import GenesTable from "./GenesTable";
 import MutationsTable from "./MutationsTable";
-import { Grid, Tabs } from "@mantine/core";
+import { Grid, Tabs, LoadingOverlay } from "@mantine/core";
 import { EnumFacet } from "../facets/EnumFacet";
 import dynamic from "next/dynamic";
 import {
@@ -97,23 +97,19 @@ const mergeFilters = (cohortFilters: GqlOperation, symbol: string) : ReadonlyArr
 const MutationFrequency: React.FC = () => {
   const coreDispatch = useCoreDispatch();
   const [geneAdditionalSurvival, setGeneAdditionalSurvival] = useState(undefined);
-  const { data } = useSurvivalPlot();
+  const { data: survivalPlotData, isSuccess :survivalPlotReady } = useSurvivalPlot();
   const cohortFilters = useCoreSelector((state) => selectCurrentCohortCaseGqlFilters(state));
 
-
   const handleSurvivalPlotToggled = (symbol: string) => {
-
     if (geneAdditionalSurvival === symbol) { // remove toggle
       setGeneAdditionalSurvival(undefined);
     } else {
       setGeneAdditionalSurvival(symbol);
     }
-  };
 
-  useEffect(() => {
-      const filters = mergeFilters(cohortFilters, geneAdditionalSurvival);
-      coreDispatch(fetchSurvival(geneAdditionalSurvival ? {  filters: filters } : undefined));
-  }, [geneAdditionalSurvival]);
+    const filters = mergeFilters(cohortFilters, symbol);
+    coreDispatch(fetchSurvival(symbol ? {  filters: filters } : undefined));
+  };
 
   return (
     <div className="flex flex-row">
@@ -151,8 +147,9 @@ const MutationFrequency: React.FC = () => {
                   <Grid.Col span={6}>
                     <GeneFrequencyChart marginBottom={95} />
                   </Grid.Col>
-                  <Grid.Col span={6}>
-                    <SurvivalPlot data={data}/>
+                  <Grid.Col span={6} className="relative">
+                    <LoadingOverlay visible={!survivalPlotReady} />
+                    <SurvivalPlot data={survivalPlotData} names={geneAdditionalSurvival ? [geneAdditionalSurvival] : []}/>
                   </Grid.Col>
                 </Grid>
                   <GenesTable handleSurvivalPlotToggled={handleSurvivalPlotToggled} />
@@ -163,7 +160,7 @@ const MutationFrequency: React.FC = () => {
             <div className="flex flex-row">
               <div className="flex flex-col">
                 <div className="w-3/4 h-auto bg-white ">
-                  <SurvivalPlot   data={data}/>
+                  <SurvivalPlot data={survivalPlotData}/>
                 </div>
               <MutationsTable />
             </div>
