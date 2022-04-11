@@ -17,8 +17,8 @@
     "test:int": "jest int",
     "test:all": "jest",
     "dev": "npm run build:watch",
-    "doc": "typedoc --plugin typedoc-plugin-markdown --out docs src",
-    "docHtml": "typedoc --plugin none --out docs_html src"
+    "doc": "typedoc --plugin typedoc-plugin-markdown --theme markdown --namedAnchors true --hideInPageTOC --out docs/api src",
+    "concat_doc": "concat-md  --start-title-level-at 2 --file-name-as-title --dir-name-as-title  docs/api > docs/AFT_API_Documentation.md"
   },
   "author": "",
   "license": "Apache-2.0",

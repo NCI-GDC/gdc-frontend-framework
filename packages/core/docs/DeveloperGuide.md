@@ -1,6 +1,6 @@
 # GDC Portal V2: Analysis Tool Framework
 
-##Overview
+## Overview
 
 The Analysis Tool Framework (ATF) package is design to help integrate Analysis 
 (or apps) into the GDC Portal. Built using Redux-toolkit, the ATF provides a 
@@ -15,7 +15,7 @@ concepts of hooks, dispatchers, and selectors.
 Figure.1 - Analysis Tool Framework's architecture.
 </p>
 
-##Core Module
+## Core Module
 
 The core interface module serves as an abstraction layer to the GDC API and the Frontend. 
 It separates updates to the store, calls to various APIs, and cohort management from the 
@@ -26,6 +26,10 @@ Applications can create their own store and context to work within the scope of 
 Analysis tool. This allows an app to maintain variables and state needed for the app without 
 altering the core state. This allows developers the freedom to create custom hooks and calls to 
 other APIs to support the data and functionality required by the tool.
+
+The design of the Analysis Tool Framework is shown in the figure above. The Core Model provides
+access to the GDC APIs, caches the current state in redux store, and provide hooks and selectors enabling
+application integration. The design is flexable to allow application to incorporate additional APIs as needed.
 
 ## API Related Functions
 
@@ -168,14 +172,14 @@ and analysis tools.
 Cohort management includes defining cohorts by a set of filters which are used to return
 cases and files from the GDC APIs.
 
-####Actions
+#### Actions
 * [updateCohortFilter](modules.md#updatecohortfilter)
 * [removeCohortFilter](modules.md#removecohortfilter)
 * [clearCohortFilters](modules.md#clearcohortfilters)
 * [setCurrentCohort](modules.md#setcurrentcohort)
 * [clearCurrentCohort](modules.md#clearcurrentcohort)
 
-####Selectors
+#### Selectors
 * [selectCurrentCohortFilters](modules.md#selectcurrentcohortfilters)
 * [selectCurrentCohortFilterSet](modules.md#selectcurrentcohortfilterset)
 * [selectCurrentCohortCaseGqlFilters](modules.md#selectcurrentcohortcasegqlfilters)
@@ -183,13 +187,13 @@ cases and files from the GDC APIs.
 * [selectCurrentCohort](modules.md#selectcurrentcohort)
 * [selectCohortCounts](modules.md#selectcohortcounts)
 * [selectCohortCountsByName](modules.md#selectcohortcountsbyname)
-####Hooks
+#### Hooks
 * [useCohortCounts](modules.md#usecohortcounts)
 * [useFilteredCohortCounts](modules.md#usefilteredcohortcounts)
-####Functions to add:
+#### Functions to add:
 Cohort management and persistence
 ### Cohort Builder Facets
-####Selectors
+#### Selectors
 * [selectCaseFacets](modules.md#selectcasefacets)
 * [selectCaseFacetByField](modules.md#selectcasefacetbyfield)
 * [selectFilesFacets](modules.md#selectfilesfacets)
@@ -199,90 +203,90 @@ Cohort management and persistence
 * [selectMutationsFacets](modules.md#selectmutationsfacets)
 * [selectMutationsFacetByField](modules.md#selectmutationsfacetbyfield)
 ### Files
-####Selectors
+#### Selectors
 * [selectFiles](modules.md#selectfiles)
 * [selectFilesData](modules.md#selectfilesdata)
-####Hooks
+#### Hooks
 * [useFiles](modules.md#usefiles)
 * [useFilteredFiles](modules.md#usefilteredfiles)
 ### Cases
-####Selector
+#### Selector
 * [selectCases](modules.md#selectcases)
 * [selectCasesData](modules.md#selectcasesdata)
 ### Projects
-####Selectors
+#### Selectors
 * [selectProjectsState](modules.md#selectprojectsstate)
 * [selectProjects](modules.md#selectprojects)
 * [selectProjectsData](modules.md#selectprojectsdata)
-####Hooks
+#### Hooks
 * [useProjects](modules.md#useprojects)
 ### SurvivalPlot
-####Selectors
+#### Selectors
 * [selectSurvivalState](modules.md#selectsurvivalstate)
 * [selectSurvival](modules.md#selectsurvival)
 * [selectSurvivalData](modules.md#selectsurvivaldata)
-####Hooks
+#### Hooks
 * [useSurvivalPlot](modules.md#usesurvivalplot)
-### Projects
-####Session
-####Actions
+### Session
+
+#### Actions
 * [setSessionId](modules.md#setsessionid)
-####Selectors
+#### Selectors
 * [selectSessionId](modules.md#selectsessionid)
 ### Genomics
-####Actions
+#### Actions
 * [updateGenomicFilter](modules.md#updategenomicfilter)
 * [removeGenomicFilter](modules.md#removegenomicfilter)
 * [clearGenomicFilters](modules.md#cleargenomicfilters)
-####Selectors
+#### Selectors
 * [selectGenomicGqlFilters](modules.md#selectgenomicgqlfilters)
 * [selectGenomicFiltersByName](modules.md#selectgenomicfiltersbyname)
 #### Genes
-####Selectors
+#### Selectors
 * [selectGeneFrequencyChartState](modules.md#selectgenefrequencychartstate)
 * [selectGeneFrequencyChartData](modules.md#selectgenefrequencychartdata)
 * [selectGenesTableState](modules.md#selectgenestablestate)
 * [selectGenesTableData](modules.md#selectgenestabledata)
-####Hooks
+#### Hooks
 * [useGeneFrequencyChart](modules.md#usegenefrequencychart)
 * [useGenesTable](modules.md#usegenestable)
 #### SSMS
-####Selectors
+#### Selectors
 * [selectSsmsTableState](modules.md#selectssmstablestate)
 * [selectSsmsTableData](modules.md#selectssmstabledata)
-####Hooks
+#### Hooks
 * [useSsmsTable](modules.md#usessmstable)
 ### Authorization
-TODO
+Design and Implementation in progress.
 ### Cart
-TODO
+Design and Implementation in progress.
 ### Images
-####Selectors
+#### Selectors
 * [selectImageDetailsInfo](modules.md#selectimagedetailsinfo)
-* ####Hooks
+* #### Hooks
 * [useImageDetails](modules.md#useimagedetails)
-####TODO
-Slide image data
+### Applications
+ Design and Implementation in progress.
 ### Annotations
-####Selectors
+#### Selectors
 * [selectAnnotationsState](modules.md#selectannotationsstate)
 * [selectAnnotations](modules.md#selectannotations)
 * [selectAnnotationsData](modules.md#selectannotationsdata)
-####Hooks
+#### Hooks
 * [useAnnotations](modules.md#useannotations)
 ### Cancer Distribution
-####Selectors
+#### Selectors
 * [selectCnvPlotData](modules.md#selectcnvplotdata)
 * [selectSsmPlotData](modules.md#selectssmplotdata)
-####Hooks
+#### Hooks
 * [useCnvPlot](modules.md#usecnvplot)
 * [useSsmPlot](modules.md#usessmplot)
 ### Oncogrid
-####Selectors
+#### Selectors
 * [selectOncoGridData](modules.md#selectoncogriddata)
-####Hooks
+#### Hooks
 * [useOncoGrid](modules.md#useoncogrid)
 
 
-##[API Documentation](api/modules.md)
+## [API Documentation](api/modules.md) 
 
