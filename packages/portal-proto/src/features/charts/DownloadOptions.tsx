@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { MdFileDownload as DownloadIcon } from "react-icons/md";
+import { Tooltip } from "@mantine/core";
 import Plotly from "plotly.js";
 
 interface ChartDownloadProps {
@@ -26,12 +27,14 @@ const DownloadOptions: React.FC<ChartDownloadProps> = ({
 
   return (
     <div>
+      <Tooltip label="Download image or data">
       <button
         className="px-1.5 min-h-[28px] nim-w-[40px] border-nci-gray-light border rounded-[4px] "
         onClick={() => setDownloadMenuOpen(!downloadMenuOpen)}
       >
         <DownloadIcon size="1.25em" />
       </button>
+      </Tooltip>
       {downloadMenuOpen && (
         <div className="z-10 w-44 absolute bg-white rounded shadow-md">
           <ul className="py-1" role="menu">

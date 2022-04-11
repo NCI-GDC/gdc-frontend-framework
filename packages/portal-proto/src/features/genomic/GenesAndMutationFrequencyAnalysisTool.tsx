@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
 import GenesTable from "./GenesTable";
 import MutationsTable from "./MutationsTable";
@@ -12,6 +12,7 @@ import {
   useSurvivalPlot,
   fetchSurvival,
 } from "@gff/core";
+import { GqlIntersection } from "@gff/core/dist/dts";
 
 
 
@@ -61,7 +62,7 @@ const MutationFacetNames = [
   },
 ];
 
-const mergeFilters = (cohortFilters: GqlOperation, symbol: string, field: string) : ReadonlyArray<GqlOperation> => {
+const buildGeneHaveAndHaveNotFilters = (cohortFilters: GqlOperation, symbol: string, field: string) : ReadonlyArray<GqlOperation> => {
   /**
    * given the contents, add two filters, one with the gene and one without
    */
@@ -69,10 +70,13 @@ const mergeFilters = (cohortFilters: GqlOperation, symbol: string, field: string
   if (symbol === undefined)
     return [];
 
+  console.log(cohortFilters);
+
+
   return ([{
     "op": "and",
     content:
-      [...(cohortFilters ? cohortFilters.content as any  : []), {
+      [...(cohortFilters ? cohortFilters.content as any  : []), { //TODO: refactor cohortFilters to be Union | Intersection
         "op": "excludeifany",
         "content": {
           "field": field,
@@ -94,24 +98,38 @@ const mergeFilters = (cohortFilters: GqlOperation, symbol: string, field: string
 
 };
 
-const MutationFrequency: React.FC = () => {
+const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const coreDispatch = useCoreDispatch();
-  const [additionalSurvival, setAdditionalSurvival] = useState(undefined);
+  const [comparativeSurvival, setComparativeSurvival] = useState(undefined);
   const cohortFilters = useCoreSelector((state) => selectCurrentCohortCaseGqlFilters(state));
   const { data: survivalPlotData, isSuccess :survivalPlotReady } = useSurvivalPlot();
 
+  /**
+   * Update survival plot in response to user actions. There are two "states"
+   * for the survival plot: If comparativeSurvival is undefined it will show the
+   * plot for the currentCohort plus whatever local filters are selected
+   * If comparativeSurvival is set, then it will show two separate plots.
+   * @param symbol
+   * @param name symbol (Gene or SSMS) to compare
+   * @param field field
+   */
   const handleSurvivalPlotToggled = (symbol: string, name: string, field: string) => {
-    if (additionalSurvival && additionalSurvival.symbol === symbol) { // remove toggle
-      setAdditionalSurvival(undefined);
+    if (comparativeSurvival && comparativeSurvival.symbol === symbol) { // remove toggle
+      setComparativeSurvival(undefined);
       coreDispatch(fetchSurvival(undefined));
     } else {
-      setAdditionalSurvival({ symbol: symbol, name: name });
-      coreDispatch(fetchSurvival({  filters: mergeFilters(cohortFilters, symbol, field) } ));
+      setComparativeSurvival({ symbol: symbol, name: name });
+      coreDispatch(fetchSurvival({  filters: buildGeneHaveAndHaveNotFilters(cohortFilters, symbol, field) } ));
     }
   };
 
-  const handleTabChanged = () => {
-    setAdditionalSurvival(undefined);
+
+  /**
+   * remove comparative survival plot when tabs or filters change.
+   * TODO: Reset table survival button state
+   */
+  const handleTabOrFilterChanged = () => {
+    setComparativeSurvival(undefined);
     coreDispatch(fetchSurvival(undefined));
   }
 
@@ -124,9 +142,9 @@ const MutationFrequency: React.FC = () => {
                              facetName={x.name}
                              type="genes"
                              showPercent={false}
-                               valueLabel="Genes"
-                               hideIfEmpty={false}
-                               description={x.description}
+                             valueLabel="Genes"
+                             hideIfEmpty={false}
+                             description={x.description}
             />);
           })
           }
@@ -148,7 +166,7 @@ const MutationFrequency: React.FC = () => {
           tabLabel: "text-nci-gray-darkest",
           tabActive: "bg-nci-gray-lighter text-nci-gray-lightest"
         }}
-              onTabChange={ () => {handleTabChanged() }}
+              onTabChange={ () => {handleTabOrFilterChanged() }}
         >
           <Tabs.Tab label="Genes">
             <div className="flex flex-row">
@@ -159,7 +177,7 @@ const MutationFrequency: React.FC = () => {
                   </Grid.Col>
                   <Grid.Col span={6} className="relative">
                     <LoadingOverlay visible={!survivalPlotReady} />
-                    <SurvivalPlot data={survivalPlotData} names={!survivalPlotReady ? [] :  additionalSurvival ? [additionalSurvival.name] : []}/>
+                    <SurvivalPlot data={survivalPlotData} names={!survivalPlotReady ? [] :  comparativeSurvival ? [comparativeSurvival.name] : []}/>
                   </Grid.Col>
                 </Grid>
                   <GenesTable handleSurvivalPlotToggled={(symbol: string ,name: string ) => handleSurvivalPlotToggled(symbol, name, "gene.symbol")} />
@@ -171,7 +189,7 @@ const MutationFrequency: React.FC = () => {
               <div className="flex flex-col">
                 <div className="w-3/4 h-auto bg-white relative">
                   <LoadingOverlay visible={!survivalPlotReady} />
-                  <SurvivalPlot data={survivalPlotData} names={!survivalPlotReady ? [] : additionalSurvival ? [additionalSurvival.name] : []}/>
+                  <SurvivalPlot data={survivalPlotData} names={!survivalPlotReady ? [] : comparativeSurvival ? [comparativeSurvival.name] : []}/>
                 </div>
               <MutationsTable handleSurvivalPlotToggled={(symbol: string ,name: string  ) => handleSurvivalPlotToggled(symbol, name, "gene.ssm.ssm_id")} />
             </div>
@@ -182,4 +200,4 @@ const MutationFrequency: React.FC = () => {
   );
 };
 
-export default MutationFrequency;
+export default GenesAndMutationFrequencyAnalysisTool;

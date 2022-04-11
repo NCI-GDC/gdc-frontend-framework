@@ -1,7 +1,8 @@
 import {
   Operation,
   ValueExtractorHandler,
-  OperationValue,
+  EnumOperandValue,
+  OperandValue,
   CoreDispatch,
   FacetBuckets,
   handleOperation,
@@ -42,7 +43,7 @@ const useGenomicFacetFilter = (): FilterSet => {
   );
 };
 
-export const extractValue = (op: Operation): OperationValue => {
+export const extractValue = (op: Operation): OperandValue => {
   const handler =  new ValueExtractorHandler();
   return handleOperation(handler, op);
 };
@@ -51,14 +52,14 @@ export const extractValue = (op: Operation): OperationValue => {
  * Selector for the facet values from the current cohort (if any)
  * @param field
  */
-const useCohortFacetFilterByName = (field: string): OperationValue => {
+const useCohortFacetFilterByName = (field: string): OperandValue => {
   const enumFilters: Operation = useCoreSelector((state) =>
     selectCurrentCohortFiltersByName(state, field)
   );
   return enumFilters ? extractValue(enumFilters) : undefined;
 };
 
-const useGenomicFilterByName = (field: string): OperationValue => {
+const useGenomicFilterByName = (field: string): OperandValue => {
   const enumFilters: Operation = useCoreSelector((state) =>
     selectGenomicFiltersByName(state, field)
   );
@@ -67,7 +68,7 @@ const useGenomicFilterByName = (field: string): OperationValue => {
 
 interface EnumFacetResponse {
   readonly data?: Record<string, number>;
-  readonly enumFilters?: string [] | number [] | undefined;
+  readonly enumFilters?: OperandValue ;
   readonly error?: string;
   readonly isUninitialized: boolean;
   readonly isFetching: boolean;
@@ -210,12 +211,12 @@ const useMutationsFacet = (field: string): EnumFacetResponse => {
 
 /**
  * Adds a enumeration filter to cohort filters
- * @param dispatch
- * @param enumerationFilters
- * @param field
- * @param prefix
+ * @param dispatch CoreDispatch instance
+ * @param enumerationFilters value to update
+ * @param field field to update
+ * @param prefix optional prefix for fields
  */
-export const updateEnumFilters = (dispatch: CoreDispatch , enumerationFilters: OperationValue, field: string, prefix="" ) => {
+export const updateEnumFilters = (dispatch: CoreDispatch , enumerationFilters: OperandValue, field: string, prefix="" ) => {
   if (enumerationFilters === undefined)
     return;
   if (enumerationFilters.length > 0) {
@@ -228,7 +229,7 @@ export const updateEnumFilters = (dispatch: CoreDispatch , enumerationFilters: O
   }
 }
 
-export const updateGenomicEnumFilters = (dispatch: CoreDispatch, enumerationFilters : OperationValue, field: string, prefix="" ) => {
+export const updateGenomicEnumFilters = (dispatch: CoreDispatch, enumerationFilters : OperandValue, field: string, prefix="" ) => {
   if (enumerationFilters === undefined)
     return;
   if (enumerationFilters.length > 0) {

@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
-  CoreDataSelectorResponse,
+  CoreDataSelectorResponse, createUseCoreDataHook,
   createUseFiltersCoreDataHook,
   DataStatus,
 } from "../../dataAcess";
@@ -191,4 +191,6 @@ export const selectSurvivalData = (
  * Trying out a possible way to create a hook that
  * handles when the filters are updated
  */
-export const useSurvivalPlot = createUseFiltersCoreDataHook(fetchSurvival, selectSurvivalData, selectCurrentCohortFilters);
+
+export const useSurvivalPlot = createUseCoreDataHook(fetchSurvival, selectSurvivalData);
+export const useSurvivalPlotWithCohortFilters = createUseFiltersCoreDataHook(fetchSurvival, selectSurvivalData, selectCurrentCohortFilters);
