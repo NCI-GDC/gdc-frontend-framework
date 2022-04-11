@@ -385,7 +385,7 @@ export const fetchGdcFiles = async (
 
 /**
  * Request an entity from the GDC API. This call can be used to create custom
- * calls to the
+ * calls to the GDC API
  * @param endpoint which endpoint to request from, {@link gdcEndpoint}
  * @param request: the parameters to a GDC API call
  * @param fetchAll: returns all of the "pages" for this call
