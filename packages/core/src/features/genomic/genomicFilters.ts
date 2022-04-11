@@ -3,9 +3,15 @@ import { GqlOperation, Operation } from "../gdcapi/filters";
 import { CoreState } from "../../store";
 import { buildCohortGqlOperator, FilterSet, joinFilters } from "../cohort/cohortFilterSlice";
 
+
 const initialState: FilterSet = {
   mode: "and",
-  root: { "genes.is_cancer_gene_census" : { field: "genes.is_cancer_gene_census", operator: "includes", operands:[1]  } }
+  root: { "genes.is_cancer_gene_census" :
+      { field: "genes.is_cancer_gene_census",
+        operator: "includes",
+        operands:[true]  // TODO: this will be fixed when boolean facets are implemented
+      }
+  }
 };
 
 const slice = createSlice({
