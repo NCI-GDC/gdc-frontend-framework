@@ -1,7 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CoreDataSelectorResponse, createUseCoreDataHook, DataStatus } from "../../dataAcess";
+import {
+  CoreDataSelectorResponse,
+  createUseCoreDataHook,
+  DataStatus,
+} from "../../dataAcess";
 import { CoreDispatch, CoreState } from "../../store";
-import { fetchSlideImages, ImageMetadataResponse } from "./imageDetailsApi";
+import {
+  fetchSlideImages,
+  ImageMetadataResponse,
+} from "./imageDetailsApi";
 
 export const fetchImageDetails = createAsyncThunk<
   ImageMetadataResponse,
@@ -11,6 +18,13 @@ export const fetchImageDetails = createAsyncThunk<
   return await fetchSlideImages(imageId);
 });
 
+// export const fetchImageViewer = createAsyncThunk(
+//   "imageDetails/fetchImageViewer",
+//   async (): Promise<GraphQLApiResponse> => {
+//     return await fetchImageViewerQuery();
+//   },
+// );
+
 export interface imageDetailsState {
   readonly details: ImageMetadataResponse;
   readonly status: DataStatus;
@@ -18,45 +32,47 @@ export interface imageDetailsState {
 
 const initialState: imageDetailsState = {
   details: {
-    Format: '',
-    Height: '',
-    Width: '',
-    TileSize: '',
-    Overlap: '',
-    uuid: ''
+    Format: "",
+    Height: "",
+    Width: "",
+    TileSize: "",
+    Overlap: "",
+    uuid: "",
   },
-  status: 'uninitialized'
-}
-
+  status: "uninitialized",
+};
 
 const slice = createSlice({
   name: "imageDetails",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchImageDetails.fulfilled, (state, action) => {
-      const response = action.payload
+    builder
+      .addCase(fetchImageDetails.fulfilled, (state, action) => {
+        const response = action.payload;
 
-      state.details = {
-        Height: response.Height,
-        Width: response.Width,
-        Format: response.Format,
-        TileSize: response.TileSize,
-        Overlap: response.Overlap,
-        uuid: response.uuid
-      };
-      state.status = "fulfilled";
+        state.details = {
+          Height: response.Height,
+          Width: response.Width,
+          Format: response.Format,
+          TileSize: response.TileSize,
+          Overlap: response.Overlap,
+          uuid: response.uuid,
+        };
+        state.status = "fulfilled";
 
-      return state;
-    })
+        return state;
+      })
       .addCase(fetchImageDetails.pending, (state) => {
         state.status = "pending";
+        return state;
       })
       .addCase(fetchImageDetails.rejected, (state) => {
         state.status = "rejected";
+        return state;
       });
-  }
-})
+  },
+});
 
 export const imageDetailsReducer = slice.reducer;
 
@@ -71,8 +87,10 @@ export const selectImageDetailsInfo = (
     TileSize: state.imageDetails.details.TileSize,
     uuid: state.imageDetails.details.uuid,
   },
-  status: state.imageDetails.status
-})
+  status: state.imageDetails.status,
+});
 
-
-export const useImageDetails = createUseCoreDataHook(fetchImageDetails, selectImageDetailsInfo)
+export const useImageDetails = createUseCoreDataHook(
+  fetchImageDetails,
+  selectImageDetailsInfo,
+);

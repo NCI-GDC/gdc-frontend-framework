@@ -13,8 +13,8 @@ export interface ImageViewerProp extends HorizontalTableProps {
 const ImageViewer = ({ imageId, tableData }: ImageViewerProp) => {
   const [viewer, setViewer] = useState<OpenSeadragon.Viewer>(null);
   const { data: imageDetails, isFetching, isError } = useImageDetails(imageId);
-  const osdContainerRef = useRef(null)
-  const detailsButtonWrapperRef = useRef(null)
+  const osdContainerRef = useRef(null);
+  const detailsButtonWrapperRef = useRef(null);
 
   const InitOpenseadragon = () => {
     viewer && viewer.destroy();
@@ -26,15 +26,19 @@ const ImageViewer = ({ imageId, tableData }: ImageViewerProp) => {
       showNavigator: true,
       minZoomLevel: 0,
       showFullPageControl: false,
-    }
-    const view: OpenSeadragon.Viewer = OpenSeadragon(options)
+    };
+    const view: OpenSeadragon.Viewer = OpenSeadragon(options);
 
     const fullPageButton = new OpenSeadragon.Button({
-      tooltip: 'Toggle Full Page',
-      srcRest: 'https://raw.githubusercontent.com/openseadragon/openseadragon/master/images/fullpage_rest.png',
-      srcGroup: 'https://raw.githubusercontent.com/openseadragon/openseadragon/master/images/fullpage_grouphover.png',
-      srcHover: 'https://raw.githubusercontent.com/openseadragon/openseadragon/master/images/fullpage_hover.png',
-      srcDown: 'https://raw.githubusercontent.com/openseadragon/openseadragon/master/images/fullpage_pressed.png',
+      tooltip: "Toggle Full Page",
+      srcRest:
+        "https://raw.githubusercontent.com/openseadragon/openseadragon/master/images/fullpage_rest.png",
+      srcGroup:
+        "https://raw.githubusercontent.com/openseadragon/openseadragon/master/images/fullpage_grouphover.png",
+      srcHover:
+        "https://raw.githubusercontent.com/openseadragon/openseadragon/master/images/fullpage_hover.png",
+      srcDown:
+        "https://raw.githubusercontent.com/openseadragon/openseadragon/master/images/fullpage_pressed.png",
       onClick: () => toggleFullScreen(osdContainerRef),
     });
 
@@ -42,9 +46,10 @@ const ImageViewer = ({ imageId, tableData }: ImageViewerProp) => {
       anchor: OpenSeadragon.ControlAnchor.TOP_LEFT,
     });
 
-    detailsButtonWrapperRef.current && view.addControl(detailsButtonWrapperRef.current, {
-      anchor: OpenSeadragon.ControlAnchor.TOP_LEFT,
-    });
+    detailsButtonWrapperRef.current &&
+      view.addControl(detailsButtonWrapperRef.current, {
+        anchor: OpenSeadragon.ControlAnchor.TOP_LEFT,
+      });
 
     setViewer(view);
   };
@@ -77,19 +82,21 @@ const ImageViewer = ({ imageId, tableData }: ImageViewerProp) => {
 
   return (
     <>
-      {
-        isFetching ? (
-          <div>
-            <LoadingOverlay visible />
-          </div>
-        )
-          :
-          isError ? (
-            <div id="osd" className="flex bg-white h-img-viewer">Image is not available</div>
-          ) : (
-            <div ref={osdContainerRef} id="osd" className="flex bg-black h-img-viewer" />
-          )
-      }
+      {isFetching ? (
+        <div>
+          <LoadingOverlay visible />
+        </div>
+      ) : isError ? (
+        <div id="osd" className="flex bg-white h-img-viewer">
+          Image is not available
+        </div>
+      ) : (
+        <div
+          ref={osdContainerRef}
+          id="osd"
+          className="flex bg-black h-img-viewer"
+        />
+      )}
       <SlideDetailButton ref={detailsButtonWrapperRef} tableData={tableData} />
     </>
   );

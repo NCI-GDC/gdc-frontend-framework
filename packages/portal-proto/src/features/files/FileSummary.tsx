@@ -32,6 +32,8 @@ export const ContextualFileView: React.FC<ContextualFileViewProps> = (
     ],
     size: 1,
   });
+
+  console.log("DATAAA*****: ", data)
   const fileName = data?.[0]?.fileName;
 
   return (

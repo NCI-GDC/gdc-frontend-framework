@@ -1,4 +1,4 @@
-import { Card, Text } from "@mantine/core";
+import { Badge, Card, Text } from "@mantine/core";
 
 interface SlidesProps {
   readonly file_id: string;
@@ -13,8 +13,17 @@ export const Slides: React.FC<SlidesProps> = ({
 }: SlidesProps) => {
   return (
     <div className="flex flex-col mb-4" onClick={() => setImageViewer(file_id)}>
-      <Card shadow="sm" p="lg">
-        <Text size="xs" className="mb-2">{submitter_id}</Text>
+      <Card
+        shadow="sm"
+        p="sm"
+        sx={(theme) => ({
+          backgroundColor: theme.colors.gray[2],
+          "&:hover": {
+            backgroundColor: theme.colors.gray[5],
+          },
+        })}
+      >
+        <Badge variant="light" className="mb-1 text-black text-xs">{submitter_id}</Badge>
 
         <img
           alt={`thumbnail of ${submitter_id}`}
