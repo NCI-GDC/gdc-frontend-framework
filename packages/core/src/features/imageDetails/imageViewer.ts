@@ -7,11 +7,13 @@ import {
 import { CoreState } from "../../store";
 import { GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import { fetchImageViewerQuery } from "./imageDetailsApi";
+import trimEnd from "lodash/trimEnd";
+import find from "lodash/find";
 
 export const fetchImageViewer = createAsyncThunk(
   "imageDetails/fetchImageViewer",
-  async (): Promise<GraphQLApiResponse> => {
-    return await fetchImageViewerQuery();
+  async (cases_offset: number): Promise<GraphQLApiResponse> => {
+    return await fetchImageViewerQuery(cases_offset);
   },
 );
 
@@ -41,6 +43,38 @@ const initialState: imageViewerInitialState = {
   edges: [],
 };
 
+export const getSlides = (caseNode: any) => {
+  const portions = (
+    caseNode.samples || {
+      hits: { edges: [] },
+    }
+  ).hits.edges.reduce(
+    (acc: any, { node }: any) => [
+      ...acc,
+      ...node.portions.hits.edges.map((p: { node: any }) => p.node),
+    ],
+    [],
+  );
+
+  const slideImageIds = caseNode.files.hits.edges.map(({ node }: any) => ({
+    file_id: node.file_id,
+    submitter_id: trimEnd(node.submitter_id, "_slide_image"),
+  }));
+
+  const slides = portions.reduce(
+    (acc: any, { slides }: any) => [
+      ...acc,
+      ...slides.hits.edges.map((p: { node: any }) => p.node),
+    ],
+    [],
+  );
+
+  return slideImageIds.map((id: { submitter_id: any }) => {
+    const matchBySubmitter = find(slides, { submitter_id: id.submitter_id });
+    return { ...id, ...matchBySubmitter };
+  });
+};
+
 const slice = createSlice({
   name: "imageViewer",
   initialState,
@@ -54,25 +88,21 @@ const slice = createSlice({
         const hits = response?.data?.viewer?.repository?.cases?.hits;
         state.status = "fulfilled";
         state.total = hits?.total;
-
-        state.edges = Object.fromEntries(
+        console.log("state.edges: ", state.edges);
+        const obj = Object.fromEntries(
           hits?.edges?.map((edge: any) => {
             // give proper name
+            const mapped = getSlides(edge?.node);
             const caseSubmitterId = edge?.node?.submitter_id;
             const projectID = edge?.node?.project?.project_id;
-            const mapped = edge?.node?.files?.hits?.edges?.map(
-              (edge: { node: { file_id: string; submitter_id: string } }) => ({
-                file_id: edge.node.file_id,
-                submitter_id: edge.node.submitter_id.replace(
-                  "_slide_image",
-                  "",
-                ),
-              }),
-            );
 
             return [`${caseSubmitterId} ${projectID}`, mapped];
           }),
         );
+
+        console.log("obj: ", obj);
+
+        state.edges = obj;
 
         return state;
       })

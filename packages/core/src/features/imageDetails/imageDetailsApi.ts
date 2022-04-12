@@ -62,14 +62,16 @@ const imageViewerGraphlQLQuery = `
   query ImageViewer_relayQuery(
     $filters: FiltersArgument
     $slideFilter: FiltersArgument
+    $cases_size: Int
+    $cases_offset: Int
   ) {
     viewer {
       repository {
         cases {
           hits(
             filters: $filters
-            first: 10
-            offset: 0
+            first: $cases_size
+            offset: $cases_offset
           ) {
             total
             edges {
@@ -138,10 +140,12 @@ const imageViewerGraphlQLQuery = `
     }
 }`;
 
-export const fetchImageViewerQuery = async (): Promise<GraphQLApiResponse> => {
+export const fetchImageViewerQuery = async (
+  cases_offset: number,
+): Promise<GraphQLApiResponse> => {
   const results: GraphQLApiResponse<any> = await graphqlAPI(
     imageViewerGraphlQLQuery,
-    graphQLFilters,
+    { ...graphQLFilters, cases_size: 10, cases_offset },
   );
 
   return results;
