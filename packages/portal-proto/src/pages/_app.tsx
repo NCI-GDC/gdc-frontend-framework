@@ -20,7 +20,6 @@ import "react-tabs/style/react-tabs.css";
 // ReactModal needs the app element set for a11y reasons.
 // It hides the main application from screen readers while modals are open.
 import ReactModal from "react-modal";
-import React from "react";
 ReactModal.setAppElement("#__next");
 
 const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
@@ -28,15 +27,7 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
     <CoreProvider>
       <Provider store={store}>
       {/* Prevents style conflicts between Mantine and Tailwind by loading Mantine second */}
-      <MantineProvider
-        withGlobalStyles
-        withNormalizeCSS
-        emotionOptions={{ key: 'mantine', prepend: false }}
-        theme={{  // Override default blue color until styles are determined
-          colors: {
-            blue: ['#bebebe', '#919191', '#484848' /* ... */],
-          }}}
-      >
+        <MantineProvider emotionOptions={{ key: 'mantine', prepend: false }}>
         <TourProvider steps={[]} components={{ Badge }}>
           <Component {...pageProps} />
         </TourProvider>
