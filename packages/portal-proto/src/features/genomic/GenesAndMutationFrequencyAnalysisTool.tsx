@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
 import GenesTable from "./GenesTable";
 import MutationsTable from "./MutationsTable";
@@ -11,10 +11,14 @@ import {
   useCoreSelector,
   useSurvivalPlot,
   fetchSurvival,
+  createUseFiltersCoreDataHook,
+  selectCurrentCohortFilters,
+  useSurvivalPlotWithCohortFilters,
+  selectGenomicAndCohortFilters,
+  selectGenomicGqlFilters,
+  selectSurvivalData,
 } from "@gff/core";
-import { GqlIntersection } from "@gff/core/dist/dts";
-
-
+import isEqual from "lodash/isEqual";
 
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
   ssr: false,
@@ -70,9 +74,6 @@ const buildGeneHaveAndHaveNotFilters = (cohortFilters: GqlOperation, symbol: str
   if (symbol === undefined)
     return [];
 
-  console.log(cohortFilters);
-
-
   return ([{
     "op": "and",
     content:
@@ -98,10 +99,26 @@ const buildGeneHaveAndHaveNotFilters = (cohortFilters: GqlOperation, symbol: str
 
 };
 
+const useSurvivalPlotWithCohortAndGenomicFilters = createUseFiltersCoreDataHook(fetchSurvival, selectSurvivalData, selectGenomicAndCohortFilters);
+
+const useSurvivalPlotWithCohortAndGenonkicFilters = () => {
+  const coreDispatch = useCoreDispatch();
+  const cohortFilters = useCoreSelector((state) => selectCurrentCohortCaseGqlFilters(state));
+  const genomicFilters = useCoreSelector((state) => selectGenomicGqlFilters(state));
+  const { data, status, error } = useCoreSelector(selectSurvivalData);
+
+  useEffect(() => {
+    if (status === "uninitialized") {
+      coreDispatch(fetchSurvival(undefined)); // eslint-disable-line
+    }
+  }, [status, coreDispatch, action, params]);
+}
+
 const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const coreDispatch = useCoreDispatch();
   const [comparativeSurvival, setComparativeSurvival] = useState(undefined);
   const cohortFilters = useCoreSelector((state) => selectCurrentCohortCaseGqlFilters(state));
+  const genomicFilters = useCoreSelector((state) => selectGenomicGqlFilters(state));
   const { data: survivalPlotData, isSuccess :survivalPlotReady } = useSurvivalPlot();
 
   /**

@@ -188,9 +188,7 @@ export const selectSurvivalData = (
 };
 
 /**
- * Trying out a possible way to create a hook that
- * handles when the filters are updated
+ * Data Hook to query survival data from the API.
  */
-
 export const useSurvivalPlot = createUseCoreDataHook(fetchSurvival, selectSurvivalData);
 export const useSurvivalPlotWithCohortFilters = createUseFiltersCoreDataHook(fetchSurvival, selectSurvivalData, selectCurrentCohortFilters);

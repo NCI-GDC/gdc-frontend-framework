@@ -98,9 +98,10 @@ export const createUseFiltersCoreDataHook = <P, A, T, F>(
     const { data, status, error } = useCoreSelector(dataSelector);
     const action = fetchDataActionCreator(...params);
     const secondary = useCoreSelector(secondarySelector)
+    const prevParams = usePrevious(params);
 
     useEffect(() => {
-      if (status === "uninitialized") {
+      if (status === "uninitialized" || !isEqual(prevParams, params))  {
         // createDispatchHook types forces the input to AnyAction, which is
         // not compatible with thunk actions. hence, the `as any` cast. ;(
         coreDispatch(action as any); // eslint-disable-line

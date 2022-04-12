@@ -96,7 +96,7 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
     const { value, checked } = e.target;
 
     if (checked) {
-      if (field === "is_cancer_gene_census") { // TODO: remove after MR and boolean facets are supported
+      if (field === "is_cancer_gene_census") { // TODO: remove once boolean facets are supported
         const updated = selectedEnums ? [...selectedEnums, checked as boolean ] : [checked as boolean ];
         setSelectedEnums(updated);
       } else {

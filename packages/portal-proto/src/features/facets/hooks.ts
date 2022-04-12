@@ -162,7 +162,7 @@ const useGenesFacet = (field: string): EnumFacetResponse => {
     if (facet) {
       coreDispatch(fetchGenesFacetByName(field));
     }
-  }, [selectFacetFilter, selectCohortFilter]);
+  }, [selectFacetFilter, selectCohortFilter, facet, field]);
 
   return {
     data: facet?.buckets,
@@ -212,7 +212,7 @@ const useMutationsFacet = (field: string): EnumFacetResponse => {
 /**
  * Adds a enumeration filter to cohort filters
  * @param dispatch CoreDispatch instance
- * @param enumerationFilters value to update
+ * @param enumerationFilters values to update
  * @param field field to update
  * @param prefix optional prefix for fields
  */
