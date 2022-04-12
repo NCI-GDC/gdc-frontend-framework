@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
 import GenesTable from "./GenesTable";
 import MutationsTable from "./MutationsTable";
@@ -7,7 +7,7 @@ import { EnumFacet } from "../facets/EnumFacet";
 import dynamic from "next/dynamic";
 import {
   GqlOperation,
-  selectCurrentCohortCaseGqlFilters, useCoreDispatch,
+  selectCurrentCohortCaseGqlFilters, useCoreDispatch,selectCurrentCohortFilterSet,joinFilters,
   useCoreSelector,
   useSurvivalPlot,
   fetchSurvival,
@@ -16,9 +16,10 @@ import {
   useSurvivalPlotWithCohortFilters,
   selectGenomicAndCohortFilters,
   selectGenomicGqlFilters,
-  selectSurvivalData,
+  selectSurvivalData, selectGenomicFilters,buildCohortGqlOperator
 } from "@gff/core";
 import isEqual from "lodash/isEqual";
+
 
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
   ssr: false,
@@ -66,7 +67,7 @@ const MutationFacetNames = [
   },
 ];
 
-const buildGeneHaveAndHaveNotFilters = (cohortFilters: GqlOperation, symbol: string, field: string) : ReadonlyArray<GqlOperation> => {
+const buildGeneHaveAndHaveNotFilters = (currentFilters: GqlOperation, symbol: string, field: string) : ReadonlyArray<GqlOperation> => {
   /**
    * given the contents, add two filters, one with the gene and one without
    */
@@ -77,50 +78,70 @@ const buildGeneHaveAndHaveNotFilters = (cohortFilters: GqlOperation, symbol: str
   return ([{
     "op": "and",
     content:
-      [...(cohortFilters ? cohortFilters.content as any  : []), { //TODO: refactor cohortFilters to be Union | Intersection
+      [ { //TODO: refactor cohortFilters to be Union | Intersection
         "op": "excludeifany",
         "content": {
           "field": field,
           "value": symbol,
         },
-      }],
+      },...(currentFilters ? currentFilters.content as any  : []) ],
   },
     {
       op: "and", content:
-        [ ...(cohortFilters ? cohortFilters.content as any  : []) , {
+        [{
           "op": "=",
           "content": {
             "field": field,
             "value": symbol,
           },
-        }],
+        }, ...(currentFilters ? currentFilters.content as any  : []) ],
     },
   ]);
 
 };
 
-const useSurvivalPlotWithCohortAndGenomicFilters = createUseFiltersCoreDataHook(fetchSurvival, selectSurvivalData, selectGenomicAndCohortFilters);
+const usePrevious = (value : any) => {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+}
 
-const useSurvivalPlotWithCohortAndGenonkicFilters = () => {
+///const useSurvivalPlotWithCohortAndGenomicFilters = createUseFiltersCoreDataHook(fetchSurvival, selectSurvivalData, selectGenomicAndCohortFilters);
+
+const useSurvivalPlotWithCohortAndGenonmicFilters = () => {
   const coreDispatch = useCoreDispatch();
-  const cohortFilters = useCoreSelector((state) => selectCurrentCohortCaseGqlFilters(state));
-  const genomicFilters = useCoreSelector((state) => selectGenomicGqlFilters(state));
+  const cohortFilters = useCoreSelector((state) => selectCurrentCohortFilters(state));
+  const genomicFilters = useCoreSelector((state) => selectGenomicFilters(state));
   const { data, status, error } = useCoreSelector(selectSurvivalData);
 
+  const filters = useMemo(() => buildCohortGqlOperator(joinFilters(cohortFilters, genomicFilters)), [cohortFilters, genomicFilters]);
+  const prevFilters = usePrevious(filters);
+
   useEffect(() => {
-    if (status === "uninitialized") {
-      coreDispatch(fetchSurvival(undefined)); // eslint-disable-line
+    if ((status === "uninitialized") || (!isEqual(prevFilters, filters))) {
+      coreDispatch(fetchSurvival(filters ? { filters:[filters] } : undefined )); // eslint-disable-line
     }
-  }, [status, coreDispatch, action, params]);
+  }, [status, coreDispatch, filters]);
+
+  return {
+    data,
+    error,
+    isUninitialized: status === "uninitialized",
+    isFetching: status === "pending",
+    isSuccess: status === "fulfilled",
+    isError: status === "rejected",
+  };
 }
 
 const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const coreDispatch = useCoreDispatch();
   const [comparativeSurvival, setComparativeSurvival] = useState(undefined);
-  const cohortFilters = useCoreSelector((state) => selectCurrentCohortCaseGqlFilters(state));
-  const genomicFilters = useCoreSelector((state) => selectGenomicGqlFilters(state));
-  const { data: survivalPlotData, isSuccess :survivalPlotReady } = useSurvivalPlot();
-
+  const cohortFilters = useCoreSelector((state) => selectCurrentCohortFilterSet(state));
+  const genomicFilters = useCoreSelector((state) => selectGenomicFilters(state));
+  const { data: survivalPlotData, isSuccess :survivalPlotReady } = useSurvivalPlotWithCohortAndGenonmicFilters();
+  const filters = useMemo(() => buildCohortGqlOperator(joinFilters(cohortFilters, genomicFilters)), [cohortFilters, genomicFilters]);
   /**
    * Update survival plot in response to user actions. There are two "states"
    * for the survival plot: If comparativeSurvival is undefined it will show the
@@ -133,13 +154,17 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const handleSurvivalPlotToggled = (symbol: string, name: string, field: string) => {
     if (comparativeSurvival && comparativeSurvival.symbol === symbol) { // remove toggle
       setComparativeSurvival(undefined);
-      coreDispatch(fetchSurvival(undefined));
+      coreDispatch(fetchSurvival(filters ? {  filters: [filters] } : undefined ));
     } else {
       setComparativeSurvival({ symbol: symbol, name: name });
-      coreDispatch(fetchSurvival({  filters: buildGeneHaveAndHaveNotFilters(cohortFilters, symbol, field) } ));
+      const f =buildGeneHaveAndHaveNotFilters(filters, symbol, field);
+      coreDispatch(fetchSurvival({  filters: f } ));
     }
   };
 
+  useEffect( () => {
+    console.log(cohortFilters, " changed")
+  }, [ cohortFilters ]);
 
   /**
    * remove comparative survival plot when tabs or filters change.
@@ -147,7 +172,11 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
    */
   const handleTabOrFilterChanged = () => {
     setComparativeSurvival(undefined);
-    coreDispatch(fetchSurvival(undefined));
+    coreDispatch(fetchSurvival(filters ? {  filters: [filters] } : undefined ));
+  }
+
+  const clearGenomicFilters = () => {
+    coreDispatch(clearGenomicFilters)
   }
 
   return (
@@ -178,14 +207,15 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
           })
           }
         </div>
-        <Tabs classNames = {{
-          root: "mt-4",
-          tabLabel: "text-nci-gray-darkest",
-          tabActive: "bg-nci-gray-lighter text-nci-gray-lightest"
+        <Tabs variant="pills" color="pink" classNames = {{
+          root: "mt-4 ",
+          tabLabel: "text-nci-gray-darkest text-lg",
+          tabActive: "bg-nci-teal",
+          tabControl: "bg-nci-teal"
         }}
               onTabChange={ () => {handleTabOrFilterChanged() }}
         >
-          <Tabs.Tab label="Genes">
+          <Tabs.Tab label="Genes" >
             <div className="flex flex-row">
               <div className="flex flex-col">
                 <Grid className="mx-2 bg-white"  >

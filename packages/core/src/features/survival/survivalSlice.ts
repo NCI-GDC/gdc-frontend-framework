@@ -115,13 +115,13 @@ export const fetchSurvival = createAsyncThunk <
 (
   "analysis/survivalData",
   async (args, thunkAPI) => {
-   if (args?.filters) { // passing filter overrides using the cohort filters.
-     return fetchSurvivalAnalysis({ filters: args?.filters });
+   //// passing filter overrides using the cohort filters.
+     return fetchSurvivalAnalysis({ filters: args?.filters ? args?.filters : undefined  });
 
-   }
-    // use the current cohort filters
-    const cohort_filters = buildCohortGqlOperator(selectCurrentCohortFilterSet(thunkAPI.getState()));
-    return fetchSurvivalAnalysis({  filters: cohort_filters ? [cohort_filters] : undefined });
+   //}
+    // // use the current cohort filters
+    // const cohort_filters = buildCohortGqlOperator(selectCurrentCohortFilterSet(thunkAPI.getState()));
+    // return fetchSurvivalAnalysis({  filters: cohort_filters ? [cohort_filters] : undefined });
   },
 );
 

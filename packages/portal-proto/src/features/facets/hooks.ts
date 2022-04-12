@@ -162,7 +162,7 @@ const useGenesFacet = (field: string): EnumFacetResponse => {
     if (facet) {
       coreDispatch(fetchGenesFacetByName(field));
     }
-  }, [selectFacetFilter, selectCohortFilter, facet, field]);
+  }, [selectFacetFilter, selectCohortFilter]);
 
   return {
     data: facet?.buckets,

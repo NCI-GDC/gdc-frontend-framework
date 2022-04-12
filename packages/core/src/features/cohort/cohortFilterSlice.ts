@@ -96,7 +96,7 @@ export const buildCohortGqlOperator = (fs: FilterSet | undefined): GqlOperation 
       return (
         (Object.keys(fs.root).length == 0) ? undefined :
         {
-          // TODO: Replace fixed AND with cohort top level operation
+          // TODO: Replace fixed AND with cohort top level operation like Union or Intersection
           op: fs.mode, content: Object.keys(fs.root).map((k): GqlOperation => {
             return convertFilterToGqlFilter( fs.root[k]);
           }),
