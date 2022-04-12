@@ -117,6 +117,7 @@ const VennDiagram: React.FC<VennDiagramProps> = ({
       "resetScale2d",
       "toImage",
     ],
+    staticPlot: !interactable,
   };
 
   const outerLabels = {
@@ -167,8 +168,8 @@ const VennDiagram: React.FC<VennDiagramProps> = ({
       layout={layout}
       config={config}
       onClick={onClick}
-      onHover={interactable ? onHover : undefined}
-      onUnhover={interactable ? onUnhover : undefined}
+      onHover={onHover}
+      onUnhover={onUnhover}
     />
   );
 };
