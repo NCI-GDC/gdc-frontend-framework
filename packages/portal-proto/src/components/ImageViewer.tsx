@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import OpenSeadragon from "openseadragon";
 import { useImageDetails } from "@gff/core";
 import { LoadingOverlay } from "@mantine/core";
-import { toggleFullScreen } from "../features/files/utils";
+import { toggleFullScreen } from "../utils";
 import { SlideDetailButton } from "./SlideDetailButton";
 import { HorizontalTableProps } from "./HorizontalTable";
 
