@@ -40,7 +40,7 @@ export interface imageViewerInitialState {
 const initialState: imageViewerInitialState = {
   status: "uninitialized",
   total: 0,
-  edges: [],
+  edges: {},
 };
 
 export const getSlides = (caseNode: any) => {
@@ -100,9 +100,7 @@ const slice = createSlice({
           }),
         );
 
-        console.log("obj: ", obj);
-
-        state.edges = obj;
+        state.edges = { ...state.edges, ...obj };
 
         return state;
       })
