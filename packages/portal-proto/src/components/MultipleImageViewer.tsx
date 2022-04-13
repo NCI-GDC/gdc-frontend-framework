@@ -97,7 +97,8 @@ export const MultipleImageViewer = (): JSX.Element => {
                     onTabChange={setActiveTab}
                     classNames={{
                       root: "text-nci-blue",
-                      tabsListWrapper: "max-h-[550px] overflow-x-hidden overflow-y-auto",
+                      tabsListWrapper:
+                        "max-h-[550px] overflow-x-hidden overflow-y-auto",
                       tabControl: "text-nci-blue bg-grey",
                       tabActive: "font-bold",
                       tabsList: "bg-grey",
@@ -146,18 +147,15 @@ export const MultipleImageViewer = (): JSX.Element => {
                 )}
               </div>
             </div>
-            <div className="flex flex-col">
-              <Text>
-                Showing {Object.keys(data?.edges).length} of {data?.total}
-              </Text>
-              <Badge
-                color="blue"
-                variant="filled"
-                className="cursor-pointer w-1/6"
-                onClick={() => setOffSet((o) => o + 10)}
-              >
+            <div className="flex flex-col w-44 ml-3 mt-5">
+              <Button onClick={() => setOffSet((o) => o + 10)} size="xs">
                 Show More
-              </Badge>
+              </Button>
+
+              <Text className="ml-3">
+                Showing <strong>{Object.keys(data?.edges).length}</strong> of{" "}
+                <strong>{data?.total}</strong>
+              </Text>
             </div>
           </div>
         </div>
