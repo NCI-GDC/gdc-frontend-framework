@@ -4,12 +4,14 @@ interface SlidesProps {
   readonly file_id: string;
   readonly submitter_id: string;
   setImageViewer: (file_id: string) => void;
+  isActive: boolean;
 }
 
 export const Slides: React.FC<SlidesProps> = ({
   file_id,
   submitter_id,
   setImageViewer,
+  isActive,
 }: SlidesProps) => {
   return (
     <div className="flex flex-col mb-4" onClick={() => setImageViewer(file_id)}>
@@ -17,13 +19,15 @@ export const Slides: React.FC<SlidesProps> = ({
         shadow="sm"
         p="sm"
         sx={(theme) => ({
-          backgroundColor: theme.colors.gray[2],
+          backgroundColor: isActive ? "#1784ac" : theme.colors.gray[2],
           "&:hover": {
-            backgroundColor: theme.colors.gray[5],
+            backgroundColor: !isActive && theme.colors.gray[5],
           },
         })}
       >
-        <Badge variant="light" className="mb-1 text-black text-xs">{submitter_id}</Badge>
+        <Badge variant="light" className="mb-1 text-black text-xs">
+          {submitter_id}
+        </Badge>
 
         <img
           alt={`thumbnail of ${submitter_id}`}

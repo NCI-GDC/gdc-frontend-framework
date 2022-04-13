@@ -13,6 +13,7 @@ import { useImageViewer } from "@gff/core";
 import { formatImageDetailsInfo } from "../features/files/utils";
 import { MdOutlineSearch } from "react-icons/md";
 import { Slides } from "./Slides";
+import { useRouter } from "next/router";
 
 const ImageViewer = dynamic(() => import("./ImageViewer"), {
   ssr: false,
@@ -24,10 +25,9 @@ export const MultipleImageViewer = (): JSX.Element => {
   const [activeImage, setActiveImage] = useState("");
   const [imageDetails, setImageDetails] = useState([]);
   const [offSet, setOffSet] = useState(0);
+  const router = useRouter();
 
   const { data, isFetching } = useImageViewer(offSet);
-
-  console.log("dataa: ", data);
 
   useEffect(() => {
     const inside = data?.edges[Object.keys(data.edges)[0]];
@@ -43,7 +43,18 @@ export const MultipleImageViewer = (): JSX.Element => {
         </div>
       ) : (
         <div>
-          <h1 className="p-2 text-xl ml-4 text-black">Slide Image Viewer</h1>
+          <div className="flex justify-between">
+            <h1 className="p-2 text-xl ml-4 text-black">Slide Image Viewer</h1>
+            {/* TODO: for cases summary push the cases summary page route once it's available (using props to know when to go back or not) */}
+            <Button
+              onClick={() => router.back()}
+              size="xs"
+              className="mr-2 mt-2"
+            >
+              Back
+            </Button>
+          </div>
+
           <div className="flex flex-col border-1 border-[#c8c8c8] m-2 mt-0">
             <div className="flex border-b-1 border-b-[#c8c8c8]">
               <div className="flex flex-col w-1/6">
@@ -91,26 +102,36 @@ export const MultipleImageViewer = (): JSX.Element => {
               {activeImage && (
                 <div className="flex-1/2">
                   <Tabs
-                    variant="outline"
+                    variant="unstyled"
                     orientation="vertical"
                     active={activeTab}
                     onTabChange={setActiveTab}
                     classNames={{
-                      root: "text-nci-blue",
                       tabsListWrapper:
                         "max-h-[550px] overflow-x-hidden overflow-y-auto",
-                      tabControl: "text-nci-blue bg-grey",
-                      tabActive: "font-bold",
+                      tabControl: "ml-2 mt-1",
                       tabsList: "bg-grey",
                       tabLabel: "text-xs",
                       body: "max-h-[550px] overflow-y-auto",
                     }}
-                    styles={{
+                    styles={(theme) => ({
+                      tabControl: {
+                        backgroundColor: theme.white,
+                        color: theme.colors.gray[9],
+                        border: `1px solid ${theme.colors.gray[4]}`,
+                        fontSize: theme.fontSizes.md,
+                        padding: `${theme.spacing.lg}px ${theme.spacing.xl}px`,
+                        borderRadius: theme.radius.md,
+                      },
+
                       tabActive: {
-                        background: "blue",
+                        backgroundColor: theme.colors.gray[7],
+                        borderColor: theme.colors.gray[7],
+                        color: theme.white,
+                        fontWeight: "bold",
                       },
                       tabsListWrapper: { minWidth: "40%" },
-                    }}
+                    })}
                   >
                     {Object.keys(data.edges).map((edge) => {
                       return (
@@ -130,6 +151,7 @@ export const MultipleImageViewer = (): JSX.Element => {
                                       formatImageDetailsInfo(file),
                                     );
                                   }}
+                                  isActive={activeImage === file.file_id}
                                 />
                               </List.Item>
                             ))}
