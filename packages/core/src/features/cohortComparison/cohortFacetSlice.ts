@@ -81,10 +81,8 @@ export const fetchCohortCases = createAsyncThunk<
   { dispatch: CoreDispatch; state: CoreState }
 >("cohortComparison/cohortCases", async (facetFields, thunkAPI) => {
   const cohortFilters = selectCurrentCohortCaseGqlFilters(thunkAPI.getState());
-  
 
   const cohort2Filters = buildCohortGqlOperator(selectAvailableCohortByName(thunkAPI.getState(), COHORTS[1].name).filters);
-  console.log("cohort filter", selectAvailableCohortByName(thunkAPI.getState(), COHORTS[1].name));
   const graphQLFilters = {
     cohort1: cohortFilters,
     cohort2: cohort2Filters,

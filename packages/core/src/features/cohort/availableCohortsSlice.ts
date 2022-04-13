@@ -24,4 +24,4 @@ export const selectAvailableCohorts = (state: CoreState) =>
 export const selectAvailableCohortByName = (
   state: CoreState,
   name: string,
-) => state.cohort.availableCohorts.find(cohort => cohort.name === name);
+) => state.cohort.availableCohorts.find((cohort : any) => cohort.name === name);

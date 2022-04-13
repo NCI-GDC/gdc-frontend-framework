@@ -13,5 +13,6 @@ export const fetchPValue = async (data: any) => {
     data,
   };
 
-  return await graphqlAPI(graphQLQuery, graphQLFilters);
+  const response = await graphqlAPI(graphQLQuery, graphQLFilters) as any;
+  return response?.data?.analysis.pvalue;
 };

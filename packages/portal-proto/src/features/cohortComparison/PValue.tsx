@@ -1,21 +1,57 @@
+import { useState, useEffect } from "react";
+import { Tooltip } from "@mantine/core";
 import { fetchPValue } from "@gff/core";
 
 const noDataKeys = [
-  "_missing",
+  "missing",
   "not reported",
   "unknown",
   "not allowed to collect",
+  "unspecified",
 ];
 
-const PValue = ({ values }) => {
-  // [[], []]
-  const pValueBuckets = values
-    .filter((v) => noDataKeys.includes(v.key))
-    .map((v) => v);
+interface PValueProps {
+  readonly data: Array<
+    Array<{
+      readonly key: string;
+      readonly count: number;
+    }>
+  >;
+}
 
-  if (pValueBuckets.every((bucket) => bucket.length === 2)) {
-    const data = fetchPValue(values);
-    return <>{`P-Value = ${data}`}</>;
+const PValue: React.FC<PValueProps> = ({ data }: PValueProps) => {
+  const [pValue, setPValue] = useState(null);
+  const pValueBuckets = data.map((val) =>
+    val.filter((v) => !noDataKeys.includes(v.key)),
+  );
+
+  const labels = Array.from(
+    new Set(pValueBuckets.map((bucket) => bucket.map((v) => v.key)).flat()),
+  );
+
+  useEffect(() => {
+    const determinePValue = async () => {
+      if (
+        pValueBuckets.length > 0 &&
+        pValueBuckets.every((bucket) => bucket.length === 2)
+      ) {
+        const p = pValueBuckets.map((bucket) => bucket.map((d) => d.count));
+        const pValue = await fetchPValue(p);
+
+        setPValue(pValue);
+      } else {
+        setPValue(null);
+      }
+    };
+    determinePValue();
+  }, [data, pValueBuckets]);
+
+  if (pValue) {
+    return (
+      <Tooltip
+        label={`P-Value for ${labels.join(" and ")}`}
+      >{`P-Value = ${pValue.toPrecision(3)}`}</Tooltip>
+    );
   } else {
     return null;
   }

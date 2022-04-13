@@ -1,5 +1,5 @@
 export const COHORTS = [
-  { name: "New Custom Cohort", facets: [] },
+  { name: "New Custom Cohort", filters: {mode: "and", root: {}} },
   {
     name: "Baily's Cohort",
     filters: {

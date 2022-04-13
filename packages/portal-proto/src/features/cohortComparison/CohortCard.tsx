@@ -1,30 +1,38 @@
 import { Paper } from "@mantine/core";
-import {
-  useCoreSelector,
-  selectCohortCounts,
-  selectCurrentCohort,
-} from "@gff/core";
 import VennDiagram from "@/features/charts/VennDiagram/VennDiagram";
+import { FIELD_LABELS } from "src/fields";
 
 interface CohortCardProps {
-  selectedCards: Record<string, boolean>[];
-  setSelectedCards: (cards: Record<string, boolean>[]) => void;
+  selectedCards: Record<string, boolean>;
+  setSelectedCards: (cards: Record<string, boolean>) => void;
+  counts: number[];
+  options: Record<string, string>;
+  cohortNames: string[];
 }
 
-const CohortCard = ({ selectedCards, setSelectedCards, options, counts }) => {
-  const cohortCount = useCoreSelector((state) => selectCohortCounts(state));
-  const cohortName = useCoreSelector((state) => selectCurrentCohort(state));
-
+const CohortCard: React.FC<CohortCardProps> = ({
+  selectedCards,
+  setSelectedCards,
+  options,
+  counts,
+  cohortNames,
+}: CohortCardProps) => {
   return (
     <Paper p="md" className="h-fit">
       <div className="flex justify-between">
         <div>
           <h2 className="text-lg font-semibold">Cohort</h2>
-          {cohortName}
+          <p className="py-1 text-nci-yellow-darkest font-semibold">
+            S<sub>1</sub> : {cohortNames[0]}
+          </p>
+          <p className="py-1 text-nci-blue font-semibold">
+            S<sub>2</sub> : {cohortNames[1]}
+          </p>
         </div>
         <div>
           <h2 className="text-lg font-semibold"># Cases</h2>
-          {cohortCount.caseCounts}
+          <p className="py-1 ">{counts[0]}</p>
+          <p className="py-1">{counts[1]}</p>
         </div>
       </div>
       <hr />
@@ -38,7 +46,7 @@ const CohortCard = ({ selectedCards, setSelectedCards, options, counts }) => {
         interactable={false}
       />
       <hr />
-      {Object.entries(options).map(([value, label]) => (
+      {Object.entries(options).map(([value, field]) => (
         <div key={value}>
           <input
             id={`cohort-comparison-${value}`}
@@ -53,7 +61,7 @@ const CohortCard = ({ selectedCards, setSelectedCards, options, counts }) => {
             checked={selectedCards[value]}
           ></input>
           <label className="pl-1" htmlFor={`cohort-comparison-${value}`}>
-            {label}
+            {FIELD_LABELS[field]}
           </label>
         </div>
       ))}
