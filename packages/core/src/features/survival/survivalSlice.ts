@@ -7,8 +7,6 @@ import {
 import { CoreDispatch, CoreState } from "../../store";
 import {
   selectCurrentCohortFilters,
-  selectCurrentCohortFilterSet,
-  buildCohortGqlOperator,
 } from "../cohort/cohortFilterSlice";
 import { GqlOperation} from "../gdcapi/filters";
 
@@ -61,7 +59,7 @@ const initialState: SurvivalState = {
  *  Survival API Specialization of API Request and Errors
  */
 export interface GdcSurvivalApiRequest {
-  filters?: ReadonlyArray<GqlOperation>;
+  filters: ReadonlyArray<GqlOperation>;
 }
 
 export interface SurvivalFetchError {
@@ -88,7 +86,7 @@ export const buildSurvivalFetchError = async (
 export const fetchSurvivalAnalysis = async (
   request: GdcSurvivalApiRequest,
 ): Promise<SurvivalApiResponse> => {
-  const parameters = request.filters ? `?filters=${encodeURIComponent(JSON.stringify(request.filters))}` : "";
+  const parameters = request.filters.length > 0 ? `?filters=${encodeURIComponent(JSON.stringify(request.filters))}` : "";
   const res = await fetch(`https://api.gdc.cancer.gov/analysis/survival${parameters}`, {
     method: "GET",
     headers: {
@@ -109,19 +107,15 @@ export const fetchSurvivalAnalysis = async (
  */
 export const fetchSurvival = createAsyncThunk <
   SurvivalApiResponse,
-  { filters?: ReadonlyArray<GqlOperation> },
+  { filters: ReadonlyArray<GqlOperation> },
   { dispatch: CoreDispatch; state: CoreState }
   >
 (
   "analysis/survivalData",
-  async (args, thunkAPI) => {
-   //// passing filter overrides using the cohort filters.
-     return fetchSurvivalAnalysis({ filters: args?.filters ? args?.filters : undefined  });
+  async ({filters = []}) => {
+     return fetchSurvivalAnalysis({ filters: filters  });
 
-   //}
-    // // use the current cohort filters
-    // const cohort_filters = buildCohortGqlOperator(selectCurrentCohortFilterSet(thunkAPI.getState()));
-    // return fetchSurvivalAnalysis({  filters: cohort_filters ? [cohort_filters] : undefined });
+
   },
 );
 

@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Pagination, Select, Table, Checkbox, Tooltip } from "@mantine/core";
+import { Pagination, Select, Table, Checkbox, Tooltip, Switch } from "@mantine/core";
 import {
-  GDCGenesTable,
   GDCSsmsTable,
   useSsmsTable,
 } from "@gff/core";
 import { BiLineChartDown as SurvivalPlotIcon } from "react-icons/bi";
 import { GenomicTableProps } from "./types";
 
-const MutationsTable: React.FC<GenomicTableProps> = ( { handleSurvivalPlotToggled } : GenomicTableProps) => {
+const MutationsTable: React.FC<GenomicTableProps> = ( { handleSurvivalPlotToggled, selectedSurvivalPlot } : GenomicTableProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [offset, setOffset] = useState(0);
   const [activePage, setPage] = useState(1);
@@ -30,7 +29,7 @@ const MutationsTable: React.FC<GenomicTableProps> = ( { handleSurvivalPlotToggle
 
   return (
     <div className="flex flex-col w-100">
-      <MutationTableSimple {...data.ssms} handleSurvivalPlotToggled={handleSurvivalPlotToggled}/>
+      <MutationTableSimple {...data.ssms} selectedSurvivalPlot={selectedSurvivalPlot} handleSurvivalPlotToggled={handleSurvivalPlotToggled}/>
       <div className="flex flex-row items-center justify-start border-t border-nci-gray-light">
         <p className="px-2">Page Size:</p>
         <Select size="sm" radius="md"
@@ -61,6 +60,7 @@ const MutationsTable: React.FC<GenomicTableProps> = ( { handleSurvivalPlotToggle
 };
 
 interface MutationTableProps extends GDCSsmsTable {
+  readonly selectedSurvivalPlot: Record<string, string>
   readonly handleSurvivalPlotToggled : (symbol:string, name:string) => void;
 }
 
@@ -68,7 +68,8 @@ const MutationTableSimple: React.FC<MutationTableProps> = ( {
                                                               ssms,
                                                               cases,
                                                               filteredCases,
-                                                              handleSurvivalPlotToggled } : MutationTableProps) => {
+                                                              handleSurvivalPlotToggled,
+                                                              selectedSurvivalPlot} : MutationTableProps) => {
   return (
     <Table verticalSpacing={5} striped highlightOnHover >
       <thead>
@@ -92,9 +93,9 @@ const MutationTableSimple: React.FC<MutationTableProps> = ( {
             <td>{x.occurrence} / {cases} ({((x.occurrence / cases) * 100).toFixed(2).toLocaleString()}%)</td>
             <td>Impact</td>
             <Tooltip label={`Click icon to plot ${x.genomic_dna_change}`}>
-              <button onClick={() => handleSurvivalPlotToggled(x.ssm_id, `${x.consequence[0].gene.symbol} ${x.consequence[0].aa_change}` )} >
-                <SurvivalPlotIcon size="1.15rem"/>
-              </button>
+                <Switch checked={ selectedSurvivalPlot && selectedSurvivalPlot.symbol == x.ssm_id}
+                        onChange={() =>handleSurvivalPlotToggled(x.ssm_id, `${x.consequence[0].gene.symbol} ${x.consequence[0]?.aa_change ? x.consequence[0].aa_change : ""}` )} >
+                </Switch>
             </Tooltip>
           </tr>
         ))}

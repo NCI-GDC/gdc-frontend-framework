@@ -7,9 +7,12 @@ import { EnumFacet } from "../facets/EnumFacet";
 import dynamic from "next/dynamic";
 import {
   GqlOperation,
-  selectCurrentCohortCaseGqlFilters, useCoreDispatch,selectCurrentCohortFilterSet,joinFilters,
+  selectCurrentCohortCaseGqlFilters,
+  useCoreDispatch,
+  selectCurrentCohortFilterSet,
+  joinFilters,
   useCoreSelector,
-  useSurvivalPlot,
+  clearGenomicFilters,
   fetchSurvival,
   createUseFiltersCoreDataHook,
   selectCurrentCohortFilters,
@@ -121,7 +124,7 @@ const useSurvivalPlotWithCohortAndGenonmicFilters = () => {
 
   useEffect(() => {
     if ((status === "uninitialized") || (!isEqual(prevFilters, filters))) {
-      coreDispatch(fetchSurvival(filters ? { filters:[filters] } : undefined )); // eslint-disable-line
+      coreDispatch(fetchSurvival({ filters: filters? [filters] : [] }  )); // eslint-disable-line
     }
   }, [status, coreDispatch, filters]);
 
@@ -154,7 +157,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const handleSurvivalPlotToggled = (symbol: string, name: string, field: string) => {
     if (comparativeSurvival && comparativeSurvival.symbol === symbol) { // remove toggle
       setComparativeSurvival(undefined);
-      coreDispatch(fetchSurvival(filters ? {  filters: [filters] } : undefined ));
+      coreDispatch(fetchSurvival({ filters: filters? [filters] : [] }  ));
     } else {
       setComparativeSurvival({ symbol: symbol, name: name });
       const f =buildGeneHaveAndHaveNotFilters(filters, symbol, field);
@@ -163,7 +166,8 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   };
 
   useEffect( () => {
-    console.log(cohortFilters, " changed")
+    coreDispatch(clearGenomicFilters)
+    console.log("clear")
   }, [ cohortFilters ]);
 
   /**
@@ -172,12 +176,9 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
    */
   const handleTabOrFilterChanged = () => {
     setComparativeSurvival(undefined);
-    coreDispatch(fetchSurvival(filters ? {  filters: [filters] } : undefined ));
+    coreDispatch(fetchSurvival({ filters: filters? [filters] : [] }  ));
   }
 
-  const clearGenomicFilters = () => {
-    coreDispatch(clearGenomicFilters)
-  }
 
   return (
     <div className="flex flex-row">
@@ -207,12 +208,15 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
           })
           }
         </div>
-        <Tabs variant="pills" color="pink" classNames = {{
-          root: "mt-4 ",
-          tabLabel: "text-nci-gray-darkest text-lg",
-          tabActive: "bg-nci-teal",
-          tabControl: "bg-nci-teal"
+        <Tabs variant="pills"  classNames = {{
+          root:"mt-6",
+          "mantine-Tabs-tabControl": "bg-nci-teal text-nci-blue p-4 hover:bg-nci-teal",
         }}
+              styles={{
+
+                tabActive: { color: 'red' },
+
+              }}
               onTabChange={ () => {handleTabOrFilterChanged() }}
         >
           <Tabs.Tab label="Genes" >
@@ -227,18 +231,19 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                     <SurvivalPlot data={survivalPlotData} names={!survivalPlotReady ? [] :  comparativeSurvival ? [comparativeSurvival.name] : []}/>
                   </Grid.Col>
                 </Grid>
-                  <GenesTable handleSurvivalPlotToggled={(symbol: string ,name: string ) => handleSurvivalPlotToggled(symbol, name, "gene.symbol")} />
+                  <GenesTable selectedSurvivalPlot={comparativeSurvival}
+                    handleSurvivalPlotToggled={(symbol: string, name: string ) => handleSurvivalPlotToggled(symbol, name, "gene.symbol")} />
               </div>
             </div>
           </Tabs.Tab>
           <Tabs.Tab label="Mutations">
             <div className="flex flex-row">
               <div className="flex flex-col">
-                <div className="w-3/4 h-auto bg-white relative">
+                <div className="w-100 h-auto bg-white relative">
                   <LoadingOverlay visible={!survivalPlotReady} />
                   <SurvivalPlot data={survivalPlotData} names={!survivalPlotReady ? [] : comparativeSurvival ? [comparativeSurvival.name] : []}/>
                 </div>
-              <MutationsTable handleSurvivalPlotToggled={(symbol: string ,name: string  ) => handleSurvivalPlotToggled(symbol, name, "gene.ssm.ssm_id")} />
+              <MutationsTable selectedSurvivalPlot={comparativeSurvival} handleSurvivalPlotToggled={(symbol: string ,name: string  ) => handleSurvivalPlotToggled(symbol, name, "gene.ssm.ssm_id")} />
             </div>
             </div>
           </Tabs.Tab>

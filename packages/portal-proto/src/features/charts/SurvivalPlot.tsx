@@ -187,11 +187,13 @@ const buildTwoPlotLegend = (data, name: string, plotType: string) => {
 export interface SurvivalPlotProps {
   readonly data: Survival;
   readonly names?: ReadonlyArray<string>;
+  readonly title?: string;
 }
 
 const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   data,
   names = [],
+  title = "Overall Survival Plot"
 }: SurvivalPlotProps) => {
   const [downloadMenuOpen, setDownloadMenuOpen] = useState(false);
   // handle the current range of the xAxis set to undefined to reset
@@ -219,7 +221,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
     <div className="flex flex-col">
       <div className="flex flex-row w-100 items-center justify-center flex-wrap items-center">
         <div className="flex ml-auto text-montserrat text-lg text-nci-gray-dark ">
-          {"Overall Survival Plot"}
+          {title}
         </div>
         <div className="flex flex-row items-center ml-auto mt-2 ">
           <Tooltip label="Download SurvivalPlot data or image">

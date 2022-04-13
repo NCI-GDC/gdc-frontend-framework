@@ -14,23 +14,22 @@ import {
 import { selectCurrentCohortFilters } from "../cohort/cohortFilterSlice";
 import { selectGenomicAndCohortGqlFilters, selectGenomicFilters } from "./genomicFilters";
 
-
-const GeneMuatationFrequenceQuery = `
-    query GeneMutationFrequency (
-      $genesTable_filters: FiltersArgument
-      $genesTable_size: Int
-      $genesTable_offset: Int
+const GeneMutationFrequenceQuery = `
+    query GeneMutationFrequencyChart (
+      $geneFrequencyChart_filters: FiltersArgument
+      $geneFrequencyChart_size: Int
+      $geneFrequencyChart_offset: Int
       $score: String
     ) {
-      genesTableViewer: viewer {
+      geneFrequencyChartViewer: viewer {
         explore {
           cases {
-            hits(first: 0, filters: $genesTable_filters) {
+            hits(first: 0, filters: $geneFrequencyChart_filters) {
               total
             }
           }
           genes {
-            hits(first: $genesTable_size, offset: $genesTable_offset, filters: $genesTable_filters, score: $score) {
+            hits(first: $geneFrequencyChart_size, offset: $geneFrequencyChart_offset, filters: $geneFrequencyChart_filters, score: $score) {
               total
               edges {
                 node {
@@ -75,13 +74,13 @@ export const fetchGeneFrequencies = createAsyncThunk<
     const filters = selectGenomicAndCohortGqlFilters(thunkAPI.getState());
 
     const graphQlVariables = {
-      genesTable_filters: filters? filters: {},
-      genesTable_size: pageSize,
-      genesTable_offset: offset,
+      geneFrequencyChart_filters: filters? filters: {},
+      geneFrequencyChart_size: pageSize,
+      geneFrequencyChart_offset: offset,
       score: "case.project.project_id",
     };
 
-    return await graphqlAPI(GeneMuatationFrequenceQuery, graphQlVariables);
+    return  await graphqlAPI(GeneMutationFrequenceQuery, graphQlVariables);
   },
 );
 
@@ -109,7 +108,7 @@ const slice = createSlice({
           state.status = "rejected";
           state.error = response.errors.filters;
         }
-        const data = response.data.genesTableViewer.explore;
+        const data = response.data.geneFrequencyChartViewer.explore;
         //  Note: change this to the field parameter
         state.frequencies.casesTotal = data.cases.hits.total;
         state.frequencies.genesTotal = data.genes.hits.total;
@@ -121,6 +120,7 @@ const slice = createSlice({
               symbol,
             }))(node),
         );
+
         state.status = "fulfilled";
         state.error = undefined;
         return state;
