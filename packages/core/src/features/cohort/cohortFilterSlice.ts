@@ -63,9 +63,9 @@ const slice = createSlice({
 /**
  *  Operand types for filter operations
  */
-export type EnumOperandValue = string[] | number [] | undefined;
+export type EnumOperandValue = string[] | number [] | boolean[] | undefined;
 export type RangeOperandValue = string | number;
-export type SetOperandValue = ReadonlyArray<string> | ReadonlyArray<number>
+export type SetOperandValue = ReadonlyArray<string> | ReadonlyArray<number> | ReadonlyArray<boolean>
 export type OperandValue = EnumOperandValue | RangeOperandValue | SetOperandValue;
 
 /**

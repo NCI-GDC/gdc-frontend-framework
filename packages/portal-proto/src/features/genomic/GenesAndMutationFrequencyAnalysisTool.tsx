@@ -210,7 +210,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
         </div>
         <Tabs variant="pills"  classNames = {{
           root:"mt-6",
-          "mantine-Tabs-tabControl": "bg-nci-teal text-nci-blue p-4 hover:bg-nci-teal",
+          tabActive: "bg-nci-teal text-nci-blue p-4 hover:bg-nci-teal",
         }}
               styles={{
 

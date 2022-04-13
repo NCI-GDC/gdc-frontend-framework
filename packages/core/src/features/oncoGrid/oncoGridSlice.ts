@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { isEmpty } from "lodash";
-import { CoreState } from "../../store";
+import { CoreDispatch, CoreState } from "../../store";
 import { GdcApiData } from "../gdcapi/gdcapi";
 import {
   createUseCoreDataHook,
@@ -12,6 +12,7 @@ import { fetchSSMOccurrences } from "./ssmOccurrencesApi";
 import { fetchCNVOccurrences } from "./cnvOccurrencesApi";
 import { fetchCases } from "./casesApi";
 import { Gene, OncoGridDonor, CNVOccurrence, SSMOccurrence } from "./types";
+import { selectGenomicAndCohortGqlFilters } from "../genomic/genomicFilters";
 
 interface OncoGridParams {
   readonly consequenceTypeFilters: string[];
@@ -26,13 +27,19 @@ interface OncoGridResponse {
   readonly caseData?: GdcApiData<OncoGridDonor>;
 }
 
-export const fetchOncoGrid = createAsyncThunk(
+export const fetchOncoGrid = createAsyncThunk<
+  OncoGridResponse,
+  OncoGridParams,
+  { dispatch: CoreDispatch; state: CoreState }
+>(
   "oncogrid/fetchAll",
   async ({
-    consequenceTypeFilters,
-    cnvFilters,
-  }: OncoGridParams): Promise<OncoGridResponse> => {
-    const geneResponse = await fetchGenes(consequenceTypeFilters);
+           consequenceTypeFilters,
+           cnvFilters,
+         }: OncoGridParams, thunkAPI): Promise<OncoGridResponse> => {
+
+    const contextFilters =  selectGenomicAndCohortGqlFilters(thunkAPI.getState());
+    const geneResponse = await fetchGenes(consequenceTypeFilters, contextFilters);
 
     if (!isEmpty(geneResponse.warnings)) {
       return { warnings: geneResponse.warnings };
