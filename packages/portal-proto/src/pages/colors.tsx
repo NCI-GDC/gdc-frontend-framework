@@ -39,7 +39,7 @@ const ColorPalette = ({ org, name, colors, grades }: ColorPaletteProps) => {
       <div className="grid grid-cols-11 w-4/5 gap-y-2">
         {colors.map((color) => (
           <>
-            <div className="col-span-2">
+            <div key={`${org}-${color}`} className="col-span-2">
               {org}-{color}
             </div>
             <div></div>
@@ -80,7 +80,7 @@ const ColorsPage: NextPage = () => {
       <div className="flex flex-col gap-y-4 py-4">
         <div>
           <h1 className="text-2xl">Official NCI Colors</h1>
-          The following colors are based on the NCI digital design guide.
+          The following colors are based on the NCI digital design guide   543543.
         </div>
         <ColorPalette
           org="nci"
