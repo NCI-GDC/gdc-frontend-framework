@@ -6,14 +6,14 @@ import {
 } from "../../dataAcess";
 import { CoreState } from "../../store";
 import { GraphQLApiResponse } from "../gdcapi/gdcgraphql";
-import { fetchImageViewerQuery } from "./imageDetailsApi";
+import { fetchImageViewerQuery, queryParams } from "./imageDetailsApi";
 import trimEnd from "lodash/trimEnd";
 import find from "lodash/find";
 
 export const fetchImageViewer = createAsyncThunk(
   "imageDetails/fetchImageViewer",
-  async (cases_offset: number): Promise<GraphQLApiResponse> => {
-    return await fetchImageViewerQuery(cases_offset);
+  async (params: queryParams): Promise<GraphQLApiResponse> => {
+    return await fetchImageViewerQuery(params);
   },
 );
 
@@ -35,12 +35,14 @@ export interface imageViewerInitialState {
   readonly status: DataStatus;
   readonly total: number;
   readonly edges: any;
+  readonly isPerformingSearch: boolean;
 }
 
 const initialState: imageViewerInitialState = {
   status: "uninitialized",
   total: 0,
   edges: {},
+  isPerformingSearch: false,
 };
 
 export const getSlides = (caseNode: any) => {
@@ -78,17 +80,20 @@ export const getSlides = (caseNode: any) => {
 const slice = createSlice({
   name: "imageViewer",
   initialState,
-  reducers: {},
+  reducers: {
+    setIsPerformingSearch(state, action) {
+      state.isPerformingSearch = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchImageViewer.fulfilled, (state, action) => {
         const response = action.payload;
-        console.log("RESPONSE: ", response);
 
         const hits = response?.data?.viewer?.repository?.cases?.hits;
         state.status = "fulfilled";
         state.total = hits?.total;
-        console.log("state.edges: ", state.edges);
+
         const obj = Object.fromEntries(
           hits?.edges?.map((edge: any) => {
             // give proper name
@@ -100,7 +105,11 @@ const slice = createSlice({
           }),
         );
 
-        state.edges = { ...state.edges, ...obj };
+        if (!state.isPerformingSearch) {
+          state.edges = { ...state.edges, ...obj };
+        } else {
+          state.edges = obj;
+        }
 
         return state;
       })
@@ -116,6 +125,8 @@ const slice = createSlice({
 });
 
 export const imageViewerReducer = slice.reducer;
+
+export const { setIsPerformingSearch } = slice.actions;
 
 export const selectImageViewerInfo = (
   state: CoreState,

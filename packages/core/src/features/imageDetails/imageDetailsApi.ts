@@ -23,41 +23,6 @@ export const fetchSlideImages = async (
   throw Error(await response.text());
 };
 
-const graphQLFilters = {
-  slideFilter: {
-    op: "and",
-    content: [
-      {
-        op: "in",
-        content: {
-          field: "files.data_type",
-          value: ["Slide Image"],
-        },
-      },
-      {
-        op: "in",
-        content: {
-          field: "files.access",
-          value: ["open"],
-        },
-      },
-    ],
-  },
-  // caseFilters
-  filters: {
-    op: "and",
-    content: [
-      {
-        op: "in",
-        content: {
-          field: "summary.experimental_strategies.experimental_strategy",
-          value: ["Tissue Slide", "Diagnostic Slide"],
-        },
-      },
-    ],
-  },
-};
-
 const imageViewerGraphlQLQuery = `
   query ImageViewer_relayQuery(
     $filters: FiltersArgument
@@ -140,9 +105,90 @@ const imageViewerGraphlQLQuery = `
     }
 }`;
 
+export interface queryParams {
+  cases_offset: number;
+  searchValues: Array<string>;
+  case_id: string;
+}
+
 export const fetchImageViewerQuery = async (
-  cases_offset: number,
+  params: queryParams,
 ): Promise<GraphQLApiResponse> => {
+  const { cases_offset, searchValues, case_id } = params;
+
+  let graphQLFilters = {
+    slideFilter: {
+      op: "and",
+      content: [
+        {
+          op: "in",
+          content: {
+            field: "files.data_type",
+            value: ["Slide Image"],
+          },
+        },
+        {
+          op: "in",
+          content: {
+            field: "files.access",
+            value: ["open"],
+          },
+        },
+      ],
+    },
+    // caseFilters
+    filters: {
+      op: "and",
+      content: [
+        {
+          op: "in",
+          content: {
+            field: "summary.experimental_strategies.experimental_strategy",
+            value: ["Tissue Slide", "Diagnostic Slide"],
+          },
+        },
+      ],
+    },
+  };
+
+  if (case_id) {
+    graphQLFilters = {
+      ...graphQLFilters,
+      filters: {
+        ...graphQLFilters.filters,
+        content: [
+          ...graphQLFilters.filters.content,
+          {
+            op: "in",
+            content: {
+              field: "cases.case_id",
+              value: [case_id],
+            },
+          },
+        ],
+      },
+    };
+  }
+
+  if (searchValues.length > 0) {
+    graphQLFilters = {
+      ...graphQLFilters,
+      filters: {
+        ...graphQLFilters.filters,
+        content: [
+          ...graphQLFilters.filters.content,
+          {
+            op: "in",
+            content: {
+              field: "cases.submitter_id",
+              value: searchValues,
+            },
+          },
+        ],
+      },
+    };
+  }
+
   const results: GraphQLApiResponse<any> = await graphqlAPI(
     imageViewerGraphlQLQuery,
     { ...graphQLFilters, cases_size: 10, cases_offset },
