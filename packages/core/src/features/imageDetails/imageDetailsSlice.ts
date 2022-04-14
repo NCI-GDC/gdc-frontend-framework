@@ -17,14 +17,6 @@ export const fetchImageDetails = createAsyncThunk<
 >("imageDetails/fetchImageDetails", async (imageId: string) => {
   return await fetchSlideImages(imageId);
 });
-
-// export const fetchImageViewer = createAsyncThunk(
-//   "imageDetails/fetchImageViewer",
-//   async (): Promise<GraphQLApiResponse> => {
-//     return await fetchImageViewerQuery();
-//   },
-// );
-
 export interface imageDetailsState {
   readonly details: ImageMetadataResponse;
   readonly status: DataStatus;

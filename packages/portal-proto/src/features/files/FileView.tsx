@@ -86,9 +86,7 @@ export const FileView: React.FC<FileViewProps> = ({ file }: FileViewProps) => {
 
       {get(file, "dataType") === "Slide Image" ? (
         <div className="bg-white w-full mt-4">
-          {/* <h2 className="p-2 text-lg mx-4">Slide Image Viewer</h2> */}
-          {/*TODO Slide Image Viewer see PEAR-167 */}
-          {/* <MultipleImageViewer imageId={imageId} tableData={parseSlideDetailsInfo(file)} /> */}
+          <h2 className="p-2 text-lg mx-4">Slide Image Viewer</h2>
           <ImageViewer
             imageId={imageId}
             tableData={parseSlideDetailsInfo(file)}
