@@ -61,8 +61,8 @@ const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : Analys
 
   return (
     <div className="flex flex-col mb-6 ">
-      <div className="flex flex-row  items-center mx-4 my-2 p-2 border border-nci-gray-lighter rounded-md shadow-lg">
-        <div className="mx-10" >
+      <div data-tour="analysis_tool_management" className="flex flex-row  items-center mx-4 my-2 p-2 border border-nci-gray-lighter rounded-md shadow-lg">
+        <div data-tour="most_common_tools" className="mx-10" >
           <Grid className="mx-2"  >
             { recommendedApps.map(k => initialApps[k]).map((x: AppRegistrationEntry) => {
                 return (<Grid.Col key={x.name} xs={12} sm={6} md={4} lg={3} xl={2} style={{ minHeight: 64, maxWidth: 220 }}>
@@ -72,7 +72,7 @@ const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : Analys
             )}
           </Grid>
         </div>
-        <div className="flex flex-col w-1/2">
+        <div data-tour="analysis_tool_filters" className="flex flex-col w-1/2">
           <h2 className="ml-6">Filter Tools</h2>
           <div className="flex flex-row">
             <Chips  className="py-1 pr-0" style={{ paddingRight: 0 }} multiple noWrap={false} value={activeTags}
@@ -105,7 +105,7 @@ const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : Analys
 
 
       </div>
-      <div className="my-2">
+      <div data-tour="all_other_apps" className="my-2">
         <Grid className="mx-2" >
           { activeApps.map(k => initialApps[k]).map((x: AppRegistrationEntry) => {
               return(

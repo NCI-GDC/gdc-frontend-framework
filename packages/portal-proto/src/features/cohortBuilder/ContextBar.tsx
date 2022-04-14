@@ -55,12 +55,12 @@ import { useCoreDispatch, setCurrentCohort, clearCurrentCohort, clearCohortFilte
 
   const filters = useCohortFacetFilters();
    // eslint-disable-next-line react/prop-types
-  const CohortBarWithProps = () => <CohortBar cohort_names={cohorts.map(o => o.name)}
+  const CohortBarWithProps = () => <CohortBar   cohort_names={cohorts.map(o => o.name)}
                                               onSelectionChanged={handleCohortSelection}
                                               defaultIdx={currentIndex}
   />;
   return (
-    <div className="mb-2">
+    <div className="mb-2" data-tour="context_bar">
     <CollapsibleContainer
       Top={CohortBarWithProps}
       isCollapsed={isGroupCollapsed}
@@ -97,11 +97,11 @@ import { useCoreDispatch, setCurrentCohort, clearCurrentCohort, clearCohortFilte
             <Menu.Item >Sample Sheet</Menu.Item>
         </Menu>
         </div>
-        <Tabs position="right" variant="pills" >
-          <Tabs.Tab label="Summary View" icon={<SummaryChartIcon size="1.5rem"/>}>
+        <Tabs position="right" variant="pills" data-tour="cohort_summary">
+          <Tabs.Tab data-tour="cohort_summary_charts" label="Summary View" icon={<SummaryChartIcon size="1.5rem"/>}>
             <SummaryFacets fields={summaryFields}/>
           </Tabs.Tab>
-          <Tabs.Tab  label="Table View" icon={<TableIcon size="1.5rem"/>}><div className="bg-secondary">
+          <Tabs.Tab data-tour="cohort_summary_table"  label="Table View" icon={<TableIcon size="1.5rem"/>}><div className="bg-secondary">
             <ContextualCasesView />
           </div>
           </Tabs.Tab>

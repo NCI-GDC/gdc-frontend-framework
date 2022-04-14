@@ -43,5 +43,47 @@ export default
             selector: "#exploration-header-button",
             content: "Explore data by utilizing various case, genes and mutation filters",
         },
-    ],    
+    ],
+    '/user-flow/workbench/analysis_page': [
+        {
+            selector: '[data_tour="full_page_content"]',
+            content: "General Introduction"
+        },
+        {
+            selector: '[data-tour="context_bar"]',
+            content: "Context management area to manages and view cohorts",
+        },
+        {
+            selector: '[data-tour="cohort_management_bar"]',
+            content: "Cohort management functions to create, delete, save, and load cohorts",
+        },
+        {
+            selector: '[data-tour="cohort_summary"]',
+            content: "Visual and tabular summary of current cohort",
+        },
+        {
+            selector: '[data-tour="cohort_summary_charts"]',
+            content: "Switch between summary chart and ...",
+        },
+        {
+            selector: '[data-tour="cohort_summary_table"]',
+            content: "table view",
+        },
+        {
+            selector: '[data-tour="analysis_tool_management"]',
+            content: "Applications and analysis tools",
+        },
+        {
+            selector: '[data-tour="analysis_tool_filters"]',
+            content: "Filter and sort GDC analysis tools in the area below",
+        },
+        {
+            selector: '[data-tour="most_common_tools"]',
+            content: "The most commonly used tools for exploration and data downloads",
+        },
+        {
+            selector: '[data-tour="all_other_apps"]',
+            content: "Analysis tools",
+        },
+    ],
 }

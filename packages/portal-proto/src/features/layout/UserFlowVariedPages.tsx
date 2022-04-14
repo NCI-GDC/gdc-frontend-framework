@@ -40,7 +40,7 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
       <header className="flex-none bg-white">
         <Header {...{ headerElements, indexPath, Options }} />
       </header>
-      <main className="flex-grow">{children}</main>
+      <main data_tour="full_page_content" className="flex-grow">{children}</main>
       <footer className="flex-none">
         <Footer />
       </footer>
