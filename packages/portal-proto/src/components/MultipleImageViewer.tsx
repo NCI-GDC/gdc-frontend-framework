@@ -63,6 +63,8 @@ export const MultipleImageViewer = ({
     setSearchValues([...searchValues, searchText.toUpperCase()]);
   };
 
+  const shouldShowMoreButton = Object.keys(data.edges).length < data.total;
+
   return (
     <>
       {isFetching ? (
@@ -118,42 +120,6 @@ export const MultipleImageViewer = ({
                     </Button>
                   </div>
 
-                  {searchValues.length > 0 && (
-                    <div
-                      className={
-                        !showSearch
-                          ? "mb-3 ml-2 flex flex-col"
-                          : "mb-0 ml-2 flex flex-col"
-                      }
-                    >
-                      {searchValues.map((value) => (
-                        <Tooltip
-                          key={value}
-                          label="Click to Remove"
-                          className="my-1"
-                          position="top"
-                          placement="start"
-                          transition="skew-up"
-                          transitionDuration={300}
-                          transitionTimingFunction="ease"
-                          withArrow
-                          classNames={{
-                            body: "h-7",
-                            root: "w-1/4",
-                          }}
-                        >
-                          <Badge
-                            size="lg"
-                            variant="filled"
-                            onClick={() => removeFilters(value)}
-                          >
-                            {value}
-                          </Badge>
-                        </Tooltip>
-                      ))}
-                    </div>
-                  )}
-
                   {showSearch && (
                     <Input
                       placeholder="eg. TCGA-DD*, *DD*, TCGA-DD-AAVP"
@@ -176,6 +142,37 @@ export const MultipleImageViewer = ({
                         }
                       }}
                     />
+                  )}
+
+                  {searchValues.length > 0 && (
+                    <div className="mb-2 ml-2 flex flex-col">
+                      {searchValues.map((value) => (
+                        <Tooltip
+                          key={value}
+                          label="Click to Remove"
+                          className="my-1"
+                          position="top"
+                          placement="start"
+                          transition="skew-up"
+                          transitionDuration={300}
+                          transitionTimingFunction="ease"
+                          withArrow
+                          classNames={{
+                            body: "h-7",
+                            root: "w-1/4",
+                          }}
+                        >
+                          <Badge
+                            size="lg"
+                            color="cyan"
+                            variant="filled"
+                            onClick={() => removeFilters(value)}
+                          >
+                            {value}
+                          </Badge>
+                        </Tooltip>
+                      ))}
+                    </div>
                   )}
                 </div>
 
@@ -263,15 +260,17 @@ export const MultipleImageViewer = ({
                 </div>
               </div>
               <div className="flex flex-col w-44 ml-3 mt-5">
-                <Button
-                  onClick={() => {
-                    dispatch(setIsPerformingSearch(false));
-                    setOffSet((o) => o + 10);
-                  }}
-                  size="xs"
-                >
-                  Show More
-                </Button>
+                {shouldShowMoreButton && (
+                  <Button
+                    onClick={() => {
+                      dispatch(setIsPerformingSearch(false));
+                      setOffSet((o) => o + 10);
+                    }}
+                    size="xs"
+                  >
+                    Show More
+                  </Button>
+                )}
 
                 <Text className="ml-3">
                   Showing <strong>{Object.keys(data?.edges).length}</strong> of{" "}
