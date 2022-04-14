@@ -14,7 +14,7 @@ import {
   MdGridOn,
   MdRefresh,
 } from "react-icons/md";
-import { useOncoGrid } from "@gff/core";
+import { useOncoGridWithContext } from "@gff/core";
 import { DocumentWithWebkit } from "../types";
 import { toggleFullScreen } from "../../utils";
 
@@ -23,6 +23,7 @@ import { cnvTypes, consequenceTypes, defaultColorMap } from "./constants";
 import useOncoGridDisplayData from "./useOncoGridDisplayData";
 import ColorPaletteModal from "./ColorPaletteModal";
 import useOncoGridObject from "./useOncoGridObject";
+
 const Tooltip = dynamic(() => import("./Tooltip"), { ssr: false });
 
 const OncoGridWrapper: React.FC = () => {
@@ -42,7 +43,7 @@ const OncoGridWrapper: React.FC = () => {
   const [showColorModal, setShowColorModal] = useState(false);
   const [colorMap, setColorMap] = useState(defaultColorMap);
 
-  const { data, isUninitialized, isFetching } = useOncoGrid({
+  const { data, isUninitialized, isFetching } = useOncoGridWithContext({
     consequenceTypeFilters,
     cnvFilters,
   });

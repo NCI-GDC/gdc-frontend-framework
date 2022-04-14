@@ -5,14 +5,15 @@ import { GdcApiData } from "../gdcapi/gdcapi";
 import {
   createUseCoreDataHook,
   CoreDataSelectorResponse,
-  DataStatus,
+  DataStatus, createUseMultipleFiltersCoreDataHook,
 } from "../../dataAcess";
 import { fetchGenes } from "./genesApi";
 import { fetchSSMOccurrences } from "./ssmOccurrencesApi";
 import { fetchCNVOccurrences } from "./cnvOccurrencesApi";
 import { fetchCases } from "./casesApi";
 import { Gene, OncoGridDonor, CNVOccurrence, SSMOccurrence } from "./types";
-import { selectGenomicAndCohortGqlFilters } from "../genomic/genomicFilters";
+import { selectGenomicAndCohortGqlFilters, selectGenomicFilters } from "../genomic/genomicFilters";
+import { selectCurrentCohortFilters } from "../cohort/cohortFilterSlice";
 
 interface OncoGridParams {
   readonly consequenceTypeFilters: string[];
@@ -146,3 +147,11 @@ export const useOncoGrid = createUseCoreDataHook(
   fetchOncoGrid,
   selectOncoGridData,
 );
+
+export const useOncoGridWithContext = createUseMultipleFiltersCoreDataHook(
+  fetchOncoGrid,
+  selectOncoGridData,
+  selectCurrentCohortFilters,
+  selectGenomicFilters
+)
+
