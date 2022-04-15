@@ -14,7 +14,7 @@ import {
 import { selectCurrentCohortFilters } from "../cohort/cohortFilterSlice";
 import { selectGenomicAndCohortGqlFilters, selectGenomicFilters } from "./genomicFilters";
 
-const GeneMutationFrequenceQuery = `
+const GeneMutationFrequencyQuery = `
     query GeneMutationFrequencyChart (
       $geneFrequencyChart_filters: FiltersArgument
       $geneFrequencyChart_size: Int
@@ -74,13 +74,13 @@ export const fetchGeneFrequencies = createAsyncThunk<
     const filters = selectGenomicAndCohortGqlFilters(thunkAPI.getState());
 
     const graphQlVariables = {
-      geneFrequencyChart_filters: filters? filters: {},
+      geneFrequencyChart_filters: filters ?? {},
       geneFrequencyChart_size: pageSize,
       geneFrequencyChart_offset: offset,
       score: "case.project.project_id",
     };
 
-    return  await graphqlAPI(GeneMutationFrequenceQuery, graphQlVariables);
+    return await graphqlAPI(GeneMutationFrequencyQuery, graphQlVariables);
   },
 );
 
