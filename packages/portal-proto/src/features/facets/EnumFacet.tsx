@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   useCoreDispatch,
 } from "@gff/core";
@@ -46,6 +46,7 @@ export interface EnumFacetProps {
  * @param startShowingData
  * @param showPercent
  * @param valueLabel
+ * @param hideIfEmpty
  * @constructor
  */
 export const EnumFacet: React.FC<EnumFacetProps> = ({
@@ -84,7 +85,7 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
 
   useEffect(() => {
     updateFilters(coreDispatch, selectedEnums, field, `${type}.`);
-  }, [ coreDispatch, selectedEnums, field, type] );
+  }, [ updateFilters, coreDispatch, selectedEnums, field, type] );
 
   const maxValuesToDisplay = 6;
   const total = visibleItems;
@@ -96,15 +97,10 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
     const { value, checked } = e.target;
 
     if (checked) {
-      if (field === "is_cancer_gene_census") { // TODO: remove once boolean facets are supported
-        const updated = selectedEnums ? [...selectedEnums, checked as boolean ] : [checked as boolean ];
-        setSelectedEnums(updated);
-      } else {
         const updated = selectedEnums ? [...selectedEnums, value] : [value];
         setSelectedEnums(updated);
-      }
     } else {
-      const updated = selectedEnums.filter((x) => x != value);
+      const updated = field === "is_cancer_gene_census" ? [] : selectedEnums.filter((x) => x != value);
       setSelectedEnums(updated);
     }
   };
@@ -190,16 +186,19 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                       Object.entries(data).filter(data => (data[0] != "_missing" && data[0] != "")).sort(isSortedByValue ? ([, a], [, b]) => (b as number) - (a as number) : ([a], [b]) => a.localeCompare(b),
                       ).map(([value, count], i) => {
                         if (!isGroupExpanded && i >= maxValuesToDisplay) return null;
+                        if (field === "is_cancer_gene_census") {
+                          value = value === "1" ? "true" : "false";
+                        }
                         return (
                           <div key={`${field}-${value}`} className="flex flex-row gap-x-1 px-2 ">
                             <div className="flex-none">
-                              { (field === "is_cancer_gene_census") ? // TODO: Remove after Feb 2022 MR review
+                              { (field === "is_cancer_gene_census") ?  // TODO: Remove after Feb 2022 MR review
                                 <input type="checkbox"
                                        value={value}
                                        onChange={handleChange}
                                        aria-label={`checkbox for ${field}`}
                                         className="bg-nci-gray-lightest hover:bg-nci-gray-darkest text-nci-gray-darkest"
-                                        checked={!!(selectedEnums && selectedEnums.includes(true))} />
+                                        checked={!!(selectedEnums && selectedEnums.includes(value))} />
                                         :
                                         <input type="checkbox"
                                                value={value}
