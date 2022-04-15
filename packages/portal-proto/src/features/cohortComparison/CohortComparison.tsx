@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { pickBy } from "lodash";
 import {
-  useCohortCases,
+  useCohortFacets,
   useCoreSelector,
   selectCurrentCohort,
 } from "@gff/core";
@@ -34,7 +34,7 @@ const CohortComparison: React.FC = () => {
   const primaryCohortName = useCoreSelector((state) =>
     selectCurrentCohort(state),
   );
-  const { data } = useCohortCases({
+  const { data } = useCohortFacets({
     facetFields: fieldsToQuery,
     primaryCohort: primaryCohortName,
     comparisonCohort: COMPARISON_COHORT,
