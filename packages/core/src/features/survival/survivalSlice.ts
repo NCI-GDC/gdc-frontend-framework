@@ -23,8 +23,6 @@ export interface SurvivalDonor {
   readonly project_id: string;
 }
 
-
-
 export interface SurvivalElement {
     readonly meta: string;
     readonly donors: ReadonlyArray<SurvivalDonor>;
@@ -112,10 +110,8 @@ export const fetchSurvival = createAsyncThunk <
   >
 (
   "analysis/survivalData",
-  async ({filters = []}) => {
+  async ({filters }) => {
      return fetchSurvivalAnalysis({ filters: filters  });
-
-
   },
 );
 

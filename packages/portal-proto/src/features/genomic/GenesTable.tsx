@@ -6,7 +6,6 @@ import {
 import { LoadingOverlay, Pagination, Select, Switch, Table, Checkbox, Tooltip } from "@mantine/core";
 import { MdCheck as CheckboxIcon} from "react-icons/md";
 import { SiMicrogenetics as GeneAnnotationIcon } from "react-icons/si";
-import { BiLineChartDown as SurvivalPlotIcon } from "react-icons/bi";
 import { GenomicTableProps } from "./types";
 
 const GenesTable: React.FC<GenomicTableProps> = ( { selectedSurvivalPlot, handleSurvivalPlotToggled } : GenomicTableProps) => {
@@ -14,7 +13,7 @@ const GenesTable: React.FC<GenomicTableProps> = ( { selectedSurvivalPlot, handle
   const [offset, setOffset] = useState(0);
   const [activePage, setPage] = useState(1);
   const [pages, setPages] = useState(10);
-  const { data, isSuccess } = useGenesTable(
+  const { data } = useGenesTable(
     { pageSize: pageSize, offset: offset }
   );
 
@@ -78,8 +77,6 @@ const GenesTableSimple: React.FC<GenesTableSimpleProps> = ({ genes,
                                                    }
                                                      : GenesTableSimpleProps,
                                                    ) => {
-
-
   return (
     <Table verticalSpacing={5} striped highlightOnHover >
       <thead>
@@ -98,7 +95,7 @@ const GenesTableSimple: React.FC<GenesTableSimpleProps> = ({ genes,
       </thead>
       <tbody>
       {
-        genes?.map((x, i) => (
+        genes?.map((x) => (
         <tr key={x.id} >
           <td className="px-2 break-all">
             <Checkbox icon={CheckboxIcon} label={x.symbol}/>
@@ -106,8 +103,7 @@ const GenesTableSimple: React.FC<GenesTableSimpleProps> = ({ genes,
           <td className="px-2">{x.name}</td>
           <td className="px-2">
             <Tooltip label={`Click icon to plot ${x.symbol}`}>
-              <Switch checked={ selectedSurvivalPlot && selectedSurvivalPlot.symbol == x.symbol} onChange={() => handleSurvivalPlotToggled(x.symbol, x.name)} >
-              </Switch>
+              <Switch checked={ selectedSurvivalPlot ? selectedSurvivalPlot.symbol == x.symbol : false}  onChange={() => handleSurvivalPlotToggled(x.symbol, x.name)} />
             </Tooltip>
           </td>
           <td className="px-2"> {x.numCases} / {filteredCases} ({((x.numCases / filteredCases) * 100).toFixed(2).toLocaleString()}%)</td>

@@ -1,20 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Pagination, Select, Table, Checkbox, Tooltip, Switch } from "@mantine/core";
 import {
   GDCSsmsTable,
   useSsmsTable,
 } from "@gff/core";
-import { BiLineChartDown as SurvivalPlotIcon } from "react-icons/bi";
 import { GenomicTableProps } from "./types";
 
 const MutationsTable: React.FC<GenomicTableProps> = ( { handleSurvivalPlotToggled, selectedSurvivalPlot } : GenomicTableProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [offset, setOffset] = useState(0);
   const [activePage, setPage] = useState(1);
-  const [pages, setPages] = useState(10);
+  const [pages] = useState(10);
   // using the useCohortSsmsTable from core and the associated useEffect hook
   // exploring different ways to dispatch the pageSize/offset changes
-  const { data, isSuccess } = useSsmsTable({ pageSize: pageSize, offset: offset });
+  const { data } = useSsmsTable({ pageSize: pageSize, offset: offset });
 
   const handlePageSizeChange = (x:string) => {
     setPageSize(parseInt(x));
@@ -24,8 +23,6 @@ const MutationsTable: React.FC<GenomicTableProps> = ( { handleSurvivalPlotToggle
     setOffset((x-1) * pageSize)
     setPage(x);
   }
-
-  console.log(data);
 
   return (
     <div className="flex flex-col w-100">
@@ -92,11 +89,12 @@ const MutationTableSimple: React.FC<MutationTableProps> = ( {
             <td>{x.filteredOccurrences} / {filteredCases} ({((x.filteredOccurrences / filteredCases) * 100).toFixed(2).toLocaleString()}%)</td>
             <td>{x.occurrence} / {cases} ({((x.occurrence / cases) * 100).toFixed(2).toLocaleString()}%)</td>
             <td>Impact</td>
+            <td>
             <Tooltip label={`Click icon to plot ${x.genomic_dna_change}`}>
-                <Switch checked={ selectedSurvivalPlot && selectedSurvivalPlot.symbol == x.ssm_id}
-                        onChange={() =>handleSurvivalPlotToggled(x.ssm_id, `${x.consequence[0].gene.symbol} ${x.consequence[0]?.aa_change ? x.consequence[0].aa_change : ""}` )} >
-                </Switch>
+                <Switch checked={ selectedSurvivalPlot ? selectedSurvivalPlot.symbol == x.ssm_id : false}
+                        onChange={() =>handleSurvivalPlotToggled(x.ssm_id, `${x.consequence[0].gene.symbol} ${x.consequence[0]?.aa_change ? x.consequence[0].aa_change : ""}` )} />
             </Tooltip>
+            </td>
           </tr>
         ))}
        </tbody>
