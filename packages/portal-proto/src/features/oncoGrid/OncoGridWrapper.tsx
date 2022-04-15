@@ -14,7 +14,13 @@ import {
   MdGridOn,
   MdRefresh,
 } from "react-icons/md";
-import { useOncoGrid } from "@gff/core";
+import {
+  clearGenomicFilters,
+  selectCurrentCohortFilterSet,
+  useCoreDispatch,
+  useCoreSelector,
+  useOncoGrid,
+} from "@gff/core";
 import { DocumentWithWebkit } from "../types";
 import { toggleFullScreen } from "../../utils";
 
@@ -27,6 +33,8 @@ import useOncoGridObject from "./useOncoGridObject";
 const Tooltip = dynamic(() => import("./Tooltip"), { ssr: false });
 
 const OncoGridWrapper: React.FC = () => {
+  const coreDispatch = useCoreDispatch();
+  const cohortFilters = useCoreSelector((state) => selectCurrentCohortFilterSet(state));
   const fullOncoGridContainer = useRef(null);
   const gridContainer = useRef(null);
   const [isHeatmap, setIsHeatmap] = useState(false);
@@ -73,6 +81,13 @@ const OncoGridWrapper: React.FC = () => {
   useEffect(() => {
     setIsLoading(isFetching);
   }, [isFetching]);
+
+  /**
+   * Remove genomic filters when cohort changes
+   */
+  useEffect( () => {
+    coreDispatch(clearGenomicFilters());
+  }, [cohortFilters, coreDispatch]);
 
   useEffect(() => {
     const eventListener = () => {
