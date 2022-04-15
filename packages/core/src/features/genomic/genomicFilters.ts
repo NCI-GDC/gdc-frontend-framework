@@ -5,6 +5,7 @@ import { buildCohortGqlOperator, FilterSet, joinFilters } from "../cohort/cohort
 
 
 
+// @ts-ignore
 const initialState: FilterSet = {
   mode: "and",
   root: { "genes.is_cancer_gene_census" :

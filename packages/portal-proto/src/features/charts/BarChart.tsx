@@ -1,7 +1,6 @@
 import { Config, Layout, PlotMouseEvent, PlotData } from "plotly.js";
 import Plot from 'react-plotly.js';
 
-//Pick<PlotData, "x"|"y"|"hoverinfo"|"hovertemplate"|"customdata"|"text"|"marker">[]
 export interface BarChartData {
   datasets: Partial<PlotData>[]
   yAxisTitle?: string;
