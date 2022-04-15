@@ -22,6 +22,7 @@ const CohortComparison: React.FC = () => {
   } as Record<string, boolean>);
 
   const fields = {
+    survival: "Survival",
     gender: "demographic.gender",
     ethnicity: "demographic.ethnicity",
     race: "demographic.race",
@@ -30,26 +31,40 @@ const CohortComparison: React.FC = () => {
   };
 
   const fieldsToQuery = Object.values(fields);
-  const { data } = useCohortCases(fieldsToQuery);
   const primaryCohortName = useCoreSelector((state) =>
     selectCurrentCohort(state),
   );
+  const { data } = useCohortCases({
+    facetFields: fieldsToQuery,
+    primaryCohort: primaryCohortName,
+    comparisonCohort: COMPARISON_COHORT,
+  });
   const cohortNames = [primaryCohortName, COMPARISON_COHORT];
+  const counts = data?.caseCounts || [];
 
   return (
     <>
-      <h1 className="text-xl font-semibold">Cohort Comparison</h1>
+      <h1 className="text-xl font-semibold p-2">Cohort Comparison</h1>
       <div className="flex gap-4">
         <div className="p-1 flex basis-2/4 flex-col gap-4">
-          {selectedCards.survival && <SurvivalCard />}
+          {selectedCards.survival && (
+            <SurvivalCard
+              comparisonCohort={COMPARISON_COHORT}
+              counts={counts}
+            />
+          )}
           {Object.keys(
             pickBy(selectedCards, (v, k) => v && k !== "survival"),
           ).map((selectedCard) => (
             <FacetCard
               key={selectedCard}
-              data={data.aggregations.map((d) => d[fields[selectedCard]])}
+              data={
+                data?.aggregations
+                  ? data.aggregations.map((d) => d[fields[selectedCard]])
+                  : []
+              }
               field={fields[selectedCard]}
-              counts={data?.caseCounts}
+              counts={counts}
               cohortNames={cohortNames}
             />
           ))}
@@ -58,7 +73,7 @@ const CohortComparison: React.FC = () => {
           <CohortCard
             selectedCards={selectedCards}
             setSelectedCards={setSelectedCards}
-            counts={data?.caseCounts}
+            counts={counts}
             cohortNames={cohortNames}
             options={fields}
           />

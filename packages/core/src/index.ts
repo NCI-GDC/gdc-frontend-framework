@@ -34,5 +34,4 @@ export * from "./features/cancerDistribution/ssmPlot";
 export * from "./features/cancerDistribution/cnvPlot";
 export * from "./features/survival/survivalSlice";
 export * from "./features/oncoGrid/oncoGridSlice";
-export * from "./features/cohortComparison/cohortFacetSlice";
-export * from "./features/cohortComparison/pValueApi";
+export * from "./features/cohortComparison";

@@ -1,6 +1,12 @@
 import { graphqlAPI } from "../gdcapi/gdcgraphql";
 
-export const fetchPValue = async (data: any) => {
+interface PValueResponse {
+  readonly analysis: {
+    readonly pvalue: number;
+  };
+}
+
+export const fetchPValue: Promise<number> = async (data: number[][]) => {
   const graphQLQuery = `
     query pValue($data: [[Int]]!) {
       analysis {
@@ -13,6 +19,9 @@ export const fetchPValue = async (data: any) => {
     data,
   };
 
-  const response = await graphqlAPI(graphQLQuery, graphQLFilters) as any;
+  const response = await graphqlAPI<PValueResponse>(
+    graphQLQuery,
+    graphQLFilters,
+  );
   return response?.data?.analysis.pvalue;
 };

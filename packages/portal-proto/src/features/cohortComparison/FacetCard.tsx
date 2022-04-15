@@ -1,8 +1,10 @@
+import { useMemo } from "react";
 import { Paper } from "@mantine/core";
-import BarChart from "../charts/BarChart";
-import PValue from "./PValue";
+import { CohortFacet } from "@gff/core";
 import { DAYS_IN_YEAR } from "src/constants";
 import { FIELD_LABELS } from "src/fields";
+import BarChart from "../charts/BarChart";
+import PValue from "./PValue";
 
 const formatAgeBuckets = (bucket) => {
   const age = bucket / DAYS_IN_YEAR;
@@ -10,10 +12,10 @@ const formatAgeBuckets = (bucket) => {
 };
 
 interface FacetCardProps {
-  data: any;
-  field: string;
-  counts: number[];
-  cohortNames: string[];
+  readonly data: CohortFacet;
+  readonly field: string;
+  readonly counts: number[];
+  readonly cohortNames: string[];
 }
 
 const FacetCard: React.FC<FacetCardProps> = ({
@@ -22,24 +24,28 @@ const FacetCard: React.FC<FacetCardProps> = ({
   counts,
   cohortNames,
 }: FacetCardProps) => {
-  // TODO comment here
-  const formattedData = data.map((cohort, idx) => {
-    const formattedCohort = cohort.buckets
-      .filter((facet) => facet.key !== "_missing")
-      .map((facet) => ({
-        count: facet.doc_count,
-        key:
-          field === "diagnoses.age_at_diagnosis"
-            ? formatAgeBuckets(facet.key)
-            : facet.key,
-      }));
-    const totalInResults = formattedCohort.reduce(
-      (runningSum, a) => runningSum + a.count,
-      0,
-    );
-    const missingValue = counts[idx] - totalInResults;
-    return [...formattedCohort, { count: missingValue, key: "missing" }];
-  });
+  const formattedData = useMemo(
+    () =>
+      data.map((cohort, idx) => {
+        const formattedCohort = cohort.buckets
+          .filter((facet) => facet.key !== "_missing")
+          .map((facet) => ({
+            count: facet.doc_count,
+            key:
+              field === "diagnoses.age_at_diagnosis"
+                ? formatAgeBuckets(facet.key)
+                : facet.key,
+          }));
+        // Replace '_missing' key becasue 1) we don't get the value back for histograms 2) to rename the key
+        const totalInResults = formattedCohort.reduce(
+          (runningSum, a) => runningSum + a.count,
+          0,
+        );
+        const missingValue = counts[idx] - totalInResults;
+        return [...formattedCohort, { count: missingValue, key: "missing" }];
+      }),
+    [data, counts, field],
+  );
 
   const barChartData = formattedData.map((cohort, idx) => ({
     x: cohort.map((facet) => facet.key),
@@ -48,7 +54,7 @@ const FacetCard: React.FC<FacetCardProps> = ({
     hovertemplate: `<b>${cohortNames[idx]}</b><br /> %{y:.0f}% Cases (%{customdata})<extra></extra>`,
     marker: {
       color: idx === 0 ? "#8c690d" : "#2a72a5",
-    }
+    },
   }));
 
   const divId = `cohort_comparison_bar_chart_${field}`;

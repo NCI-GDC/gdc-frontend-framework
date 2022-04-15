@@ -61,7 +61,7 @@ const CohortCard: React.FC<CohortCardProps> = ({
             checked={selectedCards[value]}
           ></input>
           <label className="pl-1" htmlFor={`cohort-comparison-${value}`}>
-            {FIELD_LABELS[field]}
+            {value === "survival" ? field : FIELD_LABELS[field]}
           </label>
         </div>
       ))}

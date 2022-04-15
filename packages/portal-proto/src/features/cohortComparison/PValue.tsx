@@ -26,7 +26,7 @@ const PValue: React.FC<PValueProps> = ({ data }: PValueProps) => {
   );
 
   const labels = Array.from(
-    new Set(pValueBuckets.map((bucket) => bucket.map((v) => v.key)).flat()),
+    new Set(pValueBuckets.map((bucket) => bucket.map((facet) => facet.key)).flat()),
   );
 
   useEffect(() => {
@@ -35,8 +35,8 @@ const PValue: React.FC<PValueProps> = ({ data }: PValueProps) => {
         pValueBuckets.length > 0 &&
         pValueBuckets.every((bucket) => bucket.length === 2)
       ) {
-        const p = pValueBuckets.map((bucket) => bucket.map((d) => d.count));
-        const pValue = await fetchPValue(p);
+        const values = pValueBuckets.map((bucket) => bucket.map((facet) => facet.count));
+        const pValue = await fetchPValue(values);
 
         setPValue(pValue);
       } else {
@@ -50,6 +50,7 @@ const PValue: React.FC<PValueProps> = ({ data }: PValueProps) => {
     return (
       <Tooltip
         label={`P-Value for ${labels.join(" and ")}`}
+        withArrow
       >{`P-Value = ${pValue.toPrecision(3)}`}</Tooltip>
     );
   } else {

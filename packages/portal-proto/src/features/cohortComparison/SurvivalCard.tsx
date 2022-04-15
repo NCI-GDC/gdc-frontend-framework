@@ -1,6 +1,48 @@
 import { Paper, Tooltip } from "@mantine/core";
-import { useSurvivalPlot } from "@gff/core";
+import {
+  useSurvivalPlot,
+  selectCurrentCohortCaseGqlFilters,
+  useCoreSelector,
+  selectAvailableCohortByName,
+  buildCohortGqlOperator,
+} from "@gff/core";
 import SurvivalPlot from "../charts/SurvivalPlot";
+
+const dataCompletenessFilters = [
+  {
+    op: "or",
+    content: [
+      {
+        op: "and",
+        content: [
+          {
+            op: ">",
+            content: {
+              field: "demographic.days_to_death",
+              value: 0,
+            },
+          },
+        ],
+      },
+      {
+        op: "and",
+        content: [
+          {
+            op: ">",
+            content: {
+              field: "diagnoses.days_to_last_follow_up",
+              value: 0,
+            },
+          },
+        ],
+      },
+    ],
+  },
+  {
+    op: "not",
+    content: { field: "demographic.vital_status" },
+  },
+];
 
 const tooltipLabel = (
   <>
@@ -12,8 +54,37 @@ const tooltipLabel = (
   </>
 );
 
-const SurvivalCard = () => {
-  const { data } = useSurvivalPlot();
+interface SurvivalCardProps {
+  readonly counts: number[];
+  readonly comparisonCohort: string;
+}
+
+const SurvivalCard : React.FC<SurvivalCardProps> = ({ counts, comparisonCohort } : SurvivalCardProps) => {
+  const cohort1Filters = useCoreSelector((state) =>
+    selectCurrentCohortCaseGqlFilters(state),
+  );
+  const cohort2Filters = useCoreSelector((state) =>
+    buildCohortGqlOperator(
+      selectAvailableCohortByName(state, comparisonCohort).filters,
+    ),
+  );
+
+  // TODO: limit to cases that are only within a single cohort
+  const { data } = useSurvivalPlot({
+    filters: [
+      {
+        op: "and",
+        content: cohort1Filters ? [...dataCompletenessFilters, cohort1Filters] : [...dataCompletenessFilters],
+      },
+      {
+        op: "and",
+        content: cohort2Filters ? [...dataCompletenessFilters, cohort2Filters] : [...dataCompletenessFilters],
+      },
+    ],
+  });
+
+  const cohort1Count = data[0] ? data[0].donors?.length : 0;
+  const cohort2Count = data[1] ? data[1].donors?.length : 0;
 
   return (
     <Paper p="md" className="min-w-[600px]">
@@ -32,12 +103,20 @@ const SurvivalCard = () => {
             <th>
               # Cases S<sub>1</sub>
             </th>
+            <th>%</th>
+            <th>
+              # Cases S<sub>2</sub>
+            </th>
+            <th>%</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>Overall Survival Analysis</td>
-            <td>{data[0] ? data[0].donors?.length : 0}</td>
+            <td>{cohort1Count}</td>
+            <td>{((cohort1Count / counts[0]) * 100).toFixed(0)}%</td>
+            <td>{cohort2Count}</td>
+            <td>{((cohort2Count / counts[1]) * 100).toFixed(0)}%</td>
           </tr>
         </tbody>
       </table>
