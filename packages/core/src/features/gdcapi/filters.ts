@@ -62,7 +62,7 @@ export interface Exists {
 export interface Includes {
   readonly operator: "includes";
   readonly field: string;
-  readonly operands: ReadonlyArray<string> | ReadonlyArray<number> | ReadonlyArray<boolean>;
+  readonly operands: ReadonlyArray<string> | ReadonlyArray<number>;
 }
 
 export interface Excludes {
@@ -225,7 +225,7 @@ export interface GqlIncludes {
   readonly op: "in";
   readonly content: {
     readonly field: string;
-    readonly value: ReadonlyArray<string> | ReadonlyArray<number> | ReadonlyArray<boolean>;
+    readonly value: ReadonlyArray<string> | ReadonlyArray<number>;
   };
 }
 

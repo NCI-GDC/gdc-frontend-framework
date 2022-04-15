@@ -1,10 +1,13 @@
 import { fetchGdcEntities, GdcApiResponse } from "../gdcapi/gdcapi";
 import { OncoGridDonor } from "./types";
+import { GqlOperation } from "../gdcapi/filters";
 
 export const fetchCases = async (
   genes: string[],
   consequenceTypeFilters: string[],
+  contextFilters?: GqlOperation,
 ): Promise<GdcApiResponse<OncoGridDonor>> => {
+  const caseAndGenomicFilters = contextFilters?.content ? Object(contextFilters?.content) : [];
   return fetchGdcEntities("analysis/top_mutated_cases_by_gene", {
     fields: [
       "demographic.days_to_death",
@@ -31,13 +34,6 @@ export const fetchCases = async (
           },
         },
         {
-          content: {
-            field: "genes.is_cancer_gene_census",
-            value: ["true"],
-          },
-          op: "in",
-        },
-        {
           op: "not",
           content: {
             field: "ssms.consequence.transcript.annotation.vep_impact",
@@ -51,6 +47,7 @@ export const fetchCases = async (
             value: consequenceTypeFilters,
           },
         },
+        ...caseAndGenomicFilters
       ],
     },
   });

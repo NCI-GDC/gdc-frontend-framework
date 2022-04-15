@@ -14,7 +14,7 @@ import {
   MdGridOn,
   MdRefresh,
 } from "react-icons/md";
-import { useOncoGridWithContext } from "@gff/core";
+import { useOncoGrid } from "@gff/core";
 import { DocumentWithWebkit } from "../types";
 import { toggleFullScreen } from "../../utils";
 
@@ -43,7 +43,7 @@ const OncoGridWrapper: React.FC = () => {
   const [showColorModal, setShowColorModal] = useState(false);
   const [colorMap, setColorMap] = useState(defaultColorMap);
 
-  const { data, isUninitialized, isFetching } = useOncoGridWithContext({
+  const { data, isUninitialized, isFetching } = useOncoGrid({
     consequenceTypeFilters,
     cnvFilters,
   });
@@ -123,7 +123,7 @@ const OncoGridWrapper: React.FC = () => {
   return (
     <div
       ref={(ref) => (fullOncoGridContainer.current = ref)}
-      className={`bg-white p-16 ${isFullscreen ? "overflow-scroll" : ""}`}
+      className={`bg-white p-16  ${isFullscreen ? "overflow-scroll" : ""}`}
     >
       <div className="flex pb-8">
         <div className="basis-1/2">{`${donors.length} Most Mutated Cases and Top ${genes.length} Mutated Genes by SSM`}</div>
@@ -267,8 +267,8 @@ const OncoGridWrapper: React.FC = () => {
         setNewColorMap={setColorMap}
       />
       {tracksModal}
-      <div>
-        <LoadingOverlay visible={isLoading} overlayOpacity={0.9} />
+      <div className="relative">
+        <LoadingOverlay  visible={isLoading} overlayOpacity={0.9} />
         {consequenceTypeFilters.length === 0 && (
           <>
             The current selection has no results. Please select more mutation
@@ -282,7 +282,7 @@ const OncoGridWrapper: React.FC = () => {
               ? "invisible"
               : "visible"
           }`}
-        ></div>
+        />
       </div>
     </div>
   );

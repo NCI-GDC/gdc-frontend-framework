@@ -14,10 +14,6 @@ export const fetchGenes = (
       op: "and",
       content: [
         {
-          content: { field: "genes.is_cancer_gene_census", value: ["true"] },
-          op: "in",
-        },
-        {
           op: "not",
           content: {
             field: "ssms.consequence.transcript.annotation.vep_impact",

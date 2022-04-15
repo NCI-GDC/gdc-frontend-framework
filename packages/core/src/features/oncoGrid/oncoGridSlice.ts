@@ -3,17 +3,16 @@ import { isEmpty } from "lodash";
 import { CoreDispatch, CoreState } from "../../store";
 import { GdcApiData } from "../gdcapi/gdcapi";
 import {
-  createUseCoreDataHook,
   CoreDataSelectorResponse,
-  DataStatus, createUseMultipleFiltersCoreDataHook,
+  DataStatus,
+  createUseFiltersCoreDataHook,
 } from "../../dataAcess";
 import { fetchGenes } from "./genesApi";
 import { fetchSSMOccurrences } from "./ssmOccurrencesApi";
 import { fetchCNVOccurrences } from "./cnvOccurrencesApi";
 import { fetchCases } from "./casesApi";
 import { Gene, OncoGridDonor, CNVOccurrence, SSMOccurrence } from "./types";
-import { selectGenomicAndCohortGqlFilters, selectGenomicFilters } from "../genomic/genomicFilters";
-import { selectCurrentCohortFilters } from "../cohort/cohortFilterSlice";
+import { selectGenomicAndCohortGqlFilters } from "../genomic/genomicFilters";
 
 interface OncoGridParams {
   readonly consequenceTypeFilters: string[];
@@ -47,7 +46,7 @@ export const fetchOncoGrid = createAsyncThunk<
     }
 
     const geneIds = geneResponse.data.hits.map((d) => d.gene_id);
-    const caseResponse = await fetchCases(geneIds, consequenceTypeFilters);
+    const caseResponse = await fetchCases(geneIds, consequenceTypeFilters, contextFilters);
 
     if (!isEmpty(caseResponse.warnings)) {
       return { warnings: caseResponse.warnings };
@@ -55,8 +54,8 @@ export const fetchOncoGrid = createAsyncThunk<
     const caseIds = caseResponse.data.hits.map((d) => d.case_id);
 
     return Promise.all([
-      fetchCNVOccurrences(geneIds, caseIds, cnvFilters),
-      fetchSSMOccurrences(geneIds, caseIds, consequenceTypeFilters),
+      fetchCNVOccurrences(geneIds, caseIds, cnvFilters, contextFilters),
+      fetchSSMOccurrences(geneIds, caseIds, consequenceTypeFilters, contextFilters),
     ]).then(([cnvResponse, ssmResponse]) => {
       const warnings = cnvResponse.warnings || ssmResponse.warnings;
       return {
@@ -143,15 +142,9 @@ export const selectOncoGridData = (
 
 export const oncoGridReducer = slice.reducer;
 
-export const useOncoGrid = createUseCoreDataHook(
-  fetchOncoGrid,
-  selectOncoGridData,
-);
 
-export const useOncoGridWithContext = createUseMultipleFiltersCoreDataHook(
+export const useOncoGrid = createUseFiltersCoreDataHook(
   fetchOncoGrid,
   selectOncoGridData,
-  selectCurrentCohortFilters,
-  selectGenomicFilters
-)
+  selectGenomicAndCohortGqlFilters)
 
