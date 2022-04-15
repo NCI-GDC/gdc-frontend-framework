@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useRef } from "react";
+import React, { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
 import GenesTable from "./GenesTable";
 import MutationsTable from "./MutationsTable";
@@ -111,8 +111,6 @@ const usePrevious = (value : any) => {
   return ref.current;
 }
 
-///const useSurvivalPlotWithCohortAndGenomicFilters = createUseFiltersCoreDataHook(fetchSurvival, selectSurvivalData, selectGenomicAndCohortFilters);
-
 const useSurvivalPlotWithCohortAndGenonmicFilters = () => {
   const coreDispatch = useCoreDispatch();
   const cohortFilters = useCoreSelector((state) => selectCurrentCohortFilters(state));
@@ -160,15 +158,14 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
       coreDispatch(fetchSurvival({ filters: filters? [filters] : [] }  ));
     } else {
       setComparativeSurvival({ symbol: symbol, name: name });
-      const f =buildGeneHaveAndHaveNotFilters(filters, symbol, field);
+      const f = buildGeneHaveAndHaveNotFilters(filters, symbol, field);
       coreDispatch(fetchSurvival({  filters: f } ));
     }
   };
 
   useEffect( () => {
-    coreDispatch(clearGenomicFilters)
-    console.log("clear")
-  }, [ cohortFilters ]);
+    coreDispatch(clearGenomicFilters);
+  }, [cohortFilters, coreDispatch]);
 
   /**
    * remove comparative survival plot when tabs or filters change.
@@ -211,13 +208,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
         <Tabs variant="pills"  classNames = {{
           root:"mt-6",
           tabActive: "bg-nci-teal text-nci-blue p-4 hover:bg-nci-teal",
-        }}
-              styles={{
-
-                tabActive: { color: 'red' },
-
-              }}
-              onTabChange={ () => {handleTabOrFilterChanged() }}
+        }} onTabChange={handleTabOrFilterChanged}
         >
           <Tabs.Tab label="Genes" >
             <div className="flex flex-row">
