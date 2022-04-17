@@ -125,13 +125,12 @@ export const FacetChart: React.FC<FacetProps> = ({
                                                    maxBins = maxValuesToDisplay,
                                                    orientation = "v",
                                                  }: FacetProps) => {
-  const { data, isSuccess } =
-    useCaseFacet(field);
+  const { data, isSuccess } = useCaseFacet(field);
   const [chart_data, setChartData] = useState(undefined);
 
   useEffect(() => {
     if (isSuccess) {
-      const cd = processChartData(data, field, maxBins, showXLabels);
+      const cd = processChartData(data.buckets, field, maxBins, showXLabels);
       setChartData(cd);
     }
   }, [data, isSuccess]);
@@ -139,7 +138,7 @@ export const FacetChart: React.FC<FacetProps> = ({
   // Create unique ID for this chart
   const chartDivId = `${field}_${Math.floor(Math.random() * 100)}`;
 
-  return <>
+  return <div className="flex flex-col">
     {showTitle ?
       <ChartTitleBar title={convertFieldToName(field)}
                      divId={chartDivId}
@@ -160,7 +159,7 @@ export const FacetChart: React.FC<FacetProps> = ({
         <Loader color="gray" size={height ? height : 24} />
       </div>
     }
-  </>
+  </div>
 };
 
 const convertFieldToName = (field: string): string => {
