@@ -2,9 +2,9 @@ import { Divider, Title } from '@mantine/core';
 
 const Typefaces = () => {
   return (
-    <div className="flex flex-col justify-center prose font-montserrat">
+    <article className="prose font-montserrat text-nci-gray-darker md:prose-ld">
       <h1>Typefaces</h1>
-      <Title className="font-bold font-lg" order={1}>This is h1 title</Title>
+      <Title order={1}>This is h1 title</Title>
       <Divider />
       <Title order={2}>This is h2 title</Title>
       <Divider />
@@ -16,7 +16,7 @@ const Typefaces = () => {
       <Divider />
       <Title order={6}>This is h6 title</Title>
       <Divider />
-    </div>
+    </article>
   );
 }
 
