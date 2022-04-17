@@ -19,11 +19,31 @@ const StyleGuideApp = () => {
             Introduction
           </button>
         </Navbar.Section>
-        <Navbar.Section>Typography</Navbar.Section>
-        <Navbar.Section>Colors</Navbar.Section>
-        <Navbar.Section>Icons</Navbar.Section>
-        <Navbar.Section>Charts</Navbar.Section>
-        <Navbar.Section>Components</Navbar.Section>
+        <Navbar.Section>
+          <button onClick={ () => setActiveStyleCart('Typefaces')}>
+            Typefaces
+          </button>
+        </Navbar.Section>
+        <Navbar.Section>
+          <button onClick={ () => setActiveStyleCart('Colors')}>
+            Colors
+          </button>
+        </Navbar.Section>
+        <Navbar.Section>
+          <button onClick={ () => setActiveStyleCart('Icons')}>
+            Icons
+          </button>
+        </Navbar.Section>
+        <Navbar.Section>
+          <button onClick={ () => setActiveStyleCart('Charts')}>
+            Charts
+          </button>
+        </Navbar.Section>
+        <Navbar.Section>
+          <button onClick={ () => setActiveStyleCart('Components')}>
+            Components
+          </button>
+        </Navbar.Section>
       </Navbar>}
       header={<Header height={60} p="xs">{/* Header content */}</Header>}
       styles={(theme) => ({
