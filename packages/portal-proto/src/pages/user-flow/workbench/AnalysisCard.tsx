@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Image from "next/image";
 import { AppRegistrationEntry } from "./utils";
 import { Badge, Button, Card, Group, Loader, Tooltip } from "@mantine/core";
-import { FaUserCog as OptimizeIcon } from "react-icons/fa";
 import { useCoreSelector, selectCohortCounts } from "@gff/core";
 
 export interface AnalysisCardProps  {
@@ -13,13 +12,12 @@ export interface AnalysisCardProps  {
 const AnalysisCard: React.FC<AnalysisCardProps> = ( { entry, onClick } : AnalysisCardProps) => {
   const cohortCounts = useCoreSelector((state) => selectCohortCounts(state));
   return (
-    <Card shadow="sm" padding="xs" className={ `bg-white hover:bg-nci-gray-lightest`} aria-label={`${entry.name} Tool`}>
+    <Card shadow="sm" p="xs" className={ `bg-white hover:bg-nci-gray-lightest`} aria-label={`${entry.name} Tool`}>
       <Group position="center" direction="column">
         <Card.Section>
           <Tooltip
             label={entry.description}
             classNames={{
-              wrapper: "shadow-lg",
               body: "shadow-lg bg-white text-nci-gray-darkest"
             }}
             position="right"
