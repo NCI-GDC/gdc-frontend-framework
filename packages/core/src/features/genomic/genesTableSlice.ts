@@ -127,7 +127,6 @@ export const fetchGenesTable = createAsyncThunk<
     offset,
   }: TablePageOffsetProps, thunkAPI): Promise<GraphQLApiResponse> => {
     const filters =  selectGenomicAndCohortGqlFilters(thunkAPI.getState());
-
     const filterContents = filters?.content ? Object(filters?.content) : [];
     const graphQlFilters = {
       genesTable_filters: filters? filters: {},
@@ -238,7 +237,7 @@ export const fetchGenesTable = createAsyncThunk<
       GenesTableGraphQLQuery,
       graphQlFilters,
     );
-    // if we have valid data from the table, need to query the mutation counts
+    // if we have valid data from the table, need to query the ssms counts
     if (!results.errors) {
       // extract the gene ids and user it for the call to
       const geneIds =

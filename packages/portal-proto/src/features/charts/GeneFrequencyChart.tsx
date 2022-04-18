@@ -9,6 +9,7 @@ import {
 
 
 import ChartTitleBar from "./ChartTitleBar";
+import { BarChartData } from "./BarChart";
 
 const CHART_NAME = "most-frequently-mutated-genes-bar-chart";
 
@@ -20,26 +21,32 @@ const DownloadOptions = dynamic(() => import("./DownloadOptions"), {
   ssr: false,
 });
 
+const hovertemplate =
+  "<b>%{x}</b> <br />%{customdata[0]} Cases Affected in Cohort<br />%{customdata[0]} / %{customdata[1]} (%{y:.2f}%)<extra></extra>";
+
 const processChartData = (chartData:GenesFrequencyChart,
                           title = "Distribution of Most Frequently Mutated Genes",
-                          showXLabels = true) => {
+                          showXLabels = true) : BarChartData => {
   if (!chartData) return {
     datasets: []
   };
 
   const xindex =  chartData.geneCounts.map((_i, index) => index)
   const xvals = chartData.geneCounts.map((i) => i.symbol)
+
   return {
     datasets: [{
       x: xindex,
-      y: chartData.geneCounts.map((i) => i.numCases),
+      y: chartData.geneCounts.map((x) => (x.numCases /chartData.casesTotal) * 100 ),
+      hovertemplate: hovertemplate,
+      customdata: chartData.geneCounts.map((d, idx) => [ d.numCases, chartData.casesTotal]),
     }],
     tickvals: showXLabels ? xindex : [],
     ticktext: showXLabels ? xvals : [],
     label_text: xvals,
     title: title,
     filename: title,
-    yAxisTitle: "# of Cases"
+    yAxisTitle: "% of Cases Affected"
   }
 }
 
@@ -51,6 +58,8 @@ interface GeneFrequencyChartProps {
   readonly maxBins?:number;
   readonly orientation?:string;
 }
+
+
 
 export const GeneFrequencyChart:React.FC<GeneFrequencyChartProps> = ( { height = undefined,
                                                                         marginBottom = 100,

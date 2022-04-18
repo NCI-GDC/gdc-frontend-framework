@@ -3,7 +3,16 @@ import { GqlOperation, Operation } from "../gdcapi/filters";
 import { CoreState } from "../../store";
 import { buildCohortGqlOperator, FilterSet, joinFilters } from "../cohort/cohortFilterSlice";
 
-const initialState: FilterSet = {  mode: "and", root: {} };
+
+const initialState: FilterSet = {
+  mode: "and",
+  root: { "genes.is_cancer_gene_census" :
+      { field: "genes.is_cancer_gene_census",
+        operator: "includes",
+        operands:["true"] // TODO: this will be fixed when boolean facets are implemented
+      }
+  }
+};
 
 const slice = createSlice({
   name: "genomic/filters",
@@ -23,7 +32,7 @@ const slice = createSlice({
         }
     },
     clearGenomicFilters: (state) => {
-      return { ...state, root: {} };
+      return { ...state, root: initialState.root };
     },
   },
   extraReducers: {},
@@ -38,6 +47,8 @@ export const selectGenomicFilters = (state: CoreState): FilterSet =>
 export const selectGenomicGqlFilters = (state: CoreState): GqlOperation | undefined => {
   return buildCohortGqlOperator(state.genomic.filters);
 };
+
+export const selectGenomicAndCohortFilters = (state: CoreState): FilterSet => joinFilters(state.cohort.currentFilters.filters, state.genomic.filters)
 
 export const selectGenomicAndCohortGqlFilters = (state: CoreState): GqlOperation | undefined => {
   return buildCohortGqlOperator(joinFilters(state.cohort.currentFilters.filters, state.genomic.filters));
