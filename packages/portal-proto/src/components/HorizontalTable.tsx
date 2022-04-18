@@ -2,30 +2,37 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useTable, useBlockLayout } from 'react-table';
 import { FixedSizeList as List } from "react-window";
 import _ from "lodash";
-import { ReactSortable, Sortable } from "react-sortablejs";
-
+// import { ReactSortable } from "react-sortablejs";
+import { DndProvider, useDrag } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import DragDrop from "./DragDrop";
 
 const HorizontalTable = ({ inputData, tableFunc, customCellKeys, customGridMapping, sortableOptions, selectableRow = false }) => {
     const [columnListOptions, setColumnListOptions] = useState([]);
     const tableData = useMemo(() => [...inputData], [inputData]);
 
     const rearrangeColumns = (columnChange) => {
+        console.log('columnList', columnListOptions, 'column change', columnChange);
         setColumnListOptions(columnChange);
     }
 
     const generateColumnHeadings = (obj, customCellKeys) => {
         const columnHeadings = [];
+        const columnList = [];
         const keysArr = Object.keys(obj);
-        keysArr.forEach(key => {
-            customCellKeys.includes(key) ? 
-            columnHeadings.push(customGridMapping(key)) : 
-            columnHeadings.push({
-                "Header": _.startCase(key),
-                "accessor": key,
-                "width": (obj[key].length < 10 || typeof obj[key] === 'number') ? 70 : 180,
-            });
+        keysArr.forEach((key, i) => {
+            columnList.push({id: i + 1, columnName: key});
+            customCellKeys.includes(key) ?
+                columnHeadings.push(customGridMapping(key)) :
+                columnHeadings.push({
+                    "Header": _.startCase(key),
+                    "accessor": key,
+                    "width": (obj[key].length < 10 || typeof obj[key] === 'number') ? 70 : 180,
+                });
         });
-        setColumnListOptions(keysArr);
+        // setColumnListOptions(keysArr);
+        setColumnListOptions(columnList);
+        console.log('COLUMNLIST', columnList);
         return columnHeadings
     }
 
@@ -35,13 +42,13 @@ const HorizontalTable = ({ inputData, tableFunc, customCellKeys, customGridMappi
                 id: "Checkbox",
                 Header: "",
                 Cell: ({ row }) => (
-                    <input type="checkbox"/>
+                    <input type="checkbox" />
                 ),
                 "width": 30
             },
             ...columns
-        ]) 
-    }; 
+        ])
+    };
 
     useEffect(() => {
         // tableFunc();
@@ -127,13 +134,12 @@ const HorizontalTable = ({ inputData, tableFunc, customCellKeys, customGridMappi
         )
     }
 
+
     return (
         <>
-              <ReactSortable list={columnListOptions} setList={rearrangeColumns} {...sortableOptions}>
-              {columnListOptions.map((option, idx) => (
-                <div key={idx}>{option}</div>
-                ))}
-              </ReactSortable>
+            <DndProvider backend={HTML5Backend}>
+                <DragDrop listOptions={columnListOptions} />
+            </DndProvider>
             <Table columns={tableColumns} data={tableData}></Table>
         </>
     )
