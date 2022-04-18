@@ -292,6 +292,9 @@ module.exports = {
       variants: {
         extend: {},
       },
+      fontSize: {
+        '2xs': '.85rem',
+      }
     },
   },
   plugins: [
