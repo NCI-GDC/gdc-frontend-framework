@@ -25,7 +25,8 @@ const slice = createSlice({
         };
     },
     removeGenomicFilter: (state, action: PayloadAction<string>)  => {
-      const { [action.payload]: _, ...updated} = state.root;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [action.payload]: _unused, ...updated} = state.root;
       return {
         ...state,
           root: updated,
