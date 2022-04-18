@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
-  CoreDataSelectorResponse, createUseMultipleFiltersCoreDataHook,
+  CoreDataSelectorResponse, createUseFiltersCoreDataHook,
   DataStatus,
 } from "../../dataAcess";
 import { castDraft } from "immer";
@@ -11,8 +11,7 @@ import {
   graphqlAPI,
   TablePageOffsetProps,
 } from "../gdcapi/gdcgraphql";
-import { selectCurrentCohortFilters } from "../cohort/cohortFilterSlice";
-import { selectGenomicAndCohortGqlFilters, selectGenomicFilters } from "./genomicFilters";
+import { selectGenomicAndCohortGqlFilters } from "./genomicFilters";
 
 
 const GenesTableGraphQLQuery = `
@@ -127,7 +126,6 @@ export const fetchGenesTable = createAsyncThunk<
     offset,
   }: TablePageOffsetProps, thunkAPI): Promise<GraphQLApiResponse> => {
     const filters =  selectGenomicAndCohortGqlFilters(thunkAPI.getState());
-
     const filterContents = filters?.content ? Object(filters?.content) : [];
     const graphQlFilters = {
       genesTable_filters: filters? filters: {},
@@ -238,7 +236,7 @@ export const fetchGenesTable = createAsyncThunk<
       GenesTableGraphQLQuery,
       graphQlFilters,
     );
-    // if we have valid data from the table, need to query the mutation counts
+    // if we have valid data from the table, need to query the ssms counts
     if (!results.errors) {
       // extract the gene ids and user it for the call to
       const geneIds =
@@ -368,8 +366,7 @@ export const selectGenesTableData = (
   };
 };
 
-export const useGenesTable = createUseMultipleFiltersCoreDataHook(fetchGenesTable,
+export const useGenesTable = createUseFiltersCoreDataHook(fetchGenesTable,
   selectGenesTableData,
-  selectCurrentCohortFilters,
-  selectGenomicFilters);
+  selectGenomicAndCohortGqlFilters);
 

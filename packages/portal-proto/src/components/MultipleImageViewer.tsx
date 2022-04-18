@@ -120,8 +120,8 @@ export const MultipleImageViewer = ({
             </Alert>
           </div>
         ) : (
-          <div className="flex flex-col border-1 border-[#c8c8c8] m-2 mt-0">
-            <div className="flex border-b-1 border-b-[#c8c8c8]">
+          <div className="flex flex-col border-2 border-[#c8c8c8] m-2 mt-0">
+            <div className="flex border-b-2 border-b-[#c8c8c8]">
               <div className="flex flex-col w-1/6">
                 <div className="flex">
                   <h2 className="p-2 text-xl ml-4 text-black">Cases</h2>

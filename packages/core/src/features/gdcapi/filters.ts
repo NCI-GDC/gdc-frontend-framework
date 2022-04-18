@@ -9,7 +9,7 @@ export type Operation =
   | Missing
   | Includes
   | Excludes
-  | ExcludesIfAny
+  | ExcludeIfAny
   | Intersection
   | Union;
 
@@ -71,8 +71,8 @@ export interface Excludes {
   readonly operands: ReadonlyArray<string> | ReadonlyArray<number>;
 }
 
-export interface ExcludesIfAny {
-  readonly operator: "excludesifany";
+export interface ExcludeIfAny {
+  readonly operator: "excludeifany";
   readonly field: string;
   readonly operands: string | ReadonlyArray<string> | ReadonlyArray<number>;
 }
@@ -98,7 +98,7 @@ export interface OperationHandler<T> {
   handleExists: (op: Exists) => T;
   handleIncludes: (op: Includes) => T;
   handleExcludes: (op: Excludes) => T;
-  handleExcludesIfAny: (op: ExcludesIfAny) => T;
+  handleExcludeIfAny: (op: ExcludeIfAny) => T;
   handleIntersection: (op: Intersection) => T;
   handleUnion: (op: Union) => T;
 }
@@ -128,8 +128,8 @@ export const handleOperation = <T>(
       return handler.handleIncludes(op);
     case "excludes":
       return handler.handleExcludes(op);
-    case "excludesifany":
-      return handler.handleExcludesIfAny(op);
+    case "excludeifany":
+      return handler.handleExcludeIfAny(op);
     case "and":
       return handler.handleIntersection(op);
     case "or":
@@ -154,7 +154,7 @@ export type GqlOperation =
   | GqlExists
   | GqlIncludes
   | GqlExcludes
-  | GqlExcludesIfAny
+  | GqlExcludeIfAny
   | GqlIntersection
   | GqlUnion;
 
@@ -237,8 +237,8 @@ export interface GqlExcludes {
   };
 }
 
-export interface GqlExcludesIfAny {
-  readonly op: "excludesifany";
+export interface GqlExcludeIfAny {
+  readonly op: "excludeifany";
   readonly content: {
     readonly field: string;
     readonly value: string | ReadonlyArray<string> | ReadonlyArray<number>;
@@ -266,7 +266,7 @@ export interface GqlOperationHandler<T> {
   handleExists: (op: GqlExists) => T;
   handleIncludes: (op: GqlIncludes) => T;
   handleExcludes: (op: GqlExcludes) => T;
-  handleExcludesIfAny: (op: GqlExcludesIfAny) => T;
+  handleExcludeIfAny: (op: GqlExcludeIfAny) => T;
   handleIntersection: (op: GqlIntersection) => T;
   handleUnion: (op: GqlUnion) => T;
 }
@@ -296,8 +296,8 @@ export const handleGqlOperation = <T>(
       return handler.handleIncludes(op);
     case "exclude":
       return handler.handleExcludes(op);
-    case "excludesifany":
-      return handler.handleExcludesIfAny(op);
+    case "excludeifany":
+      return handler.handleExcludeIfAny(op);
     case "and":
       return handler.handleIntersection(op);
     case "or":
@@ -378,8 +378,8 @@ export class ToGqlOperationHandler implements OperationHandler<GqlOperation> {
       value: op.operands,
     },
   });
-  handleExcludesIfAny = (op: ExcludesIfAny): GqlExcludesIfAny => ({
-    op: "excludesifany",
+  handleExcludeIfAny = (op: ExcludeIfAny): GqlExcludeIfAny => ({
+    op: "excludeifany",
     content: {
       field: op.field,
       value: op.operands,
@@ -451,8 +451,8 @@ class ToOperationHandler implements GqlOperationHandler<Operation> {
     field: op.content.field,
     operands: op.content.value,
   });
-  handleExcludesIfAny = (op: GqlExcludesIfAny): ExcludesIfAny => ({
-    operator: "excludesifany",
+  handleExcludeIfAny = (op: GqlExcludeIfAny): ExcludeIfAny => ({
+    operator: "excludeifany",
     field: op.content.field,
     operands: op.content.value,
   });

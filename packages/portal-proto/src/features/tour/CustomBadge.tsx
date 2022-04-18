@@ -1,10 +1,10 @@
-import { PropsWithChildren } from "react";
+import React, { PropsWithChildren } from "react";
 import { Badge } from "@mantine/core";
 
 export const CustomBadge: React.FC = ({
     children,
   } : PropsWithChildren<unknown>) => (
     <div className="absolute -top-2 -left-2">
-        <Badge>{children}</Badge>
+        <Badge  size="xl" variant="filled" className="bg-nci-cyan-light">{children}</Badge>
     </div>
 );

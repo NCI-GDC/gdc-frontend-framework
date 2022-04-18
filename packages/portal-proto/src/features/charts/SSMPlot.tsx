@@ -2,6 +2,7 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useSsmPlot } from "@gff/core";
 import ChartTitleBar from "./ChartTitleBar";
+
 const BarChart = dynamic(() => import("./BarChart"), {
   ssr: false,
 });
@@ -81,6 +82,7 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
       <ChartTitleBar title={title} filename={CHART_NAME} divId={chartDivId} jsonData={{}} />
     </div>
     <BarChart
+      divId={chartDivId}
       data={chartData}
       onClickHandler={onClickHandler}
     />
