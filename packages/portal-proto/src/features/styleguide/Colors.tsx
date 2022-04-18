@@ -56,7 +56,7 @@ const ColorPalletLine = ({ name, colors }: ColorStylePalletProps) => {
 const Colors: React.FC<void> = () => {
   return (
     <article className="prose font-montserrat text-nci-gray md:prose-md">
-      <p className="prose font-semibold text-2xl">Color Pallets</p>
+      <p className="prose font-semibold text-2xl">Color Palettes</p>
       <div className="flex flex-col">
         <div>
           <p className="prose font-medium text-xl">Official NCI Colors</p>
