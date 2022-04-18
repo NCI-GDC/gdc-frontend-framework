@@ -1,4 +1,6 @@
 import "../styles/globals.css";
+import "../styles/survivalplot.css";
+import "../styles/oncogrid.css";
 
 import { Provider } from "react-redux";
 import type { AppProps } from "next/app";
@@ -27,8 +29,9 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
       <Provider store={store}>
       {/* Prevents style conflicts between Mantine and Tailwind by loading Mantine second */}
       <MantineProvider
-
-        emotionOptions={{ key: 'mantine', prepend: true }}
+        withGlobalStyles
+        withNormalizeCSS
+        emotionOptions={{ key: 'mantine', prepend: false }}
         theme={{  // Override default blue color until styles are determined
           colors: {
             blue: [
@@ -42,7 +45,20 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
               '#626060',
               '#a1a1a1',
               '#a1a1a1',
-            ]
+            ],
+            gray: [
+              '#dedede',
+              '#f1f1f1',
+              '#e7e7e7',
+              '#dadada',
+              '#c9c8c8',
+              '#b9b9b9',
+              '#bdbdbd',
+              '#343434',
+              '#919090',
+              '#151515',
+            ],
+
           }}}
       >
         <TourProvider steps={[]} components={{ Badge }}>
