@@ -2,13 +2,17 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   CoreDataSelectorResponse,
   createUseCoreDataHook,
-  DataStatus,
 } from "../../dataAcess";
 import { CoreState } from "../../store";
 import { GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import { fetchImageViewerQuery, queryParams } from "./imageDetailsApi";
 import trimEnd from "lodash/trimEnd";
 import find from "lodash/find";
+import {
+  caseNodeType,
+  ImageViewerInfo,
+  imageViewerInitialState,
+} from "./types";
 
 export const fetchImageViewer = createAsyncThunk(
   "imageDetails/fetchImageViewer",
@@ -22,22 +26,6 @@ export interface edgeDetails {
   readonly submitter_id: string;
 }
 
-interface edges {
-  [caseSubmitterId: string]: Array<edgeDetails>;
-}
-
-interface ImageViewerInfo {
-  edges: edges;
-  total: number;
-}
-
-export interface imageViewerInitialState {
-  readonly status: DataStatus;
-  readonly total: number;
-  readonly edges: any;
-  readonly isPerformingSearch: boolean;
-}
-
 const initialState: imageViewerInitialState = {
   status: "uninitialized",
   total: 0,
@@ -45,7 +33,7 @@ const initialState: imageViewerInitialState = {
   isPerformingSearch: false,
 };
 
-export const getSlides = (caseNode: any) => {
+export const getSlides = (caseNode: caseNodeType) => {
   const portions = (
     caseNode.samples || {
       hits: { edges: [] },
@@ -58,10 +46,12 @@ export const getSlides = (caseNode: any) => {
     [],
   );
 
-  const slideImageIds = caseNode.files.hits.edges.map(({ node }: any) => ({
-    file_id: node.file_id,
-    submitter_id: trimEnd(node.submitter_id, "_slide_image"),
-  }));
+  const slideImageIds = caseNode.files.hits.edges.map(
+    ({ node }: { node: { file_id: string; submitter_id: string } }) => ({
+      file_id: node.file_id,
+      submitter_id: trimEnd(node.submitter_id, "_slide_image"),
+    }),
+  );
 
   const slides = portions.reduce(
     (acc: any, { slides }: any) => [

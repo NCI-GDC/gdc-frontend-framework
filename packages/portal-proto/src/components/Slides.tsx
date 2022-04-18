@@ -25,7 +25,7 @@ export const Slides: React.FC<SlidesProps> = ({
           },
         })}
       >
-        <Badge variant="light" className="mb-1 text-black text-xs">
+        <Badge variant="filled" className="mb-1 text-blue text-xs">
           {submitter_id}
         </Badge>
 
