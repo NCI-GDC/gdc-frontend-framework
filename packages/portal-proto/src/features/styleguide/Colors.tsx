@@ -43,7 +43,7 @@ interface ColorStylePalletProps {
 const ColorPalletLine = ({ name, colors }: ColorStylePalletProps) => {
   return (
     <div className="flex flex-row items-center font-montserrat">
-      <div className="grid gap-12 grid-cols-11 grid-rows-1">
+      <div className="grid gap-12 grid-cols-11 grid-rows-1 my-1">
         <p className="col-span-3 font-medium w-24">{name}</p>
         {colors.map((x) => <div key={x} className={`${x} p-4 px-8 mx-2 rounded`} />)}
       </div>
@@ -56,20 +56,21 @@ const ColorPalletLine = ({ name, colors }: ColorStylePalletProps) => {
 const Colors: React.FC<void> = () => {
   return (
     <article className="prose font-montserrat text-nci-gray md:prose-md">
-      <h1>Color Pallet</h1>
-      <div className="flex flex-col gap-y-4 py-4">
+      <p className="prose font-semibold text-2xl">Color Pallets</p>
+      <div className="flex flex-col">
         <div>
-          <h1 className="text-2xl">Official NCI Colors</h1>
+          <p className="prose font-medium text-xl">Official NCI Colors</p>
           The following colors are based on the NCI digital design guide.
         </div>
         <Divider label="NCI Primary Colors"  classNames={divider_style} />
+
         {Object.keys(nciPrimaryColors).map((name: string) => <ColorPalletLine key={`${name}-pallet`} name={name}
                                                                               colors={nciPrimaryColors[name]} />)}
         <Divider label="NCI Secondary Colors"  classNames={divider_style}/>
         {Object.keys(nciSecondaryColors).map((name: string) => <ColorPalletLine key={`${name}-pallet`} name={name}
                                                                                 colors={nciSecondaryColors[name]} />)}
         <div>
-          <h1 className="text-2xl">Accessible GDC Colors</h1>
+          <p className="text-xl">Accessible GDC Colors</p>
           The following colors come from the USWDS. They are the close
           approximations to the NCI color palette. The{" "}
           <a

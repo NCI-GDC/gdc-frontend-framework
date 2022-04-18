@@ -7,7 +7,7 @@ import { ReactNode } from "react";
 const Charts : ReactNode = () => {
   return (
     <article className="prose font-montserrat text-nci-gray prose-md">
-      <h1>Charts</h1>
+      <p className="prose font-medium text-2xl">Charts</p>
 
       <div className="flex flex-col content-center gap-y-4">
         <Divider label="Facet Bar chart with defaults"  classNames={divider_style}/>

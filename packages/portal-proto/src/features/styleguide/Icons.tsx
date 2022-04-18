@@ -93,7 +93,7 @@ const IconCard = (x, idx) => (
 const Icons:ReactNode = () => {
   return (
     <Stack className="prose font-montserrat text-nci-gray-dark md:prose-md">
-      <h1>Interface Icons</h1>
+      <p className="prose font-medium text-2xl">Interface Icons</p>
       <Divider label="Interface Icons" classNames={divider_style}/>
       <Grid>{GDC_ICONS.map((x, idx) => IconCard(x, idx))}</Grid>
     </Stack>

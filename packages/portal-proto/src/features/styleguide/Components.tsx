@@ -6,8 +6,8 @@ import GenesTable from "../genomic/GenesTable";
 
 const Components : ReactNode = () => {
   return (
-    <div className="flex flex-col prose font-montserrat text-nci-gray prose-md w-100">
-      <h1>UI Components</h1>
+    <div className="flex flex-col font-montserrat text-nci-gray w-100">
+      <p className="prose font-medium text-2xl">UI Components</p>
       <Divider label="Enumeration Facet" classNames={divider_style} />
       <EnumFacet type="cases" field="primary_site" />
       <Divider label="Genes Table" classNames={divider_style} />

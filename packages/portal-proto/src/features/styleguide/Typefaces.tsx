@@ -1,21 +1,22 @@
-import { Divider, Title } from '@mantine/core';
+import { Divider } from '@mantine/core';
+import { ReactNode } from "react";
 
-const Typefaces = () => {
+const Typefaces : ReactNode = () => {
   return (
-    <article className="prose font-montserrat text-nci-gray-darker md:prose-ld">
-      <h1>Typefaces</h1>
-      <Title order={1}>This is h1 title</Title>
+    <article className="prose font-montserrat text-nci-gray-dark prose-xs">
+        <p className="prose font-medium text-2xl">Typefaces</p>
+      <div className="text-nci-gray-dark font-montserrat font-medium">
+      <h1 className="text-nci-gray-dark" >This is H1</h1>
       <Divider />
-      <Title order={2}>This is h2 title</Title>
+      <h2 className="text-nci-gray-dark" >This is h2 title</h2>
       <Divider />
-      <Title order={3}>This is h3 title</Title>
+      <h3 className="text-nci-gray-dark">This is h3 title</h3>
       <Divider />
-      <Title order={4}>This is h4 title</Title>
+      <h4 className="text-nci-gray-dark">This is h4 title</h4>
       <Divider />
-      <Title order={5}>This is h5 title</Title>
+      <h5 className="text-nci-gray-dark">This is h5 title</h5>
       <Divider />
-      <Title order={6}>This is h6 title</Title>
-      <Divider />
+      </div>
     </article>
   );
 }
