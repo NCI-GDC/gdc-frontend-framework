@@ -87,7 +87,8 @@ describe("selectCurrentCohort", () => {
               mutationCounts: -1,
             },
             status: "uninitialized"
-          }
+          },
+          availableCohorts: [],
         },
     });
     expect(currentCohort).toEqual("asdf");
@@ -106,7 +107,8 @@ describe("selectCurrentCohort", () => {
             mutationCounts: -1,
           },
           status: "uninitialized"
-        }
+        },
+        availableCohorts: [],
       }
     });
     expect(currentCohort).toBeUndefined();
@@ -128,7 +130,8 @@ describe("selectCurrentCohortFilters", () => {
             mutationCounts: -1,
           },
           status: "uninitialized"
-        }
+        },
+        availableCohorts: [],
       }
     });
     expect(currentCohortFilters).toEqual(populatedFilters);
@@ -154,7 +157,8 @@ describe("selectCurrentCohortFilters", () => {
             mutationCounts: -1,
           },
           status: "uninitialized"
-        }
+        },
+        availableCohorts: [],
     }
     }, 'primary_site');
     expect(currentCohortFilters).toEqual( populatedFilters.root.primary_site );
