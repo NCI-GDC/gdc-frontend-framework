@@ -1,48 +1,42 @@
-
-import { Divider, Card, Grid, Stack} from "@mantine/core";
+import { Card, Divider, Grid, Stack } from "@mantine/core";
+import { divider_style } from "./style";
 
 import {
   MdAdd,
-  MdArrowDropDown,
-  MdChevronRight,
-  MdExpandMore,
-  MdArrowForward,
-  MdShoppingCart,
-  MdDelete,
   MdAddCircle,
+  MdApps,
+  MdArrowDropDown,
+  MdArrowForward,
+  MdChevronRight,
+  MdClose,
+  MdDelete,
+  MdDownload,
+  MdEdit,
+  MdExpandLess,
+  MdExpandMore,
+  MdFileDownload,
+  MdFileUpload,
   MdFlip,
-  MdSave,
-  MdRemoveCircle,
   MdLock,
   MdLockOpen,
-  MdDownload,
-  MdViewModule,
-  MdOutlineTour,
   MdOutlineLogin,
-  MdSortByAlpha,
-  MdApps,
-  MdFileUpload,
-  MdFileDownload,
-  MdExpandLess,
-  MdSettings,
-  MdSearch,
-  MdClose,
+  MdOutlineTour,
+  MdRemoveCircle,
   MdRestartAlt,
-  MdEdit,
+  MdSave,
+  MdSearch,
+  MdSettings,
+  MdShoppingCart,
+  MdSortByAlpha,
+  MdViewModule,
 } from "react-icons/md";
 
-import {
-  FaUser,
-  FaFile,
-  FaEdit,
-  FaTable,
-  FaUserCog,
-  FaCartPlus,
-} from "react-icons/fa";
+import { FaCartPlus, FaEdit, FaFile, FaTable, FaUserCog } from "react-icons/fa";
 import { BsFillTriangleFill, BsQuestionCircleFill } from "react-icons/bs";
 
 import { SiMicrogenetics } from "react-icons/si";
 import { BiLineChartDown } from "react-icons/bi";
+import { ReactNode } from "react";
 
 const GDC_ICONS = [
   MdAdd,
@@ -86,23 +80,21 @@ const GDC_ICONS = [
 ];
 
 const IconCard = (x, idx) => (
-  <Grid.Col key={`icon_${x.name}_${idx}`} span={2}>
-    <Card shadow="md">
-      <div className={"flex flex-col p-2 items-center"}>
-        {x({ size: 25 })}
-        {x.name}
+  <Grid.Col key={`icon_${x.name}_${idx}`} span={3}>
+    <Card shadow="sm">
+      <div className={"flex flex-col p-6 items-center"}>
+        {x({ size: 32 })}
+        <p className="text-sm text-nci-gray mx-12" > {x.name}</p>
       </div>
     </Card>
   </Grid.Col>
 );
 
-const Icons = () => {
+const Icons:ReactNode = () => {
   return (
-    <Stack>
-      <p className="prose font-montserrat text-xl text-nci-gray-darker">Analysis Tool Icons</p>
-      <Divider />
-      <p className="prose font-montserrat text-xl text-nci-gray-darker">Interface Icons</p>
-      <Divider />
+    <Stack className="prose font-montserrat text-nci-gray-dark md:prose-md">
+      <h1>Interface Icons</h1>
+      <Divider label="Interface Icons" classNames={divider_style}/>
       <Grid>{GDC_ICONS.map((x, idx) => IconCard(x, idx))}</Grid>
     </Stack>
   );

@@ -28,7 +28,7 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
       {/* Prevents style conflicts between Mantine and Tailwind by loading Mantine second */}
       <MantineProvider
 
-        emotionOptions={{ key: 'mantine', prepend: false }}
+        emotionOptions={{ key: 'mantine', prepend: true }}
         theme={{  // Override default blue color until styles are determined
           colors: {
             blue: [
