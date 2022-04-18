@@ -47,7 +47,7 @@ const StyleGuideApp : ReactNode = () => {
       navbar={SideBar(sections, setActiveStyleCard)}
       header={header}
       styles={(theme) => ({
-        main: { backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0] },
+        main: { backgroundColor: "#FFFFFF"  },
       })}
     >
       <ActiveStyleCard cardId={activeStyleCard} />

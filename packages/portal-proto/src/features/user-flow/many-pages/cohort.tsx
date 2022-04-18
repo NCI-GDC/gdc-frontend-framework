@@ -1,5 +1,6 @@
 import React, { PropsWithChildren, useState } from "react";
-import { Button, CardPlaceholder } from "../../layout/UserFlowVariedPages";
+import {  CardPlaceholder } from "../../layout/UserFlowVariedPages";
+import { Button } from "@mantine/core";
 import {
   MdClose as ClearIcon,
   MdSettings as SettingsIcon,
