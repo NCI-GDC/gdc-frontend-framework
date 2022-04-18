@@ -1,15 +1,13 @@
 /**
  * A Facet Chart which will soon be deprecated in favor of EnumFacetChart.
  */
-
+import React from "react";
 import {
-  EnumFilter,
   FacetBuckets,
   fetchFacetByName,
   FilterSet,
   selectCasesFacetByField,
   selectCurrentCohortFilters,
-  selectCurrentCohortFiltersByName,
   useCoreDispatch,
   useCoreSelector,
 } from "@gff/core";
@@ -44,13 +42,6 @@ const useCohortFacetFilter = (): FilterSet => {
 };
 
 
-const useCohortFacetFilterByName = (field: string): string[] | undefined => {
-  const enumFilters: EnumFilter = useCoreSelector((state) =>
-    selectCurrentCohortFiltersByName(state, field) as EnumFilter,
-  );
-  return enumFilters ? enumFilters.values : undefined;
-};
-
 const useCaseFacet = (field: string): UseCaseFacetResponse => {
   const coreDispatch = useCoreDispatch();
   const facet: FacetBuckets = useCoreSelector((state) =>
@@ -66,7 +57,7 @@ const useCaseFacet = (field: string): UseCaseFacetResponse => {
 
   useEffect(() => {
     coreDispatch(fetchFacetByName(field));
-  }, [selectFacetFilter]);
+  }, [coreDispatch, field, selectFacetFilter]);
 
   return {
     data: facet,
@@ -93,11 +84,11 @@ interface FacetProps {
 // from https://stackoverflow.com/questions/33053310/remove-value-from-object-without-mutation
 const removeKey = (key, {[key]: _, ...rest}) => rest;
 
-const processChartData = (facetData:Record<string, any>, field: string, maxBins = 100, showXLabels = true) => {
+const processChartData = (facetData:Record<string, string|number>, field: string, maxBins = 100, showXLabels = true) => {
   const data = removeKey('_missing', facetData);
   const xvals = Object.keys(data).slice(0, maxBins).map(x =>x);
   const xlabels = Object.keys(data).slice(0, maxBins).map(x => processLabel(x, 12));
-  const results = {
+  return {
     datasets: [{
       x: xvals,
       y: Object.values(data).slice(0, maxBins),
@@ -107,13 +98,8 @@ const processChartData = (facetData:Record<string, any>, field: string, maxBins 
     title: convertFieldToName(field),
     filename: field,
     yAxisTitle: "# of Cases",
-  }
-  return results;
+  };
 }
-
-const processJSONData = (facetData: Record<string, any>) => {
-  return Object.entries(facetData).map(e => ({ label: e[0], value: e[1] }));
-};
 
 export const FacetChart: React.FC<FacetProps> = ({
                                                    field,
@@ -125,21 +111,20 @@ export const FacetChart: React.FC<FacetProps> = ({
                                                    maxBins = maxValuesToDisplay,
                                                    orientation = "v",
                                                  }: FacetProps) => {
-  const { data, isSuccess } =
-    useCaseFacet(field);
+  const { data, isSuccess } = useCaseFacet(field);
   const [chart_data, setChartData] = useState(undefined);
 
   useEffect(() => {
     if (isSuccess) {
-      const cd = processChartData(data, field, maxBins, showXLabels);
+      const cd = processChartData(data.buckets, field, maxBins, showXLabels);
       setChartData(cd);
     }
-  }, [data, isSuccess]);
+  }, [data, field, isSuccess, maxBins, showXLabels]);
 
   // Create unique ID for this chart
   const chartDivId = `${field}_${Math.floor(Math.random() * 100)}`;
 
-  return <>
+  return <div className="flex flex-col">
     {showTitle ?
       <ChartTitleBar title={convertFieldToName(field)}
                      divId={chartDivId}
@@ -154,13 +139,13 @@ export const FacetChart: React.FC<FacetProps> = ({
                            marginTop={marginTop}
                            padding={padding}
                            orientation={orientation}
-                           divId={chartDivId}></BarChartWithNoSSR>
+                           divId={chartDivId} />
       :
       <div className="flex flex-row items-center justify-center w-100">
         <Loader color="gray" size={height ? height : 24} />
       </div>
     }
-  </>
+  </div>
 };
 
 const convertFieldToName = (field: string): string => {
