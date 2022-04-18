@@ -19,9 +19,9 @@ export const Slides: React.FC<SlidesProps> = ({
         shadow="sm"
         p="sm"
         sx={(theme) => ({
-          backgroundColor: isActive ? "#1784ac" : theme.colors.gray[2],
+          backgroundColor: isActive ? "#1784ac" : theme.colors.gray[5],
           "&:hover": {
-            backgroundColor: !isActive && theme.colors.gray[5],
+            backgroundColor: !isActive && theme.colors.gray[7],
           },
         })}
       >
@@ -32,7 +32,7 @@ export const Slides: React.FC<SlidesProps> = ({
         <img
           alt={`thumbnail of ${submitter_id}`}
           src={`https://api.gdc.cancer.gov/tile/${file_id}?level=7&x=0&y=0`}
-          className="w-[50px] h-[90px]"
+          className="max-w-[200px] max-h-[90px]"
         />
       </Card>
     </div>

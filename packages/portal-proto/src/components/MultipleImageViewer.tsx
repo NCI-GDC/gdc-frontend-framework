@@ -12,6 +12,7 @@ import {
   Tooltip,
 } from "@mantine/core";
 import {
+  edgeDetails,
   setIsPerformingSearch,
   useCoreDispatch,
   useImageViewer,
@@ -34,33 +35,100 @@ export const MultipleImageViewer = ({
 }: MultipleImageViewerProps): JSX.Element => {
   const [activeTab, setActiveTab] = useState(0);
   const [showSearch, setShowSearch] = useState(false);
+  const [showMorePressed, setShowMorePressed] = useState(false);
   const [activeImage, setActiveImage] = useState("");
+  const [activeSlide, setActiveSlide] = useState(0);
   const [searchText, setSearchText] = useState("");
   const [searchValues, setSearchValues] = useState([]);
   const [imageDetails, setImageDetails] = useState([]);
-  const [offSet, setOffSet] = useState(0);
+  const [cases_offset, setCasesOffSet] = useState(0);
+  const [tabListWrapperScrollPosition, setTabListWrapperScrollPosition] =
+    useState(0);
+  const [tabBodyScroll, setTabBodyScroll] = useState(0);
   const router = useRouter();
   const dispatch = useCoreDispatch();
 
   const { data, isFetching } = useImageViewer({
-    cases_offset: offSet,
+    cases_offset,
     searchValues,
     case_id,
   });
 
   useEffect(() => {
-    const inside = data?.edges[Object.keys(data.edges)[0]];
-    setActiveImage(inside?.[0].file_id);
-    setImageDetails(formatImageDetailsInfo(inside?.[0]));
-  }, [isFetching]);
+    let inside: edgeDetails[];
+    const tabsListWrapperElem = document.querySelector(
+      ".mantine-Tabs-tabsListWrapper",
+    );
+    const tabBodyElem = document.querySelector(".mantine-Tabs-body");
+
+    if (!isFetching) {
+      if (showMorePressed) {
+        inside = data?.edges[Object.keys(data.edges)[activeTab]];
+      } else {
+        inside = data?.edges[Object.keys(data.edges)[0]];
+      }
+
+      setActiveImage(inside?.[activeSlide].file_id);
+      setImageDetails(formatImageDetailsInfo(inside?.[activeSlide]));
+
+      tabsListWrapperElem &&
+        tabsListWrapperElem.addEventListener("scroll", () => {
+          setTabListWrapperScrollPosition(tabsListWrapperElem.scrollTop);
+        });
+
+      tabBodyElem &&
+        tabBodyElem.addEventListener("scroll", () => {
+          console.log(tabBodyElem.scrollTop);
+          setTabBodyScroll(tabBodyElem.scrollTop);
+        });
+
+      tabListWrapperScrollPosition > 0 &&
+        tabsListWrapperElem &&
+        tabsListWrapperElem.scrollTo(0, tabListWrapperScrollPosition);
+
+      tabBodyScroll > 0 &&
+        tabBodyElem &&
+        tabBodyElem.scrollTo(0, tabBodyScroll);
+    }
+
+    return () => {
+      tabsListWrapperElem &&
+        tabsListWrapperElem.removeEventListener("scroll", () => {
+          setTabListWrapperScrollPosition(tabsListWrapperElem.scrollTop);
+        });
+      tabBodyElem &&
+        tabBodyElem.removeEventListener("scroll", () => {
+          console.log(tabBodyElem.scrollTop);
+          setTabBodyScroll(tabBodyElem.scrollTop);
+        });
+    };
+  }, [isFetching, showMorePressed]);
+
+  const resetStates = () => {
+    setActiveTab(0);
+    setActiveSlide(0);
+    setTabListWrapperScrollPosition(0);
+    setTabBodyScroll(0);
+  };
 
   const removeFilters = (filter: string) => {
     setSearchValues(searchValues.filter((value) => value !== filter));
+    resetStates();
+  };
+
+  const onTabChange = (active: number) => {
+    setActiveTab(active);
+    setActiveSlide(0);
+    const inside = data?.edges[Object.keys(data.edges)[active]];
+    setActiveImage(inside?.[0].file_id);
+    setImageDetails(formatImageDetailsInfo(inside?.[0]));
   };
 
   const performSearch = () => {
     dispatch(setIsPerformingSearch(true));
-    setSearchValues([...searchValues, searchText.toUpperCase()]);
+    resetStates();
+    setShowMorePressed(false);
+    setSearchValues([searchText.toUpperCase(), ...searchValues]);
   };
 
   const shouldShowMoreButton = Object.keys(data.edges).length < data.total;
@@ -186,69 +254,67 @@ export const MultipleImageViewer = ({
               </div>
 
               <div className="flex max-h-[550px]">
-                {activeImage && (
-                  <div className="flex-1/2">
-                    <Tabs
-                      variant="unstyled"
-                      orientation="vertical"
-                      active={activeTab}
-                      onTabChange={setActiveTab}
-                      classNames={{
-                        tabsListWrapper:
-                          "max-h-[550px] overflow-x-hidden overflow-y-auto",
-                        tabControl: "ml-2 mt-1",
-                        tabsList: "bg-grey",
-                        tabLabel: "text-xs",
-                        body: "max-h-[550px] overflow-y-auto",
-                      }}
-                      styles={(theme) => ({
-                        tabControl: {
-                          backgroundColor: theme.white,
-                          color: theme.colors.gray[9],
-                          border: `1px solid ${theme.colors.gray[4]}`,
-                          fontSize: theme.fontSizes.md,
-                          padding: `${theme.spacing.lg}px ${theme.spacing.xl}px`,
-                          borderRadius: theme.radius.md,
-                        },
-
-                        tabActive: {
-                          backgroundColor: theme.colors.gray[7],
-                          borderColor: theme.colors.gray[7],
-                          color: theme.white,
-                          fontWeight: "bold",
-                        },
-                        tabsListWrapper: { minWidth: "40%" },
-                      })}
-                    >
-                      {Object.keys(data.edges).map((edge) => {
-                        return (
-                          <Tabs.Tab key={edge} label={edge}>
-                            <List>
-                              {data.edges[edge].map((file) => (
-                                <List.Item
-                                  key={`${file.file_id}${file.submitter_id}`}
-                                  className="max-w-xs max-h-xs"
-                                >
-                                  <Slides
-                                    file_id={file.file_id}
-                                    submitter_id={file.submitter_id}
-                                    setImageViewer={(file_id: string) => {
-                                      setActiveImage(file_id);
-                                      setImageDetails(
-                                        formatImageDetailsInfo(file),
-                                      );
-                                    }}
-                                    isActive={activeImage === file.file_id}
-                                  />
-                                </List.Item>
-                              ))}
-                            </List>
-                          </Tabs.Tab>
-                        );
-                      })}
-                    </Tabs>
-                  </div>
-                )}
+                <div className="flex-1/2">
+                  <Tabs
+                    variant="unstyled"
+                    orientation="vertical"
+                    active={activeTab}
+                    onTabChange={onTabChange}
+                    classNames={{
+                      tabsListWrapper:
+                        "max-h-[550px] overflow-x-hidden overflow-y-auto min-w-[40%]",
+                      // tabControl: "bg-white ml-2 mt-1 text-gray-900 border border-gray-400 text-base py-5 px-6 rounded-md	",
+                      tabControl: "ml-2 mt-1",
+                      tabsList: "bg-grey",
+                      tabLabel: "text-xs",
+                      body: "max-h-[550px] overflow-y-auto",
+                    }}
+                    styles={(theme) => ({
+                      tabControl: {
+                        backgroundColor: theme.white,
+                        color: theme.colors.gray[9],
+                        border: `1px solid ${theme.colors.gray[4]}`,
+                        fontSize: theme.fontSizes.md,
+                        padding: `${theme.spacing.lg}px ${theme.spacing.xl}px`,
+                        borderRadius: theme.radius.md,
+                      },
+                      tabActive: {
+                        backgroundColor: theme.colors.gray[7],
+                        borderColor: theme.colors.gray[7],
+                        color: theme.white,
+                        fontWeight: "bold",
+                      },
+                    })}
+                  >
+                    {Object.keys(data.edges).map((edge) => {
+                      return (
+                        <Tabs.Tab key={edge} label={edge}>
+                          <List>
+                            {data.edges[edge].map((file, index) => (
+                              <List.Item
+                                key={`${file.file_id}${file.submitter_id}`}
+                                className="max-w-xs max-h-xs"
+                              >
+                                <Slides
+                                  file_id={file.file_id}
+                                  submitter_id={file.submitter_id}
+                                  setImageViewer={(file_id: string) => {
+                                    setActiveImage(file_id);
+                                    setActiveSlide(index);
+                                    setImageDetails(
+                                      formatImageDetailsInfo(file),
+                                    );
+                                  }}
+                                  isActive={activeImage === file.file_id}
+                                />
+                              </List.Item>
+                            ))}
+                          </List>
+                        </Tabs.Tab>
+                      );
+                    })}
+                  </Tabs>
+                </div>
 
                 <div className="flex-1 ml-2">
                   {activeImage && (
@@ -264,7 +330,8 @@ export const MultipleImageViewer = ({
                   <Button
                     onClick={() => {
                       dispatch(setIsPerformingSearch(false));
-                      setOffSet((o) => o + 10);
+                      setCasesOffSet((o) => o + 10);
+                      setShowMorePressed(true);
                     }}
                     size="xs"
                   >

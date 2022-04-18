@@ -17,7 +17,7 @@ export const fetchImageViewer = createAsyncThunk(
   },
 );
 
-interface edgeDetails {
+export interface edgeDetails {
   readonly file_id: string;
   readonly submitter_id: string;
 }
