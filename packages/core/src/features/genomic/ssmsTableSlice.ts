@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   CoreDataSelectorResponse,
-  createUseCoreDataHook,
+  createUseFiltersCoreDataHook,
   DataStatus,
 } from "../../dataAcess";
 import { castDraft } from "immer";
@@ -11,6 +11,7 @@ import {
   graphqlAPI,
   TablePageOffsetProps,
 } from "../gdcapi/gdcgraphql";
+import { selectGenomicAndCohortGqlFilters } from "./genomicFilters";
 
 const SSMSTableGraphQLQuery = `query SsmsTable_relayQuery(
   $ssmTested: FiltersArgument
@@ -129,11 +130,14 @@ export const fetchSsmsTable = createAsyncThunk<
   TablePageOffsetProps,
   { dispatch: CoreDispatch; state: CoreState }
 >(
-  "ssmsTable",
+  "genomic/ssmsTable",
   async ({
     pageSize,
     offset,
-  }: TablePageOffsetProps): Promise<GraphQLApiResponse> => {
+  }: TablePageOffsetProps, thunkAPI): Promise<GraphQLApiResponse> => {
+    const filters =  selectGenomicAndCohortGqlFilters(thunkAPI.getState());
+    const filterContents = filters?.content ? Object(filters?.content) : [];
+
     const graphQlFilters = {
       ssmTested: {
         content: [
@@ -149,27 +153,13 @@ export const fetchSsmsTable = createAsyncThunk<
       },
       ssmCaseFilter: {
         content: [
-          {
+          ...[{
             content: {
               field: "available_variation_data",
               value: ["ssm"],
             },
             op: "in",
-          },
-          {
-            op: "in",
-            content: {
-              field: "cases.primary_site",
-              value: ["breast"],
-            },
-          },
-          {
-            content: {
-              field: "genes.is_cancer_gene_census",
-              value: ["true"],
-            },
-            op: "in",
-          },
+          }], ...filterContents
         ],
         op: "and",
       },
@@ -187,25 +177,7 @@ export const fetchSsmsTable = createAsyncThunk<
         op: "and",
       },
       ssmsTable_offset: offset,
-      ssmsTable_filters: {
-        op: "and",
-        content: [
-          {
-            op: "in",
-            content: {
-              field: "cases.primary_site",
-              value: ["breast"],
-            },
-          },
-          {
-            content: {
-              field: "genes.is_cancer_gene_census",
-              value: ["true"],
-            },
-            op: "in",
-          },
-        ],
-      },
+      ssmsTable_filters: filters? filters: {},
       score: "occurrence.case.project.project_id",
       sort: [
         {
@@ -249,10 +221,10 @@ const slice = createSlice({
     builder
       .addCase(fetchSsmsTable.fulfilled, (state, action) => {
         const response = action.payload;
-        if (response.warnings) {
+        if (response.errors) {
           state = castDraft(initialState);
           state.status = "rejected";
-          state.error = response.warnings.filters;
+          state.error = response.errors.filters;
         }
         const data = action.payload.data.viewer.explore;
         state.ssms.cases = data.cases.hits.total;
@@ -304,19 +276,18 @@ const slice = createSlice({
 export const ssmsTableReducer = slice.reducer;
 
 export const selectSsmsTableState = (state: CoreState): GDCSsmsTable =>
-  state.ssmsTable.ssms;
+  state.genomic.ssmsTable.ssms;
 
 export const selectSsmsTableData = (
   state: CoreState,
 ): CoreDataSelectorResponse<SsmsTableState> => {
   return {
-    data: state.ssmsTable,
-    status: state.ssmsTable.status,
-    error: state.ssmsTable.error,
+    data: state.genomic.ssmsTable,
+    status: state.genomic.ssmsTable.status,
+    error: state.genomic.ssmsTable.error,
   };
 };
 
-export const useSsmsTable = createUseCoreDataHook(
-  fetchSsmsTable,
+export const useSsmsTable = createUseFiltersCoreDataHook(fetchSsmsTable,
   selectSsmsTableData,
-);
+  selectGenomicAndCohortGqlFilters);

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { fetchSsmsTable, useCoreDispatch, useSsmsTable } from "@gff/core";
-import HorizontalTable from "../../components/HorizontalTable";
 import { Select } from "../../components/Select";
 import RingLoader from "react-spinners/RingLoader";
 import { getCustomGridCell, getTableFormatData, tableFunc, sortableOptions } from "./custom-config";
+import ProtoTable from "../../components/ProtoTable";
 
 const MutationTable: React.FC<unknown> = () => {
   const [pageSize, setPageSize] = useState(10);
@@ -76,7 +76,7 @@ const MutationTable: React.FC<unknown> = () => {
 
   return (
     <div className="flex flex-col w-100">
-      <HorizontalTable inputData={getTableFormatData(data)} tableFunc={tableFunc} customCellKeys={["impact", "survival"]} customGridMapping={getCustomGridCell} sortableOptions={sortableOptions} selectableRow={true}></HorizontalTable>
+      <ProtoTable inputData={getTableFormatData(data)} tableFunc={tableFunc} customCellKeys={["impact", "survival"]} customGridMapping={getCustomGridCell} sortableOptions={sortableOptions} selectableRow={true}></ProtoTable>
       <div className="flex flex-row w-2/3 justify-center gap-x-3">
         <div className="w-20">{displayFilter}</div>
         <button className="bg-nci-gray-light hover:bg-nci-gray-dark" onClick={prevPage}>Prev {pageSize}</button>

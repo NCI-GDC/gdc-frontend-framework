@@ -5,10 +5,10 @@ import {
   GDCGenesTable,
   useGenesTable
 } from "@gff/core";
-import HorizontalTable from "../../components/HorizontalTable";
 import { Select } from "../../components/Select";
 import RingLoader from "react-spinners/RingLoader";
 import { getCustomGridCell, getTableFormatData, tableFunc, sortableOptions } from "./custom-config";
+import ProtoTable from "../../components/ProtoTable";
 
 interface GenesTableResponse {
   readonly data?: GDCGenesTable;
@@ -92,7 +92,7 @@ const GenesTable: React.FC<unknown> = () => {
 
   return (
     <div className="flex flex-col w-100">
-      <HorizontalTable inputData={getTableFormatData(data)} tableFunc={tableFunc} customCellKeys={["annotations", "survival"]} customGridMapping={getCustomGridCell} sortableOptions={sortableOptions}></HorizontalTable>
+      <ProtoTable inputData={getTableFormatData(data)} tableFunc={tableFunc} customCellKeys={["annotations", "survival"]} customGridMapping={getCustomGridCell} sortableOptions={sortableOptions}></ProtoTable>
       <div className="flex flex-row w-2/3 justify-center gap-x-3">
         <div className="w-20">{displayFilter}</div>
         <button className="bg-nci-gray-light hover:bg-nci-gray-dark" onClick={prevPage}>Prev {pageSize}</button>

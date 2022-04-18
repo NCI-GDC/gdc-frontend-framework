@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
-  CoreDataSelectorResponse,
-  createUseCoreDataHook,
+  CoreDataSelectorResponse, createUseFiltersCoreDataHook,
   DataStatus,
 } from "../../dataAcess";
 import { castDraft } from "immer";
@@ -12,6 +11,8 @@ import {
   graphqlAPI,
   TablePageOffsetProps,
 } from "../gdcapi/gdcgraphql";
+import { selectGenomicAndCohortGqlFilters } from "./genomicFilters";
+
 
 const GenesTableGraphQLQuery = `
           query GenesTable_relayQuery(
@@ -100,7 +101,7 @@ export interface GeneRowInfo {
   readonly id: string;
   readonly is_cancer_gene_census: boolean;
   readonly name: string;
-  readonly num_cases: number;
+  readonly numCases: number;
   readonly ssm_case: number;
   readonly symbol: string;
 }
@@ -123,27 +124,11 @@ export const fetchGenesTable = createAsyncThunk<
   async ({
     pageSize,
     offset,
-  }: TablePageOffsetProps): Promise<GraphQLApiResponse> => {
+  }: TablePageOffsetProps, thunkAPI): Promise<GraphQLApiResponse> => {
+    const filters =  selectGenomicAndCohortGqlFilters(thunkAPI.getState());
+    const filterContents = filters?.content ? Object(filters?.content) : [];
     const graphQlFilters = {
-      genesTable_filters: {
-        op: "and",
-        content: [
-          {
-            op: "in",
-            content: {
-              field: "cases.primary_site",
-              value: ["kidney"],
-            },
-          },
-          {
-            content: {
-              field: "genes.is_cancer_gene_census",
-              value: ["true"],
-            },
-            op: "in",
-          },
-        ],
-      },
+      genesTable_filters: filters? filters: {},
       genesTable_size: pageSize,
       genesTable_offset: offset,
       score: "case.project.project_id",
@@ -168,27 +153,16 @@ export const fetchGenesTable = createAsyncThunk<
       },
       geneCaseFilter: {
         content: [
+          ...[
           {
             content: {
               field: "cases.available_variation_data",
               value: ["ssm"],
             },
             op: "in",
-          },
-          {
-            op: "in",
-            content: {
-              field: "cases.primary_site",
-              value: ["kidney"],
-            },
-          },
-          {
-            content: {
-              field: "genes.is_cancer_gene_census",
-              value: ["true"],
-            },
-            op: "in",
-          },
+          }
+          ],
+          ...filterContents
         ],
         op: "and",
       },
@@ -207,45 +181,25 @@ export const fetchGenesTable = createAsyncThunk<
       cnvTested: {
         op: "and",
         content: [
+          ...[
           {
             content: {
               field: "cases.available_variation_data",
               value: ["cnv"],
             },
             op: "in",
-          },
-          {
-            op: "in",
-            content: {
-              field: "cases.primary_site",
-              value: ["kidney"],
-            },
-          },
-          {
-            content: {
-              field: "genes.is_cancer_gene_census",
-              value: ["true"],
-            },
-            op: "in",
-          },
+          }], ...filterContents
         ],
       },
       cnvGainFilters: {
         op: "and",
         content: [
-          {
+          ...[{
             content: {
               field: "cases.available_variation_data",
               value: ["cnv"],
             },
             op: "in",
-          },
-          {
-            op: "in",
-            content: {
-              field: "cases.primary_site",
-              value: ["kidney"],
-            },
           },
           {
             content: {
@@ -254,19 +208,13 @@ export const fetchGenesTable = createAsyncThunk<
             },
             op: "in",
           },
-          {
-            content: {
-              field: "genes.is_cancer_gene_census",
-              value: ["true"],
-            },
-            op: "in",
-          },
+          ], ...filterContents
         ],
       },
       cnvLossFilters: {
         op: "and",
         content: [
-          {
+          ...[{
             content: {
               field: "cases.available_variation_data",
               value: ["cnv"],
@@ -274,44 +222,29 @@ export const fetchGenesTable = createAsyncThunk<
             op: "in",
           },
           {
-            op: "in",
-            content: {
-              field: "cases.primary_site",
-              value: ["kidney"],
-            },
-          },
-          {
             content: {
               field: "cnvs.cnv_change",
               value: ["Loss"],
             },
             op: "in",
-          },
-          {
-            content: {
-              field: "genes.is_cancer_gene_census",
-              value: ["true"],
-            },
-            op: "in",
-          },
+          } ], ...filterContents
         ],
       },
     };
     // get the TableData
-
     const results: GraphQLApiResponse<any> = await graphqlAPI(
       GenesTableGraphQLQuery,
       graphQlFilters,
     );
-    // if we have valid data from the table, need to query the mutation counts
-    if (!results.warnings) {
+    // if we have valid data from the table, need to query the ssms counts
+    if (!results.errors) {
       // extract the gene ids and user it for the call to
       const geneIds =
         results.data.genesTableViewer.explore.genes.hits.edges.map(
           ({ node }: Record<string, any>) => node.gene_id,
         );
-      const counts = await fetchSmsAggregations({ ids: geneIds });
-      if (!counts.warnings) {
+      const counts = await fetchSmsAggregations({ ids: geneIds, filters: filterContents });
+      if (!counts.errors) {
         const countsData =
           counts.data.ssmsAggregationsViewer.explore.ssms.aggregations
             .consequence__transcript__gene__gene_id;
@@ -350,40 +283,19 @@ const initialState: GenesTableState = {
   status: "uninitialized",
 };
 
-// interface GeneNode {
-//   readonly node: {
-//       readonly gene: {
-//         readonly gene_id: string;
-//       }
-//   }
-// }
-
-// interface GeneResponseNode {
-//   readonly biotype: string;
-//   readonly gene_id: string;
-//   readonly id: string;
-//   readonly is_cancer_gene_census: boolean;
-//   readonly name: string;
-//   readonly numCases: number;
-//   readonly symbol: string;
-// }
-//
-// interface GeneResponseEdge {
-//   readonly node: GeneResponseNode;
-// }
 
 const slice = createSlice({
-  name: "genes/genesTable",
+  name: "genomic/genesTable",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchGenesTable.fulfilled, (state, action) => {
         const response = action.payload;
-        if (response.warnings) {
+        if (response.errors) {
           state = castDraft(initialState);
           state.status = "rejected";
-          state.error = response.warnings.filters;
+          state.error = response.errors.filters;
         }
         const data = action.payload.data.genesTableViewer.explore;
         state.genes.cases = data.cases.hits.total;
@@ -401,7 +313,7 @@ const slice = createSlice({
               id,
               is_cancer_gene_census,
               name,
-              num_cases,
+              numCases,
               symbol,
             } = node;
             return {
@@ -411,7 +323,7 @@ const slice = createSlice({
               id,
               is_cancer_gene_census,
               name,
-              num_cases,
+              numCases,
               symbol,
               cnv_case: node.cnv_case.hits.total,
               case_cnv_loss: node.case_cnv_loss.hits.total,
@@ -442,19 +354,19 @@ const slice = createSlice({
 export const genesTableReducer = slice.reducer;
 
 export const selectGenesTableState = (state: CoreState): GDCGenesTable =>
-  state.genesTable.genes;
+  state.genomic.genesTable.genes;
 
 export const selectGenesTableData = (
   state: CoreState,
 ): CoreDataSelectorResponse<GenesTableState> => {
   return {
-    data: state.genesTable,
-    status: state.genesTable.status,
-    error: state.genesTable.error,
+    data: state.genomic.genesTable,
+    status: state.genomic.genesTable.status,
+    error: state.genomic.genesTable.error,
   };
 };
 
-export const useGenesTable = createUseCoreDataHook(
-  fetchGenesTable,
+export const useGenesTable = createUseFiltersCoreDataHook(fetchGenesTable,
   selectGenesTableData,
-);
+  selectGenomicAndCohortGqlFilters);
+

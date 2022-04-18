@@ -1,56 +1,90 @@
+import React from "react";
+import { LoadingOverlay } from "@mantine/core";
+
+import dynamic from 'next/dynamic'
 import {
   GenesFrequencyChart,
   useGeneFrequencyChart
 } from "@gff/core";
 
-import dynamic from 'next/dynamic'
 
+import ChartTitleBar from "./ChartTitleBar";
+import { BarChartData } from "./BarChart";
 
-const BarChartWithNoSSR = dynamic(() => import('./BarChart'), {
+const CHART_NAME = "most-frequently-mutated-genes-bar-chart";
+
+const BarChart = dynamic(() => import('./BarChart'), {
   ssr: false
 });
 
-const processChartData = (chartData:GenesFrequencyChart, title = "Distribution of Most Frequently Mutated Genes", maxBins = 100, showXLabels = true) => {
-  const data = chartData;
+const DownloadOptions = dynamic(() => import("./DownloadOptions"), {
+  ssr: false,
+});
+
+const hovertemplate =
+  "<b>%{x}</b> <br />%{customdata[0]} Cases Affected in Cohort<br />%{customdata[0]} / %{customdata[1]} (%{y:.2f}%)<extra></extra>";
+
+const processChartData = (chartData:GenesFrequencyChart,
+                          title = "Distribution of Most Frequently Mutated Genes",
+                          showXLabels = true) : BarChartData => {
+  if (!chartData) return {
+    datasets: []
+  };
+
+  const xindex =  chartData.geneCounts.map((_i, index) => index)
   const xvals = chartData.geneCounts.map((i) => i.symbol)
-  const xlabels = chartData.geneCounts.map((i) => i.symbol)
-  const results : Record<string, any> = {
-    x: xvals,
-    y: chartData.geneCounts.map((i) => i.numCases),
-    tickvals: showXLabels ? xvals : [],
-    ticktext: showXLabels ? xlabels : [],
-    label_text: xlabels,
+
+  return {
+    datasets: [{
+      x: xindex,
+      y: chartData.geneCounts.map((x) => (x.numCases /chartData.casesTotal) * 100 ),
+      hovertemplate: hovertemplate,
+      customdata: chartData.geneCounts.map((d, idx) => [ d.numCases, chartData.casesTotal]),
+    }],
+    tickvals: showXLabels ? xindex : [],
+    ticktext: showXLabels ? xvals : [],
+    label_text: xvals,
     title: title,
-    filename: `${title}.svg`,
-    yAxisTitle: "# of Cases"
+    filename: title,
+    yAxisTitle: "% of Cases Affected"
   }
-  return results;
 }
 
-export const GeneFrequencyChart = ( height, marginBottom, showXLabels = true, showTitle = true, maxBins = 20, orientation='v') => {
-  const { data, error, isUninitialized, isFetching, isError } =
-    useGeneFrequencyChart({ pageSize:maxBins, offset: 0});
+interface GeneFrequencyChartProps {
+  readonly height?: number;
+  readonly marginBottom?: number;
+  readonly showXLabels?: boolean;
+  readonly title?: string;
+  readonly maxBins?:number;
+  readonly orientation?:string;
+}
 
-  if (isUninitialized) {
-    return <div>Initializing facet...</div>;
-  }
 
-  if (isFetching) {
-    return <div>Fetching facet...</div>;
-  }
 
-  if (isError) {
-    return <div>Failed to fetch facet: {error}</div>;
-  }
+export const GeneFrequencyChart:React.FC<GeneFrequencyChartProps> = ( { height = undefined,
+                                                                        marginBottom = 100,
+                                                                        title = "Distribution of Most Frequently Mutated Genes",
+                                                                        maxBins = 20,
+                                                                        orientation='v'} : GeneFrequencyChartProps) => {
+  const { data, isSuccess } = useGeneFrequencyChart( { pageSize: maxBins, offset: 0 } );
 
-  const chart_data = processChartData(data);
-  return <div className="flex flex-col border-2 bg-white ">
-    {showTitle ?
-      <div className="flex items-center justify-between flex-wrap bg-gray-100 p-1.5">
-        {"Distribution of Most Frequently Mutated Genes"}
-      </div> : null
+
+  return (
+    <div className="relative pr-2 border-r-2">
+    {title ?
+      <ChartTitleBar title={title} divId={CHART_NAME} filename={CHART_NAME} jsonData={{}} /> : null
     }
-    <BarChartWithNoSSR data={chart_data} height={height} marginBottom={marginBottom} orientation={orientation}></BarChartWithNoSSR>
-  </div>;
+    <div className="w-100 h-100">
+    <LoadingOverlay  visible={!isSuccess } />
+    <BarChart data={processChartData(data)}
+              marginBottom={marginBottom}
+              marginTop={0}
+              height={height}
+              orientation={orientation}
+              divId={CHART_NAME}
+    />
+    </div>
+  </div>
+)
 };
 

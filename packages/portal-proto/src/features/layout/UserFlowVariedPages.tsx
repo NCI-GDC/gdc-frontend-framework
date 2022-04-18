@@ -1,7 +1,12 @@
-import { PropsWithChildren, ReactNode } from "react";
+import { PropsWithChildren, ReactNode, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from 'next/router'
+import { Menu } from "@mantine/core";
 import { isString } from "@gff/core";
+import {  Button  } from '@mantine/core';
+import { useTour } from "@reactour/tour";
+import steps from '../../features/tour/steps';
 
 interface UserFlowVariedPagesProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
@@ -11,7 +16,10 @@ interface UserFlowVariedPagesProps {
 
 import {
   MdOutlineLogin as LoginIcon,
-  MdShoppingCart as CartIcon
+  MdShoppingCart as CartIcon,
+  MdOutlineApps as AppsIcon,
+  MdSearch as SearchIcon,
+  MdOutlineTour as TourIcon
 } from "react-icons/md";
 
 export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
@@ -20,6 +28,13 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
   Options,
   children,
 }: PropsWithChildren<UserFlowVariedPagesProps>) => {
+  const { setSteps } = useTour();
+  const router = useRouter();
+
+  useEffect(() => {
+    setSteps(steps[router.pathname]);
+  }, []);
+
   return (
     <div className="flex flex-col min-h-screen min-w-full bg-nci-gray-lightest">
       <header className="flex-none bg-white">
@@ -44,8 +59,10 @@ const Header: React.FC<HeaderProps> = ({
   indexPath,
   Options = () => <div />,
 }: HeaderProps) => {
+  const { setIsOpen } = useTour();
+
   return (
-    <div className="px-6 py-3">
+    <div className="px-6 py-3 border-b border-gdc-grey-lightest">
       <div className="flex flex-row flex-wrap divide-x divide-gray-300 items-center">
         <div className="flex-none w-64 h-nci-logo mr-2 relative">
           {/* There's some oddities going on here that need to be explained.  When a
@@ -77,9 +94,19 @@ const Header: React.FC<HeaderProps> = ({
         <div className="w-64">
           <Options />
         </div>
-        <div className="flex flex-row flex-nowrap">
-          <div className={"flex flex-row opacity-60 hover:opacity-100 transition-opacity items-center mx-2 "}><LoginIcon size="28px" /> Login </div>
-          <div className={"flex flex-row opacity-60 hover:opacity-100 transition-opacity  items-center mx-2"}><CartIcon size="28px" /> Cart </div>
+
+        <div className="flex flex-row items-center align-middle flex-nowrap">
+          <div className={"flex flex-row opacity-60 hover:opacity-100 transition-opacity items-center mx-2 "}><SearchIcon size="24px" /> </div>
+          <div className={"flex flex-row opacity-60 hover:opacity-100 transition-opacity items-center mx-2 "}><LoginIcon className="mr-1" size="24px" /> Login </div>
+          <div className={"flex flex-row opacity-60 hover:opacity-100 transition-opacity  items-center mx-2"}><CartIcon size="24px" /> Cart </div>
+
+        <Menu withArrow className={"opacity-60 hover:opacity-100 transition-opacity mx-2"} control={<button className="p-0"><AppsIcon className="mt-2" size="24px" /></button>}>
+          <Menu.Item onClick={() => setIsOpen(true)}>
+            <TourIcon size="2.5em"/><div className="text-center text-sm pt-1">{'Tour'}</div>
+          </Menu.Item>
+        </Menu>
+
+
         </div>
       </div>
     </div>
@@ -152,29 +179,29 @@ export interface ButtonProps {
   readonly stylingOff?: boolean;
 }
 
-export const Button: React.FC<ButtonProps> = ({
-  onClick = () => {
-    return;
-  },
-  className = "",
-  children,
-  stylingOff = false,
-}: PropsWithChildren<ButtonProps>) => {
-  const classNames = stylingOff ? className : `
-    px-2 py-1 
-    border rounded border-nci-blumine
-    bg-nci-blumine hover:bg-nci-blumine-lightest
-    text-white hover:text-nci-blumine-darker
-    ${className}`;
-  return (
-    <button
-      className={classNames}
-      onClick={onClick}
-    >
-      {children}
-    </button>
-  );
-};
+// export const Button: React.FC<ButtonProps> = ({
+//   onClick = () => {
+//     return;
+//   },
+//   className = "",
+//   children,
+//   stylingOff = false,
+// }: PropsWithChildren<ButtonProps>) => {
+//   const classNames = stylingOff ? className : `
+//     px-2 py-1
+//     border rounded border-nci-blumine
+//     bg-nci-blumine hover:bg-nci-blumine-lightest
+//     text-white hover:text-nci-blumine-darker
+//     ${className}`;
+//   return (
+//     <button
+//       className={classNames}
+//       onClick={onClick}
+//     >
+//       {children}
+//     </button>
+//   );
+// };
 
 export const CohortExpressionsAndBuilder: React.FC<unknown> = () => {
   return <div className="h-96 text-center">Expressions + Cohort Builder</div>;

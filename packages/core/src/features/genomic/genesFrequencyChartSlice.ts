@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   CoreDataSelectorResponse,
-  createUseCoreDataHook,
+  createUseFiltersCoreDataHook,
   DataStatus,
 } from "../../dataAcess";
 import { castDraft } from "immer";
@@ -11,23 +11,24 @@ import {
   graphqlAPI,
   TablePageOffsetProps,
 } from "../gdcapi/gdcgraphql";
+import { selectGenomicAndCohortGqlFilters } from "./genomicFilters";
 
-const GeneMuatationFrequenceQuery = `
-    query GeneMutationFrequency (
-      $genesTable_filters: FiltersArgument
-      $genesTable_size: Int
-      $genesTable_offset: Int
+const GeneMutationFrequencyQuery = `
+    query GeneMutationFrequencyChart (
+      $geneFrequencyChart_filters: FiltersArgument
+      $geneFrequencyChart_size: Int
+      $geneFrequencyChart_offset: Int
       $score: String
     ) {
-      genesTableViewer: viewer {
+      geneFrequencyChartViewer: viewer {
         explore {
           cases {
-            hits(first: 0, filters: $genesTable_filters) {
+            hits(first: 0, filters: $geneFrequencyChart_filters) {
               total
             }
           }
           genes {
-            hits(first: $genesTable_size, offset: $genesTable_offset, filters: $genesTable_filters, score: $score) {
+            hits(first: $geneFrequencyChart_size, offset: $geneFrequencyChart_offset, filters: $geneFrequencyChart_filters, score: $score) {
               total
               edges {
                 node {
@@ -68,33 +69,17 @@ export const fetchGeneFrequencies = createAsyncThunk<
   async ({
     pageSize = 20,
     offset = 0,
-  }: TablePageOffsetProps): Promise<GraphQLApiResponse> => {
+  }: TablePageOffsetProps, thunkAPI): Promise<GraphQLApiResponse> => {
+    const filters = selectGenomicAndCohortGqlFilters(thunkAPI.getState());
+
     const graphQlVariables = {
-      genesTable_filters: {
-        op: "and",
-        content: [
-          {
-            op: "in",
-            content: {
-              field: "cases.primary_site",
-              value: ["kidney"],
-            },
-          },
-          {
-            content: {
-              field: "genes.is_cancer_gene_census",
-              value: ["true"],
-            },
-            op: "in",
-          },
-        ],
-      },
-      genesTable_size: pageSize,
-      genesTable_offset: offset,
+      geneFrequencyChart_filters: filters ?? {},
+      geneFrequencyChart_size: pageSize,
+      geneFrequencyChart_offset: offset,
       score: "case.project.project_id",
     };
 
-    return await graphqlAPI(GeneMuatationFrequenceQuery, graphQlVariables);
+    return await graphqlAPI(GeneMutationFrequencyQuery, graphQlVariables);
   },
 );
 
@@ -110,19 +95,19 @@ const initialState: GeneFrequencyChartState = {
 };
 
 const slice = createSlice({
-  name: "genes/geneFrequencyChart",
+  name: "genomic/geneFrequencyChart",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchGeneFrequencies.fulfilled, (state, action) => {
         const response = action.payload;
-        if (response.warnings) {
+        if (response.errors) {
           state = castDraft(initialState);
           state.status = "rejected";
-          state.error = response.warnings.filters;
+          state.error = response.errors.filters;
         }
-        const data = response.data.genesTableViewer.explore;
+        const data = response.data.geneFrequencyChartViewer.explore;
         //  Note: change this to the field parameter
         state.frequencies.casesTotal = data.cases.hits.total;
         state.frequencies.genesTotal = data.genes.hits.total;
@@ -134,6 +119,7 @@ const slice = createSlice({
               symbol,
             }))(node),
         );
+
         state.status = "fulfilled";
         state.error = undefined;
         return state;
@@ -156,19 +142,19 @@ export const geneFrequencyChartReducer = slice.reducer;
 
 export const selectGeneFrequencyChartState = (
   state: CoreState,
-): GeneFrequencyChartState => state.geneFrequencyChart;
+): GeneFrequencyChartState => state.genomic.geneFrequencyChart;
 
 export const selectGeneFrequencyChartData = (
   state: CoreState,
 ): CoreDataSelectorResponse<GenesFrequencyChart> => {
   return {
-    data: state.geneFrequencyChart.frequencies,
-    status: state.geneFrequencyChart.status,
-    error: state.geneFrequencyChart.error,
+    data: state.genomic.geneFrequencyChart.frequencies,
+    status: state.genomic.geneFrequencyChart.status,
+    error: state.genomic.geneFrequencyChart.error,
   };
 };
 
-export const useGeneFrequencyChart = createUseCoreDataHook(
-  fetchGeneFrequencies,
+
+export const useGeneFrequencyChart = createUseFiltersCoreDataHook(fetchGeneFrequencies,
   selectGeneFrequencyChartData,
-);
+  selectGenomicAndCohortGqlFilters);

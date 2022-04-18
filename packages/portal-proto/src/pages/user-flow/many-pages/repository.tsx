@@ -1,5 +1,4 @@
 import { NextPage } from "next";
-import Link from "next/link";
 import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
 import { CohortManager } from "../../../features/user-flow/many-pages/cohort";
 import { Select } from "../../../components/Select";
@@ -12,7 +11,7 @@ import { Case } from "../../../features/cases/CasesView";
 import { headerElements } from "./navigation-utils";
 
 const RepositoryPage: NextPage = () => {
-  const { data } = useFiles();
+  const { data } = useFiles({ size: 20 });
 
   const options = [
     { value: "cb-expand", label: "Cohort Builder Expand" },

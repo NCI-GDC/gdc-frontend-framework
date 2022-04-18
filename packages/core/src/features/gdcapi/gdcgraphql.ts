@@ -7,11 +7,11 @@ export interface GraphQLFetchError {
   readonly variables?: Record<string, any>;
 }
 
-export type AnyJson = Record<string, any>;
+type UnknownJson = Record<string, any>;
 
-export interface GraphQLApiResponse<H = AnyJson> {
+export interface GraphQLApiResponse<H = UnknownJson> {
   readonly data: H;
-  readonly warnings: Record<string, string>;
+  readonly errors: Record<string, string>;
 }
 
 export interface TablePageOffsetProps {

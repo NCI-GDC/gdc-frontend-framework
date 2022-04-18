@@ -109,16 +109,16 @@ export type FieldType = typeof FieldTypes[number];
 export interface FieldDetails {
   readonly description: string;
   readonly doc_type:
-    | "annotations"
-    | "case_centrics"
-    | "cases"
-    | "cnv_centrics"
-    | "cnv_occurrence_centrics"
-    | "files"
-    | "gene_centric"
-    | "projects"
-    | "ssm_centrics"
-    | "ssm_occurrence_centrics";
+  | "annotations"
+  | "case_centrics"
+  | "cases"
+  | "cnv_centrics"
+  | "cnv_occurrence_centrics"
+  | "files"
+  | "gene_centric"
+  | "projects"
+  | "ssm_centrics"
+  | "ssm_occurrence_centrics";
   readonly field: string;
   readonly full: string;
   readonly type: FieldType;
@@ -204,12 +204,12 @@ export interface ProjectDefaults {
       readonly case_count: number;
       readonly data_category: string;
       readonly file_count: number;
-    }>
+    }>;
     readonly experimental_strategies?: ReadonlyArray<{
       readonly case_count: number;
       readonly experimental_strategy: string;
       readonly file_count: number;
-    }>
+    }>;
   };
   readonly program?: {
     readonly dbgap_accession_number: string;
@@ -236,6 +236,96 @@ export interface AnnotationDefaults {
   readonly status: string;
 }
 
+export interface FileDefaults {
+  readonly id: string;
+  readonly submitter_id: string;
+  readonly access: string;
+  readonly acl: ReadonlyArray<string>;
+  readonly create_datetime: string;
+  readonly updated_datetime: string;
+  readonly data_category: string;
+  readonly data_format: string;
+  readonly data_release: string;
+  readonly data_type: string;
+  readonly file_id: string;
+  readonly file_name: string;
+  readonly file_size: number;
+  readonly md5sum: string;
+  readonly platform: string;
+  readonly state: string;
+  readonly type: string;
+  readonly version: string;
+  readonly experimental_strategy: string;
+  readonly cases?: ReadonlyArray<{
+    readonly case_id: string;
+    readonly submitter_id: string;
+    readonly annotations?: ReadonlyArray<{
+      readonly annotation_id: string;
+    }>;
+    readonly project?: {
+      readonly dbgap_accession_number?: string;
+      readonly disease_type: string;
+      readonly name: string;
+      readonly primary_site: string;
+      readonly project_id: string;
+      readonly releasable: boolean;
+      readonly released: boolean;
+      readonly state: string;
+    }
+    readonly samples?: ReadonlyArray<{
+      readonly sample_id: string;
+      readonly sample_type: string;
+      readonly tissue_type: string;
+      readonly submitter_id: string;
+      readonly portions?: ReadonlyArray<{
+        readonly submitter_id: string;
+        readonly analytes?: ReadonlyArray<{
+          readonly analyte_id: string;
+          readonly analyte_type: string;
+          readonly submitter_id: string;
+        }>;
+        readonly slides?: ReadonlyArray<{
+          readonly created_datetime: string | null
+          readonly number_proliferating_cells: number | null
+          readonly percent_eosinophil_infiltration: number | null
+          readonly percent_granulocyte_infiltration: number | null
+          readonly percent_inflam_infiltration: number | null
+          readonly percent_lymphocyte_infiltration: number | null
+          readonly percent_monocyte_infiltration: number | null
+          readonly percent_neutrophil_infiltration: number | null
+          readonly percent_necrosis: number | null
+          readonly percent_normal_cells: number | null
+          readonly percent_stromal_cells: number | null
+          readonly percent_tumor_cells: number | null
+          readonly percent_tumor_nuclei: number | null
+          readonly section_location: string | null
+          readonly slide_id: string | null
+          readonly state: string | null
+          readonly submitter_id: string | null
+          readonly updated_datetime: string | null
+        }>;
+      }>;
+    }>;
+  }>;
+  readonly analysis?: {
+    readonly workflow_type: string;
+    readonly updated_datetime: string;
+    readonly input_files?: ReadonlyArray<{
+      readonly file_id: string;
+    }>;
+  };
+  readonly downstream_analyses?: ReadonlyArray<{
+    readonly workflow_type: string;
+    readonly output_files?: ReadonlyArray<{
+      readonly file_name: string;
+      readonly data_category: string;
+      readonly data_type: string;
+      readonly data_format: string;
+      readonly file_size: number;
+    }>;
+  }>;
+}
+
 export const fetchGdcProjects = async (
   request?: GdcApiRequest,
 ): Promise<GdcApiResponse<ProjectDefaults>> => {
@@ -248,9 +338,17 @@ export const fetchGdcAnnotations = async (
   return fetchGdcEntities("annotations", request);
 };
 
+export const fetchGdcFiles = async (
+  request?: GdcApiRequest,
+): Promise<GdcApiResponse<FileDefaults>> => {
+  return fetchGdcEntities("files", request);
+};
+
 export const fetchGdcEntities = async <T>(
   endpoint: string,
   request?: GdcApiRequest,
+  fetchAll = false,
+  previousHits : Record<string, any>[] = [],
 ): Promise<GdcApiResponse<T>> => {
   const res = await fetch(`https://api.gdc.cancer.gov/${endpoint}`, {
     method: "POST",
@@ -269,7 +367,41 @@ export const fetchGdcEntities = async <T>(
   });
 
   if (res.ok) {
-    return res.json();
+    const resPromise = res.json();
+
+    if (fetchAll) {
+      let fullResponse = {} as GdcApiResponse<T>;
+
+      const updatedPromise = await resPromise.then((responseData) => {
+        fullResponse = {
+          ...responseData,
+          data: {
+            hits: [
+              ...previousHits,
+              ...responseData?.data?.hits,
+            ],
+            pagination: responseData?.data?.pagination,
+          },
+        };
+        return fullResponse;
+      });
+
+      if (
+        fullResponse?.data?.pagination?.page <= fullResponse?.data?.pagination?.pages &&
+        fullResponse?.data.pagination.pages !== 0
+      ) {
+        return fetchGdcEntities(
+          endpoint,
+          { ...request, from: (request?.from || 0) + (request?.size || 10) },
+          true,
+          [...fullResponse.data.hits],
+        );
+      }
+
+      return updatedPromise;
+    }
+
+    return resPromise;
   }
 
   throw await buildFetchError(res, request);

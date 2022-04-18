@@ -1,21 +1,27 @@
+/**
+ * A Facet Chart which will soon be deprecated in favor of EnumFacetChart.
+ */
+import React from "react";
 import {
   FacetBuckets,
-  selectCasesFacetByField,
   fetchFacetByName,
-  useCoreSelector,
+  FilterSet,
+  selectCasesFacetByField,
+  selectCurrentCohortFilters,
   useCoreDispatch,
+  useCoreSelector,
 } from "@gff/core";
-import { useEffect } from "react";
-import dynamic from 'next/dynamic'
+import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
+import { Loader } from "@mantine/core";
+import ChartTitleBar from "./ChartTitleBar";
 
 const BarChartWithNoSSR = dynamic(() => import('./BarChart'), {
   ssr: false
 })
-const DownloadOptions = dynamic(() => import("./DownloadOptions"), {
-  ssr: false,
-});
 
-const maxValuesToDisplay =7;
+
+const maxValuesToDisplay = 7;
 
 interface UseCaseFacetResponse {
   readonly data?: FacetBuckets;
@@ -26,11 +32,22 @@ interface UseCaseFacetResponse {
   readonly isError: boolean;
 }
 
+/**
+ * Filter selector for all of the facet filters
+ */
+const useCohortFacetFilter = (): FilterSet => {
+  return useCoreSelector((state) =>
+    selectCurrentCohortFilters(state),
+  );
+};
+
+
 const useCaseFacet = (field: string): UseCaseFacetResponse => {
   const coreDispatch = useCoreDispatch();
   const facet: FacetBuckets = useCoreSelector((state) =>
     selectCasesFacetByField(state, field),
   );
+  const selectFacetFilter = useCohortFacetFilter();
 
   useEffect(() => {
     if (!facet) {
@@ -38,8 +55,12 @@ const useCaseFacet = (field: string): UseCaseFacetResponse => {
     }
   }, [coreDispatch, facet, field]);
 
+  useEffect(() => {
+    coreDispatch(fetchFacetByName(field));
+  }, [coreDispatch, field, selectFacetFilter]);
+
   return {
-    data: facet?.buckets,
+    data: facet,
     error: facet?.error,
     isUninitialized: facet === undefined,
     isFetching: facet?.status === "pending",
@@ -53,6 +74,8 @@ interface FacetProps {
   readonly showXLabels?: boolean;
   readonly height?: number;
   readonly marginBottom?: number;
+  readonly marginTop?: number;
+  readonly padding?: number;
   readonly showTitle?: boolean;
   readonly maxBins?: number;
   readonly orientation?: string;
@@ -61,55 +84,68 @@ interface FacetProps {
 // from https://stackoverflow.com/questions/33053310/remove-value-from-object-without-mutation
 const removeKey = (key, {[key]: _, ...rest}) => rest;
 
-const processChartData = (facetData:Record<string, any>, field: string, maxBins = 100, showXLabels = true) => {
+const processChartData = (facetData:Record<string, string|number>, field: string, maxBins = 100, showXLabels = true) => {
   const data = removeKey('_missing', facetData);
   const xvals = Object.keys(data).slice(0, maxBins).map(x =>x);
   const xlabels = Object.keys(data).slice(0, maxBins).map(x => processLabel(x, 12));
-  const results : Record<string, any> = {
-    x: xvals,
-    y: Object.values(data).slice(0, maxBins),
+  return {
+    datasets: [{
+      x: xvals,
+      y: Object.values(data).slice(0, maxBins),
+    }],
     tickvals: showXLabels ? xvals : [],
     ticktext: showXLabels ? xlabels : [],
-    label_text: Object.keys(data).slice(0, maxBins).map(x => processLabel(x, 100)),
     title: convertFieldToName(field),
     filename: field,
-    yAxisTitle: "# of Cases"
-  }
-  return results;
+    yAxisTitle: "# of Cases",
+  };
 }
 
-const processJSONData = (facetData: Record<string, any>) => {
-  return Object.entries(facetData).map(e => ({ label: e[0], value: e[1] }));
-}
+export const FacetChart: React.FC<FacetProps> = ({
+                                                   field,
+                                                   showXLabels = true,
+                                                   height,
+                                                   marginBottom,
+                                                   marginTop=30, padding=4,
+                                                   showTitle = true,
+                                                   maxBins = maxValuesToDisplay,
+                                                   orientation = "v",
+                                                 }: FacetProps) => {
+  const { data, isSuccess } = useCaseFacet(field);
+  const [chart_data, setChartData] = useState(undefined);
 
-export const FacetChart: React.FC<FacetProps> = ({ field, showXLabels = true, height, marginBottom, showTitle = true, maxBins = maxValuesToDisplay, orientation='v'}: FacetProps) => {
-  const { data, error, isUninitialized, isFetching, isError } =
-    useCaseFacet(field);
+  useEffect(() => {
+    if (isSuccess) {
+      const cd = processChartData(data.buckets, field, maxBins, showXLabels);
+      setChartData(cd);
+    }
+  }, [data, field, isSuccess, maxBins, showXLabels]);
 
   // Create unique ID for this chart
   const chartDivId = `${field}_${Math.floor(Math.random() * 100)}`;
 
-  if (isUninitialized) {
-    return <div>Initializing facet...</div>;
-  }
+  return <div className="flex flex-col">
+    {showTitle ?
+      <ChartTitleBar title={convertFieldToName(field)}
+                     divId={chartDivId}
+                     filename={field}
+                     jsonData={{  }} /> : null
+    }
+    {  chart_data && isSuccess ?
 
-  if (isFetching) {
-    return <div>Fetching facet...</div>;
-  }
-
-  if (isError) {
-    return <div>Failed to fetch facet: {error}</div>;
-  }
-
-  const chart_data = processChartData(data, field, maxBins, showXLabels);
-
-  return <div className="flex flex-col border-2 bg-white ">
-    <div className="flex items-center justify-between flex-wrap bg-gray-100 p-1.5">
-      {showTitle ? convertFieldToName(field) : null}
-      <DownloadOptions chartDivId={chartDivId} chartName={field} jsonData={processJSONData(data)} />
-    </div>
-    <BarChartWithNoSSR data={chart_data} height={height} marginBottom={marginBottom} orientation={orientation} divId={chartDivId}></BarChartWithNoSSR>
-  </div>;
+        <BarChartWithNoSSR data={chart_data}
+                           height={height}
+                           marginBottom={marginBottom}
+                           marginTop={marginTop}
+                           padding={padding}
+                           orientation={orientation}
+                           divId={chartDivId} />
+      :
+      <div className="flex flex-row items-center justify-center w-100">
+        <Loader color="gray" size={height ? height : 24} />
+      </div>
+    }
+  </div>
 };
 
 const convertFieldToName = (field: string): string => {
@@ -128,7 +164,7 @@ function truncateString(str, n) {
   }
 }
 
-export const processLabel = (label: string, shorten=100): string => {
+export const processLabel = (label: string, shorten = 100): string => {
   const tokens = label.split(" ");
   const capitalizedTokens = tokens.map((s) => s[0].toUpperCase() + s.substr(1));
   return truncateString(capitalizedTokens.join(" "), shorten);

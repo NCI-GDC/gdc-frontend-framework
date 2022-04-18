@@ -2,16 +2,17 @@
  * Data Access Hooks
  */
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useCoreDispatch, useCoreSelector } from "./hooks";
 import { CoreState } from "./store";
+import isEqual from "lodash/isEqual";
 
 /**
  * The status of asynchronous data fetching is a state machine.
  * - Before data is fetched, the status is "uninitialized".
  * - Once a data request is started, the status transitions from
  * "uninitialized" to "pending".
- * - If the data request successfully complets, then the status
+ * - If the data request successfully completes, then the status
  * transitions from "pending" to "fulfilled".
  * - If the data request fails for any reason, then the status
  * transitions from "pending" to "rejected".
@@ -45,6 +46,14 @@ export interface UserCoreDataHook<P, T> {
   (...params: P[]): UseCoreDataResponse<T>;
 }
 
+const usePrevious = (value : any) => {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+}
+
 export const createUseCoreDataHook = <P, A, T>(
   fetchDataActionCreator: FetchDataActionCreator<P, A>,
   dataSelector: CoreDataSelector<T>,
@@ -53,14 +62,15 @@ export const createUseCoreDataHook = <P, A, T>(
     const coreDispatch = useCoreDispatch();
     const { data, status, error } = useCoreSelector(dataSelector);
     const action = fetchDataActionCreator(...params);
+    const prevParams = usePrevious(params);
 
     useEffect(() => {
-      if (status === "uninitialized") {
+      if (status === "uninitialized" || !isEqual(prevParams, params)) {
         // createDispatchHook types forces the input to AnyAction, which is
         // not compatible with thunk actions. hence, the `as any` cast. ;(
         coreDispatch(action as any); // eslint-disable-line
       }
-    }, [status, coreDispatch, action]);
+    }, [status, coreDispatch, action, params]);
 
     return {
       data,
@@ -72,3 +82,43 @@ export const createUseCoreDataHook = <P, A, T>(
     };
   };
 };
+
+
+export interface CoreDataValueSelector<T> {
+  (state: CoreState): T;
+}
+
+export const createUseFiltersCoreDataHook = <P, A, T, F>(
+  fetchDataActionCreator: FetchDataActionCreator<P, A>,
+  dataSelector: CoreDataSelector<T>,
+  secondarySelector: CoreDataValueSelector<F>
+): UserCoreDataHook<P, T> => {
+  return (...params: P[]): UseCoreDataResponse<T> => {
+    const coreDispatch = useCoreDispatch();
+    const { data, status, error } = useCoreSelector(dataSelector);
+    const action = fetchDataActionCreator(...params);
+    const secondary = useCoreSelector(secondarySelector)
+    const prevParams = usePrevious(params);
+    const prevSecondary = usePrevious(secondary);
+
+    useEffect(() => {
+      if ((status === "uninitialized")  || !isEqual(prevParams, params)  || !isEqual(prevSecondary, secondary) ) {
+        coreDispatch(action as any); // eslint-disable-line
+      }
+    }, [status, coreDispatch, action, prevParams, params, prevSecondary, secondary]);
+
+    return {
+      data,
+      error,
+      isUninitialized: status === "uninitialized",
+      isFetching: status === "pending",
+      isSuccess: status === "fulfilled",
+      isError: status === "rejected",
+    };
+  };
+};
+
+
+
+
+

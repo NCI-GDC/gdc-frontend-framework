@@ -1,6 +1,5 @@
 import { createContext, useState, PropsWithChildren } from "react";
 
-
 const CohortBuilderSummaryContext = createContext(null);
 
 const CohortBuilderSummaryContextProvider = ({ children }) => {

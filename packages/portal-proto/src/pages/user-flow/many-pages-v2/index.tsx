@@ -6,10 +6,10 @@ import Link from "next/link";
 const IndexPage: NextPage = () => {
   const headerElements = [
     <Link key="Studies" href="/user-flow/many-pages-v2/studies">
-      Cohorts
+      <div id="cohorts-header-button">Cohorts</div>
     </Link>,
     <Link key="Analysis" href="/user-flow/many-pages-v2/analysis">
-      Analysis
+      <div id="analysis-header-button">Analysis</div>
     </Link>,
   ];
 

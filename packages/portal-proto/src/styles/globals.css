@@ -35,4 +35,20 @@
     transform: rotateY(-180deg);
 }
 
+
+
+.number {
+    display: block;
+    text-align: right;
+    overflow: auto;
+}
+
+.decimal {
+    width: 100px;
+    float: right;
+    text-align: left;
+}
+
+
 @tailwind utilities;
+@tailwind varients;

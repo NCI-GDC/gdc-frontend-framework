@@ -9,6 +9,7 @@ export type Operation =
   | Missing
   | Includes
   | Excludes
+  | ExcludeIfAny
   | Intersection
   | Union;
 
@@ -70,6 +71,12 @@ export interface Excludes {
   readonly operands: ReadonlyArray<string> | ReadonlyArray<number>;
 }
 
+export interface ExcludeIfAny {
+  readonly operator: "excludeifany";
+  readonly field: string;
+  readonly operands: string | ReadonlyArray<string> | ReadonlyArray<number>;
+}
+
 export interface Intersection {
   readonly operator: "and";
   readonly operands: ReadonlyArray<Operation>;
@@ -91,6 +98,7 @@ export interface OperationHandler<T> {
   handleExists: (op: Exists) => T;
   handleIncludes: (op: Includes) => T;
   handleExcludes: (op: Excludes) => T;
+  handleExcludeIfAny: (op: ExcludeIfAny) => T;
   handleIntersection: (op: Intersection) => T;
   handleUnion: (op: Union) => T;
 }
@@ -120,6 +128,8 @@ export const handleOperation = <T>(
       return handler.handleIncludes(op);
     case "excludes":
       return handler.handleExcludes(op);
+    case "excludeifany":
+      return handler.handleExcludeIfAny(op);
     case "and":
       return handler.handleIntersection(op);
     case "or":
@@ -144,6 +154,7 @@ export type GqlOperation =
   | GqlExists
   | GqlIncludes
   | GqlExcludes
+  | GqlExcludeIfAny
   | GqlIntersection
   | GqlUnion;
 
@@ -206,6 +217,7 @@ export interface GqlExists {
   readonly op: "not";
   readonly content: {
     readonly field: string;
+    readonly value?: string;
   };
 }
 
@@ -222,6 +234,14 @@ export interface GqlExcludes {
   readonly content: {
     readonly field: string;
     readonly value: ReadonlyArray<string> | ReadonlyArray<number>;
+  };
+}
+
+export interface GqlExcludeIfAny {
+  readonly op: "excludeifany";
+  readonly content: {
+    readonly field: string;
+    readonly value: string | ReadonlyArray<string> | ReadonlyArray<number>;
   };
 }
 
@@ -246,6 +266,7 @@ export interface GqlOperationHandler<T> {
   handleExists: (op: GqlExists) => T;
   handleIncludes: (op: GqlIncludes) => T;
   handleExcludes: (op: GqlExcludes) => T;
+  handleExcludeIfAny: (op: GqlExcludeIfAny) => T;
   handleIntersection: (op: GqlIntersection) => T;
   handleUnion: (op: GqlUnion) => T;
 }
@@ -275,6 +296,8 @@ export const handleGqlOperation = <T>(
       return handler.handleIncludes(op);
     case "exclude":
       return handler.handleExcludes(op);
+    case "excludeifany":
+      return handler.handleExcludeIfAny(op);
     case "and":
       return handler.handleIntersection(op);
     case "or":
@@ -284,7 +307,7 @@ export const handleGqlOperation = <T>(
   }
 };
 
-class ToGqlOperationHandlder implements OperationHandler<GqlOperation> {
+export class ToGqlOperationHandler implements OperationHandler<GqlOperation> {
   handleEquals = (op: Equals): GqlEquals => ({
     op: "=",
     content: {
@@ -355,6 +378,13 @@ class ToGqlOperationHandlder implements OperationHandler<GqlOperation> {
       value: op.operands,
     },
   });
+  handleExcludeIfAny = (op: ExcludeIfAny): GqlExcludeIfAny => ({
+    op: "excludeifany",
+    content: {
+      field: op.field,
+      value: op.operands,
+    },
+  });
   handleIntersection = (op: Intersection): GqlIntersection => ({
     op: "and",
     content: op.operands.map(convertFilterToGqlFilter),
@@ -366,7 +396,7 @@ class ToGqlOperationHandlder implements OperationHandler<GqlOperation> {
 }
 
 export const convertFilterToGqlFilter = (filter: Operation): GqlOperation => {
-  const handler: OperationHandler<GqlOperation> = new ToGqlOperationHandlder();
+  const handler: OperationHandler<GqlOperation> = new ToGqlOperationHandler();
   return handleOperation(handler, filter);
 };
 
@@ -421,6 +451,11 @@ class ToOperationHandler implements GqlOperationHandler<Operation> {
     field: op.content.field,
     operands: op.content.value,
   });
+  handleExcludeIfAny = (op: GqlExcludeIfAny): ExcludeIfAny => ({
+    operator: "excludeifany",
+    field: op.content.field,
+    operands: op.content.value,
+  });
   handleIntersection = (op: GqlIntersection): Intersection => ({
     operator: "and",
     operands: op.content.map(convertGqlFilterToFilter),
@@ -437,3 +472,4 @@ export const convertGqlFilterToFilter = (
   const handler: GqlOperationHandler<Operation> = new ToOperationHandler();
   return handleGqlOperation(handler, gqlFilter);
 };
+
