@@ -8,7 +8,7 @@ import { MdCheck as CheckboxIcon} from "react-icons/md";
 import { SiMicrogenetics as GeneAnnotationIcon } from "react-icons/si";
 import { GenomicTableProps } from "./types";
 
-const GenesTable: React.FC<GenomicTableProps> = ( { selectedSurvivalPlot, handleSurvivalPlotToggled } : GenomicTableProps) => {
+const GenesTable: React.FC<GenomicTableProps> = ( { selectedSurvivalPlot, handleSurvivalPlotToggled = (_1:string, _2:string) => null } : GenomicTableProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [offset, setOffset] = useState(0);
   const [activePage, setPage] = useState(1);
