@@ -89,7 +89,7 @@ const SurvivalCard : React.FC<SurvivalCardProps> = ({ counts, comparisonCohort }
   return (
     <Paper p="md" className="min-w-[600px]">
       <h2 className="text-lg font-semibold">Survival Analysis</h2>
-      <SurvivalPlot data={data} />
+      <SurvivalPlot data={data} hideLegend />
       <table className="bg-white w-full text-left text-nci-gray-darker">
         <thead>
           <tr className="bg-nci-gray-lightest">
