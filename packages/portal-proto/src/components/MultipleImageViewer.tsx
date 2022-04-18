@@ -13,7 +13,7 @@ import {
 } from "@mantine/core";
 import {
   edgeDetails,
-  setIsPerformingSearch,
+  setShouldResetState,
   useCoreDispatch,
   useImageViewer,
 } from "@gff/core";
@@ -69,10 +69,12 @@ export const MultipleImageViewer = ({
   const resetStates = () => {
     setActiveTab(0);
     setActiveSlide(0);
+    setCasesOffSet(0);
   };
 
   const removeFilters = (filter: string) => {
     setSearchValues(searchValues.filter((value) => value !== filter));
+    dispatch(setShouldResetState(true));
     resetStates();
   };
 
@@ -85,7 +87,7 @@ export const MultipleImageViewer = ({
   };
 
   const performSearch = () => {
-    dispatch(setIsPerformingSearch(true));
+    dispatch(setShouldResetState(true));
     setShowMorePressed(false);
     setSearchValues([searchText.toUpperCase(), ...searchValues]);
     setSearchText("");
@@ -203,64 +205,68 @@ export const MultipleImageViewer = ({
             </div>
 
             <div className="flex max-h-[550px]">
-              <div className="flex-1/2">
-                <Tabs
-                  variant="unstyled"
-                  orientation="vertical"
-                  active={activeTab}
-                  onTabChange={onTabChange}
-                  classNames={{
-                    tabsListWrapper:
-                      "max-h-[550px] overflow-x-hidden overflow-y-auto min-w-[40%]",
-                    tabControl: "ml-2 mt-1",
-                    tabsList: "bg-grey",
-                    tabLabel: "text-xs",
-                    body: "max-h-[550px] overflow-y-auto",
-                  }}
-                  styles={(theme) => ({
-                    tabControl: {
-                      backgroundColor: theme.white,
-                      color: theme.colors.gray[9],
-                      border: `1px solid ${theme.colors.gray[4]}`,
-                      fontSize: theme.fontSizes.md,
-                      padding: `${theme.spacing.lg}px ${theme.spacing.xl}px`,
-                      borderRadius: theme.radius.md,
-                    },
-                    tabActive: {
-                      backgroundColor: theme.colors.gray[7],
-                      borderColor: theme.colors.gray[7],
-                      color: theme.white,
-                      fontWeight: "bold",
-                    },
-                  })}
-                >
-                  {Object.keys(data.edges).map((edge) => {
-                    return (
-                      <Tabs.Tab key={edge} label={edge}>
-                        <List>
-                          {data.edges[edge].map((file, index) => (
-                            <List.Item
-                              key={`${file.file_id}${file.submitter_id}`}
-                              className="max-w-xs max-h-xs"
-                            >
-                              <Slides
-                                file_id={file.file_id}
-                                submitter_id={file.submitter_id}
-                                setImageViewer={(file_id: string) => {
-                                  setActiveImage(file_id);
-                                  setActiveSlide(index);
-                                  setImageDetails(formatImageDetailsInfo(file));
-                                }}
-                                isActive={activeImage === file.file_id}
-                              />
-                            </List.Item>
-                          ))}
-                        </List>
-                      </Tabs.Tab>
-                    );
-                  })}
-                </Tabs>
-              </div>
+              {activeImage && (
+                <div className="flex-1/2">
+                  <Tabs
+                    variant="unstyled"
+                    orientation="vertical"
+                    active={activeTab}
+                    onTabChange={onTabChange}
+                    classNames={{
+                      tabsListWrapper:
+                        "max-h-[550px] overflow-x-hidden overflow-y-auto min-w-[40%]",
+                      tabControl: "ml-2 mt-1",
+                      tabsList: "bg-grey",
+                      tabLabel: "text-xs",
+                      body: "max-h-[550px] overflow-y-auto",
+                    }}
+                    styles={(theme) => ({
+                      tabControl: {
+                        backgroundColor: theme.white,
+                        color: theme.colors.gray[9],
+                        border: `1px solid ${theme.colors.gray[4]}`,
+                        fontSize: theme.fontSizes.md,
+                        padding: `${theme.spacing.lg}px ${theme.spacing.xl}px`,
+                        borderRadius: theme.radius.md,
+                      },
+                      tabActive: {
+                        backgroundColor: theme.colors.gray[7],
+                        borderColor: theme.colors.gray[7],
+                        color: theme.white,
+                        fontWeight: "bold",
+                      },
+                    })}
+                  >
+                    {Object.keys(data.edges).map((edge) => {
+                      return (
+                        <Tabs.Tab key={edge} label={edge}>
+                          <List>
+                            {data.edges[edge].map((file, index) => (
+                              <List.Item
+                                key={`${file.file_id}${file.submitter_id}`}
+                                className="max-w-xs max-h-xs"
+                              >
+                                <Slides
+                                  file_id={file.file_id}
+                                  submitter_id={file.submitter_id}
+                                  setImageViewer={(file_id: string) => {
+                                    setActiveImage(file_id);
+                                    setActiveSlide(index);
+                                    setImageDetails(
+                                      formatImageDetailsInfo(file),
+                                    );
+                                  }}
+                                  isActive={activeImage === file.file_id}
+                                />
+                              </List.Item>
+                            ))}
+                          </List>
+                        </Tabs.Tab>
+                      );
+                    })}
+                  </Tabs>
+                </div>
+              )}
 
               <div className="flex-1 ml-2">
                 {activeImage && (
@@ -272,7 +278,7 @@ export const MultipleImageViewer = ({
               {shouldShowMoreButton && (
                 <Button
                   onClick={() => {
-                    dispatch(setIsPerformingSearch(false));
+                    dispatch(setShouldResetState(false));
                     setCasesOffSet((o) => o + 10);
                     setShowMorePressed(true);
                   }}

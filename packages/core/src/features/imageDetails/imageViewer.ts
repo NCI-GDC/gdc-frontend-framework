@@ -30,7 +30,7 @@ const initialState: imageViewerInitialState = {
   status: "uninitialized",
   total: 0,
   edges: {},
-  isPerformingSearch: false,
+  shouldResetState: false,
 };
 
 export const getSlides = (caseNode: caseNodeType) => {
@@ -71,8 +71,8 @@ const slice = createSlice({
   name: "imageViewer",
   initialState,
   reducers: {
-    setIsPerformingSearch(state, action) {
-      state.isPerformingSearch = action.payload;
+    setShouldResetState(state, action) {
+      state.shouldResetState = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -95,7 +95,7 @@ const slice = createSlice({
           }),
         );
 
-        if (!state.isPerformingSearch) {
+        if (!state.shouldResetState) {
           state.edges = { ...state.edges, ...obj };
         } else {
           state.edges = obj;
@@ -116,7 +116,7 @@ const slice = createSlice({
 
 export const imageViewerReducer = slice.reducer;
 
-export const { setIsPerformingSearch } = slice.actions;
+export const { setShouldResetState } = slice.actions;
 
 export const selectImageViewerInfo = (
   state: CoreState,
