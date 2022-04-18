@@ -83,8 +83,8 @@ const SurvivalCard : React.FC<SurvivalCardProps> = ({ counts, comparisonCohort }
     ],
   });
 
-  const cohort1Count = data[0] ? data[0].donors?.length : 0;
-  const cohort2Count = data[1] ? data[1].donors?.length : 0;
+  const cohort1Count = data?.survivalData[0] ? data.survivalData[0].donors?.length : 0;
+  const cohort2Count = data?.survivalData[1] ? data.survivalData[1].donors?.length : 0;
 
   return (
     <Paper p="md" className="min-w-[600px]">
