@@ -288,7 +288,7 @@ export const MultipleImageViewer = ({
                 </Button>
               )}
 
-              <Text className="ml-3">
+              <Text className="ml-3" size="sm">
                 Showing <strong>{Object.keys(data?.edges).length}</strong> of{" "}
                 <strong>{data?.total}</strong>
               </Text>
