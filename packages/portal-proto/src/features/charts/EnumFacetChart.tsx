@@ -45,6 +45,13 @@ const processChartData = (facetData: Record<string, any>,
     datasets: [{
       x: xvals,
       y: Object.values(data).slice(0, maxBins),
+      marker: {
+        color:  "#b6b6b6",
+        line: {
+          color: '#FF0000',
+          width: 1.5
+        }
+      },
     }],
     tickvals: showXLabels ? xvals : [],
     ticktext: showXLabels ? xlabels : [],

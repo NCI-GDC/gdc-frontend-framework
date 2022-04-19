@@ -47,9 +47,7 @@ const SummaryStatsPanel = () => {
 }
 
 const ActionButtonBar = () => {
-
   return (
-
     <div className="flex flex-col p-4 rounded-md justify-center align-center pb-4 text-sm ">
       <div className="flex flex-grow flex-row justify-center pb-4 text-sm ">
         <Link key="Analysis" href={{
@@ -57,9 +55,8 @@ const ActionButtonBar = () => {
           query: { app: undefined },
         }}>
           <Tooltip
-            label="Explore and analyze harmonized high-quality clinical and genomics data from cancer genomic studies with the tools in the Research Workbench."
+            label="Explore and analyze harmonized high-quality clinical and genomics data from cancer genomic studies with the tools in the Research Center."
             classNames={{
-              wrapper: "shadow-lg",
               body: "shadow-lg bg-white text-nci-gray-darkest"
             }}
             position="right"
@@ -70,7 +67,7 @@ const ActionButtonBar = () => {
           <button
             className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md transition-colors ">
             <Image src={"/user-flow/icons/dna.svg"} width={42} height={42} /> <span
-            className="px-2">Research Workbench</span>
+            className="px-2 w-40">Research Center</span>
           </button>
           </Tooltip>
         </Link>
@@ -83,7 +80,6 @@ const ActionButtonBar = () => {
           <Tooltip
             label="View the Studies available within the GDC and select them for further exploration and analysis."
             classNames={{
-              wrapper: "shadow-lg",
               body: "shadow-lg bg-white text-nci-gray-darkest"
             }}
             position="bottom"
@@ -104,7 +100,6 @@ const ActionButtonBar = () => {
           <Tooltip
             label="Build and define your custom cohorts using a variety of clinical and biospecimen features."
             classNames={{
-              wrapper: "shadow-lg",
               body: "shadow-lg bg-white text-nci-gray-darkest"
             }}
             position="bottom"
@@ -127,7 +122,6 @@ const ActionButtonBar = () => {
           <Tooltip
             label="Browse and download the files associated with your cohort for more sophisticated analysis."
             classNames={{
-              wrapper: "shadow-lg",
               body: "shadow-lg bg-white text-nci-gray-darkest"
             }}
             position="bottom"
@@ -149,7 +143,7 @@ const ActionButtonBar = () => {
 const IndexPage: NextPage = () => {
   return (
     <UserFlowVariedPages
-      {...{ indexPath: "/user-flow/single-page", headerElements }}
+      {...{ indexPath: "/user-flow/workbench", headerElements }}
     >
       <div className="flex flex-col w-100 h-100 bg-gradient-to-r from-nci-gray-lightest  to-nci-gray-lighter">
         <div className="flex flex-row ">

@@ -44,8 +44,7 @@ const CohortComparison: React.FC = () => {
 
   return (
     <>
-      <h1 className="text-xl font-semibold p-2">Cohort Comparison</h1>
-      <div className="flex gap-4">
+      <div className="flex gap-4 mt-4">
         <div className="p-1 flex basis-2/4 flex-col gap-4">
           {selectedCards.survival && (
             <SurvivalCard

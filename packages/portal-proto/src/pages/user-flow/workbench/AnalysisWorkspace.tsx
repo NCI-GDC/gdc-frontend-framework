@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Chip, Chips, Grid, Select } from "@mantine/core";
+import { Chip, Chips, Divider, Grid, Select } from "@mantine/core";
 import { MdClear as Clear } from "react-icons/md";
 import AnalysisCard from "./AnalysisCard";
 import { APPTAGS, REGISTERED_APPS, RECOMMENDED_APPS } from "./registeredApps";
@@ -73,7 +73,8 @@ const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : Analys
           </Grid>
         </div>
         <div data-tour="analysis_tool_filters" className="flex flex-col w-1/2">
-          <h2 className="ml-6">Filter Tools</h2>
+          <h2 className="ml-1">Tool Categories</h2>
+          <Divider />
           <div className="flex flex-row">
             <Chips  className="py-1 pr-0" style={{ paddingRight: 0 }} multiple noWrap={false} value={activeTags}
                    onChange={setActiveTags}>
@@ -92,7 +93,7 @@ const AnalysisGrid : React.FC<AnalysisGridProps>  = ( { onAppSelected } : Analys
             <Select data={sortOptions}
                     value={sortType}
                     classNames={{
-                      root: "border border-nci-gray-lighter round-md ml-4 text-sm max-w-[20%] ",
+                      root: "border border-nci-gray-lighter round-md ml-1 text-sm max-w-[20%] ",
                     }}
                     transition="pop-top-left"
                     transitionDuration={80}
@@ -142,7 +143,7 @@ const AnalysisWorkspace : React.FC<AnalysisWorkspaceProps> = ({ app } : Analysis
       <div> { (selectedApp) ?
         <div className="flex flex-col mx-2">
           <div className="flex flex-row items-center">
-            <button  onClick={() => setSelectedApp(undefined)} className="bg-nci-gray-lighter hover:bg-nci-gray-light font-montserrat tracking-widest uppercase rounded-md shadow-md p-1 px-2">Applications</button>
+            <div role="button"  onClick={() => setSelectedApp(undefined)} className="bg-nci-gray-lighter hover:bg-nci-gray-light font-montserrat tracking-widest uppercase rounded-md shadow-md p-1 px-2">Applications</div>
             <div className=" mx-3 font-montserrat">/</div>
             <div className="bg-nci-gray-lighter font-montserrat uppercase rounded-md shadow-md p-1 px-2">{selectedAppName ? selectedAppName :  initialApps[selectedApp].name}</div>
           </div>
