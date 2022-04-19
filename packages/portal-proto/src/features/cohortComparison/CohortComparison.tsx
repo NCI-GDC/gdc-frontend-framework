@@ -43,43 +43,40 @@ const CohortComparison: React.FC = () => {
   const counts = data?.caseCounts || [];
 
   return (
-    <>
-      <h1 className="text-xl font-semibold p-2">Cohort Comparison</h1>
-      <div className="flex gap-4">
-        <div className="p-1 flex basis-2/4 flex-col gap-4">
-          {selectedCards.survival && (
-            <SurvivalCard
-              comparisonCohort={COMPARISON_COHORT}
-              counts={counts}
-            />
-          )}
-          {Object.keys(
-            pickBy(selectedCards, (v, k) => v && k !== "survival"),
-          ).map((selectedCard) => (
-            <FacetCard
-              key={selectedCard}
-              data={
-                data?.aggregations
-                  ? data.aggregations.map((d) => d[fields[selectedCard]])
-                  : []
-              }
-              field={fields[selectedCard]}
-              counts={counts}
-              cohortNames={cohortNames}
-            />
-          ))}
-        </div>
-        <div className="p-1 flex basis-2/4">
-          <CohortCard
-            selectedCards={selectedCards}
-            setSelectedCards={setSelectedCards}
+    <div className="flex gap-4 pt-2">
+      <div className="p-1 flex basis-2/4 flex-col gap-4">
+        {selectedCards.survival && (
+          <SurvivalCard
+            comparisonCohort={COMPARISON_COHORT}
+            counts={counts}
+          />
+        )}
+        {Object.keys(
+          pickBy(selectedCards, (v, k) => v && k !== "survival"),
+        ).map((selectedCard) => (
+          <FacetCard
+            key={selectedCard}
+            data={
+              data?.aggregations
+                ? data.aggregations.map((d) => d[fields[selectedCard]])
+                : []
+            }
+            field={fields[selectedCard]}
             counts={counts}
             cohortNames={cohortNames}
-            options={fields}
           />
-        </div>
+        ))}
       </div>
-    </>
+      <div className="p-1 flex basis-2/4">
+        <CohortCard
+          selectedCards={selectedCards}
+          setSelectedCards={setSelectedCards}
+          counts={counts}
+          cohortNames={cohortNames}
+          options={fields}
+        />
+      </div>
+    </div>
   );
 };
 
