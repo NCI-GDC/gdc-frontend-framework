@@ -187,13 +187,15 @@ const buildTwoPlotLegend = (data, name: string, plotType: string) => {
 export interface SurvivalPlotProps {
   readonly data: Survival;
   readonly names?: ReadonlyArray<string>;
+  readonly hideLegend?: boolean;
   readonly title?: string;
 }
 
 const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   data,
   names = [],
-  title = "Overall Survival Plot"
+  title = "Overall Survival Plot",
+  hideLegend = false
 }: SurvivalPlotProps) => {
   const [downloadMenuOpen, setDownloadMenuOpen] = useState(false);
   // handle the current range of the xAxis set to undefined to reset
@@ -242,10 +244,12 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
           </Tooltip>
         </div>
       </div>
-      <div className="flex flex-col items-center ">
-        {legend.map((x, idx) => {
-          return <div key={`${x.key}-${idx}`}>{x.value}</div>;
-        })}
+    <div className="flex flex-col items-center ">
+      {!hideLegend && (
+        legend.map((x, idx) => {
+          return <p key={`${x.key}-${idx}`}>{x.value}</p>
+        })
+      )}
         <div>
           <Tooltip
             label={
