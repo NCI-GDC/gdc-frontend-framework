@@ -167,15 +167,15 @@ const excludes: Scenario = {
   },
 };
 
-const excludesifany: Scenario = {
-  name: "excludesifany",
+const excludeifany: Scenario = {
+  name: "excludeifany",
   op: {
     operator: "excludes",
     field: "asdf",
     operands: ["a", "b"],
   },
   gqlOp: {
-    op: "excludesifany",
+    op: "excludeifany",
     content: {
       field: "asdf",
       value: ["a", "b"],
@@ -270,7 +270,7 @@ const scenarios: ReadonlyArray<Scenario> = [
   exists,
   includes,
   excludes,
-  excludesifany,
+  excludeifany,
   intersection,
   union,
 ];

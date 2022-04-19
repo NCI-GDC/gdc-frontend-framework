@@ -14,7 +14,13 @@ import {
   MdGridOn,
   MdRefresh,
 } from "react-icons/md";
-import { useOncoGrid } from "@gff/core";
+import {
+  clearGenomicFilters,
+  selectCurrentCohortFilterSet,
+  useCoreDispatch,
+  useCoreSelector,
+  useOncoGrid,
+} from "@gff/core";
 import { DocumentWithWebkit } from "../types";
 import { toggleFullScreen } from "../../utils";
 
@@ -23,9 +29,12 @@ import { cnvTypes, consequenceTypes, defaultColorMap } from "./constants";
 import useOncoGridDisplayData from "./useOncoGridDisplayData";
 import ColorPaletteModal from "./ColorPaletteModal";
 import useOncoGridObject from "./useOncoGridObject";
+
 const Tooltip = dynamic(() => import("./Tooltip"), { ssr: false });
 
 const OncoGridWrapper: React.FC = () => {
+  const coreDispatch = useCoreDispatch();
+  const cohortFilters = useCoreSelector((state) => selectCurrentCohortFilterSet(state));
   const fullOncoGridContainer = useRef(null);
   const gridContainer = useRef(null);
   const [isHeatmap, setIsHeatmap] = useState(false);
@@ -72,6 +81,13 @@ const OncoGridWrapper: React.FC = () => {
   useEffect(() => {
     setIsLoading(isFetching);
   }, [isFetching]);
+
+  /**
+   * Remove genomic filters when cohort changes
+   */
+  useEffect( () => {
+    coreDispatch(clearGenomicFilters());
+  }, [cohortFilters, coreDispatch]);
 
   useEffect(() => {
     const eventListener = () => {
@@ -122,7 +138,7 @@ const OncoGridWrapper: React.FC = () => {
   return (
     <div
       ref={(ref) => (fullOncoGridContainer.current = ref)}
-      className={`bg-white p-16 ${isFullscreen ? "overflow-scroll" : ""}`}
+      className={`bg-white p-16  ${isFullscreen ? "overflow-scroll" : ""}`}
     >
       <div className="flex pb-8">
         <div className="basis-1/2">{`${donors.length} Most Mutated Cases and Top ${genes.length} Mutated Genes by SSM`}</div>
@@ -266,8 +282,8 @@ const OncoGridWrapper: React.FC = () => {
         setNewColorMap={setColorMap}
       />
       {tracksModal}
-      <div>
-        <LoadingOverlay visible={isLoading} overlayOpacity={0.9} />
+      <div className="relative">
+        <LoadingOverlay  visible={isLoading} overlayOpacity={0.9} />
         {consequenceTypeFilters.length === 0 && (
           <>
             The current selection has no results. Please select more mutation
@@ -281,7 +297,7 @@ const OncoGridWrapper: React.FC = () => {
               ? "invisible"
               : "visible"
           }`}
-        ></div>
+        />
       </div>
     </div>
   );

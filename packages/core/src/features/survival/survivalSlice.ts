@@ -1,14 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
-  CoreDataSelectorResponse,
+  CoreDataSelectorResponse, createUseCoreDataHook,
   createUseFiltersCoreDataHook,
   DataStatus,
 } from "../../dataAcess";
 import { CoreDispatch, CoreState } from "../../store";
 import {
   selectCurrentCohortFilters,
-  selectCurrentCohortFilterSet,
-  buildCohortGqlOperator,
 } from "../cohort/cohortFilterSlice";
 import { GqlOperation} from "../gdcapi/filters";
 
@@ -24,8 +22,6 @@ export interface SurvivalDonor {
   readonly submitter_id: string;
   readonly project_id: string;
 }
-
-
 
 export interface SurvivalElement {
     readonly meta: string;
@@ -61,7 +57,7 @@ const initialState: SurvivalState = {
  *  Survival API Specialization of API Request and Errors
  */
 export interface GdcSurvivalApiRequest {
-  filters?: ReadonlyArray<GqlOperation>;
+  filters: ReadonlyArray<GqlOperation>;
 }
 
 export interface SurvivalFetchError {
@@ -88,7 +84,7 @@ export const buildSurvivalFetchError = async (
 export const fetchSurvivalAnalysis = async (
   request: GdcSurvivalApiRequest,
 ): Promise<SurvivalApiResponse> => {
-  const parameters = request.filters ? `?filters=${encodeURIComponent(JSON.stringify(request.filters))}` : "";
+  const parameters = request.filters.length > 0 ? `?filters=${encodeURIComponent(JSON.stringify(request.filters))}` : "";
   const res = await fetch(`https://api.gdc.cancer.gov/analysis/survival${parameters}`, {
     method: "GET",
     headers: {
@@ -109,19 +105,13 @@ export const fetchSurvivalAnalysis = async (
  */
 export const fetchSurvival = createAsyncThunk <
   SurvivalApiResponse,
-  { filters?: ReadonlyArray<GqlOperation> },
+  { filters: ReadonlyArray<GqlOperation> },
   { dispatch: CoreDispatch; state: CoreState }
   >
 (
   "analysis/survivalData",
-  async (args, thunkAPI) => {
-   if (args?.filters) { // passing filter overrides using the cohort filters.
-     return fetchSurvivalAnalysis({ filters: args?.filters });
-
-   }
-    // use the current cohort filters
-    const cohort_filters = buildCohortGqlOperator(selectCurrentCohortFilterSet(thunkAPI.getState()));
-    return fetchSurvivalAnalysis({  filters: cohort_filters ? [cohort_filters] : undefined });
+  async ({filters }) => {
+     return fetchSurvivalAnalysis({ filters: filters  });
   },
 );
 
@@ -188,7 +178,7 @@ export const selectSurvivalData = (
 };
 
 /**
- * Trying out a possible way to create a hook that
- * handles when the filters are updated
+ * Data Hook to query survival data from the API.
  */
-export const useSurvivalPlot = createUseFiltersCoreDataHook(fetchSurvival, selectSurvivalData, selectCurrentCohortFilters);
+export const useSurvivalPlot = createUseCoreDataHook(fetchSurvival, selectSurvivalData);
+export const useSurvivalPlotWithCohortFilters = createUseFiltersCoreDataHook(fetchSurvival, selectSurvivalData, selectCurrentCohortFilters);

@@ -1,4 +1,5 @@
 import "../styles/globals.css";
+import "../styles/survivalplot.css";
 import "../styles/oncogrid.css";
 
 import { Provider } from "react-redux";
@@ -20,7 +21,6 @@ import "react-tabs/style/react-tabs.css";
 // ReactModal needs the app element set for a11y reasons.
 // It hides the main application from screen readers while modals are open.
 import ReactModal from "react-modal";
-import React from "react";
 ReactModal.setAppElement("#__next");
 
 const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
@@ -34,7 +34,31 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
         emotionOptions={{ key: 'mantine', prepend: false }}
         theme={{  // Override default blue color until styles are determined
           colors: {
-            blue: ['#bebebe', '#919191', '#484848' /* ... */],
+            blue: [
+              '#bdbdbd',
+              '#8a8a8a',
+              '#b4b1b1',
+              '#c0c0c0',
+              '#bbbbbb',
+              '#a6a6a6',
+              '#a9a9a9',
+              '#626060',
+              '#a1a1a1',
+              '#a1a1a1',
+            ],
+            gray: [
+              '#dedede',
+              '#f1f1f1',
+              '#e7e7e7',
+              '#dadada',
+              '#c9c8c8',
+              '#b9b9b9',
+              '#bdbdbd',
+              '#343434',
+              '#919090',
+              '#151515',
+            ],
+
           }}}
       >
         <TourProvider steps={[]} components={{ Badge }}>

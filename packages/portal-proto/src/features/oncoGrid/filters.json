@@ -1,0 +1,36 @@
+{
+  "genes": [
+    {
+      "facet_filter": "biotype",
+      "name": "Biotype",
+      "description": "No description"
+    },
+    {
+      "facet_filter": "is_cancer_gene_census",
+      "name": "Is Cancer Gene Census",
+      "description": "No description"
+    }
+  ],
+  "ssms": [
+    {
+      "facet_filter": "consequence.transcript.annotation.vep_impact",
+      "name": "VEP Impact",
+      "description": "No description"
+    },
+    {
+      "facet_filter": "consequence.transcript.annotation.sift_impact",
+      "name": "SIFT Impact",
+      "description": "No description"
+    },
+    {
+      "facet_filter": "consequence.transcript.annotation.polyphen_impact",
+      "name": "Polyphen Impact",
+      "description": "No description"
+    },
+    {
+      "facet_filter": "mutation_subtype",
+      "name": "Type",
+      "description": "No description"
+    }
+  ]
+}

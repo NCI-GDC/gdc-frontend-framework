@@ -1,3 +1,4 @@
+
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CoreState } from "../../store";
 import {
@@ -11,7 +12,7 @@ import {
   LessThan,
   LessThanOrEquals,
   Excludes,
-  ExcludesIfAny,
+  ExcludeIfAny,
   Includes,
   Exists,
   Missing,
@@ -22,12 +23,12 @@ import {
 } from "../gdcapi/filters";
 
 export interface FilterSet {
-  readonly root: Record<string, Operation>;
+  readonly root: Record<string, Operation>; // TODO: Replace with Union or Intersection Operation
   readonly mode: string;
 }
 
 export interface CohortFilterState {
-  readonly filters: FilterSet;  // TODO: should be array of FilterSets
+  readonly filters: FilterSet;  // TODO: should be array of FilterSets?
 }
 
 const initialState: CohortFilterState = { filters: { mode: "and", root: {} } };
@@ -60,19 +61,28 @@ const slice = createSlice({
   extraReducers: {},
 });
 
-export type OperandValue = ReadonlyArray<string> | ReadonlyArray<number> | string | number | string[] | number [] | undefined;
+/**
+ *  Operand types for filter operations
+ */
+export type EnumOperandValue = string[] | number [] | undefined;
+export type RangeOperandValue = string | number;
+export type SetOperandValue = ReadonlyArray<string> | ReadonlyArray<number>
+export type OperandValue = EnumOperandValue | RangeOperandValue | SetOperandValue;
 
+/**
+ * Extract the operand values, if operands themselves have values,  otherwise undefined.
+ */
 export class ValueExtractorHandler implements OperationHandler<OperandValue> {
   handleEquals = (op: Equals) => op.operand;
   handleNotEquals = (op: NotEquals) => op.operand;
   handleExcludes = (op: Excludes) => op.operands;
-  handleExcludesIfAny = (op: ExcludesIfAny) => op.operands;
+  handleExcludeIfAny = (op: ExcludeIfAny) => op.operands;
   handleIncludes = (op: Includes) => op.operands;
   handleGreaterThanOrEquals = (op: GreaterThanOrEquals) => op.operand;
   handleGreaterThan = (op: GreaterThan) => op.operand;
   handleLessThan = (op: LessThan) => op.operand;
   handleLessThanOrEquals = (op: LessThanOrEquals) => op.operand;
-  handleMissing = (_: Missing) => undefined;
+  handleMissing = (_: Missing) =>  undefined;
   handleExists= (_: Exists) => undefined;
   handleIntersection= (_: Intersection) => undefined;
   handleUnion= (_: Union) => undefined;
@@ -87,7 +97,7 @@ export const buildCohortGqlOperator = (fs: FilterSet | undefined): GqlOperation 
       return (
         (Object.keys(fs.root).length == 0) ? undefined :
         {
-          // TODO: Replace fixed AND with cohort top level operation
+          // TODO: Replace fixed AND with cohort top level operation like Union or Intersection
           op: fs.mode, content: Object.keys(fs.root).map((k): GqlOperation => {
             return convertFilterToGqlFilter( fs.root[k]);
           }),
