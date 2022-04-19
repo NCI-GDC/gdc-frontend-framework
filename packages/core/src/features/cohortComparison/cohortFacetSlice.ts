@@ -14,7 +14,7 @@ const graphQLQuery = `
     $interval: Float
   ) {
     viewer {
-      repository {
+      explore {
         cohort1: cases {
           hits(filters: $cohort1) {
             total
@@ -77,6 +77,7 @@ export interface CohortComparisonState {
     caseCounts: number[];
   };
   readonly status: DataStatus;
+  readonly error?: string;
 }
 
 const initialState: CohortComparisonState = {
@@ -119,24 +120,30 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchCohortFacets.fulfilled, (state, action) => {
-        const facets1 = JSON.parse(
-          action.payload.data.viewer.repository.cohort1.facets,
-        );
-        const facets2 = JSON.parse(
-          action.payload.data.viewer.repository.cohort2.facets,
-        );
+        const response = action.payload;
 
-        facets1["diagnoses.age_at_diagnosis"] =
-          action.payload.data.viewer.repository.cohort1.aggregations.diagnoses__age_at_diagnosis.histogram;
-        facets2["diagnoses.age_at_diagnosis"] =
-          action.payload.data.viewer.repository.cohort2.aggregations.diagnoses__age_at_diagnosis.histogram;
+        if (response.errors && response.errors.length > 0) {
+          state.status = "rejected";
+        } else { 
+          const facets1 = JSON.parse(
+            response.data.viewer.explore.cohort1.facets,
+          );
+          const facets2 = JSON.parse(
+            response.data.viewer.explore.cohort2.facets,
+          );
 
-        state.data.aggregations = [facets1, facets2];
-        state.data.caseCounts = [
-          action.payload.data.viewer.repository.cohort1.hits.total,
-          action.payload.data.viewer.repository.cohort2.hits.total,
-        ];
-        state.status = "fulfilled";
+          facets1["diagnoses.age_at_diagnosis"] =
+            response.data.viewer.explore.cohort1.aggregations.diagnoses__age_at_diagnosis.histogram;
+          facets2["diagnoses.age_at_diagnosis"] =
+            response.data.viewer.explore.cohort2.aggregations.diagnoses__age_at_diagnosis.histogram;
+
+          state.data.aggregations = [facets1, facets2];
+          state.data.caseCounts = [
+            response.data.viewer.explore.cohort1.hits.total,
+            response.data.viewer.explore.cohort2.hits.total,
+          ];
+          state.status = "fulfilled";
+        }
         return state;
       })
       .addCase(fetchCohortFacets.pending, (state) => {

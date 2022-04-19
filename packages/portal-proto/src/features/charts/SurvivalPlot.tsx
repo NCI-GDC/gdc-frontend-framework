@@ -188,13 +188,10 @@ export interface SurvivalPlotProps {
   readonly data: Survival;
   readonly names?: ReadonlyArray<string>;
   readonly title?: string;
+  readonly hideLegend?: boolean;
 }
 
-const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
-  data,
-  names = [],
-  title = "Overall Survival Plot"
-}: SurvivalPlotProps) => {
+const SurvivalPlot : React.FC<SurvivalPlotProps> = ( { data, names = [], hideLegend = false, title = "Overall Survival Plot"} : SurvivalPlotProps) => {
   const [downloadMenuOpen, setDownloadMenuOpen] = useState(false);
   // handle the current range of the xAxis set to undefined to reset
   const [xDomain, setXDomain] = useState(undefined);

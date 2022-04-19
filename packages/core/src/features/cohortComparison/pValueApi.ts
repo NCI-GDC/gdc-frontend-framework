@@ -6,7 +6,7 @@ interface PValueResponse {
   };
 }
 
-export const fetchPValue = async (data: number[][]) => {
+export const fetchPValue = async (data: number[][]) : Promise<number> => {
   const graphQLQuery = `
     query pValue($data: [[Int]]!) {
       analysis {

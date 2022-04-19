@@ -2,16 +2,17 @@ import { useState } from "react";
 import { pickBy } from "lodash";
 import {
   useCohortFacets,
-  useCoreSelector,
-  selectCurrentCohort,
 } from "@gff/core";
 import CohortCard from "./CohortCard";
 import SurvivalCard from "./SurvivalCard";
 import FacetCard from "./FacetCard";
 
-const COMPARISON_COHORT = "Baily's Cohort";
+interface CohortComparisonProps {
+  readonly cohortNames: string[];
+  readonly demoMode?: boolean;
+}
 
-const CohortComparison: React.FC = () => {
+const CohortComparison: React.FC<CohortComparisonProps> = ({ cohortNames, demoMode = false } : CohortComparisonProps) => {
   const [selectedCards, setSelectedCards] = useState({
     survival: true,
     ethnicity: false,
@@ -30,26 +31,24 @@ const CohortComparison: React.FC = () => {
     age_at_diagnosis: "diagnoses.age_at_diagnosis",
   };
 
-  const fieldsToQuery = Object.values(fields);
-  const primaryCohortName = useCoreSelector((state) =>
-    selectCurrentCohort(state),
-  );
+  const fieldsToQuery = Object.values(fields).filter(v => v !== 'Survival');
+
   const { data } = useCohortFacets({
     facetFields: fieldsToQuery,
-    primaryCohort: primaryCohortName,
-    comparisonCohort: COMPARISON_COHORT,
+    primaryCohort: cohortNames[0],
+    comparisonCohort: cohortNames[1],
   });
-  const cohortNames = [primaryCohortName, COMPARISON_COHORT];
   const counts = data?.caseCounts || [];
 
   return (
     <>
       <h1 className="text-xl font-semibold p-2">Cohort Comparison</h1>
+      {demoMode && <span className="italic px-2 py-1">{'Demo showing cases with pancreatic cancer with and without mutations in the gene KRAS.'}</span>}
       <div className="flex gap-4">
         <div className="p-1 flex basis-2/4 flex-col gap-4">
           {selectedCards.survival && (
             <SurvivalCard
-              comparisonCohort={COMPARISON_COHORT}
+              cohortNames={cohortNames}
               counts={counts}
             />
           )}

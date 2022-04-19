@@ -13,4 +13,42 @@ export const COHORTS = [
       },
     },
   },
+  {
+    name: "Pancreas - KRAS mutated",
+    filters: {
+      root: 
+        {
+          "genes.symbol": {
+            field: 'genes.symbol',
+            operands: ['KRAS'],
+            operator: 'includes',
+          },
+          "cases.primary_site": {
+            field: 'cases.primary_site',
+            operands: ['pancreas'],
+            operator: 'includes',
+          }
+        },
+      mode: 'and',
+    }
+  },
+  {
+    name: "Pancreas - KRAS not mutated",
+    filters: {
+      root: 
+        {
+          "genes.symbol": {
+            field: 'genes.symbol',
+            operands: ['KRAS'],
+            operator: 'excludeifany',
+          },
+          "cases.primary_site": {
+            field: 'cases.primary_site',
+            operands: ['Pancreas'],
+            operator: 'includes',
+          }
+        }, 
+      mode: 'and',
+    },
+  }
 ];

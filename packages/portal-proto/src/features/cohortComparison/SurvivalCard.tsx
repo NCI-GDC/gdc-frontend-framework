@@ -56,16 +56,19 @@ const tooltipLabel = (
 
 interface SurvivalCardProps {
   readonly counts: number[];
-  readonly comparisonCohort: string;
+  readonly cohortNames: string[];
 }
 
-const SurvivalCard : React.FC<SurvivalCardProps> = ({ counts, comparisonCohort } : SurvivalCardProps) => {
-  const cohort1Filters = useCoreSelector((state) =>
-    selectCurrentCohortCaseGqlFilters(state),
+const SurvivalCard : React.FC<SurvivalCardProps> = ({ counts, cohortNames } : SurvivalCardProps) => {
+  const cohort1Filters =  useCoreSelector((state) =>
+    buildCohortGqlOperator(
+      selectAvailableCohortByName(state, cohortNames[0]).filters,
+    ),
   );
+
   const cohort2Filters = useCoreSelector((state) =>
     buildCohortGqlOperator(
-      selectAvailableCohortByName(state, comparisonCohort).filters,
+      selectAvailableCohortByName(state, cohortNames[1]).filters,
     ),
   );
 
@@ -74,11 +77,11 @@ const SurvivalCard : React.FC<SurvivalCardProps> = ({ counts, comparisonCohort }
     filters: [
       {
         op: "and",
-        content: cohort1Filters ? [...dataCompletenessFilters, cohort1Filters] : [...dataCompletenessFilters],
+        content: [cohort1Filters],
       },
       {
         op: "and",
-        content: cohort2Filters ? [...dataCompletenessFilters, cohort2Filters] : [...dataCompletenessFilters],
+        content: [cohort2Filters],
       },
     ],
   });
