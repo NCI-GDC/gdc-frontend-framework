@@ -21,16 +21,8 @@ export const formatDataForTable = (
   }, []);
 };
 
-export const parseSlideDetailsInfo = (file: GdcFile) => {
-  const slides = file.cases?.[0]?.samples?.[0]?.portions?.[0]?.slides[0];
-  const slidesInfo = omit(slides, [
-    "created_datetime",
-    "updated_datetime",
-    "state",
-  ]);
-  const slideDetailsInfo = { file_id: file.fileId, ...slidesInfo };
-
-  return formatDataForTable(slideDetailsInfo, [
+export const formatImageDetailsInfo = (obj: any) => {
+  const headersConfig = [
     {
       field: "file_id",
       name: "File_id",
@@ -91,5 +83,19 @@ export const parseSlideDetailsInfo = (file: GdcFile) => {
       field: "percent_tumor_cells",
       name: "Percent_tumor_cells",
     },
+  ];
+
+  return formatDataForTable(obj, headersConfig);
+};
+
+export const parseSlideDetailsInfo = (file: GdcFile) => {
+  const slides = file.cases?.[0]?.samples?.[0]?.portions?.[0]?.slides[0];
+  const slidesInfo = omit(slides, [
+    "created_datetime",
+    "updated_datetime",
+    "state",
   ]);
+  const slideDetailsInfo = { file_id: file.fileId, ...slidesInfo };
+
+  return formatImageDetailsInfo(slideDetailsInfo);
 };
