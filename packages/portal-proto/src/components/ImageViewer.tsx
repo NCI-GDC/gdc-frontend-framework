@@ -6,7 +6,7 @@ import { toggleFullScreen } from "../utils";
 import { SlideDetailButton } from "./SlideDetailButton";
 import { HorizontalTableProps } from "./HorizontalTable";
 
-interface ImageViewerProp extends HorizontalTableProps {
+export interface ImageViewerProp extends HorizontalTableProps {
   imageId: string;
 }
 
@@ -20,8 +20,7 @@ const ImageViewer = ({ imageId, tableData }: ImageViewerProp): JSX.Element => {
     viewer && viewer.destroy();
     const options: OpenSeadragon.Options = {
       id: "osd",
-      prefixUrl:
-        "https://cdn.jsdelivr.net/npm/openseadragon@3.0/build/openseadragon/images/",
+      prefixUrl: "/OpenseadragonImages/",
       visibilityRatio: 1,
       showNavigator: true,
       minZoomLevel: 0,
@@ -31,14 +30,10 @@ const ImageViewer = ({ imageId, tableData }: ImageViewerProp): JSX.Element => {
 
     const fullPageButton = new OpenSeadragon.Button({
       tooltip: "Toggle Full Page",
-      srcRest:
-        "https://raw.githubusercontent.com/openseadragon/openseadragon/master/images/fullpage_rest.png",
-      srcGroup:
-        "https://raw.githubusercontent.com/openseadragon/openseadragon/master/images/fullpage_grouphover.png",
-      srcHover:
-        "https://raw.githubusercontent.com/openseadragon/openseadragon/master/images/fullpage_hover.png",
-      srcDown:
-        "https://raw.githubusercontent.com/openseadragon/openseadragon/master/images/fullpage_pressed.png",
+      srcRest: "/OpenseadragonImages/fullpage_rest.png",
+      srcGroup: "/OpenseadragonImages/fullpage_grouphover.png",
+      srcHover: "/OpenseadragonImages/fullpage_hover.png",
+      srcDown: "/OpenseadragonImages/fullpage_pressed.png",
       onClick: () => toggleFullScreen(osdContainerRef),
     });
 
@@ -83,11 +78,10 @@ const ImageViewer = ({ imageId, tableData }: ImageViewerProp): JSX.Element => {
 
   return (
     <>
-      {isFetching ? (
-        <div>
-          <LoadingOverlay visible />
-        </div>
-      ) : isError ? (
+      <div>
+        <LoadingOverlay visible={isFetching} />
+      </div>
+      {isError ? (
         <div id="osd" className="flex bg-white h-img-viewer">
           Image is not available
         </div>
@@ -95,10 +89,16 @@ const ImageViewer = ({ imageId, tableData }: ImageViewerProp): JSX.Element => {
         <div
           ref={osdContainerRef}
           id="osd"
-          className="flex bg-black h-img-viewer"
-        />
+          className={
+            isFetching ? "invisible" : "visible flex bg-black h-img-viewer"
+          }
+        >
+          <SlideDetailButton
+            ref={detailsButtonWrapperRef}
+            tableData={tableData}
+          />
+        </div>
       )}
-      <SlideDetailButton ref={detailsButtonWrapperRef} tableData={tableData} />
     </>
   );
 };
