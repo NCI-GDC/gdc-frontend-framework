@@ -49,8 +49,7 @@ const PValue: React.FC<PValueProps> = ({ data }: PValueProps) => {
       }
     };
     determinePValue();
-
-  }, [pValueBuckets, data]);
+  }, [JSON.stringify(pValueBuckets), JSON.stringify(data)]);
 
   if (pValue) {
     return (
