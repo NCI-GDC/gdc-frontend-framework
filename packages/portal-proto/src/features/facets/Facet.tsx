@@ -30,9 +30,7 @@ import { Tooltip } from "@mantine/core";
  * Filter selector for all of the facet filters
  */
 const useCohortFacetFilter = (): FilterSet => {
-  return useCoreSelector((state) =>
-    selectCurrentCohortFilters(state),
-  );
+  return useCoreSelector((state) => selectCurrentCohortFilters(state));
 };
 
 /**
@@ -40,15 +38,15 @@ const useCohortFacetFilter = (): FilterSet => {
  * @param field
  */
 const useCohortFacetFilterByName = (field: string): string[] | undefined => {
-  const enumFilters: EnumFilter = useCoreSelector((state) =>
-    selectCurrentCohortFiltersByName(state, field) as EnumFilter,
+  const enumFilters: EnumFilter = useCoreSelector(
+    (state) => selectCurrentCohortFiltersByName(state, field) as EnumFilter,
   );
   return enumFilters ? enumFilters.values : undefined;
 };
 
 interface EnumFacetResponse {
   readonly data?: FacetBuckets;
-  readonly enumFilters: string [] | undefined;
+  readonly enumFilters: string[] | undefined;
   readonly error?: string;
   readonly isUninitialized: boolean;
   readonly isFetching: boolean;
@@ -85,42 +83,47 @@ const useCaseFacet = (field: string): EnumFacetResponse => {
   };
 };
 
-
-
 export interface FacetProps {
   readonly field: string;
   readonly description?: string;
   readonly facetName?: string;
   readonly showSearch?: boolean;
-  readonly showFlip?:boolean;
+  readonly showFlip?: boolean;
   readonly startShowingData?: boolean;
   readonly valueLabel?: string;
 }
 
 export interface EnumFacetProps extends FacetProps {
-  readonly dataHook : (string) => EnumFacetResponse;
+  readonly dataHook: (string) => EnumFacetResponse;
   readonly updateEnumFilters: (d, filters, field) => void;
 }
 
-const updateEnumFilters = (dispatch, enumerationFilters, field ) => {
-  if (enumerationFilters === undefined)
-    return;
+const updateEnumFilters = (dispatch, enumerationFilters, field) => {
+  if (enumerationFilters === undefined) return;
   if (enumerationFilters.length > 0) {
-    dispatch(updateCohortFilter({ type: "enum", op: "in", field: `${field}`, values: enumerationFilters }));
-  } else { // completely remove the field
+    dispatch(
+      updateCohortFilter({
+        type: "enum",
+        op: "in",
+        field: `${field}`,
+        values: enumerationFilters,
+      }),
+    );
+  } else {
+    // completely remove the field
     dispatch(removeCohortFilter(field));
   }
-}
+};
 
 export const Facet: React.FC<FacetProps> = ({
-                                              field,
-                                              description,
-                                              facetName = null,
-                                              showSearch = true,
-                                              showFlip=true,
-                                              startShowingData = true,
-                                              valueLabel = "Cases"
-                                            }: FacetProps) => {
+  field,
+  description,
+  facetName = null,
+  showSearch = true,
+  showFlip = true,
+  startShowingData = true,
+  valueLabel = "Cases",
+}: FacetProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [isSortedByValue, setIsSortedByValue] = useState(false);
@@ -133,25 +136,33 @@ export const Facet: React.FC<FacetProps> = ({
 
   useEffect(() => {
     setSelectedEnums(enumFilters);
-  } ,[enumFilters]);
+  }, [enumFilters]);
 
   useEffect(() => {
     if (isSuccess) {
-      setVisibleItems(Object.entries(data).filter(data => data[0] != "_missing").length)
+      setVisibleItems(
+        Object.entries(data).filter((data) => data[0] != "_missing").length,
+      );
     }
-  } ,[isSuccess]);
-
+  }, [isSuccess]);
 
   useEffect(() => {
     /**
      * Logic here: if the facet never sets a filter then return,
      * if a filter was added: update, if all are removed: remove the filter from the cohort
      */
-    if (selectedEnums === undefined)
-      return;
+    if (selectedEnums === undefined) return;
     if (selectedEnums.length > 0) {
-      coreDispatch(updateCohortFilter({ type: "enum", op: "in", field: `${field}`, values: selectedEnums }));
-    } else { // completely remove the field
+      coreDispatch(
+        updateCohortFilter({
+          type: "enum",
+          op: "in",
+          field: `${field}`,
+          values: selectedEnums,
+        }),
+      );
+    } else {
+      // completely remove the field
       coreDispatch(removeCohortFilter(field));
     }
   }, [selectedEnums]);
@@ -182,144 +193,215 @@ export const Facet: React.FC<FacetProps> = ({
     setIsFacetView(!isFacetView);
   };
 
-  const remainingValues = (total - maxValuesToDisplay);
-  const cardHeight = remainingValues > 16 ? 96 : remainingValues > 0 ? Math.min(96, remainingValues * 5 + 40) : 24;
-  const cardStyle = isGroupExpanded ? `flex-none  h-${cardHeight} overflow-y-scroll ` : `overflow-hidden pr-3.5`;
-  const numberOfLines = (total - maxValuesToDisplay) < 0 ? total : isGroupExpanded ? 16 : maxValuesToDisplay;
+  const remainingValues = total - maxValuesToDisplay;
+  const cardHeight =
+    remainingValues > 16
+      ? 96
+      : remainingValues > 0
+      ? Math.min(96, remainingValues * 5 + 40)
+      : 24;
+  const cardStyle = isGroupExpanded
+    ? `flex-none  h-${cardHeight} overflow-y-scroll `
+    : `overflow-hidden pr-3.5`;
+  const numberOfLines =
+    total - maxValuesToDisplay < 0
+      ? total
+      : isGroupExpanded
+      ? 16
+      : maxValuesToDisplay;
   const chartHeight = [0, 60, 60, 115, 135, 165, 190];
   return (
-      <div className="flex flex-col bg-white relative shadow-lg border-nci-gray-lightest border-1 rounded-b-md ">
-        <div>
-          <div className="flex items-center justify-between flex-wrap bg-nci-cyan-darker shadow-md px-1.5">
-
-            <Tooltip label={description}
-                     classNames={{
-                       arrow: "bg-nci-gray-light",
-                       body: "bg-white text-nci-gray-dark"
-                     }}
-                     position="bottom"
-                     placement="start"
-                     wrapLines
-                     width={220}
-                     withArrow
-                     transition="fade"
-                     transitionDuration={200}>
-            <div className="has-tooltip text-nci-gray-lightest font-heading font-medium text-md">{(facetName === null) ? convertFieldToName(field) : facetName}
-             </div>
-            </Tooltip>
-            <div className="flex flex-row">
-              {showSearch ? <button
+    <div className="flex flex-col bg-white relative shadow-lg border-nci-gray-lightest border-1 rounded-b-md ">
+      <div>
+        <div className="flex items-center justify-between flex-wrap bg-nci-cyan-darker shadow-md px-1.5">
+          <Tooltip
+            label={description}
+            classNames={{
+              arrow: "bg-nci-gray-light",
+              body: "bg-white text-nci-gray-dark",
+            }}
+            position="bottom"
+            placement="start"
+            wrapLines
+            width={220}
+            withArrow
+            transition="fade"
+            transitionDuration={200}
+          >
+            <div className="has-tooltip text-nci-gray-lightest font-heading font-medium text-md">
+              {facetName === null ? convertFieldToName(field) : facetName}
+            </div>
+          </Tooltip>
+          <div className="flex flex-row">
+            {showSearch ? (
+              <button
                 className="hover:bg-grey text-nci-gray-lightest font-bold py-2 px-1 rounded inline-flex items-center"
-                onClick={toggleSearch}>
+                onClick={toggleSearch}
+              >
                 <SearchIcon size="1.5em" />
-              </button> : null
-              }
-              {showFlip ? <button
+              </button>
+            ) : null}
+            {showFlip ? (
+              <button
                 className="hover:bg-grey text-nci-gray-lightest font-bold py-2 px-1 rounded inline-flex items-center"
-                onClick={toggleFlip}>
+                onClick={toggleFlip}
+              >
                 <FlipIcon size="1.15em" />
-              </button> : null
-              }
-            </div>
-          </div>
-        </div>
-        <div>
-          <div className={isFacetView ? "flip-card" : "flip-card flip-card-flipped"}>
-            <div className="card-face bg-white">
-              <div>
-                <div
-                  className="flex flex-row items-center justify-between flex-wrap border p-1">
-                  <button
-                    className={"ml-0.5 border rounded-sm border-nci-gray-darkest bg-nci-cyan hover:bg-nci-cyan-lightest text-white hover:text-nci-cyan-darker"}>
-                    <AlphaSortIcon onClick={() => setIsSortedByValue(false)} scale="1.5em" />
-                  </button>
-                  <div className={"flex flex-row items-center "}>
-                    <button onClick={() => setIsSortedByValue(true)}
-                            className={"border rounded-sm border-nci-cyan-darkest bg-nci-cyan hover:bg-nci-cyan-lightest text-white hover:text-nci-cyan-darker"}>
-                      <SortIcon scale="1.5em" /></button>
-                    <p className="px-2 mr-3">{valueLabel}</p>
-                  </div>
-                </div>
-
-                <div className={cardStyle}>
-                  {
-                    isSuccess ?
-                      Object.entries(data).filter(data => data[0] != "_missing").sort(isSortedByValue ? ([, a], [, b]) => b - a : ([a], [b]) => a.localeCompare(b),
-                      ).map(([value, count], i) => {
-                        if (!isGroupExpanded && i >= maxValuesToDisplay) return null;
-                        return (
-                          <div key={`${field}-${value}`} className="flex flex-row gap-x-1 px-2">
-                            <div className="flex-none">
-                              <input type="checkbox" value={value} onChange={handleChange}
-                                     className="bg-nci-cyan-lightest hover:bg-nci-cyan-darkest text-nci-cyan-darkest"
-                                     checked={selectedEnums && selectedEnums.includes(value)} />
-                            </div>
-                            <div className="flex-grow truncate ... font-heading text-md pt-0.5">{value}</div>
-                            <div className="flex-none text-right w-14 ">{count.toLocaleString()}</div>
-                            <div
-                              className="flex-none text-right w-18 ">({((count / 85415) * 100).toFixed(2).toLocaleString()}%)
-                            </div>
-
-                          </div>
-                        );
-                      }) :
-                      <div>
-                        { // uninitialized, loading, error animated bars
-                          Array.from(Array(numberOfLines)).map((_, index) => {
-                            return (
-                              <div key={`${field}-${index}`} className="flex flex-row items-center px-2">
-                                <div className="flex-none">
-                                  <input type="checkbox" className="bg-nci-cyan-lightest hover:bg-nci-cyan-darkest text-nci-cyan-darkest"/>
-                                </div>
-                                <div className="flex-grow h-4 align-center justify-center mt-1 ml-1 mr-8 bg-nci-gray-light rounded-b-sm animate-pulse"/>
-                                <div className="flex-none h-4 align-center justify-center mt-1 w-10 bg-nci-gray-light rounded-b-sm animate-pulse"/>
-                              </div>);
-                          })
-                        }
-                      </div>
-                  }
-                </div>
-              </div>
-              {
-                <div className="mt-3 m-1">
-                  {remainingValues > 0 ? !isGroupExpanded ?
-                      <div className="flex flex-row justify-end items-center border-t-2 p-1.5">
-                        <MoreIcon key="show-more" size="1.5em" className="text-nci-cyan-darkest"
-                                  onClick={() => setIsGroupExpanded(!isGroupExpanded)} />
-                        <div className="pl-1 text-nci-cyan-darkest"> {isSuccess ? remainingValues : "..."} more</div>
-                      </div>
-                      :
-                      <div
-                        className="flex flex-row justify-end items-center border-t-2 border-b-0 border-r-0 border-l-0 p-1.5">
-                        <LessIcon key="show-less" size="1.5em" className="text-nci-cyan-darkest"
-                                  onClick={() => setIsGroupExpanded(!isGroupExpanded)} />
-                        <div className="pl-1 text-nci-cyan-darkest"> show less</div>
-                      </div>
-                    : null
-                  }
-                </div>
-              }
-            </div>
-
-            <div className="card-face card-back bg-white">
-              <FacetChart
-                field={field}
-                marginBottom={40}
-                marginTop={5} padding={1}
-                showXLabels={true}
-                showTitle={false}
-                height={isGroupExpanded ? cardHeight * 4.88 : chartHeight[total]}
-                orientation="h"
-                maxBins={Math.min(isGroupExpanded ? 16 : Math.min(6, total))}
-              />
-            </div>
-
+              </button>
+            ) : null}
           </div>
         </div>
       </div>
+      <div>
+        <div
+          className={isFacetView ? "flip-card" : "flip-card flip-card-flipped"}
+        >
+          <div className="card-face bg-white">
+            <div>
+              <div className="flex flex-row items-center justify-between flex-wrap border p-1">
+                <button
+                  className={
+                    "ml-0.5 border rounded-sm border-nci-gray-darkest bg-nci-cyan hover:bg-nci-cyan-lightest text-white hover:text-nci-cyan-darker"
+                  }
+                >
+                  <AlphaSortIcon
+                    onClick={() => setIsSortedByValue(false)}
+                    scale="1.5em"
+                  />
+                </button>
+                <div className={"flex flex-row items-center "}>
+                  <button
+                    onClick={() => setIsSortedByValue(true)}
+                    className={
+                      "border rounded-sm border-nci-cyan-darkest bg-nci-cyan hover:bg-nci-cyan-lightest text-white hover:text-nci-cyan-darker"
+                    }
+                  >
+                    <SortIcon scale="1.5em" />
+                  </button>
+                  <p className="px-2 mr-3">{valueLabel}</p>
+                </div>
+              </div>
 
+              <div className={cardStyle}>
+                {isSuccess ? (
+                  Object.entries(data)
+                    .filter((data) => data[0] != "_missing")
+                    .sort(
+                      isSortedByValue
+                        ? ([, a], [, b]) => b - a
+                        : ([a], [b]) => a.localeCompare(b),
+                    )
+                    .map(([value, count], i) => {
+                      if (!isGroupExpanded && i >= maxValuesToDisplay)
+                        return null;
+                      return (
+                        <div
+                          key={`${field}-${value}`}
+                          className="flex flex-row gap-x-1 px-2"
+                        >
+                          <div className="flex-none">
+                            <input
+                              type="checkbox"
+                              value={value}
+                              onChange={handleChange}
+                              className="bg-nci-cyan-lightest hover:bg-nci-cyan-darkest text-nci-cyan-darkest"
+                              checked={
+                                selectedEnums && selectedEnums.includes(value)
+                              }
+                            />
+                          </div>
+                          <div className="flex-grow truncate ... font-heading text-md pt-0.5">
+                            {value}
+                          </div>
+                          <div className="flex-none text-right w-14 ">
+                            {count.toLocaleString()}
+                          </div>
+                          <div className="flex-none text-right w-18 ">
+                            (
+                            {((count / 85415) * 100)
+                              .toFixed(2)
+                              .toLocaleString()}
+                            %)
+                          </div>
+                        </div>
+                      );
+                    })
+                ) : (
+                  <div>
+                    {
+                      // uninitialized, loading, error animated bars
+                      Array.from(Array(numberOfLines)).map((_, index) => {
+                        return (
+                          <div
+                            key={`${field}-${index}`}
+                            className="flex flex-row items-center px-2"
+                          >
+                            <div className="flex-none">
+                              <input
+                                type="checkbox"
+                                className="bg-nci-cyan-lightest hover:bg-nci-cyan-darkest text-nci-cyan-darkest"
+                              />
+                            </div>
+                            <div className="flex-grow h-4 align-center justify-center mt-1 ml-1 mr-8 bg-nci-gray-light rounded-b-sm animate-pulse" />
+                            <div className="flex-none h-4 align-center justify-center mt-1 w-10 bg-nci-gray-light rounded-b-sm animate-pulse" />
+                          </div>
+                        );
+                      })
+                    }
+                  </div>
+                )}
+              </div>
+            </div>
+            {
+              <div className="mt-3 m-1">
+                {remainingValues > 0 ? (
+                  !isGroupExpanded ? (
+                    <div className="flex flex-row justify-end items-center border-t-2 p-1.5">
+                      <MoreIcon
+                        key="show-more"
+                        size="1.5em"
+                        className="text-nci-cyan-darkest"
+                        onClick={() => setIsGroupExpanded(!isGroupExpanded)}
+                      />
+                      <div className="pl-1 text-nci-cyan-darkest">
+                        {" "}
+                        {isSuccess ? remainingValues : "..."} more
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex flex-row justify-end items-center border-t-2 border-b-0 border-r-0 border-l-0 p-1.5">
+                      <LessIcon
+                        key="show-less"
+                        size="1.5em"
+                        className="text-nci-cyan-darkest"
+                        onClick={() => setIsGroupExpanded(!isGroupExpanded)}
+                      />
+                      <div className="pl-1 text-nci-cyan-darkest">
+                        {" "}
+                        show less
+                      </div>
+                    </div>
+                  )
+                ) : null}
+              </div>
+            }
+          </div>
+
+          <div className="card-face card-back bg-white">
+            <FacetChart
+              field={field}
+              marginBottom={40}
+              marginTop={5}
+              padding={1}
+              showXLabels={true}
+              showTitle={false}
+              height={isGroupExpanded ? cardHeight * 4.88 : chartHeight[total]}
+              orientation="h"
+              maxBins={Math.min(isGroupExpanded ? 16 : Math.min(6, total))}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
-
-
-

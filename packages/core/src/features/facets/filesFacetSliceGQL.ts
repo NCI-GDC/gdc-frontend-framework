@@ -1,14 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { CoreDispatch, CoreState } from "../../store";
-import {
-  graphqlAPI,
-  GraphQLApiResponse
-} from "../gdcapi/gdcgraphql";
+import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 
 import { selectCurrentCohortGqlFilters } from "../cohort/cohortFilterSlice";
 import {
   FacetBuckets,
-  buildGraphGLBucketQuery, processBuckets,
+  buildGraphGLBucketQuery,
+  processBuckets,
 } from "./facetApiGQL";
 
 /**
@@ -19,13 +17,12 @@ export const fetchFileFacetByName = createAsyncThunk<
   GraphQLApiResponse<Record<string, unknown>>,
   string,
   { dispatch: CoreDispatch; state: CoreState }
-  >("facet/fetchFilesFacetByName", async (field: string, thunkAPI) => {
+>("facet/fetchFilesFacetByName", async (field: string, thunkAPI) => {
   const filters = selectCurrentCohortGqlFilters(thunkAPI.getState());
-  const queryGQL = buildGraphGLBucketQuery("files", field, "repository" );
-  const filtersGQL =
-    {
-      "filters_0": filters? filters: {}
-    }
+  const queryGQL = buildGraphGLBucketQuery("files", field, "repository");
+  const filtersGQL = {
+    filters_0: filters ? filters : {},
+  };
   return await graphqlAPI(queryGQL, filtersGQL);
 });
 
@@ -44,8 +41,9 @@ const filesSlice = createSlice({
           state[action.meta.arg].status = "rejected";
           state[action.meta.arg].error = response.errors.facets;
         } else {
-          const aggregations = Object(response).data.viewer.repository.files.aggregations;
-           aggregations && processBuckets(aggregations, state);
+          const aggregations =
+            Object(response).data.viewer.repository.files.aggregations;
+          aggregations && processBuckets(aggregations, state);
         }
       })
       .addCase(fetchFileFacetByName.pending, (state, action) => {
@@ -63,11 +61,11 @@ const filesSlice = createSlice({
   },
 });
 
-
 export const fileFacetsReducer = filesSlice.reducer;
 
-export const selectFilesFacets = (state: CoreState): Record<string, FacetBuckets> =>
-  state.facetsGQL.files;
+export const selectFilesFacets = (
+  state: CoreState,
+): Record<string, FacetBuckets> => state.facetsGQL.files;
 
 export const selectFilesFacetByField = (
   state: CoreState,
@@ -76,5 +74,3 @@ export const selectFilesFacetByField = (
   const files = state.facetsGQL.files;
   return files[field];
 };
-
-

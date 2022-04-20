@@ -1,51 +1,55 @@
-import Plot from 'react-plotly.js';
+import Plot from "react-plotly.js";
 import GeneData from "./genes.json";
 import MutationData from "./mutations.json";
 
 const createChartData = (which) => {
-  const input_data = (which === "gene") ? GeneData["MostFrequentGenes"] : MutationData["MostFrequentMutation"];
+  const input_data =
+    which === "gene"
+      ? GeneData["MostFrequentGenes"]
+      : MutationData["MostFrequentMutation"];
 
   const data = {
-    x: input_data.map(item => item.gene_label),
-    y: input_data.map(item => item.percent),
+    x: input_data.map((item) => item.gene_label),
+    y: input_data.map((item) => item.percent),
     labels: null,
     type: "bar",
-    filename: (which === "gene") ? "gene_chart.svg" : "mutation_chart.svg",
-    chart_title: (which === "gene") ? "Distribution of Most Frequently Mutated Genes" : "Distribution of Mutations"
+    filename: which === "gene" ? "gene_chart.svg" : "mutation_chart.svg",
+    chart_title:
+      which === "gene"
+        ? "Distribution of Most Frequently Mutated Genes"
+        : "Distribution of Mutations",
   };
 
   return data;
-}
+};
 
-const GeneMutationChart = ({which} ) => {
+const GeneMutationChart = ({ which }) => {
   const chart_data = createChartData(which);
 
   const chartData = {
     ...chart_data,
     textinfo: "label+percent",
-    uniformtext_mode: 'hide',
+    uniformtext_mode: "hide",
     title: null,
 
     showlegend: false,
     marker: {
       line: {
-        color: '#ffffff',
+        color: "#ffffff",
         width: 2,
       },
     },
     textposition: "outside",
-    insidetextorientation: 'horizontal',
-
+    insidetextorientation: "horizontal",
   };
 
-   const layout = {
-
-    uniformtext: { mode: 'hide', minsize: 8 } ,
+  const layout = {
+    uniformtext: { mode: "hide", minsize: 8 },
     width: "100%",
-     height:380,
-     title: chart_data.chart_title,
+    height: 380,
+    title: chart_data.chart_title,
     titlefont: {
-      family: 'Arial, sans-serif',
+      family: "Arial, sans-serif",
       size: 24,
     },
     xaxis: {
@@ -53,45 +57,55 @@ const GeneMutationChart = ({which} ) => {
       tickangle: 45,
       tickfont: {
         size: 10,
-        color: 'rgb(107, 107, 107)'
+        color: "rgb(107, 107, 107)",
       },
     },
     yaxis: {
-      title: '% Cases Affected',
+      title: "% Cases Affected",
       titlefont: {
-        family: 'Arial, sans-serif',
+        family: "Arial, sans-serif",
         size: 24,
       },
       tickfont: {
         size: 16,
-        color: 'rgb(107, 107, 107)'
+        color: "rgb(107, 107, 107)",
       },
     },
-     autosize: true,
-     margin: {
-       l: 100,
-       r: 10,
-       b: 90,
-       t: 50,
-       pad: 4
-     },
+    autosize: true,
+    margin: {
+      l: 100,
+      r: 10,
+      b: 90,
+      t: 50,
+      pad: 4,
+    },
   };
-  const config = {responsive: false,
+  const config = {
+    responsive: false,
     toImageButtonOptions: {
-      format: 'png', // one of png, svg, jpeg, webp
+      format: "png", // one of png, svg, jpeg, webp
       filename: chart_data.filename,
       height: 500,
       width: 700,
-      scale: 1 // Multiply title/legend/axis/canvas sizes by this factor
+      scale: 1, // Multiply title/legend/axis/canvas sizes by this factor
     },
-    "displaylogo": false,
-    'modeBarButtonsToRemove': ['zoom2d', 'pan2d', 'select2d', 'lasso2d', 'zoomIn2d', 'zoomOut2d', 'autoScale2d', 'resetScale2d']
-
-  }
-  return (<div>
-    <Plot data={[chartData]} layout={layout} config={config}/>
-  </div>);
-
+    displaylogo: false,
+    modeBarButtonsToRemove: [
+      "zoom2d",
+      "pan2d",
+      "select2d",
+      "lasso2d",
+      "zoomIn2d",
+      "zoomOut2d",
+      "autoScale2d",
+      "resetScale2d",
+    ],
+  };
+  return (
+    <div>
+      <Plot data={[chartData]} layout={layout} config={config} />
+    </div>
+  );
 };
 
 export default GeneMutationChart;

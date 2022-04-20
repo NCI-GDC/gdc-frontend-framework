@@ -8,6 +8,5 @@ export const fileCaseGenesMutationsFacetReducers = combineReducers({
   cases: caseFacetsReducer,
   files: fileFacetsReducer,
   genes: genesFacetReducer,
-  ssms: mutationsFacetReducer
-})
-
+  ssms: mutationsFacetReducer,
+});

@@ -134,11 +134,9 @@ const fetchSsmAnalysisQuery = async (gene: string, ssms: string) => {
         },
       };
 
-  return await graphqlAPI(
-    graphqlQuery,
-    graphqlFilters,
-  ) as GraphQLApiResponse<Record<string, any>>
-
+  return (await graphqlAPI(graphqlQuery, graphqlFilters)) as GraphQLApiResponse<
+    Record<string, any>
+  >;
 };
 
 export const fetchSsmPlot = createAsyncThunk(

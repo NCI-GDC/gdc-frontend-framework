@@ -1,12 +1,9 @@
 import { NextPage } from "next";
-import {
-  UserFlowVariedPages,
-} from "../../../features/layout/UserFlowVariedPages";
+import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
 import { ContextualFileView } from "../../../features/files/FileSummary";
 import { headerElements } from "./navigation-utils";
 
 const FileSummary: NextPage = () => {
-
   return (
     <UserFlowVariedPages
       {...{ indexPath: "/user-flow/many-pages", headerElements }}

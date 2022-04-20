@@ -8,13 +8,15 @@ import {
 
 import { CoreDispatch, CoreState } from "../../store";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
-import { selectCurrentCohortFilters, selectCurrentCohortGqlFilters } from "./cohortFilterSlice";
+import {
+  selectCurrentCohortFilters,
+  selectCurrentCohortGqlFilters,
+} from "./cohortFilterSlice";
 
-export interface CountsState  {
+export interface CountsState {
   readonly counts: Record<string, number>;
   readonly status: DataStatus;
   readonly error?: string;
-
 }
 
 const initialState: CountsState = {
@@ -23,7 +25,7 @@ const initialState: CountsState = {
     fileCounts: -1,
     genesCounts: -1,
     mutationCounts: -1,
-    casesMax: -1
+    casesMax: -1,
   },
   status: "uninitialized",
 };
@@ -67,17 +69,11 @@ export const fetchCohortCaseCounts = createAsyncThunk<
   GraphQLApiResponse,
   void,
   { dispatch: CoreDispatch; state: CoreState }
-  >(
-  "cohort/counts",
-  async ( _, thunkAPI): Promise<GraphQLApiResponse> => {
-    const cohortFilters = selectCurrentCohortGqlFilters(thunkAPI.getState());
-    const graphQlFilters = cohortFilters? {filters: cohortFilters}: {}
-    return await graphqlAPI(
-      CountsGraphQLQuery,
-      graphQlFilters,
-    );
-  },
-);
+>("cohort/counts", async (_, thunkAPI): Promise<GraphQLApiResponse> => {
+  const cohortFilters = selectCurrentCohortGqlFilters(thunkAPI.getState());
+  const graphQlFilters = cohortFilters ? { filters: cohortFilters } : {};
+  return await graphqlAPI(CountsGraphQLQuery, graphQlFilters);
+});
 
 const slice = createSlice({
   name: "cohort/counts",
@@ -89,17 +85,21 @@ const slice = createSlice({
         const response = action.payload;
 
         if (response.errors && Object.keys(response.errors).length > 0) {
-            state.status = "rejected";
-            state.error = response.errors.counts;
+          state.status = "rejected";
+          state.error = response.errors.counts;
         } else {
           // copy the counts for explore and repository
           state.counts = {
-            caseCounts : response.data.viewer.explore.cases.hits.total,
-            genesCounts : response.data.viewer.explore.genes.hits.total,
-            mutationCounts : response.data.viewer.explore.ssms.hits.total,
-            fileCounts : response.data.viewer.repository.files.hits.total,
-            repositoryCaseCounts : response.data.viewer.repository.cases.hits.total,
-            casesMax: Math.max(response.data.viewer.explore.cases.hits.total, response.data.viewer.repository.cases.hits.total )
+            caseCounts: response.data.viewer.explore.cases.hits.total,
+            genesCounts: response.data.viewer.explore.genes.hits.total,
+            mutationCounts: response.data.viewer.explore.ssms.hits.total,
+            fileCounts: response.data.viewer.repository.files.hits.total,
+            repositoryCaseCounts:
+              response.data.viewer.repository.cases.hits.total,
+            casesMax: Math.max(
+              response.data.viewer.explore.cases.hits.total,
+              response.data.viewer.repository.cases.hits.total,
+            ),
           };
           state.status = "fulfilled";
           state.error = undefined;
@@ -113,7 +113,7 @@ const slice = createSlice({
         state.status = "rejected";
       });
   },
-})
+});
 
 export const cohortCountsReducer = slice.reducer;
 
@@ -127,17 +127,24 @@ export const selectCohortCountsData = (
   };
 };
 
-export const selectCohortCounts = (state: CoreState) : Record<string, number>  => state.cohort.counts.counts;
+export const selectCohortCounts = (state: CoreState): Record<string, number> =>
+  state.cohort.counts.counts;
 
-export const selectCohortCountsByName = (state: CoreState, name : string) : number => {
+export const selectCohortCountsByName = (
+  state: CoreState,
+  name: string,
+): number => {
   const counts = state.cohort.counts.counts;
   return counts[name];
-}
+};
 
-export const useCohortCounts = createUseCoreDataHook(fetchCohortCaseCounts, selectCohortCountsData);
-
-export const useFilteredCohortCounts = createUseFiltersCoreDataHook(fetchCohortCaseCounts,
+export const useCohortCounts = createUseCoreDataHook(
+  fetchCohortCaseCounts,
   selectCohortCountsData,
-  selectCurrentCohortFilters);
+);
 
-
+export const useFilteredCohortCounts = createUseFiltersCoreDataHook(
+  fetchCohortCaseCounts,
+  selectCohortCountsData,
+  selectCurrentCohortFilters,
+);

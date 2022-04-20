@@ -1,4 +1,3 @@
-
 export interface IconSize {
   readonly width: number;
   readonly height: number;
@@ -14,35 +13,34 @@ export interface AppRegistrationEntry {
   readonly description?: string;
   readonly iconSize?: IconSize;
   readonly caseCounts?: number; // Added for MR Demo TODO: Compute real values
-  readonly hideCounts?:boolean;
-  readonly optimizeRules?: ReadonlyArray<string>
+  readonly hideCounts?: boolean;
+  readonly optimizeRules?: ReadonlyArray<string>;
 }
 
 const descendingOrd = (array) => {
   return array.sort((a, b) => {
     if (a < b) {
-      return -1
+      return -1;
     } else if (a > b) {
-      return 1
+      return 1;
     } else {
-      return 0
+      return 0;
     }
-  })
-}
+  });
+};
 
 const ascendingOrd = (array) => {
   return array.sort((a, b) => {
     if (b < a) {
-      return -1
+      return -1;
     } else if (b > a) {
-      return 1
+      return 1;
     } else {
-      return 0
+      return 0;
     }
-  })
-}
+  });
+};
 
-export const sortAlphabetically = (array, direction ) => {
-  return direction === "a-z" ? descendingOrd(array) : ascendingOrd(array)
-}
-
+export const sortAlphabetically = (array, direction) => {
+  return direction === "a-z" ? descendingOrd(array) : ascendingOrd(array);
+};

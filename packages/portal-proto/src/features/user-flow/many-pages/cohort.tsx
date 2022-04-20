@@ -56,39 +56,52 @@ export const CohortManager: React.FC<CohortManagerProps> = ({
   ];
 
   const COHORTS = [
-    { name: 'New Custom Cohort',
+    {
+      name: "New Custom Cohort",
       // facets : [ { name:"Primary Site", op:"any of", value: "bronchus and lung"} ],
-      facets : [ { name:"Project", op:"any of", value: "TCGA-LUAD / CPTAC3" } ],
+      facets: [{ name: "Project", op: "any of", value: "TCGA-LUAD / CPTAC3" }],
       case_count: "1,326",
-      file_count: "59,239"
+      file_count: "59,239",
     },
     {
       name: "Lung Cohort",
       facets: [
-        { name:"Project", op:"any of", value: "TCGA-LUAD / CPTAC3" },
+        { name: "Project", op: "any of", value: "TCGA-LUAD / CPTAC3" },
         { name: "Primary Site", op: "any of", value: "bronchus and lung" },
         { name: "Age of Diagnosis", op: "between", value: "65 and 89" },
       ],
       case_count: "2,425",
       file_count: "29,074",
     },
-    { name: " Final Cohort",
-      facets : [
-        { name:"Project", op:"any of", value: "TCGA-LUAD / CPTAC3" },
-        { name:"Primary Site", op:"any of ", value: "bronchus and lung"},
-        { name:"Primary Diagnosis", op:"any_of", value: "squamous cell carcinoma, nos / squamous cell carcinoma, keratinizing, nos / basaloid squamous cell car…"},
-        { name:"Age of Diagnosis", op:"between", value: "65 and 89"},
-        { name:"Gene", op:"any of", value: "TP53,KMT2D,PIK3CA,NFE2L2,CDH8,KEAP1,PTEN,ADCY8,PTPRT,CALCR,GRM8,FBXW7,RB1,CDKN2A"}
+    {
+      name: " Final Cohort",
+      facets: [
+        { name: "Project", op: "any of", value: "TCGA-LUAD / CPTAC3" },
+        { name: "Primary Site", op: "any of ", value: "bronchus and lung" },
+        {
+          name: "Primary Diagnosis",
+          op: "any_of",
+          value:
+            "squamous cell carcinoma, nos / squamous cell carcinoma, keratinizing, nos / basaloid squamous cell car…",
+        },
+        { name: "Age of Diagnosis", op: "between", value: "65 and 89" },
+        {
+          name: "Gene",
+          op: "any of",
+          value:
+            "TP53,KMT2D,PIK3CA,NFE2L2,CDH8,KEAP1,PTEN,ADCY8,PTPRT,CALCR,GRM8,FBXW7,RB1,CDKN2A",
+        },
       ],
       case_count: "179",
-      file_count: "2,198"
+      file_count: "2,198",
     },
-    { name: 'All GDC Cases',
-      facets : [  ],
+    {
+      name: "All GDC Cases",
+      facets: [],
       case_count: "84,609",
-      file_count: "618,198"
-    }
-  ]
+      file_count: "618,198",
+    },
+  ];
 
   const menu_items = COHORTS.map((x, index) => {
     return { value: index, label: x.name };
@@ -252,21 +265,19 @@ export const CohortBuilder: React.FC<CohortBuilderProps> = ({
   show = true,
   handleCaseSelected,
 }: CohortBuilderProps) => {
-
   const [searchResults, setSearchResults] = useState([]);
 
   const updateSummaryCharts = (op, field) => {
-    if (op === "add")
-      setSummaryFields([...summaryFields, field])
+    if (op === "add") setSummaryFields([...summaryFields, field]);
     if (op === "remove")
-      setSummaryFields(summaryFields.filter((x) => x !== field))
-  }
+      setSummaryFields(summaryFields.filter((x) => x !== field));
+  };
 
   const [summaryFields, setSummaryFields] = useState([
     "primary_site",
     "demographic.gender",
     "disease_type",
-    "diagnoses.tissue_or_organ_of_origin"
+    "diagnoses.tissue_or_organ_of_origin",
   ]);
 
   return (
@@ -279,7 +290,10 @@ export const CohortBuilder: React.FC<CohortBuilderProps> = ({
       <div className="">
         <CohortGroup cohorts={cohort} simpleMode={true}></CohortGroup>
         <MetaSearch onChange={(r) => r}></MetaSearch>
-        <CohortTabbedFacets searchResults={[]}  onUpdateSummaryChart={updateSummaryCharts} ></CohortTabbedFacets>
+        <CohortTabbedFacets
+          searchResults={[]}
+          onUpdateSummaryChart={updateSummaryCharts}
+        ></CohortTabbedFacets>
       </div>
       <div className="pt-4">
         <SummaryCharts fields={summaryFields} />

@@ -1,8 +1,11 @@
 import { useProjects, useAnnotations } from "@gff/core";
 import SummaryCount from "../../components/SummaryCount";
-import { HorizontalTable, HorizontalTableProps } from "../../components/HorizontalTable";
+import {
+  HorizontalTable,
+  HorizontalTableProps,
+} from "../../components/HorizontalTable";
 import { FaUser, FaFile, FaEdit, FaTable } from "react-icons/fa";
-import {get} from 'lodash';
+import { get } from "lodash";
 
 export interface ContextualProjectViewProps {
   readonly setCurrentProject: string;
@@ -17,21 +20,29 @@ export const ContextualProjectView: React.FC<ContextualProjectViewProps> = (
       content: {
         field: "project_id",
         value: props.setCurrentProject,
-      }
-    },
-    expand: ['summary', 'summary.data_categories', 'summary.experimental_strategies', 'program']
-  });
-  const annotationCount  = useAnnotations({
-      filters: {
-        op: "=",
-        content: {
-          field: "project.project_id",
-          value: props.setCurrentProject,
-        }
       },
-      size: 0
-    });
-  const projectWithAnnotation = {...projectData.data[0], ...annotationCount.data[0]};
+    },
+    expand: [
+      "summary",
+      "summary.data_categories",
+      "summary.experimental_strategies",
+      "program",
+    ],
+  });
+  const annotationCount = useAnnotations({
+    filters: {
+      op: "=",
+      content: {
+        field: "project.project_id",
+        value: props.setCurrentProject,
+      },
+    },
+    size: 0,
+  });
+  const projectWithAnnotation = {
+    ...projectData.data[0],
+    ...annotationCount.data[0],
+  };
   return <ProjectView projectData={projectWithAnnotation} />;
 };
 
@@ -51,8 +62,8 @@ export interface ProjectViewProps {
       readonly name: string;
       readonly program_id: string;
     };
-    readonly annotationCount: number
-  }
+    readonly annotationCount: number;
+  };
 }
 
 export interface SummaryCardProps {
@@ -62,21 +73,21 @@ export interface SummaryCardProps {
 }
 
 export const SummaryCard: React.FC<SummaryCardProps> = (SummaryCardProps) => {
-  return (<div>
-    <h2 className="bg-white p-2 text-lg mx-4">
-      <FaTable className="inline-block mr-2 align-baseline"/>
-      {SummaryCardProps.title}
-    </h2>
-    <div className="mx-4 text-sm">
-      {SummaryCardProps.message}
+  return (
+    <div>
+      <h2 className="bg-white p-2 text-lg mx-4">
+        <FaTable className="inline-block mr-2 align-baseline" />
+        {SummaryCardProps.title}
+      </h2>
+      <div className="mx-4 text-sm">{SummaryCardProps.message}</div>
+      {
+        //TODO NoResultsMessage if no data
+      }
+      <div className="p-4">
+        <HorizontalTable tableData={SummaryCardProps.tableData} />
+      </div>
     </div>
-    {
-      //TODO NoResultsMessage if no data
-    }
-    <div className="p-4">
-      <HorizontalTable tableData={SummaryCardProps.tableData}/>
-    </div>
-  </div>);
+  );
 };
 
 export const ProjectView: React.FC<ProjectViewProps> = ({
@@ -86,32 +97,37 @@ export const ProjectView: React.FC<ProjectViewProps> = ({
     //Headers for table
     const headersConfig = [
       {
-        "field": "projectId",
-        "name": "Project ID"
-      },{
-        "field": "program.dbgap_accession_number",
-        "name": "dbGaP Study Accession"
-      },{
-        "field": "name",
-        "name": "Project Name"
-      },{
-        "field": "disease_type",
-        "name": "Disease Type"
-      },{
-        "field": "primary_site",
-        "name": "Primary Site"
-      },{
-        "field": "program.name",
-        "name": "Program"
-      }
+        field: "projectId",
+        name: "Project ID",
+      },
+      {
+        field: "program.dbgap_accession_number",
+        name: "dbGaP Study Accession",
+      },
+      {
+        field: "name",
+        name: "Project Name",
+      },
+      {
+        field: "disease_type",
+        name: "Disease Type",
+      },
+      {
+        field: "primary_site",
+        name: "Primary Site",
+      },
+      {
+        field: "program.name",
+        name: "Program",
+      },
     ];
     //match headers with available properties
-    return headersConfig.reduce((output, obj)=>{
+    return headersConfig.reduce((output, obj) => {
       const value = get(projectData, obj.field);
       if (value) {
         output.push({
           headerName: obj.name,
-          values: [value]
+          values: [value],
         });
       }
       return output;
@@ -120,42 +136,61 @@ export const ProjectView: React.FC<ProjectViewProps> = ({
   return (
     <div>
       <div className="bg-white py-4 px-8 shadow-lg">
-        <span className="rounded-full bg-nci-blue-darker text-white p-1 align-text-bottom mr-2">PR</span>
-        <span className="text-2xl text-nci-blue-darker">{projectData.projectId}</span>
+        <span className="rounded-full bg-nci-blue-darker text-white p-1 align-text-bottom mr-2">
+          PR
+        </span>
+        <span className="text-2xl text-nci-blue-darker">
+          {projectData.projectId}
+        </span>
       </div>
       <div className="p-4">
         <div className="text-nci-gray flex">
           <div className="flex-auto">
             <SummaryCard
               title={"Summary"}
-              message={(<>The project has controlled access data which requires dbGaP Access. See instructions for <a href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data" className="text-nci-blue underline">Obtaining Access to Controlled Data.</a></>)}
+              message={
+                <>
+                  The project has controlled access data which requires dbGaP
+                  Access. See instructions for{" "}
+                  <a
+                    href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
+                    className="text-nci-blue underline"
+                  >
+                    Obtaining Access to Controlled Data.
+                  </a>
+                </>
+              }
               tableData={formatDataForSummery()}
             />
           </div>
           <div className="flex-initial w-1/4 max-w-xs ">
-            {projectData.summary?.case_count?
-              <SummaryCount 
-                title={'Cases'} 
+            {projectData.summary?.case_count ? (
+              <SummaryCount
+                title={"Cases"}
                 count={projectData.summary.case_count.toLocaleString()}
-                buttonAction={()=>{alert('Cases click')}}
-                icon={<FaUser/>}
-              />:null
-            }
-            {projectData.summary?.file_count?
-              <SummaryCount 
-                title={'Files'} 
+                buttonAction={() => {
+                  alert("Cases click");
+                }}
+                icon={<FaUser />}
+              />
+            ) : null}
+            {projectData.summary?.file_count ? (
+              <SummaryCount
+                title={"Files"}
                 count={projectData.summary.file_count.toLocaleString()}
-                icon={<FaFile/>}
-              />:null
-            }
-            {projectData.annotationCount?
-              <SummaryCount 
-                title={'Annotations'} 
+                icon={<FaFile />}
+              />
+            ) : null}
+            {projectData.annotationCount ? (
+              <SummaryCount
+                title={"Annotations"}
                 count={projectData.annotationCount.toLocaleString()}
-                buttonAction={()=>{alert('Annotations click')}}
-                icon={<FaEdit/>}
-              />:null
-            }
+                buttonAction={() => {
+                  alert("Annotations click");
+                }}
+                icon={<FaEdit />}
+              />
+            ) : null}
           </div>
         </div>
       </div>

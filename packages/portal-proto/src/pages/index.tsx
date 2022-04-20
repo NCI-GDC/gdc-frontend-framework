@@ -31,7 +31,6 @@ const IndexPage: NextPage = () => {
       <div className="flex flex-col">
         <Section>
           User Flow Prototypes:
-
           <ul className="list-disc list-inside">
             <li>
               <HoverLink href="/user-flow/many-pages/">Many Pages</HoverLink>
@@ -50,9 +49,7 @@ const IndexPage: NextPage = () => {
               </HoverLink>
             </li>
             <li>
-              <HoverLink href="/user-flow/workbench/">
-                Workbench
-              </HoverLink>
+              <HoverLink href="/user-flow/workbench/">Workbench</HoverLink>
             </li>
           </ul>
         </Section>

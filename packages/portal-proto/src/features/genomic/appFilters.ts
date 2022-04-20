@@ -3,6 +3,4 @@
  *  for filtering
  */
 
-export const composeSurvivalFilters = () => {
-
-}
+export const composeSurvivalFilters = () => {};
