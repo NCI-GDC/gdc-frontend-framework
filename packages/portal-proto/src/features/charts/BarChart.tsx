@@ -74,7 +74,7 @@ const BarChart: React.FC<BarChartProps> = ({
               size: 12,
               color: "rgb(107, 107, 107)",
             },
-            tickangle: data.datasets[0].x.length > 6 ? 35 : undefined,
+            tickangle: data?.datasets?.[0]?.x.length > 6 ? 35 : undefined,
           },
           yaxis: {
             title: data.yAxisTitle,
@@ -161,7 +161,7 @@ const BarChart: React.FC<BarChartProps> = ({
       config={config}
       useResizeHandler={true}
       onClick={onClickHandler}
-      className="w-full h-full"
+      className={"w-full h-full"}
     />
   );
 };

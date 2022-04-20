@@ -21,7 +21,11 @@ import { FaCartPlus as AddToCartIcon } from "react-icons/fa";
 
 import SummaryFacets from "./SummaryFacets";
 import { updateEnumFilters } from "../facets/hooks";
-import { useCoreDispatch, clearCohortFilters } from "@gff/core";
+import {
+  useCoreDispatch,
+  clearCohortFilters,
+  setCurrentCohort,
+} from "@gff/core";
 
 const ContextBar: React.FC<CohortGroupProps> = ({
   cohorts,
@@ -37,7 +41,9 @@ const ContextBar: React.FC<CohortGroupProps> = ({
   const coreDispatch = useCoreDispatch();
 
   const setCohort = (idx: number) => {
-    if (cohorts[idx].facets)
+    coreDispatch(setCurrentCohort(cohorts[idx].name));
+
+    if (cohorts[idx].facets) {
       if (cohorts[idx].facets.length == 0) {
         coreDispatch(clearCohortFilters());
       } else {
@@ -45,6 +51,7 @@ const ContextBar: React.FC<CohortGroupProps> = ({
           updateEnumFilters(coreDispatch, x.value, x.field);
         });
       }
+    }
   };
 
   const [summaryFields] = useState([

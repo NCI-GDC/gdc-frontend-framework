@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { setupListeners } from '@reduxjs/toolkit/query'
+import { setupListeners } from "@reduxjs/toolkit/query";
 import { cohortReducers } from "./features/cohort/cohortSlice";
 import { sessionReducer } from "./features/session/sessionSlice";
 import { facetsReducer } from "./features/facets/facetSlice";
@@ -17,7 +17,8 @@ import { oncoGridReducer } from "./features/oncoGrid/oncoGridSlice";
 import { genomicReducers } from "./features/genomic/genomicSlice";
 import { ssmPlotReducer } from "./features/cancerDistribution/ssmPlot";
 import { cnvPlotReducer } from "./features/cancerDistribution/cnvPlot";
-import { imageDetailsReducer } from './features/imageDetails/imageDetailsSlice'
+import { imageDetailsReducer } from "./features/imageDetails/imageDetailsSlice";
+import { cohortFacetsReducer } from "./features/cohortComparison/cohortFacetSlice";
 
 export const coreStore = configureStore({
   reducer: {
@@ -35,14 +36,15 @@ export const coreStore = configureStore({
     survival: survivalReducer,
     oncogrid: oncoGridReducer,
     genomic: genomicReducers,
-    imageDetails: imageDetailsReducer
+    imageDetails: imageDetailsReducer,
+    cohortComparison: cohortFacetsReducer,
   },
   devTools: {
     name: "@gff/core",
   },
 });
 
-setupListeners(coreStore.dispatch)
+setupListeners(coreStore.dispatch);
 
 export type CoreDispatch = typeof coreStore.dispatch;
 export type CoreState = ReturnType<typeof coreStore.getState>;
