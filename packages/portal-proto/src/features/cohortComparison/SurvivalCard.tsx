@@ -6,6 +6,7 @@ import {
   buildCohortGqlOperator,
 } from "@gff/core";
 import SurvivalPlot from "../charts/SurvivalPlot";
+import { useEffect } from "react";
 
 const tooltipLabel = (
   <>
@@ -20,10 +21,15 @@ const tooltipLabel = (
 interface SurvivalCardProps {
   readonly counts: number[];
   readonly cohortNames: string[];
+  readonly setSurvivalPlotSelectable: (selectable: boolean) => void;
 }
 
-const SurvivalCard : React.FC<SurvivalCardProps> = ({ counts, cohortNames } : SurvivalCardProps) => {
-  const cohort1Filters =  useCoreSelector((state) =>
+const SurvivalCard: React.FC<SurvivalCardProps> = ({
+  counts,
+  cohortNames,
+  setSurvivalPlotSelectable,
+}: SurvivalCardProps) => {
+  const cohort1Filters = useCoreSelector((state) =>
     buildCohortGqlOperator(
       selectAvailableCohortByName(state, cohortNames[0]).filters,
     ),
@@ -36,7 +42,7 @@ const SurvivalCard : React.FC<SurvivalCardProps> = ({ counts, cohortNames } : Su
   );
 
   // TODO: limit to cases that are only within a single cohort
-  const { data, isFetching } = useSurvivalPlot({
+  const { data } = useSurvivalPlot({
     filters: [
       {
         op: "and",
@@ -49,44 +55,59 @@ const SurvivalCard : React.FC<SurvivalCardProps> = ({ counts, cohortNames } : Su
     ],
   });
 
-  const cohort1Count = data.survivalData[0] ? data.survivalData[0].donors?.length : 0;
-  const cohort2Count = data.survivalData[1] ? data.survivalData[1].donors?.length : 0;
+  useEffect(() => {
+    setSurvivalPlotSelectable(data.survivalData.length !== 0);
+  }, [data, setSurvivalPlotSelectable]);
+
+  const cohort1Count = data.survivalData[0]
+    ? data.survivalData[0].donors?.length
+    : 0;
+  const cohort2Count = data.survivalData[1]
+    ? data.survivalData[1].donors?.length
+    : 0;
 
   return (
     <Paper p="md" className="min-w-[600px]">
       <h2 className="text-lg font-semibold">Survival Analysis</h2>
-      <LoadingOverlay visible={isFetching} />
-      <SurvivalPlot data={data} />
-      <table className="bg-white w-full text-left text-nci-gray-darker">
-        <thead>
-          <tr className="bg-nci-gray-lightest">
-            <th>
-              <Tooltip label={tooltipLabel} wrapLines>
-                <span className="underline decoration-dashed">
-                  {"Cases included in Analysis"}
-                </span>
-              </Tooltip>
-            </th>
-            <th>
-              # Cases S<sub>1</sub>
-            </th>
-            <th>%</th>
-            <th>
-              # Cases S<sub>2</sub>
-            </th>
-            <th>%</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Overall Survival Analysis</td>
-            <td>{cohort1Count}</td>
-            <td>{((cohort1Count / counts[0]) * 100).toFixed(0)}%</td>
-            <td>{cohort2Count}</td>
-            <td>{((cohort2Count / counts[1]) * 100).toFixed(0)}%</td>
-          </tr>
-        </tbody>
-      </table>
+      {data.survivalData.length === 0 ? (
+        <div className="p-1">
+          {"No Survival data available for this Cohort Comparison"}
+        </div>
+      ) : (
+        <>
+          <SurvivalPlot data={data} />
+          <table className="bg-white w-full text-left text-nci-gray-darker">
+            <thead>
+              <tr className="bg-nci-gray-lightest">
+                <th>
+                  <Tooltip label={tooltipLabel} wrapLines>
+                    <span className="underline decoration-dashed">
+                      {"Cases included in Analysis"}
+                    </span>
+                  </Tooltip>
+                </th>
+                <th>
+                  # Cases S<sub>1</sub>
+                </th>
+                <th>%</th>
+                <th>
+                  # Cases S<sub>2</sub>
+                </th>
+                <th>%</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Overall Survival Analysis</td>
+                <td>{cohort1Count}</td>
+                <td>{((cohort1Count / counts[0]) * 100).toFixed(0)}%</td>
+                <td>{cohort2Count}</td>
+                <td>{((cohort2Count / counts[1]) * 100).toFixed(0)}%</td>
+              </tr>
+            </tbody>
+          </table>
+        </>
+      )}
     </Paper>
   );
 };

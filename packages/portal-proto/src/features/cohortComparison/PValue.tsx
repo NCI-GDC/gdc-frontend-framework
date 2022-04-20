@@ -21,12 +21,15 @@ interface PValueProps {
 
 const PValue: React.FC<PValueProps> = ({ data }: PValueProps) => {
   const [pValue, setPValue] = useState(null);
-  const pValueBuckets = useMemo(() => data.map((val) =>
-    val.filter((v) => !noDataKeys.includes(v.key)),
-  ), [data]);
+  const pValueBuckets = useMemo(
+    () => data.map((val) => val.filter((v) => !noDataKeys.includes(v.key))),
+    [data],
+  );
 
   const labels = Array.from(
-    new Set(pValueBuckets.map((bucket) => bucket.map((facet) => facet.key)).flat()),
+    new Set(
+      pValueBuckets.map((bucket) => bucket.map((facet) => facet.key)).flat(),
+    ),
   );
 
   useEffect(() => {
@@ -35,7 +38,9 @@ const PValue: React.FC<PValueProps> = ({ data }: PValueProps) => {
         pValueBuckets.length > 0 &&
         pValueBuckets.every((bucket) => bucket.length === 2)
       ) {
-        const values = pValueBuckets.map((bucket) => bucket.map((facet) => facet.count));
+        const values = pValueBuckets.map((bucket) =>
+          bucket.map((facet) => facet.count),
+        );
         const pValue = await fetchPValue(values);
 
         setPValue(pValue);

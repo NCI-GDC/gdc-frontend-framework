@@ -3,11 +3,12 @@ import VennDiagram from "@/features/charts/VennDiagram/VennDiagram";
 import { FIELD_LABELS } from "src/fields";
 
 interface CohortCardProps {
-  selectedCards: Record<string, boolean>;
-  setSelectedCards: (cards: Record<string, boolean>) => void;
-  counts: number[];
-  options: Record<string, string>;
-  cohortNames: string[];
+  readonly selectedCards: Record<string, boolean>;
+  readonly setSelectedCards: (cards: Record<string, boolean>) => void;
+  readonly counts: number[];
+  readonly options: Record<string, string>;
+  readonly cohortNames: string[];
+  readonly survivalPlotSelectable: boolean;
 }
 
 const CohortCard: React.FC<CohortCardProps> = ({
@@ -16,6 +17,7 @@ const CohortCard: React.FC<CohortCardProps> = ({
   options,
   counts,
   cohortNames,
+  survivalPlotSelectable,
 }: CohortCardProps) => {
   return (
     <Paper p="md" className="h-fit">
@@ -50,6 +52,7 @@ const CohortCard: React.FC<CohortCardProps> = ({
         <div key={value}>
           <input
             id={`cohort-comparison-${value}`}
+            className={"disabled:bg-nci-gray hover:disabled:bg-nci-gray"}
             type="checkbox"
             value={value}
             onChange={() =>
@@ -59,6 +62,7 @@ const CohortCard: React.FC<CohortCardProps> = ({
               })
             }
             checked={selectedCards[value]}
+            disabled={value === "survival" && !survivalPlotSelectable}
           ></input>
           <label className="pl-1" htmlFor={`cohort-comparison-${value}`}>
             {value === "survival" ? field : FIELD_LABELS[field]}

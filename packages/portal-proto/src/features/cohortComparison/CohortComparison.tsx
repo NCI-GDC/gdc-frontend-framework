@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { pickBy } from "lodash";
-import {
-  useCohortFacets,
-} from "@gff/core";
+import { useCohortFacets } from "@gff/core";
 import CohortCard from "./CohortCard";
 import SurvivalCard from "./SurvivalCard";
 import FacetCard from "./FacetCard";
@@ -12,7 +10,10 @@ interface CohortComparisonProps {
   readonly demoMode?: boolean;
 }
 
-const CohortComparison: React.FC<CohortComparisonProps> = ({ cohortNames, demoMode = false } : CohortComparisonProps) => {
+const CohortComparison: React.FC<CohortComparisonProps> = ({
+  cohortNames,
+  demoMode = false,
+}: CohortComparisonProps) => {
   const [selectedCards, setSelectedCards] = useState({
     survival: true,
     ethnicity: false,
@@ -21,6 +22,8 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({ cohortNames, demoMo
     vital_status: true,
     age_at_diagnosis: true,
   } as Record<string, boolean>);
+
+  const [survivalPlotSelectable, setSurvivalPlotSelectable] = useState(true);
 
   const fields = {
     survival: "Survival",
@@ -31,7 +34,7 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({ cohortNames, demoMo
     age_at_diagnosis: "diagnoses.age_at_diagnosis",
   };
 
-  const fieldsToQuery = Object.values(fields).filter(v => v !== 'Survival');
+  const fieldsToQuery = Object.values(fields).filter((v) => v !== "Survival");
 
   const { data } = useCohortFacets({
     facetFields: fieldsToQuery,
@@ -43,13 +46,20 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({ cohortNames, demoMo
   return (
     <>
       <h1 className="text-xl font-semibold p-2">Cohort Comparison</h1>
-      {demoMode && <span className="italic px-2 py-1">{'Demo showing cases with pancreatic cancer with and without mutations in the gene KRAS.'}</span>}
+      {demoMode && (
+        <span className="italic px-2 py-1">
+          {
+            "Demo showing cases with pancreatic cancer with and without mutations in the gene KRAS."
+          }
+        </span>
+      )}
       <div className="flex gap-4">
         <div className="p-1 flex basis-2/4 flex-col gap-4">
           {selectedCards.survival && (
             <SurvivalCard
               cohortNames={cohortNames}
               counts={counts}
+              setSurvivalPlotSelectable={setSurvivalPlotSelectable}
             />
           )}
           {Object.keys(
@@ -75,6 +85,7 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({ cohortNames, demoMo
             counts={counts}
             cohortNames={cohortNames}
             options={fields}
+            survivalPlotSelectable={survivalPlotSelectable}
           />
         </div>
       </div>

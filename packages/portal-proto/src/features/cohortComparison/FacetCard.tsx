@@ -63,7 +63,7 @@ const FacetCard: React.FC<FacetCardProps> = ({
     new Set(formattedData.map((cohort) => cohort.map((b) => b.key)).flat()),
   );
 
-  if (field === 'diagnoses.age_at_diagnosis') {
+  if (field === "diagnoses.age_at_diagnosis") {
     uniqueValues.sort();
   }
 
