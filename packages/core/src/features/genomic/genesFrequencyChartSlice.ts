@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   CoreDataSelectorResponse,
-  createUseMultipleFiltersCoreDataHook,
+  createUseFiltersCoreDataHook,
   DataStatus,
 } from "../../dataAcess";
 import { castDraft } from "immer";
@@ -11,8 +11,7 @@ import {
   graphqlAPI,
   TablePageOffsetProps,
 } from "../gdcapi/gdcgraphql";
-import { selectCurrentCohortFilters } from "../cohort/cohortFilterSlice";
-import { selectGenomicAndCohortGqlFilters, selectGenomicFilters } from "./genomicFilters";
+import { selectGenomicAndCohortGqlFilters } from "./genomicFilters";
 
 const GeneMutationFrequencyQuery = `
     query GeneMutationFrequencyChart (
@@ -156,8 +155,6 @@ export const selectGeneFrequencyChartData = (
 };
 
 
-export const useGeneFrequencyChart = createUseMultipleFiltersCoreDataHook(fetchGeneFrequencies,
+export const useGeneFrequencyChart = createUseFiltersCoreDataHook(fetchGeneFrequencies,
   selectGeneFrequencyChartData,
-  selectCurrentCohortFilters,
-  selectGenomicFilters);
-
+  selectGenomicAndCohortGqlFilters);

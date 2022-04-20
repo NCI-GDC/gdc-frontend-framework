@@ -45,7 +45,6 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
 
   return (
     <>
-      <h1 className="text-xl font-semibold p-2">Cohort Comparison</h1>
       {demoMode && (
         <span className="italic px-2 py-1">
           {

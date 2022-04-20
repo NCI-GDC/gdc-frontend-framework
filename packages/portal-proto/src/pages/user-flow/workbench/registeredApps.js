@@ -89,7 +89,7 @@ export const REGISTERED_APPS = [
     tags: ["variantAnalysis", "cnv", "ssm"],
     hasDemo: true,
     description: "Visualize the top most mutated cases and genes affected by high impact mutations in your cohort.",
-    id: "OncoGrid",
+    id: "OncoGridApp",
     optimizeRules: ["available data = ssm or cnv"]
   },
   {

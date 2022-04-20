@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import { Paper } from "@mantine/core";
-import { CohortFacet } from "@gff/core";
-import { DAYS_IN_YEAR } from "src/constants";
+import { CohortFacet, DAYS_IN_YEAR } from "@gff/core";
 import { FIELD_LABELS } from "src/fields";
 import BarChart from "../charts/BarChart";
 import PValue from "./PValue";
