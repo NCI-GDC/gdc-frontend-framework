@@ -31,8 +31,8 @@ const CohortCard: React.FC<CohortCardProps> = ({
         </div>
         <div>
           <h2 className="text-lg font-semibold"># Cases</h2>
-          <p className="py-1 ">{counts[0]}</p>
-          <p className="py-1">{counts[1]}</p>
+          <p className="py-1 ">{counts[0] ? counts[0].toLocaleString() : 0}</p>
+          <p className="py-1">{counts[1] ? counts[1].toLocaleString() : 0}</p>
         </div>
       </div>
       <hr />
