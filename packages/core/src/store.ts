@@ -19,6 +19,7 @@ import { ssmPlotReducer } from "./features/cancerDistribution/ssmPlot";
 import { cnvPlotReducer } from "./features/cancerDistribution/cnvPlot";
 import { imageDetailsReducer } from './features/imageDetails/imageDetailsSlice'
 import { imageViewerReducer } from './features/imageDetails/imageViewer'
+import { cohortFacetsReducer } from "./features/cohortComparison/cohortFacetSlice";
 
 export const coreStore = configureStore({
   reducer: {
@@ -38,6 +39,7 @@ export const coreStore = configureStore({
     genomic: genomicReducers,
     imageDetails: imageDetailsReducer,
     imageViewer: imageViewerReducer,
+    cohortComparison: cohortFacetsReducer,
   },
   devTools: {
     name: "@gff/core",
