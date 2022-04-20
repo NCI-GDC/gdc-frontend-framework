@@ -211,6 +211,7 @@ const VennDiagram: React.FC<VennDiagramProps> = ({
           .filter((d) => d >= 0),
       ),
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortedChartData]);
 
   const config: Partial<Config> = {

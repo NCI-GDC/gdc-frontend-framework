@@ -1,7 +1,7 @@
 import {
   Operation,
   ValueExtractorHandler,
-  OperationValue,
+  OperandValue,
   CoreDispatch,
   FacetBuckets,
   handleOperation,
@@ -31,19 +31,15 @@ import { useEffect } from "react";
  * Filter selector for all of the facet filters
  */
 const useCohortFacetFilter = (): FilterSet => {
-  return useCoreSelector((state) =>
-    selectCurrentCohortFilters(state),
-  );
+  return useCoreSelector((state) => selectCurrentCohortFilters(state));
 };
 
 const useGenomicFacetFilter = (): FilterSet => {
-  return useCoreSelector((state) =>
-    selectGenomicFilters(state)
-  );
+  return useCoreSelector((state) => selectGenomicFilters(state));
 };
 
-export const extractValue = (op: Operation): OperationValue => {
-  const handler =  new ValueExtractorHandler();
+export const extractValue = (op: Operation): OperandValue => {
+  const handler = new ValueExtractorHandler();
   return handleOperation(handler, op);
 };
 
@@ -51,23 +47,23 @@ export const extractValue = (op: Operation): OperationValue => {
  * Selector for the facet values from the current cohort (if any)
  * @param field
  */
-const useCohortFacetFilterByName = (field: string): OperationValue => {
+const useCohortFacetFilterByName = (field: string): OperandValue => {
   const enumFilters: Operation = useCoreSelector((state) =>
-    selectCurrentCohortFiltersByName(state, field)
+    selectCurrentCohortFiltersByName(state, field),
   );
   return enumFilters ? extractValue(enumFilters) : undefined;
 };
 
-const useGenomicFilterByName = (field: string): OperationValue => {
+const useGenomicFilterByName = (field: string): OperandValue => {
   const enumFilters: Operation = useCoreSelector((state) =>
-    selectGenomicFiltersByName(state, field)
+    selectGenomicFiltersByName(state, field),
   );
   return enumFilters ? extractValue(enumFilters) : undefined;
 };
 
 interface EnumFacetResponse {
   readonly data?: Record<string, number>;
-  readonly enumFilters?: string [] | number [] | undefined;
+  readonly enumFilters?: OperandValue;
   readonly error?: string;
   readonly isUninitialized: boolean;
   readonly isFetching: boolean;
@@ -94,7 +90,7 @@ const useCasesFacet = (field: string): EnumFacetResponse => {
 
   useEffect(() => {
     coreDispatch(fetchCaseFacetByName(field));
-  }, [selectFacetFilter]);
+  }, [coreDispatch, field, selectFacetFilter]);
 
   return {
     data: facet?.buckets,
@@ -126,7 +122,7 @@ const useFilesFacet = (field: string): EnumFacetResponse => {
 
   useEffect(() => {
     coreDispatch(fetchFileFacetByName(field));
-  }, [selectFacetFilter]);
+  }, [coreDispatch, field, selectFacetFilter]);
 
   return {
     data: facet?.buckets,
@@ -161,7 +157,7 @@ const useGenesFacet = (field: string): EnumFacetResponse => {
     if (facet) {
       coreDispatch(fetchGenesFacetByName(field));
     }
-  }, [selectFacetFilter, selectCohortFilter]);
+  }, [coreDispatch, facet, field, selectFacetFilter, selectCohortFilter]);
 
   return {
     data: facet?.buckets,
@@ -196,7 +192,8 @@ const useMutationsFacet = (field: string): EnumFacetResponse => {
     if (facet) {
       coreDispatch(fetchMutationsFacetByName(field));
     }
-  }, [selectFacetFilter, selectCohortFilter]);
+  }, [facet, coreDispatch, field, selectFacetFilter, selectCohortFilter]);
+
   return {
     data: facet?.buckets,
     enumFilters: enumFilters,
@@ -210,48 +207,69 @@ const useMutationsFacet = (field: string): EnumFacetResponse => {
 
 /**
  * Adds a enumeration filter to cohort filters
- * @param dispatch
- * @param enumerationFilters
- * @param field
- * @param prefix
+ * @param dispatch CoreDispatch instance
+ * @param enumerationFilters values to update
+ * @param field field to update
+ * @param prefix optional prefix for fields
  */
-export const updateEnumFilters = (dispatch: CoreDispatch , enumerationFilters: OperationValue, field: string, prefix="" ) => {
-  if (enumerationFilters === undefined)
-    return;
+export const updateEnumFilters = (
+  dispatch: CoreDispatch,
+  enumerationFilters: OperandValue,
+  field: string,
+  prefix = "",
+) => {
+  if (enumerationFilters === undefined) return;
   if (enumerationFilters.length > 0) {
-    dispatch(updateCohortFilter({  field: `${prefix}${field}`, operation: { operator: "includes",
-                                                                                    field: `${prefix}${field}`,
-                                                                                    operands: enumerationFilters }
-                                        }));
-  } else { // completely remove the field
-    dispatch(removeCohortFilter( `${prefix}${field}`));
-  }
-}
-
-export const updateGenomicEnumFilters = (dispatch: CoreDispatch, enumerationFilters : OperationValue, field: string, prefix="" ) => {
-  if (enumerationFilters === undefined)
-    return;
-  if (enumerationFilters.length > 0) {
-    dispatch(updateGenomicFilter({  field: `${prefix}${field}`, operation: { operator: "includes",
+    dispatch(
+      updateCohortFilter({
         field: `${prefix}${field}`,
-        operands: enumerationFilters }
-    }));
-  } else { // completely remove the field
-    dispatch(removeGenomicFilter( `${prefix}${field}`));
+        operation: {
+          operator: "includes",
+          field: `${prefix}${field}`,
+          operands: enumerationFilters,
+        },
+      }),
+    );
+  } else {
+    // completely remove the field
+    dispatch(removeCohortFilter(`${prefix}${field}`));
   }
-}
+};
 
+export const updateGenomicEnumFilters = (
+  dispatch: CoreDispatch,
+  enumerationFilters: OperandValue,
+  field: string,
+  prefix = "",
+) => {
+  if (enumerationFilters === undefined) return;
+  if (enumerationFilters.length > 0) {
+    dispatch(
+      updateGenomicFilter({
+        field: `${prefix}${field}`,
+        operation: {
+          operator: "includes",
+          field: `${prefix}${field}`,
+          operands: enumerationFilters,
+        },
+      }),
+    );
+  } else {
+    // completely remove the field
+    dispatch(removeGenomicFilter(`${prefix}${field}`));
+  }
+};
 
 export const UpdateEnums = {
-  "cases" : updateEnumFilters,
-  "files" : updateEnumFilters,
-  "genes" : updateGenomicEnumFilters,
-  "ssms" : updateGenomicEnumFilters,
-}
+  cases: updateEnumFilters,
+  files: updateEnumFilters,
+  genes: updateGenomicEnumFilters,
+  ssms: updateGenomicEnumFilters,
+};
 
 export const FacetEnumHooks = {
-  "cases" : useCasesFacet,
-  "files" : useFilesFacet,
-  "genes" : useGenesFacet,
-  "ssms" : useMutationsFacet,
-}
+  cases: useCasesFacet,
+  files: useFilesFacet,
+  genes: useGenesFacet,
+  ssms: useMutationsFacet,
+};

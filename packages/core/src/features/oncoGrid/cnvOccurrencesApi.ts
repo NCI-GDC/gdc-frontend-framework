@@ -1,10 +1,16 @@
 import { fetchGdcEntities, GdcApiResponse } from "../gdcapi/gdcapi";
+import { CNVOccurrence } from "./types";
+import { GqlOperation } from "../gdcapi/filters";
 
 export const fetchCNVOccurrences = async (
   genes: string[],
   cases: string[],
   cnvFilters: string[],
-): Promise<GdcApiResponse> => {
+  contextFilters?: GqlOperation,
+): Promise<GdcApiResponse<CNVOccurrence>> => {
+  const caseAndGenomicFilters = contextFilters?.content
+    ? Object(contextFilters?.content)
+    : [];
   return fetchGdcEntities(
     "cnv_occurrences",
     {
@@ -40,13 +46,7 @@ export const fetchCNVOccurrences = async (
             },
             op: "in",
           },
-          {
-            content: {
-              field: "genes.is_cancer_gene_census",
-              value: ["true"],
-            },
-            op: "in",
-          },
+          ...caseAndGenomicFilters,
         ],
       },
     },

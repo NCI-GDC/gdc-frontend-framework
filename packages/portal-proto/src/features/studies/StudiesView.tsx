@@ -10,8 +10,24 @@ import { FacetChart } from "../charts/FacetChart";
 const DLBCL: Project = {
   projectId: "DLBCL",
   name: "Diffuse Large B-Cell Lymphoma",
-  primary_site: ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15'],
-  disease_type: ['Mature B-Cell Lymphomas'],
+  primary_site: [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14",
+    "15",
+  ],
+  disease_type: ["Mature B-Cell Lymphomas"],
 };
 
 export interface ContextualStudiesViewProps {
@@ -155,23 +171,33 @@ export const StudiesView: React.FC<StudiesViewProps> = ({
     { value: "unknown", label: "unknown" },
   ];
   const filterBox = (obj) => {
-    const {data, title, inputId} = obj;
+    const { data, title } = obj;
     return (
       <div className="bg-white border border-nci-gray-lighter shadow-md rounded">
         <div className="bg-nci-gray-lightest p-2 rounded flex">
           <span className="flex-grow">{title}</span>
-          <button className="text-2xl opacity-75 hover:opacity-100"><MdSearch title="Search"/></button>
+          <button className="text-2xl opacity-75 hover:opacity-100">
+            <MdSearch title="Search" />
+          </button>
         </div>
         <div className="bg-white pl-2 flex border-b">
-          <input className="mt-2 border-2 rounded" type="checkbox" title="select all"/>
+          <input
+            className="mt-2 border-2 rounded"
+            type="checkbox"
+            title="select all"
+          />
           <div className="text-xs flex flex-col px-1">
-            <button className="pt-1 px-1 opacity-50 hover:opacity-75"><BsFillTriangleFill title="Up"/></button>
-            <button className="pt-1 px-1 opacity-50 hover:opacity-75 transform rotate-180"><BsFillTriangleFill title="Down"/></button>
+            <button className="pt-1 px-1 opacity-50 hover:opacity-75">
+              <BsFillTriangleFill title="Up" />
+            </button>
+            <button className="pt-1 px-1 opacity-50 hover:opacity-75 transform rotate-180">
+              <BsFillTriangleFill title="Down" />
+            </button>
           </div>
         </div>
         <ul className="h-52 overflow-x-scroll bg-white p-2">
-          {data.map((data)=>{
-            const {value, label} = data;
+          {data.map((data) => {
+            const { value } = data;
             return (
               <li key={`${value}`} className="">
                 <label className="flex py-1">
@@ -184,8 +210,12 @@ export const StudiesView: React.FC<StudiesViewProps> = ({
         </ul>
       </div>
     );
-  }
-  const diseaseTypeFilter = filterBox({title:'Disease Types', data: diseaseTypeOptions, inputId: 'studies-view__disease-type'});
+  };
+  const diseaseTypeFilter = filterBox({
+    title: "Disease Types",
+    data: diseaseTypeOptions,
+    inputId: "studies-view__disease-type",
+  });
 
   const primarySiteOptions: ReadonlyArray<Option> = [
     { value: "adrenal gland", label: "adrenal gland" },
@@ -329,7 +359,11 @@ export const StudiesView: React.FC<StudiesViewProps> = ({
     { value: "vulva", label: "vulva" },
   ];
 
-  const primarySiteFilter = filterBox({title:'Primary Sites', data: primarySiteOptions, inputId: 'studies-view__primary-site'});
+  const primarySiteFilter = filterBox({
+    title: "Primary Sites",
+    data: primarySiteOptions,
+    inputId: "studies-view__primary-site",
+  });
 
   const experimentalStrategyOptions = [
     { value: "ATAC-Seq", label: "ATAC-Seq" },
@@ -345,7 +379,11 @@ export const StudiesView: React.FC<StudiesViewProps> = ({
     { value: "scRNA-Seq", label: "scRNA-Seq" },
   ];
 
-  const experimentalStrategyFilter = filterBox({title:'Experimental Strategies', data: experimentalStrategyOptions, inputId: 'studies-view__experimental-strategy'});
+  const experimentalStrategyFilter = filterBox({
+    title: "Experimental Strategies",
+    data: experimentalStrategyOptions,
+    inputId: "studies-view__experimental-strategy",
+  });
 
   const programOptions = [
     { value: "BEATAML1.0", label: "BEATAML1.0" },
@@ -367,7 +405,11 @@ export const StudiesView: React.FC<StudiesViewProps> = ({
     { value: "WCDT", label: "WCDT" },
   ];
 
-  const programFilter = filterBox({title:'Program', data: programOptions, inputId: 'studies-view__program'});
+  const programFilter = filterBox({
+    title: "Program",
+    data: programOptions,
+    inputId: "studies-view__program",
+  });
 
   const sortOptions = [
     { value: "a-z", label: "Sort: A-Z" },
@@ -394,13 +436,19 @@ export const StudiesView: React.FC<StudiesViewProps> = ({
       </div>
       <div className="flex flex-col w-72 gap-y-4">
         <Button>Selected Cohorts: None</Button>
-        <Button className="px-2 py-1
+        <Button
+          className="px-2 py-1
     border rounded
-    bg-nci-gray-lighter text-nci-gray" >Explore Selected Cohorts In...</Button>
+    bg-nci-gray-lighter text-nci-gray"
+        >
+          Explore Selected Cohorts In...
+        </Button>
       </div>
       <div className="flex flex-row gap-x-4">
         <div className="w-40">{sortFilter}</div>
-        <div className="flex-grow"><Search /></div>
+        <div className="flex-grow">
+          <Search />
+        </div>
       </div>
       <div className="flex-grow">
         <Studies projects={projects} onClickStudy={setCurrentStudy} />
@@ -441,10 +489,10 @@ interface StudyProps {
 const Study: React.FC<StudyProps> = (props: StudyProps) => {
   const { projectId } = props.project;
   //const { onClick } = props;
-  const onClick = ()=>{
+  const onClick = () => {
     console.log(props);
-  }
-  const mainProject = props.project.projectId.split('-')[0];
+  };
+  const mainProject = props.project.projectId.split("-")[0];
   const projectLogoPath = `/logos/${mainProject}_logo.png`;
 
   /* thoughts on checking if images exist
@@ -462,76 +510,97 @@ const Study: React.FC<StudyProps> = (props: StudyProps) => {
   const [isFacetView, setIsFacetView] = useState(true);
   const toggleFlip = () => {
     setIsFacetView(!isFacetView);
-  }
+  };
 
   return (
-    <div key={projectId} className={"group h-250 border border-nci-gray-lighter flex flex-col bg-white shadow-md"}>
+    <div
+      key={projectId}
+      className={
+        "group h-250 border border-nci-gray-lighter flex flex-col bg-white shadow-md"
+      }
+    >
       <div className="bg-nci-gray-lightest flex flex-row">
-        <div className="flex-grow text-center pl-4">
-          {props.project.name}
-        </div>
+        <div className="flex-grow text-center pl-4">{props.project.name}</div>
         <button className="p-2" onClick={toggleFlip}>
-            <MdFlip title="Flip Card"/>
+          <MdFlip title="Flip Card" />
         </button>
         <button className="p-2 has-tooltip relative">
-            <BsQuestionCircleFill />
-            <div className='inline-block tooltip absolute bg-white p-4 border rounded top-0'>Tooltip text</div>
+          <BsQuestionCircleFill />
+          <div className="inline-block tooltip absolute bg-white p-4 border rounded top-0">
+            Tooltip text
+          </div>
         </button>
       </div>
-      <div className={`relative flip-card${isFacetView ? "" : " flip-card-flipped"}`}>
+      <div
+        className={`relative flip-card${
+          isFacetView ? "" : " flip-card-flipped"
+        }`}
+      >
         <div className="w-auto h-auto card-face bg-white grid grid-cols-2flex1 m-4 mt-2">
-          { projectLogoPath ?
+          {projectLogoPath ? (
             <div className="max-h-40 relative">
-              <Image src={projectLogoPath} layout="fill" alt={`${props.project.projectId} logo`} objectFit="contain" className="nextImageFillFix"/>
-            </div> : null
-          }
+              <Image
+                src={projectLogoPath}
+                layout="fill"
+                alt={`${props.project.projectId} logo`}
+                objectFit="contain"
+                className="nextImageFillFix"
+              />
+            </div>
+          ) : null}
           <label className="p-4">
-            <input type="checkbox" className="mx-2"/>
+            <input type="checkbox" className="mx-2" />
             <span className="pt-2">Select</span>
           </label>
           <div className="flex flex-col">
             <div className="py-4">
-              {props.project.disease_type?.length > 0 ?
-                (props.project.disease_type.length === 1 ?
-                  props.project.disease_type[0] :
-                  `${props.project.disease_type.length} Disease Types`)
-              : ''}
+              {props.project.disease_type?.length > 0
+                ? props.project.disease_type.length === 1
+                  ? props.project.disease_type[0]
+                  : `${props.project.disease_type.length} Disease Types`
+                : ""}
             </div>
 
             <div className="">
-              {props.project.primary_site?.length > 0 ?
-                (props.project.primary_site.length === 1 ?
-                  props.project.primary_site[0] :
-                  `${props.project.primary_site.length} Primary Sites`)
-              : ''}
+              {props.project.primary_site?.length > 0
+                ? props.project.primary_site.length === 1
+                  ? props.project.primary_site[0]
+                  : `${props.project.primary_site.length} Primary Sites`
+                : ""}
             </div>
           </div>
           <div className="flex flex-col justify-center px-4">
-            <Button  className="
+            <Button
+              className="
               px-2 py-1 m-1
               rounded
               text-white
               bg-nci-gray-lighter
               hover:bg-nci-gray-lightest
-              hover:text-black">
-                1,098 Cases
+              hover:text-black"
+            >
+              1,098 Cases
             </Button>
-            <Button  className="
+            <Button
+              className="
               px-2 py-1 m-1
               rounded
               text-white
               bg-nci-gray
               hover:bg-nci-gray-lightest
-              hover:text-black">33,766 Files</Button>
+              hover:text-black"
+            >
+              33,766 Files
+            </Button>
           </div>
         </div>
         <div className="card-face card-back bg-white">
           <FacetChart
-            field={'test'}
+            field={"test"}
             marginBottom={40}
             showXLabels={true}
             showTitle={false}
-            orientation='h'
+            orientation="h"
             maxBins={16}
           />
         </div>

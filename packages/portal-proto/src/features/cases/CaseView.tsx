@@ -10,6 +10,8 @@ export interface CaseViewProps {
 export const CaseView: React.FC<CaseViewProps> = ({
   patient,
 }: PropsWithChildren<CaseViewProps>) => {
+  // TODO either use or remove the prop
+  console.log(patient);
   return (
     <div>
       <Image

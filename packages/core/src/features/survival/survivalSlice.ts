@@ -1,16 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   CoreDataSelectorResponse,
+  createUseCoreDataHook,
   createUseFiltersCoreDataHook,
   DataStatus,
 } from "../../dataAcess";
 import { CoreDispatch, CoreState } from "../../store";
-import {
-  selectCurrentCohortFilters,
-  selectCurrentCohortFilterSet,
-  buildCohortGqlOperator,
-} from "../cohort/cohortFilterSlice";
-import { GqlOperation} from "../gdcapi/filters";
+import { selectCurrentCohortFilters } from "../cohort/cohortFilterSlice";
+import { GqlOperation } from "../gdcapi/filters";
 
 export const MINIMUM_CASES = 10;
 export const MAXIMUM_CURVES = 5;
@@ -25,25 +22,33 @@ export interface SurvivalDonor {
   readonly project_id: string;
 }
 
-export interface SurvivalApiResponse {
-  readonly results: ReadonlyArray<Survival>;
-  readonly overallStats?: Record<string, never>;
-  readonly warnings: Record<string, string>;
+export interface SurvivalElement {
+  readonly meta: string;
+  readonly donors: ReadonlyArray<SurvivalDonor>;
 }
 
 export interface Survival {
-    readonly meta: string;
-    readonly donors: ReadonlyArray<SurvivalDonor>;
+  readonly survivalData: ReadonlyArray<SurvivalElement>;
+  readonly overallStats: Record<string, number>;
+}
+
+export interface SurvivalApiResponse {
+  readonly results: ReadonlyArray<SurvivalElement>;
+  readonly overallStats: Record<string, number>;
+  readonly warnings: Record<string, string>;
 }
 
 export interface SurvivalState {
-  readonly survivalData: ReadonlyArray<Survival>;
+  readonly data: Survival;
   readonly status: DataStatus;
   readonly error?: string;
 }
 
 const initialState: SurvivalState = {
-  survivalData: [],
+  data: {
+    survivalData: [],
+    overallStats: {},
+  },
   status: "uninitialized",
 };
 
@@ -51,7 +56,7 @@ const initialState: SurvivalState = {
  *  Survival API Specialization of API Request and Errors
  */
 export interface GdcSurvivalApiRequest {
-  filters?: ReadonlyArray<GqlOperation>;
+  filters: ReadonlyArray<GqlOperation>;
 }
 
 export interface SurvivalFetchError {
@@ -73,18 +78,24 @@ export const buildSurvivalFetchError = async (
     text: await res.text(),
     gdcSurvivalApiReq,
   };
-}
+};
 
 export const fetchSurvivalAnalysis = async (
   request: GdcSurvivalApiRequest,
 ): Promise<SurvivalApiResponse> => {
-  const parameters = request.filters ? `?filters=${encodeURIComponent(JSON.stringify(request.filters))}` : "";
-  const res = await fetch(`https://api.gdc.cancer.gov/analysis/survival${parameters}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
+  const parameters =
+    request.filters.length > 0
+      ? `?filters=${encodeURIComponent(JSON.stringify(request.filters))}`
+      : "";
+  const res = await fetch(
+    `https://api.gdc.cancer.gov/analysis/survival${parameters}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
     },
-  });
+  );
   if (res.ok) {
     return res.json();
   }
@@ -97,23 +108,13 @@ export const fetchSurvivalAnalysis = async (
  * The API will use the passed filters if defined
  * otherwise it will use the current cohort filters.
  */
-export const fetchSurvival = createAsyncThunk <
+export const fetchSurvival = createAsyncThunk<
   SurvivalApiResponse,
-  { filters?: ReadonlyArray<GqlOperation> },
+  { filters: ReadonlyArray<GqlOperation> },
   { dispatch: CoreDispatch; state: CoreState }
-  >
-(
-  "analysis/survivalData",
-  async (args, thunkAPI) => {
-   if (args?.filters) { // passing filter overrides using the cohort filters.
-     return fetchSurvivalAnalysis({ filters: args?.filters });
-
-   }
-    // use the current cohort filters
-    const cohort_filters = buildCohortGqlOperator(selectCurrentCohortFilterSet(thunkAPI.getState()));
-    return fetchSurvivalAnalysis({  filters: cohort_filters ? [cohort_filters] : undefined });
-  },
-);
+>("analysis/survivalData", async ({ filters }) => {
+  return fetchSurvivalAnalysis({ filters: filters });
+});
 
 const slice = createSlice({
   name: "analysis/survival",
@@ -129,17 +130,19 @@ const slice = createSlice({
           state.error = response.warnings.facets;
         } else {
           if (response.results) {
-            // build the legend string
-            // while this could be done the component
-            state.survivalData = response.results.map(r => ({
+            state.data.survivalData = response.results.map((r) => ({
               ...r,
-              donors: r.donors.map(d => ({
+              donors: r.donors.map((d) => ({
                 ...d,
                 time: d.time / DAYS_IN_YEAR, // convert days to years
               })),
-            }))
+            }));
+            state.data.overallStats = response.overallStats;
           } else {
-            state.survivalData = [];
+            state.data = {
+              survivalData: [],
+              overallStats: {},
+            };
           }
           state.status = "fulfilled";
         }
@@ -161,22 +164,29 @@ export const survivalReducer = slice.reducer;
 export const selectSurvivalState = (state: CoreState): SurvivalState =>
   state.survival;
 
-export const selectSurvival = (state: CoreState): ReadonlyArray<Survival> => {
-  return state.survival.survivalData;
+export const selectSurvival = (state: CoreState): Survival => {
+  return state.survival.data;
 };
 
 export const selectSurvivalData = (
   state: CoreState,
-): CoreDataSelectorResponse<ReadonlyArray<Survival>> => {
+): CoreDataSelectorResponse<Survival> => {
   return {
-    data: state.survival.survivalData,
+    data: state.survival.data,
     status: state.survival.status,
     error: state.survival.error,
   };
 };
 
 /**
- * Trying out a possible way to create a hook that
- * handles when the filters are updated
+ * Data Hook to query survival data from the API.
  */
-export const useSurvivalPlot = createUseFiltersCoreDataHook(fetchSurvival, selectSurvivalData, selectCurrentCohortFilters);
+export const useSurvivalPlot = createUseCoreDataHook(
+  fetchSurvival,
+  selectSurvivalData,
+);
+export const useSurvivalPlotWithCohortFilters = createUseFiltersCoreDataHook(
+  fetchSurvival,
+  selectSurvivalData,
+  selectCurrentCohortFilters,
+);

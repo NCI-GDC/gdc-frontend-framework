@@ -1,10 +1,7 @@
-import MutationFrequency from "../genomic/MutationFrequency";
-
+import GenesAndMutationFrequencyAnalysisTool from "../genomic/GenesAndMutationFrequencyAnalysisTool";
 
 const MutationFrequencyApp = () => {
-  return (
-      <MutationFrequency />
-  )
-}
+  return <GenesAndMutationFrequencyAnalysisTool />;
+};
 
 export default MutationFrequencyApp;

@@ -23,9 +23,13 @@ module.exports = {
   plugins: ["jsx-a11y", "react", "react-hooks", "@typescript-eslint"],
   rules: {
     // disable these because we're using React 17+ with the jsx transform
+    // need to reverify these rules
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
     "react/display-name": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-var-requires": "off",
   },
   settings: {
     react: {

@@ -46,13 +46,13 @@ export interface UserCoreDataHook<P, T> {
   (...params: P[]): UseCoreDataResponse<T>;
 }
 
-const usePrevious = (value : any) => {
+const usePrevious = (value: any) => {
   const ref = useRef();
   useEffect(() => {
     ref.current = value;
   });
   return ref.current;
-}
+};
 
 export const createUseCoreDataHook = <P, A, T>(
   fetchDataActionCreator: FetchDataActionCreator<P, A>,
@@ -70,7 +70,7 @@ export const createUseCoreDataHook = <P, A, T>(
         // not compatible with thunk actions. hence, the `as any` cast. ;(
         coreDispatch(action as any); // eslint-disable-line
       }
-    }, [status, coreDispatch, action, params]);
+    }, [status, coreDispatch, action, params, prevParams]);
 
     return {
       data,
@@ -82,7 +82,6 @@ export const createUseCoreDataHook = <P, A, T>(
     };
   };
 };
-
 
 export interface CoreDataValueSelector<T> {
   (state: CoreState): T;
@@ -91,63 +90,33 @@ export interface CoreDataValueSelector<T> {
 export const createUseFiltersCoreDataHook = <P, A, T, F>(
   fetchDataActionCreator: FetchDataActionCreator<P, A>,
   dataSelector: CoreDataSelector<T>,
-  secondarySelector: CoreDataValueSelector<F>
-): UserCoreDataHook<P, T> => {
-  return (...params: P[]): UseCoreDataResponse<T> => {
-    const coreDispatch = useCoreDispatch();
-    const { data, status, error } = useCoreSelector(dataSelector);
-    const action = fetchDataActionCreator(...params);
-    const secondary = useCoreSelector(secondarySelector)
-
-    useEffect(() => {
-      if (status === "uninitialized") {
-        // createDispatchHook types forces the input to AnyAction, which is
-        // not compatible with thunk actions. hence, the `as any` cast. ;(
-        coreDispatch(action as any); // eslint-disable-line
-      }
-    }, [status, coreDispatch, action]);
-
-    useEffect(() => {
-        coreDispatch(action as any); // eslint-disable-line
-    }, [ secondary]);
-
-
-    return {
-      data,
-      error,
-      isUninitialized: status === "uninitialized",
-      isFetching: status === "pending",
-      isSuccess: status === "fulfilled",
-      isError: status === "rejected",
-    };
-  };
-};
-
-export const createUseMultipleFiltersCoreDataHook = <P, A, T, F, G>(
-  fetchDataActionCreator: FetchDataActionCreator<P, A>,
-  dataSelector: CoreDataSelector<T>,
   secondarySelector: CoreDataValueSelector<F>,
-  tertiarySelector: CoreDataValueSelector<G>
 ): UserCoreDataHook<P, T> => {
   return (...params: P[]): UseCoreDataResponse<T> => {
     const coreDispatch = useCoreDispatch();
     const { data, status, error } = useCoreSelector(dataSelector);
     const action = fetchDataActionCreator(...params);
-    const secondary = useCoreSelector(secondarySelector)
-    const tertiary = useCoreSelector(tertiarySelector)
+    const secondary = useCoreSelector(secondarySelector);
+    const prevParams = usePrevious(params);
+    const prevSecondary = usePrevious(secondary);
 
     useEffect(() => {
-      if (status === "uninitialized") {
-        // createDispatchHook types forces the input to AnyAction, which is
-        // not compatible with thunk actions. hence, the `as any` cast. ;(
+      if (
+        status === "uninitialized" ||
+        !isEqual(prevParams, params) ||
+        !isEqual(prevSecondary, secondary)
+      ) {
         coreDispatch(action as any); // eslint-disable-line
       }
-    }, [status, coreDispatch, action]);
-
-    useEffect(() => {
-      coreDispatch(action as any); // eslint-disable-line
-    }, [ secondary, tertiary]);
-
+    }, [
+      status,
+      coreDispatch,
+      action,
+      prevParams,
+      params,
+      prevSecondary,
+      secondary,
+    ]);
 
     return {
       data,
@@ -159,8 +128,3 @@ export const createUseMultipleFiltersCoreDataHook = <P, A, T, F, G>(
     };
   };
 };
-
-
-
-
-

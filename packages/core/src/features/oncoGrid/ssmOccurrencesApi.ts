@@ -1,10 +1,16 @@
 import { fetchGdcEntities, GdcApiResponse } from "../gdcapi/gdcapi";
+import { SSMOccurrence } from "./types";
+import { GqlOperation } from "../gdcapi/filters";
 
 export const fetchSSMOccurrences = async (
   genes: string[],
   cases: string[],
   consequenceTypeFilters: string[],
-): Promise<GdcApiResponse> => {
+  contextFilters?: GqlOperation,
+): Promise<GdcApiResponse<SSMOccurrence>> => {
+  const caseAndGenomicFilters = contextFilters?.content
+    ? Object(contextFilters?.content)
+    : [];
   return fetchGdcEntities(
     "ssm_occurrences",
     {
@@ -36,13 +42,6 @@ export const fetchSSMOccurrences = async (
             },
           },
           {
-            content: {
-              field: "genes.is_cancer_gene_census",
-              value: ["true"],
-            },
-            op: "in",
-          },
-          {
             op: "not",
             content: {
               field: "ssms.consequence.transcript.annotation.vep_impact",
@@ -56,6 +55,7 @@ export const fetchSSMOccurrences = async (
               value: consequenceTypeFilters,
             },
           },
+          ...caseAndGenomicFilters,
         ],
       },
     },

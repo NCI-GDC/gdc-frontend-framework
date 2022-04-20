@@ -13,7 +13,6 @@ import {
 } from "@gff/core";
 import { useEffect } from "react";
 
-
 interface UseFetchFilesResponse {
   readonly data?: ReadonlyArray<GdcFile>;
   readonly error?: string;
@@ -34,7 +33,6 @@ const useFetchFiles = (): UseFetchFilesResponse => {
   }, [coreDispatch, filesState.files]);
 
   return {
-
     data: filesState.files,
     error: filesState.error,
     isUninitialized: filesState.files === undefined,
@@ -44,16 +42,11 @@ const useFetchFiles = (): UseFetchFilesResponse => {
   };
 };
 
-const {
-  store,
-  context,
-  useAppSelector,
-  useAppDispatch,
-  useAppStore,} = createAppStore({
+const { store, context } = createAppStore({
   name: "Demonstration Application w/ Store",
   version: "v1.0.0",
-  reducers:  { survival: survivalReducer }
-})
+  reducers: { survival: survivalReducer },
+});
 
 type AppState = ReturnType<typeof store.getState>;
 
@@ -75,7 +68,6 @@ export const selectSurvivalData = (
 };
 
 const Demo: React.FC = () => {
-
   const { data, error, isUninitialized, isFetching, isError } = useFetchFiles();
 
   if (isUninitialized) {
