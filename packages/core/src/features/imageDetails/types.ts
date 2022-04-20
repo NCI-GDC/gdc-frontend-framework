@@ -18,7 +18,6 @@ export interface imageViewerInitialState {
   readonly status: DataStatus;
   readonly total: number;
   readonly edges: any;
-  readonly shouldResetState: boolean;
 }
 
 export interface files {

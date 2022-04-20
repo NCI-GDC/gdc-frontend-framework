@@ -1,17 +1,19 @@
 import { NextPage } from "next";
 import { MultipleImageViewer } from "../../../components/MultipleImageViewer";
 import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
+import { headerElements } from "../many-pages/navigation-utils";
 
-import { headerElements } from "./navigation-utils";
-
-const ImageViewer: NextPage = () => {
+const MultipleImageViewerPage: NextPage = () => {
   return (
     <UserFlowVariedPages
-      {...{ indexPath: "/user-flow/many-pages", headerElements }}
+      {...{
+        indexPath: "/user-flow/workbench/analysis_page?app=",
+        headerElements,
+      }}
     >
       <MultipleImageViewer />
     </UserFlowVariedPages>
   );
 };
 
-export default ImageViewer;
+export default MultipleImageViewerPage;

@@ -13,7 +13,7 @@ import {
 } from "@mantine/core";
 import {
   edgeDetails,
-  setShouldResetState,
+  setShouldResetEdgesState,
   useCoreDispatch,
   useImageViewer,
 } from "@gff/core";
@@ -74,7 +74,7 @@ export const MultipleImageViewer = ({
 
   const removeFilters = (filter: string) => {
     setSearchValues(searchValues.filter((value) => value !== filter));
-    dispatch(setShouldResetState(true));
+    dispatch(setShouldResetEdgesState());
     resetStates();
   };
 
@@ -87,7 +87,7 @@ export const MultipleImageViewer = ({
   };
 
   const performSearch = () => {
-    dispatch(setShouldResetState(true));
+    dispatch(setShouldResetEdgesState());
     setShowMorePressed(false);
     setSearchValues([searchText.toUpperCase(), ...searchValues]);
     setSearchText("");
@@ -106,6 +106,7 @@ export const MultipleImageViewer = ({
         </Button>
       </div>
       <LoadingOverlay visible={isFetching} />
+
       <div className={isFetching ? "invisible" : "visible"}>
         {data.total === 0 ? (
           <div className="flex">
@@ -122,8 +123,8 @@ export const MultipleImageViewer = ({
             </Alert>
           </div>
         ) : (
-          <div className="flex flex-col border-2 border-[#c8c8c8] m-2 mt-0">
-            <div className="flex border-b-2 border-b-[#c8c8c8]">
+          <div className="flex flex-col border-2 border-nci-gray-lighter m-2 mt-0">
+            <div className="flex border-b-2 border-b-nci-gray-lighter">
               <div className="flex flex-col w-1/6">
                 <div className="flex">
                   <h2 className="p-2 text-xl ml-4 text-black">Cases</h2>
@@ -132,6 +133,7 @@ export const MultipleImageViewer = ({
                     variant="subtle"
                     size="xs"
                     className="mt-3"
+                    aria-label="Toggle Search Input Box"
                     compact
                   >
                     <MdOutlineSearch size={30} color="black" className="mt-1" />
@@ -205,7 +207,7 @@ export const MultipleImageViewer = ({
             </div>
 
             <div className="flex max-h-[550px]">
-              {activeImage && (
+              {Object.keys(data?.edges).length > 0 && activeImage && (
                 <div className="flex-1/2">
                   <Tabs
                     variant="unstyled"
@@ -237,7 +239,7 @@ export const MultipleImageViewer = ({
                       },
                     })}
                   >
-                    {Object.keys(data.edges).map((edge) => {
+                    {Object.keys(data?.edges).map((edge) => {
                       return (
                         <Tabs.Tab key={edge} label={edge}>
                           <List>
@@ -269,7 +271,7 @@ export const MultipleImageViewer = ({
               )}
 
               <div className="flex-1 ml-2">
-                {activeImage && (
+                {!isFetching && activeImage && (
                   <ImageViewer imageId={activeImage} tableData={imageDetails} />
                 )}
               </div>
@@ -278,7 +280,6 @@ export const MultipleImageViewer = ({
               {shouldShowMoreButton && (
                 <Button
                   onClick={() => {
-                    dispatch(setShouldResetState(false));
                     setCasesOffSet((o) => o + 10);
                     setShowMorePressed(true);
                   }}

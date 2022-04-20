@@ -30,7 +30,6 @@ const initialState: imageViewerInitialState = {
   status: "uninitialized",
   total: 0,
   edges: {},
-  shouldResetState: false,
 };
 
 export const getSlides = (caseNode: caseNodeType) => {
@@ -71,8 +70,8 @@ const slice = createSlice({
   name: "imageViewer",
   initialState,
   reducers: {
-    setShouldResetState(state, action) {
-      state.shouldResetState = action.payload;
+    setShouldResetEdgesState(state) {
+      state.edges = {};
     },
   },
   extraReducers: (builder) => {
@@ -86,20 +85,15 @@ const slice = createSlice({
 
         const obj = Object.fromEntries(
           hits?.edges?.map((edge: any) => {
-            // give proper name
-            const mapped = getSlides(edge?.node);
+            const parsedSlideImagesInfo = getSlides(edge?.node);
             const caseSubmitterId = edge?.node?.submitter_id;
             const projectID = edge?.node?.project?.project_id;
 
-            return [`${caseSubmitterId} ${projectID}`, mapped];
+            return [`${caseSubmitterId} ${projectID}`, parsedSlideImagesInfo];
           }),
         );
 
-        if (!state.shouldResetState) {
-          state.edges = { ...state.edges, ...obj };
-        } else {
-          state.edges = obj;
-        }
+        state.edges = { ...state.edges, ...obj };
 
         return state;
       })
@@ -116,7 +110,7 @@ const slice = createSlice({
 
 export const imageViewerReducer = slice.reducer;
 
-export const { setShouldResetState } = slice.actions;
+export const { setShouldResetEdgesState } = slice.actions;
 
 export const selectImageViewerInfo = (
   state: CoreState,

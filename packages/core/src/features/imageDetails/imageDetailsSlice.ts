@@ -5,10 +5,7 @@ import {
   DataStatus,
 } from "../../dataAcess";
 import { CoreDispatch, CoreState } from "../../store";
-import {
-  fetchSlideImages,
-  ImageMetadataResponse,
-} from "./imageDetailsApi";
+import { fetchSlideImages, ImageMetadataResponse } from "./imageDetailsApi";
 
 export const fetchImageDetails = createAsyncThunk<
   ImageMetadataResponse,
@@ -44,12 +41,7 @@ const slice = createSlice({
         const response = action.payload;
 
         state.details = {
-          Height: response.Height,
-          Width: response.Width,
-          Format: response.Format,
-          TileSize: response.TileSize,
-          Overlap: response.Overlap,
-          uuid: response.uuid,
+          ...response,
         };
         state.status = "fulfilled";
 
