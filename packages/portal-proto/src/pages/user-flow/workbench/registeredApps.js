@@ -60,7 +60,7 @@ export const REGISTERED_APPS = [
     icon: "icons/apps/cohortComparison.svg",
     tags: ["clinicalAnalysis"],
     hasDemo: true,
-    id: "CohortComparison",
+    id: "CohortComparisonApp",
     description: "Display the survival analysis of your case sets and compare characteristics such as gender, vital status and age at diagnosis."
   },
   {
