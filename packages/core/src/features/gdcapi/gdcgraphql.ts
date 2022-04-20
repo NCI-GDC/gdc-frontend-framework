@@ -11,7 +11,7 @@ type UnknownJson = Record<string, any>;
 
 export interface GraphQLApiResponse<H = UnknownJson> {
   readonly data: H;
-  readonly errors: Record<string, string> | Record<string, string>[];
+  readonly errors: Record<string, string>;
 }
 
 export interface TablePageOffsetProps {

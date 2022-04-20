@@ -122,7 +122,7 @@ const slice = createSlice({
       .addCase(fetchCohortFacets.fulfilled, (state, action) => {
         const response = action.payload;
 
-        if (response.errors && response.errors.length > 0) {
+        if (response.errors) {
           state.status = "rejected";
         } else { 
           const facets1 = JSON.parse(
