@@ -1,48 +1,11 @@
-import { Paper, Tooltip } from "@mantine/core";
+import { LoadingOverlay, Paper, Tooltip } from "@mantine/core";
 import {
   useSurvivalPlot,
-  selectCurrentCohortCaseGqlFilters,
   useCoreSelector,
   selectAvailableCohortByName,
   buildCohortGqlOperator,
 } from "@gff/core";
 import SurvivalPlot from "../charts/SurvivalPlot";
-
-const dataCompletenessFilters = [
-  {
-    op: "or",
-    content: [
-      {
-        op: "and",
-        content: [
-          {
-            op: ">",
-            content: {
-              field: "demographic.days_to_death",
-              value: 0,
-            },
-          },
-        ],
-      },
-      {
-        op: "and",
-        content: [
-          {
-            op: ">",
-            content: {
-              field: "diagnoses.days_to_last_follow_up",
-              value: 0,
-            },
-          },
-        ],
-      },
-    ],
-  },
-  {
-    op: "not",
-    content: { field: "demographic.vital_status" },
-  },
-];
 
 const tooltipLabel = (
   <>
@@ -73,7 +36,7 @@ const SurvivalCard : React.FC<SurvivalCardProps> = ({ counts, cohortNames } : Su
   );
 
   // TODO: limit to cases that are only within a single cohort
-  const { data } = useSurvivalPlot({
+  const { data, isFetching } = useSurvivalPlot({
     filters: [
       {
         op: "and",
@@ -86,12 +49,13 @@ const SurvivalCard : React.FC<SurvivalCardProps> = ({ counts, cohortNames } : Su
     ],
   });
 
-  const cohort1Count = data[0] ? data[0].donors?.length : 0;
-  const cohort2Count = data[1] ? data[1].donors?.length : 0;
+  const cohort1Count = data.survivalData[0] ? data.survivalData[0].donors?.length : 0;
+  const cohort2Count = data.survivalData[1] ? data.survivalData[1].donors?.length : 0;
 
   return (
     <Paper p="md" className="min-w-[600px]">
       <h2 className="text-lg font-semibold">Survival Analysis</h2>
+      <LoadingOverlay visible={isFetching} />
       <SurvivalPlot data={data} />
       <table className="bg-white w-full text-left text-nci-gray-darker">
         <thead>

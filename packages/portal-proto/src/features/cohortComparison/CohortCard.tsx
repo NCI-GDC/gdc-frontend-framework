@@ -22,10 +22,10 @@ const CohortCard: React.FC<CohortCardProps> = ({
       <div className="flex justify-between">
         <div>
           <h2 className="text-lg font-semibold">Cohort</h2>
-          <p className="py-1 text-nci-yellow-darkest font-semibold">
+          <p className="py-1 text-[#1F77B4] font-semibold">
             S<sub>1</sub> : {cohortNames[0]}
           </p>
-          <p className="py-1 text-nci-blue font-semibold">
+          <p className="py-1 text-[#BD5800] font-semibold">
             S<sub>2</sub> : {cohortNames[1]}
           </p>
         </div>

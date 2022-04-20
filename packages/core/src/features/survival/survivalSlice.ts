@@ -85,13 +85,11 @@ export const fetchSurvivalAnalysis = async (
   request: GdcSurvivalApiRequest,
 ): Promise<SurvivalApiResponse> => {
   const parameters = request.filters.length > 0 ? `?filters=${encodeURIComponent(JSON.stringify(request.filters))}` : "";
-  const res = await fetch(`https://api.gdc.cancer.gov/analysis/survival`, {
-    method: "POST",
+  const res = await fetch(`https://api.gdc.cancer.gov/analysis/survival${parameters}`, {
+    method: "GET",
     headers: {
-      'Accept': 'application/json',
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(request)
   });
   if (res.ok) {
     return res.json();
