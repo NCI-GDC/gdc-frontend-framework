@@ -60,7 +60,7 @@ const graphQLQuery = `
   }
 `;
 
-interface CohortFacetDoc {
+export interface CohortFacetDoc {
   readonly key: string;
   readonly doc_count: number;
 }
