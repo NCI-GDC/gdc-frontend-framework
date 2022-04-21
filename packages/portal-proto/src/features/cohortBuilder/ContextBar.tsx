@@ -18,7 +18,7 @@ import { FaCartPlus as AddToCartIcon } from "react-icons/fa";
 
 import SummaryFacets from "./SummaryFacets";
 import { updateEnumFilters } from "../facets/hooks";
-import { useCoreDispatch, setCurrentCohort, clearCohortFilters } from "@gff/core";
+import { useCoreDispatch, clearCohortFilters, setCurrentCohort } from "@gff/core";
 
  const ContextBar: React.FC<CohortGroupProps> = ({ cohorts }: CohortGroupProps) => {
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(false);
