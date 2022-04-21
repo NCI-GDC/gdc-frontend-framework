@@ -1,11 +1,5 @@
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 
-export interface bioSpecimenQueryParams {
-  cases_offset: number;
-  searchValues: Array<string>;
-  case_id: string;
-}
-
 const bioSpecimenGraphQLQuery = `
 query BiospecimenCard_relayQuery(
     $filters: FiltersArgument
@@ -151,15 +145,47 @@ query BiospecimenCard_relayQuery(
     }
   }`;
 
-// export const fetchImageViewerQuery = async (
-//   params: bioSpecimenQueryParams,
-// ): Promise<GraphQLApiResponse> => {
+export const fetchBioSpecimenQuery = async (
+  caseId: string,
+): Promise<GraphQLApiResponse> => {
+  let graphQLFilters = {
+    fileFilters: {
+      op: "and",
+      content: [
+        {
+          op: "in",
+          content: {
+            field: "cases.case_id",
+            value: [caseId],
+          },
+        },
+        {
+          op: "in",
+          content: {
+            field: "files.data_type",
+            value: ["Biospecimen Supplement", "Slide Image"],
+          },
+        },
+      ],
+    },
+    filters: {
+      op: "and",
+      content: [
+        {
+          op: "in",
+          content: {
+            field: "cases.case_id",
+            value: [caseId],
+          },
+        },
+      ],
+    },
+  };
 
-    
-//   const results: GraphQLApiResponse<any> = await graphqlAPI(
-//     bioSpecimenGraphQLQuery,
-//     { ...graphQLFilters, cases_size: 10, cases_offset },
-//   );
+  const results: GraphQLApiResponse<any> = await graphqlAPI(
+    bioSpecimenGraphQLQuery,
+    graphQLFilters,
+  );
 
-//   return results;
-// };
+  return results;
+};
