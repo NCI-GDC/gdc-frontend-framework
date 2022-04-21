@@ -18,6 +18,9 @@ const ImageViewer = ({ imageId, tableData }: ImageViewerProp) => {
 
   const InitOpenseadragon = () => {
     viewer && viewer.destroy();
+
+    OpenSeadragon.setString("Tooltips.Home", "Reset Zoom");
+
     const options: OpenSeadragon.Options = {
       id: "osd",
       prefixUrl: "/OpenseadragonImages/",
@@ -77,27 +80,26 @@ const ImageViewer = ({ imageId, tableData }: ImageViewerProp) => {
 
   return (
     <>
-      <div>
-        <LoadingOverlay visible={isFetching} />
+      <div className={isError ? "flex bg-white h-img-viewer" : "hidden"}>
+        Image is not available
       </div>
-      {isError ? (
-        <div id="osd" className="flex bg-white h-img-viewer">
-          Image is not available
-        </div>
-      ) : (
-        <div
-          ref={osdContainerRef}
-          id="osd"
-          className={
-            isFetching ? "invisible" : "visible flex bg-black h-img-viewer"
-          }
-        >
-          <SlideDetailButton
-            ref={detailsButtonWrapperRef}
-            tableData={tableData}
-          />
-        </div>
-      )}
+      <div>
+        <LoadingOverlay visible={isFetching && !isError} />
+      </div>
+      <div
+        ref={osdContainerRef}
+        id="osd"
+        className={
+          isFetching || isError
+            ? "invisible"
+            : "flex bg-black h-img-viewer"
+        }
+      >
+        <SlideDetailButton
+          ref={detailsButtonWrapperRef}
+          tableData={tableData}
+        />
+      </div>
     </>
   );
 };
