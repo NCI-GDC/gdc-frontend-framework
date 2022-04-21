@@ -18,7 +18,7 @@ jobs:
       - name: Compilation/Type Check for core
         run: |
           cd ${{github.workspace}}/packages/core
-          npm run compile
+          npm run build:clean
 
       - name: Compilation/Type Check for portal-proto
         run: |
