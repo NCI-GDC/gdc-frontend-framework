@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import {
   Tabs,
@@ -64,6 +64,7 @@ export const MultipleImageViewer = ({
       setActiveImage(inside?.[activeSlide].file_id);
       setImageDetails(formatImageDetailsInfo(inside?.[activeSlide]));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFetching, showMorePressed]);
 
   const resetStates = () => {

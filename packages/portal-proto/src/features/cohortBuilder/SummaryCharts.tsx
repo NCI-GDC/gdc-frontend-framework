@@ -1,13 +1,4 @@
-import { useState } from "react";
 import { FacetChart } from "../charts/FacetChart";
-
-const SummaryStatsTop: React.FC<unknown> = () => {
-  return (
-    <div className="flex flex-row items-center h-12 bg-nci-cyan-light w-100">
-      <div className="px-4">Summary Statistics</div>
-    </div>
-  );
-};
 
 interface SummaryChartsProps {
   fields: string[];

@@ -1,4 +1,4 @@
-import { PropsWithChildren, useEffect, useState } from "react";
+import { useState } from "react";
 import { CollapsibleContainer } from "../../components/CollapsibleContainer";
 
 interface MutationFacetProps {
@@ -13,7 +13,6 @@ interface MutationFacetDataProps extends MutationFacetProps {
 
 const MutationFacetHeader: React.FC<MutationFacetProps> = ({
   field,
-  description,
   type = "Mutations",
 }: MutationFacetProps) => {
   return (

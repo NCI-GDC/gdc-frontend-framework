@@ -93,6 +93,7 @@ const SetOperationsDemo: React.FC = () => {
                   <td>{item?.type}</td>
                   <td>{item?.names.join(", ")}</td>
                   <td>
+                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                     <a href="#" className="underline text-gdc-blue">
                       {item?.total}
                     </a>
@@ -137,6 +138,7 @@ const SetOperationsDemo: React.FC = () => {
                   </td>
                   <td>{item.label}</td>
                   <td>
+                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                     <a href="#" className="underline text-gdc-blue">
                       {item?.value}
                     </a>

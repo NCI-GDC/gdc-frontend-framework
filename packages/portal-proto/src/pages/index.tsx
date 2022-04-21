@@ -1,7 +1,6 @@
 import { NextPage } from "next";
 import { SimpleLayout } from "../features/layout/Simple";
 import Link from "next/link";
-import { Button, Card, Chip, Badge, Grid } from "@mantine/core";
 import { PropsWithChildren } from "react";
 
 interface HoverLinkProps {

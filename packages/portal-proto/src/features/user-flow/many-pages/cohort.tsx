@@ -1,9 +1,5 @@
 import React, { PropsWithChildren, useState } from "react";
-import { Button, CardPlaceholder } from "../../layout/UserFlowVariedPages";
 import {
-  MdClose as ClearIcon,
-  MdSettings as SettingsIcon,
-  MdEdit as EditIcon,
   MdSave as SaveIcon,
   MdAdd as AddIcon,
   MdDelete as DeleteIcon,
@@ -13,7 +9,6 @@ import {
   MdExpandMore as ExpandMoreIcon,
   MdExpandLess as ExpandLessIcon,
 } from "react-icons/md";
-import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import classNames from "classnames";
 import Image from "next/image";
 import ReactModal from "react-modal";
@@ -25,6 +20,7 @@ import { SummaryCharts } from "../../cohortBuilder/SummaryCharts";
 import { MetaSearch } from "../../cohortBuilder/MetaSearch";
 import { CohortTabbedFacets } from "../../cohortBuilder/FacetGroup";
 import { GdcFile } from "@gff/core";
+import { Button } from "@mantine/core/lib/components/Button";
 
 // this is an example of where composition makes it hards to read and understand the code
 export type CohortManagerProps = Partial<ModalOrExpandProps> &
@@ -50,10 +46,10 @@ export const CohortManager: React.FC<CohortManagerProps> = ({
   const [showCases, setShowCases] = useState(false);
   const [showFiles, setShowFiles] = useState(false);
 
-  const cohortOptions = [
-    { value: "custom-cohort-1", label: "New Custom Cohort" },
-    { value: "all-gdc", label: "All GDC Cases" },
-  ];
+  // const cohortOptions = [
+  //   { value: "custom-cohort-1", label: "New Custom Cohort" },
+  //   { value: "all-gdc", label: "All GDC Cases" },
+  // ];
 
   const COHORTS = [
     {
@@ -263,10 +259,7 @@ export interface CohortBuilderProps {
 export const CohortBuilder: React.FC<CohortBuilderProps> = ({
   cohort,
   show = true,
-  handleCaseSelected,
 }: CohortBuilderProps) => {
-  const [searchResults, setSearchResults] = useState([]);
-
   const updateSummaryCharts = (op, field) => {
     if (op === "add") setSummaryFields([...summaryFields, field]);
     if (op === "remove")

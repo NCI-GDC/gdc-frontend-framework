@@ -2,18 +2,7 @@ import { useState } from "react";
 import { MdSearch, MdArrowForward, MdClear } from "react-icons/md";
 import { search_facets } from "./dictionary";
 
-type SearchFunction = {
-  (term: string): Record<string, unknown>;
-};
-
-interface MetaSearchProp {
-  readonly onChange: (any) => void;
-  // search_function: (string) => ReadonlyArray<Record<any, any>>
-}
-
-export const MetaSearch: React.FC<MetaSearchProp> = ({
-  onChange,
-}: MetaSearchProp) => {
+export const MetaSearch: React.FC = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 

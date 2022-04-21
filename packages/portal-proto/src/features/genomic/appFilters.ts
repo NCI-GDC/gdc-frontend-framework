@@ -3,4 +3,6 @@
  *  for filtering
  */
 
-export const composeSurvivalFilters = () => {};
+export const composeSurvivalFilters = () => {
+  console.log("TODO: need to fill this function");
+};

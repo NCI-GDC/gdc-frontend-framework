@@ -1,5 +1,5 @@
 import { Project, useProjects } from "@gff/core";
-import { Option, Select, SelectProps } from "../../components/Select";
+import { Option, Select } from "../../components/Select";
 import Image from "next/image";
 import { Button } from "@mantine/core";
 import { MdFlip, MdSearch } from "react-icons/md";
@@ -488,10 +488,7 @@ interface StudyProps {
 
 const Study: React.FC<StudyProps> = (props: StudyProps) => {
   const { projectId } = props.project;
-  //const { onClick } = props;
-  const onClick = () => {
-    console.log(props);
-  };
+
   const mainProject = props.project.projectId.split("-")[0];
   const projectLogoPath = `/logos/${mainProject}_logo.png`;
 

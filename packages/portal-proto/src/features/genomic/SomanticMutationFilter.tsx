@@ -8,25 +8,14 @@ import {
   VARIANT_CALLER,
   VEP_IMPACT,
 } from "../cohortBuilder/gene_mutation_facets";
-import GeneData from "./genes.json";
-import MutationData from "./mutations.json";
 import dynamic from "next/dynamic";
 import { MdSearch } from "react-icons/md";
-
-interface SomaticAppProps {
-  readonly gene_data?: Array<Record<string, any>>;
-  readonly mutations_data?: Array<Record<string, any>>;
-  readonly description?: string;
-}
 
 const GeneChartWithNoSSR = dynamic(() => import("./Charts"), {
   ssr: false,
 });
 
-const SomanticMutationFilterFixedVersion: React.FC<SomaticAppProps> = ({
-  gene_data = GeneData["MostFrequentGenes"],
-  mutations_data = MutationData["MostFrequentMutation"],
-}: SomaticAppProps) => {
+const SomanticMutationFilterFixedVersion: React.FC = () => {
   return (
     <div className="flex flex-row">
       <div className="flex flex-col">

@@ -1,6 +1,6 @@
 import GeneData from "./genes.json";
 import MutationData from "./mutations.json";
-import { MdSearch, MdSort as SortIcon } from "react-icons/md";
+import { MdSort as SortIcon } from "react-icons/md";
 
 interface GeneFacetProps {
   readonly data?: Array<Record<string, any>>;

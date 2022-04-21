@@ -14,7 +14,7 @@ export interface FileViewProps {
 }
 
 export const FileView: React.FC<FileViewProps> = ({ file }: FileViewProps) => {
-  const [imageId, setImageId] = useState(file?.fileId);
+  const [imageId] = useState(file?.fileId);
 
   return (
     <div className="p-4 text-nci-gray">
@@ -181,6 +181,8 @@ export const FileView: React.FC<FileViewProps> = ({ file }: FileViewProps) => {
       </div>
       <div className="bg-white w-full mt-4">
         <h2 className="p-2 text-lg mx-4">Downstream Analyses Files</h2>
+        {/* TODO: Need to take of this below */}
+        {/* eslint-disable-next-line no-constant-condition */}
         {false ? (
           {
             /* Data somthing like 

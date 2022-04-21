@@ -171,7 +171,7 @@ export const StudiesView: React.FC<StudiesViewProps> = ({
     { value: "unknown", label: "unknown" },
   ];
   const filterBox = (obj) => {
-    const { data, title, inputId } = obj;
+    const { data, title } = obj;
     return (
       <div className="bg-white border border-nci-gray-lighter shadow-md rounded">
         <div className="bg-nci-gray-lightest p-2 rounded flex">

@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Loader } from "@mantine/core";
 import { useFilteredCohortCounts } from "@gff/core";
 

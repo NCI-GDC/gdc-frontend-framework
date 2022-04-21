@@ -1,15 +1,12 @@
 import { NextPage } from "next";
-import {
-  Button,
-  UserFlowVariedPages,
-} from "../../../features/layout/UserFlowVariedPages";
-import Link from "next/link";
+import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
 import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import ReactModal from "react-modal";
 import { ContextualStudiesView } from "../../../features/studies/StudiesViewLeft";
 import { headerElements } from "./navigation-utils";
+import { Button } from "@mantine/core/lib/components/Button";
 
 const StudiesPageLeft: NextPage = () => {
   const router = useRouter();

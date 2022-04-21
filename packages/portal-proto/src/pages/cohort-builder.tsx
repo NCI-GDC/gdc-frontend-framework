@@ -50,13 +50,6 @@ const COHORTS = [
   },
 ];
 
-const Actions = () => {
-  return `<div className="flex flex-row">
-      <LoginIcon> Login </LoginIcon>
-      <CartIcon> Cart </CartIcon>
-    </div>`;
-};
-
 const CohortBuilder: NextPage = () => {
   return (
     <UserFlowVariedPages headerElements={headerElements}>

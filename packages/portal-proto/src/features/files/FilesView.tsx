@@ -105,7 +105,7 @@ export const FilesView: React.FC<FilesViewProps> = ({
 }: FilesViewProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [activePage, setPage] = useState(1);
-  const [pages, setPages] = useState(10);
+  const [pages] = useState(10);
   const handlePageSizeChange = (x: string) => {
     setPageSize(parseInt(x));
   };
@@ -141,7 +141,7 @@ export const FilesView: React.FC<FilesViewProps> = ({
           </tr>
         </thead>
         <tbody>
-          {files.map((file, i) => (
+          {files.map((file) => (
             <tr key={file.id}>
               <td className="px-2">
                 <input type="checkbox" />

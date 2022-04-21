@@ -1,4 +1,3 @@
-import { FacetProps } from "../facets/Facet";
 import { EnumFacet } from "../facets/EnumFacet";
 import { Tab, TabProps, TabList, TabPanel, Tabs } from "react-tabs";
 import { useState } from "react";
@@ -43,14 +42,7 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
   );
 };
 
-const molecularFmolecularFacets = [];
-
-const molecularSubcategories = ["Somatic Mutations"];
-
-const downloadableFacets = [];
 const downloadableSubcategories = ["All"];
-const visualizableFacets = [];
-const visualizableSubcategories = ["Somatic Mutations"];
 
 interface FacetTabWithSubmenuProps extends TabProps {
   category: string;
@@ -68,7 +60,7 @@ const FacetTabWithSubmenu: React.FC<FacetTabWithSubmenuProps> = ({
     return { label: n, value: index };
   });
 
-  const [subCategory, setSubCategory] = useState({ ...menu_items[0] });
+  const [subCategory] = useState({ ...menu_items[0] });
 
   const handleChange = (x) => {
     onSubcategoryChange(category, x.label);
@@ -98,10 +90,6 @@ const FacetTabWithSubmenu: React.FC<FacetTabWithSubmenuProps> = ({
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 FacetTabWithSubmenu.tabsRole = "Tab";
-
-interface CohortTabbedFacetsProps {
-  readonly searchResults?: [Record<string, unknown>];
-}
 
 export const CohortTabbedFacets = () => {
   const [subcategories, setSubcategories] = useState({

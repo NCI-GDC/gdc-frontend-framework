@@ -23,7 +23,7 @@ const createChartData = (which) => {
   return data;
 };
 
-const GeneMutationChart = ({ which }) => {
+const GeneMutationChart = ({ which }: { which: string }) => {
   const chart_data = createChartData(which);
 
   const chartData = {
