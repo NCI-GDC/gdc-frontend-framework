@@ -1,4 +1,4 @@
-import { UserFlowVariedPages, Button } from "../../layout/UserFlowVariedPages";
+import { UserFlowVariedPages } from "../../layout/UserFlowVariedPages";
 import { CohortManager } from "../many-pages/cohort";
 import React, { PropsWithChildren, useRef } from "react";
 import { useState } from "react";
@@ -33,6 +33,7 @@ import { get_facets } from "../../cohortBuilder/dictionary";
 import { FileModal } from "../../files/FileView";
 import { GdcFile } from "@gff/core";
 import { CaseModal } from "../../cases/CaseView";
+import { Button } from "@mantine/core";
 
 export interface BaseExplorationPageProps {
   readonly headerElements: ReadonlyArray<React.ReactNode>;

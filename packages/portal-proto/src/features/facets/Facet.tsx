@@ -1,5 +1,4 @@
 import {
-  EnumFilter,
   FacetBuckets,
   fetchFacetByName,
   FilterSet,

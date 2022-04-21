@@ -8,12 +8,7 @@ const FullCohortBuilder: React.FC<CohortGroupProps> = ({
   cohorts,
   simpleMode = false,
 }: CohortGroupProps) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [searchResults, setSearchResults] = useState([]);
-
-  // TODO can be varible instead of state if no use of the setter
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [summaryFields, setSummaryFields] = useState([
+  const [summaryFields] = useState([
     "primary_site",
     "demographic.gender",
     "disease_type",
@@ -22,7 +17,7 @@ const FullCohortBuilder: React.FC<CohortGroupProps> = ({
   return (
     <div className="bg-white">
       <CohortGroup cohorts={cohorts} simpleMode={simpleMode} />
-      <MetaSearch onChange={(r) => setSearchResults(r)} />
+      <MetaSearch />
       <SummaryCharts fields={summaryFields} />
       <CohortTabbedFacets />
     </div>

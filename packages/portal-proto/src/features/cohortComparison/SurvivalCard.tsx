@@ -5,10 +5,11 @@ import {
   useCoreSelector,
   selectAvailableCohortByName,
   buildCohortGqlOperator,
+  GqlOperation,
 } from "@gff/core";
 import SurvivalPlot from "../charts/SurvivalPlot";
 
-const dataCompletenessFilters = [
+const dataCompletenessFilters: GqlOperation[] = [
   {
     op: "or",
     content: [

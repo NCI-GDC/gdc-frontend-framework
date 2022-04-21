@@ -1,11 +1,11 @@
 import { Project, useProjects } from "@gff/core";
 import { Option, Select } from "../../components/Select";
 import Image from "next/image";
-import { Button } from "../layout/UserFlowVariedPages";
 import { MdFlip, MdSearch } from "react-icons/md";
 import { BsQuestionCircleFill, BsFillTriangleFill } from "react-icons/bs";
 import { useState } from "react";
 import { FacetChart } from "../charts/FacetChart";
+import { Button } from "@mantine/core";
 
 const DLBCL: Project = {
   projectId: "DLBCL",
@@ -438,7 +438,7 @@ export const StudiesView: React.FC<StudiesViewProps> = ({
           <Button>Selected Cohorts: None</Button>
           <Button
             className="px-2 py-1 border rounded bg-nci-gray-lighter text-nci-gray float-right"
-            stylingOff={true}
+            // stylingOff={true}
           >
             Explore Selected Cohorts In...
           </Button>
@@ -513,7 +513,6 @@ const Study: React.FC<StudyProps> = (props: StudyProps) => {
 
   return (
     <div
-      name={projectId}
       className={
         "group h-250 border border-nci-gray-lighter flex flex-col bg-white shadow-md"
       }

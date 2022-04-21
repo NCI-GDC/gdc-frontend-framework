@@ -25,7 +25,7 @@ jobs:
           cd ${{github.workspace}}/packages/portal-proto
           npm run compile
 
-      - name: Run link check
+      - name: Run lint check
         run: npm run lint
 
       - name: Run Prettier Check
