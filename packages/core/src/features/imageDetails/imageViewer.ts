@@ -89,7 +89,7 @@ const slice = createSlice({
             const caseSubmitterId = edge?.node?.submitter_id;
             const projectID = edge?.node?.project?.project_id;
 
-            return [`${caseSubmitterId} ${projectID}`, parsedSlideImagesInfo];
+            return [`${caseSubmitterId} - ${projectID}`, parsedSlideImagesInfo];
           }),
         );
 
