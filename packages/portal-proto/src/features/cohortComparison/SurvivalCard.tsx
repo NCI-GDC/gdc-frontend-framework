@@ -1,12 +1,13 @@
-import { LoadingOverlay, Paper, Tooltip } from "@mantine/core";
+import { useEffect } from "react";
+import { Paper, Tooltip } from "@mantine/core";
 import {
   useSurvivalPlot,
   useCoreSelector,
   selectAvailableCohortByName,
   buildCohortGqlOperator,
+  GqlOperation,
 } from "@gff/core";
 import SurvivalPlot from "../charts/SurvivalPlot";
-import { useEffect } from "react";
 
 const tooltipLabel = (
   <>
@@ -18,16 +19,62 @@ const tooltipLabel = (
   </>
 );
 
+const makeSurvivalFilters = ({
+  cohort1Filters,
+  cohort2Filters,
+  caseIds,
+}: {
+  cohort1Filters: GqlOperation,
+  cohort2Filters: GqlOperation,
+  caseIds: string[][];
+}): GqlOperation[] => {
+  // Data should be in only one of the cohorts, not both so exclude cases ids from the other set
+  const cohort1Content = [];
+  if (cohort1Filters) {
+    cohort1Content.push(cohort1Filters);
+  }
+  if (caseIds[1]) {
+    cohort1Content.push({
+      op: "exclude",
+      content: { field: "cases.case_id", value: caseIds[1] },
+    });
+  }
+
+  const cohort2Content = [];
+  if (cohort2Filters) {
+    cohort2Content.push(cohort2Filters);
+  }
+  if (caseIds[0]) {
+    cohort2Content.push({
+      op: "exclude",
+      content: { field: "cases.case_id", value: caseIds[0] },
+    });
+  }
+
+  return [
+    {
+      op: "and",
+      content: cohort1Content,
+    },
+    {
+      op: "and",
+      content: cohort2Content,
+    },
+  ];
+};
+
 interface SurvivalCardProps {
   readonly counts: number[];
   readonly cohortNames: string[];
   readonly setSurvivalPlotSelectable: (selectable: boolean) => void;
+  readonly caseIds: string[][];
 }
 
 const SurvivalCard: React.FC<SurvivalCardProps> = ({
   counts,
   cohortNames,
   setSurvivalPlotSelectable,
+  caseIds,
 }: SurvivalCardProps) => {
   const cohort1Filters = useCoreSelector((state) =>
     buildCohortGqlOperator(
@@ -41,41 +88,30 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
     ),
   );
 
-  // TODO: limit to cases that are only within a single cohort
-  const { data } = useSurvivalPlot({
-    filters: [
-      {
-        op: "and",
-        content: [cohort1Filters],
-      },
-      {
-        op: "and",
-        content: [cohort2Filters],
-      },
-    ],
-  });
+  const filters = makeSurvivalFilters({ cohort1Filters, cohort2Filters, caseIds });
+  const { data } = useSurvivalPlot({ filters });
 
   useEffect(() => {
-    setSurvivalPlotSelectable(data.survivalData.length !== 0);
+    setSurvivalPlotSelectable(data?.survivalData.length !== 0);
   }, [data, setSurvivalPlotSelectable]);
 
-  const cohort1Count = data.survivalData[0]
+  const cohort1Count = data?.survivalData[0]
     ? data.survivalData[0].donors?.length
     : 0;
-  const cohort2Count = data.survivalData[1]
+  const cohort2Count = data?.survivalData[1]
     ? data.survivalData[1].donors?.length
     : 0;
 
   return (
     <Paper p="md" className="min-w-[600px]">
       <h2 className="text-lg font-semibold">Survival Analysis</h2>
-      {data.survivalData.length === 0 ? (
+      {data?.survivalData.length === 0 ? (
         <div className="p-1">
           {"No Survival data available for this Cohort Comparison"}
         </div>
       ) : (
         <>
-          <SurvivalPlot data={data} />
+          <SurvivalPlot data={data} hideLegend />
           <table className="bg-white w-full text-left text-nci-gray-darker">
             <thead>
               <tr className="bg-nci-gray-lightest">

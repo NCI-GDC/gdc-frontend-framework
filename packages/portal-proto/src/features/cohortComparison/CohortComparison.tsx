@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { pickBy } from "lodash";
+import { LoadingOverlay } from "@mantine/core";
 import { useCohortFacets } from "@gff/core";
 import CohortCard from "./CohortCard";
 import SurvivalCard from "./SurvivalCard";
@@ -36,7 +37,7 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
 
   const fieldsToQuery = Object.values(fields).filter((v) => v !== "Survival");
 
-  const { data } = useCohortFacets({
+  const { data, isFetching, isUninitialized } = useCohortFacets({
     facetFields: fieldsToQuery,
     primaryCohort: cohortNames[0],
     comparisonCohort: cohortNames[1],
@@ -52,30 +53,44 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
           }
         </span>
       )}
-      <div className="flex gap-4">
+      <div className="flex gap-4 pt-2">
         <div className="p-1 flex basis-2/4 flex-col gap-4">
-          {selectedCards.survival && (
+          {selectedCards.survival && (isFetching || isUninitialized) ? (
+            <div className="min-w-[600px] min-h-[400px] relative">
+              <LoadingOverlay visible={isFetching} />
+            </div>
+          ) : (
             <SurvivalCard
               cohortNames={cohortNames}
               counts={counts}
+              caseIds={data?.caseIds}
               setSurvivalPlotSelectable={setSurvivalPlotSelectable}
             />
           )}
           {Object.keys(
             pickBy(selectedCards, (v, k) => v && k !== "survival"),
-          ).map((selectedCard) => (
-            <FacetCard
-              key={selectedCard}
-              data={
-                data?.aggregations
-                  ? data.aggregations.map((d) => d[fields[selectedCard]])
-                  : []
-              }
-              field={fields[selectedCard]}
-              counts={counts}
-              cohortNames={cohortNames}
-            />
-          ))}
+          ).map((selectedCard) =>
+            isFetching ? (
+              <div
+                className="min-w-[600px] min-h-[400px] relative"
+                key={selectedCard}
+              >
+                <LoadingOverlay visible={isFetching} />
+              </div>
+            ) : (
+              <FacetCard
+                key={selectedCard}
+                data={
+                  data?.aggregations
+                    ? data.aggregations.map((d) => d[fields[selectedCard]])
+                    : []
+                }
+                field={fields[selectedCard]}
+                counts={counts}
+                cohortNames={cohortNames}
+              />
+            ),
+          )}
         </div>
         <div className="p-1 flex basis-2/4">
           <CohortCard

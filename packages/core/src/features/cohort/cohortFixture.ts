@@ -24,7 +24,7 @@ export const COHORTS = [
         },
         "cases.primary_site": {
           field: "cases.primary_site",
-          operands: ["pancreas"],
+          operands: ["Pancreas"],
           operator: "includes",
         },
       },

@@ -6,7 +6,7 @@ import CohortComparison from "../cohortComparison/CohortComparison";
 
 const COMPARISON_COHORT = "breast, true";
 
-const CohortComparisonApp = () => {
+const CohortComparisonApp : React.FC = () => {
   const primaryCohortName = useCoreSelector((state) =>
     selectCurrentCohort(state),
   );
