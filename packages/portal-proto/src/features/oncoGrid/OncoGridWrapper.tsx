@@ -115,6 +115,7 @@ const OncoGridWrapper: React.FC = () => {
       setTimeout(() => gridObject.current.setHeatmap(isHeatmap), 200);
       setTimeout(() => setIsLoading(false), 1000);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isHeatmap, gridObject]);
 
   useEffect(

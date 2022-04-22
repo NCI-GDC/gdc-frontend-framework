@@ -127,6 +127,7 @@ export const Facet: React.FC<FacetProps> = ({
         Object.entries(data).filter((data) => data[0] != "_missing").length,
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccess]);
 
   useEffect(() => {
@@ -148,6 +149,7 @@ export const Facet: React.FC<FacetProps> = ({
       // completely remove the field
       coreDispatch(removeCohortFilter(field));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedEnums]);
 
   const maxValuesToDisplay = 6;

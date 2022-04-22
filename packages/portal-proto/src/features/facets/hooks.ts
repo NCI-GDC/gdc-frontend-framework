@@ -90,6 +90,7 @@ const useCasesFacet = (field: string): EnumFacetResponse => {
 
   useEffect(() => {
     coreDispatch(fetchCaseFacetByName(field));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectFacetFilter]);
 
   return {
@@ -122,6 +123,7 @@ const useFilesFacet = (field: string): EnumFacetResponse => {
 
   useEffect(() => {
     coreDispatch(fetchFileFacetByName(field));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectFacetFilter]);
 
   return {
@@ -157,6 +159,7 @@ const useGenesFacet = (field: string): EnumFacetResponse => {
     if (facet) {
       coreDispatch(fetchGenesFacetByName(field));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectFacetFilter, selectCohortFilter]);
 
   return {
@@ -192,6 +195,7 @@ const useMutationsFacet = (field: string): EnumFacetResponse => {
     if (facet) {
       coreDispatch(fetchMutationsFacetByName(field));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectFacetFilter, selectCohortFilter]);
 
   return {

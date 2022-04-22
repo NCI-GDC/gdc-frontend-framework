@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { Config, Layout, Shape, PlotMouseEvent } from "plotly.js";
 import Plot from "react-plotly.js";
 import {
@@ -101,6 +101,7 @@ const VennDiagram: React.FC<VennDiagramProps> = ({
           .filter((d) => d >= 0),
       ),
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortedChartData]);
 
   const config: Partial<Config> = {

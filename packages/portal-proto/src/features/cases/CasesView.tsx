@@ -65,6 +65,7 @@ const useCohortCases = (pageSize = 10, offset = 0) => {
         from: offset * pageSize,
       }),
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters, pageSize, offset]);
 
   return {
