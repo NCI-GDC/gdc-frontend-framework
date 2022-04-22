@@ -20,11 +20,6 @@ jobs:
           cd ${{github.workspace}}/packages/core
           npm run build:clean
 
-      - name: Compilation/Type Check for portal-proto
-        run: |
-          cd ${{github.workspace}}/packages/portal-proto
-          npm run compile
-
       - name: Run lint check
         run: npm run lint
 
@@ -33,3 +28,8 @@ jobs:
 
       - name: Check for unit tests
         run: npm test
+
+      - name: Compilation/Type Check for portal-proto
+        run: |
+          cd ${{github.workspace}}/packages/portal-proto
+          npm run compile
