@@ -47,7 +47,7 @@ const TwoPopulatedFilters = {
 describe("cohortSlice reducer", () => {
   test("should return the default state for unknown actions", () => {
     const state = cohortNameReducer(undefined, { type: "asdf" });
-    expect(state).toEqual({ currentCohort: "New Cohort" });
+    expect(state).toEqual({ currentCohort: "New Custom Cohort" });
   });
 
   test("setCurrentCohort action should set the current cohort", () => {
