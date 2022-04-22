@@ -18,15 +18,26 @@ import { nanoid } from "@reduxjs/toolkit";
 import {
   FilterSet,
   Operation,
-  OperationoprValue,
-  Includes,
-  Equals,
+  EnumOperandValue,
   handleOperation,
   OperationHandler,
   removeCohortFilter,
   selectCurrentCohortFilters,
   useCoreDispatch,
   useCoreSelector,
+  Includes,
+  Equals,
+  NotEquals,
+  LessThan,
+  LessThanOrEquals,
+  GreaterThan,
+  Exists,
+  GreaterThanOrEquals,
+  ExcludeIfAny,
+  Excludes,
+  Missing,
+  Intersection,
+  Union,
 } from "@gff/core";
 import { convertFieldToName } from "../facets/utils";
 import CountButton from "./CountButton";
@@ -182,7 +193,7 @@ const CohortFacetElement: React.FC<FacetElementProp> = ({
 interface EnumFilterProps {
   readonly op: string;
   readonly field: string;
-  readonly values: OperationValue;
+  readonly values: ReadonlyArray<string>;
 }
 
 const CohortEnumFilterElement: React.FC<EnumFilterProps> = ({
@@ -238,32 +249,13 @@ interface RangeFilterProps {
   readonly filter: Operation;
 }
 
-const CohortRangeFilterElement: React.FC<RangeFilterProps> = ({
-  filter,
-}: RangeFilterProps) => {
-  const [groupType, setGroupTop] = useState(filter.op);
-
-  const handleChange = (event) => {
-    setGroupTop(event.target.value);
-  };
-
-  const menu_items = [{ value: "between", label: "between" }];
-
-  return (
-    <div className="m-1 px-2 rounded-full bg-nci-gray-lighter font-heading text-gray-dark border-nci-gray-lighter border-width">
-      <div className="flex flex-row items-center flex-grow truncate ... ">
-        <ClearIcon className="pr-1" />
-        {filter.field} <span className="px-1 underline">{filter.op}</span>
-        {filter.from} and {filter.to}
-        <DropDownIcon />
-      </div>
-    </div>
-  );
-};
-
+interface CohortFacet {
+  readonly field: string;
+  readonly value: ReadonlyArray<string>;
+}
 interface PersistentCohort {
   readonly name: string;
-  readonly facets?: Array<Record<string, string>>;
+  readonly facets?: ReadonlyArray<CohortFacet>;
 }
 
 export interface CohortGroupProps {
@@ -283,18 +275,29 @@ class CohortFilterToComponent implements OperationHandler<JSX.Element> {
     <CohortEnumFilterElement
       key={f.field}
       field={f.field}
-      op={f.operation}
-      values={f.operands}
+      op={f.operator}
+      values={f.operands.map(String)}
     />
   );
   handleEquals = (f: Equals) => (
     <CohortEnumFilterElement
       key={f.field}
       field={f.field}
-      op={f.operation}
-      values={f.operand}
+      op={f.operator}
+      values={[String(f.operand)]}
     />
   );
+  handleNotEquals = (f: NotEquals) => null;
+  handleLessThan = (f: LessThan) => null;
+  handleLessThanOrEquals = (f: LessThanOrEquals) => null;
+  handleGreaterThan = (f: GreaterThan) => null;
+  handleGreaterThanOrEquals = (f: GreaterThanOrEquals) => null;
+  handleExists = (f: Exists) => null;
+  handleExcludeIfAny = (f: ExcludeIfAny) => null;
+  handleMissing = (f: Missing) => null;
+  handleExcludes = (f: Excludes) => null;
+  handleIntersection = (f: Intersection) => null;
+  handleUnion = (f: Union) => null;
 }
 
 export const convertFilterToComponent = (filter: Operation): JSX.Element => {

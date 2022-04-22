@@ -92,7 +92,7 @@ const SomanticMutationFilterFixedVersion: React.FC = () => {
               </div>
             </div>
           </div>
-          <MutationsTable />
+          <MutationsTable selectedSurvivalPlot={{}} />
         </div>
       </div>
     </div>

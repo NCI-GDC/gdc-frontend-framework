@@ -25,6 +25,7 @@ import {
   useCoreDispatch,
   clearCohortFilters,
   setCurrentCohort,
+  EnumOperandValue,
 } from "@gff/core";
 
 const ContextBar: React.FC<CohortGroupProps> = ({

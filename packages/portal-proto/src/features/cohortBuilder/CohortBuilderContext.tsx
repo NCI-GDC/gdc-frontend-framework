@@ -1,8 +1,10 @@
-import { createContext, useState, PropsWithChildren } from "react";
+import React, { createContext, useState, PropsWithChildren } from "react";
 
 const CohortBuilderSummaryContext = createContext(null);
 
-const CohortBuilderSummaryContextProvider = ({ children }) => {
+const CohortBuilderSummaryContextProvider: React.FC<
+  PropsWithChildren<unknown>
+> = ({ children }: PropsWithChildren<unknown>) => {
   const [summaryFields, setSummaryFields] = useState([
     "primary_site",
     "demographic.gender",

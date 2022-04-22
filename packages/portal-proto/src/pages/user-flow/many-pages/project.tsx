@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
 import { ContextualProjectView } from "../../../features/projects/ProjectView";
-import { headerElements } from "./navigation-utils";
+import { headerElements } from "../../../config/many-pages/navigation-utils";
 
 const ProjectPage: NextPage = () => {
   return (

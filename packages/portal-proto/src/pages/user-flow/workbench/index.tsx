@@ -2,7 +2,7 @@ import { NextPage } from "next";
 import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
 import Image from "next/image";
 import Link from "next/link";
-import { headerElements } from "./navigation-utils";
+import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
 import { Tooltip } from "@mantine/core";
 
 interface SummaryStatsItemProp {
@@ -101,7 +101,6 @@ const ActionButtonBar = () => {
           <Tooltip
             label="Explore and analyze harmonized high-quality clinical and genomics data from cancer genomic studies with the tools in the Research Workbench."
             classNames={{
-              wrapper: "shadow-lg",
               body: "shadow-lg bg-white text-nci-gray-darkest",
             }}
             position="right"
@@ -127,7 +126,6 @@ const ActionButtonBar = () => {
           <Tooltip
             label="View the Studies available within the GDC and select them for further exploration and analysis."
             classNames={{
-              wrapper: "shadow-lg",
               body: "shadow-lg bg-white text-nci-gray-darkest",
             }}
             position="bottom"
@@ -155,7 +153,6 @@ const ActionButtonBar = () => {
           <Tooltip
             label="Build and define your custom cohorts using a variety of clinical and biospecimen features."
             classNames={{
-              wrapper: "shadow-lg",
               body: "shadow-lg bg-white text-nci-gray-darkest",
             }}
             position="bottom"
@@ -184,7 +181,6 @@ const ActionButtonBar = () => {
           <Tooltip
             label="Browse and download the files associated with your cohort for more sophisticated analysis."
             classNames={{
-              wrapper: "shadow-lg",
               body: "shadow-lg bg-white text-nci-gray-darkest",
             }}
             position="bottom"

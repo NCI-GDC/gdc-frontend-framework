@@ -492,7 +492,7 @@ const Study: React.FC<StudyProps> = (props: StudyProps) => {
   const mainProject = props.project.projectId.split("-")[0];
   const projectLogoPath = `/logos/${mainProject}_logo.png`;
 
-  /* thoughts on checking if images exist 
+  /* thoughts on checking if images exist
   try {
     fetch(projectLogoPath, {method: 'HEAD'})
       .then((response)=>{
@@ -567,7 +567,6 @@ const Study: React.FC<StudyProps> = (props: StudyProps) => {
           </div>
           <div className="flex flex-col justify-center px-4">
             <Button
-              stylingOff={true}
               className="
               px-2 py-1 m-1
               rounded
@@ -579,7 +578,6 @@ const Study: React.FC<StudyProps> = (props: StudyProps) => {
               1,098 Cases
             </Button>
             <Button
-              stylingOff={true}
               className="
               px-2 py-1 m-1
               rounded

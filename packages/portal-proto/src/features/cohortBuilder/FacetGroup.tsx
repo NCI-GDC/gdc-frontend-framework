@@ -1,5 +1,6 @@
 import { EnumFacet } from "../facets/EnumFacet";
-import { Tab, TabProps, TabList, TabPanel, Tabs } from "react-tabs";
+import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
+import type { ReactTabsFunctionComponent, TabProps } from "react-tabs";
 import { useState } from "react";
 import Select from "react-select";
 import { get_facet_subcategories, get_facets } from "./dictionary";
@@ -50,7 +51,9 @@ interface FacetTabWithSubmenuProps extends TabProps {
   onSubcategoryChange: (c: string, sc: string) => void;
 }
 
-const FacetTabWithSubmenu: React.FC<FacetTabWithSubmenuProps> = ({
+const FacetTabWithSubmenu: React.FC<
+  ReactTabsFunctionComponent<FacetTabWithSubmenuProps>
+> = ({
   category,
   subCategories,
   onSubcategoryChange,
@@ -66,8 +69,6 @@ const FacetTabWithSubmenu: React.FC<FacetTabWithSubmenuProps> = ({
     onSubcategoryChange(category, x.label);
   };
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
   return (
     <Tab {...otherProps}>
       <div className="flex flex-row items-center justify-center ">

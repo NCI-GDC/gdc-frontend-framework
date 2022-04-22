@@ -1,14 +1,24 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Chip, Chips, Grid, Select } from "@mantine/core";
 import { MdClear as Clear } from "react-icons/md";
-import AnalysisCard from "./AnalysisCard";
-import { APPTAGS, REGISTERED_APPS, RECOMMENDED_APPS } from "./registeredApps";
-import { AppRegistrationEntry, sortAlphabetically } from "./utils";
+import AnalysisCard from "@/features/user-flow/workflow/AnalysisCard";
+import {
+  APPTAGS,
+  REGISTERED_APPS,
+  RECOMMENDED_APPS,
+} from "@/features/user-flow/workflow/registeredApps";
+import {
+  AppRegistrationEntry,
+  sortAlphabetically,
+} from "@/features/user-flow/workflow/utils";
 import dynamic from "next/dynamic";
 
-const ActiveAnalysisToolNoSSR = dynamic(() => import("./ActiveAnalysisTool"), {
-  ssr: false,
-});
+const ActiveAnalysisToolNoSSR = dynamic(
+  () => import("@/features/user-flow/workflow/ActiveAnalysisTool"),
+  {
+    ssr: false,
+  },
+);
 
 const sortOptions = [
   { value: "default", label: "Default" },

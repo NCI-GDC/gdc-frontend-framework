@@ -71,13 +71,14 @@ const slice = createSlice({
 /**
  *  Operand types for filter operations
  */
-export type EnumOperandValue = string[] | number[] | undefined;
+export type EnumOperandValue = ReadonlyArray<string> | ReadonlyArray<number>;
 export type RangeOperandValue = string | number;
-export type SetOperandValue = ReadonlyArray<string> | ReadonlyArray<number>;
+export type SetOperandValue = ReadonlyArray<Operation>;
 export type OperandValue =
   | EnumOperandValue
   | RangeOperandValue
-  | SetOperandValue;
+  | SetOperandValue
+  | undefined;
 
 /**
  * Extract the operand values, if operands themselves have values,  otherwise undefined.
@@ -92,6 +93,27 @@ export class ValueExtractorHandler implements OperationHandler<OperandValue> {
   handleGreaterThan = (op: GreaterThan) => op.operand;
   handleLessThan = (op: LessThan) => op.operand;
   handleLessThanOrEquals = (op: LessThanOrEquals) => op.operand;
+  handleMissing = (_: Missing) => undefined;
+  handleExists = (_: Exists) => undefined;
+  handleIntersection = (_: Intersection) => undefined;
+  handleUnion = (_: Union) => undefined;
+}
+
+/**
+ * Extract the operand values, if operands themselves have values,  otherwise undefined.
+ */
+export class EnumValueExtractorHandler
+  implements OperationHandler<EnumOperandValue | undefined>
+{
+  handleEquals = (_: Equals) => undefined;
+  handleNotEquals = (_: NotEquals) => undefined;
+  handleExcludes = (op: Excludes) => op.operands;
+  handleExcludeIfAny = (_: ExcludeIfAny) => undefined;
+  handleIncludes = (op: Includes) => op.operands;
+  handleGreaterThanOrEquals = (_: GreaterThanOrEquals) => undefined;
+  handleGreaterThan = (_: GreaterThan) => undefined;
+  handleLessThan = (_: LessThan) => undefined;
+  handleLessThanOrEquals = (_: LessThanOrEquals) => undefined;
   handleMissing = (_: Missing) => undefined;
   handleExists = (_: Exists) => undefined;
   handleIntersection = (_: Intersection) => undefined;

@@ -2,7 +2,7 @@ import { NextPage } from "next";
 import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
 import Image from "next/image";
 import Link from "next/link";
-import { headerElements } from "./navigation-utils";
+import { headerElements } from "../../../config/many-pages/navigation-utils";
 
 interface SummaryStatsItemProp {
   readonly title: string;

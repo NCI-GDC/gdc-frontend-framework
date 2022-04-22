@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import React, { useState } from "react";
 import { AppShell, Navbar, Header } from "@mantine/core";
 import dynamic from "next/dynamic";
 
@@ -43,7 +43,7 @@ const SideBar = (
   );
 };
 
-const StyleGuideApp: ReactNode = () => {
+const StyleGuideApp = () => {
   const [activeStyleCard, setActiveStyleCard] = useState("Introduction");
   const header = (
     <Header height={60} p="xs">

@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import { MultipleImageViewer } from "../../../components/MultipleImageViewer";
 import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
-import { headerElements } from "../many-pages/navigation-utils";
+import { headerElements } from "../../../config/many-pages/navigation-utils";
 
 const MultipleImageViewerPage: NextPage = () => {
   return (

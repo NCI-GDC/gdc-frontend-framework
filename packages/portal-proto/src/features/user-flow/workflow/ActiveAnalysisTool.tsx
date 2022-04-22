@@ -4,7 +4,7 @@ import { Loader } from "@mantine/core";
 const importApplication = (app) =>
   lazy(() =>
     import(`../../../features/apps/${app}`).catch(
-      () => import(`../../../features/apps/NullApp`),
+      () => import(`@/features/apps/NullApp`),
     ),
   ); // TODO These longs paths are not the best. Will need to restructure this code.
 

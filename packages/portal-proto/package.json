@@ -32,7 +32,7 @@
     "react-responsive-masonry": "^2.1.4",
     "react-select": "^4.3.1",
     "react-select-search": "^3.0.8",
-    "react-tabs": "^3.2.2",
+    "react-tabs": "^4.2.1",
     "typeface-montserrat": "^1.1.13"
   },
   "license": "Apache-2",
@@ -54,7 +54,6 @@
     "@types/react-modal": "^3.12.1",
     "@types/react-redux": "^7.1.16",
     "@types/react-select": "^4.0.17",
-    "@types/react-tabs": "^2.3.3",
     "autoprefixer": "^10.4.2",
     "jest": "^27.0.6",
     "jest-css-modules-transform": "^4.2.0",

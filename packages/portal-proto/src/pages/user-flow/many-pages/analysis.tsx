@@ -6,7 +6,7 @@ import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPage
 import { Select } from "../../../components/Select";
 import { CohortManager } from "../../../features/user-flow/many-pages/cohort";
 import SomanticMutationFilterFixedVersion from "../../../features/genomic/SomanticMutationFilter";
-import { headerElements } from "./navigation-utils";
+import { headerElements } from "../../../config/many-pages/navigation-utils";
 import {
   GeneExpression,
   OncoGrid,

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { CohortGroup, CohortGroupProps } from "./CohortGroup";
 import { SummaryCharts } from "./SummaryCharts";
 import MetaSearch from "./MetaSearch";

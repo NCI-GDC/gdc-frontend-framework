@@ -1,6 +1,7 @@
 import {
   Operation,
-  ValueExtractorHandler,
+  EnumValueExtractorHandler,
+  EnumOperandValue,
   OperandValue,
   CoreDispatch,
   FacetBuckets,
@@ -38,9 +39,9 @@ const useGenomicFacetFilter = (): FilterSet => {
   return useCoreSelector((state) => selectGenomicFilters(state));
 };
 
-export const extractValue = (op: Operation): OperandValue => {
-  const handler = new ValueExtractorHandler();
-  return handleOperation(handler, op);
+export const extractValue = (op: Operation): EnumOperandValue => {
+  const handler = new EnumValueExtractorHandler();
+  return handleOperation<EnumOperandValue>(handler, op);
 };
 
 /**
@@ -63,7 +64,7 @@ const useGenomicFilterByName = (field: string): OperandValue => {
 
 interface EnumFacetResponse {
   readonly data?: Record<string, number>;
-  readonly enumFilters?: OperandValue;
+  readonly enumFilters?: EnumOperandValue;
   readonly error?: string;
   readonly isUninitialized: boolean;
   readonly isFetching: boolean;
@@ -95,7 +96,7 @@ const useCasesFacet = (field: string): EnumFacetResponse => {
 
   return {
     data: facet?.buckets,
-    enumFilters: enumFilters,
+    enumFilters: enumFilters as EnumOperandValue,
     error: facet?.error,
     isUninitialized: facet === undefined,
     isFetching: facet?.status === "pending",
@@ -128,7 +129,7 @@ const useFilesFacet = (field: string): EnumFacetResponse => {
 
   return {
     data: facet?.buckets,
-    enumFilters: enumFilters,
+    enumFilters: enumFilters as EnumOperandValue,
     error: facet?.error,
     isUninitialized: facet === undefined,
     isFetching: facet?.status === "pending",
@@ -164,7 +165,7 @@ const useGenesFacet = (field: string): EnumFacetResponse => {
 
   return {
     data: facet?.buckets,
-    enumFilters: enumFilters,
+    enumFilters: enumFilters as EnumOperandValue,
     error: facet?.error,
     isUninitialized: facet === undefined,
     isFetching: facet?.status === "pending",
@@ -200,7 +201,7 @@ const useMutationsFacet = (field: string): EnumFacetResponse => {
 
   return {
     data: facet?.buckets,
-    enumFilters: enumFilters,
+    enumFilters: enumFilters as EnumOperandValue,
     error: facet?.error,
     isUninitialized: facet === undefined,
     isFetching: facet?.status === "pending",
@@ -218,7 +219,7 @@ const useMutationsFacet = (field: string): EnumFacetResponse => {
  */
 export const updateEnumFilters = (
   dispatch: CoreDispatch,
-  enumerationFilters: OperandValue,
+  enumerationFilters: EnumOperandValue,
   field: string,
   prefix = "",
 ) => {
@@ -242,7 +243,7 @@ export const updateEnumFilters = (
 
 export const updateGenomicEnumFilters = (
   dispatch: CoreDispatch,
-  enumerationFilters: OperandValue,
+  enumerationFilters: EnumOperandValue,
   field: string,
   prefix = "",
 ) => {

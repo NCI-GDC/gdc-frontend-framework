@@ -2,14 +2,11 @@ import { NextPage } from "next";
 import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
 import Image from "next/image";
 import { useState } from "react";
-import { useRouter } from "next/router";
 import ReactModal from "react-modal";
 import { ContextualStudiesView } from "../../../features/studies/StudiesViewLeft";
-import { headerElements } from "./navigation-utils";
-import { Button } from "@mantine/core/lib/components/Button";
+import { headerElements } from "../../../config/many-pages/navigation-utils";
 
 const StudiesPageLeft: NextPage = () => {
-  const router = useRouter();
   const [showModal, setShowModal] = useState(false);
 
   const SingleStudyModal = () => {
@@ -39,16 +36,6 @@ const StudiesPageLeft: NextPage = () => {
           setCurrentStudy={() => {
             setShowModal(true);
           }}
-          exploreLeft={
-            <Button onClick={() => router.push("analysis")}>
-              Analyze Selected Cohorts
-            </Button>
-          }
-          exploreRight={
-            <Button onClick={() => router.push("repository")}>
-              Download Files From Selected Cohorts
-            </Button>
-          }
         />
       </div>
     </UserFlowVariedPages>

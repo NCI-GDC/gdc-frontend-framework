@@ -19,7 +19,7 @@ import { SummaryCharts } from "../../cohortBuilder/SummaryCharts";
 import { MetaSearch } from "../../cohortBuilder/MetaSearch";
 import { CohortTabbedFacets } from "../../cohortBuilder/FacetGroup";
 import { GdcFile } from "@gff/core";
-import { Button } from "@mantine/core/lib/components/Button";
+import { Button } from "@mantine/core";
 
 // this is an example of where composition makes it hards to read and understand the code
 export type CohortManagerProps = Partial<ModalOrExpandProps> &
@@ -276,11 +276,8 @@ export const CohortBuilder: React.FC<CohortBuilderProps> = ({
     >
       <div className="">
         <CohortGroup cohorts={cohort} simpleMode={true}></CohortGroup>
-        <MetaSearch onChange={(r) => r}></MetaSearch>
-        <CohortTabbedFacets
-          searchResults={[]}
-          onUpdateSummaryChart={updateSummaryCharts}
-        ></CohortTabbedFacets>
+        <MetaSearch />
+        <CohortTabbedFacets />
       </div>
       <div className="pt-4">
         <SummaryCharts fields={summaryFields} />
@@ -347,8 +344,8 @@ const CohortBuilderModal: React.FC<CohortBuilderModalProps> = ({
     <ReactModal isOpen={isOpen} onRequestClose={closeModal}>
       <div>
         <CohortGroup cohorts={cohort} simpleMode={true}></CohortGroup>
-        <MetaSearch onChange={(r) => r}></MetaSearch>
-        <CohortTabbedFacets searchResults={[]}></CohortTabbedFacets>
+        <MetaSearch />
+        <CohortTabbedFacets />
       </div>
     </ReactModal>
   );
