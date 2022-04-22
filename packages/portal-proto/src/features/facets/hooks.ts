@@ -90,7 +90,7 @@ const useCasesFacet = (field: string): EnumFacetResponse => {
 
   useEffect(() => {
     coreDispatch(fetchCaseFacetByName(field));
-  }, [coreDispatch, field, selectFacetFilter]);
+  }, [selectFacetFilter]);
 
   return {
     data: facet?.buckets,
@@ -122,7 +122,7 @@ const useFilesFacet = (field: string): EnumFacetResponse => {
 
   useEffect(() => {
     coreDispatch(fetchFileFacetByName(field));
-  }, [coreDispatch, field, selectFacetFilter]);
+  }, [selectFacetFilter]);
 
   return {
     data: facet?.buckets,
@@ -157,7 +157,7 @@ const useGenesFacet = (field: string): EnumFacetResponse => {
     if (facet) {
       coreDispatch(fetchGenesFacetByName(field));
     }
-  }, [coreDispatch, facet, field, selectFacetFilter, selectCohortFilter]);
+  }, [selectFacetFilter, selectCohortFilter]);
 
   return {
     data: facet?.buckets,
@@ -192,7 +192,7 @@ const useMutationsFacet = (field: string): EnumFacetResponse => {
     if (facet) {
       coreDispatch(fetchMutationsFacetByName(field));
     }
-  }, [facet, coreDispatch, field, selectFacetFilter, selectCohortFilter]);
+  }, [selectFacetFilter, selectCohortFilter]);
 
   return {
     data: facet?.buckets,

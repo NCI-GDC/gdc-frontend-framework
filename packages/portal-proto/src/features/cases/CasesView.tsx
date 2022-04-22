@@ -65,7 +65,7 @@ const useCohortCases = (pageSize = 10, offset = 0) => {
         from: offset * pageSize,
       }),
     );
-  }, [filters, pageSize, offset, coreDispatch, cohortFilters]);
+  }, [filters, pageSize, offset]);
 
   return {
     data: cases.data,

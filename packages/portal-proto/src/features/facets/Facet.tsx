@@ -127,7 +127,7 @@ export const Facet: React.FC<FacetProps> = ({
         Object.entries(data).filter((data) => data[0] != "_missing").length,
       );
     }
-  }, [isSuccess, data]);
+  }, [isSuccess]);
 
   useEffect(() => {
     /**
@@ -148,7 +148,7 @@ export const Facet: React.FC<FacetProps> = ({
       // completely remove the field
       coreDispatch(removeCohortFilter(field));
     }
-  }, [coreDispatch, field, selectedEnums]);
+  }, [selectedEnums]);
 
   const maxValuesToDisplay = 6;
   const total = visibleItems;

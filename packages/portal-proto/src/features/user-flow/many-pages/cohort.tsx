@@ -45,11 +45,6 @@ export const CohortManager: React.FC<CohortManagerProps> = ({
   const [showCases, setShowCases] = useState(false);
   const [showFiles, setShowFiles] = useState(false);
 
-  // const cohortOptions = [
-  //   { value: "custom-cohort-1", label: "New Custom Cohort" },
-  //   { value: "all-gdc", label: "All GDC Cases" },
-  // ];
-
   const COHORTS = [
     {
       name: "New Custom Cohort",

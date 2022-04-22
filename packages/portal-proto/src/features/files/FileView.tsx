@@ -181,7 +181,7 @@ export const FileView: React.FC<FileViewProps> = ({ file }: FileViewProps) => {
       </div>
       <div className="bg-white w-full mt-4">
         <h2 className="p-2 text-lg mx-4">Downstream Analyses Files</h2>
-        {/* TODO: Need to take of this below */}
+        {/* TODO: Need to take care of this below */}
         {/* eslint-disable-next-line no-constant-condition */}
         {false ? (
           {

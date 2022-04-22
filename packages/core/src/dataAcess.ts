@@ -70,7 +70,7 @@ export const createUseCoreDataHook = <P, A, T>(
         // not compatible with thunk actions. hence, the `as any` cast. ;(
         coreDispatch(action as any); // eslint-disable-line
       }
-    }, [status, coreDispatch, action, params, prevParams]);
+    }, [status, coreDispatch, action, params]);
 
     return {
       data,

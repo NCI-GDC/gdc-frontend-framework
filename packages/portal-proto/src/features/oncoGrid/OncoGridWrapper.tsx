@@ -115,7 +115,7 @@ const OncoGridWrapper: React.FC = () => {
       setTimeout(() => gridObject.current.setHeatmap(isHeatmap), 200);
       setTimeout(() => setIsLoading(false), 1000);
     }
-  }, [isUninitialized, isHeatmap, gridObject]);
+  }, [isHeatmap, gridObject]);
 
   useEffect(
     () => gridObject.current.setGridLines(hasGridlines),
