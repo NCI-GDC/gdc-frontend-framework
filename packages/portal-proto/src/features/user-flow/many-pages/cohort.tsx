@@ -130,7 +130,7 @@ export const CohortManager: React.FC<CohortManagerProps> = ({
             <DownloadIcon size="1.5em" />
           </Button>
         </div>
-        <div className="flex-grow"></div>
+        <div className="flex-grow" />
         <div>
           <Button
             onClick={() => {
@@ -269,7 +269,7 @@ export const CohortBuilder: React.FC<CohortBuilderProps> = ({
       })}
     >
       <div className="">
-        <CohortGroup cohorts={cohort} simpleMode={true}></CohortGroup>
+        <CohortGroup cohorts={cohort} simpleMode={true} />
         <MetaSearch />
         <CohortTabbedFacets />
       </div>
@@ -337,7 +337,7 @@ const CohortBuilderModal: React.FC<CohortBuilderModalProps> = ({
   return (
     <ReactModal isOpen={isOpen} onRequestClose={closeModal}>
       <div>
-        <CohortGroup cohorts={cohort} simpleMode={true}></CohortGroup>
+        <CohortGroup cohorts={cohort} simpleMode={true} />
         <MetaSearch />
         <CohortTabbedFacets />
       </div>

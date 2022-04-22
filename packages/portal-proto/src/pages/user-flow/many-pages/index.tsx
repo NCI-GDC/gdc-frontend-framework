@@ -2,7 +2,7 @@ import { NextPage } from "next";
 import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
 import Image from "next/image";
 import Link from "next/link";
-import { headerElements } from "../../../config/many-pages/navigation-utils";
+import { headerElements } from "@/features/user-flow/many-pages/navigation-utils";
 
 interface SummaryStatsItemProp {
   readonly title: string;
@@ -136,7 +136,7 @@ const IndexPage: NextPage = () => {
               <div className="font-heading text-nci-gray-lightest text-2xl pb-5">
                 Genomic Data Commons Data Portal
               </div>
-              <ActionButtonBar></ActionButtonBar>
+              <ActionButtonBar />
             </div>
             <div className="flex items-center w-100 pb-5">
               <div className="w-full">

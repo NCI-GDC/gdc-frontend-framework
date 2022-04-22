@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import ReactModal from "react-modal";
 import { ContextualStudiesView } from "../../../features/studies/StudiesViewLeft";
-import { headerElements } from "../../../config/many-pages/navigation-utils";
+import { headerElements } from "@/features/user-flow/many-pages/navigation-utils";
 
 const StudiesPageLeft: NextPage = () => {
   const [showModal, setShowModal] = useState(false);
@@ -19,7 +19,7 @@ const StudiesPageLeft: NextPage = () => {
               layout="responsive"
               width="100%"
               height="100%"
-            ></Image>
+            />
           </div>
         </div>
       </ReactModal>

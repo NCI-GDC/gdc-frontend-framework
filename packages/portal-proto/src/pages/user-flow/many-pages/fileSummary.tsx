@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
 import { ContextualFileView } from "../../../features/files/FileSummary";
-import { headerElements } from "../../../config/many-pages/navigation-utils";
+import { headerElements } from "@/features/user-flow/many-pages/navigation-utils";
 
 const FileSummary: NextPage = () => {
   return (

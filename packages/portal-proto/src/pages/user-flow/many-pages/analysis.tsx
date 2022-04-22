@@ -6,7 +6,7 @@ import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPage
 import { Select } from "../../../components/Select";
 import { CohortManager } from "../../../features/user-flow/many-pages/cohort";
 import SomanticMutationFilterFixedVersion from "../../../features/genomic/SomanticMutationFilter";
-import { headerElements } from "../../../config/many-pages/navigation-utils";
+import { headerElements } from "@/features/user-flow/many-pages/navigation-utils";
 import {
   GeneExpression,
   OncoGrid,
@@ -27,8 +27,7 @@ import { Case } from "../../../features/cases/CasesView";
 
 const AnalysisPage: NextPage = () => {
   const [showCohortBuilderModal, setShowCohortBuilderModal] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [appsAsModal, setAppsAsModal] = useState(false);
+  const [appsAsModal] = useState(false);
 
   const [showAppModal, setShowAppModal] = useState(false);
   const [selectedApp, setSelectedApp] = useState("");
@@ -43,8 +42,7 @@ const AnalysisPage: NextPage = () => {
   //   { value: "app-modal", label: "Apps Modal" },
   // ];
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [protoOption, setProtoOption] = useState(cohort_options[0]);
+  const [protoOption] = useState(cohort_options[0]);
   // const [appProtoOption, setAppProtoOption] = useState(app_options[0]);
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -294,7 +292,7 @@ const AnalysisPage: NextPage = () => {
       <>
         <div className="flex flex-row mx-2 p-2.5">
           <div>Tags:</div>
-          <div className="w-2.5"></div>
+          <div className="w-2.5" />
           <div className="border p-1.5 w-min gap-1 border-gray-400 bg-white rounded">
             <div className="flex">
               <div className="flex flex-wrap">
@@ -420,7 +418,7 @@ const AnalysisPage: NextPage = () => {
                 layout="responsive"
                 width="100%"
                 height="100%"
-              ></Image>
+              />
             )}
           </div>
         </div>
@@ -429,7 +427,7 @@ const AnalysisPage: NextPage = () => {
   };
 
   const empty = () => {
-    return <div></div>;
+    return <div />;
   };
   return (
     <UserFlowVariedPages
