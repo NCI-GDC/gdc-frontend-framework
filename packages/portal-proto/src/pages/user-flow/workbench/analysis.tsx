@@ -1,7 +1,6 @@
 import { NextPage } from "next";
 import Image from "next/image";
-import Link from "next/link";
-import React, { PropsWithChildren, ReactNode, useState } from "react";
+import React, { PropsWithChildren, useState } from "react";
 import ReactModal from "react-modal";
 import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
 import { Select } from "../../../components/Select";
@@ -90,6 +89,9 @@ const AnalysisPage: NextPage = () => {
       />
     </div>
   );
+
+  // TODO: remove this after removing the OPTIONS ^
+  console.log(Options);
 
   const Apps = () => {
     const sortOptions = [

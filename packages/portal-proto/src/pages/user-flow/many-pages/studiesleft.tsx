@@ -11,7 +11,6 @@ import { Button } from "@mantine/core/lib/components/Button";
 const StudiesPageLeft: NextPage = () => {
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
-  const [selectedProjectId, setSelectedProjectId] = useState("");
 
   const SingleStudyModal = () => {
     return (
@@ -37,8 +36,7 @@ const StudiesPageLeft: NextPage = () => {
       <div className="flex flex-col p-4 gap-y-4">
         {SingleStudyModal()}
         <ContextualStudiesView
-          setCurrentStudy={(projectId) => {
-            setSelectedProjectId(projectId);
+          setCurrentStudy={() => {
             setShowModal(true);
           }}
           exploreLeft={

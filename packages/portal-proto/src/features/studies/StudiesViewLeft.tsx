@@ -489,8 +489,6 @@ interface StudyProps {
 }
 
 const Study: React.FC<StudyProps> = (props: StudyProps) => {
-  const { projectId } = props.project;
-
   const mainProject = props.project.projectId.split("-")[0];
   const projectLogoPath = `/logos/${mainProject}_logo.png`;
 

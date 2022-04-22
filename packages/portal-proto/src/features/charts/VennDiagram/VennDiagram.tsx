@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { Config, Layout, Shape, PlotMouseEvent } from "plotly.js";
 import Plot from "react-plotly.js";
 import {
@@ -11,19 +11,6 @@ import {
   twoCircleOuterLabelLayout,
   threeCircleOuterLabelLayout,
 } from "./layouts";
-
-const addHighlightToLayout = (
-  layout: Partial<Shape>[],
-  highlightedIndices: number[],
-) => {
-  return layout.map((shape, idx) => {
-    if (highlightedIndices.includes(idx)) {
-      return { ...shape, fillcolor: "#a5d5d9" };
-    } else {
-      return shape;
-    }
-  });
-};
 
 interface chartData {
   readonly key: string;
@@ -58,36 +45,52 @@ const VennDiagram: React.FC<VennDiagramProps> = ({
     (a, b) => dataOrder.indexOf(a.key) - dataOrder.indexOf(b.key),
   );
 
-  const initialLayout: Partial<Layout> = {
-    xaxis: {
-      showticklabels: false,
-      autotick: false,
-      showgrid: false,
-      zeroline: false,
-      range: [0, 5],
+  const addHighlightToLayout = useCallback(
+    (layout: Partial<Shape>[], highlightedIndices: number[]) => {
+      return layout.map((shape, idx) => {
+        if (highlightedIndices.includes(idx)) {
+          return { ...shape, fillcolor: "#a5d5d9" };
+        } else {
+          return shape;
+        }
+      });
     },
-    yaxis: {
-      showticklabels: false,
-      autotick: false,
-      showgrid: false,
-      zeroline: false,
-      range: [0, 5],
-    },
-    shapes: addHighlightToLayout(
-      chartLayout,
-      sortedChartData
-        .map((d, idx) => (d.highlighted ? idx : -1))
-        .filter((d) => d >= 0),
-    ),
-    height: 400,
-    width: 400,
-    margin: {
-      l: 0,
-      r: 0,
-      t: 0,
-      b: 0,
-    },
-  };
+    [],
+  );
+
+  const initialLayout: Partial<Layout> = useMemo(
+    () => ({
+      xaxis: {
+        showticklabels: false,
+        autotick: false,
+        showgrid: false,
+        zeroline: false,
+        range: [0, 5],
+      },
+      yaxis: {
+        showticklabels: false,
+        autotick: false,
+        showgrid: false,
+        zeroline: false,
+        range: [0, 5],
+      },
+      shapes: addHighlightToLayout(
+        chartLayout,
+        sortedChartData
+          .map((d, idx) => (d.highlighted ? idx : -1))
+          .filter((d) => d >= 0),
+      ),
+      height: 400,
+      width: 400,
+      margin: {
+        l: 0,
+        r: 0,
+        t: 0,
+        b: 0,
+      },
+    }),
+    [addHighlightToLayout, chartLayout, sortedChartData],
+  );
 
   const [layout, setLayout] = useState(initialLayout);
 
@@ -101,7 +104,7 @@ const VennDiagram: React.FC<VennDiagramProps> = ({
           .filter((d) => d >= 0),
       ),
     });
-  }, [sortedChartData]);
+  }, [sortedChartData, initialLayout, addHighlightToLayout, chartLayout]);
 
   const config: Partial<Config> = {
     responsive: true,

@@ -5,7 +5,6 @@ import {
   MdDelete as DeleteIcon,
   MdFileUpload as UploadIcon,
   MdFileDownload as DownloadIcon,
-  MdArrowDropDown as DropDownIcon,
   MdExpandMore as ExpandMoreIcon,
   MdExpandLess as ExpandLessIcon,
 } from "react-icons/md";
@@ -357,13 +356,5 @@ const CohortBuilderModal: React.FC<CohortBuilderModalProps> = ({
         <CohortTabbedFacets searchResults={[]}></CohortTabbedFacets>
       </div>
     </ReactModal>
-  );
-};
-
-const Cases = ({ handleCaseSelected }) => {
-  return (
-    <div className="overflow-y-auto h-96">
-      <ContextualCasesView handleCaseSelected={handleCaseSelected} />
-    </div>
   );
 };

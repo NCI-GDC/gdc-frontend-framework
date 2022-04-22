@@ -69,6 +69,7 @@ const useCaseFacet = (field: string): EnumFacetResponse => {
 
   useEffect(() => {
     coreDispatch(fetchFacetByName(field));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectFacetFilter]);
 
   return {
@@ -96,23 +97,6 @@ export interface EnumFacetProps extends FacetProps {
   readonly dataHook: (string) => EnumFacetResponse;
   readonly updateEnumFilters: (d, filters, field) => void;
 }
-
-const updateEnumFilters = (dispatch, enumerationFilters, field) => {
-  if (enumerationFilters === undefined) return;
-  if (enumerationFilters.length > 0) {
-    dispatch(
-      updateCohortFilter({
-        type: "enum",
-        op: "in",
-        field: `${field}`,
-        values: enumerationFilters,
-      }),
-    );
-  } else {
-    // completely remove the field
-    dispatch(removeCohortFilter(field));
-  }
-};
 
 export const Facet: React.FC<FacetProps> = ({
   field,
@@ -143,7 +127,7 @@ export const Facet: React.FC<FacetProps> = ({
         Object.entries(data).filter((data) => data[0] != "_missing").length,
       );
     }
-  }, [isSuccess]);
+  }, [isSuccess, data]);
 
   useEffect(() => {
     /**
@@ -164,7 +148,7 @@ export const Facet: React.FC<FacetProps> = ({
       // completely remove the field
       coreDispatch(removeCohortFilter(field));
     }
-  }, [selectedEnums]);
+  }, [coreDispatch, field, selectedEnums]);
 
   const maxValuesToDisplay = 6;
   const total = visibleItems;
