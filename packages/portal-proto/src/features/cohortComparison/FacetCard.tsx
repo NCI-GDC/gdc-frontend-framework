@@ -34,7 +34,7 @@ const FacetCard: React.FC<FacetCardProps> = ({
                 ? formatAgeBuckets(facet.key)
                 : facet.key,
           }));
-        // Replace '_missing' key becasue 1) we don't get the value back for histograms 2) to rename the key
+        // Replace '_missing' key because 1) we don't get the value back for histograms 2) to rename the key
         const totalInResults = formattedCohort.reduce(
           (runningSum, a) => runningSum + a.count,
           0,
@@ -51,7 +51,7 @@ const FacetCard: React.FC<FacetCardProps> = ({
     customdata: cohort.map((facet) => facet.count),
     hovertemplate: `<b>${cohortNames[idx]}</b><br /> %{y:.0f}% Cases (%{customdata})<extra></extra>`,
     marker: {
-      color: idx === 0 ? "#8c690d" : "#2a72a5",
+      color: idx === 0 ? "#1F77B4" : "#BD5800",
     },
   }));
 
@@ -60,6 +60,10 @@ const FacetCard: React.FC<FacetCardProps> = ({
   const uniqueValues = Array.from(
     new Set(formattedData.map((cohort) => cohort.map((b) => b.key)).flat()),
   );
+
+  if (field === "diagnoses.age_at_diagnosis") {
+    uniqueValues.sort();
+  }
 
   return (
     <Paper p="md">

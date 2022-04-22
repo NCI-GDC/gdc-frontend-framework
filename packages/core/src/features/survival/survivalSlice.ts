@@ -83,19 +83,15 @@ export const buildSurvivalFetchError = async (
 export const fetchSurvivalAnalysis = async (
   request: GdcSurvivalApiRequest,
 ): Promise<SurvivalApiResponse> => {
-  const parameters =
-    request.filters.length > 0
-      ? `?filters=${encodeURIComponent(JSON.stringify(request.filters))}`
-      : "";
-  const res = await fetch(
-    `https://api.gdc.cancer.gov/analysis/survival${parameters}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
+  const res = await fetch(`https://api.gdc.cancer.gov/analysis/survival`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
     },
-  );
+    body: JSON.stringify({
+      filters: JSON.stringify(request.filters),
+    }),
+  });
   if (res.ok) {
     return res.json();
   }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Tooltip } from "@mantine/core";
 import { fetchPValue } from "@gff/core";
 
@@ -21,8 +21,9 @@ interface PValueProps {
 
 const PValue: React.FC<PValueProps> = ({ data }: PValueProps) => {
   const [pValue, setPValue] = useState(null);
-  const pValueBuckets = data.map((val) =>
-    val.filter((v) => !noDataKeys.includes(v.key)),
+  const pValueBuckets = useMemo(
+    () => data.map((val) => val.filter((v) => !noDataKeys.includes(v.key))),
+    [data],
   );
 
   const labels = Array.from(
@@ -48,7 +49,7 @@ const PValue: React.FC<PValueProps> = ({ data }: PValueProps) => {
       }
     };
     determinePValue();
-  }, [data, pValueBuckets]);
+  }, [JSON.stringify(pValueBuckets), JSON.stringify(data)]);
 
   if (pValue) {
     return (
