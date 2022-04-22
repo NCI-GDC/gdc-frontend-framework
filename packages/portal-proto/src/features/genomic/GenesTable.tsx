@@ -87,7 +87,7 @@ const GenesTableSimple: React.FC<GenesTableSimpleProps> = ({
   cnvCases,
   mutationCounts,
   selectedSurvivalPlot,
-  handleSurvivalPlotToggled = (_a: string, _b: string) => null,
+  handleSurvivalPlotToggled,
 }: GenesTableSimpleProps) => {
   return (
     <Table verticalSpacing={5} striped highlightOnHover>

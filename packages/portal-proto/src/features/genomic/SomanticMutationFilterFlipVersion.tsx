@@ -8,8 +8,6 @@ import {
   VARIANT_CALLER,
   VEP_IMPACT,
 } from "../cohortBuilder/gene_mutation_facets";
-import GeneData from "./genes.json";
-import MutationData from "./mutations.json";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 import { MdFlip as FlipIcon, MdSearch } from "react-icons/md";
@@ -24,10 +22,7 @@ const GeneChartWithNoSSR = dynamic(() => import("./Charts"), {
   ssr: false,
 });
 
-const SomanticMutationFilterFlipVersion: React.FC<SomaticAppProps> = ({
-  gene_data = GeneData["MostFrequentGenes"],
-  mutations_data = MutationData["MostFrequentMutation"],
-}: SomaticAppProps) => {
+const SomanticMutationFilterFlipVersion: React.FC<SomaticAppProps> = () => {
   const [showGeneChart, setShowGeneChart] = useState(false);
   const [showMutationChart, setShowMutationChart] = useState(false);
 

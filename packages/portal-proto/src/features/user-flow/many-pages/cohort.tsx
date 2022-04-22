@@ -254,13 +254,7 @@ export const CohortBuilder: React.FC<CohortBuilderProps> = ({
   cohort,
   show = true,
 }: CohortBuilderProps) => {
-  const updateSummaryCharts = (op, field) => {
-    if (op === "add") setSummaryFields([...summaryFields, field]);
-    if (op === "remove")
-      setSummaryFields(summaryFields.filter((x) => x !== field));
-  };
-
-  const [summaryFields, setSummaryFields] = useState([
+  const [summaryFields] = useState([
     "primary_site",
     "demographic.gender",
     "disease_type",
