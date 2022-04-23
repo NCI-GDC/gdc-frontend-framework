@@ -46,8 +46,8 @@ export interface UserCoreDataHook<P, T> {
   (...params: P[]): UseCoreDataResponse<T>;
 }
 
-const usePrevious = (value: any) => {
-  const ref = useRef();
+export const usePrevious = <T>(value: T): T | undefined => {
+  const ref = useRef<T>();
   useEffect(() => {
     ref.current = value;
   });
@@ -62,7 +62,7 @@ export const createUseCoreDataHook = <P, A, T>(
     const coreDispatch = useCoreDispatch();
     const { data, status, error } = useCoreSelector(dataSelector);
     const action = fetchDataActionCreator(...params);
-    const prevParams = usePrevious(params);
+    const prevParams = usePrevious<P[]>(params);
 
     useEffect(() => {
       if (status === "uninitialized" || !isEqual(prevParams, params)) {
@@ -71,7 +71,7 @@ export const createUseCoreDataHook = <P, A, T>(
         coreDispatch(action as any); // eslint-disable-line
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [status, coreDispatch, action, params]);
+    }, [status, coreDispatch, action, params, prevParams]);
 
     return {
       data,
@@ -98,8 +98,8 @@ export const createUseFiltersCoreDataHook = <P, A, T, F>(
     const { data, status, error } = useCoreSelector(dataSelector);
     const action = fetchDataActionCreator(...params);
     const secondary = useCoreSelector(secondarySelector);
-    const prevParams = usePrevious(params);
-    const prevSecondary = usePrevious(secondary);
+    const prevParams = usePrevious<P[]>(params);
+    const prevSecondary = usePrevious<F>(secondary);
 
     useEffect(() => {
       if (
