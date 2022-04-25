@@ -32,7 +32,9 @@ const initialState: imageViewerInitialState = {
   edges: {},
 };
 
-export const getSlides = (caseNode: caseNodeType) => {
+export const getSlides: (caseNode: caseNodeType) => any[] = (
+  caseNode: caseNodeType,
+) => {
   const portions = (
     caseNode.samples || {
       hits: { edges: [] },

@@ -24,8 +24,8 @@ const makeSurvivalFilters = ({
   cohort2Filters,
   caseIds,
 }: {
-  cohort1Filters: GqlOperation,
-  cohort2Filters: GqlOperation,
+  cohort1Filters: GqlOperation;
+  cohort2Filters: GqlOperation;
   caseIds: string[][];
 }): GqlOperation[] => {
   // Data should be in only one of the cohorts, not both so exclude cases ids from the other set
@@ -88,7 +88,11 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
     ),
   );
 
-  const filters = makeSurvivalFilters({ cohort1Filters, cohort2Filters, caseIds });
+  const filters = makeSurvivalFilters({
+    cohort1Filters,
+    cohort2Filters,
+    caseIds,
+  });
   const { data } = useSurvivalPlot({ filters });
 
   useEffect(() => {

@@ -1,5 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { createUseCoreDataHook, DataStatus, CoreDataSelectorResponse } from "../../dataAcess";
+import {
+  createUseCoreDataHook,
+  DataStatus,
+  CoreDataSelectorResponse,
+} from "../../dataAcess";
 import { CoreState, CoreDispatch } from "../../store";
 import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
 import { buildCohortGqlOperator } from "../cohort/cohortFilterSlice";
@@ -70,7 +74,7 @@ const graphQLQuery = `
   }
 `;
 
-interface CohortFacetDoc {
+export interface CohortFacetDoc {
   readonly key: string;
   readonly doc_count: number;
 }
@@ -187,7 +191,9 @@ const slice = createSlice({
 
 export const cohortFacetsReducer = slice.reducer;
 
-export const selectCohortFacetsData = (state: CoreState) : CoreDataSelectorResponse<CohortComparisonData> => {
+export const selectCohortFacetsData = (
+  state: CoreState,
+): CoreDataSelectorResponse<CohortComparisonData> => {
   return {
     data: state.cohortComparison.data,
     status: state.cohortComparison.status,

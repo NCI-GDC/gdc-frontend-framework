@@ -6,23 +6,22 @@ import SSMPlot from "../../features/charts/SSMPlot";
 
 const MutationsPage: NextPage = () => {
   const router = useRouter();
-  const ssms = router.asPath.split('/')[2];
+  const ssms = router.asPath.split("/")[2];
 
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    if(router.isReady) {
+    if (router.isReady) {
       setReady(true);
     }
   }, [router]);
 
-
   return (
     <SimpleLayout>
-      <div >
+      <div>
         {ready && (
           <>
-            <SSMPlot page={'ssms'} ssms={ssms} />
+            <SSMPlot page={"ssms"} ssms={ssms} />
           </>
         )}
       </div>

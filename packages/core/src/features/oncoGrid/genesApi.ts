@@ -6,7 +6,9 @@ export const fetchGenes = (
   consequenceTypeFilters: string[],
   contextFilters?: GqlOperation,
 ): Promise<GdcApiResponse<Gene>> => {
-  const caseAndGenomicFilters = contextFilters?.content ? Object(contextFilters?.content) : [];
+  const caseAndGenomicFilters = contextFilters?.content
+    ? Object(contextFilters?.content)
+    : [];
   return fetchGdcEntities("analysis/top_mutated_genes_by_project", {
     fields: ["gene_id", "symbol", "is_cancer_gene_census"],
     size: 50,
@@ -27,7 +29,7 @@ export const fetchGenes = (
             value: consequenceTypeFilters,
           },
         },
-        ...caseAndGenomicFilters
+        ...caseAndGenomicFilters,
       ],
     },
   });

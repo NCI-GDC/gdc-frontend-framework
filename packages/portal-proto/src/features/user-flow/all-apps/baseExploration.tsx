@@ -1,4 +1,4 @@
-import { UserFlowVariedPages, Button } from "../../layout/UserFlowVariedPages";
+import { UserFlowVariedPages } from "../../layout/UserFlowVariedPages";
 import { CohortManager } from "../many-pages/cohort";
 import React, { PropsWithChildren, useRef } from "react";
 import { useState } from "react";
@@ -27,12 +27,14 @@ import {
 } from "../../apps/Apps";
 import { ContextualFilesView } from "../../files/FilesView";
 import { CollapsibleContainer } from "../../../components/CollapsibleContainer";
-import { GeneTable, MutationTable } from "../../genomic/Genomic";
+import MutationsTable from "@/features/genomic/MutationsTable";
+import GenesTable from "@/features/genomic/GenesTable";
 import { FacetGroup } from "../../cohortBuilder/FacetGroup";
 import { get_facets } from "../../cohortBuilder/dictionary";
 import { FileModal } from "../../files/FileView";
 import { GdcFile } from "@gff/core";
 import { CaseModal } from "../../cases/CaseView";
+import { Button } from "@mantine/core";
 
 export interface BaseExplorationPageProps {
   readonly headerElements: ReadonlyArray<React.ReactNode>;
@@ -179,8 +181,8 @@ export const BaseExplorationPage: React.FC<BaseExplorationPageProps> = ({
           ) : currentApp == "somatic-mutations" ? (
             <AllAppViewer title="Somatic Mutations" setView={setCurrentApp}>
               <div className="flex flex-row">
-                <GeneTable width="0" />
-                <MutationTable width="0" />
+                <GenesTable />
+                <MutationsTable />
               </div>
             </AllAppViewer>
           ) : currentApp == "clinical-filters" ? (
@@ -317,12 +319,7 @@ const AllAppsStudies = (props: AllAppsStudiesProps) => {
         </button>
         <div className="flex-grow text-center">Cohorts</div>
       </div>
-      <ContextualStudiesView
-        setCurrentStudy={viewStudy}
-        exploreRight={
-          <Button onClick={returnToAllApps}>Explore Selected Cohorts</Button>
-        }
-      />
+      <ContextualStudiesView setCurrentStudy={viewStudy} />
     </div>
   );
 };

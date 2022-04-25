@@ -1,10 +1,16 @@
 import { DataStatus } from "../../dataAcess";
 import { isBucketsAggregation } from "../gdcapi/gdcapi";
 
-export const convertFacetNameToGQL = (x:string) => x.replaceAll('.', '__')
-export const normalizeGQLFacetName = (x:string) => x.replaceAll('__', '.')
+export const convertFacetNameToGQL: (x: string) => string = (x: string) =>
+  x.replaceAll(".", "__");
+export const normalizeGQLFacetName: (x: string) => string = (x: string) =>
+  x.replaceAll("__", ".");
 
-export const buildGraphGLBucketQuery = ( what: string, facetName: string, type = "explore" ) : string => {
+export const buildGraphGLBucketQuery = (
+  what: string,
+  facetName: string,
+  type = "explore",
+): string => {
   const queryGQL = `
   query QueryBucketCounts($filters_0: FiltersArgument!) {
       viewer {
@@ -25,9 +31,9 @@ export const buildGraphGLBucketQuery = ( what: string, facetName: string, type =
           }
         }
       }
-  `
+  `;
   return queryGQL;
-}
+};
 export interface BucketCountsQueryProps {
   readonly type: string;
   readonly what: string;
@@ -40,26 +46,36 @@ export interface FacetBuckets {
   readonly buckets?: Record<string, number>;
 }
 
-export const processBuckets = (aggregations:Record<string, unknown>, state: {[index: string] :  Record<string, unknown>} ) => {
-  Object.entries(aggregations).forEach(
-    ([field, aggregation]) => {
-      const normalizedField = normalizeGQLFacetName(field)
-      if (isBucketsAggregation(aggregation)) {
-        if (!(normalizedField in state)) {
-          console.log("found:", normalizedField);
-        }
-        state[normalizedField].status = "fulfilled";
-        state[normalizedField].buckets = aggregation.buckets.reduce(
-          (facetBuckets, apiBucket) => {
-            facetBuckets[apiBucket.key] = apiBucket.doc_count;
-            return facetBuckets;
-          },
-          {} as Record<string, number>,
-        );
-      } else {
-        // Unhandled aggregation
+type processBuckets = (
+  aggregations: Record<string, unknown>,
+  state: {
+    [index: string]: Record<string, unknown>;
+  },
+) => {
+  [index: string]: Record<string, unknown>;
+};
+
+export const processBuckets: processBuckets = (
+  aggregations: Record<string, unknown>,
+  state: { [index: string]: Record<string, unknown> },
+) => {
+  Object.entries(aggregations).forEach(([field, aggregation]) => {
+    const normalizedField = normalizeGQLFacetName(field);
+    if (isBucketsAggregation(aggregation)) {
+      if (!(normalizedField in state)) {
+        console.log("found:", normalizedField);
       }
-    },
-  );
+      state[normalizedField].status = "fulfilled";
+      state[normalizedField].buckets = aggregation.buckets.reduce(
+        (facetBuckets, apiBucket) => {
+          facetBuckets[apiBucket.key] = apiBucket.doc_count;
+          return facetBuckets;
+        },
+        {} as Record<string, number>,
+      );
+    } else {
+      // Unhandled aggregation
+    }
+  });
   return state;
-}
+};

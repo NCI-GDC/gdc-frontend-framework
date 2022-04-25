@@ -1,6 +1,6 @@
 import Document, { DocumentContext, DocumentInitialProps } from "next/document";
 import { resetIdCounter } from "react-tabs";
-import { ServerStyles, createStylesServer } from '@mantine/next';
+import { ServerStyles, createStylesServer } from "@mantine/next";
 
 const stylesServer = createStylesServer();
 

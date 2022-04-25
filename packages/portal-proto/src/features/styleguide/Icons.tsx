@@ -84,17 +84,17 @@ const IconCard = (x, idx) => (
     <Card shadow="sm">
       <div className={"flex flex-col p-6 items-center"}>
         {x({ size: 32 })}
-        <p className="text-sm text-nci-gray mx-12" > {x.name}</p>
+        <p className="text-sm text-nci-gray mx-12"> {x.name}</p>
       </div>
     </Card>
   </Grid.Col>
 );
 
-const Icons:ReactNode = () => {
+const Icons: ReactNode = () => {
   return (
     <Stack className="prose font-montserrat text-nci-gray-dark md:prose-md">
       <p className="prose font-medium text-2xl">Interface Icons</p>
-      <Divider label="Interface Icons" classNames={divider_style}/>
+      <Divider label="Interface Icons" classNames={divider_style} />
       <Grid>{GDC_ICONS.map((x, idx) => IconCard(x, idx))}</Grid>
     </Stack>
   );

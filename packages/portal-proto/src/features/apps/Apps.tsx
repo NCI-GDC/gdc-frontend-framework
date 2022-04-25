@@ -23,7 +23,9 @@ export const OncoGrid: React.FC<Clickable> = (props: Clickable) => {
       </div>
       <div className="w-full content-center text-sm border-t-2">
         <div className="mt-2">
-          <span className="border border-black border-opacity-100 p-0.5 bg-nci-yellow">1215 Cases</span>
+          <span className="border border-black border-opacity-100 p-0.5 bg-nci-yellow">
+            1215 Cases
+          </span>
         </div>
       </div>
     </App>
@@ -41,13 +43,13 @@ export const SingleCellRnaSeq: React.FC<Clickable> = (props: Clickable) => {
             objectFit="contain"
           />
         </div>
-        <div className="w-full h-full hidden group-hover:block">
-
-        </div>
+        <div className="w-full h-full hidden group-hover:block"></div>
       </div>
       <div className="w-full content-center text-sm border-t-2">
         <div className="mt-2">
-          <span className="border border-black border-opacity-100 p-0.5 bg-nci-yellow">94 Cases</span>
+          <span className="border border-black border-opacity-100 p-0.5 bg-nci-yellow">
+            94 Cases
+          </span>
         </div>
       </div>
     </App>
@@ -71,7 +73,9 @@ export const GeneExpression: React.FC<Clickable> = (props: Clickable) => {
       </div>
       <div className="w-full content-center text-sm border-t-2">
         <div className="mt-2">
-          <span className="border border-black p-0.5 border-opacity-100 bg-nci-yellow">411 Cases</span>
+          <span className="border border-black p-0.5 border-opacity-100 bg-nci-yellow">
+            411 Cases
+          </span>
         </div>
       </div>
     </App>
@@ -95,7 +99,9 @@ export const ProteinPaint: React.FC<Clickable> = (props: Clickable) => {
       </div>
       <div className="w-full content-center text-sm border-t-2">
         <div className="mt-2">
-          <span className="border border-black border-opacity-100 p-0.5 bg-nci-yellow">1622 Cases</span>
+          <span className="border border-black border-opacity-100 p-0.5 bg-nci-yellow">
+            1622 Cases
+          </span>
         </div>
       </div>
     </App>
@@ -119,8 +125,7 @@ export const SetOperations: React.FC<Clickable> = (props: Clickable) => {
         </div>
       </div>
       <div className="w-full content-center text-sm border-t-2">
-        <div className="mt-7">
-        </div>
+        <div className="mt-7"></div>
       </div>
     </App>
   );
@@ -144,7 +149,9 @@ export const CohortComparison: React.FC<Clickable> = (props: Clickable) => {
       </div>
       <div className="w-full content-center text-sm border-t-2">
         <div className="mt-2">
-          <span className="border border-black border-opacity-100 p-0.5 bg-nci-yellow">3148 Cases</span>
+          <span className="border border-black border-opacity-100 p-0.5 bg-nci-yellow">
+            3148 Cases
+          </span>
         </div>
       </div>
     </App>
@@ -169,7 +176,9 @@ export const ClinicalDataAnalysis: React.FC<Clickable> = (props: Clickable) => {
       </div>
       <div className="w-full content-center text-sm border-t-2">
         <div className="mt-2">
-          <span className="border border-black border-opacity-100 p-0.5 bg-nci-yellow">3148 Cases</span>
+          <span className="border border-black border-opacity-100 p-0.5 bg-nci-yellow">
+            3148 Cases
+          </span>
         </div>
       </div>
     </App>
@@ -193,12 +202,14 @@ export const SequenceReads: React.FC<Clickable> = (props: Clickable) => {
       </div>
       <div className="w-full content-center text-sm border-t-2">
         <div className="mt-2">
-          <span className="border border-black border-opacity-100 p-0.5 bg-nci-yellow">1622 Cases</span>
+          <span className="border border-black border-opacity-100 p-0.5 bg-nci-yellow">
+            1622 Cases
+          </span>
         </div>
       </div>
     </App>
-  )
-}
+  );
+};
 
 export const ClinicalFilters: React.FC<Clickable> = (props: Clickable) => {
   return (
@@ -224,8 +235,8 @@ export const Cohorts: React.FC<Clickable> = (props: Clickable) => {
           <Initials name="Cohorts" />
         </div>
         <div className="w-full h-full hidden group-hover:block">
-          Explore the GDC&apos;s collection of cohorts. Select one or more to form
-          your custom cohort.
+          Explore the GDC&apos;s collection of cohorts. Select one or more to
+          form your custom cohort.
         </div>
       </div>
     </App>
@@ -278,12 +289,15 @@ export const SomaticMutations: React.FC<Clickable> = (props: Clickable) => {
           />
         </div>
         <div className="w-full h-full hidden group-hover:block">
-          Visualize most frequently mutated genes and most frequent somatic mutations.
+          Visualize most frequently mutated genes and most frequent somatic
+          mutations.
         </div>
       </div>
       <div className="w-full content-center text-sm border-t-2">
         <div className="mt-2">
-          <span className="border border-black border-opacity-100 p-0.5 bg-nci-yellow">1622 Cases</span>
+          <span className="border border-black border-opacity-100 p-0.5 bg-nci-yellow">
+            1622 Cases
+          </span>
         </div>
       </div>
     </App>

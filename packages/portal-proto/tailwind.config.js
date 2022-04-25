@@ -1,12 +1,13 @@
-const plugin = require('tailwindcss/plugin');
+// eslint-disable-next-line  @typescript-eslint/no-var-requires
+const plugin = require("tailwindcss/plugin");
 
 function withOpacityValue(variable) {
   return ({ opacityValue }) => {
     if (opacityValue === undefined) {
-      return `rgb(var(${variable}))`
+      return `rgb(var(${variable}))`;
     }
-    return `rgb(var(${variable}) / ${opacityValue})`
-  }
+    return `rgb(var(${variable}) / ${opacityValue})`;
+  };
 }
 
 module.exports = {
@@ -30,10 +31,10 @@ module.exports = {
          * maps to a every third shade.
          */
         // theming support
-        primary: withOpacityValue('--color-primary'),
-        secondary: withOpacityValue('--color-secondary'),
-        tertiary: withOpacityValue('--color-tertiary'),
-        highlight: withOpacityValue('--color-highlight'),
+        primary: withOpacityValue("--color-primary"),
+        secondary: withOpacityValue("--color-secondary"),
+        tertiary: withOpacityValue("--color-tertiary"),
+        highlight: withOpacityValue("--color-highlight"),
         // NCI Primary Palette
         "nci-gray": {
           lightest: "#f1f1f1",
@@ -246,18 +247,18 @@ module.exports = {
           darker: "#5c4809",
           darkest: "#422d19",
         },
-        "gdc-survival" : {
-          "0":  "#1F77B4",
-          "1" : "#BD5800",
-          "2" : "#258825",
-          "3" : "#D62728",
-          "4" : "#8E5FB9",
-          "5" : "#8C564B",
-          "6" : "#D42BA1",
-          "7" : "#757575",
-          "8" : "#7A7A15",
-          "9" : "#10828E",
-        }
+        "gdc-survival": {
+          0: "#1F77B4",
+          1: "#BD5800",
+          2: "#258825",
+          3: "#D62728",
+          4: "#8E5FB9",
+          5: "#8C564B",
+          6: "#D42BA1",
+          7: "#757575",
+          8: "#7A7A15",
+          9: "#10828E",
+        },
       },
       height: {
         "nci-logo": "54px",
@@ -274,33 +275,33 @@ module.exports = {
       },
       fontFamily: {
         montserrat: ["Montserrat", "sans-serif"],
-        heading: ["Montserrat", "sans-serif"]
+        heading: ["Montserrat", "sans-serif"],
       },
       borderWidth: {
-        DEFAULT: '1px',
-        '0': '0',
-        '1' :'1px',
-        '2': '2px',
-        '3': '3px',
-        '4': '4px',
-        '6': '6px',
-        '8': '8px',
+        DEFAULT: "1px",
+        0: "0",
+        1: "1px",
+        2: "2px",
+        3: "3px",
+        4: "4px",
+        6: "6px",
+        8: "8px",
       },
       transitionProperty: {
-        height: 'height'
+        height: "height",
       },
       variants: {
         extend: {},
       },
       fontSize: {
-        '2xs': '.85rem',
-      }
+        "2xs": ".85rem",
+      },
     },
   },
   plugins: [
     require("@tailwindcss/forms"),
     require("@tailwindcss/typography"),
-    plugin(function({ addUtilities }) {
+    plugin(function ({ addUtilities }) {
       const newUtilities = {
         ".nextImageFillFix": {
           width: "auto !important",

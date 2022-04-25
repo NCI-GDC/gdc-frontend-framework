@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
-  CoreDataSelectorResponse, createUseFiltersCoreDataHook,
+  CoreDataSelectorResponse,
+  createUseFiltersCoreDataHook,
   DataStatus,
 } from "../../dataAcess";
 import { castDraft } from "immer";
@@ -12,7 +13,6 @@ import {
   TablePageOffsetProps,
 } from "../gdcapi/gdcgraphql";
 import { selectGenomicAndCohortGqlFilters } from "./genomicFilters";
-
 
 const GenesTableGraphQLQuery = `
           query GenesTable_relayQuery(
@@ -121,14 +121,14 @@ export const fetchGenesTable = createAsyncThunk<
   { dispatch: CoreDispatch; state: CoreState }
 >(
   "genes/genesTable",
-  async ({
-    pageSize,
-    offset,
-  }: TablePageOffsetProps, thunkAPI): Promise<GraphQLApiResponse> => {
-    const filters =  selectGenomicAndCohortGqlFilters(thunkAPI.getState());
+  async (
+    { pageSize, offset }: TablePageOffsetProps,
+    thunkAPI,
+  ): Promise<GraphQLApiResponse> => {
+    const filters = selectGenomicAndCohortGqlFilters(thunkAPI.getState());
     const filterContents = filters?.content ? Object(filters?.content) : [];
     const graphQlFilters = {
-      genesTable_filters: filters? filters: {},
+      genesTable_filters: filters ? filters : {},
       genesTable_size: pageSize,
       genesTable_offset: offset,
       score: "case.project.project_id",
@@ -154,15 +154,15 @@ export const fetchGenesTable = createAsyncThunk<
       geneCaseFilter: {
         content: [
           ...[
-          {
-            content: {
-              field: "cases.available_variation_data",
-              value: ["ssm"],
+            {
+              content: {
+                field: "cases.available_variation_data",
+                value: ["ssm"],
+              },
+              op: "in",
             },
-            op: "in",
-          }
           ],
-          ...filterContents
+          ...filterContents,
         ],
         op: "and",
       },
@@ -182,52 +182,59 @@ export const fetchGenesTable = createAsyncThunk<
         op: "and",
         content: [
           ...[
-          {
-            content: {
-              field: "cases.available_variation_data",
-              value: ["cnv"],
+            {
+              content: {
+                field: "cases.available_variation_data",
+                value: ["cnv"],
+              },
+              op: "in",
             },
-            op: "in",
-          }], ...filterContents
+          ],
+          ...filterContents,
         ],
       },
       cnvGainFilters: {
         op: "and",
         content: [
-          ...[{
-            content: {
-              field: "cases.available_variation_data",
-              value: ["cnv"],
+          ...[
+            {
+              content: {
+                field: "cases.available_variation_data",
+                value: ["cnv"],
+              },
+              op: "in",
             },
-            op: "in",
-          },
-          {
-            content: {
-              field: "cnvs.cnv_change",
-              value: ["Gain"],
+            {
+              content: {
+                field: "cnvs.cnv_change",
+                value: ["Gain"],
+              },
+              op: "in",
             },
-            op: "in",
-          },
-          ], ...filterContents
+          ],
+          ...filterContents,
         ],
       },
       cnvLossFilters: {
         op: "and",
         content: [
-          ...[{
-            content: {
-              field: "cases.available_variation_data",
-              value: ["cnv"],
+          ...[
+            {
+              content: {
+                field: "cases.available_variation_data",
+                value: ["cnv"],
+              },
+              op: "in",
             },
-            op: "in",
-          },
-          {
-            content: {
-              field: "cnvs.cnv_change",
-              value: ["Loss"],
+            {
+              content: {
+                field: "cnvs.cnv_change",
+                value: ["Loss"],
+              },
+              op: "in",
             },
-            op: "in",
-          } ], ...filterContents
+          ],
+          ...filterContents,
         ],
       },
     };
@@ -243,7 +250,10 @@ export const fetchGenesTable = createAsyncThunk<
         results.data.genesTableViewer.explore.genes.hits.edges.map(
           ({ node }: Record<string, any>) => node.gene_id,
         );
-      const counts = await fetchSmsAggregations({ ids: geneIds, filters: filterContents });
+      const counts = await fetchSmsAggregations({
+        ids: geneIds,
+        filters: filterContents,
+      });
       if (!counts.errors) {
         const countsData =
           counts.data.ssmsAggregationsViewer.explore.ssms.aggregations
@@ -282,7 +292,6 @@ const initialState: GenesTableState = {
   },
   status: "uninitialized",
 };
-
 
 const slice = createSlice({
   name: "genomic/genesTable",
@@ -366,7 +375,8 @@ export const selectGenesTableData = (
   };
 };
 
-export const useGenesTable = createUseFiltersCoreDataHook(fetchGenesTable,
+export const useGenesTable = createUseFiltersCoreDataHook(
+  fetchGenesTable,
   selectGenesTableData,
-  selectGenomicAndCohortGqlFilters);
-
+  selectGenomicAndCohortGqlFilters,
+);

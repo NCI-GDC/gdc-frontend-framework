@@ -7,7 +7,9 @@ export const fetchCases = async (
   consequenceTypeFilters: string[],
   contextFilters?: GqlOperation,
 ): Promise<GdcApiResponse<OncoGridDonor>> => {
-  const caseAndGenomicFilters = contextFilters?.content ? Object(contextFilters?.content) : [];
+  const caseAndGenomicFilters = contextFilters?.content
+    ? Object(contextFilters?.content)
+    : [];
   return fetchGdcEntities("analysis/top_mutated_cases_by_gene", {
     fields: [
       "demographic.days_to_death",
@@ -47,7 +49,7 @@ export const fetchCases = async (
             value: consequenceTypeFilters,
           },
         },
-        ...caseAndGenomicFilters
+        ...caseAndGenomicFilters,
       ],
     },
   });

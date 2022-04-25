@@ -8,34 +8,34 @@ export interface SummaryCountProps {
 }
 
 /**
- * Summary Component for displaying summery data with icon and possible click event 
+ * Summary Component for displaying summery data with icon and possible click event
  */
-const SummaryCount = (
-  props: SummaryCountProps,
-): JSX.Element => {
+const SummaryCount = (props: SummaryCountProps): JSX.Element => {
   const addLinkValue = () => {
     if (props.buttonAction) {
-      return (<button 
+      return (
+        <button
           onClick={props.buttonAction}
           className="text-nci-blue underline"
         >
           {props.count}
-        </button>);
+        </button>
+      );
     } else {
-      return (props.count);
+      return props.count;
     }
-  }
-  return <div className="bg-white p-2 mb-4 flex items-center max-w-xs">
-    <div className="flex-auto">
-      <div className="uppercase tracking-tight">{props.title}</div>
-      <div className="text-xl">
-        {addLinkValue()}
+  };
+  return (
+    <div className="bg-white p-2 mb-4 flex items-center max-w-xs">
+      <div className="flex-auto">
+        <div className="uppercase tracking-tight">{props.title}</div>
+        <div className="text-xl">{addLinkValue()}</div>
+      </div>
+      <div className="flex-none text-4xl" aria-hidden="true">
+        {props.icon}
       </div>
     </div>
-    <div className="flex-none text-4xl" aria-hidden="true">
-      {props.icon}
-    </div>
-  </div>;
+  );
 };
 
 export default SummaryCount;

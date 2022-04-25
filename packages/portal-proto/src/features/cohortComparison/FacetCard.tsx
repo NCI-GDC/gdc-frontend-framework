@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { Paper } from "@mantine/core";
-import { CohortFacet, DAYS_IN_YEAR } from "@gff/core";
+import { CohortFacetDoc, DAYS_IN_YEAR } from "@gff/core";
 import { FIELD_LABELS } from "src/fields";
 import BarChart from "../charts/BarChart";
 import PValue from "./PValue";
@@ -9,9 +9,8 @@ const formatAgeBuckets = (bucket) => {
   const age = bucket / DAYS_IN_YEAR;
   return age === 80 ? "80+ years" : `${age} to <${age + 10} years`;
 };
-
 interface FacetCardProps {
-  readonly data: CohortFacet;
+  readonly data: { buckets: CohortFacetDoc[] }[];
   readonly field: string;
   readonly counts: number[];
   readonly cohortNames: string[];

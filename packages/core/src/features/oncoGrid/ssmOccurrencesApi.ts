@@ -8,7 +8,9 @@ export const fetchSSMOccurrences = async (
   consequenceTypeFilters: string[],
   contextFilters?: GqlOperation,
 ): Promise<GdcApiResponse<SSMOccurrence>> => {
-  const caseAndGenomicFilters = contextFilters?.content ? Object(contextFilters?.content) : [];
+  const caseAndGenomicFilters = contextFilters?.content
+    ? Object(contextFilters?.content)
+    : [];
   return fetchGdcEntities(
     "ssm_occurrences",
     {
@@ -53,7 +55,7 @@ export const fetchSSMOccurrences = async (
               value: consequenceTypeFilters,
             },
           },
-          ...caseAndGenomicFilters
+          ...caseAndGenomicFilters,
         ],
       },
     },

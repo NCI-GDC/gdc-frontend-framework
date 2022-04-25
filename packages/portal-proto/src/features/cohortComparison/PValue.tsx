@@ -49,6 +49,7 @@ const PValue: React.FC<PValueProps> = ({ data }: PValueProps) => {
       }
     };
     determinePValue();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(pValueBuckets), JSON.stringify(data)]);
 
   if (pValue) {
