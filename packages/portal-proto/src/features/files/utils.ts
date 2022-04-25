@@ -21,7 +21,7 @@ export const formatDataForTable = (
   }, []);
 };
 
-type formatImageDetailsInfoFunc = (obj: Record<string, unknown>) => {
+type formatImageDetailsInfoFunc = (obj: any) => {
   readonly headerName: string;
   readonly values: readonly (
     | string
