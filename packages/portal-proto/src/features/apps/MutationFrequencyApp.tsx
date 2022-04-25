@@ -1,6 +1,7 @@
+import { FC } from "react";
 import GenesAndMutationFrequencyAnalysisTool from "../genomic/GenesAndMutationFrequencyAnalysisTool";
 
-const MutationFrequencyApp = () => {
+const MutationFrequencyApp: FC = () => {
   return <GenesAndMutationFrequencyAnalysisTool />;
 };
 

@@ -210,6 +210,12 @@ const useMutationsFacet = (field: string): EnumFacetResponse => {
   };
 };
 
+type updateEnumFiltersFunc = (
+  dispatch: CoreDispatch,
+  enumerationFilters: EnumOperandValue,
+  field: string,
+  prefix?: string,
+) => void;
 /**
  * Adds a enumeration filter to cohort filters
  * @param dispatch CoreDispatch instance
@@ -217,7 +223,7 @@ const useMutationsFacet = (field: string): EnumFacetResponse => {
  * @param field field to update
  * @param prefix optional prefix for fields
  */
-export const updateEnumFilters = (
+export const updateEnumFilters: updateEnumFiltersFunc = (
   dispatch: CoreDispatch,
   enumerationFilters: EnumOperandValue,
   field: string,
@@ -241,7 +247,14 @@ export const updateEnumFilters = (
   }
 };
 
-export const updateGenomicEnumFilters = (
+type updateGenomicEnumFiltersFunc = (
+  dispatch: CoreDispatch,
+  enumerationFilters: EnumOperandValue,
+  field: string,
+  prefix?: string,
+) => void;
+
+export const updateGenomicEnumFilters: updateGenomicEnumFiltersFunc = (
   dispatch: CoreDispatch,
   enumerationFilters: EnumOperandValue,
   field: string,

@@ -84,19 +84,34 @@ export type OperandValue =
  * Extract the operand values, if operands themselves have values,  otherwise undefined.
  */
 export class ValueExtractorHandler implements OperationHandler<OperandValue> {
-  handleEquals = (op: Equals) => op.operand;
-  handleNotEquals = (op: NotEquals) => op.operand;
-  handleExcludes = (op: Excludes) => op.operands;
-  handleExcludeIfAny = (op: ExcludeIfAny) => op.operands;
-  handleIncludes = (op: Includes) => op.operands;
-  handleGreaterThanOrEquals = (op: GreaterThanOrEquals) => op.operand;
-  handleGreaterThan = (op: GreaterThan) => op.operand;
-  handleLessThan = (op: LessThan) => op.operand;
-  handleLessThanOrEquals = (op: LessThanOrEquals) => op.operand;
-  handleMissing = (_: Missing) => undefined;
-  handleExists = (_: Exists) => undefined;
-  handleIntersection = (_: Intersection) => undefined;
-  handleUnion = (_: Union) => undefined;
+  handleEquals: (op: Equals) => string | number = (op: Equals) => op.operand;
+  handleNotEquals: (op: NotEquals) => string | number = (op: NotEquals) =>
+    op.operand;
+  handleExcludes: (op: Excludes) => readonly string[] | readonly number[] = (
+    op: Excludes,
+  ) => op.operands;
+  handleExcludeIfAny: (
+    op: ExcludeIfAny,
+  ) => string | readonly string[] | readonly number[] = (op: ExcludeIfAny) =>
+    op.operands;
+  handleIncludes: (op: Includes) => readonly string[] | readonly number[] = (
+    op: Includes,
+  ) => op.operands;
+  handleGreaterThanOrEquals: (op: GreaterThanOrEquals) => string | number = (
+    op: GreaterThanOrEquals,
+  ) => op.operand;
+  handleGreaterThan: (op: GreaterThan) => string | number = (op: GreaterThan) =>
+    op.operand;
+  handleLessThan: (op: LessThan) => string | number = (op: LessThan) =>
+    op.operand;
+  handleLessThanOrEquals: (op: LessThanOrEquals) => string | number = (
+    op: LessThanOrEquals,
+  ) => op.operand;
+  handleMissing: (op: Missing) => undefined = (_: Missing) => undefined;
+  handleExists: (op: Exists) => undefined = (_: Exists) => undefined;
+  handleIntersection: (op: Intersection) => undefined = (_: Intersection) =>
+    undefined;
+  handleUnion: (op: Union) => undefined = (_: Union) => undefined;
 }
 
 /**
@@ -105,19 +120,30 @@ export class ValueExtractorHandler implements OperationHandler<OperandValue> {
 export class EnumValueExtractorHandler
   implements OperationHandler<EnumOperandValue | undefined>
 {
-  handleEquals = (_: Equals) => undefined;
-  handleNotEquals = (_: NotEquals) => undefined;
-  handleExcludes = (op: Excludes) => op.operands;
-  handleExcludeIfAny = (_: ExcludeIfAny) => undefined;
-  handleIncludes = (op: Includes) => op.operands;
-  handleGreaterThanOrEquals = (_: GreaterThanOrEquals) => undefined;
-  handleGreaterThan = (_: GreaterThan) => undefined;
-  handleLessThan = (_: LessThan) => undefined;
-  handleLessThanOrEquals = (_: LessThanOrEquals) => undefined;
-  handleMissing = (_: Missing) => undefined;
-  handleExists = (_: Exists) => undefined;
-  handleIntersection = (_: Intersection) => undefined;
-  handleUnion = (_: Union) => undefined;
+  handleEquals: (_: Equals) => undefined = (_: Equals) => undefined;
+  handleNotEquals: (_: NotEquals) => undefined = (_: NotEquals) => undefined;
+  handleExcludes: (_: Excludes) => readonly string[] | readonly number[] = (
+    op: Excludes,
+  ) => op.operands;
+  handleExcludeIfAny: (_: ExcludeIfAny) => undefined = (_: ExcludeIfAny) =>
+    undefined;
+  handleIncludes: (_: Includes) => readonly string[] | readonly number[] = (
+    op: Includes,
+  ) => op.operands;
+  handleGreaterThanOrEquals: (_: GreaterThanOrEquals) => undefined = (
+    _: GreaterThanOrEquals,
+  ) => undefined;
+  handleGreaterThan: (_: GreaterThan) => undefined = (_: GreaterThan) =>
+    undefined;
+  handleLessThan: (_: LessThan) => undefined = (_: LessThan) => undefined;
+  handleLessThanOrEquals: (_: LessThanOrEquals) => undefined = (
+    _: LessThanOrEquals,
+  ) => undefined;
+  handleMissing: (_: Missing) => undefined = (_: Missing) => undefined;
+  handleExists: (_: Exists) => undefined = (_: Exists) => undefined;
+  handleIntersection: (_: Intersection) => undefined = (_: Intersection) =>
+    undefined;
+  handleUnion: (_: Union) => undefined = (_: Union) => undefined;
 }
 
 export const buildCohortGqlOperator = (

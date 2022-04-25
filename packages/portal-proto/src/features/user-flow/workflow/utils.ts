@@ -41,6 +41,9 @@ const ascendingOrd = (array) => {
   });
 };
 
-export const sortAlphabetically = (array, direction) => {
+export const sortAlphabetically: (array: any, direction: any) => any = (
+  array,
+  direction,
+) => {
   return direction === "a-z" ? descendingOrd(array) : ascendingOrd(array);
 };

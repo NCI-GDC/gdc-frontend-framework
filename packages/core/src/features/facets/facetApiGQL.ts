@@ -1,8 +1,10 @@
 import { DataStatus } from "../../dataAcess";
 import { isBucketsAggregation } from "../gdcapi/gdcapi";
 
-export const convertFacetNameToGQL = (x: string) => x.replaceAll(".", "__");
-export const normalizeGQLFacetName = (x: string) => x.replaceAll("__", ".");
+export const convertFacetNameToGQL: (x: string) => string = (x: string) =>
+  x.replaceAll(".", "__");
+export const normalizeGQLFacetName: (x: string) => string = (x: string) =>
+  x.replaceAll("__", ".");
 
 export const buildGraphGLBucketQuery = (
   what: string,
@@ -44,7 +46,16 @@ export interface FacetBuckets {
   readonly buckets?: Record<string, number>;
 }
 
-export const processBuckets = (
+type processBuckets = (
+  aggregations: Record<string, unknown>,
+  state: {
+    [index: string]: Record<string, unknown>;
+  },
+) => {
+  [index: string]: Record<string, unknown>;
+};
+
+export const processBuckets: processBuckets = (
   aggregations: Record<string, unknown>,
   state: { [index: string]: Record<string, unknown> },
 ) => {

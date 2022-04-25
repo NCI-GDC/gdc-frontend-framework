@@ -1,6 +1,9 @@
 import { useEffect } from "react";
 
-function useOutsideClickAlert(ref, callback) {
+function useOutsideClickAlert(
+  ref: React.RefObject<any>,
+  callback: () => void,
+): void {
   useEffect(() => {
     function handleClickOutside(event) {
       if (ref.current && !ref.current.contains(event.target)) {

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { Survival, SurvivalElement } from "@gff/core";
 import { renderPlot } from "@oncojs/survivalplot";
 import {
@@ -34,7 +34,14 @@ const SVG_MARGINS = {
 export const MINIMUM_CASES = 10;
 export const MAXIMUM_CURVES = 5;
 
-export const useSurvival = (
+type survival = (
+  data: any,
+  xDomain: any,
+  setXDomain: any,
+  setTooltip?: (x?: any) => any,
+) => MutableRefObject<any>;
+
+export const useSurvival: survival = (
   data,
   xDomain,
   setXDomain,

@@ -1,6 +1,8 @@
 import { DocumentWithWebkit } from "./features/types";
 
-export const toggleFullScreen = async (ref: React.MutableRefObject<any>) => {
+export const toggleFullScreen = async (
+  ref: React.MutableRefObject<any>,
+): Promise<void> => {
   // Webkit vendor prefix for Safari support: https://developer.mozilla.org/en-US/docs/Web/API/Element/requestFullScreen#browser_compatibility
   if (
     !document.fullscreenElement &&

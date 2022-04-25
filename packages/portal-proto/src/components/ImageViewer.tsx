@@ -14,7 +14,7 @@ const ImageViewer = ({ imageId, tableData }: ImageViewerProp): JSX.Element => {
   const [viewer, setViewer] = useState<OpenSeadragon.Viewer>(null);
   const { data: imageDetails, isFetching, isError } = useImageDetails(imageId);
   const osdContainerRef = useRef(null);
-  const detailsButtonWrapperRef = useRef(null);
+  const detailsButtonWrapperRef = useRef<HTMLDivElement>(null);
 
   const InitOpenseadragon = () => {
     viewer && viewer.destroy();

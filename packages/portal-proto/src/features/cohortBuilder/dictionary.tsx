@@ -1,5 +1,5 @@
 import GDC_Dictionary from "./gdc_tooltips.json";
-import MiniSearch from "minisearch";
+import MiniSearch, { SearchResult } from "minisearch";
 
 export const get_facet_list = (
   category: string,
@@ -103,7 +103,7 @@ export const miniSearch = new MiniSearch({
   storeFields: ["name", "category", "subcategory", "description"], // fields to return with search results
 });
 
-export const init_search_index = () => {
+export const init_search_index: () => MiniSearch<any> = () => {
   miniSearch.addAll(get_facets_as_documents("Clinical"));
   miniSearch.addAll(get_facets_enums_as_documents("Clinical"));
   miniSearch.addAll(get_facets_as_documents("Biospecimen"));
@@ -111,7 +111,7 @@ export const init_search_index = () => {
   return miniSearch;
 };
 
-export const search_facets = (s: string) => {
+export const search_facets: (s: string) => SearchResult[] = (s: string) => {
   return miniSearch.search(s, { prefix: true, combineWith: "AND" });
 };
 

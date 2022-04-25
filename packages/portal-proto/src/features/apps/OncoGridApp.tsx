@@ -1,6 +1,7 @@
+import { FC } from "react";
 import OncoGridAnalysisTool from "../oncoGrid/OncoGridAnalysisTool";
 
-const OncoGridApp = () => {
+const OncoGridApp: FC = () => {
   return <OncoGridAnalysisTool />;
 };
 

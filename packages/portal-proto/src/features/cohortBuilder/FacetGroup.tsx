@@ -1,7 +1,7 @@
 import { EnumFacet } from "../facets/EnumFacet";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import type { ReactTabsFunctionComponent, TabProps } from "react-tabs";
-import { useState } from "react";
+import { FC, useState } from "react";
 import Select from "react-select";
 import { get_facet_subcategories, get_facets } from "./dictionary";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
@@ -92,7 +92,7 @@ const FacetTabWithSubmenu: React.FC<
 // @ts-ignore
 FacetTabWithSubmenu.tabsRole = "Tab";
 
-export const CohortTabbedFacets = () => {
+export const CohortTabbedFacets: FC = () => {
   const [subcategories, setSubcategories] = useState({
     Clinical: "All",
     Biospecimen: "All",

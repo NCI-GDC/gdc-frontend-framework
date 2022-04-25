@@ -1,3 +1,4 @@
+import { FC } from "react";
 import Plot from "react-plotly.js";
 import GeneData from "./genes.json";
 import MutationData from "./mutations.json";
@@ -23,7 +24,7 @@ const createChartData = (which) => {
   return data;
 };
 
-const GeneMutationChart = ({ which }: { which: string }) => {
+const GeneMutationChart: FC<{ which }> = ({ which }: { which: string }) => {
   const chart_data = createChartData(which);
 
   const chartData = {
