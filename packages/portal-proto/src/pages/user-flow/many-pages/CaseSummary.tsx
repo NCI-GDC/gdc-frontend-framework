@@ -8,7 +8,7 @@ const CaseSummary: NextPage = () => {
     <UserFlowVariedPages
       {...{ indexPath: "/user-flow/many-pages", headerElements }}
     >
-      <ContextualCasesView caseId="3b01d064-8c00-4972-9f07-407eac8e7534" />
+      <ContextualCasesView caseId="1f601832-eee3-48fb-acf5-80c4a454f26e" />
     </UserFlowVariedPages>
   );
 };
