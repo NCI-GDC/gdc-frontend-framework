@@ -9,6 +9,7 @@ import {
 } from "react-icons/md";
 import { useState } from "react";
 import { EnumFacet } from "../facets/EnumFacet";
+import Link from "next/link";
 
 export interface ContextualFilesViewProps {
   readonly handleFileSelected?: (file: GdcFile) => void;
@@ -70,7 +71,11 @@ export const ContextualFilesView: React.FC<ContextualFilesViewProps> = ({
           <DownloadIcon size={"1.5rem"} />
           Manifest
         </Button>
-        <Button className={buttonStyle}>View Images</Button>
+        <Link href="/user-flow/workbench/imageViewer">
+          <Button component="a" className={buttonStyle}>
+            View Images
+          </Button>
+        </Link>
       </div>
       <div className="flex flex-row mx-3">
         <div className="flex flex-col gap-y-4 mr-3">

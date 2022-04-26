@@ -57,13 +57,8 @@ const StyleGuideApp: FC = () => {
       padding="md"
       navbar={SideBar(sections, setActiveStyleCard)}
       header={header}
-      styles={(theme) => ({
-        main: {
-          backgroundColor:
-            theme.colorScheme === "dark"
-              ? theme.colors.dark[8]
-              : theme.colors.gray[0],
-        },
+      styles={() => ({
+        main: { backgroundColor: "gdc-grey-lightest" },
       })}
     >
       <ActiveStyleCard cardId={activeStyleCard} />
