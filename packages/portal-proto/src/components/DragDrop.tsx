@@ -1,5 +1,5 @@
 import { FC, useState, useCallback, useEffect } from 'react'
-import { Column } from './ColumnOption';
+import { ColumnOption } from './ColumnOption';
 import update from 'immutability-helper';
 
 const style = {
@@ -11,17 +11,17 @@ export interface ColumnProps {
   columnName: string
   index: number
   moveColumn: (dragIndex: number, hoverIndex: number) => void
+  handleColumnChange: (update: any) => void
 }
 
 
-const DragDrop = ({ listOptions }) => {
+const DragDrop = ({ listOptions, handleColumnChange }) => {
   
     const [columns, setColumns] = useState([]);
 
     useEffect(() => {
-      console.log('list', listOptions);
       setColumns(listOptions);
-    }, [])
+    }, [listOptions])
 
     const moveColumn = useCallback((dragIndex: number, hoverIndex: number) => {
       setColumns((prevColumns) =>
@@ -37,12 +37,13 @@ const DragDrop = ({ listOptions }) => {
     const renderColumn = useCallback(
       (column:  { id: number, columnName: string }, index: number) => {
         return (
-          <Column
+          <ColumnOption
             key={column.id}
             index={index}
             id={column.id}
             columnName={column.columnName}
             moveColumn={moveColumn}
+            handleColumnChange={handleColumnChange}
           />
         )
       },

@@ -16,6 +16,7 @@ export interface ColumnProps {
   columnName: string
   index: number
   moveColumn: (dragIndex: number, hoverIndex: number) => void
+  handleColumnChange: (update: any) => void
 }
 
 interface DragItem {
@@ -24,14 +25,12 @@ interface DragItem {
   type: string
 }
 
-export const Column: FC<ColumnProps> = ({ id, columnName, index, moveColumn }) => {
+export const ColumnOption: FC<ColumnProps> = ({ id, columnName, index, moveColumn, handleColumnChange }) => {
 
 
   const changeColumnOrder = (update, monitor) => {
-    console.log('what is being monitored', monitor);
-    console.log('update', update);
-    console.log(monitor.getDropResult());
-}
+    handleColumnChange(update);
+  }
   const ref = useRef<HTMLDivElement>(null)
   const [{ handlerId }, drop] = useDrop<
     DragItem,
@@ -43,7 +42,6 @@ export const Column: FC<ColumnProps> = ({ id, columnName, index, moveColumn }) =
     accept: ItemTypes.COLUMN,
     collect(monitor) {
       return {
-        // isOver: !!monitor.isOver(),
         handlerId: monitor.getHandlerId(),
       }
     },
