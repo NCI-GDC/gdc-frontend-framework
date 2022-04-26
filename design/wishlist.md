@@ -56,6 +56,7 @@ Ideally, we'd have a single graphing solution.
 We should provide a product tour (or user on-boarding) for new users and new features.
 
 Impressions of libraries out there:
+
 - react-joyride
   - uses inline styles for CSS
   - can provide a custom component for body and beacon so styling on that can ultimately be whatever
@@ -80,7 +81,6 @@ Impressions of libraries out there:
   - inline styles for CSS, can provide custom components which could be styled however though
   - No problems with SSR, very easy to setup
   - Way of handling multiple tours in an application is kind of annoying
-
 
 ## Tech Choices
 

@@ -239,24 +239,24 @@ export interface GdcFile {
           readonly submitter_id: string;
         }>;
         readonly slides?: ReadonlyArray<{
-          readonly created_datetime: string | null
-          readonly number_proliferating_cells: number | null
-          readonly percent_eosinophil_infiltration: number | null
-          readonly percent_granulocyte_infiltration: number | null
-          readonly percent_inflam_infiltration: number | null
-          readonly percent_lymphocyte_infiltration: number | null
-          readonly percent_monocyte_infiltration: number | null
-          readonly percent_neutrophil_infiltration: number | null
-          readonly percent_necrosis: number | null
-          readonly percent_normal_cells: number | null
-          readonly percent_stromal_cells: number | null
-          readonly percent_tumor_cells: number | null
-          readonly percent_tumor_nuclei: number | null
-          readonly section_location: string | null
-          readonly slide_id: string | null
-          readonly state: string | null
-          readonly submitter_id: string | null
-          readonly updated_datetime: string | null
+          readonly created_datetime: string | null;
+          readonly number_proliferating_cells: number | null;
+          readonly percent_eosinophil_infiltration: number | null;
+          readonly percent_granulocyte_infiltration: number | null;
+          readonly percent_inflam_infiltration: number | null;
+          readonly percent_lymphocyte_infiltration: number | null;
+          readonly percent_monocyte_infiltration: number | null;
+          readonly percent_neutrophil_infiltration: number | null;
+          readonly percent_necrosis: number | null;
+          readonly percent_normal_cells: number | null;
+          readonly percent_stromal_cells: number | null;
+          readonly percent_tumor_cells: number | null;
+          readonly percent_tumor_nuclei: number | null;
+          readonly section_location: string | null;
+          readonly slide_id: string | null;
+          readonly state: string | null;
+          readonly submitter_id: string | null;
+          readonly updated_datetime: string | null;
         }>;
       }>;
     }>;
@@ -292,7 +292,6 @@ export const fetchFiles = createAsyncThunk<
   return await fetchGdcFiles(request);
 });
 
-
 const initialState: FilesState = {
   status: "uninitialized",
 };
@@ -311,7 +310,7 @@ const slice = createSlice({
           state.error = Object.values(response.warnings)[0]; // TODO add better errors parsing
         } else {
           state.files = response.data.hits.map((hit) => {
-            return ({
+            return {
               id: hit.id,
               submitterId: hit.submitter_id,
               access: asAccessType(hit.access),
@@ -338,7 +337,9 @@ const slice = createSlice({
                 return {
                   case_id: caseObj.case_id,
                   submitter_id: caseObj.submitter_id,
-                  annotations: caseObj.annotations?.map((annotation) => annotation.annotation_id),
+                  annotations: caseObj.annotations?.map(
+                    (annotation) => annotation.annotation_id,
+                  ),
                   samples: caseObj.samples?.map((sample) => {
                     return {
                       sample_id: sample.sample_id,
@@ -357,16 +358,24 @@ const slice = createSlice({
                           }),
                           slides: portion.slides?.map((slide) => {
                             return {
-                              number_proliferating_cells: slide.number_proliferating_cells,
-                              percent_eosinophil_infiltration: slide.percent_eosinophil_infiltration,
-                              percent_granulocyte_infiltration: slide.percent_granulocyte_infiltration,
-                              percent_inflam_infiltration: slide.percent_inflam_infiltration,
-                              percent_lymphocyte_infiltration: slide.percent_lymphocyte_infiltration,
-                              percent_monocyte_infiltration: slide.percent_monocyte_infiltration,
+                              number_proliferating_cells:
+                                slide.number_proliferating_cells,
+                              percent_eosinophil_infiltration:
+                                slide.percent_eosinophil_infiltration,
+                              percent_granulocyte_infiltration:
+                                slide.percent_granulocyte_infiltration,
+                              percent_inflam_infiltration:
+                                slide.percent_inflam_infiltration,
+                              percent_lymphocyte_infiltration:
+                                slide.percent_lymphocyte_infiltration,
+                              percent_monocyte_infiltration:
+                                slide.percent_monocyte_infiltration,
                               percent_necrosis: slide.percent_necrosis,
-                              percent_neutrophil_infiltration: slide.percent_neutrophil_infiltration,
+                              percent_neutrophil_infiltration:
+                                slide.percent_neutrophil_infiltration,
                               percent_normal_cells: slide.percent_normal_cells,
-                              percent_stromal_cells: slide.percent_stromal_cells,
+                              percent_stromal_cells:
+                                slide.percent_stromal_cells,
                               percent_tumor_cells: slide.percent_tumor_cells,
                               percent_tumor_nuclei: slide.percent_tumor_nuclei,
                               section_location: slide.section_location,
@@ -374,8 +383,8 @@ const slice = createSlice({
                               state: slide.state,
                               submitter_id: slide.submitter_id,
                               updated_datetime: slide.updated_datetime,
-                              created_datetime : slide.created_datetime
-                            }
+                              created_datetime: slide.created_datetime,
+                            };
                           }),
                         };
                       }),
@@ -383,11 +392,15 @@ const slice = createSlice({
                   }),
                 };
               }),
-              analysis: hit.analysis ? {
-                workflow_type: hit.analysis.workflow_type,
-                updated_datetime: hit.analysis.updated_datetime,
-                input_files: hit.analysis.input_files?.map((file) => file.file_id),
-              } : undefined,
+              analysis: hit.analysis
+                ? {
+                    workflow_type: hit.analysis.workflow_type,
+                    updated_datetime: hit.analysis.updated_datetime,
+                    input_files: hit.analysis.input_files?.map(
+                      (file) => file.file_id,
+                    ),
+                  }
+                : undefined,
               downstream_analyses: hit.downstream_analyses?.map((analysis) => {
                 return {
                   workflow_type: analysis.workflow_type,
@@ -398,11 +411,11 @@ const slice = createSlice({
                       data_type: file.data_type,
                       data_format: file.data_format,
                       file_size: file.file_size,
-                    }
+                    };
                   }),
                 };
               }),
-            });
+            };
           });
           state.status = "fulfilled";
           state.error = undefined;
@@ -438,4 +451,3 @@ export const selectFilesData = (
     error: state.files.error,
   };
 };
-

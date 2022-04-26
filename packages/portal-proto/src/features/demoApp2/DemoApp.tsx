@@ -23,7 +23,7 @@ const useFetchFiles = (): UseFetchFilesResponse => {
 
   useEffect(() => {
     if (!filesState.files) {
-      coreDispatch(fetchFiles());
+      coreDispatch(fetchFiles({}));
     }
   }, [coreDispatch, filesState.files]);
 

@@ -3,6 +3,7 @@
 The product tour is implemented using the [react tour library](https://github.com/elrumordelaluz/reactour).
 
 To add steps to the tour:
+
 - Add ids to the HTML elements you want for tour stops
 - Add the id and content of the step to the `features/tour/steps.ts` file with the properties described here: https://github.com/elrumordelaluz/reactour/tree/master/packages/tour#tourprovider
 

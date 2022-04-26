@@ -10,11 +10,11 @@ export interface ImageViewerProp extends HorizontalTableProps {
   imageId: string;
 }
 
-const ImageViewer = ({ imageId, tableData }: ImageViewerProp) => {
+const ImageViewer = ({ imageId, tableData }: ImageViewerProp): JSX.Element => {
   const [viewer, setViewer] = useState<OpenSeadragon.Viewer>(null);
   const { data: imageDetails, isFetching, isError } = useImageDetails(imageId);
   const osdContainerRef = useRef(null);
-  const detailsButtonWrapperRef = useRef(null);
+  const detailsButtonWrapperRef = useRef<HTMLDivElement>(null);
 
   const InitOpenseadragon = () => {
     viewer && viewer.destroy();
@@ -58,6 +58,7 @@ const ImageViewer = ({ imageId, tableData }: ImageViewerProp) => {
     return () => {
       viewer && viewer.destroy();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -90,9 +91,7 @@ const ImageViewer = ({ imageId, tableData }: ImageViewerProp) => {
         ref={osdContainerRef}
         id="osd"
         className={
-          isFetching || isError
-            ? "invisible"
-            : "flex bg-black h-img-viewer"
+          isFetching || isError ? "invisible" : "flex bg-black h-img-viewer"
         }
       >
         <SlideDetailButton

@@ -1,19 +1,13 @@
 import { NextPage } from "next";
-import {
-  Button,
-  UserFlowVariedPages,
-} from "../../../features/layout/UserFlowVariedPages";
+import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import { useRouter } from "next/router";
 import ReactModal from "react-modal";
 import { ContextualStudiesView } from "../../../features/studies/StudiesView";
 
 const StudiesPage: NextPage = () => {
-  const router = useRouter();
   const [showModal, setShowModal] = useState(false);
-  const [selectedProjectId, setSelectedProjectId] = useState("");
 
   const headerElements = [
     "Cohorts",
@@ -46,15 +40,9 @@ const StudiesPage: NextPage = () => {
       <div className="flex flex-col p-4 gap-y-4">
         {SingleStudyModal()}
         <ContextualStudiesView
-          setCurrentStudy={(projectId) => {
-            setSelectedProjectId(projectId);
+          setCurrentStudy={() => {
             setShowModal(true);
           }}
-          exploreRight={
-            <Button onClick={() => router.push("analysis")}>
-              Analyze Selected Cohorts
-            </Button>
-          }
         />
       </div>
     </UserFlowVariedPages>

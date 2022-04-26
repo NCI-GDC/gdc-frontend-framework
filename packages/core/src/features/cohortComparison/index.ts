@@ -1,4 +1,8 @@
-import { useCohortFacets, CohortFacet } from "./cohortFacetSlice";
+import {
+  useCohortFacets,
+  CohortFacet,
+  CohortFacetDoc,
+} from "./cohortFacetSlice";
 import { fetchPValue } from "./pValueApi";
 
-export { useCohortFacets, fetchPValue, CohortFacet };
+export { useCohortFacets, fetchPValue, CohortFacet, CohortFacetDoc };

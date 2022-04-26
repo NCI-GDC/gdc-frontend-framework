@@ -31,49 +31,64 @@ interface FacetChartProps {
 }
 
 // from https://stackoverflow.com/questions/33053310/remove-value-from-object-without-mutation
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const removeKey = (key, { [key]: _, ...rest }) => rest;
 
-const processChartData = (facetData: Record<string, any>,
-                          field: string,
-                          maxBins = 100,
-                          showXLabels = true,
-                          valueLabel = "Cases") => {
+const processChartData = (
+  facetData: Record<string, any>,
+  field: string,
+  maxBins = 100,
+  showXLabels = true,
+  valueLabel = "Cases",
+) => {
   const data = removeKey("_missing", facetData);
-  const xvals = Object.keys(data).slice(0, maxBins).map(x => x);
-  const xlabels = Object.keys(data).slice(0, maxBins).map(x => processLabel(x, 12));
+  const xvals = Object.keys(data)
+    .slice(0, maxBins)
+    .map((x) => x);
+  const xlabels = Object.keys(data)
+    .slice(0, maxBins)
+    .map((x) => processLabel(x, 12));
   const results = {
-    datasets: [{
-      x: xvals,
-      y: Object.values(data).slice(0, maxBins),
-    }],
+    datasets: [
+      {
+        x: xvals,
+        y: Object.values(data).slice(0, maxBins),
+      },
+    ],
     tickvals: showXLabels ? xvals : [],
     ticktext: showXLabels ? xlabels : [],
     title: convertFieldToName(field),
     filename: field,
     yAxisTitle: `# of ${valueLabel}`,
-  }
+  };
   return results;
 };
 
 export const EnumFacetChart: React.FC<FacetChartProps> = ({
-                                                     field,
-                                                     data, isSuccess,
-                                                     type,
-                                                     height,
-                                                     marginBottom,
-                                                     marginTop = 30, padding = 4,
-                                                     showTitle = true,
-                                                     maxBins = maxValuesToDisplay,
-                                                     showXLabels = true,
-                                                     valueLabel = "Cases",
-                                                     orientation = "v",
-                                                   }: FacetChartProps) => {
-
+  field,
+  data,
+  isSuccess,
+  height,
+  marginBottom,
+  marginTop = 30,
+  padding = 4,
+  showTitle = true,
+  maxBins = maxValuesToDisplay,
+  showXLabels = true,
+  valueLabel = "Cases",
+  orientation = "v",
+}: FacetChartProps) => {
   const [chart_data, setChartData] = useState(undefined);
 
   useEffect(() => {
     if (isSuccess) {
-      const cd = processChartData(data, field, maxBins, showXLabels, valueLabel);
+      const cd = processChartData(
+        data,
+        field,
+        maxBins,
+        showXLabels,
+        valueLabel,
+      );
       setChartData(cd);
     }
   }, [data, field, isSuccess, maxBins, showXLabels, valueLabel]);
@@ -81,34 +96,37 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
   // Create unique ID for this chart
   const chartDivId = `${field}_${Math.floor(Math.random() * 100)}`;
 
-  return <>
-    {showTitle ?
-      <ChartTitleBar title={convertFieldToName(field)}
-                     divId={chartDivId}
-                     filename={field}
-                     jsonData={{  }} /> : null
-    }
+  return (
+    <>
+      {showTitle ? (
+        <ChartTitleBar
+          title={convertFieldToName(field)}
+          divId={chartDivId}
+          filename={field}
+          jsonData={{}}
+        />
+      ) : null}
 
-    {chart_data && isSuccess ?
-
-      <BarChart data={chart_data}
-                         height={height}
-                         marginBottom={marginBottom}
-                         marginTop={marginTop}
-                         padding={padding}
-                         orientation={orientation}
-                         divId={chartDivId}/>
-      :
-      <div className="flex flex-row items-center justify-center w-100">
-        <Loader color="gray" size={height ? height : 24} />
-      </div>
-    }
-  </>;
+      {chart_data && isSuccess ? (
+        <BarChart
+          data={chart_data}
+          height={height}
+          marginBottom={marginBottom}
+          marginTop={marginTop}
+          padding={padding}
+          orientation={orientation}
+          divId={chartDivId}
+        />
+      ) : (
+        <div className="flex flex-row items-center justify-center w-100">
+          <Loader color="gray" size={height ? height : 24} />
+        </div>
+      )}
+    </>
+  );
 };
 
-const capitalize = (s) =>
-  s.length > 0  ? s[0].toUpperCase() + s.slice(1) : "";
-
+const capitalize = (s) => (s.length > 0 ? s[0].toUpperCase() + s.slice(1) : "");
 
 const convertFieldToName = (field: string): string => {
   const property = field.split(".").pop();
@@ -116,7 +134,6 @@ const convertFieldToName = (field: string): string => {
   const capitalizedTokens = tokens.map((s) => capitalize(s));
   return capitalizedTokens.join(" ");
 };
-
 
 function truncateString(str, n) {
   if (str.length > n) {

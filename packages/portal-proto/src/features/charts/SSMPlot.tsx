@@ -78,15 +78,20 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
 
   return (
     <>
-    <div>
-      <ChartTitleBar title={title} filename={CHART_NAME} divId={chartDivId} jsonData={{}} />
-    </div>
-    <BarChart
-      divId={chartDivId}
-      data={chartData}
-      onClickHandler={onClickHandler}
-    />
-      </>
+      <div>
+        <ChartTitleBar
+          title={title}
+          filename={CHART_NAME}
+          divId={chartDivId}
+          jsonData={{}}
+        />
+      </div>
+      <BarChart
+        divId={chartDivId}
+        data={chartData}
+        onClickHandler={onClickHandler}
+      />
+    </>
   );
 };
 

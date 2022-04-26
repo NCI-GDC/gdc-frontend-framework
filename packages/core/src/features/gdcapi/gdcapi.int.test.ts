@@ -271,16 +271,14 @@ describe("GDC API", () => {
       );
       expect(entities?.data?.hits?.length).toBeGreaterThan(1);
     });
- });   
+  });
 
- describe("Fetch files", () => {
+  describe("Fetch files", () => {
     test("can retrieve defaults", async () => {
       const projects = await fetchGdcFiles();
       expect(projects?.data?.hits?.length).toEqual(10);
       expect(projects?.data?.pagination?.count).toEqual(10);
-      projects.data.hits.forEach((project) =>
-        expect(project.id).toBeDefined(),
-      );
+      projects.data.hits.forEach((project) => expect(project.id).toBeDefined());
     });
   });
 });

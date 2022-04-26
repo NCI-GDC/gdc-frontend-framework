@@ -1,14 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
-  CoreDataSelectorResponse, createUseCoreDataHook,
+  CoreDataSelectorResponse,
+  createUseCoreDataHook,
   createUseFiltersCoreDataHook,
   DataStatus,
 } from "../../dataAcess";
 import { CoreDispatch, CoreState } from "../../store";
-import {
-  selectCurrentCohortFilters,
-} from "../cohort/cohortFilterSlice";
-import { GqlOperation} from "../gdcapi/filters";
+import { selectCurrentCohortFilters } from "../cohort/cohortFilterSlice";
+import { GqlOperation } from "../gdcapi/filters";
 
 export const MINIMUM_CASES = 10;
 export const MAXIMUM_CURVES = 5;
@@ -24,8 +23,8 @@ export interface SurvivalDonor {
 }
 
 export interface SurvivalElement {
-    readonly meta: string;
-    readonly donors: ReadonlyArray<SurvivalDonor>;
+  readonly meta: string;
+  readonly donors: ReadonlyArray<SurvivalDonor>;
 }
 
 export interface Survival {
@@ -48,7 +47,7 @@ export interface SurvivalState {
 const initialState: SurvivalState = {
   data: {
     survivalData: [],
-    overallStats: {}
+    overallStats: {},
   },
   status: "uninitialized",
 };
@@ -79,7 +78,7 @@ export const buildSurvivalFetchError = async (
     text: await res.text(),
     gdcSurvivalApiReq,
   };
-}
+};
 
 export const fetchSurvivalAnalysis = async (
   request: GdcSurvivalApiRequest,
@@ -91,7 +90,7 @@ export const fetchSurvivalAnalysis = async (
     },
     body: JSON.stringify({
       filters: JSON.stringify(request.filters),
-    })
+    }),
   });
   if (res.ok) {
     return res.json();
@@ -105,17 +104,13 @@ export const fetchSurvivalAnalysis = async (
  * The API will use the passed filters if defined
  * otherwise it will use the current cohort filters.
  */
-export const fetchSurvival = createAsyncThunk <
+export const fetchSurvival = createAsyncThunk<
   SurvivalApiResponse,
   { filters: ReadonlyArray<GqlOperation> },
   { dispatch: CoreDispatch; state: CoreState }
-  >
-(
-  "analysis/survivalData",
-  async ({filters }) => {
-     return fetchSurvivalAnalysis({ filters: filters  });
-  },
-);
+>("analysis/survivalData", async ({ filters }) => {
+  return fetchSurvivalAnalysis({ filters: filters });
+});
 
 const slice = createSlice({
   name: "analysis/survival",
@@ -131,18 +126,18 @@ const slice = createSlice({
           state.error = response.warnings.facets;
         } else {
           if (response.results) {
-            state.data.survivalData = response.results.map(r => ({
+            state.data.survivalData = response.results.map((r) => ({
               ...r,
-              donors: r.donors.map(d => ({
+              donors: r.donors.map((d) => ({
                 ...d,
                 time: d.time / DAYS_IN_YEAR, // convert days to years
               })),
-            }))
+            }));
             state.data.overallStats = response.overallStats;
           } else {
             state.data = {
               survivalData: [],
-              overallStats: {}
+              overallStats: {},
             };
           }
           state.status = "fulfilled";
@@ -165,7 +160,7 @@ export const survivalReducer = slice.reducer;
 export const selectSurvivalState = (state: CoreState): SurvivalState =>
   state.survival;
 
-export const selectSurvival = (state: CoreState):Survival => {
+export const selectSurvival = (state: CoreState): Survival => {
   return state.survival.data;
 };
 
@@ -182,5 +177,12 @@ export const selectSurvivalData = (
 /**
  * Data Hook to query survival data from the API.
  */
-export const useSurvivalPlot = createUseCoreDataHook(fetchSurvival, selectSurvivalData);
-export const useSurvivalPlotWithCohortFilters = createUseFiltersCoreDataHook(fetchSurvival, selectSurvivalData, selectCurrentCohortFilters);
+export const useSurvivalPlot = createUseCoreDataHook(
+  fetchSurvival,
+  selectSurvivalData,
+);
+export const useSurvivalPlotWithCohortFilters = createUseFiltersCoreDataHook(
+  fetchSurvival,
+  selectSurvivalData,
+  selectCurrentCohortFilters,
+);

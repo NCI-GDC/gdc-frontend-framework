@@ -46,13 +46,13 @@ export interface UserCoreDataHook<P, T> {
   (...params: P[]): UseCoreDataResponse<T>;
 }
 
-const usePrevious = (value : any) => {
-  const ref = useRef();
+export const usePrevious = <T>(value: T): T | undefined => {
+  const ref = useRef<T>();
   useEffect(() => {
     ref.current = value;
   });
   return ref.current;
-}
+};
 
 export const createUseCoreDataHook = <P, A, T>(
   fetchDataActionCreator: FetchDataActionCreator<P, A>,
@@ -62,7 +62,7 @@ export const createUseCoreDataHook = <P, A, T>(
     const coreDispatch = useCoreDispatch();
     const { data, status, error } = useCoreSelector(dataSelector);
     const action = fetchDataActionCreator(...params);
-    const prevParams = usePrevious(params);
+    const prevParams = usePrevious<P[]>(params);
 
     useEffect(() => {
       if (status === "uninitialized" || !isEqual(prevParams, params)) {
@@ -70,7 +70,8 @@ export const createUseCoreDataHook = <P, A, T>(
         // not compatible with thunk actions. hence, the `as any` cast. ;(
         coreDispatch(action as any); // eslint-disable-line
       }
-    }, [status, coreDispatch, action, params]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [status, coreDispatch, action, params, prevParams]);
 
     return {
       data,
@@ -82,7 +83,6 @@ export const createUseCoreDataHook = <P, A, T>(
     };
   };
 };
-
 
 export interface CoreDataValueSelector<T> {
   (state: CoreState): T;
@@ -91,21 +91,33 @@ export interface CoreDataValueSelector<T> {
 export const createUseFiltersCoreDataHook = <P, A, T, F>(
   fetchDataActionCreator: FetchDataActionCreator<P, A>,
   dataSelector: CoreDataSelector<T>,
-  secondarySelector: CoreDataValueSelector<F>
+  secondarySelector: CoreDataValueSelector<F>,
 ): UserCoreDataHook<P, T> => {
   return (...params: P[]): UseCoreDataResponse<T> => {
     const coreDispatch = useCoreDispatch();
     const { data, status, error } = useCoreSelector(dataSelector);
     const action = fetchDataActionCreator(...params);
-    const secondary = useCoreSelector(secondarySelector)
-    const prevParams = usePrevious(params);
-    const prevSecondary = usePrevious(secondary);
+    const secondary = useCoreSelector(secondarySelector);
+    const prevParams = usePrevious<P[]>(params);
+    const prevSecondary = usePrevious<F>(secondary);
 
     useEffect(() => {
-      if ((status === "uninitialized")  || !isEqual(prevParams, params)  || !isEqual(prevSecondary, secondary) ) {
+      if (
+        status === "uninitialized" ||
+        !isEqual(prevParams, params) ||
+        !isEqual(prevSecondary, secondary)
+      ) {
         coreDispatch(action as any); // eslint-disable-line
       }
-    }, [status, coreDispatch, action, prevParams, params, prevSecondary, secondary]);
+    }, [
+      status,
+      coreDispatch,
+      action,
+      prevParams,
+      params,
+      prevSecondary,
+      secondary,
+    ]);
 
     return {
       data,
@@ -117,8 +129,3 @@ export const createUseFiltersCoreDataHook = <P, A, T, F>(
     };
   };
 };
-
-
-
-
-

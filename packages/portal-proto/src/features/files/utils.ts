@@ -21,7 +21,20 @@ export const formatDataForTable = (
   }, []);
 };
 
-export const formatImageDetailsInfo = (obj: any) => {
+type formatImageDetailsInfoFunc = (obj: any) => {
+  readonly headerName: string;
+  readonly values: readonly (
+    | string
+    | number
+    | boolean
+    | readonly string[]
+    | JSX.Element
+  )[];
+}[];
+
+export const formatImageDetailsInfo: formatImageDetailsInfoFunc = (
+  obj: any,
+) => {
   const headersConfig = [
     {
       field: "file_id",
@@ -88,7 +101,20 @@ export const formatImageDetailsInfo = (obj: any) => {
   return formatDataForTable(obj, headersConfig);
 };
 
-export const parseSlideDetailsInfo = (file: GdcFile) => {
+type parseSlideDetailsInfoFunc = (file: GdcFile) => {
+  readonly headerName: string;
+  readonly values: readonly (
+    | string
+    | number
+    | boolean
+    | readonly string[]
+    | JSX.Element
+  )[];
+}[];
+
+export const parseSlideDetailsInfo: parseSlideDetailsInfoFunc = (
+  file: GdcFile,
+) => {
   const slides = file.cases?.[0]?.samples?.[0]?.portions?.[0]?.slides[0];
   const slidesInfo = omit(slides, [
     "created_datetime",

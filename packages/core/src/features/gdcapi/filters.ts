@@ -472,4 +472,3 @@ export const convertGqlFilterToFilter = (
   const handler: GqlOperationHandler<Operation> = new ToOperationHandler();
   return handleGqlOperation(handler, gqlFilter);
 };
-

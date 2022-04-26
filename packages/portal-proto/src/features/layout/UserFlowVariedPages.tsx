@@ -1,12 +1,12 @@
 import { PropsWithChildren, ReactNode, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from 'next/router'
+import { useRouter } from "next/router";
 import { Menu } from "@mantine/core";
 import { isString } from "@gff/core";
-import {  Button  } from '@mantine/core';
+import { Button } from "@mantine/core";
 import { useTour } from "@reactour/tour";
-import steps from '../../features/tour/steps';
+import steps from "../../features/tour/steps";
 
 interface UserFlowVariedPagesProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
@@ -19,7 +19,7 @@ import {
   MdShoppingCart as CartIcon,
   MdOutlineApps as AppsIcon,
   MdSearch as SearchIcon,
-  MdOutlineTour as TourIcon
+  MdOutlineTour as TourIcon,
 } from "react-icons/md";
 
 export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
@@ -33,6 +33,7 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
 
   useEffect(() => {
     setSteps(steps[router.pathname]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -40,7 +41,9 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
       <header className="flex-none bg-white">
         <Header {...{ headerElements, indexPath, Options }} />
       </header>
-      <main data_tour="full_page_content" className="flex-grow">{children}</main>
+      <main data-tour="full_page_content" className="flex-grow">
+        {children}
+      </main>
       <footer className="flex-none">
         <Footer />
       </footer>
@@ -96,17 +99,42 @@ const Header: React.FC<HeaderProps> = ({
         </div>
 
         <div className="flex flex-row items-center align-middle flex-nowrap">
-          <div className={"flex flex-row opacity-60 hover:opacity-100 transition-opacity items-center mx-2 "}><SearchIcon size="24px" /> </div>
-          <div className={"flex flex-row opacity-60 hover:opacity-100 transition-opacity items-center mx-2 "}><LoginIcon className="mr-1" size="24px" /> Login </div>
-          <div className={"flex flex-row opacity-60 hover:opacity-100 transition-opacity  items-center mx-2"}><CartIcon size="24px" /> Cart </div>
+          <div
+            className={
+              "flex flex-row opacity-60 hover:opacity-100 transition-opacity items-center mx-2 "
+            }
+          >
+            <SearchIcon size="24px" />{" "}
+          </div>
+          <div
+            className={
+              "flex flex-row opacity-60 hover:opacity-100 transition-opacity items-center mx-2 "
+            }
+          >
+            <LoginIcon className="mr-1" size="24px" /> Login{" "}
+          </div>
+          <div
+            className={
+              "flex flex-row opacity-60 hover:opacity-100 transition-opacity  items-center mx-2"
+            }
+          >
+            <CartIcon size="24px" /> Cart{" "}
+          </div>
 
-        <Menu withArrow className={"opacity-60 hover:opacity-100 transition-opacity mx-2"} control={<button className="p-0"><AppsIcon className="mt-2" size="24px" /></button>}>
-          <Menu.Item onClick={() => setIsOpen(true)}>
-            <TourIcon size="2.5em"/><div className="text-center text-sm pt-1">{'Tour'}</div>
-          </Menu.Item>
-        </Menu>
-
-
+          <Menu
+            withArrow
+            className={"opacity-60 hover:opacity-100 transition-opacity mx-2"}
+            control={
+              <button className="p-0">
+                <AppsIcon className="mt-2" size="24px" />
+              </button>
+            }
+          >
+            <Menu.Item onClick={() => setIsOpen(true)}>
+              <TourIcon size="2.5em" />
+              <div className="text-center text-sm pt-1">{"Tour"}</div>
+            </Menu.Item>
+          </Menu>
         </div>
       </div>
     </div>

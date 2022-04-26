@@ -19,8 +19,12 @@ const slice = createSlice({
 
 export const availableCohortsReducer = slice.reducer;
 
-export const selectAvailableCohorts = (state: CoreState) =>
-  state.cohort.availableCohorts;
+export const selectAvailableCohorts: (state: CoreState) => any = (
+  state: CoreState,
+) => state.cohort.availableCohorts;
 
-export const selectAvailableCohortByName = (state: CoreState, name: string) =>
+export const selectAvailableCohortByName: (
+  state: CoreState,
+  name: string,
+) => any = (state: CoreState, name: string) =>
   state.cohort.availableCohorts.find((cohort: Cohort) => cohort.name === name);

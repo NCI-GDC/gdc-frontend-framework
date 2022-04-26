@@ -3,18 +3,11 @@
  */
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { CoreDispatch, CoreState } from "../../store";
-import {
-  graphqlAPI,
-  GraphQLApiResponse
-} from "../gdcapi/gdcgraphql";
+import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import { processBuckets } from "./facetApiGQL";
 
 import { selectCurrentCohortGqlFilters } from "../cohort/cohortFilterSlice";
-import {
-  FacetBuckets,
-  buildGraphGLBucketQuery
-} from "./facetApiGQL";
-
+import { FacetBuckets, buildGraphGLBucketQuery } from "./facetApiGQL";
 
 export const fetchCaseFacetByName = createAsyncThunk<
   GraphQLApiResponse<Record<string, unknown>>,
@@ -22,12 +15,11 @@ export const fetchCaseFacetByName = createAsyncThunk<
   { dispatch: CoreDispatch; state: CoreState }
 >("facet/fetchCasesFacetByName", async (field: string, thunkAPI) => {
   const filters = selectCurrentCohortGqlFilters(thunkAPI.getState());
-  const queryGQL = buildGraphGLBucketQuery("cases", field)
+  const queryGQL = buildGraphGLBucketQuery("cases", field);
 
-  const filtersGQL =
-    {
-      "filters_0": filters? filters: {}
-    }
+  const filtersGQL = {
+    filters_0: filters ? filters : {},
+  };
 
   return await graphqlAPI(queryGQL, filtersGQL);
 });
@@ -53,7 +45,8 @@ const casesSlice = createSlice({
           state[action.meta.arg].status = "rejected";
           state[action.meta.arg].error = response.errors.facets;
         } else {
-          const aggregations = Object(response).data.viewer.explore.cases.aggregations;
+          const aggregations =
+            Object(response).data.viewer.explore.cases.aggregations;
           aggregations && processBuckets(aggregations, state);
         }
       })
@@ -74,8 +67,9 @@ const casesSlice = createSlice({
 
 export const caseFacetsReducer = casesSlice.reducer;
 
-export const selectCaseFacets = (state: CoreState): Record<string, FacetBuckets> =>
-  state.facetsGQL.cases;
+export const selectCaseFacets = (
+  state: CoreState,
+): Record<string, FacetBuckets> => state.facetsGQL.cases;
 
 export const selectCaseFacetByField = (
   state: CoreState,
@@ -84,8 +78,3 @@ export const selectCaseFacetByField = (
   const cases = state.facetsGQL.cases;
   return cases[field];
 };
-
-
-
-
-

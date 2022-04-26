@@ -8,7 +8,9 @@ export const SlideDetailButton = forwardRef<
   HorizontalTableProps
 >(({ tableData }: HorizontalTableProps, wrapperRef) => {
   const [showDetails, setShowDetails] = useState(false);
-  useOutsideClickAlert(wrapperRef, () => setShowDetails(false));
+  useOutsideClickAlert(wrapperRef as React.RefObject<HTMLDivElement>, () =>
+    setShowDetails(false),
+  );
 
   return (
     <div ref={wrapperRef} id="details-button" className="absolute -top-3">
