@@ -1,14 +1,15 @@
-import { GdcFile, useFilteredFiles } from "@gff/core";
-import { Table, Button, Select, Pagination } from "@mantine/core";
+import { useState } from "react";
 import fileSize from "filesize";
+import { Table, Button, Select, Pagination } from "@mantine/core";
 import {
   MdLock as LockedIcon,
   MdLockOpen as OpenIcon,
   MdDownload as DownloadIcon,
   MdShoppingCart as CartIcon,
 } from "react-icons/md";
-import { useState } from "react";
+import { GdcFile, useFilteredFiles, useCoreSelector, useCoreDispatch, selectCart } from "@gff/core";
 import { EnumFacet } from "../facets/EnumFacet";
+import { addToCart } from "@/components/CartNotification/CartNotification";
 
 export interface ContextualFilesViewProps {
   readonly handleFileSelected?: (file: GdcFile) => void;
@@ -58,10 +59,13 @@ export const ContextualFilesView: React.FC<ContextualFilesViewProps> = ({
   handleFileSelected,
 }: ContextualFilesViewProps) => {
   const { data } = useFilteredFiles();
+  const currentCart = useCoreSelector((state) => selectCart(state));
+  const dispatch = useCoreDispatch();
+
   return (
     <div className="flex flex-col mt-4 ">
     <div className="flex flex-row justify-end m-2">
-      <Button className={buttonStyle}><CartIcon size={"1.5rem"}/>Add All Files to Cart</Button>
+      <Button className={buttonStyle} onClick={() => addToCart(data, currentCart, dispatch)}><CartIcon size={"1.5rem"}/>Add All Files to Cart</Button>
       <Button className={buttonStyle}><DownloadIcon size={"1.5rem"}/>Manifest</Button>
       <Button className={buttonStyle}>View Images</Button>
     </div>

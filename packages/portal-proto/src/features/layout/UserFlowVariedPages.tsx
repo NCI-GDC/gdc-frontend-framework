@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from 'next/router'
 import { Menu } from "@mantine/core";
-import { isString } from "@gff/core";
+import { isString, useCoreSelector, selectCart } from "@gff/core";
 import {  Button  } from '@mantine/core';
 import { useTour } from "@reactour/tour";
 import steps from '../../features/tour/steps';
@@ -60,6 +60,7 @@ const Header: React.FC<HeaderProps> = ({
   Options = () => <div />,
 }: HeaderProps) => {
   const { setIsOpen } = useTour();
+  const currentCart = useCoreSelector((state) => selectCart(state));
 
   return (
     <div className="px-6 py-3 border-b border-gdc-grey-lightest">
@@ -98,7 +99,7 @@ const Header: React.FC<HeaderProps> = ({
         <div className="flex flex-row items-center align-middle flex-nowrap">
           <div className={"flex flex-row opacity-60 hover:opacity-100 transition-opacity items-center mx-2 "}><SearchIcon size="24px" /> </div>
           <div className={"flex flex-row opacity-60 hover:opacity-100 transition-opacity items-center mx-2 "}><LoginIcon className="mr-1" size="24px" /> Login </div>
-          <div className={"flex flex-row opacity-60 hover:opacity-100 transition-opacity  items-center mx-2"}><CartIcon size="24px" /> Cart </div>
+          <div className={"flex flex-row opacity-60 hover:opacity-100 transition-opacity  items-center mx-2"}><CartIcon size="24px" /> Cart ({currentCart.length}) </div>
 
         <Menu withArrow className={"opacity-60 hover:opacity-100 transition-opacity mx-2"} control={<button className="p-0"><AppsIcon className="mt-2" size="24px" /></button>}>
           <Menu.Item onClick={() => setIsOpen(true)}>

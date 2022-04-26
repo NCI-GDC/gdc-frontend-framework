@@ -9,10 +9,10 @@ import {
   selectCurrentCohortFilters,
 } from "../cohort/cohortFilterSlice";
 import { GqlOperation} from "../gdcapi/filters";
+import { DAYS_IN_YEAR } from "../../constants";
 
 export const MINIMUM_CASES = 10;
 export const MAXIMUM_CURVES = 5;
-export const DAYS_IN_YEAR = 365.25;
 
 export interface SurvivalDonor {
   readonly time: number;
