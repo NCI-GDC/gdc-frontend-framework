@@ -1,19 +1,25 @@
 import { Button } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
+import { FaUndo as UndoIcon } from "react-icons/fa";
 import {
   CART_LIMIT,
   useCoreDispatch,
   removeFilesFromCart,
   addFilesToCart,
   GdcFile,
+  CoreDispatch,
 } from "@gff/core";
-import { FaUndo as UndoIcon } from "react-icons/fa";
 
-export const OverLimitNotification = ({ numFilesInCart }) => (
+interface OverLimitNotificationProps {
+  readonly numFilesInCart: number;
+}
+const OverLimitNotification: React.FC<OverLimitNotificationProps> = ({
+  numFilesInCart,
+}: OverLimitNotificationProps) => (
   <>
     <p>
-      The cart is limited to The cart is limited to {CART_LIMIT} files and
-      currently contains {numFilesInCart} files.
+      The cart is limited to {CART_LIMIT.toLocaleString()} files and
+      currently contains {numFilesInCart.toLocaleString()} files.
     </p>
     <p>
       Please add fewer files and/or first remove some files from the cart before
@@ -22,26 +28,44 @@ export const OverLimitNotification = ({ numFilesInCart }) => (
   </>
 );
 
-const UndoButton = ({ files }) => {
+interface UndoButtonProps {
+  readonly files: readonly GdcFile[];
+}
+const UndoButton: React.FC<UndoButtonProps> = ({ files }: UndoButtonProps) => {
   const dispatch = useCoreDispatch();
 
   return (
-    <Button variant={'white'} onClick={() => removeFromCart(files, dispatch)} leftIcon={<UndoIcon />}>Undo</Button>
-  )
+    <Button
+      variant={"white"}
+      onClick={() => removeFromCart(files, dispatch)}
+      leftIcon={<UndoIcon />}
+    >
+      <span className="underline">Undo</span>
+    </Button>
+  );
 };
 
-export const AddNotification = ({ files, numFilesAdded, numAlreadyInCart }) => {
+interface AddNotificationProps {
+  readonly files: readonly GdcFile[];
+  readonly numFilesAdded: number;
+  readonly numAlreadyInCart: number;
+}
+const AddNotification: React.FC<AddNotificationProps> = ({
+  files,
+  numFilesAdded,
+  numAlreadyInCart,
+}: AddNotificationProps) => {
   if (files.length === 1) {
     if (numFilesAdded === 1) {
       return (
         <>
           <p>Added {files[0].fileName} to the cart.</p>
-          <UndoButton files={files} /> 
+          <UndoButton files={files} />
         </>
       );
     } else {
       return (
-        <>{files[0].filename} was already in the cart and was not added.</>
+        <>{files[0].fileName} was already in the cart and was not added.</>
       );
     }
   } else {
@@ -67,7 +91,12 @@ export const AddNotification = ({ files, numFilesAdded, numAlreadyInCart }) => {
   }
 };
 
-export const RemoveNotification = ({ files }) => {
+interface RemoveNotificationProps {
+  readonly files: readonly GdcFile[];
+}
+const RemoveNotification: React.FC<RemoveNotificationProps> = ({
+  files,
+}: RemoveNotificationProps) => {
   if (files.length === 1) {
     return <>Removed {files[0].fileName} from the cart.</>;
   } else {
@@ -75,20 +104,30 @@ export const RemoveNotification = ({ files }) => {
   }
 };
 
-const removeFromCart = (files : GdcFile[], dispatch ) => {
+export const removeFromCart = (files: readonly GdcFile[], dispatch: CoreDispatch): void => {
   showNotification({
     message: <RemoveNotification files={files} />,
+    classNames: {
+      description: "flex flex-col content-center text-center",
+    },
   });
   const filesToRemove = files.map((f) => f.id);
   dispatch(removeFilesFromCart(filesToRemove));
 };
 
-export const addToCart = (files : readonly GdcFile[], currentCart : string[], dispatch ) => {
+export const addToCart = (
+  files: readonly GdcFile[],
+  currentCart: string[],
+  dispatch: CoreDispatch,
+): void => {
   const numFilesToBeAdded = files.length + currentCart.length;
 
   if (numFilesToBeAdded > CART_LIMIT) {
     showNotification({
       message: <OverLimitNotification numFilesInCart={numFilesToBeAdded} />,
+      classNames: {
+        description: "flex flex-col content-center text-center",
+      },
     });
   } else {
     const alreadyInCart = files
@@ -107,6 +146,9 @@ export const addToCart = (files : readonly GdcFile[], currentCart : string[], di
           numAlreadyInCart={alreadyInCart.length}
         />
       ),
+      classNames: {
+        description: "flex flex-col content-center text-center",
+      },
     });
     dispatch(addFilesToCart(filesToAdd));
   }
