@@ -141,13 +141,13 @@ export const ContextualFilesView: React.FC<ContextualFilesViewProps> = ({
 export interface FilesViewProps {
   readonly files?: ReadonlyArray<GdcFile>;
   readonly handleFileSelected?: (file: GdcFile) => void;
-  readonly handleCheckedFiles: (e, file: GdcFile) => void;
+  readonly handleCheckedFiles?: (e, file: GdcFile) => void;
 }
 
 export const FilesView: React.FC<FilesViewProps> = ({
   files = [],
   handleFileSelected = () => void 0,
-  handleCheckedFiles,
+  handleCheckedFiles = () => void 0,
 }: FilesViewProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [activePage, setPage] = useState(1);
