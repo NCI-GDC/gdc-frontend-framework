@@ -1,5 +1,5 @@
 import { DataStatus } from "../../dataAcess";
-import { isBucketsAggregation } from "../gdcapi/gdcapi";
+import { isBucketsAggregation, isStatsAggregation } from "../gdcapi/gdcapi";
 
 export const convertFacetNameToGQL: (x: string) => string = (x: string) =>
   x.replaceAll(".", "__");
@@ -63,7 +63,7 @@ export const processBuckets: processBuckets = (
     const normalizedField = normalizeGQLFacetName(field);
     if (isBucketsAggregation(aggregation)) {
       if (!(normalizedField in state)) {
-        console.log("found:", normalizedField);
+        console.log("processBuckets: field is unexpected:", normalizedField); //TODO: remove this once confirm this is no longer a problem
       }
       state[normalizedField].status = "fulfilled";
       state[normalizedField].buckets = aggregation.buckets.reduce(
@@ -73,6 +73,13 @@ export const processBuckets: processBuckets = (
         },
         {} as Record<string, number>,
       );
+    } else if (isStatsAggregation(aggregation)) {
+      //TODO: This seems dependent on the type of
+      //  the facet, which is not known here
+      state[normalizedField].status = "fulfilled";
+      state[normalizedField].buckets = {
+        count: aggregation.stats.count,
+      };
     } else {
       // Unhandled aggregation
     }

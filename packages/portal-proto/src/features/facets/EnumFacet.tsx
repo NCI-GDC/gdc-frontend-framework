@@ -82,7 +82,7 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
   }, [data, isSuccess]);
 
   useEffect(() => {
-    updateFilters(coreDispatch, selectedEnums, field, `${type}.`);
+    updateFilters(coreDispatch, selectedEnums, field);
   }, [updateFilters, coreDispatch, selectedEnums, field, type]);
 
   const maxValuesToDisplay = 6;

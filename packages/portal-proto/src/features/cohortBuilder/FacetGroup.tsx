@@ -1,4 +1,5 @@
 import { EnumFacet } from "../facets/EnumFacet";
+import NumericRangeFacet from "../facets/NumericRangeFacet";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import type { ReactTabsFunctionComponent, TabProps } from "react-tabs";
 import { FC, useState } from "react";
@@ -27,15 +28,39 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
       >
         <Masonry gutter="0.5em">
           {facetNames.map((x, index) => {
-            return (
-              <EnumFacet
-                key={`${x.facet_filter}-${index}`}
-                type="cases"
-                field={`${x.facet_filter}`}
-                facetName={x.name}
-                description={x.description}
-              />
-            );
+            if (x.facet_type === "enum")
+              return (
+                <EnumFacet
+                  key={`${x.facet_filter}-${index}`}
+                  type="cases"
+                  field={`${x.facet_filter}`}
+                  facetName={x.name}
+                  description={x.description}
+                />
+              );
+            if (
+              [
+                "year",
+                "years",
+                "age",
+                "numeric",
+                "integer",
+                "percent",
+              ].includes(x.facet_type)
+            ) {
+              console.log(x);
+              return (
+                <NumericRangeFacet
+                  key={`${x.facet_filter}-${index}`}
+                  field={x.facet_filter}
+                  facetName={x.name}
+                  description={x.description}
+                  facet_type={x.facet_type}
+                  minimum={x.minimum}
+                  maximum={x.maximum}
+                />
+              );
+            }
           })}
         </Masonry>
       </ResponsiveMasonry>
