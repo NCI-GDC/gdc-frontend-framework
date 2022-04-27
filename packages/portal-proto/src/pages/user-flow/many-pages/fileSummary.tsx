@@ -1,10 +1,8 @@
 import { NextPage } from "next";
 import { NextRouter, useRouter } from "next/dist/client/router";
-import {
-  UserFlowVariedPages,
-} from "../../../features/layout/UserFlowVariedPages";
+import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
 import { ContextualFileView } from "../../../features/files/FileSummary";
-import { headerElements } from "./navigation-utils";
+import { headerElements } from "@/features/user-flow/many-pages/navigation-utils";
 
 const FileSummary: NextPage = () => {
   const router = useRouter();
@@ -13,9 +11,7 @@ const FileSummary: NextPage = () => {
     <UserFlowVariedPages
       {...{ indexPath: "/user-flow/many-pages", headerElements }}
     >
-      {uuid?
-        <ContextualFileView setCurrentFile={uuid} />
-      :null}
+      {uuid ? <ContextualFileView setCurrentFile={uuid} /> : null}
       {/*
       List of test file uuids:
       4421d17a-adee-469c-be4c-0e360d43776b - has 	Annotations and aliquot and slides
@@ -36,7 +32,7 @@ const FileSummary: NextPage = () => {
 };
 const getAppUUID = (router: NextRouter): string => {
   if (!router.isReady) {
-    return
+    return;
   }
   const { uuid } = router.query;
   if (uuid && typeof uuid === "string") return uuid;
