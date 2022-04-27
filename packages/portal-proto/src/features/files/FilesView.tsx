@@ -7,7 +7,13 @@ import {
   MdDownload as DownloadIcon,
   MdShoppingCart as CartIcon,
 } from "react-icons/md";
-import { GdcFile, useFilteredFiles, useCoreSelector, useCoreDispatch, selectCart, removeFilesFromCart } from "@gff/core";
+import {
+  GdcFile,
+  useFilteredFiles,
+  useCoreSelector,
+  useCoreDispatch,
+  selectCart,
+} from "@gff/core";
 import { EnumFacet } from "../facets/EnumFacet";
 import { addToCart, removeFromCart } from "@/features/cart/updateCart";
 
@@ -64,24 +70,41 @@ export const ContextualFilesView: React.FC<ContextualFilesViewProps> = ({
   const dispatch = useCoreDispatch();
   const [selectedFiles, setSelectedFiles] = useState<GdcFile[]>([]);
 
-  const handleCheckedFiles = (e, file : GdcFile) => {
+  const handleCheckedFiles = (e, file: GdcFile) => {
     if (e.target.checked) {
-      setSelectedFiles([...selectedFiles, file])
+      setSelectedFiles([...selectedFiles, file]);
     } else {
-      setSelectedFiles(selectedFiles.filter(f => f.id !== file.id));
+      setSelectedFiles(selectedFiles.filter((f) => f.id !== file.id));
     }
-  }
+  };
 
   // TODO: remove, mock data for cart
-  const allFiles = Array(10001).fill(0).map((_, i) => data?.[i % 10]);
+  const allFiles = Array(10001)
+    .fill(0)
+    .map((_, i) => data?.[i % 10]);
 
   return (
     <div className="flex flex-col mt-4 ">
       <div className="flex flex-row justify-end m-2">
-        <Menu control={<Button className={buttonStyle}><CartIcon size={"1.5rem"}/>Update Cart</Button>}>
-          <Menu.Item onClick={() => addToCart(allFiles, currentCart, dispatch)}>{'Add All Files'}</Menu.Item>
-          <Menu.Item onClick={() => addToCart(selectedFiles, currentCart, dispatch)}>{'Add Selected Files'}</Menu.Item>
-          <Menu.Item onClick={() => removeFromCart(selectedFiles, dispatch)}>{'Remove Selected Files'}</Menu.Item>
+        <Menu
+          control={
+            <Button className={buttonStyle}>
+              <CartIcon size={"1.5rem"} />
+              Update Cart
+            </Button>
+          }
+        >
+          <Menu.Item onClick={() => addToCart(allFiles, currentCart, dispatch)}>
+            {"Add All Files"}
+          </Menu.Item>
+          <Menu.Item
+            onClick={() => addToCart(selectedFiles, currentCart, dispatch)}
+          >
+            {"Add Selected Files"}
+          </Menu.Item>
+          <Menu.Item onClick={() => removeFromCart(selectedFiles, dispatch)}>
+            {"Remove Selected Files"}
+          </Menu.Item>
         </Menu>
         <Button className={buttonStyle}>
           <DownloadIcon size={"1.5rem"} />
@@ -105,7 +128,11 @@ export const ContextualFilesView: React.FC<ContextualFilesViewProps> = ({
             );
           })}
         </div>
-        <FilesView files={data} handleFileSelected={handleFileSelected} handleCheckedFiles={handleCheckedFiles} />
+        <FilesView
+          files={data}
+          handleFileSelected={handleFileSelected}
+          handleCheckedFiles={handleCheckedFiles}
+        />
       </div>
     </div>
   );
@@ -163,7 +190,10 @@ export const FilesView: React.FC<FilesViewProps> = ({
           {files.map((file) => (
             <tr key={file.id}>
               <td className="px-2">
-                <input type="checkbox" onChange={e => handleCheckedFiles(e, file)} />
+                <input
+                  type="checkbox"
+                  onChange={(e) => handleCheckedFiles(e, file)}
+                />
               </td>
               <td className="flex flex-row items-center flex-nowrap">
                 {file.access === "open" ? (

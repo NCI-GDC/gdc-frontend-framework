@@ -18,8 +18,8 @@ const OverLimitNotification: React.FC<OverLimitNotificationProps> = ({
 }: OverLimitNotificationProps) => (
   <>
     <p>
-      The cart is limited to {CART_LIMIT.toLocaleString()} files and
-      currently contains {numFilesInCart.toLocaleString()} files.
+      The cart is limited to {CART_LIMIT.toLocaleString()} files and currently
+      contains {numFilesInCart.toLocaleString()} files.
     </p>
     <p>
       Please add fewer files and/or first remove some files from the cart before
@@ -104,7 +104,10 @@ const RemoveNotification: React.FC<RemoveNotificationProps> = ({
   }
 };
 
-export const removeFromCart = (files: readonly GdcFile[], dispatch: CoreDispatch): void => {
+export const removeFromCart = (
+  files: readonly GdcFile[],
+  dispatch: CoreDispatch,
+): void => {
   showNotification({
     message: <RemoveNotification files={files} />,
     classNames: {

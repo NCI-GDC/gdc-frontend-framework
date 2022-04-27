@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { Menu } from "@mantine/core";
 import { isString, useCoreSelector, selectCart } from "@gff/core";
-import {  Button  } from '@mantine/core';
+import { Button } from "@mantine/core";
 import { useTour } from "@reactour/tour";
 import steps from "../../features/tour/steps";
 

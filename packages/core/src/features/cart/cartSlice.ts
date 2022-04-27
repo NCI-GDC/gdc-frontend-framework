@@ -1,19 +1,19 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CoreState } from "../../store";
 
-const initialState : string[] = [];  
+const initialState: string[] = [];
 
 const slice = createSlice({
   name: "cart",
   initialState,
   reducers: {
     addFilesToCart: (state, action: PayloadAction<string[]>) => {
-      state =  [...state, ...action.payload];
+      state = [...state, ...action.payload];
       console.log("state", state);
       return state;
     },
     removeFilesFromCart: (state, action: PayloadAction<string[]>) => {
-      state = state.filter(f => !action.payload.includes(f))
+      state = state.filter((f) => !action.payload.includes(f));
       return state;
     },
   },
@@ -23,5 +23,4 @@ const slice = createSlice({
 export const cartReducer = slice.reducer;
 export const { addFilesToCart, removeFilesFromCart } = slice.actions;
 
-export const selectCart = (state: CoreState) =>
-  state.cart;
+export const selectCart = (state: CoreState): string[] => state.cart;
