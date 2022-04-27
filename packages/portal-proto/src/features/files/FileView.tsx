@@ -9,6 +9,18 @@ export interface FileViewProps {
 }
 
 export const FileView: React.FC<FileViewProps> = ({ file }: FileViewProps) => {
+  //check if data if not show error
+  if (!file?.fileId) {
+    return (
+      <div className="p-4 text-nci-gray h-full">
+        <div className="flex h-full">
+          <div className="flex-auto bg-white mr-4 h-full">
+            <h2 className="p-2 text-2xl mx-4">File Not Found</h2>
+          </div>
+        </div>
+      </div>
+    );
+  }
   const formatDataForTable = (headersConfig:ReadonlyArray<{
     readonly field: string;
     readonly name: string;
@@ -82,7 +94,7 @@ export const FileView: React.FC<FileViewProps> = ({ file }: FileViewProps) => {
         <div className="bg-white w-full mt-4">
           <h2 className="p-2 text-lg mx-4">Slide Image Viewer</h2>
             {/*TODO Slide Image Viewer see PEAR-167 */}
-            <div>slide ids for first case, sample, porttion: <ul>{file?.cases?.[0]?.samples?.[0]?.portions?.[0]?.slides?.map(slide => (<li>{slide.slide_id}</li>))}</ul></div>
+            <div>slide ids for first case, sample, porttion: <ul>{file?.cases?.[0]?.samples?.[0]?.portions?.[0]?.slides?.map((slide, index) => (<li key={index}>{slide.slide_id}</li>))}</ul></div>
         </div>) : null
       }
       <div className="bg-white w-full mt-4">
@@ -161,7 +173,7 @@ export const FileView: React.FC<FileViewProps> = ({ file }: FileViewProps) => {
       </div>
       <div className="bg-white w-full mt-4">
         <h2 className="p-2 text-lg mx-4">Downstream Analyses Files</h2>
-        {get(file, "dataType") === "Slide Image"? (
+        {false? (
         {/* Data somthing like 
           downstream_analyses.?[0]?.output_files?.[0]?.[0]?.
         <[
@@ -218,7 +230,7 @@ export const FileView: React.FC<FileViewProps> = ({ file }: FileViewProps) => {
 export interface FileModalProps {
   readonly isOpen: boolean;
   readonly closeModal: () => void;
-  readonly file: GdcFile;
+  readonly file?: GdcFile;
 }
 
 export const FileModal: React.FC<FileModalProps> = ({
