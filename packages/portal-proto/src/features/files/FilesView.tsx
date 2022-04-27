@@ -71,7 +71,7 @@ export const ContextualFilesView: React.FC<ContextualFilesViewProps> = ({
           <DownloadIcon size={"1.5rem"} />
           Manifest
         </Button>
-        <Link href="/user-flow/workbench/imageViewer">
+        <Link href="/user-flow/workbench/MultipleImageViewerPage">
           <Button component="a" className={buttonStyle}>
             View Images
           </Button>
