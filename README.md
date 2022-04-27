@@ -26,7 +26,7 @@ Installing from the root of the repository is required to avoid
 multiple installations of React in the workspaces. When this happens,
 React will fail to render.
 
-### Adding Depenedencies
+### Adding Dependencies
 
 Dependencies can also be installed from the root of the repository.
 To install a dependency for a specific workspace, you can run:

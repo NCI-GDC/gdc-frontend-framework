@@ -1,11 +1,21 @@
-const plugin = require('tailwindcss/plugin');
+// eslint-disable-next-line  @typescript-eslint/no-var-requires
+const plugin = require("tailwindcss/plugin");
+
+function withOpacityValue(variable) {
+  return ({ opacityValue }) => {
+    if (opacityValue === undefined) {
+      return `rgb(var(${variable}))`;
+    }
+    return `rgb(var(${variable}) / ${opacityValue})`;
+  };
+}
+
 module.exports = {
-  purge: [
-    "./pages/**/*.{js,ts,jsx,tsx}",
-    "./components/**/*.{js,ts,jsx,tsx}",
-    "./features/**/*.{js,ts,jsx,tsx}",
+  content: [
+    "./src/pages/**/*.{js,ts,jsx,tsx}",
+    "./src/components/**/*.{js,ts,jsx,tsx}",
+    "./src/features/**/*.{js,ts,jsx,tsx}",
   ],
-  darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
       colors: {
@@ -20,6 +30,11 @@ module.exports = {
          * lighter, lightest, dark, darker, and darkest modifiers. Each one
          * maps to a every third shade.
          */
+        // theming support
+        primary: withOpacityValue("--color-primary"),
+        secondary: withOpacityValue("--color-secondary"),
+        tertiary: withOpacityValue("--color-tertiary"),
+        highlight: withOpacityValue("--color-highlight"),
         // NCI Primary Palette
         "nci-gray": {
           lightest: "#f1f1f1",
@@ -232,6 +247,18 @@ module.exports = {
           darker: "#5c4809",
           darkest: "#422d19",
         },
+        "gdc-survival": {
+          0: "#1F77B4",
+          1: "#BD5800",
+          2: "#258825",
+          3: "#D62728",
+          4: "#8E5FB9",
+          5: "#8C564B",
+          6: "#D42BA1",
+          7: "#757575",
+          8: "#7A7A15",
+          9: "#10828E",
+        },
       },
       height: {
         "nci-logo": "54px",
@@ -241,34 +268,49 @@ module.exports = {
         "screen/3": "calc(100vh / 3)",
         "screen/4": "calc(100vh / 4)",
         "screen/5": "calc(100vh / 5)",
+        "img-viewer": "550px",
       },
       gridTemplateColumns: {
-        '2flex1': '1fr auto',
+        "2flex1": "1fr auto",
       },
       fontFamily: {
-        heading: ["Montserrat", "sans-serif"]
+        montserrat: ["Montserrat", "sans-serif"],
+        heading: ["Montserrat", "sans-serif"],
       },
-    },
-  },
-  variants: {
-    extend: {
-      borderWidth: ["hover"],
-      boxShadow: ["hover"],
-      display: ["group-hover"],
+      borderWidth: {
+        DEFAULT: "1px",
+        0: "0",
+        1: "1px",
+        2: "2px",
+        3: "3px",
+        4: "4px",
+        6: "6px",
+        8: "8px",
+      },
+      transitionProperty: {
+        height: "height",
+      },
+      variants: {
+        extend: {},
+      },
+      fontSize: {
+        "2xs": ".85rem",
+      },
     },
   },
   plugins: [
     require("@tailwindcss/forms"),
-    plugin(function({ addUtilities }) {
+    require("@tailwindcss/typography"),
+    plugin(function ({ addUtilities }) {
       const newUtilities = {
-        '.nextImageFillFix' : {
-          width: 'auto !important',
-          right: 'auto !important',
-          'min-width': '0 !important',
+        ".nextImageFillFix": {
+          width: "auto !important",
+          right: "auto !important",
+          "min-width": "0 !important",
         },
-      }
+      };
 
-      addUtilities(newUtilities)
-    })
+      addUtilities(newUtilities);
+    }),
   ],
 };

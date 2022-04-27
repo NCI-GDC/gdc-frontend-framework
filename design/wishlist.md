@@ -55,12 +55,32 @@ Ideally, we'd have a single graphing solution.
 
 We should provide a product tour (or user on-boarding) for new users and new features.
 
-Quick search of existing libraries:
+Impressions of libraries out there:
 
-- intro.js
 - react-joyride
-- shepherd.js
-- ???
+  - uses inline styles for CSS
+  - can provide a custom component for body and beacon so styling on that can ultimately be whatever
+  - accessible
+  - has a pretty rich API: https://docs.react-joyride.com/callback
+  - doesn't seem the most actively maintained
+  - throws errors with SSR, no docs or examples on how to get it working
+- react-shepherd
+  - professionally maintained, react wrapper is maintained by same team as main library, well documented
+  - classes for CSS but difficult to actually style with tailwind, expects you will provide a stylesheet with their classnames
+  - accessible
+  - errors with SSR, documented work-around though
+- intro.js
+  - popular and well maintained, well documented
+  - small and no dependencies
+  - license situation seems complicated and probably a non-starter: https://introjs.com/#commercial
+  - not really geared towards use in a react application, only has third party wrapper
+- reactour
+  - hook-based, most modern react-like API of the options
+  - wasn't mentioned in docs but seems accessible
+  - single maintainer
+  - inline styles for CSS, can provide custom components which could be styled however though
+  - No problems with SSR, very easy to setup
+  - Way of handling multiple tours in an application is kind of annoying
 
 ## Tech Choices
 

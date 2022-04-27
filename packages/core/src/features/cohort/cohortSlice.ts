@@ -1,29 +1,12 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CoreState } from "../../store";
+import { combineReducers } from "redux";
+import { cohortFilterReducer } from "./cohortFilterSlice";
+import { cohortNameReducer } from "./cohortNameSlice";
+import { cohortCountsReducer } from "./countSlice";
+import { availableCohortsReducer } from "./availableCohortsSlice";
 
-export interface CohortState {
-  readonly currentCohort?: string;
-}
-
-const initialState: CohortState = {};
-
-const slice = createSlice({
-  name: "cohort",
-  initialState,
-  reducers: {
-    setCurrentCohort: (state, action: PayloadAction<string>) => {
-      state.currentCohort = action.payload;
-    },
-    clearCurrentCohort: (state) => {
-      state.currentCohort = undefined;
-    },
-  },
-  extraReducers: {},
+export const cohortReducers = combineReducers({
+  currentCohort: cohortNameReducer,
+  currentFilters: cohortFilterReducer,
+  counts: cohortCountsReducer,
+  availableCohorts: availableCohortsReducer,
 });
-
-export const cohortReducer = slice.reducer;
-
-export const { setCurrentCohort, clearCurrentCohort } = slice.actions;
-
-export const selectCurrentCohort = (state: CoreState): string | undefined =>
-  state.cohort.currentCohort;

@@ -9,12 +9,19 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
+    "lint-fix": "eslint --fix .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "npm run test --workspaces",
     "test:int": "npm run test:int --workspaces",
     "test:all": "npm run test:all --workspaces",
-    "dev": "lerna run --parallel dev"
+    "dev": "lerna run --parallel dev",
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    "**/*": [
+      "prettier --write --ignore-unknown"
+    ]
   },
   "repository": {
     "type": "git",
@@ -24,6 +31,8 @@
   "license": "Apache-2.0",
   "homepage": "https://github.com/NCI-GDC/gdc-frontend-framework#readme",
   "dependencies": {
+    "@mantine/core": "^4.0.9",
+    "@reactour/tour": "^2.9.0",
     "classnames": "^2.3.1",
     "isomorphic-fetch": "^3.0.0",
     "lodash": "^4.17.21",
@@ -31,16 +40,21 @@
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
+    "@next/eslint-plugin-next": "^12.1.5",
     "@types/isomorphic-fetch": "^0.0.35",
     "@types/lodash": "^4.14.178",
     "@types/plotly.js": "^1.54.14",
     "@typescript-eslint/eslint-plugin": "^4.28.3",
     "@typescript-eslint/parser": "^4.28.3",
     "eslint": "^7.30.0",
+    "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "husky": "^7.0.4",
     "lerna": "^4.0.0",
+    "lint-staged": "^12.3.7",
     "prettier": "^2.3.2"
   },
   "engines": {

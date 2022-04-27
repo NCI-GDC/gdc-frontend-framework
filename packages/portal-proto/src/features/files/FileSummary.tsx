@@ -8,7 +8,7 @@ export interface ContextualFileViewProps {
 export const ContextualFileView: React.FC<ContextualFileViewProps> = (
   props: ContextualFileViewProps,
 ) => {
-  const { data, isFetching } = useFiles({ 
+  const { data, isFetching } = useFiles({
     filters: {
       op: "=",
       content: {
@@ -16,8 +16,21 @@ export const ContextualFileView: React.FC<ContextualFileViewProps> = (
         value: props.setCurrentFile,
       }
     },
-    expand: ['cases', 'cases.annotations', 'cases.project', 'cases.samples', 'cases.samples.portions', 'cases.samples.portions.analytes', 'cases.samples.portions.slides', 'cases.samples.portions.analytes.aliquots', 'analysis', 'analysis.input_files', 'downstream_analyses', 'downstream_analyses.output_files'],
-    size: 1
+    expand: [
+      "cases",
+      "cases.annotations",
+      "cases.project",
+      "cases.samples",
+      "cases.samples.portions",
+      "cases.samples.portions.analytes",
+      "cases.samples.portions.slides",
+      "cases.samples.portions.analytes.aliquots",
+      "analysis",
+      "analysis.input_files",
+      "downstream_analyses",
+      "downstream_analyses.output_files",
+    ],
+    size: 1,
   });
   const title = data?.[0] ?
     data[0].fileName : `${props.setCurrentFile} not found`;

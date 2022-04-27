@@ -7,13 +7,17 @@ import {
   isBucketsAggregation,
 } from "../gdcapi/gdcapi";
 
+import { selectCurrentCohortGqlFilters } from "../cohort/cohortFilterSlice";
+
 export const fetchFacetByName = createAsyncThunk<
   GdcApiResponse<unknown>,
   string,
   { dispatch: CoreDispatch; state: CoreState }
->("facet/fetchFacetByName", async (name: string) => {
+>("facet/fetchFacetByName", async (name: string, thunkAPI) => {
+  const filters = selectCurrentCohortGqlFilters(thunkAPI.getState());
   return await fetchGdcCases({
     size: 0,
+    ...(filters ? { filters: filters } : {}),
     facets: [name],
   });
 });

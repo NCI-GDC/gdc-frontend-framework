@@ -3142,13 +3142,7 @@
           "facet_filter": "demographic.gender",
           "facet_type": "enum",
           "description": "Text designations that identify gender. Gender is described as the assemblage of properties that distinguish people on the basis of their societal roles. [Explanatory Comment 1: Identification of gender is based upon self-report and may come from a form, questionnaire, interview, etc.]",
-          "enum": [
-            "female",
-            "male",
-            "unknown",
-            "unspecified",
-            "not reported"
-          ]
+          "enum": ["female", "male", "unknown", "unspecified", "not reported"]
         },
         "Race": {
           "facet_filter": "demographic.race",
@@ -3243,12 +3237,7 @@
           "facet_filter": "demographic.vital_status",
           "facet_type": "enum",
           "description": "The survival state of the person registered on the protocol.",
-          "enum": [
-            "Alive",
-            "Dead",
-            "Unknown",
-            "Not Reported"
-          ]
+          "enum": ["Alive", "Dead", "Unknown", "Not Reported"]
         },
         "Year of Birth": {
           "facet_filter": "demographic.year_of_birth",
@@ -3691,12 +3680,7 @@
           "facet_filter": "diagnoses.esophageal_columnar_metaplasia_present",
           "facet_type": "enum",
           "description": "The yes/no/unknown indicator used to describe whether esophageal columnar metaplasia was determined to be present.",
-          "enum": [
-            "Yes",
-            "No",
-            "Unknown",
-            "Not Reported"
-          ]
+          "enum": ["Yes", "No", "Unknown", "Not Reported"]
         },
         "Figo Stage": {
           "facet_filter": "diagnoses.figo_stage",
@@ -3743,33 +3727,19 @@
           "facet_filter": "diagnoses.figo_staging_edition_year",
           "facet_type": "enum",
           "description": "The text term used to describe the edition year of the FIGO staging system used to stage the patient's gynecologic tumor.",
-          "enum": [
-            "1988",
-            "1995",
-            "2009"
-          ]
+          "enum": ["1988", "1995", "2009"]
         },
         "Gastric Esophageal Junction Involvement": {
           "facet_filter": "diagnoses.gastric_esophageal_junction_involvement",
           "facet_type": "enum",
           "description": "The yes/no/unknown/not reported indicator used to describe whether the tumor is located across the gastroesophageal junction.",
-          "enum": [
-            "Yes",
-            "No",
-            "Unknown",
-            "Not Reported"
-          ]
+          "enum": ["Yes", "No", "Unknown", "Not Reported"]
         },
         "Goblet Cells Columnar Mucosa Present": {
           "facet_filter": "diagnoses.goblet_cells_columnar_mucosa_present",
           "facet_type": "enum",
           "description": "The yes/no/unknown indicator used to describe whether goblet cells were determined to be present in the esophageal columnar mucosa.",
-          "enum": [
-            "Yes",
-            "No",
-            "Unknown",
-            "Not Reported"
-          ]
+          "enum": ["Yes", "No", "Unknown", "Not Reported"]
         },
         "Icd 10 Code": {
           "facet_filter": "diagnoses.icd_10_code",
@@ -3818,13 +3788,7 @@
           "facet_filter": "diagnoses.iss_stage",
           "facet_type": "enum",
           "description": "The multiple myeloma disease stage at diagnosis.",
-          "enum": [
-            "I",
-            "II",
-            "III",
-            "Not Reported",
-            "Unknown"
-          ]
+          "enum": ["I", "II", "III", "Not Reported", "Unknown"]
         },
         "Last Known Disease Status": {
           "facet_filter": "diagnoses.last_known_disease_status",
@@ -3934,12 +3898,7 @@
           "facet_filter": "diagnoses.micropapillary_features",
           "facet_type": "enum",
           "description": "The yes/no/unknown indicator used to describe whether micropapillary features were determined to be present.",
-          "enum": [
-            "Absent",
-            "Present",
-            "Unknown",
-            "Not Reported"
-          ]
+          "enum": ["Absent", "Present", "Unknown", "Not Reported"]
         },
         "Morphology": {
           "facet_filter": "diagnoses.morphology",
@@ -5100,12 +5059,7 @@
           "facet_filter": "diagnoses.pregnant_at_diagnosis",
           "facet_type": "enum",
           "description": "The text term used to indicate whether the patient was pregnant at the time they were diagnosed.",
-          "enum": [
-            "Yes",
-            "No",
-            "Unknown",
-            "Not Reported"
-          ]
+          "enum": ["Yes", "No", "Unknown", "Not Reported"]
         },
         "Primary Gleason Grade": {
           "facet_filter": "diagnoses.primary_gleason_grade",
@@ -5159,14 +5113,7 @@
           "facet_filter": "diagnoses.residual_disease",
           "facet_type": "enum",
           "description": "Text terms to describe the status of a tissue margin following surgical resection.",
-          "enum": [
-            "R0",
-            "R1",
-            "R2",
-            "RX",
-            "Unknown",
-            "Not Reported"
-          ]
+          "enum": ["R0", "R1", "R2", "RX", "Unknown", "Not Reported"]
         },
         "Secondary Gleason Grade": {
           "facet_filter": "diagnoses.secondary_gleason_grade",
@@ -5524,12 +5471,7 @@
           "facet_filter": "diagnoses.synchronous_malignancy",
           "facet_type": "enum",
           "description": "A yes/no/unknown indicator used to describe whether the patient had an additional malignant diagnosis at the same time the tumor used for sequencing was diagnosed. If both tumors were sequenced, both tumors would have synchronous malignancies.",
-          "enum": [
-            "Yes",
-            "No",
-            "Unknown",
-            "Not Reported"
-          ]
+          "enum": ["Yes", "No", "Unknown", "Not Reported"]
         },
         "Tumor Grade": {
           "facet_filter": "diagnoses.tumor_grade",
@@ -5564,14 +5506,7 @@
           "facet_filter": "exposures.alcohol_history",
           "facet_type": "enum",
           "description": "A response to a question that asks whether the participant has consumed at least 12 drinks of any kind of alcoholic beverage in their lifetime.",
-          "enum": [
-            "Yes",
-            "No",
-            "Unknown",
-            "Not Reported",
-            "no",
-            "yes"
-          ]
+          "enum": ["Yes", "No", "Unknown", "Not Reported", "no", "yes"]
         },
         "Alcohol Intensity": {
           "facet_filter": "exposures.alcohol_intensity",
@@ -5591,12 +5526,7 @@
           "facet_filter": "exposures.asbestos_exposure",
           "facet_type": "enum",
           "description": "The yes/no/unknown indicator used to describe whether the patient was exposed to asbestos.",
-          "enum": [
-            "Yes",
-            "No",
-            "Unknown",
-            "Not Reported"
-          ]
+          "enum": ["Yes", "No", "Unknown", "Not Reported"]
         },
         "Cigarettes Per Day": {
           "facet_filter": "exposures.cigarettes_per_day",
@@ -5612,12 +5542,7 @@
           "facet_filter": "exposures.radon_exposure",
           "facet_type": "enum",
           "description": "The yes/no/unknown indicator used to describe whether the patient was exposed to radon.",
-          "enum": [
-            "Yes",
-            "No",
-            "Unknown",
-            "Not Reported"
-          ]
+          "enum": ["Yes", "No", "Unknown", "Not Reported"]
         },
         "Tobacco Smoking Onset Year": {
           "facet_filter": "exposures.tobacco_smoking_onset_year",
@@ -5708,13 +5633,7 @@
           "facet_filter": "demographic.gender",
           "facet_type": "enum",
           "description": "Text designations that identify gender. Gender is described as the assemblage of properties that distinguish people on the basis of their societal roles. [Explanatory Comment 1: Identification of gender is based upon self-report and may come from a form, questionnaire, interview, etc.]",
-          "enum": [
-            "female",
-            "male",
-            "unknown",
-            "unspecified",
-            "not reported"
-          ]
+          "enum": ["female", "male", "unknown", "unspecified", "not reported"]
         },
         "Race": {
           "facet_filter": "demographic.race",
@@ -5737,12 +5656,7 @@
           "facet_filter": "demographic.vital_status",
           "facet_type": "enum",
           "description": "The survival state of the person registered on the protocol.",
-          "enum": [
-            "Alive",
-            "Dead",
-            "Unknown",
-            "Not Reported"
-          ]
+          "enum": ["Alive", "Dead", "Unknown", "Not Reported"]
         },
         "Year of Birth": {
           "facet_filter": "demographic.year_of_birth",
@@ -5755,7 +5669,7 @@
           "description": "Numeric value to represent the year of the death of an individual."
         }
       },
-      "Case" : {
+      "Case": {
         "Project": {
           "facet_filter": "project.project_id",
           "facet_type": "string",
@@ -5779,14 +5693,7 @@
           "facet_filter": "exposures.alcohol_history",
           "facet_type": "enum",
           "description": "A response to a question that asks whether the participant has consumed at least 12 drinks of any kind of alcoholic beverage in their lifetime.",
-          "enum": [
-            "Yes",
-            "No",
-            "Unknown",
-            "Not Reported",
-            "no",
-            "yes"
-          ]
+          "enum": ["Yes", "No", "Unknown", "Not Reported", "no", "yes"]
         },
         "Alcohol Intensity": {
           "facet_filter": "exposures.alcohol_intensity",
@@ -5806,12 +5713,7 @@
           "facet_filter": "exposures.asbestos_exposure",
           "facet_type": "enum",
           "description": "The yes/no/unknown indicator used to describe whether the patient was exposed to asbestos.",
-          "enum": [
-            "Yes",
-            "No",
-            "Unknown",
-            "Not Reported"
-          ]
+          "enum": ["Yes", "No", "Unknown", "Not Reported"]
         },
         "Cigarettes Per Day": {
           "facet_filter": "exposures.cigarettes_per_day",
@@ -5827,12 +5729,7 @@
           "facet_filter": "exposures.radon_exposure",
           "facet_type": "enum",
           "description": "The yes/no/unknown indicator used to describe whether the patient was exposed to radon.",
-          "enum": [
-            "Yes",
-            "No",
-            "Unknown",
-            "Not Reported"
-          ]
+          "enum": ["Yes", "No", "Unknown", "Not Reported"]
         },
         "Tobacco Smoking Onset Year": {
           "facet_filter": "exposures.tobacco_smoking_onset_year",
@@ -6300,12 +6197,7 @@
           "facet_filter": "diagnoses.esophageal_columnar_metaplasia_present",
           "facet_type": "enum",
           "description": "The yes/no/unknown indicator used to describe whether esophageal columnar metaplasia was determined to be present.",
-          "enum": [
-            "Yes",
-            "No",
-            "Unknown",
-            "Not Reported"
-          ]
+          "enum": ["Yes", "No", "Unknown", "Not Reported"]
         },
         "Figo Stage": {
           "facet_filter": "diagnoses.figo_stage",
@@ -6352,33 +6244,19 @@
           "facet_filter": "diagnoses.figo_staging_edition_year",
           "facet_type": "enum",
           "description": "The text term used to describe the edition year of the FIGO staging system used to stage the patient's gynecologic tumor.",
-          "enum": [
-            "1988",
-            "1995",
-            "2009"
-          ]
+          "enum": ["1988", "1995", "2009"]
         },
         "Gastric Esophageal Junction Involvement": {
           "facet_filter": "diagnoses.gastric_esophageal_junction_involvement",
           "facet_type": "enum",
           "description": "The yes/no/unknown/not reported indicator used to describe whether the tumor is located across the gastroesophageal junction.",
-          "enum": [
-            "Yes",
-            "No",
-            "Unknown",
-            "Not Reported"
-          ]
+          "enum": ["Yes", "No", "Unknown", "Not Reported"]
         },
         "Goblet Cells Columnar Mucosa Present": {
           "facet_filter": "diagnoses.goblet_cells_columnar_mucosa_present",
           "facet_type": "enum",
           "description": "The yes/no/unknown indicator used to describe whether goblet cells were determined to be present in the esophageal columnar mucosa.",
-          "enum": [
-            "Yes",
-            "No",
-            "Unknown",
-            "Not Reported"
-          ]
+          "enum": ["Yes", "No", "Unknown", "Not Reported"]
         },
         "Igcccg Stage": {
           "facet_filter": "diagnoses.igcccg_stage",
@@ -6427,13 +6305,7 @@
           "facet_filter": "diagnoses.iss_stage",
           "facet_type": "enum",
           "description": "The multiple myeloma disease stage at diagnosis.",
-          "enum": [
-            "I",
-            "II",
-            "III",
-            "Not Reported",
-            "Unknown"
-          ]
+          "enum": ["I", "II", "III", "Not Reported", "Unknown"]
         },
         "Last Known Disease Status": {
           "facet_filter": "diagnoses.last_known_disease_status",
@@ -6577,12 +6449,7 @@
           "facet_filter": "diagnoses.micropapillary_features",
           "facet_type": "enum",
           "description": "The yes/no/unknown indicator used to describe whether micropapillary features were determined to be present.",
-          "enum": [
-            "Absent",
-            "Present",
-            "Unknown",
-            "Not Reported"
-          ]
+          "enum": ["Absent", "Present", "Unknown", "Not Reported"]
         },
         "Morphology": {
           "facet_filter": "diagnoses.morphology",
@@ -7743,12 +7610,7 @@
           "facet_filter": "diagnoses.pregnant_at_diagnosis",
           "facet_type": "enum",
           "description": "The text term used to indicate whether the patient was pregnant at the time they were diagnosed.",
-          "enum": [
-            "Yes",
-            "No",
-            "Unknown",
-            "Not Reported"
-          ]
+          "enum": ["Yes", "No", "Unknown", "Not Reported"]
         },
         "Primary Diagnosis": {
           "facet_filter": "diagnoses.primary_diagnosis",
@@ -10431,14 +10293,7 @@
           "facet_filter": "diagnoses.residual_disease",
           "facet_type": "enum",
           "description": "Text terms to describe the status of a tissue margin following surgical resection.",
-          "enum": [
-            "R0",
-            "R1",
-            "R2",
-            "RX",
-            "Unknown",
-            "Not Reported"
-          ]
+          "enum": ["R0", "R1", "R2", "RX", "Unknown", "Not Reported"]
         },
         "Secondary Gleason Grade": {
           "facet_filter": "diagnoses.secondary_gleason_grade",
@@ -10796,12 +10651,7 @@
           "facet_filter": "diagnoses.synchronous_malignancy",
           "facet_type": "enum",
           "description": "A yes/no/unknown indicator used to describe whether the patient had an additional malignant diagnosis at the same time the tumor used for sequencing was diagnosed. If both tumors were sequenced, both tumors would have synchronous malignancies.",
-          "enum": [
-            "Yes",
-            "No",
-            "Unknown",
-            "Not Reported"
-          ]
+          "enum": ["Yes", "No", "Unknown", "Not Reported"]
         },
         "Tissue or organ of origin": {
           "facet_filter": "diagnoses.tissue_or_organ_of_origin",
@@ -11281,18 +11131,7 @@
           "facet_filter": "samples.portions.analytes.analyte_type_id",
           "facet_type": "enum",
           "description": "A single letter code used to identify a type of molecular analyte.",
-          "enum": [
-            "D",
-            "E",
-            "G",
-            "H",
-            "R",
-            "S",
-            "T",
-            "W",
-            "X",
-            "Y"
-          ]
+          "enum": ["D", "E", "G", "H", "R", "S", "T", "W", "X", "Y"]
         },
         "Concentration": {
           "facet_filter": "samples.portions.analytes.concentration",
@@ -12435,10 +12274,7 @@
           "facet_filter": "samples.tissue_collection_type",
           "facet_type": "enum",
           "description": "The text term used to describe the tyoe of collection used to obtain tissue.",
-          "enum": [
-            "Prospective",
-            "Retrospective"
-          ]
+          "enum": ["Prospective", "Retrospective"]
         },
         "Tissue Type": {
           "facet_filter": "samples.tissue_type",
@@ -12714,18 +12550,7 @@
           "facet_filter": "samples.portions.analytes.aliquots.analyte_type_id",
           "facet_type": "enum",
           "description": "A single letter code used to identify a type of molecular analyte.",
-          "enum": [
-            "D",
-            "E",
-            "G",
-            "H",
-            "R",
-            "S",
-            "T",
-            "W",
-            "X",
-            "Y"
-          ]
+          "enum": ["D", "E", "G", "H", "R", "S", "T", "W", "X", "Y"]
         },
         "Concentration": {
           "facet_filter": "samples.portions.analytes.aliquots.concentration",
@@ -14014,10 +13839,7 @@
           "facet_filter": "samples.tissue_collection_type",
           "facet_type": "enum",
           "description": "The text term used to describe the tyoe of collection used to obtain tissue.",
-          "enum": [
-            "Prospective",
-            "Retrospective"
-          ]
+          "enum": ["Prospective", "Retrospective"]
         },
         "Tissue Type": {
           "facet_filter": "samples.tissue_type",
@@ -14214,18 +14036,7 @@
           "facet_filter": "samples.portions.analytes.analyte_type_id",
           "facet_type": "enum",
           "description": "A single letter code used to identify a type of molecular analyte.",
-          "enum": [
-            "D",
-            "E",
-            "G",
-            "H",
-            "R",
-            "S",
-            "T",
-            "W",
-            "X",
-            "Y"
-          ]
+          "enum": ["D", "E", "G", "H", "R", "S", "T", "W", "X", "Y"]
         },
         "Analyte Volume": {
           "facet_filter": "samples.portions.analytes.analyte_volume",
@@ -14611,11 +14422,7 @@
           "facet_filter": "case.lost_to_followup",
           "facet_type": "enum",
           "description": "The yes/no/unknown indicator used to describe whether a patient was unable to be contacted or seen for follow-up information.",
-          "enum": [
-            "Yes",
-            "No",
-            "Unknown"
-          ]
+          "enum": ["Yes", "No", "Unknown"]
         },
         "Projects": {
           "facet_filter": "case.projects",
@@ -14951,11 +14758,7 @@
           "facet_filter": "case.lost_to_followup",
           "facet_type": "enum",
           "description": "The yes/no/unknown indicator used to describe whether a patient was unable to be contacted or seen for follow-up information.",
-          "enum": [
-            "Yes",
-            "No",
-            "Unknown"
-          ]
+          "enum": ["Yes", "No", "Unknown"]
         },
         "Primary Site": {
           "facet_filter": "case.primary_site",
@@ -15087,49 +14890,43 @@
         }
       }
     },
-    "Downloadable":  {
+    "Downloadable": {
       "All": {
         "Data Type": {
           "facet_filter": "files.data_type",
           "facet_type": "enum",
           "description": "",
-          "enum": [
-          ]
+          "enum": []
         },
         "Data Category": {
           "facet_filter": "files.data_category",
           "facet_type": "enum",
           "description": "",
-          "enum": [
-          ]
+          "enum": []
         },
         "Experimental Strategy": {
           "facet_filter": "files.experimental_strategy",
           "facet_type": "enum",
           "description": "",
-          "enum": [
-          ]
+          "enum": []
         },
         "Workflow Type": {
           "facet_filter": "files.analysis.workflow_type",
           "facet_type": "enum",
           "description": "",
-          "enum": [
-          ]
+          "enum": []
         },
         "Platform": {
           "facet_filter": "files.platform",
           "facet_type": "enum",
           "description": "",
-          "enum": [
-          ]
+          "enum": []
         },
         "Access": {
           "facet_filter": "files.access",
           "facet_type": "enum",
           "description": "",
-          "enum": [
-          ]
+          "enum": []
         }
       }
     }

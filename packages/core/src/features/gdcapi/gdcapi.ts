@@ -132,7 +132,7 @@ export interface FetchError {
   readonly gdcApiReq?: GdcApiRequest;
 }
 
-const buildFetchError = async (
+export const buildFetchError = async (
   res: Response,
   gdcApiReq?: GdcApiRequest,
 ): Promise<FetchError> => {
@@ -204,12 +204,12 @@ export interface ProjectDefaults {
       readonly case_count: number;
       readonly data_category: string;
       readonly file_count: number;
-    }>
+    }>;
     readonly experimental_strategies?: ReadonlyArray<{
       readonly case_count: number;
       readonly experimental_strategy: string;
       readonly file_count: number;
-    }>
+    }>;
   };
   readonly program?: {
     readonly dbgap_accession_number: string;
@@ -271,7 +271,7 @@ export interface FileDefaults {
       readonly releasable: boolean;
       readonly released: boolean;
       readonly state: string;
-    }
+    };
     readonly samples?: ReadonlyArray<{
       readonly sample_id: string;
       readonly sample_type: string;
@@ -285,9 +285,24 @@ export interface FileDefaults {
           readonly submitter_id: string;
         }>;
         readonly slides?: ReadonlyArray<{
-          readonly slide_id: string;
-          readonly section_location: string;
-          readonly submitter_id: string;
+          readonly created_datetime: string | null;
+          readonly number_proliferating_cells: number | null;
+          readonly percent_eosinophil_infiltration: number | null;
+          readonly percent_granulocyte_infiltration: number | null;
+          readonly percent_inflam_infiltration: number | null;
+          readonly percent_lymphocyte_infiltration: number | null;
+          readonly percent_monocyte_infiltration: number | null;
+          readonly percent_neutrophil_infiltration: number | null;
+          readonly percent_necrosis: number | null;
+          readonly percent_normal_cells: number | null;
+          readonly percent_stromal_cells: number | null;
+          readonly percent_tumor_cells: number | null;
+          readonly percent_tumor_nuclei: number | null;
+          readonly section_location: string | null;
+          readonly slide_id: string | null;
+          readonly state: string | null;
+          readonly submitter_id: string | null;
+          readonly updated_datetime: string | null;
         }>;
       }>;
     }>;
@@ -332,6 +347,8 @@ export const fetchGdcFiles = async (
 export const fetchGdcEntities = async <T>(
   endpoint: string,
   request?: GdcApiRequest,
+  fetchAll = false,
+  previousHits: Record<string, any>[] = [],
 ): Promise<GdcApiResponse<T>> => {
   const res = await fetch(`https://api.gdc.cancer.gov/${endpoint}`, {
     method: "POST",
@@ -350,7 +367,39 @@ export const fetchGdcEntities = async <T>(
   });
 
   if (res.ok) {
-    return res.json();
+    const resPromise = res.json();
+
+    if (fetchAll) {
+      let fullResponse = {} as GdcApiResponse<T>;
+
+      const updatedPromise = await resPromise.then((responseData) => {
+        fullResponse = {
+          ...responseData,
+          data: {
+            hits: [...previousHits, ...responseData?.data?.hits],
+            pagination: responseData?.data?.pagination,
+          },
+        };
+        return fullResponse;
+      });
+
+      if (
+        fullResponse?.data?.pagination?.page <=
+          fullResponse?.data?.pagination?.pages &&
+        fullResponse?.data.pagination.pages !== 0
+      ) {
+        return fetchGdcEntities(
+          endpoint,
+          { ...request, from: (request?.from || 0) + (request?.size || 10) },
+          true,
+          [...fullResponse.data.hits],
+        );
+      }
+
+      return updatedPromise;
+    }
+
+    return resPromise;
   }
 
   throw await buildFetchError(res, request);

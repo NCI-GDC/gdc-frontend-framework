@@ -1,20 +1,29 @@
 import { coreStore } from "../../store";
 import { v5 as uuidv5 } from "uuid";
 import { addGdcAppMetadata, EntityType } from "./gdcAppsSlice";
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, ReducersMapObject, AnyAction } from "@reduxjs/toolkit";
 import { ComponentType, useEffect } from "react";
 import { Provider } from "react-redux";
+
 import React from "react";
 import { registerGdcApp } from "./gdcAppRegistry";
+import { DataStatus } from "../../dataAcess";
 
 // using a random uuid v4 as the namespace
 const GDC_APP_NAMESPACE = "0bd921a8-e5a7-4e73-a63c-e3f872798061";
 
-export interface CreateGdcAppOptions {
-  readonly App: ComponentType;
+export interface CreateGDCAppStore {
+  readonly name: string;
+  readonly version: string;
+  readonly reducer?: ReducersMapObject<any, AnyAction>;
+}
+
+export interface CreateGdcAppOptions extends CreateGDCAppStore {
   readonly name: string;
   readonly version: string;
   readonly requiredEntityTypes: ReadonlyArray<EntityType>;
+  readonly App: ComponentType;
+  readonly reducer?: ReducersMapObject<any, AnyAction>;
 }
 
 export const createGdcApp = (options: CreateGdcAppOptions): React.ReactNode => {
@@ -65,3 +74,9 @@ export const createGdcApp = (options: CreateGdcAppOptions): React.ReactNode => {
 
   return GdcAppWrapper;
 };
+
+export interface AppDataSelectorResponse<T> {
+  readonly data?: T;
+  readonly status: DataStatus;
+  readonly error?: string;
+}

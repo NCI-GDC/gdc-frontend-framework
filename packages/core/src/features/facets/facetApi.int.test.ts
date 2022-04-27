@@ -20,7 +20,7 @@ describe("facetApi", () => {
         expect(facet?.data?.hits).toEqual([]);
       });
 
-      test("should contain no warnings", () => {
+      test("should contain no errors", () => {
         expect(facet?.warnings).toEqual({});
       });
 
@@ -73,7 +73,7 @@ describe("facetApi", () => {
         expect(facet?.data?.hits).toEqual([]);
       });
 
-      test("should contain no warnings", () => {
+      test("should contain no errors", () => {
         expect(facet?.warnings).toEqual({});
       });
 

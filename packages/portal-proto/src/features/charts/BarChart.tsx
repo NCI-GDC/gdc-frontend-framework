@@ -1,150 +1,169 @@
-import { Config, Layout } from 'plotly.js';
-import Plot from 'react-plotly.js';
+import { Config, Layout, PlotMouseEvent, PlotData } from "plotly.js";
+import Plot from "react-plotly.js";
 
-interface BarChartProps {
-  readonly data: Record<string, any>;
-  // if defined, this determines the height of the chart. Otherwise, autosizing is used.
-  readonly height?: number;
-  readonly marginBottom?: number;
-  readonly orientation?: string;
+export interface BarChartData {
+  datasets: Partial<PlotData>[];
+  yAxisTitle?: string;
+  tickvals?: number[];
+  ticktext?: string[];
+  label_text?: string[] | number[];
+  title?: string;
+  filename?: string;
 }
 
-const BarChart: React.FC<BarChartProps> = ({ data, height, marginBottom, orientation='v' }: BarChartProps) => {
+interface BarChartProps {
+  readonly data: BarChartData;
+  // if defined, this determines the height of the chart. Otherwise, autosizing is used.
+  readonly height?: number;
+  readonly width?: number;
+  readonly marginBottom?: number;
+  readonly marginTop?: number;
+  readonly padding?: number;
+  readonly orientation?: string;
+  readonly onClickHandler?: (mouseEvent: PlotMouseEvent) => void;
+  readonly stacked?: boolean;
+  readonly divId: string;
+}
 
-const chartData = {
-    x: orientation === "v" ? data.x : data.y,
-    y: orientation  === "v" ? data.y : data.x,
+const BarChart: React.FC<BarChartProps> = ({
+  data,
+  marginBottom,
+  marginTop = 30,
+  padding = 4,
+  orientation = "v",
+  onClickHandler,
+  divId,
+  stacked = false,
+}: BarChartProps) => {
+  const chartData = data.datasets.map((dataset) => ({
+    x: orientation === "v" ? dataset.x : dataset.y,
+    y: orientation === "v" ? dataset.y : dataset.x,
     hoverinfo: "text",
-    text: data.label_text,
-    textposition: 'none',
+    text: dataset.text,
+    hovertemplate: dataset.hovertemplate,
+    customdata: dataset.customdata,
+    textposition: "none",
     showlegend: false,
-    uniformtext_mode: 'hide',
+    uniformtext_mode: "hide",
     title: null,
     marker: {
+      color: dataset?.marker?.color,
       line: {
-        color: '#4f4b4b',
+        color: "#4f4b4b",
         width: 2,
       },
     },
-    type: 'bar',
+    type: "bar",
     orientation: orientation,
-    bargap: 0.50,
+    bargap: 0.5,
+  }));
+
+  const layout: Partial<Layout> =
+    orientation === "v"
+      ? {
+          xaxis: {
+            // (bars are vertical)
+            automargin: false,
+            ticks: "outside",
+            tickwidth: 2,
+            tickcolor: "#aaaaaa",
+            ticklen: 2,
+            tickvals: data.tickvals,
+            ticktext: data.ticktext,
+            tickfont: {
+              size: 12,
+              color: "rgb(107, 107, 107)",
+            },
+            tickangle: data?.datasets?.[0]?.x.length > 6 ? 35 : undefined,
+          },
+          yaxis: {
+            title: data.yAxisTitle,
+            titlefont: {
+              family: "Arial, sans-serif",
+              size: 14,
+            },
+            tickfont: {
+              size: 12,
+              color: "rgb(107, 107, 107)",
+            },
+          },
+          margin: {
+            l: 80,
+            r: 40,
+            b: marginBottom !== undefined ? marginBottom : 100,
+            t: marginTop,
+            pad: padding,
+          },
+          autosize: true,
+          barmode: stacked ? "stack" : "group",
+          transition: {
+            duration: 500,
+            easing: "cubic-in-out",
+          },
+        }
+      : {
+          // (bars are horizontal)
+          yaxis: {
+            automargin: false,
+            ticks: "outside",
+            tickwidth: 2,
+            tickcolor: "#aaaaaa",
+            ticklen: 2,
+            tickvals: data.tickvals,
+            ticktext: data.ticktext,
+            autorange: "reversed",
+            tickfont: {
+              size: 12,
+              color: "rgb(107, 107, 107)",
+            },
+          },
+          xaxis: {
+            title: data.yAxisTitle,
+            titlefont: {
+              family: "Arial, sans-serif",
+              size: 14,
+            },
+            tickfont: {
+              size: 12,
+              color: "rgb(107, 107, 107)",
+            },
+          },
+          margin: {
+            l: 120,
+            r: 10,
+            b: marginBottom !== undefined ? marginBottom : 100,
+            t: marginTop,
+            pad: padding,
+          },
+          autosize: true,
+        };
+
+  const config: Partial<Config> = {
+    displaylogo: false,
+    modeBarButtonsToRemove: [
+      "zoom2d",
+      "pan2d",
+      "select2d",
+      "lasso2d",
+      "zoomIn2d",
+      "zoomOut2d",
+      "autoScale2d",
+      "resetScale2d",
+      "toImage",
+    ],
   };
-const vertical_layout: Partial<Layout> = {
-    uniformtext: {
-      mode: 'show',
-      minsize: 10
-    },
-    xaxis: {
-      tickson: "labels",
-      automargin: true,
-      ticks:"outside",
-      tickwidth:2,
-      tickcolor:'#aaaaaa',
-      ticklen:2,
-      tickvals: data.tickvals,
-      ticktext: data.ticktext,
-      tickfont: {
-        size: 12,
-        color: 'rgb(107, 107, 107)'
-      }
 
-    },
-    yaxis: {
-      title: data.yAxisTitle,
-      titlefont: {
-        family: 'Arial, sans-serif',
-        size: 14,
-      },
-
-      tickfont: {
-        size: 12,
-        color: 'rgb(107, 107, 107)'
-      },
-    },
-    margin: {
-      l: 80,
-      r: 40,
-      b: marginBottom !== undefined ? marginBottom : 100,
-      t: 30,
-      pad: 4
-    },
-  };
-
-  if (height !== undefined) {
-    vertical_layout.height = height;
-  } else {
-    vertical_layout.autosize = true;
-  }
-
-  if (data.x.length > 6) {
-    vertical_layout.xaxis.tickangle = 35;
-  }
-
-  const horizontal_layout: Partial<Layout> = {
-    uniformtext: {
-      mode: 'show',
-      minsize: 10
-    },
-    yaxis: {
-      automargin: true,
-      ticks:"outside",
-      tickwidth:2,
-      tickcolor:'#aaaaaa',
-      ticklen:2,
-      tickvals: data.tickvals,
-      ticktext: data.ticktext,
-      autorange:"reversed",
-      tickfont: {
-        size: 12,
-        color: 'rgb(107, 107, 107)'
-      }
-
-    },
-    xaxis: {
-      title: data.yAxisTitle,
-      titlefont: {
-        family: 'Arial, sans-serif',
-        size: 14,
-      },
-
-      tickfont: {
-        size: 12,
-        color: 'rgb(107, 107, 107)'
-      },
-    },
-    margin: {
-      l: 120,
-      r: 10,
-      b: marginBottom !== undefined ? marginBottom : 100,
-      t: 40,
-      pad: 4
-    },
-  };
-
-  if (height !== undefined) {
-    horizontal_layout.height = height;
-  } else {
-    horizontal_layout.autosize = true;
-  }
-
-  const config: Partial<Config> = {responsive: true,
-    toImageButtonOptions: {
-      format: 'png', // one of png, svg, jpeg, webp
-      filename: data.filename,
-      height: 500,
-      width: 700,
-      scale: 1 // Multiply title/legend/axis/canvas sizes by this factor
-    },
-    "displaylogo": false,
-    'modeBarButtonsToRemove': ['zoom2d', 'pan2d', 'select2d', 'lasso2d', 'zoomIn2d', 'zoomOut2d', 'autoScale2d', 'resetScale2d']
-  };
-  return (<div>
-    <Plot data={[chartData]} layout={ orientation==='v' ? vertical_layout : horizontal_layout } config={config} useResizeHandler={true}
-           style={{width: "100%", height: "240px"}}/>
-  </div>);
-
+  return (
+    <Plot
+      divId={divId}
+      data={chartData}
+      layout={layout}
+      config={config}
+      useResizeHandler={true}
+      onClick={onClickHandler}
+      className={"w-full h-full"}
+    />
+  );
 };
 
 export default BarChart;
-
