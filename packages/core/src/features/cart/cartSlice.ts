@@ -9,7 +9,6 @@ const slice = createSlice({
   reducers: {
     addFilesToCart: (state, action: PayloadAction<string[]>) => {
       state = [...state, ...action.payload];
-      console.log("state", state);
       return state;
     },
     removeFilesFromCart: (state, action: PayloadAction<string[]>) => {
