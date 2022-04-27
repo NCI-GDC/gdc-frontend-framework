@@ -7,23 +7,22 @@ import CNVPlot from "../../features/charts/CNVPlot";
 
 const GenesPage: NextPage = () => {
   const router = useRouter();
-  const gene = router.asPath.split('/')[2];
+  const gene = router.asPath.split("/")[2];
 
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    if(router.isReady) {
+    if (router.isReady) {
       setReady(true);
     }
   }, [router]);
 
-
   return (
     <SimpleLayout>
-      <div >
+      <div>
         {ready && (
           <>
-            <SSMPlot page={'gene'} gene={gene} />
+            <SSMPlot page={"gene"} gene={gene} />
             <CNVPlot gene={gene} />
           </>
         )}

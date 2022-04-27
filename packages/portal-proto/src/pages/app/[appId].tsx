@@ -28,11 +28,7 @@ const AppsPage: NextPage = () => {
             </div>
           </div>
         )}
-        {GdcApp && (
-          <div>
-            <GdcApp />
-          </div>
-        )}
+        {GdcApp && <div>{GdcApp}</div>}
       </div>
     </SimpleLayout>
   );

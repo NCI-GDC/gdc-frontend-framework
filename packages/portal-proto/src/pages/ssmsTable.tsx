@@ -1,12 +1,12 @@
 import { NextPage } from "next";
 import { SimpleLayout } from "../features/layout/Simple";
-import MutationTable from "../features/mutationTable/MutationTable";
+import MutationsTable from "../features/genomic/MutationsTable";
 
 const SSMSTablePage: NextPage = () => {
   return (
     <SimpleLayout>
-      <div >
-          <MutationTable />
+      <div>
+        <MutationsTable />
       </div>
     </SimpleLayout>
   );

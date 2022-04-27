@@ -1,7 +1,6 @@
 import { NextPage } from "next";
 import {
   UserFlowVariedPages,
-  CohortManager,
   CohortExpressionsAndBuilder,
   CohortGraphs,
 } from "../features/layout/UserFlowVariedPages";
@@ -23,9 +22,6 @@ const UserFlowFewerPagesPage: NextPage = () => {
   return (
     <UserFlowVariedPages {...{ headerElements }}>
       <div className="flex flex-col gap-y-4 px-4">
-        <div className="border p-4 border-gray-400">
-          <CohortManager />
-        </div>
         <div className="border p-4 border-gray-400">
           <CohortExpressionsAndBuilder />
         </div>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   viewBox="0 0 66.75 91.78"
+   style="fill-rule: evenodd; clip-rule: evenodd; stroke-linecap: round; stroke-linejoin: round; stroke-miterlimit: 1.5; height: 80px; margin-bottom: -0.1em; fill: currentcolor; flex-basis: 16px; width: 80px;"
+   version="1.1"
+   id="svg859">
+  <metadata
+     id="metadata865">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs863" />
+  <g
+     data-name="Layer 1"
+     id="g845">
+    <path
+       d="M17.73,0a2.4,2.4,0,0,0-2.18,3L17.08,8H2.31A2.4,2.4,0,0,0,0,10.27v79.2a2.4,2.4,0,0,0,2.31,2.31H64.43a2.41,2.41,0,0,0,2.32-2.31V10.27A2.41,2.41,0,0,0,64.43,8H49.64L51.2,3A2.43,2.43,0,0,0,49,0Zm3.19,4.63H45.86c-1.34,4.18-2.64,8.36-4,12.55h-17Q22.86,10.91,20.92,4.63Z"
+       style="fill: rgb(109, 60, 129);"
+       id="path841" />
+    <path
+       d="M33.11,24.64h.23a2.32,2.32,0,0,1,2.35,2.28v8h8a2.32,2.32,0,0,1,0,4.63h-8v8a2.32,2.32,0,1,1-4.63,0v-8h-8a2.32,2.32,0,0,1,0-4.63h8V27A2.32,2.32,0,0,1,33.11,24.64Z"
+       style="fill: rgb(255, 255, 255);"
+       id="path843" />
+  </g>
+  <g
+     data-name="Layer 2"
+     id="g857">
+    <rect
+       x="23.55"
+       y="71.86"
+       width="4.47"
+       height="9.21"
+       style="fill: rgb(254, 166, 105);"
+       id="rect847" />
+    <polygon
+       points="19.13 82.74 19.13 58.15 16.3 58.15 16.3 85.57 16.76 85.57 19.13 85.57 50.45 85.57 50.45 82.74 19.13 82.74"
+       style="fill: rgb(255, 255, 255);"
+       id="polygon849" />
+    <rect
+       x="29.55"
+       y="62.64"
+       width="4.47"
+       height="18.43"
+       style="fill: rgb(155, 160, 209);"
+       id="rect851" />
+    <rect
+       x="35.55"
+       y="67.5"
+       width="4.47"
+       height="13.57"
+       style="fill: rgb(85, 183, 236);"
+       id="rect853" />
+    <rect
+       x="41.55"
+       y="61.15"
+       width="4.47"
+       height="19.92"
+       style="fill: rgb(211, 213, 103);"
+       id="rect855" />
+  </g>
+</svg>

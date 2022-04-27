@@ -1,9 +1,13 @@
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useSsmPlot } from "@gff/core";
+import ChartTitleBar from "./ChartTitleBar";
+
 const BarChart = dynamic(() => import("./BarChart"), {
   ssr: false,
 });
+
+const CHART_NAME = "cancer-distribution-bar-chart-ssm";
 
 interface SSMPlotProps {
   readonly page: "gene" | "ssms";
@@ -66,17 +70,28 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
     yAxisTitle: "% of Cases Affected",
   };
 
+  const chartDivId = `${CHART_NAME}_${Math.floor(Math.random() * 100)}`;
+
   const onClickHandler = (mouseEvent) => {
     router.push(`/projects/${mouseEvent.points[0].x}`);
   };
 
   return (
-    <BarChart
-      data={chartData}
-      filename={"cancer-distribution-bar-chart"}
-      title={title}
-      onClickHandler={onClickHandler}
-    />
+    <>
+      <div>
+        <ChartTitleBar
+          title={title}
+          filename={CHART_NAME}
+          divId={chartDivId}
+          jsonData={{}}
+        />
+      </div>
+      <BarChart
+        divId={chartDivId}
+        data={chartData}
+        onClickHandler={onClickHandler}
+      />
+    </>
   );
 };
 

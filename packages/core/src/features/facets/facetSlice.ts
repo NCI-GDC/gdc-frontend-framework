@@ -8,13 +8,17 @@ import {
   isStatsAggregation,
 } from "../gdcapi/gdcapi";
 
+import { selectCurrentCohortGqlFilters } from "../cohort/cohortFilterSlice";
+
 export const fetchFacetByName = createAsyncThunk<
   GdcApiResponse<unknown>,
   string,
   { dispatch: CoreDispatch; state: CoreState }
->("facet/fetchFacetByName", async (name: string) => {
+>("facet/fetchFacetByName", async (name: string, thunkAPI) => {
+  const filters = selectCurrentCohortGqlFilters(thunkAPI.getState());
   return await fetchGdcCases({
     size: 0,
+    ...(filters ? { filters: filters } : {}),
     facets: [name],
   });
 });
@@ -22,8 +26,7 @@ export const fetchFacetByName = createAsyncThunk<
 export enum FacetBucketType {
   NotSet,
   Enum,
-  Value
-
+  Value,
 }
 
 export interface FacetBuckets {
@@ -69,10 +72,13 @@ const slice = createSlice({
                     },
                     {} as Record<string, number>,
                   );
-                } else if (isStatsAggregation(aggregation)) {  //TODO: This seems dependent on the type of
-                                                               //  the facet, which is not known here
+                } else if (isStatsAggregation(aggregation)) {
+                  //TODO: This seems dependent on the type of
+                  //  the facet, which is not known here
                   state.cases[field].status = "fulfilled";
-                  state.cases[field].buckets = { "count": aggregation.stats.count }
+                  state.cases[field].buckets = {
+                    count: aggregation.stats.count,
+                  };
                 } else {
                   // Unhandled aggregation
                 }

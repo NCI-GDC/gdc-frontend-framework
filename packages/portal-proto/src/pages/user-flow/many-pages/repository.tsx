@@ -1,5 +1,4 @@
 import { NextPage } from "next";
-import Link from "next/link";
 import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
 import { CohortManager } from "../../../features/user-flow/many-pages/cohort";
 import { Select } from "../../../components/Select";
@@ -9,7 +8,7 @@ import { FilesView } from "../../../features/files/FilesView";
 import { FileModal } from "../../../features/files/FileView";
 import { CaseModal } from "../../../features/cases/CaseView";
 import { Case } from "../../../features/cases/CasesView";
-import { headerElements } from "./navigation-utils";
+import { headerElements } from "@/features/user-flow/many-pages/navigation-utils";
 
 const RepositoryPage: NextPage = () => {
   const { data } = useFiles({ size: 20 });

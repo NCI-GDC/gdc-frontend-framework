@@ -47,7 +47,9 @@ const IndexPage: NextPage = () => {
                 All Apps Variant
               </HoverLink>
             </li>
-
+            <li>
+              <HoverLink href="/user-flow/workbench/">Workbench</HoverLink>
+            </li>
           </ul>
         </Section>
         <Section>

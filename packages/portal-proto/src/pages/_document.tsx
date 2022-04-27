@@ -1,5 +1,8 @@
 import Document, { DocumentContext, DocumentInitialProps } from "next/document";
 import { resetIdCounter } from "react-tabs";
+import { ServerStyles, createStylesServer } from "@mantine/next";
+
+const stylesServer = createStylesServer();
 
 class GdcDocument extends Document {
   static async getInitialProps(
@@ -10,7 +13,15 @@ class GdcDocument extends Document {
     // server side rendering.
     resetIdCounter();
     const initialProps = await Document.getInitialProps(ctx);
-    return initialProps;
+    return {
+      ...initialProps,
+      styles: (
+        <>
+          {initialProps.styles}
+          <ServerStyles html={initialProps.html} server={stylesServer} />
+        </>
+      ),
+    };
   }
 }
 
