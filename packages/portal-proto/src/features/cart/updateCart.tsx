@@ -19,7 +19,8 @@ const OverLimitNotification: React.FC<OverLimitNotificationProps> = ({
   <>
     <p>
       The cart is limited to {CART_LIMIT.toLocaleString()} files and currently
-      contains {numFilesInCart.toLocaleString()} files.
+      contains {numFilesInCart.toLocaleString()}{" "}
+      {numFilesInCart === 1 ? "file" : "files"}.
     </p>
     <p>
       Please add fewer files and/or first remove some files from the cart before
@@ -30,10 +31,12 @@ const OverLimitNotification: React.FC<OverLimitNotificationProps> = ({
 
 interface UndoButtonProps {
   readonly files: readonly GdcFile[];
+  dispatch: CoreDispatch;
 }
-const UndoButton: React.FC<UndoButtonProps> = ({ files }: UndoButtonProps) => {
-  const dispatch = useCoreDispatch();
-
+const UndoButton: React.FC<UndoButtonProps> = ({
+  files,
+  dispatch,
+}: UndoButtonProps) => {
   return (
     <Button
       variant={"white"}
@@ -49,18 +52,20 @@ interface AddNotificationProps {
   readonly files: readonly GdcFile[];
   readonly numFilesAdded: number;
   readonly numAlreadyInCart: number;
+  dispatch: CoreDispatch;
 }
 const AddNotification: React.FC<AddNotificationProps> = ({
   files,
   numFilesAdded,
   numAlreadyInCart,
+  dispatch,
 }: AddNotificationProps) => {
   if (files.length === 1) {
     if (numFilesAdded === 1) {
       return (
         <>
           <p>Added {files[0].fileName} to the cart.</p>
-          <UndoButton files={files} />
+          <UndoButton files={files} dispatch={dispatch} />
         </>
       );
     } else {
@@ -72,19 +77,26 @@ const AddNotification: React.FC<AddNotificationProps> = ({
     if (numAlreadyInCart === 0) {
       return (
         <>
-          <p>Added {numFilesAdded} files to the cart.</p>
-          <UndoButton files={files} />
+          <p>
+            Added {numFilesAdded} {numFilesAdded === 1 ? "file" : "files"} to
+            the cart.
+          </p>
+          <UndoButton files={files} dispatch={dispatch} />
         </>
       );
     } else {
       return (
         <>
-          <p>Added {numFilesAdded} files to the cart.</p>
           <p>
-            {numAlreadyInCart} files were already in the cart and were not
-            added.
+            Added {numFilesAdded} {numFilesAdded === 1 ? "file" : "files"} to
+            the cart.
           </p>
-          <UndoButton files={files} />
+          <p>
+            {numAlreadyInCart}{" "}
+            {numAlreadyInCart === 1 ? "file was" : "files were"} already in the
+            cart and {numAlreadyInCart === 1 ? "was" : "were"} not added.
+          </p>
+          <UndoButton files={files} dispatch={dispatch} />
         </>
       );
     }
@@ -147,12 +159,15 @@ export const addToCart = (
           files={files}
           numFilesAdded={filesToAdd.length}
           numAlreadyInCart={alreadyInCart.length}
+          dispatch={dispatch}
         />
       ),
       classNames: {
         description: "flex flex-col content-center text-center",
       },
     });
-    dispatch(addFilesToCart(filesToAdd));
+    if (filesToAdd.length > 0) {
+      dispatch(addFilesToCart(filesToAdd));
+    }
   }
 };
