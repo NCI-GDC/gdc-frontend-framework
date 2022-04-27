@@ -14,19 +14,6 @@ export interface FileViewProps {
 }
 
 export const FileView: React.FC<FileViewProps> = ({ file }: FileViewProps) => {
-  //check if data if not show error
-  if (!file?.fileId) {
-    return (
-      <div className="p-4 text-nci-gray">
-        <div className="flex">
-          <div className="flex-auto bg-white mr-4">
-            <h2 className="p-2 text-2xl mx-4">File Not Found</h2>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   const [imageId] = useState(file?.fileId);
 
   return (
@@ -267,7 +254,17 @@ export const FileModal: React.FC<FileModalProps> = ({
 }: FileModalProps) => {
   return (
     <ReactModal isOpen={isOpen} onRequestClose={closeModal}>
-      <FileView file={file} />
+      {file?.fileId ? (
+        <FileView file={file} />
+      ) : (
+        <div className="p-4 text-nci-gray">
+          <div className="flex">
+            <div className="flex-auto bg-white mr-4">
+              <h2 className="p-2 text-2xl mx-4">File Not Found</h2>
+            </div>
+          </div>
+        </div>
+      )}
     </ReactModal>
   );
 };
