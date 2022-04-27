@@ -1,13 +1,12 @@
-
+import { FC } from "react";
 import SetOperationsDemo from "../set-operations/SetOperationsDemo";
-import Downloads from "./Downloads";
 
-const SetOperationsDemoApp = () => {
+const SetOperationsDemoApp: FC = () => {
   return (
     <>
       <SetOperationsDemo />
     </>
-  )
-}
+  );
+};
 
 export default SetOperationsDemoApp;

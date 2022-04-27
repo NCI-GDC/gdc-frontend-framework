@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useRef } from "react";
+import React from "react";
 import FilterFacets from "./filters.json";
 import OncoGrid from "./OncoGridWrapper";
 import { EnumFacet } from "../facets/EnumFacet";
@@ -37,7 +37,7 @@ const OncoGridAnalysisTool: React.FC = () => {
         })}
       </div>
       <div className="mt-12 w-100">
-          <OncoGrid />
+        <OncoGrid />
       </div>
     </div>
   );

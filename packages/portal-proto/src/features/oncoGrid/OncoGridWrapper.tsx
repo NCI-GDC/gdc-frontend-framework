@@ -34,7 +34,9 @@ const Tooltip = dynamic(() => import("./Tooltip"), { ssr: false });
 
 const OncoGridWrapper: React.FC = () => {
   const coreDispatch = useCoreDispatch();
-  const cohortFilters = useCoreSelector((state) => selectCurrentCohortFilterSet(state));
+  const cohortFilters = useCoreSelector((state) =>
+    selectCurrentCohortFilterSet(state),
+  );
   const fullOncoGridContainer = useRef(null);
   const gridContainer = useRef(null);
   const [isHeatmap, setIsHeatmap] = useState(false);
@@ -85,7 +87,7 @@ const OncoGridWrapper: React.FC = () => {
   /**
    * Remove genomic filters when cohort changes
    */
-  useEffect( () => {
+  useEffect(() => {
     coreDispatch(clearGenomicFilters());
   }, [cohortFilters, coreDispatch]);
 
@@ -113,6 +115,7 @@ const OncoGridWrapper: React.FC = () => {
       setTimeout(() => gridObject.current.setHeatmap(isHeatmap), 200);
       setTimeout(() => setIsLoading(false), 1000);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isHeatmap, gridObject]);
 
   useEffect(
@@ -283,7 +286,7 @@ const OncoGridWrapper: React.FC = () => {
       />
       {tracksModal}
       <div className="relative">
-        <LoadingOverlay  visible={isLoading} overlayOpacity={0.9} />
+        <LoadingOverlay visible={isLoading} overlayOpacity={0.9} />
         {consequenceTypeFilters.length === 0 && (
           <>
             The current selection has no results. Please select more mutation

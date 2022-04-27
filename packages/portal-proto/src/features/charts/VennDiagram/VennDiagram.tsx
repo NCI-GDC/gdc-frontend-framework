@@ -12,19 +12,6 @@ import {
   threeCircleOuterLabelLayout,
 } from "./layouts";
 
-const addHighlightToLayout = (
-  layout: Partial<Shape>[],
-  highlightedIndices: number[],
-) => {
-  return layout.map((shape, idx) => {
-    if (highlightedIndices.includes(idx)) {
-      return { ...shape, fillcolor: "#a5d5d9" };
-    } else {
-      return shape;
-    }
-  });
-};
-
 interface chartData {
   readonly key: string;
   readonly value: number;
@@ -37,6 +24,19 @@ interface VennDiagramProps {
   readonly onClickHandler?: (key: string) => void;
   readonly interactable?: boolean;
 }
+
+const addHighlightToLayout = (
+  layout: Partial<Shape>[],
+  highlightedIndices: number[],
+) => {
+  return layout.map((shape, idx) => {
+    if (highlightedIndices.includes(idx)) {
+      return { ...shape, fillcolor: "#a5d5d9" };
+    } else {
+      return shape;
+    }
+  });
+};
 
 const VennDiagram: React.FC<VennDiagramProps> = ({
   chartData,
@@ -101,6 +101,7 @@ const VennDiagram: React.FC<VennDiagramProps> = ({
           .filter((d) => d >= 0),
       ),
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortedChartData]);
 
   const config: Partial<Config> = {

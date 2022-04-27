@@ -1,14 +1,15 @@
 /**
-  * Handle Genes Facets
+ * Handle Genes Facets
  */
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { CoreDispatch, CoreState } from "../../store";
-import {
-  graphqlAPI,
-  GraphQLApiResponse
-} from "../gdcapi/gdcgraphql";
+import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 
-import { FacetBuckets, buildGraphGLBucketQuery, processBuckets } from "./facetApiGQL";
+import {
+  FacetBuckets,
+  buildGraphGLBucketQuery,
+  processBuckets,
+} from "./facetApiGQL";
 import { selectGenomicAndCohortGqlFilters } from "../genomic/genomicFilters";
 
 export const fetchGenesFacetByName = createAsyncThunk<
@@ -18,15 +19,14 @@ export const fetchGenesFacetByName = createAsyncThunk<
 >("facet/fetchGenesFacetByName", async (name: string, thunkAPI) => {
   const filters = selectGenomicAndCohortGqlFilters(thunkAPI.getState());
   const queryGQL = buildGraphGLBucketQuery("genes", name);
-  const filtersGQL =
-    {
-      "filters_0": filters? filters: {}
-    }
+  const filtersGQL = {
+    filters_0: filters ? filters : {},
+  };
 
   return await graphqlAPI(queryGQL, filtersGQL);
 });
 
-const initialState: Record<string, FacetBuckets>  = { };
+const initialState: Record<string, FacetBuckets> = {};
 
 const slice = createSlice({
   name: "facet/genesFacet",
@@ -41,8 +41,9 @@ const slice = createSlice({
           state[action.meta.arg].status = "rejected";
           state[action.meta.arg].error = response.errors.facets;
         } else {
-          const aggregations = Object(response).data.viewer.explore.genes.aggregations;
-           aggregations && processBuckets(aggregations, state);
+          const aggregations =
+            Object(response).data.viewer.explore.genes.aggregations;
+          aggregations && processBuckets(aggregations, state);
         }
       })
       .addCase(fetchGenesFacetByName.pending, (state, action) => {
@@ -62,8 +63,9 @@ const slice = createSlice({
 
 export const genesFacetReducer = slice.reducer;
 
-export const selectGenesFacets = (state: CoreState): Record<string, FacetBuckets> =>
-  state.facetsGQL.genes;
+export const selectGenesFacets = (
+  state: CoreState,
+): Record<string, FacetBuckets> => state.facetsGQL.genes;
 
 export const selectGenesFacetByField = (
   state: CoreState,
@@ -72,5 +74,3 @@ export const selectGenesFacetByField = (
   const genes = state.facetsGQL.genes;
   return genes[field];
 };
-
-

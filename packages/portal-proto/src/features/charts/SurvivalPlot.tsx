@@ -1,15 +1,13 @@
-import { useEffect, useRef, useState } from "react";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { Survival, SurvivalElement } from "@gff/core";
 import { renderPlot } from "@oncojs/survivalplot";
 import {
   MdDownload as DownloadIcon,
   MdRestartAlt as ResetIcon,
 } from "react-icons/md";
-import { Box, Popover, Popper, Tooltip, FloatingTooltip } from "@mantine/core";
+import { Box, Tooltip } from "@mantine/core";
 import isNumber from "lodash/isNumber";
 import { useMouse } from "@mantine/hooks";
-
-const CHART_NAME = "survival-plot";
 
 // based on schemeCategory10
 // 4.5:1 colour contrast for normal text
@@ -36,10 +34,18 @@ const SVG_MARGINS = {
 export const MINIMUM_CASES = 10;
 export const MAXIMUM_CURVES = 5;
 
-export const useSurvival = (
+type survival = (
+  data: any,
+  xDomain: any,
+  setXDomain: any,
+  setTooltip?: (x?: any) => any,
+) => MutableRefObject<any>;
+
+export const useSurvival: survival = (
   data,
   xDomain,
   setXDomain,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setTooltip = (x?) => null,
 ) => {
   const ref = useRef(undefined);
@@ -227,12 +233,12 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
         </div>
         <div className="flex flex-row items-center ml-auto mt-2 ">
           <Tooltip label="Download SurvivalPlot data or image">
-          <button
-            className="px-1.5 min-h-[28px] nim-w-[40px] mx-1 border-nci-gray-light border rounded-[4px] transition-colors "
-            onClick={() => setDownloadMenuOpen(!downloadMenuOpen)}
-          >
-            <DownloadIcon size="1.25em" />
-          </button>
+            <button
+              className="px-1.5 min-h-[28px] nim-w-[40px] mx-1 border-nci-gray-light border rounded-[4px] transition-colors "
+              onClick={() => setDownloadMenuOpen(!downloadMenuOpen)}
+            >
+              <DownloadIcon size="1.25em" />
+            </button>
           </Tooltip>
           <Tooltip label="Reset SurvivalPlot Zoom">
             <button
@@ -244,12 +250,11 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
           </Tooltip>
         </div>
       </div>
-    <div className="flex flex-col items-center ">
-      {!hideLegend && (
-        legend.map((x, idx) => {
-          return <p key={`${x.key}-${idx}`}>{x.value}</p>
-        })
-      )}
+      <div className="flex flex-col items-center ">
+        {!hideLegend &&
+          legend.map((x, idx) => {
+            return <p key={`${x.key}-${idx}`}>{x.value}</p>;
+          })}
         <div>
           <Tooltip
             label={

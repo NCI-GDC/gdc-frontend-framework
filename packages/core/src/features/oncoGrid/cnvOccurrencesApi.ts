@@ -8,7 +8,9 @@ export const fetchCNVOccurrences = async (
   cnvFilters: string[],
   contextFilters?: GqlOperation,
 ): Promise<GdcApiResponse<CNVOccurrence>> => {
-  const caseAndGenomicFilters = contextFilters?.content ? Object(contextFilters?.content) : [];
+  const caseAndGenomicFilters = contextFilters?.content
+    ? Object(contextFilters?.content)
+    : [];
   return fetchGdcEntities(
     "cnv_occurrences",
     {
@@ -44,7 +46,7 @@ export const fetchCNVOccurrences = async (
             },
             op: "in",
           },
-          ...caseAndGenomicFilters
+          ...caseAndGenomicFilters,
         ],
       },
     },

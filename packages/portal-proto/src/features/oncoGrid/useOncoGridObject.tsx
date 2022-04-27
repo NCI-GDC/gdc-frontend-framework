@@ -270,6 +270,7 @@ const useOncoGridObject = ({
     cnvObservations,
     donors,
     genes,
+    gridContainer,
   ]);
 
   return gridObject;

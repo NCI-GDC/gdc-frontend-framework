@@ -66,10 +66,10 @@ export const fetchGeneFrequencies = createAsyncThunk<
   { dispatch: CoreDispatch; state: CoreState }
 >(
   "genes/geneFrequencyChart",
-  async ({
-    pageSize = 20,
-    offset = 0,
-  }: TablePageOffsetProps, thunkAPI): Promise<GraphQLApiResponse> => {
+  async (
+    { pageSize = 20, offset = 0 }: TablePageOffsetProps,
+    thunkAPI,
+  ): Promise<GraphQLApiResponse> => {
     const filters = selectGenomicAndCohortGqlFilters(thunkAPI.getState());
 
     const graphQlVariables = {
@@ -154,7 +154,8 @@ export const selectGeneFrequencyChartData = (
   };
 };
 
-
-export const useGeneFrequencyChart = createUseFiltersCoreDataHook(fetchGeneFrequencies,
+export const useGeneFrequencyChart = createUseFiltersCoreDataHook(
+  fetchGeneFrequencies,
   selectGeneFrequencyChartData,
-  selectGenomicAndCohortGqlFilters);
+  selectGenomicAndCohortGqlFilters,
+);

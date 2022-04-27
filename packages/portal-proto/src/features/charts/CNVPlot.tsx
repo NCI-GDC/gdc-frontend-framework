@@ -40,21 +40,24 @@ const CNVPlot: React.FC<CNVPlotProps> = ({ gene }: CNVPlotProps) => {
     return null;
   }
 
-  const caseData = data.cases.filter(d => d.gain !== undefined || d.loss !== undefined);
+  const caseData = data.cases.filter(
+    (d) => d.gain !== undefined || d.loss !== undefined,
+  );
   const title = `${data.caseTotal} CASES AFFECTED BY ${data.mutationTotal} CNV EVENTS ACROSS ${caseData.length} PROJECTS`;
 
   let chartData;
   if (gainChecked && lossChecked) {
-    chartData = caseData
-      .map((d) => ({
+    chartData = caseData.map((d) => ({
       ...d,
       percent: (((d.gain || 0) + (d.loss || 0)) / d.total) * 100,
     }));
   } else if (gainChecked) {
-    chartData = caseData.filter(d => d.gain !== undefined)
+    chartData = caseData
+      .filter((d) => d.gain !== undefined)
       .map((d) => ({ ...d, percent: (d.gain / d.total) * 100 }));
   } else if (lossChecked) {
-    chartData = caseData.filter(d => d.loss !== undefined)
+    chartData = caseData
+      .filter((d) => d.loss !== undefined)
       .map((d) => ({ ...d, percent: (d.loss / d.total) * 100 }));
   } else {
     chartData = [...caseData];
@@ -113,7 +116,12 @@ const CNVPlot: React.FC<CNVPlotProps> = ({ gene }: CNVPlotProps) => {
   return (
     <>
       <div>
-        <ChartTitleBar title={title} filename={CHART_NAME} divId={chartDivId} jsonData={{}} />
+        <ChartTitleBar
+          title={title}
+          filename={CHART_NAME}
+          divId={chartDivId}
+          jsonData={{}}
+        />
       </div>
       <BarChart
         divId={chartDivId}

@@ -4,7 +4,12 @@ import {
   createUseCoreDataHook,
 } from "../../dataAcess";
 import { CoreDispatch, CoreState } from "../../store";
-import { CaseDefaults, fetchGdcCases, GdcApiRequest, GdcApiResponse } from "../gdcapi/gdcapi";
+import {
+  CaseDefaults,
+  fetchGdcCases,
+  GdcApiRequest,
+  GdcApiResponse,
+} from "../gdcapi/gdcapi";
 import { castDraft } from "immer";
 
 export interface CasesState {
@@ -24,12 +29,9 @@ export const fetchCases = createAsyncThunk<
   GdcApiResponse<CaseDefaults>,
   GdcApiRequest,
   { dispatch: CoreDispatch; state: CoreState }
-  > (
-  "cases/fetchCases",
-  async (request?: GdcApiRequest) => {
-    return fetchGdcCases(request);
-  },
-);
+>("cases/fetchCases", async (request?: GdcApiRequest) => {
+  return fetchGdcCases(request);
+});
 
 const slice = createSlice({
   name: "cases",

@@ -1,19 +1,13 @@
 import React, { PropsWithChildren, useState } from "react";
-import { Button, CardPlaceholder } from "../../layout/UserFlowVariedPages";
 import {
-  MdClose as ClearIcon,
-  MdSettings as SettingsIcon,
-  MdEdit as EditIcon,
   MdSave as SaveIcon,
   MdAdd as AddIcon,
   MdDelete as DeleteIcon,
   MdFileUpload as UploadIcon,
   MdFileDownload as DownloadIcon,
-  MdArrowDropDown as DropDownIcon,
   MdExpandMore as ExpandMoreIcon,
   MdExpandLess as ExpandLessIcon,
 } from "react-icons/md";
-import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import classNames from "classnames";
 import Image from "next/image";
 import ReactModal from "react-modal";
@@ -25,6 +19,7 @@ import { SummaryCharts } from "../../cohortBuilder/SummaryCharts";
 import { MetaSearch } from "../../cohortBuilder/MetaSearch";
 import { CohortTabbedFacets } from "../../cohortBuilder/FacetGroup";
 import { GdcFile } from "@gff/core";
+import { Button } from "@mantine/core";
 
 // this is an example of where composition makes it hards to read and understand the code
 export type CohortManagerProps = Partial<ModalOrExpandProps> &
@@ -50,45 +45,53 @@ export const CohortManager: React.FC<CohortManagerProps> = ({
   const [showCases, setShowCases] = useState(false);
   const [showFiles, setShowFiles] = useState(false);
 
-  const cohortOptions = [
-    { value: "custom-cohort-1", label: "New Custom Cohort" },
-    { value: "all-gdc", label: "All GDC Cases" },
-  ];
-
   const COHORTS = [
-    { name: 'New Custom Cohort',
+    {
+      name: "New Custom Cohort",
       // facets : [ { name:"Primary Site", op:"any of", value: "bronchus and lung"} ],
-      facets : [ { name:"Project", op:"any of", value: "TCGA-LUAD / CPTAC3" } ],
+      facets: [{ name: "Project", op: "any of", value: "TCGA-LUAD / CPTAC3" }],
       case_count: "1,326",
-      file_count: "59,239"
+      file_count: "59,239",
     },
     {
       name: "Lung Cohort",
       facets: [
-        { name:"Project", op:"any of", value: "TCGA-LUAD / CPTAC3" },
+        { name: "Project", op: "any of", value: "TCGA-LUAD / CPTAC3" },
         { name: "Primary Site", op: "any of", value: "bronchus and lung" },
         { name: "Age of Diagnosis", op: "between", value: "65 and 89" },
       ],
       case_count: "2,425",
       file_count: "29,074",
     },
-    { name: " Final Cohort",
-      facets : [
-        { name:"Project", op:"any of", value: "TCGA-LUAD / CPTAC3" },
-        { name:"Primary Site", op:"any of ", value: "bronchus and lung"},
-        { name:"Primary Diagnosis", op:"any_of", value: "squamous cell carcinoma, nos / squamous cell carcinoma, keratinizing, nos / basaloid squamous cell car…"},
-        { name:"Age of Diagnosis", op:"between", value: "65 and 89"},
-        { name:"Gene", op:"any of", value: "TP53,KMT2D,PIK3CA,NFE2L2,CDH8,KEAP1,PTEN,ADCY8,PTPRT,CALCR,GRM8,FBXW7,RB1,CDKN2A"}
+    {
+      name: " Final Cohort",
+      facets: [
+        { name: "Project", op: "any of", value: "TCGA-LUAD / CPTAC3" },
+        { name: "Primary Site", op: "any of ", value: "bronchus and lung" },
+        {
+          name: "Primary Diagnosis",
+          op: "any_of",
+          value:
+            "squamous cell carcinoma, nos / squamous cell carcinoma, keratinizing, nos / basaloid squamous cell car…",
+        },
+        { name: "Age of Diagnosis", op: "between", value: "65 and 89" },
+        {
+          name: "Gene",
+          op: "any of",
+          value:
+            "TP53,KMT2D,PIK3CA,NFE2L2,CDH8,KEAP1,PTEN,ADCY8,PTPRT,CALCR,GRM8,FBXW7,RB1,CDKN2A",
+        },
       ],
       case_count: "179",
-      file_count: "2,198"
+      file_count: "2,198",
     },
-    { name: 'All GDC Cases',
-      facets : [  ],
+    {
+      name: "All GDC Cases",
+      facets: [],
       case_count: "84,609",
-      file_count: "618,198"
-    }
-  ]
+      file_count: "618,198",
+    },
+  ];
 
   const menu_items = COHORTS.map((x, index) => {
     return { value: index, label: x.name };
@@ -127,7 +130,7 @@ export const CohortManager: React.FC<CohortManagerProps> = ({
             <DownloadIcon size="1.5em" />
           </Button>
         </div>
-        <div className="flex-grow"></div>
+        <div className="flex-grow" />
         <div>
           <Button
             onClick={() => {
@@ -250,23 +253,12 @@ export interface CohortBuilderProps {
 export const CohortBuilder: React.FC<CohortBuilderProps> = ({
   cohort,
   show = true,
-  handleCaseSelected,
 }: CohortBuilderProps) => {
-
-  const [searchResults, setSearchResults] = useState([]);
-
-  const updateSummaryCharts = (op, field) => {
-    if (op === "add")
-      setSummaryFields([...summaryFields, field])
-    if (op === "remove")
-      setSummaryFields(summaryFields.filter((x) => x !== field))
-  }
-
-  const [summaryFields, setSummaryFields] = useState([
+  const [summaryFields] = useState([
     "primary_site",
     "demographic.gender",
     "disease_type",
-    "diagnoses.tissue_or_organ_of_origin"
+    "diagnoses.tissue_or_organ_of_origin",
   ]);
 
   return (
@@ -277,9 +269,9 @@ export const CohortBuilder: React.FC<CohortBuilderProps> = ({
       })}
     >
       <div className="">
-        <CohortGroup cohorts={cohort} simpleMode={true}></CohortGroup>
-        <MetaSearch onChange={(r) => r}></MetaSearch>
-        <CohortTabbedFacets searchResults={[]}  onUpdateSummaryChart={updateSummaryCharts} ></CohortTabbedFacets>
+        <CohortGroup cohorts={cohort} simpleMode={true} />
+        <MetaSearch />
+        <CohortTabbedFacets />
       </div>
       <div className="pt-4">
         <SummaryCharts fields={summaryFields} />
@@ -345,18 +337,10 @@ const CohortBuilderModal: React.FC<CohortBuilderModalProps> = ({
   return (
     <ReactModal isOpen={isOpen} onRequestClose={closeModal}>
       <div>
-        <CohortGroup cohorts={cohort} simpleMode={true}></CohortGroup>
-        <MetaSearch onChange={(r) => r}></MetaSearch>
-        <CohortTabbedFacets searchResults={[]}></CohortTabbedFacets>
+        <CohortGroup cohorts={cohort} simpleMode={true} />
+        <MetaSearch />
+        <CohortTabbedFacets />
       </div>
     </ReactModal>
-  );
-};
-
-const Cases = ({ handleCaseSelected }) => {
-  return (
-    <div className="overflow-y-auto h-96">
-      <ContextualCasesView handleCaseSelected={handleCaseSelected} />
-    </div>
   );
 };

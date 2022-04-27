@@ -14,7 +14,13 @@ export const Slides: React.FC<SlidesProps> = ({
   isActive,
 }: SlidesProps) => {
   return (
-    <div className="flex flex-col mb-4" onClick={() => setImageViewer(file_id)} role="button">
+    <div
+      className="flex flex-col mb-4"
+      onClick={() => setImageViewer(file_id)}
+      onKeyDown={() => setImageViewer(file_id)}
+      role="button"
+      tabIndex={0}
+    >
       <Card
         shadow="sm"
         p="sm"

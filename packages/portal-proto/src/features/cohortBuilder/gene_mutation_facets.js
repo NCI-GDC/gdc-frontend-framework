@@ -1,15 +1,15 @@
 export const VARIANT_CALLER = [
-  { value: "mutect2", count: 121748},
+  { value: "mutect2", count: 121748 },
   { value: "varscan2", count: 108616 },
   { value: "muse", count: 102298 },
   { value: "somaticsniper", count: 81052 },
-  { value: "pindel", count: 1690 }
+  { value: "pindel", count: 1690 },
 ];
 
 export const BIOTYPE = [
   { value: "protein_coding", count: 573 },
   { value: "processed_transcript", count: 1 },
-  { value: "transcribed_processed_pseudogene", count: 1 }
+  { value: "transcribed_processed_pseudogene", count: 1 },
 ];
 
 export const VEP_IMPACT = [
