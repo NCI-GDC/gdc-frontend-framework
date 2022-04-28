@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useTable, useBlockLayout } from 'react-table';
 import { FixedSizeList as List } from "react-window";
 import _ from "lodash";
@@ -9,7 +9,17 @@ import DragDrop from "./DragDrop";
 const VerticalTable = ({ tableData, tableFunc, customCellKeys, customGridMapping, sortableOptions, selectableRow = false }) => {
     const [allColumnListOptions, setAllColumnListOptions] = useState([]);
     const [columnListOptions, setColumnListOptions] = useState([]);
+
     const [headings, setHeadings] = useState([]);
+
+    const updateColumnHeadings = () => {
+        const headingOrder = columnListOptions.map((item) => {
+            return headings[headings.findIndex((find) => find.accessor === item.columnName)]
+        });
+        return headingOrder
+    }
+
+    const tableColumns = useMemo(() => updateColumnHeadings(), [columnListOptions]);
 
     const initializeColumns = () => {
         const keysArr = Object.keys(tableData[0]);
@@ -26,6 +36,7 @@ const VerticalTable = ({ tableData, tableFunc, customCellKeys, customGridMapping
                 columnName: k
             }
         });
+        
         setHeadings(columnHeadings);
         setColumnListOptions(columnOpts);
         setAllColumnListOptions(columnOpts);
@@ -35,36 +46,8 @@ const VerticalTable = ({ tableData, tableFunc, customCellKeys, customGridMapping
         initializeColumns();
     }, []);
 
-    const updateColumnHeadings = () => {
-        const headingOrder = columnListOptions.map((item) => {
-            return headings[headings.findIndex((find) => find.accessor === item.columnName)]
-        });
-        return headingOrder
-    }
-    const tableColumns = useMemo(() => updateColumnHeadings(), [columnListOptions]);
-
-    const handleColumnChange = (update) => {
-        const droppedColumn = columnListOptions.filter(item => item.id === update.id)[0];
-        const prevColIdx = columnListOptions.map(c => c.id).indexOf(update.id);
-        const cl = columnListOptions.slice();
-
-        if (prevColIdx === update.index) {
-            return
-        } else {
-            if (prevColIdx < update.index) {
-                const p1 = cl.slice(0, prevColIdx);
-                const p2 = cl.slice(prevColIdx + 1, update.index + 1);
-                const p3 = [droppedColumn];
-                const p4 = cl.slice(update.index + 1, cl.length);
-                setColumnListOptions([...p1, ...p2, ...p3, ...p4]);
-            } else {
-                const p1 = cl.slice(0, update.index);
-                const p2 = [droppedColumn];
-                const p3 = cl.slice(update.index, prevColIdx);
-                const p4 = cl.slice(prevColIdx + 1, cl.length);
-                setColumnListOptions([...p1, ...p2, ...p3, ...p4]);
-            }
-        }
+    const handleColumnChange = (updatedColumns) => {
+        setColumnListOptions(updatedColumns);
     }
 
     const tableAction = (action) => {
@@ -157,7 +140,7 @@ const VerticalTable = ({ tableData, tableFunc, customCellKeys, customGridMapping
 
     return (
         <>
-            {allColumnListOptions.length > 0 && (<DndProvider backend={HTML5Backend}>
+            {columnListOptions && columnListOptions.length > 0 && (<DndProvider backend={HTML5Backend}>
                 <DragDrop listOptions={allColumnListOptions} handleColumnChange={handleColumnChange} />
             </DndProvider>)}
             {columnListOptions.length > 0 && (<Table columns={tableColumns} data={tableData}></Table>)}

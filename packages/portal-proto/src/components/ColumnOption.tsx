@@ -1,4 +1,4 @@
-import { FC, useRef } from 'react'
+import { FC, useEffect, useRef } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 import { ItemTypes } from './ItemTypes'
 import type { XYCoord, Identifier } from 'dnd-core'
@@ -16,7 +16,6 @@ export interface ColumnProps {
   columnName: string
   index: number
   moveColumn: (dragIndex: number, hoverIndex: number) => void
-  handleColumnChange: (update: any) => void
 }
 
 interface DragItem {
@@ -25,13 +24,10 @@ interface DragItem {
   type: string
 }
 
-export const ColumnOption: FC<ColumnProps> = ({ id, columnName, index, moveColumn, handleColumnChange }) => {
+export const ColumnOption: FC<ColumnProps> = ({ id, columnName, index, moveColumn }) => {
 
+  const ref = useRef<HTMLDivElement>(null);
 
-  const changeColumnOrder = (update, monitor) => {
-    handleColumnChange(update);
-  }
-  const ref = useRef<HTMLDivElement>(null)
   const [{ handlerId }, drop] = useDrop<
     DragItem,
     void,
@@ -45,7 +41,6 @@ export const ColumnOption: FC<ColumnProps> = ({ id, columnName, index, moveColum
         handlerId: monitor.getHandlerId(),
       }
     },
-    drop: (item, monitor) => changeColumnOrder(item, monitor),
     hover(item: DragItem, monitor) {
       if (!ref.current) {
         return
@@ -72,11 +67,11 @@ export const ColumnOption: FC<ColumnProps> = ({ id, columnName, index, moveColum
       if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
         return
       }
-
       moveColumn(dragIndex, hoverIndex);
       item.index = hoverIndex;
     },
   })
+  
 
   const [{ isDragging }, drag] = useDrag({
     type: ItemTypes.COLUMN,

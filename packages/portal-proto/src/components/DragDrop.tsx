@@ -18,10 +18,17 @@ export interface ColumnProps {
 const DragDrop = ({ listOptions, handleColumnChange }) => {
   
     const [columns, setColumns] = useState([]);
+    const [test, setTest] = useState([]);
 
     useEffect(() => {
       setColumns(listOptions);
-    }, [listOptions])
+    }, []);
+
+    useEffect(() => {
+      if (columns.length > 0) {
+        handleColumnChange(columns)
+      }
+    }, [columns]);
 
     const moveColumn = useCallback((dragIndex: number, hoverIndex: number) => {
       setColumns((prevColumns) =>
@@ -32,7 +39,7 @@ const DragDrop = ({ listOptions, handleColumnChange }) => {
           ],
         }),
       )
-    }, [])
+    }, []);
 
     const renderColumn = useCallback(
       (column:  { id: number, columnName: string }, index: number) => {
@@ -43,7 +50,7 @@ const DragDrop = ({ listOptions, handleColumnChange }) => {
             id={column.id}
             columnName={column.columnName}
             moveColumn={moveColumn}
-            handleColumnChange={handleColumnChange}
+            // handleColumnChange={handleColumnChange}
           />
         )
       },
