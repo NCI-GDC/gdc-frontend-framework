@@ -1,5 +1,15 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
+import {
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist";
+import storage from "redux-persist/lib/storage";
 import { cohortReducers } from "./features/cohort/cohortSlice";
 import { sessionReducer } from "./features/session/sessionSlice";
 import { facetsReducer } from "./features/facets/facetSlice";
@@ -20,30 +30,49 @@ import { cnvPlotReducer } from "./features/cancerDistribution/cnvPlot";
 import { imageDetailsReducer } from "./features/imageDetails/imageDetailsSlice";
 import { imageViewerReducer } from "./features/imageDetails/imageViewer";
 import { cohortFacetsReducer } from "./features/cohortComparison/cohortFacetSlice";
+import { cartReducer } from "./features/cart/cartSlice";
+
+const reducers = {
+  cohort: cohortReducers,
+  session: sessionReducer,
+  facets: facetsReducer, // TODO: Pick which one to use in V2
+  facetsGQL: fileCaseGenesMutationsFacetReducers,
+  gdcApps: gdcAppReducer,
+  files: filesReducer,
+  projects: projectsReducer,
+  annotations: annotationsReducer,
+  cases: casesReducer,
+  ssmPlot: ssmPlotReducer,
+  cnvPlot: cnvPlotReducer,
+  survival: survivalReducer,
+  oncogrid: oncoGridReducer,
+  genomic: genomicReducers,
+  imageDetails: imageDetailsReducer,
+  imageViewer: imageViewerReducer,
+  cohortComparison: cohortFacetsReducer,
+  cart: cartReducer,
+};
+
+const persistConfig = {
+  key: "root",
+  version: 1,
+  storage,
+  whitelist: ["cart"],
+};
+
+const reducer = persistReducer(persistConfig, combineReducers(reducers));
 
 export const coreStore = configureStore({
-  reducer: {
-    cohort: cohortReducers,
-    session: sessionReducer,
-    facets: facetsReducer, // TODO: Pick which one to use in V2
-    facetsGQL: fileCaseGenesMutationsFacetReducers,
-    gdcApps: gdcAppReducer,
-    files: filesReducer,
-    projects: projectsReducer,
-    annotations: annotationsReducer,
-    cases: casesReducer,
-    ssmPlot: ssmPlotReducer,
-    cnvPlot: cnvPlotReducer,
-    survival: survivalReducer,
-    oncogrid: oncoGridReducer,
-    genomic: genomicReducers,
-    imageDetails: imageDetailsReducer,
-    imageViewer: imageViewerReducer,
-    cohortComparison: cohortFacetsReducer,
-  },
+  reducer,
   devTools: {
     name: "@gff/core",
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
 });
 
 setupListeners(coreStore.dispatch);

@@ -1,14 +1,22 @@
-import { GdcFile, useFilteredFiles } from "@gff/core";
-import { Table, Button, Select, Pagination } from "@mantine/core";
+import { useState } from "react";
 import fileSize from "filesize";
+import { Table, Button, Select, Pagination, Menu } from "@mantine/core";
 import {
   MdLock as LockedIcon,
   MdLockOpen as OpenIcon,
   MdDownload as DownloadIcon,
   MdShoppingCart as CartIcon,
 } from "react-icons/md";
-import { useState } from "react";
+import {
+  GdcFile,
+  useFilteredFiles,
+  useCoreSelector,
+  useCoreDispatch,
+  selectCart,
+} from "@gff/core";
 import { EnumFacet } from "../facets/EnumFacet";
+import { addToCart, removeFromCart } from "@/features/cart/updateCart";
+import Link from "next/link";
 
 export interface ContextualFilesViewProps {
   readonly handleFileSelected?: (file: GdcFile) => void;
@@ -59,18 +67,55 @@ export const ContextualFilesView: React.FC<ContextualFilesViewProps> = ({
   handleFileSelected,
 }: ContextualFilesViewProps) => {
   const { data } = useFilteredFiles();
+  const currentCart = useCoreSelector((state) => selectCart(state));
+  const dispatch = useCoreDispatch();
+  const [selectedFiles, setSelectedFiles] = useState<GdcFile[]>([]);
+
+  const handleCheckedFiles = (e, file: GdcFile) => {
+    if (e.target.checked) {
+      setSelectedFiles([...selectedFiles, file]);
+    } else {
+      setSelectedFiles(selectedFiles.filter((f) => f.id !== file.id));
+    }
+  };
+
+  // TODO: remove, mock data for cart
+  const allFiles = Array(10001)
+    .fill(0)
+    .map((_, i) => data?.[i % 10]);
+
   return (
     <div className="flex flex-col mt-4 ">
       <div className="flex flex-row justify-end m-2">
-        <Button className={buttonStyle}>
-          <CartIcon size={"1.5rem"} />
-          Add All Files to Cart
-        </Button>
+        <Menu
+          control={
+            <Button className={buttonStyle}>
+              <CartIcon size={"1.5rem"} />
+              Update Cart
+            </Button>
+          }
+        >
+          <Menu.Item onClick={() => addToCart(allFiles, currentCart, dispatch)}>
+            {"Add All Files"}
+          </Menu.Item>
+          <Menu.Item
+            onClick={() => addToCart(selectedFiles, currentCart, dispatch)}
+          >
+            {"Add Selected Files"}
+          </Menu.Item>
+          <Menu.Item onClick={() => removeFromCart(selectedFiles, dispatch)}>
+            {"Remove Selected Files"}
+          </Menu.Item>
+        </Menu>
         <Button className={buttonStyle}>
           <DownloadIcon size={"1.5rem"} />
           Manifest
         </Button>
-        <Button className={buttonStyle}>View Images</Button>
+        <Link href="/user-flow/workbench/MultipleImageViewerPage">
+          <Button component="a" className={buttonStyle}>
+            View Images
+          </Button>
+        </Link>
       </div>
       <div className="flex flex-row mx-3">
         <div className="flex flex-col gap-y-4 mr-3">
@@ -88,7 +133,11 @@ export const ContextualFilesView: React.FC<ContextualFilesViewProps> = ({
             );
           })}
         </div>
-        <FilesView files={data} handleFileSelected={handleFileSelected} />
+        <FilesView
+          files={data}
+          handleFileSelected={handleFileSelected}
+          handleCheckedFiles={handleCheckedFiles}
+        />
       </div>
     </div>
   );
@@ -97,11 +146,13 @@ export const ContextualFilesView: React.FC<ContextualFilesViewProps> = ({
 export interface FilesViewProps {
   readonly files?: ReadonlyArray<GdcFile>;
   readonly handleFileSelected?: (file: GdcFile) => void;
+  readonly handleCheckedFiles?: (e, file: GdcFile) => void;
 }
 
 export const FilesView: React.FC<FilesViewProps> = ({
   files = [],
   handleFileSelected = () => void 0,
+  handleCheckedFiles = () => void 0,
 }: FilesViewProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [activePage, setPage] = useState(1);
@@ -144,7 +195,10 @@ export const FilesView: React.FC<FilesViewProps> = ({
           {files.map((file) => (
             <tr key={file.id}>
               <td className="px-2">
-                <input type="checkbox" />
+                <input
+                  type="checkbox"
+                  onChange={(e) => handleCheckedFiles(e, file)}
+                />
               </td>
               <td className="flex flex-row items-center flex-nowrap">
                 {file.access === "open" ? (
