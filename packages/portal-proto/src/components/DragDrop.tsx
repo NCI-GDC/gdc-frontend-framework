@@ -24,13 +24,13 @@ const DragDrop = ({ listOptions, handleColumnChange }) => {
       handleColumnChange(columns);
   }, [columns]);
 
-  const toggleColumn = (field) => {
-      const newColumns = columns.map(c =>
-        c.id === field
+  const toggleColumn = (colName: string) => {
+      const visibleColumns = columns.map(c =>
+        c.columnName === colName
           ? { ...c, visible: !c.visible}
           : c
       );
-      setColumns(newColumns);
+      setColumns(visibleColumns);
   };
 
   const moveColumn = useCallback((dragIndex: number, hoverIndex: number) => {

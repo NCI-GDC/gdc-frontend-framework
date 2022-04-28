@@ -2,6 +2,7 @@ import { FC, useEffect, useRef } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 import { ItemTypes } from './ItemTypes'
 import type { XYCoord, Identifier } from 'dnd-core';
+import _ from "lodash";
 
 const style = {
   border: '1px dashed gray',
@@ -27,6 +28,10 @@ interface DragItem {
 }
 
 export const ColumnOption: FC<ColumnProps> = ({ id, columnName, visible, index, moveColumn, toggleColumn }) => {
+
+  const formatColumnName = (colName: string) => {
+    return _.startCase(colName);
+  }
 
   const ref = useRef<HTMLDivElement>(null);
 
@@ -92,8 +97,8 @@ export const ColumnOption: FC<ColumnProps> = ({ id, columnName, visible, index, 
        <input
         type="checkbox"
         checked={visible}
-        onChange={() => toggleColumn(id)}
-      />{columnName}
+        onChange={() => toggleColumn(columnName)}
+      />{formatColumnName(columnName)}
     </div>
   )
 }

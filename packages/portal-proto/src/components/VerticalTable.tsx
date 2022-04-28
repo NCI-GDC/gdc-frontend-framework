@@ -6,9 +6,8 @@ import { DndProvider, useDrag } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import DragDrop from "./DragDrop";
 
-const VerticalTable = ({ tableData, tableFunc, customCellKeys, customGridMapping, sortableOptions, selectableRow = false }) => {
+const VerticalTable = ({ tableData, tableFunc, customCellKeys, customGridMapping, selectableRow = false }) => {
     const [columnListOptions, setColumnListOptions] = useState([]);
-
     const [headings, setHeadings] = useState([]);
 
     const updateColumnHeadings = () => {
@@ -37,7 +36,6 @@ const VerticalTable = ({ tableData, tableFunc, customCellKeys, customGridMapping
                 visible: true
             }
         });
-        
         setHeadings(columnHeadings);
         setColumnListOptions(columnOpts);
     }

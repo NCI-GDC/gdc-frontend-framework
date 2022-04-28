@@ -7,7 +7,7 @@ import {
 } from "@gff/core";
 import { Select } from "../../components/Select";
 import RingLoader from "react-spinners/RingLoader";
-import { getCustomGridCell, getTableFormatData, tableFunc, sortableOptions } from "./custom-config";
+import { getCustomGridCell, getTableFormatData, tableFunc } from "./custom-config";
 import VerticalTable from "../../components/VerticalTable";
 
 interface GenesTableResponse {
@@ -92,7 +92,7 @@ const GenesTable: React.FC<unknown> = () => {
 
   return (
     <div className="flex flex-col w-100">
-      <VerticalTable tableData={getTableFormatData(data)} tableFunc={tableFunc} customCellKeys={["annotations", "survival"]} customGridMapping={getCustomGridCell} sortableOptions={sortableOptions}></VerticalTable>
+      <VerticalTable tableData={getTableFormatData(data)} tableFunc={tableFunc} customCellKeys={["annotations", "survival"]} customGridMapping={getCustomGridCell}></VerticalTable>
       <div className="flex flex-row w-2/3 justify-center gap-x-3">
         <div className="w-20">{displayFilter}</div>
         <button className="bg-nci-gray-light hover:bg-nci-gray-dark" onClick={prevPage}>Prev {pageSize}</button>

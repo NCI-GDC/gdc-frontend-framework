@@ -15,7 +15,7 @@ Need a better name for "the website built on top of the framework". Is this a "h
 
 A cohort is a collection of cases. We can think of the existing GDC programs and projects as pre-built cohorts. For example, TCGA-BRCA is a pre-built cohort of breast cancer cases.
 
-Side Note: The GDC also has a concept of a "study", where a study is currated collection of cases related to controlled-access data. Studies are also exampes of pre-built cohorts. Currently, studies are not exposed to the user. Internally, GDC has a single study, which is for FM-AD.
+Side Note: The GDC also has a concept of a "study", where a study is currated collection of cases related to controlled-access data. Studies are also examples of pre-built cohorts. Currently, studies are not exposed to the user. Internally, GDC has a single study, which is for FM-AD.
 
 Cohort building is a key feature of the new site. This allows the user to define and modify their own cohorts.
 
@@ -79,4 +79,4 @@ This could be done with correlation ids and a selector to get the response for a
 
 Currently, the GDC does not support user accounts. We have SSO integration with dbGaP for data access authorization. Beyond that, neither the front- nor back-end has specific knowledge of the user.
 
-What is the historical reason for not having user accounts? I believe this may be related to additional federal regulations if we have user acccounts. Also, from what I understand, we are not allowed to use any of the identifying information from dbGaP, such as email address. Are we allowed to map a dbGaP identifier to a GDC user id, then have GDC use the user id? If the mapping existing in a separate system, then we may get enough decoupling. Ulitmately need to find the root of the issue before we propose solutions.
+What is the historical reason for not having user accounts? I believe this may be related to additional federal regulations if we have user acccounts. Also, from what I understand, we are not allowed to use any of the identifying information from dbGaP, such as email address. Are we allowed to map a dbGaP identifier to a GDC user id, then have GDC use the user id? If the mapping existing in a separate system, then we may get enough decoupling. Ultimately need to find the root of the issue before we propose solutions.
