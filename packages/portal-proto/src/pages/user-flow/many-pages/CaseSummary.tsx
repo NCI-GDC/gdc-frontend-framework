@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
-import { headerElements } from "./navigation-utils";
+import { headerElements } from "@/features/user-flow/many-pages/navigation-utils";
 import { ContextualCasesView } from "@/features/cases/CasesView";
 
 const CaseSummary: NextPage = () => {

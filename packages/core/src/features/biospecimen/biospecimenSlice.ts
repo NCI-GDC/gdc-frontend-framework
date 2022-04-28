@@ -17,12 +17,14 @@ export const fetchBiospecimenData = createAsyncThunk(
 
 export interface biospecimenSliceInitialState {
   readonly status: DataStatus;
-  readonly edges: any;
+  readonly files: any;
+  readonly samples: any;
 }
 
 export const initialState: biospecimenSliceInitialState = {
   status: "uninitialized",
-  edges: {},
+  files: {},
+  samples: {},
 };
 
 const slice = createSlice({
@@ -34,7 +36,10 @@ const slice = createSlice({
       .addCase(fetchBiospecimenData.fulfilled, (state, action) => {
         const response = action.payload;
         state.status = "fulfilled";
-        console.log(response);
+        state.files =
+          response?.data?.viewer?.repository?.cases?.hits?.edges?.[0]?.node?.files?.hits?.edges;
+        state.samples =
+          response?.data?.viewer?.repository?.cases?.hits?.edges?.[0]?.node?.samples?.hits?.edges;
         return state;
       })
       .addCase(fetchBiospecimenData.pending, (state) => {
@@ -51,14 +56,16 @@ const slice = createSlice({
 export const biospecimenReducer = slice.reducer;
 
 export interface biospecimenSelectorType {
-  edges: any;
+  files: Array<any>;
+  samples: Array<any>;
 }
 
 export const selectBiospecimenInfo = (
   state: CoreState,
 ): CoreDataSelectorResponse<biospecimenSelectorType> => ({
   data: {
-    edges: state.biospecimen.edges,
+    files: state.biospecimen.files,
+    samples: state.biospecimen.samples,
   },
   status: state.biospecimen.status,
 });

@@ -93,7 +93,10 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
     selectCohortCountsByName(state, "caseCounts"),
   );
 
-  useBiospecimenData(props.caseId);
+  const { data: bioSpecimenData, isFetching: isBiospecimentDataFetching } =
+    useBiospecimenData(props.caseId);
+
+  console.log(bioSpecimenData.samples);
 
   useEffect(() => {
     setPages(Math.ceil(caseCounts / pageSize));
@@ -150,6 +153,38 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
           onChange={(x) => setPage(x - 1)}
           total={pages}
         />
+      </div>
+      <div>
+        <h1>Biospecimen Data</h1>
+        {/* {!isBiospecimentDataFetching &&
+          bioSpecimenData?.samples?.map(({ node }) => {
+            return (
+              <ul key={node.submitter_id}>
+                <li>"here"{node.submitter_id}</li>
+                <ul>
+                  {node.portions.hits.edges.length > 0 &&
+                    node.portions.hits.edges?.[0]?.node?.submitter_id && (
+                      <li
+                        key={node.portions.hits.edges?.[0]?.node?.submitter_id}
+                      >
+                        {node.portions.hits.edges?.[0]?.node?.submitter_id}
+                        {node.portions.hits.edges?.[0]?.node?.analytes?.hits
+                          ?.edges.length > 0 && (
+                          <ul>
+                            <li>
+                              {
+                                node.portions.hits.edges?.[0]?.node?.analytes
+                                  ?.hits?.edges?.[0]?.node?.submitter_id
+                              }
+                            </li>
+                          </ul>
+                        )}
+                      </li>
+                    )}
+                </ul>
+              </ul>
+            );
+          })} */}
       </div>
     </div>
   );
