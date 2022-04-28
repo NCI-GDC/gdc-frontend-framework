@@ -9,59 +9,63 @@ const style = {
 export interface ColumnProps {
   id: any
   columnName: string
-  index: number
+  index: number,
+  visible: true,
   moveColumn: (dragIndex: number, hoverIndex: number) => void
-  handleColumnChange: (update: any) => void
+  handleColumnChange: (update: any, checkbox: boolean) => void
 }
 
 
 const DragDrop = ({ listOptions, handleColumnChange }) => {
-  
-    const [columns, setColumns] = useState([]);
-    const [test, setTest] = useState([]);
 
-    useEffect(() => {
-      setColumns(listOptions);
-    }, []);
+  const [columns, setColumns] = useState(listOptions);
 
-    useEffect(() => {
-      if (columns.length > 0) {
-        handleColumnChange(columns)
-      }
-    }, [columns]);
+  useEffect(() => {
+      handleColumnChange(columns);
+  }, [columns]);
 
-    const moveColumn = useCallback((dragIndex: number, hoverIndex: number) => {
-      setColumns((prevColumns) =>
-        update(prevColumns, {
-          $splice: [
-            [dragIndex, 1],
-            [hoverIndex, 0, prevColumns[dragIndex]],
-          ],
-        }),
+  const toggleColumn = (field) => {
+      const newColumns = columns.map(c =>
+        c.id === field
+          ? { ...c, visible: !c.visible}
+          : c
+      );
+      setColumns(newColumns);
+  };
+
+  const moveColumn = useCallback((dragIndex: number, hoverIndex: number) => {
+    setColumns((prevColumns) =>
+      update(prevColumns, {
+        $splice: [
+          [dragIndex, 1],
+          [hoverIndex, 0, prevColumns[dragIndex]],
+        ],
+      }),
+    )
+  }, []);
+
+  const renderColumn = useCallback(
+    (column: { id: number, columnName: string, visible: boolean }, index: number) => {
+      return (
+        <ColumnOption
+          key={column.id}
+          index={index}
+          id={column.id}
+          columnName={column.columnName}
+          moveColumn={moveColumn}
+          visible={column.visible}
+          toggleColumn={toggleColumn}
+        />
       )
-    }, []);
+    },
+    [columns],
+  )
 
-    const renderColumn = useCallback(
-      (column:  { id: number, columnName: string }, index: number) => {
-        return (
-          <ColumnOption
-            key={column.id}
-            index={index}
-            id={column.id}
-            columnName={column.columnName}
-            moveColumn={moveColumn}
-            // handleColumnChange={handleColumnChange}
-          />
-        )
-      },
-      [],
-    )
-
-    return (
-      <>
-        <div style={style}>{columns.map((column, i) => renderColumn(column, i))}</div>
-      </>
-    )
-  }
+  return (
+    <>
+      <div style={style}>{columns.map((column, i) => renderColumn(column, i))}</div>
+    </>
+  )
+}
 
 export default DragDrop;

@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 import { ItemTypes } from './ItemTypes'
-import type { XYCoord, Identifier } from 'dnd-core'
+import type { XYCoord, Identifier } from 'dnd-core';
 
 const style = {
   border: '1px dashed gray',
@@ -14,8 +14,10 @@ const style = {
 export interface ColumnProps {
   id: any
   columnName: string
-  index: number
-  moveColumn: (dragIndex: number, hoverIndex: number) => void
+  index: number,
+  visible: boolean,
+  moveColumn: (dragIndex: number, hoverIndex: number) => void,
+  toggleColumn: (update: any) => void
 }
 
 interface DragItem {
@@ -24,7 +26,7 @@ interface DragItem {
   type: string
 }
 
-export const ColumnOption: FC<ColumnProps> = ({ id, columnName, index, moveColumn }) => {
+export const ColumnOption: FC<ColumnProps> = ({ id, columnName, visible, index, moveColumn, toggleColumn }) => {
 
   const ref = useRef<HTMLDivElement>(null);
 
@@ -87,7 +89,11 @@ export const ColumnOption: FC<ColumnProps> = ({ id, columnName, index, moveColum
   drag(drop(ref))
   return (
     <div ref={ref} style={{ ...style, opacity }} data-handler-id={handlerId}>
-      {columnName}
+       <input
+        type="checkbox"
+        checked={visible}
+        onChange={() => toggleColumn(id)}
+      />{columnName}
     </div>
   )
 }

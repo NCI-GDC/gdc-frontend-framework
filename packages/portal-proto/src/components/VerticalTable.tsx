@@ -7,13 +7,13 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import DragDrop from "./DragDrop";
 
 const VerticalTable = ({ tableData, tableFunc, customCellKeys, customGridMapping, sortableOptions, selectableRow = false }) => {
-    const [allColumnListOptions, setAllColumnListOptions] = useState([]);
     const [columnListOptions, setColumnListOptions] = useState([]);
 
     const [headings, setHeadings] = useState([]);
 
     const updateColumnHeadings = () => {
-        const headingOrder = columnListOptions.map((item) => {
+        const filteredColumnList = columnListOptions.filter((item) => item.visible);
+        const headingOrder = filteredColumnList.map((item) => {
             return headings[headings.findIndex((find) => find.accessor === item.columnName)]
         });
         return headingOrder
@@ -33,21 +33,21 @@ const VerticalTable = ({ tableData, tableFunc, customCellKeys, customGridMapping
         const columnOpts = keysArr.map((k, idx) => {
             return {
                 id: idx,
-                columnName: k
+                columnName: k,
+                visible: true
             }
         });
         
         setHeadings(columnHeadings);
         setColumnListOptions(columnOpts);
-        setAllColumnListOptions(columnOpts);
     }
 
     useEffect(() => {
         initializeColumns();
     }, []);
 
-    const handleColumnChange = (updatedColumns) => {
-        setColumnListOptions(updatedColumns);
+    const handleColumnChange = (update) => {
+        setColumnListOptions(update);
     }
 
     const tableAction = (action) => {
@@ -140,8 +140,8 @@ const VerticalTable = ({ tableData, tableFunc, customCellKeys, customGridMapping
 
     return (
         <>
-            {columnListOptions && columnListOptions.length > 0 && (<DndProvider backend={HTML5Backend}>
-                <DragDrop listOptions={allColumnListOptions} handleColumnChange={handleColumnChange} />
+            {columnListOptions.length > 0 && (<DndProvider backend={HTML5Backend}>
+                <DragDrop listOptions={columnListOptions} handleColumnChange={handleColumnChange} />
             </DndProvider>)}
             {columnListOptions.length > 0 && (<Table columns={tableColumns} data={tableData}></Table>)}
         </>
