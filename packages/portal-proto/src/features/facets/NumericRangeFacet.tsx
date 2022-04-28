@@ -1,11 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { convertFieldToName, FacetProps, useCaseFacet } from "./utility";
-import { MdFlip as FlipIcon } from "react-icons/md";
-
-import Select from "react-select";
-import { Button, LoadingOverlay } from "@mantine/core";
-import RadioButtonGroup from "../../components/RadioButtonGroup";
+import {
+  MdAddCircle as MoreIcon,
+  MdFlip as FlipIcon,
+  MdRemoveCircle as LessIcon,
+} from "react-icons/md";
+import {
+  Button,
+  LoadingOverlay,
+  NumberInput,
+  SegmentedControl,
+} from "@mantine/core";
 import { Icon } from "@iconify/react";
+import {
+  DAYS_IN_YEAR,
+  DAYS_IN_DECADE,
+  updateCohortFilter,
+  Operation,
+  useCoreDispatch,
+} from "@gff/core";
 
 const BUCKETS_TO_SHOW = 6;
 
@@ -22,21 +35,103 @@ interface FacetData {
   readonly maximum?: number;
 }
 
-const greater_items = [
-  { value: "gt", label: "\u2265" },
-  { value: "ge", label: ">" },
-];
+interface LowHigh {
+  readonly low: number;
+  readonly high: number;
+}
 
-const less_items = [
-  { value: "lt", label: "\u2264" },
-  { value: "le", label: "<" },
-];
+interface RangeValueSelectorProps {
+  readonly numBuckets: number;
+  readonly field: string;
+  readonly units: string;
+  readonly minimum: number;
+  readonly buildLowHigh: (x: number, units: string, minimum: number) => LowHigh;
+}
+
+type RangeFromOp = "gt" | "ge";
+type RangeToOp = "lt" | "le";
+
+interface NumericRange {
+  readonly fromOp: RangeFromOp;
+  readonly fromValue: number;
+  readonly toOp: RangeToOp;
+  readonly toValue: number;
+}
+
+/**
+ * returns the range from low to high for a "bucket"
+ * @param x - current bucket index
+ * @param units - custom units for this range: "years" or "days"
+ * @param minimum - staring value of range
+ */
+const buildDayYearRangeBucket = (x: number, units: string, minimum: number) => {
+  return {
+    low: (minimum + x * 3652.5) / (units == "years" ? DAYS_IN_YEAR : 1),
+    high: (minimum + (x + 1) * 3652.5) / (units == "years" ? DAYS_IN_YEAR : 1),
+  };
+};
+
+/**
+ * returns 10 value range from low to high for a "bucket"
+ * @param x - current bucket index
+ * @param _ unused
+ * @param minimum - staring value of range
+ */
+const build10UnitRange = (x: number, _: string, minimum: number) => {
+  return {
+    low: minimum + x * 10,
+    high: minimum + (x + 1) * 10,
+  };
+};
+
+/**
+ * Create a list of radio buttons where each line
+ * represents bucket for a range > "from" <= "to"
+ * @param numBuckets: number of buckets to consider
+ * @param field: name of field this range id for
+ * @param units: units "days", "years" or "percent"
+ * @param minimum starting value for range buckets
+ * @param buildLowHigh: function to create the range for a bucket
+ */
+
+const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
+  numBuckets,
+  field,
+  units,
+  minimum,
+  buildLowHigh,
+}: RangeValueSelectorProps) => {
+  return (
+    <div role="group" className="mt-1">
+      {[...Array(numBuckets)].map((_, i) => {
+        const { low, high } = buildLowHigh(i, units, minimum);
+        return (
+          <div
+            key={`${field}_${i}`}
+            className="flex flex-row justify-start items-center form-check mb-1"
+          >
+            <input
+              type="radio"
+              id={`${field}_${i}`}
+              name={`${field}_range_selection`}
+              className="form-radio mr-4"
+            />
+            <span>
+              {"\u2265"} {low} to {"<"} {high} {units}{" "}
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
 
 interface ItemElement {
   readonly label?: string;
   readonly icon?: any;
   readonly onClick?: () => void;
 }
+
 interface FacetItemListHeaderProps {
   readonly items: ItemElement[];
 }
@@ -66,60 +161,81 @@ const FacetItemListHeader: React.FC<FacetItemListHeaderProps> = ({
   );
 };
 
+type RangeValue = Record<string, string | number | boolean>;
+
 interface FromToProps {
   readonly minimum: number;
   readonly maximum: number;
   readonly units: string;
+  readonly applyCallback: (_: NumericRange) => void;
 }
 
 const FromTo: React.FC<FromToProps> = ({
   minimum,
   maximum,
+  applyCallback,
   units = "years",
 }: FromToProps) => {
   const unitsLabel = units != "%" ? ` ${units}` : "%";
+  const [fromOp, setFromOp] = useState("ge");
+  const [fromValue, setFromValue] = useState(undefined);
+  const [toOp, setToOp] = useState("lt");
+  const [toValue, setToValue] = useState(undefined);
+
+  const handleApply = (event) => {
+    applyCallback({
+      fromOp: fromOp as RangeFromOp,
+      fromValue: fromValue,
+      toOp: toOp as RangeToOp,
+      toValue,
+    });
+    event.preventDefault();
+  };
   return (
-    <div className="flex-grow m-1">
-      <div className="flex flex-row items-center flex-nowrap">
-        <div className="w-1/5 ">From:</div>
-        <Select
-          className="w-8 mr-1"
-          options={greater_items}
-          defaultValue={greater_items[0]}
-          components={{
-            DropdownIndicator: () => null,
-            IndicatorSeparator: () => null,
-          }}
+    <div className="flex flex-col text-nci-gray-darkest  text-md">
+      <div className="flex flex-row justify-end items-center flex-nowrap border">
+        <div className="basis-1/5 text-center">From</div>
+        <SegmentedControl
+          className="basis-2/5"
+          size="sm"
+          value={fromOp}
+          onChange={setFromOp}
+          data={[
+            { label: "\u2265", value: "ge" },
+            { label: ">", value: "gt" },
+          ]}
         />
-        <input
-          type="number"
+        <NumberInput
+          className="basis-2/5 text-sm"
           placeholder={`eg. ${minimum}${unitsLabel} `}
           min={minimum}
           max={maximum}
-          className="h-8 w-1/2 mr-auto border-nci-gray-light rounded-md focus:shadow focus:outline-none"
+          onChange={setFromValue}
+          hideControls
         />
-        <div className="mx-1 h-8"></div>
       </div>
-      <div className="flex flex-row mt-1 items-center flex-nowrap">
-        <div className="float-right w-1/5">To:</div>
-        <Select
-          className="w-8 mr-1"
-          options={less_items}
-          defaultValue={less_items[0]}
-          components={{
-            DropdownIndicator: () => null,
-            IndicatorSeparator: () => null,
-          }}
+      <div className="flex flex-row mt-1 justify-center items-center flex-nowrap border ">
+        <div className="basis-1/5 text-center">To</div>
+        <SegmentedControl
+          className="basis-2/5"
+          size="sm"
+          value={toOp}
+          onChange={setToOp}
+          data={[
+            { label: "\u2264", value: "le" },
+            { label: "<", value: "lt" },
+          ]}
         />
-        <input
-          type="number"
+        <NumberInput
+          className="basis-2/5"
           placeholder={`eg. ${maximum}${unitsLabel} `}
           min={minimum}
           max={maximum}
-          className="h-8 w-1/2  border-nci-gray-light rounded-md  focus:shadow focus:outline-none"
+          onChange={setToValue}
+          hideControls
         />
-        <Button className="mx-1 h-8 mr-auto">Ok</Button>
       </div>
+      <Button onClick={handleApply}>Apply</Button>
     </div>
   );
 };
@@ -138,24 +254,27 @@ const FacetExpander: React.FC<FacetExpanderProps> = ({
   return (
     <div className={"mt-3"}>
       {!isGroupExpanded ? (
-        <div className="bg-white border-2  p-1.5">
-          <Button
+        <div className="flex flex-row justify-end items-center border-t-2 p-1.5">
+          <MoreIcon
             key="show-more"
-            className="text-left p-2 w-auto hover:text-black"
+            size="1.5em"
+            className="text-nci-gray-darkest"
             onClick={() => onShowChanged(!isGroupExpanded)}
-          >
+          />
+          <div className="pl-1 text-nci-gray-darkest">
+            {" "}
             {remainingValues} more
-          </Button>
+          </div>
         </div>
       ) : (
-        <div className="bg-white border-2  p-1.5">
-          <Button
+        <div className="flex flex-row justify-end items-center border-t-2 border-b-0 border-r-0 border-l-0 p-1.5">
+          <LessIcon
             key="show-less"
-            className="text-left border-2 p-1.5 w-auto hover:text-black"
+            size="1.5em"
+            className="text-nci-gray-darkest"
             onClick={() => onShowChanged(!isGroupExpanded)}
-          >
-            Show less
-          </Button>
+          />
+          <div className="pl-1 text-nci-gray-darkest"> show less</div>
         </div>
       )}
     </div>
@@ -172,13 +291,17 @@ const DaysOrYears: React.FC<FacetData> = ({
   const [units, setUnits] = useState("years");
   const handleSearch = () => null;
 
+  const updateFilters = useCallback((data) => {
+    console.log("sendFilters: ", data);
+  }, []);
+
   let adjMinimum = minimum != undefined ? minimum : 0;
   let adjMaximum = maximum != undefined ? maximum : 32872;
-  const numBuckets = Math.round((adjMaximum - adjMinimum) / 3652.5);
+  const numBuckets = Math.round((adjMaximum - adjMinimum) / DAYS_IN_DECADE);
   adjMinimum =
-    Math.round(10 * (adjMinimum / (units == "years" ? 365.25 : 1))) / 10;
+    Math.round(10 * (adjMinimum / (units == "years" ? DAYS_IN_YEAR : 1))) / 10;
   adjMaximum =
-    Math.round(10 * (adjMaximum / (units == "years" ? 365.25 : 1))) / 10;
+    Math.round(10 * (adjMaximum / (units == "years" ? DAYS_IN_YEAR : 1))) / 10;
 
   const bucketsToShow = isGroupExpanded ? numBuckets : BUCKETS_TO_SHOW;
   const remainingValues = numBuckets - bucketsToShow;
@@ -193,10 +316,13 @@ const DaysOrYears: React.FC<FacetData> = ({
 
   return (
     <div className="flex flex-col w-100 space-y-2 px-2  mt-1 ">
-      <RadioButtonGroup
-        items={["days", "years"]}
-        checkedItem={"years"}
-        onSelected={setUnits}
+      <SegmentedControl
+        data={[
+          { label: "Days", value: "days" },
+          { label: "Years", value: "years" },
+        ]}
+        value={units}
+        onChange={setUnits}
       />
       <div className="flex flex-row justify-between items-center">
         <input
@@ -206,44 +332,59 @@ const DaysOrYears: React.FC<FacetData> = ({
           name={`${field}_age_range_selection`}
           onChange={handleRadioSelection}
         />
-        <FromTo minimum={adjMinimum} maximum={adjMaximum} units={units} />
-      </div>
-      <div className="flex flex-col">
-        <FacetItemListHeader
-          items={[{ icon: "mdi:sort", onClick: handleSearch }, {}]}
+        <FromTo
+          minimum={adjMinimum}
+          maximum={adjMaximum}
+          units={units}
+          applyCallback={updateFilters}
         />
-        <div role="group">
-          {[...Array(bucketsToShow)].map((_, i) => {
-            const low =
-              (minimum + i * 3652.5) / (units == "years" ? 365.25 : 1);
-            const high =
-              (minimum + (i + 1) * 3652.5) / (units == "years" ? 365.25 : 1);
-            return (
-              <div
-                key={`${field}_${i}`}
-                className="flex flex-row justify-start items-center form-check"
-              >
-                <input
-                  type="radio"
-                  id={`${field}_${i}`}
-                  name={`${field}_age_range_selection`}
-                  className="form-radio mr-4"
-                />
-                <span>
-                  From {"\u2265"} {low} to {"<"} {high} {units}{" "}
-                </span>
-              </div>
-            );
-          })}
-        </div>
       </div>
-      <FacetExpander
-        remainingValues={remainingValues}
-        isGroupExpanded={isGroupExpanded}
-        onShowChanged={onShowModeChanged}
-      />
+      <div className="flex flex-col border-t-2">
+        <RangeValueSelector
+          numBuckets={bucketsToShow}
+          field={field}
+          units={units}
+          minimum={adjMinimum}
+          buildLowHigh={buildDayYearRangeBucket}
+        />
+        <FacetExpander
+          remainingValues={remainingValues}
+          isGroupExpanded={isGroupExpanded}
+          onShowChanged={onShowModeChanged}
+        />
+      </div>
     </div>
   );
+};
+
+const buildRangeOperator = (
+  field: string,
+  rangeData: NumericRange,
+): Operation | undefined => {
+  // couple of different cases
+  // * no from/to return undefined
+  if (rangeData.fromValue === undefined && rangeData.toValue === undefined)
+    return undefined;
+
+  const fromOperation: Operation = rangeData.fromValue
+    ? {
+        field: field,
+        operator: rangeData.fromOp === "gt" ? ">" : ">=",
+        operand: rangeData.fromValue,
+      }
+    : undefined;
+  const toOperation: Operation = rangeData.toValue
+    ? {
+        field: field,
+        operator: rangeData.toOp === "lt" ? "<" : "<=",
+        operand: rangeData.toValue,
+      }
+    : undefined;
+
+  if (fromOperation && toOperation)
+    return { operator: "and", operands: [fromOperation, toOperation] };
+  if (fromOperation) return fromOperation;
+  return toOperation;
 };
 
 const Year: React.FC<FacetData> = ({
@@ -253,16 +394,28 @@ const Year: React.FC<FacetData> = ({
   maximum = undefined,
 }: FacetData) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
+  const [rangeFilters, setRangeFilters] = useState<Operation>(undefined);
   const adjMinimum = minimum != undefined ? minimum : 1900;
   const adjMaximum = maximum != undefined ? maximum : 2050;
   const numBuckets = Math.round((adjMaximum - adjMinimum) / 10);
   const bucketsToShow = isGroupExpanded ? numBuckets : 3;
   const remainingValues = numBuckets - bucketsToShow;
   const handleSearch = () => null;
+  const coreDispatch = useCoreDispatch();
 
   const onShowModeChanged = () => {
     setIsGroupExpanded(!isGroupExpanded);
   };
+
+  const updateFilters = useCallback(
+    (data) => {
+      const ops = buildRangeOperator(field, data);
+      console.log("sendFilters: ", ops);
+      setRangeFilters(ops);
+      coreDispatch(updateCohortFilter({ field: field, operation: ops }));
+    },
+    [field],
+  );
 
   return (
     <div className="flex flex-col w-100 space-y-2 px-2  mt-1 ">
@@ -273,34 +426,21 @@ const Year: React.FC<FacetData> = ({
           id={`${field}_custom`}
           name={`${field}_year_range_selection`}
         />
-        <FromTo minimum={adjMinimum} maximum={adjMaximum} units="" />
-      </div>
-      <div className="flex flex-col">
-        <FacetItemListHeader
-          items={[{ icon: "mdi:sort", onClick: handleSearch }]}
+        <FromTo
+          minimum={adjMinimum}
+          maximum={adjMaximum}
+          units="year"
+          applyCallback={updateFilters}
         />
-        <div role="group">
-          {[...Array(bucketsToShow)].map((_, i) => {
-            const low = minimum + i * 10;
-            const high = minimum + (i + 1) * 10;
-            return (
-              <div
-                key={`${field}_${i}`}
-                className="flex flex-row justify-start items-center form-check"
-              >
-                <input
-                  type="radio"
-                  id={`${field}_${i}`}
-                  name={`${field}_year_range_selection`}
-                  className="form-radio mr-4"
-                />
-                <span>
-                  From {"\u2265"} {low} to {"<"} {high}{" "}
-                </span>
-              </div>
-            );
-          })}
-        </div>
+      </div>
+      <div className="flex flex-col border-t-2">
+        <RangeValueSelector
+          numBuckets={bucketsToShow}
+          field={field}
+          units=""
+          minimum={adjMinimum}
+          buildLowHigh={build10UnitRange}
+        />
         <FacetExpander
           remainingValues={remainingValues}
           isGroupExpanded={isGroupExpanded}
@@ -362,6 +502,10 @@ const PercentRange: React.FC<FacetData> = ({
   const remainingValues = numBuckets - bucketsToShow;
   const handleSearch = () => null;
 
+  const onShowModeChanged = () => {
+    setIsGroupExpanded(!isGroupExpanded);
+  };
+
   return (
     <div className="flex flex-col w-100 space-y-2 px-2  mt-1 ">
       <div className="flex flex-row justify-between items-center">
@@ -374,53 +518,19 @@ const PercentRange: React.FC<FacetData> = ({
         <FromTo minimum={adjMinimum} maximum={adjMaximum} units="%" />
       </div>
       <div className="flex flex-col">
-        <FacetItemListHeader
-          items={[{ icon: "mdi:sort", onClick: handleSearch }]}
-        />
-        <div role="group">
-          {[...Array(bucketsToShow)].map((_, i) => {
-            const low = minimum + i * 10;
-            const high = minimum + (i + 1) * 10;
-            return (
-              <div
-                key={`${field}_${i}`}
-                className="flex flex-row justify-start items-center form-check"
-              >
-                <input
-                  type="radio"
-                  id={`${field}_${i}`}
-                  name={`${field}_percent_range_selection`}
-                  className="form-radio mr-4"
-                />
-                <span>
-                  From {"\u2265"} {`${low}%`} to {"<"} {`${high}%`}{" "}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-        <div className={"mt-3"}>
-          {!isGroupExpanded ? (
-            <div className="bg-white border-2  p-1.5">
-              <Button
-                key="show-more"
-                className="text-left p-2 w-auto hover:text-black"
-                onClick={() => setIsGroupExpanded(!isGroupExpanded)}
-              >
-                {remainingValues} more
-              </Button>
-            </div>
-          ) : (
-            <div className="bg-white border-2  p-1.5">
-              <Button
-                key="show-less"
-                className="text-left border-2 p-1.5 w-auto hover:text-black"
-                onClick={() => setIsGroupExpanded(!isGroupExpanded)}
-              >
-                Show less
-              </Button>
-            </div>
-          )}
+        <div className="flex flex-col border-t-2">
+          <RangeValueSelector
+            numBuckets={bucketsToShow}
+            field={field}
+            units="%"
+            minimum={adjMinimum}
+            buildLowHigh={build10UnitRange}
+          />
+          <FacetExpander
+            remainingValues={remainingValues}
+            isGroupExpanded={isGroupExpanded}
+            onShowChanged={onShowModeChanged}
+          />
         </div>
       </div>
     </div>
@@ -463,9 +573,9 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
 
   return (
     <div>
-      <div className="flex flex-col  border-2 bg-white p-1 relative drop-shadow-md border-nci-blumine-lighter">
+      <div className="flex flex-col w-64 bg-white relative shadow-lg border-nci-gray-lightest border-1 rounded-b-md text-xs transition">
         <div className="flex items-center justify-between flex-wrap bg-nci-gray-lighter px-1.5">
-          <div className="has-tooltip">
+          <div className="has-tooltip text-nci-gray-darkest font-heading font-semibold text-md">
             {facetName === null ? convertFieldToName(field) : facetName}
             <div className="inline-block tooltip w-full border-b-2 border-nci-cyan-lightest rounded shadow-lg p-2 bg-gray-100 text-nci-blue-darkest mt-8 absolute">
               {description}
