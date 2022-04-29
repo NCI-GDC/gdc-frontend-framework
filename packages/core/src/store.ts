@@ -31,6 +31,7 @@ import { imageDetailsReducer } from "./features/imageDetails/imageDetailsSlice";
 import { imageViewerReducer } from "./features/imageDetails/imageViewer";
 import { cohortFacetsReducer } from "./features/cohortComparison/cohortFacetSlice";
 import { cartReducer } from "./features/cart/cartSlice";
+import { apiSlice } from "./features/api/apiSlice";
 
 const reducers = {
   cohort: cohortReducers,
@@ -51,6 +52,7 @@ const reducers = {
   imageViewer: imageViewerReducer,
   cohortComparison: cohortFacetsReducer,
   cart: cartReducer,
+  [apiSlice.reducerPath]: apiSlice.reducer,
 };
 
 const persistConfig = {
@@ -72,7 +74,7 @@ export const coreStore = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }),
+    }).concat(apiSlice.middleware),
 });
 
 setupListeners(coreStore.dispatch);
