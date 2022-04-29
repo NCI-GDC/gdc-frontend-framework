@@ -8,7 +8,15 @@ import {
 import VennDiagram from "@/features/charts/VennDiagram/VennDiagram";
 import makeIntersectionFilters from "./makeIntersectionFilters";
 
-const CohortVennDiagram = ({ cohortNames, caseIds }) => {
+interface CohortVennDiagramProps {
+  readonly cohortNames: string[];
+  readonly caseIds: string[][];
+}
+
+const CohortVennDiagram: React.FC<CohortVennDiagramProps> = ({
+  cohortNames,
+  caseIds,
+}: CohortVennDiagramProps) => {
   const cohort1Filters = useCoreSelector((state) =>
     buildCohortGqlOperator(
       selectAvailableCohortByName(state, cohortNames[0]).filters,
@@ -37,17 +45,17 @@ const CohortVennDiagram = ({ cohortNames, caseIds }) => {
       chartData={[
         {
           key: "S1_minus_S1",
-          value: data?.set1?.hits?.total.toLocaleString() || 0,
+          value: data.set1?.hits?.total.toLocaleString() || 0,
           highlighted: false,
         },
         {
           key: "S2_minus_S1",
-          value: data?.set2?.hits?.total.toLocaleString() || 0,
+          value: data.set2?.hits?.total.toLocaleString() || 0,
           highlighted: false,
         },
         {
           key: "S1_intersect_S2",
-          value: data?.intersection?.hits?.total.toLocaleString() || 0,
+          value: data.intersection?.hits?.total.toLocaleString() || 0,
           highlighted: false,
         },
       ]}

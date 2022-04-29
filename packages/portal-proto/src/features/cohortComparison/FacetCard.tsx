@@ -29,12 +29,14 @@ const FacetCard: React.FC<FacetCardProps> = ({
   let formattedData = useMemo(
     () =>
       data.map((cohort, idx) => {
-        const formattedCohort = cohort.buckets.map((facet) => {
-          return {
-            key: formatBucket(facet.key, field),
-            count: facet.doc_count,
-          };
-        });
+        const formattedCohort = cohort.buckets
+          .filter((facet) => facet.key !== "_missing")
+          .map((facet) => {
+            return {
+              key: formatBucket(facet.key, field),
+              count: facet.doc_count,
+            };
+          });
         // Replace '_missing' key because 1) we don't get the value back for histograms 2) to rename the key
         const totalInResults = formattedCohort.reduce(
           (runningSum, a) => runningSum + a.count,
@@ -79,7 +81,6 @@ const FacetCard: React.FC<FacetCardProps> = ({
 
   const divId = `cohort_comparison_bar_chart_${field}`;
 
-  console.log(formattedData);
   return (
     <Paper p="md">
       <h2 className="text-lg font-semibold">{FIELD_LABELS[field]}</h2>

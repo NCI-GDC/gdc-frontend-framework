@@ -7,9 +7,9 @@ interface IntersectionFilters {
 }
 
 const makeIntersectionFilters = (
-  cohort1Filters,
-  cohort2Filters,
-  caseIds,
+  cohort1Filters: GqlOperation,
+  cohort2Filters: GqlOperation,
+  caseIds: string[][],
 ): IntersectionFilters => {
   // Data should be in only one of the cohorts, not both so exclude cases ids from the other set
 

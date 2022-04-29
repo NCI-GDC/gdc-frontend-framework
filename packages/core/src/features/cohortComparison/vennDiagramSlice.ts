@@ -5,6 +5,7 @@ import {
   CoreDataSelectorResponse,
 } from "../../dataAcess";
 import { CoreState, CoreDispatch } from "../../store";
+import { GqlOperation } from "../gdcapi/filters";
 import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
 
 const graphQLQuery = `
@@ -35,20 +36,40 @@ const graphQLQuery = `
   }
 `;
 
+interface CountData {
+  readonly hits?: {
+    readonly total: number;
+  };
+}
+
+interface CohortVennDiagramData {
+  readonly set1: CountData;
+  readonly set2: CountData;
+  readonly intersection: CountData;
+}
+
 export interface CohortVennDiagramState {
-  readonly data: any;
+  readonly data: CohortVennDiagramData;
   readonly status: DataStatus;
   readonly error?: string;
 }
 
 const initialState: CohortVennDiagramState = {
-  data: [],
+  data: {
+    set1: {},
+    set2: {},
+    intersection: {},
+  },
   status: "uninitialized",
 };
 
 export const fetchVennCounts = createAsyncThunk<
   GraphQLApiResponse,
-  { set1Filters: any; set2Filters: any; intersectionFilters: any },
+  {
+    set1Filters: GqlOperation;
+    set2Filters: GqlOperation;
+    intersectionFilters: GqlOperation;
+  },
   { dispatch: CoreDispatch; state: CoreState }
 >(
   "cohortComparison/cohortVenn",
@@ -94,7 +115,7 @@ export const cohortVennDiagramReducer = slice.reducer;
 
 export const selectCohortVennDiagramData = (
   state: CoreState,
-): CoreDataSelectorResponse<any> => {
+): CoreDataSelectorResponse<CohortVennDiagramData> => {
   return {
     data: state.cohortComparison.venn.data,
     status: state.cohortComparison.venn.status,
