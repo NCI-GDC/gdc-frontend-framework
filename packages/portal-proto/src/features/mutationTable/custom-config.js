@@ -40,10 +40,12 @@ export const getCustomGridCell = (key) => {
                 Header: "Impact",
                 accessor: 'impact',
                 Cell: ({ value, row }) => (<>
-                    <div className="flex flex-row space-x-3 ml-5">
-                        <div className="bg-red-400 rounded-xl h-6 w-6"></div>
-                        <div className="bg-blue-400 rounded-xl h-6 w-6"></div>
-                        <div className="bg-yellow-400 rounded-xl h-6 w-6"></div>
+                    <div className="grid place-items-center">
+                        <div className="flex flex-row space-x-3">
+                            <div className="bg-red-400 rounded-xl h-6 w-6"></div>
+                            <div className="bg-blue-400 rounded-xl h-6 w-6"></div>
+                            <div className="bg-yellow-400 rounded-xl h-6 w-6"></div>
+                        </div>
                     </div>
                 </>),
             };
