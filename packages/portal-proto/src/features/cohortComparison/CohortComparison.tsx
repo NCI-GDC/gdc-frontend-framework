@@ -28,8 +28,8 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
 
   const fields = {
     survival: "Survival",
-    gender: "demographic.gender",
     ethnicity: "demographic.ethnicity",
+    gender: "demographic.gender",
     race: "demographic.race",
     vital_status: "demographic.vital_status",
     age_at_diagnosis: "diagnoses.age_at_diagnosis",
@@ -100,6 +100,8 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
             cohortNames={cohortNames}
             options={fields}
             survivalPlotSelectable={survivalPlotSelectable}
+            caseIds={data?.caseIds}
+            casesFetching={isFetching}
           />
         </div>
       </div>
