@@ -2,9 +2,6 @@ import { FC, useState, useCallback, useEffect } from 'react'
 import { ColumnOption } from './ColumnOption';
 import update from 'immutability-helper';
 
-const style = {
-  width: 400,
-}
 
 export interface ColumnProps {
   id: any
@@ -63,7 +60,7 @@ const DragDrop = ({ listOptions, handleColumnChange }) => {
 
   return (
     <>
-      <div style={style}>{columns.map((column, i) => renderColumn(column, i))}</div>
+      <div className="w-60">{columns.map((column, i) => renderColumn(column, i))}</div>
     </>
   )
 }

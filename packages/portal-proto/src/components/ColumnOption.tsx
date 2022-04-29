@@ -4,13 +4,7 @@ import { ItemTypes } from './ItemTypes'
 import type { XYCoord, Identifier } from 'dnd-core';
 import _ from "lodash";
 
-const style = {
-  border: '1px dashed gray',
-  padding: '0.5rem 1rem',
-  marginBottom: '.5rem',
-  backgroundColor: 'white',
-  cursor: 'move',
-}
+const columnStyles = `cursor-move bg-white mb-2 p-1 border-1`;
 
 export interface ColumnProps {
   id: any
@@ -90,15 +84,16 @@ export const ColumnOption: FC<ColumnProps> = ({ id, columnName, visible, index, 
     }),
   })
 
-  const opacity = isDragging ? 0 : 1
+  const o = isDragging ? 0 : 1
   drag(drop(ref))
   return (
-    <div ref={ref} style={{ ...style, opacity }} data-handler-id={handlerId}>
+    <div ref={ref} className={`${columnStyles} opacity-${o}`} data-handler-id={handlerId}>
        <input
+        className={`mr-2 ml-2`}
         type="checkbox"
         checked={visible}
         onChange={() => toggleColumn(columnName)}
-      />{formatColumnName(columnName)}
+      /><span className={`text-xs`}>{formatColumnName(columnName)}</span>
     </div>
   )
 }

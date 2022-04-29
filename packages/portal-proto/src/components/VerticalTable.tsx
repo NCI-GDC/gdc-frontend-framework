@@ -6,11 +6,13 @@ import { DndProvider, useDrag } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import DragDrop from "./DragDrop";
 import { useMeasure } from "react-use";
+import { BsList } from "react-icons/bs";
 
 const VerticalTable = ({ tableData, tableFunc, customCellKeys, customGridMapping, selectableRow = false }) => {
     const [columnListOptions, setColumnListOptions] = useState([]);
     const [headings, setHeadings] = useState([]);
     const [ref, { width }] = useMeasure();
+    const [showColumnMenu, setShowColumnMenu] = useState(false);
 
     const updateColumnHeadings = () => {
         const filteredColumnList = columnListOptions.filter((item) => item.visible);
@@ -18,7 +20,7 @@ const VerticalTable = ({ tableData, tableFunc, customCellKeys, customGridMapping
             return headings[headings.findIndex((find) => find.accessor === item.columnName)]
         });
         headingOrder.forEach((heading) => {
-            heading.width =  width / headingOrder.length > 100 ? width / headingOrder.length : 100
+            heading.width = width / headingOrder.length > 100 ? width / headingOrder.length : 100
         });
         return headingOrder
     }
@@ -143,9 +145,21 @@ const VerticalTable = ({ tableData, tableFunc, customCellKeys, customGridMapping
 
     return (
         <div ref={ref}>
-            {columnListOptions.length > 0 && (<DndProvider backend={HTML5Backend}>
-                <DragDrop listOptions={columnListOptions} handleColumnChange={handleColumnChange} />
-            </DndProvider>)}
+            <div className={`w-max float-right`}>{columnListOptions.length > 0 && showColumnMenu && (
+                <div className={`mr-0 ml-auto`}>
+                    <DndProvider backend={HTML5Backend}>
+                        <DragDrop listOptions={columnListOptions} handleColumnChange={handleColumnChange} />
+                    </DndProvider></div>)}
+                    <div className={`flex flex-row w-max float-right mb-4`}>
+                    <input className={`mr-2 rounded-sm border-1 border-gray-300`} type="search" placeholder="Search"/>
+                    <div className={`mt-px`}>
+                    <button className={`mr-0 ml-auto border-1 border-gray-300 p-3`} onClick={() => setShowColumnMenu(!showColumnMenu)}><BsList></BsList></button>
+                    </div>
+                    
+                    </div>
+                    
+                </div>
+            
             {columnListOptions.length > 0 && (<Table columns={tableColumns} data={tableData}></Table>)}
         </div>
     )
