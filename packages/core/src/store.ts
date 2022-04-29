@@ -29,6 +29,7 @@ import { ssmPlotReducer } from "./features/cancerDistribution/ssmPlot";
 import { cnvPlotReducer } from "./features/cancerDistribution/cnvPlot";
 import { imageDetailsReducer } from "./features/imageDetails/imageDetailsSlice";
 import { imageViewerReducer } from "./features/imageDetails/imageViewer";
+import { cartReducer } from "./features/cart/cartSlice";
 import { cohortComparisonReducer } from "./features/cohortComparison";
 
 const reducers = {
