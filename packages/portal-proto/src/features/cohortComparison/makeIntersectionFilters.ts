@@ -15,6 +15,7 @@ const makeIntersectionFilters = (
 
   const cohort1Content = [];
   const cohort2Content = [];
+  const intersectionContent = [];
 
   if (cohort1Filters) {
     cohort1Content.push(cohort1Filters);
@@ -24,26 +25,29 @@ const makeIntersectionFilters = (
     cohort2Content.push(cohort2Filters);
   }
 
-  if (caseIds[1]) {
-    cohort1Content.push({
-      op: "exclude",
-      content: { field: "cases.case_id", value: caseIds[1] },
-    });
-  }
   if (caseIds[0]) {
     cohort2Content.push({
       op: "exclude",
       content: { field: "cases.case_id", value: caseIds[0] },
     });
+
+    intersectionContent.push({
+      op: "in",
+      content: { field: "cases.case_id", value: caseIds[0] },
+    });
   }
 
-  const intersection = {
-    op: "and",
-    content: [
-      { op: "in", content: { field: "cases.case_id", value: caseIds[0] } },
-      { op: "in", content: { field: "cases.case_id", value: caseIds[1] } },
-    ],
-  };
+  if (caseIds[1]) {
+    cohort1Content.push({
+      op: "exclude",
+      content: { field: "cases.case_id", value: caseIds[1] },
+    });
+
+    intersectionContent.push({
+      op: "in",
+      content: { field: "cases.case_id", value: caseIds[1] },
+    });
+  }
 
   return {
     cohort1: {
@@ -54,7 +58,10 @@ const makeIntersectionFilters = (
       op: "and",
       content: cohort2Content,
     },
-    intersection,
+    intersection: {
+      op: "and",
+      content: intersectionContent,
+    },
   };
 };
 
