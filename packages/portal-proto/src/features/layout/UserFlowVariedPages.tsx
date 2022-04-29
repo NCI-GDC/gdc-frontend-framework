@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Menu } from "@mantine/core";
-import { isString } from "@gff/core";
+import { isString, useCoreSelector, selectCart } from "@gff/core";
 import { Button } from "@mantine/core";
 import { useTour } from "@reactour/tour";
 import steps from "../../features/tour/steps";
@@ -63,6 +63,7 @@ const Header: React.FC<HeaderProps> = ({
   Options = () => <div />,
 }: HeaderProps) => {
   const { setIsOpen } = useTour();
+  const currentCart = useCoreSelector((state) => selectCart(state));
 
   return (
     <div className="px-6 py-3 border-b border-gdc-grey-lightest">
@@ -118,7 +119,7 @@ const Header: React.FC<HeaderProps> = ({
               "flex flex-row opacity-60 hover:opacity-100 transition-opacity  items-center mx-2"
             }
           >
-            <CartIcon size="24px" /> Cart{" "}
+            <CartIcon size="24px" /> Cart ({currentCart.length})
           </div>
 
           <Menu
