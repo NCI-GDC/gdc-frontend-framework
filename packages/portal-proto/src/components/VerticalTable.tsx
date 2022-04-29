@@ -5,34 +5,39 @@ import _ from "lodash";
 import { DndProvider, useDrag } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import DragDrop from "./DragDrop";
+import { useMeasure } from "react-use";
 
 const VerticalTable = ({ tableData, tableFunc, customCellKeys, customGridMapping, selectableRow = false }) => {
     const [columnListOptions, setColumnListOptions] = useState([]);
     const [headings, setHeadings] = useState([]);
+    const [ref, { width }] = useMeasure();
 
     const updateColumnHeadings = () => {
         const filteredColumnList = columnListOptions.filter((item) => item.visible);
         const headingOrder = filteredColumnList.map((item) => {
             return headings[headings.findIndex((find) => find.accessor === item.columnName)]
         });
+        headingOrder.forEach((heading) => {
+            heading.width =  width / headingOrder.length > 100 ? width / headingOrder.length : 100
+        });
         return headingOrder
     }
 
-    const tableColumns = useMemo(() => updateColumnHeadings(), [columnListOptions]);
+    const tableColumns = useMemo(() => updateColumnHeadings(), [columnListOptions, width]);
 
     const initializeColumns = () => {
         const keysArr = Object.keys(tableData[0]);
-        const columnHeadings = keysArr.map(k => {
-            return customCellKeys.includes(k) ? customGridMapping(k) : {
-                "Header": _.startCase(k),
-                "accessor": k,
-                "width": (tableData[0][k].length < 10 || typeof tableData[0][k] === 'number') ? 70 : 180,
+        const columnHeadings = keysArr.map((key) => {
+            return customCellKeys.includes(key) ? customGridMapping(key) : {
+                "Header": _.startCase(key),
+                "accessor": key,
+                "width": width / keysArr.length > 100 ? width / keysArr.length : 100
             }
         });
-        const columnOpts = keysArr.map((k, idx) => {
+        const columnOpts = keysArr.map((key, idx) => {
             return {
                 id: idx,
-                columnName: k,
+                columnName: key,
                 visible: true
             }
         });
@@ -42,7 +47,7 @@ const VerticalTable = ({ tableData, tableFunc, customCellKeys, customGridMapping
 
     useEffect(() => {
         initializeColumns();
-    }, []);
+    }, [width]);
 
     const handleColumnChange = (update) => {
         setColumnListOptions(update);
@@ -137,12 +142,12 @@ const VerticalTable = ({ tableData, tableFunc, customCellKeys, customGridMapping
 
 
     return (
-        <>
+        <div ref={ref}>
             {columnListOptions.length > 0 && (<DndProvider backend={HTML5Backend}>
                 <DragDrop listOptions={columnListOptions} handleColumnChange={handleColumnChange} />
             </DndProvider>)}
             {columnListOptions.length > 0 && (<Table columns={tableColumns} data={tableData}></Table>)}
-        </>
+        </div>
     )
 }
 
