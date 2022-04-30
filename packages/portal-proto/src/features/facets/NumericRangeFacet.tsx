@@ -161,8 +161,6 @@ const FacetItemListHeader: React.FC<FacetItemListHeaderProps> = ({
   );
 };
 
-type RangeValue = Record<string, string | number | boolean>;
-
 interface FromToProps {
   readonly minimum: number;
   readonly maximum: number;
@@ -235,7 +233,10 @@ const FromTo: React.FC<FromToProps> = ({
           hideControls
         />
       </div>
-      <Button onClick={handleApply}>Apply</Button>
+      <div className={"flex flex-row"}>
+        {" "}
+        <Button onClick={handleApply}>Apply</Button> <Button>Reset</Button>
+      </div>
     </div>
   );
 };

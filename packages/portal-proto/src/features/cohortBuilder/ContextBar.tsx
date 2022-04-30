@@ -3,11 +3,10 @@ import { CollapsibleContainer } from "../../components/CollapsibleContainer";
 import { Button, Menu, Tabs } from "@mantine/core";
 import { ContextualCasesView } from "../cases/CasesView";
 import CountButton from "./CountButton";
-
+import { convertFilterToComponent } from "./QueryRepresentation";
 import {
   CohortGroupProps,
   CohortBar,
-  convertFilterToComponent,
   useCohortFacetFilters,
 } from "./CohortGroup";
 
