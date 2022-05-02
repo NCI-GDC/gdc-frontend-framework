@@ -36,7 +36,6 @@ import { cartReducer } from "./features/cart/cartSlice";
 import { apiSlice } from "./features/api/apiSlice";
 
 const reducers = {
-  [apiSlice.reducerPath]: apiSlice.reducer,
   cohort: cohortReducers,
   session: sessionReducer,
   facets: facetsReducer, // TODO: Pick which one to use in V2
@@ -55,6 +54,7 @@ const reducers = {
   imageViewer: imageViewerReducer,
   cohortComparison: cohortFacetsReducer,
   cart: cartReducer,
+  [apiSlice.reducerPath]: apiSlice.reducer,
 };
 
 const persistConfig = {
