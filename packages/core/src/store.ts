@@ -9,7 +9,8 @@ import {
   REGISTER,
 } from "redux-persist";
 
-import { coreReducers, apiSpliceMW } from "./reducers";
+import { coreReducers } from "./reducers";
+import { apiSliceMiddleware } from "./features/api/apiSlice";
 
 export const coreStore = configureStore({
   reducer: coreReducers,
@@ -21,7 +22,7 @@ export const coreStore = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(apiSpliceMW),
+    }).concat(apiSliceMiddleware),
 });
 
 setupListeners(coreStore.dispatch);
