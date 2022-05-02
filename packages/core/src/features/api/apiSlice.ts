@@ -4,7 +4,6 @@
 
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { coreCreateApi } from "../../api";
-import { PersistentCohort } from "../../../features/cohortBuilder/CohortGroup";
 import type { Middleware, Reducer } from "@reduxjs/toolkit";
 //import { CohortModel } from './cohort.model'
 //import { PersistentCohort } from '../../../portal-proto/src/features/cohortBuilder/CohortGroup'
