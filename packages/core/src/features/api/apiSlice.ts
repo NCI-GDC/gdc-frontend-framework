@@ -2,9 +2,10 @@
 // @ts-nocheck
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { coreCreateApi } from "../../api";
 import { PersistentCohort } from "../../../features/cohortBuilder/CohortGroup";
+import type { Middleware, Reducer } from "@reduxjs/toolkit";
 //import { CohortModel } from './cohort.model'
 //import { PersistentCohort } from '../../../portal-proto/src/features/cohortBuilder/CohortGroup'
 
@@ -63,3 +64,7 @@ export const {
   useAddCohortMutation,
   useEditCohortMutation,
 } = apiSlice;
+
+export const apiSliceMiddleware = apiSlice.middleware as Middleware;
+export const apiSliceReducerPath: string = apiSlice.reducerPath;
+export const apiReducer: Reducer = apiSlice.reducer as Reducer;

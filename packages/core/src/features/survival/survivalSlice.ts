@@ -5,7 +5,8 @@ import {
   createUseFiltersCoreDataHook,
   DataStatus,
 } from "../../dataAcess";
-import { CoreDispatch, CoreState } from "../../store";
+import { CoreDispatch } from "../../store";
+import { CoreState } from "../../reducers";
 import { selectCurrentCohortFilters } from "../cohort/cohortFilterSlice";
 import { GqlOperation } from "../gdcapi/filters";
 import { DAYS_IN_YEAR } from "../../constants";

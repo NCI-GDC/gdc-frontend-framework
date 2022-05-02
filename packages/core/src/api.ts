@@ -5,8 +5,6 @@ import {
 } from "@reduxjs/toolkit/dist/query/react";
 import { useCoreSelector, useCoreStore, useCoreDispatch } from "./hooks";
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 export const coreCreateApi = buildCreateApi(
   coreModule(),
   reactHooksModule({

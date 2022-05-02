@@ -1,7 +1,5 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
-import { AnyAction } from "@reduxjs/toolkit";
 import React from "react";
+import { Store } from "@reduxjs/toolkit";
 import {
   createDispatchHook,
   createSelectorHook,
@@ -9,7 +7,8 @@ import {
   ReactReduxContextValue,
   TypedUseSelectorHook,
 } from "react-redux";
-import { CoreDispatch, CoreState } from "./store";
+import { CoreDispatch } from "./store";
+import { CoreState } from "./reducers";
 
 // From here down is react-related code. If we wanted to create a UI-agnotic core,
 // we could need to move the following code and the provider into a new workspace,
@@ -23,7 +22,7 @@ import { CoreDispatch, CoreState } from "./store";
  * correct opinionated type.
  */
 export const CoreContext = React.createContext(
-  undefined as unknown as ReactReduxContextValue<CoreState, AnyAction>,
+  undefined as unknown as ReactReduxContextValue<CoreState>,
 );
 
 /*
@@ -33,7 +32,8 @@ export const useCoreSelector: TypedUseSelectorHook<CoreState> =
   createSelectorHook(CoreContext);
 export const useCoreDispatch: () => CoreDispatch =
   createDispatchHook(CoreContext);
-export const useCoreStore = createStoreHook(CoreContext);
+
+export const useCoreStore: () => Store = createStoreHook(CoreContext);
 
 // This is untested. Need to verify that it work in single- and multi-store/provider contexts.
 // export const coreConnect = <

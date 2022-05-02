@@ -4,7 +4,8 @@ import {
   DataStatus,
   CoreDataSelectorResponse,
 } from "../../dataAcess";
-import { CoreState, CoreDispatch } from "../../store";
+import { CoreDispatch } from "../../store";
+import { CoreState } from "../../reducers";
 import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
 import { buildCohortGqlOperator } from "../cohort/cohortFilterSlice";
 import { selectAvailableCohortByName } from "../cohort/availableCohortsSlice";
