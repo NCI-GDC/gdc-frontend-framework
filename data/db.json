@@ -19,6 +19,19 @@
           "value": ["breast", "bronchus and lung"]
         }
       ]
+    },
+    {
+      "id": "1122334455",
+      "name": ""
+    },
+    {
+      "id": "ZVPkSjtxosi6daScZCxZT",
+      "name": "My Name 1"
+    },
+    {
+      "id": "Sgl5yQbmvKXx0SPK6gMN5",
+      "name": "Another Test",
+      "facets": []
     }
   ]
 }

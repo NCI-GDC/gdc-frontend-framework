@@ -27,12 +27,29 @@ export const apiSlice = coreCreateApi({
   // @ts-ignore
   endpoints: (builder) => ({
     //getCohorts: builder.query<PersistentCohort[], void>({
-    getCohorts: builder.query<any[], void>({
+    getCohorts: builder.query<CohortModel[], void>({
       query: () => "/cohorts",
     }),
     //getCohortById: builder.query<CohortModel, string>({
-    getCohortById: builder.query<any, string>({
+    getCohortById: builder.query<CohortModel, string>({
       query: (id) => `/cohorts/${id}`,
+    }),
+    addCohort: builder.mutation<CohortModel, CohortModel>({
+      query: (cohort) => ({
+        url: "/cohorts",
+        method: "POST",
+        body: cohort,
+      }),
+    }),
+    editCohort: builder.mutation<
+      CohortModel,
+      { id: string; data: Partial<CohortModel> }
+    >({
+      query: (id, data) => ({
+        url: `cohorts/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
     }),
     // getCohortByName: builder.query<string, string>({
     //   query: (name) => `/cohorts/${name}`,
@@ -43,5 +60,6 @@ export const apiSlice = coreCreateApi({
 export const {
   useGetCohortsQuery,
   useGetCohortByIdQuery,
-  // useGetCohortByNameQuery,
+  useAddCohortMutation,
+  useEditCohortMutation,
 } = apiSlice;
