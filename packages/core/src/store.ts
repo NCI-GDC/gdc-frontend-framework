@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import {
@@ -34,6 +36,7 @@ import { cartReducer } from "./features/cart/cartSlice";
 import { apiSlice } from "./features/api/apiSlice";
 
 const reducers = {
+  [apiSlice.reducerPath]: apiSlice.reducer,
   cohort: cohortReducers,
   session: sessionReducer,
   facets: facetsReducer, // TODO: Pick which one to use in V2
@@ -52,7 +55,6 @@ const reducers = {
   imageViewer: imageViewerReducer,
   cohortComparison: cohortFacetsReducer,
   cart: cartReducer,
-  [apiSlice.reducerPath]: apiSlice.reducer,
 };
 
 const persistConfig = {
@@ -76,6 +78,8 @@ export const coreStore = configureStore({
       },
     }).concat(apiSlice.middleware),
 });
+
+console.log("store: ", coreStore.getState());
 
 setupListeners(coreStore.dispatch);
 
