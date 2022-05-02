@@ -4,6 +4,7 @@
 
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { coreCreateApi } from "../../api";
+import { PersistentCohort } from "../../../features/cohortBuilder/CohortGroup";
 //import { CohortModel } from './cohort.model'
 //import { PersistentCohort } from '../../../portal-proto/src/features/cohortBuilder/CohortGroup'
 
@@ -25,10 +26,12 @@ export const apiSlice = coreCreateApi({
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   endpoints: (builder) => ({
-    getCohorts: builder.query<string, void>({
+    //getCohorts: builder.query<PersistentCohort[], void>({
+    getCohorts: builder.query<any[], void>({
       query: () => "/cohorts",
     }),
-    getCohortById: builder.query<CohortModel, string>({
+    //getCohortById: builder.query<CohortModel, string>({
+    getCohortById: builder.query<any, string>({
       query: (id) => `/cohorts/${id}`,
     }),
     // getCohortByName: builder.query<string, string>({
