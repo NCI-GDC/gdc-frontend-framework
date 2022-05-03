@@ -61,7 +61,7 @@ const GenesTable: React.FC<unknown> = () => {
 
     if (isFetching) {
       return (
-        <div className="grid place-items-center">
+        <div className="grid place-items-center h-96">
           <div className="flex flex-row">
             <RingLoader color={"lightblue"} loading={true} size={100} />
           </div>
@@ -73,9 +73,9 @@ const GenesTable: React.FC<unknown> = () => {
       return <div>Failed to fetch table: {error}</div>;
     }
 
-    return (<VerticalTable tableData={getTableFormatData(data)} tableFunc={tableFunc} customCellKeys={["annotations", "survival"]} customGridMapping={getCustomGridCell}></VerticalTable>)
+    return <VerticalTable tableData={getTableFormatData(data)} tableFunc={tableFunc} customCellKeys={["annotations", "survival"]} customGridMapping={getCustomGridCell}></VerticalTable>
 
-  }, [data, error, isUninitialized, isFetching, isError, pageSize, offset]);
+  }, [error, isUninitialized, isFetching, isError, data]);
 
   return (
     <div className="flex flex-col w-100">

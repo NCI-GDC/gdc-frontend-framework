@@ -57,7 +57,7 @@ const MutationTable: React.FC<unknown> = () => {
       return <div>Failed to fetch table: {error}</div>;
     }
 
-    return (<VerticalTable tableData={getTableFormatData(data)} tableFunc={tableFunc} customCellKeys={["impact", "survival"]} customGridMapping={getCustomGridCell}></VerticalTable>)
+    return <VerticalTable tableData={getTableFormatData(data)} tableFunc={tableFunc} customCellKeys={["impact", "survival"]} customGridMapping={getCustomGridCell}></VerticalTable>
 
   }, [data, error, isUninitialized, isFetching, isError, pageSize, offset]);
   

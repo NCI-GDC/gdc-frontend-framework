@@ -60,7 +60,7 @@ const DragDrop = ({ listOptions, handleColumnChange }) => {
 
   return (
     <>
-      <div className="w-60">{columns.map((column, i) => renderColumn(column, i))}</div>
+      <div className="w-70">{columns.map((column, i) => renderColumn(column, i))}</div>
     </>
   )
 }

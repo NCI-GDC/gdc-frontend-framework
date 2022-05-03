@@ -48,8 +48,8 @@ const VerticalTable = ({ tableData, tableFunc, customCellKeys, customGridMapping
     }
 
     useEffect(() => {
-        initializeColumns();
-    }, [width]);
+        if (tableData && tableData.length > 0) initializeColumns();
+    }, [width, tableData]);
 
     const handleColumnChange = (update) => {
         setColumnListOptions(update);
@@ -98,7 +98,7 @@ const VerticalTable = ({ tableData, tableFunc, customCellKeys, customGridMapping
                         {...row.getRowProps({
                             style,
                         })}
-                        className={`tr ${index % 2 === 1 ? "bg-nci-cyan-lighter" : 'bg-purple-100'}`}
+                        className={`tr ${index % 2 === 1 ? "bg-gray-300" : 'bg-white'}`}
                     >
                         {row.cells.map(cell => {
                             return (
@@ -116,7 +116,7 @@ const VerticalTable = ({ tableData, tableFunc, customCellKeys, customGridMapping
         return (
             <div className="p-2">
                 <div {...getTableProps()} className="table inline-block">
-                    <div className="bg-white rounded-md">
+                    <div className="bg-gray-200">
                         {headerGroups.map(headerGroup => (
                             <div {...headerGroup.getHeaderGroupProps()} className="tr">
                                 {headerGroup.headers.map(column => (
@@ -155,11 +155,8 @@ const VerticalTable = ({ tableData, tableFunc, customCellKeys, customGridMapping
                     <div className={`mt-px`}>
                     <button className={`mr-0 ml-auto border-1 border-gray-300 p-3`} onClick={() => setShowColumnMenu(!showColumnMenu)}><BsList></BsList></button>
                     </div>
-                    
                     </div>
-                    
                 </div>
-            
             {columnListOptions.length > 0 && (<Table columns={tableColumns} data={tableData}></Table>)}
         </div>
     )
