@@ -97,7 +97,7 @@ export const getCustomGridCell = (key) => {
                 Cell: ({ value, row }) => (<>
                     <div className="grid place-items-center">
                         <div className="flex flex-row space-x-3">
-                            <div className={`bg-${value[1]}-400 rounded-xl flex justify-center items-center h-8 w-8 text-white`}>{value[0]}</div>
+                            {value[0] ? <div className={`bg-${value[1]}-400 rounded-xl flex justify-center items-center h-8 w-8 text-white`}>{value[0]}</div> : <div className="flex justify-center items-center rounded-xl h-8 w-8">-</div>}
                             {value[2] ? <div className={`bg-${value[3]}-400 rounded-xl flex justify-center items-center h-8 w-8 text-white`}>{value[2]}</div> : <div className="flex justify-center items-center rounded-xl h-8 w-8">-</div>}
                             {value[4] ? <div className={`bg-${value[5]}-400 rounded-xl flex justify-center items-center h-8 w-8 text-white`}>{value[4]}</div>: <div className="flex justify-center items-center rounded-xl h-8 w-8">-</div>}
                         </div>
