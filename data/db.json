@@ -8,7 +8,12 @@
     {
       "id": "2f70de91-7c5a-41d2-9620-90670dfdaddb",
       "name": "Mike's Cohort",
-      "facets": []
+      "facets": [
+        {
+          "field": "cases.demographic.gender",
+          "value": ["unknown"]
+        }
+      ]
     },
     {
       "id": "fa3ec4f4-5530-4e2e-9773-12ba16c95ff2",
@@ -21,16 +26,8 @@
       ]
     },
     {
-      "id": "1122334455",
-      "name": ""
-    },
-    {
-      "id": "ZVPkSjtxosi6daScZCxZT",
-      "name": "My Name 1"
-    },
-    {
-      "id": "Sgl5yQbmvKXx0SPK6gMN5",
-      "name": "Another Test",
+      "id": "46b46931-9235-4a5d-92e3-bf116dceb70c",
+      "name": "Delete This Cohort",
       "facets": []
     }
   ]

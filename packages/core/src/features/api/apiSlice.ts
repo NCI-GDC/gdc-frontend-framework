@@ -5,7 +5,6 @@
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { coreCreateApi } from "../../coreCreateApi";
 import type { Middleware, Reducer } from "@reduxjs/toolkit";
-//import { CohortModel } from './cohort.model'
 //import { PersistentCohort } from '../../../portal-proto/src/features/cohortBuilder/CohortGroup'
 
 export interface CohortModel {
@@ -19,18 +18,16 @@ export interface CohortModel {
 export const apiSlice = coreCreateApi({
   reducerPath: "pocCohortApi",
   baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3500" }),
-  // baseQuery: async (baseUrl, prepareHeaders, ...rest) => {
-  //   const response = await fetch(`http://localhost:3500/${baseUrl}`, rest)
-  //   return {data: await response.json()}
-  // },
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   endpoints: (builder) => ({
-    //getCohorts: builder.query<PersistentCohort[], void>({
     getCohorts: builder.query<CohortModel[], void>({
       query: () => "/cohorts",
+      providesTags: (result = [], error, arg) => [
+        "Cohort",
+        ...result.map(({ id }) => ({ type: "Cohort", id })),
+      ],
     }),
-    //getCohortById: builder.query<CohortModel, string>({
     getCohortById: builder.query<CohortModel, string>({
       query: (id) => `/cohorts/${id}`,
     }),
@@ -40,6 +37,7 @@ export const apiSlice = coreCreateApi({
         method: "POST",
         body: cohort,
       }),
+      invalidatesTags: ["Cohort"],
     }),
     editCohort: builder.mutation<
       CohortModel,
@@ -50,10 +48,15 @@ export const apiSlice = coreCreateApi({
         method: "PATCH",
         body: data,
       }),
+      invalidatesTags: ["Cohort"],
     }),
-    // getCohortByName: builder.query<string, string>({
-    //   query: (name) => `/cohorts/${name}`,
-    // }),
+    deleteCohort: builder.mutation<void, { id: string }>({
+      query: (id) => ({
+        url: `cohorts/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Cohort"],
+    }),
   }),
 });
 
@@ -62,6 +65,7 @@ export const {
   useGetCohortByIdQuery,
   useAddCohortMutation,
   useEditCohortMutation,
+  useDeleteCohortMutation,
 } = apiSlice;
 
 export const apiSliceMiddleware = apiSlice.middleware as Middleware;
