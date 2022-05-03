@@ -3,7 +3,7 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { coreCreateApi } from "../../api";
+import { coreCreateApi } from "../../coreCreateApi";
 import type { Middleware, Reducer } from "@reduxjs/toolkit";
 //import { CohortModel } from './cohort.model'
 //import { PersistentCohort } from '../../../portal-proto/src/features/cohortBuilder/CohortGroup'

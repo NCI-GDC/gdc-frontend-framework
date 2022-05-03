@@ -8,12 +8,8 @@ import { useCoreSelector, useCoreStore, useCoreDispatch } from "./hooks";
 export const coreCreateApi = buildCreateApi(
   coreModule(),
   reactHooksModule({
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    useSelector: useCoreSelector,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    useStore: useCoreStore,
+    useSelector: useCoreSelector as any,
+    useStore: useCoreStore as any,
     useDispatch: useCoreDispatch,
   }),
 );
