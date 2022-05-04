@@ -1,42 +1,33 @@
 import { NextPage } from "next";
-import { useGetCohortsQuery, useAddCohortMutation } from "@gff/core";
+import {
+  useGetCohortsQuery,
+  useAddCohortMutation,
+  useDeleteCohortMutation,
+  useUpdateCohortMutation,
+} from "@gff/core";
 import React, { ChangeEvent, useState } from "react";
 import { nanoid } from "nanoid";
+import { SimpleLayout } from "../features/layout/Simple";
 
-let CohortContent = ({ cohort }) => {
-  return (
-    <article key={cohort.id}>
-      <h3>Cohort ID: {cohort.id}</h3>
-      <div>Cohort Name: {cohort.name}</div>
-    </article>
-  );
-};
+// let CohortContent = ({ cohort }) => {
+//   return (
+//     <article key={cohort.id}>
+//       <h3>Cohort ID: {cohort.id}</h3>
+//       <div>Cohort Name: {cohort.name}</div>
+//     </article>
+//   );
+// };
 
 const CohortMultiTest: NextPage = () => {
-  let CohortInput = ({ cohort }) => {
-    return (
-      <div>
-        <input
-          name="Cohort ID"
-          value={cohort.id}
-          onChange={handleInputChange}
-        />
-        <br />
-        <input name="Cohort Name" value={cohort.name} />
-        <br />
-        <button type="button">Update</button>
-      </div>
-    );
-  };
-
   const [newName, setNewName] = useState("");
+  const [existingName, setExistingName] = useState("");
+
+  const { data, isLoading, isSuccess, isError, error } = useGetCohortsQuery();
   const [addCohort] = useAddCohortMutation();
+  const [updateCohort] = useUpdateCohortMutation();
+  const [deleteCohort] = useDeleteCohortMutation();
 
-  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setNewName(event.target.value);
-  };
-
-  const handleSaveSubmit = () => {
+  const handleAddSubmit = () => {
     addCohort({
       id: nanoid(),
       name: newName,
@@ -44,31 +35,78 @@ const CohortMultiTest: NextPage = () => {
     });
   };
 
-  const { data, isLoading, isSuccess, isError, error } = useGetCohortsQuery();
+  const handleNewNameChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setNewName(event.target.value);
+  };
+
+  const handleExistingNameChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setExistingName(event.target.value);
+  };
+
+  const addCohortSection = (
+    <form onSubmit={handleAddSubmit}>
+      <div>
+        <label>New Cohort Name</label>
+        <input name="newName" onChange={handleNewNameChange} />
+      </div>
+      <button className="submit">Add</button>
+    </form>
+  );
+
+  // const addCohortSection =
+  // <form onSubmit={handleAddSubmit}>
+  //   <ul>
+  //    <label>New Cohort Name</label>
+  //    <input name="newName" onChange={handleInputChange} />
+  //   </ul>
+  //   <button className="submit">Add</button>
+  // </form>
 
   let content;
 
   if (isLoading) {
     content = <div>Loading</div>;
   } else if (isSuccess) {
-    const renderedCohorts = data.map((cohort) => (
-      <CohortInput key={cohort.id} cohort={cohort} />
-    ));
-
-    content = <div>{renderedCohorts}</div>;
+    content = data.map((cohort) => {
+      return (
+        <article key={cohort.id}>
+          <div>
+            <label>Cohort ID </label>
+            <label>{cohort.id}</label>
+          </div>
+          <form>
+            <div>
+              <label>Cohort Name: {cohort.name}</label>
+              <br></br>
+              <label>New Name</label>
+              <input
+                name="currentName"
+                onChange={handleExistingNameChange}
+              ></input>
+            </div>
+            <div>
+              <button
+                onClick={() => updateCohort(cohort.id, { name: existingName })}
+              >
+                Update
+              </button>
+              <button onClick={() => deleteCohort(cohort.id)}>Delete</button>
+              <br></br>
+            </div>
+          </form>
+        </article>
+      );
+    });
   } else if (isError || !data) {
-    content = <div>Something went wrong</div>;
+    content = <div>The following error occurred: {error}</div>;
   }
 
   return (
-    <div>
+    <div className="border p-4 border-gray-400">
+      <h1>Add Cohort to List</h1>
+      {addCohortSection}
       <h1>Existing Cohort List</h1>
       {content}
-      <h1>Add Item to List</h1>
-      <input name="name" onChange={handleInputChange} />
-      <button type="button" onClick={handleSaveSubmit}>
-        Save
-      </button>
     </div>
   );
 };

@@ -16,10 +16,12 @@ export interface CohortModel {
 // base api slice is empty, endpoints will be injected via feature slices
 
 export const apiSlice = coreCreateApi({
-  reducerPath: "pocCohortApi",
+  reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3500" }),
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
+  //endpoints: () => ({
+  tagTypes: ["Cohort"],
   endpoints: (builder) => ({
     getCohorts: builder.query<CohortModel[], void>({
       query: () => "/cohorts",
@@ -39,20 +41,24 @@ export const apiSlice = coreCreateApi({
       }),
       invalidatesTags: ["Cohort"],
     }),
-    editCohort: builder.mutation<
-      CohortModel,
-      { id: string; data: Partial<CohortModel> }
-    >({
-      query: (id, data) => ({
-        url: `cohorts/${id}`,
+    updateCohort: builder.mutation<CohortModel, CohortModel>({
+      query: (cohort) => ({
+        url: `/cohorts/${cohort.id}`,
         method: "PATCH",
-        body: data,
+        body: cohort,
       }),
+      // updateCohort: builder.mutation<CohortModel,{ id: string; data: Partial<CohortModel> }>({
+      //   query: (id, data) => ({
+      //     url: `/cohorts/${id}`,
+      //     method: "PATCH",
+      //     body: data,
+      //   }),
       invalidatesTags: ["Cohort"],
+      // invalidatesTags: (result, error, arg) => [{ type: 'Cohort', id: arg.id }],
     }),
     deleteCohort: builder.mutation<void, { id: string }>({
       query: (id) => ({
-        url: `cohorts/${id}`,
+        url: `/cohorts/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Cohort"],
@@ -64,7 +70,7 @@ export const {
   useGetCohortsQuery,
   useGetCohortByIdQuery,
   useAddCohortMutation,
-  useEditCohortMutation,
+  useUpdateCohortMutation,
   useDeleteCohortMutation,
 } = apiSlice;
 
