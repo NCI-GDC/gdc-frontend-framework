@@ -55,7 +55,8 @@
     "husky": "^7.0.4",
     "lerna": "^4.0.0",
     "lint-staged": "^12.3.7",
-    "prettier": "^2.3.2"
+    "prettier": "^2.3.2",
+    "victory": "^36.3.2"
   },
   "engines": {
     "npm": ">=7.0.0"
