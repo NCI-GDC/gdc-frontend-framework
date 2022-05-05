@@ -59,6 +59,7 @@ export const isStatsAggregation = (
 
 export type gdcEndpoint =
   | "annotations"
+  | "history"
   | "case_ssms"
   | "cases"
   | "cnv_occurrences"
@@ -110,6 +111,7 @@ export interface FieldDetails {
   readonly description: string;
   readonly doc_type:
     | "annotations"
+    | "history"
     | "case_centrics"
     | "cases"
     | "cnv_centrics"
@@ -235,6 +237,13 @@ export interface AnnotationDefaults {
   readonly case_submitter_id: string;
   readonly status: string;
 }
+export interface HistoryDefaults {
+  readonly uuid: string;
+  readonly version: string;
+  readonly file_change: string;
+  readonly release_date: string;
+  readonly data_release: string;
+}
 
 export interface FileDefaults {
   readonly id: string;
@@ -283,6 +292,10 @@ export interface FileDefaults {
           readonly analyte_id: string;
           readonly analyte_type: string;
           readonly submitter_id: string;
+          readonly aliquots?: ReadonlyArray<{
+            readonly aliquot_id: string;
+            readonly submitter_id: string;
+          }>;
         }>;
         readonly slides?: ReadonlyArray<{
           readonly created_datetime: string | null;
@@ -322,6 +335,7 @@ export interface FileDefaults {
       readonly data_type: string;
       readonly data_format: string;
       readonly file_size: number;
+      readonly file_id: string;
     }>;
   }>;
 }
@@ -403,6 +417,30 @@ export const fetchGdcEntities = async <T>(
   }
 
   throw await buildFetchError(res, request);
+};
+
+export const getGdcHistory = async (
+  uuid: string,
+): Promise<ReadonlyArray<HistoryDefaults>> => {
+  return getGdcEntities("history", uuid);
+};
+
+export const getGdcEntities = async <T>(
+  endpoint: string,
+  uuid: string,
+): Promise<ReadonlyArray<T>> => {
+  const res = await fetch(`https://api.gdc.cancer.gov/${endpoint}/${uuid}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (res.ok) {
+    return res.json();
+  }
+
+  throw await buildFetchError(res);
 };
 
 /**

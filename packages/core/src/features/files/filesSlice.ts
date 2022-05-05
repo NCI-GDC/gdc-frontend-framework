@@ -237,6 +237,10 @@ export interface GdcFile {
           readonly analyte_id: string;
           readonly analyte_type: string;
           readonly submitter_id: string;
+          readonly aliquots?: ReadonlyArray<{
+            readonly aliquot_id: string;
+            readonly submitter_id: string;
+          }>;
         }>;
         readonly slides?: ReadonlyArray<{
           readonly created_datetime: string | null;
@@ -274,6 +278,7 @@ export interface GdcFile {
       readonly data_type: string;
       readonly data_format: string;
       readonly file_size: number;
+      readonly file_id: string;
     }>;
   }>;
 }
@@ -291,7 +296,6 @@ export const fetchFiles = createAsyncThunk<
 >("files/fetchFiles", async (request?: GdcApiRequest) => {
   return await fetchGdcFiles(request);
 });
-
 
 const initialState: FilesState = {
   status: "uninitialized",
@@ -355,6 +359,12 @@ const slice = createSlice({
                               analyte_id: analyte.analyte_id,
                               analyte_type: analyte.analyte_type,
                               submitter_id: analyte.submitter_id,
+                              aliquots: analyte.aliquots?.map((aliquot) => {
+                                return {
+                                  aliquot_id: aliquot.aliquot_id,
+                                  submitter_id: aliquot.submitter_id,
+                                };
+                              }),
                             };
                           }),
                           slides: portion.slides?.map((slide) => {
@@ -412,6 +422,7 @@ const slice = createSlice({
                       data_type: file.data_type,
                       data_format: file.data_format,
                       file_size: file.file_size,
+                      file_id: file.file_id,
                     };
                   }),
                 };
