@@ -1,3 +1,21 @@
+/*
+
+
+
+
+
+
+
+File functionality changed and moved to /files/[uuid]
+
+
+
+
+
+
+
+
+*/
 import { NextPage } from "next";
 import { NextRouter, useRouter } from "next/dist/client/router";
 import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
