@@ -8,6 +8,7 @@ import {
   useUpdateCohortMutation,
   useDeleteCohortMutation,
 } from "@gff/core";
+//} from "../../../core/src/features/api/cohortApiSlice"
 import { nanoid } from "nanoid";
 
 let CohortContent = ({ cohort }) => {
@@ -19,7 +20,8 @@ let CohortContent = ({ cohort }) => {
   );
 };
 
-const EditCohortTest: NextPage = () => {
+const CohortCrudTest: NextPage = () => {
+  // literals
   const cohortId = 123456789;
   let button_class =
     "text-2xl border rounded bg-nci-gray-lighter opacity-75 hover:opacity-100";
@@ -30,18 +32,21 @@ const EditCohortTest: NextPage = () => {
   const [updateCohort] = useUpdateCohortMutation();
   const [deleteCohort] = useDeleteCohortMutation();
 
+  // request body for creates
   const addBody = {
     id: cohortId,
     name: "Original Cohort Name",
     facets: [],
   };
 
+  // request body for updates
   const updateBody = {
     id: cohortId,
     name: "Updated Cohort Name",
     facets: [],
   };
 
+  // using rtkquery to get list of cohorts
   const {
     data: cohortsListData,
     isLoading: isCohortsListLoading,
@@ -49,25 +54,28 @@ const EditCohortTest: NextPage = () => {
     isError: isCohortsListError,
   } = useGetCohortsQuery();
 
+  // render list of cohorts
   let cohortsListContent;
   if (isCohortsListLoading) {
     cohortsListContent = <div>Loading</div>;
   } else if (isCohortsListSuccess) {
     cohortsListContent = cohortsListData.map((cohort) => (
-      <div>
-        <CohortContent key={cohort.id} cohort={cohort} />
+      <article key={cohort.id}>
+        <p>Cohort ID: {cohort.id}</p>
+        <p>Cohort Name: {cohort.name}</p>
         <button
           className={button_class}
           onClick={() => deleteCohort(cohort.id)}
         >
           Delete
         </button>
-      </div>
+      </article>
     ));
   } else if (isCohortsListError || !cohortsListData) {
     cohortsListContent = <div>Error loading list</div>;
   }
 
+  // use rtk query to get a specific cohort
   const {
     data: cohortData,
     isLoading: isCohortLoading,
@@ -76,6 +84,7 @@ const EditCohortTest: NextPage = () => {
     //error: cohortError
   } = useGetCohortByIdQuery(cohortId);
 
+  // render specific cohort
   let cohortContent;
   if (isCohortLoading) {
     cohortContent = <div>Loading</div>;
@@ -89,10 +98,33 @@ const EditCohortTest: NextPage = () => {
     cohortContent = <div>Cohort with id {cohortId} does not exist</div>;
   }
 
+  // use rtk query to get a control cohort that won't be refreshed when the target cohort is modified
+  const {
+    data: controlCohortData,
+    isLoading: isControlCohortLoading,
+    isSuccess: isControlCohortSuccess,
+    isError: isControlCohortError,
+  } = useGetCohortByIdQuery("2f70de91-7c5a-41d2-9620-90670dfdaddb");
+
+  // render specific cohort
+  let controlCohortContent;
+  if (isControlCohortLoading) {
+    controlCohortContent = <div>Loading</div>;
+  } else if (isControlCohortSuccess) {
+    controlCohortContent = (
+      <div>
+        <CohortContent key={controlCohortData.id} cohort={controlCohortData} />
+      </div>
+    );
+  } else if (isControlCohortError || !controlCohortData) {
+    controlCohortContent = <div>Error occurred when getting cohort</div>;
+  }
+
+  // render page
   return (
     <div>
       <div className="font-montserrat text-xl text-nci-gray-darker p-4 shadow-md transition-colors">
-        <h1>Cohort</h1>
+        <h1>Test Cohort</h1>
         <br></br>
         {cohortContent}
         <br></br>
@@ -116,6 +148,11 @@ const EditCohortTest: NextPage = () => {
         <br></br>
       </div>
       <div className="font-montserrat text-xl text-nci-gray-darker p-4 shadow-md transition-colors">
+        <h1>Control Cohort</h1>
+        <br></br>
+        {controlCohortContent}
+      </div>
+      <div className="font-montserrat text-xl text-nci-gray-darker p-4 shadow-md transition-colors">
         <h1>Cohort List</h1>
         <br></br>
         {cohortsListContent}
@@ -124,4 +161,4 @@ const EditCohortTest: NextPage = () => {
   );
 };
 
-export default EditCohortTest;
+export default CohortCrudTest;

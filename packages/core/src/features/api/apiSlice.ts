@@ -20,8 +20,10 @@ export const apiSlice = coreCreateApi({
   baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3500" }),
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  //endpoints: () => ({
+
+  //tagTypes: ["Cohorts", "Cohort"],
   tagTypes: ["Cohort"],
+  // endpoints: () => ({
   endpoints: (builder) => ({
     getCohorts: builder.query<CohortModel[], void>({
       query: () => "/cohorts",
@@ -41,6 +43,7 @@ export const apiSlice = coreCreateApi({
         body: cohort,
       }),
       invalidatesTags: ["Cohort"],
+      //invalidatesTags: ["Cohorts", "Cohort"],
     }),
     updateCohort: builder.mutation<CohortModel, CohortModel>({
       query: (cohort) => ({
@@ -48,21 +51,15 @@ export const apiSlice = coreCreateApi({
         method: "PATCH",
         body: cohort,
       }),
-      // updateCohort: builder.mutation<CohortModel,{ id: string; data: Partial<CohortModel> }>({
-      //   query: (id, data) => ({
-      //     url: `/cohorts/${id}`,
-      //     method: "PATCH",
-      //     body: data,
-      //   }),
-      invalidatesTags: ["Cohort"],
-      // invalidatesTags: (result, error, arg) => [{ type: 'Cohort', id: arg.id }],
+      invalidatesTags: (result, error, arg) => [{ type: "Cohort", id: arg.id }],
     }),
     deleteCohort: builder.mutation<void, { id: string }>({
       query: (id) => ({
         url: `/cohorts/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Cohort"],
+      invalidatesTags: (result, error, arg) => [{ type: "Cohort", id: arg }],
+      // invalidatesTags: ["Cohort"],
     }),
   }),
 });
