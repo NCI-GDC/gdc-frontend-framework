@@ -14,7 +14,7 @@ import {
 
 interface chartData {
   readonly key: string;
-  readonly value: number;
+  readonly value: number | string;
   readonly highlighted: boolean;
 }
 

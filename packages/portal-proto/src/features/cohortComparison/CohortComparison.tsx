@@ -28,8 +28,8 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
 
   const fields = {
     survival: "Survival",
-    gender: "demographic.gender",
     ethnicity: "demographic.ethnicity",
+    gender: "demographic.gender",
     race: "demographic.race",
     vital_status: "demographic.vital_status",
     age_at_diagnosis: "diagnoses.age_at_diagnosis",
@@ -54,7 +54,7 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
         </span>
       )}
       <div className="flex gap-4 pt-2">
-        <div className="p-1 flex basis-2/4 flex-col gap-4">
+        <div className="p-1 flex basis-7/12 flex-col gap-4">
           {selectedCards.survival && (isFetching || isUninitialized) ? (
             <div className="min-w-[600px] min-h-[400px] relative">
               <LoadingOverlay visible={isFetching} />
@@ -92,7 +92,7 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
             ),
           )}
         </div>
-        <div className="p-1 flex basis-2/4">
+        <div className="p-1 flex basis-1/4">
           <CohortCard
             selectedCards={selectedCards}
             setSelectedCards={setSelectedCards}
@@ -100,6 +100,8 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
             cohortNames={cohortNames}
             options={fields}
             survivalPlotSelectable={survivalPlotSelectable}
+            caseIds={data?.caseIds}
+            casesFetching={isFetching}
           />
         </div>
       </div>
