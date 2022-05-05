@@ -32,6 +32,7 @@ export const apiSlice = coreCreateApi({
     }),
     getCohortById: builder.query<CohortModel, string>({
       query: (id) => `/cohorts/${id}`,
+      providesTags: (result, error, arg) => [{ type: "Cohort", id: arg }],
     }),
     addCohort: builder.mutation<CohortModel, CohortModel>({
       query: (cohort) => ({
