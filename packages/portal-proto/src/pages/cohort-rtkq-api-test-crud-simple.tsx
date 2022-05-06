@@ -8,7 +8,6 @@ import {
   useUpdateCohortMutation,
   useDeleteCohortMutation,
 } from "@gff/core";
-//} from "../../../core/src/features/api/cohortApiSlice"
 import { nanoid } from "nanoid";
 
 let CohortContent = ({ cohort }) => {

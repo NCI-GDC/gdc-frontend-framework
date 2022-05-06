@@ -19,7 +19,10 @@ import { imageDetailsReducer } from "./features/imageDetails/imageDetailsSlice";
 import { imageViewerReducer } from "./features/imageDetails/imageViewer";
 import { cohortFacetsReducer } from "./features/cohortComparison/cohortFacetSlice";
 import { cartReducer } from "./features/cart/cartSlice";
-import { apiReducer, apiSliceReducerPath } from "./features/api/apiSlice";
+import {
+  cohortApiReducer,
+  cohortApiSliceReducerPath,
+} from "./features/api/cohortApiSlice";
 
 export const reducers = combineReducers({
   cohort: cohortReducers,
@@ -40,7 +43,7 @@ export const reducers = combineReducers({
   imageViewer: imageViewerReducer,
   cohortComparison: cohortFacetsReducer,
   cart: cartReducer,
-  [apiSliceReducerPath]: apiReducer,
+  [cohortApiSliceReducerPath]: cohortApiReducer,
 });
 
 const persistConfig = {

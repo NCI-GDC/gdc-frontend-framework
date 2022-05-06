@@ -10,7 +10,7 @@ import {
 } from "redux-persist";
 
 import { coreReducers } from "./reducers";
-import { apiSliceMiddleware } from "./features/api/apiSlice";
+import { cohortApiSliceMiddleware } from "./features/api/cohortApiSlice";
 
 export const coreStore = configureStore({
   reducer: coreReducers,
@@ -22,7 +22,7 @@ export const coreStore = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(apiSliceMiddleware),
+    }).concat(cohortApiSliceMiddleware),
 });
 
 setupListeners(coreStore.dispatch);
