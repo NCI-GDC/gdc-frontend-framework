@@ -14,6 +14,7 @@ export * from "./features/facets/casesFacetSliceGQL";
 export * from "./features/facets/filesFacetSliceGQL";
 export * from "./features/facets/genesFacetSliceGQL";
 export * from "./features/facets/mutationFacetSliceGQL";
+export * from "./features/facets/continuousAggregationSlice";
 export * from "./features/gdcapps/gdcAppsSlice";
 export * from "./features/gdcapps/GdcApp";
 export * from "./features/files/filesSlice";

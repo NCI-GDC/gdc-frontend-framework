@@ -11,7 +11,7 @@ export const buildGraphGLBucketQuery = (
   facetName: string,
   type = "explore",
 ): string => {
-  const queryGQL = `
+  return `
   query QueryBucketCounts($filters_0: FiltersArgument!) {
       viewer {
           ${type} {
@@ -32,8 +32,8 @@ export const buildGraphGLBucketQuery = (
         }
       }
   `;
-  return queryGQL;
 };
+
 export interface BucketCountsQueryProps {
   readonly type: string;
   readonly what: string;
@@ -46,7 +46,7 @@ export interface FacetBuckets {
   readonly buckets?: Record<string, number>;
 }
 
-type processBuckets = (
+export type processBuckets = (
   aggregations: Record<string, unknown>,
   state: {
     [index: string]: Record<string, unknown>;

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useCoreDispatch } from "@gff/core";
 
 import { FacetEnumHooks, UpdateEnums } from "./hooks";
+import { DEFAULT_VISIBLE_ITEMS } from "./utils";
 
 import {
   MdAddCircle as MoreIcon,
@@ -59,7 +60,7 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
   const [isSearching, setIsSearching] = useState(false);
   const [isSortedByValue, setIsSortedByValue] = useState(false);
   const [isFacetView, setIsFacetView] = useState(startShowingData);
-  const [visibleItems, setVisibleItems] = useState(6);
+  const [visibleItems, setVisibleItems] = useState(DEFAULT_VISIBLE_ITEMS);
 
   const { data, enumFilters, isSuccess } = FacetEnumHooks[type](field);
   const [selectedEnums, setSelectedEnums] = useState(enumFilters);
@@ -85,7 +86,7 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
     updateFilters(coreDispatch, selectedEnums, field);
   }, [updateFilters, coreDispatch, selectedEnums, field, type]);
 
-  const maxValuesToDisplay = 6;
+  const maxValuesToDisplay = DEFAULT_VISIBLE_ITEMS;
   const total = visibleItems;
   if (total == 0 && hideIfEmpty) {
     return null; // nothing to render if total == 0

@@ -1,3 +1,5 @@
+export const DEFAULT_VISIBLE_ITEMS = 6;
+
 const capitalize = (s) => (s.length > 0 ? s[0].toUpperCase() + s.slice(1) : "");
 
 export const convertFieldToName = (field: string): string => {
