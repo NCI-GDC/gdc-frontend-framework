@@ -5,6 +5,7 @@
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { coreCreateApi } from "../../coreCreateApi";
 import type { Middleware, Reducer } from "@reduxjs/toolkit";
+import { useCookies } from "react-cookie";
 //import { PersistentCohort } from '../../../portal-proto/src/features/cohortBuilder/CohortGroup'
 
 export interface CohortModel {
@@ -21,8 +22,10 @@ export const cohortApiSlice = coreCreateApi({
     baseUrl: "http://localhost:3500",
     prepareHeaders: async (headers) => {
       headers.set("X-Context-ID", "FAKE-UUID-FOR-TESTING-CONTEXT-HEADER");
+      //headers.set("X-Context-ID", "FAKE-UUID-FOR-TESTING-CONTEXT-HEADER-BAD");
       return headers;
     },
+    credentials: "include",
   }),
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore

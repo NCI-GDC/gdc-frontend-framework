@@ -1,3 +1,6 @@
+// for this page to work, json-server must be started. To do this from the
+// project root run: node data/server.js
+
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { UserFlowVariedPages } from "../features/layout/UserFlowVariedPages";

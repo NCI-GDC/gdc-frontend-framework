@@ -1,4 +1,6 @@
-// import React from 'react'
+// for this page to work, json-server must be started. To do this from the
+// project root run: node data/server.js
+
 import React, { useState } from "react";
 import { NextPage } from "next";
 import {
@@ -8,7 +10,7 @@ import {
   useUpdateCohortMutation,
   useDeleteCohortMutation,
 } from "@gff/core";
-import { nanoid } from "nanoid";
+import { useCookies } from "react-cookie";
 
 let CohortContent = ({ cohort }) => {
   return (
@@ -21,10 +23,12 @@ let CohortContent = ({ cohort }) => {
 
 const CohortCrudTest: NextPage = () => {
   // literals
+  const [cookies, setCookie] = useCookies(["cookie-x-context-id"]);
+
+  setCookie("cookie-x-context-id", "FAKE-UUID-FOR-TESTING-CONTEXT-HEADER");
   const cohortId = 123456789;
   let button_class =
     "text-2xl border rounded bg-nci-gray-lighter opacity-75 hover:opacity-100";
-  // let button_class = "px-2 py-1 border rounded bg-nci-gray-lighter opacity-75 hover:opacity-100"
 
   // rtk queries and mutations
   const [addCohort] = useAddCohortMutation();
