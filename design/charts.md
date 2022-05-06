@@ -2,7 +2,7 @@
 
 - A charting library that is 508 accessible
   - Keyboard navigation: through data points on chart, displays tooltips, able to use keyboard for click events
-  - Screen reader: ideally able to add aria labels and proper roles to the chart and data points. Alternately add an aria description to the whole chart and have a fall back table for SR. (https://blog.tenon.io/accessible-charts-with-aria/)
+  - Screen reader: ideally able to add aria labels and proper roles to the chart and data points. Alternately add a description to the whole chart and have a fallback table for screen readers. (https://blog.tenon.io/accessible-charts-with-aria/)
   - Low vision: supports high contrast color palettes, ideally supports different fills and patterns
 - Other limitations of plotly that have come up:
   - no hovers on axes
@@ -28,13 +28,13 @@
 - Finicky to use and charts don't always look great
 - Library in general is very flexible
 - Supports roles on data points
-- Can add custom color themes,
+- Can add custom color themes, no fills or patterns
 
 ## Chartjs (https://www.chartjs.org/docs/latest/)
 
 - Doesn't explicitly support keyboard events (example here of how to support it but it relied on internal implentation details of the library and seems broken now: https://github.com/chartjs/Chart.js/issues/1976)
 - Can't use React integration + keyboard events (it doesn't expose what we need)
-- Doesn't seem to have a way to add aria labels to data points
+- Supports adding an aria label to the whole chart but doesn't seem to have a way to add aria labels to data points
 
 ## Recharts (https://recharts.org/en-US/)
 
