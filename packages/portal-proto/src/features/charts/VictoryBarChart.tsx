@@ -5,6 +5,7 @@ import {
   VictoryTheme,
   Bar,
   VictoryTooltip,
+  VictoryAxis,
 } from "victory";
 
 interface VictoryBarChartProps {
@@ -22,6 +23,7 @@ const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
       theme={VictoryTheme.material}
       width={700}
     >
+      <VictoryAxis />
       <VictoryGroup offset={60}>
         {data.map((set, idx) => (
           <VictoryBar
@@ -65,6 +67,7 @@ const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
               <Bar
                 tabIndex={0}
                 ariaLabel={({ datum }) => `x: ${datum.x}, y: ${datum.y}`}
+                role="graphics-symbol"
               />
             }
           />
