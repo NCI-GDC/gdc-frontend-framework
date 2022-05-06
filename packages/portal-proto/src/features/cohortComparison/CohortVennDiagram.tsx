@@ -1,3 +1,4 @@
+import dynamic from "next/dynamic";
 import {
   useCoreSelector,
   selectAvailableCohortByName,
@@ -5,8 +6,10 @@ import {
   useVennIntersectionData,
 } from "@gff/core";
 
-import VennDiagram from "@/features/charts/VennDiagram/VennDiagram";
 import makeIntersectionFilters from "./makeIntersectionFilters";
+const VennDiagram = dynamic(() => import("@/features/charts/VennDiagram"), {
+  ssr: false,
+});
 
 interface CohortVennDiagramProps {
   readonly cohortNames: string[];

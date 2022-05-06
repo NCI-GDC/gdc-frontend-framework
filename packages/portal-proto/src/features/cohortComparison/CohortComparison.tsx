@@ -55,17 +55,19 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
       )}
       <div className="flex gap-4 pt-2">
         <div className="p-1 flex basis-7/12 flex-col gap-4">
-          {selectedCards.survival && (isFetching || isUninitialized) ? (
+          {isFetching || isUninitialized ? (
             <div className="min-w-[600px] min-h-[400px] relative">
               <LoadingOverlay visible={isFetching} />
             </div>
           ) : (
-            <SurvivalCard
-              cohortNames={cohortNames}
-              counts={counts}
-              caseIds={data?.caseIds}
-              setSurvivalPlotSelectable={setSurvivalPlotSelectable}
-            />
+            selectedCards.survival && (
+              <SurvivalCard
+                cohortNames={cohortNames}
+                counts={counts}
+                caseIds={data?.caseIds}
+                setSurvivalPlotSelectable={setSurvivalPlotSelectable}
+              />
+            )
           )}
           {Object.keys(
             pickBy(selectedCards, (v, k) => v && k !== "survival"),
