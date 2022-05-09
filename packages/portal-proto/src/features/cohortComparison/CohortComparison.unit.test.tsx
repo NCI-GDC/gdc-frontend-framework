@@ -12,14 +12,12 @@ jest.mock("@gff/core", () => {
     }),
     useCoreSelector: jest.fn(),
     useVennIntersectionData: jest.fn(),
-    useSurvivalPlot: jest
-      .fn()
-      .mockReturnValue({
-        data: {
-          survivalData: [{ donors: [{ id: "1" }] }],
-          overallStats: { pValue: 0.5 },
-        },
-      }),
+    useSurvivalPlot: jest.fn().mockReturnValue({
+      data: {
+        survivalData: [{ donors: [{ id: "1" }] }],
+        overallStats: { pValue: 0.5 },
+      },
+    }),
   };
 });
 
