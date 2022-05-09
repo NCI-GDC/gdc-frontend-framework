@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useCoreDispatch } from "@gff/core";
-
-import { FacetEnumHooks, UpdateEnums } from "./hooks";
+import {
+  useCoreDispatch,
+  useCoreSelector,
+  selectCohortCountsByName,
+} from "@gff/core";
+import { countMapping, FacetEnumHooks, UpdateEnums } from "./hooks";
 import { DEFAULT_VISIBLE_ITEMS } from "./utils";
 
 import {
@@ -61,12 +64,14 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
   const [isSortedByValue, setIsSortedByValue] = useState(false);
   const [isFacetView, setIsFacetView] = useState(startShowingData);
   const [visibleItems, setVisibleItems] = useState(DEFAULT_VISIBLE_ITEMS);
-
   const { data, enumFilters, isSuccess } = FacetEnumHooks[type](field);
   const [selectedEnums, setSelectedEnums] = useState(enumFilters);
   const coreDispatch = useCoreDispatch();
-
   const updateFilters = UpdateEnums[type];
+
+  const totalCount = useCoreSelector((state) =>
+    selectCohortCountsByName(state, countMapping[type]),
+  );
 
   useEffect(() => {
     setSelectedEnums(enumFilters);
@@ -81,6 +86,13 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
       );
     }
   }, [data, isSuccess]);
+
+  /*
+  useEffect( () => {
+    if (isCountsSuccess)
+      setTotalCounts(countsData[countMapping[type]]);
+  }, [isCountsSuccess, type, c])
+ */
 
   useEffect(() => {
     updateFilters(coreDispatch, selectedEnums, field);
@@ -270,7 +282,7 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                           {showPercent ? (
                             <div className="flex-none text-right w-18 ">
                               (
-                              {(((count as number) / 85415) * 100)
+                              {(((count as number) / totalCount) * 100)
                                 .toFixed(2)
                                 .toLocaleString()}
                               %)

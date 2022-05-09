@@ -69,9 +69,10 @@ export const fetchCohortCaseCounts = createAsyncThunk<
   GraphQLApiResponse,
   void,
   { dispatch: CoreDispatch; state: CoreState }
->("cohort/counts", async (_, thunkAPI): Promise<GraphQLApiResponse> => {
+>("cohort/CohortCounts", async (_, thunkAPI): Promise<GraphQLApiResponse> => {
   const cohortFilters = selectCurrentCohortGqlFilters(thunkAPI.getState());
   const graphQlFilters = cohortFilters ? { filters: cohortFilters } : {};
+  console.log("fetchCohortCaseCounts");
   return await graphqlAPI(CountsGraphQLQuery, graphQlFilters);
 });
 
@@ -84,6 +85,7 @@ const slice = createSlice({
       .addCase(fetchCohortCaseCounts.fulfilled, (state, action) => {
         const response = action.payload;
 
+        console.log("fetchCounts");
         if (response.errors && Object.keys(response.errors).length > 0) {
           state.status = "rejected";
           state.error = response.errors.counts;

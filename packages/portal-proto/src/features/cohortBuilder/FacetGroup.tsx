@@ -48,7 +48,6 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
                 "percent",
               ].includes(x.facet_type)
             ) {
-              console.log(x);
               return (
                 <NumericRangeFacet
                   key={`${x.facet_filter}-${index}`}

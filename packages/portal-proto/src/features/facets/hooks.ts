@@ -291,3 +291,10 @@ export const FacetEnumHooks = {
   genes: useGenesFacet,
   ssms: useMutationsFacet,
 };
+
+export const countMapping = {
+  cases: "caseCounts",
+  files: "fileCounts",
+  genes: "geneCounts",
+  ssms: "mutationCounts",
+};
