@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { convertFieldToName, FacetProps, useRangeFacet } from "./utility";
 import {
   MdAddCircle as MoreIcon,
@@ -14,35 +14,18 @@ import {
 } from "@mantine/core";
 import { Icon } from "@iconify/react";
 import {
-  DAYS_IN_YEAR,
   DAYS_IN_DECADE,
-  updateCohortFilter,
-  Operation,
-  useCoreDispatch,
+  DAYS_IN_YEAR,
   FacetBuckets,
+  Operation,
   removeCohortFilter,
-  useCoreSelector,
-  selectCohortCountsByName,
-  selectRangeFacetByField,
   selectCurrentCohortFiltersByName,
-  OperationHandler,
-  Includes,
-  Equals,
-  NotEquals,
-  LessThan,
-  LessThanOrEquals,
-  GreaterThan,
-  GreaterThanOrEquals,
-  Exists,
-  ExcludeIfAny,
-  Missing,
-  Excludes,
-  Intersection,
-  Union,
+  updateCohortFilter,
+  useCoreDispatch,
+  useCoreSelector,
 } from "@gff/core";
 
 import { DEFAULT_VISIBLE_ITEMS } from "./utils";
-import { countMapping } from "@/features/facets/hooks";
 
 interface NumericFacetProps extends FacetProps {
   readonly facet_type: string;
@@ -82,9 +65,7 @@ interface NumericRange {
   readonly to?: number;
 }
 
-const ExtractRangeFilterTypeAndValues = (
-  filter?: Operation,
-): NumericRange | undefined => {
+const ExtractRangeValues = (filter?: Operation): NumericRange | undefined => {
   if (filter !== undefined) {
     switch (filter.operator) {
       case ">":
@@ -96,8 +77,8 @@ const ExtractRangeFilterTypeAndValues = (
       case "<=":
         return { to: filter.operand, toOp: filter.operator };
       case "and": {
-        const a = ExtractRangeFilterTypeAndValues(filter.operands[0]);
-        const b = ExtractRangeFilterTypeAndValues(filter.operands[1]);
+        const a = ExtractRangeValues(filter.operands[0]);
+        const b = ExtractRangeValues(filter.operands[1]);
         return { ...a, ...b };
       }
       default:
@@ -106,6 +87,18 @@ const ExtractRangeFilterTypeAndValues = (
   } else {
     return undefined;
   }
+};
+
+const ClassifyRangeType = (range?: NumericRange, precision = 1): string => {
+  if (range === undefined) return "custom";
+  if (
+    range.fromOp == ">=" &&
+    range.toOp == "<" &&
+    range.from !== undefined &&
+    range.to !== undefined
+  )
+    return `${range.from.toFixed(precision)}-${range.to.toFixed(precision)}`;
+  return "custom";
 };
 
 /**
@@ -176,12 +169,9 @@ const BuildRanges = (
       return rangeFunction(i, units, minimum);
     })
     .reduce((r, x) => {
-      r[x.key] = {
-        label: x.label,
-        range: { from: x.from, to: x.to },
-      };
+      r[x.key] = x;
       return r;
-    }, {} as Record<string, any>);
+    }, {} as Record<string, RangeBucketElement>);
 };
 
 /**
@@ -200,8 +190,18 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
   rangeLabelsAndValues,
   itemsToShow,
 }: RangeValueSelectorProps) => {
+  const coreDispatch = useCoreDispatch();
+
   const handleSelection = (rangeKey) => {
-    setSelected(rangeKey);
+    const data: NumericRange = {
+      from: rangeLabelsAndValues[rangeKey].from,
+      to: rangeLabelsAndValues[rangeKey].to,
+      fromOp: ">=",
+      toOp: "<",
+    };
+    const rangeFilters = buildRangeOperator(field, data);
+    console.log("RangeValueSelector ", data, rangeFilters);
+    coreDispatch(updateCohortFilter({ field: field, operation: rangeFilters }));
   };
 
   if (rangeLabelsAndValues === undefined) return <></>;
@@ -276,12 +276,13 @@ interface FromToProps {
   readonly units: string;
   readonly applyCallback: (data: NumericRange) => void;
   readonly disabled: boolean;
+  readonly field: string;
 }
 
 const FromTo: React.FC<FromToProps> = ({
+  field,
   minimum,
   maximum,
-  applyCallback,
   units = "years",
   disabled,
 }: FromToProps) => {
@@ -290,14 +291,23 @@ const FromTo: React.FC<FromToProps> = ({
   const [fromValue, setFromValue] = useState(undefined);
   const [toOp, setToOp] = useState("<");
   const [toValue, setToValue] = useState(undefined);
+  const coreDispatch = useCoreDispatch();
 
   const handleApply = (event) => {
-    applyCallback({
+    const data = {
       fromOp: fromOp as RangeFromOp,
       from: fromValue,
       toOp: toOp as RangeToOp,
       to: toValue,
-    });
+    };
+    const rangeFilters = buildRangeOperator(field, data);
+    if (rangeFilters === undefined) {
+      coreDispatch(removeCohortFilter(field));
+    } else {
+      coreDispatch(
+        updateCohortFilter({ field: field, operation: rangeFilters }),
+      );
+    }
     event.preventDefault();
   };
   return (
@@ -401,7 +411,7 @@ function BuildRangeLabelsAndValues(
   bucketRanges: Record<string, any>,
   rangeData?: FacetBuckets,
 ) {
-  const rangeLabelsAndValues = Object.keys(bucketRanges).reduce((b, x) => {
+  return Object.keys(bucketRanges).reduce((b, x) => {
     b[x] = {
       ...bucketRanges[x],
       key: x,
@@ -409,7 +419,6 @@ function BuildRangeLabelsAndValues(
     };
     return b;
   }, {} as Record<string, RangeBucketElement>);
-  return rangeLabelsAndValues;
 }
 
 interface RangeInputWithPrefixedRangesProps {
@@ -437,31 +446,52 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
       selectCurrentCohortFiltersByName(state, field),
     );
 
-    const filterValues = ExtractRangeFilterTypeAndValues(filter);
-
-    console.log("filter: ", filter, filterValues);
-    const [rangeFilters, setRangeFilters] = useState<Operation | undefined>(
-      filter,
-    ); // Current Filter or none
-    const [visibleItems, setVisibleItems] = useState(DEFAULT_VISIBLE_ITEMS);
-    const [selectedRange, setSelectedRange] = useState<string>("custom");
-    const coreDispatch = useCoreDispatch();
+    const filterValues = ExtractRangeValues(filter);
 
     // build the range for the useRangeFacet and the facet query
     const bucketRanges = useMemo(
       () => BuildRanges(numBuckets, units, minimum, buildDayYearRangeBucket),
       [minimum, numBuckets, units],
     );
-
     // build ranges for facet query
     const ranges = Object.keys(bucketRanges).map((x) => {
-      return bucketRanges[x].range;
+      return { from: bucketRanges[x].from, to: bucketRanges[x].to };
     });
+
+    const filterKey = ClassifyRangeType(filterValues);
+    console.log("filterKey: ", filterKey);
+
+    const [rangeFilters, setRangeFilters] = useState<Operation | undefined>(
+      filter,
+    ); // Current Filter or none
+    const [visibleItems, setVisibleItems] = useState(DEFAULT_VISIBLE_ITEMS);
+    const [selectedRange, setSelectedRange] = useState(filterKey);
+    const coreDispatch = useCoreDispatch();
+
     const { data: rangeData, isSuccess } = useRangeFacet(field, ranges);
     const rangeLabelsAndValues = BuildRangeLabelsAndValues(
       bucketRanges,
       rangeData,
     );
+
+    const clearFilters = () => {
+      coreDispatch(removeCohortFilter(field));
+    };
+
+    useEffect(() => {
+      if (filterKey == selectedRange) return;
+
+      console.log(
+        "useEffect: ",
+        field,
+        filterKey,
+        Object.keys(rangeLabelsAndValues),
+      );
+      if (Object.keys(rangeLabelsAndValues).includes(filterKey)) {
+        if (filterKey !== selectedRange) setSelectedRange(filterKey);
+        console.log("useEffect: ", field, "setSelectedRange");
+      }
+    }, [rangeLabelsAndValues, selectedRange]);
 
     // callback for Apply Button in FromToComponent
     const updateFilters = useCallback(
@@ -472,6 +502,7 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
       [field],
     );
 
+    /*
     useEffect(() => {
       // handle predefine range selection
       if (selectedRange !== "custom") {
@@ -485,7 +516,8 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
       // rule: remove filter until apply is clicked
       else setRangeFilters(undefined); //
     }, [bucketRanges, selectedRange, updateFilters]);
-
+    */
+    /*
     // update this facet's filters when changed
     useEffect(() => {
       if (rangeFilters === undefined) coreDispatch(removeCohortFilter(field));
@@ -495,7 +527,7 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
         );
       }
     }, [coreDispatch, field, rangeFilters]);
-
+    */
     const bucketsToShow = isGroupExpanded ? numBuckets : DEFAULT_VISIBLE_ITEMS;
     const remainingValues = numBuckets - bucketsToShow;
 
@@ -503,6 +535,7 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
       setIsGroupExpanded(!isGroupExpanded);
     };
 
+    console.log("selectedRange: ", selectedRange);
     return (
       <div className="flex flex-col w-100 space-y-2 px-2  mt-1 ">
         <LoadingOverlay visible={!isSuccess} />
@@ -513,13 +546,16 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
             id={`${field}_custom`}
             name={`${field}_range_selection`}
             checked={selectedRange === "custom"}
-            onChange={() => setSelectedRange("custom")}
+            onChange={() => {
+              clearFilters();
+              setSelectedRange("custom");
+            }}
           />
           <FromTo
             disabled={selectedRange !== "custom"}
             minimum={minimum}
             maximum={maximum}
-            applyCallback={updateFilters}
+            field={field}
             units={units}
           />
         </div>
