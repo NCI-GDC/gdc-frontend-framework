@@ -26,10 +26,11 @@ let CohortContent = ({ cohort }) => {
 };
 
 const CohortCrudTest: NextPage = () => {
-  // literals
-  const [cookies, setCookie] = useCookies(["cookie-x-context-id"]);
+  // for testing authorization via cookie
+  const [cookies, setCookie] = useCookies(["context-id"]);
+  setCookie("context-id", "FAKE-UUID-FOR-TESTING-CONTEXT-HEADER");
 
-  setCookie("cookie-x-context-id", "FAKE-UUID-FOR-TESTING-CONTEXT-HEADER");
+  // literals
   const cohortId = 123456789;
   let button_class =
     "text-2xl border rounded bg-nci-gray-lighter opacity-75 hover:opacity-100";
@@ -82,7 +83,7 @@ const CohortCrudTest: NextPage = () => {
     cohortsListContent = <div>Error loading list</div>;
   }
 
-  // use rtk query to get a specific cohort
+  // use rtk query to get a specific target cohort
   const {
     data: cohortData,
     isLoading: isCohortLoading,

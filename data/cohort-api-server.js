@@ -30,7 +30,7 @@ server.use(function (req, res, next) {
       });
 
       for (var i = 0; i < cookie_array.length; i++) {
-        if (cookie_array[i].split("=")[0] == "cookie-x-context-id") {
+        if (cookie_array[i].split("=")[0] == "context-id") {
           cookie_context = cookie_array[i].split("=")[1];
           break;
         }
