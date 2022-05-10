@@ -447,6 +447,7 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
     );
 
     const filterValues = ExtractRangeValues(filter);
+    const filterKey = ClassifyRangeType(filterValues);
 
     // build the range for the useRangeFacet and the facet query
     const bucketRanges = useMemo(
@@ -458,12 +459,6 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
       return { from: bucketRanges[x].from, to: bucketRanges[x].to };
     });
 
-    const filterKey = ClassifyRangeType(filterValues);
-    console.log("filterKey: ", filterKey);
-
-    const [rangeFilters, setRangeFilters] = useState<Operation | undefined>(
-      filter,
-    ); // Current Filter or none
     const [visibleItems, setVisibleItems] = useState(DEFAULT_VISIBLE_ITEMS);
     const [selectedRange, setSelectedRange] = useState(filterKey);
     const coreDispatch = useCoreDispatch();
@@ -480,54 +475,12 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
 
     useEffect(() => {
       if (filterKey == selectedRange) return;
-
-      console.log(
-        "useEffect: ",
-        field,
-        filterKey,
-        Object.keys(rangeLabelsAndValues),
-      );
       if (Object.keys(rangeLabelsAndValues).includes(filterKey)) {
-        if (filterKey !== selectedRange) setSelectedRange(filterKey);
+        setSelectedRange(filterKey);
         console.log("useEffect: ", field, "setSelectedRange");
       }
     }, [rangeLabelsAndValues, selectedRange]);
 
-    // callback for Apply Button in FromToComponent
-    const updateFilters = useCallback(
-      (data: NumericRange) => {
-        const ops = buildRangeOperator(field, data);
-        setRangeFilters(ops);
-      },
-      [field],
-    );
-
-    /*
-    useEffect(() => {
-      // handle predefine range selection
-      if (selectedRange !== "custom") {
-        const data: NumericRange = {
-          ...bucketRanges[selectedRange].range,
-          fromOp: ">=",
-          toOp: "<",
-        };
-        updateFilters(data);
-      } // switching back to custom range
-      // rule: remove filter until apply is clicked
-      else setRangeFilters(undefined); //
-    }, [bucketRanges, selectedRange, updateFilters]);
-    */
-    /*
-    // update this facet's filters when changed
-    useEffect(() => {
-      if (rangeFilters === undefined) coreDispatch(removeCohortFilter(field));
-      else {
-        coreDispatch(
-          updateCohortFilter({ field: field, operation: rangeFilters }),
-        );
-      }
-    }, [coreDispatch, field, rangeFilters]);
-    */
     const bucketsToShow = isGroupExpanded ? numBuckets : DEFAULT_VISIBLE_ITEMS;
     const remainingValues = numBuckets - bucketsToShow;
 
