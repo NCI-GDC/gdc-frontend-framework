@@ -1,5 +1,9 @@
-// for this page to work, json-server must be started. To do this from the
-// project root run: node data/server.js
+// This page tests integration of the cohort API middleware with the existing
+// analysis page. That page was copied in whole and then modified to grab
+// cohorts from the API middleware instead of a static const.
+
+// For this page to work, the mock cohort api must be started. See
+// data/cohort-api-server.js for additional details.
 
 import React, { useState } from "react";
 import { NextPage } from "next";

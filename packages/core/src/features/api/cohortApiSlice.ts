@@ -1,3 +1,8 @@
+// This defines the middleware for the cohort API POC.
+
+// For this slice to work, the mock cohort api must be started. To do this from
+// the project root run the following command: node data/cohort-api-server.js
+
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -6,7 +11,6 @@ import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { coreCreateApi } from "../../coreCreateApi";
 import type { Middleware, Reducer } from "@reduxjs/toolkit";
 import { useCookies } from "react-cookie";
-//import { PersistentCohort } from '../../../portal-proto/src/features/cohortBuilder/CohortGroup'
 
 export interface CohortModel {
   id: string;
@@ -14,25 +18,19 @@ export interface CohortModel {
   facets?: string;
 }
 
-// base api slice is empty, endpoints will be injected via feature slices
-
 export const cohortApiSlice = coreCreateApi({
   reducerPath: "cohortApi",
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:3500",
     prepareHeaders: async (headers) => {
       headers.set("X-Context-ID", "FAKE-UUID-FOR-TESTING-CONTEXT-HEADER");
-      //headers.set("X-Context-ID", "FAKE-UUID-FOR-TESTING-CONTEXT-HEADER-BAD");
       return headers;
     },
     credentials: "include",
   }),
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-
-  //tagTypes: ["Cohorts", "Cohort"],
   tagTypes: ["Cohort"],
-  // endpoints: () => ({
   endpoints: (builder) => ({
     getCohorts: builder.query<CohortModel[], void>({
       query: () => "/cohorts",
@@ -52,7 +50,6 @@ export const cohortApiSlice = coreCreateApi({
         body: cohort,
       }),
       invalidatesTags: ["Cohort"],
-      //invalidatesTags: ["Cohorts", "Cohort"],
     }),
     updateCohort: builder.mutation<CohortModel, CohortModel>({
       query: (cohort) => ({
@@ -68,7 +65,6 @@ export const cohortApiSlice = coreCreateApi({
         method: "DELETE",
       }),
       invalidatesTags: (result, error, arg) => [{ type: "Cohort", id: arg }],
-      // invalidatesTags: ["Cohort"],
     }),
   }),
 });
