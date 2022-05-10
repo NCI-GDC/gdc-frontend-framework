@@ -320,6 +320,12 @@ export interface FileDefaults {
       }>;
     }>;
   }>;
+  readonly associated_entities?: ReadonlyArray<{
+    readonly entity_submitter_id: string;
+    readonly entity_type: string;
+    readonly case_id: string;
+    readonly entity_id: string;
+  }>;
   readonly analysis?: {
     readonly workflow_type: string;
     readonly updated_datetime: string;

@@ -265,6 +265,12 @@ export interface GdcFile {
       }>;
     }>;
   }>;
+  readonly associated_entities?: ReadonlyArray<{
+    readonly entity_submitter_id: string;
+    readonly entity_type: string;
+    readonly case_id: string;
+    readonly entity_id: string;
+  }>;
   readonly analysis?: {
     readonly workflow_type: string;
     readonly updated_datetime: string;
@@ -403,6 +409,14 @@ const slice = createSlice({
                   }),
                 };
               }),
+              associated_entities: hit.associated_entities?.map(
+                (associated_entity) => ({
+                  entity_submitter_id: associated_entity.entity_submitter_id,
+                  entity_type: associated_entity.entity_type,
+                  case_id: associated_entity.case_id,
+                  entity_id: associated_entity.entity_id,
+                }),
+              ),
               analysis: hit.analysis
                 ? {
                     workflow_type: hit.analysis.workflow_type,

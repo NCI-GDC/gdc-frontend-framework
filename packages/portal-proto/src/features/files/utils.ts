@@ -1,6 +1,5 @@
 import { GdcFile } from "@gff/core";
 import { get, omit } from "lodash";
-import fileSize from "filesize";
 import { HorizontalTableProps } from "../../components/HorizontalTable";
 import { JSONObject } from "../types";
 
@@ -9,7 +8,7 @@ export const formatDataForHorizontalTable = (
   headersConfig: ReadonlyArray<{
     readonly field: string;
     readonly name: string;
-    readonly modifier?: Function;
+    readonly modifier?: (value: any) => any;
   }>,
 ): HorizontalTableProps["tableData"] => {
   //match headers with available properties

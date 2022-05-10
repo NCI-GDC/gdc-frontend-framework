@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import { GdcFile, HistoryDefaults } from "@gff/core";
 import ReactModal from "react-modal";
 import { HorizontalTable } from "../../components/HorizontalTable";
-import { Table } from "@mantine/core";
+import { Table, Button } from "@mantine/core";
+import { FaShoppingCart, FaDownload, FaCut } from "react-icons/fa";
 import { get } from "lodash";
 import dynamic from "next/dynamic";
-import { formatDataForTable, parseSlideDetailsInfo } from "./utils";
+import fileSize from "filesize";
+import { formatDataForHorizontalTable, parseSlideDetailsInfo } from "./utils";
 
 import Link from "next/link";
 
@@ -46,6 +48,10 @@ export const FileView: React.FC<FileViewProps> = ({
     };
   }
   const TempTable = ({ tableData }: TempTableProps): JSX.Element => {
+    if (!(tableData?.headers?.length > 0 && tableData?.tableRows?.length > 0)) {
+      console.error("bad table data", tableData);
+      return <></>;
+    }
     return (
       <Table striped>
         <thead>
@@ -82,7 +88,17 @@ export const FileView: React.FC<FileViewProps> = ({
         data_type: obj.data_type,
         data_format: obj.data_format,
         workflow_type: workflowType,
-        file_size: obj.file_size,
+        file_size: fileSize(obj.file_size),
+        action: (
+          <>
+            <button className="mr-2 bg-white border border-black rounded p-1 hover:bg-black hover:text-white focus:bg-black focus:text-white">
+              <FaShoppingCart title="Add to Cart" />
+            </button>
+            <button className="bg-white border border-black rounded p-1 hover:bg-black hover:text-white focus:bg-black focus:text-white">
+              <FaDownload title="Download" />
+            </button>
+          </>
+        ),
       });
     });
 
@@ -94,6 +110,7 @@ export const FileView: React.FC<FileViewProps> = ({
         "Data Format",
         "Analysis Workflow",
         "Size",
+        "Action",
       ],
       tableRows: tableRows,
     };
@@ -102,37 +119,42 @@ export const FileView: React.FC<FileViewProps> = ({
 
   const AssociatedCB = ({
     cases,
+    associated_entities,
   }: {
     cases: GdcFile["cases"];
+    associated_entities: GdcFile["associated_entities"];
   }): JSX.Element => {
     const tableRows = [];
 
-    cases?.forEach((caseObj) => {
-      caseObj.samples?.forEach((sample) => {
-        // find entity_id note path for entity_type
-        const portion = sample.portions?.[0];
-        // assigned to variables to avoid "is missing in props validation  react/prop-types" lint error
-        let entity_type = "cases",
-          entity_id = sample.submitter_id;
+    associated_entities?.forEach((entity) => {
+      // find matching id from cases
+      const caseData = cases?.find(
+        (caseObj) => caseObj.case_id === entity.case_id,
+      );
 
+      // get sample_type from casedata through matching its submitter_id
+      const sample_type = caseData?.samples?.find((sample) => {
+        // match entity_submitter_id
+
+        // get submitter_id from diferent paths
+        const portion = sample.portions?.[0];
+        let entity_id = sample.submitter_id;
         if (portion.analytes?.[0]?.aliquots?.[0]?.submitter_id) {
-          entity_type = "aliquot";
           entity_id = portion.analytes?.[0]?.aliquots?.[0]?.submitter_id;
         } else if (portion.slides?.[0]?.submitter_id) {
-          entity_type = "slide node";
           entity_id = portion.slides?.[0]?.submitter_id;
         } else if (portion.submitter_id) {
-          entity_type = "portions";
           entity_id = portion.submitter_id;
         }
+        return entity_id === entity.entity_submitter_id;
+      })?.sample_type;
 
-        tableRows.push({
-          entity_id: entity_id,
-          entity_type: entity_type,
-          sample_type: sample.sample_type,
-          case_uuid: caseObj.case_id,
-          annotations: caseObj?.annotations?.length | 0,
-        });
+      tableRows.push({
+        entity_id: entity.entity_submitter_id,
+        entity_type: entity.entity_type,
+        sample_type: sample_type,
+        case_id: entity.case_id,
+        annotations: caseData?.annotations?.length | 0,
       });
     });
 
@@ -141,7 +163,7 @@ export const FileView: React.FC<FileViewProps> = ({
         "Entity ID",
         "Entity Type",
         "Sample Type",
-        "Case UUID",
+        "Case ID",
         "Annotations",
       ],
       tableRows: tableRows,
@@ -150,11 +172,24 @@ export const FileView: React.FC<FileViewProps> = ({
   };
   return (
     <div className="p-4 text-nci-gray">
+      <div className="text-right pb-5">
+        <Button className="m-1">
+          <FaShoppingCart className="mr-2" /> Add to Cart
+        </Button>
+        {get(file, "dataFormat") === "BAM" && (
+          <Button className="m-1">
+            <FaCut className="mr-2" /> BAM Slicing
+          </Button>
+        )}
+        <Button className="m-1">
+          <FaDownload className="mr-2" /> Download
+        </Button>
+      </div>
       <div className="flex">
         <div className="flex-auto bg-white mr-4">
           <h2 className="p-2 text-lg mx-4">File Properties</h2>
           <HorizontalTable
-            tableData={formatDataForTable(file, [
+            tableData={formatDataForHorizontalTable(file, [
               {
                 field: "fileName",
                 name: "Name",
@@ -174,6 +209,7 @@ export const FileView: React.FC<FileViewProps> = ({
               {
                 field: "fileSize",
                 name: "Size",
+                modifier: fileSize,
               },
               {
                 field: "md5sum",
@@ -193,7 +229,7 @@ export const FileView: React.FC<FileViewProps> = ({
         <div className="w-1/3 bg-white h-full">
           <h2 className="p-2 text-lg mx-4">Data Information</h2>
           <HorizontalTable
-            tableData={formatDataForTable(file, [
+            tableData={formatDataForHorizontalTable(file, [
               {
                 field: "dataCategory",
                 name: "Data Category",
@@ -215,48 +251,44 @@ export const FileView: React.FC<FileViewProps> = ({
         </div>
       </div>
 
-      {get(file, "dataType") === "Slide Image" ? (
+      {get(file, "dataType") === "Slide Image" && (
         <div className="bg-white w-full mt-4">
           <h2 className="p-2 text-lg mx-4">Slide Image Viewer</h2>
           <ImageViewer
             imageId={imageId}
             tableData={parseSlideDetailsInfo(file)}
           />
-          <div>
-            slide ids for first case, sample, portion:{" "}
-            <ul>
-              {file?.cases?.[0]?.samples?.[0]?.portions?.[0]?.slides?.map(
-                (slide) => (
-                  <li key={slide.slide_id}>{slide.slide_id}</li>
-                ),
-              )}
-            </ul>
-          </div>
         </div>
-      ) : null}
+      )}
       <div className="bg-white w-full mt-4">
         <h2 className="p-2 text-lg mx-4">Associated Cases/Biospecimens</h2>
-        <AssociatedCB cases={file?.cases} />
-      </div>
-      <div className="bg-white w-full mt-4">
-        <h2 className="p-2 text-lg mx-4">Analysis</h2>
-        <HorizontalTable
-          tableData={formatDataForTable(file, [
-            {
-              field: "analysis.workflow_type",
-              name: "Workflow Type",
-            },
-            {
-              field: "analysis.updated_datetime",
-              name: "Workflow Completion Date",
-            },
-            {
-              field: "analysis.input_files.length",
-              name: "Source Files",
-            },
-          ])}
+        <AssociatedCB
+          cases={file?.cases}
+          associated_entities={file?.associated_entities}
         />
       </div>
+      {file?.analysis && (
+        <div className="bg-white w-full mt-4">
+          <h2 className="p-2 text-lg mx-4">Analysis</h2>
+          <HorizontalTable
+            tableData={formatDataForHorizontalTable(file, [
+              {
+                field: "analysis.workflow_type",
+                name: "Workflow Type",
+              },
+              {
+                field: "analysis.updated_datetime",
+                name: "Workflow Completion Date",
+                modifier: (v) => v.split("T")[0],
+              },
+              {
+                field: "analysis.input_files.length",
+                name: "Source Files",
+              },
+            ])}
+          />
+        </div>
+      )}
       <div className="bg-white w-full mt-4">
         <h2 className="p-2 text-lg mx-4">Downstream Analyses Files</h2>
         {file?.downstream_analyses?.[0]?.output_files?.length > 0 ? (
@@ -267,29 +299,51 @@ export const FileView: React.FC<FileViewProps> = ({
           </h3>
         )}
       </div>
-      <div className="bg-white w-full mt-4">
-        <h2 className="p-2 text-lg mx-4">File Versions</h2>
-        <TempTable
-          tableData={{
-            headers: [
-              "Version",
-              "File UUID",
-              "Current Version",
-              "Release Date",
-              "Release Number",
-            ],
-            tableRows: fileHistory?.map((obj) => {
-              return {
-                version: obj.version,
-                file_id: <UuidLink uuid={obj.uuid} text={obj.uuid} />,
-                current_version: obj.file_change,
-                release_date: obj.release_date,
-                data_release: obj.data_release,
-              };
-            }),
-          }}
-        />
-      </div>
+      {fileHistory && (
+        <div className="bg-white w-full mt-4">
+          <h2 className="p-2 text-lg mx-4 float-left">File Versions</h2>
+          <div className="float-right mt-3 mr-3">
+            <Button color={"gray"} className="mr-2">
+              <FaDownload className="mr-2" /> Download JSON
+            </Button>
+            <Button color={"gray"} className="">
+              <FaDownload className="mr-2" /> Download TSV
+            </Button>
+          </div>
+          <TempTable
+            tableData={{
+              headers: [
+                "Version",
+                "File UUID",
+                "Release Date",
+                "Release Number",
+              ],
+              tableRows: fileHistory
+                ?.sort(
+                  (a, b) =>
+                    //sort based on relese number biggest at top
+                    Number.parseFloat(b.data_release) -
+                    Number.parseFloat(a.data_release),
+                )
+                .map((obj, index) => ({
+                  version: obj.version,
+                  file_id: (
+                    <>
+                      <UuidLink uuid={obj.uuid} text={obj.uuid} />
+                      {index === 0 && (
+                        <span className="inline-block ml-2 border rounded-full bg-nci-blue-darker text-white font-bold text-xs py-0.5 px-1">
+                          Current Version
+                        </span>
+                      )}
+                    </>
+                  ),
+                  release_date: obj.release_date,
+                  data_release: obj.data_release,
+                })),
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 };

@@ -25,6 +25,7 @@ export const ContextualFileView: React.FC<ContextualFileViewProps> = (
       "cases.samples.portions.analytes",
       "cases.samples.portions.slides",
       "cases.samples.portions.analytes.aliquots",
+      "associated_entities",
       "analysis",
       "analysis.input_files",
       "downstream_analyses",
