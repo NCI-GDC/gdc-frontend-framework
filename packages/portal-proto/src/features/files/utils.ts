@@ -1,18 +1,24 @@
 import { GdcFile } from "@gff/core";
 import { get, omit } from "lodash";
+import fileSize from "filesize";
 import { HorizontalTableProps } from "../../components/HorizontalTable";
 import { JSONObject } from "../types";
 
-export const formatDataForTable = (
+export const formatDataForHorizontalTable = (
   file: GdcFile | JSONObject,
   headersConfig: ReadonlyArray<{
     readonly field: string;
     readonly name: string;
+    readonly modifier?: Function;
   }>,
 ): HorizontalTableProps["tableData"] => {
   //match headers with available properties
   return headersConfig.reduce((output, obj) => {
-    const value = get(file, obj.field);
+    let value = get(file, obj.field);
+    //run modifyer if provided on value
+    if (obj.modifier) {
+      value = obj.modifier(value);
+    }
     output.push({
       headerName: obj.name,
       values: [value ? value : "--"],
@@ -98,7 +104,7 @@ export const formatImageDetailsInfo: formatImageDetailsInfoFunc = (
     },
   ];
 
-  return formatDataForTable(obj, headersConfig);
+  return formatDataForHorizontalTable(obj, headersConfig);
 };
 
 type parseSlideDetailsInfoFunc = (file: GdcFile) => {
