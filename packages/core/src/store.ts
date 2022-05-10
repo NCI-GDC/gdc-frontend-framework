@@ -59,7 +59,7 @@ const persistConfig = {
   key: "root",
   version: 1,
   storage,
-  whitelist: ["cart"],
+  whitelist: ["cart", "bannerNotification"],
 };
 
 const reducer = persistReducer(persistConfig, combineReducers(reducers));
