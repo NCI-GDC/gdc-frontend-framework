@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
-import GenesTable from "./GenesTable";
-import MutationsTable from "./MutationsTable";
+import GenesTable from "../genesTable/GenesTable";
+import MutationsTable from "../genomic/MutationsTable";
 import { Grid, Tabs, LoadingOverlay } from "@mantine/core";
 import { EnumFacet } from "../facets/EnumFacet";
 import dynamic from "next/dynamic";
@@ -63,7 +63,7 @@ const MutationFacetNames = [
   },
 ];
 
-const buildGeneHaveAndHaveNotFilters = (currentFilters: GqlOperation, symbol: string, field: string) : ReadonlyArray<GqlOperation> => {
+const buildGeneHaveAndHaveNotFilters = (currentFilters: GqlOperation, symbol: string, field: string): ReadonlyArray<GqlOperation> => {
   /**
    * given the contents, add two filters, one with the gene and one without
    */
@@ -74,24 +74,24 @@ const buildGeneHaveAndHaveNotFilters = (currentFilters: GqlOperation, symbol: st
   return ([{
     "op": "and",
     content:
-      [ { //TODO: refactor cohortFilters to be Union | Intersection
+      [{ //TODO: refactor cohortFilters to be Union | Intersection
         "op": "excludeifany",
         "content": {
           "field": field,
           "value": symbol,
         },
-      },...(currentFilters ? currentFilters.content as any  : []) ],
+      }, ...(currentFilters ? currentFilters.content as any : [])],
   },
-    {
-      op: "and", content:
-        [{
-          "op": "=",
-          "content": {
-            "field": field,
-            "value": symbol,
-          },
-        }, ...(currentFilters ? currentFilters.content as any  : []) ],
-    },
+  {
+    op: "and", content:
+      [{
+        "op": "=",
+        "content": {
+          "field": field,
+          "value": symbol,
+        },
+      }, ...(currentFilters ? currentFilters.content as any : [])],
+  },
   ]);
 
 };
@@ -102,7 +102,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const cohortFilters = useCoreSelector((state) => selectCurrentCohortFilterSet(state));
   const genomicFilters = useCoreSelector((state) => selectGenomicFilters(state));
   const filters = useMemo(() => buildCohortGqlOperator(joinFilters(cohortFilters, genomicFilters)), [cohortFilters, genomicFilters]);
-  const { data: survivalPlotData, isSuccess :survivalPlotReady } = useSurvivalPlot({ filters: filters? [filters] : [] });
+  const { data: survivalPlotData, isSuccess: survivalPlotReady } = useSurvivalPlot({ filters: filters ? [filters] : [] });
   /**
    * Update survival plot in response to user actions. There are two "states"
    * for the survival plot: If comparativeSurvival is undefined it will show the
@@ -115,15 +115,15 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const handleSurvivalPlotToggled = (symbol: string, name: string, field: string) => {
     if (comparativeSurvival && comparativeSurvival.symbol === symbol) { // remove toggle
       setComparativeSurvival(undefined);
-      coreDispatch(fetchSurvival({ filters: filters? [filters] : [] }  ));
+      coreDispatch(fetchSurvival({ filters: filters ? [filters] : [] }));
     } else {
       setComparativeSurvival({ symbol: symbol, name: name });
       const f = buildGeneHaveAndHaveNotFilters(filters, symbol, field);
-      coreDispatch(fetchSurvival({  filters: f } ));
+      coreDispatch(fetchSurvival({ filters: f }));
     }
   };
 
-  useEffect( () => {
+  useEffect(() => {
     coreDispatch(clearGenomicFilters());
   }, [cohortFilters, coreDispatch]);
 
@@ -132,7 +132,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
    */
   const handleTabOrFilterChanged = () => {
     setComparativeSurvival(undefined);
-    coreDispatch(fetchSurvival({ filters: filters? [filters] : [] }  ));
+    coreDispatch(fetchSurvival({ filters: filters ? [filters] : [] }));
   }
 
   return (
@@ -140,63 +140,64 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
       <div className="flex flex-col gap-y-4 mr-3 mt-12 w-min-64 w-max-64">
         {GenesFacetNames.map((x, index) => {
           return (<EnumFacet key={`${x.facet_filter}-${index}`}
-                             field={`${x.facet_filter}`}
-                             facetName={x.name}
-                             type="genes"
-                             showPercent={false}
-                             valueLabel="Genes"
-                             hideIfEmpty={false}
-                             description={x.description}
-            />);
-          })
-          }
-          {MutationFacetNames.map((x, index) => {
-            return (<EnumFacet key={`${x.facet_filter}-${index}`}
-                               field={`${x.facet_filter}`}
-                               facetName={x.name}
-                               type="ssms"
-                               showPercent={false}
-                               valueLabel="Mutations"
-                               hideIfEmpty={false}
-                               description={x.description}
-            />);
-          })
-          }
-        </div>
-        <Tabs variant="pills"  classNames = {{
-          root:"mt-6",
-          tabActive: "bg-nci-teal text-nci-blue p-4 hover:bg-nci-teal",
-        }} onTabChange={handleTabOrFilterChanged}
-        >
-          <Tabs.Tab label="Genes" >
-            <div className="flex flex-row">
-              <div className="flex flex-col">
-                <Grid className="mx-2 bg-white"  >
-                  <Grid.Col span={6}>
-                    <GeneFrequencyChart marginBottom={95} />
-                  </Grid.Col>
-                  <Grid.Col span={6} className="relative">
-                    <LoadingOverlay visible={!survivalPlotReady} />
-                    <SurvivalPlot data={survivalPlotData} names={!survivalPlotReady ? [] :  comparativeSurvival ? [comparativeSurvival.name] : []}/>
-                  </Grid.Col>
-                </Grid>
-                  <GenesTable selectedSurvivalPlot={comparativeSurvival}
-                    handleSurvivalPlotToggled={(symbol: string, name: string ) => handleSurvivalPlotToggled(symbol, name, "gene.symbol")} />
-              </div>
-            </div>
-          </Tabs.Tab>
-          <Tabs.Tab label="Mutations">
-            <div className="flex flex-row">
-              <div className="flex flex-col">
-                <div className="w-100 h-auto bg-white relative">
+            field={`${x.facet_filter}`}
+            facetName={x.name}
+            type="genes"
+            showPercent={false}
+            valueLabel="Genes"
+            hideIfEmpty={false}
+            description={x.description}
+          />);
+        })
+        }
+        {MutationFacetNames.map((x, index) => {
+          return (<EnumFacet key={`${x.facet_filter}-${index}`}
+            field={`${x.facet_filter}`}
+            facetName={x.name}
+            type="ssms"
+            showPercent={false}
+            valueLabel="Mutations"
+            hideIfEmpty={false}
+            description={x.description}
+          />);
+        })
+        }
+      </div>
+      <Tabs variant="pills" classNames={{
+        root: "mt-6",
+        tabActive: "bg-nci-teal text-nci-blue p-4 hover:bg-nci-teal",
+      }} onTabChange={handleTabOrFilterChanged}
+      >
+        <Tabs.Tab label="Genes" >
+          <div className="flex flex-row">
+            <div className="flex flex-col w-9/12">
+              <Grid className="mx-2 bg-white"  >
+                <Grid.Col span={6}>
+                  <GeneFrequencyChart marginBottom={95} />
+                </Grid.Col>
+                <Grid.Col span={6} className="relative">
                   <LoadingOverlay visible={!survivalPlotReady} />
-                  <SurvivalPlot data={survivalPlotData} names={!survivalPlotReady ? [] : comparativeSurvival ? [comparativeSurvival.name] : []}/>
-                </div>
-              <MutationsTable selectedSurvivalPlot={comparativeSurvival} handleSurvivalPlotToggled={(symbol: string ,name: string  ) => handleSurvivalPlotToggled(symbol, name, "gene.ssm.ssm_id")} />
+                  <SurvivalPlot data={survivalPlotData} names={!survivalPlotReady ? [] : comparativeSurvival ? [comparativeSurvival.name] : []} />
+                </Grid.Col>
+              </Grid>
+              <GenesTable selectedSurvivalPlot={comparativeSurvival}
+                handleSurvivalPlotToggled={handleSurvivalPlotToggled} 
+                />
             </div>
+          </div>
+        </Tabs.Tab>
+        <Tabs.Tab label="Mutations">
+          <div className="flex flex-row">
+            <div className="flex flex-col">
+              <div className="w-full h-auto bg-white relative">
+                <LoadingOverlay visible={!survivalPlotReady} />
+                <SurvivalPlot data={survivalPlotData} names={!survivalPlotReady ? [] : comparativeSurvival ? [comparativeSurvival.name] : []} />
+              </div>
+              <MutationsTable selectedSurvivalPlot={comparativeSurvival} handleSurvivalPlotToggled={(symbol: string, name: string) => handleSurvivalPlotToggled(symbol, name, "gene.ssm.ssm_id")} />
             </div>
-          </Tabs.Tab>
-        </Tabs>
+          </div>
+        </Tabs.Tab>
+      </Tabs>
     </div>
   );
 };
