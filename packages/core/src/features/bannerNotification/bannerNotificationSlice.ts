@@ -3,27 +3,38 @@ import { CoreDispatch, CoreState } from "../../store";
 import { buildFetchError } from "../gdcapi/gdcapi";
 
 export interface BannerNotification {
-  readonly id: string;
+  readonly id: number;
   readonly dismissible: boolean;
   readonly level: "INFO" | "WARNING" | "ERROR";
+  readonly components: string[];
   readonly message: string;
   readonly dismissed?: boolean;
+  readonly end_date: string | null;
 }
 
 const initialState: BannerNotification[] = [];
 
 export const fetchNotifications = createAsyncThunk<
-  { data: BannerNotification[] },
+  BannerNotification[],
   { dispatch: CoreDispatch; state: CoreState }
 >("bannerNotifications/fetchNew", async () => {
   //const res = await fetch("https://api.gdc.cancer.gov/v0/notifications");
   const res = await fetch("http://localhost:3050/notifications");
+  const res2 = await fetch("https://api.gdc.cancer.gov/v0/login-notifications");
 
-  if (res.ok) {
-    return res.json();
+  if (!res.ok) {
+    throw await buildFetchError(res);
   }
 
-  throw await buildFetchError(res);
+  const results = await res.json();
+  const newNotifications = results.data;
+
+  if (res2.ok) {
+    const results2 = await res2.json();
+    newNotifications.push(...results2.data);
+  }
+
+  return newNotifications;
 });
 
 const slice = createSlice({
@@ -32,7 +43,7 @@ const slice = createSlice({
   reducers: {
     dismissNotification: (
       state: BannerNotification[],
-      action: PayloadAction<string>,
+      action: PayloadAction<number>,
     ) => {
       const notification = {
         ...state.find((banner) => banner.id === action.payload),
@@ -46,11 +57,15 @@ const slice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchNotifications.fulfilled, (state, action) => {
-      const newNotifications = action.payload.data
-        .map((notification) => ({ ...notification, dismissed: false }))
+      const newNotifications = action.payload
         .filter(
-          (notification) => !state.map((n) => n.id).includes(notification.id),
-        );
+          (notification) =>
+            !state.map((n) => n.id).includes(notification.id) &&
+            (notification.components.includes("PORTAL") ||
+              notification.components.includes("API")),
+        )
+        .map((notification) => ({ ...notification, dismissed: false }));
+
       return [...state, ...newNotifications];
     });
   },
@@ -59,5 +74,9 @@ const slice = createSlice({
 export const bannerReducer = slice.reducer;
 export const { dismissNotification } = slice.actions;
 
-export const selectBanners = (state: CoreState) =>
-  state.bannerNotification.filter((banner) => !banner.dismissed);
+export const selectBanners = (state: CoreState): BannerNotification[] =>
+  state.bannerNotification.filter(
+    (banner) =>
+      !banner.dismissed &&
+      (banner.end_date === null || new Date(banner.end_date) >= new Date()),
+  );

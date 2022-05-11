@@ -3,7 +3,6 @@ import {
   FaExclamation as WarningIcon,
   FaExclamationTriangle as ErrorIcon,
 } from "react-icons/fa";
-import { MdClose as CloseIcon } from "react-icons/md";
 import Markdown from "react-markdown";
 import { CloseButton } from "@mantine/core";
 import { dismissNotification, useCoreDispatch } from "@gff/core";
@@ -22,9 +21,9 @@ const backgroundColor = {
 };
 
 const icon = {
-  INFO: <InfoIcon color="white" title="Info. Icon." />,
-  WARNING: <WarningIcon color="white" title="Warning. Icon." />,
-  ERROR: <ErrorIcon color="white" title="Error. Icon." />,
+  INFO: <InfoIcon color="white" title="Info icon." />,
+  WARNING: <WarningIcon color="white" title="Warning icon." />,
+  ERROR: <ErrorIcon color="white" title="Error icon." />,
 };
 
 const Banner: React.FC<BannerProps> = ({
@@ -38,17 +37,22 @@ const Banner: React.FC<BannerProps> = ({
   return (
     <div
       className={`w-full p-1 flex justify-between border-solid border-y-1 border-gdc-gray-lighter ${backgroundColor[level]}`}
-      tabIndex={0}
     >
       <div className="flex items-center">
         {icon[level]}
         <span className="pl-4 text-white">
           <Markdown
-            children={message}
             components={{
-              a: ({ node, ...props }) => <a className="underline" {...props} />,
+              // eslint-disable-next-line react/prop-types
+              a: ({ children, ...props }) => (
+                <a className="underline" {...props}>
+                  {children}
+                </a>
+              ),
             }}
-          />
+          >
+            {message}
+          </Markdown>
         </span>
       </div>
       {dismissible && (
