@@ -25,16 +25,18 @@ export const FileView: React.FC<FileViewProps> = ({
   fileHistory,
 }: FileViewProps) => {
   const [imageId] = useState(file?.fileId);
-  const UuidLink = ({
-    uuid,
+  const GenaricLink = ({
+    path,
+    link,
     text,
   }: {
-    uuid: string;
+    path: string;
+    link: string;
     text: string;
   }): JSX.Element => (
     <Link
       href={{
-        query: { uuid: uuid },
+        pathname: `/${path}/${link}`,
       }}
     >
       <a className="text-gdc-blue hover:underline">{text}</a>
@@ -83,7 +85,9 @@ export const FileView: React.FC<FileViewProps> = ({
     const workflowType = downstream_analyses?.[0]?.workflow_type;
     downstream_analyses?.[0]?.output_files.forEach((obj) => {
       tableRows.push({
-        file_name: <UuidLink uuid={obj.file_id} text={obj.file_name} />,
+        file_name: (
+          <GenaricLink path="files" link={obj.file_id} text={obj.file_name} />
+        ),
         data_category: obj.data_category,
         data_type: obj.data_type,
         data_format: obj.data_format,
@@ -222,6 +226,9 @@ export const FileView: React.FC<FileViewProps> = ({
               {
                 field: "project_id",
                 name: "Project",
+                modifier: (v) => (
+                  <GenaricLink path="projects" link={v} text={v} />
+                ),
               },
             ])}
           />
@@ -329,7 +336,11 @@ export const FileView: React.FC<FileViewProps> = ({
                   version: obj.version,
                   file_id: (
                     <>
-                      <UuidLink uuid={obj.uuid} text={obj.uuid} />
+                      <GenaricLink
+                        path="files"
+                        link={obj.uuid}
+                        text={obj.uuid}
+                      />
                       {index === 0 && (
                         <span className="inline-block ml-2 border rounded-full bg-nci-blue-darker text-white font-bold text-xs py-0.5 px-1">
                           Current Version
