@@ -21,7 +21,7 @@ const FileSummary: NextPage = () => {
     <UserFlowVariedPages
       {...{ indexPath: "/user-flow/many-pages", headerElements }}
     >
-      {ready && uuid ? <ContextualFileView setCurrentFile={uuid} /> : null}
+      {ready && <ContextualFileView setCurrentFile={uuid} />}
     </UserFlowVariedPages>
   );
 };
