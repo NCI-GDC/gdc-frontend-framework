@@ -3,10 +3,17 @@ import { SimpleLayout } from "../features/layout/Simple";
 import GenesTable from "../features/genesTable/GenesTable";
 
 const GenesTablePage: NextPage = () => {
+  const handleSurvivalPlotToggled = () => {
+    return;
+  };
+  const selectedSurvivalPlot = "";
   return (
     <SimpleLayout>
       <div>
-        <GenesTable />
+        <GenesTable
+          handleSurvivalPlotToggled={handleSurvivalPlotToggled}
+          selectedSurvivalPlot={selectedSurvivalPlot}
+        />
       </div>
     </SimpleLayout>
   );
