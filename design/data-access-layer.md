@@ -67,15 +67,15 @@ import { useProjects } from "@gff/core";
 
 const myComponent = () => {
   const { data, error, isUninitialized, isFetching, isSuccess, isError } =
-    useProjects({ 
+    useProjects({
       filters: {
         op: "=",
         content: {
           field: "project_id",
           value: props.setCurrentProject,
-        }
+        },
       },
-      expand: ['summary', 'program']
+      expand: ["summary", "program"],
     });
   return (
     <ul>
@@ -86,6 +86,7 @@ const myComponent = () => {
   );
 };
 ```
+
 ### Cache invaldiation
 
 Cache invalidation will need to be performed when certain data changes. For example, with facets, when the filters

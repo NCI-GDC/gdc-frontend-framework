@@ -1,4 +1,3 @@
-
 export interface GraphQLFetchError {
   readonly url: string;
   readonly status: number;
@@ -32,11 +31,14 @@ const buildGraphQLFetchError = async (
   };
 };
 
-export const graphqlAPI = async <T>(query: string, variables: Record<string, unknown>): Promise<GraphQLApiResponse<T>> => {
+export const graphqlAPI = async <T>(
+  query: string,
+  variables: Record<string, unknown>,
+): Promise<GraphQLApiResponse<T>> => {
   const res = await fetch("https://api.gdc.cancer.gov/v0/graphql", {
     headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
+      Accept: "application/json",
+      "Content-Type": "application/json",
     },
     method: "POST",
     body: JSON.stringify({
@@ -45,8 +47,7 @@ export const graphqlAPI = async <T>(query: string, variables: Record<string, unk
     }),
   });
 
-  if (res.ok)
-    return res.json();
+  if (res.ok) return res.json();
 
   throw await buildGraphQLFetchError(res, variables);
 };

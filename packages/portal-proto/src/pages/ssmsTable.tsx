@@ -5,8 +5,8 @@ import MutationsTable from "../features/mutationTable/MutationTable";
 const SSMSTablePage: NextPage = () => {
   return (
     <SimpleLayout>
-      <div >
-          <MutationsTable />
+      <div>
+        <MutationsTable />
       </div>
     </SimpleLayout>
   );

@@ -14,7 +14,7 @@ export interface FileViewProps {
 }
 
 export const FileView: React.FC<FileViewProps> = ({ file }: FileViewProps) => {
-  const [imageId, setImageId] = useState(file?.fileId);
+  const [imageId] = useState(file?.fileId);
 
   return (
     <div className="p-4 text-nci-gray">
@@ -81,32 +81,15 @@ export const FileView: React.FC<FileViewProps> = ({ file }: FileViewProps) => {
             ])}
           />
         </div>
-
-      </div>
-
-      {/* TODO (Pari): remove the div defined below once the other screen gets made */}
-      <div>
-        <strong>This is just for trial, Image details wont change as of yet!!!</strong>
-        <br />
-        <button
-          onClick={() => setImageId("f069ce05-03eb-48ac-b974-a4660a4d5de2")}
-          className='bg-nci-blue text-white mr-4'
-        >
-          Change Image 1
-        </button>
-        <button
-          onClick={() => setImageId("6e63430a-4a44-4ba8-a1f9-f24871c8f08a")}
-          className='bg-nci-blue text-white'
-        >
-          Change Image 2
-        </button>
       </div>
 
       {get(file, "dataType") === "Slide Image" ? (
         <div className="bg-white w-full mt-4">
           <h2 className="p-2 text-lg mx-4">Slide Image Viewer</h2>
-          {/*TODO Slide Image Viewer see PEAR-167 */}
-          <ImageViewer imageId={imageId} tableData={parseSlideDetailsInfo(file)} />
+          <ImageViewer
+            imageId={imageId}
+            tableData={parseSlideDetailsInfo(file)}
+          />
           <div>
             slide ids for first case, sample, portion:{" "}
             <ul>
@@ -198,6 +181,8 @@ export const FileView: React.FC<FileViewProps> = ({ file }: FileViewProps) => {
       </div>
       <div className="bg-white w-full mt-4">
         <h2 className="p-2 text-lg mx-4">Downstream Analyses Files</h2>
+        {/* TODO: Need to take care of this below */}
+        {/* eslint-disable-next-line no-constant-condition */}
         {false ? (
           {
             /* Data somthing like 

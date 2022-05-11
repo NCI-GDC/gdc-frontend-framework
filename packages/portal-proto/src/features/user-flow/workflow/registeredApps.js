@@ -1,16 +1,12 @@
-
 export const COHORTS = [
-  { name: 'New Custom Cohort',
-    facets : [  ],
-  },
+  { name: "New Custom Cohort", facets: [] },
   {
     name: "Baily's Cohort",
     facets: [
       { field: "cases.primary_site", value: ["breast", "bronchus and lung"] },
-    ]
-  }
+    ],
+  },
 ];
-
 
 export const REGISTERED_APPS = [
   {
@@ -19,7 +15,8 @@ export const REGISTERED_APPS = [
     tags: ["clinicalAnalysis"],
     hasDemo: true,
     id: "CDave",
-    description: "Display basic statistical analyses for the selected case set."
+    description:
+      "Display basic statistical analyses for the selected case set.",
   },
   {
     name: "Cohort Builder",
@@ -27,7 +24,8 @@ export const REGISTERED_APPS = [
     tags: ["generalUtility"],
     hasDemo: false,
     id: "CohortBuilder",
-    description: "Build and define your custom cohorts using a variety of clinical and biospecimen features."
+    description:
+      "Build and define your custom cohorts using a variety of clinical and biospecimen features.",
   },
   {
     name: "Mutations Frequency",
@@ -35,9 +33,9 @@ export const REGISTERED_APPS = [
     tags: ["variantAnalysis", "ssm"],
     hasDemo: true,
     id: "MutationFrequencyApp",
-    description: "Visualize most frequently mutated genes and most frequent somatic mutations.",
-    optimizeRules: ["something == something"]
-
+    description:
+      "Visualize most frequently mutated genes and most frequent somatic mutations.",
+    optimizeRules: ["something == something"],
   },
   {
     name: "Repository",
@@ -45,7 +43,8 @@ export const REGISTERED_APPS = [
     tags: ["files"],
     hasDemo: false,
     id: "Downloads",
-    description: "Browse and download the files associated with your cohort for more sophisticated analysis."
+    description:
+      "Browse and download the files associated with your cohort for more sophisticated analysis.",
   },
   {
     name: "Studies",
@@ -53,15 +52,17 @@ export const REGISTERED_APPS = [
     tags: [],
     hasDemo: false,
     id: "Studies",
-    description: "View the Studies available within the GDC and select them for further exploration and analysis."
+    description:
+      "View the Studies available within the GDC and select them for further exploration and analysis.",
   },
   {
     name: "Cohort Comparison",
     icon: "icons/apps/cohortComparison.svg",
     tags: ["clinicalAnalysis"],
     hasDemo: true,
-    id: "CohortComparison",
-    description: "Display the survival analysis of your case sets and compare characteristics such as gender, vital status and age at diagnosis."
+    id: "CohortComparisonApp",
+    description:
+      "Display the survival analysis of your case sets and compare characteristics such as gender, vital status and age at diagnosis.",
   },
   {
     name: "Gene Expression",
@@ -71,7 +72,7 @@ export const REGISTERED_APPS = [
     id: "GeneExpression",
     description: "Visualize patterns in gene expression in your cohort.",
     caseCounts: 0.11,
-    optimizeRules: ["something == something"]
+    optimizeRules: ["something == something"],
   },
   {
     name: "Set Operations",
@@ -79,18 +80,20 @@ export const REGISTERED_APPS = [
     tags: ["generalUtility"],
     hasDemo: true,
     hideCounts: true,
-    description: "Display Venn diagram and find intersection or union, etc. of your cohorts.",
+    description:
+      "Display Venn diagram and find intersection or union, etc. of your cohorts.",
     id: "SetOperations",
   },
   {
     name: "OncoGrid",
     icon: "icons/apps/oncogrid.svg",
-    iconSize: { width: 100, height: 48},
+    iconSize: { width: 100, height: 48 },
     tags: ["variantAnalysis", "cnv", "ssm"],
     hasDemo: true,
-    description: "Visualize the top most mutated cases and genes affected by high impact mutations in your cohort.",
+    description:
+      "Visualize the top most mutated cases and genes affected by high impact mutations in your cohort.",
     id: "OncoGridApp",
-    optimizeRules: ["available data = ssm or cnv"]
+    optimizeRules: ["available data = ssm or cnv"],
   },
   {
     name: "Sequence Reads",
@@ -99,40 +102,40 @@ export const REGISTERED_APPS = [
     hasDemo: true,
     description: "Visualize sequencing reads.",
     id: "SequenceReads",
-    optimizeRules: ["data format = BAM"]
+    optimizeRules: ["data format = BAM"],
   },
   {
     name: "ProteinPaint",
     icon: "proteinpaint.png",
-    iconSize: { width: 100, height: 48},
-    tags: ["variantAnalysis","ssm" ],
+    iconSize: { width: 100, height: 48 },
+    tags: ["variantAnalysis", "ssm"],
     hasDemo: true,
-    description:  "Visualize mutations in protein-coding genes.",
+    description: "Visualize mutations in protein-coding genes.",
     id: "ProteinPaint",
     caseCounts: 0.25,
-    optimizeRules: ["available data = ssm"]
+    optimizeRules: ["available data = ssm"],
   },
   {
     name: "scRNA-Seq",
     icon: "scRnaSeqViz.png",
     tags: ["geneExpression"],
     hasDemo: true,
-    description:  "Visualize patterns in single-cell gene expression in your cohort.",
+    description:
+      "Visualize patterns in single-cell gene expression in your cohort.",
     id: "SingleCellRnaSeq",
     caseCounts: 0.1,
-    optimizeRules: ["experimental_strategy === scrna-seq"]
+    optimizeRules: ["experimental_strategy === scrna-seq"],
   },
 ];
 
-export const APPTAGS =  [
+export const APPTAGS = [
   { value: "clinicalAnalysis", name: "Clinical Analysis" },
-  { value: "generalUtility",name: "General Utility" },
-  { value: "variantAnalysis",name: "Variant Analysis" },
-  { value: "geneExpression",name: "Gene Expression" },
-  { value: "sequenceAnalysis",name: "Sequence Analysis" },
-  { value: "cnv",name: "cnv" },
-  { value: "ssm",name: "ssm" },
+  { value: "generalUtility", name: "General Utility" },
+  { value: "variantAnalysis", name: "Variant Analysis" },
+  { value: "geneExpression", name: "Gene Expression" },
+  { value: "sequenceAnalysis", name: "Sequence Analysis" },
+  { value: "cnv", name: "cnv" },
+  { value: "ssm", name: "ssm" },
 ];
 
-export const RECOMMENDED_APPS = ["Studies", "CohortBuilder", "Downloads", ];
-
+export const RECOMMENDED_APPS = ["Studies", "CohortBuilder", "Downloads"];

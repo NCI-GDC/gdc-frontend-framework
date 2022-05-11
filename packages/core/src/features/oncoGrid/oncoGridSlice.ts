@@ -33,20 +33,28 @@ export const fetchOncoGrid = createAsyncThunk<
   { dispatch: CoreDispatch; state: CoreState }
 >(
   "oncogrid/fetchAll",
-  async ({
-           consequenceTypeFilters,
-           cnvFilters,
-         }: OncoGridParams, thunkAPI): Promise<OncoGridResponse> => {
-
-    const contextFilters =  selectGenomicAndCohortGqlFilters(thunkAPI.getState());
-    const geneResponse = await fetchGenes(consequenceTypeFilters, contextFilters);
+  async (
+    { consequenceTypeFilters, cnvFilters }: OncoGridParams,
+    thunkAPI,
+  ): Promise<OncoGridResponse> => {
+    const contextFilters = selectGenomicAndCohortGqlFilters(
+      thunkAPI.getState(),
+    );
+    const geneResponse = await fetchGenes(
+      consequenceTypeFilters,
+      contextFilters,
+    );
 
     if (!isEmpty(geneResponse.warnings)) {
       return { warnings: geneResponse.warnings };
     }
 
     const geneIds = geneResponse.data.hits.map((d) => d.gene_id);
-    const caseResponse = await fetchCases(geneIds, consequenceTypeFilters, contextFilters);
+    const caseResponse = await fetchCases(
+      geneIds,
+      consequenceTypeFilters,
+      contextFilters,
+    );
 
     if (!isEmpty(caseResponse.warnings)) {
       return { warnings: caseResponse.warnings };
@@ -55,7 +63,12 @@ export const fetchOncoGrid = createAsyncThunk<
 
     return Promise.all([
       fetchCNVOccurrences(geneIds, caseIds, cnvFilters, contextFilters),
-      fetchSSMOccurrences(geneIds, caseIds, consequenceTypeFilters, contextFilters),
+      fetchSSMOccurrences(
+        geneIds,
+        caseIds,
+        consequenceTypeFilters,
+        contextFilters,
+      ),
     ]).then(([cnvResponse, ssmResponse]) => {
       const warnings = cnvResponse.warnings || ssmResponse.warnings;
       return {
@@ -142,9 +155,8 @@ export const selectOncoGridData = (
 
 export const oncoGridReducer = slice.reducer;
 
-
 export const useOncoGrid = createUseFiltersCoreDataHook(
   fetchOncoGrid,
   selectOncoGridData,
-  selectGenomicAndCohortGqlFilters)
-
+  selectGenomicAndCohortGqlFilters,
+);

@@ -1,12 +1,19 @@
 import React, { useState } from "react";
-import { Pagination, Select, Table, Checkbox, Tooltip, Switch } from "@mantine/core";
 import {
-  GDCSsmsTable,
-  useSsmsTable,
-} from "@gff/core";
+  Pagination,
+  Select,
+  Table,
+  Checkbox,
+  Tooltip,
+  Switch,
+} from "@mantine/core";
+import { GDCSsmsTable, useSsmsTable } from "@gff/core";
 import { GenomicTableProps } from "./types";
 
-const MutationsTable: React.FC<GenomicTableProps> = ({ handleSurvivalPlotToggled, selectedSurvivalPlot }: GenomicTableProps) => {
+const MutationsTable: React.FC<GenomicTableProps> = ({
+  handleSurvivalPlotToggled,
+  selectedSurvivalPlot,
+}: GenomicTableProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [offset, setOffset] = useState(0);
   const [activePage, setPage] = useState(1);
@@ -17,31 +24,37 @@ const MutationsTable: React.FC<GenomicTableProps> = ({ handleSurvivalPlotToggled
 
   const handlePageSizeChange = (x: string) => {
     setPageSize(parseInt(x));
-  }
+  };
 
   const handlePageChange = (x: number) => {
-    setOffset((x - 1) * pageSize)
+    setOffset((x - 1) * pageSize);
     setPage(x);
-  }
+  };
 
   return (
-    <div className="flex flex-col">
-      <MutationTableSimple {...data.ssms} selectedSurvivalPlot={selectedSurvivalPlot} handleSurvivalPlotToggled={handleSurvivalPlotToggled} />
+    <div className="flex flex-col w-100">
+      <MutationTableSimple
+        {...data.ssms}
+        selectedSurvivalPlot={selectedSurvivalPlot}
+        handleSurvivalPlotToggled={handleSurvivalPlotToggled}
+      />
       <div className="flex flex-row items-center justify-start border-t border-nci-gray-light">
         <p className="px-2">Page Size:</p>
-        <Select size="sm" radius="md"
+        <Select
+          size="sm"
+          radius="md"
           onChange={handlePageSizeChange}
           value={pageSize.toString()}
           data={[
-            { value: '10', label: '10' },
-            { value: '20', label: '20' },
-            { value: '40', label: '40' },
-            { value: '100', label: '100' },
+            { value: "10", label: "10" },
+            { value: "20", label: "20" },
+            { value: "40", label: "40" },
+            { value: "100", label: "100" },
           ]}
         />
         <Pagination
           classNames={{
-            active: "bg-nci-gray"
+            active: "bg-nci-gray",
           }}
           size="sm"
           radius="md"
@@ -49,15 +62,15 @@ const MutationsTable: React.FC<GenomicTableProps> = ({ handleSurvivalPlotToggled
           className="ml-auto"
           page={activePage}
           onChange={(x) => handlePageChange(x)}
-          total={pages} />
+          total={pages}
+        />
       </div>
-
     </div>
   );
 };
 
 interface MutationTableProps extends GDCSsmsTable {
-  readonly selectedSurvivalPlot: Record<string, string>
+  readonly selectedSurvivalPlot: Record<string, string>;
   readonly handleSurvivalPlotToggled: (symbol: string, name: string) => void;
 }
 
@@ -66,9 +79,10 @@ const MutationTableSimple: React.FC<MutationTableProps> = ({
   cases,
   filteredCases,
   handleSurvivalPlotToggled,
-  selectedSurvivalPlot }: MutationTableProps) => {
+  selectedSurvivalPlot,
+}: MutationTableProps) => {
   return (
-    <Table verticalSpacing={5} striped highlightOnHover >
+    <Table verticalSpacing={5} striped highlightOnHover>
       <thead>
         <tr className="bg-nci-gray-lighter text-white">
           <th>DNA Change</th>
@@ -83,16 +97,45 @@ const MutationTableSimple: React.FC<MutationTableProps> = ({
       <tbody>
         {ssms.map((x) => (
           <tr key={x.id}>
-            <td> <Checkbox label={x.genomic_dna_change} /></td>
+            <td>
+              {" "}
+              <Checkbox label={x.genomic_dna_change} />
+            </td>
             <td>{x.mutation_subtype}</td>
-            <td>{x.consequence[0].gene.symbol} {x.consequence[0].aa_change}</td>
-            <td>{x.filteredOccurrences} / {filteredCases} ({((x.filteredOccurrences / filteredCases) * 100).toFixed(2).toLocaleString()}%)</td>
-            <td>{x.occurrence} / {cases} ({((x.occurrence / cases) * 100).toFixed(2).toLocaleString()}%)</td>
+            <td>
+              {x.consequence[0].gene.symbol} {x.consequence[0].aa_change}
+            </td>
+            <td>
+              {x.filteredOccurrences} / {filteredCases} (
+              {((x.filteredOccurrences / filteredCases) * 100)
+                .toFixed(2)
+                .toLocaleString()}
+              %)
+            </td>
+            <td>
+              {x.occurrence} / {cases} (
+              {((x.occurrence / cases) * 100).toFixed(2).toLocaleString()}%)
+            </td>
             <td>Impact</td>
             <td>
               <Tooltip label={`Click icon to plot ${x.genomic_dna_change}`}>
-                <Switch checked={selectedSurvivalPlot ? selectedSurvivalPlot.symbol == x.ssm_id : false}
-                  onChange={() => handleSurvivalPlotToggled(x.ssm_id, `${x.consequence[0].gene.symbol} ${x.consequence[0]?.aa_change ? x.consequence[0].aa_change : ""}`)} />
+                <Switch
+                  checked={
+                    selectedSurvivalPlot
+                      ? selectedSurvivalPlot.symbol == x.ssm_id
+                      : false
+                  }
+                  onChange={() =>
+                    handleSurvivalPlotToggled(
+                      x.ssm_id,
+                      `${x.consequence[0].gene.symbol} ${
+                        x.consequence[0]?.aa_change
+                          ? x.consequence[0].aa_change
+                          : ""
+                      }`,
+                    )
+                  }
+                />
               </Tooltip>
             </td>
           </tr>

@@ -38,13 +38,17 @@ export interface HorizontalTableProps {
       string | ReadonlyArray<string> | boolean | number | JSX.Element
     >;
   }[];
-  customContainerStyles?: string
+  customContainerStyles?: string;
 }
-export const HorizontalTable = ({ tableData, customContainerStyles }: HorizontalTableProps): JSX.Element => {
+export const HorizontalTable = ({
+  tableData,
+  customContainerStyles,
+}: HorizontalTableProps): JSX.Element => {
+  const containerClassName = "bg-white w-full text-left text-nci-gray-darker";
 
-  const containerClassName = 'bg-white w-full text-left text-nci-gray-darker'
-
-  const updatedContainerClassName = customContainerStyles ? containerClassName + ` ${customContainerStyles}` : containerClassName
+  const updatedContainerClassName = customContainerStyles
+    ? containerClassName + ` ${customContainerStyles}`
+    : containerClassName;
 
   return (
     <table className={updatedContainerClassName}>

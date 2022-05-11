@@ -131,11 +131,11 @@ export const fetchSsmsTable = createAsyncThunk<
   { dispatch: CoreDispatch; state: CoreState }
 >(
   "genomic/ssmsTable",
-  async ({
-    pageSize,
-    offset,
-  }: TablePageOffsetProps, thunkAPI): Promise<GraphQLApiResponse> => {
-    const filters =  selectGenomicAndCohortGqlFilters(thunkAPI.getState());
+  async (
+    { pageSize, offset }: TablePageOffsetProps,
+    thunkAPI,
+  ): Promise<GraphQLApiResponse> => {
+    const filters = selectGenomicAndCohortGqlFilters(thunkAPI.getState());
     const filterContents = filters?.content ? Object(filters?.content) : [];
 
     const graphQlFilters = {
@@ -153,13 +153,16 @@ export const fetchSsmsTable = createAsyncThunk<
       },
       ssmCaseFilter: {
         content: [
-          ...[{
-            content: {
-              field: "available_variation_data",
-              value: ["ssm"],
+          ...[
+            {
+              content: {
+                field: "available_variation_data",
+                value: ["ssm"],
+              },
+              op: "in",
             },
-            op: "in",
-          }], ...filterContents
+          ],
+          ...filterContents,
         ],
         op: "and",
       },
@@ -177,7 +180,7 @@ export const fetchSsmsTable = createAsyncThunk<
         op: "and",
       },
       ssmsTable_offset: offset,
-      ssmsTable_filters: filters? filters: {},
+      ssmsTable_filters: filters ? filters : {},
       score: "occurrence.case.project.project_id",
       sort: [
         {
@@ -289,6 +292,8 @@ export const selectSsmsTableData = (
   };
 };
 
-export const useSsmsTable = createUseFiltersCoreDataHook(fetchSsmsTable,
+export const useSsmsTable = createUseFiltersCoreDataHook(
+  fetchSsmsTable,
   selectSsmsTableData,
-  selectGenomicAndCohortGqlFilters);
+  selectGenomicAndCohortGqlFilters,
+);

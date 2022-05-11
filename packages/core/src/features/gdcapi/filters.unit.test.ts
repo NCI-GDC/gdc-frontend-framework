@@ -170,7 +170,7 @@ const excludes: Scenario = {
 const excludeifany: Scenario = {
   name: "excludeifany",
   op: {
-    operator: "excludes",
+    operator: "excludeifany",
     field: "asdf",
     operands: ["a", "b"],
   },

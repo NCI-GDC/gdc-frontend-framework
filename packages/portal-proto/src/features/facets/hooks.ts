@@ -1,6 +1,6 @@
 import {
   Operation,
-  ValueExtractorHandler,
+  EnumValueExtractorHandler,
   EnumOperandValue,
   OperandValue,
   CoreDispatch,
@@ -32,20 +32,16 @@ import { useEffect } from "react";
  * Filter selector for all of the facet filters
  */
 const useCohortFacetFilter = (): FilterSet => {
-  return useCoreSelector((state) =>
-    selectCurrentCohortFilters(state),
-  );
+  return useCoreSelector((state) => selectCurrentCohortFilters(state));
 };
 
 const useGenomicFacetFilter = (): FilterSet => {
-  return useCoreSelector((state) =>
-    selectGenomicFilters(state)
-  );
+  return useCoreSelector((state) => selectGenomicFilters(state));
 };
 
-export const extractValue = (op: Operation): OperandValue => {
-  const handler =  new ValueExtractorHandler();
-  return handleOperation(handler, op);
+export const extractValue = (op: Operation): EnumOperandValue => {
+  const handler = new EnumValueExtractorHandler();
+  return handleOperation<EnumOperandValue>(handler, op);
 };
 
 /**
@@ -54,21 +50,21 @@ export const extractValue = (op: Operation): OperandValue => {
  */
 const useCohortFacetFilterByName = (field: string): OperandValue => {
   const enumFilters: Operation = useCoreSelector((state) =>
-    selectCurrentCohortFiltersByName(state, field)
+    selectCurrentCohortFiltersByName(state, field),
   );
   return enumFilters ? extractValue(enumFilters) : undefined;
 };
 
 const useGenomicFilterByName = (field: string): OperandValue => {
   const enumFilters: Operation = useCoreSelector((state) =>
-    selectGenomicFiltersByName(state, field)
+    selectGenomicFiltersByName(state, field),
   );
   return enumFilters ? extractValue(enumFilters) : undefined;
 };
 
 interface EnumFacetResponse {
   readonly data?: Record<string, number>;
-  readonly enumFilters?: OperandValue ;
+  readonly enumFilters?: EnumOperandValue;
   readonly error?: string;
   readonly isUninitialized: boolean;
   readonly isFetching: boolean;
@@ -95,11 +91,12 @@ const useCasesFacet = (field: string): EnumFacetResponse => {
 
   useEffect(() => {
     coreDispatch(fetchCaseFacetByName(field));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectFacetFilter]);
 
   return {
     data: facet?.buckets,
-    enumFilters: enumFilters,
+    enumFilters: enumFilters as EnumOperandValue,
     error: facet?.error,
     isUninitialized: facet === undefined,
     isFetching: facet?.status === "pending",
@@ -127,11 +124,12 @@ const useFilesFacet = (field: string): EnumFacetResponse => {
 
   useEffect(() => {
     coreDispatch(fetchFileFacetByName(field));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectFacetFilter]);
 
   return {
     data: facet?.buckets,
-    enumFilters: enumFilters,
+    enumFilters: enumFilters as EnumOperandValue,
     error: facet?.error,
     isUninitialized: facet === undefined,
     isFetching: facet?.status === "pending",
@@ -162,11 +160,12 @@ const useGenesFacet = (field: string): EnumFacetResponse => {
     if (facet) {
       coreDispatch(fetchGenesFacetByName(field));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectFacetFilter, selectCohortFilter]);
 
   return {
     data: facet?.buckets,
-    enumFilters: enumFilters,
+    enumFilters: enumFilters as EnumOperandValue,
     error: facet?.error,
     isUninitialized: facet === undefined,
     isFetching: facet?.status === "pending",
@@ -197,10 +196,12 @@ const useMutationsFacet = (field: string): EnumFacetResponse => {
     if (facet) {
       coreDispatch(fetchMutationsFacetByName(field));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectFacetFilter, selectCohortFilter]);
+
   return {
     data: facet?.buckets,
-    enumFilters: enumFilters,
+    enumFilters: enumFilters as EnumOperandValue,
     error: facet?.error,
     isUninitialized: facet === undefined,
     isFetching: facet?.status === "pending",
@@ -209,6 +210,12 @@ const useMutationsFacet = (field: string): EnumFacetResponse => {
   };
 };
 
+type updateEnumFiltersFunc = (
+  dispatch: CoreDispatch,
+  enumerationFilters: EnumOperandValue,
+  field: string,
+  prefix?: string,
+) => void;
 /**
  * Adds a enumeration filter to cohort filters
  * @param dispatch CoreDispatch instance
@@ -216,43 +223,71 @@ const useMutationsFacet = (field: string): EnumFacetResponse => {
  * @param field field to update
  * @param prefix optional prefix for fields
  */
-export const updateEnumFilters = (dispatch: CoreDispatch , enumerationFilters: OperandValue, field: string, prefix="" ) => {
-  if (enumerationFilters === undefined)
-    return;
+export const updateEnumFilters: updateEnumFiltersFunc = (
+  dispatch: CoreDispatch,
+  enumerationFilters: EnumOperandValue,
+  field: string,
+  prefix = "",
+) => {
+  if (enumerationFilters === undefined) return;
   if (enumerationFilters.length > 0) {
-    dispatch(updateCohortFilter({  field: `${prefix}${field}`, operation: { operator: "includes",
-                                                                                    field: `${prefix}${field}`,
-                                                                                    operands: enumerationFilters }
-                                        }));
-  } else { // completely remove the field
-    dispatch(removeCohortFilter( `${prefix}${field}`));
-  }
-}
-
-export const updateGenomicEnumFilters = (dispatch: CoreDispatch, enumerationFilters : OperandValue, field: string, prefix="" ) => {
-  if (enumerationFilters === undefined)
-    return;
-  if (enumerationFilters.length > 0) {
-    dispatch(updateGenomicFilter({  field: `${prefix}${field}`, operation: { operator: "includes",
+    dispatch(
+      updateCohortFilter({
         field: `${prefix}${field}`,
-        operands: enumerationFilters }
-    }));
-  } else { // completely remove the field
-    dispatch(removeGenomicFilter( `${prefix}${field}`));
+        operation: {
+          operator: "includes",
+          field: `${prefix}${field}`,
+          operands: enumerationFilters,
+        },
+      }),
+    );
+  } else {
+    // completely remove the field
+    dispatch(removeCohortFilter(`${prefix}${field}`));
   }
-}
+};
 
+type updateGenomicEnumFiltersFunc = (
+  dispatch: CoreDispatch,
+  enumerationFilters: EnumOperandValue,
+  field: string,
+  prefix?: string,
+) => void;
+
+export const updateGenomicEnumFilters: updateGenomicEnumFiltersFunc = (
+  dispatch: CoreDispatch,
+  enumerationFilters: EnumOperandValue,
+  field: string,
+  prefix = "",
+) => {
+  if (enumerationFilters === undefined) return;
+  if (enumerationFilters.length > 0) {
+    dispatch(
+      updateGenomicFilter({
+        field: `${prefix}${field}`,
+        operation: {
+          operator: "includes",
+          field: `${prefix}${field}`,
+          operands: enumerationFilters,
+        },
+      }),
+    );
+  } else {
+    // completely remove the field
+    dispatch(removeGenomicFilter(`${prefix}${field}`));
+  }
+};
 
 export const UpdateEnums = {
-  "cases" : updateEnumFilters,
-  "files" : updateEnumFilters,
-  "genes" : updateGenomicEnumFilters,
-  "ssms" : updateGenomicEnumFilters,
-}
+  cases: updateEnumFilters,
+  files: updateEnumFilters,
+  genes: updateGenomicEnumFilters,
+  ssms: updateGenomicEnumFilters,
+};
 
 export const FacetEnumHooks = {
-  "cases" : useCasesFacet,
-  "files" : useFilesFacet,
-  "genes" : useGenesFacet,
-  "ssms" : useMutationsFacet,
-}
+  cases: useCasesFacet,
+  files: useFilesFacet,
+  genes: useGenesFacet,
+  ssms: useMutationsFacet,
+};

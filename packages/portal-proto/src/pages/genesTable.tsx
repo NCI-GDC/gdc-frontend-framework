@@ -5,8 +5,8 @@ import GenesTable from "../features/genesTable/GenesTable";
 const GenesTablePage: NextPage = () => {
   return (
     <SimpleLayout>
-      <div >
-          <GenesTable/>
+      <div>
+        <GenesTable />
       </div>
     </SimpleLayout>
   );

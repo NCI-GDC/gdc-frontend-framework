@@ -1,7 +1,7 @@
-import { combineReducers } from 'redux'
-import { genesTableReducer  }from './genesTableSlice';
-import { geneFrequencyChartReducer } from './genesFrequencyChartSlice'
-import { ssmsTableReducer } from './ssmsTableSlice'
+import { combineReducers } from "redux";
+import { genesTableReducer } from "./genesTableSlice";
+import { geneFrequencyChartReducer } from "./genesFrequencyChartSlice";
+import { ssmsTableReducer } from "./ssmsTableSlice";
 import { genomicFilterReducer } from "./genomicFilters";
 
 export const genomicReducers = combineReducers({
@@ -9,4 +9,4 @@ export const genomicReducers = combineReducers({
   geneFrequencyChart: geneFrequencyChartReducer,
   ssmsTable: ssmsTableReducer,
   filters: genomicFilterReducer,
-})
+});
