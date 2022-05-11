@@ -25,7 +25,7 @@ const MutationsTable: React.FC<GenomicTableProps> = ({ handleSurvivalPlotToggled
   }
 
   return (
-    <div className="flex flex-col w-100">
+    <div className="flex flex-col">
       <MutationTableSimple {...data.ssms} selectedSurvivalPlot={selectedSurvivalPlot} handleSurvivalPlotToggled={handleSurvivalPlotToggled} />
       <div className="flex flex-row items-center justify-start border-t border-nci-gray-light">
         <p className="px-2">Page Size:</p>

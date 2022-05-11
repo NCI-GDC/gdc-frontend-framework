@@ -1,5 +1,6 @@
 import { BsGraphDown, BsFileEarmarkTextFill } from "react-icons/bs";
 import _ from "lodash";
+import { Tooltip } from "@mantine/core";
 
 export const filterMutationType = (typeText) => {
     const splitStr = typeText.split(" ");
@@ -35,9 +36,11 @@ export const handleVep = (vepImpact) => {
         case 'HIGH':
             return 'HI-red'
         case 'MODERATE':
-            return 'MR-gray'
-        case 'LOW':
             return 'MO-gray'
+        case 'LOW':
+            return 'MO-green'
+        case 'MODIFIER':
+            return 'MR-gray'
         default:
             return '-'
     }
@@ -81,7 +84,20 @@ export const formatImpact = (annotation) => {
     const [siftText, siftColor] = siftIcon.split('-');
     const polyIcon = handlePoly(polyphen_impact);
     const [polyText, polyColor] = polyIcon.split('-');
-    return [vepText, vepColor, siftText, siftColor, polyText, polyColor, sift_score, polyphen_score];
+    
+    return { 
+        "vepImpact": vep_impact,
+        "vepText": vepText,
+        "vepColor": `bg-${vepColor}-400`,
+        "siftScore": sift_score,
+        "siftText": siftText,
+        "siftColor": `bg-${siftColor}-400`,
+        "siftImpact": sift_impact,
+        "polyScore": polyphen_score,
+        "polyText": polyText,
+        "polyColor": `bg-${polyColor}-400`,
+        "polyImpact": polyphen_impact
+    }
 }
 
 export const tableFunc = (e) => {
@@ -97,9 +113,21 @@ export const getCustomGridCell = (key) => {
                 Cell: ({ value, row }) => (<>
                     <div className="grid place-items-center">
                         <div className="flex flex-row space-x-3">
-                            {value[0] ? <div className={`bg-${value[1]}-400 rounded-xl flex justify-center items-center h-8 w-8 text-white`}>{value[0]}</div> : <div className="flex justify-center items-center rounded-xl h-8 w-8">-</div>}
-                            {value[2] ? <div className={`bg-${value[3]}-400 rounded-xl flex justify-center items-center h-8 w-8 text-white`}>{value[2]}</div> : <div className="flex justify-center items-center rounded-xl h-8 w-8">-</div>}
-                            {value[4] ? <div className={`bg-${value[5]}-400 rounded-xl flex justify-center items-center h-8 w-8 text-white`}>{value[4]}</div>: <div className="flex justify-center items-center rounded-xl h-8 w-8">-</div>}
+                            {(value.vepImpact !== null) ? 
+                            <Tooltip label={`VEP Impact: ${value.vepImpact}`}>
+                                <div className={`rounded-xl flex justify-center items-center h-8 w-8 text-white ${value.vepColor}`}>{value.vepText}</div> 
+                            </Tooltip>
+                            : <div className="flex justify-center items-center rounded-xl h-8 w-8">-</div>}
+                            {(value.siftScore !== null) ? 
+                            <Tooltip label={`SIFT Impact: ${value.siftImpact} / SIFT Score: ${value.siftScore}`}>
+                                <div className={`${value.siftColor} rounded-xl flex justify-center items-center h-8 w-8 text-white`}>{value.siftText}</div> 
+                            </Tooltip>
+                            : <div className="flex justify-center items-center rounded-xl h-8 w-8">-</div>}
+                            {(value.polyScore !== null) ? 
+                            <Tooltip label={`PolyPhen Impact: ${value.polyImpact} / PolyPhen Score: ${value.polyScore}`}>
+                                <div className={`${value.polyColor} rounded-xl flex justify-center items-center h-8 w-8 text-white`}>{value.polyText}</div>
+                            </Tooltip>
+                            : <div className="flex justify-center items-center rounded-xl h-8 w-8">-</div>}
                         </div>
                     </div>
                 </>),

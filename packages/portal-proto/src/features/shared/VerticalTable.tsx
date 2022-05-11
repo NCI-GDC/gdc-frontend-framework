@@ -1,59 +1,24 @@
-import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useTable, useBlockLayout } from 'react-table';
 import { FixedSizeList as List } from "react-window";
 import _ from "lodash";
-import { DndProvider, useDrag } from "react-dnd";
+import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import DragDrop from "./DragDrop";
-import { useMeasure } from "react-use";
 import { BsList } from "react-icons/bs";
+import { Popover } from "@mantine/core";
 
-const VerticalTable = ({ tableData, tableFunc, customCellKeys, customGridMapping, selectableRow = false }) => {
+const VerticalTable = ({ tableData, columnListOrder, columnCells, handleColumnChange, selectableRow = false }) => {
+    const [table, setTable] = useState([]);
     const [columnListOptions, setColumnListOptions] = useState([]);
     const [headings, setHeadings] = useState([]);
-    const [ref, { width }] = useMeasure();
     const [showColumnMenu, setShowColumnMenu] = useState(false);
 
-    const updateColumnHeadings = () => {
-        const filteredColumnList = columnListOptions.filter((item) => item.visible);
-        const headingOrder = filteredColumnList.map((item) => {
-            return headings[headings.findIndex((find) => find.accessor === item.columnName)]
-        });
-        headingOrder.forEach((heading) => {
-            heading.width = width / headingOrder.length > 100 ? width / headingOrder.length : 100
-        });
-        return headingOrder
-    }
-
-    const tableColumns = useMemo(() => updateColumnHeadings(), [columnListOptions, width]);
-
-    const initializeColumns = () => {
-        const keysArr = Object.keys(tableData[0]);
-        const columnHeadings = keysArr.map((key) => {
-            return customCellKeys.includes(key) ? customGridMapping(key) : {
-                "Header": _.startCase(key),
-                "accessor": key,
-                "width": width / keysArr.length > 100 ? width / keysArr.length : 100
-            }
-        });
-        const columnOpts = keysArr.map((key, idx) => {
-            return {
-                id: idx,
-                columnName: key,
-                visible: true
-            }
-        });
-        setHeadings(columnHeadings);
-        setColumnListOptions(columnOpts);
-    }
-
     useEffect(() => {
-        if (tableData && tableData.length > 0) initializeColumns();
-    }, [width, tableData]);
-
-    const handleColumnChange = (update) => {
-        setColumnListOptions(update);
-    }
+        setTable(tableData);
+        setColumnListOptions(columnListOrder);
+        setHeadings(columnCells);
+    }, [tableData, columnListOrder, columnCells]);
 
     const tableAction = (action) => {
         action.visibleColumns.push((columns) => [
@@ -144,20 +109,30 @@ const VerticalTable = ({ tableData, tableFunc, customCellKeys, customGridMapping
 
 
     return (
-        <div ref={ref}>
-            <div className={`w-max float-right`}>{columnListOptions.length > 0 && showColumnMenu && (
-                <div className={`mr-0 ml-auto`}>
-                    <DndProvider backend={HTML5Backend}>
-                        <DragDrop listOptions={columnListOptions} handleColumnChange={handleColumnChange} />
-                    </DndProvider></div>)}
-                    <div className={`flex flex-row w-max float-right mb-4`}>
-                    <input className={`mr-2 rounded-sm border-1 border-gray-300`} type="search" placeholder="Search"/>
+        <div>
+            <div className={`h-10`}></div>
+            <div className={`float-right`}>
+                <Popover
+                    opened={showColumnMenu}
+                    onClose={() => setShowColumnMenu(false)}
+                    target={<button className={`mr-0 ml-auto border-1 border-gray-300 p-3`} onClick={() => setShowColumnMenu(!showColumnMenu)}><BsList></BsList></button>}
+                    width={260}
+                    position="bottom"
+                    withArrow
+                >
+                    <div className={`w-80`}>{columnListOptions.length > 0 && showColumnMenu && (
+                        <div className={`mr-0 ml-auto`}>
+                            <DndProvider backend={HTML5Backend}>
+                                <DragDrop listOptions={columnListOptions} handleColumnChange={handleColumnChange} />
+                            </DndProvider></div>)}
+                    </div></Popover>
+                <div className={`flex flex-row w-max float-right mb-4`}>
+                    <input className={`mr-2 rounded-sm border-1 border-gray-300`} type="search" placeholder="Search" />
                     <div className={`mt-px`}>
-                    <button className={`mr-0 ml-auto border-1 border-gray-300 p-3`} onClick={() => setShowColumnMenu(!showColumnMenu)}><BsList></BsList></button>
-                    </div>
                     </div>
                 </div>
-            {columnListOptions.length > 0 && (<Table columns={tableColumns} data={tableData}></Table>)}
+            </div>
+            {columnListOptions.length > 0 && (<Table columns={headings} data={table}></Table>)}
         </div>
     )
 }

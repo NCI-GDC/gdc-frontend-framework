@@ -12,22 +12,21 @@ export interface ColumnProps {
   handleColumnChange: (update: any, checkbox: boolean) => void
 }
 
-
 const DragDrop = ({ listOptions, handleColumnChange }) => {
 
   const [columns, setColumns] = useState(listOptions);
 
   useEffect(() => {
-      handleColumnChange(columns);
+    handleColumnChange(columns);
   }, [columns]);
 
   const toggleColumn = (colName: string) => {
-      const visibleColumns = columns.map(c =>
-        c.columnName === colName
-          ? { ...c, visible: !c.visible}
-          : c
-      );
-      setColumns(visibleColumns);
+    const visibleColumns = columns.map(c =>
+      c.columnName === colName
+        ? { ...c, visible: !c.visible }
+        : c
+    );
+    setColumns(visibleColumns);
   };
 
   const moveColumn = useCallback((dragIndex: number, hoverIndex: number) => {
