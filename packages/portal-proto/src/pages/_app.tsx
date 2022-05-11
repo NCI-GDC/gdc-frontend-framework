@@ -6,6 +6,7 @@ import { Provider } from "react-redux";
 import type { AppProps } from "next/app";
 import { CoreProvider } from "@gff/core";
 import { MantineProvider } from "@mantine/core";
+import { NotificationsProvider } from "@mantine/notifications";
 import { TourProvider } from "@reactour/tour";
 import { CustomBadge as Badge } from "../features/tour/CustomBadge";
 import store from "../app/store";
@@ -27,11 +28,10 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   return (
     <CoreProvider>
       <Provider store={store}>
-        {/* Prevents style conflicts between Mantine and Tailwind by loading Mantine second */}
         <MantineProvider
           withGlobalStyles
           withNormalizeCSS
-          emotionOptions={{ key: "mantine", prepend: false }}
+          emotionOptions={{ key: "mantine", prepend: false }} // Prevents style conflicts between Mantine and Tailwind by loading Mantine second
           theme={{
             // Override default blue color until styles are determined
             colors: {
@@ -62,9 +62,11 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
             },
           }}
         >
-          <TourProvider steps={[]} components={{ Badge }}>
-            <Component {...pageProps} />
-          </TourProvider>
+          <NotificationsProvider position="top-center">
+            <TourProvider steps={[]} components={{ Badge }}>
+              <Component {...pageProps} />
+            </TourProvider>
+          </NotificationsProvider>
         </MantineProvider>
       </Provider>
     </CoreProvider>

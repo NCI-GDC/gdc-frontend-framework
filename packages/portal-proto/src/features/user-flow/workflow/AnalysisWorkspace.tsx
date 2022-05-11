@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Chip, Chips, Grid, Select } from "@mantine/core";
+import { Chip, Chips, Divider, Grid, Select } from "@mantine/core";
 import { MdClear as Clear } from "react-icons/md";
 import AnalysisCard from "@/features/user-flow/workflow/AnalysisCard";
 import {
@@ -109,7 +109,8 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
           </Grid>
         </div>
         <div data-tour="analysis_tool_filters" className="flex flex-col w-1/2">
-          <h2 className="ml-6">Filter Tools</h2>
+          <h2 className="ml-6">Tool Categories</h2>
+          <Divider />
           <div className="flex flex-row">
             <Chips
               className="py-1 pr-0"
@@ -206,12 +207,12 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
           <div className="flex flex-row items-center">
             <button
               onClick={() => setSelectedApp(undefined)}
-              className="bg-nci-gray-lighter hover:bg-nci-gray-light font-montserrat tracking-widest uppercase rounded-md shadow-md p-1 px-2"
+              className="bg-nci-gray-lighter hover:bg-nci-gray-light font-montserrat tracking-widest uppercase rounded-md shadow-md p-1 px-2 py-2"
             >
               Applications
             </button>
             <div className=" mx-3 font-montserrat">/</div>
-            <div className="bg-nci-gray-lighter font-montserrat uppercase rounded-md shadow-md p-1 px-2">
+            <div className="bg-nci-gray-lighter font-montserrat tracking-widest uppercase rounded-md shadow-md p-1 px-2">
               {selectedAppName
                 ? selectedAppName
                 : initialApps[selectedApp].name}

@@ -1,6 +1,7 @@
 import { Paper } from "@mantine/core";
 import VennDiagram from "@/features/charts/VennDiagram/VennDiagram";
 import { FIELD_LABELS } from "src/fields";
+import CohortVennDiagram from "./CohortVennDiagram";
 
 interface CohortCardProps {
   readonly selectedCards: Record<string, boolean>;
@@ -9,6 +10,8 @@ interface CohortCardProps {
   readonly options: Record<string, string>;
   readonly cohortNames: string[];
   readonly survivalPlotSelectable: boolean;
+  readonly caseIds: string[][];
+  readonly casesFetching: boolean;
 }
 
 const CohortCard: React.FC<CohortCardProps> = ({
@@ -18,6 +21,8 @@ const CohortCard: React.FC<CohortCardProps> = ({
   counts,
   cohortNames,
   survivalPlotSelectable,
+  caseIds,
+  casesFetching,
 }: CohortCardProps) => {
   return (
     <Paper p="md" className="h-fit">
@@ -38,15 +43,19 @@ const CohortCard: React.FC<CohortCardProps> = ({
         </div>
       </div>
       <hr />
-      <VennDiagram
-        chartData={[
-          { key: "S1_minus_S1", value: counts?.[0] || 0, highlighted: false },
-          { key: "S2_minus_S1", value: counts?.[1] || 0, highlighted: false },
-          { key: "S1_intersect_S2", value: 0, highlighted: false },
-        ]}
-        labels={["S<sub>1</sub>", "S<sub>2</sub>"]}
-        interactable={false}
-      />
+      {!casesFetching && caseIds.length !== 0 ? (
+        <CohortVennDiagram caseIds={caseIds} cohortNames={cohortNames} />
+      ) : (
+        <VennDiagram
+          chartData={[
+            { key: "S1_minus_S1", value: 0, highlighted: false },
+            { key: "S2_minus_S1", value: 0, highlighted: false },
+            { key: "S1_intersect_S2", value: 0, highlighted: false },
+          ]}
+          labels={["S<sub>1</sub>", "S<sub>2</sub>"]}
+          interactable={false}
+        />
+      )}
       <hr />
       {Object.entries(options).map(([value, field]) => (
         <div key={value}>

@@ -11,6 +11,7 @@ const config: InitialOptionsTsJest = {
       tsconfig: "tsconfig.test.json",
     },
   },
+  testEnvironment: "jsdom",
 };
 
 export default config;
