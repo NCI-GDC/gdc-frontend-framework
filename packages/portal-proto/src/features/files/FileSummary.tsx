@@ -1,4 +1,4 @@
-import { useFiles, useHistory } from "@gff/core";
+import { useFiles, useFileHistory } from "@gff/core";
 import { FileView } from "./FileView";
 
 export interface ContextualFileViewProps {
@@ -33,7 +33,7 @@ export const ContextualFileView: React.FC<ContextualFileViewProps> = (
     ],
     size: 1,
   });
-  const hystory = useHistory(props.setCurrentFile);
+  const hystory = useFileHistory(props.setCurrentFile);
 
   const title = data?.[0]
     ? data[0].fileName
