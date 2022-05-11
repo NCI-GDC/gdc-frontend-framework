@@ -17,7 +17,7 @@ export const formatDataForHorizontalTable = (
   //match headers with available properties
   return headersConfig.reduce((output, obj) => {
     let value = get(file, obj.field);
-    //run modifyer if provided on value
+    //run modifier if provided on value
     if (obj.modifier) {
       value = obj.modifier(value);
     }
