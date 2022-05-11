@@ -200,7 +200,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
         <Tabs.Tab label="Genes">
           <div className="flex flex-row">
             <div className="flex flex-col">
-              <Grid className="mx-2 bg-white">
+              <Grid className="mx-2 bg-white w-9/12">
                 <Grid.Col span={6}>
                   <GeneFrequencyChart marginBottom={95} />
                 </Grid.Col>

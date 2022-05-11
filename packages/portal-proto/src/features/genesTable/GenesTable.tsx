@@ -4,7 +4,7 @@ import {
   fetchGenesTable,
   GDCGenesTable,
   useGenesTable,
-  GenesTableState
+  GenesTableState,
 } from "@gff/core";
 import RingLoader from "react-spinners/RingLoader";
 import VerticalTable from "../shared/VerticalTable";
@@ -34,7 +34,6 @@ const GenesTable = ({ handleSurvivalPlotToggled, selectedSurvivalPlot }) => {
   const [columnListOrder, setColumnListOrder] = useState([]);
   const [columnListCells, setColumnListCells] = useState([]);
 
-
   const coreDispatch = useCoreDispatch();
 
   // using the useSsmsTable from core and the associated useEffect hook
@@ -50,35 +49,38 @@ const GenesTable = ({ handleSurvivalPlotToggled, selectedSurvivalPlot }) => {
 
   useEffect(() => {
     setColumnListCells(getTableCellMapping());
-  }, [selectedSurvivalPlot])
+  }, [selectedSurvivalPlot]);
 
   const handlePageSizeChange = (x: string) => {
     setPageSize(parseInt(x));
-  }
+  };
 
   const handlePageChange = (x: number) => {
-    setOffset((x - 1) * pageSize)
+    setOffset((x - 1) * pageSize);
     setPage(x);
-  }
+  };
 
   const getTableColumnMapping = () => {
     return geneKeys.map((key, idx) => {
       return {
         id: idx,
         columnName: key,
-        visible: true
-      }
-    })
-  }
+        visible: true,
+      };
+    });
+  };
 
   const getTableCellMapping = useCallback(() => {
     return geneKeys.map((key) => {
-      return customGeneKeys.includes(key) ? getCustomGridCell(key, selectedSurvivalPlot) : {
-        "Header": _.startCase(key),
-        "accessor": key,
-        "width": width / geneKeys.length > 110 ? width / geneKeys.length : 110
-      }
-    })
+      return customGeneKeys.includes(key)
+        ? getCustomGridCell(key, selectedSurvivalPlot)
+        : {
+            Header: _.startCase(key),
+            accessor: key,
+            width:
+              width / geneKeys.length > 110 ? width / geneKeys.length : 110,
+          };
+    });
   }, [selectedSurvivalPlot, width]);
 
   const getTableDataMapping = (data) => {
@@ -86,49 +88,96 @@ const GenesTable = ({ handleSurvivalPlotToggled, selectedSurvivalPlot }) => {
       return {
         symbol: g.symbol,
         name: g.name,
-        SSMSAffectedCasesInCohort: g.cnv_case > 0 ? `${g.cnv_case + ' / ' + data.genes.filteredCases} (${(100 * g.cnv_case / data.genes.filteredCases).toFixed(2)}%)` : `0`,
-        SSMSAffectedCasesAcrossTheGDC: g.ssm_case > 0 ? `${g.ssm_case + ' / ' + data.genes.cases} (${(100 * g.ssm_case / data.genes.cases).toFixed(2)}%)` : `0`,
-        CNVGain: data.genes.cnvCases > 0 ? `${g.case_cnv_gain + ' / ' + data.genes.cnvCases} (${(100 * g.case_cnv_gain / data.genes.cnvCases).toFixed(2)}%)` : `0%`,
-        CNVLoss: data.genes.cnvCases > 0 ? `${g.case_cnv_loss + ' / ' + data.genes.cnvCases} (${(100 * g.case_cnv_loss / data.genes.cnvCases).toFixed(2)}%)` : `0%`,
+        SSMSAffectedCasesInCohort:
+          g.cnv_case > 0
+            ? `${g.cnv_case + " / " + data.genes.filteredCases} (${(
+                (100 * g.cnv_case) /
+                data.genes.filteredCases
+              ).toFixed(2)}%)`
+            : `0`,
+        SSMSAffectedCasesAcrossTheGDC:
+          g.ssm_case > 0
+            ? `${g.ssm_case + " / " + data.genes.cases} (${(
+                (100 * g.ssm_case) /
+                data.genes.cases
+              ).toFixed(2)}%)`
+            : `0`,
+        CNVGain:
+          data.genes.cnvCases > 0
+            ? `${g.case_cnv_gain + " / " + data.genes.cnvCases} (${(
+                (100 * g.case_cnv_gain) /
+                data.genes.cnvCases
+              ).toFixed(2)}%)`
+            : `0%`,
+        CNVLoss:
+          data.genes.cnvCases > 0
+            ? `${g.case_cnv_loss + " / " + data.genes.cnvCases} (${(
+                (100 * g.case_cnv_loss) /
+                data.genes.cnvCases
+              ).toFixed(2)}%)`
+            : `0%`,
         mutations: data.genes.mutationCounts[g.gene_id],
         annotations: g.is_cancer_gene_census,
-        survival: { "name": `${g.name}`, "symbol": `${g.symbol}`, "selectedId": `${g.ssm_id}` }
+        survival: {
+          name: `${g.name}`,
+          symbol: `${g.symbol}`,
+          selectedId: `${g.ssm_id}`,
+        },
+      };
+    });
+    return genesTableMapping;
+  };
+
+  const getCustomGridCell = useCallback(
+    (key: any, selectedSurvivalPlot) => {
+      switch (key) {
+        case "annotations":
+          return {
+            Header: "Annotations",
+            accessor: "annotations",
+            Cell: ({ value, row }) => (
+              <div className="grid place-items-center">
+                {value ? (
+                  <Tooltip label="Is Cancer Census">
+                    {" "}
+                    <GeneAnnotationIcon size="1.15rem" />{" "}
+                  </Tooltip>
+                ) : null}
+              </div>
+            ),
+          };
+        case "survival":
+          return {
+            Header: "Survival",
+            accessor: "survival",
+            Cell: ({ value, row }) => (
+              <Tooltip label={`Click icon to plot ${value.symbol}`}>
+                <Switch
+                  checked={
+                    selectedSurvivalPlot
+                      ? selectedSurvivalPlot.symbol === value.symbol
+                      : false
+                  }
+                  onChange={() => {
+                    handleSurvivalPlotToggled(
+                      value.symbol,
+                      value.name,
+                      "gene.symbol",
+                    );
+                  }}
+                />
+              </Tooltip>
+            ),
+          };
+        default:
+          return;
       }
-    })
-    return genesTableMapping
-  }
-
-  const getCustomGridCell = useCallback((key: any, selectedSurvivalPlot) => {
-    switch (key) {
-      case "annotations":
-        return {
-          Header: "Annotations",
-          accessor: 'annotations',
-          Cell: ({ value, row }) => (<div className="grid place-items-center">
-            {value ? <Tooltip label="Is Cancer Census"> <GeneAnnotationIcon size="1.15rem" /> </Tooltip> : null}
-          </div>)
-        }
-      case "survival":
-        return {
-          Header: "Survival",
-          accessor: 'survival',
-          Cell: ({ value, row }) => (
-            <Tooltip label={`Click icon to plot ${value.symbol}`}>
-              <Switch checked={selectedSurvivalPlot ? selectedSurvivalPlot.symbol === value.symbol : false} onChange={() => {
-                handleSurvivalPlotToggled(value.symbol, value.name, "gene.symbol");
-              }
-              } />
-            </Tooltip>
-          )
-        }
-      default:
-        return
-    }
-  }, [selectedSurvivalPlot]);
-
+    },
+    [selectedSurvivalPlot],
+  );
 
   useEffect(() => {
-    if (data.status === 'fulfilled') {
+    if (data.status === "fulfilled") {
       setTableData(getTableDataMapping(data));
     }
   }, [data]);
@@ -141,47 +190,61 @@ const GenesTable = ({ handleSurvivalPlotToggled, selectedSurvivalPlot }) => {
   const updateTableCells = () => {
     const filteredColumnList = columnListOrder.filter((item) => item.visible);
     const headingOrder = filteredColumnList.map((item) => {
-      return columnListCells[columnListCells.findIndex((find) => find.accessor === item.columnName)]
+      return columnListCells[
+        columnListCells.findIndex((find) => find.accessor === item.columnName)
+      ];
     });
     headingOrder.forEach((heading) => {
-      heading.width = (width / headingOrder.length) > 110 ? (width / headingOrder.length) : 110
+      heading.width =
+        width / headingOrder.length > 110 ? width / headingOrder.length : 110;
     });
-    return headingOrder
-  }
+    return headingOrder;
+  };
 
-  const columnCells = useMemo(() => updateTableCells(), [width, columnListOrder]);
+  const columnCells = useMemo(
+    () => updateTableCells(),
+    [width, columnListOrder],
+  );
 
   const handleColumnChange = (update) => {
     setColumnListOrder(update);
-  }
+  };
 
   return (
     <div className="flex flex-col w-screen">
-      <div ref={ref} className={`flex flex-row w-9/12`}>{data ? (
-        <VerticalTable tableData={tableData} columnListOrder={columnListOrder} columnCells={columnCells} handleColumnChange={handleColumnChange}></VerticalTable>
-      ) : (
-        <div className="grid place-items-center h-96">
-          <div className="flex flex-row">
-            <RingLoader color={"lightblue"} loading={true} size={100} />
+      <div ref={ref} className={`flex flex-row w-9/12`}>
+        {data ? (
+          <VerticalTable
+            tableData={tableData}
+            columnListOrder={columnListOrder}
+            columnCells={columnCells}
+            handleColumnChange={handleColumnChange}
+          ></VerticalTable>
+        ) : (
+          <div className="grid place-items-center h-96">
+            <div className="flex flex-row">
+              <RingLoader color={"lightblue"} loading={true} size={100} />
+            </div>
           </div>
-        </div>
-      )
-      }</div>
+        )}
+      </div>
       <div className="flex flex-row items-center justify-start border-t border-nci-gray-light">
         <p className="px-2">Page Size:</p>
-        <Select size="sm" radius="md"
+        <Select
+          size="sm"
+          radius="md"
           onChange={handlePageSizeChange}
           value={pageSize.toString()}
           data={[
-            { value: '10', label: '10' },
-            { value: '20', label: '20' },
-            { value: '40', label: '40' },
-            { value: '100', label: '100' },
+            { value: "10", label: "10" },
+            { value: "20", label: "20" },
+            { value: "40", label: "40" },
+            { value: "100", label: "100" },
           ]}
         />
         <Pagination
           classNames={{
-            active: "bg-nci-gray"
+            active: "bg-nci-gray",
           }}
           size="sm"
           radius="md"
@@ -189,7 +252,8 @@ const GenesTable = ({ handleSurvivalPlotToggled, selectedSurvivalPlot }) => {
           className="ml-auto"
           page={activePage}
           onChange={(x) => handlePageChange(x)}
-          total={pages} />
+          total={pages}
+        />
       </div>
     </div>
   );
