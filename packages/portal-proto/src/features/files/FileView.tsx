@@ -153,12 +153,48 @@ export const FileView: React.FC<FileViewProps> = ({
         return entity_id === entity.entity_submitter_id;
       })?.sample_type;
 
+      const entityLink =
+        entity.entity_type === "case"
+          ? entity.case_id
+          : `${entity.case_id}?bioid=${entity.entity_id}`;
+
+      let annotationsLink = <>0</>;
+      if (caseData?.annotations?.length === 1) {
+        annotationsLink = (
+          <GenaricLink
+            path="annotations"
+            link={caseData?.annotations[0]}
+            text={"1"}
+          />
+        );
+      } else if (caseData?.annotations?.length > 1) {
+        annotationsLink = (
+          <GenaricLink
+            path="annotations"
+            link={`?filters={"content"%3A[{"content"%3A{"field"%3A"annotations.entity_id"%2C"value"%3A["${entity.case_id}"]}%2C"op"%3A"in"}]%2C"op"%3A"and"}`}
+            text={`${caseData?.annotations?.length}`}
+          />
+        );
+      }
+
       tableRows.push({
-        entity_id: entity.entity_submitter_id,
+        entity_id: (
+          <GenaricLink
+            path="cases"
+            link={entityLink}
+            text={entity.entity_submitter_id}
+          />
+        ),
         entity_type: entity.entity_type,
         sample_type: sample_type,
-        case_id: entity.case_id,
-        annotations: caseData?.annotations?.length | 0,
+        case_id: (
+          <GenaricLink
+            path="cases"
+            link={entity.case_id}
+            text={entity.case_id}
+          />
+        ),
+        annotations: annotationsLink,
       });
     });
 
@@ -291,6 +327,26 @@ export const FileView: React.FC<FileViewProps> = ({
               {
                 field: "analysis.input_files.length",
                 name: "Source Files",
+                modifier: (v) => {
+                  if (v === 1) {
+                    return (
+                      <GenaricLink
+                        path="files"
+                        link={get(file, "analysis.input_files")[0]}
+                        text={"1"}
+                      />
+                    );
+                  } else if (v > 1) {
+                    return (
+                      <GenaricLink
+                        path="repository"
+                        link={`?filters={"content"%3A[{"content"%3A{"field"%3A"files.downstream_analyses.output_files.file_id"%2C"value"%3A["${file.id}"]}%2C"op"%3A"in"}]%2C"op"%3A"and"}&searchTableTab=files`}
+                        text={`${v}`}
+                      />
+                    );
+                  }
+                  return "0";
+                },
               },
             ])}
           />
@@ -325,23 +381,18 @@ export const FileView: React.FC<FileViewProps> = ({
                 "Release Date",
                 "Release Number",
               ],
-              tableRows: fileHistory
+              tableRows: [...fileHistory]
                 ?.sort(
                   (a, b) =>
                     //sort based on relese number biggest at top
-                    Number.parseFloat(b.data_release) -
-                    Number.parseFloat(a.data_release),
+                    Number.parseFloat(a.version) - Number.parseFloat(b.version),
                 )
-                .map((obj, index) => ({
+                .map((obj, index, { length }) => ({
                   version: obj.version,
                   file_id: (
                     <>
-                      <GenaricLink
-                        path="files"
-                        link={obj.uuid}
-                        text={obj.uuid}
-                      />
-                      {index === 0 && (
+                      {obj.uuid}
+                      {index + 1 === length && (
                         <span className="inline-block ml-2 border rounded-full bg-nci-blue-darker text-white font-bold text-xs py-0.5 px-1">
                           Current Version
                         </span>
