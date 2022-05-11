@@ -25,6 +25,13 @@ be asynchronous, the invocation should also return information about the status 
 request. In the event of a failed data request, the invocation should also return
 information about the failure.
 
+### Avalible Hooks
+
+- `useAnnotations(Query Params defined below)`
+- `useFiles(Query Params defined below)`
+- `useFileHistory(String: uuid of file)`
+- `useProjects(Query Params defined below)`
+
 Example: Fetch project data
 
 ```jsx

@@ -3,6 +3,9 @@ import { get, omit } from "lodash";
 import { HorizontalTableProps } from "../../components/HorizontalTable";
 import { JSONObject } from "../types";
 
+/*
+formatDataForHorizontalTable searches for data in an object and applies any modifiers provided to the located data. It then outputs data ready for the HorizontalTable component to use
+*/
 export const formatDataForHorizontalTable = (
   file: GdcFile | JSONObject,
   headersConfig: ReadonlyArray<{
