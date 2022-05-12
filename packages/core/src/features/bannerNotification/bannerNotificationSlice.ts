@@ -1,3 +1,4 @@
+import { components } from "@reactour/tour";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CoreDispatch, CoreState } from "../../store";
 import { buildFetchError } from "../gdcapi/gdcapi";
@@ -18,9 +19,10 @@ export const fetchNotifications = createAsyncThunk<
   BannerNotification[],
   { dispatch: CoreDispatch; state: CoreState }
 >("bannerNotifications/fetchNew", async () => {
-  //const res = await fetch("https://api.gdc.cancer.gov/v0/notifications");
-  const res = await fetch("http://localhost:3050/notifications");
-  const res2 = await fetch("https://api.gdc.cancer.gov/v0/login-notifications");
+  const res = await fetch("https://api.gdc.cancer.gov/v0/notifications");
+  const loginRes = await fetch(
+    "https://api.gdc.cancer.gov/v0/login-notifications",
+  );
 
   if (!res.ok) {
     throw await buildFetchError(res);
@@ -29,9 +31,9 @@ export const fetchNotifications = createAsyncThunk<
   const results = await res.json();
   const newNotifications = results.data;
 
-  if (res2.ok) {
-    const results2 = await res2.json();
-    newNotifications.push(...results2.data);
+  if (loginRes.ok) {
+    const loginResults = await loginRes.json();
+    newNotifications.push(...loginResults.data);
   }
 
   return newNotifications;
@@ -62,7 +64,8 @@ const slice = createSlice({
           (notification) =>
             !state.map((n) => n.id).includes(notification.id) &&
             (notification.components.includes("PORTAL") ||
-              notification.components.includes("API")),
+              notification.components.includes("API") ||
+              notification.components.includes("LOGIN")),
         )
         .map((notification) => ({ ...notification, dismissed: false }));
 
