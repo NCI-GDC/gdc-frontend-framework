@@ -1,4 +1,3 @@
-import { components } from "@reactour/tour";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CoreDispatch, CoreState } from "../../store";
 import { buildFetchError } from "../gdcapi/gdcapi";
