@@ -16,6 +16,7 @@ const initialState: BannerNotification[] = [];
 
 export const fetchNotifications = createAsyncThunk<
   BannerNotification[],
+  void,
   { dispatch: CoreDispatch; state: CoreState }
 >("bannerNotifications/fetchNew", async () => {
   const res = await fetch("https://api.gdc.cancer.gov/v0/notifications");
