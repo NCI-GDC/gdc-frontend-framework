@@ -29,19 +29,11 @@ const OverLimitNotification: React.FC<OverLimitNotificationProps> = ({
 );
 
 interface UndoButtonProps {
-  readonly files: readonly GdcFile[];
-  dispatch: CoreDispatch;
+  readonly action: () => void;
 }
-const UndoButton: React.FC<UndoButtonProps> = ({
-  files,
-  dispatch,
-}: UndoButtonProps) => {
+const UndoButton: React.FC<UndoButtonProps> = ({ action }: UndoButtonProps) => {
   return (
-    <Button
-      variant={"white"}
-      onClick={() => removeFromCart(files, dispatch)}
-      leftIcon={<UndoIcon />}
-    >
+    <Button variant={"white"} onClick={action} leftIcon={<UndoIcon />}>
       <span className="underline">Undo</span>
     </Button>
   );
@@ -49,12 +41,14 @@ const UndoButton: React.FC<UndoButtonProps> = ({
 
 interface AddNotificationProps {
   readonly files: readonly GdcFile[];
+  currentCart: string[];
   readonly numFilesAdded: number;
   readonly numAlreadyInCart: number;
   dispatch: CoreDispatch;
 }
 const AddNotification: React.FC<AddNotificationProps> = ({
   files,
+  currentCart,
   numFilesAdded,
   numAlreadyInCart,
   dispatch,
@@ -64,7 +58,9 @@ const AddNotification: React.FC<AddNotificationProps> = ({
       return (
         <>
           <p>Added {files[0].fileName} to the cart.</p>
-          <UndoButton files={files} dispatch={dispatch} />
+          <UndoButton
+            action={() => removeFromCart(files, currentCart, dispatch)}
+          />
         </>
       );
     } else {
@@ -80,7 +76,9 @@ const AddNotification: React.FC<AddNotificationProps> = ({
             Added {numFilesAdded} {numFilesAdded === 1 ? "file" : "files"} to
             the cart.
           </p>
-          <UndoButton files={files} dispatch={dispatch} />
+          <UndoButton
+            action={() => removeFromCart(files, currentCart, dispatch)}
+          />
         </>
       );
     } else {
@@ -95,7 +93,9 @@ const AddNotification: React.FC<AddNotificationProps> = ({
             {numAlreadyInCart === 1 ? "file was" : "files were"} already in the
             cart and {numAlreadyInCart === 1 ? "was" : "were"} not added.
           </p>
-          <UndoButton files={files} dispatch={dispatch} />
+          <UndoButton
+            action={() => removeFromCart(files, currentCart, dispatch)}
+          />
         </>
       );
     }
@@ -104,23 +104,44 @@ const AddNotification: React.FC<AddNotificationProps> = ({
 
 interface RemoveNotificationProps {
   readonly files: readonly GdcFile[];
+  readonly currentCart: string[];
+  dispatch: CoreDispatch;
 }
 const RemoveNotification: React.FC<RemoveNotificationProps> = ({
   files,
+  currentCart,
+  dispatch,
 }: RemoveNotificationProps) => {
   if (files.length === 1) {
-    return <>Removed {files[0].fileName} from the cart.</>;
+    return (
+      <>
+        <p>Removed {files[0].fileName} from the cart.</p>
+        <UndoButton action={() => addToCart(files, currentCart, dispatch)} />
+      </>
+    );
   } else {
-    return <>Removed {files.length} files from the cart.</>;
+    return (
+      <>
+        <p>Removed {files.length} files from the cart.</p>
+        <UndoButton action={() => addToCart(files, currentCart, dispatch)} />
+      </>
+    );
   }
 };
 
 export const removeFromCart = (
   files: readonly GdcFile[],
+  currentCart: string[],
   dispatch: CoreDispatch,
 ): void => {
   showNotification({
-    message: <RemoveNotification files={files} />,
+    message: (
+      <RemoveNotification
+        files={files}
+        currentCart={currentCart}
+        dispatch={dispatch}
+      />
+    ),
     classNames: {
       description: "flex flex-col content-center text-center",
     },
@@ -134,11 +155,11 @@ export const addToCart = (
   currentCart: string[],
   dispatch: CoreDispatch,
 ): void => {
-  const numFilesToBeAdded = files.length + currentCart.length;
+  const newCartSize = files.length + currentCart.length;
 
-  if (numFilesToBeAdded > CART_LIMIT) {
+  if (newCartSize > CART_LIMIT) {
     showNotification({
-      message: <OverLimitNotification numFilesInCart={numFilesToBeAdded} />,
+      message: <OverLimitNotification numFilesInCart={currentCart.length} />,
       classNames: {
         description: "flex flex-col content-center text-center",
       },
@@ -156,6 +177,7 @@ export const addToCart = (
       message: (
         <AddNotification
           files={files}
+          currentCart={currentCart}
           numFilesAdded={filesToAdd.length}
           numAlreadyInCart={alreadyInCart.length}
           dispatch={dispatch}
