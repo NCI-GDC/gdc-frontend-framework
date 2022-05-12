@@ -35,7 +35,8 @@ export const cohortApiSlice = coreCreateApi({
     getCohorts: builder.query<CohortModel[], void>({
       query: () => "/cohorts",
       providesTags: (result = [], error, arg) => [
-        "Cohort",
+        //"Cohort",
+        { type: "Cohort", id: "LIST" },
         ...result.map(({ id }) => ({ type: "Cohort", id })),
       ],
     }),
@@ -50,6 +51,7 @@ export const cohortApiSlice = coreCreateApi({
         body: cohort,
       }),
       invalidatesTags: ["Cohort"],
+      //invalidatesTags: [{ type: "Cohort", id: "LIST" }]
     }),
     updateCohort: builder.mutation<CohortModel, CohortModel>({
       query: (cohort) => ({
