@@ -4,7 +4,6 @@ import {
   fetchGenesTable,
   GDCGenesTable,
   useGenesTable,
-  GenesTableState,
 } from "@gff/core";
 import RingLoader from "react-spinners/RingLoader";
 import VerticalTable from "../shared/VerticalTable";
@@ -14,17 +13,29 @@ import _ from "lodash";
 import { useMeasure } from "react-use";
 import { geneKeys, customGeneKeys } from "./constants";
 
-interface GenesTableResponse {
-  readonly data?: GDCGenesTable;
-  readonly mutationsCount?: Record<string, number>;
-  readonly error?: string;
-  readonly isUninitialized: boolean;
-  readonly isFetching: boolean;
-  readonly isSuccess: boolean;
-  readonly isError: boolean;
+// interface GenesTableResponse {
+//   readonly data?: GDCGenesTable;
+//   readonly mutationsCount?: Record<string, number>;
+//   readonly error?: string;
+//   readonly isUninitialized: boolean;
+//   readonly isFetching: boolean;
+//   readonly isSuccess: boolean;
+//   readonly isError: boolean;
+// }
+
+interface GenesTableProps extends GDCGenesTable {
+  readonly selectedSurvivalPlot: Record<string, string>;
+  readonly handleSurvivalPlotToggled: (
+    symbol: string,
+    name: string,
+    field: string,
+  ) => void;
 }
 
-const GenesTable = ({ handleSurvivalPlotToggled, selectedSurvivalPlot }) => {
+const GenesTable: React.FC<GenesTableProps> = ({
+  handleSurvivalPlotToggled,
+  selectedSurvivalPlot,
+}: GenesTableProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [offset, setOffset] = useState(0);
   const [activePage, setPage] = useState(1);
@@ -38,50 +49,14 @@ const GenesTable = ({ handleSurvivalPlotToggled, selectedSurvivalPlot }) => {
 
   // using the useSsmsTable from core and the associated useEffect hook
   // exploring different ways to dispatch the pageSize/offset changes
-  const { data, error, isUninitialized, isFetching, isError } = useGenesTable({
+  const { data } = useGenesTable({
     pageSize: pageSize,
     offset: offset,
   });
 
   useEffect(() => {
     coreDispatch(fetchGenesTable({ pageSize: pageSize, offset: offset }));
-  }, [pageSize, offset]);
-
-  useEffect(() => {
-    setColumnListCells(getTableCellMapping());
-  }, [selectedSurvivalPlot]);
-
-  const handlePageSizeChange = (x: string) => {
-    setPageSize(parseInt(x));
-  };
-
-  const handlePageChange = (x: number) => {
-    setOffset((x - 1) * pageSize);
-    setPage(x);
-  };
-
-  const getTableColumnMapping = () => {
-    return geneKeys.map((key, idx) => {
-      return {
-        id: idx,
-        columnName: key,
-        visible: true,
-      };
-    });
-  };
-
-  const getTableCellMapping = useCallback(() => {
-    return geneKeys.map((key) => {
-      return customGeneKeys.includes(key)
-        ? getCustomGridCell(key, selectedSurvivalPlot)
-        : {
-            Header: _.startCase(key),
-            accessor: key,
-            width:
-              width / geneKeys.length > 110 ? width / geneKeys.length : 110,
-          };
-    });
-  }, [selectedSurvivalPlot, width]);
+  }, [pageSize, offset, coreDispatch]);
 
   const getTableDataMapping = (data) => {
     const genesTableMapping = data.genes.genes.map((g) => {
@@ -128,64 +103,98 @@ const GenesTable = ({ handleSurvivalPlotToggled, selectedSurvivalPlot }) => {
     return genesTableMapping;
   };
 
-  const getCustomGridCell = useCallback(
-    (key: any, selectedSurvivalPlot) => {
-      switch (key) {
-        case "annotations":
-          return {
-            Header: "Annotations",
-            accessor: "annotations",
-            Cell: ({ value, row }) => (
-              <div className="grid place-items-center">
-                {value ? (
-                  <Tooltip label="Is Cancer Census">
-                    {" "}
-                    <GeneAnnotationIcon size="1.15rem" />{" "}
-                  </Tooltip>
-                ) : null}
-              </div>
-            ),
-          };
-        case "survival":
-          return {
-            Header: "Survival",
-            accessor: "survival",
-            Cell: ({ value, row }) => (
-              <Tooltip label={`Click icon to plot ${value.symbol}`}>
-                <Switch
-                  checked={
-                    selectedSurvivalPlot
-                      ? selectedSurvivalPlot.symbol === value.symbol
-                      : false
-                  }
-                  onChange={() => {
-                    handleSurvivalPlotToggled(
-                      value.symbol,
-                      value.name,
-                      "gene.symbol",
-                    );
-                  }}
-                />
-              </Tooltip>
-            ),
-          };
-        default:
-          return;
-      }
-    },
-    [selectedSurvivalPlot],
-  );
-
   useEffect(() => {
     if (data.status === "fulfilled") {
       setTableData(getTableDataMapping(data));
     }
-  }, [data]);
+  }, [data, getTableDataMapping]);
+
+  const getCustomGridCell = useCallback((key: any, selectedSurvivalPlot) => {
+    switch (key) {
+      case "annotations":
+        return {
+          Header: "Annotations",
+          accessor: "annotations",
+          Cell: ({ value, row }) => (
+            <div className="grid place-items-center">
+              {value ? (
+                <Tooltip label="Is Cancer Census">
+                  {" "}
+                  <GeneAnnotationIcon size="1.15rem" />{" "}
+                </Tooltip>
+              ) : null}
+            </div>
+          ),
+        };
+      case "survival":
+        return {
+          Header: "Survival",
+          accessor: "survival",
+          Cell: ({ value, row }) => (
+            <Tooltip label={`Click icon to plot ${value.symbol}`}>
+              <Switch
+                checked={
+                  selectedSurvivalPlot
+                    ? selectedSurvivalPlot.symbol === value.symbol
+                    : false
+                }
+                onChange={() => {
+                  handleSurvivalPlotToggled(
+                    value.symbol,
+                    value.name,
+                    "gene.symbol",
+                  );
+                }}
+              />
+            </Tooltip>
+          ),
+        };
+      default:
+        return;
+    }
+  }, []);
+
+  const getTableCellMapping = useCallback(() => {
+    const cellMapping = geneKeys.map((key) => {
+      return customGeneKeys.includes(key)
+        ? getCustomGridCell(key, selectedSurvivalPlot)
+        : {
+            Header: _.startCase(key),
+            accessor: key,
+            width:
+              width / geneKeys.length > 110 ? width / geneKeys.length : 110,
+          };
+    });
+    return cellMapping;
+  }, [selectedSurvivalPlot, width]);
+
+  const getTableColumnMapping = () => {
+    return geneKeys.map((key, idx) => {
+      return {
+        id: idx,
+        columnName: key,
+        visible: true,
+      };
+    });
+  };
 
   useEffect(() => {
     setColumnListOrder(getTableColumnMapping());
     setColumnListCells(getTableCellMapping());
-  }, []);
+  }, [getTableColumnMapping, getTableCellMapping]);
+
+  useEffect(() => {
+    setColumnListCells(getTableCellMapping());
+  }, [selectedSurvivalPlot, getTableCellMapping]);
+
+  const handlePageSizeChange = (x: string) => {
+    setPageSize(parseInt(x));
+  };
+
+  const handlePageChange = (x: number) => {
+    setOffset((x - 1) * pageSize);
+    setPage(x);
+  };
 
   const updateTableCells = () => {
     const filteredColumnList = columnListOrder.filter((item) => item.visible);
