@@ -11,7 +11,7 @@ interface BannerProps {
   readonly message: string;
   readonly level: "INFO" | "WARNING" | "ERROR";
   readonly dismissible: boolean;
-  readonly id: string;
+  readonly id: number;
 }
 
 const backgroundColor = {
