@@ -262,7 +262,7 @@ const MutationTable: React.FC<MutationTableProps> = ({
           </div>
         )}
       </div>
-      <div className="flex flex-row items-center justify-start border-t border-nci-gray-light">
+      <div className="flex flex-row items-center justify-start border-t border-nci-gray-light w-9/12">
         <p className="px-2">Page Size:</p>
         <Select
           size="sm"
