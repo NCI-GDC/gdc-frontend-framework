@@ -121,9 +121,16 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     );
     return (
       <div className="p-2">
+        <h2
+          id={`${tableTitle.toLowerCase().replace(" ", "_")}`}
+          className={`font-semibold`}
+        >
+          {tableTitle}
+        </h2>
         <div
           role="table"
           aria-label={tableTitle}
+          aria-describedby={`${tableTitle.toLowerCase().replace(" ", "_")}`}
           aria-rowcount={pageSize}
           {...getTableProps()}
           className="table inline-block"
