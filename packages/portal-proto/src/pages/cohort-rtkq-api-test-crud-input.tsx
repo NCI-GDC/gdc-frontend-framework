@@ -16,24 +16,19 @@ import {
 } from "@gff/core";
 import { useCookies } from "react-cookie";
 
-let CohortContent = ({ cohort }) => {
-  return (
-    <article key={cohort.id}>
-      <p>Cohort ID: {cohort.id}</p>
-      <p>Cohort Name: {cohort.name}</p>
-    </article>
-  );
-};
-
 const CohortCrudTest: NextPage = () => {
   // for testing authorization via cookie
   const [cookies, setCookie] = useCookies(["context-id"]);
   setCookie("context-id", "FAKE-UUID-FOR-TESTING-CONTEXT-HEADER");
 
   // literals
-  const cohortId = "CRUD-TEST-1";
+  const cohortId = "CRUD-TEST-2";
   let button_class =
     "text-2xl border rounded bg-nci-gray-lighter opacity-75 hover:opacity-100";
+
+  // page state
+  const [cohortName, setCohortName] = useState("");
+  const onCohortNameChanged = (e) => setCohortName(e.target.value);
 
   // rtk queries and mutations
   const [addCohort] = useAddCohortMutation();
@@ -43,14 +38,14 @@ const CohortCrudTest: NextPage = () => {
   // request body for creates
   const addBody = {
     id: cohortId,
-    name: "Original Cohort Name",
+    name: cohortName,
     facets: [],
   };
 
   // request body for updates
   const updateBody = {
     id: cohortId,
-    name: "Updated Cohort Name",
+    name: cohortName,
     facets: [],
   };
 
@@ -71,12 +66,7 @@ const CohortCrudTest: NextPage = () => {
       <article key={cohort.id}>
         <p>Cohort ID: {cohort.id}</p>
         <p>Cohort Name: {cohort.name}</p>
-        <button
-          className={button_class}
-          onClick={() => deleteCohort(cohort.id)}
-        >
-          Delete
-        </button>
+        <br></br>
       </article>
     ));
   } else if (isCohortsListError || !cohortsListData) {
@@ -89,7 +79,6 @@ const CohortCrudTest: NextPage = () => {
     isLoading: isCohortLoading,
     isSuccess: isCohortSuccess,
     isError: isCohortError,
-    //error: cohortError
   } = useGetCohortByIdQuery(cohortId);
 
   // render specific cohort
@@ -99,11 +88,33 @@ const CohortCrudTest: NextPage = () => {
   } else if (isCohortSuccess) {
     cohortContent = (
       <div>
-        <CohortContent key={cohortData.id} cohort={cohortData} />
+        <article key={cohortData.id}>
+          <p>Cohort ID: {cohortData.id}</p>
+          <label htmlFor="updateCohortName">Cohort Name</label>
+          <input
+            id="updateCohortName"
+            name="updateCohortName"
+            type="text"
+            value={cohortName}
+            onChange={onCohortNameChanged}
+          />
+        </article>
       </div>
     );
   } else if (isCohortError || !cohortData) {
-    cohortContent = <div>Cohort with id {cohortId} does not exist</div>;
+    cohortContent = (
+      <div>
+        <p>Cohort with id {cohortId} does not exist</p>
+        <label htmlFor="newCohortName">Create w/ Cohort Name</label>
+        <input
+          id="newCohortName"
+          name="newCohortName"
+          type="text"
+          value={cohortName}
+          onChange={onCohortNameChanged}
+        />
+      </div>
+    );
   }
 
   // use rtk query to get a control cohort that won't be refreshed when the target cohort is modified
@@ -121,7 +132,10 @@ const CohortCrudTest: NextPage = () => {
   } else if (isControlCohortSuccess) {
     controlCohortContent = (
       <div>
-        <CohortContent key={controlCohortData.id} cohort={controlCohortData} />
+        <article key={controlCohortData.id}>
+          <p>Cohort ID: {controlCohortData.id}</p>
+          <p>Cohort Name: {controlCohortData.name}</p>
+        </article>
       </div>
     );
   } else if (isControlCohortError || !controlCohortData) {
@@ -148,7 +162,10 @@ const CohortCrudTest: NextPage = () => {
           </button>
           <button
             className={button_class}
-            onClick={() => deleteCohort(cohortId)}
+            onClick={() => {
+              deleteCohort(cohortId);
+              setCohortName("");
+            }}
           >
             Delete
           </button>
