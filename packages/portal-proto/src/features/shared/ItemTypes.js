@@ -1,4 +1,3 @@
 export const ItemTypes = {
-    COLUMN: 'column'
-  }
-  
+  COLUMN: "column",
+};

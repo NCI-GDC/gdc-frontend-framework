@@ -7,7 +7,6 @@
 - Multiple Stores
   - We can use multiple stores to isolate the framework from the host application from third-party applications.
   - This was not supported by the original redux release and is still discouraged. However, with the addition of the react context api, multiple stores is not supported.
-  
 - State
 
   - Use namespacing to avoid conflicts in state.
