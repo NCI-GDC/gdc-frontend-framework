@@ -1,7 +1,10 @@
+import dynamic from "next/dynamic";
 import { Paper } from "@mantine/core";
-import VennDiagram from "@/features/charts/VennDiagram/VennDiagram";
 import { FIELD_LABELS } from "src/fields";
 import CohortVennDiagram from "./CohortVennDiagram";
+const VennDiagram = dynamic(() => import("@/features/charts/VennDiagram"), {
+  ssr: false,
+});
 
 interface CohortCardProps {
   readonly selectedCards: Record<string, boolean>;
