@@ -83,11 +83,6 @@ export const VerticalTable: FC<VerticalTableProps> = ({
       selectableRow ? tableAction : null,
     );
 
-    useEffect(() => {
-      console.log("data", data);
-      console.log("columns", columns);
-    });
-
     const RenderRow = useCallback(
       ({ index, style }) => {
         const row = rows[index];
@@ -96,7 +91,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         return (
           <div
             role="row"
-            aria-rowindex={`${index}`}
+            aria-rowindex={index}
             {...row.getRowProps({
               style,
             })}

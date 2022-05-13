@@ -1,10 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  fetchSsmsTable,
-  useCoreDispatch,
-  useSsmsTable,
-  GDCSsmsTable,
-} from "@gff/core";
+import { fetchSsmsTable, useCoreDispatch, useSsmsTable } from "@gff/core";
 import RingLoader from "react-spinners/RingLoader";
 import { VerticalTable } from "../shared/VerticalTable";
 import { Pagination, Select, Switch, Tooltip } from "@mantine/core";
@@ -18,7 +13,7 @@ import {
   truncateAfterMarker,
 } from "./constants";
 
-interface MutationTableProps extends GDCSsmsTable {
+interface MutationTableProps {
   readonly selectedSurvivalPlot: Record<string, string>;
   readonly handleSurvivalPlotToggled: (
     symbol: string,
@@ -27,7 +22,7 @@ interface MutationTableProps extends GDCSsmsTable {
   ) => void;
 }
 
-const MutationTable: React.FC<MutationTableProps> = ({
+const MutationsTable: React.FC<MutationTableProps> = ({
   handleSurvivalPlotToggled,
   selectedSurvivalPlot,
 }: MutationTableProps) => {
@@ -83,7 +78,6 @@ const MutationTable: React.FC<MutationTableProps> = ({
             survival: { name: s.genomic_dna_change, symbol: s.ssm_id },
           };
         });
-        console.log("ssms data", data);
         return ssmsTableMapping;
       }
     };
@@ -295,4 +289,4 @@ const MutationTable: React.FC<MutationTableProps> = ({
   );
 };
 
-export default MutationTable;
+export default MutationsTable;

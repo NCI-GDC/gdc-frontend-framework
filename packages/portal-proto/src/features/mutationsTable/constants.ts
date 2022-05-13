@@ -10,7 +10,6 @@ export const ssmsKeys = [
 export const customSsmsKeys = ["impact", "survival"];
 
 export const filterMutationType = (typeText: string): string => {
-  console.log("typeText", typeText);
   const splitStr = typeText.split(" ");
   const operation = splitStr[splitStr.length - 1];
   return operation.charAt(0).toUpperCase() + operation.slice(1);
@@ -83,12 +82,19 @@ export const handlePoly = (polyImpact: string): string => {
   }
 };
 
-export const formatImpact = (annotation: any): any => {
+interface Annotation {
+  polyphen_impact: string;
+  polyphen_score: number;
+  sift_impact: string;
+  sift_score: number;
+  vep_impact: string;
+}
+
+export const formatImpact = (annotation: Annotation): any => {
   // * tailwind styles must be declared somewhere to be applied dynamically
   const tailwindRed = `bg-red-400`; // eslint-disable-line @typescript-eslint/no-unused-vars
   const tailwindGreen = `bg-green-400`; // eslint-disable-line @typescript-eslint/no-unused-vars
   const tailwindGray = `bg-gray-400`; // eslint-disable-line @typescript-eslint/no-unused-vars
-
   const {
     vep_impact,
     sift_impact,

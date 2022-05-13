@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
 import GenesTable from "../genesTable/GenesTable";
-import MutationTable from "../mutationTable/MutationTable";
+import MutationsTable from "../mutationsTable/MutationsTable";
 import { Grid, Tabs, LoadingOverlay } from "@mantine/core";
 import { EnumFacet } from "../facets/EnumFacet";
 import dynamic from "next/dynamic";
@@ -243,7 +243,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                   }
                 />
               </div>
-              <MutationTable
+              <MutationsTable
                 selectedSurvivalPlot={comparativeSurvival}
                 handleSurvivalPlotToggled={(symbol: string, name: string) =>
                   handleSurvivalPlotToggled(symbol, name, "gene.ssm.ssm_id")

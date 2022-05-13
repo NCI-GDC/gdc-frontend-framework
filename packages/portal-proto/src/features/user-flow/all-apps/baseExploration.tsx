@@ -27,8 +27,8 @@ import {
 } from "../../apps/Apps";
 import { ContextualFilesView } from "../../files/FilesView";
 import { CollapsibleContainer } from "../../../components/CollapsibleContainer";
-import MutationsTable from "@/features/genomic/MutationsTable";
-import GenesTable from "@/features/genomic/GenesTable";
+import MutationsTable from "@/features/mutationsTable/MutationsTable";
+import GenesTable from "@/features/genesTable/GenesTable";
 import { FacetGroup } from "../../cohortBuilder/FacetGroup";
 import { get_facets } from "../../cohortBuilder/dictionary";
 import { FileModal } from "../../files/FileView";
@@ -181,8 +181,14 @@ export const BaseExplorationPage: React.FC<BaseExplorationPageProps> = ({
           ) : currentApp == "somatic-mutations" ? (
             <AllAppViewer title="Somatic Mutations" setView={setCurrentApp}>
               <div className="flex flex-row">
-                <GenesTable />
-                <MutationsTable />
+                <GenesTable
+                  selectedSurvivalPlot={undefined}
+                  handleSurvivalPlotToggled={undefined}
+                />
+                <MutationsTable
+                  selectedSurvivalPlot={undefined}
+                  handleSurvivalPlotToggled={undefined}
+                />
               </div>
             </AllAppViewer>
           ) : currentApp == "clinical-filters" ? (

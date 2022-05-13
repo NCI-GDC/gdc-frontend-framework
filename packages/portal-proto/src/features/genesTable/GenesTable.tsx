@@ -1,10 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  useCoreDispatch,
-  fetchGenesTable,
-  GDCGenesTable,
-  useGenesTable,
-} from "@gff/core";
+import { useCoreDispatch, fetchGenesTable, useGenesTable } from "@gff/core";
 import RingLoader from "react-spinners/RingLoader";
 import { VerticalTable } from "../shared/VerticalTable";
 import { Pagination, Select, Switch, Tooltip } from "@mantine/core";
@@ -13,7 +8,7 @@ import _ from "lodash";
 import { useMeasure } from "react-use";
 import { geneKeys, customGeneKeys } from "./constants";
 
-interface GenesTableProps extends GDCGenesTable {
+interface GenesTableProps {
   readonly selectedSurvivalPlot: Record<string, string>;
   readonly handleSurvivalPlotToggled: (
     symbol: string,
@@ -90,7 +85,6 @@ const GenesTable: React.FC<GenesTableProps> = ({
           },
         };
       });
-      console.log("genesTable", genesTableMapping);
       return genesTableMapping;
     };
     if (data.status === "fulfilled") {
