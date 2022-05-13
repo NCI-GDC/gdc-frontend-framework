@@ -1,20 +1,38 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useCallback, FC } from "react";
 import { useTable, useBlockLayout } from "react-table";
 import { FixedSizeList as List } from "react-window";
-import _ from "lodash";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import DragDrop from "./DragDrop";
+import { DragDrop } from "./DragDrop";
 import { BsList } from "react-icons/bs";
 import { Popover } from "@mantine/core";
 
-const VerticalTable = ({
+interface VerticalTableProps {
+  tableData: any;
+  columnListOrder: any;
+  columnCells: any;
+  handleColumnChange: (columns: any) => void;
+  selectableRow: boolean;
+}
+
+interface Column {
+  Header: string;
+  accessor: string;
+  width: number;
+}
+
+interface TableProps {
+  columns: Column[];
+  data: any[];
+}
+
+export const VerticalTable: FC<VerticalTableProps> = ({
   tableData,
   columnListOrder,
   columnCells,
   handleColumnChange,
-  selectableRow = false,
-}) => {
+  selectableRow,
+}: VerticalTableProps) => {
   const [table, setTable] = useState([]);
   const [columnListOptions, setColumnListOptions] = useState([]);
   const [headings, setHeadings] = useState([]);
@@ -22,29 +40,34 @@ const VerticalTable = ({
 
   useEffect(() => {
     setTable(tableData);
+  }, [tableData]);
+
+  useEffect(() => {
     setColumnListOptions(columnListOrder);
+  }, [columnListOrder]);
+
+  useEffect(() => {
     setHeadings(columnCells);
-  }, [tableData, columnListOrder, columnCells]);
+  }, [columnCells]);
 
   const tableAction = (action) => {
     action.visibleColumns.push((columns) => [
       {
         id: "Checkbox",
         Header: "",
-        Cell: ({ row }) => <input type="checkbox" />,
+        Cell: () => <input type="checkbox" />,
         width: 30,
       },
       ...columns,
     ]);
   };
 
-  const Table = ({ columns, data }) => {
+  const Table: FC<TableProps> = ({ columns, data }: TableProps) => {
     const {
       getTableProps,
       getTableBodyProps,
       headerGroups,
       rows,
-      page,
       totalColumnsWidth,
       prepareRow,
     } = useTable(
@@ -55,6 +78,11 @@ const VerticalTable = ({
       useBlockLayout,
       selectableRow ? tableAction : null,
     );
+
+    useEffect(() => {
+      console.log("data", data);
+      console.log("columns", columns);
+    });
 
     const RenderRow = useCallback(
       ({ index, style }) => {
@@ -68,10 +96,11 @@ const VerticalTable = ({
             })}
             className={`tr ${index % 2 === 1 ? "bg-gray-300" : "bg-white"}`}
           >
-            {row.cells.map((cell) => {
+            {row.cells.map((cell, key) => {
               return (
                 <div
                   {...cell.getCellProps()}
+                  key={`row-${key}`}
                   className="td rounded-sm p-1.5 text-center h-7"
                 >
                   {cell.render("Cell")}
@@ -87,12 +116,17 @@ const VerticalTable = ({
       <div className="p-2">
         <div {...getTableProps()} className="table inline-block">
           <div className="bg-gray-200">
-            {headerGroups.map((headerGroup) => (
-              <div {...headerGroup.getHeaderGroupProps()} className="tr">
-                {headerGroup.headers.map((column) => (
+            {headerGroups.map((headerGroup, key) => (
+              <div
+                {...headerGroup.getHeaderGroupProps()}
+                className="tr"
+                key={`header-${key}`}
+              >
+                {headerGroup.headers.map((column, key) => (
                   <div
                     {...column.getHeaderProps()}
                     className="th text-black text-center"
+                    key={`column-${key}`}
                   >
                     {column.render("Header")}
                   </div>
@@ -132,6 +166,7 @@ const VerticalTable = ({
           }
           width={260}
           position="bottom"
+          transition="scale"
           withArrow
         >
           <div className={`w-fit`}>
@@ -162,5 +197,3 @@ const VerticalTable = ({
     </div>
   );
 };
-
-export default VerticalTable;

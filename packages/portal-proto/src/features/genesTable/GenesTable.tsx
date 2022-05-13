@@ -6,22 +6,12 @@ import {
   useGenesTable,
 } from "@gff/core";
 import RingLoader from "react-spinners/RingLoader";
-import VerticalTable from "../shared/VerticalTable";
+import { VerticalTable } from "../shared/VerticalTable";
 import { Pagination, Select, Switch, Tooltip } from "@mantine/core";
 import { SiMicrogenetics as GeneAnnotationIcon } from "react-icons/si";
 import _ from "lodash";
 import { useMeasure } from "react-use";
 import { geneKeys, customGeneKeys } from "./constants";
-
-// interface GenesTableResponse {
-//   readonly data?: GDCGenesTable;
-//   readonly mutationsCount?: Record<string, number>;
-//   readonly error?: string;
-//   readonly isUninitialized: boolean;
-//   readonly isFetching: boolean;
-//   readonly isSuccess: boolean;
-//   readonly isError: boolean;
-// }
 
 interface GenesTableProps extends GDCGenesTable {
   readonly selectedSurvivalPlot: Record<string, string>;
@@ -49,73 +39,72 @@ const GenesTable: React.FC<GenesTableProps> = ({
 
   // using the useSsmsTable from core and the associated useEffect hook
   // exploring different ways to dispatch the pageSize/offset changes
-  const { data } = useGenesTable({
+  const { data, isFetching } = useGenesTable({
     pageSize: pageSize,
     offset: offset,
   });
 
   useEffect(() => {
     coreDispatch(fetchGenesTable({ pageSize: pageSize, offset: offset }));
-  }, [pageSize, offset, coreDispatch]);
-
-  const getTableDataMapping = (data) => {
-    const genesTableMapping = data.genes.genes.map((g) => {
-      return {
-        symbol: g.symbol,
-        name: g.name,
-        SSMSAffectedCasesInCohort:
-          g.cnv_case > 0
-            ? `${g.cnv_case + " / " + data.genes.filteredCases} (${(
-                (100 * g.cnv_case) /
-                data.genes.filteredCases
-              ).toFixed(2)}%)`
-            : `0`,
-        SSMSAffectedCasesAcrossTheGDC:
-          g.ssm_case > 0
-            ? `${g.ssm_case + " / " + data.genes.cases} (${(
-                (100 * g.ssm_case) /
-                data.genes.cases
-              ).toFixed(2)}%)`
-            : `0`,
-        CNVGain:
-          data.genes.cnvCases > 0
-            ? `${g.case_cnv_gain + " / " + data.genes.cnvCases} (${(
-                (100 * g.case_cnv_gain) /
-                data.genes.cnvCases
-              ).toFixed(2)}%)`
-            : `0%`,
-        CNVLoss:
-          data.genes.cnvCases > 0
-            ? `${g.case_cnv_loss + " / " + data.genes.cnvCases} (${(
-                (100 * g.case_cnv_loss) /
-                data.genes.cnvCases
-              ).toFixed(2)}%)`
-            : `0%`,
-        mutations: data.genes.mutationCounts[g.gene_id],
-        annotations: g.is_cancer_gene_census,
-        survival: {
-          name: `${g.name}`,
-          symbol: `${g.symbol}`,
-          selectedId: `${g.ssm_id}`,
-        },
-      };
-    });
-    return genesTableMapping;
-  };
+  }, [coreDispatch, pageSize, offset]);
 
   useEffect(() => {
+    const getTableDataMapping = (data) => {
+      const genesTableMapping = data.genes.genes.map((g) => {
+        return {
+          symbol: g.symbol,
+          name: g.name,
+          SSMSAffectedCasesInCohort:
+            g.cnv_case > 0
+              ? `${g.cnv_case + " / " + data.genes.filteredCases} (${(
+                  (100 * g.cnv_case) /
+                  data.genes.filteredCases
+                ).toFixed(2)}%)`
+              : `0`,
+          SSMSAffectedCasesAcrossTheGDC:
+            g.ssm_case > 0
+              ? `${g.ssm_case + " / " + data.genes.cases} (${(
+                  (100 * g.ssm_case) /
+                  data.genes.cases
+                ).toFixed(2)}%)`
+              : `0`,
+          CNVGain:
+            data.genes.cnvCases > 0
+              ? `${g.case_cnv_gain + " / " + data.genes.cnvCases} (${(
+                  (100 * g.case_cnv_gain) /
+                  data.genes.cnvCases
+                ).toFixed(2)}%)`
+              : `0%`,
+          CNVLoss:
+            data.genes.cnvCases > 0
+              ? `${g.case_cnv_loss + " / " + data.genes.cnvCases} (${(
+                  (100 * g.case_cnv_loss) /
+                  data.genes.cnvCases
+                ).toFixed(2)}%)`
+              : `0%`,
+          mutations: data.genes.mutationCounts[g.gene_id],
+          annotations: g.is_cancer_gene_census,
+          survival: {
+            name: `${g.name}`,
+            symbol: `${g.symbol}`,
+          },
+        };
+      });
+      console.log("genesTable", genesTableMapping);
+      return genesTableMapping;
+    };
     if (data.status === "fulfilled") {
       setTableData(getTableDataMapping(data));
     }
-  }, [data, getTableDataMapping]);
+  }, [data]);
 
-  const getCustomGridCell = useCallback((key: any, selectedSurvivalPlot) => {
+  const getCustomGridCell = (key: string, selectedSurvivalPlot: any) => {
     switch (key) {
       case "annotations":
         return {
           Header: "Annotations",
           accessor: "annotations",
-          Cell: ({ value, row }) => (
+          Cell: ({ value }: any) => (
             <div className="grid place-items-center">
               {value ? (
                 <Tooltip label="Is Cancer Census">
@@ -130,7 +119,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
         return {
           Header: "Survival",
           accessor: "survival",
-          Cell: ({ value, row }) => (
+          Cell: ({ value }: any) => (
             <Tooltip label={`Click icon to plot ${value.symbol}`}>
               <Switch
                 checked={
@@ -152,7 +141,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
       default:
         return;
     }
-  }, []);
+  };
 
   const getTableCellMapping = useCallback(() => {
     const cellMapping = geneKeys.map((key) => {
@@ -181,11 +170,11 @@ const GenesTable: React.FC<GenesTableProps> = ({
   useEffect(() => {
     setColumnListOrder(getTableColumnMapping());
     setColumnListCells(getTableCellMapping());
-  }, [getTableColumnMapping, getTableCellMapping]);
+  }, []);
 
   useEffect(() => {
     setColumnListCells(getTableCellMapping());
-  }, [selectedSurvivalPlot, getTableCellMapping]);
+  }, [selectedSurvivalPlot]);
 
   const handlePageSizeChange = (x: string) => {
     setPageSize(parseInt(x));
@@ -220,17 +209,18 @@ const GenesTable: React.FC<GenesTableProps> = ({
   };
 
   return (
-    <div className="flex flex-col w-screen">
+    <div className="flex flex-col w-screen pb-3 pt-3">
       <div ref={ref} className={`flex flex-row w-9/12`}>
-        {data ? (
+        {data && !isFetching ? (
           <VerticalTable
             tableData={tableData}
             columnListOrder={columnListOrder}
             columnCells={columnCells}
             handleColumnChange={handleColumnChange}
+            selectableRow={false}
           ></VerticalTable>
         ) : (
-          <div className="grid place-items-center h-96">
+          <div className="grid place-items-center h-96 w-full pt-64 pb-72">
             <div className="flex flex-row">
               <RingLoader color={"lightblue"} loading={true} size={100} />
             </div>

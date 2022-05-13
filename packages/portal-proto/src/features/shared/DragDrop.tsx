@@ -1,19 +1,16 @@
-import { FC, useState, useCallback, useEffect } from 'react'
-import { ColumnOption } from './ColumnOption';
-import update from 'immutability-helper';
+import { FC, useState, useCallback, useEffect } from "react";
+import { ColumnOption } from "./ColumnOption";
+import update from "immutability-helper";
 
-
-export interface ColumnProps {
-  id: any
-  columnName: string
-  index: number,
-  visible: true,
-  moveColumn: (dragIndex: number, hoverIndex: number) => void
-  handleColumnChange: (update: any, checkbox: boolean) => void
+interface DragDropProps {
+  listOptions: any;
+  handleColumnChange: (columns: any) => void;
 }
 
-const DragDrop = ({ listOptions, handleColumnChange }) => {
-
+export const DragDrop: FC<DragDropProps> = ({
+  listOptions,
+  handleColumnChange,
+}: DragDropProps) => {
   const [columns, setColumns] = useState(listOptions);
 
   useEffect(() => {
@@ -21,10 +18,8 @@ const DragDrop = ({ listOptions, handleColumnChange }) => {
   }, [columns]);
 
   const toggleColumn = (colName: string) => {
-    const visibleColumns = columns.map(c =>
-      c.columnName === colName
-        ? { ...c, visible: !c.visible }
-        : c
+    const visibleColumns = columns.map((c) =>
+      c.columnName === colName ? { ...c, visible: !c.visible } : c,
     );
     setColumns(visibleColumns);
   };
@@ -37,11 +32,14 @@ const DragDrop = ({ listOptions, handleColumnChange }) => {
           [hoverIndex, 0, prevColumns[dragIndex]],
         ],
       }),
-    )
+    );
   }, []);
 
   const renderColumn = useCallback(
-    (column: { id: number, columnName: string, visible: boolean }, index: number) => {
+    (
+      column: { id: number; columnName: string; visible: boolean },
+      index: number,
+    ) => {
       return (
         <ColumnOption
           key={column.id}
@@ -52,16 +50,16 @@ const DragDrop = ({ listOptions, handleColumnChange }) => {
           visible={column.visible}
           toggleColumn={toggleColumn}
         />
-      )
+      );
     },
     [columns],
-  )
+  );
 
   return (
     <>
-      <div className="w-70">{columns.map((column, i) => renderColumn(column, i))}</div>
+      <div className="w-70">
+        {columns.map((column, i) => renderColumn(column, i))}
+      </div>
     </>
-  )
-}
-
-export default DragDrop;
+  );
+};
