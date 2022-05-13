@@ -1,7 +1,8 @@
 // This defines the middleware for the cohort API POC.
 
-// For this slice to work, the mock cohort api must be started. To do this from
-// the project root run the following command: node data/cohort-api-server.js
+// For this slice to work, the mock cohort api must be started. To do this,
+// run the following command from the /data directory:
+// node cohort-api-server.js
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
