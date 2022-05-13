@@ -253,6 +253,8 @@ const MutationTable: React.FC<MutationTableProps> = ({
             columnCells={columnCells}
             handleColumnChange={handleColumnChange}
             selectableRow={false}
+            tableTitle={`Mutations Table`}
+            pageSize={pageSize.toString()}
           ></VerticalTable>
         ) : (
           <div className="grid place-items-center h-96 w-full pt-64 pb-72">

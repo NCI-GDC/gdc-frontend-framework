@@ -13,6 +13,8 @@ interface VerticalTableProps {
   columnCells: any;
   handleColumnChange: (columns: any) => void;
   selectableRow: boolean;
+  tableTitle: string;
+  pageSize: string;
 }
 
 interface Column {
@@ -32,6 +34,8 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   columnCells,
   handleColumnChange,
   selectableRow,
+  tableTitle,
+  pageSize,
 }: VerticalTableProps) => {
   const [table, setTable] = useState([]);
   const [columnListOptions, setColumnListOptions] = useState([]);
@@ -91,6 +95,8 @@ export const VerticalTable: FC<VerticalTableProps> = ({
 
         return (
           <div
+            role="row"
+            aria-rowindex={`${index}`}
             {...row.getRowProps({
               style,
             })}
@@ -100,6 +106,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
               return (
                 <div
                   {...cell.getCellProps()}
+                  role="cell"
                   key={`row-${key}`}
                   className="td rounded-sm p-1.5 text-center h-7"
                 >
@@ -114,16 +121,24 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     );
     return (
       <div className="p-2">
-        <div {...getTableProps()} className="table inline-block">
-          <div className="bg-gray-200">
+        <div
+          role="table"
+          aria-label={tableTitle}
+          aria-rowcount={pageSize}
+          {...getTableProps()}
+          className="table inline-block"
+        >
+          <div role="rowgroup" className="bg-gray-200">
             {headerGroups.map((headerGroup, key) => (
               <div
                 {...headerGroup.getHeaderGroupProps()}
+                role="row"
                 className="tr"
                 key={`header-${key}`}
               >
                 {headerGroup.headers.map((column, key) => (
                   <div
+                    role="columnheader"
                     {...column.getHeaderProps()}
                     className="th text-black text-center"
                     key={`column-${key}`}
@@ -134,7 +149,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
               </div>
             ))}
           </div>
-          <div {...getTableBodyProps()}>
+          <div role="rowgroup" {...getTableBodyProps()}>
             <List
               height={360}
               itemCount={rows.length}
