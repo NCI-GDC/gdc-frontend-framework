@@ -5,11 +5,11 @@ import {
   MdFlip as FlipIcon,
   MdRemoveCircle as LessIcon,
 } from "react-icons/md";
+import { FaUndo as UndoIcon } from "react-icons/fa";
 import {
   Button,
   LoadingOverlay,
   NumberInput,
-  Overlay,
   SegmentedControl,
 } from "@mantine/core";
 import { Icon } from "@iconify/react";
@@ -188,8 +188,6 @@ const BuildRanges = (
  * represents bucket for a range > "from" <= "to"
  * @param numBuckets: number of buckets to consider
  * @param field: name of field this range id for
- * @param minimum starting value for range buckets
- * @param buildLowHigh: function to create the range for a bucket
  */
 
 const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
@@ -311,18 +309,17 @@ const FromTo: React.FC<FromToProps> = ({
     setToValue(values?.to);
   }, [values]);
 
-  // useEffect(() => changedCallback(), [changedCallback, toValue, fromValue, toOp, fromOp])
-
   /**
-   * Code to execute in response to the Apply Button being clicked.
-   * @param event
+   * Handle Apply button which will add/update/remove a range filter to the field.
+   * In the case of units == years the value is converted to days as needed
+   * for the filters
    */
-  const handleApply = (event) => {
+  const handleApply = () => {
     const data = {
       fromOp: fromOp as RangeFromOp,
-      from: units !== "years" ? fromValue : getLowerAgeFromYears(fromValue),
+      from: fromValue,
       toOp: toOp as RangeToOp,
-      to: units !== "years" ? toValue : getUpperAgeFromYears(toValue),
+      to: toValue,
     };
     const rangeFilters = buildRangeOperator(field, data);
     if (rangeFilters === undefined) {
@@ -332,7 +329,6 @@ const FromTo: React.FC<FromToProps> = ({
         updateCohortFilter({ field: field, operation: rangeFilters }),
       );
     }
-    event.preventDefault();
   };
   return (
     <div className="relative p-1">
@@ -416,6 +412,8 @@ const FacetExpander: React.FC<FacetExpanderProps> = ({
   isGroupExpanded,
   onShowChanged,
 }: FacetExpanderProps) => {
+  if (remainingValues <= 0) return null;
+
   return (
     <div className={"mt-3"}>
       {!isGroupExpanded ? (
@@ -449,8 +447,11 @@ const FacetExpander: React.FC<FacetExpanderProps> = ({
 function BuildRangeLabelsAndValues(
   bucketRanges: Record<string, any>,
   rangeData?: FacetBuckets,
+  showZero = true,
 ) {
   return Object.keys(bucketRanges).reduce((b, x) => {
+    if (!showZero && rangeData && rangeData[x] == 0) return b;
+
     b[x] = {
       ...bucketRanges[x],
       key: x,
@@ -476,7 +477,7 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
     numBuckets,
     minimum,
     maximum,
-    showZero = true,
+    showZero = false,
   }: RangeInputWithPrefixedRangesProps) => {
     const [isGroupExpanded, setIsGroupExpanded] = useState(false); // handles the expanded group
 
@@ -496,47 +497,47 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
       () => BuildRanges(numBuckets, units, minimum, buildDayYearRangeBucket),
       [minimum, numBuckets, units],
     );
-    // build ranges for facet query
+    // build ranges for continuous range query
     const ranges = Object.keys(bucketRanges).map((x) => {
       return { from: bucketRanges[x].from, to: bucketRanges[x].to };
     });
 
-    const [visibleItems, setVisibleItems] = useState(DEFAULT_VISIBLE_ITEMS);
     const [isCustom, setIsCustom] = useState(filterKey === "custom"); // in custom Range Mode
-    const [selectedRange, setSelectedRange] = useState(
-      isCustom ? "custom" : filterKey,
-    ); // which range is selected custom means NO prefixed
-    const coreDispatch = useCoreDispatch();
-
-    console.log("filterKey: ", filterKey, isCustom, filterValues);
+    const [selectedRange, setSelectedRange] = useState(filterKey);
 
     const { data: rangeData, isSuccess } = useRangeFacet(field, ranges);
     const rangeLabelsAndValues = BuildRangeLabelsAndValues(
       bucketRanges,
       rangeData,
+      showZero,
     );
 
-    const clearFilters = () => {
-      coreDispatch(removeCohortFilter(field));
-      console.log("clear");
-    };
+    console.log(
+      "filterKey: ",
+      field,
+      rangeLabelsAndValues,
+      filterKey,
+      isCustom,
+      filterValues,
+    );
 
     const resetToCustom = useCallback(() => {
       if (!isCustom) {
-        console.log("reset to custom");
         setIsCustom(true);
         setSelectedRange("custom");
       }
     }, [isCustom]);
 
     useEffect(() => {
-      if (!isCustom && Object.keys(rangeLabelsAndValues).includes(filterKey)) {
-        setSelectedRange(filterKey);
-      }
-    }, [filterKey, isCustom, rangeLabelsAndValues, selectedRange]);
+      if (!isCustom)
+        if (Object.keys(rangeLabelsAndValues).includes(filterKey))
+          setSelectedRange(filterKey);
+        else resetToCustom();
+    }, [filterKey, isCustom, rangeLabelsAndValues, resetToCustom]);
 
+    const totalBuckets = Object.keys(rangeLabelsAndValues).length;
     const bucketsToShow = isGroupExpanded ? numBuckets : DEFAULT_VISIBLE_ITEMS;
-    const remainingValues = numBuckets - bucketsToShow;
+    const remainingValues = totalBuckets - bucketsToShow;
 
     const onShowModeChanged = () => {
       setIsGroupExpanded(!isGroupExpanded);
@@ -573,8 +574,9 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
             rangeLabelsAndValues={rangeLabelsAndValues}
             selected={selectedRange}
             setSelected={(value) => {
-              console.log("setSelected:", value);
-              setIsCustom(false);
+              setIsCustom(false); // no longer a customRange
+              // this is the only way user interaction
+              // can set this to False
               setSelectedRange(value);
             }}
           />
@@ -839,9 +841,10 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
 }: NumericFacetProps) => {
   const [isSearching, setIsSearching] = useState(false);
   const [isFacetView, setIsFacetView] = useState(true);
+  const coreDispatch = useCoreDispatch();
 
-  const toggleSearch = () => {
-    setIsSearching(!isSearching);
+  const clearFilters = () => {
+    coreDispatch(removeCohortFilter(field));
   };
 
   const toggleFlip = () => {
@@ -864,6 +867,12 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
               onClick={toggleFlip}
             >
               <FlipIcon />
+            </button>
+            <button
+              className="bg-nci-gray-lighter hover:bg-grey text-grey-darkest font-bold py-2 px-4 rounded inline-flex items-center"
+              onClick={clearFilters}
+            >
+              <UndoIcon />
             </button>
           </div>
         </div>
