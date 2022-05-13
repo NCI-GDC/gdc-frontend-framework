@@ -59,6 +59,7 @@
     "@types/react-select": "^4.0.17",
     "autoprefixer": "^10.4.2",
     "jest": "^27.0.6",
+    "jest-canvas-mock": "^2.4.0",
     "jest-css-modules-transform": "^4.2.0",
     "next-transpile-modules": "^9.0.0",
     "oncogrid": "^3.0.0",

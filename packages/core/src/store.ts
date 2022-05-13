@@ -29,8 +29,8 @@ import { ssmPlotReducer } from "./features/cancerDistribution/ssmPlot";
 import { cnvPlotReducer } from "./features/cancerDistribution/cnvPlot";
 import { imageDetailsReducer } from "./features/imageDetails/imageDetailsSlice";
 import { imageViewerReducer } from "./features/imageDetails/imageViewer";
-import { cohortFacetsReducer } from "./features/cohortComparison/cohortFacetSlice";
 import { cartReducer } from "./features/cart/cartSlice";
+import { cohortComparisonReducer } from "./features/cohortComparison";
 
 const reducers = {
   cohort: cohortReducers,
@@ -49,7 +49,7 @@ const reducers = {
   genomic: genomicReducers,
   imageDetails: imageDetailsReducer,
   imageViewer: imageViewerReducer,
-  cohortComparison: cohortFacetsReducer,
+  cohortComparison: cohortComparisonReducer,
   cart: cartReducer,
 };
 
