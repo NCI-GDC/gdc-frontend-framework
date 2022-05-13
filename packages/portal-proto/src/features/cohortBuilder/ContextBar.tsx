@@ -59,7 +59,7 @@ const ContextBar: React.FC<CohortGroupProps> = ({
     { field: "project.project_id", name: "Project" },
     { field: "project.program.name", name: "Program Name" },
     { field: "demographic.gender", name: "Gender" },
-    { field: "demographic.vital_status", name: "Vital Status" },
+    { field: "demographic.race", name: "Race" },
   ]);
 
   const filters = useCohortFacetFilters();
