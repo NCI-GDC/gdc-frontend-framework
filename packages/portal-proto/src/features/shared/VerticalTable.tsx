@@ -131,7 +131,8 @@ export const VerticalTable: FC<VerticalTableProps> = ({
           role="table"
           aria-label={tableTitle}
           aria-describedby={`${tableTitle.toLowerCase().replace(" ", "_")}`}
-          aria-rowcount={pageSize}
+          aria-rowcount={pageSize ? pageSize : `-1`}
+          aria-colcount={columns.length > 0 ? columns.length.toString() : `-1`}
           {...getTableProps()}
           className="table inline-block"
         >
