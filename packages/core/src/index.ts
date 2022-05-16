@@ -38,3 +38,4 @@ export * from "./features/survival/survivalSlice";
 export * from "./features/oncoGrid/oncoGridSlice";
 export * from "./features/cohortComparison";
 export * from "./features/cart";
+export * from "./features/bannerNotification";

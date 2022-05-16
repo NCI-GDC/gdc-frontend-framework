@@ -31,6 +31,7 @@ import { imageDetailsReducer } from "./features/imageDetails/imageDetailsSlice";
 import { imageViewerReducer } from "./features/imageDetails/imageViewer";
 import { cartReducer } from "./features/cart/cartSlice";
 import { cohortComparisonReducer } from "./features/cohortComparison";
+import { bannerReducer } from "./features/bannerNotification";
 
 const reducers = {
   cohort: cohortReducers,
@@ -51,13 +52,14 @@ const reducers = {
   imageViewer: imageViewerReducer,
   cohortComparison: cohortComparisonReducer,
   cart: cartReducer,
+  bannerNotification: bannerReducer,
 };
 
 const persistConfig = {
   key: "root",
   version: 1,
   storage,
-  whitelist: ["cart"],
+  whitelist: ["cart", "bannerNotification"],
 };
 
 const reducer = persistReducer(persistConfig, combineReducers(reducers));
