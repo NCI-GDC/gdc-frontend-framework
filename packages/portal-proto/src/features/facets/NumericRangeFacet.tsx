@@ -412,8 +412,6 @@ const FacetExpander: React.FC<FacetExpanderProps> = ({
   isGroupExpanded,
   onShowChanged,
 }: FacetExpanderProps) => {
-  if (remainingValues <= 0) return null;
-
   return (
     <div className={"mt-3"}>
       {!isGroupExpanded ? (
@@ -536,7 +534,9 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
     }, [filterKey, isCustom, rangeLabelsAndValues, resetToCustom]);
 
     const totalBuckets = Object.keys(rangeLabelsAndValues).length;
-    const bucketsToShow = isGroupExpanded ? numBuckets : DEFAULT_VISIBLE_ITEMS;
+    const bucketsToShow = isGroupExpanded
+      ? totalBuckets
+      : DEFAULT_VISIBLE_ITEMS;
     const remainingValues = totalBuckets - bucketsToShow;
 
     const onShowModeChanged = () => {

@@ -1,5 +1,5 @@
 /**
- * Types and functions to suppport continuous Aggregations for numeric range data
+ * Types and functions to support continuous Aggregations for numeric range data
  */
 
 import { Buckets, Stats } from "../gdcapi/gdcapi";
@@ -16,7 +16,7 @@ export interface RangeBuckets extends Stats {
  * @param aggregation - object to test
  * @return true if object has the members needed for RangeBucket
  */
-const isRangeBucketsAggregation = (
+export const isRangeBucketsAggregation = (
   aggregation: unknown,
 ): aggregation is RangeBuckets => {
   return (

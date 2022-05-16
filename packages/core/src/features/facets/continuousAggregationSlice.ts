@@ -16,44 +16,6 @@ export interface RangeOperation {
   readonly ranges: ReadonlyArray<NumericFromTo>;
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const buildContinuousAggregationQuery = (field: string): string => {
-  return `
-  query ContinuousAggregationQuery($filters: FiltersArgument, $filters2: FiltersArgument) {
-  viewer {
-    explore {
-      cases {
-        aggregations(filters: $filters) {
-          ${convertFacetNameToGQL(field)} {
-            stats {
-              Min : min
-              Max: max
-              Mean: avg
-              SD: std_deviation
-            }
-            percentiles {
-              Median: median
-              IQR: iqr
-              q1: quartile_1
-              q3: quartile_3
-            }
-            range(ranges: $filters2) {
-              buckets {
-                doc_count
-                key
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-`;
-};
-
 const buildContinuousAggregationRangeOnlyQuery = (field: string): string => {
   return `
   query ContinuousAggregationQuery($filters: FiltersArgument, $filters2: FiltersArgument) {

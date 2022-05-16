@@ -122,6 +122,16 @@ const CohortEnumFilterElement: React.FC<EnumFilterProps> = (
   );
 };
 
+const CohortRangeFilterElement: React.FC<EnumFilterProps> = (
+  props: EnumFilterProps,
+) => {
+  return (
+    <CohortValueFilterElement {...props}>
+      <EnumValueElement values={props.values} />
+    </CohortValueFilterElement>
+  );
+};
+
 /**
  *  Processes a Filter into a component representation
  */
