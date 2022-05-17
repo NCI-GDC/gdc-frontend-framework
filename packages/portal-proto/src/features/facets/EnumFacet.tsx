@@ -161,7 +161,7 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                 onClick={toggleSearch}
                 aria-label="Search"
               >
-                <SearchIcon size="1.25em" />
+                <SearchIcon size="1.25em" color="#274863" />
               </button>
             ) : null}
             {showFlip ? (
@@ -170,7 +170,7 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                 onClick={toggleFlip}
                 aria-label="Flip between form and chart"
               >
-                <FlipIcon size="1.25em" />
+                <FlipIcon size="1.25em" color="#274863" />
               </button>
             ) : null}
           </div>
@@ -180,12 +180,14 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
         <div
           className={
             isFacetView
-              ? "flip-card h-full"
-              : "flip-card flip-card-flipped h-full"
+              ? `flip-card h-full `
+              : `flip-card flip-card-flipped h-full`
           }
           ref={cardRef}
         >
-          <div className="card-face bg-white">
+          <div
+            className={`card-face bg-white  ${!isFacetView ? "hidden" : ""}`}
+          >
             <div>
               <div className="flex flex-row items-center justify-between flex-wrap border p-1">
                 <button
@@ -321,6 +323,13 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                         size="1.5em"
                         className="text-nci-gray-darkest"
                         onClick={() => setIsGroupExpanded(!isGroupExpanded)}
+                        onKeyPress={(event) =>
+                          event.key === "Enter"
+                            ? setIsGroupExpanded(!isGroupExpanded)
+                            : undefined
+                        }
+                        tabIndex={0}
+                        aria-label="Toggle more options"
                       />
                       <div className="pl-1 text-nci-gray-darkest">
                         {" "}
@@ -334,6 +343,13 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                         size="1.5em"
                         className="text-nci-gray-darkest"
                         onClick={() => setIsGroupExpanded(!isGroupExpanded)}
+                        onKeyPress={(event) =>
+                          event.key === "Enter"
+                            ? setIsGroupExpanded(!isGroupExpanded)
+                            : undefined
+                        }
+                        tabIndex={0}
+                        aria-label="Toggle less options"
                       />
                       <div className="pl-1 text-nci-gray-darkest">
                         {" "}
@@ -345,7 +361,11 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
               </div>
             }
           </div>
-          <div className="card-face card-back bg-white h-full">
+          <div
+            className={`card-face card-back bg-white h-full ${
+              isFacetView ? "hidden" : ""
+            }`}
+          >
             <EnumFacetChart
               field={field}
               data={data}
