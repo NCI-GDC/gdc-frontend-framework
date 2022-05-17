@@ -14,6 +14,7 @@ import {
 import { convertFieldToName } from "./utils";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
 import { LoadingOverlay, Tooltip } from "@mantine/core";
+import * as tailwindConfig from "tailwind.config";
 
 export interface EnumFacetProps {
   readonly field: string;
@@ -132,6 +133,7 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
       : isGroupExpanded
       ? 16
       : maxValuesToDisplay;
+
   return (
     <div className="flex flex-col w-64 bg-white relative shadow-lg border-nci-gray-lightest border-1 rounded-b-md text-xs transition ">
       <div>
@@ -161,7 +163,10 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                 onClick={toggleSearch}
                 aria-label="Search"
               >
-                <SearchIcon size="1.25em" color="#274863" />
+                <SearchIcon
+                  size="1.25em"
+                  color={tailwindConfig.theme.extend.colors["gdc-blue"].darker}
+                />
               </button>
             ) : null}
             {showFlip ? (
@@ -170,7 +175,10 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                 onClick={toggleFlip}
                 aria-label="Flip between form and chart"
               >
-                <FlipIcon size="1.25em" color="#274863" />
+                <FlipIcon
+                  size="1.25em"
+                  color={tailwindConfig.theme.extend.colors["gdc-blue"].darker}
+                />
               </button>
             ) : null}
           </div>

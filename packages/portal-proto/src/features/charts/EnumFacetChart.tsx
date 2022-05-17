@@ -5,7 +5,6 @@
 
 import { useEffect, useState } from "react";
 import { Loader } from "@mantine/core";
-import ChartTitleBar from "./ChartTitleBar";
 import {
   VictoryBar,
   VictoryChart,
@@ -15,6 +14,8 @@ import {
   VictoryLabel,
   VictoryStack,
 } from "victory";
+import * as tailwindConfig from "tailwind.config";
+import ChartTitleBar from "./ChartTitleBar";
 
 const maxValuesToDisplay = 7;
 
@@ -169,7 +170,11 @@ const EnumBarChart: React.FC<BarChartProps> = ({
       <VictoryStack>
         <VictoryBar
           horizontal
-          style={{ data: { fill: "#274863" } }}
+          style={{
+            data: {
+              fill: tailwindConfig.theme.extend.colors["gdc-blue"].darker,
+            },
+          }}
           alignment="end"
           data={data}
           x="x"
@@ -188,7 +193,11 @@ const EnumBarChart: React.FC<BarChartProps> = ({
           data={data.map((d) => ({ x: d.x, y: max - d.y }))}
           x="x"
           y="y"
-          style={{ data: { fill: "#e6e6e6" } }}
+          style={{
+            data: {
+              fill: tailwindConfig.theme.extend.colors["gdc-grey"].lighter,
+            },
+          }}
           alignment="end"
         />
       </VictoryStack>
