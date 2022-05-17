@@ -186,7 +186,7 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
           ref={cardRef}
         >
           <div
-            className={`card-face bg-white  ${!isFacetView ? "hidden" : ""}`}
+            className={`card-face bg-white  ${!isFacetView ? "invisible" : ""}`}
           >
             <div>
               <div className="flex flex-row items-center justify-between flex-wrap border p-1">
@@ -363,7 +363,7 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
           </div>
           <div
             className={`card-face card-back bg-white h-full ${
-              isFacetView ? "hidden" : ""
+              isFacetView ? "invisible" : ""
             }`}
           >
             <EnumFacetChart
