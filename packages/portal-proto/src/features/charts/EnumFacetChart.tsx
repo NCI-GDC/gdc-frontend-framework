@@ -136,7 +136,7 @@ const EnumBarChart: React.FC<BarChartProps> = ({
 
   return (
     <VictoryChart
-      domainPadding={[30, 0]}
+      domainPadding={[data.length === 2 ? 100 : 30, 0]}
       theme={VictoryTheme.material}
       width={width}
       height={height}
@@ -173,6 +173,7 @@ const EnumBarChart: React.FC<BarChartProps> = ({
           style={{
             data: {
               fill: tailwindConfig.theme.extend.colors["gdc-blue"].darker,
+              width: 25,
             },
           }}
           alignment="end"
@@ -196,6 +197,7 @@ const EnumBarChart: React.FC<BarChartProps> = ({
           style={{
             data: {
               fill: tailwindConfig.theme.extend.colors["gdc-grey"].lighter,
+              width: 25,
             },
           }}
           alignment="end"
