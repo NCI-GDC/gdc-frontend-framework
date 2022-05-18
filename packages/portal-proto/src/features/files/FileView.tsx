@@ -27,21 +27,25 @@ export const FileView: React.FC<FileViewProps> = ({
   const [imageId] = useState(file?.fileId);
   const GenericLink = ({
     path,
-    link,
+    query,
     text,
   }: {
     path: string;
-    link: string;
+    query?: Record<string, string>;
     text: string;
-  }): JSX.Element => (
-    <Link
-      href={{
-        pathname: `/${path}/${link}`,
-      }}
-    >
-      <a className="text-gdc-blue hover:underline">{text}</a>
-    </Link>
-  );
+  }): JSX.Element => {
+    const hrefObj: { pathname: string; query?: Record<string, string> } = {
+      pathname: path,
+    };
+    if (query) {
+      hrefObj.query = query;
+    }
+    return (
+      <Link href={hrefObj}>
+        <a className="text-gdc-blue hover:underline">{text}</a>
+      </Link>
+    );
+  };
   //temp table compoent untill global one is done
   interface TempTableProps {
     readonly tableData: {
@@ -86,7 +90,7 @@ export const FileView: React.FC<FileViewProps> = ({
     downstream_analyses?.[0]?.output_files.forEach((obj) => {
       tableRows.push({
         file_name: (
-          <GenericLink path="files" link={obj.file_id} text={obj.file_name} />
+          <GenericLink path={`/files/${obj.file_id}`} text={obj.file_name} />
         ),
         data_category: obj.data_category,
         data_type: obj.data_type,
@@ -153,25 +157,37 @@ export const FileView: React.FC<FileViewProps> = ({
         return entity_id === entity.entity_submitter_id;
       })?.sample_type;
 
-      const entityLink =
-        entity.entity_type === "case"
-          ? entity.case_id
-          : `${entity.case_id}?bioid=${entity.entity_id}`;
+      let entityQuery;
+      if (entity.entity_type !== "case") {
+        entityQuery = { bioid: entity.entity_id };
+      }
 
       let annotationsLink = <>0</>;
       if (caseData?.annotations?.length === 1) {
         annotationsLink = (
           <GenericLink
-            path="annotations"
-            link={caseData?.annotations[0]}
+            path={`/annotations/${caseData?.annotations[0]}`}
             text={"1"}
           />
         );
       } else if (caseData?.annotations?.length > 1) {
         annotationsLink = (
           <GenericLink
-            path="annotations"
-            link={`?filters={"content"%3A[{"content"%3A{"field"%3A"annotations.entity_id"%2C"value"%3A["${entity.case_id}"]}%2C"op"%3A"in"}]%2C"op"%3A"and"}`}
+            path={`/annotations`}
+            query={{
+              filters: JSON.stringify({
+                content: [
+                  {
+                    content: {
+                      field: "annotations.entity_id",
+                      value: [entity.case_id],
+                    },
+                    op: "in",
+                  },
+                ],
+                op: "and",
+              }),
+            }}
             text={`${caseData?.annotations?.length}`}
           />
         );
@@ -180,8 +196,8 @@ export const FileView: React.FC<FileViewProps> = ({
       tableRows.push({
         entity_id: (
           <GenericLink
-            path="cases"
-            link={entityLink}
+            path={`/cases/${entity.case_id}`}
+            query={entityQuery}
             text={entity.entity_submitter_id}
           />
         ),
@@ -189,8 +205,7 @@ export const FileView: React.FC<FileViewProps> = ({
         sample_type: sample_type,
         case_id: (
           <GenericLink
-            path="cases"
-            link={entity.case_id}
+            path={`/cases/${entity.case_id}`}
             text={entity.case_id}
           />
         ),
@@ -263,7 +278,7 @@ export const FileView: React.FC<FileViewProps> = ({
                 field: "project_id",
                 name: "Project",
                 modifier: (v) => (
-                  <GenericLink path="projects" link={v} text={v} />
+                  <GenericLink path={`/projects/${v}`} text={v} />
                 ),
               },
             ])}
@@ -331,16 +346,30 @@ export const FileView: React.FC<FileViewProps> = ({
                   if (v === 1) {
                     return (
                       <GenericLink
-                        path="files"
-                        link={get(file, "analysis.input_files")[0]}
+                        path={`/files/${get(file, "analysis.input_files")[0]}`}
                         text={"1"}
                       />
                     );
                   } else if (v > 1) {
                     return (
                       <GenericLink
-                        path="repository"
-                        link={`?filters={"content"%3A[{"content"%3A{"field"%3A"files.downstream_analyses.output_files.file_id"%2C"value"%3A["${file.id}"]}%2C"op"%3A"in"}]%2C"op"%3A"and"}&searchTableTab=files`}
+                        path={`/repository`}
+                        query={{
+                          filters: JSON.stringify({
+                            content: [
+                              {
+                                content: {
+                                  field:
+                                    "files.downstream_analyses.output_files.file_id",
+                                  value: [file.id],
+                                },
+                                op: "in",
+                              },
+                            ],
+                            op: "and",
+                          }),
+                          searchTableTab: "files",
+                        }}
                         text={`${v}`}
                       />
                     );
