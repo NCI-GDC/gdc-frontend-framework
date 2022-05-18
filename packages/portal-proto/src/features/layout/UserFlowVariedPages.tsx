@@ -3,7 +3,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Menu } from "@mantine/core";
-import { isString, useCoreSelector, selectCart } from "@gff/core";
+import {
+  isString,
+  useCoreSelector,
+  selectCart,
+  useCoreDispatch,
+  fetchNotifications,
+  selectBanners,
+} from "@gff/core";
 import { Button } from "@mantine/core";
 import { useTour } from "@reactour/tour";
 import steps from "../../features/tour/steps";
@@ -21,6 +28,7 @@ import {
   MdSearch as SearchIcon,
   MdOutlineTour as TourIcon,
 } from "react-icons/md";
+import Banner from "@/components/Banner";
 
 export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
   headerElements,
@@ -30,14 +38,22 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
 }: PropsWithChildren<UserFlowVariedPagesProps>) => {
   const { setSteps } = useTour();
   const router = useRouter();
+  const dispatch = useCoreDispatch();
 
   useEffect(() => {
     setSteps(steps[router.pathname]);
+    dispatch(fetchNotifications());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const banners = useCoreSelector((state) => selectBanners(state));
   return (
     <div className="flex flex-col min-h-screen min-w-full bg-nci-gray-lightest">
+      <div className="sticky top-0 z-50">
+        {banners.map((banner) => (
+          <Banner {...banner} key={banner.id} />
+        ))}
+      </div>
       <header className="flex-none bg-white">
         <Header {...{ headerElements, indexPath, Options }} />
       </header>
