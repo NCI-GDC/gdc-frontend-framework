@@ -1,12 +1,15 @@
 import { NextPage } from "next";
 import { SimpleLayout } from "../features/layout/Simple";
-import GenesTable from "../features/genomic/GenesTable";
+import GenesTable from "../features/genesTable/GenesTable";
 
 const GenesTablePage: NextPage = () => {
   return (
     <SimpleLayout>
       <div>
-        <GenesTable />
+        <GenesTable
+          selectedSurvivalPlot={undefined}
+          handleSurvivalPlotToggled={undefined}
+        />
       </div>
     </SimpleLayout>
   );

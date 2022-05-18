@@ -249,6 +249,7 @@ const slice = createSlice({
                     id: y.node.id,
                     is_canonical: transcript.is_canonical,
                     aa_change: transcript.aa_change,
+                    consequence_type: transcript.consequence_type,
                     annotation: { ...transcript.annotation },
                     gene: { ...transcript.gene },
                   };
