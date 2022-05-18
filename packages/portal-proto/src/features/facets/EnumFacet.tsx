@@ -382,7 +382,7 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
               maxBins={Math.min(isGroupExpanded ? 16 : Math.min(6, total))}
               height={
                 cardRef.current === null ||
-                cardRef.current.getBoundingClientRect().height < 400
+                cardRef.current.getBoundingClientRect().height < 200
                   ? 400
                   : cardRef.current.getBoundingClientRect().height + 400
               }

@@ -173,7 +173,7 @@ const EnumBarChart: React.FC<BarChartProps> = ({
           style={{
             data: {
               fill: tailwindConfig.theme.extend.colors["gdc-blue"].darker,
-              width: 25,
+              width: 22,
             },
           }}
           alignment="end"
@@ -197,7 +197,7 @@ const EnumBarChart: React.FC<BarChartProps> = ({
           style={{
             data: {
               fill: tailwindConfig.theme.extend.colors["gdc-grey"].lighter,
-              width: 25,
+              width: 22,
             },
           }}
           alignment="end"
