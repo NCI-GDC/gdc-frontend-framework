@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useCoreDispatch, fetchGenesTable, useGenesTable } from "@gff/core";
-import RingLoader from "react-spinners/RingLoader";
 import { VerticalTable } from "../shared/VerticalTable";
-import { Pagination, Select, Switch, Tooltip } from "@mantine/core";
+import { Loader, Pagination, Select, Switch, Tooltip } from "@mantine/core";
 import { SiMicrogenetics as GeneAnnotationIcon } from "react-icons/si";
 import _ from "lodash";
 import { useMeasure } from "react-use";
@@ -230,7 +229,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
         ) : (
           <div className="grid place-items-center h-96 w-full pt-64 pb-72">
             <div className="flex flex-row">
-              <RingLoader color={"lightblue"} loading={true} size={100} />
+              <Loader color="gray" size={24} />
             </div>
           </div>
         )}
