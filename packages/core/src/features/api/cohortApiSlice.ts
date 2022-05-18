@@ -16,7 +16,7 @@ import { useCookies } from "react-cookie";
 export interface CohortModel {
   id: string;
   name: string;
-  facets?: string;
+  facets?: ReadonlyArray<string>;
 }
 
 export const cohortApiSlice = coreCreateApi({
