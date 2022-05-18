@@ -28,8 +28,9 @@ const MutationsTable: React.FC<MutationTableProps> = ({
 }: MutationTableProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [offset, setOffset] = useState(0);
-  const [activePage, setPage] = useState(1);
-  const [pages] = useState(10);
+  const [activePage, setActivePage] = useState(1);
+  const [pages, setPages] = useState(0);
+  const [totalResults, setTotalResults] = useState(0);
   const [ref, { width }] = useMeasure();
   const [tableData, setTableData] = useState([]);
   const [columnListOrder, setColumnListOrder] = useState([]);
@@ -48,38 +49,42 @@ const MutationsTable: React.FC<MutationTableProps> = ({
   }, [pageSize, offset]);
 
   useEffect(() => {
+    setActivePage(1);
+  }, [pageSize]);
+
+  useEffect(() => {
     const getTableDataMapping = (data) => {
-      if (data.status === "fulfilled") {
-        const DNA_CHANGE_MARKERS = ["del", "ins", ">"];
-        const ssmsTableMapping = data.ssms.ssms.map((s) => {
-          return {
-            DNAChange: truncateAfterMarker(
-              s.genomic_dna_change,
-              DNA_CHANGE_MARKERS,
-              "…",
-            ),
-            type: filterMutationType(s.mutation_subtype),
-            consequences:
-              _.startCase(_.toLower(s.consequence[0].consequence_type)) +
-              " " +
-              s.consequence[0].gene.symbol +
-              " " +
-              s.consequence[0].aa_change,
-            affectedCasesInCohort: `${
-              s.filteredOccurrences + " / " + data.ssms.filteredCases
-            } (${(
-              (100 * s.filteredOccurrences) /
-              data.ssms.filteredCases
-            ).toFixed(2)}%)`,
-            affectedCasesAcrossTheGDC: `${
-              s.occurrence + " / " + data.ssms.cases
-            } (${((100 * s.occurrence) / data.ssms.cases).toFixed(2)}%)`,
-            impact: formatImpact(s.consequence[0].annotation),
-            survival: { name: s.genomic_dna_change, symbol: s.ssm_id },
-          };
-        });
-        return ssmsTableMapping;
-      }
+      setTotalResults(data.ssms.filteredCases);
+      setPages(Math.ceil(data.ssms.filteredCases / pageSize));
+      const DNA_CHANGE_MARKERS = ["del", "ins", ">"];
+      const ssmsTableMapping = data.ssms.ssms.map((s) => {
+        return {
+          DNAChange: truncateAfterMarker(
+            s.genomic_dna_change,
+            DNA_CHANGE_MARKERS,
+            "…",
+          ),
+          type: filterMutationType(s.mutation_subtype),
+          consequences:
+            _.startCase(_.toLower(s.consequence[0].consequence_type)) +
+            " " +
+            s.consequence[0].gene.symbol +
+            " " +
+            s.consequence[0].aa_change,
+          affectedCasesInCohort: `${
+            s.filteredOccurrences + " / " + data.ssms.filteredCases
+          } (${(
+            (100 * s.filteredOccurrences) /
+            data.ssms.filteredCases
+          ).toFixed(2)}%)`,
+          affectedCasesAcrossTheGDC: `${
+            s.occurrence + " / " + data.ssms.cases
+          } (${((100 * s.occurrence) / data.ssms.cases).toFixed(2)}%)`,
+          impact: formatImpact(s.consequence[0].annotation),
+          survival: { name: s.genomic_dna_change, symbol: s.ssm_id },
+        };
+      });
+      return ssmsTableMapping;
     };
     if (data.status === "fulfilled") {
       setTableData(getTableDataMapping(data));
@@ -206,12 +211,13 @@ const MutationsTable: React.FC<MutationTableProps> = ({
   }, [selectedSurvivalPlot]);
 
   const handlePageSizeChange = (x: string) => {
+    setOffset((activePage - 1) * parseInt(x));
     setPageSize(parseInt(x));
   };
 
   const handlePageChange = (x: number) => {
     setOffset((x - 1) * pageSize);
-    setPage(x);
+    setActivePage(x);
   };
 
   const updateTableCells = () => {
@@ -239,6 +245,10 @@ const MutationsTable: React.FC<MutationTableProps> = ({
 
   return (
     <div className="flex flex-col w-screen pb-3 pt-3">
+      <div>
+        Showing {(activePage - 1) * pageSize + 1} - {activePage * pageSize} of{" "}
+        {totalResults} somatic mutations
+      </div>
       <div ref={ref} className={`flex flex-row w-9/12`}>
         {data && !isFetching ? (
           <VerticalTable

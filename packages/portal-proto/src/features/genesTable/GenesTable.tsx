@@ -23,8 +23,9 @@ const GenesTable: React.FC<GenesTableProps> = ({
 }: GenesTableProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [offset, setOffset] = useState(0);
-  const [activePage, setPage] = useState(1);
-  const [pages] = useState(10);
+  const [activePage, setActivePage] = useState(1);
+  const [pages, setPages] = useState(0);
+  const [totalResults, setTotalResults] = useState(0);
   const [ref, { width }] = useMeasure();
   const [tableData, setTableData] = useState([]);
   const [columnListOrder, setColumnListOrder] = useState([]);
@@ -41,10 +42,16 @@ const GenesTable: React.FC<GenesTableProps> = ({
 
   useEffect(() => {
     coreDispatch(fetchGenesTable({ pageSize: pageSize, offset: offset }));
-  }, [coreDispatch, pageSize, offset]);
+  }, [pageSize, offset]);
+
+  useEffect(() => {
+    setActivePage(1);
+  }, [pageSize]);
 
   useEffect(() => {
     const getTableDataMapping = (data) => {
+      setTotalResults(data.genes.genes_total);
+      setPages(Math.ceil(data.genes.genes_total / pageSize));
       const genesTableMapping = data.genes.genes.map((g) => {
         return {
           symbol: g.symbol,
@@ -171,12 +178,13 @@ const GenesTable: React.FC<GenesTableProps> = ({
   }, [selectedSurvivalPlot]);
 
   const handlePageSizeChange = (x: string) => {
+    setOffset((activePage - 1) * parseInt(x));
     setPageSize(parseInt(x));
   };
 
   const handlePageChange = (x: number) => {
     setOffset((x - 1) * pageSize);
-    setPage(x);
+    setActivePage(x);
   };
 
   const updateTableCells = () => {
@@ -204,6 +212,10 @@ const GenesTable: React.FC<GenesTableProps> = ({
 
   return (
     <div className="flex flex-col w-screen pb-3 pt-3">
+      <div>
+        Showing {(activePage - 1) * pageSize + 1} - {activePage * pageSize} of{" "}
+        {totalResults} genes
+      </div>
       <div ref={ref} className={`flex flex-row w-9/12`}>
         {data && !isFetching ? (
           <VerticalTable
