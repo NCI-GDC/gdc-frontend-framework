@@ -1,3 +1,4 @@
+// eslint @typescript-eslint/no-var-requires: "off"
 // Defines mock cohort api server which provides REST endpoints for a cohort
 // database created via the cohort-api-db.json file. To start the mock api
 // service:
@@ -24,6 +25,7 @@ server.use(function (req, res, next) {
   ) {
     // get context id from cookie if it exists
     let cookie_context = "";
+    let cookie_array = [];
     if ("cookie" in req.headers) {
       cookie_array = req.headers["cookie"].split(";").map(function (value) {
         return value.trim();
