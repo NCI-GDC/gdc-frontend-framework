@@ -25,7 +25,7 @@ export const FileView: React.FC<FileViewProps> = ({
   fileHistory,
 }: FileViewProps) => {
   const [imageId] = useState(file?.fileId);
-  const GenaricLink = ({
+  const GenericLink = ({
     path,
     link,
     text,
@@ -86,7 +86,7 @@ export const FileView: React.FC<FileViewProps> = ({
     downstream_analyses?.[0]?.output_files.forEach((obj) => {
       tableRows.push({
         file_name: (
-          <GenaricLink path="files" link={obj.file_id} text={obj.file_name} />
+          <GenericLink path="files" link={obj.file_id} text={obj.file_name} />
         ),
         data_category: obj.data_category,
         data_type: obj.data_type,
@@ -161,7 +161,7 @@ export const FileView: React.FC<FileViewProps> = ({
       let annotationsLink = <>0</>;
       if (caseData?.annotations?.length === 1) {
         annotationsLink = (
-          <GenaricLink
+          <GenericLink
             path="annotations"
             link={caseData?.annotations[0]}
             text={"1"}
@@ -169,7 +169,7 @@ export const FileView: React.FC<FileViewProps> = ({
         );
       } else if (caseData?.annotations?.length > 1) {
         annotationsLink = (
-          <GenaricLink
+          <GenericLink
             path="annotations"
             link={`?filters={"content"%3A[{"content"%3A{"field"%3A"annotations.entity_id"%2C"value"%3A["${entity.case_id}"]}%2C"op"%3A"in"}]%2C"op"%3A"and"}`}
             text={`${caseData?.annotations?.length}`}
@@ -179,7 +179,7 @@ export const FileView: React.FC<FileViewProps> = ({
 
       tableRows.push({
         entity_id: (
-          <GenaricLink
+          <GenericLink
             path="cases"
             link={entityLink}
             text={entity.entity_submitter_id}
@@ -188,7 +188,7 @@ export const FileView: React.FC<FileViewProps> = ({
         entity_type: entity.entity_type,
         sample_type: sample_type,
         case_id: (
-          <GenaricLink
+          <GenericLink
             path="cases"
             link={entity.case_id}
             text={entity.case_id}
@@ -263,7 +263,7 @@ export const FileView: React.FC<FileViewProps> = ({
                 field: "project_id",
                 name: "Project",
                 modifier: (v) => (
-                  <GenaricLink path="projects" link={v} text={v} />
+                  <GenericLink path="projects" link={v} text={v} />
                 ),
               },
             ])}
@@ -330,7 +330,7 @@ export const FileView: React.FC<FileViewProps> = ({
                 modifier: (v) => {
                   if (v === 1) {
                     return (
-                      <GenaricLink
+                      <GenericLink
                         path="files"
                         link={get(file, "analysis.input_files")[0]}
                         text={"1"}
@@ -338,7 +338,7 @@ export const FileView: React.FC<FileViewProps> = ({
                     );
                   } else if (v > 1) {
                     return (
-                      <GenaricLink
+                      <GenericLink
                         path="repository"
                         link={`?filters={"content"%3A[{"content"%3A{"field"%3A"files.downstream_analyses.output_files.file_id"%2C"value"%3A["${file.id}"]}%2C"op"%3A"in"}]%2C"op"%3A"and"}&searchTableTab=files`}
                         text={`${v}`}
