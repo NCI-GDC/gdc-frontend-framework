@@ -15,6 +15,7 @@ export const DragDrop: FC<DragDropProps> = ({
 
   useEffect(() => {
     handleColumnChange(columns);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [columns]);
 
   const toggleColumn = (colName: string) => {
@@ -52,6 +53,7 @@ export const DragDrop: FC<DragDropProps> = ({
         />
       );
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [columns],
   );
 

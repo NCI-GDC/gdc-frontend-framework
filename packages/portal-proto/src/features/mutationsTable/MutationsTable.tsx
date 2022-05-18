@@ -45,6 +45,7 @@ const MutationsTable: React.FC<MutationTableProps> = ({
 
   useEffect(() => {
     coreDispatch(fetchSsmsTable({ pageSize: pageSize, offset: offset }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageSize, offset]);
 
   useEffect(() => {
@@ -88,7 +89,7 @@ const MutationsTable: React.FC<MutationTableProps> = ({
     if (data.status === "fulfilled") {
       setTableData(getTableDataMapping(data));
     }
-  }, [data]);
+  }, [data, pageSize]);
 
   const getCustomGridCell = (key, selectedSurvivalPlot) => {
     switch (key) {
@@ -188,6 +189,7 @@ const MutationsTable: React.FC<MutationTableProps> = ({
           };
     });
     return cellMapping;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedSurvivalPlot, width]);
 
   const getTableColumnMapping = () => {
@@ -203,10 +205,12 @@ const MutationsTable: React.FC<MutationTableProps> = ({
   useEffect(() => {
     setColumnListOrder(getTableColumnMapping());
     setColumnListCells(getTableCellMapping());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     setColumnListCells(getTableCellMapping());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedSurvivalPlot]);
 
   const handlePageSizeChange = (x: string) => {
@@ -235,6 +239,7 @@ const MutationsTable: React.FC<MutationTableProps> = ({
 
   const columnCells = useMemo(
     () => updateTableCells(),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [width, columnListOrder],
   );
 

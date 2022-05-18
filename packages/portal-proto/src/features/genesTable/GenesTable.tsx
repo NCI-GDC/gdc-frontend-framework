@@ -41,6 +41,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
 
   useEffect(() => {
     coreDispatch(fetchGenesTable({ pageSize: pageSize, offset: offset }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageSize, offset]);
 
   useEffect(() => {
@@ -96,7 +97,8 @@ const GenesTable: React.FC<GenesTableProps> = ({
     if (data.status === "fulfilled") {
       setTableData(getTableDataMapping(data));
     }
-  }, [data]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, pageSize]);
 
   const getCustomGridCell = (key: string, selectedSurvivalPlot: any) => {
     switch (key) {
@@ -155,6 +157,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
           };
     });
     return cellMapping;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedSurvivalPlot, width]);
 
   const getTableColumnMapping = () => {
@@ -170,10 +173,12 @@ const GenesTable: React.FC<GenesTableProps> = ({
   useEffect(() => {
     setColumnListOrder(getTableColumnMapping());
     setColumnListCells(getTableCellMapping());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     setColumnListCells(getTableCellMapping());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedSurvivalPlot]);
 
   const handlePageSizeChange = (x: string) => {
@@ -202,6 +207,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
 
   const columnCells = useMemo(
     () => updateTableCells(),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [width, columnListOrder],
   );
 
