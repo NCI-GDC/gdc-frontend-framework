@@ -62,7 +62,7 @@ export const cohortApiSlice = coreCreateApi({
       }),
       invalidatesTags: (result, error, arg) => [{ type: "Cohort", id: arg.id }],
     }),
-    deleteCohort: builder.mutation<void, { id: string }>({
+    deleteCohort: builder.mutation<void, string>({
       query: (id) => ({
         url: `/cohorts/${id}`,
         method: "DELETE",
