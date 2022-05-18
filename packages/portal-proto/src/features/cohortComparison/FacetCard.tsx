@@ -5,9 +5,13 @@ import { FIELD_LABELS } from "src/fields";
 import BarChart from "../charts/BarChart";
 import PValue from "./PValue";
 
-const formatAgeBuckets = (bucket) => {
-  const age = bucket / DAYS_IN_YEAR;
-  return age === 80 ? "80+ years" : `${age} to <${age + 10} years`;
+const formatBucket = (bucket: number | string, field: string): string => {
+  if (field === "diagnoses.age_at_diagnosis") {
+    const age = (bucket as number) / DAYS_IN_YEAR;
+    return age === 80 ? "80+ years" : `${age} to <${age + 10} years`;
+  }
+
+  return bucket as string;
 };
 interface FacetCardProps {
   readonly data: { buckets: CohortFacetDoc[] }[];
@@ -22,40 +26,30 @@ const FacetCard: React.FC<FacetCardProps> = ({
   counts,
   cohortNames,
 }: FacetCardProps) => {
-  const formattedData = useMemo(
+  let formattedData = useMemo(
     () =>
       data.map((cohort, idx) => {
         const formattedCohort = cohort.buckets
           .filter((facet) => facet.key !== "_missing")
-          .map((facet) => ({
-            count: facet.doc_count,
-            key:
-              field === "diagnoses.age_at_diagnosis"
-                ? formatAgeBuckets(facet.key)
-                : facet.key,
-          }));
+          .map((facet) => {
+            return {
+              key: formatBucket(facet.key, field),
+              count: facet.doc_count,
+            };
+          });
         // Replace '_missing' key because 1) we don't get the value back for histograms 2) to rename the key
         const totalInResults = formattedCohort.reduce(
           (runningSum, a) => runningSum + a.count,
           0,
         );
         const missingValue = counts[idx] - totalInResults;
+        if (missingValue === 0) {
+          return formattedCohort;
+        }
         return [...formattedCohort, { count: missingValue, key: "missing" }];
       }),
     [data, counts, field],
   );
-
-  const barChartData = formattedData.map((cohort, idx) => ({
-    x: cohort.map((facet) => facet.key),
-    y: cohort.map((facet) => (facet.count / counts[idx]) * 100),
-    customdata: cohort.map((facet) => facet.count),
-    hovertemplate: `<b>${cohortNames[idx]}</b><br /> %{y:.0f}% Cases (%{customdata})<extra></extra>`,
-    marker: {
-      color: idx === 0 ? "#1F77B4" : "#BD5800",
-    },
-  }));
-
-  const divId = `cohort_comparison_bar_chart_${field}`;
 
   const uniqueValues = Array.from(
     new Set(formattedData.map((cohort) => cohort.map((b) => b.key)).flat()),
@@ -64,6 +58,28 @@ const FacetCard: React.FC<FacetCardProps> = ({
   if (field === "diagnoses.age_at_diagnosis") {
     uniqueValues.sort();
   }
+
+  formattedData = formattedData.map((cohort) =>
+    uniqueValues.map((value) => {
+      const dataPoint = cohort.find((d) => d.key === value);
+      if (dataPoint) {
+        return dataPoint;
+      }
+      return { key: value, count: undefined };
+    }),
+  );
+
+  const barChartData = formattedData.map((cohort, idx) => ({
+    x: cohort.map((facet) => facet.key),
+    y: cohort.map((facet) => (facet.count / counts[idx]) * 100),
+    customdata: cohort.map((facet) => facet.count),
+    hovertemplate: `<b>${cohortNames[idx]}</b><br /> %{y:.0f}% Cases (%{customdata:,})<extra></extra>`,
+    marker: {
+      color: idx === 0 ? "#1F77B4" : "#BD5800",
+    },
+  }));
+
+  const divId = `cohort_comparison_bar_chart_${field}`;
 
   return (
     <Paper p="md">
@@ -93,12 +109,8 @@ const FacetCard: React.FC<FacetCardProps> = ({
         </thead>
         <tbody>
           {uniqueValues.map((value, idx) => {
-            const cohort1Value = formattedData[0].find(
-              (facet) => facet.key === value,
-            )?.count;
-            const cohort2Value = formattedData[1].find(
-              (facet) => facet.key === value,
-            )?.count;
+            const cohort1Value = formattedData[0][idx].count;
+            const cohort2Value = formattedData[1][idx].count;
             return (
               <tr
                 className={idx % 2 ? null : "bg-gdc-blue-warm-lightest"}

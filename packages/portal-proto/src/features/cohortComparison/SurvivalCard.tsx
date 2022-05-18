@@ -5,9 +5,9 @@ import {
   useCoreSelector,
   selectAvailableCohortByName,
   buildCohortGqlOperator,
-  GqlOperation,
 } from "@gff/core";
 import SurvivalPlot from "../charts/SurvivalPlot";
+import makeIntersectionFilters from "./makeIntersectionFilters";
 
 const tooltipLabel = (
   <>
@@ -18,50 +18,6 @@ const tooltipLabel = (
     <p>- the case has the required data for the analysis</p>
   </>
 );
-
-const makeSurvivalFilters = ({
-  cohort1Filters,
-  cohort2Filters,
-  caseIds,
-}: {
-  cohort1Filters: GqlOperation;
-  cohort2Filters: GqlOperation;
-  caseIds: string[][];
-}): GqlOperation[] => {
-  // Data should be in only one of the cohorts, not both so exclude cases ids from the other set
-  const cohort1Content = [];
-  if (cohort1Filters) {
-    cohort1Content.push(cohort1Filters);
-  }
-  if (caseIds[1]) {
-    cohort1Content.push({
-      op: "exclude",
-      content: { field: "cases.case_id", value: caseIds[1] },
-    });
-  }
-
-  const cohort2Content = [];
-  if (cohort2Filters) {
-    cohort2Content.push(cohort2Filters);
-  }
-  if (caseIds[0]) {
-    cohort2Content.push({
-      op: "exclude",
-      content: { field: "cases.case_id", value: caseIds[0] },
-    });
-  }
-
-  return [
-    {
-      op: "and",
-      content: cohort1Content,
-    },
-    {
-      op: "and",
-      content: cohort2Content,
-    },
-  ];
-};
 
 interface SurvivalCardProps {
   readonly counts: number[];
@@ -88,12 +44,14 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
     ),
   );
 
-  const filters = makeSurvivalFilters({
+  const filters = makeIntersectionFilters(
     cohort1Filters,
     cohort2Filters,
     caseIds,
+  );
+  const { data } = useSurvivalPlot({
+    filters: [filters.cohort1, filters.cohort2],
   });
-  const { data } = useSurvivalPlot({ filters });
 
   useEffect(() => {
     setSurvivalPlotSelectable(data?.survivalData.length !== 0);
@@ -139,9 +97,9 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
             <tbody>
               <tr>
                 <td>Overall Survival Analysis</td>
-                <td>{cohort1Count}</td>
+                <td>{cohort1Count.toLocaleString()}</td>
                 <td>{((cohort1Count / counts[0]) * 100).toFixed(0)}%</td>
-                <td>{cohort2Count}</td>
+                <td>{cohort2Count.toLocaleString()}</td>
                 <td>{((cohort2Count / counts[1]) * 100).toFixed(0)}%</td>
               </tr>
             </tbody>
