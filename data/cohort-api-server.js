@@ -1,4 +1,4 @@
-// eslint @typescript-eslint/no-var-requires: "off"
+/* eslint-disable @typescript-eslint/no-var-requires */
 // Defines mock cohort api server which provides REST endpoints for a cohort
 // database created via the cohort-api-db.json file. To start the mock api
 // service:
