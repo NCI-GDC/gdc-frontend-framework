@@ -370,7 +370,7 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
             }
           </div>
           <div
-            className={`card-face card-back bg-white h-full ${
+            className={`card-face card-back bg-white h-full pb-1 ${
               isFacetView ? "invisible" : ""
             }`}
           >

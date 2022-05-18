@@ -80,7 +80,7 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
           data={chart_data}
           height={height}
           width={500}
-          label="# Cases"
+          label="# of Cases"
         />
       ) : (
         <div className="flex flex-row items-center justify-center w-100">
@@ -133,10 +133,11 @@ const EnumBarChart: React.FC<BarChartProps> = ({
   label,
 }: BarChartProps) => {
   const max = Math.max(...data.map((d) => d.y));
+  const formatter = Intl.NumberFormat("en", { notation: "compact" });
 
   return (
     <VictoryChart
-      domainPadding={[data.length === 2 ? 100 : 30, 0]}
+      domainPadding={[data.length === 2 ? 100 : 28, 0]}
       theme={VictoryTheme.material}
       width={width}
       height={height}
@@ -147,7 +148,7 @@ const EnumBarChart: React.FC<BarChartProps> = ({
             dx={12}
             dy={-12}
             textAnchor={"start"}
-            style={[{ fontSize: 24 }]}
+            style={[{ fontSize: 23 }]}
           />
         }
         style={{
@@ -162,7 +163,10 @@ const EnumBarChart: React.FC<BarChartProps> = ({
         style={{
           grid: { stroke: "none" },
           axisLabel: { padding: 30, fontSize: 20, fontWeight: "bold" },
+          tickLabels: { fontSize: 18 },
         }}
+        tickCount={3}
+        tickFormat={(t) => formatter.format(t)}
         label={label}
         crossAxis={false}
       />
