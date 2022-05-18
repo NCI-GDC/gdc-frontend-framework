@@ -428,10 +428,10 @@ export const fetchGdcEntities = async <T>(
 export const getGdcHistory = async (
   uuid: string,
 ): Promise<ReadonlyArray<HistoryDefaults>> => {
-  return getGdcEntities("history", uuid);
+  return getGdcInstance("history", uuid);
 };
 
-export const getGdcEntities = async <T>(
+export const getGdcInstance = async <T>(
   endpoint: string,
   uuid: string,
 ): Promise<ReadonlyArray<T>> => {
