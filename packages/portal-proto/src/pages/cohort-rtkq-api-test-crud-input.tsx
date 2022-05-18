@@ -18,12 +18,12 @@ import { useCookies } from "react-cookie";
 
 const CohortCrudTest: NextPage = () => {
   // for testing authorization via cookie
-  const [cookies, setCookie] = useCookies(["context-id"]);
+  const [, setCookie] = useCookies(["context-id"]);
   setCookie("context-id", "FAKE-UUID-FOR-TESTING-CONTEXT-HEADER");
 
   // literals
   const cohortId = "CRUD-TEST-2";
-  let button_class =
+  const button_class =
     "text-2xl border rounded bg-nci-gray-lighter opacity-75 hover:opacity-100";
 
   // page state

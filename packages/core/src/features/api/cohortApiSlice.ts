@@ -11,7 +11,6 @@
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { coreCreateApi } from "../../coreCreateApi";
 import type { Middleware, Reducer } from "@reduxjs/toolkit";
-import { useCookies } from "react-cookie";
 
 export interface CohortModel {
   id: string;
@@ -35,7 +34,7 @@ export const cohortApiSlice = coreCreateApi({
   endpoints: (builder) => ({
     getCohorts: builder.query<CohortModel[], void>({
       query: () => "/cohorts",
-      providesTags: (result = [], error, arg) => [
+      providesTags: (result = []) => [
         //"Cohort",
         { type: "Cohort", id: "LIST" },
         ...result.map(({ id }) => ({ type: "Cohort", id })),

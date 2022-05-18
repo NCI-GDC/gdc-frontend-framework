@@ -5,7 +5,6 @@
 // For this page to work, the mock cohort api must be started. See
 // data/cohort-api-server.js for additional details.
 
-import React, { useState } from "react";
 import { NextPage } from "next";
 import {
   useGetCohortsQuery,
@@ -16,23 +15,14 @@ import {
 } from "@gff/core";
 import { useCookies } from "react-cookie";
 
-let CohortContent = ({ cohort }) => {
-  return (
-    <article key={cohort.id}>
-      <p>Cohort ID: {cohort.id}</p>
-      <p>Cohort Name: {cohort.name}</p>
-    </article>
-  );
-};
-
 const CohortCrudTest: NextPage = () => {
   // for testing authorization via cookie
-  const [cookies, setCookie] = useCookies(["context-id"]);
+  const [, setCookie] = useCookies(["context-id"]);
   setCookie("context-id", "FAKE-UUID-FOR-TESTING-CONTEXT-HEADER");
 
   // literals
   const cohortId = "CRUD-TEST-1";
-  let button_class =
+  const button_class =
     "text-2xl border rounded bg-nci-gray-lighter opacity-75 hover:opacity-100";
 
   // rtk queries and mutations
@@ -99,7 +89,10 @@ const CohortCrudTest: NextPage = () => {
   } else if (isCohortSuccess) {
     cohortContent = (
       <div>
-        <CohortContent key={cohortData.id} cohort={cohortData} />
+        <article key={cohortData.id}>
+          <p>Cohort ID: {cohortData.id}</p>
+          <p>Cohort Name: {cohortData.name}</p>
+        </article>
       </div>
     );
   } else if (isCohortError || !cohortData) {
@@ -121,7 +114,10 @@ const CohortCrudTest: NextPage = () => {
   } else if (isControlCohortSuccess) {
     controlCohortContent = (
       <div>
-        <CohortContent key={controlCohortData.id} cohort={controlCohortData} />
+        <article key={controlCohortData.id}>
+          <p>Cohort ID: {controlCohortData.id}</p>
+          <p>Cohort Name: {controlCohortData.name}</p>
+        </article>
       </div>
     );
   } else if (isControlCohortError || !controlCohortData) {
