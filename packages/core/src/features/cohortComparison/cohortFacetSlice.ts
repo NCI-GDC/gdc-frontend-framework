@@ -196,8 +196,8 @@ export const selectCohortFacetsData = (
   state: CoreState,
 ): CoreDataSelectorResponse<CohortComparisonData> => {
   return {
-    data: state.cohortComparison.data,
-    status: state.cohortComparison.status,
+    data: state.cohortComparison.facets.data,
+    status: state.cohortComparison.facets.status,
   };
 };
 

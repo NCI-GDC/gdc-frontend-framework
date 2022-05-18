@@ -17,7 +17,8 @@ import { oncoGridReducer } from "./features/oncoGrid/oncoGridSlice";
 import { genomicReducers } from "./features/genomic/genomicSlice";
 import { imageDetailsReducer } from "./features/imageDetails/imageDetailsSlice";
 import { imageViewerReducer } from "./features/imageDetails/imageViewer";
-import { cohortFacetsReducer } from "./features/cohortComparison/cohortFacetSlice";
+import { cohortComparisonReducer } from "./features/cohortComparison";
+import { bannerReducer } from "./features/bannerNotification";
 import { cartReducer } from "./features/cart/cartSlice";
 import {
   cohortApiReducer,
@@ -41,8 +42,9 @@ export const reducers = combineReducers({
   genomic: genomicReducers,
   imageDetails: imageDetailsReducer,
   imageViewer: imageViewerReducer,
-  cohortComparison: cohortFacetsReducer,
+  cohortComparison: cohortComparisonReducer,
   cart: cartReducer,
+  bannerNotification: bannerReducer,
   [cohortApiSliceReducerPath]: cohortApiReducer,
 });
 
