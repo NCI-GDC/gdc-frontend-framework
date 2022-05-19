@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   useCoreDispatch,
   useCoreSelector,
@@ -65,14 +65,19 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
   const [isSortedByValue, setIsSortedByValue] = useState(false);
   const [isFacetView, setIsFacetView] = useState(startShowingData);
   const [visibleItems, setVisibleItems] = useState(DEFAULT_VISIBLE_ITEMS);
+  const cardRef = useRef<HTMLDivElement>(null);
   const { data, enumFilters, isSuccess } = FacetEnumHooks[type](field);
   const [selectedEnums, setSelectedEnums] = useState(enumFilters);
   const coreDispatch = useCoreDispatch();
   const updateFilters = UpdateEnums[type];
 
+  console.log(countMapping[type]);
+
   const totalCount = useCoreSelector((state) =>
     selectCohortCountsByName(state, countMapping[type]),
   );
+
+  // const totalCount = 86000;
 
   useEffect(() => {
     setSelectedEnums(enumFilters);
