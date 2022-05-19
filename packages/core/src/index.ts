@@ -23,6 +23,8 @@ export * from "./features/projects/projectsSlice";
 export * from "./features/projects/projectsHooks";
 export * from "./features/annotations/annotationsSlice";
 export * from "./features/annotations/annotationsHooks";
+export * from "./features/history/historySlice";
+export * from "./features/history/historyHooks";
 export * from "./features/cases/casesSlice";
 export * from "./features/cohort/cohortSlice";
 export * from "./features/cohort/cohortFilterSlice";

@@ -74,7 +74,7 @@ export const HorizontalTable = ({
                     return tdObject("");
                   case "object":
                     if (Array.isArray(value) && value.length > 1) {
-                      //colapsible list
+                      //collapsible list
                       return tdObject(
                         <CollapsableTableItems
                           expandBtnText={`${obj.headerName}s`}
@@ -82,6 +82,9 @@ export const HorizontalTable = ({
                           values={value}
                         />,
                       );
+                    }
+                    if (React.isValidElement(value)) {
+                      return tdObject(value);
                     }
                 }
                 // if not caught by switch statement

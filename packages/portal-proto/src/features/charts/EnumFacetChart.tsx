@@ -4,13 +4,18 @@
  */
 
 import { useEffect, useState } from "react";
-import dynamic from "next/dynamic";
 import { Loader } from "@mantine/core";
+import {
+  VictoryBar,
+  VictoryChart,
+  VictoryTheme,
+  Bar,
+  VictoryAxis,
+  VictoryLabel,
+  VictoryStack,
+} from "victory";
+import * as tailwindConfig from "tailwind.config";
 import ChartTitleBar from "./ChartTitleBar";
-
-const BarChart = dynamic(() => import("./BarChart"), {
-  ssr: false,
-});
 
 const maxValuesToDisplay = 7;
 
@@ -18,50 +23,25 @@ interface FacetChartProps {
   readonly field: string;
   readonly data: Record<string, number>;
   readonly isSuccess: boolean;
-  readonly type: string;
-  readonly showXLabels?: boolean;
   readonly height?: number;
-  readonly marginBottom?: number;
-  readonly marginTop?: number;
-  readonly padding?: number;
   readonly showTitle?: boolean;
   readonly maxBins?: number;
-  readonly orientation?: string;
-  readonly valueLabel?: string;
 }
 
 // from https://stackoverflow.com/questions/33053310/remove-value-from-object-without-mutation
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const removeKey = (key, { [key]: _, ...rest }) => rest;
 
-const processChartData = (
-  facetData: Record<string, any>,
-  field: string,
-  maxBins = 100,
-  showXLabels = true,
-  valueLabel = "Cases",
-) => {
+const processChartData = (facetData: Record<string, any>, maxBins = 100) => {
   const data = removeKey("_missing", facetData);
-  const xvals = Object.keys(data)
+
+  const results = Object.keys(data)
     .slice(0, maxBins)
-    .map((x) => x);
-  const xlabels = Object.keys(data)
-    .slice(0, maxBins)
-    .map((x) => processLabel(x, 12));
-  const results = {
-    datasets: [
-      {
-        x: xvals,
-        y: Object.values(data).slice(0, maxBins),
-      },
-    ],
-    tickvals: showXLabels ? xvals : [],
-    ticktext: showXLabels ? xlabels : [],
-    title: convertFieldToName(field),
-    filename: field,
-    yAxisTitle: `# of ${valueLabel}`,
-  };
-  return results;
+    .map((d) => ({
+      x: processLabel(d, 30),
+      y: data[d],
+    }));
+  return results.reverse();
 };
 
 export const EnumFacetChart: React.FC<FacetChartProps> = ({
@@ -69,29 +49,17 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
   data,
   isSuccess,
   height,
-  marginBottom,
-  marginTop = 30,
-  padding = 4,
   showTitle = true,
   maxBins = maxValuesToDisplay,
-  showXLabels = true,
-  valueLabel = "Cases",
-  orientation = "v",
 }: FacetChartProps) => {
-  const [chart_data, setChartData] = useState(undefined);
+  const [chart_data, setChartData] = useState([]);
 
   useEffect(() => {
     if (isSuccess) {
-      const cd = processChartData(
-        data,
-        field,
-        maxBins,
-        showXLabels,
-        valueLabel,
-      );
+      const cd = processChartData(data, maxBins);
       setChartData(cd);
     }
-  }, [data, field, isSuccess, maxBins, showXLabels, valueLabel]);
+  }, [data, field, isSuccess, maxBins]);
 
   // Create unique ID for this chart
   const chartDivId = `${field}_${Math.floor(Math.random() * 100)}`;
@@ -108,18 +76,15 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
       ) : null}
 
       {chart_data && isSuccess ? (
-        <BarChart
+        <EnumBarChart
           data={chart_data}
           height={height}
-          marginBottom={marginBottom}
-          marginTop={marginTop}
-          padding={padding}
-          orientation={orientation}
-          divId={chartDivId}
+          width={500}
+          label="# of Cases"
         />
       ) : (
         <div className="flex flex-row items-center justify-center w-100">
-          <Loader color="gray" size={height ? height : 24} />
+          <Loader color="gray" size={60} />
         </div>
       )}
     </>
@@ -147,4 +112,101 @@ export const processLabel = (label: string, shorten = 100): string => {
   const tokens = label.split(" ");
   const capitalizedTokens = tokens.map((s) => capitalize(s));
   return truncateString(capitalizedTokens.join(" "), shorten);
+};
+
+interface EnumBarChartData {
+  x: string;
+  y: number;
+}
+
+interface BarChartProps {
+  readonly data: EnumBarChartData[];
+  readonly width?: number;
+  readonly height?: number;
+  readonly label: string;
+}
+
+const EnumBarChart: React.FC<BarChartProps> = ({
+  data,
+  height,
+  width,
+  label,
+}: BarChartProps) => {
+  const max = Math.max(...data.map((d) => d.y));
+  const formatter = Intl.NumberFormat("en", { notation: "compact" });
+
+  return (
+    <VictoryChart
+      domainPadding={[data.length === 2 ? 100 : 28, 0]}
+      theme={VictoryTheme.material}
+      width={width}
+      height={height}
+    >
+      <VictoryAxis
+        tickLabelComponent={
+          <VictoryLabel
+            dx={12}
+            dy={-12}
+            textAnchor={"start"}
+            style={[{ fontSize: 23 }]}
+          />
+        }
+        style={{
+          grid: { stroke: "none" },
+          ticks: { size: 0 },
+          axis: { strokeWidth: 0 },
+        }}
+      />
+
+      <VictoryAxis
+        dependentAxis
+        style={{
+          grid: { stroke: "none" },
+          axisLabel: { padding: 30, fontSize: 20, fontWeight: "bold" },
+          tickLabels: { fontSize: 18 },
+        }}
+        tickCount={3}
+        tickFormat={(t) => formatter.format(t)}
+        label={label}
+        crossAxis={false}
+      />
+
+      <VictoryStack>
+        <VictoryBar
+          horizontal
+          style={{
+            data: {
+              fill: tailwindConfig.theme.extend.colors["gdc-blue"].darker,
+              width: 22,
+            },
+          }}
+          alignment="end"
+          data={data}
+          x="x"
+          y="y"
+          dataComponent={
+            <Bar
+              tabIndex={0}
+              ariaLabel={({ datum }) => `x: ${datum.x}, y: ${datum.y}`}
+              //  https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/issues/756 https://www.w3.org/TR/graphics-aria-1.0/#graphics-symbol
+              // eslint-disable-next-line
+              role="graphics-symbol"
+            />
+          }
+        />
+        <VictoryBar
+          data={data.map((d) => ({ x: d.x, y: max - d.y }))}
+          x="x"
+          y="y"
+          style={{
+            data: {
+              fill: tailwindConfig.theme.extend.colors["gdc-grey"].lighter,
+              width: 22,
+            },
+          }}
+          alignment="end"
+        />
+      </VictoryStack>
+    </VictoryChart>
+  );
 };

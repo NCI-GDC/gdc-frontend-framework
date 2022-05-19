@@ -44,6 +44,7 @@ const config = [
       typescript(),
       babel({
         presets: ["@babel/preset-react"],
+        plugins: ["@emotion"],
         babelHelpers: "runtime",
       }),
     ],

@@ -21,7 +21,10 @@ const Components: ReactNode = () => {
         field="diagnoses.pathology_details.necrosis_percent"
       />
       <Divider label="Genes Table" classNames={divider_style} />
-      <GenesTable selectedSurvivalPlot={{ id: undefined }} />
+      <GenesTable
+        selectedSurvivalPlot={{ id: undefined }}
+        handleSurvivalPlotToggled={undefined}
+      />
     </div>
   );
 };

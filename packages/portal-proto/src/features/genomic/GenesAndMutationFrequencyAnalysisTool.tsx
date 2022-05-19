@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
-import GenesTable from "./GenesTable";
-import MutationsTable from "./MutationsTable";
+import GenesTable from "../genesTable/GenesTable";
+import MutationsTable from "../mutationsTable/MutationsTable";
 import { Grid, Tabs, LoadingOverlay } from "@mantine/core";
 import { EnumFacet } from "../facets/EnumFacet";
 import dynamic from "next/dynamic";
@@ -200,7 +200,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
         <Tabs.Tab label="Genes">
           <div className="flex flex-row">
             <div className="flex flex-col">
-              <Grid className="mx-2 bg-white">
+              <Grid className="mx-2 bg-white w-9/12">
                 <Grid.Col span={6}>
                   <GeneFrequencyChart marginBottom={95} />
                 </Grid.Col>
@@ -230,7 +230,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
         <Tabs.Tab label="Mutations">
           <div className="flex flex-row">
             <div className="flex flex-col">
-              <div className="w-100 h-auto bg-white relative">
+              <div className="bg-white w-9/12">
                 <LoadingOverlay visible={!survivalPlotReady} />
                 <SurvivalPlot
                   data={survivalPlotData}

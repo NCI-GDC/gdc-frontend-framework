@@ -6,6 +6,7 @@ import {
   fetchGdcAnnotations,
   fetchGdcEntities,
   fetchGdcFiles,
+  getGdcHistory,
   FieldTypes,
   GdcApiMapping,
   isBucketsAggregation,
@@ -231,6 +232,20 @@ describe("GDC API", () => {
       expect(annotations?.data?.hits?.length).toEqual(10);
       expect(annotations?.data?.pagination?.count).toEqual(10);
       expect(annotations?.data?.pagination?.total).toBeDefined();
+    });
+  });
+
+  describe("Get History", () => {
+    test("can retrieve defaults", async () => {
+      const history = await getGdcHistory(
+        "ab641fde-b700-4880-b4cd-bcee86f8e598",
+      );
+      expect(history?.length).toEqual(1);
+      expect(history?.[0].uuid).toEqual("ab641fde-b700-4880-b4cd-bcee86f8e598");
+      expect(history?.[0].version).toEqual("1");
+      expect(history?.[0].file_change).toEqual("released");
+      expect(history?.[0].release_date).toEqual("2022-03-29");
+      expect(history?.[0].data_release).toEqual("32.0");
     });
   });
 

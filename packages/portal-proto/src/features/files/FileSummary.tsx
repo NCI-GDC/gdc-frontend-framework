@@ -1,4 +1,4 @@
-import { useFiles } from "@gff/core";
+import { useFiles, useFileHistory } from "@gff/core";
 import { FileView } from "./FileView";
 
 export interface ContextualFileViewProps {
@@ -8,7 +8,7 @@ export interface ContextualFileViewProps {
 export const ContextualFileView: React.FC<ContextualFileViewProps> = (
   props: ContextualFileViewProps,
 ) => {
-  const { data } = useFiles({
+  const { data, isFetching } = useFiles({
     filters: {
       op: "=",
       content: {
@@ -25,6 +25,7 @@ export const ContextualFileView: React.FC<ContextualFileViewProps> = (
       "cases.samples.portions.analytes",
       "cases.samples.portions.slides",
       "cases.samples.portions.analytes.aliquots",
+      "associated_entities",
       "analysis",
       "analysis.input_files",
       "downstream_analyses",
@@ -32,18 +33,34 @@ export const ContextualFileView: React.FC<ContextualFileViewProps> = (
     ],
     size: 1,
   });
+  const hystory = useFileHistory(props.setCurrentFile);
 
-  const fileName = data?.[0]?.fileName;
-
+  const title = data?.[0]
+    ? data[0].fileName
+    : `${props.setCurrentFile} not found`;
   return (
     <div>
-      <div className="bg-white py-4 px-8 shadow-lg">
-        <span className="rounded-full bg-nci-blue-darker text-white p-1 align-text-bottom mr-2">
-          FL
-        </span>
-        <span className="text-2xl text-nci-blue-darker">{fileName}</span>
-      </div>
-      {data?.[0] ? <FileView file={data[0]} /> : null}
+      {data && !isFetching ? (
+        <>
+          <div className="bg-white py-4 px-8 shadow-lg">
+            <span className="rounded-full bg-nci-blue-darker text-white p-1 align-text-bottom mr-2">
+              FL
+            </span>
+            <span className="text-2xl text-nci-blue-darker">{title}</span>
+          </div>
+          {data?.[0] ? (
+            <FileView file={data?.[0]} fileHistory={hystory?.data?.[0]} />
+          ) : (
+            <div className="p-4 text-nci-gray">
+              <div className="flex">
+                <div className="flex-auto bg-white mr-4">
+                  <h2 className="p-2 text-2xl mx-4">File Not Found</h2>
+                </div>
+              </div>
+            </div>
+          )}
+        </>
+      ) : null}
     </div>
   );
 };
