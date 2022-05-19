@@ -41,25 +41,28 @@ const UndoButton: React.FC<UndoButtonProps> = ({ action }: UndoButtonProps) => {
 
 interface AddNotificationProps {
   readonly files: readonly GdcFile[];
-  currentCart: string[];
-  readonly numFilesAdded: number;
+  readonly currentCart: string[];
+  readonly filesToAdd: GdcFile[];
   readonly numAlreadyInCart: number;
   dispatch: CoreDispatch;
 }
 const AddNotification: React.FC<AddNotificationProps> = ({
   files,
   currentCart,
-  numFilesAdded,
+  filesToAdd,
   numAlreadyInCart,
   dispatch,
 }: AddNotificationProps) => {
+  const numFilesAdded = filesToAdd.length;
+  const newCart = [...currentCart, ...filesToAdd.map((f) => f.id)];
+
   if (files.length === 1) {
     if (numFilesAdded === 1) {
       return (
         <>
           <p>Added {files[0].fileName} to the cart.</p>
           <UndoButton
-            action={() => removeFromCart(files, currentCart, dispatch)}
+            action={() => removeFromCart(filesToAdd, newCart, dispatch)}
           />
         </>
       );
@@ -77,7 +80,7 @@ const AddNotification: React.FC<AddNotificationProps> = ({
             the cart.
           </p>
           <UndoButton
-            action={() => removeFromCart(files, currentCart, dispatch)}
+            action={() => removeFromCart(filesToAdd, newCart, dispatch)}
           />
         </>
       );
@@ -93,9 +96,11 @@ const AddNotification: React.FC<AddNotificationProps> = ({
             {numAlreadyInCart === 1 ? "file was" : "files were"} already in the
             cart and {numAlreadyInCart === 1 ? "was" : "were"} not added.
           </p>
-          <UndoButton
-            action={() => removeFromCart(files, currentCart, dispatch)}
-          />
+          {numFilesAdded !== 0 && (
+            <UndoButton
+              action={() => removeFromCart(filesToAdd, newCart, dispatch)}
+            />
+          )}
         </>
       );
     }
@@ -112,18 +117,29 @@ const RemoveNotification: React.FC<RemoveNotificationProps> = ({
   currentCart,
   dispatch,
 }: RemoveNotificationProps) => {
-  if (files.length === 1) {
+  const filesToRemove = files.filter((f) => currentCart.includes(f.id));
+  const newCart = files
+    .filter((f) => !filesToRemove.includes(f))
+    .map((f) => f.id);
+
+  if (filesToRemove.length === 1) {
     return (
       <>
-        <p>Removed {files[0].fileName} from the cart.</p>
-        <UndoButton action={() => addToCart(files, currentCart, dispatch)} />
+        <p>Removed {filesToRemove[0].fileName} from the cart.</p>
+        <UndoButton
+          action={() => addToCart(filesToRemove, newCart, dispatch)}
+        />
       </>
     );
   } else {
     return (
       <>
-        <p>Removed {files.length} files from the cart.</p>
-        <UndoButton action={() => addToCart(files, currentCart, dispatch)} />
+        <p>Removed {filesToRemove.length} files from the cart.</p>
+        {filesToRemove.length !== 0 && (
+          <UndoButton
+            action={() => addToCart(filesToRemove, newCart, dispatch)}
+          />
+        )}
       </>
     );
   }
@@ -169,16 +185,14 @@ export const addToCart = (
       .map((f) => f.id)
       .filter((f) => currentCart.includes(f));
 
-    const filesToAdd = files
-      .map((f) => f.id)
-      .filter((f) => !currentCart.includes(f));
+    const filesToAdd = files.filter((f) => !currentCart.includes(f.id));
 
     showNotification({
       message: (
         <AddNotification
           files={files}
           currentCart={currentCart}
-          numFilesAdded={filesToAdd.length}
+          filesToAdd={filesToAdd}
           numAlreadyInCart={alreadyInCart.length}
           dispatch={dispatch}
         />
@@ -188,7 +202,7 @@ export const addToCart = (
       },
     });
     if (filesToAdd.length > 0) {
-      dispatch(addFilesToCart(filesToAdd));
+      dispatch(addFilesToCart(filesToAdd.map((f) => f.id)));
     }
   }
 };

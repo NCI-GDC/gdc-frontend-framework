@@ -132,6 +132,17 @@ describe("updateCart, addToCart", () => {
       getByRemoveNotificationText("Removed filey from the cart."),
     ).toBeInTheDocument();
   });
+
+  it("do not show undo button if cart was not modified", () => {
+    const dispatchMock = jest.fn();
+
+    addToCart([{ fileName: "filey", id: "1" } as GdcFile], ["1"], dispatchMock);
+
+    const { queryByText } = render(
+      mockedShowNotification.mock.calls[0][0].message,
+    );
+    expect(queryByText("Undo")).not.toBeInTheDocument();
+  });
 });
 
 describe("updateCart, removeFromCart", () => {
@@ -165,7 +176,11 @@ describe("updateCart, removeFromCart", () => {
   });
 
   it("undo button shows add notification", () => {
-    removeFromCart([{ fileName: "abc", id: "2" }] as GdcFile[], [], jest.fn());
+    removeFromCart(
+      [{ fileName: "abc", id: "2" }] as GdcFile[],
+      ["2"],
+      jest.fn(),
+    );
 
     const { getByText } = render(
       mockedShowNotification.mock.calls[0][0].message,
