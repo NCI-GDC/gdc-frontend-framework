@@ -3,16 +3,24 @@ import { get, omit } from "lodash";
 import { HorizontalTableProps } from "../../components/HorizontalTable";
 import { JSONObject } from "../types";
 
-export const formatDataForTable = (
+/*
+formatDataForHorizontalTable searches for data in an object and applies any modifiers provided to the located data. It then outputs data ready for the HorizontalTable component to use
+*/
+export const formatDataForHorizontalTable = (
   file: GdcFile | JSONObject,
   headersConfig: ReadonlyArray<{
     readonly field: string;
     readonly name: string;
+    readonly modifier?: (value: any) => any;
   }>,
 ): HorizontalTableProps["tableData"] => {
   //match headers with available properties
   return headersConfig.reduce((output, obj) => {
-    const value = get(file, obj.field);
+    let value = get(file, obj.field);
+    //run modifier if provided on value
+    if (obj.modifier) {
+      value = obj.modifier(value);
+    }
     output.push({
       headerName: obj.name,
       values: [value ? value : "--"],
@@ -98,7 +106,7 @@ export const formatImageDetailsInfo: formatImageDetailsInfoFunc = (
     },
   ];
 
-  return formatDataForTable(obj, headersConfig);
+  return formatDataForHorizontalTable(obj, headersConfig);
 };
 
 type parseSlideDetailsInfoFunc = (file: GdcFile) => {
