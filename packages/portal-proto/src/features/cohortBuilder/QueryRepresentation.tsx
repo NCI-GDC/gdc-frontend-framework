@@ -31,6 +31,20 @@ type RangeOperation =
   | GreaterThanOrEquals
   | GreaterThan;
 
+type ValueOperation = Exclude<Operation, Intersection | Union>;
+
+export const isRangeOperation = (x?: Operation): x is RangeOperation => {
+  return (
+    x !== undefined &&
+    "operator" in x &&
+    [">=", ">", "<", "<="].includes(x.operator)
+  );
+};
+
+export const isValueOperation = (x: Operation): x is ValueOperation => {
+  return "field" in x;
+};
+
 type ComparisonOperation = Equals | NotEquals | RangeOperation;
 
 const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
@@ -38,7 +52,7 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
   operator,
   operands,
 }: Includes | Excludes) => {
-  const [groupType, setGroupType] = useState(operator);
+  const [groupType] = useState(operator);
 
   const filter_set_label_v1 = {
     includes: "any of:",
@@ -56,16 +70,21 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
   );
 };
 
-const ComparisonElement: React.FC<ComparisonOperation> = ({
+interface ComparisonElementProps extends ComparisonOperation {
+  readonly showLabel?: boolean;
+}
+
+const ComparisonElement: React.FC<ComparisonElementProps> = ({
   field,
   operator,
   operand,
-}: ComparisonOperation) => {
+  showLabel = true,
+}: ComparisonElementProps) => {
   return (
     <div className="flex flex-row items-center">
-      {convertFieldToName(field)}
-      <span className="px-1 underline">{operator}</span>
-      <div className="flex truncate ... max-w-sm px-2 border-l-2 border-nci-gray-light ">
+      {showLabel ? convertFieldToName(field) : null}
+      <span className="px-1">{operator}</span>
+      <div className="flex truncate ... max-w-sm  border-nci-gray-light ">
         {operand}
       </div>
     </div>
@@ -84,10 +103,14 @@ const ExistsElement: React.FC<Exists | Missing> = ({
   );
 };
 
-export const QueryElement: React.FC<Operation> = ({
+interface QueryElementProps {
+  field: string;
+}
+
+export const QueryElement: React.FC<QueryElementProps> = ({
   field,
   children,
-}: PropsWithChildren<Operation>) => {
+}: PropsWithChildren<QueryElementProps>) => {
   const [showPopup, setShowPopup] = useState(false);
   const coreDispatch = useCoreDispatch();
 
@@ -115,43 +138,6 @@ export const QueryElement: React.FC<Operation> = ({
     </div>
   );
 };
-
-// interface EnumValueElementProps {
-//   readonly values: ReadonlyArray<string> | ReadonlyArray<number>;
-// }
-//
-// const EnumValueElement: React.FC<EnumValueElementProps> = ({
-//   values,
-// }: EnumValueElementProps) => {
-//   return (
-//     <>
-//       <span className="px-1 underline">{filter_set_label_v1["any_of"]}</span>
-//       <div className="flex truncate ... max-w-sm px-2 border-l-2 border-nci-gray-light ">
-//         {values.join(",")}
-//       </div>
-//     </>
-//   );
-// };
-
-// const CohortEnumFilterElement: React.FC<EnumFilterProps> = (
-//   props: EnumFilterProps,
-// ) => {
-//   return (
-//     <CohortValueFilterElement {...props}>
-//       <EnumValueElement values={props.values} />
-//     </CohortValueFilterElement>
-//   );
-// };
-
-// const CohortRangeFilterElement: React.FC<EnumFilterProps> = (
-//   props: EnumFilterProps,
-// ) => {
-//   return (
-//     <CohortValueFilterElement {...props}>
-//       <EnumValueElement values={props.values} />
-//     </CohortValueFilterElement>
-//   );
-// };
 
 /**
  *  Processes a Filter into a component representation
@@ -209,7 +195,24 @@ class CohortFilterToComponent implements OperationHandler<JSX.Element> {
   );
   handleExcludeIfAny = (f: ExcludeIfAny) => null;
   handleIntersection = (f: Intersection) => {
-    return <div>Intersection</div>;
+    if (f.operands.length < 1) return null;
+
+    // special case of ranges combined with AND
+    if (
+      f.operands.length == 2 &&
+      isRangeOperation(f.operands[0]) &&
+      isRangeOperation(f.operands[1])
+    ) {
+      const a = f.operands[0] as RangeOperation;
+      const b = f.operands[1] as RangeOperation;
+      return (
+        <QueryElement key={a.field} {...a}>
+          <ComparisonElement {...a} /> <span className="pr-1" /> and{" "}
+          <ComparisonElement showLabel={false} {...b} />
+        </QueryElement>
+      );
+    }
+    return null;
   };
   handleUnion = (f: Union) => {
     return <div>Union</div>;
@@ -217,7 +220,6 @@ class CohortFilterToComponent implements OperationHandler<JSX.Element> {
 }
 
 export const convertFilterToComponent = (filter: Operation): JSX.Element => {
-  console.log("converting ", filter);
   const handler: OperationHandler<JSX.Element> = new CohortFilterToComponent();
   return handleOperation(handler, filter);
 };

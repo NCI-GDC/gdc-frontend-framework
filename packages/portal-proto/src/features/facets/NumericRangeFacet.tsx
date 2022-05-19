@@ -97,7 +97,12 @@ const ExtractRangeValues = (filter?: Operation): NumericRange | undefined => {
     return undefined;
   }
 };
-
+/**
+ * Given a range compute the key if possibly matches a predefined range
+ * otherwise classify as "custom"
+ * @param range - Range to classify
+ * @param precision - number of values after .
+ */
 const ClassifyRangeType = (range?: NumericRange, precision = 1): string => {
   if (range === undefined) return "custom";
   if (
@@ -207,7 +212,6 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
       toOp: "<",
     };
     const rangeFilters = buildRangeOperator(field, data);
-    console.log("RangeValueSelector ", data, rangeFilters);
     coreDispatch(updateCohortFilter({ field: field, operation: rangeFilters }));
     setSelected(rangeKey);
   };
@@ -347,6 +351,7 @@ const FromTo: React.FC<FromToProps> = ({
               { label: "\u2265", value: ">=" },
               { label: ">", value: ">" },
             ]}
+            aria-label="select greater and equal or greater than"
           />
           <NumberInput
             className="basis-2/5 text-sm"
@@ -361,6 +366,7 @@ const FromTo: React.FC<FromToProps> = ({
               changedCallback();
             }}
             hideControls
+            aria-label="input from value"
           />
         </div>
         <div className="flex flex-row mt-1 justify-center items-center flex-nowrap border ">
@@ -377,6 +383,7 @@ const FromTo: React.FC<FromToProps> = ({
               { label: "\u2264", value: "<=" },
               { label: "<", value: "<" },
             ]}
+            aria-label="select less or less than and equal"
           />
           <NumberInput
             className="basis-2/5"
@@ -391,6 +398,7 @@ const FromTo: React.FC<FromToProps> = ({
             }}
             value={units !== "years" ? toValue : getUpperAgeYears(toValue)}
             hideControls
+            aria-label="input to value"
           />
         </div>
         <div className={"flex flex-row"}>
@@ -414,7 +422,7 @@ const FacetExpander: React.FC<FacetExpanderProps> = ({
 }: FacetExpanderProps) => {
   return (
     <div className={"mt-3"}>
-      {!isGroupExpanded ? (
+      {remainingValues > 0 && !isGroupExpanded ? (
         <div className="flex flex-row justify-end items-center border-t-2 p-1.5">
           <MoreIcon
             key="show-more"
@@ -427,7 +435,7 @@ const FacetExpander: React.FC<FacetExpanderProps> = ({
             {remainingValues} more
           </div>
         </div>
-      ) : (
+      ) : isGroupExpanded ? (
         <div className="flex flex-row justify-end items-center border-t-2 border-b-0 border-r-0 border-l-0 p-1.5">
           <LessIcon
             key="show-less"
@@ -437,16 +445,16 @@ const FacetExpander: React.FC<FacetExpanderProps> = ({
           />
           <div className="pl-1 text-nci-gray-darkest"> show less</div>
         </div>
-      )}
+      ) : null}
     </div>
   );
 };
 
-function BuildRangeLabelsAndValues(
+const BuildRangeLabelsAndValues = (
   bucketRanges: Record<string, any>,
   rangeData?: FacetBuckets,
   showZero = true,
-) {
+) => {
   return Object.keys(bucketRanges).reduce((b, x) => {
     if (!showZero && rangeData && rangeData[x] == 0) return b;
 
@@ -457,7 +465,7 @@ function BuildRangeLabelsAndValues(
     };
     return b;
   }, {} as Record<string, RangeBucketElement>);
-}
+};
 
 interface RangeInputWithPrefixedRangesProps {
   readonly numBuckets: number;
@@ -479,11 +487,20 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
   }: RangeInputWithPrefixedRangesProps) => {
     const [isGroupExpanded, setIsGroupExpanded] = useState(false); // handles the expanded group
 
+    // map unit type to appropriate build range function
+    const RangeBuilder = {
+      days: buildDayYearRangeBucket,
+      percent: build10UnitRange,
+      year: build10UnitRange,
+    };
+
     // get the current filter for this facet
     const filter = useCoreSelector((state) =>
       selectCurrentCohortFiltersByName(state, field),
     );
 
+    // giving the filter value, extract the From/To values and
+    // build it's key
     const [filterValues, filterKey] = useMemo(() => {
       const filterValues = ExtractRangeValues(filter);
       const filterKey = ClassifyRangeType(filterValues);
@@ -491,14 +508,19 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
     }, [filter]);
 
     // build the range for the useRangeFacet and the facet query
-    const bucketRanges = useMemo(
-      () => BuildRanges(numBuckets, units, minimum, buildDayYearRangeBucket),
-      [minimum, numBuckets, units],
-    );
-    // build ranges for continuous range query
-    const ranges = Object.keys(bucketRanges).map((x) => {
-      return { from: bucketRanges[x].from, to: bucketRanges[x].to };
-    });
+    const [bucketRanges, ranges] = useMemo(() => {
+      const bucketRanges = BuildRanges(
+        numBuckets,
+        units,
+        minimum,
+        RangeBuilder[units],
+      );
+      // build ranges for continuous range query
+      const ranges = Object.keys(bucketRanges).map((x) => {
+        return { from: bucketRanges[x].from, to: bucketRanges[x].to };
+      });
+      return [bucketRanges, ranges];
+    }, [minimum, numBuckets, units]);
 
     const [isCustom, setIsCustom] = useState(filterKey === "custom"); // in custom Range Mode
     const [selectedRange, setSelectedRange] = useState(filterKey);
@@ -508,15 +530,6 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
       bucketRanges,
       rangeData,
       showZero,
-    );
-
-    console.log(
-      "filterKey: ",
-      field,
-      rangeLabelsAndValues,
-      filterKey,
-      isCustom,
-      filterValues,
     );
 
     const resetToCustom = useCallback(() => {
@@ -580,11 +593,13 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
               setSelectedRange(value);
             }}
           />
-          <FacetExpander
-            remainingValues={remainingValues}
-            isGroupExpanded={isGroupExpanded}
-            onShowChanged={onShowModeChanged}
-          />
+          {
+            <FacetExpander
+              remainingValues={remainingValues}
+              isGroupExpanded={isGroupExpanded}
+              onShowChanged={onShowModeChanged}
+            />
+          }
         </div>
       </div>
     );

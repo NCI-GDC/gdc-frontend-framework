@@ -87,13 +87,6 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
     }
   }, [data, isSuccess]);
 
-  /*
-  useEffect( () => {
-    if (isCountsSuccess)
-      setTotalCounts(countsData[countMapping[type]]);
-  }, [isCountsSuccess, type, c])
- */
-
   useEffect(() => {
     updateFilters(coreDispatch, selectedEnums, field);
   }, [updateFilters, coreDispatch, selectedEnums, field, type]);
