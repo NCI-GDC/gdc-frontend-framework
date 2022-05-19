@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useCoreDispatch } from "@gff/core";
 
 import { FacetEnumHooks, UpdateEnums } from "./hooks";
@@ -14,6 +14,7 @@ import {
 import { convertFieldToName } from "./utils";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
 import { LoadingOverlay, Tooltip } from "@mantine/core";
+import * as tailwindConfig from "tailwind.config";
 
 export interface EnumFacetProps {
   readonly field: string;
@@ -60,6 +61,7 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
   const [isSortedByValue, setIsSortedByValue] = useState(false);
   const [isFacetView, setIsFacetView] = useState(startShowingData);
   const [visibleItems, setVisibleItems] = useState(6);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   const { data, enumFilters, isSuccess } = FacetEnumHooks[type](field);
   const [selectedEnums, setSelectedEnums] = useState(enumFilters);
@@ -121,6 +123,7 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
       : remainingValues > 0
       ? Math.min(96, remainingValues * 5 + 40)
       : 24;
+
   const cardStyle = isGroupExpanded
     ? `flex-none  h-${cardHeight} overflow-y-scroll `
     : `overflow-hidden pr-3.5`;
@@ -130,10 +133,11 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
       : isGroupExpanded
       ? 16
       : maxValuesToDisplay;
+
   return (
     <div className="flex flex-col w-64 bg-white relative shadow-lg border-nci-gray-lightest border-1 rounded-b-md text-xs transition ">
       <div>
-        <div className="flex items-center justify-between flex-wrap bg-nci-gray-lighter shadow-md px-1.5">
+        <div className="flex items-center justify-between flex-wrap bg-nci-blue-lightest shadow-md px-1.5">
           <Tooltip
             label={description}
             classNames={{
@@ -159,7 +163,10 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                 onClick={toggleSearch}
                 aria-label="Search"
               >
-                <SearchIcon size="1.25em" />
+                <SearchIcon
+                  size="1.25em"
+                  color={tailwindConfig.theme.extend.colors["gdc-blue"].darker}
+                />
               </button>
             ) : null}
             {showFlip ? (
@@ -168,17 +175,27 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                 onClick={toggleFlip}
                 aria-label="Flip between form and chart"
               >
-                <FlipIcon size="1.25em" />
+                <FlipIcon
+                  size="1.25em"
+                  color={tailwindConfig.theme.extend.colors["gdc-blue"].darker}
+                />
               </button>
             ) : null}
           </div>
         </div>
       </div>
-      <div>
+      <div className="h-full min-h-[180px]">
         <div
-          className={isFacetView ? "flip-card" : "flip-card flip-card-flipped"}
+          className={
+            isFacetView
+              ? `flip-card h-full `
+              : `flip-card flip-card-flipped h-full`
+          }
+          ref={cardRef}
         >
-          <div className="card-face bg-white">
+          <div
+            className={`card-face bg-white  ${!isFacetView ? "invisible" : ""}`}
+          >
             <div>
               <div className="flex flex-row items-center justify-between flex-wrap border p-1">
                 <button
@@ -314,6 +331,13 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                         size="1.5em"
                         className="text-nci-gray-darkest"
                         onClick={() => setIsGroupExpanded(!isGroupExpanded)}
+                        onKeyPress={(event) =>
+                          event.key === "Enter"
+                            ? setIsGroupExpanded(!isGroupExpanded)
+                            : undefined
+                        }
+                        tabIndex={0}
+                        aria-label="Toggle more options"
                       />
                       <div className="pl-1 text-nci-gray-darkest">
                         {" "}
@@ -327,6 +351,13 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                         size="1.5em"
                         className="text-nci-gray-darkest"
                         onClick={() => setIsGroupExpanded(!isGroupExpanded)}
+                        onKeyPress={(event) =>
+                          event.key === "Enter"
+                            ? setIsGroupExpanded(!isGroupExpanded)
+                            : undefined
+                        }
+                        tabIndex={0}
+                        aria-label="Toggle less options"
                       />
                       <div className="pl-1 text-nci-gray-darkest">
                         {" "}
@@ -338,22 +369,23 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
               </div>
             }
           </div>
-
-          <div className="card-face card-back bg-white">
+          <div
+            className={`card-face card-back bg-white h-full pb-1 ${
+              isFacetView ? "invisible" : ""
+            }`}
+          >
             <EnumFacetChart
               field={field}
               data={data}
               isSuccess={isSuccess}
-              type={type}
-              marginBottom={40}
-              marginTop={5}
-              padding={1}
-              showXLabels={true}
               showTitle={false}
-              height={undefined}
-              orientation="h"
-              valueLabel={valueLabel}
               maxBins={Math.min(isGroupExpanded ? 16 : Math.min(6, total))}
+              height={
+                cardRef.current === null ||
+                cardRef.current.getBoundingClientRect().height < 200
+                  ? 400
+                  : cardRef.current.getBoundingClientRect().height + 400
+              }
             />
           </div>
         </div>
