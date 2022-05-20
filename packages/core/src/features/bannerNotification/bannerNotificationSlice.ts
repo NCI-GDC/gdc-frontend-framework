@@ -19,7 +19,7 @@ export const fetchNotifications = createAsyncThunk<
   void,
   { dispatch: CoreDispatch; state: CoreState }
 >("bannerNotifications/fetchNew", async () => {
-  const res = await fetch("https://api.gdc.cancer.gov/v0/notifications");
+  const res = await fetch("http://localhost:3050/notifications");
   const loginRes = await fetch(
     "https://api.gdc.cancer.gov/v0/login-notifications",
   );
@@ -62,14 +62,20 @@ const slice = createSlice({
       const newNotifications = action.payload
         .filter(
           (notification) =>
-            !state.map((n) => n.id).includes(notification.id) &&
-            (notification.components.includes("PORTAL") ||
-              notification.components.includes("API") ||
-              notification.components.includes("LOGIN")),
+            notification.components.includes("PORTAL") ||
+            notification.components.includes("API") ||
+            notification.components.includes("LOGIN"),
         )
-        .map((notification) => ({ ...notification, dismissed: false }));
+        .map(
+          (notification) =>
+            state.find((n) => n.id === notification.id) ?? {
+              ...notification,
+              dismissed: false,
+            },
+        );
 
-      return [...state, ...newNotifications];
+      console.log(newNotifications);
+      return newNotifications;
     });
   },
 });
