@@ -64,7 +64,7 @@ const useGenomicFilterByName = (field: string): OperandValue => {
 
 interface EnumFacetResponse {
   readonly data?: Record<string, number>;
-  readonly enumFilters?: EnumOperandValue;
+  readonly enumFilters?: ReadonlyArray<string>;
   readonly error?: string;
   readonly isUninitialized: boolean;
   readonly isFetching: boolean;
@@ -91,12 +91,11 @@ const useCasesFacet = (field: string): EnumFacetResponse => {
 
   useEffect(() => {
     coreDispatch(fetchCaseFacetByName(field));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectFacetFilter]);
+  }, [coreDispatch, field, selectFacetFilter]);
 
   return {
     data: facet?.buckets,
-    enumFilters: enumFilters as EnumOperandValue,
+    enumFilters: (enumFilters as EnumOperandValue)?.map((x) => x.toString()),
     error: facet?.error,
     isUninitialized: facet === undefined,
     isFetching: facet?.status === "pending",
@@ -129,7 +128,7 @@ const useFilesFacet = (field: string): EnumFacetResponse => {
 
   return {
     data: facet?.buckets,
-    enumFilters: enumFilters as EnumOperandValue,
+    enumFilters: (enumFilters as EnumOperandValue).map((x) => x.toString()),
     error: facet?.error,
     isUninitialized: facet === undefined,
     isFetching: facet?.status === "pending",
@@ -165,7 +164,7 @@ const useGenesFacet = (field: string): EnumFacetResponse => {
 
   return {
     data: facet?.buckets,
-    enumFilters: enumFilters as EnumOperandValue,
+    enumFilters: (enumFilters as EnumOperandValue).map((x) => x.toString()),
     error: facet?.error,
     isUninitialized: facet === undefined,
     isFetching: facet?.status === "pending",
@@ -201,7 +200,7 @@ const useMutationsFacet = (field: string): EnumFacetResponse => {
 
   return {
     data: facet?.buckets,
-    enumFilters: enumFilters as EnumOperandValue,
+    enumFilters: (enumFilters as EnumOperandValue).map((x) => x.toString()),
     error: facet?.error,
     isUninitialized: facet === undefined,
     isFetching: facet?.status === "pending",
@@ -292,9 +291,16 @@ export const FacetEnumHooks = {
   ssms: useMutationsFacet,
 };
 
-export const countMapping = {
+export const FacetItemTypeToCountsIndexMap = {
   cases: "caseCounts",
   files: "fileCounts",
   genes: "geneCounts",
   ssms: "mutationCounts",
+};
+
+export const FacetItemTypeToLabelsMap = {
+  cases: "Cases",
+  files: "Files",
+  genes: "Genes",
+  ssms: "Mutations",
 };

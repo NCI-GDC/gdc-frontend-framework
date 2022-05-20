@@ -6,6 +6,8 @@ import { FC, useState } from "react";
 import Select from "react-select";
 import { get_facet_subcategories, get_facets } from "./dictionary";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
+import { useTotalCounts } from "@gff/core";
+import { LoadingOverlay } from "@mantine/core";
 
 interface FacetGroupProps {
   readonly facetNames: Array<Record<string, any>>;
@@ -32,7 +34,7 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
               return (
                 <EnumFacet
                   key={`${x.facet_filter}-${index}`}
-                  type="cases"
+                  itemType="cases"
                   field={`${x.facet_filter}`}
                   facetName={x.name}
                   description={x.description}
@@ -54,7 +56,8 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
                   field={x.facet_filter}
                   facetName={x.name}
                   description={x.description}
-                  facet_type={x.facet_type}
+                  rangeDatatype={x.facet_type}
+                  itemType="cases"
                   minimum={x.minimum}
                   maximum={x.maximum}
                 />

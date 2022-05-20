@@ -13,9 +13,8 @@ const OncoGridAnalysisTool: React.FC = () => {
               key={`${x.facet_filter}-${index}`}
               field={`${x.facet_filter}`}
               facetName={x.name}
-              type="genes"
+              itemType="genes"
               showPercent={false}
-              valueLabel="Genes"
               hideIfEmpty={false}
               description={x.description}
             />
@@ -27,9 +26,8 @@ const OncoGridAnalysisTool: React.FC = () => {
               key={`${x.facet_filter}-${index}`}
               field={`${x.facet_filter}`}
               facetName={x.name}
-              type="ssms"
+              itemType="ssms"
               showPercent={false}
-              valueLabel="Mutations"
               hideIfEmpty={false}
               description={x.description}
             />

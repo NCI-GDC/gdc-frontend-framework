@@ -1,9 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { FacetProps, useRangeFacet } from "./utility";
+import { useRangeFacet } from "./utility";
 import {
   MdAddCircle as MoreIcon,
   MdFlip as FlipIcon,
   MdRemoveCircle as LessIcon,
+  MdSort as SortIcon,
+  MdSortByAlpha as AlphaSortIcon,
+  MdWarning as WarningIcon,
 } from "react-icons/md";
 import { FaUndo as UndoIcon } from "react-icons/fa";
 import {
@@ -11,8 +14,9 @@ import {
   LoadingOverlay,
   NumberInput,
   SegmentedControl,
+  RadioGroup,
+  Radio,
 } from "@mantine/core";
-import { Icon } from "@iconify/react";
 import {
   DAYS_IN_DECADE,
   DAYS_IN_YEAR,
@@ -20,6 +24,7 @@ import {
   Operation,
   removeCohortFilter,
   selectCurrentCohortFiltersByName,
+  selectTotalCountsByName,
   updateCohortFilter,
   useCoreDispatch,
   useCoreSelector,
@@ -33,30 +38,36 @@ import {
   getLowerAgeYears,
   getUpperAgeYears,
 } from "./utils";
+import { FacetCardProps, FacetItemType } from "@/features/facets/types";
+import {
+  FacetItemTypeToCountsIndexMap,
+  FacetItemTypeToLabelsMap,
+} from "@/features/facets/hooks";
 
-interface NumericFacetProps extends FacetProps {
-  readonly facet_type: string;
+interface NumericFacetProps extends FacetCardProps {
+  readonly rangeDatatype: string;
   readonly minimum?: number;
   readonly maximum?: number;
 }
 
-interface NumericFacetData {
-  readonly field: string;
-  readonly minimum?: number;
-  readonly maximum?: number;
-}
+type NumericFacetData = Pick<
+  NumericFacetProps,
+  "field" | "minimum" | "maximum" | "itemType"
+>;
 
 interface RangeBucketElement {
   readonly from: number;
   readonly to: number;
   readonly key: string;
   readonly label: string;
+  readonly valueLabel?: string;
   value?: number;
 }
 
 interface RangeValueSelectorProps {
   readonly itemsToShow: number;
   readonly field: string;
+  readonly valueLabel: string;
   readonly rangeLabelsAndValues: Record<string, RangeBucketElement>;
   selected: string;
   setSelected: (value: string) => void;
@@ -143,6 +154,7 @@ const buildDayYearRangeBucket = (
  * @param x - current bucket index
  * @param units string to append to label
  * @param minimum - staring value of range
+ * @param fractionDigits - number of values to the right of the decimal point
  */
 const build10UnitRange = (
   x: number,
@@ -188,6 +200,36 @@ const BuildRanges = (
     }, {} as Record<string, RangeBucketElement>);
 };
 
+const buildRangeOperator = (
+  field: string,
+  rangeData: NumericRange,
+): Operation | undefined => {
+  // couple of different cases
+  // * no from/to return undefined
+  if (rangeData.from === undefined && rangeData.to === undefined)
+    return undefined;
+
+  const fromOperation: Operation = rangeData.from
+    ? {
+        field: field,
+        operator: rangeData.fromOp,
+        operand: rangeData.from,
+      }
+    : undefined;
+  const toOperation: Operation = rangeData.to
+    ? {
+        field: field,
+        operator: rangeData.toOp,
+        operand: rangeData.to,
+      }
+    : undefined;
+
+  if (fromOperation && toOperation)
+    return { operator: "and", operands: [fromOperation, toOperation] };
+  if (fromOperation) return fromOperation;
+  return toOperation;
+};
+
 /**
  * Create a list of radio buttons where each line
  * represents bucket for a range > "from" <= "to"
@@ -197,12 +239,15 @@ const BuildRanges = (
 
 const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
   field,
+  valueLabel,
   selected,
   setSelected,
   rangeLabelsAndValues,
   itemsToShow,
 }: RangeValueSelectorProps) => {
   const coreDispatch = useCoreDispatch();
+
+  const [isSortedByValue, setIsSortedByValue] = useState(false);
 
   const handleSelection = (rangeKey) => {
     const data: NumericRange = {
@@ -216,68 +261,72 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
     setSelected(rangeKey);
   };
 
-  if (rangeLabelsAndValues === undefined) return <></>;
+  if (rangeLabelsAndValues === undefined) return null;
+
   return (
-    <div role="group" className="mt-1">
-      {Object.keys(rangeLabelsAndValues)
-        .slice(0, itemsToShow)
-        .map((rangeKey, i) => {
-          return (
-            <div
-              key={`${field}_${rangeKey}`}
-              className="flex flex-row justify-start items-center form-check mb-1"
+    <div className="flex flex-col">
+      {Object.keys(rangeLabelsAndValues).length > 1 ? (
+        <div className="flex flex-row items-center justify-between flex-wrap border-b-1 p-1">
+          <button
+            className={
+              "ml-0.5 border rounded-sm border-nci-gray-darkest bg-nci-gray hover:bg-nci-gray-lightest text-white hover:text-nci-gray-darker"
+            }
+            aria-label="Sort alphabetically"
+          >
+            <AlphaSortIcon
+              onClick={() => setIsSortedByValue(false)}
+              scale="1.5em"
+            />
+          </button>
+          <div className={"flex flex-row items-center "}>
+            <button
+              onClick={() => setIsSortedByValue(true)}
+              className={
+                "border rounded-sm border-nci-gray-darkest bg-nci-gray hover:bg-nci-gray-lightest text-white hover:text-nci-gray-darker transition-colors"
+              }
+              aria-label="Sort numerically"
             >
-              <input
-                type="radio"
-                id={`${field}_${rangeKey}_${i}`}
-                name={`${field}_range_selection`}
-                value={rangeKey}
-                checked={rangeKey === selected}
-                className="form-radio mr-4"
-                onChange={() => handleSelection(rangeKey)}
-              />
-              <span>{rangeLabelsAndValues[rangeKey].label}</span>
-              <span className="ml-auto">
-                {rangeLabelsAndValues[rangeKey].value}
-              </span>
-            </div>
-          );
-        })}
-    </div>
-  );
-};
-
-interface ItemElement {
-  readonly label?: string;
-  readonly icon?: any;
-  readonly onClick?: () => void;
-}
-
-interface FacetItemListHeaderProps {
-  readonly items: ItemElement[];
-}
-
-const FacetItemListHeader: React.FC<FacetItemListHeaderProps> = ({
-  items,
-}: FacetItemListHeaderProps) => {
-  return (
-    <div className="flex flex-row items-center flex-nowrap border-2">
-      {items.map((x, index, { length }) => {
-        const lastItem =
-          length == 1 ? "" : index + 1 == length ? "ml-auto" : "";
-        return (
-          <>
-            <div key={``} className={`flex flex-row items-center ${lastItem} `}>
-              <button className="hover:bg-grey text-grey-darkest font-medium px-6 rounded-sm inline-flex items-center ">
-                {x.icon != undefined ? <Icon icon={x.icon}> </Icon> : null}
-                {x.label != undefined ? (
-                  <p className="px-2">{x.label} </p>
-                ) : null}
-              </button>
-            </div>
-          </>
-        );
-      })}
+              <SortIcon scale="1.5em" />
+            </button>
+            <p className="px-2 mr-3">{valueLabel}</p>
+          </div>
+        </div>
+      ) : null}
+      <div role="group" className="mt-1">
+        {Object.keys(rangeLabelsAndValues)
+          .slice(0, itemsToShow)
+          .sort(
+            isSortedByValue
+              ? (a, b) =>
+                  rangeLabelsAndValues[b].value - rangeLabelsAndValues[a].value
+              : (a, b) =>
+                  rangeLabelsAndValues[a].label.localeCompare(
+                    rangeLabelsAndValues[b].label,
+                  ),
+          )
+          .map((rangeKey, i) => {
+            return (
+              <div
+                key={`${field}_${rangeKey}`}
+                className="flex flex-row justify-start items-center form-check mb-1"
+              >
+                <input
+                  type="radio"
+                  id={`${field}_${rangeKey}_${i}`}
+                  name={`${field}_range_selection`}
+                  value={rangeKey}
+                  checked={rangeKey === selected}
+                  className="form-radio mr-4"
+                  onChange={() => handleSelection(rangeKey)}
+                />
+                <span>{rangeLabelsAndValues[rangeKey].label}</span>
+                <span className="ml-auto">
+                  {rangeLabelsAndValues[rangeKey].valueLabel}
+                </span>
+              </div>
+            );
+          })}
+      </div>
     </div>
   );
 };
@@ -304,6 +353,7 @@ const FromTo: React.FC<FromToProps> = ({
   const [fromValue, setFromValue] = useState(values?.from);
   const [toOp, setToOp] = useState(values?.toOp ?? "<");
   const [toValue, setToValue] = useState(values?.to);
+  const [isWarning, setIsWarning] = useState(false);
   const coreDispatch = useCoreDispatch();
 
   useEffect(() => {
@@ -312,6 +362,14 @@ const FromTo: React.FC<FromToProps> = ({
     setToOp(values?.toOp ?? "<");
     setToValue(values?.to);
   }, [values]);
+
+  useEffect(() => {
+    if (["diagnoses.age_at_diagnosis"].includes(field)) {
+      if (toValue >= WARNING_DAYS || fromValue >= WARNING_DAYS)
+        setIsWarning(true);
+      else setIsWarning(false);
+    }
+  }, [field, toValue, fromValue]);
 
   /**
    * Handle Apply button which will add/update/remove a range filter to the field.
@@ -401,7 +459,25 @@ const FromTo: React.FC<FromToProps> = ({
             aria-label="input to value"
           />
         </div>
-        <div className={"flex flex-row"}>
+        {isWarning ? (
+          <div className="bg-nci-yellow-lighter round-md border-nci-yellow-light">
+            <span>
+              {" "}
+              <WarningIcon size="24px" />
+              {`For health information privacy concerns, individuals over 89
+                    will all appear as 90 years old. For more information, click `}
+              <a
+                href="https://gdc.cancer.gov/about-gdc/gdc-faqs#collapsible-item-618-question"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                here
+              </a>
+              .
+            </span>
+          </div>
+        ) : null}
+        <div className={"flex flex-row mt-1"}>
           <Button onClick={handleApply}>Apply</Button>
         </div>
       </div>
@@ -452,6 +528,7 @@ const FacetExpander: React.FC<FacetExpanderProps> = ({
 
 const BuildRangeLabelsAndValues = (
   bucketRanges: Record<string, any>,
+  totalCount: number,
   rangeData?: FacetBuckets,
   showZero = true,
 ) => {
@@ -462,14 +539,20 @@ const BuildRangeLabelsAndValues = (
       ...bucketRanges[x],
       key: x,
       value: rangeData ? rangeData[x] : undefined,
+      valueLabel: rangeData
+        ? `${rangeData[x]} (${(((rangeData[x] as number) / totalCount) * 100)
+            .toFixed(2)
+            .toLocaleString()}%)`
+        : "",
     };
     return b;
   }, {} as Record<string, RangeBucketElement>);
 };
 
 interface RangeInputWithPrefixedRangesProps {
-  readonly numBuckets: number;
   readonly field: string;
+  readonly numBuckets: number;
+  readonly itemType: FacetItemType;
   readonly minimum: number;
   readonly maximum: number;
   readonly units: string;
@@ -479,6 +562,7 @@ interface RangeInputWithPrefixedRangesProps {
 const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> =
   ({
     field,
+    itemType,
     units,
     numBuckets,
     minimum,
@@ -487,16 +571,33 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
   }: RangeInputWithPrefixedRangesProps) => {
     const [isGroupExpanded, setIsGroupExpanded] = useState(false); // handles the expanded group
 
-    // map unit type to appropriate build range function
+    // map unit type to appropriate build range function and unit label
     const RangeBuilder = {
-      days: buildDayYearRangeBucket,
-      percent: build10UnitRange,
-      year: build10UnitRange,
+      days: {
+        builder: buildDayYearRangeBucket,
+        label: "days",
+      },
+      years: {
+        builder: buildDayYearRangeBucket,
+        label: "years",
+      },
+      percent: {
+        builder: build10UnitRange,
+        label: "%",
+      },
+      year: {
+        builder: build10UnitRange,
+        label: "",
+      },
     };
 
     // get the current filter for this facet
     const filter = useCoreSelector((state) =>
       selectCurrentCohortFiltersByName(state, field),
+    );
+
+    const totalCount = useCoreSelector((state) =>
+      selectTotalCountsByName(state, FacetItemTypeToCountsIndexMap[itemType]),
     );
 
     // giving the filter value, extract the From/To values and
@@ -511,16 +612,16 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
     const [bucketRanges, ranges] = useMemo(() => {
       const bucketRanges = BuildRanges(
         numBuckets,
-        units,
+        RangeBuilder[units].label,
         minimum,
-        RangeBuilder[units],
+        RangeBuilder[units].builder,
       );
       // build ranges for continuous range query
       const ranges = Object.keys(bucketRanges).map((x) => {
         return { from: bucketRanges[x].from, to: bucketRanges[x].to };
       });
       return [bucketRanges, ranges];
-    }, [minimum, numBuckets, units]);
+    }, [RangeBuilder, minimum, numBuckets, units]);
 
     const [isCustom, setIsCustom] = useState(filterKey === "custom"); // in custom Range Mode
     const [selectedRange, setSelectedRange] = useState(filterKey);
@@ -528,6 +629,7 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
     const { data: rangeData, isSuccess } = useRangeFacet(field, ranges);
     const rangeLabelsAndValues = BuildRangeLabelsAndValues(
       bucketRanges,
+      totalCount,
       rangeData,
       showZero,
     );
@@ -583,6 +685,7 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
         <div className="flex flex-col border-t-2">
           <RangeValueSelector
             field={field}
+            valueLabel={FacetItemTypeToLabelsMap[itemType]}
             itemsToShow={bucketsToShow}
             rangeLabelsAndValues={rangeLabelsAndValues}
             selected={selectedRange}
@@ -607,6 +710,7 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
 
 const DaysOrYears: React.FC<NumericFacetData> = ({
   field,
+  itemType,
   minimum = undefined,
   maximum = undefined,
 }: NumericFacetData) => {
@@ -636,121 +740,39 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
         maximum={adjMaximum}
         numBuckets={numBuckets}
         field={field}
+        itemType={itemType}
       />
     </div>
   );
 };
 
-const buildRangeOperator = (
-  field: string,
-  rangeData: NumericRange,
-): Operation | undefined => {
-  // couple of different cases
-  // * no from/to return undefined
-  if (rangeData.from === undefined && rangeData.to === undefined)
-    return undefined;
-
-  const fromOperation: Operation = rangeData.from
-    ? {
-        field: field,
-        operator: rangeData.fromOp,
-        operand: rangeData.from,
-      }
-    : undefined;
-  const toOperation: Operation = rangeData.to
-    ? {
-        field: field,
-        operator: rangeData.toOp,
-        operand: rangeData.to,
-      }
-    : undefined;
-
-  if (fromOperation && toOperation)
-    return { operator: "and", operands: [fromOperation, toOperation] };
-  if (fromOperation) return fromOperation;
-  return toOperation;
-};
-
 const Year: React.FC<NumericFacetData> = ({
   field,
+  itemType,
   minimum = undefined,
   maximum = undefined,
 }: NumericFacetData) => {
-  const [isGroupExpanded, setIsGroupExpanded] = useState(false);
-  const [rangeFilters, setRangeFilters] = useState<Operation>(undefined);
   const adjMinimum = minimum != undefined ? minimum : 1900;
   const adjMaximum = maximum != undefined ? maximum : 2050;
   const numBuckets = Math.round((adjMaximum - adjMinimum) / 10);
-  const bucketsToShow = isGroupExpanded ? numBuckets : DEFAULT_VISIBLE_ITEMS;
-  const handleSearch = () => null;
-  const coreDispatch = useCoreDispatch();
-
-  // build the range for the useRangeFacet, as well as the labels.
-  const bucketRanges = useMemo(
-    () => BuildRanges(numBuckets, "", adjMinimum, build10UnitRange),
-    [adjMinimum, numBuckets],
-  );
-
-  const onShowModeChanged = () => {
-    setIsGroupExpanded(!isGroupExpanded);
-  };
-
-  // build ranges for facet query
-  const ranges = Object.keys(bucketRanges).map((x) => {
-    return bucketRanges[x].range;
-  });
-  const { data: rangeData, isSuccess } = useRangeFacet(field, ranges);
-  const rangeLabelsAndValues = BuildRangeLabelsAndValues(
-    bucketRanges,
-    rangeData,
-  );
-
-  const remainingValues = numBuckets - bucketsToShow;
-
-  const updateFilters = useCallback(
-    (data) => {
-      const ops = buildRangeOperator(field, data);
-      console.log("sendFilters: ", ops);
-      setRangeFilters(ops);
-      coreDispatch(updateCohortFilter({ field: field, operation: ops }));
-    },
-    [coreDispatch, field],
-  );
 
   return (
     <div className="flex flex-col w-100 space-y-2 px-2  mt-1 ">
-      <div className="flex flex-row justify-between items-center">
-        <input
-          type="radio"
-          className="form-check-input  mr-4"
-          id={`${field}_custom`}
-          name={`${field}_year_range_selection`}
-        />
-        <FromTo
-          minimum={adjMinimum}
-          maximum={adjMaximum}
-          units="year"
-          applyCallback={updateFilters}
-        />
-      </div>
-      <div className="flex flex-col border-t-2">
-        <RangeValueSelector
-          itemsToShow={bucketsToShow}
-          field={field}
-          rangeLabelsAndValues={rangeLabelsAndValues}
-        />
-        <FacetExpander
-          remainingValues={remainingValues}
-          isGroupExpanded={isGroupExpanded}
-          onShowChanged={onShowModeChanged}
-        />
-      </div>
+      <RangeInputWithPrefixedRanges
+        itemType={itemType}
+        units="year"
+        minimum={adjMinimum}
+        maximum={adjMaximum}
+        numBuckets={numBuckets}
+        field={field}
+      />
     </div>
   );
 };
 
 const Years: React.FC<NumericFacetData> = ({
   field,
+  itemType,
   minimum = undefined,
   maximum = undefined,
 }: NumericFacetData) => {
@@ -758,11 +780,15 @@ const Years: React.FC<NumericFacetData> = ({
   const adjMaximum = maximum != undefined ? maximum : 89;
   const numBuckets = Math.round((adjMaximum - adjMinimum) / 10);
 
-  const handleSearch = () => null;
   return (
-    <div>
-      <FacetItemListHeader
-        items={[{ icon: "mdi:sort", onClick: handleSearch }]}
+    <div className="flex flex-col w-100 space-y-2 px-2  mt-1 ">
+      <RangeInputWithPrefixedRanges
+        itemType={itemType}
+        units="years"
+        minimum={adjMinimum}
+        maximum={adjMaximum}
+        numBuckets={numBuckets}
+        field={field}
       />
     </div>
   );
@@ -777,84 +803,49 @@ const NumericRange: React.FC<NumericFacetData> = ({
   const adjMaximum = maximum != undefined ? maximum : 999999;
   return (
     <div>
-      <FromTo minimum={adjMinimum} maximum={adjMaximum} units="" />
+      <FromTo
+        field={field}
+        minimum={adjMinimum}
+        maximum={adjMaximum}
+        units=""
+      />
     </div>
   );
 };
 
 const PercentRange: React.FC<NumericFacetData> = ({
   field,
+  itemType,
   minimum = undefined,
   maximum = undefined,
 }: NumericFacetData) => {
-  const [isGroupExpanded, setIsGroupExpanded] = useState(false);
-
   const adjMinimum = minimum != undefined ? minimum : 0;
   const adjMaximum = maximum != undefined ? maximum : 100;
   const numBuckets = Math.round((adjMaximum - adjMinimum) / 10);
 
-  const bucketsToShow = isGroupExpanded ? numBuckets : DEFAULT_VISIBLE_ITEMS;
-  const remainingValues = numBuckets - bucketsToShow;
-  const handleSearch = () => null;
-
-  // build the range for the useRangeFacet, as well as the labels.
-  const bucketRanges = useMemo(
-    () => BuildRanges(numBuckets, "%", adjMinimum, build10UnitRange),
-    [adjMinimum, numBuckets],
-  );
-
-  // build ranges for facet query
-  const ranges = Object.keys(bucketRanges).map((x) => {
-    return bucketRanges[x].range;
-  });
-  const { data: rangeData, isSuccess } = useRangeFacet(field, ranges);
-  const rangeLabelsAndValues = BuildRangeLabelsAndValues(
-    bucketRanges,
-    rangeData,
-  );
-
-  const onShowModeChanged = () => {
-    setIsGroupExpanded(!isGroupExpanded);
-  };
-
   return (
     <div className="flex flex-col w-100 space-y-2 px-2  mt-1 ">
-      <div className="flex flex-row justify-between items-center">
-        <input
-          type="radio"
-          className="form-check-input  mr-4"
-          id={`${field}_custom`}
-          name={`${field}_percent_range_selection`}
-        />
-        <FromTo minimum={adjMinimum} maximum={adjMaximum} units="%" />
-      </div>
-      <div className="flex flex-col">
-        <div className="flex flex-col border-t-2">
-          <RangeValueSelector
-            itemsToShow={bucketsToShow}
-            field={field}
-            rangeLabelsAndValues={rangeLabelsAndValues}
-          />
-          <FacetExpander
-            remainingValues={remainingValues}
-            isGroupExpanded={isGroupExpanded}
-            onShowChanged={onShowModeChanged}
-          />
-        </div>
-      </div>
+      <RangeInputWithPrefixedRanges
+        itemType={itemType}
+        units="percent"
+        minimum={adjMinimum}
+        maximum={adjMaximum}
+        numBuckets={numBuckets}
+        field={field}
+      />
     </div>
   );
 };
 
 const NumericRangeFacet: React.FC<NumericFacetProps> = ({
   field,
+  rangeDatatype,
+  itemType,
   description,
-  facet_type,
   minimum = undefined,
   maximum = undefined,
   facetName = null,
 }: NumericFacetProps) => {
-  const [isSearching, setIsSearching] = useState(false);
   const [isFacetView, setIsFacetView] = useState(true);
   const coreDispatch = useCoreDispatch();
 
@@ -894,23 +885,62 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
         {
           {
             age: (
-              <DaysOrYears field={field} minimum={minimum} maximum={maximum} />
+              <DaysOrYears
+                itemType={itemType}
+                field={field}
+                minimum={minimum}
+                maximum={maximum}
+              />
             ),
-            year: <Year field={field} minimum={minimum} maximum={maximum} />,
-            years: <Years field={field} minimum={minimum} maximum={maximum} />,
+            year: (
+              <Year
+                itemType={itemType}
+                field={field}
+                minimum={minimum}
+                maximum={maximum}
+              />
+            ),
+            years: (
+              <Years
+                itemType={itemType}
+                field={field}
+                minimum={minimum}
+                maximum={maximum}
+              />
+            ),
             days: (
-              <DaysOrYears field={field} minimum={minimum} maximum={maximum} />
+              <DaysOrYears
+                itemType={itemType}
+                field={field}
+                minimum={minimum}
+                maximum={maximum}
+              />
             ),
             numeric: (
-              <NumericRange field={field} minimum={minimum} maximum={maximum} />
+              <NumericRange
+                itemType={itemType}
+                field={field}
+                minimum={minimum}
+                maximum={maximum}
+              />
             ),
             percent: (
-              <PercentRange field={field} minimum={minimum} maximum={maximum} />
+              <PercentRange
+                itemType={itemType}
+                field={field}
+                minimum={minimum}
+                maximum={maximum}
+              />
             ),
             integer: (
-              <NumericRange field={field} minimum={minimum} maximum={maximum} />
+              <NumericRange
+                itemType={itemType}
+                field={field}
+                minimum={minimum}
+                maximum={maximum}
+              />
             ),
-          }[facet_type]
+          }[rangeDatatype]
         }
       </div>
     </div>

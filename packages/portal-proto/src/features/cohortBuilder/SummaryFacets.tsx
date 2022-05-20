@@ -28,7 +28,7 @@ export const SummaryFacets: React.FC<SummaryFacetProps> = ({
             >
               <EnumFacet
                 field={entry.field}
-                type={"cases"}
+                itemType="cases"
                 facetName={entry.name}
                 showSearch={false}
                 startShowingData={false}

@@ -125,9 +125,8 @@ export const ContextualFilesView: React.FC<ContextualFilesViewProps> = ({
                 key={`${x.facet_filter}-${index}`}
                 field={`${x.facet_filter}`}
                 facetName={x.name}
-                type="files"
+                itemType="files"
                 showPercent={false}
-                valueLabel="Files"
                 description={x.description}
               />
             );

@@ -10,6 +10,7 @@ import {
   useCoreDispatch,
   fetchNotifications,
   selectBanners,
+  useTotalCounts,
 } from "@gff/core";
 import { Button } from "@mantine/core";
 import { useTour } from "@reactour/tour";
@@ -80,7 +81,7 @@ const Header: React.FC<HeaderProps> = ({
 }: HeaderProps) => {
   const { setIsOpen } = useTour();
   const currentCart = useCoreSelector((state) => selectCart(state));
-
+  useTotalCounts();
   return (
     <div className="px-6 py-3 border-b border-gdc-grey-lightest">
       <div className="flex flex-row flex-wrap divide-x divide-gray-300 items-center">

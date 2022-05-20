@@ -20,9 +20,6 @@ import { projectsReducer } from "./features/projects/projectsSlice";
 import { annotationsReducer } from "./features/annotations/annotationsSlice";
 import { historyReducer } from "./features/history/historySlice";
 import { casesReducer } from "./features/cases/casesSlice";
-//import { ssmsTableReducer } from "./features/ssmsTable/ssmsTableSlice";
-//import { genesTableReducer } from "./features/genesTable/genesTableSlice";
-//import { geneFrequencyChartReducer } from "./features/genesTable/genesFrequencyChartSlice";
 import { survivalReducer } from "./features/survival/survivalSlice";
 import { oncoGridReducer } from "./features/oncoGrid/oncoGridSlice";
 import { genomicReducers } from "./features/genomic/genomicSlice";
@@ -33,6 +30,7 @@ import { imageViewerReducer } from "./features/imageDetails/imageViewer";
 import { cartReducer } from "./features/cart/cartSlice";
 import { cohortComparisonReducer } from "./features/cohortComparison";
 import { bannerReducer } from "./features/bannerNotification";
+import { totalCountsReducer } from "./features/summary/totalCountsSlice";
 
 const reducers = {
   cohort: cohortReducers,
@@ -55,6 +53,7 @@ const reducers = {
   cohortComparison: cohortComparisonReducer,
   cart: cartReducer,
   bannerNotification: bannerReducer,
+  summary: totalCountsReducer,
 };
 
 const persistConfig = {

@@ -1,6 +1,7 @@
 import Document, { DocumentContext, DocumentInitialProps } from "next/document";
 import { resetIdCounter } from "react-tabs";
 import { ServerStyles, createStylesServer } from "@mantine/next";
+import { useTotalCounts } from "@gff/core";
 
 const stylesServer = createStylesServer();
 
@@ -12,6 +13,7 @@ class GdcDocument extends Document {
     // This is needed in order to have deterministic results during
     // server side rendering.
     resetIdCounter();
+
     const initialProps = await Document.getInitialProps(ctx);
     return {
       ...initialProps,

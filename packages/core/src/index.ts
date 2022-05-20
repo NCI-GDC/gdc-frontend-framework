@@ -31,6 +31,7 @@ export * from "./features/cohort/cohortFilterSlice";
 export * from "./features/cohort/cohortNameSlice";
 export * from "./features/cohort/availableCohortsSlice";
 export * from "./features/cohort/countSlice";
+export * from "./features/summary/totalCountsSlice";
 export * from "./features/genomic/ssmsTableSlice";
 export * from "./features/genomic/genesTableSlice";
 export * from "./features/genomic/genesFrequencyChartSlice";

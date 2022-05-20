@@ -4,7 +4,7 @@ import "../styles/oncogrid.css";
 
 import { Provider } from "react-redux";
 import type { AppProps } from "next/app";
-import { CoreProvider } from "@gff/core";
+import { CoreProvider, useTotalCounts } from "@gff/core";
 import { MantineProvider } from "@mantine/core";
 import { NotificationsProvider } from "@mantine/notifications";
 import { TourProvider } from "@reactour/tour";

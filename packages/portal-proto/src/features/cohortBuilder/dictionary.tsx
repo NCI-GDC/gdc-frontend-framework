@@ -24,7 +24,7 @@ export const get_facets = (
   return Object.keys(root)
     .filter(
       (x, index) =>
-        //  (root[x].facet_type === "enum" || x === "Program" || x === "Project") &&
+        //  (root[x].facetDataType === "enum" || x === "Program" || x === "Project") &&
         index < limit,
     )
     .map((x) => {

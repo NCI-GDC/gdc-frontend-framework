@@ -94,5 +94,4 @@ export interface FacetProps {
   readonly field: string;
   readonly description?: string;
   readonly facetName?: string;
-  onUpdateSummaryChart?: (op: string, field: string) => void;
 }

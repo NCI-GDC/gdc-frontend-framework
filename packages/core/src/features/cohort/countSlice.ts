@@ -29,6 +29,11 @@ const initialState: CountsState = {
   },
   status: "uninitialized",
 };
+export interface CountsState {
+  readonly counts: Record<string, number>;
+  readonly status: DataStatus;
+  readonly error?: string;
+}
 
 const CountsGraphQLQuery = `
   query countsQuery($filters: FiltersArgument) {

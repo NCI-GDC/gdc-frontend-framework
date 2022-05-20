@@ -3,6 +3,7 @@ import { CohortGroup, CohortGroupProps } from "./CohortGroup";
 import { SummaryCharts } from "./SummaryCharts";
 import MetaSearch from "./MetaSearch";
 import CohortTabbedFacets from "./FacetGroup";
+import { useTotalCounts } from "@gff/core";
 
 const FullCohortBuilder: React.FC<CohortGroupProps> = ({
   cohorts,
@@ -14,6 +15,7 @@ const FullCohortBuilder: React.FC<CohortGroupProps> = ({
     "disease_type",
     "diagnoses.tissue_or_organ_of_origin",
   ]);
+
   return (
     <div className="bg-white">
       <CohortGroup cohorts={cohorts} simpleMode={simpleMode} />

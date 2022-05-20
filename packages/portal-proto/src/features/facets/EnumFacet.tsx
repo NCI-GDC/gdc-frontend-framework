@@ -2,9 +2,14 @@ import React, { useEffect, useState, useRef } from "react";
 import {
   useCoreDispatch,
   useCoreSelector,
-  selectCohortCountsByName,
+  selectTotalCountsByName,
 } from "@gff/core";
-import { countMapping, FacetEnumHooks, UpdateEnums } from "./hooks";
+import {
+  FacetItemTypeToCountsIndexMap,
+  FacetItemTypeToLabelsMap,
+  FacetEnumHooks,
+  UpdateEnums,
+} from "./hooks";
 import { DEFAULT_VISIBLE_ITEMS } from "./utils";
 
 import {
@@ -16,68 +21,52 @@ import {
   MdSortByAlpha as AlphaSortIcon,
 } from "react-icons/md";
 import { convertFieldToName } from "./utils";
+import { FacetCardProps } from "@/features/facets/types";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
 import { LoadingOverlay, Tooltip } from "@mantine/core";
 import * as tailwindConfig from "tailwind.config";
-
-export interface EnumFacetProps {
-  readonly field: string;
-  readonly type: string;
-  readonly description?: string;
-  readonly facetName?: string;
-  readonly showSearch?: boolean;
-  readonly showFlip?: boolean;
-  readonly showPercent?: boolean;
-  readonly startShowingData?: boolean;
-  readonly valueLabel?: string;
-  readonly hideIfEmpty?: boolean;
-}
 
 /**
  *  Enumeration facet filters handle display and selection of
  *  enumerated fields.
  * @param field
- * @param type
+ * @param itemType
  * @param description
  * @param facetName
  * @param showSearch
  * @param showFlip
  * @param startShowingData
  * @param showPercent
- * @param valueLabel
  * @param hideIfEmpty
  * @constructor
  */
-export const EnumFacet: React.FC<EnumFacetProps> = ({
+export const EnumFacet: React.FC<FacetCardProps> = ({
   field,
-  type,
+  itemType,
   description,
   facetName = null,
   showSearch = true,
   showFlip = true,
   startShowingData = true,
   showPercent = true,
-  valueLabel = "Cases",
   hideIfEmpty = true,
-}: EnumFacetProps) => {
+}: FacetCardProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [isSortedByValue, setIsSortedByValue] = useState(false);
   const [isFacetView, setIsFacetView] = useState(startShowingData);
   const [visibleItems, setVisibleItems] = useState(DEFAULT_VISIBLE_ITEMS);
   const cardRef = useRef<HTMLDivElement>(null);
-  const { data, enumFilters, isSuccess } = FacetEnumHooks[type](field);
+
+  console.log("itemType: ", itemType);
+  const { data, enumFilters, isSuccess } = FacetEnumHooks[itemType](field);
   const [selectedEnums, setSelectedEnums] = useState(enumFilters);
   const coreDispatch = useCoreDispatch();
-  const updateFilters = UpdateEnums[type];
-
-  console.log(countMapping[type]);
+  const updateFilters = UpdateEnums[itemType];
 
   const totalCount = useCoreSelector((state) =>
-    selectCohortCountsByName(state, countMapping[type]),
+    selectTotalCountsByName(state, FacetItemTypeToCountsIndexMap[itemType]),
   );
-
-  // const totalCount = 86000;
 
   useEffect(() => {
     setSelectedEnums(enumFilters);
@@ -95,7 +84,7 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
 
   useEffect(() => {
     updateFilters(coreDispatch, selectedEnums, field);
-  }, [updateFilters, coreDispatch, selectedEnums, field, type]);
+  }, [updateFilters, coreDispatch, selectedEnums, field, itemType]);
 
   const maxValuesToDisplay = DEFAULT_VISIBLE_ITEMS;
   const total = visibleItems;
@@ -229,7 +218,9 @@ export const EnumFacet: React.FC<EnumFacetProps> = ({
                   >
                     <SortIcon scale="1.5em" />
                   </button>
-                  <p className="px-2 mr-3">{valueLabel}</p>
+                  <p className="px-2 mr-3">
+                    {FacetItemTypeToLabelsMap[itemType]}
+                  </p>
                 </div>
               </div>
 
