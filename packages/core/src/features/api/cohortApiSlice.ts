@@ -14,8 +14,14 @@ import type { Middleware, Reducer } from "@reduxjs/toolkit";
 
 export interface CohortModel {
   id: string;
+  context_id: string;
   name: string;
   facets?: ReadonlyArray<string>;
+}
+
+export interface ContextModel {
+  id: string;
+  name: string;
 }
 
 export const cohortApiSlice = coreCreateApi({
@@ -23,15 +29,16 @@ export const cohortApiSlice = coreCreateApi({
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:3500",
     prepareHeaders: async (headers) => {
-      headers.set("X-Context-ID", "FAKE-UUID-FOR-TESTING-CONTEXT-HEADER");
+      headers.set("X-Context-ID", "FAKE-UUID-FOR-TESTING-CONTEXT-HEADER-BAD");
       return headers;
     },
     credentials: "include",
   }),
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  tagTypes: ["Cohort"],
+  tagTypes: ["Cohort", "Context"],
   endpoints: (builder) => ({
+    // cohort endpoints
     getCohorts: builder.query<CohortModel[], void>({
       query: () => "/cohorts",
       providesTags: (result = []) => [
@@ -68,6 +75,37 @@ export const cohortApiSlice = coreCreateApi({
       }),
       invalidatesTags: (result, error, arg) => [{ type: "Cohort", id: arg }],
     }),
+
+    // context endpoints
+    getContexts: builder.query<ContextModel[], void>({
+      query: () => "/contexts",
+      //provideTags: ["Context"],
+      providesTags: (result = []) => [
+        //"Cohort",
+        { type: "Context", id: "LIST" },
+        ...result.map(({ id }) => ({ type: "Context", id })),
+      ],
+    }),
+    getContextById: builder.query<ContextModel, string>({
+      query: (id) => `/contexts/${id}`,
+      //provideTags: ["Context"],
+      providesTags: (result, error, arg) => [{ type: "Context", id: arg }],
+    }),
+    // addContext: builder.mutation<ContextModel, ContextModel>({
+    //   query: (context) => ({
+    //     url: "/contexts",
+    //     method: "POST",
+    //     body: cohort,
+    //   }),
+    //   invalidatesTags: ["Context"],
+    // }),
+    addContext: builder.mutation<ContextModel, void>({
+      query: () => ({
+        url: "/contexts",
+        method: "POST",
+      }),
+      invalidatesTags: ["Context"],
+    }),
   }),
 });
 
@@ -77,6 +115,9 @@ export const {
   useAddCohortMutation,
   useUpdateCohortMutation,
   useDeleteCohortMutation,
+  useGetContextsQuery,
+  useGetContextByIdQuery,
+  useAddContextMutation,
 } = cohortApiSlice;
 
 export const cohortApiSliceMiddleware = cohortApiSlice.middleware as Middleware;
