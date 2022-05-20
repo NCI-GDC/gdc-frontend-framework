@@ -42,7 +42,10 @@ describe("banner notfication reducer", () => {
       ] as BannerNotification[],
       {
         type: fetchNotifications.fulfilled,
-        payload: [{ id: 2, components: ["OTHER"] }],
+        payload: [
+          { id: 1, dismissed: false, components: ["PORTAL"] },
+          { id: 2, components: ["OTHER"] },
+        ],
       },
     );
     expect(state).toEqual([
@@ -64,8 +67,8 @@ describe("banner notfication reducer", () => {
       },
     );
     expect(state).toEqual([
-      { id: 1, dismissed: true, components: ["PORTAL"] },
       { id: 2, dismissed: false, components: ["API"] },
+      { id: 1, dismissed: true, components: ["PORTAL"] },
     ]);
   });
 });
