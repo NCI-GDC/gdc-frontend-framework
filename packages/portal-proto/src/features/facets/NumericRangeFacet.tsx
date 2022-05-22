@@ -122,12 +122,14 @@ const ClassifyRangeType = (range?: NumericRange, precision = 1): string => {
     range.from !== undefined &&
     range.to !== undefined
   )
+    // builds a range "key"
     return `${range.from.toFixed(precision)}-${range.to.toFixed(precision)}`;
+
   return "custom";
 };
 
 /**
- * returns the range from from to to for a "bucket"
+ * returns the range [from to] for a "bucket"
  * @param x - current bucket index
  * @param units - custom units for this range: "years" or "days"
  * @param minimum - starting value of range
@@ -209,20 +211,22 @@ const buildRangeOperator = (
   if (rangeData.from === undefined && rangeData.to === undefined)
     return undefined;
 
-  const fromOperation: Operation = rangeData.from
-    ? {
-        field: field,
-        operator: rangeData.fromOp,
-        operand: rangeData.from,
-      }
-    : undefined;
-  const toOperation: Operation = rangeData.to
-    ? {
-        field: field,
-        operator: rangeData.toOp,
-        operand: rangeData.to,
-      }
-    : undefined;
+  const fromOperation: Operation =
+    rangeData.from !== undefined
+      ? {
+          field: field,
+          operator: rangeData.fromOp,
+          operand: rangeData.from,
+        }
+      : undefined;
+  const toOperation: Operation =
+    rangeData.to !== undefined
+      ? {
+          field: field,
+          operator: rangeData.toOp,
+          operand: rangeData.to,
+        }
+      : undefined;
 
   if (fromOperation && toOperation)
     return { operator: "and", operands: [fromOperation, toOperation] };
@@ -259,6 +263,7 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
     const rangeFilters = buildRangeOperator(field, data);
     coreDispatch(updateCohortFilter({ field: field, operation: rangeFilters }));
     setSelected(rangeKey);
+    console.log("handleSelection:", rangeKey, rangeFilters);
   };
 
   if (rangeLabelsAndValues === undefined) return null;
@@ -266,7 +271,7 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
   return (
     <div className="flex flex-col">
       {Object.keys(rangeLabelsAndValues).length > 1 ? (
-        <div className="flex flex-row items-center justify-between flex-wrap border-b-1 p-1">
+        <div className="flex flex-row items-center justify-between flex-wrap border-b-1 py-1">
           <button
             className={
               "ml-0.5 border rounded-sm border-nci-gray-darkest bg-nci-gray hover:bg-nci-gray-lightest text-white hover:text-nci-gray-darker"
@@ -316,7 +321,7 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
                   name={`${field}_range_selection`}
                   value={rangeKey}
                   checked={rangeKey === selected}
-                  className="form-radio mr-4"
+                  className="form-radio mr-1"
                   onChange={() => handleSelection(rangeKey)}
                 />
                 <span>{rangeLabelsAndValues[rangeKey].label}</span>
@@ -571,26 +576,6 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
   }: RangeInputWithPrefixedRangesProps) => {
     const [isGroupExpanded, setIsGroupExpanded] = useState(false); // handles the expanded group
 
-    // map unit type to appropriate build range function and unit label
-    const RangeBuilder = {
-      days: {
-        builder: buildDayYearRangeBucket,
-        label: "days",
-      },
-      years: {
-        builder: buildDayYearRangeBucket,
-        label: "years",
-      },
-      percent: {
-        builder: build10UnitRange,
-        label: "%",
-      },
-      year: {
-        builder: build10UnitRange,
-        label: "",
-      },
-    };
-
     // get the current filter for this facet
     const filter = useCoreSelector((state) =>
       selectCurrentCohortFiltersByName(state, field),
@@ -610,6 +595,26 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
 
     // build the range for the useRangeFacet and the facet query
     const [bucketRanges, ranges] = useMemo(() => {
+      // map unit type to appropriate build range function and unit label
+      const RangeBuilder = {
+        days: {
+          builder: buildDayYearRangeBucket,
+          label: "days",
+        },
+        years: {
+          builder: buildDayYearRangeBucket,
+          label: "years",
+        },
+        percent: {
+          builder: build10UnitRange,
+          label: "%",
+        },
+        year: {
+          builder: build10UnitRange,
+          label: "",
+        },
+      };
+
       const bucketRanges = BuildRanges(
         numBuckets,
         RangeBuilder[units].label,
@@ -621,7 +626,7 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
         return { from: bucketRanges[x].from, to: bucketRanges[x].to };
       });
       return [bucketRanges, ranges];
-    }, [RangeBuilder, minimum, numBuckets, units]);
+    }, [minimum, numBuckets, units]);
 
     const [isCustom, setIsCustom] = useState(filterKey === "custom"); // in custom Range Mode
     const [selectedRange, setSelectedRange] = useState(filterKey);
@@ -659,7 +664,7 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
     };
 
     return (
-      <div className="flex flex-col w-100 space-y-2 px-2  mt-1 ">
+      <div className="flex flex-col w-100 space-y-2  mt-1 ">
         <LoadingOverlay visible={!isSuccess} />
         <div className="flex flex-row justify-between items-center">
           <input
@@ -694,6 +699,7 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
               // this is the only way user interaction
               // can set this to False
               setSelectedRange(value);
+              console.log("setIsCustom to false");
             }}
           />
           {
@@ -781,7 +787,7 @@ const Years: React.FC<NumericFacetData> = ({
   const numBuckets = Math.round((adjMaximum - adjMinimum) / 10);
 
   return (
-    <div className="flex flex-col w-100 space-y-2 px-2  mt-1 ">
+    <div className="flex flex-col w-100 space-y-2 px-1  mt-1 ">
       <RangeInputWithPrefixedRanges
         itemType={itemType}
         units="years"
