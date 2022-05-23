@@ -294,7 +294,7 @@ export const FacetEnumHooks = {
 export const FacetItemTypeToCountsIndexMap = {
   cases: "caseCounts",
   files: "fileCounts",
-  genes: "geneCounts",
+  genes: "genesCounts",
   ssms: "mutationCounts",
 };
 

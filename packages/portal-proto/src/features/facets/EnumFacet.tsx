@@ -67,11 +67,18 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
     selectTotalCountsByName(state, FacetItemTypeToCountsIndexMap[itemType]),
   );
 
+  console.log(
+    "total count: ",
+    totalCount,
+    FacetItemTypeToCountsIndexMap[itemType],
+  );
+
   useEffect(() => {
     setSelectedEnums(enumFilters);
   }, [enumFilters]);
 
   useEffect(() => {
+    console.log("Enum useEffect");
     if (isSuccess) {
       setVisibleItems(
         Object.entries(data).filter(

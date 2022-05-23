@@ -585,6 +585,12 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
       selectTotalCountsByName(state, FacetItemTypeToCountsIndexMap[itemType]),
     );
 
+    console.log(
+      "total count: ",
+      totalCount,
+      FacetItemTypeToCountsIndexMap[itemType],
+    );
+
     // giving the filter value, extract the From/To values and
     // build it's key
     const [filterValues, filterKey] = useMemo(() => {
@@ -688,20 +694,24 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
           />
         </div>
         <div className="flex flex-col border-t-2">
-          <RangeValueSelector
-            field={field}
-            valueLabel={FacetItemTypeToLabelsMap[itemType]}
-            itemsToShow={bucketsToShow}
-            rangeLabelsAndValues={rangeLabelsAndValues}
-            selected={selectedRange}
-            setSelected={(value) => {
-              setIsCustom(false); // no longer a customRange
-              // this is the only way user interaction
-              // can set this to False
-              setSelectedRange(value);
-              console.log("setIsCustom to false");
-            }}
-          />
+          {totalBuckets == 0 ? (
+            <div className="mx-4">No data for this field</div>
+          ) : isSuccess ? (
+            <RangeValueSelector
+              field={field}
+              valueLabel={FacetItemTypeToLabelsMap[itemType]}
+              itemsToShow={bucketsToShow}
+              rangeLabelsAndValues={rangeLabelsAndValues}
+              selected={selectedRange}
+              setSelected={(value) => {
+                setIsCustom(false); // no longer a customRange
+                // this is the only way user interaction
+                // can set this to False
+                setSelectedRange(value);
+                console.log("setIsCustom to false");
+              }}
+            />
+          ) : null}
           {
             <FacetExpander
               remainingValues={remainingValues}
