@@ -17,6 +17,7 @@ export interface CohortModel {
   context_id: string;
   name: string;
   facets?: ReadonlyArray<string>;
+  frozen: boolean;
 }
 
 export interface ContextModel {
@@ -43,6 +44,13 @@ export const cohortApiSlice = coreCreateApi({
       query: () => "/cohorts",
       providesTags: (result = []) => [
         //"Cohort",
+        { type: "Cohort", id: "LIST" },
+        ...result.map(({ id }) => ({ type: "Cohort", id })),
+      ],
+    }),
+    getCohortsByContextId: builder.query<CohortModel[], string>({
+      query: (context_id) => `/cohorts?context_id=${context_id}`,
+      providesTags: (result = []) => [
         { type: "Cohort", id: "LIST" },
         ...result.map(({ id }) => ({ type: "Cohort", id })),
       ],
@@ -79,7 +87,6 @@ export const cohortApiSlice = coreCreateApi({
     // context endpoints
     getContexts: builder.query<ContextModel[], void>({
       query: () => "/contexts",
-      //provideTags: ["Context"],
       providesTags: (result = []) => [
         //"Cohort",
         { type: "Context", id: "LIST" },
@@ -88,17 +95,8 @@ export const cohortApiSlice = coreCreateApi({
     }),
     getContextById: builder.query<ContextModel, string>({
       query: (id) => `/contexts/${id}`,
-      //provideTags: ["Context"],
       providesTags: (result, error, arg) => [{ type: "Context", id: arg }],
     }),
-    // addContext: builder.mutation<ContextModel, ContextModel>({
-    //   query: (context) => ({
-    //     url: "/contexts",
-    //     method: "POST",
-    //     body: cohort,
-    //   }),
-    //   invalidatesTags: ["Context"],
-    // }),
     addContext: builder.mutation<ContextModel, void>({
       query: () => ({
         url: "/contexts",
@@ -111,6 +109,7 @@ export const cohortApiSlice = coreCreateApi({
 
 export const {
   useGetCohortsQuery,
+  useGetCohortsByContextIdQuery,
   useGetCohortByIdQuery,
   useAddCohortMutation,
   useUpdateCohortMutation,

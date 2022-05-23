@@ -18,7 +18,8 @@
       "id": "f05d91d2-2f06-4b61-bbfe-5098e9464011",
       "context_id": "d88c194d-5313-49df-9908-972626ef1211",
       "name": "New Custom Cohort",
-      "facets": []
+      "facets": [],
+      "frozen": false
     },
     {
       "id": "fa3ec4f4-5530-4e2e-9773-12ba16c95ff2",
@@ -29,7 +30,8 @@
           "field": "cases.primary_site",
           "value": ["breast", "bronchus and lung"]
         }
-      ]
+      ],
+      "frozen": false
     },
     {
       "id": "2f70de91-7c5a-41d2-9620-90670dfdaddb",
@@ -40,7 +42,8 @@
           "field": "cases.demographic.gender",
           "value": ["unknown"]
         }
-      ]
+      ],
+      "frozen": true
     }
   ]
 }

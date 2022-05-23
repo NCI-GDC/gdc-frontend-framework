@@ -5,7 +5,7 @@
 // For this page to work, the mock cohort api must be started. See
 // data/cohort-api-server.js for additional details.
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Select from "react-select";
 import { NextPage } from "next";
 import {
@@ -15,7 +15,7 @@ import {
 } from "@gff/core";
 import { useCookies } from "react-cookie";
 
-const ContextsTestPage: NextPage = () => {
+const ContextApiTest: NextPage = () => {
   const button_class =
     "text-2xl border rounded bg-nci-gray-lighter opacity-75 hover:opacity-100";
 
@@ -26,10 +26,10 @@ const ContextsTestPage: NextPage = () => {
   // mutations
   const [addContext] = useAddContextMutation();
 
-  // set default cookie on page load
-  useEffect(() => {
-    setCookie("context-id", "FAKE-UUID-FOR-TESTING");
-  }, []);
+  // un-comment set default cookie on page load
+  // useEffect(() => {
+  //   setCookie("context-id", "FAKE-UUID-FOR-TESTING");
+  // }, []);
 
   // using rtkquery to get list of contexts
   const {
@@ -149,4 +149,4 @@ const ContextsTestPage: NextPage = () => {
   );
 };
 
-export default ContextsTestPage;
+export default ContextApiTest;

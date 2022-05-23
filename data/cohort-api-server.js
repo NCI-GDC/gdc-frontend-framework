@@ -13,7 +13,7 @@ var router = jsonServer.router("cohort-api-db.json");
 var middlewares = jsonServer.defaults();
 
 // custom flags
-const context_auth_enabled = false;
+const context_auth_enabled = true;
 const enhanced_logging_enabled = false;
 
 server.use(middlewares);
@@ -34,8 +34,18 @@ server.use(function (req, res, next) {
     handleContextPost(req);
   }
 
+  // validate if a cohort add request
+  if (isCohortPost(req)) {
+    if (isValidCohortPost(req)) {
+      handleCohortPost(req);
+      next();
+    } else {
+      console.log("Cohort post failed. Invalid or non-existant context ID.");
+      res.sendStatus(400);
+    }
+  }
   // authorize cohort update and delete requests
-  if (context_auth_enabled && isAuthorizationRequired(req)) {
+  else if (context_auth_enabled && isAuthorizationRequired(req)) {
     if (isAuthorized(req)) {
       console.log("Authorization successful.");
       next();
@@ -255,5 +265,45 @@ function handleContextPost(req) {
   }
   if (!("name" in req.body)) {
     req.body["name"] = "testContext" + getContexts().length;
+  }
+}
+
+// check for a cohort add request
+function isCohortPost(req) {
+  var path_array = [];
+
+  path_array = req.path.split("/").map(function (value) {
+    return value.trim();
+  });
+
+  if (path_array[1] === "cohorts" && req.method === "POST") {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+// check context ID exists to determine if cohort add request is valid
+function isValidCohortPost(req) {
+  if ("context_id" in req.body && contextExists(req.body["context_id"])) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+// handle missing data in cohort add requests
+function handleCohortPost(req) {
+  if (!("id" in req.body)) {
+    req.body["id"] = crypto.randomUUID();
+  }
+  if (!("name" in req.body)) {
+    req.body["name"] = "Custom Cohort " + getCohorts().length;
+  }
+  if (!("facets" in req.body)) {
+    req.body["facets"] = [];
+  }
+  if (!("frozen" in req.body)) {
+    req.body["frozen"] = false;
   }
 }
