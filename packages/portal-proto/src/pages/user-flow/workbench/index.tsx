@@ -108,9 +108,9 @@ const ActionButtonBar = () => {
             wrapLines
             width={220}
           >
-            <button className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md transition-colors ">
+            <button className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 px-5 rounded inline-flex items-center shadow-md transition-colors ">
               <Image src={"/user-flow/icons/dna.svg"} width={42} height={42} />{" "}
-              <span className="px-2">Analysis Center</span>
+              <span className="px-4">Analysis Center</span>
             </button>
           </Tooltip>
         </Link>
