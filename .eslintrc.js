@@ -29,6 +29,15 @@ module.exports = {
     "react/display-name": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-unused-vars": "error",
+    //keep this until issue in next js is resolved https://github.com/vercel/next.js/discussions/32233
+    "jsx-a11y/anchor-is-valid": [
+      "error",
+      {
+        components: ["Link"],
+        specialLink: ["hrefLeft", "hrefRight"],
+        aspects: ["invalidHref", "preferButton"],
+      },
+    ],
   },
   settings: {
     react: {
