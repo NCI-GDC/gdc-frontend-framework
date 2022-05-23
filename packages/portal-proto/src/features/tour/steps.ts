@@ -56,7 +56,7 @@ export default {
     {
       selector: '[data_tour="full_page_content"]',
       content:
-        "Welcome to the GDC Research Workbench! This is where you'll interact with your cohorts and the many apps available in the GDC. Let's take a look around.",
+        "Welcome to the GDC Analysis Center! This is where you'll interact with your cohorts and the many apps available in the GDC. Let's take a look around.",
     },
     {
       selector: '[data-tour="context_bar"]',

@@ -1,5 +1,5 @@
 import { NextPage } from "next";
-import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
+import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
 import Image from "next/image";
 import Link from "next/link";
 import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
@@ -99,7 +99,7 @@ const ActionButtonBar = () => {
           }}
         >
           <Tooltip
-            label="Explore and analyze harmonized high-quality clinical and genomics data from cancer genomic studies with the tools in the Research Workbench."
+            label="Explore and analyze harmonized high-quality clinical and genomics data from cancer genomic studies with the tools in the Analysis Center."
             classNames={{
               body: "shadow-lg bg-white text-nci-gray-darkest",
             }}
@@ -110,7 +110,7 @@ const ActionButtonBar = () => {
           >
             <button className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md transition-colors ">
               <Image src={"/user-flow/icons/dna.svg"} width={42} height={42} />{" "}
-              <span className="px-2">Research Workbench</span>
+              <span className="px-2">Analysis Center</span>
             </button>
           </Tooltip>
         </Link>
