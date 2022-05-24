@@ -1,7 +1,7 @@
-// import { createUseCoreDataHook } from "../../dataAcess";
-// import { fetchHistory, selectHistoryData } from "./historySlice";
+import { createUseCoreDataHook } from "../../dataAcess";
+import { fetchHistory, selectHistoryData } from "./historySlice";
 
-// export const useFileHistory = createUseCoreDataHook(
-//   fetchHistory,
-//   selectHistoryData,
-// );
+export const useFileHistory = createUseCoreDataHook(
+  fetchHistory,
+  selectHistoryData,
+);

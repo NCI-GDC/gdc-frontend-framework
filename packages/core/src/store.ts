@@ -18,7 +18,7 @@ import { gdcAppReducer } from "./features/gdcapps/gdcAppsSlice";
 import { filesReducer } from "./features/files/filesSlice";
 import { projectsReducer } from "./features/projects/projectsSlice";
 import { annotationsReducer } from "./features/annotations/annotationsSlice";
-//import { historyReducer } from "./features/history/historySlice";
+import { historyReducer } from "./features/history/historySlice";
 import { casesReducer } from "./features/cases/casesSlice";
 //import { ssmsTableReducer } from "./features/ssmsTable/ssmsTableSlice";
 //import { genesTableReducer } from "./features/genesTable/genesTableSlice";
@@ -48,7 +48,7 @@ const reducers = {
   files: filesReducer,
   projects: projectsReducer,
   annotations: annotationsReducer,
-  //history: historyReducer,
+  history: historyReducer,
   cases: casesReducer,
   ssmPlot: ssmPlotReducer,
   cnvPlot: cnvPlotReducer,
