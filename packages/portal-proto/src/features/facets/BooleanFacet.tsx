@@ -12,7 +12,6 @@ import {
   useCoreDispatch,
   useCoreSelector,
 } from "@gff/core";
-import { nanoid } from "@reduxjs/toolkit";
 
 type BooleanEnumFacetCardProps = Pick<
   FacetCardProps,

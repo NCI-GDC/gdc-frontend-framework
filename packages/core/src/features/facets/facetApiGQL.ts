@@ -6,16 +6,24 @@ export const convertFacetNameToGQL: (x: string) => string = (x: string) =>
 export const normalizeGQLFacetName: (x: string) => string = (x: string) =>
   x.replaceAll("__", ".");
 
+export type GQLQueryItem = "cases" | "files" | "genes" | "ssms";
+export type GQLIndexType = "explore" | "repository";
+/**
+ * Builds a GraphQL request
+ * @param facetName - name of the facet
+ * @param itemType - "cases" | "files" | "genes" | "projects" | "ssms"
+ * @param index - which GraphQL index to query
+ */
 export const buildGraphGLBucketQuery = (
-  what: string,
   facetName: string,
-  type = "explore",
+  itemType: GQLQueryItem,
+  index: GQLIndexType = "explore",
 ): string => {
   return `
   query QueryBucketCounts($filters_0: FiltersArgument!) {
       viewer {
-          ${type} {
-            ${what} {
+          ${index} {
+            ${itemType} {
               aggregations(
                 filters: $filters_0
                 aggregations_filter_themselves: false
@@ -33,12 +41,6 @@ export const buildGraphGLBucketQuery = (
       }
   `;
 };
-
-export interface BucketCountsQueryProps {
-  readonly type: string;
-  readonly what: string;
-  readonly facetName: string;
-}
 
 export interface FacetBuckets {
   readonly status: DataStatus;

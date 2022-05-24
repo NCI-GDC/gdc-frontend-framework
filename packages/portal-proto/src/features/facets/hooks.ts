@@ -6,19 +6,16 @@ import {
   CoreDispatch,
   FacetBuckets,
   handleOperation,
-  fetchCaseFacetByName,
-  fetchFileFacetByName,
-  fetchGenesFacetByName,
-  fetchMutationsFacetByName,
   FilterSet,
   removeCohortFilter,
   removeGenomicFilter,
   selectCaseFacetByField,
   selectCurrentCohortFilters,
   selectCurrentCohortFiltersByName,
-  selectFilesFacetByField,
+  selectFileFacetByField,
   selectGenesFacetByField,
-  selectMutationsFacetByField,
+  selectSSMSFacetByField,
+  fetchFacetByNameGQL,
   updateCohortFilter,
   updateGenomicFilter,
   useCoreDispatch,
@@ -83,14 +80,14 @@ const useCasesFacet = (field: string): EnumFacetResponse => {
 
   const selectFacetFilter = useCohortFacetFilter();
   const enumFilters = useCohortFacetFilterByName(`cases.${field}`);
-  useEffect(() => {
-    if (!facet) {
-      coreDispatch(fetchCaseFacetByName(field));
-    }
-  }, [coreDispatch, facet, field]);
+  // useEffect(() => {
+  //   if (!facet) {
+  //     coreDispatch(fetchFacetByNameGQL({field:field, itemType:"cases"}));
+  //   }
+  // }, [coreDispatch, facet, field, selectFacetFilter]);
 
   useEffect(() => {
-    coreDispatch(fetchCaseFacetByName(field));
+    coreDispatch(fetchFacetByNameGQL({ field: field, itemType: "cases" }));
   }, [coreDispatch, field, selectFacetFilter]);
 
   return {
@@ -110,19 +107,19 @@ const useCasesFacet = (field: string): EnumFacetResponse => {
 const useFilesFacet = (field: string): EnumFacetResponse => {
   const coreDispatch = useCoreDispatch();
   const facet: FacetBuckets = useCoreSelector((state) =>
-    selectFilesFacetByField(state, field),
+    selectFileFacetByField(state, field),
   );
 
   const selectFacetFilter = useCohortFacetFilter();
   const enumFilters = useCohortFacetFilterByName(`files.${field}`);
   useEffect(() => {
     if (!facet) {
-      coreDispatch(fetchFileFacetByName(field));
+      coreDispatch(fetchFacetByNameGQL({ field: field, itemType: "files" }));
     }
   }, [coreDispatch, facet, field]);
 
   useEffect(() => {
-    coreDispatch(fetchFileFacetByName(field));
+    coreDispatch(fetchFacetByNameGQL({ field: field, itemType: "files" }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectFacetFilter]);
 
@@ -151,13 +148,13 @@ const useGenesFacet = (field: string): EnumFacetResponse => {
   const enumFilters = useGenomicFilterByName(`genes.${field}`);
   useEffect(() => {
     if (!facet) {
-      coreDispatch(fetchGenesFacetByName(field));
+      coreDispatch(fetchFacetByNameGQL({ field: field, itemType: "genes" }));
     }
   }, [coreDispatch, facet, field]);
 
   useEffect(() => {
     if (facet) {
-      coreDispatch(fetchGenesFacetByName(field));
+      coreDispatch(fetchFacetByNameGQL({ field: field, itemType: "genes" }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectFacetFilter, selectCohortFilter]);
@@ -179,7 +176,7 @@ const useGenesFacet = (field: string): EnumFacetResponse => {
 const useMutationsFacet = (field: string): EnumFacetResponse => {
   const coreDispatch = useCoreDispatch();
   const facet: FacetBuckets = useCoreSelector((state) =>
-    selectMutationsFacetByField(state, field),
+    selectSSMSFacetByField(state, field),
   );
 
   const selectFacetFilter = useGenomicFacetFilter();
@@ -187,13 +184,13 @@ const useMutationsFacet = (field: string): EnumFacetResponse => {
   const enumFilters = useGenomicFilterByName(`ssms.${field}`);
   useEffect(() => {
     if (!facet) {
-      coreDispatch(fetchMutationsFacetByName(field));
+      coreDispatch(fetchFacetByNameGQL({ field: field, itemType: "ssms" }));
     }
   }, [coreDispatch, facet, field]);
 
   useEffect(() => {
     if (facet) {
-      coreDispatch(fetchMutationsFacetByName(field));
+      coreDispatch(fetchFacetByNameGQL({ field: field, itemType: "ssms" }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectFacetFilter, selectCohortFilter]);

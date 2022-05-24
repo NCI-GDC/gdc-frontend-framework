@@ -16,12 +16,16 @@ export interface RangeOperation {
   readonly ranges: ReadonlyArray<NumericFromTo>;
 }
 
-const buildContinuousAggregationRangeOnlyQuery = (field: string): string => {
+const buildContinuousAggregationRangeOnlyQuery = (
+  field: string,
+  itemType: string,
+  index: string,
+): string => {
   return `
   query ContinuousAggregationQuery($filters: FiltersArgument, $filters2: FiltersArgument) {
   viewer {
-    explore {
-      cases {
+    ${index} {
+      ${itemType} {
         aggregations(filters: $filters) {
           ${convertFacetNameToGQL(field)} {
            stats {
@@ -46,20 +50,29 @@ const buildContinuousAggregationRangeOnlyQuery = (field: string): string => {
 `;
 };
 
-export interface ContinuousAggregationProps {
+export interface FetchContinuousAggregationProps {
   readonly field: string;
   readonly ranges: ReadonlyArray<NumericFromTo>;
+  readonly itemType?: string;
+  readonly index?: string;
 }
 
 export const fetchFacetContinuousAggregation = createAsyncThunk<
   GraphQLApiResponse<RangeBuckets>,
-  ContinuousAggregationProps,
+  FetchContinuousAggregationProps,
   { dispatch: CoreDispatch; state: CoreState }
 >(
   "facet/fetchFacetContinuousAggregation",
-  async ({ field, ranges }, thunkAPI) => {
+  async (
+    { field, ranges, itemType = "cases", index = "explore" },
+    thunkAPI,
+  ) => {
     const filters = selectCurrentCohortGqlFilters(thunkAPI.getState());
-    const queryGQL = buildContinuousAggregationRangeOnlyQuery(field);
+    const queryGQL = buildContinuousAggregationRangeOnlyQuery(
+      field,
+      itemType,
+      index,
+    );
     const filtersGQL = {
       filters: filters ? filters : {},
       filters2: { op: "range", content: [{ ranges: ranges }] },
@@ -79,12 +92,14 @@ const rangeFacetAggregation = createSlice({
     builder
       .addCase(fetchFacetContinuousAggregation.fulfilled, (state, action) => {
         const response = action.payload;
+        const index = action.meta.arg.index ?? "explore";
+        const itemType = action.meta.arg.itemType ?? "cases";
         if (response.errors && Object.keys(response.errors).length > 0) {
           state[action.meta.arg.field].status = "rejected";
           state[action.meta.arg.field].error = response.errors.facets;
         } else {
           const aggregations =
-            Object(response).data.viewer.explore.cases.aggregations;
+            Object(response).data.viewer[index][itemType].aggregations;
           aggregations && processRangeResults(aggregations, state);
         }
       })
