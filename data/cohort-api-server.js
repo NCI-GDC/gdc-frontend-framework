@@ -297,7 +297,7 @@ function handleCohortPost(req) {
   if (!("id" in req.body)) {
     req.body["id"] = crypto.randomUUID();
   }
-  if (!("name" in req.body)) {
+  if (!("name" in req.body) || !req.body["name"]) {
     req.body["name"] = "Custom Cohort " + getCohorts().length;
   }
   if (!("facets" in req.body)) {

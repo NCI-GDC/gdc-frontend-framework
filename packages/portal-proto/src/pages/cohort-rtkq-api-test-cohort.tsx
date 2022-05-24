@@ -44,33 +44,29 @@ const CohortContent = ({ cohort }) => {
 };
 
 const CohortApiTest: NextPage = () => {
-  // for testing authorization via cookie
-  const [cookie, setCookie] = useCookies(["context-id"]);
-
-  // uncomment this code to auto-set cookie on page load
-  // useEffect(() => {
-  //   setCookie("context-id", "FAKE-UUID-FOR-TESTING");
-  // }, []);
-
-  // page state
-  const [testCohortName, setTestCohortName] = useState("");
-  const onCohortNameChanged = (e) => setTestCohortName(e.target.value);
-  const [currentContextId, setCurrentContextId] = useState("");
-
-  // literals
-  const cohortId = "CRUD-TEST-1";
   const button_class =
     "text-2xl border rounded bg-nci-gray-lighter opacity-75 hover:opacity-100";
 
-  // rtk queries and mutations
-  const [addCohort] = useAddCohortMutation();
+  // redux state, queries and mutations
+  const [cookie, setCookie] = useCookies(["context-id"]);
+  const [testCohortName, setTestCohortName] = useState("");
+  const [currentContextId, setCurrentContextId] = useState("");
+  const [addCohort, { data: addCohortData, isSuccess: isAddCohortSuccess }] =
+    useAddCohortMutation();
   const [updateCohort] = useUpdateCohortMutation();
   const [deleteCohort] = useDeleteCohortMutation();
   const [addContext] = useAddContextMutation();
 
+  const onCohortNameChanged = (e) => setTestCohortName(e.target.value);
+
+  // id for test and control cohorts, test id initially set to invalid value
+  const testCohortId = isAddCohortSuccess
+    ? addCohortData.id
+    : "invalid-id-for-testing";
+  const controlCohortId = "2f70de91-7c5a-41d2-9620-90670dfdaddb";
+
   // request body for creates
   const addBody = {
-    id: cohortId,
     context_id: currentContextId,
     name: testCohortName,
     facets: [],
@@ -79,7 +75,7 @@ const CohortApiTest: NextPage = () => {
 
   // request body for updates
   const updateBody = {
-    id: cohortId,
+    id: testCohortId,
     name: testCohortName,
   };
 
@@ -109,7 +105,6 @@ const CohortApiTest: NextPage = () => {
         options={menu_items}
         isSearchable={false}
         isClearable={false}
-        //value={currentContextName}
         onChange={(menu_item) => {
           setCurrentContextId(menu_item.value);
           setCookie("context-id", menu_item.value);
@@ -207,7 +202,7 @@ const CohortApiTest: NextPage = () => {
     isSuccess: isCohortSuccess,
     isError: isCohortError,
     //error: cohortError
-  } = useGetCohortByIdQuery(cohortId);
+  } = useGetCohortByIdQuery(testCohortId);
 
   // render specific cohort
   let cohortContent;
@@ -220,7 +215,7 @@ const CohortApiTest: NextPage = () => {
       </div>
     );
   } else if (isCohortError || !cohortData) {
-    cohortContent = <div>Cohort with id {cohortId} does not exist</div>;
+    cohortContent = <div>Cohort with id {testCohortId} does not exist</div>;
   }
 
   // use rtk query to get a control cohort that won't be refreshed when the target cohort is modified
@@ -229,7 +224,7 @@ const CohortApiTest: NextPage = () => {
     isLoading: isControlCohortLoading,
     isSuccess: isControlCohortSuccess,
     isError: isControlCohortError,
-  } = useGetCohortByIdQuery("2f70de91-7c5a-41d2-9620-90670dfdaddb");
+  } = useGetCohortByIdQuery(controlCohortId);
 
   // render specific cohort
   let controlCohortContent;
@@ -290,7 +285,7 @@ const CohortApiTest: NextPage = () => {
           <button
             className={button_class}
             onClick={() => {
-              deleteCohort(cohortId);
+              deleteCohort(testCohortId);
               setTestCohortName("");
             }}
           >

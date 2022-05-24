@@ -11,19 +11,7 @@
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { coreCreateApi } from "../../coreCreateApi";
 import type { Middleware, Reducer } from "@reduxjs/toolkit";
-
-export interface CohortModel {
-  id: string;
-  context_id?: string;
-  name?: string;
-  facets?: ReadonlyArray<string>;
-  frozen?: boolean;
-}
-
-export interface ContextModel {
-  id: string;
-  name: string;
-}
+import { CohortModel, ContextModel } from "cohortApiTypes";
 
 export const cohortApiSlice = coreCreateApi({
   reducerPath: "cohortApi",
@@ -59,7 +47,7 @@ export const cohortApiSlice = coreCreateApi({
       query: (id) => `/cohorts/${id}`,
       providesTags: (result, error, arg) => [{ type: "Cohort", id: arg }],
     }),
-    addCohort: builder.mutation<CohortModel, CohortModel>({
+    addCohort: builder.mutation<Partial<CohortModel>, CohortModel>({
       query: (cohort) => ({
         url: "/cohorts",
         method: "POST",
@@ -68,7 +56,7 @@ export const cohortApiSlice = coreCreateApi({
       invalidatesTags: ["Cohort"],
       //invalidatesTags: [{ type: "Cohort", id: "LIST" }]
     }),
-    updateCohort: builder.mutation<CohortModel, CohortModel>({
+    updateCohort: builder.mutation<Partial<CohortModel>, CohortModel>({
       query: (cohort) => ({
         url: `/cohorts/${cohort.id}`,
         method: "PATCH",
