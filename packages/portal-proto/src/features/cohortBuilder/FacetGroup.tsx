@@ -6,15 +6,16 @@ import { FC, useState } from "react";
 import Select from "react-select";
 import { get_facet_subcategories, get_facets } from "./dictionary";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
-import { useTotalCounts } from "@gff/core";
-import { LoadingOverlay } from "@mantine/core";
+import { GQLIndexType } from "@gff/core";
 
 interface FacetGroupProps {
   readonly facetNames: Array<Record<string, any>>;
+  readonly indexType?: GQLIndexType;
 }
 
 export const FacetGroup: React.FC<FacetGroupProps> = ({
   facetNames,
+  indexType = "explore",
 }: FacetGroupProps) => {
   return (
     <div className="flex flex-col border-r-2 border-l-2 border-b-2 border-t-0 border-nci-cyan-darker p-3 h-screen/1.5 overflow-y-scroll">
@@ -35,6 +36,7 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
                 <EnumFacet
                   key={`${x.facet_filter}-${index}`}
                   itemType="cases"
+                  indexType={indexType}
                   field={`${x.facet_filter}`}
                   facetName={x.name}
                   description={x.description}
@@ -58,6 +60,7 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
                   description={x.description}
                   rangeDatatype={x.facet_type}
                   itemType="cases"
+                  indexType={indexType}
                   minimum={x.minimum}
                   maximum={x.maximum}
                 />
@@ -158,6 +161,7 @@ export const CohortTabbedFacets: FC = () => {
         </TabPanel>
         <TabPanel>
           <FacetGroup
+            indexType="repository"
             facetNames={get_facets("Biospecimen", subcategories["Biospecimen"])}
           />
         </TabPanel>

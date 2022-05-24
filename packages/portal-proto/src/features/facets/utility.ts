@@ -9,6 +9,8 @@ import {
   useCoreSelector,
   FilterSet,
   selectCurrentCohortFilters,
+  GQLQueryItem,
+  GQLIndexType,
 } from "@gff/core";
 
 import { useEffect, useRef } from "react";
@@ -55,6 +57,8 @@ const useCohortFacetFilter = (): FilterSet => {
 export const useRangeFacet = (
   field: string,
   ranges: ReadonlyArray<NumericRange>,
+  itemType: GQLQueryItem,
+  indexType: GQLIndexType,
 ): UseCaseFacetResponse => {
   const coreDispatch = useCoreDispatch();
   const facet: FacetBuckets = useCoreSelector((state) =>
@@ -75,10 +79,24 @@ export const useRangeFacet = (
   useEffect(() => {
     if (!facet || !isEqual(prevFilters, cohortFilters)) {
       coreDispatch(
-        fetchFacetContinuousAggregation({ field: field, ranges: ranges }),
+        fetchFacetContinuousAggregation({
+          field: field,
+          ranges: ranges,
+          itemType: itemType,
+          indexType: indexType,
+        }),
       );
     }
-  }, [coreDispatch, facet, field, cohortFilters, prevFilters, ranges]);
+  }, [
+    coreDispatch,
+    facet,
+    field,
+    cohortFilters,
+    prevFilters,
+    ranges,
+    itemType,
+    indexType,
+  ]);
 
   return {
     data: facet?.buckets,

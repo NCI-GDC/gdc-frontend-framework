@@ -27,8 +27,9 @@ const Components: ReactNode = () => {
       <Divider label="Percent Range Facet" classNames={divider_style} />
       <NumericRangeFacet
         itemType="cases"
+        indexType="repository"
         rangeDatatype="percent"
-        field="cases.samples.portions.slides.percent_tumor_cells"
+        field="samples.portions.slides.percent_tumor_cells"
       />
 
       <Divider label="Genes Table" classNames={divider_style} />

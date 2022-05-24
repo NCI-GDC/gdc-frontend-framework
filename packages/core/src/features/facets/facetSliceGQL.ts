@@ -4,13 +4,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import { CoreDispatch, CoreState } from "../../store";
 import { selectCurrentCohortGqlFilters } from "../cohort/cohortFilterSlice";
-import {
-  buildGraphGLBucketQuery,
-  FacetBuckets,
-  GQLIndexType,
-  GQLQueryItem,
-  processBuckets,
-} from "./facetApiGQL";
+import { buildGraphGLBucketQuery, processBuckets } from "./facetApiGQL";
+import { FacetBuckets, GQLIndexType, GQLQueryItem } from "./types";
 import { FacetsState } from "./facetSlice";
 
 export interface FetchFacetByNameGQLProps {

@@ -22,6 +22,8 @@ import {
   useCoreSelector,
   selectGenomicFilters,
   selectGenomicFiltersByName,
+  GQLQueryItem,
+  GQLIndexType,
 } from "@gff/core";
 import { useEffect } from "react";
 
@@ -72,14 +74,18 @@ interface EnumFacetResponse {
 /**
  *  Facet Selector using GQL which will refresh when filters/enum values changes.02
  */
-const useCasesFacet = (field: string): EnumFacetResponse => {
+const useCasesFacet = (
+  field: string,
+  itemType: GQLQueryItem,
+  indexType: GQLIndexType,
+): EnumFacetResponse => {
   const coreDispatch = useCoreDispatch();
   const facet: FacetBuckets = useCoreSelector((state) =>
     selectCaseFacetByField(state, field),
   );
 
   const selectFacetFilter = useCohortFacetFilter();
-  const enumFilters = useCohortFacetFilterByName(`cases.${field}`);
+  const enumFilters = useCohortFacetFilterByName(`${field}`);
   // useEffect(() => {
   //   if (!facet) {
   //     coreDispatch(fetchFacetByNameGQL({field:field, itemType:"cases"}));
@@ -87,8 +93,14 @@ const useCasesFacet = (field: string): EnumFacetResponse => {
   // }, [coreDispatch, facet, field, selectFacetFilter]);
 
   useEffect(() => {
-    coreDispatch(fetchFacetByNameGQL({ field: field, itemType: "cases" }));
-  }, [coreDispatch, field, selectFacetFilter]);
+    coreDispatch(
+      fetchFacetByNameGQL({
+        field: field,
+        itemType: itemType,
+        index: indexType,
+      }),
+    );
+  }, [coreDispatch, field, indexType, itemType, selectFacetFilter]);
 
   return {
     data: facet?.buckets,
@@ -136,7 +148,11 @@ const useFilesFacet = (field: string): EnumFacetResponse => {
 /**
  * Genes Facet Selector using GQL
  */
-const useGenesFacet = (field: string): EnumFacetResponse => {
+const useGenesFacet = (
+  field: string,
+  itemType = "genes" as GQLQueryItem,
+  indexType = "explore" as GQLIndexType,
+): EnumFacetResponse => {
   const coreDispatch = useCoreDispatch();
   const facet: FacetBuckets = useCoreSelector((state) =>
     selectGenesFacetByField(state, field),
@@ -153,7 +169,13 @@ const useGenesFacet = (field: string): EnumFacetResponse => {
 
   useEffect(() => {
     console.log("useGenesFacet:", field, cohortFilters);
-    coreDispatch(fetchFacetByNameGQL({ field: field, itemType: "genes" }));
+    coreDispatch(
+      fetchFacetByNameGQL({
+        field: field,
+        itemType: itemType,
+        index: indexType,
+      }),
+    );
   }, [coreDispatch, field, cohortFilters]);
 
   return {
@@ -277,9 +299,9 @@ export const UpdateEnums = {
 
 export const FacetEnumHooks = {
   cases: useCasesFacet,
-  files: useFilesFacet,
+  files: useCasesFacet,
   genes: useGenesFacet,
-  ssms: useMutationsFacet,
+  ssms: useGenesFacet,
 };
 
 export const FacetItemTypeToCountsIndexMap = {

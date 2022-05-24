@@ -2,7 +2,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { CoreDispatch, CoreState } from "../../store";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import { selectCurrentCohortGqlFilters } from "../cohort/cohortFilterSlice";
-import { convertFacetNameToGQL, FacetBuckets } from "./facetApiGQL";
+import { convertFacetNameToGQL } from "./facetApiGQL";
+import { FacetBuckets, GQLIndexType, GQLQueryItem } from "./types";
 
 import { RangeBuckets, processRangeResults } from "./continuousAggregationApi";
 
@@ -18,13 +19,13 @@ export interface RangeOperation {
 
 const buildContinuousAggregationRangeOnlyQuery = (
   field: string,
-  itemType: string,
-  index: string,
+  itemType: GQLQueryItem,
+  indexType: GQLIndexType,
 ): string => {
   return `
   query ContinuousAggregationQuery($filters: FiltersArgument, $filters2: FiltersArgument) {
   viewer {
-    ${index} {
+    ${indexType} {
       ${itemType} {
         aggregations(filters: $filters) {
           ${convertFacetNameToGQL(field)} {
@@ -53,8 +54,8 @@ const buildContinuousAggregationRangeOnlyQuery = (
 export interface FetchContinuousAggregationProps {
   readonly field: string;
   readonly ranges: ReadonlyArray<NumericFromTo>;
-  readonly itemType?: string;
-  readonly index?: string;
+  readonly itemType?: GQLQueryItem;
+  readonly indexType?: GQLIndexType;
 }
 
 export const fetchFacetContinuousAggregation = createAsyncThunk<
@@ -64,14 +65,19 @@ export const fetchFacetContinuousAggregation = createAsyncThunk<
 >(
   "facet/fetchFacetContinuousAggregation",
   async (
-    { field, ranges, itemType = "cases", index = "explore" },
+    {
+      field,
+      ranges,
+      itemType = "cases" as GQLQueryItem,
+      indexType = "explore" as GQLIndexType,
+    },
     thunkAPI,
   ) => {
     const filters = selectCurrentCohortGqlFilters(thunkAPI.getState());
     const queryGQL = buildContinuousAggregationRangeOnlyQuery(
       field,
       itemType,
-      index,
+      indexType,
     );
     const filtersGQL = {
       filters: filters ? filters : {},
@@ -92,7 +98,7 @@ const rangeFacetAggregation = createSlice({
     builder
       .addCase(fetchFacetContinuousAggregation.fulfilled, (state, action) => {
         const response = action.payload;
-        const index = action.meta.arg.index ?? "explore";
+        const index = action.meta.arg.indexType ?? "explore";
         const itemType = action.meta.arg.itemType ?? "cases";
         if (response.errors && Object.keys(response.errors).length > 0) {
           state[action.meta.arg.field].status = "rejected";

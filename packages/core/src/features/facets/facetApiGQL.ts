@@ -1,13 +1,11 @@
-import { DataStatus } from "../../dataAcess";
 import { isBucketsAggregation, isStatsAggregation } from "../gdcapi/gdcapi";
+import { GQLIndexType, GQLQueryItem } from "./types";
 
 export const convertFacetNameToGQL: (x: string) => string = (x: string) =>
   x.replaceAll(".", "__");
 export const normalizeGQLFacetName: (x: string) => string = (x: string) =>
   x.replaceAll("__", ".");
 
-export type GQLQueryItem = "cases" | "files" | "genes" | "ssms";
-export type GQLIndexType = "explore" | "repository";
 /**
  * Builds a GraphQL request
  * @param facetName - name of the facet
@@ -41,12 +39,6 @@ export const buildGraphGLBucketQuery = (
       }
   `;
 };
-
-export interface FacetBuckets {
-  readonly status: DataStatus;
-  readonly error?: string;
-  readonly buckets?: Record<string, number>;
-}
 
 export type processBuckets = (
   aggregations: Record<string, unknown>,

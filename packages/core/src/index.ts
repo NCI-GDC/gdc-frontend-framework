@@ -14,6 +14,8 @@ export * from "./features/imageDetails/imageViewer";
 // export * from "./features/facets/filesFacetSliceGQL";
 // export * from "./features/facets/genesFacetSliceGQL";
 // export * from "./features/facets/mutationFacetSliceGQL";
+export * from "./features/facets/types";
+export * from "./features/facets/facetApiGQL";
 export * from "./features/facets/facetSliceGQL";
 export * from "./features/facets/continuousAggregationSlice";
 export * from "./features/gdcapps/gdcAppsSlice";

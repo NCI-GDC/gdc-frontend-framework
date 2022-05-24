@@ -50,6 +50,7 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
   startShowingData = true,
   showPercent = true,
   hideIfEmpty = true,
+  indexType = "explore",
 }: FacetCardProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
@@ -57,7 +58,11 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
   const [isFacetView, setIsFacetView] = useState(startShowingData);
   const [visibleItems, setVisibleItems] = useState(DEFAULT_VISIBLE_ITEMS);
   const cardRef = useRef<HTMLDivElement>(null);
-  const { data, enumFilters, isSuccess } = FacetEnumHooks[itemType](field);
+  const { data, enumFilters, isSuccess } = FacetEnumHooks[itemType](
+    field,
+    itemType,
+    indexType,
+  );
   const [selectedEnums, setSelectedEnums] = useState(enumFilters);
   const coreDispatch = useCoreDispatch();
   const updateFilters = UpdateEnums[itemType];

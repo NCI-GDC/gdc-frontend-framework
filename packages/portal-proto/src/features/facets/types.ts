@@ -1,8 +1,8 @@
-export type FacetItemType = "cases" | "files" | "genes" | "ssms";
+import { GQLQueryItem, GQLIndexType } from "@gff/core";
 
 export interface FacetCardProps {
   readonly field: string;
-  readonly itemType: FacetItemType;
+  readonly itemType: GQLQueryItem;
   readonly description?: string;
   readonly facetName?: string;
   readonly showSearch?: boolean;
@@ -10,4 +10,5 @@ export interface FacetCardProps {
   readonly showPercent?: boolean;
   readonly startShowingData?: boolean;
   readonly hideIfEmpty?: boolean;
+  readonly indexType?: GQLIndexType;
 }

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { DataStatus } from "../../dataAcess";
+import { FacetBuckets } from "./types";
 import { CoreDispatch, CoreState } from "../../store";
 import {
   fetchGdcCases,
@@ -22,18 +22,6 @@ export const fetchFacetByName = createAsyncThunk<
     facets: [name],
   });
 });
-
-export enum FacetBucketType {
-  NotSet,
-  Enum,
-  Value,
-}
-
-export interface FacetBuckets {
-  readonly status: DataStatus;
-  readonly error?: string;
-  readonly buckets?: Record<string, number>;
-}
 
 // these top-level properties should match the gdcapi indices.
 // however, this implementation detail should not be exposed to the portal
