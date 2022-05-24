@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Chip, Chips, Divider, Grid, Select } from "@mantine/core";
-import { MdClear as Clear } from "react-icons/md";
+import { Chip, Chips, Menu, Grid, Select, ActionIcon } from "@mantine/core";
+import { MdClear as Clear, MdSort as SortIcon } from "react-icons/md";
 import AnalysisCard from "@/features/user-flow/workflow/AnalysisCard";
 import {
   APPTAGS,
@@ -12,6 +12,8 @@ import {
   sortAlphabetically,
 } from "@/features/user-flow/workflow/utils";
 import dynamic from "next/dynamic";
+import FeaturedToolCard from "./FeaturedToolCard";
+import tailwindConfig from "tailwind.config";
 
 const ActiveAnalysisToolNoSSR = dynamic(
   () => import("@/features/user-flow/workflow/ActiveAnalysisTool"),
@@ -21,7 +23,6 @@ const ActiveAnalysisToolNoSSR = dynamic(
 );
 
 const sortOptions = [
-  { value: "default", label: "Default" },
   { value: "a-z", label: "Sort: A-Z" },
   { value: "z-a", label: "Sort: Z-A" },
 ];
@@ -51,6 +52,9 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
   const [recommendedApps] = useState([...RECOMMENDED_APPS]); // recommended apps based on Context
   const [remainingApps] = useState([...ALL_OTHER_APPS]); // all other apps
   const [activeApps, setActiveApps] = useState([...ALL_OTHER_APPS]); // set of active apps i.e. not recommended but filterable/dimmable
+
+  console.log("tags", appTags);
+  console.log("active", activeApps);
 
   const sortTools = (arr, st) => {
     if (st === "default") return arr;
@@ -82,11 +86,113 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
     <div className="flex flex-col mb-6 ">
       <div
         data-tour="analysis_tool_management"
-        className="flex flex-row  items-center mx-4 my-2 p-2 border border-nci-gray-lighter rounded-md shadow-lg"
+        className="flex flex-row  items-center shadow-lg bg-nci-blue-darkest"
       >
-        <div data-tour="most_common_tools" className="mx-10">
-          <Grid className="mx-2">
+        <div data-tour="most_common_tools" className="mx-4 my-6">
+          <Grid className="mx-2" columns={13}>
+            <Grid.Col span={1}>
+              <h2 className="text-white font-bold uppercase">
+                {"Featured Tools"}
+              </h2>
+            </Grid.Col>
             {recommendedApps
+              .map((k) => initialApps[k])
+              .map((x: AppRegistrationEntry) => {
+                return (
+                  <Grid.Col
+                    key={x.name}
+                    span={4}
+                    //xs={12}
+                    //sm={6}
+                    //md={4}
+                    //lg={3}
+                    //xl={2}
+                    style={{ minHeight: 64 }}
+                  >
+                    <FeaturedToolCard
+                      entry={{ ...{ applicable: true, ...x } }}
+                      onClick={handleOpenAppClicked}
+                    />
+                  </Grid.Col>
+                );
+              })}
+          </Grid>
+        </div>
+      </div>
+      <Grid className="p-2" gutter={"lg"}>
+        <Grid.Col
+          data-tour="analysis_tool_filters"
+          className="flex flex-col p-3"
+          span={3}
+        >
+          <div className="flex justify-between pb-2">
+            <div>
+              <h2 className="font-bold pb-2 uppercase">Tools</h2>
+              <h3>Categories</h3>
+            </div>
+            <div className="flex flex-col">
+              <Menu
+                control={
+                  <ActionIcon variant="outline">
+                    <SortIcon />
+                  </ActionIcon>
+                }
+                aria-label="Select tools sort"
+                withinPortal={false}
+                classNames={{
+                  body: "border-t-4 border-nci-blue w-28",
+                }}
+              >
+                {sortOptions.map((option) => (
+                  <Menu.Item onClick={() => setSortType(option.value)}>
+                    {option.label}
+                  </Menu.Item>
+                ))}
+              </Menu>
+              {activeTags.length ? (
+                <span className="pointer" onClick={() => setActiveTags([])}>
+                  {"Clear all"}
+                </span>
+              ) : (
+                <span
+                  onClick={() => setActiveTags(appTags.map((tag) => tag.value))}
+                  tabIndex={0}
+                  onKeyPress={(event) =>
+                    event.key === "Enter"
+                      ? setActiveTags(appTags.map((tag) => tag.value))
+                      : undefined
+                  }
+                  className="cursor-pointer mt-1"
+                >
+                  {"Select all"}
+                </span>
+              )}
+            </div>
+          </div>
+          <div className="flex flex-row">
+            <Chips
+              multiple
+              noWrap={false}
+              value={activeTags}
+              onChange={setActiveTags}
+              classNames={{
+                checked: "!text-white bg-gdc-cyan",
+                label: "text-gdc-cyan",
+                checkIcon: "text-white",
+              }}
+            >
+              {appTags.map((x) => (
+                <Chip size="sm" key={x.value} value={x.value}>
+                  {x.name}
+                </Chip>
+              ))}
+            </Chips>
+          </div>
+        </Grid.Col>
+
+        <Grid.Col data-tour="all_other_apps" span={9}>
+          <Grid className="mx-2">
+            {activeApps
               .map((k) => initialApps[k])
               .map((x: AppRegistrationEntry) => {
                 return (
@@ -97,7 +203,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
                     md={4}
                     lg={3}
                     xl={2}
-                    style={{ minHeight: 64, maxWidth: 220 }}
+                    style={{ minHeight: 130, maxWidth: 180 }}
                   >
                     <AnalysisCard
                       entry={{ ...{ applicable: true, ...x } }}
@@ -107,75 +213,8 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
                 );
               })}
           </Grid>
-        </div>
-        <div data-tour="analysis_tool_filters" className="flex flex-col w-1/2">
-          <h2 className="ml-6">Tool Categories</h2>
-          <Divider />
-          <div className="flex flex-row">
-            <Chips
-              className="py-1 pr-0"
-              style={{ paddingRight: 0 }}
-              multiple
-              noWrap={false}
-              value={activeTags}
-              onChange={setActiveTags}
-            >
-              {appTags.map((x) => (
-                <Chip size="sm" key={x.value} value={x.value}>
-                  {x.name}
-                </Chip>
-              ))}
-            </Chips>
-            {activeTags.length ? (
-              <button
-                className="bg-nci-gray-lighter h-6 rounded-full hover:bg-nci-gray"
-                onClick={() => setActiveTags([])}
-                aria-label="Tools filter clear button"
-              >
-                <Clear size="1.5rem" />
-              </button>
-            ) : null}
-          </div>
-          <div className=" mt-3">
-            <Select
-              data={sortOptions}
-              value={sortType}
-              classNames={{
-                root: "border border-nci-gray-lighter round-md ml-4 text-sm max-w-[20%] ",
-              }}
-              transition="pop-top-left"
-              transitionDuration={80}
-              transitionTimingFunction="ease"
-              onChange={(v) => setSortType(v)}
-              aria-label="Select tools sort"
-            />
-          </div>
-        </div>
-      </div>
-      <div data-tour="all_other_apps" className="my-2">
-        <Grid className="mx-2">
-          {activeApps
-            .map((k) => initialApps[k])
-            .map((x: AppRegistrationEntry) => {
-              return (
-                <Grid.Col
-                  key={x.name}
-                  xs={12}
-                  sm={6}
-                  md={4}
-                  lg={3}
-                  xl={2}
-                  style={{ minHeight: 48, maxWidth: 180 }}
-                >
-                  <AnalysisCard
-                    entry={{ ...{ applicable: true, ...x } }}
-                    onClick={handleOpenAppClicked}
-                  />
-                </Grid.Col>
-              );
-            })}
-        </Grid>
-      </div>
+        </Grid.Col>
+      </Grid>
     </div>
   );
 };

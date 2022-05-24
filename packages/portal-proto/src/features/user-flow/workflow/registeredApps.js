@@ -87,7 +87,7 @@ export const REGISTERED_APPS = [
   {
     name: "OncoGrid",
     icon: "icons/apps/oncogrid.svg",
-    iconSize: { width: 100, height: 48 },
+    iconSize: { width: 80, height: 48 },
     tags: ["variantAnalysis", "cnv", "ssm"],
     hasDemo: true,
     description:
@@ -107,7 +107,7 @@ export const REGISTERED_APPS = [
   {
     name: "ProteinPaint",
     icon: "proteinpaint.png",
-    iconSize: { width: 100, height: 48 },
+    iconSize: { width: 80, height: 48 },
     tags: ["variantAnalysis", "ssm"],
     hasDemo: true,
     description: "Visualize mutations in protein-coding genes.",
@@ -125,6 +125,8 @@ export const REGISTERED_APPS = [
     id: "SingleCellRnaSeq",
     caseCounts: 0.1,
     optimizeRules: ["experimental_strategy === scrna-seq"],
+    noDataTooltip:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
   },
 ];
 
