@@ -21,7 +21,7 @@ const ContextApiTest: NextPage = () => {
 
   // for testing authorization via cookie
   const [cookie, setCookie] = useCookies(["context-id"]);
-  const [currentContextId, setCurrentContextId] = useState();
+  const [currentContextId, setCurrentContextId] = useState("");
 
   // mutations
   const [addContext] = useAddContextMutation();
@@ -102,8 +102,8 @@ const ContextApiTest: NextPage = () => {
     contextContent = (
       <div>
         <article key={contextData.id}>
-          <p>Cohort ID: {contextData.id}</p>
-          <p>Cohort Name: {contextData.name}</p>
+          <p>context_id: {contextData.id}</p>
+          <p>context_name: {contextData.name}</p>
         </article>
       </div>
     );
