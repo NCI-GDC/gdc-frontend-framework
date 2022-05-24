@@ -14,10 +14,10 @@ import type { Middleware, Reducer } from "@reduxjs/toolkit";
 
 export interface CohortModel {
   id: string;
-  context_id: string;
-  name: string;
+  context_id?: string;
+  name?: string;
   facets?: ReadonlyArray<string>;
-  frozen: boolean;
+  frozen?: boolean;
 }
 
 export interface ContextModel {

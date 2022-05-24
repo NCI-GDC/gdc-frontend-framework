@@ -55,7 +55,7 @@ const CohortApiTest: NextPage = () => {
   // page state
   const [testCohortName, setTestCohortName] = useState("");
   const onCohortNameChanged = (e) => setTestCohortName(e.target.value);
-  const [currentContextId, setCurrentContextId] = useState();
+  const [currentContextId, setCurrentContextId] = useState("");
 
   // literals
   const cohortId = "CRUD-TEST-1";
