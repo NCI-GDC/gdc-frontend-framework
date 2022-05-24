@@ -10,7 +10,7 @@ import {
 const initialState: FilterSet = {
   mode: "and",
   root: {
-    "genes.is_cancer_gene_census": {
+    is_cancer_gene_census: {
       field: "genes.is_cancer_gene_census",
       operator: "includes",
       operands: ["true"], // TODO: this will be fixed when boolean facets are implemented

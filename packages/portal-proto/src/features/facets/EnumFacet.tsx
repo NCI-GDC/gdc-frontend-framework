@@ -57,7 +57,6 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
   const [isFacetView, setIsFacetView] = useState(startShowingData);
   const [visibleItems, setVisibleItems] = useState(DEFAULT_VISIBLE_ITEMS);
   const cardRef = useRef<HTMLDivElement>(null);
-  console.log("FacetEnumHooks:", field, itemType);
   const { data, enumFilters, isSuccess } = FacetEnumHooks[itemType](field);
   const [selectedEnums, setSelectedEnums] = useState(enumFilters);
   const coreDispatch = useCoreDispatch();
