@@ -72,7 +72,7 @@ interface EnumFacetResponse {
 }
 
 /**
- *  Facet Selector using GQL which will refresh when filters/enum values changes.02
+ *  Facet Selector using GQL which will refresh when filters/enum values changes.
  */
 const useCasesFacet = (
   field: string,
@@ -85,7 +85,7 @@ const useCasesFacet = (
   );
 
   const selectFacetFilter = useCohortFacetFilter();
-  const enumFilters = useCohortFacetFilterByName(`${field}`);
+  const enumFilters = useCohortFacetFilterByName(field);
   // useEffect(() => {
   //   if (!facet) {
   //     coreDispatch(fetchFacetByNameGQL({field:field, itemType:"cases"}));
@@ -93,6 +93,7 @@ const useCasesFacet = (
   // }, [coreDispatch, facet, field, selectFacetFilter]);
 
   useEffect(() => {
+    console.log("getting facet data: ", field, selectFacetFilter);
     coreDispatch(
       fetchFacetByNameGQL({
         field: field,
