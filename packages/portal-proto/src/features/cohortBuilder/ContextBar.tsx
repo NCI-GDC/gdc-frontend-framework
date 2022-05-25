@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { CollapsibleContainer } from "../../components/CollapsibleContainer";
-import { Button, Menu, Tabs } from "@mantine/core";
+import { Button, Menu, Tabs, Divider } from "@mantine/core";
 import { ContextualCasesView } from "../cases/CasesView";
 import CountButton from "./CountButton";
 
@@ -81,17 +81,33 @@ const ContextBar: React.FC<CohortGroupProps> = ({
         isCollapsed={isGroupCollapsed}
         toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
       >
-        <div className="flex flex-col bg-white rounded-md shadow-sm">
-          <div className="flex flex-row flex-wrap w-100 p-2 bg-nci-gray-lightest ">
-            {Object.keys(filters.root).map((k) => {
-              return convertFilterToComponent(filters.root[k]);
-            })}
+        <div className="flex flex-col bg-nci-gray-lightest">
+          <div className="flex items-center bg-nci-blue-lightest h-20 mb-4">
+            <CountButton
+              countName="casesMax"
+              label="CASES"
+              className="text-nci-blue-darkest pl-4"
+              bold
+            />
+            <Divider
+              orientation="vertical"
+              my="md"
+              className="m-2 h-[80%] border-nci-blue-darkest"
+            />
+            <span className="text-lg text-nci-blue-darkest">
+              Use the filters below to build a query
+            </span>
+            <div className="flex flex-row flex-wrap w-100 p-2 ">
+              {Object.keys(filters.root).map((k) => {
+                return convertFilterToComponent(filters.root[k]);
+              })}
+            </div>
           </div>
-          <div className="relative">
-            <div className="flex flex-row absolute z-20 ml-2 mt-2 ">
+          <div className="relative p-2">
+            <div className="flex flex-row absolute ml-2">
               <Menu
                 control={
-                  <Button className="bg-nci-gray-light hover:bg-nci-gray transition-colors">
+                  <Button className="bg-white text-nci-blue-darkest border-2 border-solid border-nci-blue-darkest">
                     <DownloadIcon size="1.5rem" />
                     <CountButton
                       countName="fileCounts"
@@ -110,7 +126,7 @@ const ContextBar: React.FC<CohortGroupProps> = ({
               </Menu>
               <Menu
                 control={
-                  <Button className="ml-2 bg-nci-gray-light hover:bg-nci-gray transition-colors">
+                  <Button className="ml-2 bg-white text-nci-blue-darkest border-2 border-solid border-nci-blue-darkest">
                     <FilesIcon size="1.5rem" className="mr-1" /> Metadata
                   </Button>
                 }
@@ -120,7 +136,17 @@ const ContextBar: React.FC<CohortGroupProps> = ({
                 <Menu.Item>Sample Sheet</Menu.Item>
               </Menu>
             </div>
-            <Tabs position="right" variant="pills" data-tour="cohort_summary">
+            <Tabs
+              position="right"
+              variant="unstyled"
+              data-tour="cohort_summary"
+              classNames={{
+                tabControl:
+                  "bg-white text-nci-blue-darkest border-2 border-nci-blue-darkest border-solid rounded-md first:border-r-0 last:border-l-0 first:rounded-r-none last:rounded-l-none",
+                tabActive: "!bg-nci-blue-darkest !text-white",
+                body: "p-4",
+              }}
+            >
               <Tabs.Tab
                 data-tour="cohort_summary_charts"
                 label="Summary View"

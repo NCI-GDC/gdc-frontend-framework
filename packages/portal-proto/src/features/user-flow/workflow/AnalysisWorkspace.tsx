@@ -88,13 +88,11 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
         data-tour="analysis_tool_management"
         className="flex flex-row  items-center shadow-lg bg-nci-blue-darkest"
       >
-        <div data-tour="most_common_tools" className="mx-4 my-6">
-          <Grid className="mx-2" columns={13}>
-            <Grid.Col span={1}>
-              <h2 className="text-white font-bold uppercase">
-                {"Featured Tools"}
-              </h2>
-            </Grid.Col>
+        <div data-tour="most_common_tools" className="mx-4 my-6 flex">
+          <h2 className="text-white font-bold uppercase pr-6">
+            {"Featured Tools"}
+          </h2>
+          <Grid columns={12}>
             {recommendedApps
               .map((k) => initialApps[k])
               .map((x: AppRegistrationEntry) => {
@@ -119,7 +117,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
           </Grid>
         </div>
       </div>
-      <Grid className="p-2" gutter={"lg"}>
+      <Grid className="p-2 mt-2" gutter={"lg"}>
         <Grid.Col
           data-tour="analysis_tool_filters"
           className="flex flex-col p-3"
@@ -176,8 +174,9 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
               value={activeTags}
               onChange={setActiveTags}
               classNames={{
-                checked: "!text-white bg-gdc-cyan",
-                label: "text-gdc-cyan",
+                checked: "!text-white bg-nci-blue-darkest",
+                label:
+                  "text-nci-blue border-2 border-solid border-nci-blue-darkest",
                 checkIcon: "text-white",
               }}
             >

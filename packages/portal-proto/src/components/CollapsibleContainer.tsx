@@ -18,14 +18,14 @@ export const CollapsibleContainer: React.FC<CollapsibleContainerProps> = (
   const { Top, isCollapsed, toggle, children } = props;
 
   return (
-    <div className="flex flex-col p-1">
+    <div className="flex flex-col">
       <div className="flex flex-row">
         <div className="flex-grow">
           <Top />
         </div>
-        <div className="flex flex-row items-center bg-nci-gray-lighter hover:bg-nci-gray-dark hover:text-nci-gray-lightest rounded-lg rounded-l-none rounded-b-none border-0 border-l-2">
+        <div className="flex flex-row items-center bg-nci-blue-darkest pr-2">
           <Button
-            className="hover:bg-nci-gray-dark hover:text-nci-gray-lightest"
+            className="bg-white text-nci-blue-darkest p-2"
             onClick={toggle}
           >
             {isCollapsed ? (

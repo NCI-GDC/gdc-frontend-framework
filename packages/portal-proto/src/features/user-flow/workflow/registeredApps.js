@@ -47,11 +47,11 @@ export const REGISTERED_APPS = [
       "Browse and download the files associated with your cohort for more sophisticated analysis.",
   },
   {
-    name: "Studies",
+    name: "Projects",
     icon: "icons/crowd-of-users.svg",
     tags: [],
     hasDemo: false,
-    id: "Studies",
+    id: "Projects",
     description:
       "View the Studies available within the GDC and select them for further exploration and analysis.",
   },
@@ -140,4 +140,4 @@ export const APPTAGS = [
   { value: "ssm", name: "ssm" },
 ];
 
-export const RECOMMENDED_APPS = ["Studies", "CohortBuilder", "Downloads"];
+export const RECOMMENDED_APPS = ["Projects", "CohortBuilder", "Downloads"];

@@ -105,14 +105,12 @@ export const CohortBar: React.FC<CohortBarProps> = ({
 
   const [currentCohort, setCurrentCohort] = useState(menu_items[defaultIdx]);
 
-  const buttonStyle =
-    "mx-1 bg-nci-gray-light hover:bg-nci-gray transition-colors";
+  const buttonStyle = "p-2 bg-white transition-colors text-nci-blue-darkest";
   return (
     <div
       data-tour="cohort_management_bar"
-      className="flex flex-row items-center justify-start pl-4 h-12 shadow-lg bg-nci-gray-lighter rounded-lg rounded-b-none rounded-r-none"
+      className="flex flex-row items-center justify-start gap-4 pl-4 h-20 shadow-lg bg-nci-blue-darkest"
     >
-      <CountButton countName="casesMax" label="Cases" className="px-2 ml-20 " />
       <div className="border-opacity-0">
         {!hide_controls ? (
           <Select
@@ -128,7 +126,7 @@ export const CohortBar: React.FC<CohortBarProps> = ({
               setCurrentCohort(x);
               onSelectionChanged(x.value);
             }}
-            className="border-nci-gray-light w-80 p-0"
+            className="border-nci-gray-light w-80 p-0 z-10"
             aria-label="Select cohort"
           />
         ) : (
@@ -138,7 +136,7 @@ export const CohortBar: React.FC<CohortBarProps> = ({
         )}
       </div>
       {!hide_controls ? (
-        <div className="flex flex-row items-center ml-auto">
+        <>
           <Button className={buttonStyle}>
             <SaveIcon size="1.5em" aria-label="Save cohort" />
           </Button>
@@ -154,7 +152,7 @@ export const CohortBar: React.FC<CohortBarProps> = ({
           <Button className={buttonStyle}>
             <DownloadIcon size="1.5em" aria-label="Download cohort" />
           </Button>
-        </div>
+        </>
       ) : (
         <div />
       )}

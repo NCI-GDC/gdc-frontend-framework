@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ActionIcon } from "@mantine/core";
+import { ActionIcon, Grid } from "@mantine/core";
 import { MdArrowForwardIos } from "react-icons/md";
 import * as tailwindConfig from "tailwind.config";
 import { AppRegistrationEntry } from "./utils";
@@ -14,32 +14,30 @@ const FeaturedToolCard: React.FC<FeaturedToolCardProps> = ({
   onClick,
 }: FeaturedToolCardProps) => {
   return (
-    <div className="bg-white flex p-2 h-full">
-      <Image
-        className="m-auto"
-        src={`/user-flow/${entry.icon}`}
-        height="64"
-        width="64"
-        alt={`${entry.name} icon`}
-      />
-      <div className="m-1">
+    <Grid className="bg-white h-full items-center m-1" gutter="lg">
+      <Grid.Col span={2}>
+        <Image
+          className="m-auto"
+          src={`/user-flow/${entry.icon}`}
+          height="64"
+          width="64"
+          alt={`${entry.name} icon`}
+        />
+      </Grid.Col>
+      <Grid.Col span={8}>
         <h3 className="font-bold">{entry.name}</h3>
         {entry.description}
-      </div>
-      <ActionIcon
-        styles={{
-          root: {
-            backgroundColor:
-              tailwindConfig.theme.extend.colors["nci-blue"].darkest,
-          },
-        }}
-        className="self-center"
-        variant="filled"
-        onClick={() => onClick(entry)}
-      >
-        <MdArrowForwardIos size={30} color={"white"} />
-      </ActionIcon>
-    </div>
+      </Grid.Col>
+      <Grid.Col span={2}>
+        <ActionIcon
+          className="self-center bg-nci-blue-darkest w-12 h-12 p-2"
+          variant="filled"
+          onClick={() => onClick(entry)}
+        >
+          <MdArrowForwardIos size={30} color={"white"} />
+        </ActionIcon>
+      </Grid.Col>
+    </Grid>
   );
 };
 
