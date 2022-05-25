@@ -3,6 +3,7 @@ import {
   useCoreDispatch,
   useCoreSelector,
   selectTotalCountsByName,
+  usePrevious,
 } from "@gff/core";
 import {
   FacetItemTypeToCountsIndexMap,
@@ -25,6 +26,7 @@ import { FacetCardProps } from "@/features/facets/types";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
 import { LoadingOverlay, Tooltip } from "@mantine/core";
 import * as tailwindConfig from "tailwind.config";
+import isEqual from "lodash/isEqual";
 
 /**
  *  Enumeration facet filters handle display and selection of
@@ -64,17 +66,17 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
     indexType,
   );
   const [selectedEnums, setSelectedEnums] = useState(enumFilters);
-  const coreDispatch = useCoreDispatch();
-  const updateFilters = UpdateEnums[itemType];
 
+  const prevFilters = usePrevious(enumFilters);
+  const coreDispatch = useCoreDispatch();
+  const updateFilters = UpdateEnums[itemType]; // Gets all filter updates
+
+  // get the total count to compute percentages
   const totalCount = useCoreSelector((state) =>
     selectTotalCountsByName(state, FacetItemTypeToCountsIndexMap[itemType]),
   );
 
-  useEffect(() => {
-    setSelectedEnums(enumFilters);
-  }, [enumFilters]);
-
+  // filter missing and "" strings and update checkboxes
   useEffect(() => {
     if (isSuccess) {
       setVisibleItems(
@@ -83,11 +85,12 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
         ).length,
       );
     }
-  }, [data, isSuccess]);
+  }, [data, field, isSuccess]);
 
   useEffect(() => {
-    updateFilters(coreDispatch, selectedEnums, field);
-  }, [updateFilters, coreDispatch, selectedEnums, field, itemType]);
+    if (isSuccess && !isEqual(prevFilters, enumFilters))
+      setSelectedEnums(enumFilters);
+  }, [enumFilters, isSuccess, prevFilters]);
 
   const maxValuesToDisplay = DEFAULT_VISIBLE_ITEMS;
   const total = visibleItems;
@@ -95,18 +98,19 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
     return null; // nothing to render if total == 0
   }
 
+  // update filters when checkbox is selected
   const handleChange = (e) => {
     const { value, checked } = e.target;
 
     if (checked) {
       const updated = selectedEnums ? [...selectedEnums, value] : [value];
-      setSelectedEnums(updated);
+      updateFilters(coreDispatch, updated, field);
     } else {
       const updated =
         field === "is_cancer_gene_census"
           ? []
           : selectedEnums.filter((x) => x != value);
-      setSelectedEnums(updated);
+      updateFilters(coreDispatch, updated, field);
     }
   };
 

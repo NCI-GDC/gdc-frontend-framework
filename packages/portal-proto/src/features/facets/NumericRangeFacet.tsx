@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useRangeFacet } from "./utility";
 import {
   MdAddCircle as MoreIcon,
   MdFlip as FlipIcon,
@@ -44,6 +43,7 @@ import { FacetCardProps } from "@/features/facets/types";
 import {
   FacetItemTypeToCountsIndexMap,
   FacetItemTypeToLabelsMap,
+  useRangeFacet,
 } from "@/features/facets/hooks";
 
 interface NumericFacetProps extends FacetCardProps {

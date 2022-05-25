@@ -3,7 +3,6 @@ import { CohortGroup, CohortGroupProps } from "./CohortGroup";
 import { SummaryCharts } from "./SummaryCharts";
 import MetaSearch from "./MetaSearch";
 import CohortTabbedFacets from "./FacetGroup";
-import { useTotalCounts } from "@gff/core";
 
 const FullCohortBuilder: React.FC<CohortGroupProps> = ({
   cohorts,
