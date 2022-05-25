@@ -24,8 +24,12 @@ import {
   selectGenomicFiltersByName,
   GQLQueryItem,
   GQLIndexType,
+  NumericRange,
+  selectRangeFacetByField,
+  fetchFacetContinuousAggregation,
 } from "@gff/core";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import isEqual from "lodash/isEqual";
 
 /**
  * Filter selector for all the facet filters
@@ -44,8 +48,9 @@ export const extractValue = (op: Operation): EnumOperandValue => {
 };
 
 /**
- * Selector for the facet values from the current cohort (if any)
- * @param field
+ * Selector for the facet values (if any) from the current cohort
+ * @param field - field name to find filter for
+ * @return Value of Filters or undefined
  */
 const useCohortFacetFilterByName = (field: string): OperandValue => {
   const enumFilters: Operation = useCoreSelector((state) =>
@@ -70,6 +75,69 @@ interface EnumFacetResponse {
   readonly isSuccess: boolean;
   readonly isError: boolean;
 }
+
+export const useCasesFacet2 = (
+  field: string,
+  itemType: GQLQueryItem,
+  indexType: GQLIndexType,
+): EnumFacetResponse => {
+  const coreDispatch = useCoreDispatch();
+  const facet: FacetBuckets = useCoreSelector((state) =>
+    selectCaseFacetByField(state, field),
+  );
+
+  /*
+   * store the previous value to see if it has changed
+   */
+  const usePrevious = <T>(value: T): T | undefined => {
+    const ref = useRef<T>();
+    useEffect(() => {
+      ref.current = value;
+    });
+    return ref.current;
+  };
+
+  const enumValues = useCohortFacetFilterByName(field);
+  const cohortFilters = useCohortFacetFilter();
+  const prevCohortFilters = usePrevious(cohortFilters);
+  const prevEnumValues = usePrevious(enumValues);
+
+  useEffect(() => {
+    if (
+      !facet ||
+      !isEqual(prevCohortFilters, cohortFilters) ||
+      !isEqual(prevEnumValues, enumValues)
+    ) {
+      coreDispatch(
+        fetchFacetByNameGQL({
+          field: field,
+          itemType: itemType,
+          index: indexType,
+        }),
+      );
+    }
+  }, [
+    coreDispatch,
+    facet,
+    field,
+    cohortFilters,
+    itemType,
+    indexType,
+    prevCohortFilters,
+    prevEnumValues,
+    enumValues,
+  ]);
+
+  return {
+    data: facet?.buckets,
+    enumFilters: (enumValues as EnumOperandValue)?.map((x) => x.toString()),
+    error: facet?.error,
+    isUninitialized: facet === undefined,
+    isFetching: facet?.status === "pending",
+    isSuccess: facet?.status === "fulfilled",
+    isError: facet?.status === "rejected",
+  };
+};
 
 /**
  *  Facet Selector using GQL which will refresh when filters/enum values changes.
@@ -299,8 +367,8 @@ export const UpdateEnums = {
 };
 
 export const FacetEnumHooks = {
-  cases: useCasesFacet,
-  files: useCasesFacet,
+  cases: useCasesFacet2,
+  files: useCasesFacet2,
   genes: useGenesFacet,
   ssms: useGenesFacet,
 };
