@@ -80,6 +80,49 @@ const useCohortCases = (pageSize = 10, offset = 0) => {
   };
 };
 
+const keys = {
+  portions: {
+    analytes: {
+      node: "aliquots",
+    },
+    node: "slides",
+  },
+};
+
+const Node = ({ value }) => {
+  return <li>{value}</li>;
+};
+
+const Tree: React.FC = ({ data, keys }) => {
+  console.log("data", data);
+  console.log("keys", keys);
+  return Object.keys(keys).map((k) => {
+    if (k === "node") {
+      return (
+        <ul>
+          {keys[k]}{" "}
+          {data.map((d) =>
+            d.node[keys[k]].hits.edges.map((d2) => (
+              <Node value={d2.node.submitter_id} />
+            )),
+          )}{" "}
+        </ul>
+      );
+    } else {
+      return data.map((d) => {
+        return (
+          <li>
+            {k}
+            <ul>
+              <Tree data={d.node[k].hits.edges} keys={keys[k]} />
+            </ul>
+          </li>
+        );
+      });
+    }
+  });
+};
+
 export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
   props: ContextualCasesViewProps,
 ) => {
@@ -156,6 +199,11 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
       </div>
       <div>
         <h1>Biospecimen Data</h1>
+        {!isBiospecimentDataFetching && (
+          <ul>
+            <Tree data={bioSpecimenData?.samples} keys={keys} />
+          </ul>
+        )}
         {/* {!isBiospecimentDataFetching &&
           bioSpecimenData?.samples?.map(({ node }) => {
             return (
