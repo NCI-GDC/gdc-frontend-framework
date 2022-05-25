@@ -237,6 +237,10 @@ export interface GdcFile {
           readonly analyte_id: string;
           readonly analyte_type: string;
           readonly submitter_id: string;
+          readonly aliquots?: ReadonlyArray<{
+            readonly aliquot_id: string;
+            readonly submitter_id: string;
+          }>;
         }>;
         readonly slides?: ReadonlyArray<{
           readonly created_datetime: string | null;
@@ -261,6 +265,12 @@ export interface GdcFile {
       }>;
     }>;
   }>;
+  readonly associated_entities?: ReadonlyArray<{
+    readonly entity_submitter_id: string;
+    readonly entity_type: string;
+    readonly case_id: string;
+    readonly entity_id: string;
+  }>;
   readonly analysis?: {
     readonly workflow_type: string;
     readonly updated_datetime: string;
@@ -274,6 +284,7 @@ export interface GdcFile {
       readonly data_type: string;
       readonly data_format: string;
       readonly file_size: number;
+      readonly file_id: string;
     }>;
   }>;
 }
@@ -354,6 +365,12 @@ const slice = createSlice({
                               analyte_id: analyte.analyte_id,
                               analyte_type: analyte.analyte_type,
                               submitter_id: analyte.submitter_id,
+                              aliquots: analyte.aliquots?.map((aliquot) => {
+                                return {
+                                  aliquot_id: aliquot.aliquot_id,
+                                  submitter_id: aliquot.submitter_id,
+                                };
+                              }),
                             };
                           }),
                           slides: portion.slides?.map((slide) => {
@@ -392,6 +409,14 @@ const slice = createSlice({
                   }),
                 };
               }),
+              associated_entities: hit.associated_entities?.map(
+                (associated_entity) => ({
+                  entity_submitter_id: associated_entity.entity_submitter_id,
+                  entity_type: associated_entity.entity_type,
+                  case_id: associated_entity.case_id,
+                  entity_id: associated_entity.entity_id,
+                }),
+              ),
               analysis: hit.analysis
                 ? {
                     workflow_type: hit.analysis.workflow_type,
@@ -411,6 +436,7 @@ const slice = createSlice({
                       data_type: file.data_type,
                       data_format: file.data_format,
                       file_size: file.file_size,
+                      file_id: file.file_id,
                     };
                   }),
                 };

@@ -25,6 +25,13 @@ be asynchronous, the invocation should also return information about the status 
 request. In the event of a failed data request, the invocation should also return
 information about the failure.
 
+### Avalible Hooks
+
+- `useAnnotations(Query Params defined below)`
+- `useFiles(Query Params defined below)`
+- `useFileHistory(String: uuid of file)`
+- `useProjects(Query Params defined below)`
+
 Example: Fetch project data
 
 ```jsx
@@ -235,7 +242,7 @@ get current cohort(context)
   - this could be an application-scoped filter
   - this could be a globally scoped filter
   - NOTE: seems that filter scoping is an application concern. not a framework concern
-  - NOTE: can dyanmic contexts abstract this scoping problems?
+  - NOTE: can dynamic contexts abstract this scoping problems?
 - fetch from cases endpoint with filters
 
 #### Scenario: Get cases from a cohort with a filter

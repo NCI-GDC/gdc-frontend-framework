@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import { divider_style } from "./style";
 import { Divider } from "@mantine/core";
 import { EnumFacet } from "../facets/EnumFacet";
-import GenesTable from "../genomic/GenesTable";
+import GenesTable from "../genesTable/GenesTable";
 
 const Components: ReactNode = () => {
   return (
@@ -11,7 +11,10 @@ const Components: ReactNode = () => {
       <Divider label="Enumeration Facet" classNames={divider_style} />
       <EnumFacet type="cases" field="primary_site" />
       <Divider label="Genes Table" classNames={divider_style} />
-      <GenesTable selectedSurvivalPlot={{ id: undefined }} />
+      <GenesTable
+        selectedSurvivalPlot={{ id: undefined }}
+        handleSurvivalPlotToggled={undefined}
+      />
     </div>
   );
 };

@@ -27,14 +27,14 @@ Data Request
 
 Cohort Definition
 
-- In #1, the cohort is a collection of cases, which is consistent with the simple defintion
+- In #1, the cohort is a collection of cases, which is consistent with the simple definition
   that a cohort is always a collection of cases.
 - In #2 and #3, the (sub-)cohort is a collection of aliquots. This introduces a cohort
   variant. Variants increase the complexity of a cohort model and concept. This also opens
-  up the possibility of other variants, like a cohort of genes, a cohort of mutation, a
+  up the possibility of other variants, like a cohort of genes, a cohort of mutations, a
   cohort of aliquots. Perhaps the variants are collections of entities and a cohort is always
   a collection of cases. One disadvantage is that two independent collection of aliquots
-  are not gauranteed to represent the same set of cases.
+  are not guaranteed to represent the same set of cases.
 - In #3, the sub-cohort is also a new concept, although a sub-cohort might just be a cohort
   with a specialized relationship with another cohort.
 

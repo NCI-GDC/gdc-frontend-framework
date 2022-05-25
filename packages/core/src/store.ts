@@ -1,5 +1,15 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
+import {
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist";
+import storage from "redux-persist/lib/storage";
 import { cohortReducers } from "./features/cohort/cohortSlice";
 import { sessionReducer } from "./features/session/sessionSlice";
 import { facetsReducer } from "./features/facets/facetSlice";
@@ -8,6 +18,7 @@ import { gdcAppReducer } from "./features/gdcapps/gdcAppsSlice";
 import { filesReducer } from "./features/files/filesSlice";
 import { projectsReducer } from "./features/projects/projectsSlice";
 import { annotationsReducer } from "./features/annotations/annotationsSlice";
+import { historyReducer } from "./features/history/historySlice";
 import { casesReducer } from "./features/cases/casesSlice";
 //import { ssmsTableReducer } from "./features/ssmsTable/ssmsTableSlice";
 //import { genesTableReducer } from "./features/genesTable/genesTableSlice";
@@ -19,33 +30,55 @@ import { ssmPlotReducer } from "./features/cancerDistribution/ssmPlot";
 import { cnvPlotReducer } from "./features/cancerDistribution/cnvPlot";
 import { imageDetailsReducer } from "./features/imageDetails/imageDetailsSlice";
 import { imageViewerReducer } from "./features/imageDetails/imageViewerSlice";
-import { cohortFacetsReducer } from "./features/cohortComparison/cohortFacetSlice";
+import { cartReducer } from "./features/cart/cartSlice";
+import { cohortComparisonReducer } from "./features/cohortComparison";
+import { bannerReducer } from "./features/bannerNotification";
 import { biospecimenReducer } from "./features/biospecimen/biospecimenSlice";
 
+const reducers = {
+  cohort: cohortReducers,
+  session: sessionReducer,
+  facets: facetsReducer, // TODO: Pick which one to use in V2
+  facetsGQL: fileCaseGenesMutationsFacetReducers,
+  gdcApps: gdcAppReducer,
+  files: filesReducer,
+  projects: projectsReducer,
+  annotations: annotationsReducer,
+  history: historyReducer,
+  cases: casesReducer,
+  ssmPlot: ssmPlotReducer,
+  cnvPlot: cnvPlotReducer,
+  survival: survivalReducer,
+  oncogrid: oncoGridReducer,
+  genomic: genomicReducers,
+  imageDetails: imageDetailsReducer,
+  imageViewer: imageViewerReducer,
+  cohortComparison: cohortComparisonReducer,
+  cart: cartReducer,
+  bannerNotification: bannerReducer,
+  biospecimen: biospecimenReducer,
+};
+
+const persistConfig = {
+  key: "root",
+  version: 1,
+  storage,
+  whitelist: ["cart", "bannerNotification"],
+};
+
+const reducer = persistReducer(persistConfig, combineReducers(reducers));
+
 export const coreStore = configureStore({
-  reducer: {
-    cohort: cohortReducers,
-    session: sessionReducer,
-    facets: facetsReducer, // TODO: Pick which one to use in V2
-    facetsGQL: fileCaseGenesMutationsFacetReducers,
-    gdcApps: gdcAppReducer,
-    files: filesReducer,
-    projects: projectsReducer,
-    annotations: annotationsReducer,
-    cases: casesReducer,
-    ssmPlot: ssmPlotReducer,
-    cnvPlot: cnvPlotReducer,
-    survival: survivalReducer,
-    oncogrid: oncoGridReducer,
-    genomic: genomicReducers,
-    imageDetails: imageDetailsReducer,
-    imageViewer: imageViewerReducer,
-    cohortComparison: cohortFacetsReducer,
-    biospecimen: biospecimenReducer,
-  },
+  reducer,
   devTools: {
     name: "@gff/core",
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
 });
 
 setupListeners(coreStore.dispatch);
