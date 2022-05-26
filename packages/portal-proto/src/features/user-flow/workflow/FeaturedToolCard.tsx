@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { ActionIcon, Grid } from "@mantine/core";
-import { MdArrowForwardIos } from "react-icons/md";
-import * as tailwindConfig from "tailwind.config";
+import { MdPlayArrow } from "react-icons/md";
 import { AppRegistrationEntry } from "./utils";
 
 export interface FeaturedToolCardProps {
@@ -14,7 +13,7 @@ const FeaturedToolCard: React.FC<FeaturedToolCardProps> = ({
   onClick,
 }: FeaturedToolCardProps) => {
   return (
-    <Grid className="bg-white h-full items-center m-1" gutter="lg">
+    <Grid className="bg-white h-full items-center m-1 rounded">
       <Grid.Col span={2}>
         <Image
           className="m-auto"
@@ -24,7 +23,7 @@ const FeaturedToolCard: React.FC<FeaturedToolCardProps> = ({
           alt={`${entry.name} icon`}
         />
       </Grid.Col>
-      <Grid.Col span={8}>
+      <Grid.Col span={8} className="text-nci-blue-darkest">
         <h3 className="font-bold">{entry.name}</h3>
         {entry.description}
       </Grid.Col>
@@ -33,8 +32,9 @@ const FeaturedToolCard: React.FC<FeaturedToolCardProps> = ({
           className="self-center bg-nci-blue-darkest w-12 h-12 p-2"
           variant="filled"
           onClick={() => onClick(entry)}
+          aria-label={`Navigate to ${entry.name}`}
         >
-          <MdArrowForwardIos size={30} color={"white"} />
+          <MdPlayArrow size={30} color={"white"} />
         </ActionIcon>
       </Grid.Col>
     </Grid>

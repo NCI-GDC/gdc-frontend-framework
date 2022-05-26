@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Chip, Chips, Menu, Grid, Select, ActionIcon } from "@mantine/core";
-import { MdClear as Clear, MdSort as SortIcon } from "react-icons/md";
+import { Chip, Chips, Menu, Grid, ActionIcon } from "@mantine/core";
+import { MdSort as SortIcon } from "react-icons/md";
 import AnalysisCard from "@/features/user-flow/workflow/AnalysisCard";
 import {
   APPTAGS,
@@ -13,7 +13,6 @@ import {
 } from "@/features/user-flow/workflow/utils";
 import dynamic from "next/dynamic";
 import FeaturedToolCard from "./FeaturedToolCard";
-import tailwindConfig from "tailwind.config";
 
 const ActiveAnalysisToolNoSSR = dynamic(
   () => import("@/features/user-flow/workflow/ActiveAnalysisTool"),
@@ -83,7 +82,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
   };
 
   return (
-    <div className="flex flex-col mb-6 ">
+    <div className="flex flex-col mb-6 font-montserrat">
       <div
         data-tour="analysis_tool_management"
         className="flex flex-row  items-center shadow-lg bg-nci-blue-darkest"
@@ -117,50 +116,67 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
           </Grid>
         </div>
       </div>
-      <Grid className="p-2 mt-2" gutter={"lg"}>
+      <Grid className="p-3 mt-2" gutter={"lg"}>
         <Grid.Col
           data-tour="analysis_tool_filters"
           className="flex flex-col p-3"
           span={3}
         >
-          <div className="flex justify-between pb-2">
+          <div className="flex justify-between pb-4 text-nci-blue-darkest">
             <div>
-              <h2 className="font-bold pb-2 uppercase">Tools</h2>
-              <h3>Categories</h3>
+              <h2 className="font-bold text-lg pb-3 uppercase">Tools</h2>
+              <h3 className="text-lg">Categories</h3>
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col justify-around items-end">
               <Menu
                 control={
-                  <ActionIcon variant="outline">
-                    <SortIcon />
+                  <ActionIcon
+                    variant="outline"
+                    className="text-nci-blue-darkest"
+                  >
+                    <SortIcon size={24} />
                   </ActionIcon>
                 }
                 aria-label="Select tools sort"
                 withinPortal={false}
                 classNames={{
-                  body: "border-t-4 border-nci-blue w-28",
+                  body: "border-t-8 border-nci-blue-darkest w-24",
+                  itemHovered: "bg-nci-blue-lightest",
+                  itemLabel: "text-nci-blue-darkest",
                 }}
               >
                 {sortOptions.map((option) => (
-                  <Menu.Item onClick={() => setSortType(option.value)}>
+                  <Menu.Item
+                    onClick={() => setSortType(option.value)}
+                    key={option.value}
+                  >
                     {option.label}
                   </Menu.Item>
                 ))}
               </Menu>
               {activeTags.length ? (
-                <span className="pointer" onClick={() => setActiveTags([])}>
+                <span
+                  className="cursor-pointer text-xs"
+                  tabIndex={0}
+                  role="button"
+                  onClick={() => setActiveTags([])}
+                  onKeyPress={(event) =>
+                    event.key === "Enter" ? setActiveTags([]) : undefined
+                  }
+                >
                   {"Clear all"}
                 </span>
               ) : (
                 <span
-                  onClick={() => setActiveTags(appTags.map((tag) => tag.value))}
+                  className="cursor-pointer text-xs"
+                  role="button"
                   tabIndex={0}
+                  onClick={() => setActiveTags(appTags.map((tag) => tag.value))}
                   onKeyPress={(event) =>
                     event.key === "Enter"
                       ? setActiveTags(appTags.map((tag) => tag.value))
                       : undefined
                   }
-                  className="cursor-pointer mt-1"
                 >
                   {"Select all"}
                 </span>

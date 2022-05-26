@@ -1,21 +1,13 @@
 import React, { useState } from "react";
 import Image from "next/image";
-import { ActionIcon, Divider } from "@mantine/core";
+import { Divider } from "@mantine/core";
 import {
-  MdArrowForwardIos,
+  MdPlayArrow,
   MdArrowDropDown,
   MdArrowDropUp,
   MdInfo,
 } from "react-icons/md";
-import {
-  Badge,
-  Button,
-  Card,
-  Group,
-  Loader,
-  Tooltip,
-  Collapse,
-} from "@mantine/core";
+import { Button, Card, Loader, Tooltip, Collapse } from "@mantine/core";
 import { useCoreSelector, selectCohortCounts } from "@gff/core";
 import { AppRegistrationEntry } from "./utils";
 
@@ -75,7 +67,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
             disabled={caseCounts === 0}
             arial-label={`Navigate to ${entry.name} tool`}
           >
-            <MdArrowForwardIos size={16} color={"white"} />
+            <MdPlayArrow size={16} color={"white"} />
           </Button>
           {entry.hasDemo ? (
             <Button
@@ -91,6 +83,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
               radius="sm"
               arial-label={`${entry.name} Demo`}
               variant={"outline"}
+              className="text-nci-blue-darkest border-nci-blue-darkest"
             >
               Demo
             </Button>
@@ -104,9 +97,14 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
           variant="white"
           size="xs"
           rightIcon={
-            descriptionVisisble ? <MdArrowDropUp /> : <MdArrowDropDown />
+            descriptionVisisble ? (
+              <MdArrowDropUp size={16} />
+            ) : (
+              <MdArrowDropDown size={16} />
+            )
           }
           classNames={{
+            root: "text-nci-blue-darkest font-bold",
             rightIcon: "ml-0",
           }}
         >
@@ -119,7 +117,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
           {entry.description}
         </Collapse>
         {entry.hideCounts ? null : cohortCounts ? (
-          <div>
+          <div className="text-nci-blue-darkest">
             <span>{`${caseCounts.toLocaleString()} Cases`}</span>
             {caseCounts === 0 && (
               <Tooltip

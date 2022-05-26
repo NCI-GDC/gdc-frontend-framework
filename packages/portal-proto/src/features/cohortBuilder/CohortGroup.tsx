@@ -39,6 +39,7 @@ import {
   Intersection,
   Union,
 } from "@gff/core";
+import * as tailwindConfig from "tailwind.config";
 import { convertFieldToName } from "../facets/utils";
 import CountButton from "./CountButton";
 
@@ -109,15 +110,12 @@ export const CohortBar: React.FC<CohortBarProps> = ({
   return (
     <div
       data-tour="cohort_management_bar"
-      className="flex flex-row items-center justify-start gap-4 pl-4 h-20 shadow-lg bg-nci-blue-darkest"
+      className="flex flex-row items-center justify-start gap-6 pl-4 h-20 shadow-lg bg-nci-blue-darkest"
     >
       <div className="border-opacity-0">
         {!hide_controls ? (
           <Select
             inputId="cohort-bar_cohort_select"
-            components={{
-              IndicatorSeparator: () => null,
-            }}
             options={menu_items}
             isSearchable={false}
             isClearable={false}
@@ -126,8 +124,18 @@ export const CohortBar: React.FC<CohortBarProps> = ({
               setCurrentCohort(x);
               onSelectionChanged(x.value);
             }}
-            className="border-nci-gray-light w-80 p-0 z-10"
-            aria-label="Select cohort"
+            className="border-nci-gray-light w-80 p-0 z-10 "
+            aria-items-centerlabel="Select cohort"
+            styles={{
+              dropdownIndicator: (provided) => ({
+                ...provided,
+                color: tailwindConfig.theme.extend.colors["gdc-blue"].darkest,
+              }),
+              singleValue: (provided) => ({
+                ...provided,
+                color: tailwindConfig.theme.extend.colors["gdc-blue"].darkest,
+              }),
+            }}
           />
         ) : (
           <div>

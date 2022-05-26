@@ -53,7 +53,7 @@ export const REGISTERED_APPS = [
     hasDemo: false,
     id: "Projects",
     description:
-      "View the Studies available within the GDC and select them for further exploration and analysis.",
+      "View the Projects available within the GDC and select them for further exploration and analysis.",
   },
   {
     name: "Cohort Comparison",
@@ -73,6 +73,8 @@ export const REGISTERED_APPS = [
     description: "Visualize patterns in gene expression in your cohort.",
     caseCounts: 0.11,
     optimizeRules: ["something == something"],
+    noDataTooltip:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
   },
   {
     name: "Set Operations",
