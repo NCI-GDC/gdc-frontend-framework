@@ -220,7 +220,7 @@ export const FileView: React.FC<FileViewProps> = ({
         "Entity ID",
         "Entity Type",
         "Sample Type",
-        "Case ID",
+        "Case UUID",
         "Annotations",
       ],
       tableRows: tableRows,
@@ -271,10 +271,6 @@ export const FileView: React.FC<FileViewProps> = ({
               {
                 field: "md5sum",
                 name: "MD5 Checksum",
-              },
-              {
-                field: "state",
-                name: "State",
               },
               {
                 field: "project_id",
