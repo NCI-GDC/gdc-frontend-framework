@@ -52,9 +52,6 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
   const [remainingApps] = useState([...ALL_OTHER_APPS]); // all other apps
   const [activeApps, setActiveApps] = useState([...ALL_OTHER_APPS]); // set of active apps i.e. not recommended but filterable/dimmable
 
-  console.log("tags", appTags);
-  console.log("active", activeApps);
-
   const sortTools = (arr, st) => {
     if (st === "default") return arr;
     else {
