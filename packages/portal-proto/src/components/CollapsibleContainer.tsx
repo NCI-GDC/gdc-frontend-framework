@@ -1,5 +1,4 @@
 import { PropsWithChildren } from "react";
-//import { Button } from "../features/layout/UserFlowVariedPages";
 import { Button, Collapse } from "@mantine/core";
 import {
   MdChevronRight as ExpandMoreIcon,
@@ -27,6 +26,7 @@ export const CollapsibleContainer: React.FC<CollapsibleContainerProps> = (
           <Button
             className="bg-white text-nci-blue-darkest p-2"
             onClick={toggle}
+            aria-expanded={!isCollapsed}
           >
             {isCollapsed ? (
               <ExpandMoreIcon size="1.75em" />

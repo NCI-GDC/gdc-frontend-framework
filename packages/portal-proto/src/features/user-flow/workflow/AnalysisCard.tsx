@@ -65,7 +65,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
             size="xs"
             radius="sm"
             disabled={caseCounts === 0}
-            arial-label={`Navigate to ${entry.name} tool`}
+            aria-label={`Navigate to ${entry.name} tool`}
           >
             <MdPlayArrow size={16} color={"white"} />
           </Button>
@@ -81,7 +81,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
               compact
               size="xs"
               radius="sm"
-              arial-label={`${entry.name} Demo`}
+              aria-label={`Navigate to ${entry.name} Demo`}
               variant={"outline"}
               className="text-nci-blue-darkest border-nci-blue-darkest"
             >
