@@ -96,16 +96,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
               .map((k) => initialApps[k])
               .map((x: AppRegistrationEntry) => {
                 return (
-                  <Grid.Col
-                    key={x.name}
-                    span={4}
-                    //xs={12}
-                    //sm={6}
-                    //md={4}
-                    //lg={3}
-                    //xl={2}
-                    style={{ minHeight: 64 }}
-                  >
+                  <Grid.Col key={x.name} span={4} style={{ minHeight: 64 }}>
                     <FeaturedToolCard
                       entry={{ ...{ applicable: true, ...x } }}
                       onClick={handleOpenAppClicked}
