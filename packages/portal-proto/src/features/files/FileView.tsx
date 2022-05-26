@@ -86,27 +86,29 @@ export const FileView: React.FC<FileViewProps> = ({
     downstream_analyses: GdcFile["downstream_analyses"];
   }): JSX.Element => {
     const tableRows = [];
-    const workflowType = downstream_analyses?.[0]?.workflow_type;
-    downstream_analyses?.[0]?.output_files.forEach((obj) => {
-      tableRows.push({
-        file_name: (
-          <GenericLink path={`/files/${obj.file_id}`} text={obj.file_name} />
-        ),
-        data_category: obj.data_category,
-        data_type: obj.data_type,
-        data_format: obj.data_format,
-        workflow_type: workflowType,
-        file_size: fileSize(obj.file_size),
-        action: (
-          <>
-            <button className="mr-2 bg-white border border-black rounded p-1 hover:bg-black hover:text-white focus:bg-black focus:text-white">
-              <FaShoppingCart title="Add to Cart" />
-            </button>
-            <button className="bg-white border border-black rounded p-1 hover:bg-black hover:text-white focus:bg-black focus:text-white">
-              <FaDownload title="Download" />
-            </button>
-          </>
-        ),
+    downstream_analyses?.forEach((byWorkflowType) => {
+      const workflowType = byWorkflowType?.workflow_type;
+      byWorkflowType?.output_files.forEach((obj) => {
+        tableRows.push({
+          file_name: (
+            <GenericLink path={`/files/${obj.file_id}`} text={obj.file_name} />
+          ),
+          data_category: obj.data_category,
+          data_type: obj.data_type,
+          data_format: obj.data_format,
+          workflow_type: workflowType,
+          file_size: fileSize(obj.file_size),
+          action: (
+            <>
+              <button className="mr-2 bg-white border border-black rounded p-1 hover:bg-black hover:text-white focus:bg-black focus:text-white">
+                <FaShoppingCart title="Add to Cart" />
+              </button>
+              <button className="bg-white border border-black rounded p-1 hover:bg-black hover:text-white focus:bg-black focus:text-white">
+                <FaDownload title="Download" />
+              </button>
+            </>
+          ),
+        });
       });
     });
 
