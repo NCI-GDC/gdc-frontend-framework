@@ -208,7 +208,7 @@ export const FileView: React.FC<FileViewProps> = ({
         case_id: (
           <GenericLink
             path={`/cases/${entity.case_id}`}
-            text={entity.case_id}
+            text={caseData.submitter_id}
           />
         ),
         annotations: annotationsLink,
@@ -220,7 +220,7 @@ export const FileView: React.FC<FileViewProps> = ({
         "Entity ID",
         "Entity Type",
         "Sample Type",
-        "Case UUID",
+        "Case ID",
         "Annotations",
       ],
       tableRows: tableRows,
