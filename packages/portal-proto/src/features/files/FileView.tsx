@@ -322,10 +322,16 @@ export const FileView: React.FC<FileViewProps> = ({
       )}
       <div className="bg-white w-full mt-4">
         <h2 className="p-2 text-lg mx-4">Associated Cases/Biospecimens</h2>
-        <AssociatedCB
-          cases={file?.cases}
-          associated_entities={file?.associated_entities}
-        />
+        {file?.associated_entities?.length > 0 ? (
+          <AssociatedCB
+            cases={file?.cases}
+            associated_entities={file?.associated_entities}
+          />
+        ) : (
+          <h3 className="p-2 mx-4 text-nci-gray-darker">
+            No cases or biospecimen found.
+          </h3>
+        )}
       </div>
       {file?.analysis && (
         <div className="bg-white w-full mt-4">
