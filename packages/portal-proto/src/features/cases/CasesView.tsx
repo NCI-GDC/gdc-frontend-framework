@@ -95,23 +95,26 @@ const Node = ({ value }) => {
 
 const Tree: React.FC = ({ data, keys }) => {
   console.log("data", data);
+  console.log("length: ", data.length);
   console.log("keys", keys);
   return Object.keys(keys).map((k) => {
-    if (k === "node") {
+    if (k === "node" && data.length > 0) {
       return (
-        <ul>
+        <li>
           {keys[k]}{" "}
           {data.map((d) =>
             d.node[keys[k]].hits.edges.map((d2) => (
               <Node value={d2.node.submitter_id} />
             )),
           )}{" "}
-        </ul>
+        </li>
       );
     } else {
       return data.map((d) => {
         return (
           <li>
+            {d.node.submitter_id}
+            <br />
             {k}
             <ul>
               <Tree data={d.node[k].hits.edges} keys={keys[k]} />
