@@ -4,7 +4,8 @@ import {
   FaExclamationTriangle as ErrorIcon,
 } from "react-icons/fa";
 import Markdown from "react-markdown";
-import { CloseButton } from "@mantine/core";
+import { Button } from "@mantine/core";
+import { MdClose } from "react-icons/md";
 import { dismissNotification, useCoreDispatch } from "@gff/core";
 
 interface BannerProps {
@@ -57,15 +58,20 @@ const Banner: React.FC<BannerProps> = ({
       </div>
       {dismissible && (
         <div className="flex items-center pl-1">
-          <span className="text-white pr-1" id={`banner-dismiss-${id}`}>
-            {"Dismiss"}
-          </span>
-          <CloseButton
-            color="white"
-            variant="transparent"
+          <Button
             onClick={() => dispatch(dismissNotification(id))}
-            aria-labelledby={`banner-dismiss-${id}`}
-          />
+            rightIcon={<MdClose color="white" />}
+            styles={{
+              root: {
+                background: "transparent",
+                "&:hover": {
+                  backgroundColor: "transparent",
+                },
+              },
+            }}
+          >
+            Dismiss
+          </Button>
         </div>
       )}
     </div>

@@ -62,14 +62,19 @@ const slice = createSlice({
       const newNotifications = action.payload
         .filter(
           (notification) =>
-            !state.map((n) => n.id).includes(notification.id) &&
-            (notification.components.includes("PORTAL") ||
-              notification.components.includes("API") ||
-              notification.components.includes("LOGIN")),
+            notification.components.includes("PORTAL") ||
+            notification.components.includes("API") ||
+            notification.components.includes("LOGIN"),
         )
-        .map((notification) => ({ ...notification, dismissed: false }));
+        .map(
+          (notification) =>
+            state.find((n) => n.id === notification.id) ?? {
+              ...notification,
+              dismissed: false,
+            },
+        );
 
-      return [...state, ...newNotifications];
+      return newNotifications;
     });
   },
 });

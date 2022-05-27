@@ -1,5 +1,5 @@
 import { NextPage } from "next";
-import { SimpleLayout } from "../features/layout/Simple";
+import { SimpleLayout } from "@/features/layout/Simple";
 import Link from "next/link";
 import { PropsWithChildren } from "react";
 
@@ -32,7 +32,7 @@ const IndexPage: NextPage = () => {
           User Flow Prototypes:
           <ul className="list-disc list-inside">
             <li>
-              <HoverLink href="/user-flow/workbench/">Workbench</HoverLink>
+              <HoverLink href="/user-flow/workbench/">V2 Prototype</HoverLink>
             </li>
           </ul>
         </Section>
