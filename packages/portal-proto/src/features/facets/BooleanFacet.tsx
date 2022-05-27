@@ -18,6 +18,7 @@ type BooleanEnumFacetCardProps = Pick<
   | "field"
   | "description"
   | "itemType"
+  | "indexType"
   | "hideIfEmpty"
   | "facetName"
   | "showPercent"
@@ -28,11 +29,16 @@ const BooleanFacet: React.FC<BooleanEnumFacetCardProps> = ({
   description,
   facetName,
   itemType,
+  indexType,
   showPercent = true,
   hideIfEmpty = false,
 }: BooleanEnumFacetCardProps) => {
   const [visibleItems, setVisibleItems] = useState(1);
-  const { data, enumFilters, isSuccess } = FacetEnumHooks[itemType](field);
+  const { data, enumFilters, isSuccess } = FacetEnumHooks[itemType](
+    field,
+    itemType,
+    indexType,
+  );
   const [selectedEnums, setSelectedEnums] = useState(enumFilters);
   const coreDispatch = useCoreDispatch();
   const updateFilters = UpdateEnums[itemType];
@@ -50,23 +56,9 @@ const BooleanFacet: React.FC<BooleanEnumFacetCardProps> = ({
 
   const total = visibleItems;
 
-  // useEffect(() => {
-  //   if (isSuccess)
-  //    setSelectedEnums(enumFilters);
-  // }, [enumFilters]);
-
-  // useEffect(() => {
-  //   console.log("setVisibleItems");
-  //   if (isSuccess) {
-  //     setVisibleItems(
-  //       Object.entries(data).length
-  //     );
-  //   }
-  // }, [data, isSuccess]);
-
   useEffect(() => {
     console.log("updateFilters");
-    updateFilters(coreDispatch, selectedEnums, field);
+    updateFilters(coreDispatch, selectedEnums, field, itemType);
   }, [updateFilters, coreDispatch, selectedEnums, field, itemType]);
 
   if (total == 0 && hideIfEmpty) {
@@ -79,10 +71,10 @@ const BooleanFacet: React.FC<BooleanEnumFacetCardProps> = ({
     if (checked) {
       const updated = ["true"];
       console.log("setSelectedEnums: ", field, updated);
-      updateFilters(coreDispatch, selectedEnums, field);
+      updateFilters(coreDispatch, selectedEnums, field, itemType);
     } else {
       console.log("setSelectedEnums: ", field);
-      updateFilters(coreDispatch, [], field);
+      updateFilters(coreDispatch, [], field, itemType);
     }
   };
 
@@ -113,7 +105,7 @@ const BooleanFacet: React.FC<BooleanEnumFacetCardProps> = ({
         {total == 0 ? (
           <div className="mx-4">No data for this field</div>
         ) : isSuccess ? (
-          Object.entries(data).map(([value, count], i) => {
+          Object.entries(data).map(([value, count]) => {
             return (
               <div
                 key={`${field}-${value}`}

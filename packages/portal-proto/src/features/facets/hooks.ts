@@ -105,7 +105,7 @@ export const useCasesFacet = (
     ) {
       coreDispatch(
         fetchFacetByNameGQL({
-          field: field,
+          field: `${field}`,
           itemType: itemType,
           index: indexType,
         }),
@@ -147,7 +147,7 @@ const useGenesFacet = (
     selectGenesFacetByField(state, field),
   );
 
-  const enumValues = useGenomicFilterByName(field);
+  const enumValues = useGenomicFilterByName(`genes.${field}`);
   const cohortFilters = useCohortFacetFilter();
   const genomicFilters = useGenomicFacetFilter();
   const prevCohortFilters = usePrevious(cohortFilters);
@@ -163,7 +163,7 @@ const useGenesFacet = (
     ) {
       coreDispatch(
         fetchFacetByNameGQL({
-          field: field,
+          field: `${field}`,
           itemType: itemType,
           index: indexType,
         }),
@@ -207,7 +207,7 @@ const useMutationsFacet = (
     selectSSMSFacetByField(state, field),
   );
 
-  const enumValues = useGenomicFilterByName(field);
+  const enumValues = useGenomicFilterByName(`ssms.${field}`);
   const cohortFilters = useCohortFacetFilter();
   const genomicFilters = useGenomicFacetFilter();
   const prevCohortFilters = usePrevious(cohortFilters);
@@ -223,7 +223,7 @@ const useMutationsFacet = (
     ) {
       coreDispatch(
         fetchFacetByNameGQL({
-          field: field,
+          field: `${field}`,
           itemType: itemType,
           index: indexType,
         }),
@@ -265,7 +265,7 @@ type updateEnumFiltersFunc = (
  * @param dispatch CoreDispatch instance
  * @param enumerationFilters values to update
  * @param field field to update
- * @param prefix optional prefix for fields
+ * @param prefix "cases"|"files"  | "genes" |  "ssms"  prefix for fields
  */
 export const updateEnumFilters: updateEnumFiltersFunc = (
   dispatch: CoreDispatch,
@@ -273,6 +273,7 @@ export const updateEnumFilters: updateEnumFiltersFunc = (
   field: string,
   prefix = "",
 ) => {
+  // undefined just return
   if (enumerationFilters === undefined) return;
   if (enumerationFilters.length > 0) {
     dispatch(
@@ -280,14 +281,14 @@ export const updateEnumFilters: updateEnumFiltersFunc = (
         field: `${field}`,
         operation: {
           operator: "includes",
-          field: `${field}`,
+          field: `${prefix}.${field}`,
           operands: enumerationFilters,
         },
       }),
     );
   } else {
     // completely remove the field
-    dispatch(removeCohortFilter(`${prefix}${field}`));
+    dispatch(removeCohortFilter(`${field}`));
   }
 };
 
@@ -308,17 +309,17 @@ export const updateGenomicEnumFilters: updateGenomicEnumFiltersFunc = (
   if (enumerationFilters.length > 0) {
     dispatch(
       updateGenomicFilter({
-        field: `${prefix}${field}`,
+        field: `${field}`,
         operation: {
           operator: "includes",
-          field: `${prefix}${field}`,
+          field: `${prefix}.${field}`,
           operands: enumerationFilters,
         },
       }),
     );
   } else {
     // completely remove the field
-    dispatch(removeGenomicFilter(`${prefix}${field}`));
+    dispatch(removeGenomicFilter(`${field}`));
   }
 };
 

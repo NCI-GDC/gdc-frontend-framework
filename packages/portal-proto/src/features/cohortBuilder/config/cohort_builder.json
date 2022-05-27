@@ -1,0 +1,62 @@
+[
+  {
+    "label": "General",
+    "facets": [
+      "demographic.gender",
+      "demographic.race",
+      "demographic.ethnicity",
+      "diagnoses.age_at_diagnosis",
+      "diagnoses.vital_status"
+    ],
+    "filterType": "cases",
+    "index": "explore"
+  },
+  {
+    "label": "General Diagnostic",
+    "facets": [
+      "primary_site",
+      "disease_type",
+      "diagnoses.primary_diagnosis",
+      "diagnoses.year_of_diagnosis",
+      "diagnoses.tissue_or_organ_of_origin",
+      "diagnoses.sites_of_involvement",
+      "diagnoses.laterality"
+    ],
+    "filterType": "cases",
+    "index": "explore"
+  },
+  {
+    "label": "Disease Status and History",
+    "facets": [
+      "diagnoses.prior_malignancy",
+      "diagnoses.prior_treatment",
+      "diagnoses.synchronous_malignancy",
+      "diagnoses.progression_or_recurrence",
+      "diagnoses.residual_disease"
+    ],
+    "filterType": "cases",
+    "index": "explore"
+  },
+  {
+    "label": "Stage Classification",
+    "facets": [
+      "diagnoses.ajcc_clinical_stage",
+      "diagnoses.ajcc_pathologic_stage",
+      "diagnoses.ann_arbor_clinical_stage",
+      "diagnoses.ann_arbor_pathologic_stage",
+      "diagnoses.cog_liver_stage",
+      "diagnoses.cog_renal_stage",
+      "diagnoses.enneking_msts_stage",
+      "diagnoses.figo_stage",
+      "diagnoses.igcccg_stage",
+      "diagnoses.inrg_stage",
+      "diagnoses.inss_stage",
+      "diagnoses.irs_stage",
+      "diagnoses.iss_stage",
+      "diagnoses.iss_stage",
+      "diagnoses.masaoka_stage"
+    ],
+    "filterType": "cases",
+    "index": "repository"
+  }
+]

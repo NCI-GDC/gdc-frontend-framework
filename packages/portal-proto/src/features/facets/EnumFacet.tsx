@@ -88,8 +88,11 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
   }, [data, field, isSuccess]);
 
   useEffect(() => {
-    if (isSuccess && !isEqual(prevFilters, enumFilters))
+    console.log("before updating facet filters", prevFilters, enumFilters);
+    if (isSuccess && !isEqual(prevFilters, enumFilters)) {
       setSelectedEnums(enumFilters);
+      console.log("updating facet filters", enumFilters);
+    }
   }, [enumFilters, isSuccess, prevFilters]);
 
   const maxValuesToDisplay = DEFAULT_VISIBLE_ITEMS;
@@ -104,13 +107,15 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
 
     if (checked) {
       const updated = selectedEnums ? [...selectedEnums, value] : [value];
-      updateFilters(coreDispatch, updated, field);
+      updateFilters(coreDispatch, updated, field, itemType);
     } else {
+      console.log("before remove", selectedEnums, value, checked);
       const updated =
         field === "is_cancer_gene_census"
           ? []
           : selectedEnums.filter((x) => x != value);
-      updateFilters(coreDispatch, updated, field);
+      console.log("selected removed", updated);
+      updateFilters(coreDispatch, updated, field, itemType);
     }
   };
 

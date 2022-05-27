@@ -31,7 +31,13 @@ const Components: ReactNode = () => {
         rangeDatatype="percent"
         field="samples.portions.slides.percent_tumor_cells"
       />
-
+      <Divider label="Boolean Facet" classNames={divider_style} />
+      <BooleanFacet
+        itemType="genes"
+        indexType="explore"
+        facetName="Is Cancer Gene Census"
+        field="is_cancer_gene_census"
+      />
       <Divider label="Genes Table" classNames={divider_style} />
       <GenesTable
         selectedSurvivalPlot={{ id: undefined }}

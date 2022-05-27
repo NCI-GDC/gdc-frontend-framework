@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { CohortGroup, CohortGroupProps } from "./CohortGroup";
 import { SummaryCharts } from "./SummaryCharts";
 import MetaSearch from "./MetaSearch";
-import CohortTabbedFacets from "./FacetGroup";
+import FacetTabs from "./FacetTabs";
 
 const FullCohortBuilder: React.FC<CohortGroupProps> = ({
   cohorts,
@@ -20,7 +20,7 @@ const FullCohortBuilder: React.FC<CohortGroupProps> = ({
       <CohortGroup cohorts={cohorts} simpleMode={simpleMode} />
       <MetaSearch />
       <SummaryCharts fields={summaryFields} />
-      <CohortTabbedFacets />
+      <FacetTabs />
     </div>
   );
 };

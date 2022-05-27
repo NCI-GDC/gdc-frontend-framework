@@ -24971,7 +24971,7 @@
           "property_type": "string"
         },
         "Dbgap Accession Number": {
-          "facet_filter": "program.dbgap_accession_number",
+          "facet_filtFer": "program.dbgap_accession_number",
           "facet_type": "string",
           "description": "The dbgap accession number provided for the program.",
           "property_type": "string"
