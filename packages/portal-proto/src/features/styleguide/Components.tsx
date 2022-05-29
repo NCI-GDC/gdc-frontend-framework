@@ -11,29 +11,29 @@ const Components: ReactNode = () => {
     <div className="flex flex-col font-montserrat text-nci-gray w-100">
       <p className="prose font-medium text-2xl">UI Components</p>
       <Divider label="Enumeration Facet" classNames={divider_style} />
-      <EnumFacet itemType="cases" field="primary_site" />
+      <EnumFacet docType="cases" field="primary_site" />
       <Divider label="Year Facet" classNames={divider_style} />
       <NumericRangeFacet
-        itemType="cases"
+        docType="cases"
         rangeDatatype="year"
         field="demographic.year_of_death"
       />
       <Divider label="Age Facet" classNames={divider_style} />
       <NumericRangeFacet
-        itemType="cases"
+        docType="cases"
         rangeDatatype="age"
         field="diagnoses.age_at_diagnosis"
       />
       <Divider label="Percent Range Facet" classNames={divider_style} />
       <NumericRangeFacet
-        itemType="cases"
+        docType="cases"
         indexType="repository"
         rangeDatatype="percent"
         field="samples.portions.slides.percent_tumor_cells"
       />
       <Divider label="Boolean Facet" classNames={divider_style} />
       <BooleanFacet
-        itemType="genes"
+        docType="genes"
         indexType="explore"
         facetName="Is Cancer Gene Census"
         field="is_cancer_gene_census"

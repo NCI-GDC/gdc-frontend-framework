@@ -5,12 +5,12 @@ import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import { CoreDispatch, CoreState } from "../../store";
 import { selectCurrentCohortGqlFilters } from "../cohort/cohortFilterSlice";
 import { buildGraphGLBucketQuery, processBuckets } from "./facetApiGQL";
-import { FacetBuckets, GQLIndexType, GQLQueryItem } from "./types";
+import { FacetBuckets, GQLIndexType, GQLDocType } from "./types";
 import { FacetsState } from "./facetSlice";
 
 export interface FetchFacetByNameGQLProps {
   readonly field: string;
-  readonly itemType?: GQLQueryItem;
+  readonly docType?: GQLDocType;
   readonly index?: GQLIndexType;
 }
 
@@ -21,13 +21,13 @@ export const fetchFacetByNameGQL = createAsyncThunk<
 >(
   "facet/fetchCasesFacetByName",
   async (
-    { field, itemType = "cases", index = "explore" as GQLIndexType },
+    { field, docType = "cases", index = "explore" as GQLIndexType },
     thunkAPI,
   ) => {
     const filters = selectCurrentCohortGqlFilters(thunkAPI.getState());
-    const queryGQL = buildGraphGLBucketQuery(field, itemType, index);
+    const queryGQL = buildGraphGLBucketQuery(field, docType, index);
 
-    console.log("fetchFacetByNameGQL:", field, filters, itemType, index);
+    console.log("fetchFacetByNameGQL:", field, filters, docType, index);
 
     const filtersGQL = {
       filters_0: filters ? filters : {},
@@ -58,7 +58,7 @@ const facetsGQLSlice = createSlice({
       .addCase(fetchFacetByNameGQL.fulfilled, (state, action) => {
         const response = action.payload;
         const index = action.meta.arg.index ?? "explore";
-        const itemType = action.meta.arg.itemType ?? "cases";
+        const itemType = action.meta.arg.docType ?? "cases";
         const field = action.meta.arg.field;
         if (response.errors && Object.keys(response.errors).length > 0) {
           state[itemType][field] = {
@@ -73,14 +73,14 @@ const facetsGQLSlice = createSlice({
       })
       .addCase(fetchFacetByNameGQL.pending, (state, action) => {
         const field = action.meta.arg.field;
-        const itemType = action.meta.arg.itemType ?? "cases";
+        const itemType = action.meta.arg.docType ?? "cases";
         state[itemType][field] = {
           status: "pending",
         };
       })
       .addCase(fetchFacetByNameGQL.rejected, (state, action) => {
         const field = action.meta.arg.field;
-        const itemType = action.meta.arg.itemType ?? "cases";
+        const itemType = action.meta.arg.docType ?? "cases";
         state[itemType][field] = {
           status: "rejected",
         };

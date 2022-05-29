@@ -27,7 +27,7 @@ import {
   updateCohortFilter,
   useCoreDispatch,
   useCoreSelector,
-  GQLQueryItem,
+  GQLDocType,
   GQLIndexType,
 } from "@gff/core";
 
@@ -41,8 +41,8 @@ import {
 } from "./utils";
 import { FacetCardProps } from "@/features/facets/types";
 import {
-  FacetItemTypeToCountsIndexMap,
-  FacetItemTypeToLabelsMap,
+  FacetDocTypeToCountsIndexMap,
+  FacetDocTypeToLabelsMap,
   useRangeFacet,
 } from "@/features/facets/hooks";
 
@@ -54,7 +54,7 @@ interface NumericFacetProps extends FacetCardProps {
 
 type NumericFacetData = Pick<
   NumericFacetProps,
-  "field" | "minimum" | "maximum" | "itemType" | "indexType"
+  "field" | "minimum" | "maximum" | "docType" | "indexType"
 >;
 
 interface RangeBucketElement {
@@ -559,7 +559,7 @@ const BuildRangeLabelsAndValues = (
 interface RangeInputWithPrefixedRangesProps {
   readonly field: string;
   readonly numBuckets: number;
-  readonly itemType: GQLQueryItem;
+  readonly docType: GQLDocType;
   readonly indexType: GQLIndexType;
   readonly minimum: number;
   readonly maximum: number;
@@ -570,7 +570,7 @@ interface RangeInputWithPrefixedRangesProps {
 const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> =
   ({
     field,
-    itemType,
+    docType,
     indexType,
     units,
     numBuckets,
@@ -586,7 +586,7 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
     );
 
     const totalCount = useCoreSelector((state) =>
-      selectTotalCountsByName(state, FacetItemTypeToCountsIndexMap[itemType]),
+      selectTotalCountsByName(state, FacetDocTypeToCountsIndexMap[docType]),
     );
 
     // giving the filter value, extract the From/To values and
@@ -638,7 +638,7 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
     const { data: rangeData, isSuccess } = useRangeFacet(
       field,
       ranges,
-      itemType,
+      docType,
       indexType,
     );
     const rangeLabelsAndValues = BuildRangeLabelsAndValues(
@@ -702,7 +702,7 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
           ) : isSuccess ? (
             <RangeValueSelector
               field={field}
-              valueLabel={FacetItemTypeToLabelsMap[itemType]}
+              valueLabel={FacetDocTypeToLabelsMap[docType]}
               itemsToShow={bucketsToShow}
               rangeLabelsAndValues={rangeLabelsAndValues}
               selected={selectedRange}
@@ -729,7 +729,7 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
 
 const DaysOrYears: React.FC<NumericFacetData> = ({
   field,
-  itemType,
+  docType,
   indexType,
   minimum = undefined,
   maximum = undefined,
@@ -760,7 +760,7 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
         maximum={adjMaximum}
         numBuckets={numBuckets}
         field={field}
-        itemType={itemType}
+        docType={docType}
         indexType={indexType}
       />
     </div>
@@ -769,7 +769,7 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
 
 const Year: React.FC<NumericFacetData> = ({
   field,
-  itemType,
+  docType,
   indexType,
   minimum = undefined,
   maximum = undefined,
@@ -781,7 +781,7 @@ const Year: React.FC<NumericFacetData> = ({
   return (
     <div className="flex flex-col w-100 space-y-2 px-2  mt-1 ">
       <RangeInputWithPrefixedRanges
-        itemType={itemType}
+        docType={docType}
         indexType={indexType}
         units="year"
         minimum={adjMinimum}
@@ -795,7 +795,7 @@ const Year: React.FC<NumericFacetData> = ({
 
 const Years: React.FC<NumericFacetData> = ({
   field,
-  itemType,
+  docType,
   indexType,
   minimum = undefined,
   maximum = undefined,
@@ -807,7 +807,7 @@ const Years: React.FC<NumericFacetData> = ({
   return (
     <div className="flex flex-col w-100 space-y-2 px-1  mt-1 ">
       <RangeInputWithPrefixedRanges
-        itemType={itemType}
+        docType={docType}
         indexType={indexType}
         units="years"
         minimum={adjMinimum}
@@ -840,7 +840,7 @@ const NumericRange: React.FC<NumericFacetData> = ({
 
 const PercentRange: React.FC<NumericFacetData> = ({
   field,
-  itemType,
+  docType,
   indexType,
   minimum = undefined,
   maximum = undefined,
@@ -852,7 +852,7 @@ const PercentRange: React.FC<NumericFacetData> = ({
   return (
     <div className="flex flex-col w-100 space-y-2 px-2  mt-1 ">
       <RangeInputWithPrefixedRanges
-        itemType={itemType}
+        docType={docType}
         indexType={indexType}
         units="percent"
         minimum={adjMinimum}
@@ -867,7 +867,7 @@ const PercentRange: React.FC<NumericFacetData> = ({
 const NumericRangeFacet: React.FC<NumericFacetProps> = ({
   field,
   rangeDatatype,
-  itemType,
+  docType,
   description,
   minimum = undefined,
   maximum = undefined,
@@ -914,7 +914,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
           {
             age: (
               <DaysOrYears
-                itemType={itemType}
+                docType={docType}
                 indexType={indexType}
                 field={field}
                 minimum={minimum}
@@ -923,7 +923,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
             ),
             year: (
               <Year
-                itemType={itemType}
+                docType={docType}
                 indexType={indexType}
                 field={field}
                 minimum={minimum}
@@ -932,7 +932,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
             ),
             years: (
               <Years
-                itemType={itemType}
+                docType={docType}
                 indexType={indexType}
                 field={field}
                 minimum={minimum}
@@ -941,7 +941,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
             ),
             days: (
               <DaysOrYears
-                itemType={itemType}
+                docType={docType}
                 indexType={indexType}
                 field={field}
                 minimum={minimum}
@@ -950,7 +950,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
             ),
             numeric: (
               <NumericRange
-                itemType={itemType}
+                docType={docType}
                 indexType={indexType}
                 field={field}
                 minimum={minimum}
@@ -959,7 +959,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
             ),
             percent: (
               <PercentRange
-                itemType={itemType}
+                docType={docType}
                 indexType={indexType}
                 field={field}
                 minimum={minimum}
@@ -968,7 +968,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
             ),
             integer: (
               <NumericRange
-                itemType={itemType}
+                docType={docType}
                 indexType={indexType}
                 field={field}
                 minimum={minimum}

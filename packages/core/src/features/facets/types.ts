@@ -12,5 +12,5 @@ export interface FacetBuckets {
   readonly buckets?: Record<string, number>;
 }
 
-export type GQLQueryItem = "cases" | "files" | "genes" | "ssms";
+export type GQLDocType = "cases" | "files" | "genes" | "ssms";
 export type GQLIndexType = "explore" | "repository";

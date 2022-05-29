@@ -1,5 +1,5 @@
 import { isBucketsAggregation, isStatsAggregation } from "../gdcapi/gdcapi";
-import { GQLIndexType, GQLQueryItem } from "./types";
+import { GQLIndexType, GQLDocType } from "./types";
 
 export const convertFacetNameToGQL: (x: string) => string = (x: string) =>
   x.replaceAll(".", "__");
@@ -9,19 +9,19 @@ export const normalizeGQLFacetName: (x: string) => string = (x: string) =>
 /**
  * Builds a GraphQL request
  * @param facetName - name of the facet
- * @param itemType - "cases" | "files" | "genes" | "projects" | "ssms"
+ * @param docType - "cases" | "files" | "genes" | "projects" | "ssms"
  * @param index - which GraphQL index to query
  */
 export const buildGraphGLBucketQuery = (
   facetName: string,
-  itemType: GQLQueryItem,
+  docType: GQLDocType,
   index: GQLIndexType = "explore",
 ): string => {
   return `
   query QueryBucketCounts($filters_0: FiltersArgument!) {
       viewer {
           ${index} {
-            ${itemType} {
+            ${docType} {
               aggregations(
                 filters: $filters_0
                 aggregations_filter_themselves: false

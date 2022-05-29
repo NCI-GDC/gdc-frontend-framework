@@ -6,8 +6,8 @@ import {
   usePrevious,
 } from "@gff/core";
 import {
-  FacetItemTypeToCountsIndexMap,
-  FacetItemTypeToLabelsMap,
+  FacetDocTypeToCountsIndexMap,
+  FacetDocTypeToLabelsMap,
   FacetEnumHooks,
   UpdateEnums,
 } from "./hooks";
@@ -32,7 +32,7 @@ import isEqual from "lodash/isEqual";
  *  Enumeration facet filters handle display and selection of
  *  enumerated fields.
  * @param field
- * @param itemType
+ * @param docType
  * @param description
  * @param facetName
  * @param showSearch
@@ -44,7 +44,7 @@ import isEqual from "lodash/isEqual";
  */
 export const EnumFacet: React.FC<FacetCardProps> = ({
   field,
-  itemType,
+  docType,
   description,
   facetName = null,
   showSearch = true,
@@ -60,20 +60,20 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
   const [isFacetView, setIsFacetView] = useState(startShowingData);
   const [visibleItems, setVisibleItems] = useState(DEFAULT_VISIBLE_ITEMS);
   const cardRef = useRef<HTMLDivElement>(null);
-  const { data, enumFilters, isSuccess } = FacetEnumHooks[itemType](
+  const { data, enumFilters, isSuccess } = FacetEnumHooks[docType](
     field,
-    itemType,
+    docType,
     indexType,
   );
   const [selectedEnums, setSelectedEnums] = useState(enumFilters);
 
   const prevFilters = usePrevious(enumFilters);
   const coreDispatch = useCoreDispatch();
-  const updateFilters = UpdateEnums[itemType]; // Gets all filter updates
+  const updateFilters = UpdateEnums[docType]; // Gets all filter updates
 
   // get the total count to compute percentages
   const totalCount = useCoreSelector((state) =>
-    selectTotalCountsByName(state, FacetItemTypeToCountsIndexMap[itemType]),
+    selectTotalCountsByName(state, FacetDocTypeToCountsIndexMap[docType]),
   );
 
   // filter missing and "" strings and update checkboxes
@@ -107,7 +107,7 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
 
     if (checked) {
       const updated = selectedEnums ? [...selectedEnums, value] : [value];
-      updateFilters(coreDispatch, updated, field, itemType);
+      updateFilters(coreDispatch, updated, field, docType);
     } else {
       console.log("before remove", selectedEnums, value, checked);
       const updated =
@@ -115,7 +115,7 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
           ? []
           : selectedEnums.filter((x) => x != value);
       console.log("selected removed", updated);
-      updateFilters(coreDispatch, updated, field, itemType);
+      updateFilters(coreDispatch, updated, field, docType);
     }
   };
 
@@ -231,7 +231,7 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
                     <SortIcon scale="1.5em" />
                   </button>
                   <p className="px-2 mr-3">
-                    {FacetItemTypeToLabelsMap[itemType]}
+                    {FacetDocTypeToLabelsMap[docType]}
                   </p>
                 </div>
               </div>

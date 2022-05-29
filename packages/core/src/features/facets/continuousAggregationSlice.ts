@@ -3,7 +3,7 @@ import { CoreDispatch, CoreState } from "../../store";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import { selectCurrentCohortGqlFilters } from "../cohort/cohortFilterSlice";
 import { convertFacetNameToGQL } from "./facetApiGQL";
-import { FacetBuckets, GQLIndexType, GQLQueryItem } from "./types";
+import { FacetBuckets, GQLIndexType, GQLDocType } from "./types";
 
 import { RangeBuckets, processRangeResults } from "./continuousAggregationApi";
 
@@ -19,7 +19,7 @@ export interface RangeOperation {
 
 const buildContinuousAggregationRangeOnlyQuery = (
   field: string,
-  itemType: GQLQueryItem,
+  itemType: GQLDocType,
   indexType: GQLIndexType,
 ): string => {
   return `
@@ -54,7 +54,7 @@ const buildContinuousAggregationRangeOnlyQuery = (
 export interface FetchContinuousAggregationProps {
   readonly field: string;
   readonly ranges: ReadonlyArray<NumericFromTo>;
-  readonly itemType?: GQLQueryItem;
+  readonly itemType?: GQLDocType;
   readonly indexType?: GQLIndexType;
 }
 
@@ -68,7 +68,7 @@ export const fetchFacetContinuousAggregation = createAsyncThunk<
     {
       field,
       ranges,
-      itemType = "cases" as GQLQueryItem,
+      itemType = "cases" as GQLDocType,
       indexType = "explore" as GQLIndexType,
     },
     thunkAPI,

@@ -17,7 +17,7 @@ type BooleanEnumFacetCardProps = Pick<
   FacetCardProps,
   | "field"
   | "description"
-  | "itemType"
+  | "docType"
   | "indexType"
   | "hideIfEmpty"
   | "facetName"
@@ -28,38 +28,38 @@ const BooleanFacet: React.FC<BooleanEnumFacetCardProps> = ({
   field,
   description,
   facetName,
-  itemType,
+  docType,
   indexType,
   showPercent = true,
   hideIfEmpty = false,
 }: BooleanEnumFacetCardProps) => {
   const [visibleItems, setVisibleItems] = useState(1);
-  const { data, enumFilters, isSuccess } = FacetEnumHooks[itemType](
+  const { data, enumFilters, isSuccess } = FacetEnumHooks[docType](
     field,
-    itemType,
+    docType,
     indexType,
   );
   const [selectedEnums, setSelectedEnums] = useState(enumFilters);
   const coreDispatch = useCoreDispatch();
-  const updateFilters = UpdateEnums[itemType];
+  const updateFilters = UpdateEnums[docType];
 
   const totalCount = useCoreSelector((state) =>
-    selectTotalCountsByName(state, FacetItemTypeToCountsIndexMap[itemType]),
+    selectTotalCountsByName(state, FacetItemTypeToCountsIndexMap[docType]),
   );
 
   console.log(
     "total count: ",
     data,
     totalCount,
-    FacetItemTypeToCountsIndexMap[itemType],
+    FacetItemTypeToCountsIndexMap[docType],
   );
 
   const total = visibleItems;
 
   useEffect(() => {
     console.log("updateFilters");
-    updateFilters(coreDispatch, selectedEnums, field, itemType);
-  }, [updateFilters, coreDispatch, selectedEnums, field, itemType]);
+    updateFilters(coreDispatch, selectedEnums, field, docType);
+  }, [updateFilters, coreDispatch, selectedEnums, field, docType]);
 
   if (total == 0 && hideIfEmpty) {
     return null; // nothing to render if total == 0
@@ -71,10 +71,10 @@ const BooleanFacet: React.FC<BooleanEnumFacetCardProps> = ({
     if (checked) {
       const updated = ["true"];
       console.log("setSelectedEnums: ", field, updated);
-      updateFilters(coreDispatch, selectedEnums, field, itemType);
+      updateFilters(coreDispatch, selectedEnums, field, docType);
     } else {
       console.log("setSelectedEnums: ", field);
-      updateFilters(coreDispatch, [], field, itemType);
+      updateFilters(coreDispatch, [], field, docType);
     }
   };
 

@@ -21,7 +21,7 @@ import {
   useCoreSelector,
   selectGenomicFilters,
   selectGenomicFiltersByName,
-  GQLQueryItem,
+  GQLDocType,
   GQLIndexType,
   NumericFromTo,
   selectRangeFacetByField,
@@ -84,7 +84,7 @@ interface EnumFacetResponse extends FacetResponse {
  */
 export const useCasesFacet = (
   field: string,
-  itemType: GQLQueryItem,
+  itemType: GQLDocType,
   indexType: GQLIndexType,
 ): EnumFacetResponse => {
   const coreDispatch = useCoreDispatch();
@@ -139,7 +139,7 @@ export const useCasesFacet = (
  */
 const useGenesFacet = (
   field: string,
-  itemType = "genes" as GQLQueryItem,
+  itemType = "genes" as GQLDocType,
   indexType = "explore" as GQLIndexType,
 ): EnumFacetResponse => {
   const coreDispatch = useCoreDispatch();
@@ -199,7 +199,7 @@ const useGenesFacet = (
  */
 const useMutationsFacet = (
   field,
-  itemType = "ssms" as GQLQueryItem,
+  itemType = "ssms" as GQLDocType,
   indexType = "explore" as GQLIndexType,
 ): EnumFacetResponse => {
   const coreDispatch = useCoreDispatch();
@@ -326,7 +326,7 @@ export const updateGenomicEnumFilters: updateGenomicEnumFiltersFunc = (
 export const useRangeFacet = (
   field: string,
   ranges: ReadonlyArray<NumericFromTo>,
-  itemType: GQLQueryItem,
+  itemType: GQLDocType,
   indexType: GQLIndexType,
 ): FacetResponse => {
   const coreDispatch = useCoreDispatch();
@@ -383,14 +383,14 @@ export const FacetEnumHooks = {
   ssms: useMutationsFacet,
 };
 
-export const FacetItemTypeToCountsIndexMap = {
+export const FacetDocTypeToCountsIndexMap = {
   cases: "caseCounts",
   files: "fileCounts",
   genes: "genesCounts",
   ssms: "mutationCounts",
 };
 
-export const FacetItemTypeToLabelsMap = {
+export const FacetDocTypeToLabelsMap = {
   cases: "Cases",
   files: "Files",
   genes: "Genes",

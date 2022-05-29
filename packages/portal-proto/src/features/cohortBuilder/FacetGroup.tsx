@@ -35,7 +35,7 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
               return (
                 <EnumFacet
                   key={`${x.facet_filter}-${index}`}
-                  itemType="cases"
+                  docType="cases"
                   indexType={indexType}
                   field={`${x.facet_filter}`}
                   facetName={x.name}
@@ -59,7 +59,7 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
                   facetName={x.name}
                   description={x.description}
                   rangeDatatype={x.facet_type}
-                  itemType="cases"
+                  docType="cases"
                   indexType={indexType}
                   minimum={x.minimum}
                   maximum={x.maximum}

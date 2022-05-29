@@ -166,7 +166,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
               key={`${x.facet_filter}-${index}`}
               field={`${x.facet_filter}`}
               facetName={x.name}
-              itemType="genes"
+              docType="genes"
               showPercent={false}
               hideIfEmpty={false}
               description={x.description}
@@ -179,7 +179,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
               key={`${x.facet_filter}-${index}`}
               field={`${x.facet_filter}`}
               facetName={x.name}
-              itemType="ssms"
+              docType="ssms"
               showPercent={false}
               hideIfEmpty={false}
               description={x.description}

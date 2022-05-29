@@ -8,7 +8,7 @@
       "diagnoses.age_at_diagnosis",
       "diagnoses.vital_status"
     ],
-    "filterType": "cases",
+    "docType": "cases",
     "index": "explore"
   },
   {
@@ -22,7 +22,7 @@
       "diagnoses.sites_of_involvement",
       "diagnoses.laterality"
     ],
-    "filterType": "cases",
+    "docType": "cases",
     "index": "explore"
   },
   {
@@ -34,7 +34,7 @@
       "diagnoses.progression_or_recurrence",
       "diagnoses.residual_disease"
     ],
-    "filterType": "cases",
+    "docType": "cases",
     "index": "explore"
   },
   {
@@ -56,7 +56,30 @@
       "diagnoses.iss_stage",
       "diagnoses.masaoka_stage"
     ],
-    "filterType": "cases",
+    "docType": "cases",
     "index": "repository"
+  },
+  {
+    "label": "Grade Classification",
+    "facets": [
+      "diagnoses.gleason_grade_group",
+      "diagnoses.inpc_grade",
+      "diagnoses.who_cns_grade",
+      "diagnoses.who_nte_grade"
+    ],
+    "docType": "cases",
+    "index": "repository"
+  },
+  {
+    "label": "Other Classification",
+    "facets": [
+      "diagnoses.prior_malignancy",
+      "diagnoses.prior_treatment",
+      "diagnoses.synchronous_malignancy",
+      "diagnoses.progression_or_recurrence",
+      "diagnoses.residual_disease"
+    ],
+    "docType": "cases",
+    "index": "explore"
   }
 ]
