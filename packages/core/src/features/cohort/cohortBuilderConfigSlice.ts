@@ -25,20 +25,21 @@ const slice = createSlice({
       state,
       action: PayloadAction<CohortBuilderCategoryFacet>,
     ) => {
-      state[action.payload.category].facets = [
-        ...state[action.payload.category].facets,
-        action.payload.facetName,
-      ];
+      if (action.payload.category in state)
+        state[action.payload.category].facets = [
+          ...state[action.payload.category].facets,
+          action.payload.facetName,
+        ];
     },
     removeFilterFromCohortBuilder: (
       state,
       action: PayloadAction<CohortBuilderCategoryFacet>,
     ) => {
-      state[action.payload.category].facets = state[
-        action.payload.category
-      ].facets.filter((x) => x != action.payload.facetName);
+      if (action.payload.category in state)
+        state[action.payload.category].facets = state[
+          action.payload.category
+        ].facets.filter((x) => x != action.payload.facetName);
     },
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     resetCohortBuilderToDefault: () => initialState,
   },
   extraReducers: {},
@@ -51,6 +52,6 @@ export const {
   resetCohortBuilderToDefault,
 } = slice.actions;
 
-export const selectCurrentCohort = (
+export const selectCurrentCohortBuilderConfig = (
   state: CoreState,
 ): Record<string, CohortBuilderCategory> => state.cohort.builderConfig;
