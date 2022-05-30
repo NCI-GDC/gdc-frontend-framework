@@ -91,7 +91,6 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
     console.log("before updating facet filters", prevFilters, enumFilters);
     if (isSuccess && !isEqual(prevFilters, enumFilters)) {
       setSelectedEnums(enumFilters);
-      console.log("updating facet filters", enumFilters);
     }
   }, [enumFilters, isSuccess, prevFilters]);
 
@@ -109,12 +108,10 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
       const updated = selectedEnums ? [...selectedEnums, value] : [value];
       updateFilters(coreDispatch, updated, field, docType);
     } else {
-      console.log("before remove", selectedEnums, value, checked);
       const updated =
         field === "is_cancer_gene_census"
           ? []
           : selectedEnums.filter((x) => x != value);
-      console.log("selected removed", updated);
       updateFilters(coreDispatch, updated, field, docType);
     }
   };
