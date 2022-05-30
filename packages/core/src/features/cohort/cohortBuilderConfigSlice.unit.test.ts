@@ -4,7 +4,8 @@ import {
   removeFilterFromCohortBuilder,
   resetCohortBuilderToDefault,
   cohortBuilderConfigReducer,
-  selectCurrentCohortBuilderConfig,
+  selectCohortBuilderConfig,
+  selectCohortBuilderConfigCategory,
 } from "./cohortBuilderConfigSlice";
 import CohortBuilderDefaultConfig from "./data/cohort_builder.json";
 import { getInitialCoreState } from "../../store.unit.test";
@@ -138,7 +139,34 @@ const state = getInitialCoreState();
 
 describe("selectBuilderConfig", () => {
   test("should select the default configuration", () => {
-    const builderConfig = selectCurrentCohortBuilderConfig(state);
+    const builderConfig = selectCohortBuilderConfig(state);
     expect(builderConfig).toEqual(CohortBuilderDefaultConfig.config);
+  });
+  test("should select the 'common' configuration", () => {
+    const expected = {
+      label: "General",
+      facets: [
+        "demographic.gender",
+        "demographic.race",
+        "demographic.ethnicity",
+        "diagnoses.age_at_diagnosis",
+        "diagnoses.vital_status",
+      ],
+      docType: "cases",
+      index: "explore",
+    };
+    const builderCommonConfig = selectCohortBuilderConfigCategory(
+      state,
+      "general",
+    );
+    expect(builderCommonConfig).toEqual(expected);
+  });
+
+  test("should return undefined", () => {
+    const builderCommonConfig = selectCohortBuilderConfigCategory(
+      state,
+      "none",
+    );
+    expect(builderCommonConfig).toBeUndefined();
   });
 });

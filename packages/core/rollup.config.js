@@ -1,5 +1,6 @@
 import babel from "@rollup/plugin-babel";
 import typescript from "@rollup/plugin-typescript";
+import json from "@rollup/plugin-json";
 import { terser } from "rollup-plugin-terser";
 import dts from "rollup-plugin-dts";
 import peerDepsExternal from "rollup-plugin-peer-deps-external";
@@ -42,6 +43,7 @@ const config = [
     plugins: [
       peerDepsExternal(),
       typescript(),
+      json(),
       babel({
         presets: ["@babel/preset-react"],
         plugins: ["@emotion"],

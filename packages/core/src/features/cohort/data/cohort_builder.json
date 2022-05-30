@@ -74,14 +74,34 @@
     "other_classification": {
       "label": "Other Classification",
       "facets": [
-        "diagnoses.prior_malignancy",
-        "diagnoses.prior_treatment",
-        "diagnoses.synchronous_malignancy",
-        "diagnoses.progression_or_recurrence",
-        "diagnoses.residual_disease"
+        "diagnoses.child_pugh_classification",
+        "diagnoses.cog_neuroblastoma_risk_group",
+        "diagnoses.cog_rhabdomyosarcoma_risk_group",
+        "diagnoses.eln_risk_classification",
+        "diagnoses.international_prognostic_index",
+        "diagnoses.ishak_fibrosis_score",
+        "diagnoses.medulloblastoma_molecular_classification",
+        "diagnoses.weiss_assessment_score",
+        "diagnoses.wilms_tumor_histologic_subtype"
       ],
       "docType": "cases",
-      "index": "explore"
+      "index": "repository"
+    },
+    "biospecimen": {
+      "label": "Biospecimen",
+      "facets": [
+        "samples.sample_type",
+        "samples.tissue_type",
+        "samples.biospecimen_anatomic_site",
+        "samples.composition",
+        "samples.composition",
+        "samples.preservation_method",
+        "samples.tumor_code",
+        "samples.tumor_descriptor",
+        "samples.portions.analytes.aliquots.analyte_type"
+      ],
+      "docType": "cases",
+      "index": "repository"
     }
   }
 }

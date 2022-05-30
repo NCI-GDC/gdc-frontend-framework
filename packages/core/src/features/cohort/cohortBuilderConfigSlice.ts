@@ -52,6 +52,11 @@ export const {
   resetCohortBuilderToDefault,
 } = slice.actions;
 
-export const selectCurrentCohortBuilderConfig = (
+export const selectCohortBuilderConfig = (
   state: CoreState,
 ): Record<string, CohortBuilderCategory> => state.cohort.builderConfig;
+
+export const selectCohortBuilderConfigCategory = (
+  state: CoreState,
+  category: string,
+): CohortBuilderCategory => state.cohort.builderConfig[category];
