@@ -6,8 +6,7 @@ import {
 import { CoreState } from "../../store";
 import { GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import { fetchImageViewerQuery, queryParams } from "./imageDetailsApi";
-import trimEnd from "lodash/trimEnd";
-import find from "lodash/find";
+import { trimEnd, find } from "lodash";
 import {
   caseNodeType,
   ImageViewerInfo,
