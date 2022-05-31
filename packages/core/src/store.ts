@@ -9,7 +9,7 @@ import {
   PURGE,
   REGISTER,
 } from "redux-persist";
-import storage from "redux-persist/lib/storage";
+import storage from "./storage-persist";
 import { cohortReducers } from "./features/cohort/cohortSlice";
 import { sessionReducer } from "./features/session/sessionSlice";
 import { facetsReducer } from "./features/facets/facetSlice";
