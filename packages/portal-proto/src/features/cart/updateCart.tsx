@@ -1,5 +1,5 @@
 import { Button } from "@mantine/core";
-import { showNotification } from "@mantine/notifications";
+import { showNotification, cleanNotifications } from "@mantine/notifications";
 import { FaUndo as UndoIcon } from "react-icons/fa";
 import {
   CART_LIMIT,
@@ -150,6 +150,7 @@ export const removeFromCart = (
   currentCart: string[],
   dispatch: CoreDispatch,
 ): void => {
+  cleanNotifications();
   showNotification({
     message: (
       <RemoveNotification
@@ -172,6 +173,8 @@ export const addToCart = (
   dispatch: CoreDispatch,
 ): void => {
   const newCartSize = files.length + currentCart.length;
+
+  cleanNotifications();
 
   if (newCartSize > CART_LIMIT) {
     showNotification({
