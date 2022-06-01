@@ -4,14 +4,10 @@
 // run the following command from the /data directory:
 // node cohort-api-server.js
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { coreCreateApi } from "../../coreCreateApi";
 import type { Middleware, Reducer } from "@reduxjs/toolkit";
-import { CohortModel, ContextModel } from "cohortApiTypes";
+import { CohortModel, ContextModel } from "./cohortApiTypes";
 
 export const cohortApiSlice = coreCreateApi({
   reducerPath: "cohortApi",
@@ -23,8 +19,6 @@ export const cohortApiSlice = coreCreateApi({
     },
     credentials: "include",
   }),
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
   tagTypes: ["Cohort", "Context"],
   endpoints: (builder) => ({
     // cohort endpoints
@@ -33,19 +27,19 @@ export const cohortApiSlice = coreCreateApi({
       providesTags: (result = []) => [
         //"Cohort",
         { type: "Cohort", id: "LIST" },
-        ...result.map(({ id }) => ({ type: "Cohort", id })),
+        ...result.map(({ id }) => ({ type: "Cohort" as const, id })),
       ],
     }),
     getCohortsByContextId: builder.query<CohortModel[], string>({
       query: (context_id) => `/cohorts?context_id=${context_id}`,
       providesTags: (result = []) => [
         { type: "Cohort", id: "LIST" },
-        ...result.map(({ id }) => ({ type: "Cohort", id })),
+        ...result.map(({ id }) => ({ type: "Cohort" as const, id })),
       ],
     }),
     getCohortById: builder.query<CohortModel, string>({
       query: (id) => `/cohorts/${id}`,
-      providesTags: (result, error, arg) => [{ type: "Cohort", id: arg }],
+      providesTags: (_result, _error, arg) => [{ type: "Cohort", id: arg }],
     }),
     addCohort: builder.mutation<Partial<CohortModel>, CohortModel>({
       query: (cohort) => ({
@@ -53,8 +47,7 @@ export const cohortApiSlice = coreCreateApi({
         method: "POST",
         body: cohort,
       }),
-      invalidatesTags: ["Cohort"],
-      //invalidatesTags: [{ type: "Cohort", id: "LIST" }]
+      invalidatesTags: [{ type: "Cohort", id: "LIST" }],
     }),
     updateCohort: builder.mutation<Partial<CohortModel>, CohortModel>({
       query: (cohort) => ({
@@ -62,35 +55,36 @@ export const cohortApiSlice = coreCreateApi({
         method: "PATCH",
         body: cohort,
       }),
-      invalidatesTags: (result, error, arg) => [{ type: "Cohort", id: arg.id }],
+      invalidatesTags: (_result, _error, arg) => [
+        { type: "Cohort", id: arg.id },
+      ],
     }),
     deleteCohort: builder.mutation<void, string>({
       query: (id) => ({
         url: `/cohorts/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: (result, error, arg) => [{ type: "Cohort", id: arg }],
+      invalidatesTags: (_result, _error, arg) => [{ type: "Cohort", id: arg }],
     }),
 
     // context endpoints
     getContexts: builder.query<ContextModel[], void>({
       query: () => "/contexts",
       providesTags: (result = []) => [
-        //"Cohort",
         { type: "Context", id: "LIST" },
-        ...result.map(({ id }) => ({ type: "Context", id })),
+        ...result.map(({ id }) => ({ type: "Context" as const, id })),
       ],
     }),
     getContextById: builder.query<ContextModel, string>({
       query: (id) => `/contexts/${id}`,
-      providesTags: (result, error, arg) => [{ type: "Context", id: arg }],
+      providesTags: (_result, _error, arg) => [{ type: "Context", id: arg }],
     }),
     addContext: builder.mutation<ContextModel, void>({
       query: () => ({
         url: "/contexts",
         method: "POST",
       }),
-      invalidatesTags: ["Context"],
+      invalidatesTags: [{ type: "Context", id: "LIST" }],
     }),
   }),
 });

@@ -125,51 +125,20 @@ function getCohorts() {
 
 // get a cohort by id
 function getCohortById(cohort_id) {
-  const cohorts = getCohorts();
-  var cohort = undefined;
-
-  for (var i = 0; i < cohorts.length; i++) {
-    const current_cohort = cohorts[i];
-    if (current_cohort.id === cohort_id) {
-      cohort = current_cohort;
-      break;
-    }
-  }
-
-  return cohort;
+  return getCohorts().find((current_cohort) => current_cohort.id === cohort_id);
 }
 
 // check if a context exists
 function contextExists(context_id) {
-  var is_valid = false;
-
-  const contexts = getContexts();
-  for (var i = 0; i < contexts.length; i++) {
-    const current_id = contexts[i].id;
-    //console.log(current_id);
-    if (context_id === current_id) {
-      is_valid = true;
-      // console.log("Valid context_id found for context name " + contexts[i].name + ".'");
-    }
-  }
-
-  return is_valid;
+  return getContexts().some(
+    (current_context) => current_context.id === context_id,
+  );
 }
 
 // check if a cohort exists
-function cohortExists(cohort_id) {
-  var is_valid = false;
-
-  const cohorts = getCohorts();
-  for (var i = 0; i < cohorts.length; i++) {
-    const current_id = cohorts[i].id;
-    if (cohort_id === current_id) {
-      is_valid = true;
-    }
-  }
-
-  return is_valid;
-}
+// function cohortExists(cohort_id) {
+//   return getCohorts().some(current_cohort => current_cohort.id === cohort_id)
+// }
 
 // determines if authorization is required - i.e. if this is a cohort update or delete
 function isAuthorizationRequired(req) {
@@ -197,20 +166,13 @@ function isAuthorizationRequired(req) {
 
 // check if context ID matches that of the target cohort to be updated/deleted
 function isAuthorized(req) {
-  // get cohort_id
-  const cohort_id = getCohortIdFromPath(req);
-
-  // if cohort_id doesn't exist return authorized and let the api handle the 404 error
-  if (isUndefined(cohort_id) || !cohortExists(cohort_id)) {
+  // get target cohort and check it exists
+  const cohort = getCohortById(getCohortIdFromPath(req));
+  if (isUndefined(cohort)) {
     console.log(
-      "Cohort ID is invalid or does not exist so authorization unnecessary.",
+      "Could not retrieve cohort. Allowing authorization because expecting 404 error.",
     );
     return true;
-  }
-
-  const cohort = getCohortById(cohort_id);
-  if (isUndefined(cohort)) {
-    console.log("Could not retrieve cohort. Failing authorization.");
   }
 
   // get context_id from cookie or header
@@ -224,7 +186,7 @@ function isAuthorized(req) {
 
   // if the context_id can't be retrieved or is invalid, return not authorized
   if (isUndefined(context_id) || !contextExists(context_id)) {
-    console.log("Context ID " + context_id + " is invalid.");
+    console.log("Context ID is invalid: ");
     return false;
   }
 
@@ -233,12 +195,7 @@ function isAuthorized(req) {
     console.log("Context ID matches that of cohort.");
     return true;
   } else {
-    console.log(
-      "Context ID " +
-        context_id +
-        " does not match that of cohort " +
-        cohort.context_id,
-    );
+    console.log("Context ID does not match that of cohort.");
     return false;
   }
 }
