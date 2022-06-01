@@ -32,10 +32,7 @@ describe("banner notfication reducer", () => {
         payload: [{ id: 2, components: ["API"] }],
       },
     );
-    expect(state).toEqual([
-      { id: 1, dismissed: false, components: ["PORTAL"] },
-      { id: 2, dismissed: false, components: ["API"] },
-    ]);
+    expect(state).toEqual([{ id: 2, dismissed: false, components: ["API"] }]);
   });
 
   test("excludes irrelevant notifications", () => {
@@ -45,11 +42,33 @@ describe("banner notfication reducer", () => {
       ] as BannerNotification[],
       {
         type: fetchNotifications.fulfilled,
-        payload: [{ id: 2, components: ["OTHER"] }],
+        payload: [
+          { id: 1, dismissed: false, components: ["PORTAL"] },
+          { id: 2, components: ["OTHER"] },
+        ],
       },
     );
     expect(state).toEqual([
       { id: 1, dismissed: false, components: ["PORTAL"] },
+    ]);
+  });
+
+  test("keeps notifications as dismissed", () => {
+    const state = bannerReducer(
+      [
+        { id: 1, dismissed: true, components: ["PORTAL"] },
+      ] as BannerNotification[],
+      {
+        type: fetchNotifications.fulfilled,
+        payload: [
+          { id: 2, components: ["API"] },
+          { id: 1, components: ["PORTAL"] },
+        ],
+      },
+    );
+    expect(state).toEqual([
+      { id: 2, dismissed: false, components: ["API"] },
+      { id: 1, dismissed: true, components: ["PORTAL"] },
     ]);
   });
 });

@@ -8,7 +8,7 @@ const slice = createSlice({
   initialState,
   reducers: {
     addFilesToCart: (state, action: PayloadAction<string[]>) => {
-      state = [...state, ...action.payload];
+      state = [...new Set([...state, ...action.payload])];
       return state;
     },
     removeFilesFromCart: (state, action: PayloadAction<string[]>) => {
