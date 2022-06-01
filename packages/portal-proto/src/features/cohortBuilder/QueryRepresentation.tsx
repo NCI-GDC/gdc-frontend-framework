@@ -255,7 +255,7 @@ class CohortFilterToComponent implements OperationHandler<JSX.Element> {
       <ExistsElement {...f} />
     </QueryElement>
   );
-  handleExcludeIfAny = (f: ExcludeIfAny) => null;
+  handleExcludeIfAny = (_f: ExcludeIfAny) => null;
   handleIntersection = (f: Intersection) => {
     if (f.operands.length < 1) return null;
 
@@ -274,7 +274,7 @@ class CohortFilterToComponent implements OperationHandler<JSX.Element> {
     }
     return null;
   };
-  handleUnion = (f: Union) => {
+  handleUnion = (_f: Union) => {
     return <div>Union</div>;
   };
 }
