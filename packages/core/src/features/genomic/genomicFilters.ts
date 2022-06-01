@@ -13,7 +13,7 @@ const initialState: FilterSet = {
     is_cancer_gene_census: {
       field: "genes.is_cancer_gene_census",
       operator: "includes",
-      operands: ["true"], // TODO: this will be fixed when boolean facets are implemented
+      operands: ["true"], // TODO: this will be fixed when toggle facets are implemented
     },
   },
 };

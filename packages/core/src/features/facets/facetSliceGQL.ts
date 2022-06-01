@@ -33,7 +33,7 @@ export const fetchFacetByNameGQL = createAsyncThunk<
       filters_0: filters ? filters : {},
     };
 
-    return await graphqlAPI(queryGQL, filtersGQL);
+    return graphqlAPI(queryGQL, filtersGQL);
   },
 );
 
@@ -58,17 +58,17 @@ const facetsGQLSlice = createSlice({
       .addCase(fetchFacetByNameGQL.fulfilled, (state, action) => {
         const response = action.payload;
         const index = action.meta.arg.index ?? "explore";
-        const itemType = action.meta.arg.docType ?? "cases";
+        const docType = action.meta.arg.docType ?? "cases";
         const field = action.meta.arg.field;
         if (response.errors && Object.keys(response.errors).length > 0) {
-          state[itemType][field] = {
+          state[docType][field] = {
             status: "rejected",
             error: response.errors.facets,
           };
         } else {
           const aggregations =
-            Object(response).data.viewer[index][itemType].aggregations;
-          aggregations && processBuckets(aggregations, state[itemType]);
+            Object(response).data.viewer[index][docType].aggregations;
+          aggregations && processBuckets(aggregations, state[docType]);
         }
       })
       .addCase(fetchFacetByNameGQL.pending, (state, action) => {
@@ -139,10 +139,6 @@ export const selectSSMSFacetByField = (
 };
 
 export const fileCaseGenesMutationsFacetReducers = combineReducers({
-  // cases: caseFacetsReducer,
-  // files: fileFacetsReducer,
-  // genes: genesFacetReducer,
-  // ssms: mutationsFacetReducer,
   facetsGQL: facetsGQLReducer,
   ranges: rangeFacetsReducer,
 });

@@ -1,5 +1,40 @@
 {
   "dictionary": {
+    "data_category": {
+      "facet_filter": "data_category",
+      "facet_type": "enum",
+      "label": "Data Category"
+    },
+    "data_type": {
+      "facet_filter": "data_type",
+      "facet_type": "enum",
+      "label": "Data Type"
+    },
+    "experimental_strategy": {
+      "facet_filter": "experimental_strategy",
+      "facet_type": "enum",
+      "label": "Experimental Strategy"
+    },
+    "analysis.workflow_type": {
+      "facet_filter": "analysis.workflow_type",
+      "facet_type": "enum",
+      "label": "Workflow Type"
+    },
+    "data_format": {
+      "facet_filter": "data_format",
+      "facet_type": "enum",
+      "label": "Data Format"
+    },
+    "platform": {
+      "facet_filter": "platform",
+      "facet_type": "enum",
+      "label": "Platform"
+    },
+    "access": {
+      "facet_filter": "access",
+      "facet_type": "enum",
+      "label": "Access"
+    },
     "demographic.age_at_index": {
       "facet_filter": "demographic.age_at_index",
       "facet_type": "years",

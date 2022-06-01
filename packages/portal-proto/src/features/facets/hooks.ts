@@ -10,6 +10,7 @@ import {
   removeCohortFilter,
   removeGenomicFilter,
   selectCaseFacetByField,
+  selectFileFacetByField,
   selectCurrentCohortFilters,
   selectCurrentCohortFiltersByName,
   selectGenesFacetByField,
@@ -84,15 +85,19 @@ interface EnumFacetResponse extends FacetResponse {
  */
 export const useCasesFacet = (
   field: string,
-  itemType: GQLDocType,
+  docType: GQLDocType,
   indexType: GQLIndexType,
 ): EnumFacetResponse => {
   const coreDispatch = useCoreDispatch();
-  const facet: FacetBuckets = useCoreSelector((state) =>
-    selectCaseFacetByField(state, field),
-  );
 
-  const enumValues = useCohortFacetFilterByName(field);
+  const facet: FacetBuckets =
+    docType == "cases"
+      ? useCoreSelector((state) => selectCaseFacetByField(state, field))
+      : useCoreSelector((state) => selectFileFacetByField(state, field));
+
+  // NOTE: the facets filters require prepending the doc type in
+  // front of the field.
+  const enumValues = useCohortFacetFilterByName(`${docType}.${field}`);
   const cohortFilters = useCohortFacetFilter();
   const prevCohortFilters = usePrevious(cohortFilters);
   const prevEnumValues = usePrevious(enumValues);
@@ -106,7 +111,7 @@ export const useCasesFacet = (
       coreDispatch(
         fetchFacetByNameGQL({
           field: `${field}`,
-          itemType: itemType,
+          docType: docType,
           index: indexType,
         }),
       );
@@ -116,7 +121,7 @@ export const useCasesFacet = (
     facet,
     field,
     cohortFilters,
-    itemType,
+    docType,
     indexType,
     prevCohortFilters,
     prevEnumValues,
@@ -139,7 +144,7 @@ export const useCasesFacet = (
  */
 const useGenesFacet = (
   field: string,
-  itemType = "genes" as GQLDocType,
+  docType = "genes" as GQLDocType,
   indexType = "explore" as GQLIndexType,
 ): EnumFacetResponse => {
   const coreDispatch = useCoreDispatch();
@@ -164,7 +169,7 @@ const useGenesFacet = (
       coreDispatch(
         fetchFacetByNameGQL({
           field: `${field}`,
-          itemType: itemType,
+          docType: docType,
           index: indexType,
         }),
       );
@@ -174,7 +179,7 @@ const useGenesFacet = (
     facet,
     field,
     cohortFilters,
-    itemType,
+    docType,
     indexType,
     prevCohortFilters,
     prevEnumValues,
@@ -199,7 +204,7 @@ const useGenesFacet = (
  */
 const useMutationsFacet = (
   field,
-  itemType = "ssms" as GQLDocType,
+  docType = "ssms" as GQLDocType,
   indexType = "explore" as GQLIndexType,
 ): EnumFacetResponse => {
   const coreDispatch = useCoreDispatch();
@@ -224,7 +229,7 @@ const useMutationsFacet = (
       coreDispatch(
         fetchFacetByNameGQL({
           field: `${field}`,
-          itemType: itemType,
+          docType: docType,
           index: indexType,
         }),
       );
@@ -234,7 +239,7 @@ const useMutationsFacet = (
     facet,
     field,
     cohortFilters,
-    itemType,
+    docType,
     indexType,
     prevCohortFilters,
     prevEnumValues,
@@ -278,7 +283,7 @@ export const updateEnumFilters: updateEnumFiltersFunc = (
   if (enumerationFilters.length > 0) {
     dispatch(
       updateCohortFilter({
-        field: `${field}`,
+        field: `${prefix}.${field}`,
         operation: {
           operator: "includes",
           field: `${prefix}.${field}`,
@@ -288,7 +293,7 @@ export const updateEnumFilters: updateEnumFiltersFunc = (
     );
   } else {
     // completely remove the field
-    dispatch(removeCohortFilter(`${field}`));
+    dispatch(removeCohortFilter(`${prefix}.${field}`));
   }
 };
 
@@ -372,8 +377,8 @@ export const useRangeFacet = (
 export const UpdateEnums = {
   cases: updateEnumFilters,
   files: updateEnumFilters,
-  genes: updateGenomicEnumFilters,
-  ssms: updateGenomicEnumFilters,
+  genes: updateEnumFilters,
+  ssms: updateEnumFilters,
 };
 
 export const FacetEnumHooks = {

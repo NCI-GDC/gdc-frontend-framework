@@ -11,7 +11,7 @@ import {
   FacetEnumHooks,
   UpdateEnums,
 } from "./hooks";
-import { DEFAULT_VISIBLE_ITEMS } from "./utils";
+import { DEFAULT_VISIBLE_ITEMS, convertFieldToName } from "./utils";
 
 import {
   MdAddCircle as MoreIcon,
@@ -21,7 +21,6 @@ import {
   MdSort as SortIcon,
   MdSortByAlpha as AlphaSortIcon,
 } from "react-icons/md";
-import { convertFieldToName } from "./utils";
 import { FacetCardProps } from "@/features/facets/types";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
 import { LoadingOverlay, Tooltip } from "@mantine/core";
@@ -69,7 +68,7 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
 
   const prevFilters = usePrevious(enumFilters);
   const coreDispatch = useCoreDispatch();
-  const updateFilters = UpdateEnums[docType]; // Gets all filter updates
+  const updateFilters = UpdateEnums[docType]; // update the filter for this facet
 
   // get the total count to compute percentages
   const totalCount = useCoreSelector((state) =>
@@ -81,14 +80,13 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
     if (isSuccess) {
       setVisibleItems(
         Object.entries(data).filter(
-          (data) => data[0] != "_missing" && data[0] != "",
+          (entry) => entry[0] != "_missing" && entry[0] != "",
         ).length,
       );
     }
   }, [data, field, isSuccess]);
 
   useEffect(() => {
-    console.log("before updating facet filters", prevFilters, enumFilters);
     if (isSuccess && !isEqual(prevFilters, enumFilters)) {
       setSelectedEnums(enumFilters);
     }
@@ -108,10 +106,12 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
       const updated = selectedEnums ? [...selectedEnums, value] : [value];
       updateFilters(coreDispatch, updated, field, docType);
     } else {
+      console.log("before remove", selectedEnums, value, checked);
       const updated =
         field === "is_cancer_gene_census"
           ? []
           : selectedEnums.filter((x) => x != value);
+      console.log("selected removed", updated);
       updateFilters(coreDispatch, updated, field, docType);
     }
   };
@@ -239,10 +239,10 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
                   <div className="mx-4">No data for this field</div>
                 ) : isSuccess ? (
                   Object.entries(data)
-                    .filter((data) => data[0] != "_missing" && data[0] != "")
+                    .filter((entry) => entry[0] != "_missing" && entry[0] != "")
                     .sort(
                       isSortedByValue
-                        ? ([, a], [, b]) => (b as number) - (a as number)
+                        ? ([, a], [, b]) => b - a
                         : ([a], [b]) => a.localeCompare(b),
                     )
                     .map(([value, count], i) => {
@@ -296,7 +296,7 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
                           {showPercent ? (
                             <div className="flex-none text-right w-18 ">
                               (
-                              {(((count as number) / totalCount) * 100)
+                              {((count / totalCount) * 100)
                                 .toFixed(2)
                                 .toLocaleString()}
                               %)

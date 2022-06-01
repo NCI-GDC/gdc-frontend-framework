@@ -45,8 +45,6 @@ export const isValueOperation = (x: Operation): x is ValueOperation => {
   return "field" in x;
 };
 
-type ComparisonOperation = Equals | NotEquals | RangeOperation;
-
 const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
   field,
   operator,
@@ -70,7 +68,10 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
   );
 };
 
-interface ComparisonElementProps extends ComparisonOperation {
+interface ComparisonElementProps {
+  readonly operator: string;
+  readonly field: string;
+  readonly operand: string | number;
   readonly showLabel?: boolean;
 }
 
@@ -206,10 +207,15 @@ class CohortFilterToComponent implements OperationHandler<JSX.Element> {
       const a = f.operands[0] as RangeOperation;
       const b = f.operands[1] as RangeOperation;
       return (
-        <QueryElement key={a.field} {...a}>
-          <ComparisonElement {...a} /> <span className="pr-1" /> and{" "}
-          <ComparisonElement showLabel={false} {...b} />
-        </QueryElement>
+        <>
+          <QueryElement key={a.field} {...a}>
+            <ComparisonElement {...a} /> <span className="pr-1" />
+          </QueryElement>
+          and{" "}
+          <QueryElement key={b.field} {...b}>
+            <ComparisonElement showLabel={false} {...b} />
+          </QueryElement>
+        </>
       );
     }
     return null;

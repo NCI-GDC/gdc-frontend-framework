@@ -13,13 +13,10 @@ import {
   LoadingOverlay,
   NumberInput,
   SegmentedControl,
-  RadioGroup,
-  Radio,
 } from "@mantine/core";
 import {
   DAYS_IN_DECADE,
   DAYS_IN_YEAR,
-  FacetBuckets,
   Operation,
   removeCohortFilter,
   selectCurrentCohortFiltersByName,
@@ -45,6 +42,7 @@ import {
   FacetDocTypeToLabelsMap,
   useRangeFacet,
 } from "@/features/facets/hooks";
+import * as tailwindConfig from "../../../tailwind.config";
 
 interface NumericFacetProps extends FacetCardProps {
   readonly rangeDatatype: string;
@@ -57,14 +55,21 @@ type NumericFacetData = Pick<
   "field" | "minimum" | "maximum" | "docType" | "indexType"
 >;
 
+/**
+ * Represent a range. Used to configure a row
+ * of a range list
+ */
 interface RangeBucketElement {
   readonly from: number;
   readonly to: number;
-  readonly key: string;
-  readonly label: string;
-  readonly valueLabel?: string;
-  value?: number;
+  readonly key: string; // key for facet range
+  readonly label: string; // label for value
+  readonly valueLabel?: string; // string representation of the count
+  value?: number; // count of items in range
 }
+
+const RadioStyle =
+  "form-check-input form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:ring-0 focus:ring-offset-0 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer";
 
 interface RangeValueSelectorProps {
   readonly itemsToShow: number;
@@ -87,6 +92,11 @@ interface NumericRange {
   readonly to?: number;
 }
 
+/**
+ * Given an operation, determine if range is open or closed and extract
+ * the range values and operands as a NumericRange
+ * @param filter - operation to test
+ */
 const ExtractRangeValues = (filter?: Operation): NumericRange | undefined => {
   if (filter !== undefined) {
     switch (filter.operator) {
@@ -154,9 +164,9 @@ const buildDayYearRangeBucket = (
 };
 
 /**
- * returns 10 value range from from to to for a "bucket"
+ * returns 10 value range from to for a "bucket"
  * @param x - current bucket index
- * @param units string to append to label
+ * @param units - string to append to label
  * @param minimum - staring value of range
  * @param fractionDigits - number of values to the right of the decimal point
  */
@@ -177,11 +187,11 @@ const build10UnitRange = (
 };
 
 /**
- * Builds an Dictionary like object contain the range and label for each "bucket" in the range
- * @param numBuckets
- * @param units
- * @param minimum
- * @param rangeFunction
+ * Builds a Dictionary like object contain the range and label for each "bucket" in the range
+ * @param numBuckets - number of buckets to create
+ * @param units - units such as days or percent
+ * @param minimum - start value of range
+ * @param rangeFunction - function to compute range boundaries
  */
 const BuildRanges = (
   numBuckets: number,
@@ -195,7 +205,7 @@ const BuildRanges = (
 ) => {
   // build the range for the useRangeFacet call
   return [...Array(numBuckets)]
-    .map((x, i) => {
+    .map((_x, i) => {
       return rangeFunction(i, units, minimum);
     })
     .reduce((r, x) => {
@@ -239,10 +249,12 @@ const buildRangeOperator = (
 /**
  * Create a list of radio buttons where each line
  * represents bucket for a range > "from" <= "to"
- * @param numBuckets: number of buckets to consider
- * @param field: name of field this range id for
+ * @param field - facet managed by this component
+ * @param valueLabel - string representing the datatype of values (e.g. "Cases")
+ * @param selected - which range, if any, is selected
+ * @param rangeLabelsAndValues - list of range keys, labels and values
+ * @param itemsToShow - number of ranges to render
  */
-
 const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
   field,
   valueLabel,
@@ -253,8 +265,10 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
 }: RangeValueSelectorProps) => {
   const coreDispatch = useCoreDispatch();
 
+  // toggle to handle sorting by value vs. label
   const [isSortedByValue, setIsSortedByValue] = useState(false);
 
+  // process when range is selected
   const handleSelection = (rangeKey) => {
     const data: NumericRange = {
       from: rangeLabelsAndValues[rangeKey].from,
@@ -263,9 +277,9 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
       toOp: "<",
     };
     const rangeFilters = buildRangeOperator(field, data);
+    console.log("range:", field);
     coreDispatch(updateCohortFilter({ field: field, operation: rangeFilters }));
     setSelected(rangeKey);
-    console.log("handleSelection:", rangeKey, rangeFilters);
   };
 
   if (rangeLabelsAndValues === undefined) return null;
@@ -323,7 +337,7 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
                   name={`${field}_range_selection`}
                   value={rangeKey}
                   checked={rangeKey === selected}
-                  className="form-radio mr-1"
+                  className={RadioStyle}
                   onChange={() => handleSelection(rangeKey)}
                 />
                 <span>{rangeLabelsAndValues[rangeKey].label}</span>
@@ -347,6 +361,16 @@ interface FromToProps {
   readonly field: string;
 }
 
+/**
+ * A Component which manages a range. The From/To values are managed by a numeric text entry
+ * @param field
+ * @param minimum
+ * @param maximum
+ * @param values
+ * @param changedCallback
+ * @param units
+ * @constructor
+ */
 const FromTo: React.FC<FromToProps> = ({
   field,
   minimum,
@@ -498,6 +522,13 @@ interface FacetExpanderProps {
   readonly onShowChanged: (v: boolean) => void;
 }
 
+/**
+ * Component which manages the compact/expanded state of a FacetCard
+ * @param remainingValues - number of remaining values when compact "show 4"
+ * @param isGroupExpanded - true if expanded, false if compact
+ * @param onShowChanged - callback to call when the expand/compact button is clicked
+ * @constructor
+ */
 const FacetExpander: React.FC<FacetExpanderProps> = ({
   remainingValues,
   isGroupExpanded,
@@ -536,7 +567,7 @@ const FacetExpander: React.FC<FacetExpanderProps> = ({
 const BuildRangeLabelsAndValues = (
   bucketRanges: Record<string, any>,
   totalCount: number,
-  rangeData?: FacetBuckets,
+  rangeData?: Record<string, string | number>,
   showZero = true,
 ) => {
   return Object.keys(bucketRanges).reduce((b, x) => {
@@ -582,7 +613,7 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
 
     // get the current filter for this facet
     const filter = useCoreSelector((state) =>
-      selectCurrentCohortFiltersByName(state, field),
+      selectCurrentCohortFiltersByName(state, `${docType}.${field}`),
     );
 
     const totalCount = useCoreSelector((state) =>
@@ -592,9 +623,9 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
     // giving the filter value, extract the From/To values and
     // build it's key
     const [filterValues, filterKey] = useMemo(() => {
-      const filterValues = ExtractRangeValues(filter);
-      const filterKey = ClassifyRangeType(filterValues);
-      return [filterValues, filterKey];
+      const values = ExtractRangeValues(filter);
+      const key = ClassifyRangeType(values);
+      return [values, key];
     }, [filter]);
 
     // build the range for the useRangeFacet and the facet query
@@ -619,17 +650,17 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
         },
       };
 
-      const bucketRanges = BuildRanges(
+      const bucketEntries = BuildRanges(
         numBuckets,
         RangeBuilder[units].label,
         minimum,
         RangeBuilder[units].builder,
       );
       // build ranges for continuous range query
-      const ranges = Object.keys(bucketRanges).map((x) => {
-        return { from: bucketRanges[x].from, to: bucketRanges[x].to };
+      const r = Object.keys(bucketEntries).map((x) => {
+        return { from: bucketEntries[x].from, to: bucketEntries[x].to };
       });
-      return [bucketRanges, ranges];
+      return [bucketEntries, r];
     }, [minimum, numBuckets, units]);
 
     const [isCustom, setIsCustom] = useState(filterKey === "custom"); // in custom Range Mode
@@ -678,7 +709,7 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
         <div className="flex flex-row justify-between items-center">
           <input
             type="radio"
-            className="form-check-input mr-4"
+            className={RadioStyle}
             id={`${field}_custom`}
             name={`${field}_range_selection`}
             checked={selectedRange === "custom"}
@@ -691,7 +722,7 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
             minimum={minimum}
             maximum={maximum}
             values={filterValues}
-            field={field}
+            field={`${docType}.${field}`}
             units={units}
             changedCallback={resetToCustom}
           />
@@ -701,7 +732,7 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
             <div className="mx-4">No data for this field</div>
           ) : isSuccess ? (
             <RangeValueSelector
-              field={field}
+              field={`${docType}.${field}`}
               valueLabel={FacetDocTypeToLabelsMap[docType]}
               itemsToShow={bucketsToShow}
               rangeLabelsAndValues={rangeLabelsAndValues}
@@ -819,7 +850,7 @@ const Years: React.FC<NumericFacetData> = ({
   );
 };
 
-const NumericRange: React.FC<NumericFacetData> = ({
+const NumericRangePanel: React.FC<NumericFacetData> = ({
   field,
   minimum = undefined,
   maximum = undefined,
@@ -878,7 +909,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
   const coreDispatch = useCoreDispatch();
 
   const clearFilters = () => {
-    coreDispatch(removeCohortFilter(field));
+    coreDispatch(removeCohortFilter(`${docType}.${field}`));
   };
 
   const toggleFlip = () => {
@@ -887,8 +918,8 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
 
   return (
     <div>
-      <div className="flex flex-col w-64 bg-white relative shadow-lg border-nci-gray-lightest border-1 rounded-b-md text-xs transition">
-        <div className="flex items-center justify-between flex-wrap bg-nci-gray-lighter px-1.5">
+      <div className="flex flex-col w-64 bg-white relative shadow-lg border-nci-gray-lightest border-1 rounded-b-md text-xs transition ">
+        <div className="flex items-center justify-between flex-wrap bg-nci-blue-lightest shadow-md px-1.5">
           <div className="has-tooltip text-nci-gray-darkest font-heading font-semibold text-md">
             {facetName === null ? convertFieldToName(field) : facetName}
             <div className="inline-block tooltip w-full border-b-2 border-nci-cyan-lightest rounded shadow-lg p-2 bg-gray-100 text-nci-blue-darkest mt-8 absolute">
@@ -897,16 +928,23 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
           </div>
           <div className="flex flex-row">
             <button
-              className="bg-nci-gray-lighter hover:bg-grey text-grey-darkest font-bold py-2 px-4 rounded inline-flex items-center"
+              className="hover:bg-nci-grey-darker text-nci-gray font-bold py-2 px-1 rounded inline-flex items-center"
               onClick={toggleFlip}
+              aria-label="Flip between form and chart"
             >
-              <FlipIcon />
+              <FlipIcon
+                size="1.25em"
+                color={tailwindConfig.theme.extend.colors["gdc-blue"].darker}
+              />
             </button>
             <button
-              className="bg-nci-gray-lighter hover:bg-grey text-grey-darkest font-bold py-2 px-4 rounded inline-flex items-center"
+              className="hover:bg-nci-grey-darker text-nci-gray font-bold py-2 px-1 rounded inline-flex items-center"
               onClick={clearFilters}
             >
-              <UndoIcon />
+              <UndoIcon
+                size="1.25em"
+                color={tailwindConfig.theme.extend.colors["gdc-blue"].darker}
+              />
             </button>
           </div>
         </div>
@@ -949,7 +987,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
               />
             ),
             numeric: (
-              <NumericRange
+              <NumericRangePanel
                 docType={docType}
                 indexType={indexType}
                 field={field}
@@ -967,7 +1005,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
               />
             ),
             integer: (
-              <NumericRange
+              <NumericRangePanel
                 docType={docType}
                 indexType={indexType}
                 field={field}
