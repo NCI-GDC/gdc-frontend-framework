@@ -42,6 +42,7 @@ const fileTypes = [
   "secondary_expression_analysis",
   "masked_methylation_array",
   "protein_expression",
+  "pathology_report",
 ] as const;
 
 export type FileType = typeof fileTypes[number];
@@ -106,6 +107,7 @@ const dataFormats = [
   "XLSX",
   "MEX",
   "HDF5",
+  "PDF",
 ] as const;
 
 export type DataFormat = typeof dataFormats[number];
@@ -149,6 +151,7 @@ const dataTypes = [
   "Transcript Fusion",
   "Masked Intensities",
   "miRNA Expression Quantification",
+  "Pathology Report",
 ] as const;
 
 export type DataType = typeof dataTypes[number];
