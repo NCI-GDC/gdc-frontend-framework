@@ -181,7 +181,7 @@ const EnumBarChart: React.FC<BarChartProps> = ({
         tickLabelComponent={
           <VictoryLabel
             dx={12}
-            dy={-12}
+            dy={-15}
             textAnchor={"start"}
             style={[{ fontSize: 23 }]}
           />
