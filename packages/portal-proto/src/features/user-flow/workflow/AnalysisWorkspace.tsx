@@ -79,7 +79,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
   };
 
   return (
-    <div className="flex flex-col mb-6 font-montserrat">
+    <div className="flex flex-col font-montserrat">
       <div
         data-tour="analysis_tool_management"
         className="flex flex-row  items-center shadow-lg bg-nci-blue-darkest"
@@ -104,120 +104,124 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
           </Grid>
         </div>
       </div>
-      <Grid className="p-3 mt-2" gutter={"lg"}>
-        <Grid.Col
-          data-tour="analysis_tool_filters"
-          className="flex flex-col p-3"
-          span={3}
-        >
-          <div className="flex justify-between pb-4 text-nci-blue-darkest">
-            <div>
-              <h2 className="font-bold text-lg pb-3 uppercase">Tools</h2>
-              <h3 className="text-lg">Categories</h3>
-            </div>
-            <div className="flex flex-col justify-around items-end">
-              <Menu
-                control={
-                  <ActionIcon
-                    variant="outline"
-                    className="text-nci-blue-darkest"
+      <div className="bg-white">
+        <Grid className="p-3 mt-2" gutter={"lg"}>
+          <Grid.Col
+            data-tour="analysis_tool_filters"
+            className="flex flex-col p-3"
+            span={2}
+          >
+            <div className="flex justify-between pb-4 text-nci-blue-darkest">
+              <div>
+                <h2 className="font-bold text-lg pb-3 uppercase">Tools</h2>
+                <h3 className="text-lg">Categories</h3>
+              </div>
+              <div className="flex flex-col justify-around items-end">
+                <Menu
+                  control={
+                    <ActionIcon
+                      variant="outline"
+                      className="text-nci-blue-darkest"
+                    >
+                      <SortIcon size={24} />
+                    </ActionIcon>
+                  }
+                  aria-label="Select tools sort"
+                  withinPortal={false}
+                  classNames={{
+                    body: "border-t-8 border-nci-blue-darkest w-24",
+                    itemHovered: "bg-nci-blue-lightest",
+                    itemLabel: "text-nci-blue-darkest",
+                  }}
+                >
+                  {sortOptions.map((option) => (
+                    <Menu.Item
+                      onClick={() => setSortType(option.value)}
+                      key={option.value}
+                    >
+                      {option.label}
+                    </Menu.Item>
+                  ))}
+                </Menu>
+                {activeTags.length ? (
+                  <span
+                    className="cursor-pointer text-xs"
+                    tabIndex={0}
+                    role="button"
+                    onClick={() => setActiveTags([])}
+                    onKeyPress={(event) =>
+                      event.key === "Enter" ? setActiveTags([]) : undefined
+                    }
                   >
-                    <SortIcon size={24} />
-                  </ActionIcon>
-                }
-                aria-label="Select tools sort"
-                withinPortal={false}
+                    {"Clear all"}
+                  </span>
+                ) : (
+                  <span
+                    className="cursor-pointer text-xs"
+                    role="button"
+                    tabIndex={0}
+                    onClick={() =>
+                      setActiveTags(appTags.map((tag) => tag.value))
+                    }
+                    onKeyPress={(event) =>
+                      event.key === "Enter"
+                        ? setActiveTags(appTags.map((tag) => tag.value))
+                        : undefined
+                    }
+                  >
+                    {"Select all"}
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="flex flex-row">
+              <Chips
+                multiple
+                noWrap={false}
+                value={activeTags}
+                onChange={setActiveTags}
                 classNames={{
-                  body: "border-t-8 border-nci-blue-darkest w-24",
-                  itemHovered: "bg-nci-blue-lightest",
-                  itemLabel: "text-nci-blue-darkest",
+                  checked: "!text-white bg-nci-blue-darkest",
+                  label:
+                    "text-nci-blue border border-solid border-nci-blue-darkest",
+                  checkIcon: "text-white",
                 }}
               >
-                {sortOptions.map((option) => (
-                  <Menu.Item
-                    onClick={() => setSortType(option.value)}
-                    key={option.value}
-                  >
-                    {option.label}
-                  </Menu.Item>
+                {appTags.map((x) => (
+                  <Chip size="sm" key={x.value} value={x.value}>
+                    {x.name}
+                  </Chip>
                 ))}
-              </Menu>
-              {activeTags.length ? (
-                <span
-                  className="cursor-pointer text-xs"
-                  tabIndex={0}
-                  role="button"
-                  onClick={() => setActiveTags([])}
-                  onKeyPress={(event) =>
-                    event.key === "Enter" ? setActiveTags([]) : undefined
-                  }
-                >
-                  {"Clear all"}
-                </span>
-              ) : (
-                <span
-                  className="cursor-pointer text-xs"
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => setActiveTags(appTags.map((tag) => tag.value))}
-                  onKeyPress={(event) =>
-                    event.key === "Enter"
-                      ? setActiveTags(appTags.map((tag) => tag.value))
-                      : undefined
-                  }
-                >
-                  {"Select all"}
-                </span>
-              )}
+              </Chips>
             </div>
-          </div>
-          <div className="flex flex-row">
-            <Chips
-              multiple
-              noWrap={false}
-              value={activeTags}
-              onChange={setActiveTags}
-              classNames={{
-                checked: "!text-white bg-nci-blue-darkest",
-                label:
-                  "text-nci-blue border-2 border-solid border-nci-blue-darkest",
-                checkIcon: "text-white",
-              }}
-            >
-              {appTags.map((x) => (
-                <Chip size="sm" key={x.value} value={x.value}>
-                  {x.name}
-                </Chip>
-              ))}
-            </Chips>
-          </div>
-        </Grid.Col>
+          </Grid.Col>
 
-        <Grid.Col data-tour="all_other_apps" span={9}>
-          <Grid className="mx-2">
-            {activeApps
-              .map((k) => initialApps[k])
-              .map((x: AppRegistrationEntry) => {
-                return (
-                  <Grid.Col
-                    key={x.name}
-                    xs={12}
-                    sm={6}
-                    md={4}
-                    lg={3}
-                    xl={2}
-                    style={{ minHeight: 130, maxWidth: 180 }}
-                  >
-                    <AnalysisCard
-                      entry={{ ...{ applicable: true, ...x } }}
-                      onClick={handleOpenAppClicked}
-                    />
-                  </Grid.Col>
-                );
-              })}
-          </Grid>
-        </Grid.Col>
-      </Grid>
+          <Grid.Col data-tour="all_other_apps" span={10}>
+            <Grid className="mx-2" gutter={"sm"}>
+              {activeApps
+                .map((k) => initialApps[k])
+                .map((x: AppRegistrationEntry) => {
+                  return (
+                    <Grid.Col
+                      key={x.name}
+                      xs={12}
+                      sm={6}
+                      md={4}
+                      lg={3}
+                      xl={2}
+                      style={{ minHeight: 130, maxWidth: 160 }}
+                    >
+                      <AnalysisCard
+                        entry={{ ...{ applicable: true, ...x } }}
+                        onClick={handleOpenAppClicked}
+                      />
+                    </Grid.Col>
+                  );
+                })}
+            </Grid>
+          </Grid.Col>
+        </Grid>
+      </div>
     </div>
   );
 };

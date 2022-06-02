@@ -74,6 +74,7 @@ const ContextBar: React.FC<CohortGroupProps> = ({
       defaultIdx={currentIndex}
     />
   );
+
   return (
     <div className="mb-2 font-montserrat" data-tour="context_bar">
       <CollapsibleContainer
@@ -94,20 +95,23 @@ const ContextBar: React.FC<CohortGroupProps> = ({
               my="md"
               className="m-2 h-[80%] border-nci-blue-darkest"
             />
-            <span className="text-lg text-nci-blue-darkest ">
-              Use the filters below to build a query
-            </span>
-            <div className="flex flex-row flex-wrap w-100 p-2 ">
-              {Object.keys(filters.root).map((k) => {
-                return convertFilterToComponent(filters.root[k]);
-              })}
-            </div>
+            {Object.keys(filters.root).length !== 0 ? (
+              <div className="flex flex-row flex-wrap w-100 p-2 ">
+                {Object.keys(filters.root).map((k) => {
+                  return convertFilterToComponent(filters.root[k]);
+                })}
+              </div>
+            ) : (
+              <span className="text-lg text-nci-blue-darkest ">
+                Use the filters below to build a query
+              </span>
+            )}
           </div>
           <div className="relative p-2">
             <div className="flex flex-row absolute ml-2">
               <Menu
                 control={
-                  <Button className="bg-white text-nci-blue-darkest border-2 border-solid border-nci-blue-darkest h-12">
+                  <Button className="bg-white text-nci-blue-darkest border-solid border-nci-blue-darkest h-12">
                     <DownloadIcon size="1.5rem" />
                     <CountButton
                       countName="fileCounts"
@@ -126,7 +130,7 @@ const ContextBar: React.FC<CohortGroupProps> = ({
               </Menu>
               <Menu
                 control={
-                  <Button className="ml-2 bg-white text-nci-blue-darkest border-2 border-solid border-nci-blue-darkest h-12">
+                  <Button className="ml-2 bg-white text-nci-blue-darkest border-solid border-nci-blue-darkest h-12">
                     <FilesIcon size="1.5rem" className="mr-1" /> Metadata
                   </Button>
                 }
@@ -142,7 +146,7 @@ const ContextBar: React.FC<CohortGroupProps> = ({
               data-tour="cohort_summary"
               classNames={{
                 tabControl:
-                  "h-12 bg-white text-nci-blue-darkest border-2 border-nci-blue-darkest border-solid rounded-md first:border-r-0 last:border-l-0 first:rounded-r-none last:rounded-l-none",
+                  "h-12 bg-white text-nci-blue-darkest border-1 border-nci-blue-darkest border-solid rounded-md first:border-r-0 last:border-l-0 first:rounded-r-none last:rounded-l-none",
                 tabActive: "!bg-nci-blue-darkest !text-white",
                 body: "py-8 px-2",
               }}

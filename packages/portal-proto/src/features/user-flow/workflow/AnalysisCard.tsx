@@ -29,11 +29,15 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
     caseCounts = 0;
   }
 
+  const inactive = caseCounts === 0;
+
   return (
     <Card
       shadow="sm"
       p="xs"
-      className="border-nci-blue-darkest border-2 border-t-6 h-full"
+      className={`border-nci-blue-darkest border ${
+        inactive ? "" : "border-t-6"
+      } ${descriptionVisisble ? "h-fit" : "h-32"}`}
       aria-label={`${entry.name} Tool`}
     >
       <div className="flex justify-between mb-1">
@@ -57,14 +61,14 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
         <div className="flex flex-col">
           <Button
             className={`bg-nci-blue-darkest mb-1 w-12 ${
-              caseCounts === 0 ? "opacity-50" : ""
+              inactive ? "opacity-50" : ""
             }`}
             variant="filled"
             onClick={() => onClick(entry)}
             compact
             size="xs"
             radius="sm"
-            disabled={caseCounts === 0}
+            disabled={inactive}
             aria-label={`Navigate to ${entry.name} tool`}
           >
             <MdPlayArrow size={16} color={"white"} />
