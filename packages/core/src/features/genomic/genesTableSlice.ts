@@ -3,7 +3,7 @@ import {
   CoreDataSelectorResponse,
   createUseFiltersCoreDataHook,
   DataStatus,
-} from "../../dataAcess";
+} from "../../dataAccess";
 import { castDraft } from "immer";
 import { CoreDispatch, CoreState } from "../../store";
 import { fetchSmsAggregations } from "./smsAggregationsApi";

@@ -267,6 +267,7 @@ class CohortFilterToComponent implements OperationHandler<JSX.Element> {
     ) {
       return (
         <ClosedRangeQueryElement
+          key={(f.operands[0] as RangeOperation).field}
           lower={f.operands[0] as RangeOperation}
           upper={f.operands[1] as RangeOperation}
         />

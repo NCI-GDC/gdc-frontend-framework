@@ -6,7 +6,7 @@ import {
   CoreDataSelectorResponse,
   DataStatus,
   createUseFiltersCoreDataHook,
-} from "../../dataAcess";
+} from "../../dataAccess";
 import { fetchGenes } from "./genesApi";
 import { fetchSSMOccurrences } from "./ssmOccurrencesApi";
 import { fetchCNVOccurrences } from "./cnvOccurrencesApi";

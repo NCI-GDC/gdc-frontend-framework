@@ -7,7 +7,7 @@ import { Provider } from "react-redux";
 
 import React from "react";
 import { registerGdcApp } from "./gdcAppRegistry";
-import { DataStatus } from "../../dataAcess";
+import { DataStatus } from "../../dataAccess";
 
 // using a random uuid v4 as the namespace
 const GDC_APP_NAMESPACE = "0bd921a8-e5a7-4e73-a63c-e3f872798061";

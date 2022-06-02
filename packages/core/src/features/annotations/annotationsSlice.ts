@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { DataStatus } from "../../dataAcess";
-import { CoreDataSelectorResponse } from "../../dataAcess";
+import { DataStatus, CoreDataSelectorResponse } from "../../dataAccess";
 import { CoreDispatch, CoreState } from "../../store";
 import { GqlEquals } from "../gdcapi/filters";
 import {
@@ -20,7 +19,7 @@ export const fetchAnnotations = createAsyncThunk<
   GdcApiRequest,
   { dispatch: CoreDispatch; state: CoreState }
 >("facet/fetchAnnotations", async (request?: GdcApiRequest) => {
-  return await fetchGdcAnnotations(request);
+  return fetchGdcAnnotations(request);
 });
 
 export interface AnnotationsState {

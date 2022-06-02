@@ -7,6 +7,7 @@ import { selectCurrentCohortGqlFilters } from "../cohort/cohortFilterSlice";
 import { buildGraphGLBucketQuery, processBuckets } from "./facetApiGQL";
 import { FacetBuckets, GQLIndexType, GQLDocType } from "./types";
 import { FacetsState } from "./facetSlice";
+import { facetDictionaryReducer } from "./facetDictionarySlice";
 
 export interface FetchFacetByNameGQLProps {
   readonly field: string;
@@ -141,4 +142,5 @@ export const selectSSMSFacetByField = (
 export const fileCaseGenesMutationsFacetReducers = combineReducers({
   facetsGQL: facetsGQLReducer,
   ranges: rangeFacetsReducer,
+  dictionary: facetDictionaryReducer,
 });

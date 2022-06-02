@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { DataStatus } from "../../dataAcess";
-import { CoreDataSelectorResponse } from "../../dataAcess";
+import { DataStatus } from "../../dataAccess";
+import { CoreDataSelectorResponse } from "../../dataAccess";
 import { CoreDispatch, CoreState } from "../../store";
 import { getGdcHistory, HistoryDefaults } from "../gdcapi/gdcapi";
 

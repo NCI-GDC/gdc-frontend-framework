@@ -4,7 +4,7 @@ import {
   createUseCoreDataHook,
   createUseFiltersCoreDataHook,
   DataStatus,
-} from "../../dataAcess";
+} from "../../dataAccess";
 import { CoreDispatch, CoreState } from "../../store";
 import { selectCurrentCohortFilters } from "../cohort/cohortFilterSlice";
 import { GqlOperation } from "../gdcapi/filters";

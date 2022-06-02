@@ -106,12 +106,10 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
       const updated = selectedEnums ? [...selectedEnums, value] : [value];
       updateFilters(coreDispatch, updated, field, docType);
     } else {
-      console.log("before remove", selectedEnums, value, checked);
       const updated =
         field === "is_cancer_gene_census"
           ? []
           : selectedEnums.filter((x) => x != value);
-      console.log("selected removed", updated);
       updateFilters(coreDispatch, updated, field, docType);
     }
   };
@@ -257,35 +255,18 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
                           className="flex flex-row gap-x-1 px-2 "
                         >
                           <div className="flex-none">
-                            {field === "is_cancer_gene_census" ? ( // TODO: Remove after Feb 2022 MR review
-                              <input
-                                type="checkbox"
-                                value={value}
-                                onChange={handleChange}
-                                aria-label={`checkbox for ${field}`}
-                                className="bg-nci-gray-lightest hover:bg-nci-gray-darkest text-nci-gray-darkest"
-                                checked={
-                                  !!(
-                                    selectedEnums &&
-                                    selectedEnums.includes(value)
-                                  )
-                                }
-                              />
-                            ) : (
-                              <input
-                                type="checkbox"
-                                value={value}
-                                onChange={handleChange}
-                                aria-label={`checkbox for ${field}`}
-                                className="bg-nci-gray-lightest hover:bg-nci-gray-darkest text-nci-gray-darkest"
-                                checked={
-                                  !!(
-                                    selectedEnums &&
-                                    selectedEnums.includes(value)
-                                  )
-                                }
-                              />
-                            )}
+                            <input
+                              type="checkbox"
+                              value={value}
+                              onChange={handleChange}
+                              aria-label={`checkbox for ${field}`}
+                              className="bg-nci-gray-lightest hover:bg-nci-gray-darkest text-nci-gray-darkest"
+                              checked={
+                                !!(
+                                  selectedEnums && selectedEnums.includes(value)
+                                )
+                              }
+                            />
                           </div>
                           <div className="flex-grow truncate ... font-heading text-md pt-0.5">
                             {value}

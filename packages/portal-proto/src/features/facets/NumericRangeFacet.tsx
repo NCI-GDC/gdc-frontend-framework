@@ -508,7 +508,7 @@ const FromTo: React.FC<FromToProps> = ({
             </span>
           </div>
         ) : null}
-        <div className={"flex flex-row mt-1"}>
+        <div className={"flex flex-row mt-1 w-100"}>
           <Button onClick={handleApply}>Apply</Button>
         </div>
       </div>

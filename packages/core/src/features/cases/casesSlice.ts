@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   CoreDataSelectorResponse,
   createUseCoreDataHook,
-} from "../../dataAcess";
+} from "../../dataAccess";
 import { CoreDispatch, CoreState } from "../../store";
 import {
   CaseDefaults,

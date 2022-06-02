@@ -66,7 +66,7 @@ const ContextBar: React.FC<CohortGroupProps> = ({
 
   const CohortBarWithProps = () => (
     <CohortBar
-      // TODO : need to revisit this
+      // TODO: need to connect to cohort persistence
       // eslint-disable-next-line react/prop-types
       cohort_names={cohorts.map((o) => o.name)}
       onSelectionChanged={handleCohortSelection}
@@ -83,7 +83,6 @@ const ContextBar: React.FC<CohortGroupProps> = ({
         <div className="flex flex-col bg-white rounded-md shadow-sm">
           <div className="flex flex-row flex-wrap w-100 p-2 bg-nci-gray-lightest ">
             {Object.keys(filters.root).map((k) => {
-              console.log("CohortBarWithProps", filters.root[k]);
               return convertFilterToComponent(filters.root[k]);
             })}
           </div>

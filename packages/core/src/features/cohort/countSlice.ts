@@ -4,7 +4,7 @@ import {
   createUseCoreDataHook,
   createUseFiltersCoreDataHook,
   DataStatus,
-} from "../../dataAcess";
+} from "../../dataAccess";
 
 import { CoreDispatch, CoreState } from "../../store";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";

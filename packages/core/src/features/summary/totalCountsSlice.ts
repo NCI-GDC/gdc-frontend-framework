@@ -5,7 +5,7 @@ import {
   CoreDataSelectorResponse,
   createUseCoreDataHook,
   DataStatus,
-} from "../../dataAcess";
+} from "../../dataAccess";
 
 const CountsGraphQLQuery = `
   query countsQuery($filters: FiltersArgument) {
