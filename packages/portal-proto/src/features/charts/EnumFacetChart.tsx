@@ -136,7 +136,7 @@ const EnumBarChartTooltip: React.FC<EnumBarChartTooltipProps> = ({
           label={
             <>
               <b>{datum.xName}</b>
-              <p>{datum.y} Cases</p>
+              <p>{datum.y.toLocaleString()} Cases</p>
             </>
           }
           withArrow
