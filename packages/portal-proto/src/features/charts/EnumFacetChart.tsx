@@ -4,7 +4,7 @@
  */
 
 import { useEffect, useState } from "react";
-import { Loader } from "@mantine/core";
+import { Loader, Tooltip } from "@mantine/core";
 import {
   VictoryBar,
   VictoryChart,
@@ -13,6 +13,7 @@ import {
   VictoryAxis,
   VictoryLabel,
   VictoryStack,
+  VictoryTooltip,
 } from "victory";
 import * as tailwindConfig from "tailwind.config";
 import ChartTitleBar from "./ChartTitleBar";
@@ -114,6 +115,40 @@ export const processLabel = (label: string, shorten = 100): string => {
   return truncateString(capitalizedTokens.join(" "), shorten);
 };
 
+interface EnumBarChartTooltipProps {
+  readonly x?: number;
+  readonly y?: number;
+  readonly datum?: {
+    xName: string;
+    y: number;
+  };
+}
+
+const EnumBarChartTooltip: React.FC<EnumBarChartTooltipProps> = ({
+  x,
+  y,
+  datum,
+}: EnumBarChartTooltipProps) => {
+  return (
+    <g transform={`translate(${x}, ${y})`}>
+      <foreignObject>
+        <Tooltip
+          label={
+            <>
+              <b>{datum.xName}</b>
+              <p>{datum.y} Cases</p>
+            </>
+          }
+          withArrow
+          opened
+        >
+          <></>
+        </Tooltip>
+      </foreignObject>
+    </g>
+  );
+};
+
 interface EnumBarChartData {
   x: string;
   y: number;
@@ -174,6 +209,10 @@ const EnumBarChart: React.FC<BarChartProps> = ({
       <VictoryStack>
         <VictoryBar
           horizontal
+          labels={() => ""}
+          labelComponent={
+            <VictoryTooltip flyoutComponent={<EnumBarChartTooltip />} />
+          }
           style={{
             data: {
               fill: tailwindConfig.theme.extend.colors["gdc-blue"].darker,
