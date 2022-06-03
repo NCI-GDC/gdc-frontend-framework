@@ -104,13 +104,13 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
 
     if (checked) {
       const updated = selectedEnums ? [...selectedEnums, value] : [value];
-      updateFilters(coreDispatch, updated, field, docType);
+      updateFilters(coreDispatch, updated, field);
     } else {
       const updated =
         field === "is_cancer_gene_census"
           ? []
           : selectedEnums.filter((x) => x != value);
-      updateFilters(coreDispatch, updated, field, docType);
+      updateFilters(coreDispatch, updated, field);
     }
   };
 

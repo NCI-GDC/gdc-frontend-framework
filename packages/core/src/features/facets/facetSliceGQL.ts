@@ -26,9 +26,10 @@ export const fetchFacetByNameGQL = createAsyncThunk<
     thunkAPI,
   ) => {
     const filters = selectCurrentCohortGqlFilters(thunkAPI.getState());
-    const queryGQL = buildGraphGLBucketQuery(field, docType, index);
-
-    console.log("fetchFacetByNameGQL:", field, filters, docType, index);
+    const adjField = field.includes(`${docType}.`)
+      ? field.replace(`${docType}.`, "")
+      : field;
+    const queryGQL = buildGraphGLBucketQuery(adjField, docType, index, field);
 
     const filtersGQL = {
       filters_0: filters ? filters : {},

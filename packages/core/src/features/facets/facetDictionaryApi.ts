@@ -39,7 +39,7 @@ export const shortendFieldNameToTitle = (
 
 export const fieldNameToTitle = (fieldName: string) =>
   fieldName
-    .replace(/_|\./g, " ")
+    .replace(/[_.]/g, " ")
     .split(" ")
     .map((word) =>
       COMMON_PREPOSITIONS.includes(word) ? word : capitalize(word),
@@ -50,7 +50,9 @@ export const classifyFacetDatatype = (f: FacetDefinition): string => {
   const fieldName = f.field;
   if (fieldName.includes("datetime")) return "datetime";
   if (fieldName.includes("percent")) return "percent";
-  if (fieldName.includes("age")) return "age";
+  if (fieldName.includes("age_")) return "age";
+  if (fieldName.includes("_age_")) return "age";
+  if (fieldName.includes("_age")) return "age";
   if (fieldName.includes("days")) return "days";
   if (fieldName.includes("years")) return "years";
   if (fieldName.includes("year")) return "days";
@@ -80,7 +82,7 @@ export const processDictionaryEntries = (
     (dict: Record<string, FacetDefinition>, key: string) => {
       dict[key] = {
         ...entries[key],
-        data_type: classifyFacetDatatype(entries[key]),
+        facet_type: classifyFacetDatatype(entries[key]),
         range: getRangeData(entries[key]),
       };
       return dict;

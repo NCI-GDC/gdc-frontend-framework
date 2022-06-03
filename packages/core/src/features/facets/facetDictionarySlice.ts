@@ -1,8 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { GraphQLApiResponse, GraphQLFetchError } from "../gdcapi/gdcgraphql";
+import { GraphQLFetchError } from "../gdcapi/gdcgraphql";
 import { FacetDefinition } from "./types";
 import { CoreDispatch, CoreState } from "../../store";
-import { DataStatus } from "../../dataAccess";
+import {
+  CoreDataSelectorResponse,
+  createUseCoreDataHook,
+  DataStatus,
+} from "../../dataAccess";
 import { processDictionaryEntries } from "./facetDictionaryApi";
 
 const buildGraphMappingFetchError = async (
@@ -16,12 +20,12 @@ const buildGraphMappingFetchError = async (
   };
 };
 
-export const fetchFieldDictionary = createAsyncThunk<
-  GraphQLApiResponse<Record<string, FacetDefinition>>,
+export const fetchFacetDictionary = createAsyncThunk<
+  Record<string, FacetDefinition>,
   void,
   { dispatch: CoreDispatch; state: CoreState }
->("facet/fetchFieldDictionary", async (_) => {
-  const res = await fetch("https://api.gdc.cancer.gov/v0/graphql/_mapping", {
+>("facet/fetchFacetDictionary", async (_) => {
+  const res = await fetch("https://api.gdc.cancer.gov/v0/gql/_mapping", {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
@@ -46,13 +50,14 @@ const initialState: FacetDefinitionState = {
 };
 
 const facetDictionary = createSlice({
-  name: "facet/fetchFieldDictionary",
+  name: "facet/fetchFacetDictionary",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchFieldDictionary.fulfilled, (_, action) => {
+      .addCase(fetchFacetDictionary.fulfilled, (_, action) => {
         const response = action.payload;
+        console.log("dictionary: ", response);
         if (response.errors && Object.keys(response.errors).length > 0)
           return {
             entries: {},
@@ -61,16 +66,16 @@ const facetDictionary = createSlice({
 
         return {
           status: "fulfilled",
-          entries: processDictionaryEntries(response.data),
+          entries: processDictionaryEntries(response),
         };
       })
-      .addCase(fetchFieldDictionary.pending, () => {
+      .addCase(fetchFacetDictionary.pending, () => {
         return {
           entries: {},
           status: "pending",
         };
       })
-      .addCase(fetchFieldDictionary.rejected, () => {
+      .addCase(fetchFacetDictionary.rejected, () => {
         return {
           entries: {},
           status: "rejected",
@@ -83,7 +88,22 @@ export const facetDictionaryReducer = facetDictionary.reducer;
 
 export const selectFacetDefinition = (
   state: CoreState,
+): CoreDataSelectorResponse<Record<string, FacetDefinition>> => {
+  return {
+    data: state.facetsGQL.dictionary.entries,
+    status: state.facetsGQL.dictionary.status,
+    error: state.facetsGQL.dictionary.error,
+  };
+};
+
+export const selectFacetDefinitionByName = (
+  state: CoreState,
   field: string,
 ): FacetDefinition => {
   return state.facetsGQL.dictionary.entries?.[field];
 };
+
+export const useFacetDictionary = createUseCoreDataHook(
+  fetchFacetDictionary,
+  selectFacetDefinition,
+);

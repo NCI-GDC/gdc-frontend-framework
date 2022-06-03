@@ -16,8 +16,8 @@ export type GQLDocType = "cases" | "files" | "genes" | "ssms";
 export type GQLIndexType = "explore" | "repository";
 
 export interface AllowableRange {
-  readonly minimum?: string | number;
-  readonly maximum?: string | number;
+  readonly minimum?: number;
+  readonly maximum?: number;
 }
 
 export interface FacetDefinition {
@@ -26,6 +26,6 @@ export interface FacetDefinition {
   readonly full: string;
   readonly type: string;
   readonly doc_type: string;
-  readonly data_type?: string;
+  readonly facet_type?: string;
   readonly range?: AllowableRange;
 }

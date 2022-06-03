@@ -21,14 +21,20 @@ const buildContinuousAggregationRangeOnlyQuery = (
   field: string,
   itemType: GQLDocType,
   indexType: GQLIndexType,
+  alias?: string,
 ): string => {
+  const queriedFacet =
+    alias !== undefined
+      ? `${convertFacetNameToGQL(alias)} : ${convertFacetNameToGQL(field)}`
+      : convertFacetNameToGQL(field);
+
   return `
   query ContinuousAggregationQuery($filters: FiltersArgument, $filters2: FiltersArgument) {
   viewer {
     ${indexType} {
       ${itemType} {
         aggregations(filters: $filters) {
-          ${convertFacetNameToGQL(field)} {
+          ${queriedFacet} {
            stats {
                 Min : min
                 Max: max
@@ -54,7 +60,7 @@ const buildContinuousAggregationRangeOnlyQuery = (
 export interface FetchContinuousAggregationProps {
   readonly field: string;
   readonly ranges: ReadonlyArray<NumericFromTo>;
-  readonly itemType?: GQLDocType;
+  readonly docType?: GQLDocType;
   readonly indexType?: GQLIndexType;
 }
 
@@ -68,16 +74,20 @@ export const fetchFacetContinuousAggregation = createAsyncThunk<
     {
       field,
       ranges,
-      itemType = "cases" as GQLDocType,
+      docType = "cases" as GQLDocType,
       indexType = "explore" as GQLIndexType,
     },
     thunkAPI,
   ) => {
     const filters = selectCurrentCohortGqlFilters(thunkAPI.getState());
+    const adjField = field.includes(`${docType}.`)
+      ? field.replace(`${docType}.`, "")
+      : field;
     const queryGQL = buildContinuousAggregationRangeOnlyQuery(
-      field,
-      itemType,
+      adjField,
+      docType,
       indexType,
+      field,
     );
     const filtersGQL = {
       filters: filters ? filters : {},
@@ -99,7 +109,7 @@ const rangeFacetAggregation = createSlice({
       .addCase(fetchFacetContinuousAggregation.fulfilled, (state, action) => {
         const response = action.payload;
         const index = action.meta.arg.indexType ?? "explore";
-        const itemType = action.meta.arg.itemType ?? "cases";
+        const itemType = action.meta.arg.docType ?? "cases";
         if (response.errors && Object.keys(response.errors).length > 0) {
           state[action.meta.arg.field].status = "rejected";
           state[action.meta.arg.field].error = response.errors.facets;

@@ -97,7 +97,7 @@ export const useCasesFacet = (
 
   // NOTE: the facets filters require prepending the doc type in
   // front of the field.
-  const enumValues = useCohortFacetFilterByName(`${docType}.${field}`);
+  const enumValues = useCohortFacetFilterByName(`${field}`);
   const cohortFilters = useCohortFacetFilter();
   const prevCohortFilters = usePrevious(cohortFilters);
   const prevEnumValues = usePrevious(enumValues);
@@ -110,7 +110,7 @@ export const useCasesFacet = (
     ) {
       coreDispatch(
         fetchFacetByNameGQL({
-          field: `${field}`,
+          field: field,
           docType: docType,
           index: indexType,
         }),
@@ -276,24 +276,23 @@ export const updateEnumFilters: updateEnumFiltersFunc = (
   dispatch: CoreDispatch,
   enumerationFilters: EnumOperandValue,
   field: string,
-  prefix = "",
 ) => {
   // undefined just return
   if (enumerationFilters === undefined) return;
   if (enumerationFilters.length > 0) {
     dispatch(
       updateCohortFilter({
-        field: `${prefix}.${field}`,
+        field: `${field}`,
         operation: {
           operator: "includes",
-          field: `${prefix}.${field}`,
+          field: `${field}`,
           operands: enumerationFilters,
         },
       }),
     );
   } else {
     // completely remove the field
-    dispatch(removeCohortFilter(`${prefix}.${field}`));
+    dispatch(removeCohortFilter(`${field}`));
   }
 };
 
@@ -308,7 +307,6 @@ export const updateGenomicEnumFilters: updateGenomicEnumFiltersFunc = (
   dispatch: CoreDispatch,
   enumerationFilters: EnumOperandValue,
   field: string,
-  prefix = "",
 ) => {
   if (enumerationFilters === undefined) return;
   if (enumerationFilters.length > 0) {
@@ -317,7 +315,7 @@ export const updateGenomicEnumFilters: updateGenomicEnumFiltersFunc = (
         field: `${field}`,
         operation: {
           operator: "includes",
-          field: `${prefix}.${field}`,
+          field: `${field}`,
           operands: enumerationFilters,
         },
       }),
@@ -331,7 +329,7 @@ export const updateGenomicEnumFilters: updateGenomicEnumFiltersFunc = (
 export const useRangeFacet = (
   field: string,
   ranges: ReadonlyArray<NumericFromTo>,
-  itemType: GQLDocType,
+  docType: GQLDocType,
   indexType: GQLIndexType,
 ): FacetResponse => {
   const coreDispatch = useCoreDispatch();
@@ -348,7 +346,7 @@ export const useRangeFacet = (
         fetchFacetContinuousAggregation({
           field: field,
           ranges: ranges,
-          itemType: itemType,
+          itemType: docType,
           indexType: indexType,
         }),
       );
@@ -360,7 +358,7 @@ export const useRangeFacet = (
     cohortFilters,
     prevFilters,
     ranges,
-    itemType,
+    docType,
     indexType,
   ]);
 

@@ -613,7 +613,7 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
 
     // get the current filter for this facet
     const filter = useCoreSelector((state) =>
-      selectCurrentCohortFiltersByName(state, `${docType}.${field}`),
+      selectCurrentCohortFiltersByName(state, `${field}`),
     );
 
     const totalCount = useCoreSelector((state) =>
@@ -722,7 +722,7 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
             minimum={minimum}
             maximum={maximum}
             values={filterValues}
-            field={`${docType}.${field}`}
+            field={`${field}`}
             units={units}
             changedCallback={resetToCustom}
           />
@@ -732,7 +732,7 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
             <div className="mx-4">No data for this field</div>
           ) : isSuccess ? (
             <RangeValueSelector
-              field={`${docType}.${field}`}
+              field={`${field}`}
               valueLabel={FacetDocTypeToLabelsMap[docType]}
               itemsToShow={bucketsToShow}
               rangeLabelsAndValues={rangeLabelsAndValues}
@@ -742,7 +742,6 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
                 // this is the only way user interaction
                 // can set this to False
                 setSelectedRange(value);
-                console.log("setIsCustom to false");
               }}
             />
           ) : null}
@@ -909,7 +908,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
   const coreDispatch = useCoreDispatch();
 
   const clearFilters = () => {
-    coreDispatch(removeCohortFilter(`${docType}.${field}`));
+    coreDispatch(removeCohortFilter(`${field}`));
   };
 
   const toggleFlip = () => {

@@ -60,7 +60,7 @@ describe("test facet dictionary api functions", () => {
         field: "case_id",
         full: "cases.case_id",
         type: "keyword",
-        data_type: "enum",
+        facet_type: "enum",
       },
       "cases.created_datetime": {
         description: "",
@@ -68,7 +68,7 @@ describe("test facet dictionary api functions", () => {
         field: "created_datetime",
         full: "cases.created_datetime",
         type: "keyword",
-        data_type: "datetime",
+        facet_type: "datetime",
       },
       "cases.demographic.age_at_index": {
         description:
@@ -77,7 +77,7 @@ describe("test facet dictionary api functions", () => {
         field: "demographic.age_at_index",
         full: "cases.demographic.age_at_index",
         type: "long",
-        data_type: "age",
+        facet_type: "age",
         range: {
           minimum: 0,
           maximum: 89,
@@ -90,7 +90,7 @@ describe("test facet dictionary api functions", () => {
         field: "demographic.age_is_obfuscated",
         full: "cases.demographic.age_is_obfuscated",
         type: "keyword",
-        data_type: "age",
+        facet_type: "age",
         range: {},
       },
       "cases.demographic.cause_of_death": {
@@ -99,7 +99,7 @@ describe("test facet dictionary api functions", () => {
         field: "demographic.cause_of_death",
         full: "cases.demographic.cause_of_death",
         type: "keyword",
-        data_type: "enum",
+        facet_type: "enum",
       },
       "cases.demographic.cause_of_death_source": {
         description:
@@ -108,7 +108,7 @@ describe("test facet dictionary api functions", () => {
         field: "demographic.cause_of_death_source",
         full: "cases.demographic.cause_of_death_source",
         type: "keyword",
-        data_type: "enum",
+        facet_type: "enum",
       },
     };
 

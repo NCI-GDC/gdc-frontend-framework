@@ -1,8 +1,8 @@
-import { GQLDocType, GQLIndexType } from "@gff/core";
+import { GQLIndexType } from "@gff/core";
 
 export interface FacetCardProps {
   readonly field: string;
-  readonly docType: GQLDocType;
+  readonly docType: string;
   readonly description?: string;
   readonly facetName?: string;
   readonly showSearch?: boolean;

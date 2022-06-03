@@ -11,7 +11,16 @@ import {
   fetchNotifications,
   selectBanners,
   useTotalCounts,
+  useFacetDictionary,
 } from "@gff/core";
+import {
+  MdOutlineLogin as LoginIcon,
+  MdShoppingCart as CartIcon,
+  MdOutlineApps as AppsIcon,
+  MdSearch as SearchIcon,
+  MdOutlineTour as TourIcon,
+} from "react-icons/md";
+import Banner from "@/components/Banner";
 import { Button } from "@mantine/core";
 import { useTour } from "@reactour/tour";
 import steps from "../../features/tour/steps";
@@ -21,15 +30,6 @@ interface UserFlowVariedPagesProps {
   readonly indexPath?: string;
   readonly Options?: React.FC<unknown>;
 }
-
-import {
-  MdOutlineLogin as LoginIcon,
-  MdShoppingCart as CartIcon,
-  MdOutlineApps as AppsIcon,
-  MdSearch as SearchIcon,
-  MdOutlineTour as TourIcon,
-} from "react-icons/md";
-import Banner from "@/components/Banner";
 
 export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
   headerElements,
@@ -81,7 +81,8 @@ const Header: React.FC<HeaderProps> = ({
 }: HeaderProps) => {
   const { setIsOpen } = useTour();
   const currentCart = useCoreSelector((state) => selectCart(state));
-  useTotalCounts();
+  useTotalCounts(); // request total counts and facet dictionary
+  useFacetDictionary();
   return (
     <div className="px-6 py-3 border-b border-gdc-grey-lightest">
       <div className="flex flex-row flex-wrap divide-x divide-gray-300 items-center">
@@ -224,30 +225,6 @@ export interface ButtonProps {
   readonly className?: string;
   readonly stylingOff?: boolean;
 }
-
-// export const Button: React.FC<ButtonProps> = ({
-//   onClick = () => {
-//     return;
-//   },
-//   className = "",
-//   children,
-//   stylingOff = false,
-// }: PropsWithChildren<ButtonProps>) => {
-//   const classNames = stylingOff ? className : `
-//     px-2 py-1
-//     border rounded border-nci-blumine
-//     bg-nci-blumine hover:bg-nci-blumine-lightest
-//     text-white hover:text-nci-blumine-darker
-//     ${className}`;
-//   return (
-//     <button
-//       className={classNames}
-//       onClick={onClick}
-//     >
-//       {children}
-//     </button>
-//   );
-// };
 
 export const CohortExpressionsAndBuilder: React.FC<unknown> = () => {
   return <div className="h-96 text-center">Expressions + Cohort Builder</div>;

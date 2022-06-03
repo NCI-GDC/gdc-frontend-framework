@@ -2,11 +2,11 @@
   {
     "label": "General",
     "facets": [
-      "demographic.gender",
-      "demographic.race",
-      "demographic.ethnicity",
-      "diagnoses.age_at_diagnosis",
-      "diagnoses.vital_status"
+      "cases.demographic.gender",
+      "cases.demographic.race",
+      "cases.demographic.ethnicity",
+      "cases.diagnoses.age_at_diagnosis",
+      "cases.diagnoses.vital_status"
     ],
     "docType": "cases",
     "index": "explore"
@@ -14,13 +14,13 @@
   {
     "label": "General Diagnostic",
     "facets": [
-      "primary_site",
-      "disease_type",
-      "diagnoses.primary_diagnosis",
-      "diagnoses.year_of_diagnosis",
-      "diagnoses.tissue_or_organ_of_origin",
-      "diagnoses.sites_of_involvement",
-      "diagnoses.laterality"
+      "cases.primary_site",
+      "cases.disease_type",
+      "cases.diagnoses.primary_diagnosis",
+      "cases.diagnoses.year_of_diagnosis",
+      "cases.diagnoses.tissue_or_organ_of_origin",
+      "cases.diagnoses.sites_of_involvement",
+      "cases.diagnoses.laterality"
     ],
     "docType": "cases",
     "index": "explore"
@@ -28,11 +28,11 @@
   {
     "label": "Disease Status and History",
     "facets": [
-      "diagnoses.prior_malignancy",
-      "diagnoses.prior_treatment",
-      "diagnoses.synchronous_malignancy",
-      "diagnoses.progression_or_recurrence",
-      "diagnoses.residual_disease"
+      "cases.diagnoses.prior_malignancy",
+      "cases.diagnoses.prior_treatment",
+      "cases.diagnoses.synchronous_malignancy",
+      "cases.diagnoses.progression_or_recurrence",
+      "cases.diagnoses.residual_disease"
     ],
     "docType": "cases",
     "index": "explore"
@@ -40,21 +40,21 @@
   {
     "label": "Stage Classification",
     "facets": [
-      "diagnoses.ajcc_clinical_stage",
-      "diagnoses.ajcc_pathologic_stage",
-      "diagnoses.ann_arbor_clinical_stage",
-      "diagnoses.ann_arbor_pathologic_stage",
-      "diagnoses.cog_liver_stage",
-      "diagnoses.cog_renal_stage",
-      "diagnoses.enneking_msts_stage",
-      "diagnoses.figo_stage",
-      "diagnoses.igcccg_stage",
-      "diagnoses.inrg_stage",
-      "diagnoses.inss_stage",
-      "diagnoses.irs_stage",
-      "diagnoses.iss_stage",
-      "diagnoses.iss_stage",
-      "diagnoses.masaoka_stage"
+      "cases.diagnoses.ajcc_clinical_stage",
+      "cases.diagnoses.ajcc_pathologic_stage",
+      "cases.diagnoses.ann_arbor_clinical_stage",
+      "cases.diagnoses.ann_arbor_pathologic_stage",
+      "cases.diagnoses.cog_liver_stage",
+      "cases.diagnoses.cog_renal_stage",
+      "cases.diagnoses.enneking_msts_stage",
+      "cases.diagnoses.figo_stage",
+      "cases.diagnoses.igcccg_stage",
+      "cases.diagnoses.inrg_stage",
+      "cases.diagnoses.inss_stage",
+      "cases.diagnoses.irs_stage",
+      "cases.diagnoses.iss_stage",
+      "cases.diagnoses.iss_stage",
+      "cases.diagnoses.masaoka_stage"
     ],
     "docType": "cases",
     "index": "repository"
@@ -62,10 +62,10 @@
   {
     "label": "Grade Classification",
     "facets": [
-      "diagnoses.gleason_grade_group",
-      "diagnoses.inpc_grade",
-      "diagnoses.who_cns_grade",
-      "diagnoses.who_nte_grade"
+      "cases.diagnoses.gleason_grade_group",
+      "cases.diagnoses.inpc_grade",
+      "cases.diagnoses.who_cns_grade",
+      "cases.diagnoses.who_nte_grade"
     ],
     "docType": "cases",
     "index": "repository"
@@ -73,11 +73,11 @@
   {
     "label": "Other Classification",
     "facets": [
-      "diagnoses.prior_malignancy",
-      "diagnoses.prior_treatment",
-      "diagnoses.synchronous_malignancy",
-      "diagnoses.progression_or_recurrence",
-      "diagnoses.residual_disease"
+      "cases.diagnoses.prior_malignancy",
+      "cases.diagnoses.prior_treatment",
+      "cases.diagnoses.synchronous_malignancy",
+      "cases.diagnoses.progression_or_recurrence",
+      "cases.diagnoses.residual_disease"
     ],
     "docType": "cases",
     "index": "explore"

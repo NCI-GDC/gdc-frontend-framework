@@ -5,23 +5,35 @@ import {
   GQLDocType,
   selectCohortBuilderConfig,
   useCoreSelector,
+  FacetDefinition,
+  selectFacetDefinitionByName,
 } from "@gff/core";
 import { EnumFacet } from "../facets/EnumFacet";
 import NumericRangeFacet from "../facets/NumericRangeFacet";
-import { get_facets_from_list } from "./dictionary";
 import { Tabs } from "@mantine/core";
 
+const getFacetInfo = (
+  fields: ReadonlyArray<string>,
+): ReadonlyArray<FacetDefinition> => {
+  const results = fields.map((x) =>
+    useCoreSelector((state) => selectFacetDefinitionByName(state, x)),
+  );
+  console.log(results);
+  return results;
+};
+
 interface FacetGroupProps {
-  readonly facetNames: Array<Record<string, any>>;
+  readonly facets: ReadonlyArray<FacetDefinition>;
   readonly indexType?: GQLIndexType;
   readonly docType: GQLDocType;
 }
 
 export const FacetGroup: React.FC<FacetGroupProps> = ({
-  facetNames,
+  facets,
   docType,
   indexType = "explore",
 }: FacetGroupProps) => {
+  console.log(facets);
   return (
     <div className="flex flex-col border-r-2 border-l-2 border-b-2 border-t-0 p-3 w-screen/1.5 overflow-y-scroll">
       <ResponsiveMasonry
@@ -35,15 +47,14 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
         }}
       >
         <Masonry gutter="0.5em">
-          {facetNames.map((x, index) => {
+          {facets.map((x, index) => {
             if (x.facet_type === "enum")
               return (
                 <EnumFacet
-                  key={`${x.facet_filter}-${index}`}
+                  key={`${x.full}-${index}`}
                   docType={docType}
                   indexType={indexType}
-                  field={x.facet_filter}
-                  facetName={x.label}
+                  field={x.full}
                   description={x.description}
                 />
               );
@@ -59,15 +70,14 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
             ) {
               return (
                 <NumericRangeFacet
-                  key={`${x.facet_filter}-${index}`}
-                  field={x.facet_filter}
-                  facetName={x.label}
+                  key={`${x.full}-${index}`}
+                  field={x.full}
                   description={x.description}
                   rangeDatatype={x.facet_type}
                   docType={docType}
                   indexType={indexType}
-                  minimum={x.minimum}
-                  maximum={x.maximum}
+                  minimum={x?.range?.minimum}
+                  maximum={x?.range?.maximum}
                 />
               );
             }
@@ -93,7 +103,7 @@ export const FacetTabs: FC = () => {
               label={tabEntry.label}
             >
               <FacetGroup
-                facetNames={get_facets_from_list(tabEntry.facets)}
+                facets={getFacetInfo(tabEntry.facets)}
                 docType={tabEntry.docType as GQLDocType}
                 indexType={tabEntry.index as GQLIndexType}
               />

@@ -1,6 +1,5 @@
 import GDC_Dictionary from "./config/gdc_tooltips.json";
 import GDC_Dictionary_Flattened from "./config/gdc_facet_dictionary_flat.json";
-import CohortBuilderConfig from "./config/cohort_builder.json";
 import MiniSearch, { SearchResult } from "minisearch";
 
 interface CohortCategory {

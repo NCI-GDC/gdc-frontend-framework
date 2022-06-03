@@ -16,7 +16,13 @@ export const buildGraphGLBucketQuery = (
   facetName: string,
   docType: GQLDocType,
   index: GQLIndexType = "explore",
+  alias?: string,
 ): string => {
+  const queriedFacet =
+    alias !== undefined
+      ? `${convertFacetNameToGQL(alias)} : ${convertFacetNameToGQL(facetName)}`
+      : convertFacetNameToGQL(facetName);
+
   return `
   query QueryBucketCounts($filters_0: FiltersArgument!) {
       viewer {
@@ -26,7 +32,7 @@ export const buildGraphGLBucketQuery = (
                 filters: $filters_0
                 aggregations_filter_themselves: false
               ) {
-                ${convertFacetNameToGQL(facetName)} {
+                ${queriedFacet} {
                   buckets {
                     doc_count
                     key
@@ -40,7 +46,7 @@ export const buildGraphGLBucketQuery = (
   `;
 };
 
-export type processBuckets = (
+export type ProcessBucketsFunction = (
   aggregations: Record<string, unknown>,
   state: {
     [index: string]: Record<string, unknown>;
@@ -49,7 +55,7 @@ export type processBuckets = (
   [index: string]: Record<string, unknown>;
 };
 
-export const processBuckets: processBuckets = (
+export const processBuckets: ProcessBucketsFunction = (
   aggregations: Record<string, unknown>,
   state: { [index: string]: Record<string, unknown> },
 ) => {
