@@ -37,9 +37,9 @@ const slice = createSlice({
         const response = action.payload;
         state.status = "fulfilled";
         state.files =
-          response?.data?.viewer?.repository?.cases?.hits?.edges?.[0]?.node?.files?.hits?.edges;
+          response?.data?.viewer?.repository?.cases?.hits?.edges?.[0]?.node?.files;
         state.samples =
-          response?.data?.viewer?.repository?.cases?.hits?.edges?.[0]?.node?.samples?.hits?.edges;
+          response?.data?.viewer?.repository?.cases?.hits?.edges?.[0]?.node?.samples;
         return state;
       })
       .addCase(fetchBiospecimenData.pending, (state) => {

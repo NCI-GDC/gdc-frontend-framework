@@ -5,11 +5,11 @@ import {
   useCoreDispatch,
   selectCasesData,
   useCoreSelector,
-  useBiospecimenData,
 } from "@gff/core";
-import { Table, Pagination, Select } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { Table, Pagination, Select, Button, Input } from "@mantine/core";
+import React, { useEffect, useState } from "react";
 import { GqlOperation } from "@gff/core/dist/dts/features/gdcapi/filters";
+import { Biospecimen } from "../biospecimen/Biospecimen";
 
 export interface Case {
   readonly id: string;
@@ -80,52 +80,6 @@ const useCohortCases = (pageSize = 10, offset = 0) => {
   };
 };
 
-const keys = {
-  portions: {
-    analytes: {
-      node: "aliquots",
-    },
-    node: "slides",
-  },
-};
-
-const Node = ({ value }) => {
-  return <li>{value}</li>;
-};
-
-const Tree: React.FC = ({ data, keys }) => {
-  console.log("data", data);
-  console.log("length: ", data.length);
-  console.log("keys", keys);
-  return Object.keys(keys).map((k) => {
-    if (k === "node" && data.length > 0) {
-      return (
-        <li>
-          {keys[k]}{" "}
-          {data.map((d) =>
-            d.node[keys[k]].hits.edges.map((d2) => (
-              <Node value={d2.node.submitter_id} />
-            )),
-          )}{" "}
-        </li>
-      );
-    } else {
-      return data.map((d) => {
-        return (
-          <li>
-            {d.node.submitter_id}
-            <br />
-            {k}
-            <ul>
-              <Tree data={d.node[k].hits.edges} keys={keys[k]} />
-            </ul>
-          </li>
-        );
-      });
-    }
-  });
-};
-
 export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
   props: ContextualCasesViewProps,
 ) => {
@@ -138,11 +92,6 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
   const caseCounts = useCoreSelector((state) =>
     selectCohortCountsByName(state, "caseCounts"),
   );
-
-  const { data: bioSpecimenData, isFetching: isBiospecimentDataFetching } =
-    useBiospecimenData(props.caseId);
-
-  console.log(bioSpecimenData.samples);
 
   useEffect(() => {
     setPages(Math.ceil(caseCounts / pageSize));
@@ -167,7 +116,7 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
   }));
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col m-4">
       <CasesView
         cases={cases}
         caption={`Showing ${pageSize} of ${caseCounts} Cases`}
@@ -200,43 +149,7 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
           total={pages}
         />
       </div>
-      <div>
-        <h1>Biospecimen Data</h1>
-        {!isBiospecimentDataFetching && (
-          <ul>
-            <Tree data={bioSpecimenData?.samples} keys={keys} />
-          </ul>
-        )}
-        {/* {!isBiospecimentDataFetching &&
-          bioSpecimenData?.samples?.map(({ node }) => {
-            return (
-              <ul key={node.submitter_id}>
-                <li>"here"{node.submitter_id}</li>
-                <ul>
-                  {node.portions.hits.edges.length > 0 &&
-                    node.portions.hits.edges?.[0]?.node?.submitter_id && (
-                      <li
-                        key={node.portions.hits.edges?.[0]?.node?.submitter_id}
-                      >
-                        {node.portions.hits.edges?.[0]?.node?.submitter_id}
-                        {node.portions.hits.edges?.[0]?.node?.analytes?.hits
-                          ?.edges.length > 0 && (
-                          <ul>
-                            <li>
-                              {
-                                node.portions.hits.edges?.[0]?.node?.analytes
-                                  ?.hits?.edges?.[0]?.node?.submitter_id
-                              }
-                            </li>
-                          </ul>
-                        )}
-                      </li>
-                    )}
-                </ul>
-              </ul>
-            );
-          })} */}
-      </div>
+      <Biospecimen caseId={props.caseId} />
     </div>
   );
 };
