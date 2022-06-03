@@ -29,7 +29,7 @@ const FeaturedToolCard: React.FC<FeaturedToolCardProps> = ({
       </Grid.Col>
       <Grid.Col span={2}>
         <ActionIcon
-          className="self-center bg-nci-blue-darkest w-12 h-12 p-2"
+          className="self-center bg-nci-blue-darkest w-12 h-12 p-2 hover:bg-nci-blue"
           variant="filled"
           onClick={() => onClick(entry)}
           aria-label={`Navigate to ${entry.name}`}

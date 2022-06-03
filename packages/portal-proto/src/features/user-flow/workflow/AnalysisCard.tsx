@@ -60,7 +60,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
         )}
         <div className="flex flex-col">
           <Button
-            className={`bg-nci-blue-darkest mb-1 w-12 ${
+            className={`bg-nci-blue-darkest hover:bg-nci-blue hover:border-nci-blue mb-1 w-12 ${
               inactive ? "opacity-50" : ""
             }`}
             variant="filled"
@@ -87,7 +87,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
               radius="sm"
               aria-label={`Navigate to ${entry.name} Demo`}
               variant={"outline"}
-              className="text-nci-blue-darkest border-nci-blue-darkest"
+              className="text-nci-blue-darkest border-nci-blue-darkest hover:bg-nci-blue hover:text-white hover:border-nci-blue"
             >
               Demo
             </Button>

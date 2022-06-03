@@ -93,7 +93,13 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
               .map((k) => initialApps[k])
               .map((x: AppRegistrationEntry) => {
                 return (
-                  <Grid.Col key={x.name} span={4} style={{ minHeight: 64 }}>
+                  <Grid.Col
+                    key={x.name}
+                    md={4}
+                    lg={4}
+                    xl={4}
+                    style={{ minHeight: 64 }}
+                  >
                     <FeaturedToolCard
                       entry={{ ...{ applicable: true, ...x } }}
                       onClick={handleOpenAppClicked}
@@ -105,11 +111,15 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
         </div>
       </div>
       <div className="bg-white">
-        <Grid className="p-3 mt-2" gutter={"lg"}>
+        <Grid className="p-3 my-2" gutter={"lg"}>
           <Grid.Col
             data-tour="analysis_tool_filters"
             className="flex flex-col p-3"
-            span={2}
+            xs={4}
+            sm={4}
+            md={3}
+            lg={3}
+            xl={2}
           >
             <div className="flex justify-between pb-4 text-nci-blue-darkest">
               <div>
@@ -121,7 +131,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
                   control={
                     <ActionIcon
                       variant="outline"
-                      className="text-nci-blue-darkest"
+                      className="text-nci-blue-darkest hover:bg-nci-blue hover:text-white hover:border-nci-blue"
                     >
                       <SortIcon size={24} />
                     </ActionIcon>
@@ -180,15 +190,17 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
                 noWrap={false}
                 value={activeTags}
                 onChange={setActiveTags}
+                size={"xs"}
+                spacing={"xs"}
                 classNames={{
                   checked: "!text-white bg-nci-blue-darkest",
                   label:
-                    "text-nci-blue border border-solid border-nci-blue-darkest",
+                    "text-nci-blue border border-solid border-nci-blue-darkest hover:bg-nci-blue hover:text-white hover:border-nci-blue",
                   checkIcon: "text-white",
                 }}
               >
                 {appTags.map((x) => (
-                  <Chip size="sm" key={x.value} value={x.value}>
+                  <Chip key={x.value} value={x.value}>
                     {x.name}
                   </Chip>
                 ))}
@@ -196,8 +208,15 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
             </div>
           </Grid.Col>
 
-          <Grid.Col data-tour="all_other_apps" span={10}>
-            <Grid className="mx-2" gutter={"sm"}>
+          <Grid.Col
+            data-tour="all_other_apps"
+            xs={8}
+            sm={8}
+            md={9}
+            lg={9}
+            xl={10}
+          >
+            <Grid className="mx-2">
               {activeApps
                 .map((k) => initialApps[k])
                 .map((x: AppRegistrationEntry) => {
@@ -209,7 +228,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
                       md={4}
                       lg={3}
                       xl={2}
-                      style={{ minHeight: 130, maxWidth: 160 }}
+                      style={{ minHeight: 130, maxWidth: 170 }}
                     >
                       <AnalysisCard
                         entry={{ ...{ applicable: true, ...x } }}

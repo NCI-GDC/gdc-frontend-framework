@@ -75,6 +75,10 @@ const ContextBar: React.FC<CohortGroupProps> = ({
     />
   );
 
+  const buttonStyle =
+    "bg-white text-nci-blue-darkest border border-solid border-nci-blue-darkest h-12 hover:bg-nci-blue hover:text-white hover:border-nci-blue";
+  const tabStyle = `${buttonStyle} rounded-md first:border-r-0 last:border-l-0 first:rounded-r-none last:rounded-l-none hover:border-nci-blue-darkest`;
+
   return (
     <div className="mb-2 font-montserrat" data-tour="context_bar">
       <CollapsibleContainer
@@ -111,7 +115,7 @@ const ContextBar: React.FC<CohortGroupProps> = ({
             <div className="flex flex-row absolute ml-2">
               <Menu
                 control={
-                  <Button className="bg-white text-nci-blue-darkest border-solid border-nci-blue-darkest h-12">
+                  <Button className={buttonStyle}>
                     <DownloadIcon size="1.5rem" />
                     <CountButton
                       countName="fileCounts"
@@ -130,7 +134,7 @@ const ContextBar: React.FC<CohortGroupProps> = ({
               </Menu>
               <Menu
                 control={
-                  <Button className="ml-2 bg-white text-nci-blue-darkest border-solid border-nci-blue-darkest h-12">
+                  <Button className={`ml-2 ${buttonStyle}`}>
                     <FilesIcon size="1.5rem" className="mr-1" /> Metadata
                   </Button>
                 }
@@ -145,9 +149,8 @@ const ContextBar: React.FC<CohortGroupProps> = ({
               variant="unstyled"
               data-tour="cohort_summary"
               classNames={{
-                tabControl:
-                  "h-12 bg-white text-nci-blue-darkest border-1 border-nci-blue-darkest border-solid rounded-md first:border-r-0 last:border-l-0 first:rounded-r-none last:rounded-l-none",
                 tabActive: "!bg-nci-blue-darkest !text-white",
+                tabControl: tabStyle,
                 body: "py-8 px-2",
               }}
             >
