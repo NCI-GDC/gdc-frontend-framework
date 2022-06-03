@@ -46,6 +46,10 @@ export const buildGraphGLBucketQuery = (
   `;
 };
 
+/**
+ * Defines the function signature for Processing GQL Aggregation Responses
+ * into FacetBuckets
+ */
 export type ProcessBucketsFunction = (
   aggregations: Record<string, unknown>,
   state: {

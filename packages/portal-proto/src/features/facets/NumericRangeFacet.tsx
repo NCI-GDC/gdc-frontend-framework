@@ -8,12 +8,8 @@ import {
   MdWarning as WarningIcon,
 } from "react-icons/md";
 import { FaUndo as UndoIcon } from "react-icons/fa";
-import {
-  Button,
-  LoadingOverlay,
-  NumberInput,
-  SegmentedControl,
-} from "@mantine/core";
+import tw from "tailwind-styled-components";
+import { LoadingOverlay, NumberInput, SegmentedControl } from "@mantine/core";
 import {
   DAYS_IN_DECADE,
   DAYS_IN_YEAR,
@@ -69,7 +65,27 @@ interface RangeBucketElement {
 }
 
 const RadioStyle =
-  "form-check-input form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:ring-0 focus:ring-offset-0 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer";
+  "form-check-input form-check-input appearance-none rounded-full h-3 w-3 border border-nci-gray-light bg-white checked:bg-nci-blue-dark checked:bg-nci-blue-dark focus:ring-0 focus:ring-offset-0 focus:outline-none focus:bg-nci-blue-darkest active:bg-nci-blue-dark transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer";
+
+export const ApplyButton = tw.div`
+        flex
+        flex-row
+        subpixel-antialiased
+        rounded-md
+        text-base
+        font-montserrat
+        font-medium
+        text-sm
+        text-white
+        transition
+        w-full
+        justify-center
+        align-center
+        py-1
+        bg-nci-blue-dark
+        hover:bg-nci-blue-darkest
+        hover:shadow-[0_4px_5px_0px_rgba(0,0,0,0.35)]
+`;
 
 interface RangeValueSelectorProps {
   readonly itemsToShow: number;
@@ -285,12 +301,12 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
   if (rangeLabelsAndValues === undefined) return null;
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col px-1">
       {Object.keys(rangeLabelsAndValues).length > 1 ? (
-        <div className="flex flex-row items-center justify-between flex-wrap border-b-1 py-1">
+        <div className="flex flex-row items-center justify-between flex-wrap border-b-2 py-1">
           <button
             className={
-              "ml-0.5 border rounded-sm border-nci-gray-darkest bg-nci-gray hover:bg-nci-gray-lightest text-white hover:text-nci-gray-darker"
+              "border rounded-sm border-nci-gray-darkest bg-nci-gray hover:bg-nci-gray-lightest text-white hover:text-nci-gray-darker"
             }
             aria-label="Sort alphabetically"
           >
@@ -309,7 +325,7 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
             >
               <SortIcon scale="1.5em" />
             </button>
-            <p className="px-2 mr-3">{valueLabel}</p>
+            <p className="px-1">{valueLabel}</p>
           </div>
         </div>
       ) : null}
@@ -424,7 +440,7 @@ const FromTo: React.FC<FromToProps> = ({
     }
   };
   return (
-    <div className="relative p-1">
+    <div className="relative">
       <div className="flex flex-col text-nci-gray-dark text-md ">
         <div className="flex flex-row justify-end items-center flex-nowrap border">
           <div className="basis-1/5 text-center">From</div>
@@ -508,8 +524,8 @@ const FromTo: React.FC<FromToProps> = ({
             </span>
           </div>
         ) : null}
-        <div className={"flex flex-row mt-1 w-100"}>
-          <Button onClick={handleApply}>Apply</Button>
+        <div className="flex items-stretch w-100 pt-1">
+          <ApplyButton onClick={handleApply}>Apply</ApplyButton>
         </div>
       </div>
     </div>
@@ -544,7 +560,7 @@ const FacetExpander: React.FC<FacetExpanderProps> = ({
             className="text-nci-gray-darkest"
             onClick={() => onShowChanged(!isGroupExpanded)}
           />
-          <div className="pl-1 text-nci-gray-darkest">
+          <div className="pl-1 text-nci-gray-darkest font-bold">
             {" "}
             {remainingValues} more
           </div>
@@ -557,7 +573,7 @@ const FacetExpander: React.FC<FacetExpanderProps> = ({
             className="text-nci-gray-darkest"
             onClick={() => onShowChanged(!isGroupExpanded)}
           />
-          <div className="pl-1 text-nci-gray-darkest"> show less</div>
+          <div className="pl-1 text-nci-gray-darkest font-bold"> show less</div>
         </div>
       ) : null}
     </div>
@@ -704,7 +720,7 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
     };
 
     return (
-      <div className="flex flex-col w-100 space-y-2  mt-1 ">
+      <div className="flex flex-col w-100 space-y-2 mt-1 ">
         <LoadingOverlay visible={!isSuccess} />
         <div className="flex flex-row justify-between items-center">
           <input

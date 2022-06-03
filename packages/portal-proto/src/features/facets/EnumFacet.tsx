@@ -203,10 +203,10 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
             className={`card-face bg-white  ${!isFacetView ? "invisible" : ""}`}
           >
             <div>
-              <div className="flex flex-row items-center justify-between flex-wrap border p-1">
+              <div className="flex flex-row items-center justify-between flex-wrap p-1 mb-1 border-b-2">
                 <button
                   className={
-                    "ml-0.5 border rounded-sm border-nci-gray-darkest bg-nci-gray hover:bg-nci-gray-lightest text-white hover:text-nci-gray-darker"
+                    "ml-1 border rounded-sm border-nci-gray-darkest bg-nci-gray hover:bg-nci-gray-lightest text-white hover:text-nci-gray-darker"
                   }
                   aria-label="Sort alphabetically"
                 >
@@ -240,7 +240,7 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
                     .filter((entry) => entry[0] != "_missing" && entry[0] != "")
                     .sort(
                       isSortedByValue
-                        ? ([, a], [, b]) => b - a
+                        ? ([, a], [, b]) => (b as number) - (a as number)
                         : ([a], [b]) => a.localeCompare(b),
                     )
                     .map(([value, count], i) => {
@@ -277,7 +277,7 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
                           {showPercent ? (
                             <div className="flex-none text-right w-18 ">
                               (
-                              {((count / totalCount) * 100)
+                              {(((count as number) / totalCount) * 100)
                                 .toFixed(2)
                                 .toLocaleString()}
                               %)
@@ -320,7 +320,7 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
                       <MoreIcon
                         key="show-more"
                         size="1.5em"
-                        className="text-nci-gray-darkest"
+                        className="text-nci-gray-darkest "
                         onClick={() => setIsGroupExpanded(!isGroupExpanded)}
                         onKeyPress={(event) =>
                           event.key === "Enter"
@@ -330,7 +330,7 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
                         tabIndex={0}
                         aria-label="Toggle more options"
                       />
-                      <div className="pl-1 text-nci-gray-darkest">
+                      <div className="pl-1 text-nci-gray-darkest font-bold">
                         {" "}
                         {isSuccess ? remainingValues : "..."} more
                       </div>
@@ -350,7 +350,7 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
                         tabIndex={0}
                         aria-label="Toggle less options"
                       />
-                      <div className="pl-1 text-nci-gray-darkest">
+                      <div className="pl-1 text-nci-gray-darkest font-bold">
                         {" "}
                         show less
                       </div>

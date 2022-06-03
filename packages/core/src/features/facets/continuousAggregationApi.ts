@@ -3,7 +3,7 @@
  */
 
 import { Buckets, Stats } from "../gdcapi/gdcapi";
-import { normalizeGQLFacetName, processBuckets } from "./facetApiGQL";
+import { normalizeGQLFacetName, ProcessBucketsFunction } from "./facetApiGQL";
 import { isObject } from "../../ts-utils";
 
 export interface RangeBuckets extends Stats {
@@ -24,7 +24,7 @@ export const isRangeBucketsAggregation = (
   );
 };
 
-export const processRangeResults: processBuckets = (
+export const processRangeResults: ProcessBucketsFunction = (
   aggregations: Record<string, unknown>,
   state: { [index: string]: Record<string, unknown> },
 ) => {
@@ -42,6 +42,7 @@ export const processRangeResults: processBuckets = (
       );
     } else {
       // Unhandled aggregation
+      // TODO: this smells and should at least be logged.
     }
   });
   return state;
