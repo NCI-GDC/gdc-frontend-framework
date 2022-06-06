@@ -4,7 +4,7 @@
  */
 
 import { useEffect, useState } from "react";
-import { Loader } from "@mantine/core";
+import { Loader, Tooltip } from "@mantine/core";
 import {
   VictoryBar,
   VictoryChart,
@@ -13,6 +13,7 @@ import {
   VictoryAxis,
   VictoryLabel,
   VictoryStack,
+  VictoryTooltip,
 } from "victory";
 import * as tailwindConfig from "tailwind.config";
 import ChartTitleBar from "./ChartTitleBar";
@@ -38,8 +39,9 @@ const processChartData = (facetData: Record<string, any>, maxBins = 100) => {
   const results = Object.keys(data)
     .slice(0, maxBins)
     .map((d) => ({
-      x: processLabel(d, 30),
+      x: truncateString(processLabel(d), 35),
       y: data[d],
+      fullXName: processLabel(d),
     }));
   return results.reverse();
 };
@@ -100,18 +102,52 @@ const convertFieldToName = (field: string): string => {
   return capitalizedTokens.join(" ");
 };
 
-function truncateString(str, n) {
+const truncateString = (str: string, n: number): string => {
   if (str.length > n) {
     return str.substring(0, n) + "...";
   } else {
     return str;
   }
-}
+};
 
-export const processLabel = (label: string, shorten = 100): string => {
+export const processLabel = (label: string): string => {
   const tokens = label.split(" ");
   const capitalizedTokens = tokens.map((s) => capitalize(s));
-  return truncateString(capitalizedTokens.join(" "), shorten);
+  return capitalizedTokens.join(" ");
+};
+
+interface EnumBarChartTooltipProps {
+  readonly x?: number;
+  readonly y?: number;
+  readonly datum?: {
+    y: number;
+    fullXName: string;
+  };
+}
+
+const EnumBarChartTooltip: React.FC<EnumBarChartTooltipProps> = ({
+  x,
+  y,
+  datum,
+}: EnumBarChartTooltipProps) => {
+  return (
+    <g transform={`translate(${x}, ${y})`}>
+      <foreignObject>
+        <Tooltip
+          label={
+            <>
+              <b>{datum.fullXName}</b>
+              <p>{datum.y.toLocaleString()} Cases</p>
+            </>
+          }
+          withArrow
+          opened
+        >
+          <></>
+        </Tooltip>
+      </foreignObject>
+    </g>
+  );
 };
 
 interface EnumBarChartData {
@@ -146,7 +182,7 @@ const EnumBarChart: React.FC<BarChartProps> = ({
         tickLabelComponent={
           <VictoryLabel
             dx={12}
-            dy={-12}
+            dy={-15}
             textAnchor={"start"}
             style={[{ fontSize: 23 }]}
           />
@@ -174,6 +210,10 @@ const EnumBarChart: React.FC<BarChartProps> = ({
       <VictoryStack>
         <VictoryBar
           horizontal
+          labels={() => ""}
+          labelComponent={
+            <VictoryTooltip flyoutComponent={<EnumBarChartTooltip />} />
+          }
           style={{
             data: {
               fill: tailwindConfig.theme.extend.colors["gdc-blue"].darker,

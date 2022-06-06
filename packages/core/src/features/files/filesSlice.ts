@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { CoreDataSelectorResponse, DataStatus } from "../../dataAcess";
-import { CoreDispatch, CoreState } from "../../store";
+import { CoreDispatch } from "../../store";
+import { CoreState } from "../../reducers";
 import {
   fetchGdcFiles,
   GdcApiRequest,
@@ -42,6 +43,7 @@ const fileTypes = [
   "secondary_expression_analysis",
   "masked_methylation_array",
   "protein_expression",
+  "pathology_report",
 ] as const;
 
 export type FileType = typeof fileTypes[number];
@@ -106,6 +108,7 @@ const dataFormats = [
   "XLSX",
   "MEX",
   "HDF5",
+  "PDF",
 ] as const;
 
 export type DataFormat = typeof dataFormats[number];
@@ -149,6 +152,7 @@ const dataTypes = [
   "Transcript Fusion",
   "Masked Intensities",
   "miRNA Expression Quantification",
+  "Pathology Report",
 ] as const;
 
 export type DataType = typeof dataTypes[number];

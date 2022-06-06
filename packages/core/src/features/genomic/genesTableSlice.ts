@@ -5,7 +5,8 @@ import {
   DataStatus,
 } from "../../dataAcess";
 import { castDraft } from "immer";
-import { CoreDispatch, CoreState } from "../../store";
+import { CoreDispatch } from "../../store";
+import { CoreState } from "../../reducers";
 import { fetchSmsAggregations } from "./smsAggregationsApi";
 import {
   GraphQLApiResponse,

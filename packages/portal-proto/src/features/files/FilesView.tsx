@@ -103,7 +103,9 @@ export const ContextualFilesView: React.FC<ContextualFilesViewProps> = ({
           >
             {"Add Selected Files"}
           </Menu.Item>
-          <Menu.Item onClick={() => removeFromCart(selectedFiles, dispatch)}>
+          <Menu.Item
+            onClick={() => removeFromCart(selectedFiles, currentCart, dispatch)}
+          >
             {"Remove Selected Files"}
           </Menu.Item>
         </Menu>

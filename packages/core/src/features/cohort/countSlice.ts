@@ -6,7 +6,8 @@ import {
   DataStatus,
 } from "../../dataAcess";
 
-import { CoreDispatch, CoreState } from "../../store";
+import { CoreDispatch } from "../../store";
+import { CoreState } from "../../reducers";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import {
   selectCurrentCohortFilters,

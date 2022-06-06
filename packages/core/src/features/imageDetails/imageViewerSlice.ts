@@ -3,7 +3,7 @@ import {
   CoreDataSelectorResponse,
   createUseCoreDataHook,
 } from "../../dataAcess";
-import { CoreState } from "../../store";
+import { CoreState } from "../../reducers";
 import { GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import { fetchImageViewerQuery, queryParams } from "./imageDetailsApi";
 import { trimEnd, find } from "lodash";

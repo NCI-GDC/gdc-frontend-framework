@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CoreDispatch, CoreState } from "../../store";
+import { CoreDispatch } from "../../store";
+import { CoreState } from "../../reducers";
 import { buildFetchError } from "../gdcapi/gdcapi";
 
 export interface BannerNotification {
@@ -84,7 +85,7 @@ export const { dismissNotification } = slice.actions;
 
 export const selectBanners = (state: CoreState): BannerNotification[] =>
   state.bannerNotification.filter(
-    (banner) =>
+    (banner: Pick<BannerNotification, "dismissed" | "end_date">) =>
       !banner.dismissed &&
       (banner.end_date === null || new Date(banner.end_date) >= new Date()),
   );
