@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
 import { Divider } from "@mantine/core";
 import {
@@ -14,15 +14,18 @@ import { AppRegistrationEntry } from "./utils";
 export interface AnalysisCardProps {
   entry: AppRegistrationEntry;
   readonly onClick?: (x: AppRegistrationEntry) => void;
+  readonly descriptionVisible: boolean;
+  readonly setDescriptionVisible: () => void;
 }
 
 const AnalysisCard: React.FC<AnalysisCardProps> = ({
   entry,
   onClick,
+  descriptionVisible,
+  setDescriptionVisible,
 }: AnalysisCardProps) => {
   const cohortCounts = useCoreSelector((state) => selectCohortCounts(state));
   let caseCounts = cohortCounts?.caseCounts || 0;
-  const [descriptionVisisble, setDescriptionVisible] = useState(false);
 
   // TODO - remove, just for demo purposes
   if (entry.name === "scRNA-Seq" || entry.name === "Gene Expression") {
@@ -37,7 +40,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
       p="xs"
       className={`border-nci-blue-darkest border ${
         inactive ? "" : "border-t-6"
-      } ${descriptionVisisble ? "h-fit" : "h-32"}`}
+      } ${descriptionVisible ? "h-fit" : "h-32"}`}
       aria-label={`${entry.name} Tool`}
     >
       <div className="flex justify-between mb-1">
@@ -97,11 +100,11 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
       <Divider variant="dotted" />
       <div className="flex flex-col items-center text-xs">
         <Button
-          onClick={() => setDescriptionVisible(!descriptionVisisble)}
+          onClick={() => setDescriptionVisible()}
           variant="white"
           size="xs"
           rightIcon={
-            descriptionVisisble ? (
+            descriptionVisible ? (
               <MdArrowDropUp size={16} />
             ) : (
               <MdArrowDropDown size={16} />
@@ -115,7 +118,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
           {entry.name}
         </Button>
         <Collapse
-          in={descriptionVisisble}
+          in={descriptionVisible}
           className="bg-nci-blue-lightest -mx-2.5 mb-2.5 p-2"
         >
           {entry.description}

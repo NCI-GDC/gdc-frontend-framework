@@ -51,6 +51,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
   const [recommendedApps] = useState([...RECOMMENDED_APPS]); // recommended apps based on Context
   const [remainingApps] = useState([...ALL_OTHER_APPS]); // all other apps
   const [activeApps, setActiveApps] = useState([...ALL_OTHER_APPS]); // set of active apps i.e. not recommended but filterable/dimmable
+  const [activeAnalysisCard, setActiveAnalysisCard] = useState(null);
 
   const sortTools = (arr, st) => {
     if (st === "default") return arr;
@@ -219,7 +220,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
             <Grid className="mx-2">
               {activeApps
                 .map((k) => initialApps[k])
-                .map((x: AppRegistrationEntry) => {
+                .map((x: AppRegistrationEntry, idx: number) => {
                   return (
                     <Grid.Col
                       key={x.name}
@@ -233,6 +234,12 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
                       <AnalysisCard
                         entry={{ ...{ applicable: true, ...x } }}
                         onClick={handleOpenAppClicked}
+                        descriptionVisible={activeAnalysisCard === idx}
+                        setDescriptionVisible={() =>
+                          setActiveAnalysisCard(
+                            idx === activeAnalysisCard ? null : idx,
+                          )
+                        }
                       />
                     </Grid.Col>
                   );
