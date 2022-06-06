@@ -56,7 +56,7 @@
     "@types/react-modal": "^3.13.1",
     "@types/react-redux": "^7.1.16",
     "@types/react-select": "^4.0.17",
-    "autoprefixer": "=10.4.6",
+    "autoprefixer": "=10.4.5",
     "jest": "^27.0.6",
     "jest-canvas-mock": "^2.4.0",
     "jest-css-modules-transform": "^4.2.0",
