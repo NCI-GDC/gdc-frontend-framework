@@ -17,10 +17,10 @@ export const SummaryFacets: React.FC<SummaryFacetProps> = ({
         {fields.map((entry, index) => {
           const style =
             index == 4
-              ? "xl:grid hidden h-fit"
+              ? "xl:grid hidden w-fit"
               : index == 5
-              ? "2xl:grid hidden h-fit"
-              : "grid h-fit";
+              ? "2xl:grid hidden"
+              : "grid w-fit ";
           return (
             <div
               key={`summary-chart-${entry.field}-{${index}`}
@@ -33,7 +33,7 @@ export const SummaryFacets: React.FC<SummaryFacetProps> = ({
                 showSearch={false}
                 startShowingData={false}
                 key={`summary-chart-${index}`}
-                width="w-[300px]"
+                width="w-64"
               />
             </div>
           );
