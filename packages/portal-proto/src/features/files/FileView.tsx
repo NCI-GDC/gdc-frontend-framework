@@ -86,27 +86,29 @@ export const FileView: React.FC<FileViewProps> = ({
     downstream_analyses: GdcFile["downstream_analyses"];
   }): JSX.Element => {
     const tableRows = [];
-    const workflowType = downstream_analyses?.[0]?.workflow_type;
-    downstream_analyses?.[0]?.output_files.forEach((obj) => {
-      tableRows.push({
-        file_name: (
-          <GenericLink path={`/files/${obj.file_id}`} text={obj.file_name} />
-        ),
-        data_category: obj.data_category,
-        data_type: obj.data_type,
-        data_format: obj.data_format,
-        workflow_type: workflowType,
-        file_size: fileSize(obj.file_size),
-        action: (
-          <>
-            <button className="mr-2 bg-white border border-black rounded p-1 hover:bg-black hover:text-white focus:bg-black focus:text-white">
-              <FaShoppingCart title="Add to Cart" />
-            </button>
-            <button className="bg-white border border-black rounded p-1 hover:bg-black hover:text-white focus:bg-black focus:text-white">
-              <FaDownload title="Download" />
-            </button>
-          </>
-        ),
+    downstream_analyses?.forEach((byWorkflowType) => {
+      const workflowType = byWorkflowType?.workflow_type;
+      byWorkflowType?.output_files.forEach((obj) => {
+        tableRows.push({
+          file_name: (
+            <GenericLink path={`/files/${obj.file_id}`} text={obj.file_name} />
+          ),
+          data_category: obj.data_category,
+          data_type: obj.data_type,
+          data_format: obj.data_format,
+          workflow_type: workflowType,
+          file_size: fileSize(obj.file_size),
+          action: (
+            <>
+              <button className="mr-2 bg-white border border-black rounded p-1 hover:bg-black hover:text-white focus:bg-black focus:text-white">
+                <FaShoppingCart title="Add to Cart" />
+              </button>
+              <button className="bg-white border border-black rounded p-1 hover:bg-black hover:text-white focus:bg-black focus:text-white">
+                <FaDownload title="Download" />
+              </button>
+            </>
+          ),
+        });
       });
     });
 
@@ -206,7 +208,7 @@ export const FileView: React.FC<FileViewProps> = ({
         case_id: (
           <GenericLink
             path={`/cases/${entity.case_id}`}
-            text={entity.case_id}
+            text={caseData.submitter_id}
           />
         ),
         annotations: annotationsLink,
@@ -271,10 +273,6 @@ export const FileView: React.FC<FileViewProps> = ({
                 name: "MD5 Checksum",
               },
               {
-                field: "state",
-                name: "State",
-              },
-              {
                 field: "project_id",
                 name: "Project",
                 modifier: (v) => (
@@ -320,10 +318,16 @@ export const FileView: React.FC<FileViewProps> = ({
       )}
       <div className="bg-white w-full mt-4">
         <h2 className="p-2 text-lg mx-4">Associated Cases/Biospecimens</h2>
-        <AssociatedCB
-          cases={file?.cases}
-          associated_entities={file?.associated_entities}
-        />
+        {file?.associated_entities?.length > 0 ? (
+          <AssociatedCB
+            cases={file?.cases}
+            associated_entities={file?.associated_entities}
+          />
+        ) : (
+          <h3 className="p-2 mx-4 text-nci-gray-darker">
+            No cases or biospecimen found.
+          </h3>
+        )}
       </div>
       {file?.analysis && (
         <div className="bg-white w-full mt-4">

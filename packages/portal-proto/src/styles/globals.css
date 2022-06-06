@@ -47,5 +47,10 @@
   text-align: left;
 }
 
+.VictoryContainer [role="graphics-symbol"]:focus {
+  outline-color: black;
+  outline-style: dotted;
+}
+
 @tailwind utilities;
 @tailwind varients;

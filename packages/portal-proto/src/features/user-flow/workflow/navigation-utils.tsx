@@ -11,7 +11,7 @@ export const headerElements = [
     }}
   >
     <Tooltip
-      label="Explore and analyze harmonized high-quality clinical and genomics data from cancer genomic studies with the tools in the Research Workbench."
+      label="Explore and analyze harmonized high-quality clinical and genomics data from cancer genomic studies with the tools in the Analysis Center."
       classNames={{
         body: "shadow-lg bg-white text-nci-gray-darkest",
       }}

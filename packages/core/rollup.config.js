@@ -8,8 +8,14 @@ const globals = {
   react: "React",
   "react-redux": "reactRedux",
   "@reduxjs/toolkit": "toolkit",
-  "@reduxjs/toolkit/dist/query": "query",
+  "@reduxjs/toolkit/query": "query",
+  redux: "redux",
+  "redux-persist": "reduxPersist",
+  "redux-persist/lib/storage/createWebStorage": "createWebStorage",
   uuid: "uuid",
+  lodash: "lodash",
+  immer: "immer",
+  "redux-persist/integration/react": "integration",
 };
 
 const config = [
@@ -39,6 +45,7 @@ const config = [
         name: "gffCore",
       },
     ],
+    external: ["lodash", "uuid", "immer", "isomorphic-fetch", "redux"],
     plugins: [
       peerDepsExternal(),
       typescript(),

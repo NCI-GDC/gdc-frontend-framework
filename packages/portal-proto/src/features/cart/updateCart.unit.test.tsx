@@ -1,5 +1,5 @@
 import { showNotification } from "@mantine/notifications";
-import { render } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import { GdcFile } from "@gff/core";
 import { addToCart, removeFromCart } from "./updateCart";
 
@@ -109,13 +109,49 @@ describe("updateCart, addToCart", () => {
     expect(
       getByText("Please add fewer files", { exact: false }),
     ).toBeInTheDocument();
+    expect(
+      getByText("currently contains 2 files", { exact: false }),
+    ).toBeInTheDocument();
     expect(dispatchMock).not.toHaveBeenCalled();
+  });
+
+  it("undo button shows remove notification", () => {
+    const dispatchMock = jest.fn();
+    addToCart([{ fileName: "filey", id: "1" } as GdcFile], [], dispatchMock);
+
+    const { getByText } = render(
+      mockedShowNotification.mock.calls[0][0].message,
+    );
+    fireEvent.click(getByText("Undo"));
+
+    const { getByText: getByRemoveNotificationText } = render(
+      mockedShowNotification.mock.calls[1][0].message,
+    );
+
+    expect(
+      getByRemoveNotificationText("Removed filey from the cart."),
+    ).toBeInTheDocument();
+  });
+
+  it("do not show undo button if cart was not modified", () => {
+    const dispatchMock = jest.fn();
+
+    addToCart([{ fileName: "filey", id: "1" } as GdcFile], ["1"], dispatchMock);
+
+    const { queryByText } = render(
+      mockedShowNotification.mock.calls[0][0].message,
+    );
+    expect(queryByText("Undo")).not.toBeInTheDocument();
   });
 });
 
 describe("updateCart, removeFromCart", () => {
   it("remove single file", () => {
-    removeFromCart([{ fileName: "abc", id: "2" }] as GdcFile[], jest.fn());
+    removeFromCart(
+      [{ fileName: "abc", id: "2" }] as GdcFile[],
+      ["2"],
+      jest.fn(),
+    );
 
     const { getByText } = render(
       mockedShowNotification.mock.calls[0][0].message,
@@ -129,6 +165,7 @@ describe("updateCart, removeFromCart", () => {
         { fileName: "filey", id: "1" },
         { fileName: "abc", id: "2" },
       ] as GdcFile[],
+      ["1", "2"],
       jest.fn(),
     );
 
@@ -136,5 +173,26 @@ describe("updateCart, removeFromCart", () => {
       mockedShowNotification.mock.calls[0][0].message,
     );
     expect(getByText("Removed 2 files from the cart.")).toBeInTheDocument();
+  });
+
+  it("undo button shows add notification", () => {
+    removeFromCart(
+      [{ fileName: "abc", id: "2" }] as GdcFile[],
+      ["2"],
+      jest.fn(),
+    );
+
+    const { getByText } = render(
+      mockedShowNotification.mock.calls[0][0].message,
+    );
+    fireEvent.click(getByText("Undo"));
+
+    const { getByText: getByAddNotificationText } = render(
+      mockedShowNotification.mock.calls[1][0].message,
+    );
+
+    expect(
+      getByAddNotificationText("Added abc to the cart."),
+    ).toBeInTheDocument();
   });
 });
