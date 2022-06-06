@@ -379,12 +379,12 @@ interface FromToProps {
 
 /**
  * A Component which manages a range. The From/To values are managed by a numeric text entry
- * @param field
- * @param minimum
- * @param maximum
- * @param values
- * @param changedCallback
- * @param units
+ * @param field - field for this range
+ * @param minimum - range minimum value
+ * @param maximum - range maximum value
+ * @param values - the current value of the range
+ * @param changedCallback - function called when FromTo values change
+ * @param units - string represention of unit: "days" | "years" | "year", "percent" | "numeric"
  * @constructor
  */
 const FromTo: React.FC<FromToProps> = ({
@@ -680,7 +680,7 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
     }, [minimum, numBuckets, units]);
 
     const [isCustom, setIsCustom] = useState(filterKey === "custom"); // in custom Range Mode
-    const [selectedRange, setSelectedRange] = useState(filterKey);
+    const [selectedRange, setSelectedRange] = useState(filterKey); // the current selected range
 
     const { data: rangeData, isSuccess } = useRangeFacet(
       field,

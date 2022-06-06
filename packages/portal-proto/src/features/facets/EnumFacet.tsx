@@ -51,7 +51,6 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
   startShowingData = true,
   showPercent = true,
   hideIfEmpty = true,
-  indexType = "explore",
 }: FacetCardProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
@@ -59,10 +58,10 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
   const [isFacetView, setIsFacetView] = useState(startShowingData);
   const [visibleItems, setVisibleItems] = useState(DEFAULT_VISIBLE_ITEMS);
   const cardRef = useRef<HTMLDivElement>(null);
+  // TODO: Move this outside of Facet Component
   const { data, enumFilters, isSuccess } = FacetEnumHooks[docType](
     field,
     docType,
-    indexType,
   );
   const [selectedEnums, setSelectedEnums] = useState(enumFilters);
 
@@ -71,6 +70,7 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
   const updateFilters = UpdateEnums[docType]; // update the filter for this facet
 
   // get the total count to compute percentages
+  // TODO: move this outside of Facet Component
   const totalCount = useCoreSelector((state) =>
     selectTotalCountsByName(state, FacetDocTypeToCountsIndexMap[docType]),
   );

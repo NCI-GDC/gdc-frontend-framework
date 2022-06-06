@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { CollapsibleContainer } from "../../components/CollapsibleContainer";
+import React, { useState } from "react";
+import { CollapsibleContainer } from "@/components/CollapsibleContainer";
 import { Button, Menu, Tabs } from "@mantine/core";
 import { ContextualCasesView } from "../cases/CasesView";
 import CountButton from "./CountButton";
@@ -54,12 +54,12 @@ const ContextBar: React.FC<CohortGroupProps> = ({
   };
 
   const [summaryFields] = useState([
-    { field: "primary_site", name: "Primary Site" },
-    { field: "disease_type", name: "Disease Type" },
-    { field: "project.project_id", name: "Project" },
-    { field: "project.program.name", name: "Program Name" },
-    { field: "demographic.gender", name: "Gender" },
-    { field: "demographic.race", name: "Race" },
+    { field: "cases.primary_site", name: "Primary Site" },
+    { field: "cases.disease_type", name: "Disease Type" },
+    { field: "cases.project.project_id", name: "Project" },
+    { field: "cases.project.program.name", name: "Program Name" },
+    { field: "cases.demographic.gender", name: "Gender" },
+    { field: "cases.demographic.race", name: "Race" },
   ]);
 
   const filters = useCohortFacetFilters();

@@ -1,3 +1,7 @@
+/**
+ * Genomic Filters are designed to be local
+ */
+
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { GqlOperation, Operation } from "../gdcapi/filters";
 import { CoreState } from "../../store";
@@ -10,7 +14,7 @@ import {
 const initialState: FilterSet = {
   mode: "and",
   root: {
-    is_cancer_gene_census: {
+    "genes.is_cancer_gene_census": {
       field: "genes.is_cancer_gene_census",
       operator: "includes",
       operands: ["true"], // TODO: this will be fixed when toggle facets are implemented

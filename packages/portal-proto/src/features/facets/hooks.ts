@@ -9,8 +9,6 @@ import {
   FilterSet,
   removeCohortFilter,
   removeGenomicFilter,
-  selectCaseFacetByField,
-  selectFileFacetByField,
   selectCurrentCohortFilters,
   selectCurrentCohortFiltersByName,
   selectGenesFacetByField,
@@ -27,6 +25,7 @@ import {
   NumericFromTo,
   selectRangeFacetByField,
   fetchFacetContinuousAggregation,
+  selectFacetByDocTypeAndField,
   usePrevious,
 } from "@gff/core";
 import { useEffect } from "react";
@@ -90,14 +89,13 @@ export const useCasesFacet = (
 ): EnumFacetResponse => {
   const coreDispatch = useCoreDispatch();
 
-  const facet: FacetBuckets =
-    docType == "cases"
-      ? useCoreSelector((state) => selectCaseFacetByField(state, field))
-      : useCoreSelector((state) => selectFileFacetByField(state, field));
+  const facet: FacetBuckets = useCoreSelector((state) =>
+    selectFacetByDocTypeAndField(state, docType, field),
+  );
 
   // NOTE: the facets filters require prepending the doc type in
   // front of the field.
-  const enumValues = useCohortFacetFilterByName(`${field}`);
+  const enumValues = useCohortFacetFilterByName(field);
   const cohortFilters = useCohortFacetFilter();
   const prevCohortFilters = usePrevious(cohortFilters);
   const prevEnumValues = usePrevious(enumValues);
@@ -152,7 +150,7 @@ const useGenesFacet = (
     selectGenesFacetByField(state, field),
   );
 
-  const enumValues = useGenomicFilterByName(`genes.${field}`);
+  const enumValues = useGenomicFilterByName(field);
   const cohortFilters = useCohortFacetFilter();
   const genomicFilters = useGenomicFacetFilter();
   const prevCohortFilters = usePrevious(cohortFilters);
@@ -168,7 +166,7 @@ const useGenesFacet = (
     ) {
       coreDispatch(
         fetchFacetByNameGQL({
-          field: `${field}`,
+          field: field,
           docType: docType,
           index: indexType,
         }),
@@ -212,7 +210,7 @@ const useMutationsFacet = (
     selectSSMSFacetByField(state, field),
   );
 
-  const enumValues = useGenomicFilterByName(`ssms.${field}`);
+  const enumValues = useGenomicFilterByName(field);
   const cohortFilters = useCohortFacetFilter();
   const genomicFilters = useGenomicFacetFilter();
   const prevCohortFilters = usePrevious(cohortFilters);
@@ -228,7 +226,7 @@ const useMutationsFacet = (
     ) {
       coreDispatch(
         fetchFacetByNameGQL({
-          field: `${field}`,
+          field: field,
           docType: docType,
           index: indexType,
         }),
@@ -282,17 +280,17 @@ export const updateEnumFilters: updateEnumFiltersFunc = (
   if (enumerationFilters.length > 0) {
     dispatch(
       updateCohortFilter({
-        field: `${field}`,
+        field: field,
         operation: {
           operator: "includes",
-          field: `${field}`,
+          field: field,
           operands: enumerationFilters,
         },
       }),
     );
   } else {
     // completely remove the field
-    dispatch(removeCohortFilter(`${field}`));
+    dispatch(removeCohortFilter(field));
   }
 };
 
@@ -312,17 +310,17 @@ export const updateGenomicEnumFilters: updateGenomicEnumFiltersFunc = (
   if (enumerationFilters.length > 0) {
     dispatch(
       updateGenomicFilter({
-        field: `${field}`,
+        field: field,
         operation: {
           operator: "includes",
-          field: `${field}`,
+          field: field,
           operands: enumerationFilters,
         },
       }),
     );
   } else {
     // completely remove the field
-    dispatch(removeGenomicFilter(`${field}`));
+    dispatch(removeGenomicFilter(field));
   }
 };
 
@@ -375,8 +373,8 @@ export const useRangeFacet = (
 export const UpdateEnums = {
   cases: updateEnumFilters,
   files: updateEnumFilters,
-  genes: updateEnumFilters,
-  ssms: updateEnumFilters,
+  genes: updateGenomicEnumFilters,
+  ssms: updateGenomicEnumFilters,
 };
 
 export const FacetEnumHooks = {

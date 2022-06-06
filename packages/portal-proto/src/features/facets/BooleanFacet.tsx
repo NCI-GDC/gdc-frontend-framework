@@ -33,13 +33,13 @@ const BooleanFacet: React.FC<BooleanEnumFacetCardProps> = ({
   showPercent = true,
   hideIfEmpty = false,
 }: BooleanEnumFacetCardProps) => {
-  const [visibleItems, setVisibleItems] = useState(1);
+  const [visibleItems] = useState(1);
   const { data, enumFilters, isSuccess } = FacetEnumHooks[docType](
     field,
     docType,
     indexType,
   );
-  const [selectedEnums, setSelectedEnums] = useState(enumFilters);
+  const [selectedEnums] = useState(enumFilters);
   const coreDispatch = useCoreDispatch();
   const updateFilters = UpdateEnums[docType];
 

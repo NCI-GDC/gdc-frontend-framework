@@ -26,9 +26,14 @@ export const fetchFacetByNameGQL = createAsyncThunk<
     thunkAPI,
   ) => {
     const filters = selectCurrentCohortGqlFilters(thunkAPI.getState());
+
+    // the GDC GraphQL schema does accept the docType prepended if the
+    // docType is the same. Remove it but use the original field string
+    // as the alias which reduces the complexity when processing facet buckets
     const adjField = field.includes(`${docType}.`)
       ? field.replace(`${docType}.`, "")
       : field;
+
     const queryGQL = buildGraphGLBucketQuery(adjField, docType, index, field);
 
     const filtersGQL = {
@@ -95,6 +100,12 @@ export const facetsGQLReducer = facetsGQLSlice.reducer;
 export const selectCaseFacets = (
   state: CoreState,
 ): Record<string, FacetBuckets> => state.facetsGQL.facetsGQL.cases;
+
+export const selectFacetByDocTypeAndField = (
+  state: CoreState,
+  docType: GQLDocType,
+  field: string,
+): FacetBuckets => state.facetsGQL.facetsGQL[docType][field];
 
 export const selectCaseFacetByField = (
   state: CoreState,

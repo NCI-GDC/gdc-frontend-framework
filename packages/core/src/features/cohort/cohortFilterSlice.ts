@@ -35,7 +35,7 @@ export interface FilterSet {
 }
 
 export interface CohortFilterState {
-  readonly filters: FilterSet; // TODO: should be array of FilterSets?
+  readonly filters: FilterSet;
 }
 
 const initialState: CohortFilterState = { filters: { mode: "and", root: {} } };
