@@ -201,7 +201,7 @@ const useGenesFacet = (
  * Mutations Facet Selector using GQL
  */
 const useMutationsFacet = (
-  field,
+  field: string,
   docType = "ssms" as GQLDocType,
   indexType = "explore" as GQLIndexType,
 ): EnumFacetResponse => {
@@ -268,7 +268,6 @@ type updateEnumFiltersFunc = (
  * @param dispatch CoreDispatch instance
  * @param enumerationFilters values to update
  * @param field field to update
- * @param prefix "cases"|"files"  | "genes" |  "ssms"  prefix for fields
  */
 export const updateEnumFilters: updateEnumFiltersFunc = (
   dispatch: CoreDispatch,
@@ -344,7 +343,7 @@ export const useRangeFacet = (
         fetchFacetContinuousAggregation({
           field: field,
           ranges: ranges,
-          itemType: docType,
+          docType: docType,
           indexType: indexType,
         }),
       );

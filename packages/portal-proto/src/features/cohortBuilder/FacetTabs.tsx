@@ -18,7 +18,6 @@ const getFacetInfo = (
   const results = fields.map((x) =>
     useCoreSelector((state) => selectFacetDefinitionByName(state, x)),
   );
-  console.log(results);
   return results;
 };
 
@@ -33,20 +32,10 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
   docType,
   indexType = "explore",
 }: FacetGroupProps) => {
-  console.log(facets);
   return (
-    <div className="flex flex-col border-r-2 border-l-2 border-b-2 border-t-0 p-3 w-screen/1.5 overflow-y-scroll">
-      <ResponsiveMasonry
-        columnsCountBreakPoints={{
-          350: 2,
-          750: 3,
-          900: 4,
-          1400: 5,
-          1800: 6,
-          2200: 7,
-        }}
-      >
-        <Masonry gutter="0.5em">
+    <div className="flex flex-col w-screen/1.5 bg-white overflow-y-scroll overflow-x-clip">
+      <ResponsiveMasonry columnsCountBreakPoints={{ 640: 3, 1400: 3 }}>
+        <Masonry gutter="0.5em" className="m-4">
           {facets.map((x, index) => {
             if (x.facet_type === "enum")
               return (
@@ -94,8 +83,17 @@ export const FacetTabs: FC = () => {
   );
 
   return (
-    <div className="w-100 px-10">
-      <Tabs color="teal" variant="pills">
+    <div className="w-100">
+      <Tabs
+        variant="unstyled"
+        orientation="vertical"
+        classNames={{
+          tabControl:
+            "font-bold !font-medium !bg-nci-blue-dark !text-nci-gray-lightest",
+          tabActive: "!bg-white !text-nci-gray-darkest",
+          body: "!pl-0 !ml-0",
+        }}
+      >
         {Object.values(tabsConfig).map((tabEntry) => {
           return (
             <Tabs.Tab

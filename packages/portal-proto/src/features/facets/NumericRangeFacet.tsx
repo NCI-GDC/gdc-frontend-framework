@@ -933,7 +933,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
 
   return (
     <div>
-      <div className="flex flex-col w-64 bg-white relative shadow-lg border-nci-gray-lightest border-1 rounded-b-md text-xs transition ">
+      <div className="flex flex-col  mx-1 bg-white relative shadow-lg border-nci-gray-lightest border-1 rounded-b-md text-xs transition ">
         <div className="flex items-center justify-between flex-wrap bg-nci-blue-lightest shadow-md px-1.5">
           <div className="has-tooltip text-nci-gray-darkest font-heading font-semibold text-md">
             {facetName === null ? convertFieldToName(field) : facetName}

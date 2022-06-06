@@ -44,6 +44,7 @@ import isEqual from "lodash/isEqual";
 export const EnumFacet: React.FC<FacetCardProps> = ({
   field,
   docType,
+  indexType,
   description,
   facetName = null,
   showSearch = true,
@@ -51,6 +52,7 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
   startShowingData = true,
   showPercent = true,
   hideIfEmpty = true,
+  width = undefined,
 }: FacetCardProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
@@ -62,6 +64,7 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
   const { data, enumFilters, isSuccess } = FacetEnumHooks[docType](
     field,
     docType,
+    indexType,
   );
   const [selectedEnums, setSelectedEnums] = useState(enumFilters);
 
@@ -141,7 +144,11 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
       : maxValuesToDisplay;
 
   return (
-    <div className="flex flex-col w-64 bg-white relative shadow-lg border-nci-gray-lightest border-1 rounded-b-md text-xs transition ">
+    <div
+      className={`flex flex-col ${
+        width ? width : "mx-1"
+      } bg-white relative shadow-lg border-nci-gray-lightest border-1 rounded-b-md text-xs transition`}
+    >
       <div>
         <div className="flex items-center justify-between flex-wrap bg-nci-blue-lightest shadow-md px-1.5">
           <Tooltip
@@ -375,7 +382,7 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
                 cardRef.current === null ||
                 cardRef.current.getBoundingClientRect().height < 200
                   ? 400
-                  : cardRef.current.getBoundingClientRect().height + 400
+                  : cardRef.current.getBoundingClientRect().height + 500
               }
             />
           </div>
