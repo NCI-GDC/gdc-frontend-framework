@@ -1,15 +1,6 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import { setupListeners } from "@reduxjs/toolkit/query";
-import {
-  persistReducer,
-  FLUSH,
-  REHYDRATE,
-  PAUSE,
-  PERSIST,
-  PURGE,
-  REGISTER,
-} from "redux-persist";
-import storage from "./storage-persist";
+import storage from "redux-persist/lib/storage";
+import { persistReducer } from "redux-persist";
+import { combineReducers } from "@reduxjs/toolkit";
 import { cohortReducers } from "./features/cohort/cohortSlice";
 import { sessionReducer } from "./features/session/sessionSlice";
 import { facetsReducer } from "./features/facets/facetSlice";
@@ -18,28 +9,23 @@ import { gdcAppReducer } from "./features/gdcapps/gdcAppsSlice";
 import { filesReducer } from "./features/files/filesSlice";
 import { projectsReducer } from "./features/projects/projectsSlice";
 import { annotationsReducer } from "./features/annotations/annotationsSlice";
-import { historyReducer } from "./features/history/historySlice";
 import { casesReducer } from "./features/cases/casesSlice";
-//import { ssmsTableReducer } from "./features/ssmsTable/ssmsTableSlice";
-//import { genesTableReducer } from "./features/genesTable/genesTableSlice";
-//import { geneFrequencyChartReducer } from "./features/genesTable/genesFrequencyChartSlice";
+import { ssmPlotReducer } from "./features/cancerDistribution/ssmPlot";
+import { cnvPlotReducer } from "./features/cancerDistribution/cnvPlot";
 import { survivalReducer } from "./features/survival/survivalSlice";
 import { oncoGridReducer } from "./features/oncoGrid/oncoGridSlice";
 import { genomicReducers } from "./features/genomic/genomicSlice";
-import { ssmPlotReducer } from "./features/cancerDistribution/ssmPlot";
-import { cnvPlotReducer } from "./features/cancerDistribution/cnvPlot";
 import { imageDetailsReducer } from "./features/imageDetails/imageDetailsSlice";
 import { imageViewerReducer } from "./features/imageDetails/imageViewer";
-import { cartReducer } from "./features/cart/cartSlice";
 import { cohortComparisonReducer } from "./features/cohortComparison";
 import { bannerReducer } from "./features/bannerNotification";
+import { cartReducer } from "./features/cart/cartSlice";
 import {
   cohortApiReducer,
   cohortApiSliceReducerPath,
-  cohortApiSliceMiddleware,
 } from "./features/api/cohortApiSlice";
 
-const reducers = {
+export const reducers = combineReducers({
   cohort: cohortReducers,
   session: sessionReducer,
   facets: facetsReducer, // TODO: Pick which one to use in V2
@@ -48,7 +34,6 @@ const reducers = {
   files: filesReducer,
   projects: projectsReducer,
   annotations: annotationsReducer,
-  history: historyReducer,
   cases: casesReducer,
   ssmPlot: ssmPlotReducer,
   cnvPlot: cnvPlotReducer,
@@ -61,30 +46,14 @@ const reducers = {
   cart: cartReducer,
   bannerNotification: bannerReducer,
   [cohortApiSliceReducerPath]: cohortApiReducer,
-};
+});
 
 const persistConfig = {
   key: "root",
   version: 1,
   storage,
-  whitelist: ["cart", "bannerNotification"],
+  whitelist: ["cart"],
 };
 
-const reducer = persistReducer(persistConfig, combineReducers(reducers));
-
-export const coreStore = configureStore({
-  reducer,
-  devTools: {
-    name: "@gff/core",
-  },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      },
-    }).concat(cohortApiSliceMiddleware),
-});
-
-setupListeners(coreStore.dispatch);
-
-export type CoreDispatch = typeof coreStore.dispatch;
+export const coreReducers = persistReducer(persistConfig, reducers);
+export type CoreState = ReturnType<typeof coreReducers>;

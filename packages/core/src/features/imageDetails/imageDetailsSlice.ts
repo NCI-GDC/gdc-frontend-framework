@@ -4,7 +4,8 @@ import {
   createUseCoreDataHook,
   DataStatus,
 } from "../../dataAcess";
-import { CoreDispatch, CoreState } from "../../store";
+import { CoreDispatch } from "../../store";
+import { CoreState } from "../../reducers";
 import { fetchSlideImages, ImageMetadataResponse } from "./imageDetailsApi";
 
 export const fetchImageDetails = createAsyncThunk<

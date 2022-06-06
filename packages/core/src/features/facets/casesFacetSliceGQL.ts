@@ -2,7 +2,8 @@
  * Drop in replacement for facetSlice which uses the GraphQL API.
  */
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CoreDispatch, CoreState } from "../../store";
+import { CoreDispatch } from "../../store";
+import { CoreState } from "../../reducers";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import { processBuckets } from "./facetApiGQL";
 
