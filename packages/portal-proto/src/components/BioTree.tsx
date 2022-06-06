@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import {
   AiOutlinePlusSquare as ExpandMoreIcon,
   AiOutlineMinusSquare as ExpandLessIcon,
+  AiOutlineCaretRight as Caret,
 } from "react-icons/ai";
+import { Badge } from "@mantine/core";
 
 export const entityTypes = [
   {
@@ -27,17 +29,31 @@ export const entityTypes = [
   },
 ];
 
-const Node = ({ entity, entityTypes, type, children }) => {
+const Node = ({
+  entity,
+  entityTypes,
+  type,
+  children,
+  selectedEntity,
+  selectEntity,
+}) => {
   return (
     <li>
       {entity[`${type.s}_id`] && entity.submitter_id && (
-        <div>
+        <div className="flex">
           <span
-            className="cursor-pointer hover:underline"
-            onClick={() => alert(entity.submitter_id)}
+            className={`text-sm cursor-pointer hover:underline hover:font-bold ml-3 ${
+              selectedEntity[`${type.s}_id`] === entity[`${type.s}_id`]
+                ? "underline font-bold"
+                : ""
+            }`}
+            onClick={() => selectEntity(entity, type)}
           >
             {entity.submitter_id}
           </span>
+          {selectedEntity[`${type.s}_id`] === entity[`${type.s}_id`] && (
+            <Caret className="ml-1" />
+          )}
         </div>
       )}
       {entityTypes
@@ -56,27 +72,36 @@ const Node = ({ entity, entityTypes, type, children }) => {
   );
 };
 
-const capitalize = (word: string) =>
-  word.charAt(0).toUpperCase() + word.slice(1);
-
 export const BioTree = ({
   entities,
   entityTypes,
   type,
   parentNode,
   treeStatusOverride,
+  selectedEntity,
+  selectEntity,
 }: any) => {
   const shouldExpand = parentNode === "root";
   const [isExpanded, setIsExpanded] = useState(shouldExpand || false);
   return (
-    <ul className="ml-2 pl-2">
+    <ul className="ml-3 mt-1 pl-2">
       <div className="flex" onClick={() => setIsExpanded((c) => !c)}>
         {isExpanded ? (
-          <ExpandLessIcon color="green" size={18} />
+          <ExpandLessIcon
+            className="hover:cursor-pointer"
+            color="green"
+            size={18}
+          />
         ) : (
-          <ExpandMoreIcon color="green" size={18} />
+          <ExpandMoreIcon
+            className="hover:cursor-pointer"
+            color="blue"
+            size={18}
+          />
         )}
-        <span>{capitalize(type.p)}</span>
+        <Badge variant="dot" className="ml-2">
+          {type.p}
+        </Badge>
       </div>
       {isExpanded &&
         entities?.hits?.edges?.map((entity) => {
@@ -92,10 +117,14 @@ export const BioTree = ({
                 entity.node.slide_id
               }
               type={type}
+              selectedEntity={selectedEntity}
+              selectEntity={selectEntity}
             >
               <BioTree
                 entityTypes={entityTypes}
                 parentNode={entity.node.submitter_id}
+                selectedEntity={selectedEntity}
+                selectEntity={selectEntity}
               />
             </Node>
           );

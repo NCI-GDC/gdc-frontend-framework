@@ -116,7 +116,7 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
   }));
 
   return (
-    <div className="flex flex-col m-4">
+    <div className="flex flex-col m-auto w-10/12">
       <CasesView
         cases={cases}
         caption={`Showing ${pageSize} of ${caseCounts} Cases`}
