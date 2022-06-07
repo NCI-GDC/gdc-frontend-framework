@@ -7,7 +7,8 @@ import {
   MdArrowDropUp,
   MdInfo,
 } from "react-icons/md";
-import { Button, Card, Loader, Tooltip, Collapse } from "@mantine/core";
+import { Button, Card, Loader, Tooltip } from "@mantine/core";
+import { useElementSize } from "@mantine/hooks";
 import { useCoreSelector, selectCohortCounts } from "@gff/core";
 import { AppRegistrationEntry } from "./utils";
 
@@ -33,16 +34,18 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
   }
 
   const inactive = caseCounts === 0;
+  const { ref: descRef, height: descHeight } = useElementSize();
 
   return (
     <Card
       shadow="sm"
       p="xs"
-      className={`border-nci-blue-darkest border ${
-        inactive ? "" : "border-t-6"
-      } ${descriptionVisible ? "h-fit" : "h-32"}`}
+      className={`border-nci-blue-darkest border ${inactive ? "" : "border-t-6"}
+       `}
       aria-label={`${entry.name} Tool`}
     >
+      {/* Spacer so that the cards are the same height without setting an explicit height for the later transition */}
+      {inactive && <div className="h-1" />}
       <div className="flex justify-between mb-1">
         {entry.iconSize ? (
           <Image
@@ -117,13 +120,22 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
         >
           {entry.name}
         </Button>
-        <Collapse
-          in={descriptionVisible}
-          className="bg-nci-blue-lightest -mx-2.5 mb-2.5 p-2"
+        <div
+          style={{ height: descriptionVisible ? descHeight : 0 }}
+          className={`transition-[height] duration-300 bg-nci-blue-lightest -mx-2.5 mb-2.5`}
         >
-          {entry.description}
-        </Collapse>
-        {entry.hideCounts ? null : cohortCounts ? (
+          <div
+            className={`${
+              descriptionVisible ? "opacity-100" : "opacity-0"
+            } transition-opacity`}
+            ref={descRef}
+          >
+            <p className="p-2">{entry.description}</p>
+          </div>
+        </div>
+        {entry.hideCounts ? (
+          <div className="h-4" />
+        ) : cohortCounts ? (
           <div className="text-nci-blue-darkest">
             <span>{`${caseCounts.toLocaleString()} Cases`}</span>
             {caseCounts === 0 && (
