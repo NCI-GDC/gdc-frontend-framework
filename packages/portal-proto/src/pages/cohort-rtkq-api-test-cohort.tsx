@@ -23,7 +23,6 @@ import {
   useAddContextMutation,
 } from "@gff/core";
 import { useCookies } from "react-cookie";
-// import { CohortModel } from "../../../core/src/features/api/cohortApiTypes";
 
 // for displaying cohort data
 const CohortContent = ({ cohort }) => {
