@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CoreState } from "../../store";
+import { CoreState } from "../../reducers";
 import {
   Operation,
   GqlOperation,

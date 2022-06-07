@@ -2,8 +2,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   CoreDataSelectorResponse,
   createUseCoreDataHook,
-} from "../../dataAccess";
-import { CoreState } from "../../store";
+} from "../../dataAcess";
+import { CoreState } from "../../reducers";
 import { GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import { fetchImageViewerQuery, queryParams } from "./imageDetailsApi";
 import { trimEnd, find } from "lodash";

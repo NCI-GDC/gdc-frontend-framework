@@ -4,7 +4,7 @@
 
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { GqlOperation, Operation } from "../gdcapi/filters";
-import { CoreState } from "../../store";
+import { CoreState } from "../../reducers";
 import {
   buildCohortGqlOperator,
   FilterSet,

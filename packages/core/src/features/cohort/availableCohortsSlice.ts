@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { CoreState } from "../../store";
+import { CoreState } from "../../reducers";
 import { FilterSet } from "./cohortFilterSlice";
 import { COHORTS } from "./cohortFixture";
 

@@ -3,8 +3,9 @@ import {
   createUseCoreDataHook,
   DataStatus,
   CoreDataSelectorResponse,
-} from "../../dataAccess";
-import { CoreState, CoreDispatch } from "../../store";
+} from "../../dataAcess";
+import { CoreDispatch } from "../../store";
+import { CoreState } from "../../reducers";
 import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
 import { buildCohortGqlOperator } from "../cohort/cohortFilterSlice";
 import { selectAvailableCohortByName } from "../cohort/availableCohortsSlice";

@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { isEmpty } from "lodash";
-import { CoreDispatch, CoreState } from "../../store";
+import { CoreDispatch } from "../../store";
+import { CoreState } from "../../reducers";
 import { GdcApiData } from "../gdcapi/gdcapi";
 import {
   CoreDataSelectorResponse,

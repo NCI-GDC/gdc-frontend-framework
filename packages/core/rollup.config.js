@@ -10,6 +10,8 @@ const globals = {
   "react-redux": "reactRedux",
   "@reduxjs/toolkit": "toolkit",
   "@reduxjs/toolkit/query": "query",
+  "@reduxjs/toolkit/query/react": "react",
+  "@reduxjs/toolkit/dist/query/react": "react",
   redux: "redux",
   "redux-persist": "reduxPersist",
   "redux-persist/lib/storage/createWebStorage": "createWebStorage",
@@ -17,6 +19,7 @@ const globals = {
   lodash: "lodash",
   immer: "immer",
   "redux-persist/integration/react": "integration",
+  "react-cookie": "reactCookie",
 };
 
 const config = [
@@ -46,7 +49,15 @@ const config = [
         name: "gffCore",
       },
     ],
-    external: ["lodash", "uuid", "immer", "isomorphic-fetch", "redux"],
+    external: [
+      "lodash",
+      "uuid",
+      "immer",
+      "isomorphic-fetch",
+      "redux",
+      "redux-toolkit",
+      "react-cookie",
+    ],
     plugins: [
       peerDepsExternal(),
       typescript(),

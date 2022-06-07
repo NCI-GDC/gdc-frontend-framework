@@ -1,6 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { DataStatus, CoreDataSelectorResponse } from "../../dataAccess";
-import { CoreDispatch, CoreState } from "../../store";
+import { DataStatus } from "../../dataAcess";
+import { CoreDataSelectorResponse } from "../../dataAcess";
+import { CoreDispatch } from "../../store";
+import { CoreState } from "../../reducers";
 import { GqlEquals } from "../gdcapi/filters";
 import {
   fetchGdcAnnotations,

@@ -4,8 +4,8 @@ import {
   CoreDataSelectorResponse,
   createUseCoreDataHook,
   DataStatus,
-} from "../../dataAccess";
-import { CoreState } from "../../store";
+} from "../../dataAcess";
+import { CoreState } from "../../reducers";
 import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
 
 const graphQLQuery = `query CancerDistributionCNV(
