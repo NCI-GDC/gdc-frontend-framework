@@ -23,7 +23,7 @@ import {
   useAddContextMutation,
 } from "@gff/core";
 import { useCookies } from "react-cookie";
-import { CohortModel } from "../../../core/src/features/api/cohortApiTypes";
+// import { CohortModel } from "../../../core/src/features/api/cohortApiTypes";
 
 // for displaying cohort data
 const CohortContent = ({ cohort }) => {
@@ -67,7 +67,7 @@ const CohortApiTest: NextPage = () => {
   const controlCohortId = "2f70de91-7c5a-41d2-9620-90670dfdaddb";
 
   // request body for creates
-  const addBody: Partial<CohortModel> = {
+  const addBody = {
     context_id: currentContextId,
     name: testCohortName,
     facets: [],
@@ -75,7 +75,7 @@ const CohortApiTest: NextPage = () => {
   };
 
   // request body for updates
-  const updateBody: Partial<CohortModel> = {
+  const updateBody = {
     id: testCohortId,
     name: testCohortName,
   };
