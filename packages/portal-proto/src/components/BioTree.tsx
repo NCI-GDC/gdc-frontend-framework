@@ -42,7 +42,7 @@ const Node = ({
       {entity[`${type.s}_id`] && entity.submitter_id && (
         <div className="flex">
           <span
-            className={`text-sm cursor-pointer hover:underline hover:font-bold ml-3 ${
+            className={`text-sm cursor-pointer hover:underline hover:font-bold ml-3 mt-1 ${
               selectedEntity[`${type.s}_id`] === entity[`${type.s}_id`]
                 ? "underline font-bold"
                 : ""
@@ -84,7 +84,7 @@ export const BioTree = ({
   const shouldExpand = parentNode === "root";
   const [isExpanded, setIsExpanded] = useState(shouldExpand || false);
   return (
-    <ul className="ml-3 mt-1 pl-2">
+    <ul className="ml-3 my-2 pl-2">
       <div className="flex" onClick={() => setIsExpanded((c) => !c)}>
         {isExpanded ? (
           <ExpandLessIcon

@@ -2,8 +2,11 @@ import { NextPage } from "next";
 import { MultipleImageViewer } from "../../../components/MultipleImageViewer";
 import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
 import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
+import { useRouter } from "next/router";
 
 const MultipleImageViewerPage: NextPage = () => {
+  const { query } = useRouter();
+
   return (
     <UserFlowVariedPages
       {...{
@@ -11,7 +14,7 @@ const MultipleImageViewerPage: NextPage = () => {
         headerElements,
       }}
     >
-      <MultipleImageViewer />
+      <MultipleImageViewer case_id={query.caseId as string} />
     </UserFlowVariedPages>
   );
 };

@@ -4,7 +4,7 @@ import {
   createUseCoreDataHook,
   DataStatus,
 } from "../../dataAcess";
-import { CoreState } from "../../store";
+import { CoreState } from "../../reducers";
 import { GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import { fetchBioSpecimenQuery } from "./bioSpecimenApi";
 

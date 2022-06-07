@@ -7,6 +7,7 @@ import {
   addFilesToCart,
   GdcFile,
   CoreDispatch,
+  SlideImageFile,
 } from "@gff/core";
 
 interface OverLimitNotificationProps {
@@ -40,7 +41,8 @@ const UndoButton: React.FC<UndoButtonProps> = ({ action }: UndoButtonProps) => {
 };
 
 interface AddNotificationProps {
-  readonly files: readonly GdcFile[];
+  // readonly files: readonly GdcFile[] | readonly SlideImageFile[];
+  readonly files: any;
   readonly currentCart: string[];
   readonly filesToAdd: GdcFile[];
   readonly numAlreadyInCart: number;
@@ -60,7 +62,7 @@ const AddNotification: React.FC<AddNotificationProps> = ({
     if (numFilesAdded === 1) {
       return (
         <>
-          <p>Added {files[0].fileName} to the cart.</p>
+          <p>Added {files[0].fileName || files[0].file_name} to the cart.</p>
           <UndoButton
             action={() => removeFromCart(filesToAdd, newCart, dispatch)}
           />
@@ -68,7 +70,10 @@ const AddNotification: React.FC<AddNotificationProps> = ({
       );
     } else {
       return (
-        <>{files[0].fileName} was already in the cart and was not added.</>
+        <>
+          {files[0].fileName || files[0].file_name} was already in the cart and
+          was not added.
+        </>
       );
     }
   } else {

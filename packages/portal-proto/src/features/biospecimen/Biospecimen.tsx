@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BioTree, entityTypes } from "@/components/BioTree";
 import { MdOutlineSearch, MdFileDownload } from "react-icons/md";
 import { Button, Input, Tooltip } from "@mantine/core";
 import { useBiospecimenData } from "@gff/core";
 import { HorizontalTable } from "@/components/HorizontalTable";
 import { formatEntityInfo } from "./utils";
+import { trimEnd, find } from "lodash";
 
 export const Biospecimen = ({ caseId }) => {
   const [isAllExpanded, setIsAllExpanded] = useState(false);
@@ -15,9 +16,25 @@ export const Biospecimen = ({ caseId }) => {
 
   const [selectedEntity, setSelectedEntity] = useState({});
 
-  //   useEffect(() => {
-  //     setSelectedEntity(bioSpecimenData.samples?.hits?.edges[0].node);
-  //   }, [bioSpecimenData]);
+  useEffect(() => {
+    if (
+      !isBiospecimentDataFetching &&
+      bioSpecimenData &&
+      Object.keys(selectedEntity).length === 0
+    ) {
+      setSelectedEntity(bioSpecimenData?.samples?.hits?.edges[0]?.node || {});
+      // need to select type too
+    }
+  }, [bioSpecimenData, isBiospecimentDataFetching, selectedEntity]);
+
+  const supplementalFiles = bioSpecimenData?.files?.hits?.edges || [];
+  const withTrimmedSubIds = supplementalFiles.map(({ node }) => ({
+    ...node,
+    submitter_id: trimEnd(node.submitter_id, "_slide_image"),
+  }));
+  const selectedSlide = find(withTrimmedSubIds, {
+    submitter_id: selectedEntity?.submitter_id,
+  });
 
   const [selectedType, setSelectedType] = useState("sample");
 
@@ -34,8 +51,8 @@ export const Biospecimen = ({ caseId }) => {
         </Button>
       </div>
 
-      <div className="flex">
-        <div className="flex-1">
+      <div className="flex justify-between">
+        <div className="mr-5">
           <div className="flex mb-4">
             <Input
               icon={<MdOutlineSearch size={24} />}
@@ -59,11 +76,8 @@ export const Biospecimen = ({ caseId }) => {
               parentNode="root"
               selectedEntity={selectedEntity}
               selectEntity={(entity, type) => {
-                console.log(entity);
-                console.log(type);
                 setSelectedEntity(entity);
                 setSelectedType(type.s);
-                formatEntityInfo(entity, type.s);
               }}
               type={{
                 p: "samples",
@@ -74,9 +88,16 @@ export const Biospecimen = ({ caseId }) => {
           )}
         </div>
         <div className="flex-1">
-          <HorizontalTable
-            tableData={formatEntityInfo(selectedEntity, selectedType)}
-          />
+          {selectedEntity && selectedType && (
+            <HorizontalTable
+              tableData={formatEntityInfo(
+                selectedEntity,
+                selectedType,
+                caseId,
+                [selectedSlide],
+              )}
+            />
+          )}
         </div>
       </div>
     </div>
