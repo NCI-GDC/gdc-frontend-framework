@@ -63,6 +63,7 @@ export const REGISTERED_APPS = [
     id: "CohortComparisonApp",
     description:
       "Display the survival analysis of your case sets and compare characteristics such as gender, vital status and age at diagnosis.",
+    selectAdditionalCohort: true,
   },
   {
     name: "Gene Expression",
@@ -83,6 +84,7 @@ export const REGISTERED_APPS = [
     description:
       "Display Venn diagram and find intersection or union, etc. of your cohorts.",
     id: "SetOperations",
+    selectAdditionalCohort: true,
   },
   {
     name: "OncoGrid",

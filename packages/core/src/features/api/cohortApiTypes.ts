@@ -5,6 +5,7 @@ export interface CohortModel {
   name: string;
   facets: ReadonlyArray<string>;
   frozen: boolean;
+  counts: number;
 }
 
 // model for context endpoints

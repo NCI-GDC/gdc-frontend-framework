@@ -19,7 +19,8 @@
       "context_id": "d88c194d-5313-49df-9908-972626ef1211",
       "name": "New Custom Cohort",
       "facets": [],
-      "frozen": false
+      "frozen": false,
+      "counts": 60
     },
     {
       "id": "fa3ec4f4-5530-4e2e-9773-12ba16c95ff2",
@@ -31,7 +32,8 @@
           "value": ["breast", "bronchus and lung"]
         }
       ],
-      "frozen": false
+      "frozen": false,
+      "counts": 121
     },
     {
       "id": "2f70de91-7c5a-41d2-9620-90670dfdaddb",
@@ -43,7 +45,8 @@
           "value": ["unknown"]
         }
       ],
-      "frozen": true
+      "frozen": true,
+      "counts": 1000
     }
   ]
 }

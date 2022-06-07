@@ -16,6 +16,7 @@ const ActiveAnalysisTool: React.FC<AnalysisToolInfo> = ({
   appId,
 }: AnalysisToolInfo) => {
   const [analysisApp, setAnalysisApp] = useState(undefined);
+
   useEffect(() => {
     async function loadApp() {
       const AnalysisApp = await importApplication(appId);

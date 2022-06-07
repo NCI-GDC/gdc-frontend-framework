@@ -11,6 +11,7 @@ import {
   AppRegistrationEntry,
   sortAlphabetically,
 } from "@/features/user-flow/workflow/utils";
+import AdditionalCohortSelection from "./AdditionalCohortSelection";
 import dynamic from "next/dynamic";
 
 const ActiveAnalysisToolNoSSR = dynamic(
@@ -29,7 +30,7 @@ const sortOptions = [
 const initialApps = REGISTERED_APPS.reduce(
   (obj, item) => ((obj[item.id] = item), obj),
   {},
-);
+) as AppRegistrationEntry[];
 const ALL_OTHER_APPS = Object.keys(initialApps).filter(
   (x) => !RECOMMENDED_APPS.includes(x),
 );
@@ -194,32 +195,48 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
     setSelectedAppName(name);
   };
 
+  console.log(app);
+  console.log(selectedApp);
+
   useEffect(() => {
     setSelectedApp(app);
     setSelectedAppName(undefined); // will use the registered app name
+    setAdditionalCohort(undefined);
   }, [app]);
+
+  const appInfo = initialApps[selectedApp];
+
+  const [additonalCohort, setAdditionalCohort] = useState(undefined);
 
   return (
     <div>
       {" "}
       {selectedApp ? (
-        <div className="flex flex-col mx-2">
-          <div className="flex flex-row items-center">
-            <button
-              onClick={() => setSelectedApp(undefined)}
-              className="bg-nci-gray-lighter hover:bg-nci-gray-light font-montserrat tracking-widest uppercase rounded-md shadow-md p-1 px-2 py-2"
-            >
-              Applications
-            </button>
-            <div className=" mx-3 font-montserrat">/</div>
-            <div className="bg-nci-gray-lighter font-montserrat tracking-widest uppercase rounded-md shadow-md p-1 px-2">
-              {selectedAppName
-                ? selectedAppName
-                : initialApps[selectedApp].name}
+        appInfo?.selectAdditionalCohort && additonalCohort === undefined ? (
+          <AdditionalCohortSelection
+            entry={appInfo}
+            onClick={handleAppSelected}
+            setAdditionalCohort={setAdditionalCohort}
+          />
+        ) : (
+          <div className="flex flex-col mx-2">
+            <div className="flex flex-row items-center">
+              <button
+                onClick={() => setSelectedApp(undefined)}
+                className="bg-nci-gray-lighter hover:bg-nci-gray-light font-montserrat tracking-widest uppercase rounded-md shadow-md p-1 px-2 py-2"
+              >
+                Applications
+              </button>
+              <div className=" mx-3 font-montserrat">/</div>
+              <div className="bg-nci-gray-lighter font-montserrat tracking-widest uppercase rounded-md shadow-md p-1 px-2">
+                {selectedAppName
+                  ? selectedAppName
+                  : initialApps[selectedApp].name}
+              </div>
             </div>
+            <ActiveAnalysisToolNoSSR appId={selectedApp} />
           </div>
-          <ActiveAnalysisToolNoSSR appId={selectedApp} />
-        </div>
+        )
       ) : (
         <AnalysisGrid onAppSelected={handleAppSelected} />
       )}
