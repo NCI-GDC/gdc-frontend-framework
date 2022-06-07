@@ -1,5 +1,3 @@
-import storage from "redux-persist/lib/storage";
-import { persistReducer } from "redux-persist";
 import { combineReducers } from "@reduxjs/toolkit";
 import { cohortReducers } from "./features/cohort/cohortSlice";
 import { sessionReducer } from "./features/session/sessionSlice";
@@ -48,12 +46,4 @@ export const reducers = combineReducers({
   [cohortApiSliceReducerPath]: cohortApiReducer,
 });
 
-const persistConfig = {
-  key: "root",
-  version: 1,
-  storage,
-  whitelist: ["cart"],
-};
-
-export const coreReducers = persistReducer(persistConfig, reducers);
-export type CoreState = ReturnType<typeof coreReducers>;
+export type CoreState = ReturnType<typeof reducers>;
