@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { GraphQLFetchError } from "../gdcapi/gdcgraphql";
 import { FacetDefinition } from "./types";
-import { CoreDispatch, CoreState } from "../../store";
+import { CoreDispatch } from "../../store";
+import { CoreState } from "../../reducers";
 import {
   CoreDataSelectorResponse,
   createUseCoreDataHook,
@@ -57,7 +58,6 @@ const facetDictionary = createSlice({
     builder
       .addCase(fetchFacetDictionary.fulfilled, (_, action) => {
         const response = action.payload;
-        console.log("dictionary: ", response);
         if (response.errors && Object.keys(response.errors).length > 0)
           return {
             entries: {},
