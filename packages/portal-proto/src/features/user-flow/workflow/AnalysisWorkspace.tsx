@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Chip, Chips, Divider, Grid, Select } from "@mantine/core";
-import { MdClear as Clear } from "react-icons/md";
+import { Chip, Chips, Menu, Grid, ActionIcon } from "@mantine/core";
+import { MdSort as SortIcon } from "react-icons/md";
 import AnalysisCard from "@/features/user-flow/workflow/AnalysisCard";
 import {
   APPTAGS,
@@ -12,6 +12,7 @@ import {
   sortAlphabetically,
 } from "@/features/user-flow/workflow/utils";
 import dynamic from "next/dynamic";
+import FeaturedToolCard from "./FeaturedToolCard";
 
 const ActiveAnalysisToolNoSSR = dynamic(
   () => import("@/features/user-flow/workflow/ActiveAnalysisTool"),
@@ -21,7 +22,6 @@ const ActiveAnalysisToolNoSSR = dynamic(
 );
 
 const sortOptions = [
-  { value: "default", label: "Default" },
   { value: "a-z", label: "Sort: A-Z" },
   { value: "z-a", label: "Sort: Z-A" },
 ];
@@ -51,6 +51,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
   const [recommendedApps] = useState([...RECOMMENDED_APPS]); // recommended apps based on Context
   const [remainingApps] = useState([...ALL_OTHER_APPS]); // all other apps
   const [activeApps, setActiveApps] = useState([...ALL_OTHER_APPS]); // set of active apps i.e. not recommended but filterable/dimmable
+  const [activeAnalysisCard, setActiveAnalysisCard] = useState(null);
 
   const sortTools = (arr, st) => {
     if (st === "default") return arr;
@@ -79,27 +80,28 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
   };
 
   return (
-    <div className="flex flex-col mb-6 ">
+    <div className="flex flex-col font-montserrat">
       <div
         data-tour="analysis_tool_management"
-        className="flex flex-row  items-center mx-4 my-2 p-2 border border-nci-gray-lighter rounded-md shadow-lg"
+        className="flex flex-row  items-center shadow-lg bg-nci-blue-darkest"
       >
-        <div data-tour="most_common_tools" className="mx-10">
-          <Grid className="mx-2">
+        <div data-tour="most_common_tools" className="mx-4 my-6 flex">
+          <h2 className="text-white font-bold uppercase pr-6">
+            {"Featured Tools"}
+          </h2>
+          <Grid columns={12}>
             {recommendedApps
               .map((k) => initialApps[k])
               .map((x: AppRegistrationEntry) => {
                 return (
                   <Grid.Col
                     key={x.name}
-                    xs={12}
-                    sm={6}
                     md={4}
-                    lg={3}
-                    xl={2}
-                    style={{ minHeight: 64, maxWidth: 220 }}
+                    lg={4}
+                    xl={4}
+                    style={{ minHeight: 64 }}
                   >
-                    <AnalysisCard
+                    <FeaturedToolCard
                       entry={{ ...{ applicable: true, ...x } }}
                       onClick={handleOpenAppClicked}
                     />
@@ -108,72 +110,142 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
               })}
           </Grid>
         </div>
-        <div data-tour="analysis_tool_filters" className="flex flex-col w-1/2">
-          <h2 className="ml-6">Tool Categories</h2>
-          <Divider />
-          <div className="flex flex-row">
-            <Chips
-              className="py-1 pr-0"
-              style={{ paddingRight: 0 }}
-              multiple
-              noWrap={false}
-              value={activeTags}
-              onChange={setActiveTags}
-            >
-              {appTags.map((x) => (
-                <Chip size="sm" key={x.value} value={x.value}>
-                  {x.name}
-                </Chip>
-              ))}
-            </Chips>
-            {activeTags.length ? (
-              <button
-                className="bg-nci-gray-lighter h-6 rounded-full hover:bg-nci-gray"
-                onClick={() => setActiveTags([])}
-                aria-label="Tools filter clear button"
-              >
-                <Clear size="1.5rem" />
-              </button>
-            ) : null}
-          </div>
-          <div className=" mt-3">
-            <Select
-              data={sortOptions}
-              value={sortType}
-              classNames={{
-                root: "border border-nci-gray-lighter round-md ml-4 text-sm max-w-[20%] ",
-              }}
-              transition="pop-top-left"
-              transitionDuration={80}
-              transitionTimingFunction="ease"
-              onChange={(v) => setSortType(v)}
-              aria-label="Select tools sort"
-            />
-          </div>
-        </div>
       </div>
-      <div data-tour="all_other_apps" className="my-2">
-        <Grid className="mx-2">
-          {activeApps
-            .map((k) => initialApps[k])
-            .map((x: AppRegistrationEntry) => {
-              return (
-                <Grid.Col
-                  key={x.name}
-                  xs={12}
-                  sm={6}
-                  md={4}
-                  lg={3}
-                  xl={2}
-                  style={{ minHeight: 48, maxWidth: 180 }}
+      <div className="bg-white">
+        <Grid className="p-3 my-2" gutter={"lg"}>
+          <Grid.Col
+            data-tour="analysis_tool_filters"
+            className="flex flex-col p-3"
+            xs={4}
+            sm={4}
+            md={3}
+            lg={3}
+            xl={2}
+          >
+            <div className="flex justify-between pb-4 text-nci-blue-darkest">
+              <div>
+                <h2 className="font-bold text-lg pb-3 uppercase">Tools</h2>
+                <h3 className="text-lg">Categories</h3>
+              </div>
+              <div className="flex flex-col justify-around items-end">
+                <Menu
+                  control={
+                    <ActionIcon
+                      variant="outline"
+                      className="text-nci-blue-darkest hover:bg-nci-blue hover:text-white hover:border-nci-blue"
+                    >
+                      <SortIcon size={24} />
+                    </ActionIcon>
+                  }
+                  aria-label="Select tools sort"
+                  withinPortal={false}
+                  classNames={{
+                    body: "border-t-8 border-nci-blue-darkest w-24",
+                    itemHovered: "bg-nci-blue-lightest",
+                    itemLabel: "text-nci-blue-darkest",
+                  }}
                 >
-                  <AnalysisCard
-                    entry={{ ...{ applicable: true, ...x } }}
-                    onClick={handleOpenAppClicked}
-                  />
-                </Grid.Col>
-              );
-            })}
+                  {sortOptions.map((option) => (
+                    <Menu.Item
+                      onClick={() => setSortType(option.value)}
+                      key={option.value}
+                    >
+                      {option.label}
+                    </Menu.Item>
+                  ))}
+                </Menu>
+                {activeTags.length ? (
+                  <span
+                    className="cursor-pointer text-xs"
+                    tabIndex={0}
+                    role="button"
+                    onClick={() => setActiveTags([])}
+                    onKeyPress={(event) =>
+                      event.key === "Enter" ? setActiveTags([]) : undefined
+                    }
+                  >
+                    {"Clear all"}
+                  </span>
+                ) : (
+                  <span
+                    className="cursor-pointer text-xs"
+                    role="button"
+                    tabIndex={0}
+                    onClick={() =>
+                      setActiveTags(appTags.map((tag) => tag.value))
+                    }
+                    onKeyPress={(event) =>
+                      event.key === "Enter"
+                        ? setActiveTags(appTags.map((tag) => tag.value))
+                        : undefined
+                    }
+                  >
+                    {"Select all"}
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="flex flex-row">
+              <Chips
+                multiple
+                noWrap={false}
+                value={activeTags}
+                onChange={setActiveTags}
+                size={"xs"}
+                spacing={"xs"}
+                classNames={{
+                  checked: "!text-white bg-nci-blue-darkest",
+                  label:
+                    "text-nci-blue border border-solid border-nci-blue-darkest hover:bg-nci-blue hover:text-white hover:border-nci-blue",
+                  checkIcon: "text-white",
+                }}
+              >
+                {appTags.map((x) => (
+                  <Chip key={x.value} value={x.value}>
+                    {x.name}
+                  </Chip>
+                ))}
+              </Chips>
+            </div>
+          </Grid.Col>
+
+          <Grid.Col
+            data-tour="all_other_apps"
+            xs={8}
+            sm={8}
+            md={9}
+            lg={9}
+            xl={10}
+          >
+            <Grid className="mx-2">
+              {activeApps
+                .map((k) => initialApps[k])
+                .map((x: AppRegistrationEntry, idx: number) => {
+                  return (
+                    <Grid.Col
+                      key={x.name}
+                      xs={12}
+                      sm={6}
+                      md={4}
+                      lg={3}
+                      xl={2}
+                      style={{ minHeight: 130, maxWidth: 170 }}
+                    >
+                      <AnalysisCard
+                        entry={{ ...{ applicable: true, ...x } }}
+                        onClick={handleOpenAppClicked}
+                        descriptionVisible={activeAnalysisCard === idx}
+                        setDescriptionVisible={() =>
+                          setActiveAnalysisCard(
+                            idx === activeAnalysisCard ? null : idx,
+                          )
+                        }
+                      />
+                    </Grid.Col>
+                  );
+                })}
+            </Grid>
+          </Grid.Col>
         </Grid>
       </div>
     </div>
