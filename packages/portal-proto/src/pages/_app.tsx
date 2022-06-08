@@ -72,6 +72,13 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
                 "#ffffff",
               ],
             },
+            breakpoints: {
+              xs: 500,
+              sm: 800,
+              md: 1000,
+              lg: 1275,
+              xl: 1800,
+            },
           }}
         >
           <NotificationsProvider position="top-center">

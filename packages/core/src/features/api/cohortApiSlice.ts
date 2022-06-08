@@ -41,7 +41,7 @@ export const cohortApiSlice = coreCreateApi({
       query: (id) => `/cohorts/${id}`,
       providesTags: (_result, _error, arg) => [{ type: "Cohort", id: arg }],
     }),
-    addCohort: builder.mutation<Partial<CohortModel>, CohortModel>({
+    addCohort: builder.mutation<CohortModel, Partial<CohortModel>>({
       query: (cohort) => ({
         url: "/cohorts",
         method: "POST",
@@ -49,7 +49,7 @@ export const cohortApiSlice = coreCreateApi({
       }),
       invalidatesTags: [{ type: "Cohort", id: "LIST" }],
     }),
-    updateCohort: builder.mutation<Partial<CohortModel>, CohortModel>({
+    updateCohort: builder.mutation<CohortModel, Partial<CohortModel>>({
       query: (cohort) => ({
         url: `/cohorts/${cohort.id}`,
         method: "PATCH",

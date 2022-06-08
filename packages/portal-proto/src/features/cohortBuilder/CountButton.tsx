@@ -5,19 +5,28 @@ export interface CountButtonProp {
   readonly countName: string;
   readonly label: string;
   readonly className?: string;
+  readonly bold?: boolean;
 }
 
 const CountButton: React.FC<CountButtonProp> = ({
   countName,
   label,
   className = "",
+  bold = false,
 }: CountButtonProp) => {
   const cohortCounts = useFilteredCohortCounts();
   return (
     <div className={className}>
       <div className="flex flex-row flex-nowrap items-center">
         {cohortCounts.isSuccess ? (
-          `${cohortCounts.data[countName].toLocaleString()} ${label}`
+          <>
+            <span className={`${bold ? "font-bold pr-1" : "pr-1"}`}>
+              {cohortCounts.data[countName].toLocaleString()}
+            </span>{" "}
+            <span className={`${bold ? "font-medium pr-1" : "pr-1"}`}>
+              {label}
+            </span>
+          </>
         ) : (
           <>
             <Loader color="gray" size="xs" className="mr-2" /> {label}{" "}
