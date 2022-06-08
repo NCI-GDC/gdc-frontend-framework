@@ -1,37 +1,41 @@
-# docker build -t gdcff .
-# docker run -p 3000:3000 -it gdcff
+FROM node:16-alpine3.15 as dep
+RUN apk add --no-cache libc6-compat nasm autoconf automake bash libltdl libtool gcc make g++ zlib-dev
+WORKDIR /app
 
-FROM quay.io/cdis/ubuntu:20.04
+# ==================================================================
+FROM node:16-alpine3.15 AS builder
+WORKDIR /app
+RUN npm install --location=global lerna
+COPY . .
 
-ENV DEBIAN_FRONTEND=noninteractive
-
-ARG BASE_PATH
-ARG NEXT_PUBLIC_PORTAL_BASENAME
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    libssl1.1 \
-    libgnutls30 \
-    ca-certificates \
-    curl \
-    git \
-    nginx \
-    python3 \
-    time \
-    vim \
-    && curl -sL https://deb.nodesource.com/setup_14.x | bash - \
-    && apt-get install -y --no-install-recommends nodejs \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* \
-    && ln -sf /dev/stdout /var/log/nginx/access.log \
-    && ln -sf /dev/stderr /var/log/nginx/error.log \
-    && npm install -g npm@8.5
-
-RUN mkdir -p /gdc
-COPY . /gdc
-WORKDIR /gdc/
-
-RUN npm ci
+RUN npm ci --network-timeout 1000000
+RUN lerna bootstrap
 RUN npm run build
 
-CMD npm run start
+# ==================================================================
+
+FROM node:16-alpine3.15 AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+
+RUN apk add --no-cache libc6-compat nasm autoconf automake bash
+RUN addgroup --system --gid 1001 nextjs
+RUN adduser --system --uid 1001 nextjs
+
+
+COPY --from=builder --chown=nextjs:nextjs /app/package.json ./package.json
+COPY --from=builder --chown=nextjs:nextjs /app/node_modules ./node_modules
+COPY --from=builder --chown=nextjs:nextjs /app/packages/portal-proto/public ./packages/portal-proto/public
+COPY --from=builder --chown=nextjs:nextjs /app/packages/portal-proto/package.json ./packages/portal-proto/package.json
+COPY --from=builder --chown=nextjs:nextjs /app/packages/portal-proto/.next ./packages/portal-proto/.next
+COPY --from=builder --chown=nextjs:nextjs /app/packages/portal-proto/node_modules ./packages/portal-proto/node_modules
+COPY --from=builder --chown=nextjs:nextjs /app/packages/portal-proto/next.config.js ./packages/portal-proto/next.config.js
+
+RUN mkdir -p ./packages/portal-proto/.next/cache/images
+RUN chown nextjs ./packages/portal-proto/.next/cache/images
+USER nextjs
+
+EXPOSE 3000
+ENV PORT 3000
+
+CMD ["npm", "run", "start"]
