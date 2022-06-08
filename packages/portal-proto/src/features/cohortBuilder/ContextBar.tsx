@@ -107,7 +107,8 @@ const ContextBar: React.FC<CohortGroupProps> = ({
               </div>
             ) : (
               <span className="text-lg text-nci-blue-darkest ">
-                Use the filters below to build a query
+                Currently viewing all cases in the GDC. Further refine your
+                cohort with tools such as the Cohort Builder.
               </span>
             )}
           </div>
