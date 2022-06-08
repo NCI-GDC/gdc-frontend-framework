@@ -71,16 +71,12 @@ const CohortApiTest: NextPage = () => {
     name: testCohortName,
     facets: [],
     frozen: false,
-    id: testCohortId,
   };
 
   // request body for updates
   const updateBody = {
-    context_id: currentContextId,
     id: testCohortId,
     name: testCohortName,
-    facets: [],
-    frozen: false,
   };
 
   // using rtkquery to get list of contexts
