@@ -63,6 +63,7 @@
     "jest": "^27.0.6",
     "jest-canvas-mock": "^2.4.0",
     "jest-css-modules-transform": "^4.2.0",
+    "minimist": ">=1.2.6",
     "next-transpile-modules": "^9.0.0",
     "oncogrid": "^3.0.0",
     "postcss": "^8.4.6",
