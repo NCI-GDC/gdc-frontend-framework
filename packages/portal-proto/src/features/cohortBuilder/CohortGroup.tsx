@@ -39,6 +39,7 @@ import {
   Intersection,
   Union,
 } from "@gff/core";
+import * as tailwindConfig from "tailwind.config";
 import { convertFieldToName } from "../facets/utils";
 import CountButton from "./CountButton";
 
@@ -106,20 +107,16 @@ export const CohortBar: React.FC<CohortBarProps> = ({
   const [currentCohort, setCurrentCohort] = useState(menu_items[defaultIdx]);
 
   const buttonStyle =
-    "mx-1 bg-nci-gray-light hover:bg-nci-gray transition-colors";
+    "p-2 bg-white transition-colors text-nci-blue-darkest hover:bg-nci-blue hover:text-white";
   return (
     <div
       data-tour="cohort_management_bar"
-      className="flex flex-row items-center justify-start pl-4 h-12 shadow-lg bg-nci-gray-lighter rounded-lg rounded-b-none rounded-r-none"
+      className="flex flex-row items-center justify-start gap-6 pl-4 h-20 shadow-lg bg-nci-blue-darkest"
     >
-      <CountButton countName="casesMax" label="Cases" className="px-2 ml-20 " />
       <div className="border-opacity-0">
         {!hide_controls ? (
           <Select
             inputId="cohort-bar_cohort_select"
-            components={{
-              IndicatorSeparator: () => null,
-            }}
             options={menu_items}
             isSearchable={false}
             isClearable={false}
@@ -128,8 +125,18 @@ export const CohortBar: React.FC<CohortBarProps> = ({
               setCurrentCohort(x);
               onSelectionChanged(x.value);
             }}
-            className="border-nci-gray-light w-80 p-0"
-            aria-label="Select cohort"
+            className="border-nci-gray-light w-80 p-0 z-10 "
+            aria-items-centerlabel="Select cohort"
+            styles={{
+              dropdownIndicator: (provided) => ({
+                ...provided,
+                color: tailwindConfig.theme.extend.colors["gdc-blue"].darkest,
+              }),
+              singleValue: (provided) => ({
+                ...provided,
+                color: tailwindConfig.theme.extend.colors["gdc-blue"].darkest,
+              }),
+            }}
           />
         ) : (
           <div>
@@ -138,7 +145,7 @@ export const CohortBar: React.FC<CohortBarProps> = ({
         )}
       </div>
       {!hide_controls ? (
-        <div className="flex flex-row items-center ml-auto">
+        <>
           <Button className={buttonStyle}>
             <SaveIcon size="1.5em" aria-label="Save cohort" />
           </Button>
@@ -154,7 +161,7 @@ export const CohortBar: React.FC<CohortBarProps> = ({
           <Button className={buttonStyle}>
             <DownloadIcon size="1.5em" aria-label="Download cohort" />
           </Button>
-        </div>
+        </>
       ) : (
         <div />
       )}

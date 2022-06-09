@@ -16,6 +16,7 @@ export interface AppRegistrationEntry {
   readonly hideCounts?: boolean;
   readonly optimizeRules?: ReadonlyArray<string>;
   readonly selectAdditionalCohort?: boolean;
+  readonly noDataTooltip?: string;
 }
 
 const descendingOrd = (array) => {
