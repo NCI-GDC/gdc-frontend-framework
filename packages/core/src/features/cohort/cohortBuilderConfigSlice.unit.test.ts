@@ -144,13 +144,7 @@ describe("selectBuilderConfig", () => {
   test("should select the 'common' configuration", () => {
     const expected = {
       label: "General",
-      facets: [
-        "demographic.gender",
-        "demographic.race",
-        "demographic.ethnicity",
-        "diagnoses.age_at_diagnosis",
-        "diagnoses.vital_status",
-      ],
+      facets: ["cases.project.program.name", "cases.project.project_id"],
       docType: "cases",
       index: "explore",
     };

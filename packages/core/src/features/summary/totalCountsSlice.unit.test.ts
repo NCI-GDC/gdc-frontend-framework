@@ -8,6 +8,7 @@ const initialCounts = {
     mutationCounts: -1,
     repositoryCaseCounts: -1,
   },
+  status: "uninitialized",
 };
 
 describe("totalCounts reducer", () => {
@@ -31,36 +32,34 @@ describe("totalCounts reducer", () => {
       {
         type: fetchTotalCounts.fulfilled,
         payload: {
-          response: {
-            data: {
-              viewer: {
-                explore: {
-                  cases: {
-                    hits: {
-                      total: 10000,
-                    },
-                  },
-                  genes: {
-                    hits: {
-                      total: 20000,
-                    },
-                  },
-                  ssms: {
-                    hits: {
-                      total: 30000,
-                    },
+          data: {
+            viewer: {
+              explore: {
+                cases: {
+                  hits: {
+                    total: 10000,
                   },
                 },
-                repository: {
-                  cases: {
-                    hits: {
-                      total: 5000,
-                    },
+                genes: {
+                  hits: {
+                    total: 20000,
                   },
-                  files: {
-                    hits: {
-                      total: 900,
-                    },
+                },
+                ssms: {
+                  hits: {
+                    total: 30000,
+                  },
+                },
+              },
+              repository: {
+                cases: {
+                  hits: {
+                    total: 5000,
+                  },
+                },
+                files: {
+                  hits: {
+                    total: 900,
                   },
                 },
               },
@@ -69,9 +68,15 @@ describe("totalCounts reducer", () => {
         },
       },
     );
-    expect(state).toEqual([
-      { id: 1, dismissed: false, components: ["PORTAL"] },
-      { id: 2, dismissed: false, components: ["API"] },
-    ]);
+    expect(state).toEqual({
+      counts: {
+        caseCounts: 10000,
+        fileCounts: 900,
+        genesCounts: 20000,
+        mutationCounts: 30000,
+        repositoryCaseCounts: 5000,
+      },
+      status: "fulfilled",
+    });
   });
 });
