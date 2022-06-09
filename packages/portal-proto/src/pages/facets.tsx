@@ -7,7 +7,7 @@ const FacetsPage: NextPage = () => {
     <SimpleLayout>
       <div className="flex flex-col content-center">
         <div className="grid grid-cols-3 gap-4">
-          <EnumFacet type="cases" field="primary_site" />
+          <EnumFacet docType="cases" field="primary_site" />
         </div>
       </div>
     </SimpleLayout>
