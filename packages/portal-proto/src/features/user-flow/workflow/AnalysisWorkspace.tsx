@@ -291,7 +291,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
                 : initialApps[selectedApp].name}
             </div>
             <div className="w-10/12 m-auto">
-              <SearchInput />
+              {selectedApp === "CohortBuilder" ? <SearchInput /> : null}
             </div>
           </div>
           <ActiveAnalysisToolNoSSR appId={selectedApp} />

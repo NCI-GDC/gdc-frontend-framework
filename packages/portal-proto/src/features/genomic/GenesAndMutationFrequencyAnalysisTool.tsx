@@ -29,7 +29,7 @@ const GenesFacetNames = [
     description: "No description",
   },
   {
-    facet_filter: "is_cancer_gene_census",
+    facet_filter: "genes.is_cancer_gene_census",
     name: "Is Cancer Gene Census",
     description: "No description",
   },

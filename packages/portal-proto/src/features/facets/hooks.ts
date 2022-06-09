@@ -11,8 +11,6 @@ import {
   removeGenomicFilter,
   selectCurrentCohortFilters,
   selectCurrentCohortFiltersByName,
-  selectGenesFacetByField,
-  selectSSMSFacetByField,
   fetchFacetByNameGQL,
   updateCohortFilter,
   updateGenomicFilter,
@@ -147,7 +145,7 @@ const useGenesFacet = (
 ): EnumFacetResponse => {
   const coreDispatch = useCoreDispatch();
   const facet: FacetBuckets = useCoreSelector((state) =>
-    selectGenesFacetByField(state, field),
+    selectFacetByDocTypeAndField(state, docType, field),
   );
 
   const enumValues = useGenomicFilterByName(field);
@@ -207,7 +205,7 @@ const useMutationsFacet = (
 ): EnumFacetResponse => {
   const coreDispatch = useCoreDispatch();
   const facet: FacetBuckets = useCoreSelector((state) =>
-    selectSSMSFacetByField(state, field),
+    selectFacetByDocTypeAndField(state, docType, field),
   );
 
   const enumValues = useGenomicFilterByName(field);

@@ -109,8 +109,9 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
       const updated = selectedEnums ? [...selectedEnums, value] : [value];
       updateFilters(coreDispatch, updated, field);
     } else {
+      // TODO: replace with ToggleFacet
       const updated =
-        field === "is_cancer_gene_census"
+        field === "genes.is_cancer_gene_census"
           ? []
           : selectedEnums.filter((x) => x != value);
       updateFilters(coreDispatch, updated, field);
@@ -253,7 +254,7 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
                     .map(([value, count], i) => {
                       if (!isGroupExpanded && i >= maxValuesToDisplay)
                         return null;
-                      if (field === "is_cancer_gene_census") {
+                      if (field === "genes.is_cancer_gene_census") {
                         value = value === "1" ? "true" : "false";
                       }
                       return (
