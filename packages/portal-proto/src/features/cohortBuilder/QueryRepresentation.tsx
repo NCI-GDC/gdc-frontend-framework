@@ -241,6 +241,7 @@ class CohortFilterToComponent implements OperationHandler<JSX.Element> {
       <ExistsElement {...f} />
     </QueryElement>
   );
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   handleExcludeIfAny = (_f: ExcludeIfAny) => null;
   handleIntersection = (f: Intersection) => {
     if (f.operands.length < 1) return null;
@@ -261,6 +262,7 @@ class CohortFilterToComponent implements OperationHandler<JSX.Element> {
     }
     return null;
   };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   handleUnion = (_f: Union) => {
     return <div>Union</div>;
   };

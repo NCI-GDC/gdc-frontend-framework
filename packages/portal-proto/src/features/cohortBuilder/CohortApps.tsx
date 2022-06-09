@@ -10,9 +10,9 @@ import {
 } from "../apps/Apps";
 import React, { useState } from "react";
 
-const CohortApps = () => {
-  const [showAppModal, setShowAppModal] = useState(false);
-  const [selectedApp, setSelectedApp] = useState("");
+const CohortApps: React.FC = () => {
+  const [, setShowAppModal] = useState(false);
+  const [, setSelectedApp] = useState("");
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 bg-gray-100">

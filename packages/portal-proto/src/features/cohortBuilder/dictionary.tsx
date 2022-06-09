@@ -2,13 +2,6 @@ import GDC_Dictionary from "./config/gdc_tooltips.json";
 import GDC_Dictionary_Flattened from "./config/gdc_facet_dictionary_flat.json";
 import MiniSearch, { SearchResult } from "minisearch";
 
-interface CohortCategory {
-  readonly label: string;
-  readonly filterType: string;
-  readonly index: string;
-  readonly facets: ReadonlyArray<string>;
-}
-
 export const get_facet_list = (
   category: string,
 ): Array<Record<string, never>> | undefined => {

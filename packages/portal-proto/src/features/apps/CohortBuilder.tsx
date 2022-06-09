@@ -1,4 +1,3 @@
-import MetaSearch from "../cohortBuilder/MetaSearch";
 import FacetTabs from "../cohortBuilder/FacetTabs";
 import { FC } from "react";
 

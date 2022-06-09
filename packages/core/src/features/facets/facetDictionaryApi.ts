@@ -37,7 +37,7 @@ export const shortendFieldNameToTitle = (
   return fieldNameToTitle(fieldName);
 };
 
-export const fieldNameToTitle = (fieldName: string) =>
+export const fieldNameToTitle = (fieldName: string): string =>
   fieldName
     .replace(/[_.]/g, " ")
     .split(" ")

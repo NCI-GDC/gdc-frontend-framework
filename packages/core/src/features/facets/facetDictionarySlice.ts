@@ -25,7 +25,7 @@ export const fetchFacetDictionary = createAsyncThunk<
   Record<string, FacetDefinition>,
   void,
   { dispatch: CoreDispatch; state: CoreState }
->("facet/fetchFacetDictionary", async (_) => {
+>("facet/fetchFacetDictionary", async () => {
   const res = await fetch("https://api.gdc.cancer.gov/v0/gql/_mapping", {
     headers: {
       Accept: "application/json",

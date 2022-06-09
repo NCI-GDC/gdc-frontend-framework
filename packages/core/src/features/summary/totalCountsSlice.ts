@@ -64,7 +64,7 @@ export const fetchTotalCounts = createAsyncThunk<
   GraphQLApiResponse,
   void,
   { dispatch: CoreDispatch; state: CoreState }
->("gdc/totalCounts", async (_): Promise<GraphQLApiResponse> => {
+>("gdc/totalCounts", async (): Promise<GraphQLApiResponse> => {
   return await graphqlAPI(CountsGraphQLQuery, {});
 });
 
