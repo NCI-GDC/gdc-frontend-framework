@@ -6,43 +6,24 @@ import { useBiospecimenData } from "@gff/core";
 import { HorizontalTable } from "@/components/HorizontalTable";
 import { formatEntityInfo } from "./utils";
 import { trimEnd, find } from "lodash";
-import {
-  treeStatusInitialState,
-  treeStatusStateReducer,
-} from "./treeStatusReducer";
 
 export const Biospecimen = ({ caseId }) => {
   const [treeStatusOverride, setTreeStatusOverride] = useState(null);
-
-  const [treeStatusState, dispatch] = useReducer(
-    treeStatusStateReducer,
-    treeStatusInitialState,
-  );
-
-  console.log(treeStatusState);
+  const [selectedEntity, setSelectedEntity] = useState({});
   const [isAllExpanded, setIsAllExpanded] = useState(false);
-
-  useEffect(() => {
-    setIsAllExpanded(
-      treeStatusState.totalNodes === treeStatusState.expandedNodes,
-    );
-  }, [treeStatusState]);
-
-  useEffect(() => {
-    if (treeStatusState.totalNodes > 0 && treeStatusOverride) {
-      dispatch({
-        payload: {
-          expanded: treeStatusOverride === "expanded",
-        },
-        type: "OVERRIDE_NODES",
-      });
-    }
-  }, [treeStatusOverride]);
+  const [selectedType, setSelectedType] = useState("sample");
+  const [expandedCount, setExpandedCount] = useState(1);
+  const [totalNodeCount, setTotalNodeCount] = useState(0);
 
   const { data: bioSpecimenData, isFetching: isBiospecimentDataFetching } =
     useBiospecimenData(caseId);
 
-  const [selectedEntity, setSelectedEntity] = useState({});
+  useEffect(() => {
+    setIsAllExpanded(expandedCount === totalNodeCount);
+  }, [expandedCount, totalNodeCount]);
+
+  console.log("bioSpecimenData: ", bioSpecimenData);
+  console.log("expandedCount, totalNodeCount: ", expandedCount, totalNodeCount);
 
   useEffect(() => {
     if (
@@ -63,13 +44,6 @@ export const Biospecimen = ({ caseId }) => {
   const selectedSlide = find(withTrimmedSubIds, {
     submitter_id: selectedEntity?.submitter_id,
   });
-  console.log("SELECTED ENTITY: ", selectedEntity);
-  const [selectedType, setSelectedType] = useState("sample");
-  console.log(
-    "out is all expanded, treeStatusOverride: ",
-    isAllExpanded,
-    treeStatusOverride,
-  );
 
   return (
     <div className="mb-5">
@@ -95,38 +69,34 @@ export const Biospecimen = ({ caseId }) => {
             <Button
               onClick={() => {
                 setTreeStatusOverride(isAllExpanded ? "collapsed" : "expanded");
-                // console.log(
-                //   "in is all expanded, treeStatusOverride: ",
-                //   isAllExpanded,
-                //   treeStatusOverride,
-                // );
-                treeStatusOverride;
+                setExpandedCount(0);
               }}
               className="ml-4"
             >
               {isAllExpanded ? "Collapse All" : "Expand All"}
             </Button>
           </div>
-          {!isBiospecimentDataFetching && (
-            <BioTree
-              entities={bioSpecimenData.samples}
-              entityTypes={entityTypes}
-              parentNode="root"
-              selectedEntity={selectedEntity}
-              selectEntity={(entity, type) => {
-                setSelectedEntity(entity);
-                setSelectedType(type.s);
-              }}
-              type={{
-                p: "samples",
-                s: "sample",
-              }}
-              treeStatusOverride={treeStatusOverride}
-              setTreeStatusOverride={setTreeStatusOverride}
-              dispatch={dispatch}
-              treeStatusState={treeStatusState}
-            />
-          )}
+          {!isBiospecimentDataFetching &&
+            bioSpecimenData.samples?.hits?.edges.length > 0 && (
+              <BioTree
+                entities={bioSpecimenData.samples}
+                entityTypes={entityTypes}
+                parentNode="root"
+                selectedEntity={selectedEntity}
+                selectEntity={(entity, type) => {
+                  setSelectedEntity(entity);
+                  setSelectedType(type.s);
+                }}
+                type={{
+                  p: "samples",
+                  s: "sample",
+                }}
+                treeStatusOverride={treeStatusOverride}
+                setTreeStatusOverride={setTreeStatusOverride}
+                setTotalNodeCount={setTotalNodeCount}
+                setExpandedCount={setExpandedCount}
+              />
+            )}
         </div>
         <div className="flex-1">
           {selectedEntity && selectedType && (

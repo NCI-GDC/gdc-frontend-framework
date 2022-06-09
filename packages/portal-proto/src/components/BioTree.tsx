@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   AiOutlinePlusSquare as ExpandMoreIcon,
   AiOutlineMinusSquare as ExpandLessIcon,
@@ -84,40 +84,32 @@ export const BioTree = ({
   setTreeStatusOverride,
   selectedEntity,
   selectEntity,
-  dispatch,
-  treeStatusState,
+  setExpandedCount,
+  setTotalNodeCount,
 }: any) => {
+  console.log("treeStatusOverride: ", treeStatusOverride);
   const shouldExpand =
     parentNode === "root" || treeStatusOverride === "expanded";
   const [isExpanded, setIsExpanded] = useState(shouldExpand);
+  const isExpandedd = useRef(shouldExpand);
 
   useEffect(() => {
     if (treeStatusOverride) {
-      console.log("tree: ", treeStatusOverride);
       const override = treeStatusOverride === "expanded";
       setIsExpanded(override);
+      isExpandedd.current = override;
+      console.log("IS EXPANDED: ", isExpanded);
+      override && setExpandedCount((c) => c + 1);
     }
   }, [treeStatusOverride]);
 
   useEffect(() => {
-    dispatch({
-      payload: {
-        expanded: isExpanded,
-        mounted: true,
-      },
-      type: "TOTAL_NODES",
-    });
-
+    setTotalNodeCount((c) => c + 1);
     return () => {
-      console.log("unmounted: ", type.p);
-
-      dispatch({
-        payload: {
-          expanded: isExpanded,
-          mounted: false,
-        },
-        type: "TOTAL_NODES",
-      });
+      console.log("UNMOUNT: ", parentNode, isExpanded);
+      setTotalNodeCount((c) => c - 1);
+      // isExpanded && setExpandedCount((c) => Math.max(c - 1, 0));
+      isExpandedd.current && setExpandedCount((c) => Math.max(c - 1, 0));
     };
   }, []);
 
@@ -125,16 +117,20 @@ export const BioTree = ({
     <ul className="ml-3 my-2 pl-2">
       <div
         className="flex"
-        onClick={(e) => {
-          e.stopPropagation();
+        onClick={() => {
           setIsExpanded(!isExpanded);
-          dispatch({
-            type: `${isExpanded ? "COLLAPSE" : "EXPAND"}_NODE`,
-          });
+          isExpandedd.current = !isExpandedd.current;
+          console.log("PARENT NODE: ", isExpanded, parentNode);
+          // !isExpanded
+          //   ? setExpandedCount((c) => c + 1)
+          //   : setExpandedCount((c) => Math.max(c - 1, 0));
+          isExpandedd.current
+            ? setExpandedCount((c) => c + 1)
+            : setExpandedCount((c) => Math.max(c - 1, 0));
           setTreeStatusOverride(null);
         }}
       >
-        {isExpanded ? (
+        {isExpandedd.current ? (
           <ExpandLessIcon
             className="hover:cursor-pointer"
             color="green"
@@ -151,7 +147,7 @@ export const BioTree = ({
           {type.p}
         </Badge>
       </div>
-      {isExpanded &&
+      {isExpandedd.current &&
         entities?.hits?.edges?.map((entity) => {
           return (
             <Node
@@ -175,8 +171,8 @@ export const BioTree = ({
                 selectEntity={selectEntity}
                 setTreeStatusOverride={setTreeStatusOverride}
                 treeStatusOverride={treeStatusOverride}
-                dispatch={dispatch}
-                treeStatusState={treeStatusState}
+                setExpandedCount={setExpandedCount}
+                setTotalNodeCount={setTotalNodeCount}
               />
             </Node>
           );
