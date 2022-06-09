@@ -3,7 +3,6 @@ import { divider_style } from "./style";
 import { Divider } from "@mantine/core";
 import { EnumFacet } from "../facets/EnumFacet";
 import NumericRangeFacet from "../facets/NumericRangeFacet";
-import BooleanFacet from "../facets/BooleanFacet";
 import GenesTable from "../genesTable/GenesTable";
 
 const Components: ReactNode = () => {
@@ -30,13 +29,6 @@ const Components: ReactNode = () => {
         indexType="repository"
         rangeDatatype="percent"
         field="samples.portions.slides.percent_tumor_cells"
-      />
-      <Divider label="Boolean Facet" classNames={divider_style} />
-      <BooleanFacet
-        docType="genes"
-        indexType="explore"
-        facetName="Is Cancer Gene Census"
-        field="is_cancer_gene_census"
       />
       <Divider label="Genes Table" classNames={divider_style} />
       <GenesTable

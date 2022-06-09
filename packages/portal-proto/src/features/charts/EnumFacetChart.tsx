@@ -58,8 +58,6 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
   const [chart_data, setChartData] = useState([]);
   const { ref, width } = useElementSize();
 
-  console.log("width: ", width);
-
   useEffect(() => {
     if (isSuccess) {
       const cd = processChartData(data, maxBins);

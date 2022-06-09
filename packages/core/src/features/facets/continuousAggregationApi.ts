@@ -19,7 +19,6 @@ export interface RangeBuckets extends Stats {
 export const isRangeBucketsAggregation = (
   aggregation: unknown,
 ): aggregation is RangeBuckets => {
-  console.log("aggregation:", aggregation);
   return (
     isObject(aggregation) && "range" in aggregation && "stats" in aggregation
   );
