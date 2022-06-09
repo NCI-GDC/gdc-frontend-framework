@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Chip, Chips, Menu, Grid, ActionIcon } from "@mantine/core";
 import { MdSort as SortIcon } from "react-icons/md";
+import { IoMdArrowRoundBack as BackIcon } from "react-icons/io";
 import AnalysisCard from "@/features/user-flow/workflow/AnalysisCard";
 import {
   APPTAGS,
@@ -11,6 +12,7 @@ import {
   AppRegistrationEntry,
   sortAlphabetically,
 } from "@/features/user-flow/workflow/utils";
+import SearchInput from "@/components/SearchInput";
 import dynamic from "next/dynamic";
 import FeaturedToolCard from "./FeaturedToolCard";
 
@@ -276,18 +278,20 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
       {" "}
       {selectedApp ? (
         <div className="flex flex-col mx-2">
-          <div className="flex flex-row items-center">
+          <div className="flex flex-row items-center  bg-nci-blue-darkest px-2 py-4">
             <button
               onClick={() => setSelectedApp(undefined)}
-              className="bg-nci-gray-lighter hover:bg-nci-gray-light font-montserrat tracking-widest uppercase rounded-md shadow-md p-1 px-2 py-2"
+              className="bg-white hover:bg-nci-gray-light font-montserrat tracking-widest uppercase rounded-sm shadow-md p-1 px-2 py-2"
             >
-              Applications
+              <BackIcon size="1.5rem" />
             </button>
-            <div className=" mx-3 font-montserrat">/</div>
-            <div className="bg-nci-gray-lighter font-montserrat tracking-widest uppercase rounded-md shadow-md p-1 px-2">
+            <div className="font-montserrat tracking-widest font-bold text-white w-1/2 uppercase ml-4 p-1 px-2">
               {selectedAppName
                 ? selectedAppName
                 : initialApps[selectedApp].name}
+            </div>
+            <div className="w-10/12 m-auto">
+              <SearchInput />
             </div>
           </div>
           <ActiveAnalysisToolNoSSR appId={selectedApp} />

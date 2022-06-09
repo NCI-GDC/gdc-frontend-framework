@@ -89,7 +89,7 @@ export const FacetTabs: FC = () => {
         orientation="vertical"
         classNames={{
           tabControl:
-            "font-bold !font-medium !bg-nci-blue-dark !text-nci-gray-lightest",
+            "font-bold !font-medium !bg-nci-blue-darkest !text-nci-gray-lightest",
           tabActive: "!bg-white !text-nci-gray-darkest",
           body: "!pl-0 !ml-0",
         }}

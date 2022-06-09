@@ -24,7 +24,7 @@ const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
 
 const GenesFacetNames = [
   {
-    facet_filter: "biotype",
+    facet_filter: "genes.biotype",
     name: "Biotype",
     description: "No description",
   },
@@ -37,27 +37,27 @@ const GenesFacetNames = [
 
 const MutationFacetNames = [
   {
-    facet_filter: "consequence.transcript.annotation.vep_impact",
+    facet_filter: "ssms.consequence.transcript.annotation.vep_impact",
     name: "VEP Impact",
     description: "No description",
   },
   {
-    facet_filter: "consequence.transcript.annotation.sift_impact",
+    facet_filter: "ssms.consequence.transcript.annotation.sift_impact",
     name: "SIFT Impact",
     description: "No description",
   },
   {
-    facet_filter: "consequence.transcript.annotation.polyphen_impact",
+    facet_filter: "ssms.consequence.transcript.annotation.polyphen_impact",
     name: "Polyphen Impact",
     description: "No description",
   },
   {
-    facet_filter: "consequence.transcript.consequence_type",
+    facet_filter: "ssms.consequence.transcript.consequence_type",
     name: "Consequence Type",
     description: "No description",
   },
   {
-    facet_filter: "mutation_subtype",
+    facet_filter: "ssms.mutation_subtype",
     name: "Type",
     description: "No description",
   },
@@ -191,7 +191,8 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
         variant="pills"
         classNames={{
           root: "mt-6",
-          tabActive: "bg-nci-teal text-nci-blue p-4 hover:bg-nci-teal",
+          tabActive:
+            "bg-nci-blue-darkest text-white p-4 hover:bg-nci-blue-dark",
         }}
         onTabChange={handleTabOrFilterChanged}
       >
