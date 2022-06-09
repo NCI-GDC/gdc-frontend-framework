@@ -2,6 +2,12 @@
   "config": {
     "general": {
       "label": "General",
+      "facets": ["cases.project.program.name", "cases.project.project_id"],
+      "docType": "cases",
+      "index": "explore"
+    },
+    "demographic": {
+      "label": "Demographic",
       "facets": [
         "cases.demographic.gender",
         "cases.demographic.race",

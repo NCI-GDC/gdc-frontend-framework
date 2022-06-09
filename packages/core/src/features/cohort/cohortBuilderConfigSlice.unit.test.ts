@@ -1,4 +1,3 @@
-//import { getInitialCoreState } from "../../store.unit.test";
 import {
   addFilterToCohortBuilder,
   removeFilterFromCohortBuilder,
