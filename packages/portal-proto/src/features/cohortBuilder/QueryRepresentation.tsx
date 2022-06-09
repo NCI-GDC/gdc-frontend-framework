@@ -34,6 +34,9 @@ type RangeOperation =
 
 type ValueOperation = Exclude<Operation, Intersection | Union>;
 
+const queryItemStyle =
+  "m-1 px-2 font-heading shadow-md font-medium text-sm rounded-xl bg-nci-blue-dark text-white border-nci-gray-light border-1";
+
 export const isRangeOperation = (x?: Operation): x is RangeOperation => {
   return (
     x !== undefined &&
@@ -111,59 +114,42 @@ interface ClosedRangeQueryElementProps {
   readonly op?: "and";
 }
 
-export const ClosedRangeQueryElement: React.FC<ClosedRangeQueryElementProps> =
-  ({
-    lower,
-    upper,
-    op = "and",
-  }: PropsWithChildren<ClosedRangeQueryElementProps>) => {
-    const field = lower.field; // As this is a Range the field for both lower and upper will be the same
-    const coreDispatch = useCoreDispatch();
-    const handleKeepMember = (keep: RangeOperation) => {
-      coreDispatch(updateCohortFilter({ field: field, operation: keep }));
-    };
+export const ClosedRangeQueryElement: React.FC<
+  ClosedRangeQueryElementProps
+> = ({
+  lower,
+  upper,
+  op = "and",
+}: PropsWithChildren<ClosedRangeQueryElementProps>) => {
+  const field = lower.field; // As this is a Range the field for both lower and upper will be the same
+  const coreDispatch = useCoreDispatch();
+  const handleKeepMember = (keep: RangeOperation) => {
+    coreDispatch(updateCohortFilter({ field: field, operation: keep }));
+  };
 
-    const handleRemoveFilter = () => {
-      coreDispatch(removeCohortFilter(field));
-    };
-
-    return (
-      <>
-        <div className="m-1 px-2 font-heading shadow-md font-medium text-sm rounded-xl bg-nci-gray-lighter text-nci-gray-darkest border-nci-gray-light border-1">
+  return (
+    <>
+      <div className={queryItemStyle}>
+        <div className="flex flex-row items-center">
           <div className="flex flex-row items-center">
-            <div className="flex flex-row items-center">
-              <ComparisonElement {...lower} />
-              <button>
-                <ClearIcon
-                  onClick={() => handleKeepMember(upper)}
-                  size="1.5em"
-                  className="pl-1 border-l-2 border-nci-gray-light "
-                />
-              </button>
-            </div>
-            {op}
-            <div className="flex flex-row items-center">
-              <ComparisonElement {...upper} showLabel={false} />
-              <button>
-                <ClearIcon
-                  onClick={() => handleKeepMember(lower)}
-                  size="1.5em"
-                  className="pl-1 border-l-2 border-nci-gray-light "
-                />
-              </button>
-            </div>
+            <ComparisonElement {...lower} />
+          </div>
+          {op}
+          <div className="flex flex-row items-center">
+            <ComparisonElement {...upper} showLabel={false} />
             <button>
               <ClearIcon
-                onClick={handleRemoveFilter}
+                onClick={() => handleKeepMember(lower)}
                 size="1.5em"
                 className="pl-1 border-l-2 border-nci-gray-light "
               />
             </button>
           </div>
         </div>
-      </>
-    );
-  };
+      </div>
+    </>
+  );
+};
 
 interface QueryElementProps {
   field: string;
@@ -185,7 +171,7 @@ export const QueryElement: React.FC<QueryElementProps> = ({
   };
 
   return (
-    <div className="m-1 px-2 font-heading shadow-md font-medium text-sm rounded-xl bg-nci-gray-lighter text-nci-gray-darkest border-nci-gray-light border-1">
+    <div className={queryItemStyle}>
       <div className="flex flex-row items-center">
         {children}
         <DropDownIcon size="1.5em" onClick={handlePopupFacet} />

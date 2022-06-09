@@ -21,7 +21,7 @@ import {
   MdOutlineTour as TourIcon,
 } from "react-icons/md";
 import Banner from "@/components/Banner";
-import { Button } from "@mantine/core";
+import { Button, LoadingOverlay } from "@mantine/core";
 import { useTour } from "@reactour/tour";
 import steps from "../../features/tour/steps";
 
@@ -81,11 +81,12 @@ const Header: React.FC<HeaderProps> = ({
 }: HeaderProps) => {
   const { setIsOpen } = useTour();
   const currentCart = useCoreSelector((state) => selectCart(state));
-  useTotalCounts(); // request total counts and facet dictionary
-  useFacetDictionary();
+  const { isSuccess: totalSuccess } = useTotalCounts(); // request total counts and facet dictionary
+  const { isSuccess: dictSuccess } = useFacetDictionary();
   return (
     <div className="px-6 py-3 border-b border-gdc-grey-lightest">
       <div className="flex flex-row flex-wrap divide-x divide-gray-300 items-center">
+        <LoadingOverlay visible={!(totalSuccess || dictSuccess)} />
         <div className="flex-none w-64 h-nci-logo mr-2 relative">
           {/* There's some oddities going on here that need to be explained.  When a
           <Link> wraps an <Image>, react complains it's expecting a reference to be
