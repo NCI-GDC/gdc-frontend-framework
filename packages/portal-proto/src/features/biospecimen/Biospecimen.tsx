@@ -1,15 +1,43 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { BioTree, entityTypes } from "@/components/BioTree";
 import { MdOutlineSearch, MdFileDownload } from "react-icons/md";
-import { Button, Input, Tooltip } from "@mantine/core";
+import { Button, Input } from "@mantine/core";
 import { useBiospecimenData } from "@gff/core";
 import { HorizontalTable } from "@/components/HorizontalTable";
 import { formatEntityInfo } from "./utils";
 import { trimEnd, find } from "lodash";
+import {
+  treeStatusInitialState,
+  treeStatusStateReducer,
+} from "./treeStatusReducer";
 
 export const Biospecimen = ({ caseId }) => {
+  const [treeStatusOverride, setTreeStatusOverride] = useState(null);
+
+  const [treeStatusState, dispatch] = useReducer(
+    treeStatusStateReducer,
+    treeStatusInitialState,
+  );
+
+  console.log(treeStatusState);
   const [isAllExpanded, setIsAllExpanded] = useState(false);
-  const [treeStatusOverride, setTreeStatusOverride] = useState("Collapsed");
+
+  useEffect(() => {
+    setIsAllExpanded(
+      treeStatusState.totalNodes === treeStatusState.expandedNodes,
+    );
+  }, [treeStatusState]);
+
+  useEffect(() => {
+    if (treeStatusState.totalNodes > 0 && treeStatusOverride) {
+      dispatch({
+        payload: {
+          expanded: treeStatusOverride === "expanded",
+        },
+        type: "OVERRIDE_NODES",
+      });
+    }
+  }, [treeStatusOverride]);
 
   const { data: bioSpecimenData, isFetching: isBiospecimentDataFetching } =
     useBiospecimenData(caseId);
@@ -35,15 +63,20 @@ export const Biospecimen = ({ caseId }) => {
   const selectedSlide = find(withTrimmedSubIds, {
     submitter_id: selectedEntity?.submitter_id,
   });
-
+  console.log("SELECTED ENTITY: ", selectedEntity);
   const [selectedType, setSelectedType] = useState("sample");
+  console.log(
+    "out is all expanded, treeStatusOverride: ",
+    isAllExpanded,
+    treeStatusOverride,
+  );
 
   return (
     <div className="mb-5">
       <div className="flex justify-between">
         <h1>Biospecimen</h1>
         <Button
-          className="px-1.5 min-h-[28px] nim-w-[40px] border-nci-gray-light border rounded-[4px] "
+          className="px-1.5 min-h-[28px] min-w-[40px] border-nci-gray-light border rounded-[4px] "
           onClick={() => {}}
         >
           <MdFileDownload size="1.25em" />
@@ -61,8 +94,13 @@ export const Biospecimen = ({ caseId }) => {
             />
             <Button
               onClick={() => {
-                setIsAllExpanded(!isAllExpanded);
                 setTreeStatusOverride(isAllExpanded ? "collapsed" : "expanded");
+                // console.log(
+                //   "in is all expanded, treeStatusOverride: ",
+                //   isAllExpanded,
+                //   treeStatusOverride,
+                // );
+                treeStatusOverride;
               }}
               className="ml-4"
             >
@@ -84,6 +122,9 @@ export const Biospecimen = ({ caseId }) => {
                 s: "sample",
               }}
               treeStatusOverride={treeStatusOverride}
+              setTreeStatusOverride={setTreeStatusOverride}
+              dispatch={dispatch}
+              treeStatusState={treeStatusState}
             />
           )}
         </div>

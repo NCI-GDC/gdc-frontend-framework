@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   AiOutlinePlusSquare as ExpandMoreIcon,
   AiOutlineMinusSquare as ExpandLessIcon,
@@ -47,7 +47,10 @@ const Node = ({
                 ? "underline font-bold"
                 : ""
             }`}
-            onClick={() => selectEntity(entity, type)}
+            onClick={(e) => {
+              e.stopPropagation();
+              selectEntity(entity, type);
+            }}
           >
             {entity.submitter_id}
           </span>
@@ -78,14 +81,59 @@ export const BioTree = ({
   type,
   parentNode,
   treeStatusOverride,
+  setTreeStatusOverride,
   selectedEntity,
   selectEntity,
+  dispatch,
+  treeStatusState,
 }: any) => {
-  const shouldExpand = parentNode === "root";
-  const [isExpanded, setIsExpanded] = useState(shouldExpand || false);
+  const shouldExpand =
+    parentNode === "root" || treeStatusOverride === "expanded";
+  const [isExpanded, setIsExpanded] = useState(shouldExpand);
+
+  useEffect(() => {
+    if (treeStatusOverride) {
+      console.log("tree: ", treeStatusOverride);
+      const override = treeStatusOverride === "expanded";
+      setIsExpanded(override);
+    }
+  }, [treeStatusOverride]);
+
+  useEffect(() => {
+    dispatch({
+      payload: {
+        expanded: isExpanded,
+        mounted: true,
+      },
+      type: "TOTAL_NODES",
+    });
+
+    return () => {
+      console.log("unmounted: ", type.p);
+
+      dispatch({
+        payload: {
+          expanded: isExpanded,
+          mounted: false,
+        },
+        type: "TOTAL_NODES",
+      });
+    };
+  }, []);
+
   return (
     <ul className="ml-3 my-2 pl-2">
-      <div className="flex" onClick={() => setIsExpanded((c) => !c)}>
+      <div
+        className="flex"
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsExpanded(!isExpanded);
+          dispatch({
+            type: `${isExpanded ? "COLLAPSE" : "EXPAND"}_NODE`,
+          });
+          setTreeStatusOverride(null);
+        }}
+      >
         {isExpanded ? (
           <ExpandLessIcon
             className="hover:cursor-pointer"
@@ -125,6 +173,10 @@ export const BioTree = ({
                 parentNode={entity.node.submitter_id}
                 selectedEntity={selectedEntity}
                 selectEntity={selectEntity}
+                setTreeStatusOverride={setTreeStatusOverride}
+                treeStatusOverride={treeStatusOverride}
+                dispatch={dispatch}
+                treeStatusState={treeStatusState}
               />
             </Node>
           );

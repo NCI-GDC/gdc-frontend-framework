@@ -27,7 +27,7 @@ export const humanify: THumanify = ({
   let original;
   let humanified;
   if (facetTerm) {
-    // Splits on capital letters f ollowed by lowercase letters to find
+    // Splits on capital letters followed by lowercase letters to find
     // words squished together in a string.
     original = term.split(/(?=[A-Z][a-z])/).join(" ");
     humanified = term.replace(/\./g, " ").replace(/_/g, " ").trim();
