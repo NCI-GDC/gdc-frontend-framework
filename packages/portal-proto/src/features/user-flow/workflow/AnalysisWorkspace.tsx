@@ -1,6 +1,11 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Chip, Chips, Menu, Grid, ActionIcon } from "@mantine/core";
 import { MdSort as SortIcon } from "react-icons/md";
+import {
+  clearComparisonCohorts,
+  selectComparisonCohorts,
+  useCoreSelector,
+} from "@gff/core";
 import AnalysisCard from "@/features/user-flow/workflow/AnalysisCard";
 import {
   APPTAGS,
@@ -14,6 +19,7 @@ import {
 import AdditionalCohortSelection from "./AdditionalCohortSelection";
 import dynamic from "next/dynamic";
 import FeaturedToolCard from "./FeaturedToolCard";
+import AnalysisBreadcrumbs from "./AnalysisBreadcrumbs";
 
 const ActiveAnalysisToolNoSSR = dynamic(
   () => import("@/features/user-flow/workflow/ActiveAnalysisTool"),
@@ -261,6 +267,9 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
 }: AnalysisWorkspaceProps) => {
   const [selectedApp, setSelectedApp] = useState(undefined);
   const [selectedAppName, setSelectedAppName] = useState(undefined);
+  const additionalCohorts = useCoreSelector((state) =>
+    selectComparisonCohorts(state),
+  );
 
   const handleAppSelected = (id: string, name: string) => {
     setSelectedApp(id);
@@ -273,22 +282,24 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   useEffect(() => {
     setSelectedApp(app);
     setSelectedAppName(undefined); // will use the registered app name
-    setAdditionalCohort(undefined);
+    clearComparisonCohorts();
   }, [app]);
 
   const appInfo = initialApps[selectedApp];
 
-  const [additonalCohort, setAdditionalCohort] = useState(undefined);
-
   return (
     <div>
-      {" "}
+      {selectedApp && (
+        <AnalysisBreadcrumbs
+          intermediateStep={"Selection"}
+          currentApp={appInfo}
+        />
+      )}
       {selectedApp ? (
-        appInfo?.selectAdditionalCohort && additonalCohort === undefined ? (
+        appInfo?.selectAdditionalCohort && additionalCohorts.length === 0 ? (
           <AdditionalCohortSelection
             entry={appInfo}
             onClick={handleAppSelected}
-            setAdditionalCohort={setAdditionalCohort}
           />
         ) : (
           <div className="flex flex-col mx-2">

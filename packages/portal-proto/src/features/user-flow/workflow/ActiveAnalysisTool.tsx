@@ -1,5 +1,7 @@
 import React, { Suspense, lazy, useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import { Loader } from "@mantine/core";
+import { REGISTERED_APPS } from "./registeredApps";
 
 const importApplication = (app) =>
   lazy(() =>
@@ -16,6 +18,7 @@ const ActiveAnalysisTool: React.FC<AnalysisToolInfo> = ({
   appId,
 }: AnalysisToolInfo) => {
   const [analysisApp, setAnalysisApp] = useState(undefined);
+  const router = useRouter();
 
   useEffect(() => {
     async function loadApp() {
@@ -24,6 +27,10 @@ const ActiveAnalysisTool: React.FC<AnalysisToolInfo> = ({
     }
 
     loadApp().then(setAnalysisApp);
+
+    router.push({
+      query: { app: REGISTERED_APPS.find((app) => app.id === appId).id },
+    });
   }, [appId]);
 
   return (

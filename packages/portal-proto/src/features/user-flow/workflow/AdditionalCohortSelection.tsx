@@ -1,27 +1,26 @@
 import { useEffect, useState } from "react";
 import { Drawer, Table, Button, Pagination, Grid } from "@mantine/core";
-import { AppRegistrationEntry } from "@/features/user-flow/workflow/utils";
 import {
   useCoreSelector,
   selectCurrentCohort,
-  selectAvailableCohorts,
   useGetCohortsQuery,
+  setComparisonCohorts,
+  useCoreDispatch,
 } from "@gff/core";
-import { classNames } from "react-select/src/utils";
+import { AppRegistrationEntry } from "@/features/user-flow/workflow/utils";
 
 interface AdditionalCohortSelectionProps {
   readonly entry: AppRegistrationEntry;
   readonly onClick: (id: string, name: string) => void;
-  readonly setAdditionalCohort: (additionalCohort: string) => void;
 }
 
-const PAGE_SIZE = 2;
+const PAGE_SIZE = 10;
 
 const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
   entry,
   onClick,
-  setAdditionalCohort,
 }) => {
+  const dispatch = useCoreDispatch();
   const [selectedCohort, setSelectedCohort] = useState(null);
   const primaryCohortName = useCoreSelector((state) =>
     selectCurrentCohort(state),
@@ -33,6 +32,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
   useEffect(() => {
     if (cohorts.currentData) {
       setCurrentCohortPage(cohorts.currentData.slice(0, PAGE_SIZE));
+      setActivePage(1);
     }
   }, [cohorts.isSuccess]);
 
@@ -53,17 +53,12 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
   };
 
   const [drawerOpen, setDrawerOpen] = useState(true);
+  const totalResults = cohorts.currentData?.length || 0;
 
   return (
-    <Drawer
-      opened={drawerOpen}
-      onClose={() => setSelectedCohort(null)}
-      position={"bottom"}
-      withinPortal={false}
-      size={"xl"}
-    >
+    <div className="bg-white">
       <Grid>
-        <Grid.Col span={3}>
+        <Grid.Col span={3} className="p-4">
           <p>Select a cohort to compare with {primaryCohortName}</p>
         </Grid.Col>
         <Grid.Col span={9}>
@@ -77,13 +72,14 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
             </thead>
             <tbody>
               {currentCohortPage.map((cohort) => (
-                <tr>
+                <tr key={cohort.id}>
                   <td>
                     <input
                       type="radio"
                       name="additonal-cohort-selection"
                       id={cohort.id}
                       onChange={() => setSelectedCohort(cohort.id)}
+                      checked={selectedCohort === cohort.id}
                     />
                   </td>
                   <td>
@@ -94,19 +90,27 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
               ))}
             </tbody>
             <tfoot>
-              <p>
-                Showing {} - {} of {cohorts.currentData?.length || 0}
-              </p>
-              <Pagination
-                total={(cohorts.currentData?.length || 0) / PAGE_SIZE + 1}
-                page={activePage}
-                onChange={updatePage}
-              />
+              <tr>
+                <td>
+                  Showing {1 + (activePage - 1) * PAGE_SIZE} -{" "}
+                  {totalResults > PAGE_SIZE * activePage
+                    ? PAGE_SIZE * activePage
+                    : totalResults}{" "}
+                  of {totalResults}
+                </td>
+                <td>
+                  <Pagination
+                    total={Math.ceil(totalResults / PAGE_SIZE)}
+                    page={activePage}
+                    onChange={updatePage}
+                  />
+                </td>
+              </tr>
             </tfoot>
           </Table>
         </Grid.Col>
       </Grid>
-      <div className="absolute bottom-0 p-4  bg-nci-gray-lightest w-full flex justify-between">
+      <div className="p-4  bg-nci-gray-lightest w-full flex justify-between">
         <Button
           onClick={() => onClick(`${entry.id}Demo`, `${entry.name} Demo`)}
           className="bg-white border-nci-blue-darkest text-nci-blue-darkest"
@@ -126,14 +130,14 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
             className="bg-nci-blue-darkest hover:bg-nci-blue"
             onClick={() => {
               setDrawerOpen(false);
-              setAdditionalCohort(selectedCohort);
+              dispatch(setComparisonCohorts([selectedCohort]));
             }}
           >
             Run
           </Button>
         </div>
       </div>
-    </Drawer>
+    </div>
   );
 };
 
