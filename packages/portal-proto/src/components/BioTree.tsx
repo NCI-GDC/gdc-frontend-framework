@@ -36,15 +36,26 @@ const Node = ({
   children,
   selectedEntity,
   selectEntity,
+  query,
+  search,
 }) => {
   return (
     <li>
       {entity[`${type.s}_id`] && entity.submitter_id && (
         <div className="flex">
           <span
-            className={`text-sm cursor-pointer hover:underline hover:font-bold ml-3 mt-1 ${
+            className={`text-sm cursor-pointer hover:underline hover:font-bold ml-3 mt-1
+            ${
               selectedEntity[`${type.s}_id`] === entity[`${type.s}_id`]
                 ? "underline font-bold"
+                : ""
+            }
+            ${
+              query &&
+              (search(query, { node: entity }) || [])
+                .map((e) => e.node)
+                .some((e) => e[`${type.s}_id`] === entity[`${type.s}_id`])
+                ? "bg-amber-300"
                 : ""
             }`}
             onClick={(e) => {
@@ -86,29 +97,40 @@ export const BioTree = ({
   selectEntity,
   setExpandedCount,
   setTotalNodeCount,
+  query,
+  search,
 }: any) => {
   console.log("treeStatusOverride: ", treeStatusOverride);
   const shouldExpand =
-    parentNode === "root" || treeStatusOverride === "expanded";
-  const [isExpanded, setIsExpanded] = useState(shouldExpand);
+    parentNode === "root" ||
+    ["expanded", "query matches"].includes(treeStatusOverride);
+
   const isExpandedd = useRef(shouldExpand);
 
   useEffect(() => {
-    if (treeStatusOverride) {
+    if (
+      query?.length > 0 &&
+      (entities.hits.edges.some((e) => search(query, e).length) ||
+        ["samples", "portions", "analytes", "aliquots", "slides"].find((t) =>
+          t.includes(query),
+        ) ||
+        type.p.includes(query))
+    ) {
+      const message = "query matches";
+      isExpandedd.current = true;
+      setExpandedCount((c) => c + 1);
+      setTreeStatusOverride(message);
+    } else if (treeStatusOverride) {
       const override = treeStatusOverride === "expanded";
-      setIsExpanded(override);
       isExpandedd.current = override;
-      console.log("IS EXPANDED: ", isExpanded);
       override && setExpandedCount((c) => c + 1);
     }
-  }, [treeStatusOverride]);
+  }, [treeStatusOverride, query]);
 
   useEffect(() => {
     setTotalNodeCount((c) => c + 1);
     return () => {
-      console.log("UNMOUNT: ", parentNode, isExpanded);
       setTotalNodeCount((c) => c - 1);
-      // isExpanded && setExpandedCount((c) => Math.max(c - 1, 0));
       isExpandedd.current && setExpandedCount((c) => Math.max(c - 1, 0));
     };
   }, []);
@@ -118,12 +140,7 @@ export const BioTree = ({
       <div
         className="flex"
         onClick={() => {
-          setIsExpanded(!isExpanded);
           isExpandedd.current = !isExpandedd.current;
-          console.log("PARENT NODE: ", isExpanded, parentNode);
-          // !isExpanded
-          //   ? setExpandedCount((c) => c + 1)
-          //   : setExpandedCount((c) => Math.max(c - 1, 0));
           isExpandedd.current
             ? setExpandedCount((c) => c + 1)
             : setExpandedCount((c) => Math.max(c - 1, 0));
@@ -143,7 +160,11 @@ export const BioTree = ({
             size={18}
           />
         )}
-        <Badge variant="dot" className="ml-2">
+
+        <Badge
+          variant="filled"
+          color={query && type.p.includes(query) ? "yellow" : ""}
+        >
           {type.p}
         </Badge>
       </div>
@@ -163,6 +184,8 @@ export const BioTree = ({
               type={type}
               selectedEntity={selectedEntity}
               selectEntity={selectEntity}
+              search={search}
+              query={query}
             >
               <BioTree
                 entityTypes={entityTypes}
@@ -173,6 +196,8 @@ export const BioTree = ({
                 treeStatusOverride={treeStatusOverride}
                 setExpandedCount={setExpandedCount}
                 setTotalNodeCount={setTotalNodeCount}
+                search={search}
+                query={query}
               />
             </Node>
           );

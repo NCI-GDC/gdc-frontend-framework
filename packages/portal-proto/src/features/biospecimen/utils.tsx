@@ -4,7 +4,7 @@ import { Tooltip } from "@mantine/core";
 import Link from "next/link";
 import { useCoreSelector, selectCart, useCoreDispatch } from "@gff/core";
 import { addToCart } from "@/features/cart/updateCart";
-
+import { isArray, isObject, get } from "lodash";
 interface IHumanifyParams {
   term: string;
   capitalize?: boolean;
@@ -18,6 +18,63 @@ export const capitalize = (original: string) =>
     .split(" ")
     .map((word) => `${word.charAt(0).toUpperCase()}${word.slice(1)}`)
     .join(" ");
+
+export const entityTypes = [
+  { s: "portion", p: "portions" },
+  { s: "aliquot", p: "aliquots" },
+  { s: "analyte", p: "analytes" },
+  { s: "slide", p: "slides" },
+];
+
+type TFormatValue = (value: any) => string;
+export const formatValue: TFormatValue = (value) => {
+  if (isArray(value)) {
+    return value.length;
+  }
+
+  if (isObject(value)) {
+    return value.name;
+  }
+
+  if (!value && !isNaN(value) && value !== 0) {
+    return "--";
+  }
+
+  return value;
+};
+
+export const match = (query: string, entity: Object): boolean =>
+  Object.keys(entity).some((k) => {
+    const formatted = formatValue(entity[k]);
+    return (
+      typeof formatted === "string" &&
+      formatted.toLowerCase().includes(query.toLowerCase())
+    );
+  });
+
+export const search = (query: string, entity: Object): any[] => {
+  const found = [];
+
+  function search(entity, type, parents) {
+    if (entity.node && match(query, entity.node)) found.push(entity);
+
+    entityTypes.forEach((type) => {
+      _.get(entity, `node[${type.p}].hits.edges`, []).forEach((child) => {
+        search(child, type.s, [entity[type.p], entity].concat(parents));
+      });
+    });
+  }
+
+  if (entity.node && match(query, entity.node)) found.push(entity);
+
+  entityTypes.forEach((type) => {
+    get(entity, `node[${type.p}].hits.edges`, []).forEach((child) => {
+      search(child, type.s, [entity[type.p], entity]);
+    });
+  });
+
+  return found;
+};
 
 export const humanify: THumanify = ({
   term,

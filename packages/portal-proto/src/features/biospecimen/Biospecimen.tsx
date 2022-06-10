@@ -1,10 +1,14 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BioTree, entityTypes } from "@/components/BioTree";
-import { MdOutlineSearch, MdFileDownload } from "react-icons/md";
-import { Button, Input } from "@mantine/core";
+import {
+  MdOutlineSearch,
+  MdFileDownload,
+  MdOutlineClear,
+} from "react-icons/md";
+import { Button, Input, ActionIcon } from "@mantine/core";
 import { useBiospecimenData } from "@gff/core";
 import { HorizontalTable } from "@/components/HorizontalTable";
-import { formatEntityInfo } from "./utils";
+import { formatEntityInfo, search } from "./utils";
 import { trimEnd, find } from "lodash";
 
 export const Biospecimen = ({ caseId }) => {
@@ -14,6 +18,7 @@ export const Biospecimen = ({ caseId }) => {
   const [selectedType, setSelectedType] = useState("sample");
   const [expandedCount, setExpandedCount] = useState(1);
   const [totalNodeCount, setTotalNodeCount] = useState(0);
+  const [searchText, setSearchText] = useState("");
 
   const { data: bioSpecimenData, isFetching: isBiospecimentDataFetching } =
     useBiospecimenData(caseId);
@@ -21,9 +26,6 @@ export const Biospecimen = ({ caseId }) => {
   useEffect(() => {
     setIsAllExpanded(expandedCount === totalNodeCount);
   }, [expandedCount, totalNodeCount]);
-
-  console.log("bioSpecimenData: ", bioSpecimenData);
-  console.log("expandedCount, totalNodeCount: ", expandedCount, totalNodeCount);
 
   useEffect(() => {
     if (
@@ -65,6 +67,24 @@ export const Biospecimen = ({ caseId }) => {
               icon={<MdOutlineSearch size={24} />}
               placeholder="Search"
               className="w-96"
+              onChange={(e) => {
+                e.target.value.length === 0 &&
+                  treeStatusOverride === "query matches" &&
+                  setTreeStatusOverride(null);
+                setSearchText(e.target.value);
+              }}
+              value={searchText}
+              rightSection={
+                <MdOutlineClear
+                  className={`hover:cursor-pointer ${
+                    searchText.length === 0 ? "hidden" : "visible"
+                  }`}
+                  onClick={() => {
+                    setTreeStatusOverride("expanded");
+                    setSearchText("");
+                  }}
+                />
+              }
             />
             <Button
               onClick={() => {
@@ -72,6 +92,9 @@ export const Biospecimen = ({ caseId }) => {
                 setExpandedCount(0);
               }}
               className="ml-4"
+              disabled={
+                searchText.length > 0 && treeStatusOverride === "query matches"
+              }
             >
               {isAllExpanded ? "Collapse All" : "Expand All"}
             </Button>
@@ -95,6 +118,8 @@ export const Biospecimen = ({ caseId }) => {
                 setTreeStatusOverride={setTreeStatusOverride}
                 setTotalNodeCount={setTotalNodeCount}
                 setExpandedCount={setExpandedCount}
+                query={searchText.toLowerCase()}
+                search={search}
               />
             )}
         </div>
