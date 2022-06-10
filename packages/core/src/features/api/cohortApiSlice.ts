@@ -1,8 +1,7 @@
 // This defines the middleware for the cohort API POC.
 
-// For this slice to work, the mock cohort api must be started. To do this,
-// run the following command from the /data directory:
-// node cohort-api-server.js
+// For this slice to work, the mock cohort api must be started. See
+// data/cohort-api-server.js for additional details.
 
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { coreCreateApi } from "../../coreCreateApi";
