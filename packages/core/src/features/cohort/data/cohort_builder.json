@@ -4,7 +4,7 @@
       "label": "General",
       "facets": ["cases.project.program.name", "cases.project.project_id"],
       "docType": "cases",
-      "index": "explore"
+      "index": "repository"
     },
     "demographic": {
       "label": "Demographic",
@@ -16,7 +16,7 @@
         "cases.demographic.vital_status"
       ],
       "docType": "cases",
-      "index": "explore"
+      "index": "repository"
     },
     "general_diagnostic": {
       "label": "General Diagnostic",
@@ -42,7 +42,7 @@
         "cases.diagnoses.residual_disease"
       ],
       "docType": "cases",
-      "index": "explore"
+      "index": "repository"
     },
     "stage_classification": {
       "label": "Stage Classification",
