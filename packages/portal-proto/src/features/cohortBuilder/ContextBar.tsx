@@ -18,12 +18,13 @@ import {
 } from "react-icons/md";
 import { FaCartPlus as AddToCartIcon } from "react-icons/fa";
 
-import SummaryFacets from "./SummaryFacets";
+import SummaryFacets, { SummaryFacetInfo } from "./SummaryFacets";
 import { updateEnumFilters } from "../facets/hooks";
 import {
   useCoreDispatch,
   clearCohortFilters,
   setCurrentCohort,
+  GQLDocType,
 } from "@gff/core";
 
 const ContextBar: React.FC<CohortGroupProps> = ({
@@ -81,7 +82,7 @@ const ContextBar: React.FC<CohortGroupProps> = ({
     {
       field: "cases.demographic.gender",
       name: "Gender",
-      docType: "cases",
+      docType: "cases" as GQLDocType,
       indexType: "repository",
     },
     {
@@ -90,7 +91,7 @@ const ContextBar: React.FC<CohortGroupProps> = ({
       docType: "cases",
       indexType: "repository",
     },
-  ]);
+  ] as ReadonlyArray<SummaryFacetInfo>);
 
   const filters = useCohortFacetFilters();
 

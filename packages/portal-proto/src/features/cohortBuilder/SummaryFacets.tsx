@@ -1,7 +1,7 @@
 import { EnumFacet } from "../facets/EnumFacet";
 import { GQLDocType, GQLIndexType } from "@gff/core";
 
-interface SummaryFacetInfo {
+export interface SummaryFacetInfo {
   readonly field: string;
   readonly name: string;
   readonly docType: GQLDocType;
