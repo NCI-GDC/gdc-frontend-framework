@@ -25,7 +25,7 @@ import { FacetCardProps } from "@/features/facets/types";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
 import { LoadingOverlay, Tooltip } from "@mantine/core";
 import * as tailwindConfig from "tailwind.config";
-import isEqual from "lodash/isEqual";
+import { isEqual } from "lodash";
 
 /**
  *  Enumeration facet filters handle display and selection of
