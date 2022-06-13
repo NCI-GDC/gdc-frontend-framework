@@ -69,7 +69,7 @@ const CohortApiTest: NextPage = () => {
   const addBody = {
     context_id: currentContextId,
     name: testCohortName,
-    facets: [],
+    filters: [],
     frozen: false,
   };
 

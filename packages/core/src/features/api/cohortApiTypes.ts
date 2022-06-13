@@ -3,7 +3,7 @@ export interface CohortModel {
   id: string;
   context_id: string;
   name: string;
-  facets: ReadonlyArray<string>;
+  filters: ReadonlyArray<string>;
   frozen: boolean;
   counts: number;
 }
