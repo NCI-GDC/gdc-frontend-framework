@@ -54,12 +54,42 @@ const ContextBar: React.FC<CohortGroupProps> = ({
   };
 
   const [summaryFields] = useState([
-    { field: "cases.primary_site", name: "Primary Site" },
-    { field: "cases.disease_type", name: "Disease Type" },
-    { field: "cases.project.project_id", name: "Project" },
-    { field: "cases.project.program.name", name: "Program Name" },
-    { field: "cases.demographic.gender", name: "Gender" },
-    { field: "cases.demographic.race", name: "Race" },
+    {
+      field: "cases.primary_site",
+      name: "Primary Site",
+      docType: "cases",
+      indexType: "repository",
+    },
+    {
+      field: "cases.disease_type",
+      name: "Disease Type",
+      docType: "cases",
+      indexType: "repository",
+    },
+    {
+      field: "cases.project.project_id",
+      name: "Project",
+      docType: "cases",
+      indexType: "repository",
+    },
+    {
+      field: "cases.project.program.name",
+      name: "Program Name",
+      docType: "cases",
+      indexType: "repository",
+    },
+    {
+      field: "cases.demographic.gender",
+      name: "Gender",
+      docType: "cases",
+      indexType: "repository",
+    },
+    {
+      field: "cases.demographic.race",
+      name: "Race",
+      docType: "cases",
+      indexType: "repository",
+    },
   ]);
 
   const filters = useCohortFacetFilters();
