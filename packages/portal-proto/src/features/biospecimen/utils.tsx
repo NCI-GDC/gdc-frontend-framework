@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useCoreSelector, selectCart, useCoreDispatch } from "@gff/core";
 import { addToCart } from "@/features/cart/updateCart";
 import { isArray, isObject, get } from "lodash";
+
 interface IHumanifyParams {
   term: string;
   capitalize?: boolean;
@@ -47,29 +48,28 @@ export const match = (query: string, entity: Object): boolean =>
   Object.keys(entity).some((k) => {
     const formatted = formatValue(entity[k]);
     return (
-      typeof formatted === "string" &&
-      formatted.toLowerCase().includes(query.toLowerCase())
+      typeof formatted === "string" && formatted.toLowerCase().includes(query)
     );
   });
 
 export const search = (query: string, entity: Object): any[] => {
   const found = [];
 
-  function search(entity, type, parents) {
+  function searchEntity(entity, type, parents) {
     if (entity.node && match(query, entity.node)) found.push(entity);
 
-    entityTypes.forEach((type) => {
-      _.get(entity, `node[${type.p}].hits.edges`, []).forEach((child) => {
-        search(child, type.s, [entity[type.p], entity].concat(parents));
+    entityTypes?.forEach((type) => {
+      get(entity, `node[${type.p}].hits.edges`, []).forEach((child) => {
+        searchEntity(child, type.s, [entity[type.p], entity].concat(parents));
       });
     });
   }
 
   if (entity.node && match(query, entity.node)) found.push(entity);
 
-  entityTypes.forEach((type) => {
+  entityTypes?.forEach((type) => {
     get(entity, `node[${type.p}].hits.edges`, []).forEach((child) => {
-      search(child, type.s, [entity[type.p], entity]);
+      searchEntity(child, type.s, [entity[type.p], entity]);
     });
   });
 

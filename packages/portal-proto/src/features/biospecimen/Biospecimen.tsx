@@ -9,7 +9,7 @@ import { Button, Input, ActionIcon } from "@mantine/core";
 import { useBiospecimenData } from "@gff/core";
 import { HorizontalTable } from "@/components/HorizontalTable";
 import { formatEntityInfo, search } from "./utils";
-import { trimEnd, find } from "lodash";
+import { trimEnd, find, flatten } from "lodash";
 
 export const Biospecimen = ({ caseId }) => {
   const [treeStatusOverride, setTreeStatusOverride] = useState(null);
@@ -20,6 +20,7 @@ export const Biospecimen = ({ caseId }) => {
   const [totalNodeCount, setTotalNodeCount] = useState(0);
   const [searchText, setSearchText] = useState("");
 
+  console.log("expandedCount, totalNodeCount: ", expandedCount, totalNodeCount);
   const { data: bioSpecimenData, isFetching: isBiospecimentDataFetching } =
     useBiospecimenData(caseId);
 
@@ -27,16 +28,27 @@ export const Biospecimen = ({ caseId }) => {
     setIsAllExpanded(expandedCount === totalNodeCount);
   }, [expandedCount, totalNodeCount]);
 
+  const getType = (node) =>
+    (entityTypes.find((type) => node[`${type.s}_id`]) || { s: null }).s;
+
   useEffect(() => {
-    if (
-      !isBiospecimentDataFetching &&
-      bioSpecimenData &&
-      Object.keys(selectedEntity).length === 0
-    ) {
-      setSelectedEntity(bioSpecimenData?.samples?.hits?.edges[0]?.node || {});
-      // need to select type too
+    if (!isBiospecimentDataFetching && bioSpecimenData) {
+      const founds = bioSpecimenData.samples.hits?.edges.map((e) =>
+        search(searchText, e),
+      );
+
+      console.log("FOUNDS: ", founds);
+      const flattened = flatten(founds);
+      const foundNode = ((flattened || [])[0] || { node: {} }).node;
+      const selectedNode = (searchText && foundNode) || selectedEntity;
+      const foundType = (searchText && getType(foundNode)) || selectedType;
+      const selected = Object.keys(selectedNode).length
+        ? selectedNode
+        : bioSpecimenData.samples.hits?.edges[0].node;
+      setSelectedEntity(selected || {});
+      setSelectedType(foundType);
     }
-  }, [bioSpecimenData, isBiospecimentDataFetching, selectedEntity]);
+  }, [bioSpecimenData, isBiospecimentDataFetching, selectedType, searchText]);
 
   const supplementalFiles = bioSpecimenData?.files?.hits?.edges || [];
   const withTrimmedSubIds = supplementalFiles.map(({ node }) => ({
@@ -60,7 +72,7 @@ export const Biospecimen = ({ caseId }) => {
         </Button>
       </div>
 
-      <div className="flex justify-between">
+      <div className="flex">
         <div className="mr-5">
           <div className="flex mb-4">
             <Input
@@ -68,9 +80,13 @@ export const Biospecimen = ({ caseId }) => {
               placeholder="Search"
               className="w-96"
               onChange={(e) => {
-                e.target.value.length === 0 &&
-                  treeStatusOverride === "query matches" &&
-                  setTreeStatusOverride(null);
+                // e.target.value.length === 0 &&
+                //   treeStatusOverride === "query matches" &&
+                //   setTreeStatusOverride(null);
+                if (e.target.value.length === 0) {
+                  setExpandedCount(0);
+                  setTreeStatusOverride("expanded");
+                }
                 setSearchText(e.target.value);
               }}
               value={searchText}
@@ -80,6 +96,7 @@ export const Biospecimen = ({ caseId }) => {
                     searchText.length === 0 ? "hidden" : "visible"
                   }`}
                   onClick={() => {
+                    setExpandedCount(0);
                     setTreeStatusOverride("expanded");
                     setSearchText("");
                   }}
@@ -92,9 +109,7 @@ export const Biospecimen = ({ caseId }) => {
                 setExpandedCount(0);
               }}
               className="ml-4"
-              disabled={
-                searchText.length > 0 && treeStatusOverride === "query matches"
-              }
+              disabled={searchText.length > 0}
             >
               {isAllExpanded ? "Collapse All" : "Expand All"}
             </Button>
@@ -109,6 +124,7 @@ export const Biospecimen = ({ caseId }) => {
                 selectEntity={(entity, type) => {
                   setSelectedEntity(entity);
                   setSelectedType(type.s);
+                  // setSearchText("");
                 }}
                 type={{
                   p: "samples",
@@ -118,7 +134,7 @@ export const Biospecimen = ({ caseId }) => {
                 setTreeStatusOverride={setTreeStatusOverride}
                 setTotalNodeCount={setTotalNodeCount}
                 setExpandedCount={setExpandedCount}
-                query={searchText.toLowerCase()}
+                query={searchText.toLocaleLowerCase()}
                 search={search}
               />
             )}

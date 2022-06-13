@@ -5,6 +5,7 @@ import {
   AiOutlineCaretRight as Caret,
 } from "react-icons/ai";
 import { Badge } from "@mantine/core";
+import Highlight from "./Highlight";
 
 export const entityTypes = [
   {
@@ -47,7 +48,7 @@ const Node = ({
             className={`text-sm cursor-pointer hover:underline hover:font-bold ml-3 mt-1
             ${
               selectedEntity[`${type.s}_id`] === entity[`${type.s}_id`]
-                ? "underline font-bold"
+                ? "underline"
                 : ""
             }
             ${
@@ -55,7 +56,7 @@ const Node = ({
               (search(query, { node: entity }) || [])
                 .map((e) => e.node)
                 .some((e) => e[`${type.s}_id`] === entity[`${type.s}_id`])
-                ? "bg-amber-300"
+                ? "bg-yellow-300"
                 : ""
             }`}
             onClick={(e) => {
@@ -63,7 +64,7 @@ const Node = ({
               selectEntity(entity, type);
             }}
           >
-            {entity.submitter_id}
+            <Highlight search={query} text={entity.submitter_id} />
           </span>
           {selectedEntity[`${type.s}_id`] === entity[`${type.s}_id`] && (
             <Caret className="ml-1" />
@@ -100,38 +101,46 @@ export const BioTree = ({
   query,
   search,
 }: any) => {
-  console.log("treeStatusOverride: ", treeStatusOverride);
   const shouldExpand =
     parentNode === "root" ||
     ["expanded", "query matches"].includes(treeStatusOverride);
 
-  const isExpandedd = useRef(shouldExpand);
+  const isExpanded = useRef(shouldExpand);
 
   useEffect(() => {
-    if (
-      query?.length > 0 &&
-      (entities.hits.edges.some((e) => search(query, e).length) ||
+    console.log(type.p);
+    console.log(query);
+    console.log("here: ", entities.hits.edges);
+
+    if (query.length > 0) {
+      if (
+        entities.hits.edges.some((e) => search(query, e).length) ||
         ["samples", "portions", "analytes", "aliquots", "slides"].find((t) =>
           t.includes(query),
         ) ||
-        type.p.includes(query))
-    ) {
-      const message = "query matches";
-      isExpandedd.current = true;
-      setExpandedCount((c) => c + 1);
-      setTreeStatusOverride(message);
+        type.p.includes(query)
+      ) {
+        const message = "query matches";
+        isExpanded.current = true;
+        setTreeStatusOverride(message);
+      } else {
+        isExpanded.current = false;
+        setTreeStatusOverride(null);
+      }
     } else if (treeStatusOverride) {
+      console.log("got here");
       const override = treeStatusOverride === "expanded";
-      isExpandedd.current = override;
+      isExpanded.current = override;
       override && setExpandedCount((c) => c + 1);
     }
   }, [treeStatusOverride, query]);
 
   useEffect(() => {
     setTotalNodeCount((c) => c + 1);
+
     return () => {
       setTotalNodeCount((c) => c - 1);
-      isExpandedd.current && setExpandedCount((c) => Math.max(c - 1, 0));
+      isExpanded.current && setExpandedCount((c) => Math.max(c - 1, 0));
     };
   }, []);
 
@@ -140,14 +149,14 @@ export const BioTree = ({
       <div
         className="flex"
         onClick={() => {
-          isExpandedd.current = !isExpandedd.current;
-          isExpandedd.current
+          isExpanded.current = !isExpanded.current;
+          isExpanded.current
             ? setExpandedCount((c) => c + 1)
             : setExpandedCount((c) => Math.max(c - 1, 0));
           setTreeStatusOverride(null);
         }}
       >
-        {isExpandedd.current ? (
+        {isExpanded.current ? (
           <ExpandLessIcon
             className="hover:cursor-pointer"
             color="green"
@@ -165,10 +174,10 @@ export const BioTree = ({
           variant="filled"
           color={query && type.p.includes(query) ? "yellow" : ""}
         >
-          {type.p}
+          <Highlight search={query} text={type.p} />
         </Badge>
       </div>
-      {isExpandedd.current &&
+      {isExpanded.current &&
         entities?.hits?.edges?.map((entity) => {
           return (
             <Node
