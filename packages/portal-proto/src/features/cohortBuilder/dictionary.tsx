@@ -19,9 +19,7 @@ export const get_facet_subcategories = (category: string): string[] => {
 export const get_facets_from_list = (
   facets: ReadonlyArray<string>,
 ): Array<Record<string, any>> => {
-  return facets.map((x) => {
-    return { name: x, ...GDC_Dictionary_Flattened.dictionary[x] };
-  });
+ return facets.map((x) => ({ name: x, ...GDC_Dictionary_Flattened.dictionary[x] }));
 };
 
 export const get_facets = (
