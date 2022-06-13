@@ -137,9 +137,8 @@ export const ClosedRangeQueryElement: React.FC<
           {op}
           <div className="flex flex-row items-center">
             <ComparisonElement {...upper} showLabel={false} />
-            <button>
+            <button onClick={() => handleKeepMember(lower)}>
               <ClearIcon
-                onClick={() => handleKeepMember(lower)}
                 size="1.5em"
                 className="pl-1 border-l-2 border-nci-gray-light "
               />
@@ -174,10 +173,11 @@ export const QueryElement: React.FC<QueryElementProps> = ({
     <div className={queryItemStyle}>
       <div className="flex flex-row items-center">
         {children}
-        <DropDownIcon size="1.5em" onClick={handlePopupFacet} />
-        <button>
+        <button onClick={handlePopupFacet}>
+          <DropDownIcon size="1.5em" onClick={handlePopupFacet} />
+        </button>
+        <button onClick={handleRemoveFilter}>
           <ClearIcon
-            onClick={handleRemoveFilter}
             size="1.5em"
             className="pl-1 border-l-2 border-nci-gray-light "
           />

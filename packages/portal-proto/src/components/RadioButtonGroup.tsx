@@ -33,15 +33,7 @@ const RadioButtonGroup: React.FC<RadioSquareButtonGroupProps> = ({
             className="inline-flex shadow-md hover:shadow-lg focus:shadow-lg"
             role="group"
           >
-            {items.map((x, index, { length }) => {
-              const border =
-                length == 1
-                  ? "rounded"
-                  : index == 0
-                  ? "rounded-l"
-                  : index + 1 == length
-                  ? "rounded-r"
-                  : "";
+            {items.map((x, index) => {
               return (
                 <div key={`${fieldId}_${index}`}>
                   <input
@@ -55,7 +47,7 @@ const RadioButtonGroup: React.FC<RadioSquareButtonGroupProps> = ({
                   />
                   <label
                     htmlFor={`${fieldId}-${index}`}
-                    className={`${border} inline-block px-6 py-2.5 peer-checked:bg-nci-cyan-dark bg-nci-cyan-lighter text-white font-medium text-xs leading-tight uppercase hover:bg-nci-cyan focus:bg-nci-cyan focus:outline-none focus:ring-0 transition duration-150 ease-in-out`}
+                    className={`rounded first:rounded-l last:rounded-r inline-block px-6 py-2.5 peer-checked:bg-nci-cyan-dark bg-nci-cyan-lighter text-white font-medium text-xs leading-tight uppercase hover:bg-nci-cyan focus:bg-nci-cyan focus:outline-none focus:ring-0 transition duration-150 ease-in-out`}
                   >
                     {x}
                   </label>

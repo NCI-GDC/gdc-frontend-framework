@@ -19,7 +19,10 @@ export const get_facet_subcategories = (category: string): string[] => {
 export const get_facets_from_list = (
   facets: ReadonlyArray<string>,
 ): Array<Record<string, any>> => {
- return facets.map((x) => ({ name: x, ...GDC_Dictionary_Flattened.dictionary[x] }));
+  return facets.map((x) => ({
+    name: x,
+    ...GDC_Dictionary_Flattened.dictionary[x],
+  }));
 };
 
 export const get_facets = (
@@ -29,11 +32,7 @@ export const get_facets = (
 ): Array<Record<any, any>> => {
   const root = GDC_Dictionary.dictionary[category][subcategory];
   return Object.keys(root)
-    .filter(
-      (x, index) =>
-        //  (root[x].facetDataType === "enum" || x === "Program" || x === "Project") &&
-        index < limit,
-    )
+    .slice(limit)
     .map((x) => {
       return { name: x, ...root[x] };
     });
