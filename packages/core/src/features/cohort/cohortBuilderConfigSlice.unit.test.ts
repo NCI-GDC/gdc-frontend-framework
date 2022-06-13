@@ -20,7 +20,7 @@ const defaultState = {
       "diagnoses.vital_status",
     ],
     docType: "cases",
-    index: "explore",
+    index: "repository",
   },
 };
 
@@ -36,7 +36,7 @@ const alteredConfig = {
       "case.test_facet",
     ],
     docType: "cases",
-    index: "explore",
+    index: "repository",
   },
 };
 
@@ -52,13 +52,13 @@ const removeFacetTestState = {
       "example.facet_type",
     ],
     docType: "cases",
-    index: "explore",
+    index: "repository",
   },
   additional: {
     label: "General",
     facets: ["example.facet_type", "case.test_facet"],
     docType: "cases",
-    index: "explore",
+    index: "repository",
   },
 };
 
@@ -105,13 +105,13 @@ describe("cohortConfig reducer", () => {
           "example.facet_type",
         ],
         docType: "cases",
-        index: "explore",
+        index: "repository",
       },
       additional: {
         label: "General",
         facets: ["case.test_facet"],
         docType: "cases",
-        index: "explore",
+        index: "repository",
       },
     };
 
@@ -146,7 +146,7 @@ describe("selectBuilderConfig", () => {
       label: "General",
       facets: ["cases.project.program.name", "cases.project.project_id"],
       docType: "cases",
-      index: "explore",
+      index: "repository",
     };
     const builderCommonConfig = selectCohortBuilderConfigCategory(
       state,
