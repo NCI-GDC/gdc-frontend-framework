@@ -268,6 +268,8 @@ interface PersistentCohort {
 export interface CohortGroupProps {
   readonly cohorts: ReadonlyArray<PersistentCohort>;
   readonly simpleMode?: boolean;
+  readonly isGroupCollapsed: boolean;
+  readonly setIsGroupCollapsed: (collapsed: boolean) => void;
 }
 
 export const useCohortFacetFilters = (): FilterSet => {

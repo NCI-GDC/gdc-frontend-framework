@@ -261,32 +261,32 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
 
 interface AnalysisWorkspaceProps {
   readonly app: string | undefined;
+  readonly setIsGroupCollapsed: (collapsed: boolean) => void;
 }
 const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   app,
+  setIsGroupCollapsed,
 }: AnalysisWorkspaceProps) => {
   const [selectedApp, setSelectedApp] = useState(undefined);
   const [selectedAppName, setSelectedAppName] = useState(undefined);
   const [cohortSelectionOpen, setCohortSelectionOpen] = useState(false);
 
   const appInfo = initialApps[selectedApp];
-  const comparisonCohorts = useCoreSelector((state) =>
-    selectComparisonCohorts(state),
-  );
-  console.log(appInfo);
 
   const handleAppSelected = (id: string, name: string) => {
     setSelectedApp(id);
     setSelectedAppName(name);
-    //if (appInfo?.selectAdditionalCohort) {
-    setCohortSelectionOpen(true);
-    //}
+    if (initialApps[id]?.selectAdditionalCohort) {
+      setCohortSelectionOpen(true);
+      setIsGroupCollapsed(true);
+    }
   };
 
   useEffect(() => {
     setSelectedApp(app);
     setSelectedAppName(undefined); // will use the registered app name
     clearComparisonCohorts();
+    setCohortSelectionOpen(false);
   }, [app]);
 
   return (
@@ -300,20 +300,6 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
       />
       {selectedApp && !cohortSelectionOpen && (
         <div className="flex flex-col mx-2">
-          <div className="flex flex-row items-center">
-            <button
-              onClick={() => setSelectedApp(undefined)}
-              className="bg-nci-gray-lighter hover:bg-nci-gray-light font-montserrat tracking-widest uppercase rounded-md shadow-md p-1 px-2 py-2"
-            >
-              Applications
-            </button>
-            <div className=" mx-3 font-montserrat">/</div>
-            <div className="bg-nci-gray-lighter font-montserrat tracking-widest uppercase rounded-md shadow-md p-1 px-2">
-              {selectedAppName
-                ? selectedAppName
-                : initialApps[selectedApp].name}
-            </div>
-          </div>
           <ActiveAnalysisToolNoSSR appId={selectedApp} />
         </div>
       )}

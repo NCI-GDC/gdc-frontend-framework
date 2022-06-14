@@ -29,8 +29,9 @@ import {
 
 const ContextBar: React.FC<CohortGroupProps> = ({
   cohorts,
+  isGroupCollapsed,
+  setIsGroupCollapsed,
 }: CohortGroupProps) => {
-  const [isGroupCollapsed, setIsGroupCollapsed] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handleCohortSelection = (idx) => {

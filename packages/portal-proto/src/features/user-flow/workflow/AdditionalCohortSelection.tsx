@@ -4,11 +4,11 @@ import { useRouter } from "next/router";
 import {
   useCoreSelector,
   selectCurrentCohort,
-  useGetCohortsQuery,
   setComparisonCohorts,
   useCoreDispatch,
   selectAvailableCohorts,
 } from "@gff/core";
+import { VerticalTable } from "@/features/shared/VerticalTable";
 import { AppRegistrationEntry } from "@/features/user-flow/workflow/utils";
 
 interface AdditionalCohortSelectionProps {
@@ -26,6 +26,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
   open,
   setOpen,
 }) => {
+  const router = useRouter();
   const dispatch = useCoreDispatch();
   const primaryCohortName = useCoreSelector((state) =>
     selectCurrentCohort(state),
@@ -46,14 +47,11 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
   const updatePage = (newPage: number) => {
     if (newPage > activePage) {
       setCurrentCohortPage(
-        cohorts.currentData.slice(activePage * PAGE_SIZE, newPage * PAGE_SIZE),
+        cohorts.slice(activePage * PAGE_SIZE, newPage * PAGE_SIZE),
       );
     } else {
       setCurrentCohortPage(
-        cohorts.currentData.slice(
-          (newPage - 1) * PAGE_SIZE,
-          (activePage - 1) * PAGE_SIZE,
-        ),
+        cohorts.slice((newPage - 1) * PAGE_SIZE, (activePage - 1) * PAGE_SIZE),
       );
     }
     setActivePage(newPage);
@@ -67,12 +65,22 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
         open ? "h-[500px]" : "h-0"
       } transition-[height]`}
     >
-      <Grid className={`flex-grow ${open ? "flex" : "hidden"}`}>
+      <Grid className={`flex-grow ${open ? "flex" : "hidden"} p-2`}>
         <Grid.Col span={3} className="p-4 text-nci-blue-darkest">
           <p>Select a cohort to compare with {primaryCohortName}</p>
         </Grid.Col>
         <Grid.Col span={9}>
-          <Table className="h-full">
+          {/*
+        <VerticalTable
+            tableData={[]}
+            columnListOrder={["Select", "Name", "# Cases"]}
+            columnCells={[]}
+            handleColumnChange={() => {}}
+            selectableRow={false}
+            tableTitle={""}
+            pageSize={PAGE_SIZE.toString()}
+    ></VerticalTable>*/}
+          <Table className="h-full p-4">
             <thead>
               <tr>
                 <th>Select</th>
@@ -82,9 +90,14 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
             </thead>
             {/* TODO: switch to using cohort id from name when updating to use cohort persistence */}
             <tbody>
-              {currentCohortPage.map((cohort) => (
-                <tr key={cohort.name}>
-                  <td>
+              {currentCohortPage.map((cohort, idx) => (
+                <tr
+                  key={cohort.name}
+                  className={
+                    idx % 2 === 0 ? "bg-white" : "bg-nci-gray-lightest"
+                  }
+                >
+                  <td className="h-8">
                     <input
                       type="radio"
                       name="additonal-cohort-selection"
@@ -93,15 +106,15 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
                       checked={selectedCohort === cohort.name}
                     />
                   </td>
-                  <td>
+                  <td className="h-8">
                     <label htmlFor={cohort.name}>{cohort.name}</label>
                   </td>
-                  <td>{cohort?.counts}</td>
+                  <td className="h-8">{cohort?.counts}</td>
                 </tr>
               ))}
             </tbody>
             <tfoot>
-              <tr>
+              <tr className="py-2 flex">
                 <td>
                   <b>
                     Showing {1 + (activePage - 1) * PAGE_SIZE} -{" "}
@@ -111,7 +124,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
                   </b>
                   of <b>{totalResults}</b> case sets
                 </td>
-                <td>
+                <td className="absolute right-0">
                   <Pagination
                     total={Math.ceil(totalResults / PAGE_SIZE)}
                     page={activePage}
