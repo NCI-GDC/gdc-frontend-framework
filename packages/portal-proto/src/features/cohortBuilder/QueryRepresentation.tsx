@@ -35,7 +35,7 @@ type RangeOperation =
 type ValueOperation = Exclude<Operation, Intersection | Union>;
 
 const queryItemStyle =
-  "m-1 px-2 font-heading shadow-md font-medium text-sm rounded-xl bg-nci-blue-dark text-white border-nci-gray-light border-1";
+  "m-1 px-2 font-heading shadow-md font-medium text-md rounded-xl bg-nci-blue-dark text-nci-gray-lightest border-nci-gray-light border-1";
 
 export const isRangeOperation = (x?: Operation): x is RangeOperation => {
   return (

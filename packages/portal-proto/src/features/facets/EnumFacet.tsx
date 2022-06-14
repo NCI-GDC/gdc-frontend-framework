@@ -4,6 +4,7 @@ import {
   useCoreSelector,
   selectTotalCountsByName,
   usePrevious,
+  removeCohortFilter,
 } from "@gff/core";
 import {
   FacetDocTypeToCountsIndexMap,
@@ -26,6 +27,7 @@ import { EnumFacetChart } from "../charts/EnumFacetChart";
 import { LoadingOverlay, Tooltip } from "@mantine/core";
 import * as tailwindConfig from "tailwind.config";
 import { isEqual } from "lodash";
+import { FaUndo as UndoIcon } from "react-icons/fa";
 
 /**
  *  Enumeration facet filters handle display and selection of
@@ -77,6 +79,10 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
   const totalCount = useCoreSelector((state) =>
     selectTotalCountsByName(state, FacetDocTypeToCountsIndexMap[docType]),
   );
+
+  const clearFilters = () => {
+    coreDispatch(removeCohortFilter(field));
+  };
 
   // filter missing and "" strings and update checkboxes
   useEffect(() => {
@@ -178,7 +184,7 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
                 aria-label="Search"
               >
                 <SearchIcon
-                  size="1.25em"
+                  size="1.45em"
                   color={tailwindConfig.theme.extend.colors["gdc-blue"].darker}
                 />
               </button>
@@ -195,6 +201,15 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
                 />
               </button>
             ) : null}
+            <button
+              className="hover:bg-nci-grey-darker text-nci-gray font-bold py-2 px-1 rounded inline-flex items-center"
+              onClick={clearFilters}
+            >
+              <UndoIcon
+                size="1.15em"
+                color={tailwindConfig.theme.extend.colors["gdc-blue"].darker}
+              />
+            </button>
           </div>
         </div>
       </div>
@@ -268,7 +283,7 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
                               value={value}
                               onChange={handleChange}
                               aria-label={`checkbox for ${field}`}
-                              className="bg-nci-gray-lightest hover:bg-nci-gray-darkest text-nci-gray-darkest"
+                              className="hover:bg-nci-gray-darkest text-nci-gray-darkest checked:bg-nci-blue-darkest checked:border-bg-nci-blue-darkest focus:outline-none transition duration-200 bg-no-repeat bg-center bg-contain"
                               checked={
                                 !!(
                                   selectedEnums && selectedEnums.includes(value)

@@ -922,7 +922,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
   const coreDispatch = useCoreDispatch();
 
   const clearFilters = () => {
-    coreDispatch(removeCohortFilter(`${field}`));
+    coreDispatch(removeCohortFilter(field));
   };
 
   const toggleFlip = () => {
@@ -955,7 +955,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
               onClick={clearFilters}
             >
               <UndoIcon
-                size="1.25em"
+                size="1.15em"
                 color={tailwindConfig.theme.extend.colors["gdc-blue"].darker}
               />
             </button>

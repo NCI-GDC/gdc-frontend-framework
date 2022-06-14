@@ -7,6 +7,7 @@ import {
   useCoreSelector,
   FacetDefinition,
   selectFacetDefinitionByName,
+  CohortBuilderCategory,
 } from "@gff/core";
 import { EnumFacet } from "../facets/EnumFacet";
 import NumericRangeFacet from "../facets/NumericRangeFacet";
@@ -94,7 +95,7 @@ export const FacetTabs: FC = () => {
           body: "!pl-0 !ml-0",
         }}
       >
-        {Object.values(tabsConfig).map((tabEntry) => {
+        {Object.values(tabsConfig).map((tabEntry: CohortBuilderCategory) => {
           return (
             <Tabs.Tab
               key={`cohortTab-${tabEntry.label}`}

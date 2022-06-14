@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { CollapsibleContainer } from "../../components/CollapsibleContainer";
 import { Button, Menu, Tabs, Divider } from "@mantine/core";
 import { ContextualCasesView } from "../cases/CasesView";
@@ -16,7 +16,10 @@ import {
   MdOutlineViewComfy as TableIcon,
   MdFileCopy as FilesIcon,
 } from "react-icons/md";
-import { FaCartPlus as AddToCartIcon } from "react-icons/fa";
+import {
+  FaCartPlus as AddToCartIcon,
+  FaUndo as UndoIcon,
+} from "react-icons/fa";
 
 import SummaryFacets, { SummaryFacetInfo } from "./SummaryFacets";
 import { updateEnumFilters } from "../facets/hooks";
@@ -24,8 +27,8 @@ import {
   useCoreDispatch,
   clearCohortFilters,
   setCurrentCohort,
-  GQLDocType,
 } from "@gff/core";
+import * as tailwindConfig from "../../../tailwind.config";
 
 const ContextBar: React.FC<CohortGroupProps> = ({
   cohorts,
@@ -54,6 +57,7 @@ const ContextBar: React.FC<CohortGroupProps> = ({
     }
   };
 
+  // TODO: move this to a configuration files or slice
   const [summaryFields] = useState([
     {
       field: "cases.primary_site",
@@ -82,7 +86,7 @@ const ContextBar: React.FC<CohortGroupProps> = ({
     {
       field: "cases.demographic.gender",
       name: "Gender",
-      docType: "cases" as GQLDocType,
+      docType: "cases",
       indexType: "repository",
     },
     {
@@ -109,6 +113,10 @@ const ContextBar: React.FC<CohortGroupProps> = ({
     "bg-white text-nci-blue-darkest border border-solid border-nci-blue-darkest h-12 hover:bg-nci-blue hover:text-white hover:border-nci-blue";
   const tabStyle = `${buttonStyle} rounded-md first:border-r-0 last:border-l-0 first:rounded-r-none last:rounded-l-none hover:border-nci-blue-darkest`;
 
+  const clearAllFilters = () => {
+    coreDispatch(clearCohortFilters());
+  };
+
   return (
     <div className="mb-2 font-montserrat" data-tour="context_bar">
       <CollapsibleContainer
@@ -129,11 +137,25 @@ const ContextBar: React.FC<CohortGroupProps> = ({
               my="md"
               className="m-2 h-[80%] border-nci-blue-darkest"
             />
+
             {Object.keys(filters.root).length !== 0 ? (
-              <div className="flex flex-row flex-wrap w-100 p-2 ">
-                {Object.keys(filters.root).map((k) => {
-                  return convertFilterToComponent(filters.root[k]);
-                })}
+              <div className="flex flex-row items-center w-full">
+                <div className="flex flex-row flex-wrap w-100 p-2 ">
+                  {Object.keys(filters.root).map((k) => {
+                    return convertFilterToComponent(filters.root[k]);
+                  })}
+                </div>
+                <button
+                  className="hover:bg-nci-grey-darker text-nci-gray font-bold py-2 px-1 rounded ml-auto mr-4 "
+                  onClick={clearAllFilters}
+                >
+                  <UndoIcon
+                    size="1.15em"
+                    color={
+                      tailwindConfig.theme.extend.colors["gdc-blue"].darker
+                    }
+                  />
+                </button>
               </div>
             ) : (
               <span className="text-lg text-nci-blue-darkest ">

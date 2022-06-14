@@ -34,11 +34,11 @@ export const headerElements = [
     key="Studies"
     href={{
       pathname: "/user-flow/workbench/analysis_page",
-      query: { app: "Studies" },
+      query: { app: "Projects" },
     }}
   >
     <Tooltip
-      label="View the Studies available within the GDC and select them for further exploration and analysis."
+      label="View the Projects/Studies available within the GDC and select them for further exploration and analysis."
       classNames={{
         body: "shadow-lg bg-white text-nci-gray-darkest",
       }}

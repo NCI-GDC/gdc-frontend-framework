@@ -5,7 +5,14 @@ export const DEFAULT_VISIBLE_ITEMS = 6;
 
 const capitalize = (s) => (s.length > 0 ? s[0].toUpperCase() + s.slice(1) : "");
 
+const FieldNameOverrides = {
+  "cases.project.program.name": "Program Name",
+  "cases.project.project_id": "Project",
+};
+
 export const convertFieldToName = (field: string): string => {
+  if (field in FieldNameOverrides) return FieldNameOverrides[field];
+
   const property = field.split(".").pop();
   const tokens = property.split("_");
   const capitalizedTokens = tokens.map((s) => capitalize(s));
