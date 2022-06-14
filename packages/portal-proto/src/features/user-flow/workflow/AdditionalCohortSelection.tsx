@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Drawer, Table, Button, Pagination, Grid } from "@mantine/core";
+import { Table, Button, Pagination, Grid } from "@mantine/core";
+import { useRouter } from "next/router";
 import {
   useCoreSelector,
   selectCurrentCohort,
@@ -12,6 +13,8 @@ import { AppRegistrationEntry } from "@/features/user-flow/workflow/utils";
 interface AdditionalCohortSelectionProps {
   readonly entry: AppRegistrationEntry;
   readonly onClick: (id: string, name: string) => void;
+  readonly open: boolean;
+  readonly setOpen: (open: boolean) => void;
 }
 
 const PAGE_SIZE = 10;
@@ -19,12 +22,15 @@ const PAGE_SIZE = 10;
 const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
   entry,
   onClick,
+  open,
+  setOpen,
 }) => {
   const dispatch = useCoreDispatch();
   const [selectedCohort, setSelectedCohort] = useState(null);
   const primaryCohortName = useCoreSelector((state) =>
     selectCurrentCohort(state),
   );
+
   const [currentCohortPage, setCurrentCohortPage] = useState([]);
   const [activePage, setActivePage] = useState(1);
 
@@ -52,17 +58,20 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
     setActivePage(newPage);
   };
 
-  const [drawerOpen, setDrawerOpen] = useState(true);
   const totalResults = cohorts.currentData?.length || 0;
 
   return (
-    <div className="bg-white">
-      <Grid>
-        <Grid.Col span={3} className="p-4">
+    <div
+      className={`bg-white flex flex-col flex-grow ${
+        open ? "h-[500px]" : "h-0"
+      } transition-[height]`}
+    >
+      <Grid className={`flex-grow ${open ? "flex" : "hidden"}`}>
+        <Grid.Col span={3} className="p-4 text-nci-blue-darkest">
           <p>Select a cohort to compare with {primaryCohortName}</p>
         </Grid.Col>
         <Grid.Col span={9}>
-          <Table>
+          <Table className="h-full">
             <thead>
               <tr>
                 <th>Select</th>
@@ -92,11 +101,13 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
             <tfoot>
               <tr>
                 <td>
-                  Showing {1 + (activePage - 1) * PAGE_SIZE} -{" "}
-                  {totalResults > PAGE_SIZE * activePage
-                    ? PAGE_SIZE * activePage
-                    : totalResults}{" "}
-                  of {totalResults}
+                  <b>
+                    Showing {1 + (activePage - 1) * PAGE_SIZE} -{" "}
+                    {totalResults > PAGE_SIZE * activePage
+                      ? PAGE_SIZE * activePage
+                      : totalResults}{" "}
+                  </b>
+                  of <b>{totalResults}</b> case sets
                 </td>
                 <td>
                   <Pagination
@@ -110,7 +121,11 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
           </Table>
         </Grid.Col>
       </Grid>
-      <div className="p-4  bg-nci-gray-lightest w-full flex justify-between">
+      <div
+        className={`p-4 bg-nci-gray-lightest w-full ${
+          open ? "flex" : "hidden"
+        } justify-between`}
+      >
         <Button
           onClick={() => onClick(`${entry.id}Demo`, `${entry.name} Demo`)}
           className="bg-white border-nci-blue-darkest text-nci-blue-darkest"
@@ -119,7 +134,10 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
         </Button>
         <div>
           <Button
-            onClick={() => onClick(undefined, undefined)}
+            onClick={() => {
+              onClick(undefined, undefined);
+              setOpen(false);
+            }}
             className="mr-4 bg-white border-nci-blue-darkest text-nci-blue-darkest"
           >
             Cancel
@@ -129,8 +147,8 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
             variant={"filled"}
             className="bg-nci-blue-darkest hover:bg-nci-blue"
             onClick={() => {
-              setDrawerOpen(false);
               dispatch(setComparisonCohorts([selectedCohort]));
+              setOpen(false);
             }}
           >
             Run
