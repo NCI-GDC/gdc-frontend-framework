@@ -267,17 +267,21 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
 }: AnalysisWorkspaceProps) => {
   const [selectedApp, setSelectedApp] = useState(undefined);
   const [selectedAppName, setSelectedAppName] = useState(undefined);
-  const additionalCohorts = useCoreSelector((state) =>
+  const [cohortSelectionOpen, setCohortSelectionOpen] = useState(false);
+
+  const appInfo = initialApps[selectedApp];
+  const comparisonCohorts = useCoreSelector((state) =>
     selectComparisonCohorts(state),
   );
+  console.log(appInfo);
 
   const handleAppSelected = (id: string, name: string) => {
     setSelectedApp(id);
     setSelectedAppName(name);
+    //if (appInfo?.selectAdditionalCohort) {
+    setCohortSelectionOpen(true);
+    //}
   };
-
-  console.log(app);
-  console.log(selectedApp);
 
   useEffect(() => {
     setSelectedApp(app);
@@ -285,45 +289,36 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
     clearComparisonCohorts();
   }, [app]);
 
-  const appInfo = initialApps[selectedApp];
-
   return (
-    <div>
-      {selectedApp && (
-        <AnalysisBreadcrumbs
-          intermediateStep={"Selection"}
-          currentApp={appInfo}
-        />
-      )}
-      {selectedApp ? (
-        appInfo?.selectAdditionalCohort && additionalCohorts.length === 0 ? (
-          <AdditionalCohortSelection
-            entry={appInfo}
-            onClick={handleAppSelected}
-          />
-        ) : (
-          <div className="flex flex-col mx-2">
-            <div className="flex flex-row items-center">
-              <button
-                onClick={() => setSelectedApp(undefined)}
-                className="bg-nci-gray-lighter hover:bg-nci-gray-light font-montserrat tracking-widest uppercase rounded-md shadow-md p-1 px-2 py-2"
-              >
-                Applications
-              </button>
-              <div className=" mx-3 font-montserrat">/</div>
-              <div className="bg-nci-gray-lighter font-montserrat tracking-widest uppercase rounded-md shadow-md p-1 px-2">
-                {selectedAppName
-                  ? selectedAppName
-                  : initialApps[selectedApp].name}
-              </div>
+    <>
+      {selectedApp && <AnalysisBreadcrumbs currentApp={appInfo} />}
+      <AdditionalCohortSelection
+        entry={appInfo}
+        onClick={handleAppSelected}
+        open={cohortSelectionOpen}
+        setOpen={setCohortSelectionOpen}
+      />
+      {selectedApp && !cohortSelectionOpen && (
+        <div className="flex flex-col mx-2">
+          <div className="flex flex-row items-center">
+            <button
+              onClick={() => setSelectedApp(undefined)}
+              className="bg-nci-gray-lighter hover:bg-nci-gray-light font-montserrat tracking-widest uppercase rounded-md shadow-md p-1 px-2 py-2"
+            >
+              Applications
+            </button>
+            <div className=" mx-3 font-montserrat">/</div>
+            <div className="bg-nci-gray-lighter font-montserrat tracking-widest uppercase rounded-md shadow-md p-1 px-2">
+              {selectedAppName
+                ? selectedAppName
+                : initialApps[selectedApp].name}
             </div>
-            <ActiveAnalysisToolNoSSR appId={selectedApp} />
           </div>
-        )
-      ) : (
-        <AnalysisGrid onAppSelected={handleAppSelected} />
+          <ActiveAnalysisToolNoSSR appId={selectedApp} />
+        </div>
       )}
-    </div>
+      {!selectedApp && <AnalysisGrid onAppSelected={handleAppSelected} />}
+    </>
   );
 };
 

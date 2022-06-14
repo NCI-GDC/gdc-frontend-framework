@@ -2,6 +2,7 @@ import React, { Suspense, lazy, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Loader } from "@mantine/core";
 import { REGISTERED_APPS } from "./registeredApps";
+import { clearComparisonCohorts } from "@gff/core";
 
 const importApplication = (app) =>
   lazy(() =>
@@ -31,6 +32,8 @@ const ActiveAnalysisTool: React.FC<AnalysisToolInfo> = ({
     router.push({
       query: { app: REGISTERED_APPS.find((app) => app.id === appId).id },
     });
+
+    () => clearComparisonCohorts();
   }, [appId]);
 
   return (

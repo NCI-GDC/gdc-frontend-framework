@@ -57,7 +57,7 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
       <header className="flex-none bg-white">
         <Header {...{ headerElements, indexPath, Options }} />
       </header>
-      <main data-tour="full_page_content" className="flex-grow">
+      <main data-tour="full_page_content" className="flex-grow flex flex-col">
         {children}
       </main>
       <footer className="flex-none">
