@@ -29,6 +29,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
   const [tableData, setTableData] = useState([]);
   const [columnListOrder, setColumnListOrder] = useState([]);
   const [columnListCells, setColumnListCells] = useState([]);
+  const [selectedTableRows, setSelectedTableRows] = useState(["TP53"]);
 
   const coreDispatch = useCoreDispatch();
 
@@ -47,6 +48,23 @@ const GenesTable: React.FC<GenesTableProps> = ({
   useEffect(() => {
     setActivePage(1);
   }, [pageSize]);
+
+  useEffect(() => {
+    console.log("selectedTableRows:", selectedTableRows);
+  }, [selectedTableRows]);
+
+  const handleRowSelectChange = (row, select) => {
+    switch (select) {
+      case "all":
+        console.log("select all", row);
+      case "single":
+        console.log("single", row);
+        setSelectedTableRows((selectedTableRows) => [
+          ...selectedTableRows,
+          row.original.symbol,
+        ]);
+    }
+  };
 
   useEffect(() => {
     const getTableDataMapping = (data) => {
@@ -228,9 +246,11 @@ const GenesTable: React.FC<GenesTableProps> = ({
             columnListOrder={columnListOrder}
             columnCells={columnCells}
             handleColumnChange={handleColumnChange}
-            selectableRow={false}
+            handleRowSelectChange={handleRowSelectChange}
+            selectedTableRows={selectedTableRows}
             tableTitle={"Genes Table"}
             pageSize={pageSize.toString()}
+            selectableRow={true}
           ></VerticalTable>
         ) : (
           <div className="grid place-items-center h-96 w-full pt-64 pb-72">

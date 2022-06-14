@@ -12,6 +12,8 @@ interface VerticalTableProps {
   columnListOrder: any;
   columnCells: any;
   handleColumnChange: (columns: any) => void;
+  handleRowSelectChange: (rows: any, select: string) => void;
+  selectedTableRows: any;
   selectableRow: boolean;
   tableTitle: string;
   pageSize: string;
@@ -33,6 +35,8 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   columnListOrder,
   columnCells,
   handleColumnChange,
+  handleRowSelectChange,
+  selectedTableRows,
   selectableRow,
   tableTitle,
   pageSize,
@@ -59,7 +63,15 @@ export const VerticalTable: FC<VerticalTableProps> = ({
       {
         id: "Checkbox",
         Header: "",
-        Cell: () => <input type="checkbox" />,
+        Cell: ({ row }) => (
+          <input
+            checked={
+              selectedTableRows.includes(row.original.symbol) ? true : false
+            }
+            onChange={() => handleRowSelectChange(row, "single")}
+            type="checkbox"
+          />
+        ),
         width: 30,
       },
       ...columns,
