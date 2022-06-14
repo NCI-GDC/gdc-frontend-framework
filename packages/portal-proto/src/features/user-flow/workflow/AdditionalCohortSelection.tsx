@@ -7,6 +7,7 @@ import {
   useGetCohortsQuery,
   setComparisonCohorts,
   useCoreDispatch,
+  selectAvailableCohorts,
 } from "@gff/core";
 import { AppRegistrationEntry } from "@/features/user-flow/workflow/utils";
 
@@ -26,21 +27,21 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
   setOpen,
 }) => {
   const dispatch = useCoreDispatch();
-  const [selectedCohort, setSelectedCohort] = useState(null);
   const primaryCohortName = useCoreSelector((state) =>
     selectCurrentCohort(state),
   );
+  const cohorts = useCoreSelector((state) =>
+    selectAvailableCohorts(state),
+  ).filter((cohort) => cohort.name !== primaryCohortName);
 
+  const [selectedCohort, setSelectedCohort] = useState(null);
   const [currentCohortPage, setCurrentCohortPage] = useState([]);
   const [activePage, setActivePage] = useState(1);
 
-  const cohorts = useGetCohortsQuery();
   useEffect(() => {
-    if (cohorts.currentData) {
-      setCurrentCohortPage(cohorts.currentData.slice(0, PAGE_SIZE));
-      setActivePage(1);
-    }
-  }, [cohorts.isSuccess]);
+    setCurrentCohortPage(cohorts.slice(0, PAGE_SIZE));
+    setActivePage(1);
+  }, []);
 
   const updatePage = (newPage: number) => {
     if (newPage > activePage) {
@@ -58,7 +59,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
     setActivePage(newPage);
   };
 
-  const totalResults = cohorts.currentData?.length || 0;
+  const totalResults = cohorts.length || 0;
 
   return (
     <div
@@ -79,20 +80,21 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
                 <th># Cases</th>
               </tr>
             </thead>
+            {/* TODO: switch to using cohort id from name when updating to use cohort persistence */}
             <tbody>
               {currentCohortPage.map((cohort) => (
-                <tr key={cohort.id}>
+                <tr key={cohort.name}>
                   <td>
                     <input
                       type="radio"
                       name="additonal-cohort-selection"
                       id={cohort.id}
-                      onChange={() => setSelectedCohort(cohort.id)}
-                      checked={selectedCohort === cohort.id}
+                      onChange={() => setSelectedCohort(cohort.name)}
+                      checked={selectedCohort === cohort.name}
                     />
                   </td>
                   <td>
-                    <label htmlFor={cohort.id}>{cohort.name}</label>
+                    <label htmlFor={cohort.name}>{cohort.name}</label>
                   </td>
                   <td>{cohort?.counts}</td>
                 </tr>
