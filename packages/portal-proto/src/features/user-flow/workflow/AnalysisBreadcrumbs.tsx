@@ -2,20 +2,15 @@ import { useRouter } from "next/router";
 import { MdArrowBack, MdCircle } from "react-icons/md";
 import { Button } from "@mantine/core";
 import { REGISTERED_APPS } from "./registeredApps";
-import { AppRegistrationEntry } from "./utils";
-import { useEffect } from "react";
-import app from "next/app";
 
 interface AnalysisBreadcrumbsProps {
   currentApp: string;
-  readonly setActiveApp: (id: string, name: string) => void;
   readonly setCohortSelectionOpen: (open: boolean) => void;
   readonly cohortSelectionOpen: boolean;
 }
 
 const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
   currentApp,
-  setActiveApp,
   setCohortSelectionOpen,
   cohortSelectionOpen,
 }: AnalysisBreadcrumbsProps) => {

@@ -1,6 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
 import { Table, Button, Pagination, Grid } from "@mantine/core";
-import { useRouter } from "next/router";
 import {
   useCoreSelector,
   selectCurrentCohort,
@@ -8,12 +7,10 @@ import {
   useCoreDispatch,
   selectAvailableCohorts,
 } from "@gff/core";
-import { VerticalTable } from "@/features/shared/VerticalTable";
-import { AppRegistrationEntry } from "@/features/user-flow/workflow/utils";
-import { REGISTERED_APPS } from "./registeredApps";
+import { AppRegistrationEntry } from "./utils";
 
 interface AdditionalCohortSelectionProps {
-  readonly appId: string;
+  readonly currentApp: AppRegistrationEntry;
   readonly setActiveApp?: (id: string, name: string) => void;
   readonly open: boolean;
   readonly setOpen: (open: boolean) => void;
@@ -22,11 +19,11 @@ interface AdditionalCohortSelectionProps {
 const PAGE_SIZE = 10;
 
 const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
-  appId,
+  currentApp,
   setActiveApp,
   open,
   setOpen,
-}) => {
+}: AdditionalCohortSelectionProps) => {
   const dispatch = useCoreDispatch();
   const primaryCohortName = useCoreSelector((state) =>
     selectCurrentCohort(state),
@@ -38,9 +35,8 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
   const cohorts = useMemo(
     () =>
       availableCohorts.filter((cohort) => cohort.name !== primaryCohortName),
-    [primaryCohortName],
+    [primaryCohortName, availableCohorts],
   );
-  const currentApp = REGISTERED_APPS.find((app) => app.id === appId);
 
   const [selectedCohort, setSelectedCohort] = useState(null);
   const [currentCohortPage, setCurrentCohortPage] = useState([]);
@@ -82,16 +78,6 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
           <p>Select a cohort to compare with {primaryCohortName}</p>
         </Grid.Col>
         <Grid.Col span={9}>
-          {/*
-        <VerticalTable
-            tableData={[]}
-            columnListOrder={["Select", "Name", "# Cases"]}
-            columnCells={[]}
-            handleColumnChange={() => {}}
-            selectableRow={false}
-            tableTitle={""}
-            pageSize={PAGE_SIZE.toString()}
-    ></VerticalTable>*/}
           <Table className="h-full p-4">
             <thead>
               <tr>

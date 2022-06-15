@@ -16,11 +16,13 @@ const importApplication = (app) =>
 export interface AnalysisToolInfo {
   readonly appId: string;
   readonly setActiveApp: (id: string, name: string) => void;
+  readonly setContextBarCollapsed: (collapsed: boolean) => void;
 }
 
 const ActiveAnalysisTool: React.FC<AnalysisToolInfo> = ({
   appId,
   setActiveApp,
+  setContextBarCollapsed,
 }: AnalysisToolInfo) => {
   const [analysisApp, setAnalysisApp] = useState(undefined);
   const [cohortSelectionOpen, setCohortSelectionOpen] = useState(false);
@@ -55,16 +57,21 @@ const ActiveAnalysisTool: React.FC<AnalysisToolInfo> = ({
     }
   }, []);
 
+  useEffect(() => {
+    if (cohortSelectionOpen) {
+      setContextBarCollapsed(true);
+    }
+  }, [cohortSelectionOpen]);
+
   return (
     <>
       <AnalysisBreadcrumbs
         currentApp={appId}
-        setActiveApp={setActiveApp}
         setCohortSelectionOpen={setCohortSelectionOpen}
         cohortSelectionOpen={cohortSelectionOpen}
       />
       <AdditionalCohortSelection
-        appId={appId}
+        currentApp={currentApp}
         open={cohortSelectionOpen}
         setOpen={setCohortSelectionOpen}
         setActiveApp={setActiveApp}

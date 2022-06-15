@@ -26,7 +26,7 @@ const SingleAppsPage: NextPage = () => {
       />
       <AnalysisWorkspace
         app={app && app.length > 0 ? app.toString() : undefined}
-        setIsGroupCollapsed={setIsGroupCollapsed}
+        setContextBarCollapsed={setIsGroupCollapsed}
       />
     </UserFlowVariedPages>
   );

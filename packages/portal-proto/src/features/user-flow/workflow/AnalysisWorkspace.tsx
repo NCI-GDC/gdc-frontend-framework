@@ -1,11 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Chip, Chips, Menu, Grid, ActionIcon } from "@mantine/core";
 import { MdSort as SortIcon } from "react-icons/md";
-import {
-  clearComparisonCohorts,
-  selectComparisonCohorts,
-  useCoreSelector,
-} from "@gff/core";
 import AnalysisCard from "@/features/user-flow/workflow/AnalysisCard";
 import {
   APPTAGS,
@@ -16,10 +11,8 @@ import {
   AppRegistrationEntry,
   sortAlphabetically,
 } from "@/features/user-flow/workflow/utils";
-import AdditionalCohortSelection from "./AdditionalCohortSelection";
 import dynamic from "next/dynamic";
 import FeaturedToolCard from "./FeaturedToolCard";
-import AnalysisBreadcrumbs from "./AnalysisBreadcrumbs";
 
 const ActiveAnalysisToolNoSSR = dynamic(
   () => import("@/features/user-flow/workflow/ActiveAnalysisTool"),
@@ -261,23 +254,20 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
 
 interface AnalysisWorkspaceProps {
   readonly app: string | undefined;
-  readonly setIsGroupCollapsed: (collapsed: boolean) => void;
+  readonly setContextBarCollapsed: (collapsed: boolean) => void;
 }
 const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   app,
-  setIsGroupCollapsed,
+  setContextBarCollapsed,
 }: AnalysisWorkspaceProps) => {
   const [selectedApp, setSelectedApp] = useState(undefined);
-  const [selectedAppName, setSelectedAppName] = useState(undefined);
 
-  const handleAppSelected = (id: string, name: string) => {
+  const handleAppSelected = (id: string) => {
     setSelectedApp(id);
-    setSelectedAppName(name);
   };
 
   useEffect(() => {
     setSelectedApp(app);
-    setSelectedAppName(undefined); // will use the registered app name
   }, [app]);
 
   return (
@@ -287,6 +277,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
           <ActiveAnalysisToolNoSSR
             appId={selectedApp}
             setActiveApp={handleAppSelected}
+            setContextBarCollapsed={setContextBarCollapsed}
           />
         </div>
       ) : (
