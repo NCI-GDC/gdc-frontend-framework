@@ -21,13 +21,21 @@ import {
   Union,
 } from "../gdcapi/filters";
 
+/**
+ * Root filter set. Similar to how case filters are
+ * manages: as a Object where the key is the field name
+ * and the value is the Filter Operation
+ *
+ * @member root - root Objects of all of the filters
+ * @member mode: Root level set operation for the filters
+ */
 export interface FilterSet {
-  readonly root: Record<string, Operation>; // TODO: Replace with Union or Intersection Operation
+  readonly root: Record<string, Operation>;
   readonly mode: string;
 }
 
 export interface CohortFilterState {
-  readonly filters: FilterSet; // TODO: should be array of FilterSets?
+  readonly filters: FilterSet;
 }
 
 const initialState: CohortFilterState = { filters: { mode: "and", root: {} } };

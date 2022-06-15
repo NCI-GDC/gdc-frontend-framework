@@ -1,4 +1,4 @@
-import { createUseCoreDataHook } from "../../dataAcess";
+import { createUseCoreDataHook } from "../../dataAccess";
 import { fetchAnnotations, selectAnnotationsData } from "./annotationsSlice";
 
 export const useAnnotations = createUseCoreDataHook(

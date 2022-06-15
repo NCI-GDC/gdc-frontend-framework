@@ -3,7 +3,7 @@ import {
   CoreDataSelectorResponse,
   createUseCoreDataHook,
   DataStatus,
-} from "../../dataAcess";
+} from "../../dataAccess";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import { fetchSlideImages, ImageMetadataResponse } from "./imageDetailsApi";
