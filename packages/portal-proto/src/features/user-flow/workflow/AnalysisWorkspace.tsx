@@ -286,15 +286,20 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
     setSelectedApp(app);
     setSelectedAppName(undefined); // will use the registered app name
     clearComparisonCohorts();
-    setCohortSelectionOpen(false);
   }, [app]);
 
   return (
     <>
-      {selectedApp && <AnalysisBreadcrumbs currentApp={appInfo} />}
+      {selectedApp && (
+        <AnalysisBreadcrumbs
+          currentApp={appInfo}
+          setCohortSelectionOpen={setCohortSelectionOpen}
+          setActiveApp={handleAppSelected}
+        />
+      )}
       <AdditionalCohortSelection
         entry={appInfo}
-        onClick={handleAppSelected}
+        setActiveApp={handleAppSelected}
         open={cohortSelectionOpen}
         setOpen={setCohortSelectionOpen}
       />

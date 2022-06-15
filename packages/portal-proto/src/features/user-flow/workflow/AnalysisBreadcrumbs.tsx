@@ -6,20 +6,36 @@ import { useEffect } from "react";
 
 interface AnalysisBreadcrumbsProps {
   currentApp: AppRegistrationEntry;
+  setCohortSelectionOpen: (open: boolean) => void;
+  setActiveApp: (id, name) => void;
 }
 
 const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
   currentApp,
+  setCohortSelectionOpen,
+  setActiveApp,
 }: AnalysisBreadcrumbsProps) => {
   const router = useRouter();
-
+  console.log(currentApp);
   const onApp = router.query.app === currentApp?.id;
+  const onDemoApp = router.query.app === `${currentApp?.id}Demo`;
 
   return (
     <div className="w-full bg-nci-blue-darkest text-white p-2 flex items-center ">
       <Button
         onClick={() => {
-          router.back();
+          if (onApp || onDemoApp) {
+            router.back();
+          }
+          if (onApp && currentApp?.selectAdditionalCohort) {
+            setCohortSelectionOpen(true);
+          } else {
+            setActiveApp(undefined, undefined);
+          }
+
+          if (!onApp || !onDemoApp) {
+            setCohortSelectionOpen(false);
+          }
         }}
         className="bg-white text-nci-blue-darkest"
       >

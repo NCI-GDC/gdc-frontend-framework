@@ -20,6 +20,7 @@ const ActiveAnalysisTool: React.FC<AnalysisToolInfo> = ({
 }: AnalysisToolInfo) => {
   const [analysisApp, setAnalysisApp] = useState(undefined);
   const router = useRouter();
+  console.log(appId);
 
   useEffect(() => {
     async function loadApp() {
@@ -30,10 +31,8 @@ const ActiveAnalysisTool: React.FC<AnalysisToolInfo> = ({
     loadApp().then(setAnalysisApp);
 
     router.push({
-      query: { app: REGISTERED_APPS.find((app) => app.id === appId)?.id },
+      query: { app: appId },
     });
-
-    () => clearComparisonCohorts();
   }, [appId]);
 
   return (
