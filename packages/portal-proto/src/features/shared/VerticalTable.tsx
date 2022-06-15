@@ -12,8 +12,13 @@ interface VerticalTableProps {
   columnListOrder: any;
   columnCells: any;
   handleColumnChange: (columns: any) => void;
-  handleRowSelectChange: (rows: any, select: string) => void;
-  selectedTableRows: any;
+  handleRowSelectChange: (
+    rows: any,
+    select: string,
+    selectAll: boolean,
+  ) => void;
+  uuidRowParam: string;
+  selectedRowsMap: any;
   selectableRow: boolean;
   tableTitle: string;
   pageSize: string;
@@ -36,7 +41,8 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   columnCells,
   handleColumnChange,
   handleRowSelectChange,
-  selectedTableRows,
+  uuidRowParam,
+  selectedRowsMap,
   selectableRow,
   tableTitle,
   pageSize,
@@ -66,9 +72,11 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         Cell: ({ row }) => (
           <input
             checked={
-              selectedTableRows.includes(row.original.symbol) ? true : false
+              row.original[uuidRowParam] in selectedRowsMap ? true : false
             }
-            onChange={() => handleRowSelectChange(row, "single")}
+            onChange={() =>
+              handleRowSelectChange(row.original[uuidRowParam], "single", false)
+            }
             type="checkbox"
           />
         ),
@@ -132,7 +140,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
           id={`${tableTitle.toLowerCase().replace(" ", "_")}`}
           className={`font-semibold`}
         >
-          {tableTitle}
+          {/* {tableTitle} */}
         </h2>
         <div
           role="table"
@@ -158,6 +166,25 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                     className="th text-black text-center"
                     key={`column-${key}`}
                   >
+                    {key === 0 ? (
+                      <input
+                        checked={rows.every((row) => {
+                          return row.original[uuidRowParam] in selectedRowsMap;
+                        })}
+                        onChange={() =>
+                          handleRowSelectChange(
+                            rows,
+                            "all",
+                            rows.every((row) => {
+                              return (
+                                row.original[uuidRowParam] in selectedRowsMap
+                              );
+                            }),
+                          )
+                        }
+                        type="checkbox"
+                      />
+                    ) : null}
                     {column.render("Header")}
                   </div>
                 ))}

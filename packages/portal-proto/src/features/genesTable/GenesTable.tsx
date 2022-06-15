@@ -29,7 +29,9 @@ const GenesTable: React.FC<GenesTableProps> = ({
   const [tableData, setTableData] = useState([]);
   const [columnListOrder, setColumnListOrder] = useState([]);
   const [columnListCells, setColumnListCells] = useState([]);
-  const [selectedTableRows, setSelectedTableRows] = useState(["TP53"]);
+
+  const [selectedRowsMap, setSelectedRowsMap] = useState({});
+  const [uuidRowParam] = useState("symbol");
 
   const coreDispatch = useCoreDispatch();
 
@@ -50,19 +52,52 @@ const GenesTable: React.FC<GenesTableProps> = ({
   }, [pageSize]);
 
   useEffect(() => {
-    console.log("selectedTableRows:", selectedTableRows);
-  }, [selectedTableRows]);
+    console.log("selectedRowsMap:", selectedRowsMap);
+  }, [selectedRowsMap]);
 
-  const handleRowSelectChange = (row, select) => {
+  const handleRowSelectChange = (rowUpdate, select, selectAll) => {
     switch (select) {
       case "all":
-        console.log("select all", row);
+        if (!selectAll) {
+          // select all rows [displayed] that aren't already selected
+          setSelectedRowsMap((currentMap) => {
+            const newMap = { ...currentMap };
+            for (const singleRow of rowUpdate) {
+              if (!(singleRow.original[uuidRowParam] in currentMap)) {
+                newMap[singleRow.original[uuidRowParam]] =
+                  singleRow.original[uuidRowParam];
+              }
+            }
+            return newMap;
+          });
+        } else {
+          // deselect all rows [displayed] that are selected
+          setSelectedRowsMap((currentMap) => {
+            const newMap = { ...currentMap };
+            for (const singleRow of rowUpdate) {
+              if (singleRow.original[uuidRowParam] in currentMap) {
+                delete newMap[singleRow.original[uuidRowParam]];
+              }
+            }
+            return newMap;
+          });
+        }
+        break;
       case "single":
-        console.log("single", row);
-        setSelectedTableRows((selectedTableRows) => [
-          ...selectedTableRows,
-          row.original.symbol,
-        ]);
+        if (rowUpdate in selectedRowsMap) {
+          // deselect single row
+          setSelectedRowsMap((currentMap) => {
+            const newMap = { ...currentMap };
+            delete newMap[rowUpdate];
+            return newMap;
+          });
+        } else {
+          // select single row
+          setSelectedRowsMap((currentMap) => {
+            return { ...currentMap, [rowUpdate]: rowUpdate };
+          });
+        }
+        break;
     }
   };
 
@@ -229,8 +264,8 @@ const GenesTable: React.FC<GenesTableProps> = ({
     [width, columnListOrder],
   );
 
-  const handleColumnChange = (update) => {
-    setColumnListOrder(update);
+  const handleColumnChange = (columnUpdate) => {
+    setColumnListOrder(columnUpdate);
   };
 
   return (
@@ -238,6 +273,13 @@ const GenesTable: React.FC<GenesTableProps> = ({
       <div>
         Showing {(activePage - 1) * pageSize + 1} - {activePage * pageSize} of{" "}
         {totalResults} genes
+      </div>
+      <div className={`flex flex-row`}>
+        <div className={`flex-2 p-2`}>
+          {Object.keys(selectedRowsMap).length} Map Length?
+        </div>
+        <div className={`flex-2 p-2`}>JSON</div>
+        <div className={`flex-2 p-2`}>TSV</div>
       </div>
       <div ref={ref} className={`flex flex-row w-9/12`}>
         {data && !isFetching ? (
@@ -247,7 +289,8 @@ const GenesTable: React.FC<GenesTableProps> = ({
             columnCells={columnCells}
             handleColumnChange={handleColumnChange}
             handleRowSelectChange={handleRowSelectChange}
-            selectedTableRows={selectedTableRows}
+            uuidRowParam={uuidRowParam}
+            selectedRowsMap={selectedRowsMap}
             tableTitle={"Genes Table"}
             pageSize={pageSize.toString()}
             selectableRow={true}
