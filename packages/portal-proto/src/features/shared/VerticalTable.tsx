@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, FC } from "react";
+import React, { useState, useEffect, useCallback, FC, useRef } from "react";
 import { useTable, useBlockLayout } from "react-table";
 import { FixedSizeList as List } from "react-window";
 import { DndProvider } from "react-dnd";
@@ -18,6 +18,7 @@ interface VerticalTableProps {
     selectAll: boolean,
   ) => void;
   uuidRowParam: string;
+  scrollItem: number;
   selectedRowsMap: any;
   selectableRow: boolean;
   tableTitle: string;
@@ -33,6 +34,7 @@ interface Column {
 interface TableProps {
   columns: Column[];
   data: any[];
+  scrollItem: number;
 }
 
 export const VerticalTable: FC<VerticalTableProps> = ({
@@ -42,6 +44,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   handleColumnChange,
   handleRowSelectChange,
   uuidRowParam,
+  scrollItem,
   selectedRowsMap,
   selectableRow,
   tableTitle,
@@ -74,9 +77,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
             checked={
               row.original[uuidRowParam] in selectedRowsMap ? true : false
             }
-            onChange={() =>
-              handleRowSelectChange(row.original[uuidRowParam], "single", false)
-            }
+            onChange={() => handleRowSelectChange(row, "single", false)}
             type="checkbox"
           />
         ),
@@ -86,7 +87,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     ]);
   };
 
-  const Table: FC<TableProps> = ({ columns, data }: TableProps) => {
+  const Table: FC<TableProps> = ({ columns, data, scrollItem }: TableProps) => {
     const {
       getTableProps,
       getTableBodyProps,
@@ -134,6 +135,13 @@ export const VerticalTable: FC<VerticalTableProps> = ({
       },
       [prepareRow, rows],
     );
+
+    let tableRef: any = useRef();
+
+    useEffect(() => {
+      tableRef.current.scrollToItem(scrollItem, "smart");
+    }, [scrollItem]);
+
     return (
       <div className="p-2">
         <h2
@@ -197,6 +205,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
               itemCount={rows.length}
               itemSize={60}
               width={totalColumnsWidth}
+              ref={tableRef}
             >
               {RenderRow}
             </List>
@@ -249,7 +258,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         </div>
       </div>
       {columnListOptions.length > 0 && (
-        <Table columns={headings} data={table}></Table>
+        <Table columns={headings} data={table} scrollItem={scrollItem}></Table>
       )}
     </div>
   );

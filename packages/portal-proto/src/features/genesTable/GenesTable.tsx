@@ -32,7 +32,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
 
   const [selectedRowsMap, setSelectedRowsMap] = useState({});
   const [uuidRowParam] = useState("symbol");
-
+  const [scrollItem, setScrollItem] = useState(1);
   const coreDispatch = useCoreDispatch();
 
   // using the useSsmsTable from core and the associated useEffect hook
@@ -64,8 +64,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
             const newMap = { ...currentMap };
             for (const singleRow of rowUpdate) {
               if (!(singleRow.original[uuidRowParam] in currentMap)) {
-                newMap[singleRow.original[uuidRowParam]] =
-                  singleRow.original[uuidRowParam];
+                newMap[singleRow.original[uuidRowParam]] = singleRow;
               }
             }
             return newMap;
@@ -84,18 +83,21 @@ const GenesTable: React.FC<GenesTableProps> = ({
         }
         break;
       case "single":
-        if (rowUpdate in selectedRowsMap) {
+        const row = rowUpdate.original[uuidRowParam];
+        if (row in selectedRowsMap) {
           // deselect single row
           setSelectedRowsMap((currentMap) => {
             const newMap = { ...currentMap };
-            delete newMap[rowUpdate];
+            delete newMap[row];
             return newMap;
           });
+          setScrollItem(rowUpdate.index + 1);
         } else {
           // select single row
           setSelectedRowsMap((currentMap) => {
-            return { ...currentMap, [rowUpdate]: rowUpdate };
+            return { ...currentMap, [row]: rowUpdate };
           });
+          setScrollItem(rowUpdate.index + 1);
         }
         break;
     }
@@ -290,6 +292,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
             handleColumnChange={handleColumnChange}
             handleRowSelectChange={handleRowSelectChange}
             uuidRowParam={uuidRowParam}
+            scrollItem={scrollItem}
             selectedRowsMap={selectedRowsMap}
             tableTitle={"Genes Table"}
             pageSize={pageSize.toString()}
