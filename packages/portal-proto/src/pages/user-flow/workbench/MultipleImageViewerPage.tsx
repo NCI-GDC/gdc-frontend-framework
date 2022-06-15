@@ -6,7 +6,6 @@ import { useRouter } from "next/router";
 
 const MultipleImageViewerPage: NextPage = () => {
   const { query } = useRouter();
-
   return (
     <UserFlowVariedPages
       {...{
@@ -14,7 +13,10 @@ const MultipleImageViewerPage: NextPage = () => {
         headerElements,
       }}
     >
-      <MultipleImageViewer case_id={query.caseId as string} />
+      <MultipleImageViewer
+        case_id={query.caseId as string}
+        selectedId={query.selectedId as string}
+      />
     </UserFlowVariedPages>
   );
 };

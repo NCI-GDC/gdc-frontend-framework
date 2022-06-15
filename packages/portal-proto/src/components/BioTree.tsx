@@ -1,34 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   AiOutlinePlusSquare as ExpandMoreIcon,
   AiOutlineMinusSquare as ExpandLessIcon,
-  AiOutlineCaretRight as Caret,
 } from "react-icons/ai";
+import { ImArrowRight as ArrowRight } from "react-icons/im";
 import { Badge } from "@mantine/core";
 import Highlight from "./Highlight";
-
-export const entityTypes = [
-  {
-    p: "samples",
-    s: "sample",
-  },
-  {
-    p: "portions",
-    s: "portion",
-  },
-  {
-    p: "aliquots",
-    s: "aliquot",
-  },
-  {
-    p: "analytes",
-    s: "analyte",
-  },
-  {
-    p: "slides",
-    s: "slide",
-  },
-];
+import { node } from "@gff/core";
+import { overrideMessage } from "@/features/biospecimen/utils";
 
 const Node = ({
   entity,
@@ -48,7 +27,7 @@ const Node = ({
             className={`text-sm cursor-pointer hover:underline hover:font-bold ml-3 mt-1
             ${
               selectedEntity[`${type.s}_id`] === entity[`${type.s}_id`]
-                ? "underline"
+                ? "border-1 border-black rounded p-1"
                 : ""
             }
             ${
@@ -59,15 +38,14 @@ const Node = ({
                 ? "bg-yellow-300"
                 : ""
             }`}
-            onClick={(e) => {
-              e.stopPropagation();
+            onClick={() => {
               selectEntity(entity, type);
             }}
           >
             <Highlight search={query} text={entity.submitter_id} />
           </span>
           {selectedEntity[`${type.s}_id`] === entity[`${type.s}_id`] && (
-            <Caret className="ml-1" />
+            <ArrowRight className="ml-1 mt-2.5" />
           )}
         </div>
       )}
@@ -87,6 +65,33 @@ const Node = ({
   );
 };
 
+interface BioTreeProps {
+  entities?: {
+    hits: {
+      edges: {
+        node: node;
+      }[];
+    };
+  };
+  entityTypes: Array<{
+    s: string;
+    p: string;
+  }>;
+  type: {
+    p: string;
+    s: string;
+  };
+  parentNode: string;
+  treeStatusOverride: overrideMessage | null;
+  setTreeStatusOverride: any;
+  selectedEntity: node;
+  selectEntity: any;
+  setExpandedCount: any;
+  setTotalNodeCount: any;
+  query: string;
+  search: any;
+}
+
 export const BioTree = ({
   entities,
   entityTypes,
@@ -100,18 +105,16 @@ export const BioTree = ({
   setTotalNodeCount,
   query,
   search,
-}: any) => {
+}: BioTreeProps) => {
   const shouldExpand =
     parentNode === "root" ||
-    ["expanded", "query matches"].includes(treeStatusOverride);
+    [overrideMessage.Expanded, overrideMessage.QueryMatches].includes(
+      treeStatusOverride,
+    );
 
   const isExpanded = useRef(shouldExpand);
 
   useEffect(() => {
-    console.log(type.p);
-    console.log(query);
-    console.log("here: ", entities.hits.edges);
-
     if (query.length > 0) {
       if (
         entities.hits.edges.some((e) => search(query, e).length) ||
@@ -120,20 +123,18 @@ export const BioTree = ({
         ) ||
         type.p.includes(query)
       ) {
-        const message = "query matches";
         isExpanded.current = true;
-        setTreeStatusOverride(message);
+        setTreeStatusOverride(overrideMessage.QueryMatches);
       } else {
         isExpanded.current = false;
         setTreeStatusOverride(null);
       }
     } else if (treeStatusOverride) {
-      console.log("got here");
-      const override = treeStatusOverride === "expanded";
+      const override = treeStatusOverride === overrideMessage.Expanded;
       isExpanded.current = override;
       override && setExpandedCount((c) => c + 1);
     }
-  }, [treeStatusOverride, query]);
+  }, [treeStatusOverride, query, setExpandedCount, setTotalNodeCount]);
 
   useEffect(() => {
     setTotalNodeCount((c) => c + 1);
@@ -145,7 +146,7 @@ export const BioTree = ({
   }, []);
 
   return (
-    <ul className="ml-3 my-2 pl-2">
+    <ul className="ml-4 my-2 pl-4">
       <div
         className="flex"
         onClick={() => {
@@ -207,6 +208,7 @@ export const BioTree = ({
                 setTotalNodeCount={setTotalNodeCount}
                 search={search}
                 query={query}
+                type={type}
               />
             </Node>
           );

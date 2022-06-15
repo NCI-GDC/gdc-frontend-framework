@@ -148,7 +148,7 @@ query BiospecimenCard_relayQuery(
 export const fetchBioSpecimenQuery = async (
   caseId: string,
 ): Promise<GraphQLApiResponse> => {
-  let graphQLFilters = {
+  const graphQLFilters = {
     fileFilters: {
       op: "and",
       content: [

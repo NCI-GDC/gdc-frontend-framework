@@ -30,6 +30,7 @@ export interface CasesViewProps {
 export interface ContextualCasesViewProps {
   readonly handleCaseSelected?: (patient: Case) => void;
   caseId?: string;
+  bioId?: string;
 }
 
 const useCohortFacetFilter = (): GqlOperation => {
@@ -149,7 +150,7 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
           total={pages}
         />
       </div>
-      <Biospecimen caseId={props.caseId} />
+      <Biospecimen caseId={props.caseId} bioId={props.bioId} />
     </div>
   );
 };

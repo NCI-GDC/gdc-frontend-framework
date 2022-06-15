@@ -1,26 +1,34 @@
 import React, { useEffect, useState } from "react";
-import { BioTree, entityTypes } from "@/components/BioTree";
+import { BioTree } from "@/components/BioTree";
 import {
   MdOutlineSearch,
   MdFileDownload,
   MdOutlineClear,
 } from "react-icons/md";
-import { Button, Input, ActionIcon } from "@mantine/core";
-import { useBiospecimenData } from "@gff/core";
+import { Button, Input } from "@mantine/core";
+import { node, useBiospecimenData } from "@gff/core";
 import { HorizontalTable } from "@/components/HorizontalTable";
-import { formatEntityInfo, search } from "./utils";
+import {
+  formatEntityInfo,
+  search,
+  entityTypes,
+  overrideMessage,
+} from "./utils";
 import { trimEnd, find, flatten } from "lodash";
+import { useRouter } from "next/router";
 
-export const Biospecimen = ({ caseId }) => {
-  const [treeStatusOverride, setTreeStatusOverride] = useState(null);
-  const [selectedEntity, setSelectedEntity] = useState({});
+export const Biospecimen = ({ caseId, bioId }) => {
+  const router = useRouter();
+
+  const [treeStatusOverride, setTreeStatusOverride] =
+    useState<overrideMessage | null>(null);
+  const [selectedEntity, setSelectedEntity] = useState<node>({});
   const [isAllExpanded, setIsAllExpanded] = useState(false);
-  const [selectedType, setSelectedType] = useState("sample");
+  const [selectedType, setSelectedType] = useState("samples");
   const [expandedCount, setExpandedCount] = useState(1);
   const [totalNodeCount, setTotalNodeCount] = useState(0);
-  const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState(bioId || "");
 
-  console.log("expandedCount, totalNodeCount: ", expandedCount, totalNodeCount);
   const { data: bioSpecimenData, isFetching: isBiospecimentDataFetching } =
     useBiospecimenData(caseId);
 
@@ -32,23 +40,34 @@ export const Biospecimen = ({ caseId }) => {
     (entityTypes.find((type) => node[`${type.s}_id`]) || { s: null }).s;
 
   useEffect(() => {
-    if (!isBiospecimentDataFetching && bioSpecimenData) {
+    if (
+      !isBiospecimentDataFetching &&
+      bioSpecimenData.samples.hits.edges.length
+    ) {
       const founds = bioSpecimenData.samples.hits?.edges.map((e) =>
         search(searchText, e),
       );
-
-      console.log("FOUNDS: ", founds);
       const flattened = flatten(founds);
-      const foundNode = ((flattened || [])[0] || { node: {} }).node;
-      const selectedNode = (searchText && foundNode) || selectedEntity;
-      const foundType = (searchText && getType(foundNode)) || selectedType;
-      const selected = Object.keys(selectedNode).length
-        ? selectedNode
-        : bioSpecimenData.samples.hits?.edges[0].node;
-      setSelectedEntity(selected || {});
-      setSelectedType(foundType);
+
+      const foundNode = flattened[0]?.node;
+      Object.keys(selectedEntity).length === 0 && setSelectedEntity(foundNode);
+      !selectedType && setSelectedType(getType(foundNode));
+      // const selectedNode = (searchText && foundNode) || selectedEntity;
+      // const foundType = (searchText && getType(foundNode)) || selectedType;
+      // const selected = Object.keys(selectedNode).length
+      //   ? selectedNode
+      //   : bioSpecimenData?.samples?.hits?.edges[0]?.node || {};
+
+      // setSelectedEntity(selected);
+      // setSelectedType(foundType);
     }
-  }, [bioSpecimenData, isBiospecimentDataFetching, selectedType, searchText]);
+  }, [
+    bioSpecimenData.samples.hits.edges.length,
+    isBiospecimentDataFetching,
+    searchText,
+    selectedEntity,
+    selectedType,
+  ]);
 
   const supplementalFiles = bioSpecimenData?.files?.hits?.edges || [];
   const withTrimmedSubIds = supplementalFiles.map(({ node }) => ({
@@ -80,13 +99,11 @@ export const Biospecimen = ({ caseId }) => {
               placeholder="Search"
               className="w-96"
               onChange={(e) => {
-                // e.target.value.length === 0 &&
-                //   treeStatusOverride === "query matches" &&
-                //   setTreeStatusOverride(null);
                 if (e.target.value.length === 0) {
                   setExpandedCount(0);
-                  setTreeStatusOverride("expanded");
+                  setTreeStatusOverride(overrideMessage.Expanded);
                 }
+
                 setSearchText(e.target.value);
               }}
               value={searchText}
@@ -97,15 +114,27 @@ export const Biospecimen = ({ caseId }) => {
                   }`}
                   onClick={() => {
                     setExpandedCount(0);
-                    setTreeStatusOverride("expanded");
+                    setTreeStatusOverride(overrideMessage.Expanded);
                     setSearchText("");
+                    router.push(
+                      {
+                        pathname: router.pathname,
+                        query: { ...router.query, bioId: "" },
+                      },
+                      undefined,
+                      { shallow: true },
+                    );
                   }}
                 />
               }
             />
             <Button
               onClick={() => {
-                setTreeStatusOverride(isAllExpanded ? "collapsed" : "expanded");
+                setTreeStatusOverride(
+                  isAllExpanded
+                    ? overrideMessage.Collapsed
+                    : overrideMessage.Expanded,
+                );
                 setExpandedCount(0);
               }}
               className="ml-4"
@@ -124,7 +153,20 @@ export const Biospecimen = ({ caseId }) => {
                 selectEntity={(entity, type) => {
                   setSelectedEntity(entity);
                   setSelectedType(type.s);
-                  // setSearchText("");
+
+                  console.log("treeStatusOverride: ", treeStatusOverride);
+                  if (treeStatusOverride === overrideMessage.QueryMatches) {
+                    setTreeStatusOverride(null);
+                  }
+
+                  router.push(
+                    {
+                      pathname: router.pathname,
+                      query: { ...router.query, bioId: entity[`${type.s}_id`] },
+                    },
+                    undefined,
+                    { shallow: true },
+                  );
                 }}
                 type={{
                   p: "samples",

@@ -2,9 +2,9 @@ import { formatDataForHorizontalTable } from "../files/utils";
 import { FaMicroscope, FaShoppingCart, FaDownload } from "react-icons/fa";
 import { Tooltip } from "@mantine/core";
 import Link from "next/link";
-import { useCoreSelector, selectCart, useCoreDispatch } from "@gff/core";
+import { useCoreSelector, selectCart, useCoreDispatch, node } from "@gff/core";
 import { addToCart } from "@/features/cart/updateCart";
-import { isArray, isObject, get } from "lodash";
+import { get } from "lodash";
 
 interface IHumanifyParams {
   term: string;
@@ -14,53 +14,52 @@ interface IHumanifyParams {
 
 type THumanify = ({}: IHumanifyParams) => string;
 
-export const capitalize = (original: string) =>
-  original
+export const capitalize = (original: string) => {
+  const customCapitalizations = {
+    id: "ID",
+    uuid: "UUID",
+  };
+
+  return original
     .split(" ")
-    .map((word) => `${word.charAt(0).toUpperCase()}${word.slice(1)}`)
+    .map(
+      (word) =>
+        customCapitalizations[word.toLowerCase()] ||
+        `${word.charAt(0).toUpperCase()}${word.slice(1)}`,
+    )
     .join(" ");
+};
 
 export const entityTypes = [
   { s: "portion", p: "portions" },
   { s: "aliquot", p: "aliquots" },
   { s: "analyte", p: "analytes" },
   { s: "slide", p: "slides" },
+  { s: "sample", p: "samples" },
 ];
 
-type TFormatValue = (value: any) => string;
-export const formatValue: TFormatValue = (value) => {
-  if (isArray(value)) {
-    return value.length;
-  }
-
-  if (isObject(value)) {
-    return value.name;
-  }
-
-  if (!value && !isNaN(value) && value !== 0) {
-    return "--";
-  }
-
-  return value;
-};
+export enum overrideMessage {
+  Expanded = "Expanded",
+  Collapsed = "Collapsed",
+  QueryMatches = "QueryMatches",
+}
 
 export const match = (query: string, entity: Object): boolean =>
   Object.keys(entity).some((k) => {
-    const formatted = formatValue(entity[k]);
     return (
-      typeof formatted === "string" && formatted.toLowerCase().includes(query)
+      typeof entity[k] === "string" && entity[k].toLowerCase().includes(query)
     );
   });
 
-export const search = (query: string, entity: Object): any[] => {
+export const search = (query: string, entity: { node: {} }): any[] => {
   const found = [];
 
-  function searchEntity(entity, type, parents) {
+  function searchEntity(entity, _type, parents) {
     if (entity.node && match(query, entity.node)) found.push(entity);
 
-    entityTypes?.forEach((type) => {
-      get(entity, `node[${type.p}].hits.edges`, []).forEach((child) => {
-        searchEntity(child, type.s, [entity[type.p], entity].concat(parents));
+    entityTypes?.forEach((_type) => {
+      get(entity, `node[${_type.p}].hits.edges`, []).forEach((child) => {
+        searchEntity(child, _type.s, [entity[_type.p], entity].concat(parents));
       });
     });
   }
@@ -110,11 +109,15 @@ export const idFields = [
 ];
 
 export const formatEntityInfo = (
-  entity: any,
-  foundType: any,
+  entity: node,
+  foundType: string,
   caseId: string,
   selectedSlide?: any,
 ) => {
+  // console.log("entity: ", entity)
+  // console.log("foundType: ", foundType)
+  // console.log("caseId: ", caseId)
+  // console.log("selectedSlide: ", selectedSlide)
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
 
@@ -148,7 +151,7 @@ export const formatEntityInfo = (
       <div className="flex gap-4">
         <Tooltip label="View Slide Image">
           <Link
-            href={`/user-flow/workbench/MultipleImageViewerPage?caseId=${caseId}`}
+            href={`/user-flow/workbench/MultipleImageViewerPage?caseId=${caseId}&selectedId=${selectedSlide[0]?.file_id}`}
           >
             <a>
               <FaMicroscope />
