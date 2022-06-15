@@ -269,46 +269,29 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
 }: AnalysisWorkspaceProps) => {
   const [selectedApp, setSelectedApp] = useState(undefined);
   const [selectedAppName, setSelectedAppName] = useState(undefined);
-  const [cohortSelectionOpen, setCohortSelectionOpen] = useState(false);
-
-  const appInfo = initialApps[selectedApp];
 
   const handleAppSelected = (id: string, name: string) => {
     setSelectedApp(id);
     setSelectedAppName(name);
-    if (initialApps[id]?.selectAdditionalCohort) {
-      setCohortSelectionOpen(true);
-      setIsGroupCollapsed(true);
-    }
   };
 
   useEffect(() => {
     setSelectedApp(app);
     setSelectedAppName(undefined); // will use the registered app name
-    clearComparisonCohorts();
   }, [app]);
 
   return (
     <>
-      {selectedApp && (
-        <AnalysisBreadcrumbs
-          currentApp={appInfo}
-          setCohortSelectionOpen={setCohortSelectionOpen}
-          setActiveApp={handleAppSelected}
-        />
-      )}
-      <AdditionalCohortSelection
-        entry={appInfo}
-        setActiveApp={handleAppSelected}
-        open={cohortSelectionOpen}
-        setOpen={setCohortSelectionOpen}
-      />
-      {selectedApp && !cohortSelectionOpen && (
-        <div className="flex flex-col mx-2">
-          <ActiveAnalysisToolNoSSR appId={selectedApp} />
+      {selectedApp ? (
+        <div className="flex flex-col">
+          <ActiveAnalysisToolNoSSR
+            appId={selectedApp}
+            setActiveApp={handleAppSelected}
+          />
         </div>
+      ) : (
+        <AnalysisGrid onAppSelected={handleAppSelected} />
       )}
-      {!selectedApp && <AnalysisGrid onAppSelected={handleAppSelected} />}
     </>
   );
 };

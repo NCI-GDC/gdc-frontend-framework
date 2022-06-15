@@ -1,26 +1,31 @@
 import React, { Suspense, lazy, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Loader } from "@mantine/core";
+import AnalysisBreadcrumbs from "./AnalysisBreadcrumbs";
+import AdditionalCohortSelection from "./AdditionalCohortSelection";
+import { selectComparisonCohorts, useCoreSelector } from "@gff/core";
 import { REGISTERED_APPS } from "./registeredApps";
-import { clearComparisonCohorts } from "@gff/core";
 
 const importApplication = (app) =>
   lazy(() =>
-    import(`../../../features/apps/${app}`).catch(
+    import(`@/features/apps/${app}`).catch(
       () => import(`@/features/apps/NullApp`),
     ),
-  ); // TODO These longs paths are not the best. Will need to restructure this code.
+  );
 
 export interface AnalysisToolInfo {
   readonly appId: string;
+  readonly setActiveApp: (id: string, name: string) => void;
 }
 
 const ActiveAnalysisTool: React.FC<AnalysisToolInfo> = ({
   appId,
+  setActiveApp,
 }: AnalysisToolInfo) => {
   const [analysisApp, setAnalysisApp] = useState(undefined);
+  const [cohortSelectionOpen, setCohortSelectionOpen] = useState(false);
   const router = useRouter();
-  console.log(appId);
+  const currentApp = REGISTERED_APPS.find((app) => app.id === appId);
 
   useEffect(() => {
     async function loadApp() {
@@ -33,18 +38,49 @@ const ActiveAnalysisTool: React.FC<AnalysisToolInfo> = ({
     router.push({
       query: { app: appId },
     });
+
+    if (currentApp?.selectAdditionalCohort) {
+      setCohortSelectionOpen(true);
+    }
   }, [appId]);
 
+  const comparisonCohorts = useCoreSelector((state) =>
+    selectComparisonCohorts(state),
+  );
+
+  /* Display selection screen if we get to app by page refresh */
+  useEffect(() => {
+    if (comparisonCohorts.length === 0 && currentApp?.selectAdditionalCohort) {
+      setCohortSelectionOpen(true);
+    }
+  }, []);
+
   return (
-    <Suspense
-      fallback={
-        <div className="flex flex-row items-center justify-center w-100 h-64">
-          <Loader size={100} />
-        </div>
-      }
-    >
-      {analysisApp}
-    </Suspense>
+    <>
+      <AnalysisBreadcrumbs
+        currentApp={appId}
+        setActiveApp={setActiveApp}
+        setCohortSelectionOpen={setCohortSelectionOpen}
+        cohortSelectionOpen={cohortSelectionOpen}
+      />
+      <AdditionalCohortSelection
+        appId={appId}
+        open={cohortSelectionOpen}
+        setOpen={setCohortSelectionOpen}
+        setActiveApp={setActiveApp}
+      />
+      {!cohortSelectionOpen && (
+        <Suspense
+          fallback={
+            <div className="flex flex-row items-center justify-center w-100 h-64">
+              <Loader size={100} />
+            </div>
+          }
+        >
+          <div className="mx-2">{analysisApp}</div>
+        </Suspense>
+      )}
+    </>
   );
 };
 

@@ -10,10 +10,11 @@ import {
 } from "@gff/core";
 import { VerticalTable } from "@/features/shared/VerticalTable";
 import { AppRegistrationEntry } from "@/features/user-flow/workflow/utils";
+import { REGISTERED_APPS } from "./registeredApps";
 
 interface AdditionalCohortSelectionProps {
-  readonly entry: AppRegistrationEntry;
-  readonly setActiveApp: (id: string, name: string) => void;
+  readonly appId: string;
+  readonly setActiveApp?: (id: string, name: string) => void;
   readonly open: boolean;
   readonly setOpen: (open: boolean) => void;
 }
@@ -21,7 +22,7 @@ interface AdditionalCohortSelectionProps {
 const PAGE_SIZE = 10;
 
 const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
-  entry,
+  appId,
   setActiveApp,
   open,
   setOpen,
@@ -39,6 +40,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
       availableCohorts.filter((cohort) => cohort.name !== primaryCohortName),
     [primaryCohortName],
   );
+  const currentApp = REGISTERED_APPS.find((app) => app.id === appId);
 
   const [selectedCohort, setSelectedCohort] = useState(null);
   const [currentCohortPage, setCurrentCohortPage] = useState([]);
@@ -153,7 +155,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
       >
         <Button
           onClick={() => {
-            setActiveApp(`${entry.id}Demo`, `${entry.name} Demo`);
+            setActiveApp(`${currentApp.id}Demo`, `${currentApp.name} Demo`);
             closeCohortSelection();
           }}
           className="bg-white border-nci-blue-darkest text-nci-blue-darkest"
