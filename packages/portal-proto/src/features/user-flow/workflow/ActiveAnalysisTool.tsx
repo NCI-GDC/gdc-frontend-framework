@@ -1,12 +1,14 @@
 import React, { Suspense, lazy, useEffect, useState } from "react";
 import { Loader } from "@mantine/core";
 
-const importApplication = (app) =>
-  lazy(() =>
-    import(`../../../features/apps/${app}`).catch(
-      () => import(`@/features/apps/NullApp`),
-    ),
+const importApplication = (app) => {
+  return lazy(() =>
+    import(`../../../features/apps/${app}`).catch((e) => {
+      console.log("importApplication error: ", e);
+      return import(`@/features/apps/NullApp`);
+    }),
   ); // TODO These longs paths are not the best. Will need to restructure this code.
+};
 
 export interface AnalysisToolInfo {
   readonly appId: string;
