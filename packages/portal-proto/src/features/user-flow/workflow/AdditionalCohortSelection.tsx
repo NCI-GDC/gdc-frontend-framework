@@ -110,10 +110,11 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
                   <td className="w-1/6">{cohort?.counts}</td>
                 </tr>
               ))}
+              <tr />
             </tbody>
             <tfoot>
-              <tr className="py-2 flex">
-                <td>
+              <tr>
+                <td className="pt-2">
                   <b>
                     Showing {1 + (activePage - 1) * PAGE_SIZE} -{" "}
                     {totalResults > PAGE_SIZE * activePage
@@ -122,7 +123,8 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
                   </b>
                   of <b>{totalResults}</b> case sets
                 </td>
-                <td className="absolute right-0">
+                <td></td>
+                <td className="pt-2">
                   <Pagination
                     total={Math.ceil(totalResults / PAGE_SIZE)}
                     page={activePage}
