@@ -15,8 +15,7 @@ export const REGISTERED_APPS = [
     tags: ["clinicalAnalysis"],
     hasDemo: true,
     id: "CDave",
-    description:
-      "Display basic statistical analyses for the selected case set.",
+    description: "Display basic statistical analyses for your cohort.",
   },
   {
     name: "Cohort Builder",
@@ -35,6 +34,8 @@ export const REGISTERED_APPS = [
     id: "MutationFrequencyApp",
     description:
       "Visualize most frequently mutated genes and most frequent somatic mutations.",
+    noDataTooltip:
+      "Current cohort does not have SSM data available for visualization.",
     optimizeRules: ["something == something"],
   },
   {
@@ -62,7 +63,7 @@ export const REGISTERED_APPS = [
     hasDemo: true,
     id: "CohortComparisonApp",
     description:
-      "Display the survival analysis of your case sets and compare characteristics such as gender, vital status and age at diagnosis.",
+      "Display the survival analysis of your cohorts and compare characteristics such as gender, vital status and age at diagnosis.",
   },
   {
     name: "Gene Expression",
@@ -74,7 +75,7 @@ export const REGISTERED_APPS = [
     caseCounts: 0.11,
     optimizeRules: ["something == something"],
     noDataTooltip:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "Current cohort does not have gene expression data available for visualization.",
   },
   {
     name: "Set Operations",
@@ -96,6 +97,8 @@ export const REGISTERED_APPS = [
       "Visualize the top most mutated cases and genes affected by high impact mutations in your cohort.",
     id: "OncoGridApp",
     optimizeRules: ["available data = ssm or cnv"],
+    noDataTooltip:
+      "Current cohort does not have SSM or CNV data available for visualization.",
   },
   {
     name: "Sequence Reads",
@@ -116,6 +119,8 @@ export const REGISTERED_APPS = [
     id: "ProteinPaint",
     caseCounts: 0.25,
     optimizeRules: ["available data = ssm"],
+    noDataTooltip:
+      "Current cohort does not have SSM data available for visualization.",
   },
   {
     name: "scRNA-Seq",
@@ -128,7 +133,7 @@ export const REGISTERED_APPS = [
     caseCounts: 0.1,
     optimizeRules: ["experimental_strategy === scrna-seq"],
     noDataTooltip:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "Current cohort does not have scRNA-Seq data available for visualization.",
   },
 ];
 
