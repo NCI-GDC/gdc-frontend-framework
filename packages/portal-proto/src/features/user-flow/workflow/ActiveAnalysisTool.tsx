@@ -65,11 +65,13 @@ const ActiveAnalysisTool: React.FC<AnalysisToolInfo> = ({
 
   return (
     <>
-      <AnalysisBreadcrumbs
-        currentApp={appId}
-        setCohortSelectionOpen={setCohortSelectionOpen}
-        cohortSelectionOpen={cohortSelectionOpen}
-      />
+      {currentApp?.displayBreadcrumb === false ? null : (
+        <AnalysisBreadcrumbs
+          currentApp={appId}
+          setCohortSelectionOpen={setCohortSelectionOpen}
+          cohortSelectionOpen={cohortSelectionOpen}
+        />
+      )}
       <AdditionalCohortSelection
         currentApp={currentApp}
         open={cohortSelectionOpen}
