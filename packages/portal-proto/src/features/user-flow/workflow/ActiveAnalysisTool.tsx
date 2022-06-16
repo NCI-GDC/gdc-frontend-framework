@@ -1,9 +1,8 @@
 import React, { Suspense, lazy, useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import Router from "next/router";
 import { Loader } from "@mantine/core";
 import AnalysisBreadcrumbs from "./AnalysisBreadcrumbs";
 import AdditionalCohortSelection from "./AdditionalCohortSelection";
-import { selectComparisonCohorts, useCoreSelector } from "@gff/core";
 import { REGISTERED_APPS } from "./registeredApps";
 
 const importApplication = (app) =>
@@ -26,7 +25,6 @@ const ActiveAnalysisTool: React.FC<AnalysisToolInfo> = ({
 }: AnalysisToolInfo) => {
   const [analysisApp, setAnalysisApp] = useState(undefined);
   const [cohortSelectionOpen, setCohortSelectionOpen] = useState(false);
-  const router = useRouter();
   const currentApp = REGISTERED_APPS.find((app) => app.id === appId);
 
   useEffect(() => {
@@ -37,31 +35,20 @@ const ActiveAnalysisTool: React.FC<AnalysisToolInfo> = ({
 
     loadApp().then(setAnalysisApp);
 
-    router.push({
+    Router.push({
       query: { app: appId },
     });
 
     if (currentApp?.selectAdditionalCohort) {
       setCohortSelectionOpen(true);
     }
-  }, [appId]);
-
-  const comparisonCohorts = useCoreSelector((state) =>
-    selectComparisonCohorts(state),
-  );
-
-  /* Display selection screen if we get to app by page refresh */
-  useEffect(() => {
-    if (comparisonCohorts.length === 0 && currentApp?.selectAdditionalCohort) {
-      setCohortSelectionOpen(true);
-    }
-  }, []);
+  }, [appId, currentApp?.selectAdditionalCohort]);
 
   useEffect(() => {
     if (cohortSelectionOpen) {
       setContextBarCollapsed(true);
     }
-  }, [cohortSelectionOpen]);
+  }, [cohortSelectionOpen, setContextBarCollapsed]);
 
   return (
     <>

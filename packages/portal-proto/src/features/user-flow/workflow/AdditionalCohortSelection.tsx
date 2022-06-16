@@ -8,6 +8,7 @@ import {
   selectAvailableCohorts,
 } from "@gff/core";
 import { AppRegistrationEntry } from "./utils";
+import { useRouter } from "next/router";
 
 interface AdditionalCohortSelectionProps {
   readonly currentApp: AppRegistrationEntry;
@@ -25,6 +26,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
   setOpen,
 }: AdditionalCohortSelectionProps) => {
   const dispatch = useCoreDispatch();
+  const router = useRouter();
   const primaryCohortName = useCoreSelector((state) =>
     selectCurrentCohort(state),
   );
@@ -154,6 +156,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
           <Button
             onClick={() => {
               setActiveApp(undefined, undefined);
+              router.push({ query: { app: undefined } });
               closeCohortSelection();
             }}
             className="mr-4 bg-white border-nci-blue-darkest text-nci-blue-darkest"
