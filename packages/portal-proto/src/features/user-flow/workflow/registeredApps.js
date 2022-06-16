@@ -15,8 +15,7 @@ export const REGISTERED_APPS = [
     tags: ["clinicalAnalysis"],
     hasDemo: true,
     id: "CDave",
-    description:
-      "Display basic statistical analyses for the selected case set.",
+    description: "Display basic statistical analyses for your cohort.",
   },
   {
     name: "Cohort Builder",
@@ -35,6 +34,8 @@ export const REGISTERED_APPS = [
     id: "MutationFrequencyApp",
     description:
       "Visualize most frequently mutated genes and most frequent somatic mutations.",
+    noDataTooltip:
+      "Current cohort does not have SSM data available for visualization.",
     optimizeRules: ["something == something"],
   },
   {
@@ -47,13 +48,13 @@ export const REGISTERED_APPS = [
       "Browse and download the files associated with your cohort for more sophisticated analysis.",
   },
   {
-    name: "Studies",
+    name: "Projects",
     icon: "icons/crowd-of-users.svg",
     tags: [],
     hasDemo: false,
-    id: "Studies",
+    id: "Projects",
     description:
-      "View the Studies available within the GDC and select them for further exploration and analysis.",
+      "View the Projects available within the GDC and select them for further exploration and analysis.",
   },
   {
     name: "Cohort Comparison",
@@ -62,7 +63,7 @@ export const REGISTERED_APPS = [
     hasDemo: true,
     id: "CohortComparisonApp",
     description:
-      "Display the survival analysis of your case sets and compare characteristics such as gender, vital status and age at diagnosis.",
+      "Display the survival analysis of your cohorts and compare characteristics such as gender, vital status and age at diagnosis.",
   },
   {
     name: "Gene Expression",
@@ -73,6 +74,8 @@ export const REGISTERED_APPS = [
     description: "Visualize patterns in gene expression in your cohort.",
     caseCounts: 0.11,
     optimizeRules: ["something == something"],
+    noDataTooltip:
+      "Current cohort does not have gene expression data available for visualization.",
   },
   {
     name: "Set Operations",
@@ -87,13 +90,15 @@ export const REGISTERED_APPS = [
   {
     name: "OncoGrid",
     icon: "icons/apps/oncogrid.svg",
-    iconSize: { width: 100, height: 48 },
+    iconSize: { width: 80, height: 48 },
     tags: ["variantAnalysis", "cnv", "ssm"],
     hasDemo: true,
     description:
       "Visualize the top most mutated cases and genes affected by high impact mutations in your cohort.",
     id: "OncoGridApp",
     optimizeRules: ["available data = ssm or cnv"],
+    noDataTooltip:
+      "Current cohort does not have SSM or CNV data available for visualization.",
   },
   {
     name: "Sequence Reads",
@@ -107,13 +112,15 @@ export const REGISTERED_APPS = [
   {
     name: "ProteinPaint",
     icon: "proteinpaint.png",
-    iconSize: { width: 100, height: 48 },
+    iconSize: { width: 80, height: 48 },
     tags: ["variantAnalysis", "ssm"],
     hasDemo: true,
     description: "Visualize mutations in protein-coding genes.",
     id: "ProteinPaint",
     caseCounts: 0.25,
     optimizeRules: ["available data = ssm"],
+    noDataTooltip:
+      "Current cohort does not have SSM data available for visualization.",
   },
   {
     name: "scRNA-Seq",
@@ -125,6 +132,8 @@ export const REGISTERED_APPS = [
     id: "SingleCellRnaSeq",
     caseCounts: 0.1,
     optimizeRules: ["experimental_strategy === scrna-seq"],
+    noDataTooltip:
+      "Current cohort does not have scRNA-Seq data available for visualization.",
   },
 ];
 
@@ -138,4 +147,4 @@ export const APPTAGS = [
   { value: "ssm", name: "ssm" },
 ];
 
-export const RECOMMENDED_APPS = ["Studies", "CohortBuilder", "Downloads"];
+export const RECOMMENDED_APPS = ["Projects", "CohortBuilder", "Downloads"];

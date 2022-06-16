@@ -11,6 +11,7 @@ function withOpacityValue(variable) {
 }
 
 module.exports = {
+  important: "#__next",
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx}",
     "./src/components/**/*.{js,ts,jsx,tsx}",
@@ -269,6 +270,13 @@ module.exports = {
         "screen/4": "calc(100vh / 4)",
         "screen/5": "calc(100vh / 5)",
         "img-viewer": "550px",
+      },
+      width: {
+        "screen/1.5": "75vw",
+        "screen/2": "50vw",
+        "screen/3": "calc(100vw / 3)",
+        "screen/4": "calc(100vw / 4)",
+        "screen/5": "calc(100vw / 5)",
       },
       gridTemplateColumns: {
         "2flex1": "1fr auto",

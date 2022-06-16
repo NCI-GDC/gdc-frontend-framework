@@ -3,7 +3,7 @@ import {
   CoreDataSelectorResponse,
   createUseCoreDataHook,
   DataStatus,
-} from "../../dataAcess";
+} from "../../dataAccess";
 import { CoreState } from "../../reducers";
 import { GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import { fetchBioSpecimenQuery } from "./bioSpecimenApi";
@@ -91,7 +91,7 @@ const slice = createSlice({
 export const biospecimenReducer = slice.reducer;
 
 export interface biospecimenSelectorType {
-  files: { hits: { edges: [{ node: { [id: string]: any } }] } };
+  files: { hits: { edges: Array<{ node: node }> } };
   samples: { hits: { edges: Array<{ node: node }> } };
 }
 

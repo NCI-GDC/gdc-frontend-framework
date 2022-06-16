@@ -3,7 +3,7 @@ import { NextPage } from "next";
 import { useRouter } from "next/dist/client/router";
 import { UserFlowVariedPages } from "../../features/layout/UserFlowVariedPages";
 import { ContextualFileView } from "../../features/files/FileSummary";
-import { headerElements } from "@/features/user-flow/many-pages/navigation-utils";
+import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
 
 const FileSummary: NextPage = () => {
   const router = useRouter();

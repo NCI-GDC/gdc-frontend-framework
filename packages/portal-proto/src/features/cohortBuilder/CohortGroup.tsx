@@ -2,7 +2,6 @@
 // TODO need to revisit this file for more changes to fix eslint issues
 import { useState } from "react";
 import { CollapsibleContainer } from "../../components/CollapsibleContainer";
-
 import { Button, NativeSelect } from "@mantine/core";
 import Select from "react-select";
 import {
@@ -18,28 +17,12 @@ import { nanoid } from "@reduxjs/toolkit";
 import {
   FilterSet,
   Operation,
-  EnumOperandValue,
-  handleOperation,
-  OperationHandler,
-  removeCohortFilter,
   selectCurrentCohortFilters,
-  useCoreDispatch,
   useCoreSelector,
-  Includes,
-  Equals,
-  NotEquals,
-  LessThan,
-  LessThanOrEquals,
-  GreaterThan,
-  Exists,
-  GreaterThanOrEquals,
-  ExcludeIfAny,
-  Excludes,
-  Missing,
-  Intersection,
-  Union,
 } from "@gff/core";
+import * as tailwindConfig from "tailwind.config";
 import { convertFieldToName } from "../facets/utils";
+import { convertFilterToComponent } from "./QueryRepresentation";
 import CountButton from "./CountButton";
 
 const enum_menu_items = [
@@ -48,18 +31,6 @@ const enum_menu_items = [
   { value: "none_of", label: "excludes:" },
   { value: "between", label: "between" },
 ];
-
-const filter_set_label_v1 = {
-  any_of: "any of:",
-  all_of: "all:",
-  none_of: "none:",
-};
-
-const filter_set_label_v2 = {
-  any_of: "includes at least one:",
-  all_of: "includes all:",
-  none_of: "excludes:",
-};
 
 const CohortGroupSelect: React.FC<unknown> = () => {
   const menu_items = [
@@ -106,20 +77,16 @@ export const CohortBar: React.FC<CohortBarProps> = ({
   const [currentCohort, setCurrentCohort] = useState(menu_items[defaultIdx]);
 
   const buttonStyle =
-    "mx-1 bg-nci-gray-light hover:bg-nci-gray transition-colors";
+    "p-2 bg-white transition-colors text-nci-blue-darkest hover:bg-nci-blue hover:text-white";
   return (
     <div
       data-tour="cohort_management_bar"
-      className="flex flex-row items-center justify-start pl-4 h-12 shadow-lg bg-nci-gray-lighter rounded-lg rounded-b-none rounded-r-none"
+      className="flex flex-row items-center justify-start gap-6 pl-4 h-20 shadow-lg bg-nci-blue-darkest"
     >
-      <CountButton countName="casesMax" label="Cases" className="px-2 ml-20 " />
       <div className="border-opacity-0">
         {!hide_controls ? (
           <Select
             inputId="cohort-bar_cohort_select"
-            components={{
-              IndicatorSeparator: () => null,
-            }}
             options={menu_items}
             isSearchable={false}
             isClearable={false}
@@ -128,8 +95,18 @@ export const CohortBar: React.FC<CohortBarProps> = ({
               setCurrentCohort(x);
               onSelectionChanged(x.value);
             }}
-            className="border-nci-gray-light w-80 p-0"
-            aria-label="Select cohort"
+            className="border-nci-gray-light w-80 p-0 z-10 "
+            aria-items-centerlabel="Select cohort"
+            styles={{
+              dropdownIndicator: (provided) => ({
+                ...provided,
+                color: tailwindConfig.theme.extend.colors["gdc-blue"].darkest,
+              }),
+              singleValue: (provided) => ({
+                ...provided,
+                color: tailwindConfig.theme.extend.colors["gdc-blue"].darkest,
+              }),
+            }}
           />
         ) : (
           <div>
@@ -138,7 +115,7 @@ export const CohortBar: React.FC<CohortBarProps> = ({
         )}
       </div>
       {!hide_controls ? (
-        <div className="flex flex-row items-center ml-auto">
+        <>
           <Button className={buttonStyle}>
             <SaveIcon size="1.5em" aria-label="Save cohort" />
           </Button>
@@ -154,7 +131,7 @@ export const CohortBar: React.FC<CohortBarProps> = ({
           <Button className={buttonStyle}>
             <DownloadIcon size="1.5em" aria-label="Download cohort" />
           </Button>
-        </div>
+        </>
       ) : (
         <div />
       )}
@@ -190,61 +167,6 @@ const CohortFacetElement: React.FC<FacetElementProp> = ({
   );
 };
 
-interface EnumFilterProps {
-  readonly op: string;
-  readonly field: string;
-  readonly values: ReadonlyArray<string>;
-}
-
-const CohortEnumFilterElement: React.FC<EnumFilterProps> = ({
-  field,
-  op,
-  values,
-}: EnumFilterProps) => {
-  const [groupType, setGroupTop] = useState(op);
-  const [showPopup, setShowPopup] = useState(false);
-
-  const handleChange = (event) => {
-    setGroupTop(event.target.value);
-  };
-
-  const menu_items = [
-    { value: "any_of", label: "any of" },
-    { value: "all_of", label: "all of" },
-    { value: "none_of", label: "none of" },
-  ];
-
-  const coreDispatch = useCoreDispatch();
-
-  const handleRemoveFilter = () => {
-    coreDispatch(removeCohortFilter(field));
-  };
-
-  const handlePopupFacet = () => {
-    setShowPopup(!showPopup);
-  };
-
-  return (
-    <div className="m-1 px-2 font-heading shadow-md font-medium text-sm rounded-xl bg-nci-gray-lighter text-nci-gray-darkest border-nci-gray-light border-1">
-      <div className="flex flex-row items-center">
-        {convertFieldToName(field)} is{" "}
-        <span className="px-1 underline">{filter_set_label_v1["any_of"]}</span>
-        <div className="flex truncate ... max-w-sm px-2 border-l-2 border-nci-gray-light ">
-          {values.join(",")}
-        </div>
-        <DropDownIcon size="1.5em" onClick={handlePopupFacet} />
-        <button>
-          <ClearIcon
-            onClick={handleRemoveFilter}
-            size="1.5em"
-            className="pl-1 border-l-2 border-nci-gray-light "
-          />
-        </button>
-      </div>
-    </div>
-  );
-};
-
 interface RangeFilterProps {
   readonly filter: Operation;
 }
@@ -265,44 +187,6 @@ export interface CohortGroupProps {
 
 export const useCohortFacetFilters = (): FilterSet => {
   return useCoreSelector((state) => selectCurrentCohortFilters(state));
-};
-
-/**
- *  Processes a Filter into a component representation
- */
-class CohortFilterToComponent implements OperationHandler<JSX.Element> {
-  handleIncludes = (f: Includes) => (
-    <CohortEnumFilterElement
-      key={f.field}
-      field={f.field}
-      op={f.operator}
-      values={f.operands.map(String)}
-    />
-  );
-  handleEquals = (f: Equals) => (
-    <CohortEnumFilterElement
-      key={f.field}
-      field={f.field}
-      op={f.operator}
-      values={[String(f.operand)]}
-    />
-  );
-  handleNotEquals = (f: NotEquals) => null;
-  handleLessThan = (f: LessThan) => null;
-  handleLessThanOrEquals = (f: LessThanOrEquals) => null;
-  handleGreaterThan = (f: GreaterThan) => null;
-  handleGreaterThanOrEquals = (f: GreaterThanOrEquals) => null;
-  handleExists = (f: Exists) => null;
-  handleExcludeIfAny = (f: ExcludeIfAny) => null;
-  handleMissing = (f: Missing) => null;
-  handleExcludes = (f: Excludes) => null;
-  handleIntersection = (f: Intersection) => null;
-  handleUnion = (f: Union) => null;
-}
-
-export const convertFilterToComponent = (filter: Operation): JSX.Element => {
-  const handler: OperationHandler<JSX.Element> = new CohortFilterToComponent();
-  return handleOperation(handler, filter);
 };
 
 export const CohortGroup: React.FC<CohortGroupProps> = ({

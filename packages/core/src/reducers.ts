@@ -1,5 +1,3 @@
-import storage from "redux-persist/lib/storage";
-import { persistReducer } from "redux-persist";
 import { combineReducers } from "@reduxjs/toolkit";
 import { cohortReducers } from "./features/cohort/cohortSlice";
 import { sessionReducer } from "./features/session/sessionSlice";
@@ -7,6 +5,7 @@ import { facetsReducer } from "./features/facets/facetSlice";
 import { fileCaseGenesMutationsFacetReducers } from "./features/facets/facetSliceGQL";
 import { gdcAppReducer } from "./features/gdcapps/gdcAppsSlice";
 import { filesReducer } from "./features/files/filesSlice";
+import { historyReducer } from "./features/history/historySlice";
 import { projectsReducer } from "./features/projects/projectsSlice";
 import { annotationsReducer } from "./features/annotations/annotationsSlice";
 import { casesReducer } from "./features/cases/casesSlice";
@@ -20,10 +19,12 @@ import { imageViewerReducer } from "./features/imageDetails/imageViewer";
 import { cohortComparisonReducer } from "./features/cohortComparison";
 import { bannerReducer } from "./features/bannerNotification";
 import { cartReducer } from "./features/cart/cartSlice";
+import { totalCountsReducer } from "./features/summary/totalCountsSlice";
 import {
   cohortApiReducer,
   cohortApiSliceReducerPath,
 } from "./features/api/cohortApiSlice";
+import { biospecimenReducer } from "./features/biospecimen/biospecimenSlice";
 
 export const reducers = combineReducers({
   cohort: cohortReducers,
@@ -32,6 +33,7 @@ export const reducers = combineReducers({
   facetsGQL: fileCaseGenesMutationsFacetReducers,
   gdcApps: gdcAppReducer,
   files: filesReducer,
+  history: historyReducer,
   projects: projectsReducer,
   annotations: annotationsReducer,
   cases: casesReducer,
@@ -45,15 +47,9 @@ export const reducers = combineReducers({
   cohortComparison: cohortComparisonReducer,
   cart: cartReducer,
   bannerNotification: bannerReducer,
+  summary: totalCountsReducer,
+  biospecimen: biospecimenReducer,
   [cohortApiSliceReducerPath]: cohortApiReducer,
 });
 
-const persistConfig = {
-  key: "root",
-  version: 1,
-  storage,
-  whitelist: ["cart"],
-};
-
-export const coreReducers = persistReducer(persistConfig, reducers);
-export type CoreState = ReturnType<typeof coreReducers>;
+export type CoreState = ReturnType<typeof reducers>;
