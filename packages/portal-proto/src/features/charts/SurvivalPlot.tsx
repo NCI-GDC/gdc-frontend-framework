@@ -95,10 +95,10 @@ export const useSurvival: survival = (
   return ref;
 };
 
-const enoughData = (data: SurvivalElement[]) =>
+const enoughData = (data: ReadonlyArray<SurvivalElement>) =>
   data && data.length && data.every((r) => r.donors.length >= MINIMUM_CASES);
 
-const enoughDataOnSomeCurves = (data: SurvivalElement[]) =>
+const enoughDataOnSomeCurves = (data: ReadonlyArray<SurvivalElement>) =>
   data && data.length && data.some((r) => r.donors.length >= MINIMUM_CASES);
 
 const buildOnePlotLegend = (data, name) => {
@@ -213,9 +213,11 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   const pValue = data.overallStats.pValue;
   const plotData = data.survivalData;
 
+  const hasEnoughData = enoughData(plotData);
+
   // hook to call renderSurvivalPlot
   const container = useSurvival(
-    plotData,
+    hasEnoughData ? plotData : [], // TODO: when implementing GDave this likely will need more logic
     xDomain,
     setXDomain,
     setSurvivalPlotLineTooltipContent,

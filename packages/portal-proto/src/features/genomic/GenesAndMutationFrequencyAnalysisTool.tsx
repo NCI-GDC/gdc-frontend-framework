@@ -16,6 +16,7 @@ import {
   useSurvivalPlot,
   selectGenomicFilters,
   buildCohortGqlOperator,
+  useTopGene,
 } from "@gff/core";
 
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
@@ -105,25 +106,39 @@ const buildGeneHaveAndHaveNotFilters = (
   ];
 };
 
+type MODE = "genes" | "mutations";
+
 const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const coreDispatch = useCoreDispatch();
-  const [comparativeSurvival, setComparativeSurvival] = useState(undefined);
+  const [comparativeSurvival, setComparativeSurvival] = useState({
+    name: undefined,
+    symbol: undefined,
+    field: "gene.symbol",
+  });
+  const [appMode, setAppMode] = useState("genes");
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilterSet(state),
   );
   const genomicFilters = useCoreSelector((state) =>
     selectGenomicFilters(state),
   );
+
   const filters = useMemo(
     () => buildCohortGqlOperator(joinFilters(cohortFilters, genomicFilters)),
     [cohortFilters, genomicFilters],
   );
   const { data: survivalPlotData, isSuccess: survivalPlotReady } =
     useSurvivalPlot({ filters: filters ? [filters] : [] });
+
+  const { data: topGeneSSMS, isSuccess: topGeneSSMSSuccess } = useTopGene(); // get the default top gene/ssms if
+  // none other selected by the user
+
+  console.log("top:", topGeneSSMS);
   /**
    * Update survival plot in response to user actions. There are two "states"
    * for the survival plot: If comparativeSurvival is undefined it will show the
-   * plot for the currentCohort plus whatever local filters are selected
+   * plot for the currentCohort plus whatever local filters are selected for the "top"
+   * gene or mutation.
    * If comparativeSurvival is set, then it will show two separate plots.
    * @param symbol
    * @param name symbol (Gene or SSMS) to compare
@@ -134,17 +149,19 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     name: string,
     field: string,
   ) => {
+    console.log("handle:", symbol, name, field);
     if (comparativeSurvival && comparativeSurvival.symbol === symbol) {
       // remove toggle
       setComparativeSurvival(undefined);
       coreDispatch(fetchSurvival({ filters: filters ? [filters] : [] }));
     } else {
-      setComparativeSurvival({ symbol: symbol, name: name });
+      setComparativeSurvival({ symbol: symbol, name: name, field: field });
       const f = buildGeneHaveAndHaveNotFilters(filters, symbol, field);
       coreDispatch(fetchSurvival({ filters: f }));
     }
   };
 
+  // clear local filters when cohort changes or tabs change
   useEffect(() => {
     coreDispatch(clearGenomicFilters());
   }, [cohortFilters, coreDispatch]);
@@ -152,10 +169,32 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   /**
    * remove comparative survival plot when tabs or filters change.
    */
-  const handleTabOrFilterChanged = () => {
+  const handleTabChanged = () => {
     setComparativeSurvival(undefined);
     coreDispatch(fetchSurvival({ filters: filters ? [filters] : [] }));
   };
+
+  useEffect(() => {
+    if (comparativeSurvival) {
+      console.log("fetching survival");
+      const f = buildGeneHaveAndHaveNotFilters(
+        filters,
+        comparativeSurvival.symbol,
+        comparativeSurvival.field,
+      );
+      coreDispatch(fetchSurvival({ filters: f }));
+    }
+  }, [cohortFilters, comparativeSurvival, coreDispatch, filters]);
+
+  useEffect(() => {
+    if (
+      topGeneSSMSSuccess &&
+      comparativeSurvival.symbol != topGeneSSMS[0][appMode].symbol
+    ) {
+      console.log("set Top");
+      // setComparativeSurvival({ symbol: topSymbol, name: appMode == "genes" ? topGeneSSMS[0]?.gene_id :  topGeneSSMS[0]?.ssms_symbol; })
+    }
+  }, [topGeneSSMS, topGeneSSMSSuccess]);
 
   return (
     <div className="flex flex-row">
@@ -195,7 +234,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
           root: "mt-6",
           tabActive: "bg-nci-teal text-nci-blue p-4 hover:bg-nci-teal",
         }}
-        onTabChange={handleTabOrFilterChanged}
+        onTabChange={handleTabChanged}
       >
         <Tabs.Tab label="Genes">
           <div className="flex flex-row">
@@ -205,7 +244,9 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                   <GeneFrequencyChart marginBottom={95} />
                 </Grid.Col>
                 <Grid.Col span={6} className="relative">
-                  <LoadingOverlay visible={!survivalPlotReady} />
+                  <LoadingOverlay
+                    visible={!survivalPlotReady && !comparativeSurvival}
+                  />
                   <SurvivalPlot
                     data={survivalPlotData}
                     names={

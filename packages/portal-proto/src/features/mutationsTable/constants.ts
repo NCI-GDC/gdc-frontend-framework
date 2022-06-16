@@ -1,11 +1,11 @@
 export const ssmsKeys = [
   "DNAChange",
   "type",
+  "survival",
   "consequences",
   "affectedCasesInCohort",
   "affectedCasesAcrossTheGDC",
   "impact",
-  "survival",
 ];
 export const customSsmsKeys = ["impact", "survival"];
 

@@ -34,6 +34,7 @@ export * from "./features/genomic/ssmsTableSlice";
 export * from "./features/genomic/genesTableSlice";
 export * from "./features/genomic/genesFrequencyChartSlice";
 export * from "./features/genomic/genomicFilters";
+export * from "./features/genomic/topGenesSSMSSlice";
 export * from "./features/cancerDistribution/ssmPlot";
 export * from "./features/cancerDistribution/cnvPlot";
 export * from "./features/survival/survivalSlice";

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useCoreDispatch, fetchGenesTable, useGenesTable } from "@gff/core";
+import { useGenesTable } from "@gff/core";
 import { VerticalTable } from "../shared/VerticalTable";
 import { Loader, Pagination, Select, Switch, Tooltip } from "@mantine/core";
 import { SiMicrogenetics as GeneAnnotationIcon } from "react-icons/si";
@@ -30,7 +30,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
   const [columnListOrder, setColumnListOrder] = useState([]);
   const [columnListCells, setColumnListCells] = useState([]);
 
-  const coreDispatch = useCoreDispatch();
+  // const coreDispatch = useCoreDispatch();
 
   // using the useSsmsTable from core and the associated useEffect hook
   // exploring different ways to dispatch the pageSize/offset changes
@@ -38,11 +38,6 @@ const GenesTable: React.FC<GenesTableProps> = ({
     pageSize: pageSize,
     offset: offset,
   });
-
-  useEffect(() => {
-    coreDispatch(fetchGenesTable({ pageSize: pageSize, offset: offset }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageSize, offset]);
 
   useEffect(() => {
     setActivePage(1);
@@ -56,6 +51,10 @@ const GenesTable: React.FC<GenesTableProps> = ({
         return {
           symbol: g.symbol,
           name: g.name,
+          survival: {
+            name: `${g.name}`,
+            symbol: `${g.symbol}`,
+          },
           SSMSAffectedCasesInCohort:
             g.cnv_case > 0
               ? `${g.cnv_case + " / " + data.genes.filteredCases} (${(
@@ -86,10 +85,6 @@ const GenesTable: React.FC<GenesTableProps> = ({
               : `0%`,
           mutations: data.genes.mutationCounts[g.gene_id],
           annotations: g.is_cancer_gene_census,
-          survival: {
-            name: `${g.name}`,
-            symbol: `${g.symbol}`,
-          },
         };
       });
       return genesTableMapping;
