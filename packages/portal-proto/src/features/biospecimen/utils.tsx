@@ -2,7 +2,7 @@ import { formatDataForHorizontalTable } from "../files/utils";
 import { FaMicroscope, FaShoppingCart, FaDownload } from "react-icons/fa";
 import { Tooltip } from "@mantine/core";
 import Link from "next/link";
-import { useCoreSelector, selectCart, useCoreDispatch, node } from "@gff/core";
+import { CoreDispatch, node } from "@gff/core";
 import { addToCart } from "@/features/cart/updateCart";
 import { get } from "lodash";
 
@@ -12,9 +12,7 @@ interface IHumanifyParams {
   facetTerm?: boolean;
 }
 
-type THumanify = ({}: IHumanifyParams) => string;
-
-export const capitalize = (original: string) => {
+export const capitalize = (original: string): string => {
   const customCapitalizations = {
     id: "ID",
     uuid: "UUID",
@@ -44,14 +42,17 @@ export enum overrideMessage {
   QueryMatches = "QueryMatches",
 }
 
-export const match = (query: string, entity: Object): boolean =>
+export const match = (query: string, entity: Record<string, any>): boolean =>
   Object.keys(entity).some((k) => {
     return (
       typeof entity[k] === "string" && entity[k].toLowerCase().includes(query)
     );
   });
 
-export const search = (query: string, entity: { node: {} }): any[] => {
+export const search = (
+  query: string,
+  entity: { node: Record<string, any> },
+): any[] => {
   const found = [];
 
   function searchEntity(entity, _type, parents) {
@@ -75,11 +76,11 @@ export const search = (query: string, entity: { node: {} }): any[] => {
   return found;
 };
 
-export const humanify: THumanify = ({
+export const humanify = ({
   term,
   capitalize: cap = true,
   facetTerm = false,
-}) => {
+}: IHumanifyParams): string => {
   let original;
   let humanified;
   if (facetTerm) {
@@ -112,15 +113,19 @@ export const formatEntityInfo = (
   entity: node,
   foundType: string,
   caseId: string,
+  dispatch: CoreDispatch,
+  currentCart: string[],
   selectedSlide?: any,
-) => {
-  // console.log("entity: ", entity)
-  // console.log("foundType: ", foundType)
-  // console.log("caseId: ", caseId)
-  // console.log("selectedSlide: ", selectedSlide)
-  const currentCart = useCoreSelector((state) => selectCart(state));
-  const dispatch = useCoreDispatch();
-
+): {
+  readonly headerName: string;
+  readonly values: readonly (
+    | string
+    | number
+    | boolean
+    | JSX.Element
+    | readonly string[]
+  )[];
+}[] => {
   const ids = {
     [`${foundType}_ID`]: entity.submitter_id,
     [`${foundType}_UUID`]: entity[idFields.find((id) => entity[id])],
@@ -148,7 +153,7 @@ export const formatEntityInfo = (
   if (foundType === "slide" && !!selectedSlide) {
     filtered.push([
       "Slides",
-      <div className="flex gap-4">
+      <div className="flex gap-4" key={selectedSlide[0]?.file_id}>
         <Tooltip label="View Slide Image">
           <Link
             href={`/user-flow/workbench/MultipleImageViewerPage?caseId=${caseId}&selectedId=${selectedSlide[0]?.file_id}`}

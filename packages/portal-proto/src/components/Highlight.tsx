@@ -4,7 +4,7 @@ export const internalHighlight = (
   query: string,
   foundText: string,
   highlightStyle: React.CSSProperties = { fontWeight: "bold" },
-) => {
+): JSX.Element => {
   const index = (foundText || "").toLocaleLowerCase().indexOf(query);
   if (foundText && index !== -1) {
     const seg1 = foundText.substring(0, index);
@@ -25,7 +25,7 @@ interface HighlightProps {
   search: string;
   text: string;
 }
-const Highlight = ({ search, text }: HighlightProps) => (
+const Highlight = ({ search, text }: HighlightProps): JSX.Element => (
   <span>{internalHighlight(search, text)}</span>
 );
 

@@ -9,6 +9,23 @@ import Highlight from "./Highlight";
 import { node } from "@gff/core";
 import { overrideMessage } from "@/features/biospecimen/utils";
 
+interface NodeProps {
+  entity: node;
+  children: any;
+  entityTypes: Array<{
+    s: string;
+    p: string;
+  }>;
+  type: {
+    p: string;
+    s: string;
+  };
+  selectedEntity: node;
+  selectEntity: any;
+  query: string;
+  search: any;
+}
+
 const Node = ({
   entity,
   entityTypes,
@@ -18,7 +35,7 @@ const Node = ({
   selectEntity,
   query,
   search,
-}) => {
+}: NodeProps): JSX.Element => {
   return (
     <li>
       {entity[`${type.s}_id`] && entity.submitter_id && (
@@ -41,6 +58,11 @@ const Node = ({
             onClick={() => {
               selectEntity(entity, type);
             }}
+            onKeyDown={() => {
+              selectEntity(entity, type);
+            }}
+            role="button"
+            tabIndex={0}
           >
             <Highlight search={query} text={entity.submitter_id} />
           </span>
@@ -105,7 +127,7 @@ export const BioTree = ({
   setTotalNodeCount,
   query,
   search,
-}: BioTreeProps) => {
+}: BioTreeProps): JSX.Element => {
   const shouldExpand =
     parentNode === "root" ||
     [overrideMessage.Expanded, overrideMessage.QueryMatches].includes(
@@ -134,7 +156,16 @@ export const BioTree = ({
       isExpanded.current = override;
       override && setExpandedCount((c) => c + 1);
     }
-  }, [treeStatusOverride, query, setExpandedCount, setTotalNodeCount]);
+  }, [
+    treeStatusOverride,
+    query,
+    setExpandedCount,
+    setTotalNodeCount,
+    entities.hits.edges,
+    search,
+    setTreeStatusOverride,
+    type.p,
+  ]);
 
   useEffect(() => {
     setTotalNodeCount((c) => c + 1);
@@ -143,19 +174,25 @@ export const BioTree = ({
       setTotalNodeCount((c) => c - 1);
       isExpanded.current && setExpandedCount((c) => Math.max(c - 1, 0));
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const onTreeClick = () => {
+    isExpanded.current = !isExpanded.current;
+    isExpanded.current
+      ? setExpandedCount((c) => c + 1)
+      : setExpandedCount((c) => Math.max(c - 1, 0));
+    setTreeStatusOverride(null);
+  };
 
   return (
     <ul className="ml-4 my-2 pl-4">
       <div
         className="flex"
-        onClick={() => {
-          isExpanded.current = !isExpanded.current;
-          isExpanded.current
-            ? setExpandedCount((c) => c + 1)
-            : setExpandedCount((c) => Math.max(c - 1, 0));
-          setTreeStatusOverride(null);
-        }}
+        onClick={onTreeClick}
+        onKeyDown={onTreeClick}
+        role="treeitem"
+        tabIndex={0}
       >
         {isExpanded.current ? (
           <ExpandLessIcon

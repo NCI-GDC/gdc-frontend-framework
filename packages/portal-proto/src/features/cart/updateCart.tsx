@@ -7,7 +7,6 @@ import {
   addFilesToCart,
   GdcFile,
   CoreDispatch,
-  SlideImageFile,
 } from "@gff/core";
 
 interface OverLimitNotificationProps {

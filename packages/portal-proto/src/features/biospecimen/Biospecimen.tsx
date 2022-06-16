@@ -6,7 +6,13 @@ import {
   MdOutlineClear,
 } from "react-icons/md";
 import { Button, Input } from "@mantine/core";
-import { node, useBiospecimenData } from "@gff/core";
+import {
+  node,
+  useBiospecimenData,
+  useCoreDispatch,
+  useCoreSelector,
+  selectCart,
+} from "@gff/core";
 import { HorizontalTable } from "@/components/HorizontalTable";
 import {
   formatEntityInfo,
@@ -17,17 +23,28 @@ import {
 import { trimEnd, find, flatten } from "lodash";
 import { useRouter } from "next/router";
 
-export const Biospecimen = ({ caseId, bioId }) => {
+interface BiospecimenProps {
+  caseId: string;
+  bioId: string;
+}
+
+export const Biospecimen = ({
+  caseId,
+  bioId,
+}: BiospecimenProps): JSX.Element => {
   const router = useRouter();
 
   const [treeStatusOverride, setTreeStatusOverride] =
     useState<overrideMessage | null>(null);
   const [selectedEntity, setSelectedEntity] = useState<node>({});
   const [isAllExpanded, setIsAllExpanded] = useState(false);
-  const [selectedType, setSelectedType] = useState("samples");
+  const [selectedType, setSelectedType] = useState(undefined);
   const [expandedCount, setExpandedCount] = useState(1);
   const [totalNodeCount, setTotalNodeCount] = useState(0);
   const [searchText, setSearchText] = useState(bioId || "");
+
+  const currentCart = useCoreSelector((state) => selectCart(state));
+  const dispatch = useCoreDispatch();
 
   const { data: bioSpecimenData, isFetching: isBiospecimentDataFetching } =
     useBiospecimenData(caseId);
@@ -52,17 +69,10 @@ export const Biospecimen = ({ caseId, bioId }) => {
       const foundNode = flattened[0]?.node;
       Object.keys(selectedEntity).length === 0 && setSelectedEntity(foundNode);
       !selectedType && setSelectedType(getType(foundNode));
-      // const selectedNode = (searchText && foundNode) || selectedEntity;
-      // const foundType = (searchText && getType(foundNode)) || selectedType;
-      // const selected = Object.keys(selectedNode).length
-      //   ? selectedNode
-      //   : bioSpecimenData?.samples?.hits?.edges[0]?.node || {};
-
-      // setSelectedEntity(selected);
-      // setSelectedType(foundType);
     }
   }, [
-    bioSpecimenData.samples.hits.edges.length,
+    // bioSpecimenData.samples.hits.edges.length,
+    bioSpecimenData.samples.hits.edges,
     isBiospecimentDataFetching,
     searchText,
     selectedEntity,
@@ -84,116 +94,121 @@ export const Biospecimen = ({ caseId, bioId }) => {
         <h1>Biospecimen</h1>
         <Button
           className="px-1.5 min-h-[28px] min-w-[40px] border-nci-gray-light border rounded-[4px] "
-          onClick={() => {}}
+          onClick={() => {
+            alert("coming soon!!!");
+          }}
         >
           <MdFileDownload size="1.25em" />
           Download
         </Button>
       </div>
-
-      <div className="flex">
-        <div className="mr-5">
-          <div className="flex mb-4">
-            <Input
-              icon={<MdOutlineSearch size={24} />}
-              placeholder="Search"
-              className="w-96"
-              onChange={(e) => {
-                if (e.target.value.length === 0) {
-                  setExpandedCount(0);
-                  setTreeStatusOverride(overrideMessage.Expanded);
-                }
-
-                setSearchText(e.target.value);
-              }}
-              value={searchText}
-              rightSection={
-                <MdOutlineClear
-                  className={`hover:cursor-pointer ${
-                    searchText.length === 0 ? "hidden" : "visible"
-                  }`}
-                  onClick={() => {
+      {Object.keys(selectedEntity).length && selectedType !== undefined && (
+        <div className="flex">
+          <div className="mr-5">
+            <div className="flex mb-4">
+              <Input
+                icon={<MdOutlineSearch size={24} />}
+                placeholder="Search"
+                className="w-96"
+                onChange={(e) => {
+                  if (e.target.value.length === 0) {
                     setExpandedCount(0);
                     setTreeStatusOverride(overrideMessage.Expanded);
-                    setSearchText("");
+                  }
+
+                  setSearchText(e.target.value);
+                }}
+                value={searchText}
+                rightSection={
+                  <MdOutlineClear
+                    className={`hover:cursor-pointer ${
+                      searchText.length === 0 ? "hidden" : "visible"
+                    }`}
+                    onClick={() => {
+                      setExpandedCount(0);
+                      setTreeStatusOverride(overrideMessage.Expanded);
+                      setSearchText("");
+                      router.push(
+                        {
+                          pathname: router.pathname,
+                          query: { ...router.query, bioId: "" },
+                        },
+                        undefined,
+                        { shallow: true },
+                      );
+                    }}
+                  />
+                }
+              />
+              <Button
+                onClick={() => {
+                  setTreeStatusOverride(
+                    isAllExpanded
+                      ? overrideMessage.Collapsed
+                      : overrideMessage.Expanded,
+                  );
+                  setExpandedCount(0);
+                }}
+                className="ml-4"
+                disabled={searchText.length > 0}
+              >
+                {isAllExpanded ? "Collapse All" : "Expand All"}
+              </Button>
+            </div>
+            {!isBiospecimentDataFetching &&
+              bioSpecimenData.samples?.hits?.edges.length > 0 && (
+                <BioTree
+                  entities={bioSpecimenData.samples}
+                  entityTypes={entityTypes}
+                  parentNode="root"
+                  selectedEntity={selectedEntity}
+                  selectEntity={(entity, type) => {
+                    setSelectedEntity(entity);
+                    setSelectedType(type.s);
+
+                    if (treeStatusOverride === overrideMessage.QueryMatches) {
+                      setTreeStatusOverride(null);
+                    }
+
                     router.push(
                       {
                         pathname: router.pathname,
-                        query: { ...router.query, bioId: "" },
+                        query: {
+                          ...router.query,
+                          bioId: entity[`${type.s}_id`],
+                        },
                       },
                       undefined,
                       { shallow: true },
                     );
                   }}
+                  type={{
+                    p: "samples",
+                    s: "sample",
+                  }}
+                  treeStatusOverride={treeStatusOverride}
+                  setTreeStatusOverride={setTreeStatusOverride}
+                  setTotalNodeCount={setTotalNodeCount}
+                  setExpandedCount={setExpandedCount}
+                  query={searchText.toLocaleLowerCase()}
+                  search={search}
                 />
-              }
-            />
-            <Button
-              onClick={() => {
-                setTreeStatusOverride(
-                  isAllExpanded
-                    ? overrideMessage.Collapsed
-                    : overrideMessage.Expanded,
-                );
-                setExpandedCount(0);
-              }}
-              className="ml-4"
-              disabled={searchText.length > 0}
-            >
-              {isAllExpanded ? "Collapse All" : "Expand All"}
-            </Button>
+              )}
           </div>
-          {!isBiospecimentDataFetching &&
-            bioSpecimenData.samples?.hits?.edges.length > 0 && (
-              <BioTree
-                entities={bioSpecimenData.samples}
-                entityTypes={entityTypes}
-                parentNode="root"
-                selectedEntity={selectedEntity}
-                selectEntity={(entity, type) => {
-                  setSelectedEntity(entity);
-                  setSelectedType(type.s);
-
-                  console.log("treeStatusOverride: ", treeStatusOverride);
-                  if (treeStatusOverride === overrideMessage.QueryMatches) {
-                    setTreeStatusOverride(null);
-                  }
-
-                  router.push(
-                    {
-                      pathname: router.pathname,
-                      query: { ...router.query, bioId: entity[`${type.s}_id`] },
-                    },
-                    undefined,
-                    { shallow: true },
-                  );
-                }}
-                type={{
-                  p: "samples",
-                  s: "sample",
-                }}
-                treeStatusOverride={treeStatusOverride}
-                setTreeStatusOverride={setTreeStatusOverride}
-                setTotalNodeCount={setTotalNodeCount}
-                setExpandedCount={setExpandedCount}
-                query={searchText.toLocaleLowerCase()}
-                search={search}
-              />
-            )}
-        </div>
-        <div className="flex-1">
-          {selectedEntity && selectedType && (
+          <div className="flex-1">
             <HorizontalTable
               tableData={formatEntityInfo(
                 selectedEntity,
                 selectedType,
                 caseId,
+                dispatch,
+                currentCart,
                 [selectedSlide],
               )}
             />
-          )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
