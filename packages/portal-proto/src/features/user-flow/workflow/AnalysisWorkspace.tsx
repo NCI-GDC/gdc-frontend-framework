@@ -1,5 +1,13 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Chip, Chips, Menu, Grid, ActionIcon } from "@mantine/core";
+import {
+  Drawer,
+  Chip,
+  Chips,
+  Menu,
+  Grid,
+  ActionIcon,
+  Button,
+} from "@mantine/core";
 import { MdSort as SortIcon } from "react-icons/md";
 import { IoMdArrowRoundBack as BackIcon } from "react-icons/io";
 import AnalysisCard from "@/features/user-flow/workflow/AnalysisCard";
@@ -15,6 +23,9 @@ import {
 import SearchInput from "@/components/SearchInput";
 import dynamic from "next/dynamic";
 import FeaturedToolCard from "./FeaturedToolCard";
+import Sidebar from "@/components/Sidebar";
+import FacetTabs from "@/features/cohortBuilder/FacetTabs";
+import Image from "next/image";
 
 const ActiveAnalysisToolNoSSR = dynamic(
   () => import("@/features/user-flow/workflow/ActiveAnalysisTool"),
@@ -262,6 +273,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
 }: AnalysisWorkspaceProps) => {
   const [selectedApp, setSelectedApp] = useState(undefined);
   const [selectedAppName, setSelectedAppName] = useState(undefined);
+  const [opened, setOpened] = useState(false);
 
   const handleAppSelected = (id: string, name: string) => {
     setSelectedApp(id);
@@ -290,10 +302,28 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
                 ? selectedAppName
                 : initialApps[selectedApp].name}
             </div>
-            <div className="w-10/12 m-auto">
-              {selectedApp === "CohortBuilder" ? <SearchInput /> : null}
+            <div className="flex flex-row justify-end w-10/12 m-auto">
+              {selectedApp === "CohortBuilder" ? (
+                <SearchInput />
+              ) : (
+                <div
+                  role="button"
+                  onClick={() => setOpened(!opened)}
+                  className="text-sm font-heading bg-white hover:bg-nci-blue-lighter transition-colors text-nci-gray-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md "
+                >
+                  <Image
+                    src={"/user-flow/icons/build.svg"}
+                    alt="Cohort logo"
+                    width={24}
+                    height={24}
+                  />
+                </div>
+              )}
             </div>
           </div>
+          <Sidebar showSidebar={opened} closeSidebar={() => setOpened(false)}>
+            <FacetTabs columns={2}></FacetTabs>
+          </Sidebar>
           <ActiveAnalysisToolNoSSR appId={selectedApp} />
         </div>
       ) : (

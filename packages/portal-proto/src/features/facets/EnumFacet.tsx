@@ -291,14 +291,14 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
                               }
                             />
                           </div>
-                          <div className="flex-grow truncate ... font-heading text-md pt-0.5">
+                          <div className="flex-grow truncate ... text-nci-gray-darkest font-heading text-md pt-0.5">
                             {value}
                           </div>
-                          <div className="flex-none text-right w-14 ">
+                          <div className="flex-none text-nci-gray-darkest  text-right w-14 ">
                             {count.toLocaleString()}
                           </div>
                           {showPercent ? (
-                            <div className="flex-none text-right w-18 ">
+                            <div className="flex-none text-right text-nci-gray-darkest   w-18 ">
                               (
                               {(((count as number) / totalCount) * 100)
                                 .toFixed(2)

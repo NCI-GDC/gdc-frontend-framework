@@ -32,7 +32,7 @@ export const SearchInput: React.FC = () => {
   return (
     <div className="flex flex-col items-center relative z-10">
       <div className="flex flex-row items-center justify-end w-full p-2">
-        <div className="bg-none flex items-center w-1/2 ">
+        <div className="bg-none flex items-center ">
           <div className="relative w-full ">
             <div className="absolute top-2 right-3 h-4">
               {searchTerm.length == 0 ? (

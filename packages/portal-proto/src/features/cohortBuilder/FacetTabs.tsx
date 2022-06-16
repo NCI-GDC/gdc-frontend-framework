@@ -26,17 +26,21 @@ interface FacetGroupProps {
   readonly facets: ReadonlyArray<FacetDefinition>;
   readonly indexType?: GQLIndexType;
   readonly docType: GQLDocType;
+  readonly columns: number;
 }
 
 export const FacetGroup: React.FC<FacetGroupProps> = ({
   facets,
   docType,
   indexType = "explore",
+  columns,
 }: FacetGroupProps) => {
   return (
-    <div className="flex flex-col w-screen/1.5 bg-white overflow-y-scroll overflow-x-clip">
-      <ResponsiveMasonry columnsCountBreakPoints={{ 640: 3, 1400: 3 }}>
-        <Masonry gutter="0.5em" className="m-4">
+    <div className="flex flex-col w-full bg-white overflow-y-scroll overflow-x-visible">
+      <ResponsiveMasonry
+        columnsCountBreakPoints={{ 640: columns, 1400: columns }}
+      >
+        <Masonry gutter="0.5em" className="m-0">
           {facets.map((x, index) => {
             if (x.facet_type === "enum")
               return (
@@ -78,21 +82,25 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
   );
 };
 
-export const FacetTabs: FC = () => {
+interface FacetTabsProps {
+  readonly columns?: number;
+}
+
+export const FacetTabs: FC<FacetTabsProps> = ({ columns }: FacetTabsProps) => {
   const tabsConfig = useCoreSelector((state) =>
     selectCohortBuilderConfig(state),
   );
 
   return (
-    <div className="w-100">
+    <div className="w-full">
       <Tabs
         variant="unstyled"
         orientation="vertical"
         classNames={{
           tabControl:
-            "font-bold !font-medium !bg-nci-blue-dark !text-nci-gray-lightest",
+            "!font-bold !font-medium !bg-nci-blue-dark !text-nci-gray-lightest",
           tabActive: "!bg-white !text-nci-gray-darkest",
-          body: "!pl-0 !ml-0",
+          body: "!pl-0 !ml-0 !w-full !pr-1 !bg-white",
         }}
       >
         {Object.values(tabsConfig).map((tabEntry: CohortBuilderCategory) => {
@@ -105,6 +113,7 @@ export const FacetTabs: FC = () => {
                 facets={getFacetInfo(tabEntry.facets)}
                 docType={tabEntry.docType as GQLDocType}
                 indexType={tabEntry.index as GQLIndexType}
+                columns={columns}
               />
             </Tabs.Tab>
           );

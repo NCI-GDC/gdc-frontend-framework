@@ -344,7 +344,7 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
             return (
               <div
                 key={`${field}_${rangeKey}`}
-                className="flex flex-row justify-start items-center form-check mb-1"
+                className="flex flex-row justify-start items-center form-check mb-1 text-nci-gray-darkest"
               >
                 <input
                   type="radio"
