@@ -1,6 +1,7 @@
 import React, { FC, useState } from "react";
 import { AppShell, Navbar, Header } from "@mantine/core";
 import dynamic from "next/dynamic";
+import { useTotalCounts } from "@gff/core";
 
 const ActiveStyleCard = dynamic(() => import("./ActiveStyleCard"), {
   ssr: false,
@@ -27,6 +28,8 @@ const SideBar = (
   // default styling
   const navbar_items =
     "prose font-montserrat text-xl text-nci-gray-darker p-4 shadow-md hover:bg-nci-gray-light transition-colors";
+
+  useTotalCounts();
   return (
     <Navbar width={{ base: 200 }} p="md">
       {sections.map((sectionName) => (

@@ -5,6 +5,7 @@
 
 import { useEffect, useState } from "react";
 import { Loader, Tooltip } from "@mantine/core";
+import { useElementSize } from "@mantine/hooks";
 import {
   VictoryBar,
   VictoryChart,
@@ -55,6 +56,7 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
   maxBins = maxValuesToDisplay,
 }: FacetChartProps) => {
   const [chart_data, setChartData] = useState([]);
+  const { ref, width } = useElementSize();
 
   useEffect(() => {
     if (isSuccess) {
@@ -67,7 +69,7 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
   const chartDivId = `${field}_${Math.floor(Math.random() * 100)}`;
 
   return (
-    <>
+    <div ref={ref}>
       {showTitle ? (
         <ChartTitleBar
           title={convertFieldToName(field)}
@@ -81,7 +83,7 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
         <EnumBarChart
           data={chart_data}
           height={height}
-          width={500}
+          width={width * 2.2}
           label="# of Cases"
         />
       ) : (
@@ -89,7 +91,7 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
           <Loader color="gray" size={60} />
         </div>
       )}
-    </>
+    </div>
   );
 };
 

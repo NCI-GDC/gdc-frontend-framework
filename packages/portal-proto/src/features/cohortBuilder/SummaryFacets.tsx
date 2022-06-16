@@ -1,8 +1,11 @@
 import { EnumFacet } from "../facets/EnumFacet";
+import { GQLDocType, GQLIndexType } from "@gff/core";
 
-interface SummaryFacetInfo {
+export interface SummaryFacetInfo {
   readonly field: string;
   readonly name: string;
+  readonly docType: GQLDocType;
+  readonly indexType: GQLIndexType;
 }
 
 interface SummaryFacetProps {
@@ -17,10 +20,10 @@ export const SummaryFacets: React.FC<SummaryFacetProps> = ({
         {fields.map((entry, index) => {
           const style =
             index == 4
-              ? "xl:grid hidden h-fit"
+              ? "xl:grid hidden w-fit"
               : index == 5
-              ? "2xl:grid hidden h-fit"
-              : "grid h-fit";
+              ? "2xl:grid hidden"
+              : "grid w-fit ";
           return (
             <div
               key={`summary-chart-${entry.field}-{${index}`}
@@ -28,11 +31,13 @@ export const SummaryFacets: React.FC<SummaryFacetProps> = ({
             >
               <EnumFacet
                 field={entry.field}
-                type={"cases"}
+                docType={entry.docType}
                 facetName={entry.name}
                 showSearch={false}
                 startShowingData={false}
                 key={`summary-chart-${index}`}
+                width="w-64"
+                indexType={entry.indexType}
               />
             </div>
           );

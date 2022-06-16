@@ -1,7 +1,7 @@
 import {
   createUseCoreDataHook,
   createUseFiltersCoreDataHook,
-} from "../../dataAcess";
+} from "../../dataAccess";
 import { fetchFiles, selectFilesData } from "./filesSlice";
 import { selectCurrentCohortFilters } from "../cohort/cohortFilterSlice";
 

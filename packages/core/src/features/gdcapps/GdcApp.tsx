@@ -1,13 +1,12 @@
+import React from "react";
 import { coreStore } from "../../store";
 import { v5 as uuidv5 } from "uuid";
 import { addGdcAppMetadata, EntityType } from "./gdcAppsSlice";
 import { configureStore, ReducersMapObject, AnyAction } from "@reduxjs/toolkit";
 import { ComponentType, useEffect } from "react";
 import { Provider } from "react-redux";
-
-import React from "react";
 import { registerGdcApp } from "./gdcAppRegistry";
-import { DataStatus } from "../../dataAcess";
+import { DataStatus } from "../../dataAccess";
 import { CookiesProvider } from "react-cookie";
 
 // using a random uuid v4 as the namespace

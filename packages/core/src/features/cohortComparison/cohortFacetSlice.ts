@@ -3,7 +3,7 @@ import {
   createUseCoreDataHook,
   DataStatus,
   CoreDataSelectorResponse,
-} from "../../dataAcess";
+} from "../../dataAccess";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";

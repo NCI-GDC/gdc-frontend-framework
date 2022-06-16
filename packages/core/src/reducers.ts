@@ -19,6 +19,7 @@ import { imageViewerReducer } from "./features/imageDetails/imageViewer";
 import { cohortComparisonReducer } from "./features/cohortComparison";
 import { bannerReducer } from "./features/bannerNotification";
 import { cartReducer } from "./features/cart/cartSlice";
+import { totalCountsReducer } from "./features/summary/totalCountsSlice";
 import {
   cohortApiReducer,
   cohortApiSliceReducerPath,
@@ -45,6 +46,7 @@ export const reducers = combineReducers({
   cohortComparison: cohortComparisonReducer,
   cart: cartReducer,
   bannerNotification: bannerReducer,
+  summary: totalCountsReducer,
   [cohortApiSliceReducerPath]: cohortApiReducer,
 });
 

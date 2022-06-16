@@ -6,30 +6,31 @@ import {
   CoreDispatch,
   FacetBuckets,
   handleOperation,
-  fetchCaseFacetByName,
-  fetchFileFacetByName,
-  fetchGenesFacetByName,
-  fetchMutationsFacetByName,
   FilterSet,
   removeCohortFilter,
   removeGenomicFilter,
-  selectCaseFacetByField,
   selectCurrentCohortFilters,
   selectCurrentCohortFiltersByName,
-  selectFilesFacetByField,
-  selectGenesFacetByField,
-  selectMutationsFacetByField,
+  fetchFacetByNameGQL,
   updateCohortFilter,
   updateGenomicFilter,
   useCoreDispatch,
   useCoreSelector,
   selectGenomicFilters,
   selectGenomicFiltersByName,
+  GQLDocType,
+  GQLIndexType,
+  NumericFromTo,
+  selectRangeFacetByField,
+  fetchFacetContinuousAggregation,
+  selectFacetByDocTypeAndField,
+  usePrevious,
 } from "@gff/core";
 import { useEffect } from "react";
+import isEqual from "lodash/isEqual";
 
 /**
- * Filter selector for all of the facet filters
+ * Filter selector for all the facet filters
  */
 const useCohortFacetFilter = (): FilterSet => {
   return useCoreSelector((state) => selectCurrentCohortFilters(state));
@@ -45,8 +46,9 @@ export const extractValue = (op: Operation): EnumOperandValue => {
 };
 
 /**
- * Selector for the facet values from the current cohort (if any)
- * @param field
+ * Selector for the facet values (if any) from the current cohort
+ * @param field - field name to find filter for
+ * @return Value of Filters or undefined
  */
 const useCohortFacetFilterByName = (field: string): OperandValue => {
   const enumFilters: Operation = useCoreSelector((state) =>
@@ -62,9 +64,8 @@ const useGenomicFilterByName = (field: string): OperandValue => {
   return enumFilters ? extractValue(enumFilters) : undefined;
 };
 
-interface EnumFacetResponse {
+interface FacetResponse {
   readonly data?: Record<string, number>;
-  readonly enumFilters?: EnumOperandValue;
   readonly error?: string;
   readonly isUninitialized: boolean;
   readonly isFetching: boolean;
@@ -72,64 +73,60 @@ interface EnumFacetResponse {
   readonly isError: boolean;
 }
 
+interface EnumFacetResponse extends FacetResponse {
+  readonly enumFilters?: ReadonlyArray<string>;
+}
+
 /**
- * Case Facet Selector using GQL
+ *  Facet Selector using GQL which will refresh when filters/enum values changes.
  */
-const useCasesFacet = (field: string): EnumFacetResponse => {
+export const useCasesFacet = (
+  field: string,
+  docType: GQLDocType,
+  indexType: GQLIndexType,
+): EnumFacetResponse => {
   const coreDispatch = useCoreDispatch();
+
   const facet: FacetBuckets = useCoreSelector((state) =>
-    selectCaseFacetByField(state, field),
+    selectFacetByDocTypeAndField(state, docType, field),
   );
 
-  const selectFacetFilter = useCohortFacetFilter();
-  const enumFilters = useCohortFacetFilterByName(`cases.${field}`);
-  useEffect(() => {
-    if (!facet) {
-      coreDispatch(fetchCaseFacetByName(field));
-    }
-  }, [coreDispatch, facet, field]);
+  // NOTE: the facets filters require prepending the doc type in
+  // front of the field.
+  const enumValues = useCohortFacetFilterByName(field);
+  const cohortFilters = useCohortFacetFilter();
+  const prevCohortFilters = usePrevious(cohortFilters);
+  const prevEnumValues = usePrevious(enumValues);
 
   useEffect(() => {
-    coreDispatch(fetchCaseFacetByName(field));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectFacetFilter]);
+    if (
+      !facet ||
+      !isEqual(prevCohortFilters, cohortFilters) ||
+      !isEqual(prevEnumValues, enumValues)
+    ) {
+      coreDispatch(
+        fetchFacetByNameGQL({
+          field: field,
+          docType: docType,
+          index: indexType,
+        }),
+      );
+    }
+  }, [
+    coreDispatch,
+    facet,
+    field,
+    cohortFilters,
+    docType,
+    indexType,
+    prevCohortFilters,
+    prevEnumValues,
+    enumValues,
+  ]);
 
   return {
     data: facet?.buckets,
-    enumFilters: enumFilters as EnumOperandValue,
-    error: facet?.error,
-    isUninitialized: facet === undefined,
-    isFetching: facet?.status === "pending",
-    isSuccess: facet?.status === "fulfilled",
-    isError: facet?.status === "rejected",
-  };
-};
-
-/**
- * File Facet Selector using GQL
- */
-const useFilesFacet = (field: string): EnumFacetResponse => {
-  const coreDispatch = useCoreDispatch();
-  const facet: FacetBuckets = useCoreSelector((state) =>
-    selectFilesFacetByField(state, field),
-  );
-
-  const selectFacetFilter = useCohortFacetFilter();
-  const enumFilters = useCohortFacetFilterByName(`files.${field}`);
-  useEffect(() => {
-    if (!facet) {
-      coreDispatch(fetchFileFacetByName(field));
-    }
-  }, [coreDispatch, facet, field]);
-
-  useEffect(() => {
-    coreDispatch(fetchFileFacetByName(field));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectFacetFilter]);
-
-  return {
-    data: facet?.buckets,
-    enumFilters: enumFilters as EnumOperandValue,
+    enumFilters: (enumValues as EnumOperandValue)?.map((x) => x.toString()),
     error: facet?.error,
     isUninitialized: facet === undefined,
     isFetching: facet?.status === "pending",
@@ -141,31 +138,55 @@ const useFilesFacet = (field: string): EnumFacetResponse => {
 /**
  * Genes Facet Selector using GQL
  */
-const useGenesFacet = (field: string): EnumFacetResponse => {
+const useGenesFacet = (
+  field: string,
+  docType = "genes" as GQLDocType,
+  indexType = "explore" as GQLIndexType,
+): EnumFacetResponse => {
   const coreDispatch = useCoreDispatch();
   const facet: FacetBuckets = useCoreSelector((state) =>
-    selectGenesFacetByField(state, field),
+    selectFacetByDocTypeAndField(state, docType, field),
   );
 
-  const selectFacetFilter = useGenomicFacetFilter();
-  const selectCohortFilter = useCohortFacetFilter();
-  const enumFilters = useGenomicFilterByName(`genes.${field}`);
-  useEffect(() => {
-    if (!facet) {
-      coreDispatch(fetchGenesFacetByName(field));
-    }
-  }, [coreDispatch, facet, field]);
+  const enumValues = useGenomicFilterByName(field);
+  const cohortFilters = useCohortFacetFilter();
+  const genomicFilters = useGenomicFacetFilter();
+  const prevCohortFilters = usePrevious(cohortFilters);
+  const prevGenomicFilters = usePrevious(genomicFilters);
+  const prevEnumValues = usePrevious(enumValues);
 
   useEffect(() => {
-    if (facet) {
-      coreDispatch(fetchGenesFacetByName(field));
+    if (
+      !facet ||
+      !isEqual(prevCohortFilters, cohortFilters) ||
+      !isEqual(prevGenomicFilters, genomicFilters) ||
+      !isEqual(prevEnumValues, enumValues)
+    ) {
+      coreDispatch(
+        fetchFacetByNameGQL({
+          field: field,
+          docType: docType,
+          index: indexType,
+        }),
+      );
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectFacetFilter, selectCohortFilter]);
+  }, [
+    coreDispatch,
+    facet,
+    field,
+    cohortFilters,
+    docType,
+    indexType,
+    prevCohortFilters,
+    prevEnumValues,
+    enumValues,
+    prevGenomicFilters,
+    genomicFilters,
+  ]);
 
   return {
     data: facet?.buckets,
-    enumFilters: enumFilters as EnumOperandValue,
+    enumFilters: (enumValues as EnumOperandValue)?.map((x) => x.toString()),
     error: facet?.error,
     isUninitialized: facet === undefined,
     isFetching: facet?.status === "pending",
@@ -177,31 +198,55 @@ const useGenesFacet = (field: string): EnumFacetResponse => {
 /**
  * Mutations Facet Selector using GQL
  */
-const useMutationsFacet = (field: string): EnumFacetResponse => {
+const useMutationsFacet = (
+  field: string,
+  docType = "ssms" as GQLDocType,
+  indexType = "explore" as GQLIndexType,
+): EnumFacetResponse => {
   const coreDispatch = useCoreDispatch();
   const facet: FacetBuckets = useCoreSelector((state) =>
-    selectMutationsFacetByField(state, field),
+    selectFacetByDocTypeAndField(state, docType, field),
   );
 
-  const selectFacetFilter = useGenomicFacetFilter();
-  const selectCohortFilter = useCohortFacetFilter();
-  const enumFilters = useGenomicFilterByName(`ssms.${field}`);
-  useEffect(() => {
-    if (!facet) {
-      coreDispatch(fetchMutationsFacetByName(field));
-    }
-  }, [coreDispatch, facet, field]);
+  const enumValues = useGenomicFilterByName(field);
+  const cohortFilters = useCohortFacetFilter();
+  const genomicFilters = useGenomicFacetFilter();
+  const prevCohortFilters = usePrevious(cohortFilters);
+  const prevGenomicFilters = usePrevious(genomicFilters);
+  const prevEnumValues = usePrevious(enumValues);
 
   useEffect(() => {
-    if (facet) {
-      coreDispatch(fetchMutationsFacetByName(field));
+    if (
+      !facet ||
+      !isEqual(prevCohortFilters, cohortFilters) ||
+      !isEqual(prevGenomicFilters, genomicFilters) ||
+      !isEqual(prevEnumValues, enumValues)
+    ) {
+      coreDispatch(
+        fetchFacetByNameGQL({
+          field: field,
+          docType: docType,
+          index: indexType,
+        }),
+      );
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectFacetFilter, selectCohortFilter]);
+  }, [
+    coreDispatch,
+    facet,
+    field,
+    cohortFilters,
+    docType,
+    indexType,
+    prevCohortFilters,
+    prevEnumValues,
+    enumValues,
+    prevGenomicFilters,
+    genomicFilters,
+  ]);
 
   return {
     data: facet?.buckets,
-    enumFilters: enumFilters as EnumOperandValue,
+    enumFilters: (enumValues as EnumOperandValue)?.map((x) => x.toString()),
     error: facet?.error,
     isUninitialized: facet === undefined,
     isFetching: facet?.status === "pending",
@@ -217,33 +262,32 @@ type updateEnumFiltersFunc = (
   prefix?: string,
 ) => void;
 /**
- * Adds a enumeration filter to cohort filters
+ * Adds an enumeration filter to cohort filters
  * @param dispatch CoreDispatch instance
  * @param enumerationFilters values to update
  * @param field field to update
- * @param prefix optional prefix for fields
  */
 export const updateEnumFilters: updateEnumFiltersFunc = (
   dispatch: CoreDispatch,
   enumerationFilters: EnumOperandValue,
   field: string,
-  prefix = "",
 ) => {
+  // undefined just return
   if (enumerationFilters === undefined) return;
   if (enumerationFilters.length > 0) {
     dispatch(
       updateCohortFilter({
-        field: `${prefix}${field}`,
+        field: field,
         operation: {
           operator: "includes",
-          field: `${prefix}${field}`,
+          field: field,
           operands: enumerationFilters,
         },
       }),
     );
   } else {
     // completely remove the field
-    dispatch(removeCohortFilter(`${prefix}${field}`));
+    dispatch(removeCohortFilter(field));
   }
 };
 
@@ -258,24 +302,69 @@ export const updateGenomicEnumFilters: updateGenomicEnumFiltersFunc = (
   dispatch: CoreDispatch,
   enumerationFilters: EnumOperandValue,
   field: string,
-  prefix = "",
 ) => {
   if (enumerationFilters === undefined) return;
   if (enumerationFilters.length > 0) {
     dispatch(
       updateGenomicFilter({
-        field: `${prefix}${field}`,
+        field: field,
         operation: {
           operator: "includes",
-          field: `${prefix}${field}`,
+          field: field,
           operands: enumerationFilters,
         },
       }),
     );
   } else {
     // completely remove the field
-    dispatch(removeGenomicFilter(`${prefix}${field}`));
+    dispatch(removeGenomicFilter(field));
   }
+};
+
+export const useRangeFacet = (
+  field: string,
+  ranges: ReadonlyArray<NumericFromTo>,
+  docType: GQLDocType,
+  indexType: GQLIndexType,
+): FacetResponse => {
+  const coreDispatch = useCoreDispatch();
+  const facet: FacetBuckets = useCoreSelector((state) =>
+    selectRangeFacetByField(state, field),
+  );
+
+  const cohortFilters = useCohortFacetFilter();
+  const prevFilters = usePrevious(cohortFilters);
+
+  useEffect(() => {
+    if (!facet || !isEqual(prevFilters, cohortFilters)) {
+      coreDispatch(
+        fetchFacetContinuousAggregation({
+          field: field,
+          ranges: ranges,
+          docType: docType,
+          indexType: indexType,
+        }),
+      );
+    }
+  }, [
+    coreDispatch,
+    facet,
+    field,
+    cohortFilters,
+    prevFilters,
+    ranges,
+    docType,
+    indexType,
+  ]);
+
+  return {
+    data: facet?.buckets,
+    error: facet?.error,
+    isUninitialized: facet === undefined,
+    isFetching: facet?.status === "pending",
+    isSuccess: facet?.status === "fulfilled",
+    isError: facet?.status === "rejected",
+  };
 };
 
 export const UpdateEnums = {
@@ -287,7 +376,21 @@ export const UpdateEnums = {
 
 export const FacetEnumHooks = {
   cases: useCasesFacet,
-  files: useFilesFacet,
+  files: useCasesFacet,
   genes: useGenesFacet,
   ssms: useMutationsFacet,
+};
+
+export const FacetDocTypeToCountsIndexMap = {
+  cases: "caseCounts",
+  files: "fileCounts",
+  genes: "genesCounts",
+  ssms: "mutationCounts",
+};
+
+export const FacetDocTypeToLabelsMap = {
+  cases: "Cases",
+  files: "Files",
+  genes: "Genes",
+  ssms: "Mutations",
 };

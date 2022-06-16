@@ -81,6 +81,7 @@ describe("selectCurrentCohort", () => {
           status: "uninitialized",
         },
         availableCohorts: [],
+        builderConfig: {},
       },
     });
     expect(currentCohort).toEqual("asdf");
@@ -102,6 +103,7 @@ describe("selectCurrentCohort", () => {
           status: "uninitialized",
         },
         availableCohorts: [],
+        builderConfig: {},
       },
     });
     expect(currentCohort).toBeUndefined();
@@ -125,6 +127,7 @@ describe("selectCurrentCohortFilters", () => {
           status: "uninitialized",
         },
         availableCohorts: [],
+        builderConfig: {},
       },
     });
     expect(currentCohortFilters).toEqual(populatedFilters);
@@ -154,6 +157,7 @@ describe("selectCurrentCohortFilters", () => {
             status: "uninitialized",
           },
           availableCohorts: [],
+          builderConfig: {},
         },
       },
       "primary_site",
