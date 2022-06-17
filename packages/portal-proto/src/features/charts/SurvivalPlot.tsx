@@ -217,7 +217,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
 
   // hook to call renderSurvivalPlot
   const container = useSurvival(
-    hasEnoughData ? plotData : [], // TODO: when implementing GDave this likely will need more logic
+    hasEnoughData ? plotData : [], // TODO: when implementing CDave this likely will need more logic
     xDomain,
     setXDomain,
     setSurvivalPlotLineTooltipContent,
