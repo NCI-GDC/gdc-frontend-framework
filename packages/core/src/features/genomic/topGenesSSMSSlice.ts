@@ -6,7 +6,7 @@ import {
   CoreDataSelectorResponse,
   createUseFiltersCoreDataHook,
   DataStatus,
-} from "../../dataAcess";
+} from "../../dataAccess";
 import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
 import { selectGenomicAndCohortGqlFilters } from "./genomicFilters";
 

@@ -3,6 +3,7 @@ import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
 import GenesTable from "../genesTable/GenesTable";
 import MutationsTable from "../mutationsTable/MutationsTable";
 import { Grid, Tabs, LoadingOverlay } from "@mantine/core";
+import isEqual from "lodash/isEqual";
 import { EnumFacet } from "../facets/EnumFacet";
 import dynamic from "next/dynamic";
 import {
@@ -17,6 +18,7 @@ import {
   selectGenomicFilters,
   buildCohortGqlOperator,
   useTopGene,
+  usePrevious,
 } from "@gff/core";
 
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
@@ -110,11 +112,7 @@ type MODE = "genes" | "mutations";
 
 const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const coreDispatch = useCoreDispatch();
-  const [comparativeSurvival, setComparativeSurvival] = useState({
-    name: undefined,
-    symbol: undefined,
-    field: "gene.symbol",
-  });
+  const [comparativeSurvival, setComparativeSurvival] = useState(undefined);
   const [appMode, setAppMode] = useState("genes");
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilterSet(state),
@@ -130,10 +128,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const { data: survivalPlotData, isSuccess: survivalPlotReady } =
     useSurvivalPlot({ filters: filters ? [filters] : [] });
 
-  const { data: topGeneSSMS, isSuccess: topGeneSSMSSuccess } = useTopGene(); // get the default top gene/ssms if
-  // none other selected by the user
-
-  console.log("top:", topGeneSSMS);
+  const { data: topGeneSSMS, isSuccess: topGeneSSMSSuccess } = useTopGene(); // get the default top gene/ssms to show by default
   /**
    * Update survival plot in response to user actions. There are two "states"
    * for the survival plot: If comparativeSurvival is undefined it will show the
@@ -153,12 +148,22 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     if (comparativeSurvival && comparativeSurvival.symbol === symbol) {
       // remove toggle
       setComparativeSurvival(undefined);
-      coreDispatch(fetchSurvival({ filters: filters ? [filters] : [] }));
+      //   coreDispatch(fetchSurvival({ filters: filters ? [filters] : [] }));
     } else {
       setComparativeSurvival({ symbol: symbol, name: name, field: field });
-      const f = buildGeneHaveAndHaveNotFilters(filters, symbol, field);
-      coreDispatch(fetchSurvival({ filters: f }));
+      //    const f = buildGeneHaveAndHaveNotFilters(filters, symbol, field);
+      //    coreDispatch(fetchSurvival({ filters: f }));
     }
+  };
+
+  const isComparativeEqual = (a, b, mode) => {};
+
+  /**
+   * remove comparative survival plot when tabs or filters change.
+   */
+  const handleTabChanged = () => {
+    setComparativeSurvival(undefined);
+    //  coreDispatch(fetchSurvival({ filters: filters ? [filters] : [] }));
   };
 
   // clear local filters when cohort changes or tabs change
@@ -167,16 +172,30 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   }, [cohortFilters, coreDispatch]);
 
   /**
-   * remove comparative survival plot when tabs or filters change.
+   * Clear comparative
    */
-  const handleTabChanged = () => {
+  useEffect(() => {
     setComparativeSurvival(undefined);
-    coreDispatch(fetchSurvival({ filters: filters ? [filters] : [] }));
-  };
+    console.log("clearing");
+  }, [filters]);
+
+  /**
+   *  Received a new topGene in response to a filter change, so set comparativeSurvival
+   */
+  useEffect(() => {
+    if (topGeneSSMSSuccess && comparativeSurvival === undefined) {
+      console.log("reset to top");
+      setComparativeSurvival({
+        symbol: topGeneSSMS[0][appMode].symbol,
+        name: topGeneSSMS[0][appMode].name,
+        field: "gene.symbol",
+      });
+    }
+  }, [appMode, comparativeSurvival, topGeneSSMS, topGeneSSMSSuccess]);
 
   useEffect(() => {
     if (comparativeSurvival) {
-      console.log("fetching survival");
+      console.log("fetching survival", comparativeSurvival);
       const f = buildGeneHaveAndHaveNotFilters(
         filters,
         comparativeSurvival.symbol,
@@ -185,16 +204,6 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
       coreDispatch(fetchSurvival({ filters: f }));
     }
   }, [cohortFilters, comparativeSurvival, coreDispatch, filters]);
-
-  useEffect(() => {
-    if (
-      topGeneSSMSSuccess &&
-      comparativeSurvival.symbol != topGeneSSMS[0][appMode].symbol
-    ) {
-      console.log("set Top");
-      // setComparativeSurvival({ symbol: topSymbol, name: appMode == "genes" ? topGeneSSMS[0]?.gene_id :  topGeneSSMS[0]?.ssms_symbol; })
-    }
-  }, [topGeneSSMS, topGeneSSMSSuccess]);
 
   return (
     <div className="flex flex-row">
@@ -244,7 +253,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                 </Grid.Col>
                 <Grid.Col span={6} className="relative">
                   <LoadingOverlay
-                    visible={!survivalPlotReady && !comparativeSurvival}
+                    visible={!survivalPlotReady && !topGeneSSMSSuccess}
                   />
                   <SurvivalPlot
                     data={survivalPlotData}
