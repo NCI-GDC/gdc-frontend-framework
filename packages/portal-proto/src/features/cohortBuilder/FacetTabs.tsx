@@ -96,11 +96,23 @@ export const FacetTabs: FC<FacetTabsProps> = ({ columns }: FacetTabsProps) => {
       <Tabs
         variant="unstyled"
         orientation="vertical"
-        classNames={{
-          tabControl:
-            "!font-bold !font-medium !bg-nci-blue-dark !text-nci-gray-lightest !text-left",
-          tabActive: "!bg-white !text-nci-gray-darkest",
-          body: "!pl-0 !ml-0 !w-full !pr-1 !bg-white",
+        styles={{
+          tabControl: {
+            backgroundColor: "#1d567e",
+            textAlign: "left",
+            color: "#f1f1f1",
+            fontWeight: 500,
+          },
+          tabActive: {
+            backgroundColor: "#FFFFFF",
+            color: "#38393a",
+          },
+          body: {
+            width: "100%",
+            paddingLeft: 0,
+            marginLeft: 0,
+            paddingRight: "1em",
+          },
         }}
       >
         {Object.values(tabsConfig).map((tabEntry: CohortBuilderCategory) => {
