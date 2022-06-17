@@ -4,21 +4,23 @@ import { Button } from "@mantine/core";
 import { REGISTERED_APPS } from "./registeredApps";
 
 interface AnalysisBreadcrumbsProps {
-  currentApp: string;
+  readonly currentApp: string;
   readonly setCohortSelectionOpen: (open: boolean) => void;
   readonly cohortSelectionOpen: boolean;
+  readonly setActiveApp: (app: string) => void;
 }
 
 const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
   currentApp,
   setCohortSelectionOpen,
   cohortSelectionOpen,
+  setActiveApp,
 }: AnalysisBreadcrumbsProps) => {
   const router = useRouter();
   const onApp = router.query.app === currentApp;
-  const onDemoApp = currentApp.includes("Demo");
+  const onDemoApp = currentApp?.includes("Demo");
 
-  const appId = onDemoApp ? currentApp.split("Demo")[0] : currentApp;
+  const appId = onDemoApp ? currentApp?.split("Demo")[0] : currentApp;
   const appInfo = REGISTERED_APPS.find((app) => app.id === appId);
 
   return (
@@ -34,8 +36,9 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
             onDemoApp ||
             (onApp && !appInfo?.selectAdditionalCohort)
           ) {
-            setCohortSelectionOpen(false);
             router.push({ query: { app: undefined } });
+            setActiveApp(undefined);
+            setCohortSelectionOpen(false);
           }
         }}
         className="bg-white text-nci-blue-darkest"

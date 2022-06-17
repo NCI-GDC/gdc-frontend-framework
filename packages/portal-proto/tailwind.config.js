@@ -297,6 +297,20 @@ module.exports = {
       fontSize: {
         "2xs": ".85rem",
       },
+      keyframes: {
+        "slide-up": {
+          from: { transform: "translate(0, 100%)" },
+          to: { transform: "translate(0, 0)" },
+        },
+        "slide-down": {
+          from: { transform: "translate(0, 0)" },
+          to: { transform: "translate(0, 100%)" },
+        },
+      },
+      animation: {
+        "slide-up": "slide-up 500ms ease-in-out ",
+        "slide-down": "slide-down 500ms ease-in-out ",
+      },
     },
   },
   plugins: [

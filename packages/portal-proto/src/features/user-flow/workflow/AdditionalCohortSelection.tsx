@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
+import { useRouter } from "next/router";
 import { Table, Button, Pagination, Grid } from "@mantine/core";
 import {
   useCoreSelector,
@@ -8,7 +9,6 @@ import {
   selectAvailableCohorts,
 } from "@gff/core";
 import { AppRegistrationEntry } from "./utils";
-import { useRouter } from "next/router";
 
 interface AdditionalCohortSelectionProps {
   readonly currentApp: AppRegistrationEntry;
@@ -70,12 +70,8 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
   const totalResults = cohorts.length || 0;
 
   return (
-    <div
-      className={`bg-white flex flex-col flex-grow ${
-        open ? "h-[500px]" : "h-0"
-      } transition-[height]`}
-    >
-      <Grid className={`flex-grow ${open ? "flex" : "hidden"} p-2 m-2`}>
+    <div className="bg-white flex flex-col flex-grow h-full ">
+      <Grid className={`flex-grow p-2 m-2`}>
         <Grid.Col span={3} className="p-4 text-nci-blue-darkest">
           <p>Select a cohort to compare with {primaryCohortName}</p>
         </Grid.Col>
@@ -138,11 +134,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
           </Table>
         </Grid.Col>
       </Grid>
-      <div
-        className={`p-4 bg-nci-gray-lightest w-full ${
-          open ? "flex" : "hidden"
-        } justify-between`}
-      >
+      <div className={`p-4 bg-nci-gray-lightest w-full justify-between flex`}>
         <Button
           onClick={() => {
             setActiveApp(`${currentApp.id}Demo`, `${currentApp.name} Demo`);

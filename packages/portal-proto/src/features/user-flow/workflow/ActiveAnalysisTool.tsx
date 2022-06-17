@@ -1,6 +1,7 @@
-import React, { Suspense, lazy, useEffect, useState } from "react";
+import React, { Suspense, lazy, useEffect, useState, useRef } from "react";
 import Router from "next/router";
 import { Loader } from "@mantine/core";
+import { CSSTransition } from "react-transition-group";
 import AnalysisBreadcrumbs from "./AnalysisBreadcrumbs";
 import AdditionalCohortSelection from "./AdditionalCohortSelection";
 import { REGISTERED_APPS } from "./registeredApps";
@@ -14,18 +15,15 @@ const importApplication = (app) =>
 
 export interface AnalysisToolInfo {
   readonly appId: string;
-  readonly setActiveApp: (id: string, name: string) => void;
-  readonly setContextBarCollapsed: (collapsed: boolean) => void;
+  readonly setActiveApp?: (id: string, name: string) => void;
+  readonly setContextBarCollapsed?: (collapsed: boolean) => void;
 }
 
 const ActiveAnalysisTool: React.FC<AnalysisToolInfo> = ({
   appId,
-  setActiveApp,
-  setContextBarCollapsed,
 }: AnalysisToolInfo) => {
   const [analysisApp, setAnalysisApp] = useState(undefined);
-  const [cohortSelectionOpen, setCohortSelectionOpen] = useState(false);
-  const currentApp = REGISTERED_APPS.find((app) => app.id === appId);
+  const appRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     async function loadApp() {
@@ -39,43 +37,22 @@ const ActiveAnalysisTool: React.FC<AnalysisToolInfo> = ({
       query: { app: appId },
     });
 
-    if (currentApp?.selectAdditionalCohort) {
-      setCohortSelectionOpen(true);
-    }
-  }, [appId, currentApp?.selectAdditionalCohort]);
-
-  useEffect(() => {
-    if (cohortSelectionOpen) {
-      setContextBarCollapsed(true);
-    }
-  }, [cohortSelectionOpen, setContextBarCollapsed]);
+    //window.scrollTo(0, appRef.current.offsetTop);
+  }, [appId]);
 
   return (
     <>
-      {currentApp?.displayBreadcrumb === false ? null : (
-        <AnalysisBreadcrumbs
-          currentApp={appId}
-          setCohortSelectionOpen={setCohortSelectionOpen}
-          cohortSelectionOpen={cohortSelectionOpen}
-        />
-      )}
-      <AdditionalCohortSelection
-        currentApp={currentApp}
-        open={cohortSelectionOpen}
-        setOpen={setCohortSelectionOpen}
-        setActiveApp={setActiveApp}
-      />
-      {!cohortSelectionOpen && (
-        <Suspense
-          fallback={
-            <div className="flex flex-row items-center justify-center w-100 h-64">
-              <Loader size={100} />
-            </div>
-          }
-        >
-          <div className="mx-2">{analysisApp}</div>
-        </Suspense>
-      )}
+      <Suspense
+        fallback={
+          <div className="flex flex-row items-center justify-center w-100 h-64">
+            <Loader size={100} />
+          </div>
+        }
+      >
+        <div className="mx-2" ref={appRef}>
+          {analysisApp}
+        </div>
+      </Suspense>
     </>
   );
 };

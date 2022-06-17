@@ -14,6 +14,10 @@ import {
 import dynamic from "next/dynamic";
 import FeaturedToolCard from "./FeaturedToolCard";
 
+import { CSSTransition } from "react-transition-group";
+import AnalysisBreadcrumbs from "./AnalysisBreadcrumbs";
+import AdditionalCohortSelection from "./AdditionalCohortSelection";
+
 const ActiveAnalysisToolNoSSR = dynamic(
   () => import("@/features/user-flow/workflow/ActiveAnalysisTool"),
   {
@@ -261,6 +265,8 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   setContextBarCollapsed,
 }: AnalysisWorkspaceProps) => {
   const [selectedApp, setSelectedApp] = useState(undefined);
+  const [cohortSelectionOpen, setCohortSelectionOpen] = useState(false);
+  const currentApp = REGISTERED_APPS.find((a) => a.id === app);
 
   const handleAppSelected = (id: string) => {
     setSelectedApp(id);
@@ -268,18 +274,59 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
 
   useEffect(() => {
     setSelectedApp(app);
+
+    if (currentApp?.selectAdditionalCohort) {
+      setCohortSelectionOpen(true);
+    } else {
+      setCohortSelectionOpen(false);
+    }
   }, [app]);
 
   return (
     <>
-      {selectedApp ? (
-        <div className="flex flex-col">
+      <CSSTransition in={cohortSelectionOpen} timeout={500}>
+        {(state) => (
+          <div
+            className={
+              {
+                entering:
+                  "block animate-slide-up h-full w-full absolute z-[1000]",
+                entered: "block h-full  w-full absolute z-[1000]",
+                exiting:
+                  "block animate-slide-down w-full h-full absolute z-[1000]",
+                exited: "hidden translate-x-0",
+              }[state]
+            }
+          >
+            <AnalysisBreadcrumbs
+              currentApp={app}
+              setCohortSelectionOpen={setCohortSelectionOpen}
+              cohortSelectionOpen={cohortSelectionOpen}
+              setActiveApp={handleAppSelected}
+            />
+            <AdditionalCohortSelection
+              currentApp={currentApp}
+              open={cohortSelectionOpen}
+              setOpen={setCohortSelectionOpen}
+              setActiveApp={handleAppSelected}
+            />
+          </div>
+        )}
+      </CSSTransition>
+      {selectedApp && !cohortSelectionOpen ? (
+        <>
+          <AnalysisBreadcrumbs
+            currentApp={app}
+            setCohortSelectionOpen={setCohortSelectionOpen}
+            cohortSelectionOpen={cohortSelectionOpen}
+            setActiveApp={handleAppSelected}
+          />
           <ActiveAnalysisToolNoSSR
             appId={selectedApp}
             setActiveApp={handleAppSelected}
             setContextBarCollapsed={setContextBarCollapsed}
           />
-        </div>
+        </>
       ) : (
         <AnalysisGrid onAppSelected={handleAppSelected} />
       )}
