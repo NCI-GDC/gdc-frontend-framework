@@ -40,6 +40,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
   const { data, isFetching } = useGenesTable({
     pageSize: pageSize,
     offset: offset,
+    // sort_?: sortArray TODO
   });
 
   useEffect(() => {
@@ -101,6 +102,10 @@ const GenesTable: React.FC<GenesTableProps> = ({
         }
         break;
     }
+  };
+
+  const handleSortChange = (sortUpdate) => {
+    console.log("sortUpdate");
   };
 
   useEffect(() => {
@@ -294,6 +299,8 @@ const GenesTable: React.FC<GenesTableProps> = ({
             uuidRowParam={uuidRowParam}
             scrollItem={scrollItem}
             selectedRowsMap={selectedRowsMap}
+            handleSortChange={handleSortChange}
+            sortList={[]} // TODO generate list of sort options (basically all except -> Select, Cohort, Survival, and Annotations)
             tableTitle={"Genes Table"}
             pageSize={pageSize.toString()}
             selectableRow={true}

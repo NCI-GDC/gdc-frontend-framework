@@ -4,6 +4,7 @@ import { FixedSizeList as List } from "react-window";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DragDrop } from "./DragDrop";
+import { ToggleSort } from "./ToggleSort";
 import { BsList } from "react-icons/bs";
 import { Popover } from "@mantine/core";
 
@@ -21,6 +22,8 @@ interface VerticalTableProps {
   scrollItem: number;
   selectedRowsMap: any;
   selectableRow: boolean;
+  handleSortChange: (sortUpdate: any) => void;
+  sortList: any;
   tableTitle: string;
   pageSize: string;
 }
@@ -47,13 +50,17 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   scrollItem,
   selectedRowsMap,
   selectableRow,
+  handleSortChange,
+  sortList,
   tableTitle,
   pageSize,
 }: VerticalTableProps) => {
   const [table, setTable] = useState([]);
   const [columnListOptions, setColumnListOptions] = useState([]);
+  const [sortListOptions, setSortListOptions] = useState([]);
   const [headings, setHeadings] = useState([]);
   const [showColumnMenu, setShowColumnMenu] = useState(false);
+  const [showSortMenu, setShowSortMenu] = useState(false);
 
   useEffect(() => {
     setTable(tableData);
@@ -62,6 +69,10 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   useEffect(() => {
     setColumnListOptions(columnListOrder);
   }, [columnListOrder]);
+
+  useEffect(() => {
+    setSortListOptions(sortList);
+  }, [sortList]);
 
   useEffect(() => {
     setHeadings(columnCells);
@@ -219,6 +230,33 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     <div>
       <div className={`h-10`}></div>
       <div className={`float-right`}>
+        <Popover
+          opened={showSortMenu}
+          onClose={() => setShowSortMenu(false)}
+          target={
+            <button
+              className={`mr-0 ml-auto border-1 border-gray-300 p-3`}
+              onClick={() => setShowSortMenu(!showSortMenu)}
+            >
+              <BsList></BsList>
+            </button>
+          }
+          width={260}
+          position="bottom"
+          transition="scale"
+          withArrow
+        >
+          <div className={`w-fit`}>
+            {
+              <div className={`mr-0 ml-auto`}>
+                <ToggleSort
+                  sortListOptions={sortListOptions}
+                  handleSortChange={handleSortChange}
+                />
+              </div>
+            }
+          </div>
+        </Popover>
         <Popover
           opened={showColumnMenu}
           onClose={() => setShowColumnMenu(false)}
