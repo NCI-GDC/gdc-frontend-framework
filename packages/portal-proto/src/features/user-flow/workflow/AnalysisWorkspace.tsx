@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Chip, Chips, Menu, Grid, ActionIcon } from "@mantine/core";
+import { useScrollIntoView } from "@mantine/hooks";
 import { MdSort as SortIcon } from "react-icons/md";
 import AnalysisCard from "@/features/user-flow/workflow/AnalysisCard";
 import {
@@ -266,6 +267,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
 }: AnalysisWorkspaceProps) => {
   const [selectedApp, setSelectedApp] = useState(undefined);
   const [cohortSelectionOpen, setCohortSelectionOpen] = useState(false);
+  const { scrollIntoView, targetRef } = useScrollIntoView();
   const currentApp = REGISTERED_APPS.find((a) => a.id === app);
 
   const handleAppSelected = (id: string) => {
@@ -280,10 +282,18 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
     } else {
       setCohortSelectionOpen(false);
     }
-  }, [app]);
+
+    scrollIntoView();
+  }, [app, currentApp?.selectAdditionalCohort, scrollIntoView]);
+
+  useEffect(() => {
+    if (cohortSelectionOpen) {
+      setContextBarCollapsed(true);
+    }
+  }, [cohortSelectionOpen, setContextBarCollapsed]);
 
   return (
-    <>
+    <div>
       <CSSTransition in={cohortSelectionOpen} timeout={500}>
         {(state) => (
           <div
@@ -306,7 +316,6 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
             />
             <AdditionalCohortSelection
               currentApp={currentApp}
-              open={cohortSelectionOpen}
               setOpen={setCohortSelectionOpen}
               setActiveApp={handleAppSelected}
             />
@@ -314,7 +323,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
         )}
       </CSSTransition>
       {selectedApp && !cohortSelectionOpen ? (
-        <>
+        <div ref={(ref) => (targetRef.current = ref)}>
           <AnalysisBreadcrumbs
             currentApp={app}
             setCohortSelectionOpen={setCohortSelectionOpen}
@@ -326,11 +335,11 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
             setActiveApp={handleAppSelected}
             setContextBarCollapsed={setContextBarCollapsed}
           />
-        </>
+        </div>
       ) : (
         <AnalysisGrid onAppSelected={handleAppSelected} />
       )}
-    </>
+    </div>
   );
 };
 

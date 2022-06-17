@@ -13,7 +13,6 @@ import { AppRegistrationEntry } from "./utils";
 interface AdditionalCohortSelectionProps {
   readonly currentApp: AppRegistrationEntry;
   readonly setActiveApp?: (id: string, name: string) => void;
-  readonly open: boolean;
   readonly setOpen: (open: boolean) => void;
 }
 
@@ -22,7 +21,6 @@ const PAGE_SIZE = 10;
 const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
   currentApp,
   setActiveApp,
-  open,
   setOpen,
 }: AdditionalCohortSelectionProps) => {
   const dispatch = useCoreDispatch();
