@@ -9,21 +9,26 @@ import Highlight from "./Highlight";
 import { node } from "@gff/core";
 import { overrideMessage } from "@/features/biospecimen/utils";
 
+interface types {
+  s: string;
+  p: string;
+}
+
+type searchType = (
+  query: string,
+  entity: {
+    node: Record<string, any>;
+  },
+) => any[];
 interface NodeProps {
   entity: node;
   children: any;
-  entityTypes: Array<{
-    s: string;
-    p: string;
-  }>;
-  type: {
-    p: string;
-    s: string;
-  };
+  entityTypes: Array<types>;
+  type: types;
   selectedEntity: node;
-  selectEntity: any;
+  selectEntity: (entity: node, type: types) => void;
   query: string;
-  search: any;
+  search: searchType;
 }
 
 const Node = ({
@@ -95,23 +100,17 @@ interface BioTreeProps {
       }[];
     };
   };
-  entityTypes: Array<{
-    s: string;
-    p: string;
-  }>;
-  type: {
-    p: string;
-    s: string;
-  };
+  entityTypes: Array<types>;
+  type: types;
   parentNode: string;
   treeStatusOverride: overrideMessage | null;
-  setTreeStatusOverride: any;
+  setTreeStatusOverride: React.Dispatch<React.SetStateAction<overrideMessage>>;
   selectedEntity: node;
-  selectEntity: any;
-  setExpandedCount: any;
-  setTotalNodeCount: any;
+  selectEntity: (entity: node, type: types) => void;
+  setExpandedCount: React.Dispatch<React.SetStateAction<number>>;
+  setTotalNodeCount: React.Dispatch<React.SetStateAction<number>>;
   query: string;
-  search: any;
+  search: searchType;
 }
 
 export const BioTree = ({

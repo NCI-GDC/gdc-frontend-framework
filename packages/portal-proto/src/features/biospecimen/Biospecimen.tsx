@@ -71,7 +71,6 @@ export const Biospecimen = ({
       !selectedType && setSelectedType(getType(foundNode));
     }
   }, [
-    // bioSpecimenData.samples.hits.edges.length,
     bioSpecimenData.samples.hits.edges,
     isBiospecimentDataFetching,
     searchText,
@@ -95,14 +94,14 @@ export const Biospecimen = ({
         <Button
           className="px-1.5 min-h-[28px] min-w-[40px] border-nci-gray-light border rounded-[4px] "
           onClick={() => {
-            alert("coming soon!!!");
+            alert("Download coming soon!!!");
           }}
         >
           <MdFileDownload size="1.25em" />
           Download
         </Button>
       </div>
-      {Object.keys(selectedEntity).length && selectedType !== undefined && (
+      {Object.keys(selectedEntity).length > 0 && selectedType !== undefined && (
         <div className="flex">
           <div className="mr-5">
             <div className="flex mb-4">
@@ -114,6 +113,9 @@ export const Biospecimen = ({
                   if (e.target.value.length === 0) {
                     setExpandedCount(0);
                     setTreeStatusOverride(overrideMessage.Expanded);
+                    router.replace(`/cases/${caseId}`, undefined, {
+                      shallow: true,
+                    });
                   }
 
                   setSearchText(e.target.value);
@@ -128,14 +130,9 @@ export const Biospecimen = ({
                       setExpandedCount(0);
                       setTreeStatusOverride(overrideMessage.Expanded);
                       setSearchText("");
-                      router.push(
-                        {
-                          pathname: router.pathname,
-                          query: { ...router.query, bioId: "" },
-                        },
-                        undefined,
-                        { shallow: true },
-                      );
+                      router.replace(`/cases/${caseId}`, undefined, {
+                        shallow: true,
+                      });
                     }}
                   />
                 }

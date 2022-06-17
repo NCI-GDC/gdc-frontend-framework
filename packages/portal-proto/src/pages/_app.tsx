@@ -22,9 +22,19 @@ import "react-tabs/style/react-tabs.css";
 // ReactModal needs the app element set for a11y reasons.
 // It hides the main application from screen readers while modals are open.
 import ReactModal from "react-modal";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 ReactModal.setAppElement("#__next");
 
 const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
+  const router = useRouter();
+
+  useEffect(() => {
+    const prevPath = localStorage.getItem("currentPath");
+    localStorage.setItem("prevPath", prevPath);
+    localStorage.setItem("currentPath", globalThis.location.pathname);
+  }, [router.asPath]);
+
   return (
     <CoreProvider>
       <Provider store={store}>

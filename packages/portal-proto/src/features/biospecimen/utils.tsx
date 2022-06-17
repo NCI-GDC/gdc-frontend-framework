@@ -169,7 +169,11 @@ export const formatEntityInfo = (
           />
         </Tooltip>
         <Tooltip label="Download">
-          <FaDownload />
+          <FaDownload
+            onClick={() => {
+              alert("Download coming soon!!!");
+            }}
+          />
         </Tooltip>
       </div>,
     ]);

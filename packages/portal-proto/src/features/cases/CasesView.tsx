@@ -10,6 +10,7 @@ import {
 import { Table, Pagination, Select } from "@mantine/core";
 import { Biospecimen } from "../biospecimen/Biospecimen";
 import { useEffect, useState } from "react";
+import { useScrollIntoView } from "@mantine/hooks";
 
 export interface Case {
   readonly id: string;
@@ -89,10 +90,20 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
   const [activePage, setPage] = useState(1);
   const { data, isSuccess } = useCohortCases(pageSize, activePage);
   const [pages, setPages] = useState(10);
-
   const caseCounts = useCoreSelector((state) =>
     selectCohortCountsByName(state, "caseCounts"),
   );
+
+  const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>({
+    offset: 60,
+  });
+
+  useEffect(() => {
+    if (localStorage.getItem("prevPath")?.includes("MultipleImageViewerPage")) {
+      scrollIntoView();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     setPages(Math.ceil(caseCounts / pageSize));
@@ -150,7 +161,9 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
           total={pages}
         />
       </div>
-      <Biospecimen caseId={props.caseId} bioId={props.bioId} />
+      <div ref={targetRef} id="biospecimen">
+        <Biospecimen caseId={props.caseId} bioId={props.bioId} />
+      </div>
     </div>
   );
 };

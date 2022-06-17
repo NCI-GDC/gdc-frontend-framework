@@ -14,7 +14,6 @@ const CaseSummary: NextPage = () => {
         caseId="1f601832-eee3-48fb-acf5-80c4a454f26e"
         bioId={query.bioId as string}
       />
-      {/* <ContextualCasesView caseId="ae5c7389-f0f9-4fd3-97c0-cdd5800f4801" /> */}
     </UserFlowVariedPages>
   );
 };
