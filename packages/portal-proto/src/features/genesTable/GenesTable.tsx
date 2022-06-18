@@ -30,8 +30,6 @@ const GenesTable: React.FC<GenesTableProps> = ({
   const [columnListOrder, setColumnListOrder] = useState([]);
   const [columnListCells, setColumnListCells] = useState([]);
 
-  // const coreDispatch = useCoreDispatch();
-
   // using the useSsmsTable from core and the associated useEffect hook
   // exploring different ways to dispatch the pageSize/offset changes
   const { data, isFetching } = useGenesTable({
@@ -54,6 +52,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
           survival: {
             name: `${g.name}`,
             symbol: `${g.symbol}`,
+            checked: g.symbol == selectedSurvivalPlot?.symbol,
           },
           SSMSAffectedCasesInCohort:
             g.cnv_case > 0
@@ -92,10 +91,9 @@ const GenesTable: React.FC<GenesTableProps> = ({
     if (data.status === "fulfilled") {
       setTableData(getTableDataMapping(data));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, pageSize]);
+  }, [data, pageSize, selectedSurvivalPlot]);
 
-  const getCustomGridCell = (key: string, selectedSurvivalPlot: any) => {
+  const getCustomGridCell = (key: string) => {
     switch (key) {
       case "annotations":
         return {
@@ -112,29 +110,29 @@ const GenesTable: React.FC<GenesTableProps> = ({
             </div>
           ),
         };
-      case "survival":
+      case "survival": {
         return {
           Header: "Survival",
           accessor: "survival",
-          Cell: ({ value }: any) => (
-            <Tooltip label={`Click icon to plot ${value.symbol}`}>
-              <Switch
-                checked={
-                  selectedSurvivalPlot
-                    ? selectedSurvivalPlot.symbol === value.symbol
-                    : false
-                }
-                onChange={() => {
-                  handleSurvivalPlotToggled(
-                    value.symbol,
-                    value.name,
-                    "gene.symbol",
-                  );
-                }}
-              />
-            </Tooltip>
-          ),
+          Cell: ({ value }: any) => {
+            return (
+              <Tooltip label={`Click icon to plot ${value.symbol}`}>
+                <Switch
+                  radius="xs"
+                  checked={value.checked}
+                  onChange={() => {
+                    handleSurvivalPlotToggled(
+                      value.symbol,
+                      value.name,
+                      "gene.symbol",
+                    );
+                  }}
+                />
+              </Tooltip>
+            );
+          },
         };
+      }
       default:
         return;
     }
@@ -143,7 +141,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
   const getTableCellMapping = useCallback(() => {
     const cellMapping = geneKeys.map((key) => {
       return customGeneKeys.includes(key)
-        ? getCustomGridCell(key, selectedSurvivalPlot)
+        ? getCustomGridCell(key)
         : {
             Header: _.startCase(key),
             accessor: key,
@@ -171,11 +169,6 @@ const GenesTable: React.FC<GenesTableProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    setColumnListCells(getTableCellMapping());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedSurvivalPlot]);
-
   const handlePageSizeChange = (x: string) => {
     setOffset((activePage - 1) * parseInt(x));
     setPageSize(parseInt(x));
@@ -202,8 +195,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
 
   const columnCells = useMemo(
     () => updateTableCells(),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [width, columnListOrder],
+    [width, columnListOrder, updateTableCells],
   );
 
   const handleColumnChange = (update) => {
