@@ -223,10 +223,14 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
     setSurvivalPlotLineTooltipContent,
   );
 
-  const legend =
-    plotData.length == 1
-      ? buildOnePlotLegend(plotData, "Explorer")
-      : buildTwoPlotLegend(plotData, names[0], "mutation");
+  let legend;
+  if (plotData.length === 1) {
+    legend = buildOnePlotLegend(plotData, "Explorer");
+  } else if (plotData.length === 2) {
+    legend = buildTwoPlotLegend(plotData, names[0], "mutation");
+  } else {
+    legend = undefined;
+  }
   return (
     <div className="flex flex-col">
       <div className="flex flex-row w-100 items-center justify-center flex-wrap items-center">
@@ -254,7 +258,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
       </div>
       <div className="flex flex-col items-center ">
         {!hideLegend &&
-          legend.map((x, idx) => {
+          legend?.map((x, idx) => {
             return <p key={`${x.key}-${idx}`}>{x.value}</p>;
           })}
         <div>

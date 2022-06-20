@@ -1,7 +1,7 @@
 export const geneKeys = [
+  "survival",
   "symbol",
   "name",
-  "survival",
   "SSMSAffectedCasesInCohort",
   "SSMSAffectedCasesAcrossTheGDC",
   "CNVGain",

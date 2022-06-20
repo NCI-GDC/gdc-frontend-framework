@@ -1,7 +1,7 @@
 export const ssmsKeys = [
+  "survival",
   "DNAChange",
   "type",
-  "survival",
   "consequences",
   "affectedCasesInCohort",
   "affectedCasesAcrossTheGDC",
@@ -92,9 +92,9 @@ interface Annotation {
 
 export const formatImpact = (annotation: Annotation): any => {
   // * tailwind styles must be declared somewhere to be applied dynamically
-  const tailwindRed = `bg-red-400`; // eslint-disable-line @typescript-eslint/no-unused-vars
-  const tailwindGreen = `bg-green-400`; // eslint-disable-line @typescript-eslint/no-unused-vars
-  const tailwindGray = `bg-gray-400`; // eslint-disable-line @typescript-eslint/no-unused-vars
+  const tailwindRed = `bg-nci-red`; // eslint-disable-line @typescript-eslint/no-unused-vars
+  const tailwindGreen = `bg-nci-green`; // eslint-disable-line @typescript-eslint/no-unused-vars
+  const tailwindGray = `bg-nci-gray`; // eslint-disable-line @typescript-eslint/no-unused-vars
   const {
     vep_impact,
     sift_impact,

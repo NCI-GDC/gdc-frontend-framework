@@ -6,7 +6,6 @@ import { SiMicrogenetics as GeneAnnotationIcon } from "react-icons/si";
 import _ from "lodash";
 import { useMeasure } from "react-use";
 import { geneKeys, customGeneKeys } from "./constants";
-import SwitchWithIcon from "@/components/SwitchWIthIcon";
 
 interface GenesTableProps {
   readonly selectedSurvivalPlot: Record<string, string>;
