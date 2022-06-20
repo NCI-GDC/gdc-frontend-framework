@@ -6,6 +6,7 @@ import { SiMicrogenetics as GeneAnnotationIcon } from "react-icons/si";
 import _ from "lodash";
 import { useMeasure } from "react-use";
 import { geneKeys, customGeneKeys } from "./constants";
+import SwitchWithIcon from "@/components/SwitchWIthIcon";
 
 interface GenesTableProps {
   readonly selectedSurvivalPlot: Record<string, string>;
@@ -119,6 +120,8 @@ const GenesTable: React.FC<GenesTableProps> = ({
               <Tooltip label={`Click icon to plot ${value.symbol}`}>
                 <Switch
                   radius="xs"
+                  size="sm"
+                  id={`genetable-survival-${value.symbol}`}
                   checked={value.checked}
                   onChange={() => {
                     handleSurvivalPlotToggled(
@@ -126,6 +129,10 @@ const GenesTable: React.FC<GenesTableProps> = ({
                       value.name,
                       "gene.symbol",
                     );
+                  }}
+                  classNames={{
+                    input:
+                      "bg-nci-gray-light checked:bg-nci-blue-dark  checked:bg-none",
                   }}
                 />
               </Tooltip>
