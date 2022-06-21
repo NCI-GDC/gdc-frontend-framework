@@ -64,7 +64,7 @@ export const Biospecimen = ({
 
       const foundNode = flattened[0]?.node;
       Object.keys(selectedEntity).length === 0 && setSelectedEntity(foundNode);
-      !selectedType && setSelectedType(getType(foundNode));
+      !selectedType && foundNode && setSelectedType(getType(foundNode));
     }
   }, [
     bioSpecimenData?.samples?.hits?.edges,
@@ -108,7 +108,7 @@ export const Biospecimen = ({
   return (
     <div className="my-5">
       {isBiospecimentDataFetching ? (
-        <LoadingOverlay visible />
+        <LoadingOverlay visible data-testid="loading" />
       ) : Object.keys(selectedEntity).length > 0 &&
         selectedType !== undefined ? (
         <>
