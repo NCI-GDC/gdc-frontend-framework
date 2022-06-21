@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import { MdClose, MdCircle } from "react-icons/md";
 import { Button } from "@mantine/core";
 import { REGISTERED_APPS } from "./registeredApps";
@@ -16,12 +15,11 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
   cohortSelectionOpen,
   setActiveApp,
 }: AnalysisBreadcrumbsProps) => {
-  const router = useRouter();
-  const onApp = router.query.app === currentApp;
   const onDemoApp = currentApp?.includes("Demo");
-
   const appId = onDemoApp ? currentApp?.split("Demo")[0] : currentApp;
   const appInfo = REGISTERED_APPS.find((app) => app.id === appId);
+
+  const displayAdditionalSteps = !onDemoApp && appInfo?.selectAdditionalCohort;
 
   return (
     <div className="w-full bg-nci-blue-darkest text-white p-2 flex items-center ">
@@ -32,10 +30,14 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
       >
         <MdClose size={20} />
       </Button>
-      <span className={`p-2 mx-2 uppercase ${onDemoApp ? "font-bold" : ""}`}>
+      <span
+        className={`p-2 mx-2 uppercase ${
+          !displayAdditionalSteps ? "font-bold" : ""
+        }`}
+      >
         {onDemoApp ? `${appInfo?.name} Demo` : appInfo?.name}
       </span>
-      {!onDemoApp && (
+      {displayAdditionalSteps && (
         <>
           {appInfo?.selectAdditionalCohort && (
             <>
