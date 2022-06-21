@@ -1,5 +1,4 @@
 import { useEffect, useState, useMemo } from "react";
-import { useRouter } from "next/router";
 import { Table, Button, Pagination, Grid } from "@mantine/core";
 import {
   useCoreSelector,
@@ -8,23 +7,22 @@ import {
   useCoreDispatch,
   selectAvailableCohorts,
 } from "@gff/core";
-import { AppRegistrationEntry } from "./utils";
+import { REGISTERED_APPS } from "./registeredApps";
 
 interface AdditionalCohortSelectionProps {
-  readonly currentApp: AppRegistrationEntry;
-  readonly setActiveApp?: (id: string, name: string) => void;
+  readonly app: string;
+  readonly setActiveApp?: (id: string) => void;
   readonly setOpen: (open: boolean) => void;
 }
 
 const PAGE_SIZE = 10;
 
 const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
-  currentApp,
+  app,
   setActiveApp,
   setOpen,
 }: AdditionalCohortSelectionProps) => {
   const dispatch = useCoreDispatch();
-  const router = useRouter();
   const primaryCohortName = useCoreSelector((state) =>
     selectCurrentCohort(state),
   );
@@ -66,6 +64,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
     setSelectedCohort(null);
   };
   const totalResults = cohorts.length || 0;
+  const currentApp = REGISTERED_APPS.find((a) => a.id === app);
 
   return (
     <div className="bg-white flex flex-col flex-grow h-full ">
@@ -135,7 +134,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
       <div className={`p-4 bg-nci-gray-lightest w-full justify-between flex`}>
         <Button
           onClick={() => {
-            setActiveApp(`${currentApp.id}Demo`, `${currentApp.name} Demo`);
+            setActiveApp(`${currentApp.id}Demo`);
             closeCohortSelection();
           }}
           className="bg-white border-nci-blue-darkest text-nci-blue-darkest"
@@ -145,8 +144,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
         <div>
           <Button
             onClick={() => {
-              setActiveApp(undefined, undefined);
-              router.push({ query: { app: undefined } });
+              setActiveApp(undefined);
               closeCohortSelection();
             }}
             className="mr-4 bg-white border-nci-blue-darkest text-nci-blue-darkest"

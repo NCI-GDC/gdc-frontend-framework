@@ -36,9 +36,7 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
             onDemoApp ||
             (onApp && !appInfo?.selectAdditionalCohort)
           ) {
-            router.push({ query: { app: undefined } });
             setActiveApp(undefined);
-            setCohortSelectionOpen(false);
           }
         }}
         className="bg-white text-nci-blue-darkest"

@@ -1,5 +1,4 @@
 import React, { Suspense, lazy, useEffect, useState } from "react";
-import Router from "next/router";
 import { Loader } from "@mantine/core";
 
 const importApplication = (app) =>
@@ -27,10 +26,6 @@ const ActiveAnalysisTool: React.FC<AnalysisToolInfo> = ({
     }
 
     loadApp().then(setAnalysisApp);
-
-    Router.push({
-      query: { app: appId },
-    });
   }, [appId]);
 
   return (

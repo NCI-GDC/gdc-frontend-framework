@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
+import { useRouter } from "next/router";
 import { Chip, Chips, Menu, Grid, ActionIcon } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
 import { MdSort as SortIcon } from "react-icons/md";
@@ -41,7 +42,7 @@ const ALL_OTHER_APPS = Object.keys(initialApps).filter(
 );
 
 interface AnalysisGridProps {
-  readonly onAppSelected?: (id: string, name: string) => void;
+  readonly onAppSelected?: (id: string) => void;
 }
 
 const AnalysisGrid: React.FC<AnalysisGridProps> = ({
@@ -82,7 +83,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
   }, [filterAppsByTagsAndSort]);
 
   const handleOpenAppClicked = (x: AppRegistrationEntry) => {
-    onAppSelected(x.id, x.name);
+    onAppSelected(x.id);
   };
 
   return (
@@ -266,26 +267,20 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   app,
   setContextBarCollapsed,
 }: AnalysisWorkspaceProps) => {
-  const [selectedApp, setSelectedApp] = useState(undefined);
   const [cohortSelectionOpen, setCohortSelectionOpen] = useState(false);
+  const [cohortSelectionHeight, setCohortSelectionHeight] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
   const { scrollIntoView, targetRef } = useScrollIntoView();
-  const currentApp = REGISTERED_APPS.find((a) => a.id === app);
-
-  const handleAppSelected = (id: string) => {
-    setSelectedApp(id);
-  };
+  const router = useRouter();
 
   useEffect(() => {
-    setSelectedApp(app);
+    const appInfo = REGISTERED_APPS.find((a) => a.id === app);
+    setCohortSelectionOpen(appInfo?.selectAdditionalCohort);
 
-    if (currentApp?.selectAdditionalCohort) {
-      setCohortSelectionOpen(true);
-    } else {
-      setCohortSelectionOpen(false);
+    if (app) {
+      scrollIntoView();
     }
-
-    scrollIntoView();
-  }, [app, currentApp?.selectAdditionalCohort, scrollIntoView]);
+  }, [app, scrollIntoView]);
 
   useEffect(() => {
     if (cohortSelectionOpen) {
@@ -293,8 +288,18 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
     }
   }, [cohortSelectionOpen, setContextBarCollapsed]);
 
+  useEffect(() => {
+    setCohortSelectionHeight(
+      window.innerHeight - containerRef?.current.offsetTop,
+    );
+  }, []);
+
+  const handleAppSelected = (app: string) => {
+    router.push({ query: { app } });
+  };
+
   return (
-    <div>
+    <div ref={containerRef}>
       <CSSTransition in={cohortSelectionOpen} timeout={500}>
         {(state) => (
           <div
@@ -302,12 +307,12 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
               {
                 entering:
                   "block animate-slide-up h-full w-full absolute z-[1000]",
-                entered: "block h-full  w-full absolute z-[1000]",
-                exiting:
-                  "block animate-slide-down w-full h-full absolute z-[1000]",
+                entered: `block h-full w-full absolute z-[1000]`,
+                exiting: "block animate-slide-down w-full absolute z-[1000]",
                 exited: "hidden translate-x-0",
               }[state]
             }
+            style={{ height: cohortSelectionHeight }}
           >
             <AnalysisBreadcrumbs
               currentApp={app}
@@ -316,14 +321,14 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
               setActiveApp={handleAppSelected}
             />
             <AdditionalCohortSelection
-              currentApp={currentApp}
+              app={app}
               setOpen={setCohortSelectionOpen}
               setActiveApp={handleAppSelected}
             />
           </div>
         )}
       </CSSTransition>
-      {selectedApp && !cohortSelectionOpen ? (
+      {app && !cohortSelectionOpen && (
         <div ref={(ref) => (targetRef.current = ref)}>
           <AnalysisBreadcrumbs
             currentApp={app}
@@ -332,17 +337,16 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
             setActiveApp={handleAppSelected}
           />
           <div className="w-10/12 m-auto">
-            {selectedApp === "CohortBuilder" ? <SearchInput /> : null}
+            {app === "CohortBuilder" ? <SearchInput /> : null}
           </div>
           <ActiveAnalysisToolNoSSR
-            appId={selectedApp}
+            appId={app}
             setActiveApp={handleAppSelected}
             setContextBarCollapsed={setContextBarCollapsed}
           />
         </div>
-      ) : (
-        <AnalysisGrid onAppSelected={handleAppSelected} />
       )}
+      {!app && <AnalysisGrid onAppSelected={handleAppSelected} />}
     </div>
   );
 };
