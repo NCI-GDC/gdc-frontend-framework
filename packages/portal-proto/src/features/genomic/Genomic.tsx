@@ -1,3 +1,7 @@
+/**
+ * This component will be moved to Demo
+ */
+
 import GeneData from "./genes.json";
 import MutationData from "./mutations.json";
 import { MdSort as SortIcon } from "react-icons/md";

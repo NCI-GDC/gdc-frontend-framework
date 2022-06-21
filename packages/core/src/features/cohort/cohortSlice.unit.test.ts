@@ -82,6 +82,7 @@ describe("selectCurrentCohort", () => {
         },
         availableCohorts: [],
         comparisonCohorts: [],
+        builderConfig: {},
       },
     });
     expect(currentCohort).toEqual("asdf");
@@ -104,6 +105,7 @@ describe("selectCurrentCohort", () => {
         },
         availableCohorts: [],
         comparisonCohorts: [],
+        builderConfig: {},
       },
     });
     expect(currentCohort).toBeUndefined();
@@ -128,6 +130,7 @@ describe("selectCurrentCohortFilters", () => {
         },
         availableCohorts: [],
         comparisonCohorts: [],
+        builderConfig: {},
       },
     });
     expect(currentCohortFilters).toEqual(populatedFilters);
@@ -158,6 +161,7 @@ describe("selectCurrentCohortFilters", () => {
           },
           availableCohorts: [],
           comparisonCohorts: [],
+          builderConfig: {},
         },
       },
       "primary_site",

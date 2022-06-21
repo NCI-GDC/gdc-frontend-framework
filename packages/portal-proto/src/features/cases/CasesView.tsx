@@ -5,10 +5,10 @@ import {
   useCoreDispatch,
   selectCasesData,
   useCoreSelector,
+  GqlOperation,
 } from "@gff/core";
 import { Table, Pagination, Select } from "@mantine/core";
 import { useEffect, useState } from "react";
-import { GqlOperation } from "@gff/core/dist/dts/features/gdcapi/filters";
 
 export interface Case {
   readonly id: string;

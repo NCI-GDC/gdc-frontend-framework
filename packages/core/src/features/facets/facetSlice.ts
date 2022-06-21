@@ -1,11 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { DataStatus } from "../../dataAcess";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
+import { FacetBuckets } from "./types";
 import {
   fetchGdcCases,
   GdcApiResponse,
   isBucketsAggregation,
+  isStatsAggregation,
 } from "../gdcapi/gdcapi";
 
 import { selectCurrentCohortGqlFilters } from "../cohort/cohortFilterSlice";
@@ -22,12 +23,6 @@ export const fetchFacetByName = createAsyncThunk<
     facets: [name],
   });
 });
-
-export interface FacetBuckets {
-  readonly status: DataStatus;
-  readonly error?: string;
-  readonly buckets?: Record<string, number>;
-}
 
 // these top-level properties should match the gdcapi indices.
 // however, this implementation detail should not be exposed to the portal
@@ -66,6 +61,13 @@ const slice = createSlice({
                     },
                     {} as Record<string, number>,
                   );
+                } else if (isStatsAggregation(aggregation)) {
+                  //TODO: This seems dependent on the type of
+                  //  the facet, which is not known here
+                  state.cases[field].status = "fulfilled";
+                  state.cases[field].buckets = {
+                    count: aggregation.stats.count,
+                  };
                 } else {
                   // Unhandled aggregation
                 }

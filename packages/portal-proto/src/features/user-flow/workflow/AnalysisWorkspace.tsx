@@ -12,6 +12,7 @@ import {
   AppRegistrationEntry,
   sortAlphabetically,
 } from "@/features/user-flow/workflow/utils";
+import SearchInput from "@/components/SearchInput";
 import dynamic from "next/dynamic";
 import FeaturedToolCard from "./FeaturedToolCard";
 
@@ -330,6 +331,9 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
             cohortSelectionOpen={cohortSelectionOpen}
             setActiveApp={handleAppSelected}
           />
+          <div className="w-10/12 m-auto">
+            {selectedApp === "CohortBuilder" ? <SearchInput /> : null}
+          </div>
           <ActiveAnalysisToolNoSSR
             appId={selectedApp}
             setActiveApp={handleAppSelected}
