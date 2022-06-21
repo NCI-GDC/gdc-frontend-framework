@@ -185,24 +185,27 @@ const GenesTable: React.FC<GenesTableProps> = ({
     setActivePage(x);
   };
 
-  const updateTableCells = () => {
-    const filteredColumnList = columnListOrder.filter((item) => item.visible);
-    const headingOrder = filteredColumnList.map((item) => {
-      return columnListCells[
-        columnListCells.findIndex((find) => find.accessor === item.columnName)
-      ];
-    });
-    headingOrder.forEach((heading) => {
-      heading.width =
-        width / headingOrder.length > 110 ? width / headingOrder.length : 110;
-    });
-    return headingOrder;
-  };
+  const columnCells = useMemo(() => {
+    const updateTableCells = (currentWidth, currentColumnListOrder) => {
+      const filteredColumnList = currentColumnListOrder.filter(
+        (item) => item.visible,
+      );
+      const headingOrder = filteredColumnList.map((item) => {
+        return columnListCells[
+          columnListCells.findIndex((find) => find.accessor === item.columnName)
+        ];
+      });
+      headingOrder.forEach((heading) => {
+        heading.width =
+          currentWidth / headingOrder.length > 110
+            ? width / headingOrder.length
+            : 110;
+      });
+      return headingOrder;
+    };
 
-  const columnCells = useMemo(
-    () => updateTableCells(),
-    [width, columnListOrder, updateTableCells],
-  );
+    return updateTableCells(width, columnListOrder);
+  }, [width, columnListOrder, columnListCells]);
 
   const handleColumnChange = (update) => {
     setColumnListOrder(update);
