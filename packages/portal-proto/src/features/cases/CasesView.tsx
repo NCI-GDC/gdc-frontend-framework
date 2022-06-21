@@ -129,38 +129,41 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
 
   return (
     <div className="flex flex-col m-auto w-10/12">
-      {/* <CasesView
-        cases={cases}
-        caption={`Showing ${pageSize} of ${caseCounts} Cases`}
-        handleCaseSelected={props.handleCaseSelected}
-      />
-      <div className="flex flex-row items-center justify-start border-t border-nci-gray-light">
-        <p className="px-2">Page Size:</p>
-        <Select
-          size="sm"
-          radius="md"
-          onChange={handlePageSizeChange}
-          value={pageSize.toString()}
-          data={[
-            { value: "10", label: "10" },
-            { value: "20", label: "20" },
-            { value: "40", label: "40" },
-            { value: "100", label: "100" },
-          ]}
+      {/* TODO: need to take remove this class later */}
+      <div className="hidden">
+        <CasesView
+          cases={cases}
+          caption={`Showing ${pageSize} of ${caseCounts} Cases`}
+          handleCaseSelected={props.handleCaseSelected}
         />
-        <Pagination
-          classNames={{
-            active: "bg-nci-gray",
-          }}
-          size="sm"
-          radius="md"
-          color="gray"
-          className="ml-auto"
-          page={activePage}
-          onChange={(x) => setPage(x - 1)}
-          total={pages}
-        />
-      </div> */}
+        <div className="flex flex-row items-center justify-start border-t border-nci-gray-light">
+          <p className="px-2">Page Size:</p>
+          <Select
+            size="sm"
+            radius="md"
+            onChange={handlePageSizeChange}
+            value={pageSize.toString()}
+            data={[
+              { value: "10", label: "10" },
+              { value: "20", label: "20" },
+              { value: "40", label: "40" },
+              { value: "100", label: "100" },
+            ]}
+          />
+          <Pagination
+            classNames={{
+              active: "bg-nci-gray",
+            }}
+            size="sm"
+            radius="md"
+            color="gray"
+            className="ml-auto"
+            page={activePage}
+            onChange={(x) => setPage(x - 1)}
+            total={pages}
+          />
+        </div>
+      </div>
       <div ref={targetRef} id="biospecimen">
         <Biospecimen caseId={props.caseId} bioId={props.bioId} />
       </div>
