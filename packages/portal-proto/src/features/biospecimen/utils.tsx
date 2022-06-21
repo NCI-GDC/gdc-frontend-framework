@@ -7,6 +7,7 @@ import Link from "next/link";
 import { CoreDispatch, node } from "@gff/core";
 import { addToCart } from "@/features/cart/updateCart";
 import { get } from "lodash";
+import { entityTypes } from "@/components/BioTree/types";
 
 interface IHumanifyParams {
   term: string;
@@ -29,20 +30,6 @@ export const capitalize = (original: string): string => {
     )
     .join(" ");
 };
-
-export const entityTypes = [
-  { s: "portion", p: "portions" },
-  { s: "aliquot", p: "aliquots" },
-  { s: "analyte", p: "analytes" },
-  { s: "slide", p: "slides" },
-  { s: "sample", p: "samples" },
-];
-
-export enum overrideMessage {
-  Expanded = "Expanded",
-  Collapsed = "Collapsed",
-  QueryMatches = "QueryMatches",
-}
 
 export const match = (query: string, entity: Record<string, any>): boolean =>
   Object.keys(entity).some((k) => {
@@ -152,7 +139,7 @@ export const formatEntityInfo = (
       ]),
   );
 
-  if (foundType === "slide" && !!selectedSlide) {
+  if (foundType === "slide" && !!selectedSlide[0]) {
     filtered.push([
       "Slides",
       <div className="flex gap-4" key={selectedSlide[0]?.file_id}>

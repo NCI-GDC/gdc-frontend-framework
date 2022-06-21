@@ -5,31 +5,8 @@ import {
 } from "react-icons/ai";
 import { ImArrowRight as ArrowRight } from "react-icons/im";
 import { Badge } from "@mantine/core";
-import Highlight from "./Highlight";
-import { node } from "@gff/core";
-import { overrideMessage } from "@/features/biospecimen/utils";
-
-interface types {
-  s: string;
-  p: string;
-}
-
-type searchType = (
-  query: string,
-  entity: {
-    node: Record<string, any>;
-  },
-) => any[];
-interface NodeProps {
-  entity: node;
-  children: any;
-  entityTypes: Array<types>;
-  type: types;
-  selectedEntity: node;
-  selectEntity: (entity: node, type: types) => void;
-  query: string;
-  search: searchType;
-}
+import Highlight from "../Highlight";
+import { BioTreeProps, NodeProps, overrideMessage } from "./types";
 
 const Node = ({
   entity,
@@ -91,27 +68,6 @@ const Node = ({
     </li>
   );
 };
-
-interface BioTreeProps {
-  entities?: {
-    hits: {
-      edges: {
-        node: node;
-      }[];
-    };
-  };
-  entityTypes: Array<types>;
-  type: types;
-  parentNode: string;
-  treeStatusOverride: overrideMessage | null;
-  setTreeStatusOverride: React.Dispatch<React.SetStateAction<overrideMessage>>;
-  selectedEntity: node;
-  selectEntity: (entity: node, type: types) => void;
-  setExpandedCount: React.Dispatch<React.SetStateAction<number>>;
-  setTotalNodeCount: React.Dispatch<React.SetStateAction<number>>;
-  query: string;
-  search: searchType;
-}
 
 export const BioTree = ({
   entities,

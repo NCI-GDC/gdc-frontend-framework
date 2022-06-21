@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BioTree } from "@/components/BioTree";
+import { BioTree } from "@/components/BioTree/BioTree";
 import {
   MdOutlineSearch,
   MdFileDownload,
@@ -14,14 +14,10 @@ import {
   selectCart,
 } from "@gff/core";
 import { HorizontalTable } from "@/components/HorizontalTable";
-import {
-  formatEntityInfo,
-  search,
-  entityTypes,
-  overrideMessage,
-} from "./utils";
+import { formatEntityInfo, search } from "./utils";
 import { trimEnd, find, flatten } from "lodash";
 import { useRouter } from "next/router";
+import { entityTypes, overrideMessage } from "@/components/BioTree/types";
 
 interface BiospecimenProps {
   caseId: string;
@@ -77,6 +73,27 @@ export const Biospecimen = ({
     selectedEntity,
     selectedType,
   ]);
+
+  const onSelectEntity = (entity, type) => {
+    setSelectedEntity(entity);
+    setSelectedType(type.s);
+
+    if (treeStatusOverride === overrideMessage.QueryMatches) {
+      setTreeStatusOverride(null);
+    }
+
+    router.push(
+      {
+        pathname: router.pathname,
+        query: {
+          ...router.query,
+          bioId: entity[`${type.s}_id`],
+        },
+      },
+      undefined,
+      { shallow: true },
+    );
+  };
 
   const supplementalFiles = bioSpecimenData?.files?.hits?.edges || [];
   const withTrimmedSubIds = supplementalFiles.map(({ node }) => ({
@@ -162,26 +179,7 @@ export const Biospecimen = ({
                     entityTypes={entityTypes}
                     parentNode="root"
                     selectedEntity={selectedEntity}
-                    selectEntity={(entity, type) => {
-                      setSelectedEntity(entity);
-                      setSelectedType(type.s);
-
-                      if (treeStatusOverride === overrideMessage.QueryMatches) {
-                        setTreeStatusOverride(null);
-                      }
-
-                      router.push(
-                        {
-                          pathname: router.pathname,
-                          query: {
-                            ...router.query,
-                            bioId: entity[`${type.s}_id`],
-                          },
-                        },
-                        undefined,
-                        { shallow: true },
-                      );
-                    }}
+                    selectEntity={onSelectEntity}
                     type={{
                       p: "samples",
                       s: "sample",
