@@ -129,7 +129,7 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
 
   return (
     <div className="flex flex-col m-auto w-10/12">
-      <CasesView
+      {/* <CasesView
         cases={cases}
         caption={`Showing ${pageSize} of ${caseCounts} Cases`}
         handleCaseSelected={props.handleCaseSelected}
@@ -160,7 +160,7 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
           onChange={(x) => setPage(x - 1)}
           total={pages}
         />
-      </div>
+      </div> */}
       <div ref={targetRef} id="biospecimen">
         <Biospecimen caseId={props.caseId} bioId={props.bioId} />
       </div>
