@@ -95,10 +95,10 @@ export const useSurvival: survival = (
   return ref;
 };
 
-const enoughData = (data: SurvivalElement[]) =>
+const enoughData = (data: ReadonlyArray<SurvivalElement>) =>
   data && data.length && data.every((r) => r.donors.length >= MINIMUM_CASES);
 
-const enoughDataOnSomeCurves = (data: SurvivalElement[]) =>
+const enoughDataOnSomeCurves = (data: ReadonlyArray<SurvivalElement>) =>
   data && data.length && data.some((r) => r.donors.length >= MINIMUM_CASES);
 
 const buildOnePlotLegend = (data, name) => {
@@ -213,18 +213,24 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   const pValue = data.overallStats.pValue;
   const plotData = data.survivalData;
 
+  const hasEnoughData = enoughData(plotData);
+
   // hook to call renderSurvivalPlot
   const container = useSurvival(
-    plotData,
+    hasEnoughData ? plotData : [], // TODO: when implementing CDave this likely will need more logic
     xDomain,
     setXDomain,
     setSurvivalPlotLineTooltipContent,
   );
 
-  const legend =
-    plotData.length == 1
-      ? buildOnePlotLegend(plotData, "Explorer")
-      : buildTwoPlotLegend(plotData, names[0], "mutation");
+  let legend;
+  if (plotData.length === 1) {
+    legend = buildOnePlotLegend(plotData, "Explorer");
+  } else if (plotData.length === 2) {
+    legend = buildTwoPlotLegend(plotData, names[0], "mutation");
+  } else {
+    legend = undefined;
+  }
   return (
     <div className="flex flex-col">
       <div className="flex flex-row w-100 items-center justify-center flex-wrap items-center">
@@ -252,7 +258,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
       </div>
       <div className="flex flex-col items-center ">
         {!hideLegend &&
-          legend.map((x, idx) => {
+          legend?.map((x, idx) => {
             return <p key={`${x.key}-${idx}`}>{x.value}</p>;
           })}
         <div>
