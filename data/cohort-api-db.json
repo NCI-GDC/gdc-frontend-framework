@@ -31,8 +31,7 @@
           "value": ["breast", "bronchus and lung"]
         }
       ],
-      "frozen": false,
-      "counts": 121
+      "frozen": false
     },
     {
       "id": "2f70de91-7c5a-41d2-9620-90670dfdaddb",
@@ -44,8 +43,7 @@
           "value": ["unknown"]
         }
       ],
-      "frozen": true,
-      "counts": 1000
+      "frozen": true
     }
   ]
 }

@@ -5,7 +5,6 @@ export interface CohortModel {
   name: string;
   filters: ReadonlyArray<string>;
   frozen: boolean;
-  counts: number;
 }
 
 // model for context endpoints

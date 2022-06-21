@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect, useState, useRef } from "react";
+import React, { Suspense, lazy, useEffect, useState } from "react";
 import Router from "next/router";
 import { Loader } from "@mantine/core";
 
@@ -19,7 +19,6 @@ const ActiveAnalysisTool: React.FC<AnalysisToolInfo> = ({
   appId,
 }: AnalysisToolInfo) => {
   const [analysisApp, setAnalysisApp] = useState(undefined);
-  const appRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     async function loadApp() {
@@ -35,17 +34,15 @@ const ActiveAnalysisTool: React.FC<AnalysisToolInfo> = ({
   }, [appId]);
 
   return (
-    <div ref={appRef}>
-      <Suspense
-        fallback={
-          <div className="flex flex-row items-center justify-center w-100 h-64">
-            <Loader size={100} />
-          </div>
-        }
-      >
-        <div className="mx-2">{analysisApp}</div>
-      </Suspense>
-    </div>
+    <Suspense
+      fallback={
+        <div className="flex flex-row items-center justify-center w-100 h-64">
+          <Loader size={100} />
+        </div>
+      }
+    >
+      <div className="mx-2">{analysisApp}</div>
+    </Suspense>
   );
 };
 
