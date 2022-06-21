@@ -1,3 +1,5 @@
+// credit to https://github.com/NCI-GDC/portal-ui/blob/develop/src/packages/%40ncigdc/uikit/Highlight.js
+
 import React from "react";
 
 export const internalHighlight = (

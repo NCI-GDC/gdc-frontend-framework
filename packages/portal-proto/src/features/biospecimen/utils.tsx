@@ -1,3 +1,5 @@
+// Credits to https://github.com/NCI-GDC/portal-ui/blob/develop/src/packages/%40ncigdc/modern_components/BiospecimenCard/utils.js for useful utilities functions
+
 import { formatDataForHorizontalTable } from "../files/utils";
 import { FaMicroscope, FaShoppingCart, FaDownload } from "react-icons/fa";
 import { Tooltip } from "@mantine/core";
