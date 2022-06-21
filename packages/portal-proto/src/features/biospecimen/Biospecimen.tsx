@@ -146,7 +146,7 @@ export const Biospecimen = ({
                   );
                   setExpandedCount(0);
                 }}
-                className="ml-4"
+                className="ml-4 w-32"
                 disabled={searchText.length > 0}
               >
                 {isAllExpanded ? "Collapse All" : "Expand All"}
