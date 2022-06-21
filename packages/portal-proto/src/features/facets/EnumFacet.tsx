@@ -142,7 +142,7 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
 
   const cardStyle = isGroupExpanded
     ? `flex-none  h-${cardHeight} overflow-y-scroll `
-    : `overflow-hidden pr-3.5`;
+    : `overflow-hidden pr-3.5 h-auto`;
   const numberOfLines =
     total - maxValuesToDisplay < 0
       ? total
@@ -213,7 +213,7 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
           </div>
         </div>
       </div>
-      <div className="h-full min-h-[180px]">
+      <div className="h-full">
         <div
           className={
             isFacetView

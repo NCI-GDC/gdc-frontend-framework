@@ -259,10 +259,6 @@ const MutationsTable: React.FC<MutationTableProps> = ({
 
   return (
     <div className="flex flex-col w-screen pb-3 pt-3">
-      <div>
-        Showing {(activePage - 1) * pageSize + 1} - {activePage * pageSize} of{" "}
-        {totalResults} somatic mutations
-      </div>
       <div ref={ref} className={`flex flex-row w-9/12`}>
         {data && !isFetching ? (
           <VerticalTable
@@ -271,7 +267,9 @@ const MutationsTable: React.FC<MutationTableProps> = ({
             columnCells={columnCells}
             handleColumnChange={handleColumnChange}
             selectableRow={false}
-            tableTitle={`Mutations Table`}
+            tableTitle={`Showing ${(activePage - 1) * pageSize + 1} - ${
+              activePage * pageSize
+            } of  ${totalResults} somatic mutations`}
             pageSize={pageSize.toString()}
           ></VerticalTable>
         ) : (

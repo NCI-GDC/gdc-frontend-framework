@@ -108,6 +108,7 @@ const buildGeneHaveAndHaveNotFilters = (
   ];
 };
 
+// Persist which tab is active
 type AppModeState = "genes" | "ssms";
 
 const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
@@ -129,6 +130,8 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     useSurvivalPlot({ filters: filters ? [filters] : [] });
 
   const prevComparative = usePrevious(comparativeSurvival);
+
+  // pass to Survival Plot when survivalPlotData data is undefined/not ready
   const emptySurvivalPlot = {
     overallStats: { pValue: undefined },
     survivalData: [],
@@ -141,9 +144,9 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
    * plot for the currentCohort plus whatever local filters are selected for the "top"
    * gene or mutation.
    * If comparativeSurvival is set, then it will show two separate plots.
-   * @param symbol
-   * @param name symbol (Gene or SSMS) to compare
-   * @param field field
+   * @param symbol symbol (Gene or SSMS) to compare
+   * @param name used as the label for the symbol in the Survival Plot
+   * @param field  which gene or ssms field the symbol applied to
    */
   const handleSurvivalPlotToggled = (
     symbol: string,

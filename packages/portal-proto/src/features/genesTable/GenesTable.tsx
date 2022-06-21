@@ -210,10 +210,6 @@ const GenesTable: React.FC<GenesTableProps> = ({
 
   return (
     <div className="flex flex-col w-screen pb-3 pt-3">
-      <div>
-        Showing {(activePage - 1) * pageSize + 1} - {activePage * pageSize} of{" "}
-        {totalResults} genes
-      </div>
       <div ref={ref} className={`flex flex-row w-9/12`}>
         {data && !isFetching ? (
           <VerticalTable
@@ -222,7 +218,9 @@ const GenesTable: React.FC<GenesTableProps> = ({
             columnCells={columnCells}
             handleColumnChange={handleColumnChange}
             selectableRow={false}
-            tableTitle={"Genes Table"}
+            tableTitle={`Showing ${(activePage - 1) * pageSize + 1} - ${
+              activePage * pageSize
+            } of   ${totalResults} genes`}
             pageSize={pageSize.toString()}
           ></VerticalTable>
         ) : (
