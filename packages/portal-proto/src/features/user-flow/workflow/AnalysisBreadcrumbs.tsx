@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { MdArrowBack, MdCircle } from "react-icons/md";
+import { MdClose, MdCircle } from "react-icons/md";
 import { Button } from "@mantine/core";
 import { REGISTERED_APPS } from "./registeredApps";
 
@@ -26,43 +26,40 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
   return (
     <div className="w-full bg-nci-blue-darkest text-white p-2 flex items-center ">
       <Button
-        onClick={() => {
-          if (!onDemoApp && appInfo?.selectAdditionalCohort) {
-            setCohortSelectionOpen(true);
-          }
-
-          if (
-            cohortSelectionOpen ||
-            onDemoApp ||
-            (onApp && !appInfo?.selectAdditionalCohort)
-          ) {
-            setActiveApp(undefined);
-          }
-        }}
+        onClick={() => setActiveApp(undefined)}
         className="bg-white text-nci-blue-darkest"
-        aria-label="Back"
+        aria-label="Close app"
       >
-        <MdArrowBack size={20} />
+        <MdClose size={20} />
       </Button>
-      <span className="p-2 mx-2 uppercase">
+      <span className={`p-2 mx-2 uppercase ${onDemoApp ? "font-bold" : ""}`}>
         {onDemoApp ? `${appInfo?.name} Demo` : appInfo?.name}
       </span>
-      {appInfo?.selectAdditionalCohort && !onDemoApp && (
+      {!onDemoApp && (
         <>
-          <MdCircle size={8} />
-          <span
-            className={`p-2 mx-2 uppercase ${
-              cohortSelectionOpen ? "font-bold" : ""
-            }`}
-          >
-            Selection
-          </span>
-        </>
-      )}
-      {onApp && !cohortSelectionOpen && (
-        <>
-          <MdCircle size={8} />
-          <span className="p-2 mx-2 uppercase font-bold">Results</span>
+          {appInfo?.selectAdditionalCohort && (
+            <>
+              <MdCircle size={8} />
+              <span
+                className={`p-2 mx-2 uppercase cursor-pointer ${
+                  cohortSelectionOpen ? "font-bold" : ""
+                }`}
+                role="button"
+                onClick={() => setCohortSelectionOpen(true)}
+                onKeyPress={(e) =>
+                  e.key === "Enter" ? setCohortSelectionOpen(true) : null
+                }
+              >
+                Selection
+              </span>
+            </>
+          )}
+          {!cohortSelectionOpen && (
+            <>
+              <MdCircle size={8} />
+              <span className="p-2 mx-2 uppercase font-bold">Results</span>
+            </>
+          )}
         </>
       )}
     </div>

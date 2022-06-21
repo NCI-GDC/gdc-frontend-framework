@@ -20,6 +20,7 @@ import FeaturedToolCard from "./FeaturedToolCard";
 import { CSSTransition } from "react-transition-group";
 import AnalysisBreadcrumbs from "./AnalysisBreadcrumbs";
 import AdditionalCohortSelection from "./AdditionalCohortSelection";
+import { clearComparisonCohorts } from "@gff/core";
 
 const ActiveAnalysisToolNoSSR = dynamic(
   () => import("@/features/user-flow/workflow/ActiveAnalysisTool"),
@@ -279,6 +280,8 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
 
     if (app) {
       scrollIntoView();
+    } else {
+      clearComparisonCohorts();
     }
   }, [app, scrollIntoView]);
 
@@ -292,7 +295,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
     setCohortSelectionHeight(
       window.innerHeight - containerRef?.current.offsetTop,
     );
-  }, []);
+  }, [cohortSelectionOpen]);
 
   const handleAppSelected = (app: string) => {
     router.push({ query: { app } });

@@ -116,7 +116,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
                       ? PAGE_SIZE * activePage
                       : totalResults}{" "}
                   </b>
-                  of <b>{totalResults}</b> case sets
+                  of <b>{totalResults}</b> cohorts
                 </td>
                 <td></td>
                 <td className="pt-2">
