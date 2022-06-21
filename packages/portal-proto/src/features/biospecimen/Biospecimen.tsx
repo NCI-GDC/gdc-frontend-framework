@@ -5,7 +5,7 @@ import {
   MdFileDownload,
   MdOutlineClear,
 } from "react-icons/md";
-import { Button, Input, Alert } from "@mantine/core";
+import { Button, Input, Alert, LoadingOverlay } from "@mantine/core";
 import {
   node,
   useBiospecimenData,
@@ -107,7 +107,10 @@ export const Biospecimen = ({
   // TODO:  Need to add error message in place after this is moved to the Case Summary page for invalid case ids
   return (
     <div className="my-5">
-      {Object.keys(selectedEntity).length > 0 && selectedType !== undefined ? (
+      {isBiospecimentDataFetching ? (
+        <LoadingOverlay visible />
+      ) : Object.keys(selectedEntity).length > 0 &&
+        selectedType !== undefined ? (
         <>
           <div className="flex justify-between">
             <h1>Biospecimen</h1>
