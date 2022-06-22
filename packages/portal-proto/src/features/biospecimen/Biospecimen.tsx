@@ -89,7 +89,6 @@ export const Biospecimen = ({
 
     router.push(
       {
-        pathname: router.pathname,
         query: {
           ...router.query,
           bioId: entity[`${type.s}_id`],
@@ -120,7 +119,7 @@ export const Biospecimen = ({
           <div className="flex justify-between">
             <h1>Biospecimen</h1>
             <Button
-              className="px-1.5 min-h-[28px] min-w-[40px] border-nci-gray-light border rounded-[4px] "
+              className="px-1.5 min-h-7 min-w-10 border-nci-gray-light border rounded"
               onClick={() => {
                 alert("Download coming soon!!!");
               }}

@@ -1,7 +1,7 @@
 import "../styles/globals.css";
 import "../styles/survivalplot.css";
 import "../styles/oncogrid.css";
-
+import { createContext, useState } from "react";
 import { Provider } from "react-redux";
 import type { AppProps } from "next/app";
 import { CoreProvider } from "@gff/core";
@@ -26,14 +26,17 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 ReactModal.setAppElement("#__next");
 
+export const URLContext = createContext({ prevPath: "", currentPath: "" });
+
 const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
+  const [prevPath, setPrevPath] = useState("");
+  const [currentPath, setCurrentPath] = useState("");
 
   useEffect(() => {
-    const prevPath = localStorage.getItem("currentPath");
-    localStorage.setItem("prevPath", prevPath);
-    localStorage.setItem("currentPath", globalThis.location.pathname);
-  }, [router.asPath]);
+    setPrevPath(currentPath);
+    setCurrentPath(globalThis.location.pathname);
+  }, [currentPath, router.asPath]);
 
   return (
     <CoreProvider>
@@ -93,7 +96,9 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
         >
           <NotificationsProvider position="top-center">
             <TourProvider steps={[]} components={{ Badge }}>
-              <Component {...pageProps} />
+              <URLContext.Provider value={{ prevPath, currentPath }}>
+                <Component {...pageProps} />
+              </URLContext.Provider>
             </TourProvider>
           </NotificationsProvider>
         </MantineProvider>

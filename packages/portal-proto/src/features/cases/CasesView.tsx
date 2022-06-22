@@ -9,8 +9,9 @@ import {
 } from "@gff/core";
 import { Table, Pagination, Select } from "@mantine/core";
 import { Biospecimen } from "../biospecimen/Biospecimen";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useScrollIntoView } from "@mantine/hooks";
+import { URLContext } from "src/pages/_app";
 
 export interface Case {
   readonly id: string;
@@ -86,6 +87,7 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
   props: ContextualCasesViewProps,
 ) => {
   // TODO useContextualCases() that filters based on the context
+  const { prevPath } = useContext(URLContext);
   const [pageSize, setPageSize] = useState(10);
   const [activePage, setPage] = useState(1);
   const { data, isSuccess } = useCohortCases(pageSize, activePage);
@@ -99,11 +101,10 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
   });
 
   useEffect(() => {
-    if (localStorage.getItem("prevPath")?.includes("MultipleImageViewerPage")) {
+    if (prevPath?.includes("MultipleImageViewerPage")) {
       scrollIntoView();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [prevPath, scrollIntoView]);
 
   useEffect(() => {
     setPages(Math.ceil(caseCounts / pageSize));
@@ -130,7 +131,7 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
   return (
     <div className="flex flex-col m-auto w-10/12">
       {/* TODO: need to take remove this class later */}
-      <div className="hidden">
+      <div>
         <CasesView
           cases={cases}
           caption={`Showing ${pageSize} of ${caseCounts} Cases`}

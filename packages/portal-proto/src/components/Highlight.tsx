@@ -5,7 +5,6 @@ import React from "react";
 export const internalHighlight = (
   query: string,
   foundText: string,
-  highlightStyle: React.CSSProperties = { fontWeight: "bold" },
 ): JSX.Element => {
   const index = (foundText || "").toLocaleLowerCase().indexOf(query);
   if (foundText && index !== -1) {
@@ -15,7 +14,7 @@ export const internalHighlight = (
     return (
       <span>
         {seg1}
-        <span style={highlightStyle}>{foundQuery}</span>
+        <mark className="font-bold bg-transparent">{foundQuery}</mark>
         {seg2}
       </span>
     );

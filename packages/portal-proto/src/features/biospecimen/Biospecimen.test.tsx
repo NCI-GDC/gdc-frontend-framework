@@ -59,7 +59,7 @@ describe("<Biospecimen />", () => {
     expect(getByTestId("loading")).toBeInTheDocument();
   });
 
-  it("should not show error text when the results are NOT empty and should render a Biotree comp", () => {
+  it("should not show error text when the results are NOT empty and should render a Biotree comp with given data", () => {
     jest.spyOn(func, "useBiospecimenData").mockReturnValue({
       data: {
         files: { hits: { edges: [] } },
@@ -74,12 +74,13 @@ describe("<Biospecimen />", () => {
       isSuccess: true,
       isUninitialized: false,
     });
-    const { queryByLabelText, getByRole } = render(
+    const { queryByLabelText, getByRole, getByText } = render(
       <Biospecimen caseId="testId" bioId="" />,
     );
 
     expect(queryByLabelText("Case ID not found")).toBeNull();
     expect(getByRole("treeitem")).toBeInTheDocument();
+    expect(getByText("Primary Tumor")).toBeInTheDocument();
   });
 
   it("should show error text when the results are empty", () => {

@@ -152,19 +152,21 @@ export const BioTree = ({
       >
         {isExpanded.current ? (
           <ExpandLessIcon
-            className="hover:cursor-pointer text-nci-green-darkest"
+            className="cursor-pointer text-nci-green-darkest"
             size={18}
           />
         ) : (
           <ExpandMoreIcon
-            className="hover:cursor-pointer text-nci-blue-darkest"
+            className="cursor-pointer text-nci-blue-darkest"
             size={18}
           />
         )}
 
         <Badge
           variant="filled"
-          className={query && type.p.includes(query) ? "bg-nci-yellow" : ""}
+          className={`cursor-pointer ${
+            query && type.p.includes(query) && "bg-nci-yellow"
+          }`}
         >
           <Highlight search={query} text={type.p} />
         </Badge>

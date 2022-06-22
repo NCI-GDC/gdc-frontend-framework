@@ -1,4 +1,5 @@
 import { node } from "@gff/core";
+import { JSXElementConstructor, ReactElement } from "react";
 
 export interface types {
   s: string;
@@ -14,7 +15,7 @@ export type searchType = (
 
 export interface NodeProps {
   entity: Partial<node>;
-  children: any;
+  children: ReactElement<any, string | JSXElementConstructor<any>>;
   entityTypes: Array<types>;
   type: types;
   selectedEntity: Partial<node>;
