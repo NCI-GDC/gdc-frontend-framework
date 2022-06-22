@@ -94,13 +94,13 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
             },
           }}
         >
-          <NotificationsProvider position="top-center">
-            <TourProvider steps={[]} components={{ Badge }}>
-              <URLContext.Provider value={{ prevPath, currentPath }}>
+          <URLContext.Provider value={{ prevPath, currentPath }}>
+            <NotificationsProvider position="top-center">
+              <TourProvider steps={[]} components={{ Badge }}>
                 <Component {...pageProps} />
-              </URLContext.Provider>
-            </TourProvider>
-          </NotificationsProvider>
+              </TourProvider>
+            </NotificationsProvider>
+          </URLContext.Provider>
         </MantineProvider>
       </Provider>
     </CoreProvider>
