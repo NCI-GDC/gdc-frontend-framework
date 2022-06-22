@@ -133,6 +133,7 @@ export const BioTree = ({
   }, []);
 
   const onTreeClick = () => {
+    if (query) return;
     isExpanded.current = !isExpanded.current;
     isExpanded.current
       ? setExpandedCount((c) => c + 1)
@@ -151,13 +152,12 @@ export const BioTree = ({
       >
         {isExpanded.current ? (
           <ExpandLessIcon
-            className="hover:cursor-pointer"
-            color="green"
+            className="hover:cursor-pointer text-nci-green-darkest"
             size={18}
           />
         ) : (
           <ExpandMoreIcon
-            className="hover:cursor-pointer text-nci-blue"
+            className="hover:cursor-pointer text-nci-blue-darkest"
             size={18}
           />
         )}
