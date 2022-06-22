@@ -131,6 +131,7 @@ export const ContextualFilesView: React.FC<ContextualFilesViewProps> = ({
                 indexType="repository"
                 showPercent={false}
                 description={x.description}
+                width="w-64"
               />
             );
           })}
