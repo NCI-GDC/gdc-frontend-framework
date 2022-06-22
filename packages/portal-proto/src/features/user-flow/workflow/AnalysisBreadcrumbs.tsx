@@ -47,6 +47,7 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
                   cohortSelectionOpen ? "font-bold" : ""
                 }`}
                 role="button"
+                tabIndex={0}
                 onClick={() => setCohortSelectionOpen(true)}
                 onKeyPress={(e) =>
                   e.key === "Enter" ? setCohortSelectionOpen(true) : null

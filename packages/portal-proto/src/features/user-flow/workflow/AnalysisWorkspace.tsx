@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/router";
 import { Chip, Chips, Menu, Grid, ActionIcon } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
@@ -269,9 +269,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   setContextBarCollapsed,
 }: AnalysisWorkspaceProps) => {
   const [cohortSelectionOpen, setCohortSelectionOpen] = useState(false);
-  const [cohortSelectionHeight, setCohortSelectionHeight] = useState(0);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollIntoView, targetRef } = useScrollIntoView();
+  const { scrollIntoView, targetRef } = useScrollIntoView({ offset: 42 });
   const router = useRouter();
 
   useEffect(() => {
@@ -285,37 +283,25 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
     }
   }, [app, scrollIntoView]);
 
-  useEffect(() => {
-    if (cohortSelectionOpen) {
-      setContextBarCollapsed(true);
-    }
-  }, [cohortSelectionOpen, setContextBarCollapsed]);
-
-  useEffect(() => {
-    setCohortSelectionHeight(
-      window.innerHeight - containerRef?.current.offsetTop,
-    );
-  }, [cohortSelectionOpen]);
-
   const handleAppSelected = (app: string) => {
     router.push({ query: { app } });
   };
 
   return (
-    <div ref={containerRef}>
+    <div ref={(ref) => (targetRef.current = ref)}>
       <CSSTransition in={cohortSelectionOpen} timeout={500}>
         {(state) => (
           <div
             className={
               {
                 entering:
-                  "block animate-slide-up h-full w-full absolute z-[1000]",
-                entered: `block h-full w-full absolute z-[1000]`,
-                exiting: "block animate-slide-down w-full absolute z-[1000]",
+                  "block animate-slide-up min-h-[800px] w-full flex flex-col absolute z-[1000]",
+                entered: `block min-h-[800px] w-full flex flex-col absolute z-[1000]`,
+                exiting:
+                  "block animate-slide-down min-h-[800px] w-full flex flex-col absolute z-[1000]",
                 exited: "hidden translate-x-0",
               }[state]
             }
-            style={{ height: cohortSelectionHeight }}
           >
             <AnalysisBreadcrumbs
               currentApp={app}
@@ -332,7 +318,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
         )}
       </CSSTransition>
       {app && !cohortSelectionOpen && (
-        <div ref={(ref) => (targetRef.current = ref)}>
+        <>
           <AnalysisBreadcrumbs
             currentApp={app}
             setCohortSelectionOpen={setCohortSelectionOpen}
@@ -347,7 +333,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
             setActiveApp={handleAppSelected}
             setContextBarCollapsed={setContextBarCollapsed}
           />
-        </div>
+        </>
       )}
       {!app && <AnalysisGrid onAppSelected={handleAppSelected} />}
     </div>
