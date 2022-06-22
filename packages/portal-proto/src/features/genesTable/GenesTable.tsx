@@ -50,8 +50,8 @@ const GenesTable: React.FC<GenesTableProps> = ({
           symbol: g.symbol,
           name: g.name,
           survival: {
-            name: `${g.name}`,
-            symbol: `${g.symbol}`,
+            name: g.name,
+            symbol: g.symbol,
             checked: g.symbol == selectedSurvivalPlot?.symbol,
           },
           SSMSAffectedCasesInCohort:
