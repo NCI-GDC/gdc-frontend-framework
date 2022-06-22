@@ -326,11 +326,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
           <div className="w-10/12 m-auto">
             {app === "CohortBuilder" ? <SearchInput /> : null}
           </div>
-          <ActiveAnalysisToolNoSSR
-            appId={app}
-            setActiveApp={handleAppSelected}
-            setContextBarCollapsed={setContextBarCollapsed}
-          />
+          <ActiveAnalysisToolNoSSR appId={app} />
         </>
       )}
       {!app && <AnalysisGrid onAppSelected={handleAppSelected} />}

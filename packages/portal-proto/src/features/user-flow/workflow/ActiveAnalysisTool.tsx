@@ -10,8 +10,6 @@ const importApplication = (app) =>
 
 export interface AnalysisToolInfo {
   readonly appId: string;
-  readonly setActiveApp?: (id: string, name: string) => void;
-  readonly setContextBarCollapsed?: (collapsed: boolean) => void;
 }
 
 const ActiveAnalysisTool: React.FC<AnalysisToolInfo> = ({
