@@ -130,7 +130,6 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
 
   return (
     <div className="flex flex-col m-auto w-10/12">
-      {/* TODO: need to take remove this class later */}
       <div>
         <CasesView
           cases={cases}
