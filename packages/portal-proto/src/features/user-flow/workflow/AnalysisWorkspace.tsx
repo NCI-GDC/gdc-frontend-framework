@@ -262,11 +262,9 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
 
 interface AnalysisWorkspaceProps {
   readonly app: string | undefined;
-  readonly setContextBarCollapsed: (collapsed: boolean) => void;
 }
 const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   app,
-  setContextBarCollapsed,
 }: AnalysisWorkspaceProps) => {
   const [cohortSelectionOpen, setCohortSelectionOpen] = useState(false);
   const { scrollIntoView, targetRef } = useScrollIntoView({ offset: 42 });

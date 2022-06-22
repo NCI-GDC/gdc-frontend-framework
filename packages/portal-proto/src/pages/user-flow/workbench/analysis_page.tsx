@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
@@ -13,20 +12,13 @@ const SingleAppsPage: NextPage = () => {
     query: { app },
   } = router;
 
-  const [isGroupCollapsed, setIsGroupCollapsed] = useState(false);
-
   return (
     <UserFlowVariedPages
       {...{ indexPath: "/user-flow/workbench", headerElements }}
     >
-      <ContextBar
-        cohorts={COHORTS}
-        isGroupCollapsed={isGroupCollapsed}
-        setIsGroupCollapsed={setIsGroupCollapsed}
-      />
+      <ContextBar cohorts={COHORTS} />
       <AnalysisWorkspace
         app={app && app.length > 0 ? app.toString() : undefined}
-        setContextBarCollapsed={setIsGroupCollapsed}
       />
     </UserFlowVariedPages>
   );
