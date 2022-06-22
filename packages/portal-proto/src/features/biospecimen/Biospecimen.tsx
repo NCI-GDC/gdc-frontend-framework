@@ -38,6 +38,7 @@ export const Biospecimen = ({
   const [expandedCount, setExpandedCount] = useState(1);
   const [totalNodeCount, setTotalNodeCount] = useState(0);
   const [searchText, setSearchText] = useState(bioId || "");
+  const [entityClicked, setEntityClicked] = useState(false);
 
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
@@ -61,10 +62,12 @@ export const Biospecimen = ({
         search(searchText, e),
       );
       const flattened = flatten(founds);
-
       const foundNode = flattened[0]?.node;
-      Object.keys(selectedEntity).length === 0 && setSelectedEntity(foundNode);
-      !selectedType && foundNode && setSelectedType(getType(foundNode));
+
+      if (!entityClicked && foundNode) {
+        setSelectedEntity(foundNode);
+        setSelectedType(getType(foundNode));
+      }
     }
   }, [
     bioSpecimenData?.samples?.hits?.edges,
@@ -72,11 +75,13 @@ export const Biospecimen = ({
     searchText,
     selectedEntity,
     selectedType,
+    entityClicked,
   ]);
 
   const onSelectEntity = (entity, type) => {
     setSelectedEntity(entity);
     setSelectedType(type.s);
+    setEntityClicked(true);
 
     if (treeStatusOverride === overrideMessage.QueryMatches) {
       setTreeStatusOverride(null);
@@ -140,7 +145,7 @@ export const Biospecimen = ({
                         shallow: true,
                       });
                     }
-
+                    setEntityClicked && setEntityClicked(false);
                     setSearchText(e.target.value);
                   }}
                   value={searchText}
@@ -153,6 +158,7 @@ export const Biospecimen = ({
                         setExpandedCount(0);
                         setTreeStatusOverride(overrideMessage.Expanded);
                         setSearchText("");
+                        setEntityClicked && setEntityClicked(false);
                         router.replace(`/cases/${caseId}`, undefined, {
                           shallow: true,
                         });
