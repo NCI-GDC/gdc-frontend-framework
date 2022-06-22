@@ -7,12 +7,9 @@ import { useEffect, useState } from "react";
 
 const CaseSummary: NextPage = () => {
   const router = useRouter();
-  let caseId = router.asPath.split("/")[2];
-
-  if (caseId.includes("?")) {
-    caseId = caseId.split("?")[0];
-  }
-
+  const {
+    query: { caseId, bioId },
+  } = router;
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -27,8 +24,8 @@ const CaseSummary: NextPage = () => {
     >
       {ready && (
         <ContextualCasesView
-          caseId={caseId}
-          bioId={router.query.bioId as string}
+          caseId={caseId as string}
+          bioId={bioId as string}
         />
       )}
     </UserFlowVariedPages>
