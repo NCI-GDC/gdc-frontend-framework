@@ -13,12 +13,12 @@ export type searchType = (
 ) => any[];
 
 export interface NodeProps {
-  entity: node;
+  entity: Partial<node>;
   children: any;
   entityTypes: Array<types>;
   type: types;
-  selectedEntity: node;
-  selectEntity: (entity: node, type: types) => void;
+  selectedEntity: Partial<node>;
+  selectEntity: (entity: Partial<node>, type: types) => void;
   query: string;
   search: searchType;
 }
@@ -27,7 +27,7 @@ export interface BioTreeProps {
   entities?: {
     hits: {
       edges: {
-        node: node;
+        node: Partial<node>;
       }[];
     };
   };
@@ -36,8 +36,8 @@ export interface BioTreeProps {
   parentNode: string;
   treeStatusOverride: overrideMessage | null;
   setTreeStatusOverride: React.Dispatch<React.SetStateAction<overrideMessage>>;
-  selectedEntity: node;
-  selectEntity: (entity: node, type: types) => void;
+  selectedEntity: Partial<node>;
+  selectEntity: (entity: Partial<node>, type: types) => void;
   setExpandedCount: React.Dispatch<React.SetStateAction<number>>;
   setTotalNodeCount: React.Dispatch<React.SetStateAction<number>>;
   query: string;

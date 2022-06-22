@@ -34,7 +34,7 @@ const Node = ({
               (search(query, { node: entity }) || [])
                 .map((e) => e.node)
                 .some((e) => e[`${type.s}_id`] === entity[`${type.s}_id`])
-                ? "bg-yellow-300"
+                ? "bg-nci-yellow"
                 : ""
             }`}
             onClick={() => {

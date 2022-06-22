@@ -8,28 +8,13 @@ import { CoreDispatch, node } from "@gff/core";
 import { addToCart } from "@/features/cart/updateCart";
 import { get } from "lodash";
 import { entityTypes } from "@/components/BioTree/types";
+import { capitalize } from "src/utils";
 
 interface IHumanifyParams {
   term: string;
   capitalize?: boolean;
   facetTerm?: boolean;
 }
-
-export const capitalize = (original: string): string => {
-  const customCapitalizations = {
-    id: "ID",
-    uuid: "UUID",
-  };
-
-  return original
-    .split(" ")
-    .map(
-      (word) =>
-        customCapitalizations[word.toLowerCase()] ||
-        `${word.charAt(0).toUpperCase()}${word.slice(1)}`,
-    )
-    .join(" ");
-};
 
 export const match = (query: string, entity: Record<string, any>): boolean =>
   Object.keys(entity).some((k) => {
@@ -99,7 +84,7 @@ export const idFields = [
 ];
 
 export const formatEntityInfo = (
-  entity: node,
+  entity: Partial<node>,
   foundType: string,
   caseId: string,
   dispatch: CoreDispatch,

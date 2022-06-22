@@ -32,7 +32,7 @@ export const Biospecimen = ({
 
   const [treeStatusOverride, setTreeStatusOverride] =
     useState<overrideMessage | null>(null);
-  const [selectedEntity, setSelectedEntity] = useState<node>({});
+  const [selectedEntity, setSelectedEntity] = useState<Partial<node>>({});
   const [isAllExpanded, setIsAllExpanded] = useState(false);
   const [selectedType, setSelectedType] = useState(undefined);
   const [expandedCount, setExpandedCount] = useState(1);

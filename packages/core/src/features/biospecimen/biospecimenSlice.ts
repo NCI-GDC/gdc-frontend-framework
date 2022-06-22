@@ -16,39 +16,39 @@ export const fetchBiospecimenData = createAsyncThunk(
 );
 
 export interface node {
-  composition?: string | null;
-  current_weight?: string | null;
-  days_to_collection?: string | null;
-  days_to_sample_procurement?: number | null;
-  freezing_method?: string | null;
-  id?: string | null;
-  initial_weight?: string | null;
-  intermediate_dimension?: string | null;
-  is_ffpe?: string | null;
-  longest_dimension?: string | null;
-  oct_embedded?: string | null;
-  pathology_report_uuid?: string | null;
-  portions?: any;
-  preservation_method?: string | null;
-  sample_id?: string | null;
-  portion_id?: string | null;
-  analyte_id?: string | null;
-  aliquot_id?: string | null;
-  slide_id?: string | null;
-  sample_type?: string | null;
-  sample_type_id?: string | null;
-  shortest_dimension?: string | null;
-  submitter_id?: string | null;
-  time_between_clamping_and_freezing?: string | null;
-  time_between_excision_and_freezing?: string | null;
-  tissue_type?: string | null;
-  tumor_code?: string | null;
-  tumor_code_id?: string | null;
-  tumor_descriptor?: string | null;
+  composition: string | null;
+  current_weight: string | null;
+  days_to_collection: string | null;
+  days_to_sample_procurement: number | null;
+  freezing_method: string | null;
+  id: string | null;
+  initial_weight: string | null;
+  intermediate_dimension: string | null;
+  is_ffpe: string | null;
+  longest_dimension: string | null;
+  oct_embedded: string | null;
+  pathology_report_uuid: string | null;
+  portions: any;
+  preservation_method: string | null;
+  sample_id: string | null;
+  portion_id: string | null;
+  analyte_id: string | null;
+  aliquot_id: string | null;
+  slide_id: string | null;
+  sample_type: string | null;
+  sample_type_id: string | null;
+  shortest_dimension: string | null;
+  submitter_id: string | null;
+  time_between_clamping_and_freezing: string | null;
+  time_between_excision_and_freezing: string | null;
+  tissue_type: string | null;
+  tumor_code: string | null;
+  tumor_code_id: string | null;
+  tumor_descriptor: string | null;
 }
 
 interface nodeType {
-  hits: { edges: Array<{ node: node }> };
+  hits: { edges: Array<{ node: Partial<node> }> };
 }
 export interface biospecimenSliceInitialState {
   readonly status: DataStatus;
@@ -91,8 +91,8 @@ const slice = createSlice({
 export const biospecimenReducer = slice.reducer;
 
 export interface biospecimenSelectorType {
-  files: { hits: { edges: Array<{ node: node }> } };
-  samples: { hits: { edges: Array<{ node: node }> } };
+  files: { hits: { edges: Array<{ node: any }> } };
+  samples: { hits: { edges: Array<{ node: Partial<node> }> } };
 }
 
 export const selectBiospecimenInfo = (

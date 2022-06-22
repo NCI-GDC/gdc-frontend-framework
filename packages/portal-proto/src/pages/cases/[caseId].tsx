@@ -1,5 +1,5 @@
 import { NextPage } from "next";
-import { headerElements } from "@/features/user-flow/many-pages/navigation-utils";
+import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
 import { ContextualCasesView } from "@/features/cases/CasesView";
 import { useRouter } from "next/router";
 import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
