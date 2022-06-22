@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from "react";
 import Image from "next/image";
-import { Case } from "./CasesView";
+import { Case } from "./types";
 import ReactModal from "react-modal";
 
 export interface CaseViewProps {

@@ -1,51 +1,44 @@
 import { selectCohortCountsByName, useCoreSelector } from "@gff/core";
-import { Table, Pagination, Select } from "@mantine/core";
-import { Biospecimen } from "../biospecimen/Biospecimen";
+import { Table, Pagination, Select, LoadingOverlay } from "@mantine/core";
 import { useEffect, useState } from "react";
-import { useScrollIntoView } from "@mantine/hooks";
 import { Case } from "./types";
 import { useCohortCases } from "@/features/cases/hooks";
+import { useRouter } from "next/router";
 
-export interface CasesViewProps {
+export interface CasesTableViewProps {
   readonly cases?: ReadonlyArray<Case>;
   readonly handleCaseSelected?: (patient: Case) => void;
   readonly caption?: string;
 }
 
-export interface ContextualCasesViewProps {
+export interface ContextualCasesTableViewProps {
   readonly handleCaseSelected?: (patient: Case) => void;
-  caseId?: string;
-  bioId?: string;
 }
 
-export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
-  props: ContextualCasesViewProps,
-) => {
+export const ContextualCasesTableView: React.FC<
+  ContextualCasesTableViewProps
+> = () => {
   // TODO useContextualCases() that filters based on the context
   const [pageSize, setPageSize] = useState(10);
   const [activePage, setPage] = useState(1);
   const { data, isSuccess } = useCohortCases(pageSize, activePage);
   const [pages, setPages] = useState(10);
+
   const caseCounts = useCoreSelector((state) =>
     selectCohortCountsByName(state, "caseCounts"),
   );
-
-  const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>({
-    offset: 60,
-  });
-
-  useEffect(() => {
-    if (localStorage.getItem("prevPath")?.includes("MultipleImageViewerPage")) {
-      scrollIntoView();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     setPages(Math.ceil(caseCounts / pageSize));
   }, [caseCounts, pageSize]);
 
-  if (!isSuccess) return <div>Loading...</div>;
+  const router = useRouter();
+  const handleCaseSelected = (p: Case) => {
+    router.push({
+      pathname: `/cases/[uuid]`,
+      query: { uuid: p.id },
+    });
+  };
 
   const handlePageSizeChange = (x: string) => {
     setPageSize(parseInt(x));
@@ -64,50 +57,47 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
   }));
 
   return (
-    <div className="flex flex-col m-auto w-10/12">
-      {/* TODO: need to take remove this class later */}
-      <div className="hidden">
-        <CasesView
-          cases={cases}
-          caption={`Showing ${pageSize} of ${caseCounts} Cases`}
-          handleCaseSelected={props.handleCaseSelected}
+    <div className="flex flex-col">
+      <LoadingOverlay visible={!isSuccess} />
+      <CasesTableView
+        cases={cases}
+        caption={`Showing ${pageSize} of ${caseCounts} Cases`}
+        handleCaseSelected={handleCaseSelected}
+      />
+      <div className="flex flex-row items-center justify-start border-t border-nci-gray-light">
+        <p className="px-2">Page Size:</p>
+        <Select
+          size="sm"
+          radius="md"
+          onChange={handlePageSizeChange}
+          value={pageSize.toString()}
+          data={[
+            { value: "10", label: "10" },
+            { value: "20", label: "20" },
+            { value: "40", label: "40" },
+            { value: "100", label: "100" },
+          ]}
         />
-        <div className="flex flex-row items-center justify-start border-t border-nci-gray-light">
-          <p className="px-2">Page Size:</p>
-          <Select
-            size="sm"
-            radius="md"
-            onChange={handlePageSizeChange}
-            value={pageSize.toString()}
-            data={[
-              { value: "10", label: "10" },
-              { value: "20", label: "20" },
-              { value: "40", label: "40" },
-              { value: "100", label: "100" },
-            ]}
-          />
-          <Pagination
-            classNames={{
-              active: "bg-nci-gray",
-            }}
-            size="sm"
-            radius="md"
-            color="gray"
-            className="ml-auto"
-            page={activePage}
-            onChange={(x) => setPage(x - 1)}
-            total={pages}
-          />
-        </div>
-      </div>
-      <div ref={targetRef} id="biospecimen">
-        <Biospecimen caseId={props.caseId} bioId={props.bioId} />
+        <Pagination
+          classNames={{
+            active: "bg-nci-gray",
+          }}
+          size="sm"
+          radius="md"
+          color="gray"
+          className="ml-auto"
+          page={activePage}
+          onChange={(x) => setPage(x - 1)}
+          total={pages}
+        />
       </div>
     </div>
   );
 };
 
-export const CasesView: React.FC<CasesViewProps> = (props: CasesViewProps) => {
+export const CasesTableView: React.FC<CasesTableViewProps> = (
+  props: CasesTableViewProps,
+) => {
   const { cases, handleCaseSelected = () => void 0 } = props;
 
   return (

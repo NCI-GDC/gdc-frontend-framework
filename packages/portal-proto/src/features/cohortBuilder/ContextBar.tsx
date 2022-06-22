@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { CollapsibleContainer } from "../../components/CollapsibleContainer";
 import { Button, Menu, Tabs, Divider } from "@mantine/core";
-import { ContextualCasesView } from "../cases/CasesView";
+import { ContextualCasesTableView } from "../cases/CasesTableView";
 import CountButton from "./CountButton";
 import { convertFilterToComponent } from "./QueryRepresentation";
 import {
@@ -220,7 +220,7 @@ const ContextBar: React.FC<CohortGroupProps> = ({
                 icon={<TableIcon size="1.5rem" />}
               >
                 <div className="bg-secondary">
-                  <ContextualCasesView />
+                  <ContextualCasesTableView />
                 </div>
               </Tabs.Tab>
             </Tabs>
