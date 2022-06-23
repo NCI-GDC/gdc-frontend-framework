@@ -37,7 +37,7 @@ const removeKey = (key, { [key]: _, ...rest }) => rest;
 
 const processChartData = (
   facetData: Record<string, any>,
-  selectedEnums: string[],
+  selectedEnums: ReadonlyArray<string>,
   maxBins = 100,
 ) => {
   const data = removeKey("_missing", facetData);
