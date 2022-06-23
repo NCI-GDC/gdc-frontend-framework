@@ -24,6 +24,7 @@ const maxValuesToDisplay = 7;
 interface FacetChartProps {
   readonly field: string;
   readonly data: Record<string, number>;
+  readonly selectedEnums: string[];
   readonly isSuccess: boolean;
   readonly height?: number;
   readonly showTitle?: boolean;
@@ -34,10 +35,19 @@ interface FacetChartProps {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const removeKey = (key, { [key]: _, ...rest }) => rest;
 
-const processChartData = (facetData: Record<string, any>, maxBins = 100) => {
+const processChartData = (
+  facetData: Record<string, any>,
+  selectedEnums: string[],
+  maxBins = 100,
+) => {
   const data = removeKey("_missing", facetData);
 
   const results = Object.keys(data)
+    .filter((d) =>
+      !selectedEnums || selectedEnums.length === 0
+        ? d
+        : selectedEnums.includes(d),
+    )
     .slice(0, maxBins)
     .map((d) => ({
       x: truncateString(processLabel(d), 35),
@@ -50,6 +60,7 @@ const processChartData = (facetData: Record<string, any>, maxBins = 100) => {
 export const EnumFacetChart: React.FC<FacetChartProps> = ({
   field,
   data,
+  selectedEnums,
   isSuccess,
   height,
   showTitle = true,
@@ -60,10 +71,10 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
 
   useEffect(() => {
     if (isSuccess) {
-      const cd = processChartData(data, maxBins);
+      const cd = processChartData(data, selectedEnums, maxBins);
       setChartData(cd);
     }
-  }, [data, field, isSuccess, maxBins]);
+  }, [data, selectedEnums, field, isSuccess, maxBins]);
 
   // Create unique ID for this chart
   const chartDivId = `${field}_${Math.floor(Math.random() * 100)}`;

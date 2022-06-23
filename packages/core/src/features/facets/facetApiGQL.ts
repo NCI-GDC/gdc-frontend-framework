@@ -30,6 +30,7 @@ export const buildGraphGLBucketQuery = (
             ${docType} {
               aggregations(
                 filters: $filters_0
+                aggregations_filter_themselves: false
               ) {
                 ${queriedFacet} {
                   buckets {
