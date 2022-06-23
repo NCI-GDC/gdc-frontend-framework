@@ -332,7 +332,7 @@ export interface FileDefaults {
     readonly input_files?: ReadonlyArray<{
       readonly file_id: string;
     }>;
-    readonly metadata: {
+    readonly metadata?: {
       readonly read_groups: Array<{
         readonly read_group_id: string;
         readonly is_paired_end: boolean;

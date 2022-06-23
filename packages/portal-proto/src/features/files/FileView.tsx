@@ -407,7 +407,7 @@ export const FileView: React.FC<FileViewProps> = ({
               />
             </div>
           </div>
-          {file?.analysis.metadata && (
+          {file?.analysis?.metadata && (
             <FullWidthDiv>
               <TitleText>Read Groups</TitleText>
               <TempTable
