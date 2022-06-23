@@ -88,7 +88,7 @@ export const FileView: React.FC<FileViewProps> = ({
     const tableRows = [];
     downstream_analyses?.forEach((byWorkflowType) => {
       const workflowType = byWorkflowType?.workflow_type;
-      byWorkflowType?.output_files.forEach((obj) => {
+      byWorkflowType?.output_files?.forEach((obj) => {
         tableRows.push({
           file_name: (
             <GenericLink path={`/files/${obj.file_id}`} text={obj.file_name} />
@@ -330,71 +330,111 @@ export const FileView: React.FC<FileViewProps> = ({
         )}
       </div>
       {file?.analysis && (
+        <>
+          <div className="bg-white mt-4 flex gap-4">
+            <div className="flex-1">
+              <h2 className="p-2 text-lg mx-4">Analysis</h2>
+              <HorizontalTable
+                tableData={formatDataForHorizontalTable(file, [
+                  {
+                    field: "analysis.workflow_type",
+                    name: "Workflow Type",
+                  },
+                  {
+                    field: "analysis.updated_datetime",
+                    name: "Workflow Completion Date",
+                    modifier: (v) => v.split("T")[0],
+                  },
+                  {
+                    field: "analysis.input_files.length",
+                    name: "Source Files",
+                    modifier: (v) => {
+                      if (v === 1) {
+                        return (
+                          <GenericLink
+                            path={`/files/${
+                              get(file, "analysis.input_files")[0]
+                            }`}
+                            text={"1"}
+                          />
+                        );
+                      } else if (v > 1) {
+                        return (
+                          <GenericLink
+                            path={`/repository`}
+                            query={{
+                              filters: JSON.stringify({
+                                content: [
+                                  {
+                                    content: {
+                                      field:
+                                        "files.downstream_analyses.output_files.file_id",
+                                      value: [file.id],
+                                    },
+                                    op: "in",
+                                  },
+                                ],
+                                op: "and",
+                              }),
+                              searchTableTab: "files",
+                            }}
+                            text={`${v}`}
+                          />
+                        );
+                      }
+                      return "0";
+                    },
+                  },
+                ])}
+              />
+            </div>
+            <div className="flex-1">
+              <h2 className="p-2 text-lg mx-4">Reference Genome</h2>
+              <HorizontalTable
+                tableData={[
+                  { headerName: "Genome Build	", values: ["GRCh38.p0"] },
+                  { headerName: "Genome Name	", values: ["GRCh38.d1.vd1"] },
+                ]}
+              />
+            </div>
+          </div>
+          <div className="bg-white w-full mt-4">
+            <h2 className="p-2 text-lg mx-4">Read Groups</h2>
+            <TempTable
+              tableData={{
+                headers: [
+                  "Read Group ID",
+                  "Is Paired End",
+                  "Read Length",
+                  "Library Name",
+                  "Sequencing Center",
+                  "Sequencing Date",
+                ],
+                tableRows: file?.analysis.metadata.read_groups.map(
+                  (read_group) => ({
+                    read_group_id: read_group.read_group_id ?? "--",
+                    is_paired_end: read_group.is_paired_end ? "true" : "false",
+                    read_length: read_group.read_length ?? "--",
+                    library_name: read_group.library_name ?? "--",
+                    sequencing_center: read_group.sequencing_center ?? "--",
+                    sequencing_date: read_group.sequencing_date ?? "--",
+                  }),
+                ),
+              }}
+            />
+          </div>
+        </>
+      )}
+      {file?.downstream_analyses?.some(
+        (byWorkflowType) => byWorkflowType?.output_files?.length > 0,
+      ) && (
         <div className="bg-white w-full mt-4">
-          <h2 className="p-2 text-lg mx-4">Analysis</h2>
-          <HorizontalTable
-            tableData={formatDataForHorizontalTable(file, [
-              {
-                field: "analysis.workflow_type",
-                name: "Workflow Type",
-              },
-              {
-                field: "analysis.updated_datetime",
-                name: "Workflow Completion Date",
-                modifier: (v) => v.split("T")[0],
-              },
-              {
-                field: "analysis.input_files.length",
-                name: "Source Files",
-                modifier: (v) => {
-                  if (v === 1) {
-                    return (
-                      <GenericLink
-                        path={`/files/${get(file, "analysis.input_files")[0]}`}
-                        text={"1"}
-                      />
-                    );
-                  } else if (v > 1) {
-                    return (
-                      <GenericLink
-                        path={`/repository`}
-                        query={{
-                          filters: JSON.stringify({
-                            content: [
-                              {
-                                content: {
-                                  field:
-                                    "files.downstream_analyses.output_files.file_id",
-                                  value: [file.id],
-                                },
-                                op: "in",
-                              },
-                            ],
-                            op: "and",
-                          }),
-                          searchTableTab: "files",
-                        }}
-                        text={`${v}`}
-                      />
-                    );
-                  }
-                  return "0";
-                },
-              },
-            ])}
-          />
+          <h2 className="p-2 text-lg mx-4">Downstream Analyses Files</h2>
+
+          <DownstreamAnalyses downstream_analyses={file?.downstream_analyses} />
         </div>
       )}
-      <div className="bg-white w-full mt-4">
-        <h2 className="p-2 text-lg mx-4">Downstream Analyses Files</h2>
-        {file?.downstream_analyses?.[0]?.output_files?.length > 0 ? (
-          <DownstreamAnalyses downstream_analyses={file?.downstream_analyses} />
-        ) : (
-          <h3 className="p-2 mx-4 text-nci-gray-darker">
-            No Downstream Analysis files found.
-          </h3>
-        )}
-      </div>
+
       {fileHistory && (
         <div className="bg-white w-full mt-4">
           <h2 className="p-2 text-lg mx-4 float-left">File Versions</h2>
