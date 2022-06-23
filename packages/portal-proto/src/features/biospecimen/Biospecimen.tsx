@@ -7,7 +7,7 @@ import {
 } from "react-icons/md";
 import { Button, Input, Alert, LoadingOverlay } from "@mantine/core";
 import {
-  node,
+  entityType,
   useBiospecimenData,
   useCoreDispatch,
   useCoreSelector,
@@ -32,7 +32,7 @@ export const Biospecimen = ({
 
   const [treeStatusOverride, setTreeStatusOverride] =
     useState<overrideMessage | null>(null);
-  const [selectedEntity, setSelectedEntity] = useState<Partial<node>>({});
+  const [selectedEntity, setSelectedEntity] = useState<entityType>(null);
   const [isAllExpanded, setIsAllExpanded] = useState(false);
   const [selectedType, setSelectedType] = useState(undefined);
   const [expandedCount, setExpandedCount] = useState(1);
@@ -113,7 +113,8 @@ export const Biospecimen = ({
     <div className="my-5">
       {isBiospecimentDataFetching ? (
         <LoadingOverlay visible data-testid="loading" />
-      ) : Object.keys(selectedEntity).length > 0 &&
+      ) : selectedEntity &&
+        Object.keys(selectedEntity).length > 0 &&
         selectedType !== undefined ? (
         <>
           <div className="flex justify-between">

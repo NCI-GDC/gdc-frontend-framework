@@ -4,7 +4,7 @@ import { formatDataForHorizontalTable } from "../files/utils";
 import { FaMicroscope, FaShoppingCart, FaDownload } from "react-icons/fa";
 import { Tooltip } from "@mantine/core";
 import Link from "next/link";
-import { CoreDispatch, node } from "@gff/core";
+import { CoreDispatch, entityType } from "@gff/core";
 import { addToCart } from "@/features/cart/updateCart";
 import { get } from "lodash";
 import { entityTypes } from "@/components/BioTree/types";
@@ -84,12 +84,12 @@ export const idFields = [
 ];
 
 export const formatEntityInfo = (
-  entity: Partial<node>,
+  entity: entityType,
   foundType: string,
   caseId: string,
   dispatch: CoreDispatch,
   currentCart: string[],
-  selectedSlide?: any,
+  selectedSlide: any,
 ): {
   readonly headerName: string;
   readonly values: readonly (
@@ -105,8 +105,14 @@ export const formatEntityInfo = (
     [`${foundType}_UUID`]: entity[idFields.find((id) => entity[id])],
   };
 
+  const ordered: Record<string, any> = Object.entries(
+    getOrder(foundType).reduce((next, k) => {
+      return { ...next, [k]: entity[k] };
+    }, {}),
+  );
+
   const filtered = Object.entries(ids).concat(
-    Object.entries(entity)
+    ordered
       .filter(
         ([key]) =>
           ![
@@ -161,4 +167,105 @@ export const formatEntityInfo = (
   const obj = { ...ids, ...Object.fromEntries(filtered) };
 
   return formatDataForHorizontalTable(obj, headersConfig);
+};
+
+const getOrder = (type) => {
+  const sampleOrder = [
+    "submitter_id",
+    "sample_id",
+    "sample_type",
+    "sample_type_id",
+    "tissue_type",
+    "tumor_code",
+    "tumor_code_id",
+    "oct_embedded",
+    "shortest_dimension",
+    "intermediate_dimension",
+    "longest_dimension",
+    "is_ffpe",
+    "pathology_report_uuid",
+    "tumor_descriptor",
+    "current_weight",
+    "initial_weight",
+    "composition",
+    "time_between_clamping_and_freezing",
+    "time_between_excision_and_freezing",
+    "days_to_sample_procurement",
+    "freezing_method",
+    "preservation_method",
+    "days_to_collection",
+    "portions",
+  ];
+
+  const portionOrder = [
+    "submitter_id",
+    "portion_id",
+    "portion_number",
+    " weight",
+    "is_ffpe",
+    "analytes",
+    "slides",
+  ];
+
+  const analytesOrder = [
+    "submitter_id",
+    "analyte_id",
+    "analyte_type",
+    "analyte_type_id",
+    "well_number",
+    "amount",
+    "a260_a280_ratio",
+    "concentration",
+    "spectrophotometer_method",
+    "aliquots",
+  ];
+
+  const slidesOrder = [
+    "submitter_id",
+    "slide_id",
+    "percent_tumor_nuclei",
+    "percent_monocyte_infiltration",
+    "percent_normal_cells",
+    "percent_stromal_cells",
+    "percent_eosinophil_infiltration",
+    "percent_lymphocyte_infiltration",
+    "percent_neutrophil_infiltration",
+    "section_location",
+    "percent_granulocyte_infiltration",
+    "percent_necrosis",
+    "percent_inflam_infiltration",
+    "number_proliferating_cells",
+    "percent_tumor_cells",
+  ];
+
+  const aliquotOrder = [
+    "submitter_id",
+    "aliquot_id",
+    "source_center",
+    "amount",
+    "concentration",
+    "analyte_type",
+    "analyte_type_id",
+  ];
+
+  let order;
+  switch (type) {
+    case "sample":
+      order = sampleOrder;
+      break;
+    case "portion":
+      order = portionOrder;
+      break;
+    case "aliquot":
+      order = aliquotOrder;
+      break;
+    case "slide":
+      order = slidesOrder;
+      break;
+    case "analyte":
+      order = analytesOrder;
+      break;
+  }
+
+  return order;
 };

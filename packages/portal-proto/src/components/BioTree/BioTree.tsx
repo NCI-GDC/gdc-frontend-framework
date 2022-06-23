@@ -141,6 +141,28 @@ export const BioTree = ({
     setTreeStatusOverride(null);
   };
 
+  const generateKey = (node) => {
+    let key: string;
+    switch (type.s) {
+      case "sample":
+        key = node.sample_id;
+        break;
+      case "portion":
+        key = node.portion_id;
+        break;
+      case "aliquot":
+        key = node.aliquot_id;
+        break;
+      case "slide":
+        key = node.slide_id;
+        break;
+      case "analyte":
+        key = node.analyte_id;
+        break;
+    }
+    return key;
+  };
+
   return (
     <ul className="ml-4 my-2 pl-4">
       <div
@@ -177,13 +199,7 @@ export const BioTree = ({
             <Node
               entity={entity.node}
               entityTypes={entityTypes}
-              key={
-                entity.node.sample_id ||
-                entity.node.portion_id ||
-                entity.node.analyte_id ||
-                entity.node.aliquot_id ||
-                entity.node.slide_id
-              }
+              key={generateKey(entity.node)}
               type={type}
               selectedEntity={selectedEntity}
               selectEntity={selectEntity}
