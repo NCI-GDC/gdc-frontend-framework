@@ -15,11 +15,10 @@ const mockResponse = {
   oct_embedded: "No",
   pathology_report_uuid: null,
   portions: {
-    hits: { edges: [{ node: { portion_id: "afadfkldjls" } }] },
+    hits: { edges: [{ node: { portion_id: "afadfkldjls" } }], total: 1 },
   },
   preservation_method: "FFPE",
   sample_id: "55864d86-dab8-47bb-a3e3-8cfb198b06c1",
-  portion_id: "adfadsafds",
   sample_type: "Primary Tumor",
   sample_type_id: "01",
   shortest_dimension: null,
@@ -74,12 +73,12 @@ describe("<Biospecimen />", () => {
       isSuccess: true,
       isUninitialized: false,
     });
-    const { queryByLabelText, getByRole, getByText } = render(
+    const { queryByLabelText, getAllByRole, getByText } = render(
       <Biospecimen caseId="testId" bioId="" />,
     );
 
     expect(queryByLabelText("Case ID not found")).toBeNull();
-    expect(getByRole("treeitem")).toBeInTheDocument();
+    expect(getAllByRole("treeitem")).toBeDefined();
     expect(getByText("Primary Tumor")).toBeInTheDocument();
   });
 
