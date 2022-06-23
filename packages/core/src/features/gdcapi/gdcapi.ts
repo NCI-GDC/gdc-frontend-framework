@@ -335,7 +335,7 @@ export interface FileDefaults {
     readonly metadata: {
       readonly read_groups: Array<{
         readonly read_group_id: string;
-        readonly is_paired_end: string;
+        readonly is_paired_end: boolean;
         readonly read_length: number;
         readonly library_name: string;
         readonly sequencing_center: string;
