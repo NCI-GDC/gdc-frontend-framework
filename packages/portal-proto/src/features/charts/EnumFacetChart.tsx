@@ -24,7 +24,7 @@ const maxValuesToDisplay = 7;
 interface FacetChartProps {
   readonly field: string;
   readonly data: Record<string, number>;
-  readonly selectedEnums: string[];
+  readonly selectedEnums: ReadonlyArray<string>;
   readonly isSuccess: boolean;
   readonly height?: number;
   readonly showTitle?: boolean;
