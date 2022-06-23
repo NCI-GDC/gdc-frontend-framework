@@ -25,7 +25,6 @@ export const REGISTERED_APPS = [
     id: "CohortBuilder",
     description:
       "Build and define your custom cohorts using a variety of clinical and biospecimen features.",
-    displayBreadcrumb: false,
   },
   {
     name: "Mutations Frequency",
@@ -47,7 +46,6 @@ export const REGISTERED_APPS = [
     id: "Downloads",
     description:
       "Browse and download the files associated with your cohort for more sophisticated analysis.",
-    displayBreadcrumb: false,
   },
   {
     name: "Projects",
@@ -57,7 +55,6 @@ export const REGISTERED_APPS = [
     id: "Projects",
     description:
       "View the Projects available within the GDC and select them for further exploration and analysis.",
-    displayBreadcrumb: false,
   },
   {
     name: "Cohort Comparison",
