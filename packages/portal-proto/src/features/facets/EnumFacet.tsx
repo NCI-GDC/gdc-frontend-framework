@@ -391,6 +391,7 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
             <EnumFacetChart
               field={field}
               data={data}
+              selectedEnums={selectedEnums}
               isSuccess={isSuccess}
               showTitle={false}
               maxBins={Math.min(isGroupExpanded ? 16 : Math.min(6, total))}
