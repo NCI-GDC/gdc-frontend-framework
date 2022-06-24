@@ -1,8 +1,8 @@
 import { FC } from "react";
-import { runproteinpaint } from "@stjude/proteinpaint-client";
+import { PpLolliplot } from "../proteinpaint/PpReactWrapper";
 
 const ProteinPaintApp: FC = () => {
-  const PpLolliplot = runproteinpaint.wrappers.getPpLolliplot();
+  /*** TODO: determine basepath prop value at runtime ***/
   return <PpLolliplot basepath="https://proteinpaint.stjude.org" />;
 };
 

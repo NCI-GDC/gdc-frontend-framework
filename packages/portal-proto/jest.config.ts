@@ -19,6 +19,7 @@ const config: InitialOptionsTsJest = {
   },
   modulePaths: ["<rootDir>"],
   setupFiles: ["jest-canvas-mock"],
+  transformIgnorePatterns: ["/node_modules/(?!@stjude)"],
 };
 
 export default config;
