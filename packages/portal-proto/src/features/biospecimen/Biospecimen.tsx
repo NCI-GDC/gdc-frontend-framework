@@ -128,16 +128,8 @@ export const Biospecimen = ({
               }
               size="xs"
             >
-              <Menu.Item
-                icon={<MdFileDownload size="1.25em" />}
-                onClick={() => {}}
-              >
-                TSV
-              </Menu.Item>
-              <Menu.Item
-                icon={<MdFileDownload size="1.25em" />}
-                onClick={() => {}}
-              >
+              <Menu.Item icon={<MdFileDownload size="1.25em" />}>TSV</Menu.Item>
+              <Menu.Item icon={<MdFileDownload size="1.25em" />}>
                 JSON
               </Menu.Item>
             </Menu>
