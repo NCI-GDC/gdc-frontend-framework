@@ -128,18 +128,9 @@ const RemoveNotification: React.FC<RemoveNotificationProps> = ({
   currentCart,
   dispatch,
 }: RemoveNotificationProps) => {
-  const gdcFilesToRemove = (files as readonly GdcFile[]).filter((f) =>
-    currentCart.includes(f.id),
+  const filesToRemove = files.filter((f) =>
+    currentCart.includes("id" in f ? f.id : f.file_id),
   );
-
-  const slideFilesToRemove = (files as readonly SlideImageFile[]).filter((f) =>
-    currentCart.includes(f.file_id),
-  );
-
-  const filesToRemove = [...gdcFilesToRemove, ...slideFilesToRemove];
-  // const filesToRemove = files.filter((f) =>
-  //   currentCart.includes(f.id || f.file_id),
-  // );
 
   const newCart = files
     .filter((f) => !filesToRemove.includes(f))
