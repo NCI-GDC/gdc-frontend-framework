@@ -5,7 +5,7 @@ import {
   MdFileDownload,
   MdOutlineClear,
 } from "react-icons/md";
-import { Button, Input, Alert, LoadingOverlay } from "@mantine/core";
+import { Button, Input, Alert, LoadingOverlay, Menu } from "@mantine/core";
 import {
   entityType,
   useBiospecimenData,
@@ -119,15 +119,28 @@ export const Biospecimen = ({
         <>
           <div className="flex justify-between">
             <h1>Biospecimen</h1>
-            <Button
-              className="px-1.5 min-h-7 min-w-10 border-nci-gray-light border rounded"
-              onClick={() => {
-                alert("Download coming soon!!!");
-              }}
+            <Menu
+              control={
+                <Button className="px-1.5 min-h-7 w-28 border-nci-gray-light border rounded">
+                  <MdFileDownload size="1.25em" />
+                  Download
+                </Button>
+              }
+              size="xs"
             >
-              <MdFileDownload size="1.25em" />
-              Download
-            </Button>
+              <Menu.Item
+                icon={<MdFileDownload size="1.25em" />}
+                onClick={() => {}}
+              >
+                TSV
+              </Menu.Item>
+              <Menu.Item
+                icon={<MdFileDownload size="1.25em" />}
+                onClick={() => {}}
+              >
+                JSON
+              </Menu.Item>
+            </Menu>
           </div>
 
           <div className="flex">
