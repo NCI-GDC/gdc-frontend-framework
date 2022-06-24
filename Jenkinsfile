@@ -1,19 +1,10 @@
-#!groovy
-
-//library identifier: "jenkins-lib@master"
-//dockerPipeline{
-//    tagSource = "semver"
-    // testBranches = '(develop|master|release.*)'
-//}
-
-
 #!/bin/groovy
 pipeline {
-//  tools {
-//    nodejs 'default-nodejs'
-//  }
+  agent {
+    docker { image 'docker.osdc.io/node:14' }
+  }
   stages {
-    stage('Startup') {
+    stage('Install') {
       steps {
         script {
           sh 'npm install'
@@ -29,4 +20,3 @@ pipeline {
     }
   }
 }
-
