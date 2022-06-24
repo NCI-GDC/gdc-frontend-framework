@@ -73,6 +73,7 @@ describe("<Biospecimen />", () => {
       isSuccess: true,
       isUninitialized: false,
     });
+    jest.spyOn(func, "useCoreSelector").mockReturnValue(["test1id", "test2id"]);
     const { queryByLabelText, getAllByRole, getByText } = render(
       <Biospecimen caseId="testId" bioId="" />,
     );
