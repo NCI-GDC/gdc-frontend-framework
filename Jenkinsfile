@@ -8,6 +8,7 @@ pipeline {
       steps {
         script {
 		sh '''
+			sudo chown -R 1100:1100 "/.npm"
   			npm config set proxy http://cloud-proxy:3128
   			npm config set https-proxy http://cloud-proxy:3128
   			npm install
