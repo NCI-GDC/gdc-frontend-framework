@@ -205,6 +205,18 @@ const asExperimentalStrategy = (
   throw new Error(`${x} is not a valid experimental strategy`);
 };
 
+export interface SlideImageFile {
+  access: string;
+  acl: Array<string>;
+  data_format: string;
+  file_id: string;
+  file_name: string;
+  file_size: number;
+  md5sum: string;
+  state: string;
+  submitter_id: string;
+}
+
 export interface GdcFile {
   readonly id: string;
   readonly submitterId: string;

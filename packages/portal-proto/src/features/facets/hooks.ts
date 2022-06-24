@@ -25,6 +25,7 @@ import {
   fetchFacetContinuousAggregation,
   selectFacetByDocTypeAndField,
   usePrevious,
+  selectGenomicAndCohortFilters,
 } from "@gff/core";
 import { useEffect } from "react";
 import isEqual from "lodash/isEqual";
@@ -91,8 +92,6 @@ export const useCasesFacet = (
     selectFacetByDocTypeAndField(state, docType, field),
   );
 
-  // NOTE: the facets filters require prepending the doc type in
-  // front of the field.
   const enumValues = useCohortFacetFilterByName(field);
   const cohortFilters = useCohortFacetFilter();
   const prevCohortFilters = usePrevious(cohortFilters);
@@ -167,6 +166,7 @@ const useGenesFacet = (
           field: field,
           docType: docType,
           index: indexType,
+          filterSelector: selectGenomicAndCohortFilters,
         }),
       );
     }
@@ -227,6 +227,7 @@ const useMutationsFacet = (
           field: field,
           docType: docType,
           index: indexType,
+          filterSelector: selectGenomicAndCohortFilters,
         }),
       );
     }

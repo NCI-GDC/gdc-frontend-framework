@@ -1,7 +1,7 @@
 import "../styles/globals.css";
 import "../styles/survivalplot.css";
 import "../styles/oncogrid.css";
-
+import { createContext, useState } from "react";
 import { Provider } from "react-redux";
 import type { AppProps } from "next/app";
 import { CoreProvider } from "@gff/core";
@@ -22,9 +22,22 @@ import "react-tabs/style/react-tabs.css";
 // ReactModal needs the app element set for a11y reasons.
 // It hides the main application from screen readers while modals are open.
 import ReactModal from "react-modal";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 ReactModal.setAppElement("#__next");
 
+export const URLContext = createContext({ prevPath: "", currentPath: "" });
+
 const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
+  const router = useRouter();
+  const [prevPath, setPrevPath] = useState("");
+  const [currentPath, setCurrentPath] = useState("");
+
+  useEffect(() => {
+    setPrevPath(currentPath);
+    setCurrentPath(globalThis.location.pathname);
+  }, [currentPath, router.asPath]);
+
   return (
     <CoreProvider>
       <Provider store={store}>
@@ -81,11 +94,13 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
             },
           }}
         >
-          <NotificationsProvider position="top-center">
-            <TourProvider steps={[]} components={{ Badge }}>
-              <Component {...pageProps} />
-            </TourProvider>
-          </NotificationsProvider>
+          <URLContext.Provider value={{ prevPath, currentPath }}>
+            <NotificationsProvider position="top-center">
+              <TourProvider steps={[]} components={{ Badge }}>
+                <Component {...pageProps} />
+              </TourProvider>
+            </NotificationsProvider>
+          </URLContext.Provider>
         </MantineProvider>
       </Provider>
     </CoreProvider>
