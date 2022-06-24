@@ -2,6 +2,6 @@
 
 library identifier: "jenkins-lib@master"
 dockerPipeline{
-    tagSource = "semver"
+ //   tagSource = "semver"
     // testBranches = '(develop|master|release.*)'
 }
