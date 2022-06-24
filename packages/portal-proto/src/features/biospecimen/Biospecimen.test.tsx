@@ -97,8 +97,8 @@ describe("<Biospecimen />", () => {
       isSuccess: true,
       isUninitialized: false,
     });
-    const { getByLabelText } = render(<Biospecimen caseId="testId" bioId="" />);
+    const { getByText } = render(<Biospecimen caseId="testId" bioId="" />);
 
-    expect(getByLabelText("Case ID not found")).toBeInTheDocument();
+    expect(getByText("Case ID not found")).toBeInTheDocument();
   });
 });
