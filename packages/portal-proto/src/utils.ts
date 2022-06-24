@@ -21,3 +21,19 @@ export const toggleFullScreen = async (
     }
   }
 };
+
+export const capitalize = (original: string): string => {
+  const customCapitalizations = {
+    id: "ID",
+    uuid: "UUID",
+  };
+
+  return original
+    .split(" ")
+    .map(
+      (word) =>
+        customCapitalizations[word.toLowerCase()] ||
+        `${word.charAt(0).toUpperCase()}${word.slice(1)}`,
+    )
+    .join(" ");
+};

@@ -18,6 +18,7 @@ import {
 } from "victory";
 import * as tailwindConfig from "tailwind.config";
 import ChartTitleBar from "./ChartTitleBar";
+import { capitalize } from "src/utils";
 
 const maxValuesToDisplay = 7;
 
@@ -94,8 +95,6 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
     </div>
   );
 };
-
-const capitalize = (s) => (s.length > 0 ? s[0].toUpperCase() + s.slice(1) : "");
 
 const convertFieldToName = (field: string): string => {
   const property = field.split(".").pop();
