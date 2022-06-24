@@ -59,7 +59,7 @@ export const HorizontalTable = ({
               className={rowIndex % 2 ? "" : "bg-gdc-blue-warm-lightest"}
             >
               <th
-                className="w-4/12 align-top pl-1 pr-8 whitespace-nowrap text-sm"
+                className="w-4/12 text-sm align-top pl-1 pr-8 whitespace-nowrap"
                 key={`head-${obj.headerName}`}
               >
                 {obj.headerName}

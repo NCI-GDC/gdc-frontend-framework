@@ -1,4 +1,5 @@
 export const geneKeys = [
+  "survival",
   "symbol",
   "name",
   "SSMSAffectedCasesInCohort",
@@ -7,6 +8,5 @@ export const geneKeys = [
   "CNVLoss",
   "mutations",
   "annotations",
-  "survival",
 ];
 export const customGeneKeys = ["annotations", "survival"];

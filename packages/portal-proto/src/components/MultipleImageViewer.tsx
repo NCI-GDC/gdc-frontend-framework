@@ -28,10 +28,12 @@ const ImageViewer = dynamic(() => import("./ImageViewer"), {
 
 interface MultipleImageViewerProps {
   case_id?: string;
+  selectedId?: string;
 }
 
 export const MultipleImageViewer = ({
   case_id,
+  selectedId,
 }: MultipleImageViewerProps): JSX.Element => {
   const [activeTab, setActiveTab] = useState(0);
   const [showSearch, setShowSearch] = useState(false);
@@ -54,15 +56,14 @@ export const MultipleImageViewer = ({
   useEffect(() => {
     if (!isFetching) {
       let inside: edgeDetails[];
-
       if (showMorePressed) {
         inside = data?.edges[Object.keys(data.edges)[activeTab]];
       } else {
         inside = data?.edges[Object.keys(data.edges)[0]];
       }
-
-      setActiveImage(inside?.[activeSlide].file_id);
-      setImageDetails(formatImageDetailsInfo(inside?.[activeSlide]));
+      const index = inside?.findIndex((elem) => elem.file_id === selectedId);
+      setActiveImage(selectedId || inside?.[activeSlide].file_id);
+      setImageDetails(formatImageDetailsInfo(inside?.[index || activeSlide]));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFetching, showMorePressed]);

@@ -1,6 +1,14 @@
 @tailwind base;
 @tailwind components;
 
+html,
+body {
+  overflow-x: hidden;
+}
+body {
+  position: relative;
+}
+
 .tooltip {
   @apply invisible;
 }

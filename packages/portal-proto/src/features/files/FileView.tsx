@@ -170,7 +170,7 @@ export const FileView: React.FC<FileViewProps> = ({
 
       let entityQuery;
       if (entity.entity_type !== "case") {
-        entityQuery = { bioid: entity.entity_id };
+        entityQuery = { bioId: entity.entity_id };
       }
 
       let annotationsLink = <>0</>;
