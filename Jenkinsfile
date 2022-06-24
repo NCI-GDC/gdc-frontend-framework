@@ -8,7 +8,7 @@ pipeline {
       steps {
         script {
 		sh 'npm config set proxy http://cloud-proxy:3128'
-		sh 'pm config set https-proxy http://cloud-proxy:3128'
+		sh 'npm config set https-proxy http://cloud-proxy:3128'
 	   	sh 'npm install'
         }
       }
