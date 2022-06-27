@@ -7,12 +7,15 @@ pipeline {
     stages {
 	stage('Checkout') {
           // Get code from github.
+	steps{
              checkout scm
            }
+	}
 
 	stage("pre-commit hooks") {
+	steps{
                     pipelineHelper.preCommitHooks(preCommitVersion)
            }
-    
+    }
 	}
 }
