@@ -7,17 +7,24 @@ import {
 } from "react-icons/md";
 import { RiFile3Fill as FileIcon } from "react-icons/ri";
 import { VscTrash as TrashIcon } from "react-icons/vsc";
-import { useCartSummary, useCoreDispatch, fetchCartSummary } from "@gff/core";
+import { useCartSummary, useCoreSelector, selectCart } from "@gff/core";
 
 const buttonStyle = "bg-white text-nci-blue-darkest border-nci-blue-darkest";
 
+const formatFileSize = (bytes: number) => {
+  if (bytes == 0) {
+    return "0.00 B";
+  }
+  const level = Math.floor(Math.log(bytes) / Math.log(1024));
+
+  return `${(bytes / Math.pow(1024, level)).toFixed(2)} ${
+    ["B", "kB", "MB", "GB", "TB"][level]
+  }`;
+};
+
 const Cart: React.FC = () => {
-  const dispatch = useCoreDispatch();
-
-  dispatch(fetchCartSummary);
-
-  const { data } = useCartSummary();
-  console.log(data);
+  const currentCart = useCoreSelector((state) => selectCart(state));
+  const { data } = useCartSummary(currentCart);
 
   return (
     <>
@@ -80,7 +87,8 @@ const Cart: React.FC = () => {
           Manifest
         </Button>
         <h1 className="uppercase ml-auto mr-4 flex items-center truncate">
-          Total of <FileIcon /> 0 Files <PersonIcon /> 0 Cases <SaveIcon /> 0 GB
+          Total of <FileIcon /> {data.doc_count} Files <PersonIcon />{" "}
+          {data.case_count} Cases <SaveIcon /> {formatFileSize(data.file_size)}
         </h1>
       </div>
       <Grid>

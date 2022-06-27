@@ -7,25 +7,20 @@ import {
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
-import { selectCart } from "./updateCartSlice";
 
 const graphQLQuery = ` 
   query CartSummary(
     $fileFilters: FiltersArgument
   ) {
-    cart_summary {
-      explore { 
+    viewer {
+      cart_summary {
         aggregations(filters: $fileFilters) {
           project__project_id {
             buckets {
               case_count
               doc_count
               file_size
-              key
             }
-          }
-          fs {
-            value
           }
         }
       }
@@ -35,14 +30,14 @@ const graphQLQuery = `
 
 export const fetchCartSummary = createAsyncThunk<
   GraphQLApiResponse,
-  {},
+  string[],
   { dispatch: CoreDispatch; state: CoreState }
->("cart/cartSummary", async ({}, thunkAPI) => {
-  await console.log("HI3");
-  const fileIds = selectCart(thunkAPI.getState());
-
+>("cart/cartSummary", async (fileIds) => {
+  if (fileIds.length === 0) {
+    Promise.resolve();
+  }
   const graphQLFilters = {
-    filterFilters: {
+    fileFilters: {
       op: "and",
       content: [
         {
@@ -58,13 +53,23 @@ export const fetchCartSummary = createAsyncThunk<
   return await graphqlAPI(graphQLQuery, graphQLFilters);
 });
 
+interface CartSummaryData {
+  case_count: number;
+  doc_count: number;
+  file_size: number;
+}
+
 export interface CartSummary {
-  data: any[];
+  data: CartSummaryData;
   status: DataStatus;
 }
 
 const initialState: CartSummary = {
-  data: ["HI"],
+  data: {
+    case_count: 0,
+    doc_count: 0,
+    file_size: 0,
+  },
   status: "uninitialized",
 };
 
@@ -76,6 +81,14 @@ const slice = createSlice({
     builder.addCase(fetchCartSummary.fulfilled, (state, action) => {
       const response = action.payload;
       console.log(response);
+      const aggregations =
+        response.data.viewer.cart_summary.aggregations.project__project_id
+          .buckets[0];
+      state.data = {
+        case_count: aggregations?.case_count || 0,
+        doc_count: aggregations?.doc_count || 0,
+        file_size: aggregations?.file_size || 0,
+      };
       state.status = "fulfilled";
 
       if (response.errors) {
@@ -89,7 +102,7 @@ export const cartSummaryReducer = slice.reducer;
 
 export const selectCartSummaryData = (
   state: CoreState,
-): CoreDataSelectorResponse<any[]> => {
+): CoreDataSelectorResponse<CartSummaryData> => {
   return {
     data: state.cart.cartSummary.data,
     status: state.cart.cartSummary.status,
