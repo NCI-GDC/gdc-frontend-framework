@@ -5,14 +5,13 @@ pipeline {
  	}
 
     stages {
-//	withEnv(['https_proxy=http://cloud-proxy:3128', ]) {
 	 stage('Checkout') {
           // Get code from github.
 	  steps{
              checkout scm
           }
 	 }
-	}
+	
 
 	stage("pre-commit hooks") {
 	 steps{
@@ -26,6 +25,6 @@ pipeline {
             }
           }
          }
-        }
+       }
  }
 }
