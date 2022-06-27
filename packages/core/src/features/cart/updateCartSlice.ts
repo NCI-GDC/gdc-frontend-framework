@@ -19,7 +19,7 @@ const slice = createSlice({
   extraReducers: {},
 });
 
-export const cartReducer = slice.reducer;
+export const updateCartReducer = slice.reducer;
 export const { addFilesToCart, removeFilesFromCart } = slice.actions;
 
-export const selectCart = (state: CoreState): string[] => state.cart;
+export const selectCart = (state: CoreState): string[] => state.cart.files;
