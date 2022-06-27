@@ -43,9 +43,9 @@ def call(body) {
                         //pipelineHelper.loadScriptFromLibrary("calculateTags.sh")
                         //sh "./calculateTags.sh --env $tagSource"
                    // }
-                    else {
-                        Utils.markStageSkippedForConditional(STAGE_NAME)
-                    }
+                   // else {
+                   //     Utils.markStageSkippedForConditional(STAGE_NAME)
+                   // }
                 }
                 stage("pre-commit hooks") {
                     pipelineHelper.preCommitHooks(preCommitVersion)
