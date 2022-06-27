@@ -1,5 +1,3 @@
-#!groovy
-
 #!/bin/groovy
 pipeline {
  agent {
