@@ -36,17 +36,6 @@ def call(body) {
                     // Get code from github.
                     checkout scm
                 }
-                // Validate SEMVER of latest tag.
-                stage('Validate SEMVER') {
-                    // Don't run this step if it is a PR.
-                    if (!(env.CHANGE_ID)) {
-                        pipelineHelper.loadScriptFromLibrary("calculateTags.sh")
-                        sh "./calculateTags.sh --env $tagSource"
-                    }
-                    else {
-                        Utils.markStageSkippedForConditional(STAGE_NAME)
-                    }
-                }
                 stage("pre-commit hooks") {
                     pipelineHelper.preCommitHooks(preCommitVersion)
                 }
