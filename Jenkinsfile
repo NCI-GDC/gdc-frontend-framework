@@ -1,7 +1,7 @@
-#!/usr/bin/env groovy
+#!/bin/groovy
 pipeline {
     agent {
-  	docker { image 'huzaifabajwa/py3node8:alpine-1.0' }
+  	docker { image 'docker.osdc.io/node:16-alpine3.15' }
  	}
 
     stages {
