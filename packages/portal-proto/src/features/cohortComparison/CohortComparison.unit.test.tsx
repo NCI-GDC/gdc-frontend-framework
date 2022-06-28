@@ -1,4 +1,4 @@
-import { render, fireEvent, waitFor } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import CohortComparison from "./CohortComparison";
 
 jest.mock("@gff/core", () => {
@@ -26,11 +26,9 @@ describe("<CohortComparison />", () => {
     const { getByLabelText, queryByRole } = render(
       <CohortComparison cohortNames={["Cohort 1", "Cohort 2"]} />,
     );
-    waitFor(() => {
       expect(
         queryByRole("heading", { name: "Survival Analysis" }),
       ).toBeInTheDocument();
-    });
     fireEvent.click(getByLabelText("Survival"));
     expect(
       queryByRole("heading", { name: "Survival Analysis" }),
