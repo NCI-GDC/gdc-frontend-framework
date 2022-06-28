@@ -13,11 +13,16 @@ export const ToggleSort: FC<ToggleSortProps> = ({
   const [sorts, setSorts] = useState(sortListOptions);
 
   const toggleSort = (fieldName: string, parity: string) => {
+    console.log("fieldname", fieldName, "parity", parity);
     // TODO
     //  parity => desc or asc
     // fieldName => field in obj of sortListOptions array
     // setSorts(updated sorts)
   };
+  useEffect(() => {
+    console.log("sortlistOptions", sortListOptions);
+  }, []);
+
   useEffect(() => {
     handleSortChange(sorts);
   }, [sorts]);

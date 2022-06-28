@@ -33,6 +33,8 @@ const GenesTable: React.FC<GenesTableProps> = ({
   const [selectedRowsMap, setSelectedRowsMap] = useState({});
   const [uuidRowParam] = useState("symbol");
   const [scrollItem, setScrollItem] = useState(1);
+  const [selectedSorts, setSelectedSorts] = useState([]);
+
   const coreDispatch = useCoreDispatch();
 
   // using the useSsmsTable from core and the associated useEffect hook
@@ -53,8 +55,8 @@ const GenesTable: React.FC<GenesTableProps> = ({
   }, [pageSize]);
 
   useEffect(() => {
-    console.log("selectedRowsMap:", selectedRowsMap);
-  }, [selectedRowsMap]);
+    console.log("selected sorts", selectedSorts);
+  }, [selectedSorts]);
 
   const handleRowSelectChange = (rowUpdate, select, selectAll) => {
     switch (select) {
@@ -251,6 +253,34 @@ const GenesTable: React.FC<GenesTableProps> = ({
     setActivePage(x);
   };
 
+  const isVisibleSort = (column) => {
+    // all except -> Select, Cohort, Survival, and Annotations)
+    return column.visible &&
+      !["annotations", "survival"].includes(column.columnName)
+      ? true
+      : false;
+  };
+
+  const updateSortables = () => {
+    const eligibleSorts = columnListOrder
+      .filter((column) => isVisibleSort(column))
+      .map((column) => {
+        return {
+          sortActive: false,
+          field: column.columnName,
+          parity: "desc",
+        };
+      });
+    console.log("eligibleSorts", eligibleSorts);
+    setSelectedSorts(eligibleSorts);
+  };
+
+  const sortables = useMemo(
+    () => updateSortables(),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [columnListOrder],
+  );
+
   const updateTableCells = () => {
     const filteredColumnList = columnListOrder.filter((item) => item.visible);
     const headingOrder = filteredColumnList.map((item) => {
@@ -300,7 +330,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
             scrollItem={scrollItem}
             selectedRowsMap={selectedRowsMap}
             handleSortChange={handleSortChange}
-            sortList={[]} // TODO generate list of sort options (basically all except -> Select, Cohort, Survival, and Annotations)
+            selectedSorts={selectedSorts}
             tableTitle={"Genes Table"}
             pageSize={pageSize.toString()}
             selectableRow={true}

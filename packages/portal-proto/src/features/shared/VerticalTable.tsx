@@ -23,7 +23,7 @@ interface VerticalTableProps {
   selectedRowsMap: any;
   selectableRow: boolean;
   handleSortChange: (sortUpdate: any) => void;
-  sortList: any;
+  selectedSorts: any;
   tableTitle: string;
   pageSize: string;
 }
@@ -51,7 +51,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   selectedRowsMap,
   selectableRow,
   handleSortChange,
-  sortList,
+  selectedSorts,
   tableTitle,
   pageSize,
 }: VerticalTableProps) => {
@@ -71,8 +71,8 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   }, [columnListOrder]);
 
   useEffect(() => {
-    setSortListOptions(sortList);
-  }, [sortList]);
+    setSortListOptions(selectedSorts);
+  }, [selectedSorts]);
 
   useEffect(() => {
     setHeadings(columnCells);
