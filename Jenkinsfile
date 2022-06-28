@@ -14,8 +14,8 @@ pipeline {
       steps{
        script {
 //        sshagent(credentials: ['githubkey']) {
-//          sh "pip install pre-commit==${preCommitVersion}"
-            sh "pre-commit run -a"
+          sh "python -m ensurepip --upgrade"
+          sh "pre-commit run -a"
        
         
      
