@@ -26,9 +26,9 @@ describe("<CohortComparison />", () => {
     const { getByLabelText, queryByRole } = render(
       <CohortComparison cohortNames={["Cohort 1", "Cohort 2"]} />,
     );
-      expect(
-        queryByRole("heading", { name: "Survival Analysis" }),
-      ).toBeInTheDocument();
+    expect(
+      queryByRole("heading", { name: "Survival Analysis" }),
+    ).toBeInTheDocument();
     fireEvent.click(getByLabelText("Survival"));
     expect(
       queryByRole("heading", { name: "Survival Analysis" }),
