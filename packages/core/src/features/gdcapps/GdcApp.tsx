@@ -2,7 +2,7 @@ import React from "react";
 import { coreStore } from "../../store";
 import { v5 as uuidv5 } from "uuid";
 import { addGdcAppMetadata, EntityType } from "./gdcAppsSlice";
-import { configureStore, ReducersMapObject, AnyAction } from "@reduxjs/toolkit";
+import { configureStore, AnyAction } from "@reduxjs/toolkit";
 import { ComponentType, useEffect } from "react";
 import { Store, Action } from "redux";
 import {
@@ -87,7 +87,7 @@ export interface AppDataSelectorResponse<T> {
 export interface CreateGDCAppStore {
   readonly name: string;
   readonly version: string;
-  readonly reducer?: ReducersMapObject<any, AnyAction>;
+  readonly reducers: (...args: any) => any;
 }
 
 // ----------------------------------------------------------------------------------------
@@ -95,17 +95,17 @@ export interface CreateGDCAppStore {
 //
 
 export const createAppStore = (options: CreateGDCAppStore) => {
-  const { name, version, reducer } = options;
+  const { name, version, reducers } = options;
   const nameVersion = `${name}::${version}`;
   const id = uuidv5(nameVersion, GDC_APP_NAMESPACE);
 
   const store = configureStore({
-    reducer: reducer ? reducer : (state) => state,
+    reducer: reducers,
     devTools: {
       name: `${nameVersion}::${id}`,
     },
   });
-  type AppState = ReturnType<typeof store.getState>;
+  type AppState = ReturnType<typeof reducers>;
   const context = React.createContext(
     undefined as unknown as ReactReduxContextValue<AppState, AnyAction>,
   );
@@ -141,11 +141,7 @@ export interface CreateGdcAppWithOwnStoreOptions<
 export const createGdcAppWithOwnStore = <A extends Action = AnyAction, S = any>(
   options: CreateGdcAppWithOwnStoreOptions<A, S>,
 ): React.ReactNode => {
-  const { App, name, version, requiredEntityTypes, store } = options;
-
-  // create a stable id for this app
-  const nameVersion = `${name}::${version}`;
-  const id = uuidv5(nameVersion, GDC_APP_NAMESPACE);
+  const { App, id, name, version, requiredEntityTypes, store } = options;
 
   // need to create store and provider.
   // return a component representing this app

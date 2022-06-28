@@ -1,0 +1,6 @@
+{
+  "label": "General",
+  "facets": ["cases.project.program.name", "cases.project.project_id"],
+  "docType": "cases",
+  "index": "repository"
+}

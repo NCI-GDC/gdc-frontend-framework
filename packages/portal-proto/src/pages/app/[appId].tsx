@@ -15,6 +15,7 @@ const AppsPage: NextPage = () => {
   );
   const GdcApp = useCoreSelector(() => selectGdcAppById(appId));
 
+  console.log("GDCApp", GdcApp);
   return (
     <SimpleLayout>
       <div className="flex flex-col content-center gap-y-4">

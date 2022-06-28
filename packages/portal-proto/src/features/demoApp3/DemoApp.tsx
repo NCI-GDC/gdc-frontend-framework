@@ -1,5 +1,5 @@
 import {
-  createGdcApp,
+  createGdcAppWithOwnStore,
   useCoreSelector,
   GdcFile,
   useCoreDispatch,
@@ -7,6 +7,8 @@ import {
   selectFilesState,
 } from "@gff/core";
 import { useEffect } from "react";
+import { AppStore, id, useAppSelector } from "./reducers";
+import { selectRepositoryConfig } from "@/features/demoApp3/fileFiltersSlice";
 
 interface UseFetchFilesResponse {
   readonly data?: ReadonlyArray<GdcFile>;
@@ -39,6 +41,7 @@ const useFetchFiles = (): UseFetchFilesResponse => {
 
 const Demo: React.FC = () => {
   const { data, error, isUninitialized, isFetching, isError } = useFetchFiles();
+  const configState = useAppSelector(selectRepositoryConfig);
 
   if (isUninitialized) {
     return <div>Initializing files...</div>;
@@ -52,6 +55,8 @@ const Demo: React.FC = () => {
     return <div>Failed to fetch files: {error}</div>;
   }
 
+  console.log("app filters: ", configState);
+
   return (
     <div>
       This demo app lists files:
@@ -62,9 +67,11 @@ const Demo: React.FC = () => {
   );
 };
 
-export default createGdcApp({
+export default createGdcAppWithOwnStore({
   App: Demo,
-  name: "Demonstration Application 2",
+  id: id,
+  name: "Demonstration Application 3",
   version: "v1.0.0",
   requiredEntityTypes: ["file"],
+  store: AppStore,
 });
