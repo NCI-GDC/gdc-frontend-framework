@@ -291,6 +291,16 @@ export interface GdcFile {
     readonly workflow_type: string;
     readonly updated_datetime: string;
     readonly input_files?: ReadonlyArray<string>;
+    readonly metadata?: {
+      readonly read_groups: Array<{
+        readonly read_group_id: string;
+        readonly is_paired_end: boolean;
+        readonly read_length: number;
+        readonly library_name: string;
+        readonly sequencing_center: string;
+        readonly sequencing_date: string;
+      }>;
+    };
   };
   readonly downstream_analyses?: ReadonlyArray<{
     readonly workflow_type: string;
@@ -440,6 +450,20 @@ const slice = createSlice({
                     input_files: hit.analysis.input_files?.map(
                       (file) => file.file_id,
                     ),
+                    metadata: hit.analysis.metadata
+                      ? {
+                          read_groups: hit.analysis.metadata.read_groups.map(
+                            (read_group) => ({
+                              read_group_id: read_group.read_group_id,
+                              is_paired_end: read_group.is_paired_end,
+                              read_length: read_group.read_length,
+                              library_name: read_group.library_name,
+                              sequencing_center: read_group.sequencing_center,
+                              sequencing_date: read_group.sequencing_date,
+                            }),
+                          ),
+                        }
+                      : undefined,
                   }
                 : undefined,
               downstream_analyses: hit.downstream_analyses?.map((analysis) => {
