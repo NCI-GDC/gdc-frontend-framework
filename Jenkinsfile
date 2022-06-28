@@ -16,7 +16,7 @@ pipeline {
 	stage("pre-commit hooks") {
 	 steps{
 	  script{
-             docker.image('hub.docker.com/repository/docker/huzaifabajwa/py3node8:alpine-1.0').inside {
+             docker.image('huzaifabajwa/py3node8:alpine-1.0').inside {
                // Some of the pre-commit hooks are installed via an ssh github url.
                  sshagent(credentials: ['githubkey']) {
 //		 sh "apk add --no-cache python3"
