@@ -1,8 +1,8 @@
 #!/bin/groovy
 pipeline {
     agent {
-  	docker { image 'docker.osdc.io/node:16-alpine3.15' }
- 	}
+	any
+  	  }
 
     stages {
 //	withEnv(['https_proxy=http://cloud-proxy:3128', ]) {
@@ -15,9 +15,10 @@ pipeline {
 	
 
 	stage("pre-commit hooks") {
+	 docker.image('docker.osdc.io/ncigdc/jenkins-agent:1.4.0').inside {
 	 steps{
 	  script{
-		docker.image('docker.osdc.io/ncigdc/jenkins-agent:1.4.0').inside {
+//		docker.image('docker.osdc.io/ncigdc/jenkins-agent:1.4.0').inside {
                // Some of the pre-commit hooks are installed via an ssh github url.
                  sshagent(credentials: ['githubkey']) {
 //		 sh "apk add --no-cache python3"
