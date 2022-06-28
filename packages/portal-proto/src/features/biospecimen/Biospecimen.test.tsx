@@ -99,6 +99,6 @@ describe("<Biospecimen />", () => {
     });
     const { getByLabelText } = render(<Biospecimen caseId="testId" bioId="" />);
 
-    expect(getByLabelText("Case ID not found")).toBeInTheDocument();
+    expect(getByLabelText("Case Not Found with a case id")).toBeInTheDocument();
   });
 });
