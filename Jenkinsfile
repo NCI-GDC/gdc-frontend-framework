@@ -2,7 +2,7 @@
 
 pipeline {
   agent any
-
+  withEnv(['https_proxy=http://cloud-proxy:3128', ]) {
   stages {
     stage('Checkout') {
           // Get code from github.
@@ -16,8 +16,9 @@ pipeline {
         docker.image('docker.osdc.io/ncigdc/jenkins-agent:1.4.0').inside {
         // Some of the pre-commit hooks are installed via an ssh github url.
         sshagent(credentials: ['githubkey']) {
-            sh "pip install pre-commit==${preCommitVersion}"
+//            sh "pip install pre-commit==${preCommitVersion}"
             sh "pre-commit run -a"
+       }
       }  
      }
     }
