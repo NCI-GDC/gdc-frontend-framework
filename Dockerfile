@@ -2,6 +2,8 @@ FROM node:16-alpine3.15 as dep
 RUN apk add --no-cache libc6-compat nasm autoconf automake bash libltdl libtool gcc make g++ zlib-dev
 WORKDIR /app
 
+#==================================================================
+
 # ==================================================================
 FROM node:16-alpine3.15 AS builder
 WORKDIR /app
@@ -37,5 +39,12 @@ USER nextjs
 
 EXPOSE 3000
 ENV PORT 3000
+
+User root
+ENV PYTHONUNBUFFERED=1
+RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python
+RUN python3 -m ensurepip
+RUN pip3 install --no-cache --upgrade pip setuptools
+
 
 CMD ["npm", "run", "start"]
