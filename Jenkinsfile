@@ -1,8 +1,10 @@
 #!/bin/groovy
 pipeline {
     agent {
-	any
-  	  }
+        node {
+            label 'docker'
+        }
+    }
 
     stages {
 
