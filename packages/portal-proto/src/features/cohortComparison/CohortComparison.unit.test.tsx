@@ -1,4 +1,4 @@
-import { render, fireEvent } from "@testing-library/react";
+import { render, fireEvent, waitFor } from "@testing-library/react";
 import CohortComparison from "./CohortComparison";
 
 jest.mock("@gff/core", () => {
@@ -8,7 +8,7 @@ jest.mock("@gff/core", () => {
     useCohortFacets: jest.fn().mockReturnValue({
       data: { aggregations: [], caseCounts: [], caseIds: [] },
       isFetching: false,
-      isUnitialized: false,
+      isUninitialized: false,
     }),
     useCoreSelector: jest.fn(),
     useVennIntersectionData: jest.fn(),
@@ -26,9 +26,11 @@ describe("<CohortComparison />", () => {
     const { getByLabelText, queryByRole } = render(
       <CohortComparison cohortNames={["Cohort 1", "Cohort 2"]} />,
     );
-    expect(
-      queryByRole("heading", { name: "Survival Analysis" }),
-    ).toBeInTheDocument();
+    waitFor(() => {
+      expect(
+        queryByRole("heading", { name: "Survival Analysis" }),
+      ).toBeInTheDocument();
+    });
     fireEvent.click(getByLabelText("Survival"));
     expect(
       queryByRole("heading", { name: "Survival Analysis" }),
