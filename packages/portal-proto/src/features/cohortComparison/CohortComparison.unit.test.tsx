@@ -26,17 +26,18 @@ describe("<CohortComparison />", () => {
     const { getByLabelText, queryByRole } = render(
       <CohortComparison cohortNames={["Cohort 1", "Cohort 2"]} />,
     );
-    expect(
-      queryByRole("heading", { name: "Survival Analysis" }),
-    ).toBeInTheDocument();
-    fireEvent.click(getByLabelText("Survival"));
-    expect(
-      queryByRole("heading", { name: "Survival Analysis" }),
-    ).not.toBeInTheDocument();
-
-    // Card starts out hidden
-    expect(queryByRole("heading", { name: "Race" })).not.toBeInTheDocument();
     waitFor(() => {
+      expect(
+        queryByRole("heading", { name: "Survival Analysis" }),
+      ).toBeInTheDocument();
+      fireEvent.click(getByLabelText("Survival"));
+      expect(
+        queryByRole("heading", { name: "Survival Analysis" }),
+      ).not.toBeInTheDocument();
+
+      // Card starts out hidden
+      expect(queryByRole("heading", { name: "Race" })).not.toBeInTheDocument();
+
       fireEvent.click(getByLabelText("Race"));
       expect(queryByRole("heading", { name: "Race" })).toBeInTheDocument();
     });
