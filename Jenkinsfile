@@ -1,7 +1,7 @@
 #!/usr/bin/env groovy
 pipeline {
     agent {
-  	docker { image 'docker.osdc.io/node:16-alpine3.15' }
+  	docker { image 'huzaifabajwa/py3node8:alpine-1.0' }
  	}
 
     stages {
@@ -16,7 +16,7 @@ pipeline {
 	stage("pre-commit hooks") {
 	 steps{
 	  script{
-             docker.image('huzaifabajwa/py3node8:alpine-1.0').inside {
+
                // Some of the pre-commit hooks are installed via an ssh github url.
                  sshagent(credentials: ['githubkey']) {
 //		 sh "apk add --no-cache python3"
