@@ -16,14 +16,15 @@ pipeline {
 	stage("pre-commit hooks") {
 	 steps{
 	  script{
-             docker.image('docker.osdc.io/node:16-alpine3.15').inside {
+//             docker.image('docker.osdc.io/node:16-alpine3.15').inside {
                // Some of the pre-commit hooks are installed via an ssh github url.
                sshagent(credentials: ['githubkey']) {
+		 sh "npm -v"
 		 sh "python -m ensurepip --upgrade"
                  sh "pip install pre-commit==1.21"
                  sh "pre-commit run -a"
                }
-            }
+//            }
           }
          }
        }
