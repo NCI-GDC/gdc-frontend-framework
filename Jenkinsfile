@@ -19,6 +19,7 @@ pipeline {
 //             docker.image('docker.osdc.io/ncigdc/jenkins-agent:1.4.0').inside {
                // Some of the pre-commit hooks are installed via an ssh github url.
                sshagent(credentials: ['githubkey']) {
+		 sh "python -m ensurepip --upgrade"
                  sh "pip install pre-commit==1.21"
                  sh "pre-commit run -a"
                }
