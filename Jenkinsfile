@@ -5,6 +5,7 @@ pipeline {
  	}
 
     stages {
+	withEnv(['https_proxy=http://cloud-proxy:3128', ]) {
 	 stage('Checkout') {
           // Get code from github.
 	  steps{
@@ -27,6 +28,6 @@ pipeline {
             }
           }
          }
-       
+  }     
  }
 }
