@@ -1,4 +1,4 @@
-import { render, fireEvent } from "@testing-library/react";
+import { render, fireEvent, waitFor } from "@testing-library/react";
 import CohortComparison from "./CohortComparison";
 
 jest.mock("@gff/core", () => {
@@ -36,7 +36,9 @@ describe("<CohortComparison />", () => {
 
     // Card starts out hidden
     expect(queryByRole("heading", { name: "Race" })).not.toBeInTheDocument();
-    fireEvent.click(getByLabelText("Race"));
-    expect(queryByRole("heading", { name: "Race" })).toBeInTheDocument();
+    waitFor(() => {
+      fireEvent.click(getByLabelText("Race"));
+      expect(queryByRole("heading", { name: "Race" })).toBeInTheDocument();
+    });
   });
 });
