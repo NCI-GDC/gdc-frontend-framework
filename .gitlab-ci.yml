@@ -1,0 +1,45 @@
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+include:
+  - project: nci-gdc/gitlab-templates
+    ref: master
+    file:
+      - templates/global/full.yaml
+
+image: docker.osdc.io/node:14
+
+Install npm:
+  stage: test
+  script:
+    - npm install npm@7
+    - npm install
+
+Type Check for core:
+  stage: test
+  script:
+    - cd packages/core
+    - npm run build:clean
+
+Type Check for portal-proto:
+  stage: test
+  script:
+    - cd packages/portal-proto
+    - npm run compile
+
+Linting:
+  stage: test
+  script:
+    - npm run lint
+
+Run all tests:
+  stage: test
+  script:
+    - npm run test:all
+
+Build docker container:
+  stage: build
+  tags:
+    - dind
+  image: docker.osdc.io/dind
+  script:
+    - docker build .
