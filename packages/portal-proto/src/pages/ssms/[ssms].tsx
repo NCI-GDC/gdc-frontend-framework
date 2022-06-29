@@ -3,6 +3,7 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { SimpleLayout } from "../../features/layout/Simple";
 import SSMPlot from "../../features/charts/SSMPlot";
+import { SSMSSummary } from "@/features/SSMSSummary";
 
 const MutationsPage: NextPage = () => {
   const router = useRouter();
@@ -21,6 +22,7 @@ const MutationsPage: NextPage = () => {
       <div>
         {ready && (
           <>
+            <SSMSSummary ssm_id={ssms} />
             <SSMPlot page={"ssms"} ssms={ssms} />
           </>
         )}
