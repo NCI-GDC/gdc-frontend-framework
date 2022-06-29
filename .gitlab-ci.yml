@@ -13,6 +13,8 @@ Install npm:
   script:
     - npm install npm@7
     - npm install
+    - npm config set proxy http://cloud-proxy:3128
+    - npm config set https-proxy http://cloud-proxy:3128
 
 Type Check for core:
   stage: test
