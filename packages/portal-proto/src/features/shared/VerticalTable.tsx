@@ -5,7 +5,7 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DragDrop } from "./DragDrop";
 import { ToggleSort } from "./ToggleSort";
-import { BsList } from "react-icons/bs";
+import { BsList, BsSortDown } from "react-icons/bs";
 import { Popover } from "@mantine/core";
 
 interface VerticalTableProps {
@@ -238,7 +238,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
               className={`mr-0 ml-auto border-1 border-gray-300 p-3`}
               onClick={() => setShowSortMenu(!showSortMenu)}
             >
-              <BsList></BsList>
+              <BsSortDown></BsSortDown>
             </button>
           }
           width={260}

@@ -25,15 +25,20 @@ export const ToggleSort: FC<ToggleSortProps> = ({
 
   useEffect(() => {
     handleSortChange(sorts);
+    console.log("SORTZ", sorts);
   }, [sorts]);
 
   const renderSort = useCallback(
-    (sort: { field: string; order: string }, index: number) => {
+    (
+      sort: { field: string; parity: string; sortActive: boolean },
+      index: number,
+    ) => {
       return (
         <SortOption
           field={sort.field}
           index={index}
-          order={sort.order}
+          order={sort.parity}
+          sortActive={sort.sortActive}
           toggleSort={toggleSort}
         />
       );
