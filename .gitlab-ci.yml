@@ -6,16 +6,14 @@ include:
     file:
       - templates/global/full.yaml
 
-image: docker.osdc.io/node:14
+image: docker.osdc.io/node:16
 variables:
-  NPM_CONFIG_PROXY: http://cloud-proxy:3128
-  NPM_CONFIG_HTTPS-PROXY: http://cloud-proxy:3128
+  NPM_CONFIG_PROXY: "http://cloud-proxy:3128"
+  NPM_CONFIG_HTTPS-PROXY: "http://cloud-proxy:3128"
 
 Install npm:
   stage: .pre
   script:
-    - npm config set proxy http://cloud-proxy:3128
-    - npm config set https-proxy http://cloud-proxy:3128
     - npm install npm@7
     - npm install
 
