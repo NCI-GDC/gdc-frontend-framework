@@ -9,6 +9,12 @@ include:
 image: docker.osdc.io/node:16
 variables:
   npm_config_registry: https://nexus.osdc.io/repository/npm-all/
+cache:
+  key: build-cache
+  paths:
+    - node_modules/
+    - lib/
+    - .npmrc
 
 Install npm:
   stage: .pre
@@ -16,11 +22,6 @@ Install npm:
     - npm install npm@7
     - npm install
   cache:
-    key: build-cache
-    paths:
-      - node_modules/
-      - lib/
-      - .npmrc
     policy: push
 
 Type Check for core:
@@ -29,11 +30,6 @@ Type Check for core:
     - cd packages/core
     - npm run build:clean
   cache:
-    key: build-cache
-    paths:
-      - node_modules/
-      - lib/
-      - .npmrc
     policy: pull
 
 Type Check for portal-proto:
@@ -42,11 +38,6 @@ Type Check for portal-proto:
     - cd packages/portal-proto
     - npm run compile
   cache:
-    key: build-cache
-    paths:
-      - node_modules/
-      - lib/
-      - .npmrc
     policy: pull
 
 Linting:
@@ -54,11 +45,6 @@ Linting:
   script:
     - npm run lint
   cache:
-    key: build-cache
-    paths:
-      - node_modules/
-      - lib/
-      - .npmrc
     policy: pull
 
 Run all tests:
@@ -66,11 +52,6 @@ Run all tests:
   script:
     - npm run test:all
   cache:
-    key: build-cache
-    paths:
-      - node_modules/
-      - lib/
-      - .npmrc
     policy: pull
 
 Build docker container:
