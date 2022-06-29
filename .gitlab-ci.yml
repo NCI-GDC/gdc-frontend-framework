@@ -8,8 +8,7 @@ include:
 
 image: docker.osdc.io/node:16
 variables:
-  NPM_CONFIG_PROXY: "http://cloud-proxy:3128"
-  NPM_CONFIG_HTTPS-PROXY: "http://cloud-proxy:3128"
+  NPM_CONFIG_REGISTRY: https://nexus.osdc.io/repository/npm-all/
 
 Install npm:
   stage: .pre
