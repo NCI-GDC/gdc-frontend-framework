@@ -9,7 +9,7 @@ include:
 image: docker.osdc.io/node:14
 
 Install npm:
-  stage: test
+  stage: .pre
   script:
     - npm install npm@7
     - npm install
