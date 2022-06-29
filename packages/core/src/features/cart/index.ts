@@ -5,20 +5,18 @@ import {
   removeFilesFromCart,
   updateCartReducer,
 } from "./updateCartSlice";
-import {
-  cartSummaryReducer,
-  useCartSummary,
-  fetchCartSummary,
-} from "./cartSummarySlice";
+import { cartSummaryReducer, useCartSummary } from "./cartSummarySlice";
+import { filesTableReducer, useCartFilesTable } from "./filesTableSlice";
 export {
   selectCart,
   addFilesToCart,
   removeFilesFromCart,
   useCartSummary,
-  fetchCartSummary,
+  useCartFilesTable,
 };
 
 export const cartReducer = combineReducers({
   files: updateCartReducer,
   cartSummary: cartSummaryReducer,
+  filesTable: filesTableReducer,
 });

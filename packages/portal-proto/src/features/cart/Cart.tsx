@@ -7,7 +7,12 @@ import {
 } from "react-icons/md";
 import { RiFile3Fill as FileIcon } from "react-icons/ri";
 import { VscTrash as TrashIcon } from "react-icons/vsc";
-import { useCartSummary, useCoreSelector, selectCart } from "@gff/core";
+import {
+  useCartSummary,
+  useCoreSelector,
+  selectCart,
+  useCartFilesTable,
+} from "@gff/core";
 
 const buttonStyle = "bg-white text-nci-blue-darkest border-nci-blue-darkest";
 
@@ -23,8 +28,14 @@ const formatFileSize = (bytes: number) => {
 };
 
 const Cart: React.FC = () => {
-  const currentCart = useCoreSelector((state) => selectCart(state));
-  const { data } = useCartSummary(currentCart);
+  const cart = useCoreSelector((state) => selectCart(state));
+  const { data: summaryData } = useCartSummary(cart);
+  const { data: tableData } = useCartFilesTable({
+    cart,
+    size: 20,
+    offset: 0,
+    sort: [],
+  });
 
   return (
     <>
@@ -87,8 +98,9 @@ const Cart: React.FC = () => {
           Manifest
         </Button>
         <h1 className="uppercase ml-auto mr-4 flex items-center truncate">
-          Total of <FileIcon /> {data.doc_count} Files <PersonIcon />{" "}
-          {data.case_count} Cases <SaveIcon /> {formatFileSize(data.file_size)}
+          Total of <FileIcon /> {summaryData.total_doc_count} Files{" "}
+          <PersonIcon /> {summaryData.total_case_count} Cases <SaveIcon />{" "}
+          {formatFileSize(summaryData.total_file_size)}
         </h1>
       </div>
       <Grid>
@@ -100,11 +112,11 @@ const Cart: React.FC = () => {
             <h3>Download Manifest:</h3>
             <p className="py-2">
               Download a manifest for use with the{" "}
-              <a href="https://gdc.cancer.gov/access-data/gdc-data-transfer-tool">
-                GDC Data Transfer Tool
+              <a href="https://gdc.cancer.gov/access-summaryData/gdc-data-transfer-tool">
+                GDC summaryData Transfer Tool
               </a>
-              . The GDC Data Transfer Tool is recommended for transferring large
-              volumes of data.
+              . The GDC summaryData Transfer Tool is recommended for
+              transferring large volumes of summaryData.
             </p>
             <h3>Download Cart:</h3>
             <p className="py-2">
@@ -113,10 +125,10 @@ const Cart: React.FC = () => {
             <h3>Download Reference Files:</h3>
             <p className="py-2">
               Download{" "}
-              <a href="https://gdc.cancer.gov/about-data/gdc-data-processing/gdc-reference-files">
+              <a href="https://gdc.cancer.gov/about-summaryData/gdc-data-processing/gdc-reference-files">
                 GDC Reference Files
               </a>{" "}
-              for use in your genomic data analysis.
+              for use in your genomic summaryData analysis.
             </p>
           </div>
           <div className="pt-2">
@@ -130,7 +142,26 @@ const Cart: React.FC = () => {
           <h2 className="uppercase text-nci-blue-darkest font-bold">
             File counts by project
           </h2>
-          <div>TABLE PLACEHOLER</div>
+          <table>
+            <thead>
+              <tr>
+                <th>Project</th>
+                <th>Cases</th>
+                <th>Files</th>
+                <th>File Size</th>
+              </tr>
+            </thead>
+            <tbody>
+              {summaryData.byProject.map((project) => (
+                <tr>
+                  <td>{project.key}</td>
+                  <td>{project.case_count}</td>
+                  <td>{project.doc_count}</td>
+                  <td>{formatFileSize(project.file_size)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </Grid.Col>
         <Grid.Col span={12} className="p-4">
           <div className="flex gap-2">
@@ -154,7 +185,20 @@ const Cart: React.FC = () => {
               <MenuItem>Unauthorized Files</MenuItem>
             </Menu>
           </div>
-          <div>TABLE PLACEHOLDER</div>
+          <table>
+            <thead>
+              <tr>
+                <th>File Name</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tableData.map((file) => (
+                <tr>
+                  <td>{file.node.file_name}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </Grid.Col>
       </Grid>
     </>

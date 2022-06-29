@@ -133,14 +133,15 @@ const Header: React.FC<HeaderProps> = ({
           >
             <LoginIcon className="mr-1" size="24px" /> Login{" "}
           </div>
-          <div
-            className={
-              "flex flex-row opacity-60 hover:opacity-100 transition-opacity  items-center mx-2"
-            }
-          >
-            <CartIcon size="24px" /> Cart ({currentCart.length})
-          </div>
-
+          <Link href="/cart">
+            <div
+              className={
+                "flex flex-row opacity-60 hover:opacity-100 transition-opacity  items-center mx-2"
+              }
+            >
+              <CartIcon size="24px" /> Cart ({currentCart.length})
+            </div>
+          </Link>
           <Menu
             withArrow
             className={"opacity-60 hover:opacity-100 transition-opacity mx-2"}
