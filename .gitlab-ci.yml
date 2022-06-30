@@ -81,6 +81,9 @@ Run all tests:
 Build docker container:
   stage: build
   needs: [Type_Check_for_portal-proto]
-  image: docker.osdc.io/docker:19-dind
+  services:
+    - name: docker:dind
+  entrypoint: ["dockerd-entrypoint.sh", "--tls=false"]
   script:
+    - export DOCKER_HOST=tcp://127.0.0.1:2375 && docker build --pull -t ${CI_REGISTRY_IMAGE} .
     - docker build -t gitlab_ci .
