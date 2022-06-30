@@ -47,3 +47,42 @@ Type Check for core:
     paths:
       - ../gdc-frontend-framework
     policy: pull
+
+Type Check for portal-proto:
+  stage: test
+  script:
+    - cd packages/portal-proto
+    - npm run compile
+  cache:
+    key: build-cache
+    paths:
+      - ../gdc-frontend-framework
+    policy: pull
+
+Linting:
+  stage: test
+  script:
+    - npm run lint
+  cache:
+    key: build-cache
+    paths:
+      - ../gdc-frontend-framework
+    policy: pull
+
+Run all tests:
+  stage: test
+  script:
+    - npm run test:all
+  cache:
+    key: build-cache
+    paths:
+      - ../gdc-frontend-framework
+    policy: pull
+
+Build docker container:
+  stage: build
+  tags:
+    - dind
+  image: docker.osdc.io/dind
+  script:
+    - docker build .
