@@ -26,6 +26,7 @@ Install npm:
   cache:
     key: build-cache
     paths:
+      - *
       - node_modules/
       - lib/
       - .npmrc
@@ -47,6 +48,7 @@ Type Check for core:
   cache:
     key: build-cache
     paths:
+      - *
       - node_modules/
       - lib/
       - .npmrc
@@ -60,6 +62,7 @@ Type Check for portal-proto:
   cache:
     key: build-cache
     paths:
+      - *
       - node_modules/
       - lib/
       - .npmrc
