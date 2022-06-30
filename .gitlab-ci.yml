@@ -1,6 +1,15 @@
 # To contribute improvements to CI/CD templates, please follow the Development guide at:
 # https://docs.gitlab.com/ee/development/cicd/templates.html
 
+stages:
+  - install_packages
+  - compilation_typecheck_for_core
+  - compilation_typecheck_for_portal-porto
+  - run_lint_check
+  - run_prettier_check
+  - check_for_Unit_Tests
+  - build
+
 include:
   - project: nci-gdc/gitlab-templates
     ref: master
@@ -11,17 +20,8 @@ image: docker.osdc.io/node:16
 variables:
   npm_config_registry: https://nexus.osdc.io/repository/npm-all/
 
-stages:
-  - install packages
-  - compilation/typecheck for core
-  - compilation/typecheck for portal-porto
-  - run lint check
-  - run prettier check
-  - check for Unit Tests
-  - build
-
 Install npm:
-  stage: install packages
+  stage: install_packages
   script:
     - npm install npm@7
     - npm install
@@ -33,7 +33,7 @@ Install npm:
     policy: push
 
 Type Check for core:
-  stage: compilation/typecheck for core
+  stage: compilation_typecheck_for_core
   script:
     - cd packages/core
     - npm run build:clean
@@ -44,7 +44,7 @@ Type Check for core:
       - ../gdc-frontend-framework
 
 Type Check for portal-proto:
-  stage: compilation/typecheck for portal-porto
+  stage: compilation_typecheck_for_portal-porto
   script:
     - cd packages/portal-proto
     - npm run compile
@@ -54,7 +54,7 @@ Type Check for portal-proto:
       - ../gdc-frontend-framework
 
 Linting:
-  stage: run lint check
+  stage: run_lint_check
   script:
     - npm run lint
   cache:
@@ -63,7 +63,7 @@ Linting:
       - ../gdc-frontend-framework
 
 Prettier Checks:
-  stage: run prettier check
+  stage: run_prettier_check
   script:
     - npm run format:check
   cache:
@@ -72,7 +72,7 @@ Prettier Checks:
       - ../gdc-frontend-framework
 
 Run all tests:
-  stage: check for Unit Tests
+  stage: check_for_Unit_Tests
   script:
     - npm run test:all
   cache:
