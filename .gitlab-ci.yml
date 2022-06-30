@@ -85,4 +85,4 @@ Build docker container:
     - dind
   image: docker.osdc.io/docker
   script:
-    - docker build .
+    - docker build -t gitlab_ci .
