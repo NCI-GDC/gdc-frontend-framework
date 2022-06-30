@@ -108,7 +108,7 @@ export const REGISTERED_APPS = [
     tags: ["sequenceAnalysis"],
     hasDemo: true,
     description: "Visualize sequencing reads.",
-    id: "SequenceReads",
+    id: "SequenceReadApp",
     optimizeRules: ["data format = BAM"],
   },
   {

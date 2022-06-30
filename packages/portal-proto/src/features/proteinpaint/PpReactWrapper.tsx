@@ -4,26 +4,7 @@ import { runproteinpaint } from "@stjude/proteinpaint-client";
 
 const basepath: string = "https://proteinpaint.stjude.org"; // '/auth/api/custom/proteinpaint'
 
-interface Mds3Arg {
-  host: string;
-  genome: string;
-  gene2canonicalisoform?: string;
-  mds3_ssm2canonicalisoform?: mds3_isoform;
-  geneSearch4GDCmds3?: boolean;
-  tracks: Track[];
-}
-
-interface Track {
-  type: string;
-  dslabel: string;
-}
-
-interface mds3_isoform {
-  ssm_id: string;
-  dslabel: string;
-}
-
-export class PpLolliplot extends React.Component<any, any> {
+class PpReact extends React.Component<any, any> {
   currentData: object;
 
   constructor(props) {
@@ -58,6 +39,28 @@ export class PpLolliplot extends React.Component<any, any> {
     );
     runproteinpaint(arg);
   }
+}
+
+interface Mds3Arg {
+  host: string;
+  genome: string;
+  gene2canonicalisoform?: string;
+  mds3_ssm2canonicalisoform?: mds3_isoform;
+  geneSearch4GDCmds3?: boolean;
+  tracks: Track[];
+}
+
+interface Track {
+  type: string;
+  dslabel: string;
+}
+
+interface mds3_isoform {
+  ssm_id: string;
+  dslabel: string;
+}
+
+export class PpLolliplot extends PpReact<any, any> {
   getTrack() {
     // host in gdc is just a relative url path,
     // using the same domain as the GDC portal where PP is embedded
@@ -83,6 +86,24 @@ export class PpLolliplot extends React.Component<any, any> {
     } else {
       arg.geneSearch4GDCmds3 = true;
     }
+
+    return arg;
+  }
+}
+
+interface BamArg {
+  host: string;
+  gdcbamslice: boolean;
+}
+
+export class PpBam extends PpReact<any, any> {
+  getTrack() {
+    // host in gdc is just a relative url path,
+    // using the same domain as the GDC portal where PP is embedded
+    const arg: BamArg = {
+      host: this.props.basepath || (basepath as string),
+      gdcbamslice: true,
+    };
 
     return arg;
   }
