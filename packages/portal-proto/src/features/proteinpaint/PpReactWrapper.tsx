@@ -1,78 +1,91 @@
 import React from "react";
 import { findDOMNode } from "react-dom";
 import { runproteinpaint } from "@stjude/proteinpaint-client";
-import { getLolliplotTrack, getTrackByType } from "./gdc.views";
 
-export function getPpReact(getTrack) {
-  if (!React) throw `missing React module`;
-  class PpReact extends React.Component {
-    constructor(props) {
-      super(props);
-      this.state = {};
-    }
-    componentDidMount() {
-      this.window = this.props.window ? this.props.window : window;
-      this.runpp();
-    }
-    componentDidUpdate() {
-      this.runpp();
-    }
-    render() {
-      // avoid jsx syntax to simplify bundling requirements
-      // since this is only a very minimal wrapper
-      return React.createElement("div", null, "");
-    }
-    runpp() {
-      const data = this.getTrack();
-      // do not cause unnecessary re-render if the track argument
-      // is the same as the last render
-      if (deepEqual(data, this.currentData)) return;
-      this.currentData = data;
-      const rootElem = findDOMNode(this);
-      const pp_holder = rootElem.querySelector(".sja_root_holder");
-      if (pp_holder) pp_holder.remove();
+const basepath: string = "https://proteinpaint.stjude.org"; // '/auth/api/custom/proteinpaint'
 
-      const arg = Object.assign(
-        { holder: rootElem, noheader: true, nobox: true },
-        JSON.parse(JSON.stringify(data)),
-      );
-      runproteinpaint(arg);
-    }
-    /* 
-			TODO: delete getUrlParams() once all 
-		  required input are passed via props 
-		  by the gdc portal app
-		*/
-    getUrlParams() {
-      const loc = this.window.location;
-      const params = {};
-      loc.search
-        .substr(1)
-        .split("&")
-        .forEach((kv) => {
-          const [key, value] = kv.split("=");
-          params[key] = value;
-        });
-      if (params.filters) {
-        params["filters"] = JSON.parse(decodeURIComponent(params.filters));
-      }
-      if (loc.pathname) {
-        const url_split = loc.pathname.split("/");
-        // do not hardcode the position of /genes/ in the pathname
-        const i = url_split.findIndex((d) => d === "genes");
-        if (i !== -1) params.gene = url_split[i + 1];
-      }
-      return params;
-    }
+interface Mds3Arg {
+  host: string;
+  genome: string;
+  gene2canonicalisoform?: string;
+  mds3_ssm2canonicalisoform?: mds3_isoform;
+  geneSearch4GDCmds3?: boolean;
+  tracks: Track[];
+}
+
+interface Track {
+  type: string;
+  dslabel: string;
+}
+
+interface mds3_isoform {
+  ssm_id: string;
+  dslabel: string;
+}
+
+export class PpLolliplot extends React.Component<any, any> {
+  currentData: object;
+
+  constructor(props) {
+    super(props);
+    this.state = {};
+    this.currentData = {};
   }
-
-  if (typeof getTrack == "function") {
-    PpReact.prototype.getTrack = getTrack;
-  } else {
-    throw "The second argument to getPpReact must be a function that returns runproteinpaint() arguments";
+  componentDidMount() {
+    this.runpp();
   }
-  PpReact.React = React;
-  return PpReact;
+  componentDidUpdate() {
+    this.runpp();
+  }
+  render() {
+    // avoid jsx syntax to simplify bundling requirements
+    // since this is only a very minimal wrapper
+    return React.createElement("div", null, "");
+  }
+  runpp() {
+    const data = this.getTrack();
+    // do not cause unnecessary re-render if the track argument
+    // is the same as the last render
+    if (deepEqual(data, this.currentData)) return;
+    this.currentData = data;
+    const rootElem = findDOMNode(this) as HTMLElement;
+    const pp_holder = rootElem.querySelector(".sja_root_holder");
+    if (pp_holder) pp_holder.remove();
+
+    const arg = Object.assign(
+      { holder: rootElem, noheader: true, nobox: true },
+      JSON.parse(JSON.stringify(data)),
+    );
+    runproteinpaint(arg);
+  }
+  getTrack() {
+    // host in gdc is just a relative url path,
+    // using the same domain as the GDC portal where PP is embedded
+    const arg: Mds3Arg = {
+      host: this.props.basepath || (basepath as string),
+      genome: "hg38", // hardcoded for gdc
+      //gene: data.gene,
+      tracks: [
+        {
+          type: "mds3",
+          dslabel: "GDC",
+        },
+      ],
+    };
+
+    if (this.props.geneId) {
+      arg.gene2canonicalisoform = this.props.geneId;
+    } else if (this.props.ssm_id) {
+      arg.mds3_ssm2canonicalisoform = {
+        dslabel: "GDC",
+        ssm_id: this.props.ssm_id,
+      };
+    } else {
+      arg.geneSearch4GDCmds3 = true;
+    }
+
+    return arg;
+  }
 }
 
 function deepEqual(x, y) {
@@ -98,5 +111,3 @@ function deepEqual(x, y) {
     return true;
   } else return false;
 }
-
-export const PpLolliplot = getPpReact(getLolliplotTrack);
