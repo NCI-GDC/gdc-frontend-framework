@@ -49,7 +49,7 @@ Type Check for core:
     policy: pull
 
 Type Check for portal-proto:
-  stage: test
+  stage: portol-proto
   script:
     - cd packages/portal-proto
     - npm run compile
@@ -57,7 +57,6 @@ Type Check for portal-proto:
     key: build-cache
     paths:
       - ../gdc-frontend-framework
-    policy: pull
 
 Linting:
   stage: test
