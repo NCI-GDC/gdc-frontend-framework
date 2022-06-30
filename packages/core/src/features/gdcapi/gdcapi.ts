@@ -261,7 +261,7 @@ interface transcript {
 export interface SSMSDefaults {
   id: string;
   consequence: Array<{ transcript: transcript }>;
-  clinical_annotations: {
+  clinical_annotations?: {
     civic: {
       variant_id: string;
     };

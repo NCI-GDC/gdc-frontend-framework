@@ -15,15 +15,10 @@ import {
 
 export interface SsmsState {
   readonly ssms?: SSMSDefaults;
-  readonly summaryData?: Record<string, any>;
+  readonly summaryData?: summaryData;
   readonly status: DataStatus;
   readonly error?: string;
 }
-
-const initialState: SsmsState = {
-  status: "uninitialized",
-  error: undefined,
-};
 
 export const fetchSsms = createAsyncThunk<
   GdcApiResponse<SSMSDefaults>,
@@ -32,6 +27,33 @@ export const fetchSsms = createAsyncThunk<
 >("ssms/fetchSsms", async (request?: GdcApiRequest) => {
   return await fetchGdcSsms(request);
 });
+
+interface summaryData {
+  uuid: string;
+  dna_change: string;
+  type: string;
+  reference_genome_assembly: string;
+  cosmic_id: Array<string>;
+  allele_in_the_reference_assembly: string;
+  civic?: string;
+  transcript: {
+    is_canonical: boolean;
+    transcript_id: string;
+    annotation: {
+      polyphen_impact: string;
+      polyphen_score: number;
+      sift_impact: string;
+      sift_score: number;
+      vep_impact: string;
+      dbsnp: string;
+    };
+  };
+}
+
+const initialState: SsmsState = {
+  status: "uninitialized",
+  error: undefined,
+};
 
 const slice = createSlice({
   name: "ssms",
@@ -48,8 +70,9 @@ const slice = createSlice({
           dna_change: hit.genomic_dna_change,
           type: hit.mutation_subtype,
           reference_genome_assembly: hit.ncbi_build,
+          cosmic_id: hit.cosmic_id,
           allele_in_the_reference_assembly: hit.reference_allele,
-          civic: hit.clinical_annotations.civic.variant_id,
+          civic: hit?.clinical_annotations?.civic.variant_id,
           transcript: hit.consequence
             .filter((con) => con.transcript.is_canonical)
             .map((item) => ({
@@ -61,9 +84,10 @@ const slice = createSlice({
                 sift_impact: item.transcript.annotation.sift_impact,
                 sift_score: item.transcript.annotation.sift_score,
                 vep_impact: item.transcript.annotation.vep_impact,
+                dbsnp: item.transcript.annotation.dbsnp_rs,
               },
-            })),
-        }));
+            }))[0],
+        }))[0];
 
         state.status = "fulfilled";
       })
@@ -82,8 +106,9 @@ const slice = createSlice({
 
 export const ssmsReducer = slice.reducer;
 
-export const selectSsmsSummaryData = (state: CoreState): any =>
-  state.ssms.summaryData;
+export const selectSsmsSummaryData = (
+  state: CoreState,
+): summaryData | undefined => state.ssms.summaryData;
 
 export const selectSsmsData = (
   state: CoreState,

@@ -26,6 +26,10 @@ export const capitalize = (original: string): string => {
   const customCapitalizations = {
     id: "ID",
     uuid: "UUID",
+    dna: "DNA",
+    dbsnp: "dbSNP",
+    cosmic: "COSMIC",
+    civic: "CIViC",
   };
 
   return original
@@ -36,4 +40,33 @@ export const capitalize = (original: string): string => {
         `${word.charAt(0).toUpperCase()}${word.slice(1)}`,
     )
     .join(" ");
+};
+
+export const externalLinkNames = {
+  civic: "CIViC",
+  entrez_gene: "NCBI Gene",
+  hgnc: "HGNC",
+  omim_gene: "OMIM",
+  uniprotkb_swissprot: "UniProtKB Swiss-Prot",
+};
+
+export const externalLinks = {
+  civic: (id: string) =>
+    `https://civicdb.org/variants/${id}/summary
+    }`,
+  cosm: (id: string) =>
+    `http://cancer.sanger.ac.uk/cosmic/mutation/overview?id=${id}`,
+  cosn: (id: string) =>
+    `http://cancer.sanger.ac.uk/cosmic/ncv/overview?id=${id}`,
+  dbsnp: (id: string) =>
+    `https://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs=${id}`,
+  ensembl: (id: string) =>
+    `http://nov2020.archive.ensembl.org/Homo_sapiens/Gene/Summary?db=core;g=${id}`,
+  entrez_gene: (id: string) => `http://www.ncbi.nlm.nih.gov/gene/${id}`,
+  hgnc: (id: string) =>
+    `https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/${id}`,
+  omim_gene: (id: string) => `http://omim.org/entry/${id}`,
+  transcript: (id: string) =>
+    `http://nov2020.archive.ensembl.org/Homo_sapiens/Transcript/Summary?db=core;t=${id}`,
+  uniprotkb_swissprot: (id: string) => `http://www.uniprot.org/uniprot/${id}`,
 };

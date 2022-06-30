@@ -3,7 +3,7 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { SimpleLayout } from "../../features/layout/Simple";
 import SSMPlot from "../../features/charts/SSMPlot";
-import { SSMSSummary } from "@/features/SSMSSummary";
+import { SSMSSummary } from "@/features/mutationSummary/SSMSSummary";
 
 const MutationsPage: NextPage = () => {
   const router = useRouter();
