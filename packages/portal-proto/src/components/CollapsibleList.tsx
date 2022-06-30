@@ -11,7 +11,7 @@ export const CollapsibleList = ({
   limit?: number;
   collapseText?: string;
   expandText?: string;
-}) => {
+}): JSX.Element => {
   const [expanded, setExpanded] = useState(false);
   return (
     <ul className="list-none pl-0 mb-0 inline-block">
@@ -20,7 +20,7 @@ export const CollapsibleList = ({
       ))}
       {data.length > limit && (
         <li className="float-right italic cursor-pointer">
-          <a className="no-underline" onClick={() => setExpanded((e) => !e)}>
+          <button onClick={() => setExpanded((e) => !e)}>
             {expanded ? (
               <div className="flex">
                 <AiFillCaretUp className="mr-1" />
@@ -32,7 +32,7 @@ export const CollapsibleList = ({
                 <span>{expandText}</span>
               </div>
             )}
-          </a>
+          </button>
         </li>
       )}
     </ul>

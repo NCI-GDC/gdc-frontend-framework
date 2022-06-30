@@ -9,7 +9,7 @@ import { FaBook, FaTable } from "react-icons/fa";
 import { CollapsibleList } from "@/components/CollapsibleList";
 import { AnchorLink } from "@/components/AnchorLink";
 
-export const SSMSSummary = ({ ssm_id }) => {
+export const SSMSSummary = ({ ssm_id }: { ssm_id: string }): JSX.Element => {
   const { isFetching } = useSSMS({
     filters: {
       op: "and",
@@ -131,6 +131,7 @@ export const SSMSSummary = ({ ssm_id }) => {
                 id.match(/(\d+)$/g),
               )}
               title={id}
+              key={id}
             />
           ))}
         />

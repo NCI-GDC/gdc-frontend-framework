@@ -204,7 +204,13 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
       );
       coreDispatch(fetchSurvival({ filters: f }));
     }
-  }, [cohortFilters, comparativeSurvival, coreDispatch, filters]);
+  }, [
+    cohortFilters,
+    prevComparative,
+    comparativeSurvival,
+    coreDispatch,
+    filters,
+  ]);
 
   return (
     <div className="flex flex-row">

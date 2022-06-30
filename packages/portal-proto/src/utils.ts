@@ -42,7 +42,7 @@ export const capitalize = (original: string): string => {
     .join(" ");
 };
 
-export const externalLinkNames = {
+export const geneExternalLinkNames = {
   civic: "CIViC",
   entrez_gene: "NCBI Gene",
   hgnc: "HGNC",
@@ -51,22 +51,23 @@ export const externalLinkNames = {
 };
 
 export const externalLinks = {
-  civic: (id: string) =>
+  civic: (id: string): string =>
     `https://civicdb.org/variants/${id}/summary
     }`,
-  cosm: (id: string) =>
+  cosm: (id: string): string =>
     `http://cancer.sanger.ac.uk/cosmic/mutation/overview?id=${id}`,
-  cosn: (id: string) =>
+  cosn: (id: string): string =>
     `http://cancer.sanger.ac.uk/cosmic/ncv/overview?id=${id}`,
-  dbsnp: (id: string) =>
+  dbsnp: (id: string): string =>
     `https://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs=${id}`,
-  ensembl: (id: string) =>
+  ensembl: (id: string): string =>
     `http://nov2020.archive.ensembl.org/Homo_sapiens/Gene/Summary?db=core;g=${id}`,
-  entrez_gene: (id: string) => `http://www.ncbi.nlm.nih.gov/gene/${id}`,
-  hgnc: (id: string) =>
+  entrez_gene: (id: string): string => `http://www.ncbi.nlm.nih.gov/gene/${id}`,
+  hgnc: (id: string): string =>
     `https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/${id}`,
-  omim_gene: (id: string) => `http://omim.org/entry/${id}`,
-  transcript: (id: string) =>
+  omim_gene: (id: string): string => `http://omim.org/entry/${id}`,
+  transcript: (id: string): string =>
     `http://nov2020.archive.ensembl.org/Homo_sapiens/Transcript/Summary?db=core;t=${id}`,
-  uniprotkb_swissprot: (id: string) => `http://www.uniprot.org/uniprot/${id}`,
+  uniprotkb_swissprot: (id: string): string =>
+    `http://www.uniprot.org/uniprot/${id}`,
 };

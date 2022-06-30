@@ -6,7 +6,7 @@ export const TypeIcon = ({
 }: {
   toolTipLabel?: string;
   iconText: string;
-}) => {
+}): JSX.Element => {
   return (
     <>
       {toolTipLabel ? (

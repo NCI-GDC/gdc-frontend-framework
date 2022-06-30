@@ -8,7 +8,7 @@ interface SummaryHeaderProps {
 export const SummaryHeader = ({
   iconText,
   headerTitle,
-}: SummaryHeaderProps) => {
+}: SummaryHeaderProps): JSX.Element => {
   return (
     <div className="bg-white py-4 px-8 shadow-lg">
       <TypeIcon iconText={iconText} />
@@ -24,12 +24,12 @@ export interface SummaryCardProps {
   readonly tableData: HorizontalTableProps["tableData"];
 }
 
-export const SummaryCard: React.FC<SummaryCardProps> = ({
+export const SummaryCard = ({
   title = "Summary",
   message,
   tableData,
   Icon,
-}) => {
+}: SummaryCardProps): JSX.Element => {
   return (
     <div>
       <div className="flex gap-2">

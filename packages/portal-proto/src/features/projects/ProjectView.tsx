@@ -1,9 +1,6 @@
 import { useProjects, useAnnotations } from "@gff/core";
 import SummaryCount from "../../components/SummaryCount";
-import {
-  HorizontalTable,
-  HorizontalTableProps,
-} from "../../components/HorizontalTable";
+import { HorizontalTableProps } from "../../components/HorizontalTable";
 import { FaUser, FaFile, FaEdit, FaTable } from "react-icons/fa";
 import { get } from "lodash";
 import { SummaryCard, SummaryHeader } from "@/components/SummaryHeader";

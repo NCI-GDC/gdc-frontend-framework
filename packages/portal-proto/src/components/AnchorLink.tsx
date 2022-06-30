@@ -12,7 +12,7 @@ export const AnchorLink = ({
   title: string;
   iconText?: string;
   toolTipLabel?: string;
-}) => {
+}): JSX.Element => {
   return (
     <Anchor href={href} target="_blank" className="flex gap-1 underline">
       <FiExternalLink className="mt-1" />
