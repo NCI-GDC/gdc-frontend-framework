@@ -61,7 +61,6 @@ Type_Check_for_portal-proto:
 
 Linting:
   stage: test
-  needs: [Type_Check_for_portal-proto]
   script:
     - npm run lint
   cache:
@@ -71,7 +70,7 @@ Linting:
 
 Run all tests:
   stage: test
-  needs: [Linting]
+  needs: [Type Check for core]
   script:
     - npm run test:all
   cache:
