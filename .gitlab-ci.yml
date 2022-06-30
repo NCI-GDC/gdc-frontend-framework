@@ -1,15 +1,6 @@
 # To contribute improvements to CI/CD templates, please follow the Development guide at:
 # https://docs.gitlab.com/ee/development/cicd/templates.html
 
-stages:
-  - install_packages
-  - compilation_typecheck_for_core
-  - compilation_typecheck_for_portal-porto
-  - run_lint_check
-  - run_prettier_check
-  - check_for_Unit_Tests
-  - build
-
 include:
   - project: nci-gdc/gitlab-templates
     ref: master
@@ -21,7 +12,7 @@ variables:
   npm_config_registry: https://nexus.osdc.io/repository/npm-all/
 
 Install npm:
-  stage: install_packages
+  stage: .pre
   script:
     - npm install npm@7
     - npm install
@@ -33,7 +24,7 @@ Install npm:
     policy: push
 
 Type Check for core:
-  stage: compilation_typecheck_for_core
+  stage: test
   script:
     - cd packages/core
     - npm run build:clean
@@ -44,7 +35,9 @@ Type Check for core:
       - ../gdc-frontend-framework
 
 Type Check for portal-proto:
-  stage: compilation_typecheck_for_portal-porto
+  stage: test
+  needs: [Type Check for core]
+
   script:
     - cd packages/portal-proto
     - npm run compile
@@ -54,7 +47,8 @@ Type Check for portal-proto:
       - ../gdc-frontend-framework
 
 Linting:
-  stage: run_lint_check
+  stage: test
+  needs: [Type Check for portal-proto]
   script:
     - npm run lint
   cache:
@@ -63,7 +57,8 @@ Linting:
       - ../gdc-frontend-framework
 
 Prettier Checks:
-  stage: run_prettier_check
+  stage: test
+  needs: [Linting]
   script:
     - npm run format:check
   cache:
@@ -72,7 +67,8 @@ Prettier Checks:
       - ../gdc-frontend-framework
 
 Run all tests:
-  stage: check_for_Unit_Tests
+  stage: test
+  needs: [Prettier Checks]
   script:
     - npm run test:all
   cache:
@@ -102,5 +98,5 @@ build:
   script:
     - /bin/bash build.sh -b "$CI_COMMIT_BRANCH" -n "$CI_COMMIT_SHORT_SHA"
     - docker info
-    - docker images
+    - docker ls
     - docker ps -a
