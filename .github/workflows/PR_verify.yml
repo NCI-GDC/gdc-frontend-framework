@@ -13,11 +13,15 @@ jobs:
       - uses: actions/setup-node@v3
 
       - name: Install Packages
-        run: npm install
+        run: |
+          ls
+          npm install
 
       - name: Compilation/Type Check for core
         run: |
+          ls
           cd ${{github.workspace}}/packages/core
+          ls
           npm run build:clean
 
       - name: Compilation/Type Check for portal-proto
