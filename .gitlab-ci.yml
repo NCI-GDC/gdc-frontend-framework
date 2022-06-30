@@ -97,4 +97,6 @@ build:
     - mv dive /usr/local/bin/
   script:
     - /bin/bash build.sh -b "$CI_COMMIT_BRANCH" -n "$CI_COMMIT_SHORT_SHA"
+    - export http_proxy=http://cloud-proxy:3128
+    - export https_proxy=http://cloud-proxy:3128
     - docker build .
