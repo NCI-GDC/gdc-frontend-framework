@@ -2,6 +2,7 @@ import React from "react";
 import { findDOMNode } from "react-dom";
 import { runproteinpaint } from "@stjude/proteinpaint-client";
 
+// !!! TODO: may determine basepath prop value at runtime !!!
 const basepath: string = "https://proteinpaint.stjude.org"; // '/auth/api/custom/proteinpaint'
 
 class PpReact extends React.Component<any, any> {
@@ -19,9 +20,7 @@ class PpReact extends React.Component<any, any> {
     this.runpp();
   }
   render() {
-    // avoid jsx syntax to simplify bundling requirements
-    // since this is only a very minimal wrapper
-    return React.createElement("div", null, "");
+    return <div />;
   }
   runpp() {
     const data = this.getTrack();
