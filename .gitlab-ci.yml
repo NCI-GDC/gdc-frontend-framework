@@ -84,16 +84,6 @@ build:
   tags:
     - dind
   image: docker:20.10.16-dind
-  before_script:
-    - docker info
-    - apk add --no-cache bash moreutils git go curl
-    - curl -L -o dive.tar.gz https://github.com/wagoodman/dive/releases/download/v0.10.0/dive_0.10.0_linux_amd64.tar.gz
-    - curl -L -o ds.tar.gz https://nexus.osdc.io/repository/misc/dockerslim/releases/1.37.5/dist_linux.tar.gz
-    - tar -xvf ds.tar.gz
-    - tar -xvf dive.tar.gz
-    - mv dist_linux/docker-slim /usr/local/bin/
-    - mv dist_linux/docker-slim-sensor /usr/local/bin/
-    - rm -rf dist_linux/
-    - mv dive /usr/local/bin/
   script:
     - /bin/bash build.sh -b "$CI_COMMIT_BRANCH" -n "$CI_COMMIT_SHORT_SHA"
+    - docker build .
