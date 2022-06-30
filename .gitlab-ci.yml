@@ -13,8 +13,16 @@ variables:
 Install npm:
   stage: .pre
   script:
+    - echo "current Working directory"
+    - pwd
+    - echo "Files List"
+    - ls
+    -echo "Installing Packages"
     - npm install npm@7
     - npm install
+    - echo "Installation Complete"
+    - ls
+    - echo ".pre stage completed"
   cache:
     key: build-cache
     paths:
@@ -26,7 +34,15 @@ Install npm:
 Type Check for core:
   stage: test
   script:
+    - echo "Type check for core Started" 
+    - echo "Current Working Directory"
+    - pwd
+    - echo "List of files"
+    - ls
     - cd packages/core
+    - echo "List of files in packages/core"
+    - ls
+    - echo "RUN npm build/n"
     - npm run build:clean
   cache:
     key: build-cache
