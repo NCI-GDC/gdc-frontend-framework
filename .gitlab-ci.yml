@@ -48,7 +48,8 @@ Type Check for core:
       - ../gdc-frontend-framework
 
 Type_Check_for_portal-proto:
-  stage: build
+  stage: test
+  needs: [Type Check for core]
   script:
     - cd packages/portal-proto
     - npm run compile
@@ -59,28 +60,27 @@ Type_Check_for_portal-proto:
 
 Linting:
   stage: test
+  needs: [Type_Check_for_portal-proto]
   script:
     - npm run lint
   cache:
     key: build-cache
     paths:
       - ../gdc-frontend-framework
-    policy: pull
 
 Run all tests:
   stage: test
+  needs: [Linting]
   script:
     - npm run test:all
   cache:
     key: build-cache
     paths:
       - ../gdc-frontend-framework
-    policy: pull
   allow_failure: true
 
 Build docker container:
   stage: build
-  needs: [Type_Check_for_portal-proto]
   image: docker:stable
   services:
     - name: docker:dind
