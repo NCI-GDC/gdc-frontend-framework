@@ -81,7 +81,7 @@ Run all tests:
 Build docker container:
   stage: build
   needs: [Type_Check_for_portal-proto]
-  image: docker.osdc.io/docker
+  image: docker:stable
   services:
     - name: docker:dind
       alias: thedockerhost
