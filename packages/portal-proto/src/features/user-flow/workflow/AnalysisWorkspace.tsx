@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useCallback } from "react";
+import { useRouter } from "next/router";
 import { Chip, Chips, Menu, Grid, ActionIcon } from "@mantine/core";
+import { useScrollIntoView } from "@mantine/hooks";
 import { MdSort as SortIcon } from "react-icons/md";
-import { IoMdArrowRoundBack as BackIcon } from "react-icons/io";
 import AnalysisCard from "@/features/user-flow/workflow/AnalysisCard";
 import {
   APPTAGS,
@@ -15,6 +16,11 @@ import {
 import SearchInput from "@/components/SearchInput";
 import dynamic from "next/dynamic";
 import FeaturedToolCard from "./FeaturedToolCard";
+
+import { CSSTransition } from "react-transition-group";
+import AnalysisBreadcrumbs from "./AnalysisBreadcrumbs";
+import AdditionalCohortSelection from "./AdditionalCohortSelection";
+import { clearComparisonCohorts } from "@gff/core";
 
 const ActiveAnalysisToolNoSSR = dynamic(
   () => import("@/features/user-flow/workflow/ActiveAnalysisTool"),
@@ -31,13 +37,13 @@ const sortOptions = [
 const initialApps = REGISTERED_APPS.reduce(
   (obj, item) => ((obj[item.id] = item), obj),
   {},
-);
+) as AppRegistrationEntry[];
 const ALL_OTHER_APPS = Object.keys(initialApps).filter(
   (x) => !RECOMMENDED_APPS.includes(x),
 );
 
 interface AnalysisGridProps {
-  readonly onAppSelected?: (id: string, name: string) => void;
+  readonly onAppSelected?: (id: string) => void;
 }
 
 const AnalysisGrid: React.FC<AnalysisGridProps> = ({
@@ -78,7 +84,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
   }, [filterAppsByTagsAndSort]);
 
   const handleOpenAppClicked = (x: AppRegistrationEntry) => {
-    onAppSelected(x.id, x.name);
+    onAppSelected(x.id);
   };
 
   return (
@@ -260,45 +266,70 @@ interface AnalysisWorkspaceProps {
 const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   app,
 }: AnalysisWorkspaceProps) => {
-  const [selectedApp, setSelectedApp] = useState(undefined);
-  const [selectedAppName, setSelectedAppName] = useState(undefined);
-
-  const handleAppSelected = (id: string, name: string) => {
-    setSelectedApp(id);
-    setSelectedAppName(name);
-  };
+  const [cohortSelectionOpen, setCohortSelectionOpen] = useState(false);
+  const { scrollIntoView, targetRef } = useScrollIntoView({ offset: 42 });
+  const router = useRouter();
 
   useEffect(() => {
-    setSelectedApp(app);
-    setSelectedAppName(undefined); // will use the registered app name
-  }, [app]);
+    const appInfo = REGISTERED_APPS.find((a) => a.id === app);
+    setCohortSelectionOpen(appInfo?.selectAdditionalCohort);
+
+    if (app) {
+      scrollIntoView();
+    } else {
+      clearComparisonCohorts();
+    }
+  }, [app, scrollIntoView]);
+
+  const handleAppSelected = (app: string) => {
+    router.push({ query: { app } });
+  };
 
   return (
-    <div>
-      {" "}
-      {selectedApp ? (
-        <div className="flex flex-col mx-2">
-          <div className="flex flex-row items-center  bg-nci-blue-darkest px-2 py-4">
-            <button
-              onClick={() => setSelectedApp(undefined)}
-              className="bg-white hover:bg-nci-gray-light font-montserrat tracking-widest uppercase rounded-sm shadow-md p-1 px-2 py-2"
-            >
-              <BackIcon size="1.5rem" />
-            </button>
-            <div className="font-montserrat tracking-widest font-bold text-white w-1/2 uppercase ml-4 p-1 px-2">
-              {selectedAppName
-                ? selectedAppName
-                : initialApps[selectedApp].name}
-            </div>
-            <div className="w-10/12 m-auto">
-              {selectedApp === "CohortBuilder" ? <SearchInput /> : null}
-            </div>
+    <div ref={(ref) => (targetRef.current = ref)}>
+      <CSSTransition in={cohortSelectionOpen} timeout={500}>
+        {(state) => (
+          <div
+            className={
+              {
+                entering:
+                  "block animate-slide-up min-h-[700px] w-full flex flex-col absolute z-[1000]",
+                entered: `block min-h-[700px] w-full flex flex-col absolute z-[1000]`,
+                exiting:
+                  "block animate-slide-down min-h-[700px] w-full flex flex-col absolute z-[1000]",
+                exited: "hidden translate-x-0",
+              }[state]
+            }
+          >
+            <AnalysisBreadcrumbs
+              currentApp={app}
+              setCohortSelectionOpen={setCohortSelectionOpen}
+              cohortSelectionOpen={cohortSelectionOpen}
+              setActiveApp={handleAppSelected}
+            />
+            <AdditionalCohortSelection
+              app={app}
+              setOpen={setCohortSelectionOpen}
+              setActiveApp={handleAppSelected}
+            />
           </div>
-          <ActiveAnalysisToolNoSSR appId={selectedApp} />
-        </div>
-      ) : (
-        <AnalysisGrid onAppSelected={handleAppSelected} />
+        )}
+      </CSSTransition>
+      {app && !cohortSelectionOpen && (
+        <>
+          <AnalysisBreadcrumbs
+            currentApp={app}
+            setCohortSelectionOpen={setCohortSelectionOpen}
+            cohortSelectionOpen={cohortSelectionOpen}
+            setActiveApp={handleAppSelected}
+          />
+          <div className="w-10/12 m-auto">
+            {app === "CohortBuilder" ? <SearchInput /> : null}
+          </div>
+          <ActiveAnalysisToolNoSSR appId={app} />
+        </>
       )}
+      {!app && <AnalysisGrid onAppSelected={handleAppSelected} />}
     </div>
   );
 };

@@ -114,41 +114,40 @@ interface ClosedRangeQueryElementProps {
   readonly op?: "and";
 }
 
-export const ClosedRangeQueryElement: React.FC<
-  ClosedRangeQueryElementProps
-> = ({
-  lower,
-  upper,
-  op = "and",
-}: PropsWithChildren<ClosedRangeQueryElementProps>) => {
-  const field = lower.field; // As this is a Range the field for both lower and upper will be the same
-  const coreDispatch = useCoreDispatch();
-  const handleKeepMember = (keep: RangeOperation) => {
-    coreDispatch(updateCohortFilter({ field: field, operation: keep }));
-  };
+export const ClosedRangeQueryElement: React.FC<ClosedRangeQueryElementProps> =
+  ({
+    lower,
+    upper,
+    op = "and",
+  }: PropsWithChildren<ClosedRangeQueryElementProps>) => {
+    const field = lower.field; // As this is a Range the field for both lower and upper will be the same
+    const coreDispatch = useCoreDispatch();
+    const handleKeepMember = (keep: RangeOperation) => {
+      coreDispatch(updateCohortFilter({ field: field, operation: keep }));
+    };
 
-  return (
-    <>
-      <div className={queryItemStyle}>
-        <div className="flex flex-row items-center">
+    return (
+      <>
+        <div className={queryItemStyle}>
           <div className="flex flex-row items-center">
-            <ComparisonElement {...lower} />
-          </div>
-          {op}
-          <div className="flex flex-row items-center">
-            <ComparisonElement {...upper} showLabel={false} />
-            <button onClick={() => handleKeepMember(lower)}>
-              <ClearIcon
-                size="1.5em"
-                className="pl-1 border-l-2 border-nci-gray-light "
-              />
-            </button>
+            <div className="flex flex-row items-center">
+              <ComparisonElement {...lower} />
+            </div>
+            {op}
+            <div className="flex flex-row items-center">
+              <ComparisonElement {...upper} showLabel={false} />
+              <button onClick={() => handleKeepMember(lower)}>
+                <ClearIcon
+                  size="1.5em"
+                  className="pl-1 border-l-2 border-nci-gray-light "
+                />
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    </>
-  );
-};
+      </>
+    );
+  };
 
 interface QueryElementProps {
   field: string;

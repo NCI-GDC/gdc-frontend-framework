@@ -7,6 +7,7 @@ import {
   addFilesToCart,
   GdcFile,
   CoreDispatch,
+  SlideImageFile,
 } from "@gff/core";
 
 interface OverLimitNotificationProps {
@@ -40,9 +41,9 @@ const UndoButton: React.FC<UndoButtonProps> = ({ action }: UndoButtonProps) => {
 };
 
 interface AddNotificationProps {
-  readonly files: readonly GdcFile[];
+  readonly files: readonly (GdcFile | SlideImageFile)[];
   readonly currentCart: string[];
-  readonly filesToAdd: GdcFile[];
+  readonly filesToAdd: readonly (GdcFile | SlideImageFile)[];
   readonly numAlreadyInCart: number;
   dispatch: CoreDispatch;
 }
@@ -54,13 +55,20 @@ const AddNotification: React.FC<AddNotificationProps> = ({
   dispatch,
 }: AddNotificationProps) => {
   const numFilesAdded = filesToAdd.length;
-  const newCart = [...currentCart, ...filesToAdd.map((f) => f.id)];
+  const newCart = [
+    ...currentCart,
+    ...filesToAdd.map((f) => ("id" in f ? f.id : f.file_id)),
+  ];
 
   if (files.length === 1) {
     if (numFilesAdded === 1) {
       return (
         <>
-          <p>Added {files[0].fileName} to the cart.</p>
+          <p>
+            Added{" "}
+            {"fileName" in files[0] ? files[0].fileName : files[0].file_name} to
+            the cart.
+          </p>
           <UndoButton
             action={() => removeFromCart(filesToAdd, newCart, dispatch)}
           />
@@ -68,7 +76,10 @@ const AddNotification: React.FC<AddNotificationProps> = ({
       );
     } else {
       return (
-        <>{files[0].fileName} was already in the cart and was not added.</>
+        <>
+          {"fileName" in files[0] ? files[0].fileName : files[0].file_name} was
+          already in the cart and was not added.
+        </>
       );
     }
   } else {
@@ -108,7 +119,7 @@ const AddNotification: React.FC<AddNotificationProps> = ({
 };
 
 interface RemoveNotificationProps {
-  readonly files: readonly GdcFile[];
+  readonly files: readonly (GdcFile | SlideImageFile)[];
   readonly currentCart: string[];
   dispatch: CoreDispatch;
 }
@@ -117,15 +128,24 @@ const RemoveNotification: React.FC<RemoveNotificationProps> = ({
   currentCart,
   dispatch,
 }: RemoveNotificationProps) => {
-  const filesToRemove = files.filter((f) => currentCart.includes(f.id));
+  const filesToRemove = files.filter((f) =>
+    currentCart.includes("id" in f ? f.id : f.file_id),
+  );
+
   const newCart = files
     .filter((f) => !filesToRemove.includes(f))
-    .map((f) => f.id);
+    .map((f) => ("id" in f ? f.id : f.file_id));
 
   if (filesToRemove.length === 1) {
     return (
       <>
-        <p>Removed {filesToRemove[0].fileName} from the cart.</p>
+        <p>
+          Removed{" "}
+          {"fileName" in filesToRemove[0]
+            ? filesToRemove[0].fileName
+            : filesToRemove[0].file_name}{" "}
+          from the cart.
+        </p>
         <UndoButton
           action={() => addToCart(filesToRemove, newCart, dispatch)}
         />
@@ -146,7 +166,7 @@ const RemoveNotification: React.FC<RemoveNotificationProps> = ({
 };
 
 export const removeFromCart = (
-  files: readonly GdcFile[],
+  files: readonly (GdcFile | SlideImageFile)[],
   currentCart: string[],
   dispatch: CoreDispatch,
 ): void => {
@@ -163,17 +183,16 @@ export const removeFromCart = (
       description: "flex flex-col content-center text-center",
     },
   });
-  const filesToRemove = files.map((f) => f.id);
+  const filesToRemove = files.map((f) => ("id" in f ? f.id : f.file_id));
   dispatch(removeFilesFromCart(filesToRemove));
 };
 
 export const addToCart = (
-  files: readonly GdcFile[],
+  files: readonly (GdcFile | SlideImageFile)[],
   currentCart: string[],
   dispatch: CoreDispatch,
 ): void => {
   const newCartSize = files.length + currentCart.length;
-
   cleanNotifications();
 
   if (newCartSize > CART_LIMIT) {
@@ -185,10 +204,12 @@ export const addToCart = (
     });
   } else {
     const alreadyInCart = files
-      .map((f) => f.id)
+      .map((f) => ("id" in f ? f.id : f.file_id))
       .filter((f) => currentCart.includes(f));
 
-    const filesToAdd = files.filter((f) => !currentCart.includes(f.id));
+    const filesToAdd = files.filter(
+      (f) => !currentCart.includes("id" in f ? f.id : f.file_id),
+    );
 
     showNotification({
       message: (
@@ -205,7 +226,9 @@ export const addToCart = (
       },
     });
     if (filesToAdd.length > 0) {
-      dispatch(addFilesToCart(filesToAdd.map((f) => f.id)));
+      dispatch(
+        addFilesToCart(filesToAdd.map((f) => ("id" in f ? f.id : f.file_id))),
+      );
     }
   }
 };

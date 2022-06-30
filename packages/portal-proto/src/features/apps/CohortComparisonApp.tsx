@@ -1,15 +1,21 @@
-import { useCoreSelector, selectCurrentCohort } from "@gff/core";
+import {
+  useCoreSelector,
+  selectCurrentCohort,
+  selectComparisonCohorts,
+} from "@gff/core";
 import CohortComparison from "../cohortComparison/CohortComparison";
-
-const COMPARISON_COHORT = "breast, true";
 
 const CohortComparisonApp: React.FC = () => {
   const primaryCohortName = useCoreSelector((state) =>
     selectCurrentCohort(state),
   );
 
+  const comparisonCohort = useCoreSelector((state) =>
+    selectComparisonCohorts(state),
+  )[0];
+
   return (
-    <CohortComparison cohortNames={[primaryCohortName, COMPARISON_COHORT]} />
+    <CohortComparison cohortNames={[primaryCohortName, comparisonCohort]} />
   );
 };
 
