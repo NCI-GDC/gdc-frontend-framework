@@ -48,7 +48,7 @@ Type Check for core:
       - ../gdc-frontend-framework
     policy: pull
 
-Type_Check_for_portal-proto:
+Type Check for portal-proto:
   stage: build
   needs: [Type Check for core]
   script:
@@ -82,7 +82,7 @@ Run all tests:
 Build docker container:
   stage: build
   image: docker:stable
-  needs: [Type_Check_for_portal-proto]
+  needs: [Type Check for portal-proto]
   services:
     - name: docker:dind
       alias: thedockerhost
