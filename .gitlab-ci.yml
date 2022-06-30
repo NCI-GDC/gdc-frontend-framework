@@ -83,6 +83,6 @@ Build docker container:
   needs: [Type_Check_for_portal-proto]
   tags:
     - dind
-  image: docker.osdc.io/dind
+  image: docker.osdc.io/docker
   script:
     - docker build .
