@@ -1,5 +1,6 @@
 # To contribute improvements to CI/CD templates, please follow the Development guide at:
 # https://docs.gitlab.com/ee/development/cicd/templates.html
+
 include:
   - project: nci-gdc/gitlab-templates
     ref: master
@@ -10,19 +11,21 @@ image: docker.osdc.io/node:16
 variables:
   npm_config_registry: https://nexus.osdc.io/repository/npm-all/
 
+stages:
+  - install packages
+  - compilation/typecheck for core
+  - compilation/typecheck for portal-porto
+  - run lint check
+  - run prettier check
+  - check for Unit Tests
+  - build
+
 Install npm:
-  stage: .pre
+  stage: install packages
   script:
-    - echo "current Working directory"
-    - pwd
-    - echo "Files List"
-    - ls
-    - echo "Installing Packages"
     - npm install npm@7
     - npm install
-    - echo "Installation Complete"
-    - ls
-    - echo ".pre stage completed"
+
   cache:
     key: build-cache
     paths:
@@ -30,25 +33,18 @@ Install npm:
     policy: push
 
 Type Check for core:
-  stage: test
+  stage: compilation/typecheck for core
   script:
-    - echo "Type check for core Started"
-    - echo "Current Working Directory"
-    - pwd
-    - echo "List of files"
-    - ls
     - cd packages/core
-    - echo "List of files in packages/core"
-    - ls
-    - echo "RUN npm build/n"
     - npm run build:clean
+
   cache:
     key: build-cache
     paths:
       - ../gdc-frontend-framework
 
 Type Check for portal-proto:
-  stage: build
+  stage: compilation/typecheck for portal-porto
   script:
     - cd packages/portal-proto
     - npm run compile
@@ -58,40 +54,50 @@ Type Check for portal-proto:
       - ../gdc-frontend-framework
 
 Linting:
-  stage: test
+  stage: run lint check
   script:
     - npm run lint
   cache:
     key: build-cache
     paths:
       - ../gdc-frontend-framework
-    policy: pull
+
+Prettier Checks:
+  stage: run prettier check
+  script:
+    - npm run format:check
+  cache:
+    key: build-cache
+    paths:
+      - ../gdc-frontend-framework
 
 Run all tests:
-  stage: test
+  stage: check for Unit Tests
   script:
     - npm run test:all
   cache:
     key: build-cache
     paths:
       - ../gdc-frontend-framework
-    policy: pull
   allow_failure: true
 
-Build docker container:
+build:
   stage: build
-  image: docker:stable
-  needs: [Type Check for portal-proto]
   services:
-    - name: docker:dind
-      alias: thedockerhost
-  variables:
-    # Tell docker CLI how to talk to Docker daemon; see
-    # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#use-docker-in-docker-executor
-    DOCKER_HOST: tcp://thedockerhost:2375/
-    # Use the overlayfs driver for improved performance:
-    #   DOCKER_DRIVER: overlay2
-    DOCKER_TLS_CERTDIR: ""
+    - docker:20.10.16-dind
+  tags:
+    - dind
+  image: docker:20.10.16-dind
+  before_script:
+    - docker info
+    - apk add --no-cache bash moreutils git go curl
+    - curl -L -o dive.tar.gz https://github.com/wagoodman/dive/releases/download/v0.10.0/dive_0.10.0_linux_amd64.tar.gz
+    - curl -L -o ds.tar.gz https://nexus.osdc.io/repository/misc/dockerslim/releases/1.37.5/dist_linux.tar.gz
+    - tar -xvf ds.tar.gz
+    - tar -xvf dive.tar.gz
+    - mv dist_linux/docker-slim /usr/local/bin/
+    - mv dist_linux/docker-slim-sensor /usr/local/bin/
+    - rm -rf dist_linux/
+    - mv dive /usr/local/bin/
   script:
-    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER $CI_REGISTRY --password-stdin
-    - docker build -t $CI_REGISTRY_IMAGE .
+    - /bin/bash build.sh -b "$CI_COMMIT_BRANCH" -n "$CI_COMMIT_SHORT_SHA"
