@@ -78,12 +78,23 @@ Run all tests:
     policy: pull
   allow_failure: true
 
+  needs: [Type_Check_for_portal-proto]
 Build docker container:
   stage: build
   needs: [Type_Check_for_portal-proto]
+  tags:
+    - dind
+  image: docker.osdc.io/dind
   services:
     - name: docker:dind
-  entrypoint: ["dockerd-entrypoint.sh", "--tls=false"]
+      alias: thedockerhost
+  variables:
+    # Tell docker CLI how to talk to Docker daemon; see
+    # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#use-docker-in-docker-executor
+    DOCKER_HOST: tcp://thedockerhost:2375/
+    # Use the overlayfs driver for improved performance:
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
   script:
-    - export DOCKER_HOST=tcp://127.0.0.1:2375 && docker build --pull -t ${CI_REGISTRY_IMAGE} .
+    - sleep 20s
     - docker build -t gitlab_ci .
