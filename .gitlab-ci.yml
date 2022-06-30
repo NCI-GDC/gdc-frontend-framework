@@ -76,6 +76,7 @@ Run all tests:
     paths:
       - ../gdc-frontend-framework
     policy: pull
+  allow_failure: true
 
 Build docker container:
   stage: build
