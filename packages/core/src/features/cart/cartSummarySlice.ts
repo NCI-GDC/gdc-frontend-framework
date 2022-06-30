@@ -90,6 +90,7 @@ const slice = createSlice({
       if (response.errors) {
         state.status = "rejected";
       } else {
+        console.log(response);
         const byProject: CartAggregation[] =
           response.data.viewer.cart_summary?.aggregations.project__project_id
             .buckets || [];

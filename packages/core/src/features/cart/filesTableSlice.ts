@@ -72,7 +72,7 @@ export const fetchFilesTable = createAsyncThunk<
     sort: { field: string; order: string }[];
   },
   { dispatch: CoreDispatch; state: CoreState }
->("cart/cartSummary", async ({ cart, size, offset, sort }) => {
+>("cart/filesTable", async ({ cart, size, offset, sort }) => {
   const graphQLFilters = {
     size,
     offset,
@@ -99,7 +99,7 @@ export interface CartSummary {
 }
 
 const initialState: CartSummary = {
-  data: {},
+  data: [],
   status: "uninitialized",
 };
 

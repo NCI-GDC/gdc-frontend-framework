@@ -12,7 +12,11 @@ import {
   useCoreSelector,
   selectCart,
   useCartFilesTable,
+  useCoreDispatch,
 } from "@gff/core";
+import { VerticalTable } from "@/features/shared/VerticalTable";
+import { removeFromCart } from "./updateCart";
+import FilesTable from "./FilesTable";
 
 const buttonStyle = "bg-white text-nci-blue-darkest border-nci-blue-darkest";
 
@@ -28,7 +32,9 @@ const formatFileSize = (bytes: number) => {
 };
 
 const Cart: React.FC = () => {
+  const dispatch = useCoreDispatch();
   const cart = useCoreSelector((state) => selectCart(state));
+  console.log(cart);
   const { data: summaryData } = useCartSummary(cart);
   const { data: tableData } = useCartFilesTable({
     cart,
@@ -98,9 +104,9 @@ const Cart: React.FC = () => {
           Manifest
         </Button>
         <h1 className="uppercase ml-auto mr-4 flex items-center truncate">
-          Total of <FileIcon /> {summaryData.total_doc_count} Files{" "}
-          <PersonIcon /> {summaryData.total_case_count} Cases <SaveIcon />{" "}
-          {formatFileSize(summaryData.total_file_size)}
+          Total of <FileIcon /> {summaryData.total_doc_count.toLocaleString()}{" "}
+          Files <PersonIcon /> {summaryData.total_case_count.toLocaleString()}{" "}
+          Cases <SaveIcon /> {formatFileSize(summaryData.total_file_size)}
         </h1>
       </div>
       <Grid>
@@ -142,6 +148,7 @@ const Cart: React.FC = () => {
           <h2 className="uppercase text-nci-blue-darkest font-bold">
             File counts by project
           </h2>
+
           <table>
             <thead>
               <tr>
@@ -181,24 +188,15 @@ const Cart: React.FC = () => {
                 </Button>
               }
             >
-              <MenuItem>All Files</MenuItem>
+              <MenuItem
+                onClick={() => removeFromCart(tableData, cart, dispatch)}
+              >
+                All Files
+              </MenuItem>
               <MenuItem>Unauthorized Files</MenuItem>
             </Menu>
           </div>
-          <table>
-            <thead>
-              <tr>
-                <th>File Name</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tableData.map((file) => (
-                <tr>
-                  <td>{file.node.file_name}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <FilesTable />
         </Grid.Col>
       </Grid>
     </>
