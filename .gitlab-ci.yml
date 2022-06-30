@@ -98,5 +98,5 @@ build:
   script:
     - /bin/bash build.sh -b "$CI_COMMIT_BRANCH" -n "$CI_COMMIT_SHORT_SHA"
     - docker info
-    - docker ls
+    - docker images
     - docker ps -a
