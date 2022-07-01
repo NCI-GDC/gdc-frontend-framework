@@ -1,15 +1,15 @@
 import { useEffect, useRef } from "react";
-import { findDOMNode } from "react-dom";
 import { runproteinpaint } from "@stjude/proteinpaint-client";
 import { isEqual } from "lodash";
 
 // !!! TODO: may determine basepath prop value at runtime !!!
-const basepath: string = "https://proteinpaint.stjude.org"; // '/auth/api/custom/proteinpaint'
+const basepath = "https://proteinpaint.stjude.org"; // '/auth/api/custom/proteinpaint'
 
 function getComponent(getTrack) {
-  let currentData;
-
+  // return a functional component
   return (props) => {
+    let currentData;
+
     useEffect(() => {
       const data = getTrack(props);
       // do not cause unnecessary re-render if the track argument
