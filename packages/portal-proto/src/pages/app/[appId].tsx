@@ -15,7 +15,8 @@ const AppsPage: NextPage = () => {
   );
   const GdcApp = useCoreSelector(() => selectGdcAppById(appId));
 
-  console.log("GDCApp", GdcApp);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   return (
     <SimpleLayout>
       <div className="flex flex-col content-center gap-y-4">
@@ -29,7 +30,11 @@ const AppsPage: NextPage = () => {
             </div>
           </div>
         )}
-        {GdcApp && <div>{GdcApp}</div>}
+        {GdcApp && (
+          <div>
+            <GdcApp key={metadata.id} />
+          </div>
+        )}
       </div>
     </SimpleLayout>
   );

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import RepositoryDefaultConfig from "./config/filters.json";
-import { AppState } from "./reducers";
+import { AppState } from "./coreApi";
 
 export interface RepositoryFilters {
   readonly label: string;

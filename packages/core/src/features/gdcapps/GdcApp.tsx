@@ -94,7 +94,9 @@ export interface CreateGDCAppStore {
 // Apps with Local Storage
 //
 
-export const createAppStore = (options: CreateGDCAppStore) => {
+export const createAppStore = (
+  options: CreateGDCAppStore,
+): Record<any, any> => {
   const { name, version, reducers } = options;
   const nameVersion = `${name}::${version}`;
   const id = uuidv5(nameVersion, GDC_APP_NAMESPACE);
@@ -136,12 +138,14 @@ export interface CreateGdcAppWithOwnStoreOptions<
   readonly version: string;
   readonly requiredEntityTypes: ReadonlyArray<EntityType>;
   readonly store: Store<S, A>;
+  readonly context: any;
 }
 
 export const createGdcAppWithOwnStore = <A extends Action = AnyAction, S = any>(
   options: CreateGdcAppWithOwnStoreOptions<A, S>,
 ): React.ReactNode => {
-  const { App, id, name, version, requiredEntityTypes, store } = options;
+  const { App, id, name, version, requiredEntityTypes, store, context } =
+    options;
 
   // need to create store and provider.
   // return a component representing this app
@@ -158,7 +162,7 @@ export const createGdcAppWithOwnStore = <A extends Action = AnyAction, S = any>(
     });
 
     return (
-      <Provider store={store}>
+      <Provider store={store} context={context}>
         <CookiesProvider>
           <App />
         </CookiesProvider>
@@ -176,6 +180,5 @@ export const createGdcAppWithOwnStore = <A extends Action = AnyAction, S = any>(
     }),
   );
   registerGdcApp(id, GdcAppWrapper);
-
   return GdcAppWrapper;
 };
