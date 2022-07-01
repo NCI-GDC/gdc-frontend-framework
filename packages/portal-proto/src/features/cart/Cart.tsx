@@ -17,6 +17,7 @@ import {
 import { formatFileSize } from "src/utils";
 import { removeFromCart } from "./updateCart";
 import FilesTable from "./FilesTable";
+import ProjectTable from "./ProjectTable";
 
 const buttonStyle = "bg-white text-nci-blue-darkest border-nci-blue-darkest";
 
@@ -136,27 +137,7 @@ const Cart: React.FC = () => {
           <h2 className="uppercase text-nci-blue-darkest font-bold">
             File counts by project
           </h2>
-
-          <table>
-            <thead>
-              <tr>
-                <th>Project</th>
-                <th>Cases</th>
-                <th>Files</th>
-                <th>File Size</th>
-              </tr>
-            </thead>
-            <tbody>
-              {summaryData.byProject.map((project) => (
-                <tr>
-                  <td>{project.key}</td>
-                  <td>{project.case_count}</td>
-                  <td>{project.doc_count}</td>
-                  <td>{formatFileSize(project.file_size)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <ProjectTable projectData={summaryData.byProject} />
         </Grid.Col>
         <Grid.Col span={12} className="p-4">
           <div className="flex gap-2">
