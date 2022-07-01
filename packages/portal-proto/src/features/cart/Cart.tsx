@@ -38,11 +38,15 @@ const Cart: React.FC = () => {
             <h3>Download Manifest:</h3>
             <p className="py-2">
               Download a manifest for use with the{" "}
-              <a href="https://gdc.cancer.gov/access-summaryData/gdc-data-transfer-tool">
-                GDC summaryData Transfer Tool
+              <a
+                href="https://gdc.cancer.gov/access-data/gdc-data-transfer-tool"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                GDC Data Transfer Tool
               </a>
-              . The GDC summaryData Transfer Tool is recommended for
-              transferring large volumes of summaryData.
+              . The GDC Data Transfer Tool is recommended for transferring large
+              volumes of data.
             </p>
             <h3>Download Cart:</h3>
             <p className="py-2">
@@ -51,10 +55,14 @@ const Cart: React.FC = () => {
             <h3>Download Reference Files:</h3>
             <p className="py-2">
               Download{" "}
-              <a href="https://gdc.cancer.gov/about-summaryData/gdc-data-processing/gdc-reference-files">
+              <a
+                href="https://gdc.cancer.gov/about-data/gdc-data-processing/gdc-reference-files"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 GDC Reference Files
               </a>{" "}
-              for use in your genomic summaryData analysis.
+              for use in your genomic data analysis.
             </p>
           </div>
           <div className="pt-2">
