@@ -14,27 +14,15 @@ import {
   useCartFilesTable,
   useCoreDispatch,
 } from "@gff/core";
-import { VerticalTable } from "@/features/shared/VerticalTable";
+import { formatFileSize } from "src/utils";
 import { removeFromCart } from "./updateCart";
 import FilesTable from "./FilesTable";
 
 const buttonStyle = "bg-white text-nci-blue-darkest border-nci-blue-darkest";
 
-const formatFileSize = (bytes: number) => {
-  if (bytes == 0) {
-    return "0.00 B";
-  }
-  const level = Math.floor(Math.log(bytes) / Math.log(1024));
-
-  return `${(bytes / Math.pow(1024, level)).toFixed(2)} ${
-    ["B", "kB", "MB", "GB", "TB"][level]
-  }`;
-};
-
 const Cart: React.FC = () => {
   const dispatch = useCoreDispatch();
   const cart = useCoreSelector((state) => selectCart(state));
-  console.log(cart);
   const { data: summaryData } = useCartSummary(cart);
   const { data: tableData } = useCartFilesTable({
     cart,

@@ -136,7 +136,7 @@ const Header: React.FC<HeaderProps> = ({
           <Link href="/cart">
             <div
               className={
-                "flex flex-row opacity-60 hover:opacity-100 transition-opacity  items-center mx-2"
+                "flex flex-row opacity-60 hover:opacity-100 transition-opacity  items-center mx-2 cursor-pointer"
               }
             >
               <CartIcon size="24px" /> Cart ({currentCart.length})
