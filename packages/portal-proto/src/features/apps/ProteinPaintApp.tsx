@@ -1,8 +1,8 @@
 import { FC } from "react";
-import { PpLolliplot } from "../proteinpaint/PpReactWrapper";
+import { PpReactWrapper } from "../proteinpaint/PpReactWrapper";
 
 const ProteinPaintApp: FC = () => {
-  return <PpLolliplot />;
+  return <PpReactWrapper track="lolliplot" />;
 };
 
 export default ProteinPaintApp;

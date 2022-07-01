@@ -5,31 +5,35 @@ import { isEqual } from "lodash";
 // !!! TODO: may determine basepath prop value at runtime !!!
 const basepath = "https://proteinpaint.stjude.org"; // '/auth/api/custom/proteinpaint'
 
-function getComponent(getTrack) {
-  // return a functional component
-  return (props) => {
-    let currentData;
+export function PpReactWrapper(props) {
+  let currentData;
 
-    useEffect(() => {
-      const data = getTrack(props);
-      // do not cause unnecessary re-render if the track argument
-      // is the same as the last render
-      if (isEqual(data, currentData)) return;
-      currentData = data;
-      const rootElem = ref.current as HTMLElement;
-      const pp_holder = rootElem.querySelector(".sja_root_holder");
-      if (pp_holder) pp_holder.remove();
+  useEffect(() => {
+    const data =
+      props.track == "lolliplot"
+        ? getLolliplotTrack(props)
+        : props.track == "bam"
+        ? getBamTrack(props)
+        : null;
 
-      const arg = Object.assign(
-        { holder: rootElem, noheader: true, nobox: true },
-        JSON.parse(JSON.stringify(data)),
-      );
-      runproteinpaint(arg);
-    });
+    if (!data) return;
+    // do not cause unnecessary re-render if the track argument
+    // is the same as the last render
+    if (isEqual(data, currentData)) return;
+    currentData = data;
+    const rootElem = ref.current as HTMLElement;
+    const pp_holder = rootElem.querySelector(".sja_root_holder");
+    if (pp_holder) pp_holder.remove();
 
-    const ref = useRef();
-    return <div ref={ref} />;
-  };
+    const arg = Object.assign(
+      { holder: rootElem, noheader: true, nobox: true },
+      JSON.parse(JSON.stringify(data)),
+    );
+    runproteinpaint(arg);
+  });
+
+  const ref = useRef();
+  return <div ref={ref} />;
 }
 
 interface Mds3Arg {
@@ -85,8 +89,6 @@ interface BamArg {
   gdcbamslice: boolean;
 }
 
-export const PpLolliplot = getComponent(getLolliplotTrack);
-
 function getBamTrack(props) {
   // host in gdc is just a relative url path,
   // using the same domain as the GDC portal where PP is embedded
@@ -97,5 +99,3 @@ function getBamTrack(props) {
 
   return arg;
 }
-
-export const PpBam = getComponent(getBamTrack);
