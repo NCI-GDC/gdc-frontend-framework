@@ -1,8 +1,8 @@
 import { FC } from "react";
-import { PpReactWrapper } from "../proteinpaint/PpReactWrapper";
+import { ProteinPaintWrapper } from "../proteinpaint/ProteinPaintWrapper";
 
 const SequenceReadApp: FC = () => {
-  return <PpReactWrapper track="bam" />;
+  return <ProteinPaintWrapper track="bam" />;
 };
 
 export default SequenceReadApp;

@@ -5,7 +5,7 @@ import { isEqual } from "lodash";
 // !!! TODO: may determine basepath prop value at runtime !!!
 const basepath = "https://proteinpaint.stjude.org"; // '/auth/api/custom/proteinpaint'
 
-export function PpReactWrapper(props) {
+export function ProteinPaintWrapper(props) {
   let currentData;
 
   useEffect(() => {

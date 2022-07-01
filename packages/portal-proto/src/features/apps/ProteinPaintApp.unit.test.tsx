@@ -2,7 +2,7 @@ import "whatwg-fetch";
 import React from "react";
 import { render, unmountComponentAtNode } from "react-dom";
 import { act } from "react-dom/test-utils";
-import { PpLolliplot } from "../proteinpaint/PpReactWrapper";
+import { ProteinPaintWrapper } from "../proteinpaint/ProteinPaintWrapper";
 
 let container = null;
 beforeEach(() => {
@@ -24,10 +24,11 @@ function sleep(ms) {
 
 test("renders a search input", async () => {
   act(() => {
-    render(<PpLolliplot />, container);
+    render(<ProteinPaintWrapper track="lolliplot" />, container);
   });
   await sleep(1500);
   const input = container.querySelector("input");
+  console.log(30, typeof input);
   expect(input instanceof HTMLElement).toBe(true);
   // !!! jsdom breaks with getBBox() as used in proteinpaint, cannot render tracks to test !!!
   /*if (input) {
