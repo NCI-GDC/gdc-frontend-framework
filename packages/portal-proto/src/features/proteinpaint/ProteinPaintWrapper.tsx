@@ -5,7 +5,12 @@ import { isEqual } from "lodash";
 // !!! TODO: may determine basepath prop value at runtime !!!
 const basepath = "https://proteinpaint.stjude.org"; // '/auth/api/custom/proteinpaint'
 
-export function ProteinPaintWrapper(props) {
+interface PpProps {
+  track: string;
+  basepath?: string;
+}
+
+export function ProteinPaintWrapper(props: PpProps) {
   let currentData;
 
   useEffect(() => {
@@ -55,7 +60,7 @@ interface mds3_isoform {
   dslabel: string;
 }
 
-function getLolliplotTrack(props) {
+function getLolliplotTrack(props: PpProps) {
   // host in gdc is just a relative url path,
   // using the same domain as the GDC portal where PP is embedded
   const arg: Mds3Arg = {
@@ -70,16 +75,16 @@ function getLolliplotTrack(props) {
     ],
   };
 
-  if (props.geneId) {
+  /*if (props.geneId) {
     arg.gene2canonicalisoform = this.props.geneId;
   } else if (props.ssm_id) {
     arg.mds3_ssm2canonicalisoform = {
       dslabel: "GDC",
       ssm_id: props.ssm_id,
     };
-  } else {
-    arg.geneSearch4GDCmds3 = true;
-  }
+  } else {*/
+  arg.geneSearch4GDCmds3 = true;
+  //}
 
   return arg;
 }
@@ -89,7 +94,7 @@ interface BamArg {
   gdcbamslice: boolean;
 }
 
-function getBamTrack(props) {
+function getBamTrack(props: PpProps) {
   // host in gdc is just a relative url path,
   // using the same domain as the GDC portal where PP is embedded
   const arg: BamArg = {
