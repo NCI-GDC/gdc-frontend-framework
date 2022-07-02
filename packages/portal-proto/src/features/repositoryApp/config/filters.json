@@ -1,5 +1,5 @@
 {
-  "label": "General",
+  "label": "Repository Default",
   "facets": [
     "files.data_category",
     "files.data_type",
@@ -9,6 +9,6 @@
     "files.platform",
     "files.access"
   ],
-  "docType": "cases",
+  "docType": "files",
   "index": "repository"
 }

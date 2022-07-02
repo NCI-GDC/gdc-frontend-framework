@@ -7,9 +7,9 @@ import {
   useFacetDictionary,
   useFilteredFiles,
 } from "@gff/core";
-import React, { useEffect, useState } from "react";
-import { AppStore, id, AppContext, useAppSelector } from "./coreApi";
-import { selectRepositoryConfig } from "@/features/downloads/fileFiltersSlice";
+import React, { useState } from "react";
+import { AppStore, id, AppContext, useAppSelector } from "./appApi";
+import { selectRepositoryConfig } from "@/features/repositoryApp/fileFiltersSlice";
 import { Button, Menu } from "@mantine/core";
 import {
   MdDownload as DownloadIcon,
@@ -29,7 +29,7 @@ export interface ContextualFilesViewProps {
   readonly handleFileSelected?: (file: GdcFile) => void;
 }
 
-const DownloadApp: React.FC<ContextualFilesViewProps> = ({
+const RepositoryApp: React.FC<ContextualFilesViewProps> = ({
   handleFileSelected,
 }: ContextualFilesViewProps) => {
   const { data } = useFilteredFiles();
@@ -48,8 +48,6 @@ const DownloadApp: React.FC<ContextualFilesViewProps> = ({
   };
 
   const facets = getFacetInfo(configState.facets);
-  console.log("facets in download", facets);
-
   // TODO: remove, mock data for cart
   const allFiles = Array(10001)
     .fill(0)
@@ -118,7 +116,7 @@ const DownloadApp: React.FC<ContextualFilesViewProps> = ({
 
 // creates and registers the App with the Analysis Tool Framework
 export default createGdcAppWithOwnStore({
-  App: DownloadApp,
+  App: RepositoryApp,
   id: id,
   name: "Demonstration Application 3",
   version: "v1.0.0",

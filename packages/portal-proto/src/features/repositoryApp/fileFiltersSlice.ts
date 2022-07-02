@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import RepositoryDefaultConfig from "./config/filters.json";
-import { AppState } from "./coreApi";
+import { AppState } from "./appApi";
 
 export interface RepositoryFilters {
   readonly label: string;
@@ -20,7 +20,8 @@ const slice = createSlice({
   initialState,
   reducers: {
     addFilter: (state, action: PayloadAction<RepositoryFacet>) => {
-      state.facets = [...state.facets, action.payload.facetName];
+      if (!state.facets.includes(action.payload.facetName))
+        state.facets = [...state.facets, action.payload.facetName];
     },
     removeFilter: (state, action: PayloadAction<RepositoryFacet>) => {
       state.facets = state.facets.filter((x) => x != action.payload.facetName);
