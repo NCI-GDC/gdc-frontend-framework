@@ -1,6 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, FC } from "react";
 import { runproteinpaint } from "@stjude/proteinpaint-client";
-import { isEqual } from "lodash";
 
 // !!! TODO: may determine basepath prop value at runtime !!!
 const basepath = "https://proteinpaint.stjude.org"; // '/auth/api/custom/proteinpaint'
@@ -8,11 +7,12 @@ const basepath = "https://proteinpaint.stjude.org"; // '/auth/api/custom/protein
 interface PpProps {
   track: string;
   basepath?: string;
+  gene2canonicalisoform?: string;
+  mds3_ssm2canonicalisoform?: mds3_isoform;
+  geneSearch4GDCmds3?: boolean;
 }
 
-export function ProteinPaintWrapper(props: PpProps) {
-  let currentData;
-
+export const ProteinPaintWrapper: FC<PpProps> = (props) => {
   useEffect(() => {
     const data =
       props.track == "lolliplot"
@@ -22,10 +22,6 @@ export function ProteinPaintWrapper(props: PpProps) {
         : null;
 
     if (!data) return;
-    // do not cause unnecessary re-render if the track argument
-    // is the same as the last render
-    if (isEqual(data, currentData)) return;
-    currentData = data;
     const rootElem = ref.current as HTMLElement;
     const pp_holder = rootElem.querySelector(".sja_root_holder");
     if (pp_holder) pp_holder.remove();
@@ -35,11 +31,15 @@ export function ProteinPaintWrapper(props: PpProps) {
       JSON.parse(JSON.stringify(data)),
     );
     runproteinpaint(arg);
-  });
+  }, [
+    props.gene2canonicalisoform,
+    props.mds3_ssm2canonicalisoform,
+    props.geneSearch4GDCmds3,
+  ]);
 
   const ref = useRef();
   return <div ref={ref} />;
-}
+};
 
 interface Mds3Arg {
   host: string;
