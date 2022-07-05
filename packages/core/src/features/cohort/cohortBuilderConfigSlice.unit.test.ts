@@ -81,6 +81,17 @@ describe("cohortConfig reducer", () => {
     expect(state).toEqual(alteredConfig);
   });
 
+  test("addFilter that exists should be ignored", () => {
+    const state = cohortBuilderConfigReducer(
+      alteredConfig,
+      addFilterToCohortBuilder({
+        category: "general",
+        facetName: "file.test_facet",
+      }),
+    );
+    expect(state).toEqual(alteredConfig);
+  });
+
   test("addFilterToCohortBuilder with bad category should do nothing", () => {
     const state = cohortBuilderConfigReducer(
       defaultState,

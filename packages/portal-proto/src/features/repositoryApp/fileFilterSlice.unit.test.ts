@@ -71,7 +71,7 @@ describe("repository config reduce", () => {
     expect(state).toEqual(alteredConfig);
   });
 
-  test("addFilter that exists should be a no-op", () => {
+  test("addFilter that exists should be ignored", () => {
     const state = repositoryConfigReducer(
       alteredConfig,
       addFilter({
