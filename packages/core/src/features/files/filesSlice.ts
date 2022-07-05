@@ -7,6 +7,7 @@ import {
   GdcApiRequest,
   GdcApiResponse,
   FileDefaults,
+  Pagination,
 } from "../gdcapi/gdcapi";
 
 const accessTypes = ["open", "controlled"] as const;
@@ -330,6 +331,7 @@ export interface GdcFile {
 
 export interface FilesState {
   readonly files?: ReadonlyArray<GdcFile>;
+  readonly pagination?: Pagination;
   readonly status: DataStatus;
   readonly error?: string;
 }
@@ -497,6 +499,7 @@ const slice = createSlice({
               }),
             };
           });
+          state.pagination = response.data.pagination;
           state.status = "fulfilled";
           state.error = undefined;
         }
@@ -527,6 +530,7 @@ export const selectFilesData = (
 ): CoreDataSelectorResponse<ReadonlyArray<GdcFile> | undefined> => {
   return {
     data: state.files.files,
+    pagination: state.files.pagination,
     status: state.files.status,
     error: state.files.error,
   };

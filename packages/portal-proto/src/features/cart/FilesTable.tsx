@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Badge, Button, Menu, MenuItem } from "@mantine/core";
+import {
+  Badge,
+  Button,
+  Menu,
+  MenuItem,
+  Select,
+  Pagination,
+} from "@mantine/core";
 import { MdArrowDropDown as DropdownIcon } from "react-icons/md";
 import { VscTrash as TrashIcon } from "react-icons/vsc";
 import {
@@ -52,10 +59,14 @@ const initialVisibleColumns = [
 const FilesTable: React.FC = () => {
   const [tableData, setTableData] = useState([]);
   const [visibleColumns, setVisibleColumns] = useState(initialVisibleColumns);
+  const [pageSize, setPageSize] = useState(20);
+  const [activePage, setActivePage] = useState(0);
+
   const dispatch = useCoreDispatch();
   const cart = useCoreSelector((state) => selectCart(state));
-  const { data, isSuccess } = useFiles({
-    size: 20,
+  const { data, isSuccess, pagination } = useFiles({
+    size: pageSize,
+    from: pageSize * activePage,
     filters: {
       op: "and",
       content: [
@@ -88,7 +99,11 @@ const FilesTable: React.FC = () => {
       isSuccess
         ? data.map((file) => ({
             remove: <RemoveFromCartButton files={[file]} iconOnly />,
-            uuid: file.fileId,
+            uuid: (
+              <Link href={`/files/${file.fileId}`}>
+                <a className="text-nci-blue underline">{file.fileId}</a>
+              </Link>
+            ),
             access: (
               <Badge
                 className={
@@ -105,7 +120,7 @@ const FilesTable: React.FC = () => {
                 <a className="text-nci-blue underline">{file.fileName}</a>
               </Link>
             ),
-            cases: file.cases.length,
+            cases: file.cases?.length || 0,
             project: (
               <Link href={`/projects/${file.project_id}`}>
                 <a className="text-nci-blue underline">{file.project_id}</a>
@@ -174,17 +189,46 @@ const FilesTable: React.FC = () => {
           <MenuItem>Unauthorized Files</MenuItem>
         </Menu>
       </div>
-      <VerticalTable
-        tableData={visibleData}
-        columnListOrder={visibleColumns}
-        columnCells={columnCells.filter((column) =>
-          columnKeys.includes(column.accessor),
-        )}
-        pageSize={"20"}
-        selectableRow={false}
-        handleColumnChange={handleColumnChange}
-        tableTitle={""}
-      />
+      <div>
+        <VerticalTable
+          tableData={visibleData}
+          columnListOrder={visibleColumns}
+          columnCells={columnCells.filter((column) =>
+            columnKeys.includes(column.accessor),
+          )}
+          pageSize={pageSize.toString()}
+          selectableRow={false}
+          handleColumnChange={handleColumnChange}
+          tableTitle={""}
+        />
+        <div className="flex flex-row items-center justify-start border-t border-nci-gray-light w-9/12">
+          <p className="px-2">Page Size:</p>
+          <Select
+            size="sm"
+            radius="md"
+            onChange={(pageSize: string) => setPageSize(parseInt(pageSize))}
+            value={pageSize.toString()}
+            data={[
+              { value: "10", label: "10" },
+              { value: "20", label: "20" },
+              { value: "40", label: "40" },
+              { value: "100", label: "100" },
+            ]}
+          />
+          <Pagination
+            classNames={{
+              active: "bg-nci-gray",
+            }}
+            size="sm"
+            radius="md"
+            color="gray"
+            className="ml-auto"
+            page={activePage}
+            onChange={(page: number) => setActivePage(page)}
+            total={pagination?.pages || 1}
+          />
+        </div>
+      </div>
     </>
   );
 };

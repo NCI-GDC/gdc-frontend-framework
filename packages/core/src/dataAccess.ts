@@ -6,6 +6,7 @@ import { useEffect, useRef } from "react";
 import { useCoreDispatch, useCoreSelector } from "./hooks";
 import { CoreState } from "./reducers";
 import { isEqual } from "lodash";
+import { Pagination } from "./features/gdcapi/gdcapi";
 
 /**
  * The status of asynchronous data fetching is a state machine.
@@ -22,6 +23,7 @@ export type DataStatus = "uninitialized" | "pending" | "fulfilled" | "rejected";
 export interface UseCoreDataResponse<T> {
   readonly data?: T;
   readonly error?: string;
+  readonly pagination?: Pagination;
   readonly isUninitialized: boolean;
   readonly isFetching: boolean;
   readonly isSuccess: boolean;
@@ -30,6 +32,7 @@ export interface UseCoreDataResponse<T> {
 
 export interface CoreDataSelectorResponse<T> {
   readonly data?: T;
+  readonly pagination?: Pagination;
   readonly status: DataStatus;
   readonly error?: string;
 }
@@ -60,7 +63,7 @@ export const createUseCoreDataHook = <P, A, T>(
 ): UserCoreDataHook<P, T> => {
   return (...params: P[]): UseCoreDataResponse<T> => {
     const coreDispatch = useCoreDispatch();
-    const { data, status, error } = useCoreSelector(dataSelector);
+    const { data, pagination, status, error } = useCoreSelector(dataSelector);
     const action = fetchDataActionCreator(...params);
     const prevParams = usePrevious<P[]>(params);
 
@@ -76,6 +79,7 @@ export const createUseCoreDataHook = <P, A, T>(
     return {
       data,
       error,
+      pagination,
       isUninitialized: status === "uninitialized",
       isFetching: status === "pending",
       isSuccess: status === "fulfilled",

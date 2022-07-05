@@ -1,19 +1,10 @@
-import { Button, Menu, MenuItem, Grid } from "@mantine/core";
-import { MdArrowDropDown as DropdownIcon } from "react-icons/md";
-import { VscTrash as TrashIcon } from "react-icons/vsc";
-import {
-  useCartSummary,
-  useCoreSelector,
-  selectCart,
-  useCoreDispatch,
-} from "@gff/core";
-import { removeFromCart } from "./updateCart";
+import { Grid } from "@mantine/core";
+import { useCartSummary, useCoreSelector, selectCart } from "@gff/core";
 import FilesTable from "./FilesTable";
 import ProjectTable from "./ProjectTable";
 import CartHeader from "./CartHeader";
 
 const Cart: React.FC = () => {
-  const dispatch = useCoreDispatch();
   const cart = useCoreSelector((state) => selectCart(state));
   const { data: summaryData } = useCartSummary(cart);
 
@@ -22,7 +13,7 @@ const Cart: React.FC = () => {
       <CartHeader summaryData={summaryData} />
       <Grid className="mt-8 mx-2">
         <Grid.Col span={6}>
-          <div className="text-nci-blue-darkest bg-white p-2">
+          <div className="text-nci-blue-darkest bg-white p-4">
             <h2 className="uppercase font-bold pb-2">
               How to download files in my Cart?
             </h2>
@@ -63,7 +54,7 @@ const Cart: React.FC = () => {
             <div>TABLE PLACEHOLDER</div>
           </div>
         </Grid.Col>
-        <Grid.Col span={6} className="p-4">
+        <Grid.Col span={6} className="px-4">
           <h2 className="uppercase text-nci-blue-darkest font-bold">
             File counts by project
           </h2>
