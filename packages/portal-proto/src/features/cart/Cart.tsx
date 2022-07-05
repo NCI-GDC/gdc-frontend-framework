@@ -5,7 +5,6 @@ import {
   useCartSummary,
   useCoreSelector,
   selectCart,
-  useCartFilesTable,
   useCoreDispatch,
 } from "@gff/core";
 import { removeFromCart } from "./updateCart";
@@ -19,18 +18,12 @@ const Cart: React.FC = () => {
   const dispatch = useCoreDispatch();
   const cart = useCoreSelector((state) => selectCart(state));
   const { data: summaryData } = useCartSummary(cart);
-  const { data: tableData } = useCartFilesTable({
-    cart,
-    size: 20,
-    offset: 0,
-    sort: [],
-  });
 
   return (
     <>
       <CartHeader summaryData={summaryData} />
-      <Grid>
-        <Grid.Col span={6} className="p-4">
+      <Grid className="mt-8 mx-2">
+        <Grid.Col span={6}>
           <div className="text-nci-blue-darkest bg-white p-2">
             <h2 className="uppercase font-bold pb-2">
               How to download files in my Cart?
@@ -96,11 +89,7 @@ const Cart: React.FC = () => {
                 </Button>
               }
             >
-              <MenuItem
-                onClick={() => removeFromCart(tableData, cart, dispatch)}
-              >
-                All Files
-              </MenuItem>
+              <MenuItem>All Files</MenuItem>
               <MenuItem>Unauthorized Files</MenuItem>
             </Menu>
           </div>

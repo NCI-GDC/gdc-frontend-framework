@@ -265,6 +265,19 @@ export interface FileDefaults {
   readonly type: string;
   readonly version: string;
   readonly experimental_strategy: string;
+  readonly annotations?: ReadonlyArray<{
+    readonly annotation_id: string;
+    readonly category: string;
+    readonly classification: string;
+    readonly created_datetime: string;
+    readonly entity_id: string;
+    readonly entity_submitter_id: string;
+    readonly entity_type: string;
+    readonly notes: string;
+    readonly state: string;
+    readonly status: string;
+    readonly updated_datetime: string;
+  }>;
   readonly cases?: ReadonlyArray<{
     readonly case_id: string;
     readonly submitter_id: string;

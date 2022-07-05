@@ -1,6 +1,7 @@
-import { Button } from "@mantine/core";
+import { ActionIcon, Button } from "@mantine/core";
 import { showNotification, cleanNotifications } from "@mantine/notifications";
-import { FaUndo as UndoIcon } from "react-icons/fa";
+import { VscTrash as TrashIcon } from "react-icons/vsc";
+import { FaUndo as UndoIcon, FaShoppingCart as CartIcon } from "react-icons/fa";
 import {
   CART_LIMIT,
   removeFilesFromCart,
@@ -8,6 +9,9 @@ import {
   GdcFile,
   CoreDispatch,
   SlideImageFile,
+  selectCart,
+  useCoreSelector,
+  useCoreDispatch,
 } from "@gff/core";
 
 interface OverLimitNotificationProps {
@@ -231,4 +235,43 @@ export const addToCart = (
       );
     }
   }
+};
+
+export const AddToCartButton = ({ files }) => {
+  const currentCart = useCoreSelector((state) => selectCart(state));
+  const dispatch = useCoreDispatch();
+
+  return (
+    <Button onClick={() => addToCart(files, currentCart, dispatch)}>
+      <CartIcon className="mr-2" /> Add to Cart
+    </Button>
+  );
+};
+
+interface RemoveFromCartButtonProps {
+  readonly files: GdcFile[];
+  readonly iconOnly?: boolean;
+}
+
+export const RemoveFromCartButton: React.FC<RemoveFromCartButtonProps> = ({
+  files,
+  iconOnly = false,
+}: RemoveFromCartButtonProps) => {
+  const currentCart = useCoreSelector((state) => selectCart(state));
+  const dispatch = useCoreDispatch();
+
+  return iconOnly ? (
+    <ActionIcon
+      aria-label="Remove from cart"
+      variant="outline"
+      onClick={() => removeFromCart(files, currentCart, dispatch)}
+    >
+      <TrashIcon />
+    </ActionIcon>
+  ) : (
+    <Button onClick={() => removeFromCart(files, currentCart, dispatch)}>
+      <CartIcon className="mr-2" />
+      Remove From Cart
+    </Button>
+  );
 };

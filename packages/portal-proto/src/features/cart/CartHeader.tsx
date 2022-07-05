@@ -8,7 +8,8 @@ import {
 import { RiFile3Fill as FileIcon } from "react-icons/ri";
 import { formatFileSize } from "src/utils";
 
-const buttonStyle = "bg-white text-nci-blue-darkest border-nci-blue-darkest";
+const buttonStyle =
+  "bg-white text-nci-blue-darkest border-nci-blue-darkest px-2";
 
 const CartHeader = ({ summaryData }) => (
   <div className="bg-nci-blue-darkest text-white flex items-center gap-x-4 w-full h-16">
@@ -70,9 +71,12 @@ const CartHeader = ({ summaryData }) => (
       Manifest
     </Button>
     <h1 className="uppercase ml-auto mr-4 flex items-center truncate">
-      Total of <FileIcon /> {summaryData.total_doc_count.toLocaleString()} Files{" "}
-      <PersonIcon /> {summaryData.total_case_count.toLocaleString()} Cases{" "}
-      <SaveIcon /> {formatFileSize(summaryData.total_file_size)}
+      Total of <FileIcon size={25} className="mx-1" />{" "}
+      {summaryData.total_doc_count.toLocaleString()} Files{" "}
+      <PersonIcon size={25} className="mx-1" />{" "}
+      {summaryData.total_case_count.toLocaleString()} Cases{" "}
+      <SaveIcon size={25} className="mx-1" />{" "}
+      {formatFileSize(summaryData.total_file_size)}
     </h1>
   </div>
 );

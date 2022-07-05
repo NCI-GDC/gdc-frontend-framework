@@ -6,17 +6,9 @@ import {
   updateCartReducer,
 } from "./updateCartSlice";
 import { cartSummaryReducer, useCartSummary } from "./cartSummarySlice";
-import { filesTableReducer, useCartFilesTable } from "./filesTableSlice";
-export {
-  selectCart,
-  addFilesToCart,
-  removeFilesFromCart,
-  useCartSummary,
-  useCartFilesTable,
-};
+export { selectCart, addFilesToCart, removeFilesFromCart, useCartSummary };
 
 export const cartReducer = combineReducers({
   files: updateCartReducer,
   cartSummary: cartSummaryReducer,
-  filesTable: filesTableReducer,
 });

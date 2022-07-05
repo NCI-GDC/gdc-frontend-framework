@@ -238,6 +238,19 @@ export interface GdcFile {
   readonly version: string;
   readonly experimentalStrategy?: ExperimentalStrategy;
   readonly project_id?: string;
+  readonly annotations?: ReadonlyArray<{
+    readonly annotation_id: string;
+    readonly category: string;
+    readonly classification: string;
+    readonly created_datetime: string;
+    readonly entity_id: string;
+    readonly entity_submitter_id: string;
+    readonly entity_type: string;
+    readonly notes: string;
+    readonly state: string;
+    readonly status: string;
+    readonly updated_datetime: string;
+  }>;
   readonly cases?: ReadonlyArray<{
     readonly case_id: string;
     readonly submitter_id: string;
@@ -370,6 +383,7 @@ const slice = createSlice({
                 hit.experimental_strategy,
               ),
               project_id: hit.cases?.[0]?.project?.project_id,
+              annotations: hit.annotations?.map((annotation) => annotation),
               cases: hit.cases?.map((caseObj) => {
                 return {
                   case_id: caseObj.case_id,
