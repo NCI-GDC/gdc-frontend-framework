@@ -7,12 +7,14 @@ const basepath = "https://proteinpaint.stjude.org"; // '/auth/api/custom/protein
 interface PpProps {
   track: string;
   basepath?: string;
+  geneId?: string;
   gene2canonicalisoform?: string;
+  ssm_id?: string;
   mds3_ssm2canonicalisoform?: mds3_isoform;
   geneSearch4GDCmds3?: boolean;
 }
 
-export const ProteinPaintWrapper: FC<PpProps> = (props) => {
+export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
   useEffect(() => {
     const data =
       props.track == "lolliplot"
@@ -75,16 +77,16 @@ function getLolliplotTrack(props: PpProps) {
     ],
   };
 
-  /*if (props.geneId) {
+  if (props.geneId) {
     arg.gene2canonicalisoform = this.props.geneId;
   } else if (props.ssm_id) {
     arg.mds3_ssm2canonicalisoform = {
       dslabel: "GDC",
       ssm_id: props.ssm_id,
     };
-  } else {*/
-  arg.geneSearch4GDCmds3 = true;
-  //}
+  } else {
+    arg.geneSearch4GDCmds3 = true;
+  }
 
   return arg;
 }
