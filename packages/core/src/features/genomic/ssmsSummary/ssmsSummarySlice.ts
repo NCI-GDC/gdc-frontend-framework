@@ -3,15 +3,15 @@ import {
   CoreDataSelectorResponse,
   createUseCoreDataHook,
   DataStatus,
-} from "../../dataAccess";
-import { CoreState } from "../../reducers";
-import { CoreDispatch } from "../../store";
+} from "../../../dataAccess";
+import { CoreState } from "../../../reducers";
+import { CoreDispatch } from "../../../store";
 import {
   fetchGdcSsms,
   SSMSDefaults,
   GdcApiRequest,
   GdcApiResponse,
-} from "../gdcapi/gdcapi";
+} from "../../gdcapi/gdcapi";
 
 export interface SsmsState {
   readonly ssms?: SSMSDefaults;
@@ -90,6 +90,8 @@ const slice = createSlice({
         }))[0];
 
         state.status = "fulfilled";
+
+        return state;
       })
       .addCase(fetchSsms.pending, (state) => {
         // state.ssms = {};

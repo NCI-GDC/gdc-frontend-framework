@@ -59,6 +59,7 @@ export const SSMSSummary = ({ ssm_id }: { ssm_id: string }): JSX.Element => {
         },
       },
     } = summaryData;
+
     const functionalImpact = {
       functional_impact: (
         <>

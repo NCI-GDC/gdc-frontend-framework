@@ -42,6 +42,14 @@ export const capitalize = (original: string): string => {
     .join(" ");
 };
 
+export const externalLinkNames = {
+  civic: "CIViC",
+  entrez_gene: "NCBI Gene",
+  hgnc: "HGNC",
+  omim_gene: "OMIM",
+  uniprotkb_swissprot: "UniProtKB Swiss-Prot",
+};
+
 export const geneExternalLinkNames = {
   civic: "CIViC",
   entrez_gene: "NCBI Gene",
@@ -51,9 +59,7 @@ export const geneExternalLinkNames = {
 };
 
 export const externalLinks = {
-  civic: (id: string): string =>
-    `https://civicdb.org/variants/${id}/summary
-    }`,
+  civic: (id: string): string => `https://civicdb.org/variants/${id}/summary`,
   cosm: (id: string): string =>
     `http://cancer.sanger.ac.uk/cosmic/mutation/overview?id=${id}`,
   cosn: (id: string): string =>
