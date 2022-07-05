@@ -12,8 +12,6 @@ import FilesTable from "./FilesTable";
 import ProjectTable from "./ProjectTable";
 import CartHeader from "./CartHeader";
 
-const buttonStyle = "bg-white text-nci-blue-darkest border-nci-blue-darkest";
-
 const Cart: React.FC = () => {
   const dispatch = useCoreDispatch();
   const cart = useCoreSelector((state) => selectCart(state));
@@ -72,27 +70,6 @@ const Cart: React.FC = () => {
           <ProjectTable projectData={summaryData.byProject} />
         </Grid.Col>
         <Grid.Col span={12} className="p-4">
-          <div className="flex gap-2">
-            <Button className={buttonStyle}>JSON</Button>
-            <Button className={buttonStyle}>TSV</Button>
-            <Menu
-              control={
-                <Button
-                  leftIcon={<TrashIcon />}
-                  rightIcon={<DropdownIcon size={20} />}
-                  classNames={{
-                    root: "bg-nci-red-darker",
-                    rightIcon: "border-l pl-1 -mr-2",
-                  }}
-                >
-                  Remove From Cart
-                </Button>
-              }
-            >
-              <MenuItem>All Files</MenuItem>
-              <MenuItem>Unauthorized Files</MenuItem>
-            </Menu>
-          </div>
           <FilesTable />
         </Grid.Col>
       </Grid>

@@ -1,10 +1,17 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Badge } from "@mantine/core";
-import { useCoreSelector, selectCart, useFiles } from "@gff/core";
+import { Badge, Button, Menu, MenuItem } from "@mantine/core";
+import { MdArrowDropDown as DropdownIcon } from "react-icons/md";
+import { VscTrash as TrashIcon } from "react-icons/vsc";
+import {
+  useCoreSelector,
+  selectCart,
+  useFiles,
+  useCoreDispatch,
+} from "@gff/core";
 import { formatFileSize } from "src/utils";
 import { VerticalTable } from "@/features/shared/VerticalTable";
-import { RemoveFromCartButton } from "./updateCart";
+import { removeFromCart, RemoveFromCartButton } from "./updateCart";
 
 const columnCells = [
   { Header: "Remove", accessor: "remove", width: 80 },
@@ -45,6 +52,7 @@ const initialVisibleColumns = [
 const FilesTable: React.FC = () => {
   const [tableData, setTableData] = useState([]);
   const [visibleColumns, setVisibleColumns] = useState(initialVisibleColumns);
+  const dispatch = useCoreDispatch();
   const cart = useCoreSelector((state) => selectCart(state));
   const { data, isSuccess } = useFiles({
     size: 20,
@@ -134,17 +142,50 @@ const FilesTable: React.FC = () => {
   };
 
   return (
-    <VerticalTable
-      tableData={visibleData}
-      columnListOrder={visibleColumns}
-      columnCells={columnCells.filter((column) =>
-        columnKeys.includes(column.accessor),
-      )}
-      pageSize={"20"}
-      selectableRow={false}
-      handleColumnChange={handleColumnChange}
-      tableTitle={""}
-    />
+    <>
+      <div className="flex gap-2">
+        <Button
+          className={"bg-white text-nci-blue-darkest border-nci-blue-darkest"}
+        >
+          JSON
+        </Button>
+        <Button
+          className={"bg-white text-nci-blue-darkest border-nci-blue-darkest"}
+        >
+          TSV
+        </Button>
+        <Menu
+          control={
+            <Button
+              leftIcon={<TrashIcon />}
+              rightIcon={<DropdownIcon size={20} />}
+              classNames={{
+                root: "bg-nci-red-darker",
+                rightIcon: "border-l pl-1 -mr-2",
+              }}
+            >
+              Remove From Cart
+            </Button>
+          }
+        >
+          <MenuItem onClick={() => removeFromCart(data, cart, dispatch)}>
+            All Files
+          </MenuItem>
+          <MenuItem>Unauthorized Files</MenuItem>
+        </Menu>
+      </div>
+      <VerticalTable
+        tableData={visibleData}
+        columnListOrder={visibleColumns}
+        columnCells={columnCells.filter((column) =>
+          columnKeys.includes(column.accessor),
+        )}
+        pageSize={"20"}
+        selectableRow={false}
+        handleColumnChange={handleColumnChange}
+        tableTitle={""}
+      />
+    </>
   );
 };
 
