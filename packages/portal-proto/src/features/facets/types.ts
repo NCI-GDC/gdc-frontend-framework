@@ -12,4 +12,5 @@ export interface FacetCardProps {
   readonly hideIfEmpty?: boolean;
   readonly indexType?: GQLIndexType;
   readonly width?: string;
+  readonly dismissCallback?: (string) => void;
 }

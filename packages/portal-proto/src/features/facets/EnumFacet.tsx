@@ -21,6 +21,7 @@ import {
   MdSearch as SearchIcon,
   MdSort as SortIcon,
   MdSortByAlpha as AlphaSortIcon,
+  MdClose as CloseIcon,
 } from "react-icons/md";
 import { FacetCardProps } from "@/features/facets/types";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
@@ -54,6 +55,7 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
   startShowingData = true,
   showPercent = true,
   hideIfEmpty = true,
+  dismissCallback = undefined,
   width = undefined,
 }: FacetCardProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
@@ -210,6 +212,21 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
                 color={tailwindConfig.theme.extend.colors["gdc-blue"].darker}
               />
             </button>
+            {dismissCallback ? (
+              <button
+                className="hover:bg-nci-grey-darker text-nci-gray font-bold py-2 px-1 rounded inline-flex items-center"
+                onClick={() => {
+                  clearFilters();
+                  dismissCallback(field);
+                }}
+                aria-label="Remove the facet"
+              >
+                <CloseIcon
+                  size="1.25em"
+                  color={tailwindConfig.theme.extend.colors["gdc-blue"].darker}
+                />
+              </button>
+            ) : null}
           </div>
         </div>
       </div>
