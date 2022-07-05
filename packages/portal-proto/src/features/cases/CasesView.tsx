@@ -5,10 +5,13 @@ import {
   useCoreDispatch,
   selectCasesData,
   useCoreSelector,
+  GqlOperation,
 } from "@gff/core";
 import { Table, Pagination, Select } from "@mantine/core";
-import { useEffect, useState } from "react";
-import { GqlOperation } from "@gff/core/dist/dts/features/gdcapi/filters";
+import { Biospecimen } from "../biospecimen/Biospecimen";
+import { useEffect, useState, useContext } from "react";
+import { useScrollIntoView } from "@mantine/hooks";
+import { URLContext } from "src/pages/_app";
 
 export interface Case {
   readonly id: string;
@@ -28,6 +31,8 @@ export interface CasesViewProps {
 
 export interface ContextualCasesViewProps {
   readonly handleCaseSelected?: (patient: Case) => void;
+  caseId?: string;
+  bioId?: string;
 }
 
 const useCohortFacetFilter = (): GqlOperation => {
@@ -82,14 +87,24 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
   props: ContextualCasesViewProps,
 ) => {
   // TODO useContextualCases() that filters based on the context
+  const { prevPath } = useContext(URLContext);
   const [pageSize, setPageSize] = useState(10);
   const [activePage, setPage] = useState(1);
   const { data, isSuccess } = useCohortCases(pageSize, activePage);
   const [pages, setPages] = useState(10);
-
   const caseCounts = useCoreSelector((state) =>
     selectCohortCountsByName(state, "caseCounts"),
   );
+
+  const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>({
+    offset: 60,
+  });
+
+  useEffect(() => {
+    if (prevPath?.includes("MultipleImageViewerPage")) {
+      scrollIntoView();
+    }
+  }, [prevPath, scrollIntoView]);
 
   useEffect(() => {
     setPages(Math.ceil(caseCounts / pageSize));
@@ -114,38 +129,43 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
   }));
 
   return (
-    <div className="flex flex-col">
-      <CasesView
-        cases={cases}
-        caption={`Showing ${pageSize} of ${caseCounts} Cases`}
-        handleCaseSelected={props.handleCaseSelected}
-      />
-      <div className="flex flex-row items-center justify-start border-t border-nci-gray-light">
-        <p className="px-2">Page Size:</p>
-        <Select
-          size="sm"
-          radius="md"
-          onChange={handlePageSizeChange}
-          value={pageSize.toString()}
-          data={[
-            { value: "10", label: "10" },
-            { value: "20", label: "20" },
-            { value: "40", label: "40" },
-            { value: "100", label: "100" },
-          ]}
+    <div className="flex flex-col m-auto w-10/12">
+      <div>
+        <CasesView
+          cases={cases}
+          caption={`Showing ${pageSize} of ${caseCounts} Cases`}
+          handleCaseSelected={props.handleCaseSelected}
         />
-        <Pagination
-          classNames={{
-            active: "bg-nci-gray",
-          }}
-          size="sm"
-          radius="md"
-          color="gray"
-          className="ml-auto"
-          page={activePage}
-          onChange={(x) => setPage(x - 1)}
-          total={pages}
-        />
+        <div className="flex flex-row items-center justify-start border-t border-nci-gray-light">
+          <p className="px-2">Page Size:</p>
+          <Select
+            size="sm"
+            radius="md"
+            onChange={handlePageSizeChange}
+            value={pageSize.toString()}
+            data={[
+              { value: "10", label: "10" },
+              { value: "20", label: "20" },
+              { value: "40", label: "40" },
+              { value: "100", label: "100" },
+            ]}
+          />
+          <Pagination
+            classNames={{
+              active: "bg-nci-gray",
+            }}
+            size="sm"
+            radius="md"
+            color="gray"
+            className="ml-auto"
+            page={activePage}
+            onChange={(x) => setPage(x - 1)}
+            total={pages}
+          />
+        </div>
+      </div>
+      <div ref={targetRef} id="biospecimen">
+        <Biospecimen caseId={props.caseId} bioId={props.bioId} />
       </div>
     </div>
   );

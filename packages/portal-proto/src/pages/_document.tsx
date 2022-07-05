@@ -12,6 +12,7 @@ class GdcDocument extends Document {
     // This is needed in order to have deterministic results during
     // server side rendering.
     resetIdCounter();
+
     const initialProps = await Document.getInitialProps(ctx);
     return {
       ...initialProps,

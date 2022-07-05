@@ -13,11 +13,24 @@ jobs:
       - uses: actions/setup-node@v3
 
       - name: Install Packages
-        run: npm install
+        run: |
+          echo "Current Working Directory"
+          pwd
+          echo "List of Files"
+          ls
+          npm install
 
       - name: Compilation/Type Check for core
         run: |
+          echo "Current Working Directory"
+          pwd
+          echo "List of files"
+          ls
+          echo " "
           cd ${{github.workspace}}/packages/core
+          echo "List of files in ./packages/core"
+          ls
+          echo " "
           npm run build:clean
 
       - name: Compilation/Type Check for portal-proto
@@ -32,4 +45,4 @@ jobs:
         run: npm run format:check
 
       - name: Check for unit tests
-        run: npm test
+        run: npm run test:all

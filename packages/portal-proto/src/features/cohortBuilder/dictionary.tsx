@@ -1,18 +1,28 @@
-import GDC_Dictionary from "./gdc_tooltips.json";
+import GDC_Dictionary from "./config/gdc_tooltips.json";
+import GDC_Dictionary_Flattened from "./config/gdc_facet_dictionary_flat.json";
 import MiniSearch, { SearchResult } from "minisearch";
 
 export const get_facet_list = (
   category: string,
-): Array<Record<string, never>> | null => {
+): Array<Record<string, never>> | undefined => {
   return category in GDC_Dictionary.dictionary
     ? GDC_Dictionary.dictionary[category]
-    : null;
+    : undefined;
 };
 
 export const get_facet_subcategories = (category: string): string[] => {
   return category in GDC_Dictionary.dictionary
     ? Object.keys(GDC_Dictionary.dictionary[category])
     : [];
+};
+
+export const get_facets_from_list = (
+  facets: ReadonlyArray<string>,
+): Array<Record<string, any>> => {
+  return facets.map((x) => ({
+    name: x,
+    ...GDC_Dictionary_Flattened.dictionary[x],
+  }));
 };
 
 export const get_facets = (
@@ -22,11 +32,7 @@ export const get_facets = (
 ): Array<Record<any, any>> => {
   const root = GDC_Dictionary.dictionary[category][subcategory];
   return Object.keys(root)
-    .filter(
-      (x, index) =>
-        (root[x].facet_type === "enum" || x === "Program" || x === "Project") &&
-        index < limit,
-    )
+    .slice(limit)
     .map((x) => {
       return { name: x, ...root[x] };
     });

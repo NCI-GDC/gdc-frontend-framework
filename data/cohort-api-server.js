@@ -1,16 +1,17 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 // Defines mock cohort api server which provides REST endpoints for a cohort
 // database created via the cohort-api-db.json file. To start the mock api
-// service:
-// cd to the /data directory in project root and run: node cohort-api-server.js
+// service from the project root run: node data/cohort-api-server.js
 
-var jsonServer = require("json-server");
+const path = require("path");
+const db_file = path.join(__dirname, "cohort-api-db.json");
+const jsonServer = require("json-server");
 const { isUndefined } = require("lodash");
 const crypto = require("crypto");
 
-var server = jsonServer.create();
-var router = jsonServer.router("cohort-api-db.json");
-var middlewares = jsonServer.defaults();
+const server = jsonServer.create();
+const router = jsonServer.router(db_file);
+const middlewares = jsonServer.defaults();
 
 // custom flags
 const context_auth_enabled = true;
@@ -113,13 +114,13 @@ function readFileAsJson(filename) {
 
 // get all contexts
 function getContexts() {
-  const json_data = readFileAsJson("cohort-api-db.json");
+  const json_data = readFileAsJson(db_file);
   return json_data["contexts"];
 }
 
 // get all cohorts
 function getCohorts() {
-  const json_data = readFileAsJson("cohort-api-db.json");
+  const json_data = readFileAsJson(db_file);
   return json_data["cohorts"];
 }
 

@@ -23,7 +23,18 @@ const SingleAppsPage: NextPage = () => {
   if (isLoading) {
     cohort_data = [];
   } else if (isSuccess) {
-    cohort_data = data;
+    // this map transformation is only necessary until ContextBar is updated
+    // to use the property name of filters instead of facets
+    cohort_data = data.map((elm) => ({
+      id: elm.id,
+      context_id: elm.context_id,
+      name: elm.name,
+      facets: elm.filters,
+      frozen: elm.frozen,
+    }));
+
+    // TODO: remove map transformation and use the following instead
+    //cohort_data = data;
   }
 
   return (

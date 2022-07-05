@@ -15,6 +15,8 @@ export interface AppRegistrationEntry {
   readonly caseCounts?: number; // Added for MR Demo TODO: Compute real values
   readonly hideCounts?: boolean;
   readonly optimizeRules?: ReadonlyArray<string>;
+  readonly selectAdditionalCohort?: boolean;
+  readonly noDataTooltip?: string;
 }
 
 const descendingOrd = (array) => {
