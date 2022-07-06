@@ -35,10 +35,13 @@ const slice = createSlice({
         const response = action.payload;
         console.log("response, ", response);
         state.status = "fulfilled";
-        const civic = [
-          response.data.viewer.explore.ssms.aggregations
-            .clinical_annotations__civic__gene_id.buckets[0].key,
-        ];
+        const civic = response.data.viewer.explore.ssms?.aggregations
+          ?.clinical_annotations__civic__gene_id?.buckets[0]?.key
+          ? [
+              response.data.viewer.explore.ssms?.aggregations
+                ?.clinical_annotations__civic__gene_id?.buckets[0]?.key,
+            ]
+          : undefined;
         state.genes = {
           ...response.data.viewer.explore.genes.hits.edges[0].node,
           civic,

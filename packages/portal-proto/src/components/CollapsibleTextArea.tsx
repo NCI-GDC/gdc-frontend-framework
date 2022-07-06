@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { AiFillCaretDown, AiFillCaretUp } from "react-icons/ai";
 
-export const CollapsibleTextArea = ({ text }: { text: string }) => {
+export const CollapsibleTextArea = ({
+  text,
+}: {
+  text: string;
+}): JSX.Element => {
   const [expanded, setExpanded] = useState(false);
   return (
     <>

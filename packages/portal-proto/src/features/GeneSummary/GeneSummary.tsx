@@ -8,7 +8,7 @@ import { externalLinkNames, externalLinks } from "src/utils";
 import { humanify } from "../biospecimen/utils";
 import { formatDataForHorizontalTable } from "../files/utils";
 
-export const GeneSummary = ({ gene_id }: { gene_id: string }) => {
+export const GeneSummary = ({ gene_id }: { gene_id: string }): JSX.Element => {
   const { data, isFetching } = useGenesSummaryData({ gene_id });
   console.log(data);
   const formatDataForSummary = () => {
@@ -67,19 +67,22 @@ export const GeneSummary = ({ gene_id }: { gene_id: string }) => {
 
   const formatDataForExternalReferences = () => {
     const externalLinksObj = {
-      ...data.genes.external_db_ids,
-      ensembl: data.genes.gene_id,
+      entrez_gene: data.genes.external_db_ids.entrez_gene,
+      uniprotkb_swissprot: data.genes.external_db_ids.uniprotkb_swissprot,
+      hgnc: data.genes.external_db_ids.hgnc,
+      omim_gene: data.genes.external_db_ids.omim_gene,
+      ensembl: [data.genes.gene_id],
       civic: data.genes.civic,
     };
 
-    // console.log(externalLinksObj);
+    console.log(externalLinksObj);
 
     let obj = {};
 
     Object.keys(externalLinksObj).forEach((link) => {
       const objs = {
         [`${externalLinkNames[link] || link.replace(/_/, " ")}`]:
-          externalLinksObj[link]?.length ? (
+          externalLinksObj[link] && externalLinksObj[link]?.length ? (
             <AnchorLink
               href={externalLinks[link](externalLinksObj[link][0])}
               title={externalLinksObj[link][0]}
@@ -102,7 +105,7 @@ export const GeneSummary = ({ gene_id }: { gene_id: string }) => {
 
   return (
     <div>
-      {!isFetching && data.genes && (
+      {!isFetching && Object.keys(data.genes).length > 0 && (
         <>
           <SummaryHeader iconText="GN" headerTitle={data.genes.symbol} />
           <div className="pt-4">
