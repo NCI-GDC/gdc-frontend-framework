@@ -58,7 +58,7 @@ const Cart: React.FC = () => {
           <h2 className="uppercase text-nci-blue-darkest font-bold">
             File counts by project
           </h2>
-          <ProjectTable projectData={summaryData.byProject} />
+          <ProjectTable projectData={summaryData} />
         </Grid.Col>
         <Grid.Col span={12} className="p-4">
           <FilesTable />

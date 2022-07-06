@@ -237,7 +237,13 @@ export const addToCart = (
   }
 };
 
-export const AddToCartButton = ({ files }) => {
+interface AddToCartButtonProps {
+  readonly files: GdcFile[];
+}
+
+export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
+  files,
+}: AddToCartButtonProps) => {
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
 

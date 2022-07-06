@@ -37,14 +37,3 @@ export const capitalize = (original: string): string => {
     )
     .join(" ");
 };
-
-export const formatFileSize = (bytes: number) => {
-  if (bytes == 0) {
-    return "0.00 B";
-  }
-  const level = Math.floor(Math.log(bytes) / Math.log(1024));
-
-  return `${(bytes / Math.pow(1024, level)).toFixed(2)} ${
-    ["B", "kB", "MB", "GB", "TB"][level]
-  }`;
-};

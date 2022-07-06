@@ -1,4 +1,5 @@
-import { formatFileSize } from "src/utils";
+import { CartSummaryData } from "@gff/core";
+import fileSize from "filesize";
 import { VerticalTable } from "../shared/VerticalTable";
 
 const columnListOrder = [
@@ -16,17 +17,17 @@ const columnCells = [
 ];
 
 interface ProjectTableProps {
-  readonly projectData: any;
+  readonly projectData: CartSummaryData;
 }
 
 const ProjectTable: React.FC<ProjectTableProps> = ({
   projectData,
 }: ProjectTableProps) => {
-  const tableData = projectData.map((project) => ({
+  const tableData = projectData.byProject.map((project) => ({
     key: project.key,
     case_count: project.case_count,
     doc_count: project.doc_count,
-    file_size: formatFileSize(project.file_size),
+    file_size: fileSize(project.file_size),
   }));
 
   return (
@@ -36,7 +37,7 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
       columnCells={columnCells}
       pageSize={"20"}
       selectableRow={false}
-      handleColumnChange={() => {}}
+      handleColumnChange={undefined}
       tableTitle={""}
       showControls={false}
     />

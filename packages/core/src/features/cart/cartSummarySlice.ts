@@ -58,7 +58,7 @@ interface CartAggregation {
   key: string;
 }
 
-interface CartSummaryData {
+export interface CartSummaryData {
   total_case_count: number;
   total_doc_count: number;
   total_file_size: number;
@@ -68,6 +68,7 @@ interface CartSummaryData {
 export interface CartSummary {
   data: CartSummaryData;
   status: DataStatus;
+  error?: string;
 }
 
 const initialState: CartSummary = {
@@ -85,31 +86,37 @@ const slice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchCartSummary.fulfilled, (state, action) => {
-      const response = action.payload;
-      if (response.errors) {
-        state.status = "rejected";
-      } else {
-        console.log(response);
-        const byProject: CartAggregation[] =
-          response.data.viewer.cart_summary?.aggregations.project__project_id
-            .buckets || [];
+    builder
+      .addCase(fetchCartSummary.fulfilled, (state, action) => {
+        const response = action.payload;
+        if (response.errors) {
+          state.status = "rejected";
+        } else {
+          const byProject: CartAggregation[] =
+            response.data.viewer.cart_summary?.aggregations.project__project_id
+              .buckets || [];
 
-        state.data = {
-          total_case_count: byProject
-            .map((project) => project.case_count)
-            .reduce((previous, current) => previous + current, 0),
-          total_doc_count: byProject
-            .map((project) => project.doc_count)
-            .reduce((previous, current) => previous + current, 0),
-          total_file_size: byProject
-            .map((project) => project.file_size)
-            .reduce((previous, current) => previous + current, 0),
-          byProject,
-        };
-        state.status = "fulfilled";
-      }
-    });
+          state.data = {
+            total_case_count: byProject
+              .map((project) => project.case_count)
+              .reduce((previous, current) => previous + current, 0),
+            total_doc_count: byProject
+              .map((project) => project.doc_count)
+              .reduce((previous, current) => previous + current, 0),
+            total_file_size: byProject
+              .map((project) => project.file_size)
+              .reduce((previous, current) => previous + current, 0),
+            byProject,
+          };
+          state.status = "fulfilled";
+        }
+      })
+      .addCase(fetchCartSummary.pending, (state) => {
+        state.status = "pending";
+      })
+      .addCase(fetchCartSummary.rejected, (state) => {
+        state.status = "rejected";
+      });
   },
 });
 

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import fileSize from "filesize";
 import {
   Badge,
   Button,
@@ -17,7 +18,6 @@ import {
   useFiles,
   useCoreDispatch,
 } from "@gff/core";
-import { formatFileSize } from "src/utils";
 import { VerticalTable } from "@/features/shared/VerticalTable";
 import { removeFromCart, RemoveFromCartButton } from "./updateCart";
 
@@ -92,7 +92,7 @@ const FilesTable: React.FC = () => {
   const [visibleData, setVisibleData] = useState(
     tableData.map((row) =>
       Object.fromEntries(
-        Object.entries(row).filter(([key, _]) => columnKeys.includes(key)),
+        Object.entries(row).filter(([key]) => columnKeys.includes(key)),
       ),
     ),
   );
@@ -131,7 +131,7 @@ const FilesTable: React.FC = () => {
             ),
             data_category: file.dataCategory,
             data_format: file.dataFormat,
-            file_size: formatFileSize(file.fileSize),
+            file_size: fileSize(file.fileSize),
             annotations: file.annotations?.length || 0,
             data_type: file.dataType,
             experimental_strategy: file.experimentalStrategy,
@@ -149,7 +149,7 @@ const FilesTable: React.FC = () => {
     setVisibleData(
       tableData.map((row) =>
         Object.fromEntries(
-          Object.entries(row).filter(([key, _]) => columnKeys.includes(key)),
+          Object.entries(row).filter(([key]) => columnKeys.includes(key)),
         ),
       ),
     );

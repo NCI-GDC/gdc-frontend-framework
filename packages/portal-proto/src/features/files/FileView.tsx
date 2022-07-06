@@ -8,7 +8,7 @@ import { get } from "lodash";
 import dynamic from "next/dynamic";
 import fileSize from "filesize";
 import tw from "tailwind-styled-components";
-import { addToCart, AddToCartButton } from "../cart/updateCart";
+import { AddToCartButton } from "../cart/updateCart";
 import { formatDataForHorizontalTable, parseSlideDetailsInfo } from "./utils";
 
 import Link from "next/link";

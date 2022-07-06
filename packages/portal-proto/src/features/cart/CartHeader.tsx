@@ -1,3 +1,5 @@
+import { CartSummaryData } from "@gff/core";
+import fileSize from "filesize";
 import { Button, Menu } from "@mantine/core";
 import {
   MdOutlineFileDownload as DownloadIcon,
@@ -6,12 +8,17 @@ import {
   MdSave as SaveIcon,
 } from "react-icons/md";
 import { RiFile3Fill as FileIcon } from "react-icons/ri";
-import { formatFileSize } from "src/utils";
 
 const buttonStyle =
   "bg-white text-nci-blue-darkest border-nci-blue-darkest px-2";
 
-const CartHeader = ({ summaryData }) => (
+interface CartHeaderProps {
+  summaryData: CartSummaryData;
+}
+
+const CartHeader: React.FC<CartHeaderProps> = ({
+  summaryData,
+}: CartHeaderProps) => (
   <div className="bg-nci-blue-darkest text-white flex items-center gap-x-4 w-full h-16">
     <Menu
       control={
@@ -76,7 +83,7 @@ const CartHeader = ({ summaryData }) => (
       <PersonIcon size={25} className="mx-1" />{" "}
       {summaryData.total_case_count.toLocaleString()} Cases{" "}
       <SaveIcon size={25} className="mx-1" />{" "}
-      {formatFileSize(summaryData.total_file_size)}
+      {fileSize(summaryData.total_file_size)}
     </h1>
   </div>
 );
