@@ -127,7 +127,9 @@ export const VerticalTable: FC<VerticalTableProps> = ({
             {...row.getRowProps({
               style,
             })}
-            className={`tr ${index % 2 === 1 ? "bg-gray-300" : "bg-white"}`}
+            className={`tr ${
+              index % 2 === 1 ? "bg-slate-100" : "bg-white"
+            } text-sm`}
           >
             {row.cells.map((cell, key) => {
               return (
@@ -154,13 +156,11 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     }, [scrollItem]);
 
     return (
-      <div className="p-2">
+      <div className="p-2 overflow-visible">
         <h2
           id={`${tableTitle.toLowerCase().replace(" ", "_")}`}
           className={`font-semibold`}
-        >
-          {/* {tableTitle} */}
-        </h2>
+        ></h2>
         <div
           role="table"
           aria-label={tableTitle}
@@ -168,21 +168,21 @@ export const VerticalTable: FC<VerticalTableProps> = ({
           aria-rowcount={pageSize ? pageSize : `-1`}
           aria-colcount={columns.length > 0 ? columns.length.toString() : `-1`}
           {...getTableProps()}
-          className="table inline-block"
+          className={`table inline-block shadow-3xl`}
         >
-          <div role="rowgroup" className="bg-gray-200">
+          <div role="rowgroup">
             {headerGroups.map((headerGroup, key) => (
               <div
                 {...headerGroup.getHeaderGroupProps()}
                 role="row"
-                className="tr"
+                className={`tr bg-white shadow-inset text-sm font-semibold`}
                 key={`header-${key}`}
               >
                 {headerGroup.headers.map((column, key) => (
                   <div
                     role="columnheader"
                     {...column.getHeaderProps()}
-                    className="th text-black text-center"
+                    className={`th text-black text-center`}
                     key={`column-${key}`}
                   >
                     {key === 0 ? (
@@ -214,7 +214,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
             <List
               height={360}
               itemCount={rows.length}
-              itemSize={60}
+              itemSize={80}
               width={totalColumnsWidth}
               ref={tableRef}
             >
