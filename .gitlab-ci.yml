@@ -103,4 +103,4 @@ build:
     - export http_proxy=http://cloud-proxy:3128
     - export https_proxy=http://cloud-proxy:3128
     - docker build . --tag ${REGISTRY}/${REPO}:${GIT_TAG}
-    - docker push ${REGISTRY}/${REPO}:${GIT_TAG}
+    - docker push ncigdc/${REGISTRY}/${REPO}:${GIT_TAG}
