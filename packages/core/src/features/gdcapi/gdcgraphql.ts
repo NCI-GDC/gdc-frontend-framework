@@ -13,9 +13,15 @@ export interface GraphQLApiResponse<H = UnknownJson> {
   readonly errors: Record<string, string>;
 }
 
+export interface SortOption {
+  field: string;
+  order: string;
+}
+
 export interface TablePageOffsetProps {
   readonly pageSize?: number;
   readonly offset?: number;
+  readonly sorts?: Array<SortOption>;
 }
 
 const buildGraphQLFetchError = async (

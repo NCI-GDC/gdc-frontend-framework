@@ -26,6 +26,7 @@ const GenesTableGraphQLQuery = `
             $cnvTested: FiltersArgument
             $cnvGainFilters: FiltersArgument
             $cnvLossFilters: FiltersArgument
+            $sort: [Sort]
           ) {
             genesTableViewer: viewer {
               explore {
@@ -50,6 +51,7 @@ const GenesTableGraphQLQuery = `
                     offset: $genesTable_offset
                     filters: $genesTable_filters
                     score: $score
+                    sort: $sort
                   ) {
                     total
                     edges {
@@ -122,7 +124,7 @@ export const fetchGenesTable = createAsyncThunk<
 >(
   "genes/genesTable",
   async (
-    { pageSize, offset }: TablePageOffsetProps,
+    { pageSize, offset, sorts = [] }: TablePageOffsetProps,
     thunkAPI,
   ): Promise<GraphQLApiResponse> => {
     const filters = selectGenomicAndCohortGqlFilters(thunkAPI.getState());
@@ -237,8 +239,11 @@ export const fetchGenesTable = createAsyncThunk<
           ...filterContents,
         ],
       },
+      sort: sorts,
     };
+
     // get the TableData
+
     const results: GraphQLApiResponse<any> = await graphqlAPI(
       GenesTableGraphQLQuery,
       graphQlFilters,

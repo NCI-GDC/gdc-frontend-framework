@@ -22,6 +22,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
 }: GenesTableProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [offset, setOffset] = useState(0);
+  const [sorts, setSorts] = useState([]);
   const [activePage, setActivePage] = useState(1);
   const [pages, setPages] = useState(0);
   const [totalResults, setTotalResults] = useState(0);
@@ -42,11 +43,13 @@ const GenesTable: React.FC<GenesTableProps> = ({
   const { data, isFetching } = useGenesTable({
     pageSize: pageSize,
     offset: offset,
-    // sort_?: sortArray TODO
+    sorts: sorts,
   });
 
   useEffect(() => {
-    coreDispatch(fetchGenesTable({ pageSize: pageSize, offset: offset }));
+    coreDispatch(
+      fetchGenesTable({ pageSize: pageSize, offset: offset, sorts: sorts }),
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageSize, offset]);
 
@@ -55,8 +58,12 @@ const GenesTable: React.FC<GenesTableProps> = ({
   }, [pageSize]);
 
   useEffect(() => {
-    console.log("selected sorts", selectedSorts);
+    // console.log("selected sorts", selectedSorts);
   }, [selectedSorts]);
+
+  useEffect(() => {
+    // console.log("sorts", sorts);
+  }, [sorts]);
 
   const handleRowSelectChange = (rowUpdate, select, selectAll) => {
     switch (select) {
@@ -107,7 +114,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
   };
 
   const handleSortChange = (sortUpdate) => {
-    console.log("sortUpdate");
+    // console.log("sortUpdate", sortUpdate);
   };
 
   useEffect(() => {
@@ -271,7 +278,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
           parity: "desc",
         };
       });
-    console.log("eligibleSorts", eligibleSorts);
+    // console.log("eligibleSorts", eligibleSorts);
     setSelectedSorts(eligibleSorts);
   };
 
