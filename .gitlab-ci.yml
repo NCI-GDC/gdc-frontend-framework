@@ -99,10 +99,10 @@ build:
     - REPO=$(basename `git rev-parse --show-toplevel`)
     - echo $CI_REGISTRY_USER
     - echo $CI_REGISTRY_PASSWORD
+    - docker login docker.osdc.io -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
   script:
     - /bin/bash build.sh -b "$CI_COMMIT_BRANCH" -n "$CI_COMMIT_SHORT_SHA"
     - export http_proxy=http://cloud-proxy:3128
     - export https_proxy=http://cloud-proxy:3128
-    - docker login docker.osdc.io -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
     - docker build . --tag ${REGISTRY}/${REPO}:${GIT_TAG}
     - docker push ncigdc/${REGISTRY}/${REPO}:${GIT_TAG}
