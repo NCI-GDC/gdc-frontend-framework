@@ -2,12 +2,11 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   CoreDataSelectorResponse,
   createUseCoreDataHook,
-} from "../../dataAcess";
-import { CoreState } from "../../store";
+} from "../../dataAccess";
+import { CoreState } from "../../reducers";
 import { GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import { fetchImageViewerQuery, queryParams } from "./imageDetailsApi";
-import trimEnd from "lodash/trimEnd";
-import find from "lodash/find";
+import { trimEnd, find } from "lodash";
 import {
   caseNodeType,
   ImageViewerInfo,

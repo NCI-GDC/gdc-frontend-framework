@@ -1,5 +1,5 @@
 /**
- * A Facet Chart which will soon be deprecated in favor of EnumFacetChart.
+ * A Facet Chart deprecated in favor of EnumFacetChart.
  */
 import React from "react";
 import {

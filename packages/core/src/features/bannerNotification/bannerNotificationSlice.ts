@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CoreDispatch, CoreState } from "../../store";
+import { CoreDispatch } from "../../store";
+import { CoreState } from "../../reducers";
 import { buildFetchError } from "../gdcapi/gdcapi";
 
 export interface BannerNotification {
@@ -62,14 +63,19 @@ const slice = createSlice({
       const newNotifications = action.payload
         .filter(
           (notification) =>
-            !state.map((n) => n.id).includes(notification.id) &&
-            (notification.components.includes("PORTAL") ||
-              notification.components.includes("API") ||
-              notification.components.includes("LOGIN")),
+            notification.components.includes("PORTAL") ||
+            notification.components.includes("API") ||
+            notification.components.includes("LOGIN"),
         )
-        .map((notification) => ({ ...notification, dismissed: false }));
+        .map(
+          (notification) =>
+            state.find((n) => n.id === notification.id) ?? {
+              ...notification,
+              dismissed: false,
+            },
+        );
 
-      return [...state, ...newNotifications];
+      return newNotifications;
     });
   },
 });
@@ -79,7 +85,7 @@ export const { dismissNotification } = slice.actions;
 
 export const selectBanners = (state: CoreState): BannerNotification[] =>
   state.bannerNotification.filter(
-    (banner) =>
+    (banner: Pick<BannerNotification, "dismissed" | "end_date">) =>
       !banner.dismissed &&
       (banner.end_date === null || new Date(banner.end_date) >= new Date()),
   );

@@ -103,7 +103,9 @@ export const ContextualFilesView: React.FC<ContextualFilesViewProps> = ({
           >
             {"Add Selected Files"}
           </Menu.Item>
-          <Menu.Item onClick={() => removeFromCart(selectedFiles, dispatch)}>
+          <Menu.Item
+            onClick={() => removeFromCart(selectedFiles, currentCart, dispatch)}
+          >
             {"Remove Selected Files"}
           </Menu.Item>
         </Menu>
@@ -125,9 +127,8 @@ export const ContextualFilesView: React.FC<ContextualFilesViewProps> = ({
                 key={`${x.facet_filter}-${index}`}
                 field={`${x.facet_filter}`}
                 facetName={x.name}
-                type="files"
+                docType="files"
                 showPercent={false}
-                valueLabel="Files"
                 description={x.description}
               />
             );

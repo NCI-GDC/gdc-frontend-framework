@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import React from "react";
-import { CoreState } from "../../store";
+import { CoreState } from "../../reducers";
 import { lookupGdcApp } from "./gdcAppRegistry";
 
 export interface GdcAppsState {

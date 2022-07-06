@@ -11,6 +11,7 @@ function withOpacityValue(variable) {
 }
 
 module.exports = {
+  important: "#__next",
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx}",
     "./src/components/**/*.{js,ts,jsx,tsx}",
@@ -270,6 +271,13 @@ module.exports = {
         "screen/5": "calc(100vh / 5)",
         "img-viewer": "550px",
       },
+      width: {
+        "screen/1.5": "75vw",
+        "screen/2": "50vw",
+        "screen/3": "calc(100vw / 3)",
+        "screen/4": "calc(100vw / 4)",
+        "screen/5": "calc(100vw / 5)",
+      },
       gridTemplateColumns: {
         "2flex1": "1fr auto",
       },
@@ -299,6 +307,20 @@ module.exports = {
       boxShadow: {
         "3xl": "0 0 5px 2px rgba(0, 0, 0, 0.25)",
         inset: "inset 0 0 5px 2px rgba(0, 0, 0, 0.1)",
+      },
+      keyframes: {
+        "slide-up": {
+          from: { transform: "translate(0, 100%)" },
+          to: { transform: "translate(0, 0)" },
+        },
+        "slide-down": {
+          from: { transform: "translate(0, 0)" },
+          to: { transform: "translate(0, 100%)" },
+        },
+      },
+      animation: {
+        "slide-up": "slide-up 500ms ease-in-out ",
+        "slide-down": "slide-down 500ms ease-in-out ",
       },
     },
   },

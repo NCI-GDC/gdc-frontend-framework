@@ -81,7 +81,13 @@ const MutationsTable: React.FC<MutationTableProps> = ({
             s.occurrence + " / " + data.ssms.cases
           } (${((100 * s.occurrence) / data.ssms.cases).toFixed(2)}%)`,
           impact: formatImpact(s.consequence[0].annotation),
-          survival: { name: s.genomic_dna_change, symbol: s.ssm_id },
+          survival: {
+            label:
+              s.consequence[0].gene.symbol + " " + s.consequence[0].aa_change,
+            name: s.genomic_dna_change,
+            symbol: s.ssm_id,
+            checked: s.ssm_id == selectedSurvivalPlot?.symbol,
+          },
         };
       });
       return ssmsTableMapping;
@@ -89,9 +95,9 @@ const MutationsTable: React.FC<MutationTableProps> = ({
     if (data.status === "fulfilled") {
       setTableData(getTableDataMapping(data));
     }
-  }, [data, pageSize]);
+  }, [data, pageSize, selectedSurvivalPlot]);
 
-  const getCustomGridCell = (key, selectedSurvivalPlot) => {
+  const getCustomGridCell = (key) => {
     switch (key) {
       case "impact":
         return {
@@ -104,13 +110,13 @@ const MutationsTable: React.FC<MutationTableProps> = ({
                   {value.vepImpact !== null ? (
                     <Tooltip label={`VEP Impact: ${value.vepImpact}`}>
                       <div
-                        className={`${value.vepColor} rounded-xl flex justify-center items-center h-8 w-8 text-white`}
+                        className={`${value.vepColor} rounded-md flex justify-center items-center h-8 w-8 text-white`}
                       >
                         {value.vepText}
                       </div>
                     </Tooltip>
                   ) : (
-                    <div className="flex justify-center items-center rounded-xl h-8 w-8">
+                    <div className="flex justify-center items-center rounded-md h-8 w-8">
                       -
                     </div>
                   )}
@@ -119,13 +125,13 @@ const MutationsTable: React.FC<MutationTableProps> = ({
                       label={`SIFT Impact: ${value.siftImpact} / SIFT Score: ${value.siftScore}`}
                     >
                       <div
-                        className={`${value.siftColor} rounded-xl flex justify-center items-center h-8 w-8 text-white`}
+                        className={`${value.siftColor} rounded-md flex justify-center items-center h-8 w-8 text-white`}
                       >
                         {value.siftText}
                       </div>
                     </Tooltip>
                   ) : (
-                    <div className="flex justify-center items-center rounded-xl h-8 w-8">
+                    <div className="flex justify-center items-center rounded-md h-8 w-8">
                       -
                     </div>
                   )}
@@ -134,7 +140,7 @@ const MutationsTable: React.FC<MutationTableProps> = ({
                       label={`PolyPhen Impact: ${value.polyImpact} / PolyPhen Score: ${value.polyScore}`}
                     >
                       <div
-                        className={`${value.polyColor} rounded-xl flex justify-center items-center h-8 w-8 text-white`}
+                        className={`${value.polyColor} rounded-md flex justify-center items-center h-8 w-8 text-white`}
                       >
                         {value.polyText}
                       </div>
@@ -153,20 +159,24 @@ const MutationsTable: React.FC<MutationTableProps> = ({
         return {
           Header: "Survival",
           accessor: "survival",
+
           Cell: ({ value }: any) => (
             <Tooltip label={`Click icon to plot ${value.symbol}`}>
               <Switch
-                checked={
-                  selectedSurvivalPlot
-                    ? selectedSurvivalPlot.symbol === value.symbol
-                    : false
-                }
+                radius="xs"
+                size="sm"
+                id={`ssmstable-survival-${value.symbol}`}
+                checked={value.checked}
                 onChange={() => {
                   handleSurvivalPlotToggled(
                     value.symbol,
-                    value.name,
+                    value.label,
                     "gene.ssm.ssm_id",
                   );
+                }}
+                classNames={{
+                  input:
+                    "bg-nci-gray-light checked:bg-nci-blue-dark  checked:bg-none",
                 }}
               />
             </Tooltip>
@@ -180,7 +190,7 @@ const MutationsTable: React.FC<MutationTableProps> = ({
   const getTableCellMapping = useCallback(() => {
     const cellMapping = ssmsKeys.map((key) => {
       return customSsmsKeys.includes(key)
-        ? getCustomGridCell(key, selectedSurvivalPlot)
+        ? getCustomGridCell(key)
         : {
             Header: _.startCase(key),
             accessor: key,
@@ -249,10 +259,6 @@ const MutationsTable: React.FC<MutationTableProps> = ({
 
   return (
     <div className="flex flex-col w-screen pb-3 pt-3">
-      <div>
-        Showing {(activePage - 1) * pageSize + 1} - {activePage * pageSize} of{" "}
-        {totalResults} somatic mutations
-      </div>
       <div ref={ref} className={`flex flex-row w-9/12`}>
         {data && !isFetching ? (
           <VerticalTable
@@ -261,7 +267,9 @@ const MutationsTable: React.FC<MutationTableProps> = ({
             columnCells={columnCells}
             handleColumnChange={handleColumnChange}
             selectableRow={false}
-            tableTitle={`Mutations Table`}
+            tableTitle={`Showing ${(activePage - 1) * pageSize + 1} - ${
+              activePage * pageSize
+            } of  ${totalResults} somatic mutations`}
             pageSize={pageSize.toString()}
           ></VerticalTable>
         ) : (

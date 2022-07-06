@@ -1,6 +1,10 @@
+/**
+ * Genomic Filters are designed to be local
+ */
+
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { GqlOperation, Operation } from "../gdcapi/filters";
-import { CoreState } from "../../store";
+import { CoreState } from "../../reducers";
 import {
   buildCohortGqlOperator,
   FilterSet,
@@ -13,7 +17,7 @@ const initialState: FilterSet = {
     "genes.is_cancer_gene_census": {
       field: "genes.is_cancer_gene_census",
       operator: "includes",
-      operands: ["true"], // TODO: this will be fixed when boolean facets are implemented
+      operands: ["true"], // TODO: this will be fixed when toggle facets are implemented
     },
   },
 };

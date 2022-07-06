@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CoreDataSelectorResponse, DataStatus } from "../../dataAcess";
-import { CoreDispatch, CoreState } from "../../store";
+import { CoreDataSelectorResponse, DataStatus } from "../../dataAccess";
+import { CoreDispatch } from "../../store";
+import { CoreState } from "../../reducers";
 import {
   fetchGdcFiles,
   GdcApiRequest,
@@ -42,6 +43,7 @@ const fileTypes = [
   "secondary_expression_analysis",
   "masked_methylation_array",
   "protein_expression",
+  "pathology_report",
 ] as const;
 
 export type FileType = typeof fileTypes[number];
@@ -106,6 +108,7 @@ const dataFormats = [
   "XLSX",
   "MEX",
   "HDF5",
+  "PDF",
 ] as const;
 
 export type DataFormat = typeof dataFormats[number];
@@ -149,6 +152,7 @@ const dataTypes = [
   "Transcript Fusion",
   "Masked Intensities",
   "miRNA Expression Quantification",
+  "Pathology Report",
 ] as const;
 
 export type DataType = typeof dataTypes[number];
@@ -200,6 +204,18 @@ const asExperimentalStrategy = (
 
   throw new Error(`${x} is not a valid experimental strategy`);
 };
+
+export interface SlideImageFile {
+  access: string;
+  acl: Array<string>;
+  data_format: string;
+  file_id: string;
+  file_name: string;
+  file_size: number;
+  md5sum: string;
+  state: string;
+  submitter_id: string;
+}
 
 export interface GdcFile {
   readonly id: string;
@@ -275,6 +291,16 @@ export interface GdcFile {
     readonly workflow_type: string;
     readonly updated_datetime: string;
     readonly input_files?: ReadonlyArray<string>;
+    readonly metadata?: {
+      readonly read_groups: Array<{
+        readonly read_group_id: string;
+        readonly is_paired_end: boolean;
+        readonly read_length: number;
+        readonly library_name: string;
+        readonly sequencing_center: string;
+        readonly sequencing_date: string;
+      }>;
+    };
   };
   readonly downstream_analyses?: ReadonlyArray<{
     readonly workflow_type: string;
@@ -424,6 +450,20 @@ const slice = createSlice({
                     input_files: hit.analysis.input_files?.map(
                       (file) => file.file_id,
                     ),
+                    metadata: hit.analysis.metadata
+                      ? {
+                          read_groups: hit.analysis.metadata.read_groups.map(
+                            (read_group) => ({
+                              read_group_id: read_group.read_group_id,
+                              is_paired_end: read_group.is_paired_end,
+                              read_length: read_group.read_length,
+                              library_name: read_group.library_name,
+                              sequencing_center: read_group.sequencing_center,
+                              sequencing_date: read_group.sequencing_date,
+                            }),
+                          ),
+                        }
+                      : undefined,
                   }
                 : undefined,
               downstream_analyses: hit.downstream_analyses?.map((analysis) => {

@@ -1,4 +1,4 @@
-import { DataStatus } from "../../dataAcess";
+import { DataStatus } from "../../dataAccess";
 
 export interface edgeDetails {
   readonly file_id: string;

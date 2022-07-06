@@ -3,6 +3,7 @@ import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
 import GenesTable from "../genesTable/GenesTable";
 import MutationsTable from "../mutationsTable/MutationsTable";
 import { Grid, Tabs, LoadingOverlay } from "@mantine/core";
+import isEqual from "lodash/isEqual";
 import { EnumFacet } from "../facets/EnumFacet";
 import dynamic from "next/dynamic";
 import {
@@ -16,6 +17,8 @@ import {
   useSurvivalPlot,
   selectGenomicFilters,
   buildCohortGqlOperator,
+  useTopGene,
+  usePrevious,
 } from "@gff/core";
 
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
@@ -24,12 +27,12 @@ const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
 
 const GenesFacetNames = [
   {
-    facet_filter: "biotype",
+    facet_filter: "genes.biotype",
     name: "Biotype",
     description: "No description",
   },
   {
-    facet_filter: "is_cancer_gene_census",
+    facet_filter: "genes.is_cancer_gene_census",
     name: "Is Cancer Gene Census",
     description: "No description",
   },
@@ -37,27 +40,27 @@ const GenesFacetNames = [
 
 const MutationFacetNames = [
   {
-    facet_filter: "consequence.transcript.annotation.vep_impact",
+    facet_filter: "ssms.consequence.transcript.annotation.vep_impact",
     name: "VEP Impact",
     description: "No description",
   },
   {
-    facet_filter: "consequence.transcript.annotation.sift_impact",
+    facet_filter: "ssms.consequence.transcript.annotation.sift_impact",
     name: "SIFT Impact",
     description: "No description",
   },
   {
-    facet_filter: "consequence.transcript.annotation.polyphen_impact",
+    facet_filter: "ssms.consequence.transcript.annotation.polyphen_impact",
     name: "Polyphen Impact",
     description: "No description",
   },
   {
-    facet_filter: "consequence.transcript.consequence_type",
+    facet_filter: "ssms.consequence.transcript.consequence_type",
     name: "Consequence Type",
     description: "No description",
   },
   {
-    facet_filter: "mutation_subtype",
+    facet_filter: "ssms.mutation_subtype",
     name: "Type",
     description: "No description",
   },
@@ -105,29 +108,45 @@ const buildGeneHaveAndHaveNotFilters = (
   ];
 };
 
+// Persist which tab is active
+type AppModeState = "genes" | "ssms";
+
 const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const coreDispatch = useCoreDispatch();
   const [comparativeSurvival, setComparativeSurvival] = useState(undefined);
+  const [appMode, setAppMode] = useState<AppModeState>("genes");
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilterSet(state),
   );
   const genomicFilters = useCoreSelector((state) =>
     selectGenomicFilters(state),
   );
+
   const filters = useMemo(
     () => buildCohortGqlOperator(joinFilters(cohortFilters, genomicFilters)),
     [cohortFilters, genomicFilters],
   );
   const { data: survivalPlotData, isSuccess: survivalPlotReady } =
     useSurvivalPlot({ filters: filters ? [filters] : [] });
+
+  const prevComparative = usePrevious(comparativeSurvival);
+
+  // pass to Survival Plot when survivalPlotData data is undefined/not ready
+  const emptySurvivalPlot = {
+    overallStats: { pValue: undefined },
+    survivalData: [],
+  };
+
+  const { data: topGeneSSMS, isSuccess: topGeneSSMSSuccess } = useTopGene(); // get the default top gene/ssms to show by default
   /**
    * Update survival plot in response to user actions. There are two "states"
    * for the survival plot: If comparativeSurvival is undefined it will show the
-   * plot for the currentCohort plus whatever local filters are selected
+   * plot for the currentCohort plus whatever local filters are selected for the "top"
+   * gene or mutation.
    * If comparativeSurvival is set, then it will show two separate plots.
-   * @param symbol
-   * @param name symbol (Gene or SSMS) to compare
-   * @param field field
+   * @param symbol symbol (Gene or SSMS) to compare
+   * @param name used as the label for the symbol in the Survival Plot
+   * @param field  which gene or ssms field the symbol applied to
    */
   const handleSurvivalPlotToggled = (
     symbol: string,
@@ -137,25 +156,55 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     if (comparativeSurvival && comparativeSurvival.symbol === symbol) {
       // remove toggle
       setComparativeSurvival(undefined);
-      coreDispatch(fetchSurvival({ filters: filters ? [filters] : [] }));
     } else {
-      setComparativeSurvival({ symbol: symbol, name: name });
-      const f = buildGeneHaveAndHaveNotFilters(filters, symbol, field);
-      coreDispatch(fetchSurvival({ filters: f }));
+      setComparativeSurvival({ symbol: symbol, name: name, field: field });
     }
   };
 
+  /**
+   * remove comparative survival plot when tabs or filters change.
+   */
+  const handleTabChanged = (_tabIndex: number, tabKey?: string) => {
+    setAppMode(tabKey as AppModeState);
+    setComparativeSurvival(undefined);
+  };
+
+  // clear local filters when cohort changes or tabs change
   useEffect(() => {
     coreDispatch(clearGenomicFilters());
   }, [cohortFilters, coreDispatch]);
 
   /**
-   * remove comparative survival plot when tabs or filters change.
+   * Clear comparative when local filters change
    */
-  const handleTabOrFilterChanged = () => {
+  useEffect(() => {
     setComparativeSurvival(undefined);
-    coreDispatch(fetchSurvival({ filters: filters ? [filters] : [] }));
-  };
+  }, [filters]);
+
+  /**
+   *  Received a new topGene in response to a filter change, so set comparativeSurvival
+   *  which will update the survival plot
+   */
+  useEffect(() => {
+    if (topGeneSSMSSuccess && comparativeSurvival === undefined) {
+      setComparativeSurvival({
+        symbol: topGeneSSMS[0][appMode].symbol,
+        name: topGeneSSMS[0][appMode].name,
+        field: appMode === "genes" ? "gene.symbol" : "gene.ssm.ssm_id",
+      });
+    }
+  }, [appMode, comparativeSurvival, topGeneSSMS, topGeneSSMSSuccess]);
+
+  useEffect(() => {
+    if (comparativeSurvival && !isEqual(comparativeSurvival, prevComparative)) {
+      const f = buildGeneHaveAndHaveNotFilters(
+        filters,
+        comparativeSurvival.symbol,
+        comparativeSurvival.field,
+      );
+      coreDispatch(fetchSurvival({ filters: f }));
+    }
+  }, [cohortFilters, comparativeSurvival, coreDispatch, filters]);
 
   return (
     <div className="flex flex-row">
@@ -166,9 +215,8 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
               key={`${x.facet_filter}-${index}`}
               field={`${x.facet_filter}`}
               facetName={x.name}
-              type="genes"
+              docType="genes"
               showPercent={false}
-              valueLabel="Genes"
               hideIfEmpty={false}
               description={x.description}
             />
@@ -180,9 +228,8 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
               key={`${x.facet_filter}-${index}`}
               field={`${x.facet_filter}`}
               facetName={x.name}
-              type="ssms"
+              docType="ssms"
               showPercent={false}
-              valueLabel="Mutations"
               hideIfEmpty={false}
               description={x.description}
             />
@@ -193,11 +240,12 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
         variant="pills"
         classNames={{
           root: "mt-6",
-          tabActive: "bg-nci-teal text-nci-blue p-4 hover:bg-nci-teal",
+          tabActive:
+            "bg-nci-blue-darkest text-nci-gray-lightest font-medium p-4 hover:bg-nci-blue-dark",
         }}
-        onTabChange={handleTabOrFilterChanged}
+        onTabChange={handleTabChanged}
       >
-        <Tabs.Tab label="Genes">
+        <Tabs.Tab label="Genes" tabKey="genes">
           <div className="flex flex-row">
             <div className="flex flex-col">
               <Grid className="mx-2 bg-white w-9/12">
@@ -205,14 +253,19 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                   <GeneFrequencyChart marginBottom={95} />
                 </Grid.Col>
                 <Grid.Col span={6} className="relative">
-                  <LoadingOverlay visible={!survivalPlotReady} />
+                  <LoadingOverlay
+                    visible={!survivalPlotReady && !topGeneSSMSSuccess}
+                  />
                   <SurvivalPlot
-                    data={survivalPlotData}
+                    data={
+                      survivalPlotReady &&
+                      survivalPlotData.survivalData.length > 1
+                        ? survivalPlotData
+                        : emptySurvivalPlot
+                    }
                     names={
-                      !survivalPlotReady
-                        ? []
-                        : comparativeSurvival
-                        ? [comparativeSurvival.name]
+                      survivalPlotReady && comparativeSurvival
+                        ? [comparativeSurvival.symbol]
                         : []
                     }
                   />
@@ -227,17 +280,23 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
             </div>
           </div>
         </Tabs.Tab>
-        <Tabs.Tab label="Mutations">
+        <Tabs.Tab label="Mutations" tabKey="ssms">
           <div className="flex flex-row">
             <div className="flex flex-col">
               <div className="bg-white w-9/12">
-                <LoadingOverlay visible={!survivalPlotReady} />
+                <LoadingOverlay
+                  visible={!survivalPlotReady && !topGeneSSMSSuccess}
+                />
                 <SurvivalPlot
-                  data={survivalPlotData}
+                  data={
+                    survivalPlotReady &&
+                    comparativeSurvival &&
+                    survivalPlotData.survivalData.length > 1
+                      ? survivalPlotData
+                      : emptySurvivalPlot
+                  }
                   names={
-                    !survivalPlotReady
-                      ? []
-                      : comparativeSurvival
+                    survivalPlotReady && comparativeSurvival
                       ? [comparativeSurvival.name]
                       : []
                   }

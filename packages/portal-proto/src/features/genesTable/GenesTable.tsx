@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useCoreDispatch, fetchGenesTable, useGenesTable } from "@gff/core";
+import { useGenesTable } from "@gff/core";
 import { VerticalTable } from "../shared/VerticalTable";
 import { Loader, Pagination, Select, Switch, Tooltip } from "@mantine/core";
 import { SiMicrogenetics as GeneAnnotationIcon } from "react-icons/si";
@@ -36,22 +36,13 @@ const GenesTable: React.FC<GenesTableProps> = ({
   const [scrollItem, setScrollItem] = useState(1);
   const [selectedSorts, setSelectedSorts] = useState([]);
 
-  const coreDispatch = useCoreDispatch();
-
   // using the useSsmsTable from core and the associated useEffect hook
   // exploring different ways to dispatch the pageSize/offset changes
   const { data, isFetching } = useGenesTable({
     pageSize: pageSize,
     offset: offset,
-    sorts: sorts,
+    // sorts: sorts,
   });
-
-  useEffect(() => {
-    coreDispatch(
-      fetchGenesTable({ pageSize: pageSize, offset: offset, sorts: sorts }),
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageSize, offset]);
 
   useEffect(() => {
     setActivePage(1);
@@ -125,6 +116,11 @@ const GenesTable: React.FC<GenesTableProps> = ({
         return {
           symbol: g.symbol,
           name: g.name,
+          survival: {
+            name: g.name,
+            symbol: g.symbol,
+            checked: g.symbol == selectedSurvivalPlot?.symbol,
+          },
           SSMSAffectedCasesInCohort:
             g.cnv_case > 0
               ? `${g.cnv_case + " / " + data.genes.filteredCases} (${(
@@ -155,10 +151,6 @@ const GenesTable: React.FC<GenesTableProps> = ({
               : `0%`,
           mutations: data.genes.mutationCounts[g.gene_id],
           annotations: g.is_cancer_gene_census,
-          survival: {
-            name: `${g.name}`,
-            symbol: `${g.symbol}`,
-          },
         };
       });
       return genesTableMapping;
@@ -166,10 +158,9 @@ const GenesTable: React.FC<GenesTableProps> = ({
     if (data.status === "fulfilled") {
       setTableData(getTableDataMapping(data));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, pageSize]);
+  }, [data, pageSize, selectedSurvivalPlot]);
 
-  const getCustomGridCell = (key: string, selectedSurvivalPlot: any) => {
+  const getCustomGridCell = (key: string) => {
     switch (key) {
       case "annotations":
         return {
@@ -186,29 +177,35 @@ const GenesTable: React.FC<GenesTableProps> = ({
             </div>
           ),
         };
-      case "survival":
+      case "survival": {
         return {
           Header: "Survival",
           accessor: "survival",
-          Cell: ({ value }: any) => (
-            <Tooltip label={`Click icon to plot ${value.symbol}`}>
-              <Switch
-                checked={
-                  selectedSurvivalPlot
-                    ? selectedSurvivalPlot.symbol === value.symbol
-                    : false
-                }
-                onChange={() => {
-                  handleSurvivalPlotToggled(
-                    value.symbol,
-                    value.name,
-                    "gene.symbol",
-                  );
-                }}
-              />
-            </Tooltip>
-          ),
+          Cell: ({ value }: any) => {
+            return (
+              <Tooltip label={`Click icon to plot ${value.symbol}`}>
+                <Switch
+                  radius="xs"
+                  size="sm"
+                  id={`genetable-survival-${value.symbol}`}
+                  checked={value.checked}
+                  onChange={() => {
+                    handleSurvivalPlotToggled(
+                      value.symbol,
+                      value.name,
+                      "gene.symbol",
+                    );
+                  }}
+                  classNames={{
+                    input:
+                      "bg-nci-gray-light checked:bg-nci-blue-dark  checked:bg-none",
+                  }}
+                />
+              </Tooltip>
+            );
+          },
         };
+      }
       default:
         return;
     }
@@ -217,7 +214,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
   const getTableCellMapping = useCallback(() => {
     const cellMapping = geneKeys.map((key) => {
       return customGeneKeys.includes(key)
-        ? getCustomGridCell(key, selectedSurvivalPlot)
+        ? getCustomGridCell(key)
         : {
             Header: _.startCase(key),
             accessor: key,
@@ -244,11 +241,6 @@ const GenesTable: React.FC<GenesTableProps> = ({
     setColumnListCells(getTableCellMapping());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    setColumnListCells(getTableCellMapping());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedSurvivalPlot]);
 
   const handlePageSizeChange = (x: string) => {
     setOffset((activePage - 1) * parseInt(x));
@@ -288,25 +280,27 @@ const GenesTable: React.FC<GenesTableProps> = ({
     [columnListOrder],
   );
 
-  const updateTableCells = () => {
-    const filteredColumnList = columnListOrder.filter((item) => item.visible);
-    const headingOrder = filteredColumnList.map((item) => {
-      return columnListCells[
-        columnListCells.findIndex((find) => find.accessor === item.columnName)
-      ];
-    });
-    headingOrder.forEach((heading) => {
-      heading.width =
-        width / headingOrder.length > 110 ? width / headingOrder.length : 110;
-    });
-    return headingOrder;
-  };
+  const columnCells = useMemo(() => {
+    const updateTableCells = (currentWidth, currentColumnListOrder) => {
+      const filteredColumnList = currentColumnListOrder.filter(
+        (item) => item.visible,
+      );
+      const headingOrder = filteredColumnList.map((item) => {
+        return columnListCells[
+          columnListCells.findIndex((find) => find.accessor === item.columnName)
+        ];
+      });
+      headingOrder.forEach((heading) => {
+        heading.width =
+          currentWidth / headingOrder.length > 110
+            ? width / headingOrder.length
+            : 110;
+      });
+      return headingOrder;
+    };
 
-  const columnCells = useMemo(
-    () => updateTableCells(),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [width, columnListOrder],
-  );
+    return updateTableCells(width, columnListOrder);
+  }, [width, columnListOrder, columnListCells]);
 
   const handleColumnChange = (columnUpdate) => {
     setColumnListOrder(columnUpdate);
@@ -314,10 +308,6 @@ const GenesTable: React.FC<GenesTableProps> = ({
 
   return (
     <div className="flex flex-col w-screen pb-3 pt-3">
-      <div>
-        Showing {(activePage - 1) * pageSize + 1} - {activePage * pageSize} of{" "}
-        {totalResults} genes
-      </div>
       <div className={`flex flex-row`}>
         <div className={`flex-2 p-2`}>
           {Object.keys(selectedRowsMap).length} Map Length?
@@ -338,7 +328,9 @@ const GenesTable: React.FC<GenesTableProps> = ({
             selectedRowsMap={selectedRowsMap}
             handleSortChange={handleSortChange}
             selectedSorts={selectedSorts}
-            tableTitle={"Genes Table"}
+            tableTitle={`Showing ${(activePage - 1) * pageSize + 1} - ${
+              activePage * pageSize
+            } of   ${totalResults} genes`}
             pageSize={pageSize.toString()}
             selectableRow={true}
           ></VerticalTable>

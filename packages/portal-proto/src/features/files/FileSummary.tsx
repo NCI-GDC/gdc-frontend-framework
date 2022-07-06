@@ -28,6 +28,7 @@ export const ContextualFileView: React.FC<ContextualFileViewProps> = (
       "associated_entities",
       "analysis",
       "analysis.input_files",
+      "analysis.metadata.read_groups",
       "downstream_analyses",
       "downstream_analyses.output_files",
     ],

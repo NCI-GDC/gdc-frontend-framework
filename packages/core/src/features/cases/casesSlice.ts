@@ -2,8 +2,9 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   CoreDataSelectorResponse,
   createUseCoreDataHook,
-} from "../../dataAcess";
-import { CoreDispatch, CoreState } from "../../store";
+} from "../../dataAccess";
+import { CoreDispatch } from "../../store";
+import { CoreState } from "../../reducers";
 import {
   CaseDefaults,
   fetchGdcCases,

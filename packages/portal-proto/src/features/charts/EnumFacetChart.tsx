@@ -4,7 +4,8 @@
  */
 
 import { useEffect, useState } from "react";
-import { Loader } from "@mantine/core";
+import { Loader, Tooltip } from "@mantine/core";
+import { useElementSize } from "@mantine/hooks";
 import {
   VictoryBar,
   VictoryChart,
@@ -13,15 +14,18 @@ import {
   VictoryAxis,
   VictoryLabel,
   VictoryStack,
+  VictoryTooltip,
 } from "victory";
 import * as tailwindConfig from "tailwind.config";
 import ChartTitleBar from "./ChartTitleBar";
+import { capitalize } from "src/utils";
 
 const maxValuesToDisplay = 7;
 
 interface FacetChartProps {
   readonly field: string;
   readonly data: Record<string, number>;
+  readonly selectedEnums: ReadonlyArray<string>;
   readonly isSuccess: boolean;
   readonly height?: number;
   readonly showTitle?: boolean;
@@ -32,14 +36,24 @@ interface FacetChartProps {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const removeKey = (key, { [key]: _, ...rest }) => rest;
 
-const processChartData = (facetData: Record<string, any>, maxBins = 100) => {
+const processChartData = (
+  facetData: Record<string, any>,
+  selectedEnums: ReadonlyArray<string>,
+  maxBins = 100,
+) => {
   const data = removeKey("_missing", facetData);
 
   const results = Object.keys(data)
+    .filter((d) =>
+      !selectedEnums || selectedEnums.length === 0
+        ? d
+        : selectedEnums.includes(d),
+    )
     .slice(0, maxBins)
     .map((d) => ({
-      x: processLabel(d, 30),
+      x: truncateString(processLabel(d), 35),
       y: data[d],
+      fullXName: processLabel(d),
     }));
   return results.reverse();
 };
@@ -47,25 +61,27 @@ const processChartData = (facetData: Record<string, any>, maxBins = 100) => {
 export const EnumFacetChart: React.FC<FacetChartProps> = ({
   field,
   data,
+  selectedEnums,
   isSuccess,
   height,
   showTitle = true,
   maxBins = maxValuesToDisplay,
 }: FacetChartProps) => {
   const [chart_data, setChartData] = useState([]);
+  const { ref, width } = useElementSize();
 
   useEffect(() => {
     if (isSuccess) {
-      const cd = processChartData(data, maxBins);
+      const cd = processChartData(data, selectedEnums, maxBins);
       setChartData(cd);
     }
-  }, [data, field, isSuccess, maxBins]);
+  }, [data, selectedEnums, field, isSuccess, maxBins]);
 
   // Create unique ID for this chart
   const chartDivId = `${field}_${Math.floor(Math.random() * 100)}`;
 
   return (
-    <>
+    <div ref={ref}>
       {showTitle ? (
         <ChartTitleBar
           title={convertFieldToName(field)}
@@ -79,7 +95,7 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
         <EnumBarChart
           data={chart_data}
           height={height}
-          width={500}
+          width={width * 2.2}
           label="# of Cases"
         />
       ) : (
@@ -87,11 +103,9 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
           <Loader color="gray" size={60} />
         </div>
       )}
-    </>
+    </div>
   );
 };
-
-const capitalize = (s) => (s.length > 0 ? s[0].toUpperCase() + s.slice(1) : "");
 
 const convertFieldToName = (field: string): string => {
   const property = field.split(".").pop();
@@ -100,18 +114,52 @@ const convertFieldToName = (field: string): string => {
   return capitalizedTokens.join(" ");
 };
 
-function truncateString(str, n) {
+const truncateString = (str: string, n: number): string => {
   if (str.length > n) {
     return str.substring(0, n) + "...";
   } else {
     return str;
   }
-}
+};
 
-export const processLabel = (label: string, shorten = 100): string => {
+export const processLabel = (label: string): string => {
   const tokens = label.split(" ");
   const capitalizedTokens = tokens.map((s) => capitalize(s));
-  return truncateString(capitalizedTokens.join(" "), shorten);
+  return capitalizedTokens.join(" ");
+};
+
+interface EnumBarChartTooltipProps {
+  readonly x?: number;
+  readonly y?: number;
+  readonly datum?: {
+    y: number;
+    fullXName: string;
+  };
+}
+
+const EnumBarChartTooltip: React.FC<EnumBarChartTooltipProps> = ({
+  x,
+  y,
+  datum,
+}: EnumBarChartTooltipProps) => {
+  return (
+    <g transform={`translate(${x}, ${y})`}>
+      <foreignObject>
+        <Tooltip
+          label={
+            <>
+              <b>{datum.fullXName}</b>
+              <p>{datum.y.toLocaleString()} Cases</p>
+            </>
+          }
+          withArrow
+          opened
+        >
+          <></>
+        </Tooltip>
+      </foreignObject>
+    </g>
+  );
 };
 
 interface EnumBarChartData {
@@ -146,7 +194,7 @@ const EnumBarChart: React.FC<BarChartProps> = ({
         tickLabelComponent={
           <VictoryLabel
             dx={12}
-            dy={-12}
+            dy={-15}
             textAnchor={"start"}
             style={[{ fontSize: 23 }]}
           />
@@ -174,6 +222,10 @@ const EnumBarChart: React.FC<BarChartProps> = ({
       <VictoryStack>
         <VictoryBar
           horizontal
+          labels={() => ""}
+          labelComponent={
+            <VictoryTooltip flyoutComponent={<EnumBarChartTooltip />} />
+          }
           style={{
             data: {
               fill: tailwindConfig.theme.extend.colors["gdc-blue"].darker,

@@ -10,17 +10,9 @@ import {
   useCoreDispatch,
   fetchNotifications,
   selectBanners,
+  useTotalCounts,
+  useFacetDictionary,
 } from "@gff/core";
-import { Button } from "@mantine/core";
-import { useTour } from "@reactour/tour";
-import steps from "../../features/tour/steps";
-
-interface UserFlowVariedPagesProps {
-  readonly headerElements: ReadonlyArray<ReactNode>;
-  readonly indexPath?: string;
-  readonly Options?: React.FC<unknown>;
-}
-
 import {
   MdOutlineLogin as LoginIcon,
   MdShoppingCart as CartIcon,
@@ -29,6 +21,15 @@ import {
   MdOutlineTour as TourIcon,
 } from "react-icons/md";
 import Banner from "@/components/Banner";
+import { Button, LoadingOverlay } from "@mantine/core";
+import { useTour } from "@reactour/tour";
+import steps from "../../features/tour/steps";
+
+interface UserFlowVariedPagesProps {
+  readonly headerElements: ReadonlyArray<ReactNode>;
+  readonly indexPath?: string;
+  readonly Options?: React.FC<unknown>;
+}
 
 export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
   headerElements,
@@ -57,7 +58,7 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
       <header className="flex-none bg-white">
         <Header {...{ headerElements, indexPath, Options }} />
       </header>
-      <main data-tour="full_page_content" className="flex-grow">
+      <main data-tour="full_page_content" className="flex-grow flex flex-col">
         {children}
       </main>
       <footer className="flex-none">
@@ -80,10 +81,12 @@ const Header: React.FC<HeaderProps> = ({
 }: HeaderProps) => {
   const { setIsOpen } = useTour();
   const currentCart = useCoreSelector((state) => selectCart(state));
-
+  const { isSuccess: totalSuccess } = useTotalCounts(); // request total counts and facet dictionary
+  const { isSuccess: dictSuccess } = useFacetDictionary();
   return (
     <div className="px-6 py-3 border-b border-gdc-grey-lightest">
       <div className="flex flex-row flex-wrap divide-x divide-gray-300 items-center">
+        <LoadingOverlay visible={!(totalSuccess || dictSuccess)} />
         <div className="flex-none w-64 h-nci-logo mr-2 relative">
           {/* There's some oddities going on here that need to be explained.  When a
           <Link> wraps an <Image>, react complains it's expecting a reference to be
@@ -223,30 +226,6 @@ export interface ButtonProps {
   readonly className?: string;
   readonly stylingOff?: boolean;
 }
-
-// export const Button: React.FC<ButtonProps> = ({
-//   onClick = () => {
-//     return;
-//   },
-//   className = "",
-//   children,
-//   stylingOff = false,
-// }: PropsWithChildren<ButtonProps>) => {
-//   const classNames = stylingOff ? className : `
-//     px-2 py-1
-//     border rounded border-nci-blumine
-//     bg-nci-blumine hover:bg-nci-blumine-lightest
-//     text-white hover:text-nci-blumine-darker
-//     ${className}`;
-//   return (
-//     <button
-//       className={classNames}
-//       onClick={onClick}
-//     >
-//       {children}
-//     </button>
-//   );
-// };
 
 export const CohortExpressionsAndBuilder: React.FC<unknown> = () => {
   return <div className="h-96 text-center">Expressions + Cohort Builder</div>;

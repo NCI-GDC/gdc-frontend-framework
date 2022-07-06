@@ -1,5 +1,6 @@
 import babel from "@rollup/plugin-babel";
 import typescript from "@rollup/plugin-typescript";
+import json from "@rollup/plugin-json";
 import { terser } from "rollup-plugin-terser";
 import dts from "rollup-plugin-dts";
 import peerDepsExternal from "rollup-plugin-peer-deps-external";
@@ -8,8 +9,17 @@ const globals = {
   react: "React",
   "react-redux": "reactRedux",
   "@reduxjs/toolkit": "toolkit",
-  "@reduxjs/toolkit/dist/query": "query",
+  "@reduxjs/toolkit/query": "query",
+  "@reduxjs/toolkit/query/react": "react",
+  "@reduxjs/toolkit/dist/query/react": "react",
+  redux: "redux",
+  "redux-persist": "reduxPersist",
+  "redux-persist/lib/storage/createWebStorage": "createWebStorage",
   uuid: "uuid",
+  lodash: "lodash",
+  immer: "immer",
+  "redux-persist/integration/react": "integration",
+  "react-cookie": "reactCookie",
 };
 
 const config = [
@@ -39,9 +49,19 @@ const config = [
         name: "gffCore",
       },
     ],
+    external: [
+      "lodash",
+      "uuid",
+      "immer",
+      "isomorphic-fetch",
+      "redux",
+      "redux-toolkit",
+      "react-cookie",
+    ],
     plugins: [
       peerDepsExternal(),
       typescript(),
+      json(),
       babel({
         presets: ["@babel/preset-react"],
         plugins: ["@emotion"],

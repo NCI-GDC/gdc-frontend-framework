@@ -7,6 +7,7 @@ import { FaShoppingCart, FaDownload, FaCut } from "react-icons/fa";
 import { get } from "lodash";
 import dynamic from "next/dynamic";
 import fileSize from "filesize";
+import tw from "tailwind-styled-components";
 import { formatDataForHorizontalTable, parseSlideDetailsInfo } from "./utils";
 
 import Link from "next/link";
@@ -19,6 +20,14 @@ export interface FileViewProps {
   readonly file?: GdcFile;
   readonly fileHistory?: HistoryDefaults[];
 }
+
+const FullWidthDiv = tw.div`
+bg-white w-full mt-4
+`;
+
+const TitleText = tw.h2`
+text-lg font-bold mx-4 ml-2
+`;
 
 export const FileView: React.FC<FileViewProps> = ({
   file,
@@ -86,27 +95,29 @@ export const FileView: React.FC<FileViewProps> = ({
     downstream_analyses: GdcFile["downstream_analyses"];
   }): JSX.Element => {
     const tableRows = [];
-    const workflowType = downstream_analyses?.[0]?.workflow_type;
-    downstream_analyses?.[0]?.output_files.forEach((obj) => {
-      tableRows.push({
-        file_name: (
-          <GenericLink path={`/files/${obj.file_id}`} text={obj.file_name} />
-        ),
-        data_category: obj.data_category,
-        data_type: obj.data_type,
-        data_format: obj.data_format,
-        workflow_type: workflowType,
-        file_size: fileSize(obj.file_size),
-        action: (
-          <>
-            <button className="mr-2 bg-white border border-black rounded p-1 hover:bg-black hover:text-white focus:bg-black focus:text-white">
-              <FaShoppingCart title="Add to Cart" />
-            </button>
-            <button className="bg-white border border-black rounded p-1 hover:bg-black hover:text-white focus:bg-black focus:text-white">
-              <FaDownload title="Download" />
-            </button>
-          </>
-        ),
+    downstream_analyses?.forEach((byWorkflowType) => {
+      const workflowType = byWorkflowType?.workflow_type;
+      byWorkflowType?.output_files?.forEach((obj) => {
+        tableRows.push({
+          file_name: (
+            <GenericLink path={`/files/${obj.file_id}`} text={obj.file_name} />
+          ),
+          data_category: obj.data_category,
+          data_type: obj.data_type,
+          data_format: obj.data_format,
+          workflow_type: workflowType,
+          file_size: fileSize(obj.file_size),
+          action: (
+            <>
+              <button className="mr-2 bg-white border border-black rounded p-1 hover:bg-black hover:text-white focus:bg-black focus:text-white">
+                <FaShoppingCart title="Add to Cart" />
+              </button>
+              <button className="bg-white border border-black rounded p-1 hover:bg-black hover:text-white focus:bg-black focus:text-white">
+                <FaDownload title="Download" />
+              </button>
+            </>
+          ),
+        });
       });
     });
 
@@ -159,7 +170,7 @@ export const FileView: React.FC<FileViewProps> = ({
 
       let entityQuery;
       if (entity.entity_type !== "case") {
-        entityQuery = { bioid: entity.entity_id };
+        entityQuery = { bioId: entity.entity_id };
       }
 
       let annotationsLink = <>0</>;
@@ -206,7 +217,7 @@ export const FileView: React.FC<FileViewProps> = ({
         case_id: (
           <GenericLink
             path={`/cases/${entity.case_id}`}
-            text={entity.case_id}
+            text={caseData.submitter_id}
           />
         ),
         annotations: annotationsLink,
@@ -226,7 +237,7 @@ export const FileView: React.FC<FileViewProps> = ({
     return <TempTable tableData={formatedTableData} />;
   };
   return (
-    <div className="p-4 text-nci-gray">
+    <div className="p-4 text-nci-gray w-10/12 m-auto">
       <div className="text-right pb-5">
         <Button className="m-1">
           <FaShoppingCart className="mr-2" /> Add to Cart
@@ -242,7 +253,7 @@ export const FileView: React.FC<FileViewProps> = ({
       </div>
       <div className="flex">
         <div className="flex-auto bg-white mr-4">
-          <h2 className="p-2 text-lg mx-4">File Properties</h2>
+          <TitleText>File Properties</TitleText>
           <HorizontalTable
             tableData={formatDataForHorizontalTable(file, [
               {
@@ -271,10 +282,6 @@ export const FileView: React.FC<FileViewProps> = ({
                 name: "MD5 Checksum",
               },
               {
-                field: "state",
-                name: "State",
-              },
-              {
                 field: "project_id",
                 name: "Project",
                 modifier: (v) => (
@@ -285,7 +292,7 @@ export const FileView: React.FC<FileViewProps> = ({
           />
         </div>
         <div className="w-1/3 bg-white h-full">
-          <h2 className="p-2 text-lg mx-4">Data Information</h2>
+          <TitleText>Data Information</TitleText>
           <HorizontalTable
             tableData={formatDataForHorizontalTable(file, [
               {
@@ -310,90 +317,139 @@ export const FileView: React.FC<FileViewProps> = ({
       </div>
 
       {get(file, "dataType") === "Slide Image" && (
-        <div className="bg-white w-full mt-4">
-          <h2 className="p-2 text-lg mx-4">Slide Image Viewer</h2>
+        <FullWidthDiv>
+          <TitleText>Slide Image Viewer</TitleText>
           <ImageViewer
             imageId={imageId}
             tableData={parseSlideDetailsInfo(file)}
           />
-        </div>
+        </FullWidthDiv>
       )}
-      <div className="bg-white w-full mt-4">
-        <h2 className="p-2 text-lg mx-4">Associated Cases/Biospecimens</h2>
-        <AssociatedCB
-          cases={file?.cases}
-          associated_entities={file?.associated_entities}
-        />
-      </div>
-      {file?.analysis && (
-        <div className="bg-white w-full mt-4">
-          <h2 className="p-2 text-lg mx-4">Analysis</h2>
-          <HorizontalTable
-            tableData={formatDataForHorizontalTable(file, [
-              {
-                field: "analysis.workflow_type",
-                name: "Workflow Type",
-              },
-              {
-                field: "analysis.updated_datetime",
-                name: "Workflow Completion Date",
-                modifier: (v) => v.split("T")[0],
-              },
-              {
-                field: "analysis.input_files.length",
-                name: "Source Files",
-                modifier: (v) => {
-                  if (v === 1) {
-                    return (
-                      <GenericLink
-                        path={`/files/${get(file, "analysis.input_files")[0]}`}
-                        text={"1"}
-                      />
-                    );
-                  } else if (v > 1) {
-                    return (
-                      <GenericLink
-                        path={`/repository`}
-                        query={{
-                          filters: JSON.stringify({
-                            content: [
-                              {
-                                content: {
-                                  field:
-                                    "files.downstream_analyses.output_files.file_id",
-                                  value: [file.id],
-                                },
-                                op: "in",
-                              },
-                            ],
-                            op: "and",
-                          }),
-                          searchTableTab: "files",
-                        }}
-                        text={`${v}`}
-                      />
-                    );
-                  }
-                  return "0";
-                },
-              },
-            ])}
+      <FullWidthDiv>
+        <TitleText>Associated Cases/Biospecimens</TitleText>
+        {file?.associated_entities?.length > 0 ? (
+          <AssociatedCB
+            cases={file?.cases}
+            associated_entities={file?.associated_entities}
           />
-        </div>
-      )}
-      <div className="bg-white w-full mt-4">
-        <h2 className="p-2 text-lg mx-4">Downstream Analyses Files</h2>
-        {file?.downstream_analyses?.[0]?.output_files?.length > 0 ? (
-          <DownstreamAnalyses downstream_analyses={file?.downstream_analyses} />
         ) : (
           <h3 className="p-2 mx-4 text-nci-gray-darker">
-            No Downstream Analysis files found.
+            No cases or biospecimen found.
           </h3>
         )}
-      </div>
+      </FullWidthDiv>
+      {file?.analysis && (
+        <>
+          <div className="bg-grey mt-4 flex gap-10">
+            <div className="flex-1 bg-white">
+              <TitleText>Analysis</TitleText>
+              <HorizontalTable
+                tableData={formatDataForHorizontalTable(file, [
+                  {
+                    field: "analysis.workflow_type",
+                    name: "Workflow Type",
+                  },
+                  {
+                    field: "analysis.updated_datetime",
+                    name: "Workflow Completion Date",
+                    modifier: (v) => v.split("T")[0],
+                  },
+                  {
+                    field: "analysis.input_files.length",
+                    name: "Source Files",
+                    modifier: (v) => {
+                      if (v === 1) {
+                        return (
+                          <GenericLink
+                            path={`/files/${
+                              get(file, "analysis.input_files")[0]
+                            }`}
+                            text={"1"}
+                          />
+                        );
+                      } else if (v > 1) {
+                        return (
+                          <GenericLink
+                            path={`/repository`}
+                            query={{
+                              filters: JSON.stringify({
+                                content: [
+                                  {
+                                    content: {
+                                      field:
+                                        "files.downstream_analyses.output_files.file_id",
+                                      value: [file.id],
+                                    },
+                                    op: "in",
+                                  },
+                                ],
+                                op: "and",
+                              }),
+                              searchTableTab: "files",
+                            }}
+                            text={`${v}`}
+                          />
+                        );
+                      }
+                      return "0";
+                    },
+                  },
+                ])}
+              />
+            </div>
+            <div className="flex-1 bg-white">
+              <TitleText>Reference Genome</TitleText>
+              <HorizontalTable
+                tableData={[
+                  { headerName: "Genome Build	", values: ["GRCh38.p0"] },
+                  { headerName: "Genome Name	", values: ["GRCh38.d1.vd1"] },
+                ]}
+              />
+            </div>
+          </div>
+          {file?.analysis?.metadata && (
+            <FullWidthDiv>
+              <TitleText>Read Groups</TitleText>
+              <TempTable
+                tableData={{
+                  headers: [
+                    "Read Group ID",
+                    "Is Paired End",
+                    "Read Length",
+                    "Library Name",
+                    "Sequencing Center",
+                    "Sequencing Date",
+                  ],
+                  tableRows: file?.analysis.metadata.read_groups.map(
+                    (read_group) => ({
+                      read_group_id: read_group.read_group_id ?? "--",
+                      is_paired_end: read_group.is_paired_end
+                        ? "true"
+                        : "false",
+                      read_length: read_group.read_length ?? "--",
+                      library_name: read_group.library_name ?? "--",
+                      sequencing_center: read_group.sequencing_center ?? "--",
+                      sequencing_date: read_group.sequencing_date ?? "--",
+                    }),
+                  ),
+                }}
+              />
+            </FullWidthDiv>
+          )}
+        </>
+      )}
+      {file?.downstream_analyses?.some(
+        (byWorkflowType) => byWorkflowType?.output_files?.length > 0,
+      ) && (
+        <FullWidthDiv>
+          <TitleText>Downstream Analyses Files</TitleText>
+          <DownstreamAnalyses downstream_analyses={file?.downstream_analyses} />
+        </FullWidthDiv>
+      )}
+
       {fileHistory && (
-        <div className="bg-white w-full mt-4">
-          <h2 className="p-2 text-lg mx-4 float-left">File Versions</h2>
+        <FullWidthDiv>
+          <TitleText className="float-left">File Versions</TitleText>
           <div className="float-right mt-3 mr-3">
             <Button color={"gray"} className="mr-2">
               <FaDownload className="mr-2" /> Download JSON
@@ -433,7 +489,7 @@ export const FileView: React.FC<FileViewProps> = ({
                 })),
             }}
           />
-        </div>
+        </FullWidthDiv>
       )}
     </div>
   );

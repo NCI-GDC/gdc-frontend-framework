@@ -4,8 +4,8 @@
 
 import { useEffect, useRef } from "react";
 import { useCoreDispatch, useCoreSelector } from "./hooks";
-import { CoreState } from "./store";
-import isEqual from "lodash/isEqual";
+import { CoreState } from "./reducers";
+import { isEqual } from "lodash";
 
 /**
  * The status of asynchronous data fetching is a state machine.

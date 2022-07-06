@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { DataStatus } from "../../dataAcess";
-import { CoreDataSelectorResponse } from "../../dataAcess";
-import { CoreDispatch, CoreState } from "../../store";
+import { DataStatus, CoreDataSelectorResponse } from "../../dataAccess";
+import { CoreDispatch } from "../../store";
+import { CoreState } from "../../reducers";
 import { getGdcHistory, HistoryDefaults } from "../gdcapi/gdcapi";
 
 export const fetchHistory = createAsyncThunk<

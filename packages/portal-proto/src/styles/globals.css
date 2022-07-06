@@ -1,6 +1,14 @@
 @tailwind base;
 @tailwind components;
 
+html,
+body {
+  overflow-x: hidden;
+}
+body {
+  position: relative;
+}
+
 .tooltip {
   @apply invisible;
 }
@@ -45,6 +53,11 @@
   width: 100px;
   float: right;
   text-align: left;
+}
+
+.VictoryContainer [role="graphics-symbol"]:focus {
+  outline-color: black;
+  outline-style: dotted;
 }
 
 @tailwind utilities;

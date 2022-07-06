@@ -4,9 +4,10 @@ import {
   createUseCoreDataHook,
   createUseFiltersCoreDataHook,
   DataStatus,
-} from "../../dataAcess";
+} from "../../dataAccess";
 
-import { CoreDispatch, CoreState } from "../../store";
+import { CoreDispatch } from "../../store";
+import { CoreState } from "../../reducers";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import {
   selectCurrentCohortFilters,
@@ -29,6 +30,11 @@ const initialState: CountsState = {
   },
   status: "uninitialized",
 };
+export interface CountsState {
+  readonly counts: Record<string, number>;
+  readonly status: DataStatus;
+  readonly error?: string;
+}
 
 const CountsGraphQLQuery = `
   query countsQuery($filters: FiltersArgument) {
@@ -69,7 +75,7 @@ export const fetchCohortCaseCounts = createAsyncThunk<
   GraphQLApiResponse,
   void,
   { dispatch: CoreDispatch; state: CoreState }
->("cohort/counts", async (_, thunkAPI): Promise<GraphQLApiResponse> => {
+>("cohort/CohortCounts", async (_, thunkAPI): Promise<GraphQLApiResponse> => {
   const cohortFilters = selectCurrentCohortGqlFilters(thunkAPI.getState());
   const graphQlFilters = cohortFilters ? { filters: cohortFilters } : {};
   return await graphqlAPI(CountsGraphQLQuery, graphQlFilters);
@@ -83,7 +89,6 @@ const slice = createSlice({
     builder
       .addCase(fetchCohortCaseCounts.fulfilled, (state, action) => {
         const response = action.payload;
-
         if (response.errors && Object.keys(response.errors).length > 0) {
           state.status = "rejected";
           state.error = response.errors.counts;
