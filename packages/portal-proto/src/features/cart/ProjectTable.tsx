@@ -38,6 +38,7 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
       selectableRow={false}
       handleColumnChange={() => {}}
       tableTitle={""}
+      showControls={false}
     />
   );
 };

@@ -7,6 +7,7 @@ import {
   MenuItem,
   Select,
   Pagination,
+  Loader,
 } from "@mantine/core";
 import { MdArrowDropDown as DropdownIcon } from "react-icons/md";
 import { VscTrash as TrashIcon } from "react-icons/vsc";
@@ -60,27 +61,29 @@ const FilesTable: React.FC = () => {
   const [tableData, setTableData] = useState([]);
   const [visibleColumns, setVisibleColumns] = useState(initialVisibleColumns);
   const [pageSize, setPageSize] = useState(20);
-  const [activePage, setActivePage] = useState(0);
+  const [activePage, setActivePage] = useState(1);
 
   const dispatch = useCoreDispatch();
   const cart = useCoreSelector((state) => selectCart(state));
-  const { data, isSuccess, pagination } = useFiles({
-    size: pageSize,
-    from: pageSize * activePage,
-    filters: {
-      op: "and",
-      content: [
-        {
-          op: "in",
-          content: {
-            field: "files.file_id",
-            value: cart,
+  const { data, isSuccess, isFetching, isUninitialized, pagination } = useFiles(
+    {
+      size: pageSize,
+      from: pageSize * (activePage - 1),
+      filters: {
+        op: "and",
+        content: [
+          {
+            op: "in",
+            content: {
+              field: "files.file_id",
+              value: cart,
+            },
           },
-        },
-      ],
+        ],
+      },
+      expand: ["annotations", "cases", "cases.project"],
     },
-    expand: ["annotations", "cases", "cases.project"],
-  });
+  );
 
   const columnKeys = visibleColumns
     .filter((column) => column.visible)
@@ -156,78 +159,92 @@ const FilesTable: React.FC = () => {
     setVisibleColumns(columns);
   };
 
-  return (
-    <>
-      <div className="flex gap-2">
-        <Button
-          className={"bg-white text-nci-blue-darkest border-nci-blue-darkest"}
-        >
-          JSON
-        </Button>
-        <Button
-          className={"bg-white text-nci-blue-darkest border-nci-blue-darkest"}
-        >
-          TSV
-        </Button>
-        <Menu
-          control={
-            <Button
-              leftIcon={<TrashIcon />}
-              rightIcon={<DropdownIcon size={20} />}
-              classNames={{
-                root: "bg-nci-red-darker",
-                rightIcon: "border-l pl-1 -mr-2",
-              }}
-            >
-              Remove From Cart
-            </Button>
-          }
-        >
-          <MenuItem onClick={() => removeFromCart(data, cart, dispatch)}>
-            All Files
-          </MenuItem>
-          <MenuItem>Unauthorized Files</MenuItem>
-        </Menu>
+  return isFetching || isUninitialized ? (
+    <div className="grid place-items-center h-96 w-full pt-64 pb-72">
+      <div className="flex flex-row">
+        <Loader color="gray" size={24} />
       </div>
-      <div>
-        <VerticalTable
-          tableData={visibleData}
-          columnListOrder={visibleColumns}
-          columnCells={columnCells.filter((column) =>
-            columnKeys.includes(column.accessor),
-          )}
-          pageSize={pageSize.toString()}
-          selectableRow={false}
-          handleColumnChange={handleColumnChange}
-          tableTitle={""}
+    </div>
+  ) : (
+    <>
+      <VerticalTable
+        tableData={visibleData}
+        columnListOrder={visibleColumns}
+        columnCells={columnCells.filter((column) =>
+          columnKeys.includes(column.accessor),
+        )}
+        pageSize={pageSize.toString()}
+        selectableRow={false}
+        handleColumnChange={handleColumnChange}
+        tableTitle={`Showing ${(activePage - 1) * pageSize + 1} - ${
+          activePage * pageSize < pagination.total
+            ? activePage * pageSize
+            : pagination.total
+        } of ${pagination.total} files`}
+        additionalControls={
+          <div className="flex gap-2">
+            <Button
+              className={
+                "bg-white text-nci-blue-darkest border-nci-blue-darkest"
+              }
+            >
+              JSON
+            </Button>
+            <Button
+              className={
+                "bg-white text-nci-blue-darkest border-nci-blue-darkest"
+              }
+            >
+              TSV
+            </Button>
+            <Menu
+              control={
+                <Button
+                  leftIcon={<TrashIcon />}
+                  rightIcon={<DropdownIcon size={20} />}
+                  classNames={{
+                    root: "bg-nci-red-darker",
+                    rightIcon: "border-l pl-1 -mr-2",
+                  }}
+                >
+                  Remove From Cart
+                </Button>
+              }
+            >
+              <MenuItem onClick={() => removeFromCart(data, cart, dispatch)}>
+                All Files
+              </MenuItem>
+              <MenuItem>Unauthorized Files</MenuItem>
+            </Menu>
+          </div>
+        }
+      />
+      <div className="flex flex-row items-center justify-start border-t border-nci-gray-light w-9/12">
+        <p className="px-2">Page Size:</p>
+        <Select
+          size="sm"
+          radius="md"
+          onChange={(pageSize: string) => setPageSize(parseInt(pageSize))}
+          value={pageSize.toString()}
+          data={[
+            { value: "10", label: "10" },
+            { value: "20", label: "20" },
+            { value: "40", label: "40" },
+            { value: "100", label: "100" },
+          ]}
         />
-        <div className="flex flex-row items-center justify-start border-t border-nci-gray-light w-9/12">
-          <p className="px-2">Page Size:</p>
-          <Select
-            size="sm"
-            radius="md"
-            onChange={(pageSize: string) => setPageSize(parseInt(pageSize))}
-            value={pageSize.toString()}
-            data={[
-              { value: "10", label: "10" },
-              { value: "20", label: "20" },
-              { value: "40", label: "40" },
-              { value: "100", label: "100" },
-            ]}
-          />
-          <Pagination
-            classNames={{
-              active: "bg-nci-gray",
-            }}
-            size="sm"
-            radius="md"
-            color="gray"
-            className="ml-auto"
-            page={activePage}
-            onChange={(page: number) => setActivePage(page)}
-            total={pagination?.pages || 1}
-          />
-        </div>
+        <Pagination
+          classNames={{
+            active: "bg-nci-gray",
+          }}
+          size="sm"
+          radius="md"
+          color="gray"
+          className="ml-auto"
+          page={activePage}
+          onChange={(page: number) => setActivePage(page)}
+          total={pagination?.pages || 1}
+        />
       </div>
     </>
   );
