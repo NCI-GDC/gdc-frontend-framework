@@ -95,6 +95,12 @@ build:
     - mv dist_linux/docker-slim-sensor /usr/local/bin/
     - rm -rf dist_linux/
     - mv dive /usr/local/bin/
+    - GIT_TAG=$(git branch | sed -n -e 's/^\* \(.*\)/\1/p')
+    - REPO=$(basename `git rev-parse --show-toplevel`)
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
     - /bin/bash build.sh -b "$CI_COMMIT_BRANCH" -n "$CI_COMMIT_SHORT_SHA"
-    - docker build . --build-arg http_proxy=https://cloud-proxy:3128 --build-arg https_proxy=https://cloud-proxy:3128
+    - export http_proxy=http://cloud-proxy:3128
+    - export https_proxy=http://cloud-proxy:3128
+    - docker build . --tag ${REGISTRY}/${REPO}:${GIT_TAG}
+    - docker push ${REGISTRY}/${REPO}:${GIT_TAG}
