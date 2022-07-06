@@ -6,6 +6,7 @@ import {
   MdSort as SortIcon,
   MdSortByAlpha as AlphaSortIcon,
   MdWarning as WarningIcon,
+  MdClose as CloseIcon,
 } from "react-icons/md";
 import { FaUndo as UndoIcon } from "react-icons/fa";
 import tw from "tailwind-styled-components";
@@ -918,6 +919,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
   maximum = undefined,
   facetName = null,
   indexType = "explore",
+  dismissCallback = undefined,
 }: NumericFacetProps) => {
   const [isFacetView, setIsFacetView] = useState(true);
   const coreDispatch = useCoreDispatch();
@@ -960,6 +962,21 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 color={tailwindConfig.theme.extend.colors["gdc-blue"].darker}
               />
             </button>
+            {dismissCallback ? (
+              <button
+                className="hover:bg-nci-grey-darker text-nci-gray font-bold py-2 px-1 rounded inline-flex items-center"
+                onClick={() => {
+                  clearFilters();
+                  dismissCallback(field);
+                }}
+                aria-label="Remove the facet"
+              >
+                <CloseIcon
+                  size="1.25em"
+                  color={tailwindConfig.theme.extend.colors["gdc-blue"].darker}
+                />
+              </button>
+            ) : null}
           </div>
         </div>
         {
