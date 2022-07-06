@@ -368,6 +368,16 @@ export interface FileDefaults {
     readonly input_files?: ReadonlyArray<{
       readonly file_id: string;
     }>;
+    readonly metadata?: {
+      readonly read_groups: Array<{
+        readonly read_group_id: string;
+        readonly is_paired_end: boolean;
+        readonly read_length: number;
+        readonly library_name: string;
+        readonly sequencing_center: string;
+        readonly sequencing_date: string;
+      }>;
+    };
   };
   readonly downstream_analyses?: ReadonlyArray<{
     readonly workflow_type: string;
