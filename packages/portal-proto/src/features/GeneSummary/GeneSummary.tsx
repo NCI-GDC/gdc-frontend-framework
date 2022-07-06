@@ -10,7 +10,6 @@ import { formatDataForHorizontalTable } from "../files/utils";
 
 export const GeneSummary = ({ gene_id }: { gene_id: string }): JSX.Element => {
   const { data, isFetching } = useGenesSummaryData({ gene_id });
-  console.log(data);
   const formatDataForSummary = () => {
     const {
       genes: {
@@ -30,9 +29,8 @@ export const GeneSummary = ({ gene_id }: { gene_id: string }): JSX.Element => {
     const location = `chr${gene_chromosome}:${gene_start}-${gene_end} (GRCh38)`;
     const Strand = gene_strand && gene_strand === 1 ? <HiPlus /> : <HiMinus />;
     const annotation = is_cancer_gene_census ? (
-      <a href="#" className="underline">
-        Cancer Gene Census
-      </a>
+      // TODO: need to change this after figuring out what to do with clicking on it
+      <button className="underline">Cancer Gene Census</button>
     ) : (
       "--"
     );
@@ -66,46 +64,55 @@ export const GeneSummary = ({ gene_id }: { gene_id: string }): JSX.Element => {
   };
 
   const formatDataForExternalReferences = () => {
+    const {
+      genes: {
+        external_db_ids: { entrez_gene, uniprotkb_swissprot, hgnc, omim_gene },
+        gene_id,
+        civic,
+      },
+    } = data;
+
     const externalLinksObj = {
-      entrez_gene: data.genes.external_db_ids.entrez_gene,
-      uniprotkb_swissprot: data.genes.external_db_ids.uniprotkb_swissprot,
-      hgnc: data.genes.external_db_ids.hgnc,
-      omim_gene: data.genes.external_db_ids.omim_gene,
-      ensembl: [data.genes.gene_id],
-      civic: data.genes.civic,
+      entrez_gene,
+      uniprotkb_swissprot,
+      hgnc,
+      omim_gene,
+      ensembl: gene_id,
+      civic,
     };
 
-    console.log(externalLinksObj);
-
-    let obj = {};
+    let externalReferenceLinksobj = {};
 
     Object.keys(externalLinksObj).forEach((link) => {
-      const objs = {
+      const modified = {
         [`${externalLinkNames[link] || link.replace(/_/, " ")}`]:
           externalLinksObj[link] && externalLinksObj[link]?.length ? (
             <AnchorLink
-              href={externalLinks[link](externalLinksObj[link][0])}
-              title={externalLinksObj[link][0]}
+              href={externalLinks[link](externalLinksObj[link])}
+              title={externalLinksObj[link]}
             />
           ) : (
             "--"
           ),
       };
 
-      obj = { ...obj, ...objs };
+      externalReferenceLinksobj = { ...externalReferenceLinksobj, ...modified };
     });
 
-    const headersConfig = Object.keys(obj).map((key) => ({
+    const headersConfig = Object.keys(externalReferenceLinksobj).map((key) => ({
       field: key,
       name: humanify({ term: key }),
     }));
 
-    return formatDataForHorizontalTable(obj, headersConfig);
+    return formatDataForHorizontalTable(
+      externalReferenceLinksobj,
+      headersConfig,
+    );
   };
 
   return (
     <div>
-      {!isFetching && Object.keys(data.genes).length > 0 && (
+      {!isFetching && data?.genes && (
         <>
           <SummaryHeader iconText="GN" headerTitle={data.genes.symbol} />
           <div className="pt-4">

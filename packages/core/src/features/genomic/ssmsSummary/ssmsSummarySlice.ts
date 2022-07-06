@@ -63,7 +63,6 @@ const slice = createSlice({
     builder
       .addCase(fetchSsms.fulfilled, (state, action) => {
         const response = action.payload;
-        console.log("response: ", response);
 
         state.summaryData = response.data.hits.map((hit) => ({
           uuid: hit.id,
@@ -94,12 +93,12 @@ const slice = createSlice({
         return state;
       })
       .addCase(fetchSsms.pending, (state) => {
-        // state.ssms = {};
+        state.summaryData = undefined;
         state.status = "pending";
         state.error = undefined;
       })
       .addCase(fetchSsms.rejected, (state) => {
-        // state.ssms = {};
+        state.summaryData = undefined;
         state.status = "rejected";
         state.error = undefined;
       });

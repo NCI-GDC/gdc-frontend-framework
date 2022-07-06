@@ -44,11 +44,53 @@ query GeneSummary_relayQuery($filters: FiltersArgument) {
 }
 `;
 
+export interface GeneSummaryResponse {
+  viewer: {
+    explore: {
+      genes: {
+        hits: {
+          edges: Array<{
+            node: {
+              description: string;
+              gene_id: string;
+              symbol: string;
+              name: string;
+              synonyms: Array<string>;
+              biotype: string;
+              gene_chromosome: string;
+              gene_start: number;
+              gene_end: number;
+              gene_strand: number;
+              is_cancer_gene_census: boolean;
+              external_db_ids: {
+                entrez_gene: Array<string>;
+                uniprotkb_swissprot: Array<string>;
+                hgnc: Array<string>;
+                omim_gene: Array<string>;
+              };
+            };
+          }>;
+        };
+      };
+      ssms: {
+        aggregations: {
+          clinical_annotations__civic__gene_id: {
+            buckets: Array<{
+              doc_count: number;
+              key: string;
+            }>;
+          };
+        };
+      };
+    };
+  };
+}
+
 export const fetchGenesSummaryQuery = async ({
   gene_id,
 }: {
   gene_id: string;
-}): Promise<GraphQLApiResponse> => {
+}): Promise<GraphQLApiResponse<GeneSummaryResponse>> => {
   const filters = {
     op: "and",
     content: [
@@ -62,9 +104,7 @@ export const fetchGenesSummaryQuery = async ({
     ],
   };
 
-  const results: GraphQLApiResponse<any> = await graphqlAPI(geneSummary_query, {
+  return await graphqlAPI(geneSummary_query, {
     filters,
   });
-
-  return results;
 };
