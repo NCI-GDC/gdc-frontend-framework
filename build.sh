@@ -38,7 +38,7 @@ else
 	EXTERNAL_REGISTRY=""
 fi
 # As what versions (i.e., "...:version") to tag the build images.
-TAG_VERSIONS=("${
+TAG_VERSIONS=("${CURRENT_VERSION}")
 if [ "$BRANCH" = "master" ]; then
 	TAG_VERSIONS+=("latest")
 fi
@@ -64,16 +64,15 @@ fi
 
 
 echo "Building Dockerfile" | ts "[INFO] %H:%M:%S"
-docker build -t ncigdc/$BRANCH:BUILDNUMBER .
-
+docker build -t ncigdc/frontend/$BRANCH:$BUILDNUMBER .
 
 if [[ -z "$GITLAB_CI" ]]; then
 	echo "This is not being built on GitLab, ignoring dive." | ts "[INFO] %H:%M:%S - $directory -"
 else
-	dive "ncigdc/$BRANCH:BUILDNUMBER" || true
+	dive "ncigdc/frontend/$BRANCH:$BUILDNUMBER" || true
 fi
 
-echo docker rmi "ncigdc/$BRANCH:BUILDNUMBER"
+echo docker rmi "ncigdc/frontend/$BRANCH:$BUILDNUMBER"
 cd ..
 
 echo "Successfully built all containers!" | ts '[INFO] %H:%M:%S -'
@@ -85,7 +84,7 @@ if [ ! -f Dockerfile ]; then
 fi
 
 echo "Pushing and cleaning up." | ts "[INFO] %H:%M:%S - $directory -"
-docker push ncigdc/$BRANCH:BUILDNUMBER
+docker push  ncigdc/frontend/$BRANCH:$BUILDNUMBER
 populate_image_tags "${directory}"
 for TAG in "${IMAGE_TAGS[@]}"; do
 	echo docker push "${TAG}" | ts "[PUSH] %H:%M:%S - $directory -"
@@ -93,3 +92,4 @@ for TAG in "${IMAGE_TAGS[@]}"; do
 	echo "${TAG} is all set"
 done
 echo "All done!" | ts '[INFO] %H:%M:%S -'
+
