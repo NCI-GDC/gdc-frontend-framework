@@ -95,8 +95,8 @@ build:
     - mv dist_linux/docker-slim-sensor /usr/local/bin/
     - rm -rf dist_linux/
     - mv dive /usr/local/bin/
-    - GIT_TAG=$(git branch | sed -n -e 's/^\* \(.*\)/\1/p')
-    - REPO=$(basename `git rev-parse --show-toplevel`)
+    #    - GIT_TAG=$(git branch | sed -n -e 's/^\* \(.*\)/\1/p')
+    #    - REPO=$(basename `git rev-parse --show-toplevel`)
     - echo $CI_REGISTRY_USER
     - echo $CI_REGISTRY_PASSWORD
   #    - docker login docker.osdc.io -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
@@ -104,5 +104,9 @@ build:
     - /bin/bash build.sh -b "$CI_COMMIT_BRANCH" -n "$CI_COMMIT_SHORT_SHA"
     - export http_proxy=http://cloud-proxy:3128
     - export https_proxy=http://cloud-proxy:3128
+    - GIT_TAG=$(git branch | sed -n -e 's/^\* \(.*\)/\1/p')
+    - REPO=$(basename `git rev-parse --show-toplevel`)
+    - echo $REPO
+    - echo $GIT_TAG
     - docker build --tag ${REGISTRY}/${REPO}:${GIT_TAG} .
     - docker push ncigdc/${REGISTRY}/${REPO}:${GIT_TAG}
