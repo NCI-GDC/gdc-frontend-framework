@@ -82,7 +82,7 @@ build:
   services:
     - docker:20.10.16-dind
   tags:
-    - dind
+    - gdc
   image: docker:20.10.16-dind
   before_script:
     - docker info
