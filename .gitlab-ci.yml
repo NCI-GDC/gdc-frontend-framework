@@ -97,4 +97,4 @@ build:
     - mv dive /usr/local/bin/
     - REPO=$(basename `git rev-parse --show-toplevel`)
   script:
-    - /bin/bash build.sh -b "$REPO" -n "$CI_COMMIT_SHORT_SHA" -r "$REPO"
+    - /bin/bash build.sh -b "$REPO" -n "$CI_COMMIT_SHORT_SHA"
