@@ -108,5 +108,5 @@ build:
     - REPO=$(basename `git rev-parse --show-toplevel`)
     - echo $REPO
     - echo $GIT_TAG
-    - docker build --tag ${REGISTRY}/${REPO}:${GIT_TAG} .
+    - docker build -t ${REGISTRY}/${REPO}:${GIT_TAG} .
     - docker push ncigdc/${REGISTRY}/${REPO}:${GIT_TAG}
