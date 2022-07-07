@@ -48,15 +48,11 @@ const UndoButton: React.FC<UndoButtonProps> = ({ action }: UndoButtonProps) => {
 interface AddNotificationProps {
   readonly files: GdcFile[];
   readonly currentCart: CartFile[];
-  //readonly filesToAdd: CartFile[];
-  //readonly numAlreadyInCart: number;
   dispatch: CoreDispatch;
 }
 const AddNotification: React.FC<AddNotificationProps> = ({
   files,
   currentCart,
-  //filesToAdd,
-  //numAlreadyInCart,
   dispatch,
 }: AddNotificationProps) => {
   const filesToAdd = files
@@ -75,9 +71,9 @@ const AddNotification: React.FC<AddNotificationProps> = ({
 
   const newCart = [...currentCart, ...filesToAdd];
 
-  const alreadyInCart = files
-    .map((f) => f.id)
-    .filter((f) => currentCart.map((c) => c.id).includes(f));
+  const alreadyInCart = files.filter((f) =>
+    currentCart.map((c) => c.id).includes(f.id),
+  );
 
   if (filesToAdd.length > 0) {
     dispatch(addFilesToCart(filesToAdd));

@@ -66,7 +66,7 @@ const Cart: React.FC = () => {
           </div>
           <div className="pt-2">
             <H2>File counts by authorization level</H2>
-            <AuthorizationTable />
+            <AuthorizationTable cart={cart} />
           </div>
         </Grid.Col>
         <Grid.Col span={6} className="px-4">
