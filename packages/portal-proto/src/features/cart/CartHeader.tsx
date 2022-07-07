@@ -9,8 +9,7 @@ import {
 } from "react-icons/md";
 import { RiFile3Fill as FileIcon } from "react-icons/ri";
 
-const buttonStyle =
-  "bg-white text-nci-blue-darkest border-nci-blue-darkest px-2";
+const buttonStyle = "bg-white text-nci-blue-darkest border-nci-blue-darkest";
 
 interface CartHeaderProps {
   summaryData: CartSummaryData;
@@ -77,12 +76,13 @@ const CartHeader: React.FC<CartHeaderProps> = ({
     <Button className={buttonStyle} leftIcon={<DownloadIcon size={20} />}>
       Manifest
     </Button>
-    <h1 className="uppercase ml-auto mr-4 flex items-center truncate">
+    <h1 className="uppercase ml-auto mr-4 flex items-center truncate text-2xl">
       Total of <FileIcon size={25} className="mx-1" />{" "}
-      {summaryData.total_doc_count.toLocaleString()} Files{" "}
+      <b className="mr-1">{summaryData.total_doc_count.toLocaleString()}</b>{" "}
+      Files
       <PersonIcon size={25} className="mx-1" />{" "}
-      {summaryData.total_case_count.toLocaleString()} Cases{" "}
-      <SaveIcon size={25} className="mx-1" />{" "}
+      <b className="mr-1">{summaryData.total_case_count.toLocaleString()}</b>{" "}
+      Cases <SaveIcon size={25} className="mx-1" />{" "}
       {fileSize(summaryData.total_file_size)}
     </h1>
   </div>

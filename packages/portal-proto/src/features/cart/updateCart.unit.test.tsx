@@ -13,7 +13,11 @@ beforeEach(() => mockedShowNotification.mockClear());
 describe("updateCart, addToCart", () => {
   it("add single file", () => {
     const dispatchMock = jest.fn();
-    addToCart([{ fileName: "filey", id: "1" } as GdcFile], [], dispatchMock);
+    addToCart(
+      [{ fileName: "filey", fileId: "1" } as GdcFile],
+      [],
+      dispatchMock,
+    );
 
     const { getByText } = render(
       mockedShowNotification.mock.calls[0][0].message,
@@ -26,8 +30,8 @@ describe("updateCart, addToCart", () => {
     const dispatchMock = jest.fn();
 
     addToCart(
-      [{ fileName: "filey", id: "1" } as GdcFile],
-      [{ id: "1" } as CartFile],
+      [{ fileName: "filey", fileId: "1" } as GdcFile],
+      [{ fileId: "1" } as CartFile],
       dispatchMock,
     );
 
@@ -44,8 +48,8 @@ describe("updateCart, addToCart", () => {
     const dispatchMock = jest.fn();
     addToCart(
       [
-        { fileName: "filey", id: "1" },
-        { fileName: "abc", id: "2" },
+        { fileName: "filey", fileId: "1" },
+        { fileName: "abc", fileId: "2" },
       ] as GdcFile[],
       [],
       dispatchMock,
@@ -62,10 +66,10 @@ describe("updateCart, addToCart", () => {
     const dispatchMock = jest.fn();
     addToCart(
       [
-        { fileName: "filey", id: "1" },
-        { fileName: "abc", id: "2" },
+        { fileName: "filey", fileId: "1" },
+        { fileName: "abc", fileId: "2" },
       ] as GdcFile[],
-      [{ id: "2" } as CartFile],
+      [{ fileId: "2" } as CartFile],
       dispatchMock,
     );
 
@@ -83,12 +87,12 @@ describe("updateCart, addToCart", () => {
     const dispatchMock = jest.fn();
     addToCart(
       [
-        { fileName: "filey", id: "1" },
-        { fileName: "abc", id: "2" },
-        { fileName: "filey", id: "3" },
-        { fileName: "abc", id: "4" },
+        { fileName: "filey", fileId: "1" },
+        { fileName: "abc", fileId: "2" },
+        { fileName: "filey", fileId: "3" },
+        { fileName: "abc", fileId: "4" },
       ] as GdcFile[],
-      [{ id: "2" }, { id: "4" }] as CartFile[],
+      [{ fileId: "2" }, { fileId: "4" }] as CartFile[],
       dispatchMock,
     );
 
@@ -104,8 +108,12 @@ describe("updateCart, addToCart", () => {
 
   it("add too many files", () => {
     const dispatchMock = jest.fn();
-    const files = Array(9999).fill({ fileName: "filey", id: "1" });
-    addToCart(files, [{ id: "2" }, { id: "4" }] as CartFile[], dispatchMock);
+    const files = Array(9999).fill({ fileName: "filey", fileId: "1" });
+    addToCart(
+      files,
+      [{ fileId: "2" }, { fileId: "4" }] as CartFile[],
+      dispatchMock,
+    );
 
     const { getByText } = render(
       mockedShowNotification.mock.calls[0][0].message,
@@ -121,7 +129,11 @@ describe("updateCart, addToCart", () => {
 
   it("undo button shows remove notification", () => {
     const dispatchMock = jest.fn();
-    addToCart([{ fileName: "filey", id: "1" } as GdcFile], [], dispatchMock);
+    addToCart(
+      [{ fileName: "filey", fileId: "1" } as GdcFile],
+      [],
+      dispatchMock,
+    );
 
     const { getByText } = render(
       mockedShowNotification.mock.calls[0][0].message,
@@ -141,8 +153,8 @@ describe("updateCart, addToCart", () => {
     const dispatchMock = jest.fn();
 
     addToCart(
-      [{ fileName: "filey", id: "1" } as GdcFile],
-      [{ id: "1" } as CartFile],
+      [{ fileName: "filey", fileId: "1" } as GdcFile],
+      [{ fileId: "1" } as CartFile],
       dispatchMock,
     );
 
@@ -156,8 +168,8 @@ describe("updateCart, addToCart", () => {
 describe("updateCart, removeFromCart", () => {
   it("remove single file", () => {
     removeFromCart(
-      [{ fileName: "abc", id: "2" }] as GdcFile[],
-      [{ id: "2" } as CartFile],
+      [{ fileName: "abc", fileId: "2" }] as GdcFile[],
+      [{ fileId: "2" } as CartFile],
       jest.fn(),
     );
 
@@ -170,10 +182,10 @@ describe("updateCart, removeFromCart", () => {
   it("remove multiple files", () => {
     removeFromCart(
       [
-        { fileName: "filey", id: "1" },
-        { fileName: "abc", id: "2" },
+        { fileName: "filey", fileId: "1" },
+        { fileName: "abc", fileId: "2" },
       ] as GdcFile[],
-      [{ id: "1" }, { id: "2" }] as CartFile[],
+      [{ fileId: "1" }, { fileId: "2" }] as CartFile[],
       jest.fn(),
     );
 
@@ -185,8 +197,8 @@ describe("updateCart, removeFromCart", () => {
 
   it("undo button shows add notification", () => {
     removeFromCart(
-      [{ fileName: "abc", id: "2" }] as GdcFile[],
-      [{ id: "2" } as CartFile],
+      [{ fileName: "abc", fileId: "2" }] as GdcFile[],
+      [{ fileId: "2" } as CartFile],
       jest.fn(),
     );
 

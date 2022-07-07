@@ -10,7 +10,7 @@ const H2 = tw.h2`
   uppercase
   text-nci-blue-darkest
   font-montserrat
-  text-lg
+  text-xl
   font-medium
   pb-2
 `;
@@ -18,7 +18,15 @@ const H2 = tw.h2`
 const H3 = tw.h3`
   text-nci-blue-darkest
   font-montserrat
-  text-lg
+  text-xl
+  font-normal
+`;
+
+const P = tw.p`
+  pt-2
+  pb-4
+  font-montserrat
+  text-nci-gray-darkest
 `;
 
 const Cart: React.FC = () => {
@@ -30,10 +38,10 @@ const Cart: React.FC = () => {
       <CartHeader summaryData={summaryData} />
       <Grid className="mt-8 mx-2">
         <Grid.Col span={6}>
-          <div className="bg-white p-4">
+          <div className="bg-white p-4 border border-solid border-nci-gray-lighter">
             <H2>How to download files in my Cart?</H2>
             <H3>Download Manifest:</H3>
-            <p className="pt-1 pb-2">
+            <P>
               Download a manifest for use with the{" "}
               <a
                 href="https://gdc.cancer.gov/access-data/gdc-data-transfer-tool"
@@ -45,13 +53,11 @@ const Cart: React.FC = () => {
               </a>
               . The GDC Data Transfer Tool is recommended for transferring large
               volumes of data.
-            </p>
+            </P>
             <H3>Download Cart:</H3>
-            <p className="pt-1 pb-2">
-              Download Files in your Cart directly from the Web Browser.
-            </p>
+            <P>Download Files in your Cart directly from the Web Browser.</P>
             <H3>Download Reference Files:</H3>
-            <p className="pt-1 pb-2">
+            <P>
               Download{" "}
               <a
                 href="https://gdc.cancer.gov/about-data/gdc-data-processing/gdc-reference-files"
@@ -62,9 +68,9 @@ const Cart: React.FC = () => {
                 GDC Reference Files
               </a>{" "}
               for use in your genomic data analysis.
-            </p>
+            </P>
           </div>
-          <div className="pt-2">
+          <div className="pt-5">
             <H2>File counts by authorization level</H2>
             <AuthorizationTable cart={cart} />
           </div>

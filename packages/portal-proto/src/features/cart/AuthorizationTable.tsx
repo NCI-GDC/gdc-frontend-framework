@@ -54,7 +54,7 @@ const AuthorizationTable: React.FC<AuthorizationTableProps> = ({
       showControls={false}
       tableTitle={""}
       selectableRow={false}
-      pageSize={"20"}
+      pageSize={"2"}
       handleColumnChange={undefined}
     />
   );

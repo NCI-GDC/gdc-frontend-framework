@@ -123,7 +123,7 @@ const FilesTable: React.FC = () => {
                 <a className="text-nci-blue underline">{file.fileName}</a>
               </Link>
             ),
-            cases: file.cases?.length || 0,
+            cases: file.cases?.length.toLocaleString() || 0,
             project: (
               <Link href={`/projects/${file.project_id}`}>
                 <a className="text-nci-blue underline">{file.project_id}</a>
