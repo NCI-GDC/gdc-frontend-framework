@@ -64,7 +64,7 @@ fi
 
 
 echo "Building Dockerfile" | ts "[INFO] %H:%M:%S"
-docker build -t $BRANCH:BUILDNUMBER
+docker build -t $BRANCH:BUILDNUMBER .
 
 if [[ -z "$GITLAB_CI" ]]; then
 	echo "This is not being built on GitLab, ignoring dive." | ts "[INFO] %H:%M:%S - $directory -"
