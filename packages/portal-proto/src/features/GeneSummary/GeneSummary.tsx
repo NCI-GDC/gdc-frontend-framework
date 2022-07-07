@@ -28,12 +28,10 @@ export const GeneSummary = ({ gene_id }: { gene_id: string }): JSX.Element => {
 
     const location = `chr${gene_chromosome}:${gene_start}-${gene_end} (GRCh38)`;
     const Strand = gene_strand && gene_strand === 1 ? <HiPlus /> : <HiMinus />;
-    const annotation = is_cancer_gene_census ? (
-      // TODO: need to change this after figuring out what to do with clicking on it
-      <button className="underline">Cancer Gene Census</button>
-    ) : (
-      "--"
-    );
+    const annotation = is_cancer_gene_census
+      ? // TODO: need to change this after figuring out what to do with clicking on it
+        "Cancer Gene Census"
+      : "--";
     const synonymss = synonyms?.length && (
       <div>
         {synonyms?.map((s) => (
