@@ -104,6 +104,8 @@ build:
     - docker build --ssh default -t ${REGISTRY}/ncigdc/front-end/${REPO}:0.1 .
     - docker push ${REGISTRY}/ncigdc/front-end/${REPO}:0.1
   script:
+    - echo $CI_COMMIT_BRANCH
+    - echo $CI_COMMIT_SHORT_SHA
     - /bin/bash build.sh -b "$CI_COMMIT_BRANCH" -n "$CI_COMMIT_SHORT_SHA"
     - export http_proxy=http://cloud-proxy:3128
     - export https_proxy=http://cloud-proxy:3128
