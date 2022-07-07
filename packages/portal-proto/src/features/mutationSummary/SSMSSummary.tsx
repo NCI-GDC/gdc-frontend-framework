@@ -143,7 +143,7 @@ export const SSMSSummary = ({ ssm_id }: { ssm_id: string }): JSX.Element => {
     arr.push([
       "civic",
       civic ? (
-        <AnchorLink href={externalLinks.civic(civic)} title={civic} />
+        <AnchorLink href={externalLinks.civicMutaton(civic)} title={civic} />
       ) : (
         "--"
       ),
