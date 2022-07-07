@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { castDraft } from "immer";
 import { CoreDataSelectorResponse, DataStatus } from "../../dataAccess";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
@@ -206,18 +207,6 @@ const asExperimentalStrategy = (
   throw new Error(`${x} is not a valid experimental strategy`);
 };
 
-export interface SlideImageFile {
-  access: string;
-  acl: Array<string>;
-  data_format: string;
-  file_id: string;
-  file_name: string;
-  file_size: number;
-  md5sum: string;
-  state: string;
-  submitter_id: string;
-}
-
 export interface GdcFile {
   readonly id: string;
   readonly submitterId: string;
@@ -329,6 +318,138 @@ export interface GdcFile {
   }>;
 }
 
+export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
+  return files.map((hit) => ({
+    id: hit.id,
+    submitterId: hit.submitter_id,
+    access: asAccessType(hit.access),
+    acl: [...hit.acl],
+    createDatetime: hit.create_datetime,
+    updatedDatetime: hit.updated_datetime,
+    dataCategory: asDataCategory(hit.data_category),
+    dataFormat: asDataFormat(hit.data_format),
+    dataRelease: hit.data_release,
+    dataType: asDataType(hit.data_type),
+    fileId: hit.file_id,
+    fileName: hit.file_name,
+    fileSize: hit.file_size,
+    md5sum: hit.md5sum,
+    platform: hit.platform,
+    state: hit.state,
+    fileType: asFileType(hit.type),
+    version: hit.version,
+    experimentalStrategy: asExperimentalStrategy(hit.experimental_strategy),
+    project_id: hit.cases?.[0]?.project?.project_id,
+    annotations: hit.annotations?.map((annotation) => annotation),
+    cases: hit.cases?.map((caseObj) => {
+      return {
+        case_id: caseObj.case_id,
+        submitter_id: caseObj.submitter_id,
+        annotations: caseObj.annotations?.map(
+          (annotation) => annotation.annotation_id,
+        ),
+        samples: caseObj.samples?.map((sample) => {
+          return {
+            sample_id: sample.sample_id,
+            sample_type: sample.sample_type,
+            submitter_id: sample.submitter_id,
+            tissue_type: sample.tissue_type,
+            portions: sample.portions?.map((portion) => {
+              return {
+                submitter_id: portion.submitter_id,
+                analytes: portion.analytes?.map((analyte) => {
+                  return {
+                    analyte_id: analyte.analyte_id,
+                    analyte_type: analyte.analyte_type,
+                    submitter_id: analyte.submitter_id,
+                    aliquots: analyte.aliquots?.map((aliquot) => {
+                      return {
+                        aliquot_id: aliquot.aliquot_id,
+                        submitter_id: aliquot.submitter_id,
+                      };
+                    }),
+                  };
+                }),
+                slides: portion.slides?.map((slide) => {
+                  return {
+                    number_proliferating_cells:
+                      slide.number_proliferating_cells,
+                    percent_eosinophil_infiltration:
+                      slide.percent_eosinophil_infiltration,
+                    percent_granulocyte_infiltration:
+                      slide.percent_granulocyte_infiltration,
+                    percent_inflam_infiltration:
+                      slide.percent_inflam_infiltration,
+                    percent_lymphocyte_infiltration:
+                      slide.percent_lymphocyte_infiltration,
+                    percent_monocyte_infiltration:
+                      slide.percent_monocyte_infiltration,
+                    percent_necrosis: slide.percent_necrosis,
+                    percent_neutrophil_infiltration:
+                      slide.percent_neutrophil_infiltration,
+                    percent_normal_cells: slide.percent_normal_cells,
+                    percent_stromal_cells: slide.percent_stromal_cells,
+                    percent_tumor_cells: slide.percent_tumor_cells,
+                    percent_tumor_nuclei: slide.percent_tumor_nuclei,
+                    section_location: slide.section_location,
+                    slide_id: slide.slide_id,
+                    state: slide.state,
+                    submitter_id: slide.submitter_id,
+                    updated_datetime: slide.updated_datetime,
+                    created_datetime: slide.created_datetime,
+                  };
+                }),
+              };
+            }),
+          };
+        }),
+      };
+    }),
+    associated_entities: hit.associated_entities?.map((associated_entity) => ({
+      entity_submitter_id: associated_entity.entity_submitter_id,
+      entity_type: associated_entity.entity_type,
+      case_id: associated_entity.case_id,
+      entity_id: associated_entity.entity_id,
+    })),
+    analysis: hit.analysis
+      ? {
+          workflow_type: hit.analysis.workflow_type,
+          updated_datetime: hit.analysis.updated_datetime,
+          input_files: hit.analysis.input_files?.map((file) => file.file_id),
+          metadata: hit.analysis.metadata
+            ? {
+                read_groups: hit.analysis.metadata.read_groups.map(
+                  (read_group) => ({
+                    read_group_id: read_group.read_group_id,
+                    is_paired_end: read_group.is_paired_end,
+                    read_length: read_group.read_length,
+                    library_name: read_group.library_name,
+                    sequencing_center: read_group.sequencing_center,
+                    sequencing_date: read_group.sequencing_date,
+                  }),
+                ),
+              }
+            : undefined,
+        }
+      : undefined,
+    downstream_analyses: hit.downstream_analyses?.map((analysis) => {
+      return {
+        workflow_type: analysis.workflow_type,
+        output_files: analysis.output_files?.map((file) => {
+          return {
+            file_name: file.file_name,
+            data_category: file.data_category,
+            data_type: file.data_type,
+            data_format: file.data_format,
+            file_size: file.file_size,
+            file_id: file.file_id,
+          };
+        }),
+      };
+    }),
+  }));
+};
+
 export interface FilesState {
   readonly files?: ReadonlyArray<GdcFile>;
   readonly pagination?: Pagination;
@@ -361,144 +482,7 @@ const slice = createSlice({
           state.status = "rejected";
           state.error = Object.values(response.warnings)[0]; // TODO add better errors parsing
         } else {
-          state.files = response.data.hits.map((hit) => {
-            return {
-              id: hit.id,
-              submitterId: hit.submitter_id,
-              access: asAccessType(hit.access),
-              acl: [...hit.acl],
-              createDatetime: hit.create_datetime,
-              updatedDatetime: hit.updated_datetime,
-              dataCategory: asDataCategory(hit.data_category),
-              dataFormat: asDataFormat(hit.data_format),
-              dataRelease: hit.data_release,
-              dataType: asDataType(hit.data_type),
-              fileId: hit.file_id,
-              fileName: hit.file_name,
-              fileSize: hit.file_size,
-              md5sum: hit.md5sum,
-              platform: hit.platform,
-              state: hit.state,
-              fileType: asFileType(hit.type),
-              version: hit.version,
-              experimentalStrategy: asExperimentalStrategy(
-                hit.experimental_strategy,
-              ),
-              project_id: hit.cases?.[0]?.project?.project_id,
-              annotations: hit.annotations?.map((annotation) => annotation),
-              cases: hit.cases?.map((caseObj) => {
-                return {
-                  case_id: caseObj.case_id,
-                  submitter_id: caseObj.submitter_id,
-                  annotations: caseObj.annotations?.map(
-                    (annotation) => annotation.annotation_id,
-                  ),
-                  samples: caseObj.samples?.map((sample) => {
-                    return {
-                      sample_id: sample.sample_id,
-                      sample_type: sample.sample_type,
-                      submitter_id: sample.submitter_id,
-                      tissue_type: sample.tissue_type,
-                      portions: sample.portions?.map((portion) => {
-                        return {
-                          submitter_id: portion.submitter_id,
-                          analytes: portion.analytes?.map((analyte) => {
-                            return {
-                              analyte_id: analyte.analyte_id,
-                              analyte_type: analyte.analyte_type,
-                              submitter_id: analyte.submitter_id,
-                              aliquots: analyte.aliquots?.map((aliquot) => {
-                                return {
-                                  aliquot_id: aliquot.aliquot_id,
-                                  submitter_id: aliquot.submitter_id,
-                                };
-                              }),
-                            };
-                          }),
-                          slides: portion.slides?.map((slide) => {
-                            return {
-                              number_proliferating_cells:
-                                slide.number_proliferating_cells,
-                              percent_eosinophil_infiltration:
-                                slide.percent_eosinophil_infiltration,
-                              percent_granulocyte_infiltration:
-                                slide.percent_granulocyte_infiltration,
-                              percent_inflam_infiltration:
-                                slide.percent_inflam_infiltration,
-                              percent_lymphocyte_infiltration:
-                                slide.percent_lymphocyte_infiltration,
-                              percent_monocyte_infiltration:
-                                slide.percent_monocyte_infiltration,
-                              percent_necrosis: slide.percent_necrosis,
-                              percent_neutrophil_infiltration:
-                                slide.percent_neutrophil_infiltration,
-                              percent_normal_cells: slide.percent_normal_cells,
-                              percent_stromal_cells:
-                                slide.percent_stromal_cells,
-                              percent_tumor_cells: slide.percent_tumor_cells,
-                              percent_tumor_nuclei: slide.percent_tumor_nuclei,
-                              section_location: slide.section_location,
-                              slide_id: slide.slide_id,
-                              state: slide.state,
-                              submitter_id: slide.submitter_id,
-                              updated_datetime: slide.updated_datetime,
-                              created_datetime: slide.created_datetime,
-                            };
-                          }),
-                        };
-                      }),
-                    };
-                  }),
-                };
-              }),
-              associated_entities: hit.associated_entities?.map(
-                (associated_entity) => ({
-                  entity_submitter_id: associated_entity.entity_submitter_id,
-                  entity_type: associated_entity.entity_type,
-                  case_id: associated_entity.case_id,
-                  entity_id: associated_entity.entity_id,
-                }),
-              ),
-              analysis: hit.analysis
-                ? {
-                    workflow_type: hit.analysis.workflow_type,
-                    updated_datetime: hit.analysis.updated_datetime,
-                    input_files: hit.analysis.input_files?.map(
-                      (file) => file.file_id,
-                    ),
-                    metadata: hit.analysis.metadata
-                      ? {
-                          read_groups: hit.analysis.metadata.read_groups.map(
-                            (read_group) => ({
-                              read_group_id: read_group.read_group_id,
-                              is_paired_end: read_group.is_paired_end,
-                              read_length: read_group.read_length,
-                              library_name: read_group.library_name,
-                              sequencing_center: read_group.sequencing_center,
-                              sequencing_date: read_group.sequencing_date,
-                            }),
-                          ),
-                        }
-                      : undefined,
-                  }
-                : undefined,
-              downstream_analyses: hit.downstream_analyses?.map((analysis) => {
-                return {
-                  workflow_type: analysis.workflow_type,
-                  output_files: analysis.output_files?.map((file) => {
-                    return {
-                      file_name: file.file_name,
-                      data_category: file.data_category,
-                      data_type: file.data_type,
-                      data_format: file.data_format,
-                      file_size: file.file_size,
-                      file_id: file.file_id,
-                    };
-                  }),
-                };
-              }),
-            };
-          });
+          state.files = castDraft(mapFileData(response.data.hits));
           state.pagination = response.data.pagination;
           state.status = "fulfilled";
           state.error = undefined;

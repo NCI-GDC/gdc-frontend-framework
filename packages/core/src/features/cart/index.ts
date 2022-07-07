@@ -4,6 +4,7 @@ import {
   addFilesToCart,
   removeFilesFromCart,
   updateCartReducer,
+  CartFile,
 } from "./updateCartSlice";
 import {
   cartSummaryReducer,
@@ -16,6 +17,7 @@ export {
   removeFilesFromCart,
   useCartSummary,
   CartSummaryData,
+  CartFile,
 };
 
 export const cartReducer = combineReducers({

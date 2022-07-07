@@ -1,6 +1,6 @@
 import { showNotification } from "@mantine/notifications";
 import { render, fireEvent } from "@testing-library/react";
-import { GdcFile } from "@gff/core";
+import { GdcFile, CartFile } from "@gff/core";
 import { addToCart, removeFromCart } from "./updateCart";
 
 jest.mock("@mantine/notifications");
@@ -25,7 +25,11 @@ describe("updateCart, addToCart", () => {
   it("add single file already in cart", () => {
     const dispatchMock = jest.fn();
 
-    addToCart([{ fileName: "filey", id: "1" } as GdcFile], ["1"], dispatchMock);
+    addToCart(
+      [{ fileName: "filey", id: "1" } as GdcFile],
+      [{ id: "1" } as CartFile],
+      dispatchMock,
+    );
 
     const { getByText } = render(
       mockedShowNotification.mock.calls[0][0].message,
@@ -61,7 +65,7 @@ describe("updateCart, addToCart", () => {
         { fileName: "filey", id: "1" },
         { fileName: "abc", id: "2" },
       ] as GdcFile[],
-      ["2"],
+      [{ id: "2" } as CartFile],
       dispatchMock,
     );
 
@@ -84,7 +88,7 @@ describe("updateCart, addToCart", () => {
         { fileName: "filey", id: "3" },
         { fileName: "abc", id: "4" },
       ] as GdcFile[],
-      ["2", "4"],
+      [{ id: "2" }, { id: "4" }] as CartFile[],
       dispatchMock,
     );
 
@@ -101,7 +105,7 @@ describe("updateCart, addToCart", () => {
   it("add too many files", () => {
     const dispatchMock = jest.fn();
     const files = Array(9999).fill({ fileName: "filey", id: "1" });
-    addToCart(files, ["2", "4"], dispatchMock);
+    addToCart(files, [{ id: "2" }, { id: "4" }] as CartFile[], dispatchMock);
 
     const { getByText } = render(
       mockedShowNotification.mock.calls[0][0].message,
@@ -136,7 +140,11 @@ describe("updateCart, addToCart", () => {
   it("do not show undo button if cart was not modified", () => {
     const dispatchMock = jest.fn();
 
-    addToCart([{ fileName: "filey", id: "1" } as GdcFile], ["1"], dispatchMock);
+    addToCart(
+      [{ fileName: "filey", id: "1" } as GdcFile],
+      [{ id: "1" } as CartFile],
+      dispatchMock,
+    );
 
     const { queryByText } = render(
       mockedShowNotification.mock.calls[0][0].message,
@@ -149,7 +157,7 @@ describe("updateCart, removeFromCart", () => {
   it("remove single file", () => {
     removeFromCart(
       [{ fileName: "abc", id: "2" }] as GdcFile[],
-      ["2"],
+      [{ id: "2" } as CartFile],
       jest.fn(),
     );
 
@@ -165,7 +173,7 @@ describe("updateCart, removeFromCart", () => {
         { fileName: "filey", id: "1" },
         { fileName: "abc", id: "2" },
       ] as GdcFile[],
-      ["1", "2"],
+      [{ id: "1" }, { id: "2" }] as CartFile[],
       jest.fn(),
     );
 
@@ -178,7 +186,7 @@ describe("updateCart, removeFromCart", () => {
   it("undo button shows add notification", () => {
     removeFromCart(
       [{ fileName: "abc", id: "2" }] as GdcFile[],
-      ["2"],
+      [{ id: "2" } as CartFile],
       jest.fn(),
     );
 

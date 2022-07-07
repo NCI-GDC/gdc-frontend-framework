@@ -76,7 +76,7 @@ const FilesTable: React.FC = () => {
             op: "in",
             content: {
               field: "files.file_id",
-              value: cart,
+              value: cart.map((f) => f.id),
             },
           },
         ],
@@ -134,12 +134,12 @@ const FilesTable: React.FC = () => {
             file_size: fileSize(file.fileSize),
             annotations: file.annotations?.length || 0,
             data_type: file.dataType,
-            experimental_strategy: file.experimentalStrategy,
-            platform: file.platform,
+            experimental_strategy: file.experimentalStrategy || "--",
+            platform: file.platform || "--",
           }))
         : [],
     );
-  }, [isSuccess]);
+  }, [isSuccess, data]);
 
   useEffect(() => {
     const columnKeys = visibleColumns
