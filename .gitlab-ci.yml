@@ -118,4 +118,5 @@ build:
     - echo $REPO
     - echo $GIT_TAG
     - docker build --ssh default -t ${REGISTRY}/ncigdc/front-end/${REPO}:0.1 .
+    - docker login docker.osdc.io -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
     - docker push ${REGISTRY}/ncigdc/front-end/${REPO}:0.1
