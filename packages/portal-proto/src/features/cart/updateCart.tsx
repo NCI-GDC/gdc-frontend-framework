@@ -56,12 +56,12 @@ const AddNotification: React.FC<AddNotificationProps> = ({
   dispatch,
 }: AddNotificationProps) => {
   const filesToAdd = files
-    .filter((f) => !currentCart.map((c) => c.id).includes(f.id))
+    .filter((f) => !currentCart.map((c) => c.fileId).includes(f.fileId))
     .map((file) =>
       pick(file, [
         "access",
         "acl",
-        "id",
+        "fileId",
         "fileSize",
         "state",
         "project_id",
@@ -72,7 +72,7 @@ const AddNotification: React.FC<AddNotificationProps> = ({
   const newCart = [...currentCart, ...filesToAdd];
 
   const alreadyInCart = files.filter((f) =>
-    currentCart.map((c) => c.id).includes(f.id),
+    currentCart.map((c) => c.fileId).includes(f.fileId),
   );
 
   if (filesToAdd.length > 0) {
@@ -132,7 +132,7 @@ const AddNotification: React.FC<AddNotificationProps> = ({
 };
 
 interface RemoveNotificationProps {
-  readonly files: GdcFile[];
+  files: readonly GdcFile[];
   readonly currentCart: CartFile[];
   dispatch: CoreDispatch;
 }
@@ -142,7 +142,7 @@ const RemoveNotification: React.FC<RemoveNotificationProps> = ({
   dispatch,
 }: RemoveNotificationProps) => {
   const filesToRemove = files.filter((f) =>
-    currentCart.map((cartFile) => cartFile.id).includes(f.id),
+    currentCart.map((cartFile) => cartFile.fileId).includes(f.fileId),
   );
 
   const newCart = files.filter((f) => !filesToRemove.includes(f));
@@ -171,7 +171,7 @@ const RemoveNotification: React.FC<RemoveNotificationProps> = ({
 };
 
 export const removeFromCart = (
-  files: GdcFile[],
+  files: readonly GdcFile[],
   currentCart: CartFile[],
   dispatch: CoreDispatch,
 ): void => {
@@ -188,7 +188,7 @@ export const removeFromCart = (
       description: "flex flex-col content-center text-center",
     },
   });
-  const filesToRemove = files.map((f) => f.id);
+  const filesToRemove = files.map((f) => f.fileId);
   dispatch(removeFilesFromCart(filesToRemove));
 };
 

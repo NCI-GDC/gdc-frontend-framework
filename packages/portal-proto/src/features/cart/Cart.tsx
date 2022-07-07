@@ -23,7 +23,7 @@ const H3 = tw.h3`
 
 const Cart: React.FC = () => {
   const cart = useCoreSelector((state) => selectCart(state));
-  const { data: summaryData } = useCartSummary(cart.map((f) => f.id));
+  const { data: summaryData } = useCartSummary(cart.map((f) => f.fileId));
 
   return (
     <>

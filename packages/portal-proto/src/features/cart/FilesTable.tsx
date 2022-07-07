@@ -9,6 +9,7 @@ import {
   Select,
   Pagination,
   Loader,
+  Alert,
 } from "@mantine/core";
 import { MdArrowDropDown as DropdownIcon } from "react-icons/md";
 import { VscTrash as TrashIcon } from "react-icons/vsc";
@@ -65,8 +66,8 @@ const FilesTable: React.FC = () => {
 
   const dispatch = useCoreDispatch();
   const cart = useCoreSelector((state) => selectCart(state));
-  const { data, isSuccess, isFetching, isUninitialized, pagination } = useFiles(
-    {
+  const { data, isFetching, isSuccess, isUninitialized, isError, pagination } =
+    useFiles({
       size: pageSize,
       from: pageSize * (activePage - 1),
       filters: {
@@ -76,14 +77,13 @@ const FilesTable: React.FC = () => {
             op: "in",
             content: {
               field: "files.file_id",
-              value: cart.map((f) => f.id),
+              value: cart.map((f) => f.fileId),
             },
           },
         ],
       },
       expand: ["annotations", "cases", "cases.project"],
-    },
-  );
+    });
 
   const columnKeys = visibleColumns
     .filter((column) => column.visible)
@@ -165,6 +165,8 @@ const FilesTable: React.FC = () => {
         <Loader color="gray" size={24} />
       </div>
     </div>
+  ) : isError ? (
+    <Alert>Error loading table</Alert>
   ) : (
     <>
       <VerticalTable
@@ -177,10 +179,10 @@ const FilesTable: React.FC = () => {
         selectableRow={false}
         handleColumnChange={handleColumnChange}
         tableTitle={`Showing ${(activePage - 1) * pageSize + 1} - ${
-          activePage * pageSize < pagination.total
+          activePage * pageSize < pagination?.total
             ? activePage * pageSize
-            : pagination.total
-        } of ${pagination.total} files`}
+            : pagination?.total
+        } of ${pagination?.total} files`}
         additionalControls={
           <div className="flex gap-2">
             <Button
