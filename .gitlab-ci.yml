@@ -95,8 +95,10 @@ build:
     - mv dist_linux/docker-slim-sensor /usr/local/bin/
     - rm -rf dist_linux/
     - mv dive /usr/local/bin/
-    #    - GIT_TAG=$(git branch | sed -n -e 's/^\* \(.*\)/\1/p')
-    #    - REPO=$(basename `git rev-parse --show-toplevel`)
+    - GIT_TAG=$(git branch | sed -n -e 's/^\* \(.*\)/\1/p')
+    - REPO=$(basename `git rev-parse --show-toplevel`)
+    - echo $REPO
+    - echo $GIT_TAG
     - echo $CI_REGISTRY_USER
     - echo $CI_REGISTRY_PASSWORD
     - echo $CI_COMMIT_BRANCH
