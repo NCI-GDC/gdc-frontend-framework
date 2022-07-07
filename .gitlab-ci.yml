@@ -101,12 +101,12 @@ build:
     - echo $GIT_TAG
     - echo $CI_REGISTRY_USER
     - echo $CI_REGISTRY_PASSWORD
-    - echo $CI_COMMIT_BRANCH
-    - echo $CI_COMMIT_SHORT_SHA
+    #    - echo $CI_COMMIT_BRANCH
+    #    - echo $CI_COMMIT_SHORT_SHA
     #    - docker login docker.osdc.io -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
     - docker info
-    - docker build --ssh default -t ${REGISTRY}/${REPO}:0.1 .
-    - docker push ${REGISTRY}/${REPO}:0.1
+  #    - docker build --ssh default -t ${REGISTRY}/${REPO}:0.1 .
+  #    - docker push ${REGISTRY}/${REPO}:0.1
   script:
     - echo $CI_COMMIT_BRANCH
     - echo $CI_COMMIT_SHORT_SHA
@@ -117,5 +117,5 @@ build:
     - REPO=$(basename `git rev-parse --show-toplevel`)
     - echo $REPO
     - echo $GIT_TAG
-    # - docker build --ssh default -t ${REGISTRY}/ncigdc/front-end/${REPO}:0.1 .
-    # - docker push ${REGISTRY}/ncigdc/front-end/${REPO}:0.1
+    - docker build --ssh default -t ${REGISTRY}/ncigdc/front-end/${REPO}:0.1 .
+    - docker push ${REGISTRY}/ncigdc/front-end/${REPO}:0.1
