@@ -66,7 +66,7 @@ export const SSMSSummary = ({ ssm_id }: { ssm_id: string }): JSX.Element => {
           {transcript_id ? (
             <div className="flex-col">
               <AnchorLink
-                href={externalLinks.ensembl(transcript_id)}
+                href={externalLinks.transcript(transcript_id)}
                 title={transcript_id}
                 iconText="C"
                 toolTipLabel="Canonical"
