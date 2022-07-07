@@ -7,7 +7,7 @@ while getopts b:n:t: option; do
 	b) BRANCH=${OPTARG} ;;
 	n) BUILDNUMBER=${OPTARG} ;;
 	t) SCM_TAG=${OPTARG} ;;
-        r) REPO=${OPTARG}
+        r) REPO=${OPTARG} ;;
 	*) echo "${OPTARG}" not supported! ;;
 	esac
 done
