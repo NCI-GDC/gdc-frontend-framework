@@ -7,6 +7,7 @@ while getopts b:n:t: option; do
 	b) BRANCH=${OPTARG} ;;
 	n) BUILDNUMBER=${OPTARG} ;;
 	t) SCM_TAG=${OPTARG} ;;
+        r) REPO=${OPTARG}
 	*) echo "${OPTARG}" not supported! ;;
 	esac
 done
@@ -42,7 +43,7 @@ if [ "$BRANCH" = "master" ] || [ -n "$SCM_TAG" ]; then
 	# TODO: Should REGISTRY just be an array instead?
 	EXTERNAL_REGISTRY="quay.io"
 else
-	REGISTRY="dev-containers.osdc.io"
+	REGISTRY="docker.osdc.io"
 	EXTERNAL_REGISTRY=""
 fi
 
@@ -75,18 +76,7 @@ fi
 
 
 echo "Building Dockerfile" | ts "[INFO] %H:%M:%S"
-echo docker buildx build --compress --progress plain \
-	-t "gdc-frontend-framework:${CURRENT_VERSION}" \
-	${DOCKER_BUILD_OPT} \
-	-f Dockerfile . \
-	--build-arg CURRENT_VERSION="${CURRENT_VERSION}" \
-	--build-arg REGISTRY="${REGISTRY}" \
-	--label org.opencontainers.image.version="${CURRENT_VERSION}" \
-	--label org.opencontainers.image.created="$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
-	--label org.opencontainers.image.revision="$(git rev-parse --short HEAD)" \
-	--build-arg http_proxy=http://cloud-proxy:3128 \
-	--build-arg https_proxy=http://cloud-proxy:3128 | ts "[BUILD] %H:%M:%S - $directory -"
-
+docker build -t $REPO/$BRANCH:$BUILDNUMBER .
 
 if [[ -z "$GITLAB_CI" ]]; then
 	echo "This is not being built on GitLab, ignoring dive." | ts "[INFO] %H:%M:%S - $directory -"
@@ -94,7 +84,7 @@ else
 	dive "build-${directory}:${CURRENT_VERSION}" || true
 fi
 
-echo docker rmi "build-${directory}:${CURRENT_VERSION}"
+echo docker rmi "build-$REPO/$BRANCH:$BUILDNUMBER"
 cd ..
 
 echo "Successfully built all containers!" | ts '[INFO] %H:%M:%S -'
@@ -106,11 +96,7 @@ if [ ! -f Dockerfile ]; then
 fi
 
 echo "Pushing and cleaning up." | ts "[INFO] %H:%M:%S - $directory -"
+docker push $REPO/$BRANCH:$BUILDNUMBER
 
-populate_image_tags "${directory}"
-for TAG in "${IMAGE_TAGS[@]}"; do
-	echo docker push "${TAG}" | ts "[PUSH] %H:%M:%S - $directory -"
-	echo docker rmi "${TAG}" | ts "[PUSH] %H:%M:%S - $directory -"
-	echo "${TAG} is all set"
-done
+
 echo "All done!" | ts '[INFO] %H:%M:%S -'
