@@ -14,13 +14,13 @@ WORKDIR /app
 
 # ==================================================================
 
-#FROM node:16-alpine3.15 AS runner
-#WORKDIR /app
-#ENV NODE_ENV=production
+FROM node:16-alpine3.15 AS runner
+WORKDIR /app
+ENV NODE_ENV=production
 
-#RUN apk add --no-cache libc6-compat nasm autoconf automake bash
-#RUN addgroup --system --gid 1001 nextjs
-#RUN adduser --system --uid 1001 nextjs
+RUN apk add --no-cache libc6-compat nasm autoconf automake bash
+RUN addgroup --system --gid 1001 nextjs
+RUN adduser --system --uid 1001 nextjs
 
 #COPY --from=builder --chown=nextjs:nextjs /app/lerna.json ./lerna.json
 #COPY --from=builder --chown=nextjs:nextjs /app/package.json ./package.json
