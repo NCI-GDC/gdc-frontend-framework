@@ -66,71 +66,51 @@ function populate_image_tags() {
 	done
 }
 
+
 set -e
-for directory in *; do
-	if [ -d "${directory}" ]; then
+cd "$BUILD_ROOT_DIR"
+if [ ! -f Dockerfile ]; then
+	continue
+fi
 
-		if [ ! -f "${directory}"/Dockerfile ]; then
-			cd "$BUILD_ROOT_DIR"
-			continue
-		fi
 
-		cd "${directory}"
+echo "Building Dockerfile" | ts "[INFO] %H:%M:%S"
+echo docker buildx build --compress --progress plain \
+	-t "gdc-frontend-framework:${CURRENT_VERSION}" \
+	${DOCKER_BUILD_OPT} \
+	-f Dockerfile . \
+	--build-arg CURRENT_VERSION="${CURRENT_VERSION}" \
+	--build-arg REGISTRY="${REGISTRY}" \
+	--label org.opencontainers.image.version="${CURRENT_VERSION}" \
+	--label org.opencontainers.image.created="$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
+	--label org.opencontainers.image.revision="$(git rev-parse --short HEAD)" \
+	--build-arg http_proxy=http://cloud-proxy:3128 \
+	--build-arg https_proxy=http://cloud-proxy:3128 | ts "[BUILD] %H:%M:%S - $directory -"
 
-		echo "Building ${directory} ..." | ts "[INFO] %H:%M:%S - $directory -"
-		docker buildx build --compress --progress plain \
-			-t "build-${directory}:${CURRENT_VERSION}" \
-			${DOCKER_BUILD_OPT} \
-			-f Dockerfile . \
-			--build-arg CURRENT_VERSION="${CURRENT_VERSION}" \
-			--build-arg REGISTRY="${REGISTRY}" \
-			--label org.opencontainers.image.version="${CURRENT_VERSION}" \
-			--label org.opencontainers.image.created="$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
-			--label org.opencontainers.image.revision="$(git rev-parse --short HEAD)" \
-			--label org.opencontainers.ref.name="${directory}:${CURRENT_VERSION}" \
-			--build-arg http_proxy=http://cloud-proxy:3128 \
-			--build-arg https_proxy=http://cloud-proxy:3128 | ts "[BUILD] %H:%M:%S - $directory -"
 
-		# Assign the final tags now so later images can build on this one.
-		populate_image_tags "${directory}"
-		for TAG in "${IMAGE_TAGS[@]}"; do
-			docker tag "build-${directory}:${CURRENT_VERSION}" "$TAG"
-		done
+if [[ -z "$GITLAB_CI" ]]; then
+	echo "This is not being built on GitLab, ignoring dive." | ts "[INFO] %H:%M:%S - $directory -"
+else
+	dive "build-${directory}:${CURRENT_VERSION}" || true
+fi
 
-		if [[ -z "$GITLAB_CI" ]]; then
-			echo "This is not being built on GitLab, ignoring dive." | ts "[INFO] %H:%M:%S - $directory -"
-		else
-			dive "build-${directory}:${CURRENT_VERSION}" || true
-		fi
-
-		docker rmi "build-${directory}:${CURRENT_VERSION}"
-		cd ..
-	fi
-done
+echo docker rmi "build-${directory}:${CURRENT_VERSION}"
+cd ..
 
 echo "Successfully built all containers!" | ts '[INFO] %H:%M:%S -'
 
 cd "$BUILD_ROOT_DIR"
 
-for directory in *; do
-	if [ -d "${directory}" ]; then
+if [ ! -f Dockerfile ]; then
+	continue
+fi
 
-		if [ ! -f "${directory}"/Dockerfile ]; then
-			continue
-		fi
+echo "Pushing and cleaning up." | ts "[INFO] %H:%M:%S - $directory -"
 
-		if [[ ${directory} == dep-* ]]; then
-			continue
-		fi
-
-		echo "Pushing and cleaning up." | ts "[INFO] %H:%M:%S - $directory -"
-
-		populate_image_tags "${directory}"
-		for TAG in "${IMAGE_TAGS[@]}"; do
-			docker push "${TAG}" | ts "[PUSH] %H:%M:%S - $directory -"
-			docker rmi "${TAG}" | ts "[PUSH] %H:%M:%S - $directory -"
-			echo "${TAG} is all set"
-		done
-	fi
+populate_image_tags "${directory}"
+for TAG in "${IMAGE_TAGS[@]}"; do
+	echo docker push "${TAG}" | ts "[PUSH] %H:%M:%S - $directory -"
+	echo docker rmi "${TAG}" | ts "[PUSH] %H:%M:%S - $directory -"
+	echo "${TAG} is all set"
 done
 echo "All done!" | ts '[INFO] %H:%M:%S -'
