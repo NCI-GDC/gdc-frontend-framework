@@ -34,11 +34,11 @@ if [ "$BRANCH" = "master" ] || [ -n "$SCM_TAG" ]; then
 	# TODO: Should REGISTRY just be an array instead?
 	EXTERNAL_REGISTRY="quay.io"
 else
-	REGISTRY="dev-containers.osdc.io"
+	REGISTRY="docker.osdc.io"
 	EXTERNAL_REGISTRY=""
 fi
 # As what versions (i.e., "...:version") to tag the build images.
-TAG_VERSIONS=("${CURRENT_VERSION}")
+TAG_VERSIONS=("${
 if [ "$BRANCH" = "master" ]; then
 	TAG_VERSIONS+=("latest")
 fi
@@ -64,15 +64,16 @@ fi
 
 
 echo "Building Dockerfile" | ts "[INFO] %H:%M:%S"
-docker build -t $BRANCH:BUILDNUMBER .
+docker build -t ncigdc/$BRANCH:BUILDNUMBER .
+
 
 if [[ -z "$GITLAB_CI" ]]; then
 	echo "This is not being built on GitLab, ignoring dive." | ts "[INFO] %H:%M:%S - $directory -"
 else
-	dive "build-${directory}:${CURRENT_VERSION}" || true
+	dive "ncigdc/$BRANCH:BUILDNUMBER" || true
 fi
 
-echo docker rmi "build-${directory}:${CURRENT_VERSION}"
+echo docker rmi "ncigdc/$BRANCH:BUILDNUMBER"
 cd ..
 
 echo "Successfully built all containers!" | ts '[INFO] %H:%M:%S -'
@@ -84,7 +85,7 @@ if [ ! -f Dockerfile ]; then
 fi
 
 echo "Pushing and cleaning up." | ts "[INFO] %H:%M:%S - $directory -"
-
+docker push ncigdc/$BRANCH:BUILDNUMBER
 populate_image_tags "${directory}"
 for TAG in "${IMAGE_TAGS[@]}"; do
 	echo docker push "${TAG}" | ts "[PUSH] %H:%M:%S - $directory -"
