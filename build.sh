@@ -75,7 +75,7 @@ fi
 
 
 echo "Building Dockerfile" | ts "[INFO] %H:%M:%S"
-docker build -t $REPO/$BRANCH:$BUILDNUMBER .
+docker build -t BRANCH:$BUILDNUMBER .
 
 if [[ -z "$GITLAB_CI" ]]; then
 	echo "This is not being built on GitLab, ignoring dive." | ts "[INFO] %H:%M:%S - $directory -"
@@ -83,7 +83,7 @@ else
 	dive "build-${directory}:${CURRENT_VERSION}" || true
 fi
 
-echo docker rmi "build-$REPO/$BRANCH:$BUILDNUMBER"
+echo docker rmi "build-$BRANCH:$BUILDNUMBER"
 cd ..
 
 echo "Successfully built all containers!" | ts '[INFO] %H:%M:%S -'
@@ -95,7 +95,8 @@ if [ ! -f Dockerfile ]; then
 fi
 
 echo "Pushing and cleaning up." | ts "[INFO] %H:%M:%S - $directory -"
-docker push $REPO/$BRANCH:$BUILDNUMBER
+docker push $BRANCH:$BUILDNUMBER
 
 
 echo "All done!" | ts '[INFO] %H:%M:%S -'
+
