@@ -29,12 +29,12 @@ else
 fi
 if [ "$BRANCH" = "master" ] || [ -n "$SCM_TAG" ]; then
 	# Which internal registry to push the images to.
-	REGISTRY="docker.osdc.io"
+	REGISTRY="dev-containers.osdc.io"
 	# Which external registry to push the images to, or blank to skip.
 	# TODO: Should REGISTRY just be an array instead?
 	EXTERNAL_REGISTRY="quay.io"
 else
-	REGISTRY="docker.osdc.io"
+	REGISTRY="containers.osdc.io"
 	EXTERNAL_REGISTRY=""
 fi
 # As what versions (i.e., "...:version") to tag the build images.
@@ -68,7 +68,7 @@ fi
 
 
 echo "Building Dockerfile" | ts "[INFO] %H:%M:%S"
-docker build -t ncigdc/frontend/$BRANCH:$BUILDNUMBER .
+docker build -t dev-containers.osdc.io/portalv2:$BRANCH-$BUILDNUMBER .
 
 if [[ -z "$GITLAB_CI" ]]; then
 	echo "This is not being built on GitLab, ignoring dive." | ts "[INFO] %H:%M:%S - $directory -"
@@ -93,8 +93,8 @@ echo "Pushing and cleaning up." | ts "[INFO] %H:%M:%S - $directory -"
 populate_image_tags "${directory}"
 echo $REGISTRY
 for TAG in "${IMAGE_TAGS[@]}"; do
-         echo docker push ncigdc/frontend/$BRANCH:$BUILDNUMBER | ts "[PUSH] %H:%M:%S - $directory -"
-	 docker push ncigdc/frontend/$BRANCH:$BUILDNUMBER | ts "[PUSH] %H:%M:%S - $directory -"
+	 echo docker push dev-containers.osdc.io/portalv2:$BRANCH-$BUILDNUMBER | ts "[PUSH] %H:%M:%S - $directory -"
+         docker push dev-containers.osdc.io/portalv2:$BRANCH-$BUILDNUMBER | ts "[PUSH] %H:%M:%S - $directory -"
 	 docker rmi  ncigdc/frontend/$BRANCH:$BUILDNUMBER  | ts "[PUSH] %H:%M:%S - $directory -"
 	 echo "${TAG} is all set"
 done
