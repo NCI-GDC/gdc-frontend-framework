@@ -88,12 +88,12 @@ if [ ! -f Dockerfile ]; then
 fi
 
 echo "Pushing and cleaning up." | ts "[INFO] %H:%M:%S - $directory -"
-docker login docker.osdc.io -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
-docker push  ncigdc/frontend/$BRANCH:$BUILDNUMBER
+#docker login docker.osdc.io -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+#docker push  ncigdc/frontend/$BRANCH:$BUILDNUMBER
 populate_image_tags "${directory}"
 for TAG in "${IMAGE_TAGS[@]}"; do
-	echo docker push "${TAG}" | ts "[PUSH] %H:%M:%S - $directory -"
-	echo docker rmi "${TAG}" | ts "[PUSH] %H:%M:%S - $directory -"
+	 docker push "${TAG}" | ts "[PUSH] %H:%M:%S - $directory -"
+	 docker rmi "${TAG}" | ts "[PUSH] %H:%M:%S - $directory -"
 	echo "${TAG} is all set"
 done
 echo "All done!" | ts '[INFO] %H:%M:%S -'
