@@ -93,8 +93,8 @@ echo "Pushing and cleaning up." | ts "[INFO] %H:%M:%S - $directory -"
 populate_image_tags "${directory}"
 echo ${TAG}
 for TAG in "${IMAGE_TAGS[@]}"; do
-	 docker push ${TAG} | ts "[PUSH] %H:%M:%S - $directory -"
-	 docker rmi  ${TAG}  | ts "[PUSH] %H:%M:%S - $directory -"
+	 docker push ncigdc/frontend/$BRANCH:$BUILDNUMBER | ts "[PUSH] %H:%M:%S - $directory -"
+	 docker rmi  ncigdc/frontend/$BRANCH:$BUILDNUMBER  | ts "[PUSH] %H:%M:%S - $directory -"
 	echo "${TAG} is all set"
 done
 echo "All done!" | ts '[INFO] %H:%M:%S -'
