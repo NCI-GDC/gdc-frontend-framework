@@ -111,8 +111,8 @@ const FilesTable: React.FC = () => {
               <Badge
                 className={
                   file.access === "open"
-                    ? "bg-nci-green-lighter text-nci-green"
-                    : "bg-nci-red-lighter text-nci-red"
+                    ? "bg-nci-green-lighter/50 text-nci-green-darkest"
+                    : "bg-nci-red-lighter/50 text-nci-red-darkest"
                 }
               >
                 {file.access}
