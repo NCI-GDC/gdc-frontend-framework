@@ -29,12 +29,12 @@ else
 fi
 if [ "$BRANCH" = "master" ] || [ -n "$SCM_TAG" ]; then
 	# Which internal registry to push the images to.
-	REGISTRY="docker.osdc.io"
+	REGISTRY="containers.osdc.io"
 	# Which external registry to push the images to, or blank to skip.
 	# TODO: Should REGISTRY just be an array instead?
 	EXTERNAL_REGISTRY="quay.io"
 else
-	REGISTRY="docker.osdc.io"
+	REGISTRY="dev-containers.osdc.io"
 	EXTERNAL_REGISTRY=""
 fi
 # As what versions (i.e., "...:version") to tag the build images.
