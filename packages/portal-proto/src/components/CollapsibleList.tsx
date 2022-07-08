@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { AiFillCaretDown, AiFillCaretUp } from "react-icons/ai";
+import { v4 as uuidv4 } from "uuid";
 
 export const CollapsibleList = ({
   data,
@@ -15,8 +16,8 @@ export const CollapsibleList = ({
   const [expanded, setExpanded] = useState(false);
   return (
     <ul className="list-none pl-0 mb-0 inline-block">
-      {data.slice(0, expanded ? data.length : limit).map((d, i) => (
-        <li key={i}>{d}</li>
+      {data.slice(0, expanded ? data.length : limit).map((d) => (
+        <li key={uuidv4()}>{d}</li>
       ))}
       {data.length > limit && (
         <li className="float-right italic cursor-pointer">

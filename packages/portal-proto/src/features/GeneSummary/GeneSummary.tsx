@@ -32,7 +32,7 @@ export const GeneSummary = ({ gene_id }: { gene_id: string }): JSX.Element => {
       ? // TODO: need to change this after figuring out what to do with clicking on it
         "Cancer Gene Census"
       : "--";
-    const synonymss = synonyms?.length && (
+    const synonymsList = synonyms?.length && (
       <div>
         {synonyms?.map((s) => (
           <div key={s}>{s}</div>
@@ -45,7 +45,7 @@ export const GeneSummary = ({ gene_id }: { gene_id: string }): JSX.Element => {
     const summaryObj = {
       symbol,
       name,
-      synonyms: synonymss,
+      synonyms: synonymsList,
       type,
       location,
       Strand,

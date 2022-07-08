@@ -156,7 +156,7 @@ export const SSMSSummary = ({ ssm_id }: { ssm_id: string }): JSX.Element => {
     const externalLinksObj = { ...Object.fromEntries(arr) };
     return formatDataForHorizontalTable(externalLinksObj, headersConfig);
   };
-  console.log("summaryData: ", summaryData);
+
   return (
     <div>
       {!isFetching && summaryData ? (
