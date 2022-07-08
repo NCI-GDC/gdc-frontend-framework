@@ -59,9 +59,9 @@ fi
 function populate_image_tags() {
 	IMAGE_TAGS=()
 	for TAG_VERSION in "${TAG_VERSIONS[@]}"; do
-		IMAGE_TAGS+=("${REGISTRY}/ncigdc/$1:${TAG_VERSION}")
+		IMAGE_TAGS+=("${REGISTRY}/ncigdc/frontend:${TAG_VERSION}")
 		if [ -n "$EXTERNAL_REGISTRY" ]; then
-			IMAGE_TAGS+=("${EXTERNAL_REGISTRY}/ncigdc/$1:${TAG_VERSION}")
+			IMAGE_TAGS+=("${EXTERNAL_REGISTRY}/ncigdc/frontend:${TAG_VERSION}")
 		fi
 	done
 }
