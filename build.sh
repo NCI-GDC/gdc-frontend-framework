@@ -48,9 +48,9 @@ fi
 function populate_image_tags() {
 	IMAGE_TAGS=()
 	for TAG_VERSION in "${TAG_VERSIONS[@]}"; do
-		IMAGE_TAGS+=("${REGISTRY}/ncigdc/$1:${TAG_VERSION}")
+		IMAGE_TAGS+=("${REGISTRY}/ncigdc/$BRANCH:${TAG_VERSION}")
 		if [ -n "$EXTERNAL_REGISTRY" ]; then
-			IMAGE_TAGS+=("${EXTERNAL_REGISTRY}/ncigdc/$1:${TAG_VERSION}")
+			IMAGE_TAGS+=("${EXTERNAL_REGISTRY}/ncigdc/$BRANCH:${TAG_VERSION}")
 		fi
 	done
 }
@@ -93,8 +93,8 @@ echo "Pushing and cleaning up." | ts "[INFO] %H:%M:%S - $directory -"
 populate_image_tags "${directory}"
 echo ${TAG}
 for TAG in "${IMAGE_TAGS[@]}"; do
-	 docker push ncigdc/frontend/$BRANCH:$BUILDNUMBER | ts "[PUSH] %H:%M:%S - $directory -"
-	 docker rmi ncigdc/frontend/$BRANCH:$BUILDNUMBER  | ts "[PUSH] %H:%M:%S - $directory -"
+	 docker push ${TAG} | ts "[PUSH] %H:%M:%S - $directory -"
+	 docker rmi  ${TAG}  | ts "[PUSH] %H:%M:%S - $directory -"
 	echo "${TAG} is all set"
 done
 echo "All done!" | ts '[INFO] %H:%M:%S -'
