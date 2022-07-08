@@ -2,7 +2,7 @@
 set -o pipefail
 while getopts b:n:t: option; do
 	case "${option}" in
-	b) BRANCH=$${OPTARG} ;;
+	b) BRANCH=${OPTARG} ;;
 	n) BUILDNUMBER=${OPTARG} ;;
 	t) SCM_TAG=${OPTARG} ;;
 	*) echo "${OPTARG}" not supported! ;;

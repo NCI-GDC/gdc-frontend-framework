@@ -93,4 +93,4 @@ build:
     - rm -rf dist_linux/
     - mv dive /usr/local/bin/
   script:
-    - /bin/bash build.sh -b "$add-gitlab-ci" -n "$CI_COMMIT_SHORT_SHA"
+    - /bin/bash build.sh -b "add-gitlab-ci" -n "$CI_COMMIT_SHORT_SHA"
