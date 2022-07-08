@@ -1,25 +1,31 @@
 #!/bin/bash -x
 set -o pipefail
+
 while getopts b:n:t: option; do
 	case "${option}" in
+
 	b) BRANCH=${OPTARG} ;;
 	n) BUILDNUMBER=${OPTARG} ;;
 	t) SCM_TAG=${OPTARG} ;;
 	*) echo "${OPTARG}" not supported! ;;
 	esac
 done
+
 export DOCKER_BUILDKIT=1
 export BUILDKIT_STEP_LOG_MAX_SIZE=10485760
 export BUILDKIT_STEP_LOG_MAX_SPEED=1048576
+
 BRANCH="${BRANCH-}"
 SCM_TAG="${SCM_TAG-}"
 BUILD_ROOT_DIR=$(pwd)
 DOCKER_BUILD_OPT=""
+
 if [[ -z "$GITLAB_CI" ]]; then
 	DOCKER_BUILD_OPT="--progress plain"
 else
 	DOCKER_BUILD_OPT=""
 fi
+
 if [ -z "$SCM_TAG" ]; then
 	CLEAN_BRANCH_NAME=${BRANCH/\//_}
 	LOWERCASE_BRANCH_NAME="$(tr "[:upper:]" "[:lower:]" <<<"$CLEAN_BRANCH_NAME")"
@@ -27,76 +33,119 @@ if [ -z "$SCM_TAG" ]; then
 else
 	CURRENT_VERSION="$SCM_TAG"
 fi
+
 if [ "$BRANCH" = "master" ] || [ -n "$SCM_TAG" ]; then
 	# Which internal registry to push the images to.
-	REGISTRY="dev-containers.osdc.io"
+	REGISTRY="containers.osdc.io"
+
 	# Which external registry to push the images to, or blank to skip.
 	# TODO: Should REGISTRY just be an array instead?
 	EXTERNAL_REGISTRY="quay.io"
 else
-	REGISTRY="containers.osdc.io"
+	REGISTRY="dev-containers.osdc.io"
 	EXTERNAL_REGISTRY=""
 fi
+
 # As what versions (i.e., "...:version") to tag the build images.
 TAG_VERSIONS=("${CURRENT_VERSION}")
+
 if [ "$BRANCH" = "master" ]; then
 	TAG_VERSIONS+=("latest")
 fi
+
 # Populate the IMAGE_TAGS variable with an array listing the tags to set,
 # including all versions and registries. Pass the "directory" of the image
 # as an argument.
 function populate_image_tags() {
 	IMAGE_TAGS=()
 	for TAG_VERSION in "${TAG_VERSIONS[@]}"; do
-		IMAGE_TAGS+=("${REGISTRY}/ncigdc/$BRANCH:${TAG_VERSION}")
+		IMAGE_TAGS+=("${REGISTRY}/ncigdc/$1:${TAG_VERSION}")
 		if [ -n "$EXTERNAL_REGISTRY" ]; then
-			IMAGE_TAGS+=("${EXTERNAL_REGISTRY}/ncigdc/$BRANCH:${TAG_VERSION}")
+			IMAGE_TAGS+=("${EXTERNAL_REGISTRY}/ncigdc/$1:${TAG_VERSION}")
 		fi
 	done
 }
 
-echo "IMAGE_TAGS:"
-echo $IMAGE_TAGS
-echo "BRANCH"
-echo $BRANCH
-
 set -e
-cd "$BUILD_ROOT_DIR"
-if [ ! -f Dockerfile ]; then
-	continue
-fi
+for directory in *; do
+	if [ -d "${directory}" ]; then
 
+		if [ ! -f "${directory}"/Dockerfile ]; then
+			cd "$BUILD_ROOT_DIR"
+			continue
+		fi
 
-echo "Building Dockerfile" | ts "[INFO] %H:%M:%S"
-docker build -t dev-containers.osdc.io/portalv2:$BRANCH-$BUILDNUMBER .
+		cd "${directory}"
 
-if [[ -z "$GITLAB_CI" ]]; then
-	echo "This is not being built on GitLab, ignoring dive." | ts "[INFO] %H:%M:%S - $directory -"
-else
-	dive "ncigdc/frontend/$BRANCH:$BUILDNUMBER" || true
-fi
+		echo "Building ${directory} ..." | ts "[INFO] %H:%M:%S - $directory -"
+		echo docker buildx build --compress --progress plain \
+			-t "build-${directory}:${CURRENT_VERSION}" \
+			${DOCKER_BUILD_OPT} \
+			-f Dockerfile . \
+			--build-arg CURRENT_VERSION="${CURRENT_VERSION}" \
+			--build-arg REGISTRY="${REGISTRY}" \
+			--label org.opencontainers.image.version="${CURRENT_VERSION}" \
+			--label org.opencontainers.image.created="$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
+			--label org.opencontainers.image.revision="$(git rev-parse --short HEAD)" \
+			--label org.opencontainers.ref.name="${directory}:${CURRENT_VERSION}" \
+			--build-arg http_proxy=http://cloud-proxy:3128 \
+			--build-arg https_proxy=http://cloud-proxy:3128 | ts "[BUILD] %H:%M:%S - $directory -"
 
-echo docker rmi "ncigdc/frontend/$BRANCH:$BUILDNUMBER"
-cd ..
+		docker buildx build --compress --progress plain \
+                        -t "build-${directory}:${CURRENT_VERSION}" \
+                        ${DOCKER_BUILD_OPT} \
+                        -f Dockerfile . \
+                        --build-arg CURRENT_VERSION="${CURRENT_VERSION}" \
+                        --build-arg REGISTRY="${REGISTRY}" \
+                        --label org.opencontainers.image.version="${CURRENT_VERSION}" \
+                        --label org.opencontainers.image.created="$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
+                        --label org.opencontainers.image.revision="$(git rev-parse --short HEAD)" \
+                        --label org.opencontainers.ref.name="${directory}:${CURRENT_VERSION}" \
+                        --build-arg http_proxy=http://cloud-proxy:3128 \
+                        --build-arg https_proxy=http://cloud-proxy:3128 | ts "[BUILD] %H:%M:%S - $directory -"
+
+		# Assign the final tags now so later images can build on this one.
+		populate_image_tags "${directory}"
+		for TAG in "${IMAGE_TAGS[@]}"; do
+			echo docker tag "build-${directory}:${CURRENT_VERSION}" "$TAG"
+			docker tag "build-${directory}:${CURRENT_VERSION}" "$TAG"
+		done
+
+		if [[ -z "$GITLAB_CI" ]]; then
+			echo "This is not being built on GitLab, ignoring dive." | ts "[INFO] %H:%M:%S - $directory -"
+		else
+			dive "build-${directory}:${CURRENT_VERSION}" || true
+		fi
+
+		docker rmi "build-${directory}:${CURRENT_VERSION}"
+		cd ..
+	fi
+done
 
 echo "Successfully built all containers!" | ts '[INFO] %H:%M:%S -'
 
 cd "$BUILD_ROOT_DIR"
 
-if [ ! -f Dockerfile ]; then
-	continue
-fi
+for directory in *; do
+	if [ -d "${directory}" ]; then
 
-echo "Pushing and cleaning up." | ts "[INFO] %H:%M:%S - $directory -"
-#docker login docker.osdc.io -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
-#docker push  ncigdc/frontend/$BRANCH:$BUILDNUMBER
-populate_image_tags "${directory}"
-echo $REGISTRY
-for TAG in "${IMAGE_TAGS[@]}"; do
-	 echo docker push dev-containers.osdc.io/portalv2:$BRANCH-$BUILDNUMBER | ts "[PUSH] %H:%M:%S - $directory -"
-         docker push dev-containers.osdc.io/portalv2:$BRANCH-$BUILDNUMBER | ts "[PUSH] %H:%M:%S - $directory -"
-	 docker rmi  ncigdc/frontend/$BRANCH:$BUILDNUMBER  | ts "[PUSH] %H:%M:%S - $directory -"
-	 echo "${TAG} is all set"
+		if [ ! -f "${directory}"/Dockerfile ]; then
+			continue
+		fi
+
+		if [[ ${directory} == dep-* ]]; then
+			continue
+		fi
+
+		echo "Pushing and cleaning up." | ts "[INFO] %H:%M:%S - $directory -"
+
+		populate_image_tags "${directory}"
+		for TAG in "${IMAGE_TAGS[@]}"; do
+                        echo docker push "${TAG}" | ts "[PUSH] %H:%M:%S - $directory -"
+			docker push "${TAG}" | ts "[PUSH] %H:%M:%S - $directory -"
+			docker rmi "${TAG}" | ts "[PUSH] %H:%M:%S - $directory -"
+			echo "${TAG} is all set"
+		done
+	fi
 done
 echo "All done!" | ts '[INFO] %H:%M:%S -'
-
