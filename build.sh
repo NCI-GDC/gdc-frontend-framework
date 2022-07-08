@@ -91,11 +91,12 @@ echo "Pushing and cleaning up." | ts "[INFO] %H:%M:%S - $directory -"
 #docker login docker.osdc.io -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
 #docker push  ncigdc/frontend/$BRANCH:$BUILDNUMBER
 populate_image_tags "${directory}"
-echo ${TAG}
+echo $REGISTRY
 for TAG in "${IMAGE_TAGS[@]}"; do
+         echo docker push ncigdc/frontend/$BRANCH:$BUILDNUMBER | ts "[PUSH] %H:%M:%S - $directory -"
 	 docker push ncigdc/frontend/$BRANCH:$BUILDNUMBER | ts "[PUSH] %H:%M:%S - $directory -"
 	 docker rmi  ncigdc/frontend/$BRANCH:$BUILDNUMBER  | ts "[PUSH] %H:%M:%S - $directory -"
-	echo "${TAG} is all set"
+	 echo "${TAG} is all set"
 done
 echo "All done!" | ts '[INFO] %H:%M:%S -'
 
