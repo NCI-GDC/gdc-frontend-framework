@@ -136,9 +136,6 @@ export const formatEntityInfo = (
       ]),
   );
 
-  console.log(currentCart);
-  console.log(selectedSlide[0]);
-
   const fileInCart = (cart: CartFile[], newId: string) =>
     cart.map((f) => f.fileId).some((id) => id === newId);
 
