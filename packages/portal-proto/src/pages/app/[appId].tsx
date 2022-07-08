@@ -1,3 +1,4 @@
+import React from "react";
 import {
   useCoreSelector,
   selectGdcAppMetadataById,
@@ -5,7 +6,7 @@ import {
 } from "@gff/core";
 import { NextPage } from "next";
 import { NextRouter, useRouter } from "next/dist/client/router";
-import { SimpleLayout } from "../../features/layout/Simple";
+import { SimpleLayout } from "@/features/layout/Simple";
 
 const AppsPage: NextPage = () => {
   const router = useRouter();
@@ -13,10 +14,10 @@ const AppsPage: NextPage = () => {
   const metadata = useCoreSelector((state) =>
     selectGdcAppMetadataById(state, appId),
   );
-  const GdcApp = useCoreSelector(() => selectGdcAppById(appId));
+  const GdcApp = useCoreSelector(() =>
+    selectGdcAppById(appId),
+  ) as React.ElementType;
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
   return (
     <SimpleLayout>
       <div className="flex flex-col content-center gap-y-4">

@@ -5,6 +5,7 @@ const config: InitialOptionsTsJest = {
   setupFilesAfterEnv: ["<rootDir>/setupTests.ts"],
   transform: {
     ".+\\.(css|styl|less|sass|scss)$": "jest-css-modules-transform",
+    "@stjude": "ts-jest",
   },
   globals: {
     "ts-jest": {
@@ -19,6 +20,7 @@ const config: InitialOptionsTsJest = {
   },
   modulePaths: ["<rootDir>"],
   setupFiles: ["jest-canvas-mock"],
+  transformIgnorePatterns: ["/node_modules/(?!@stjude)/"],
 };
 
 export default config;

@@ -86,7 +86,7 @@ describe("cohortConfig reducer", () => {
       alteredConfig,
       addFilterToCohortBuilder({
         category: "general",
-        facetName: "file.test_facet",
+        facetName: "case.test_facet",
       }),
     );
     expect(state).toEqual(alteredConfig);
