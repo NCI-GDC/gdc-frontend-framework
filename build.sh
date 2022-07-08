@@ -29,12 +29,12 @@ else
 fi
 if [ "$BRANCH" = "master" ] || [ -n "$SCM_TAG" ]; then
 	# Which internal registry to push the images to.
-	REGISTRY="containers.osdc.io"
+	REGISTRY="docker.osdc.io"
 	# Which external registry to push the images to, or blank to skip.
 	# TODO: Should REGISTRY just be an array instead?
 	EXTERNAL_REGISTRY="quay.io"
 else
-	REGISTRY="dev-containers.osdc.io"
+	REGISTRY="docker.osdc.io"
 	EXTERNAL_REGISTRY=""
 fi
 # As what versions (i.e., "...:version") to tag the build images.
@@ -55,6 +55,10 @@ function populate_image_tags() {
 	done
 }
 
+echo "IMAGE_TAGS:"
+echo $IMAGE_TAGS
+echo "BRANCH"
+echo $BRANCH
 
 set -e
 cd "$BUILD_ROOT_DIR"
