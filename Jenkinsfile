@@ -1,7 +1,26 @@
-#!groovy
+#!/usr/bin/env groovy
 
-library identifier: "jenkins-lib@master"
-dockerPipeline{
-    tagSource = "semver"
-    // testBranches = '(develop|master|release.*)'
+pipeline {
+  agent any
+  stages {
+
+    stage('Checkout') {
+          // Get code from github.
+	  steps{
+             checkout scm
+          }
+        }
+    stage ('Pre commithooks') {
+      steps{
+       script {
+//        sshagent(credentials: ['githubkey']) {
+          sh "python -m ensurepip --upgrade"
+          sh "pre-commit run -a"
+       
+        
+     
+    }
+   }
+  }
+ }
 }
