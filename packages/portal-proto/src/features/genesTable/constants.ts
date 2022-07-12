@@ -9,4 +9,8 @@ export const geneKeys = [
   "mutations",
   "annotations",
 ];
-export const customGeneKeys = ["annotations", "survival"];
+export const customGeneKeys = [
+  "annotations",
+  "survival",
+  "SSMSAffectedCasesAcrossTheGDC",
+];

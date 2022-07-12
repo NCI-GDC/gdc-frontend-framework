@@ -1,7 +1,15 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useGenesTable } from "@gff/core";
 import { VerticalTable } from "../shared/VerticalTable";
-import { Loader, Pagination, Select, Switch, Tooltip } from "@mantine/core";
+import {
+  Loader,
+  Pagination,
+  Select,
+  Switch,
+  Tooltip,
+  Collapse,
+  Button,
+} from "@mantine/core";
 import { SiMicrogenetics as GeneAnnotationIcon } from "react-icons/si";
 import _ from "lodash";
 import { useMeasure } from "react-use";
@@ -32,6 +40,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
   const [columnListCells, setColumnListCells] = useState([]);
 
   const [selectedRowsMap, setSelectedRowsMap] = useState({});
+  const [expandedCell, setExpandedCell] = useState([]);
   const [uuidRowParam] = useState("symbol");
   const [scrollItem, setScrollItem] = useState(1);
   const [selectedSorts, setSelectedSorts] = useState([]);
@@ -47,14 +56,6 @@ const GenesTable: React.FC<GenesTableProps> = ({
   useEffect(() => {
     setActivePage(1);
   }, [pageSize]);
-
-  useEffect(() => {
-    // console.log("selected sorts", selectedSorts);
-  }, [selectedSorts]);
-
-  useEffect(() => {
-    // console.log("sorts", sorts);
-  }, [sorts]);
 
   const handleRowSelectChange = (rowUpdate, select, selectAll) => {
     switch (select) {
@@ -104,6 +105,27 @@ const GenesTable: React.FC<GenesTableProps> = ({
     }
   };
 
+  useEffect(() => {
+    console.log("cellmap", expandedCell);
+  }, [expandedCell]);
+
+  const handleRowExpansion = (rowUpdate) => {
+    // TODO
+    const row = rowUpdate.original[uuidRowParam];
+    if (expandedCell.length === 0) {
+      setExpandedCell((cell) => {
+        return [...cell, row];
+      });
+    } else {
+      if (expandedCell[0] === row) {
+      }
+    }
+    // setExpandedRowsMap((exMap) => {
+    //   return {...exMap, }
+    // })
+    // setScrollItem(...)
+  };
+
   const handleSortChange = (sortUpdate) => {
     // console.log("sortUpdate", sortUpdate);
   };
@@ -141,14 +163,14 @@ const GenesTable: React.FC<GenesTableProps> = ({
                   (100 * g.case_cnv_gain) /
                   data.genes.cnvCases
                 ).toFixed(2)}%)`
-              : `0%`,
+              : `--`,
           CNVLoss:
             data.genes.cnvCases > 0
               ? `${g.case_cnv_loss + " / " + data.genes.cnvCases} (${(
                   (100 * g.case_cnv_loss) /
                   data.genes.cnvCases
                 ).toFixed(2)}%)`
-              : `0%`,
+              : `--`,
           mutations: data.genes.mutationCounts[g.gene_id],
           annotations: g.is_cancer_gene_census,
         };
@@ -167,7 +189,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
           Header: "Annotations",
           accessor: "annotations",
           Cell: ({ value }: any) => (
-            <div className="grid place-items-center">
+            <div className={`grid place-items-center`}>
               {value ? (
                 <Tooltip label="Is Cancer Census">
                   {" "}
@@ -177,35 +199,56 @@ const GenesTable: React.FC<GenesTableProps> = ({
             </div>
           ),
         };
-      case "survival": {
+      case "survival":
         return {
           Header: "Survival",
           accessor: "survival",
           Cell: ({ value }: any) => {
             return (
-              <Tooltip label={`Click icon to plot ${value.symbol}`}>
-                <Switch
-                  radius="xs"
-                  size="sm"
-                  id={`genetable-survival-${value.symbol}`}
-                  checked={value.checked}
-                  onChange={() => {
-                    handleSurvivalPlotToggled(
-                      value.symbol,
-                      value.name,
-                      "gene.symbol",
-                    );
-                  }}
-                  classNames={{
-                    input:
-                      "bg-nci-gray-light checked:bg-nci-blue-dark  checked:bg-none",
-                  }}
-                />
-              </Tooltip>
+              <div className={`grid place-items-center`}>
+                <Tooltip label={`Click icon to plot ${value.symbol}`}>
+                  <Switch
+                    radius="xs"
+                    size="sm"
+                    id={`genetable-survival-${value.symbol}`}
+                    checked={value.checked}
+                    onChange={() => {
+                      handleSurvivalPlotToggled(
+                        value.symbol,
+                        value.name,
+                        "gene.symbol",
+                      );
+                    }}
+                    classNames={{
+                      input:
+                        "bg-nci-gray-light checked:bg-nci-blue-dark  checked:bg-none",
+                    }}
+                  />
+                </Tooltip>
+              </div>
             );
           },
         };
-      }
+      case "SSMSAffectedCasesAcrossTheGDC":
+        return {
+          Header: "Cases Affected Across the GDC",
+          id: "expander",
+          accessor: "SSMSAffectedCasesAcrossTheGDC",
+          Cell: ({ value, row }: any) => {
+            return (
+              <div
+                {...row.getToggleRowExpandedProps()}
+                className={`grid place-items-center`}
+              >
+                <button onClick={() => row.toggleRowExpanded()}>{value}</button>
+                {/* <span>{expandedCell.length > 0 ? expandedCell[0] : "no expanded cell"}</span> */}
+                <span onClick={() => console.log("row??", row)}>
+                  {row.isExpanded ? "expanded" : "not expanded"}
+                </span>
+              </div>
+            );
+          },
+        };
       default:
         return;
     }
@@ -218,13 +261,16 @@ const GenesTable: React.FC<GenesTableProps> = ({
         : {
             Header: _.startCase(key),
             accessor: key,
+            Cell: ({ value }) => {
+              return <div className={`grid place-items-center`}>{value}</div>;
+            },
             width:
-              width / geneKeys.length > 110 ? width / geneKeys.length : 110,
+              width / geneKeys.length > 100 ? width / geneKeys.length : 100,
           };
     });
     return cellMapping;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedSurvivalPlot, width]);
+  }, [selectedSurvivalPlot, width, expandedCell]);
 
   const getTableColumnMapping = () => {
     return geneKeys.map((key, idx) => {
@@ -240,7 +286,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
     setColumnListOrder(getTableColumnMapping());
     setColumnListCells(getTableCellMapping());
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [expandedCell]);
 
   const handlePageSizeChange = (x: string) => {
     setOffset((activePage - 1) * parseInt(x));
@@ -315,6 +361,9 @@ const GenesTable: React.FC<GenesTableProps> = ({
         <div className={`flex-2 p-2`}>JSON</div>
         <div className={`flex-2 p-2`}>TSV</div>
       </div>
+      {/* TODO: move this & pagination into VerticalTable
+      Showing ${(activePage - 1) * pageSize + 1} - ${activePage * pageSize
+              } of   ${totalResults} genes */}
       <div ref={ref} className={`flex flex-row w-9/12`}>
         {data && !isFetching ? (
           <VerticalTable
@@ -326,11 +375,10 @@ const GenesTable: React.FC<GenesTableProps> = ({
             uuidRowParam={uuidRowParam}
             scrollItem={scrollItem}
             selectedRowsMap={selectedRowsMap}
+            expandedCell={expandedCell}
             handleSortChange={handleSortChange}
             selectedSorts={selectedSorts}
-            tableTitle={`Showing ${(activePage - 1) * pageSize + 1} - ${
-              activePage * pageSize
-            } of   ${totalResults} genes`}
+            tableTitle={`Genes Table`}
             pageSize={pageSize.toString()}
             selectableRow={true}
           ></VerticalTable>

@@ -256,10 +256,10 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
           </Tooltip>
         </div>
       </div>
-      <div className="flex flex-col items-center ">
+      <div className="flex flex-col items-center">
         {!hideLegend &&
           legend?.map((x, idx) => {
-            return <p key={`${x.key}-${idx}`}>{x.value}</p>;
+            return <div key={`${x.key}-${idx}`}>{x.value}</div>;
           })}
         <div>
           <Tooltip

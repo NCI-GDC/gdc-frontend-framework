@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, FC, useRef } from "react";
-import { useTable, useBlockLayout } from "react-table";
-import { FixedSizeList as List } from "react-window";
+import { useTable, useBlockLayout, useExpanded } from "react-table";
+import { VariableSizeList as List } from "react-window";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DragDrop } from "./DragDrop";
@@ -21,6 +21,7 @@ interface VerticalTableProps {
   uuidRowParam: string;
   scrollItem: number;
   selectedRowsMap: any;
+  expandedCell: any;
   selectableRow: boolean;
   handleSortChange: (sortUpdate: any) => void;
   selectedSorts: any;
@@ -38,6 +39,7 @@ interface TableProps {
   columns: Column[];
   data: any[];
   scrollItem: number;
+  expandedCell: any;
 }
 
 export const VerticalTable: FC<VerticalTableProps> = ({
@@ -49,6 +51,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   uuidRowParam,
   scrollItem,
   selectedRowsMap,
+  expandedCell,
   selectableRow,
   handleSortChange,
   selectedSorts,
@@ -61,6 +64,9 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   const [headings, setHeadings] = useState([]);
   const [showColumnMenu, setShowColumnMenu] = useState(false);
   const [showSortMenu, setShowSortMenu] = useState(false);
+
+  const listRef = useRef<any>({});
+  const rowHeights = useRef<any>({});
 
   useEffect(() => {
     setTable(tableData);
@@ -85,6 +91,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         Header: "",
         Cell: ({ row }) => (
           <input
+            key={`key-${row.id}`}
             checked={
               row.original[uuidRowParam] in selectedRowsMap ? true : false
             }
@@ -92,13 +99,18 @@ export const VerticalTable: FC<VerticalTableProps> = ({
             type="checkbox"
           />
         ),
-        width: 30,
+        width: 20,
       },
       ...columns,
     ]);
   };
 
-  const Table: FC<TableProps> = ({ columns, data, scrollItem }: TableProps) => {
+  const Table: FC<TableProps> = ({
+    columns,
+    data,
+    scrollItem,
+    expandedCell,
+  }: TableProps) => {
     const {
       getTableProps,
       getTableBodyProps,
@@ -111,52 +123,123 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         columns,
         data,
       },
+
       useBlockLayout,
+      useExpanded,
       selectableRow ? tableAction : null,
     );
 
+    const setRowHeight = (index, size) => {
+      rowHeights.current = { ...rowHeights.current, [index]: size };
+    };
+
+    const rowRef = useRef<any>({});
+
     const RenderRow = useCallback(
       ({ index, style }) => {
-        const row = rows[index];
-        prepareRow(row);
+        useEffect(() => {
+          if (rowRef.current) {
+            setRowHeight(index, rowRef.current.clientHeight);
+          }
+          // eslint-disable-next-line
+        }, [rowRef]);
+        //   const row = rows[index];
+        //   prepareRow(row);
 
+        //   return (
+        //     <>
+        //       <div>
+        //         <div
+        //           {...row.getRowProps({
+        //             style,
+        //           })}
+        //           // {...row.getToggleRowExpandedProps()}
+        //           role="row"
+        //           aria-rowindex={index}
+        //           ref={rowRef}
+        //           key={`row-header-${index}`}
+        //           className={`tr ${index % 2 === 1 ? "bg-slate-100" : "bg-white"
+        //             } text-sm block`}>
+        //           {row.cells.map((cell, key) => {
+        //             return (
+        //               <div key={`cell-${key}`} className={`flex ${cell?.value?.length > 25 ? 'mt-4' : 'items-center'} justify-center`}>
+        //                 <div
+        //                   {...cell.getCellProps()}
+        //                   role="cell"
+        //                   // key={`row-key-${index}-${key}`}
+        //                   // justify-end flex items-center justify-center
+        //                   className={`td rounded-sm p-1 h-8`}
+        //                 >
+        //                   {cell.render("Cell")}
+        //                 </div>
+
+        //               </div>
+        //             );
+        //           })}
+        //         </div>
+        //       </div>
+        //     </>
+        //   );
+        // },
+        const renderRowSubComponent = React.useCallback(
+          ({ row }) => (
+            // TODO: parametrize this subrow component w/ props (styles, expandedCell, rowHeights)
+            <button onClick={(row) => console.log(`subrow`, row)}>
+              Subrow woohoo!
+            </button>
+          ),
+          [],
+        );
         return (
-          <div
-            role="row"
-            aria-rowindex={index}
-            {...row.getRowProps({
-              style,
-            })}
-            className={`tr ${
-              index % 2 === 1 ? "bg-slate-100" : "bg-white"
-            } text-sm`}
-          >
-            {row.cells.map((cell, key) => {
+          <div>
+            {rows.map((row, i) => {
+              prepareRow(row);
               return (
                 <div
-                  {...cell.getCellProps()}
-                  role="cell"
-                  key={`row-${key}`}
-                  className="td rounded-sm p-1.5 text-center h-7"
+                  {...row.getRowProps()}
+                  {...row.getToggleRowExpandedProps()}
                 >
-                  {cell.render("Cell")}
+                  <div
+                    className={`tr`}
+                    {...row.getRowProps()}
+                    onClick={() => {
+                      row.toggleRowExpanded(); // toggle row expand
+                    }}
+                  >
+                    {row.cells.map((cell) => {
+                      return (
+                        <div className={`td`} {...cell.getCellProps()}>
+                          {cell.render("Cell")}
+                        </div>
+                      );
+                    })}
+                  </div>
+                  {/* TODO: pass the number of currently visible columns for col-span-n property */}
+                  {row.isExpanded ? (
+                    <div className={`tr`}>
+                      <div className={`td col-span-6`}>
+                        {/*
+                      TODO: pass this component as a prop/child from Parent Table
+                    */}
+                        {renderRowSubComponent({ row })}
+                      </div>
+                    </div>
+                  ) : null}
                 </div>
               );
             })}
           </div>
         );
       },
-      [prepareRow, rows],
+      [prepareRow, rows, rowRef],
     );
 
-    let tableRef: any = useRef();
-
-    useEffect(() => {
-      tableRef.current.scrollToItem(scrollItem, "smart");
-    }, [scrollItem]);
+    const getRowSize = (index) => {
+      return rowHeights.current[index] || 90;
+    };
 
     return (
-      <div className="p-2 overflow-visible">
+      <div className="p-2">
         <h2
           id={`${tableTitle.toLowerCase().replace(" ", "_")}`}
           className={`font-semibold`}
@@ -175,6 +258,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
               <div
                 {...headerGroup.getHeaderGroupProps()}
                 role="row"
+                // shadow-inner not noticable
                 className={`tr bg-white shadow-inset text-sm font-semibold`}
                 key={`header-${key}`}
               >
@@ -182,7 +266,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                   <div
                     role="columnheader"
                     {...column.getHeaderProps()}
-                    className={`th text-black text-center`}
+                    className={`th text-black text-center grid place-items-center`}
                     key={`column-${key}`}
                   >
                     {key === 0 ? (
@@ -212,11 +296,12 @@ export const VerticalTable: FC<VerticalTableProps> = ({
           </div>
           <div role="rowgroup" {...getTableBodyProps()}>
             <List
-              height={360}
+              // TODO: calculate height from sum of expanded & non-expanded rows
+              height={600}
               itemCount={rows.length}
-              itemSize={80}
-              width={totalColumnsWidth}
-              ref={tableRef}
+              itemSize={getRowSize}
+              width={totalColumnsWidth + 20}
+              ref={listRef}
             >
               {RenderRow}
             </List>
@@ -296,7 +381,12 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         </div>
       </div>
       {columnListOptions.length > 0 && (
-        <Table columns={headings} data={table} scrollItem={scrollItem}></Table>
+        <Table
+          columns={headings}
+          data={table}
+          scrollItem={scrollItem}
+          expandedCell={expandedCell}
+        ></Table>
       )}
     </div>
   );
