@@ -1,7 +1,9 @@
 import { useCaseSummary } from "@gff/core";
-import { LoadingOverlay } from "@mantine/core";
+import { LoadingOverlay, Tooltip } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
+import Link from "next/link";
 import { useContext, useEffect } from "react";
+import { FaMicroscope, FaShoppingCart } from "react-icons/fa";
 import { URLContext } from "src/pages/_app";
 import { Biospecimen } from "../biospecimen/Biospecimen";
 
@@ -43,7 +45,6 @@ export const CaseSummaryNew = ({
     ],
   });
 
-  console.log("data: ", data);
   const { prevPath } = useContext(URLContext);
 
   const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>({
@@ -55,6 +56,76 @@ export const CaseSummaryNew = ({
       scrollIntoView();
     }
   }, [prevPath, scrollIntoView]);
+
+  const slideCountFromCaseSummary = (
+    experimental_strategies: Array<{
+      experimental_strategy: string;
+      file_count: number;
+    }>,
+  ): number => {
+    const slideTypes = ["Diagnostic Slide", "Tissue Slide"];
+    return (experimental_strategies || []).reduce(
+      (slideCount, { file_count, experimental_strategy }) =>
+        slideTypes.includes(experimental_strategy)
+          ? slideCount + file_count
+          : slideCount,
+      0,
+    );
+  };
+
+  const formatDataForCaseSummary = () => {
+    const {
+      case_id,
+      submitter_id,
+      project: {
+        project_id,
+        name: project_name,
+        program: { name: program_name },
+      },
+      disease_type,
+      primary_site,
+      summary: { experimental_strategies },
+    } = data;
+
+    const slideCount = slideCountFromCaseSummary(experimental_strategies);
+
+    let caseSummaryObject = {
+      case_uuid: case_id,
+      case_id: submitter_id,
+      project_name,
+      disease_type,
+      program_name,
+      primary_site,
+    };
+
+    // if (!!slideCount) {
+    //   const slideImage = {
+    //     images: (
+    //       <div className="flex">
+    //         <Tooltip label="View Slide Image">
+    //           <Link
+    //             href={`/user-flow/workbench/MultipleImageViewerPage?caseId=${caseId}&selectedId=${selectedSlide[0]?.file_id}`}
+    //           >
+    //             <a>
+    //               <FaMicroscope />
+    //             </a>
+    //           </Link>
+    //         </Tooltip>
+    //         <Tooltip label={isFileInCart ? "Remove from Cart" : "Add to Cart"}>
+    //           <FaShoppingCart
+    //             onClick={() => {
+    //               isFileInCart
+    //                 ? removeFromCart(selectedSlide, currentCart, dispatch)
+    //                 : addToCart(selectedSlide, currentCart, dispatch);
+    //             }}
+    //             className={isFileInCart ? "text-nci-green" : ""}
+    //           />
+    //         </Tooltip>
+    //       </div>
+    //     ),
+    //   };
+    // }
+  };
 
   return (
     <>

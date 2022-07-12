@@ -39,7 +39,7 @@ export interface caseSummaryDefaults {
       data_category: string;
     }>;
     experimental_strategies: Array<{
-      file_count: string;
+      file_count: number;
       experimental_strategy: string;
     }>;
     file_count: number;
