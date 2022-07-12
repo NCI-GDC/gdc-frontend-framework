@@ -20,6 +20,7 @@ export const CollapsibleTextArea = ({
             <button
               className="float-right italic"
               onClick={() => setExpanded((e) => !e)}
+              aria-expanded={expanded}
             >
               {expanded ? (
                 <div className="flex">

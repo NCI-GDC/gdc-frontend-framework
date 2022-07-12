@@ -21,7 +21,10 @@ export const CollapsibleList = ({
       ))}
       {data.length > limit && (
         <li className="float-right italic cursor-pointer">
-          <button onClick={() => setExpanded((e) => !e)}>
+          <button
+            onClick={() => setExpanded((e) => !e)}
+            aria-expanded={expanded}
+          >
             {expanded ? (
               <div className="flex">
                 <AiFillCaretUp className="mr-1" title="show less icon" />
