@@ -4,6 +4,7 @@ import { ContextualCasesView } from "@/features/cases/CasesView";
 import { useRouter } from "next/router";
 import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
 import { useEffect, useState } from "react";
+import { CaseSummaryNew } from "@/features/cases/CaseSummaryNew";
 
 const CaseSummary: NextPage = () => {
   const router = useRouter();
@@ -23,10 +24,11 @@ const CaseSummary: NextPage = () => {
       {...{ indexPath: "/user-flow/many-pages", headerElements }}
     >
       {ready && (
-        <ContextualCasesView
-          caseId={caseId as string}
-          bioId={bioId as string}
-        />
+        // <ContextualCasesView
+        //   caseId={caseId as string}
+        //   bioId={bioId as string}
+        // />
+        <CaseSummaryNew case_id={caseId as string} bio_id={bioId as string} />
       )}
     </UserFlowVariedPages>
   );

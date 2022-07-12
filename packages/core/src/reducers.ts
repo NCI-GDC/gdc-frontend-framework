@@ -25,6 +25,7 @@ import {
   cohortApiSliceReducerPath,
 } from "./features/api/cohortApiSlice";
 import { biospecimenReducer } from "./features/biospecimen/biospecimenSlice";
+import { caseSummarySliceReducer } from "./features/cases/caseSummarySlice";
 
 export const reducers = combineReducers({
   cohort: cohortReducers,
@@ -49,6 +50,7 @@ export const reducers = combineReducers({
   bannerNotification: bannerReducer,
   summary: totalCountsReducer,
   biospecimen: biospecimenReducer,
+  caseSummary: caseSummarySliceReducer,
   [cohortApiSliceReducerPath]: cohortApiReducer,
 });
 
