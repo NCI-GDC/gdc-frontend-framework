@@ -10,7 +10,7 @@ const columnListOrder = [
 ];
 
 const columnCells = [
-  { Header: "Project", accessor: "key" },
+  { Header: "Project", accessor: "key", width: 200 },
   { Header: "Cases", accessor: "case_count" },
   { Header: "Files", accessor: "doc_count" },
   { Header: "File Size", accessor: "file_size" },

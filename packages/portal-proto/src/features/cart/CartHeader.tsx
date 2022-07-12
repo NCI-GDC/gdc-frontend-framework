@@ -77,12 +77,13 @@ const CartHeader: React.FC<CartHeaderProps> = ({
       Manifest
     </Button>
     <h1 className="uppercase ml-auto mr-4 flex items-center truncate text-2xl">
-      Total of <FileIcon size={25} className="mx-1" />{" "}
-      <b className="mr-1">{summaryData.total_doc_count.toLocaleString()}</b>{" "}
-      Files
-      <PersonIcon size={25} className="mx-1" />{" "}
-      <b className="mr-1">{summaryData.total_case_count.toLocaleString()}</b>{" "}
-      Cases <SaveIcon size={25} className="mx-1" />{" "}
+      Total of <FileIcon size={25} className="mx-2" />{" "}
+      <b className="mr-2">{summaryData.total_doc_count.toLocaleString()}</b>{" "}
+      {summaryData.total_doc_count === 1 ? "File" : "Files"}
+      <PersonIcon size={25} className="mx-2" />{" "}
+      <b className="mr-2">{summaryData.total_case_count.toLocaleString()}</b>{" "}
+      {summaryData.total_case_count === 1 ? "Case" : "Cases"}{" "}
+      <SaveIcon size={25} className="mx-2" />{" "}
       {fileSize(summaryData.total_file_size)}
     </h1>
   </div>

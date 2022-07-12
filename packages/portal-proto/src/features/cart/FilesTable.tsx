@@ -27,15 +27,15 @@ const columnCells = [
   { Header: "File UUID", accessor: "uuid" },
   { Header: "Access", accessor: "access" },
   { Header: "File Name", accessor: "name", width: 300 },
-  { Header: "Cases", accessor: "cases" },
-  { Header: "Project", accessor: "project" },
+  { Header: "Cases", accessor: "cases", width: 80 },
+  { Header: "Project", accessor: "project", width: 300 },
   { Header: "Data Category", accessor: "data_category" },
-  { Header: "Data Format", accessor: "data_format" },
-  { Header: "File Size", accessor: "file_size" },
-  { Header: "Annotations", accessor: "annotations" },
   { Header: "Data Type", accessor: "data_type" },
+  { Header: "Data Format", accessor: "data_format", width: 80 },
   { Header: "Experimental Strategy", accessor: "experimental_strategy" },
   { Header: "Platform", accessor: "platform" },
+  { Header: "File Size", accessor: "file_size" },
+  { Header: "Annotations", accessor: "annotations", width: 100 },
 ];
 
 const initialVisibleColumns = [
@@ -46,16 +46,16 @@ const initialVisibleColumns = [
   { id: "cases", columnName: "Cases", visible: true },
   { id: "project", columnName: "Project", visible: true },
   { id: "data_category", columnName: "Data Category", visible: true },
-  { id: "data_format", columnName: "Data Format", visible: true },
-  { id: "file_size", columnName: "File Size", visible: true },
-  { id: "annotations", columnName: "Annotations", visible: true },
   { id: "data_type", columnName: "Data Type", visible: false },
+  { id: "data_format", columnName: "Data Format", visible: true },
   {
     id: "experimental_strategy",
     columnName: "Experimental Strategy",
     visible: false,
   },
   { id: "platform", columnName: "Platform", visible: false },
+  { id: "file_size", columnName: "File Size", visible: true },
+  { id: "annotations", columnName: "Annotations", visible: true },
 ];
 
 const FilesTable: React.FC = () => {
@@ -111,8 +111,8 @@ const FilesTable: React.FC = () => {
               <Badge
                 className={
                   file.access === "open"
-                    ? "bg-nci-green-lighter/50 text-nci-green-darkest"
-                    : "bg-nci-red-lighter/50 text-nci-red-darkest"
+                    ? "bg-nci-green-lighter/50 text-nci-green-darkest capitalize text-sm"
+                    : "bg-nci-red-lighter/50 text-nci-red-darkest capitalize text-sm"
                 }
               >
                 {file.access}

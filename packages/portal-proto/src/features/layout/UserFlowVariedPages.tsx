@@ -139,7 +139,7 @@ const Header: React.FC<HeaderProps> = ({
                 "flex flex-row opacity-60 hover:opacity-100 transition-opacity  items-center mx-2 cursor-pointer"
               }
             >
-              <CartIcon size="24px" /> Cart ({currentCart.length})
+              <CartIcon size="24px" /> Cart ({currentCart.length || 0})
             </div>
           </Link>
           <Menu
