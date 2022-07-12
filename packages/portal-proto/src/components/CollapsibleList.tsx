@@ -24,12 +24,12 @@ export const CollapsibleList = ({
           <button onClick={() => setExpanded((e) => !e)}>
             {expanded ? (
               <div className="flex">
-                <AiFillCaretUp className="mr-1" />
+                <AiFillCaretUp className="mr-1" title="show less icon" />
                 <span>{collapseText}</span>
               </div>
             ) : (
               <div className="flex">
-                <AiFillCaretDown className="mr-1" />
+                <AiFillCaretDown className="mr-1" title="show more icon" />
                 <span>{expandText}</span>
               </div>
             )}

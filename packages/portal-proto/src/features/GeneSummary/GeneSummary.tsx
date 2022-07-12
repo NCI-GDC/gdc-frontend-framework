@@ -35,7 +35,9 @@ export const GeneSummary = ({ gene_id }: { gene_id: string }): JSX.Element => {
     const synonymsList = synonyms?.length && (
       <div>
         {synonyms?.map((s) => (
-          <div key={s}>{s}</div>
+          <li className="list-none" key={s}>
+            {s}
+          </li>
         ))}
       </div>
     );

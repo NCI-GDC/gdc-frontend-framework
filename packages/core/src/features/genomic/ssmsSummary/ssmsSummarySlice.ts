@@ -109,14 +109,10 @@ export const ssmsReducer = slice.reducer;
 
 export const selectSsmsSummaryData = (
   state: CoreState,
-): summaryData | undefined => state.ssms.summaryData;
-
-export const selectSsmsData = (
-  state: CoreState,
-): CoreDataSelectorResponse<SSMSDefaults> => ({
-  data: state.ssms.ssms,
+): CoreDataSelectorResponse<summaryData | undefined> => ({
+  data: state.ssms.summaryData,
   status: state.ssms.status,
   error: state.ssms.error,
 });
 
-export const useSSMS = createUseCoreDataHook(fetchSsms, selectSsmsData);
+export const useSSMS = createUseCoreDataHook(fetchSsms, selectSsmsSummaryData);

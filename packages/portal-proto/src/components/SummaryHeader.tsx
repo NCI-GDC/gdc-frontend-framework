@@ -1,3 +1,4 @@
+import { IconType } from "react-icons";
 import { HorizontalTable, HorizontalTableProps } from "./HorizontalTable";
 import { TypeIcon } from "./TypeIcon";
 
@@ -20,7 +21,7 @@ export const SummaryHeader = ({
 export interface SummaryCardProps {
   readonly title?: string;
   readonly message?: JSX.Element;
-  readonly Icon?: any;
+  readonly Icon?: IconType;
   readonly tableData: HorizontalTableProps["tableData"];
 }
 

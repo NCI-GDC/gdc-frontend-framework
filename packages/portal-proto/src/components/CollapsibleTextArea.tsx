@@ -23,12 +23,12 @@ export const CollapsibleTextArea = ({
             >
               {expanded ? (
                 <div className="flex">
-                  <AiFillCaretUp className="mr-1" />
+                  <AiFillCaretUp className="mr-1" title="show less icon" />
                   <span>less</span>
                 </div>
               ) : (
                 <div className="flex">
-                  <AiFillCaretDown className="mr-1" />
+                  <AiFillCaretDown className="mr-1" title="show more icon" />
                   <span>more</span>
                 </div>
               )}

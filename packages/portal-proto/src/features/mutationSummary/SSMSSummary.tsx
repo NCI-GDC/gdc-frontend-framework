@@ -1,5 +1,5 @@
 import { SummaryHeader, SummaryCard } from "@/components/SummaryHeader";
-import { useSSMS, selectSsmsSummaryData, useCoreSelector } from "@gff/core";
+import { useSSMS } from "@gff/core";
 import { pick } from "lodash";
 import { HorizontalTableProps } from "@/components/HorizontalTable";
 import { humanify } from "../biospecimen/utils";
@@ -10,18 +10,13 @@ import { CollapsibleList } from "@/components/CollapsibleList";
 import { AnchorLink } from "@/components/AnchorLink";
 
 export const SSMSSummary = ({ ssm_id }: { ssm_id: string }): JSX.Element => {
-  const { isFetching } = useSSMS({
+  const { data: summaryData, isFetching } = useSSMS({
     filters: {
-      op: "and",
-      content: [
-        {
-          content: {
-            field: "ssm_id",
-            value: ssm_id,
-          },
-          op: "=",
-        },
-      ],
+      content: {
+        field: "ssm_id",
+        value: ssm_id,
+      },
+      op: "=",
     },
     expand: ["consequence.transcript", "consequence.transcript.annotation"],
     fields: [
@@ -35,8 +30,6 @@ export const SSMSSummary = ({ ssm_id }: { ssm_id: string }): JSX.Element => {
     ],
     size: 1,
   });
-
-  const summaryData = useCoreSelector((state) => selectSsmsSummaryData(state));
 
   const formatDataForSummary = (): HorizontalTableProps["tableData"] => {
     const obj = pick(summaryData, [
