@@ -34,13 +34,13 @@ export const GeneSummary = ({ gene_id }: { gene_id: string }): JSX.Element => {
         "Cancer Gene Census"
       : "--";
     const synonymsList = synonyms?.length && (
-      <div>
+      <ul>
         {synonyms?.map((s) => (
           <li className="list-none" key={s}>
             {s}
           </li>
         ))}
-      </div>
+      </ul>
     );
 
     const desc = <CollapsibleTextArea text={description} />;
