@@ -1,4 +1,4 @@
-import { SummaryHeader } from "@/components/SummaryHeader";
+import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { useFiles, useFileHistory } from "@gff/core";
 import { FileView } from "./FileView";
 

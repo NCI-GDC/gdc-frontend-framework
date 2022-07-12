@@ -1,4 +1,5 @@
-import { SummaryHeader, SummaryCard } from "@/components/SummaryHeader";
+import { SummaryHeader } from "@/components/Summary/SummaryHeader";
+import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { useSSMS } from "@gff/core";
 import { pick } from "lodash";
 import { HorizontalTableProps } from "@/components/HorizontalTable";

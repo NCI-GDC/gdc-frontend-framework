@@ -1,6 +1,7 @@
 import { AnchorLink } from "@/components/AnchorLink";
 import { CollapsibleTextArea } from "@/components/CollapsibleTextArea";
-import { SummaryCard, SummaryHeader } from "@/components/SummaryHeader";
+import { SummaryCard } from "@/components/Summary/SummaryCard";
+import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { useGenesSummaryData } from "@gff/core";
 import { FaBook, FaTable } from "react-icons/fa";
 import { HiPlus, HiMinus } from "react-icons/hi";
