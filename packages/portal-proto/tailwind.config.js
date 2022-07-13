@@ -17,6 +17,7 @@ module.exports = {
     "./src/components/**/*.{js,ts,jsx,tsx}",
     "./src/features/**/*.{js,ts,jsx,tsx}",
   ],
+  safelist: ["text-nci-orange", "text-nci-green", "text-nci-purple"],
   theme: {
     extend: {
       colors: {
