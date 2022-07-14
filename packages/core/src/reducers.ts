@@ -20,6 +20,8 @@ import { cohortComparisonReducer } from "./features/cohortComparison";
 import { bannerReducer } from "./features/bannerNotification";
 import { cartReducer } from "./features/cart/cartSlice";
 import { totalCountsReducer } from "./features/summary/totalCountsSlice";
+import { ssmsReducer } from "./features/genomic/ssmsSummary/ssmsSummarySlice";
+import { genesSummaryReducer } from "./features/genomic/geneSummary/geneSummarySlice";
 import {
   cohortApiReducer,
   cohortApiSliceReducerPath,
@@ -49,6 +51,8 @@ export const reducers = combineReducers({
   bannerNotification: bannerReducer,
   summary: totalCountsReducer,
   biospecimen: biospecimenReducer,
+  ssms: ssmsReducer,
+  genesSummary: genesSummaryReducer,
   [cohortApiSliceReducerPath]: cohortApiReducer,
 });
 

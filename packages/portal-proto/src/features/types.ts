@@ -4,7 +4,8 @@ type JSONValue =
   | boolean
   | null
   | JSONValue[]
-  | { [key: string]: JSONValue };
+  | { [key: string]: JSONValue }
+  | JSX.Element;
 
 export interface JSONObject {
   [k: string]: JSONValue;
