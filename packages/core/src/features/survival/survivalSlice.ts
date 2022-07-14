@@ -148,10 +148,9 @@ const slice = createSlice({
         state.status = "pending";
         state.error = undefined;
       })
-      .addCase(fetchSurvival.rejected, (state) => {
+      .addCase(fetchSurvival.rejected, (state, action) => {
         state.status = "rejected";
-        // TODO get error from action
-        state.error = undefined;
+        state.error = action.error.message;
       });
   },
 });

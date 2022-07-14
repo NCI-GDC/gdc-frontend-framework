@@ -49,3 +49,4 @@ export * from "./features/biospecimen/biospecimenSlice";
 export * from "./features/cart";
 export * from "./features/api/cohortApiSlice";
 export * from "./features/bannerNotification";
+export * from "./features/clinicalDataAnalysis";
