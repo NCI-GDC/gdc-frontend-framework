@@ -26,10 +26,16 @@ const slice = createSlice({
       action: PayloadAction<CohortBuilderCategoryFacet>,
     ) => {
       if (action.payload.category in state)
-        state[action.payload.category].facets = [
-          ...state[action.payload.category].facets,
-          action.payload.facetName,
-        ];
+        if (
+          // only add if not already added
+          !state[action.payload.category].facets.includes(
+            action.payload.facetName,
+          )
+        )
+          state[action.payload.category].facets = [
+            ...state[action.payload.category].facets,
+            action.payload.facetName,
+          ];
     },
     removeFilterFromCohortBuilder: (
       state,

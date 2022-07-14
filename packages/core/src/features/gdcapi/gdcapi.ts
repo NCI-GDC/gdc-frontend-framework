@@ -237,6 +237,42 @@ export interface AnnotationDefaults {
   readonly case_submitter_id: string;
   readonly status: string;
 }
+
+interface transcript {
+  aa_change: string;
+  aa_end: number;
+  aa_start: number;
+  annotation: {
+    ccds: string;
+    dbsnp_rs: string;
+    existing_variation: string;
+    hgvsc: string;
+    polyphen_impact: string;
+    polyphen_score: number;
+    pubmed: string;
+    sift_impact: string;
+    sift_score: number;
+    transcript_id: string;
+    vep_impact: string;
+  };
+  is_canonical: boolean;
+  transcript_id: string;
+}
+export interface SSMSDefaults {
+  id: string;
+  consequence: Array<{ transcript: transcript }>;
+  clinical_annotations?: {
+    civic: {
+      variant_id: string;
+    };
+  };
+  reference_allele: string;
+  ncbi_build: string;
+  cosmic_id: Array<string>;
+  mutation_subtype: string;
+  chromosome: string;
+  genomic_dna_change: string;
+}
 export interface HistoryDefaults {
   readonly uuid: string;
   readonly version: string;
@@ -265,6 +301,19 @@ export interface FileDefaults {
   readonly type: string;
   readonly version: string;
   readonly experimental_strategy: string;
+  readonly annotations?: ReadonlyArray<{
+    readonly annotation_id: string;
+    readonly category: string;
+    readonly classification: string;
+    readonly created_datetime: string;
+    readonly entity_id: string;
+    readonly entity_submitter_id: string;
+    readonly entity_type: string;
+    readonly notes: string;
+    readonly state: string;
+    readonly status: string;
+    readonly updated_datetime: string;
+  }>;
   readonly cases?: ReadonlyArray<{
     readonly case_id: string;
     readonly submitter_id: string;
@@ -368,6 +417,11 @@ export const fetchGdcAnnotations = async (
   return fetchGdcEntities("annotations", request);
 };
 
+export const fetchGdcSsms = async (
+  request?: GdcApiRequest,
+): Promise<GdcApiResponse<SSMSDefaults>> => {
+  return fetchGdcEntities("ssms", request);
+};
 export const fetchGdcFiles = async (
   request?: GdcApiRequest,
 ): Promise<GdcApiResponse<FileDefaults>> => {

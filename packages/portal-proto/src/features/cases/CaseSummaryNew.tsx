@@ -1,4 +1,5 @@
-import SummaryCount from "@/components/SummaryCount";
+import { SummaryCard } from "@/components/Summary/SummaryCard";
+import SummaryCount from "@/components/Summary/SummaryCount";
 import { useCaseSummary } from "@gff/core";
 import { Button, LoadingOverlay, Tooltip } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
@@ -10,8 +11,6 @@ import { Biospecimen } from "../biospecimen/Biospecimen";
 import { humanify } from "../biospecimen/utils";
 import { addToCart } from "../cart/updateCart";
 import { formatDataForHorizontalTable } from "../files/utils";
-import { SummaryCard } from "../projects/ProjectView";
-
 export const CaseSummaryNew = ({
   case_id,
   bio_id,
@@ -184,10 +183,7 @@ export const CaseSummaryNew = ({
               </Button>
               <div className="flex">
                 <div className="flex- 1 w-10/12">
-                  <SummaryCard
-                    title={"Summary"}
-                    tableData={formatDataForCaseSummary()}
-                  />
+                  <SummaryCard tableData={formatDataForCaseSummary()} />
                 </div>
                 <div className="flex-1 w-2/12">
                   <SummaryCount
