@@ -68,7 +68,7 @@ export interface ProjectViewProps {
 
 export interface SummaryCardProps {
   readonly title: string;
-  readonly message: JSX.Element;
+  readonly message?: JSX.Element;
   readonly tableData: HorizontalTableProps["tableData"];
 }
 
@@ -171,14 +171,14 @@ export const ProjectView: React.FC<ProjectViewProps> = ({
                 buttonAction={() => {
                   alert("Cases click");
                 }}
-                icon={<FaUser />}
+                Icon={FaUser}
               />
             ) : null}
             {projectData.summary?.file_count ? (
               <SummaryCount
                 title={"Files"}
                 count={projectData.summary.file_count.toLocaleString()}
-                icon={<FaFile />}
+                Icon={FaFile}
               />
             ) : null}
             {projectData.annotationCount ? (
@@ -188,7 +188,7 @@ export const ProjectView: React.FC<ProjectViewProps> = ({
                 buttonAction={() => {
                   alert("Annotations click");
                 }}
-                icon={<FaEdit />}
+                Icon={FaEdit}
               />
             ) : null}
           </div>
