@@ -5,4 +5,8 @@ const withTM = require("next-transpile-modules")([
   "oncogrid",
 ]);
 
-module.exports = withTM({});
+module.exports = withTM({
+  experimental: {
+    outputStandalone: true,
+  },
+});

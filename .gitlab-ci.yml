@@ -1,5 +1,3 @@
-# To contribute improvements to CI/CD templates, please follow the Development guide at:
-# https://docs.gitlab.com/ee/development/cicd/templates.html
 include:
   - project: nci-gdc/gitlab-templates
     ref: master
@@ -15,12 +13,11 @@ Install npm:
   script:
     - npm install npm@7
     - npm install
+
   cache:
     key: build-cache
     paths:
-      - node_modules/
-      - lib/
-      - .npmrc
+      - ../gdc-frontend-framework
     policy: push
 
 Type Check for core:
@@ -28,55 +25,72 @@ Type Check for core:
   script:
     - cd packages/core
     - npm run build:clean
+
   cache:
     key: build-cache
     paths:
-      - node_modules/
-      - lib/
-      - .npmrc
-    policy: pull
+      - ../gdc-frontend-framework
 
 Type Check for portal-proto:
   stage: test
+  needs: [Type Check for core]
+
   script:
     - cd packages/portal-proto
     - npm run compile
   cache:
     key: build-cache
     paths:
-      - node_modules/
-      - lib/
-      - .npmrc
-    policy: pull
+      - ../gdc-frontend-framework
 
 Linting:
   stage: test
+  needs: [Type Check for portal-proto]
   script:
     - npm run lint
   cache:
     key: build-cache
     paths:
-      - node_modules/
-      - lib/
-      - .npmrc
-    policy: pull
+      - ../gdc-frontend-framework
+
+Prettier Checks:
+  stage: test
+  needs: [Linting]
+  script:
+    - npm run format:check
+  cache:
+    key: build-cache
+    paths:
+      - ../gdc-frontend-framework
 
 Run all tests:
   stage: test
+  needs: [Prettier Checks]
   script:
     - npm run test:all
   cache:
     key: build-cache
     paths:
-      - node_modules/
-      - lib/
-      - .npmrc
-    policy: pull
+      - ../gdc-frontend-framework
+  allow_failure: true
 
-Build docker container:
+build:
   stage: build
+  services:
+    - docker:20.10.16-dind
   tags:
     - dind
-  image: docker.osdc.io/dind
+  image: docker:20.10.16-dind
+  before_script:
+    - docker info
+    - apk add --no-cache bash moreutils git go curl
+    - curl -L -o dive.tar.gz https://github.com/wagoodman/dive/releases/download/v0.10.0/dive_0.10.0_linux_amd64.tar.gz
+    - curl -L -o ds.tar.gz https://nexus.osdc.io/repository/misc/dockerslim/releases/1.37.5/dist_linux.tar.gz
+    - tar -xvf ds.tar.gz
+    - tar -xvf dive.tar.gz
+    - mv dist_linux/docker-slim /usr/local/bin/
+    - mv dist_linux/docker-slim-sensor /usr/local/bin/
+    - rm -rf dist_linux/
+    - mv dive /usr/local/bin/
   script:
-    - docker build .
+    - /bin/bash build.sh -b "add-gitlab-ci" -n "$CI_COMMIT_SHORT_SHA"
