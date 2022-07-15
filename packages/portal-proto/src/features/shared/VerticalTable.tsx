@@ -27,6 +27,8 @@ interface VerticalTableProps {
   selectedSorts: any;
   tableTitle: string;
   pageSize: string;
+  additionalControls?: React.ReactNode;
+  showControls?: boolean;
 }
 
 interface Column {
@@ -57,6 +59,8 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   selectedSorts,
   tableTitle,
   pageSize,
+  additionalControls,
+  showControls = true,
 }: VerticalTableProps) => {
   const [table, setTable] = useState([]);
   const [columnListOptions, setColumnListOptions] = useState([]);
@@ -313,73 +317,48 @@ export const VerticalTable: FC<VerticalTableProps> = ({
 
   return (
     <div>
-      <div className={`h-10`}></div>
-      <div className={`float-right`}>
-        <Popover
-          opened={showSortMenu}
-          onClose={() => setShowSortMenu(false)}
-          target={
-            <button
-              className={`mr-0 ml-auto border-1 border-gray-300 p-3`}
-              onClick={() => setShowSortMenu(!showSortMenu)}
-            >
-              <BsSortDown></BsSortDown>
-            </button>
-          }
-          width={260}
-          position="bottom"
-          transition="scale"
-          withArrow
-        >
-          <div className={`w-fit`}>
-            {
-              <div className={`mr-0 ml-auto`}>
-                <ToggleSort
-                  sortListOptions={sortListOptions}
-                  handleSortChange={handleSortChange}
-                />
-              </div>
+      <div className={`h-10 float-left`}>{additionalControls}</div>
+      {showControls && (
+        <div className={`float-right`}>
+          <Popover
+            opened={showColumnMenu}
+            onClose={() => setShowColumnMenu(false)}
+            target={
+              <button
+                className={`mr-0 ml-auto border-1 border-gray-300 p-3`}
+                onClick={() => setShowColumnMenu(!showColumnMenu)}
+              >
+                <BsList></BsList>
+              </button>
             }
+            width={260}
+            position="bottom"
+            transition="scale"
+            withArrow
+          >
+            <div className={`w-fit`}>
+              {columnListOptions.length > 0 && showColumnMenu && (
+                <div className={`mr-0 ml-auto`}>
+                  <DndProvider backend={HTML5Backend}>
+                    <DragDrop
+                      listOptions={columnListOptions}
+                      handleColumnChange={handleColumnChange}
+                    />
+                  </DndProvider>
+                </div>
+              )}
+            </div>
+          </Popover>
+          <div className={`flex flex-row w-max float-right mb-4`}>
+            <input
+              className={`mr-2 rounded-sm border-1 border-gray-300`}
+              type="search"
+              placeholder="Search"
+            />
+            <div className={`mt-px`}></div>
           </div>
-        </Popover>
-        <Popover
-          opened={showColumnMenu}
-          onClose={() => setShowColumnMenu(false)}
-          target={
-            <button
-              className={`mr-0 ml-auto border-1 border-gray-300 p-3`}
-              onClick={() => setShowColumnMenu(!showColumnMenu)}
-            >
-              <BsList></BsList>
-            </button>
-          }
-          width={260}
-          position="bottom"
-          transition="scale"
-          withArrow
-        >
-          <div className={`w-fit`}>
-            {columnListOptions.length > 0 && showColumnMenu && (
-              <div className={`mr-0 ml-auto`}>
-                <DndProvider backend={HTML5Backend}>
-                  <DragDrop
-                    listOptions={columnListOptions}
-                    handleColumnChange={handleColumnChange}
-                  />
-                </DndProvider>
-              </div>
-            )}
-          </div>
-        </Popover>
-        <div className={`flex flex-row w-max float-right mb-4`}>
-          <input
-            className={`mr-2 rounded-sm border-1 border-gray-300`}
-            type="search"
-            placeholder="Search"
-          />
-          <div className={`mt-px`}></div>
         </div>
-      </div>
+      )}
       {columnListOptions.length > 0 && (
         <Table
           columns={headings}

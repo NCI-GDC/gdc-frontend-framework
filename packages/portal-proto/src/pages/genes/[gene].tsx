@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { SimpleLayout } from "../../features/layout/Simple";
 import SSMPlot from "../../features/charts/SSMPlot";
 import CNVPlot from "../../features/charts/CNVPlot";
+import { GeneSummary } from "@/features/GeneSummary/GeneSummary";
 
 const GenesPage: NextPage = () => {
   const router = useRouter();
@@ -22,6 +23,7 @@ const GenesPage: NextPage = () => {
       <div>
         {ready && (
           <>
+            <GeneSummary gene_id={gene} />
             <SSMPlot page={"gene"} gene={gene} />
             <CNVPlot gene={gene} />
           </>
