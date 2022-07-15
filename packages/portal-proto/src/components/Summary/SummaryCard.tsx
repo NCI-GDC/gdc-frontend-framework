@@ -24,7 +24,7 @@ export const SummaryCard = ({
             size="1.25rem"
           />
         )}
-        <h2 className="text-lg">{title}</h2>
+        <h2 className="text-lg font-medium">{title}</h2>
       </div>
 
       {message && <div className="mt-2 text-sm">{message}</div>}

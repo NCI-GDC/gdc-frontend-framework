@@ -11,27 +11,20 @@ import {
   GdcApiResponse,
 } from "../gdcapi/gdcapi";
 
+export interface caseFileType {
+  access: "open" | "controlled";
+  acl: Array<string>;
+  data_type: string;
+  file_id: string;
+  file_name: string;
+  file_size: number;
+  state: string;
+}
 export interface caseSummaryDefaults {
   annotations?: Array<{ annontation_id: string }>;
   case_id: string;
   disease_type: string;
-  files: Array<{
-    submitter_id: string;
-    access: string;
-    acl: Array<string>;
-    created_datetime: string;
-    updated_datetime: string;
-    data_category: string;
-    data_format: string;
-    data_type: string;
-    file_id: string;
-    file_name: string;
-    file_size: number;
-    md5sum: string;
-    platform: string;
-    state: string;
-    type: string;
-  }>;
+  files?: Array<caseFileType>;
   id: string;
   primary_site: string;
   project: {
@@ -44,12 +37,12 @@ export interface caseSummaryDefaults {
   submitter_id: string;
   summary: {
     data_categories: Array<{
-      file_count: number;
       data_category: string;
+      file_count: number;
     }>;
     experimental_strategies: Array<{
-      file_count: number;
       experimental_strategy: string;
+      file_count: number;
     }>;
     file_count: number;
   };

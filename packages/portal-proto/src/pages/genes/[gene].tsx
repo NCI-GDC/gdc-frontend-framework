@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import SSMPlot from "../../features/charts/SSMPlot";
-import CNVPlot from "../../features/charts/CNVPlot";
 import { GeneSummary } from "@/features/GeneSummary/GeneSummary";
 import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
 import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";

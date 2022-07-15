@@ -30,6 +30,47 @@ const TitleText = tw.h2`
 text-lg font-bold mx-4 ml-2
 `;
 
+//temp table compoent untill global one is done
+interface TempTableProps {
+  readonly tableData: {
+    readonly headers: string[];
+    readonly tableRows: any[];
+  };
+}
+export const TempTable = ({ tableData }: TempTableProps): JSX.Element => {
+  if (!(tableData?.headers?.length > 0 && tableData?.tableRows?.length > 0)) {
+    console.error("bad table data", tableData);
+    return <></>;
+  }
+  return (
+    <Table striped>
+      <thead>
+        <tr>
+          {tableData.headers.map((text, index) => (
+            <th key={index} className="bg-nci-gray-lighter">
+              {text}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {tableData.tableRows.map((row, index) => (
+          <tr
+            key={index}
+            className={index % 2 ? "bg-white" : "bg-gdc-blue-warm-lightest"}
+          >
+            {Object.values(row).map((item, index) => (
+              <td key={index} className="text-sm p-1">
+                {typeof item === "undefined" ? "--" : item}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </Table>
+  );
+};
+
 export const FileView: React.FC<FileViewProps> = ({
   file,
   fileHistory,
@@ -54,39 +95,6 @@ export const FileView: React.FC<FileViewProps> = ({
       <Link href={hrefObj}>
         <a className="text-gdc-blue hover:underline">{text}</a>
       </Link>
-    );
-  };
-  //temp table compoent untill global one is done
-  interface TempTableProps {
-    readonly tableData: {
-      readonly headers: string[];
-      readonly tableRows: any[];
-    };
-  }
-  const TempTable = ({ tableData }: TempTableProps): JSX.Element => {
-    if (!(tableData?.headers?.length > 0 && tableData?.tableRows?.length > 0)) {
-      console.error("bad table data", tableData);
-      return <></>;
-    }
-    return (
-      <Table striped>
-        <thead>
-          <tr>
-            {tableData.headers.map((text, index) => (
-              <th key={index}>{text}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {tableData.tableRows.map((row, index) => (
-            <tr key={index}>
-              {Object.values(row).map((item, index) => (
-                <td key={index}>{typeof item === "undefined" ? "--" : item}</td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </Table>
     );
   };
 

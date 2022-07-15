@@ -6,7 +6,6 @@ export interface SummaryCountProps {
   readonly count: string;
   readonly buttonAction?: MouseEventHandler;
   readonly Icon: IconType;
-  readonly href?: string;
 }
 
 /**
@@ -17,7 +16,6 @@ const SummaryCount = ({
   title,
   count,
   Icon,
-  href,
 }: SummaryCountProps): JSX.Element => {
   const addLinkValue = () => {
     if (buttonAction) {
