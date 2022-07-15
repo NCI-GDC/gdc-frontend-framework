@@ -8,12 +8,14 @@ interface DashboardProps {
   readonly cohortFilters: GqlOperation;
   readonly activeFields: string[];
   readonly results: any;
+  readonly updateFields: (field: string) => void;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({
   cohortFilters,
   activeFields,
   results,
+  updateFields,
 }: DashboardProps) => {
   const { data: survivalData } = useSurvivalPlotWithCohortFilters({
     filters: cohortFilters,
@@ -28,7 +30,11 @@ const Dashboard: React.FC<DashboardProps> = ({
       {activeFields.map((field) => {
         return (
           <Grid.Col span={6} key={field}>
-            <CDaveCard field={field} stats={results} />
+            <CDaveCard
+              field={field}
+              data={results}
+              updateFields={updateFields}
+            />
           </Grid.Col>
         );
       })}

@@ -14,6 +14,7 @@ interface ControlGroupProps {
   readonly fields: FacetDefinition[];
   readonly color: string;
   readonly updateFields: (field: string) => void;
+  readonly activeFields: string[];
 }
 
 const ControlGroup: React.FC<ControlGroupProps> = ({
@@ -21,6 +22,7 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
   fields,
   color,
   updateFields,
+  activeFields,
 }: ControlGroupProps) => {
   const [groupOpen, setGroupOpen] = useState(true);
   const [fieldsCollapsed, setFieldsCollapsed] = useState(true);
@@ -46,6 +48,7 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
               color={color}
               updateFields={updateFields}
               key={field.field}
+              activeFields={activeFields}
             />
           ))}
         </ul>
@@ -64,14 +67,20 @@ interface FieldControlProps {
   readonly field: FacetDefinition;
   readonly color: string;
   readonly updateFields: (field: string) => void;
+  readonly activeFields: string[];
 }
 
 const FieldControl: React.FC<FieldControlProps> = ({
   field,
   color,
   updateFields,
+  activeFields,
 }: FieldControlProps) => {
-  const [checked, setChecked] = useState(DEFAULT_FIELDS.includes(field.field));
+  const [checked, setChecked] = useState(DEFAULT_FIELDS.includes(field.full));
+
+  useEffect(() => {
+    setChecked(activeFields.includes(field.full));
+  }, [activeFields]);
 
   return (
     <li key={field.field} className="cursor-pointer p-2">
@@ -82,8 +91,8 @@ const FieldControl: React.FC<FieldControlProps> = ({
         <Switch
           classNames={{ input: "bg-none" }}
           checked={checked}
-          onChange={() => {
-            setChecked(!checked);
+          onChange={(e) => {
+            setChecked(e.currentTarget.checked);
             updateFields(field.full);
           }}
           color={color}
@@ -97,44 +106,51 @@ const FieldControl: React.FC<FieldControlProps> = ({
 interface ControlPanelProps {
   readonly updateFields: (field: string) => void;
   readonly cDaveFields: FacetDefinition[];
-  readonly numFieldsWithData: number;
+  readonly fieldsWithData: any;
+  readonly activeFields: string[];
 }
 
 const Controls: React.FC<ControlPanelProps> = ({
   updateFields,
   cDaveFields,
-  numFieldsWithData,
+  fieldsWithData,
+  activeFields,
 }: ControlPanelProps) => {
   const groupedFields = groupBy(cDaveFields, "field_type");
 
   return (
     <div className="w-80 h-[600px] overflow-scroll flex flex-col bg-white">
       <p>
-        {numFieldsWithData} of {cDaveFields.length} fields with values
+        {Object.keys(fieldsWithData).length} of {cDaveFields.length} fields with
+        values
       </p>
       <ControlGroup
         name={"Demographic"}
         fields={groupedFields["demographic"] || []}
         color={"blue"}
         updateFields={updateFields}
+        activeFields={activeFields}
       />
       <ControlGroup
         name={"Diagnosis"}
         fields={groupedFields["diagnoses"] || []}
         color={"orange"}
         updateFields={updateFields}
+        activeFields={activeFields}
       />
       <ControlGroup
         name={"Treatment"}
         fields={groupedFields["treatments"] || []}
         color={"green"}
         updateFields={updateFields}
+        activeFields={activeFields}
       />
       <ControlGroup
         name={"Exposure"}
         fields={groupedFields["exposures"] || []}
         color={"purple"}
         updateFields={updateFields}
+        activeFields={activeFields}
       />
     </div>
   );

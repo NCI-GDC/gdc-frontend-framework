@@ -4,3 +4,13 @@ export const DEFAULT_FIELDS = [
   "cases.demographic.ethnicity",
   "cases.diagnoses.age_at_diagnosis",
 ];
+
+export const CONTINUOUS_FACET_TYPES = [
+  "year",
+  "years",
+  "age",
+  "numeric",
+  "integer",
+  "percent",
+  "long",
+];

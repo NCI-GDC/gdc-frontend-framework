@@ -9,6 +9,7 @@ import {
 import Controls from "./Controls";
 import Dashboard from "./Dashboard";
 import { DEFAULT_FIELDS } from "./constants";
+import { filterUsefulFacets } from "./utils";
 
 const parseFieldName = (field) => {
   const parsed = field.split(".");
@@ -72,12 +73,14 @@ const ClinicalDataAnalysis: React.FC<ClinicalDataAnalysisProps> = ({
       <Controls
         updateFields={updateFields}
         cDaveFields={cDaveFields}
-        numFieldsWithData={Object.keys(cDaveResult).length}
+        fieldsWithData={filterUsefulFacets(cDaveResult)}
+        activeFields={activeFields}
       />
       <Dashboard
         activeFields={activeFields}
         cohortFilters={cohortFilters}
         results={cDaveResult}
+        updateFields={updateFields}
       />
     </div>
   );
