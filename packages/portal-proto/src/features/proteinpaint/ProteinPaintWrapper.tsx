@@ -29,7 +29,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
     if (pp_holder) pp_holder.remove();
 
     const arg = Object.assign(
-      { holder: rootElem, noheader: true, nobox: true },
+      { holder: rootElem, noheader: true, nobox: true, hide_dsHandles: true },
       JSON.parse(JSON.stringify(data)),
     );
     runproteinpaint(arg);
