@@ -1,16 +1,32 @@
 import { SummaryCard } from "@/components/Summary/SummaryCard";
 import SummaryCount from "@/components/Summary/SummaryCount";
-import { useCaseSummary } from "@gff/core";
+import { SummaryHeader } from "@/components/Summary/SummaryHeader";
+import {
+  useCaseSummary,
+  useCoreDispatch,
+  useCoreSelector,
+  selectCart,
+  mapFileData,
+  CartFile,
+  GdcFile,
+} from "@gff/core";
 import { Button, LoadingOverlay, Tooltip } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
 import Link from "next/link";
-import { useContext, useEffect, useState } from "react";
-import { FaFile, FaMicroscope, FaShoppingCart, FaEdit } from "react-icons/fa";
+import { useContext, useEffect } from "react";
+import {
+  FaFile,
+  FaMicroscope,
+  FaShoppingCart,
+  FaEdit,
+  FaTable,
+} from "react-icons/fa";
 import { URLContext } from "src/pages/_app";
 import { Biospecimen } from "../biospecimen/Biospecimen";
 import { humanify } from "../biospecimen/utils";
-import { addToCart } from "../cart/updateCart";
+import { addToCart, removeFromCart } from "../cart/updateCart";
 import { formatDataForHorizontalTable } from "../files/utils";
+
 export const CaseSummaryNew = ({
   case_id,
   bio_id,
@@ -27,12 +43,21 @@ export const CaseSummaryNew = ({
       op: "=",
     },
     fields: [
-      "files.file_id",
-      "files.data_type",
-      "files.acl",
-      "files.state",
+      "files.submitter_id",
       "files.access",
+      "files.acl",
+      "files.created_datetime",
+      "files.updated_datetime",
+      "files.data_category",
+      "files.data_format",
+      "files.data_type",
+      "files.file_name",
       "files.file_size",
+      "files.file_id",
+      "files.md5sum",
+      "files.platform",
+      "files.state",
+      "files.type",
       "case_id",
       "submitter_id",
       "project.name",
@@ -51,7 +76,8 @@ export const CaseSummaryNew = ({
 
   console.log("data: ", data);
   const { prevPath } = useContext(URLContext);
-
+  const currentCart = useCoreSelector((state) => selectCart(state));
+  const dispatch = useCoreDispatch();
   const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>({
     offset: 60,
   });
@@ -84,6 +110,8 @@ export const CaseSummaryNew = ({
     : 0;
   console.log(filesCountTotal, annotationsCountTotal);
 
+  const headerTitle = `${data?.project.project_id} / ${data?.submitter_id}`;
+
   const getAnnotationsLinkParams = (
     annotations: typeof data.annotations,
   ): string | null => {
@@ -94,6 +122,13 @@ export const CaseSummaryNew = ({
       return "";
     }
   };
+
+  const filesInCart = (carts: CartFile[], files: GdcFile[]) =>
+    files.every((file) => carts.some((cart) => cart.fileId === file.fileId));
+
+  const isAllFilesInCart = data?.files
+    ? filesInCart(currentCart, mapFileData(data?.files))
+    : false;
 
   const formatDataForCaseSummary = () => {
     const {
@@ -116,8 +151,6 @@ export const CaseSummaryNew = ({
       (file) => file.data_type === "Slide Image",
     );
 
-    console.log("imageFiles: ", imageFiles);
-
     let caseSummaryObject: Record<string, any> = {
       case_uuid: case_id,
       case_id: submitter_id,
@@ -132,6 +165,11 @@ export const CaseSummaryNew = ({
       primary_site,
     };
 
+    const isAllImagesFilesInCart = filesInCart(
+      currentCart,
+      mapFileData(imageFiles),
+    );
+
     if (!!slideCount && imageFiles.length > 0) {
       const images = (
         <div className="flex">
@@ -145,13 +183,22 @@ export const CaseSummaryNew = ({
               </a>
             </Link>
           </Tooltip>
-          <Tooltip label={"Add to Cart"}>
+          <Tooltip
+            label={!isAllImagesFilesInCart ? "Add to Cart" : "Remove from cart"}
+          >
             <FaShoppingCart
-              className="mt-0.5"
               onClick={() => {
-                // addToCart(imageFiles, currentCart, dispatch);
+                isAllImagesFilesInCart
+                  ? removeFromCart(
+                      mapFileData(imageFiles),
+                      currentCart,
+                      dispatch,
+                    )
+                  : addToCart(mapFileData(imageFiles), currentCart, dispatch);
               }}
-              // className={isFileInCart ? "text-nci-green" : ""}
+              className={
+                isAllImagesFilesInCart ? "text-nci-green mt-0.5" : "mt-0.5"
+              }
             />
           </Tooltip>
         </div>
@@ -176,16 +223,34 @@ export const CaseSummaryNew = ({
         <LoadingOverlay visible />
       ) : data ? (
         <>
-          <div className="flex flex-col mx-auto mt-5 w-10/12">
+          <SummaryHeader iconText="CA" headerTitle={headerTitle} />
+          <div className="flex flex-col mx-auto mt-5 w-9/12">
             <div className="flex flex-col gap-3">
-              <Button leftIcon={<FaShoppingCart />} className="self-end	">
-                Add all files to the cart
+              <Button
+                leftIcon={<FaShoppingCart />}
+                className="self-end"
+                onClick={() =>
+                  isAllFilesInCart
+                    ? removeFromCart(
+                        mapFileData(data.files),
+                        currentCart,
+                        dispatch,
+                      )
+                    : addToCart(mapFileData(data.files), currentCart, dispatch)
+                }
+              >
+                {!isAllFilesInCart
+                  ? "Add all files to the cart"
+                  : "Remove all files from the cart"}
               </Button>
-              <div className="flex">
-                <div className="flex- 1 w-10/12">
-                  <SummaryCard tableData={formatDataForCaseSummary()} />
+              <div className="flex gap-4">
+                <div className="w-10/12">
+                  <SummaryCard
+                    tableData={formatDataForCaseSummary()}
+                    Icon={FaTable}
+                  />
                 </div>
-                <div className="flex-1 w-2/12">
+                <div className="w-2/12">
                   <SummaryCount
                     title="files"
                     count={filesCountTotal.toLocaleString()}

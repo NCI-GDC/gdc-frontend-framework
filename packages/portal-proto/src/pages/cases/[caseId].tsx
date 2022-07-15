@@ -20,9 +20,7 @@ const CaseSummary: NextPage = () => {
   }, [router]);
 
   return (
-    <UserFlowVariedPages
-      {...{ indexPath: "/user-flow/many-pages", headerElements }}
-    >
+    <UserFlowVariedPages {...{ headerElements }}>
       {ready && (
         // <ContextualCasesView
         //   caseId={caseId as string}

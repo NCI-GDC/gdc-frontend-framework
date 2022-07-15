@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { SimpleLayout } from "../../features/layout/Simple";
 import SSMPlot from "../../features/charts/SSMPlot";
 import CNVPlot from "../../features/charts/CNVPlot";
 import { GeneSummary } from "@/features/GeneSummary/GeneSummary";
+import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
+import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
 
 const GenesPage: NextPage = () => {
   const router = useRouter();
@@ -19,17 +20,9 @@ const GenesPage: NextPage = () => {
   }, [router]);
 
   return (
-    <SimpleLayout>
-      <div>
-        {ready && (
-          <>
-            <GeneSummary gene_id={gene} />
-            <SSMPlot page={"gene"} gene={gene} />
-            <CNVPlot gene={gene} />
-          </>
-        )}
-      </div>
-    </SimpleLayout>
+    <UserFlowVariedPages {...{ headerElements }}>
+      <div>{ready && <GeneSummary gene_id={gene} />}</div>
+    </UserFlowVariedPages>
   );
 };
 

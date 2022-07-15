@@ -16,12 +16,21 @@ export interface caseSummaryDefaults {
   case_id: string;
   disease_type: string;
   files: Array<{
+    submitter_id: string;
     access: string;
     acl: Array<string>;
+    created_datetime: string;
+    updated_datetime: string;
+    data_category: string;
+    data_format: string;
     data_type: string;
     file_id: string;
-    file_sizez: number;
+    file_name: string;
+    file_size: number;
+    md5sum: string;
+    platform: string;
     state: string;
+    type: string;
   }>;
   id: string;
   primary_site: string;
