@@ -60,7 +60,7 @@ export const TempTable = ({ tableData }: TempTableProps): JSX.Element => {
             className={index % 2 ? "bg-white" : "bg-gdc-blue-warm-lightest"}
           >
             {Object.values(row).map((item, index) => (
-              <td key={index} className="text-sm p-1">
+              <td key={index} className="text-sm p-1 pl-2.5">
                 {typeof item === "undefined" ? "--" : item}
               </td>
             ))}

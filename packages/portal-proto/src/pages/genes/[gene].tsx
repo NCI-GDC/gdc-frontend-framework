@@ -19,7 +19,7 @@ const GenesPage: NextPage = () => {
 
   return (
     <UserFlowVariedPages {...{ headerElements }}>
-      <div>{ready && <GeneSummary gene_id={gene} />}</div>
+      {ready && <GeneSummary gene_id={gene} />}
     </UserFlowVariedPages>
   );
 };

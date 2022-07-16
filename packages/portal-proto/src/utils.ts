@@ -1,3 +1,5 @@
+import { CartFile } from "@gff/core";
+import { replace, sortBy } from "lodash";
 import { DocumentWithWebkit } from "./features/types";
 
 export const toggleFullScreen = async (
@@ -79,3 +81,17 @@ export const externalLinks = {
   uniprotkb_swissprot: (id: string): string =>
     `http://www.uniprot.org/uniprot/${id}`,
 };
+
+export const calculatePercentage = (count: number, total: number): string =>
+  ((count / total) * 100).toFixed(2);
+
+export const allFilesInCart = (carts: CartFile[], files: CartFile[]): boolean =>
+  files?.every((file) => carts.some((cart) => cart.fileId === file.fileId));
+
+export const sortByPropertyAsc = <T>(
+  givenObject: Array<T>,
+  property: string,
+): Array<T> =>
+  sortBy(givenObject, [
+    (e) => replace(e[property], /[^a-zA-Z]/g, "").toLocaleLowerCase(),
+  ]);

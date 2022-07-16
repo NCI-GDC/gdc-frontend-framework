@@ -1,18 +1,16 @@
-import { SummaryCard } from "@/components/Summary/SummaryCard";
-import SummaryCount from "@/components/Summary/SummaryCount";
-import { SummaryHeader } from "@/components/Summary/SummaryHeader";
+import { useContext, useEffect } from "react";
+import Link from "next/link";
 import {
   useCaseSummary,
   useCoreDispatch,
   useCoreSelector,
   selectCart,
-  CartFile,
 } from "@gff/core";
+import { SummaryCard } from "@/components/Summary/SummaryCard";
+import SummaryCount from "@/components/Summary/SummaryCount";
+import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { Button, LoadingOverlay, Tooltip } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
-import { orderBy, replace, sortBy } from "lodash";
-import Link from "next/link";
-import { useContext, useEffect } from "react";
 import {
   FaFile,
   FaMicroscope,
@@ -29,8 +27,13 @@ import {
   formatDataForHorizontalTable,
   mapFilesFromCasesToCartFile,
 } from "../files/utils";
+import {
+  allFilesInCart,
+  calculatePercentage,
+  sortByPropertyAsc,
+} from "src/utils";
 
-export const CaseSummaryNew = ({
+export const CaseSummary = ({
   case_id,
   bio_id,
 }: {
@@ -46,21 +49,13 @@ export const CaseSummaryNew = ({
       op: "=",
     },
     fields: [
-      "files.submitter_id",
       "files.access",
       "files.acl",
-      "files.created_datetime",
-      "files.updated_datetime",
-      "files.data_category",
-      "files.data_format",
       "files.data_type",
       "files.file_name",
       "files.file_size",
       "files.file_id",
-      "files.md5sum",
-      "files.platform",
       "files.state",
-      "files.type",
       "case_id",
       "submitter_id",
       "project.name",
@@ -77,7 +72,6 @@ export const CaseSummaryNew = ({
     ],
   });
 
-  console.log("data: ", data);
   const { prevPath } = useContext(URLContext);
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
@@ -86,12 +80,16 @@ export const CaseSummaryNew = ({
   });
 
   useEffect(() => {
-    if (prevPath?.includes("MultipleImageViewerPage")) {
+    if (
+      ["MultipleImageViewerPage", "selectedId"].every((term) =>
+        prevPath?.includes(term),
+      )
+    ) {
       scrollIntoView();
     }
   }, [prevPath, scrollIntoView]);
 
-  const slideCountFromCaseSummary = (
+  const getSlideCountFromCaseSummary = (
     experimental_strategies: Array<{
       experimental_strategy: string;
       file_count: number;
@@ -109,14 +107,10 @@ export const CaseSummaryNew = ({
 
   const filesCountTotal = data?.files?.length ?? 0;
   const annotationsCountTotal = data?.annotations?.length ?? 0;
-
   const headerTitle = `${data?.project.project_id} / ${data?.submitter_id}`;
 
-  const filesInCart = (carts: CartFile[], files: CartFile[]) =>
-    files?.every((file) => carts.some((cart) => cart.fileId === file.fileId));
-
   const isAllFilesInCart = data?.files
-    ? filesInCart(currentCart, mapFilesFromCasesToCartFile(data?.files))
+    ? allFilesInCart(currentCart, mapFilesFromCasesToCartFile(data?.files))
     : false;
 
   const formatDataForCaseSummary = () => {
@@ -134,7 +128,7 @@ export const CaseSummaryNew = ({
       summary: { experimental_strategies },
     } = data;
 
-    const slideCount = slideCountFromCaseSummary(experimental_strategies);
+    const slideCount = getSlideCountFromCaseSummary(experimental_strategies);
 
     const imageFiles = files?.filter(
       (file) => file.data_type === "Slide Image",
@@ -154,19 +148,19 @@ export const CaseSummaryNew = ({
       primary_site,
     };
 
-    const isAllImagesFilesInCart = filesInCart(
+    const isAllImagesFilesInCart = allFilesInCart(
       currentCart,
       mapFilesFromCasesToCartFile(imageFiles),
     );
 
     if (!!slideCount && imageFiles.length > 0) {
       const images = (
-        <div className="flex">
+        <div className="flex gap-2">
           <Tooltip label="View Slide Image">
             <Link
               href={`/user-flow/workbench/MultipleImageViewerPage?caseId=${case_id}`}
             >
-              <a className="flex gap-1 cursor-pointer">
+              <a className="flex gap-1 cursor-pointer text-nci-blue">
                 <FaMicroscope className="mt-0.5" />
                 <span>({slideCount})</span>
               </a>
@@ -189,9 +183,9 @@ export const CaseSummaryNew = ({
                       dispatch,
                     );
               }}
-              className={
-                isAllImagesFilesInCart ? "text-nci-green mt-0.5" : "mt-0.5"
-              }
+              className={`cursor-pointer mt-0.5 ${
+                isAllImagesFilesInCart ? "text-nci-green" : "text-nci-blue"
+              }`}
             />
           </Tooltip>
         </div>
@@ -210,13 +204,11 @@ export const CaseSummaryNew = ({
     return formatDataForHorizontalTable(caseSummaryObject, headersConfig);
   };
 
-  const calculatePercentage = (count: number, total: number) =>
-    ((count / total) * 100).toFixed(2);
-
   const formatDataForDataCateogryTable = () => {
-    const sortedDataCategories = sortBy(data.summary.data_categories, [
-      (d) => replace(d.data_category, /[^a-zA-Z]/g, "").toLocaleLowerCase(),
-    ]);
+    const sortedDataCategories = sortByPropertyAsc(
+      data.summary.data_categories,
+      "data_category",
+    );
 
     const rows = sortedDataCategories.map((data_c) => ({
       data_category: data_c.data_category,
@@ -233,10 +225,10 @@ export const CaseSummaryNew = ({
   };
 
   const formatDataForExpCateogryTable = () => {
-    const sortedExpCategories = sortBy(data.summary.experimental_strategies, [
-      (e) =>
-        replace(e.experimental_strategy, /[^a-zA-Z]/g, "").toLocaleLowerCase(),
-    ]);
+    const sortedExpCategories = sortByPropertyAsc(
+      data.summary.experimental_strategies,
+      "experimental_strategy",
+    );
 
     const rows = sortedExpCategories.map((exp_c) => ({
       experimental_strategy: exp_c.experimental_strategy,
@@ -259,7 +251,7 @@ export const CaseSummaryNew = ({
       ) : data ? (
         <>
           <SummaryHeader iconText="CA" headerTitle={headerTitle} />
-          <div className="flex flex-col mx-auto mt-5 w-9/12">
+          <div className="flex flex-col mx-auto mt-5 w-10/12">
             <div className="flex flex-col gap-5">
               <Button
                 leftIcon={<FaShoppingCart />}

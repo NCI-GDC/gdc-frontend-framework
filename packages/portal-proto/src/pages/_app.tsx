@@ -36,7 +36,7 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
 
   useEffect(() => {
     setPrevPath(currentPath);
-    setCurrentPath(globalThis.location.pathname);
+    setCurrentPath(globalThis.location.pathname + globalThis.location.search);
   }, [currentPath, router.asPath]);
 
   return (
