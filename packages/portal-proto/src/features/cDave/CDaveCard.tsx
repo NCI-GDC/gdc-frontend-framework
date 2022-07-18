@@ -1,13 +1,16 @@
 import { useState } from "react";
-import { Card, ActionIcon, Tooltip } from "@mantine/core";
+import { Card, ActionIcon, Tooltip, Checkbox } from "@mantine/core";
 import {
   MdBarChart as ChartIcon,
   MdOutlineClose as CloseIcon,
 } from "react-icons/md";
 import { useCoreSelector, selectFacetDefinitionByName } from "@gff/core";
 import { FacetChart } from "../charts/FacetChart";
-import { CONTINUOUS_FACET_TYPES } from "./constants";
-import { createBuckets } from "./utils";
+import { CONTINUOUS_FACET_TYPES, COLOR_MAP } from "./constants";
+import { createBuckets, parseFieldName } from "./utils";
+import { useRangeFacet } from "../facets/hooks";
+import VictoryBarChart from "../charts/VictoryBarChart";
+import { humanify } from "@/features/biospecimen/utils";
 
 interface CDaveCardProps {
   readonly field: string;
@@ -31,9 +34,9 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
     selectFacetDefinitionByName(state, field),
   );
 
-  console.log("full data", data);
-  console.log("data", data[facet?.field]);
-  console.log("facet", facet);
+  console.log(facet);
+
+  const color = COLOR_MAP[parseFieldName(field).field_type];
 
   if (
     facet &&
@@ -43,7 +46,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
     console.log("buckets", createBuckets(data[facet.field].stats));
   }
 
-  return facet ? (
+  return facet && data[facet.field] ? (
     <Card>
       <Tooltip label={"Histogram"}>
         <ActionIcon
@@ -62,9 +65,60 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
           <CloseIcon />
         </ActionIcon>
       </Tooltip>
-      <FacetChart field={facet?.field} />
+      {CONTINUOUS_FACET_TYPES.includes(facet.type) ? (
+        <ContinuousResult
+          field={facet.field}
+          stats={data[facet.field].stats}
+          color={color}
+        />
+      ) : (
+        <FacetChart field={facet?.field} />
+      )}
     </Card>
   ) : null;
+};
+
+const ContinuousResult = ({ field, stats, color }) => {
+  const ranges = createBuckets(stats);
+  const { data } = useRangeFacet(field, ranges, "cases", "repository");
+
+  const barChartData = Object.entries(data || {}).map(([key, value]) => ({
+    x: key,
+    y: value,
+  }));
+
+  console.log("range facet data", data);
+  return (
+    <>
+      <VictoryBarChart data={barChartData} color={color} yLabel={"# Cases"} />
+      <CDaveTable field={field} data={barChartData} />
+    </>
+  );
+};
+
+const CDaveTable = ({ field, data }) => {
+  return (
+    <table className="bg-white w-full text-left text-nci-gray-darker">
+      <thead className="bg-nci-gray-lightest font-bold">
+        <tr>
+          <th>Select</th>
+          <th>{humanify({ term: field })}</th>
+          <th># Cases</th>
+        </tr>
+      </thead>
+      <tbody>
+        {data.map((d, idx) => (
+          <tr className={idx % 2 ? null : "bg-gdc-blue-warm-lightest"}>
+            <td>
+              <Checkbox />
+            </td>
+            <td>{d.x}</td>
+            <td>{d.y}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
 };
 
 export default CDaveCard;

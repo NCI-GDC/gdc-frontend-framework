@@ -14,3 +14,10 @@ export const CONTINUOUS_FACET_TYPES = [
   "percent",
   "long",
 ];
+
+export const COLOR_MAP = {
+  demographic: "blue",
+  diagnoses: "orange",
+  treatments: "green",
+  exposures: "purple",
+};

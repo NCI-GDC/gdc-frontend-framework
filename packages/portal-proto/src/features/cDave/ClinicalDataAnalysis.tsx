@@ -9,12 +9,7 @@ import {
 import Controls from "./Controls";
 import Dashboard from "./Dashboard";
 import { DEFAULT_FIELDS } from "./constants";
-import { filterUsefulFacets } from "./utils";
-
-const parseFieldName = (field) => {
-  const parsed = field.split(".");
-  return { field_type: parsed.at(-2), field_name: parsed.at(-1) };
-};
+import { filterUsefulFacets, parseFieldName } from "./utils";
 
 const tabs = ["demographic", "diagnoses", "exposures", "treatments"];
 

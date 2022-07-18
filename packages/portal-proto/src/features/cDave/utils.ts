@@ -1,4 +1,10 @@
+import { NumericFromTo } from "@gff/core";
 import { omitBy, some } from "lodash";
+
+export const parseFieldName = (field) => {
+  const parsed = field.split(".");
+  return { field_type: parsed.at(-2), field_name: parsed.at(-1) };
+};
 
 export const filterUsefulFacets = (
   facets: Record<string, any>,
@@ -23,12 +29,7 @@ interface Stats {
   readonly count: number;
 }
 
-interface Range {
-  readonly from: number;
-  readonly to: number;
-}
-
-export const createBuckets = (stats: Stats): Range[] => {
+export const createBuckets = (stats: Stats): NumericFromTo[] => {
   if (stats.count === 1) {
     return [{ from: stats.min, to: stats.max + 1 }];
   }
