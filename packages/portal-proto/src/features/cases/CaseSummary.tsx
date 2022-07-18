@@ -33,6 +33,18 @@ import {
   sortByPropertyAsc,
 } from "src/utils";
 
+const getAnnotationsLinkParams = (
+  annotations?: Array<{ annotation_id: string }>,
+) => {
+  if (!annotations) return null;
+
+  if (annotations.length === 1) {
+    return `https://portal.gdc.cancer.gov/annotations/${annotations[0].annotation_id}`;
+  } else {
+    return `https://portal.gdc.cancer.gov/annotations?field=annotations.annotation_id`;
+  }
+};
+
 export const CaseSummary = ({
   case_id,
   bio_id,
@@ -291,6 +303,8 @@ export const CaseSummary = ({
                     title="annotations"
                     count={annotationsCountTotal.toLocaleString()}
                     Icon={FaEdit}
+                    href={getAnnotationsLinkParams(data.annotations)}
+                    shouldOpenInNewTab
                   />
                 </div>
               </div>

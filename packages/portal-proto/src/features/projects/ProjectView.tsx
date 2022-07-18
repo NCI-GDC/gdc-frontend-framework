@@ -136,9 +136,6 @@ export const ProjectView: React.FC<ProjectViewProps> = ({
               <SummaryCount
                 title={"Cases"}
                 count={projectData.summary.case_count.toLocaleString()}
-                buttonAction={() => {
-                  alert("Cases click");
-                }}
                 Icon={FaUser}
               />
             ) : null}
@@ -153,9 +150,6 @@ export const ProjectView: React.FC<ProjectViewProps> = ({
               <SummaryCount
                 title={"Annotations"}
                 count={projectData.annotationCount.toLocaleString()}
-                buttonAction={() => {
-                  alert("Annotations click");
-                }}
                 Icon={FaEdit}
               />
             ) : null}

@@ -21,7 +21,7 @@ export interface caseFileType {
   state: string;
 }
 export interface caseSummaryDefaults {
-  annotations?: Array<{ annontation_id: string }>;
+  annotations?: Array<{ annotation_id: string }>;
   case_id: string;
   disease_type: string;
   files?: Array<caseFileType>;

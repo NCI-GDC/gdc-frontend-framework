@@ -1,33 +1,41 @@
-import { MouseEventHandler } from "react";
+import Link from "next/link";
 import { IconType } from "react-icons";
 
 export interface SummaryCountProps {
   readonly title: string;
   readonly count: string;
-  readonly buttonAction?: MouseEventHandler;
   readonly Icon: IconType;
+  href?: string;
+  shouldOpenInNewTab?: boolean;
 }
 
 /**
  * Summary Component for displaying summery data with icon and possible click event
  */
 const SummaryCount = ({
-  buttonAction,
   title,
   count,
   Icon,
+  href,
+  shouldOpenInNewTab,
 }: SummaryCountProps): JSX.Element => {
-  const addLinkValue = () => {
-    if (buttonAction) {
-      return (
-        <button onClick={buttonAction} className="text-nci-blue underline">
-          {count}
-        </button>
-      );
-    } else {
-      return count;
-    }
-  };
+  const addLinkValue = () => (
+    <>
+      {href ? (
+        <Link href={href} passHref>
+          <a
+            className="text-nci-blue underline"
+            target={shouldOpenInNewTab && "_blank"}
+          >
+            {count}
+          </a>
+        </Link>
+      ) : (
+        count
+      )}
+    </>
+  );
+
   return (
     <div className="bg-white p-2 mb-4 flex items-center max-w-xs">
       <div className="flex-auto">
