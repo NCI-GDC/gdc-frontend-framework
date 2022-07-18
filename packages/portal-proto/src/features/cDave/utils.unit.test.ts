@@ -1,4 +1,5 @@
-import { createBuckets } from "./utils";
+import { Statistics } from "@gff/core";
+import { createBuckets, parseFieldName } from "./utils";
 
 describe("createBuckets", () => {
   it("standard bucket", () => {
@@ -8,7 +9,7 @@ describe("createBuckets", () => {
       min: 7201,
     };
 
-    expect(createBuckets(stats)).toEqual([
+    expect(createBuckets(stats as Statistics)).toEqual([
       { from: 7201, to: 12255.8 },
       { from: 12255.8, to: 17310.6 },
       { from: 17310.6, to: 22365.4 },
@@ -24,6 +25,22 @@ describe("createBuckets", () => {
       min: 0,
     };
 
-    expect(createBuckets(stats)).toEqual([{ from: 0, to: 1 }]);
+    expect(createBuckets(stats as Statistics)).toEqual([{ from: 0, to: 1 }]);
+  });
+});
+
+describe("parseFieldName", () => {
+  it("demographic field", () => {
+    expect(parseFieldName("demographic.gender")).toEqual({
+      field_name: "gender",
+      field_type: "demographic",
+    });
+  });
+
+  it("treatment field", () => {
+    expect(parseFieldName("diagnoses.treatments.treatment_type")).toEqual({
+      field_name: "treatments",
+      field_type: "treatment_type",
+    });
   });
 });

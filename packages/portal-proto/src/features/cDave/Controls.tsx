@@ -7,12 +7,16 @@ import {
 } from "react-icons/md";
 import { FacetDefinition } from "@gff/core";
 import { humanify } from "@/features/biospecimen/utils";
-import { DEFAULT_FIELDS } from "./constants";
+import { COLOR_MAP, DEFAULT_FIELDS } from "./constants";
+
+type ParsedFacetDefinition = FacetDefinition & {
+  readonly field_type: string;
+  readonly field_name: string;
+};
 
 interface ControlGroupProps {
   readonly name: string;
-  readonly fields: FacetDefinition[];
-  readonly color: string;
+  readonly fields: ParsedFacetDefinition[];
   readonly updateFields: (field: string) => void;
   readonly activeFields: string[];
 }
@@ -20,7 +24,6 @@ interface ControlGroupProps {
 const ControlGroup: React.FC<ControlGroupProps> = ({
   name,
   fields,
-  color,
   updateFields,
   activeFields,
 }: ControlGroupProps) => {
@@ -44,17 +47,16 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
         <ul className="bg-white">
           {visibleFields.map((field) => (
             <FieldControl
-              field={field}
-              color={color}
-              updateFields={updateFields}
               key={field.field}
+              field={field}
+              updateFields={updateFields}
               activeFields={activeFields}
             />
           ))}
         </ul>
         <span
           onClick={() => setFieldsCollapsed(!fieldsCollapsed)}
-          className="cursor-pointer"
+          className="cursor-pointer float-right mr-2"
         >
           {fieldsCollapsed ? `${fields.length - 5} More ...` : "Less..."}
         </span>
@@ -64,15 +66,13 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
 };
 
 interface FieldControlProps {
-  readonly field: FacetDefinition;
-  readonly color: string;
+  readonly field: ParsedFacetDefinition;
   readonly updateFields: (field: string) => void;
   readonly activeFields: string[];
 }
 
 const FieldControl: React.FC<FieldControlProps> = ({
   field,
-  color,
   updateFields,
   activeFields,
 }: FieldControlProps) => {
@@ -95,7 +95,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
             setChecked(e.currentTarget.checked);
             updateFields(field.full);
           }}
-          color={color}
+          color={COLOR_MAP[field.field_type]}
         />
       </div>
       <Divider />
@@ -105,7 +105,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
 
 interface ControlPanelProps {
   readonly updateFields: (field: string) => void;
-  readonly cDaveFields: FacetDefinition[];
+  readonly cDaveFields: ParsedFacetDefinition[];
   readonly fieldsWithData: any;
   readonly activeFields: string[];
 }
@@ -127,28 +127,24 @@ const Controls: React.FC<ControlPanelProps> = ({
       <ControlGroup
         name={"Demographic"}
         fields={groupedFields["demographic"] || []}
-        color={"blue"}
         updateFields={updateFields}
         activeFields={activeFields}
       />
       <ControlGroup
         name={"Diagnosis"}
         fields={groupedFields["diagnoses"] || []}
-        color={"orange"}
         updateFields={updateFields}
         activeFields={activeFields}
       />
       <ControlGroup
         name={"Treatment"}
         fields={groupedFields["treatments"] || []}
-        color={"green"}
         updateFields={updateFields}
         activeFields={activeFields}
       />
       <ControlGroup
         name={"Exposure"}
         fields={groupedFields["exposures"] || []}
-        color={"purple"}
         updateFields={updateFields}
         activeFields={activeFields}
       />

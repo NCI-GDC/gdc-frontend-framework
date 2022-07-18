@@ -1,5 +1,5 @@
 import { GqlOperation, useSurvivalPlotWithCohortFilters } from "@gff/core";
-import { Grid } from "@mantine/core";
+import { Card, Grid } from "@mantine/core";
 import SurvivalPlot from "../charts/SurvivalPlot";
 import CDaveCard from "./CDaveCard";
 import { result } from "lodash";
@@ -23,9 +23,11 @@ const Dashboard: React.FC<DashboardProps> = ({
 
   console.log("dashboard", results);
   return (
-    <Grid className="w-full">
+    <Grid className="w-full p-4">
       <Grid.Col span={6}>
-        <SurvivalPlot data={survivalData} />
+        <Card>
+          <SurvivalPlot data={survivalData} />
+        </Card>
       </Grid.Col>
       {activeFields.map((field) => {
         return (

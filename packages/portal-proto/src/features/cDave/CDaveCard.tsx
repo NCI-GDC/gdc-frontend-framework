@@ -4,13 +4,16 @@ import {
   MdBarChart as ChartIcon,
   MdOutlineClose as CloseIcon,
 } from "react-icons/md";
-import { useCoreSelector, selectFacetDefinitionByName } from "@gff/core";
-import { FacetChart } from "../charts/FacetChart";
-import { CONTINUOUS_FACET_TYPES, COLOR_MAP } from "./constants";
-import { createBuckets, parseFieldName } from "./utils";
-import { useRangeFacet } from "../facets/hooks";
+import {
+  useCoreSelector,
+  selectFacetDefinitionByName,
+  Statistics,
+} from "@gff/core";
+import { useCasesFacet, useRangeFacet } from "../facets/hooks";
 import VictoryBarChart from "../charts/VictoryBarChart";
 import { humanify } from "@/features/biospecimen/utils";
+import { CONTINUOUS_FACET_TYPES, COLOR_MAP } from "./constants";
+import { createBuckets, parseFieldName } from "./utils";
 
 interface CDaveCardProps {
   readonly field: string;
@@ -34,51 +37,59 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
     selectFacetDefinitionByName(state, field),
   );
 
-  console.log(facet);
-
+  const fieldName = humanify({ term: facet?.field || "" });
   const color = COLOR_MAP[parseFieldName(field).field_type];
-
-  if (
-    facet &&
-    data[facet.field] &&
-    CONTINUOUS_FACET_TYPES.includes(facet.type)
-  ) {
-    console.log("buckets", createBuckets(data[facet.field].stats));
-  }
 
   return facet && data[facet.field] ? (
     <Card>
-      <Tooltip label={"Histogram"}>
-        <ActionIcon
-          variant="outline"
-          className={
-            chartType === ChartTypes.histogram
-              ? "bg-nci-blue-darkest text-white"
-              : "border-nci-blue-darkest"
-          }
-        >
-          <ChartIcon />
-        </ActionIcon>
-      </Tooltip>
-      <Tooltip label={"Remove Card"}>
-        <ActionIcon onClick={() => updateFields(field)}>
-          <CloseIcon />
-        </ActionIcon>
-      </Tooltip>
+      <div className="flex justify-between mb-2">
+        <h2>{fieldName}</h2>
+        <div className="flex gap-2">
+          <Tooltip label={"Histogram"} withArrow>
+            <ActionIcon
+              variant="outline"
+              className={
+                chartType === ChartTypes.histogram
+                  ? "bg-nci-blue-darkest text-white"
+                  : "border-nci-blue-darkest"
+              }
+            >
+              <ChartIcon />
+            </ActionIcon>
+          </Tooltip>
+          <Tooltip label={"Remove Card"} withArrow>
+            <ActionIcon onClick={() => updateFields(field)}>
+              <CloseIcon />
+            </ActionIcon>
+          </Tooltip>
+        </div>
+      </div>
       {CONTINUOUS_FACET_TYPES.includes(facet.type) ? (
         <ContinuousResult
-          field={facet.field}
+          field={field}
+          fieldName={fieldName}
           stats={data[facet.field].stats}
           color={color}
         />
       ) : (
-        <FacetChart field={facet?.field} />
+        <EnumResult field={facet?.field} color={color} fieldName={fieldName} />
       )}
     </Card>
   ) : null;
 };
 
-const ContinuousResult = ({ field, stats, color }) => {
+interface ContinuousResultProps {
+  readonly field: string;
+  readonly fieldName: string;
+  readonly color: string;
+  readonly stats: Statistics;
+}
+const ContinuousResult: React.FC<ContinuousResultProps> = ({
+  field,
+  stats,
+  color,
+  fieldName,
+}: ContinuousResultProps) => {
   const ranges = createBuckets(stats);
   const { data } = useRangeFacet(field, ranges, "cases", "repository");
 
@@ -87,22 +98,53 @@ const ContinuousResult = ({ field, stats, color }) => {
     y: value,
   }));
 
-  console.log("range facet data", data);
   return (
     <>
       <VictoryBarChart data={barChartData} color={color} yLabel={"# Cases"} />
-      <CDaveTable field={field} data={barChartData} />
+      <CDaveTable data={barChartData} fieldName={fieldName} />
     </>
   );
 };
 
-const CDaveTable = ({ field, data }) => {
+interface EnumResultProps {
+  readonly field: string;
+  readonly fieldName: string;
+  readonly color: string;
+}
+const EnumResult: React.FC<EnumResultProps> = ({
+  field,
+  color,
+  fieldName,
+}: EnumResultProps) => {
+  const { data } = useCasesFacet(field, "cases", "repository");
+  const barChartData = Object.entries(data || {}).map(([key, value]) => ({
+    x: key,
+    y: value,
+  }));
+
+  return (
+    <>
+      <VictoryBarChart data={barChartData} color={color} yLabel={"# Cases"} />
+      <CDaveTable fieldName={fieldName} data={barChartData} />
+    </>
+  );
+};
+
+interface CDaveTableProps {
+  readonly fieldName: string;
+  readonly data: any;
+}
+
+const CDaveTable: React.FC<CDaveTableProps> = ({
+  fieldName,
+  data,
+}: CDaveTableProps) => {
   return (
     <table className="bg-white w-full text-left text-nci-gray-darker">
       <thead className="bg-nci-gray-lightest font-bold">
         <tr>
           <th>Select</th>
-          <th>{humanify({ term: field })}</th>
+          <th>{fieldName}</th>
           <th># Cases</th>
         </tr>
       </thead>

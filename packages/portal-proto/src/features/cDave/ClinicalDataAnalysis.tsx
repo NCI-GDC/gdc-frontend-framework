@@ -53,8 +53,6 @@ const ClinicalDataAnalysis: React.FC<ClinicalDataAnalysisProps> = ({
     facets: cDaveFields.map((f) => f.field),
   });
 
-  console.log("result", cDaveResult);
-
   const updateFields = (field: string) => {
     if (activeFields.includes(field)) {
       setActiveFields(activeFields.filter((f) => f !== field));

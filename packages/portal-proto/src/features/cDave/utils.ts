@@ -1,7 +1,7 @@
-import { NumericFromTo } from "@gff/core";
+import { NumericFromTo, Statistics } from "@gff/core";
 import { omitBy, some } from "lodash";
 
-export const parseFieldName = (field) => {
+export const parseFieldName = (field: string) => {
   const parsed = field.split(".");
   return { field_type: parsed.at(-2), field_name: parsed.at(-1) };
 };
@@ -23,13 +23,7 @@ export const filterUsefulFacets = (
   );
 };
 
-interface Stats {
-  readonly min: number;
-  readonly max: number;
-  readonly count: number;
-}
-
-export const createBuckets = (stats: Stats): NumericFromTo[] => {
+export const createBuckets = (stats: Statistics): NumericFromTo[] => {
   if (stats.count === 1) {
     return [{ from: stats.min, to: stats.max + 1 }];
   }
