@@ -33,6 +33,16 @@ import {
   sortByPropertyAsc,
 } from "src/utils";
 
+const createFilterForMultipleAnnotations = (
+  annotations?: Array<{ annotation_id: string }>,
+) => {
+  const values = annotations.map(
+    (annotation) => `"${annotation.annotation_id}"`,
+  );
+
+  return `filters={"content":[{"content":{"field":"annotations.annotation_id","value":[${values}]},"op":"in"}],"op":"and"}`;
+};
+
 const getAnnotationsLinkParams = (
   annotations?: Array<{ annotation_id: string }>,
 ) => {
@@ -41,7 +51,9 @@ const getAnnotationsLinkParams = (
   if (annotations.length === 1) {
     return `https://portal.gdc.cancer.gov/annotations/${annotations[0].annotation_id}`;
   } else {
-    return `https://portal.gdc.cancer.gov/annotations?field=annotations.annotation_id`;
+    return `https://portal.gdc.cancer.gov/annotations?${createFilterForMultipleAnnotations(
+      annotations,
+    )}`;
   }
 };
 
@@ -167,7 +179,7 @@ export const CaseSummary = ({
 
     if (!!slideCount && imageFiles.length > 0) {
       const images = (
-        <div className="flex gap-2">
+        <div className="flex">
           <Tooltip label="View Slide Image">
             <Link
               href={`/user-flow/workbench/MultipleImageViewerPage?caseId=${case_id}`}
