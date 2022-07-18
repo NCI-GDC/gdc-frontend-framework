@@ -208,7 +208,7 @@ const asExperimentalStrategy = (
 };
 
 export interface GdcFile {
-  readonly id?: string;
+  readonly id: string;
   readonly submitterId: string;
   readonly access: AccessType;
   readonly acl: ReadonlyArray<string>;
@@ -216,7 +216,7 @@ export interface GdcFile {
   readonly updatedDatetime: string;
   readonly dataCategory: DataCategory;
   readonly dataFormat: DataFormat;
-  readonly dataRelease?: string;
+  readonly dataRelease: string;
   readonly dataType: DataType;
   readonly fileId: string;
   readonly fileName: string;
@@ -225,7 +225,7 @@ export interface GdcFile {
   readonly platform: string;
   readonly state: string;
   readonly fileType: FileType;
-  readonly version?: string;
+  readonly version: string;
   readonly experimentalStrategy?: ExperimentalStrategy;
   readonly project_id?: string;
   readonly annotations?: ReadonlyArray<{
@@ -320,7 +320,7 @@ export interface GdcFile {
 
 export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
   return files.map((hit) => ({
-    id: hit?.id,
+    id: hit.id,
     submitterId: hit.submitter_id,
     access: asAccessType(hit.access),
     acl: [...hit.acl],
@@ -328,7 +328,7 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
     updatedDatetime: hit.updated_datetime,
     dataCategory: asDataCategory(hit.data_category),
     dataFormat: asDataFormat(hit.data_format),
-    dataRelease: hit?.data_release,
+    dataRelease: hit.data_release,
     dataType: asDataType(hit.data_type),
     fileId: hit.file_id,
     fileName: hit.file_name,
@@ -337,7 +337,7 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
     platform: hit.platform,
     state: hit.state,
     fileType: asFileType(hit.type),
-    version: hit?.version,
+    version: hit.version,
     experimentalStrategy: asExperimentalStrategy(hit.experimental_strategy),
     project_id: hit.cases?.[0]?.project?.project_id,
     annotations: hit.annotations?.map((annotation) => annotation),

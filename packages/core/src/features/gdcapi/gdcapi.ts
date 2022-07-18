@@ -282,7 +282,7 @@ export interface HistoryDefaults {
 }
 
 export interface FileDefaults {
-  readonly id?: string;
+  readonly id: string;
   readonly submitter_id: string;
   readonly access: string;
   readonly acl: ReadonlyArray<string>;
@@ -290,7 +290,7 @@ export interface FileDefaults {
   readonly updated_datetime: string;
   readonly data_category: string;
   readonly data_format: string;
-  readonly data_release?: string;
+  readonly data_release: string;
   readonly data_type: string;
   readonly file_id: string;
   readonly file_name: string;
@@ -299,7 +299,7 @@ export interface FileDefaults {
   readonly platform: string;
   readonly state: string;
   readonly type: string;
-  readonly version?: string;
+  readonly version: string;
   readonly experimental_strategy?: string;
   readonly annotations?: ReadonlyArray<{
     readonly annotation_id: string;
