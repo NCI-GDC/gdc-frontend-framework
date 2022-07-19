@@ -5,7 +5,7 @@ import {
   MdFileDownload,
   MdOutlineClear,
 } from "react-icons/md";
-import { Button, Input, Alert, LoadingOverlay, Menu } from "@mantine/core";
+import { Button, Input, LoadingOverlay, Menu } from "@mantine/core";
 import {
   entityType,
   useBiospecimenData,
