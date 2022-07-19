@@ -81,6 +81,7 @@ describe("selectCurrentCohort", () => {
           status: "uninitialized",
         },
         availableCohorts: [],
+        comparisonCohorts: [],
         builderConfig: {},
       },
     });
@@ -103,6 +104,7 @@ describe("selectCurrentCohort", () => {
           status: "uninitialized",
         },
         availableCohorts: [],
+        comparisonCohorts: [],
         builderConfig: {},
       },
     });
@@ -127,6 +129,7 @@ describe("selectCurrentCohortFilters", () => {
           status: "uninitialized",
         },
         availableCohorts: [],
+        comparisonCohorts: [],
         builderConfig: {},
       },
     });
@@ -157,6 +160,7 @@ describe("selectCurrentCohortFilters", () => {
             status: "uninitialized",
           },
           availableCohorts: [],
+          comparisonCohorts: [],
           builderConfig: {},
         },
       },

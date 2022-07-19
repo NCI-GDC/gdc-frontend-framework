@@ -4,7 +4,11 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
-import { selectCurrentCohortGqlFilters } from "../cohort/cohortFilterSlice";
+import {
+  buildCohortGqlOperator,
+  FilterSet,
+  selectCurrentCohortFilterSet,
+} from "../cohort/cohortFilterSlice";
 import { buildGraphGLBucketQuery, processBuckets } from "./facetApiGQL";
 import { FacetBuckets, GQLIndexType, GQLDocType } from "./types";
 import { FacetsState } from "./facetSlice";
@@ -14,6 +18,7 @@ export interface FetchFacetByNameGQLProps {
   readonly field: string;
   readonly docType?: GQLDocType;
   readonly index?: GQLIndexType;
+  readonly filterSelector?: (state: CoreState) => FilterSet;
 }
 
 export const fetchFacetByNameGQL = createAsyncThunk<
@@ -23,11 +28,15 @@ export const fetchFacetByNameGQL = createAsyncThunk<
 >(
   "facet/fetchCasesFacetByName",
   async (
-    { field, docType = "cases", index = "explore" as GQLIndexType },
+    {
+      field,
+      docType = "cases",
+      index = "explore" as GQLIndexType,
+      filterSelector = selectCurrentCohortFilterSet,
+    },
     thunkAPI,
   ) => {
-    const filters = selectCurrentCohortGqlFilters(thunkAPI.getState());
-
+    const filters = buildCohortGqlOperator(filterSelector(thunkAPI.getState()));
     // the GDC GraphQL schema does accept the docType prepended if the
     // docType is the same. Remove it but use the original field string
     // as the alias which reduces the complexity when processing facet buckets
@@ -36,11 +45,9 @@ export const fetchFacetByNameGQL = createAsyncThunk<
       : field;
 
     const queryGQL = buildGraphGLBucketQuery(adjField, docType, index, field);
-
     const filtersGQL = {
       filters_0: filters ? filters : {},
     };
-
     return graphqlAPI(queryGQL, filtersGQL);
   },
 );

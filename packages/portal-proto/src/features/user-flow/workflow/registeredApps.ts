@@ -64,6 +64,7 @@ export const REGISTERED_APPS = [
     id: "CohortComparisonApp",
     description:
       "Display the survival analysis of your cohorts and compare characteristics such as gender, vital status and age at diagnosis.",
+    selectAdditionalCohort: true,
   },
   {
     name: "Gene Expression",
@@ -86,6 +87,7 @@ export const REGISTERED_APPS = [
     description:
       "Display Venn diagram and find intersection or union, etc. of your cohorts.",
     id: "SetOperations",
+    selectAdditionalCohort: true,
   },
   {
     name: "OncoGrid",
@@ -106,7 +108,7 @@ export const REGISTERED_APPS = [
     tags: ["sequenceAnalysis"],
     hasDemo: true,
     description: "Visualize sequencing reads.",
-    id: "SequenceReads",
+    id: "SequenceReadApp",
     optimizeRules: ["data format = BAM"],
   },
   {
@@ -116,7 +118,7 @@ export const REGISTERED_APPS = [
     tags: ["variantAnalysis", "ssm"],
     hasDemo: true,
     description: "Visualize mutations in protein-coding genes.",
-    id: "ProteinPaint",
+    id: "ProteinPaintApp",
     caseCounts: 0.25,
     optimizeRules: ["available data = ssm"],
     noDataTooltip:

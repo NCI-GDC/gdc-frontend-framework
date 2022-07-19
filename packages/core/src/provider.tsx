@@ -14,8 +14,7 @@ export const CoreProvider: React.FC<unknown> = ({
   return (
     <Provider store={coreStore} context={CoreContext}>
       <PersistGate loading={null} persistor={persistor}>
-        {/* https://github.com/vercel/next.js/issues/8240#issuecomment-647699316 */}
-        {() => children}
+        {children}
       </PersistGate>
     </Provider>
   );

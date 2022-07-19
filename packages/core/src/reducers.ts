@@ -18,12 +18,15 @@ import { imageDetailsReducer } from "./features/imageDetails/imageDetailsSlice";
 import { imageViewerReducer } from "./features/imageDetails/imageViewer";
 import { cohortComparisonReducer } from "./features/cohortComparison";
 import { bannerReducer } from "./features/bannerNotification";
-import { cartReducer } from "./features/cart/cartSlice";
+import { cartReducer } from "./features/cart";
 import { totalCountsReducer } from "./features/summary/totalCountsSlice";
+import { ssmsReducer } from "./features/genomic/ssmsSummary/ssmsSummarySlice";
+import { genesSummaryReducer } from "./features/genomic/geneSummary/geneSummarySlice";
 import {
   cohortApiReducer,
   cohortApiSliceReducerPath,
 } from "./features/api/cohortApiSlice";
+import { biospecimenReducer } from "./features/biospecimen/biospecimenSlice";
 
 export const reducers = combineReducers({
   cohort: cohortReducers,
@@ -47,6 +50,9 @@ export const reducers = combineReducers({
   cart: cartReducer,
   bannerNotification: bannerReducer,
   summary: totalCountsReducer,
+  biospecimen: biospecimenReducer,
+  ssms: ssmsReducer,
+  genesSummary: genesSummaryReducer,
   [cohortApiSliceReducerPath]: cohortApiReducer,
 });
 

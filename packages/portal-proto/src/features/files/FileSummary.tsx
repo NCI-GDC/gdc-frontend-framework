@@ -1,3 +1,4 @@
+import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { useFiles, useFileHistory } from "@gff/core";
 import { FileView } from "./FileView";
 
@@ -28,6 +29,7 @@ export const ContextualFileView: React.FC<ContextualFileViewProps> = (
       "associated_entities",
       "analysis",
       "analysis.input_files",
+      "analysis.metadata.read_groups",
       "downstream_analyses",
       "downstream_analyses.output_files",
     ],
@@ -42,12 +44,7 @@ export const ContextualFileView: React.FC<ContextualFileViewProps> = (
     <div>
       {data && !isFetching ? (
         <>
-          <div className="bg-white py-4 px-8 shadow-lg">
-            <span className="rounded-full bg-nci-blue-darker text-white p-1 align-text-bottom mr-2">
-              FL
-            </span>
-            <span className="text-2xl text-nci-blue-darker">{title}</span>
-          </div>
+          <SummaryHeader iconText="FL" headerTitle={title} />
           {data?.[0] ? (
             <FileView file={data?.[0]} fileHistory={hystory?.data?.[0]} />
           ) : (

@@ -9,7 +9,6 @@ import {
   Button,
 } from "@mantine/core";
 import { MdSort as SortIcon } from "react-icons/md";
-import { IoMdArrowRoundBack as BackIcon } from "react-icons/io";
 import AnalysisCard from "@/features/user-flow/workflow/AnalysisCard";
 import {
   APPTAGS,
@@ -27,6 +26,11 @@ import Sidebar from "@/components/Sidebar";
 import FacetTabs from "@/features/cohortBuilder/FacetTabs";
 import Image from "next/image";
 
+import { CSSTransition } from "react-transition-group";
+import AnalysisBreadcrumbs from "./AnalysisBreadcrumbs";
+import AdditionalCohortSelection from "./AdditionalCohortSelection";
+import { clearComparisonCohorts } from "@gff/core";
+
 const ActiveAnalysisToolNoSSR = dynamic(
   () => import("@/features/user-flow/workflow/ActiveAnalysisTool"),
   {
@@ -42,13 +46,13 @@ const sortOptions = [
 const initialApps = REGISTERED_APPS.reduce(
   (obj, item) => ((obj[item.id] = item), obj),
   {},
-);
+) as AppRegistrationEntry[];
 const ALL_OTHER_APPS = Object.keys(initialApps).filter(
   (x) => !RECOMMENDED_APPS.includes(x),
 );
 
 interface AnalysisGridProps {
-  readonly onAppSelected?: (id: string, name: string) => void;
+  readonly onAppSelected?: (id: string) => void;
 }
 
 const AnalysisGrid: React.FC<AnalysisGridProps> = ({
@@ -89,7 +93,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
   }, [filterAppsByTagsAndSort]);
 
   const handleOpenAppClicked = (x: AppRegistrationEntry) => {
-    onAppSelected(x.id, x.name);
+    onAppSelected(x.id);
   };
 
   return (
@@ -281,9 +285,19 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   };
 
   useEffect(() => {
-    setSelectedApp(app);
-    setSelectedAppName(undefined); // will use the registered app name
-  }, [app]);
+    const appInfo = REGISTERED_APPS.find((a) => a.id === app);
+    setCohortSelectionOpen(appInfo?.selectAdditionalCohort);
+
+    if (app) {
+      scrollIntoView();
+    } else {
+      clearComparisonCohorts();
+    }
+  }, [app, scrollIntoView]);
+
+  const handleAppSelected = (app: string) => {
+    router.push({ query: { app } });
+  };
 
   return (
     <div>
@@ -329,6 +343,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
       ) : (
         <AnalysisGrid onAppSelected={handleAppSelected} />
       )}
+      {!app && <AnalysisGrid onAppSelected={handleAppSelected} />}
     </div>
   );
 };

@@ -45,7 +45,6 @@ export const HorizontalTable = ({
   customContainerStyles,
 }: HorizontalTableProps): JSX.Element => {
   const containerClassName = "bg-white w-full text-left text-nci-gray-darker";
-
   const updatedContainerClassName = customContainerStyles
     ? containerClassName + ` ${customContainerStyles}`
     : containerClassName;
@@ -60,14 +59,18 @@ export const HorizontalTable = ({
               className={rowIndex % 2 ? "" : "bg-gdc-blue-warm-lightest"}
             >
               <th
-                className="w-4/12 align-top pl-1 pr-8 whitespace-nowrap"
+                className="w-4/12 text-sm align-top pl-1 pr-8 whitespace-nowrap"
                 key={`head-${obj.headerName}`}
               >
                 {obj.headerName}
               </th>
               {obj.values.map((value, index): JSX.Element => {
                 const tdObject = (item: string | JSX.Element): JSX.Element => {
-                  return <td key={`${obj.headerName}-${index}`}>{item}</td>;
+                  return (
+                    <td key={`${obj.headerName}-${index}`} className="text-sm">
+                      {item}
+                    </td>
+                  );
                 };
                 switch (typeof value) {
                   case "undefined":

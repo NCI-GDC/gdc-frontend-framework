@@ -1,3 +1,4 @@
+import React from "react";
 import {
   useCoreSelector,
   selectGdcAppMetadataById,
@@ -5,7 +6,7 @@ import {
 } from "@gff/core";
 import { NextPage } from "next";
 import { NextRouter, useRouter } from "next/dist/client/router";
-import { SimpleLayout } from "../../features/layout/Simple";
+import { SimpleLayout } from "@/features/layout/Simple";
 
 const AppsPage: NextPage = () => {
   const router = useRouter();
@@ -13,7 +14,9 @@ const AppsPage: NextPage = () => {
   const metadata = useCoreSelector((state) =>
     selectGdcAppMetadataById(state, appId),
   );
-  const GdcApp = useCoreSelector(() => selectGdcAppById(appId));
+  const GdcApp = useCoreSelector(() =>
+    selectGdcAppById(appId),
+  ) as React.ElementType;
 
   return (
     <SimpleLayout>
@@ -28,7 +31,11 @@ const AppsPage: NextPage = () => {
             </div>
           </div>
         )}
-        {GdcApp && <div>{GdcApp}</div>}
+        {GdcApp && (
+          <div>
+            <GdcApp key={metadata.id} />
+          </div>
+        )}
       </div>
     </SimpleLayout>
   );

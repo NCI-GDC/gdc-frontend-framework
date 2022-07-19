@@ -6,21 +6,12 @@ import {
   selectCohortBuilderConfig,
   useCoreSelector,
   FacetDefinition,
-  selectFacetDefinitionByName,
   CohortBuilderCategory,
 } from "@gff/core";
 import { EnumFacet } from "../facets/EnumFacet";
 import NumericRangeFacet from "../facets/NumericRangeFacet";
 import { Tabs } from "@mantine/core";
-
-const getFacetInfo = (
-  fields: ReadonlyArray<string>,
-): ReadonlyArray<FacetDefinition> => {
-  const results = fields.map((x) =>
-    useCoreSelector((state) => selectFacetDefinitionByName(state, x)),
-  );
-  return results;
-};
+import { getFacetInfo } from "@/features/cohortBuilder/utils";
 
 interface FacetGroupProps {
   readonly facets: ReadonlyArray<FacetDefinition>;
