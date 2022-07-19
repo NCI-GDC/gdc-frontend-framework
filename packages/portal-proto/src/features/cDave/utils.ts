@@ -1,5 +1,6 @@
 import { NumericFromTo, Statistics, Buckets, Stats } from "@gff/core";
-import { omitBy, some } from "lodash";
+import { omitBy, some, capitalize } from "lodash";
+import { CAPILIZED_TERMS } from "./constants";
 
 export const parseFieldName = (
   field: string,
@@ -32,4 +33,11 @@ export const createBuckets = (stats: Statistics): NumericFromTo[] => {
     from: i * interval + stats.min,
     to: i + 1 === 5 ? stats.max + 1 : stats.min + (i + 1) * interval,
   }));
+};
+
+export const toDisplayName = (field: string): string => {
+  return field
+    .split("_")
+    .map((w) => (CAPILIZED_TERMS.includes(w) ? w.toUpperCase() : capitalize(w)))
+    .join(" ");
 };

@@ -18,9 +18,9 @@ import {
 } from "react-icons/fa";
 import { FacetDefinition } from "@gff/core";
 import Highlight from "@/components/Highlight";
-import { humanify } from "@/features/biospecimen/utils";
-import { COLOR_MAP, DEFAULT_FIELDS } from "./constants";
 import { createKeyboardAccessibleFunction } from "src/utils";
+import { COLOR_MAP, DEFAULT_FIELDS } from "./constants";
+import { toDisplayName } from "./utils";
 
 type ParsedFacetDefinition = FacetDefinition & {
   readonly field_type: string;
@@ -79,31 +79,33 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
         {groupOpen ? <DownIcon /> : <RightIcon />} {name}
       </span>
       <Collapse in={groupOpen}>
-        <ul className="bg-white">
-          {visibleFields.map((field) => (
-            <FieldControl
-              key={field.field}
-              field={field}
-              updateFields={updateFields}
-              activeFields={activeFields}
-              searchTerm={searchTerm}
-            />
-          ))}
-        </ul>
-        <span
-          onClick={() => setFieldsCollapsed(!fieldsCollapsed)}
-          onKeyPress={createKeyboardAccessibleFunction(() =>
-            setFieldsCollapsed(!fieldsCollapsed),
-          )}
-          tabIndex={0}
-          role="button"
-          className="cursor-pointer  mr-2"
-        >
-          {filteredFields.length > 5 &&
-            (fieldsCollapsed
-              ? `${filteredFields.length - 5} More ...`
-              : "Less...")}
-        </span>
+        <div className="flex flex-col">
+          <ul className="bg-white">
+            {visibleFields.map((field) => (
+              <FieldControl
+                key={field.field}
+                field={field}
+                updateFields={updateFields}
+                activeFields={activeFields}
+                searchTerm={searchTerm}
+              />
+            ))}
+          </ul>
+          <span
+            onClick={() => setFieldsCollapsed(!fieldsCollapsed)}
+            onKeyPress={createKeyboardAccessibleFunction(() =>
+              setFieldsCollapsed(!fieldsCollapsed),
+            )}
+            tabIndex={0}
+            role="button"
+            className="cursor-pointer mr-2 self-end"
+          >
+            {filteredFields.length > 5 &&
+              (fieldsCollapsed
+                ? `${filteredFields.length - 5} More ...`
+                : "Less...")}
+          </span>
+        </div>
       </Collapse>
     </>
   ) : null;
@@ -128,15 +130,14 @@ const FieldControl: React.FC<FieldControlProps> = ({
     setChecked(activeFields.includes(field.full));
   }, [activeFields, field.full]);
 
+  const displayName = toDisplayName(field.field_name);
+
   return (
     <li key={field.field} className="p-2">
       {searchTerm ? (
         <>
           <div className="flex justify-between">
-            <Highlight
-              search={searchTerm}
-              text={humanify({ term: field.field_name })}
-            />
+            <Highlight search={searchTerm} text={displayName} />
             <Switch
               classNames={{ input: "bg-none" }}
               checked={checked}
@@ -152,7 +153,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
       ) : (
         <div className="flex justify-between cursor-pointer">
           <Tooltip label={field.description} withArrow wrapLines width={200}>
-            {humanify({ term: field.field_name })}
+            {displayName}
           </Tooltip>
           <Switch
             classNames={{
@@ -192,7 +193,7 @@ const Controls: React.FC<ControlPanelProps> = ({
   return (
     <div
       className={`${
-        !panelCollapsed ? "w-80 bg-white overflow-scroll" : ""
+        !panelCollapsed ? "w-80 bg-white overflow-scroll -ml-2" : ""
       } h-[600px] flex flex-col`}
     >
       <ActionIcon
@@ -204,12 +205,13 @@ const Controls: React.FC<ControlPanelProps> = ({
       <div className={panelCollapsed ? "hidden" : "block"}>
         <Input
           placeholder="Search"
+          className="p-2"
           value={searchTerm}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setSearchTerm(e.currentTarget.value)
           }
         />
-        <p>
+        <p className="p-2">
           {Object.keys(fieldsWithData).length} of {cDaveFields.length} fields
           with values
         </p>

@@ -13,10 +13,9 @@ import {
 } from "@gff/core";
 import { useCasesFacet, useRangeFacet } from "../facets/hooks";
 import VictoryBarChart from "../charts/VictoryBarChart";
-import { humanify } from "@/features/biospecimen/utils";
 import tailwindConfig from "tailwind.config";
 import { CONTINUOUS_FACET_TYPES, COLOR_MAP } from "./constants";
-import { createBuckets, parseFieldName } from "./utils";
+import { createBuckets, parseFieldName, toDisplayName } from "./utils";
 
 interface CDaveCardProps {
   readonly field: string;
@@ -40,7 +39,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
     selectFacetDefinitionByName(state, field),
   );
 
-  const fieldName = humanify({ term: facet?.field || "" });
+  const fieldName = toDisplayName(parseFieldName(field).field_name);
 
   return facet && data[facet.field] ? (
     <Card>
