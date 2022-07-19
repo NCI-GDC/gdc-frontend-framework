@@ -17,5 +17,9 @@ build:
     - dind
   image: docker:20.10.16-dind
   script:
+    - echo $CI_REPOSITORY
+    - echo $CI_PROJECT_ID
+    - echo $CI_PROJECT_NAME
+    - echo $CI_PROJECT_TITLE
     - echo $CI_PROJECT_DIR
     - echo $CI_EXTERNAL_PULL_REQUEST_TARGET_REPOSITORY
