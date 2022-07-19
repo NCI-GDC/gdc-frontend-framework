@@ -4,7 +4,13 @@ import { formatDataForHorizontalTable } from "../files/utils";
 import { FaMicroscope, FaShoppingCart, FaDownload } from "react-icons/fa";
 import { Tooltip } from "@mantine/core";
 import Link from "next/link";
-import { CoreDispatch, entityType, SlideImageFile } from "@gff/core";
+import {
+  CartFile,
+  CoreDispatch,
+  entityType,
+  FileDefaults,
+  mapFileData,
+} from "@gff/core";
 import { addToCart, removeFromCart } from "@/features/cart/updateCart";
 import { get } from "lodash";
 import { entityTypes } from "@/components/BioTree/types";
@@ -88,8 +94,8 @@ export const formatEntityInfo = (
   foundType: string,
   caseId: string,
   dispatch: CoreDispatch,
-  currentCart: string[],
-  selectedSlide: readonly SlideImageFile[],
+  currentCart: CartFile[],
+  selectedSlide: readonly FileDefaults[],
 ): {
   readonly headerName: string;
   readonly values: readonly (
@@ -130,8 +136,8 @@ export const formatEntityInfo = (
       ]),
   );
 
-  const fileInCart = (ids: string[], newId: string) =>
-    ids.some((id) => id === newId);
+  const fileInCart = (cart: CartFile[], newId: string) =>
+    cart.map((f) => f.fileId).some((id) => id === newId);
 
   const isFileInCart = fileInCart(currentCart, selectedSlide[0]?.file_id);
 
@@ -152,8 +158,12 @@ export const formatEntityInfo = (
           <FaShoppingCart
             onClick={() => {
               isFileInCart
-                ? removeFromCart(selectedSlide, currentCart, dispatch)
-                : addToCart(selectedSlide, currentCart, dispatch);
+                ? removeFromCart(
+                    mapFileData(selectedSlide),
+                    currentCart,
+                    dispatch,
+                  )
+                : addToCart(mapFileData(selectedSlide), currentCart, dispatch);
             }}
             className={isFileInCart ? "text-nci-green" : ""}
           />

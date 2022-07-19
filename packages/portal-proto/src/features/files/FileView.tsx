@@ -8,6 +8,7 @@ import { get } from "lodash";
 import dynamic from "next/dynamic";
 import fileSize from "filesize";
 import tw from "tailwind-styled-components";
+import { AddToCartButton } from "../cart/updateCart";
 import { formatDataForHorizontalTable, parseSlideDetailsInfo } from "./utils";
 
 import Link from "next/link";
@@ -239,9 +240,7 @@ export const FileView: React.FC<FileViewProps> = ({
   return (
     <div className="p-4 text-nci-gray w-10/12 m-auto">
       <div className="text-right pb-5">
-        <Button className="m-1">
-          <FaShoppingCart className="mr-2" /> Add to Cart
-        </Button>
+        <AddToCartButton files={[file]} />
         {get(file, "dataFormat") === "BAM" && (
           <Button className="m-1">
             <FaCut className="mr-2" /> BAM Slicing

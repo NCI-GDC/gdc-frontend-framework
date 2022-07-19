@@ -29,6 +29,9 @@ query BiospecimenCard_relayQuery(
                         state
                         access
                         submitter_id
+                        data_category
+                        data_type
+                        type
                       }
                     }
                   }
