@@ -1,7 +1,8 @@
 #!/bin/bash -x
 set -o pipefail
-while getopts b:n:t: option; do
+while getopts r:b:n:t: option; do
 	case "${option}" in
+	r) REPO=${REPO};;
 	b) BRANCH=${OPTARG} ;;
 	n) BUILDNUMBER=${OPTARG} ;;
 	t) SCM_TAG=${OPTARG} ;;
@@ -11,7 +12,8 @@ done
 export DOCKER_BUILDKIT=1
 export BUILDKIT_STEP_LOG_MAX_SIZE=10485760
 export BUILDKIT_STEP_LOG_MAX_SPEED=1048576
-BRANCH="${BRANCH-}"
+
+BRANCH="${BRANCH//[\/]/_}"
 SCM_TAG="${SCM_TAG-}"
 BUILD_ROOT_DIR=$(pwd)
 DOCKER_BUILD_OPT=""
@@ -87,9 +89,9 @@ fi
 echo "Pushing and cleaning up." | ts "[INFO] %H:%M:%S - $directory -"
 populate_image_tags "${directory}"
 for TAG in "${IMAGE_TAGS[@]}"; do
-	 echo docker push $REGISTRY/portalv2/gdcfrontend/$BRANCH:$BUILDNUMBER | ts "[PUSH] %H:%M:%S - $directory -"
-         docker push $REGISTRY/portalv2/gdcfrontend/$BRANCH:$BUILDNUMBER | ts "[PUSH] %H:%M:%S - $directory -"
-	 docker rmi  $REGISTRY/portalv2/gdcfrontend/$BRANCH:$BUILDNUMBER  | ts "[PUSH] %H:%M:%S - $directory -"
+	 echo docker push $REGISTRY/$REPO:$BRANCH | ts "[PUSH] %H:%M:%S - $directory -"
+         docker push $REGISTRY/$REPO:$BRANCH | ts "[PUSH] %H:%M:%S - $directory -"
+	 docker rmi  $REGISTRY/$REPO:$BRANCH | ts "[PUSH] %H:%M:%S - $directory -"
 	 echo "${TAG} is all set"
 done
 echo "All done!" | ts '[INFO] %H:%M:%S -'

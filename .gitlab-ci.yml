@@ -92,5 +92,6 @@ build:
     - mv dist_linux/docker-slim-sensor /usr/local/bin/
     - rm -rf dist_linux/
     - mv dive /usr/local/bin/
+    - CI_COMMIT_REPO=basename `git rev-parse --show-toplevel`
   script:
-    - /bin/bash build.sh -b "add-gitlab-ci" -n "$CI_COMMIT_SHORT_SHA"
+    - /bin/bash build.sh -b "$CI_COMMIT_BRANCH" -r "$CI_COMMIT_REPO"
