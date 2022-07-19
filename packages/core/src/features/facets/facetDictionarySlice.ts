@@ -4,22 +4,12 @@ import { FacetDefinition } from "./types";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import {
-  CoreDataSelector,
   CoreDataSelectorResponse,
-  CoreDataSelectorWithParams,
   createUseCoreDataHook,
   DataStatus,
-  FetchDataActionCreator,
-  UseCoreDataResponse,
-  usePrevious,
-  UserCoreDataHook,
 } from "../../dataAccess";
 import { processDictionaryEntries } from "./facetDictionaryApi";
 import { isBucketsAggregation, isStatsAggregation } from "../gdcapi/gdcapi";
-import { useCoreDispatch, useCoreSelector } from "../../hooks";
-import { useEffect } from "react";
-import { isEqual } from "lodash";
-
 export type FacetDefinitionType = "cases" | "files";
 
 const buildFacetListByType = (
@@ -164,6 +154,8 @@ const facetDictionary = createSlice({
           },
         );
 
+        console.log("withValues:", withValues);
+
         return {
           ...state,
           [action.meta.arg.filterType]: "fulfilled",
@@ -175,7 +167,7 @@ const facetDictionary = createSlice({
           [action.meta.arg.filterType]: "pending",
         };
       })
-      .addCase(fetchFacetsWithValues.pending, (state, action) => {
+      .addCase(fetchFacetsWithValues.rejected, (state, action) => {
         return {
           ...state,
           [action.meta.arg.filterType]: "rejected",
@@ -207,6 +199,26 @@ export const selectUsefulFacets = (
   };
 };
 
+export const selectUsefulCaseFacets = (
+  state: CoreState,
+): CoreDataSelectorResponse<Record<string, FacetDefinition>> => {
+  return {
+    data: state.facetsGQL.dictionary.entries,
+    status: state.facetsGQL.dictionary.usefulStatus["cases"],
+    error: state.facetsGQL.dictionary.error,
+  };
+};
+
+export const selectUsefulFileFacets = (
+  state: CoreState,
+): CoreDataSelectorResponse<Record<string, FacetDefinition>> => {
+  return {
+    data: state.facetsGQL.dictionary.entries,
+    status: state.facetsGQL.dictionary.usefulStatus["files"],
+    error: state.facetsGQL.dictionary.error,
+  };
+};
+
 export const selectFacetDefinitionByName = (
   state: CoreState,
   field: string,
@@ -219,37 +231,12 @@ export const useFacetDictionary = createUseCoreDataHook(
   selectFacetDefinition,
 );
 
-export const createCodeDataSelectorWithParameters = <P, A, T, R>(
-  fetchDataActionCreator: FetchDataActionCreator<P, A>,
-  dataSelector: CoreDataSelectorWithParams<T, R>,
-): UserCoreDataHook<P, T> => {
-  return (...params: P[]): UseCoreDataResponse<T> => {
-    const coreDispatch = useCoreDispatch();
-    const { data, status, error } = useCoreSelector(dataSelector);
-    const action = fetchDataActionCreator(...params);
-    const prevParams = usePrevious<P[]>(params);
+export const useUsefulCaseFacets = createUseCoreDataHook(
+  fetchFacetsWithValues,
+  selectUsefulCaseFacets,
+);
 
-    useEffect(() => {
-      if (status === "uninitialized" || !isEqual(prevParams, params)) {
-        // createDispatchHook types forces the input to AnyAction, which is
-        // not compatible with thunk actions. hence, the `as any` cast. ;(
-        coreDispatch(action as any); // eslint-disable-line
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [status, coreDispatch, action, params, prevParams]);
-
-    return {
-      data,
-      error,
-      isUninitialized: status === "uninitialized",
-      isFetching: status === "pending",
-      isSuccess: status === "fulfilled",
-      isError: status === "rejected",
-    };
-  };
-};
-
-// export const useUsefulFacets = ( filterType: FacetDefinitionType) : UserCoreDataHook<> => {
-//   return  (): UseCoreDataResponse<T> => {
-//     const { data, status, error } = useCoreSelector();
-//   }
+export const useUsefulFilesFacets = createUseCoreDataHook(
+  fetchFacetsWithValues,
+  selectUsefulFileFacets,
+);
