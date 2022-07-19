@@ -185,7 +185,6 @@ export const addToCart = (
   currentCart: CartFile[],
   dispatch: CoreDispatch,
 ): void => {
-  console.log(files);
   const newCartSize = files.length + currentCart.length;
   cleanNotifications();
 

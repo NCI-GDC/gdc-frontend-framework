@@ -274,7 +274,7 @@ export const CaseSummary = ({
   return (
     <>
       {isFetching || isAnnotationCallFetching ? (
-        <LoadingOverlay visible />
+        <LoadingOverlay visible data-testid="loading" />
       ) : data && Object.keys(data).length > 0 && annotationCountData ? (
         <>
           <SummaryHeader iconText="CA" headerTitle={headerTitle} />
