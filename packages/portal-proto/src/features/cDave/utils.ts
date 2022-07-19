@@ -1,4 +1,4 @@
-import { NumericFromTo, Statistics } from "@gff/core";
+import { NumericFromTo, Statistics, Buckets, Stats } from "@gff/core";
 import { omitBy, some } from "lodash";
 
 export const parseFieldName = (field: string) => {
@@ -7,18 +7,16 @@ export const parseFieldName = (field: string) => {
 };
 
 export const filterUsefulFacets = (
-  facets: Record<string, any>,
-): Record<string, any> => {
+  facets: Record<string, Buckets | Stats>,
+): Record<string, Buckets | Stats> => {
   return omitBy(facets, (aggregation) =>
     some([
-      aggregation.buckets &&
-        aggregation.buckets.filter(
+      (aggregation as Buckets).buckets &&
+        (aggregation as Buckets).buckets.filter(
           (bucket: { key: string; doc_count: number }) =>
             bucket.key !== "_missing",
         ).length === 0,
-      aggregation.count === 0,
-      aggregation.count === null,
-      aggregation.stats && aggregation.stats.count === 0,
+      (aggregation as Stats).stats && (aggregation as Stats).stats.count === 0,
     ]),
   );
 };

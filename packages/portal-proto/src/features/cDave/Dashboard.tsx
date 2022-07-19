@@ -1,13 +1,17 @@
-import { GqlOperation, useSurvivalPlotWithCohortFilters } from "@gff/core";
+import {
+  GqlOperation,
+  useSurvivalPlotWithCohortFilters,
+  Buckets,
+  Stats,
+} from "@gff/core";
 import { Card, Grid } from "@mantine/core";
 import SurvivalPlot from "../charts/SurvivalPlot";
 import CDaveCard from "./CDaveCard";
-import { result } from "lodash";
 
 interface DashboardProps {
   readonly cohortFilters: GqlOperation;
   readonly activeFields: string[];
-  readonly results: any;
+  readonly results: Record<string, Buckets | Stats>;
   readonly updateFields: (field: string) => void;
 }
 
@@ -18,10 +22,9 @@ const Dashboard: React.FC<DashboardProps> = ({
   updateFields,
 }: DashboardProps) => {
   const { data: survivalData } = useSurvivalPlotWithCohortFilters({
-    filters: cohortFilters,
+    filters: [cohortFilters],
   });
 
-  console.log("dashboard", results);
   return (
     <Grid className="w-full p-4">
       <Grid.Col span={6}>

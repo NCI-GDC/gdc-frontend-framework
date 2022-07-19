@@ -8,6 +8,7 @@ import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import { GqlOperation } from "../gdcapi/filters";
 import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
+import { Buckets, Stats } from "../gdcapi/gdcapi";
 
 const graphQLQuery = `
   query ClinicalAnalysisResult(
@@ -43,7 +44,7 @@ export const fetchClinicalAnalysisResult = createAsyncThunk<
 });
 
 export interface ClinicalAnalysisResult {
-  data: any;
+  data: Record<string, Buckets | Stats>;
   status: DataStatus;
 }
 
@@ -85,7 +86,7 @@ export const clinicalAnalysisReducer = slice.reducer;
 
 export const selectClinicalAnalysisData = (
   state: CoreState,
-): CoreDataSelectorResponse<any> => {
+): CoreDataSelectorResponse<Record<string, Buckets | Stats>> => {
   return {
     data: state.clinicalDataAnalysis.data,
     status: state.clinicalDataAnalysis.status,

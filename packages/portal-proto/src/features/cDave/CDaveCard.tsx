@@ -8,6 +8,8 @@ import {
   useCoreSelector,
   selectFacetDefinitionByName,
   Statistics,
+  Buckets,
+  Stats,
 } from "@gff/core";
 import { useCasesFacet, useRangeFacet } from "../facets/hooks";
 import VictoryBarChart from "../charts/VictoryBarChart";
@@ -17,7 +19,7 @@ import { createBuckets, parseFieldName } from "./utils";
 
 interface CDaveCardProps {
   readonly field: string;
-  readonly data: any;
+  readonly data: Record<string, Buckets | Stats>;
   readonly updateFields: (field: string) => void;
 }
 
@@ -68,7 +70,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
         <ContinuousResult
           field={field}
           fieldName={fieldName}
-          stats={data[facet.field].stats}
+          stats={(data[facet.field] as Stats).stats}
           color={color}
         />
       ) : (
@@ -132,7 +134,10 @@ const EnumResult: React.FC<EnumResultProps> = ({
 
 interface CDaveTableProps {
   readonly fieldName: string;
-  readonly data: any;
+  readonly data: ReadonlyArray<{
+    x: string;
+    y: number;
+  }>;
 }
 
 const CDaveTable: React.FC<CDaveTableProps> = ({
