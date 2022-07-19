@@ -134,7 +134,7 @@ export const CaseSummary = ({
 
   const filesCountTotal = data?.files?.length ?? 0;
   const annotationsCountTotal = annotationCountData?.count;
-  const headerTitle = `${data?.project.project_id} / ${data?.submitter_id}`;
+  const headerTitle = `${data?.project?.project_id} / ${data?.submitter_id}`;
 
   const isAllFilesInCart = data?.files
     ? allFilesInCart(currentCart, mapFilesFromCasesToCartFile(data?.files))
@@ -171,7 +171,7 @@ export const CaseSummary = ({
       ),
       project_name,
       disease_type,
-      program_name,
+      program: program_name,
       primary_site,
     };
 
@@ -246,7 +246,7 @@ export const CaseSummary = ({
     }));
 
     return {
-      headers: ["Data Category", `Files (n = ${filesCountTotal})`],
+      headers: ["Data Category", `Files (n=${filesCountTotal})`],
       tableRows: rows,
     };
   };
@@ -266,7 +266,7 @@ export const CaseSummary = ({
     }));
 
     return {
-      headers: ["Experimental Strategy", `Files (n = ${filesCountTotal})`],
+      headers: ["Experimental Strategy", `Files (n=${filesCountTotal})`],
       tableRows: rows,
     };
   };
@@ -275,7 +275,7 @@ export const CaseSummary = ({
     <>
       {isFetching || isAnnotationCallFetching ? (
         <LoadingOverlay visible />
-      ) : data && annotationCountData ? (
+      ) : data && Object.keys(data).length > 0 && annotationCountData ? (
         <>
           <SummaryHeader iconText="CA" headerTitle={headerTitle} />
           <div className="flex flex-col mx-auto mt-5 w-10/12">
@@ -367,7 +367,13 @@ export const CaseSummary = ({
             </div>
           </div>
         </>
-      ) : null}
+      ) : (
+        <div className="p-4 text-nci-gray">
+          <div className="flex-auto bg-white mr-4">
+            <h2 className="p-2 text-2xl mx-4">Case Not Found</h2>
+          </div>
+        </div>
+      )}
     </>
   );
 };

@@ -221,12 +221,7 @@ export const Biospecimen = ({
             </div>
           </div>
         </>
-      ) : (
-        // TODO: Need to Remove this part after moving this to the case summary
-        <Alert title="Case ID not found" color="red" withCloseButton>
-          Case Not Found with a case id <strong>{caseId}</strong>
-        </Alert>
-      )}
+      ) : null}
     </div>
   );
 };
