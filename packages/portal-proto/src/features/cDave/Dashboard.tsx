@@ -22,7 +22,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   updateFields,
 }: DashboardProps) => {
   const { data: survivalData } = useSurvivalPlotWithCohortFilters({
-    filters: [cohortFilters],
+    filters: cohortFilters && [cohortFilters],
   });
 
   return (

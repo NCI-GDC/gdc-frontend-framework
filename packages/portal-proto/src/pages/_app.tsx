@@ -10,6 +10,11 @@ import { NotificationsProvider } from "@mantine/notifications";
 import { TourProvider } from "@reactour/tour";
 import { CustomBadge as Badge } from "../features/tour/CustomBadge";
 import store from "../app/store";
+import resolveConfig from "tailwindcss/resolveConfig";
+import tailwindConfig from "tailwind.config";
+
+// Grabs the full Tailwind CSS object
+const fullConfig = resolveConfig(tailwindConfig);
 
 // import gdc apps here.
 // their default exports will trigger registration.
@@ -84,6 +89,12 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
                 "#ffffff",
                 "#ffffff",
               ],
+              // Add default color from tailwind config to Mantine theme
+              ...Object.fromEntries(
+                Object.entries(tailwindConfig.theme.extend.colors).map(
+                  ([key, values]) => [key, Array(10).fill(values?.DEFAULT)],
+                ),
+              ),
             },
             breakpoints: {
               xs: 500,

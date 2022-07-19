@@ -16,8 +16,8 @@ export const CONTINUOUS_FACET_TYPES = [
 ];
 
 export const COLOR_MAP = {
-  demographic: "blue",
-  diagnoses: "orange",
-  treatments: "green",
-  exposures: "purple",
+  demographic: "nci-blue",
+  diagnoses: "nci-orange",
+  treatments: "nci-green",
+  exposures: "nci-purple",
 };

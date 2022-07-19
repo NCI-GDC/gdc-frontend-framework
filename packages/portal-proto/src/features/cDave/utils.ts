@@ -1,7 +1,9 @@
 import { NumericFromTo, Statistics, Buckets, Stats } from "@gff/core";
 import { omitBy, some } from "lodash";
 
-export const parseFieldName = (field: string) => {
+export const parseFieldName = (
+  field: string,
+): { field_type: string; field_name: string } => {
   const parsed = field.split(".");
   return { field_type: parsed.at(-2), field_name: parsed.at(-1) };
 };

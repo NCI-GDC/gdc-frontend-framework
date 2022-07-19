@@ -20,6 +20,7 @@ import { FacetDefinition } from "@gff/core";
 import Highlight from "@/components/Highlight";
 import { humanify } from "@/features/biospecimen/utils";
 import { COLOR_MAP, DEFAULT_FIELDS } from "./constants";
+import { createKeyboardAccessibleFunction } from "src/utils";
 
 type ParsedFacetDefinition = FacetDefinition & {
   readonly field_type: string;
@@ -68,6 +69,11 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
     <>
       <span
         onClick={() => setGroupOpen(!groupOpen)}
+        onKeyPress={createKeyboardAccessibleFunction(() =>
+          setGroupOpen(!groupOpen),
+        )}
+        tabIndex={0}
+        role="button"
         className="text-lg text-nci-blue-darkest cursor-pointer bg-nci-gray-lightest flex items-center p-2"
       >
         {groupOpen ? <DownIcon /> : <RightIcon />} {name}
@@ -86,6 +92,11 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
         </ul>
         <span
           onClick={() => setFieldsCollapsed(!fieldsCollapsed)}
+          onKeyPress={createKeyboardAccessibleFunction(() =>
+            setFieldsCollapsed(!fieldsCollapsed),
+          )}
+          tabIndex={0}
+          role="button"
           className="cursor-pointer  mr-2"
         >
           {filteredFields.length > 5 &&
@@ -115,7 +126,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
 
   useEffect(() => {
     setChecked(activeFields.includes(field.full));
-  }, [activeFields]);
+  }, [activeFields, field.full]);
 
   return (
     <li key={field.field} className="p-2">
@@ -140,11 +151,13 @@ const FieldControl: React.FC<FieldControlProps> = ({
         </>
       ) : (
         <div className="flex justify-between cursor-pointer">
-          <Tooltip label={field.description} withArrow wrapLines>
+          <Tooltip label={field.description} withArrow wrapLines width={200}>
             {humanify({ term: field.field_name })}
           </Tooltip>
           <Switch
-            classNames={{ input: "bg-none" }}
+            classNames={{
+              input: `bg-none text-${COLOR_MAP[field.field_type]}`,
+            }}
             checked={checked}
             onChange={(e) => {
               setChecked(e.currentTarget.checked);
@@ -188,12 +201,14 @@ const Controls: React.FC<ControlPanelProps> = ({
       >
         {panelCollapsed ? <DoubleRightIcon /> : <DoubleLeftIcon />}
       </ActionIcon>
-      <Input
-        placeholder="Search"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.currentTarget.value)}
-      />
       <div className={panelCollapsed ? "hidden" : "block"}>
+        <Input
+          placeholder="Search"
+          value={searchTerm}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setSearchTerm(e.currentTarget.value)
+          }
+        />
         <p>
           {Object.keys(fieldsWithData).length} of {cDaveFields.length} fields
           with values

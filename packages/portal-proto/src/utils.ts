@@ -1,3 +1,4 @@
+import { KeyboardEventHandler } from "react";
 import { DocumentWithWebkit } from "./features/types";
 
 export const toggleFullScreen = async (
@@ -20,6 +21,13 @@ export const toggleFullScreen = async (
       (document as DocumentWithWebkit).webkitExitFullscreen();
     }
   }
+};
+
+/* eslint-disable-next-line  @typescript-eslint/ban-types */
+export const createKeyboardAccessibleFunction = (
+  func: Function,
+): KeyboardEventHandler<any> => {
+  return (e: React.KeyboardEvent<any>) => (e.key === "Enter" ? func() : null);
 };
 
 export const capitalize = (original: string): string => {

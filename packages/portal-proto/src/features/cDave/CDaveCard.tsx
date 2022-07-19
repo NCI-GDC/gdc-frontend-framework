@@ -14,6 +14,7 @@ import {
 import { useCasesFacet, useRangeFacet } from "../facets/hooks";
 import VictoryBarChart from "../charts/VictoryBarChart";
 import { humanify } from "@/features/biospecimen/utils";
+import tailwindConfig from "tailwind.config";
 import { CONTINUOUS_FACET_TYPES, COLOR_MAP } from "./constants";
 import { createBuckets, parseFieldName } from "./utils";
 
@@ -40,7 +41,6 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   );
 
   const fieldName = humanify({ term: facet?.field || "" });
-  const color = COLOR_MAP[parseFieldName(field).field_type];
 
   return facet && data[facet.field] ? (
     <Card>
@@ -71,10 +71,9 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
           field={field}
           fieldName={fieldName}
           stats={(data[facet.field] as Stats).stats}
-          color={color}
         />
       ) : (
-        <EnumResult field={facet?.field} color={color} fieldName={fieldName} />
+        <EnumResult field={facet?.field} fieldName={fieldName} />
       )}
     </Card>
   ) : null;
@@ -83,13 +82,11 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
 interface ContinuousResultProps {
   readonly field: string;
   readonly fieldName: string;
-  readonly color: string;
   readonly stats: Statistics;
 }
 const ContinuousResult: React.FC<ContinuousResultProps> = ({
   field,
   stats,
-  color,
   fieldName,
 }: ContinuousResultProps) => {
   const ranges = createBuckets(stats);
@@ -99,6 +96,11 @@ const ContinuousResult: React.FC<ContinuousResultProps> = ({
     x: key,
     y: value,
   }));
+
+  const color =
+    tailwindConfig.theme.extend.colors[
+      COLOR_MAP[parseFieldName(field).field_type]
+    ].DEFAULT;
 
   return (
     <>
@@ -111,11 +113,9 @@ const ContinuousResult: React.FC<ContinuousResultProps> = ({
 interface EnumResultProps {
   readonly field: string;
   readonly fieldName: string;
-  readonly color: string;
 }
 const EnumResult: React.FC<EnumResultProps> = ({
   field,
-  color,
   fieldName,
 }: EnumResultProps) => {
   const { data } = useCasesFacet(field, "cases", "repository");
@@ -123,6 +123,11 @@ const EnumResult: React.FC<EnumResultProps> = ({
     x: key,
     y: value,
   }));
+
+  const color =
+    tailwindConfig.theme.extend.colors[
+      COLOR_MAP[parseFieldName(field).field_type]
+    ].DEFAULT;
 
   return (
     <>
@@ -155,7 +160,10 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
       </thead>
       <tbody>
         {data.map((d, idx) => (
-          <tr className={idx % 2 ? null : "bg-gdc-blue-warm-lightest"}>
+          <tr
+            className={idx % 2 ? null : "bg-gdc-blue-warm-lightest"}
+            key={`${d.x}-${d.y}`}
+          >
             <td>
               <Checkbox />
             </td>
