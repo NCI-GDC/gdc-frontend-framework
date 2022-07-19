@@ -296,6 +296,7 @@ export const CaseSummary = ({
                         dispatch,
                       )
                 }
+                disabled={filesCountTotal === 0}
               >
                 {!isAllFilesInCart
                   ? "Add all files to the cart"
