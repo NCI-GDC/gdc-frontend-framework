@@ -5,6 +5,8 @@ import {
   useCoreDispatch,
   useCoreSelector,
   selectCart,
+  useAnnotations,
+  AnnotationDefaults,
 } from "@gff/core";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
 import SummaryCount from "@/components/Summary/SummaryCount";
@@ -32,30 +34,6 @@ import {
   calculatePercentage,
   sortByPropertyAsc,
 } from "src/utils";
-
-const createFilterForMultipleAnnotations = (
-  annotations?: Array<{ annotation_id: string }>,
-) => {
-  const values = annotations.map(
-    (annotation) => `"${annotation.annotation_id}"`,
-  );
-
-  return `filters={"content":[{"content":{"field":"annotations.annotation_id","value":[${values}]},"op":"in"}],"op":"and"}`;
-};
-
-const getAnnotationsLinkParams = (
-  annotations?: Array<{ annotation_id: string }>,
-) => {
-  if (!annotations) return null;
-
-  if (annotations.length === 1) {
-    return `https://portal.gdc.cancer.gov/annotations/${annotations[0].annotation_id}`;
-  } else {
-    return `https://portal.gdc.cancer.gov/annotations?${createFilterForMultipleAnnotations(
-      annotations,
-    )}`;
-  }
-};
 
 export const CaseSummary = ({
   case_id,
@@ -92,9 +70,19 @@ export const CaseSummary = ({
       "summary.data_categories.data_category",
       "summary.experimental_strategies.experimental_strategy",
       "summary.experimental_strategies.file_count",
-      "annotations.annotation_id",
     ],
   });
+
+  const { data: annotationCountData, isFetching: isAnnotationCallFetching } =
+    useAnnotations({
+      filters: {
+        op: "=",
+        content: {
+          field: "annotations.case_id",
+          value: case_id,
+        },
+      },
+    });
 
   const { prevPath } = useContext(URLContext);
   const currentCart = useCoreSelector((state) => selectCart(state));
@@ -113,6 +101,21 @@ export const CaseSummary = ({
     }
   }, [prevPath, scrollIntoView]);
 
+  const getAnnotationsLinkParams = (
+    annotations: {
+      list: AnnotationDefaults[];
+      count: number;
+    },
+    case_id: string,
+  ) => {
+    if (annotations.count === 0) return null;
+
+    if (annotations.count === 1) {
+      return `https://portal.gdc.cancer.gov/annotations/${annotations.list[0].annotation_id}`;
+    }
+    return `https://portal.gdc.cancer.gov/annotations?filters={"content":[{"content":{"field":"annotations.case_id","value":["${case_id}"]},"op":"in"}],"op":"and"}`;
+  };
+
   const getSlideCountFromCaseSummary = (
     experimental_strategies: Array<{
       experimental_strategy: string;
@@ -130,7 +133,7 @@ export const CaseSummary = ({
   };
 
   const filesCountTotal = data?.files?.length ?? 0;
-  const annotationsCountTotal = data?.annotations?.length ?? 0;
+  const annotationsCountTotal = annotationCountData?.count;
   const headerTitle = `${data?.project.project_id} / ${data?.submitter_id}`;
 
   const isAllFilesInCart = data?.files
@@ -270,9 +273,9 @@ export const CaseSummary = ({
 
   return (
     <>
-      {!data && isFetching ? (
+      {isFetching || isAnnotationCallFetching ? (
         <LoadingOverlay visible />
-      ) : data ? (
+      ) : data && annotationCountData ? (
         <>
           <SummaryHeader iconText="CA" headerTitle={headerTitle} />
           <div className="flex flex-col mx-auto mt-5 w-10/12">
@@ -315,7 +318,10 @@ export const CaseSummary = ({
                     title="annotations"
                     count={annotationsCountTotal.toLocaleString()}
                     Icon={FaEdit}
-                    href={getAnnotationsLinkParams(data.annotations)}
+                    href={getAnnotationsLinkParams(
+                      annotationCountData,
+                      case_id,
+                    )}
                     shouldOpenInNewTab
                   />
                 </div>
@@ -329,7 +335,7 @@ export const CaseSummary = ({
                     </h2>
                     {!data.summary.data_categories && (
                       <span className="block text-center text-sm pt-4">
-                        No Results found
+                        No results found
                       </span>
                     )}
                   </div>
@@ -345,7 +351,7 @@ export const CaseSummary = ({
                     </h2>
                     {!data.summary.experimental_strategies && (
                       <span className="block text-center text-sm pt-4">
-                        No Results found
+                        No results found
                       </span>
                     )}
                   </div>

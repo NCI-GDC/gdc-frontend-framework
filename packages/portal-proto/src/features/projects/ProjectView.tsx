@@ -28,7 +28,7 @@ export const ContextualProjectView: React.FC<ContextualProjectViewProps> = (
       "program",
     ],
   });
-  const annotationCount = useAnnotations({
+  const annotationCountData = useAnnotations({
     filters: {
       op: "=",
       content: {
@@ -40,7 +40,7 @@ export const ContextualProjectView: React.FC<ContextualProjectViewProps> = (
   });
   const projectWithAnnotation = {
     ...projectData.data[0],
-    ...annotationCount.data[0],
+    annotationCount: annotationCountData.data.count,
   };
   return <ProjectView projectData={projectWithAnnotation} />;
 };
