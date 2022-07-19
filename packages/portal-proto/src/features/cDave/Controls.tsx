@@ -1,11 +1,23 @@
 import { useEffect, useState } from "react";
-import { Switch, Divider, Tooltip, Collapse } from "@mantine/core";
+import {
+  Switch,
+  Divider,
+  Tooltip,
+  Collapse,
+  ActionIcon,
+  Input,
+} from "@mantine/core";
 import { groupBy } from "lodash";
 import {
   MdKeyboardArrowDown as DownIcon,
   MdKeyboardArrowRight as RightIcon,
 } from "react-icons/md";
+import {
+  FaAngleDoubleLeft as DoubleLeftIcon,
+  FaAngleDoubleRight as DoubleRightIcon,
+} from "react-icons/fa";
 import { FacetDefinition } from "@gff/core";
+import Highlight from "@/components/Highlight";
 import { humanify } from "@/features/biospecimen/utils";
 import { COLOR_MAP, DEFAULT_FIELDS } from "./constants";
 
@@ -19,6 +31,7 @@ interface ControlGroupProps {
   readonly fields: ParsedFacetDefinition[];
   readonly updateFields: (field: string) => void;
   readonly activeFields: string[];
+  readonly searchTerm?: string;
 }
 
 const ControlGroup: React.FC<ControlGroupProps> = ({
@@ -26,16 +39,32 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
   fields,
   updateFields,
   activeFields,
+  searchTerm,
 }: ControlGroupProps) => {
   const [groupOpen, setGroupOpen] = useState(true);
+  const [filteredFields, setFilteredFields] = useState(fields);
   const [fieldsCollapsed, setFieldsCollapsed] = useState(true);
   const [visibleFields, setVisibleFields] = useState(fields.slice(0, 5));
 
   useEffect(() => {
-    setVisibleFields(fieldsCollapsed ? fields.slice(0, 5) : fields);
-  }, [fieldsCollapsed, fields]);
+    if (!searchTerm) {
+      setVisibleFields(fieldsCollapsed ? fields.slice(0, 5) : fields);
+      setFilteredFields(fields);
+    } else {
+      const filteredFields = fields.filter(
+        (f) =>
+          f.description.toLowerCase().search(searchTerm) > -1 ||
+          f.field_name.search(searchTerm) > -1,
+      );
 
-  return (
+      setVisibleFields(
+        fieldsCollapsed ? filteredFields.slice(0, 5) : filteredFields,
+      );
+      setFilteredFields(filteredFields);
+    }
+  }, [searchTerm, fieldsCollapsed, fields]);
+
+  return filteredFields.length > 0 ? (
     <>
       <span
         onClick={() => setGroupOpen(!groupOpen)}
@@ -51,30 +80,36 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
               field={field}
               updateFields={updateFields}
               activeFields={activeFields}
+              searchTerm={searchTerm}
             />
           ))}
         </ul>
         <span
           onClick={() => setFieldsCollapsed(!fieldsCollapsed)}
-          className="cursor-pointer float-right mr-2"
+          className="cursor-pointer  mr-2"
         >
-          {fieldsCollapsed ? `${fields.length - 5} More ...` : "Less..."}
+          {filteredFields.length > 5 &&
+            (fieldsCollapsed
+              ? `${filteredFields.length - 5} More ...`
+              : "Less...")}
         </span>
       </Collapse>
     </>
-  );
+  ) : null;
 };
 
 interface FieldControlProps {
   readonly field: ParsedFacetDefinition;
   readonly updateFields: (field: string) => void;
   readonly activeFields: string[];
+  readonly searchTerm?: string;
 }
 
 const FieldControl: React.FC<FieldControlProps> = ({
   field,
   updateFields,
   activeFields,
+  searchTerm,
 }: FieldControlProps) => {
   const [checked, setChecked] = useState(DEFAULT_FIELDS.includes(field.full));
 
@@ -83,21 +118,42 @@ const FieldControl: React.FC<FieldControlProps> = ({
   }, [activeFields]);
 
   return (
-    <li key={field.field} className="cursor-pointer p-2">
-      <div className="flex justify-between">
-        <Tooltip label={field.description} withArrow wrapLines>
-          {humanify({ term: field.field_name })}
-        </Tooltip>
-        <Switch
-          classNames={{ input: "bg-none" }}
-          checked={checked}
-          onChange={(e) => {
-            setChecked(e.currentTarget.checked);
-            updateFields(field.full);
-          }}
-          color={COLOR_MAP[field.field_type]}
-        />
-      </div>
+    <li key={field.field} className="p-2">
+      {searchTerm ? (
+        <>
+          <div className="flex justify-between">
+            <Highlight
+              search={searchTerm}
+              text={humanify({ term: field.field_name })}
+            />
+            <Switch
+              classNames={{ input: "bg-none" }}
+              checked={checked}
+              onChange={(e) => {
+                setChecked(e.currentTarget.checked);
+                updateFields(field.full);
+              }}
+              color={COLOR_MAP[field.field_type]}
+            />
+          </div>
+          <Highlight search={searchTerm} text={field.description} />
+        </>
+      ) : (
+        <div className="flex justify-between cursor-pointer">
+          <Tooltip label={field.description} withArrow wrapLines>
+            {humanify({ term: field.field_name })}
+          </Tooltip>
+          <Switch
+            classNames={{ input: "bg-none" }}
+            checked={checked}
+            onChange={(e) => {
+              setChecked(e.currentTarget.checked);
+              updateFields(field.full);
+            }}
+            color={COLOR_MAP[field.field_type]}
+          />
+        </div>
+      )}
       <Divider />
     </li>
   );
@@ -116,38 +172,61 @@ const Controls: React.FC<ControlPanelProps> = ({
   fieldsWithData,
   activeFields,
 }: ControlPanelProps) => {
+  const [searchTerm, setSearchTerm] = useState(null);
+  const [panelCollapsed, setPanelCollapsed] = useState(false);
   const groupedFields = groupBy(cDaveFields, "field_type");
 
   return (
-    <div className="w-80 h-[600px] overflow-scroll flex flex-col bg-white">
-      <p>
-        {Object.keys(fieldsWithData).length} of {cDaveFields.length} fields with
-        values
-      </p>
-      <ControlGroup
-        name={"Demographic"}
-        fields={groupedFields["demographic"] || []}
-        updateFields={updateFields}
-        activeFields={activeFields}
+    <div
+      className={`${
+        !panelCollapsed ? "w-80 bg-white overflow-scroll" : ""
+      } h-[600px] flex flex-col`}
+    >
+      <ActionIcon
+        className="self-end"
+        onClick={() => setPanelCollapsed(!panelCollapsed)}
+      >
+        {panelCollapsed ? <DoubleRightIcon /> : <DoubleLeftIcon />}
+      </ActionIcon>
+      <Input
+        placeholder="Search"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.currentTarget.value)}
       />
-      <ControlGroup
-        name={"Diagnosis"}
-        fields={groupedFields["diagnoses"] || []}
-        updateFields={updateFields}
-        activeFields={activeFields}
-      />
-      <ControlGroup
-        name={"Treatment"}
-        fields={groupedFields["treatments"] || []}
-        updateFields={updateFields}
-        activeFields={activeFields}
-      />
-      <ControlGroup
-        name={"Exposure"}
-        fields={groupedFields["exposures"] || []}
-        updateFields={updateFields}
-        activeFields={activeFields}
-      />
+      <div className={panelCollapsed ? "hidden" : "block"}>
+        <p>
+          {Object.keys(fieldsWithData).length} of {cDaveFields.length} fields
+          with values
+        </p>
+        <ControlGroup
+          name={"Demographic"}
+          fields={groupedFields["demographic"] || []}
+          updateFields={updateFields}
+          activeFields={activeFields}
+          searchTerm={searchTerm}
+        />
+        <ControlGroup
+          name={"Diagnosis"}
+          fields={groupedFields["diagnoses"] || []}
+          updateFields={updateFields}
+          activeFields={activeFields}
+          searchTerm={searchTerm}
+        />
+        <ControlGroup
+          name={"Treatment"}
+          fields={groupedFields["treatments"] || []}
+          updateFields={updateFields}
+          activeFields={activeFields}
+          searchTerm={searchTerm}
+        />
+        <ControlGroup
+          name={"Exposure"}
+          fields={groupedFields["exposures"] || []}
+          updateFields={updateFields}
+          activeFields={activeFields}
+          searchTerm={searchTerm}
+        />
+      </div>
     </div>
   );
 };
