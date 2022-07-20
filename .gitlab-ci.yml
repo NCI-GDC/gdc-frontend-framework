@@ -76,7 +76,8 @@ Run all tests:
 
 build:
   stage: build
+  tags:
+    - dind
   script:
     - docker build .
     - /bin/bash build.sh -r "$CI_PROJECT_NAME" -b "$CI_COMMIT_BRANCH"
-
