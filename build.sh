@@ -2,7 +2,7 @@
 set -o pipefail
 while getopts r:b:n:t: option; do
 	case "${option}" in
-	r) REPO=${REPO};;
+	r) REPO=${OPTARG};;
 	b) BRANCH=${OPTARG} ;;
 	n) BUILDNUMBER=${OPTARG} ;;
 	t) SCM_TAG=${OPTARG} ;;
@@ -60,7 +60,7 @@ fi
 
 
 echo "Building Dockerfile" | ts "[INFO] %H:%M:%S"
-docker build -t $REGISTRY/$REPO:$BRANCH .
+echo docker build -t $REGISTRY/$REPO:$BRANCH .
 
 if [[ -z "$GITLAB_CI" ]]; then
 	echo "This is not being built on GitLab, ignoring dive." | ts "[INFO] %H:%M:%S - $directory -"
