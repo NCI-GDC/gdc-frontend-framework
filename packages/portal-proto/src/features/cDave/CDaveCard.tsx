@@ -14,6 +14,7 @@ import {
 import { useCasesFacet, useRangeFacet } from "../facets/hooks";
 import VictoryBarChart from "../charts/VictoryBarChart";
 import tailwindConfig from "tailwind.config";
+import { truncateString } from "src/utils";
 import { CONTINUOUS_FACET_TYPES, COLOR_MAP } from "./constants";
 import { createBuckets, parseFieldName, toDisplayName } from "./utils";
 
@@ -42,7 +43,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   const fieldName = toDisplayName(parseFieldName(field).field_name);
 
   return facet && data[facet.field] ? (
-    <Card>
+    <Card className="h-[560px]">
       <div className="flex justify-between mb-2">
         <h2>{fieldName}</h2>
         <div className="flex gap-2">
@@ -78,6 +79,11 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   ) : null;
 };
 
+const parseContinuousBucket = (bucket: string): string => {
+  const [fromValue, toValue] = bucket.split("-");
+  return `${Number(fromValue).toFixed(2)} to < ${Number(toValue).toFixed(2)}`;
+};
+
 interface ContinuousResultProps {
   readonly field: string;
   readonly fieldName: string;
@@ -91,9 +97,13 @@ const ContinuousResult: React.FC<ContinuousResultProps> = ({
   const ranges = createBuckets(stats);
   const { data } = useRangeFacet(field, ranges, "cases", "repository");
 
+  const yTotal = Object.values(data || {}).reduce((prevY, y) => prevY + y, 0);
+
   const barChartData = Object.entries(data || {}).map(([key, value]) => ({
-    x: key,
+    x: parseContinuousBucket(key),
+    fullName: parseContinuousBucket(key),
     y: value,
+    yTotal,
   }));
 
   const color =
@@ -103,7 +113,15 @@ const ContinuousResult: React.FC<ContinuousResultProps> = ({
 
   return (
     <>
-      <VictoryBarChart data={barChartData} color={color} yLabel={"# Cases"} />
+      <div className="h-80">
+        <VictoryBarChart
+          data={barChartData}
+          color={color}
+          yLabel={"# Cases"}
+          width={800}
+          height={500}
+        />
+      </div>
       <CDaveTable data={barChartData} fieldName={fieldName} />
     </>
   );
@@ -118,9 +136,13 @@ const EnumResult: React.FC<EnumResultProps> = ({
   fieldName,
 }: EnumResultProps) => {
   const { data } = useCasesFacet(field, "cases", "repository");
+  const yTotal = Object.values(data || {}).reduce((prevY, y) => prevY + y, 0);
+
   const barChartData = Object.entries(data || {}).map(([key, value]) => ({
-    x: key,
+    x: truncateString(key, 8),
+    fullName: key,
     y: value,
+    yTotal,
   }));
 
   const color =
@@ -130,7 +152,15 @@ const EnumResult: React.FC<EnumResultProps> = ({
 
   return (
     <>
-      <VictoryBarChart data={barChartData} color={color} yLabel={"# Cases"} />
+      <div className="h-80">
+        <VictoryBarChart
+          data={barChartData}
+          color={color}
+          yLabel={"# Cases"}
+          width={800}
+          height={500}
+        />
+      </div>
       <CDaveTable fieldName={fieldName} data={barChartData} />
     </>
   );
@@ -139,7 +169,7 @@ const EnumResult: React.FC<EnumResultProps> = ({
 interface CDaveTableProps {
   readonly fieldName: string;
   readonly data: ReadonlyArray<{
-    x: string;
+    fullName: string;
     y: number;
   }>;
 }
@@ -149,29 +179,31 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
   data,
 }: CDaveTableProps) => {
   return (
-    <table className="bg-white w-full text-left text-nci-gray-darker">
-      <thead className="bg-nci-gray-lightest font-bold">
-        <tr>
-          <th>Select</th>
-          <th>{fieldName}</th>
-          <th># Cases</th>
-        </tr>
-      </thead>
-      <tbody>
-        {data.map((d, idx) => (
-          <tr
-            className={idx % 2 ? null : "bg-gdc-blue-warm-lightest"}
-            key={`${d.x}-${d.y}`}
-          >
-            <td>
-              <Checkbox />
-            </td>
-            <td>{d.x}</td>
-            <td>{d.y}</td>
+    <div className="h-44 block overflow-auto w-full">
+      <table className="bg-white w-full text-left text-nci-gray-darker ">
+        <thead className="bg-nci-gray-lightest font-bold">
+          <tr>
+            <th>Select</th>
+            <th>{fieldName}</th>
+            <th># Cases</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {data.map((d, idx) => (
+            <tr
+              className={idx % 2 ? null : "bg-gdc-blue-warm-lightest"}
+              key={`${d.fullName}-${d.y}`}
+            >
+              <td>
+                <Checkbox />
+              </td>
+              <td>{d.fullName}</td>
+              <td>{d.y.toLocaleString()}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 };
 

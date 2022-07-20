@@ -28,7 +28,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   return (
     <Grid className="w-full p-4">
       <Grid.Col span={6}>
-        <Card>
+        <Card className="h-[560px]">
           <SurvivalPlot data={survivalData} />
         </Card>
       </Grid.Col>

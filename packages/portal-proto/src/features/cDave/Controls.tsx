@@ -186,7 +186,7 @@ const Controls: React.FC<ControlPanelProps> = ({
   fieldsWithData,
   activeFields,
 }: ControlPanelProps) => {
-  const [searchTerm, setSearchTerm] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const [panelCollapsed, setPanelCollapsed] = useState(false);
   const groupedFields = groupBy(cDaveFields, "field_type");
 
@@ -194,7 +194,7 @@ const Controls: React.FC<ControlPanelProps> = ({
     <div
       className={`${
         !panelCollapsed ? "w-80 bg-white overflow-scroll -ml-2" : ""
-      } h-[600px] flex flex-col`}
+      } h-[675px] flex flex-col`}
     >
       <ActionIcon
         className="self-end"
