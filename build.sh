@@ -60,7 +60,7 @@ fi
 
 
 echo "Building Dockerfile" | ts "[INFO] %H:%M:%S"
-echo docker build -t $REGISTRY/$REPO:$BRANCH .
+docker build -t $REGISTRY/$REPO:$BRANCH .
 
 if [[ -z "$GITLAB_CI" ]]; then
 	echo "This is not being built on GitLab, ignoring dive." | ts "[INFO] %H:%M:%S - $directory -"
@@ -83,8 +83,8 @@ echo "Pushing and cleaning up." | ts "[INFO] %H:%M:%S - $directory -"
 populate_image_tags "${directory}"
 for TAG in "${IMAGE_TAGS[@]}"; do
 	 echo docker push $REGISTRY/$REPO:$BRANCH | ts "[PUSH] %H:%M:%S - $directory -"
-#         docker push $REGISTRY/$REPO:$BRANCH | ts "[PUSH] %H:%M:%S - $directory -"
-#	 docker rmi  $REGISTRY/$REPO:$BRANCH | ts "[PUSH] %H:%M:%S - $directory -"
+         docker push $REGISTRY/$REPO:$BRANCH | ts "[PUSH] %H:%M:%S - $directory -"
+	 docker rmi  $REGISTRY/$REPO:$BRANCH | ts "[PUSH] %H:%M:%S - $directory -"
 	 echo "${TAG} is all set"
 done
 echo "All done!" | ts '[INFO] %H:%M:%S -'
