@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { Card, ActionIcon, Tooltip, Checkbox } from "@mantine/core";
+import {
+  Card,
+  ActionIcon,
+  Tooltip,
+  Checkbox,
+  RadioGroup,
+  Radio,
+} from "@mantine/core";
 import {
   MdBarChart as ChartIcon,
   MdOutlineClose as CloseIcon,
@@ -36,6 +43,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   updateFields,
 }: CDaveCardProps) => {
   const [chartType] = useState<ChartTypes>(ChartTypes.histogram);
+  const [displayPercent, setDisplayPercent] = useState(false);
   const facet = useCoreSelector((state) =>
     selectFacetDefinitionByName(state, field),
   );
@@ -66,14 +74,28 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
           </Tooltip>
         </div>
       </div>
+      <RadioGroup
+        size="sm"
+        className="p-2"
+        onChange={(e) => setDisplayPercent(e === "percent")}
+        defaultValue={"counts"}
+      >
+        <Radio value="counts" label="# of Cases" />
+        <Radio value="percent" label="% of Cases" />
+      </RadioGroup>
       {CONTINUOUS_FACET_TYPES.includes(facet.type) ? (
         <ContinuousResult
           field={field}
           fieldName={fieldName}
           stats={(data[facet.field] as Stats).stats}
+          displayPercent={displayPercent}
         />
       ) : (
-        <EnumResult field={facet?.field} fieldName={fieldName} />
+        <EnumResult
+          field={facet?.field}
+          fieldName={fieldName}
+          displayPercent={displayPercent}
+        />
       )}
     </Card>
   ) : null;
@@ -84,27 +106,38 @@ const parseContinuousBucket = (bucket: string): string => {
   return `${Number(fromValue).toFixed(2)} to < ${Number(toValue).toFixed(2)}`;
 };
 
+const formatBarChartData = (
+  data: Record<string, number>,
+  displayPercent: boolean,
+  continuous: boolean,
+) => {
+  const yTotal = Object.values(data || {}).reduce((prevY, y) => prevY + y, 0);
+
+  return Object.entries(data || {}).map(([key, value]) => ({
+    x: truncateString(continuous ? parseContinuousBucket(key) : key, 8),
+    fullName: continuous ? parseContinuousBucket(key) : key,
+    y: displayPercent ? (value / yTotal) * 100 : value,
+    yCount: value,
+    yTotal,
+  }));
+};
+
 interface ContinuousResultProps {
   readonly field: string;
   readonly fieldName: string;
   readonly stats: Statistics;
+  readonly displayPercent: boolean;
 }
 const ContinuousResult: React.FC<ContinuousResultProps> = ({
   field,
   stats,
   fieldName,
+  displayPercent,
 }: ContinuousResultProps) => {
   const ranges = createBuckets(stats);
   const { data } = useRangeFacet(field, ranges, "cases", "repository");
 
-  const yTotal = Object.values(data || {}).reduce((prevY, y) => prevY + y, 0);
-
-  const barChartData = Object.entries(data || {}).map(([key, value]) => ({
-    x: truncateString(parseContinuousBucket(key), 8),
-    fullName: parseContinuousBucket(key),
-    y: value,
-    yTotal,
-  }));
+  const barChartData = formatBarChartData(data, displayPercent, true);
 
   const color =
     tailwindConfig.theme.extend.colors[
@@ -117,7 +150,7 @@ const ContinuousResult: React.FC<ContinuousResultProps> = ({
         <VictoryBarChart
           data={barChartData}
           color={color}
-          yLabel={"# Cases"}
+          yLabel={displayPercent ? "% of Cases" : "# Cases"}
           width={800}
           height={500}
         />
@@ -130,20 +163,16 @@ const ContinuousResult: React.FC<ContinuousResultProps> = ({
 interface EnumResultProps {
   readonly field: string;
   readonly fieldName: string;
+  readonly displayPercent: boolean;
 }
 const EnumResult: React.FC<EnumResultProps> = ({
   field,
   fieldName,
+  displayPercent,
 }: EnumResultProps) => {
   const { data } = useCasesFacet(field, "cases", "repository");
-  const yTotal = Object.values(data || {}).reduce((prevY, y) => prevY + y, 0);
 
-  const barChartData = Object.entries(data || {}).map(([key, value]) => ({
-    x: truncateString(key, 8),
-    fullName: key,
-    y: value,
-    yTotal,
-  }));
+  const barChartData = formatBarChartData(data, displayPercent, false);
 
   const color =
     tailwindConfig.theme.extend.colors[
@@ -156,7 +185,7 @@ const EnumResult: React.FC<EnumResultProps> = ({
         <VictoryBarChart
           data={barChartData}
           color={color}
-          yLabel={"# Cases"}
+          yLabel={displayPercent ? "% of Cases" : "# Cases"}
           width={800}
           height={500}
         />
@@ -170,7 +199,8 @@ interface CDaveTableProps {
   readonly fieldName: string;
   readonly data: ReadonlyArray<{
     fullName: string;
-    y: number;
+    yCount: number;
+    yTotal: number;
   }>;
 }
 
@@ -192,13 +222,20 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
           {data.map((d, idx) => (
             <tr
               className={idx % 2 ? null : "bg-gdc-blue-warm-lightest"}
-              key={`${d.fullName}-${d.y}`}
+              key={`${fieldName}-${d.fullName}`}
             >
               <td>
                 <Checkbox />
               </td>
               <td>{d.fullName}</td>
-              <td>{d.y.toLocaleString()}</td>
+              <td>
+                {d.yCount.toLocaleString()} (
+                {(d.yCount / d.yTotal).toLocaleString(undefined, {
+                  style: "percent",
+                  minimumFractionDigits: 2,
+                })}
+                )
+              </td>
             </tr>
           ))}
         </tbody>

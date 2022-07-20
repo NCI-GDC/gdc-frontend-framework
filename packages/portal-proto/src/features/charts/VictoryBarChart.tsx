@@ -26,8 +26,8 @@ const BarChartTooltip: React.FC<BarChartTooltipProps> = ({
         <Tooltip
           label={
             <>
-              {datum.fullName}: {datum.y.toLocaleString()} (
-              {(datum.y / datum.yTotal).toLocaleString(undefined, {
+              {datum.fullName}: {datum.yCount.toLocaleString()} (
+              {(datum.yCount / datum.yTotal).toLocaleString(undefined, {
                 style: "percent",
                 minimumFractionDigits: 2,
               })}
@@ -52,7 +52,7 @@ const BarChartLabel: React.FC<VictoryLabelProps & { index?: number }> = ({
   angle,
   data,
   index,
-}) => {
+}: VictoryLabelProps & { index?: number }) => {
   const [showTooltip, setShowTooltip] = useState(false);
 
   return (
@@ -62,7 +62,7 @@ const BarChartLabel: React.FC<VictoryLabelProps & { index?: number }> = ({
         y={y}
         texta-anchor="start"
         transform={`rotate(${angle},${x - 5}, ${y})`}
-        style={style as object}
+        style={style as Record<string, string>}
         onMouseOver={() => setShowTooltip(true)}
         onMouseOut={() => setShowTooltip(false)}
       >
