@@ -22,13 +22,6 @@ if [[ -z "$GITLAB_CI" ]]; then
 else
 	DOCKER_BUILD_OPT=""
 fi
-if [ -z "$SCM_TAG" ]; then
-	CLEAN_BRANCH_NAME=${BRANCH/\//_}
-	LOWERCASE_BRANCH_NAME="$(tr "[:upper:]" "[:lower:]" <<<"$CLEAN_BRANCH_NAME")"
-	CURRENT_VERSION="${LOWERCASE_BRANCH_NAME}-${BUILDNUMBER}"
-else
-	CURRENT_VERSION="$SCM_TAG"
-fi
 if [ "$BRANCH" = "master" ] || [ -n "$SCM_TAG" ]; then
 	# Which internal registry to push the images to.
 	REGISTRY="dev-containers.osdc.io"
@@ -50,9 +43,9 @@ fi
 function populate_image_tags() {
 	IMAGE_TAGS=()
 	for TAG_VERSION in "${TAG_VERSIONS[@]}"; do
-		IMAGE_TAGS+=("${REGISTRY}/ncigdc/$BRANCH:${TAG_VERSION}")
+		IMAGE_TAGS+=("${REGISTRY}/$REPO:$BRANCH")
 		if [ -n "$EXTERNAL_REGISTRY" ]; then
-			IMAGE_TAGS+=("${EXTERNAL_REGISTRY}/ncigdc/$BRANCH:${TAG_VERSION}")
+			IMAGE_TAGS+=("${EXTERNAL_REGISTRY}/$REPO:$BRANCH")
 		fi
 	done
 }
@@ -67,15 +60,15 @@ fi
 
 
 echo "Building Dockerfile" | ts "[INFO] %H:%M:%S"
-docker build -t $REGISTRY/portalv2/gdcfrontend/$BRANCH:$BUILDNUMBER .
+docker build -t $REGISTRY/$REPO:$BRANCH .
 
 if [[ -z "$GITLAB_CI" ]]; then
 	echo "This is not being built on GitLab, ignoring dive." | ts "[INFO] %H:%M:%S - $directory -"
 else
-	dive "$REGISTRY/portalv2/gdcfrontend/$BRANCH:$BUILDNUMBER" || true
+	dive "$REGISTRY/$REPO:$BRANCH" || true
 fi
 
-echo docker rmi "$REGISTRY/portalv2/gdcfrontend/$BRANCH:$BUILDNUMBER"
+echo docker rmi "$REGISTRY/$REPO:$BRANCH"
 cd ..
 
 echo "Successfully built all containers!" | ts '[INFO] %H:%M:%S -'
