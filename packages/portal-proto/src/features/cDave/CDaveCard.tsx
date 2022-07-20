@@ -100,7 +100,7 @@ const ContinuousResult: React.FC<ContinuousResultProps> = ({
   const yTotal = Object.values(data || {}).reduce((prevY, y) => prevY + y, 0);
 
   const barChartData = Object.entries(data || {}).map(([key, value]) => ({
-    x: parseContinuousBucket(key),
+    x: truncateString(parseContinuousBucket(key), 8),
     fullName: parseContinuousBucket(key),
     y: value,
     yTotal,

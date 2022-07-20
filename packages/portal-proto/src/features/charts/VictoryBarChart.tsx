@@ -1,10 +1,11 @@
 import { Tooltip } from "@mantine/core";
-import React from "react";
+import React, { useState } from "react";
 import {
   VictoryAxis,
   VictoryBar,
   VictoryChart,
   VictoryLabel,
+  VictoryLabelProps,
   VictoryTooltip,
 } from "victory";
 
@@ -19,7 +20,6 @@ const BarChartTooltip: React.FC<BarChartTooltipProps> = ({
   y,
   datum,
 }: BarChartTooltipProps) => {
-  console.log("datum", datum);
   return (
     <g transform={`translate(${x}, ${y})`}>
       <foreignObject>
@@ -44,18 +44,34 @@ const BarChartTooltip: React.FC<BarChartTooltipProps> = ({
   );
 };
 
-const BarChartLabel = (props) => {
-  console.log(props);
+const BarChartLabel: React.FC<VictoryLabelProps & { index?: number }> = ({
+  text,
+  x,
+  y,
+  style,
+  angle,
+  data,
+  index,
+}) => {
+  const [showTooltip, setShowTooltip] = useState(false);
+
   return (
-    <text
-      x={props.x}
-      y={props.y}
-      text-anchor="start"
-      transform={`rotate(${props.angle},${props.x}, ${props.y + 15})`}
-      style={props.style}
-    >
-      {props.text}
-    </text>
+    <g>
+      <text
+        x={x}
+        y={y}
+        texta-anchor="start"
+        transform={`rotate(${angle},${x - 5}, ${y})`}
+        style={style as object}
+        onMouseOver={() => setShowTooltip(true)}
+        onMouseOut={() => setShowTooltip(false)}
+      >
+        {text}
+      </text>
+      {showTooltip && (
+        <BarChartTooltip x={x + 20} y={y - 20} datum={data[index]} />
+      )}
+    </g>
   );
 };
 
@@ -88,7 +104,7 @@ const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
       />
       <VictoryAxis
         style={{ tickLabels: { angle: 45, fontSize: 24 } }}
-        tickLabelComponent={<BarChartLabel />}
+        tickLabelComponent={<BarChartLabel data={data} />}
       />
       <VictoryBar
         data={data}
