@@ -76,8 +76,11 @@ Run all tests:
 
 build:
   stage: build
+  services:
+    - docker:20.10.16-dind
   tags:
     - dind
+  image: docker:20.10.16-dind
   script:
     - docker build .
     - /bin/bash build.sh -r "$CI_PROJECT_NAME" -b "$CI_COMMIT_BRANCH"
