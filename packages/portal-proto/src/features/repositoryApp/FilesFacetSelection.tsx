@@ -3,8 +3,9 @@ import FacetSelection from "@/components/FacetSelection";
 import { selectCohortBuilderConfigFilters } from "@gff/core";
 
 import { Modal, Button } from "@mantine/core";
+import { selectRepositoryConfigFacets } from "@/features/repositoryApp/fileFiltersSlice";
 
-const CohortFacetSelection = () => {
+const FilesFacetSelection = () => {
   const handleFilterSelected = (facet: string) => {
     // TODO remove this when actually used
     console.log("facetSelected", facet);
@@ -13,14 +14,14 @@ const CohortFacetSelection = () => {
   return (
     <FacetSelection
       title={"Add Cohort Filter"}
-      facetType="cases"
+      facetType="files"
       handleFilterSelected={handleFilterSelected}
-      usedFacetsSelector={selectCohortBuilderConfigFilters}
+      usedFacetsSelector={selectRepositoryConfigFacets}
     />
   );
 };
 
-export const CohortFacetSelectionModal = () => {
+export const FilesFacetSelectionModal = () => {
   const [opened, setOpened] = useState(false);
 
   const handleFilterSelected = (facet: string) => {
@@ -33,16 +34,16 @@ export const CohortFacetSelectionModal = () => {
     <>
       <Modal size="lg" opened={opened} onClose={() => setOpened(false)}>
         <FacetSelection
-          title={"Add Cohort Filter"}
-          facetType="cases"
+          title={"Add Files Filter"}
+          facetType="files"
           handleFilterSelected={handleFilterSelected}
           usedFacetsSelector={selectCohortBuilderConfigFilters}
         />
       </Modal>
 
-      <Button onClick={() => setOpened(true)}>Add Clinical Facet</Button>
+      <Button onClick={() => setOpened(true)}>Add File Facet</Button>
     </>
   );
 };
 
-export default CohortFacetSelection;
+export default FilesFacetSelection;

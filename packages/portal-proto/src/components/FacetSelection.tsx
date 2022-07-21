@@ -17,6 +17,7 @@ import {
   SimpleGrid,
   TextInput,
   Title,
+  Stack,
   UnstyledButton,
 } from "@mantine/core";
 import isEqual from "lodash/isEqual";
@@ -39,61 +40,73 @@ const FacetList: React.FC<FacetListProps> = ({
   handleFilterSelected,
 }: FacetListProps) => {
   return (
-    <>
-      <div className="flex flex-col h-screen/2 overflow-y-scroll">
-        <SimpleGrid cols={1} spacing={1}>
-          {data
-            ? Object.values(data).map((x, index) => {
-                return (
-                  <button
-                    key={x.field}
-                    className={`flex flex-col justify-start px-1 ${
-                      index % 2 == 0 ? "bg-nci-gray-lightest" : "bg-white"
-                    } text-nci-gray-darkest hover:bg-nci-blue-darkest hover:text-nci-gray-lightest transition-colors`}
-                    onClick={() => handleFilterSelected(x.full)}
-                  >
-                    <div className="flex-row font-bold">
-                      <Highlight highlight={searchString}>{x.field}</Highlight>
-                    </div>
+    <Stack style={{ height: "50vh", overflow: "scroll" }}>
+      <SimpleGrid cols={1} spacing={1}>
+        {data
+          ? Object.values(data).map((x, index) => {
+              return (
+                <Stack
+                  key={x.field}
+                  sx={(theme) => ({
+                    backgroundColor:
+                      index % 2 == 0
+                        ? theme.colors.gray[0]
+                        : theme.colors.gray[2],
+                    "&:hover": {
+                      backgroundColor: theme.colors.blue[1],
+                    },
+                  })}
+                >
+                  <button onClick={() => handleFilterSelected(x.full)}>
+                    <Highlight
+                      align="left"
+                      weight={700}
+                      size="sm"
+                      highlight={searchString}
+                    >
+                      {x.field}
+                    </Highlight>
                     {x.description ? (
-                      <div className="italic text-sm text-justify">
-                        <Highlight highlight={searchString}>
-                          {x.description}
-                        </Highlight>
-                      </div>
+                      <Highlight
+                        align="left"
+                        size="xs"
+                        highlight={searchString}
+                      >
+                        {x.description}
+                      </Highlight>
                     ) : null}
                   </button>
-                );
-              })
-            : null}
-        </SimpleGrid>
-      </div>
-    </>
+                </Stack>
+              );
+            })
+          : null}
+      </SimpleGrid>
+    </Stack>
   );
 };
 
 interface FacetSelectionProps {
-  readonly filterType?: string;
+  readonly facetType: string;
   readonly title: string;
-  readonly filters: Record<string, FacetDefinition>;
+  readonly facets: Record<string, FacetDefinition>;
   readonly handleFilterSelected: (_: string) => void;
   readonly handleFilteredWithValuesChanged: (_: boolean) => void;
 }
 
 const FacetSelectionPanel = ({
-  filters,
+  facets,
   title,
   handleFilterSelected,
   handleFilteredWithValuesChanged,
-  filterType = "cases",
+  facetType,
 }: FacetSelectionProps) => {
   const [searchString, setSearchString] = useState("");
   const [filteredData, setFilteredData] = useState(undefined);
 
   useEffect(() => {
-    if (!filters) return;
+    if (!facets) return;
     if (searchString && searchString.length > 1) {
-      const s = Object.values(filters)
+      const s = Object.values(facets)
         .filter((y) => {
           return searchString
             ? y.field.includes(searchString) ||
@@ -105,63 +118,61 @@ const FacetSelectionPanel = ({
         }, {});
       setFilteredData(s);
     } else {
-      setFilteredData(filters);
+      setFilteredData(facets);
     }
-  }, [filters, searchString]);
+  }, [facets, searchString]);
 
   return (
-    <>
-      <div className="flex flex-col w-1/2">
-        <Title order={3}>{title}</Title>
-        <TextInput
-          label="Search for a field:"
-          placeholder="search"
-          value={searchString}
-          rightSection={
-            searchString?.length > 0 ? (
-              <UnstyledButton
-                className="opacity-100"
-                onClick={() => setSearchString("")}
-              >
-                x
-              </UnstyledButton>
-            ) : null
+    <div className="flex flex-col w-1/2">
+      <Title order={3}>{title}</Title>
+      <TextInput
+        label="Search for a field:"
+        placeholder="search"
+        value={searchString}
+        rightSection={
+          searchString?.length > 0 ? (
+            <UnstyledButton
+              className="opacity-100"
+              onClick={() => setSearchString("")}
+            >
+              x
+            </UnstyledButton>
+          ) : null
+        }
+        onChange={(evt) => setSearchString(evt.target.value)}
+        aria-label="Search for a field"
+      />
+      <Group position="apart">
+        <p>
+          {filteredData ? Object.values(filteredData).length : ""} {facetType}{" "}
+          fields
+        </p>
+        <Checkbox
+          label="Only show fields with values"
+          onChange={(event) =>
+            handleFilteredWithValuesChanged(event.currentTarget.checked)
           }
-          onChange={(evt) => setSearchString(evt.target.value)}
-          aria-label="Search for a field"
+          aria-label="show only field with values"
+        ></Checkbox>
+      </Group>
+      <div>
+        <LoadingOverlay visible={facets === undefined} />
+        <FacetList
+          data={filteredData}
+          handleFilterSelected={handleFilterSelected}
+          searchString={
+            searchString && searchString.length > 1 ? searchString : ""
+          }
         />
-        <Group position="apart">
-          <p>
-            {filteredData ? Object.values(filteredData).length : ""}{" "}
-            {filterType} fields
-          </p>
-          <Checkbox
-            label="Only show fields with values"
-            onChange={(event) =>
-              handleFilteredWithValuesChanged(event.currentTarget.checked)
-            }
-            aria-label="show only field with values"
-          ></Checkbox>
-        </Group>
-        <div>
-          <LoadingOverlay visible={filters === undefined} />
-          <FacetList
-            data={filteredData}
-            handleFilterSelected={handleFilterSelected}
-            searchString={
-              searchString && searchString.length > 1 ? searchString : ""
-            }
-          />
-        </div>
       </div>
-    </>
+    </div>
   );
 };
 
 interface FacetSelectionModalProps {
   readonly title: string;
   readonly facetType: FacetDefinitionType;
-  readonly usedFacetsSelector: (CoreState) => string[];
+  readonly usedFacetsSelector: (CoreState) => ReadonlyArray<string>;
   readonly handleFilterSelected: (string) => void;
 }
 
@@ -188,12 +199,6 @@ const FacetSelection = ({
   const [currentFacets, setCurrentFacets] = useState(undefined); // current set of Facets
   const [useUsefulFacets, setUseUsefulFacets] = useState(false); // list of Facet which have values
   const prevAssignedFacets = usePrevious(assignedFacets);
-  // const usefulFacetsStatus = useCoreSelector((state) =>
-  //   selectUsefulCaseFacets(state).status,
-  // );
-  // const usefulFacets = useCoreSelector((state) =>
-  //   selectUsefulFacets(state, facetType).data,
-  // );
 
   const { data: usefulFacets, status: usefulFacetsStatus } = useCoreSelector(
     (state) => selectUsefulFacets(state, facetType),
@@ -204,7 +209,7 @@ const FacetSelection = ({
   // select facets with values if not already requested
   useEffect(() => {
     if (useUsefulFacets && usefulFacetsStatus == "uninitialized" && isSuccess) {
-      coreDispatch(fetchFacetsWithValues("cases"));
+      coreDispatch(fetchFacetsWithValues(facetType));
     }
   }, [coreDispatch, isSuccess, useUsefulFacets, usefulFacetsStatus]);
 
@@ -218,7 +223,7 @@ const FacetSelection = ({
       // build the list of filters that are not currently used
       const unusedFacets = Object.values(data)
         .filter((x: FacetDefinition) => {
-          return x.full.startsWith("cases");
+          return x.full.startsWith(facetType);
         })
         .filter((x: FacetDefinition) => {
           return !assignedFacets.includes(x.full);
@@ -264,7 +269,8 @@ const FacetSelection = ({
   return (
     <FacetSelectionPanel
       title={title}
-      filters={currentFacets}
+      facets={currentFacets}
+      facetType={facetType}
       handleFilterSelected={handleFilterSelected}
       handleFilteredWithValuesChanged={setUseUsefulFacets}
     />
