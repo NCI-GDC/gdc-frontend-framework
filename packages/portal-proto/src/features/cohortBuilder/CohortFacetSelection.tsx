@@ -1,55 +1,51 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import FacetSelection from "@/components/FacetSelection";
-import {
-  usePrevious,
-  selectCohortBuilderConfigFilters,
-  useCoreSelector,
-  useFacetDictionary,
-} from "@gff/core";
-import isEqual from "lodash/isEqual";
+import { selectCohortBuilderConfigFilters } from "@gff/core";
+
+import { Modal, Button } from "@mantine/core";
 
 const CohortFacetSelection = () => {
-  // get the current list of cohort filters
-  const cohortBuilderFilters = useCoreSelector((state) =>
-    selectCohortBuilderConfigFilters(state),
-  );
-  const { data, isSuccess } = useFacetDictionary();
-  const [availableFilters, setAvailableFilters] = useState(undefined);
-  const prevCohortBuilderFilters = usePrevious(cohortBuilderFilters);
-  const prevData = usePrevious(data);
-
   const handleFilterSelected = (facet: string) => {
+    // TODO remove this when actually used
     console.log("facetSelected", facet);
   };
-
-  const handleUsefulFiltersChanges = (useUseful: boolean) => {
-    console.log("facetSelected", useUseful);
-  };
-
-  useEffect(() => {
-    if (
-      !isEqual(prevData, data) ||
-      !isEqual(prevCohortBuilderFilters, cohortBuilderFilters)
-    ) {
-      const f = Object.values(data)
-        .filter((x) => {
-          return x.full.startsWith("cases");
-        })
-        .filter((x) => {
-          return !cohortBuilderFilters.includes(x.full);
-        });
-
-      setAvailableFilters(f);
-    }
-  }, [cohortBuilderFilters, isSuccess, data, prevCohortBuilderFilters]);
 
   return (
     <FacetSelection
       title={"Add Cohort Filter"}
-      filters={availableFilters}
+      facetType="cases"
       handleFilterSelected={handleFilterSelected}
-      handleFilteredWithValuesChanged={handleUsefulFiltersChanges}
+      usedFacetsSelector={selectCohortBuilderConfigFilters}
     />
+  );
+};
+
+export const CohortFacetSelectionModal = () => {
+  const [opened, setOpened] = useState(false);
+
+  const handleFilterSelected = (facet: string) => {
+    // TODO remove this when actually used
+    console.log("facetSelected", facet);
+    setOpened(false);
+  };
+
+  return (
+    <>
+      <Modal
+        opened={opened}
+        onClose={() => setOpened(false)}
+        title="Introduce yourself!"
+      >
+        <FacetSelection
+          title={"Add Cohort Filter"}
+          facetType="cases"
+          handleFilterSelected={handleFilterSelected}
+          usedFacetsSelector={selectCohortBuilderConfigFilters}
+        />
+      </Modal>
+
+      <Button onClick={() => setOpened(true)}>Add Facet</Button>
+    </>
   );
 };
 

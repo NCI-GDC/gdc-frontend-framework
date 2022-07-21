@@ -16,6 +16,7 @@ export * from "./features/facets/facetSliceGQL";
 export * from "./features/facets/continuousAggregationSlice";
 export * from "./features/facets/facetDictionaryApi";
 export * from "./features/facets/facetDictionarySlice";
+export * from "./features/facets/usefulFacetsSlice";
 export * from "./features/gdcapps/gdcAppsSlice";
 export * from "./features/gdcapps/GdcApp";
 export * from "./features/files/filesSlice";

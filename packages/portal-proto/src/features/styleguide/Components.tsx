@@ -4,7 +4,7 @@ import { Divider } from "@mantine/core";
 import { EnumFacet } from "../facets/EnumFacet";
 import NumericRangeFacet from "../facets/NumericRangeFacet";
 import GenesTable from "../genesTable/GenesTable";
-import CohortFacetSelection from "@/features/cohortBuilder/CohortFacetSelection";
+import { CohortFacetSelectionModal } from "@/features/cohortBuilder/CohortFacetSelection";
 
 const Components: ReactNode = () => {
   return (
@@ -32,7 +32,7 @@ const Components: ReactNode = () => {
         field="samples.portions.slides.percent_tumor_cells"
       />
       <Divider label="Facet Filters" classNames={divider_style} />
-      <CohortFacetSelection />
+      <CohortFacetSelectionModal />
       <Divider label="Genes Table" classNames={divider_style} />
       <GenesTable
         selectedSurvivalPlot={{ id: undefined }}
