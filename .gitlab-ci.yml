@@ -100,6 +100,7 @@ Push latest:
     - docker:20.10.16-dind
   tags:
     - dind
+  image: docker:20.10.16-dind
   only:
     - feat/add-gitlab-ci
   script:
