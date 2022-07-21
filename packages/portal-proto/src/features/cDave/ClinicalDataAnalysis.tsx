@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Loader } from "@mantine/core";
 import {
   useCoreSelector,
   selectAvailableCohortByName,
@@ -49,7 +50,7 @@ const ClinicalDataAnalysis: React.FC<ClinicalDataAnalysisProps> = ({
     buildCohortGqlOperator(selectAvailableCohortByName(state, cohort).filters),
   );
 
-  const { data: cDaveResult } = useClinicalAnalysis({
+  const { data: cDaveResult, isFetching } = useClinicalAnalysis({
     filters: cohortFilters,
     facets: cDaveFields.map((f) => f.field),
   });
@@ -62,7 +63,9 @@ const ClinicalDataAnalysis: React.FC<ClinicalDataAnalysisProps> = ({
     }
   };
 
-  return (
+  return isFetching ? (
+    <Loader />
+  ) : (
     <div className="flex">
       <Controls
         updateFields={updateFields}

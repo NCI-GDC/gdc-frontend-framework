@@ -6,7 +6,6 @@ import {
   Collapse,
   ActionIcon,
   Input,
-  CloseButton,
 } from "@mantine/core";
 import { groupBy } from "lodash";
 import {

@@ -6,8 +6,8 @@ import {
   Checkbox,
   RadioGroup,
   Radio,
-  Input,
   Select,
+  Loader,
 } from "@mantine/core";
 import {
   MdBarChart as ChartIcon,
@@ -45,7 +45,6 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   updateFields,
 }: CDaveCardProps) => {
   const [chartType] = useState<ChartTypes>(ChartTypes.histogram);
-  const [displayPercent, setDisplayPercent] = useState(false);
   const facet = useCoreSelector((state) =>
     selectFacetDefinitionByName(state, field),
   );
@@ -76,28 +75,14 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
           </Tooltip>
         </div>
       </div>
-      <RadioGroup
-        size="sm"
-        className="p-2"
-        onChange={(e) => setDisplayPercent(e === "percent")}
-        defaultValue={"counts"}
-      >
-        <Radio value="counts" label="# of Cases" />
-        <Radio value="percent" label="% of Cases" />
-      </RadioGroup>
       {CONTINUOUS_FACET_TYPES.includes(facet.type) ? (
         <ContinuousResult
           field={field}
           fieldName={fieldName}
           stats={(data[facet.field] as Stats).stats}
-          displayPercent={displayPercent}
         />
       ) : (
-        <EnumResult
-          field={facet?.field}
-          fieldName={fieldName}
-          displayPercent={displayPercent}
-        />
+        <EnumResult field={facet?.field} fieldName={fieldName} />
       )}
     </Card>
   ) : null;
@@ -128,54 +113,69 @@ interface ContinuousResultProps {
   readonly field: string;
   readonly fieldName: string;
   readonly stats: Statistics;
-  readonly displayPercent: boolean;
 }
 const ContinuousResult: React.FC<ContinuousResultProps> = ({
   field,
   stats,
   fieldName,
-  displayPercent,
 }: ContinuousResultProps) => {
   const ranges = createBuckets(stats);
-  const { data } = useRangeFacet(field, ranges, "cases", "repository");
-
-  const barChartData = formatBarChartData(data, displayPercent, true);
-
-  const color =
-    tailwindConfig.theme.extend.colors[
-      COLOR_MAP[parseFieldName(field).field_type]
-    ].DEFAULT;
+  const { data, isFetching } = useRangeFacet(
+    field,
+    ranges,
+    "cases",
+    "repository",
+  );
 
   return (
-    <>
-      <div className="h-64">
-        <VictoryBarChart
-          data={barChartData}
-          color={color}
-          yLabel={displayPercent ? "% of Cases" : "# Cases"}
-          width={800}
-          height={500}
-        />
-      </div>
-      <CDaveTable data={barChartData} fieldName={fieldName} />
-    </>
+    <Result
+      field={field}
+      fieldName={fieldName}
+      data={data}
+      isFetching={isFetching}
+      continuous={true}
+    />
   );
 };
 
 interface EnumResultProps {
   readonly field: string;
   readonly fieldName: string;
-  readonly displayPercent: boolean;
 }
 const EnumResult: React.FC<EnumResultProps> = ({
   field,
   fieldName,
-  displayPercent,
 }: EnumResultProps) => {
-  const { data } = useCasesFacet(field, "cases", "repository");
+  const { data, isFetching } = useCasesFacet(field, "cases", "repository");
 
-  const barChartData = formatBarChartData(data, displayPercent, false);
+  return (
+    <Result
+      field={field}
+      fieldName={fieldName}
+      data={data}
+      isFetching={isFetching}
+      continuous={false}
+    />
+  );
+};
 
+interface ResultProps {
+  readonly data: Record<string, number>;
+  readonly isFetching: boolean;
+  readonly field: string;
+  readonly fieldName: string;
+  readonly continuous: boolean;
+}
+
+const Result: React.FC<ResultProps> = ({
+  data,
+  isFetching,
+  field,
+  fieldName,
+  continuous,
+}: ResultProps) => {
+  const [displayPercent, setDisplayPercent] = useState(false);
+  const barChartData = formatBarChartData(data, displayPercent, continuous);
   const color =
     tailwindConfig.theme.extend.colors[
       COLOR_MAP[parseFieldName(field).field_type]
@@ -183,16 +183,35 @@ const EnumResult: React.FC<EnumResultProps> = ({
 
   return (
     <>
-      <div className="h-64">
-        <VictoryBarChart
-          data={barChartData}
-          color={color}
-          yLabel={displayPercent ? "% of Cases" : "# Cases"}
-          width={900}
-          height={500}
-        />
-      </div>
-      <CDaveTable fieldName={fieldName} data={barChartData} />
+      {isFetching ? (
+        <Loader />
+      ) : barChartData.length === 0 ? (
+        <div className="h-full w-full flex">
+          <p className="m-auto">No data for this field</p>
+        </div>
+      ) : (
+        <>
+          <RadioGroup
+            size="sm"
+            className="p-2"
+            onChange={(e) => setDisplayPercent(e === "percent")}
+            defaultValue={"counts"}
+          >
+            <Radio value="counts" label="# of Cases" />
+            <Radio value="percent" label="% of Cases" />
+          </RadioGroup>
+          <div className="h-64">
+            <VictoryBarChart
+              data={barChartData}
+              color={color}
+              yLabel={displayPercent ? "% of Cases" : "# Cases"}
+              width={900}
+              height={500}
+            />
+          </div>
+          <CDaveTable fieldName={fieldName} data={barChartData} />
+        </>
+      )}
     </>
   );
 };
