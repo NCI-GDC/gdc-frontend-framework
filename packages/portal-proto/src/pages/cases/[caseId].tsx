@@ -19,7 +19,7 @@ const CaseSummaryPage: NextPage = () => {
   }, [router]);
 
   return (
-    <UserFlowVariedPages {...{ headerElements }}>
+    <UserFlowVariedPages { headerElements }>
       {ready && (
         <CaseSummary case_id={caseId as string} bio_id={bioId as string} />
       )}
