@@ -2,7 +2,6 @@ stages:
   - .pre
   - test
   - build
-  - push
 
 include:
   - project: nci-gdc/gitlab-templates
@@ -89,13 +88,21 @@ build:
     - BRANCH="${CI_COMMIT_BRANCH//[\/]/_}"
     - docker build -t $REGISTRY/$CI_PROJECT_NAME:$BRANCH .
     - docker push $REGISTRY/$CI_PROJECT_NAME:$BRANCH
+  cache:
+    key: build-docker
 
 Push latest:
   variables:
     GIT_STRATEGY: none
-  stage: push
+  stage: build
+  services:
+    - docker:20.10.16-dind
+  tags:
+    - dind
   only:
     - feat/add-gitlab-ci
   script:
     - docker tag $REGISTRY/$CI_PROJECT_NAME:$BRANCH $CI_REGISTRY_IMAGE/$CI_PROJECT_NAME:latest
     - docker push $REGISTRY/$CI_PROJECT_NAME:latest
+  cache:
+    key: build-docker
