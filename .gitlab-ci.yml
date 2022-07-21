@@ -89,8 +89,6 @@ build docker:
     - BRANCH="${CI_COMMIT_BRANCH//[\/]/_}"
     - docker build -t $REGISTRY/$CI_PROJECT_NAME:$BRANCH .
     - docker push $REGISTRY/$CI_PROJECT_NAME:$BRANCH
-  cache:
-    key: build-docker
 
 Push latest:
   variables:
