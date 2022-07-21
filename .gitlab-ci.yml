@@ -97,5 +97,5 @@ Push latest:
   only:
     - feat/add-gitlab-ci
   script:
-    - echo docker tag $REGISTRY/$CI_PROJECT_NAME:$BRANCH $CI_REGISTRY_IMAGE/$CI_PROJECT_NAME:latest
-    - echo docker push $REGISTRY/$CI_PROJECT_NAME:latest
+    - docker tag $REGISTRY/$CI_PROJECT_NAME:$BRANCH $CI_REGISTRY_IMAGE/$CI_PROJECT_NAME:latest
+    - docker push $REGISTRY/$CI_PROJECT_NAME:latest
