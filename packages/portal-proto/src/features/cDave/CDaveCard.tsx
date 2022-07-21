@@ -6,6 +6,8 @@ import {
   Checkbox,
   RadioGroup,
   Radio,
+  Input,
+  Select,
 } from "@mantine/core";
 import {
   MdBarChart as ChartIcon,
@@ -51,10 +53,10 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   const fieldName = toDisplayName(parseFieldName(field).field_name);
 
   return facet && data[facet.field] ? (
-    <Card className="h-[560px]">
-      <div className="flex justify-between mb-2">
+    <Card className="h-[580px]">
+      <div className="flex justify-between mb-1">
         <h2>{fieldName}</h2>
-        <div className="flex gap-2">
+        <div className="flex gap-1">
           <Tooltip label={"Histogram"} withArrow>
             <ActionIcon
               variant="outline"
@@ -146,7 +148,7 @@ const ContinuousResult: React.FC<ContinuousResultProps> = ({
 
   return (
     <>
-      <div className="h-80">
+      <div className="h-64">
         <VictoryBarChart
           data={barChartData}
           color={color}
@@ -181,12 +183,12 @@ const EnumResult: React.FC<EnumResultProps> = ({
 
   return (
     <>
-      <div className="h-80">
+      <div className="h-64">
         <VictoryBarChart
           data={barChartData}
           color={color}
           yLabel={displayPercent ? "% of Cases" : "# Cases"}
-          width={800}
+          width={900}
           height={500}
         />
       </div>
@@ -209,38 +211,50 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
   data,
 }: CDaveTableProps) => {
   return (
-    <div className="h-44 block overflow-auto w-full">
-      <table className="bg-white w-full text-left text-nci-gray-darker ">
-        <thead className="bg-nci-gray-lightest font-bold">
-          <tr>
-            <th>Select</th>
-            <th>{fieldName}</th>
-            <th># Cases</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((d, idx) => (
-            <tr
-              className={idx % 2 ? null : "bg-gdc-blue-warm-lightest"}
-              key={`${fieldName}-${d.fullName}`}
-            >
-              <td>
-                <Checkbox />
-              </td>
-              <td>{d.fullName}</td>
-              <td>
-                {d.yCount.toLocaleString()} (
-                {(d.yCount / d.yTotal).toLocaleString(undefined, {
-                  style: "percent",
-                  minimumFractionDigits: 2,
-                })}
-                )
-              </td>
+    <>
+      <div className="flex justify-between p-2">
+        <Select
+          placeholder="Select Action"
+          data={[{ value: "download", label: "Download TSV" }]}
+        />
+        <Select
+          placeholder="Customize Bins"
+          data={[{ value: "download", label: "Edit Bins" }]}
+        />
+      </div>
+      <div className="h-48 block overflow-auto w-full">
+        <table className="bg-white w-full text-left text-nci-gray-darker mb-2">
+          <thead className="bg-nci-gray-lightest font-bold">
+            <tr>
+              <th>Select</th>
+              <th>{fieldName}</th>
+              <th># Cases</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {data.map((d, idx) => (
+              <tr
+                className={idx % 2 ? null : "bg-gdc-blue-warm-lightest"}
+                key={`${fieldName}-${d.fullName}`}
+              >
+                <td>
+                  <Checkbox />
+                </td>
+                <td>{d.fullName}</td>
+                <td>
+                  {d.yCount.toLocaleString()} (
+                  {(d.yCount / d.yTotal).toLocaleString(undefined, {
+                    style: "percent",
+                    minimumFractionDigits: 2,
+                  })}
+                  )
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 };
 

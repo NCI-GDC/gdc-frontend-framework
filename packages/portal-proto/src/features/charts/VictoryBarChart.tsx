@@ -91,11 +91,16 @@ const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
   height = 400,
 }: VictoryBarChartProps) => {
   return (
-    <VictoryChart width={width} height={height} domainPadding={60} padding={80}>
+    <VictoryChart
+      width={width}
+      height={height}
+      domainPadding={60}
+      padding={{ left: 80, right: 80, bottom: 80, top: 10 }}
+    >
       <VictoryAxis
         dependentAxis
         label={yLabel}
-        axisLabelComponent={<VictoryLabel dy={-40} />}
+        axisLabelComponent={<VictoryLabel dy={-60} />}
         style={{
           tickLabels: { fontSize: 20 },
           grid: { stroke: "#F5F5F5", strokeWidth: 1 },
