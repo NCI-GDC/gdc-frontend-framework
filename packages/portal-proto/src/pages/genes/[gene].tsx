@@ -18,7 +18,7 @@ const GenesPage: NextPage = () => {
   }, [router]);
 
   return (
-    <UserFlowVariedPages {...{ headerElements }}>
+    <UserFlowVariedPages headerElements={headerElements}>
       {ready && <GeneSummary gene_id={gene} />}
     </UserFlowVariedPages>
   );

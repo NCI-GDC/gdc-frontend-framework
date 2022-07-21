@@ -19,9 +19,7 @@ const ProjectSummary: NextPage = () => {
   }, [router]);
 
   return (
-    <UserFlowVariedPages
-      {...{ indexPath: "/user-flow/many-pages", headerElements }}
-    >
+    <UserFlowVariedPages headerElements={headerElements}>
       {ready && (
         <ContextualProjectView setCurrentProject={projectId as string} />
       )}
