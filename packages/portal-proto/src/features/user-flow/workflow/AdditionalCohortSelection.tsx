@@ -143,15 +143,6 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
         </Button>
         <div>
           <Button
-            onClick={() => {
-              setActiveApp(undefined);
-              closeCohortSelection();
-            }}
-            className="mr-4 bg-white border-nci-blue-darkest text-nci-blue-darkest"
-          >
-            Cancel
-          </Button>
-          <Button
             disabled={selectedCohort === null}
             variant={"filled"}
             className="bg-nci-blue-darkest hover:bg-nci-blue"

@@ -50,15 +50,16 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
   const banners = useCoreSelector((state) => selectBanners(state));
   return (
     <div className="flex flex-col min-h-screen min-w-full bg-nci-gray-lightest">
-      <div className="sticky top-0 z-50">
+      <header className="flex-none bg-white sticky top-0 z-50">
         {banners.map((banner) => (
           <Banner {...banner} key={banner.id} />
         ))}
-      </div>
-      <header className="flex-none bg-white">
         <Header {...{ headerElements, indexPath, Options }} />
       </header>
-      <main data-tour="full_page_content" className="flex-grow flex flex-col">
+      <main
+        data-tour="full_page_content"
+        className="flex-grow flex flex-col overflow-x-hidden"
+      >
         {children}
       </main>
       <footer className="flex-none">
