@@ -35,6 +35,7 @@ interface ClinicalDataAnalysisProps {
 const ClinicalDataAnalysis: React.FC<ClinicalDataAnalysisProps> = ({
   cohort,
 }: ClinicalDataAnalysisProps) => {
+  const [controlsExpanded, setControlsExpanded] = useState(true);
   const { data } = useFacetDictionary();
 
   const cDaveFields = Object.values(data)
@@ -68,12 +69,15 @@ const ClinicalDataAnalysis: React.FC<ClinicalDataAnalysisProps> = ({
         cDaveFields={cDaveFields}
         fieldsWithData={filterUsefulFacets(cDaveResult)}
         activeFields={activeFields}
+        controlsExpanded={controlsExpanded}
+        setControlsExpanded={setControlsExpanded}
       />
       <Dashboard
         activeFields={activeFields}
         cohortFilters={cohortFilters}
         results={cDaveResult}
         updateFields={updateFields}
+        controlsExpanded={controlsExpanded}
       />
     </div>
   );

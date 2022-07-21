@@ -6,11 +6,13 @@ import {
   Collapse,
   ActionIcon,
   Input,
+  CloseButton,
 } from "@mantine/core";
 import { groupBy } from "lodash";
 import {
   MdKeyboardArrowDown as DownIcon,
   MdKeyboardArrowRight as RightIcon,
+  MdClose as CloseIcon,
 } from "react-icons/md";
 import {
   FaAngleDoubleLeft as DoubleLeftIcon,
@@ -178,6 +180,8 @@ interface ControlPanelProps {
   readonly cDaveFields: ParsedFacetDefinition[];
   readonly fieldsWithData: any;
   readonly activeFields: string[];
+  readonly controlsExpanded: boolean;
+  readonly setControlsExpanded: (expanded: boolean) => void;
 }
 
 const Controls: React.FC<ControlPanelProps> = ({
@@ -185,30 +189,36 @@ const Controls: React.FC<ControlPanelProps> = ({
   cDaveFields,
   fieldsWithData,
   activeFields,
+  controlsExpanded,
+  setControlsExpanded,
 }: ControlPanelProps) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [panelCollapsed, setPanelCollapsed] = useState(false);
   const groupedFields = groupBy(cDaveFields, "field_type");
 
   return (
     <div
       className={`${
-        !panelCollapsed ? "w-80 bg-white overflow-scroll -ml-2" : ""
+        controlsExpanded ? "w-80 bg-white overflow-scroll -ml-2" : ""
       } h-[675px] flex flex-col`}
     >
       <ActionIcon
         className="self-end"
-        onClick={() => setPanelCollapsed(!panelCollapsed)}
+        onClick={() => setControlsExpanded(!controlsExpanded)}
       >
-        {panelCollapsed ? <DoubleRightIcon /> : <DoubleLeftIcon />}
+        {controlsExpanded ? <DoubleLeftIcon /> : <DoubleRightIcon />}
       </ActionIcon>
-      <div className={panelCollapsed ? "hidden" : "block"}>
+      <div className={controlsExpanded ? "block" : "hidden"}>
         <Input
           placeholder="Search"
           className="p-2"
           value={searchTerm}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setSearchTerm(e.currentTarget.value)
+          }
+          rightSection={
+            searchTerm && (
+              <CloseIcon onClick={() => setSearchTerm("")}></CloseIcon>
+            )
           }
         />
         <p className="p-2">
