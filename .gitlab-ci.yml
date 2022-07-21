@@ -100,7 +100,7 @@ Push latest:
     - dind
   image: docker:20.10.16-dind
   only:
-    - feat/add-gitlab-ci
+    - master
   script:
     - BRANCH="${CI_COMMIT_BRANCH//[\/]/_}"
     - docker pull $REGISTRY/$CI_PROJECT_NAME:$BRANCH
