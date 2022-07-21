@@ -84,4 +84,3 @@ build:
     - docker build -t $REGISTRY/$CI_PROJECT_NAME:$BRANCH .
     - docker push $REGISTRY/$CI_PROJECT_NAME:$BRANCH
     - docker rmi $REGISTRY/$CI_PROJECT_NAME:$BRANCH
-
