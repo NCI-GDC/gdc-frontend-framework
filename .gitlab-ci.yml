@@ -63,6 +63,7 @@ Prettier Checks:
 
 Run all tests:
   stage: test
+  needs: [Type Check for portal-proto]
   script:
     - npm run test:all
   cache:
