@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   ActionIcon,
@@ -9,6 +9,7 @@ import {
   Select,
   Loader,
 } from "@mantine/core";
+import { useScrollIntoView } from "@mantine/hooks";
 import {
   MdBarChart as ChartIcon,
   MdOutlineClose as CloseIcon,
@@ -45,14 +46,19 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   updateFields,
 }: CDaveCardProps) => {
   const [chartType] = useState<ChartTypes>(ChartTypes.histogram);
+  const { scrollIntoView, targetRef } = useScrollIntoView();
   const facet = useCoreSelector((state) =>
     selectFacetDefinitionByName(state, field),
   );
 
   const fieldName = toDisplayName(parseFieldName(field).field_name);
 
-  return facet && data[facet.field] ? (
-    <Card className="h-[580px]">
+  useEffect(() => {
+    scrollIntoView();
+  }, []);
+
+  return (
+    <Card className="h-[580px]" ref={(ref) => (targetRef.current = ref)}>
       <div className="flex justify-between mb-1">
         <h2>{fieldName}</h2>
         <div className="flex gap-1">
@@ -75,17 +81,19 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
           </Tooltip>
         </div>
       </div>
-      {CONTINUOUS_FACET_TYPES.includes(facet.type) ? (
-        <ContinuousResult
-          field={field}
-          fieldName={fieldName}
-          stats={(data[facet.field] as Stats).stats}
-        />
-      ) : (
-        <EnumResult field={facet?.field} fieldName={fieldName} />
-      )}
+      {facet &&
+        data[facet.field] &&
+        (CONTINUOUS_FACET_TYPES.includes(facet.type) ? (
+          <ContinuousResult
+            field={field}
+            fieldName={fieldName}
+            stats={(data[facet.field] as Stats).stats}
+          />
+        ) : (
+          <EnumResult field={facet?.field} fieldName={fieldName} />
+        ))}
     </Card>
-  ) : null;
+  );
 };
 
 const parseContinuousBucket = (bucket: string): string => {

@@ -7,7 +7,7 @@ import {
   ActionIcon,
   Input,
 } from "@mantine/core";
-import { groupBy } from "lodash";
+import { groupBy, get, sortBy } from "lodash";
 import {
   MdKeyboardArrowDown as DownIcon,
   MdKeyboardArrowRight as RightIcon,
@@ -20,8 +20,9 @@ import {
 import { FacetDefinition } from "@gff/core";
 import Highlight from "@/components/Highlight";
 import { createKeyboardAccessibleFunction } from "src/utils";
-import { COLOR_MAP, DEFAULT_FIELDS } from "./constants";
+import { COLOR_MAP, DEFAULT_FIELDS, FACET_SORT } from "./constants";
 import { toDisplayName } from "./utils";
+import { scrollIntoView } from "react-select/src/utils";
 
 type ParsedFacetDefinition = FacetDefinition & {
   readonly field_type: string;
@@ -174,6 +175,14 @@ const FieldControl: React.FC<FieldControlProps> = ({
   );
 };
 
+const sortFacetFields = (fields, facet_type) => {
+  return sortBy(fields, (item) =>
+    FACET_SORT[facet_type].indexOf(item.field_name) !== -1
+      ? FACET_SORT[facet_type].indexOf(item.field_name)
+      : fields.length,
+  );
+};
+
 interface ControlPanelProps {
   readonly updateFields: (field: string) => void;
   readonly cDaveFields: ParsedFacetDefinition[];
@@ -226,28 +235,40 @@ const Controls: React.FC<ControlPanelProps> = ({
         </p>
         <ControlGroup
           name={"Demographic"}
-          fields={groupedFields["demographic"] || []}
+          fields={sortFacetFields(
+            get(groupedFields, "demographic", []),
+            "demographic",
+          )}
           updateFields={updateFields}
           activeFields={activeFields}
           searchTerm={searchTerm}
         />
         <ControlGroup
           name={"Diagnosis"}
-          fields={groupedFields["diagnoses"] || []}
+          fields={sortFacetFields(
+            get(groupedFields, "diagnoses", []),
+            "diagnoses",
+          )}
           updateFields={updateFields}
           activeFields={activeFields}
           searchTerm={searchTerm}
         />
         <ControlGroup
           name={"Treatment"}
-          fields={groupedFields["treatments"] || []}
+          fields={sortFacetFields(
+            get(groupedFields, "treatments", []),
+            "treatments",
+          )}
           updateFields={updateFields}
           activeFields={activeFields}
           searchTerm={searchTerm}
         />
         <ControlGroup
           name={"Exposure"}
-          fields={groupedFields["exposures"] || []}
+          fields={sortFacetFields(
+            get(groupedFields, "exposures", []),
+            "exposures",
+          )}
           updateFields={updateFields}
           activeFields={activeFields}
           searchTerm={searchTerm}
