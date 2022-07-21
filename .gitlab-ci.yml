@@ -1,6 +1,6 @@
 stages:
   - .pre
-  - test  
+  - test
   - build
   - push
 
@@ -96,7 +96,7 @@ Push latest:
     GIT_STRATEGY: none
   stage: push
   only:
-    - feat/add-gitlab-ci
+    - master
   script:
     - echo docker pull $REGISTRY/$CI_PROJECT_NAME:$BRANCH
     - echo docker tag $REGISTRY/$CI_PROJECT_NAME:$BRANCH $CI_REGISTRY_IMAGE/$CI_PROJECT_NAME:latest
