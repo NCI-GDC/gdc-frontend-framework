@@ -84,7 +84,7 @@ export const CaseSummary = ({
       },
     });
 
-  const { prevPath } = useContext(URLContext);
+  const prevPathValue = useContext(URLContext);
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
   const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>({
@@ -93,13 +93,14 @@ export const CaseSummary = ({
 
   useEffect(() => {
     if (
+      prevPathValue !== undefined &&
       ["MultipleImageViewerPage", "selectedId"].every((term) =>
-        prevPath?.includes(term),
+        prevPathValue.prevPath?.includes(term),
       )
     ) {
       scrollIntoView();
     }
-  }, [prevPath, scrollIntoView]);
+  }, [prevPathValue, scrollIntoView]);
 
   const getAnnotationsLinkParams = (
     annotations: {
