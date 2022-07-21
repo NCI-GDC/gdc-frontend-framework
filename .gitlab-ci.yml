@@ -77,7 +77,7 @@ Run all tests:
       - ../gdc-frontend-framework
   allow_failure: true
 
-build:
+build docker:
   stage: build
   services:
     - docker:20.10.16-dind
@@ -95,6 +95,7 @@ Push latest:
   variables:
     GIT_STRATEGY: none
   stage: build
+  needs: [build docker]
   services:
     - docker:20.10.16-dind
   tags:
