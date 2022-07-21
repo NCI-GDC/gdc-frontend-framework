@@ -59,10 +59,10 @@ Prettier Checks:
     key: build-cache
     paths:
       - ../gdc-frontend-framework
+  allow_failure: true
 
 Run all tests:
   stage: test
-  needs: [Prettier Checks]
   script:
     - npm run test:all
   cache:
@@ -82,4 +82,4 @@ build:
     - BRANCH="${CI_COMMIT_BRANCH//[\/]/_}"
     - echo docker build -t $REGISTRY/$CI_PROJECT_NAME:$BRANCH .
     - echo docker push $REGISTRY/$CI_PROJECT_NAME:$BRANCH
-    - echo docker rmi  $REGISTRY/$CI_PROJECTNAME:$BRANCH
+    - echo docker rmi  $REGISTRY/$CI_PROJECT_NAME:$BRANCH
