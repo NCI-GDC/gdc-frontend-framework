@@ -81,7 +81,7 @@ build:
   image: docker:20.10.16-dind
   script:
     - BRANCH="${CI_COMMIT_BRANCH//[\/]/_}"
-    - echo docker build -t $REGISTRY/$CI_PROJECT_NAME:$BRANCH .
-    - echo docker push $REGISTRY/$CI_PROJECT_NAME:$BRANCH
-    - echo docker rmi  $REGISTRY/$CI_PROJECT_NAME:$BRANCH
+    - docker build -t $REGISTRY/$CI_PROJECT_NAME:$BRANCH .
+    - docker push $REGISTRY/$CI_PROJECT_NAME:$BRANCH
+    - docker rmi $REGISTRY/$CI_PROJECT_NAME:$BRANCH
 
