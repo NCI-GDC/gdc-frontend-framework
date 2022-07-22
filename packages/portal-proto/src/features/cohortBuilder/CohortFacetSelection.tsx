@@ -4,7 +4,7 @@ import { selectCohortBuilderConfigFilters } from "@gff/core";
 
 import { Modal, Button } from "@mantine/core";
 
-const CohortFacetSelection = () => {
+const CohortFacetSelection = (): JSX.Element => {
   const handleFilterSelected = (facet: string) => {
     // TODO remove this when actually used
     console.log("facetSelected", facet);
@@ -20,7 +20,7 @@ const CohortFacetSelection = () => {
   );
 };
 
-export const CohortFacetSelectionModal = () => {
+export const CohortFacetSelectionModal = (): JSX.Element => {
   const [opened, setOpened] = useState(false);
 
   const handleFilterSelected = (facet: string) => {

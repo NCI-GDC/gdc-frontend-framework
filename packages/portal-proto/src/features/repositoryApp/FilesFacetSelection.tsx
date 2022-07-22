@@ -5,7 +5,7 @@ import { selectCohortBuilderConfigFilters } from "@gff/core";
 import { Modal, Button } from "@mantine/core";
 import { selectRepositoryConfigFacets } from "@/features/repositoryApp/fileFiltersSlice";
 
-const FilesFacetSelection = () => {
+const FilesFacetSelection = (): JSX.Element => {
   const handleFilterSelected = (facet: string) => {
     // TODO remove this when actually used
     console.log("facetSelected", facet);
@@ -21,7 +21,7 @@ const FilesFacetSelection = () => {
   );
 };
 
-export const FilesFacetSelectionModal = () => {
+export const FilesFacetSelectionModal = (): JSX.Element => {
   const [opened, setOpened] = useState(false);
 
   const handleFilterSelected = (facet: string) => {
