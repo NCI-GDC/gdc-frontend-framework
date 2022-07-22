@@ -86,7 +86,7 @@ const FacetList: React.FC<FacetListProps> = ({
 };
 
 interface FacetSelectionProps {
-  readonly facetType: string;
+  readonly facetType: FacetDefinitionType;
   readonly title: string;
   readonly facets: Record<string, FacetDefinition>;
   readonly handleFilterSelected: (_: string) => void;
@@ -160,9 +160,7 @@ const FacetSelectionPanel = ({
         <FacetList
           data={filteredData}
           handleFilterSelected={handleFilterSelected}
-          searchString={
-            searchString && searchString.length > 1 ? searchString : ""
-          }
+          searchString={searchString.length > 1 ? searchString : ""}
         />
       </div>
     </div>
@@ -191,7 +189,7 @@ const FacetSelection = ({
   facetType,
   usedFacetsSelector,
   handleFilterSelected,
-}: FacetSelectionModalProps) => {
+}: FacetSelectionModalProps): JSX.Element => {
   // get the current list of cohort filters
   const assignedFacets = useCoreSelector((state) => usedFacetsSelector(state));
   const { data, isSuccess } = useFacetDictionary();
@@ -211,7 +209,7 @@ const FacetSelection = ({
     if (useUsefulFacets && usefulFacetsStatus == "uninitialized" && isSuccess) {
       coreDispatch(fetchFacetsWithValues(facetType));
     }
-  }, [coreDispatch, isSuccess, useUsefulFacets, usefulFacetsStatus]);
+  }, [coreDispatch, facetType, isSuccess, useUsefulFacets, usefulFacetsStatus]);
 
   // if data changes or the current facetSet changes rebuild the
   // available facet list
@@ -246,6 +244,7 @@ const FacetSelection = ({
     useUsefulFacets,
     usefulFacetsStatus,
     usefulFacets,
+    facetType,
   ]);
 
   useEffect(() => {

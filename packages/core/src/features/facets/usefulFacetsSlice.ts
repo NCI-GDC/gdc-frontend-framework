@@ -121,6 +121,8 @@ const usefulFacets = createSlice({
       })
       .addCase(fetchFacetsWithValues.rejected, (state, action) => {
         state.status[action.meta.arg] = "rejected";
+        state.entries[action.meta.arg] = [];
+        state.error = "Fetching facets with values failed. Results are 0";
       });
   },
 });
