@@ -19,9 +19,10 @@ import {
   selectFacetDefinitionByName,
   Statistics,
   Buckets,
+  Bucket,
   Stats,
 } from "@gff/core";
-import { useCasesFacet, useRangeFacet } from "../facets/hooks";
+import { useRangeFacet } from "../facets/hooks";
 import VictoryBarChart from "../charts/VictoryBarChart";
 import tailwindConfig from "tailwind.config";
 import { truncateString } from "src/utils";
@@ -94,7 +95,11 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
             stats={(data[facet.field] as Stats).stats}
           />
         ) : (
-          <EnumResult field={facet?.field} fieldName={fieldName} />
+          <EnumResult
+            field={facet?.field}
+            fieldName={fieldName}
+            data={(data[facet.field] as Buckets).buckets}
+          />
         ))}
     </Card>
   );
@@ -132,19 +137,19 @@ const ContinuousResult: React.FC<ContinuousResultProps> = ({
 interface EnumResultProps {
   readonly field: string;
   readonly fieldName: string;
+  readonly data: readonly Bucket[];
 }
 const EnumResult: React.FC<EnumResultProps> = ({
   field,
   fieldName,
+  data,
 }: EnumResultProps) => {
-  const { data, isFetching } = useCasesFacet(field, "cases", "repository");
-
   return (
     <Result
       field={field}
       fieldName={fieldName}
-      data={data}
-      isFetching={isFetching}
+      data={Object.fromEntries(data.map((d) => [d.key, d.doc_count]))}
+      isFetching={false}
       continuous={false}
     />
   );
@@ -164,13 +169,22 @@ const formatBarChartData = (
 ) => {
   const yTotal = Object.values(data || {}).reduce((prevY, y) => prevY + y, 0);
 
-  return Object.entries(data || {}).map(([key, value]) => ({
+  if (data["_missing"]) {
+    data["missing"] = data["_missing"];
+    delete data["_missing"];
+  }
+
+  const mappedData = Object.entries(data || {}).map(([key, value]) => ({
     x: truncateString(continuous ? parseContinuousBucket(key) : key, 8),
     fullName: continuous ? parseContinuousBucket(key) : key,
     y: displayPercent ? (value / yTotal) * 100 : value,
     yCount: value,
     yTotal,
   }));
+
+  return continuous
+    ? mappedData
+    : mappedData.sort((a, b) => b.yCount - a.yCount);
 };
 
 interface ResultProps {
@@ -199,7 +213,8 @@ const Result: React.FC<ResultProps> = ({
     <>
       {isFetching ? (
         <Loader />
-      ) : barChartData.length === 0 ? (
+      ) : barChartData.length === 0 ||
+        Object.keys(data).every((k) => k === "_missing") ? (
         <div className="h-full w-full flex">
           <p className="m-auto">No data for this field</p>
         </div>
