@@ -1,8 +1,10 @@
+import { useEffect, useRef } from "react";
 import {
   GqlOperation,
   useSurvivalPlotWithCohortFilters,
   Buckets,
   Stats,
+  usePrevious,
 } from "@gff/core";
 import { Card, Grid } from "@mantine/core";
 import SurvivalPlot from "../charts/SurvivalPlot";
@@ -23,8 +25,16 @@ const Dashboard: React.FC<DashboardProps> = ({
   updateFields,
   controlsExpanded,
 }: DashboardProps) => {
+  const initialDashboardRender = useRef(true);
+  const lastDashboardRender = usePrevious(initialDashboardRender);
   const { data: survivalData } = useSurvivalPlotWithCohortFilters({
     filters: cohortFilters && [cohortFilters],
+  });
+
+  useEffect(() => {
+    if (lastDashboardRender) {
+      initialDashboardRender.current = false;
+    }
   });
 
   return (
@@ -41,6 +51,7 @@ const Dashboard: React.FC<DashboardProps> = ({
               field={field}
               data={results}
               updateFields={updateFields}
+              initialDashboardRender={initialDashboardRender.current}
             />
           </Grid.Col>
         );

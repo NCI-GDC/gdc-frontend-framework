@@ -1,6 +1,6 @@
 import { NumericFromTo, Statistics, Buckets, Stats } from "@gff/core";
 import { omitBy, some, capitalize } from "lodash";
-import { CAPILIZED_TERMS, CLINICAL_FACET_SORT } from "./constants";
+import { CAPILIZED_TERMS } from "./constants";
 
 export const parseFieldName = (
   field: string,

@@ -32,6 +32,7 @@ interface CDaveCardProps {
   readonly field: string;
   readonly data: Record<string, Buckets | Stats>;
   readonly updateFields: (field: string) => void;
+  readonly initialDashboardRender: boolean;
 }
 
 enum ChartTypes {
@@ -44,6 +45,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   field,
   data,
   updateFields,
+  initialDashboardRender,
 }: CDaveCardProps) => {
   const [chartType] = useState<ChartTypes>(ChartTypes.histogram);
   const { scrollIntoView, targetRef } = useScrollIntoView();
@@ -54,7 +56,9 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   const fieldName = toDisplayName(parseFieldName(field).field_name);
 
   useEffect(() => {
-    scrollIntoView();
+    if (!initialDashboardRender) {
+      scrollIntoView();
+    }
   }, []);
 
   return (
@@ -94,27 +98,6 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
         ))}
     </Card>
   );
-};
-
-const parseContinuousBucket = (bucket: string): string => {
-  const [fromValue, toValue] = bucket.split("-");
-  return `${Number(fromValue).toFixed(2)} to < ${Number(toValue).toFixed(2)}`;
-};
-
-const formatBarChartData = (
-  data: Record<string, number>,
-  displayPercent: boolean,
-  continuous: boolean,
-) => {
-  const yTotal = Object.values(data || {}).reduce((prevY, y) => prevY + y, 0);
-
-  return Object.entries(data || {}).map(([key, value]) => ({
-    x: truncateString(continuous ? parseContinuousBucket(key) : key, 8),
-    fullName: continuous ? parseContinuousBucket(key) : key,
-    y: displayPercent ? (value / yTotal) * 100 : value,
-    yCount: value,
-    yTotal,
-  }));
 };
 
 interface ContinuousResultProps {
@@ -167,6 +150,29 @@ const EnumResult: React.FC<EnumResultProps> = ({
   );
 };
 
+const parseContinuousBucket = (bucket: string): string => {
+  const [fromValue, toValue] = bucket.split("-");
+  return `${Number(Number(fromValue).toFixed(2))} to < ${Number(
+    Number(toValue).toFixed(2),
+  )}`;
+};
+
+const formatBarChartData = (
+  data: Record<string, number>,
+  displayPercent: boolean,
+  continuous: boolean,
+) => {
+  const yTotal = Object.values(data || {}).reduce((prevY, y) => prevY + y, 0);
+
+  return Object.entries(data || {}).map(([key, value]) => ({
+    x: truncateString(continuous ? parseContinuousBucket(key) : key, 8),
+    fullName: continuous ? parseContinuousBucket(key) : key,
+    y: displayPercent ? (value / yTotal) * 100 : value,
+    yCount: value,
+    yTotal,
+  }));
+};
+
 interface ResultProps {
   readonly data: Record<string, number>;
   readonly isFetching: boolean;
@@ -217,6 +223,16 @@ const Result: React.FC<ResultProps> = ({
               height={500}
             />
           </div>
+          <div className="flex justify-between p-2">
+            <Select
+              placeholder="Select Action"
+              data={[{ value: "download", label: "Download TSV" }]}
+            />
+            <Select
+              placeholder="Customize Bins"
+              data={[{ value: "download", label: "Edit Bins" }]}
+            />
+          </div>
           <CDaveTable fieldName={fieldName} data={barChartData} />
         </>
       )}
@@ -238,50 +254,38 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
   data,
 }: CDaveTableProps) => {
   return (
-    <>
-      <div className="flex justify-between p-2">
-        <Select
-          placeholder="Select Action"
-          data={[{ value: "download", label: "Download TSV" }]}
-        />
-        <Select
-          placeholder="Customize Bins"
-          data={[{ value: "download", label: "Edit Bins" }]}
-        />
-      </div>
-      <div className="h-48 block overflow-auto w-full">
-        <table className="bg-white w-full text-left text-nci-gray-darker mb-2">
-          <thead className="bg-nci-gray-lightest font-bold">
-            <tr>
-              <th>Select</th>
-              <th>{fieldName}</th>
-              <th># Cases</th>
+    <div className="h-48 block overflow-auto w-full">
+      <table className="bg-white w-full text-left text-nci-gray-darker mb-2">
+        <thead className="bg-nci-gray-lightest font-bold">
+          <tr>
+            <th>Select</th>
+            <th>{fieldName}</th>
+            <th># Cases</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((d, idx) => (
+            <tr
+              className={idx % 2 ? null : "bg-gdc-blue-warm-lightest"}
+              key={`${fieldName}-${d.fullName}`}
+            >
+              <td>
+                <Checkbox />
+              </td>
+              <td>{d.fullName}</td>
+              <td>
+                {d.yCount.toLocaleString()} (
+                {(d.yCount / d.yTotal).toLocaleString(undefined, {
+                  style: "percent",
+                  minimumFractionDigits: 2,
+                })}
+                )
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {data.map((d, idx) => (
-              <tr
-                className={idx % 2 ? null : "bg-gdc-blue-warm-lightest"}
-                key={`${fieldName}-${d.fullName}`}
-              >
-                <td>
-                  <Checkbox />
-                </td>
-                <td>{d.fullName}</td>
-                <td>
-                  {d.yCount.toLocaleString()} (
-                  {(d.yCount / d.yTotal).toLocaleString(undefined, {
-                    style: "percent",
-                    minimumFractionDigits: 2,
-                  })}
-                  )
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 };
 

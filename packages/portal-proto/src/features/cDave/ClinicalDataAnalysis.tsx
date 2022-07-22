@@ -37,19 +37,17 @@ const ClinicalDataAnalysis: React.FC<ClinicalDataAnalysisProps> = ({
   cohort,
 }: ClinicalDataAnalysisProps) => {
   const [controlsExpanded, setControlsExpanded] = useState(true);
-  const { data } = useFacetDictionary();
+  const [activeFields, setActiveFields] = useState(DEFAULT_FIELDS);
 
+  const { data } = useFacetDictionary();
   const cDaveFields = Object.values(data)
     .map((d) => ({ ...d, ...parseFieldName(d.field) }))
     .filter((d) => d.doc_type === "cases" && tabs.includes(d.field_type))
     .filter((field) => !blacklistRegex.test(field.field));
 
-  const [activeFields, setActiveFields] = useState(DEFAULT_FIELDS);
-
   const cohortFilters = useCoreSelector((state) =>
     buildCohortGqlOperator(selectAvailableCohortByName(state, cohort).filters),
   );
-
   const { data: cDaveResult, isFetching } = useClinicalAnalysis({
     filters: cohortFilters,
     facets: cDaveFields.map((f) => f.field),

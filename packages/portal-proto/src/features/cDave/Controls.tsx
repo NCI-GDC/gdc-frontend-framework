@@ -22,7 +22,6 @@ import Highlight from "@/components/Highlight";
 import { createKeyboardAccessibleFunction } from "src/utils";
 import { COLOR_MAP, DEFAULT_FIELDS, FACET_SORT } from "./constants";
 import { toDisplayName } from "./utils";
-import { scrollIntoView } from "react-select/src/utils";
 
 type ParsedFacetDefinition = FacetDefinition & {
   readonly field_type: string;
@@ -175,7 +174,10 @@ const FieldControl: React.FC<FieldControlProps> = ({
   );
 };
 
-const sortFacetFields = (fields, facet_type) => {
+const sortFacetFields = (
+  fields: ParsedFacetDefinition[],
+  facet_type: string,
+): ParsedFacetDefinition[] => {
   return sortBy(fields, (item) =>
     FACET_SORT[facet_type].indexOf(item.field_name) !== -1
       ? FACET_SORT[facet_type].indexOf(item.field_name)
