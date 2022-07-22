@@ -16,9 +16,15 @@ export const SummaryCard = ({
 }: SummaryCardProps): JSX.Element => {
   return (
     <div>
-      <div className="flex gap-2">
-        {Icon && <Icon className="inline-block mt-1 align-baseline" />}
-        <h2 className="bg-white text-lg">{title}</h2>
+      <div className="flex gap-2 bg-white text-nci-gray p-2">
+        {Icon && (
+          <Icon
+            className="inline-block mt-1 align-baseline"
+            color="gray"
+            size="1.25rem"
+          />
+        )}
+        <h2 className="text-lg font-medium">{title}</h2>
       </div>
 
       {message && <div className="mt-2 text-sm">{message}</div>}

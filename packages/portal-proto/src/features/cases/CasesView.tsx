@@ -8,10 +8,7 @@ import {
   GqlOperation,
 } from "@gff/core";
 import { Table, Pagination, Select } from "@mantine/core";
-import { Biospecimen } from "../biospecimen/Biospecimen";
-import { useEffect, useState, useContext } from "react";
-import { useScrollIntoView } from "@mantine/hooks";
-import { URLContext } from "src/pages/_app";
+import { useEffect, useState } from "react";
 
 export interface Case {
   readonly id: string;
@@ -32,7 +29,6 @@ export interface CasesViewProps {
 export interface ContextualCasesViewProps {
   readonly handleCaseSelected?: (patient: Case) => void;
   caseId?: string;
-  bioId?: string;
 }
 
 const useCohortFacetFilter = (): GqlOperation => {
@@ -87,7 +83,6 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
   props: ContextualCasesViewProps,
 ) => {
   // TODO useContextualCases() that filters based on the context
-  const { prevPath } = useContext(URLContext);
   const [pageSize, setPageSize] = useState(10);
   const [activePage, setPage] = useState(1);
   const { data, isSuccess } = useCohortCases(pageSize, activePage);
@@ -95,16 +90,6 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
   const caseCounts = useCoreSelector((state) =>
     selectCohortCountsByName(state, "caseCounts"),
   );
-
-  const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>({
-    offset: 60,
-  });
-
-  useEffect(() => {
-    if (prevPath?.includes("MultipleImageViewerPage")) {
-      scrollIntoView();
-    }
-  }, [prevPath, scrollIntoView]);
 
   useEffect(() => {
     setPages(Math.ceil(caseCounts / pageSize));
@@ -163,9 +148,6 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
             total={pages}
           />
         </div>
-      </div>
-      <div ref={targetRef} id="biospecimen">
-        <Biospecimen caseId={props.caseId} bioId={props.bioId} />
       </div>
     </div>
   );

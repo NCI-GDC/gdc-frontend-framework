@@ -28,7 +28,7 @@ export const ContextualProjectView: React.FC<ContextualProjectViewProps> = (
       "program",
     ],
   });
-  const annotationCount = useAnnotations({
+  const annotationCountData = useAnnotations({
     filters: {
       op: "=",
       content: {
@@ -40,7 +40,7 @@ export const ContextualProjectView: React.FC<ContextualProjectViewProps> = (
   });
   const projectWithAnnotation = {
     ...projectData.data[0],
-    ...annotationCount.data[0],
+    annotationCount: annotationCountData.data.count,
   };
   return <ProjectView projectData={projectWithAnnotation} />;
 };
@@ -136,27 +136,21 @@ export const ProjectView: React.FC<ProjectViewProps> = ({
               <SummaryCount
                 title={"Cases"}
                 count={projectData.summary.case_count.toLocaleString()}
-                buttonAction={() => {
-                  alert("Cases click");
-                }}
-                icon={<FaUser />}
+                Icon={FaUser}
               />
             ) : null}
             {projectData.summary?.file_count ? (
               <SummaryCount
                 title={"Files"}
                 count={projectData.summary.file_count.toLocaleString()}
-                icon={<FaFile />}
+                Icon={FaFile}
               />
             ) : null}
             {projectData.annotationCount ? (
               <SummaryCount
                 title={"Annotations"}
                 count={projectData.annotationCount.toLocaleString()}
-                buttonAction={() => {
-                  alert("Annotations click");
-                }}
-                icon={<FaEdit />}
+                Icon={FaEdit}
               />
             ) : null}
           </div>

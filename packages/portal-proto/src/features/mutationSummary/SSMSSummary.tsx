@@ -9,6 +9,7 @@ import { externalLinks } from "src/utils";
 import { FaBook, FaTable } from "react-icons/fa";
 import { CollapsibleList } from "@/components/CollapsibleList";
 import { AnchorLink } from "@/components/AnchorLink";
+import SSMPlot from "../charts/SSMPlot";
 
 export const SSMSSummary = ({ ssm_id }: { ssm_id: string }): JSX.Element => {
   const { data: summaryData, isFetching } = useSSMS({
@@ -156,7 +157,7 @@ export const SSMSSummary = ({ ssm_id }: { ssm_id: string }): JSX.Element => {
       {!isFetching && summaryData ? (
         <>
           <SummaryHeader iconText="MU" headerTitle={summaryData.dna_change} />
-          <div className="pt-4">
+          <div className="mx-auto w-9/12 pt-4">
             <div className="text-nci-gray">
               <div className="flex gap-6">
                 <div className="flex-1">
@@ -173,6 +174,9 @@ export const SSMSSummary = ({ ssm_id }: { ssm_id: string }): JSX.Element => {
                   />
                 </div>
               </div>
+            </div>
+            <div>
+              <SSMPlot page={"ssms"} ssms={ssm_id} />
             </div>
           </div>
         </>

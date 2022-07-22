@@ -7,6 +7,8 @@ import { FaBook, FaTable } from "react-icons/fa";
 import { HiPlus, HiMinus } from "react-icons/hi";
 import { externalLinkNames, externalLinks } from "src/utils";
 import { humanify } from "../biospecimen/utils";
+import CNVPlot from "../charts/CNVPlot";
+import SSMPlot from "../charts/SSMPlot";
 import { formatDataForHorizontalTable } from "../files/utils";
 
 export const GeneSummary = ({ gene_id }: { gene_id: string }): JSX.Element => {
@@ -116,7 +118,7 @@ export const GeneSummary = ({ gene_id }: { gene_id: string }): JSX.Element => {
       {!isFetching && data?.genes && (
         <>
           <SummaryHeader iconText="GN" headerTitle={data.genes.symbol} />
-          <div className="pt-4">
+          <div className="mx-auto w-9/12 pt-4">
             <div className="text-nci-gray">
               <div className="flex gap-6">
                 <div className="flex-1">
@@ -134,6 +136,8 @@ export const GeneSummary = ({ gene_id }: { gene_id: string }): JSX.Element => {
                 </div>
               </div>
             </div>
+            <SSMPlot page={"gene"} gene={gene_id} />
+            <CNVPlot gene={gene_id} />
           </div>
         </>
       )}

@@ -212,7 +212,7 @@ export interface GdcFile {
   readonly submitterId: string;
   readonly access: AccessType;
   readonly acl: ReadonlyArray<string>;
-  readonly createDatetime: string;
+  readonly createdDatetime: string;
   readonly updatedDatetime: string;
   readonly dataCategory: DataCategory;
   readonly dataFormat: DataFormat;
@@ -324,7 +324,7 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
     submitterId: hit.submitter_id,
     access: asAccessType(hit.access),
     acl: [...hit.acl],
-    createDatetime: hit.create_datetime,
+    createdDatetime: hit.created_datetime,
     updatedDatetime: hit.updated_datetime,
     dataCategory: asDataCategory(hit.data_category),
     dataFormat: asDataFormat(hit.data_format),

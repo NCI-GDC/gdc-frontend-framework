@@ -1,14 +1,14 @@
 import { NextPage } from "next";
-import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
 import { useRouter } from "next/router";
 import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
 import { useEffect, useState } from "react";
-import { CaseSummary } from "@/features/cases/CaseSummary";
+import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
+import { ContextualProjectView } from "@/features/projects/ProjectView";
 
-const CaseSummaryPage: NextPage = () => {
+const ProjectSummary: NextPage = () => {
   const router = useRouter();
   const {
-    query: { caseId, bioId },
+    query: { projectId },
   } = router;
   const [ready, setReady] = useState(false);
 
@@ -21,10 +21,10 @@ const CaseSummaryPage: NextPage = () => {
   return (
     <UserFlowVariedPages headerElements={headerElements}>
       {ready && (
-        <CaseSummary case_id={caseId as string} bio_id={bioId as string} />
+        <ContextualProjectView setCurrentProject={projectId as string} />
       )}
     </UserFlowVariedPages>
   );
 };
 
-export default CaseSummaryPage;
+export default ProjectSummary;

@@ -21,6 +21,7 @@ import { EnumFacet } from "@/features/facets/EnumFacet";
 import { FilesView } from "@/features/files/FilesView";
 import { getFacetInfo } from "@/features/cohortBuilder/utils";
 import { LoadingOverlay } from "@mantine/core";
+import { mapGdcFileToCartFile } from "../files/utils";
 
 const buttonStyle =
   "mx-1 bg-nci-gray-light hover:bg-nci-gray transition-colors";
@@ -64,16 +65,32 @@ const RepositoryApp: React.FC<ContextualFilesViewProps> = ({
             </Button>
           }
         >
-          <Menu.Item onClick={() => addToCart(allFiles, currentCart, dispatch)}>
+          <Menu.Item
+            onClick={() =>
+              addToCart(mapGdcFileToCartFile(allFiles), currentCart, dispatch)
+            }
+          >
             {"Add All Files"}
           </Menu.Item>
           <Menu.Item
-            onClick={() => addToCart(selectedFiles, currentCart, dispatch)}
+            onClick={() =>
+              addToCart(
+                mapGdcFileToCartFile(selectedFiles),
+                currentCart,
+                dispatch,
+              )
+            }
           >
             {"Add Selected Files"}
           </Menu.Item>
           <Menu.Item
-            onClick={() => removeFromCart(selectedFiles, currentCart, dispatch)}
+            onClick={() =>
+              removeFromCart(
+                mapGdcFileToCartFile(selectedFiles),
+                currentCart,
+                dispatch,
+              )
+            }
           >
             {"Remove Selected Files"}
           </Menu.Item>

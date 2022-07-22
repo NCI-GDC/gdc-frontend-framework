@@ -286,7 +286,7 @@ export interface FileDefaults {
   readonly submitter_id: string;
   readonly access: string;
   readonly acl: ReadonlyArray<string>;
-  readonly create_datetime: string;
+  readonly created_datetime: string;
   readonly updated_datetime: string;
   readonly data_category: string;
   readonly data_format: string;
@@ -300,7 +300,7 @@ export interface FileDefaults {
   readonly state: string;
   readonly type: string;
   readonly version: string;
-  readonly experimental_strategy: string;
+  readonly experimental_strategy?: string;
   readonly annotations?: ReadonlyArray<{
     readonly annotation_id: string;
     readonly category: string;
