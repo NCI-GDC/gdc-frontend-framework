@@ -153,7 +153,7 @@ const FacetSelectionPanel = ({
             handleFilteredWithValuesChanged(event.currentTarget.checked)
           }
           aria-label="show only field with values"
-        ></Checkbox>
+        />
       </Group>
       <div>
         <LoadingOverlay visible={facets === undefined} />
