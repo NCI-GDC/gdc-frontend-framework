@@ -28,6 +28,7 @@ import tailwindConfig from "tailwind.config";
 import { truncateString } from "src/utils";
 import { CONTINUOUS_FACET_TYPES, COLOR_MAP } from "./constants";
 import { createBuckets, parseFieldName, toDisplayName } from "./utils";
+import { mapKeys } from "lodash";
 
 interface CDaveCardProps {
   readonly field: string;
@@ -167,14 +168,12 @@ const formatBarChartData = (
   displayPercent: boolean,
   continuous: boolean,
 ) => {
-  const yTotal = Object.values(data || {}).reduce((prevY, y) => prevY + y, 0);
+  const dataToMap = mapKeys(data || {}, (_, k) =>
+    k === "_missing" ? "missing" : k,
+  );
+  const yTotal = Object.values(dataToMap).reduce((prevY, y) => prevY + y, 0);
 
-  if (data["_missing"]) {
-    data["missing"] = data["_missing"];
-    delete data["_missing"];
-  }
-
-  const mappedData = Object.entries(data || {}).map(([key, value]) => ({
+  const mappedData = Object.entries(dataToMap || {}).map(([key, value]) => ({
     x: truncateString(continuous ? parseContinuousBucket(key) : key, 8),
     fullName: continuous ? parseContinuousBucket(key) : key,
     y: displayPercent ? (value / yTotal) * 100 : value,
