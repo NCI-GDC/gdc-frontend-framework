@@ -17,20 +17,21 @@ import {
   FaAngleDoubleLeft as DoubleLeftIcon,
   FaAngleDoubleRight as DoubleRightIcon,
 } from "react-icons/fa";
-import { FacetDefinition } from "@gff/core";
 import Highlight from "@/components/Highlight";
 import { createKeyboardAccessibleFunction } from "src/utils";
 import { COLOR_MAP, DEFAULT_FIELDS, FACET_SORT } from "./constants";
 import { toDisplayName } from "./utils";
 
-type ParsedFacetDefinition = FacetDefinition & {
+interface CDaveField {
   readonly field_type: string;
   readonly field_name: string;
-};
+  readonly description?: string;
+  readonly full: string;
+}
 
 interface ControlGroupProps {
   readonly name: string;
-  readonly fields: ParsedFacetDefinition[];
+  readonly fields: CDaveField[];
   readonly updateFields: (field: string) => void;
   readonly activeFields: string[];
   readonly searchTerm?: string;
@@ -84,7 +85,7 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
           <ul className="bg-white">
             {visibleFields.map((field) => (
               <FieldControl
-                key={field.field}
+                key={field.full}
                 field={field}
                 updateFields={updateFields}
                 activeFields={activeFields}
@@ -113,7 +114,7 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
 };
 
 interface FieldControlProps {
-  readonly field: ParsedFacetDefinition;
+  readonly field: CDaveField;
   readonly updateFields: (field: string) => void;
   readonly activeFields: string[];
   readonly searchTerm?: string;
@@ -134,7 +135,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
   const displayName = toDisplayName(field.field_name);
 
   return (
-    <li key={field.field} className="p-2">
+    <li key={field.full} className="p-2">
       {searchTerm ? (
         <>
           <div className="flex justify-between">
@@ -175,9 +176,9 @@ const FieldControl: React.FC<FieldControlProps> = ({
 };
 
 const sortFacetFields = (
-  fields: ParsedFacetDefinition[],
+  fields: CDaveField[],
   facet_type: string,
-): ParsedFacetDefinition[] => {
+): CDaveField[] => {
   return sortBy(fields, (item) =>
     FACET_SORT[facet_type].indexOf(item.field_name) !== -1
       ? FACET_SORT[facet_type].indexOf(item.field_name)
@@ -187,7 +188,7 @@ const sortFacetFields = (
 
 interface ControlPanelProps {
   readonly updateFields: (field: string) => void;
-  readonly cDaveFields: ParsedFacetDefinition[];
+  readonly cDaveFields: CDaveField[];
   readonly fieldsWithData: any;
   readonly activeFields: string[];
   readonly controlsExpanded: boolean;

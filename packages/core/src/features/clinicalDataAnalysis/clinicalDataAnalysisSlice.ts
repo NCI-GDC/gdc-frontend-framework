@@ -66,7 +66,8 @@ const slice = createSlice({
           state.status = "rejected";
         } else {
           state.data =
-            JSON.parse(action.payload.data.viewer.explore.cases.facets) || {};
+            JSON.parse(action.payload.data.viewer?.explore?.cases?.facets) ||
+            {};
           state.status = "fulfilled";
         }
         return state;
@@ -88,8 +89,8 @@ export const selectClinicalAnalysisData = (
   state: CoreState,
 ): CoreDataSelectorResponse<Record<string, Buckets | Stats>> => {
   return {
-    data: state.clinicalDataAnalysis.data,
-    status: state.clinicalDataAnalysis.status,
+    data: state.clinicalDataAnalysis.result.data,
+    status: state.clinicalDataAnalysis.result.status,
   };
 };
 

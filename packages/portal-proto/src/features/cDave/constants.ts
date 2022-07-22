@@ -1,9 +1,9 @@
 export const DEFAULT_FIELDS = [
-  "cases.demographic.gender",
-  "cases.demographic.race",
-  "cases.demographic.ethnicity",
-  "cases.diagnoses.age_at_diagnosis",
-  "cases.diagnoses.primary_diagnosis",
+  "demographic.gender",
+  "demographic.race",
+  "demographic.ethnicity",
+  "diagnoses.age_at_diagnosis",
+  "diagnoses.primary_diagnosis",
 ];
 
 export const CONTINUOUS_FACET_TYPES = [
@@ -24,43 +24,25 @@ export const COLOR_MAP = {
 };
 
 export const CAPILIZED_TERMS = [
-  ".bmi",
-  "_bmi",
-  "aa.",
-  "aa_",
-  "ajc.",
-  "ajcc",
   "bmi",
-  "cog.",
-  "cog_",
-  "dlco.",
-  "dlco_",
-  "ecog.",
-  "ecog_",
-  "fev1.",
-  "fev1_",
-  "figo.",
-  "figo_",
-  "fvc.",
-  "fvc_",
-  "hiv.",
-  "hiv_",
-  "hpv.",
-  "hpv_",
-  "inpc.",
-  "inpc_",
-  "inrg.",
-  "inrg_",
-  "inss.",
-  "inss_",
-  "irs.",
-  "irs_",
-  "iss.",
-  "iss_",
-  "ldh.",
-  "ldh_",
-  "msts.",
-  "msts_",
+  "aa",
+  "ajc",
+  "ajcc",
+  "cog",
+  "dlco",
+  "ecog",
+  "fev1",
+  "figo",
+  "fvc",
+  "hiv",
+  "hpv",
+  "inpc",
+  "inrg",
+  "inss",
+  "irs",
+  "iss",
+  "ldh",
+  "msts",
 ];
 
 export const FACET_SORT = {
@@ -171,3 +153,5 @@ export const FACET_SORT = {
     "tobacco_smoking_status",
   ],
 };
+
+export const TABS = ["demographic", "diagnoses", "exposures", "treatments"];

@@ -32,7 +32,7 @@ import { mapKeys } from "lodash";
 
 interface CDaveCardProps {
   readonly field: string;
-  readonly data: Record<string, Buckets | Stats>;
+  readonly data: Buckets | Stats;
   readonly updateFields: (field: string) => void;
   readonly initialDashboardRender: boolean;
 }
@@ -52,8 +52,10 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   const [chartType] = useState<ChartTypes>(ChartTypes.histogram);
   const { scrollIntoView, targetRef } = useScrollIntoView();
   const facet = useCoreSelector((state) =>
-    selectFacetDefinitionByName(state, field),
+    selectFacetDefinitionByName(state, `cases.${field}`),
   );
+
+  console.log(facet);
 
   const fieldName = toDisplayName(parseFieldName(field).field_name);
 
@@ -87,21 +89,19 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
           </Tooltip>
         </div>
       </div>
-      {facet &&
-        data[facet.field] &&
-        (CONTINUOUS_FACET_TYPES.includes(facet.type) ? (
-          <ContinuousResult
-            field={field}
-            fieldName={fieldName}
-            stats={(data[facet.field] as Stats).stats}
-          />
-        ) : (
-          <EnumResult
-            field={facet?.field}
-            fieldName={fieldName}
-            data={(data[facet.field] as Buckets).buckets}
-          />
-        ))}
+      {data && facet && CONTINUOUS_FACET_TYPES.includes(facet?.type) ? (
+        <ContinuousResult
+          field={field}
+          fieldName={fieldName}
+          stats={(data as Stats).stats}
+        />
+      ) : (
+        <EnumResult
+          field={facet?.field}
+          fieldName={fieldName}
+          data={(data as Buckets).buckets}
+        />
+      )}
     </Card>
   );
 };
