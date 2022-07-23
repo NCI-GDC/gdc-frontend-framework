@@ -13,9 +13,9 @@
   },
   "dependencies": {
     "@gff/core": "0.0.1",
-    "@mantine/core": "^4.1.2",
-    "@mantine/hooks": "^4.1.2",
-    "@mantine/next": "^4.1.2",
+    "@mantine/core": "^4.1.22",
+    "@mantine/hooks": "^4.1.22",
+    "@mantine/next": "^4.1.22",
     "@reduxjs/toolkit": "^1.8.1",
     "@stjude/proteinpaint-client": "https://pecan.stjude.cloud/static/Pk983gP.Rl2410y45/ydbD5DBW0BdkjXJq/stjude-proteinpaint-client-2.1.5.tgz",
     "filesize": "^8.0.7",

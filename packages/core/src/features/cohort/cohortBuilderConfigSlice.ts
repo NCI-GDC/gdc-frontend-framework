@@ -62,6 +62,18 @@ export const selectCohortBuilderConfig = (
   state: CoreState,
 ): Record<string, CohortBuilderCategory> => state.cohort.builderConfig;
 
+/**
+ * returns an array of all the filters used in the current configuration.
+ * @param state - current core state/store
+ */
+export const selectCohortBuilderConfigFilters = (state: CoreState): string[] =>
+  Object.values(state.cohort.builderConfig).reduce(
+    (filters: string[], category) => {
+      return [...filters, ...category.facets];
+    },
+    [] as string[],
+  );
+
 export const selectCohortBuilderConfigCategory = (
   state: CoreState,
   category: string,
