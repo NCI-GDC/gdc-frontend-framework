@@ -35,13 +35,14 @@ import { FaUndo as UndoIcon } from "react-icons/fa";
  *  enumerated fields.
  * @param field
  * @param docType
+ * @param indexType index this facet used
  * @param description
  * @param facetName
  * @param showSearch
  * @param showFlip
  * @param startShowingData
  * @param showPercent
- * @param hideIfEmpty
+ * @param hideIfEmpty if facet has no data, do not render
  * @constructor
  */
 export const EnumFacet: React.FC<FacetCardProps> = ({

@@ -1,4 +1,4 @@
-import { FC } from "react";
+import React, { useState } from "react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import {
   GQLIndexType,
@@ -7,11 +7,18 @@ import {
   useCoreSelector,
   FacetDefinition,
   CohortBuilderCategory,
+  addFilterToCohortBuilder,
+  selectCohortBuilderConfigCategory,
+  selectCohortBuilderConfigFilters,
+  useCoreDispatch,
+  selectFacetDefinitionsByName,
 } from "@gff/core";
 import { EnumFacet } from "../facets/EnumFacet";
 import NumericRangeFacet from "../facets/NumericRangeFacet";
-import { Tabs } from "@mantine/core";
+import { Button, Modal, Stack, Tabs, Text } from "@mantine/core";
 import { getFacetInfo } from "@/features/cohortBuilder/utils";
+import { MdLibraryAdd as AddFacetIcon } from "react-icons/md";
+import FacetSelection from "@/components/FacetSelection";
 
 interface FacetGroupProps {
   readonly facets: ReadonlyArray<FacetDefinition>;
@@ -69,19 +76,61 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
   );
 };
 
-export const FacetTabs: FC = () => {
+const CustomFacetGroup = (): JSX.Element => {
+  const customConfig = useCoreSelector((state) =>
+    selectCohortBuilderConfigCategory(state, "custom"),
+  );
+  const facets = useCoreSelector((state) =>
+    selectFacetDefinitionsByName(state, customConfig.facets),
+  );
+  const [opened, setOpened] = useState(false);
+  const coreDispatch = useCoreDispatch();
+
+  const handleFilterSelected = (filter: string) => {
+    console.log("filter added", filter);
+    setOpened(false);
+    coreDispatch(
+      addFilterToCohortBuilder({ category: "custom", facetName: filter }),
+    );
+  };
+
+  if (facets.length == 0) {
+    // handle the empty case
+    return (
+      <div className="flex flex-col w-screen/1.5 bg-white overflow-y-scroll overflow-x-clip">
+        <Stack
+          align="center"
+          justify="center"
+          className="h-64 bg-nci-gray-lightest w-1/2 border-2 border-dotted "
+        >
+          <AddFacetIcon></AddFacetIcon>
+          <Text>No Custom Facets Added</Text>
+          <Button onClick={() => setOpened(true)}>Add Custom Facet</Button>
+          <Modal size="lg" opened={opened} onClose={() => setOpened(false)}>
+            <FacetSelection
+              title={"Add Cohort Filter"}
+              facetType="cases"
+              handleFilterSelected={handleFilterSelected}
+              usedFacetsSelector={selectCohortBuilderConfigFilters}
+            />
+          </Modal>
+        </Stack>
+      </div>
+    );
+  } else return <FacetGroup facets={facets} docType={"cases"} />;
+};
+
+export const FacetTabs = () => {
   const tabsConfig = useCoreSelector((state) =>
     selectCohortBuilderConfig(state),
   );
-
   return (
     <div className="w-100">
       <Tabs
         variant="unstyled"
         orientation="vertical"
         classNames={{
-          tabControl:
-            "font-bold !font-medium !bg-nci-blue-dark !text-nci-gray-lightest",
+          tabControl: "!font-medium !bg-nci-blue-dark !text-nci-gray-lightest",
           tabActive: "!bg-white !text-nci-gray-darkest",
           body: "!pl-0 !ml-0",
         }}
@@ -92,11 +141,16 @@ export const FacetTabs: FC = () => {
               key={`cohortTab-${tabEntry.label}`}
               label={tabEntry.label}
             >
-              <FacetGroup
-                facets={getFacetInfo(tabEntry.facets)}
-                docType={tabEntry.docType as GQLDocType}
-                indexType={tabEntry.index as GQLIndexType}
-              />
+              {" "}
+              {tabEntry.label === "Custom" ? (
+                <CustomFacetGroup />
+              ) : (
+                <FacetGroup
+                  facets={getFacetInfo(tabEntry.facets)}
+                  docType={tabEntry.docType as GQLDocType}
+                  indexType={tabEntry.index as GQLIndexType}
+                />
+              )}
             </Tabs.Tab>
           );
         })}

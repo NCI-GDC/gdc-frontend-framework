@@ -29,7 +29,7 @@ import { ContextualFilesView } from "../../files/FilesView";
 import { CollapsibleContainer } from "../../../components/CollapsibleContainer";
 import MutationsTable from "@/features/mutationsTable/MutationsTable";
 import GenesTable from "@/features/genesTable/GenesTable";
-import { FacetGroup } from "../../cohortBuilder/FacetGroup";
+import { FacetGroup } from "../../cohortBuilder/FacetTabs";
 import { get_facets } from "../../cohortBuilder/dictionary";
 import { FileModal } from "../../files/FileView";
 import { GdcFile } from "@gff/core";

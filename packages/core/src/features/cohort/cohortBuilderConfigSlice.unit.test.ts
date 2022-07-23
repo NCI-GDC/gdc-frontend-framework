@@ -63,7 +63,7 @@ const removeFacetTestState = {
   },
 };
 
-// const state = getInitialCoreState();
+const state = getInitialCoreState();
 
 describe("cohortConfig reducer", () => {
   test("should return the default state for unknown actions", () => {
@@ -144,11 +144,7 @@ describe("cohortConfig reducer", () => {
     );
     expect(state).toEqual(CohortBuilderDefaultConfig.config);
   });
-});
 
-const state = getInitialCoreState();
-
-describe("selectBuilderConfig", () => {
   test("should select the default configuration", () => {
     const builderConfig = selectCohortBuilderConfig(state);
     expect(builderConfig).toEqual(CohortBuilderDefaultConfig.config);

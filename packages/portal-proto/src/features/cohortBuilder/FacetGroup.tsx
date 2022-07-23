@@ -2,14 +2,14 @@ import { EnumFacet } from "../facets/EnumFacet";
 import NumericRangeFacet from "../facets/NumericRangeFacet";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import type { ReactTabsFunctionComponent, TabProps } from "react-tabs";
-import { FC, useState } from "react";
+import React, { FC, useState } from "react";
 import Select from "react-select";
 import { get_facet_subcategories, get_facets } from "./dictionary";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
-import { GQLIndexType } from "@gff/core";
+import { GQLIndexType, FacetDefinition } from "@gff/core";
 
 interface FacetGroupProps {
-  readonly facetNames: Array<Record<string, any>>;
+  readonly facetNames: ReadonlyArray<FacetDefinition>;
   readonly indexType?: GQLIndexType;
 }
 
