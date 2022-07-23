@@ -82,24 +82,4 @@ describe("<Biospecimen />", () => {
     expect(getAllByRole("treeitem")).toBeDefined();
     expect(getByText("Primary Tumor")).toBeInTheDocument();
   });
-
-  it("should show error text when the results are empty", () => {
-    jest.spyOn(func, "useBiospecimenData").mockReturnValue({
-      data: {
-        files: { hits: { edges: [] } },
-        samples: {
-          hits: {
-            edges: [],
-          },
-        },
-      },
-      isError: false,
-      isFetching: false,
-      isSuccess: true,
-      isUninitialized: false,
-    });
-    const { getByText } = render(<Biospecimen caseId="testId" bioId="" />);
-
-    expect(getByText("Case ID not found")).toBeInTheDocument();
-  });
 });
