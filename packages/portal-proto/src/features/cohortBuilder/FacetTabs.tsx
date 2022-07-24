@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
+import tw from "tailwind-styled-components";
 import {
   GQLIndexType,
   GQLDocType,
@@ -8,6 +9,7 @@ import {
   FacetDefinition,
   CohortBuilderCategory,
   addFilterToCohortBuilder,
+  removeFilterFromCohortBuilder,
   selectCohortBuilderConfigCategory,
   selectCohortBuilderConfigFilters,
   useCoreDispatch,
@@ -20,16 +22,28 @@ import { getFacetInfo } from "@/features/cohortBuilder/utils";
 import { MdLibraryAdd as AddFacetIcon } from "react-icons/md";
 import FacetSelection from "@/components/FacetSelection";
 
+export const CustomFacetWhenEmptyGroup = tw(Stack)`
+h-64 
+bg-nci-gray-lightest 
+w-1/2 
+border-2 
+border-dotted
+`;
+
 interface FacetGroupProps {
   readonly facets: ReadonlyArray<FacetDefinition>;
   readonly indexType?: GQLIndexType;
   readonly docType: GQLDocType;
+  readonly dismissCallback?: (string) => void;
+  readonly hideIfEmpty?: boolean;
 }
 
 export const FacetGroup: React.FC<FacetGroupProps> = ({
   facets,
   docType,
   indexType = "explore",
+  dismissCallback = undefined,
+  hideIfEmpty = false,
 }: FacetGroupProps) => {
   return (
     <div className="flex flex-col w-screen/1.5 bg-white overflow-y-scroll overflow-x-clip">
@@ -44,6 +58,8 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
                   indexType={indexType}
                   field={x.full}
                   description={x.description}
+                  dismissCallback={dismissCallback}
+                  hideIfEmpty={hideIfEmpty}
                 />
               );
             if (
@@ -66,6 +82,8 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
                   indexType={indexType}
                   minimum={x?.range?.minimum}
                   maximum={x?.range?.maximum}
+                  dismissCallback={dismissCallback}
+                  hideIfEmpty={hideIfEmpty}
                 />
               );
             }
@@ -87,10 +105,15 @@ const CustomFacetGroup = (): JSX.Element => {
   const coreDispatch = useCoreDispatch();
 
   const handleFilterSelected = (filter: string) => {
-    console.log("filter added", filter);
     setOpened(false);
     coreDispatch(
       addFilterToCohortBuilder({ category: "custom", facetName: filter }),
+    );
+  };
+
+  const handleRemoveFilter = (filter: string) => {
+    coreDispatch(
+      removeFilterFromCohortBuilder({ category: "custom", facetName: filter }),
     );
   };
 
@@ -98,11 +121,7 @@ const CustomFacetGroup = (): JSX.Element => {
     // handle the empty case
     return (
       <div className="flex flex-col w-screen/1.5 bg-white overflow-y-scroll overflow-x-clip">
-        <Stack
-          align="center"
-          justify="center"
-          className="h-64 bg-nci-gray-lightest w-1/2 border-2 border-dotted "
-        >
+        <CustomFacetWhenEmptyGroup align="center" justify="center">
           <AddFacetIcon></AddFacetIcon>
           <Text>No Custom Facets Added</Text>
           <Button onClick={() => setOpened(true)}>Add Custom Facet</Button>
@@ -114,10 +133,18 @@ const CustomFacetGroup = (): JSX.Element => {
               usedFacetsSelector={selectCohortBuilderConfigFilters}
             />
           </Modal>
-        </Stack>
+        </CustomFacetWhenEmptyGroup>
       </div>
     );
-  } else return <FacetGroup facets={facets} docType={"cases"} />;
+  } else
+    return (
+      <FacetGroup
+        facets={facets}
+        docType={"cases"}
+        indexType={customConfig.index}
+        dismissCallback={handleRemoveFilter}
+      />
+    );
 };
 
 export const FacetTabs = () => {
