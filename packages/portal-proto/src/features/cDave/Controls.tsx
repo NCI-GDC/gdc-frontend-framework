@@ -56,8 +56,8 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
     } else {
       const filteredFields = fields.filter(
         (f) =>
-          f.description?.toLowerCase().search(searchTerm) > -1 ||
-          f.field_name.search(searchTerm) > -1,
+          f.description?.toLowerCase().search(searchTerm.toLowerCase()) > -1 ||
+          f.field_name.search(searchTerm.toLowerCase()) > -1,
       );
 
       setVisibleFields(
@@ -150,14 +150,16 @@ const FieldControl: React.FC<FieldControlProps> = ({
               color={COLOR_MAP[field.field_type]}
             />
           </div>
-          <Highlight
-            search={searchTerm}
-            text={field?.description || "No description available"}
-          />
+          <Highlight search={searchTerm} text={field.description} />
         </>
       ) : (
         <div className="flex justify-between cursor-pointer">
-          <Tooltip label={field.description} withArrow wrapLines width={200}>
+          <Tooltip
+            label={field?.description || "No description available"}
+            withArrow
+            wrapLines
+            width={200}
+          >
             {displayName}
           </Tooltip>
           <Switch

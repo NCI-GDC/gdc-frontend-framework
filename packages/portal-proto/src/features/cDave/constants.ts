@@ -43,6 +43,7 @@ export const CAPILIZED_TERMS = [
   "iss",
   "ldh",
   "msts",
+  "uicc",
 ];
 
 export const FACET_SORT = {

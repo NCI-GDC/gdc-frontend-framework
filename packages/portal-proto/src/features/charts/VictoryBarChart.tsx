@@ -7,6 +7,7 @@ import {
   VictoryLabel,
   VictoryLabelProps,
   VictoryTooltip,
+  Bar,
 } from "victory";
 
 interface BarChartTooltipProps {
@@ -117,6 +118,15 @@ const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
         labels={() => ""}
         labelComponent={
           <VictoryTooltip flyoutComponent={<BarChartTooltip />} />
+        }
+        dataComponent={
+          <Bar
+            tabIndex={0}
+            ariaLabel={({ datum }) => `x: ${datum.x}, y: ${datum.y}`}
+            //  https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/issues/756 https://www.w3.org/TR/graphics-aria-1.0/#graphics-symbol
+            // eslint-disable-next-line
+            role="graphics-symbol"
+          />
         }
       />
     </VictoryChart>
