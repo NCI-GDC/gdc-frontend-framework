@@ -26,10 +26,16 @@ const slice = createSlice({
       action: PayloadAction<CohortBuilderCategoryFacet>,
     ) => {
       if (action.payload.category in state)
-        state[action.payload.category].facets = [
-          ...state[action.payload.category].facets,
-          action.payload.facetName,
-        ];
+        if (
+          // only add if not already added
+          !state[action.payload.category].facets.includes(
+            action.payload.facetName,
+          )
+        )
+          state[action.payload.category].facets = [
+            ...state[action.payload.category].facets,
+            action.payload.facetName,
+          ];
     },
     removeFilterFromCohortBuilder: (
       state,
@@ -55,6 +61,18 @@ export const {
 export const selectCohortBuilderConfig = (
   state: CoreState,
 ): Record<string, CohortBuilderCategory> => state.cohort.builderConfig;
+
+/**
+ * returns an array of all the filters used in the current configuration.
+ * @param state - current core state/store
+ */
+export const selectCohortBuilderConfigFilters = (state: CoreState): string[] =>
+  Object.values(state.cohort.builderConfig).reduce(
+    (filters: string[], category) => {
+      return [...filters, ...category.facets];
+    },
+    [] as string[],
+  );
 
 export const selectCohortBuilderConfigCategory = (
   state: CoreState,

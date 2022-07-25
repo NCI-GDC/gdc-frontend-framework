@@ -1,11 +1,10 @@
 import { useProjects, useAnnotations } from "@gff/core";
-import SummaryCount from "../../components/SummaryCount";
-import {
-  HorizontalTable,
-  HorizontalTableProps,
-} from "../../components/HorizontalTable";
+import SummaryCount from "../../components/Summary/SummaryCount";
+import { HorizontalTableProps } from "../../components/HorizontalTable";
 import { FaUser, FaFile, FaEdit, FaTable } from "react-icons/fa";
 import { get } from "lodash";
+import { SummaryHeader } from "@/components/Summary/SummaryHeader";
+import { SummaryCard } from "@/components/Summary/SummaryCard";
 
 export interface ContextualProjectViewProps {
   readonly setCurrentProject: string;
@@ -29,7 +28,7 @@ export const ContextualProjectView: React.FC<ContextualProjectViewProps> = (
       "program",
     ],
   });
-  const annotationCount = useAnnotations({
+  const annotationCountData = useAnnotations({
     filters: {
       op: "=",
       content: {
@@ -41,7 +40,7 @@ export const ContextualProjectView: React.FC<ContextualProjectViewProps> = (
   });
   const projectWithAnnotation = {
     ...projectData.data[0],
-    ...annotationCount.data[0],
+    annotationCount: annotationCountData.data.count,
   };
   return <ProjectView projectData={projectWithAnnotation} />;
 };
@@ -65,30 +64,6 @@ export interface ProjectViewProps {
     readonly annotationCount: number;
   };
 }
-
-export interface SummaryCardProps {
-  readonly title: string;
-  readonly message: JSX.Element;
-  readonly tableData: HorizontalTableProps["tableData"];
-}
-
-export const SummaryCard: React.FC<SummaryCardProps> = (SummaryCardProps) => {
-  return (
-    <div>
-      <h2 className="bg-white p-2 text-lg mx-4">
-        <FaTable className="inline-block mr-2 align-baseline" />
-        {SummaryCardProps.title}
-      </h2>
-      <div className="mx-4 text-sm">{SummaryCardProps.message}</div>
-      {
-        //TODO NoResultsMessage if no data
-      }
-      <div className="p-4">
-        <HorizontalTable tableData={SummaryCardProps.tableData} />
-      </div>
-    </div>
-  );
-};
 
 export const ProjectView: React.FC<ProjectViewProps> = ({
   projectData,
@@ -135,19 +110,11 @@ export const ProjectView: React.FC<ProjectViewProps> = ({
   };
   return (
     <div>
-      <div className="bg-white py-4 px-8 shadow-lg">
-        <span className="rounded-full bg-nci-blue-darker text-white p-1 align-text-bottom mr-2">
-          PR
-        </span>
-        <span className="text-2xl text-nci-blue-darker">
-          {projectData.projectId}
-        </span>
-      </div>
+      <SummaryHeader iconText="PR" headerTitle={projectData.projectId} />
       <div className="p-4">
         <div className="text-nci-gray flex">
           <div className="flex-auto">
             <SummaryCard
-              title={"Summary"}
               message={
                 <>
                   The project has controlled access data which requires dbGaP
@@ -160,6 +127,7 @@ export const ProjectView: React.FC<ProjectViewProps> = ({
                   </a>
                 </>
               }
+              Icon={FaTable}
               tableData={formatDataForSummery()}
             />
           </div>
@@ -168,27 +136,21 @@ export const ProjectView: React.FC<ProjectViewProps> = ({
               <SummaryCount
                 title={"Cases"}
                 count={projectData.summary.case_count.toLocaleString()}
-                buttonAction={() => {
-                  alert("Cases click");
-                }}
-                icon={<FaUser />}
+                Icon={FaUser}
               />
             ) : null}
             {projectData.summary?.file_count ? (
               <SummaryCount
                 title={"Files"}
                 count={projectData.summary.file_count.toLocaleString()}
-                icon={<FaFile />}
+                Icon={FaFile}
               />
             ) : null}
             {projectData.annotationCount ? (
               <SummaryCount
                 title={"Annotations"}
                 count={projectData.annotationCount.toLocaleString()}
-                buttonAction={() => {
-                  alert("Annotations click");
-                }}
-                icon={<FaEdit />}
+                Icon={FaEdit}
               />
             ) : null}
           </div>

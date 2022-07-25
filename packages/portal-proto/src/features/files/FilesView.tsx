@@ -17,6 +17,7 @@ import {
 import { EnumFacet } from "../facets/EnumFacet";
 import { addToCart, removeFromCart } from "@/features/cart/updateCart";
 import Link from "next/link";
+import { mapGdcFileToCartFile } from "./utils";
 
 export interface ContextualFilesViewProps {
   readonly handleFileSelected?: (file: GdcFile) => void;
@@ -95,16 +96,32 @@ export const ContextualFilesView: React.FC<ContextualFilesViewProps> = ({
             </Button>
           }
         >
-          <Menu.Item onClick={() => addToCart(allFiles, currentCart, dispatch)}>
+          <Menu.Item
+            onClick={() =>
+              addToCart(mapGdcFileToCartFile(allFiles), currentCart, dispatch)
+            }
+          >
             {"Add All Files"}
           </Menu.Item>
           <Menu.Item
-            onClick={() => addToCart(selectedFiles, currentCart, dispatch)}
+            onClick={() =>
+              addToCart(
+                mapGdcFileToCartFile(selectedFiles),
+                currentCart,
+                dispatch,
+              )
+            }
           >
             {"Add Selected Files"}
           </Menu.Item>
           <Menu.Item
-            onClick={() => removeFromCart(selectedFiles, currentCart, dispatch)}
+            onClick={() =>
+              removeFromCart(
+                mapGdcFileToCartFile(selectedFiles),
+                currentCart,
+                dispatch,
+              )
+            }
           >
             {"Remove Selected Files"}
           </Menu.Item>

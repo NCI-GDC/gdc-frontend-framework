@@ -104,7 +104,6 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
                 return (
                   <Grid.Col
                     key={x.name}
-                    md={4}
                     lg={4}
                     xl={4}
                     style={{ minHeight: 64 }}
@@ -267,7 +266,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   app,
 }: AnalysisWorkspaceProps) => {
   const [cohortSelectionOpen, setCohortSelectionOpen] = useState(false);
-  const { scrollIntoView, targetRef } = useScrollIntoView({ offset: 42 });
+  const { scrollIntoView, targetRef } = useScrollIntoView({ offset: 115 });
   const router = useRouter();
 
   useEffect(() => {
@@ -293,10 +292,10 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
             className={
               {
                 entering:
-                  "block animate-slide-up min-h-[700px] w-full flex flex-col absolute z-[1000]",
-                entered: `block min-h-[700px] w-full flex flex-col absolute z-[1000]`,
+                  "block animate-slide-up min-h-[650px] w-full flex flex-col absolute z-[1000]",
+                entered: `block min-h-[650px] w-full flex flex-col absolute z-[1000]`,
                 exiting:
-                  "block animate-slide-down min-h-[700px] w-full flex flex-col absolute z-[1000]",
+                  "block animate-slide-down min-h-[650px] w-full flex flex-col absolute z-[1000]",
                 exited: "hidden translate-x-0",
               }[state]
             }

@@ -108,7 +108,7 @@ export const REGISTERED_APPS = [
     tags: ["sequenceAnalysis"],
     hasDemo: true,
     description: "Visualize sequencing reads.",
-    id: "SequenceReads",
+    id: "SequenceReadApp",
     optimizeRules: ["data format = BAM"],
   },
   {
@@ -118,7 +118,7 @@ export const REGISTERED_APPS = [
     tags: ["variantAnalysis", "ssm"],
     hasDemo: true,
     description: "Visualize mutations in protein-coding genes.",
-    id: "ProteinPaint",
+    id: "ProteinPaintApp",
     caseCounts: 0.25,
     optimizeRules: ["available data = ssm"],
     noDataTooltip:
