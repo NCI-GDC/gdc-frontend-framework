@@ -9,7 +9,7 @@
   "scripts": {
     "clean": "rimraf dist",
     "compile": "tsc",
-    "build": "npm run compile && rollup --config rollup.config.js",
+    "build": "rollup --config rollup.config.js",
     "build:clean": "npm run clean && npm run compile && rollup --config rollup.config.js",
     "build:watch": "npm run compile && npm run build -- --watch",
     "test": "jest unit",
