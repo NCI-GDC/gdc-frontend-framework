@@ -12,6 +12,7 @@ COPY . .
 
 RUN npm ci --network-timeout 1000000
 RUN lerna bootstrap
+RUN npm run compile
 RUN npm run build
 
 # ==================================================================
