@@ -61,9 +61,9 @@ export const geneExternalLinkNames = {
 };
 
 export const externalLinks = {
-  civic: (id: string): string => `https://civicdb.org/genes/${id}/summary`,
+  civic: (id: string): string => `https://civicdb.org/links/gene/${id}`,
   civicMutaton: (id: string): string =>
-    `https://civicdb.org/variants/${id}/summary`,
+    `https://civicdb.org/links/variant/${id}`,
   cosm: (id: string): string =>
     `http://cancer.sanger.ac.uk/cosmic/mutation/overview?id=${id}`,
   cosn: (id: string): string =>
