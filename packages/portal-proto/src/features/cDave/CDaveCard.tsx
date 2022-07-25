@@ -131,6 +131,7 @@ const ContinuousResult: React.FC<ContinuousResultProps> = ({
       data={data}
       isFetching={isFetching}
       continuous={true}
+      noData={stats.count === 0}
     />
   );
 };
@@ -152,6 +153,7 @@ const EnumResult: React.FC<EnumResultProps> = ({
       data={Object.fromEntries((data || []).map((d) => [d.key, d.doc_count]))}
       isFetching={false}
       continuous={false}
+      noData={data.every((bucket) => bucket.key === "_missing")}
     />
   );
 };
@@ -189,6 +191,7 @@ const formatBarChartData = (
 interface ResultProps {
   readonly data: Record<string, number>;
   readonly isFetching: boolean;
+  readonly noData: boolean;
   readonly field: string;
   readonly fieldName: string;
   readonly continuous: boolean;
@@ -200,6 +203,7 @@ const Result: React.FC<ResultProps> = ({
   field,
   fieldName,
   continuous,
+  noData,
 }: ResultProps) => {
   const [displayPercent, setDisplayPercent] = useState(false);
   const barChartData = formatBarChartData(data, displayPercent, continuous);
@@ -211,8 +215,7 @@ const Result: React.FC<ResultProps> = ({
     <>
       {isFetching ? (
         <Loader />
-      ) : barChartData.length === 0 ||
-        Object.keys(data).every((k) => k === "_missing") ? (
+      ) : noData ? (
         <div className="h-full w-full flex">
           <p className="m-auto">No data for this field</p>
         </div>
