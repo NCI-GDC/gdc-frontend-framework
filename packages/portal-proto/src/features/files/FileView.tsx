@@ -8,6 +8,7 @@ import { get } from "lodash";
 import dynamic from "next/dynamic";
 import fileSize from "filesize";
 import tw from "tailwind-styled-components";
+import { AddToCartButton } from "../cart/updateCart";
 import { formatDataForHorizontalTable, parseSlideDetailsInfo } from "./utils";
 
 import Link from "next/link";
@@ -28,6 +29,47 @@ bg-white w-full mt-4
 const TitleText = tw.h2`
 text-lg font-bold mx-4 ml-2
 `;
+
+//temp table compoent untill global one is done
+interface TempTableProps {
+  readonly tableData: {
+    readonly headers: string[];
+    readonly tableRows: any[];
+  };
+}
+export const TempTable = ({ tableData }: TempTableProps): JSX.Element => {
+  if (!(tableData?.headers?.length > 0 && tableData?.tableRows?.length > 0)) {
+    console.error("bad table data", tableData);
+    return <></>;
+  }
+  return (
+    <Table striped>
+      <thead>
+        <tr>
+          {tableData.headers.map((text, index) => (
+            <th key={index} className="bg-nci-gray-lighter">
+              {text}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {tableData.tableRows.map((row, index) => (
+          <tr
+            key={index}
+            className={index % 2 ? "bg-white" : "bg-gdc-blue-warm-lightest"}
+          >
+            {Object.values(row).map((item, index) => (
+              <td key={index} className="text-sm p-1 pl-2.5">
+                {typeof item === "undefined" ? "--" : item}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </Table>
+  );
+};
 
 export const FileView: React.FC<FileViewProps> = ({
   file,
@@ -53,39 +95,6 @@ export const FileView: React.FC<FileViewProps> = ({
       <Link href={hrefObj}>
         <a className="text-gdc-blue hover:underline">{text}</a>
       </Link>
-    );
-  };
-  //temp table compoent untill global one is done
-  interface TempTableProps {
-    readonly tableData: {
-      readonly headers: string[];
-      readonly tableRows: any[];
-    };
-  }
-  const TempTable = ({ tableData }: TempTableProps): JSX.Element => {
-    if (!(tableData?.headers?.length > 0 && tableData?.tableRows?.length > 0)) {
-      console.error("bad table data", tableData);
-      return <></>;
-    }
-    return (
-      <Table striped>
-        <thead>
-          <tr>
-            {tableData.headers.map((text, index) => (
-              <th key={index}>{text}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {tableData.tableRows.map((row, index) => (
-            <tr key={index}>
-              {Object.values(row).map((item, index) => (
-                <td key={index}>{typeof item === "undefined" ? "--" : item}</td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </Table>
     );
   };
 
@@ -239,9 +248,7 @@ export const FileView: React.FC<FileViewProps> = ({
   return (
     <div className="p-4 text-nci-gray w-10/12 m-auto">
       <div className="text-right pb-5">
-        <Button className="m-1">
-          <FaShoppingCart className="mr-2" /> Add to Cart
-        </Button>
+        <AddToCartButton files={[file]} />
         {get(file, "dataFormat") === "BAM" && (
           <Button className="m-1">
             <FaCut className="mr-2" /> BAM Slicing

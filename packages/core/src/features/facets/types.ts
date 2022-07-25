@@ -28,4 +28,5 @@ export interface FacetDefinition {
   readonly doc_type: string;
   readonly facet_type?: string;
   readonly range?: AllowableRange;
+  readonly hasData?: boolean;
 }

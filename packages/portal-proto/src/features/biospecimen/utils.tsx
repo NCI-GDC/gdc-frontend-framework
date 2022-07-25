@@ -1,11 +1,20 @@
 // Credits to https://github.com/NCI-GDC/portal-ui/blob/develop/src/packages/%40ncigdc/modern_components/BiospecimenCard/utils.js for useful utilities functions
 
-import { formatDataForHorizontalTable } from "../files/utils";
+import {
+  formatDataForHorizontalTable,
+  mapGdcFileToCartFile,
+} from "../files/utils";
 import { FaMicroscope, FaShoppingCart, FaDownload } from "react-icons/fa";
 import { Tooltip } from "@mantine/core";
 import Link from "next/link";
-import { CoreDispatch, entityType } from "@gff/core";
-import { addToCart } from "@/features/cart/updateCart";
+import {
+  CartFile,
+  CoreDispatch,
+  entityType,
+  FileDefaults,
+  mapFileData,
+} from "@gff/core";
+import { addToCart, removeFromCart } from "@/features/cart/updateCart";
 import { get } from "lodash";
 import { entityTypes } from "@/components/BioTree/types";
 import { capitalize } from "src/utils";
@@ -88,8 +97,8 @@ export const formatEntityInfo = (
   foundType: string,
   caseId: string,
   dispatch: CoreDispatch,
-  currentCart: string[],
-  selectedSlide: any,
+  currentCart: CartFile[],
+  selectedSlide: readonly FileDefaults[],
 ): {
   readonly headerName: string;
   readonly values: readonly (
@@ -130,6 +139,11 @@ export const formatEntityInfo = (
       ]),
   );
 
+  const fileInCart = (cart: CartFile[], newId: string) =>
+    cart.map((f) => f.fileId).some((id) => id === newId);
+
+  const isFileInCart = fileInCart(currentCart, selectedSlide[0]?.file_id);
+
   if (foundType === "slide" && !!selectedSlide[0]) {
     filtered.push([
       "Slides",
@@ -139,20 +153,35 @@ export const formatEntityInfo = (
             href={`/user-flow/workbench/MultipleImageViewerPage?caseId=${caseId}&selectedId=${selectedSlide[0]?.file_id}`}
           >
             <a>
-              <FaMicroscope />
+              <FaMicroscope className="text-nci-blue" />
             </a>
           </Link>
         </Tooltip>{" "}
-        <Tooltip label="Add to Cart">
+        <Tooltip label={isFileInCart ? "Remove from Cart" : "Add to Cart"}>
           <FaShoppingCart
-            onClick={() => addToCart(selectedSlide, currentCart, dispatch)}
+            onClick={() => {
+              isFileInCart
+                ? removeFromCart(
+                    mapGdcFileToCartFile(mapFileData(selectedSlide)),
+                    currentCart,
+                    dispatch,
+                  )
+                : addToCart(
+                    mapGdcFileToCartFile(mapFileData(selectedSlide)),
+                    currentCart,
+                    dispatch,
+                  );
+            }}
+            className={isFileInCart ? "text-nci-green" : "text-nci-blue"}
           />
         </Tooltip>
         <Tooltip label="Download">
           <FaDownload
+            // TODO: change this
             onClick={() => {
               alert("Download coming soon!!!");
             }}
+            className="text-nci-blue"
           />
         </Tooltip>
       </div>,
