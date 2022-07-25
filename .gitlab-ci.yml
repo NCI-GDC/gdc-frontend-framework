@@ -36,7 +36,7 @@ Type Check for core:
     key: build-cache
     paths:
       - ../gdc-frontend-framework
-      - allow_failure: true
+  allow_failure: true
 
 Type Check for portal-proto:
   stage: test
@@ -48,7 +48,7 @@ Type Check for portal-proto:
     key: build-cache
     paths:
       - ../gdc-frontend-framework
-      - allow_failure: true
+  allow_failure: true
 
 Linting:
   stage: test
