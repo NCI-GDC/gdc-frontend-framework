@@ -19,7 +19,7 @@ import {
 } from "react-icons/fa";
 import Highlight from "@/components/Highlight";
 import { createKeyboardAccessibleFunction } from "src/utils";
-import { COLOR_MAP, DEFAULT_FIELDS, FACET_SORT } from "./constants";
+import { COLOR_MAP, DEFAULT_FIELDS, FACET_SORT, TABS } from "./constants";
 import { toDisplayName } from "./utils";
 
 interface CDaveField {
@@ -56,7 +56,7 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
     } else {
       const filteredFields = fields.filter(
         (f) =>
-          f.description.toLowerCase().search(searchTerm) > -1 ||
+          f.description?.toLowerCase().search(searchTerm) > -1 ||
           f.field_name.search(searchTerm) > -1,
       );
 
@@ -150,7 +150,10 @@ const FieldControl: React.FC<FieldControlProps> = ({
               color={COLOR_MAP[field.field_type]}
             />
           </div>
-          <Highlight search={searchTerm} text={field.description} />
+          <Highlight
+            search={searchTerm}
+            text={field?.description || "No description available"}
+          />
         </>
       ) : (
         <div className="flex justify-between cursor-pointer">
@@ -236,46 +239,16 @@ const Controls: React.FC<ControlPanelProps> = ({
           {Object.keys(fieldsWithData).length} of {cDaveFields.length} fields
           with values
         </p>
-        <ControlGroup
-          name={"Demographic"}
-          fields={sortFacetFields(
-            get(groupedFields, "demographic", []),
-            "demographic",
-          )}
-          updateFields={updateFields}
-          activeFields={activeFields}
-          searchTerm={searchTerm}
-        />
-        <ControlGroup
-          name={"Diagnosis"}
-          fields={sortFacetFields(
-            get(groupedFields, "diagnoses", []),
-            "diagnoses",
-          )}
-          updateFields={updateFields}
-          activeFields={activeFields}
-          searchTerm={searchTerm}
-        />
-        <ControlGroup
-          name={"Treatment"}
-          fields={sortFacetFields(
-            get(groupedFields, "treatments", []),
-            "treatments",
-          )}
-          updateFields={updateFields}
-          activeFields={activeFields}
-          searchTerm={searchTerm}
-        />
-        <ControlGroup
-          name={"Exposure"}
-          fields={sortFacetFields(
-            get(groupedFields, "exposures", []),
-            "exposures",
-          )}
-          updateFields={updateFields}
-          activeFields={activeFields}
-          searchTerm={searchTerm}
-        />
+        {Object.entries(TABS).map(([key, label]) => (
+          <ControlGroup
+            name={label}
+            fields={sortFacetFields(get(groupedFields, key, []), key)}
+            updateFields={updateFields}
+            activeFields={activeFields}
+            searchTerm={searchTerm}
+            key={key}
+          />
+        ))}
       </div>
     </div>
   );

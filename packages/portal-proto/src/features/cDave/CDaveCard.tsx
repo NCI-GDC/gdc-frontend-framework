@@ -27,7 +27,7 @@ import VictoryBarChart from "../charts/VictoryBarChart";
 import tailwindConfig from "tailwind.config";
 import { truncateString } from "src/utils";
 import { CONTINUOUS_FACET_TYPES, COLOR_MAP } from "./constants";
-import { createBuckets, parseFieldName, toDisplayName } from "./utils";
+import { createBuckets, toDisplayName } from "./utils";
 import { mapKeys } from "lodash";
 
 interface CDaveCardProps {
@@ -55,14 +55,14 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
     selectFacetDefinitionByName(state, `cases.${field}`),
   );
 
-  console.log(facet);
-
-  const fieldName = toDisplayName(parseFieldName(field).field_name);
+  const fieldName = toDisplayName(field);
 
   useEffect(() => {
     if (!initialDashboardRender) {
       scrollIntoView();
     }
+    // this should only happen on inital component mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -97,7 +97,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
         />
       ) : (
         <EnumResult
-          field={facet?.field}
+          field={field}
           fieldName={fieldName}
           data={(data as Buckets).buckets}
         />
@@ -149,7 +149,7 @@ const EnumResult: React.FC<EnumResultProps> = ({
     <Result
       field={field}
       fieldName={fieldName}
-      data={Object.fromEntries(data.map((d) => [d.key, d.doc_count]))}
+      data={Object.fromEntries((data || []).map((d) => [d.key, d.doc_count]))}
       isFetching={false}
       continuous={false}
     />
@@ -204,9 +204,8 @@ const Result: React.FC<ResultProps> = ({
   const [displayPercent, setDisplayPercent] = useState(false);
   const barChartData = formatBarChartData(data, displayPercent, continuous);
   const color =
-    tailwindConfig.theme.extend.colors[
-      COLOR_MAP[parseFieldName(field).field_type]
-    ].DEFAULT;
+    tailwindConfig.theme.extend.colors[COLOR_MAP[field.split(".").at(-2)]]
+      .DEFAULT;
 
   return (
     <>

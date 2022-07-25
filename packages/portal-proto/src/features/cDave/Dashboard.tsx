@@ -31,15 +31,13 @@ const Dashboard: React.FC<DashboardProps> = ({
   const { data: survivalData } = useSurvivalPlotWithCohortFilters({
     filters: cohortFilters && [cohortFilters],
   });
-  const { isFetching } = useFacetDictionary();
+  useFacetDictionary();
 
   useEffect(() => {
     if (lastDashboardRender) {
       initialDashboardRender.current = false;
     }
   });
-
-  console.log(results);
   return (
     <Grid className="w-full p-4" grow>
       <Grid.Col span={controlsExpanded ? 6 : 4}>
@@ -47,19 +45,18 @@ const Dashboard: React.FC<DashboardProps> = ({
           <SurvivalPlot data={survivalData} />
         </Card>
       </Grid.Col>
-      {!isFetching &&
-        activeFields.map((field) => {
-          return (
-            <Grid.Col span={controlsExpanded ? 6 : 4} key={field}>
-              <CDaveCard
-                field={field}
-                data={results[field]}
-                updateFields={updateFields}
-                initialDashboardRender={initialDashboardRender.current}
-              />
-            </Grid.Col>
-          );
-        })}
+      {activeFields.map((field) => {
+        return (
+          <Grid.Col span={controlsExpanded ? 6 : 4} key={field}>
+            <CDaveCard
+              field={field}
+              data={results[field]}
+              updateFields={updateFields}
+              initialDashboardRender={initialDashboardRender.current}
+            />
+          </Grid.Col>
+        );
+      })}
     </Grid>
   );
 };

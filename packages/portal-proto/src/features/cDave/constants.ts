@@ -154,4 +154,9 @@ export const FACET_SORT = {
   ],
 };
 
-export const TABS = ["demographic", "diagnoses", "exposures", "treatments"];
+export const TABS = {
+  demographic: "Demographic",
+  diagnoses: "Diagnosis",
+  treatments: "Treatment",
+  exposures: "Exposures",
+};

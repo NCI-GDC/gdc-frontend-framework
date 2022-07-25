@@ -6,7 +6,6 @@ import {
   buildCohortGqlOperator,
   useClinicalAnalysis,
   useClinicalFields,
-  useFacetDictionary,
 } from "@gff/core";
 import Controls from "./Controls";
 import Dashboard from "./Dashboard";
@@ -32,7 +31,7 @@ export const parseFieldName = (
   field: string,
 ): { field_type: string; field_name: string; full: string } => {
   const parsed = field.split("__");
-  const full = field.replace("__", ".");
+  const full = field.replaceAll("__", ".");
   if (parsed.at(-2) === "treatments") {
     return { field_type: parsed.at(-2), field_name: parsed.at(-1), full };
   }
@@ -52,7 +51,7 @@ const ClinicalDataAnalysis: React.FC<ClinicalDataAnalysisProps> = ({
   const { data: fields } = useClinicalFields();
   const cDaveFields = Object.values(fields)
     .map((d) => ({ ...d, ...parseFieldName(d.name) }))
-    .filter((d) => TABS.includes(d.field_type))
+    .filter((d) => Object.keys(TABS).includes(d.field_type))
     .filter((field) => !blacklistRegex.test(field.field_name));
 
   const cohortFilters = useCoreSelector((state) =>
