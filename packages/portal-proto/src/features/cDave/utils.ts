@@ -36,3 +36,14 @@ export const toDisplayName = (field: string): string => {
     .map((w) => (CAPILIZED_TERMS.includes(w) ? w.toUpperCase() : capitalize(w)))
     .join(" ");
 };
+
+export const parseFieldName = (
+  field: string,
+): { field_type: string; field_name: string; full: string } => {
+  const parsed = field.split("__");
+  const full = field.replaceAll("__", ".");
+  if (parsed.at(-2) === "treatments") {
+    return { field_type: parsed.at(-2), field_name: parsed.at(-1), full };
+  }
+  return { field_type: parsed.at(0), field_name: parsed.at(-1), full };
+};

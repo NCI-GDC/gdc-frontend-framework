@@ -10,7 +10,7 @@ import {
 import Controls from "./Controls";
 import Dashboard from "./Dashboard";
 import { DEFAULT_FIELDS, TABS } from "./constants";
-import { filterUsefulFacets } from "./utils";
+import { filterUsefulFacets, parseFieldName } from "./utils";
 
 export const CLINICAL_FIELD_BLACKLIST = [
   "state",
@@ -26,17 +26,6 @@ export const CLINICAL_FIELD_BLACKLIST = [
 const blacklistRegex = new RegExp(
   CLINICAL_FIELD_BLACKLIST.map((item) => `(${item})`).join("|"),
 );
-
-export const parseFieldName = (
-  field: string,
-): { field_type: string; field_name: string; full: string } => {
-  const parsed = field.split("__");
-  const full = field.replaceAll("__", ".");
-  if (parsed.at(-2) === "treatments") {
-    return { field_type: parsed.at(-2), field_name: parsed.at(-1), full };
-  }
-  return { field_type: parsed.at(0), field_name: parsed.at(-1), full };
-};
 
 interface ClinicalDataAnalysisProps {
   readonly cohort: string;
