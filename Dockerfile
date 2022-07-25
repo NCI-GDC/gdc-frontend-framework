@@ -9,7 +9,8 @@ FROM node:16-alpine3.15 AS builder
 WORKDIR /app
 RUN npm install --location=global lerna
 COPY . .
-
+RUN export http_proxy=http://cloud-proxy:3128
+RUN export https_proxy=http://cloud-proxy:3128
 RUN npm ci --network-timeout 1000000
 RUN lerna bootstrap
 RUN npm run compile
