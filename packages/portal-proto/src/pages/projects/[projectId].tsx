@@ -20,9 +20,7 @@ const ProjectSummary: NextPage = () => {
 
   return (
     <UserFlowVariedPages headerElements={headerElements}>
-      {ready && (
-        <ContextualProjectView setCurrentProject={projectId as string} />
-      )}
+      {ready && <ContextualProjectView projectId={projectId as string} />}
     </UserFlowVariedPages>
   );
 };

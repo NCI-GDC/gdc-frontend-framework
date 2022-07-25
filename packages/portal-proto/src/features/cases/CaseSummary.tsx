@@ -32,6 +32,7 @@ import {
 import {
   allFilesInCart,
   calculatePercentage,
+  numberWithCommas,
   sortByPropertyAsc,
 } from "src/utils";
 
@@ -247,7 +248,10 @@ export const CaseSummary = ({
     }));
 
     return {
-      headers: ["Data Category", `Files (n=${filesCountTotal})`],
+      headers: [
+        "Data Category",
+        `Files (n=${numberWithCommas(filesCountTotal)})`,
+      ],
       tableRows: rows,
     };
   };
@@ -267,7 +271,10 @@ export const CaseSummary = ({
     }));
 
     return {
-      headers: ["Experimental Strategy", `Files (n=${filesCountTotal})`],
+      headers: [
+        "Experimental Strategy",
+        `Files (n=${numberWithCommas(filesCountTotal)})`,
+      ],
       tableRows: rows,
     };
   };
