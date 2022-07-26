@@ -17,6 +17,7 @@ import {
   FaAngleDoubleLeft as DoubleLeftIcon,
   FaAngleDoubleRight as DoubleRightIcon,
 } from "react-icons/fa";
+import { Stats, Buckets } from "@gff/core";
 import Highlight from "@/components/Highlight";
 import { createKeyboardAccessibleFunction } from "src/utils";
 import { COLOR_MAP, DEFAULT_FIELDS, FACET_SORT, TABS } from "./constants";
@@ -57,7 +58,9 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
       const filteredFields = fields.filter(
         (f) =>
           f.description?.toLowerCase().search(searchTerm.toLowerCase()) > -1 ||
-          f.field_name.search(searchTerm.toLowerCase()) > -1,
+          toDisplayName(f.field_name)
+            .toLowerCase()
+            .search(searchTerm.toLowerCase()) > -1,
       );
 
       setVisibleFields(
@@ -104,7 +107,7 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
           >
             {filteredFields.length > 5 &&
               (fieldsCollapsed
-                ? `${filteredFields.length - 5} More ...`
+                ? `${filteredFields.length - 5} More...`
                 : "Less...")}
           </span>
         </div>
@@ -139,7 +142,9 @@ const FieldControl: React.FC<FieldControlProps> = ({
       {searchTerm ? (
         <>
           <div className="flex justify-between">
-            <Highlight search={searchTerm} text={displayName} />
+            <label htmlFor={`switch-${field.full}`}>
+              <Highlight search={searchTerm} text={displayName} />
+            </label>
             <Switch
               classNames={{ input: "bg-none" }}
               checked={checked}
@@ -148,6 +153,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
                 updateFields(field.full);
               }}
               color={COLOR_MAP[field.field_type]}
+              id={`switch-${field.full}`}
             />
           </div>
           <Highlight search={searchTerm} text={field.description} />
@@ -160,7 +166,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
             wrapLines
             width={200}
           >
-            {displayName}
+            <label htmlFor={`switch-${field.full}`}>{displayName}</label>
           </Tooltip>
           <Switch
             classNames={{
@@ -172,6 +178,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
               updateFields(field.full);
             }}
             color={COLOR_MAP[field.field_type]}
+            id={`switch-${field.full}`}
           />
         </div>
       )}
@@ -194,7 +201,7 @@ const sortFacetFields = (
 interface ControlPanelProps {
   readonly updateFields: (field: string) => void;
   readonly cDaveFields: CDaveField[];
-  readonly fieldsWithData: any;
+  readonly fieldsWithData: Record<string, Stats | Buckets>;
   readonly activeFields: string[];
   readonly controlsExpanded: boolean;
   readonly setControlsExpanded: (expanded: boolean) => void;
@@ -220,10 +227,14 @@ const Controls: React.FC<ControlPanelProps> = ({
       <ActionIcon
         className="self-end"
         onClick={() => setControlsExpanded(!controlsExpanded)}
+        aria-label={"Collapse/Expand controls"}
       >
         {controlsExpanded ? <DoubleLeftIcon /> : <DoubleRightIcon />}
       </ActionIcon>
-      <div className={controlsExpanded ? "block" : "hidden"}>
+      <div
+        className={controlsExpanded ? "block" : "hidden"}
+        data-testid="cdave-control-panel"
+      >
         <Input
           placeholder="Search"
           className="p-2"

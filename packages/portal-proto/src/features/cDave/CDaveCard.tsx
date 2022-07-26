@@ -14,6 +14,7 @@ import {
   MdBarChart as ChartIcon,
   MdOutlineClose as CloseIcon,
 } from "react-icons/md";
+import { mapKeys } from "lodash";
 import {
   useCoreSelector,
   selectFacetDefinitionByName,
@@ -22,13 +23,12 @@ import {
   Bucket,
   Stats,
 } from "@gff/core";
-import { useRangeFacet } from "../facets/hooks";
-import VictoryBarChart from "../charts/VictoryBarChart";
 import tailwindConfig from "tailwind.config";
 import { truncateString } from "src/utils";
+import { useRangeFacet } from "../facets/hooks";
+import VictoryBarChart from "../charts/VictoryBarChart";
 import { CONTINUOUS_FACET_TYPES, COLOR_MAP } from "./constants";
 import { createBuckets, toDisplayName } from "./utils";
-import { mapKeys } from "lodash";
 
 interface CDaveCardProps {
   readonly field: string;

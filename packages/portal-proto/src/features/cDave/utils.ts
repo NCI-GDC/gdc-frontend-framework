@@ -1,5 +1,5 @@
-import { NumericFromTo, Statistics, Buckets, Stats } from "@gff/core";
 import { omitBy, some, capitalize } from "lodash";
+import { NumericFromTo, Statistics, Buckets, Stats } from "@gff/core";
 import { CAPILIZED_TERMS } from "./constants";
 
 export const filterUsefulFacets = (
