@@ -10,7 +10,8 @@ WORKDIR /app
 RUN npm install --location=global lerna
 COPY . .
 
-RUN npm ci --network-timeout 1000000
+RUN npm ci --network-timeout 100000
+RUN lerna bootstrap
 RUN lerna run --scope @gff/core compile
 RUN lerna run --scope @gff/core build
 RUN lerna run --scope portal-proto build
