@@ -15,9 +15,11 @@
     "test": "npm run test --workspaces",
     "test:int": "npm run test:int --workspaces",
     "test:all": "npm run test:all --workspaces",
-    "compile": "lerna run --parallel compile",
     "dev": "lerna run --parallel dev",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "compile": "lerna run compile",
+    "build": "lerna run build",
+    "start": "lerna run --parallel start"
   },
   "lint-staged": {
     "**/*": [
