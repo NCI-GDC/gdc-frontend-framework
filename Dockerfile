@@ -12,10 +12,9 @@ COPY . .
 RUN export http_proxy=http://cloud-proxy:3128
 RUN export https_proxy=http://cloud-proxy:3128
 RUN npm ci --network-timeout 1000000
-RUN lerna bootstrap
-RUN npm run compile
-RUN npm run build
-
+RUN lerna run --scope @gff/core compile
+RUN lerna run --scope @gff/core build
+RUN lerna run --scope portal-proto build
 # ==================================================================
 
 FROM node:16-alpine3.15 AS runner
@@ -43,10 +42,5 @@ EXPOSE 3000
 ENV PORT 3000
 
 User root
-ENV PYTHONUNBUFFERED=1
-RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python
-RUN python3 -m ensurepip
-RUN pip3 install --no-cache --upgrade pip setuptools
-
 
 CMD ["npm", "run", "start"]
