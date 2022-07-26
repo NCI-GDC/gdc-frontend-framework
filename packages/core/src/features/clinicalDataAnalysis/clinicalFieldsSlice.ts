@@ -61,7 +61,6 @@ const slice = createSlice({
     builder
       .addCase(fetchClinicalFieldsResult.fulfilled, (state, action) => {
         const response = action.payload;
-        console.log(response);
 
         if (response.errors) {
           state.status = "rejected";
