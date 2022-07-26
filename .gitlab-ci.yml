@@ -31,7 +31,6 @@ Type Check for core:
   script:
     - cd packages/core
     - npm run build:clean
-
   cache:
     key: build-cache
     paths:
