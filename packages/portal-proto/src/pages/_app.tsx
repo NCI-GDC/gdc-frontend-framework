@@ -16,6 +16,7 @@ import tailwindConfig from "tailwind.config";
 // their default exports will trigger registration.
 import "../features/demoApp1/DemoApp";
 import "../features/demoApp2/DemoApp";
+import "@/features/repositoryApp/RepositoryApp";
 
 // import the react tab styles once
 import "react-tabs/style/react-tabs.css";
@@ -36,7 +37,7 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
 
   useEffect(() => {
     setPrevPath(currentPath);
-    setCurrentPath(globalThis.location.pathname);
+    setCurrentPath(globalThis.location.pathname + globalThis.location.search);
   }, [currentPath, router.asPath]);
 
   return (

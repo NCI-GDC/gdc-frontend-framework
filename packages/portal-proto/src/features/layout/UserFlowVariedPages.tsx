@@ -50,15 +50,16 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
   const banners = useCoreSelector((state) => selectBanners(state));
   return (
     <div className="flex flex-col min-h-screen min-w-full bg-nci-gray-lightest">
-      <div className="sticky top-0 z-50">
+      <header className="flex-none bg-white sticky top-0 z-50">
         {banners.map((banner) => (
           <Banner {...banner} key={banner.id} />
         ))}
-      </div>
-      <header className="flex-none bg-white">
         <Header {...{ headerElements, indexPath, Options }} />
       </header>
-      <main data-tour="full_page_content" className="flex-grow flex flex-col">
+      <main
+        data-tour="full_page_content"
+        className="flex-grow flex flex-col overflow-x-hidden"
+      >
         {children}
       </main>
       <footer className="flex-none">
@@ -133,14 +134,15 @@ const Header: React.FC<HeaderProps> = ({
           >
             <LoginIcon className="mr-1" size="24px" /> Login{" "}
           </div>
-          <div
-            className={
-              "flex flex-row opacity-60 hover:opacity-100 transition-opacity  items-center mx-2"
-            }
-          >
-            <CartIcon size="24px" /> Cart ({currentCart.length})
-          </div>
-
+          <Link href="/cart">
+            <div
+              className={
+                "flex flex-row opacity-60 hover:opacity-100 transition-opacity  items-center mx-2 cursor-pointer"
+              }
+            >
+              <CartIcon size="24px" /> Cart ({currentCart.length || 0})
+            </div>
+          </Link>
           <Menu
             withArrow
             className={"opacity-60 hover:opacity-100 transition-opacity mx-2"}

@@ -1,11 +1,11 @@
 import { NextPage } from "next";
 import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
-import { ContextualCasesView } from "@/features/cases/CasesView";
 import { useRouter } from "next/router";
 import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
 import { useEffect, useState } from "react";
+import { CaseSummary } from "@/features/cases/CaseSummary";
 
-const CaseSummary: NextPage = () => {
+const CaseSummaryPage: NextPage = () => {
   const router = useRouter();
   const {
     query: { caseId, bioId },
@@ -19,17 +19,12 @@ const CaseSummary: NextPage = () => {
   }, [router]);
 
   return (
-    <UserFlowVariedPages
-      {...{ indexPath: "/user-flow/many-pages", headerElements }}
-    >
+    <UserFlowVariedPages headerElements={headerElements}>
       {ready && (
-        <ContextualCasesView
-          caseId={caseId as string}
-          bioId={bioId as string}
-        />
+        <CaseSummary case_id={caseId as string} bio_id={bioId as string} />
       )}
     </UserFlowVariedPages>
   );
 };
 
-export default CaseSummary;
+export default CaseSummaryPage;
