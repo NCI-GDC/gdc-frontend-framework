@@ -112,3 +112,4 @@ Push latest:
     - docker pull $REGISTRY/$CI_PROJECT_NAME:$BRANCH
     - docker tag $REGISTRY/$CI_PROJECT_NAME:$BRANCH $REGISTRY/$CI_PROJECT_NAME:latest
     - docker push $REGISTRY/$CI_PROJECT_NAME:latest
+
