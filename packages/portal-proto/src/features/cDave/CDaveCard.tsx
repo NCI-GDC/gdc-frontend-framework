@@ -89,19 +89,21 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
           </Tooltip>
         </div>
       </div>
-      {data && facet && CONTINUOUS_FACET_TYPES.includes(facet?.type) ? (
-        <ContinuousResult
-          field={field}
-          fieldName={fieldName}
-          stats={(data as Stats).stats}
-        />
-      ) : (
-        <EnumResult
-          field={field}
-          fieldName={fieldName}
-          data={(data as Buckets).buckets}
-        />
-      )}
+      {data && facet ? (
+        CONTINUOUS_FACET_TYPES.includes(facet?.type) ? (
+          <ContinuousResult
+            field={field}
+            fieldName={fieldName}
+            stats={(data as Stats).stats}
+          />
+        ) : (
+          <EnumResult
+            field={field}
+            fieldName={fieldName}
+            data={(data as Buckets).buckets}
+          />
+        )
+      ) : null}
     </Card>
   );
 };
@@ -159,8 +161,12 @@ const EnumResult: React.FC<EnumResultProps> = ({
 };
 
 const parseContinuousBucket = (bucket: string): string => {
-  const [fromValue, toValue] = bucket.split("-");
-  return `${Number(Number(fromValue).toFixed(2))} to < ${Number(
+  const [fromValue, toValue] = bucket
+    .split("-")
+    .map((val, idx, src) => (src[idx - 1] === "" ? `-${val}` : val))
+    .filter((val) => val !== "");
+
+  return `${Number(Number(fromValue).toFixed(2))} to <${Number(
     Number(toValue).toFixed(2),
   )}`;
 };
@@ -209,7 +215,7 @@ const Result: React.FC<ResultProps> = ({
   const barChartData = formatBarChartData(data, displayPercent, continuous);
   const color =
     tailwindConfig.theme.extend.colors[COLOR_MAP[field.split(".").at(-2)]]
-      .DEFAULT;
+      ?.DEFAULT;
 
   return (
     <>
