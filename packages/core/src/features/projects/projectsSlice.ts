@@ -63,12 +63,6 @@ const slice = createSlice({
 
 export const projectsReducer = slice.reducer;
 
-export const selectProjectsState = (state: CoreState): ProjectsState =>
-  state.projects;
-
-export const selectProjects = (state: CoreState): ProjectDefaults | undefined =>
-  state.projects.projectData;
-
 export const selectProjectsData = (
   state: CoreState,
 ): CoreDataSelectorResponse<ProjectDefaults> => {

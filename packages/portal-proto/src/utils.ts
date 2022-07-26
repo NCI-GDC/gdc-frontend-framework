@@ -32,6 +32,7 @@ export const capitalize = (original: string): string => {
     dbsnp: "dbSNP",
     cosmic: "COSMIC",
     civic: "CIViC",
+    dbgap: "dbGaP",
   };
 
   return original
@@ -101,6 +102,3 @@ export const sortByPropertyAsc = <T>(
   sortBy(givenObjects, [
     (e) => replace(e[property], /[^a-zA-Z]/g, "").toLocaleLowerCase(),
   ]);
-
-export const numberWithCommas = (num: number) =>
-  num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");

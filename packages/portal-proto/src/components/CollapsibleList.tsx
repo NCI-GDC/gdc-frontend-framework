@@ -7,23 +7,30 @@ export const CollapsibleList = ({
   limit = 2,
   collapseText = "less",
   expandText = `${data.length - limit} more`,
+  customLiStyle,
+  customToggleTextStyle,
 }: {
   data: Array<any>;
   limit?: number;
   collapseText?: string;
   expandText?: string;
+  customLiStyle?: string;
+  customToggleTextStyle?: string;
 }): JSX.Element => {
   const [expanded, setExpanded] = useState(false);
   return (
     <ul className="list-none pl-0 mb-0 inline-block">
       {data.slice(0, expanded ? data.length : limit).map((d) => (
-        <li key={uuidv4()}>{d}</li>
+        <li key={uuidv4()} className={`${customLiStyle}`}>
+          {d}
+        </li>
       ))}
       {data.length > limit && (
-        <li className="float-right italic cursor-pointer">
+        <li className={`float-right cursor-pointer`}>
           <button
             onClick={() => setExpanded((e) => !e)}
             aria-expanded={expanded}
+            className={`text-nci-blue ${customToggleTextStyle || "italic"}`}
           >
             {expanded ? (
               <div className="flex">

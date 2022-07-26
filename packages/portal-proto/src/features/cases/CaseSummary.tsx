@@ -32,9 +32,9 @@ import {
 import {
   allFilesInCart,
   calculatePercentage,
-  numberWithCommas,
   sortByPropertyAsc,
 } from "src/utils";
+import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 
 export const CaseSummary = ({
   case_id,
@@ -250,7 +250,7 @@ export const CaseSummary = ({
     return {
       headers: [
         "Data Category",
-        `Files (n=${numberWithCommas(filesCountTotal)})`,
+        `Files (n=${filesCountTotal.toLocaleString()})`,
       ],
       tableRows: rows,
     };
@@ -273,7 +273,7 @@ export const CaseSummary = ({
     return {
       headers: [
         "Experimental Strategy",
-        `Files (n=${numberWithCommas(filesCountTotal)})`,
+        `Files (n=${filesCountTotal.toLocaleString()})`,
       ],
       tableRows: rows,
     };
@@ -377,11 +377,7 @@ export const CaseSummary = ({
           </div>
         </>
       ) : (
-        <div className="p-4 text-nci-gray">
-          <div className="flex-auto bg-white mr-4">
-            <h2 className="p-2 text-2xl mx-4">Case Not Found</h2>
-          </div>
-        </div>
+        <SummaryErrorHeader label="Case Not Found" />
       )}
     </>
   );

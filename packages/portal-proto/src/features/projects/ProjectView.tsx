@@ -7,17 +7,17 @@ import {
 import SummaryCount from "../../components/Summary/SummaryCount";
 import { HorizontalTableProps } from "../../components/HorizontalTable";
 import { FaUser, FaFile, FaEdit, FaTable } from "react-icons/fa";
-import { get } from "lodash";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
-import { Button, Menu, Tooltip } from "@mantine/core";
+import { Button, LoadingOverlay, Menu, Tooltip } from "@mantine/core";
 import { MdFileDownload } from "react-icons/md";
 import { TempTable } from "../files/FileView";
-import {
-  calculatePercentage,
-  numberWithCommas,
-  sortByPropertyAsc,
-} from "src/utils";
+import { calculatePercentage, sortByPropertyAsc } from "src/utils";
+import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
+import { formatDataForHorizontalTable } from "../files/utils";
+import { humanify } from "../biospecimen/utils";
+import Link from "next/link";
+import { CollapsibleList } from "@/components/CollapsibleList";
 
 export interface ContextualProjectViewProps {
   readonly projectId: string;
@@ -55,7 +55,18 @@ export const ContextualProjectView: React.FC<ContextualProjectViewProps> = ({
     ...projectData,
     annotation: annotationCountData,
   };
-  return <ProjectView {...projectWithAnnotation} />;
+
+  return (
+    <>
+      {isProjectFetching || isAnnotationFetching ? (
+        <LoadingOverlay visible data-testid="loading" />
+      ) : projectData && Object.keys(projectData).length > 0 ? (
+        <ProjectView {...projectWithAnnotation} />
+      ) : (
+        <SummaryErrorHeader label="Project Not Found" />
+      )}
+    </>
+  );
 };
 
 export interface ProjectViewProps extends ProjectDefaults {
@@ -70,44 +81,60 @@ export const ProjectView: React.FC<ProjectViewProps> = (
 ) => {
   console.log(projectData);
   const formatDataForSummary = (): HorizontalTableProps["tableData"] => {
-    //Headers for table
-    const headersConfig = [
-      {
-        field: "projectId",
-        name: "Project ID",
+    const {
+      project_id,
+      program: {
+        name: program,
+        dbgap_accession_number: program_dbgap_accession_number,
       },
-      {
-        field: "program.dbgap_accession_number",
-        name: "dbGaP Study Accession",
-      },
-      {
-        field: "name",
-        name: "Project Name",
-      },
-      {
-        field: "disease_type",
-        name: "Disease Type",
-      },
-      {
-        field: "primary_site",
-        name: "Primary Site",
-      },
-      {
-        field: "program.name",
-        name: "Program",
-      },
-    ];
-    //match headers with available properties
-    return headersConfig.reduce((output, obj) => {
-      const value = get(projectData, obj.field);
-      if (value) {
-        output.push({
-          headerName: obj.name,
-          values: [value],
-        });
-      }
-      return output;
-    }, []);
+      primary_site,
+      dbgap_accession_number,
+      disease_type,
+      name: project_name,
+    } = projectData;
+
+    const dbGaP_study_accession =
+      program_dbgap_accession_number || dbgap_accession_number;
+
+    const projectSummaryObj: Record<string, any> = {
+      project_id,
+      dbGaP_study_accession: (
+        <Link
+          href={`https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=${dbGaP_study_accession}`}
+          passHref
+        >
+          <a className="underline text-nci-blue" target="_blank">
+            {dbGaP_study_accession}
+          </a>
+        </Link>
+      ),
+      project_name,
+      ...(primary_site.length <= 1 &&
+        disease_type.length > 0 && {
+          disease_type:
+            disease_type.length > 1 ? (
+              <CollapsibleList
+                data={disease_type.slice(0).sort()}
+                limit={0}
+                expandText={`${disease_type.length} Disease Types`}
+                collapseText="collapse"
+                customLiStyle="list-disc"
+                customToggleTextStyle="not-italic"
+              />
+            ) : (
+              disease_type
+            ),
+        }),
+      ...(primary_site.length === 1 && { primary_site }),
+      program,
+    };
+
+    const headersConfig = Object.keys(projectSummaryObj).map((key) => ({
+      field: key,
+      name: humanify({ term: key }),
+    }));
+
+    return formatDataForHorizontalTable(projectSummaryObj, headersConfig);
   };
 
   const getAnnotationsLinkParams = () => {
@@ -140,8 +167,8 @@ export const ProjectView: React.FC<ProjectViewProps> = (
     return {
       headers: [
         "Data Category",
-        `Cases (n=${numberWithCommas(projectData.summary.case_count)})`,
-        `Files (n=${numberWithCommas(projectData.summary.file_count)})`,
+        `Cases (n=${projectData.summary.case_count.toLocaleString()})`,
+        `Files (n=${projectData.summary.file_count.toLocaleString()})`,
       ],
       tableRows: rows,
     };
@@ -168,8 +195,8 @@ export const ProjectView: React.FC<ProjectViewProps> = (
     return {
       headers: [
         "Experimental Strategy",
-        `Cases (n=${numberWithCommas(projectData.summary.case_count)})`,
-        `Files (n=${numberWithCommas(projectData.summary.file_count)})`,
+        `Cases (n=${projectData.summary.case_count.toLocaleString()})`,
+        `Files (n=${projectData.summary.file_count.toLocaleString()})`,
       ],
       tableRows: rows,
     };
@@ -209,7 +236,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
               </Menu.Item>
             </Menu>
             <Tooltip
-              // multiline
+              wrapLines
               transition="fade"
               transitionDuration={200}
               width={220}
