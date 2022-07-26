@@ -22,6 +22,8 @@ export const CLINICAL_FIELD_BLACKLIST = [
   "created_datetime",
   "exposure_id",
   "treatment_id",
+  "radon_exposure",
+  "asbestos_exposure",
 ];
 const blacklistRegex = new RegExp(
   CLINICAL_FIELD_BLACKLIST.map((item) => `(${item})`).join("|"),

@@ -226,15 +226,20 @@ const Controls: React.FC<ControlPanelProps> = ({
         controlsExpanded ? "w-80 bg-white overflow-scroll -ml-2" : ""
       } h-[675px] flex flex-col`}
     >
-      <ActionIcon
+      <Tooltip
+        withArrow
+        label={controlsExpanded ? "Hide Control Panel" : "Show Control Panel"}
         className="self-end"
-        onClick={() => setControlsExpanded(!controlsExpanded)}
-        aria-label={"Collapse/Expand controls"}
-        aria-controls={"cdave-control-panel"}
-        aria-expanded={controlsExpanded}
       >
-        {controlsExpanded ? <DoubleLeftIcon /> : <DoubleRightIcon />}
-      </ActionIcon>
+        <ActionIcon
+          onClick={() => setControlsExpanded(!controlsExpanded)}
+          aria-label={"Collapse/Expand controls"}
+          aria-controls={"cdave-control-panel"}
+          aria-expanded={controlsExpanded}
+        >
+          {controlsExpanded ? <DoubleLeftIcon /> : <DoubleRightIcon />}
+        </ActionIcon>
+      </Tooltip>
       <div
         className={controlsExpanded ? "block" : "hidden"}
         id="cdave-control-panel"

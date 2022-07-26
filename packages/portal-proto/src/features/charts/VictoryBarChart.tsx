@@ -79,17 +79,21 @@ const BarChartLabel: React.FC<VictoryLabelProps & { index?: number }> = ({
 interface VictoryBarChartProps {
   readonly data: any;
   readonly color: string;
-  readonly yLabel: string;
+  readonly yLabel?: string;
+  readonly xLabel?: string;
   readonly width?: number;
   readonly height?: number;
+  readonly hideXTicks?: boolean;
 }
 
 const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
   data,
   color,
   yLabel,
+  xLabel,
   width = 400,
   height = 400,
+  hideXTicks = false,
 }: VictoryBarChartProps) => {
   return (
     <VictoryChart
@@ -109,8 +113,12 @@ const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
         }}
       />
       <VictoryAxis
-        style={{ tickLabels: { angle: 45, fontSize: 24 } }}
-        tickLabelComponent={<BarChartLabel data={data} />}
+        style={{
+          tickLabels: { angle: 45, fontSize: 24 },
+          axisLabel: { fontSize: 20 },
+        }}
+        tickLabelComponent={hideXTicks ? <></> : <BarChartLabel data={data} />}
+        label={xLabel}
       />
       <VictoryBar
         data={data}

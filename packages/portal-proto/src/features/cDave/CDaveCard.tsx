@@ -8,6 +8,7 @@ import {
   Radio,
   Select,
   Loader,
+  Button,
 } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
 import {
@@ -216,6 +217,7 @@ const Result: React.FC<ResultProps> = ({
   const color =
     tailwindConfig.theme.extend.colors[COLOR_MAP[field.split(".").at(-2)]]
       ?.DEFAULT;
+  const hideXTicks = barChartData.length > 20;
 
   return (
     <>
@@ -243,6 +245,12 @@ const Result: React.FC<ResultProps> = ({
               yLabel={displayPercent ? "% of Cases" : "# Cases"}
               width={900}
               height={500}
+              hideXTicks={hideXTicks}
+              xLabel={
+                hideXTicks
+                  ? "Roll over the graph to see X axis labels"
+                  : undefined
+              }
             />
           </div>
           <div className="flex justify-between p-2">
@@ -250,6 +258,7 @@ const Result: React.FC<ResultProps> = ({
               placeholder="Select Action"
               data={[{ value: "download", label: "Download TSV" }]}
             />
+            <Button>TSV</Button>
             <Select
               placeholder="Customize Bins"
               data={[{ value: "download", label: "Edit Bins" }]}
