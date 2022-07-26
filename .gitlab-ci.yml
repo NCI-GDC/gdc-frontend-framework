@@ -89,8 +89,6 @@ build docker:
   image: docker:20.10.16-dind
   script:
     - BRANCH="${CI_COMMIT_BRANCH//[\/]/_}"
-    - export http_proxy=http://cloud-proxy:3128
-    - export https_proxy=http://cloud-proxy:3128
     - docker build -t $REGISTRY/$CI_PROJECT_NAME:$BRANCH .
     - docker push $REGISTRY/$CI_PROJECT_NAME:$BRANCH
 
