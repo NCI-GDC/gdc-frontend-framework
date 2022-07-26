@@ -24,7 +24,6 @@ import { URLContext } from "src/pages/_app";
 import { Biospecimen } from "../biospecimen/Biospecimen";
 import { humanify } from "../biospecimen/utils";
 import { addToCart, removeFromCart } from "../cart/updateCart";
-import { TempTable } from "../files/FileView";
 import {
   formatDataForHorizontalTable,
   mapFilesFromCasesToCartFile,
@@ -35,6 +34,7 @@ import {
   sortByPropertyAsc,
 } from "src/utils";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
+import { CategoryTableSummary } from "@/components/Summary/CategoryTableSummary";
 
 export const CaseSummary = ({
   case_id,
@@ -241,6 +241,7 @@ export const CaseSummary = ({
 
     const rows = sortedDataCategories.map((data_c) => ({
       data_category: data_c.data_category,
+      // TODO: Need to change it to Link after the href has been finalized
       file_count: `${data_c.file_count} (${calculatePercentage(
         data_c.file_count,
         filesCountTotal,
@@ -264,6 +265,7 @@ export const CaseSummary = ({
 
     const rows = sortedExpCategories.map((exp_c) => ({
       experimental_strategy: exp_c.experimental_strategy,
+      // TODO: Need to change it to Link after the href has been finalized
       file_count: `${exp_c.file_count} (${calculatePercentage(
         exp_c.file_count,
         filesCountTotal,
@@ -337,37 +339,17 @@ export const CaseSummary = ({
               </div>
 
               <div className="flex gap-4 mt-4">
-                <div className="flex-1">
-                  <div className="bg-white text-nci-gray p-2">
-                    <h2 className="text-lg font-medium">
-                      File Counts by Data Category
-                    </h2>
-                    {!data.summary.data_categories && (
-                      <span className="block text-center text-sm pt-4">
-                        No results found
-                      </span>
-                    )}
-                  </div>
-                  {data.summary.data_categories ? (
-                    <TempTable tableData={formatDataForDataCateogryTable()} />
-                  ) : null}
-                </div>
+                <CategoryTableSummary
+                  title=" File Counts by Data Category"
+                  dataObject={data.summary.data_categories}
+                  tableData={formatDataForDataCateogryTable()}
+                />
 
-                <div className="flex-1">
-                  <div className="bg-white text-nci-gray p-2">
-                    <h2 className="text-lg font-medium">
-                      File Counts by Experimental Strategy
-                    </h2>
-                    {!data.summary.experimental_strategies && (
-                      <span className="block text-center text-sm pt-4">
-                        No results found
-                      </span>
-                    )}
-                  </div>
-                  {data.summary.experimental_strategies ? (
-                    <TempTable tableData={formatDataForExpCateogryTable()} />
-                  ) : null}
-                </div>
+                <CategoryTableSummary
+                  title="File Counts by Experimental Strategy"
+                  dataObject={data.summary.experimental_strategies}
+                  tableData={formatDataForExpCateogryTable()}
+                />
               </div>
             </div>
 

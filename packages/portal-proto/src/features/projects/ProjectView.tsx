@@ -11,13 +11,13 @@ import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { Button, LoadingOverlay, Menu, Tooltip } from "@mantine/core";
 import { MdFileDownload } from "react-icons/md";
-import { TempTable } from "../files/FileView";
 import { calculatePercentage, sortByPropertyAsc } from "src/utils";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 import { formatDataForHorizontalTable } from "../files/utils";
 import { humanify } from "../biospecimen/utils";
 import Link from "next/link";
 import { CollapsibleList } from "@/components/CollapsibleList";
+import { CategoryTableSummary } from "@/components/Summary/CategoryTableSummary";
 
 export interface ContextualProjectViewProps {
   readonly projectId: string;
@@ -79,7 +79,6 @@ export interface ProjectViewProps extends ProjectDefaults {
 export const ProjectView: React.FC<ProjectViewProps> = (
   projectData: ProjectViewProps,
 ) => {
-  console.log(projectData);
   const formatDataForSummary = (): HorizontalTableProps["tableData"] => {
     const {
       project_id,
@@ -154,10 +153,12 @@ export const ProjectView: React.FC<ProjectViewProps> = (
 
     const rows = sortedDataCategories.map((data_c) => ({
       data_category: data_c.data_category,
+      // TODO: Need to change it to Link after the href has been finalized
       case_count: `${data_c.case_count} (${calculatePercentage(
         data_c.case_count,
         projectData.summary.case_count,
       )}%)`,
+      // TODO: Need to change it to Link after the href has been finalized
       file_count: `${data_c.file_count} (${calculatePercentage(
         data_c.file_count,
         projectData.summary.file_count,
@@ -182,10 +183,12 @@ export const ProjectView: React.FC<ProjectViewProps> = (
 
     const rows = sortedExpCategories.map((exp_c) => ({
       experimental_strategy: exp_c.experimental_strategy,
+      // TODO: Need to change it to Link after the href has been finalized
       case_count: `${exp_c.case_count} (${calculatePercentage(
         exp_c.case_count,
         projectData.summary.case_count,
       )}%)`,
+      // TODO: Need to change it to Link after the href has been finalized
       file_count: `${exp_c.file_count} (${calculatePercentage(
         exp_c.file_count,
         projectData.summary.file_count,
@@ -295,37 +298,18 @@ Data Transfer Tool is recommended for transferring large volumes of data."
             </div>
           </div>
 
-          <div className="flex gap-4 mt-4">
-            <div className="flex-1">
-              <div className="bg-white text-nci-gray p-2">
-                <h2 className="text-lg font-medium">
-                  Cases and File Counts by Data Category
-                </h2>
-                {!projectData?.summary?.data_categories && (
-                  <span className="block text-center text-sm pt-4">
-                    No results found
-                  </span>
-                )}
-              </div>
-              {projectData?.summary?.data_categories ? (
-                <TempTable tableData={formatDataForDataCateogryTable()} />
-              ) : null}
-            </div>
-            <div className="flex-1">
-              <div className="bg-white text-nci-gray p-2">
-                <h2 className="text-lg font-medium">
-                  Cases and File Counts by Experimental Strategy
-                </h2>
-                {!projectData?.summary?.experimental_strategies && (
-                  <span className="block text-center text-sm pt-4">
-                    No results found
-                  </span>
-                )}
-              </div>
-              {projectData?.summary?.experimental_strategies ? (
-                <TempTable tableData={formatDataForExpCateogryTable()} />
-              ) : null}
-            </div>
+          <div className="flex gap-4 mt-4 mb-8">
+            <CategoryTableSummary
+              title="Cases and File Counts by Data Category"
+              dataObject={projectData?.summary?.data_categories}
+              tableData={formatDataForDataCateogryTable()}
+            />
+
+            <CategoryTableSummary
+              title="Cases and File Counts by Experimental Strategy"
+              dataObject={projectData?.summary?.experimental_strategies}
+              tableData={formatDataForExpCateogryTable()}
+            />
           </div>
         </div>
       </div>
