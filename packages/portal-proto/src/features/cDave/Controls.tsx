@@ -80,10 +80,12 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
         tabIndex={0}
         role="button"
         className="text-lg text-nci-blue-darkest cursor-pointer bg-nci-gray-lightest flex items-center p-2 sticky top-0 z-10"
+        aria-controls={`cdave-control-group-${name}`}
+        aria-expanded={groupOpen}
       >
         {groupOpen ? <DownIcon /> : <RightIcon />} {name}
       </span>
-      <Collapse in={groupOpen}>
+      <Collapse in={groupOpen} id={`cdave-control-group-${name}`}>
         <div className="flex flex-col">
           <ul className="bg-white">
             {visibleFields.map((field) => (
@@ -228,11 +230,14 @@ const Controls: React.FC<ControlPanelProps> = ({
         className="self-end"
         onClick={() => setControlsExpanded(!controlsExpanded)}
         aria-label={"Collapse/Expand controls"}
+        aria-controls={"cdave-control-panel"}
+        aria-expanded={controlsExpanded}
       >
         {controlsExpanded ? <DoubleLeftIcon /> : <DoubleRightIcon />}
       </ActionIcon>
       <div
         className={controlsExpanded ? "block" : "hidden"}
+        id="cdave-control-panel"
         data-testid="cdave-control-panel"
       >
         <Input

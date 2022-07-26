@@ -4,7 +4,7 @@ import Controls from "./Controls";
 
 describe("<Controls />", () => {
   it("controls collapse", () => {
-    const { getByLabelText, getByTestId } = render(
+    const { getByRole, getByTestId } = render(
       <Controls
         updateFields={jest.fn()}
         controlsExpanded={false}
@@ -15,7 +15,12 @@ describe("<Controls />", () => {
       />,
     );
 
-    expect(getByLabelText("Collapse/Expand controls")).toBeVisible();
+    expect(
+      getByRole("button", {
+        name: "Collapse/Expand controls",
+        expanded: false,
+      }),
+    ).toBeInTheDocument();
     expect(getByTestId("cdave-control-panel")).toHaveClass("hidden");
   });
 
