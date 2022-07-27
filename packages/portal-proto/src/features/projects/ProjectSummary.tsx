@@ -5,7 +5,6 @@ import {
   ProjectDefaults,
 } from "@gff/core";
 import SummaryCount from "../../components/Summary/SummaryCount";
-import { HorizontalTableProps } from "../../components/HorizontalTable";
 import { FaUser, FaFile, FaEdit, FaTable } from "react-icons/fa";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
