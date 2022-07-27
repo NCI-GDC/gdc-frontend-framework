@@ -22,6 +22,4 @@ build:
   variables:
     npm_config_registry: https://nexus.osdc.io/repository/npm-all/
   script:
-    - BRANCH="${CI_COMMIT_BRANCH//[\/]/_}"
-    - docker build -t $REGISTRY/$CI_PROJECT_NAME:$BRANCH .
-    - docker push $REGISTRY/$CI_PROJECT_NAME:$BRANCH
+    - docker build .
