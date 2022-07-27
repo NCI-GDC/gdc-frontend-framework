@@ -9,25 +9,8 @@ import {
 } from "@gff/core";
 import Controls from "./Controls";
 import Dashboard from "./Dashboard";
-import { DEFAULT_FIELDS, TABS } from "./constants";
+import { DEFAULT_FIELDS, FACET_SORT } from "./constants";
 import { filterUsefulFacets, parseFieldName } from "./utils";
-
-export const CLINICAL_FIELD_BLACKLIST = [
-  "state",
-  "score",
-  "submitter_id",
-  "demographic_id",
-  "updated_datetime",
-  "diagnosis_id",
-  "created_datetime",
-  "exposure_id",
-  "treatment_id",
-  "radon_exposure",
-  "asbestos_exposure",
-];
-const blacklistRegex = new RegExp(
-  CLINICAL_FIELD_BLACKLIST.map((item) => `(${item})`).join("|"),
-);
 
 interface ClinicalDataAnalysisProps {
   readonly cohort: string;
@@ -42,8 +25,11 @@ const ClinicalDataAnalysis: React.FC<ClinicalDataAnalysisProps> = ({
   const { data: fields } = useClinicalFields();
   const cDaveFields = Object.values(fields)
     .map((d) => ({ ...d, ...parseFieldName(d.name) }))
-    .filter((d) => Object.keys(TABS).includes(d.field_type))
-    .filter((field) => !blacklistRegex.test(field.field_name));
+    .filter(
+      (d) =>
+        FACET_SORT?.[d.field_type] &&
+        FACET_SORT[d.field_type].includes(d.field_name),
+    );
 
   const cohortFilters = useCoreSelector((state) =>
     buildCohortGqlOperator(selectAvailableCohortByName(state, cohort).filters),
