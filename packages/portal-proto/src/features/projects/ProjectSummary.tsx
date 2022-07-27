@@ -268,6 +268,7 @@ Data Transfer Tool is recommended for transferring large volumes of data."
                       href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
                       className="text-nci-blue underline"
                       target="_blank"
+                      rel="noreferrer"
                     >
                       Obtaining Access to Controlled Data.
                     </a>
