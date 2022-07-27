@@ -7,11 +7,11 @@ WORKDIR /app
 # ==================================================================
 FROM node:16-alpine3.15 AS builder
 WORKDIR /app
+
 RUN npm install --location=global lerna
 COPY . .
-RUN export http_proxy=http://cloud-proxy:3128
-RUN export https_proxy=http://cloud-proxy:3128
-RUN npm ci --network-timeout 1000000
+
+RUN npm i
 RUN lerna run --scope @gff/core compile
 RUN lerna run --scope @gff/core build
 RUN lerna run --scope portal-proto build
