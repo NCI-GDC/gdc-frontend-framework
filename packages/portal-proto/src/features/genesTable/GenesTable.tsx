@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useGenesTable } from "@gff/core";
 import { VerticalTable } from "../shared/VerticalTable";
+import ExpandableTable from "../shared/ExpandableTable";
 import {
   Loader,
   Pagination,
@@ -365,7 +366,8 @@ const GenesTable: React.FC<GenesTableProps> = ({
       Showing ${(activePage - 1) * pageSize + 1} - ${activePage * pageSize
               } of   ${totalResults} genes */}
       <div ref={ref} className={`flex flex-row w-9/12`}>
-        {data && !isFetching ? (
+        <ExpandableTable />
+        {/* {data && !isFetching ? (
           <VerticalTable
             tableData={tableData}
             columnListOrder={columnListOrder}
@@ -388,7 +390,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
               <Loader color="gray" size={24} />
             </div>
           </div>
-        )}
+        )} */}
       </div>
       <div className="flex flex-row items-center justify-start border-t border-nci-gray-light w-9/12">
         <p className="px-2">Page Size:</p>
