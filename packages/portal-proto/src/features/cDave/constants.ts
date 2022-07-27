@@ -135,7 +135,6 @@ export const FACET_SORT = {
     "pack_years_smoked",
     "tobacco_smoking_onset_year",
     "tobacco_smoking_quit_year",
-    "years_smoked",
   ],
 };
 
