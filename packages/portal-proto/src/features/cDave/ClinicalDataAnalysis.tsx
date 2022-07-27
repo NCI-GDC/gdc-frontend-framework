@@ -2,23 +2,17 @@ import { useState } from "react";
 import { Loader } from "@mantine/core";
 import {
   useCoreSelector,
-  selectAvailableCohortByName,
   buildCohortGqlOperator,
   useClinicalAnalysis,
   useClinicalFields,
+  selectCurrentCohortFilters,
 } from "@gff/core";
 import Controls from "./Controls";
 import Dashboard from "./Dashboard";
 import { DEFAULT_FIELDS, FACET_SORT } from "./constants";
 import { filterUsefulFacets, parseFieldName } from "./utils";
 
-interface ClinicalDataAnalysisProps {
-  readonly cohort: string;
-}
-
-const ClinicalDataAnalysis: React.FC<ClinicalDataAnalysisProps> = ({
-  cohort,
-}: ClinicalDataAnalysisProps) => {
+const ClinicalDataAnalysis: React.FC = () => {
   const [controlsExpanded, setControlsExpanded] = useState(true);
   const [activeFields, setActiveFields] = useState(DEFAULT_FIELDS);
 
@@ -32,7 +26,7 @@ const ClinicalDataAnalysis: React.FC<ClinicalDataAnalysisProps> = ({
     );
 
   const cohortFilters = useCoreSelector((state) =>
-    buildCohortGqlOperator(selectAvailableCohortByName(state, cohort).filters),
+    buildCohortGqlOperator(selectCurrentCohortFilters(state)),
   );
   const {
     data: cDaveResult,
