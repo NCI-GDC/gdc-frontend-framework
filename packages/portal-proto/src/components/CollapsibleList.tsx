@@ -21,12 +21,12 @@ export const CollapsibleList = ({
   return (
     <ul className="list-none pl-0 mb-0 inline-block">
       {data.slice(0, expanded ? data.length : limit).map((d) => (
-        <li key={uuidv4()} className={`${customLiStyle}`}>
+        <li key={uuidv4()} className={customLiStyle}>
           {d}
         </li>
       ))}
       {data.length > limit && (
-        <li className={`float-right cursor-pointer`}>
+        <li className="float-right cursor-pointer">
           <button
             onClick={() => setExpanded((e) => !e)}
             aria-expanded={expanded}

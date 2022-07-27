@@ -36,7 +36,7 @@ const slice = createSlice({
     builder
       .addCase(fetchProjects.fulfilled, (state, action) => {
         const response = action.payload;
-        console.log(response);
+
         if (response.warnings && Object.keys(response.warnings).length > 0) {
           state.status = "rejected";
           state.error = response.warnings.facets;
@@ -50,11 +50,13 @@ const slice = createSlice({
         }
       })
       .addCase(fetchProjects.pending, (state) => {
+        state.projectData = undefined;
         state.status = "pending";
         state.error = undefined;
       })
       .addCase(fetchProjects.rejected, (state) => {
         state.status = "rejected";
+        state.projectData = undefined;
         // TODO get error from action
         state.error = undefined;
       });

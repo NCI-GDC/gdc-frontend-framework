@@ -3,9 +3,9 @@ import { useRouter } from "next/router";
 import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
 import { useEffect, useState } from "react";
 import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
-import { ContextualProjectView } from "@/features/projects/ProjectView";
+import { ProjectSummary } from "@/features/projects/ProjectSummary";
 
-const ProjectSummary: NextPage = () => {
+const ProjectSummaryPage: NextPage = () => {
   const router = useRouter();
   const {
     query: { projectId },
@@ -20,9 +20,9 @@ const ProjectSummary: NextPage = () => {
 
   return (
     <UserFlowVariedPages headerElements={headerElements}>
-      {ready && <ContextualProjectView projectId={projectId as string} />}
+      {ready && <ProjectSummary projectId={projectId as string} />}
     </UserFlowVariedPages>
   );
 };
 
-export default ProjectSummary;
+export default ProjectSummaryPage;

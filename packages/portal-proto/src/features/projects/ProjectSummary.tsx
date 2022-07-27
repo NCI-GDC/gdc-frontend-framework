@@ -23,7 +23,7 @@ export interface ContextualProjectViewProps {
   readonly projectId: string;
 }
 
-export const ContextualProjectView: React.FC<ContextualProjectViewProps> = ({
+export const ProjectSummary: React.FC<ContextualProjectViewProps> = ({
   projectId,
 }: ContextualProjectViewProps) => {
   const { data: projectData, isFetching: isProjectFetching } = useProjects({
@@ -79,7 +79,7 @@ export interface ProjectViewProps extends ProjectDefaults {
 export const ProjectView: React.FC<ProjectViewProps> = (
   projectData: ProjectViewProps,
 ) => {
-  const formatDataForSummary = (): HorizontalTableProps["tableData"] => {
+  const formatDataForSummary = () => {
     const {
       project_id,
       program: {
