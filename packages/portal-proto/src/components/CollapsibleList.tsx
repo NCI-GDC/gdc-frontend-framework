@@ -7,6 +7,7 @@ export const CollapsibleList = ({
   limit = 2,
   collapseText = "less",
   expandText = `${data.length - limit} more`,
+  customUlStyle,
   customLiStyle,
   customToggleTextStyle,
 }: {
@@ -14,12 +15,13 @@ export const CollapsibleList = ({
   limit?: number;
   collapseText?: string;
   expandText?: string;
+  customUlStyle?: string;
   customLiStyle?: string;
   customToggleTextStyle?: string;
 }): JSX.Element => {
   const [expanded, setExpanded] = useState(false);
   return (
-    <ul className="list-none pl-0 mb-0 inline-block">
+    <ul className={`list-none pl-0 mb-0 inline-block ${customUlStyle}`}>
       {data.slice(0, expanded ? data.length : limit).map((d) => (
         <li key={uuidv4()} className={customLiStyle}>
           {d}

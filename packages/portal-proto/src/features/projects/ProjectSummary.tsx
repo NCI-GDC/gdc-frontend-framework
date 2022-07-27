@@ -116,6 +116,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
                 limit={0}
                 expandText={`${disease_type.length} Disease Types`}
                 collapseText="collapse"
+                customUlStyle="pl-3"
                 customLiStyle="list-disc"
                 customToggleTextStyle="not-italic"
               />
@@ -153,12 +154,12 @@ export const ProjectView: React.FC<ProjectViewProps> = (
     const rows = sortedDataCategories.map((data_c) => ({
       data_category: data_c.data_category,
       // TODO: Need to change it to Link after the href has been finalized
-      case_count: `${data_c.case_count} (${calculatePercentage(
+      case_count: `${data_c.case_count.toLocaleString()} (${calculatePercentage(
         data_c.case_count,
         projectData.summary.case_count,
       )}%)`,
       // TODO: Need to change it to Link after the href has been finalized
-      file_count: `${data_c.file_count} (${calculatePercentage(
+      file_count: `${data_c.file_count.toLocaleString()} (${calculatePercentage(
         data_c.file_count,
         projectData.summary.file_count,
       )}%)`,
@@ -183,12 +184,12 @@ export const ProjectView: React.FC<ProjectViewProps> = (
     const rows = sortedExpCategories.map((exp_c) => ({
       experimental_strategy: exp_c.experimental_strategy,
       // TODO: Need to change it to Link after the href has been finalized
-      case_count: `${exp_c.case_count} (${calculatePercentage(
+      case_count: `${exp_c.case_count.toLocaleString()} (${calculatePercentage(
         exp_c.case_count,
         projectData.summary.case_count,
       )}%)`,
       // TODO: Need to change it to Link after the href has been finalized
-      file_count: `${exp_c.file_count} (${calculatePercentage(
+      file_count: `${exp_c.file_count.toLocaleString()} (${calculatePercentage(
         exp_c.file_count,
         projectData.summary.file_count,
       )}%)`,
@@ -211,8 +212,10 @@ export const ProjectView: React.FC<ProjectViewProps> = (
           <div className="self-end flex gap-3">
             <Menu
               control={
-                <Button className="px-1.5 min-h-7 w-32 border-nci-gray-light border rounded">
-                  <MdFileDownload size="1.25em" />
+                <Button
+                  className="px-1.5 min-h-7 w-32 border-nci-gray-light border rounded"
+                  leftIcon={<MdFileDownload size="1.25em" />}
+                >
                   Biospecimen
                 </Button>
               }
@@ -225,8 +228,10 @@ export const ProjectView: React.FC<ProjectViewProps> = (
             </Menu>
             <Menu
               control={
-                <Button className="px-1.5 min-h-7 w-24 border-nci-gray-light border rounded">
-                  <MdFileDownload size="1.25em" />
+                <Button
+                  className="px-1.5 min-h-7 w-24 border-nci-gray-light border rounded"
+                  leftIcon={<MdFileDownload size="1.25em" />}
+                >
                   Clinical
                 </Button>
               }
@@ -247,10 +252,7 @@ Data Transfer Tool is recommended for transferring large volumes of data."
               arrowSize={10}
               withArrow
             >
-              <Button
-                leftIcon={<MdFileDownload size="1.25em" />}
-                className="w-32"
-              >
+              <Button leftIcon={<MdFileDownload size="1.25em" />}>
                 Manifest
               </Button>
             </Tooltip>
@@ -265,6 +267,7 @@ Data Transfer Tool is recommended for transferring large volumes of data."
                     <a
                       href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
                       className="text-nci-blue underline"
+                      target="_blank"
                     >
                       Obtaining Access to Controlled Data.
                     </a>

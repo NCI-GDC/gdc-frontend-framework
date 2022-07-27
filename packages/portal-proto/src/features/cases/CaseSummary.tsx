@@ -242,7 +242,7 @@ export const CaseSummary = ({
     const rows = sortedDataCategories.map((data_c) => ({
       data_category: data_c.data_category,
       // TODO: Need to change it to Link after the href has been finalized
-      file_count: `${data_c.file_count} (${calculatePercentage(
+      file_count: `${data_c.file_count.toLocaleString()} (${calculatePercentage(
         data_c.file_count,
         filesCountTotal,
       )}%)`,
@@ -266,7 +266,7 @@ export const CaseSummary = ({
     const rows = sortedExpCategories.map((exp_c) => ({
       experimental_strategy: exp_c.experimental_strategy,
       // TODO: Need to change it to Link after the href has been finalized
-      file_count: `${exp_c.file_count} (${calculatePercentage(
+      file_count: `${exp_c.file_count.toLocaleString()} (${calculatePercentage(
         exp_c.file_count,
         filesCountTotal,
       )}%)`,
