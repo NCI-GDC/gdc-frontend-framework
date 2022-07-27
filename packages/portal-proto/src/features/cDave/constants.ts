@@ -14,6 +14,7 @@ export const CONTINUOUS_FACET_TYPES = [
   "integer",
   "percent",
   "long",
+  "double",
 ];
 
 export const COLOR_MAP = {
