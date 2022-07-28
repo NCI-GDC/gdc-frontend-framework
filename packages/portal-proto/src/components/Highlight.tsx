@@ -5,6 +5,7 @@ import React from "react";
 export const internalHighlight = (
   query: string,
   foundText: string,
+  background: boolean,
 ): JSX.Element => {
   const index = (foundText || "").toLocaleLowerCase().indexOf(query);
   if (foundText && index !== -1) {
@@ -14,7 +15,9 @@ export const internalHighlight = (
     return (
       <span>
         {seg1}
-        <mark className="font-bold bg-transparent">{foundQuery}</mark>
+        <mark className={background ? "bg-yellow" : "font-bold bg-transparent"}>
+          {foundQuery}
+        </mark>
         {seg2}
       </span>
     );
@@ -25,9 +28,14 @@ export const internalHighlight = (
 interface HighlightProps {
   search: string;
   text: string;
+  background?: boolean;
 }
-const Highlight = ({ search, text }: HighlightProps): JSX.Element => (
-  <span>{internalHighlight(search, text)}</span>
+const Highlight = ({
+  search,
+  text,
+  background = false,
+}: HighlightProps): JSX.Element => (
+  <span>{internalHighlight(search, text, background)}</span>
 );
 
 export default Highlight;

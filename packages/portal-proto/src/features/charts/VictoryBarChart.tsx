@@ -105,17 +105,17 @@ const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
       <VictoryAxis
         dependentAxis
         label={yLabel}
-        axisLabelComponent={<VictoryLabel dy={-60} />}
+        axisLabelComponent={<VictoryLabel dy={-70} />}
         style={{
-          tickLabels: { fontSize: 20 },
+          tickLabels: { fontSize: 25 },
           grid: { stroke: "#F5F5F5", strokeWidth: 1 },
-          axisLabel: { fontSize: 20 },
+          axisLabel: { fontSize: 25 },
         }}
       />
       <VictoryAxis
         style={{
-          tickLabels: { angle: 45, fontSize: 24 },
-          axisLabel: { fontSize: 20 },
+          tickLabels: { angle: 45, fontSize: 25 },
+          axisLabel: { fontSize: 25 },
         }}
         tickLabelComponent={hideXTicks ? <></> : <BarChartLabel data={data} />}
         label={xLabel}
@@ -127,6 +127,7 @@ const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
         labelComponent={
           <VictoryTooltip flyoutComponent={<BarChartTooltip />} />
         }
+        domain={data.length <= 2 ? { x: [0, 5] } : undefined}
         dataComponent={
           <Bar
             tabIndex={0}

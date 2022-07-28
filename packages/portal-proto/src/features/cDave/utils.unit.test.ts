@@ -63,14 +63,16 @@ describe("createBuckets", () => {
     ]);
   });
 
-  it("zero only bucket", () => {
+  it("min/max the same bucket", () => {
     const stats = {
-      count: 1,
-      max: 0,
-      min: 0,
+      count: 2,
+      max: 850,
+      min: 850,
     };
 
-    expect(createBuckets(stats as Statistics)).toEqual([{ from: 0, to: 1 }]);
+    expect(createBuckets(stats as Statistics)).toEqual([
+      { from: 850, to: 851 },
+    ]);
   });
 });
 

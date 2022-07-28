@@ -35,6 +35,10 @@ export const CAPILIZED_TERMS = [
   "igcccg",
 ];
 
+export const SPECIAL_CASE_FIELDS = {
+  icd_10_code: "ICD-10 Code",
+};
+
 export const FACET_SORT = {
   demographic: [
     "gender",
@@ -47,6 +51,8 @@ export const FACET_SORT = {
     "days_to_birth",
     "year_of_birth",
     "year_of_death",
+    "age_at_index",
+    "age_is_obfuscated",
   ],
   diagnoses: [
     "age_at_diagnosis",

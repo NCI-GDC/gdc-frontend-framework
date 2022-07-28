@@ -6,14 +6,16 @@ import {
   Checkbox,
   RadioGroup,
   Radio,
-  Select,
   Loader,
   Button,
+  Menu,
 } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
 import {
   MdBarChart as ChartIcon,
   MdOutlineClose as CloseIcon,
+  MdDownload as DownloadIcon,
+  MdArrowDropDown as DownIcon,
 } from "react-icons/md";
 import { mapKeys } from "lodash";
 import {
@@ -156,7 +158,9 @@ const EnumResult: React.FC<EnumResultProps> = ({
       data={Object.fromEntries((data || []).map((d) => [d.key, d.doc_count]))}
       isFetching={false}
       continuous={false}
-      noData={data.every((bucket) => bucket.key === "_missing")}
+      noData={
+        data !== undefined && data.every((bucket) => bucket.key === "_missing")
+      }
     />
   );
 };
@@ -225,44 +229,83 @@ const Result: React.FC<ResultProps> = ({
         <Loader />
       ) : noData ? (
         <div className="h-full w-full flex">
-          <p className="m-auto">No data for this field</p>
+          <p className="m-auto">No data for this property</p>
         </div>
       ) : (
         <>
-          <RadioGroup
-            size="sm"
-            className="p-2"
-            onChange={(e) => setDisplayPercent(e === "percent")}
-            defaultValue={"counts"}
-          >
-            <Radio value="counts" label="# of Cases" />
-            <Radio value="percent" label="% of Cases" />
-          </RadioGroup>
+          <div className="flex justify-between p-2">
+            <RadioGroup
+              size="sm"
+              className="p-2"
+              onChange={(e) => setDisplayPercent(e === "percent")}
+              defaultValue={"counts"}
+            >
+              <Radio value="counts" label="# of Cases" />
+              <Radio value="percent" label="% of Cases" />
+            </RadioGroup>
+            <Menu
+              control={
+                <ActionIcon
+                  variant="outline"
+                  className="text-nci-blue-darkest border-nci-blue-darkest"
+                >
+                  <DownloadIcon />
+                </ActionIcon>
+              }
+            >
+              <Menu.Item>SVG</Menu.Item>
+              <Menu.Item>PNG</Menu.Item>
+              <Menu.Item>JSON</Menu.Item>
+            </Menu>
+          </div>
           <div className="h-64">
             <VictoryBarChart
               data={barChartData}
               color={color}
-              yLabel={displayPercent ? "% of Cases" : "# Cases"}
+              yLabel={displayPercent ? "% of Cases" : "# of Cases"}
               width={900}
               height={500}
               hideXTicks={hideXTicks}
               xLabel={
                 hideXTicks
-                  ? "Roll over the graph to see X axis labels"
+                  ? "Mouse over the histogram to see x-axis labels"
                   : undefined
               }
             />
           </div>
           <div className="flex justify-between p-2">
-            <Select
-              placeholder="Select Action"
-              data={[{ value: "download", label: "Download TSV" }]}
-            />
-            <Button>TSV</Button>
-            <Select
-              placeholder="Customize Bins"
-              data={[{ value: "download", label: "Edit Bins" }]}
-            />
+            <div>
+              <Menu
+                control={
+                  <Button
+                    rightIcon={<DownIcon size={20} />}
+                    className="bg-white text-nci-gray-darkest border-nci-gray"
+                  >
+                    Select Action
+                  </Button>
+                }
+              >
+                <Menu.Item disabled>Save as a new case set</Menu.Item>
+                <Menu.Item disabled>Add to existing case set</Menu.Item>
+                <Menu.Item disabled>Remove from existing case set</Menu.Item>
+              </Menu>
+              <Button className="bg-white text-nci-gray-darkest border-nci-gray ml-2">
+                TSV
+              </Button>
+            </div>
+            <Menu
+              control={
+                <Button
+                  rightIcon={<DownIcon size={20} />}
+                  className="bg-white text-nci-gray-darkest border-nci-gray"
+                >
+                  Customize Bins
+                </Button>
+              }
+            >
+              <Menu.Item>Edit Bins</Menu.Item>
+              <Menu.Item disabled>Reset to Default</Menu.Item>
+            </Menu>
           </div>
           <CDaveTable fieldName={fieldName} data={barChartData} />
         </>
@@ -291,7 +334,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
           <tr>
             <th>Select</th>
             <th>{fieldName}</th>
-            <th># Cases</th>
+            <th className="text-right"># Cases</th>
           </tr>
         </thead>
         <tbody>
@@ -304,7 +347,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                 <Checkbox />
               </td>
               <td>{d.fullName}</td>
-              <td>
+              <td className="text-right">
                 {d.yCount.toLocaleString()} (
                 {(d.yCount / d.yTotal).toLocaleString(undefined, {
                   style: "percent",

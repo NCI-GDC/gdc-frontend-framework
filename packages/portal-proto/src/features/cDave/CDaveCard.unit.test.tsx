@@ -48,7 +48,7 @@ describe("CDaveCard", () => {
       />,
     );
 
-    expect(getByText("No data for this field")).toBeInTheDocument();
+    expect(getByText("No data for this property")).toBeInTheDocument();
   });
 
   it("enum results with a missing value", () => {
@@ -154,6 +154,6 @@ describe("CDaveCard", () => {
       />,
     );
 
-    expect(getByText("No data for this field")).toBeInTheDocument();
+    expect(getByText("No data for this property")).toBeInTheDocument();
   });
 });

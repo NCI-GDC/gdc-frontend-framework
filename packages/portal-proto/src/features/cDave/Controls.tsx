@@ -145,7 +145,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
         <>
           <div className="flex justify-between">
             <label htmlFor={`switch-${field.full}`}>
-              <Highlight search={searchTerm} text={displayName} />
+              <Highlight search={searchTerm} text={displayName} background />
             </label>
             <Switch
               classNames={{ input: "bg-none" }}
@@ -158,7 +158,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
               id={`switch-${field.full}`}
             />
           </div>
-          <Highlight search={searchTerm} text={field.description} />
+          <Highlight search={searchTerm} text={field.description} background />
         </>
       ) : (
         <div className="flex justify-between cursor-pointer">
@@ -224,7 +224,7 @@ const Controls: React.FC<ControlPanelProps> = ({
     <div
       className={`${
         controlsExpanded ? "w-80 bg-white overflow-scroll -ml-2" : ""
-      } h-[675px] flex flex-col`}
+      } flex flex-col min-h-[560px] max-h-[calc(100vh-50px)]`}
     >
       <Tooltip
         withArrow

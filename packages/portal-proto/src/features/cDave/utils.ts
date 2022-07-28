@@ -1,6 +1,6 @@
 import { omitBy, some, capitalize } from "lodash";
 import { NumericFromTo, Statistics, Buckets, Stats } from "@gff/core";
-import { CAPILIZED_TERMS } from "./constants";
+import { CAPILIZED_TERMS, SPECIAL_CASE_FIELDS } from "./constants";
 
 export const filterUsefulFacets = (
   facets: Record<string, Buckets | Stats>,
@@ -17,7 +17,7 @@ export const filterUsefulFacets = (
 };
 
 export const createBuckets = (stats: Statistics): NumericFromTo[] => {
-  if (stats.count === 1) {
+  if (stats.min === stats.max) {
     return [{ from: stats.min, to: stats.max + 1 }];
   }
   const interval = (stats.max - stats.min) / 5;
@@ -30,6 +30,10 @@ export const createBuckets = (stats: Statistics): NumericFromTo[] => {
 export const toDisplayName = (field: string): string => {
   const parsed = field.split(".");
   const fieldName = parsed.at(-1);
+
+  if (SPECIAL_CASE_FIELDS[fieldName]) {
+    return SPECIAL_CASE_FIELDS[fieldName];
+  }
 
   return fieldName
     .split("_")
