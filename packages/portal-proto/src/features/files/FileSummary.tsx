@@ -32,6 +32,7 @@ export const ContextualFileView: React.FC<ContextualFileViewProps> = (
       "analysis.metadata.read_groups",
       "downstream_analyses",
       "downstream_analyses.output_files",
+      "index_files",
     ],
     size: 1,
   });

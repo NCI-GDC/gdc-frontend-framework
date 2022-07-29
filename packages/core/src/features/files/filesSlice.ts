@@ -111,6 +111,7 @@ const dataFormats = [
   "MEX",
   "HDF5",
   "PDF",
+  "BAI",
 ] as const;
 
 export type DataFormat = typeof dataFormats[number];
@@ -155,6 +156,7 @@ const dataTypes = [
   "Masked Intensities",
   "miRNA Expression Quantification",
   "Pathology Report",
+  "Aligned Reads Index",
 ] as const;
 
 export type DataType = typeof dataTypes[number];
@@ -316,6 +318,19 @@ export interface GdcFile {
       readonly file_id: string;
     }>;
   }>;
+  readonly index_files?: ReadonlyArray<{
+    readonly submitterId: string;
+    readonly createdDatetime: string;
+    readonly updatedDatetime: string;
+    readonly dataCategory: DataCategory;
+    readonly dataFormat: DataFormat;
+    readonly dataType: DataType;
+    readonly fileId: string;
+    readonly fileName: string;
+    readonly fileSize: number;
+    readonly md5sum: string;
+    readonly state: string;
+  }>;
 }
 
 export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
@@ -447,6 +462,19 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
         }),
       };
     }),
+    index_files: hit.index_files?.map((idx) => ({
+      submitterId: idx.submitter_id,
+      createdDatetime: idx.created_datetime,
+      updatedDatetime: idx.updated_datetime,
+      dataCategory: asDataCategory(idx.data_category),
+      dataFormat: asDataFormat(idx.data_format),
+      dataType: asDataType(idx.data_type),
+      fileId: idx.file_id,
+      fileName: idx.file_name,
+      fileSize: idx.file_size,
+      md5sum: idx.md5sum,
+      state: idx.state,
+    })),
   }));
 };
 
