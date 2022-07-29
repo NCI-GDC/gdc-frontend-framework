@@ -38,8 +38,8 @@ type survival = (
   data: any,
   xDomain: any,
   setXDomain: any,
-  setTooltip?: (x?: any) => any,
   height: number,
+  setTooltip?: (x?: any) => any,
 ) => MutableRefObject<any>;
 
 export const useSurvival: survival = (
@@ -47,8 +47,8 @@ export const useSurvival: survival = (
   xDomain,
   setXDomain,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  setTooltip = (x?) => null,
   height,
+  setTooltip = (x?) => null,
 ) => {
   const ref = useRef(undefined);
 
@@ -196,6 +196,7 @@ const buildManyLegend = (
   data: readonly SurvivalElement[],
   names: readonly string[],
   field: string,
+  plotType: SurvivalPlotTypes,
 ) => {
   const hasEnoughDataOnSomeCurves = enoughDataOnSomeCurves(data);
 
@@ -229,7 +230,9 @@ const buildManyLegend = (
                 <span className={`text-gdc-survival-${i}`}>
                   S<sub>{i + 1}</sub>
                   {` (N = ${r.donors.length.toLocaleString()})`}
-                  <span>{` - ${names[i]}`}</span>
+                  {plotType === SurvivalPlotTypes.categorical && (
+                    <span>{` - ${names[i]}`}</span>
+                  )}
                 </span>
               ),
             };
@@ -242,15 +245,17 @@ const buildManyLegend = (
       ];
 };
 
-enum SurvivalPlotTypes {
+export enum SurvivalPlotTypes {
   mutation = "mutation",
   categorical = "categorical",
+  continuous = "continuous",
+  overall = "overall",
 }
 
 export interface SurvivalPlotProps {
   readonly data: Survival;
   readonly names?: ReadonlyArray<string>;
-  readonly plotType: SurvivalPlotTypes;
+  readonly plotType?: SurvivalPlotTypes;
   readonly title?: string;
   readonly hideLegend?: boolean;
   readonly height?: number;
@@ -276,28 +281,40 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   const pValue = data.overallStats.pValue;
   const plotData = data.survivalData;
 
-  const hasEnoughData = enoughDataOnSomeCurves(plotData);
+  const hasEnoughData =
+    plotType == SurvivalPlotTypes.categorical ||
+    plotType === SurvivalPlotTypes.continuous
+      ? enoughDataOnSomeCurves(plotData)
+      : enoughData(plotData);
 
   // hook to call renderSurvivalPlot
   const container = useSurvival(
     hasEnoughData ? plotData : [],
     xDomain,
     setXDomain,
-    setSurvivalPlotLineTooltipContent,
     height,
+    setSurvivalPlotLineTooltipContent,
   );
 
   let legend;
-  if (plotData.length === 1) {
-    legend = buildOnePlotLegend(plotData, "Explorer");
-  } else if (plotData.length === 2) {
-    legend = buildTwoPlotLegend(plotData, names[0], plotType);
-  } else {
-    legend = buildManyLegend(plotData, names, field);
+  switch (plotType) {
+    case SurvivalPlotTypes.overall:
+      legend = buildOnePlotLegend(plotData, "Explorer");
+      break;
+    case SurvivalPlotTypes.mutation:
+      legend = buildTwoPlotLegend(plotData, names[0], plotType);
+      break;
+    case SurvivalPlotTypes.categorical:
+      legend = buildManyLegend(plotData, names, field, plotType);
+      break;
+    case SurvivalPlotTypes.continuous:
+      legend = buildManyLegend(plotData, names, field, plotType);
+      break;
   }
+
   return (
     <div className="flex flex-col">
-      <div className="flex flex-row w-100 items-center justify-center flex-wrap items-center">
+      <div className="flex flex-row w-100 justify-center flex-wrap items-center">
         <div className="flex ml-auto text-montserrat text-lg text-nci-gray-dark ">
           {title}
         </div>
@@ -320,10 +337,22 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
           </Tooltip>
         </div>
       </div>
-      <div className="flex flex-col items-center ">
+      <div
+        className={
+          [SurvivalPlotTypes.overall, SurvivalPlotTypes.mutation].includes(
+            plotType,
+          )
+            ? "flex flex-col items-center "
+            : "flex flex-row flex-wrap justify-center"
+        }
+      >
         {!hideLegend &&
           legend?.map((x, idx) => {
-            return <div key={`${x.key}-${idx}`}>{x.value}</div>;
+            return (
+              <div key={`${x.key}-${idx}`} className="px-2">
+                {x.value}
+              </div>
+            );
           })}
         <div>
           <Tooltip

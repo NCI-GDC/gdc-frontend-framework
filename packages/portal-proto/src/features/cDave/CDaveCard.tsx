@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   ActionIcon,
@@ -27,7 +27,6 @@ import {
   Buckets,
   Bucket,
   Stats,
-  useSurvivalPlot,
   selectCurrentCohortFilters,
   buildCohortGqlOperator,
   GqlOperation,
@@ -39,7 +38,7 @@ import { useRangeFacet } from "../facets/hooks";
 import VictoryBarChart from "../charts/VictoryBarChart";
 import { CONTINUOUS_FACET_TYPES, COLOR_MAP } from "./constants";
 import { createBuckets, toDisplayName } from "./utils";
-import SurvivalPlot from "../charts/SurvivalPlot";
+import SurvivalPlot, { SurvivalPlotTypes } from "../charts/SurvivalPlot";
 
 interface CDaveCardProps {
   readonly field: string;
@@ -206,7 +205,6 @@ const ClinicalSurvivalPlot: React.FC<ClinicalSurvivalPlotProps> = ({
           } as GqlOperation;
         });
 
-  console.log(filters);
   const { data, isLoading, isError } = useGetSurvivalPlotQuery({ filters });
 
   return (
@@ -223,7 +221,11 @@ const ClinicalSurvivalPlot: React.FC<ClinicalSurvivalPlotProps> = ({
             title={""}
             field={field}
             names={selectedSurvivalPlots}
-            plotType={"categorical"}
+            plotType={
+              continuous
+                ? SurvivalPlotTypes.continuous
+                : SurvivalPlotTypes.categorical
+            }
           />
         )}
       </div>
@@ -538,8 +540,10 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                     variant="outline"
                     className={
                       selectedSurvivalPlots.includes(d.key)
-                        ? `bg-gdc-survival-${idx} text-white`
-                        : "bg-nci-gray text-white"
+                        ? `bg-gdc-survival-${selectedSurvivalPlots.indexOf(
+                            d.key,
+                          )} text-white float-right`
+                        : "bg-nci-gray text-white float-right"
                     }
                     disabled={
                       (!selectedSurvivalPlots.includes(d.key) &&

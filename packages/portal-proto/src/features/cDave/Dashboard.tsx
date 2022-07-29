@@ -8,7 +8,7 @@ import {
   useFacetDictionary,
 } from "@gff/core";
 import { Card, Grid } from "@mantine/core";
-import SurvivalPlot from "../charts/SurvivalPlot";
+import SurvivalPlot, { SurvivalPlotTypes } from "../charts/SurvivalPlot";
 import CDaveCard from "./CDaveCard";
 
 interface DashboardProps {
@@ -43,7 +43,11 @@ const Dashboard: React.FC<DashboardProps> = ({
       <Grid.Col span={controlsExpanded ? 6 : 4}>
         <Card className="h-[580px]">
           <h2>Overall Survival</h2>
-          <SurvivalPlot data={survivalData} title="" />
+          <SurvivalPlot
+            data={survivalData}
+            title=""
+            plotType={SurvivalPlotTypes.overall}
+          />
         </Card>
       </Grid.Col>
       {activeFields.map((field) => {
