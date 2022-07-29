@@ -112,6 +112,7 @@ const dataFormats = [
   "HDF5",
   "PDF",
   "BAI",
+  "TBI",
 ] as const;
 
 export type DataFormat = typeof dataFormats[number];
@@ -157,6 +158,7 @@ const dataTypes = [
   "miRNA Expression Quantification",
   "Pathology Report",
   "Aligned Reads Index",
+  "Somatic Mutation Index",
 ] as const;
 
 export type DataType = typeof dataTypes[number];
