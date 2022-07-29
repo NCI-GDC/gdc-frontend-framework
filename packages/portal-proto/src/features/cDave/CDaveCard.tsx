@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   Card,
   ActionIcon,
@@ -12,7 +12,8 @@ import {
 } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
 import {
-  MdBarChart as ChartIcon,
+  MdBarChart as BarChartIcon,
+  MdShowChart as SurvivalChartIcon,
   MdOutlineClose as CloseIcon,
   MdDownload as DownloadIcon,
   MdArrowDropDown as DownIcon,
@@ -25,6 +26,11 @@ import {
   Buckets,
   Bucket,
   Stats,
+  useSurvivalPlot,
+  selectCurrentCohortFilters,
+  buildCohortGqlOperator,
+  GqlOperation,
+  useGetSurvivalPlotQuery,
 } from "@gff/core";
 import tailwindConfig from "tailwind.config";
 import { truncateString } from "src/utils";
@@ -32,6 +38,7 @@ import { useRangeFacet } from "../facets/hooks";
 import VictoryBarChart from "../charts/VictoryBarChart";
 import { CONTINUOUS_FACET_TYPES, COLOR_MAP } from "./constants";
 import { createBuckets, toDisplayName } from "./utils";
+import SurvivalPlot from "../charts/SurvivalPlot";
 
 interface CDaveCardProps {
   readonly field: string;
@@ -52,7 +59,11 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   updateFields,
   initialDashboardRender,
 }: CDaveCardProps) => {
-  const [chartType] = useState<ChartTypes>(ChartTypes.histogram);
+  const [chartType, setChartType] = useState<ChartTypes>(ChartTypes.histogram);
+  const [resultData, setResultData] = useState([]);
+  const [selectedSurvivalPlots, setSelectedSurvivalPlots] = useState<string[]>(
+    [],
+  );
   const { scrollIntoView, targetRef } = useScrollIntoView();
   const facet = useCoreSelector((state) =>
     selectFacetDefinitionByName(state, `cases.${field}`),
@@ -79,10 +90,24 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
               className={
                 chartType === ChartTypes.histogram
                   ? "bg-nci-blue-darkest text-white"
-                  : "border-nci-blue-darkest"
+                  : "border-nci-blue-darkest text-nci-blue-darkest"
               }
+              onClick={() => setChartType(ChartTypes.histogram)}
             >
-              <ChartIcon />
+              <BarChartIcon />
+            </ActionIcon>
+          </Tooltip>
+          <Tooltip label={"Survival Plot"} withArrow>
+            <ActionIcon
+              variant="outline"
+              className={
+                chartType === ChartTypes.survival
+                  ? "bg-nci-blue-darkest text-white"
+                  : "border-nci-blue-darkest text-nci-blue-darkest"
+              }
+              onClick={() => setChartType(ChartTypes.survival)}
+            >
+              <SurvivalChartIcon />
             </ActionIcon>
           </Tooltip>
           <Tooltip label={"Remove Card"} withArrow>
@@ -92,22 +117,128 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
           </Tooltip>
         </div>
       </div>
-      {data && facet ? (
-        CONTINUOUS_FACET_TYPES.includes(facet?.type) ? (
-          <ContinuousResult
-            field={field}
-            fieldName={fieldName}
-            stats={(data as Stats).stats}
-          />
-        ) : (
-          <EnumResult
-            field={field}
-            fieldName={fieldName}
-            data={(data as Buckets).buckets}
-          />
-        )
-      ) : null}
+      {chartType === ChartTypes.histogram ? (
+        data && facet ? (
+          CONTINUOUS_FACET_TYPES.includes(facet?.type) ? (
+            <ContinuousResult
+              field={field}
+              fieldName={fieldName}
+              stats={(data as Stats).stats}
+              setResultData={setResultData}
+            />
+          ) : (
+            <EnumResult
+              field={field}
+              fieldName={fieldName}
+              data={(data as Buckets).buckets}
+              setResultData={setResultData}
+            />
+          )
+        ) : null
+      ) : (
+        <ClinicalSurvivalPlot
+          field={field}
+          selectedSurvivalPlots={selectedSurvivalPlots}
+        />
+      )}
+      <CDaveTable
+        fieldName={fieldName}
+        data={resultData}
+        survival={chartType === ChartTypes.survival}
+        selectedSurvivalPlots={selectedSurvivalPlots}
+        setSelectedSurvivalPlots={setSelectedSurvivalPlots}
+      />
     </Card>
+  );
+};
+
+interface ClinicalSurvivalPlotProps {
+  readonly field: string;
+  readonly selectedSurvivalPlots: string[];
+  readonly names: string[];
+}
+
+const ClinicalSurvivalPlot: React.FC<ClinicalSurvivalPlotProps> = ({
+  field,
+  selectedSurvivalPlots,
+}: ClinicalSurvivalPlotProps) => {
+  const cohortFilters = useCoreSelector((state) =>
+    buildCohortGqlOperator(selectCurrentCohortFilters(state)),
+  );
+
+  const filters =
+    selectedSurvivalPlots.length === 0
+      ? [cohortFilters]
+      : selectedSurvivalPlots.map((value) => {
+          const content = [];
+          if (cohortFilters) {
+            content.push(cohortFilters);
+          }
+
+          content.push({
+            op: "=",
+            content: { field, value },
+          });
+
+          return {
+            op: "and",
+            content,
+          } as GqlOperation;
+        });
+
+  const { data, isLoading } = useGetSurvivalPlotQuery({ filters });
+
+  return (
+    <>
+      <div className="h-64">
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <SurvivalPlot
+            data={data}
+            height={150}
+            title={""}
+            field={field}
+            names={selectedSurvivalPlots}
+            plotType={"categorical"}
+          />
+        )}
+      </div>
+      <div className="flex justify-between p-2">
+        <div>
+          <Menu
+            control={
+              <Button
+                rightIcon={<DownIcon size={20} />}
+                className="bg-white text-nci-gray-darkest border-nci-gray"
+              >
+                Select Action
+              </Button>
+            }
+          >
+            <Menu.Item disabled>Save as a new case set</Menu.Item>
+            <Menu.Item disabled>Add to existing case set</Menu.Item>
+            <Menu.Item disabled>Remove from existing case set</Menu.Item>
+          </Menu>
+          <Button className="bg-white text-nci-gray-darkest border-nci-gray ml-2">
+            TSV
+          </Button>
+        </div>
+        <Menu
+          control={
+            <Button
+              rightIcon={<DownIcon size={20} />}
+              className="bg-white text-nci-gray-darkest border-nci-gray"
+            >
+              Customize Bins
+            </Button>
+          }
+        >
+          <Menu.Item>Edit Bins</Menu.Item>
+          <Menu.Item disabled>Reset to Default</Menu.Item>
+        </Menu>
+      </div>
+    </>
   );
 };
 
@@ -115,11 +246,13 @@ interface ContinuousResultProps {
   readonly field: string;
   readonly fieldName: string;
   readonly stats: Statistics;
+  readonly setResultData: (data) => void;
 }
 const ContinuousResult: React.FC<ContinuousResultProps> = ({
   field,
   stats,
   fieldName,
+  setResultData,
 }: ContinuousResultProps) => {
   const ranges = createBuckets(stats);
   const { data, isFetching } = useRangeFacet(
@@ -137,6 +270,7 @@ const ContinuousResult: React.FC<ContinuousResultProps> = ({
       isFetching={isFetching}
       continuous={true}
       noData={stats.count === 0}
+      setResultData={setResultData}
     />
   );
 };
@@ -145,11 +279,13 @@ interface EnumResultProps {
   readonly field: string;
   readonly fieldName: string;
   readonly data: readonly Bucket[];
+  readonly setResultData: (data) => void;
 }
 const EnumResult: React.FC<EnumResultProps> = ({
   field,
   fieldName,
   data,
+  setResultData,
 }: EnumResultProps) => {
   return (
     <Result
@@ -161,6 +297,7 @@ const EnumResult: React.FC<EnumResultProps> = ({
       noData={
         data !== undefined && data.every((bucket) => bucket.key === "_missing")
       }
+      setResultData={setResultData}
     />
   );
 };
@@ -189,6 +326,7 @@ const formatBarChartData = (
   const mappedData = Object.entries(dataToMap || {}).map(([key, value]) => ({
     x: truncateString(continuous ? parseContinuousBucket(key) : key, 8),
     fullName: continuous ? parseContinuousBucket(key) : key,
+    key,
     y: displayPercent ? (value / yTotal) * 100 : value,
     yCount: value,
     yTotal,
@@ -206,6 +344,7 @@ interface ResultProps {
   readonly field: string;
   readonly fieldName: string;
   readonly continuous: boolean;
+  readonly setResultData: (data) => void;
 }
 
 const Result: React.FC<ResultProps> = ({
@@ -215,9 +354,13 @@ const Result: React.FC<ResultProps> = ({
   fieldName,
   continuous,
   noData,
+  setResultData,
 }: ResultProps) => {
   const [displayPercent, setDisplayPercent] = useState(false);
   const barChartData = formatBarChartData(data, displayPercent, continuous);
+  useEffect(() => {
+    setResultData(barChartData);
+  }, []);
   const color =
     tailwindConfig.theme.extend.colors[COLOR_MAP[field.split(".").at(-2)]]
       ?.DEFAULT;
@@ -307,7 +450,6 @@ const Result: React.FC<ResultProps> = ({
               <Menu.Item disabled>Reset to Default</Menu.Item>
             </Menu>
           </div>
-          <CDaveTable fieldName={fieldName} data={barChartData} />
         </>
       )}
     </>
@@ -320,21 +462,33 @@ interface CDaveTableProps {
     fullName: string;
     yCount: number;
     yTotal: number;
+    key: string;
   }>;
+  readonly survival: boolean;
+  readonly selectedSurvivalPlots: string[];
+  readonly setSelectedSurvivalPlots: (field: string[]) => void;
 }
 
 const CDaveTable: React.FC<CDaveTableProps> = ({
   fieldName,
   data,
+  survival,
+  selectedSurvivalPlots,
+  setSelectedSurvivalPlots,
 }: CDaveTableProps) => {
+  useEffect(() => {
+    setSelectedSurvivalPlots(data.slice(0, 2).map((d) => d.key));
+  }, [data, setSelectedSurvivalPlots]);
+
   return (
-    <div className="h-48 block overflow-auto w-full">
+    <div className="h-48 block overflow-auto w-full relative">
       <table className="bg-white w-full text-left text-nci-gray-darker mb-2">
         <thead className="bg-nci-gray-lightest font-bold">
           <tr>
             <th>Select</th>
             <th>{fieldName}</th>
             <th className="text-right"># Cases</th>
+            {survival && <th>Survival</th>}
           </tr>
         </thead>
         <tbody>
@@ -355,6 +509,33 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                 })}
                 )
               </td>
+              {survival && (
+                <ActionIcon
+                  variant="outline"
+                  className={
+                    selectedSurvivalPlots.includes(d.key)
+                      ? `bg-gdc-survival-${idx} text-white`
+                      : "bg-nci-gray text-white"
+                  }
+                  disabled={
+                    (!selectedSurvivalPlots.includes(d.key) &&
+                      selectedSurvivalPlots.length === 5) ||
+                    d.yCount <= 10
+                  }
+                  onClick={() =>
+                    selectedSurvivalPlots.includes(d.key)
+                      ? setSelectedSurvivalPlots(
+                          selectedSurvivalPlots.filter((s) => s !== d.key),
+                        )
+                      : setSelectedSurvivalPlots([
+                          ...selectedSurvivalPlots,
+                          d.key,
+                        ])
+                  }
+                >
+                  <SurvivalChartIcon />
+                </ActionIcon>
+              )}
             </tr>
           ))}
         </tbody>

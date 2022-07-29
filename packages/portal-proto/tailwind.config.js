@@ -17,6 +17,28 @@ module.exports = {
     "./src/components/**/*.{js,ts,jsx,tsx}",
     "./src/features/**/*.{js,ts,jsx,tsx}",
   ],
+  safelist: [
+    "bg-gdc-survival-0",
+    "bg-gdc-survival-1",
+    "bg-gdc-survival-2",
+    "bg-gdc-survival-3",
+    "bg-gdc-survival-4",
+    "bg-gdc-survival-5",
+    "bg-gdc-survival-6",
+    "bg-gdc-survival-7",
+    "bg-gdc-survival-8",
+    "bg-gdc-survival-9",
+    "text-gdc-survival-0",
+    "text-gdc-survival-1",
+    "text-gdc-survival-2",
+    "text-gdc-survival-3",
+    "text-gdc-survival-4",
+    "text-gdc-survival-5",
+    "text-gdc-survival-6",
+    "text-gdc-survival-7",
+    "text-gdc-survival-8",
+    "text-gdc-survival-9",
+  ],
   theme: {
     extend: {
       colors: {

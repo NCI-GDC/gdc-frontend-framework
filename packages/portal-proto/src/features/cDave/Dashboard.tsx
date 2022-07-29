@@ -42,7 +42,8 @@ const Dashboard: React.FC<DashboardProps> = ({
     <Grid className="w-full p-4" grow>
       <Grid.Col span={controlsExpanded ? 6 : 4}>
         <Card className="h-[580px]">
-          <SurvivalPlot data={survivalData} />
+          <h2>Overall Survival</h2>
+          <SurvivalPlot data={survivalData} title="" />
         </Card>
       </Grid.Col>
       {activeFields.map((field) => {

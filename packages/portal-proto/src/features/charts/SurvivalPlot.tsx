@@ -39,6 +39,7 @@ type survival = (
   xDomain: any,
   setXDomain: any,
   setTooltip?: (x?: any) => any,
+  height: number,
 ) => MutableRefObject<any>;
 
 export const useSurvival: survival = (
@@ -47,13 +48,14 @@ export const useSurvival: survival = (
   setXDomain,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setTooltip = (x?) => null,
+  height,
 ) => {
   const ref = useRef(undefined);
 
   useEffect(() => {
     ref.current
       ? renderPlot({
-          height: 380, // TODO: Figure out how to fix size of Survival Plot without setting this.
+          height,
           container: ref.current,
           palette: textColors,
           margins: SVG_MARGINS,
@@ -190,18 +192,79 @@ const buildTwoPlotLegend = (data, name: string, plotType: string) => {
       ];
 };
 
+const buildManyLegend = (
+  data: readonly SurvivalElement[],
+  names: readonly string[],
+  field: string,
+) => {
+  const hasEnoughDataOnSomeCurves = enoughDataOnSomeCurves(data);
+
+  return hasEnoughDataOnSomeCurves
+    ? data.map((r, i) => {
+        return data.length === 0
+          ? {
+              key: `${names[i]}-cannot-compare`,
+              style: {
+                marginTop: 5,
+                width: "100%",
+              },
+              value: (
+                <div>
+                  <span>Not enough data to compare</span>
+                </div>
+              ),
+            }
+          : r.donors.length < MINIMUM_CASES
+          ? {
+              key: `${names[i]}-not-enough-data`,
+              value: (
+                <span
+                  className={`text-gdc-survival-${i}`}
+                >{`Not enough survival data for ${names[i]}`}</span>
+              ),
+            }
+          : {
+              key: names[i],
+              value: (
+                <span className={`text-gdc-survival-${i}`}>
+                  S<sub>{i + 1}</sub>
+                  {` (N = ${r.donors.length.toLocaleString()})`}
+                  <span>{` - ${names[i]}`}</span>
+                </span>
+              ),
+            };
+      })
+    : [
+        {
+          key: `${field}-not-enough-data`,
+          value: <span>Not enough survival data for this facet</span>,
+        },
+      ];
+};
+
+enum SurvivalPlotTypes {
+  mutation = "mutation",
+  categorical = "categorical",
+}
+
 export interface SurvivalPlotProps {
   readonly data: Survival;
   readonly names?: ReadonlyArray<string>;
+  readonly plotType: SurvivalPlotTypes;
   readonly title?: string;
   readonly hideLegend?: boolean;
+  readonly height?: number;
+  readonly field?: string;
 }
 
 const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   data,
   names = [],
+  plotType = SurvivalPlotTypes.mutation,
   title = "Overall Survival Plot",
   hideLegend = false,
+  height = 380,
+  field,
 }: SurvivalPlotProps) => {
   const [downloadMenuOpen, setDownloadMenuOpen] = useState(false);
   // handle the current range of the xAxis set to undefined to reset
@@ -213,23 +276,24 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   const pValue = data.overallStats.pValue;
   const plotData = data.survivalData;
 
-  const hasEnoughData = enoughData(plotData);
+  const hasEnoughData = enoughDataOnSomeCurves(plotData);
 
   // hook to call renderSurvivalPlot
   const container = useSurvival(
-    hasEnoughData ? plotData : [], // TODO: when implementing CDave this likely will need more logic
+    hasEnoughData ? plotData : [],
     xDomain,
     setXDomain,
     setSurvivalPlotLineTooltipContent,
+    height,
   );
 
   let legend;
   if (plotData.length === 1) {
     legend = buildOnePlotLegend(plotData, "Explorer");
   } else if (plotData.length === 2) {
-    legend = buildTwoPlotLegend(plotData, names[0], "mutation");
+    legend = buildTwoPlotLegend(plotData, names[0], plotType);
   } else {
-    legend = undefined;
+    legend = buildManyLegend(plotData, names, field);
   }
   return (
     <div className="flex flex-col">

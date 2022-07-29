@@ -26,6 +26,10 @@ import {
   cohortApiReducer,
   cohortApiSliceReducerPath,
 } from "./features/api/cohortApiSlice";
+import {
+  survivalApiSliceReducerPath,
+  survivalApiReducer,
+} from "./features/api/survivalApiSlice";
 import { biospecimenReducer } from "./features/biospecimen/biospecimenSlice";
 import { clinicalDataAnalysisReducer } from "./features/clinicalDataAnalysis";
 import { caseSummarySliceReducer } from "./features/cases/caseSummarySlice";
@@ -58,6 +62,7 @@ export const reducers = combineReducers({
   ssms: ssmsReducer,
   genesSummary: genesSummaryReducer,
   [cohortApiSliceReducerPath]: cohortApiReducer,
+  [survivalApiSliceReducerPath]: survivalApiReducer,
 });
 
 export type CoreState = ReturnType<typeof reducers>;
