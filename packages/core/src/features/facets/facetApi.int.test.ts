@@ -5,7 +5,7 @@ import {
   isStatsAggregation,
   Statistics,
 } from "../gdcapi/gdcapi";
-import { fetchFacetByName } from "./facetApi";
+import { fetchFacetByNameRestApi } from "./facetApi";
 
 describe("facetApi", () => {
   describe("fetchFacetByName", () => {
@@ -13,7 +13,7 @@ describe("facetApi", () => {
       let facet: GdcApiResponse<never>;
 
       beforeAll(async () => {
-        facet = await fetchFacetByName("primary_site");
+        facet = await fetchFacetByNameRestApi("primary_site");
       });
 
       test("should contain no hits", () => {
@@ -66,7 +66,7 @@ describe("facetApi", () => {
       let facet: GdcApiResponse<never>;
 
       beforeAll(async () => {
-        facet = await fetchFacetByName("demographic.days_to_death");
+        facet = await fetchFacetByNameRestApi("demographic.days_to_death");
       });
 
       test("should contain no hits", () => {

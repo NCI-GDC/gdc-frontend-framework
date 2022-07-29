@@ -3,6 +3,7 @@ import {
   useAnnotations,
   AnnotationDefaults,
   ProjectDefaults,
+  useFilesFacetsByNameFilter,
 } from "@gff/core";
 import SummaryCount from "../../components/Summary/SummaryCount";
 import { FaUser, FaFile, FaEdit, FaTable } from "react-icons/fa";
@@ -50,14 +51,41 @@ export const ProjectSummary: React.FC<ContextualProjectViewProps> = ({
         },
       },
     });
+
+  const { data: filesFacetData, isFetching: isFileFetching } =
+    useFilesFacetsByNameFilter({
+      facetName: "access",
+      filters: {
+        op: "and",
+        content: [
+          {
+            op: "=",
+            content: {
+              field: "files.cases.project.project_id",
+              value: projectId,
+            },
+          },
+        ],
+      },
+      filterType: "files",
+    });
+
+  const hasControlledAccess =
+    filesFacetData?.access &&
+    Object.keys(filesFacetData?.access?.buckets).some(
+      (bucket) =>
+        bucket === "controlled" && filesFacetData?.access?.buckets[bucket] > 0,
+    );
+
   const projectWithAnnotation = {
     ...projectData,
     annotation: annotationCountData,
+    hasControlledAccess,
   };
 
   return (
     <>
-      {isProjectFetching || isAnnotationFetching ? (
+      {isProjectFetching || isAnnotationFetching || isFileFetching ? (
         <LoadingOverlay visible data-testid="loading" />
       ) : projectData && Object.keys(projectData).length > 0 ? (
         <ProjectView {...projectWithAnnotation} />
@@ -73,6 +101,7 @@ export interface ProjectViewProps extends ProjectDefaults {
     list: AnnotationDefaults[];
     count: number;
   };
+  hasControlledAccess: boolean;
 }
 
 export const ProjectView: React.FC<ProjectViewProps> = (
@@ -261,18 +290,20 @@ Data Transfer Tool is recommended for transferring large volumes of data."
             <div className="w-10/12">
               <SummaryCard
                 message={
-                  <>
-                    The project has controlled access data which requires dbGaP
-                    Access. See instructions for{" "}
-                    <a
-                      href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
-                      className="text-nci-blue underline"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Obtaining Access to Controlled Data.
-                    </a>
-                  </>
+                  projectData.hasControlledAccess ? (
+                    <>
+                      The project has controlled access data which requires
+                      dbGaP Access. See instructions for{" "}
+                      <a
+                        href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
+                        className="text-nci-blue underline"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Obtaining Access to Controlled Data.
+                      </a>
+                    </>
+                  ) : null
                 }
                 Icon={FaTable}
                 tableData={formatDataForSummary()}
