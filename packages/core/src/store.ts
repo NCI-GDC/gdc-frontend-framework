@@ -13,6 +13,7 @@ import { reducers } from "./reducers";
 import { cohortApiSliceMiddleware } from "./features/api/cohortApiSlice";
 
 import storage from "./storage-persist";
+import { survivalApiSliceMiddleware } from "./features/api/survivalApiSlice";
 
 const persistConfig = {
   key: "root",
@@ -31,7 +32,7 @@ export const coreStore = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(cohortApiSliceMiddleware),
+    }).concat(cohortApiSliceMiddleware, survivalApiSliceMiddleware),
 });
 
 setupListeners(coreStore.dispatch);

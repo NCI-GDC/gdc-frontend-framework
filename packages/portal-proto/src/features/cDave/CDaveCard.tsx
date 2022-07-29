@@ -9,6 +9,7 @@ import {
   Loader,
   Button,
   Menu,
+  Alert,
 } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
 import {
@@ -139,6 +140,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
         <ClinicalSurvivalPlot
           field={field}
           selectedSurvivalPlots={selectedSurvivalPlots}
+          continuous={CONTINUOUS_FACET_TYPES.includes(facet?.type)}
         />
       )}
       <CDaveTable
@@ -155,12 +157,13 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
 interface ClinicalSurvivalPlotProps {
   readonly field: string;
   readonly selectedSurvivalPlots: string[];
-  readonly names: string[];
+  readonly continuous: boolean;
 }
 
 const ClinicalSurvivalPlot: React.FC<ClinicalSurvivalPlotProps> = ({
   field,
   selectedSurvivalPlots,
+  continuous,
 }: ClinicalSurvivalPlotProps) => {
   const cohortFilters = useCoreSelector((state) =>
     buildCohortGqlOperator(selectCurrentCohortFilters(state)),
@@ -175,10 +178,27 @@ const ClinicalSurvivalPlot: React.FC<ClinicalSurvivalPlotProps> = ({
             content.push(cohortFilters);
           }
 
-          content.push({
-            op: "=",
-            content: { field, value },
-          });
+          if (continuous) {
+            const [fromValue, toValue] = value
+              .split("-")
+              .map((val, idx, src) => (src[idx - 1] === "" ? `-${val}` : val))
+              .filter((val) => val !== "");
+
+            content.push({
+              op: ">=",
+              content: { field, value: [fromValue] },
+            });
+
+            content.push({
+              op: "<",
+              content: { field, value: [toValue] },
+            });
+          } else {
+            content.push({
+              op: "=",
+              content: { field, value },
+            });
+          }
 
           return {
             op: "and",
@@ -186,13 +206,16 @@ const ClinicalSurvivalPlot: React.FC<ClinicalSurvivalPlotProps> = ({
           } as GqlOperation;
         });
 
-  const { data, isLoading } = useGetSurvivalPlotQuery({ filters });
+  console.log(filters);
+  const { data, isLoading, isError } = useGetSurvivalPlotQuery({ filters });
 
   return (
     <>
       <div className="h-64">
         {isLoading ? (
           <Loader />
+        ) : isError ? (
+          <Alert color={"red"}>Something's gone wrong</Alert>
         ) : (
           <SurvivalPlot
             data={data}
@@ -510,31 +533,33 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                 )
               </td>
               {survival && (
-                <ActionIcon
-                  variant="outline"
-                  className={
-                    selectedSurvivalPlots.includes(d.key)
-                      ? `bg-gdc-survival-${idx} text-white`
-                      : "bg-nci-gray text-white"
-                  }
-                  disabled={
-                    (!selectedSurvivalPlots.includes(d.key) &&
-                      selectedSurvivalPlots.length === 5) ||
-                    d.yCount <= 10
-                  }
-                  onClick={() =>
-                    selectedSurvivalPlots.includes(d.key)
-                      ? setSelectedSurvivalPlots(
-                          selectedSurvivalPlots.filter((s) => s !== d.key),
-                        )
-                      : setSelectedSurvivalPlots([
-                          ...selectedSurvivalPlots,
-                          d.key,
-                        ])
-                  }
-                >
-                  <SurvivalChartIcon />
-                </ActionIcon>
+                <td>
+                  <ActionIcon
+                    variant="outline"
+                    className={
+                      selectedSurvivalPlots.includes(d.key)
+                        ? `bg-gdc-survival-${idx} text-white`
+                        : "bg-nci-gray text-white"
+                    }
+                    disabled={
+                      (!selectedSurvivalPlots.includes(d.key) &&
+                        selectedSurvivalPlots.length === 5) ||
+                      d.yCount <= 10
+                    }
+                    onClick={() =>
+                      selectedSurvivalPlots.includes(d.key)
+                        ? setSelectedSurvivalPlots(
+                            selectedSurvivalPlots.filter((s) => s !== d.key),
+                          )
+                        : setSelectedSurvivalPlots([
+                            ...selectedSurvivalPlots,
+                            d.key,
+                          ])
+                    }
+                  >
+                    <SurvivalChartIcon />
+                  </ActionIcon>
+                </td>
               )}
             </tr>
           ))}

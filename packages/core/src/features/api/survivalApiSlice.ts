@@ -1,4 +1,4 @@
-import type { Reducer } from "@reduxjs/toolkit";
+import type { Middleware, Reducer } from "@reduxjs/toolkit";
 import { DAYS_IN_YEAR } from "../../constants";
 import { coreCreateApi } from "../../coreCreateApi";
 
@@ -63,5 +63,7 @@ export const survivalApiSlice = coreCreateApi({
 
 export const { useGetSurvivalPlotQuery } = survivalApiSlice;
 
+export const survivalApiSliceMiddleware =
+  survivalApiSlice.middleware as Middleware;
 export const survivalApiSliceReducerPath: string = survivalApiSlice.reducerPath;
 export const survivalApiReducer: Reducer = survivalApiSlice.reducer as Reducer;
