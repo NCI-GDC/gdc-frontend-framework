@@ -23,6 +23,12 @@ const defaultState = {
     docType: "cases",
     index: "repository",
   },
+  custom: {
+    label: "Custom",
+    facets: [],
+    docType: "cases",
+    index: "repository",
+  },
 };
 
 const alteredConfig = {
@@ -36,6 +42,22 @@ const alteredConfig = {
       "diagnoses.vital_status",
       "case.test_facet",
     ],
+    docType: "cases",
+    index: "repository",
+  },
+  custom: {
+    label: "Custom",
+    facets: [],
+    docType: "cases",
+    index: "repository",
+  },
+};
+
+const alteredCustomConfig = {
+  general: { ...defaultState.general },
+  custom: {
+    label: "Custom",
+    facets: ["case.test_facet", "case.test_facet_other"],
     docType: "cases",
     index: "repository",
   },
@@ -71,7 +93,7 @@ describe("cohortConfig reducer", () => {
     expect(state).toEqual(defaultState);
   });
 
-  test("addFilterToCohortBuilder action should add a facetName to the config category", () => {
+  test("addFilterToCohortBuilder action should add a facetName to the general category", () => {
     const state = cohortBuilderConfigReducer(
       defaultState,
       addFilterToCohortBuilder({
@@ -79,7 +101,27 @@ describe("cohortConfig reducer", () => {
         facetName: "case.test_facet",
       }),
     );
+
     expect(state).toEqual(alteredConfig);
+  });
+
+  test("addFilterToCohortBuilder action should add a facetName to the custom category", () => {
+    const altered_state = cohortBuilderConfigReducer(
+      defaultState,
+      addFilterToCohortBuilder({
+        category: "custom",
+        facetName: "case.test_facet",
+      }),
+    );
+
+    const state = cohortBuilderConfigReducer(
+      altered_state,
+      addFilterToCohortBuilder({
+        category: "custom",
+        facetName: "case.test_facet_other",
+      }),
+    );
+    expect(state).toEqual(alteredCustomConfig);
   });
 
   test("addFilter that exists should be ignored", () => {

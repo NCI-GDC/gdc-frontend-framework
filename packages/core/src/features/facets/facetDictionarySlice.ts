@@ -107,7 +107,11 @@ export const selectFacetDefinitionsByName = (
   state: CoreState,
   fields: ReadonlyArray<string>,
 ): ReadonlyArray<FacetDefinition> => {
-  return fields.map((field) => state.facetsGQL.dictionary.entries?.[field]);
+  return fields.flatMap((field) => {
+    if (field in state.facetsGQL.dictionary.entries)
+      return [state.facetsGQL.dictionary.entries[field]];
+    else return [];
+  });
 };
 
 export const useFacetDictionary = createUseCoreDataHook(

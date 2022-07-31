@@ -198,6 +198,8 @@ const FacetSelection = ({
   const [useUsefulFacets, setUseUsefulFacets] = useState(false); // list of Facet which have values
   const prevAssignedFacets = usePrevious(assignedFacets);
 
+  console.log("assigned facets:", assignedFacets);
+
   const { data: usefulFacets, status: usefulFacetsStatus } = useCoreSelector(
     (state) => selectUsefulFacets(state, facetType),
   );
