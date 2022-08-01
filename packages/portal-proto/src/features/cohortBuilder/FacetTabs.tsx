@@ -22,7 +22,6 @@ import NumericRangeFacet from "../facets/NumericRangeFacet";
 import {
   Button,
   Center,
-  UnstyledButton,
   LoadingOverlay,
   Modal,
   Stack,
@@ -203,7 +202,7 @@ const CustomFacetGroup = (): JSX.Element => {
   );
 };
 
-export const FacetTabs = () => {
+export const FacetTabs = (): JSX.Element => {
   const tabsConfig = useCoreSelector((state) =>
     selectCohortBuilderConfig(state),
   );
