@@ -1,3 +1,4 @@
+import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { useFiles, useFileHistory } from "@gff/core";
 import { FileView } from "./FileView";
@@ -48,13 +49,7 @@ export const ContextualFileView: React.FC<ContextualFileViewProps> = (
           {data?.[0] ? (
             <FileView file={data?.[0]} fileHistory={hystory?.data?.[0]} />
           ) : (
-            <div className="p-4 text-nci-gray">
-              <div className="flex">
-                <div className="flex-auto bg-white mr-4">
-                  <h2 className="p-2 text-2xl mx-4">File Not Found</h2>
-                </div>
-              </div>
-            </div>
+            <SummaryErrorHeader label="File Not Found" />
           )}
         </>
       ) : null}

@@ -54,3 +54,4 @@ export * from "./features/clinicalDataAnalysis";
 export * from "./features/cases/caseSummarySlice";
 export * from "./features/genomic/ssmsSummary/ssmsSummarySlice";
 export * from "./features/genomic/geneSummary/geneSummarySlice";
+export * from "./features/facets/facetsByNameTypeAndFilter";

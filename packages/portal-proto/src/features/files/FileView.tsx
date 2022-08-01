@@ -10,8 +10,8 @@ import fileSize from "filesize";
 import tw from "tailwind-styled-components";
 import { AddToCartButton } from "../cart/updateCart";
 import { formatDataForHorizontalTable, parseSlideDetailsInfo } from "./utils";
-
 import Link from "next/link";
+import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 
 const ImageViewer = dynamic(() => import("../../components/ImageViewer"), {
   ssr: false,
@@ -520,13 +520,7 @@ export const FileModal: React.FC<FileModalProps> = ({
       {file?.fileId ? (
         <FileView file={file} fileHistory={fileHistory} />
       ) : (
-        <div className="p-4 text-nci-gray">
-          <div className="flex">
-            <div className="flex-auto bg-white mr-4">
-              <h2 className="p-2 text-2xl mx-4">File Not Found</h2>
-            </div>
-          </div>
-        </div>
+        <SummaryErrorHeader label="File Not Found" />
       )}
     </ReactModal>
   );
