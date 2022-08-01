@@ -7,7 +7,7 @@ export enum FacetBucketType {
 }
 
 export interface FacetBuckets {
-  readonly status?: DataStatus;
+  readonly status: DataStatus;
   readonly error?: string;
   readonly buckets?: Record<string, number>;
 }

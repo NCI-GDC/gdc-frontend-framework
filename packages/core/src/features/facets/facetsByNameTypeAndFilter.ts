@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
-import { FacetBuckets } from "./types";
 import {
   fetchGdcCases,
   fetchGdcFiles,
@@ -51,8 +50,8 @@ export const fetchFacetByNameTypeAndFilter = createAsyncThunk<
 export interface FacetsByNameTypeFilterState {
   readonly status: Record<FacetDefinitionType, DataStatus>;
   entries: {
-    readonly cases: Record<string, FacetBuckets>;
-    readonly files: Record<string, FacetBuckets>;
+    readonly cases: Record<string, Record<string, number>>;
+    readonly files: Record<string, Record<string, number>>;
   };
 }
 
@@ -84,15 +83,11 @@ const slice = createSlice({
             Object.entries(response.data.aggregations).forEach(
               ([field, aggregation]) => {
                 if (isBucketsAggregation(aggregation)) {
-                  state.entries[action.meta.arg.filterType][field] = {
-                    buckets: aggregation.buckets.reduce(
-                      (facetBuckets, apiBucket) => {
-                        facetBuckets[apiBucket.key] = apiBucket.doc_count;
-                        return facetBuckets;
-                      },
-                      {} as Record<string, number>,
-                    ),
-                  };
+                  state.entries[action.meta.arg.filterType][field] =
+                    aggregation.buckets.reduce((facetBuckets, apiBucket) => {
+                      facetBuckets[apiBucket.key] = apiBucket.doc_count;
+                      return facetBuckets;
+                    }, {} as Record<string, number>);
                 }
               },
             );
@@ -111,7 +106,7 @@ export const facetsByNameTypeAndFilterReducer = slice.reducer;
 
 export const selectCasesFacetsByNameFilter = (
   state: CoreState,
-): CoreDataSelectorResponse<Record<string, FacetBuckets>> => {
+): CoreDataSelectorResponse<Record<string, Record<string, number>>> => {
   return {
     data: state.facetsByNameTypeFilter.entries["cases"],
     status: state.facetsByNameTypeFilter.status["cases"],
@@ -120,7 +115,7 @@ export const selectCasesFacetsByNameFilter = (
 
 export const selectFilesFacetsByNameFilter = (
   state: CoreState,
-): CoreDataSelectorResponse<Record<string, FacetBuckets>> => {
+): CoreDataSelectorResponse<Record<string, Record<string, number>>> => {
   return {
     data: state.facetsByNameTypeFilter.entries["files"],
     status: state.facetsByNameTypeFilter.status["files"],

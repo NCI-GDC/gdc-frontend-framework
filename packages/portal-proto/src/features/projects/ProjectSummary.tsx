@@ -71,10 +71,9 @@ export const ProjectSummary: React.FC<ContextualProjectViewProps> = ({
     });
 
   const hasControlledAccess =
-    filesFacetData?.access &&
-    Object.keys(filesFacetData?.access?.buckets).some(
-      (bucket) =>
-        bucket === "controlled" && filesFacetData?.access?.buckets[bucket] > 0,
+    Object.keys(filesFacetData).length > 0 &&
+    Object.keys(filesFacetData?.access).some(
+      (bucket) => bucket === "controlled" && filesFacetData?.access[bucket] > 0,
     );
 
   const projectWithAnnotation = {
