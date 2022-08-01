@@ -1,4 +1,5 @@
-import { render, fireEvent } from "@testing-library/react";
+import { render } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { FacetTabs } from "./FacetTabs";
 import * as core from "@gff/core";
 import * as func from "@gff/core";
@@ -14,7 +15,7 @@ describe("<FacetTabs />", () => {
     jest.spyOn(core, "useCoreSelector").mockReturnValue({
       general: {
         label: "General",
-        facets: ["cases.project.program.name", "cases.project.project_id"],
+        facets: [],
         docType: "cases",
         index: "repository",
       },
@@ -26,6 +27,10 @@ describe("<FacetTabs />", () => {
       },
     });
 
-    const { getByLabelText, queryByRole } = render(<FacetTabs />);
+    const { queryByText } = render(<FacetTabs />);
+    const customTab = queryByText("Custom");
+    expect(customTab).toBeInTheDocument();
+    userEvent.click(customTab);
+    expect(queryByText("Add Custom Facet")).toBeDefined();
   });
 });

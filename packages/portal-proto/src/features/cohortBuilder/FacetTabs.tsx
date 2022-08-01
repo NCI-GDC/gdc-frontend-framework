@@ -149,7 +149,7 @@ const CustomFacetGroup = (): JSX.Element => {
     );
   };
 
-  // handle the empty case
+  // handle the case where there are no custom filters
   return (
     <div className="flex flex-col w-screen/1.5 h-full bg-white overflow-y-scroll overflow-x-clip">
       <LoadingOverlay visible={!isDictionaryReady} />
@@ -164,11 +164,15 @@ const CustomFacetGroup = (): JSX.Element => {
       {customFacetDefinitions.length == 0 ? (
         <Center>
           <CustomFacetWhenEmptyGroup align="center" justify="center">
-            <AddFacetIcon></AddFacetIcon>
-            <Text>No Custom Facets Added</Text>
+            <AddFacetIcon className="text-nci-blue" size="3em"></AddFacetIcon>
+            <Text size="md" weight={700} className="text-nci-blue-darker">
+              No custom filters added
+            </Text>
             <Button
+              variant="outline"
               onClick={() => setOpened(true)}
-              aria-label="Add a custom facet"
+              aria-label="Add Custom Filter"
+              className="bg-white text-nci-blue-darker"
             >
               Add Custom Facet
             </Button>
@@ -176,13 +180,17 @@ const CustomFacetGroup = (): JSX.Element => {
         </Center>
       ) : (
         <FacetGroup>
-          <UnstyledButton
-            className="h-48 bg-nci-gray-lightest flex flex-row justify-center align-middle items-center"
+          <Button
+            variant="outline"
+            className="h-48 bg-white flex flex-row justify-center align-middle items-center border-nci-blue-darker b-2 border-dotted"
             onClick={() => setOpened(true)}
           >
-            <AddAdditionalIcon />
-            <div> Add A Custom Filter</div>
-          </UnstyledButton>
+            <AddAdditionalIcon className="text-nci-blue" size="2em" />
+            <Text size="md" weight={700} className="text-nci-blue-darker">
+              {" "}
+              Add a Custom Filter
+            </Text>
+          </Button>
           {createFacets(
             customFacetDefinitions,
             "cases", // Cohort custom filter restricted to "cases"
