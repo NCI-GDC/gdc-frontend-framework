@@ -720,56 +720,58 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
     };
 
     return (
-      <div className="flex flex-col w-100 space-y-2 mt-1 ">
-        <div className="flex flex-row justify-between items-center">
-          <LoadingOverlay visible={!isSuccess} />
-          <input
-            type="radio"
-            className={RadioStyle}
-            id={`${field}_custom`}
-            name={`${field}_range_selection`}
-            checked={selectedRange === "custom"}
-            onChange={() => {
-              setSelectedRange("custom");
-              setIsCustom(true);
-            }}
-          />
-          <FromTo
-            minimum={minimum}
-            maximum={maximum}
-            values={filterValues}
-            field={`${field}`}
-            units={units}
-            changedCallback={resetToCustom}
-          />
-        </div>
-        <div className="flex flex-col border-t-2">
-          {totalBuckets == 0 ? (
-            <div className="mx-4">No data for this field</div>
-          ) : isSuccess ? (
-            <RangeValueSelector
-              field={`${field}`}
-              valueLabel={FacetDocTypeToLabelsMap[docType]}
-              itemsToShow={bucketsToShow}
-              rangeLabelsAndValues={rangeLabelsAndValues}
-              selected={selectedRange}
-              setSelected={(value) => {
-                setIsCustom(false); // no longer a customRange
-                // this is the only way user interaction
-                // can set this to False
-                setSelectedRange(value);
+      <>
+        <LoadingOverlay visible={!isSuccess} />
+        <div className="flex flex-col w-100 space-y-2 mt-1 ">
+          <div className="flex flex-row justify-between items-center">
+            <input
+              type="radio"
+              className={RadioStyle}
+              id={`${field}_custom`}
+              name={`${field}_range_selection`}
+              checked={selectedRange === "custom"}
+              onChange={() => {
+                setSelectedRange("custom");
+                setIsCustom(true);
               }}
             />
-          ) : null}
-          {
-            <FacetExpander
-              remainingValues={remainingValues}
-              isGroupExpanded={isGroupExpanded}
-              onShowChanged={onShowModeChanged}
+            <FromTo
+              minimum={minimum}
+              maximum={maximum}
+              values={filterValues}
+              field={`${field}`}
+              units={units}
+              changedCallback={resetToCustom}
             />
-          }
+          </div>
+          <div className="flex flex-col border-t-2">
+            {totalBuckets == 0 ? (
+              <div className="mx-4">No data for this field</div>
+            ) : isSuccess ? (
+              <RangeValueSelector
+                field={`${field}`}
+                valueLabel={FacetDocTypeToLabelsMap[docType]}
+                itemsToShow={bucketsToShow}
+                rangeLabelsAndValues={rangeLabelsAndValues}
+                selected={selectedRange}
+                setSelected={(value) => {
+                  setIsCustom(false); // no longer a customRange
+                  // this is the only way user interaction
+                  // can set this to False
+                  setSelectedRange(value);
+                }}
+              />
+            ) : null}
+            {
+              <FacetExpander
+                remainingValues={remainingValues}
+                isGroupExpanded={isGroupExpanded}
+                onShowChanged={onShowModeChanged}
+              />
+            }
+          </div>
         </div>
-      </div>
+      </>
     );
   };
 

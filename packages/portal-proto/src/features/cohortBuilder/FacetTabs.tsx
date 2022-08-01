@@ -16,12 +16,12 @@ import {
   usePrevious,
   selectFacetDefinitionsByName,
   useFacetDictionary,
-  selectFacetDefinition,
 } from "@gff/core";
 import { EnumFacet } from "../facets/EnumFacet";
 import NumericRangeFacet from "../facets/NumericRangeFacet";
 import {
   Button,
+  Center,
   UnstyledButton,
   LoadingOverlay,
   Modal,
@@ -43,16 +43,8 @@ bg-nci-gray-lightest
 w-1/2 
 border-2 
 border-dotted
+m-6
 `;
-
-const AddFacetPanel = () => {
-  return (
-    <UnstyledButton className="h-48 bg-nci-gray-lightest flex flex-row justify-center align-middle items-center">
-      <AddAdditionalIcon />
-      <div> Add A Custom Filter</div>
-    </UnstyledButton>
-  );
-};
 
 const createFacets = (
   facets: ReadonlyArray<FacetDefinition>,
@@ -75,9 +67,15 @@ const createFacets = (
         />
       );
     if (
-      ["year", "years", "age", "numeric", "integer", "percent"].includes(
-        x.facet_type,
-      )
+      [
+        "year",
+        "years",
+        "age",
+        "days",
+        "numeric",
+        "integer",
+        "percent",
+      ].includes(x.facet_type)
     ) {
       return (
         <NumericRangeFacet
@@ -93,10 +91,6 @@ const createFacets = (
           hideIfEmpty={hideIfEmpty}
         />
       );
-    }
-    if (x.facet_type === "add_facet") {
-      console.log("add_facet");
-      return <AddFacetPanel />;
     }
   });
 };
@@ -157,7 +151,7 @@ const CustomFacetGroup = (): JSX.Element => {
 
   // handle the empty case
   return (
-    <div className="flex flex-col w-screen/1.5 bg-white overflow-y-scroll overflow-x-clip">
+    <div className="flex flex-col w-screen/1.5 h-full bg-white overflow-y-scroll overflow-x-clip">
       <LoadingOverlay visible={!isDictionaryReady} />
       <Modal size="lg" opened={opened} onClose={() => setOpened(false)}>
         <FacetSelection
@@ -168,11 +162,18 @@ const CustomFacetGroup = (): JSX.Element => {
         />
       </Modal>
       {customFacetDefinitions.length == 0 ? (
-        <CustomFacetWhenEmptyGroup align="center" justify="center">
-          <AddFacetIcon></AddFacetIcon>
-          <Text>No Custom Facets Added</Text>
-          <Button onClick={() => setOpened(true)}>Add Custom Facet</Button>
-        </CustomFacetWhenEmptyGroup>
+        <Center>
+          <CustomFacetWhenEmptyGroup align="center" justify="center">
+            <AddFacetIcon></AddFacetIcon>
+            <Text>No Custom Facets Added</Text>
+            <Button
+              onClick={() => setOpened(true)}
+              aria-label="Add a custom facet"
+            >
+              Add Custom Facet
+            </Button>
+          </CustomFacetWhenEmptyGroup>
+        </Center>
       ) : (
         <FacetGroup>
           <UnstyledButton
@@ -184,7 +185,7 @@ const CustomFacetGroup = (): JSX.Element => {
           </UnstyledButton>
           {createFacets(
             customFacetDefinitions,
-            "cases",
+            "cases", // Cohort custom filter restricted to "cases"
             customConfig.index as GQLIndexType,
             handleRemoveFilter,
           )}

@@ -207,6 +207,7 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
             <button
               className="hover:bg-nci-grey-darker text-nci-gray font-bold py-2 px-1 rounded inline-flex items-center"
               onClick={clearFilters}
+              aria-label="clear selection"
             >
               <UndoIcon
                 size="1.15em"
