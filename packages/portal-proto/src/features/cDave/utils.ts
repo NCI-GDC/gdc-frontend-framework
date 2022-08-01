@@ -51,3 +51,10 @@ export const parseFieldName = (
   }
   return { field_type: parsed.at(0), field_name: parsed.at(-1), full };
 };
+
+export const parseContinuousBucket = (bucket: string): string[] => {
+  return bucket
+    .split("-")
+    .map((val, idx, src) => (src[idx - 1] === "" ? `-${val}` : val))
+    .filter((val) => val !== "");
+};

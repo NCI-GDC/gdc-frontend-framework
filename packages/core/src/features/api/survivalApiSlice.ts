@@ -2,7 +2,7 @@ import type { Middleware, Reducer } from "@reduxjs/toolkit";
 import { DAYS_IN_YEAR } from "../../constants";
 import { coreCreateApi } from "../../coreCreateApi";
 
-export interface SurvivalDonor {
+interface SurvivalDonor {
   readonly time: number;
   readonly censored: boolean;
   readonly survivalEstimate: number;
@@ -11,12 +11,12 @@ export interface SurvivalDonor {
   readonly project_id: string;
 }
 
-export interface SurvivalElement {
+interface SurvivalElement {
   readonly meta: string;
   readonly donors: ReadonlyArray<SurvivalDonor>;
 }
 
-export interface SurvivalApiResponse {
+interface SurvivalApiResponse {
   readonly results: ReadonlyArray<SurvivalElement>;
   readonly overallStats: Record<string, number>;
   readonly warnings: Record<string, string>;
