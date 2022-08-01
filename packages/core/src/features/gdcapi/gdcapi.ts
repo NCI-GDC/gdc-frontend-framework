@@ -403,6 +403,19 @@ export interface FileDefaults {
       readonly file_id: string;
     }>;
   }>;
+  readonly index_files?: ReadonlyArray<{
+    readonly submitter_id: string;
+    readonly created_datetime: string;
+    readonly updated_datetime: string;
+    readonly data_category: string;
+    readonly data_format: string;
+    readonly data_type: string;
+    readonly file_id: string;
+    readonly file_name: string;
+    readonly file_size: number;
+    readonly md5sum: string;
+    readonly state: string;
+  }>;
 }
 
 export const fetchGdcProjects = async (
