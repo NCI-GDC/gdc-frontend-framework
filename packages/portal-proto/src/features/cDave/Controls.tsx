@@ -6,6 +6,7 @@ import {
   Collapse,
   ActionIcon,
   Input,
+  Highlight,
 } from "@mantine/core";
 import { groupBy, get, sortBy } from "lodash";
 import {
@@ -18,7 +19,6 @@ import {
   FaAngleDoubleRight as DoubleRightIcon,
 } from "react-icons/fa";
 import { Stats, Buckets } from "@gff/core";
-import Highlight from "@/components/Highlight";
 import { createKeyboardAccessibleFunction } from "src/utils";
 import { COLOR_MAP, DEFAULT_FIELDS, FACET_SORT, TABS } from "./constants";
 import { toDisplayName } from "./utils";
@@ -145,7 +145,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
         <>
           <div className="flex justify-between">
             <label htmlFor={`switch-${field.full}`}>
-              <Highlight search={searchTerm} text={displayName} background />
+              <Highlight highlight={searchTerm}>{displayName}</Highlight>
             </label>
             <Switch
               classNames={{ input: "bg-none" }}
@@ -158,7 +158,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
               id={`switch-${field.full}`}
             />
           </div>
-          <Highlight search={searchTerm} text={field.description} background />
+          <Highlight highlight={searchTerm}>{field.description}</Highlight>
         </>
       ) : (
         <div className="flex justify-between cursor-pointer">

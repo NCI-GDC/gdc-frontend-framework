@@ -33,12 +33,14 @@ import {
 import { biospecimenReducer } from "./features/biospecimen/biospecimenSlice";
 import { clinicalDataAnalysisReducer } from "./features/clinicalDataAnalysis";
 import { caseSummarySliceReducer } from "./features/cases/caseSummarySlice";
+import { facetsByNameTypeAndFilterReducer } from "./features/facets/facetsByNameTypeAndFilter";
 
 export const reducers = combineReducers({
   cohort: cohortReducers,
   session: sessionReducer,
   facets: facetsReducer, // TODO: Pick which one to use in V2
   facetsGQL: fileCaseGenesMutationsFacetReducers,
+  facetsByNameTypeFilter: facetsByNameTypeAndFilterReducer,
   gdcApps: gdcAppReducer,
   files: filesReducer,
   history: historyReducer,

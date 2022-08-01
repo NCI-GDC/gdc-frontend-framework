@@ -28,7 +28,6 @@ const ClinicalDataAnalysis: React.FC = () => {
   const cohortFilters = useCoreSelector((state) =>
     buildCohortGqlOperator(selectCurrentCohortFilters(state)),
   );
-
   const {
     data: cDaveResult,
     isFetching,
