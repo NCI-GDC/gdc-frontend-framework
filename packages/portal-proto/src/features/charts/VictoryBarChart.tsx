@@ -128,6 +128,7 @@ const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
           <VictoryTooltip flyoutComponent={<BarChartTooltip />} />
         }
         domain={data.length <= 2 ? { x: [0, 5] } : undefined}
+        barWidth={data.length === 1 ? 100 : undefined}
         dataComponent={
           <Bar
             tabIndex={0}

@@ -285,9 +285,9 @@ const Result: React.FC<ResultProps> = ({
                   </Button>
                 }
               >
-                <Menu.Item disabled>Save as a new case set</Menu.Item>
-                <Menu.Item disabled>Add to existing case set</Menu.Item>
-                <Menu.Item disabled>Remove from existing case set</Menu.Item>
+                <Menu.Item disabled>Save as a new cohort</Menu.Item>
+                <Menu.Item disabled>Add to cohort</Menu.Item>
+                <Menu.Item disabled>Remove from cohort</Menu.Item>
               </Menu>
               <Button className="bg-white text-nci-gray-darkest border-nci-gray ml-2">
                 TSV
