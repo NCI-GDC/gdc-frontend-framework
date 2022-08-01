@@ -721,8 +721,8 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
 
     return (
       <div className="flex flex-col w-100 space-y-2 mt-1 ">
-        <LoadingOverlay visible={!isSuccess} />
         <div className="flex flex-row justify-between items-center">
+          <LoadingOverlay visible={!isSuccess} />
           <input
             type="radio"
             className={RadioStyle}

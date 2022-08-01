@@ -36,11 +36,6 @@ const slice = createSlice({
             ...state[action.payload.category].facets,
             action.payload.facetName,
           ];
-      console.log(
-        "Add filter:",
-        [...state[action.payload.category].facets, action.payload.facetName],
-        action.payload.facetName,
-      );
     },
     removeFilterFromCohortBuilder: (
       state,

@@ -16,6 +16,7 @@ import {
   usePrevious,
   selectFacetDefinitionsByName,
   useFacetDictionary,
+  selectFacetDefinition,
 } from "@gff/core";
 import { EnumFacet } from "../facets/EnumFacet";
 import NumericRangeFacet from "../facets/NumericRangeFacet";
@@ -118,28 +119,6 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
   );
 };
 
-const useCustomFacets = () => {
-  const { isSuccess } = useFacetDictionary();
-  const customConfig = useCoreSelector((state) =>
-    selectCohortBuilderConfigCategory(state, "custom"),
-  );
-  const facets = useCoreSelector((state) =>
-    selectFacetDefinitionsByName(state, customConfig.facets),
-  );
-  const [customFacetDefinitions, setCustomFacetDefinitions] = useState<
-    ReadonlyArray<FacetDefinition>
-  >([]);
-  const prevCustomFacets = usePrevious(customConfig.facets);
-
-  useEffect(() => {
-    if (isSuccess || !isEqual(prevCustomFacets, customConfig.facets)) {
-      setCustomFacetDefinitions(facets);
-    }
-  }, [customConfig.facets, facets, isSuccess, prevCustomFacets]);
-
-  return customFacetDefinitions;
-};
-
 const CustomFacetGroup = (): JSX.Element => {
   const customConfig = useCoreSelector((state) =>
     selectCohortBuilderConfigCategory(state, "custom"),
@@ -149,12 +128,14 @@ const CustomFacetGroup = (): JSX.Element => {
     ReadonlyArray<FacetDefinition>
   >([]);
   const [opened, setOpened] = useState(false);
-  const { data: dictionaryData, isSuccess: isDictionaryReady } =
-    useFacetDictionary();
+  const { isSuccess: isDictionaryReady } = useFacetDictionary();
+
   const coreDispatch = useCoreDispatch();
   const facets = useCoreSelector((state) =>
     selectFacetDefinitionsByName(state, customConfig.facets),
   );
+
+  // rebuild customFacets
   useEffect(() => {
     if (isDictionaryReady && !isEqual(prevCustomFacets, customConfig.facets)) {
       setCustomFacetDefinitions(facets);
@@ -167,14 +148,6 @@ const CustomFacetGroup = (): JSX.Element => {
       addFilterToCohortBuilder({ category: "custom", facetName: filter }),
     );
   };
-
-  console.log(
-    "facets:",
-    customFacetDefinitions,
-    customConfig.facets,
-    dictionaryData,
-    isDictionaryReady,
-  );
 
   const handleRemoveFilter = (filter: string) => {
     coreDispatch(
@@ -209,7 +182,6 @@ const CustomFacetGroup = (): JSX.Element => {
             <AddAdditionalIcon />
             <div> Add A Custom Filter</div>
           </UnstyledButton>
-          {console.log(customFacetDefinitions)}
           {createFacets(
             customFacetDefinitions,
             "cases",

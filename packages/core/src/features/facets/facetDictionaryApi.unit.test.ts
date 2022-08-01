@@ -3,6 +3,8 @@ import {
   processDictionaryEntries,
 } from "./facetDictionaryApi";
 
+import { FacetDefinition } from "./types";
+
 const TestFacetDictionary = {
   "cases.case_id": {
     description: "",
@@ -112,7 +114,9 @@ describe("test facet dictionary api functions", () => {
       },
     };
 
-    const results = processDictionaryEntries(TestFacetDictionary);
+    const results = processDictionaryEntries(
+      TestFacetDictionary as Record<string, FacetDefinition>,
+    );
     expect(results).toEqual(expected);
   });
 
