@@ -16,7 +16,7 @@ import tailwindConfig from "tailwind.config";
 // their default exports will trigger registration.
 import "../features/demoApp1/DemoApp";
 import "../features/demoApp2/DemoApp";
-//import "@/features/repositoryApp/RepositoryApp";
+import "@/features/repositoryApp/RepositoryApp";
 
 // import the react tab styles once
 import "react-tabs/style/react-tabs.css";
@@ -25,7 +25,7 @@ import "react-tabs/style/react-tabs.css";
 // It hides the main application from screen readers while modals are open.
 import ReactModal from "react-modal";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 ReactModal.setAppElement("#__next");
 
 export const URLContext = createContext({ prevPath: "", currentPath: "" });
@@ -89,7 +89,10 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
               // Add default color from tailwind config to Mantine theme
               ...Object.fromEntries(
                 Object.entries(tailwindConfig.theme.extend.colors).map(
-                  ([key, values]) => [key, Array(10).fill(values?.DEFAULT)],
+                  ([key, values]) =>
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    [key, Array(10).fill(values?.DEFAULT)],
                 ),
               ),
             },

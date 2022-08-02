@@ -8,6 +8,13 @@ import { get_facet_subcategories, get_facets } from "./dictionary";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { GQLIndexType, FacetDefinition } from "@gff/core";
 
+/**
+ *
+ * Note all components in this file are deprecated in favor of FacetTabs
+ * This has not been removed due to dependencies with older demos.
+ *
+ */
+
 interface FacetGroupProps {
   readonly facetNames: ReadonlyArray<FacetDefinition>;
   readonly indexType?: GQLIndexType;
@@ -34,11 +41,11 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
             if (x.facet_type === "enum")
               return (
                 <EnumFacet
-                  key={`${x.facet_filter}-${index}`}
+                  key={`${x.full}-${index}`}
                   docType="cases"
                   indexType={indexType}
-                  field={`${x.facet_filter}`}
-                  facetName={x.name}
+                  field={`${x.field}`}
+                  facetName={x.field}
                   description={x.description}
                 />
               );
@@ -54,15 +61,15 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
             ) {
               return (
                 <NumericRangeFacet
-                  key={`${x.facet_filter}-${index}`}
-                  field={x.facet_filter}
-                  facetName={x.name}
+                  key={`${x.full}-${index}`}
+                  field={x.field}
+                  facetName={x.field}
                   description={x.description}
                   rangeDatatype={x.facet_type}
                   docType="cases"
                   indexType={indexType}
-                  minimum={x.minimum}
-                  maximum={x.maximum}
+                  minimum={x.range?.minimum}
+                  maximum={x.range?.maximum}
                 />
               );
             }
@@ -156,21 +163,34 @@ export const CohortTabbedFacets: FC = () => {
         </TabList>
         <TabPanel>
           <FacetGroup
-            facetNames={get_facets("Clinical", subcategories["Clinical"], 25)}
+            facetNames={
+              get_facets(
+                "Clinical",
+                subcategories["Clinical"],
+                25,
+              ) as FacetDefinition[]
+            }
           />
         </TabPanel>
         <TabPanel>
           <FacetGroup
             indexType="repository"
-            facetNames={get_facets("Biospecimen", subcategories["Biospecimen"])}
+            facetNames={
+              get_facets(
+                "Biospecimen",
+                subcategories["Biospecimen"],
+              ) as FacetDefinition[]
+            }
           />
         </TabPanel>
         <TabPanel>
           <FacetGroup
-            facetNames={get_facets(
-              "Downloadable",
-              subcategories["Downloadable"],
-            )}
+            facetNames={
+              get_facets(
+                "Downloadable",
+                subcategories["Downloadable"],
+              ) as FacetDefinition[]
+            }
           />
         </TabPanel>
       </Tabs>
