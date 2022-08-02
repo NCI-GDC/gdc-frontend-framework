@@ -60,19 +60,23 @@ export const FileFacetPanel = () => {
   return (
     <div className="flex flex-col gap-y-4 mr-3 w-64  ">
       <Group position="apart">
-        Filters
+        <Text size="lg" weight={700} className="text-nci-blue-darker">
+          Filters
+        </Text>
         <Button
+          size="xs"
           variant="outline"
-          aria-label="Reset"
+          aria-label="Reset File Filters"
           onClick={() => handleClearAll()}
         >
-          <UndoIcon size="1.5em" className="mr-4" />
+          <UndoIcon size="0.85em" className="mr-4" />
           Reset
         </Button>
       </Group>
       <Button
         variant="outline"
-        className=" mx-6 bg-white flex flex-row justify-center align-middle items-center border-nci-blue-darker b-2"
+        aria-label="Add a file filter"
+        className="mx-1 bg-white flex flex-row justify-center align-middle items-center border-nci-blue-darker b-2"
         onClick={() => setOpened(true)}
       >
         <AddAdditionalIcon className="text-nci-blue" size="2em" />
@@ -94,7 +98,7 @@ export const FileFacetPanel = () => {
         {facetDefinitions.map((x, index) => {
           const isDefault = getDefaultFacets().includes(x.full);
           return (
-            // TODO: add other facet type when available
+            // TODO: add other facet types when available
             <EnumFacet
               key={`${x.full}-${index}`}
               field={`${x.full}`}

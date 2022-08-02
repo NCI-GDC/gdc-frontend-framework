@@ -7,8 +7,7 @@ import {
   useFilteredFiles,
 } from "@gff/core";
 import React, { useState } from "react";
-import { AppStore, id, AppContext, useAppSelector } from "./appApi";
-import { selectRepositoryConfig } from "@/features/repositoryApp/fileFiltersSlice";
+import { AppStore, id, AppContext } from "./appApi";
 import { Button, Menu } from "@mantine/core";
 import {
   MdDownload as DownloadIcon,
@@ -34,7 +33,6 @@ const RepositoryApp: React.FC<ContextualFilesViewProps> = ({
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
   const [selectedFiles, setSelectedFiles] = useState<GdcFile[]>([]);
-  const configState = useAppSelector(selectRepositoryConfig);
 
   const handleCheckedFiles = (e, file: GdcFile) => {
     if (e.target.checked) {
@@ -122,3 +120,5 @@ export default createGdcAppWithOwnStore({
   store: AppStore,
   context: AppContext,
 });
+
+export const RepositoryAppId: string = id;
