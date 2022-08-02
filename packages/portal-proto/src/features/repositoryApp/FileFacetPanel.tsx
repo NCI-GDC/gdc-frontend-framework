@@ -1,6 +1,12 @@
 import { EnumFacet } from "@/features/facets/EnumFacet";
-import React, { useState } from "react";
-import { useFacetDictionary } from "@gff/core";
+import React, { useEffect, useState } from "react";
+import {
+  FacetDefinition,
+  selectFacetDefinitionsByName,
+  useCoreSelector,
+  useFacetDictionary,
+  usePrevious,
+} from "@gff/core";
 import {
   useAppSelector,
   useAppDispatch,
@@ -10,17 +16,24 @@ import {
   addFilter,
   removeFilter,
   resetToDefault,
+  getDefaultFacets,
 } from "@/features/repositoryApp/fileFiltersSlice";
-import { getFacetInfo } from "@/features/cohortBuilder/utils";
 import FacetSelection from "@/components/FacetSelection";
 import { Group, Button, LoadingOverlay, Text, Modal } from "@mantine/core";
 import { MdAdd as AddAdditionalIcon } from "react-icons/md";
 import { FaUndo as UndoIcon } from "react-icons/fa";
+import isEqual from "lodash/isEqual";
 
 export const FileFacetPanel = () => {
-  const configState = useAppSelector(selectRepositoryConfig);
+  const config = useAppSelector(selectRepositoryConfig);
   const { isSuccess: isDictionaryReady } = useFacetDictionary();
-  const facets = getFacetInfo(configState.facets);
+  const facets = useCoreSelector((state) =>
+    selectFacetDefinitionsByName(state, config.facets),
+  );
+
+  const [facetDefinitions, setFacetDefinitions] =
+    useState<ReadonlyArray<FacetDefinition>>(facets);
+  const prevCustomFacets = usePrevious(facets);
   const [opened, setOpened] = useState(false);
   const appDispatch = useAppDispatch();
 
@@ -33,12 +46,27 @@ export const FileFacetPanel = () => {
     appDispatch(removeFilter({ facetName: filter }));
   };
 
+  const handleClearAll = () => {
+    appDispatch(resetToDefault());
+  };
+
+  // rebuild customFacets
+  useEffect(() => {
+    if (isDictionaryReady && !isEqual(prevCustomFacets, facets)) {
+      setFacetDefinitions(facets);
+    }
+  }, [facets, isDictionaryReady, prevCustomFacets]);
+
   return (
-    <div className="flex flex-col gap-y-4 mr-3">
+    <div className="flex flex-col gap-y-4 mr-3 w-64  ">
       <Group position="apart">
         Filters
-        <Button aria-label="Reset">
-          <UndoIcon size="1.5em" />
+        <Button
+          variant="outline"
+          aria-label="Reset"
+          onClick={() => handleClearAll()}
+        >
+          <UndoIcon size="1.5em" className="mr-4" />
           Reset
         </Button>
       </Group>
@@ -53,26 +81,29 @@ export const FileFacetPanel = () => {
           Add a File Filter
         </Text>
       </Button>
-      <div className="flex flex-col gap-y-4 mr-3">
+      <div className="flex flex-col gap-y-4 mr-3 h-screen/1.5 overflow-y-scroll">
         <Modal size="lg" opened={opened} onClose={() => setOpened(false)}>
           <FacetSelection
             title={"Add File Filter"}
             facetType="files"
             handleFilterSelected={handleFilterSelected}
-            usedFacetsSelector={facets}
+            usedFacets={config.facets}
           />
         </Modal>
         <LoadingOverlay visible={!isDictionaryReady} />
-        {facets.map((x, index) => {
+        {facetDefinitions.map((x, index) => {
+          const isDefault = getDefaultFacets().includes(x.full);
           return (
+            // TODO: add other facet type when available
             <EnumFacet
-              key={`${x.field}-${index}`}
-              field={`${x.field}`}
+              key={`${x.full}-${index}`}
+              field={`${x.full}`}
               docType="files"
               indexType="repository"
               showPercent={false}
+              hideIfEmpty={false}
               description={x.description}
-              dismissCallback={handleRemoveFilter}
+              dismissCallback={!isDefault ? handleRemoveFilter : undefined}
             />
           );
         })}

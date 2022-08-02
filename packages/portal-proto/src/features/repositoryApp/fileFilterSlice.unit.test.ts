@@ -26,6 +26,7 @@ const defaultState = {
 const alteredConfig = {
   label: "Repository Default",
   facets: [
+    "file.test_facet",
     "files.data_category",
     "files.data_type",
     "files.experimental_strategy",
@@ -33,7 +34,6 @@ const alteredConfig = {
     "files.data_format",
     "files.platform",
     "files.access",
-    "file.test_facet",
   ],
   docType: "files",
   index: "repository",
