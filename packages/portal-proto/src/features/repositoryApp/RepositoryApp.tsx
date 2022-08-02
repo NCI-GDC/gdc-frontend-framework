@@ -5,6 +5,7 @@ import {
   useCoreDispatch,
   useCoreSelector,
   useFilteredFiles,
+  selectCurrentCohortFilterSet,
 } from "@gff/core";
 import React, { useState } from "react";
 import { AppStore, id, AppContext } from "./appApi";
@@ -29,10 +30,15 @@ export interface ContextualFilesViewProps {
 const RepositoryApp: React.FC<ContextualFilesViewProps> = ({
   handleFileSelected,
 }: ContextualFilesViewProps) => {
-  const { data } = useFilteredFiles();
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
   const [selectedFiles, setSelectedFiles] = useState<GdcFile[]>([]);
+  const cohortFilters = useCoreSelector((state) =>
+    selectCurrentCohortFilterSet(state),
+  );
+  const { data } = useFilteredFiles();
+
+  console.log("cohortFilter", cohortFilters);
 
   const handleCheckedFiles = (e, file: GdcFile) => {
     if (e.target.checked) {

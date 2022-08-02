@@ -3,7 +3,7 @@ import FacetSelection from "@/components/FacetSelection";
 import { selectCohortBuilderConfigFilters } from "@gff/core";
 
 import { Modal, Button } from "@mantine/core";
-import { selectRepositoryConfigFacets } from "@/features/repositoryApp/fileFiltersSlice";
+import { selectRepositoryConfigFacets } from "@/features/repositoryApp/repositoryConfigSlice";
 
 const FilesFacetSelection = (): JSX.Element => {
   const handleFilterSelected = (facet: string) => {

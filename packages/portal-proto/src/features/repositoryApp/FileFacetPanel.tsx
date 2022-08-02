@@ -17,7 +17,7 @@ import {
   removeFilter,
   resetToDefault,
   getDefaultFacets,
-} from "@/features/repositoryApp/fileFiltersSlice";
+} from "@/features/repositoryApp/repositoryConfigSlice";
 import FacetSelection from "@/components/FacetSelection";
 import { Group, Button, LoadingOverlay, Text, Modal } from "@mantine/core";
 import { MdAdd as AddAdditionalIcon } from "react-icons/md";

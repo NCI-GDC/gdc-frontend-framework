@@ -4,7 +4,7 @@ import {
   resetToDefault,
   repositoryConfigReducer,
   selectRepositoryConfig,
-} from "./fileFiltersSlice";
+} from "./repositoryConfigSlice";
 import DownloadFiltersDefault from "./config/filters.json";
 import { getInitialAppState } from "./store.unit.test";
 
