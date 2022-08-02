@@ -4,7 +4,6 @@ import {
   selectCart,
   useCoreDispatch,
   useCoreSelector,
-  useFacetDictionary,
   useFilteredFiles,
 } from "@gff/core";
 import React, { useState } from "react";
@@ -17,10 +16,8 @@ import {
 } from "react-icons/md";
 import { addToCart, removeFromCart } from "@/features/cart/updateCart";
 import Link from "next/link";
-import { EnumFacet } from "@/features/facets/EnumFacet";
+import { FileFacetPanel } from "./FileFacetPanel";
 import { FilesView } from "@/features/files/FilesView";
-import { getFacetInfo } from "@/features/cohortBuilder/utils";
-import { LoadingOverlay } from "@mantine/core";
 import { mapGdcFileToCartFile } from "../files/utils";
 
 const buttonStyle =
@@ -38,7 +35,6 @@ const RepositoryApp: React.FC<ContextualFilesViewProps> = ({
   const dispatch = useCoreDispatch();
   const [selectedFiles, setSelectedFiles] = useState<GdcFile[]>([]);
   const configState = useAppSelector(selectRepositoryConfig);
-  const { isSuccess: dictSuccess } = useFacetDictionary();
 
   const handleCheckedFiles = (e, file: GdcFile) => {
     if (e.target.checked) {
@@ -48,7 +44,6 @@ const RepositoryApp: React.FC<ContextualFilesViewProps> = ({
     }
   };
 
-  const facets = getFacetInfo(configState.facets);
   // TODO: remove, mock data for cart
   const allFiles = Array(10001)
     .fill(0)
@@ -106,21 +101,7 @@ const RepositoryApp: React.FC<ContextualFilesViewProps> = ({
         </Link>
       </div>
       <div className="flex flex-row mx-3">
-        <div className="flex flex-col gap-y-4 mr-3">
-          <LoadingOverlay visible={!dictSuccess} />
-          {facets.map((x, index) => {
-            return (
-              <EnumFacet
-                key={`${x.field}-${index}`}
-                field={`${x.field}`}
-                docType="files"
-                indexType="repository"
-                showPercent={false}
-                description={x.description}
-              />
-            );
-          })}
-        </div>
+        <FileFacetPanel />
         <FilesView
           files={data}
           handleFileSelected={handleFileSelected}

@@ -23,12 +23,12 @@ import {
   MdSortByAlpha as AlphaSortIcon,
   MdClose as CloseIcon,
 } from "react-icons/md";
+import { FaUndo as UndoIcon } from "react-icons/fa";
 import { FacetCardProps } from "@/features/facets/types";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
 import { LoadingOverlay, Tooltip } from "@mantine/core";
 import * as tailwindConfig from "tailwind.config";
 import { isEqual } from "lodash";
-import { FaUndo as UndoIcon } from "react-icons/fa";
 
 /**
  *  Enumeration facet filters handle display and selection of
