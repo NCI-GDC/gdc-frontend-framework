@@ -6,6 +6,8 @@ import {
   useCoreSelector,
   useFilteredFiles,
   selectCurrentCohortFilterSet,
+  GQLDocType,
+  GQLIndexType,
 } from "@gff/core";
 import React, { useState } from "react";
 import { AppStore, id, AppContext } from "./appApi";

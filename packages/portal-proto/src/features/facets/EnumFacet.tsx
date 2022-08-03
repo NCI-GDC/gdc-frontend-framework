@@ -24,7 +24,7 @@ import {
   MdClose as CloseIcon,
 } from "react-icons/md";
 import { FaUndo as UndoIcon } from "react-icons/fa";
-import { FacetCardProps } from "@/features/facets/types";
+import { EnumFacetCardProps } from "@/features/facets/types";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
 import { LoadingOverlay, Tooltip } from "@mantine/core";
 import * as tailwindConfig from "tailwind.config";
@@ -45,7 +45,7 @@ import { isEqual } from "lodash";
  * @param hideIfEmpty if facet has no data, do not render
  * @constructor
  */
-export const EnumFacet: React.FC<FacetCardProps> = ({
+export const EnumFacet: React.FC<EnumFacetCardProps> = ({
   field,
   docType,
   indexType,
@@ -58,24 +58,24 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
   hideIfEmpty = true,
   dismissCallback = undefined,
   width = undefined,
-}: FacetCardProps) => {
+  facetDataFunc = FacetEnumHooks[docType],
+  updateEnumsFunc = UpdateEnums[docType],
+  clearFilterFunc = undefined,
+}: EnumFacetCardProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [isSortedByValue, setIsSortedByValue] = useState(false);
   const [isFacetView, setIsFacetView] = useState(startShowingData);
   const [visibleItems, setVisibleItems] = useState(DEFAULT_VISIBLE_ITEMS);
   const cardRef = useRef<HTMLDivElement>(null);
-  // TODO: Move this outside of Facet Component
-  const { data, enumFilters, isSuccess } = FacetEnumHooks[docType](
+  const { data, enumFilters, isSuccess } = facetDataFunc(
     field,
     docType,
     indexType,
   );
   const [selectedEnums, setSelectedEnums] = useState(enumFilters);
-
   const prevFilters = usePrevious(enumFilters);
   const coreDispatch = useCoreDispatch();
-  const updateFilters = UpdateEnums[docType]; // update the filter for this facet
 
   // get the total count to compute percentages
   // TODO: move this outside of Facet Component
@@ -84,7 +84,9 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
   );
 
   const clearFilters = () => {
-    coreDispatch(removeCohortFilter(field));
+    clearFilterFunc
+      ? clearFilterFunc(field)
+      : coreDispatch(removeCohortFilter(field));
   };
 
   // filter missing and "" strings and update checkboxes
@@ -116,14 +118,14 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
 
     if (checked) {
       const updated = selectedEnums ? [...selectedEnums, value] : [value];
-      updateFilters(coreDispatch, updated, field);
+      updateEnumsFunc(updated, field);
     } else {
       // TODO: replace with ToggleFacet
       const updated =
         field === "genes.is_cancer_gene_census"
           ? []
           : selectedEnums.filter((x) => x != value);
-      updateFilters(coreDispatch, updated, field);
+      updateEnumsFunc(updated, field);
     }
   };
 

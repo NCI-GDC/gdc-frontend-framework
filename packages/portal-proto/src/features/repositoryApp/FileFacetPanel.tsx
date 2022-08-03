@@ -1,7 +1,11 @@
 import { EnumFacet } from "@/features/facets/EnumFacet";
 import React, { useEffect, useState } from "react";
 import {
+  EnumOperandValue,
   FacetDefinition,
+  GQLDocType,
+  GQLIndexType,
+  removeCohortFilter,
   selectFacetDefinitionsByName,
   useCoreSelector,
   useFacetDictionary,
@@ -23,6 +27,38 @@ import { Group, Button, LoadingOverlay, Text, Modal } from "@mantine/core";
 import { MdAdd as AddAdditionalIcon } from "react-icons/md";
 import { FaUndo as UndoIcon } from "react-icons/fa";
 import isEqual from "lodash/isEqual";
+import {
+  useLocalFilters,
+  useRepositoryFilters,
+  useRepositoryEnumValues,
+  updateEnumerationFilters,
+} from "@/features/repositoryApp/hooks";
+import {
+  updateRepositoryFilter,
+  removeRepositoryFilter,
+} from "./repositoryFiltersSlice";
+
+const useRepositoryEnumData = (
+  field: string,
+  docType: GQLDocType,
+  indexType: GQLIndexType,
+) =>
+  useLocalFilters(
+    field,
+    docType,
+    indexType,
+    useRepositoryEnumValues,
+    useRepositoryFilters,
+  );
+
+const useEnumValues = (enumerationFilters: EnumOperandValue, field: string) =>
+  updateEnumerationFilters(
+    enumerationFilters,
+    field,
+    useAppDispatch(),
+    updateRepositoryFilter,
+    removeRepositoryFilter,
+  );
 
 export const FileFacetPanel = () => {
   const config = useAppSelector(selectRepositoryConfig);
@@ -49,6 +85,8 @@ export const FileFacetPanel = () => {
   const handleClearAll = () => {
     appDispatch(resetToDefault());
   };
+
+  const clearFilters = (f: string) => appDispatch(removeCohortFilter(f));
 
   // rebuild customFacets
   useEffect(() => {
@@ -108,6 +146,9 @@ export const FileFacetPanel = () => {
               hideIfEmpty={false}
               description={x.description}
               dismissCallback={!isDefault ? handleRemoveFilter : undefined}
+              facetDataFunc={useRepositoryEnumData}
+              updateEnumsFunc={useEnumValues}
+              clearFilterFunc={clearFilters}
             />
           );
         })}

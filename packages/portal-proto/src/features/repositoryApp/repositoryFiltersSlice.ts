@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { Operation, FilterSet } from "@gff/core";
 import { AppState } from "./appApi";
+import { CoreState } from "@gff/core/dist/dts/reducers";
 
 export interface RepositoryFiltersSlice {
   readonly filters: FilterSet;
@@ -54,5 +55,10 @@ export const {
   clearRepositoryFilters,
 } = slice.actions;
 
-export const selectCurrentFilters = (state: AppState): FilterSet | undefined =>
+export const selectFilters = (state: AppState): FilterSet | undefined =>
   state.filters.filters;
+
+export const selectFiltersByName = (
+  state: AppState,
+  name: string,
+): Operation | undefined => state.filters.filters?.root[name];
