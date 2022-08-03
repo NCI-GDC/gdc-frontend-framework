@@ -1,4 +1,5 @@
 # Holmes
+## Docs specific to Data Portal V2 can be found [here](docs/README.md)
 ## BDD test automation framework
 _Detects and reports UI defects_
 
@@ -131,3 +132,4 @@ PWDEBUG=1 gauge run specs
 See [Run Gauge Specifications](https://docs.gauge.org/execution.html?os=macos&language=python&ide=vscode)
 
 This will also compile all the supporting code implementations.
+
