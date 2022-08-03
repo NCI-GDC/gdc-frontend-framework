@@ -33,17 +33,21 @@ import { isEqual } from "lodash";
 /**
  *  Enumeration facet filters handle display and selection of
  *  enumerated fields.
- * @param field
- * @param docType
- * @param indexType index this facet used
- * @param description
- * @param facetName
- * @param showSearch
- * @param showFlip
- * @param startShowingData
- * @param showPercent
+ * @param field filter this FacetCard manages
+ * @param docType documement type "cases" "files, etc.
+ * @param indexType index this facet uses to get data from
+ * @param description describes information about the facet
+ * @param facetName name of the Facet in human readable form
+ * @param showSearch if the search icon show be displayed
+ * @param showFlip if the flip icon should be displayed
+ * @param startShowingData set to false to show the chart by default
+ * @param showPercent show the percentage
  * @param hideIfEmpty if facet has no data, do not render
- * @constructor
+ * @param dismissCallback if facet can be removed, supply a function and the dissmiss control will be visible
+ * @param width set the width of the facet
+ * @param facetDataFunc function to pull enumerated data with
+ * @param updateEnumsFunc function to extract enumeration values (used to set checkboxes)
+ * @param clearFilterFunc function to call when filter should be reset (all cehckboxes cleared)
  */
 export const EnumFacet: React.FC<EnumFacetCardProps> = ({
   field,
