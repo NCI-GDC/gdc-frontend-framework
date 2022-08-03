@@ -249,6 +249,7 @@ const FacetSelection = ({
     usefulFacetsStatus,
     usefulFacets,
     facetType,
+    dictionaryData,
   ]);
 
   useEffect(() => {
