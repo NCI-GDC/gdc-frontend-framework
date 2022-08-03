@@ -72,12 +72,21 @@ describe("repository filter reducer", () => {
     expect(state).toEqual(initialFilters);
   });
 
-  test("remove unknown filter", () => {
+  test("remove unknown filter, state should remain unchanged", () => {
     const state = repositoryFiltersReducer(
       populatedFilters as RepositoryFiltersSlice,
       removeRepositoryFilter("files.data_bear"),
     );
 
     expect(state).toEqual(populatedFilters);
+  });
+
+  test("reset to default state should be initialFilters", () => {
+    const state = repositoryFiltersReducer(
+      populatedFilters as RepositoryFiltersSlice,
+      clearRepositoryFilters(),
+    );
+
+    expect(state).toEqual(initialFilters);
   });
 });
