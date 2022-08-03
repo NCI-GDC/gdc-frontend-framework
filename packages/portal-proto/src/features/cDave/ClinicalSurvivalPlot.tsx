@@ -42,7 +42,7 @@ const ClinicalSurvivalPlot: React.FC<ClinicalSurvivalPlotProps> = ({
 
   const filters =
     selectedSurvivalPlots.length === 0
-      ? [cohortFilters]
+      ? cohortFilters && [cohortFilters]
       : selectedSurvivalPlots.map((value) => {
           const content = [];
           if (cohortFilters) {
@@ -82,7 +82,7 @@ const ClinicalSurvivalPlot: React.FC<ClinicalSurvivalPlotProps> = ({
         {isLoading ? (
           <Loader />
         ) : isError ? (
-          <Alert color={"red"}>Something's gone wrong</Alert>
+          <Alert color={"red"}>{"Something's gone wrong"}</Alert>
         ) : (
           <SurvivalPlot
             data={data}

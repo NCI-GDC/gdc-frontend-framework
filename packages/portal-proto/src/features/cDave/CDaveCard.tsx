@@ -25,6 +25,8 @@ import { CONTINUOUS_FACET_TYPES } from "./constants";
 import { toDisplayName } from "./utils";
 import { CategoricalHistogram, ContinuousHistogram } from "./CDaveHistogram";
 import ClinicalSurvivalPlot from "./ClinicalSurvivalPlot";
+import ContinuousBinningModal from "./ContinuousBinningModal";
+import CategoricalBinningModal from "./CategoricalBinningModal";
 
 interface CDaveCardProps {
   readonly field: string;
@@ -46,10 +48,11 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   initialDashboardRender,
 }: CDaveCardProps) => {
   const [chartType, setChartType] = useState<ChartTypes>(ChartTypes.histogram);
-  const [resultData, setResultData] = useState([]);
+  const [resultData, setResultData] = useState({});
   const [selectedSurvivalPlots, setSelectedSurvivalPlots] = useState<string[]>(
     [],
   );
+  const [customBinnedData, setCustomBinnedData] = useState({});
   const { scrollIntoView, targetRef } = useScrollIntoView();
   const facet = useCoreSelector((state) =>
     selectFacetDefinitionByName(state, `cases.${field}`),
@@ -64,6 +67,8 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
     // this should only happen on inital component mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const continuous = CONTINUOUS_FACET_TYPES.includes(facet?.type);
 
   return (
     <Card className="h-[580px]" ref={(ref) => (targetRef.current = ref)}>
@@ -105,7 +110,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
       </div>
       {chartType === ChartTypes.histogram ? (
         data && facet ? (
-          CONTINUOUS_FACET_TYPES.includes(facet?.type) ? (
+          continuous ? (
             <ContinuousHistogram
               field={field}
               fieldName={fieldName}
@@ -118,6 +123,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
               fieldName={fieldName}
               data={(data as Buckets).buckets}
               setResultData={setResultData}
+              customBinnedData={customBinnedData}
             />
           )
         ) : null
@@ -125,10 +131,17 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
         <ClinicalSurvivalPlot
           field={field}
           selectedSurvivalPlots={selectedSurvivalPlots}
-          continuous={CONTINUOUS_FACET_TYPES.includes(facet?.type)}
+          continuous={continuous}
         />
       )}
-      <CardControls />
+      <CardControls
+        continuous={continuous}
+        field={fieldName}
+        results={resultData}
+        hasCustomBinnedData={Object.keys(customBinnedData).length > 0}
+        setCustomBinnedData={setCustomBinnedData}
+      />
+      {/*
       <CDaveTable
         fieldName={fieldName}
         data={resultData}
@@ -136,6 +149,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
         selectedSurvivalPlots={selectedSurvivalPlots}
         setSelectedSurvivalPlots={setSelectedSurvivalPlots}
       />
+      */}
     </Card>
   );
 };
@@ -251,42 +265,75 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
   );
 };
 
-const CardControls: React.FC = () => {
+interface CardControlsProps {
+  readonly continuous: boolean;
+  readonly field: string;
+  readonly results: Record<string, number>;
+  readonly hasCustomBinnedData: boolean;
+  readonly setCustomBinnedData: (bins: Record<string, number>) => void;
+}
+
+const CardControls: React.FC<CardControlsProps> = ({
+  continuous,
+  field,
+  results,
+  hasCustomBinnedData,
+  setCustomBinnedData,
+}: CardControlsProps) => {
+  const [modalOpen, setModalOpen] = useState(false);
   return (
-    <div className="flex justify-between p-2">
-      <div>
+    <>
+      <div className="flex justify-between p-2">
+        <div>
+          <Menu
+            control={
+              <Button
+                rightIcon={<DownIcon size={20} />}
+                className="bg-white text-nci-gray-darkest border-nci-gray"
+              >
+                Select Action
+              </Button>
+            }
+          >
+            <Menu.Item disabled>Save as a new cohort</Menu.Item>
+            <Menu.Item disabled>Add to cohort</Menu.Item>
+            <Menu.Item disabled>Remove from cohort</Menu.Item>
+          </Menu>
+          <Button className="bg-white text-nci-gray-darkest border-nci-gray ml-2">
+            TSV
+          </Button>
+        </div>
         <Menu
           control={
             <Button
               rightIcon={<DownIcon size={20} />}
               className="bg-white text-nci-gray-darkest border-nci-gray"
             >
-              Select Action
+              Customize Bins
             </Button>
           }
         >
-          <Menu.Item disabled>Save as a new cohort</Menu.Item>
-          <Menu.Item disabled>Add to cohort</Menu.Item>
-          <Menu.Item disabled>Remove from cohort</Menu.Item>
-        </Menu>
-        <Button className="bg-white text-nci-gray-darkest border-nci-gray ml-2">
-          TSV
-        </Button>
-      </div>
-      <Menu
-        control={
-          <Button
-            rightIcon={<DownIcon size={20} />}
-            className="bg-white text-nci-gray-darkest border-nci-gray"
+          <Menu.Item onClick={() => setModalOpen(true)}>Edit Bins</Menu.Item>
+          <Menu.Item
+            disabled={!hasCustomBinnedData}
+            onClick={() => setCustomBinnedData([])}
           >
-            Customize Bins
-          </Button>
-        }
-      >
-        <Menu.Item>Edit Bins</Menu.Item>
-        <Menu.Item disabled>Reset to Default</Menu.Item>
-      </Menu>
-    </div>
+            Reset to Default
+          </Menu.Item>
+        </Menu>
+      </div>
+      {modalOpen &&
+        (continuous ? (
+          <ContinuousBinningModal setModalOpen={setModalOpen} />
+        ) : (
+          <CategoricalBinningModal
+            setModalOpen={setModalOpen}
+            field={field}
+            results={results}
+            updateBins={setCustomBinnedData}
+          />
+        ))}
+    </>
   );
 };
 

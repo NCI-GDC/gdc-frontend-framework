@@ -33,6 +33,7 @@
   "homepage": "https://github.com/NCI-GDC/gdc-frontend-framework#readme",
   "dependencies": {
     "@mantine/core": "^4.1.2",
+    "@mantine/form": "^5.0.2",
     "@reactour/tour": "^2.9.0",
     "classnames": "^2.3.1",
     "immutability-helper": "^3.1.1",
@@ -60,7 +61,7 @@
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.24.0",
-    "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "husky": "^7.0.4",
     "lerna": "^4.0.0",
     "lint-staged": "^12.3.7",

@@ -46,11 +46,12 @@ export const useSurvival: survival = (
   data,
   xDomain,
   setXDomain,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   height,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setTooltip = (x?) => null,
 ) => {
   const ref = useRef(undefined);
+  const containerSize = ref?.current?.getBoundingClientRect();
 
   useEffect(() => {
     ref.current
@@ -93,7 +94,14 @@ export const useSurvival: survival = (
           onMouseLeaveDonor: () => setTooltip(undefined),
         })
       : null;
-  }, [data, xDomain, setXDomain, setTooltip]);
+  }, [
+    data,
+    xDomain,
+    setXDomain,
+    setTooltip,
+    height,
+    ref?.current?.getBoundingClientRect(),
+  ]);
   return ref;
 };
 
@@ -337,23 +345,24 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
           </Tooltip>
         </div>
       </div>
-      <div
-        className={
-          [SurvivalPlotTypes.overall, SurvivalPlotTypes.mutation].includes(
-            plotType,
-          )
-            ? "flex flex-col items-center "
-            : "flex flex-row flex-wrap justify-center"
-        }
-      >
-        {!hideLegend &&
-          legend?.map((x, idx) => {
-            return (
-              <div key={`${x.key}-${idx}`} className="px-2">
-                {x.value}
-              </div>
-            );
-          })}
+      <div className="flex flex-col items-center ">
+        <div
+          className={
+            [
+              SurvivalPlotTypes.categorical,
+              SurvivalPlotTypes.continuous,
+            ].includes(plotType) && "flex flex-row flex-wrap justify-center"
+          }
+        >
+          {!hideLegend &&
+            legend?.map((x, idx) => {
+              return (
+                <div key={`${x.key}-${idx}`} className="px-2">
+                  {x.value}
+                </div>
+              );
+            })}
+        </div>
         <div>
           <Tooltip
             label={

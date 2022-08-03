@@ -15,7 +15,7 @@ interface ContinuousHistogramProps {
   readonly field: string;
   readonly fieldName: string;
   readonly stats: Statistics;
-  readonly setResultData: (data) => void;
+  readonly setResultData: (data: Record<string, number>) => void;
 }
 export const ContinuousHistogram: React.FC<ContinuousHistogramProps> = ({
   field,
@@ -31,6 +31,10 @@ export const ContinuousHistogram: React.FC<ContinuousHistogramProps> = ({
     "repository",
   );
 
+  useEffect(() => {
+    setResultData(data);
+  }, []);
+
   return (
     <CDaveHistogram
       field={field}
@@ -39,7 +43,6 @@ export const ContinuousHistogram: React.FC<ContinuousHistogramProps> = ({
       isFetching={isFetching}
       continuous={true}
       noData={stats.count === 0}
-      setResultData={setResultData}
     />
   );
 };
@@ -48,25 +51,35 @@ interface CategoricalHistogramProps {
   readonly field: string;
   readonly fieldName: string;
   readonly data: readonly Bucket[];
-  readonly setResultData: (data) => void;
+  readonly setResultData: (data: Record<string, number>) => void;
+  readonly customBinnedData: Record<string, number>;
 }
 export const CategoricalHistogram: React.FC<CategoricalHistogramProps> = ({
   field,
   fieldName,
   data,
   setResultData,
+  customBinnedData,
 }: CategoricalHistogramProps) => {
+  const resultData = Object.fromEntries(
+    (data || []).map((d) => [d.key, d.doc_count]),
+  );
+
+  useEffect(() => {
+    setResultData(resultData);
+  }, []);
+
   return (
     <CDaveHistogram
       field={field}
       fieldName={fieldName}
-      data={Object.fromEntries((data || []).map((d) => [d.key, d.doc_count]))}
+      data={resultData}
       isFetching={false}
       continuous={false}
       noData={
         data !== undefined && data.every((bucket) => bucket.key === "_missing")
       }
-      setResultData={setResultData}
+      customBinnedData={customBinnedData}
     />
   );
 };
@@ -110,7 +123,7 @@ interface HistogramProps {
   readonly field: string;
   readonly fieldName: string;
   readonly continuous: boolean;
-  readonly setResultData: (data) => void;
+  readonly customBinnedData?: Record<string, number>;
 }
 
 const CDaveHistogram: React.FC<HistogramProps> = ({
@@ -119,13 +132,15 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
   field,
   continuous,
   noData,
-  setResultData,
+  customBinnedData = {},
 }: HistogramProps) => {
   const [displayPercent, setDisplayPercent] = useState(false);
-  const barChartData = formatBarChartData(data, displayPercent, continuous);
-  useEffect(() => {
-    setResultData(barChartData);
-  }, []);
+  const barChartData = formatBarChartData(
+    Object.keys(customBinnedData).length > 0 ? customBinnedData : data,
+    displayPercent,
+    continuous,
+  );
+
   const color =
     tailwindConfig.theme.extend.colors[COLOR_MAP[field.split(".").at(-2)]]
       ?.DEFAULT;
