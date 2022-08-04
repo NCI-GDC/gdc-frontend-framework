@@ -30,6 +30,7 @@ const slice = createSlice({
       };
     },
     removeRepositoryFilter: (state, action: PayloadAction<string>) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { [action.payload]: _, ...updated } = state.filters.root;
       return {
         ...state,
@@ -39,9 +40,8 @@ const slice = createSlice({
         },
       };
     },
-    clearRepositoryFilters: (_state) => {
-      console.log("clearing filters");
-      return { filters: { mode: "and", root: {} } };
+    clearRepositoryFilters: (state) => {
+      return { ...state, root: {} };
     },
   },
   extraReducers: {},

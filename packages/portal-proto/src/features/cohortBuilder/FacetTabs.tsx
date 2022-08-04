@@ -15,7 +15,6 @@ import {
   usePrevious,
   selectFacetDefinitionsByName,
   useFacetDictionary,
-  EnumOperandValue,
 } from "@gff/core";
 import { EnumFacet } from "../facets/EnumFacet";
 import NumericRangeFacet from "../facets/NumericRangeFacet";
@@ -35,7 +34,6 @@ import {
 } from "react-icons/md";
 import FacetSelection from "@/components/FacetSelection";
 import isEqual from "lodash/isEqual";
-import { useUpdateEnumFilters } from "@/features/facets/hooks";
 
 const CustomFacetWhenEmptyGroup = tw(Stack)`
 h-64 

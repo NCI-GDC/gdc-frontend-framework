@@ -10,11 +10,10 @@ import {
   buildCohortGqlOperator,
   joinFilters,
   usePrevious,
-  useTotalCounts,
 } from "@gff/core";
 import React, { useEffect, useState } from "react";
 import { AppStore, id, AppContext, useAppSelector } from "./appApi";
-import { Button, Menu } from "@mantine/core";
+import { Button, LoadingOverlay, Menu, Text } from "@mantine/core";
 import {
   MdDownload as DownloadIcon,
   MdShoppingCart as CartIcon,
@@ -36,7 +35,7 @@ export interface ContextualFilesViewProps {
 
 const useCohortCentricFiles = () => {
   const coreDispatch = useCoreDispatch();
-  const { data, status, error } = useCoreSelector(selectFilesData);
+  const { data, pagination, status, error } = useCoreSelector(selectFilesData);
 
   const repositoryFilters = useAppSelector((state) => selectFilters(state));
   const cohortFilters = useCoreSelector((state) =>
@@ -54,6 +53,7 @@ const useCohortCentricFiles = () => {
 
   return {
     data,
+    pagination,
     error,
     isUninitialized: status === "uninitialized",
     isFetching: status === "pending",
@@ -69,8 +69,7 @@ const RepositoryApp: React.FC<ContextualFilesViewProps> = ({
   const dispatch = useCoreDispatch();
   const [selectedFiles, setSelectedFiles] = useState<GdcFile[]>([]);
 
-  const { data } = useCohortCentricFiles();
-  const { data: countsData, isSuccess: isTotalReady } = useTotalCounts();
+  const { data, pagination, isSuccess } = useCohortCentricFiles();
 
   const handleCheckedFiles = (e, file: GdcFile) => {
     if (e.target.checked) {
@@ -86,8 +85,17 @@ const RepositoryApp: React.FC<ContextualFilesViewProps> = ({
     .map((_, i) => data?.[i % 10]);
   return (
     <div className="flex flex-col mt-4 ">
-      <div className="flex flex-row justify-end m-2">
-        <div>Total Files {isTotalReady ? countsData.files : "xxx"}</div>
+      <div className="flex flex-row justify-end algin center m-2">
+        <LoadingOverlay visible={!isSuccess} />
+        <Text transform="uppercase" size="lg" weight={700}>
+          Total of{" "}
+        </Text>
+        <Text className="mx-2" transform="uppercase" size="lg" weight={1000}>
+          {isSuccess ? pagination.total : "   "}
+        </Text>
+        <Text transform="uppercase" size="lg" weight={700}>
+          Files
+        </Text>
         <Menu
           control={
             <Button className={buttonStyle}>

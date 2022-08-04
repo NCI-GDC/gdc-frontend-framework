@@ -180,8 +180,8 @@ interface FacetSelectionModalProps {
  * passing the full name of the selected Facet
  * @param title - Title to show
  * @param facetType - cases or files
- * @param useFacets - list of filtere currently in use, those filters are not shown in the list
- * @param handleFilterSelected - function whuch handled when a filter is selected
+ * @param useFacets - list of filter currently in use, those filters are not shown in the list
+ * @param handleFilterSelected - function which handled when a filter is selected
  */
 const FacetSelection = ({
   title,
@@ -248,6 +248,7 @@ const FacetSelection = ({
     usefulFacetsStatus,
     usefulFacets,
     facetType,
+    dictionaryData,
   ]);
 
   useEffect(() => {

@@ -13,7 +13,6 @@ import {
   useCoreSelector,
   useCoreDispatch,
   selectCart,
-  useTotalCounts,
 } from "@gff/core";
 import { EnumFacet } from "../facets/EnumFacet";
 import { addToCart, removeFromCart } from "@/features/cart/updateCart";

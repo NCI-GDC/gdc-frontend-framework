@@ -1,5 +1,5 @@
 import { EnumFacet } from "@/features/facets/EnumFacet";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, ReactNode } from "react";
 import {
   EnumOperandValue,
   FacetDefinition,
@@ -53,7 +53,7 @@ const useRepositoryEnumData = (
     useRepositoryFilters,
   );
 
-export const FileFacetPanel = () => {
+export const FileFacetPanel: ReactNode = () => {
   const config = useAppSelector(selectRepositoryConfig);
   const { isSuccess: isDictionaryReady } = useFacetDictionary();
   const facets = useCoreSelector((state) =>

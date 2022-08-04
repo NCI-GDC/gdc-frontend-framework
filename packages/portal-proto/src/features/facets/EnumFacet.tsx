@@ -38,17 +38,17 @@ import { isEqual } from "lodash";
  * @param docType documement type "cases" "files, etc.
  * @param indexType index this facet uses to get data from
  * @param description describes information about the facet
- * @param facetName name of the Facet in human readable form
+ * @param facetName name of the Facet in human-readable form
  * @param showSearch if the search icon show be displayed
  * @param showFlip if the flip icon should be displayed
- * @param startShowingData set to false to show the chart by default
+ * @param startShowingData set = false to show the chart by default
  * @param showPercent show the percentage
  * @param hideIfEmpty if facet has no data, do not render
- * @param dismissCallback if facet can be removed, supply a function and the dissmiss control will be visible
+ * @param dismissCallback if facet can be removed, supply a function which will ensure the dismiss control will be visible
  * @param width set the width of the facet
  * @param facetDataFunc function to pull enumerated data with
  * @param updateEnumsFunc function to extract enumeration values (used to set checkboxes)
- * @param clearFilterFunc function to call when filter should be reset (all cehckboxes cleared)
+ * @param clearFilterFunc function to call when filter should be reset (all checkboxes cleared)
  */
 export const EnumFacet: React.FC<EnumFacetCardProps> = ({
   field,
@@ -96,11 +96,11 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
 
   const updateFacetEnum = (
     enumerationFilters: EnumOperandValue,
-    field: string,
+    fieldname: string,
   ) => {
     updateEnumsFunc
-      ? updateEnumsFunc(enumerationFilters, field)
-      : UpdateEnums[docType](enumerationFilters, field, coreDispatch);
+      ? updateEnumsFunc(enumerationFilters, fieldname)
+      : UpdateEnums[docType](enumerationFilters, fieldname, coreDispatch);
   };
 
   // filter missing and "" strings and update checkboxes
@@ -115,7 +115,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
   }, [data, field, isSuccess]);
 
   useEffect(() => {
-    if (isSuccess && !isEqual(prevFilters, enumFilters)) {
+    if (!isEqual(prevFilters, enumFilters)) {
       setSelectedEnums(enumFilters);
     }
   }, [enumFilters, isSuccess, prevFilters]);
@@ -298,7 +298,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
                     .filter((entry) => entry[0] != "_missing" && entry[0] != "")
                     .sort(
                       isSortedByValue
-                        ? ([, a], [, b]) => (b as number) - (a as number)
+                        ? ([, a], [, b]) => b - a
                         : ([a], [b]) => a.localeCompare(b),
                     )
                     .map(([value, count], i) => {

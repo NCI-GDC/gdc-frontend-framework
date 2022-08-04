@@ -284,7 +284,7 @@ export const useUpdateGenomicEnumFilters: UpdateEnumFiltersFunc = (
   field: string,
   dispatch: ThunkDispatch<any, undefined, AnyAction>,
 ) => {
-  if (enumerationFilters === undefined) return;
+  if (enumerationFilters === undefined) dispatch(removeGenomicFilter(field));
   if (enumerationFilters.length > 0) {
     dispatch(
       updateGenomicFilter({
