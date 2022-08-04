@@ -155,8 +155,7 @@ export const FileFacetPanel = () => {
         <LoadingOverlay visible={!isDictionaryReady} />
         {facetDefinitions.map((x, index) => {
           const isDefault = getDefaultFacets().includes(x.full);
-          const facetName = convertFieldToName(x.full, 2);
-          console.log(facetName);
+          const facetName = convertFieldToName(x.full, isDefault ? 1 : 2);
           return (
             // TODO: add other facet types when available
             <EnumFacet
