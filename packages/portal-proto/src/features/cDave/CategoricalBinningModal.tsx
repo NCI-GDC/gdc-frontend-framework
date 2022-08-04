@@ -9,24 +9,10 @@ const DEFAULT_GROUP_NAME_REGEX = /selected value \d+/;
 
 type GroupedValues = Record<string, number | Record<string, number>>;
 
-export const flattenGroups = (
-  groupedValues: GroupedValues,
-): Record<string, number> => {
-  let flattenedValues = {};
-  Object.entries(groupedValues).forEach(([k, v]) => {
-    if (Number.isInteger(v)) {
-      flattenedValues[k] = v;
-    } else {
-      flattenedValues = {
-        ...flattenedValues,
-        ...(v as Record<string, number>),
-      };
-    }
-  });
-  return flattenedValues;
-};
-
-const filterOutSelected = (values, selectedValues) => {
+const filterOutSelected = (
+  values: GroupedValues,
+  selectedValues: Record<string, number>,
+) => {
   const newValues = {};
   Object.entries(values).forEach(([key, value]) => {
     if (Number.isInteger(value) && !selectedValues?.[key]) {
@@ -49,16 +35,20 @@ interface CategoricalBinningModalProps {
   readonly setModalOpen: (open: boolean) => void;
   readonly field: string;
   readonly results: Record<string, number>;
-  readonly updateBins: (bin: Record<string, number>) => void;
+  readonly customBins: Record<string, number>;
+  readonly updateBins: (bin: GroupedValues) => void;
 }
 
 const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
   setModalOpen,
   field,
   results,
+  customBins,
   updateBins,
 }: CategoricalBinningModalProps) => {
-  const [values, setValues] = useState<GroupedValues>(results);
+  const [values, setValues] = useState<GroupedValues>(
+    Object.keys(customBins).length > 0 ? customBins : results,
+  );
   const [selectedValues, setSelectedValues] = useState<Record<string, number>>(
     {},
   );

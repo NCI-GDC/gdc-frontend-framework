@@ -116,6 +116,20 @@ const formatBarChartData = (
     : mappedData.sort((a, b) => b.yCount - a.yCount);
 };
 
+const flattenBinnedData = (binnedData) => {
+  const flattenedValues = {};
+
+  Object.entries(binnedData).forEach(([k, v]) => {
+    if (Number.isInteger(v)) {
+      flattenedValues[k] = v;
+    } else {
+      flattenedValues[k] = Object.values(v).reduce((a, b) => a + b);
+    }
+  });
+
+  return flattenedValues;
+};
+
 interface HistogramProps {
   readonly data: Record<string, number>;
   readonly isFetching: boolean;
@@ -136,7 +150,9 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
 }: HistogramProps) => {
   const [displayPercent, setDisplayPercent] = useState(false);
   const barChartData = formatBarChartData(
-    Object.keys(customBinnedData).length > 0 ? customBinnedData : data,
+    Object.keys(customBinnedData).length > 0
+      ? flattenBinnedData(customBinnedData)
+      : data,
     displayPercent,
     continuous,
   );

@@ -138,7 +138,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
         continuous={continuous}
         field={fieldName}
         results={resultData}
-        hasCustomBinnedData={Object.keys(customBinnedData).length > 0}
+        customBinnedData={customBinnedData}
         setCustomBinnedData={setCustomBinnedData}
       />
       {/*
@@ -269,7 +269,7 @@ interface CardControlsProps {
   readonly continuous: boolean;
   readonly field: string;
   readonly results: Record<string, number>;
-  readonly hasCustomBinnedData: boolean;
+  readonly customBinnedData: Record<string, number>;
   readonly setCustomBinnedData: (bins: Record<string, number>) => void;
 }
 
@@ -277,7 +277,7 @@ const CardControls: React.FC<CardControlsProps> = ({
   continuous,
   field,
   results,
-  hasCustomBinnedData,
+  customBinnedData,
   setCustomBinnedData,
 }: CardControlsProps) => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -315,8 +315,8 @@ const CardControls: React.FC<CardControlsProps> = ({
         >
           <Menu.Item onClick={() => setModalOpen(true)}>Edit Bins</Menu.Item>
           <Menu.Item
-            disabled={!hasCustomBinnedData}
-            onClick={() => setCustomBinnedData([])}
+            disabled={Object.keys(customBinnedData).length === 0}
+            onClick={() => setCustomBinnedData({})}
           >
             Reset to Default
           </Menu.Item>
@@ -331,6 +331,7 @@ const CardControls: React.FC<CardControlsProps> = ({
             field={field}
             results={results}
             updateBins={setCustomBinnedData}
+            customBins={customBinnedData}
           />
         ))}
     </>
