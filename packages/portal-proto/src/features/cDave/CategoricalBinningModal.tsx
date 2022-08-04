@@ -26,6 +26,25 @@ export const flattenGroups = (
   return flattenedValues;
 };
 
+const filterOutSelected = (values, selectedValues) => {
+  const newValues = {};
+  Object.entries(values).forEach(([key, value]) => {
+    if (Number.isInteger(value) && !selectedValues?.[key]) {
+      newValues[key] = value;
+    } else {
+      const groupValues = pickBy(
+        value as Record<string, number>,
+        (_, k) => !selectedValues?.[k],
+      );
+      if (Object.keys(groupValues).length > 0) {
+        newValues[key] = groupValues;
+      }
+    }
+  });
+
+  return newValues;
+};
+
 interface CategoricalBinningModalProps {
   readonly setModalOpen: (open: boolean) => void;
   readonly field: string;
@@ -48,16 +67,31 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
     Record<string, number>
   >({});
 
-  const createGroup = (groupValues: GroupedValues) => {
-    const defaultNames = Object.entries(values).filter(
-      ([k, v]) => v instanceof Object && k.match(DEFAULT_GROUP_NAME_REGEX),
+  const group = () => {
+    const existingGroup = Object.entries(values).find(
+      ([k, v]) =>
+        v instanceof Object &&
+        Object.keys(v).every((subKey) => selectedValues?.[subKey]),
     );
 
-    setValues({
-      ...pickBy(values, (_, k) => !Object.keys(groupValues).includes(k)),
-      [`selected value ${defaultNames.length + 1}`]: groupValues,
-    } as GroupedValues);
+    if (existingGroup) {
+      setValues({
+        ...filterOutSelected(values, selectedValues),
+        [existingGroup[0]]: {
+          ...(existingGroup[1] as Record<string, number>),
+          ...selectedValues,
+        },
+      });
+    } else {
+      const defaultNames = Object.entries(values).filter(
+        ([k, v]) => v instanceof Object && k.match(DEFAULT_GROUP_NAME_REGEX),
+      );
 
+      setValues({
+        ...filterOutSelected(values, selectedValues),
+        [`selected value ${defaultNames.length + 1}`]: selectedValues,
+      } as GroupedValues);
+    }
     setSelectedValues({});
   };
 
@@ -68,24 +102,10 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
   const hideValues = () => {
     setHiddenValues({
       ...hiddenValues,
-      ...flattenGroups(selectedValues),
+      ...selectedValues,
     });
 
-    const newValues = {};
-    Object.entries(values).forEach(([key, value]) => {
-      if (Number.isInteger(value) && !selectedValues?.[key]) {
-        newValues[key] = value;
-      } else {
-        const groupValues = pickBy(
-          value as Record<string, number>,
-          (_, k) => !Object.keys(selectedValues).includes(k),
-        );
-        if (Object.keys(groupValues).length > 0) {
-          newValues[key] = groupValues;
-        }
-      }
-    });
-    setValues(newValues);
+    setValues(filterOutSelected(values, selectedValues));
 
     setSelectedValues({});
   };
@@ -115,7 +135,18 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
             >
               Reset
             </Button>
-            <Button onClick={() => createGroup(selectedValues)}>Group</Button>
+            <Button onClick={group}>Group</Button>
+            <Button
+              onClick={() => {
+                setValues({
+                  ...filterOutSelected(values, selectedValues),
+                  ...selectedValues,
+                });
+                setSelectedValues({});
+              }}
+            >
+              Ungroup
+            </Button>
             <Button onClick={hideValues}>Hide</Button>
           </div>
         </div>
@@ -216,8 +247,8 @@ const ListValue: React.FC<ListValueProps> = ({
       className={`${
         Object.keys(selectedValues).includes(value[0])
           ? "bg-nci-yellow-lighter"
-          : undefined
-      } cursor-pointer`}
+          : ""
+      } cursor-pointer list-inside`}
       key={value[0]}
     >
       {value[0]} ({value[1].toLocaleString()})
@@ -246,7 +277,7 @@ const GroupInput: React.FC<GroupInputProps> = ({
 
   const ref = useClickOutside(() => {
     form.validate();
-    console.log(form);
+    //console.log(form);
     if (Object.keys(form.errors).length === 0) {
       updateGroupName(groupName, form.values.group);
       setEditMode(false);
@@ -276,12 +307,21 @@ const GroupInput: React.FC<GroupInputProps> = ({
           {...form.getInputProps("group")}
         />
       ) : (
-        <li className="flex items-center">
+        <li
+          onClick={() =>
+            setSelectedValues({ ...selectedValues, ...groupValues })
+          }
+          className={`${
+            Object.keys(groupValues).every((k) => selectedValues?.[k])
+              ? "bg-nci-yellow-lighter"
+              : undefined
+          } cursor-pointer flex items-center`}
+        >
           {groupName}{" "}
           <PencilIcon className="ml-2" onClick={() => setEditMode(true)} />
         </li>
       )}
-      <ul className="list-disc pl-5">
+      <ul className="list-disc">
         {Object.entries(groupValues).map((v) => (
           <ListValue
             value={v}
