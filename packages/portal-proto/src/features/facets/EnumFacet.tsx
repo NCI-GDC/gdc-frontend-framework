@@ -5,6 +5,7 @@ import {
   selectTotalCountsByName,
   usePrevious,
   removeCohortFilter,
+  EnumOperandValue,
 } from "@gff/core";
 import {
   FacetDocTypeToCountsIndexMap,
@@ -63,7 +64,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
   dismissCallback = undefined,
   width = undefined,
   facetDataFunc = FacetEnumHooks[docType],
-  updateEnumsFunc = UpdateEnums[docType],
+  updateEnumsFunc = undefined,
   clearFilterFunc = undefined,
 }: EnumFacetCardProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
@@ -91,6 +92,15 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
     clearFilterFunc
       ? clearFilterFunc(field)
       : coreDispatch(removeCohortFilter(field));
+  };
+
+  const updateFacetEnum = (
+    enumerationFilters: EnumOperandValue,
+    field: string,
+  ) => {
+    updateEnumsFunc
+      ? updateEnumsFunc(enumerationFilters, field)
+      : UpdateEnums[docType](enumerationFilters, field, coreDispatch);
   };
 
   // filter missing and "" strings and update checkboxes
@@ -122,14 +132,14 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
 
     if (checked) {
       const updated = selectedEnums ? [...selectedEnums, value] : [value];
-      updateEnumsFunc(updated, field);
+      updateFacetEnum(updated, field);
     } else {
       // TODO: replace with ToggleFacet
       const updated =
         field === "genes.is_cancer_gene_census"
           ? []
           : selectedEnums.filter((x) => x != value);
-      updateEnumsFunc(updated, field);
+      updateFacetEnum(updated, field);
     }
   };
 

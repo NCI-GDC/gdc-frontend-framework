@@ -4,13 +4,16 @@ import {
   selectCart,
   useCoreDispatch,
   useCoreSelector,
-  useFilteredFiles,
   selectCurrentCohortFilterSet,
-  GQLDocType,
-  GQLIndexType,
+  selectFilesData,
+  fetchFiles,
+  buildCohortGqlOperator,
+  joinFilters,
+  usePrevious,
+  useTotalCounts,
 } from "@gff/core";
-import React, { useState } from "react";
-import { AppStore, id, AppContext } from "./appApi";
+import React, { useEffect, useState } from "react";
+import { AppStore, id, AppContext, useAppSelector } from "./appApi";
 import { Button, Menu } from "@mantine/core";
 import {
   MdDownload as DownloadIcon,
@@ -21,6 +24,8 @@ import Link from "next/link";
 import { FileFacetPanel } from "./FileFacetPanel";
 import { FilesView } from "@/features/files/FilesView";
 import { mapGdcFileToCartFile } from "../files/utils";
+import { selectFilters } from "@/features/repositoryApp/repositoryFiltersSlice";
+import { isEqual } from "lodash";
 
 const buttonStyle =
   "mx-1 bg-nci-gray-light hover:bg-nci-gray transition-colors";
@@ -29,18 +34,43 @@ export interface ContextualFilesViewProps {
   readonly handleFileSelected?: (file: GdcFile) => void;
 }
 
+const useCohortCentricFiles = () => {
+  const coreDispatch = useCoreDispatch();
+  const { data, status, error } = useCoreSelector(selectFilesData);
+
+  const repositoryFilters = useAppSelector((state) => selectFilters(state));
+  const cohortFilters = useCoreSelector((state) =>
+    selectCurrentCohortFilterSet(state),
+  );
+
+  const allFilters = joinFilters(cohortFilters, repositoryFilters);
+  const prevFilters = usePrevious(allFilters);
+
+  useEffect(() => {
+    if (status === "uninitialized" || !isEqual(allFilters, prevFilters)) {
+      coreDispatch(fetchFiles({ filters: buildCohortGqlOperator(allFilters) })); // eslint-disable-line
+    }
+  }, [status, coreDispatch, allFilters, prevFilters]);
+
+  return {
+    data,
+    error,
+    isUninitialized: status === "uninitialized",
+    isFetching: status === "pending",
+    isSuccess: status === "fulfilled",
+    isError: status === "rejected",
+  };
+};
+
 const RepositoryApp: React.FC<ContextualFilesViewProps> = ({
   handleFileSelected,
 }: ContextualFilesViewProps) => {
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
   const [selectedFiles, setSelectedFiles] = useState<GdcFile[]>([]);
-  const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilterSet(state),
-  );
-  const { data } = useFilteredFiles();
 
-  console.log("cohortFilter", cohortFilters);
+  const { data } = useCohortCentricFiles();
+  const { data: countsData, isSuccess: isTotalReady } = useTotalCounts();
 
   const handleCheckedFiles = (e, file: GdcFile) => {
     if (e.target.checked) {
@@ -54,10 +84,10 @@ const RepositoryApp: React.FC<ContextualFilesViewProps> = ({
   const allFiles = Array(10001)
     .fill(0)
     .map((_, i) => data?.[i % 10]);
-
   return (
     <div className="flex flex-col mt-4 ">
       <div className="flex flex-row justify-end m-2">
+        <div>Total Files {isTotalReady ? countsData.files : "xxx"}</div>
         <Menu
           control={
             <Button className={buttonStyle}>

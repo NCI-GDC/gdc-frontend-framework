@@ -1,8 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
 import { Operation, FilterSet } from "@gff/core";
 import { AppState } from "./appApi";
-import { CoreState } from "@gff/core/dist/dts/reducers";
 
 export interface RepositoryFiltersSlice {
   readonly filters: FilterSet;
@@ -41,8 +39,9 @@ const slice = createSlice({
         },
       };
     },
-    clearRepositoryFilters: (state) => {
-      state.filters = { mode: "and", root: {} };
+    clearRepositoryFilters: (_state) => {
+      console.log("clearing filters");
+      return { filters: { mode: "and", root: {} } };
     },
   },
   extraReducers: {},

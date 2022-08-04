@@ -6,6 +6,7 @@ import {
   GQLDocType,
   GQLIndexType,
   removeCohortFilter,
+  selectCurrentCohortFilterSet,
   selectFacetDefinitionsByName,
   useCoreSelector,
   useFacetDictionary,
@@ -36,6 +37,7 @@ import {
 import {
   updateRepositoryFilter,
   removeRepositoryFilter,
+  clearRepositoryFilters,
 } from "./repositoryFiltersSlice";
 
 const useRepositoryEnumData = (
@@ -51,27 +53,36 @@ const useRepositoryEnumData = (
     useRepositoryFilters,
   );
 
-const useEnumValues = (enumerationFilters: EnumOperandValue, field: string) =>
-  updateEnumerationFilters(
-    enumerationFilters,
-    field,
-    useAppDispatch(),
-    updateRepositoryFilter,
-    removeRepositoryFilter,
-  );
-
 export const FileFacetPanel = () => {
   const config = useAppSelector(selectRepositoryConfig);
   const { isSuccess: isDictionaryReady } = useFacetDictionary();
   const facets = useCoreSelector((state) =>
     selectFacetDefinitionsByName(state, config.facets),
   );
+  const dispatch = useAppDispatch();
+  const useEnumValues = (
+    enumerationFilters: EnumOperandValue,
+    field: string,
+  ) => {
+    return updateEnumerationFilters(
+      enumerationFilters,
+      field,
+      dispatch,
+      updateRepositoryFilter,
+      removeRepositoryFilter,
+    );
+  };
 
   const [facetDefinitions, setFacetDefinitions] =
     useState<ReadonlyArray<FacetDefinition>>(facets);
   const prevCustomFacets = usePrevious(facets);
   const [opened, setOpened] = useState(false);
+  const cohortFilters = useCoreSelector((state) =>
+    selectCurrentCohortFilterSet(state),
+  );
+
   const appDispatch = useAppDispatch();
+  const prevCohortFilters = usePrevious(cohortFilters);
 
   const handleFilterSelected = (filter: string) => {
     setOpened(false);
@@ -82,6 +93,7 @@ export const FileFacetPanel = () => {
     appDispatch(removeFilter({ facetName: filter }));
   };
 
+  // clears all added custom facets
   const handleClearAll = () => {
     appDispatch(resetToDefault());
   };
@@ -94,6 +106,14 @@ export const FileFacetPanel = () => {
       setFacetDefinitions(facets);
     }
   }, [facets, isDictionaryReady, prevCustomFacets]);
+
+  // Clear filters if Cohort Changes
+  useEffect(() => {
+    if (!isEqual(prevCohortFilters, cohortFilters)) {
+      console.log("clear filters");
+      appDispatch(clearRepositoryFilters());
+    }
+  }, [appDispatch, cohortFilters, prevCohortFilters, prevCustomFacets]);
 
   return (
     <div className="flex flex-col gap-y-4 mr-3 w-64  ">

@@ -29,6 +29,7 @@ import {
 import { useEffect } from "react";
 import isEqual from "lodash/isEqual";
 import { EnumFacetResponse, FacetResponse } from "@/features/facets/types";
+import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
 
 /**
  * Filter selector for all the facet filters
@@ -246,6 +247,7 @@ const useMutationsFacet = (
 type UpdateEnumFiltersFunc = (
   enumerationFilters: EnumOperandValue,
   field: string,
+  dispatch: ThunkDispatch<any, undefined, AnyAction>,
 ) => void;
 /**
  * Adds an enumeration filter to cohort filters
@@ -253,11 +255,11 @@ type UpdateEnumFiltersFunc = (
  * @param enumerationFilters values to update
  * @param field field to update
  */
-export const useUpdateEnumFilters: UpdateEnumFiltersFunc = (
+export const updateEnumFilters: UpdateEnumFiltersFunc = (
   enumerationFilters: EnumOperandValue,
   field: string,
+  dispatch: ThunkDispatch<any, undefined, AnyAction>,
 ) => {
-  const dispatch = useCoreDispatch();
   // undefined just return
   if (enumerationFilters === undefined) return;
   if (enumerationFilters.length > 0) {
@@ -280,8 +282,8 @@ export const useUpdateEnumFilters: UpdateEnumFiltersFunc = (
 export const useUpdateGenomicEnumFilters: UpdateEnumFiltersFunc = (
   enumerationFilters: EnumOperandValue,
   field: string,
+  dispatch: ThunkDispatch<any, undefined, AnyAction>,
 ) => {
-  const dispatch = useCoreDispatch();
   if (enumerationFilters === undefined) return;
   if (enumerationFilters.length > 0) {
     dispatch(
@@ -347,8 +349,8 @@ export const useRangeFacet = (
 };
 
 export const UpdateEnums = {
-  cases: useUpdateEnumFilters,
-  files: useUpdateEnumFilters,
+  cases: updateEnumFilters,
+  files: updateEnumFilters,
   genes: useUpdateGenomicEnumFilters,
   ssms: useUpdateGenomicEnumFilters,
 };

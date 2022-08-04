@@ -1,19 +1,21 @@
 import {
   EnumOperandValue,
   FacetBuckets,
-  fetchFacetByNameGQL,
   FilterSet,
   GQLDocType,
   GQLIndexType,
   OperandValue,
   Operation,
+  useCoreSelector,
+  fetchFacetByNameGQL,
+  selectCurrentCohortFilterSet,
   selectFacetByDocTypeAndField,
   useCoreDispatch,
-  useCoreSelector,
   usePrevious,
+  joinFilters,
 } from "@gff/core";
 import { useEffect } from "react";
-import { ThunkDispatch, AnyAction, Dispatch } from "@reduxjs/toolkit";
+import { ThunkDispatch, AnyAction } from "@reduxjs/toolkit";
 import isEqual from "lodash/isEqual";
 import { EnumFacetResponse } from "@/features/facets/types";
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit/dist/createAction";
@@ -43,7 +45,7 @@ export const useRepositoryFilters = (): FilterSet => {
 type updateEnumFiltersFunc = (
   enumerationFilters: EnumOperandValue,
   field: string,
-  dispatch: ThunkDispatch<any, undefined, AnyAction> & Dispatch<AnyAction>,
+  dispatch: ThunkDispatch<any, undefined, AnyAction>,
   updateFilter: ActionCreatorWithPayload<
     { field: string; operation: Operation },
     string
@@ -106,16 +108,19 @@ export const useLocalFilters = (
   ); // Facet data is always cached in the coreState
 
   const enumValues = selectFieldEnumValues(field);
+  console.log("repo enum: ", field, enumValues);
   const localFilters = selectLocalFilters();
-  const prevLocalFilters = usePrevious(localFilters);
+  const cohortFilters = useCoreSelector((state) =>
+    selectCurrentCohortFilterSet(state),
+  );
+  const allFilters = joinFilters(cohortFilters, localFilters);
+  const prevAllFilters = usePrevious(allFilters);
   const prevEnumValues = usePrevious(enumValues);
-
-  console.log("repo:", enumValues);
 
   useEffect(() => {
     if (
       !facet ||
-      !isEqual(prevLocalFilters, localFilters) ||
+      !isEqual(prevAllFilters, allFilters) ||
       !isEqual(prevEnumValues, enumValues)
     ) {
       coreDispatch(
@@ -131,10 +136,10 @@ export const useLocalFilters = (
     coreDispatch,
     facet,
     field,
-    localFilters,
+    allFilters,
     docType,
     indexType,
-    prevLocalFilters,
+    prevAllFilters,
     prevEnumValues,
     enumValues,
   ]);
