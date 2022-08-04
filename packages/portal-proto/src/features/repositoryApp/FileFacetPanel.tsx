@@ -39,6 +39,7 @@ import {
   removeRepositoryFilter,
   clearRepositoryFilters,
 } from "./repositoryFiltersSlice";
+import { convertFieldToName } from "@/features/facets/utils";
 
 const useRepositoryEnumData = (
   field: string,
@@ -154,11 +155,14 @@ export const FileFacetPanel = () => {
         <LoadingOverlay visible={!isDictionaryReady} />
         {facetDefinitions.map((x, index) => {
           const isDefault = getDefaultFacets().includes(x.full);
+          const facetName = convertFieldToName(x.full, 2);
+          console.log(facetName);
           return (
             // TODO: add other facet types when available
             <EnumFacet
               key={`${x.full}-${index}`}
               field={`${x.full}`}
+              facetName={facetName}
               docType="files"
               indexType="repository"
               showPercent={false}
