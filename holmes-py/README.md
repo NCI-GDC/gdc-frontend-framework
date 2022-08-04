@@ -132,4 +132,3 @@ PWDEBUG=1 gauge run specs
 See [Run Gauge Specifications](https://docs.gauge.org/execution.html?os=macos&language=python&ide=vscode)
 
 This will also compile all the supporting code implementations.
-
