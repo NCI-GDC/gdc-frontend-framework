@@ -1,5 +1,5 @@
 import { EnumFacet } from "@/features/facets/EnumFacet";
-import React, { useEffect, useState, ReactNode } from "react";
+import React, { useEffect, useState } from "react";
 import {
   EnumOperandValue,
   FacetDefinition,
@@ -53,7 +53,7 @@ const useRepositoryEnumData = (
     useRepositoryFilters,
   );
 
-export const FileFacetPanel: ReactNode = () => {
+export const FileFacetPanel = () => {
   const config = useAppSelector(selectRepositoryConfig);
   const { isSuccess: isDictionaryReady } = useFacetDictionary();
   const facets = useCoreSelector((state) =>
@@ -110,7 +110,6 @@ export const FileFacetPanel: ReactNode = () => {
   // Clear filters if Cohort Changes
   useEffect(() => {
     if (!isEqual(prevCohortFilters, cohortFilters)) {
-      console.log("clear filters");
       appDispatch(clearRepositoryFilters());
     }
   }, [appDispatch, cohortFilters, prevCohortFilters, prevCustomFacets]);

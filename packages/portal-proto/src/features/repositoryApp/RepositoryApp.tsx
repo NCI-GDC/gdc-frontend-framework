@@ -13,7 +13,7 @@ import {
 } from "@gff/core";
 import React, { useEffect, useState } from "react";
 import { AppStore, id, AppContext, useAppSelector } from "./appApi";
-import { Button, LoadingOverlay, Menu, Text } from "@mantine/core";
+import { Button, Menu, Text } from "@mantine/core";
 import {
   MdDownload as DownloadIcon,
   MdShoppingCart as CartIcon,
@@ -85,8 +85,7 @@ const RepositoryApp: React.FC<ContextualFilesViewProps> = ({
     .map((_, i) => data?.[i % 10]);
   return (
     <div className="flex flex-col mt-4 ">
-      <div className="flex flex-row justify-end algin center m-2">
-        <LoadingOverlay visible={!isSuccess} />
+      <div className="flex flex-row justify-end align-center m-2">
         <Text transform="uppercase" size="lg" weight={700}>
           Total of{" "}
         </Text>

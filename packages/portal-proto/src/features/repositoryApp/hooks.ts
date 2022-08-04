@@ -108,7 +108,6 @@ export const useLocalFilters = (
   ); // Facet data is always cached in the coreState
 
   const enumValues = selectFieldEnumValues(field);
-  console.log("repo enum: ", field, enumValues);
   const localFilters = selectLocalFilters();
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilterSet(state),

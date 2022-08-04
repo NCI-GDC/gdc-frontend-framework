@@ -40,8 +40,8 @@ const slice = createSlice({
         },
       };
     },
-    clearRepositoryFilters: (state) => {
-      return { ...state, root: {} };
+    clearRepositoryFilters: () => {
+      return { filters: { mode: "and", root: {} } };
     },
   },
   extraReducers: {},
