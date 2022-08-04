@@ -1,0 +1,3 @@
+[submodule "holmes-py"]
+	path = holmes-py
+	url = git@github.com:NCI-GDC/holmes-py.git
