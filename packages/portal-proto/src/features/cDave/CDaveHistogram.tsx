@@ -9,7 +9,11 @@ import { useRangeFacet } from "../facets/hooks";
 import VictoryBarChart from "../charts/VictoryBarChart";
 
 import { COLOR_MAP } from "./constants";
-import { createBuckets, parseContinuousBucket } from "./utils";
+import {
+  createBuckets,
+  parseContinuousBucket,
+  flattenBinnedData,
+} from "./utils";
 
 interface ContinuousHistogramProps {
   readonly field: string;
@@ -116,20 +120,6 @@ const formatBarChartData = (
   return continuous
     ? mappedData
     : mappedData.sort((a, b) => b.yCount - a.yCount);
-};
-
-const flattenBinnedData = (binnedData) => {
-  const flattenedValues = {};
-
-  Object.entries(binnedData).forEach(([k, v]) => {
-    if (Number.isInteger(v)) {
-      flattenedValues[k] = v;
-    } else {
-      flattenedValues[k] = Object.values(v).reduce((a, b) => a + b);
-    }
-  });
-
-  return flattenedValues;
 };
 
 interface HistogramProps {

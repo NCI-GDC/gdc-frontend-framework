@@ -76,7 +76,37 @@ describe("CDaveCard", () => {
       getByRole("row", { name: "missing 1,000 (66.67%)" }),
     ).toBeInTheDocument();
   });
-  it("categorical results sorted by count", () => {});
+
+  it("categorical results sorted by count", () => {
+    jest
+      .spyOn(core, "useCoreSelector")
+      .mockReturnValue({ field: "demographic.gender", type: "keyword" });
+
+    const data = {
+      buckets: [
+        { doc_count: 500, key: "female" },
+        { doc_count: 1000, key: "_missing" },
+      ],
+    };
+
+    const { getAllByRole } = render(
+      <CDaveCard
+        data={data}
+        field={""}
+        updateFields={jest.fn()}
+        initialDashboardRender
+      />,
+    );
+
+    expect(getAllByRole("row")[1]).toHaveTextContent("missing");
+    expect(getAllByRole("row")[2]).toHaveTextContent("female");
+  });
+
+  /*
+  it("table displays custom bins", () => {
+
+  });
+  */
 
   it("continuous result with data", () => {
     jest.spyOn(core, "useCoreSelector").mockReturnValue({
@@ -157,6 +187,4 @@ describe("CDaveCard", () => {
 
     expect(getByText("No data for this property")).toBeInTheDocument();
   });
-
-  it("table displays custom bins", () => {});
 });

@@ -58,3 +58,17 @@ export const parseContinuousBucket = (bucket: string): string[] => {
     .map((val, idx, src) => (src[idx - 1] === "" ? `-${val}` : val))
     .filter((val) => val !== "");
 };
+
+export const flattenBinnedData = (binnedData) => {
+  const flattenedValues = {};
+
+  Object.entries(binnedData).forEach(([k, v]) => {
+    if (Number.isInteger(v)) {
+      flattenedValues[k] = v;
+    } else {
+      flattenedValues[k] = Object.values(v).reduce((a, b) => a + b);
+    }
+  });
+
+  return flattenedValues;
+};

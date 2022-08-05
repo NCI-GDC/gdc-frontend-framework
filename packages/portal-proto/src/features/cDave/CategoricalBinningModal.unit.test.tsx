@@ -218,16 +218,15 @@ describe("<CategoricalBinningModal />", () => {
   });
 
   it("edit group name", async () => {
-    const { queryByText, queryByLabelText, queryByDisplayValue, debug } =
-      render(
-        <CategoricalBinningModal
-          setModalOpen={jest.fn()}
-          field={"Gender"}
-          results={{ female: 10, male: 90, missing: 20 }}
-          customBins={{}}
-          updateBins={jest.fn()}
-        />,
-      );
+    const { queryByText, queryByLabelText, queryByDisplayValue } = render(
+      <CategoricalBinningModal
+        setModalOpen={jest.fn()}
+        field={"Gender"}
+        results={{ female: 10, male: 90, missing: 20 }}
+        customBins={{}}
+        updateBins={jest.fn()}
+      />,
+    );
 
     await createGroup(queryByText);
 
