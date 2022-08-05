@@ -31,15 +31,17 @@ export const ContinuousHistogram: React.FC<ContinuousHistogramProps> = ({
     "repository",
   );
 
+  const resultData = mapKeys(data, (_, k) => toBucketDisplayName(k));
+
   useEffect(() => {
-    setResultData(data);
+    setResultData(resultData);
   }, []);
 
   return (
     <CDaveHistogram
       field={field}
       fieldName={fieldName}
-      data={data}
+      data={resultData}
       isFetching={isFetching}
       continuous={true}
       noData={stats.count === 0}
@@ -62,7 +64,10 @@ export const CategoricalHistogram: React.FC<CategoricalHistogramProps> = ({
   customBinnedData,
 }: CategoricalHistogramProps) => {
   const resultData = Object.fromEntries(
-    (data || []).map((d) => [d.key, d.doc_count]),
+    (data || []).map((d) => [
+      d.key === "_missing" ? "missing" : d.key,
+      d.doc_count,
+    ]),
   );
 
   useEffect(() => {
@@ -97,14 +102,11 @@ const formatBarChartData = (
   displayPercent: boolean,
   continuous: boolean,
 ) => {
-  const dataToMap = mapKeys(data || {}, (_, k) =>
-    k === "_missing" ? "missing" : k,
-  );
-  const yTotal = Object.values(dataToMap).reduce((prevY, y) => prevY + y, 0);
+  const yTotal = Object.values(data).reduce((prevY, y) => prevY + y, 0);
 
-  const mappedData = Object.entries(dataToMap || {}).map(([key, value]) => ({
-    x: truncateString(continuous ? toBucketDisplayName(key) : key, 8),
-    fullName: continuous ? toBucketDisplayName(key) : key,
+  const mappedData = Object.entries(data || {}).map(([key, value]) => ({
+    x: truncateString(key, 8),
+    fullName: key,
     key,
     y: displayPercent ? (value / yTotal) * 100 : value,
     yCount: value,

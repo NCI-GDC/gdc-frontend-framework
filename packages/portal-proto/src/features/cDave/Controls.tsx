@@ -129,7 +129,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
   field,
   updateFields,
   activeFields,
-  searchTerm,
+  searchTerm = "",
 }: FieldControlProps) => {
   const [checked, setChecked] = useState(DEFAULT_FIELDS.includes(field.full));
 

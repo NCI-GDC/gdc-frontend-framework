@@ -76,6 +76,7 @@ describe("CDaveCard", () => {
       getByRole("row", { name: "missing 1,000 (66.67%)" }),
     ).toBeInTheDocument();
   });
+  it("categorical results sorted by count", () => {});
 
   it("continuous result with data", () => {
     jest.spyOn(core, "useCoreSelector").mockReturnValue({

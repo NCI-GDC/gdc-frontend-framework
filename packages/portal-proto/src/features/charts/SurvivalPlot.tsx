@@ -351,7 +351,9 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
             [
               SurvivalPlotTypes.categorical,
               SurvivalPlotTypes.continuous,
-            ].includes(plotType) && "flex flex-row flex-wrap justify-center"
+            ].includes(plotType)
+              ? "flex flex-row flex-wrap justify-center"
+              : undefined
           }
         >
           {!hideLegend &&
