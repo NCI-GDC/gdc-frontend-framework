@@ -1,4 +1,4 @@
-import { Project, useProjects } from "@gff/core";
+import { ProjectDefaults, useProjects } from "@gff/core";
 import { Option, Select } from "../../components/Select";
 import Image from "next/image";
 import { MdFlip, MdSearch } from "react-icons/md";
@@ -7,8 +7,8 @@ import { useState } from "react";
 import { FacetChart } from "../charts/FacetChart";
 import { Button } from "@mantine/core";
 
-const DLBCL: Project = {
-  projectId: "DLBCL",
+const DLBCL: ProjectDefaults = {
+  project_id: "DLBCL",
   name: "Diffuse Large B-Cell Lymphoma",
   primary_site: [
     "1",
@@ -28,6 +28,7 @@ const DLBCL: Project = {
     "15",
   ],
   disease_type: ["Mature B-Cell Lymphomas"],
+  dbgap_accession_number: "phs100009",
 };
 
 export interface ContextualStudiesViewProps {
@@ -38,11 +39,13 @@ export const ContextualStudiesView: React.FC<ContextualStudiesViewProps> = (
   props: ContextualStudiesViewProps,
 ) => {
   const { data } = useProjects({ size: 100 });
-  return <StudiesView projects={data ? [DLBCL, ...data] : []} {...props} />;
+  return (
+    <StudiesView projects={data ? [{ ...DLBCL, ...data }] : []} {...props} />
+  );
 };
 
 export interface StudiesViewProps {
-  readonly projects: ReadonlyArray<Project>;
+  readonly projects: ReadonlyArray<ProjectDefaults>;
   readonly setCurrentStudy: (name: string) => void;
 }
 
@@ -460,7 +463,7 @@ export const StudiesView: React.FC<StudiesViewProps> = ({
 };
 
 interface StudiesProps {
-  readonly projects?: ReadonlyArray<Project>;
+  readonly projects?: ReadonlyArray<ProjectDefaults>;
   readonly onClickStudy?: (string) => void;
 }
 
@@ -475,8 +478,8 @@ const Studies: React.FC<StudiesProps> = ({
       {projects?.map((project) => (
         <Study
           project={project}
-          key={project.projectId}
-          onClick={() => onClickStudy(project.projectId)}
+          key={project.project_id}
+          onClick={() => onClickStudy(project.project_id)}
         />
       ))}
     </div>
@@ -484,12 +487,12 @@ const Studies: React.FC<StudiesProps> = ({
 };
 
 interface StudyProps {
-  readonly project: Project;
+  readonly project: ProjectDefaults;
   readonly onClick: () => void;
 }
 
 const Study: React.FC<StudyProps> = (props: StudyProps) => {
-  const mainProject = props.project.projectId.split("-")[0];
+  const mainProject = props.project.project_id.split("-")[0];
   const projectLogoPath = `/logos/${mainProject}_logo.png`;
 
   /* thoughts on checking if images exist
@@ -538,7 +541,7 @@ const Study: React.FC<StudyProps> = (props: StudyProps) => {
               <Image
                 src={projectLogoPath}
                 layout="fill"
-                alt={`${props.project.projectId} logo`}
+                alt={`${props.project.project_id} logo`}
                 objectFit="contain"
                 className="nextImageFillFix"
               />

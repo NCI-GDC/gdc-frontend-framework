@@ -10,11 +10,13 @@ import { NotificationsProvider } from "@mantine/notifications";
 import { TourProvider } from "@reactour/tour";
 import { CustomBadge as Badge } from "../features/tour/CustomBadge";
 import store from "../app/store";
+import tailwindConfig from "tailwind.config";
 
 // import gdc apps here.
 // their default exports will trigger registration.
 import "../features/demoApp1/DemoApp";
 import "../features/demoApp2/DemoApp";
+import "@/features/repositoryApp/RepositoryApp";
 
 // import the react tab styles once
 import "react-tabs/style/react-tabs.css";
@@ -35,7 +37,7 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
 
   useEffect(() => {
     setPrevPath(currentPath);
-    setCurrentPath(globalThis.location.pathname);
+    setCurrentPath(globalThis.location.pathname + globalThis.location.search);
   }, [currentPath, router.asPath]);
 
   return (
@@ -84,6 +86,12 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
                 "#ffffff",
                 "#ffffff",
               ],
+              // Add default color from tailwind config to Mantine theme
+              ...Object.fromEntries(
+                Object.entries(tailwindConfig.theme.extend.colors).map(
+                  ([key, values]) => [key, Array(10).fill(values?.DEFAULT)],
+                ),
+              ),
             },
             breakpoints: {
               xs: 500,

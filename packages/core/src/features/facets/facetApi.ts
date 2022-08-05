@@ -1,7 +1,7 @@
 import { GdcApiResponse } from "../gdcapi/gdcapi";
 import "isomorphic-fetch";
 
-export const fetchFacetByName = async (
+export const fetchFacetByNameRestApi = async (
   name: string,
 ): Promise<GdcApiResponse<never>> => {
   const response = await fetch(
@@ -14,7 +14,7 @@ export const fetchFacetByName = async (
   throw Error(await response.text());
 };
 
-export const fetchFacetsByNames = async (
+export const fetchFacetsByNamesRestApi = async (
   names: ReadonlyArray<string>,
 ): Promise<GdcApiResponse<never>> => {
   const response = await fetch(

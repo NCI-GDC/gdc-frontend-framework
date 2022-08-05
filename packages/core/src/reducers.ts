@@ -18,19 +18,25 @@ import { imageDetailsReducer } from "./features/imageDetails/imageDetailsSlice";
 import { imageViewerReducer } from "./features/imageDetails/imageViewer";
 import { cohortComparisonReducer } from "./features/cohortComparison";
 import { bannerReducer } from "./features/bannerNotification";
-import { cartReducer } from "./features/cart/cartSlice";
+import { cartReducer } from "./features/cart";
 import { totalCountsReducer } from "./features/summary/totalCountsSlice";
+import { ssmsReducer } from "./features/genomic/ssmsSummary/ssmsSummarySlice";
+import { genesSummaryReducer } from "./features/genomic/geneSummary/geneSummarySlice";
 import {
   cohortApiReducer,
   cohortApiSliceReducerPath,
 } from "./features/api/cohortApiSlice";
 import { biospecimenReducer } from "./features/biospecimen/biospecimenSlice";
+import { clinicalDataAnalysisReducer } from "./features/clinicalDataAnalysis";
+import { caseSummarySliceReducer } from "./features/cases/caseSummarySlice";
+import { facetsByNameTypeAndFilterReducer } from "./features/facets/facetsByNameTypeAndFilter";
 
 export const reducers = combineReducers({
   cohort: cohortReducers,
   session: sessionReducer,
   facets: facetsReducer, // TODO: Pick which one to use in V2
   facetsGQL: fileCaseGenesMutationsFacetReducers,
+  facetsByNameTypeFilter: facetsByNameTypeAndFilterReducer,
   gdcApps: gdcAppReducer,
   files: filesReducer,
   history: historyReducer,
@@ -49,6 +55,10 @@ export const reducers = combineReducers({
   bannerNotification: bannerReducer,
   summary: totalCountsReducer,
   biospecimen: biospecimenReducer,
+  clinicalDataAnalysis: clinicalDataAnalysisReducer,
+  caseSummary: caseSummarySliceReducer,
+  ssms: ssmsReducer,
+  genesSummary: genesSummaryReducer,
   [cohortApiSliceReducerPath]: cohortApiReducer,
 });
 

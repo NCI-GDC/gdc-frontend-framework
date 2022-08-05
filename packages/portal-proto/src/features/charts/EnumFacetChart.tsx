@@ -18,7 +18,7 @@ import {
 } from "victory";
 import * as tailwindConfig from "tailwind.config";
 import ChartTitleBar from "./ChartTitleBar";
-import { capitalize } from "src/utils";
+import { capitalize, truncateString } from "src/utils";
 
 const maxValuesToDisplay = 7;
 
@@ -112,14 +112,6 @@ const convertFieldToName = (field: string): string => {
   const tokens = property.split("_");
   const capitalizedTokens = tokens.map((s) => capitalize(s));
   return capitalizedTokens.join(" ");
-};
-
-const truncateString = (str: string, n: number): string => {
-  if (str.length > n) {
-    return str.substring(0, n) + "...";
-  } else {
-    return str;
-  }
 };
 
 export const processLabel = (label: string): string => {
