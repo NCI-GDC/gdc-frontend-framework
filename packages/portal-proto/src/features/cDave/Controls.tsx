@@ -158,7 +158,9 @@ const FieldControl: React.FC<FieldControlProps> = ({
               id={`switch-${field.full}`}
             />
           </div>
-          <Highlight highlight={searchTerm}>{field.description}</Highlight>
+          <Highlight highlight={searchTerm}>
+            {field?.description || ""}
+          </Highlight>
         </>
       ) : (
         <div className="flex justify-between cursor-pointer">

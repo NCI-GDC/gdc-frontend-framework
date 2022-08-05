@@ -1,4 +1,4 @@
-import { queryByDisplayValue, render } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import CategoricalBinningModal from "./CategoricalBinningModal";
 
@@ -159,6 +159,8 @@ describe("<CategoricalBinningModal />", () => {
     );
 
     await createGroup(queryByText);
+
+    expect(queryByText("Ungroup").closest("button")).toBeDisabled();
 
     await userEvent.click(queryByText("female (10)"));
     await userEvent.click(queryByText("Ungroup"));
