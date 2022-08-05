@@ -10,4 +10,5 @@ Test analysis center navigation
 -----------------------------------
 
 * On GDC Data Portal V2 app
-* Analysis Center Icon
+* Navigation Bar Icon Checks
+* Navigation Default View Icon Checks

@@ -13,8 +13,10 @@ def navigate_to_app():
     APP = GDCDataPortalV2App(WebDriver.page)
     APP.home_page.visit()
 
-@step("Analysis Center Icon")
-def analysis_center_icon():
-    APP.home_page.click_analysis_center_icon()
-    time.sleep(5)
+@step("Navigation Bar Icon Checks")
+def navigation_bar_icon_check():
+    APP.home_page.navigation_bar_card_check()
 
+@step("Navigation Default View Icon Checks")
+def navigation_default_view_icon_check():
+    APP.home_page.navigation_default_view_card_check()

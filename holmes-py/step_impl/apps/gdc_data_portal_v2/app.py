@@ -1,4 +1,5 @@
 from step_impl.apps.gdc_data_portal_v2.pages.home_page import HomePage
+from step_impl.apps.gdc_data_portal_v2.pages.nav_analysis_center import NavAnalysisCenterPage
 
 
 class GDCDataPortalV2App:
@@ -12,4 +13,4 @@ class GDCDataPortalV2App:
 
     def init_pages(self):
         self.home_page = HomePage(self.driver, self.url)
-        self.home_page = navpagehere
+        self.home_page = NavAnalysisCenterPage(self.driver, self.url)

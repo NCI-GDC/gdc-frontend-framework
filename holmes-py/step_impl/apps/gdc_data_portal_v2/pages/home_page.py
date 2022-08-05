@@ -5,9 +5,17 @@ import time
 
 class HomePageLocators:
     """A class for Home page locators. All home page locators should come here"""
+    NAV_NIH_LOGO = "div[id='__next'] >> img[src='/NIH_GDC_DataPortal-logo.svg']"
+    NAV_BAR_ANALYSIS_ICON= "img[alt='Analysis logo']"
+    NAV_BAR_PROJECT_ICON = "img[alt='Studies logo']"   
+    NAV_BAR_COHORT_ICON = "img[alt='Cohort logo']"    
+    NAV_BAR_REPOSITORY_ICON = "img[alt='Downloads logo']"   
 
-    NAV_TOOL_BAR = lambda data_link: f"a[data-test='{data_link}']"
-    ANALYSIS_CENTER_ICON_NAV = "img[alt='Analysis logo']"
+    NAV_DEFAULT_ANALYSIS_ICON = "text='Analysis Center'"
+    NAV_DEFAULT_COHORT_ICON = "main[data-tour='full_page_content'] >> img[src='/user-flow/icons/build.svg']"
+    NAV_DEFAULT_REPOSITORY_ICON = "main[data-tour='full_page_content'] >> img[src='/user-flow/icons/database.svg']"
+    
+
 
 class HomePage:
     def __init__(self, driver: Page, url):
@@ -18,7 +26,3 @@ class HomePage:
 
     def visit(self):
         self.driver.goto(self.URL)
-
-    def click_analysis_center_icon(self):
-        self.driver.wait_for_selector(HomePageLocators.ANALYSIS_CENTER_ICON_NAV, state="visible")
-        self.driver.locator(HomePageLocators.ANALYSIS_CENTER_ICON_NAV).click()
