@@ -1,6 +1,13 @@
-import { render } from "@testing-library/react";
+import { queryByDisplayValue, render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import CategoricalBinningModal from "./CategoricalBinningModal";
+
+const createGroup = async (queryByText) => {
+  await userEvent.click(queryByText("female (10)"));
+  await userEvent.click(queryByText("male (90)"));
+  await userEvent.click(queryByText("Group"));
+  await userEvent.click(document.body);
+};
 
 describe("<CategoricalBinningModal />", () => {
   it("display field name", () => {
@@ -112,7 +119,9 @@ describe("<CategoricalBinningModal />", () => {
     expect(queryByDisplayValue("selected value 1")).toBeInTheDocument();
     await userEvent.click(document.body);
     expect(
-      queryByText("selected value 1").contains(queryByText("female (10)")),
+      queryByText("selected value 1")
+        .closest("li")
+        .contains(queryByText("female (10)")),
     ).toBeTruthy();
   });
   it("add to existing group", async () => {
@@ -126,35 +135,194 @@ describe("<CategoricalBinningModal />", () => {
       />,
     );
 
-    await userEvent.click(queryByText("female (10)"));
-    await userEvent.click(queryByText("male (90)"));
-
-    const group = queryByText("Group");
-    await userEvent.click(group);
-
-    await userEvent.click(document.body);
+    await createGroup(queryByText);
 
     await userEvent.click(queryByText("selected value 1"));
     await userEvent.click(queryByText("missing (20)"));
-    await userEvent.click(group);
+    await userEvent.click(queryByText("Group"));
 
     expect(
-      queryByText("selected value 1").contains(queryByText("missing (20)")),
+      queryByText("selected value 1")
+        .closest("li")
+        .contains(queryByText("missing (20)")),
     ).toBeTruthy();
   });
-  it("ungroup one value", () => {});
+  it("ungroup one value", async () => {
+    const { queryByText } = render(
+      <CategoricalBinningModal
+        setModalOpen={jest.fn()}
+        field={"Gender"}
+        results={{ female: 10, male: 90, missing: 20 }}
+        customBins={{}}
+        updateBins={jest.fn()}
+      />,
+    );
 
-  it("ungroup whole group", () => {});
+    await createGroup(queryByText);
 
-  it("hide group", () => {});
+    await userEvent.click(queryByText("female (10)"));
+    await userEvent.click(queryByText("Ungroup"));
 
-  it("edit group name", () => {});
+    expect(
+      queryByText("selected value 1")
+        .closest("li")
+        .contains(queryByText("female (10)")),
+    ).toBeFalsy();
+  });
 
-  it("empty group name is validation failure", () => {});
-  it("identical group name is validation failure", () => {});
-  it("empty group name is validation failure", () => {});
+  it("ungroup whole group", async () => {
+    const { queryByText } = render(
+      <CategoricalBinningModal
+        setModalOpen={jest.fn()}
+        field={"Gender"}
+        results={{ female: 10, male: 90, missing: 20 }}
+        customBins={{}}
+        updateBins={jest.fn()}
+      />,
+    );
 
-  it("reset to starting values", () => {});
+    await createGroup(queryByText);
+
+    await userEvent.click(queryByText("selected value 1"));
+    await userEvent.click(queryByText("Ungroup"));
+
+    expect(queryByText("selected value 1")).not.toBeInTheDocument();
+    expect(queryByText("female (10)")).toBeInTheDocument();
+  });
+
+  it("hide group", async () => {
+    const { queryByText, queryByTestId } = render(
+      <CategoricalBinningModal
+        setModalOpen={jest.fn()}
+        field={"Gender"}
+        results={{ female: 10, male: 90, missing: 20 }}
+        customBins={{}}
+        updateBins={jest.fn()}
+      />,
+    );
+
+    await createGroup(queryByText);
+
+    await userEvent.click(queryByText("selected value 1"));
+    await userEvent.click(queryByText("Hide"));
+
+    expect(
+      queryByTestId("cat-bin-modal-hidden-values").contains(
+        queryByText("female (10)"),
+      ),
+    ).toBeTruthy();
+
+    expect(queryByText("selected values 1")).not.toBeInTheDocument();
+  });
+
+  it("edit group name", async () => {
+    const { queryByText, queryByLabelText, queryByDisplayValue, debug } =
+      render(
+        <CategoricalBinningModal
+          setModalOpen={jest.fn()}
+          field={"Gender"}
+          results={{ female: 10, male: 90, missing: 20 }}
+          customBins={{}}
+          updateBins={jest.fn()}
+        />,
+      );
+
+    await createGroup(queryByText);
+
+    await userEvent.click(queryByLabelText("edit group name"));
+    const input = queryByDisplayValue("selected value 1");
+    await userEvent.clear(input);
+    await userEvent.type(input, "new group");
+    await userEvent.click(document.body);
+
+    expect(queryByDisplayValue("new group")).toBeInTheDocument();
+  });
+
+  it("empty group name is validation failure", async () => {
+    const { queryByText, queryByLabelText, queryByDisplayValue } = render(
+      <CategoricalBinningModal
+        setModalOpen={jest.fn()}
+        field={"Gender"}
+        results={{ female: 10, male: 90, missing: 20 }}
+        customBins={{}}
+        updateBins={jest.fn()}
+      />,
+    );
+
+    await createGroup(queryByText);
+
+    await userEvent.click(queryByLabelText("edit group name"));
+    await userEvent.clear(queryByDisplayValue("selected value 1"));
+    await userEvent.click(document.body);
+    expect(queryByText("Required field")).toBeInTheDocument();
+  });
+
+  it("identical group name is validation failure", async () => {
+    const { queryByText, queryByLabelText, queryByDisplayValue } = render(
+      <CategoricalBinningModal
+        setModalOpen={jest.fn()}
+        field={"Gender"}
+        results={{ female: 10, male: 90, missing: 20 }}
+        customBins={{}}
+        updateBins={jest.fn()}
+      />,
+    );
+
+    await createGroup(queryByText);
+
+    await userEvent.click(queryByLabelText("edit group name"));
+    const input = queryByDisplayValue("selected value 1");
+    await userEvent.clear(input);
+    await userEvent.type(input, "missing");
+    await userEvent.click(document.body);
+
+    expect(queryByText("missing already exists")).toBeInTheDocument();
+  });
+
+  it("group name same as values is validation failure", async () => {
+    const { queryByText, queryByLabelText, queryByDisplayValue } = render(
+      <CategoricalBinningModal
+        setModalOpen={jest.fn()}
+        field={"Gender"}
+        results={{ female: 10, male: 90, missing: 20 }}
+        customBins={{}}
+        updateBins={jest.fn()}
+      />,
+    );
+
+    await createGroup(queryByText);
+
+    await userEvent.click(queryByLabelText("edit group name"));
+    const input = queryByDisplayValue("selected value 1");
+    await userEvent.clear(input);
+    await userEvent.type(input, "female");
+    await userEvent.click(document.body);
+
+    expect(
+      queryByText(
+        "The group name cannot be the same as the name of the values",
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it("reset to starting values", async () => {
+    const { queryByText, queryByLabelText } = render(
+      <CategoricalBinningModal
+        setModalOpen={jest.fn()}
+        field={"Gender"}
+        results={{ female: 10, male: 90, missing: 20 }}
+        customBins={{}}
+        updateBins={jest.fn()}
+      />,
+    );
+
+    await createGroup(queryByText);
+
+    expect(queryByText("selected value 1")).toBeInTheDocument();
+    await userEvent.click(queryByLabelText("reset groups"));
+
+    expect(queryByText("selected value 1")).not.toBeInTheDocument();
+  });
 
   it("default names given to groups", async () => {
     const { queryByText, queryByDisplayValue } = render(
@@ -167,15 +335,11 @@ describe("<CategoricalBinningModal />", () => {
       />,
     );
 
-    await userEvent.click(queryByText("female (10)"));
-    await userEvent.click(queryByText("male (90)"));
-
-    const group = queryByText("Group");
-    await userEvent.click(group);
+    await createGroup(queryByText);
 
     await userEvent.click(queryByText("missing (20)"));
     await userEvent.click(queryByText("other (10)"));
-    await userEvent.click(group);
+    await userEvent.click(queryByText("Group"));
 
     expect(queryByDisplayValue("selected value 2")).toBeInTheDocument();
   });
@@ -192,10 +356,7 @@ describe("<CategoricalBinningModal />", () => {
       />,
     );
 
-    await userEvent.click(queryByText("female (10)"));
-    await userEvent.click(queryByText("male (90)"));
-    await userEvent.click(queryByText("Group"));
-    await userEvent.click(document.body);
+    await createGroup(queryByText);
 
     await userEvent.click(queryByRole("button", { name: "Save Bins" }));
 

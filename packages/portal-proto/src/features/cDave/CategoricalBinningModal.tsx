@@ -3,7 +3,16 @@ import { pickBy, mapKeys } from "lodash";
 import { Button, Modal, TextInput } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
-import { FaPencilAlt as PencilIcon } from "react-icons/fa";
+import {
+  FaPencilAlt as PencilIcon,
+  FaEyeSlash as HideIcon,
+  FaEye as ShowIcon,
+} from "react-icons/fa";
+import {
+  MdReplay as ResetIcon,
+  MdHorizontalSplit as GroupIcon,
+  MdOutlineHorizontalSplit as UngroupIcon,
+} from "react-icons/md";
 import { createKeyboardAccessibleFunction } from "src/utils";
 
 const DEFAULT_GROUP_NAME_REGEX = /selected value \d+/;
@@ -126,12 +135,14 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
                 setValues(results);
                 setSelectedValues({});
               }}
+              aria-label="reset groups"
             >
-              Reset
+              <ResetIcon size={20} />
             </Button>
             <Button
               onClick={group}
               disabled={Object.keys(selectedValues).length < 2}
+              leftIcon={<GroupIcon />}
             >
               Group
             </Button>
@@ -152,12 +163,14 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
                     ),
                 )
               }
+              leftIcon={<UngroupIcon />}
             >
               Ungroup
             </Button>
             <Button
               onClick={hideValues}
               disabled={Object.keys(selectedValues).length === 0}
+              leftIcon={<HideIcon />}
             >
               Hide
             </Button>
@@ -200,11 +213,12 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
               setHiddenValues(
                 pickBy(
                   hiddenValues,
-                  (_, k) => !Object.keys(selectedHiddenValues).includes(k),
+                  (_, k) => selectedHiddenValues?.[k] === undefined,
                 ),
               );
               setSelectedHiddenValues({});
             }}
+            leftIcon={<ShowIcon />}
           >
             Show
           </Button>
@@ -265,16 +279,21 @@ const ListValue: React.FC<ListValueProps> = ({
 
   return (
     <li
-      onClick={() => updateSelectedValues(name, count)}
-      onKeyPress={createKeyboardAccessibleFunction(() =>
-        updateSelectedValues(name, count),
-      )}
-      tabIndex={0}
       className={`${
         selectedValues?.[name] ? "bg-nci-yellow-lighter" : ""
       } cursor-pointer list-inside`}
     >
-      {name} ({count.toLocaleString()})
+      <div
+        onClick={() => updateSelectedValues(name, count)}
+        onKeyPress={createKeyboardAccessibleFunction(() =>
+          updateSelectedValues(name, count),
+        )}
+        tabIndex={0}
+        role="button"
+        className="inline"
+      >
+        {name} ({count.toLocaleString()})
+      </div>
     </li>
   );
 };
@@ -298,15 +317,8 @@ const GroupInput: React.FC<GroupInputProps> = ({
 }: GroupInputProps) => {
   const [editMode, setEditMode] = useState(true);
 
-  const ref = useClickOutside(() => {
-    form.validate();
-    if (Object.keys(form.errors).length === 0) {
-      updateGroupName(groupName, form.values.group);
-      setEditMode(false);
-    }
-  });
-
   const form = useForm({
+    validateInputOnChange: true,
     initialValues: { group: groupName },
     validate: {
       group: (value) =>
@@ -320,30 +332,49 @@ const GroupInput: React.FC<GroupInputProps> = ({
     },
   });
 
+  const closeInput = () => {
+    if (Object.keys(form.errors).length === 0) {
+      updateGroupName(groupName, form.values.group);
+      setEditMode(false);
+    }
+  };
+
+  const ref = useClickOutside(() => {
+    closeInput();
+  });
+
   return (
-    <li
-      onClick={() => setSelectedValues({ ...selectedValues, ...groupValues })}
-      onKeyPress={createKeyboardAccessibleFunction(() =>
-        setSelectedValues({ ...selectedValues, ...groupValues }),
-      )}
-      tabIndex={0}
-      className={`${
-        Object.keys(groupValues).every((k) => selectedValues?.[k])
-          ? "bg-nci-yellow-lighter"
-          : undefined
-      } cursor-pointer flex items-center`}
-    >
+    <li>
       {editMode ? (
         <TextInput
           ref={ref}
           className={"w-1/2"}
+          onKeyPress={createKeyboardAccessibleFunction(closeInput)}
           {...form.getInputProps("group")}
         />
       ) : (
-        <>
+        <div
+          onClick={() =>
+            setSelectedValues({ ...selectedValues, ...groupValues })
+          }
+          onKeyPress={createKeyboardAccessibleFunction(() =>
+            setSelectedValues({ ...selectedValues, ...groupValues }),
+          )}
+          tabIndex={0}
+          role="button"
+          className={`${
+            Object.keys(groupValues).every((k) => selectedValues?.[k])
+              ? "bg-nci-yellow-lighter"
+              : ""
+          } cursor-pointer flex items-center`}
+        >
           {groupName}{" "}
-          <PencilIcon className="ml-2" onClick={() => setEditMode(true)} />
-        </>
+          <PencilIcon
+            className="ml-2"
+            onClick={() => setEditMode(true)}
+            aria-label="edit group name"
+          />
+        </div>
       )}
       <ul className="list-disc">
         {Object.entries(groupValues).map(([k, v]) => (

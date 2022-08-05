@@ -157,4 +157,6 @@ describe("CDaveCard", () => {
 
     expect(getByText("No data for this property")).toBeInTheDocument();
   });
+
+  it("table displays custom bins", () => {});
 });
