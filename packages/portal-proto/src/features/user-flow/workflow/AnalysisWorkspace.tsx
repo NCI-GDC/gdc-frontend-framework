@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/router";
-import { Chip, Chips, Menu, Grid, ActionIcon } from "@mantine/core";
+import { createStyles, Chip, Menu, Grid, ActionIcon } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
 import { MdSort as SortIcon } from "react-icons/md";
 import AnalysisCard from "@/features/user-flow/workflow/AnalysisCard";
@@ -136,30 +136,34 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
               </div>
               <div className="flex flex-col justify-around items-end">
                 <Menu
-                  control={
+                  aria-label="Select tools sort"
+                  withinPortal={false}
+                  position="bottom-start"
+                  transition="pop-bottom-left"
+                  transitionDuration={150}
+                  classNames={{
+                    label: "text-nci-blue-darkest",
+                    dropdown: "border-t-8 border-nci-blue-darkest w-24",
+                  }}
+                >
+                  <Menu.Target>
                     <ActionIcon
                       variant="outline"
                       className="text-nci-blue-darkest hover:bg-nci-blue hover:text-white hover:border-nci-blue"
                     >
                       <SortIcon size={24} />
                     </ActionIcon>
-                  }
-                  aria-label="Select tools sort"
-                  withinPortal={false}
-                  classNames={{
-                    body: "border-t-8 border-nci-blue-darkest w-24",
-                    itemHovered: "bg-nci-blue-lightest",
-                    itemLabel: "text-nci-blue-darkest",
-                  }}
-                >
-                  {sortOptions.map((option) => (
-                    <Menu.Item
-                      onClick={() => setSortType(option.value)}
-                      key={option.value}
-                    >
-                      {option.label}
-                    </Menu.Item>
-                  ))}
+                  </Menu.Target>
+                  <Menu.Dropdown>
+                    {sortOptions.map((option) => (
+                      <Menu.Item
+                        onClick={() => setSortType(option.value)}
+                        key={option.value}
+                      >
+                        {option.label}
+                      </Menu.Item>
+                    ))}
+                  </Menu.Dropdown>
                 </Menu>
                 {activeTags.length ? (
                   <span
@@ -193,26 +197,29 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
               </div>
             </div>
             <div className="flex flex-row">
-              <Chips
+              <Chip.Group
                 multiple
                 noWrap={false}
                 value={activeTags}
                 onChange={setActiveTags}
-                size={"xs"}
                 spacing={"xs"}
-                classNames={{
-                  checked: "!text-white bg-nci-blue-darkest",
-                  label:
-                    "text-nci-blue border border-solid border-nci-blue-darkest hover:bg-nci-blue hover:text-white hover:border-nci-blue",
-                  checkIcon: "text-white",
-                }}
               >
                 {appTags.map((x) => (
-                  <Chip key={x.value} value={x.value}>
+                  <Chip
+                    key={x.value}
+                    size="xs"
+                    value={x.value}
+                    classNames={{
+                      label:
+                        "text-nci-blue border border-solid border-nci-blue-darkest hover:bg-nci-blue hover:text-white hover:border-nci-blue data-checked:text-white data-checked:bg-nci-blue-darkest ",
+                      checkIcon: "text-white",
+                      iconWrapper: "text-white",
+                    }}
+                  >
                     {x.name}
                   </Chip>
                 ))}
-              </Chips>
+              </Chip.Group>
             </div>
           </Grid.Col>
 

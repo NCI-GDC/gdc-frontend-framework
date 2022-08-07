@@ -179,19 +179,19 @@ export const VerticalTable: FC<VerticalTableProps> = ({
           <Popover
             opened={showColumnMenu}
             onClose={() => setShowColumnMenu(false)}
-            target={
+            width={260}
+            position="bottom"
+            transition="scale"
+            withArrow
+          >
+            <Popover.Target>
               <button
                 className={`mr-0 ml-auto border-1 border-gray-300 p-3`}
                 onClick={() => setShowColumnMenu(!showColumnMenu)}
               >
                 <BsList></BsList>
               </button>
-            }
-            width={260}
-            position="bottom"
-            transition="scale"
-            withArrow
-          >
+            </Popover.Target>
             <div className={`w-fit`}>
               {columnListOptions.length > 0 && showColumnMenu && (
                 <div className={`mr-0 ml-auto`}>

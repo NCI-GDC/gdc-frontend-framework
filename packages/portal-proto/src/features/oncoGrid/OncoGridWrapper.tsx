@@ -152,28 +152,32 @@ const OncoGridWrapper: React.FC = () => {
             label={"Customize Colors"}
             withArrow
           >
-            <Menu
-              control={
-                <ActionIcon variant={"outline"} classNames={{ root: "mx-1" }}>
-                  <MdColorLens />
-                </ActionIcon>
-              }
-              withinPortal={false}
-            >
-              <Menu.Item onClick={() => setShowColorModal(true)}>
-                Customize color
-              </Menu.Item>
-              <Menu.Item
-                onClick={() => {
-                  localStorage.setItem(
-                    "oncogridActiveTheme",
-                    JSON.stringify(defaultColorMap),
-                  );
-                  setColorMap(defaultColorMap);
-                }}
-              >
-                Reset to default
-              </Menu.Item>
+            <Menu>
+              <Menu.Target>
+                control=
+                {
+                  <ActionIcon variant={"outline"} classNames={{ root: "mx-1" }}>
+                    <MdColorLens />
+                  </ActionIcon>
+                }
+                withinPortal={false}
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Item onClick={() => setShowColorModal(true)}>
+                  Customize color
+                </Menu.Item>
+                <Menu.Item
+                  onClick={() => {
+                    localStorage.setItem(
+                      "oncogridActiveTheme",
+                      JSON.stringify(defaultColorMap),
+                    );
+                    setColorMap(defaultColorMap);
+                  }}
+                >
+                  Reset to default
+                </Menu.Item>
+              </Menu.Dropdown>
             </Menu>
           </MTooltip>
           <MTooltip

@@ -139,14 +139,10 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
           <div className="text-nci-blue-darkest">
             <span>{`${caseCounts.toLocaleString()} Cases`}</span>
             {caseCounts === 0 && (
-              <Tooltip
-                label={entry?.noDataTooltip}
-                withArrow
-                wrapLines
-                width={200}
-              >
-                {" "}
-                <MdInfo className="inline-block ml-1" />{" "}
+              <Tooltip label={entry?.noDataTooltip} withArrow width={200}>
+                <div>
+                  <MdInfo className="inline-block ml-1" />
+                </div>
               </Tooltip>
             )}
           </div>

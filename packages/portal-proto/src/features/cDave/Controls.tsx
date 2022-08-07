@@ -165,7 +165,6 @@ const FieldControl: React.FC<FieldControlProps> = ({
           <Tooltip
             label={field?.description || "No description available"}
             withArrow
-            wrapLines
             width={200}
           >
             <label htmlFor={`switch-${field.full}`}>{displayName}</label>

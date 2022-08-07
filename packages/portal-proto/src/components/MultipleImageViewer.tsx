@@ -10,6 +10,7 @@ import {
   Text,
   Alert,
   Tooltip,
+  createStyles,
 } from "@mantine/core";
 import {
   edgeDetails,
@@ -80,7 +81,8 @@ export const MultipleImageViewer = ({
     resetStates();
   };
 
-  const onTabChange = (active: number) => {
+  const onTabChange = (sValue: string) => {
+    const active = parseInt(sValue);
     setActiveTab(active);
     setActiveSlide(0);
     const inside = data?.edges[Object.keys(data.edges)[active]];
@@ -97,6 +99,23 @@ export const MultipleImageViewer = ({
   };
 
   const shouldShowMoreButton = Object.keys(data.edges).length < data.total;
+
+  const styles = createStyles((theme) => ({
+    tabControl: {
+      backgroundColor: theme.white,
+      color: theme.colors.gray[9],
+      border: `1px solid ${theme.colors.gray[4]}`,
+      fontSize: theme.fontSizes.md,
+      padding: `${theme.spacing.lg}px ${theme.spacing.xl}px`,
+      borderRadius: theme.radius.md,
+    },
+    tabActive: {
+      backgroundColor: theme.colors.gray[7],
+      borderColor: theme.colors.gray[7],
+      color: theme.white,
+      fontWeight: "bold",
+    },
+  }));
 
   return (
     <>
@@ -174,15 +193,12 @@ export const MultipleImageViewer = ({
                         key={value}
                         label="Click to Remove"
                         className="my-1"
-                        position="top"
-                        placement="start"
+                        position="top-start"
                         transition="skew-up"
                         transitionDuration={300}
-                        transitionTimingFunction="ease"
                         withArrow
                         classNames={{
-                          body: "h-7",
-                          root: "w-1/4",
+                          tooltip: "h-7 w-1/4",
                         }}
                       >
                         <Badge
@@ -212,38 +228,28 @@ export const MultipleImageViewer = ({
               {Object.keys(data?.edges).length > 0 && activeImage && (
                 <div className="flex-1/2">
                   <Tabs
-                    variant="unstyled"
+                    unstyled
                     orientation="vertical"
-                    active={activeTab}
+                    value={activeTab.toString()}
                     onTabChange={onTabChange}
                     classNames={{
-                      tabsListWrapper:
-                        "max-h-[550px] overflow-x-hidden overflow-y-auto min-w-[40%]",
-                      tabControl: "ml-2 mt-1",
+                      root: "max-h-[550px] overflow-x-hidden overflow-y-auto min-w-[40%]",
+                      tab: "ml-2 mt-1",
                       tabsList: "bg-grey",
                       tabLabel: "text-xs",
-                      body: "max-h-[550px] overflow-y-auto",
+                      panel: "max-h-[550px] overflow-y-auto",
                     }}
-                    styles={(theme) => ({
-                      tabControl: {
-                        backgroundColor: theme.white,
-                        color: theme.colors.gray[9],
-                        border: `1px solid ${theme.colors.gray[4]}`,
-                        fontSize: theme.fontSizes.md,
-                        padding: `${theme.spacing.lg}px ${theme.spacing.xl}px`,
-                        borderRadius: theme.radius.md,
-                      },
-                      tabActive: {
-                        backgroundColor: theme.colors.gray[7],
-                        borderColor: theme.colors.gray[7],
-                        color: theme.white,
-                        fontWeight: "bold",
-                      },
-                    })}
                   >
                     {Object.keys(data?.edges).map((edge) => {
                       return (
-                        <Tabs.Tab key={edge} label={edge}>
+                        <Tabs.Tab key={edge} value={edge}>
+                          {edge}
+                        </Tabs.Tab>
+                      );
+                    })}
+                    {Object.keys(data?.edges).map((edge) => {
+                      return (
+                        <Tabs.Panel key={edge} value={edge}>
                           <List>
                             {data.edges[edge].map((file, index) => (
                               <List.Item
@@ -265,7 +271,7 @@ export const MultipleImageViewer = ({
                               </List.Item>
                             ))}
                           </List>
-                        </Tabs.Tab>
+                        </Tabs.Panel>
                       );
                     })}
                   </Tabs>

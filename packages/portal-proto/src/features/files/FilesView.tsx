@@ -88,14 +88,13 @@ export const ContextualFilesView: React.FC<ContextualFilesViewProps> = ({
   return (
     <div className="flex flex-col mt-4 ">
       <div className="flex flex-row justify-end m-2">
-        <Menu
-          control={
+        <Menu>
+          <Menu.Target>
             <Button className={buttonStyle}>
               <CartIcon size={"1.5rem"} />
               Update Cart
             </Button>
-          }
-        >
+          </Menu.Target>
           <Menu.Item
             onClick={() =>
               addToCart(mapGdcFileToCartFile(allFiles), currentCart, dispatch)
@@ -254,9 +253,6 @@ export const FilesView: React.FC<FilesViewProps> = ({
           ]}
         />
         <Pagination
-          classNames={{
-            active: "bg-nci-gray",
-          }}
           size="sm"
           radius="md"
           color="gray"

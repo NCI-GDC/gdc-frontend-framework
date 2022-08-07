@@ -249,9 +249,6 @@ const GenesTable: React.FC<GenesTableProps> = ({
           ]}
         />
         <Pagination
-          classNames={{
-            active: "bg-nci-gray",
-          }}
           size="sm"
           radius="md"
           color="gray"

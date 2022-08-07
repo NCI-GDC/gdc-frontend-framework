@@ -119,15 +119,14 @@ export const Biospecimen = ({
         <>
           <div className="flex justify-between">
             <h1>Biospecimen</h1>
-            <Menu
-              control={
+            <Menu>
+              <Menu.Target>
                 <Button className="px-1.5 min-h-7 w-28 border-nci-gray-light border rounded">
                   <MdFileDownload size="1.25em" />
                   Download
                 </Button>
-              }
-              size="xs"
-            >
+              </Menu.Target>
+
               <Menu.Item icon={<MdFileDownload size="1.25em" />}>TSV</Menu.Item>
               <Menu.Item icon={<MdFileDownload size="1.25em" />}>
                 JSON

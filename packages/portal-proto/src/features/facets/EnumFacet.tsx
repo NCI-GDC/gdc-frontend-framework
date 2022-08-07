@@ -181,11 +181,10 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
             label={description}
             classNames={{
               arrow: "bg-nci-gray-light",
-              body: "bg-white text-nci-gray-darkest",
+              tooltip: "bg-white text-nci-gray-darkest",
             }}
-            position="bottom"
-            placement="start"
-            wrapLines
+            position="bottom-start"
+            multiline
             width={220}
             withArrow
             transition="fade"

@@ -31,7 +31,8 @@ const ColorPickerButton: React.FC<ColorPickerButtonProps> = ({
       onClose={() => setColorPickerOpen(false)}
       position={"bottom"}
       withinPortal={false}
-      target={
+    >
+      <Popover.Target>
         <>
           <Tooltip label={"Click to adjust color"} withArrow>
             <Button
@@ -47,8 +48,7 @@ const ColorPickerButton: React.FC<ColorPickerButtonProps> = ({
             </Button>
           </Tooltip>
         </>
-      }
-    >
+      </Popover.Target>
       <ColorPicker
         format="rgba"
         value={color}

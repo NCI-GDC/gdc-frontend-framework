@@ -164,7 +164,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   /**
    * remove comparative survival plot when tabs or filters change.
    */
-  const handleTabChanged = (_tabIndex: number, tabKey?: string) => {
+  const handleTabChanged = (tabKey: string) => {
     setAppMode(tabKey as AppModeState);
     setComparativeSurvival(undefined);
   };
@@ -245,15 +245,17 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
         })}
       </div>
       <Tabs
+        value={appMode}
         variant="pills"
         classNames={{
           root: "mt-6",
-          tabActive:
-            "bg-nci-blue-darkest text-nci-gray-lightest font-medium p-4 hover:bg-nci-blue-dark",
         }}
         onTabChange={handleTabChanged}
       >
-        <Tabs.Tab label="Genes" tabKey="genes">
+        <Tabs.Tab value="genes">Genes</Tabs.Tab>
+
+        <Tabs.Tab value="ssms">Mutations</Tabs.Tab>
+        <Tabs.Panel value="genes" pt="xs">
           <div className="flex flex-row">
             <div className="flex flex-col">
               <Grid className="mx-2 bg-white w-9/12">
@@ -287,8 +289,8 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
               />
             </div>
           </div>
-        </Tabs.Tab>
-        <Tabs.Tab label="Mutations" tabKey="ssms">
+        </Tabs.Panel>
+        <Tabs.Panel value="genes" pt="xs">
           <div className="flex flex-row">
             <div className="flex flex-col">
               <div className="bg-white w-9/12">
@@ -318,7 +320,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
               />
             </div>
           </div>
-        </Tabs.Tab>
+        </Tabs.Panel>
       </Tabs>
     </div>
   );

@@ -4,7 +4,6 @@ import {
   ActionIcon,
   Tooltip,
   Checkbox,
-  RadioGroup,
   Radio,
   Loader,
   Button,
@@ -234,7 +233,7 @@ const Result: React.FC<ResultProps> = ({
       ) : (
         <>
           <div className="flex justify-between p-2">
-            <RadioGroup
+            <Radio.Group
               size="sm"
               className="p-2"
               onChange={(e) => setDisplayPercent(e === "percent")}
@@ -242,17 +241,16 @@ const Result: React.FC<ResultProps> = ({
             >
               <Radio value="counts" label="# of Cases" />
               <Radio value="percent" label="% of Cases" />
-            </RadioGroup>
-            <Menu
-              control={
+            </Radio.Group>
+            <Menu>
+              <Menu.Target>
                 <ActionIcon
                   variant="outline"
                   className="text-nci-blue-darkest border-nci-blue-darkest"
                 >
                   <DownloadIcon />
                 </ActionIcon>
-              }
-            >
+              </Menu.Target>
               <Menu.Item>SVG</Menu.Item>
               <Menu.Item>PNG</Menu.Item>
               <Menu.Item>JSON</Menu.Item>
@@ -275,16 +273,15 @@ const Result: React.FC<ResultProps> = ({
           </div>
           <div className="flex justify-between p-2">
             <div>
-              <Menu
-                control={
+              <Menu>
+                <Menu.Target>
                   <Button
                     rightIcon={<DownIcon size={20} />}
                     className="bg-white text-nci-gray-darkest border-nci-gray"
                   >
                     Select Action
                   </Button>
-                }
-              >
+                </Menu.Target>
                 <Menu.Item disabled>Save as a new cohort</Menu.Item>
                 <Menu.Item disabled>Add to cohort</Menu.Item>
                 <Menu.Item disabled>Remove from cohort</Menu.Item>
@@ -293,16 +290,15 @@ const Result: React.FC<ResultProps> = ({
                 TSV
               </Button>
             </div>
-            <Menu
-              control={
+            <Menu>
+              <Menu.Target>
                 <Button
                   rightIcon={<DownIcon size={20} />}
                   className="bg-white text-nci-gray-darkest border-nci-gray"
                 >
                   Customize Bins
                 </Button>
-              }
-            >
+              </Menu.Target>
               <Menu.Item>Edit Bins</Menu.Item>
               <Menu.Item disabled>Reset to Default</Menu.Item>
             </Menu>

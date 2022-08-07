@@ -38,7 +38,6 @@ const Tooltip: React.FC<TooltipProps> = ({ content }: TooltipProps) => {
       label={content}
       color={"gray"}
       style={{ left: x, top: y, position: "absolute" }}
-      tooltipRef={(ref) => (tooltipRef.current = ref)}
       opened={content !== null}
       withArrow
       withinPortal={false}

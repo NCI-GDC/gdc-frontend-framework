@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { CollapsibleContainer } from "@/components/CollapsibleContainer";
-import { Button, Menu, Tabs, Divider } from "@mantine/core";
+import { Button, Menu, Tabs, TabsProps, Divider } from "@mantine/core";
 import { ContextualCasesView } from "../cases/CasesView";
 import CountButton from "./CountButton";
 import { convertFilterToComponent } from "./QueryRepresentation";
@@ -110,8 +110,8 @@ const ContextBar: React.FC<CohortGroupProps> = ({
   );
 
   const buttonStyle =
-    "bg-white text-nci-blue-darkest border border-solid border-nci-blue-darkest h-12 hover:bg-nci-blue hover:text-white hover:border-nci-blue";
-  const tabStyle = `${buttonStyle} rounded-md first:border-r-0 last:border-l-0 first:rounded-r-none last:rounded-l-none hover:border-nci-blue-darkest`;
+    "flex flex-row items-center bg-white text-nci-blue-darkest border border-solid border-nci-blue-darkest h-12 hover:bg-nci-blue hover:text-white hover:border-nci-blue";
+  const tabStyle = `${buttonStyle} rounded-md first:border-r-0 last:border-l-0 first:rounded-r-none last:rounded-l-none hover:border-nci-blue-darkest data-active:bg-nci-blue-darkest data-active:text-white`;
 
   const clearAllFilters = () => {
     coreDispatch(clearCohortFilters());
@@ -166,8 +166,8 @@ const ContextBar: React.FC<CohortGroupProps> = ({
           </div>
           <div className="relative p-2">
             <div className="flex flex-row absolute ml-2">
-              <Menu
-                control={
+              <Menu>
+                <Menu.Target>
                   <Button className={buttonStyle}>
                     <DownloadIcon size="1.5rem" />
                     <CountButton
@@ -176,53 +176,64 @@ const ContextBar: React.FC<CohortGroupProps> = ({
                       className="px-2"
                     />
                   </Button>
-                }
-              >
-                <Menu.Item icon={<AddToCartIcon size="1.5rem" />}>
-                  Add to Cart
-                </Menu.Item>
-                <Menu.Item icon={<DownloadIcon size="1.5rem" />}>
-                  Download Manifest
-                </Menu.Item>
+                </Menu.Target>
+                <Menu.Dropdown>
+                  <Menu.Item icon={<AddToCartIcon size="1.5rem" />}>
+                    Add to Cart
+                  </Menu.Item>
+                  <Menu.Item icon={<DownloadIcon size="1.5rem" />}>
+                    Download Manifest
+                  </Menu.Item>
+                </Menu.Dropdown>
               </Menu>
-              <Menu
-                control={
+              <Menu>
+                <Menu.Target>
                   <Button className={`ml-2 ${buttonStyle}`}>
                     <FilesIcon size="1.5rem" className="mr-1" /> Metadata
                   </Button>
-                }
-              >
-                <Menu.Item>Biospecimen</Menu.Item>
-                <Menu.Item>Clinical</Menu.Item>
-                <Menu.Item>Sample Sheet</Menu.Item>
+                </Menu.Target>
+                <Menu.Dropdown>
+                  <Menu.Item>Biospecimen</Menu.Item>
+                  <Menu.Item>Clinical</Menu.Item>
+                  <Menu.Item>Sample Sheet</Menu.Item>
+                </Menu.Dropdown>
               </Menu>
             </div>
             <Tabs
-              position="right"
-              variant="unstyled"
-              data-tour="cohort_summary"
               classNames={{
-                tabActive: "!bg-nci-blue-darkest !text-white",
-                tabControl: tabStyle,
-                body: "py-8 px-2",
+                tab: tabStyle,
+                tabsList: "px-2 mb-4 border-0",
+                root: "border-0",
               }}
+              data-tour="cohort_summary"
+              defaultValue="summary"
             >
-              <Tabs.Tab
-                data-tour="cohort_summary_charts"
-                label="Summary View"
-                icon={<SummaryChartIcon size="1.5rem" />}
-              >
-                <SummaryFacets fields={summaryFields} />
-              </Tabs.Tab>
-              <Tabs.Tab
-                data-tour="cohort_summary_table"
-                label="Table View"
-                icon={<TableIcon size="1.5rem" />}
-              >
-                <div className="bg-secondary">
-                  <ContextualCasesView />
-                </div>
-              </Tabs.Tab>
+              <Tabs.List position="right">
+                <Tabs.Tab
+                  data-tour="cohort_summary_charts"
+                  value="summary"
+                  icon={<SummaryChartIcon size="1.5rem" />}
+                >
+                  {" "}
+                  Summary View{" "}
+                </Tabs.Tab>
+
+                <Tabs.Tab
+                  data-tour="cohort_summary_table"
+                  value="table"
+                  icon={<TableIcon size="1.5rem" />}
+                >
+                  Table View
+                </Tabs.Tab>
+              </Tabs.List>
+              <Tabs.Panel value="summary">
+                {" "}
+                <SummaryFacets fields={summaryFields} />{" "}
+              </Tabs.Panel>
+              <Tabs.Panel value={"table"}>
+                {" "}
+                <ContextualCasesView />
+              </Tabs.Panel>
             </Tabs>
           </div>
         </div>
