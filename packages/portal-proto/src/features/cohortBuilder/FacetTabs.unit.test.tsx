@@ -11,7 +11,7 @@ describe("<FacetTabs />", () => {
     jest.spyOn(func, "useCoreDispatch").mockImplementation(jest.fn());
   });
 
-  it("No custom facets", () => {
+  it("No custom facets", async () => {
     jest.spyOn(core, "useCoreSelector").mockReturnValue({
       general: {
         label: "General",
@@ -30,7 +30,7 @@ describe("<FacetTabs />", () => {
     const { queryByText } = render(<FacetTabs />);
     const customTab = queryByText("Custom");
     expect(customTab).toBeInTheDocument();
-    userEvent.click(customTab);
+    await userEvent.click(customTab);
     expect(queryByText("Add Custom Facet")).toBeDefined();
   });
 });

@@ -239,10 +239,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
                 }}
                 aria-label="Remove the facet"
               >
-                <CloseIcon
-                  size="1.25em"
-                  color={tailwindConfig.theme.extend.colors["gdc-blue"].darker}
-                />
+                <CloseIcon size="1.25em" className="text-gdc-blue-darker" />
               </button>
             ) : null}
           </div>
