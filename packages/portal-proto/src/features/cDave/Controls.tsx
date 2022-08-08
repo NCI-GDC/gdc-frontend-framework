@@ -22,6 +22,7 @@ import { Stats, Buckets } from "@gff/core";
 import { createKeyboardAccessibleFunction } from "src/utils";
 import { COLOR_MAP, DEFAULT_FIELDS, FACET_SORT, TABS } from "./constants";
 import { toDisplayName } from "./utils";
+import tailwindConfig from "../../../tailwind.config";
 
 interface CDaveField {
   readonly field_type: string;
@@ -148,37 +149,74 @@ const FieldControl: React.FC<FieldControlProps> = ({
               <Highlight highlight={searchTerm}>{displayName}</Highlight>
             </label>
             <Switch
-              classNames={{ input: "bg-none" }}
+              styles={(theme) => ({
+                input: {
+                  "&:hover": {
+                    backgroundColor: theme.fn.darken(
+                      tailwindConfig.theme.extend.colors[
+                        COLOR_MAP[field.field_type]
+                      ]?.DEFAULT,
+                      0.05,
+                    ),
+                  },
+                  "&:checked": {
+                    color:
+                      tailwindConfig.theme.extend.colors[
+                        COLOR_MAP[field.field_type]
+                      ]?.DEFAULT,
+                  },
+                },
+              })}
+              classNames={{
+                input: "bg-none rounded-lg",
+              }}
               checked={checked}
               onChange={(e) => {
                 setChecked(e.currentTarget.checked);
                 updateFields(field.full);
               }}
-              color={COLOR_MAP[field.field_type]}
               id={`switch-${field.full}`}
             />
           </div>
           <Highlight highlight={searchTerm}>{field.description}</Highlight>
         </>
       ) : (
-        <div className="flex justify-between cursor-pointer">
+        <div className="flex justify-between cursor-pointer bg-none">
           <Tooltip
             label={field?.description || "No description available"}
             withArrow
             width={200}
+            multiline
           >
             <label htmlFor={`switch-${field.full}`}>{displayName}</label>
           </Tooltip>
           <Switch
+            styles={(theme) => ({
+              input: {
+                "&:hover": {
+                  backgroundColor: theme.fn.darken(
+                    tailwindConfig.theme.extend.colors[
+                      COLOR_MAP[field.field_type]
+                    ]?.DEFAULT,
+                    0.05,
+                  ),
+                },
+                "&:checked": {
+                  color:
+                    tailwindConfig.theme.extend.colors[
+                      COLOR_MAP[field.field_type]
+                    ]?.DEFAULT,
+                },
+              },
+            })}
             classNames={{
-              input: `bg-none text-${COLOR_MAP[field.field_type]}`,
+              input: "bg-none rounded-lg",
             }}
             checked={checked}
             onChange={(e) => {
               setChecked(e.currentTarget.checked);
               updateFields(field.full);
             }}
-            color={COLOR_MAP[field.field_type]}
             id={`switch-${field.full}`}
           />
         </div>
@@ -227,8 +265,8 @@ const Controls: React.FC<ControlPanelProps> = ({
     >
       <Tooltip
         withArrow
+        withinPortal
         label={controlsExpanded ? "Hide Control Panel" : "Show Control Panel"}
-        className="self-end"
       >
         <ActionIcon
           onClick={() => setControlsExpanded(!controlsExpanded)}

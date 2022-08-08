@@ -100,23 +100,6 @@ export const MultipleImageViewer = ({
 
   const shouldShowMoreButton = Object.keys(data.edges).length < data.total;
 
-  const styles = createStyles((theme) => ({
-    tabControl: {
-      backgroundColor: theme.white,
-      color: theme.colors.gray[9],
-      border: `1px solid ${theme.colors.gray[4]}`,
-      fontSize: theme.fontSizes.md,
-      padding: `${theme.spacing.lg}px ${theme.spacing.xl}px`,
-      borderRadius: theme.radius.md,
-    },
-    tabActive: {
-      backgroundColor: theme.colors.gray[7],
-      borderColor: theme.colors.gray[7],
-      color: theme.white,
-      fontWeight: "bold",
-    },
-  }));
-
   return (
     <>
       <div className="flex justify-between">
@@ -228,34 +211,53 @@ export const MultipleImageViewer = ({
               {Object.keys(data?.edges).length > 0 && activeImage && (
                 <div className="flex-1/2">
                   <Tabs
-                    unstyled
                     orientation="vertical"
+                    variant="pills"
                     value={activeTab.toString()}
                     onTabChange={onTabChange}
                     classNames={{
-                      root: "max-h-[550px] overflow-x-hidden overflow-y-auto min-w-[40%]",
+                      root: "max-h-[550px] overflow-x-hidden min-w-[40%]",
                       tab: "ml-2 mt-1",
-                      tabsList: "bg-grey",
-                      tabLabel: "text-xs",
+                      tabsList: "bg-grey overflow-y-auto",
+                      tabLabel:
+                        "text-xs text-nci-gray-darkest px-2 font-medium ",
                       panel: "max-h-[550px] overflow-y-auto",
                     }}
-                  >
-                    {Object.keys(data?.edges).map((edge) => {
-                      return (
-                        <Tabs.Tab key={edge} value={edge}>
-                          {edge}
-                        </Tabs.Tab>
-                      );
+                    styles={(theme) => ({
+                      tab: {
+                        backgroundColor: theme.white,
+                        color: theme.colors.gray[9],
+                        border: `1px solid ${theme.colors.gray[4]}`,
+                        fontSize: theme.fontSizes.sm,
+                        padding: `1em 1em`,
+                        borderRadius: theme.radius.md,
+                      },
+                      tabLabel: {
+                        borderColor: theme.colors.gray[7],
+                        color: theme.white,
+                        fontWeight: "bold",
+                      },
                     })}
-                    {Object.keys(data?.edges).map((edge) => {
+                  >
+                    <Tabs.List>
+                      {Object.keys(data?.edges).map((edge, index) => {
+                        return (
+                          <Tabs.Tab key={edge} value={index.toString()}>
+                            {edge}
+                          </Tabs.Tab>
+                        );
+                      })}
+                    </Tabs.List>
+                    {Object.keys(data?.edges).map((edge, index) => {
                       return (
-                        <Tabs.Panel key={edge} value={edge}>
+                        <Tabs.Panel key={edge} value={index.toString()}>
                           <List>
                             {data.edges[edge].map((file, index) => (
                               <List.Item
                                 key={`${file.file_id}${file.submitter_id}`}
                                 className="max-w-xs max-h-xs"
                               >
+                                {console.log("Slide")}
                                 <Slides
                                   file_id={file.file_id}
                                   submitter_id={file.submitter_id}

@@ -251,9 +251,11 @@ const Result: React.FC<ResultProps> = ({
                   <DownloadIcon />
                 </ActionIcon>
               </Menu.Target>
-              <Menu.Item>SVG</Menu.Item>
-              <Menu.Item>PNG</Menu.Item>
-              <Menu.Item>JSON</Menu.Item>
+              <Menu.Dropdown>
+                <Menu.Item>SVG</Menu.Item>
+                <Menu.Item>PNG</Menu.Item>
+                <Menu.Item>JSON</Menu.Item>
+              </Menu.Dropdown>
             </Menu>
           </div>
           <div className="h-64">
@@ -282,9 +284,11 @@ const Result: React.FC<ResultProps> = ({
                     Select Action
                   </Button>
                 </Menu.Target>
-                <Menu.Item disabled>Save as a new cohort</Menu.Item>
-                <Menu.Item disabled>Add to cohort</Menu.Item>
-                <Menu.Item disabled>Remove from cohort</Menu.Item>
+                <Menu.Dropdown>
+                  <Menu.Item disabled>Save as a new cohort</Menu.Item>
+                  <Menu.Item disabled>Add to cohort</Menu.Item>
+                  <Menu.Item disabled>Remove from cohort</Menu.Item>
+                </Menu.Dropdown>
               </Menu>
               <Button className="bg-white text-nci-gray-darkest border-nci-gray ml-2">
                 TSV
@@ -299,8 +303,10 @@ const Result: React.FC<ResultProps> = ({
                   Customize Bins
                 </Button>
               </Menu.Target>
-              <Menu.Item>Edit Bins</Menu.Item>
-              <Menu.Item disabled>Reset to Default</Menu.Item>
+              <Menu.Dropdown>
+                <Menu.Item>Edit Bins</Menu.Item>
+                <Menu.Item disabled>Reset to Default</Menu.Item>
+              </Menu.Dropdown>
             </Menu>
           </div>
           <CDaveTable fieldName={fieldName} data={barChartData} />
