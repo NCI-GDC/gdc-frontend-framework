@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/router";
-import { createStyles, Chip, Menu, Grid, ActionIcon } from "@mantine/core";
+import { Chip, Menu, Grid, ActionIcon } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
 import { MdSort as SortIcon } from "react-icons/md";
 import AnalysisCard from "@/features/user-flow/workflow/AnalysisCard";

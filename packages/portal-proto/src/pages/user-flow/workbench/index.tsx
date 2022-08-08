@@ -115,10 +115,18 @@ const ActionButtonBar = () => {
                 pathname: "/user-flow/workbench/analysis_page",
                 query: { app: undefined },
               }}
-              className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 px-5 rounded inline-flex items-center shadow-md transition-colors "
+              classNames={{
+                root: "bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 px-5 rounded shadow-md transition-colors",
+              }}
             >
-              <Image src={"/user-flow/icons/dna.svg"} width={42} height={42} />{" "}
-              <span className="px-4">Analysis Center</span>
+              <div className="flex flex-row items-center">
+                <Image
+                  src={"/user-flow/icons/dna.svg"}
+                  width={42}
+                  height={42}
+                />{" "}
+                <span className="px-4">Analysis Center</span>
+              </div>
             </Button>
           </Tooltip>
         </Link>

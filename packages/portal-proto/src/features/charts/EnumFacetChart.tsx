@@ -4,7 +4,7 @@
  */
 
 import { useEffect, useState } from "react";
-import { Box, Button, Loader, Tooltip } from "@mantine/core";
+import { Box, Loader, Tooltip } from "@mantine/core";
 import { useElementSize } from "@mantine/hooks";
 import {
   VictoryBar,

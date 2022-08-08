@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { CollapsibleContainer } from "@/components/CollapsibleContainer";
-import { Button, Menu, Tabs, TabsProps, Divider } from "@mantine/core";
+import { Button, Menu, Tabs, Divider } from "@mantine/core";
 import { ContextualCasesView } from "../cases/CasesView";
 import CountButton from "./CountButton";
 import { convertFilterToComponent } from "./QueryRepresentation";

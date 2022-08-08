@@ -136,7 +136,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
         {entry.hideCounts ? (
           <div className="h-4" />
         ) : cohortCounts ? (
-          <div className="text-nci-blue-darkest">
+          <div className="flex flex-row items-center text-nci-blue-darkest">
             <span>{`${caseCounts.toLocaleString()} Cases`}</span>
             {caseCounts === 0 && (
               <Tooltip label={entry?.noDataTooltip} withArrow width={200}>

@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef } from "react";
-import dynamic from "next/dynamic";
 import { LoadingOverlay, Button, Box, Tooltip, Menu } from "@mantine/core";
 import { FaCrosshairs, FaFire, FaSortAmountDown } from "react-icons/fa";
 import {

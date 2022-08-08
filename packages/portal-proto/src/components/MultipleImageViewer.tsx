@@ -10,7 +10,6 @@ import {
   Text,
   Alert,
   Tooltip,
-  createStyles,
 } from "@mantine/core";
 import {
   edgeDetails,

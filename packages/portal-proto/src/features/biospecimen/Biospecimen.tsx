@@ -121,7 +121,7 @@ export const Biospecimen = ({
             <h1>Biospecimen</h1>
             <Menu>
               <Menu.Target>
-                <Button className="px-1.5 min-h-7 w-28 border-nci-gray-light border rounded">
+                <Button className="px-1.5 min-h-7 w-28 border-nci-gray-light border rounded text-nci-gray-lightest bg-nci-blue hover:bg-nci-blue-darker">
                   <MdFileDownload size="1.25em" />
                   Download
                 </Button>
@@ -182,7 +182,7 @@ export const Biospecimen = ({
                     );
                     setExpandedCount(0);
                   }}
-                  className="ml-4 w-32"
+                  className="ml-4 w-32 text-nci-gray-lightest bg-nci-blue hover:bg-nci-blue-darker "
                   disabled={searchText.length > 0}
                 >
                   {isAllExpanded ? "Collapse All" : "Expand All"}
