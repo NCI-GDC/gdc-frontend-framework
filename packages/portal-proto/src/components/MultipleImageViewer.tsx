@@ -294,6 +294,9 @@ export const MultipleImageViewer = ({
                     setShowMorePressed(true);
                   }}
                   size="xs"
+                  classNames={{
+                    root: "bg-nci-gray-lighter hover:bg-nci-gray-dark",
+                  }}
                 >
                   Show More
                 </Button>

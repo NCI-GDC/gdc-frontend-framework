@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {
+  Box,
   Modal,
   Button,
   Tooltip,
@@ -33,12 +34,12 @@ const ColorPickerButton: React.FC<ColorPickerButtonProps> = ({
       withinPortal={false}
     >
       <Popover.Target>
-        <>
+        <Box>
           <Tooltip label={"Click to adjust color"} withArrow>
             <Button
               variant="outline"
               color="gray"
-              onClick={() => setColorPickerOpen(true)}
+              onClick={() => setColorPickerOpen(!colorPickerOpen)}
               classNames={{
                 root: "min-w-[150px]",
               }}
@@ -47,13 +48,15 @@ const ColorPickerButton: React.FC<ColorPickerButtonProps> = ({
               <div className="pl-1">{label}</div>
             </Button>
           </Tooltip>
-        </>
+        </Box>
       </Popover.Target>
-      <ColorPicker
-        format="rgba"
-        value={color}
-        onChange={(newColor) => setColor(value, newColor)}
-      />
+      <Popover.Dropdown>
+        <ColorPicker
+          format="rgba"
+          value={color}
+          onChange={(newColor) => setColor(value, newColor)}
+        />
+      </Popover.Dropdown>
     </Popover>
   );
 };
@@ -170,8 +173,12 @@ const ColorPaletteModal: React.FC<ColorPaletteModalProps> = ({
       </div>
       <hr className="m-4" />
       <div className="flex justify-end gap-x-2">
-        <Button onClick={closeWithSaving}>Cancel</Button>
-        <Button onClick={savePalette}>Save</Button>
+        <Button className="bg-nci-gray" onClick={closeWithSaving}>
+          Cancel
+        </Button>
+        <Button className="bg-nci-gray" onClick={savePalette}>
+          Save
+        </Button>
       </div>
     </Modal>
   );

@@ -126,11 +126,14 @@ export const Biospecimen = ({
                   Download
                 </Button>
               </Menu.Target>
-
-              <Menu.Item icon={<MdFileDownload size="1.25em" />}>TSV</Menu.Item>
-              <Menu.Item icon={<MdFileDownload size="1.25em" />}>
-                JSON
-              </Menu.Item>
+              <Menu.Dropdown>
+                <Menu.Item icon={<MdFileDownload size="1.25em" />}>
+                  TSV
+                </Menu.Item>
+                <Menu.Item icon={<MdFileDownload size="1.25em" />}>
+                  JSON
+                </Menu.Item>
+              </Menu.Dropdown>
             </Menu>
           </div>
 

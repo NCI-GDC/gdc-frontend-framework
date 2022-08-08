@@ -95,35 +95,37 @@ export const ContextualFilesView: React.FC<ContextualFilesViewProps> = ({
               Update Cart
             </Button>
           </Menu.Target>
-          <Menu.Item
-            onClick={() =>
-              addToCart(mapGdcFileToCartFile(allFiles), currentCart, dispatch)
-            }
-          >
-            {"Add All Files"}
-          </Menu.Item>
-          <Menu.Item
-            onClick={() =>
-              addToCart(
-                mapGdcFileToCartFile(selectedFiles),
-                currentCart,
-                dispatch,
-              )
-            }
-          >
-            {"Add Selected Files"}
-          </Menu.Item>
-          <Menu.Item
-            onClick={() =>
-              removeFromCart(
-                mapGdcFileToCartFile(selectedFiles),
-                currentCart,
-                dispatch,
-              )
-            }
-          >
-            {"Remove Selected Files"}
-          </Menu.Item>
+          <Menu.Dropdown>
+            <Menu.Item
+              onClick={() =>
+                addToCart(mapGdcFileToCartFile(allFiles), currentCart, dispatch)
+              }
+            >
+              {"Add All Files"}
+            </Menu.Item>
+            <Menu.Item
+              onClick={() =>
+                addToCart(
+                  mapGdcFileToCartFile(selectedFiles),
+                  currentCart,
+                  dispatch,
+                )
+              }
+            >
+              {"Add Selected Files"}
+            </Menu.Item>
+            <Menu.Item
+              onClick={() =>
+                removeFromCart(
+                  mapGdcFileToCartFile(selectedFiles),
+                  currentCart,
+                  dispatch,
+                )
+              }
+            >
+              {"Remove Selected Files"}
+            </Menu.Item>
+          </Menu.Dropdown>
         </Menu>
         <Button className={buttonStyle}>
           <DownloadIcon size={"1.5rem"} />

@@ -52,7 +52,6 @@ const StyledFacetTabs = (props: TabsProps) => {
       styles={(theme) => ({
         tab: {
           ...theme.fn.focusStyles(),
-          backgroundColor: "#FF00FF",
           color: theme.colors["nci-blue"][0],
           border: theme.colors["nci-blue"][0],
           padding: `${theme.spacing.xs}px ${theme.spacing.md}px`,
@@ -68,18 +67,7 @@ const StyledFacetTabs = (props: TabsProps) => {
             opacity: 0.5,
             cursor: "not-allowed",
           },
-
-          tabLabel: {
-            backgroundColor: theme.colors["nci-blue"][0],
-          },
-
-          "&[data-active]": {
-            backgroundColor: theme.white,
-            borderColor: theme.colors.blue[7],
-            color: theme.colors.blue[7],
-          },
         },
-
         root: {
           display: "flex",
           flexDirection: "row",
@@ -89,12 +77,6 @@ const StyledFacetTabs = (props: TabsProps) => {
           marginRight: theme.spacing.xs,
           display: "flex",
           alignItems: "center",
-        },
-
-        tabsList: {
-          display: "flex",
-          flexDirection: "column",
-          width: "220px",
         },
       })}
       {...props}
@@ -268,6 +250,10 @@ export const FacetTabs = (): JSX.Element => {
       <StyledFacetTabs
         orientation="vertical"
         defaultValue={tabsConfig[Object.keys(tabsConfig)[0]].label}
+        classNames={{
+          tab: "data-active:text-nci-gray-darkest text-white data-active:border-nci-red data-active:border-2 data-active:bg-white hover:bg-nci-blue",
+          tabsList: "flex flex-col bg-nci-blue-darker text-white w-[240px] ",
+        }}
       >
         <Tabs.List>
           {Object.values(tabsConfig).map((tabEntry: CohortBuilderCategory) => {

@@ -324,7 +324,7 @@ module.exports = {
     require("@tailwindcss/forms"),
     require("@tailwindcss/typography"),
     plugin(function ({ addVariant }) {
-      // add mantine.dev variantss
+      // add mantine.dev variants
       addVariant("data-checked", "&[data-checked]");
       addVariant("data-active", "&[data-active]");
     }),
