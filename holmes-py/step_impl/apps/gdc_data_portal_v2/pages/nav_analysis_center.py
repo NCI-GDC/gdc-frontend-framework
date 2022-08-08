@@ -8,7 +8,6 @@ import time
 class NavAnalysisCenterLocators:
     """A class for Home page locators. All home page locators should come here"""
 
-    NAV_TOOL_BAR = lambda data_link: f"a[data-test='{data_link}']"
     TOOL_MANAGEMENT_SECTION = "div[data-tour='analysis_tool_management']"
     COHORT_BUILDER_SECTION = "text='Cohort Builder' >> nth = 1"
     REPOSITORY_VIEW_IMAGE_BUTTON = "text='View Images'"
