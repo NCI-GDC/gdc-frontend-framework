@@ -30,6 +30,7 @@ import { biospecimenReducer } from "./features/biospecimen/biospecimenSlice";
 import { clinicalDataAnalysisReducer } from "./features/clinicalDataAnalysis";
 import { caseSummarySliceReducer } from "./features/cases/caseSummarySlice";
 import { facetsByNameTypeAndFilterReducer } from "./features/facets/facetsByNameTypeAndFilter";
+import { userDetailsReducer } from "./features/users/usersSlice";
 
 export const reducers = combineReducers({
   cohort: cohortReducers,
@@ -59,6 +60,7 @@ export const reducers = combineReducers({
   caseSummary: caseSummarySliceReducer,
   ssms: ssmsReducer,
   genesSummary: genesSummaryReducer,
+  userInfo: userDetailsReducer,
   [cohortApiSliceReducerPath]: cohortApiReducer,
 });
 

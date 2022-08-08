@@ -26,6 +26,7 @@ import "react-tabs/style/react-tabs.css";
 import ReactModal from "react-modal";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { UserProfileModal } from "@/components/Modals/UserProfileModal";
 ReactModal.setAppElement("#__next");
 
 export const URLContext = createContext({ prevPath: "", currentPath: "" });
@@ -110,6 +111,7 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
             </NotificationsProvider>
           </URLContext.Provider>
         </MantineProvider>
+        <UserProfileModal openModal={true} />
       </Provider>
     </CoreProvider>
   );

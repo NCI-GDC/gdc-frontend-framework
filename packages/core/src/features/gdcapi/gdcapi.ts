@@ -1,6 +1,7 @@
 import { isObject } from "../../ts-utils";
 import { GqlOperation } from "./filters";
 import "isomorphic-fetch";
+import { GDC_APP_API_AUTH } from "../../Api";
 
 export type UnknownJson = Record<string, unknown>;
 export interface GdcApiResponse<H = UnknownJson> {
@@ -447,7 +448,7 @@ export const fetchGdcEntities = async <T>(
   fetchAll = false,
   previousHits: Record<string, any>[] = [],
 ): Promise<GdcApiResponse<T>> => {
-  const res = await fetch(`https://api.gdc.cancer.gov/${endpoint}`, {
+  const res = await fetch(`${GDC_APP_API_AUTH}/${endpoint}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -1,3 +1,4 @@
+import { GDC_APP_SLIDE_IMAGE_ENDPOINT } from "../../Api";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 
 export interface ImageMetadataResponse {
@@ -13,7 +14,7 @@ export const fetchSlideImages = async (
   fileId: string,
 ): Promise<ImageMetadataResponse> => {
   const response = await fetch(
-    `https://api.gdc.cancer.gov/tile/metadata/${fileId}`,
+    `${GDC_APP_SLIDE_IMAGE_ENDPOINT}/metadata/${fileId}`,
   );
 
   if (response.ok) {

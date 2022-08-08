@@ -12,6 +12,7 @@ import {
   selectBanners,
   useTotalCounts,
   useFacetDictionary,
+  fetchUserDetails,
 } from "@gff/core";
 import {
   MdOutlineLogin as LoginIcon,
@@ -19,11 +20,15 @@ import {
   MdOutlineApps as AppsIcon,
   MdSearch as SearchIcon,
   MdOutlineTour as TourIcon,
+  MdLogout,
+  MdArrowDropDown,
 } from "react-icons/md";
 import Banner from "@/components/Banner";
 import { Button, LoadingOverlay } from "@mantine/core";
 import { useTour } from "@reactour/tour";
 import steps from "../../features/tour/steps";
+import openAuthWindow from "./auth/openAuthWindow";
+import { FaDownload, FaUserCheck } from "react-icons/fa";
 
 interface UserFlowVariedPagesProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
@@ -81,6 +86,24 @@ const Header: React.FC<HeaderProps> = ({
   Options = () => <div />,
 }: HeaderProps) => {
   const { setIsOpen } = useTour();
+  const dispatch = useCoreDispatch();
+  const res = {
+    projects: {
+      phs_ids: { phs001648: ["_member_"], phs001337: ["_member_"] },
+      gdc_ids: {
+        "WCDT-MCRPC": ["_member_"],
+        "GENIE-MDA": ["_member_"],
+        "GENIE-GRCC": ["_member_"],
+        "GENIE-VICC": ["_member_"],
+        "GENIE-DFCI": ["_member_"],
+        "GENIE-NKI": ["_member_"],
+        "GENIE-UHN": ["_member_"],
+        "GENIE-MSK": ["_member_"],
+        "GENIE-JHU": ["_member_"],
+      },
+    },
+    username: "PARIBARTANDHAKAL",
+  };
   const currentCart = useCoreSelector((state) => selectCart(state));
   const { isSuccess: totalSuccess } = useTotalCounts(); // request total counts and facet dictionary
   const { isSuccess: dictSuccess } = useFacetDictionary();
@@ -127,12 +150,46 @@ const Header: React.FC<HeaderProps> = ({
           >
             <SearchIcon size="24px" />{" "}
           </div>
+          {!res.username ? (
+            <Menu
+              control={
+                <Button rightIcon={<MdArrowDropDown size="1.25em" />}>
+                  {res.username}
+                </Button>
+              }
+            >
+              <Menu.Item icon={<FaUserCheck size="1.25em" />}>
+                User Profile
+              </Menu.Item>
+              <Menu.Item icon={<FaDownload size="1.25em" />}>
+                Download Token
+              </Menu.Item>
+              <Menu.Item icon={<MdLogout size="1.25em" />}>Logout</Menu.Item>
+            </Menu>
+          ) : (
+            <div
+              className={
+                "flex flex-row opacity-60 hover:opacity-100 transition-opacity items-center mx-2 cursor-pointer"
+              }
+              onClick={async () => {
+                await openAuthWindow();
+
+                // await dispatch(fetchUserDetails());
+              }}
+            >
+              <LoginIcon className="mr-1" size="24px" /> Login{" "}
+            </div>
+          )}
           <div
             className={
-              "flex flex-row opacity-60 hover:opacity-100 transition-opacity items-center mx-2 "
+              "flex flex-row opacity-60 hover:opacity-100 transition-opacity items-center mx-2 cursor-pointer"
             }
+            onClick={async () => {
+              //await openAuthWindow();
+              await dispatch(fetchUserDetails());
+            }}
           >
-            <LoginIcon className="mr-1" size="24px" /> Login{" "}
+            <LoginIcon className="mr-1" size="24px" /> Loginsss{" "}
           </div>
           <Link href="/cart">
             <div
