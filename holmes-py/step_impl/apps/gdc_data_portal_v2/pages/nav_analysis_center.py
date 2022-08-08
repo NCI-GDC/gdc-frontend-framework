@@ -29,10 +29,14 @@ class NavAnalysisCenterPage:
         (HomePageLocators.NAV_BAR_REPOSITORY_ICON,NavAnalysisCenterLocators.REPOSITORY_VIEW_IMAGE_BUTTON)]
         # Click on an icon from the nav bar, then validate user arrived on correct page
         for navigation, location in (nav_and_location):
-            self.driver.locator(navigation).click()
-            self.driver.wait_for_selector(location, state="visible")
+            try:
+                self.driver.locator(navigation).click()                
+                self.driver.wait_for_selector(location, state="visible")
+            except:
+                return False
+        return True
 
-    def navigation_default_view_card_check(self):
+    def navigation_default_view_card_check(self): 
         navigation_icon = [(HomePageLocators.NAV_DEFAULT_COHORT_ICON,HomePageLocators.NAV_BAR_ANALYSIS_ICON),
         (HomePageLocators.NAV_DEFAULT_ANALYSIS_ICON,HomePageLocators.NAV_BAR_COHORT_ICON),
         (HomePageLocators.NAV_DEFAULT_COHORT_ICON,HomePageLocators.NAV_BAR_REPOSITORY_ICON),
@@ -51,8 +55,12 @@ class NavAnalysisCenterPage:
         # navigation. 
         for navigation, location in zip(navigation_icon,check_for_location):
             HomePage.visit(self)
-            self.driver.locator(navigation[0]).click()
-            self.driver.wait_for_selector(location[0], state="visible")   
-            self.driver.locator(navigation[1]).click()
-            self.driver.wait_for_selector(location[1], state="visible")     
+            try:
+                 self.driver.locator(navigation[0]).click()
+                 self.driver.wait_for_selector(location[0], state="visible")   
+                 self.driver.locator(navigation[1]).click()
+                 self.driver.wait_for_selector(location[1], state="visible")     
+            except:
+                return False
+        return True              
 

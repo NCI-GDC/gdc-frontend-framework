@@ -15,8 +15,10 @@ def navigate_to_app():
 
 @step("Navigation Bar Icon Checks")
 def navigation_bar_icon_check():
-    APP.home_page.navigation_bar_card_check()
+    Result = APP.home_page.navigation_bar_card_check()
+    assert Result, f"FAILED: Navigation bar"
 
 @step("Navigation Default View Icon Checks")
 def navigation_default_view_icon_check():
-    APP.home_page.navigation_default_view_card_check()
+    Result = APP.home_page.navigation_default_view_card_check()
+    assert Result, f"FAILED: Navigation from center icons to nav bar"
