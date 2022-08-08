@@ -62,7 +62,11 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
   const [selectedValues, setSelectedValues] = useState<Record<string, number>>(
     {},
   );
-  const [hiddenValues, setHiddenValues] = useState<Record<string, number>>({});
+  const [hiddenValues, setHiddenValues] = useState<Record<string, number>>(
+    Object.keys(customBins).length > 0
+      ? filterOutSelected(results, customBins)
+      : {},
+  );
   const [selectedHiddenValues, setSelectedHiddenValues] = useState<
     Record<string, number>
   >({});
