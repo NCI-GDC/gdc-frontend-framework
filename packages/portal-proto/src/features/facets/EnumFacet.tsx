@@ -169,6 +169,33 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
       ? 16
       : maxValuesToDisplay;
 
+  const numberOfBars = enumFilters
+    ? enumFilters.length
+    : total - maxValuesToDisplay < 0
+    ? total
+    : isGroupExpanded
+    ? 16
+    : maxValuesToDisplay;
+
+  const sortedData = data
+    ? Object.fromEntries(
+        Object.entries(data)
+          .filter((entry) => entry[0] != "_missing" && entry[0] != "")
+          .sort(
+            isSortedByValue
+              ? ([, a], [, b]) => b - a
+              : ([a], [b]) => a.localeCompare(b),
+          )
+          .slice(0, !isGroupExpanded ? maxValuesToDisplay : undefined)
+          .map(([value, count], i) => {
+            if (field === "genes.is_cancer_gene_census") {
+              value = value === "1" ? "true" : "false";
+            }
+            return [value, count];
+          }),
+      )
+    : undefined;
+
   return (
     <div
       className={`flex flex-col ${
@@ -290,56 +317,42 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
                 {total == 0 ? (
                   <div className="mx-4">No data for this field</div>
                 ) : isSuccess ? (
-                  Object.entries(data)
-                    .filter((entry) => entry[0] != "_missing" && entry[0] != "")
-                    .sort(
-                      isSortedByValue
-                        ? ([, a], [, b]) => b - a
-                        : ([a], [b]) => a.localeCompare(b),
-                    )
-                    .map(([value, count], i) => {
-                      if (!isGroupExpanded && i >= maxValuesToDisplay)
-                        return null;
-                      if (field === "genes.is_cancer_gene_census") {
-                        value = value === "1" ? "true" : "false";
-                      }
-                      return (
-                        <div
-                          key={`${field}-${value}`}
-                          className="flex flex-row gap-x-1 px-2 "
-                        >
-                          <div className="flex-none">
-                            <input
-                              type="checkbox"
-                              value={value}
-                              onChange={handleChange}
-                              aria-label={`checkbox for ${field}`}
-                              className="hover:bg-nci-gray-darkest text-nci-gray-darkest checked:bg-nci-blue-darkest checked:border-bg-nci-blue-darkest focus:outline-none transition duration-200 bg-no-repeat bg-center bg-contain"
-                              checked={
-                                !!(
-                                  selectedEnums && selectedEnums.includes(value)
-                                )
-                              }
-                            />
-                          </div>
-                          <div className="flex-grow truncate ... font-heading text-md pt-0.5">
-                            {value}
-                          </div>
-                          <div className="flex-none text-right w-14 ">
-                            {count.toLocaleString()}
-                          </div>
-                          {showPercent ? (
-                            <div className="flex-none text-right w-18 ">
-                              (
-                              {(((count as number) / totalCount) * 100)
-                                .toFixed(2)
-                                .toLocaleString()}
-                              %)
-                            </div>
-                          ) : null}
+                  Object.entries(sortedData).map(([value, count]) => {
+                    return (
+                      <div
+                        key={`${field}-${value}`}
+                        className="flex flex-row gap-x-1 px-2 "
+                      >
+                        <div className="flex-none">
+                          <input
+                            type="checkbox"
+                            value={value}
+                            onChange={handleChange}
+                            aria-label={`checkbox for ${field}`}
+                            className="hover:bg-nci-gray-darkest text-nci-gray-darkest checked:bg-nci-blue-darkest checked:border-bg-nci-blue-darkest focus:outline-none transition duration-200 bg-no-repeat bg-center bg-contain"
+                            checked={
+                              !!(selectedEnums && selectedEnums.includes(value))
+                            }
+                          />
                         </div>
-                      );
-                    })
+                        <div className="flex-grow truncate ... font-heading text-md pt-0.5">
+                          {value}
+                        </div>
+                        <div className="flex-none text-right w-14 ">
+                          {count.toLocaleString()}
+                        </div>
+                        {showPercent ? (
+                          <div className="flex-none text-right w-18 ">
+                            (
+                            {(((count as number) / totalCount) * 100)
+                              .toFixed(2)
+                              .toLocaleString()}
+                            %)
+                          </div>
+                        ) : null}
+                      </div>
+                    );
+                  })
                 ) : (
                   <div>
                     {
@@ -415,7 +428,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
             }
           </div>
           <div
-            className={`card-face card-back bg-white h-full pb-1 ${
+            className={`card-face card-back bg-white h-full overflow-y-scroll pb-1 ${
               isFacetView ? "invisible" : ""
             }`}
           >
@@ -425,12 +438,15 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
               selectedEnums={selectedEnums}
               isSuccess={isSuccess}
               showTitle={false}
-              maxBins={Math.min(isGroupExpanded ? 16 : Math.min(6, total))}
+              maxBins={numberOfBars}
               height={
-                cardRef.current === null ||
-                cardRef.current.getBoundingClientRect().height < 200
-                  ? 400
-                  : cardRef.current.getBoundingClientRect().height + 500
+                numberOfBars == 1
+                  ? 150
+                  : numberOfBars == 2
+                  ? 220
+                  : numberOfBars == 3
+                  ? 240
+                  : numberOfBars * 65 + 10
               }
             />
           </div>
