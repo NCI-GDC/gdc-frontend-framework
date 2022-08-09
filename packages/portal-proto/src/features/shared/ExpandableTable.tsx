@@ -1,14 +1,6 @@
 // @ts-nocheck
-import React, {
-  HTMLProps,
-  useReducer,
-  useMemo,
-  useState,
-  useEffect,
-} from "react";
+import React, { useState } from "react";
 import {
-  Column,
-  Table,
   ExpandedState,
   useReactTable,
   getCoreRowModel,
@@ -17,6 +9,7 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 import { GenesColumns, makeData } from "./table-utils";
+import { SubTableRow } from "./SubTableRow";
 
 const ExpandableTable: React.FC<any> = () => {
   const columns = React.useMemo<ColumnDef<GenesColumns>[]>(
@@ -24,54 +17,111 @@ const ExpandableTable: React.FC<any> = () => {
       {
         header: " ",
         footer: (props) => props.column.id,
-        cell: ({ row, getValue }) => (
-          <>
-            {row.getCanExpand() ? (
-              <button
-                {...{
-                  onClick: row.getToggleExpandedHandler(),
-                  style: { cursor: "pointer" },
-                }}
-              >
-                {row.getIsExpanded() ? ">" : "<"}
-              </button>
-            ) : (
-              "testing"
-            )}{" "}
-            {getValue()}
-          </>
-        ),
         columns: [
           {
-            accessorKey: "subRows",
-            header: "# SSMS Affected Cases Across the GDC",
+            accessorKey: "SSMSAffectedCasesAcrossTheGDC",
+            header: ({ table }) => {
+              return <>SSMS Affected Cases Across The GDC</>;
+            },
             cell: ({ row, getValue }) => (
-              <>
-                {row.getCanExpand() ? (
-                  <button
-                    {...{
-                      onClick: () => {
-                        row.toggleExpanded();
-                      },
-                      style: { cursor: "pointer" },
-                    }}
-                  >
-                    {row.getIsExpanded() ? ">" : "<"}
-                  </button>
-                ) : (
-                  `${row.original.description} ${row.original.title}`
-                )}{" "}
-              </>
+              <div
+                className="w-fit h-fit"
+                style={{
+                  paddingLeft: `${row.depth * 2}rem`,
+                }}
+              >
+                <>
+                  {row.getCanExpand() ? (
+                    <button
+                      {...{
+                        onClick: row.getToggleExpandedHandler(),
+                        style: { cursor: "pointer" },
+                      }}
+                    >
+                      {row.getIsExpanded() ? "👇" : "👉"}
+                    </button>
+                  ) : (
+                    <SubTableRow geneId={"ENSG00000133703"}></SubTableRow>
+                  )}
+                  {""}
+                  {}
+                </>
+              </div>
             ),
             footer: (props) => props.column.id,
           },
         ],
       },
       {
-        accessorKey: "symbol",
-        cell: (info) => info.getValue(),
-        header: () => <button>Symbol</button>,
+        header: " ",
         footer: (props) => props.column.id,
+        columns: [
+          {
+            accessorKey: "name",
+            header: ({ table }) => (
+              <>
+                <div
+                  style={{
+                    marginLeft: `15px`,
+                  }}
+                >
+                  Name
+                </div>
+              </>
+            ),
+            cell: ({ row, getValue }) => (
+              <div>
+                <>
+                  {row.getCanExpand() ? <></> : null}{" "}
+                  <div
+                    style={{
+                      marginLeft: `15px`,
+                    }}
+                  >
+                    {getValue()}
+                  </div>
+                </>
+              </div>
+            ),
+            footer: (props) => props.column.id,
+          },
+        ],
+      },
+      {
+        header: " ",
+        footer: (props) => props.column.id,
+        columns: [
+          {
+            accessorKey: "survival",
+            header: ({ table }) => (
+              <>
+                <div
+                  style={{
+                    marginLeft: `15px`,
+                  }}
+                >
+                  {" "}
+                  Survival
+                </div>
+              </>
+            ),
+            cell: ({ row, getValue }) => (
+              <div>
+                <>
+                  {row.getCanExpand() ? <></> : null}{" "}
+                  <div
+                    style={{
+                      marginLeft: `15px`,
+                    }}
+                  >
+                    {getValue()}
+                  </div>
+                </>
+              </div>
+            ),
+            footer: (props) => props.column.id,
+          },
+        ],
       },
     ],
     [],
@@ -91,7 +141,6 @@ const ExpandableTable: React.FC<any> = () => {
     getSubRows: (row) => row.subRows,
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
-    // debugTable: true,
   });
 
   return (

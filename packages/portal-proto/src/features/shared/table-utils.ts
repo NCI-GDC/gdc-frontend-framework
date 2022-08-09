@@ -7,8 +7,8 @@ export type GenesSubRow = {
 
 export type GenesColumns = {
   symbol: string;
-  // name: string
-  // survival: string
+  name: string;
+  survival: string;
   // SSMSAffectedCasesInCohort: string
   SSMSAffectedCasesAcrossTheGDC: string[];
   // CNVGain: string,
@@ -22,6 +22,8 @@ const newGenesColumn = (): GenesColumns => {
   return {
     SSMSAffectedCasesAcrossTheGDC: ["hello", "someid"],
     symbol: "symbol",
+    name: "myname",
+    survival: "surviving",
   };
 };
 
