@@ -13,6 +13,9 @@ import {
   useTotalCounts,
   useFacetDictionary,
   fetchUserDetails,
+  GDC_AUTH,
+  showModal,
+  Modals,
 } from "@gff/core";
 import {
   MdOutlineLogin as LoginIcon,
@@ -29,6 +32,8 @@ import { useTour } from "@reactour/tour";
 import steps from "../../features/tour/steps";
 import openAuthWindow from "./auth/openAuthWindow";
 import { FaDownload, FaUserCheck } from "react-icons/fa";
+import { saveAs } from "file-saver";
+import urlJoin from "url-join";
 
 interface UserFlowVariedPagesProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
@@ -153,18 +158,51 @@ const Header: React.FC<HeaderProps> = ({
           {!res.username ? (
             <Menu
               control={
-                <Button rightIcon={<MdArrowDropDown size="1.25em" />}>
+                <Button
+                  rightIcon={<MdArrowDropDown size="2em" />}
+                  variant="subtle"
+                  className="text-nci-blue"
+                  classNames={{ rightIcon: "ml-0" }}
+                >
                   {res.username}
                 </Button>
               }
             >
-              <Menu.Item icon={<FaUserCheck size="1.25em" />}>
+              <Menu.Item
+                icon={<FaUserCheck size="1.25em" />}
+                onClick={() => dispatch(showModal(Modals.UserProfileModal))}
+              >
                 User Profile
               </Menu.Item>
-              <Menu.Item icon={<FaDownload size="1.25em" />}>
+              <Menu.Item
+                icon={<FaDownload size="1.25em" />}
+                onClick={() => {
+                  // need to take care of unhappy path too.
+                  // fetch the token and parse it to the text
+                  const token = "adfhjklasdhjklasdjlkasdjlasd";
+                  saveAs(
+                    new Blob([token], { type: "text/plain;charset=us-ascii" }),
+                    `gdc-user-token.${new Date().toISOString()}.txt`,
+                  );
+                }}
+              >
                 Download Token
               </Menu.Item>
-              <Menu.Item icon={<MdLogout size="1.25em" />}>Logout</Menu.Item>
+              <Menu.Item
+                icon={<MdLogout size="1.25em" />}
+                onClick={() => {
+                  window.location.assign(
+                    urlJoin(
+                      GDC_AUTH,
+                      `logout?next=${
+                        window.location.port ? `:${window.location.port}` : ""
+                      }${window.location.pathname}`,
+                    ),
+                  );
+                }}
+              >
+                Logout
+              </Menu.Item>
             </Menu>
           ) : (
             <div

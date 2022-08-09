@@ -26,7 +26,6 @@ import "react-tabs/style/react-tabs.css";
 import ReactModal from "react-modal";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { UserProfileModal } from "@/components/Modals/UserProfileModal";
 ReactModal.setAppElement("#__next");
 
 export const URLContext = createContext({ prevPath: "", currentPath: "" });
@@ -35,7 +34,6 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
   const [prevPath, setPrevPath] = useState("");
   const [currentPath, setCurrentPath] = useState("");
-
   useEffect(() => {
     setPrevPath(currentPath);
     setCurrentPath(globalThis.location.pathname + globalThis.location.search);
@@ -90,7 +88,7 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
               // Add default color from tailwind config to Mantine theme
               ...Object.fromEntries(
                 Object.entries(tailwindConfig.theme.extend.colors).map(
-                  ([key, values]) => [key, Array(10).fill(values?.DEFAULT)],
+                  ([key, values]) => [key, Array(10).fill(values)],
                 ),
               ),
             },
@@ -111,7 +109,6 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
             </NotificationsProvider>
           </URLContext.Provider>
         </MantineProvider>
-        <UserProfileModal openModal={true} />
       </Provider>
     </CoreProvider>
   );

@@ -4,7 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
 import { Tooltip } from "@mantine/core";
-
+import { UserProfileModal } from "@/components/Modals/UserProfileModal";
+import {
+  CoreProvider,
+  Modals,
+  selectCurrentModal,
+  useCoreSelector,
+} from "@gff/core";
 interface SummaryStatsItemProp {
   readonly title: string;
   readonly icon: string;
@@ -204,6 +210,8 @@ const ActionButtonBar = () => {
 };
 
 const IndexPage: NextPage = () => {
+  const modal = useCoreSelector((state) => state.modals.currentModal);
+
   return (
     <UserFlowVariedPages
       {...{ indexPath: "/user-flow/single-page", headerElements }}
@@ -243,6 +251,7 @@ const IndexPage: NextPage = () => {
           </div>
         </div>
       </div>
+      {/* <UserProfileModal openModal={modal === Modals.UserProfileModal} /> */}
     </UserFlowVariedPages>
   );
 };

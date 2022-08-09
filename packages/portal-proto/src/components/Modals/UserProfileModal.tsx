@@ -1,11 +1,10 @@
 import { TempTable } from "@/features/files/FileView";
+import { hideModal, useCoreDispatch } from "@gff/core";
 import { Modal } from "@mantine/core";
 import { useState } from "react";
 import { FaCheck } from "react-icons/fa";
 
 export const UserProfileModal = ({ openModal }: { openModal: boolean }) => {
-  const [opened, setOpened] = useState(openModal);
-
   // probably call a selector which returns the info in this order
   const res = {
     projects: {
@@ -93,7 +92,7 @@ export const UserProfileModal = ({ openModal }: { openModal: boolean }) => {
   const {
     projects: { gdc_ids },
   } = res;
-
+  const dispatch = useCoreDispatch();
   const formatUserProfileData = () => {
     // get the unique permission properties
     const allPermissionValues = Array.from(
@@ -139,8 +138,10 @@ export const UserProfileModal = ({ openModal }: { openModal: boolean }) => {
 
   return (
     <Modal
-      opened={opened}
-      onClose={() => setOpened(false)}
+      opened={openModal}
+      onClose={() => {
+        dispatch(hideModal());
+      }}
       title={<h1>{`Username: ${res?.username}`}</h1>}
       overflow="inside"
       size="60%"
