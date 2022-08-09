@@ -11,6 +11,7 @@ import {
   addFilterToCohortBuilder,
   removeFilterFromCohortBuilder,
   selectCohortBuilderConfigCategory,
+  selectCohortBuilderConfigFilters,
   useCoreDispatch,
   usePrevious,
   selectFacetDefinitionsByName,
@@ -115,6 +116,10 @@ const CustomFacetGroup = (): JSX.Element => {
   const customConfig = useCoreSelector((state) =>
     selectCohortBuilderConfigCategory(state, "custom"),
   );
+  const cohortBuilderFilters = useCoreSelector((state) =>
+    selectCohortBuilderConfigFilters(state),
+  );
+
   const prevCustomFacets = usePrevious(customConfig.facets);
   const [customFacetDefinitions, setCustomFacetDefinitions] = useState<
     ReadonlyArray<FacetDefinition>
@@ -156,7 +161,7 @@ const CustomFacetGroup = (): JSX.Element => {
           title={"Add Cohort Filter"}
           facetType="cases"
           handleFilterSelected={handleFilterSelected}
-          usedFacets={customConfig.facets}
+          usedFacets={cohortBuilderFilters}
         />
       </Modal>
       {customFacetDefinitions.length == 0 ? (

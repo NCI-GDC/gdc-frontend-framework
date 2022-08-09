@@ -23,7 +23,7 @@ export interface AllowableRange {
 export interface FacetDefinition {
   readonly description: string; //description from _mapping
   readonly field: string; // name of field minus "case", "file"
-  readonly full: string; //  full name of filter
+  readonly full: string; //  full name of filter (e.g. prepended with case.)
   readonly type: string; // type from mapping
   readonly doc_type: GQLDocType;
   readonly facet_type?: string; // classified type based on type + name: e.g. age, year, enumeration, etc
