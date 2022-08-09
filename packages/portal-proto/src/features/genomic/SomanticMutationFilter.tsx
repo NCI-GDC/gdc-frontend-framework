@@ -7,7 +7,7 @@ import {
   SIFT_IMPACT,
   VARIANT_CALLER,
   VEP_IMPACT,
-} from "../cohortBuilder/gene_mutation_facets";
+} from "./gene_mutation_facets";
 import dynamic from "next/dynamic";
 import { MdSearch } from "react-icons/md";
 

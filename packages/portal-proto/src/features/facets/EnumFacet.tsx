@@ -21,6 +21,7 @@ import {
   MdSearch as SearchIcon,
   MdSort as SortIcon,
   MdSortByAlpha as AlphaSortIcon,
+  MdClose as CloseIcon,
 } from "react-icons/md";
 import { FacetCardProps } from "@/features/facets/types";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
@@ -34,13 +35,14 @@ import { FaUndo as UndoIcon } from "react-icons/fa";
  *  enumerated fields.
  * @param field
  * @param docType
+ * @param indexType index this facet used
  * @param description
  * @param facetName
  * @param showSearch
  * @param showFlip
  * @param startShowingData
  * @param showPercent
- * @param hideIfEmpty
+ * @param hideIfEmpty if facet has no data, do not render
  * @constructor
  */
 export const EnumFacet: React.FC<FacetCardProps> = ({
@@ -54,6 +56,7 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
   startShowingData = true,
   showPercent = true,
   hideIfEmpty = true,
+  dismissCallback = undefined,
   width = undefined,
 }: FacetCardProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
@@ -204,12 +207,28 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
             <button
               className="hover:bg-nci-grey-darker text-nci-gray font-bold py-2 px-1 rounded inline-flex items-center"
               onClick={clearFilters}
+              aria-label="clear selection"
             >
               <UndoIcon
                 size="1.15em"
                 color={tailwindConfig.theme.extend.colors["gdc-blue"].darker}
               />
             </button>
+            {dismissCallback ? (
+              <button
+                className="hover:bg-nci-grey-darker text-nci-gray font-bold py-2 px-1 rounded inline-flex items-center"
+                onClick={() => {
+                  clearFilters();
+                  dismissCallback(field);
+                }}
+                aria-label="Remove the facet"
+              >
+                <CloseIcon
+                  size="1.25em"
+                  color={tailwindConfig.theme.extend.colors["gdc-blue"].darker}
+                />
+              </button>
+            ) : null}
           </div>
         </div>
       </div>
