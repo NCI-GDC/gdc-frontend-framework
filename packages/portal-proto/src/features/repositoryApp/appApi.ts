@@ -1,9 +1,11 @@
 import { combineReducers } from "@reduxjs/toolkit";
-import { repositoryConfigReducer } from "./fileFiltersSlice";
+import { repositoryConfigReducer } from "./repositoryConfigSlice";
+import { repositoryFiltersReducer } from "./repositoryFiltersSlice";
 import { createAppStore } from "@gff/core";
 
 const downloadAppReducers = combineReducers({
   facets: repositoryConfigReducer,
+  filters: repositoryFiltersReducer,
 });
 
 // create the store, context and selector for the RepositoryApp

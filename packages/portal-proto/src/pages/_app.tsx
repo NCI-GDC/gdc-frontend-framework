@@ -25,7 +25,7 @@ import "react-tabs/style/react-tabs.css";
 // It hides the main application from screen readers while modals are open.
 import ReactModal from "react-modal";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 ReactModal.setAppElement("#__next");
 
 export const URLContext = createContext({ prevPath: "", currentPath: "" });
@@ -88,7 +88,7 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
               // Add default color from tailwind config to Mantine theme
               ...Object.fromEntries(
                 Object.entries(tailwindConfig.theme.extend.colors).map(
-                  ([key, values]) => [key, Array(10).fill(values)],
+                  ([key, values]) => [key, Array(10).fill(values?.DEFAULT)],
                 ),
               ),
             },

@@ -1,5 +1,5 @@
 import { FacetDefinition } from "./types";
-import SupplimentalFacetDefinitions from "./data/facet_additional_data.json";
+import SupplementalFacetDefinitions from "./data/facet_additional_data.json";
 
 const COMMON_PREPOSITIONS = [
   "a",
@@ -48,6 +48,7 @@ export const fieldNameToTitle = (fieldName: string): string =>
 
 export const classifyFacetDatatype = (f: FacetDefinition): string => {
   const fieldName = f.field;
+  if (f.type == "keyword") return "enum";
   if (fieldName.includes("datetime")) return "datetime";
   if (fieldName.includes("percent")) return "percent";
   if (fieldName.includes("age_")) return "age";
@@ -65,10 +66,10 @@ interface IStringIndex {
 }
 
 const getRangeData = (f: FacetDefinition) => {
-  if (f.field in SupplimentalFacetDefinitions) {
+  if (f.field in SupplementalFacetDefinitions) {
     return {
-      minimum: (SupplimentalFacetDefinitions as IStringIndex)[f.field].minimum,
-      maximum: (SupplimentalFacetDefinitions as IStringIndex)[f.field].maximum,
+      minimum: (SupplementalFacetDefinitions as IStringIndex)[f.field].minimum,
+      maximum: (SupplementalFacetDefinitions as IStringIndex)[f.field].maximum,
     };
   } else {
     return undefined;

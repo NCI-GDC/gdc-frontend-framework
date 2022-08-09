@@ -21,12 +21,12 @@ export interface AllowableRange {
 }
 
 export interface FacetDefinition {
-  readonly description: string;
-  readonly field: string;
-  readonly full: string;
-  readonly type: string;
-  readonly doc_type: string;
-  readonly facet_type?: string;
-  readonly range?: AllowableRange;
+  readonly description: string; //description from _mapping
+  readonly field: string; // name of field minus "case", "file"
+  readonly full: string; //  full name of filter (e.g. prepended with case.)
+  readonly type: string; // type from mapping
+  readonly doc_type: GQLDocType;
+  readonly facet_type?: string; // classified type based on type + name: e.g. age, year, enumeration, etc
+  readonly range?: AllowableRange; // range of value types
   readonly hasData?: boolean;
 }

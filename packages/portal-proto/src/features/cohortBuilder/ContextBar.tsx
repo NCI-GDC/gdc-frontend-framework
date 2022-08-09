@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { CollapsibleContainer } from "../../components/CollapsibleContainer";
+import { CollapsibleContainer } from "@/components/CollapsibleContainer";
 import { Button, Menu, Tabs, Divider } from "@mantine/core";
 import { ContextualCasesView } from "../cases/CasesView";
 import CountButton from "./CountButton";
@@ -51,7 +51,7 @@ const ContextBar: React.FC<CohortGroupProps> = ({
         coreDispatch(clearCohortFilters());
       } else {
         cohorts[idx].facets.map((x) => {
-          updateEnumFilters(coreDispatch, x.value, x.field);
+          updateEnumFilters(x.value, x.field, coreDispatch);
         });
       }
     }

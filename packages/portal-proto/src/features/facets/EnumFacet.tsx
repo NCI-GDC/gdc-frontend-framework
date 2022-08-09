@@ -5,6 +5,7 @@ import {
   selectTotalCountsByName,
   usePrevious,
   removeCohortFilter,
+  EnumOperandValue,
 } from "@gff/core";
 import {
   FacetDocTypeToCountsIndexMap,
@@ -21,29 +22,35 @@ import {
   MdSearch as SearchIcon,
   MdSort as SortIcon,
   MdSortByAlpha as AlphaSortIcon,
+  MdClose as CloseIcon,
 } from "react-icons/md";
-import { FacetCardProps } from "@/features/facets/types";
+import { FaUndo as UndoIcon } from "react-icons/fa";
+import { EnumFacetCardProps } from "@/features/facets/types";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
 import { LoadingOverlay, Tooltip } from "@mantine/core";
 import * as tailwindConfig from "tailwind.config";
 import { isEqual } from "lodash";
-import { FaUndo as UndoIcon } from "react-icons/fa";
 
 /**
  *  Enumeration facet filters handle display and selection of
  *  enumerated fields.
- * @param field
- * @param docType
- * @param description
- * @param facetName
- * @param showSearch
- * @param showFlip
- * @param startShowingData
- * @param showPercent
- * @param hideIfEmpty
- * @constructor
+ * @param field filter this FacetCard manages
+ * @param docType documement type "cases" "files, etc.
+ * @param indexType index this facet uses to get data from
+ * @param description describes information about the facet
+ * @param facetName name of the Facet in human-readable form
+ * @param showSearch if the search icon show be displayed
+ * @param showFlip if the flip icon should be displayed
+ * @param startShowingData set = false to show the chart by default
+ * @param showPercent show the percentage
+ * @param hideIfEmpty if facet has no data, do not render
+ * @param dismissCallback if facet can be removed, supply a function which will ensure the dismiss control will be visible
+ * @param width set the width of the facet
+ * @param facetDataFunc function to pull enumerated data with
+ * @param updateEnumsFunc function to extract enumeration values (used to set checkboxes)
+ * @param clearFilterFunc function to call when filter should be reset (all checkboxes cleared)
  */
-export const EnumFacet: React.FC<FacetCardProps> = ({
+export const EnumFacet: React.FC<EnumFacetCardProps> = ({
   field,
   docType,
   indexType,
@@ -54,25 +61,26 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
   startShowingData = true,
   showPercent = true,
   hideIfEmpty = true,
+  dismissCallback = undefined,
   width = undefined,
-}: FacetCardProps) => {
+  facetDataFunc = FacetEnumHooks[docType],
+  updateEnumsFunc = undefined,
+  clearFilterFunc = undefined,
+}: EnumFacetCardProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [isSortedByValue, setIsSortedByValue] = useState(false);
   const [isFacetView, setIsFacetView] = useState(startShowingData);
   const [visibleItems, setVisibleItems] = useState(DEFAULT_VISIBLE_ITEMS);
   const cardRef = useRef<HTMLDivElement>(null);
-  // TODO: Move this outside of Facet Component
-  const { data, enumFilters, isSuccess } = FacetEnumHooks[docType](
+  const { data, enumFilters, isSuccess } = facetDataFunc(
     field,
     docType,
     indexType,
   );
   const [selectedEnums, setSelectedEnums] = useState(enumFilters);
-
   const prevFilters = usePrevious(enumFilters);
   const coreDispatch = useCoreDispatch();
-  const updateFilters = UpdateEnums[docType]; // update the filter for this facet
 
   // get the total count to compute percentages
   // TODO: move this outside of Facet Component
@@ -81,7 +89,18 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
   );
 
   const clearFilters = () => {
-    coreDispatch(removeCohortFilter(field));
+    clearFilterFunc
+      ? clearFilterFunc(field)
+      : coreDispatch(removeCohortFilter(field));
+  };
+
+  const updateFacetEnum = (
+    enumerationFilters: EnumOperandValue,
+    fieldname: string,
+  ) => {
+    updateEnumsFunc
+      ? updateEnumsFunc(enumerationFilters, fieldname)
+      : UpdateEnums[docType](enumerationFilters, fieldname, coreDispatch);
   };
 
   // filter missing and "" strings and update checkboxes
@@ -96,7 +115,7 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
   }, [data, field, isSuccess]);
 
   useEffect(() => {
-    if (isSuccess && !isEqual(prevFilters, enumFilters)) {
+    if (!isEqual(prevFilters, enumFilters)) {
       setSelectedEnums(enumFilters);
     }
   }, [enumFilters, isSuccess, prevFilters]);
@@ -113,14 +132,14 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
 
     if (checked) {
       const updated = selectedEnums ? [...selectedEnums, value] : [value];
-      updateFilters(coreDispatch, updated, field);
+      updateFacetEnum(updated, field);
     } else {
       // TODO: replace with ToggleFacet
       const updated =
         field === "genes.is_cancer_gene_census"
           ? []
           : selectedEnums.filter((x) => x != value);
-      updateFilters(coreDispatch, updated, field);
+      updateFacetEnum(updated, field);
     }
   };
 
@@ -204,12 +223,25 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
             <button
               className="hover:bg-nci-grey-darker text-nci-gray font-bold py-2 px-1 rounded inline-flex items-center"
               onClick={clearFilters}
+              aria-label="clear selection"
             >
               <UndoIcon
                 size="1.15em"
                 color={tailwindConfig.theme.extend.colors["gdc-blue"].darker}
               />
             </button>
+            {dismissCallback ? (
+              <button
+                className="hover:bg-nci-grey-darker text-nci-gray font-bold py-2 px-1 rounded inline-flex items-center"
+                onClick={() => {
+                  clearFilters();
+                  dismissCallback(field);
+                }}
+                aria-label="Remove the facet"
+              >
+                <CloseIcon size="1.25em" className="text-gdc-blue-darker" />
+              </button>
+            ) : null}
           </div>
         </div>
       </div>
@@ -263,7 +295,7 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
                     .filter((entry) => entry[0] != "_missing" && entry[0] != "")
                     .sort(
                       isSortedByValue
-                        ? ([, a], [, b]) => (b as number) - (a as number)
+                        ? ([, a], [, b]) => b - a
                         : ([a], [b]) => a.localeCompare(b),
                     )
                     .map(([value, count], i) => {

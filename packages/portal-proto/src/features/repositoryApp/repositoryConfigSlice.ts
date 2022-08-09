@@ -6,7 +6,7 @@ export interface RepositoryFilters {
   readonly label: string;
   readonly docType: string;
   readonly index: string;
-  readonly facets: ReadonlyArray<string>;
+  readonly facets: Array<string>;
 }
 
 export interface RepositoryFacet {
@@ -21,7 +21,7 @@ const slice = createSlice({
   reducers: {
     addFilter: (state, action: PayloadAction<RepositoryFacet>) => {
       if (!state.facets.includes(action.payload.facetName))
-        state.facets = [...state.facets, action.payload.facetName];
+        state.facets = [action.payload.facetName, ...state.facets];
     },
     removeFilter: (state, action: PayloadAction<RepositoryFacet>) => {
       state.facets = state.facets.filter((x) => x != action.payload.facetName);
@@ -36,6 +36,8 @@ export const { addFilter, removeFilter, resetToDefault } = slice.actions;
 
 export const selectRepositoryConfig = (state: AppState): RepositoryFilters =>
   state.facets;
+
+export const getDefaultFacets = () => RepositoryDefaultConfig.facets;
 
 export const selectRepositoryConfigFacets = (
   state: AppState,
