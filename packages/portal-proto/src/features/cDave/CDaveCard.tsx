@@ -19,6 +19,7 @@ import {
   selectFacetDefinitionByName,
   Buckets,
   Stats,
+  Statistics,
 } from "@gff/core";
 
 import { CONTINUOUS_FACET_TYPES } from "./constants";
@@ -140,6 +141,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
         results={resultData}
         customBinnedData={customBinnedData}
         setCustomBinnedData={setCustomBinnedData}
+        stats={data?.stats}
       />
       <CDaveTable
         fieldName={fieldName}
@@ -148,6 +150,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
         survival={chartType === ChartTypes.survival}
         selectedSurvivalPlots={selectedSurvivalPlots}
         setSelectedSurvivalPlots={setSelectedSurvivalPlots}
+        continuous={continuous}
       />
     </Card>
   );
@@ -160,6 +163,7 @@ interface CDaveTableProps {
   readonly survival: boolean;
   readonly selectedSurvivalPlots: string[];
   readonly setSelectedSurvivalPlots: (field: string[]) => void;
+  readonly continuous: boolean;
 }
 
 const CDaveTable: React.FC<CDaveTableProps> = ({
@@ -191,6 +195,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
           </tr>
         </thead>
         <tbody>
+          {/* TODO don't sort for continuous */}
           {Object.entries(
             hasCustomBins ? flattenBinnedData(customBinnedData) : data,
           )
@@ -276,6 +281,7 @@ interface CardControlsProps {
   readonly results: Record<string, number>;
   readonly customBinnedData: Record<string, number>;
   readonly setCustomBinnedData: (bins: Record<string, number>) => void;
+  readonly stats?: Statistics;
 }
 
 const CardControls: React.FC<CardControlsProps> = ({
@@ -284,6 +290,7 @@ const CardControls: React.FC<CardControlsProps> = ({
   results,
   customBinnedData,
   setCustomBinnedData,
+  stats,
 }: CardControlsProps) => {
   const [modalOpen, setModalOpen] = useState(false);
   return (
@@ -329,7 +336,11 @@ const CardControls: React.FC<CardControlsProps> = ({
       </div>
       {modalOpen &&
         (continuous ? (
-          <ContinuousBinningModal setModalOpen={setModalOpen} />
+          <ContinuousBinningModal
+            setModalOpen={setModalOpen}
+            field={field}
+            stats={stats}
+          />
         ) : (
           <CategoricalBinningModal
             setModalOpen={setModalOpen}
