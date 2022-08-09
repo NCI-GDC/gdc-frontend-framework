@@ -5,7 +5,7 @@ import {
 } from "@gff/core";
 
 /**
- * getFacetInfo: returns information from the GDC API: description, full field
+ * getFacetInfo: returns information from the GDC API: description, full field, type, etc.
  * It returns information ONLY for defined fields
  * @param fields - array of fields to return data for
  * @returns array of FacetDefinitions

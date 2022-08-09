@@ -1,4 +1,17 @@
-import { GQLDocType, GQLIndexType } from "@gff/core";
+import { EnumOperandValue, GQLDocType, GQLIndexType } from "@gff/core";
+
+export interface FacetResponse {
+  readonly data?: Record<string, number>;
+  readonly error?: string;
+  readonly isUninitialized: boolean;
+  readonly isFetching: boolean;
+  readonly isSuccess: boolean;
+  readonly isError: boolean;
+}
+
+export interface EnumFacetResponse extends FacetResponse {
+  readonly enumFilters?: ReadonlyArray<string>;
+}
 
 export interface FacetCardProps {
   readonly field: string;
@@ -13,4 +26,17 @@ export interface FacetCardProps {
   readonly indexType?: GQLIndexType;
   readonly width?: string;
   readonly dismissCallback?: (string) => void;
+}
+
+export interface EnumFacetCardProps extends FacetCardProps {
+  readonly facetDataFunc?: (
+    field: string,
+    docType: GQLDocType,
+    indexType: GQLIndexType,
+  ) => EnumFacetResponse;
+  readonly updateEnumsFunc?: (
+    enumerationFilters: EnumOperandValue,
+    field: string,
+  ) => void;
+  readonly clearFilterFunc?: (string) => void;
 }

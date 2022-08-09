@@ -225,6 +225,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
               showPercent={false}
               hideIfEmpty={false}
               description={x.description}
+              width="w-64"
             />
           );
         })}
@@ -238,6 +239,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
               showPercent={false}
               hideIfEmpty={false}
               description={x.description}
+              width="w-64"
             />
           );
         })}

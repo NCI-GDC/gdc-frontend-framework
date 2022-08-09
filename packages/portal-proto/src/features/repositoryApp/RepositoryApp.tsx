@@ -4,24 +4,27 @@ import {
   selectCart,
   useCoreDispatch,
   useCoreSelector,
-  useFacetDictionary,
-  useFilteredFiles,
+  selectCurrentCohortFilterSet,
+  selectFilesData,
+  fetchFiles,
+  buildCohortGqlOperator,
+  joinFilters,
+  usePrevious,
 } from "@gff/core";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AppStore, id, AppContext, useAppSelector } from "./appApi";
-import { selectRepositoryConfig } from "@/features/repositoryApp/fileFiltersSlice";
-import { Button, Menu } from "@mantine/core";
+import { Button, Menu, Text } from "@mantine/core";
 import {
   MdDownload as DownloadIcon,
   MdShoppingCart as CartIcon,
 } from "react-icons/md";
 import { addToCart, removeFromCart } from "@/features/cart/updateCart";
 import Link from "next/link";
-import { EnumFacet } from "@/features/facets/EnumFacet";
+import { FileFacetPanel } from "./FileFacetPanel";
 import { FilesView } from "@/features/files/FilesView";
-import { getFacetInfo } from "@/features/cohortBuilder/utils";
-import { LoadingOverlay } from "@mantine/core";
 import { mapGdcFileToCartFile } from "../files/utils";
+import { selectFilters } from "@/features/repositoryApp/repositoryFiltersSlice";
+import { isEqual } from "lodash";
 
 const buttonStyle =
   "mx-1 bg-nci-gray-light hover:bg-nci-gray transition-colors";
@@ -30,15 +33,43 @@ export interface ContextualFilesViewProps {
   readonly handleFileSelected?: (file: GdcFile) => void;
 }
 
+const useCohortCentricFiles = () => {
+  const coreDispatch = useCoreDispatch();
+  const { data, pagination, status, error } = useCoreSelector(selectFilesData);
+
+  const repositoryFilters = useAppSelector((state) => selectFilters(state));
+  const cohortFilters = useCoreSelector((state) =>
+    selectCurrentCohortFilterSet(state),
+  );
+
+  const allFilters = joinFilters(cohortFilters, repositoryFilters);
+  const prevFilters = usePrevious(allFilters);
+
+  useEffect(() => {
+    if (status === "uninitialized" || !isEqual(allFilters, prevFilters)) {
+      coreDispatch(fetchFiles({ filters: buildCohortGqlOperator(allFilters) })); // eslint-disable-line
+    }
+  }, [status, coreDispatch, allFilters, prevFilters]);
+
+  return {
+    data,
+    pagination,
+    error,
+    isUninitialized: status === "uninitialized",
+    isFetching: status === "pending",
+    isSuccess: status === "fulfilled",
+    isError: status === "rejected",
+  };
+};
+
 const RepositoryApp: React.FC<ContextualFilesViewProps> = ({
   handleFileSelected,
 }: ContextualFilesViewProps) => {
-  const { data } = useFilteredFiles();
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
   const [selectedFiles, setSelectedFiles] = useState<GdcFile[]>([]);
-  const configState = useAppSelector(selectRepositoryConfig);
-  const { isSuccess: dictSuccess } = useFacetDictionary();
+
+  const { data, pagination, isSuccess } = useCohortCentricFiles();
 
   const handleCheckedFiles = (e, file: GdcFile) => {
     if (e.target.checked) {
@@ -48,15 +79,22 @@ const RepositoryApp: React.FC<ContextualFilesViewProps> = ({
     }
   };
 
-  const facets = getFacetInfo(configState.facets);
   // TODO: remove, mock data for cart
   const allFiles = Array(10001)
     .fill(0)
     .map((_, i) => data?.[i % 10]);
-
   return (
     <div className="flex flex-col mt-4 ">
-      <div className="flex flex-row justify-end m-2">
+      <div className="flex flex-row justify-end align-center m-2">
+        <Text transform="uppercase" size="lg" weight={700}>
+          Total of{" "}
+        </Text>
+        <Text className="mx-2" transform="uppercase" size="lg" weight={1000}>
+          {isSuccess ? pagination.total : "   "}
+        </Text>
+        <Text transform="uppercase" size="lg" weight={700}>
+          Files
+        </Text>
         <Menu
           control={
             <Button className={buttonStyle}>
@@ -106,21 +144,7 @@ const RepositoryApp: React.FC<ContextualFilesViewProps> = ({
         </Link>
       </div>
       <div className="flex flex-row mx-3">
-        <div className="flex flex-col gap-y-4 mr-3">
-          <LoadingOverlay visible={!dictSuccess} />
-          {facets.map((x, index) => {
-            return (
-              <EnumFacet
-                key={`${x.field}-${index}`}
-                field={`${x.field}`}
-                docType="files"
-                indexType="repository"
-                showPercent={false}
-                description={x.description}
-              />
-            );
-          })}
-        </div>
+        <FileFacetPanel />
         <FilesView
           files={data}
           handleFileSelected={handleFileSelected}
@@ -141,3 +165,5 @@ export default createGdcAppWithOwnStore({
   store: AppStore,
   context: AppContext,
 });
+
+export const RepositoryAppId: string = id;
