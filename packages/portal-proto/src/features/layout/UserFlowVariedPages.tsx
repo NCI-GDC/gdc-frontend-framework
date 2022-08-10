@@ -16,6 +16,9 @@ import {
   GDC_AUTH,
   showModal,
   Modals,
+  selectUserDetailsInfo,
+  fetchToken,
+  selectCurrentModal,
 } from "@gff/core";
 import {
   MdOutlineLogin as LoginIcon,
@@ -34,6 +37,8 @@ import openAuthWindow from "./auth/openAuthWindow";
 import { FaDownload, FaUserCheck } from "react-icons/fa";
 import { saveAs } from "file-saver";
 import urlJoin from "url-join";
+import { UserProfileModal } from "@/components/Modals/UserProfileModal";
+import { cleanNotifications, showNotification } from "@mantine/notifications";
 
 interface UserFlowVariedPagesProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
@@ -53,6 +58,7 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
 
   useEffect(() => {
     setSteps(steps[router.pathname]);
+    dispatch(fetchUserDetails());
     dispatch(fetchNotifications());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -92,24 +98,10 @@ const Header: React.FC<HeaderProps> = ({
 }: HeaderProps) => {
   const { setIsOpen } = useTour();
   const dispatch = useCoreDispatch();
-  const res = {
-    projects: {
-      phs_ids: { phs001648: ["_member_"], phs001337: ["_member_"] },
-      gdc_ids: {
-        "WCDT-MCRPC": ["_member_"],
-        "GENIE-MDA": ["_member_"],
-        "GENIE-GRCC": ["_member_"],
-        "GENIE-VICC": ["_member_"],
-        "GENIE-DFCI": ["_member_"],
-        "GENIE-NKI": ["_member_"],
-        "GENIE-UHN": ["_member_"],
-        "GENIE-MSK": ["_member_"],
-        "GENIE-JHU": ["_member_"],
-      },
-    },
-    username: "PARIBARTANDHAKAL",
-  };
+
+  const userInfo = useCoreSelector((state) => selectUserDetailsInfo(state));
   const currentCart = useCoreSelector((state) => selectCart(state));
+  const modal = useCoreSelector((state) => selectCurrentModal(state));
   const { isSuccess: totalSuccess } = useTotalCounts(); // request total counts and facet dictionary
   const { isSuccess: dictSuccess } = useFacetDictionary();
   return (
@@ -155,7 +147,7 @@ const Header: React.FC<HeaderProps> = ({
           >
             <SearchIcon size="24px" />{" "}
           </div>
-          {!res.username ? (
+          {userInfo.data.username ? (
             <Menu
               control={
                 <Button
@@ -164,7 +156,7 @@ const Header: React.FC<HeaderProps> = ({
                   className="text-nci-blue"
                   classNames={{ rightIcon: "ml-0" }}
                 >
-                  {res.username}
+                  {userInfo.data.username}
                 </Button>
               }
             >
@@ -176,14 +168,54 @@ const Header: React.FC<HeaderProps> = ({
               </Menu.Item>
               <Menu.Item
                 icon={<FaDownload size="1.25em" />}
-                onClick={() => {
-                  // need to take care of unhappy path too.
-                  // fetch the token and parse it to the text
-                  const token = "adfhjklasdhjklasdjlkasdjlasd";
-                  saveAs(
-                    new Blob([token], { type: "text/plain;charset=us-ascii" }),
-                    `gdc-user-token.${new Date().toISOString()}.txt`,
-                  );
+                onClick={async () => {
+                  if (Object.keys(userInfo.data?.projects.gdc_ids).length > 0) {
+                    const token = await fetchToken();
+                    saveAs(
+                      new Blob([token], {
+                        type: "text/plain;charset=us-ascii",
+                      }),
+                      `gdc-user-token.${new Date().toISOString()}.txt`,
+                    );
+                  } else {
+                    cleanNotifications();
+                    showNotification({
+                      message: (
+                        <p>
+                          {userInfo.data.username} does not have access to any
+                          protected data within the GDC. Click{" "}
+                          <a
+                            href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
+                            target="_blank"
+                            style={{
+                              textDecoration: "underline",
+                              color: "#0f4163",
+                            }}
+                          >
+                            here
+                          </a>{" "}
+                          to learn more about obtaining access to protected
+                          data.
+                        </p>
+                      ),
+                      styles: () => ({
+                        root: {
+                          backgroundColor: "#ffe296",
+                          textAlign: "center",
+                          "&::before": { backgroundColor: "#ffe296" },
+                        },
+                        closeButton: {
+                          color: "black",
+                          "&:hover": { backgroundColor: "#e6e6e6" },
+                        },
+                        icon: {
+                          height: 0,
+                          width: 0,
+                        },
+                      }),
+                      icon: <div />,
+                    });
+                  }
                 }}
               >
                 Download Token
@@ -211,24 +243,14 @@ const Header: React.FC<HeaderProps> = ({
               }
               onClick={async () => {
                 await openAuthWindow();
-
-                // await dispatch(fetchUserDetails());
+                await dispatch(fetchUserDetails());
+                await dispatch(fetchNotifications());
               }}
             >
               <LoginIcon className="mr-1" size="24px" /> Login{" "}
             </div>
           )}
-          <div
-            className={
-              "flex flex-row opacity-60 hover:opacity-100 transition-opacity items-center mx-2 cursor-pointer"
-            }
-            onClick={async () => {
-              //await openAuthWindow();
-              await dispatch(fetchUserDetails());
-            }}
-          >
-            <LoginIcon className="mr-1" size="24px" /> Loginsss{" "}
-          </div>
+
           <Link href="/cart">
             <div
               className={
@@ -254,6 +276,7 @@ const Header: React.FC<HeaderProps> = ({
           </Menu>
         </div>
       </div>
+      <UserProfileModal openModal={modal === Modals.UserProfileModal} />
     </div>
   );
 };

@@ -8,13 +8,15 @@ import {
 import { CoreState } from "../../reducers";
 
 export interface UserResponse {
-  projects: {};
+  projects: {
+    phs_ids: Record<string, Array<string>>;
+    gdc_ids: Record<string, Array<string>>;
+  };
   username: string;
 }
 export const fetchUserDetails = createAsyncThunk<UserResponse>(
   "userInfo/fetchUserDetails",
   async () => {
-    console.log("document.cookie: ", document.cookie);
     const response = await fetch(`${GDC_AUTH}user`, {
       credentials: "same-origin",
       method: "GET",
@@ -33,14 +35,38 @@ export const fetchUserDetails = createAsyncThunk<UserResponse>(
   },
 );
 
+export const fetchToken = async () => {
+  const response = await fetch(`${GDC_AUTH}token/refresh`, {
+    credentials: "same-origin",
+    method: "GET",
+    headers: {
+      "Access-Control-Allow-Origin": "true",
+      "Content-Type": "application/json",
+      "X-Auth-Token": "secret admin token",
+    },
+  });
+
+  if (response.ok) {
+    return response.text();
+  }
+
+  throw Error(await response.text());
+};
+
 export interface userSliceInitialStateInterface {
-  projects: {};
-  username: string;
+  projects: {
+    phs_ids: Record<string, Array<string>>;
+    gdc_ids: Record<string, Array<string>>;
+  };
+  username: string | null;
   status: DataStatus;
 }
 const userSliceInitialState: userSliceInitialStateInterface = {
-  projects: {},
-  username: "",
+  projects: {
+    phs_ids: {},
+    gdc_ids: {},
+  },
+  username: null,
   status: "uninitialized",
 };
 
@@ -52,17 +78,27 @@ const slice = createSlice({
     builder
       .addCase(fetchUserDetails.fulfilled, (state, action) => {
         const response = action.payload;
-        console.log(response);
 
-        // state.projects = {};
+        state.projects = { ...response.projects };
+        state.username = response.username;
         state.status = "fulfilled";
         return state;
       })
       .addCase(fetchUserDetails.pending, (state) => {
+        state.projects = {
+          phs_ids: {},
+          gdc_ids: {},
+        };
+        state.username = null;
         state.status = "pending";
         return state;
       })
       .addCase(fetchUserDetails.rejected, (state) => {
+        state.projects = {
+          phs_ids: {},
+          gdc_ids: {},
+        };
+        state.username = null;
         state.status = "rejected";
         return state;
       });
@@ -73,7 +109,9 @@ export const userDetailsReducer = slice.reducer;
 
 export const selectUserDetailsInfo = (
   state: CoreState,
-): CoreDataSelectorResponse<UserResponse> => ({
+): CoreDataSelectorResponse<
+  Omit<userSliceInitialStateInterface, "status">
+> => ({
   data: {
     projects: state.userInfo.projects,
     username: state.userInfo.username,
