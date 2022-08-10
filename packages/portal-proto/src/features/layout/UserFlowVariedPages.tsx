@@ -21,7 +21,6 @@ import {
   selectCurrentModal,
 } from "@gff/core";
 import {
-  MdOutlineLogin as LoginIcon,
   MdShoppingCart as CartIcon,
   MdOutlineApps as AppsIcon,
   MdSearch as SearchIcon,
@@ -33,12 +32,13 @@ import Banner from "@/components/Banner";
 import { Button, LoadingOverlay } from "@mantine/core";
 import { useTour } from "@reactour/tour";
 import steps from "../../features/tour/steps";
-import openAuthWindow from "./auth/openAuthWindow";
 import { FaDownload, FaUserCheck } from "react-icons/fa";
 import { saveAs } from "file-saver";
 import urlJoin from "url-join";
 import { UserProfileModal } from "@/components/Modals/UserProfileModal";
 import { cleanNotifications, showNotification } from "@mantine/notifications";
+import { SessionExpireModal } from "@/components/Modals/SessionExpireModal";
+import { LoginButton } from "@/components/LoginButton";
 
 interface UserFlowVariedPagesProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
@@ -142,7 +142,7 @@ const Header: React.FC<HeaderProps> = ({
         <div className="flex flex-row items-center align-middle flex-nowrap">
           <div
             className={
-              "flex flex-row opacity-60 hover:opacity-100 transition-opacity items-center mx-2 "
+              "flex flex-row opacity-60 cursor-pointer hover:opacity-100 transition-opacity items-center mx-2 "
             }
           >
             <SearchIcon size="24px" />{" "}
@@ -162,7 +162,14 @@ const Header: React.FC<HeaderProps> = ({
             >
               <Menu.Item
                 icon={<FaUserCheck size="1.25em" />}
-                onClick={() => dispatch(showModal(Modals.UserProfileModal))}
+                onClick={async () => {
+                  const token = await fetchToken();
+                  if (token.status === 401) {
+                    dispatch(showModal(Modals.SessionExpireModal));
+                    return;
+                  }
+                  dispatch(showModal(Modals.UserProfileModal));
+                }}
               >
                 User Profile
               </Menu.Item>
@@ -171,8 +178,12 @@ const Header: React.FC<HeaderProps> = ({
                 onClick={async () => {
                   if (Object.keys(userInfo.data?.projects.gdc_ids).length > 0) {
                     const token = await fetchToken();
+                    if (token.status === 401) {
+                      dispatch(showModal(Modals.SessionExpireModal));
+                      return;
+                    }
                     saveAs(
-                      new Blob([token], {
+                      new Blob([token.text], {
                         type: "text/plain;charset=us-ascii",
                       }),
                       `gdc-user-token.${new Date().toISOString()}.txt`,
@@ -187,6 +198,7 @@ const Header: React.FC<HeaderProps> = ({
                           <a
                             href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
                             target="_blank"
+                            rel="noreferrer"
                             style={{
                               textDecoration: "underline",
                               color: "#0f4163",
@@ -223,12 +235,11 @@ const Header: React.FC<HeaderProps> = ({
               <Menu.Item
                 icon={<MdLogout size="1.25em" />}
                 onClick={() => {
+                  // TODO: need to change next url to the new URL
                   window.location.assign(
                     urlJoin(
                       GDC_AUTH,
-                      `logout?next=${
-                        window.location.port ? `:${window.location.port}` : ""
-                      }${window.location.pathname}`,
+                      `logout?next=https://localhost.gdc.cancer.gov:3010/user-flow/workbench`,
                     ),
                   );
                 }}
@@ -237,18 +248,7 @@ const Header: React.FC<HeaderProps> = ({
               </Menu.Item>
             </Menu>
           ) : (
-            <div
-              className={
-                "flex flex-row opacity-60 hover:opacity-100 transition-opacity items-center mx-2 cursor-pointer"
-              }
-              onClick={async () => {
-                await openAuthWindow();
-                await dispatch(fetchUserDetails());
-                await dispatch(fetchNotifications());
-              }}
-            >
-              <LoginIcon className="mr-1" size="24px" /> Login{" "}
-            </div>
+            <LoginButton />
           )}
 
           <Link href="/cart">
@@ -277,6 +277,7 @@ const Header: React.FC<HeaderProps> = ({
         </div>
       </div>
       <UserProfileModal openModal={modal === Modals.UserProfileModal} />
+      <SessionExpireModal openModal={modal === Modals.SessionExpireModal} />
     </div>
   );
 };

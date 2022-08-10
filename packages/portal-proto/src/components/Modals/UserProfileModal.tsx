@@ -1,4 +1,3 @@
-import { TempTable } from "@/features/files/FileView";
 import {
   hideModal,
   useCoreDispatch,
@@ -7,7 +6,13 @@ import {
 } from "@gff/core";
 import { Button, Modal, Text } from "@mantine/core";
 import { FaCheck } from "react-icons/fa";
-export const UserProfileModal = ({ openModal }: { openModal: boolean }) => {
+import { ScrollableTableWithFixedHeader } from "../ScrollableTableWithFixedHeader";
+
+export const UserProfileModal = ({
+  openModal,
+}: {
+  openModal: boolean;
+}): JSX.Element => {
   const dispatch = useCoreDispatch();
   const userInfo = useCoreSelector((state) => selectUserDetailsInfo(state));
   const {
@@ -74,20 +79,10 @@ export const UserProfileModal = ({ openModal }: { openModal: boolean }) => {
         }}
       >
         {data ? (
-          <TempTable
+          <ScrollableTableWithFixedHeader
             tableData={{
               headers: headings,
               tableRows: data,
-            }}
-            customWrapperStyle={{
-              height: "500px",
-              overflow: "hidden",
-              overflowY: "scroll",
-            }}
-            customTableStyle={{
-              position: "sticky",
-              top: 0,
-              width: "100%",
             }}
           />
         ) : (
@@ -101,6 +96,7 @@ export const UserProfileModal = ({ openModal }: { openModal: boolean }) => {
               <a
                 href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
                 target="_blank"
+                rel="noreferrer"
                 style={{ color: "#2a72a5", textDecoration: "underline" }}
               >
                 how to apply for access to controlled data

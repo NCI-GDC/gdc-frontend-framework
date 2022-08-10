@@ -35,7 +35,10 @@ export const fetchUserDetails = createAsyncThunk<UserResponse>(
   },
 );
 
-export const fetchToken = async () => {
+export const fetchToken = async (): Promise<{
+  text: string | null;
+  status: number;
+}> => {
   const response = await fetch(`${GDC_AUTH}token/refresh`, {
     credentials: "same-origin",
     method: "GET",
@@ -47,7 +50,17 @@ export const fetchToken = async () => {
   });
 
   if (response.ok) {
-    return response.text();
+    return {
+      text: await response.text(),
+      status: response.status,
+    };
+  }
+
+  if (response.status === 401) {
+    return {
+      status: response.status,
+      text: null,
+    };
   }
 
   throw Error(await response.text());
@@ -73,7 +86,12 @@ const userSliceInitialState: userSliceInitialStateInterface = {
 const slice = createSlice({
   name: "userInfo",
   initialState: userSliceInitialState,
-  reducers: {},
+  reducers: {
+    handleLogout: (state: userSliceInitialStateInterface) => {
+      state.username = null;
+      return state;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchUserDetails.fulfilled, (state, action) => {

@@ -1,6 +1,6 @@
 import { GDC_AUTH } from "@gff/core";
 
-const openAuthWindow = () => {
+const openAuthWindow = (): Promise<unknown> => {
   const pollInterval = 500;
   const winUrl = `${GDC_AUTH}?next=${location.origin + location.pathname}`;
   const winStyle = "width=800, height=600";

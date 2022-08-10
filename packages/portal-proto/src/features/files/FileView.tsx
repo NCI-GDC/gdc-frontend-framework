@@ -36,46 +36,39 @@ interface TempTableProps {
     readonly headers: string[];
     readonly tableRows: any[];
   };
-  customWrapperStyle?: React.CSSProperties;
-  customTableStyle?: React.CSSProperties;
 }
-export const TempTable = ({
-  tableData,
-  customWrapperStyle,
-  customTableStyle,
-}: TempTableProps): JSX.Element => {
+
+export const TempTable = ({ tableData }: TempTableProps): JSX.Element => {
   if (!(tableData?.headers?.length > 0 && tableData?.tableRows?.length > 0)) {
     console.error("bad table data", tableData);
     return <></>;
   }
   return (
-    <div style={customWrapperStyle || {}}>
-      <Table striped style={customTableStyle || {}}>
-        <thead>
-          <tr>
-            {tableData.headers.map((text, index) => (
-              <th key={index} className="bg-nci-gray-lighter">
-                {text}
-              </th>
+    <Table striped>
+      <thead>
+        <tr>
+          {tableData.headers.map((text, index) => (
+            <th key={index} className="bg-nci-gray-lighter">
+              {text}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {tableData.tableRows.map((row, index) => (
+          <tr
+            key={index}
+            className={index % 2 ? "bg-white" : "bg-gdc-blue-warm-lightest"}
+          >
+            {Object.values(row).map((item, index) => (
+              <td key={index} className="text-sm p-1 pl-2.5">
+                {typeof item === "undefined" ? "--" : item}
+              </td>
             ))}
           </tr>
-        </thead>
-        <tbody>
-          {tableData.tableRows.map((row, index) => (
-            <tr
-              key={index}
-              className={index % 2 ? "bg-white" : "bg-gdc-blue-warm-lightest"}
-            >
-              {Object.values(row).map((item, index) => (
-                <td key={index} className="text-sm p-1 pl-2.5">
-                  {typeof item === "undefined" ? "--" : item}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-    </div>
+        ))}
+      </tbody>
+    </Table>
   );
 };
 

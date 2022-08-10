@@ -37,7 +37,7 @@ export const { addFilter, removeFilter, resetToDefault } = slice.actions;
 export const selectRepositoryConfig = (state: AppState): RepositoryFilters =>
   state.facets;
 
-export const getDefaultFacets = () => RepositoryDefaultConfig.facets;
+export const getDefaultFacets = (): string[] => RepositoryDefaultConfig.facets;
 
 export const selectRepositoryConfigFacets = (
   state: AppState,
