@@ -77,7 +77,7 @@ export const CohortBar: React.FC<CohortBarProps> = ({
   const [currentCohort, setCurrentCohort] = useState(menu_items[defaultIdx]);
 
   const buttonStyle =
-    "p-2 bg-white transition-colors text-nci-blue-darkest hover:bg-nci-blue hover:text-white";
+    "p-2 bg-base-lightest transition-colors text-nci-blue-darkest hover:bg-nci-blue hover:text-white";
   return (
     <div
       data-tour="cohort_management_bar"

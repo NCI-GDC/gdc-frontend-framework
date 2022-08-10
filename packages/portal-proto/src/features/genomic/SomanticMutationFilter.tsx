@@ -29,7 +29,7 @@ const SomanticMutationFilterFixedVersion: React.FC = () => {
             />
             <div className="p-10"></div>
           </div>
-          <div className="flex flex-row justify-center bg-white border-r-2  border-nci-gray-light">
+          <div className="flex flex-row justify-center bg-base-lightest border-r-2  border-nci-gray-light">
             <GeneChartWithNoSSR which="gene" />
           </div>
           <div className="flex flex-row justify-center items-center w-full ">
@@ -78,7 +78,7 @@ const SomanticMutationFilterFixedVersion: React.FC = () => {
               />
             </div>
           </div>
-          <div className="flex flex-row justify-center bg-white mt-2">
+          <div className="flex flex-row justify-center bg-base-lightest mt-2">
             <GeneChartWithNoSSR which="mutation" />
           </div>
           <div className="flex flex-row justify-center items-center w-full ">

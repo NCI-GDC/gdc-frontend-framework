@@ -1,17 +1,17 @@
 import { NextPage } from "next";
-import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
+import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import ReactModal from "react-modal";
-import { ContextualStudiesView } from "../../../features/studies/StudiesView";
+import { ContextualStudiesView } from "@/features/studies/StudiesView";
 
 const StudiesPage: NextPage = () => {
   const [showModal, setShowModal] = useState(false);
 
   const headerElements = [
     "Cohorts",
-    <Link key="Analysis" href="/user-flow/many-pages-v2/analysis">
+    <Link key="Analysis" href="/user-flow/decpreciated/many-pages-v2/analysis">
       Analysis
     </Link>,
   ];

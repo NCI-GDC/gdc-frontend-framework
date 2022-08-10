@@ -100,7 +100,7 @@ const AnalysisPage: NextPage = () => {
     ];
 
     const inactiveTag =
-      "truncate px-2 py-1 text-xs m-1.5 border rounded border-black bg-white hover:bg-nci-blue text-black hover:text-white";
+      "truncate px-2 py-1 text-xs m-1.5 border rounded border-black bg-base-lightest hover:bg-nci-blue text-black hover:text-white";
     const activeTag =
       "truncate px-2 py-1 text-xs m-1.5 border rounded border-black bg-nci-blumine-darker hover:bg-nci-blumine-lightest text-white hover:text-nci-blumine-darker";
 
@@ -295,7 +295,7 @@ const AnalysisPage: NextPage = () => {
         <div className="flex flex-row mx-2 p-2.5">
           <div>Tags:</div>
           <div className="w-2.5"></div>
-          <div className="border p-1.5 w-min gap-1 border-gray-400 bg-white rounded">
+          <div className="border p-1.5 w-min gap-1 border-gray-400 bg-base-lightest rounded">
             <div className="flex">
               <div className="flex flex-wrap">
                 <div className="flex flex-row">
@@ -436,7 +436,7 @@ const AnalysisPage: NextPage = () => {
       {...{ indexPath: "/user-flow/many-pages", headerElements, empty }}
     >
       <div className="flex flex-col p-4 gap-y-4">
-        <div className="border p-4 border-gray-400 bg-white">
+        <div className="border p-4 border-gray-400 bg-base-lightest">
           <CohortManager
             setIsModalOpen={setShowCohortBuilderModal}
             setIsExpanded={setIsExpanded}

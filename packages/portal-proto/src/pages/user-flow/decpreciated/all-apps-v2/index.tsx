@@ -1,29 +1,34 @@
 import { NextPage } from "next";
-import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
+import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
 import Image from "next/image";
 import Link from "next/link";
 
 const IndexPage: NextPage = () => {
   const headerElements = [
-    <Link key="Studies" href="/user-flow/many-pages-v2/studies">
+    <Link key="cohorts" href="/user-flow/decpreciated/all-apps-v2/cohorts">
       <div id="cohorts-header-button">Cohorts</div>
     </Link>,
-    <Link key="Analysis" href="/user-flow/many-pages-v2/analysis">
-      <div id="analysis-header-button">Analysis</div>
+    <Link
+      key="exploration"
+      href="/user-flow/decpreciated/all-apps-v2/exploration"
+    >
+      <div id="exploration-header-button">Exploration</div>
     </Link>,
   ];
 
   return (
     <UserFlowVariedPages
-      {...{ indexPath: "/user-flow/many-pages-v2", headerElements }}
+      {...{ indexPath: "/user-flow/all-apps-v2", headerElements }}
     >
       <div className="flex flex-row p-4 gap-x-4 h-full">
-        <div className="flex-grow p-4 border border-gdc-grey-lighter bg-white w-1/2 self-center">
+        <div className="flex-grow p-4 border border-gdc-grey-lighter bg-base-lightest w-1/2 self-center">
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
             eiusmod tempor incididunt ut{" "}
             <span className="text-gdc-blue">
-              <Link href="/user-flow/many-pages-v2/studies">Cohorts</Link>
+              <Link href="/user-flow/decpreciated/all-apps-v2/cohorts">
+                Cohorts
+              </Link>
             </span>{" "}
             labore et dolore magna aliqua.{" "}
           </p>{" "}
@@ -31,7 +36,9 @@ const IndexPage: NextPage = () => {
           <p>
             Lorem ipsum{" "}
             <span className="text-gdc-blue">
-              <Link href="/user-flow/many-pages-v2/analysis">Analysis</Link>
+              <Link href="/user-flow/decpreciated/all-apps-v2/exploration">
+                Exploration
+              </Link>
             </span>{" "}
             dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
             incididunt ut labore et dolore magna aliqua. Ut enim ad minim
@@ -39,12 +46,12 @@ const IndexPage: NextPage = () => {
             ea commodo consequat.
           </p>
         </div>
-        <div className="border border-gdc-grey-lighter bg-white w-1/2">
+        <div className="border border-gdc-grey-lighter bg-base-lightest w-1/2">
           <Image
             src="/user-flow/body-plot.png"
             layout="responsive"
-            height={500}
-            width={600}
+            height="968"
+            width="1180"
           />
         </div>
       </div>

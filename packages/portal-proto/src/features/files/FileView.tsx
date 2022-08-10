@@ -23,7 +23,7 @@ export interface FileViewProps {
 }
 
 const FullWidthDiv = tw.div`
-bg-white w-full mt-4
+bg-base-lightest w-full mt-4
 `;
 
 const TitleText = tw.h2`
@@ -57,7 +57,9 @@ export const TempTable = ({ tableData }: TempTableProps): JSX.Element => {
         {tableData.tableRows.map((row, index) => (
           <tr
             key={index}
-            className={index % 2 ? "bg-white" : "bg-gdc-blue-warm-lightest"}
+            className={
+              index % 2 ? "bg-base-lightest" : "bg-gdc-blue-warm-lightest"
+            }
           >
             {Object.values(row).map((item, index) => (
               <td key={index} className="text-sm p-1 pl-2.5">
@@ -118,10 +120,10 @@ export const FileView: React.FC<FileViewProps> = ({
           file_size: fileSize(obj.file_size),
           action: (
             <>
-              <button className="mr-2 bg-white border border-black rounded p-1 hover:bg-black hover:text-white focus:bg-black focus:text-white">
+              <button className="mr-2 bg-base-lightest border border-black rounded p-1 hover:bg-black hover:text-white focus:bg-black focus:text-white">
                 <FaShoppingCart title="Add to Cart" />
               </button>
-              <button className="bg-white border border-black rounded p-1 hover:bg-black hover:text-white focus:bg-black focus:text-white">
+              <button className="bg-base-lightest border border-black rounded p-1 hover:bg-black hover:text-white focus:bg-black focus:text-white">
                 <FaDownload title="Download" />
               </button>
             </>
@@ -267,7 +269,7 @@ export const FileView: React.FC<FileViewProps> = ({
         </Button>
       </div>
       <div className="flex">
-        <div className="flex-auto bg-white mr-4">
+        <div className="flex-auto bg-base-lightest mr-4">
           <TitleText>File Properties</TitleText>
           <HorizontalTable
             tableData={formatDataForHorizontalTable(file, [
@@ -306,7 +308,7 @@ export const FileView: React.FC<FileViewProps> = ({
             ])}
           />
         </div>
-        <div className="w-1/3 bg-white h-full">
+        <div className="w-1/3 bg-base-lightest h-full">
           <TitleText>Data Information</TitleText>
           <HorizontalTable
             tableData={formatDataForHorizontalTable(file, [
@@ -356,7 +358,7 @@ export const FileView: React.FC<FileViewProps> = ({
       {file?.analysis && (
         <>
           <div className="bg-grey mt-4 flex gap-10">
-            <div className="flex-1 bg-white">
+            <div className="flex-1 bg-base-lightest">
               <TitleText>Analysis</TitleText>
               <HorizontalTable
                 tableData={formatDataForHorizontalTable(file, [
@@ -412,7 +414,7 @@ export const FileView: React.FC<FileViewProps> = ({
                 ])}
               />
             </div>
-            <div className="flex-1 bg-white">
+            <div className="flex-1 bg-base-lightest">
               <TitleText>Reference Genome</TitleText>
               <HorizontalTable
                 tableData={[

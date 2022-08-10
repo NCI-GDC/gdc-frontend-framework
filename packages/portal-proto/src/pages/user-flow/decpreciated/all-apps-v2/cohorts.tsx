@@ -1,9 +1,9 @@
 import { NextPage } from "next";
-import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
+import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
 import Link from "next/link";
-import { ContextualStudiesView } from "../../../features/studies/StudiesView";
+import { ContextualStudiesView } from "@/features/studies/StudiesView";
 import ReactModal from "react-modal";
-import { StudyView } from "../../../features/studies/StudyView";
+import { StudyView } from "@/features/studies/StudyView";
 import { useState } from "react";
 
 const CohortsPage: NextPage = () => {
@@ -11,7 +11,10 @@ const CohortsPage: NextPage = () => {
 
   const headerElements = [
     "Cohorts",
-    <Link key="exploration" href="/user-flow/all-apps-v2/exploration">
+    <Link
+      key="exploration"
+      href="/user-flow/decpreciated/all-apps-v2/exploration"
+    >
       Exploration
     </Link>,
   ];

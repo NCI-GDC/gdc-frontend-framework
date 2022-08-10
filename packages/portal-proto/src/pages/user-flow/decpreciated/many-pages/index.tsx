@@ -1,5 +1,5 @@
 import { NextPage } from "next";
-import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
+import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
 import Image from "next/image";
 import Link from "next/link";
 import { headerElements } from "@/features/user-flow/many-pages/navigation-utils";
@@ -32,14 +32,14 @@ const SummaryStatsItem: React.FC<SummaryStatsItemProp> = ({
 
 const SummaryStatsPanel = () => {
   return (
-    <div className="flex flex-col bg-white border-nci-teal-lighter border-t-8 border-0 p-4 opacity-90 shadow-md hover:shadow-lg  ">
+    <div className="flex flex-col bg-base-lightest border-nci-teal-lighter border-t-8 border-0 p-4 opacity-90 shadow-md hover:shadow-lg  ">
       <div className="flex flex-row items-end justify-items-end">
         <p className="font-heading text-lg text-gdc-grey-darker">
           Data Portal Summary
         </p>
         <a
           className="text-xs px-4 pb-1 text-gdc-blue"
-          href="https://docs.gdc.cancer.gov/Data/Release_Notes/Data_Release_Notes/"
+          href="src/pages/user-flow/decpreciated/many-pages/index"
         >
           Data Release 31.0 - October 29, 2021{" "}
         </a>
@@ -89,13 +89,16 @@ const SummaryStatsPanel = () => {
 const ActionButtonBar = () => {
   return (
     <div className="flex flex-grow flex-row align-center pb-4 text-sm ">
-      <Link key="CohortBuilder" href="/cohort-builder">
+      <Link
+        key="CohortBuilder"
+        href="/packages/portal-proto/src/pages/cohort-builder"
+      >
         <button className="text-sm bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest hover:text-white font-bold mx-4 p-2 rounded inline-flex flex-nowrap items-center shadow-md">
           <Image src={"/user-flow/icons/build.svg"} width={32} height={32} />
           <span className="px-2 whitespace-nowrap">Build</span>
         </button>
       </Link>
-      <Link key="Studies" href="/user-flow/many-pages/studies">
+      <Link key="Studies" href="/user-flow/decpreciated/many-pages/studies">
         <button className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest  font-bold  mx-4 p-2 rounded inline-flex items-center shadow-md ">
           <Image
             src={"/user-flow/icons/crowd-of-users.svg"}
@@ -105,13 +108,16 @@ const ActionButtonBar = () => {
           <span className="px-2"> View </span>
         </button>
       </Link>
-      <Link key="Analysis" href="/user-flow/many-pages/analysis">
+      <Link key="Analysis" href="/user-flow/decpreciated/many-pages/analysis">
         <button className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md ">
           <Image src={"/user-flow/icons/dna.svg"} width={32} height={32} />{" "}
           <span className="px-2"> Analyze </span>
         </button>
       </Link>
-      <Link key="Repository" href="/user-flow/many-pages/repository">
+      <Link
+        key="Repository"
+        href="/user-flow/decpreciated/many-pages/repository"
+      >
         <button className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md ">
           <Image src={"/user-flow/icons/database.svg"} width={32} height={32} />{" "}
           <span className="px-2"> Download </span>
@@ -142,7 +148,7 @@ const IndexPage: NextPage = () => {
               <div className="w-full">
                 <input
                   type="text"
-                  className="h-10 pr-8 w-full pl-5 bg-white border-nci-gray-light rounded-full focus:outline-none focus:ring focus:ring-nci-cyan-light focus:border-nci-teal-light hover:shadow-lg hover:border-nci-teal-lighter"
+                  className="h-10 pr-8 w-full pl-5 bg-base-lightest border-nci-gray-light rounded-full focus:outline-none focus:ring focus:ring-nci-cyan-light focus:border-nci-teal-light hover:shadow-lg hover:border-nci-teal-lighter"
                   placeholder={`e.g. BRAF, Breast, TCGA-BLCA, TCGA-A5-A0G2`}
                 />
               </div>

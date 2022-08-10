@@ -118,7 +118,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
           </Grid>
         </div>
       </div>
-      <div className="bg-white">
+      <div className="bg-base-lightest">
         <Grid className="p-3 my-2" gutter={"lg"}>
           <Grid.Col
             data-tour="analysis_tool_filters"

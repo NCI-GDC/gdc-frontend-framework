@@ -13,7 +13,7 @@ const FeaturedToolCard: React.FC<FeaturedToolCardProps> = ({
   onClick,
 }: FeaturedToolCardProps) => {
   return (
-    <Grid className="bg-white h-full items-center m-1 rounded">
+    <Grid className="bg-base-lightest h-full items-center m-1 rounded">
       <Grid.Col span={2}>
         <Image
           className="m-auto"

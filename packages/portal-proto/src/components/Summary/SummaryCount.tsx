@@ -37,13 +37,13 @@ const SummaryCount = ({
   );
 
   return (
-    <div className="bg-white p-2 mb-4 flex items-center max-w-xs">
+    <div className="bg-base-lightest p-2 mb-4 flex items-center max-w-xs">
       <div className="flex-auto">
         <div className="uppercase tracking-tight text-xs">{title}</div>
         <div className="text-xl">{addLinkValue()}</div>
       </div>
       <div className="flex-none text-4xl" aria-hidden="true">
-        <Icon color="gray" />
+        <Icon color="primary" />
       </div>
     </div>
   );

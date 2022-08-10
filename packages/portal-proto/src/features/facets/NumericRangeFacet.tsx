@@ -66,7 +66,7 @@ interface RangeBucketElement {
 }
 
 const RadioStyle =
-  "form-check-input form-check-input appearance-none rounded-full h-3 w-3 border border-nci-gray-light bg-white checked:bg-nci-blue-dark checked:bg-nci-blue-dark focus:ring-0 focus:ring-offset-0 focus:outline-none focus:bg-nci-blue-darkest active:bg-nci-blue-dark transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer";
+  "form-check-input form-check-input appearance-none rounded-full h-3 w-3 border border-nci-gray-light bg-base-lightest checked:bg-nci-blue-dark checked:bg-nci-blue-dark focus:ring-0 focus:ring-offset-0 focus:outline-none focus:bg-nci-blue-darkest active:bg-nci-blue-dark transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer";
 
 export const ApplyButton = tw.div`
         flex
@@ -940,7 +940,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
       <div
         className={`flex flex-col ${
           width ? width : "mx-1"
-        } bg-white relative shadow-lg border-nci-gray-lightest border-1 rounded-b-md text-xs transition `}
+        } bg-base-lightest relative shadow-lg border-nci-gray-lightest border-1 rounded-b-md text-xs transition `}
       >
         <div className="flex items-center justify-between flex-wrap bg-nci-blue-lightest shadow-md px-1.5">
           <div className="has-tooltip text-nci-gray-darkest font-heading font-semibold text-md">

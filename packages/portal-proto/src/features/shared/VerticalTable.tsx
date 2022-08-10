@@ -99,7 +99,9 @@ export const VerticalTable: FC<VerticalTableProps> = ({
             {...row.getRowProps({
               style,
             })}
-            className={`tr ${index % 2 === 1 ? "bg-gray-300" : "bg-white"}`}
+            className={`tr ${
+              index % 2 === 1 ? "bg-gray-300" : "bg-base-lightest"
+            }`}
           >
             {row.cells.map((cell, key) => {
               return (

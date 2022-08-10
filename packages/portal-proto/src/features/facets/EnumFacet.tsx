@@ -205,7 +205,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
             label={description}
             classNames={{
               arrow: "bg-nci-gray-light",
-              tooltip: "bg-white text-nci-gray-darkest",
+              tooltip: "bg-base-lightest text-nci-gray-darkest",
             }}
             position="bottom-start"
             multiline
@@ -274,7 +274,9 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
           ref={cardRef}
         >
           <div
-            className={`card-face bg-white  ${!isFacetView ? "invisible" : ""}`}
+            className={`card-face bg-base-lightest  ${
+              !isFacetView ? "invisible" : ""
+            }`}
           >
             <div>
               <div className="flex flex-row items-center justify-between flex-wrap p-1 mb-1 border-b-2">
@@ -424,7 +426,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
             }
           </div>
           <div
-            className={`card-face card-back bg-white h-full overflow-y-scroll pb-1 ${
+            className={`card-face card-back bg-base-lightest h-full overflow-y-scroll pb-1 ${
               isFacetView ? "invisible" : ""
             }`}
           >

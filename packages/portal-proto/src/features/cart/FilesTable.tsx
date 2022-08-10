@@ -186,14 +186,14 @@ const FilesTable: React.FC = () => {
           <div className="flex gap-2">
             <Button
               className={
-                "bg-white text-nci-blue-darkest border-nci-blue-darkest"
+                "bg-base-lightest text-nci-blue-darkest border-nci-blue-darkest"
               }
             >
               JSON
             </Button>
             <Button
               className={
-                "bg-white text-nci-blue-darkest border-nci-blue-darkest"
+                "bg-base-lightest text-nci-blue-darkest border-nci-blue-darkest"
               }
             >
               TSV

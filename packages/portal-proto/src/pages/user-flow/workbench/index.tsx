@@ -135,7 +135,7 @@ const ActionButtonBar = () => {
         <Tooltip
           label="View the Studies available within the GDC and select them for further exploration and analysis."
           classNames={{
-            tooltip: "shadow-lg bg-base-max text-primary-content-darkest",
+            tooltip: "shadow-lg bg-base-lightest text-primary-content-darkest",
           }}
           position="bottom-start"
           multiline
@@ -161,7 +161,7 @@ const ActionButtonBar = () => {
         <Tooltip
           label="Build and define your custom cohorts using a variety of clinical and biospecimen features."
           classNames={{
-            tooltip: "shadow-lg bg-white text-nci-gray-darkest",
+            tooltip: "shadow-lg bg-base-lightest text-nci-gray-darkest",
           }}
           position="bottom-start"
           multiline
@@ -184,7 +184,7 @@ const ActionButtonBar = () => {
         <Tooltip
           label="Browse and download the files associated with your cohort for more sophisticated analysis."
           classNames={{
-            tooltip: "shadow-lg bg-white text-nci-gray-darkest",
+            tooltip: "shadow-lg bg-base-lightest text-nci-gray-darkest",
           }}
           position="bottom-start"
           multiline
@@ -240,7 +240,7 @@ const IndexPage: NextPage = () => {
               <div className="w-full">
                 <input
                   type="text"
-                  className="h-10 pr-8 w-full pl-5 bg-base-max border-primary-light rounded-full focus:outline-none focus:ring focus:ring-nci-cyan-light focus:border-nci-teal-light hover:shadow-lg hover:border-nci-teal-lighter"
+                  className="h-10 pr-8 w-full pl-5 bg-base-lightest border-primary-light rounded-full focus:outline-none focus:ring focus:ring-nci-cyan-light focus:border-nci-teal-light hover:shadow-lg hover:border-nci-teal-lighter"
                   placeholder={`e.g. BRAF, Breast, TCGA-BLCA, TCGA-A5-A0G2`}
                 />
               </div>

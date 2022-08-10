@@ -142,7 +142,7 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
   children,
 }: FacetGroupProps) => {
   return (
-    <div className="flex flex-col w-screen/1.5 bg-white overflow-y-scroll overflow-x-clip">
+    <div className="flex flex-col w-screen/1.5 bg-base-lightest overflow-y-scroll overflow-x-clip">
       <ResponsiveMasonry columnsCountBreakPoints={{ 640: 3, 1400: 3 }}>
         <Masonry gutter="0.5em" className="m-4">
           {children}
@@ -194,7 +194,7 @@ const CustomFacetGroup = (): JSX.Element => {
 
   // handle the case where there are no custom filters
   return (
-    <div className="flex flex-col w-screen/1.5 h-full bg-white overflow-y-scroll overflow-x-clip">
+    <div className="flex flex-col w-screen/1.5 h-full bg-base-lightest overflow-y-scroll overflow-x-clip">
       <LoadingOverlay visible={!isDictionaryReady} />
       <Modal size="lg" opened={opened} onClose={() => setOpened(false)}>
         <FacetSelection
@@ -215,7 +215,7 @@ const CustomFacetGroup = (): JSX.Element => {
               variant="outline"
               onClick={() => setOpened(true)}
               aria-label="Add Custom Filter"
-              className="bg-white text-nci-blue-darker"
+              className="bg-base-lightest text-nci-blue-darker"
             >
               Add Custom Facet
             </Button>
@@ -225,7 +225,7 @@ const CustomFacetGroup = (): JSX.Element => {
         <FacetGroup>
           <Button
             variant="outline"
-            className="h-48 bg-white flex flex-row justify-center align-middle items-center border-nci-blue-darker b-2 border-dotted"
+            className="h-48 bg-base-lightest flex flex-row justify-center align-middle items-center border-nci-blue-darker b-2 border-dotted"
             onClick={() => setOpened(true)}
           >
             <AddAdditionalIcon className="text-nci-blue" size="2em" />
@@ -256,7 +256,7 @@ export const FacetTabs = (): JSX.Element => {
         orientation="vertical"
         defaultValue={tabsConfig[Object.keys(tabsConfig)[0]].label}
         classNames={{
-          tab: "data-active:text-nci-gray-darkest text-white data-active:border-nci-red data-active:border-2 data-active:bg-white hover:bg-nci-blue",
+          tab: "data-active:text-nci-gray-darkest text-white data-active:border-nci-red data-active:border-2 data-active:bg-base-lightest hover:bg-nci-blue",
           tabsList: "flex flex-col bg-nci-blue-darker text-white w-[240px] ",
         }}
       >

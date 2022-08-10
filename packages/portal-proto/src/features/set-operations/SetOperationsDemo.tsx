@@ -74,7 +74,7 @@ const SetOperationsDemo: React.FC = () => {
           onClickHandler={onClickHandler}
         />
         <div className="w-full ml-2">
-          <table className="bg-white w-full text-left text-nci-gray-darker">
+          <table className="bg-base-lightest w-full text-left text-nci-gray-darker">
             <thead>
               <tr className="bg-nci-gray-lightest">
                 <th>Alias</th>
@@ -102,7 +102,7 @@ const SetOperationsDemo: React.FC = () => {
               ))}
             </tbody>
           </table>
-          <table className="bg-white w-full text-left text-nci-gray-darker mt-8">
+          <table className="bg-base-lightest w-full text-left text-nci-gray-darker mt-8">
             <thead>
               <tr className="bg-nci-gray-lightest">
                 <th>Select</th>

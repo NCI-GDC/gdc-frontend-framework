@@ -133,7 +133,9 @@ const OncoGridWrapper: React.FC = () => {
   return (
     <div
       ref={(ref) => (fullOncoGridContainer.current = ref)}
-      className={`bg-white p-16  ${isFullscreen ? "overflow-scroll" : ""}`}
+      className={`bg-base-lightest p-16  ${
+        isFullscreen ? "overflow-scroll" : ""
+      }`}
     >
       <div className="flex pb-8">
         <div className="basis-1/2">{`${donors.length} Most Mutated Cases and Top ${genes.length} Mutated Genes by SSM`}</div>
@@ -305,7 +307,7 @@ const OncoGridWrapper: React.FC = () => {
           <Box>
             <div
               ref={(ref) => (gridContainer.current = ref)}
-              className={`oncogrid-wrapper bg-white ${
+              className={`oncogrid-wrapper bg-base-lightest ${
                 consequenceTypeFilters.length === 0 || isLoading
                   ? "invisible"
                   : "visible"

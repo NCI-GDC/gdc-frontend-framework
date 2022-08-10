@@ -81,7 +81,9 @@ const ImageViewer = ({ imageId, tableData }: ImageViewerProp): JSX.Element => {
 
   return (
     <>
-      <div className={isError ? "flex bg-white h-img-viewer" : "hidden"}>
+      <div
+        className={isError ? "flex bg-base-lightest h-img-viewer" : "hidden"}
+      >
         Image is not available
       </div>
       <div>

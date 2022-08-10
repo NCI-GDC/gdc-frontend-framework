@@ -159,6 +159,19 @@ const nciYellow = {
   min: "#4D3907",
 };
 
+const utility = {
+  link: "#155276",
+  success: "#318f71",
+  warning: "#d9a214",
+  error: "#8a0e2a",
+  emergency: "#6a0019",
+  info: "#1c5e86",
+  category1: "#1c5e86",
+  category2: "#d1541d",
+  category3: "#564990",
+  category4: "#4dbc97",
+};
+
 module.exports = {
   important: "#__next",
   content: [

@@ -36,7 +36,7 @@ const DownloadOptions: React.FC<ChartDownloadProps> = ({
         </button>
       </Tooltip>
       {downloadMenuOpen && (
-        <div className="z-10 w-44 absolute bg-white rounded shadow-md">
+        <div className="z-10 w-44 absolute bg-base-lightest rounded shadow-md">
           <ul className="py-1" role="menu">
             <li>
               <span

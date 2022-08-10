@@ -16,9 +16,9 @@ interface BannerProps {
 }
 
 const backgroundColor = {
-  INFO: "bg-nci-blue-darker",
-  WARNING: "bg-nci-yellow-darker",
-  ERROR: "bg-nci-red-darker",
+  INFO: "bg-utility-info",
+  WARNING: "bg-utility-warning",
+  ERROR: "bg-utility-error",
 };
 
 const icon = {
@@ -37,11 +37,11 @@ const Banner: React.FC<BannerProps> = ({
 
   return (
     <div
-      className={`w-full p-1 flex justify-between border-solid border-y-1 border-gdc-gray-lighter ${backgroundColor[level]}`}
+      className={`w-full p-1 flex justify-between border-solid border-y-1 border-primary-content-lighter ${backgroundColor[level]}`}
     >
       <div className="flex items-center">
         {icon[level]}
-        <span className="pl-4 text-white">
+        <span className="pl-4 text-primary-content-min">
           <Markdown
             components={{
               // eslint-disable-next-line react/prop-types

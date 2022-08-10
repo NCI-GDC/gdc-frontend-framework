@@ -65,14 +65,14 @@ const SomanticMutationFilterFlipVersion: React.FC<SomaticAppProps> = () => {
               !showGeneChart ? "flip-card " : "flip-card flip-card-flipped "
             }
           >
-            <div className="card-face bg-white">
+            <div className="card-face bg-base-lightest">
               <GenesTable
                 selectedSurvivalPlot={undefined}
                 handleSurvivalPlotToggled={undefined}
               />
             </div>
-            <div className="card-face card-back bg-white">
-              <div className="flex flex-row justify-center bg-white border-2 border-nci-blumine-lighter">
+            <div className="card-face card-back bg-base-lightest">
+              <div className="flex flex-row justify-center bg-base-lightest border-2 border-nci-blumine-lighter">
                 <GeneChartWithNoSSR which="gene" />
               </div>
             </div>
@@ -116,14 +116,14 @@ const SomanticMutationFilterFlipVersion: React.FC<SomaticAppProps> = () => {
               !showMutationChart ? "flip-card " : "flip-card flip-card-flipped "
             }
           >
-            <div className="card-face bg-white">
+            <div className="card-face bg-base-lightest">
               <MutationsTable
                 selectedSurvivalPlot={undefined}
                 handleSurvivalPlotToggled={undefined}
               />
             </div>
-            <div className="card-face card-back bg-white">
-              <div className="flex flex-row justify-center bg-white border-2 border-nci-blumine-lighter">
+            <div className="card-face card-back bg-base-lightest">
+              <div className="flex flex-row justify-center bg-base-lightest border-2 border-nci-blumine-lighter">
                 <GeneChartWithNoSSR which="mutation" />
               </div>
             </div>

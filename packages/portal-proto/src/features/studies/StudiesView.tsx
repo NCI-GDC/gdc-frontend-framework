@@ -176,14 +176,14 @@ export const StudiesView: React.FC<StudiesViewProps> = ({
   const filterBox = (obj) => {
     const { data, title } = obj;
     return (
-      <div className="bg-white border border-nci-gray-lighter shadow-md rounded">
+      <div className="bg-base-lightest border border-nci-gray-lighter shadow-md rounded">
         <div className="bg-nci-gray-lightest p-2 rounded flex">
           <span className="flex-grow">{title}</span>
           <button className="text-2xl opacity-75 hover:opacity-100">
             <MdSearch title="Search" />
           </button>
         </div>
-        <div className="bg-white pl-2 flex border-b">
+        <div className="bg-base-lightest pl-2 flex border-b">
           <input
             className="mt-2 border-2 rounded"
             type="checkbox"
@@ -198,7 +198,7 @@ export const StudiesView: React.FC<StudiesViewProps> = ({
             </button>
           </div>
         </div>
-        <ul className="h-52 overflow-x-scroll bg-white p-2">
+        <ul className="h-52 overflow-x-scroll bg-base-lightest p-2">
           {data.map((data) => {
             const { value } = data;
             return (
@@ -516,7 +516,7 @@ const Study: React.FC<StudyProps> = (props: StudyProps) => {
     <div
       key={project_id}
       className={
-        "group h-250 border border-nci-gray-lighter flex flex-col bg-white shadow-md"
+        "group h-250 border border-nci-gray-lighter flex flex-col bg-base-lightest shadow-md"
       }
     >
       <div className="bg-nci-gray-lightest flex flex-row">
@@ -526,7 +526,7 @@ const Study: React.FC<StudyProps> = (props: StudyProps) => {
         </button>
         <button className="p-2 has-tooltip relative">
           <BsQuestionCircleFill />
-          <div className="inline-block tooltip absolute bg-white p-4 border rounded top-0">
+          <div className="inline-block tooltip absolute bg-base-lightest p-4 border rounded top-0">
             Tooltip text
           </div>
         </button>
@@ -536,7 +536,7 @@ const Study: React.FC<StudyProps> = (props: StudyProps) => {
           isFacetView ? "" : " flip-card-flipped"
         }`}
       >
-        <div className="w-auto h-auto card-face bg-white grid grid-cols-2flex1 m-4 mt-2">
+        <div className="w-auto h-auto card-face bg-base-lightest grid grid-cols-2flex1 m-4 mt-2">
           {projectLogoPath ? (
             <div className="max-h-40 relative">
               <Image
@@ -594,7 +594,7 @@ const Study: React.FC<StudyProps> = (props: StudyProps) => {
             </Button>
           </div>
         </div>
-        <div className="card-face card-back bg-white">
+        <div className="card-face card-back bg-base-lightest">
           <FacetChart
             field={"test"}
             marginBottom={40}
@@ -612,7 +612,7 @@ const Study: React.FC<StudyProps> = (props: StudyProps) => {
 const Search: React.FC<unknown> = () => {
   return (
     <div className="flex flex-row justify-center">
-      <div className="sm:w-1/2  rounded-full border border-gray-600 flex flex-row pr-4 bg-white">
+      <div className="sm:w-1/2  rounded-full border border-gray-600 flex flex-row pr-4 bg-base-lightest">
         <div className="flex flex-none fill-current text-black align-text-bottom pl-2">
           <Image src="/Search_Icon.svg" width={16} height={16} />
         </div>

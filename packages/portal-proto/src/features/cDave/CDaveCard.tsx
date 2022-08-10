@@ -279,7 +279,7 @@ const Result: React.FC<ResultProps> = ({
                 <Menu.Target>
                   <Button
                     rightIcon={<DownIcon size={20} />}
-                    className="bg-white text-nci-gray-darkest border-nci-gray"
+                    className="bg-base-lightest text-nci-gray-darkest border-nci-gray"
                   >
                     Select Action
                   </Button>
@@ -290,7 +290,7 @@ const Result: React.FC<ResultProps> = ({
                   <Menu.Item disabled>Remove from cohort</Menu.Item>
                 </Menu.Dropdown>
               </Menu>
-              <Button className="bg-white text-nci-gray-darkest border-nci-gray ml-2">
+              <Button className="bg-base-lightest text-nci-gray-darkest border-nci-gray ml-2">
                 TSV
               </Button>
             </div>
@@ -298,7 +298,7 @@ const Result: React.FC<ResultProps> = ({
               <Menu.Target>
                 <Button
                   rightIcon={<DownIcon size={20} />}
-                  className="bg-white text-nci-gray-darkest border-nci-gray"
+                  className="bg-base-lightest text-nci-gray-darkest border-nci-gray"
                 >
                   Customize Bins
                 </Button>
@@ -331,7 +331,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
 }: CDaveTableProps) => {
   return (
     <div className="h-48 block overflow-auto w-full">
-      <table className="bg-white w-full text-left text-nci-gray-darker mb-2">
+      <table className="bg-base-lightest w-full text-left text-nci-gray-darker mb-2">
         <thead className="bg-nci-gray-lightest font-bold">
           <tr>
             <th>Select</th>

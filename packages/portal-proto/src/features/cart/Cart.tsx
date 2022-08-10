@@ -38,7 +38,7 @@ const Cart: React.FC = () => {
       <CartHeader summaryData={summaryData} />
       <Grid className="mt-8 mx-2">
         <Grid.Col span={6}>
-          <div className="bg-white p-4 border border-solid border-nci-gray-lighter">
+          <div className="bg-base-lightest p-4 border border-solid border-nci-gray-lighter">
             <H2>How to download files in my Cart?</H2>
             <H3>Download Manifest:</H3>
             <P>

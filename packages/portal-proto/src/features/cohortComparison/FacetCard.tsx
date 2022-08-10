@@ -93,7 +93,7 @@ const FacetCard: React.FC<FacetCardProps> = ({
           divId={divId}
         />
       </div>
-      <table className="bg-white w-full text-left text-nci-gray-darker">
+      <table className="bg-base-lightest w-full text-left text-nci-gray-darker">
         <thead>
           <tr className="bg-nci-gray-lightest">
             <th>{FIELD_LABELS[field]}</th>

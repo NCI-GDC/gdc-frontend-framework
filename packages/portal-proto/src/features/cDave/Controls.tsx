@@ -88,7 +88,7 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
       </span>
       <Collapse in={groupOpen} id={`cdave-control-group-${name}`}>
         <div className="flex flex-col">
-          <ul className="bg-white">
+          <ul className="bg-base-lightest">
             {visibleFields.map((field) => (
               <FieldControl
                 key={field.full}
@@ -260,7 +260,7 @@ const Controls: React.FC<ControlPanelProps> = ({
   return (
     <div
       className={`${
-        controlsExpanded ? "w-80 bg-white overflow-scroll -ml-2" : ""
+        controlsExpanded ? "w-80 bg-base-lightest overflow-scroll -ml-2" : ""
       } flex flex-col min-h-[560px] max-h-[calc(100vh-50px)]`}
     >
       <Tooltip

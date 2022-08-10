@@ -289,7 +289,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
       </div>
       <div ref={mouseRef} className="relative">
         <Box
-          className="bg-white min-w-[150px]"
+          className="bg-base-lightest min-w-[150px]"
           sx={{ left: x + 20, top: y - 20, position: "absolute" }}
         >
           {survivalPlotLineTooltipContent}

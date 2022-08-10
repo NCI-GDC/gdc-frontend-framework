@@ -9,7 +9,8 @@ import {
 } from "react-icons/md";
 import { RiFile3Fill as FileIcon } from "react-icons/ri";
 
-const buttonStyle = "bg-white text-nci-blue-darkest border-nci-blue-darkest";
+const buttonStyle =
+  "bg-base-lightest text-nci-blue-darkest border-nci-blue-darkest";
 
 interface CartHeaderProps {
   summaryData: CartSummaryData;

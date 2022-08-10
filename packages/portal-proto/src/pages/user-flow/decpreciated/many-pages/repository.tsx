@@ -1,13 +1,13 @@
 import { NextPage } from "next";
-import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
-import { CohortManager } from "../../../features/user-flow/many-pages/cohort";
-import { Select } from "../../../components/Select";
+import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
+import { CohortManager } from "@/features/user-flow/many-pages/cohort";
+import { Select } from "@/components/Select";
 import { useState } from "react";
 import { GdcFile, useFiles } from "@gff/core";
-import { FilesView } from "../../../features/files/FilesView";
-import { FileModal } from "../../../features/files/FileView";
-import { CaseModal } from "../../../features/cases/CaseView";
-import { Case } from "../../../features/cases/CasesView";
+import { FilesView } from "@/features/files/FilesView";
+import { FileModal } from "@/features/files/FileView";
+import { CaseModal } from "@/features/cases/CaseView";
+import { Case } from "@/features/cases/CasesView";
 import { headerElements } from "@/features/user-flow/many-pages/navigation-utils";
 
 const RepositoryPage: NextPage = () => {
@@ -50,7 +50,7 @@ const RepositoryPage: NextPage = () => {
       {...{ indexPath: "/user-flow/many-pages", headerElements, Options }}
     >
       <div className="flex flex-col p-4 gap-y-4">
-        <div className="border p-4 border-gray-400 bg-white">
+        <div className="border p-4 border-gray-400 bg-base-lightest">
           <CohortManager
             setIsModalOpen={setShowCohortBuilderModal}
             setIsExpanded={setIsExpanded}
@@ -68,7 +68,7 @@ const RepositoryPage: NextPage = () => {
             }}
           />
         </div>
-        <div className="border border-gray-400 bg-white p-4">
+        <div className="border border-gray-400 bg-base-lightest p-4">
           <FilesView
             files={data}
             handleFileSelected={(file: GdcFile) => {

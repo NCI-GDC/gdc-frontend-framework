@@ -134,7 +134,7 @@ export const FileFacetPanel = () => {
       <Button
         variant="outline"
         aria-label="Add a file filter"
-        className="mx-1 bg-white flex flex-row justify-center align-middle items-center border-nci-blue-darker b-2"
+        className="mx-1 bg-base-lightest flex flex-row justify-center align-middle items-center border-nci-blue-darker b-2"
         onClick={() => setOpened(true)}
       >
         <AddAdditionalIcon className="text-nci-blue" size="2em" />

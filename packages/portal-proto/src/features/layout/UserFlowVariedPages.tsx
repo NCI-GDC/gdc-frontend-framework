@@ -51,7 +51,7 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
   const banners = useCoreSelector((state) => selectBanners(state));
   return (
     <div className="flex flex-col min-h-screen min-w-full bg-nci-gray-lightest">
-      <header className="flex-none bg-white sticky top-0 z-50">
+      <header className="flex-none bg-base-lightest sticky top-0 z-50">
         {banners.map((banner) => (
           <Banner {...banner} key={banner.id} />
         ))}
@@ -209,7 +209,7 @@ export const CohortGraphs: React.FC<CohortGraphs> = ({
 
 export const Graph: React.FC<unknown> = () => {
   return (
-    <div className="h-52 border pt-2 px-4 pb-4 bg-white">
+    <div className="h-52 border pt-2 px-4 pb-4 bg-base-lightest">
       <div className="flex flex-col h-full gap-y-2">
         <span className="text-center">Graph</span>
         <div className="flex-grow">
@@ -252,7 +252,7 @@ export const App: React.FC<AppProps> = ({
   }
   return (
     <button
-      className="group h-52 border border-nci-gray-lighter px-4 pt-2 pb-4 flex flex-col gap-y-2 bg-white shadow-md hover:shadow-lg hover:border-nci-blumine-darker hover:border-2"
+      className="group h-52 border border-nci-gray-lighter px-4 pt-2 pb-4 flex flex-col gap-y-2 bg-base-lightest shadow-md hover:shadow-lg hover:border-nci-blumine-darker hover:border-2"
       onClick={onClick}
     >
       <div className="text-center w-full text-lg">{name}</div>

@@ -7,7 +7,7 @@ export const headerElements = [
     key="Analysis"
     label="Explore and analyze harmonized high-quality clinical and genomics data from cancer genomic studies with the tools in the Analysis Center."
     classNames={{
-      tooltip: "shadow-lg bg-white text-nci-gray-darkest",
+      tooltip: "shadow-lg bg-base-lightest text-nci-gray-darkest",
     }}
     position="bottom-start"
     multiline
@@ -34,7 +34,7 @@ export const headerElements = [
     key="Studies"
     label="View the Projects/Studies available within the GDC and select them for further exploration and analysis."
     classNames={{
-      tooltip: "shadow-lg bg-white text-nci-gray-darkest",
+      tooltip: "shadow-lg bg-base-lightest text-nci-gray-darkest",
     }}
     position="bottom-start"
     multiline
@@ -61,7 +61,7 @@ export const headerElements = [
     key="Cohort"
     label="Build and define your custom cohorts using a variety of clinical and biospecimen features."
     classNames={{
-      tooltip: "shadow-lg bg-white text-nci-gray-darkest",
+      tooltip: "shadow-lg bg-base-lightest text-nci-gray-darkest",
     }}
     position="bottom-start"
     multiline
@@ -88,7 +88,7 @@ export const headerElements = [
     key="Download"
     label="Browse and download the files associated with your cohort for more sophisticated analysis."
     classNames={{
-      tooltip: "shadow-lg bg-white text-nci-gray-darkest",
+      tooltip: "shadow-lg bg-base-lightest text-nci-gray-darkest",
     }}
     position="bottom-start"
     multiline
