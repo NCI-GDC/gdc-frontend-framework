@@ -146,7 +146,7 @@ export const MultipleImageViewer = ({
                 {showSearch && (
                   <Input
                     placeholder="eg. TCGA-DD*, *DD*, TCGA-DD-AAVP"
-                    className="w-[220px] m-2 mt-1"
+                    className="w-1/8 m-2 mt-1"
                     rightSectionWidth={50}
                     onChange={(e) => setSearchText(e.target.value)}
                     rightSection={
@@ -180,7 +180,7 @@ export const MultipleImageViewer = ({
                         transitionDuration={300}
                         withArrow
                         classNames={{
-                          tooltip: "h-7 w-1/4",
+                          tooltip: "h-7 w-1/8",
                         }}
                       >
                         <Badge
@@ -256,7 +256,6 @@ export const MultipleImageViewer = ({
                                 key={`${file.file_id}${file.submitter_id}`}
                                 className="max-w-xs max-h-xs"
                               >
-                                {console.log("Slide")}
                                 <Slides
                                   file_id={file.file_id}
                                   submitter_id={file.submitter_id}

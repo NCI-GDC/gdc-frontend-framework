@@ -118,7 +118,7 @@ export const FileView: React.FC<FileViewProps> = ({
           file_size: fileSize(obj.file_size),
           action: (
             <>
-              <button className="mr-2 bg-white border border-black rounded p-1 hover:bg-black hover:text-white focus:bg-black focus:text-white">
+              <button className="mr-2 mb-2 bg-white border border-black rounded p-1 hover:bg-black hover:text-white focus:bg-black focus:text-white">
                 <FaShoppingCart title="Add to Cart" />
               </button>
               <button className="bg-white border border-black rounded p-1 hover:bg-black hover:text-white focus:bg-black focus:text-white">
@@ -464,8 +464,8 @@ export const FileView: React.FC<FileViewProps> = ({
 
       {fileHistory && (
         <FullWidthDiv>
-          <TitleText className="float-left">File Versions</TitleText>
-          <div className="float-right mt-3 mr-3">
+          <TitleText className="float-left mt-3">File Versions</TitleText>
+          <div className="float-right my-2 mr-3">
             <Button
               color={"gray"}
               className="mr-2 text-nci-gray-lightest bg-nci-blue hover:bg-nci-blue-darker"
