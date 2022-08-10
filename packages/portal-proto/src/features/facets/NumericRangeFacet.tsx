@@ -39,7 +39,7 @@ import {
   FacetDocTypeToLabelsMap,
   useRangeFacet,
 } from "@/features/facets/hooks";
-import * as tailwindConfig from "../../../tailwind.config";
+import { FacetIconButton } from "./components";
 
 interface NumericFacetProps extends FacetCardProps {
   readonly rangeDatatype: string;
@@ -950,39 +950,25 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
             </div>
           </div>
           <div className="flex flex-row">
-            <button
-              className="hover:bg-nci-grey-darker text-nci-gray font-bold py-2 px-1 rounded inline-flex items-center"
+            <FacetIconButton
               onClick={toggleFlip}
               aria-label="Flip between form and chart"
             >
-              <FlipIcon
-                size="1.25em"
-                color={tailwindConfig.theme.extend.colors["gdc-blue"].darker}
-              />
-            </button>
-            <button
-              className="hover:bg-nci-grey-darker text-nci-gray font-bold py-2 px-1 rounded inline-flex items-center"
-              onClick={clearFilters}
-            >
-              <UndoIcon
-                size="1.15em"
-                color={tailwindConfig.theme.extend.colors["gdc-blue"].darker}
-              />
-            </button>
+              <FlipIcon size="1.25em" />
+            </FacetIconButton>
+            <FacetIconButton onClick={clearFilters}>
+              <UndoIcon size="1.15em" />
+            </FacetIconButton>
             {dismissCallback ? (
-              <button
-                className="hover:bg-nci-grey-darker text-nci-gray font-bold py-2 px-1 rounded inline-flex items-center"
+              <FacetIconButton
                 onClick={() => {
                   clearFilters();
                   dismissCallback(field);
                 }}
                 aria-label="Remove the facet"
               >
-                <CloseIcon
-                  size="1.25em"
-                  color={tailwindConfig.theme.extend.colors["gdc-blue"].darker}
-                />
-              </button>
+                <CloseIcon size="1.25em" />
+              </FacetIconButton>
             ) : null}
           </div>
         </div>

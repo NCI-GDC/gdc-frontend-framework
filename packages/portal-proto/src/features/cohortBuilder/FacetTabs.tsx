@@ -53,8 +53,8 @@ const StyledFacetTabs = (props: TabsProps) => {
       styles={(theme) => ({
         tab: {
           ...theme.fn.focusStyles(),
-          color: theme.colors["nci-blue"][0],
-          border: theme.colors["nci-blue"][0],
+          color: theme.primaryColor,
+          border: theme.colors.primary[7],
           padding: `${theme.spacing.xs}px ${theme.spacing.md}px`,
           cursor: "pointer",
           fontSize: theme.fontSizes.md,

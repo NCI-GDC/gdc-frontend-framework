@@ -27,9 +27,9 @@ import {
 import { FaUndo as UndoIcon } from "react-icons/fa";
 import { EnumFacetCardProps } from "@/features/facets/types";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
-import { LoadingOverlay, Tooltip } from "@mantine/core";
-import * as tailwindConfig from "tailwind.config";
+import { ActionIcon, LoadingOverlay, Tooltip } from "@mantine/core";
 import { isEqual } from "lodash";
+import { FacetIconButton } from "./components";
 
 /**
  *  Enumeration facet filters handle display and selection of
@@ -169,13 +169,10 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
       ? 16
       : maxValuesToDisplay;
 
-  const numberOfBars = enumFilters
-    ? enumFilters.length
-    : total - maxValuesToDisplay < 0
-    ? total
-    : isGroupExpanded
-    ? 16
-    : maxValuesToDisplay;
+  const totalNumberOfBars = enumFilters ? enumFilters.length : total;
+  const numberOfBarsToDisplay = isGroupExpanded
+    ? Math.min(16, totalNumberOfBars)
+    : Math.min(maxValuesToDisplay, totalNumberOfBars);
 
   const sortedData = data
     ? Object.fromEntries(
@@ -200,10 +197,10 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
     <div
       className={`flex flex-col ${
         width ? width : "mx-1"
-      } bg-white relative shadow-lg border-nci-gray-lightest border-1 rounded-b-md text-xs transition`}
+      } bg-base-white relative shadow-lg border-secondary-lightest border-1 rounded-b-md text-xs transition`}
     >
       <div>
-        <div className="flex items-center justify-between flex-wrap bg-nci-blue-lightest shadow-md px-1.5">
+        <div className="flex items-center justify-between flex-wrap bg-secondary-lighter shadow-md px-1.5">
           <Tooltip
             label={description}
             classNames={{
@@ -223,50 +220,46 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
           </Tooltip>
           <div className="flex flex-row">
             {showSearch ? (
-              <button
-                className="hover:bg-nci-grey-darker text-nci-gray font-bold py-2 px-1 rounded inline-flex items-center"
-                onClick={toggleSearch}
-                aria-label="Search"
-              >
+              <FacetIconButton onClick={toggleSearch} aria-label="Search">
                 <SearchIcon
                   size="1.45em"
-                  color={tailwindConfig.theme.extend.colors["gdc-blue"].darker}
+                  className="text-primary-darker hover:text-primary-lighter"
                 />
-              </button>
+              </FacetIconButton>
             ) : null}
             {showFlip ? (
-              <button
-                className="hover:bg-nci-grey-darker text-nci-gray font-bold py-2 px-1 rounded inline-flex items-center"
+              <FacetIconButton
                 onClick={toggleFlip}
                 aria-label="Flip between form and chart"
               >
                 <FlipIcon
                   size="1.25em"
-                  color={tailwindConfig.theme.extend.colors["gdc-blue"].darker}
+                  className="text-primary-darker hover:text-primary-lighter"
                 />
-              </button>
+              </FacetIconButton>
             ) : null}
-            <button
-              className="hover:bg-nci-grey-darker text-nci-gray font-bold py-2 px-1 rounded inline-flex items-center"
+            <FacetIconButton
               onClick={clearFilters}
               aria-label="clear selection"
             >
               <UndoIcon
                 size="1.15em"
-                color={tailwindConfig.theme.extend.colors["gdc-blue"].darker}
+                className="text-primary-darker hover:text-primary-lighter"
               />
-            </button>
+            </FacetIconButton>
             {dismissCallback ? (
-              <button
-                className="hover:bg-nci-grey-darker text-nci-gray font-bold py-2 px-1 rounded inline-flex items-center"
+              <FacetIconButton
                 onClick={() => {
                   clearFilters();
                   dismissCallback(field);
                 }}
                 aria-label="Remove the facet"
               >
-                <CloseIcon size="1.25em" className="text-gdc-blue-darker" />
-              </button>
+                <CloseIcon
+                  size="1.25em"
+                  className="text-primary-darker hover:text-primary-lighter"
+                />
+              </FacetIconButton>
             ) : null}
           </div>
         </div>
@@ -285,27 +278,30 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
           >
             <div>
               <div className="flex flex-row items-center justify-between flex-wrap p-1 mb-1 border-b-2">
-                <button
-                  className={
-                    "ml-1 border rounded-sm border-nci-gray-darkest bg-nci-gray hover:bg-nci-gray-lightest text-white hover:text-nci-gray-darker"
-                  }
+                <ActionIcon
+                  size="xs"
+                  className={`ml-1 border rounded-sm border-accent-darkest ${
+                    !isSortedByValue ? "bg-accent" : "bg-accent-light"
+                  } text-accent-content-darker hover:bg-accent-lightest  hover:text-accent-content-darker`}
                   aria-label="Sort alphabetically"
                 >
                   <AlphaSortIcon
                     onClick={() => setIsSortedByValue(false)}
                     scale="1.5em"
                   />
-                </button>
+                </ActionIcon>
                 <div className={"flex flex-row items-center "}>
-                  <button
+                  <ActionIcon
+                    size="xs"
+                    variant={isSortedByValue ? "filled" : "outline"}
                     onClick={() => setIsSortedByValue(true)}
-                    className={
-                      "border rounded-sm border-nci-gray-darkest bg-nci-gray hover:bg-nci-gray-lightest text-white hover:text-nci-gray-darker transition-colors"
-                    }
+                    className={`ml-1 border rounded-sm border-accent-darkest ${
+                      isSortedByValue ? "bg-accent" : "bg-accent-light"
+                    } text-accent-content-darker hover:bg-accent-lightest  hover:text-accent-content-darker`}
                     aria-label="Sort numerically"
                   >
                     <SortIcon scale="1.5em" />
-                  </button>
+                  </ActionIcon>
                   <p className="px-2 mr-3">
                     {FacetDocTypeToLabelsMap[docType]}
                   </p>
@@ -438,15 +434,15 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
               selectedEnums={selectedEnums}
               isSuccess={isSuccess}
               showTitle={false}
-              maxBins={numberOfBars}
+              maxBins={numberOfBarsToDisplay}
               height={
-                numberOfBars == 1
+                numberOfBarsToDisplay == 1
                   ? 150
-                  : numberOfBars == 2
+                  : numberOfBarsToDisplay == 2
                   ? 220
-                  : numberOfBars == 3
+                  : numberOfBarsToDisplay == 3
                   ? 240
-                  : numberOfBars * 65 + 10
+                  : numberOfBarsToDisplay * 65 + 10
               }
             />
           </div>

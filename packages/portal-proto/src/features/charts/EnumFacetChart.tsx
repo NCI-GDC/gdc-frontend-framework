@@ -16,7 +16,7 @@ import {
   VictoryStack,
   VictoryTooltip,
 } from "victory";
-import * as tailwindConfig from "tailwind.config";
+import { getThemeColor } from "src/utils";
 import ChartTitleBar from "./ChartTitleBar";
 import { capitalize, truncateString } from "src/utils";
 
@@ -221,7 +221,7 @@ const EnumBarChart: React.FC<BarChartProps> = ({
           }
           style={{
             data: {
-              fill: tailwindConfig.theme.extend.colors["gdc-blue"].darker,
+              fill: getThemeColor("chart").darker,
               width: 22,
             },
           }}
@@ -245,7 +245,7 @@ const EnumBarChart: React.FC<BarChartProps> = ({
           y="y"
           style={{
             data: {
-              fill: tailwindConfig.theme.extend.colors["gdc-grey"].lighter,
+              fill: getThemeColor("base").light,
               width: 22,
             },
           }}

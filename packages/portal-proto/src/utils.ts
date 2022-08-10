@@ -2,6 +2,7 @@ import { KeyboardEventHandler } from "react";
 import { CartFile } from "@gff/core";
 import { replace, sortBy } from "lodash";
 import { DocumentWithWebkit } from "./features/types";
+import * as tailwindConfig from "tailwind.config";
 
 export const toggleFullScreen = async (
   ref: React.MutableRefObject<any>,
@@ -107,7 +108,7 @@ export const allFilesInCart = (carts: CartFile[], files: CartFile[]): boolean =>
 
 /**
  *
- * @param givenObject Array of given objects
+ * @param givenObjects Array of given objects
  * @param property Property (string) which we want to base the comparison on
  * @returns the array of given objects (@param givenObject) in ascending order based on the (@param property)
  */
@@ -118,3 +119,6 @@ export const sortByPropertyAsc = <T>(
   sortBy(givenObjects, [
     (e) => replace(e[property], /[^a-zA-Z]/g, "").toLocaleLowerCase(),
   ]);
+
+export const getThemeColor = (key: string): Record<string, string> =>
+  tailwindConfig.plugins.slice(-1)[0].__options.defaultTheme.extend.colors[key];

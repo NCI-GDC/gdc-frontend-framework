@@ -86,15 +86,18 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
                 "#ffffff",
               ],
               // Add default color from tailwind config to Mantine theme
+              // note that now getting colors from the tailwindcss-themer which assumes that plugin is last in the
+              // plugins declaration.
+              // TODO: refactor how the configuration get loaded
               ...Object.fromEntries(
-                Object.entries(tailwindConfig.theme.extend.colors).map(
-                  ([key, values]) =>
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-ignore
-                    [key, Array(10).fill(values?.DEFAULT)],
-                ),
+                Object.entries(
+                  tailwindConfig.plugins.slice(-1)[0].__options.defaultTheme
+                    .extend.colors,
+                ).map(([key, values]) => [key, Object.values(values)]),
               ),
             },
+            primaryColor: "primary",
+            primaryShade: { light: 4, dark: 7 },
             breakpoints: {
               xs: 500,
               sm: 800,

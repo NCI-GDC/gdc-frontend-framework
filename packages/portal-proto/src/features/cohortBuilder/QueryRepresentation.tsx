@@ -25,6 +25,11 @@ import {
   MdArrowDropDown as DropDownIcon,
   MdClose as ClearIcon,
 } from "react-icons/md";
+import tw from "tailwind-styled-components";
+
+export const QueryRepresentationText = tw.div`
+flex truncate ... max-w-sm px-2 border-l-2 border-secondary-light
+`;
 
 type RangeOperation =
   | LessThan
@@ -35,7 +40,7 @@ type RangeOperation =
 type ValueOperation = Exclude<Operation, Intersection | Union>;
 
 const queryItemStyle =
-  "m-1 px-2 font-heading shadow-md font-medium text-md rounded-xl bg-nci-blue-dark text-nci-gray-lightest border-nci-gray-light border-1";
+  "m-1 px-2 font-heading shadow-md font-medium text-md rounded-xl bg-secondary-dark text-secondary-content-lightest border-secondary-light border-1";
 
 export const isRangeOperation = (x?: Operation): x is RangeOperation => {
   return (
@@ -65,9 +70,7 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
     <div className="flex flex-row items-center">
       {convertFieldToName(field)} is
       <span className="px-1 underline">{filter_set_label_v1[groupType]}</span>
-      <div className="flex truncate ... max-w-sm px-2 border-l-2 border-nci-gray-light ">
-        {operands.join(",")}
-      </div>
+      <QueryRepresentationText>{operands.join(",")}</QueryRepresentationText>
     </div>
   );
 };
@@ -89,9 +92,7 @@ const ComparisonElement: React.FC<ComparisonElementProps> = ({
     <div className="flex flex-row items-center">
       {showLabel ? convertFieldToName(field) : null}
       <span className="px-1">{operator}</span>
-      <div className="flex truncate ... max-w-sm  border-nci-gray-light ">
-        {operand}
-      </div>
+      <QueryRepresentationText>{operand}</QueryRepresentationText>
     </div>
   );
 };
@@ -139,7 +140,7 @@ export const ClosedRangeQueryElement: React.FC<ClosedRangeQueryElementProps> =
               <button onClick={() => handleKeepMember(lower)}>
                 <ClearIcon
                   size="1.5em"
-                  className="pl-1 border-l-2 border-nci-gray-light "
+                  className="pl-1 border-l-2 border-secondary-light"
                 />
               </button>
             </div>
@@ -178,7 +179,7 @@ export const QueryElement: React.FC<QueryElementProps> = ({
         <button onClick={handleRemoveFilter}>
           <ClearIcon
             size="1.5em"
-            className="pl-1 border-l-2 border-nci-gray-light "
+            className="pl-1 border-l-2 border-secondary-light"
           />
         </button>
       </div>

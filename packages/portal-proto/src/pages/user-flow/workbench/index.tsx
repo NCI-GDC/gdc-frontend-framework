@@ -34,13 +34,13 @@ const SummaryStatsItem: React.FC<SummaryStatsItemProp> = ({
 
 const SummaryStatsPanel = () => {
   return (
-    <div className="flex flex-col bg-white border-nci-blue-lighter border-t-8 border-0 p-4 opacity-90 shadow-md hover:shadow-lg  ">
+    <div className="flex flex-col bg-base-lightest border-primary-lighter border-t-8 border-0 p-4 opacity-90 shadow-md hover:shadow-lg  ">
       <div className="flex flex-row items-end justify-items-end">
-        <p className="font-heading text-lg text-gdc-grey-darker">
+        <p className="font-heading text-lg text-primary-content-darker">
           Data Portal Summary
         </p>
         <a
-          className="text-xs px-4 pb-1 text-gdc-blue"
+          className="text-xs px-4 pb-1 text-accent-cool-content-dark"
           href="https://docs.gdc.cancer.gov/Data/Release_Notes/Data_Release_Notes/"
         >
           Data Release 31.0 - October 29, 2021{" "}
@@ -102,7 +102,7 @@ const ActionButtonBar = () => {
           <Tooltip
             label="Explore and analyze harmonized high-quality clinical and genomics data from cancer genomic studies with the tools in the Analysis Center."
             classNames={{
-              tooltip: "shadow-lg bg-white text-nci-gray-darkest",
+              tooltip: "shadow-lg bg-base-lighter text-primary-content-darkest",
             }}
             position="right-start"
             multiline
@@ -116,7 +116,7 @@ const ActionButtonBar = () => {
                 query: { app: undefined },
               }}
               classNames={{
-                root: "bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 px-5 rounded shadow-md transition-colors",
+                root: "bg-base-lighter hover:bg-primary-content text-primary-content-darkest font-bold mx-4 p-2 px-5 rounded shadow-md transition-colors",
               }}
             >
               <div className="flex flex-row items-center">
@@ -135,7 +135,7 @@ const ActionButtonBar = () => {
         <Tooltip
           label="View the Studies available within the GDC and select them for further exploration and analysis."
           classNames={{
-            tooltip: "shadow-lg bg-white text-nci-gray-darkest",
+            tooltip: "shadow-lg bg-base-max text-primary-content-darkest",
           }}
           position="bottom-start"
           multiline
@@ -148,7 +148,7 @@ const ActionButtonBar = () => {
               pathname: "/user-flow/workbench/analysis_page",
               query: { app: "Studies" },
             }}
-            className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md transition-colors"
+            className="bg-base-lighter hover:bg-primary-content-gray text-bg-primary-content-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md transition-colors"
           >
             <Image
               src={"/user-flow/icons/crowd-of-users.svg"}
@@ -240,7 +240,7 @@ const IndexPage: NextPage = () => {
               <div className="w-full">
                 <input
                   type="text"
-                  className="h-10 pr-8 w-full pl-5 bg-white border-nci-gray-light rounded-full focus:outline-none focus:ring focus:ring-nci-cyan-light focus:border-nci-teal-light hover:shadow-lg hover:border-nci-teal-lighter"
+                  className="h-10 pr-8 w-full pl-5 bg-base-max border-primary-light rounded-full focus:outline-none focus:ring focus:ring-nci-cyan-light focus:border-nci-teal-light hover:shadow-lg hover:border-nci-teal-lighter"
                   placeholder={`e.g. BRAF, Breast, TCGA-BLCA, TCGA-A5-A0G2`}
                 />
               </div>

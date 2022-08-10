@@ -28,7 +28,6 @@ import {
   clearCohortFilters,
   setCurrentCohort,
 } from "@gff/core";
-import * as tailwindConfig from "../../../tailwind.config";
 
 const ContextBar: React.FC<CohortGroupProps> = ({
   cohorts,
@@ -110,8 +109,8 @@ const ContextBar: React.FC<CohortGroupProps> = ({
   );
 
   const buttonStyle =
-    "flex flex-row items-center bg-white text-nci-blue-darkest border border-solid border-nci-blue-darkest h-12 hover:bg-nci-blue hover:text-white hover:border-nci-blue";
-  const tabStyle = `${buttonStyle} rounded-md first:border-r-0 last:border-l-0 first:rounded-r-none last:rounded-l-none hover:border-nci-blue-darkest data-active:bg-nci-blue-darkest data-active:text-white`;
+    "flex flex-row items-center bg-base-white text-primary-darkest border border-solid border-primary-darkest hover:bg-primary-darkest hover:text-primary-lightest";
+  const tabStyle = `${buttonStyle} rounded-md first:border-r-0 last:border-l-0 first:rounded-r-none last:rounded-l-none hover:border-primary-darkest data-active:bg-primary-darker data-active:text-primary-content-lightest`;
 
   const clearAllFilters = () => {
     coreDispatch(clearCohortFilters());
@@ -124,18 +123,18 @@ const ContextBar: React.FC<CohortGroupProps> = ({
         isCollapsed={isGroupCollapsed}
         toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
       >
-        <div className="flex flex-col bg-nci-gray-lightest">
-          <div className="flex items-center bg-nci-blue-lightest h-20 mb-6">
+        <div className="flex flex-col bg-base-lightest">
+          <div className="flex items-center bg-primary-lightest h-20 mb-6">
             <CountButton
               countName="casesMax"
               label="CASES"
-              className="text-nci-blue-darkest pl-4"
+              className="text-primary-content-darkest pl-4"
               bold
             />
             <Divider
               orientation="vertical"
               my="md"
-              className="m-2 h-[80%] border-nci-blue-darkest"
+              className="m-2 h-[80%] border-primary-darkest"
             />
 
             {Object.keys(filters.root).length !== 0 ? (
@@ -146,19 +145,14 @@ const ContextBar: React.FC<CohortGroupProps> = ({
                   })}
                 </div>
                 <button
-                  className="hover:bg-nci-grey-darker text-nci-gray font-bold py-2 px-1 rounded ml-auto mr-4 "
+                  className="hover:text-primary-darkest text-primary-content font-bold py-2 px-1 rounded ml-auto mr-4 "
                   onClick={clearAllFilters}
                 >
-                  <UndoIcon
-                    size="1.15em"
-                    color={
-                      tailwindConfig.theme.extend.colors["gdc-blue"].darker
-                    }
-                  />
+                  <UndoIcon size="1.15em" color="secondary" />
                 </button>
               </div>
             ) : (
-              <span className="text-lg text-nci-blue-darkest ">
+              <span className="text-lg text-primary-darkest ">
                 Currently viewing all cases in the GDC. Further refine your
                 cohort with tools such as the Cohort Builder.
               </span>

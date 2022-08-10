@@ -95,16 +95,16 @@ export const CohortBar: React.FC<CohortBarProps> = ({
               setCurrentCohort(x);
               onSelectionChanged(x.value);
             }}
-            className="border-nci-gray-light w-80 p-0 z-10 "
+            className="border-base-light w-80 p-0 z-10 "
             aria-items-centerlabel="Select cohort"
             styles={{
               dropdownIndicator: (provided) => ({
                 ...provided,
-                color: tailwindConfig.theme.extend.colors["gdc-blue"].darkest,
+                color: "#FF0000",
               }),
               singleValue: (provided) => ({
                 ...provided,
-                color: tailwindConfig.theme.extend.colors["gdc-blue"].darkest,
+                color: "#FF0000",
               }),
             }}
           />

@@ -1,3 +1,5 @@
+//@ts-check
+
 // eslint-disable-next-line  @typescript-eslint/no-var-requires
 const plugin = require("tailwindcss/plugin");
 
@@ -10,6 +12,153 @@ function withOpacityValue(variable) {
   };
 }
 
+// define NCI colors so all at 10 color pallets
+// note addition of vivid, white, black to "pad" the
+// nci color to 10 colors
+
+const nciGray = {
+  max: "#FFFFFF",
+  lightest: "#f1f1f1",
+  lighter: "#c5c5c5",
+  light: "#9b9b9b",
+  DEFAULT: "#706f6f",
+  dark: "#606060",
+  darker: "#414150",
+  darkest: "#38393a",
+  ink: "#1b1b1b",
+  min: "#000000",
+};
+
+const nciBlue = {
+  max: "#ffffff",
+  lightest: "#e9eff5",
+  lighter: "#abc5db",
+  light: "#6a9dc1",
+  DEFAULT: "#2a72a5",
+  vivid: "#3289C7",
+  dark: "#256492",
+  darker: "#1d567e",
+  darkest: "#0f4163",
+  min: "#11324A",
+};
+
+const nciRed = {
+  max: "#ffffff",
+  lightest: "#f9e7ed",
+  lighter: "#e3a5b3",
+  light: "#cf5f78",
+  DEFAULT: "#bb0e3d",
+  vivid: "#d01145",
+  dark: "#a31836",
+  darker: "#8a0e2a",
+  darkest: "#6a0019",
+  min: "#3D000E",
+};
+
+const nciBlumine = {
+  max: "#ffffff",
+  lightest: "#e9eff3",
+  lighter: "#a3bfcf",
+  light: "#648fab",
+  DEFAULT: "#1c5e86",
+  vivid: "#2884BD",
+  dark: "#155276",
+  darker: "#0c4564",
+  darkest: "#00314c",
+  min: "#001926",
+};
+
+const nciTeal = {
+  max: "#ffffff",
+  lightest: "#e9f5f7",
+  lighter: "#a5d5d9",
+  light: "#64b7db",
+  DEFAULT: "#0d95a1",
+  vivid: "#0FB1BF",
+  dark: "#2b8ba7",
+  darker: "#227991",
+  darkest: "#135f73",
+  min: "#0C3945",
+};
+
+const nciCyan = {
+  max: "#ffffff",
+  lightest: "#ebf5f9",
+  lighter: "#add9e5",
+  light: "#72bdd1",
+  DEFAULT: "#319fbe",
+  vivid: "#37B2D4",
+  dark: "#2b8ba7",
+  darker: "#227991",
+  darkest: "#135f73",
+  min: "#092A33",
+};
+
+const nciGreen = {
+  max: "#ffffff",
+  lightest: "#edf7f5",
+  lighter: "#b3e5d5",
+  light: "#7cd1b4",
+  DEFAULT: "#4dbc97",
+  vivid: "#5CE0B4",
+  dark: "#3ca582",
+  darker: "#318f71",
+  darkest: "#1e7158",
+  min: "#0F382C",
+};
+
+const nciViolet = {
+  max: "#ffffff",
+  lightest: "#efeff5",
+  lighter: "#bfb9db",
+  light: "#8f85bf",
+  DEFAULT: "#6254a3",
+  vivid: "#7A69C9",
+  dark: "#564990",
+  darker: "#4a3d7d",
+  darkest: "#392b62",
+  min: "#1F1836",
+};
+
+const nciPurple = {
+  max: "#ffffff",
+  lightest: "#f1e9f3",
+  lighter: "#cdadd1",
+  light: "#a76eaf",
+  DEFAULT: "#82368c",
+  vivid: "#AD49BA",
+  dark: "#742d7c",
+  darker: "#64226b",
+  darkest: "#4e1154",
+  min: "#1F1836",
+};
+
+const nciOrange = {
+  max: "#ffffff",
+  lightest: "#fdefeb",
+  lighter: "#f9bfaa",
+  light: "#f38f6a",
+  DEFAULT: "#ff5f00",
+  vivid: "#ff5f00",
+  dark: "#d1541d",
+  darker: "#b34715",
+  darkest: "#8d3503",
+  min: "#471B01",
+};
+
+const nciYellow = {
+  max: "#ffffff",
+  lightest: "#fff9e8",
+  lighter: "#ffe296",
+  light: "#ffd056",
+  DEFAULT: "#ffbf17",
+  vivid: "#FFB700",
+  dark: "#d9a214",
+  darker: "#bf8f11",
+  darkest: "#8c690d",
+  min: "#4D3907",
+};
+
 module.exports = {
   important: "#__next",
   content: [
@@ -20,6 +169,32 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // theming support
+        // based on daisyUI color scheme
+        // primary: withOpacityValue("--color-primary"),
+        // "primary-focus": withOpacityValue("--color-primary-focus"),
+        // "primary-content" : withOpacityValue("--color-primary-content"),
+        // "primary-border" : withOpacityValue("--color-primary-border"),
+        // secondary: withOpacityValue("--color-secondary"),
+        // "secondary-focus": withOpacityValue("--color-secondary-focus"),
+        // "secondary-content" : withOpacityValue("--color-secondary-content"),
+        // "secondary-border" : withOpacityValue("--color-secondary-border"),
+        // accent: withOpacityValue("--color-accent"),
+        // "accent-focus": withOpacityValue("--color-accent-focus"),
+        // "accent-content" : withOpacityValue("--color-accent-content"),
+        // "accent-border" : withOpacityValue("--color-secondary-border"),
+        // neutral: withOpacityValue("--color-neutral"),
+        // "neutral-focus": withOpacityValue("--color-neutral-focus"),
+        // "neutral-content" : withOpacityValue("--color-neutral-content"),
+        // base: withOpacityValue("--color-base"),
+        // "base-lighter": withOpacityValue("--color-base-lighter"),
+        // "base-lightest": withOpacityValue("--color-base-lightest"),
+        // "base-darker": withOpacityValue("--color-base-darker"),
+        // "base-darkest": withOpacityValue("--color-base-darkest"),
+        // tertiary: withOpacityValue("--color-tertiary"),
+        // highlight: withOpacityValue("--color-highlight"),
+        // chart: withOpacityValue("--color-chart"),
+
         /* These colors come from the NCI color palette. The palette defines
          * six primary and five secondary colors. The extended palette defines
          * nine shades lighter and nine shades darker for each of the primary
@@ -31,112 +206,22 @@ module.exports = {
          * lighter, lightest, dark, darker, and darkest modifiers. Each one
          * maps to every third shade.
          */
-        // theming support
-        primary: withOpacityValue("--color-primary"),
-        secondary: withOpacityValue("--color-secondary"),
-        tertiary: withOpacityValue("--color-tertiary"),
-        highlight: withOpacityValue("--color-highlight"),
+
         // NCI Primary Palette
-        "nci-gray": {
-          lightest: "#f1f1f1",
-          lighter: "#c5c5c5",
-          light: "#9b9b9b",
-          DEFAULT: "#706f6f",
-          dark: "#606060",
-          darker: "#414150",
-          darkest: "#38393a",
-        },
-        "nci-red": {
-          lightest: "#f9e7ed",
-          lighter: "#e3a5b3",
-          light: "#cf5f78",
-          DEFAULT: "#bb0e3d",
-          dark: "#a31836",
-          darker: "#8a0e2a",
-          darkest: "#6a0019",
-        },
-        "nci-blumine": {
-          lightest: "#e9eff3",
-          lighter: "#a3bfcf",
-          light: "#648fab",
-          DEFAULT: "#1c5e86",
-          dark: "#155276",
-          darker: "#0c4564",
-          darkest: "#00314c",
-        },
-        "nci-blue": {
-          lightest: "#e9eff5",
-          lighter: "#abc5db",
-          light: "#6a9dc1",
-          DEFAULT: "#2a72a5",
-          dark: "#256492",
-          darker: "#1d567e",
-          darkest: "#0f4163",
-        },
-        "nci-teal": {
-          lightest: "#e9f5f7",
-          lighter: "#a5d5d9",
-          light: "#64b7db",
-          DEFAULT: "#0d95a1",
-          dark: "#2b8ba7",
-          darker: "#227991",
-          darkest: "#135f73",
-        },
-        "nci-cyan": {
-          lightest: "#ebf5f9",
-          lighter: "#add9e5",
-          light: "#72bdd1", //???
-          DEFAULT: "#319fbe",
-          dark: "#2b8ba7",
-          darker: "#227991",
-          darkest: "#135f73",
-        },
+        "nci-gray": nciGray,
+        "nci-red": nciRed,
+        "nci-blumine": nciBlumine,
+        "nci-blue": nciBlue,
+        "nci-teal": nciTeal,
+        "nci-cyan": nciCyan,
         // NCI Secondary Palette
-        "nci-green": {
-          lightest: "#edf7f5",
-          lighter: "#b3e5d5",
-          light: "#7cd1b4",
-          DEFAULT: "#4dbc97",
-          dark: "#3ca582",
-          darker: "#318f71",
-          darkest: "#1e7158",
-        },
-        "nci-violet": {
-          lightest: "#efeff5",
-          lighter: "#bfb9db",
-          light: "#8f85bf",
-          DEFAULT: "#6254a3",
-          dark: "#564990",
-          darker: "#4a3d7d",
-          darkest: "#392b62",
-        },
-        "nci-purple": {
-          lightest: "#f1e9f3",
-          lighter: "#cdadd1",
-          light: "#a76eaf",
-          DEFAULT: "#82368c",
-          dark: "#742d7c",
-          darker: "#64226b",
-          darkest: "#4e1154",
-        },
-        "nci-orange": {
-          lightest: "#fdefeb",
-          lighter: "#f9bfaa",
-          light: "#f38f6a",
-          DEFAULT: "#ff5f00",
-          dark: "#d1541d",
-          darker: "#b34715",
-          darkest: "#8d3503",
-        },
-        "nci-yellow": {
-          lightest: "#fff9e8",
-          lighter: "#ffe296",
-          light: "#ffd056",
-          DEFAULT: "#ffbf17",
-          dark: "#d9a214",
-          darker: "#bf8f11",
-          darkest: "#8c690d",
-        },
+        "nci-green": nciGreen,
+        "nci-violet": nciViolet,
+        "nci-purple": nciPurple,
+        "nci-orange": nciOrange,
+        "nci-yellow": nciYellow,
+        // TODO add remaining after Aug 2022 MR review
+        /** --
         "gdc-grey": {
           // gray
           lightest: "#f0f0f0",
@@ -248,6 +333,7 @@ module.exports = {
           darker: "#5c4809",
           darkest: "#422d19",
         },
+         --- */
         "gdc-survival": {
           0: "#1F77B4",
           1: "#BD5800",
@@ -284,6 +370,7 @@ module.exports = {
       fontFamily: {
         montserrat: ["Montserrat", "sans-serif"],
         heading: ["Montserrat", "sans-serif"],
+        content: ["Montserrat", "sans-serif"],
       },
       borderWidth: {
         DEFAULT: "1px",
@@ -323,6 +410,7 @@ module.exports = {
   plugins: [
     require("@tailwindcss/forms"),
     require("@tailwindcss/typography"),
+
     plugin(function ({ addVariant }) {
       // add mantine.dev variants
       addVariant("data-checked", "&[data-checked]");
@@ -337,6 +425,33 @@ module.exports = {
         },
       };
       addUtilities(newUtilities);
+    }),
+    /**
+     * Color theme follows USWGS Color Tokens https://designsystem.digital.gov/design-tokens/color/theme-tokens/
+     * with an addition of content and focus tokens
+     */
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    require("tailwindcss-themer")({
+      defaultTheme: {
+        extend: {
+          colors: {
+            base: nciGray,
+            primary: nciBlue,
+            "primary-content": nciGray,
+            "primary-focus": nciGray,
+            secondary: nciRed,
+            "secondary-content": nciGray,
+            "secondary-focus": nciRed,
+            accent: nciRed,
+            "accent-content": nciGray,
+            "accent-warm": nciRed,
+            "accent-warm-content": nciGray,
+            "accent-cool": nciRed,
+            "accent-cool-content": nciGray,
+            chart: nciTeal,
+          },
+        },
+      },
     }),
   ],
 };

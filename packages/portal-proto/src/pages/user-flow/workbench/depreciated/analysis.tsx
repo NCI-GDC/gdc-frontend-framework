@@ -2,10 +2,10 @@ import { NextPage } from "next";
 import Image from "next/image";
 import React, { PropsWithChildren, useState } from "react";
 import ReactModal from "react-modal";
-import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
-import { Select } from "../../../components/Select";
-import { CohortManager } from "../../../features/user-flow/many-pages/cohort";
-import SomanticMutationFilterFixedVersion from "../../../features/genomic/SomanticMutationFilter";
+import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
+import { Select } from "@/components/Select";
+import { CohortManager } from "@/features/user-flow/many-pages/cohort";
+import SomanticMutationFilterFixedVersion from "@/features/genomic/SomanticMutationFilter";
 import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
 import {
   GeneExpression,
@@ -17,13 +17,13 @@ import {
   ClinicalDataAnalysis,
   SequenceReads,
   SomaticMutations,
-} from "../../../features/apps/Apps";
+} from "@/features/apps/Apps";
 import { MdClose as CloseIcon } from "react-icons/md";
 
-import { FileModal } from "../../../features/files/FileView";
+import { FileModal } from "@/features/files/FileView";
 import { GdcFile } from "@gff/core";
-import { CaseModal } from "../../../features/cases/CaseView";
-import { Case } from "../../../features/cases/CasesView";
+import { CaseModal } from "@/features/cases/CaseView";
+import { Case } from "@/features/cases/CasesView";
 
 const AnalysisPage: NextPage = () => {
   const [showCohortBuilderModal, setShowCohortBuilderModal] = useState(false);
