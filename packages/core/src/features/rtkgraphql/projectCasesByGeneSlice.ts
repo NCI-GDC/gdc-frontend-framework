@@ -1,7 +1,20 @@
-import { gql } from "graphql-request";
+import { gql, request, ClientError } from "graphql-request";
 import { GetCountsByGeneResponse, geneFilterHandler } from "./constants";
 import { coreCreateApi } from "../../coreCreateApi";
-import { graphqlRequestBaseQuery } from "@rtk-query/graphql-request-base-query";
+
+const graphqlBaseQuery =
+  ({ baseUrl }: { baseUrl: any }) =>
+  async ({ body }: { body: string }) => {
+    try {
+      const result = await request(baseUrl, body);
+      return { data: result };
+    } catch (error) {
+      if (error instanceof ClientError) {
+        return { error: { status: error.response.status, data: error } };
+      }
+      return { error: { status: 500, data: error } };
+    }
+  };
 
 const exploreCasesAggregatedProjectsBucketsQuery = gql`
   query getProjectDocCountsByGene($filters_1: FiltersArgument) {
@@ -21,13 +34,15 @@ const exploreCasesAggregatedProjectsBucketsQuery = gql`
 `;
 
 export const rtkGraphQL = coreCreateApi({
-  baseQuery: graphqlRequestBaseQuery({
-    url: "https://api.gdc.cancer.gov/v0/graphql",
+  baseQuery: graphqlBaseQuery({
+    baseUrl: "https://api.gdc.cancer.gov/v0/graphql",
   }),
   endpoints: (builder) => ({
     getProjectDocCountsByGene: builder.query<GetCountsByGeneResponse, any>({
       query: (geneId: any) => ({
-        document: exploreCasesAggregatedProjectsBucketsQuery,
+        url: "/",
+        method: "POST",
+        body: exploreCasesAggregatedProjectsBucketsQuery,
         variables: geneFilterHandler(geneId),
       }),
     }),
