@@ -20,13 +20,14 @@ import {
   Buckets,
   Stats,
   Statistics,
+  NumericFromTo,
 } from "@gff/core";
 
 import { CONTINUOUS_FACET_TYPES } from "./constants";
 import { flattenBinnedData, toDisplayName } from "./utils";
 import { CategoricalHistogram, ContinuousHistogram } from "./CDaveHistogram";
 import ClinicalSurvivalPlot from "./ClinicalSurvivalPlot";
-import ContinuousBinningModal from "./ContinuousBinningModal";
+import ContinuousBinningModal from "./ContinuousBinningModal/ContinuousBinningModal";
 import CategoricalBinningModal from "./CategoricalBinningModal";
 
 interface CDaveCardProps {
@@ -53,7 +54,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   const [selectedSurvivalPlots, setSelectedSurvivalPlots] = useState<string[]>(
     [],
   );
-  const [customBinnedData, setCustomBinnedData] = useState({});
+  const [customBinnedData, setCustomBinnedData] = useState<any>({});
   const { scrollIntoView, targetRef } = useScrollIntoView();
   const facet = useCoreSelector((state) =>
     selectFacetDefinitionByName(state, `cases.${field}`),
@@ -117,6 +118,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
               fieldName={fieldName}
               stats={(data as Stats).stats}
               setResultData={setResultData}
+              customBinnedData={customBinnedData}
             />
           ) : (
             <CategoricalHistogram
@@ -173,6 +175,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
   survival,
   selectedSurvivalPlots,
   setSelectedSurvivalPlots,
+  continuous,
 }: CDaveTableProps) => {
   useEffect(() => {
     setSelectedSurvivalPlots(Object.keys(data).slice(0, 2));
@@ -197,9 +200,11 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
         <tbody>
           {/* TODO don't sort for continuous */}
           {Object.entries(
-            hasCustomBins ? flattenBinnedData(customBinnedData) : data,
+            hasCustomBins && !continuous
+              ? flattenBinnedData(customBinnedData)
+              : data,
           )
-            .sort((a, b) => b[1] - a[1])
+            .sort((a, b) => (continuous ? 0 : b[1] - a[1]))
             .map(([key, count], idx) => {
               const survivalSelected = selectedSurvivalPlots.includes(key);
               const enoughCasesForSurvival = count > 10;
@@ -280,7 +285,7 @@ interface CardControlsProps {
   readonly field: string;
   readonly results: Record<string, number>;
   readonly customBinnedData: Record<string, number>;
-  readonly setCustomBinnedData: (bins: Record<string, number>) => void;
+  //readonly setCustomBinnedData: (bins: Record<string, number>) => void;
   readonly stats?: Statistics;
 }
 
@@ -340,6 +345,7 @@ const CardControls: React.FC<CardControlsProps> = ({
             setModalOpen={setModalOpen}
             field={field}
             stats={stats}
+            updateBins={setCustomBinnedData}
           />
         ) : (
           <CategoricalBinningModal

@@ -1,5 +1,5 @@
 import { omitBy, some, capitalize } from "lodash";
-import { NumericFromTo, Statistics, Buckets, Stats } from "@gff/core";
+import { NumericFromTo, Buckets, Stats } from "@gff/core";
 import { CAPILIZED_TERMS, SPECIAL_CASE_FIELDS } from "./constants";
 
 export const filterUsefulFacets = (
@@ -16,14 +16,23 @@ export const filterUsefulFacets = (
   );
 };
 
-export const createBuckets = (stats: Statistics): NumericFromTo[] => {
-  if (stats.min === stats.max) {
-    return [{ from: stats.min, to: stats.max + 1 }];
+export const createBuckets = (
+  min: number,
+  max: number,
+  customInterval?: number,
+): NumericFromTo[] => {
+  if (min === max) {
+    return [{ from: min, to: max + 1 }];
   }
-  const interval = (stats.max - stats.min) / 5;
-  return Array.from({ length: 5 }, (_, i) => ({
-    from: i * interval + stats.min,
-    to: i + 1 === 5 ? stats.max + 1 : stats.min + (i + 1) * interval,
+
+  const numBuckets = customInterval
+    ? Math.ceil((max - min) / customInterval)
+    : 5;
+  const interval = customInterval ? customInterval : (max - min) / 5;
+
+  return Array.from({ length: numBuckets }, (_, i) => ({
+    from: i * interval + min,
+    to: i + 1 === numBuckets ? max + 1 : min + (i + 1) * interval,
   }));
 };
 
@@ -59,7 +68,9 @@ export const parseContinuousBucket = (bucket: string): string[] => {
     .filter((val) => val !== "");
 };
 
-export const flattenBinnedData = (binnedData) => {
+export const flattenBinnedData = (
+  binnedData: Record<string, number | Record<string, number>>,
+): Record<string, number> => {
   const flattenedValues = {};
 
   Object.entries(binnedData).forEach(([k, v]) => {

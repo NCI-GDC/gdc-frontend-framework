@@ -335,9 +335,14 @@ export const useRangeFacet = (
 
   const cohortFilters = useCohortFacetFilter();
   const prevFilters = usePrevious(cohortFilters);
+  const prevRanges = usePrevious(ranges);
 
   useEffect(() => {
-    if (!facet || !isEqual(prevFilters, cohortFilters)) {
+    if (
+      !facet ||
+      !isEqual(prevFilters, cohortFilters) ||
+      !isEqual(ranges, prevRanges)
+    ) {
       coreDispatch(
         fetchFacetContinuousAggregation({
           field: field,
