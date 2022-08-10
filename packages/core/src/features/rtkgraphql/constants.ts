@@ -1,9 +1,7 @@
 export interface ProjectDocCount {
   doc_count: number;
   key: string;
-  geneId: string;
 }
-
 export interface GetCountsByGeneResponse {
   data: {
     explore: {
@@ -17,8 +15,7 @@ export interface GetCountsByGeneResponse {
     };
   };
 }
-
-export const getGraphQLGeneId = (geneId: string | undefined) => {
+export const geneFilterHandler = (geneId: string) => {
   return {
     op: "and",
     content: [

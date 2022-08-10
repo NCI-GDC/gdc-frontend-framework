@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useGetProjectDocCountsByGeneQuery } from "@gff/core/src/features/rtk-graphql/projectCasesByGeneSlice";
+import { useGetProjectDocCountsByGeneQuery } from "@gff/core/src/features/rtkgraphql/projectCasesByGeneSlice";
 
 export const SubTableRow = ({ geneId }) => {
   const data = useGetProjectDocCountsByGeneQuery(geneId);
