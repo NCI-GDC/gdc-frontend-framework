@@ -197,7 +197,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
     <div
       className={`flex flex-col ${
         width ? width : "mx-1"
-      } bg-base-white relative shadow-lg border-secondary-lightest border-1 rounded-b-md text-xs transition`}
+      } bg-base-max relative shadow-lg border-secondary-lightest border-1 rounded-b-md text-xs transition`}
     >
       <div>
         <div className="flex items-center justify-between flex-wrap bg-secondary-lighter shadow-md px-1.5">
@@ -205,7 +205,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
             label={description}
             classNames={{
               arrow: "bg-nci-gray-light",
-              tooltip: "bg-base-lightest text-nci-gray-darkest",
+              tooltip: "bg-base-max text-nci-gray-darkest",
             }}
             position="bottom-start"
             multiline
@@ -274,7 +274,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
           ref={cardRef}
         >
           <div
-            className={`card-face bg-base-lightest  ${
+            className={`card-face bg-base-max ${
               !isFacetView ? "invisible" : ""
             }`}
           >
@@ -385,7 +385,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
                       <MoreIcon
                         key="show-more"
                         size="1.5em"
-                        className="text-nci-gray-darkest "
+                        className="text-accent-darkest "
                         onClick={() => setIsGroupExpanded(!isGroupExpanded)}
                         onKeyPress={(event) =>
                           event.key === "Enter"
@@ -395,7 +395,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
                         tabIndex={0}
                         aria-label="Toggle more options"
                       />
-                      <div className="pl-1 text-nci-gray-darkest font-bold">
+                      <div className="pl-1 text-accent-darkest font-bold">
                         {" "}
                         {isSuccess ? remainingValues : "..."} more
                       </div>
@@ -405,7 +405,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
                       <LessIcon
                         key="show-less"
                         size="1.5em"
-                        className="text-nci-gray-darkest"
+                        className="text-accent-darkest"
                         onClick={() => setIsGroupExpanded(!isGroupExpanded)}
                         onKeyPress={(event) =>
                           event.key === "Enter"
@@ -415,7 +415,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
                         tabIndex={0}
                         aria-label="Toggle less options"
                       />
-                      <div className="pl-1 text-nci-gray-darkest font-bold">
+                      <div className="pl-1 text-accent-darkest font-bold">
                         {" "}
                         show less
                       </div>
@@ -426,7 +426,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
             }
           </div>
           <div
-            className={`card-face card-back bg-base-lightest h-full overflow-y-scroll pb-1 ${
+            className={`card-face card-back bg-base-max h-full overflow-y-scroll pb-1 ${
               isFacetView ? "invisible" : ""
             }`}
           >

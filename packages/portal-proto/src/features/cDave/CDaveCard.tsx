@@ -77,8 +77,8 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
               variant="outline"
               className={
                 chartType === ChartTypes.histogram
-                  ? "bg-nci-blue-darkest text-white"
-                  : "border-nci-blue-darkest"
+                  ? "bg-primary-darkest text-primary-content-max"
+                  : "border-primary-darkest"
               }
             >
               <ChartIcon />
@@ -222,6 +222,9 @@ const Result: React.FC<ResultProps> = ({
       ?.DEFAULT;
   const hideXTicks = barChartData.length > 20;
 
+  const controlsStyle =
+    "bg-primary-lightest text-primary-content-darkest border-primary";
+
   return (
     <>
       {isFetching ? (
@@ -246,7 +249,7 @@ const Result: React.FC<ResultProps> = ({
               <Menu.Target>
                 <ActionIcon
                   variant="outline"
-                  className="text-nci-blue-darkest border-nci-blue-darkest"
+                  className="text-primary-content-darkest border-primary-darkest"
                 >
                   <DownloadIcon />
                 </ActionIcon>
@@ -279,7 +282,7 @@ const Result: React.FC<ResultProps> = ({
                 <Menu.Target>
                   <Button
                     rightIcon={<DownIcon size={20} />}
-                    className="bg-base-lightest text-nci-gray-darkest border-nci-gray"
+                    className={controlsStyle}
                   >
                     Select Action
                   </Button>
@@ -290,15 +293,13 @@ const Result: React.FC<ResultProps> = ({
                   <Menu.Item disabled>Remove from cohort</Menu.Item>
                 </Menu.Dropdown>
               </Menu>
-              <Button className="bg-base-lightest text-nci-gray-darkest border-nci-gray ml-2">
-                TSV
-              </Button>
+              <Button className={`${controlsStyle} ml-2`}>TSV</Button>
             </div>
             <Menu>
               <Menu.Target>
                 <Button
                   rightIcon={<DownIcon size={20} />}
-                  className="bg-base-lightest text-nci-gray-darkest border-nci-gray"
+                  className={controlsStyle}
                 >
                   Customize Bins
                 </Button>
@@ -331,8 +332,8 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
 }: CDaveTableProps) => {
   return (
     <div className="h-48 block overflow-auto w-full">
-      <table className="bg-base-lightest w-full text-left text-nci-gray-darker mb-2">
-        <thead className="bg-nci-gray-lightest font-bold">
+      <table className="bg-base-lightest w-full text-left text-primary-content-darker mb-2">
+        <thead className="bg-base-lightest font-bold">
           <tr>
             <th>Select</th>
             <th>{fieldName}</th>
@@ -342,7 +343,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
         <tbody>
           {data.map((d, idx) => (
             <tr
-              className={idx % 2 ? null : "bg-gdc-blue-warm-lightest"}
+              className={idx % 2 ? null : "bg-accent-warm-lightest"}
               key={`${fieldName}-${d.fullName}`}
             >
               <td>

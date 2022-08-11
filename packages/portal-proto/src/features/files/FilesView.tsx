@@ -62,7 +62,7 @@ const FileFacetNames = [
 ];
 
 const buttonStyle =
-  "mx-1 text-nci-gray-lightest bg-nci-blue hover:bg-nci-blue-darker transition-colors ";
+  "mx-1 text-primary-content-lightest bg-primary hover:bg-primary-darker transition-colors ";
 
 export const ContextualFilesView: React.FC<ContextualFilesViewProps> = ({
   handleFileSelected,
@@ -183,14 +183,11 @@ export const FilesView: React.FC<FilesViewProps> = ({
     <div className="flex flex-col gap-y-4">
       <Table verticalSpacing="xs" striped highlightOnHover>
         <thead>
-          <tr className="bg-nci-gray-light text-white text-md text-montserrat border border-nci-gray-light">
+          <tr className="bg-base-light text-primary-content-min text-montserrat border border-base-light">
             <th className="px-2">
               <input type="checkbox" />
             </th>
-            <th
-              className="px-2 th-nci-gray-lightest"
-              style={{ color: "#FFFFFF" }}
-            >
+            <th className="px-2 th-base-lightest" style={{ color: "#FFFFFF" }}>
               File
             </th>
             <th className="px-2 " style={{ color: "#FFFFFF" }}>
@@ -240,7 +237,7 @@ export const FilesView: React.FC<FilesViewProps> = ({
           ))}
         </tbody>
       </Table>
-      <div className="flex flex-row items-center justify-start border-t border-nci-gray-light">
+      <div className="flex flex-row items-center justify-start border-t border-base-light">
         <p className="px-2">Page Size:</p>
         <Select
           size="sm"

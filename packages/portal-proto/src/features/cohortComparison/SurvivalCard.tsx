@@ -74,9 +74,9 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
       ) : (
         <>
           <SurvivalPlot data={data} hideLegend />
-          <table className="bg-base-lightest w-full text-left text-nci-gray-darker">
+          <table className="bg-base-lightest w-full text-left text-primary-content-darker">
             <thead>
-              <tr className="bg-nci-gray-lightest">
+              <tr className="bg-base-lightest">
                 <th>
                   <Tooltip label={tooltipLabel}>
                     <span className="underline decoration-dashed">

@@ -109,7 +109,7 @@ const ContextBar: React.FC<CohortGroupProps> = ({
   );
 
   const buttonStyle =
-    "flex flex-row items-center bg-base-white text-primary-darkest border border-solid border-primary-darkest hover:bg-primary-darkest hover:text-primary-lightest";
+    "flex flex-row items-center bg-base-max text-primary-darkest border border-solid border-primary-darkest hover:bg-primary-darkest hover:text-primary-lightest";
   const tabStyle = `${buttonStyle} rounded-md first:border-r-0 last:border-l-0 first:rounded-r-none last:rounded-l-none hover:border-primary-darkest data-active:bg-primary-darker data-active:text-primary-content-lightest`;
 
   const clearAllFilters = () => {

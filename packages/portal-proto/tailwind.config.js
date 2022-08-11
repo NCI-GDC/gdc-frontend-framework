@@ -428,6 +428,8 @@ module.exports = {
       // add mantine.dev variants
       addVariant("data-checked", "&[data-checked]");
       addVariant("data-active", "&[data-active]");
+      addVariant("data-selected", "&[data-selected]");
+      addVariant("data-hovered", "&[data-hovered]");
     }),
     plugin(function ({ addUtilities }) {
       const newUtilities = {
@@ -462,6 +464,7 @@ module.exports = {
             "accent-cool": nciRed,
             "accent-cool-content": nciGray,
             chart: nciTeal,
+            utility: utility,
           },
         },
       },

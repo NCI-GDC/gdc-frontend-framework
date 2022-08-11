@@ -153,7 +153,7 @@ export const formatEntityInfo = (
             href={`/user-flow/workbench/MultipleImageViewerPage?caseId=${caseId}&selectedId=${selectedSlide[0]?.file_id}`}
           >
             <a>
-              <FaMicroscope className="text-nci-blue" />
+              <FaMicroscope className="text-primary-content" />
             </a>
           </Link>
         </Tooltip>{" "}
@@ -172,7 +172,7 @@ export const formatEntityInfo = (
                     dispatch,
                   );
             }}
-            className={isFileInCart ? "text-nci-green" : "text-nci-blue"}
+            className={isFileInCart ? "text-nci-green" : "text-primary-content"}
           />
         </Tooltip>
         <Tooltip label="Download">
@@ -181,7 +181,7 @@ export const formatEntityInfo = (
             onClick={() => {
               alert("Download coming soon!!!");
             }}
-            className="text-nci-blue"
+            className="text-primary-content"
           />
         </Tooltip>
       </div>,

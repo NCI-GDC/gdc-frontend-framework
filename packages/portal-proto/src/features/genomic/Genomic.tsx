@@ -17,14 +17,14 @@ export const GeneFacet: React.FC<GeneFacetProps> = ({
   width = "64",
 }: GeneFacetProps) => {
   return (
-    <div className={`border-2 border-nci-gray-lighter pt-2 mx-${width}`}>
+    <div className={`border-2 border-base-lighter pt-2 mx-${width}`}>
       <div className="overflow-y-auto h-96">
         <table
-          className="table-fixed border-collapse border-nci-gray w-full"
+          className="table-fixed border-collapse border-base w-full"
           style={{ borderSpacing: "4em" }}
         >
           <thead>
-            <tr className="bg-nci-blue text-white">
+            <tr className="bg-primary text-primary-content-min">
               <th align="left" className="w-1/2 px-2">
                 Gene
               </th>
@@ -47,7 +47,7 @@ export const GeneFacet: React.FC<GeneFacetProps> = ({
               data.map((x, i) => (
                 <tr
                   key={x.gene_label}
-                  className={i % 2 == 0 ? "bg-gray-200" : ""}
+                  className={i % 2 == 0 ? "bg-base-lighter" : ""}
                 >
                   <td className="px-2 break-all">
                     <input type="checkbox" value={x.gene_label} />

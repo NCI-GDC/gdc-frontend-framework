@@ -39,7 +39,7 @@ import isEqual from "lodash/isEqual";
 
 const CustomFacetWhenEmptyGroup = tw(Stack)`
 h-64 
-bg-nci-gray-lightest 
+bg-base-lightest 
 w-1/2 
 border-2 
 border-dotted
@@ -207,15 +207,22 @@ const CustomFacetGroup = (): JSX.Element => {
       {customFacetDefinitions.length == 0 ? (
         <Center>
           <CustomFacetWhenEmptyGroup align="center" justify="center">
-            <AddFacetIcon className="text-nci-blue" size="3em"></AddFacetIcon>
-            <Text size="md" weight={700} className="text-nci-blue-darker">
+            <AddFacetIcon
+              className="text-primary-content"
+              size="3em"
+            ></AddFacetIcon>
+            <Text
+              size="md"
+              weight={700}
+              className="text-primary-content-darker"
+            >
               No custom filters added
             </Text>
             <Button
               variant="outline"
               onClick={() => setOpened(true)}
               aria-label="Add Custom Filter"
-              className="bg-base-lightest text-nci-blue-darker"
+              className="bg-base-lightest text-primary-content-darker"
             >
               Add Custom Facet
             </Button>
@@ -225,11 +232,15 @@ const CustomFacetGroup = (): JSX.Element => {
         <FacetGroup>
           <Button
             variant="outline"
-            className="h-48 bg-base-lightest flex flex-row justify-center align-middle items-center border-nci-blue-darker b-2 border-dotted"
+            className="h-48 bg-base-lightest flex flex-row justify-center align-middle items-center border-base-darker b-2 border-dotted"
             onClick={() => setOpened(true)}
           >
-            <AddAdditionalIcon className="text-nci-blue" size="2em" />
-            <Text size="md" weight={700} className="text-nci-blue-darker">
+            <AddAdditionalIcon className="text-primary-content" size="2em" />
+            <Text
+              size="md"
+              weight={700}
+              className="text-primary-content-darker"
+            >
               {" "}
               Add a Custom Filter
             </Text>
@@ -256,8 +267,9 @@ export const FacetTabs = (): JSX.Element => {
         orientation="vertical"
         defaultValue={tabsConfig[Object.keys(tabsConfig)[0]].label}
         classNames={{
-          tab: "data-active:text-nci-gray-darkest text-white data-active:border-nci-red data-active:border-2 data-active:bg-base-lightest hover:bg-nci-blue",
-          tabsList: "flex flex-col bg-nci-blue-darker text-white w-[240px] ",
+          tab: "data-active:text-primary-content-darkest text-primary-content-min data-active:border-primary-darker data-active:border-2 data-active:bg-base-lightest hover:bg-primary-darker",
+          tabsList:
+            "flex flex-col bg-primary-darker text-primary-content-min w-[240px] ",
         }}
       >
         <Tabs.List>

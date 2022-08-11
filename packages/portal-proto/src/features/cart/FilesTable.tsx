@@ -103,7 +103,7 @@ const FilesTable: React.FC = () => {
             remove: <RemoveFromCartButton files={[file]} iconOnly />,
             uuid: (
               <Link href={`/files/${file.fileId}`}>
-                <a className="text-nci-blue underline">{file.fileId}</a>
+                <a className="text-primary-content underline">{file.fileId}</a>
               </Link>
             ),
             access: (
@@ -119,13 +119,17 @@ const FilesTable: React.FC = () => {
             ),
             name: (
               <Link href={`/files/${file.fileId}`}>
-                <a className="text-nci-blue underline">{file.fileName}</a>
+                <a className="text-primary-content underline">
+                  {file.fileName}
+                </a>
               </Link>
             ),
             cases: file.cases?.length.toLocaleString() || 0,
             project: (
               <Link href={`/projects/${file.project_id}`}>
-                <a className="text-nci-blue underline">{file.project_id}</a>
+                <a className="text-primary-content underline">
+                  {file.project_id}
+                </a>
               </Link>
             ),
             data_category: file.dataCategory,
@@ -186,14 +190,14 @@ const FilesTable: React.FC = () => {
           <div className="flex gap-2">
             <Button
               className={
-                "bg-base-lightest text-nci-blue-darkest border-nci-blue-darkest"
+                "bg-base-lightest text-primary-content-darkest border-nci-blue-darkest"
               }
             >
               JSON
             </Button>
             <Button
               className={
-                "bg-base-lightest text-nci-blue-darkest border-nci-blue-darkest"
+                "bg-base-lightest text-primary-content-darkest border-nci-blue-darkest"
               }
             >
               TSV

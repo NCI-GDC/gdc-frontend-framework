@@ -9,6 +9,12 @@ import {
 } from "@gff/core";
 import { Table, Pagination, Select } from "@mantine/core";
 import { useEffect, useState } from "react";
+import tw from "tailwind-styled-components";
+
+export const CasesTableHeader = tw.th`
+text-primary-content-darkest 
+px-2
+`;
 
 export interface Case {
   readonly id: string;
@@ -121,7 +127,7 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
           caption={`Showing ${pageSize} of ${caseCounts} Cases`}
           handleCaseSelected={props.handleCaseSelected}
         />
-        <div className="flex flex-row items-center justify-start border-t border-nci-gray-light">
+        <div className="flex flex-row items-center justify-start border-t border-base-light">
           <p className="px-2">Page Size:</p>
           <Select
             size="sm"
@@ -137,11 +143,11 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
           />
           <Pagination
             classNames={{
-              item: "bg-nci-gray",
+              item: "bg-base",
             }}
             size="sm"
             radius="md"
-            color="gray"
+            color="accent"
             className="ml-auto"
             page={activePage}
             onChange={(x) => setPage(x - 1)}
@@ -159,20 +165,20 @@ export const CasesView: React.FC<CasesViewProps> = (props: CasesViewProps) => {
   return (
     <Table verticalSpacing="xs" striped highlightOnHover>
       <thead>
-        <tr className="bg-nci-gray-lighter ">
-          <th className="px-2 text-nci-gray-darkest">Case</th>
-          <th className="px-2 text-nci-gray-darkest">Project</th>
-          <th className="px-2 text-nci-gray-darkest">Primary Site</th>
-          <th className="px-2 text-nci-gray-darkest">Gender</th>
-          <th className="px-2 text-nci-gray-darkest">Primary Diagnosis</th>
-          <th className="px-2 text-nci-gray-darkest whitespace-nowrap">
+        <tr className="bg-base-lighter ">
+          <CasesTableHeader>Case</CasesTableHeader>
+          <CasesTableHeader>Project</CasesTableHeader>
+          <CasesTableHeader>Primary Site</CasesTableHeader>
+          <CasesTableHeader>Gender</CasesTableHeader>
+          <CasesTableHeader>Primary Diagnosis</CasesTableHeader>
+          <CasesTableHeader className="whitespace-nowrap">
             Tissue/Organ of Origin
-          </th>
+          </CasesTableHeader>
         </tr>
       </thead>
       <tbody>
         {cases?.map((c, i) => (
-          <tr key={c.id} className={i % 2 == 0 ? "bg-nci-gray-lightest" : ""}>
+          <tr key={c.id} className={i % 2 == 0 ? "bg-base-lightest" : ""}>
             <td className="px-2 break-all">
               <button onClick={() => handleCaseSelected(c)}>
                 {c.submitterId}

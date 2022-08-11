@@ -168,7 +168,7 @@ export const CaseSummary = ({
       case_id: submitter_id,
       project: (
         <Link href={`/projects/${project_id}`}>
-          <a className="underline text-nci-blue"> {project_id}</a>
+          <a className="underline text-primary-content"> {project_id}</a>
         </Link>
       ),
       project_name,
@@ -189,7 +189,7 @@ export const CaseSummary = ({
             <Link
               href={`/user-flow/workbench/MultipleImageViewerPage?caseId=${case_id}`}
             >
-              <a className="flex gap-1 cursor-pointer text-nci-blue">
+              <a className="flex gap-1 cursor-pointer text-primary-content">
                 <FaMicroscope className="mt-0.5" />
                 <span>({slideCount})</span>
               </a>
@@ -213,7 +213,9 @@ export const CaseSummary = ({
                     );
               }}
               className={`cursor-pointer mt-0.5 ${
-                isAllImagesFilesInCart ? "text-nci-green" : "text-nci-blue"
+                isAllImagesFilesInCart
+                  ? "text-nci-green"
+                  : "text-primary-content"
               }`}
             />
           </Tooltip>

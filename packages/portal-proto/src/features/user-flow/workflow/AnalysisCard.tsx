@@ -93,7 +93,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
               radius="sm"
               aria-label={`Navigate to ${entry.name} Demo`}
               variant={"outline"}
-              className="text-nci-blue-darkest border-nci-blue-darkest hover:bg-nci-blue hover:text-white hover:border-nci-blue w-[50px]"
+              className="text-primary-content-darkest border-nci-blue-darkest hover:bg-nci-blue hover:text-white hover:border-nci-blue w-[50px]"
             >
               Demo
             </Button>
@@ -114,7 +114,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
             )
           }
           classNames={{
-            root: "text-nci-blue-darkest font-bold",
+            root: "text-primary-content-darkest font-bold",
             rightIcon: "ml-0",
           }}
         >
@@ -136,7 +136,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
         {entry.hideCounts ? (
           <div className="h-4" />
         ) : cohortCounts ? (
-          <div className="flex flex-row items-center text-nci-blue-darkest">
+          <div className="flex flex-row items-center text-primary-content-darkest">
             <span>{`${caseCounts.toLocaleString()} Cases`}</span>
             {caseCounts === 0 && (
               <Tooltip label={entry?.noDataTooltip} withArrow width={200}>

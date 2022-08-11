@@ -139,7 +139,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
                   }}
                   classNames={{
                     input:
-                      "bg-nci-gray-light checked:bg-nci-blue-dark  checked:bg-none",
+                      "bg-base-light checked:bg-primary-dark  checked:bg-none",
                   }}
                 />
               </Tooltip>
@@ -242,7 +242,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
           </div>
         )}
       </div>
-      <div className="flex flex-row items-center justify-start border-t border-nci-gray-light w-9/12">
+      <div className="flex flex-row items-center justify-start border-t border-base-light w-9/12">
         <p className="px-2">Page Size:</p>
         <Select
           size="sm"

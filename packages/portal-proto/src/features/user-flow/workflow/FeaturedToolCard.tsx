@@ -23,7 +23,7 @@ const FeaturedToolCard: React.FC<FeaturedToolCardProps> = ({
           alt={`${entry.name} icon`}
         />
       </Grid.Col>
-      <Grid.Col span={8} className="text-nci-blue-darkest">
+      <Grid.Col span={8} className="text-primary-content-darkest">
         <h3 className="font-bold">{entry.name}</h3>
         {entry.description}
       </Grid.Col>

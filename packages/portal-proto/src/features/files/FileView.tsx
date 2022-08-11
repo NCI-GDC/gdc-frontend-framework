@@ -13,6 +13,18 @@ import { formatDataForHorizontalTable, parseSlideDetailsInfo } from "./utils";
 import Link from "next/link";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 
+export const DownloadButton = tw.button`
+bg-base-lightest
+border
+border-base-darkest
+rounded 
+p-1
+hover:bg-base-darkest
+hover:text-primary-content-lighter
+focus:bg-base-darkest
+focus:text-primary-content-lighter
+`;
+
 const ImageViewer = dynamic(() => import("../../components/ImageViewer"), {
   ssr: false,
 });
@@ -58,7 +70,7 @@ export const TempTable = ({ tableData }: TempTableProps): JSX.Element => {
           <tr
             key={index}
             className={
-              index % 2 ? "bg-base-lightest" : "bg-gdc-blue-warm-lightest"
+              index % 2 ? "bg-base-lightest" : "bg-accent-warm-lightest"
             }
           >
             {Object.values(row).map((item, index) => (
@@ -95,7 +107,7 @@ export const FileView: React.FC<FileViewProps> = ({
     }
     return (
       <Link href={hrefObj}>
-        <a className="text-gdc-blue hover:underline">{text}</a>
+        <a className="text-utility=link hover:underline">{text}</a>
       </Link>
     );
   };
@@ -120,12 +132,12 @@ export const FileView: React.FC<FileViewProps> = ({
           file_size: fileSize(obj.file_size),
           action: (
             <>
-              <button className="mr-2 bg-base-lightest border border-black rounded p-1 hover:bg-black hover:text-white focus:bg-black focus:text-white">
+              <DownloadButton className="mr-2">
                 <FaShoppingCart title="Add to Cart" />
-              </button>
-              <button className="bg-base-lightest border border-black rounded p-1 hover:bg-black hover:text-white focus:bg-black focus:text-white">
+              </DownloadButton>
+              <DownloadButton>
                 <FaDownload title="Download" />
-              </button>
+              </DownloadButton>
             </>
           ),
         });

@@ -6,6 +6,7 @@ import { MdFlip, MdSearch } from "react-icons/md";
 import { BsQuestionCircleFill, BsFillTriangleFill } from "react-icons/bs";
 import { useState } from "react";
 import { FacetChart } from "../charts/FacetChart";
+import { StudiesButton } from "@/features/studies/components";
 
 const DLBCL: ProjectDefaults = {
   project_id: "DLBCL",
@@ -176,8 +177,8 @@ export const StudiesView: React.FC<StudiesViewProps> = ({
   const filterBox = (obj) => {
     const { data, title } = obj;
     return (
-      <div className="bg-base-lightest border border-nci-gray-lighter shadow-md rounded">
-        <div className="bg-nci-gray-lightest p-2 rounded flex">
+      <div className="bg-base-lightest border border-base-lighter shadow-md rounded">
+        <div className="bg-base-lightest p-2 rounded flex">
           <span className="flex-grow">{title}</span>
           <button className="text-2xl opacity-75 hover:opacity-100">
             <MdSearch title="Search" />
@@ -442,7 +443,7 @@ export const StudiesView: React.FC<StudiesViewProps> = ({
         <Button
           className="px-2 py-1
     border rounded
-    bg-nci-gray-lighter text-nci-gray"
+    bg-primary-lighter text-primary-content"
         >
           Explore Selected Cohorts In...
         </Button>
@@ -516,10 +517,10 @@ const Study: React.FC<StudyProps> = (props: StudyProps) => {
     <div
       key={project_id}
       className={
-        "group h-250 border border-nci-gray-lighter flex flex-col bg-base-lightest shadow-md"
+        "group h-250 border border-base-lighter flex flex-col bg-base-lightest shadow-md"
       }
     >
-      <div className="bg-nci-gray-lightest flex flex-row">
+      <div className="bg-base-lightest flex flex-row">
         <div className="flex-grow text-center pl-4">{props.project.name}</div>
         <button className="p-2" onClick={toggleFlip}>
           <MdFlip title="Flip Card" />
@@ -570,28 +571,8 @@ const Study: React.FC<StudyProps> = (props: StudyProps) => {
             </div>
           </div>
           <div className="flex flex-col justify-center px-4">
-            <Button
-              className="
-              px-2 py-1 m-1
-              rounded
-              text-white
-              bg-nci-gray-lighter
-              hover:bg-nci-gray-lightest
-              hover:text-black"
-            >
-              1,098 Cases
-            </Button>
-            <Button
-              className="
-              px-2 py-1 m-1
-              rounded
-              text-white
-              bg-nci-gray
-              hover:bg-nci-gray-lightest
-              hover:text-black"
-            >
-              33,766 Files
-            </Button>
+            <StudiesButton>1,098 Cases</StudiesButton>
+            <Button>33,766 Files</Button>
           </div>
         </div>
         <div className="card-face card-back bg-base-lightest">
@@ -612,8 +593,8 @@ const Study: React.FC<StudyProps> = (props: StudyProps) => {
 const Search: React.FC<unknown> = () => {
   return (
     <div className="flex flex-row justify-center">
-      <div className="sm:w-1/2  rounded-full border border-gray-600 flex flex-row pr-4 bg-base-lightest">
-        <div className="flex flex-none fill-current text-black align-text-bottom pl-2">
+      <div className="sm:w-1/2  rounded-full border border-base flex flex-row pr-4 bg-base-lightest">
+        <div className="flex flex-none fill-current text-prinary-content-darkest align-text-bottom pl-2">
           <Image src="/Search_Icon.svg" width={16} height={16} />
         </div>
         <input

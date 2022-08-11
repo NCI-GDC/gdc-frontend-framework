@@ -129,7 +129,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
             lg={3}
             xl={2}
           >
-            <div className="flex justify-between pb-4 text-nci-blue-darkest">
+            <div className="flex justify-between pb-4 text-primary-content-darkest">
               <div>
                 <h2 className="font-bold text-lg pb-3 uppercase">Tools</h2>
                 <h3 className="text-lg">Categories</h3>
@@ -142,14 +142,14 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
                   transition="pop-bottom-left"
                   transitionDuration={150}
                   classNames={{
-                    label: "text-nci-blue-darkest",
+                    label: "text-primary-content-darkest",
                     dropdown: "border-t-8 border-nci-blue-darkest w-24",
                   }}
                 >
                   <Menu.Target>
                     <ActionIcon
                       variant="outline"
-                      className="text-nci-blue-darkest hover:bg-nci-blue hover:text-white hover:border-nci-blue"
+                      className="text-primary-content-darkest hover:bg-nci-blue hover:text-white hover:border-nci-blue"
                     >
                       <SortIcon size={24} />
                     </ActionIcon>
@@ -211,7 +211,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
                     value={x.value}
                     classNames={{
                       label:
-                        "text-nci-blue border border-solid border-nci-blue-darkest hover:bg-nci-blue hover:text-white hover:border-nci-blue data-checked:text-white data-checked:bg-nci-blue-darkest ",
+                        "text-primary-content border border-solid border-nci-blue-darkest hover:bg-nci-blue hover:text-white hover:border-nci-blue data-checked:text-white data-checked:bg-nci-blue-darkest ",
                       checkIcon: "text-white",
                       iconWrapper: "text-white",
                     }}

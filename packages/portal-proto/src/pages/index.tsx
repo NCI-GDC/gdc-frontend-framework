@@ -12,7 +12,7 @@ const HoverLink: React.FC<HoverLinkProps> = ({
   children,
 }: PropsWithChildren<HoverLinkProps>) => {
   return (
-    <span className="hover:text-nci-blue">
+    <span className="hover:text-primary-content">
       <Link href={href}>{children}</Link>
     </span>
   );

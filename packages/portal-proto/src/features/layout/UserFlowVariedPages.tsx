@@ -50,8 +50,8 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
 
   const banners = useCoreSelector((state) => selectBanners(state));
   return (
-    <div className="flex flex-col min-h-screen min-w-full bg-nci-gray-lightest">
-      <header className="flex-none bg-base-lightest sticky top-0 z-50">
+    <div className="flex flex-col min-h-screen min-w-full bg-base-max">
+      <header className="flex-none bg-base-max sticky top-0 z-50">
         {banners.map((banner) => (
           <Banner {...banner} key={banner.id} />
         ))}
@@ -87,7 +87,7 @@ const Header: React.FC<HeaderProps> = ({
   const { isSuccess: dictSuccess } = useFacetDictionary();
   return (
     <div className="px-6 py-3 border-b border-gdc-grey-lightest">
-      <div className="flex flex-row flex-wrap divide-x divide-gray-300 items-center">
+      <div className="flex flex-row flex-wrap divide-x divide-base-light items-center">
         <LoadingOverlay visible={!(totalSuccess || dictSuccess)} />
         <div className="flex-none w-64 h-nci-logo mr-2 relative">
           {/* There's some oddities going on here that need to be explained.  When a
@@ -163,7 +163,7 @@ const Header: React.FC<HeaderProps> = ({
 
 const Footer: React.FC<unknown> = () => {
   return (
-    <div className="flex flex-col bg-nci-blumine justify-center text-center p-4 text-white">
+    <div className="flex flex-col bg-accent-cool-darker justify-center text-center p-4 text-accent-cooler-content-lightest">
       <div>Site Home | Policies | Accessibility | FOIA | Support</div>
       <div>
         U.S. Department of Health and Human Services | National Institutes of
@@ -270,7 +270,7 @@ export const LinePlaceholer: React.FC<LinePlaceholerProps> = ({
 }: LinePlaceholerProps) => {
   return (
     <div className="flex flex-row justify-center">
-      <div className={`w-${length * 4} h-6 bg-gray-200 rounded-md`} />
+      <div className={`w-${length * 4} h-6 bg-base-lighter rounded-md`} />
     </div>
   );
 };
@@ -280,7 +280,7 @@ export const CardPlaceholder: React.FC<unknown> = () => {
   const color = "gray";
   return (
     <div
-      className="h-full w-full border border-nci-gray-light"
+      className="h-full w-full border border-base-light"
       style={{
         background: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 100 100'><line x1='0' y1='0' x2='100' y2='100' stroke='${color}' vector-effect='non-scaling-stroke'/><line x1='0' y1='100' x2='100' y2='0' stroke='${color}' vector-effect='non-scaling-stroke'/></svg>")`,
         backgroundRepeat: "no-repeat",
@@ -303,7 +303,7 @@ export const Initials: React.FC<InitialsProps> = ({ name }: InitialsProps) => {
     .join("");
   return (
     <div className="flex flex-row justify-content-center items-center w-full h-full">
-      <div className="flex-grow text-8xl text-gdc-blue">{initials}</div>
+      <div className="flex-grow text-8xl text-primary">{initials}</div>
     </div>
   );
 };

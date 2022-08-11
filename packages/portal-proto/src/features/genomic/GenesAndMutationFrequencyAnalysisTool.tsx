@@ -213,8 +213,8 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   ]);
 
   const buttonStyle =
-    "flex flex-row items-center bg-base-lightest text-nci-blue-darkest border border-solid border-nci-blue-darkest h-12 hover:bg-nci-blue hover:text-white hover:border-nci-blue";
-  const tabStyle = `${buttonStyle} rounded-md first:border-r-0 last:border-l-0 first:rounded-r-none last:rounded-l-none hover:border-nci-blue-darkest data-active:bg-nci-blue-darkest data-active:text-white`;
+    "flex flex-row items-center bg-base-lightest text-primary-content-darkest border border-solid border-primary-darkest h-12 hover:bg-primary hover:text-primary-content-min hover:border-primary";
+  const tabStyle = `${buttonStyle} rounded-md first:border-r-0 last:border-l-0 first:rounded-r-none last:rounded-l-none hover:border-primary-darkest data-active:bg-primary-darkest data-active:text-primary-content-min`;
 
   return (
     <div className="flex flex-row">

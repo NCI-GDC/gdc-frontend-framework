@@ -2,7 +2,7 @@
 // TODO need to revisit this file for more changes to fix eslint issues
 import { useState } from "react";
 import { CollapsibleContainer } from "../../components/CollapsibleContainer";
-import { Button, NativeSelect } from "@mantine/core";
+import { Button, NativeSelect, useMantineTheme } from "@mantine/core";
 import Select from "react-select";
 import {
   MdAdd as AddIcon,
@@ -76,8 +76,10 @@ export const CohortBar: React.FC<CohortBarProps> = ({
 
   const [currentCohort, setCurrentCohort] = useState(menu_items[defaultIdx]);
 
+  const theme = useMantineTheme();
+
   const buttonStyle =
-    "p-2 bg-base-lightest transition-colors text-nci-blue-darkest hover:bg-nci-blue hover:text-white";
+    "p-2 bg-base-lightest transition-colors text-primary-content-darkest hover:bg-nci-blue hover:text-primary-content-lightest";
   return (
     <div
       data-tour="cohort_management_bar"
@@ -100,11 +102,11 @@ export const CohortBar: React.FC<CohortBarProps> = ({
             styles={{
               dropdownIndicator: (provided) => ({
                 ...provided,
-                color: "#FF0000",
+                color: theme.colors.primary[4],
               }),
               singleValue: (provided) => ({
                 ...provided,
-                color: "#FF0000",
+                color: theme.colors.accent[4],
               }),
             }}
           />
@@ -154,7 +156,7 @@ const CohortFacetElement: React.FC<FacetElementProp> = ({
   };
 
   return (
-    <div className="m-1 px-2 rounded-full bg-nci-gray-lighter text-nci-gray-darker border-nci-gray-light border-2">
+    <div className="m-1 px-2 rounded-full bg-base-lighter text-primary-content-darker border-base-light border-2">
       <div
         key={nanoid()}
         className="flex flex-row items-center flex-grow truncate ... "
@@ -213,7 +215,7 @@ export const CohortGroup: React.FC<CohortGroupProps> = ({
       isCollapsed={isGroupCollapsed}
       toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
     >
-      <div className="flex flex-row flex-wrap w-100 p-2 bg-nci-gray-lightest ">
+      <div className="flex flex-row flex-wrap w-100 p-2 bg-base-lightest ">
         {Object.keys(filters.root).map((k) => {
           return convertFilterToComponent(filters.root[k]);
         })}

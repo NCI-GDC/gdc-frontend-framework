@@ -40,6 +40,15 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
     setCurrentPath(globalThis.location.pathname + globalThis.location.search);
   }, [currentPath, router.asPath]);
 
+  console.log(
+    Object.fromEntries(
+      Object.entries(
+        tailwindConfig.plugins.slice(-1)[0].__options.defaultTheme.extend
+          .colors,
+      ).map(([key, values]) => [key, Object.values(values)]),
+    ),
+  );
+
   return (
     <CoreProvider>
       <Provider store={store}>

@@ -69,7 +69,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
   return (
     <div className="bg-base-lightest flex flex-col flex-grow h-full ">
       <Grid className={`flex-grow p-2 m-2`}>
-        <Grid.Col span={3} className="p-4 text-nci-blue-darkest">
+        <Grid.Col span={3} className="p-4 text-primary-content-darkest">
           <p>Select a cohort to compare with {primaryCohortName}</p>
         </Grid.Col>
         <Grid.Col span={9}>
@@ -137,7 +137,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
             setActiveApp(`${currentApp.id}Demo`);
             closeCohortSelection();
           }}
-          className="bg-base-lightest border-nci-blue-darkest text-nci-blue-darkest"
+          className="bg-base-lightest border-nci-blue-darkest text-primary-content-darkest"
         >
           Demo
         </Button>

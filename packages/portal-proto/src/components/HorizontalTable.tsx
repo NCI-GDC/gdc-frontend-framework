@@ -13,7 +13,7 @@ export const CollapsableTableItems = (
   return (
     <>
       <button
-        className="text-nci-blue px-4"
+        className="text-primary-content px-4"
         onClick={() => setToggle(!toggle)}
         aria-expanded={!toggle}
       >
@@ -45,7 +45,7 @@ export const HorizontalTable = ({
   customContainerStyles,
 }: HorizontalTableProps): JSX.Element => {
   const containerClassName =
-    "bg-base-lightest w-full text-left text-nci-gray-darker";
+    "bg-base-lightest w-full text-left text-primary-content-darker";
   const updatedContainerClassName = customContainerStyles
     ? containerClassName + ` ${customContainerStyles}`
     : containerClassName;
@@ -57,7 +57,7 @@ export const HorizontalTable = ({
           return (
             <tr
               key={`row-${obj.headerName}`}
-              className={rowIndex % 2 ? "" : "bg-gdc-blue-warm-lightest"}
+              className={rowIndex % 2 ? "" : "bg-accent-warm-lightest"}
             >
               <th
                 className="w-4/12 text-sm align-top pl-1 pr-8 whitespace-nowrap"

@@ -25,13 +25,15 @@ export const Slides: React.FC<SlidesProps> = ({
         shadow="sm"
         p="sm"
         sx={(theme) => ({
-          backgroundColor: isActive ? "#1784ac" : theme.colors.gray[5],
+          backgroundColor: isActive
+            ? theme.colors.accent[5]
+            : theme.colors.gray[5],
           "&:hover": {
             backgroundColor: !isActive && theme.colors.gray[7],
           },
         })}
       >
-        <Badge variant="filled" className="mb-1 text-blue text-xs">
+        <Badge variant="filled" className="mb-1 text-primary-content text-xs">
           {submitter_id}
         </Badge>
 

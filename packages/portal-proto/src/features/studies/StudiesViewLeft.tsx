@@ -1,11 +1,13 @@
+import React from "react";
 import { ProjectDefaults, useProjects } from "@gff/core";
-import { Option, Select } from "../../components/Select";
+import { Option, Select } from "@/components/Select";
 import Image from "next/image";
 import { MdFlip, MdSearch } from "react-icons/md";
 import { BsQuestionCircleFill, BsFillTriangleFill } from "react-icons/bs";
 import { useState } from "react";
 import { FacetChart } from "../charts/FacetChart";
 import { Button } from "@mantine/core";
+import { StudiesButton } from "@/features/studies/components";
 
 const DLBCL: ProjectDefaults = {
   project_id: "DLBCL",
@@ -515,10 +517,10 @@ const Study: React.FC<StudyProps> = (props: StudyProps) => {
   return (
     <div
       className={
-        "group h-250 border border-nci-gray-lighter flex flex-col bg-base-lightest shadow-md"
+        "group h-250 border border-base-lighter flex flex-col bg-base-lightest shadow-md"
       }
     >
-      <div className="bg-nci-gray-lightest flex flex-row">
+      <div className="bg-base-lightest flex flex-row">
         <div className="flex-grow text-center pl-4">{props.project.name}</div>
         <button className="p-2" onClick={toggleFlip}>
           <MdFlip title="Flip Card" />
@@ -569,28 +571,8 @@ const Study: React.FC<StudyProps> = (props: StudyProps) => {
             </div>
           </div>
           <div className="flex flex-col justify-center px-4">
-            <Button
-              className="
-              px-2 py-1 m-1
-              rounded
-              text-white
-              bg-nci-gray-lighter
-              hover:bg-nci-gray-lightest
-              hover:text-black"
-            >
-              1,098 Cases
-            </Button>
-            <Button
-              className="
-              px-2 py-1 m-1
-              rounded
-              text-white
-              bg-nci-gray
-              hover:bg-nci-gray-lightest
-              hover:text-black"
-            >
-              33,766 Files
-            </Button>
+            <StudiesButton>1,098 Cases</StudiesButton>
+            <StudiesButton>33,766 Files</StudiesButton>
           </div>
         </div>
         <div className="card-face card-back bg-base-lightest">

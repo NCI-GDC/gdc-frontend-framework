@@ -10,7 +10,7 @@ import {
 import { RiFile3Fill as FileIcon } from "react-icons/ri";
 
 const buttonStyle =
-  "bg-base-lightest text-nci-blue-darkest border-nci-blue-darkest";
+  "bg-base-lightest text-primary-content-darkest border-base-darkest";
 
 interface CartHeaderProps {
   summaryData: CartSummaryData;
@@ -19,7 +19,7 @@ interface CartHeaderProps {
 const CartHeader: React.FC<CartHeaderProps> = ({
   summaryData,
 }: CartHeaderProps) => (
-  <div className="bg-nci-blue-darkest text-white flex items-center gap-x-4 w-full h-16">
+  <div className="bg-primary-darkest text-primary-content-min flex items-center gap-x-4 w-full h-16">
     <Menu>
       <Menu.Target>
         <Button
