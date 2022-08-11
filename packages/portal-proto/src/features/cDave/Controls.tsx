@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {
+  Box,
   Switch,
   Divider,
   Tooltip,
@@ -169,6 +170,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
               })}
               classNames={{
                 input: "bg-none rounded-lg",
+                label: "hover:bg-black",
               }}
               checked={checked}
               onChange={(e) => {
@@ -188,7 +190,14 @@ const FieldControl: React.FC<FieldControlProps> = ({
             width={200}
             multiline
           >
-            <label htmlFor={`switch-${field.full}`}>{displayName}</label>
+            <Box>
+              <label
+                className="pointer-events-none"
+                htmlFor={`switch-${field.full}`}
+              >
+                {displayName}
+              </label>
+            </Box>
           </Tooltip>
           <Switch
             styles={(theme) => ({
@@ -211,6 +220,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
             })}
             classNames={{
               input: "bg-none rounded-lg",
+              label: "hover:bg-black",
             }}
             checked={checked}
             onChange={(e) => {

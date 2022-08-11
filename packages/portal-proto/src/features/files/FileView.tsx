@@ -478,8 +478,8 @@ export const FileView: React.FC<FileViewProps> = ({
 
       {fileHistory && (
         <FullWidthDiv>
-          <TitleText className="float-left">File Versions</TitleText>
-          <div className="float-right mt-3 mr-3">
+          <TitleText className="float-left mt-3">File Versions</TitleText>
+          <div className="float-right my-2 mr-3">
             <Button
               color={"gray"}
               className="mr-2 text-nci-gray-lightest bg-nci-blue hover:bg-nci-blue-darker"
