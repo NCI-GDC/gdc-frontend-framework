@@ -8,7 +8,7 @@ import { truncateString } from "src/utils";
 import { useRangeFacet } from "../facets/hooks";
 import VictoryBarChart from "../charts/VictoryBarChart";
 import { isInterval } from "./utils";
-import { CustomInterval, NamedFromTo } from "./types";
+import { CategoricalBins, CustomInterval, NamedFromTo } from "./types";
 
 import { COLOR_MAP } from "./constants";
 import {
@@ -71,7 +71,7 @@ interface CategoricalHistogramProps {
   readonly fieldName: string;
   readonly data: readonly Bucket[];
   readonly setResultData: (data: Record<string, number>) => void;
-  readonly customBinnedData: Record<string, number>;
+  readonly customBinnedData: CategoricalBins;
 }
 export const CategoricalHistogram: React.FC<CategoricalHistogramProps> = ({
   field,
@@ -142,7 +142,7 @@ interface HistogramProps {
   readonly field: string;
   readonly fieldName: string;
   readonly continuous: boolean;
-  readonly customBinnedData?: Record<string, number>;
+  readonly customBinnedData?: CategoricalBins;
 }
 
 const CDaveHistogram: React.FC<HistogramProps> = ({
@@ -151,13 +151,11 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
   field,
   continuous,
   noData,
-  customBinnedData = {},
+  customBinnedData = null,
 }: HistogramProps) => {
   const [displayPercent, setDisplayPercent] = useState(false);
   const barChartData = formatBarChartData(
-    Object.keys(customBinnedData).length > 0
-      ? flattenBinnedData(customBinnedData)
-      : data,
+    customBinnedData !== null ? flattenBinnedData(customBinnedData) : data,
     displayPercent,
     continuous,
   );

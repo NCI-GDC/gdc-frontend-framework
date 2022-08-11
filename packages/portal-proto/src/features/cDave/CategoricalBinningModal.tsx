@@ -14,13 +14,12 @@ import {
   MdOutlineHorizontalSplit as UngroupIcon,
 } from "react-icons/md";
 import { createKeyboardAccessibleFunction } from "src/utils";
+import { CategoricalBins } from "./types";
 
 const DEFAULT_GROUP_NAME_REGEX = /selected value \d+/;
 
-type GroupedValues = Record<string, number | Record<string, number>>;
-
 const filterOutSelected = (
-  values: GroupedValues,
+  values: CategoricalBins,
   selectedValues: Record<string, number>,
 ) => {
   const newValues = {};
@@ -45,8 +44,8 @@ interface CategoricalBinningModalProps {
   readonly setModalOpen: (open: boolean) => void;
   readonly field: string;
   readonly results: Record<string, number>;
-  readonly customBins: Record<string, number>;
-  readonly updateBins: (bin: GroupedValues) => void;
+  readonly customBins: CategoricalBins;
+  readonly updateBins: (bin: CategoricalBins) => void;
 }
 
 const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
@@ -56,16 +55,14 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
   customBins,
   updateBins,
 }: CategoricalBinningModalProps) => {
-  const [values, setValues] = useState<GroupedValues>(
-    Object.keys(customBins).length > 0 ? customBins : results,
+  const [values, setValues] = useState<CategoricalBins>(
+    customBins !== null ? customBins : results,
   );
   const [selectedValues, setSelectedValues] = useState<Record<string, number>>(
     {},
   );
   const [hiddenValues, setHiddenValues] = useState<Record<string, number>>(
-    Object.keys(customBins).length > 0
-      ? filterOutSelected(results, customBins)
-      : {},
+    customBins !== null ? filterOutSelected(results, customBins) : {},
   );
   const [selectedHiddenValues, setSelectedHiddenValues] = useState<
     Record<string, number>
@@ -94,7 +91,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
       setValues({
         ...filterOutSelected(values, selectedValues),
         [`selected value ${defaultNames.length + 1}`]: selectedValues,
-      } as GroupedValues);
+      });
     }
     setSelectedValues({});
   };

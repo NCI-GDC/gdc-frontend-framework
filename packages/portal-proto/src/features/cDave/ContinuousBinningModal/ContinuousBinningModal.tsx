@@ -31,7 +31,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
   const binSize = (stats.max + 1 - stats.min) / 4;
   const customIntervalSet = isInterval(customBins);
   const [binMethod, setBinMethod] = useState<"interval" | "ranges">(
-    !customIntervalSet && customBins.length > 0 ? "ranges" : "interval",
+    !customIntervalSet && customBins?.length > 0 ? "ranges" : "interval",
   );
 
   const intervalForm = useForm({
@@ -64,7 +64,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
   const rangeForm = useForm({
     initialValues: {
       ranges:
-        !customIntervalSet && customBins.length > 0
+        !customIntervalSet && customBins?.length > 0
           ? customBins.map((b) => ({
               name: b.name,
               from: String(b.from),

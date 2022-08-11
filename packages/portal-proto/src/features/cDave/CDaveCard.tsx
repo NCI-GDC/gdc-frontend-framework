@@ -20,7 +20,6 @@ import {
   Buckets,
   Stats,
   Statistics,
-  NumericFromTo,
 } from "@gff/core";
 
 import { CONTINUOUS_FACET_TYPES } from "./constants";
@@ -29,6 +28,7 @@ import { CategoricalHistogram, ContinuousHistogram } from "./CDaveHistogram";
 import ClinicalSurvivalPlot from "./ClinicalSurvivalPlot";
 import ContinuousBinningModal from "./ContinuousBinningModal/ContinuousBinningModal";
 import CategoricalBinningModal from "./CategoricalBinningModal";
+import { CategoricalBins, CustomInterval, NamedFromTo } from "./types";
 
 interface CDaveCardProps {
   readonly field: string;
@@ -54,7 +54,9 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   const [selectedSurvivalPlots, setSelectedSurvivalPlots] = useState<string[]>(
     [],
   );
-  const [customBinnedData, setCustomBinnedData] = useState<any>({});
+  const [customBinnedData, setCustomBinnedData] = useState<
+    CategoricalBins | NamedFromTo[] | CustomInterval
+  >(null);
   const { scrollIntoView, targetRef } = useScrollIntoView();
   const facet = useCoreSelector((state) =>
     selectFacetDefinitionByName(state, `cases.${field}`),
@@ -118,7 +120,9 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
               fieldName={fieldName}
               stats={(data as Stats).stats}
               setResultData={setResultData}
-              customBinnedData={customBinnedData}
+              customBinnedData={
+                customBinnedData as NamedFromTo[] | CustomInterval
+              }
             />
           ) : (
             <CategoricalHistogram
@@ -126,7 +130,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
               fieldName={fieldName}
               data={(data as Buckets).buckets}
               setResultData={setResultData}
-              customBinnedData={customBinnedData}
+              customBinnedData={customBinnedData as CategoricalBins}
             />
           )
         ) : null
@@ -161,7 +165,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
 interface CDaveTableProps {
   readonly fieldName: string;
   readonly data: Record<string, number>;
-  readonly customBinnedData: Record<string, number>;
+  readonly customBinnedData: CategoricalBins | CustomInterval | NamedFromTo[];
   readonly survival: boolean;
   readonly selectedSurvivalPlots: string[];
   readonly setSelectedSurvivalPlots: (field: string[]) => void;
@@ -182,7 +186,6 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
   }, [data, setSelectedSurvivalPlots]);
 
   const yTotal = Object.values(data).reduce((a, b) => a + b, 0);
-  const hasCustomBins = Object.keys(customBinnedData).length > 0;
 
   return (
     <div className="h-48 block overflow-auto w-full relative">
@@ -191,7 +194,8 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
           <tr>
             <th>Select</th>
             <th>
-              {fieldName} {hasCustomBins && "(User Defined Bins Applied)"}
+              {fieldName}{" "}
+              {customBinnedData !== null && "(User Defined Bins Applied)"}
             </th>
             <th className="text-right"># Cases</th>
             {survival && <th className="text-right">Survival</th>}
@@ -199,10 +203,11 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
         </thead>
         <tbody>
           {Object.entries(
-            hasCustomBins && !continuous
-              ? flattenBinnedData(customBinnedData)
+            customBinnedData !== null && !continuous
+              ? flattenBinnedData(customBinnedData as CategoricalBins)
               : data,
           )
+            // Don't sort values if continuous
             .sort((a, b) => (continuous ? 0 : b[1] - a[1]))
             .map(([key, count], idx) => {
               const survivalSelected = selectedSurvivalPlots.includes(key);
@@ -283,8 +288,10 @@ interface CardControlsProps {
   readonly continuous: boolean;
   readonly field: string;
   readonly results: Record<string, number>;
-  readonly customBinnedData: Record<string, number>;
-  //readonly setCustomBinnedData: (bins: Record<string, number>) => void;
+  readonly customBinnedData: CategoricalBins | NamedFromTo[] | CustomInterval;
+  readonly setCustomBinnedData: (
+    bins: CategoricalBins | NamedFromTo[] | CustomInterval,
+  ) => void;
   readonly stats?: Statistics;
 }
 
@@ -331,8 +338,8 @@ const CardControls: React.FC<CardControlsProps> = ({
         >
           <Menu.Item onClick={() => setModalOpen(true)}>Edit Bins</Menu.Item>
           <Menu.Item
-            disabled={Object.keys(customBinnedData).length === 0}
-            onClick={() => setCustomBinnedData({})}
+            disabled={customBinnedData === null}
+            onClick={() => setCustomBinnedData(null)}
           >
             Reset to Default
           </Menu.Item>
@@ -345,7 +352,7 @@ const CardControls: React.FC<CardControlsProps> = ({
             field={field}
             stats={stats}
             updateBins={setCustomBinnedData}
-            customBins={customBinnedData}
+            customBins={customBinnedData as NamedFromTo[] | CustomInterval}
           />
         ) : (
           <CategoricalBinningModal
@@ -353,7 +360,7 @@ const CardControls: React.FC<CardControlsProps> = ({
             field={field}
             results={results}
             updateBins={setCustomBinnedData}
-            customBins={customBinnedData}
+            customBins={customBinnedData as CategoricalBins}
           />
         ))}
     </>

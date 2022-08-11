@@ -9,3 +9,5 @@ export interface CustomInterval {
 export type NamedFromTo = NumericFromTo & {
   name: string;
 };
+
+export type CategoricalBins = Record<string, number | Record<string, number>>;
