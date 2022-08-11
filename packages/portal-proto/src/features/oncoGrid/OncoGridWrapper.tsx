@@ -299,6 +299,9 @@ const OncoGridWrapper: React.FC = () => {
           </>
         )}
         <Tooltip.Floating
+          withinPortal
+          position="left"
+          offset={10}
           label={tooltipContent}
           disabled={tooltipContent === null}
         >
