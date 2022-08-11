@@ -53,8 +53,6 @@ const StyledFacetTabs = (props: TabsProps) => {
       styles={(theme) => ({
         tab: {
           ...theme.fn.focusStyles(),
-          color: theme.colors["nci-blue"][0],
-          border: theme.colors["nci-blue"][0],
           padding: `${theme.spacing.xs}px ${theme.spacing.md}px`,
           cursor: "pointer",
           fontSize: theme.fontSizes.md,
@@ -256,7 +254,7 @@ export const FacetTabs = (): JSX.Element => {
         orientation="vertical"
         defaultValue={tabsConfig[Object.keys(tabsConfig)[0]].label}
         classNames={{
-          tab: "data-active:text-nci-gray-darkest text-white data-active:border-nci-red data-active:border-2 data-active:bg-white hover:bg-nci-blue",
+          tab: "data-active:text-nci-gray-darkest text-white data-active:border-nci-blue-darker data-active:border-2 data-active:border-r-0 data-active:bg-white hover:bg-nci-blue",
           tabsList: "flex flex-col bg-nci-blue-darker text-white w-[240px] ",
         }}
       >

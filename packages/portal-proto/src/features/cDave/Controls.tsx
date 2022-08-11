@@ -170,7 +170,6 @@ const FieldControl: React.FC<FieldControlProps> = ({
               })}
               classNames={{
                 input: "bg-none rounded-lg",
-                label: "hover:bg-black",
               }}
               checked={checked}
               onChange={(e) => {
@@ -220,7 +219,6 @@ const FieldControl: React.FC<FieldControlProps> = ({
             })}
             classNames={{
               input: "bg-none rounded-lg",
-              label: "hover:bg-black",
             }}
             checked={checked}
             onChange={(e) => {
