@@ -10,17 +10,15 @@ import {
   validateMinInput,
   validateRangeInput,
 } from "./validateInputs";
-import { CustomInterval } from "../CDaveHistogram";
-
-type NamedFromTo = NumericFromTo & {
-  name: string;
-};
+import { CustomInterval, NamedFromTo } from "../types";
+import { isInterval } from "../utils";
 
 interface ContinuousBinningModalProps {
   readonly setModalOpen: (open: boolean) => void;
   readonly field: string;
   readonly stats: Statistics;
   readonly updateBins: (bins: NamedFromTo[] | CustomInterval) => void;
+  readonly customBins: NamedFromTo[] | CustomInterval;
 }
 
 const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
@@ -28,16 +26,26 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
   field,
   stats,
   updateBins,
+  customBins,
 }: ContinuousBinningModalProps) => {
   const binSize = (stats.max + 1 - stats.min) / 4;
-  const [binMethod, setBinMethod] = useState<"interval" | "ranges">("interval");
+  const customIntervalSet = isInterval(customBins);
+  const [binMethod, setBinMethod] = useState<"interval" | "ranges">(
+    !customIntervalSet && customBins.length > 0 ? "ranges" : "interval",
+  );
 
   const intervalForm = useForm({
     validateInputOnChange: true,
     initialValues: {
-      setIntervalSize: String(binSize),
-      setIntervalMin: String(stats.min),
-      setIntervalMax: String(stats.max + 1),
+      setIntervalSize: customIntervalSet
+        ? String(customBins.interval)
+        : String(binSize),
+      setIntervalMin: customIntervalSet
+        ? String(customBins.min)
+        : String(stats.min),
+      setIntervalMax: customIntervalSet
+        ? String(customBins.max)
+        : String(stats.max + 1),
     },
     validate: {
       setIntervalSize: (value, values) =>
@@ -55,7 +63,14 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
 
   const rangeForm = useForm({
     initialValues: {
-      ranges: [{ name: "", from: "", to: "" }],
+      ranges:
+        !customIntervalSet && customBins.length > 0
+          ? customBins.map((b) => ({
+              name: b.name,
+              from: String(b.from),
+              to: String(b.to),
+            }))
+          : [{ name: "", from: "", to: "" }],
     },
     validate: (values) => validateRangeInput(values.ranges),
   });
@@ -110,7 +125,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                 name="binMethod"
                 checked={binMethod === "interval"}
                 onChange={(e) =>
-                  e.target.checked ? setBinMethod("interval") : null
+                  e.target.checked ? setBinMethod("interval") : undefined
                 }
               />
               A set interval of
@@ -163,7 +178,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
               checked={binMethod === "ranges"}
               className="px-2 "
               onChange={(e) =>
-                e.target.checked ? setBinMethod("ranges") : null
+                e.target.checked ? setBinMethod("ranges") : undefined
               }
             />
             Custom ranges:
@@ -270,8 +285,10 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                   min: Number(intervalForm.values.setIntervalMin),
                   max: Number(intervalForm.values.setIntervalMax),
                 })
-              : updateBins(
-                  rangeForm.values.ranges.map((r) => ({
+              : // TODO only values that have been "added"
+                updateBins(
+                  // Remove empty last row
+                  rangeForm.values.ranges.slice(0).map((r) => ({
                     name: r.name,
                     to: Number(r.to),
                     from: Number(r.from),

@@ -198,7 +198,6 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
           </tr>
         </thead>
         <tbody>
-          {/* TODO don't sort for continuous */}
           {Object.entries(
             hasCustomBins && !continuous
               ? flattenBinnedData(customBinnedData)
@@ -346,6 +345,7 @@ const CardControls: React.FC<CardControlsProps> = ({
             field={field}
             stats={stats}
             updateBins={setCustomBinnedData}
+            customBins={customBinnedData}
           />
         ) : (
           <CategoricalBinningModal

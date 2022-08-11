@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
-import { mapKeys, range } from "lodash";
+import { mapKeys } from "lodash";
 import { ActionIcon, RadioGroup, Radio, Loader, Menu } from "@mantine/core";
 import { MdDownload as DownloadIcon } from "react-icons/md";
-import { Statistics, Bucket, NumericFromTo } from "@gff/core";
+import { Statistics, Bucket } from "@gff/core";
 import tailwindConfig from "tailwind.config";
 import { truncateString } from "src/utils";
 import { useRangeFacet } from "../facets/hooks";
 import VictoryBarChart from "../charts/VictoryBarChart";
+import { isInterval } from "./utils";
+import { CustomInterval, NamedFromTo } from "./types";
 
 import { COLOR_MAP } from "./constants";
 import {
@@ -15,29 +17,13 @@ import {
   flattenBinnedData,
 } from "./utils";
 
-export interface CustomInterval {
-  readonly interval: number;
-  readonly min: number;
-  readonly max: number;
-}
-
 interface ContinuousHistogramProps {
   readonly field: string;
   readonly fieldName: string;
   readonly stats: Statistics;
   readonly setResultData: (data: Record<string, number>) => void;
-  readonly customBinnedData: NumericFromTo[] | CustomInterval;
+  readonly customBinnedData: NamedFromTo[] | CustomInterval;
 }
-
-const isInterval = (
-  customBinnedData: NumericFromTo[] | CustomInterval,
-): customBinnedData is CustomInterval => {
-  if (!Array.isArray(customBinnedData) && customBinnedData?.interval) {
-    return true;
-  }
-
-  return false;
-};
 
 export const ContinuousHistogram: React.FC<ContinuousHistogramProps> = ({
   field,
@@ -53,8 +39,9 @@ export const ContinuousHistogram: React.FC<ContinuousHistogramProps> = ({
         customBinnedData.interval,
       )
     : customBinnedData?.length > 0
-    ? customBinnedData
+    ? customBinnedData.map((d) => ({ to: d.to, from: d.from }))
     : createBuckets(stats.min, stats.max);
+
   const { data, isFetching } = useRangeFacet(
     field,
     ranges,

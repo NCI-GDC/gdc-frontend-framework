@@ -1,6 +1,7 @@
 import { omitBy, some, capitalize } from "lodash";
 import { NumericFromTo, Buckets, Stats } from "@gff/core";
 import { CAPILIZED_TERMS, SPECIAL_CASE_FIELDS } from "./constants";
+import { CustomInterval, NamedFromTo } from "./types";
 
 export const filterUsefulFacets = (
   facets: Record<string, Buckets | Stats>,
@@ -82,4 +83,14 @@ export const flattenBinnedData = (
   });
 
   return flattenedValues;
+};
+
+export const isInterval = (
+  customBinnedData: NamedFromTo[] | CustomInterval,
+): customBinnedData is CustomInterval => {
+  if (!Array.isArray(customBinnedData) && customBinnedData?.interval) {
+    return true;
+  }
+
+  return false;
 };
