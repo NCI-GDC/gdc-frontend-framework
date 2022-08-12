@@ -95,43 +95,44 @@ const RepositoryApp: React.FC<ContextualFilesViewProps> = ({
         <Text transform="uppercase" size="lg" weight={700}>
           Files
         </Text>
-        <Menu
-          control={
+        <Menu>
+          <Menu.Target>
             <Button className={buttonStyle}>
               <CartIcon size={"1.5rem"} />
               Update Cart
             </Button>
-          }
-        >
-          <Menu.Item
-            onClick={() =>
-              addToCart(mapGdcFileToCartFile(allFiles), currentCart, dispatch)
-            }
-          >
-            {"Add All Files"}
-          </Menu.Item>
-          <Menu.Item
-            onClick={() =>
-              addToCart(
-                mapGdcFileToCartFile(selectedFiles),
-                currentCart,
-                dispatch,
-              )
-            }
-          >
-            {"Add Selected Files"}
-          </Menu.Item>
-          <Menu.Item
-            onClick={() =>
-              removeFromCart(
-                mapGdcFileToCartFile(selectedFiles),
-                currentCart,
-                dispatch,
-              )
-            }
-          >
-            {"Remove Selected Files"}
-          </Menu.Item>
+          </Menu.Target>
+          <Menu.Dropdown>
+            <Menu.Item
+              onClick={() =>
+                addToCart(mapGdcFileToCartFile(allFiles), currentCart, dispatch)
+              }
+            >
+              {"Add All Files"}
+            </Menu.Item>
+            <Menu.Item
+              onClick={() =>
+                addToCart(
+                  mapGdcFileToCartFile(selectedFiles),
+                  currentCart,
+                  dispatch,
+                )
+              }
+            >
+              {"Add Selected Files"}
+            </Menu.Item>
+            <Menu.Item
+              onClick={() =>
+                removeFromCart(
+                  mapGdcFileToCartFile(selectedFiles),
+                  currentCart,
+                  dispatch,
+                )
+              }
+            >
+              {"Remove Selected Files"}
+            </Menu.Item>
+          </Menu.Dropdown>
         </Menu>
         <Button className={buttonStyle}>
           <DownloadIcon size={"1.5rem"} />
@@ -159,7 +160,7 @@ const RepositoryApp: React.FC<ContextualFilesViewProps> = ({
 export default createGdcAppWithOwnStore({
   App: RepositoryApp,
   id: id,
-  name: "Demonstration Application 3",
+  name: "Repository Tool",
   version: "v1.0.0",
   requiredEntityTypes: ["file"],
   store: AppStore,

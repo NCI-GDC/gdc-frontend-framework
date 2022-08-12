@@ -164,7 +164,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   /**
    * remove comparative survival plot when tabs or filters change.
    */
-  const handleTabChanged = (_tabIndex: number, tabKey?: string) => {
+  const handleTabChanged = (tabKey: string) => {
     setAppMode(tabKey as AppModeState);
     setComparativeSurvival(undefined);
   };
@@ -212,6 +212,10 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     filters,
   ]);
 
+  const buttonStyle =
+    "flex flex-row items-center bg-white text-nci-blue-darkest border border-solid border-nci-blue-darkest h-12 hover:bg-nci-blue hover:text-white hover:border-nci-blue";
+  const tabStyle = `${buttonStyle} rounded-md first:border-r-0 last:border-l-0 first:rounded-r-none last:rounded-l-none hover:border-nci-blue-darkest data-active:bg-nci-blue-darkest data-active:text-white`;
+
   return (
     <div className="flex flex-row">
       <div className="flex flex-col gap-y-4 mr-3 mt-12 w-min-64 w-max-64">
@@ -245,18 +249,23 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
         })}
       </div>
       <Tabs
-        variant="pills"
+        value={appMode}
+        defaultValue="genes"
         classNames={{
-          root: "mt-6",
-          tabActive:
-            "bg-nci-blue-darkest text-nci-gray-lightest font-medium p-4 hover:bg-nci-blue-dark",
+          tab: tabStyle,
+          tabsList: "px-2 mt-2 border-0",
+          root: "border-0",
         }}
         onTabChange={handleTabChanged}
       >
-        <Tabs.Tab label="Genes" tabKey="genes">
-          <div className="flex flex-row">
+        <Tabs.List>
+          <Tabs.Tab value="genes">Genes</Tabs.Tab>
+          <Tabs.Tab value="ssms">Mutations</Tabs.Tab>
+        </Tabs.List>
+        <Tabs.Panel value="genes" pt="xs">
+          <div className="flex flex-row mt-3">
             <div className="flex flex-col">
-              <Grid className="mx-2 bg-white w-9/12">
+              <Grid className="mx-2  bg-white w-9/12">
                 <Grid.Col span={6}>
                   <GeneFrequencyChart marginBottom={95} />
                 </Grid.Col>
@@ -287,8 +296,8 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
               />
             </div>
           </div>
-        </Tabs.Tab>
-        <Tabs.Tab label="Mutations" tabKey="ssms">
+        </Tabs.Panel>
+        <Tabs.Panel value="ssms" pt="xs">
           <div className="flex flex-row">
             <div className="flex flex-col">
               <div className="bg-white w-9/12">
@@ -318,7 +327,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
               />
             </div>
           </div>
-        </Tabs.Tab>
+        </Tabs.Panel>
       </Tabs>
     </div>
   );
