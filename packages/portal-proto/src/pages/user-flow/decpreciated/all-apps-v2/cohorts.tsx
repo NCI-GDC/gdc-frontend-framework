@@ -13,7 +13,7 @@ const CohortsPage: NextPage = () => {
     "Cohorts",
     <Link
       key="exploration"
-      href="/user-flow/decpreciated/all-apps-v2/exploration"
+      href="/user-flow/depreciated/all-apps-v2/exploration"
     >
       Exploration
     </Link>,

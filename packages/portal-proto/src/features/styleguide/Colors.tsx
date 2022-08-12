@@ -4,13 +4,13 @@ import { divider_style } from "./style";
 
 const nciPrimaryColors = {
   gray: [
-    "bg-nci-gray-lightest",
-    "bg-nci-gray-lighter",
-    "bg-nci-gray-light",
-    "bg-nci-gray",
-    "bg-nci-gray-dark",
-    "bg-nci-gray-darker",
-    "bg-nci-gray-darkest",
+    "bg-base-lightest",
+    "bg-base-lighter",
+    "bg-base-light",
+    "bg-base",
+    "bg-base-dark",
+    "bg-base-darker",
+    "bg-base-darkest",
   ],
   red: [
     "bg-nci-red-lightest",
@@ -22,40 +22,40 @@ const nciPrimaryColors = {
     "bg-nci-red-darkest",
   ],
   blumine: [
-    "bg-nci-blumine-lightest",
-    "bg-nci-blumine-lighter",
-    "bg-nci-blumine-light",
-    "bg-nci-blumine",
-    "bg-nci-blumine-dark",
-    "bg-nci-blumine-darker",
-    "bg-nci-blumine-darkest",
+    "bg-accent-cool-lightest",
+    "bg-accent-cool-lighter",
+    "bg-accent-cool-light",
+    "bg-accent-cool",
+    "bg-accent-cool-dark",
+    "bg-accent-cool-darker",
+    "bg-accent-cool-darkest",
   ],
   blue: [
-    "bg-nci-blue-lightest",
-    "bg-nci-blue-lighter",
-    "bg-nci-blue-light",
-    "bg-nci-blue",
-    "bg-nci-blue-dark",
-    "bg-nci-blue-darker",
-    "bg-nci-blue-darkest",
+    "bg-primary-lightest",
+    "bg-primary-lighter",
+    "bg-primary-light",
+    "bg-primary",
+    "bg-primary-dark",
+    "bg-primary-darker",
+    "bg-primary-darkest",
   ],
   teal: [
-    "bg-nci-teal-lightest",
-    "bg-nci-teal-lighter",
-    "bg-nci-teal-light",
-    "bg-nci-teal",
-    "bg-nci-teal-dark",
-    "bg-nci-teal-darker",
-    "bg-nci-teal-darkest",
+    "bg-accent-cool-lightest",
+    "bg-accent-cool-lighter",
+    "bg-accent-cool-light",
+    "bg-accent-cool",
+    "bg-accent-cool-dark",
+    "bg-accent-cool-darker",
+    "bg-accent-cool-darkest",
   ],
   cyan: [
-    "bg-nci-cyan-lightest",
-    "bg-nci-cyan-lighter",
-    "bg-nci-cyan-light",
-    "bg-nci-cyan",
-    "bg-nci-cyan-dark",
-    "bg-nci-cyan-darker",
-    "bg-nci-cyan-darkest",
+    "bg-accent-cool-lightest",
+    "bg-accent-cool-lighter",
+    "bg-accent-cool-light",
+    "bg-accent-cool",
+    "bg-accent-cool-dark",
+    "bg-accent-cool-darker",
+    "bg-accent-cool-darkest",
   ],
 };
 const nciSecondaryColors = {
@@ -79,12 +79,12 @@ const nciSecondaryColors = {
   ],
   purple: [
     "bg-nci-purple-lightest",
-    "bg-nci-gray-lighter",
-    "bg-nci-gray-light",
-    "bg-nci-gray",
-    "bg-nci-gray-dark",
-    "bg-nci-gray-darker",
-    "bg-nci-gray-darkest",
+    "bg-base-lighter",
+    "bg-base-light",
+    "bg-base",
+    "bg-base-dark",
+    "bg-base-darker",
+    "bg-base-darkest",
   ],
   orange: [
     "bg-nci-orange-lightest",
@@ -230,7 +230,7 @@ const ColorPalletLine = ({ name, colors }: ColorStylePalletProps) => {
 
 const Colors: React.FC<void> = () => {
   return (
-    <article className="prose font-montserrat text-nci-gray md:prose-md">
+    <article className="prose font-montserrat text-primary-content md:prose-md">
       <p className="prose font-semibold text-2xl">Color Palettes</p>
       <div className="flex flex-col">
         <div>

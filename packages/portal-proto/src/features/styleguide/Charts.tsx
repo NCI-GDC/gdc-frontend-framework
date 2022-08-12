@@ -6,7 +6,7 @@ import { ReactNode } from "react";
 
 const Charts: ReactNode = () => {
   return (
-    <article className="prose font-montserrat text-nci-gray prose-md">
+    <article className="prose font-montserrat text-primary-content prose-md">
       <p className="prose font-medium text-2xl">Charts</p>
 
       <div className="flex flex-col content-center gap-y-4">

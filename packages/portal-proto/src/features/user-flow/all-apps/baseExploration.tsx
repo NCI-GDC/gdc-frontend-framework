@@ -134,7 +134,7 @@ export const BaseExplorationPage: React.FC<BaseExplorationPageProps> = ({
   return (
     <UserFlowVariedPages {...{ indexPath, headerElements }}>
       <div className="flex flex-col gap-y-4 p-4">
-        <div className="border p-4 border-nci-gray-lighter bg-base-lightest">
+        <div className="border p-4 border-base-lighter bg-base-lightest">
           <CohortManager
             handleFileSelected={(file: GdcFile) => {
               setCurrentFile(file);

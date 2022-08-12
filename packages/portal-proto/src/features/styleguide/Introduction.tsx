@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 
 const Typefaces: ReactNode = () => {
   return (
-    <article className="prose font-montserrat text-nci-gray-dark md:prose-md">
+    <article className="prose font-montserrat text-primary-content-dark md:prose-md">
       <p className="prose font-medium text-2xl">GDC Portal Style guide</p>
       <p>
         A style guide is a collection of pre-designed elements, graphics and

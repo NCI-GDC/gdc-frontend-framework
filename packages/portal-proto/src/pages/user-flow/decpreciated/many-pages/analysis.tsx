@@ -98,9 +98,9 @@ const AnalysisPage: NextPage = () => {
     ];
 
     const inactiveTag =
-      "truncate px-2 py-1 text-xs m-1.5 border rounded border-black bg-base-lightest hover:bg-nci-blue text-black hover:text-white";
+      "truncate px-2 py-1 text-xs m-1.5 border rounded border-black bg-base-lightest hover:bg-primary text-black hover:text-white";
     const activeTag =
-      "truncate px-2 py-1 text-xs m-1.5 border rounded border-black bg-nci-blumine-darker hover:bg-nci-blumine-lightest text-white hover:text-nci-blumine-darker";
+      "truncate px-2 py-1 text-xs m-1.5 border rounded border-black bg-accent-cool-darker hover:bg-accent-cool-lightest text-white hover:text-accent-cool-darker";
 
     const defaultTagStyles = {
       clinicalAnalysis: false,
@@ -356,7 +356,7 @@ const AnalysisPage: NextPage = () => {
               <div className="flex w-14 p-2 content-center">
                 <button
                   onClick={() => clearTags()}
-                  className="text-nci-blumine-darker text-sm bold"
+                  className="text-accent-cool-darker text-sm bold"
                 >
                   Clear
                 </button>
@@ -397,15 +397,15 @@ const AnalysisPage: NextPage = () => {
   const AppModal = () => {
     return selectedApp !== "" ? (
       <ModalOrInline modal={appsAsModal}>
-        <div className="flex flex-col border-nci-gray-light border-2 h-full">
-          <div className="w-full border-1 border-b-2 border-nci-blue-lighter">
+        <div className="flex flex-col border-base-light border-2 h-full">
+          <div className="w-full border-1 border-b-2 border-primary-lighter">
             <button
               className="flex flex-row"
               onClick={() => {
                 setSelectedApp("");
               }}
             >
-              <CloseIcon className="bg-nci-blue-lighter mr-2" size="1.5em" />{" "}
+              <CloseIcon className="bg-primary-lighter mr-2" size="1.5em" />{" "}
               Analysis
             </button>
           </div>

@@ -11,7 +11,7 @@ const StudiesPage: NextPage = () => {
 
   const headerElements = [
     "Cohorts",
-    <Link key="Analysis" href="/user-flow/decpreciated/many-pages-v2/analysis">
+    <Link key="Analysis" href="/user-flow/depreciated/many-pages-v2/analysis">
       Analysis
     </Link>,
   ];

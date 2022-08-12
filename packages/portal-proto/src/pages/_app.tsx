@@ -10,7 +10,7 @@ import { NotificationsProvider } from "@mantine/notifications";
 import { TourProvider } from "@reactour/tour";
 import { CustomBadge as Badge } from "../features/tour/CustomBadge";
 import store from "../app/store";
-import tailwindConfig from "tailwind.config";
+import tailwindConfig from "../../tailwind.config";
 
 // import gdc apps here.
 // their default exports will trigger registration.
@@ -27,6 +27,19 @@ import ReactModal from "react-modal";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 ReactModal.setAppElement("#__next");
+
+type TenStringArray = [
+  string?,
+  string?,
+  string?,
+  string?,
+  string?,
+  string?,
+  string?,
+  string?,
+  string?,
+  string?,
+];
 
 export const URLContext = createContext({ prevPath: "", currentPath: "" });
 
@@ -49,30 +62,12 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
           theme={{
             // Override default blue color until styles are determined
             colors: {
-              blue: [
-                "#bdbdbd",
-                "#8a8a8a",
-                "#b4b1b1",
-                "#c0c0c0",
-                "#bbbbbb",
-                "#a6a6a6",
-                "#a9a9a9",
-                "#626060",
-                "#a1a1a1",
-                "#a1a1a1",
-              ],
-              gray: [
-                "#dedede",
-                "#f1f1f1",
-                "#e7e7e7",
-                "#dadada",
-                "#c9c8c8",
-                "#b9b9b9",
-                "#bdbdbd",
-                "#343434",
-                "#919090",
-                "#151515",
-              ],
+              blue: Object.values(
+                tailwindConfig.theme.extend.colors["nci-blue"],
+              ) as TenStringArray,
+              gray: Object.values(
+                tailwindConfig.theme.extend.colors["nci-gray"],
+              ) as TenStringArray,
               white: [
                 "#ffffff",
                 "#ffffff",

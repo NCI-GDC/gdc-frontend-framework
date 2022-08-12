@@ -163,7 +163,7 @@ const Header: React.FC<HeaderProps> = ({
 
 const Footer: React.FC<unknown> = () => {
   return (
-    <div className="flex flex-col bg-accent-cool-darker justify-center text-center p-4 text-accent-cooler-content-lightest">
+    <div className="flex flex-col bg-primary-darker justify-center text-center p-4 text-primary-content-lightest">
       <div>Site Home | Policies | Accessibility | FOIA | Support</div>
       <div>
         U.S. Department of Health and Human Services | National Institutes of
@@ -252,7 +252,7 @@ export const App: React.FC<AppProps> = ({
   }
   return (
     <button
-      className="group h-52 border border-nci-gray-lighter px-4 pt-2 pb-4 flex flex-col gap-y-2 bg-base-lightest shadow-md hover:shadow-lg hover:border-nci-blumine-darker hover:border-2"
+      className="group h-52 border border-base-lighter px-4 pt-2 pb-4 flex flex-col gap-y-2 bg-base-lightest shadow-md hover:shadow-lg hover:border-accent-cool-darker hover:border-2"
       onClick={onClick}
     >
       <div className="text-center w-full text-lg">{name}</div>

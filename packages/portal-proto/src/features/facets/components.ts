@@ -10,3 +10,6 @@ inline-flex
 items-center
 hover:text-primary-lighter
 `;
+
+export const controlsIconStyle =
+  "text-primary-darker hover:text-primary-content-lightest";

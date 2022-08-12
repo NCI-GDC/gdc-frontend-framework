@@ -241,7 +241,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
             <Menu>
               <Menu.Target>
                 <Button
-                  className="px-1.5 min-h-7 w-32 border-nci-gray-light border rounded"
+                  className="px-1.5 min-h-7 w-32 border-base-light border rounded"
                   leftIcon={<MdFileDownload size="1.25em" />}
                 >
                   Biospecimen
@@ -259,7 +259,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
             <Menu>
               <Menu.Target>
                 <Button
-                  className="px-1.5 min-h-7 w-24 border-nci-gray-light border rounded"
+                  className="px-1.5 min-h-7 w-24 border-base-light border rounded"
                   leftIcon={<MdFileDownload size="1.25em" />}
                 >
                   Clinical

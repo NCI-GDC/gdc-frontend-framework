@@ -59,7 +59,7 @@ export const TempTable = ({ tableData }: TempTableProps): JSX.Element => {
       <thead>
         <tr>
           {tableData.headers.map((text, index) => (
-            <th key={index} className="bg-nci-gray-lighter">
+            <th key={index} className="bg-base-lighter">
               {text}
             </th>
           ))}
@@ -260,21 +260,21 @@ export const FileView: React.FC<FileViewProps> = ({
     return <TempTable tableData={formatedTableData} />;
   };
   return (
-    <div className="p-4 text-nci-gray w-10/12 m-auto">
+    <div className="p-4 text-primary-content w-10/12 m-auto">
       <div className="text-right pb-5">
         <AddToCartButton files={[file]} />
         {file.dataFormat === "BAM" &&
           file.dataType === "Aligned Reads" &&
           file?.index_files?.length > 0 && (
             <Button
-              className="m-1 text-nci-gray-lightest bg-nci-blue hover:bg-nci-blue-darker"
+              className="m-1 text-primary-content-lightest bg-primary hover:bg-primary-darker"
               leftIcon={<FaCut />}
             >
               BAM Slicing
             </Button>
           )}
         <Button
-          className="m-1 text-nci-gray-lightest bg-nci-blue hover:bg-nci-blue-darker"
+          className="m-1 text-primary-content-lightest bg-primary hover:bg-primary-darker"
           leftIcon={<FaDownload />}
         >
           Download
@@ -362,7 +362,7 @@ export const FileView: React.FC<FileViewProps> = ({
             associated_entities={file?.associated_entities}
           />
         ) : (
-          <h3 className="p-2 mx-4 text-nci-gray-darker">
+          <h3 className="p-2 mx-4 text-primary-content-darker">
             No cases or biospecimen found.
           </h3>
         )}
@@ -482,13 +482,13 @@ export const FileView: React.FC<FileViewProps> = ({
           <div className="float-right my-2 mr-3">
             <Button
               color={"gray"}
-              className="mr-2 text-nci-gray-lightest bg-nci-blue hover:bg-nci-blue-darker"
+              className="mr-2 text-primary-content-lightest bg-primary hover:bg-primary-darker"
             >
               <FaDownload className="mr-2" /> Download JSON
             </Button>
             <Button
               color={"gray"}
-              className="text-nci-gray-lightest bg-nci-blue hover:bg-nci-blue-darker"
+              className="text-primary-content-lightest bg-primary hover:bg-primary-darker"
             >
               <FaDownload className="mr-2" /> Download TSV
             </Button>
@@ -513,7 +513,7 @@ export const FileView: React.FC<FileViewProps> = ({
                     <>
                       {obj.uuid}
                       {index + 1 === length && (
-                        <span className="inline-block ml-2 border rounded-full bg-nci-blue-darker text-white font-bold text-xs py-0.5 px-1">
+                        <span className="inline-block ml-2 border rounded-full bg-primary-darker text-white font-bold text-xs py-0.5 px-1">
                           Current Version
                         </span>
                       )}

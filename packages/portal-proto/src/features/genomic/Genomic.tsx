@@ -73,14 +73,14 @@ export const MutationFacet: React.FC<GeneFacetProps> = ({
   width = "64",
 }: GeneFacetProps) => {
   return (
-    <div className={`border-2 border-nci-gray-lighter pt-2 mx-${width}`}>
+    <div className={`border-2 border-base-lighter pt-2 mx-${width}`}>
       <div className="overflow-y-auto h-96">
         <table
-          className="table-fixed border-collapse border-nci-gray w-full"
+          className="table-fixed border-collapse border-base w-full"
           style={{ borderSpacing: "4em" }}
         >
           <thead>
-            <tr className="bg-nci-blue text-white">
+            <tr className="bg-primary text-white">
               <th align="left" className="w-1/4 px-2">
                 Mutation
               </th>

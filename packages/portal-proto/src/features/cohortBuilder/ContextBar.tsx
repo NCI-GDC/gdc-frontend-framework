@@ -20,6 +20,7 @@ import {
   FaCartPlus as AddToCartIcon,
   FaUndo as UndoIcon,
 } from "react-icons/fa";
+import tw from "tailwind-styled-components";
 
 import SummaryFacets, { SummaryFacetInfo } from "./SummaryFacets";
 import { updateEnumFilters } from "../facets/hooks";
@@ -28,6 +29,19 @@ import {
   clearCohortFilters,
   setCurrentCohort,
 } from "@gff/core";
+
+export const ContextMenuButton = tw(Button)`
+flex 
+flex-row 
+items-center 
+bg-base-max 
+text-primary-darkest 
+border 
+border-solid 
+border-primary-darkest 
+hover:bg-primary-darkest 
+hover:text-primary-lightest";
+`;
 
 const ContextBar: React.FC<CohortGroupProps> = ({
   cohorts,
@@ -109,8 +123,8 @@ const ContextBar: React.FC<CohortGroupProps> = ({
   );
 
   const buttonStyle =
-    "flex flex-row items-center bg-base-max text-primary-darkest border border-solid border-primary-darkest hover:bg-primary-darkest hover:text-primary-lightest";
-  const tabStyle = `${buttonStyle} rounded-md first:border-r-0 last:border-l-0 first:rounded-r-none last:rounded-l-none hover:border-primary-darkest data-active:bg-primary-darker data-active:text-primary-content-lightest`;
+    "flex flex-row items-center bg-base-max text-secondary-darkest border border-solid border-secondary-darkest hover:bg-secondary-darkest hover:text-secondary-content-lightest";
+  const tabStyle = `${buttonStyle} rounded-md first:border-r-0 last:border-l-0 first:rounded-r-none last:rounded-l-none hover:border-secondary-darkest data-active:bg-secondary-darker data-active:text-secondary-content-lightest`;
 
   const clearAllFilters = () => {
     coreDispatch(clearCohortFilters());
@@ -162,14 +176,14 @@ const ContextBar: React.FC<CohortGroupProps> = ({
             <div className="flex flex-row absolute ml-2">
               <Menu>
                 <Menu.Target>
-                  <Button className={buttonStyle}>
+                  <ContextMenuButton>
                     <DownloadIcon size="1.5rem" />
                     <CountButton
                       countName="fileCounts"
                       label="Files"
                       className="px-2"
                     />
-                  </Button>
+                  </ContextMenuButton>
                 </Menu.Target>
                 <Menu.Dropdown>
                   <Menu.Item icon={<AddToCartIcon size="1.5rem" />}>
@@ -182,9 +196,9 @@ const ContextBar: React.FC<CohortGroupProps> = ({
               </Menu>
               <Menu>
                 <Menu.Target>
-                  <Button className={`ml-2 ${buttonStyle}`}>
+                  <ContextMenuButton className="ml-2">
                     <FilesIcon size="1.5rem" className="mr-1" /> Metadata
-                  </Button>
+                  </ContextMenuButton>
                 </Menu.Target>
                 <Menu.Dropdown>
                   <Menu.Item>Biospecimen</Menu.Item>
@@ -208,8 +222,7 @@ const ContextBar: React.FC<CohortGroupProps> = ({
                   value="summary"
                   icon={<SummaryChartIcon size="1.5rem" />}
                 >
-                  {" "}
-                  Summary View{" "}
+                  Summary View
                 </Tabs.Tab>
 
                 <Tabs.Tab
@@ -221,11 +234,9 @@ const ContextBar: React.FC<CohortGroupProps> = ({
                 </Tabs.Tab>
               </Tabs.List>
               <Tabs.Panel value="summary">
-                {" "}
                 <SummaryFacets fields={summaryFields} />{" "}
               </Tabs.Panel>
               <Tabs.Panel value={"table"}>
-                {" "}
                 <ContextualCasesView />
               </Tabs.Panel>
             </Tabs>

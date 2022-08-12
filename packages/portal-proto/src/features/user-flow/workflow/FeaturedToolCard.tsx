@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ActionIcon, Grid } from "@mantine/core";
+import { ActionIcon, Grid, Text } from "@mantine/core";
 import { MdPlayArrow } from "react-icons/md";
 import { AppRegistrationEntry } from "./utils";
 
@@ -13,7 +13,10 @@ const FeaturedToolCard: React.FC<FeaturedToolCardProps> = ({
   onClick,
 }: FeaturedToolCardProps) => {
   return (
-    <Grid className="bg-base-lightest h-full items-center m-1 rounded">
+    <Grid
+      className="bg-base-lightest border-base-darkest border h-full items-center m-0 rounded-lg p-0"
+      justify="space-between"
+    >
       <Grid.Col span={2}>
         <Image
           className="m-auto"
@@ -24,12 +27,21 @@ const FeaturedToolCard: React.FC<FeaturedToolCardProps> = ({
         />
       </Grid.Col>
       <Grid.Col span={8} className="text-primary-content-darkest">
-        <h3 className="font-bold">{entry.name}</h3>
-        {entry.description}
+        <Text size={"sm"} className="font-heading font-bold">
+          {entry.name}
+        </Text>
+        <Text size={"xs"} className="font-content">
+          {" "}
+          {entry.description}
+        </Text>
       </Grid.Col>
-      <Grid.Col span={2}>
+      <Grid.Col
+        span={2}
+        style={{ minHeight: "6rem" }}
+        className="flex flex-row justify-end p-0 m-0"
+      >
         <ActionIcon
-          className="self-center bg-nci-blue-darkest w-12 h-12 p-2 hover:bg-nci-blue"
+          className="justify-self-end bg-secondary-darkest w-12 h-[6em] p-0 hover:bg-secondary rounded-none rounded-r"
           variant="filled"
           onClick={() => onClick(entry)}
           aria-label={`Navigate to ${entry.name}`}

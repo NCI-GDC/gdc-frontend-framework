@@ -5,10 +5,10 @@ import Link from "next/link";
 
 const IndexPage: NextPage = () => {
   const headerElements = [
-    <Link key="Studies" href="/user-flow/decpreciated/many-pages-v2/studies">
+    <Link key="Studies" href="/user-flow/depreciated/many-pages-v2/studies">
       <div id="cohorts-header-button">Cohorts</div>
     </Link>,
-    <Link key="Analysis" href="/user-flow/decpreciated/many-pages-v2/analysis">
+    <Link key="Analysis" href="/user-flow/depreciated/many-pages-v2/analysis">
       <div id="analysis-header-button">Analysis</div>
     </Link>,
   ];
@@ -23,7 +23,7 @@ const IndexPage: NextPage = () => {
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
             eiusmod tempor incididunt ut{" "}
             <span className="text-gdc-blue">
-              <Link href="/user-flow/decpreciated/many-pages-v2/studies">
+              <Link href="/user-flow/depreciated/many-pages-v2/studies">
                 Cohorts
               </Link>
             </span>{" "}
@@ -33,7 +33,7 @@ const IndexPage: NextPage = () => {
           <p>
             Lorem ipsum{" "}
             <span className="text-gdc-blue">
-              <Link href="/user-flow/decpreciated/many-pages-v2/analysis">
+              <Link href="/user-flow/depreciated/many-pages-v2/analysis">
                 Analysis
               </Link>
             </span>{" "}

@@ -178,8 +178,8 @@ export const StudiesView: React.FC<StudiesViewProps> = ({
   const filterBox = (obj) => {
     const { data, title } = obj;
     return (
-      <div className="bg-base-lightest border border-nci-gray-lighter shadow-md rounded">
-        <div className="bg-nci-gray-lightest p-2 rounded flex">
+      <div className="bg-base-lightest border border-base-lighter shadow-md rounded">
+        <div className="bg-base-lightest p-2 rounded flex">
           <span className="flex-grow">{title}</span>
           <button className="text-2xl opacity-75 hover:opacity-100">
             <MdSearch title="Search" />
@@ -442,7 +442,7 @@ export const StudiesView: React.FC<StudiesViewProps> = ({
         <div className="flex-grow">
           <Button>Selected Cohorts: None</Button>
           <Button
-            className="px-2 py-1 border rounded bg-nci-gray-lighter text-nci-gray float-right"
+            className="px-2 py-1 border rounded bg-base-lighter text-primary-content float-right"
             // stylingOff={true}
           >
             Explore Selected Cohorts In...

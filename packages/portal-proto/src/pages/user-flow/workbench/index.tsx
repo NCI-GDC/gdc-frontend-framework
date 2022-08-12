@@ -161,7 +161,7 @@ const ActionButtonBar = () => {
         <Tooltip
           label="Build and define your custom cohorts using a variety of clinical and biospecimen features."
           classNames={{
-            tooltip: "shadow-lg bg-base-lightest text-nci-gray-darkest",
+            tooltip: "shadow-lg bg-base-lightest text-primary-content-darkest",
           }}
           position="bottom-start"
           multiline
@@ -174,7 +174,7 @@ const ActionButtonBar = () => {
               pathname: "/user-flow/workbench/analysis_page",
               query: { app: "CohortBuilder" },
             }}
-            className="text-sm bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest hover:text-white transition-colors font-bold mx-4 p-2 rounded inline-flex flex-nowrap items-center shadow-md"
+            className="text-sm bg-base-lighter hover:bg-base text-primary-content-darkest hover:text-white transition-colors font-bold mx-4 p-2 rounded inline-flex flex-nowrap items-center shadow-md"
           >
             <Image src={"/user-flow/icons/build.svg"} width={36} height={36} />
             <span />
@@ -184,7 +184,7 @@ const ActionButtonBar = () => {
         <Tooltip
           label="Browse and download the files associated with your cohort for more sophisticated analysis."
           classNames={{
-            tooltip: "shadow-lg bg-base-lightest text-nci-gray-darkest",
+            tooltip: "shadow-lg bg-base-lightest text-primary-content-darkest",
           }}
           position="bottom-start"
           multiline
@@ -197,7 +197,7 @@ const ActionButtonBar = () => {
               pathname: "/user-flow/workbench/analysis_page",
               query: { app: "Downloads" },
             }}
-            className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md transition-colors"
+            className="bg-base-lighter hover:bg-base text-primary-content-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md transition-colors"
           >
             <Image
               src={"/user-flow/icons/database.svg"}
@@ -217,19 +217,19 @@ const IndexPage: NextPage = () => {
     <UserFlowVariedPages
       {...{ indexPath: "/user-flow/single-page", headerElements }}
     >
-      <div className="flex flex-col w-100 h-100 bg-gradient-to-r from-nci-gray-lightest  to-nci-gray-lighter">
+      <div className="flex flex-col w-100 h-100 bg-gradient-to-r from-nci-accent-warm-lightest  to-accent-cool-lightest">
         <div className="flex flex-row ">
           <div className="flex flex-col w-1/2 pl-10">
-            <div className="flex flex-col w-100 bg-nci-gray p-4 rounded-md shadow-lg mt-2  ">
-              <div className="font-montserrat text-nci-gray-lightest text-md pt-5 pb-2">
+            <div className="flex flex-col w-100 bg-base p-4 rounded-md shadow-lg mt-2  ">
+              <div className="font-montserrat text-primary-content-lightest text-md pt-5 pb-2">
                 Harmonized Cancer Datasets
               </div>
-              <div className="font-montserrat text-nci-gray-lightest text-2xl pb-5">
+              <div className="font-montserrat text-primary-content-lightest text-2xl pb-5">
                 Genomic Data Commons Data Portal
               </div>
             </div>
             <div className="flex flex-row">
-              <div className="flex-auto w-36 m-4 p-4 items-center font-montserrat text-nci-gray-darkest rounded-md shadow-inner">
+              <div className="flex-auto w-36 m-4 p-4 items-center font-montserrat text-primary-content-darkest rounded-md shadow-inner">
                 A repository and knowledge base for cancer researchers who need
                 to understand cancer, its clinical progression, and response to
                 therapy.
@@ -240,7 +240,7 @@ const IndexPage: NextPage = () => {
               <div className="w-full">
                 <input
                   type="text"
-                  className="h-10 pr-8 w-full pl-5 bg-base-lightest border-primary-light rounded-full focus:outline-none focus:ring focus:ring-nci-cyan-light focus:border-nci-teal-light hover:shadow-lg hover:border-nci-teal-lighter"
+                  className="h-10 pr-8 w-full pl-5 bg-base-lightest border-primary-light rounded-full focus:outline-none focus:ring focus:ring-accent-cool-light focus:border-accent-cool-light hover:shadow-lg hover:border-accent-cool-lighter"
                   placeholder={`e.g. BRAF, Breast, TCGA-BLCA, TCGA-A5-A0G2`}
                 />
               </div>

@@ -14,16 +14,23 @@ import {
   MdSave as SaveIcon,
 } from "react-icons/md";
 import { nanoid } from "@reduxjs/toolkit";
+import tw from "tailwind-styled-components";
 import {
   FilterSet,
   Operation,
   selectCurrentCohortFilters,
   useCoreSelector,
 } from "@gff/core";
-import * as tailwindConfig from "tailwind.config";
-import { convertFieldToName } from "../facets/utils";
 import { convertFilterToComponent } from "./QueryRepresentation";
-import CountButton from "./CountButton";
+
+const CohortGroupButton = tw(Button)`
+p-2
+bg-base-lightest
+transition-colors 
+text-primary-content-darkest 
+hover:bg-primary 
+hover:text-primary-content-lightest
+`;
 
 const enum_menu_items = [
   { value: "any_of", label: "includes at least one:" },
@@ -50,7 +57,7 @@ const CohortGroupSelect: React.FC<unknown> = () => {
         rightSection={<DropDownIcon />}
         data={menu_items}
         value={groupType.value}
-        className="border-nci-gray-light w-36"
+        className="border-base-light w-36"
         onChange={handleChange}
       />
     </div>
@@ -79,11 +86,11 @@ export const CohortBar: React.FC<CohortBarProps> = ({
   const theme = useMantineTheme();
 
   const buttonStyle =
-    "p-2 bg-base-lightest transition-colors text-primary-content-darkest hover:bg-nci-blue hover:text-primary-content-lightest";
+    "p-2 bg-base-lightest transition-colors text-primary-content-darkest hover:bg-primary hover:text-primary-content-lightest";
   return (
     <div
       data-tour="cohort_management_bar"
-      className="flex flex-row items-center justify-start gap-6 pl-4 h-20 shadow-lg bg-nci-blue-darkest"
+      className="flex flex-row items-center justify-start gap-6 pl-4 h-20 shadow-lg bg-primary-darkest"
     >
       <div className="border-opacity-0">
         {!hide_controls ? (
@@ -102,11 +109,11 @@ export const CohortBar: React.FC<CohortBarProps> = ({
             styles={{
               dropdownIndicator: (provided) => ({
                 ...provided,
-                color: theme.colors.primary[4],
+                color: theme.colors.blue[4],
               }),
               singleValue: (provided) => ({
                 ...provided,
-                color: theme.colors.accent[4],
+                color: theme.colors.blue[4],
               }),
             }}
           />
@@ -118,21 +125,21 @@ export const CohortBar: React.FC<CohortBarProps> = ({
       </div>
       {!hide_controls ? (
         <>
-          <Button className={buttonStyle}>
+          <CohortGroupButton>
             <SaveIcon size="1.5em" aria-label="Save cohort" />
-          </Button>
-          <Button className={buttonStyle}>
+          </CohortGroupButton>
+          <CohortGroupButton>
             <AddIcon size="1.5em" aria-label="Add cohort" />
-          </Button>
-          <Button className={buttonStyle}>
+          </CohortGroupButton>
+          <CohortGroupButton>
             <DeleteIcon size="1.5em" aria-label="Delete cohort" />
-          </Button>
-          <Button className={buttonStyle}>
+          </CohortGroupButton>
+          <CohortGroupButton>
             <UploadIcon size="1.5em" aria-label="Upload cohort" />
-          </Button>
-          <Button className={buttonStyle}>
+          </CohortGroupButton>
+          <CohortGroupButton>
             <DownloadIcon size="1.5em" aria-label="Download cohort" />
-          </Button>
+          </CohortGroupButton>
         </>
       ) : (
         <div />

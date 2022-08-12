@@ -45,7 +45,7 @@ const AnalysisPage: NextPage = () => {
   const [currentCase, setCurrentCase] = useState(undefined as Case);
 
   const headerElements = [
-    <Link key="Studies" href="/user-flow/decpreciated/many-pages-v2/studies">
+    <Link key="Studies" href="/user-flow/depreciated/many-pages-v2/studies">
       Cohorts
     </Link>,
     "Analysis",

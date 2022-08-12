@@ -120,7 +120,7 @@ const SetOperationsDemo: React.FC = () => {
                       ? "bg-nci-yellow-lightest"
                       : idx % 2
                       ? null
-                      : "bg-nci-blue-warm-lightest"
+                      : "bg-primary-warm-lightest"
                   }
                 >
                   <td>

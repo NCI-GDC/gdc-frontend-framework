@@ -29,7 +29,7 @@ const DownloadOptions: React.FC<ChartDownloadProps> = ({
     <div>
       <Tooltip label="Download image or data">
         <button
-          className="px-1.5 min-h-[28px] nim-w-[40px] border-nci-gray-light border rounded-[4px] "
+          className="px-1.5 min-h-[28px] nim-w-[40px] border-base-light border rounded-[4px] "
           onClick={() => setDownloadMenuOpen(!downloadMenuOpen)}
         >
           <DownloadIcon size="1.25em" />
@@ -46,7 +46,7 @@ const DownloadOptions: React.FC<ChartDownloadProps> = ({
                 onKeyPress={(e) =>
                   e.key === "Enter" ? downloadImage("svg") : undefined
                 }
-                className="cursor-pointer block py-2 px-4 text-sm text-nci-gray-darker hover:bg-nci-gray-lightest "
+                className="cursor-pointer block py-2 px-4 text-sm text-primary-content-darker hover:bg-base-lightest "
               >
                 SVG
               </span>
@@ -59,7 +59,7 @@ const DownloadOptions: React.FC<ChartDownloadProps> = ({
                 onKeyPress={(e) =>
                   e.key === "Enter" ? downloadImage("png") : undefined
                 }
-                className="cursor-pointer block py-2 px-4 text-sm text-nci-gray-darker hover:bg-nci-gray-lightest "
+                className="cursor-pointer block py-2 px-4 text-sm text-primary-content-darker hover:bg-base-lightest "
               >
                 PNG
               </span>
@@ -70,7 +70,7 @@ const DownloadOptions: React.FC<ChartDownloadProps> = ({
                   JSON.stringify(jsonData),
                 )}`}
                 download={`${chartName}.json`}
-                className="block py-2 px-4 text-sm text-nci-gray-darker hover:bg-nci-gray-lightest "
+                className="block py-2 px-4 text-sm text-primary-content-darker hover:bg-base-lightest "
                 role="menuitem"
               >
                 JSON

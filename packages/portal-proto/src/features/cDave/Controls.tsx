@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Switch,
@@ -81,7 +81,7 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
         )}
         tabIndex={0}
         role="button"
-        className="text-lg text-primary-content-darkest cursor-pointer bg-primary-lightest flex items-center p-2 sticky top-0 z-10"
+        className="text-lg text-primary-content-darkest cursor-pointer bg-primary-lighter font-heading font-bold flex items-center p-2 sticky top-0 z-10"
         aria-controls={`cdave-control-group-${name}`}
         aria-expanded={groupOpen}
       >
@@ -89,7 +89,7 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
       </span>
       <Collapse in={groupOpen} id={`cdave-control-group-${name}`}>
         <div className="flex flex-col">
-          <ul className="bg-base-lightest">
+          <ul className="bg-base-max">
             {visibleFields.map((field) => (
               <FieldControl
                 key={field.full}
@@ -146,7 +146,10 @@ const FieldControl: React.FC<FieldControlProps> = ({
       {searchTerm ? (
         <>
           <div className="flex justify-between">
-            <label htmlFor={`switch-${field.full}`}>
+            <label
+              className="font-content font-medium"
+              htmlFor={`switch-${field.full}`}
+            >
               <Highlight highlight={searchTerm}>{displayName}</Highlight>
             </label>
             <Switch
@@ -268,8 +271,10 @@ const Controls: React.FC<ControlPanelProps> = ({
   return (
     <div
       className={`${
-        controlsExpanded ? "w-80 bg-base-lightest overflow-scroll -ml-2" : ""
-      } flex flex-col min-h-[560px] max-h-[calc(100vh-50px)]`}
+        controlsExpanded
+          ? "w-80 bg-base-max shadow-md overflow-y-scroll -ml-2"
+          : ""
+      } flex flex-col min-h-[560px] max-h-screen`}
     >
       <Tooltip
         withArrow

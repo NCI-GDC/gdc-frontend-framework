@@ -7,10 +7,7 @@ const AllAppsExplorationVariant: NextPage = () => {
     <BaseExplorationPage
       {...{
         headerElements: [
-          <Link
-            key="cohorts"
-            href="/user-flow/decpreciated/all-apps-v2/cohorts"
-          >
+          <Link key="cohorts" href="/user-flow/depreciated/all-apps-v2/cohorts">
             Cohorts
           </Link>,
           "Exploration",

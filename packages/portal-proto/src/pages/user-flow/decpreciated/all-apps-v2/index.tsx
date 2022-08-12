@@ -5,12 +5,12 @@ import Link from "next/link";
 
 const IndexPage: NextPage = () => {
   const headerElements = [
-    <Link key="cohorts" href="/user-flow/decpreciated/all-apps-v2/cohorts">
+    <Link key="cohorts" href="/user-flow/depreciated/all-apps-v2/cohorts">
       <div id="cohorts-header-button">Cohorts</div>
     </Link>,
     <Link
       key="exploration"
-      href="/user-flow/decpreciated/all-apps-v2/exploration"
+      href="/user-flow/depreciated/all-apps-v2/exploration"
     >
       <div id="exploration-header-button">Exploration</div>
     </Link>,
@@ -26,7 +26,7 @@ const IndexPage: NextPage = () => {
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
             eiusmod tempor incididunt ut{" "}
             <span className="text-gdc-blue">
-              <Link href="/user-flow/decpreciated/all-apps-v2/cohorts">
+              <Link href="/user-flow/depreciated/all-apps-v2/cohorts">
                 Cohorts
               </Link>
             </span>{" "}
@@ -36,7 +36,7 @@ const IndexPage: NextPage = () => {
           <p>
             Lorem ipsum{" "}
             <span className="text-gdc-blue">
-              <Link href="/user-flow/decpreciated/all-apps-v2/exploration">
+              <Link href="/user-flow/depreciated/all-apps-v2/exploration">
                 Exploration
               </Link>
             </span>{" "}

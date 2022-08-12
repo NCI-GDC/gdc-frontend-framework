@@ -26,8 +26,7 @@ import { mapGdcFileToCartFile } from "../files/utils";
 import { selectFilters } from "@/features/repositoryApp/repositoryFiltersSlice";
 import { isEqual } from "lodash";
 
-const buttonStyle =
-  "mx-1 bg-nci-gray-light hover:bg-nci-gray transition-colors";
+const buttonStyle = "mx-1 bg-base-light hover:bg-base transition-colors";
 
 export interface ContextualFilesViewProps {
   readonly handleFileSelected?: (file: GdcFile) => void;

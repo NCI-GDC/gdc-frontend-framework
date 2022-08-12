@@ -91,10 +91,10 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
     <div className="flex flex-col font-montserrat">
       <div
         data-tour="analysis_tool_management"
-        className="flex flex-row  items-center shadow-lg bg-nci-blue-darkest"
+        className="flex flex-row  items-center shadow-lg bg-primary-lightest"
       >
         <div data-tour="most_common_tools" className="mx-4 my-6 flex">
-          <h2 className="text-white font-bold uppercase pr-6">
+          <h2 className="text-primary-content-darkest font-bold uppercase pr-6">
             {"Featured Tools"}
           </h2>
           <Grid columns={12}>
@@ -118,7 +118,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
           </Grid>
         </div>
       </div>
-      <div className="bg-base-lightest">
+      <div className="bg-base-max">
         <Grid className="p-3 my-2" gutter={"lg"}>
           <Grid.Col
             data-tour="analysis_tool_filters"
@@ -143,13 +143,13 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
                   transitionDuration={150}
                   classNames={{
                     label: "text-primary-content-darkest",
-                    dropdown: "border-t-8 border-nci-blue-darkest w-24",
+                    dropdown: "border-t-8 border-primary-darkest w-24",
                   }}
                 >
                   <Menu.Target>
                     <ActionIcon
                       variant="outline"
-                      className="text-primary-content-darkest hover:bg-nci-blue hover:text-white hover:border-nci-blue"
+                      className="text-primary-content-darkest hover:bg-primary hover:text-primary-content-lightest hover:border-primary"
                     >
                       <SortIcon size={24} />
                     </ActionIcon>
@@ -211,9 +211,9 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
                     value={x.value}
                     classNames={{
                       label:
-                        "text-primary-content border border-solid border-nci-blue-darkest hover:bg-nci-blue hover:text-white hover:border-nci-blue data-checked:text-white data-checked:bg-nci-blue-darkest ",
+                        "text-primary-content-darker font-medium border border-solid border-primary-darkest hover:bg-primary hover:text-primary-content-max hover:border-primary data-checked:text-primary-content-lightest data-checked:bg-primary-darkest ",
                       checkIcon: "text-white",
-                      iconWrapper: "text-white",
+                      iconWrapper: "text-primary-content-min",
                     }}
                   >
                     {x.name}

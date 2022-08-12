@@ -29,7 +29,7 @@ import { EnumFacetCardProps } from "@/features/facets/types";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
 import { ActionIcon, LoadingOverlay, Tooltip } from "@mantine/core";
 import { isEqual } from "lodash";
-import { FacetIconButton } from "./components";
+import { FacetIconButton, controlsIconStyle } from "./components";
 
 /**
  *  Enumeration facet filters handle display and selection of
@@ -200,12 +200,12 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
       } bg-base-max relative shadow-lg border-secondary-lightest border-1 rounded-b-md text-xs transition`}
     >
       <div>
-        <div className="flex items-center justify-between flex-wrap bg-secondary-lighter shadow-md px-1.5">
+        <div className="flex items-center justify-between flex-wrap bg-primary-lighter shadow-md px-1.5">
           <Tooltip
             label={description}
             classNames={{
-              arrow: "bg-nci-gray-light",
-              tooltip: "bg-base-max text-nci-gray-darkest",
+              arrow: "bg-base-light",
+              tooltip: "bg-base-max text-primary-content-darkest",
             }}
             position="bottom-start"
             multiline
@@ -214,17 +214,14 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
             transition="fade"
             transitionDuration={200}
           >
-            <div className="has-tooltip text-nci-gray-darkest font-heading font-semibold text-md">
+            <div className="has-tooltip text-primary-content-darkest font-heading font-semibold text-md">
               {facetName === null ? convertFieldToName(field) : facetName}
             </div>
           </Tooltip>
           <div className="flex flex-row">
             {showSearch ? (
               <FacetIconButton onClick={toggleSearch} aria-label="Search">
-                <SearchIcon
-                  size="1.45em"
-                  className="text-primary-darker hover:text-primary-lighter"
-                />
+                <SearchIcon size="1.45em" className={controlsIconStyle} />
               </FacetIconButton>
             ) : null}
             {showFlip ? (
@@ -232,20 +229,14 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
                 onClick={toggleFlip}
                 aria-label="Flip between form and chart"
               >
-                <FlipIcon
-                  size="1.25em"
-                  className="text-primary-darker hover:text-primary-lighter"
-                />
+                <FlipIcon size="1.25em" className={controlsIconStyle} />
               </FacetIconButton>
             ) : null}
             <FacetIconButton
               onClick={clearFilters}
               aria-label="clear selection"
             >
-              <UndoIcon
-                size="1.15em"
-                className="text-primary-darker hover:text-primary-lighter"
-              />
+              <UndoIcon size="1.15em" className={controlsIconStyle} />
             </FacetIconButton>
             {dismissCallback ? (
               <FacetIconButton
@@ -255,10 +246,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
                 }}
                 aria-label="Remove the facet"
               >
-                <CloseIcon
-                  size="1.25em"
-                  className="text-primary-darker hover:text-primary-lighter"
-                />
+                <CloseIcon size="1.25em" className={controlsIconStyle} />
               </FacetIconButton>
             ) : null}
           </div>
@@ -283,8 +271,10 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
                 <ActionIcon
                   size="xs"
                   className={`ml-1 border rounded-sm border-accent-darkest ${
-                    !isSortedByValue ? "bg-accent" : "bg-accent-light"
-                  } text-accent-content-darker hover:bg-accent-lightest  hover:text-accent-content-darker`}
+                    !isSortedByValue
+                      ? "bg-accent text-primary-content-max"
+                      : "bg-accent-lightest text-primary-content-darkest"
+                  }  hover:bg-accent-darker  hover:text-accent-content-lightest`}
                   aria-label="Sort alphabetically"
                 >
                   <AlphaSortIcon
@@ -298,8 +288,10 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
                     variant={isSortedByValue ? "filled" : "outline"}
                     onClick={() => setIsSortedByValue(true)}
                     className={`ml-1 border rounded-sm border-accent-darkest ${
-                      isSortedByValue ? "bg-accent" : "bg-accent-light"
-                    } text-accent-content-darker hover:bg-accent-lightest  hover:text-accent-content-darker`}
+                      isSortedByValue
+                        ? "bg-accent text-primary-content-max"
+                        : "bg-accent-lightest text-primary-content-darkest"
+                    }  hover:bg-accent-darker  hover:text-accent-content-lightest`}
                     aria-label="Sort numerically"
                   >
                     <SortIcon scale="1.5em" />
@@ -327,7 +319,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
                             value={value}
                             onChange={handleChange}
                             aria-label={`checkbox for ${field}`}
-                            className="hover:bg-nci-gray-darkest text-nci-gray-darkest checked:bg-nci-blue-darkest checked:border-bg-nci-blue-darkest focus:outline-none transition duration-200 bg-no-repeat bg-center bg-contain"
+                            className="hover:bg-base-darkest text-primary-content-darkest checked:bg-primary-darkest checked:border-bg-primary-darkest focus:outline-none transition duration-200 bg-no-repeat bg-center bg-contain"
                             checked={
                               !!(selectedEnums && selectedEnums.includes(value))
                             }
@@ -364,11 +356,11 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
                             <div className="flex-none">
                               <input
                                 type="checkbox"
-                                className="bg-nci-gray-lightest hover:bg-nci-gray-darkest text-nci-gray-darkest"
+                                className="bg-base-lightest hover:bg-base-darkest text-primary-content-darkest"
                               />
                             </div>
-                            <div className="flex-grow h-3.5 align-center justify-center mt-1 ml-1 mr-8 bg-nci-gray-light rounded-b-sm animate-pulse" />
-                            <div className="flex-none h-3.5 align-center justify-center mt-1 w-10 bg-nci-gray-light rounded-b-sm animate-pulse" />
+                            <div className="flex-grow h-3.5 align-center justify-center mt-1 ml-1 mr-8 bg-base-light rounded-b-sm animate-pulse" />
+                            <div className="flex-none h-3.5 align-center justify-center mt-1 w-10 bg-base-light rounded-b-sm animate-pulse" />
                           </div>
                         );
                       })

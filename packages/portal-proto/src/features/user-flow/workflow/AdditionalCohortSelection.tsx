@@ -87,7 +87,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
                 <tr
                   key={cohort.name}
                   className={`${
-                    idx % 2 === 0 ? "bg-base-lightest" : "bg-nci-gray-lightest"
+                    idx % 2 === 0 ? "bg-base-lightest" : "bg-base-lightest"
                   } h-4`}
                 >
                   <td className="w-2/6">
@@ -131,13 +131,13 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
           </Table>
         </Grid.Col>
       </Grid>
-      <div className={`p-4 bg-nci-gray-lightest w-full justify-between flex`}>
+      <div className={`p-4 bg-base-lightest w-full justify-between flex`}>
         <Button
           onClick={() => {
             setActiveApp(`${currentApp.id}Demo`);
             closeCohortSelection();
           }}
-          className="bg-base-lightest border-nci-blue-darkest text-primary-content-darkest"
+          className="bg-base-lightest border-primary-darkest text-primary-content-darkest"
         >
           Demo
         </Button>
@@ -145,7 +145,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
           <Button
             disabled={selectedCohort === null}
             variant={"filled"}
-            className="bg-nci-blue-darkest hover:bg-nci-blue"
+            className="bg-primary-darkest hover:bg-primary"
             onClick={() => {
               dispatch(setComparisonCohorts([selectedCohort]));
               closeCohortSelection();

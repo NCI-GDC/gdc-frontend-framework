@@ -25,7 +25,7 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
   indexType = "explore",
 }: FacetGroupProps) => {
   return (
-    <div className="flex flex-col border-r-2 border-l-2 border-b-2 border-t-0 border-nci-cyan-darker p-3 h-screen/1.5 overflow-y-scroll">
+    <div className="flex flex-col border-r-2 border-l-2 border-b-2 border-t-0 border-accent-cool-darker p-3 h-screen/1.5 overflow-y-scroll">
       <ResponsiveMasonry
         columnsCountBreakPoints={{
           350: 2,

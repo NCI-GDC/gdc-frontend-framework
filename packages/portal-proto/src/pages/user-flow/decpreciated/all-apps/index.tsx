@@ -5,7 +5,7 @@ import Link from "next/link";
 
 const IndexPage: NextPage = () => {
   const headerElements = [
-    <Link key="exploration" href="/user-flow/decpreciated/all-apps/exploration">
+    <Link key="exploration" href="/user-flow/depreciated/all-apps/exploration">
       <div id="exploration-header-button">Exploration</div>
     </Link>,
   ];
@@ -18,7 +18,7 @@ const IndexPage: NextPage = () => {
         <div className="flex-grow p-4 border border-gdc-grey-lighter bg-base-lightest w-1/2 self-center">
           Lorem ipsum{" "}
           <span className="text-gdc-blue">
-            <Link href="/user-flow/decpreciated/all-apps/exploration">
+            <Link href="/user-flow/depreciated/all-apps/exploration">
               Exploration
             </Link>
           </span>{" "}

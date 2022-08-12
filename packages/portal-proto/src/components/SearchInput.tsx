@@ -58,7 +58,7 @@ export const SearchInput: React.FC = () => {
           searchResults.length > 6 ? "h-48 overflow-y-auto" : ""
         } `}
       >
-        <div className="w-full border-b-2 border-nci-gray ">
+        <div className="w-full border-b-2 border-base ">
           {searchResults.length}{" "}
           {searchResults.length === 1 ? "result" : "results"} found for{" "}
           <em>{searchTerm}</em>:

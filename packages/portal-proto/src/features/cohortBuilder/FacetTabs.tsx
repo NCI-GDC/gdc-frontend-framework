@@ -53,8 +53,6 @@ const StyledFacetTabs = (props: TabsProps) => {
       styles={(theme) => ({
         tab: {
           ...theme.fn.focusStyles(),
-          color: theme.primaryColor,
-          border: theme.colors.primary[7],
           padding: `${theme.spacing.xs}px ${theme.spacing.md}px`,
           cursor: "pointer",
           fontSize: theme.fontSizes.md,
@@ -73,7 +71,9 @@ const StyledFacetTabs = (props: TabsProps) => {
           display: "flex",
           flexDirection: "row",
         },
-
+        panel: {
+          backgroundColor: theme.colors.base[0],
+        },
         tabIcon: {
           marginRight: theme.spacing.xs,
           display: "flex",
@@ -142,7 +142,7 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
   children,
 }: FacetGroupProps) => {
   return (
-    <div className="flex flex-col w-screen/1.5 bg-base-lightest overflow-y-scroll overflow-x-clip">
+    <div className="flex flex-col w-screen/1.5 bg-base-max pr-6 overflow-x-clip">
       <ResponsiveMasonry columnsCountBreakPoints={{ 640: 3, 1400: 3 }}>
         <Masonry gutter="0.5em" className="m-4">
           {children}
@@ -194,7 +194,7 @@ const CustomFacetGroup = (): JSX.Element => {
 
   // handle the case where there are no custom filters
   return (
-    <div className="flex flex-col w-screen/1.5 h-full bg-base-lightest overflow-y-scroll overflow-x-clip">
+    <div className="flex flex-col w-screen/1.5 h-full bg-base-max pr-6 overflow-x-clip">
       <LoadingOverlay visible={!isDictionaryReady} />
       <Modal size="lg" opened={opened} onClose={() => setOpened(false)}>
         <FacetSelection
@@ -267,9 +267,10 @@ export const FacetTabs = (): JSX.Element => {
         orientation="vertical"
         defaultValue={tabsConfig[Object.keys(tabsConfig)[0]].label}
         classNames={{
-          tab: "data-active:text-primary-content-darkest text-primary-content-min data-active:border-primary-darker data-active:border-2 data-active:bg-base-lightest hover:bg-primary-darker",
+          tab: "data-active:text-primary-content-darkest text-primary-content-lightest font-medium data-active:border-primary-darker data-active:border-l-1 data-active:border-t-1 data-active:border-b-1 data-active:bg-base-max hover:bg-primary-darker",
           tabsList:
-            "flex flex-col bg-primary-darker text-primary-content-min w-[240px] ",
+            "flex flex-col bg-primary-dark text-primary-content-max w-[240px] ",
+          root: "bg-base-max",
         }}
       >
         <Tabs.List>

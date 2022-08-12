@@ -22,9 +22,9 @@ export const CollapsibleContainer: React.FC<CollapsibleContainerProps> = (
         <div className="flex-grow">
           <Top />
         </div>
-        <div className="flex flex-row items-center bg-nci-blue-darkest pr-4">
+        <div className="flex flex-row items-center bg-primary-darkest pr-4">
           <Button
-            className="bg-base-lightest text-primary-content-darkest p-2 hover:bg-nci-blue hover:text-white"
+            className="bg-base-lightest text-primary-content-darkest p-2 hover:bg-primary hover:text-white"
             onClick={toggle}
             aria-expanded={!isCollapsed}
           >
