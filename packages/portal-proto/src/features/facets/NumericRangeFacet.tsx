@@ -1,12 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  MdAddCircle as MoreIcon,
+  MdClose as CloseIcon,
   MdFlip as FlipIcon,
-  MdRemoveCircle as LessIcon,
   MdSort as SortIcon,
   MdSortByAlpha as AlphaSortIcon,
   MdWarning as WarningIcon,
-  MdClose as CloseIcon,
 } from "react-icons/md";
 import { FaUndo as UndoIcon } from "react-icons/fa";
 import tw from "tailwind-styled-components";
@@ -14,6 +12,8 @@ import { LoadingOverlay, NumberInput, SegmentedControl } from "@mantine/core";
 import {
   DAYS_IN_DECADE,
   DAYS_IN_YEAR,
+  GQLDocType,
+  GQLIndexType,
   Operation,
   removeCohortFilter,
   selectCurrentCohortFiltersByName,
@@ -21,16 +21,14 @@ import {
   updateCohortFilter,
   useCoreDispatch,
   useCoreSelector,
-  GQLDocType,
-  GQLIndexType,
 } from "@gff/core";
 
 import {
-  DEFAULT_VISIBLE_ITEMS,
   convertFieldToName,
+  DEFAULT_VISIBLE_ITEMS,
   getLowerAgeFromYears,
-  getUpperAgeFromYears,
   getLowerAgeYears,
+  getUpperAgeFromYears,
   getUpperAgeYears,
 } from "./utils";
 import { FacetCardProps } from "@/features/facets/types";
@@ -39,7 +37,8 @@ import {
   FacetDocTypeToLabelsMap,
   useRangeFacet,
 } from "@/features/facets/hooks";
-import { FacetIconButton, controlsIconStyle } from "./components";
+import { controlsIconStyle, FacetIconButton } from "./components";
+import { FacetExpander } from "@/features/facets/FacetExpander";
 
 interface NumericFacetProps extends FacetCardProps {
   readonly rangeDatatype: string;
@@ -524,57 +523,6 @@ const FromTo: React.FC<FromToProps> = ({
           <ApplyButton onClick={handleApply}>Apply</ApplyButton>
         </div>
       </div>
-    </div>
-  );
-};
-
-interface FacetExpanderProps {
-  readonly remainingValues: number;
-  readonly isGroupExpanded: boolean;
-  readonly onShowChanged: (v: boolean) => void;
-}
-
-/**
- * Component which manages the compact/expanded state of a FacetCard
- * @param remainingValues - number of remaining values when compact "show 4"
- * @param isGroupExpanded - true if expanded, false if compact
- * @param onShowChanged - callback to call when the expand/compact button is clicked
- * @constructor
- */
-const FacetExpander: React.FC<FacetExpanderProps> = ({
-  remainingValues,
-  isGroupExpanded,
-  onShowChanged,
-}: FacetExpanderProps) => {
-  return (
-    <div className={"mt-3"}>
-      {remainingValues > 0 && !isGroupExpanded ? (
-        <div className="flex flex-row justify-end items-center border-t-2 p-1.5">
-          <MoreIcon
-            key="show-more"
-            size="1.5em"
-            className="text-primary-content-darkest"
-            onClick={() => onShowChanged(!isGroupExpanded)}
-          />
-          <div className="pl-1 text-primary-content-darkest font-bold">
-            {" "}
-            {remainingValues} more
-          </div>
-        </div>
-      ) : isGroupExpanded ? (
-        <div className="flex flex-row justify-end items-center border-t-2 border-b-0 border-r-0 border-l-0 p-1.5">
-          <LessIcon
-            key="show-less"
-            size="1.5em"
-            className="text-primary-content-darkest"
-            onClick={() => onShowChanged(!isGroupExpanded)}
-          />
-          <div className="pl-1 text-primary-content-darkest font-bold">
-            {" "}
-            show less
-          </div>
-        </div>
-      ) : null}
     </div>
   );
 };

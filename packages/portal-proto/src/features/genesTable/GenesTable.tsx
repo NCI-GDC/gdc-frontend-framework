@@ -237,7 +237,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
         ) : (
           <div className="grid place-items-center h-96 w-full pt-64 pb-72">
             <div className="flex flex-row">
-              <Loader color="gray" size={24} />
+              <Loader color="primary" size={24} />
             </div>
           </div>
         )}
@@ -259,7 +259,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
         <Pagination
           size="sm"
           radius="md"
-          color="gray"
+          color="secondary"
           className="ml-auto"
           page={activePage}
           onChange={(x) => handlePageChange(x)}

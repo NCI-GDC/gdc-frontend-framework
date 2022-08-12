@@ -29,6 +29,7 @@ import {
   clearCohortFilters,
   setCurrentCohort,
 } from "@gff/core";
+import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
 
 export const ContextMenuButton = tw(Button)`
 flex 
@@ -122,56 +123,18 @@ const ContextBar: React.FC<CohortGroupProps> = ({
     />
   );
 
-  const buttonStyle =
-    "flex flex-row items-center bg-base-max text-secondary-darkest border border-solid border-secondary-darkest hover:bg-secondary-darkest hover:text-secondary-content-lightest";
-  const tabStyle = `${buttonStyle} rounded-md first:border-r-0 last:border-l-0 first:rounded-r-none last:rounded-l-none hover:border-secondary-darkest data-active:bg-secondary-darker data-active:text-secondary-content-lightest`;
-
   const clearAllFilters = () => {
     coreDispatch(clearCohortFilters());
   };
 
   return (
-    <div className="mb-2 font-montserrat" data-tour="context_bar">
+    <div className="mb-2 font-heading flex flex-col" data-tour="context_bar">
       <CollapsibleContainer
         Top={CohortBarWithProps}
         isCollapsed={isGroupCollapsed}
         toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
       >
         <div className="flex flex-col bg-base-lightest">
-          <div className="flex items-center bg-primary-lightest h-20 mb-6">
-            <CountButton
-              countName="casesMax"
-              label="CASES"
-              className="text-primary-content-darkest pl-4"
-              bold
-            />
-            <Divider
-              orientation="vertical"
-              my="md"
-              className="m-2 h-[80%] border-primary-darkest"
-            />
-
-            {Object.keys(filters.root).length !== 0 ? (
-              <div className="flex flex-row items-center w-full">
-                <div className="flex flex-row flex-wrap w-100 p-2 ">
-                  {Object.keys(filters.root).map((k) => {
-                    return convertFilterToComponent(filters.root[k]);
-                  })}
-                </div>
-                <button
-                  className="hover:text-primary-darkest text-primary-content font-bold py-2 px-1 rounded ml-auto mr-4 "
-                  onClick={clearAllFilters}
-                >
-                  <UndoIcon size="1.15em" color="secondary" />
-                </button>
-              </div>
-            ) : (
-              <span className="text-lg text-primary-darkest ">
-                Currently viewing all cases in the GDC. Further refine your
-                cohort with tools such as the Cohort Builder.
-              </span>
-            )}
-          </div>
           <div className="relative p-2">
             <div className="flex flex-row absolute ml-2">
               <Menu>
@@ -209,7 +172,7 @@ const ContextBar: React.FC<CohortGroupProps> = ({
             </div>
             <Tabs
               classNames={{
-                tab: tabStyle,
+                tab: SecondaryTabStyle,
                 tabsList: "px-2 mb-4 border-0",
                 root: "border-0",
               }}
@@ -243,6 +206,40 @@ const ContextBar: React.FC<CohortGroupProps> = ({
           </div>
         </div>
       </CollapsibleContainer>
+      <div className="flex items-center bg-primary-lightest shadow border-y-1 border-primary-lighter h-20 ml-2 my-2 mr-1">
+        <CountButton
+          countName="casesMax"
+          label="CASES"
+          className="text-primary-content-darkest pl-4"
+          bold
+        />
+        <Divider
+          orientation="vertical"
+          my="md"
+          className="m-2 h-[80%] border-accent-darkest"
+        />
+
+        {Object.keys(filters.root).length !== 0 ? (
+          <div className="flex flex-row items-center w-full">
+            <div className="flex flex-row flex-wrap w-100 p-2 ">
+              {Object.keys(filters.root).map((k) => {
+                return convertFilterToComponent(filters.root[k]);
+              })}
+            </div>
+            <button
+              className="hover:text-primary-darkest text-primary-content font-bold py-2 px-1 rounded ml-auto mr-4 "
+              onClick={clearAllFilters}
+            >
+              <UndoIcon size="1.15em" color="secondary" />
+            </button>
+          </div>
+        ) : (
+          <span className="text-lg text-primary-darkest ">
+            Currently viewing all cases in the GDC. Further refine your cohort
+            with tools such as the Cohort Builder.
+          </span>
+        )}
+      </div>
     </div>
   );
 };

@@ -109,7 +109,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                   {...cell.getCellProps()}
                   role="cell"
                   key={`row-${key}`}
-                  className="td rounded-sm p-1.5 text-center h-7"
+                  className="td rounded-sm p-1.5 text-sm text-content text-medium text-center h-7"
                 >
                   {cell.render("Cell")}
                 </div>
@@ -137,7 +137,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
           {...getTableProps()}
           className="table inline-block"
         >
-          <div role="rowgroup" className="bg-base-lighter">
+          <div role="rowgroup" className="bg-primary-lighter">
             {headerGroups.map((headerGroup, key) => (
               <div
                 {...headerGroup.getHeaderGroupProps()}
@@ -149,7 +149,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                   <div
                     role="columnheader"
                     {...column.getHeaderProps()}
-                    className="th text-primary-content-darkest text-center"
+                    className="th font-header font-bold text-primary-content-darkest text-center"
                     key={`column-${key}`}
                   >
                     {column.render("Header")}
