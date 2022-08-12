@@ -1,6 +1,6 @@
 import { DAYS_IN_YEAR } from "@gff/core";
 import _ from "lodash";
-
+// TODO write unit test for these
 export const DEFAULT_VISIBLE_ITEMS = 6;
 
 const capitalize = (s) => (s.length > 0 ? s[0].toUpperCase() + s.slice(1) : "");
@@ -10,11 +10,21 @@ const FieldNameOverrides = {
   "cases.project.project_id": "Project",
 };
 
-export const convertFieldToName = (field: string): string => {
+/**
+ * Converts a GDC filter name to a title,
+ * For example files.input.experimental_strategy will get converted to Experimental Strategy
+ * if sections == 2 then the output would be Input Experimental Strategy
+ * @param field input filter expected to be: string.firstpart_secondpart
+ * @param sections number of "sections" string.string.string to got back from the end of the field
+ */
+export const convertFieldToName = (field: string, sections = 1): string => {
   if (field in FieldNameOverrides) return FieldNameOverrides[field];
 
-  const property = field.split(".").pop();
-  const tokens = property.split("_");
+  const tokens = field
+    .split(".")
+    .slice(-sections)
+    .map((s) => s.split("_"))
+    .flat();
   const capitalizedTokens = tokens.map((s) => capitalize(s));
   return capitalizedTokens.join(" ");
 };

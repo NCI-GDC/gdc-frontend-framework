@@ -10,8 +10,8 @@ import fileSize from "filesize";
 import tw from "tailwind-styled-components";
 import { AddToCartButton } from "../cart/updateCart";
 import { formatDataForHorizontalTable, parseSlideDetailsInfo } from "./utils";
-
 import Link from "next/link";
+import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 
 const ImageViewer = dynamic(() => import("../../components/ImageViewer"), {
   ssr: false,
@@ -118,7 +118,7 @@ export const FileView: React.FC<FileViewProps> = ({
           file_size: fileSize(obj.file_size),
           action: (
             <>
-              <button className="mr-2 bg-white border border-black rounded p-1 hover:bg-black hover:text-white focus:bg-black focus:text-white">
+              <button className="mr-2 mb-2 bg-white border border-black rounded p-1 hover:bg-black hover:text-white focus:bg-black focus:text-white">
                 <FaShoppingCart title="Add to Cart" />
               </button>
               <button className="bg-white border border-black rounded p-1 hover:bg-black hover:text-white focus:bg-black focus:text-white">
@@ -249,13 +249,21 @@ export const FileView: React.FC<FileViewProps> = ({
     <div className="p-4 text-nci-gray w-10/12 m-auto">
       <div className="text-right pb-5">
         <AddToCartButton files={[file]} />
-        {get(file, "dataFormat") === "BAM" && (
-          <Button className="m-1">
-            <FaCut className="mr-2" /> BAM Slicing
-          </Button>
-        )}
-        <Button className="m-1">
-          <FaDownload className="mr-2" /> Download
+        {file.dataFormat === "BAM" &&
+          file.dataType === "Aligned Reads" &&
+          file?.index_files?.length > 0 && (
+            <Button
+              className="m-1 text-nci-gray-lightest bg-nci-blue hover:bg-nci-blue-darker"
+              leftIcon={<FaCut />}
+            >
+              BAM Slicing
+            </Button>
+          )}
+        <Button
+          className="m-1 text-nci-gray-lightest bg-nci-blue hover:bg-nci-blue-darker"
+          leftIcon={<FaDownload />}
+        >
+          Download
         </Button>
       </div>
       <div className="flex">
@@ -456,12 +464,18 @@ export const FileView: React.FC<FileViewProps> = ({
 
       {fileHistory && (
         <FullWidthDiv>
-          <TitleText className="float-left">File Versions</TitleText>
-          <div className="float-right mt-3 mr-3">
-            <Button color={"gray"} className="mr-2">
+          <TitleText className="float-left mt-3">File Versions</TitleText>
+          <div className="float-right my-2 mr-3">
+            <Button
+              color={"gray"}
+              className="mr-2 text-nci-gray-lightest bg-nci-blue hover:bg-nci-blue-darker"
+            >
               <FaDownload className="mr-2" /> Download JSON
             </Button>
-            <Button color={"gray"} className="">
+            <Button
+              color={"gray"}
+              className="text-nci-gray-lightest bg-nci-blue hover:bg-nci-blue-darker"
+            >
               <FaDownload className="mr-2" /> Download TSV
             </Button>
           </div>
@@ -520,13 +534,7 @@ export const FileModal: React.FC<FileModalProps> = ({
       {file?.fileId ? (
         <FileView file={file} fileHistory={fileHistory} />
       ) : (
-        <div className="p-4 text-nci-gray">
-          <div className="flex">
-            <div className="flex-auto bg-white mr-4">
-              <h2 className="p-2 text-2xl mx-4">File Not Found</h2>
-            </div>
-          </div>
-        </div>
+        <SummaryErrorHeader label="File Not Found" />
       )}
     </ReactModal>
   );

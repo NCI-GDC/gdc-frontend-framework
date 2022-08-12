@@ -4,7 +4,7 @@
  */
 
 import { useEffect, useState } from "react";
-import { Loader, Tooltip } from "@mantine/core";
+import { Box, Loader, Tooltip } from "@mantine/core";
 import { useElementSize } from "@mantine/hooks";
 import {
   VictoryBar,
@@ -18,7 +18,7 @@ import {
 } from "victory";
 import * as tailwindConfig from "tailwind.config";
 import ChartTitleBar from "./ChartTitleBar";
-import { capitalize } from "src/utils";
+import { capitalize, truncateString } from "src/utils";
 
 const maxValuesToDisplay = 7;
 
@@ -114,14 +114,6 @@ const convertFieldToName = (field: string): string => {
   return capitalizedTokens.join(" ");
 };
 
-const truncateString = (str: string, n: number): string => {
-  if (str.length > n) {
-    return str.substring(0, n) + "...";
-  } else {
-    return str;
-  }
-};
-
 export const processLabel = (label: string): string => {
   const tokens = label.split(" ");
   const capitalizedTokens = tokens.map((s) => capitalize(s));
@@ -143,8 +135,8 @@ const EnumBarChartTooltip: React.FC<EnumBarChartTooltipProps> = ({
   datum,
 }: EnumBarChartTooltipProps) => {
   return (
-    <g transform={`translate(${x}, ${y})`}>
-      <foreignObject>
+    <g style={{ pointerEvents: "none" }}>
+      <foreignObject x={x} y={y}>
         <Tooltip
           label={
             <>
@@ -154,8 +146,9 @@ const EnumBarChartTooltip: React.FC<EnumBarChartTooltipProps> = ({
           }
           withArrow
           opened
+          withinPortal
         >
-          <></>
+          <Box></Box>
         </Tooltip>
       </foreignObject>
     </g>

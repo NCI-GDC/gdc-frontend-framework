@@ -1,6 +1,7 @@
 import GDC_Dictionary from "./config/gdc_tooltips.json";
 import GDC_Dictionary_Flattened from "./config/gdc_facet_dictionary_flat.json";
 import MiniSearch, { SearchResult } from "minisearch";
+// TODO: Remove the above JSON config file and replace with the dictionary slice.
 
 export const get_facet_list = (
   category: string,

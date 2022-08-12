@@ -6,6 +6,10 @@ export const COHORTS = [
       { field: "cases.primary_site", value: ["breast", "bronchus and lung"] },
     ],
   },
+  {
+    name: "Pancreas",
+    facets: [{ field: "cases.primary_site", value: ["pancreas"] }],
+  },
 ];
 
 export const REGISTERED_APPS = [

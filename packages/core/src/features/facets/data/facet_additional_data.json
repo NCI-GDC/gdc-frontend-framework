@@ -5,11 +5,11 @@
     "label": "Age at Index",
     "oneOf": {
       "type": "integer",
-      "maximum": 89,
+      "maximum": 32507,
       "minimum": 0
     },
     "minimum": 0,
-    "maximum": 89,
+    "maximum": 32507,
     "property_type": "integer"
   },
   "demographic.age_is_obfuscated": {
