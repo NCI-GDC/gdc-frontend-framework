@@ -33,7 +33,7 @@ export const validateIntervalInput = (
     return "Must be greater than 0";
   }
 
-  if (Number(value) > Number(max) - Number(min)) {
+  if (max !== "" && min !== "" && Number(value) > Number(max) - Number(min)) {
     return `Must be less than or equal to ${Number(max) - Number(min)}`;
   }
 
@@ -47,7 +47,7 @@ export const validateMinInput = (value: string, max: string) => {
     return validNumberError;
   }
 
-  if (Number(value) > Number(max)) {
+  if (max !== "" && Number(value) > Number(max)) {
     return `Must be less than ${max}`;
   }
 
@@ -85,7 +85,7 @@ export const validateRangeInput = (
       errors[`ranges.${idx}.name`] = "Bin names must be unique";
     }
 
-    const fromResult = validateNumberInput(value.to);
+    const fromResult = validateNumberInput(value.from);
     if (fromResult) {
       errors[`ranges.${idx}.from`] = fromResult;
     }
