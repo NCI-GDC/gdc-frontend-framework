@@ -310,5 +310,3 @@ export const FacetTabs = (): JSX.Element => {
     </div>
   );
 };
-
-export default FacetTabs;

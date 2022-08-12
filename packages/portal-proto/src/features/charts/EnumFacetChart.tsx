@@ -100,7 +100,7 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
         />
       ) : (
         <div className="flex flex-row items-center justify-center w-100">
-          <Loader color="gray" size={60} />
+          <Loader color="secondary" size={60} />
         </div>
       )}
     </div>
@@ -222,6 +222,8 @@ const EnumBarChart: React.FC<BarChartProps> = ({
           style={{
             data: {
               fill: getThemeColor("chart").darker,
+              stroke: getThemeColor("chart").darkest,
+              strokeWidth: 1,
               width: 22,
             },
           }}
@@ -245,7 +247,9 @@ const EnumBarChart: React.FC<BarChartProps> = ({
           y="y"
           style={{
             data: {
-              fill: getThemeColor("base").light,
+              fill: getThemeColor("base").lightest,
+              stroke: getThemeColor("base").dark,
+              strokeWidth: 1,
               width: 22,
             },
           }}
