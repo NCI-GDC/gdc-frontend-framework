@@ -24,6 +24,7 @@ import { createKeyboardAccessibleFunction } from "src/utils";
 import { COLOR_MAP, DEFAULT_FIELDS, FACET_SORT, TABS } from "./constants";
 import { toDisplayName } from "./utils";
 import tailwindConfig from "../../../tailwind.config";
+import { FacetExpander } from "../facets/FacetExpander";
 
 interface CDaveField {
   readonly field_type: string;
@@ -100,20 +101,12 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
               />
             ))}
           </ul>
-          <span
-            onClick={() => setFieldsCollapsed(!fieldsCollapsed)}
-            onKeyPress={createKeyboardAccessibleFunction(() =>
-              setFieldsCollapsed(!fieldsCollapsed),
-            )}
-            tabIndex={0}
-            role="button"
-            className="cursor-pointer mr-2 self-end"
-          >
-            {filteredFields.length > 5 &&
-              (fieldsCollapsed
-                ? `${filteredFields.length - 5} More...`
-                : "Less...")}
-          </span>
+          <FacetExpander
+            remainingValues={filteredFields.length - 5}
+            isGroupExpanded={!fieldsCollapsed}
+            onShowChanged={() => setFieldsCollapsed(!fieldsCollapsed)}
+            color="accent"
+          />
         </div>
       </Collapse>
     </>

@@ -27,8 +27,26 @@ import {
 } from "react-icons/md";
 import tw from "tailwind-styled-components";
 
-export const QueryRepresentationText = tw.div`
-flex truncate ... max-w-sm px-2 border-l-2 border-secondary-light
+const QueryRepresentationText = tw.div`
+flex truncate ... max-w-sm px-2 bg-base-max
+`;
+
+const QueryFieldLabel = tw.span`
+text-accent-content-darkest uppercase px-2 border-accent border-r-2
+`;
+
+const QueryItemContainer = tw.div`
+flex
+flex-row
+items-center
+font-heading 
+shadow-md 
+font-medium
+text-md
+rounded-md 
+border-1
+mr-2
+border-accent-light
 `;
 
 type RangeOperation =
@@ -38,9 +56,7 @@ type RangeOperation =
   | GreaterThan;
 
 type ValueOperation = Exclude<Operation, Intersection | Union>;
-
-const queryItemStyle =
-  "m-1 px-2 font-heading shadow-md font-medium text-md rounded-xl bg-secondary-dark text-secondary-content-lightest border-secondary-light border-1";
+type ComparisonOperation = RangeOperation | Equals | NotEquals;
 
 export const isRangeOperation = (x?: Operation): x is RangeOperation => {
   return (
@@ -68,32 +84,41 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
 
   return (
     <div className="flex flex-row items-center">
-      {convertFieldToName(field)} is
-      <span className="px-1 underline">{filter_set_label_v1[groupType]}</span>
+      <QueryFieldLabel>{convertFieldToName(field)}</QueryFieldLabel>
       <QueryRepresentationText>{operands.join(",")}</QueryRepresentationText>
     </div>
   );
 };
 
 interface ComparisonElementProps {
-  readonly operator: string;
-  readonly field: string;
-  readonly operand: string | number;
+  operation: ComparisonOperation;
   readonly showLabel?: boolean;
 }
 
 const ComparisonElement: React.FC<ComparisonElementProps> = ({
-  field,
-  operator,
-  operand,
+  operation,
   showLabel = true,
 }: ComparisonElementProps) => {
+  const coreDispatch = useCoreDispatch();
+  const handleKeepMember = (keep: ValueOperation) => {
+    coreDispatch(updateCohortFilter({ field: keep.field, operation: keep }));
+  };
+
   return (
-    <div className="flex flex-row items-center">
-      {showLabel ? convertFieldToName(field) : null}
-      <span className="px-1">{operator}</span>
-      <QueryRepresentationText>{operand}</QueryRepresentationText>
-    </div>
+    <>
+      {showLabel ? (
+        <QueryFieldLabel>{convertFieldToName(operation.field)}</QueryFieldLabel>
+      ) : null}
+      <div className="flex flex-row items-center bg-accent-content-max">
+        <button
+          className="p-1 mx-2 rounded-md bg-accent-lightest "
+          onClick={() => handleKeepMember(operation)}
+        >
+          {operation.operator}
+        </button>
+        <QueryRepresentationText>{operation.operand}</QueryRepresentationText>
+      </div>
+    </>
   );
 };
 
@@ -110,8 +135,8 @@ const ExistsElement: React.FC<Exists | Missing> = ({
 };
 
 interface ClosedRangeQueryElementProps {
-  readonly lower: RangeOperation;
-  readonly upper: RangeOperation;
+  readonly lower: ComparisonOperation;
+  readonly upper: ComparisonOperation;
   readonly op?: "and";
 }
 
@@ -122,30 +147,20 @@ export const ClosedRangeQueryElement: React.FC<ClosedRangeQueryElementProps> =
     op = "and",
   }: PropsWithChildren<ClosedRangeQueryElementProps>) => {
     const field = lower.field; // As this is a Range the field for both lower and upper will be the same
-    const coreDispatch = useCoreDispatch();
-    const handleKeepMember = (keep: RangeOperation) => {
-      coreDispatch(updateCohortFilter({ field: field, operation: keep }));
-    };
 
     return (
       <>
-        <div className={queryItemStyle}>
-          <div className="flex flex-row items-center">
-            <div className="flex flex-row items-center">
-              <ComparisonElement {...lower} />
-            </div>
+        <QueryElement field={field}>
+          <ComparisonElement operation={lower} />
+          <span
+            className={
+              "uppercase bg-accent-content-max text-accent-content-darkest text-bold"
+            }
+          >
             {op}
-            <div className="flex flex-row items-center">
-              <ComparisonElement {...upper} showLabel={false} />
-              <button onClick={() => handleKeepMember(lower)}>
-                <ClearIcon
-                  size="1.5em"
-                  className="pl-1 border-l-2 border-secondary-light"
-                />
-              </button>
-            </div>
-          </div>
-        </div>
+          </span>
+          <ComparisonElement operation={upper} showLabel={false} />
+        </QueryElement>
       </>
     );
   };
@@ -170,20 +185,18 @@ export const QueryElement: React.FC<QueryElementProps> = ({
   };
 
   return (
-    <div className={queryItemStyle}>
-      <div className="flex flex-row items-center">
-        {children}
-        <button onClick={handlePopupFacet}>
-          <DropDownIcon size="1.5em" onClick={handlePopupFacet} />
-        </button>
-        <button onClick={handleRemoveFilter}>
-          <ClearIcon
-            size="1.5em"
-            className="pl-1 border-l-2 border-secondary-light"
-          />
-        </button>
-      </div>
-    </div>
+    <QueryItemContainer>
+      {children}
+      <button onClick={handlePopupFacet}>
+        <DropDownIcon size="1.5em" onClick={handlePopupFacet} />
+      </button>
+      <button
+        className="bg-accent p-0 m-0 h-full round-r-lg "
+        onClick={handleRemoveFilter}
+      >
+        <ClearIcon size="1.5em" className="px-1" />
+      </button>
+    </QueryItemContainer>
   );
 };
 
@@ -203,32 +216,32 @@ class CohortFilterToComponent implements OperationHandler<JSX.Element> {
   );
   handleEquals = (f: Equals) => (
     <QueryElement key={f.field} {...f}>
-      <ComparisonElement {...f} />
+      <ComparisonElement operation={f} />
     </QueryElement>
   );
   handleNotEquals = (f: NotEquals) => (
     <QueryElement key={f.field} {...f}>
-      <ComparisonElement {...f} />
+      <ComparisonElement operation={f} />
     </QueryElement>
   );
   handleLessThan = (f: LessThan) => (
     <QueryElement key={f.field} {...f}>
-      <ComparisonElement {...f} />
+      <ComparisonElement operation={f} />
     </QueryElement>
   );
   handleLessThanOrEquals = (f: LessThanOrEquals) => (
     <QueryElement key={f.field} {...f}>
-      <ComparisonElement {...f} />
+      <ComparisonElement operation={f} />
     </QueryElement>
   );
   handleGreaterThan = (f: GreaterThan) => (
     <QueryElement key={f.field} {...f}>
-      <ComparisonElement {...f} />
+      <ComparisonElement operation={f} />
     </QueryElement>
   );
   handleGreaterThanOrEquals = (f: GreaterThanOrEquals) => (
     <QueryElement key={f.field} {...f}>
-      <ComparisonElement {...f} />
+      <ComparisonElement operation={f} />
     </QueryElement>
   );
   handleExists = (f: Exists) => (
@@ -254,9 +267,9 @@ class CohortFilterToComponent implements OperationHandler<JSX.Element> {
     ) {
       return (
         <ClosedRangeQueryElement
-          key={(f.operands[0] as RangeOperation).field}
-          lower={f.operands[0] as RangeOperation}
-          upper={f.operands[1] as RangeOperation}
+          key={(f.operands[0] as ComparisonOperation).field}
+          lower={f.operands[0] as ComparisonOperation}
+          upper={f.operands[1] as ComparisonOperation}
         />
       );
     }

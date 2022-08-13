@@ -2,13 +2,21 @@ import React from "react";
 import {
   MdAddCircle as MoreIcon,
   MdRemoveCircle as LessIcon,
-} from "react-icons/all";
+} from "react-icons/md";
+import { ActionIcon } from "@mantine/core";
+import tw from "tailwind-styled-components";
+
+export const ExpanderLabel = tw.div`
+text-accent-content-darker
+p-1
+font-bold 
+cursor-pointer
+`;
 
 interface FacetExpanderProps {
   readonly remainingValues: number;
   readonly isGroupExpanded: boolean;
   readonly onShowChanged: (v: boolean) => void;
-  readonly color?: string;
 }
 
 /**
@@ -22,39 +30,32 @@ export const FacetExpander: React.FC<FacetExpanderProps> = ({
   remainingValues,
   isGroupExpanded,
   onShowChanged,
-  color = "primary",
 }: FacetExpanderProps) => {
   return (
     <div className={"mt-3"}>
       {remainingValues > 0 && !isGroupExpanded ? (
         <div className="flex flex-row justify-end items-center border-t-2 p-1.5">
-          <MoreIcon
-            key="show-more"
-            size="1.5em"
-            className={`text-${color}-content-darkest`}
-            onClick={() => onShowChanged(!isGroupExpanded)}
-          />
-          <div
-            className={`pl-1 text-${color}-content-darkest font-bold cursor-pointer`}
-          >
-            {" "}
-            {remainingValues} more
-          </div>
+          <ActionIcon size="sm" color="accent">
+            <MoreIcon
+              key="show-more"
+              size="1.5em"
+              onClick={() => onShowChanged(!isGroupExpanded)}
+            />
+          </ActionIcon>
+          <ExpanderLabel>{remainingValues} more</ExpanderLabel>
         </div>
       ) : isGroupExpanded ? (
         <div
           className={`flex flex-row justify-end items-center border-t-2 border-b-0 border-r-0 border-l-0 p-1.5`}
         >
-          <LessIcon
-            key="show-less"
-            size="1.5em"
-            className={`text-${color}-content-darkest cursor-pointer`}
-            onClick={() => onShowChanged(!isGroupExpanded)}
-          />
-          <div className={`"pl-1 text-${color}-content-darkest font-bold`}>
-            {" "}
-            show less
-          </div>
+          <ActionIcon size="sm" color="accent">
+            <LessIcon
+              key="show-less"
+              size="1.5em"
+              onClick={() => onShowChanged(!isGroupExpanded)}
+            />
+          </ActionIcon>
+          <ExpanderLabel>show less</ExpanderLabel>
         </div>
       ) : null}
     </div>

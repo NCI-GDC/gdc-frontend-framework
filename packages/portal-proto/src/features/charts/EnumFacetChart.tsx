@@ -100,7 +100,7 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
         />
       ) : (
         <div className="flex flex-row items-center justify-center w-100">
-          <Loader color="secondary" size={60} />
+          <Loader color="chart" size={60} />
         </div>
       )}
     </div>

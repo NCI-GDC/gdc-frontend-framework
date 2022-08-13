@@ -179,35 +179,10 @@ module.exports = {
     "./src/components/**/*.{js,ts,jsx,tsx}",
     "./src/features/**/*.{js,ts,jsx,tsx}",
   ],
+  safelist: ["primary", "secondary", "text-accent", "text-accent-content"],
   theme: {
     extend: {
       colors: {
-        // theming support
-        // based on daisyUI color scheme
-        // primary: withOpacityValue("--color-primary"),
-        // "primary-focus": withOpacityValue("--color-primary-focus"),
-        // "primary-content" : withOpacityValue("--color-primary-content"),
-        // "primary-border" : withOpacityValue("--color-primary-border"),
-        // secondary: withOpacityValue("--color-secondary"),
-        // "secondary-focus": withOpacityValue("--color-secondary-focus"),
-        // "secondary-content" : withOpacityValue("--color-secondary-content"),
-        // "secondary-border" : withOpacityValue("--color-secondary-border"),
-        // accent: withOpacityValue("--color-accent"),
-        // "accent-focus": withOpacityValue("--color-accent-focus"),
-        // "accent-content" : withOpacityValue("--color-accent-content"),
-        // "accent-border" : withOpacityValue("--color-secondary-border"),
-        // neutral: withOpacityValue("--color-neutral"),
-        // "neutral-focus": withOpacityValue("--color-neutral-focus"),
-        // "neutral-content" : withOpacityValue("--color-neutral-content"),
-        // base: withOpacityValue("--color-base"),
-        // "base-lighter": withOpacityValue("--color-base-lighter"),
-        // "base-lightest": withOpacityValue("--color-base-lightest"),
-        // "base-darker": withOpacityValue("--color-base-darker"),
-        // "base-darkest": withOpacityValue("--color-base-darkest"),
-        // tertiary: withOpacityValue("--color-tertiary"),
-        // highlight: withOpacityValue("--color-highlight"),
-        // chart: withOpacityValue("--color-chart"),
-
         /* These colors come from the NCI color palette. The palette defines
          * six primary and five secondary colors. The extended palette defines
          * nine shades lighter and nine shades darker for each of the primary

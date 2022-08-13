@@ -92,6 +92,8 @@ export const CaseSummary = ({
     offset: 60,
   });
 
+  console.log(data);
+
   useEffect(() => {
     if (
       prevPathValue !== undefined &&
@@ -143,6 +145,7 @@ export const CaseSummary = ({
     : false;
 
   const formatDataForCaseSummary = () => {
+    console.log("formatDataForCaseSummary", data);
     const {
       case_id,
       submitter_id,

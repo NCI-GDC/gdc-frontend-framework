@@ -1,24 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import tw from "tailwind-styled-components";
 import {
-  GQLIndexType,
-  GQLDocType,
-  selectCohortBuilderConfig,
-  useCoreSelector,
-  FacetDefinition,
-  CohortBuilderCategory,
   addFilterToCohortBuilder,
+  CohortBuilderCategory,
+  FacetDefinition,
+  GQLDocType,
+  GQLIndexType,
   removeFilterFromCohortBuilder,
+  selectCohortBuilderConfig,
   selectCohortBuilderConfigCategory,
   selectCohortBuilderConfigFilters,
-  useCoreDispatch,
-  usePrevious,
   selectFacetDefinitionsByName,
+  useCoreDispatch,
+  useCoreSelector,
   useFacetDictionary,
+  usePrevious,
 } from "@gff/core";
-import { EnumFacet } from "../facets/EnumFacet";
-import NumericRangeFacet from "../facets/NumericRangeFacet";
 import {
   Button,
   Center,
@@ -31,11 +29,12 @@ import {
 } from "@mantine/core";
 import { getFacetInfo } from "@/features/cohortBuilder/utils";
 import {
-  MdLibraryAdd as AddFacetIcon,
   MdAdd as AddAdditionalIcon,
+  MdLibraryAdd as AddFacetIcon,
 } from "react-icons/md";
 import FacetSelection from "@/components/FacetSelection";
 import isEqual from "lodash/isEqual";
+import { createFacetCard } from "@/features/facets/CreateFacetCard";
 
 const CustomFacetWhenEmptyGroup = tw(Stack)`
 h-64 
@@ -83,55 +82,6 @@ const StyledFacetTabs = (props: TabsProps) => {
       {...props}
     />
   );
-};
-
-const createFacets = (
-  facets: ReadonlyArray<FacetDefinition>,
-  docType: GQLDocType,
-  indexType: GQLIndexType,
-  dismissCallback: (string) => void = undefined,
-  hideIfEmpty = false,
-) => {
-  return facets.map((x, index) => {
-    if (x.facet_type === "enum")
-      return (
-        <EnumFacet
-          key={`${x.full}-${index}`}
-          docType={docType}
-          indexType={indexType}
-          field={x.full}
-          description={x.description}
-          dismissCallback={dismissCallback}
-          hideIfEmpty={hideIfEmpty}
-        />
-      );
-    if (
-      [
-        "year",
-        "years",
-        "age",
-        "days",
-        "numeric",
-        "integer",
-        "percent",
-      ].includes(x.facet_type)
-    ) {
-      return (
-        <NumericRangeFacet
-          key={`${x.full}-${index}`}
-          field={x.full}
-          description={x.description}
-          rangeDatatype={x.facet_type}
-          docType={docType}
-          indexType={indexType}
-          minimum={x?.range?.minimum}
-          maximum={x?.range?.maximum}
-          dismissCallback={dismissCallback}
-          hideIfEmpty={hideIfEmpty}
-        />
-      );
-    }
-  });
 };
 
 type FacetGroupProps = {
@@ -245,7 +195,7 @@ const CustomFacetGroup = (): JSX.Element => {
               Add a Custom Filter
             </Text>
           </Button>
-          {createFacets(
+          {createFacetCard(
             customFacetDefinitions,
             "cases", // Cohort custom filter restricted to "cases"
             customConfig.index as GQLIndexType,
@@ -296,7 +246,7 @@ export const FacetTabs = (): JSX.Element => {
                 <CustomFacetGroup />
               ) : (
                 <FacetGroup>
-                  {createFacets(
+                  {createFacetCard(
                     getFacetInfo(tabEntry.facets),
                     tabEntry.docType as GQLDocType,
                     tabEntry.index as GQLIndexType,
@@ -310,3 +260,5 @@ export const FacetTabs = (): JSX.Element => {
     </div>
   );
 };
+
+export default FacetTabs;

@@ -68,7 +68,10 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   }, []);
 
   return (
-    <Card className="h-[580px]" ref={(ref) => (targetRef.current = ref)}>
+    <Card
+      className="h-[580px] p-2 shadow-lg my-2 border border-base-lightest"
+      ref={(ref) => (targetRef.current = ref)}
+    >
       <div className="flex justify-between mb-1">
         <h2>{fieldName}</h2>
         <div className="flex gap-1">
@@ -223,7 +226,7 @@ const Result: React.FC<ResultProps> = ({
   const hideXTicks = barChartData.length > 20;
 
   const controlsStyle =
-    "bg-primary-lightest text-primary-content-darkest border-primary";
+    "bg-primary-lightest text-primary-content-darkest border-primary-dark";
 
   return (
     <>

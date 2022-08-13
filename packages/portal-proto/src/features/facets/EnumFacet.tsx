@@ -16,9 +16,7 @@ import {
 import { DEFAULT_VISIBLE_ITEMS, convertFieldToName } from "./utils";
 
 import {
-  MdAddCircle as MoreIcon,
   MdFlip as FlipIcon,
-  MdRemoveCircle as LessIcon,
   MdSearch as SearchIcon,
   MdSort as SortIcon,
   MdSortByAlpha as AlphaSortIcon,
@@ -30,6 +28,7 @@ import { EnumFacetChart } from "../charts/EnumFacetChart";
 import { ActionIcon, LoadingOverlay, Tooltip } from "@mantine/core";
 import { isEqual } from "lodash";
 import { FacetIconButton, controlsIconStyle } from "./components";
+import { FacetExpander } from "@/features/facets/FacetExpander";
 
 /**
  *  Enumeration facet filters handle display and selection of
@@ -370,51 +369,11 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
               </div>
             </div>
             {
-              <div className="mt-3 m-1">
-                {remainingValues > 0 ? (
-                  !isGroupExpanded ? (
-                    <div className="flex flex-row justify-end items-center border-t-2 p-1.5">
-                      <MoreIcon
-                        key="show-more"
-                        size="1.5em"
-                        className="text-accent-darkest "
-                        onClick={() => setIsGroupExpanded(!isGroupExpanded)}
-                        onKeyPress={(event) =>
-                          event.key === "Enter"
-                            ? setIsGroupExpanded(!isGroupExpanded)
-                            : undefined
-                        }
-                        tabIndex={0}
-                        aria-label="Toggle more options"
-                      />
-                      <div className="pl-1 text-accent-darkest font-bold">
-                        {" "}
-                        {isSuccess ? remainingValues : "..."} more
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex flex-row justify-end items-center border-t-2 border-b-0 border-r-0 border-l-0 p-1.5">
-                      <LessIcon
-                        key="show-less"
-                        size="1.5em"
-                        className="text-accent-darkest"
-                        onClick={() => setIsGroupExpanded(!isGroupExpanded)}
-                        onKeyPress={(event) =>
-                          event.key === "Enter"
-                            ? setIsGroupExpanded(!isGroupExpanded)
-                            : undefined
-                        }
-                        tabIndex={0}
-                        aria-label="Toggle less options"
-                      />
-                      <div className="pl-1 text-accent-darkest font-bold">
-                        {" "}
-                        show less
-                      </div>
-                    </div>
-                  )
-                ) : null}
-              </div>
+              <FacetExpander
+                remainingValues={remainingValues}
+                isGroupExpanded={isGroupExpanded}
+                onShowChanged={setIsGroupExpanded}
+              />
             }
           </div>
           <div
