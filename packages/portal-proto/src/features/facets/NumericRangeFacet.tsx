@@ -38,7 +38,8 @@ import {
   useRangeFacet,
 } from "@/features/facets/hooks";
 import { controlsIconStyle, FacetIconButton } from "./components";
-import { FacetExpander } from "@/features/facets/FacetExpander";
+import FacetExpander from "@/features/facets/FacetExpander";
+import FacetSortPanel from "@/features/facets/FacetSortPanel";
 
 interface NumericFacetProps extends FacetCardProps {
   readonly rangeDatatype: string;
@@ -302,27 +303,34 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
   return (
     <div className="flex flex-col px-1">
       {Object.keys(rangeLabelsAndValues).length > 1 ? (
-        <div className="flex flex-row items-center justify-between flex-wrap border-b-2 py-1">
-          <button
-            className={controlsIconStyle}
-            aria-label="Sort alphabetically"
-          >
-            <AlphaSortIcon
-              onClick={() => setIsSortedByValue(false)}
-              scale="1.5em"
-            />
-          </button>
-          <div className={"flex flex-row items-center "}>
+        <>
+          <FacetSortPanel
+            isSortedByValue={isSortedByValue}
+            valueLabel={valueLabel}
+            setIsSortedByValue={setIsSortedByValue}
+          />
+          <div className="flex flex-row items-center justify-between flex-wrap border-b-2 py-1">
             <button
-              onClick={() => setIsSortedByValue(true)}
               className={controlsIconStyle}
-              aria-label="Sort numerically"
+              aria-label="Sort alphabetically"
             >
-              <SortIcon scale="1.5em" />
+              <AlphaSortIcon
+                onClick={() => setIsSortedByValue(false)}
+                scale="1.5em"
+              />
             </button>
-            <p className="px-1">{valueLabel}</p>
+            <div className={"flex flex-row items-center "}>
+              <button
+                onClick={() => setIsSortedByValue(true)}
+                className={controlsIconStyle}
+                aria-label="Sort numerically"
+              >
+                <SortIcon scale="1.5em" />
+              </button>
+              <p className="px-1">{valueLabel}</p>
+            </div>
           </div>
-        </div>
+        </>
       ) : null}
       <div role="group" className="mt-1">
         {Object.keys(rangeLabelsAndValues)

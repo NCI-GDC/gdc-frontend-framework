@@ -18,23 +18,22 @@ import { DEFAULT_VISIBLE_ITEMS, convertFieldToName } from "./utils";
 import {
   MdFlip as FlipIcon,
   MdSearch as SearchIcon,
-  MdSort as SortIcon,
-  MdSortByAlpha as AlphaSortIcon,
   MdClose as CloseIcon,
 } from "react-icons/md";
 import { FaUndo as UndoIcon } from "react-icons/fa";
 import { EnumFacetCardProps } from "@/features/facets/types";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
-import { ActionIcon, LoadingOverlay, Tooltip } from "@mantine/core";
+import { LoadingOverlay, Tooltip } from "@mantine/core";
 import { isEqual } from "lodash";
 import { FacetIconButton, controlsIconStyle } from "./components";
-import { FacetExpander } from "@/features/facets/FacetExpander";
+import FacetExpander from "@/features/facets/FacetExpander";
+import FacetSortPanel from "@/features/facets/FacetSortPanel";
 
 /**
  *  Enumeration facet filters handle display and selection of
  *  enumerated fields.
  * @param field filter this FacetCard manages
- * @param docType documement type "cases" "files, etc.
+ * @param docType document type "cases" "files, etc.
  * @param indexType index this facet uses to get data from
  * @param description describes information about the facet
  * @param facetName name of the Facet in human-readable form
@@ -183,7 +182,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
               : ([a], [b]) => a.localeCompare(b),
           )
           .slice(0, !isGroupExpanded ? maxValuesToDisplay : undefined)
-          .map(([value, count], i) => {
+          .map(([value, count]) => {
             if (field === "genes.is_cancer_gene_census") {
               value = value === "1" ? "true" : "false";
             }
@@ -266,40 +265,11 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
             }`}
           >
             <div>
-              <div className="flex flex-row items-center justify-between flex-wrap p-1 mb-1 border-b-2">
-                <ActionIcon
-                  size="xs"
-                  className={`ml-1 border rounded-sm border-accent-darkest ${
-                    !isSortedByValue
-                      ? "bg-accent text-primary-content-max"
-                      : "bg-accent-lightest text-primary-content-darkest"
-                  }  hover:bg-accent-darker  hover:text-accent-content-lightest`}
-                  aria-label="Sort alphabetically"
-                >
-                  <AlphaSortIcon
-                    onClick={() => setIsSortedByValue(false)}
-                    scale="1.5em"
-                  />
-                </ActionIcon>
-                <div className={"flex flex-row items-center "}>
-                  <ActionIcon
-                    size="xs"
-                    variant={isSortedByValue ? "filled" : "outline"}
-                    onClick={() => setIsSortedByValue(true)}
-                    className={`ml-1 border rounded-sm border-accent-darkest ${
-                      isSortedByValue
-                        ? "bg-accent text-primary-content-max"
-                        : "bg-accent-lightest text-primary-content-darkest"
-                    }  hover:bg-accent-darker  hover:text-accent-content-lightest`}
-                    aria-label="Sort numerically"
-                  >
-                    <SortIcon scale="1.5em" />
-                  </ActionIcon>
-                  <p className="px-2 mr-3">
-                    {FacetDocTypeToLabelsMap[docType]}
-                  </p>
-                </div>
-              </div>
+              <FacetSortPanel
+                isSortedByValue={isSortedByValue}
+                valueLabel={FacetDocTypeToLabelsMap[docType]}
+                setIsSortedByValue={setIsSortedByValue}
+              />
 
               <div className={cardStyle}>
                 <LoadingOverlay visible={!isSuccess} />

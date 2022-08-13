@@ -20,6 +20,7 @@ import {
   Union,
   useCoreDispatch,
 } from "@gff/core";
+import { ActionIcon, Badge, Group } from "@mantine/core";
 import { convertFieldToName } from "@/features/facets/utils";
 import {
   MdArrowDropDown as DropDownIcon,
@@ -82,10 +83,36 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
     excludes: "none:",
   };
 
+  const removeButton = (
+    <ActionIcon
+      size="xs"
+      color="accent-content.0"
+      radius="xl"
+      variant="transparent"
+    >
+      <ClearIcon />
+    </ActionIcon>
+  );
+
   return (
     <div className="flex flex-row items-center">
       <QueryFieldLabel>{convertFieldToName(field)}</QueryFieldLabel>
-      <QueryRepresentationText>{operands.join(",")}</QueryRepresentationText>
+      <QueryRepresentationText>
+        <Group>
+          {operands.map((x) => (
+            <Badge
+              key={`query-rep-${field}-{x}`}
+              variant="filled"
+              color="accent.3"
+              size="md"
+              className="normal-case"
+              rightSection={removeButton}
+            >
+              {x}
+            </Badge>
+          ))}
+        </Group>
+      </QueryRepresentationText>
     </div>
   );
 };
@@ -191,7 +218,7 @@ export const QueryElement: React.FC<QueryElementProps> = ({
         <DropDownIcon size="1.5em" onClick={handlePopupFacet} />
       </button>
       <button
-        className="bg-accent p-0 m-0 h-full round-r-lg "
+        className="bg-accent p-0 m-0 h-full round-r-lg text-accent-content-max "
         onClick={handleRemoveFilter}
       >
         <ClearIcon size="1.5em" className="px-1" />

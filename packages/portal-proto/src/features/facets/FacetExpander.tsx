@@ -26,7 +26,7 @@ interface FacetExpanderProps {
  * @param onShowChanged - callback to call when the expand/compact button is clicked
  * @constructor
  */
-export const FacetExpander: React.FC<FacetExpanderProps> = ({
+const FacetExpander: React.FC<FacetExpanderProps> = ({
   remainingValues,
   isGroupExpanded,
   onShowChanged,
@@ -61,3 +61,5 @@ export const FacetExpander: React.FC<FacetExpanderProps> = ({
     </div>
   );
 };
+
+export default FacetExpander;
