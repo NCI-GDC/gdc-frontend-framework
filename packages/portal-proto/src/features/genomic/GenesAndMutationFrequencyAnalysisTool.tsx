@@ -3,7 +3,6 @@ import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
 import GenesTable from "../genesTable/GenesTable";
 import MutationsTable from "../mutationsTable/MutationsTable";
 import { Grid, Tabs, LoadingOverlay } from "@mantine/core";
-import isEqual from "lodash/isEqual";
 import { EnumFacet } from "../facets/EnumFacet";
 import dynamic from "next/dynamic";
 import {
@@ -13,12 +12,10 @@ import {
   joinFilters,
   useCoreSelector,
   clearGenomicFilters,
-  fetchSurvival,
-  useSurvivalPlot,
+  useGetSurvivalPlotQuery,
   selectGenomicFilters,
   buildCohortGqlOperator,
   useTopGene,
-  usePrevious,
 } from "@gff/core";
 
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
@@ -126,10 +123,15 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     () => buildCohortGqlOperator(joinFilters(cohortFilters, genomicFilters)),
     [cohortFilters, genomicFilters],
   );
+  const f = buildGeneHaveAndHaveNotFilters(
+    filters,
+    comparativeSurvival?.symbol,
+    comparativeSurvival?.field,
+  );
   const { data: survivalPlotData, isSuccess: survivalPlotReady } =
-    useSurvivalPlot({ filters: filters ? [filters] : [] });
-
-  const prevComparative = usePrevious(comparativeSurvival);
+    useGetSurvivalPlotQuery({
+      filters: comparativeSurvival !== undefined ? f : filters ? [filters] : [],
+    });
 
   // pass to Survival Plot when survivalPlotData data is undefined/not ready
   const emptySurvivalPlot = {
@@ -194,23 +196,6 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
       });
     }
   }, [appMode, comparativeSurvival, topGeneSSMS, topGeneSSMSSuccess]);
-
-  useEffect(() => {
-    if (comparativeSurvival && !isEqual(comparativeSurvival, prevComparative)) {
-      const f = buildGeneHaveAndHaveNotFilters(
-        filters,
-        comparativeSurvival.symbol,
-        comparativeSurvival.field,
-      );
-      coreDispatch(fetchSurvival({ filters: f }));
-    }
-  }, [
-    cohortFilters,
-    prevComparative,
-    comparativeSurvival,
-    coreDispatch,
-    filters,
-  ]);
 
   return (
     <div className="flex flex-row">

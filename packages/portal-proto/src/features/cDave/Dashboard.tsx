@@ -1,13 +1,13 @@
 import { useEffect, useRef } from "react";
 import {
   GqlOperation,
-  useSurvivalPlotWithCohortFilters,
   Buckets,
   Stats,
   usePrevious,
   useFacetDictionary,
+  useGetSurvivalPlotQuery,
 } from "@gff/core";
-import { Card, Grid } from "@mantine/core";
+import { Card, Grid, Alert, Loader } from "@mantine/core";
 import SurvivalPlot, { SurvivalPlotTypes } from "../charts/SurvivalPlot";
 import CDaveCard from "./CDaveCard";
 
@@ -28,7 +28,12 @@ const Dashboard: React.FC<DashboardProps> = ({
 }: DashboardProps) => {
   const initialDashboardRender = useRef(true);
   const lastDashboardRender = usePrevious(initialDashboardRender);
-  const { data: survivalData } = useSurvivalPlotWithCohortFilters({
+  const {
+    data: survivalData,
+    isError,
+    isFetching,
+    isUninitialized,
+  } = useGetSurvivalPlotQuery({
     filters: cohortFilters && [cohortFilters],
   });
   useFacetDictionary();
@@ -43,11 +48,17 @@ const Dashboard: React.FC<DashboardProps> = ({
       <Grid.Col span={controlsExpanded ? 6 : 4}>
         <Card className="h-[580px]">
           <h2>Overall Survival</h2>
-          <SurvivalPlot
-            data={survivalData}
-            title=""
-            plotType={SurvivalPlotTypes.overall}
-          />
+          {isError ? (
+            <Alert>{"Something's gone wrong"}</Alert>
+          ) : isFetching || isUninitialized ? (
+            <Loader />
+          ) : (
+            <SurvivalPlot
+              data={survivalData}
+              title=""
+              plotType={SurvivalPlotTypes.overall}
+            />
+          )}
         </Card>
       </Grid.Col>
       {activeFields.map((field) => {

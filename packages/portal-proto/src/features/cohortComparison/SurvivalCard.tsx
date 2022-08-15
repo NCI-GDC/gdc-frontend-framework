@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { Alert, Loader, Paper, Tooltip } from "@mantine/core";
 import {
-  useSurvivalPlot,
   useCoreSelector,
   selectAvailableCohortByName,
   buildCohortGqlOperator,
