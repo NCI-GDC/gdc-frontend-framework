@@ -226,7 +226,7 @@ const Result: React.FC<ResultProps> = ({
   const hideXTicks = barChartData.length > 20;
 
   const controlsStyle =
-    "bg-primary-lightest text-primary-content-darkest border-primary-dark";
+    "bg-secondary-lighter text-primary-content-darkest border-secondary-dark";
 
   return (
     <>
@@ -241,12 +241,25 @@ const Result: React.FC<ResultProps> = ({
           <div className="flex justify-between p-2">
             <Radio.Group
               size="sm"
+              color={"secondary"}
               className="p-2"
               onChange={(e) => setDisplayPercent(e === "percent")}
               defaultValue={"counts"}
             >
-              <Radio value="counts" label="# of Cases" />
-              <Radio value="percent" label="% of Cases" />
+              <Radio
+                classNames={{
+                  radio: "checked:bg-secondary focus:bg-secondary-light",
+                }}
+                value="counts"
+                label="# of Cases"
+              />
+              <Radio
+                classNames={{
+                  radio: "checked:bg-secondary focus:bg-secondary-light",
+                }}
+                value="percent"
+                label="% of Cases"
+              />
             </Radio.Group>
             <Menu>
               <Menu.Target>

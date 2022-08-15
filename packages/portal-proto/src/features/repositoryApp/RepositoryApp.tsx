@@ -25,8 +25,18 @@ import { FilesView } from "@/features/files/FilesView";
 import { mapGdcFileToCartFile } from "../files/utils";
 import { selectFilters } from "@/features/repositoryApp/repositoryFiltersSlice";
 import { isEqual } from "lodash";
+import tw from "tailwind-styled-components";
 
-const buttonStyle = "mx-1 bg-base-light hover:bg-base transition-colors";
+const FileActionButton = tw(Button)`
+mx-1 
+bg-secondary-darker 
+text-secondary-content-lightest 
+hover:bg-secondary-darkest
+hover:text-secondary-content-lightest 
+transition-colors
+border-1
+border-secondary-darkest
+`;
 
 export interface ContextualFilesViewProps {
   readonly handleFileSelected?: (file: GdcFile) => void;
@@ -96,10 +106,10 @@ const RepositoryApp: React.FC<ContextualFilesViewProps> = ({
         </Text>
         <Menu>
           <Menu.Target>
-            <Button className={buttonStyle}>
+            <FileActionButton>
               <CartIcon size={"1.5rem"} />
               Update Cart
-            </Button>
+            </FileActionButton>
           </Menu.Target>
           <Menu.Dropdown>
             <Menu.Item
@@ -133,14 +143,12 @@ const RepositoryApp: React.FC<ContextualFilesViewProps> = ({
             </Menu.Item>
           </Menu.Dropdown>
         </Menu>
-        <Button className={buttonStyle}>
+        <FileActionButton>
           <DownloadIcon size={"1.5rem"} />
           Manifest
-        </Button>
+        </FileActionButton>
         <Link href="/user-flow/workbench/MultipleImageViewerPage">
-          <Button component="a" className={buttonStyle}>
-            View Images
-          </Button>
+          <FileActionButton component="a">View Images</FileActionButton>
         </Link>
       </div>
       <div className="flex flex-row mx-3">

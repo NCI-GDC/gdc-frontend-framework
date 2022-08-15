@@ -1,6 +1,6 @@
 import { useState } from "react";
 import fileSize from "filesize";
-import { Table, Button, Select, Pagination, Menu } from "@mantine/core";
+import { Table, Button, Select, Pagination, Menu, Text } from "@mantine/core";
 import {
   MdLock as LockedIcon,
   MdLockOpen as OpenIcon,
@@ -18,10 +18,17 @@ import { EnumFacet } from "../facets/EnumFacet";
 import { addToCart, removeFromCart } from "@/features/cart/updateCart";
 import Link from "next/link";
 import { mapGdcFileToCartFile } from "./utils";
+import tw from "tailwind-styled-components";
 
 export interface ContextualFilesViewProps {
   readonly handleFileSelected?: (file: GdcFile) => void;
 }
+
+export const FilesTableHeader = tw.th`
+bg-primary-lighter
+text-primary-content-darkest 
+px-2
+`;
 
 const FileFacetNames = [
   {
@@ -170,7 +177,6 @@ export interface FilesViewProps {
 
 export const FilesView: React.FC<FilesViewProps> = ({
   files = [],
-  handleFileSelected = () => void 0,
   handleCheckedFiles = () => void 0,
 }: FilesViewProps) => {
   const [pageSize, setPageSize] = useState(10);
@@ -180,31 +186,19 @@ export const FilesView: React.FC<FilesViewProps> = ({
     setPageSize(parseInt(x));
   };
   return (
-    <div className="flex flex-col gap-y-4">
+    <div className="flex flex-col w-full gap-y-4">
       <Table verticalSpacing="xs" striped highlightOnHover>
         <thead>
-          <tr className="bg-base-light text-primary-content-min text-montserrat border border-base-light">
-            <th className="px-2">
+          <tr className="bg-base-light text-primary-content-min text-headind border border-base-light">
+            <FilesTableHeader>
               <input type="checkbox" />
-            </th>
-            <th className="px-2 th-base-lightest" style={{ color: "#FFFFFF" }}>
-              File
-            </th>
-            <th className="px-2 " style={{ color: "#FFFFFF" }}>
-              Access
-            </th>
-            <th className="px-2" style={{ color: "#FFFFFF" }}>
-              Experimental Strategy
-            </th>
-            <th className="px-2" style={{ color: "#FFFFFF" }}>
-              Data Category
-            </th>
-            <th className="px-2" style={{ color: "#FFFFFF" }}>
-              Data Format
-            </th>
-            <th className="px-2" style={{ color: "#FFFFFF" }}>
-              File Size
-            </th>
+            </FilesTableHeader>
+            <FilesTableHeader>Access</FilesTableHeader>
+            <FilesTableHeader>File</FilesTableHeader>
+            <FilesTableHeader>Experimental Strategy</FilesTableHeader>
+            <FilesTableHeader>Data Category</FilesTableHeader>
+            <FilesTableHeader>Data Format</FilesTableHeader>
+            <FilesTableHeader>File Size</FilesTableHeader>
           </tr>
         </thead>
         <tbody>
@@ -224,10 +218,18 @@ export const FilesView: React.FC<FilesViewProps> = ({
                 )}
                 {file.access}
               </td>
-              <td className="px-2 break-all">
-                <button onClick={() => handleFileSelected(file)}>
-                  {file.fileName}
-                </button>
+              <td className="px-2">
+                <Link
+                  href={{
+                    pathname: "/files/[slug]",
+                    query: { slug: file.id },
+                  }}
+                  passHref
+                >
+                  <Text variant="link" component="a">
+                    {file.fileName}
+                  </Text>
+                </Link>
               </td>
               <td className="px-2">{file.experimentalStrategy}</td>
               <td className="px-2">{file.dataCategory}</td>
@@ -254,7 +256,7 @@ export const FilesView: React.FC<FilesViewProps> = ({
         <Pagination
           size="sm"
           radius="md"
-          color="gray"
+          color="secondary"
           className="ml-auto"
           page={activePage}
           onChange={setPage}

@@ -93,7 +93,7 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
 }: FacetGroupProps) => {
   return (
     <div className="flex flex-col w-screen/1.5 bg-base-max pr-6 overflow-x-clip">
-      <ResponsiveMasonry columnsCountBreakPoints={{ 640: 3, 1400: 3 }}>
+      <ResponsiveMasonry columnsCountBreakPoints={{ 320: 2, 640: 3, 1200: 4 }}>
         <Masonry gutter="0.5em" className="m-4">
           {children}
         </Masonry>

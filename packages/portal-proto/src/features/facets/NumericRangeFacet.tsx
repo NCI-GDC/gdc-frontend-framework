@@ -443,8 +443,8 @@ const FromTo: React.FC<FromToProps> = ({
     }
   };
   return (
-    <div className="relative">
-      <div className="flex flex-col text-primary-content-dark text-md ">
+    <div className="relative w-full">
+      <div className="flex flex-col text-primary-content-dark bg-base-max text-md ">
         <div className="flex flex-row justify-end items-center flex-nowrap border">
           <div className="basis-1/5 text-center">From</div>
           <SegmentedControl
@@ -510,7 +510,7 @@ const FromTo: React.FC<FromToProps> = ({
           />
         </div>
         {isWarning ? (
-          <div className="bg-nci-yellow-lighter round-md border-nci-yellow-light">
+          <div className="bg-utility-warning border-utility-warning">
             <span>
               {" "}
               <WarningIcon size="24px" />
@@ -678,7 +678,7 @@ const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> 
       <>
         <LoadingOverlay visible={!isSuccess} />
         <div className="flex flex-col w-100 space-y-2 mt-1 ">
-          <div className="flex flex-row justify-between items-center">
+          <div className="flex flex-row  justify-items-stretch items-center">
             <input
               type="radio"
               className={RadioStyle}
@@ -755,6 +755,7 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
           { label: "Years", value: "years" },
         ]}
         value={units}
+        color={"primary.2"}
         onChange={setUnits}
       />
       <RangeInputWithPrefixedRanges
@@ -895,9 +896,9 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
       <div
         className={`flex flex-col ${
           width ? width : "mx-1"
-        } bg-base-lightest relative shadow-lg border-base-lightest border-1 rounded-b-md text-xs transition `}
+        } bg-base-max relative shadow-lg border-base-lightest border-1 rounded-b-md text-xs transition `}
       >
-        <div className="flex items-center justify-between flex-wrap bg-primary-lightest shadow-md px-1.5">
+        <div className="flex items-center justify-between flex-wrap bg-primary-lighter shadow-md px-1.5">
           <div className="has-tooltip text-primary-content-darkest font-heading font-semibold text-md">
             {facetName === null ? convertFieldToName(field) : facetName}
             <div className="inline-block tooltip w-full border-b-2 border-accent-cool-lightest rounded shadow-lg p-2 bg-gray-100 text-primary-content-darkest mt-8 absolute">

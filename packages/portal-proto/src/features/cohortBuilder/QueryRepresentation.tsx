@@ -29,7 +29,7 @@ import {
 import tw from "tailwind-styled-components";
 
 const QueryRepresentationText = tw.div`
-flex truncate ... max-w-sm px-2 bg-base-max
+flex truncate ... px-2 bg-base-max
 `;
 
 const QueryFieldLabel = tw.span`
@@ -46,7 +46,8 @@ font-medium
 text-md
 rounded-md 
 border-1
-mr-2
+mr-1
+mb-1
 border-accent-light
 `;
 
@@ -95,10 +96,10 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
   );
 
   return (
-    <div className="flex flex-row items-center">
+    <div className="flex flex-row grow items-center">
       <QueryFieldLabel>{convertFieldToName(field)}</QueryFieldLabel>
       <QueryRepresentationText>
-        <Group>
+        <Group grow noWrap>
           {operands.map((x) => (
             <Badge
               key={`query-rep-${field}-{x}`}
@@ -200,23 +201,27 @@ export const QueryElement: React.FC<QueryElementProps> = ({
   field,
   children,
 }: PropsWithChildren<QueryElementProps>) => {
-  const [showPopup, setShowPopup] = useState(false);
+  //  const [showPopup, setShowPopup] = useState(false);
   const coreDispatch = useCoreDispatch();
 
   const handleRemoveFilter = () => {
     coreDispatch(removeCohortFilter(field));
   };
 
-  const handlePopupFacet = () => {
-    setShowPopup(!showPopup);
-  };
+  // TODO: Enable facet dropdown
+  //const handlePopupFacet = () => {
+  //  setShowPopup(!showPopup);
+  //};
 
   return (
     <QueryItemContainer>
       {children}
-      <button onClick={handlePopupFacet}>
+      {/* ---
+        // TODO: enable facet dropdown
+         <button onClick={handlePopupFacet}>
         <DropDownIcon size="1.5em" onClick={handlePopupFacet} />
       </button>
+      -- */}
       <button
         className="bg-accent p-0 m-0 h-full round-r-lg text-accent-content-max "
         onClick={handleRemoveFilter}

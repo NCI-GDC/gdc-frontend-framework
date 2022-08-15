@@ -123,6 +123,7 @@ export const FileFacetPanel = () => {
         </Text>
         <Button
           size="xs"
+          color="secondary"
           variant="outline"
           aria-label="Reset File Filters"
           onClick={() => handleClearAll()}
