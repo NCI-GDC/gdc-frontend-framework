@@ -78,7 +78,7 @@ export const UserProfileModal = ({
           padding: `${!data ? "15px" : "5px"} 0`,
         }}
       >
-        {data ? (
+        {data.length > 0 ? (
           <ScrollableTableWithFixedHeader
             tableData={{
               headers: headings,
@@ -86,7 +86,7 @@ export const UserProfileModal = ({
             }}
           />
         ) : (
-          <>
+          <div data-testid="warningText">
             <Text style={{ marginBottom: "1rem" }}>
               You do not have any access to controlled access data for projects
               available in the GDC Data Portal.
@@ -104,7 +104,7 @@ export const UserProfileModal = ({
               , please visit our documentation on how to apply for access
               through dbGAP.
             </Text>
-          </>
+          </div>
         )}
       </div>
 

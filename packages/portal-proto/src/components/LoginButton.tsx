@@ -36,6 +36,7 @@ export const LoginButton = ({
         label: `ml-0 ${fromSession && "text-nci-blue-darkest"}`,
         leftIcon: "mr-0",
       }}
+      data-testid="loginButton"
     >
       Login
     </Button>

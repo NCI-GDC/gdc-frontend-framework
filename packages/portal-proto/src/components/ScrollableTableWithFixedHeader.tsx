@@ -41,6 +41,7 @@ export function ScrollableTableWithFixedHeader({
     <ScrollArea
       sx={{ height: 500 }}
       onScrollPositionChange={({ y }) => setScrolled(y !== 0)}
+      data-testid="scrolltable"
     >
       <Table striped sx={{ minWidth: 700 }}>
         <thead className={cx(classes.header, { [classes.scrolled]: scrolled })}>

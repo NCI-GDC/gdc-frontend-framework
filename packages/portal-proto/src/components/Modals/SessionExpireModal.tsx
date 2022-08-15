@@ -26,6 +26,7 @@ export const SessionExpireModal = ({
       })}
       closeButtonLabel="Done"
       withinPortal={false}
+      data-testid="sessionmodal"
     >
       <div
         className=""

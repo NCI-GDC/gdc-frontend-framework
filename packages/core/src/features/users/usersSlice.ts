@@ -86,12 +86,7 @@ const userSliceInitialState: userSliceInitialStateInterface = {
 const slice = createSlice({
   name: "userInfo",
   initialState: userSliceInitialState,
-  reducers: {
-    handleLogout: (state: userSliceInitialStateInterface) => {
-      state.username = null;
-      return state;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchUserDetails.fulfilled, (state, action) => {
