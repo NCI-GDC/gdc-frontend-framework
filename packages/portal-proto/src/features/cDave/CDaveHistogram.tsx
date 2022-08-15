@@ -17,6 +17,30 @@ import {
   flattenBinnedData,
 } from "./utils";
 
+const formatContinuousResultData = (
+  data: Record<string, number>,
+  customBinnedData: NamedFromTo[] | CustomInterval,
+): Record<string, number> => {
+  if (!isInterval(customBinnedData) && customBinnedData?.length > 0) {
+    return Object.fromEntries(
+      Object.entries(data).map(([_, v], idx) => [
+        customBinnedData[idx].name,
+        v,
+      ]),
+    );
+  }
+
+  return mapKeys(data, (_, k) => toBucketDisplayName(k));
+};
+
+const toBucketDisplayName = (bucket: string): string => {
+  const [fromValue, toValue] = parseContinuousBucket(bucket);
+
+  return `${Number(Number(fromValue).toFixed(2))} to <${Number(
+    Number(toValue).toFixed(2),
+  )}`;
+};
+
 interface ContinuousHistogramProps {
   readonly field: string;
   readonly fieldName: string;
@@ -50,14 +74,14 @@ export const ContinuousHistogram: React.FC<ContinuousHistogramProps> = ({
   );
 
   useEffect(() => {
-    setResultData(mapKeys(data, (_, k) => toBucketDisplayName(k)));
+    setResultData(formatContinuousResultData(data, customBinnedData));
   }, [data]);
 
   return (
     <CDaveHistogram
       field={field}
       fieldName={fieldName}
-      data={mapKeys(data, (_, k) => toBucketDisplayName(k))}
+      data={formatContinuousResultData(data, customBinnedData)}
       isFetching={isFetching}
       continuous={true}
       noData={stats.count === 0}
@@ -103,14 +127,6 @@ export const CategoricalHistogram: React.FC<CategoricalHistogramProps> = ({
       customBinnedData={customBinnedData}
     />
   );
-};
-
-const toBucketDisplayName = (bucket: string): string => {
-  const [fromValue, toValue] = parseContinuousBucket(bucket);
-
-  return `${Number(Number(fromValue).toFixed(2))} to <${Number(
-    Number(toValue).toFixed(2),
-  )}`;
 };
 
 const formatBarChartData = (

@@ -102,12 +102,6 @@ describe("CDaveCard", () => {
     expect(getAllByRole("row")[2]).toHaveTextContent("female");
   });
 
-  /*
-  it("table displays custom bins", () => {
-
-  });
-  */
-
   it("continuous result with data", () => {
     jest.spyOn(core, "useCoreSelector").mockReturnValue({
       field: "diagnosis.days_to_treatment_start",
@@ -187,6 +181,4 @@ describe("CDaveCard", () => {
 
     expect(getByText("No data for this property")).toBeInTheDocument();
   });
-
-  /* it("continuous result not sorted", () => {}) */
 });
