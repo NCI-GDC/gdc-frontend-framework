@@ -30,6 +30,7 @@ import {
 } from "react-icons/md";
 import Banner from "@/components/Banner";
 import { Button, LoadingOverlay } from "@mantine/core";
+import { NextLink } from "@mantine/next";
 import { useTour } from "@reactour/tour";
 import steps from "../../features/tour/steps";
 import { FaDownload, FaUserCheck } from "react-icons/fa";
@@ -115,15 +116,13 @@ const Header: React.FC<HeaderProps> = ({
           This causes an accessibility problem because empty anchors confuse screen
           readers. The button tag satisfies both react's requirements and a11y
           requirements.  */}
-          <Link href={indexPath}>
-            <button>
-              <Image
-                src="/NIH_GDC_DataPortal-logo.svg"
-                layout="fill"
-                objectFit="contain"
-              />
-            </button>
-          </Link>
+          <Button unstyled component={NextLink} href={indexPath}>
+            <Image
+              src="/NIH_GDC_DataPortal-logo.svg"
+              layout="fill"
+              objectFit="contain"
+            />
+          </Button>
         </div>
         {headerElements.map((element, i) => (
           <div key={i} className="px-2">
@@ -148,8 +147,8 @@ const Header: React.FC<HeaderProps> = ({
             <SearchIcon size="24px" />{" "}
           </div>
           {userInfo.data.username ? (
-            <Menu
-              control={
+            <Menu>
+              <Menu.Target>
                 <Button
                   rightIcon={<MdArrowDropDown size="2em" />}
                   variant="subtle"
@@ -158,8 +157,8 @@ const Header: React.FC<HeaderProps> = ({
                 >
                   {userInfo.data.username}
                 </Button>
-              }
-            >
+              </Menu.Target>
+
               <Menu.Item
                 icon={<FaUserCheck size="1.25em" />}
                 onClick={async () => {
@@ -260,19 +259,18 @@ const Header: React.FC<HeaderProps> = ({
               <CartIcon size="24px" /> Cart ({currentCart.length || 0})
             </div>
           </Link>
-          <Menu
-            withArrow
-            className={"opacity-60 hover:opacity-100 transition-opacity mx-2"}
-            control={
+          <Menu withArrow>
+            <Menu.Target>
               <button className="p-0">
                 <AppsIcon className="mt-2" size="24px" />
               </button>
-            }
-          >
-            <Menu.Item onClick={() => setIsOpen(true)}>
-              <TourIcon size="2.5em" />
-              <div className="text-center text-sm pt-1">{"Tour"}</div>
-            </Menu.Item>
+            </Menu.Target>
+            <Menu.Dropdown>
+              <Menu.Item onClick={() => setIsOpen(true)}>
+                <TourIcon size="2.5em" />
+                <div className="text-center text-sm pt-1">{"Tour"}</div>
+              </Menu.Item>
+            </Menu.Dropdown>
           </Menu>
         </div>
       </div>

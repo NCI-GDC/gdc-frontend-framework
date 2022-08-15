@@ -5,7 +5,6 @@ import {
   Badge,
   Button,
   Menu,
-  MenuItem,
   Select,
   Pagination,
   Loader,
@@ -199,8 +198,8 @@ const FilesTable: React.FC = () => {
             >
               TSV
             </Button>
-            <Menu
-              control={
+            <Menu>
+              <Menu.Target>
                 <Button
                   leftIcon={<TrashIcon />}
                   rightIcon={<DropdownIcon size={20} />}
@@ -211,12 +210,13 @@ const FilesTable: React.FC = () => {
                 >
                   Remove From Cart
                 </Button>
-              }
-            >
-              <MenuItem onClick={() => removeFromCart(data, cart, dispatch)}>
-                All Files
-              </MenuItem>
-              <MenuItem>Unauthorized Files</MenuItem>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Item onClick={() => removeFromCart(data, cart, dispatch)}>
+                  All Files
+                </Menu.Item>
+                <Menu.Item>Unauthorized Files</Menu.Item>
+              </Menu.Dropdown>
             </Menu>
           </div>
         }
@@ -236,9 +236,6 @@ const FilesTable: React.FC = () => {
           ]}
         />
         <Pagination
-          classNames={{
-            active: "bg-nci-gray",
-          }}
           size="sm"
           radius="md"
           color="gray"

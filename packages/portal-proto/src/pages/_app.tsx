@@ -45,7 +45,6 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
         <MantineProvider
           withGlobalStyles
           withNormalizeCSS
-          emotionOptions={{ key: "mantine", prepend: false }} // Prevents style conflicts between Mantine and Tailwind by loading Mantine second
           theme={{
             // Override default blue color until styles are determined
             colors: {
@@ -88,6 +87,8 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
               // Add default color from tailwind config to Mantine theme
               ...Object.fromEntries(
                 Object.entries(tailwindConfig.theme.extend.colors).map(
+                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  // @ts-ignore
                   ([key, values]) => [key, Array(10).fill(values?.DEFAULT)],
                 ),
               ),

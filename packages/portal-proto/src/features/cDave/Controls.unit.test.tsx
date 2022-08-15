@@ -186,11 +186,13 @@ describe("<Controls />", () => {
               field_name: "gender",
               full: "demographic.gender",
               field_type: "demographic",
+              description: "a type of filter",
             },
             {
               field_name: "treatment_type",
               full: "treatments.treatment_type",
               field_type: "treatments",
+              description: "another type of filter",
             },
           ] as any[]
         }

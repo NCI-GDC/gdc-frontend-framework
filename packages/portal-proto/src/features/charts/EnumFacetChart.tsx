@@ -4,7 +4,7 @@
  */
 
 import { useEffect, useState } from "react";
-import { Loader, Tooltip } from "@mantine/core";
+import { Box, Loader, Tooltip } from "@mantine/core";
 import { useElementSize } from "@mantine/hooks";
 import {
   VictoryBar,
@@ -135,8 +135,8 @@ const EnumBarChartTooltip: React.FC<EnumBarChartTooltipProps> = ({
   datum,
 }: EnumBarChartTooltipProps) => {
   return (
-    <g transform={`translate(${x}, ${y})`}>
-      <foreignObject>
+    <g style={{ pointerEvents: "none" }}>
+      <foreignObject x={x} y={y}>
         <Tooltip
           label={
             <>
@@ -146,8 +146,9 @@ const EnumBarChartTooltip: React.FC<EnumBarChartTooltipProps> = ({
           }
           withArrow
           opened
+          withinPortal
         >
-          <></>
+          <Box></Box>
         </Tooltip>
       </foreignObject>
     </g>

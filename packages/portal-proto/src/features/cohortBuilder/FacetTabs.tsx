@@ -26,6 +26,7 @@ import {
   Modal,
   Stack,
   Tabs,
+  TabsProps,
   Text,
 } from "@mantine/core";
 import { getFacetInfo } from "@/features/cohortBuilder/utils";
@@ -44,6 +45,43 @@ border-2
 border-dotted
 m-6
 `;
+
+const StyledFacetTabs = (props: TabsProps) => {
+  return (
+    <Tabs
+      unstyled
+      styles={(theme) => ({
+        tab: {
+          ...theme.fn.focusStyles(),
+          padding: `${theme.spacing.xs}px ${theme.spacing.md}px`,
+          cursor: "pointer",
+          fontSize: theme.fontSizes.md,
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          borderTopLeftRadius: theme.radius.md,
+          borderBottomLeftRadius: theme.radius.md,
+
+          "&:disabled": {
+            opacity: 0.5,
+            cursor: "not-allowed",
+          },
+        },
+        root: {
+          display: "flex",
+          flexDirection: "row",
+        },
+
+        tabIcon: {
+          marginRight: theme.spacing.xs,
+          display: "flex",
+          alignItems: "center",
+        },
+      })}
+      {...props}
+    />
+  );
+};
 
 const createFacets = (
   facets: ReadonlyArray<FacetDefinition>,
@@ -212,20 +250,31 @@ export const FacetTabs = (): JSX.Element => {
   );
   return (
     <div className="w-100">
-      <Tabs
-        variant="unstyled"
+      <StyledFacetTabs
         orientation="vertical"
+        defaultValue={tabsConfig[Object.keys(tabsConfig)[0]].label}
         classNames={{
-          tabControl: "!font-medium !bg-nci-blue-dark !text-nci-gray-lightest",
-          tabActive: "!bg-white !text-nci-gray-darkest",
-          body: "!pl-0 !ml-0",
+          tab: "data-active:text-nci-gray-darkest text-white data-active:border-nci-blue-darker data-active:border-2 data-active:border-r-0 data-active:bg-white hover:bg-nci-blue",
+          tabsList: "flex flex-col bg-nci-blue-darker text-white w-[240px] ",
         }}
       >
+        <Tabs.List>
+          {Object.values(tabsConfig).map((tabEntry: CohortBuilderCategory) => {
+            return (
+              <Tabs.Tab
+                key={`cohortTab-${tabEntry.label}`}
+                value={tabEntry.label}
+              >
+                {tabEntry.label}
+              </Tabs.Tab>
+            );
+          })}
+        </Tabs.List>
         {Object.values(tabsConfig).map((tabEntry: CohortBuilderCategory) => {
           return (
-            <Tabs.Tab
+            <Tabs.Panel
               key={`cohortTab-${tabEntry.label}`}
-              label={tabEntry.label}
+              value={tabEntry.label}
             >
               {" "}
               {tabEntry.label === "Custom" ? (
@@ -239,10 +288,10 @@ export const FacetTabs = (): JSX.Element => {
                   )}
                 </FacetGroup>
               )}
-            </Tabs.Tab>
+            </Tabs.Panel>
           );
         })}
-      </Tabs>
+      </StyledFacetTabs>
     </div>
   );
 };

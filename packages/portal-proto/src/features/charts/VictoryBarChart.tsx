@@ -1,4 +1,4 @@
-import { Tooltip } from "@mantine/core";
+import { Box, Tooltip } from "@mantine/core";
 import React, { useState } from "react";
 import {
   VictoryAxis,
@@ -22,8 +22,8 @@ const BarChartTooltip: React.FC<BarChartTooltipProps> = ({
   datum,
 }: BarChartTooltipProps) => {
   return (
-    <g transform={`translate(${x}, ${y})`}>
-      <foreignObject>
+    <g style={{ pointerEvents: "none" }}>
+      <foreignObject x={x} y={y}>
         <Tooltip
           label={
             <>
@@ -37,8 +37,9 @@ const BarChartTooltip: React.FC<BarChartTooltipProps> = ({
           }
           withArrow
           opened
+          withinPortal
         >
-          <></>
+          <Box />
         </Tooltip>
       </foreignObject>
     </g>

@@ -9,9 +9,16 @@ describe("<FacetTabs />", () => {
     jest.clearAllMocks();
     jest.spyOn(func, "useCoreSelector").mockImplementation(jest.fn());
     jest.spyOn(func, "useCoreDispatch").mockImplementation(jest.fn());
+    jest.spyOn(func, "useFacetDictionary").mockImplementation(jest.fn());
   });
 
   it("No custom facets", async () => {
+    jest.spyOn(core, "useFacetDictionary").mockReturnValue({
+      isUninitialized: false,
+      isFetching: false,
+      isSuccess: true,
+      isError: false,
+    });
     jest.spyOn(core, "useCoreSelector").mockReturnValue({
       general: {
         label: "General",

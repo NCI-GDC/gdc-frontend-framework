@@ -48,7 +48,7 @@ export const fieldNameToTitle = (fieldName: string): string =>
 
 export const classifyFacetDatatype = (f: FacetDefinition): string => {
   const fieldName = f.field;
-  if (f.type == "keyword") return "enum";
+  if (fieldName.includes("age_is_")) return "enum";
   if (fieldName.includes("datetime")) return "datetime";
   if (fieldName.includes("percent")) return "percent";
   if (fieldName.includes("age_")) return "age";
