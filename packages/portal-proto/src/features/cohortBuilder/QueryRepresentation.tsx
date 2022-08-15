@@ -47,7 +47,6 @@ text-md
 rounded-md 
 border-1
 mr-1
-mb-1
 border-accent-light
 `;
 
@@ -96,10 +95,10 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
   );
 
   return (
-    <div className="flex flex-row grow items-center">
+    <div className="flex flex-row items-center">
       <QueryFieldLabel>{convertFieldToName(field)}</QueryFieldLabel>
       <QueryRepresentationText>
-        <Group grow noWrap>
+        <Group noWrap>
           {operands.map((x) => (
             <Badge
               key={`query-rep-${field}-{x}`}

@@ -59,7 +59,7 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
       </header>
       <main
         data-tour="full_page_content"
-        className="flex-grow flex flex-col overflow-x-hidden"
+        className="flex flex-grow flex-col overflow-x-hidden overflow-y-hidden"
       >
         {children}
       </main>

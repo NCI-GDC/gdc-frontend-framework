@@ -21,6 +21,12 @@ const backgroundColor = {
   ERROR: "bg-utility-error",
 };
 
+const textColor = {
+  INFO: "text-utility-contrast-info",
+  WARNING: "text-utility-contrast-warning",
+  ERROR: "text-utility-contrast-error",
+};
+
 const icon = {
   INFO: <InfoIcon color="white" title="Info icon." />,
   WARNING: <WarningIcon color="white" title="Warning icon." />,
@@ -41,7 +47,7 @@ const Banner: React.FC<BannerProps> = ({
     >
       <div className="flex items-center">
         {icon[level]}
-        <span className="pl-4 text-primary-content-min">
+        <span className={`pl-4 ${textColor[level]}`}>
           <Markdown
             components={{
               // eslint-disable-next-line react/prop-types

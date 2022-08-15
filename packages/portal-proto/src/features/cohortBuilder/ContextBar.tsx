@@ -221,7 +221,7 @@ const ContextBar: React.FC<CohortGroupProps> = ({
 
         {Object.keys(filters.root).length !== 0 ? (
           <div className="flex flex-row items-center w-full">
-            <div className="flex flex-row flex-wrap w-100 p-2 ">
+            <div className="flex flex-row flex-wrap w-100 p-2 gap-y-1 ">
               {Object.keys(filters.root).map((k) => {
                 return convertFilterToComponent(filters.root[k]);
               })}

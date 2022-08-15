@@ -45,7 +45,7 @@ export const HorizontalTable = ({
   customContainerStyles,
 }: HorizontalTableProps): JSX.Element => {
   const containerClassName =
-    "bg-base-lightest w-full text-left text-primary-content-darker";
+    "bg-base-lightest w-full text-left text-base-contrast-lightest";
   const updatedContainerClassName = customContainerStyles
     ? containerClassName + ` ${customContainerStyles}`
     : containerClassName;

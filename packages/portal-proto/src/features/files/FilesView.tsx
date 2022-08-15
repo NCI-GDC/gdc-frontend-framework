@@ -26,7 +26,7 @@ export interface ContextualFilesViewProps {
 
 export const FilesTableHeader = tw.th`
 bg-primary-lighter
-text-primary-content-darkest 
+text-primary-contrast-lighter
 px-2
 `;
 

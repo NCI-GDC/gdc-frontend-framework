@@ -223,7 +223,7 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
 
   return (
     <Button
-      className="text-primary-content-lightest bg-primary hover:bg-primary-darker"
+      className="text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
       onClick={() => addToCart(files, currentCart, dispatch)}
     >
       <CartIcon className="mr-2" /> Add to Cart

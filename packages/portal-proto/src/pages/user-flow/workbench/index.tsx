@@ -5,6 +5,13 @@ import Link from "next/link";
 import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
 import { Button, Tooltip } from "@mantine/core";
 import { NextLink } from "@mantine/next";
+import tw from "tailwind-styled-components";
+
+export const HomePageButton = tw(Button)`
+bg-base-lighter text-base-contrast-lighter
+hover:bg-primary hover:text-primary-contrast
+font-bold mx-4 p-2 rounded inline-flex items-center shadow-md transition-colors
+`;
 
 interface SummaryStatsItemProp {
   readonly title: string;
@@ -34,9 +41,9 @@ const SummaryStatsItem: React.FC<SummaryStatsItemProp> = ({
 
 const SummaryStatsPanel = () => {
   return (
-    <div className="flex flex-col bg-base-lightest border-primary-lighter border-t-8 border-0 p-4 opacity-90 shadow-md hover:shadow-lg  ">
+    <div className="flex flex-col bg-base-lightest border-primary border-t-8 border-0 p-4 opacity-90 shadow-md hover:shadow-lg  ">
       <div className="flex flex-row items-end justify-items-end">
-        <p className="font-heading text-lg text-primary-content-darker">
+        <p className="font-heading text-lg text-base-contrast-lightest">
           Data Portal Summary
         </p>
         <a
@@ -102,22 +109,20 @@ const ActionButtonBar = () => {
           <Tooltip
             label="Explore and analyze harmonized high-quality clinical and genomics data from cancer genomic studies with the tools in the Analysis Center."
             classNames={{
-              tooltip: "shadow-lg bg-base-lighter text-primary-content-darkest",
+              tooltip: "shadow-lg bg-base-lightest text-base-contrast-lightest",
             }}
             position="right-start"
             multiline
             width={220}
           >
-            <Button
+            <HomePageButton
               unstyled
               component={NextLink}
               href={{
                 pathname: "/user-flow/workbench/analysis_page",
                 query: { app: undefined },
               }}
-              classNames={{
-                root: "bg-base-lighter hover:bg-primary-content text-primary-content-darkest font-bold mx-4 p-2 px-5 rounded shadow-md transition-colors",
-              }}
+              className="mx-4 p-2 px-5"
             >
               <div className="flex flex-row items-center">
                 <Image
@@ -127,7 +132,7 @@ const ActionButtonBar = () => {
                 />{" "}
                 <span className="px-4">Analysis Center</span>
               </div>
-            </Button>
+            </HomePageButton>
           </Tooltip>
         </Link>
       </div>
@@ -135,20 +140,19 @@ const ActionButtonBar = () => {
         <Tooltip
           label="View the Studies available within the GDC and select them for further exploration and analysis."
           classNames={{
-            tooltip: "shadow-lg bg-base-lightest text-primary-content-darkest",
+            tooltip: "shadow-lg bg-base-lightest text-base-contrast-lightest",
           }}
           position="bottom-start"
           multiline
           width={220}
         >
-          <Button
+          <HomePageButton
             unstyled
             component={NextLink}
             href={{
               pathname: "/user-flow/workbench/analysis_page",
               query: { app: "Studies" },
             }}
-            className="bg-base-lighter hover:bg-primary-content-gray text-bg-primary-content-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md transition-colors"
           >
             <Image
               src={"/user-flow/icons/crowd-of-users.svg"}
@@ -156,48 +160,46 @@ const ActionButtonBar = () => {
               height={36}
             />{" "}
             <span> </span>
-          </Button>
+          </HomePageButton>
         </Tooltip>
         <Tooltip
           label="Build and define your custom cohorts using a variety of clinical and biospecimen features."
           classNames={{
-            tooltip: "shadow-lg bg-base-lightest text-primary-content-darkest",
+            tooltip: "shadow-lg bg-base-lightest text-base-contrast-lightest",
           }}
           position="bottom-start"
           multiline
           width={220}
         >
-          <Button
+          <HomePageButton
             unstyled
             component={NextLink}
             href={{
               pathname: "/user-flow/workbench/analysis_page",
               query: { app: "CohortBuilder" },
             }}
-            className="text-sm bg-base-lighter hover:bg-base text-primary-content-darkest hover:text-white transition-colors font-bold mx-4 p-2 rounded inline-flex flex-nowrap items-center shadow-md"
           >
             <Image src={"/user-flow/icons/build.svg"} width={36} height={36} />
             <span />
-          </Button>
+          </HomePageButton>
         </Tooltip>
 
         <Tooltip
           label="Browse and download the files associated with your cohort for more sophisticated analysis."
           classNames={{
-            tooltip: "shadow-lg bg-base-lightest text-primary-content-darkest",
+            tooltip: "shadow-lg bg-base-lightest text-base-contrast-lightest",
           }}
           position="bottom-start"
           multiline
           width={220}
         >
-          <Button
+          <HomePageButton
             unstyled
             component={NextLink}
             href={{
               pathname: "/user-flow/workbench/analysis_page",
               query: { app: "Downloads" },
             }}
-            className="bg-base-lighter hover:bg-base text-primary-content-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md transition-colors"
           >
             <Image
               src={"/user-flow/icons/database.svg"}
@@ -205,7 +207,7 @@ const ActionButtonBar = () => {
               height={36}
             />{" "}
             <span> </span>
-          </Button>
+          </HomePageButton>
         </Tooltip>
       </div>
     </div>
@@ -217,11 +219,11 @@ const IndexPage: NextPage = () => {
     <UserFlowVariedPages
       {...{ indexPath: "/user-flow/single-page", headerElements }}
     >
-      <div className="flex flex-col w-100 h-100 bg-gradient-to-r from-nci-accent-warm-lightest  to-accent-cool-lightest">
+      <div className="flex flex-col w-100 h-100 bg-gradient-to-r from-nci-accent-warm  to-accent-cool">
         <div className="flex flex-row ">
           <div className="flex flex-col w-1/2 pl-10">
             <div className="flex flex-col w-100 bg-base p-4 rounded-md shadow-lg mt-2  ">
-              <div className="font-montserrat text-primary-content-lightest text-md pt-5 pb-2">
+              <div className="font-montserrat text-base-contrast text-md pt-5 pb-2">
                 Harmonized Cancer Datasets
               </div>
               <div className="font-montserrat text-primary-content-lightest text-2xl pb-5">

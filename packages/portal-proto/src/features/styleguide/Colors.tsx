@@ -2,6 +2,207 @@ import React from "react";
 import { Divider } from "@mantine/core";
 import { divider_style } from "./style";
 
+const portalV2contrastColors = {
+  "base-contrast": [
+    "text-base-contrast-max",
+    "text-base-contrast-lightest",
+    "text-base-contrast-lighter",
+    "text-base-contrast-light",
+    "text-base-contrast",
+    "text-base-contrast-vivid",
+    "text-base-contrast-dark",
+    "text-base-contrast-darker",
+    "text-base-contrast-darkest",
+    "text-base-contrast-min",
+  ],
+  "primary-contrast": [
+    "text-primary-contrast-max",
+    "text-primary-contrast-lightest",
+    "text-primary-contrast-lighter",
+    "text-primary-contrast-light",
+    "text-primary-contrast",
+    "text-primary-contrast-vivid",
+    "text-primary-contrast-dark",
+    "text-primary-contrast-darker",
+    "text-primary-contrast-darkest",
+    "text-primary-contrast-min",
+  ],
+  "secondary-contrast": [
+    "text-secondary-contrast-max",
+    "text-secondary-contrast-lightest",
+    "text-secondary-contrast-lighter",
+    "text-secondary-contrast-light",
+    "text-secondary-contrast",
+    "text-secondary-contrast-vivid",
+    "text-secondary-contrast-dark",
+    "text-secondary-contrast-darker",
+    "text-secondary-contrast-darkest",
+    "text-secondary-contrast-min",
+  ],
+  "accent-contrast": [
+    "text-accent-contrast-max",
+    "text-accent-contrast-lightest",
+    "text-accent-contrast-lighter",
+    "text-accent-contrast-light",
+    "text-accent-contrast",
+    "text-accent-contrast-vivid",
+    "text-accent-contrast-dark",
+    "text-accent-contrast-darker",
+    "text-accent-contrast-darkest",
+    "text-accent-contrast-min",
+  ],
+  "accent-warm-contrast": [
+    "text-accent-warm-contrast-max",
+    "text-accent-warm-contrast-lightest",
+    "text-accent-warm-contrast-lighter",
+    "text-accent-warm-contrast-light",
+    "text-accent-warm-contrast",
+    "text-accent-warm-contrast-vivid",
+    "text-accent-warm-contrast-dark",
+    "text-accent-warm-contrast-darker",
+    "text-accent-warm-contrast-darkest",
+    "text-accent-warm-contrast-min",
+  ],
+  "accent-cool-contrast": [
+    "text-accent-cool-contrast-max",
+    "text-accent-cool-contrast-lightest",
+    "text-accent-cool-contrast-lighter",
+    "text-accent-cool-contrast-light",
+    "text-accent-cool-contrast",
+    "text-accent-cool-contrast-vivid",
+    "text-accent-cool-contrast-dark",
+    "text-accent-cool-contrast-darker",
+    "text-accent-cool-contrast-darkest",
+    "text-accent-cool-contrast-min",
+  ],
+  "chart-contrast": [
+    "text-chart-contrast-max",
+    "text-chart-contrast-lightest",
+    "text-chart-contrast-lighter",
+    "text-chart-contrast-light",
+    "text-chart-contrast",
+    "text-chart-contrast-vivid",
+    "text-chart-contrast-dark",
+    "text-chart-contrast-darker",
+    "text-chart-contrast-darkest",
+    "text-chart-contrast-min",
+  ],
+  "utility-contrast": [
+    "text-utility-contrast-link",
+    "text-utility-contrast-success",
+    "text-utility-contrast-warning",
+    "text-utility-contrast-error",
+    "text-utility-contrast-emergency",
+    "text-utility-contrast-info",
+    "text-utility-contrast-category1",
+    "text-utility-contrast-category2",
+    "text-utility-contrast-category3",
+    "text-utility-contrast-category4",
+  ],
+};
+
+const portalV2Colors = {
+  base: [
+    "bg-base-max",
+    "bg-base-lightest",
+    "bg-base-lighter",
+    "bg-base-light",
+    "bg-base",
+    "bg-base-dark",
+    "bg-base-darker",
+    "bg-base-darkest",
+    "bg-base-ink",
+    "bg-base-min",
+  ],
+  primary: [
+    "bg-primary-max",
+    "bg-primary-lightest",
+    "bg-primary-lighter",
+    "bg-primary-light",
+    "bg-primary",
+    "bg-primary-vivid",
+    "bg-primary-dark",
+    "bg-primary-darker",
+    "bg-primary-darkest",
+    "bg-primary-min",
+  ],
+
+  secondary: [
+    "bg-secondary-max",
+    "bg-secondary-lightest",
+    "bg-secondary-lighter",
+    "bg-secondary-light",
+    "bg-secondary",
+    "bg-secondary-vivid",
+    "bg-secondary-dark",
+    "bg-secondary-darker",
+    "bg-secondary-darkest",
+    "bg-secondary-min",
+  ],
+
+  accent: [
+    "bg-accent-max",
+    "bg-accent-lightest",
+    "bg-accent-lighter",
+    "bg-accent-light",
+    "bg-accent",
+    "bg-accent-vivid",
+    "bg-accent-dark",
+    "bg-accent-darker",
+    "bg-accent-darkest",
+    "bg-accent-min",
+  ],
+
+  "accent-warm": [
+    "bg-accent-warm-max",
+    "bg-accent-warm-lightest",
+    "bg-accent-warm-lighter",
+    "bg-accent-warm-light",
+    "bg-accent-warm",
+    "bg-accent-warm-vivid",
+    "bg-accent-warm-dark",
+    "bg-accent-warm-darker",
+    "bg-accent-warm-darkest",
+    "bg-accent-warm-min",
+  ],
+  "accent-cool": [
+    "bg-accent-cool-max",
+    "bg-accent-cool-lightest",
+    "bg-accent-cool-lighter",
+    "bg-accent-cool-light",
+    "bg-accent-cool",
+    "bg-accent-cool-vivid",
+    "bg-accent-cool-dark",
+    "bg-accent-cool-darker",
+    "bg-accent-cool-darkest",
+    "bg-accent-cool-min",
+  ],
+
+  chart: [
+    "bg-chart-max",
+    "bg-chart-lightest",
+    "bg-chart-lighter",
+    "bg-chart-light",
+    "bg-chart",
+    "bg-chart-vivid",
+    "bg-chart-dark",
+    "bg-chart-darker",
+    "bg-chart-darkest",
+    "bg-chart-min",
+  ],
+  utility: [
+    "bg-utility-link",
+    "bg-utility-success",
+    "bg-utility-warning",
+    "bg-utility-error",
+    "bg-utility-emergency",
+    "bg-utility-info",
+    "bg-utility-category1",
+    "bg-utility-category2",
+    "bg-utility-category3",
+    "bg-utility-category4",
+  ],
+};
 const nciPrimaryColors = {
   gray: [
     "bg-base-lightest",
@@ -105,7 +306,6 @@ const nciSecondaryColors = {
     "bg-nci-yellow-darkest",
   ],
 };
-
 const gdcPrimaryColors = {
   grey: [
     "bg-gdc-grey-lightest",
@@ -215,14 +415,43 @@ interface ColorStylePalletProps {
   readonly colors: ReadonlyArray<string>;
 }
 
+interface ColorAndcontrastStylePalletProps extends ColorStylePalletProps {
+  readonly contrast?: ReadonlyArray<string>;
+}
+
 const ColorPalletLine = ({ name, colors }: ColorStylePalletProps) => {
   return (
     <div className="flex flex-row items-center font-montserrat">
       <div className="grid gap-12 grid-cols-11 grid-rows-1 my-1">
         <p className="col-span-3 font-medium w-24">{name}</p>
-        {colors.map((x) => (
-          <div key={x} className={`${x} p-4 px-8 mx-2 rounded`} />
+        {colors.map((x, i) => (
+          <div key={`${x}-${i}`} className={`${x} p-4 px-8 mx-2 rounded`} />
         ))}
+      </div>
+    </div>
+  );
+};
+
+const ColorAndcontrastPalletLine = ({
+  name,
+  colors,
+  contrast = undefined,
+}: ColorAndcontrastStylePalletProps) => {
+  return (
+    <div className="flex flex-row items-center font-montserrat font-bold">
+      <div className="grid gap-2 grid-cols-12 grid-rows-1 my-1">
+        <p className="col-span-2 text-black ">{name}</p>
+        {colors.map((x, i) => {
+          const ext = x.split("-").slice(-1);
+          return (
+            <div
+              key={`${x}-${i}`}
+              className={`${x} ${contrast[i]} flex justify-center p-4 px-8 mx-2 rounded border text-sm border-black`}
+            >
+              {ext}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -230,9 +459,31 @@ const ColorPalletLine = ({ name, colors }: ColorStylePalletProps) => {
 
 const Colors: React.FC<void> = () => {
   return (
-    <article className="prose font-montserrat text-primary-content md:prose-md">
+    <article className="prose font-montserrat bg-base-max text-base-contrast-lighter md:prose-md min-w-full">
       <p className="prose font-semibold text-2xl">Color Palettes</p>
       <div className="flex flex-col">
+        <div>
+          <p className="prose font-medium text-xl">Official NCI Colors</p>
+          The following theme colors are used in the GDC Portal Version 2.
+        </div>
+        <Divider label="Portal theme color names" classNames={divider_style} />
+        {Object.keys(portalV2Colors).map((name: string) => {
+          //       console.log(Object.keys(portalV2contrastColors), name, Object.keys(portalV2contrastColors).filter(element => element.includes(name)) ?  `${name}-contrast` : 'primary-contrast' );
+          return (
+            <ColorAndcontrastPalletLine
+              key={`${name}-pallet`}
+              name={name}
+              colors={portalV2Colors[name]}
+              contrast={
+                Object.keys(portalV2contrastColors).filter((element) =>
+                  element.includes(name),
+                ).length > 0
+                  ? portalV2contrastColors[`${name}-contrast`]
+                  : portalV2contrastColors["primary-contrast"]
+              }
+            />
+          );
+        })}
         <div>
           <p className="prose font-medium text-xl">Official NCI Colors</p>
           The following colors are based on the NCI digital design guide.

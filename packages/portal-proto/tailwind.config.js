@@ -29,6 +29,32 @@ const nciGray = {
   min: "#000000",
 };
 
+const nciGrayContent = {
+  max: "#FFFFFF",
+  lightest: "#f1f1f1",
+  lighter: "#c5c5c5",
+  light: "#9b9b9b",
+  DEFAULT: "#706f6f",
+  dark: "#606060",
+  darker: "#414150",
+  darkest: "#38393a",
+  ink: "#1b1b1b",
+  min: "#000000",
+};
+
+const nciGrayContrast = {
+  min: "#FFFFFF",
+  darkest: "#f1f1f1",
+  darker: "#f1f1f1",
+  dark: "#f1f1f1",
+  DEFAULT: "#FFFFFF",
+  vivid: "#f1f1f1",
+  light: "#1b1b1b",
+  lighter: "#1b1b1b",
+  lightest: "#1b1b1b",
+  max: "#000000",
+};
+
 const nciBlue = {
   max: "#ffffff",
   lightest: "#e9eff5",
@@ -40,6 +66,19 @@ const nciBlue = {
   darker: "#1d567e",
   darkest: "#0f4163",
   min: "#11324A",
+};
+
+const nciBlueContrast = {
+  min: "#FFFFFF",
+  darkest: "#f1f1f1",
+  darker: "#f1f1f1",
+  dark: "#f1f1f1",
+  DEFAULT: "#f1f1f1",
+  vivid: "#000000",
+  light: "#1b1b1b",
+  lighter: "#1b1b1b",
+  lightest: "#1b1b1b",
+  max: "#000000",
 };
 
 const nciRed = {
@@ -55,6 +94,19 @@ const nciRed = {
   min: "#3D000E",
 };
 
+const nciRedContrast = {
+  min: "#FFFFFF",
+  darkest: "#f1f1f1",
+  darker: "#f1f1f1",
+  dark: "#f1f1f1",
+  DEFAULT: "#f1f1f1",
+  vivid: "#f1f1f1",
+  light: "#1b1b1b",
+  lighter: "#1b1b1b",
+  lightest: "#1b1b1b",
+  max: "#000000",
+};
+
 const nciBlumine = {
   max: "#ffffff",
   lightest: "#e9eff3",
@@ -66,6 +118,19 @@ const nciBlumine = {
   darker: "#0c4564",
   darkest: "#00314c",
   min: "#001926",
+};
+
+const nciBlumineContrast = {
+  min: "#FFFFFF",
+  darkest: "#f1f1f1",
+  darker: "#f1f1f1",
+  dark: "#f1f1f1",
+  DEFAULT: "#f1f1f1",
+  vivid: "#000000",
+  light: "#1b1b1b",
+  lighter: "#1b1b1b",
+  lightest: "#1b1b1b",
+  max: "#000000",
 };
 
 const nciTeal = {
@@ -81,6 +146,19 @@ const nciTeal = {
   min: "#0C3945",
 };
 
+const nciTealContrast = {
+  min: "#FFFFFF",
+  darkest: "#f1f1f1",
+  darker: "#ffffff",
+  dark: "#000000",
+  DEFAULT: "#000000",
+  vivid: "#000000",
+  light: "#1b1b1b",
+  lighter: "#1b1b1b",
+  lightest: "#1b1b1b",
+  max: "#000000",
+};
+
 const nciCyan = {
   max: "#ffffff",
   lightest: "#ebf5f9",
@@ -92,6 +170,19 @@ const nciCyan = {
   darker: "#227991",
   darkest: "#135f73",
   min: "#092A33",
+};
+
+const nciCyanContrast = {
+  min: "#FFFFFF",
+  darkest: "#f1f1f1",
+  darker: "#f1f1f1",
+  dark: "#f1f1f1",
+  DEFAULT: "#000000",
+  vivid: "#000000",
+  light: "#1b1b1b",
+  lighter: "#1b1b1b",
+  lightest: "#1b1b1b",
+  max: "#000000",
 };
 
 const nciGreen = {
@@ -159,6 +250,19 @@ const nciYellow = {
   min: "#4D3907",
 };
 
+const nciYellowContrast = {
+  min: "#FFFFFF",
+  darkest: "#FFFFFF",
+  darker: "#1b1b1b",
+  dark: "#1b1b1b",
+  DEFAULT: "#000000",
+  vivid: "#000000",
+  light: "#1b1b1b",
+  lighter: "#1b1b1b",
+  lightest: "#1b1b1b",
+  max: "#000000",
+};
+
 const utility = {
   link: "#155276",
   success: "#318f71",
@@ -170,6 +274,19 @@ const utility = {
   category2: "#d1541d",
   category3: "#564990",
   category4: "#4dbc97",
+};
+
+const utilityContrast = {
+  link: "#f1f1f1",
+  success: "#000000",
+  warning: "#1b1b1b",
+  error: "#f1f1f1",
+  emergency: "#f1f1f1",
+  info: "#f1f1f1",
+  category1: "#f1f1f1",
+  category2: "#000000",
+  category3: "#f1f1f1",
+  category4: "#1b1b1b",
 };
 
 module.exports = {
@@ -426,20 +543,27 @@ module.exports = {
         extend: {
           colors: {
             base: nciGray,
+            "base-content": nciGrayContent,
+            "base-contrast": nciGrayContrast,
             primary: nciBlue,
-            "primary-content": nciGray,
-            "primary-focus": nciGray,
+            "primary-content": nciGrayContent,
+            "primary-contrast": nciBlueContrast,
             secondary: nciRed,
-            "secondary-content": nciGray,
-            "secondary-focus": nciRed,
+            "secondary-content": nciGrayContent,
+            "secondary-contrast": nciRedContrast,
             accent: nciBlumine,
-            "accent-content": nciGray,
+            "accent-content": nciGrayContent,
+            "accent-contrast": nciBlumineContrast,
             "accent-warm": nciYellow,
-            "accent-warm-content": nciGray,
+            "accent-warm-content": nciGrayContent,
+            "accent-warm-contrast": nciYellowContrast,
             "accent-cool": nciBlumine,
-            "accent-cool-content": nciGray,
+            "accent-cool-content": nciGrayContent,
+            "accent-cool-contrast": nciBlumineContrast,
             chart: nciTeal,
+            "chart-contrast": nciTealContrast,
             utility: utility,
+            "utility-contrast": utilityContrast,
           },
         },
       },

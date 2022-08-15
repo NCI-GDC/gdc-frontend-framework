@@ -26,8 +26,8 @@ export const Slides: React.FC<SlidesProps> = ({
         p="sm"
         sx={(theme) => ({
           backgroundColor: isActive
-            ? theme.colors.accent[5]
-            : theme.colors.gray[5],
+            ? theme.colors.accent[3]
+            : theme.colors.gray[3],
           "&:hover": {
             backgroundColor: !isActive && theme.colors.gray[7],
           },

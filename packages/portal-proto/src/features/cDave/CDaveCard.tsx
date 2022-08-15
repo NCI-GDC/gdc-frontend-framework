@@ -226,7 +226,7 @@ const Result: React.FC<ResultProps> = ({
   const hideXTicks = barChartData.length > 20;
 
   const controlsStyle =
-    "bg-secondary-lighter text-primary-content-darkest border-secondary-dark";
+    "bg-secondary-lighter text-secondary-contrast-lighter border-secondary-dark";
 
   return (
     <>
@@ -348,7 +348,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
 }: CDaveTableProps) => {
   return (
     <div className="h-48 block overflow-auto w-full">
-      <table className="bg-base-lightest w-full text-left text-primary-content-darker mb-2">
+      <table className="bg-base-lightest w-full text-left text-base-contrast-lightest mb-2">
         <thead className="bg-base-lightest font-bold">
           <tr>
             <th>Select</th>
@@ -359,7 +359,11 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
         <tbody>
           {data.map((d, idx) => (
             <tr
-              className={idx % 2 ? null : "bg-accent-warm-lightest"}
+              className={
+                idx % 2
+                  ? "bg-base-lightest hover:bg-base-lighter hover:text-base-contrast-lighter"
+                  : "bg-accent-cool-lightest hover:bg-accent-cool-lighter hover:text-accent-cool-contrast-lighter"
+              }
               key={`${fieldName}-${d.fullName}`}
             >
               <td>
