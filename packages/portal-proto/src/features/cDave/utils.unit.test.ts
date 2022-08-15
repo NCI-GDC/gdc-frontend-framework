@@ -1,4 +1,3 @@
-import { Statistics } from "@gff/core";
 import {
   createBuckets,
   filterUsefulFacets,

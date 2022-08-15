@@ -359,6 +359,7 @@ export const useRangeFacet = (
     cohortFilters,
     prevFilters,
     ranges,
+    prevRanges,
     docType,
     indexType,
   ]);

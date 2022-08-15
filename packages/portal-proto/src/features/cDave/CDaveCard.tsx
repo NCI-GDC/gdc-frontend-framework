@@ -194,7 +194,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
           : data,
       ).slice(0, 2),
     );
-  }, [data, setSelectedSurvivalPlots, customBinnedData]);
+  }, [data, setSelectedSurvivalPlots, customBinnedData, continuous]);
 
   const yTotal = Object.values(data).reduce((a, b) => a + b, 0);
 

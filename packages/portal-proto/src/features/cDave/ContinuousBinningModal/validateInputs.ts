@@ -73,7 +73,7 @@ export const validateIntervalInput = (
   size: string,
   min: string,
   max: string,
-) => {
+): Record<string, string> => {
   const errors = {};
 
   const intervalSizeResult = validateIntervalSize(size, min, max);
@@ -96,7 +96,7 @@ export const validateIntervalInput = (
 
 export const validateRangeInput = (
   values: { name: string; to: string; from: string }[],
-) => {
+): Record<string, string> => {
   const errors = {};
 
   values.forEach((value, idx) => {

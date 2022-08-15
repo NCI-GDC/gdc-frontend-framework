@@ -9,7 +9,7 @@ import {
 } from "@gff/core";
 
 import SurvivalPlot, { SurvivalPlotTypes } from "../charts/SurvivalPlot";
-import { isInterval, parseContinuousBucket } from "./utils";
+import { isInterval } from "./utils";
 import { CategoricalBins, CustomInterval, NamedFromTo } from "./types";
 
 interface ClinicalSurvivalPlotProps {
@@ -40,7 +40,7 @@ const ClinicalSurvivalPlot: React.FC<ClinicalSurvivalPlotProps> = ({
         setPlotType(SurvivalPlotTypes.categorical);
       }
     }
-  }, [selectedSurvivalPlots]);
+  }, [selectedSurvivalPlots, continuous]);
 
   const filters =
     selectedSurvivalPlots.length === 0

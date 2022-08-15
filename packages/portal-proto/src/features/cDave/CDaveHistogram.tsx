@@ -23,7 +23,7 @@ const formatContinuousResultData = (
 ): Record<string, number> => {
   if (!isInterval(customBinnedData) && customBinnedData?.length > 0) {
     return Object.fromEntries(
-      Object.entries(data).map(([_, v], idx) => [
+      Object.entries(data).map(([, v], idx) => [
         customBinnedData[idx]?.name,
         v,
       ]),
@@ -77,7 +77,7 @@ export const ContinuousHistogram: React.FC<ContinuousHistogramProps> = ({
     setResultData(
       formatContinuousResultData(isSuccess ? data : {}, customBinnedData),
     );
-  }, [data, customBinnedData, isSuccess]);
+  }, [data, customBinnedData, isSuccess, setResultData]);
 
   return (
     <CDaveHistogram

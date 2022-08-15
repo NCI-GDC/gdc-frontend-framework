@@ -94,14 +94,7 @@ export const useSurvival: survival = (
           onMouseLeaveDonor: () => setTooltip(undefined),
         })
       : null;
-  }, [
-    data,
-    xDomain,
-    setXDomain,
-    setTooltip,
-    height,
-    ref?.current?.getBoundingClientRect(),
-  ]);
+  }, [data, xDomain, setXDomain, setTooltip, height, containerSize]);
   return ref;
 };
 

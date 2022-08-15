@@ -13,7 +13,7 @@ import { reducers } from "./reducers";
 import { cohortApiSliceMiddleware } from "./features/api/cohortApiSlice";
 
 import storage from "./storage-persist";
-import { survivalApiSliceMiddleware } from "./features/api/survivalApiSlice";
+import { survivalApiSliceMiddleware } from "./features/survival/survivalApiSlice";
 
 const persistConfig = {
   key: "root",

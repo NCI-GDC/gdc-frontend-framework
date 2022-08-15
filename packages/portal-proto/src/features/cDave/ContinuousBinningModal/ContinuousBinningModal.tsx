@@ -68,7 +68,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
   useEffect(() => {
     intervalForm.clearErrors();
     intervalForm.validate();
-  }, [intervalForm.values]);
+  }, [intervalForm, intervalForm.values]);
 
   useEffect(() => {
     if (binMethod === "interval") {
@@ -80,7 +80,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
         rangeForm.validate();
       }
     }
-  }, [binMethod]);
+  }, [rangeForm, intervalForm, binMethod]);
 
   return (
     <Modal
@@ -109,9 +109,11 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
       <div className="bg-nci-gray-lightest p-4 flex flex-col">
         <div className="flex">
           <div className="flex-grow">
-            Define bins by:
+            {"Define bins by:"}
+            {/* This switches the bin method when a user clicks on the "area", no keyboard equivalent is needed to accessibly navigate the form */}
+            {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
             <div
-              className="flex mt-4 items-cente text-sm"
+              className="flex mt-4 items-center text-sm"
               onClick={() => setBinMethod("interval")}
             >
               <Radio
@@ -173,6 +175,8 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
             <ResetIcon size={20} />
           </Button>
         </div>
+        {/* This switches the bin method when a user clicks on the "area", no keyboard equivalent is needed to accessibly navigate the form */}
+        {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
         <div
           className="flex flex-col text-sm mt-4"
           onClick={() => setBinMethod("ranges")}

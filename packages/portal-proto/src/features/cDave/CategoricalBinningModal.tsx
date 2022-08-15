@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { pickBy, mapKeys, flatMapDeep } from "lodash";
+import { pickBy, mapKeys } from "lodash";
 import { Button, Modal, TextInput } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
