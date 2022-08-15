@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { pickBy, mapKeys } from "lodash";
+import { pickBy, mapKeys, flatMapDeep } from "lodash";
 import { Button, Modal, TextInput } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
@@ -23,6 +23,7 @@ const filterOutSelected = (
   selectedValues: Record<string, number>,
 ) => {
   const newValues = {};
+
   Object.entries(values).forEach(([key, value]) => {
     if (Number.isInteger(value) && !selectedValues?.[key]) {
       newValues[key] = value;
@@ -38,6 +39,25 @@ const filterOutSelected = (
   });
 
   return newValues;
+};
+
+const getHiddenValues = (
+  results: CategoricalBins,
+  customBins: CategoricalBins,
+) => {
+  const flattenedKeys = [];
+  Object.entries(customBins).forEach(([key, value]) => {
+    if (Number.isInteger(value)) {
+      flattenedKeys.push(key);
+    } else {
+      flattenedKeys.push(...Object.keys(value));
+    }
+  });
+
+  return pickBy(
+    results,
+    (v, k) => Number.isInteger(v) && !flattenedKeys.includes(k),
+  ) as Record<string, number>;
 };
 
 interface CategoricalBinningModalProps {
@@ -61,8 +81,9 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
   const [selectedValues, setSelectedValues] = useState<Record<string, number>>(
     {},
   );
+  // TODO fix group + hide functionality
   const [hiddenValues, setHiddenValues] = useState<Record<string, number>>(
-    customBins !== null ? filterOutSelected(results, customBins) : {},
+    customBins !== null ? getHiddenValues(results, customBins) : {},
   );
   const [selectedHiddenValues, setSelectedHiddenValues] = useState<
     Record<string, number>

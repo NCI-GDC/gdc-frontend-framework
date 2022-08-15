@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { queryByDisplayValue, render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import CategoricalBinningModal from "./CategoricalBinningModal";
 
@@ -38,22 +38,29 @@ describe("<CategoricalBinningModal />", () => {
     expect(getByText("male (90)")).toBeInTheDocument();
   });
 
-  /*
   it("shows existing custom bins", () => {
-    const { queryByText } = render(
+    const { queryByText, queryByTestId, getByDisplayValue } = render(
       <CategoricalBinningModal
         setModalOpen={jest.fn()}
         field={"Gender"}
-        results={{ female: 10, male: 90 }}
-        customBins={{ "custom bin": 100 }}
+        results={{ female: 10, male: 90, missing: 200 }}
+        customBins={{ "custom bin": { female: 10, male: 100 } }}
         updateBins={jest.fn()}
       />,
     );
 
-    expect(queryByText("female (10)")).not.toBeInTheDocument();
-    expect(queryByText("custom bin (100)")).toBeInTheDocument();
+    expect(getByDisplayValue("custom bin")).toBeInTheDocument();
+    expect(
+      getByDisplayValue("custom bin")
+        .closest("li")
+        .contains(queryByText("female (10)")),
+    ).toBeTruthy();
+    expect(
+      queryByTestId("cat-bin-modal-hidden-values").contains(
+        queryByText("missing (200)"),
+      ),
+    ).toBeTruthy();
   });
-  */
 
   it("hide and show value", async () => {
     const { queryByText, queryByTestId } = render(
