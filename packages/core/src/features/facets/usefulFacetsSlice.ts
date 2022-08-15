@@ -14,6 +14,7 @@ import {
   isStatsAggregation,
 } from "../gdcapi/gdcapi";
 import { selectFacetDefinition } from "./facetDictionarySlice";
+import { GDC_APP_API_AUTH } from "../../constants";
 export type FacetDefinitionType = "cases" | "files";
 
 const buildFacetListByType = (
@@ -53,7 +54,7 @@ export const fetchFacetsWithValues = createAsyncThunk<
     ),
   };
 
-  const res = await fetch(`https://api.gdc.cancer.gov/${filterType}`, {
+  const res = await fetch(`${GDC_APP_API_AUTH}/${filterType}`, {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",

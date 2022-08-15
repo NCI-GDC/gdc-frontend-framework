@@ -162,6 +162,7 @@ const Header: React.FC<HeaderProps> = ({
               <Menu.Item
                 icon={<FaUserCheck size="1.25em" />}
                 onClick={async () => {
+                  // This is just done for the purpose of checking if the session is still active
                   const token = await fetchToken();
                   if (token.status === 401) {
                     dispatch(showModal(Modals.SessionExpireModal));

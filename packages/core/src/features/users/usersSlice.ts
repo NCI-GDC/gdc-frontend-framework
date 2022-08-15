@@ -14,18 +14,22 @@ export interface UserResponse {
   };
   username: string;
 }
+
+export async function fetchAuth({ endpoint }: { endpoint: string }) {
+  return await fetch(`${GDC_AUTH}/${endpoint}`, {
+    credentials: "same-origin",
+    method: "GET",
+    headers: {
+      "Access-Control-Allow-Origin": "true",
+      "Content-Type": "application/json",
+    },
+  });
+}
+
 export const fetchUserDetails = createAsyncThunk<UserResponse>(
   "userInfo/fetchUserDetails",
   async () => {
-    const response = await fetch(`${GDC_AUTH}user`, {
-      credentials: "same-origin",
-      method: "GET",
-      headers: {
-        "Access-Control-Allow-Origin": "true",
-        "Content-Type": "application/json",
-        "X-Auth-Token": "secret admin token",
-      },
-    });
+    const response = await fetchAuth({ endpoint: "user" });
 
     if (response.ok) {
       return response.json();
@@ -39,15 +43,7 @@ export const fetchToken = async (): Promise<{
   text: string | null;
   status: number;
 }> => {
-  const response = await fetch(`${GDC_AUTH}token/refresh`, {
-    credentials: "same-origin",
-    method: "GET",
-    headers: {
-      "Access-Control-Allow-Origin": "true",
-      "Content-Type": "application/json",
-      "X-Auth-Token": "secret admin token",
-    },
-  });
+  const response = await fetchAuth({ endpoint: "token/refresh" });
 
   if (response.ok) {
     return {

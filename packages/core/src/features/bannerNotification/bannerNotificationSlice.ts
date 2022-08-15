@@ -21,8 +21,8 @@ export const fetchNotifications = createAsyncThunk<
   void,
   { dispatch: CoreDispatch; state: CoreState }
 >("bannerNotifications/fetchNew", async () => {
-  const res = await fetch(`${GDC_APP_API_AUTH}notifications`);
-  const loginRes = await fetch(`${GDC_APP_API_AUTH}login-notifications`);
+  const res = await fetch(`${GDC_APP_API_AUTH}/notifications`);
+  const loginRes = await fetch(`${GDC_APP_API_AUTH}/login-notifications`);
 
   if (!res.ok) {
     throw await buildFetchError(res);
