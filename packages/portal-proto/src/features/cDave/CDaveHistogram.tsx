@@ -48,7 +48,6 @@ export const ContinuousHistogram: React.FC<ContinuousHistogramProps> = ({
     "cases",
     "repository",
   );
-  console.log(data);
 
   useEffect(() => {
     setResultData(mapKeys(data, (_, k) => toBucketDisplayName(k)));

@@ -147,7 +147,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
         results={resultData}
         customBinnedData={customBinnedData}
         setCustomBinnedData={setCustomBinnedData}
-        stats={data?.stats}
+        stats={continuous ? (data as Stats)?.stats : undefined}
       />
       <CDaveTable
         fieldName={fieldName}

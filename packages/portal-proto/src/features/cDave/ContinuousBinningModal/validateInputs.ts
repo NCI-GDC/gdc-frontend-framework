@@ -18,29 +18,30 @@ const validateNumberInput = (value: string) => {
   return null;
 };
 
-export const validateIntervalInput = (
-  value: string,
-  min: string,
-  max: string,
-) => {
-  const validNumberError = validateNumberInput(value);
+const validateIntervalSize = (size: string, min: string, max: string) => {
+  const validNumberError = validateNumberInput(size);
 
   if (validNumberError) {
     return validNumberError;
   }
 
-  if (Number(value) <= 0) {
+  if (Number(size) <= 0) {
     return "Must be greater than 0";
   }
 
-  if (max !== "" && min !== "" && Number(value) > Number(max) - Number(min)) {
+  if (
+    max !== "" &&
+    min !== "" &&
+    Number(max) > Number(min) &&
+    Number(size) > Number(max) - Number(min)
+  ) {
     return `Must be less than or equal to ${Number(max) - Number(min)}`;
   }
 
   return null;
 };
 
-export const validateMinInput = (value: string, max: string) => {
+const validateMinInput = (value: string, max: string) => {
   const validNumberError = validateNumberInput(value);
 
   if (validNumberError) {
@@ -54,7 +55,7 @@ export const validateMinInput = (value: string, max: string) => {
   return null;
 };
 
-export const validateMaxInput = (value: string, min: string) => {
+const validateMaxInput = (value: string, min: string) => {
   const validNumberError = validateNumberInput(value);
 
   if (validNumberError) {
@@ -66,6 +67,31 @@ export const validateMaxInput = (value: string, min: string) => {
   }
 
   return null;
+};
+
+export const validateIntervalInput = (
+  size: string,
+  min: string,
+  max: string,
+) => {
+  const errors = {};
+
+  const intervalSizeResult = validateIntervalSize(size, min, max);
+  if (intervalSizeResult) {
+    errors["setIntervalSize"] = intervalSizeResult;
+  }
+
+  const minResult = validateMinInput(min, max);
+  if (minResult) {
+    errors["setIntervalMin"] = minResult;
+  }
+
+  const maxResult = validateMaxInput(max, min);
+  if (maxResult) {
+    errors["setIntervalMax"] = maxResult;
+  }
+
+  return errors;
 };
 
 export const validateRangeInput = (

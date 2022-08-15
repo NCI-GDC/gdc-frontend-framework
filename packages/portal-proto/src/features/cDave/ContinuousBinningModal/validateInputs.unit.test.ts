@@ -1,51 +1,51 @@
-import {
-  validateMinInput,
-  validateMaxInput,
-  validateIntervalInput,
-  validateRangeInput,
-} from "./validateInputs";
+import { validateIntervalInput, validateRangeInput } from "./validateInputs";
 
 describe("validateInputs", () => {
-  it("validate interval input", () => {
-    expect(validateIntervalInput("", "5", "10")).toEqual("Required field");
-    expect(validateIntervalInput("fhqwhgads", "5", "10")).toEqual(
-      "fhqwhgads is not a valid number",
-    );
-    expect(validateIntervalInput("1.22222", "5", "10")).toEqual(
-      "Use up to 2 decimal places",
-    );
-    expect(validateIntervalInput("-1", "5", "10")).toEqual(
-      "Must be greater than 0",
-    );
-    expect(validateIntervalInput("7", "5", "10")).toEqual(
-      "Must be less than or equal to 5",
-    );
-    expect(validateIntervalInput("7", "", "10")).toEqual(null);
-    expect(validateIntervalInput("1", "5", "10")).toEqual(null);
+  it("validate interval size input", () => {
+    expect(validateIntervalInput("", "5", "10")).toEqual({
+      setIntervalSize: "Required field",
+    });
+    expect(validateIntervalInput("fhqwhgads", "5", "10")).toEqual({
+      setIntervalSize: "fhqwhgads is not a valid number",
+    });
+    expect(validateIntervalInput("1.22222", "5", "10")).toEqual({
+      setIntervalSize: "Use up to 2 decimal places",
+    });
+    expect(validateIntervalInput("-1", "5", "10")).toEqual({
+      setIntervalSize: "Must be greater than 0",
+    });
+    expect(validateIntervalInput("7", "5", "10")).toEqual({
+      setIntervalSize: "Must be less than or equal to 5",
+    });
+    expect(validateIntervalInput("1", "5", "10")).toEqual({});
   });
 
   it("validate min input", () => {
-    expect(validateMinInput("", "10")).toEqual("Required field");
-    expect(validateMinInput("blargh", "10")).toEqual(
-      "blargh is not a valid number",
-    );
-    expect(validateMinInput("2.5252", "")).toEqual(
-      "Use up to 2 decimal places",
-    );
-    expect(validateMinInput("15", "10")).toEqual("Must be less than 10");
-    expect(validateMinInput("10", "")).toEqual(null);
-    expect(validateMinInput("10", "15")).toEqual(null);
+    expect(validateIntervalInput("1", "", "10")).toEqual({
+      setIntervalMin: "Required field",
+    });
+    expect(validateIntervalInput("1", "blargh", "10")).toEqual({
+      setIntervalMin: "blargh is not a valid number",
+    });
+    expect(validateIntervalInput("1", "2.5252", "10")).toEqual({
+      setIntervalMin: "Use up to 2 decimal places",
+    });
+    expect(validateIntervalInput("1", "15", "10")).toEqual({
+      setIntervalMin: "Must be less than 10",
+      setIntervalMax: "Must be greater than 15",
+    });
   });
 
   it("validate max input", () => {
-    expect(validateMaxInput("", "10")).toEqual("Required field");
-    expect(validateMaxInput("mmm", "10")).toEqual("mmm is not a valid number");
-    expect(validateMaxInput("2.0001", "")).toEqual(
-      "Use up to 2 decimal places",
-    );
-    expect(validateMaxInput("5", "10")).toEqual("Must be greater than 10");
-    expect(validateMaxInput("10", "")).toEqual(null);
-    expect(validateMaxInput("15", "10")).toEqual(null);
+    expect(validateIntervalInput("1", "10", "")).toEqual({
+      setIntervalMax: "Required field",
+    });
+    expect(validateIntervalInput("1", "10", "mmm")).toEqual({
+      setIntervalMax: "mmm is not a valid number",
+    });
+    expect(validateIntervalInput("1", "0", "2.0001")).toEqual({
+      setIntervalMax: "Use up to 2 decimal places",
+    });
   });
 
   it("validate range input", () => {
