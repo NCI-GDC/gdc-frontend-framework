@@ -1,4 +1,4 @@
-import { GDC_APP_SLIDE_IMAGE_ENDPOINT } from "../../Api";
+import { GDC_APP_SLIDE_IMAGE_ENDPOINT } from "../../constants";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 
 export interface ImageMetadataResponse {

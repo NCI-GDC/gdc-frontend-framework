@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import { buildFetchError } from "../gdcapi/gdcapi";
-import { GDC_APP_API_AUTH } from "../../Api";
+import { GDC_APP_API_AUTH } from "../../constants";
 
 export interface BannerNotification {
   readonly id: number;

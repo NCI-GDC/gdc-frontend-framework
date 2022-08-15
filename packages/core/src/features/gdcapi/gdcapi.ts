@@ -1,7 +1,7 @@
 import { isObject } from "../../ts-utils";
 import { GqlOperation } from "./filters";
 import "isomorphic-fetch";
-import { GDC_APP_API_AUTH } from "../../Api";
+import { GDC_APP_API_AUTH } from "../../constants";
 
 export type UnknownJson = Record<string, unknown>;
 export interface GdcApiResponse<H = UnknownJson> {
