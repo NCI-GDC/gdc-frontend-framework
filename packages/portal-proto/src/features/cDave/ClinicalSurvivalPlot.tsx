@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Loader, Alert } from "@mantine/core";
 import {
   useCoreSelector,
@@ -9,18 +9,20 @@ import {
 } from "@gff/core";
 
 import SurvivalPlot, { SurvivalPlotTypes } from "../charts/SurvivalPlot";
-import { parseContinuousBucket } from "./utils";
-import { useEffect } from "react";
+import { isInterval, parseContinuousBucket } from "./utils";
+import { CategoricalBins, CustomInterval, NamedFromTo } from "./types";
 
 interface ClinicalSurvivalPlotProps {
   readonly field: string;
   readonly selectedSurvivalPlots: string[];
+  readonly customBinnedData: CategoricalBins | NamedFromTo[] | CustomInterval;
   readonly continuous: boolean;
 }
 
 const ClinicalSurvivalPlot: React.FC<ClinicalSurvivalPlotProps> = ({
   field,
   selectedSurvivalPlots,
+  customBinnedData,
   continuous,
 }: ClinicalSurvivalPlotProps) => {
   const [plotType, setPlotType] = useState(undefined);
@@ -50,22 +52,48 @@ const ClinicalSurvivalPlot: React.FC<ClinicalSurvivalPlotProps> = ({
           }
 
           if (continuous) {
-            const [fromValue, toValue] = parseContinuousBucket(value);
+            if (
+              customBinnedData !== null &&
+              !isInterval(customBinnedData as NamedFromTo[] | CustomInterval)
+            ) {
+              const dataPoint = (customBinnedData as NamedFromTo[]).find(
+                (bin) => bin.name === value,
+              );
 
-            content.push({
-              op: ">=",
-              content: { field, value: [fromValue] },
-            });
+              content.push({
+                op: ">=",
+                content: { field, value: [dataPoint.from] },
+              });
 
-            content.push({
-              op: "<",
-              content: { field, value: [toValue] },
-            });
+              content.push({
+                op: "<",
+                content: { field, value: [dataPoint.to] },
+              });
+            } else {
+              const [fromValue, toValue] = value.split(" to <");
+
+              content.push({
+                op: ">=",
+                content: { field, value: [fromValue] },
+              });
+
+              content.push({
+                op: "<",
+                content: { field, value: [toValue] },
+              });
+            }
           } else {
-            content.push({
-              op: "=",
-              content: { field, value },
-            });
+            if (typeof customBinnedData?.[value] === "object") {
+              content.push({
+                op: "=",
+                content: { field, value: Object.keys(customBinnedData[value]) },
+              });
+            } else {
+              content.push({
+                op: "=",
+                content: { field, value },
+              });
+            }
           }
 
           return {

@@ -24,7 +24,7 @@ const formatContinuousResultData = (
   if (!isInterval(customBinnedData) && customBinnedData?.length > 0) {
     return Object.fromEntries(
       Object.entries(data).map(([_, v], idx) => [
-        customBinnedData[idx].name,
+        customBinnedData[idx]?.name,
         v,
       ]),
     );
@@ -66,7 +66,7 @@ export const ContinuousHistogram: React.FC<ContinuousHistogramProps> = ({
     ? customBinnedData.map((d) => ({ to: d.to, from: d.from }))
     : createBuckets(stats.min, stats.max);
 
-  const { data, isFetching } = useRangeFacet(
+  const { data, isFetching, isSuccess } = useRangeFacet(
     field,
     ranges,
     "cases",
@@ -74,14 +74,16 @@ export const ContinuousHistogram: React.FC<ContinuousHistogramProps> = ({
   );
 
   useEffect(() => {
-    setResultData(formatContinuousResultData(data, customBinnedData));
-  }, [data]);
+    setResultData(
+      formatContinuousResultData(isSuccess ? data : {}, customBinnedData),
+    );
+  }, [data, customBinnedData, isSuccess]);
 
   return (
     <CDaveHistogram
       field={field}
       fieldName={fieldName}
-      data={formatContinuousResultData(data, customBinnedData)}
+      data={formatContinuousResultData(isSuccess ? data : {}, customBinnedData)}
       isFetching={isFetching}
       continuous={true}
       noData={stats.count === 0}

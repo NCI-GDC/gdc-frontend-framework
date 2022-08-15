@@ -139,6 +139,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
           field={field}
           selectedSurvivalPlots={selectedSurvivalPlots}
           continuous={continuous}
+          customBinnedData={customBinnedData}
         />
       )}
       <CardControls
@@ -175,15 +176,25 @@ interface CDaveTableProps {
 const CDaveTable: React.FC<CDaveTableProps> = ({
   fieldName,
   data = {},
-  customBinnedData = {},
+  customBinnedData = null,
   survival,
   selectedSurvivalPlots,
   setSelectedSurvivalPlots,
   continuous,
 }: CDaveTableProps) => {
   useEffect(() => {
-    setSelectedSurvivalPlots(Object.keys(data).slice(0, 2));
-  }, [data, setSelectedSurvivalPlots]);
+    setSelectedSurvivalPlots(
+      Object.keys(
+        customBinnedData !== null && !continuous
+          ? Object.fromEntries(
+              Object.entries(
+                flattenBinnedData(customBinnedData as CategoricalBins),
+              ).sort((a, b) => b[1] - a[1]),
+            )
+          : data,
+      ).slice(0, 2),
+    );
+  }, [data, setSelectedSurvivalPlots, customBinnedData]);
 
   const yTotal = Object.values(data).reduce((a, b) => a + b, 0);
 
