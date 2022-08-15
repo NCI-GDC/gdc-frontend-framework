@@ -15,7 +15,11 @@ export interface UserResponse {
   username: string;
 }
 
-export async function fetchAuth({ endpoint }: { endpoint: string }) {
+export async function fetchAuth({
+  endpoint,
+}: {
+  endpoint: string;
+}): Promise<Response> {
   return await fetch(`${GDC_AUTH}/${endpoint}`, {
     credentials: "same-origin",
     method: "GET",

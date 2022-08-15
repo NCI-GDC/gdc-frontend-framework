@@ -147,7 +147,7 @@ const Header: React.FC<HeaderProps> = ({
             <SearchIcon size="24px" />{" "}
           </div>
           {userInfo.data.username ? (
-            <Menu>
+            <Menu width="target">
               <Menu.Target>
                 <Button
                   rightIcon={<MdArrowDropDown size="2em" />}
@@ -158,94 +158,97 @@ const Header: React.FC<HeaderProps> = ({
                   {userInfo.data.username}
                 </Button>
               </Menu.Target>
-
-              <Menu.Item
-                icon={<FaUserCheck size="1.25em" />}
-                onClick={async () => {
-                  // This is just done for the purpose of checking if the session is still active
-                  const token = await fetchToken();
-                  if (token.status === 401) {
-                    dispatch(showModal(Modals.SessionExpireModal));
-                    return;
-                  }
-                  dispatch(showModal(Modals.UserProfileModal));
-                }}
-              >
-                User Profile
-              </Menu.Item>
-              <Menu.Item
-                icon={<FaDownload size="1.25em" />}
-                onClick={async () => {
-                  if (Object.keys(userInfo.data?.projects.gdc_ids).length > 0) {
+              <Menu.Dropdown>
+                <Menu.Item
+                  icon={<FaUserCheck size="1.25em" />}
+                  onClick={async () => {
+                    // This is just done for the purpose of checking if the session is still active
                     const token = await fetchToken();
                     if (token.status === 401) {
                       dispatch(showModal(Modals.SessionExpireModal));
                       return;
                     }
-                    saveAs(
-                      new Blob([token.text], {
-                        type: "text/plain;charset=us-ascii",
-                      }),
-                      `gdc-user-token.${new Date().toISOString()}.txt`,
-                    );
-                  } else {
-                    cleanNotifications();
-                    showNotification({
-                      message: (
-                        <p>
-                          {userInfo.data.username} does not have access to any
-                          protected data within the GDC. Click{" "}
-                          <a
-                            href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
-                            target="_blank"
-                            rel="noreferrer"
-                            style={{
-                              textDecoration: "underline",
-                              color: "#0f4163",
-                            }}
-                          >
-                            here
-                          </a>{" "}
-                          to learn more about obtaining access to protected
-                          data.
-                        </p>
+                    dispatch(showModal(Modals.UserProfileModal));
+                  }}
+                >
+                  User Profile
+                </Menu.Item>
+                <Menu.Item
+                  icon={<FaDownload size="1.25em" />}
+                  onClick={async () => {
+                    if (
+                      Object.keys(userInfo.data?.projects.gdc_ids).length > 0
+                    ) {
+                      const token = await fetchToken();
+                      if (token.status === 401) {
+                        dispatch(showModal(Modals.SessionExpireModal));
+                        return;
+                      }
+                      saveAs(
+                        new Blob([token.text], {
+                          type: "text/plain;charset=us-ascii",
+                        }),
+                        `gdc-user-token.${new Date().toISOString()}.txt`,
+                      );
+                    } else {
+                      cleanNotifications();
+                      showNotification({
+                        message: (
+                          <p>
+                            {userInfo.data.username} does not have access to any
+                            protected data within the GDC. Click{" "}
+                            <a
+                              href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
+                              target="_blank"
+                              rel="noreferrer"
+                              style={{
+                                textDecoration: "underline",
+                                color: "#0f4163",
+                              }}
+                            >
+                              here
+                            </a>{" "}
+                            to learn more about obtaining access to protected
+                            data.
+                          </p>
+                        ),
+                        styles: () => ({
+                          root: {
+                            backgroundColor: "#ffe296",
+                            textAlign: "center",
+                            "&::before": { backgroundColor: "#ffe296" },
+                          },
+                          closeButton: {
+                            color: "black",
+                            "&:hover": { backgroundColor: "#e6e6e6" },
+                          },
+                          icon: {
+                            height: 0,
+                            width: 0,
+                          },
+                        }),
+                        icon: <div />,
+                      });
+                    }
+                  }}
+                >
+                  Download Token
+                </Menu.Item>
+                <Menu.Item
+                  icon={<MdLogout size="1.25em" />}
+                  onClick={() => {
+                    // TODO: need to change next url to the new URL
+                    window.location.assign(
+                      urlJoin(
+                        GDC_AUTH,
+                        `logout?next=https://localhost.gdc.cancer.gov:3010/user-flow/workbench`,
                       ),
-                      styles: () => ({
-                        root: {
-                          backgroundColor: "#ffe296",
-                          textAlign: "center",
-                          "&::before": { backgroundColor: "#ffe296" },
-                        },
-                        closeButton: {
-                          color: "black",
-                          "&:hover": { backgroundColor: "#e6e6e6" },
-                        },
-                        icon: {
-                          height: 0,
-                          width: 0,
-                        },
-                      }),
-                      icon: <div />,
-                    });
-                  }
-                }}
-              >
-                Download Token
-              </Menu.Item>
-              <Menu.Item
-                icon={<MdLogout size="1.25em" />}
-                onClick={() => {
-                  // TODO: need to change next url to the new URL
-                  window.location.assign(
-                    urlJoin(
-                      GDC_AUTH,
-                      `logout?next=https://localhost.gdc.cancer.gov:3010/user-flow/workbench`,
-                    ),
-                  );
-                }}
-              >
-                Logout
-              </Menu.Item>
+                    );
+                  }}
+                >
+                  Logout
+                </Menu.Item>
+              </Menu.Dropdown>
             </Menu>
           ) : (
             <LoginButton />

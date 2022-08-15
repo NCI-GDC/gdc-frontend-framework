@@ -103,3 +103,19 @@ For example,
 `npm run test:int` will run integration tests.
 
 `npm run test:all` will run both unit and integration tests.
+
+### Running Auth in Localhost (Login and other Auth related actions)
+
+1. [Open Chrome (web browser)](https://alfilatov.com/posts/run-chrome-without-cors/) which disables web security to suppress the CORS warning.
+2. Configure your machine to map `localhost.gdc.cancer.gov` (or a similar subdomain) to resolve to `127.0.0.1`.
+
+   In Mac or Linux, edit the file `/etc/hosts` (You need to give sudo access to edit this file), add the following line:
+
+   ```
+       127.0.0.1   localhost localhost.gdc.cancer.gov
+   ```
+
+3. Since the `sessionid` cookie can only be send through `HTTPS`, you need to [add https to your localhost](https://dev.to/defite/adding-https-to-your-localhost-15hg).
+4. After these steps, you can access the app on `https://localhost.gdc.cancer.gov:3010/`.
+5. Even after all these steps you will see `SecurityError: Blocked a frame with origin "https://localhost.gdc.cancer.gov:3010" from accessing a cross-origin frame` error. But you can close the error and refresh the page. This warning will be supressed in production.
+6. Now you can Login and use features that are available with Authentication.
