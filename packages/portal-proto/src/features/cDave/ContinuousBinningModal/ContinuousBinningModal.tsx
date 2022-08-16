@@ -174,7 +174,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
           </div>
           <Button
             aria-label="reset bins"
-            className="p-2"
+            className="p-2 bg-nci-gray"
             onClick={() => {
               intervalForm.reset();
               rangeForm.reset();

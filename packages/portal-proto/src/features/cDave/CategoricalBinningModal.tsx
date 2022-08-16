@@ -81,7 +81,6 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
   const [selectedValues, setSelectedValues] = useState<Record<string, number>>(
     {},
   );
-  // TODO fix group + hide functionality
   const [hiddenValues, setHiddenValues] = useState<Record<string, number>>(
     customBins !== null ? getHiddenValues(results, customBins) : {},
   );
