@@ -24,12 +24,10 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
   customBins,
 }: ContinuousBinningModalProps) => {
   const binSize = (stats.max + 1 - stats.min) / 4;
-  const customIntervalSet = isInterval(customBins);
-  const [binMethod, setBinMethod] = useState<"interval" | "ranges">(
-    !customIntervalSet && customBins?.length > 0 ? "ranges" : "interval",
-  );
+  const [binMethod, setBinMethod] = useState<"interval" | "ranges">("interval");
   const [savedRangeRows, setSavedRangeRow] = useState([]);
 
+  const customIntervalSet = isInterval(customBins);
   const intervalForm = useForm({
     validateInputOnChange: true,
     initialValues: {
@@ -68,7 +66,9 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
   useEffect(() => {
     intervalForm.clearErrors();
     intervalForm.validate();
-  }, [intervalForm, intervalForm.values]);
+    // Adding form objects to dep array causes infinite rerenders
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [intervalForm.values]);
 
   useEffect(() => {
     if (binMethod === "interval") {
@@ -80,7 +80,15 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
         rangeForm.validate();
       }
     }
-  }, [rangeForm, intervalForm, binMethod]);
+    // Adding form objects to dep array causes infinite rerenders
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [binMethod]);
+
+  useEffect(() => {
+    setBinMethod(
+      !customIntervalSet && customBins?.length > 0 ? "ranges" : "interval",
+    );
+  }, [customIntervalSet, customBins]);
 
   return (
     <Modal

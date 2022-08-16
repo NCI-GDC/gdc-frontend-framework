@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { ActionIcon, Tooltip, Checkbox } from "@mantine/core";
 import { MdShowChart as SurvivalChartIcon } from "react-icons/md";
 import { CategoricalBins, CustomInterval, NamedFromTo } from "./types";

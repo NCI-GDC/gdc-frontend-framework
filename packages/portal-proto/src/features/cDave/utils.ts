@@ -27,13 +27,18 @@ export const createBuckets = (
   }
 
   const numBuckets = customInterval
-    ? Math.ceil((max - min) / customInterval)
+    ? Math.floor((max - min) / customInterval)
     : 5;
   const interval = customInterval ? customInterval : (max - min) / 5;
 
   return Array.from({ length: numBuckets }, (_, i) => ({
     from: i * interval + min,
-    to: i + 1 === numBuckets ? max + 1 : min + (i + 1) * interval,
+    to:
+      i + 1 === numBuckets
+        ? customInterval
+          ? max
+          : max + 1
+        : min + (i + 1) * interval,
   }));
 };
 

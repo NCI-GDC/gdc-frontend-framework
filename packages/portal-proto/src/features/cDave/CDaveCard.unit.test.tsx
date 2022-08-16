@@ -110,6 +110,7 @@ describe("CDaveCard", () => {
     jest.spyOn(facetHooks, "useRangeFacet").mockReturnValue({
       data: { "7201.0-12255.8": 10, "12255.8-17310.6": 90 },
       isFetching: false,
+      isSuccess: true,
     } as any);
 
     const { getByRole } = render(
@@ -137,6 +138,7 @@ describe("CDaveCard", () => {
     jest.spyOn(facetHooks, "useRangeFacet").mockReturnValue({
       data: { "-28.0-166.8000001": 38 },
       isFetching: false,
+      isSuccess: true,
     } as any);
 
     const { getByRole } = render(

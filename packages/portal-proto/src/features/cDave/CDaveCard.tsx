@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { mapKeys } from "lodash";
-import { Card, ActionIcon, Tooltip, Button, Menu, Loader } from "@mantine/core";
+import { Card, ActionIcon, Tooltip, Button, Menu } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
 import {
   MdBarChart as BarChartIcon,
@@ -12,6 +12,7 @@ import {
   useCoreSelector,
   selectFacetDefinitionByName,
   Buckets,
+  Bucket,
   Stats,
   Statistics,
 } from "@gff/core";
@@ -232,13 +233,18 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
 };
 
 interface CategoricalDataProps {
-  readonly initialData: Buckets;
+  readonly initialData: readonly Bucket[];
   readonly field: string;
   readonly fieldName: string;
   readonly chartType: ChartTypes;
 }
 
-const CategoricalData = ({ initialData, field, fieldName, chartType }) => {
+const CategoricalData: React.FC<CategoricalDataProps> = ({
+  initialData,
+  field,
+  fieldName,
+  chartType,
+}: CategoricalDataProps) => {
   const [customBinnedData, setCustomBinnedData] =
     useState<CategoricalBins>(null);
   const [selectedSurvivalPlots, setSelectedSurvivalPlots] = useState<string[]>(
@@ -301,7 +307,6 @@ const CategoricalData = ({ initialData, field, fieldName, chartType }) => {
         results={resultData}
         customBinnedData={customBinnedData}
         setCustomBinnedData={setCustomBinnedData}
-        stats={initialData}
       />
       <CDaveTable
         fieldName={fieldName}
@@ -383,7 +388,11 @@ const CardControls: React.FC<CardControlsProps> = ({
             setModalOpen={setModalOpen}
             field={field}
             stats={stats}
-            updateBins={setCustomBinnedData}
+            updateBins={
+              setCustomBinnedData as (
+                bins: NamedFromTo[] | CustomInterval,
+              ) => void
+            }
             customBins={customBinnedData as NamedFromTo[] | CustomInterval}
           />
         ) : (
@@ -391,7 +400,7 @@ const CardControls: React.FC<CardControlsProps> = ({
             setModalOpen={setModalOpen}
             field={field}
             results={results}
-            updateBins={setCustomBinnedData}
+            updateBins={setCustomBinnedData as (bins: CategoricalBins) => void}
             customBins={customBinnedData as CategoricalBins}
           />
         ))}
