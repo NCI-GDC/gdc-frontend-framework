@@ -40,14 +40,9 @@ USER nextjs
 
 EXPOSE 3000
 ENV PORT 3000
-####################################################
-FROM ${registry}/ncigdc/nginx-extras:1.2.0
 
-RUN rm -v /etc/nginx/sites-enabled/default
 
-COPY --from=builder /portal/build /usr/share/nginx/html
 
-##########################################################
 User root
 
 CMD ["npm", "run", "start"]
