@@ -14,7 +14,7 @@ export const internalHighlight = (
     return (
       <span>
         {seg1}
-        <mark className={"font-bold bg-transparent"}>{foundQuery}</mark>
+        <mark className="font-bold bg-transparent">{foundQuery}</mark>
         {seg2}
       </span>
     );

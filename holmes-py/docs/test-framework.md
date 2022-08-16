@@ -13,3 +13,4 @@ Use `data-testid={elementIdentifierName}` within a tag to help locate the elemen
 Reference:
 1. **Using "data-test" in Tests** - https://blog.rstankov.com/using-rel-in-testing/
 2. **data-\*** - https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/data-*
+
