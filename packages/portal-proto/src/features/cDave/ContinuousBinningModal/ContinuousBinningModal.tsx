@@ -277,6 +277,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                           rangeForm.values.ranges[idx].from === "" ||
                           rangeForm.values.ranges[idx].to === ""
                         }
+                        className="bg-nci-gray"
                       >
                         Add
                       </Button>

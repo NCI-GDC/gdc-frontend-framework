@@ -158,6 +158,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
                 setSelectedValues({});
               }}
               aria-label="reset groups"
+              className="bg-nci-gray"
             >
               <ResetIcon size={20} />
             </Button>
@@ -165,6 +166,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
               onClick={group}
               disabled={Object.keys(selectedValues).length < 2}
               leftIcon={<GroupIcon />}
+              className="bg-nci-gray"
             >
               Group
             </Button>
@@ -186,6 +188,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
                 )
               }
               leftIcon={<UngroupIcon />}
+              className="bg-nci-gray"
             >
               Ungroup
             </Button>
@@ -193,6 +196,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
               onClick={hideValues}
               disabled={Object.keys(selectedValues).length === 0}
               leftIcon={<HideIcon />}
+              className="bg-nci-gray"
             >
               Hide
             </Button>
@@ -241,6 +245,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
               setSelectedHiddenValues({});
             }}
             leftIcon={<ShowIcon />}
+            className="bg-nci-gray"
           >
             Show
           </Button>
