@@ -86,14 +86,12 @@ build docker:
   tags:
     - dind
   image: docker:20.10.16-dind
-  variables:
-    npm_config_registry: https://nexus.osdc.io/repository/npm-all/
   script:
     - apk add bash
     - export CLEAN_BRANCH_NAME=${CI_COMMIT_BRANCH/\//_}
     - export LOWERCASE_BRANCH_NAME="$(bash -c 'tr "[:upper:]" "[:lower:]" <<< "$CLEAN_BRANCH_NAME"')"
-    - docker build -t $REGISTRY/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME .
-    - docker push $REGISTRY/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME
+    - docker build -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME-${CI_COMMIT_SHORT_SHA} .
+    - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME-${CI_COMMIT_SHORT_SHA}
   cache:
     key: build-cache
     paths:
@@ -108,15 +106,13 @@ Push latest:
   tags:
     - dind
   image: docker:20.10.16-dind
-  variables:
-    npm_config_registry: https://nexus.osdc.io/repository/npm-all/
   only:
     - master
   script:
     - apk add bash
     - export CLEAN_BRANCH_NAME=${CI_COMMIT_BRANCH/\//_}
     - export LOWERCASE_BRANCH_NAME="$(bash -c 'tr "[:upper:]" "[:lower:]" <<< "$CLEAN_BRANCH_NAME"')"
-    - docker pull $REGISTRY/$CI_PROJECT_NAME:$CLEAN_BRANCH_NAME
-    - docker tag $REGISTRY/$CI_PROJECT_NAME:$CLEAN_BRANCH_NAME $REGISTRY/$CI_PROJECT_NAME:latest
-    - docker push $REGISTRY/$CI_PROJECT_NAME:latest
+    - docker pull $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME-${CI_COMMIT_SHORT_SHA}
+    - docker tag $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME-${CI_COMMIT_SHORT_SHA} $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:latest
+    - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:latest
 
