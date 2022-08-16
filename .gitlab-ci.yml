@@ -89,9 +89,10 @@ build docker:
   variables:
     npm_config_registry: https://nexus.osdc.io/repository/npm-all/
   script:
-    - BRANCH="${CI_COMMIT_BRANCH//[\/]/_}"
-    - docker build -t $REGISTRY/$CI_PROJECT_NAME:$BRANCH .
-    - docker push $REGISTRY/$CI_PROJECT_NAME:$BRANCH
+    - export CLEAN_BRANCH_NAME=${CI_COMMIT_BRANCH/\//_}
+    - export LOWERCASE_BRANCH_NAME="$(bash -c 'tr "[:upper:]" "[:lower:]" <<< "$CLEAN_BRANCH_NAME"')"
+    - docker build -t $REGISTRY/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME .
+    - docker push $REGISTRY/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME
   cache:
     key: build-cache
     paths:
@@ -111,8 +112,9 @@ Push latest:
   only:
     - master
   script:
-    - BRANCH="${CI_COMMIT_BRANCH//[\/]/_}"
-    - docker pull $REGISTRY/$CI_PROJECT_NAME:$BRANCH
-    - docker tag $REGISTRY/$CI_PROJECT_NAME:$BRANCH $REGISTRY/$CI_PROJECT_NAME:latest
+    - export CLEAN_BRANCH_NAME=${CI_COMMIT_BRANCH/\//_}
+    - export LOWERCASE_BRANCH_NAME="$(bash -c 'tr "[:upper:]" "[:lower:]" <<< "$CLEAN_BRANCH_NAME"')"
+    - docker pull $REGISTRY/$CI_PROJECT_NAME:$CLEAN_BRANCH_NAME
+    - docker tag $REGISTRY/$CI_PROJECT_NAME:$CLEAN_BRANCH_NAME $REGISTRY/$CI_PROJECT_NAME:latest
     - docker push $REGISTRY/$CI_PROJECT_NAME:latest
 
