@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { pickBy, mapKeys } from "lodash";
 import { Button, Modal, TextInput } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
@@ -87,6 +87,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
   const [selectedHiddenValues, setSelectedHiddenValues] = useState<
     Record<string, number>
   >({});
+  const [hasInputErrors, setInputErrors] = useState(false);
 
   const group = () => {
     const existingGroup = Object.entries(values).find(
@@ -211,6 +212,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
                 updateGroupName={updateGroupName}
                 selectedValues={selectedValues}
                 setSelectedValues={setSelectedValues}
+                setInputErrors={setInputErrors}
                 key={k}
               />
             ) : (
@@ -274,6 +276,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
             updateBins(values);
             setModalOpen(false);
           }}
+          disabled={hasInputErrors}
         >
           Save Bins
         </Button>
@@ -331,6 +334,7 @@ interface GroupInputProps {
   readonly updateGroupName: (oldName: string, newName: string) => void;
   readonly selectedValues: Record<string, number>;
   readonly setSelectedValues: (selectedValues: Record<string, number>) => void;
+  readonly setInputErrors: (hasError: boolean) => void;
 }
 
 const GroupInput: React.FC<GroupInputProps> = ({
@@ -340,6 +344,7 @@ const GroupInput: React.FC<GroupInputProps> = ({
   updateGroupName,
   selectedValues,
   setSelectedValues,
+  setInputErrors,
 }: GroupInputProps) => {
   const [editMode, setEditMode] = useState(true);
 
@@ -368,6 +373,10 @@ const GroupInput: React.FC<GroupInputProps> = ({
   const ref = useClickOutside(() => {
     closeInput();
   });
+
+  useEffect(() => {
+    setInputErrors(Object.keys(form.errors).length > 0);
+  }, [form.values]);
 
   return (
     <li>
