@@ -41,8 +41,6 @@ USER nextjs
 EXPOSE 3000
 ENV PORT 3000
 
-
-
 User root
 
 CMD ["npm", "run", "start"]
