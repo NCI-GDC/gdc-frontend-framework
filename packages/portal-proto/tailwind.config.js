@@ -3,6 +3,7 @@
 // eslint-disable-next-line  @typescript-eslint/no-var-requires
 const plugin = require("tailwindcss/plugin");
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function withOpacityValue(variable) {
   return ({ opacityValue }) => {
     if (opacityValue === undefined) {
@@ -172,6 +173,7 @@ const nciCyan = {
   min: "#092A33",
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const nciCyanContrast = {
   min: "#FFFFFF",
   darkest: "#f1f1f1",
@@ -535,7 +537,10 @@ module.exports = {
     }),
     /**
      * Color theme follows USWGS Color Tokens https://designsystem.digital.gov/design-tokens/color/theme-tokens/
-     * with an addition of content and focus tokens
+     * with an addition of content and contrast colors
+     * Note: the contrast color is defined to be a 508 compliant contrast
+     * so while primary-darker is a darker version of primary
+     * primary-contrast-darker is lighter but is named to match the primary color
      */
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     require("tailwindcss-themer")({
@@ -567,6 +572,37 @@ module.exports = {
           },
         },
       },
+      themes: [
+        {
+          name: "invert-primary",
+          extend: {
+            colors: {
+              base: nciGray,
+              "base-content": nciGrayContent,
+              "base-contrast": nciGrayContrast,
+              primary: nciRed,
+              "primary-content": nciGrayContent,
+              "primary-contrast": nciRedContrast,
+              secondary: nciBlue,
+              "secondary-content": nciGrayContent,
+              "secondary-contrast": nciBlueContrast,
+              accent: nciBlumine,
+              "accent-content": nciGrayContent,
+              "accent-contrast": nciBlumineContrast,
+              "accent-warm": nciYellow,
+              "accent-warm-content": nciGrayContent,
+              "accent-warm-contrast": nciYellowContrast,
+              "accent-cool": nciBlumine,
+              "accent-cool-content": nciGrayContent,
+              "accent-cool-contrast": nciBlumineContrast,
+              chart: nciTeal,
+              "chart-contrast": nciTealContrast,
+              utility: utility,
+              "utility-contrast": utilityContrast,
+            },
+          },
+        },
+      ],
     }),
   ],
 };

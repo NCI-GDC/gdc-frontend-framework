@@ -5,6 +5,7 @@ import { createContext, useState } from "react";
 import { Provider } from "react-redux";
 import type { AppProps } from "next/app";
 import { CoreProvider } from "@gff/core";
+import { useLocalStorage } from "@mantine/hooks";
 import { MantineProvider } from "@mantine/core";
 import { NotificationsProvider } from "@mantine/notifications";
 import { TourProvider } from "@reactour/tour";
@@ -47,7 +48,10 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
   const [prevPath, setPrevPath] = useState("");
   const [currentPath, setCurrentPath] = useState("");
-
+  const [theme] = useLocalStorage({
+    key: "color-scheme",
+    defaultValue: "default",
+  });
   useEffect(() => {
     setPrevPath(currentPath);
     setCurrentPath(globalThis.location.pathname + globalThis.location.search);
@@ -102,13 +106,19 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
             },
           }}
         >
-          <URLContext.Provider value={{ prevPath, currentPath }}>
-            <NotificationsProvider position="top-center">
-              <TourProvider steps={[]} components={{ Badge }}>
-                <Component {...pageProps} />
-              </TourProvider>
-            </NotificationsProvider>
-          </URLContext.Provider>
+          <div
+            className={`${
+              theme !== "default" ? theme : null
+            } color-transition duration-500`}
+          >
+            <URLContext.Provider value={{ prevPath, currentPath }}>
+              <NotificationsProvider position="top-center">
+                <TourProvider steps={[]} components={{ Badge }}>
+                  <Component {...pageProps} />
+                </TourProvider>
+              </NotificationsProvider>
+            </URLContext.Provider>
+          </div>
         </MantineProvider>
       </Provider>
     </CoreProvider>

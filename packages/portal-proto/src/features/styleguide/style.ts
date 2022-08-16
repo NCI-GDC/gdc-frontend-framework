@@ -1,3 +1,3 @@
 export const divider_style = {
-  label: "font-medium text-primary-content-darker text-lg my-2",
+  label: "font-medium text-primary-content-darkest text-lg my-2",
 };

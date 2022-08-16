@@ -440,7 +440,7 @@ const ColorAndcontrastPalletLine = ({
   return (
     <div className="flex flex-row items-center font-montserrat font-bold">
       <div className="grid gap-2 grid-cols-12 grid-rows-1 my-1">
-        <p className="col-span-2 text-black ">{name}</p>
+        <p className="bg-base-max col-span-2 text-black ">{name}</p>
         {colors.map((x, i) => {
           const ext = x.split("-").slice(-1);
           return (

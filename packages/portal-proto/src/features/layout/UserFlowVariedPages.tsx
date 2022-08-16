@@ -2,6 +2,7 @@ import { PropsWithChildren, ReactNode, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useLocalStorage } from "@mantine/hooks";
 import { Menu } from "@mantine/core";
 import {
   isString,
@@ -76,6 +77,8 @@ interface HeaderProps {
   readonly Options?: React.FC<unknown>;
 }
 
+const V2Themes = ["default", "invert-primary"];
+
 const Header: React.FC<HeaderProps> = ({
   headerElements,
   indexPath,
@@ -85,8 +88,13 @@ const Header: React.FC<HeaderProps> = ({
   const currentCart = useCoreSelector((state) => selectCart(state));
   const { isSuccess: totalSuccess } = useTotalCounts(); // request total counts and facet dictionary
   const { isSuccess: dictSuccess } = useFacetDictionary();
+  const [, setTheme] = useLocalStorage({
+    key: "color-scheme",
+    defaultValue: "default",
+  });
+
   return (
-    <div className="px-6 py-3 border-b border-gdc-grey-lightest">
+    <div className={`px-6 py-3 border-b border-base-lightest `}>
       <div className="flex flex-row flex-wrap divide-x divide-base-light items-center">
         <LoadingOverlay visible={!(totalSuccess || dictSuccess)} />
         <div className="flex-none w-64 h-nci-logo mr-2 relative">
@@ -101,6 +109,7 @@ const Header: React.FC<HeaderProps> = ({
               src="/NIH_GDC_DataPortal-logo.svg"
               layout="fill"
               objectFit="contain"
+              aria-label="NCI GDC Data Portal logo"
             />
           </Button>
         </div>
@@ -153,6 +162,15 @@ const Header: React.FC<HeaderProps> = ({
                 <TourIcon size="2.5em" />
                 <div className="text-center text-sm pt-1">{"Tour"}</div>
               </Menu.Item>
+              <Menu.Divider />
+              <Menu.Label>Themes</Menu.Label>
+              {V2Themes.map((theme) => (
+                <Menu.Item key={theme} onClick={() => setTheme(theme)}>
+                  <div className="capitalize text-left text-sm pt-1">
+                    {theme}
+                  </div>
+                </Menu.Item>
+              ))}
             </Menu.Dropdown>
           </Menu>
         </div>
