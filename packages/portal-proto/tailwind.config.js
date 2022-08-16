@@ -29,7 +29,7 @@ module.exports = {
          * colors. The DEFAULT represent the value for those colors. The
          * shades from the extended palette are represented by the light,
          * lighter, lightest, dark, darker, and darkest modifiers. Each one
-         * maps to a every third shade.
+         * maps to every third shade.
          */
         // theming support
         primary: withOpacityValue("--color-primary"),
@@ -323,6 +323,11 @@ module.exports = {
   plugins: [
     require("@tailwindcss/forms"),
     require("@tailwindcss/typography"),
+    plugin(function ({ addVariant }) {
+      // add mantine.dev variants
+      addVariant("data-checked", "&[data-checked]");
+      addVariant("data-active", "&[data-active]");
+    }),
     plugin(function ({ addUtilities }) {
       const newUtilities = {
         ".nextImageFillFix": {
@@ -331,7 +336,6 @@ module.exports = {
           "min-width": "0 !important",
         },
       };
-
       addUtilities(newUtilities);
     }),
   ],

@@ -65,7 +65,7 @@ const initialState: FacetStateGQL = {
   ssms: {},
 };
 
-const facetsGQLSlice = createSlice({
+export const facetsGQLSlice = createSlice({
   name: "facet/facetsGQL",
   initialState,
   reducers: {},

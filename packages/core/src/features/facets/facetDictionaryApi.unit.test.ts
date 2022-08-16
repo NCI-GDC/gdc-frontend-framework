@@ -3,6 +3,8 @@ import {
   processDictionaryEntries,
 } from "./facetDictionaryApi";
 
+import { FacetDefinition } from "./types";
+
 const TestFacetDictionary = {
   "cases.case_id": {
     description: "",
@@ -80,7 +82,7 @@ describe("test facet dictionary api functions", () => {
         facet_type: "age",
         range: {
           minimum: 0,
-          maximum: 89,
+          maximum: 32507,
         },
       },
       "cases.demographic.age_is_obfuscated": {
@@ -90,7 +92,7 @@ describe("test facet dictionary api functions", () => {
         field: "demographic.age_is_obfuscated",
         full: "cases.demographic.age_is_obfuscated",
         type: "keyword",
-        facet_type: "age",
+        facet_type: "enum",
         range: {},
       },
       "cases.demographic.cause_of_death": {
@@ -112,7 +114,9 @@ describe("test facet dictionary api functions", () => {
       },
     };
 
-    const results = processDictionaryEntries(TestFacetDictionary);
+    const results = processDictionaryEntries(
+      TestFacetDictionary as Record<string, FacetDefinition>,
+    );
     expect(results).toEqual(expected);
   });
 

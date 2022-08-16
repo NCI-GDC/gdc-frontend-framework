@@ -137,7 +137,7 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
           />
           <Pagination
             classNames={{
-              active: "bg-nci-gray",
+              item: "bg-nci-gray",
             }}
             size="sm"
             radius="md"

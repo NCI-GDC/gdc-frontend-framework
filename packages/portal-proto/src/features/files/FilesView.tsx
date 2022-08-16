@@ -62,7 +62,7 @@ const FileFacetNames = [
 ];
 
 const buttonStyle =
-  "mx-1 bg-nci-gray-light hover:bg-nci-gray transition-colors";
+  "mx-1 text-nci-gray-lightest bg-nci-blue hover:bg-nci-blue-darker transition-colors ";
 
 export const ContextualFilesView: React.FC<ContextualFilesViewProps> = ({
   handleFileSelected,
@@ -88,43 +88,44 @@ export const ContextualFilesView: React.FC<ContextualFilesViewProps> = ({
   return (
     <div className="flex flex-col mt-4 ">
       <div className="flex flex-row justify-end m-2">
-        <Menu
-          control={
+        <Menu>
+          <Menu.Target>
             <Button className={buttonStyle}>
               <CartIcon size={"1.5rem"} />
               Update Cart
             </Button>
-          }
-        >
-          <Menu.Item
-            onClick={() =>
-              addToCart(mapGdcFileToCartFile(allFiles), currentCart, dispatch)
-            }
-          >
-            {"Add All Files"}
-          </Menu.Item>
-          <Menu.Item
-            onClick={() =>
-              addToCart(
-                mapGdcFileToCartFile(selectedFiles),
-                currentCart,
-                dispatch,
-              )
-            }
-          >
-            {"Add Selected Files"}
-          </Menu.Item>
-          <Menu.Item
-            onClick={() =>
-              removeFromCart(
-                mapGdcFileToCartFile(selectedFiles),
-                currentCart,
-                dispatch,
-              )
-            }
-          >
-            {"Remove Selected Files"}
-          </Menu.Item>
+          </Menu.Target>
+          <Menu.Dropdown>
+            <Menu.Item
+              onClick={() =>
+                addToCart(mapGdcFileToCartFile(allFiles), currentCart, dispatch)
+              }
+            >
+              {"Add All Files"}
+            </Menu.Item>
+            <Menu.Item
+              onClick={() =>
+                addToCart(
+                  mapGdcFileToCartFile(selectedFiles),
+                  currentCart,
+                  dispatch,
+                )
+              }
+            >
+              {"Add Selected Files"}
+            </Menu.Item>
+            <Menu.Item
+              onClick={() =>
+                removeFromCart(
+                  mapGdcFileToCartFile(selectedFiles),
+                  currentCart,
+                  dispatch,
+                )
+              }
+            >
+              {"Remove Selected Files"}
+            </Menu.Item>
+          </Menu.Dropdown>
         </Menu>
         <Button className={buttonStyle}>
           <DownloadIcon size={"1.5rem"} />
@@ -254,9 +255,6 @@ export const FilesView: React.FC<FilesViewProps> = ({
           ]}
         />
         <Pagination
-          classNames={{
-            active: "bg-nci-gray",
-          }}
           size="sm"
           radius="md"
           color="gray"

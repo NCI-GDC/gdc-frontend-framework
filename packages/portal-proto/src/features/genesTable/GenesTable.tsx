@@ -1,7 +1,14 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useGenesTable } from "@gff/core";
 import { VerticalTable } from "../shared/VerticalTable";
-import { Loader, Pagination, Select, Switch, Tooltip } from "@mantine/core";
+import {
+  Box,
+  Loader,
+  Pagination,
+  Select,
+  Switch,
+  Tooltip,
+} from "@mantine/core";
 import { SiMicrogenetics as GeneAnnotationIcon } from "react-icons/si";
 import _ from "lodash";
 import { useMeasure } from "react-use";
@@ -103,8 +110,9 @@ const GenesTable: React.FC<GenesTableProps> = ({
             <div className="grid place-items-center">
               {value ? (
                 <Tooltip label="Is Cancer Census">
-                  {" "}
-                  <GeneAnnotationIcon size="1.15rem" />{" "}
+                  <Box>
+                    <GeneAnnotationIcon size="1.15rem" />
+                  </Box>
                 </Tooltip>
               ) : null}
             </div>
@@ -249,9 +257,6 @@ const GenesTable: React.FC<GenesTableProps> = ({
           ]}
         />
         <Pagination
-          classNames={{
-            active: "bg-nci-gray",
-          }}
           size="sm"
           radius="md"
           color="gray"

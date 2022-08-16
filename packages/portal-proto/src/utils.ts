@@ -1,3 +1,4 @@
+import { KeyboardEventHandler } from "react";
 import { CartFile } from "@gff/core";
 import { replace, sortBy } from "lodash";
 import { DocumentWithWebkit } from "./features/types";
@@ -24,6 +25,14 @@ export const toggleFullScreen = async (
   }
 };
 
+/* eslint-disable @typescript-eslint/ban-types */
+export const createKeyboardAccessibleFunction = (
+  func: Function,
+): KeyboardEventHandler<any> => {
+  return (e: React.KeyboardEvent<any>) => (e.key === "Enter" ? func() : null);
+};
+/* eslint-enable */
+
 export const capitalize = (original: string): string => {
   const customCapitalizations = {
     id: "ID",
@@ -32,6 +41,7 @@ export const capitalize = (original: string): string => {
     dbsnp: "dbSNP",
     cosmic: "COSMIC",
     civic: "CIViC",
+    dbgap: "dbGaP",
   };
 
   return original
@@ -44,6 +54,13 @@ export const capitalize = (original: string): string => {
     .join(" ");
 };
 
+export const truncateString = (str: string, n: number): string => {
+  if (str.length > n) {
+    return str.substring(0, n) + "...";
+  } else {
+    return str;
+  }
+};
 export const externalLinkNames = {
   civic: "CIViC",
   entrez_gene: "NCBI Gene",

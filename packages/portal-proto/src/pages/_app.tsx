@@ -10,6 +10,7 @@ import { NotificationsProvider } from "@mantine/notifications";
 import { TourProvider } from "@reactour/tour";
 import { CustomBadge as Badge } from "../features/tour/CustomBadge";
 import store from "../app/store";
+import tailwindConfig from "tailwind.config";
 
 // import gdc apps here.
 // their default exports will trigger registration.
@@ -24,7 +25,7 @@ import "react-tabs/style/react-tabs.css";
 // It hides the main application from screen readers while modals are open.
 import ReactModal from "react-modal";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 ReactModal.setAppElement("#__next");
 
 export const URLContext = createContext({ prevPath: "", currentPath: "" });
@@ -45,7 +46,6 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
         <MantineProvider
           withGlobalStyles
           withNormalizeCSS
-          emotionOptions={{ key: "mantine", prepend: false }} // Prevents style conflicts between Mantine and Tailwind by loading Mantine second
           theme={{
             // Override default blue color until styles are determined
             colors: {
@@ -85,6 +85,15 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
                 "#ffffff",
                 "#ffffff",
               ],
+              // Add default color from tailwind config to Mantine theme
+              ...Object.fromEntries(
+                Object.entries(tailwindConfig.theme.extend.colors).map(
+                  ([key, values]) =>
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    [key, Array(10).fill(values?.DEFAULT)],
+                ),
+              ),
             },
             breakpoints: {
               xs: 500,
