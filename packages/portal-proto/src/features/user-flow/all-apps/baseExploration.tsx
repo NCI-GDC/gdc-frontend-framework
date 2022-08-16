@@ -32,7 +32,7 @@ import GenesTable from "@/features/genesTable/GenesTable";
 import { FacetGroup } from "../../cohortBuilder/FacetGroup";
 import { get_facets } from "../../cohortBuilder/dictionary";
 import { FileModal } from "../../files/FileView";
-import { GdcFile } from "@gff/core";
+import { GdcFile, FacetDefinition } from "@gff/core";
 import { CaseModal } from "../../cases/CaseView";
 import { Button } from "@mantine/core";
 
@@ -194,12 +194,18 @@ export const BaseExplorationPage: React.FC<BaseExplorationPageProps> = ({
           ) : currentApp == "clinical-filters" ? (
             <AllAppViewer title="Clinical Filters" setView={setCurrentApp}>
               {" "}
-              <FacetGroup facetNames={get_facets("Clinical", "All")} />
+              <FacetGroup
+                facetNames={get_facets("Clinical", "All") as FacetDefinition[]}
+              />
             </AllAppViewer>
           ) : currentApp == "biospecimen-filters" ? (
             <AllAppViewer title="Biospecimen Filters" setView={setCurrentApp}>
               {" "}
-              <FacetGroup facetNames={get_facets("Biospecimen", "All")} />
+              <FacetGroup
+                facetNames={
+                  get_facets("Biospecimen", "All") as FacetDefinition[]
+                }
+              />
             </AllAppViewer>
           ) : (
             // app selector

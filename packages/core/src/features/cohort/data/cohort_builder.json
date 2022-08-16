@@ -6,6 +6,12 @@
       "docType": "cases",
       "index": "repository"
     },
+    "custom": {
+      "label": "Custom",
+      "facets": [],
+      "docType": "cases",
+      "index": "repository"
+    },
     "demographic": {
       "label": "Demographic",
       "facets": [

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ActionIcon, RadioGroup, Radio, Loader, Menu } from "@mantine/core";
+import { ActionIcon, Radio, Loader, Menu } from "@mantine/core";
 import { MdDownload as DownloadIcon } from "react-icons/md";
 import tailwindConfig from "tailwind.config";
 import { truncateString } from "src/utils";
@@ -71,7 +71,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
       ) : (
         <>
           <div className="flex justify-between p-2">
-            <RadioGroup
+            <Radio.Group
               size="sm"
               className="p-2"
               onChange={(e) => setDisplayPercent(e === "percent")}
@@ -79,20 +79,21 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
             >
               <Radio value="counts" label="# of Cases" />
               <Radio value="percent" label="% of Cases" />
-            </RadioGroup>
-            <Menu
-              control={
+            </Radio.Group>
+            <Menu>
+              <Menu.Target>
                 <ActionIcon
                   variant="outline"
                   className="text-nci-blue-darkest border-nci-blue-darkest"
                 >
                   <DownloadIcon />
                 </ActionIcon>
-              }
-            >
-              <Menu.Item>SVG</Menu.Item>
-              <Menu.Item>PNG</Menu.Item>
-              <Menu.Item>JSON</Menu.Item>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Item>SVG</Menu.Item>
+                <Menu.Item>PNG</Menu.Item>
+                <Menu.Item>JSON</Menu.Item>
+              </Menu.Dropdown>
             </Menu>
           </div>
           <div className="h-64">

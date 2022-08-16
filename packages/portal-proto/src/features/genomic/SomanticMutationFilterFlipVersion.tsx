@@ -7,7 +7,7 @@ import {
   SIFT_IMPACT,
   VARIANT_CALLER,
   VEP_IMPACT,
-} from "../cohortBuilder/gene_mutation_facets";
+} from "./gene_mutation_facets";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 import { MdFlip as FlipIcon, MdSearch } from "react-icons/md";

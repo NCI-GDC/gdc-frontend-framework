@@ -345,41 +345,43 @@ const CardControls: React.FC<CardControlsProps> = ({
     <>
       <div className="flex justify-between p-2">
         <div>
-          <Menu
-            control={
+          <Menu>
+            <Menu.Target>
               <Button
                 rightIcon={<DownIcon size={20} />}
                 className="bg-white text-nci-gray-darkest border-nci-gray"
               >
                 Select Action
               </Button>
-            }
-          >
-            <Menu.Item disabled>Save as a new cohort</Menu.Item>
-            <Menu.Item disabled>Add to cohort</Menu.Item>
-            <Menu.Item disabled>Remove from cohort</Menu.Item>
+            </Menu.Target>
+            <Menu.Dropdown>
+              <Menu.Item disabled>Save as a new cohort</Menu.Item>
+              <Menu.Item disabled>Add to cohort</Menu.Item>
+              <Menu.Item disabled>Remove from cohort</Menu.Item>
+            </Menu.Dropdown>
           </Menu>
           <Button className="bg-white text-nci-gray-darkest border-nci-gray ml-2">
             TSV
           </Button>
         </div>
-        <Menu
-          control={
+        <Menu>
+          <Menu.Target>
             <Button
               rightIcon={<DownIcon size={20} />}
               className="bg-white text-nci-gray-darkest border-nci-gray"
             >
               Customize Bins
             </Button>
-          }
-        >
-          <Menu.Item onClick={() => setModalOpen(true)}>Edit Bins</Menu.Item>
-          <Menu.Item
-            disabled={customBinnedData === null}
-            onClick={() => setCustomBinnedData(null)}
-          >
-            Reset to Default
-          </Menu.Item>
+          </Menu.Target>
+          <Menu.Dropdown>
+            <Menu.Item onClick={() => setModalOpen(true)}>Edit Bins</Menu.Item>
+            <Menu.Item
+              disabled={customBinnedData === null}
+              onClick={() => setCustomBinnedData(null)}
+            >
+              Reset to Default
+            </Menu.Item>
+          </Menu.Dropdown>
         </Menu>
       </div>
       {modalOpen &&

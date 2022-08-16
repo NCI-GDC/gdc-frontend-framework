@@ -85,7 +85,7 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
             <thead>
               <tr className="bg-nci-gray-lightest">
                 <th>
-                  <Tooltip label={tooltipLabel} wrapLines>
+                  <Tooltip label={tooltipLabel}>
                     <span className="underline decoration-dashed">
                       {"Cases included in Analysis"}
                     </span>
