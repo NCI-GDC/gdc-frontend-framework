@@ -6,4 +6,8 @@ const withTM = require("next-transpile-modules")([
   "@stjude/proteinpaint-client",
 ]);
 
-module.exports = withTM({});
+module.exports = withTM({
+  experimental: {
+    outputStandalone: true,
+  },
+});
