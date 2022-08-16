@@ -1,12 +1,6 @@
-import { useState, useEffect } from "react";
-import {
-  Card,
-  ActionIcon,
-  Tooltip,
-  Checkbox,
-  Button,
-  Menu,
-} from "@mantine/core";
+import { useState, useEffect, useMemo } from "react";
+import { mapKeys } from "lodash";
+import { Card, ActionIcon, Tooltip, Button, Menu, Loader } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
 import {
   MdBarChart as BarChartIcon,
@@ -21,14 +15,21 @@ import {
   Stats,
   Statistics,
 } from "@gff/core";
-
-import { CONTINUOUS_FACET_TYPES } from "./constants";
-import { flattenBinnedData, toDisplayName } from "./utils";
-import { CategoricalHistogram, ContinuousHistogram } from "./CDaveHistogram";
+import { useRangeFacet } from "../facets/hooks";
+import CDaveHistogram from "./CDaveHistogram";
+import CDaveTable from "./CDaveTable";
 import ClinicalSurvivalPlot from "./ClinicalSurvivalPlot";
 import ContinuousBinningModal from "./ContinuousBinningModal/ContinuousBinningModal";
 import CategoricalBinningModal from "./CategoricalBinningModal";
 import { CategoricalBins, CustomInterval, NamedFromTo } from "./types";
+import { CONTINUOUS_FACET_TYPES } from "./constants";
+import {
+  toDisplayName,
+  isInterval,
+  createBuckets,
+  parseContinuousBucket,
+  flattenBinnedData,
+} from "./utils";
 
 interface CDaveCardProps {
   readonly field: string;
@@ -37,11 +38,7 @@ interface CDaveCardProps {
   readonly initialDashboardRender: boolean;
 }
 
-enum ChartTypes {
-  histogram = "histogram",
-  survival = "survival",
-  qq = "qq",
-}
+type ChartTypes = "histogram" | "survival" | "qq";
 
 const CDaveCard: React.FC<CDaveCardProps> = ({
   field,
@@ -49,18 +46,13 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   updateFields,
   initialDashboardRender,
 }: CDaveCardProps) => {
-  const [chartType, setChartType] = useState<ChartTypes>(ChartTypes.histogram);
-  const [resultData, setResultData] = useState({});
-  const [selectedSurvivalPlots, setSelectedSurvivalPlots] = useState<string[]>(
-    [],
-  );
-  const [customBinnedData, setCustomBinnedData] = useState<
-    CategoricalBins | NamedFromTo[] | CustomInterval
-  >(null);
+  const [chartType, setChartType] = useState<ChartTypes>("histogram");
   const { scrollIntoView, targetRef } = useScrollIntoView();
   const facet = useCoreSelector((state) =>
     selectFacetDefinitionByName(state, `cases.${field}`),
   );
+
+  const continuous = CONTINUOUS_FACET_TYPES.includes(facet?.type);
 
   const fieldName = toDisplayName(field);
 
@@ -72,8 +64,6 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const continuous = CONTINUOUS_FACET_TYPES.includes(facet?.type);
-
   return (
     <Card className="h-[580px]" ref={(ref) => (targetRef.current = ref)}>
       <div className="flex justify-between mb-1">
@@ -83,11 +73,11 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
             <ActionIcon
               variant="outline"
               className={
-                chartType === ChartTypes.histogram
+                chartType === "histogram"
                   ? "bg-nci-blue-darkest text-white"
                   : "border-nci-blue-darkest text-nci-blue-darkest"
               }
-              onClick={() => setChartType(ChartTypes.histogram)}
+              onClick={() => setChartType("histogram")}
             >
               <BarChartIcon />
             </ActionIcon>
@@ -96,11 +86,11 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
             <ActionIcon
               variant="outline"
               className={
-                chartType === ChartTypes.survival
+                chartType === "survival"
                   ? "bg-nci-blue-darkest text-white"
                   : "border-nci-blue-darkest text-nci-blue-darkest"
               }
-              onClick={() => setChartType(ChartTypes.survival)}
+              onClick={() => setChartType("survival")}
             >
               <SurvivalChartIcon />
             </ActionIcon>
@@ -112,186 +102,217 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
           </Tooltip>
         </div>
       </div>
-      {chartType === ChartTypes.histogram ? (
-        data && facet ? (
-          continuous ? (
-            <ContinuousHistogram
-              field={field}
-              fieldName={fieldName}
-              stats={(data as Stats).stats}
-              setResultData={setResultData}
-              customBinnedData={
-                customBinnedData as NamedFromTo[] | CustomInterval
-              }
-            />
-          ) : (
-            <CategoricalHistogram
-              field={field}
-              fieldName={fieldName}
-              data={(data as Buckets).buckets}
-              setResultData={setResultData}
-              customBinnedData={customBinnedData as CategoricalBins}
-            />
-          )
-        ) : null
+      {continuous ? (
+        <ContinuousData
+          initialData={(data as Stats)?.stats}
+          field={field}
+          fieldName={fieldName}
+          chartType={chartType}
+        />
+      ) : (
+        <CategoricalData
+          initialData={(data as Buckets)?.buckets}
+          field={field}
+          fieldName={fieldName}
+          chartType={chartType}
+        />
+      )}
+    </Card>
+  );
+};
+
+const processContinuousResultData = (
+  data: Record<string, number>,
+  customBinnedData: NamedFromTo[] | CustomInterval,
+): Record<string, number> => {
+  if (!isInterval(customBinnedData) && customBinnedData?.length > 0) {
+    return Object.fromEntries(
+      Object.entries(data).map(([, v], idx) => [
+        customBinnedData[idx]?.name,
+        v,
+      ]),
+    );
+  }
+
+  return mapKeys(data, (_, k) => toBucketDisplayName(k));
+};
+
+const toBucketDisplayName = (bucket: string): string => {
+  const [fromValue, toValue] = parseContinuousBucket(bucket);
+
+  return `${Number(Number(fromValue).toFixed(2))} to <${Number(
+    Number(toValue).toFixed(2),
+  )}`;
+};
+
+interface ContinuousDataProps {
+  readonly initialData: Statistics;
+  readonly field: string;
+  readonly fieldName: string;
+  readonly chartType: ChartTypes;
+}
+
+const ContinuousData: React.FC<ContinuousDataProps> = ({
+  initialData,
+  field,
+  fieldName,
+  chartType,
+}: ContinuousDataProps) => {
+  const [customBinnedData, setCustomBinnedData] = useState<
+    CustomInterval | NamedFromTo[]
+  >(null);
+  const [selectedSurvivalPlots, setSelectedSurvivalPlots] = useState<string[]>(
+    [],
+  );
+
+  const ranges = isInterval(customBinnedData)
+    ? createBuckets(
+        customBinnedData.min,
+        customBinnedData.max,
+        customBinnedData.interval,
+      )
+    : customBinnedData?.length > 0
+    ? customBinnedData.map((d) => ({ to: d.to, from: d.from }))
+    : createBuckets(initialData.min, initialData.max);
+
+  const { data, isFetching, isSuccess } = useRangeFacet(
+    field,
+    ranges,
+    "cases",
+    "repository",
+  );
+
+  const resultData = useMemo(
+    () => processContinuousResultData(isSuccess ? data : {}, customBinnedData),
+    [isSuccess, data, customBinnedData],
+  );
+
+  useEffect(() => {
+    setSelectedSurvivalPlots(Object.keys(resultData).slice(0, 2));
+  }, [resultData]);
+
+  return (
+    <>
+      {chartType === "histogram" ? (
+        <CDaveHistogram
+          field={field}
+          fieldName={fieldName}
+          data={resultData}
+          isFetching={isFetching}
+          continuous={true}
+          noData={initialData.count === 0}
+        />
       ) : (
         <ClinicalSurvivalPlot
           field={field}
           selectedSurvivalPlots={selectedSurvivalPlots}
-          continuous={continuous}
+          continuous={true}
           customBinnedData={customBinnedData}
         />
       )}
       <CardControls
-        continuous={continuous}
+        continuous={true}
         field={fieldName}
         results={resultData}
         customBinnedData={customBinnedData}
         setCustomBinnedData={setCustomBinnedData}
-        stats={continuous ? (data as Stats)?.stats : undefined}
+        stats={initialData}
       />
       <CDaveTable
         fieldName={fieldName}
         data={resultData}
         customBinnedData={customBinnedData}
-        survival={chartType === ChartTypes.survival}
+        survival={chartType === "survival"}
         selectedSurvivalPlots={selectedSurvivalPlots}
         setSelectedSurvivalPlots={setSelectedSurvivalPlots}
-        continuous={continuous}
+        continuous={true}
       />
-    </Card>
+    </>
   );
 };
 
-interface CDaveTableProps {
+interface CategoricalDataProps {
+  readonly initialData: Buckets;
+  readonly field: string;
   readonly fieldName: string;
-  readonly data: Record<string, number>;
-  readonly customBinnedData: CategoricalBins | CustomInterval | NamedFromTo[];
-  readonly survival: boolean;
-  readonly selectedSurvivalPlots: string[];
-  readonly setSelectedSurvivalPlots: (field: string[]) => void;
-  readonly continuous: boolean;
+  readonly chartType: ChartTypes;
 }
 
-const CDaveTable: React.FC<CDaveTableProps> = ({
-  fieldName,
-  data = {},
-  customBinnedData = null,
-  survival,
-  selectedSurvivalPlots,
-  setSelectedSurvivalPlots,
-  continuous,
-}: CDaveTableProps) => {
-  useEffect(() => {
-    setSelectedSurvivalPlots(
-      Object.keys(
-        customBinnedData !== null && !continuous
-          ? Object.fromEntries(
-              Object.entries(
-                flattenBinnedData(customBinnedData as CategoricalBins),
-              ).sort((a, b) => b[1] - a[1]),
-            )
-          : data,
-      ).slice(0, 2),
-    );
-  }, [data, setSelectedSurvivalPlots, customBinnedData, continuous]);
+const CategoricalData = ({ initialData, field, fieldName, chartType }) => {
+  const [customBinnedData, setCustomBinnedData] =
+    useState<CategoricalBins>(null);
+  const [selectedSurvivalPlots, setSelectedSurvivalPlots] = useState<string[]>(
+    [],
+  );
 
-  const yTotal = Object.values(data).reduce((a, b) => a + b, 0);
+  const resultData = useMemo(
+    () =>
+      Object.fromEntries(
+        (initialData || []).map((d) => [
+          d.key === "_missing" ? "missing" : d.key,
+          d.doc_count,
+        ]),
+      ),
+    [initialData],
+  );
+
+  useEffect(
+    () =>
+      setSelectedSurvivalPlots(
+        Object.keys(
+          customBinnedData !== null
+            ? Object.fromEntries(
+                Object.entries(
+                  flattenBinnedData(customBinnedData as CategoricalBins),
+                ).sort((a, b) => b[1] - a[1]),
+              )
+            : resultData,
+        ).slice(0, 2),
+      ),
+    [customBinnedData, resultData],
+  );
 
   return (
-    <div className="h-48 block overflow-auto w-full relative">
-      <table className="bg-white w-full text-left text-nci-gray-darker mb-2">
-        <thead className="bg-nci-gray-lightest font-bold">
-          <tr>
-            <th>Select</th>
-            <th>
-              {fieldName}{" "}
-              {customBinnedData !== null && "(User Defined Bins Applied)"}
-            </th>
-            <th className="text-right"># Cases</th>
-            {survival && <th className="text-right">Survival</th>}
-          </tr>
-        </thead>
-        <tbody>
-          {Object.entries(
-            customBinnedData !== null && !continuous
-              ? flattenBinnedData(customBinnedData as CategoricalBins)
-              : data,
-          )
-            // Don't sort values if continuous
-            .sort((a, b) => (continuous ? 0 : b[1] - a[1]))
-            .map(([key, count], idx) => {
-              const survivalSelected = selectedSurvivalPlots.includes(key);
-              const enoughCasesForSurvival = count > 10;
-              const survivalDisabled =
-                (!survivalSelected && selectedSurvivalPlots.length === 5) ||
-                !enoughCasesForSurvival;
-
-              return (
-                <tr
-                  className={idx % 2 ? null : "bg-gdc-blue-warm-lightest"}
-                  key={`${fieldName}-${key}`}
-                >
-                  <td>
-                    <Checkbox />
-                  </td>
-                  <td>{key}</td>
-                  <td className="text-right">
-                    {count.toLocaleString()} (
-                    {(count / yTotal).toLocaleString(undefined, {
-                      style: "percent",
-                      minimumFractionDigits: 2,
-                    })}
-                    )
-                  </td>
-                  {survival && (
-                    <td>
-                      <Tooltip
-                        label={
-                          !enoughCasesForSurvival
-                            ? "Not enough data"
-                            : survivalSelected
-                            ? `Click to remove ${key} from plot`
-                            : `Click to plot ${key}`
-                        }
-                        className="float-right"
-                      >
-                        <ActionIcon
-                          variant="outline"
-                          className={
-                            survivalDisabled
-                              ? "bg-nci-gray-lighter text-white"
-                              : survivalSelected
-                              ? `bg-gdc-survival-${selectedSurvivalPlots.indexOf(
-                                  key,
-                                )} text-white`
-                              : "bg-nci-gray text-white"
-                          }
-                          disabled={survivalDisabled}
-                          onClick={() =>
-                            survivalSelected
-                              ? setSelectedSurvivalPlots(
-                                  selectedSurvivalPlots.filter(
-                                    (s) => s !== key,
-                                  ),
-                                )
-                              : setSelectedSurvivalPlots([
-                                  ...selectedSurvivalPlots,
-                                  key,
-                                ])
-                          }
-                        >
-                          <SurvivalChartIcon />
-                        </ActionIcon>
-                      </Tooltip>
-                    </td>
-                  )}
-                </tr>
-              );
-            })}
-        </tbody>
-      </table>
-    </div>
+    <>
+      {chartType === "histogram" ? (
+        <CDaveHistogram
+          field={field}
+          fieldName={fieldName}
+          data={resultData}
+          isFetching={false}
+          continuous={false}
+          noData={
+            initialData !== undefined &&
+            initialData.every((bucket) => bucket.key === "_missing")
+          }
+          customBinnedData={customBinnedData}
+        />
+      ) : (
+        <ClinicalSurvivalPlot
+          field={field}
+          selectedSurvivalPlots={selectedSurvivalPlots}
+          continuous={false}
+          customBinnedData={customBinnedData}
+        />
+      )}
+      <CardControls
+        continuous={false}
+        field={fieldName}
+        results={resultData}
+        customBinnedData={customBinnedData}
+        setCustomBinnedData={setCustomBinnedData}
+        stats={initialData}
+      />
+      <CDaveTable
+        fieldName={fieldName}
+        data={resultData}
+        customBinnedData={customBinnedData}
+        survival={chartType === "survival"}
+        selectedSurvivalPlots={selectedSurvivalPlots}
+        setSelectedSurvivalPlots={setSelectedSurvivalPlots}
+        continuous={false}
+      />
+    </>
   );
 };
 
@@ -300,9 +321,9 @@ interface CardControlsProps {
   readonly field: string;
   readonly results: Record<string, number>;
   readonly customBinnedData: CategoricalBins | NamedFromTo[] | CustomInterval;
-  readonly setCustomBinnedData: (
-    bins: CategoricalBins | NamedFromTo[] | CustomInterval,
-  ) => void;
+  readonly setCustomBinnedData:
+    | ((bins: CategoricalBins) => void)
+    | ((bins: NamedFromTo[] | CustomInterval) => void);
   readonly stats?: Statistics;
 }
 

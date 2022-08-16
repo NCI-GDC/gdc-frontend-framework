@@ -1,135 +1,13 @@
-import { useState, useEffect } from "react";
-import { mapKeys } from "lodash";
+import { useState } from "react";
 import { ActionIcon, RadioGroup, Radio, Loader, Menu } from "@mantine/core";
 import { MdDownload as DownloadIcon } from "react-icons/md";
-import { Statistics, Bucket } from "@gff/core";
 import tailwindConfig from "tailwind.config";
 import { truncateString } from "src/utils";
-import { useRangeFacet } from "../facets/hooks";
 import VictoryBarChart from "../charts/VictoryBarChart";
-import { isInterval } from "./utils";
-import { CategoricalBins, CustomInterval, NamedFromTo } from "./types";
+import { CategoricalBins } from "./types";
 
 import { COLOR_MAP } from "./constants";
-import {
-  createBuckets,
-  parseContinuousBucket,
-  flattenBinnedData,
-} from "./utils";
-
-const formatContinuousResultData = (
-  data: Record<string, number>,
-  customBinnedData: NamedFromTo[] | CustomInterval,
-): Record<string, number> => {
-  if (!isInterval(customBinnedData) && customBinnedData?.length > 0) {
-    return Object.fromEntries(
-      Object.entries(data).map(([, v], idx) => [
-        customBinnedData[idx]?.name,
-        v,
-      ]),
-    );
-  }
-
-  return mapKeys(data, (_, k) => toBucketDisplayName(k));
-};
-
-const toBucketDisplayName = (bucket: string): string => {
-  const [fromValue, toValue] = parseContinuousBucket(bucket);
-
-  return `${Number(Number(fromValue).toFixed(2))} to <${Number(
-    Number(toValue).toFixed(2),
-  )}`;
-};
-
-interface ContinuousHistogramProps {
-  readonly field: string;
-  readonly fieldName: string;
-  readonly stats: Statistics;
-  readonly setResultData: (data: Record<string, number>) => void;
-  readonly customBinnedData: NamedFromTo[] | CustomInterval;
-}
-
-export const ContinuousHistogram: React.FC<ContinuousHistogramProps> = ({
-  field,
-  stats,
-  fieldName,
-  setResultData,
-  customBinnedData,
-}: ContinuousHistogramProps) => {
-  const ranges = isInterval(customBinnedData)
-    ? createBuckets(
-        customBinnedData.min,
-        customBinnedData.max,
-        customBinnedData.interval,
-      )
-    : customBinnedData?.length > 0
-    ? customBinnedData.map((d) => ({ to: d.to, from: d.from }))
-    : createBuckets(stats.min, stats.max);
-
-  const { data, isFetching, isSuccess } = useRangeFacet(
-    field,
-    ranges,
-    "cases",
-    "repository",
-  );
-
-  useEffect(() => {
-    setResultData(
-      formatContinuousResultData(isSuccess ? data : {}, customBinnedData),
-    );
-  }, [data, customBinnedData, isSuccess, setResultData]);
-
-  return (
-    <CDaveHistogram
-      field={field}
-      fieldName={fieldName}
-      data={formatContinuousResultData(isSuccess ? data : {}, customBinnedData)}
-      isFetching={isFetching}
-      continuous={true}
-      noData={stats.count === 0}
-    />
-  );
-};
-
-interface CategoricalHistogramProps {
-  readonly field: string;
-  readonly fieldName: string;
-  readonly data: readonly Bucket[];
-  readonly setResultData: (data: Record<string, number>) => void;
-  readonly customBinnedData: CategoricalBins;
-}
-export const CategoricalHistogram: React.FC<CategoricalHistogramProps> = ({
-  field,
-  fieldName,
-  data,
-  setResultData,
-  customBinnedData,
-}: CategoricalHistogramProps) => {
-  const resultData = Object.fromEntries(
-    (data || []).map((d) => [
-      d.key === "_missing" ? "missing" : d.key,
-      d.doc_count,
-    ]),
-  );
-
-  useEffect(() => {
-    setResultData(resultData);
-  }, []);
-
-  return (
-    <CDaveHistogram
-      field={field}
-      fieldName={fieldName}
-      data={resultData}
-      isFetching={false}
-      continuous={false}
-      noData={
-        data !== undefined && data.every((bucket) => bucket.key === "_missing")
-      }
-      customBinnedData={customBinnedData}
-    />
-  );
-};
+import { flattenBinnedData } from "./utils";
 
 const formatBarChartData = (
   data: Record<string, number>,
@@ -237,3 +115,5 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
     </>
   );
 };
+
+export default CDaveHistogram;
