@@ -5,7 +5,7 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DragDrop } from "./DragDrop";
 import { BsList } from "react-icons/bs";
-import { Popover } from "@mantine/core";
+import { Box, Popover } from "@mantine/core";
 
 interface VerticalTableProps {
   tableData: any;
@@ -175,37 +175,39 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     <div>
       <div className={`h-10 float-left`}>{additionalControls}</div>
       {showControls && (
-        <div className={`float-right`}>
+        <div className="flex flex-row float-right mb-4">
           <Popover
             opened={showColumnMenu}
             onClose={() => setShowColumnMenu(false)}
-            target={
-              <button
-                className={`mr-0 ml-auto border-1 border-gray-300 p-3`}
-                onClick={() => setShowColumnMenu(!showColumnMenu)}
-              >
-                <BsList></BsList>
-              </button>
-            }
             width={260}
             position="bottom"
             transition="scale"
             withArrow
           >
-            <div className={`w-fit`}>
-              {columnListOptions.length > 0 && showColumnMenu && (
-                <div className={`mr-0 ml-auto`}>
-                  <DndProvider backend={HTML5Backend}>
-                    <DragDrop
-                      listOptions={columnListOptions}
-                      handleColumnChange={handleColumnChange}
-                    />
-                  </DndProvider>
-                </div>
-              )}
-            </div>
+            <Popover.Target>
+              <Box
+                className={`mr-0 ml-auto border-1 border-gray-300 p-3`}
+                onClick={() => setShowColumnMenu(!showColumnMenu)}
+              >
+                <BsList></BsList>
+              </Box>
+            </Popover.Target>
+            <Popover.Dropdown>
+              <div className={`w-fit`}>
+                {columnListOptions.length > 0 && showColumnMenu && (
+                  <div className={`mr-0 ml-auto`}>
+                    <DndProvider backend={HTML5Backend}>
+                      <DragDrop
+                        listOptions={columnListOptions}
+                        handleColumnChange={handleColumnChange}
+                      />
+                    </DndProvider>
+                  </div>
+                )}
+              </div>
+            </Popover.Dropdown>
           </Popover>
-          <div className={`flex flex-row w-max float-right mb-4`}>
+          <div className="flex flex-row w-max float-right">
             <input
               className={`mr-2 rounded-sm border-1 border-gray-300`}
               type="search"

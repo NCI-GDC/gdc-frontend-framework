@@ -80,7 +80,8 @@ export const MultipleImageViewer = ({
     resetStates();
   };
 
-  const onTabChange = (active: number) => {
+  const onTabChange = (sValue: string) => {
+    const active = parseInt(sValue);
     setActiveTab(active);
     setActiveSlide(0);
     const inside = data?.edges[Object.keys(data.edges)[active]];
@@ -145,7 +146,7 @@ export const MultipleImageViewer = ({
                 {showSearch && (
                   <Input
                     placeholder="eg. TCGA-DD*, *DD*, TCGA-DD-AAVP"
-                    className="w-[220px] m-2 mt-1"
+                    className="w-1/8 m-2 mt-1"
                     rightSectionWidth={50}
                     onChange={(e) => setSearchText(e.target.value)}
                     rightSection={
@@ -174,15 +175,12 @@ export const MultipleImageViewer = ({
                         key={value}
                         label="Click to Remove"
                         className="my-1"
-                        position="top"
-                        placement="start"
+                        position="top-start"
                         transition="skew-up"
                         transitionDuration={300}
-                        transitionTimingFunction="ease"
                         withArrow
                         classNames={{
-                          body: "h-7",
-                          root: "w-1/4",
+                          tooltip: "h-7 w-1/8",
                         }}
                       >
                         <Badge
@@ -212,38 +210,46 @@ export const MultipleImageViewer = ({
               {Object.keys(data?.edges).length > 0 && activeImage && (
                 <div className="flex-1/2">
                   <Tabs
-                    variant="unstyled"
                     orientation="vertical"
-                    active={activeTab}
+                    variant="pills"
+                    value={activeTab.toString()}
                     onTabChange={onTabChange}
                     classNames={{
-                      tabsListWrapper:
-                        "max-h-[550px] overflow-x-hidden overflow-y-auto min-w-[40%]",
-                      tabControl: "ml-2 mt-1",
-                      tabsList: "bg-grey",
-                      tabLabel: "text-xs",
-                      body: "max-h-[550px] overflow-y-auto",
+                      root: "max-h-[550px] overflow-x-hidden min-w-[40%]",
+                      tab: "ml-2 mt-1",
+                      tabsList: "bg-grey overflow-y-auto",
+                      tabLabel:
+                        "text-xs text-nci-gray-darkest px-2 font-medium ",
+                      panel: "max-h-[550px] overflow-y-auto",
                     }}
                     styles={(theme) => ({
-                      tabControl: {
+                      tab: {
                         backgroundColor: theme.white,
                         color: theme.colors.gray[9],
                         border: `1px solid ${theme.colors.gray[4]}`,
-                        fontSize: theme.fontSizes.md,
-                        padding: `${theme.spacing.lg}px ${theme.spacing.xl}px`,
+                        fontSize: theme.fontSizes.sm,
+                        padding: `1em 1em`,
                         borderRadius: theme.radius.md,
                       },
-                      tabActive: {
-                        backgroundColor: theme.colors.gray[7],
+                      tabLabel: {
                         borderColor: theme.colors.gray[7],
                         color: theme.white,
                         fontWeight: "bold",
                       },
                     })}
                   >
-                    {Object.keys(data?.edges).map((edge) => {
+                    <Tabs.List>
+                      {Object.keys(data?.edges).map((edge, index) => {
+                        return (
+                          <Tabs.Tab key={edge} value={index.toString()}>
+                            {edge}
+                          </Tabs.Tab>
+                        );
+                      })}
+                    </Tabs.List>
+                    {Object.keys(data?.edges).map((edge, index) => {
                       return (
-                        <Tabs.Tab key={edge} label={edge}>
+                        <Tabs.Panel key={edge} value={index.toString()}>
                           <List>
                             {data.edges[edge].map((file, index) => (
                               <List.Item
@@ -265,7 +271,7 @@ export const MultipleImageViewer = ({
                               </List.Item>
                             ))}
                           </List>
-                        </Tabs.Tab>
+                        </Tabs.Panel>
                       );
                     })}
                   </Tabs>
@@ -286,6 +292,9 @@ export const MultipleImageViewer = ({
                     setShowMorePressed(true);
                   }}
                   size="xs"
+                  classNames={{
+                    root: "bg-nci-gray-lighter hover:bg-nci-gray-dark",
+                  }}
                 >
                   Show More
                 </Button>

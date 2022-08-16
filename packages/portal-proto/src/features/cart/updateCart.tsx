@@ -222,7 +222,10 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
   const dispatch = useCoreDispatch();
 
   return (
-    <Button onClick={() => addToCart(files, currentCart, dispatch)}>
+    <Button
+      className="text-nci-gray-lightest bg-nci-blue hover:bg-nci-blue-darker"
+      onClick={() => addToCart(files, currentCart, dispatch)}
+    >
       <CartIcon className="mr-2" /> Add to Cart
     </Button>
   );

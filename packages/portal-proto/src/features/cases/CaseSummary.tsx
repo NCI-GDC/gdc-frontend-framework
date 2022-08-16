@@ -24,7 +24,6 @@ import { URLContext } from "src/pages/_app";
 import { Biospecimen } from "../biospecimen/Biospecimen";
 import { humanify } from "../biospecimen/utils";
 import { addToCart, removeFromCart } from "../cart/updateCart";
-import { TempTable } from "../files/FileView";
 import {
   formatDataForHorizontalTable,
   mapFilesFromCasesToCartFile,
@@ -34,6 +33,8 @@ import {
   calculatePercentage,
   sortByPropertyAsc,
 } from "src/utils";
+import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
+import { CategoryTableSummary } from "@/components/Summary/CategoryTableSummary";
 
 export const CaseSummary = ({
   case_id,
@@ -240,14 +241,18 @@ export const CaseSummary = ({
 
     const rows = sortedDataCategories.map((data_c) => ({
       data_category: data_c.data_category,
-      file_count: `${data_c.file_count} (${calculatePercentage(
+      // TODO: Need to change it to Link after the href has been finalized
+      file_count: `${data_c.file_count.toLocaleString()} (${calculatePercentage(
         data_c.file_count,
         filesCountTotal,
       )}%)`,
     }));
 
     return {
-      headers: ["Data Category", `Files (n=${filesCountTotal})`],
+      headers: [
+        "Data Category",
+        `Files (n=${filesCountTotal.toLocaleString()})`,
+      ],
       tableRows: rows,
     };
   };
@@ -260,14 +265,18 @@ export const CaseSummary = ({
 
     const rows = sortedExpCategories.map((exp_c) => ({
       experimental_strategy: exp_c.experimental_strategy,
-      file_count: `${exp_c.file_count} (${calculatePercentage(
+      // TODO: Need to change it to Link after the href has been finalized
+      file_count: `${exp_c.file_count.toLocaleString()} (${calculatePercentage(
         exp_c.file_count,
         filesCountTotal,
       )}%)`,
     }));
 
     return {
-      headers: ["Experimental Strategy", `Files (n=${filesCountTotal})`],
+      headers: [
+        "Experimental Strategy",
+        `Files (n=${filesCountTotal.toLocaleString()})`,
+      ],
       tableRows: rows,
     };
   };
@@ -283,7 +292,7 @@ export const CaseSummary = ({
             <div className="flex flex-col gap-5">
               <Button
                 leftIcon={<FaShoppingCart />}
-                className="self-end"
+                className="self-end text-nci-gray-lightest bg-nci-blue hover:bg-nci-blue-darker"
                 onClick={() =>
                   isAllFilesInCart
                     ? removeFromCart(
@@ -330,37 +339,17 @@ export const CaseSummary = ({
               </div>
 
               <div className="flex gap-4 mt-4">
-                <div className="flex-1">
-                  <div className="bg-white text-nci-gray p-2">
-                    <h2 className="text-lg font-medium">
-                      File Counts by Data Category
-                    </h2>
-                    {!data.summary.data_categories && (
-                      <span className="block text-center text-sm pt-4">
-                        No results found
-                      </span>
-                    )}
-                  </div>
-                  {data.summary.data_categories ? (
-                    <TempTable tableData={formatDataForDataCateogryTable()} />
-                  ) : null}
-                </div>
+                <CategoryTableSummary
+                  title=" File Counts by Data Category"
+                  dataObject={data.summary.data_categories}
+                  tableData={formatDataForDataCateogryTable()}
+                />
 
-                <div className="flex-1">
-                  <div className="bg-white text-nci-gray p-2">
-                    <h2 className="text-lg font-medium">
-                      File Counts by Experimental Strategy
-                    </h2>
-                    {!data.summary.experimental_strategies && (
-                      <span className="block text-center text-sm pt-4">
-                        No results found
-                      </span>
-                    )}
-                  </div>
-                  {data.summary.experimental_strategies ? (
-                    <TempTable tableData={formatDataForExpCateogryTable()} />
-                  ) : null}
-                </div>
+                <CategoryTableSummary
+                  title="File Counts by Experimental Strategy"
+                  dataObject={data.summary.experimental_strategies}
+                  tableData={formatDataForExpCateogryTable()}
+                />
               </div>
             </div>
 
@@ -370,11 +359,7 @@ export const CaseSummary = ({
           </div>
         </>
       ) : (
-        <div className="p-4 text-nci-gray">
-          <div className="flex-auto bg-white mr-4">
-            <h2 className="p-2 text-2xl mx-4">Case Not Found</h2>
-          </div>
-        </div>
+        <SummaryErrorHeader label="Case Not Found" />
       )}
     </>
   );
