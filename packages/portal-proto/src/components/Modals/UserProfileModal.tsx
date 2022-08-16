@@ -6,6 +6,7 @@ import {
 } from "@gff/core";
 import { Button, Modal, Text } from "@mantine/core";
 import { FaCheck } from "react-icons/fa";
+import { theme } from "tailwind.config";
 import { ScrollableTableWithFixedHeader } from "../ScrollableTableWithFixedHeader";
 
 export const UserProfileModal = ({
@@ -54,7 +55,15 @@ export const UserProfileModal = ({
       ),
     }));
 
-  const headings = ["Project ID", ...allPermissionValues.map((v) => v)];
+  const headings = [
+    "Project ID",
+    ...allPermissionValues.map((v) => {
+      if (v === "_member_") {
+        return "member";
+      }
+      return v;
+    }),
+  ];
 
   return (
     <Modal
@@ -68,15 +77,15 @@ export const UserProfileModal = ({
         header: {
           marginBottom: "5px",
         },
+        close: {
+          color: theme.extend.colors["gdc-grey"].darkest,
+        },
       })}
       closeButtonLabel="Done"
+      withinPortal={false}
     >
       <div
-        style={{
-          borderTop: "1px solid gray",
-          borderBottom: "1px solid gray",
-          padding: `${!data ? "15px" : "5px"} 0`,
-        }}
+        className={`${!data ? "py-15px" : "py-5px"} border-y border-y-nci-gray`}
       >
         {data.length > 0 ? (
           <ScrollableTableWithFixedHeader
@@ -87,7 +96,7 @@ export const UserProfileModal = ({
           />
         ) : (
           <div data-testid="warningText">
-            <Text style={{ marginBottom: "1rem" }}>
+            <Text className="mb-4">
               You do not have any access to controlled access data for projects
               available in the GDC Data Portal.
             </Text>
@@ -97,7 +106,7 @@ export const UserProfileModal = ({
                 href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
                 target="_blank"
                 rel="noreferrer"
-                style={{ color: "#2a72a5", textDecoration: "underline" }}
+                className="text-nci-blue underline hover:text-nci-blue-darkest"
               >
                 how to apply for access to controlled data
               </a>
@@ -108,14 +117,13 @@ export const UserProfileModal = ({
         )}
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          marginTop: "10px",
-        }}
-      >
-        <Button onClick={() => dispatch(hideModal())}>Done</Button>
+      <div className="flex justify-end mt-2.5">
+        <Button
+          onClick={() => dispatch(hideModal())}
+          className="bg-nci-blue hover:bg-nci-blue-darker"
+        >
+          Done
+        </Button>
       </div>
     </Modal>
   );

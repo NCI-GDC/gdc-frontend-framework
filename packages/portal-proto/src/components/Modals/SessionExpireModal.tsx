@@ -1,5 +1,6 @@
 import { hideModal, useCoreDispatch } from "@gff/core";
 import { Button, Modal, Text } from "@mantine/core";
+import { theme } from "tailwind.config";
 import { LoginButton } from "../LoginButton";
 
 export const SessionExpireModal = ({
@@ -23,35 +24,30 @@ export const SessionExpireModal = ({
         header: {
           marginBottom: "5px",
         },
+        close: {
+          color: theme.extend.colors["gdc-grey"].darkest,
+        },
       })}
-      closeButtonLabel="Done"
+      closeButtonLabel="Cancel"
       withinPortal={false}
       data-testid="sessionmodal"
     >
-      <div
-        className=""
-        style={{
-          borderTop: "1px solid gray",
-          borderBottom: "1px solid gray",
-          padding: "15px 0",
-        }}
-      >
+      <div className="border-y border-y-nci-gray p-4">
         <Text size="sm"> Your session has expired.</Text>
-        <div style={{ display: "flex", alignContent: "center" }}>
+        <div className="flex content-center">
           <Text size="sm" className="mt-1">
             Please
           </Text>{" "}
           <LoginButton fromSession />
         </div>
       </div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          marginTop: "10px",
-        }}
-      >
-        <Button onClick={() => dispatch(hideModal())}>Cancel</Button>
+      <div className="flex justify-end mt-2.5">
+        <Button
+          onClick={() => dispatch(hideModal())}
+          className="!bg-nci-blue hover:!bg-nci-blue-darker"
+        >
+          Cancel
+        </Button>
       </div>
     </Modal>
   );

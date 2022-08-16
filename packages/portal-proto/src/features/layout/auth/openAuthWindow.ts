@@ -3,7 +3,7 @@ import { GDC_AUTH } from "@gff/core";
 const openAuthWindow = (): Promise<unknown> => {
   const pollInterval = 500;
   const winUrl = `${GDC_AUTH}?next=${location.origin + location.pathname}`;
-  const winStyle = "width=800, height=600";
+  const winStyle = "width=1000, height=800";
 
   return new Promise((resolve, reject) => {
     if (window.navigator.cookieEnabled) {

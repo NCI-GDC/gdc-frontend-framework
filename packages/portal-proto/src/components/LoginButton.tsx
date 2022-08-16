@@ -7,6 +7,7 @@ import {
 } from "@gff/core";
 import { Button } from "@mantine/core";
 import { MdOutlineLogin as LoginIcon } from "react-icons/md";
+import { theme } from "tailwind.config";
 export const LoginButton = ({
   fromSession,
 }: {
@@ -15,7 +16,11 @@ export const LoginButton = ({
   const dispatch = useCoreDispatch();
   return (
     <Button
-      className="flex flex-row opacity-60 hover:opacity-100 hover:bg-transparent transition-opacity items-center mx-2 cursor-pointer text-inherit font-normal ml-1 pl-0"
+      className={`flex flex-row ${
+        fromSession
+          ? "opacity-80 text-nci-blue-dark ml-0 hover:text-nci-blue-darkest"
+          : "opacity-60 text-inherit font-normal ml-1"
+      } hover:opacity-100 hover:bg-transparent transition-opacity mx-2 cursor-pointer pl-0`}
       onClick={async () => {
         fromSession && dispatch(hideModal());
         await openAuthWindow();
@@ -26,15 +31,14 @@ export const LoginButton = ({
         <LoginIcon
           className="mr-1"
           size="24px"
-          color={fromSession && "#0f4163"}
+          color={fromSession && theme.extend.colors["nci-blue"].darkest}
         />
       }
       variant="subtle"
       compact
       size="md"
       classNames={{
-        label: `ml-0 ${fromSession && "text-nci-blue-darkest"}`,
-        leftIcon: "mr-0",
+        leftIcon: `mr-0 ml-1 ${fromSession && "opacity-90"}`,
       }}
       data-testid="loginButton"
     >
