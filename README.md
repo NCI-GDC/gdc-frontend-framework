@@ -104,6 +104,21 @@ For example,
 
 `npm run test:all` will run both unit and integration tests.
 
+### Running the portal in Docker
+
+The portal has support for running in a Docker container
+To create a docker container:
+
+```
+ docker build -t GDCV2 .
+```
+
+to run it:
+
+```
+ docker run -p 3000:3000 -t GDCV2
+```
+
 ### Running Auth in Localhost (Login and other Auth related actions)
 
 1. [Open Chrome (web browser)](https://alfilatov.com/posts/run-chrome-without-cors/) which disables web security to suppress the CORS warning.

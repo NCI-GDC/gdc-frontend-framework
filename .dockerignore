@@ -1,0 +1,7 @@
+node_modules
+package-lock.json
+packages/portal-proto/package-lock.json
+packages/core/node_modules
+packages/portal-proto/node_modules
+packages/portal-proto/.next
+.git
