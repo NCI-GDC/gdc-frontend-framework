@@ -60,6 +60,16 @@ const getHiddenValues = (
   ) as Record<string, number>;
 };
 
+const sortBins = (
+  a: number | Record<string, number>,
+  b: number | Record<string, number>,
+) => {
+  const compA = a instanceof Object ? Object.values(a) : [a];
+  const compB = b instanceof Object ? Object.values(b) : [b];
+
+  return Math.max(...compB) - Math.max(...compA);
+};
+
 interface CategoricalBinningModalProps {
   readonly setModalOpen: (open: boolean) => void;
   readonly field: string;
@@ -90,17 +100,17 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
   const [hasInputErrors, setInputErrors] = useState(false);
 
   const group = () => {
-    const existingGroup = Object.entries(values).find(
+    const existingGroups = Object.entries(values).filter(
       ([, v]) =>
         v instanceof Object &&
         Object.keys(v).every((subKey) => selectedValues?.[subKey]),
     );
 
-    if (existingGroup) {
+    if (existingGroups.length === 1) {
       setValues({
         ...filterOutSelected(values, selectedValues),
-        [existingGroup[0]]: {
-          ...(existingGroup[1] as Record<string, number>),
+        [existingGroups[0][0]]: {
+          ...(existingGroups[0][1] as Record<string, number>),
           ...selectedValues,
         },
       });
@@ -204,29 +214,33 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
           </div>
         </div>
         <ul className="p-2">
-          {Object.entries(values).map(([k, value]) =>
-            value instanceof Object ? (
-              <GroupInput
-                groupName={k}
-                groupValues={value}
-                otherGroups={Object.keys(values)}
-                updateGroupName={updateGroupName}
-                selectedValues={selectedValues}
-                setSelectedValues={setSelectedValues}
-                setInputErrors={setInputErrors}
-                hasCustomBins={customBins !== null}
-                key={k}
-              />
-            ) : (
-              <ListValue
-                name={k}
-                count={value}
-                selectedValues={selectedValues}
-                setSelectedValues={setSelectedValues}
-                key={k}
-              />
-            ),
-          )}
+          {Object.entries(values)
+            .sort((a, b) => sortBins(a[1], b[1]))
+            .map(([k, value]) =>
+              value instanceof Object ? (
+                <GroupInput
+                  groupName={k}
+                  groupValues={value}
+                  otherGroups={Object.keys(values)}
+                  updateGroupName={updateGroupName}
+                  selectedValues={selectedValues}
+                  setSelectedValues={setSelectedValues}
+                  setInputErrors={setInputErrors}
+                  hasCustomBins={customBins !== null}
+                  clearOtherValues={() => setSelectedHiddenValues({})}
+                  key={k}
+                />
+              ) : (
+                <ListValue
+                  name={k}
+                  count={value}
+                  selectedValues={selectedValues}
+                  setSelectedValues={setSelectedValues}
+                  clearOtherValues={() => setSelectedHiddenValues({})}
+                  key={k}
+                />
+              ),
+            )}
         </ul>
       </div>
       <div
@@ -260,6 +274,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
               count={v}
               selectedValues={selectedHiddenValues}
               setSelectedValues={setSelectedHiddenValues}
+              clearOtherValues={() => setSelectedValues({})}
               key={k}
             />
           ))}
@@ -294,6 +309,7 @@ interface ListValueProps {
   readonly count: number;
   readonly selectedValues: Record<string, number>;
   readonly setSelectedValues: (selectedValues: Record<string, number>) => void;
+  readonly clearOtherValues: () => void;
 }
 
 const ListValue: React.FC<ListValueProps> = ({
@@ -301,6 +317,7 @@ const ListValue: React.FC<ListValueProps> = ({
   count,
   selectedValues,
   setSelectedValues,
+  clearOtherValues,
 }: ListValueProps) => {
   const updateSelectedValues = (name: string, count: number) => {
     if (Object.keys(selectedValues).includes(name)) {
@@ -317,10 +334,14 @@ const ListValue: React.FC<ListValueProps> = ({
       } cursor-pointer list-inside`}
     >
       <div
-        onClick={() => updateSelectedValues(name, count)}
-        onKeyPress={createKeyboardAccessibleFunction(() =>
-          updateSelectedValues(name, count),
-        )}
+        onClick={() => {
+          updateSelectedValues(name, count);
+          clearOtherValues();
+        }}
+        onKeyPress={createKeyboardAccessibleFunction(() => {
+          updateSelectedValues(name, count);
+          clearOtherValues();
+        })}
         tabIndex={0}
         role="button"
         className="inline"
@@ -340,6 +361,7 @@ interface GroupInputProps {
   readonly setSelectedValues: (selectedValues: Record<string, number>) => void;
   readonly setInputErrors: (hasError: boolean) => void;
   readonly hasCustomBins: boolean;
+  readonly clearOtherValues: () => void;
 }
 
 const GroupInput: React.FC<GroupInputProps> = ({
@@ -351,8 +373,9 @@ const GroupInput: React.FC<GroupInputProps> = ({
   setSelectedValues,
   setInputErrors,
   hasCustomBins,
+  clearOtherValues,
 }: GroupInputProps) => {
-  const [editMode, setEditMode] = useState(hasCustomBins ? false : true);
+  const [editMode, setEditMode] = useState(false);
 
   const form = useForm({
     validateInputOnChange: true,
@@ -424,15 +447,18 @@ const GroupInput: React.FC<GroupInputProps> = ({
         </div>
       )}
       <ul className="list-disc">
-        {Object.entries(groupValues).map(([k, v]) => (
-          <ListValue
-            name={k}
-            count={v}
-            selectedValues={selectedValues}
-            setSelectedValues={setSelectedValues}
-            key={k}
-          />
-        ))}
+        {Object.entries(groupValues)
+          .sort((a, b) => b[1] - a[1])
+          .map(([k, v]) => (
+            <ListValue
+              name={k}
+              count={v}
+              selectedValues={selectedValues}
+              setSelectedValues={setSelectedValues}
+              clearOtherValues={clearOtherValues}
+              key={k}
+            />
+          ))}
       </ul>
     </li>
   );
