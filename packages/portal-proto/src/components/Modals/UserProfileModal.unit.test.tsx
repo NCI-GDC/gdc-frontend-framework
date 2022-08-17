@@ -31,10 +31,12 @@ describe("<UserProfileModal />", () => {
     });
     window.ResizeObserver = ResizeObserver;
 
-    const { getByTestId, queryByTestId } = render(
-      <UserProfileModal openModal />,
-    );
-    expect(getByTestId("warningText")).toBeInTheDocument();
+    const { getByText, queryByTestId } = render(<UserProfileModal openModal />);
+    expect(
+      getByText(
+        "You do not have any access to controlled access data for projects available in the GDC Data Portal.",
+      ),
+    ).toBeInTheDocument();
     expect(queryByTestId("scrolltable")).toBeNull();
   });
 
@@ -48,10 +50,12 @@ describe("<UserProfileModal />", () => {
       },
     });
 
-    const { getByTestId, queryByTestId } = render(
-      <UserProfileModal openModal />,
-    );
+    const { getByTestId, queryByText } = render(<UserProfileModal openModal />);
     expect(getByTestId("scrolltable")).toBeInTheDocument();
-    expect(queryByTestId("warningText")).toBeNull();
+    expect(
+      queryByText(
+        "You do not have any access to controlled access data for projects available in the GDC Data Portal.",
+      ),
+    ).toBeNull();
   });
 });
