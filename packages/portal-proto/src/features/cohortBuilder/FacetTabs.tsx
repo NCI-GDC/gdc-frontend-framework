@@ -241,7 +241,6 @@ export const FacetTabs = (): JSX.Element => {
               key={`cohortTab-${tabEntry.label}`}
               value={tabEntry.label}
             >
-              {" "}
               {tabEntry.label === "Custom" ? (
                 <CustomFacetGroup />
               ) : (

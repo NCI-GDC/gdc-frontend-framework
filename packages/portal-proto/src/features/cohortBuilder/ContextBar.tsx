@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { CollapsibleContainer } from "@/components/CollapsibleContainer";
-import { Button, Menu, Tabs, Divider } from "@mantine/core";
+import { Menu, Tabs, Divider } from "@mantine/core";
 import { ContextualCasesView } from "../cases/CasesView";
 import CountButton from "./CountButton";
 import { convertFilterToComponent } from "./QueryRepresentation";
@@ -20,7 +20,6 @@ import {
   FaCartPlus as AddToCartIcon,
   FaUndo as UndoIcon,
 } from "react-icons/fa";
-import tw from "tailwind-styled-components";
 
 import SummaryFacets, { SummaryFacetInfo } from "./SummaryFacets";
 import { updateEnumFilters } from "../facets/hooks";
@@ -30,19 +29,7 @@ import {
   setCurrentCohort,
 } from "@gff/core";
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
-
-export const ContextMenuButton = tw(Button)`
-flex 
-flex-row 
-items-center 
-bg-base-max 
-text-primary-darkest 
-border 
-border-solid 
-border-primary-darkest 
-hover:bg-primary-darkest 
-hover:text-primary-lightest";
-`;
+import FunctionButton from "@/components/FunctionButton";
 
 const ContextBar: React.FC<CohortGroupProps> = ({
   cohorts,
@@ -128,25 +115,28 @@ const ContextBar: React.FC<CohortGroupProps> = ({
   };
 
   return (
-    <div className="mb-2 font-heading flex flex-col" data-tour="context_bar">
+    <div
+      className="mb-2 font-heading bg-base-lightest flex flex-col"
+      data-tour="context_bar"
+    >
       <CollapsibleContainer
         Top={CohortBarWithProps}
         isCollapsed={isGroupCollapsed}
         toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
       >
-        <div className="flex flex-col bg-base-lightest">
+        <div className="flex flex-col ">
           <div className="relative p-2">
             <div className="flex flex-row absolute ml-2">
               <Menu>
                 <Menu.Target>
-                  <ContextMenuButton>
+                  <FunctionButton>
                     <DownloadIcon size="1.5rem" />
                     <CountButton
                       countName="fileCounts"
                       label="Files"
                       className="px-2"
                     />
-                  </ContextMenuButton>
+                  </FunctionButton>
                 </Menu.Target>
                 <Menu.Dropdown>
                   <Menu.Item icon={<AddToCartIcon size="1.5rem" />}>
@@ -159,9 +149,9 @@ const ContextBar: React.FC<CohortGroupProps> = ({
               </Menu>
               <Menu>
                 <Menu.Target>
-                  <ContextMenuButton className="ml-2">
+                  <FunctionButton className="ml-2">
                     <FilesIcon size="1.5rem" className="mr-1" /> Metadata
-                  </ContextMenuButton>
+                  </FunctionButton>
                 </Menu.Target>
                 <Menu.Dropdown>
                   <Menu.Item>Biospecimen</Menu.Item>

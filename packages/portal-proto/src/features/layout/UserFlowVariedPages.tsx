@@ -110,6 +110,7 @@ const Header: React.FC<HeaderProps> = ({
               layout="fill"
               objectFit="contain"
               aria-label="NCI GDC Data Portal logo"
+              alt="NCI GDC Data Portal logo"
             />
           </Button>
         </div>

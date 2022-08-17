@@ -119,14 +119,17 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilterSet(state),
   );
+
   const genomicFilters = useCoreSelector((state) =>
     selectGenomicFilters(state),
   );
 
   const filters = useMemo(
     () => buildCohortGqlOperator(joinFilters(cohortFilters, genomicFilters)),
+
     [cohortFilters, genomicFilters],
   );
+
   const { data: survivalPlotData, isSuccess: survivalPlotReady } =
     useSurvivalPlot({ filters: filters ? [filters] : [] });
 

@@ -204,6 +204,14 @@ export const selectCurrentCohortCaseGqlFilters = (
   return buildCohortGqlOperator(state.cohort.currentFilters.filters);
 };
 
+export const selectCurrentCohortFilterOrCaseSet = (
+  state: CoreState,
+): FilterSet => {
+  if (Object.keys(state.cohort.caseSet.caseSetId.root).length != 0) {
+    return state.cohort.caseSet.caseSetId;
+  } else return state.cohort.currentFilters.filters;
+};
+
 export const selectCurrentCohortFiltersByName = (
   state: CoreState,
   name: string,

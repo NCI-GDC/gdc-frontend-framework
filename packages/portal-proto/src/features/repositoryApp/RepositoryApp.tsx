@@ -13,7 +13,7 @@ import {
 } from "@gff/core";
 import React, { useEffect, useState } from "react";
 import { AppStore, id, AppContext, useAppSelector } from "./appApi";
-import { Button, Menu, Text } from "@mantine/core";
+import { Menu, Text } from "@mantine/core";
 import {
   MdDownload as DownloadIcon,
   MdShoppingCart as CartIcon,
@@ -25,18 +25,7 @@ import { FilesView } from "@/features/files/FilesView";
 import { mapGdcFileToCartFile } from "../files/utils";
 import { selectFilters } from "@/features/repositoryApp/repositoryFiltersSlice";
 import { isEqual } from "lodash";
-import tw from "tailwind-styled-components";
-
-const FileActionButton = tw(Button)`
-mx-1 
-bg-secondary-darker 
-text-secondary-content-lightest 
-hover:bg-secondary-darkest
-hover:text-secondary-content-lightest 
-transition-colors
-border-1
-border-secondary-darkest
-`;
+import FunctionButton from "@/components/FunctionButton";
 
 export interface ContextualFilesViewProps {
   readonly handleFileSelected?: (file: GdcFile) => void;
@@ -101,15 +90,15 @@ const RepositoryApp: React.FC<ContextualFilesViewProps> = ({
         <Text className="mx-2" transform="uppercase" size="lg" weight={1000}>
           {isSuccess ? pagination.total : "   "}
         </Text>
-        <Text transform="uppercase" size="lg" weight={700}>
+        <Text transform="uppercase" size="lg" className="mr-6" weight={700}>
           Files
         </Text>
         <Menu>
           <Menu.Target>
-            <FileActionButton>
+            <FunctionButton>
               <CartIcon size={"1.5rem"} />
               Update Cart
-            </FileActionButton>
+            </FunctionButton>
           </Menu.Target>
           <Menu.Dropdown>
             <Menu.Item
@@ -143,12 +132,12 @@ const RepositoryApp: React.FC<ContextualFilesViewProps> = ({
             </Menu.Item>
           </Menu.Dropdown>
         </Menu>
-        <FileActionButton>
+        <FunctionButton>
           <DownloadIcon size={"1.5rem"} />
           Manifest
-        </FileActionButton>
+        </FunctionButton>
         <Link href="/user-flow/workbench/MultipleImageViewerPage">
-          <FileActionButton component="a">View Images</FileActionButton>
+          <FunctionButton component="a">View Images</FunctionButton>
         </Link>
       </div>
       <div className="flex flex-row mx-3">

@@ -6,7 +6,6 @@ import {
   Checkbox,
   Radio,
   Loader,
-  Button,
   Menu,
 } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
@@ -31,6 +30,7 @@ import { useRangeFacet } from "../facets/hooks";
 import VictoryBarChart from "../charts/VictoryBarChart";
 import { CONTINUOUS_FACET_TYPES, COLOR_MAP } from "./constants";
 import { createBuckets, toDisplayName } from "./utils";
+import FunctionButton from "@/components/FunctionButton";
 
 interface CDaveCardProps {
   readonly field: string;
@@ -225,9 +225,6 @@ const Result: React.FC<ResultProps> = ({
       ?.DEFAULT;
   const hideXTicks = barChartData.length > 20;
 
-  const controlsStyle =
-    "bg-secondary-lighter text-secondary-contrast-lighter border-secondary-dark";
-
   return (
     <>
       {isFetching ? (
@@ -293,15 +290,12 @@ const Result: React.FC<ResultProps> = ({
             />
           </div>
           <div className="flex justify-between p-2">
-            <div>
+            <div className={"flex flex-row nowrap"}>
               <Menu>
                 <Menu.Target>
-                  <Button
-                    rightIcon={<DownIcon size={20} />}
-                    className={controlsStyle}
-                  >
+                  <FunctionButton rightIcon={<DownIcon size={20} />}>
                     Select Action
-                  </Button>
+                  </FunctionButton>
                 </Menu.Target>
                 <Menu.Dropdown>
                   <Menu.Item disabled>Save as a new cohort</Menu.Item>
@@ -309,16 +303,13 @@ const Result: React.FC<ResultProps> = ({
                   <Menu.Item disabled>Remove from cohort</Menu.Item>
                 </Menu.Dropdown>
               </Menu>
-              <Button className={`${controlsStyle} ml-2`}>TSV</Button>
+              <FunctionButton className="ml-2">TSV</FunctionButton>
             </div>
             <Menu>
               <Menu.Target>
-                <Button
-                  rightIcon={<DownIcon size={20} />}
-                  className={controlsStyle}
-                >
+                <FunctionButton rightIcon={<DownIcon size={20} />}>
                   Customize Bins
-                </Button>
+                </FunctionButton>
               </Menu.Target>
               <Menu.Dropdown>
                 <Menu.Item>Edit Bins</Menu.Item>

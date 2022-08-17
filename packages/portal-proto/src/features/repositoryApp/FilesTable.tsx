@@ -90,7 +90,7 @@ const FilesTables: React.FC<FilesViewProps> = ({
         <Pagination
           size="sm"
           radius="md"
-          color="gray"
+          color="accent"
           className="ml-auto"
           page={activePage}
           onChange={setPage}

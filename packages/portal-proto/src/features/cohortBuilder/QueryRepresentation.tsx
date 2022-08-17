@@ -1,4 +1,4 @@
-import { PropsWithChildren, useState } from "react";
+import { PropsWithChildren } from "react";
 import {
   Equals,
   ExcludeIfAny,
@@ -22,10 +22,7 @@ import {
 } from "@gff/core";
 import { ActionIcon, Badge, Group } from "@mantine/core";
 import { convertFieldToName } from "@/features/facets/utils";
-import {
-  MdArrowDropDown as DropDownIcon,
-  MdClose as ClearIcon,
-} from "react-icons/md";
+import { MdClose as ClearIcon } from "react-icons/md";
 import tw from "tailwind-styled-components";
 
 const QueryRepresentationText = tw.div`
@@ -72,16 +69,16 @@ export const isValueOperation = (x: Operation): x is ValueOperation => {
 };
 
 const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
-  field,
-  operator,
+  field, // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _operator,
   operands,
 }: Includes | Excludes) => {
-  const [groupType] = useState(operator);
-
-  const filter_set_label_v1 = {
-    includes: "any of:",
-    excludes: "none:",
-  };
+  // const [groupType] = useState(operator);
+  //
+  // const filter_set_label_v1 = {
+  //   includes: "any of:",
+  //   excludes: "none:",
+  // };
 
   const removeButton = (
     <ActionIcon
@@ -99,9 +96,9 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
       <QueryFieldLabel>{convertFieldToName(field)}</QueryFieldLabel>
       <QueryRepresentationText>
         <Group noWrap>
-          {operands.map((x) => (
+          {operands.map((x, i) => (
             <Badge
-              key={`query-rep-${field}-{x}`}
+              key={`query-rep-${field}-${x}-${i}`}
               variant="filled"
               color="accent.3"
               size="md"

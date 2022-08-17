@@ -119,15 +119,16 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
         </div>
       </div>
       <div className="bg-base-max">
-        <Grid className="p-3 my-2" gutter={"lg"}>
+        <Grid columns={12} className="p-3 my-2" gutter="md">
           <Grid.Col
             data-tour="analysis_tool_filters"
-            className="flex flex-col p-3"
-            xs={4}
-            sm={4}
+            className="flex flex-col pr-1"
+            span={1}
+            xs={3}
+            sm={3}
             md={3}
             lg={3}
-            xl={2}
+            xl={3}
           >
             <div className="flex justify-between pb-4 text-primary-content-darkest">
               <div>
@@ -225,20 +226,21 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
 
           <Grid.Col
             data-tour="all_other_apps"
-            xs={8}
-            sm={8}
+            xs={9}
+            sm={9}
             md={9}
             lg={9}
-            xl={10}
+            xl={9}
+            span={11}
           >
-            <Grid className="mx-2">
+            <Grid className="mx-0" gutter="md">
               {activeApps
                 .map((k) => initialApps[k])
                 .map((x: AppRegistrationEntry, idx: number) => {
                   return (
                     <Grid.Col
                       key={x.name}
-                      xs={12}
+                      xs={8}
                       sm={6}
                       md={4}
                       lg={3}

@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
+
 import {
   persistReducer,
   FLUSH,
@@ -11,6 +12,7 @@ import {
 } from "redux-persist";
 import { reducers } from "./reducers";
 import { cohortApiSliceMiddleware } from "./features/api/cohortApiSlice";
+import { listenerMiddleware } from "./listeners";
 
 import storage from "./storage-persist";
 
@@ -31,7 +33,9 @@ export const coreStore = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(cohortApiSliceMiddleware),
+    })
+      .concat(cohortApiSliceMiddleware)
+      .prepend(listenerMiddleware.middleware),
 });
 
 setupListeners(coreStore.dispatch);

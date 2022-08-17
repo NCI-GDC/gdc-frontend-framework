@@ -30,6 +30,7 @@ export const CoreContext = React.createContext(
  */
 export const useCoreSelector: TypedUseSelectorHook<CoreState> =
   createSelectorHook(CoreContext);
+
 export const useCoreDispatch: () => CoreDispatch =
   createDispatchHook(CoreContext);
 

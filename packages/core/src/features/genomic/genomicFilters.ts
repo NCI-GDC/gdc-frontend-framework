@@ -9,6 +9,7 @@ import {
   buildCohortGqlOperator,
   FilterSet,
   joinFilters,
+  selectCurrentCohortFilterOrCaseSet,
 } from "../cohort/cohortFilterSlice";
 
 const initialState: FilterSet = {
@@ -67,13 +68,16 @@ export const selectGenomicGqlFilters = (
 };
 
 export const selectGenomicAndCohortFilters = (state: CoreState): FilterSet =>
-  joinFilters(state.cohort.currentFilters.filters, state.genomic.filters);
+  joinFilters(selectCurrentCohortFilterOrCaseSet(state), state.genomic.filters);
 
 export const selectGenomicAndCohortGqlFilters = (
   state: CoreState,
 ): GqlOperation | undefined => {
   return buildCohortGqlOperator(
-    joinFilters(state.cohort.currentFilters.filters, state.genomic.filters),
+    joinFilters(
+      selectCurrentCohortFilterOrCaseSet(state),
+      state.genomic.filters,
+    ),
   );
 };
 

@@ -256,7 +256,7 @@ export const FilesView: React.FC<FilesViewProps> = ({
         <Pagination
           size="sm"
           radius="md"
-          color="secondary"
+          color="accent"
           className="ml-auto"
           page={activePage}
           onChange={setPage}

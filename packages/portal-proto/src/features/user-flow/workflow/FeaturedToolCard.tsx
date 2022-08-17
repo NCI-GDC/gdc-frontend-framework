@@ -14,7 +14,7 @@ const FeaturedToolCard: React.FC<FeaturedToolCardProps> = ({
 }: FeaturedToolCardProps) => {
   return (
     <Grid
-      className="bg-base-lightest border-base-darkest border h-full items-center m-0 rounded-lg p-0"
+      className="bg-base-max border-base-darkest border h-full items-center m-0 rounded-lg p-0"
       justify="space-between"
     >
       <Grid.Col span={2}>
@@ -26,7 +26,7 @@ const FeaturedToolCard: React.FC<FeaturedToolCardProps> = ({
           alt={`${entry.name} icon`}
         />
       </Grid.Col>
-      <Grid.Col span={8} className="text-primary-content-darkest">
+      <Grid.Col span={8} className="text-base-content-darkest">
         <Text size={"sm"} className="font-heading font-bold">
           {entry.name}
         </Text>

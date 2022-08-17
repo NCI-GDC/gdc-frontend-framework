@@ -39,6 +39,7 @@ const GeneMutationChart: FC<{ which }> = ({ which }: { which: string }) => {
         color: "#ffffff",
         width: 2,
       },
+      color: "#FF0000",
     },
     textposition: "outside",
     insidetextorientation: "horizontal",

@@ -298,7 +298,7 @@ const MutationsTable: React.FC<MutationTableProps> = ({
         <Pagination
           size="sm"
           radius="md"
-          color="secondary"
+          color="accent"
           className="ml-auto"
           page={activePage}
           onChange={(x) => handlePageChange(x)}

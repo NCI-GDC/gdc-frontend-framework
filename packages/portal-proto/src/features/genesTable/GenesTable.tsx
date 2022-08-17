@@ -259,7 +259,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
         <Pagination
           size="sm"
           radius="md"
-          color="secondary"
+          color="accent"
           className="ml-auto"
           page={activePage}
           onChange={(x) => handlePageChange(x)}
