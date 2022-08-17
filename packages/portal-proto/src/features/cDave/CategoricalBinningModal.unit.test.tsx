@@ -49,9 +49,9 @@ describe("<CategoricalBinningModal />", () => {
       />,
     );
 
-    expect(getByDisplayValue("custom bin")).toBeInTheDocument();
+    expect(queryByText("custom bin")).toBeInTheDocument();
     expect(
-      getByDisplayValue("custom bin")
+      queryByText("custom bin")
         .closest("li")
         .contains(queryByText("female (10)")),
     ).toBeTruthy();
@@ -286,7 +286,7 @@ describe("<CategoricalBinningModal />", () => {
     await userEvent.type(input, "missing");
     await userEvent.click(document.body);
 
-    expect(queryByText("missing already exists")).toBeInTheDocument();
+    expect(queryByText('"missing" already exists')).toBeInTheDocument();
   });
 
   it("group name same as values is validation failure", async () => {
@@ -309,9 +309,7 @@ describe("<CategoricalBinningModal />", () => {
     await userEvent.click(document.body);
 
     expect(
-      queryByText(
-        "The group name cannot be the same as the name of the values",
-      ),
+      queryByText("The group name cannot be the same as the name of a value"),
     ).toBeInTheDocument();
   });
 

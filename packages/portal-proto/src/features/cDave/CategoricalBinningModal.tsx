@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { pickBy, mapKeys } from "lodash";
+import { pickBy, mapKeys, isEqual } from "lodash";
 import { Button, Modal, TextInput } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
@@ -156,6 +156,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
                 setHiddenValues({});
                 setValues(results);
                 setSelectedValues({});
+                updateBins(null);
               }}
               aria-label="reset groups"
               className="bg-nci-gray"
@@ -213,6 +214,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
                 selectedValues={selectedValues}
                 setSelectedValues={setSelectedValues}
                 setInputErrors={setInputErrors}
+                hasCustomBins={customBins !== null}
                 key={k}
               />
             ) : (
@@ -273,10 +275,12 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
         <Button
           className="bg-nci-blue-darkest"
           onClick={() => {
-            updateBins(values);
+            if (!isEqual(values, results)) {
+              updateBins(values);
+            }
             setModalOpen(false);
           }}
-          disabled={hasInputErrors}
+          disabled={hasInputErrors || isEqual(values, results)}
         >
           Save Bins
         </Button>
@@ -335,6 +339,7 @@ interface GroupInputProps {
   readonly selectedValues: Record<string, number>;
   readonly setSelectedValues: (selectedValues: Record<string, number>) => void;
   readonly setInputErrors: (hasError: boolean) => void;
+  readonly hasCustomBins: boolean;
 }
 
 const GroupInput: React.FC<GroupInputProps> = ({
@@ -345,8 +350,9 @@ const GroupInput: React.FC<GroupInputProps> = ({
   selectedValues,
   setSelectedValues,
   setInputErrors,
+  hasCustomBins,
 }: GroupInputProps) => {
-  const [editMode, setEditMode] = useState(true);
+  const [editMode, setEditMode] = useState(hasCustomBins ? false : true);
 
   const form = useForm({
     validateInputOnChange: true,
@@ -356,9 +362,9 @@ const GroupInput: React.FC<GroupInputProps> = ({
         value === ""
           ? "Required field"
           : Object.keys(groupValues).includes(value)
-          ? "The group name cannot be the same as the name of the values"
+          ? "The group name cannot be the same as the name of a value"
           : otherGroups.includes(value)
-          ? `${value} already exists`
+          ? `"${value}" already exists`
           : null,
     },
   });
@@ -376,7 +382,17 @@ const GroupInput: React.FC<GroupInputProps> = ({
 
   useEffect(() => {
     setInputErrors(Object.keys(form.errors).length > 0);
-  }, [form.values]);
+  }, [form.values, form.errors, setInputErrors]);
+
+  const updateSelectedValues = () => {
+    if (Object.keys(groupValues).every((k) => selectedValues?.[k])) {
+      setSelectedValues(
+        pickBy(selectedValues, (_, k) => !Object.keys(groupValues).includes(k)),
+      );
+    } else {
+      setSelectedValues({ ...selectedValues, ...groupValues });
+    }
+  };
 
   return (
     <li>
@@ -389,12 +405,8 @@ const GroupInput: React.FC<GroupInputProps> = ({
         />
       ) : (
         <div
-          onClick={() =>
-            setSelectedValues({ ...selectedValues, ...groupValues })
-          }
-          onKeyPress={createKeyboardAccessibleFunction(() =>
-            setSelectedValues({ ...selectedValues, ...groupValues }),
-          )}
+          onClick={updateSelectedValues}
+          onKeyPress={createKeyboardAccessibleFunction(updateSelectedValues)}
           tabIndex={0}
           role="button"
           className={`${

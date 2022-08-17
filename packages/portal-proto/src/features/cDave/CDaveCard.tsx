@@ -4,7 +4,7 @@ import { Card, ActionIcon, Tooltip, Button, Menu } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
 import {
   MdBarChart as BarChartIcon,
-  MdShowChart as SurvivalChartIcon,
+  MdTrendingDown as SurvivalChartIcon,
   MdOutlineClose as CloseIcon,
   MdArrowDropDown as DownIcon,
 } from "react-icons/md";
@@ -23,7 +23,7 @@ import ClinicalSurvivalPlot from "./ClinicalSurvivalPlot";
 import ContinuousBinningModal from "./ContinuousBinningModal/ContinuousBinningModal";
 import CategoricalBinningModal from "./CategoricalBinningModal";
 import { CategoricalBins, CustomInterval, NamedFromTo } from "./types";
-import { CONTINUOUS_FACET_TYPES } from "./constants";
+import { CONTINUOUS_FACET_TYPES, SURVIVAL_PLOT_MIN_COUNT } from "./constants";
 import {
   toDisplayName,
   isInterval,
@@ -54,6 +54,10 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   );
 
   const continuous = CONTINUOUS_FACET_TYPES.includes(facet?.type);
+  const noData = continuous
+    ? (data as Stats)?.stats?.count === 0
+    : data !== undefined &&
+      (data as Buckets).buckets.every((bucket) => bucket.key === "_missing");
 
   const fieldName = toDisplayName(field);
 
@@ -92,6 +96,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
                   : "border-nci-blue-darkest text-nci-blue-darkest"
               }
               onClick={() => setChartType("survival")}
+              disabled={noData}
             >
               <SurvivalChartIcon />
             </ActionIcon>
@@ -109,6 +114,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
           field={field}
           fieldName={fieldName}
           chartType={chartType}
+          noData={noData}
         />
       ) : (
         <CategoricalData
@@ -116,6 +122,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
           field={field}
           fieldName={fieldName}
           chartType={chartType}
+          noData={noData}
         />
       )}
     </Card>
@@ -151,6 +158,7 @@ interface ContinuousDataProps {
   readonly field: string;
   readonly fieldName: string;
   readonly chartType: ChartTypes;
+  readonly noData: boolean;
 }
 
 const ContinuousData: React.FC<ContinuousDataProps> = ({
@@ -158,6 +166,7 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
   field,
   fieldName,
   chartType,
+  noData,
 }: ContinuousDataProps) => {
   const [customBinnedData, setCustomBinnedData] = useState<
     CustomInterval | NamedFromTo[]
@@ -189,7 +198,16 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
   );
 
   useEffect(() => {
-    setSelectedSurvivalPlots(Object.keys(resultData).slice(0, 2));
+    setSelectedSurvivalPlots(
+      Object.entries(resultData)
+        .filter(
+          ([key, value]) =>
+            key !== "missing" && value > SURVIVAL_PLOT_MIN_COUNT,
+        )
+        .sort((a, b) => b[1] - a[1])
+        .map(([key]) => key)
+        .slice(0, 2),
+    );
   }, [resultData]);
 
   return (
@@ -201,7 +219,7 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
           data={resultData}
           isFetching={isFetching}
           continuous={true}
-          noData={initialData.count === 0}
+          noData={noData}
         />
       ) : (
         <ClinicalSurvivalPlot
@@ -237,6 +255,7 @@ interface CategoricalDataProps {
   readonly field: string;
   readonly fieldName: string;
   readonly chartType: ChartTypes;
+  readonly noData: boolean;
 }
 
 const CategoricalData: React.FC<CategoricalDataProps> = ({
@@ -244,6 +263,7 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
   field,
   fieldName,
   chartType,
+  noData,
 }: CategoricalDataProps) => {
   const [customBinnedData, setCustomBinnedData] =
     useState<CategoricalBins>(null);
@@ -265,15 +285,19 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
   useEffect(
     () =>
       setSelectedSurvivalPlots(
-        Object.keys(
+        Object.entries(
           customBinnedData !== null
-            ? Object.fromEntries(
-                Object.entries(
-                  flattenBinnedData(customBinnedData as CategoricalBins),
-                ).sort((a, b) => b[1] - a[1]),
-              )
+            ? flattenBinnedData(customBinnedData as CategoricalBins)
             : resultData,
-        ).slice(0, 2),
+        )
+          .filter(
+            ([key, value]) =>
+              key !== "missing" && value > SURVIVAL_PLOT_MIN_COUNT,
+          )
+          .sort((a, b) => b[1] - a[1])
+          .map(([key]) => key)
+
+          .slice(0, 2),
       ),
     [customBinnedData, resultData],
   );
@@ -287,10 +311,7 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
           data={resultData}
           isFetching={false}
           continuous={false}
-          noData={
-            initialData !== undefined &&
-            initialData.every((bucket) => bucket.key === "_missing")
-          }
+          noData={noData}
           customBinnedData={customBinnedData}
         />
       ) : (

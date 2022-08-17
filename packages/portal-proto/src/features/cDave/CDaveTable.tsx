@@ -1,5 +1,5 @@
 import { ActionIcon, Tooltip, Checkbox } from "@mantine/core";
-import { MdShowChart as SurvivalChartIcon } from "react-icons/md";
+import { MdTrendingDown as SurvivalChartIcon } from "react-icons/md";
 import { CategoricalBins, CustomInterval, NamedFromTo } from "./types";
 import { flattenBinnedData } from "./utils";
 
@@ -51,7 +51,8 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
               const enoughCasesForSurvival = count > 10;
               const survivalDisabled =
                 (!survivalSelected && selectedSurvivalPlots.length === 5) ||
-                !enoughCasesForSurvival;
+                !enoughCasesForSurvival ||
+                key === "missing";
 
               return (
                 <tr
@@ -71,7 +72,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                     )
                   </td>
                   {survival && (
-                    <td>
+                    <td className="float-right">
                       <Tooltip
                         label={
                           !enoughCasesForSurvival
@@ -80,7 +81,8 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                             ? `Click to remove ${key} from plot`
                             : `Click to plot ${key}`
                         }
-                        className="float-right"
+                        withArrow
+                        withinPortal={true}
                       >
                         <ActionIcon
                           variant="outline"
