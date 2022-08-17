@@ -54,7 +54,7 @@ export const createCaseSet = createAsyncThunk<
   async (
     {
       filterSelector = selectCurrentCohortFilterSet,
-      index = "explore" as GQLIndexType,
+      index = "repository" as GQLIndexType,
     },
     thunkAPI,
   ) => {

@@ -32,7 +32,7 @@ startCoreListening({
         .length === 0
     )
       await listenerApi.dispatch(clearCaseSet());
-    else await listenerApi.dispatch(createCaseSet({ index: "explore" }));
+    else await listenerApi.dispatch(createCaseSet({ index: "repository" }));
   },
 });
 

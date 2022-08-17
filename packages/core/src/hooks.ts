@@ -30,7 +30,8 @@ export const CoreContext = React.createContext(
  */
 export const useCoreSelector: TypedUseSelectorHook<CoreState> =
   createSelectorHook(CoreContext);
-
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 export const useCoreDispatch: () => CoreDispatch =
   createDispatchHook(CoreContext);
 

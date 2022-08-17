@@ -25,6 +25,7 @@ import {
   selectFacetByDocTypeAndField,
   usePrevious,
   selectGenomicAndCohortFilters,
+  selectCurrentCohortFilterOrCaseSet,
 } from "@gff/core";
 import { useEffect } from "react";
 import isEqual from "lodash/isEqual";
@@ -36,6 +37,10 @@ import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
  */
 const useCohortFacetFilter = (): FilterSet => {
   return useCoreSelector((state) => selectCurrentCohortFilters(state));
+};
+
+const useCohortOrCaseSetFacetFilter = (): FilterSet => {
+  return useCoreSelector((state) => selectCurrentCohortFilterOrCaseSet(state));
 };
 
 const useGenomicFacetFilter = (): FilterSet => {
@@ -136,7 +141,7 @@ const useGenesFacet = (
   );
 
   const enumValues = useGenomicFilterByName(field);
-  const cohortFilters = useCohortFacetFilter();
+  const cohortFilters = useCohortOrCaseSetFacetFilter();
   const genomicFilters = useGenomicFacetFilter();
   const prevCohortFilters = usePrevious(cohortFilters);
   const prevGenomicFilters = usePrevious(genomicFilters);
@@ -197,7 +202,7 @@ const useMutationsFacet = (
   );
 
   const enumValues = useGenomicFilterByName(field);
-  const cohortFilters = useCohortFacetFilter();
+  const cohortFilters = useCohortOrCaseSetFacetFilter();
   const genomicFilters = useGenomicFacetFilter();
   const prevCohortFilters = usePrevious(cohortFilters);
   const prevGenomicFilters = usePrevious(genomicFilters);
