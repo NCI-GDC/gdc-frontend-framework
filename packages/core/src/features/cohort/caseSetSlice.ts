@@ -96,7 +96,6 @@ export const createCaseSetSlice = createSlice({
     builder
       .addCase(createCaseSet.fulfilled, (_, action) => {
         const response = action.payload;
-        console.log("createCaseSet", response);
         if (response.errors && Object.keys(response.errors).length > 0) {
           return {
             caseSetId: { mode: "and", root: {} },
@@ -107,7 +106,6 @@ export const createCaseSetSlice = createSlice({
 
         const index = action.meta.arg.index ?? "explore";
         const data = response.data.sets.create[index];
-        console.log(data);
         const filter: FilterSet = {
           mode: "and",
           root: {
