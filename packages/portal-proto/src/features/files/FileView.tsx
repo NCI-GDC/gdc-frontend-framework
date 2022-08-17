@@ -1,5 +1,11 @@
-import React, { useState } from "react";
-import { GdcFile, HistoryDefaults } from "@gff/core";
+import React, { useEffect, useState } from "react";
+import {
+  GdcFile,
+  HistoryDefaults,
+  Modals,
+  useCoreSelector,
+  selectCurrentModal,
+} from "@gff/core";
 import ReactModal from "react-modal";
 import { HorizontalTable } from "../../components/HorizontalTable";
 import { Table, Button } from "@mantine/core";
@@ -12,6 +18,9 @@ import { AddToCartButton } from "../cart/updateCart";
 import { formatDataForHorizontalTable, parseSlideDetailsInfo } from "./utils";
 import Link from "next/link";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
+import { BAMSlicingButton } from "./BamSlicingButton";
+import { NoAccessModal } from "@/components/Modals/NoAccessModal";
+import { BAMSlicingModal } from "@/components/Modals/BAMSlicingModal/BAMSlicingModal";
 
 const ImageViewer = dynamic(() => import("../../components/ImageViewer"), {
   ssr: false,
@@ -77,6 +86,8 @@ export const FileView: React.FC<FileViewProps> = ({
   fileHistory,
 }: FileViewProps) => {
   const [imageId] = useState(file?.fileId);
+  const modal = useCoreSelector((state) => selectCurrentModal(state));
+
   const GenericLink = ({
     path,
     query,
@@ -246,22 +257,22 @@ export const FileView: React.FC<FileViewProps> = ({
     };
     return <TempTable tableData={formatedTableData} />;
   };
+
+  const [bamActive, setBamActive] = useState(false);
+
+  console.log(bamActive);
+
   return (
     <div className="p-4 text-nci-gray w-10/12 m-auto">
-      <div className="text-right pb-5">
+      <div className="flex justify-end pb-5 gap-2">
         <AddToCartButton files={[file]} />
         {file.dataFormat === "BAM" &&
           file.dataType === "Aligned Reads" &&
           file?.index_files?.length > 0 && (
-            <Button
-              className="m-1 text-nci-gray-lightest bg-nci-blue hover:bg-nci-blue-darker"
-              leftIcon={<FaCut />}
-            >
-              BAM Slicing
-            </Button>
+            <BAMSlicingButton isActive={bamActive} file={file} />
           )}
         <Button
-          className="m-1 text-nci-gray-lightest bg-nci-blue hover:bg-nci-blue-darker"
+          className="text-nci-gray-lightest bg-nci-blue hover:bg-nci-blue-darker"
           leftIcon={<FaDownload />}
         >
           Download
@@ -512,6 +523,10 @@ export const FileView: React.FC<FileViewProps> = ({
             }}
           />
         </FullWidthDiv>
+      )}
+      {modal === Modals.NoAccessModal && <NoAccessModal openModal />}
+      {modal === Modals.BAMSlicingModal && (
+        <BAMSlicingModal openModal file={file} setActive={setBamActive} />
       )}
     </div>
   );

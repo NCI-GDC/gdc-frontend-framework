@@ -4,6 +4,8 @@ import { CoreState } from "../../reducers";
 export enum Modals {
   "UserProfileModal" = "UserProfileModal",
   "SessionExpireModal" = "SessionExpireModal",
+  "NoAccessModal" = "NoAccessModal",
+  "BAMSlicingModal" = "BAMSlicingModal",
 }
 
 export interface ModalState {

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { GDC_AUTH } from "../../constants";
+import { GDC_APP_API_AUTH, GDC_AUTH } from "../../constants";
 import {
   CoreDataSelectorResponse,
   createUseCoreDataHook,
@@ -66,6 +66,17 @@ export const fetchToken = async (): Promise<{
   throw Error(await response.text());
 };
 
+export const fetchSlice = async (endpoint: string, body: any) => {
+  return await fetch(`${GDC_APP_API_AUTH}/${endpoint}`, {
+    method: "POST",
+    body: JSON.stringify(body),
+    headers: {
+      "Access-Control-Allow-Origin": "true",
+      "Content-Type": "application/json",
+    },
+  });
+};
+
 export interface userSliceInitialStateInterface {
   projects: {
     phs_ids: Record<string, Array<string>>;
@@ -82,6 +93,8 @@ const userSliceInitialState: userSliceInitialStateInterface = {
   username: null,
   status: "uninitialized",
 };
+
+export type UserInfo = Omit<userSliceInitialStateInterface, "status">;
 
 const slice = createSlice({
   name: "userInfo",
@@ -122,9 +135,7 @@ export const userDetailsReducer = slice.reducer;
 
 export const selectUserDetailsInfo = (
   state: CoreState,
-): CoreDataSelectorResponse<
-  Omit<userSliceInitialStateInterface, "status">
-> => ({
+): CoreDataSelectorResponse<UserInfo> => ({
   data: {
     projects: state.userInfo.projects,
     username: state.userInfo.username,
