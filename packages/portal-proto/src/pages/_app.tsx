@@ -19,7 +19,7 @@ import "../features/demoApp1/DemoApp";
 import "../features/demoApp2/DemoApp";
 import "@/features/repositoryApp/RepositoryApp";
 
-// import the react tab styles once
+// import the React tab styles once
 import "react-tabs/style/react-tabs.css";
 
 // ReactModal needs the app element set for a11y reasons.

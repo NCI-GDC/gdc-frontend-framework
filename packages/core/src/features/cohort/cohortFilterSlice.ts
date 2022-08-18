@@ -23,7 +23,7 @@ import {
 
 /**
  * Root filter set. Similar to how case filters are
- * manages: as a Object where the key is the field name
+ * manages: as an Object where the key is the field name
  * and the value is the Filter Operation
  *
  * @member root - root Objects of all of the filters
