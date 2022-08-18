@@ -1,5 +1,5 @@
 import React from "react";
-import { Divider } from "@mantine/core";
+import { Divider, Text } from "@mantine/core";
 import { divider_style } from "./style";
 
 const portalV2contrastColors = {
@@ -203,6 +203,8 @@ const portalV2Colors = {
     "bg-utility-category4",
   ],
 };
+
+// TODO Decide if we still need these
 /* ----
 const nciPrimaryColors = {
   gray: [
@@ -416,7 +418,7 @@ interface ColorStylePalletProps {
   readonly colors: ReadonlyArray<string>;
 }
 
-interface ColorAndcontrastStylePalletProps extends ColorStylePalletProps {
+interface ColorAndContrastStylePalletProps extends ColorStylePalletProps {
   readonly contrast?: ReadonlyArray<string>;
 }
 
@@ -438,7 +440,7 @@ const ColorAndcontrastPalletLine = ({
   name,
   colors,
   contrast = undefined,
-}: ColorAndcontrastStylePalletProps) => {
+}: ColorAndContrastStylePalletProps) => {
   return (
     <div className="flex flex-row items-center font-montserrat font-bold">
       <div className="grid gap-2 grid-cols-12 grid-rows-1 my-1">
@@ -470,7 +472,6 @@ const Colors: React.FC<void> = () => {
         </div>
         <Divider label="Portal theme color names" classNames={divider_style} />
         {Object.keys(portalV2Colors).map((name: string) => {
-          //       console.log(Object.keys(portalV2contrastColors), name, Object.keys(portalV2contrastColors).filter(element => element.includes(name)) ?  `${name}-contrast` : 'primary-contrast' );
           return (
             <ColorAndcontrastPalletLine
               key={`${name}-pallet`}
@@ -486,6 +487,33 @@ const Colors: React.FC<void> = () => {
             />
           );
         })}
+        <Divider label="USWDS theme color tokens" classNames={divider_style} />
+        <Text>
+          <p>
+            <b>USWDS theme color tokens</b> are divided into five high-level
+            role-based color families:{" "}
+            <em>base, primary, secondary, accent-warm, and accent-cool.</em>
+          </p>
+          <b>Base</b> is a project’s neutral color, typically some tint of gray,
+          and usually used as the text color throughout.
+          <p>
+            <b>Primary, secondary, and accent colors</b> can be thought of as
+            falling into a proportional 60/30/10 relationship: about 60% of your
+            site’s color would be the primary color family, about 30% would be
+            the secondary color family, and about 10% would be the accent color
+            families (accent-warm and accent-cool). Note that these proportions
+            are for non-base colors. In many cases, the neutral base text color
+            will be the predominant tone on your site.
+          </p>
+          <p>
+            Each color family has seven possible lightness grades, from lightest
+            to darkest, though not every family needs to include a color at each
+            grade. Some grades may be set to false in your project’s theme
+            settings. The default USWDS theme palette does not use every grade
+            for every family. The primary and secondary families also have a
+            vivid grade available.
+          </p>
+        </Text>
         {/*---
         <div>
           <p className="prose font-medium text-xl">Official NCI Colors</p>

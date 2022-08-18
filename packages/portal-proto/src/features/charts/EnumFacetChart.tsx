@@ -16,7 +16,7 @@ import {
   VictoryStack,
   VictoryTooltip,
 } from "victory";
-import { getThemeColor } from "src/utils";
+import { useMantineTheme } from "@mantine/core";
 import ChartTitleBar from "./ChartTitleBar";
 import { capitalize, truncateString } from "src/utils";
 
@@ -175,6 +175,7 @@ const EnumBarChart: React.FC<BarChartProps> = ({
 }: BarChartProps) => {
   const max = Math.max(...data.map((d) => d.y));
   const formatter = Intl.NumberFormat("en", { notation: "compact" });
+  const theme = useMantineTheme();
 
   return (
     <VictoryChart
@@ -221,8 +222,8 @@ const EnumBarChart: React.FC<BarChartProps> = ({
           }
           style={{
             data: {
-              fill: getThemeColor("chart").darker,
-              stroke: getThemeColor("chart").darkest,
+              fill: theme.colors.chart[6],
+              stroke: theme.colors.chart[6],
               strokeWidth: 1,
               width: 22,
             },
@@ -247,8 +248,8 @@ const EnumBarChart: React.FC<BarChartProps> = ({
           y="y"
           style={{
             data: {
-              fill: getThemeColor("base").lightest,
-              stroke: getThemeColor("base").dark,
+              fill: theme.colors.base[1],
+              stroke: theme.colors.base[7],
               strokeWidth: 1,
               width: 22,
             },

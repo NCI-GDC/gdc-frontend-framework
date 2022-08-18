@@ -29,9 +29,9 @@ const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
         size="xs"
         className={`ml-1 border rounded-sm border-accent-darkest ${
           !isSortedByValue
-            ? "bg-accent text-primary-content-max"
-            : "bg-accent-lightest text-primary-content-darkest"
-        }  hover:bg-accent-darker  hover:text-accent-content-lightest`}
+            ? "bg-accent text-accent-contrast"
+            : "bg-accent-lightest text-accent-contrast-lightest"
+        }  hover:bg-accent-darker  hover:text-accent-contrast-darker`}
         aria-label="Sort alphabetically"
       >
         <AlphaSortIcon
@@ -46,9 +46,9 @@ const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
           onClick={() => setIsSortedByValue(true)}
           className={`ml-1 border rounded-sm border-accent-darkest ${
             isSortedByValue
-              ? "bg-accent text-primary-content-max"
-              : "bg-accent-lightest text-primary-content-darkest"
-          }  hover:bg-accent-darker  hover:text-accent-content-lightest`}
+              ? "bg-accent text-accent-contrast"
+              : "bg-accent-lightest text-accent-contrast-lightest"
+          }  hover:bg-accent-darker  hover:text-accent-contrast-darker`}
           aria-label="Sort numerically"
         >
           <SortIcon scale="1.5em" />
