@@ -30,7 +30,7 @@ flex truncate ... px-2 bg-base-max
 `;
 
 const QueryFieldLabel = tw.span`
-text-accent-content-darkest uppercase px-2 border-accent border-r-2
+bg-accent-lighter text-accent-content-darkest uppercase px-2 border-accent border-r-2
 `;
 
 const QueryItemContainer = tw.div`
@@ -69,8 +69,7 @@ export const isValueOperation = (x: Operation): x is ValueOperation => {
 };
 
 const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
-  field, // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _operator,
+  field,
   operands,
 }: Includes | Excludes) => {
   // const [groupType] = useState(operator);

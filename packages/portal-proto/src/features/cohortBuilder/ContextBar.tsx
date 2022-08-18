@@ -200,7 +200,7 @@ const ContextBar: React.FC<CohortGroupProps> = ({
         <CountButton
           countName="casesMax"
           label="CASES"
-          className="text-primary-content-darkest pl-4"
+          className="text-primary-contrast-lightest pl-4"
           bold
         />
         <Divider
