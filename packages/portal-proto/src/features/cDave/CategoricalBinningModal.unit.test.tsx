@@ -245,7 +245,7 @@ describe("<CategoricalBinningModal />", () => {
     await userEvent.type(input, "new group");
     await userEvent.click(document.body);
 
-    expect(queryByDisplayValue("new group")).toBeInTheDocument();
+    expect(queryByText("new group")).toBeInTheDocument();
   });
 
   it("empty group name is validation failure", async () => {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { pickBy, mapKeys, isEqual } from "lodash";
+import { pickBy, mapKeys, isEqual, fromPairs } from "lodash";
 import { Button, Modal, TextInput } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
@@ -97,9 +97,11 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
   const [selectedHiddenValues, setSelectedHiddenValues] = useState<
     Record<string, number>
   >({});
-  const [hasInputErrors, setInputErrors] = useState(false);
+  const [editField, setEditField] = useState(undefined);
 
   const group = () => {
+    setEditField(undefined);
+
     const existingGroups = Object.entries(values).filter(
       ([, v]) =>
         v instanceof Object &&
@@ -123,6 +125,8 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
         ...filterOutSelected(values, selectedValues),
         [`selected value ${defaultNames.length + 1}`]: selectedValues,
       });
+
+      setEditField(`selected value ${defaultNames.length + 1}`);
     }
     setSelectedValues({});
   };
@@ -132,6 +136,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
   };
 
   const hideValues = () => {
+    setEditField(undefined);
     setHiddenValues({
       ...hiddenValues,
       ...selectedValues,
@@ -141,6 +146,10 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
 
     setSelectedValues({});
   };
+
+  const sortedValues = Object.entries(values).sort((a, b) =>
+    sortBins(a[1], b[1]),
+  );
 
   return (
     <Modal
@@ -163,6 +172,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
           <div className="gap-1 flex">
             <Button
               onClick={() => {
+                setEditField(undefined);
                 setHiddenValues({});
                 setValues(results);
                 setSelectedValues({});
@@ -175,7 +185,13 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
             </Button>
             <Button
               onClick={group}
-              disabled={Object.keys(selectedValues).length < 2}
+              disabled={
+                Object.entries(values).filter(([k, v]) =>
+                  v instanceof Object
+                    ? Object.keys(v).some((k) => selectedValues?.[k])
+                    : selectedValues?.[k],
+                ).length < 2
+              }
               leftIcon={<GroupIcon />}
               className="bg-nci-gray"
             >
@@ -183,6 +199,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
             </Button>
             <Button
               onClick={() => {
+                setEditField(undefined);
                 setValues({
                   ...filterOutSelected(values, selectedValues),
                   ...selectedValues,
@@ -214,20 +231,22 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
           </div>
         </div>
         <ul className="p-2">
-          {Object.entries(values)
+          {sortedValues
             .sort((a, b) => sortBins(a[1], b[1]))
-            .map(([k, value]) =>
+            .map(([k, value], idx) =>
               value instanceof Object ? (
                 <GroupInput
                   groupName={k}
                   groupValues={value}
-                  otherGroups={Object.keys(values)}
+                  otherGroups={sortedValues
+                    .map((v) => v[0])
+                    .filter((_, i) => idx !== i)}
                   updateGroupName={updateGroupName}
                   selectedValues={selectedValues}
                   setSelectedValues={setSelectedValues}
-                  setInputErrors={setInputErrors}
-                  hasCustomBins={customBins !== null}
                   clearOtherValues={() => setSelectedHiddenValues({})}
+                  editing={k === editField}
+                  setEditField={setEditField}
                   key={k}
                 />
               ) : (
@@ -252,6 +271,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
           <Button
             disabled={Object.keys(selectedHiddenValues).length === 0}
             onClick={() => {
+              setEditField(undefined);
               setValues({ ...values, ...selectedHiddenValues });
               setHiddenValues(
                 pickBy(
@@ -268,16 +288,18 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
           </Button>
         </div>
         <ul className="min-h-[100px] p-2">
-          {Object.entries(hiddenValues).map(([k, v]) => (
-            <ListValue
-              name={k}
-              count={v}
-              selectedValues={selectedHiddenValues}
-              setSelectedValues={setSelectedHiddenValues}
-              clearOtherValues={() => setSelectedValues({})}
-              key={k}
-            />
-          ))}
+          {Object.entries(hiddenValues)
+            .sort((a, b) => b[1] - a[1])
+            .map(([k, v]) => (
+              <ListValue
+                name={k}
+                count={v}
+                selectedValues={selectedHiddenValues}
+                setSelectedValues={setSelectedHiddenValues}
+                clearOtherValues={() => setSelectedValues({})}
+                key={k}
+              />
+            ))}
         </ul>
       </div>
       <div className="mt-2 flex gap-2 justify-end">
@@ -290,12 +312,12 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
         <Button
           className="bg-nci-blue-darkest"
           onClick={() => {
+            setEditField(undefined);
             if (!isEqual(values, results)) {
               updateBins(values);
             }
             setModalOpen(false);
           }}
-          disabled={hasInputErrors || isEqual(values, results)}
         >
           Save Bins
         </Button>
@@ -359,9 +381,9 @@ interface GroupInputProps {
   readonly updateGroupName: (oldName: string, newName: string) => void;
   readonly selectedValues: Record<string, number>;
   readonly setSelectedValues: (selectedValues: Record<string, number>) => void;
-  readonly setInputErrors: (hasError: boolean) => void;
-  readonly hasCustomBins: boolean;
   readonly clearOtherValues: () => void;
+  readonly editing: boolean;
+  readonly setEditField: (field: string) => void;
 }
 
 const GroupInput: React.FC<GroupInputProps> = ({
@@ -371,12 +393,10 @@ const GroupInput: React.FC<GroupInputProps> = ({
   updateGroupName,
   selectedValues,
   setSelectedValues,
-  setInputErrors,
-  hasCustomBins,
   clearOtherValues,
+  editing,
+  setEditField,
 }: GroupInputProps) => {
-  const [editMode, setEditMode] = useState(false);
-
   const form = useForm({
     validateInputOnChange: true,
     initialValues: { group: groupName },
@@ -395,17 +415,13 @@ const GroupInput: React.FC<GroupInputProps> = ({
   const closeInput = () => {
     if (Object.keys(form.errors).length === 0) {
       updateGroupName(groupName, form.values.group);
-      setEditMode(false);
+      setEditField(undefined);
     }
   };
 
   const ref = useClickOutside(() => {
     closeInput();
   });
-
-  useEffect(() => {
-    setInputErrors(Object.keys(form.errors).length > 0);
-  }, [form.values, form.errors, setInputErrors]);
 
   const updateSelectedValues = () => {
     if (Object.keys(groupValues).every((k) => selectedValues?.[k])) {
@@ -417,9 +433,16 @@ const GroupInput: React.FC<GroupInputProps> = ({
     }
   };
 
+  useEffect(() => {
+    if (!editing) {
+      form.clearErrors();
+      form.reset();
+    }
+  }, [editing]);
+
   return (
     <li>
-      {editMode ? (
+      {editing ? (
         <TextInput
           ref={ref}
           className={"w-1/2"}
@@ -441,7 +464,10 @@ const GroupInput: React.FC<GroupInputProps> = ({
           {groupName}{" "}
           <PencilIcon
             className="ml-2"
-            onClick={() => setEditMode(true)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setEditField(groupName);
+            }}
             aria-label="edit group name"
           />
         </div>

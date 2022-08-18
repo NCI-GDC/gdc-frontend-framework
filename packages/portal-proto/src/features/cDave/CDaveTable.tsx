@@ -88,12 +88,12 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                           variant="outline"
                           className={
                             survivalDisabled
-                              ? "bg-nci-gray-lighter text-white"
+                              ? "bg-nci-gray-lightest text-white"
                               : survivalSelected
                               ? `bg-gdc-survival-${selectedSurvivalPlots.indexOf(
                                   key,
                                 )} text-white`
-                              : "bg-nci-gray text-white"
+                              : "bg-white text-nci-gray"
                           }
                           disabled={survivalDisabled}
                           onClick={() =>
