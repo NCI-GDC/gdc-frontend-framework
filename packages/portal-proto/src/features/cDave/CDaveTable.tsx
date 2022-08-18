@@ -1,5 +1,6 @@
 import { ActionIcon, Tooltip, Checkbox } from "@mantine/core";
 import { MdTrendingDown as SurvivalChartIcon } from "react-icons/md";
+import { SURVIVAL_PLOT_MIN_COUNT } from "./constants";
 import { CategoricalBins, CustomInterval, NamedFromTo } from "./types";
 import { flattenBinnedData } from "./utils";
 
@@ -48,7 +49,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
             .sort((a, b) => (continuous ? 0 : b[1] - a[1]))
             .map(([key, count], idx) => {
               const survivalSelected = selectedSurvivalPlots.includes(key);
-              const enoughCasesForSurvival = count > 10;
+              const enoughCasesForSurvival = count >= SURVIVAL_PLOT_MIN_COUNT;
               const survivalDisabled =
                 (!survivalSelected && selectedSurvivalPlots.length === 5) ||
                 !enoughCasesForSurvival ||

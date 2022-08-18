@@ -202,7 +202,7 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
       Object.entries(resultData)
         .filter(
           ([key, value]) =>
-            key !== "missing" && value > SURVIVAL_PLOT_MIN_COUNT,
+            key !== "missing" && value >= SURVIVAL_PLOT_MIN_COUNT,
         )
         .sort((a, b) => b[1] - a[1])
         .map(([key]) => key)
@@ -292,7 +292,7 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
         )
           .filter(
             ([key, value]) =>
-              key !== "missing" && value > SURVIVAL_PLOT_MIN_COUNT,
+              key !== "missing" && value >= SURVIVAL_PLOT_MIN_COUNT,
           )
           .sort((a, b) => b[1] - a[1])
           .map(([key]) => key)
