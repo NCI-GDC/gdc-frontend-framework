@@ -203,6 +203,7 @@ const portalV2Colors = {
     "bg-utility-category4",
   ],
 };
+/* ----
 const nciPrimaryColors = {
   gray: [
     "bg-base-lightest",
@@ -409,7 +410,7 @@ const gdcSecondaryColors = {
     "bg-gdc-yellow-darkest",
   ],
 };
-
+--- */
 interface ColorStylePalletProps {
   readonly name: string;
   readonly colors: ReadonlyArray<string>;
@@ -419,6 +420,7 @@ interface ColorAndcontrastStylePalletProps extends ColorStylePalletProps {
   readonly contrast?: ReadonlyArray<string>;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const ColorPalletLine = ({ name, colors }: ColorStylePalletProps) => {
   return (
     <div className="flex flex-row items-center font-montserrat">
@@ -484,6 +486,7 @@ const Colors: React.FC<void> = () => {
             />
           );
         })}
+        {/*---
         <div>
           <p className="prose font-medium text-xl">Official NCI Colors</p>
           The following colors are based on the NCI digital design guide.
@@ -541,6 +544,7 @@ const Colors: React.FC<void> = () => {
             colors={gdcSecondaryColors[name]}
           />
         ))}
+              --- */}
       </div>
     </article>
   );

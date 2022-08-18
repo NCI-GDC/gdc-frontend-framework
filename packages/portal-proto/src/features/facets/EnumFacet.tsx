@@ -203,7 +203,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
             label={description}
             classNames={{
               arrow: "bg-base-light",
-              tooltip: "bg-base-max text-primary-content-darkest",
+              tooltip: "bg-base-max text-base-contrast-max",
             }}
             position="bottom-start"
             multiline
@@ -212,7 +212,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
             transition="fade"
             transitionDuration={200}
           >
-            <div className="has-tooltip text-primary-content-darkest font-heading font-semibold text-md">
+            <div className="has-tooltip text-primary-contrast-lighter font-heading font-semibold text-md">
               {facetName === null ? convertFieldToName(field) : facetName}
             </div>
           </Tooltip>

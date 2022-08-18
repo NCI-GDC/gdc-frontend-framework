@@ -77,7 +77,7 @@ interface HeaderProps {
   readonly Options?: React.FC<unknown>;
 }
 
-const V2Themes = ["default", "invert-primary"];
+const V2Themes = ["default", "invert-primary", "pastel"];
 
 const Header: React.FC<HeaderProps> = ({
   headerElements,

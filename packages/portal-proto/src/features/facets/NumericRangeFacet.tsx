@@ -899,7 +899,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
         } bg-base-max relative shadow-lg border-base-lightest border-1 rounded-b-md text-xs transition `}
       >
         <div className="flex items-center justify-between flex-wrap bg-primary-lighter shadow-md px-1.5">
-          <div className="has-tooltip text-primary-content-darkest font-heading font-semibold text-md">
+          <div className="has-tooltip text-primary-contrast-lighter font-heading font-semibold text-md">
             {facetName === null ? convertFieldToName(field) : facetName}
             <div className="inline-block tooltip w-full border-b-2 border-accent-cool-lightest rounded shadow-lg p-2 bg-gray-100 text-primary-content-darkest mt-8 absolute">
               {description}
