@@ -93,7 +93,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
                   <td className="w-2/6">
                     <input
                       type="radio"
-                      name="additonal-cohort-selection"
+                      name="additional-cohort-selection"
                       id={cohort.id}
                       onChange={() => setSelectedCohort(cohort.name)}
                       checked={selectedCohort === cohort.name}
