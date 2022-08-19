@@ -28,6 +28,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
     const pp_holder = rootElem.querySelector(".sja_root_holder");
     if (pp_holder) pp_holder.remove();
 
+    rootElem.parentNode.parentNode.parentNode.style.backgroundColor = "#fff";
     const arg = Object.assign(
       { holder: rootElem, noheader: true, nobox: true, hide_dsHandles: true },
       JSON.parse(JSON.stringify(data)),
