@@ -46,7 +46,7 @@ interface AnalysisGridProps {
   readonly onAppSelected?: (id: string) => void;
 }
 
-const AnalysisGrid: React.FC<AnalysisGridProps> = ({
+export const AnalysisGrid: React.FC<AnalysisGridProps> = ({
   onAppSelected,
 }: AnalysisGridProps) => {
   // TODO: move app registration to core
@@ -88,7 +88,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
   };
 
   return (
-    <div className="flex flex-col font-montserrat">
+    <div className="flex flex-col font-montserrat relative" id="workspace-main">
       <div
         data-tour="analysis_tool_management"
         className="flex flex-row  items-center shadow-lg bg-nci-blue-darkest"
@@ -272,70 +272,21 @@ interface AnalysisWorkspaceProps {
 const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   app,
 }: AnalysisWorkspaceProps) => {
-  const [cohortSelectionOpen, setCohortSelectionOpen] = useState(false);
-  const { scrollIntoView, targetRef } = useScrollIntoView({ offset: 115 });
   const router = useRouter();
-
-  useEffect(() => {
-    const appInfo = REGISTERED_APPS.find((a) => a.id === app);
-    setCohortSelectionOpen(appInfo?.selectAdditionalCohort);
-
-    if (app) {
-      scrollIntoView();
-    } else {
-      clearComparisonCohorts();
-    }
-  }, [app, scrollIntoView]);
 
   const handleAppSelected = (app: string) => {
     router.push({ query: { app } });
   };
 
   return (
-    <div ref={(ref) => (targetRef.current = ref)}>
-      <CSSTransition in={cohortSelectionOpen} timeout={500}>
-        {(state) => (
-          <div
-            className={
-              {
-                entering:
-                  "block animate-slide-up min-h-[650px] w-full flex flex-col absolute z-[1000]",
-                entered: `block min-h-[650px] w-full flex flex-col absolute z-[1000]`,
-                exiting:
-                  "block animate-slide-down min-h-[650px] w-full flex flex-col absolute z-[1000]",
-                exited: "hidden translate-x-0",
-              }[state]
-            }
-          >
-            <AnalysisBreadcrumbs
-              currentApp={app}
-              setCohortSelectionOpen={setCohortSelectionOpen}
-              cohortSelectionOpen={cohortSelectionOpen}
-              setActiveApp={handleAppSelected}
-            />
-            <AdditionalCohortSelection
-              app={app}
-              setOpen={setCohortSelectionOpen}
-              setActiveApp={handleAppSelected}
-            />
-          </div>
-        )}
-      </CSSTransition>
-      {app && !cohortSelectionOpen && (
-        <>
-          <AnalysisBreadcrumbs
-            currentApp={app}
-            setCohortSelectionOpen={setCohortSelectionOpen}
-            cohortSelectionOpen={cohortSelectionOpen}
-            setActiveApp={handleAppSelected}
-          />
-          <div className="w-10/12 m-auto">
-            {app === "CohortBuilder" ? <SearchInput /> : null}
-          </div>
-          <ActiveAnalysisToolNoSSR appId={app} />
-        </>
-      )}
-      {!app && <AnalysisGrid onAppSelected={handleAppSelected} />}
+    <div>
+      <div>
+        <div className="w-10/12 m-auto">
+          {app === "CohortBuilder" ? <SearchInput /> : null}
+        </div>
+        <ActiveAnalysisToolNoSSR appId={app} />
+      </div>
+      {app === undefined && <AnalysisGrid onAppSelected={handleAppSelected} />}
     </div>
   );
 };
