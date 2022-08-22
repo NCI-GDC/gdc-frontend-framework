@@ -19,7 +19,7 @@ const FilesTables: React.FC<FilesViewProps> = ({
     <div className="flex flex-col gap-y-4">
       <Table verticalSpacing="xs" striped highlightOnHover>
         <thead>
-          <tr className="bg-base-light text-primary-content-darkest text-md text-montserrat border border-base">
+          <tr className="bg-base-light text-base-contrast-light text-md text-montserrat border border-base">
             <th className="px-2">
               <input type="checkbox" />
             </th>

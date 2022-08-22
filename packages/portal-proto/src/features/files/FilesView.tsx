@@ -69,7 +69,7 @@ const FileFacetNames = [
 ];
 
 const buttonStyle =
-  "mx-1 text-primary-content-lightest bg-primary hover:bg-primary-darker transition-colors ";
+  "mx-1 text-primary-contrast bg-primary hover:bg-primary-darker transition-colors ";
 
 export const ContextualFilesView: React.FC<ContextualFilesViewProps> = ({
   handleFileSelected,

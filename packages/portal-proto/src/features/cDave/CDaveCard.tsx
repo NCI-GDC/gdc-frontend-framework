@@ -245,14 +245,14 @@ const Result: React.FC<ResultProps> = ({
             >
               <Radio
                 classNames={{
-                  radio: "checked:bg-secondary focus:bg-secondary-light",
+                  radio: "checked:bg-accent focus:bg-accent-light",
                 }}
                 value="counts"
                 label="# of Cases"
               />
               <Radio
                 classNames={{
-                  radio: "checked:bg-secondary focus:bg-secondary-light",
+                  radio: "checked:bg-accent focus:bg-accent-light",
                 }}
                 value="percent"
                 label="% of Cases"

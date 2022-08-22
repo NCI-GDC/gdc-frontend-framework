@@ -173,7 +173,7 @@ const CustomFacetGroup = (): JSX.Element => {
               variant="outline"
               onClick={() => setOpened(true)}
               aria-label="Add Custom Filter"
-              className="bg-base-lightest text-primary-content-darker"
+              className="bg-base-lightest text-base-contrast-lightest"
             >
               Add Custom Facet
             </Button>
@@ -220,7 +220,7 @@ export const FacetTabs = (): JSX.Element => {
         classNames={{
           tab: "data-active:text-primary-content-darkest text-primary-content-lightest font-medium data-active:border-primary-darker data-active:border-l-1 data-active:border-t-1 data-active:border-b-1 data-active:bg-base-max hover:bg-primary-darker",
           tabsList:
-            "flex flex-col bg-primary-dark text-primary-content-max w-[240px] ",
+            "flex flex-col bg-primary-dark text-primary-contrast-dark w-[240px] ",
           root: "bg-base-max",
         }}
       >
