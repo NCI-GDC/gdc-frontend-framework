@@ -272,6 +272,7 @@ interface AnalysisWorkspaceProps {
 const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   app,
 }: AnalysisWorkspaceProps) => {
+  const [inTransitionState, setInTransitionState] = useState(false);
   const router = useRouter();
 
   const handleAppSelected = (app: string) => {
@@ -279,14 +280,56 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   };
 
   return (
-    <div>
-      <div>
-        <div className="w-10/12 m-auto">
-          {app === "CohortBuilder" ? <SearchInput /> : null}
-        </div>
-        <ActiveAnalysisToolNoSSR appId={app} />
-      </div>
-      {app === undefined && <AnalysisGrid onAppSelected={handleAppSelected} />}
+    <div className="relative h-full">
+      <CSSTransition in={app !== undefined} timeout={500}>
+        {(state) => (
+          <div
+            className={
+              {
+                entering:
+                  "transition-transform scale-y-100 origin-top 5000ms ease ",
+
+                entered:
+                  "transition-transform scale-y-0 origin-top 5000ms ease h-0",
+                exiting:
+                  "transition-transform scale-y-100 origin-top 5000ms ease ",
+                exited: "h-full",
+              }[state]
+            }
+          >
+            <AnalysisGrid onAppSelected={handleAppSelected} />
+          </div>
+        )}
+      </CSSTransition>
+      <CSSTransition
+        in={app !== undefined}
+        timeout={{
+          appear: 500,
+        }}
+        onEntered={() => setInTransitionState(true)}
+        onExited={() => setInTransitionState(false)}
+      >
+        {(state) => (
+          <div
+            className={
+              {
+                entering:
+                  "transition-transform scale-y-0 origin-bottom 5000ms ease",
+                entered:
+                  "transition-transform scale-y-100 origin-bottom 5000ms ease",
+                exiting:
+                  "transition-transform scale-y-100 origin-bottom 5000ms ease",
+                exited: "scale-y-0 hidden",
+              }[state]
+            }
+          >
+            <ActiveAnalysisToolNoSSR
+              appId={app}
+              inTransitionState={inTransitionState}
+            />
+          </div>
+        )}
+      </CSSTransition>
     </div>
   );
 };
