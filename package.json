@@ -71,5 +71,8 @@
   },
   "engines": {
     "npm": ">=7.0.0"
+  },
+  "eslintConfig": {
+    "@typescript-eslint/no-unused-vars" : "off"
   }
 }
