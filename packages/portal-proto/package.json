@@ -78,8 +78,5 @@
   },
   "engines": {
     "node": ">=14.0.0"
-  },
-  "eslintConfig": {
-    "@typescript-eslint/no-unused-vars" : "off"
   }
 }

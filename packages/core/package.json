@@ -48,8 +48,5 @@
   },
   "dependencies": {
     "uuid": "^8.3.2"
-  },
-  "eslintConfig": {
-    "@typescript-eslint/no-unused-vars" : "off"
   }
 }
