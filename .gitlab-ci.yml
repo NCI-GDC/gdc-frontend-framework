@@ -82,15 +82,15 @@ Run all tests:
 build docker:
   stage: build
   services:
-    - docker:20.10.16-dind
+    - docker:${DOCKER_VERSION}-dind
   tags:
     - dind
-  image: docker:20.10.16-dind
+  image: docker:${DOCKER_VERSION}-dind
   script:
     - apk add bash
     - export CLEAN_BRANCH_NAME=${CI_COMMIT_BRANCH/\//_}
     - export LOWERCASE_BRANCH_NAME="$(bash -c 'tr "[:upper:]" "[:lower:]" <<< "$CLEAN_BRANCH_NAME"')"
-    - docker build -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME-${CI_COMMIT_SHORT_SHA} .
+    - docker build -e "npm_config_registry=https://nexus.osdc.io/repository/npm-all/" -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME-${CI_COMMIT_SHORT_SHA} .
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME-${CI_COMMIT_SHORT_SHA}
   cache:
     key: build-cache
@@ -102,10 +102,10 @@ Push latest:
     GIT_STRATEGY: none
   stage: push
   services:
-    - docker:20.10.16-dind
+    - docker:${DOCKER_VERSION}-dind
   tags:
     - dind
-  image: docker:20.10.16-dind
+  image: docker:${DOCKER_VERSION}-dind
   only:
     - master
   script:
