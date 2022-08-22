@@ -6,8 +6,10 @@ WORKDIR /app
 
 # ==================================================================
 FROM node:16-alpine3.15 AS builder
-WORKDIR /app
+ARG NPM_REGISTRY="https://registry.npmjs.org/"
 
+WORKDIR /app
+ENV npm_config_registry=$NPM_REGISTRY
 RUN npm install --location=global lerna
 COPY . .
 
