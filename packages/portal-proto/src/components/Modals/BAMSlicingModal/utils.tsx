@@ -1,7 +1,17 @@
-// @flow
-
-import _ from "lodash";
+import { Modals, showModal, useCoreDispatch } from "@gff/core";
 import Cookies from "js-cookie";
+import {
+  flow,
+  isError,
+  partial,
+  attempt,
+  isPlainObject,
+  includes,
+  uniqueId,
+  assign,
+  reduce,
+} from "lodash";
+import { BAMSlicingErrorModal } from "../BAMSlicingErrorModal";
 
 const getBody = (iframe) => {
   const document = iframe.contentWindow || iframe.contentDocument;
@@ -13,23 +23,10 @@ const cookiePath = "/";
 const getIframeResponse = (iFrame) =>
   JSON.parse(getBody(iFrame).querySelector("pre").innerText);
 const showErrorModal = (error) => {
-  const warning = error.warning || error.message;
-  //   window.store.dispatch(
-  //     setModal(
-  //       <Column
-  //         style={{
-  //           padding: "15px",
-  //         }}
-  //       >
-  //         {warning}
-  //         <Row style={{ paddingTop: "0.5rem", justifyContent: "flex-end" }}>
-  //           <Button onClick={() => window.store.dispatch(setModal(null))}>
-  //             OK
-  //           </Button>
-  //         </Row>
-  //       </Column>,
-  //     ),
-  //   );
+  // const dispatch = useCoreDispatch();
+  console.log("reached here in showError modal");
+  // <BAMSlicingErrorModal openModal />
+  // dispatch(showModal(Modals.BAMSlicingErrorModal));
 };
 // notification config
 
@@ -46,16 +43,21 @@ const progressChecker = (
   let attempts = 0;
   let timeoutPromise = null;
 
+  console.log("REACHED INSIDE: ", iFrame);
+
   const cookieStillThere = () => downloadToken === Cookies.get(cookieKey); // TODO: not $
+
   const handleError = () => {
-    const error = _.flow(_.attempt, (e) =>
-      _.isError(e)
+    const error = flow(attempt, (e) => {
+      console.log("error: ", e);
+      return isError(e)
         ? {
             message: "GDC download service is currently experiencing issues.",
           }
-        : e,
-    )(_.partial(getIframeResponse, iFrame));
+        : e;
+    })(partial(getIframeResponse, iFrame));
 
+    console.log("error: ", error);
     return error;
   };
 
@@ -64,6 +66,7 @@ const progressChecker = (
     timeoutPromise = null;
     // window.store.dispatch(closeNotification());
     iFrame.parentNode.removeChild(iFrame);
+    console.log("done: ", done);
     done();
   };
 
@@ -117,10 +120,18 @@ const progressChecker = (
 
   const checker = () => {
     attempts++;
+    console.log("INSIDE CHECKER: ", attempts);
+    console.log("iFrame.__frame__loaded: ", iFrame.__frame__loaded);
+    console.log("cookieStillThere: ", cookieStillThere);
+    console.log("downloadToken", downloadToken);
+    console.log("Cookies.get(cookieKey):", cookieKey, Cookies.get(cookieKey));
     if (iFrame.__frame__loaded) {
+      console.log("IFRAME LOADED");
       // The downloadToken cookie is removed before the server sends the response
+      console.log("COOKIES: ", Cookies, cookieStillThere());
       if (cookieStillThere()) {
         const error = handleError();
+        console.log(error);
         Cookies.remove(cookieKey);
         finished();
         showErrorModal(error);
@@ -129,6 +140,7 @@ const progressChecker = (
         finished();
       }
     } else if (cookieStillThere()) {
+      console.log("altMessage: ", altMessage);
       if (altMessage) {
         if (attempts === 5 || attempts === 2) {
           // window.store.dispatch(
@@ -159,7 +171,7 @@ const progressChecker = (
         //   }),
         // );
       }
-
+      console.log("reached here");
       timeoutPromise = setTimeout(checker, waitTime);
     } else {
       // In case the download is initiated without triggering the iFrame to reload
@@ -170,6 +182,32 @@ const progressChecker = (
   timeoutPromise = setTimeout(checker, waitTime);
 };
 
+const cookielessChecker = (iFrame, inProgress, done) => {
+  // let attempts = 30;
+  // const finished = () => {
+  //   iFrame.parentNode.removeChild(iFrame);
+  //   done();
+  // };
+  // const checker = () => {
+  //   // Here we simply try to read the error message if the iFrame DOM is
+  //   // reloaded; for a successful download, the error message is not in the DOM
+  //   // therefore #getIframeResponse will return a JS error.
+  //   const error = _.attempt(_.partial(getIframeResponse, iFrame));
+  //   if (_.isError(error)) {
+  //     // Keep waiting until we exhaust `attempts` then we do the cleanup.
+  //     if (--attempts < 0) {
+  //       finished();
+  //     } else {
+  //       // setTimeout(checker, waitTime)
+  //     }
+  //   } else {
+  //     finished();
+  //     showErrorModal(error);
+  //   }
+  // };
+  // setTimeout(checker, waitTime);
+};
+
 const hashString = (s) =>
   s.split("").reduce((acc, c) => (acc << 5) - acc + c.charCodeAt(0), 0);
 
@@ -178,7 +216,7 @@ const toHtml = (key, value) =>
     type="hidden"
     name="${key}"
     value="${
-      _.isPlainObject(value)
+      isPlainObject(value)
         ? JSON.stringify(value).replace(/"/g, "&quot;")
         : value
     }"
@@ -187,11 +225,11 @@ const toHtml = (key, value) =>
 const arrayToStringFields = ["expand", "fields", "facets"];
 
 const arrayToStringOnFields = (key, value, fields) =>
-  _.includes(fields, key) ? [].concat(value).join() : value;
+  includes(fields, key) ? [].concat(value).join() : value;
 
 type TDownloadCallbacks = (inProgress: Function, done: Function) => void;
 
-const download = ({
+const downloaddd = ({
   url,
   params,
   method = "GET",
@@ -202,7 +240,7 @@ const download = ({
   method: string;
   altMessage?: boolean;
 }): TDownloadCallbacks => {
-  const downloadToken = _.uniqueId(`${+new Date()}-`);
+  const downloadToken = uniqueId(`${+new Date()}-`);
   // a cookie value that the server will remove as a download-ready indicator
   const cookieKey = navigator.cookieEnabled
     ? Math.abs(hashString(JSON.stringify(params) + downloadToken)).toString(16)
@@ -210,13 +248,13 @@ const download = ({
 
   if (cookieKey) {
     Cookies.set(cookieKey, downloadToken);
-    _.assign(params, {
+    assign(params, {
       downloadCookieKey: cookieKey,
       downloadCookiePath: cookiePath,
     });
   }
 
-  const fields = _.reduce(
+  const fields = reduce(
     params,
     (result, value, key) => {
       const paramValue = arrayToStringOnFields(key, value, arrayToStringFields);
@@ -228,37 +266,41 @@ const download = ({
     "",
   );
 
+  console.log("fields:", fields);
+
   const iFrame = document.createElement("iframe");
 
   iFrame.style.display = "none";
   iFrame.src = "about:blank";
   iFrame.onload = function () {
-    globalThis.__frame__loaded = true;
+    this.__frame__loaded = true;
   };
   // Appending to document body to allow navigation away from the current
   // page and downloads in the background
   document.body.appendChild(iFrame);
 
-  // iFrame.__frame__loaded = false;
+  iFrame.__frame__loaded = false;
 
   const form = document.createElement("form");
   form.method = method.toUpperCase();
   form.action = url;
   form.innerHTML = fields;
 
+  console.log(form, method);
   getBody(iFrame).appendChild(form);
 
   form.submit();
 
-  return _.partial(
-    progressChecker,
-    iFrame,
+  console.log(
+    "BEFORE Cookies.get(cookieKey):",
     cookieKey,
-    downloadToken,
-    altMessage,
+    Cookies.get(cookieKey),
   );
+  return cookieKey
+    ? partial(progressChecker, iFrame, cookieKey, downloadToken, altMessage)
+    : partial(cookielessChecker, iFrame);
 };
 
 /*----------------------------------------------------------------------------*/
 
-export default download;
+export default downloaddd;

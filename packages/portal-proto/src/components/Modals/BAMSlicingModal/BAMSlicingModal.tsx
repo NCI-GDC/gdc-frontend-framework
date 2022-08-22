@@ -3,14 +3,20 @@ import {
   GdcFile,
   GDC_APP_API_AUTH,
   hideModal,
+  Modals,
+  showModal,
   useCoreDispatch,
 } from "@gff/core";
 import { Button, Text, Textarea } from "@mantine/core";
-import saveAs from "file-saver";
+import { saveAs } from "file-saver";
 import { useState } from "react";
 import urlJoin from "url-join";
+import { BAMSlicingErrorModal } from "../BAMSlicingErrorModal";
 import { BaseModal } from "../BaseModal";
-import download from "./utils";
+import { NoAccessModal } from "../NoAccessModal";
+import { download } from "./download";
+import downloaddd from "./utils";
+// import  Worker  from "./downloadWorker";
 
 export const processBAMSliceInput = (userInput: string): Object => {
   if (userInput) {
@@ -69,6 +75,7 @@ export const BAMSlicingModal = ({
 }): JSX.Element => {
   const dispatch = useCoreDispatch();
   const [coordinates, setCoordinates] = useState("");
+  const downloadWorker = new Worker("./downloadWorker.js");
   return (
     <BaseModal
       title={
@@ -84,23 +91,24 @@ export const BAMSlicingModal = ({
         <Text size="lg" className="mb-2">
           File name: <Text className="inline font-medium">{file.fileName}</Text>
         </Text>
-        <label htmlFor="bed">
+        <label htmlFor="bed" className="text-sm">
           Please enter one or more slices' genome coordinates below in one of
           the following formats:
         </label>
-        <pre className="p-3 border-separate border-1 rounded bg-nci-gray-lighter text-gdc-indigo-darkest mb-2">
+        <pre className="p-3 border-separate border-1 rounded bg-nci-gray-lighter text-gdc-indigo-darkest mb-2 text-sm">
           chr7:140505783-140511649
           <br />
           {"chr1	150505782	150511648"}
         </pre>
-        <label htmlFor="bed" className="mb-2">
+        <label htmlFor="bed" className="mb-2 text-sm">
           Alternatively, enter "unmapped" to retrieve unmapped reads on this
           file.
         </label>
-        <textarea
+        <Textarea
           id="bed"
-          // required
-          //minRows={4}
+          required
+          minRows={4}
+          autosize
           //error={}
           className="m-0 p-0"
           style={{
@@ -124,6 +132,7 @@ export const BAMSlicingModal = ({
         </Button>
         <Button
           onClick={async () => {
+            dispatch(hideModal());
             if (coordinates) {
               const params = {
                 ...processBAMSliceInput(coordinates),
@@ -131,19 +140,67 @@ export const BAMSlicingModal = ({
               };
 
               setActive(true);
-              download({
-                params,
-                url: urlJoin(GDC_APP_API_AUTH, `slicing/view/${file.fileId}`),
-                method: "POST",
-              })(
-                (value) => {
-                  console.log(value);
-                },
-                () => {
-                  console.log("reached here");
-                  return setActive(false);
-                },
-              );
+
+              // download({ url: `slicing/view/${file.fileId}`, params });
+              // const downloadWorker = new Worker(
+              //   new URL("./download.worker.ts", import.meta.url),
+              // );
+              // console.log(downloadWorker);
+
+              // downloadWorker.onmessage = (msg) => {
+              //   console.log(msg);
+              // };
+              // downloadWorker.postMessage({
+              //   url: `slicing/view/${file.fileId}`,
+              //   method: "POST",
+              //   params,
+              // });
+
+              // const res = await fetchSlice(
+              //   `slicing/view/${file.fileId}`,
+              //   params,
+              // );
+
+              // if (res.status === 403) {
+              //   dispatch(showModal(Modals.NoAccessModal));
+              //   return;
+              // }
+              // if (res.status === 400) {
+              //   console.log("got here");
+              //   setActive(false);
+              //   dispatch(showModal(Modals.BAMSlicingErrorModal));
+
+              //   return;
+              // }
+
+              // if (res.ok) {
+              //   const fileName = res.headers
+              //     .get("content-disposition")
+              //     .split("filename=")[1]
+              //     .split(";")[0];
+
+              //   console.log(fileName);
+
+              //   const blob = await res.text();
+              //   saveAs(
+              //     new Blob([blob], {
+              //       type: "text/plain;charset=us-ascii",
+              //     }),
+              //     fileName,
+              //   );
+              //   // saveAs(blob, fileName);
+              // }
+
+              // setActive(false);
+
+              // download({
+              //   params,
+              //   url: urlJoin(GDC_APP_API_AUTH, `slicing/view/${file.fileId}`),
+              //   method: "POST",
+              // })(
+              //   () => {},
+              //   () => setActive(false),
+              // );
             }
             dispatch(hideModal());
           }}

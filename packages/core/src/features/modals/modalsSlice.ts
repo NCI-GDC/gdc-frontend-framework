@@ -6,6 +6,7 @@ export enum Modals {
   "SessionExpireModal" = "SessionExpireModal",
   "NoAccessModal" = "NoAccessModal",
   "BAMSlicingModal" = "BAMSlicingModal",
+  "BAMSlicingErrorModal" = "BAMSlicingErrorModal",
 }
 
 export interface ModalState {
