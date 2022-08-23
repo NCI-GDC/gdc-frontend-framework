@@ -11,4 +11,7 @@ module.exports = withTM({
     locales: ["en"],
     defaultLocale: "en",
   },
+  experimental: {
+    outputStandalone: true,
+  },
 });
