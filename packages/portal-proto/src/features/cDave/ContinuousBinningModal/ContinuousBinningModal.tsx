@@ -23,11 +23,22 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
   updateBins,
   customBins,
 }: ContinuousBinningModalProps) => {
-  const binSize = (stats.max + 1 - stats.min) / 4;
-  const [binMethod, setBinMethod] = useState<"interval" | "ranges">("interval");
-  const [savedRangeRows, setSavedRangeRow] = useState([]);
-
   const customIntervalSet = isInterval(customBins);
+
+  const binSize = (stats.max + 1 - stats.min) / 4;
+  const [binMethod, setBinMethod] = useState<"interval" | "ranges">(
+    !customIntervalSet && customBins?.length > 0 ? "ranges" : "interval",
+  );
+  const [savedRangeRows, setSavedRangeRow] = useState(
+    !customIntervalSet && customBins?.length > 0
+      ? customBins.map((bin) => ({
+          ...bin,
+          to: String(bin.to),
+          from: String(bin.from),
+        }))
+      : [],
+  );
+
   const intervalForm = useForm({
     validateInputOnChange: true,
     initialValues: {
@@ -53,11 +64,14 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
     initialValues: {
       ranges:
         !customIntervalSet && customBins?.length > 0
-          ? customBins.map((b) => ({
-              name: b.name,
-              from: String(b.from),
-              to: String(b.to),
-            }))
+          ? [
+              ...customBins.map((b) => ({
+                name: b.name,
+                from: String(b.from),
+                to: String(b.to),
+              })),
+              { name: "", from: "", to: "" },
+            ]
           : [{ name: "", from: "", to: "" }],
     },
     validate: (values) => validateRangeInput(values.ranges),
@@ -76,19 +90,21 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
       intervalForm.validate();
     } else {
       intervalForm.clearErrors();
-      if (rangeForm.values.ranges.length > 1) {
-        rangeForm.validate();
-      }
+      rangeForm.validate();
+      // Ignore empty last row
+      rangeForm.clearFieldError(
+        `ranges.${rangeForm.values.ranges.length - 1}.name`,
+      );
+      rangeForm.clearFieldError(
+        `ranges.${rangeForm.values.ranges.length - 1}.to`,
+      );
+      rangeForm.clearFieldError(
+        `ranges.${rangeForm.values.ranges.length - 1}.from`,
+      );
     }
     // Adding form objects to dep array causes infinite rerenders
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [binMethod]);
-
-  useEffect(() => {
-    setBinMethod(
-      !customIntervalSet && customBins?.length > 0 ? "ranges" : "interval",
-    );
-  }, [customIntervalSet, customBins]);
 
   return (
     <Modal
@@ -97,6 +113,9 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
       size={1000}
       title={`Create Custom Bins: ${field}`}
       withinPortal={false}
+      classNames={{
+        header: "text-xl",
+      }}
     >
       <p>
         Configure your bins, then click <b>Save Bins</b> to update the analysis
@@ -121,7 +140,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
             {/* This switches the bin method when a user clicks on the "area", no keyboard equivalent is needed to accessibly navigate the form */}
             {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
             <div
-              className="flex mt-4 items-center text-sm"
+              className="flex mt-4 items-start text-sm"
               onClick={() => setBinMethod("interval")}
             >
               <Radio
@@ -129,6 +148,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                 value="interval"
                 name="binMethod"
                 aria-label="select interval"
+                color="nci-blue"
                 checked={binMethod === "interval"}
                 onChange={(e) =>
                   e.target.checked ? setBinMethod("interval") : undefined
@@ -174,10 +194,16 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
           </div>
           <Button
             aria-label="reset bins"
-            className="p-2 bg-nci-gray"
+            className="p-2 bg-white text-nci-gray border-nci-gray"
             onClick={() => {
-              intervalForm.reset();
-              rangeForm.reset();
+              intervalForm.setValues({
+                setIntervalSize: String(binSize),
+                setIntervalMin: String(stats.min),
+                setIntervalMax: String(stats.max + 1),
+              });
+              rangeForm.setValues({
+                ranges: [{ name: "", from: "", to: "" }],
+              });
             }}
           >
             <ResetIcon size={20} />
@@ -196,6 +222,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
               aria-label="select range"
               checked={binMethod === "ranges"}
               className="px-2 "
+              color="nci-blue"
               onChange={(e) =>
                 e.target.checked ? setBinMethod("ranges") : undefined
               }
@@ -211,7 +238,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                 <th className="p-1">Bin Name</th>
                 <th className="p-1">From</th>
                 <th className="p-1">To less than</th>
-                <th className="p-1">Actions</th>
+                <th className="pr-2 text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -228,6 +255,11 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                             ? "bg-nci-gray-lightest"
                             : undefined,
                       }}
+                      onBlur={() =>
+                        idx !== rangeForm.values.ranges.length - 1
+                          ? rangeForm.validateField(`ranges.${idx}.name`)
+                          : undefined
+                      }
                     />
                   </td>
                   <td>
@@ -241,6 +273,11 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                             ? "bg-nci-gray-lightest"
                             : undefined,
                       }}
+                      onBlur={() =>
+                        idx !== rangeForm.values.ranges.length - 1
+                          ? rangeForm.validateField(`ranges.${idx}.to`)
+                          : undefined
+                      }
                     />
                   </td>
                   <td>
@@ -254,6 +291,11 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                             ? "bg-nci-gray-lightest"
                             : undefined,
                       }}
+                      onBlur={() =>
+                        idx !== rangeForm.values.ranges.length - 1
+                          ? rangeForm.validateField(`ranges.${idx}.from`)
+                          : undefined
+                      }
                     />
                   </td>
                   <td className="float-right">
@@ -277,7 +319,16 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                           rangeForm.values.ranges[idx].from === "" ||
                           rangeForm.values.ranges[idx].to === ""
                         }
-                        className="bg-nci-gray"
+                        className={
+                          binMethod === "ranges" &&
+                          !(
+                            rangeForm.values.ranges[idx].name === "" ||
+                            rangeForm.values.ranges[idx].from === "" ||
+                            rangeForm.values.ranges[idx].to === ""
+                          )
+                            ? "bg-white text-nci-gray border-nci-gray"
+                            : "bg-nci-gray-lighter text-white"
+                        }
                       >
                         Add
                       </Button>
@@ -290,6 +341,11 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                           );
                         }}
                         aria-label="delete row"
+                        className={
+                          binMethod === "ranges"
+                            ? "bg-white text-nci-gray border-nci-gray"
+                            : "bg-nci-gray-lighter"
+                        }
                       >
                         <TrashIcon />
                       </Button>
@@ -329,7 +385,8 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
           disabled={
             binMethod === "interval"
               ? Object.keys(intervalForm.errors).length > 0
-              : savedRangeRows.length === 0
+              : savedRangeRows.length === 0 ||
+                Object.keys(rangeForm.errors).length > 0
           }
         >
           Save Bins

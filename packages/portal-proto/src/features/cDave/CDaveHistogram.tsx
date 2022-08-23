@@ -11,11 +11,10 @@ import { flattenBinnedData } from "./utils";
 
 const formatBarChartData = (
   data: Record<string, number>,
+  yTotal: number,
   displayPercent: boolean,
   continuous: boolean,
 ) => {
-  const yTotal = Object.values(data).reduce((prevY, y) => prevY + y, 0);
-
   const mappedData = Object.entries(data || {}).map(([key, value]) => ({
     x: truncateString(key, 8),
     fullName: key,
@@ -32,6 +31,7 @@ const formatBarChartData = (
 
 interface HistogramProps {
   readonly data: Record<string, number>;
+  readonly yTotal: number;
   readonly isFetching: boolean;
   readonly noData: boolean;
   readonly field: string;
@@ -42,6 +42,7 @@ interface HistogramProps {
 
 const CDaveHistogram: React.FC<HistogramProps> = ({
   data,
+  yTotal,
   isFetching,
   field,
   continuous,
@@ -51,6 +52,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
   const [displayPercent, setDisplayPercent] = useState(false);
   const barChartData = formatBarChartData(
     customBinnedData !== null ? flattenBinnedData(customBinnedData) : data,
+    yTotal,
     displayPercent,
     continuous,
   );
@@ -77,8 +79,8 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
               onChange={(e) => setDisplayPercent(e === "percent")}
               defaultValue={"counts"}
             >
-              <Radio value="counts" label="# of Cases" />
-              <Radio value="percent" label="% of Cases" />
+              <Radio value="counts" label="# of Cases" color="nci-blue" />
+              <Radio value="percent" label="% of Cases" color="nci-blue" />
             </Radio.Group>
             <Menu>
               <Menu.Target>

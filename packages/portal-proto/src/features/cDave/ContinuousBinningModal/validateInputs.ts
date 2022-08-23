@@ -48,7 +48,7 @@ const validateMinInput = (value: string, max: string) => {
     return validNumberError;
   }
 
-  if (max !== "" && Number(value) > Number(max)) {
+  if (max !== "" && Number(value) >= Number(max)) {
     return `Must be less than ${max}`;
   }
 
@@ -62,7 +62,7 @@ const validateMaxInput = (value: string, min: string) => {
     return validNumberError;
   }
 
-  if (Number(value) < Number(min)) {
+  if (Number(value) <= Number(min)) {
     return `Must be greater than ${min}`;
   }
 
@@ -126,12 +126,33 @@ export const validateRangeInput = (
       errors[`ranges.${idx}.to`] = `Must be greater than ${value.from}`;
     }
 
-    if (idx !== 0) {
-      if (Number(values[idx - 1].to) > Number(value.from)) {
-        errors[`ranges.${idx}.name`] = `${value.name} overlaps with ${
-          values[idx - 1].name
-        }`;
+    const overlappingBins = [];
+    values.forEach((otherValue, otherIdx) => {
+      if (
+        idx === otherIdx ||
+        value.from === "" ||
+        value.to === "" ||
+        otherValue.from === "" ||
+        otherValue.to === ""
+      ) {
+        return;
       }
+      if (
+        (Number(value.from) > Number(otherValue.from) &&
+          Number(value.from) < Number(otherValue.to)) ||
+        (Number(value.to) > Number(otherValue.from) &&
+          Number(value.to) < Number(otherValue.to)) ||
+        Number(value.to) === Number(otherValue.to) ||
+        Number(value.from) === Number(otherValue.from)
+      ) {
+        overlappingBins.push(otherValue.name);
+      }
+    });
+
+    if (overlappingBins.length > 0) {
+      errors[`ranges.${idx}.name`] = `'${
+        value.name
+      }' overlaps with ${overlappingBins.map((b) => `'${b}'`).join(",")}`;
     }
   });
 

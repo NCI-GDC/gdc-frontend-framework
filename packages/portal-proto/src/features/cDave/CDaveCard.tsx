@@ -78,11 +78,12 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
             <ActionIcon
               variant="outline"
               className={
-                chartType === "histogram"
+                chartType === "histogram" && !noData
                   ? "bg-nci-blue-darkest text-white"
                   : "border-nci-blue-darkest text-nci-blue-darkest"
               }
               onClick={() => setChartType("histogram")}
+              disabled={noData}
             >
               <BarChartIcon />
             </ActionIcon>
@@ -102,7 +103,10 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
             </ActionIcon>
           </Tooltip>
           <Tooltip label={"Remove Card"} withArrow>
-            <ActionIcon onClick={() => updateFields(field)}>
+            <ActionIcon
+              onClick={() => updateFields(field)}
+              className="text-nci-gray"
+            >
               <CloseIcon />
             </ActionIcon>
           </Tooltip>
@@ -174,6 +178,7 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
   const [selectedSurvivalPlots, setSelectedSurvivalPlots] = useState<string[]>(
     [],
   );
+  const [yTotal, setYTotal] = useState(0);
 
   const ranges = isInterval(customBinnedData)
     ? createBuckets(
@@ -208,7 +213,11 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
         .map(([key]) => key)
         .slice(0, 2),
     );
-  }, [resultData]);
+
+    if (customBinnedData === null) {
+      setYTotal(Object.values(resultData).reduce((a, b) => a + b, 0));
+    }
+  }, [resultData, customBinnedData]);
 
   return (
     <>
@@ -217,6 +226,7 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
           field={field}
           fieldName={fieldName}
           data={resultData}
+          yTotal={yTotal}
           isFetching={isFetching}
           continuous={true}
           noData={noData}
@@ -240,6 +250,7 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
       <CDaveTable
         fieldName={fieldName}
         data={resultData}
+        yTotal={yTotal}
         customBinnedData={customBinnedData}
         survival={chartType === "survival"}
         selectedSurvivalPlots={selectedSurvivalPlots}
@@ -270,6 +281,7 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
   const [selectedSurvivalPlots, setSelectedSurvivalPlots] = useState<string[]>(
     [],
   );
+  const [yTotal, setYTotal] = useState(0);
 
   const resultData = useMemo(
     () =>
@@ -282,25 +294,27 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
     [initialData],
   );
 
-  useEffect(
-    () =>
-      setSelectedSurvivalPlots(
-        Object.entries(
-          customBinnedData !== null
-            ? flattenBinnedData(customBinnedData as CategoricalBins)
-            : resultData,
+  useEffect(() => {
+    setSelectedSurvivalPlots(
+      Object.entries(
+        customBinnedData !== null
+          ? flattenBinnedData(customBinnedData as CategoricalBins)
+          : resultData,
+      )
+        .filter(
+          ([key, value]) =>
+            key !== "missing" && value >= SURVIVAL_PLOT_MIN_COUNT,
         )
-          .filter(
-            ([key, value]) =>
-              key !== "missing" && value >= SURVIVAL_PLOT_MIN_COUNT,
-          )
-          .sort((a, b) => b[1] - a[1])
-          .map(([key]) => key)
+        .sort((a, b) => b[1] - a[1])
+        .map(([key]) => key)
 
-          .slice(0, 2),
-      ),
-    [customBinnedData, resultData],
-  );
+        .slice(0, 2),
+    );
+
+    if (customBinnedData === null) {
+      setYTotal(Object.values(resultData).reduce((a, b) => a + b, 0));
+    }
+  }, [customBinnedData, resultData]);
 
   return (
     <>
@@ -309,6 +323,7 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
           field={field}
           fieldName={fieldName}
           data={resultData}
+          yTotal={yTotal}
           isFetching={false}
           continuous={false}
           noData={noData}
@@ -332,6 +347,7 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
       <CDaveTable
         fieldName={fieldName}
         data={resultData}
+        yTotal={yTotal}
         customBinnedData={customBinnedData}
         survival={chartType === "survival"}
         selectedSurvivalPlots={selectedSurvivalPlots}

@@ -7,6 +7,7 @@ import { flattenBinnedData } from "./utils";
 interface CDaveTableProps {
   readonly fieldName: string;
   readonly data: Record<string, number>;
+  readonly yTotal: number;
   readonly customBinnedData: CategoricalBins | CustomInterval | NamedFromTo[];
   readonly survival: boolean;
   readonly selectedSurvivalPlots: string[];
@@ -17,14 +18,13 @@ interface CDaveTableProps {
 const CDaveTable: React.FC<CDaveTableProps> = ({
   fieldName,
   data = {},
+  yTotal,
   customBinnedData = null,
   survival,
   selectedSurvivalPlots,
   setSelectedSurvivalPlots,
   continuous,
 }: CDaveTableProps) => {
-  const yTotal = Object.values(data).reduce((a, b) => a + b, 0);
-
   return (
     <div className="h-48 block overflow-auto w-full relative">
       <table className="bg-white w-full text-left text-nci-gray-darker mb-2">
@@ -61,15 +61,17 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                   key={`${fieldName}-${key}`}
                 >
                   <td>
-                    <Checkbox />
+                    <Checkbox color={"nci-blue"} />
                   </td>
                   <td>{key}</td>
                   <td className="text-right">
                     {count.toLocaleString()} (
-                    {(count / yTotal).toLocaleString(undefined, {
-                      style: "percent",
-                      minimumFractionDigits: 2,
-                    })}
+                    {yTotal === 0
+                      ? "0.00%"
+                      : (count / yTotal).toLocaleString(undefined, {
+                          style: "percent",
+                          minimumFractionDigits: 2,
+                        })}
                     )
                   </td>
                   {survival && (

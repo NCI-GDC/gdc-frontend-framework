@@ -74,7 +74,8 @@ describe("validateInputs", () => {
         { name: "bin1", from: "15", to: "30" },
       ]),
     ).toEqual({
-      "ranges.1.name": "bin1 overlaps with bin",
+      "ranges.0.name": "'bin' overlaps with 'bin1'",
+      "ranges.1.name": "'bin1' overlaps with 'bin'",
     });
 
     expect(

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { pickBy, mapKeys, isEqual, fromPairs } from "lodash";
+import { pickBy, mapKeys, isEqual } from "lodash";
 import { Button, Modal, TextInput } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
@@ -158,6 +158,9 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
       size={800}
       title={`Create Custom Bins: ${field}`}
       withinPortal={false}
+      classNames={{
+        header: "text-xl",
+      }}
     >
       <p>
         Organize values into groups of your choosing. Click <b>Save Bins</b> to
@@ -424,6 +427,8 @@ const GroupInput: React.FC<GroupInputProps> = ({
   });
 
   const updateSelectedValues = () => {
+    clearOtherValues();
+
     if (Object.keys(groupValues).every((k) => selectedValues?.[k])) {
       setSelectedValues(
         pickBy(selectedValues, (_, k) => !Object.keys(groupValues).includes(k)),

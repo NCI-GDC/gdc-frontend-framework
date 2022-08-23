@@ -39,7 +39,7 @@ describe("<CategoricalBinningModal />", () => {
   });
 
   it("shows existing custom bins", () => {
-    const { queryByText, queryByTestId, getByDisplayValue } = render(
+    const { queryByText, queryByTestId } = render(
       <CategoricalBinningModal
         setModalOpen={jest.fn()}
         field={"Gender"}
