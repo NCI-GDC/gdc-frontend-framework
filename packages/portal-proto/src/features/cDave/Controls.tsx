@@ -212,7 +212,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
                   ),
                 },
                 "&:checked": {
-                  color:
+                  backgroundColor:
                     tailwindConfig.theme.extend.colors[
                       COLOR_MAP[field.field_type]
                     ]?.DEFAULT,

@@ -7,6 +7,7 @@ import { Statistics } from "@gff/core";
 import { validateIntervalInput, validateRangeInput } from "./validateInputs";
 import { CustomInterval, NamedFromTo } from "../types";
 import { isInterval } from "../utils";
+import { isEqual } from "lodash";
 
 interface ContinuousBinningModalProps {
   readonly setModalOpen: (open: boolean) => void;
@@ -29,7 +30,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
   const [binMethod, setBinMethod] = useState<"interval" | "ranges">(
     !customIntervalSet && customBins?.length > 0 ? "ranges" : "interval",
   );
-  const [savedRangeRows, setSavedRangeRow] = useState(
+  const [savedRangeRows, setSavedRangeRows] = useState(
     !customIntervalSet && customBins?.length > 0
       ? customBins.map((bin) => ({
           ...bin,
@@ -105,6 +106,33 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
     // Adding form objects to dep array causes infinite rerenders
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [binMethod]);
+
+  const saveBins = () => {
+    setModalOpen(false);
+    if (binMethod === "interval") {
+      const newBins = {
+        interval: Number(intervalForm.values.setIntervalSize),
+        min: Number(intervalForm.values.setIntervalMin),
+        max: Number(intervalForm.values.setIntervalMax),
+      };
+      if (
+        !isEqual(newBins, {
+          interval: binSize,
+          min: stats.min,
+          max: stats.max + +1,
+        })
+      ) {
+        updateBins(newBins);
+      }
+    } else {
+      const newBins = savedRangeRows.map((r) => ({
+        name: r.name,
+        to: Number(r.to),
+        from: Number(r.from),
+      }));
+      updateBins(newBins);
+    }
+  };
 
   return (
     <Modal
@@ -204,6 +232,9 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
               rangeForm.setValues({
                 ranges: [{ name: "", from: "", to: "" }],
               });
+              updateBins(null);
+              setSavedRangeRows([]);
+              setBinMethod("interval");
             }}
           >
             <ResetIcon size={20} />
@@ -305,7 +336,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                         onClick={() => {
                           const result = rangeForm.validate();
                           if (!result.hasErrors) {
-                            setSavedRangeRow(rangeForm.values.ranges);
+                            setSavedRangeRows(rangeForm.values.ranges);
 
                             rangeForm.insertListItem("ranges", {
                               name: "",
@@ -336,7 +367,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                       <Button
                         onClick={() => {
                           rangeForm.removeListItem("ranges", idx);
-                          setSavedRangeRow(
+                          setSavedRangeRows(
                             savedRangeRows.filter((_, i) => idx !== i),
                           );
                         }}
@@ -366,22 +397,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
         </Button>
         <Button
           className="bg-nci-blue-darkest"
-          onClick={() => {
-            setModalOpen(false);
-            binMethod === "interval"
-              ? updateBins({
-                  interval: Number(intervalForm.values.setIntervalSize),
-                  min: Number(intervalForm.values.setIntervalMin),
-                  max: Number(intervalForm.values.setIntervalMax),
-                })
-              : updateBins(
-                  savedRangeRows.map((r) => ({
-                    name: r.name,
-                    to: Number(r.to),
-                    from: Number(r.from),
-                  })),
-                );
-          }}
+          onClick={saveBins}
           disabled={
             binMethod === "interval"
               ? Object.keys(intervalForm.errors).length > 0
