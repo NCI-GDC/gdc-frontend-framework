@@ -177,7 +177,10 @@ export const ScRnaSeqViz: React.VFC<ScRnaSeqVizProps> = () => {
           </label>
         </div>
       </div>
-      <div>{createPlot(plotData)}</div>
+      <div className="grid grid-cols-2">
+        <div>{createPlot(plotData)}</div>
+        <div></div>
+      </div>
       <div>
         <DegTable data={differentiallyExpressedGenes} />
       </div>
@@ -213,11 +216,11 @@ const generateScatterPlot2dData = (
           return colors[cell.seuratCluster % colors.length];
         } else if (geneId === "ENSG00000183715") {
           if (cell.cellId in geENSG00000183715) {
-            return geENSG00000183715[cell.cellId];
+            return geENSG00000183715[cell.cellId] || "rgba(200,200,200,0.2)";
           }
         } else if (geneId === "ENSG00000163638") {
           if (cell.cellId in geENSG00000163638) {
-            return geENSG00000163638[cell.cellId];
+            return geENSG00000163638[cell.cellId] || "rgba(200,200,200,0.2)";
           }
         }
         return undefined;
@@ -262,11 +265,11 @@ const generateScatterPlot3dData = (
           return colors[cell.seuratCluster % colors.length];
         } else if (geneId === "ENSG00000183715") {
           if (cell.cellId in geENSG00000183715) {
-            return geENSG00000183715[cell.cellId];
+            return geENSG00000183715[cell.cellId] || "rgba(200,200,200,1)";
           }
         } else if (geneId === "ENSG00000163638") {
           if (cell.cellId in geENSG00000163638) {
-            return geENSG00000163638[cell.cellId];
+            return geENSG00000163638[cell.cellId] || "rgba(200,200,200,1)";
           }
         }
         return undefined;

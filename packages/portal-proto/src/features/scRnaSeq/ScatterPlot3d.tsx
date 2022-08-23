@@ -12,6 +12,10 @@ const ScatterPlot3d: React.VFC<ScatterPlot3dProps> = (
       type: "scatter3d",
       mode: "markers",
       marker: {
+        colorscale: [
+          [0, "#cfe8ff"],
+          [1, "#005ea2"],
+        ],
         color: trace.color,
         size: 2,
         opacity: 0.8,
@@ -25,7 +29,7 @@ const ScatterPlot3d: React.VFC<ScatterPlot3dProps> = (
 
   return (
     <div>
-      <Plot data={data} />
+      <Plot data={data} className="w-full h-full" />
     </div>
   );
 };

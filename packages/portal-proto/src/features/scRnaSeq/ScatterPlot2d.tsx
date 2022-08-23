@@ -11,6 +11,13 @@ const ScatterPlot2d: React.VFC<ScatterPlot2dProps> = (
       type: "scatter",
       mode: "markers",
       marker: {
+        cmin: 0,
+        cmid: 2,
+        cmax: 4,
+        colorscale: [
+          [0, "#cfe8ff"],
+          [1, "#005ea2"],
+        ],
         color: trace.color,
         size: 3,
       },
@@ -19,7 +26,7 @@ const ScatterPlot2d: React.VFC<ScatterPlot2dProps> = (
 
   return (
     <div>
-      <Plot data={data} />
+      <Plot data={data} className="w-full h-full" />
     </div>
   );
 };
