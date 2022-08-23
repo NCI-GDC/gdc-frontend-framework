@@ -11,6 +11,13 @@ import {
   removeCohortFilter,
 } from "./features/cohort/cohortFilterSlice";
 import { createCaseSet, clearCaseSet } from "./features/cohort/caseSetSlice";
+
+/**
+ * Defines coreListeners for adding middleware.
+ * This listener will dispatch a createCaseSet each time the
+ * current cohort filters mutate.
+ */
+
 export const listenerMiddleware = createListenerMiddleware();
 export type CoreStartListening = TypedStartListening<CoreState, CoreDispatch>;
 
