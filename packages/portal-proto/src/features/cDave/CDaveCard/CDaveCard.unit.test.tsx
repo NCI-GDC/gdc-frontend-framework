@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
 import * as core from "@gff/core";
-import * as facetHooks from "../facets/hooks";
+import * as facetHooks from "../../facets/hooks";
 import CDaveCard from "./CDaveCard";
 
 describe("CDaveCard", () => {

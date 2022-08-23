@@ -9,7 +9,7 @@ import {
 } from "@gff/core";
 import { Card, Grid, Alert, Loader } from "@mantine/core";
 import SurvivalPlot, { SurvivalPlotTypes } from "../charts/SurvivalPlot";
-import CDaveCard from "./CDaveCard";
+import CDaveCard from "./CDaveCard/CDaveCard";
 
 interface DashboardProps {
   readonly cohortFilters: GqlOperation;

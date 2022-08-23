@@ -3,11 +3,11 @@ import { ActionIcon, Radio, Loader, Menu } from "@mantine/core";
 import { MdDownload as DownloadIcon } from "react-icons/md";
 import tailwindConfig from "tailwind.config";
 import { truncateString } from "src/utils";
-import VictoryBarChart from "../charts/VictoryBarChart";
-import { CategoricalBins } from "./types";
+import VictoryBarChart from "../../charts/VictoryBarChart";
+import { CategoricalBins } from "../types";
 
-import { COLOR_MAP } from "./constants";
-import { flattenBinnedData } from "./utils";
+import { COLOR_MAP } from "../constants";
+import { flattenBinnedData } from "../utils";
 
 const formatBarChartData = (
   data: Record<string, number>,

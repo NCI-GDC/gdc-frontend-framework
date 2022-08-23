@@ -8,9 +8,9 @@ import {
   useGetSurvivalPlotQuery,
 } from "@gff/core";
 
-import SurvivalPlot, { SurvivalPlotTypes } from "../charts/SurvivalPlot";
-import { isInterval } from "./utils";
-import { CategoricalBins, CustomInterval, NamedFromTo } from "./types";
+import SurvivalPlot, { SurvivalPlotTypes } from "../../charts/SurvivalPlot";
+import { isInterval } from "../utils";
+import { CategoricalBins, CustomInterval, NamedFromTo } from "../types";
 
 interface ClinicalSurvivalPlotProps {
   readonly field: string;

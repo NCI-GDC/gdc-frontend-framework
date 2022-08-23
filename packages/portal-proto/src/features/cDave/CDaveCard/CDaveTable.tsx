@@ -1,8 +1,8 @@
 import { ActionIcon, Tooltip, Checkbox } from "@mantine/core";
 import { MdTrendingDown as SurvivalChartIcon } from "react-icons/md";
-import { SURVIVAL_PLOT_MIN_COUNT } from "./constants";
-import { CategoricalBins, CustomInterval, NamedFromTo } from "./types";
-import { flattenBinnedData } from "./utils";
+import { SURVIVAL_PLOT_MIN_COUNT } from "../constants";
+import { CategoricalBins, CustomInterval, NamedFromTo } from "../types";
+import { flattenBinnedData } from "../utils";
 
 interface CDaveTableProps {
   readonly fieldName: string;
