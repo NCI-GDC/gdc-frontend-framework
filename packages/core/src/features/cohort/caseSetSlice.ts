@@ -13,9 +13,9 @@ import { CoreDataSelectorResponse, DataStatus } from "../../dataAccess";
 
 /*
  A start at handling how to seamlessly create cohorts that can bridge to explore
- and repository index. The slice creates a case set using the defined filteres
+ and repository index. The slice creates a case set using the defined filters
  Currently only uses the repository index and this will be changed in
- PEAR-XXX.
+ PEAR-517.
  Since this is pending unit test are TODO: add unit test for full caseSet support.
 */
 const buildCaseSetMutationQuery = (index: string) =>

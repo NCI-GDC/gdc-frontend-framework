@@ -219,6 +219,7 @@ export const FacetTabs = (): JSX.Element => {
     <div className="w-100">
       <StyledFacetTabs
         orientation="vertical"
+        keepMounted={false}
         defaultValue={tabsConfig[Object.keys(tabsConfig)[0]].label}
         classNames={{
           tab: "data-active:text-primary-content-darkest text-primary-content-lightest font-medium data-active:border-primary-darker data-active:border-l-1 data-active:border-t-1 data-active:border-b-1 data-active:bg-base-max hover:bg-primary-darker",
