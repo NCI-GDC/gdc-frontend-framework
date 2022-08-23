@@ -306,7 +306,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                       }}
                       onBlur={() =>
                         idx !== rangeForm.values.ranges.length - 1
-                          ? rangeForm.validateField(`ranges.${idx}.to`)
+                          ? rangeForm.validateField(`ranges.${idx}.from`)
                           : undefined
                       }
                     />
@@ -324,7 +324,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                       }}
                       onBlur={() =>
                         idx !== rangeForm.values.ranges.length - 1
-                          ? rangeForm.validateField(`ranges.${idx}.from`)
+                          ? rangeForm.validateField(`ranges.${idx}.to`)
                           : undefined
                       }
                     />

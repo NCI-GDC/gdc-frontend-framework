@@ -62,7 +62,7 @@ const validateMaxInput = (value: string, min: string) => {
     return validNumberError;
   }
 
-  if (Number(value) <= Number(min)) {
+  if (min !== "" && Number(value) <= Number(min)) {
     return `Must be greater than ${min}`;
   }
 
@@ -121,7 +121,11 @@ export const validateRangeInput = (
       errors[`ranges.${idx}.to`] = toResult;
     }
 
-    if (Number(value.to) <= Number(value.from)) {
+    if (
+      value.to !== "" &&
+      value.from !== "" &&
+      Number(value.to) <= Number(value.from)
+    ) {
       errors[`ranges.${idx}.from`] = `Must be less than ${value.to}`;
       errors[`ranges.${idx}.to`] = `Must be greater than ${value.from}`;
     }
