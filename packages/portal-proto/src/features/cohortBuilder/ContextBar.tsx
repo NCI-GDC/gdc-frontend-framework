@@ -217,7 +217,7 @@ const ContextBar: React.FC<CohortGroupProps> = ({
               })}
             </div>
             <button
-              className="hover:text-primary-darkest text-primary-content font-bold py-2 px-1 rounded ml-auto mr-4 "
+              className="hover:text-primary-darkest text-primary-contrast-lightest font-bold py-2 px-1 rounded ml-auto mr-4 "
               onClick={clearAllFilters}
             >
               <UndoIcon size="1.15em" color="secondary" />

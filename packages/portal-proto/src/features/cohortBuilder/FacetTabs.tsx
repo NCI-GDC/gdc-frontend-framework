@@ -45,7 +45,7 @@ border-dotted
 m-6
 `;
 
-const StyledFacetTabs = (props: TabsProps) => {
+const StyledFacetTabs = ({ children }: TabsProps) => {
   return (
     <Tabs
       unstyled
@@ -80,7 +80,7 @@ const StyledFacetTabs = (props: TabsProps) => {
           alignItems: "center",
         },
       })}
-      {...props}
+      {...children}
     />
   );
 };
@@ -183,14 +183,17 @@ const CustomFacetGroup = (): JSX.Element => {
         <FacetGroup>
           <Button
             variant="outline"
-            className="h-48 bg-base-lightest flex flex-row justify-center align-middle items-center border-base-darker b-2 border-dotted"
+            className="h-48 bg-primary-lightest flex flex-row justify-center align-middle items-center border-base-darker b-2 border-dotted"
             onClick={() => setOpened(true)}
           >
-            <AddAdditionalIcon className="text-primary-content" size="2em" />
+            <AddAdditionalIcon
+              className="text-primary-contrast-lightest"
+              size="2em"
+            />
             <Text
               size="md"
               weight={700}
-              className="text-primary-content-darker"
+              className="text-primary-contrast-lightest"
             >
               {" "}
               Add a Custom Filter

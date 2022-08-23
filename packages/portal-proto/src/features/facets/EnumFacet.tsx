@@ -325,7 +325,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
                             <div className="flex-none">
                               <input
                                 type="checkbox"
-                                className="bg-base-lightest hover:bg-base-darkest text-primary-content-darkest"
+                                className="bg-base-lightest text-primary-contrast-lightest hover:bg-base-darkest hover:text-base-contrast-darkest"
                               />
                             </div>
                             <div className="flex-grow h-3.5 align-center justify-center mt-1 ml-1 mr-8 bg-base-light rounded-b-sm animate-pulse" />

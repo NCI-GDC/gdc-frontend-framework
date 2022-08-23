@@ -24,7 +24,7 @@ export const GeneFacet: React.FC<GeneFacetProps> = ({
           style={{ borderSpacing: "4em" }}
         >
           <thead>
-            <tr className="bg-primary text-primary-content-min">
+            <tr className="bg-primary text-primary-contrast">
               <th align="left" className="w-1/2 px-2">
                 Gene
               </th>
@@ -80,7 +80,7 @@ export const MutationFacet: React.FC<GeneFacetProps> = ({
           style={{ borderSpacing: "4em" }}
         >
           <thead>
-            <tr className="bg-primary text-white">
+            <tr className="bg-primary text-primnary-contrast">
               <th align="left" className="w-1/4 px-2">
                 Mutation
               </th>
@@ -106,7 +106,7 @@ export const MutationFacet: React.FC<GeneFacetProps> = ({
               data.map((x, i) => (
                 <tr
                   key={x.gene_label}
-                  className={i % 2 == 0 ? "bg-gray-200" : ""}
+                  className={i % 2 == 0 ? "bg-base-lighter" : ""}
                 >
                   <td align="left" className="px-2 break-all">
                     <input type="checkbox" value={x.gene_label} />

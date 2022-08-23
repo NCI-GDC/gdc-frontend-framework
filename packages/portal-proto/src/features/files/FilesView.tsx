@@ -189,7 +189,7 @@ export const FilesView: React.FC<FilesViewProps> = ({
     <div className="flex flex-col w-full gap-y-4">
       <Table verticalSpacing="xs" striped highlightOnHover>
         <thead>
-          <tr className="bg-base-light text-primary-content-min text-headind border border-base-light">
+          <tr className="bg-base-light text-base-contrast-light text-heading border border-base-light">
             <FilesTableHeader>
               <input type="checkbox" />
             </FilesTableHeader>

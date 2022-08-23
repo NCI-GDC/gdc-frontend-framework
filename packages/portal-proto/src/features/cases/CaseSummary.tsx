@@ -297,7 +297,7 @@ export const CaseSummary = ({
             <div className="flex flex-col gap-5">
               <Button
                 leftIcon={<FaShoppingCart />}
-                className="self-end text-primary-content-lightest bg-primary hover:bg-primary-darker"
+                className="self-end text-primary-contrast bg-primary hover:bg-primary-darker"
                 onClick={() =>
                   isAllFilesInCart
                     ? removeFromCart(

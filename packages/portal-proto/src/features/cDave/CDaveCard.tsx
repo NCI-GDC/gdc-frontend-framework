@@ -80,7 +80,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
               variant="outline"
               className={
                 chartType === ChartTypes.histogram
-                  ? "bg-primary-darkest text-primary-content-max"
+                  ? "bg-primary-darkest text-primary-contrast-darkest"
                   : "border-primary-darkest"
               }
             >
@@ -238,7 +238,7 @@ const Result: React.FC<ResultProps> = ({
           <div className="flex justify-between p-2">
             <Radio.Group
               size="sm"
-              color={"secondary"}
+              color={"accent"}
               className="p-2"
               onChange={(e) => setDisplayPercent(e === "percent")}
               defaultValue={"counts"}

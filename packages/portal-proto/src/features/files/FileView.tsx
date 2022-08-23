@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { GdcFile, HistoryDefaults } from "@gff/core";
 import ReactModal from "react-modal";
-import { HorizontalTable } from "../../components/HorizontalTable";
+import { HorizontalTable } from "@/components/HorizontalTable";
 import { Table, Button } from "@mantine/core";
 import { FaShoppingCart, FaDownload, FaCut } from "react-icons/fa";
 import { get } from "lodash";
@@ -20,9 +20,9 @@ border-base-darkest
 rounded 
 p-1
 hover:bg-base-darkest
-hover:text-primary-content-lighter
+hover:text-base-contrast-darkest
 focus:bg-base-darkest
-focus:text-primary-content-lighter
+focus:text-base-contrast-darkest
 `;
 
 const ImageViewer = dynamic(() => import("../../components/ImageViewer"), {
@@ -267,14 +267,14 @@ export const FileView: React.FC<FileViewProps> = ({
           file.dataType === "Aligned Reads" &&
           file?.index_files?.length > 0 && (
             <Button
-              className="m-1 text-primary-content-lightest bg-primary hover:bg-primary-darker"
+              className="m-1 text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
               leftIcon={<FaCut />}
             >
               BAM Slicing
             </Button>
           )}
         <Button
-          className="m-1 text-primary-content-lightest bg-primary hover:bg-primary-darker"
+          className="m-1 text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
           leftIcon={<FaDownload />}
         >
           Download
@@ -481,14 +481,14 @@ export const FileView: React.FC<FileViewProps> = ({
           <TitleText className="float-left mt-3">File Versions</TitleText>
           <div className="float-right my-2 mr-3">
             <Button
-              color={"gray"}
-              className="mr-2 text-primary-content-lightest bg-primary hover:bg-primary-darker"
+              color={"base"}
+              className="mr-2 text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
             >
               <FaDownload className="mr-2" /> Download JSON
             </Button>
             <Button
-              color={"gray"}
-              className="text-primary-content-lightest bg-primary hover:bg-primary-darker"
+              color={"base"}
+              className="text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
             >
               <FaDownload className="mr-2" /> Download TSV
             </Button>

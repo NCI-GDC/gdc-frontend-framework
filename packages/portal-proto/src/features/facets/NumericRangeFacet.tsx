@@ -269,6 +269,7 @@ const buildRangeOperator = (
  * @param field - facet managed by this component
  * @param valueLabel - string representing the datatype of values (e.g. "Cases")
  * @param selected - which range, if any, is selected
+ * @param setSelected - function to handle selected range
  * @param rangeLabelsAndValues - list of range keys, labels and values
  * @param itemsToShow - number of ranges to render
  */
@@ -444,7 +445,7 @@ const FromTo: React.FC<FromToProps> = ({
   };
   return (
     <div className="relative w-full">
-      <div className="flex flex-col text-primary-content-dark bg-base-max text-md ">
+      <div className="flex flex-col text-base-contrast-max bg-base-max text-md ">
         <div className="flex flex-row justify-end items-center flex-nowrap border">
           <div className="basis-1/5 text-center">From</div>
           <SegmentedControl
@@ -901,7 +902,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
         <div className="flex items-center justify-between flex-wrap bg-primary-lighter shadow-md px-1.5">
           <div className="has-tooltip text-primary-contrast-lighter font-heading font-semibold text-md">
             {facetName === null ? convertFieldToName(field) : facetName}
-            <div className="inline-block tooltip w-full border-b-2 border-accent-cool-lightest rounded shadow-lg p-2 bg-gray-100 text-primary-content-darkest mt-8 absolute">
+            <div className="inline-block tooltip w-full border-b-2 border-accent-cool-lightest rounded shadow-lg p-2 bg-base-lightest text-base-contrast-lightest mt-8 absolute">
               {description}
             </div>
           </div>

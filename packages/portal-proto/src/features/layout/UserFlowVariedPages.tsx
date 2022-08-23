@@ -182,7 +182,7 @@ const Header: React.FC<HeaderProps> = ({
 
 const Footer: React.FC<unknown> = () => {
   return (
-    <div className="flex flex-col bg-primary-darker justify-center text-center p-4 text-primary-content-lightest">
+    <div className="flex flex-col bg-primary-darker justify-center text-center p-4 text-primary-contrast-darker">
       <div>Site Home | Policies | Accessibility | FOIA | Support</div>
       <div>
         U.S. Department of Health and Human Services | National Institutes of

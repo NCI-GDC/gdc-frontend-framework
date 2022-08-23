@@ -3,16 +3,6 @@
 // eslint-disable-next-line  @typescript-eslint/no-var-requires
 const plugin = require("tailwindcss/plugin");
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function withOpacityValue(variable) {
-  return ({ opacityValue }) => {
-    if (opacityValue === undefined) {
-      return `rgb(var(${variable}))`;
-    }
-    return `rgb(var(${variable}) / ${opacityValue})`;
-  };
-}
-
 // define NCI colors so all at 10 color pallets
 // note addition of vivid, white, black to "pad" the
 // nci color to 10 colors
@@ -265,6 +255,159 @@ const nciYellowContrast = {
   max: "#000000",
 };
 
+const gdcGrey = {
+  // gray
+  max: "#FFFFFF",
+  lightest: "#f0f0f0",
+  lighter: "#e6e6e6",
+  light: "#adadad",
+  DEFAULT: "#757575",
+  vivid: "#9f9f9f",
+  dark: "#5c5c5c",
+  darker: "#454545",
+  darkest: "#2e2e2e",
+  min: "#1a1a1a",
+};
+
+// red-cool-vivid
+const gdcRed = {
+  max: "#fff9fb",
+  lightest: "#fff2f5",
+  lighter: "#f8dfe2",
+  light: "#fd8ba0",
+  DEFAULT: "#e41d3d",
+  vivid: "#ef183a",
+  dark: "#b21d38",
+  darker: "#822133",
+  darkest: "#4f1c24",
+  min: "#230c0e",
+};
+
+const gdcBlue = {
+  // blue
+  max: "#f8fcff",
+  lightest: "#eff6fb",
+  lighter: "#d9e8f6",
+  light: "#73b3e7",
+  DEFAULT: "#2378c3",
+  vivid: "#298fe8",
+  dark: "#2c608a",
+  darker: "#274863",
+  darkest: "#1f303e",
+  min: "#111a23",
+};
+
+const gdcBlueWarm = {
+  // blue-warm
+  max: "#ecf1f7",
+  lightest: "#ecf1f7",
+  lighter: "#e1e7f1",
+  light: "#98afd2",
+  DEFAULT: "#4a77b4",
+  vivid: "#4a87dc",
+  dark: "#345d96",
+  darker: "#2f4668",
+  darkest: "#252f3e",
+  min: "#ecf1f7",
+};
+
+const gdcCyan = {
+  // cyan
+  max: "#f5fafc",
+  lightest: "#e7f6f8",
+  lighter: "#ccecf2",
+  light: "#5dc0d1",
+  DEFAULT: "#168092",
+  vivid: "#1ca7be",
+  dark: "#2a646d",
+  darker: "#2c4a4e",
+  darkest: "#203133",
+  min: "#11191a",
+};
+
+const gdcCyanVivid = {
+  // cyan vivid
+  max: "#ecf1f7",
+  lightest: "#e5faff",
+  lighter: "#a8f2ff",
+  light: "#00bde3",
+  DEFAULT: "#0081a1",
+  vivid: "#01a7d0",
+  dark: "#00687d",
+  darker: "#0e4f5c",
+  darkest: "#093b44",
+  min: "#051e21",
+};
+// NCI Secondary Palette
+const gdcGreen = {
+  // mint
+  max: "#e9f6f4",
+  lightest: "#dbf6ed",
+  lighter: "#c7efe2",
+  light: "#5abf95",
+  DEFAULT: "#2e8367",
+  vivid: "#39a985",
+  dark: "#286846",
+  darker: "#204e34",
+  darkest: "#193324",
+  min: "#112118",
+};
+
+const gdcIndigo = {
+  // indigo-warm
+  max: "#f4f4fc",
+  lightest: "#f1eff7",
+  lighter: "#e7e3fa",
+  light: "#afa5e8",
+  DEFAULT: "#7665d1",
+  vivid: "#7f6de8",
+  dark: "#5e519e",
+  darker: "#453c7b",
+  darkest: "#2e2c40",
+  min: "#1b1a26",
+};
+
+const gdcViolet = {
+  // violet-warm
+  max: "#f7f2f8",
+  lightest: "#f8f0f9",
+  lighter: "#f6dff8",
+  light: "#d29ad8",
+  DEFAULT: "#b04abd",
+  vivid: "#c452d2",
+  dark: "#864381",
+  darker: "#5c395a",
+  darkest: "#382936",
+  min: "#251c24",
+};
+
+const gdcOrange = {
+  // orange-warm-vivid
+  max: "#fdf8f4",
+  lightest: "#fff3ea",
+  lighter: "#ffe2d1",
+  light: "#fc906d",
+  DEFAULT: "#cf4900",
+  dark: "#a72f10",
+  darker: "#782312",
+  darkest: "#3d231d",
+  min: "#2f1c18",
+};
+
+const gdcYellow = {
+  // yellow-vivid
+  max: "#fcf7de",
+  lightest: "#fff5c2",
+  lighter: "#fee685",
+  light: "#ddaa01",
+  DEFAULT: "#947100",
+  vivid: "#e1b10f",
+  dark: "#776017",
+  darker: "#5c4809",
+  darkest: "#422d19",
+  min: "#231910",
+};
+
 const utility = {
   link: "#155276",
   success: "#318f71",
@@ -458,120 +601,18 @@ module.exports = {
         "nci-purple": nciPurple,
         "nci-orange": nciOrange,
         "nci-yellow": nciYellow,
-        // TODO add remaining after Aug 2022 MR review
-        /** --
-        "gdc-grey": {
-          // gray
-          lightest: "#f0f0f0",
-          lighter: "#e6e6e6",
-          light: "#adadad",
-          DEFAULT: "#757575",
-          dark: "#5c5c5c",
-          darker: "#454545",
-          darkest: "#2e2e2e",
-        },
-        "gdc-red": {
-          // red-cool-vivid
-          lightest: "#fff2f5",
-          lighter: "#f8dfe2",
-          light: "#fd8ba0",
-          DEFAULT: "#e41d3d",
-          dark: "#b21d38",
-          darker: "#822133",
-          darkest: "#4f1c24",
-        },
-        "gdc-blue": {
-          // blue
-          lightest: "#eff6fb",
-          lighter: "#d9e8f6",
-          light: "#73b3e7",
-          DEFAULT: "#2378c3",
-          dark: "#2c608a",
-          darker: "#274863",
-          darkest: "#1f303e",
-        },
-        "gdc-blue-warm": {
-          // blue-warm
-          lightest: "#ecf1f7",
-          lighter: "#e1e7f1",
-          light: "#98afd2",
-          DEFAULT: "#4a77b4",
-          dark: "#345d96",
-          darker: "#2f4668",
-          darkest: "#252f3e",
-        },
-        "gdc-cyan": {
-          // cyan
-          lightest: "#e7f6f8",
-          lighter: "#ccecf2",
-          light: "#5dc0d1",
-          DEFAULT: "#168092",
-          dark: "#2a646d",
-          darker: "#2c4a4e",
-          darkest: "#203133",
-        },
-        "gdc-cyan-vivid": {
-          // cyan vivid
-          lightest: "#e5faff",
-          lighter: "#a8f2ff",
-          light: "#00bde3",
-          DEFAULT: "#0081a1",
-          dark: "#00687d",
-          darker: "#0e4f5c",
-          darkest: "#093b44",
-        },
+        "gdc-grey": gdcGrey,
+        "gdc-red": gdcRed,
+        "gdc-blue": gdcBlue,
+        "gdc-blue-warm": gdcBlueWarm,
+        "gdc-cyan": gdcCyan,
+        "gdc-cyan-vivid": gdcCyanVivid,
         // NCI Secondary Palette
-        "gdc-green": {
-          // mint
-          lightest: "#dbf6ed",
-          lighter: "#c7efe2",
-          light: "#5abf95",
-          DEFAULT: "#2e8367",
-          dark: "#286846",
-          darker: "#204e34",
-          darkest: "#193324",
-        },
-        "gdc-indigo": {
-          // indigo-warm
-          lightest: "#f1eff7",
-          lighter: "#e7e3fa",
-          light: "#afa5e8",
-          DEFAULT: "#7665d1",
-          dark: "#5e519e",
-          darker: "#453c7b",
-          darkest: "#2e2c40",
-        },
-        "gdc-violet": {
-          // violet-warm
-          lightest: "#f8f0f9",
-          lighter: "#f6dff8",
-          light: "#d29ad8",
-          DEFAULT: "#b04abd",
-          dark: "#864381",
-          darker: "#5c395a",
-          darkest: "#382936",
-        },
-        "gdc-orange": {
-          // orange-warm-vivid
-          lightest: "#fff3ea",
-          lighter: "#ffe2d1",
-          light: "#fc906d",
-          DEFAULT: "#cf4900",
-          dark: "#a72f10",
-          darker: "#782312",
-          darkest: "#3d231d",
-        },
-        "gdc-yellow": {
-          // yellow-vivid
-          lightest: "#fff5c2",
-          lighter: "#fee685",
-          light: "#ddaa01",
-          DEFAULT: "#947100",
-          dark: "#776017",
-          darker: "#5c4809",
-          darkest: "#422d19",
-        },
-         --- */
+        "gdc-green": gdcGreen,
+        "gdc-indigo": gdcIndigo,
+        "gdc-violet": gdcViolet,
+        "gdc-orange": gdcOrange,
+        "gdc-yellow": gdcYellow,
         "gdc-survival": {
           0: "#1F77B4",
           1: "#BD5800",
@@ -671,7 +712,9 @@ module.exports = {
      * with an addition of content and contrast colors
      * Note: the contrast color is defined to be a 508 compliant contrast
      * so while primary-darker is a darker version of primary
-     * primary-contrast-darker is lighter but is named to match the primary color
+     * primary-contrast-darker is lighter but is named to match the primary color shade
+     * the content variant allows finder control over the theme but at the risk of creating 508 contrast errors
+     * Any component using content should be checked.
      */
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     require("tailwindcss-themer")({

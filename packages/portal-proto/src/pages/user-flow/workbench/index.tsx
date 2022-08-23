@@ -226,12 +226,12 @@ const IndexPage: NextPage = () => {
               <div className="font-montserrat text-base-contrast text-md pt-5 pb-2">
                 Harmonized Cancer Datasets
               </div>
-              <div className="font-montserrat text-primary-content-lightest text-2xl pb-5">
+              <div className="font-heading text-primary-content-lightest text-2xl pb-5">
                 Genomic Data Commons Data Portal
               </div>
             </div>
             <div className="flex flex-row">
-              <div className="flex-auto w-36 m-4 p-4 items-center font-montserrat text-primary-content-darkest rounded-md shadow-inner">
+              <div className="flex-auto w-36 m-4 p-4 items-center font-content text-primary-content-darkest rounded-md shadow-inner">
                 A repository and knowledge base for cancer researchers who need
                 to understand cancer, its clinical progression, and response to
                 therapy.

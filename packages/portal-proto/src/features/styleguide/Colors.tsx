@@ -487,12 +487,18 @@ const Colors: React.FC<void> = () => {
             />
           );
         })}
-        <Divider label="USWDS theme color tokens" classNames={divider_style} />
+        <Divider
+          label="GDC Portal V2 theme color tokens"
+          classNames={divider_style}
+        />
         <Text>
           <p>
-            <b>USWDS theme color tokens</b> are divided into five high-level
-            role-based color families:{" "}
-            <em>base, primary, secondary, accent-warm, and accent-cool.</em>
+            <b>GDC V2 is based on USWDS theme color tokens</b> which are divided
+            into several high-level role-based color families:{" "}
+            <em>
+              base, primary, secondary, accent, accent-warm, accent-cool, chart,
+              and utility.
+            </em>
           </p>
           <b>Base</b> is a project’s neutral color, typically some tint of gray,
           and usually used as the text color throughout.
@@ -506,14 +512,53 @@ const Colors: React.FC<void> = () => {
             will be the predominant tone on your site.
           </p>
           <p>
-            Each color family has seven possible lightness grades, from lightest
-            to darkest, though not every family needs to include a color at each
-            grade. Some grades may be set to false in your project’s theme
-            settings. The default USWDS theme palette does not use every grade
-            for every family. The primary and secondary families also have a
-            vivid grade available.
+            Each color in the theme has 10 colors:
+            <b>
+              max, lightest, lighter, light, DEFAULT, vivid, dark, darker,
+              darkest, min{" "}
+            </b>
+            These are padded to 10 color arrays for compatibility with
+            Mantine&amp.s color theme. This allows you to pass
+            color=&quot;primary|secondary|accent....&quot; to Mantine components
+            as documented, this includes accessing lighter or darker version vis
+            the primary.N (where N 0..9).
+          </p>
+          <p>
+            {" "}
+            Each of these color also has two contrasting colors:
+            <ul>
+              <li>
+                <b>
+                  content-max, content-lightest, content-lighter, content-light,
+                  content-DEFAULT, content-vivid, content-dark, content-darker,
+                  content-darkest, content-min{" "}
+                </b>
+              </li>
+              <li>
+                <b>
+                  contrast-max, contrast-lightest, contrast-lighter,
+                  contrast-light, contrast-DEFAULT, contrast-vivid,
+                  contrast-dark, contrast-darker, contrast-darkest, contrast-min{" "}
+                </b>
+              </li>
+            </ul>
+          </p>
+          <p>
+            The contrast color is defined to be a 508 compliant contrast so
+            while <b>primary-darker</b> is a darker version of the primary
+            color, <b>primary-contrast-darker</b> is a 508 contrast compliant
+            color, and it actually lighter, but is named to match the primary
+            color shade. This means that consistent use of color-<em>shade</em>{" "}
+            and color-contrast-<em>shade</em>, for example{" "}
+            <b>bg-primary-lighter</b> and <b>text-primary-contrast-lighter</b>{" "}
+            ensures that these two colors will be 508 compliant if the shades
+            are defined correctly. The <em>content</em> variant allows finder
+            control over the theme but at the risk of creating 508 contrast
+            errors Any component using <em>content</em> should be checked for
+            508 contrast issues.
           </p>
         </Text>
+
         {/*---
         <div>
           <p className="prose font-medium text-xl">Official NCI Colors</p>
@@ -550,7 +595,7 @@ const Colors: React.FC<void> = () => {
           </a>{" "}
           are designed to meet the accessibility contrast requirements as
           defined by WCAG 2.0 AA. Each color has a magic number. Colors with the
-          same magic number have the same luminence. To meet the accessibility
+          same magic number have the same luminance. To meet the accessibility
           contrast requirements, colors must be 50 points apart. The default
           variations of each color have a magic number of 50. This means that
           they can be used against pure white (magic number = 0) and pure black

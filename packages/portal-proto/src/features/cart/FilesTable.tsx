@@ -190,14 +190,14 @@ const FilesTable: React.FC = () => {
           <div className="flex gap-2">
             <Button
               className={
-                "bg-base-lightest text-primary-content-darkest border-primary-darkest"
+                "bg-base-lightest text-base-contrast-lightest border-primary-darkest"
               }
             >
               JSON
             </Button>
             <Button
               className={
-                "bg-base-lightest text-primary-content-darkest border-primary-darkest"
+                "bg-base-lightest text-base-contrast-lightest border-primary-darkest"
               }
             >
               TSV
@@ -208,7 +208,7 @@ const FilesTable: React.FC = () => {
                   leftIcon={<TrashIcon />}
                   rightIcon={<DropdownIcon size={20} />}
                   classNames={{
-                    root: "bg-nci-red-darker",
+                    root: "bg-nci-red-darker", //TODO: find good color theme for this
                     rightIcon: "border-l pl-1 -mr-2",
                   }}
                 >

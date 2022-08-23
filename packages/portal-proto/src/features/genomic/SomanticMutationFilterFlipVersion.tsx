@@ -104,7 +104,7 @@ const SomanticMutationFilterFlipVersion: React.FC<SomaticAppProps> = () => {
             </div>
             <div className="ml-auto">
               <button
-                className="hover:bg-primary text-primary-content-darkest font-bold py-2 px-4 rounded"
+                className="hover:bg-primary text-primary-contrast font-bold py-2 px-4 rounded"
                 onClick={toggleMutationFlip}
               >
                 <FlipIcon />

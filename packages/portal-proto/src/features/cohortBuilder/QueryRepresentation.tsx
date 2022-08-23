@@ -30,7 +30,7 @@ flex truncate ... px-2 bg-base-max
 `;
 
 const QueryFieldLabel = tw.span`
-bg-accent-lighter text-accent-content-darkest uppercase px-2 border-accent border-r-2
+bg-accent-lighter text-accent-contrast-lighter uppercase px-2 border-accent border-r-2
 `;
 
 const QueryItemContainer = tw.div`
@@ -132,7 +132,7 @@ const ComparisonElement: React.FC<ComparisonElementProps> = ({
       {showLabel ? (
         <QueryFieldLabel>{convertFieldToName(operation.field)}</QueryFieldLabel>
       ) : null}
-      <div className="flex flex-row items-center bg-accent-content-max">
+      <div className="flex flex-row items-center bg-accent-contrast-lightest">
         <button
           className="p-1 mx-2 rounded-md bg-accent-lightest "
           onClick={() => handleKeepMember(operation)}
@@ -177,7 +177,7 @@ export const ClosedRangeQueryElement: React.FC<ClosedRangeQueryElementProps> =
           <ComparisonElement operation={lower} />
           <span
             className={
-              "uppercase bg-accent-content-max text-accent-content-darkest text-bold"
+              "uppercase bg-accent-content-max text-accent-contrast-max text-bold"
             }
           >
             {op}
@@ -218,7 +218,7 @@ export const QueryElement: React.FC<QueryElementProps> = ({
       </button>
       -- */}
       <button
-        className="bg-accent p-0 m-0 h-full round-r-lg text-accent-content-max "
+        className="bg-accent p-0 m-0 h-full round-r-lg text-accent-contrast "
         onClick={handleRemoveFilter}
       >
         <ClearIcon size="1.5em" className="px-1" />
