@@ -1,5 +1,8 @@
-# To contribute improvements to CI/CD templates, please follow the Development guide at:
-# https://docs.gitlab.com/ee/development/cicd/templates.html
+stages:
+  - .pre
+  - test
+  - build
+  - push
 
 include:
   - project: nci-gdc/gitlab-templates
@@ -11,15 +14,105 @@ image: docker.osdc.io/node:16
 variables:
   npm_config_registry: https://nexus.osdc.io/repository/npm-all/
 
+Install npm:
+  stage: .pre
+  script:
+    - npm install npm@7
+    - npm install
 
-build:
+  cache:
+    key: build-cache
+    paths:
+      - ../gdc-frontend-framework
+    policy: push
+
+Type Check for core:
+  stage: test
+  script:
+    - cd packages/core
+    - npm run build:clean
+  cache:
+    key: build-cache
+    paths:
+      - ../gdc-frontend-framework
+  allow_failure: true
+
+Type Check for portal-proto:
+  stage: test
+  needs: [Type Check for core]
+  script:
+    - cd packages/portal-proto
+    - npm run compile
+  cache:
+    key: build-cache
+    paths:
+      - ../gdc-frontend-framework
+  allow_failure: true
+
+Linting:
+  stage: test
+  script:
+    - npm run lint
+  cache:
+    key: build-cache
+    paths:
+      - ../gdc-frontend-framework
+
+Prettier Checks:
+  stage: test
+  script:
+    - npm run format:check
+  cache:
+    key: build-cache
+    paths:
+      - ../gdc-frontend-framework
+  allow_failure: true
+
+Run all tests:
+  stage: test
+  needs: [Type Check for portal-proto]
+  script:
+    - npm run test:all
+  cache:
+    key: build-cache
+    paths:
+      - ../gdc-frontend-framework
+  allow_failure: true
+
+build docker:
   stage: build
   services:
     - docker:20.10.16-dind
   tags:
     - dind
   image: docker:20.10.16-dind
-  variables:
-    npm_config_registry: https://nexus.osdc.io/repository/npm-all/
   script:
-    - docker build .
+    - apk add bash
+    - export CLEAN_BRANCH_NAME=${CI_COMMIT_BRANCH/\//_}
+    - export LOWERCASE_BRANCH_NAME="$(bash -c 'tr "[:upper:]" "[:lower:]" <<< "$CLEAN_BRANCH_NAME"')"
+    - docker build -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME-${CI_COMMIT_SHORT_SHA} .
+    - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME-${CI_COMMIT_SHORT_SHA}
+  cache:
+    key: build-cache
+    paths:
+      - ../gdc-frontend-framework
+
+Push latest:
+  variables:
+    GIT_STRATEGY: none
+  stage: push
+  services:
+    - docker:20.10.16-dind
+  tags:
+    - dind
+  image: docker:20.10.16-dind
+  only:
+    - master
+  script:
+    - apk add bash
+    - export CLEAN_BRANCH_NAME=${CI_COMMIT_BRANCH/\//_}
+    - export LOWERCASE_BRANCH_NAME="$(bash -c 'tr "[:upper:]" "[:lower:]" <<< "$CLEAN_BRANCH_NAME"')"
+    - docker pull $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME-${CI_COMMIT_SHORT_SHA}
+    - docker tag $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME-${CI_COMMIT_SHORT_SHA} $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:latest
+    - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:latest
+
