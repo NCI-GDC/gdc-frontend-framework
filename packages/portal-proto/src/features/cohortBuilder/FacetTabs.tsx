@@ -45,7 +45,7 @@ border-dotted
 m-6
 `;
 
-const StyledFacetTabs = ({ children }: TabsProps) => {
+const StyledFacetTabs = (props: TabsProps) => {
   return (
     <Tabs
       unstyled
@@ -80,7 +80,7 @@ const StyledFacetTabs = ({ children }: TabsProps) => {
           alignItems: "center",
         },
       })}
-      {...children}
+      {...props}
     />
   );
 };
