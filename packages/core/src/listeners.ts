@@ -18,11 +18,11 @@ import { createCaseSet, clearCaseSet } from "./features/cohort/caseSetSlice";
  * current cohort filters mutate.
  */
 
-export const listenerMiddleware = createListenerMiddleware();
+export const caseSetListenerMiddleware = createListenerMiddleware();
 export type CoreStartListening = TypedStartListening<CoreState, CoreDispatch>;
 
 export const startCoreListening =
-  listenerMiddleware.startListening as CoreStartListening;
+  caseSetListenerMiddleware.startListening as CoreStartListening;
 
 export const addAppListener = addListener as TypedAddListener<
   CoreState,

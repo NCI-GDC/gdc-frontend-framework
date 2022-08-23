@@ -12,7 +12,7 @@ import {
 } from "redux-persist";
 import { reducers } from "./reducers";
 import { cohortApiSliceMiddleware } from "./features/api/cohortApiSlice";
-import { listenerMiddleware } from "./listeners";
+import { caseSetListenerMiddleware } from "./listeners";
 
 import storage from "./storage-persist";
 
@@ -35,7 +35,7 @@ export const coreStore = configureStore({
       },
     })
       .concat(cohortApiSliceMiddleware)
-      .prepend(listenerMiddleware.middleware),
+      .prepend(caseSetListenerMiddleware.middleware), // needs to be prepended
 });
 
 setupListeners(coreStore.dispatch);
