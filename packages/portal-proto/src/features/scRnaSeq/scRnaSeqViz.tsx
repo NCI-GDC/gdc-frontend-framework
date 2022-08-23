@@ -4,6 +4,10 @@ import {
   differentiallyExpressedGenes,
   geENSG00000163638,
   geENSG00000183715,
+  geENSG00000245532,
+  geENSG00000141510,
+  geENSG00000198938,
+  geENSG00000138413,
   seuratAnalysis,
 } from "./data/scRnaSeqData";
 import { DegTable } from "./DegTable";
@@ -151,7 +155,7 @@ export const ScRnaSeqViz: React.VFC<ScRnaSeqVizProps> = () => {
             checked={geneId === "None"}
           />
           <label className="px-1" htmlFor="geneId--None">
-            None
+            Clusters
           </label>
           <br></br>
           <input
@@ -162,7 +166,18 @@ export const ScRnaSeqViz: React.VFC<ScRnaSeqVizProps> = () => {
             checked={geneId === "ENSG00000163638"}
           />
           <label className="px-1" htmlFor="geneId--ENSG00000163638">
-            ENSG00000163638
+            ADAMTS9
+          </label>
+          <br />
+          <input
+            type="radio"
+            name="geneId"
+            onClick={() => setGeneId("ENSG00000245532")}
+            id="geneId--ENSG00000245532"
+            checked={geneId === "ENSG00000245532"}
+          />
+          <label className="px-1" htmlFor="geneId--ENSG00000245532">
+            NEAT1
           </label>
           <br />
           <input
@@ -173,7 +188,29 @@ export const ScRnaSeqViz: React.VFC<ScRnaSeqVizProps> = () => {
             checked={geneId === "ENSG00000183715"}
           />
           <label className="px-1" htmlFor="geneId--ENSG00000183715">
-            ENSG00000183715
+            OPCML
+          </label>
+          <br />
+          <input
+            type="radio"
+            name="geneId"
+            onClick={() => setGeneId("ENSG00000141510")}
+            id="geneId--ENSG00000141510"
+            checked={geneId === "ENSG00000141510"}
+          />
+          <label className="px-1" htmlFor="geneId--ENSG00000141510">
+            TP53
+          </label>
+          <br />
+          <input
+            type="radio"
+            name="geneId"
+            onClick={() => setGeneId("ENSG00000138413")}
+            id="geneId--ENSG00000138413"
+            checked={geneId === "ENSG00000138413"}
+          />
+          <label className="px-1" htmlFor="geneId--ENSG00000138413">
+            IDH1
           </label>
         </div>
       </div>
@@ -222,6 +259,22 @@ const generateScatterPlot2dData = (
           if (cell.cellId in geENSG00000163638) {
             return geENSG00000163638[cell.cellId] || "rgba(200,200,200,0.2)";
           }
+        } else if (geneId === "ENSG00000245532") {
+          if (cell.cellId in geENSG00000245532) {
+            return geENSG00000245532[cell.cellId] || "rgba(200,200,200,0.2)";
+          }
+        } else if (geneId === "ENSG00000141510") {
+          if (cell.cellId in geENSG00000141510) {
+            return geENSG00000141510[cell.cellId] || "rgba(200,200,200,0.2)";
+          }
+        } else if (geneId === "ENSG00000198938") {
+          if (cell.cellId in geENSG00000198938) {
+            return geENSG00000198938[cell.cellId] || "rgba(200,200,200,0.2)";
+          }
+        } else if (geneId === "ENSG00000138413") {
+          if (cell.cellId in geENSG00000138413) {
+            return geENSG00000138413[cell.cellId] || "rgba(200,200,200,0.2)";
+          }
         }
         return undefined;
       })();
@@ -265,11 +318,27 @@ const generateScatterPlot3dData = (
           return colors[cell.seuratCluster % colors.length];
         } else if (geneId === "ENSG00000183715") {
           if (cell.cellId in geENSG00000183715) {
-            return geENSG00000183715[cell.cellId] || "rgba(200,200,200,1)";
+            return geENSG00000183715[cell.cellId] || "rgba(200,200,200,0.9)";
           }
         } else if (geneId === "ENSG00000163638") {
           if (cell.cellId in geENSG00000163638) {
-            return geENSG00000163638[cell.cellId] || "rgba(200,200,200,1)";
+            return geENSG00000163638[cell.cellId] || "rgba(200,200,200,0.9)";
+          }
+        } else if (geneId === "ENSG00000245532") {
+          if (cell.cellId in geENSG00000245532) {
+            return geENSG00000245532[cell.cellId] || "rgba(200,200,200,0.9)";
+          }
+        } else if (geneId === "ENSG00000141510") {
+          if (cell.cellId in geENSG00000141510) {
+            return geENSG00000141510[cell.cellId] || "rgba(200,200,200,0.9)";
+          }
+        } else if (geneId === "ENSG00000198938") {
+          if (cell.cellId in geENSG00000198938) {
+            return geENSG00000198938[cell.cellId] || "rgba(200,200,200,0.9)";
+          }
+        } else if (geneId === "ENSG00000138413") {
+          if (cell.cellId in geENSG00000138413) {
+            return geENSG00000138413[cell.cellId] || "rgba(200,200,200,0.9)";
           }
         }
         return undefined;
