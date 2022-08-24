@@ -1,11 +1,12 @@
 import { GdcApiResponse } from "../gdcapi/gdcapi";
 import "isomorphic-fetch";
+import { GDC_APP_API_AUTH } from "../../constants";
 
 export const fetchFacetByNameRestApi = async (
   name: string,
 ): Promise<GdcApiResponse<never>> => {
   const response = await fetch(
-    `https://api.gdc.cancer.gov/cases?size=0&facets=${name}`,
+    `${GDC_APP_API_AUTH}/cases?size=0&facets=${name}`,
   );
   if (response.ok) {
     return response.json();
@@ -18,7 +19,7 @@ export const fetchFacetsByNamesRestApi = async (
   names: ReadonlyArray<string>,
 ): Promise<GdcApiResponse<never>> => {
   const response = await fetch(
-    `https://api.gdc.cancer.gov/cases?size=0&facets=${names.join(",")}`,
+    `${GDC_APP_API_AUTH}/cases?size=0&facets=${names.join(",")}`,
   );
   if (response.ok) {
     return response.json();

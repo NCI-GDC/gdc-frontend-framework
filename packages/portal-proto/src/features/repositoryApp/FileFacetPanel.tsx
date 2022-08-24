@@ -54,7 +54,7 @@ const useRepositoryEnumData = (
     useRepositoryFilters,
   );
 
-export const FileFacetPanel = () => {
+export const FileFacetPanel = (): JSX.Element => {
   const config = useAppSelector(selectRepositoryConfig);
   const { isSuccess: isDictionaryReady } = useFacetDictionary();
   const facets = useCoreSelector((state) =>

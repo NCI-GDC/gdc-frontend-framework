@@ -1,3 +1,5 @@
+import { GDC_APP_API_AUTH } from "../../constants";
+
 export interface GraphQLFetchError {
   readonly url: string;
   readonly status: number;
@@ -35,7 +37,7 @@ export const graphqlAPI = async <T>(
   query: string,
   variables: Record<string, unknown>,
 ): Promise<GraphQLApiResponse<T>> => {
-  const res = await fetch("https://api.gdc.cancer.gov/v0/graphql", {
+  const res = await fetch(`${GDC_APP_API_AUTH}/graphql`, {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
