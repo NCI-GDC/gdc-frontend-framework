@@ -155,7 +155,7 @@ export const validateRangeInput = (
     if (overlappingBins.length > 0) {
       errors[`ranges.${idx}.name`] = `'${
         value.name
-      }' overlaps with ${overlappingBins.map((b) => `'${b}'`).join(",")}`;
+      }' overlaps with ${overlappingBins.map((b) => `'${b}'`).join(", ")}`;
     }
   });
 
