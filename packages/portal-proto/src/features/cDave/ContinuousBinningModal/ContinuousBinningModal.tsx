@@ -7,7 +7,6 @@ import { Statistics } from "@gff/core";
 import { validateIntervalInput, validateRangeInput } from "./validateInputs";
 import { CustomInterval, NamedFromTo } from "../types";
 import { isInterval } from "../utils";
-import { isEqual } from "lodash";
 
 interface ContinuousBinningModalProps {
   readonly setModalOpen: (open: boolean) => void;
@@ -84,7 +83,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
     intervalForm.validate();
     // Adding form objects to dep array causes infinite rerenders
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [intervalForm.values]);
+  }, []);
 
   useEffect(() => {
     if (binMethod === "interval") {

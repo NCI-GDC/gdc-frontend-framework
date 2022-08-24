@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ActionIcon, Radio, Loader, Menu } from "@mantine/core";
+import { ActionIcon, Radio, Loader, Menu, Tooltip } from "@mantine/core";
 import { MdDownload as DownloadIcon } from "react-icons/md";
 import tailwindConfig from "tailwind.config";
 import { truncateString } from "src/utils";
@@ -84,12 +84,15 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
             </Radio.Group>
             <Menu>
               <Menu.Target>
-                <ActionIcon
-                  variant="outline"
-                  className="text-nci-blue-darkest border-nci-blue-darkest"
-                >
-                  <DownloadIcon />
-                </ActionIcon>
+                <Tooltip label="Download image or data" withArrow withinPortal>
+                  <ActionIcon
+                    variant="outline"
+                    className="text-nci-blue-darkest border-nci-blue-darkest"
+                    aria-label="Download image or data"
+                  >
+                    <DownloadIcon />
+                  </ActionIcon>
+                </Tooltip>
               </Menu.Target>
               <Menu.Dropdown>
                 <Menu.Item>SVG</Menu.Item>

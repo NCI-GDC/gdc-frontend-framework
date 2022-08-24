@@ -54,7 +54,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   }, []);
 
   return (
-    <Card className="h-[580px]" ref={(ref) => (targetRef.current = ref)}>
+    <Card ref={(ref) => (targetRef.current = ref)}>
       <div className="flex justify-between mb-1">
         <h2>{fieldName}</h2>
         <div className="flex gap-1">

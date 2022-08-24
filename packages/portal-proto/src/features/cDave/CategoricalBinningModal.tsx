@@ -444,6 +444,8 @@ const GroupInput: React.FC<GroupInputProps> = ({
       form.clearErrors();
       form.reset();
     }
+    // Adding form objects to dep array causes infinite rerenders
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editing]);
 
   return (

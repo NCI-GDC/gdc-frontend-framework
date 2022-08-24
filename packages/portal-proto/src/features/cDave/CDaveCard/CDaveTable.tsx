@@ -26,9 +26,9 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
   continuous,
 }: CDaveTableProps) => {
   return (
-    <div className="h-48 block overflow-auto w-full relative">
+    <div className="h-40 block overflow-auto w-full relative">
       <table className="bg-white w-full text-left text-nci-gray-darker mb-2">
-        <thead className="bg-nci-gray-lightest font-bold">
+        <thead className="bg-nci-gray-lightest font-bold sticky top-0 z-10">
           <tr>
             <th>Select</th>
             <th>

@@ -46,7 +46,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   return (
     <Grid className="w-full p-4" grow>
       <Grid.Col span={controlsExpanded ? 6 : 4}>
-        <Card className="h-[580px]">
+        <Card className="h-full">
           <h2>Overall Survival</h2>
           {isError ? (
             <Alert>{"Something's gone wrong"}</Alert>
