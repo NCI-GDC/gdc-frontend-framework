@@ -108,6 +108,35 @@ export const validateRangeInput = (
         .map((v) => v.name);
       if (otherBinNames.includes(value.name)) {
         errors[`ranges.${idx}.name`] = "Bin names must be unique";
+      } else {
+        const overlappingBins = [];
+        values.forEach((otherValue, otherIdx) => {
+          if (
+            idx === otherIdx ||
+            value.from === "" ||
+            value.to === "" ||
+            otherValue.from === "" ||
+            otherValue.to === ""
+          ) {
+            return;
+          }
+          if (
+            (Number(value.from) > Number(otherValue.from) &&
+              Number(value.from) < Number(otherValue.to)) ||
+            (Number(value.to) > Number(otherValue.from) &&
+              Number(value.to) < Number(otherValue.to)) ||
+            Number(value.to) === Number(otherValue.to) ||
+            Number(value.from) === Number(otherValue.from)
+          ) {
+            overlappingBins.push(otherValue.name);
+          }
+        });
+
+        if (overlappingBins.length > 0) {
+          errors[`ranges.${idx}.name`] = `'${
+            value.name
+          }' overlaps with ${overlappingBins.map((b) => `'${b}'`).join(", ")}`;
+        }
       }
     }
     const fromResult = validateNumberInput(value.from);
@@ -127,35 +156,6 @@ export const validateRangeInput = (
     ) {
       errors[`ranges.${idx}.from`] = `Must be less than ${value.to}`;
       errors[`ranges.${idx}.to`] = `Must be greater than ${value.from}`;
-    }
-
-    const overlappingBins = [];
-    values.forEach((otherValue, otherIdx) => {
-      if (
-        idx === otherIdx ||
-        value.from === "" ||
-        value.to === "" ||
-        otherValue.from === "" ||
-        otherValue.to === ""
-      ) {
-        return;
-      }
-      if (
-        (Number(value.from) > Number(otherValue.from) &&
-          Number(value.from) < Number(otherValue.to)) ||
-        (Number(value.to) > Number(otherValue.from) &&
-          Number(value.to) < Number(otherValue.to)) ||
-        Number(value.to) === Number(otherValue.to) ||
-        Number(value.from) === Number(otherValue.from)
-      ) {
-        overlappingBins.push(otherValue.name);
-      }
-    });
-
-    if (overlappingBins.length > 0) {
-      errors[`ranges.${idx}.name`] = `'${
-        value.name
-      }' overlaps with ${overlappingBins.map((b) => `'${b}'`).join(", ")}`;
     }
   });
 

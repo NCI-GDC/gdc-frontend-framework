@@ -83,7 +83,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
     intervalForm.validate();
     // Adding form objects to dep array causes infinite rerenders
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [intervalForm.values]);
 
   useEffect(() => {
     if (binMethod === "interval") {
