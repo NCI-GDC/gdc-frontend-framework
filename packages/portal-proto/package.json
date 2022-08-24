@@ -17,7 +17,7 @@
     "@mantine/hooks": "^5.0.2",
     "@mantine/next": "^5.0.2",
     "@mantine/notifications": "^5.0.2",
-    "@mantine/form": "^5.0.2",
+    "@mantine/form": "^5.2.3",
     "@reduxjs/toolkit": "^1.8.1",
     "@stjude/proteinpaint-client": "https://pecan.stjude.cloud/static/Pk983gP.Rl2410y45/ydbD5DBW0BdkjXJq/stjude-proteinpaint-client-2.1.5.tgz",
     "filesize": "^8.0.7",

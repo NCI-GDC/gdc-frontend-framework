@@ -39,6 +39,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
         }))
       : [],
   );
+  const [hasReset, setHasReset] = useState(false);
 
   const intervalForm = useForm({
     validateInputOnChange: true,
@@ -115,14 +116,10 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
         min: Number(intervalForm.values.setIntervalMin),
         max: Number(intervalForm.values.setIntervalMax),
       };
-      if (
-        !isEqual(newBins, {
-          interval: binSize,
-          min: stats.min,
-          max: stats.max + +1,
-        })
-      ) {
+      if (!hasReset || intervalForm.isDirty()) {
         updateBins(newBins);
+      } else {
+        updateBins(null);
       }
     } else {
       const newBins = savedRangeRows.map((r) => ({
@@ -130,7 +127,11 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
         to: Number(r.to),
         from: Number(r.from),
       }));
-      updateBins(newBins);
+      if (!hasReset || rangeForm.isDirty()) {
+        updateBins(newBins);
+      } else {
+        updateBins(null);
+      }
     }
   };
 
@@ -232,9 +233,9 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
               rangeForm.setValues({
                 ranges: [{ name: "", from: "", to: "" }],
               });
-              updateBins(null);
               setSavedRangeRows([]);
               setBinMethod("interval");
+              setHasReset(true);
             }}
           >
             <ResetIcon size={20} />

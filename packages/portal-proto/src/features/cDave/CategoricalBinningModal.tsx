@@ -179,7 +179,6 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
                 setHiddenValues({});
                 setValues(results);
                 setSelectedValues({});
-                updateBins(null);
               }}
               aria-label="reset groups"
               className="bg-nci-gray"
@@ -318,6 +317,8 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
             setEditField(undefined);
             if (!isEqual(values, results)) {
               updateBins(values);
+            } else {
+              updateBins(null);
             }
             setModalOpen(false);
           }}

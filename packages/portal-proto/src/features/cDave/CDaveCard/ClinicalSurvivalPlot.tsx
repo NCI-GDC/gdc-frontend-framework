@@ -60,15 +60,17 @@ const ClinicalSurvivalPlot: React.FC<ClinicalSurvivalPlotProps> = ({
                 (bin) => bin.name === value,
               );
 
-              content.push({
-                op: ">=",
-                content: { field, value: [dataPoint.from] },
-              });
+              if (dataPoint !== undefined) {
+                content.push({
+                  op: ">=",
+                  content: { field, value: [dataPoint.from] },
+                });
 
-              content.push({
-                op: "<",
-                content: { field, value: [dataPoint.to] },
-              });
+                content.push({
+                  op: "<",
+                  content: { field, value: [dataPoint.to] },
+                });
+              }
             } else {
               const [fromValue, toValue] = value.split(" to <");
 

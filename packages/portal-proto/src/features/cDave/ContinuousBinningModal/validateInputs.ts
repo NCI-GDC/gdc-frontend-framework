@@ -102,15 +102,14 @@ export const validateRangeInput = (
   values.forEach((value, idx) => {
     if (value.name === "") {
       errors[`ranges.${idx}.name`] = "Required field";
+    } else {
+      const otherBinNames = values
+        .filter((_, otherIdx) => otherIdx !== idx)
+        .map((v) => v.name);
+      if (otherBinNames.includes(value.name)) {
+        errors[`ranges.${idx}.name`] = "Bin names must be unique";
+      }
     }
-
-    const otherBinNames = values
-      .filter((_, otherIdx) => otherIdx !== idx)
-      .map((v) => v.name);
-    if (otherBinNames.includes(value.name)) {
-      errors[`ranges.${idx}.name`] = "Bin names must be unique";
-    }
-
     const fromResult = validateNumberInput(value.from);
     if (fromResult) {
       errors[`ranges.${idx}.from`] = fromResult;
