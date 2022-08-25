@@ -9,6 +9,18 @@ import ge_ENSG00000141510 from "./ge-ENSG00000141510.json";
 import ge_ENSG00000198938 from "./ge-ENSG00000198938.json";
 import ge_ENSG00000138413 from "./ge-ENSG00000138413.json";
 
+/**
+ * NOTES: This code exists for testing purposes. The json files that are imported
+ * are NOT and SHOULD NOT be commit to the code repository.
+ *
+ * To use this, you will need to copy the json data files to this directory.
+ *
+ * For reference, the analysis file was generated from a seurat analysis tsv file.
+ * The deg file was generated from a seurat deg tsv file.
+ * The ge files were generated from the loom hdf5 files. (all the cell ids and
+ * expression values for a given gene from the norm data)
+ */
+
 export const seuratAnalysis: ReadonlyArray<CellData> =
   analysis as ReadonlyArray<CellData>;
 
