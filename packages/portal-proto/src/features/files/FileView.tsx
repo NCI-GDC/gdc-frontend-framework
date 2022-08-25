@@ -37,6 +37,7 @@ interface TempTableProps {
     readonly tableRows: any[];
   };
 }
+
 export const TempTable = ({ tableData }: TempTableProps): JSX.Element => {
   if (!(tableData?.headers?.length > 0 && tableData?.tableRows?.length > 0)) {
     console.error("bad table data", tableData);

@@ -5,7 +5,6 @@ import Link from "next/link";
 import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
 import { Button, Tooltip } from "@mantine/core";
 import { NextLink } from "@mantine/next";
-
 interface SummaryStatsItemProp {
   readonly title: string;
   readonly icon: string;
@@ -212,48 +211,46 @@ const ActionButtonBar = () => {
   );
 };
 
-const IndexPage: NextPage = () => {
-  return (
-    <UserFlowVariedPages
-      {...{ indexPath: "/user-flow/single-page", headerElements }}
-    >
-      <div className="flex flex-col w-100 h-100 bg-gradient-to-r from-nci-gray-lightest  to-nci-gray-lighter">
-        <div className="flex flex-row ">
-          <div className="flex flex-col w-1/2 pl-10">
-            <div className="flex flex-col w-100 bg-nci-gray p-4 rounded-md shadow-lg mt-2  ">
-              <div className="font-montserrat text-nci-gray-lightest text-md pt-5 pb-2">
-                Harmonized Cancer Datasets
-              </div>
-              <div className="font-montserrat text-nci-gray-lightest text-2xl pb-5">
-                Genomic Data Commons Data Portal
-              </div>
+const IndexPage: NextPage = () => (
+  <UserFlowVariedPages
+    {...{ indexPath: "/user-flow/single-page", headerElements }}
+  >
+    <div className="flex flex-col w-100 h-100 bg-gradient-to-r from-nci-gray-lightest  to-nci-gray-lighter">
+      <div className="flex flex-row ">
+        <div className="flex flex-col w-1/2 pl-10">
+          <div className="flex flex-col w-100 bg-nci-gray p-4 rounded-md shadow-lg mt-2  ">
+            <div className="font-montserrat text-nci-gray-lightest text-md pt-5 pb-2">
+              Harmonized Cancer Datasets
             </div>
-            <div className="flex flex-row">
-              <div className="flex-auto w-36 m-4 p-4 items-center font-montserrat text-nci-gray-darkest rounded-md shadow-inner">
-                A repository and knowledge base for cancer researchers who need
-                to understand cancer, its clinical progression, and response to
-                therapy.
-              </div>
-              <ActionButtonBar />
+            <div className="font-montserrat text-nci-gray-lightest text-2xl pb-5">
+              Genomic Data Commons Data Portal
             </div>
-            <div className="flex items-center w-100 pb-5">
-              <div className="w-full">
-                <input
-                  type="text"
-                  className="h-10 pr-8 w-full pl-5 bg-white border-nci-gray-light rounded-full focus:outline-none focus:ring focus:ring-nci-cyan-light focus:border-nci-teal-light hover:shadow-lg hover:border-nci-teal-lighter"
-                  placeholder={`e.g. BRAF, Breast, TCGA-BLCA, TCGA-A5-A0G2`}
-                />
-              </div>
-            </div>
-            <SummaryStatsPanel />
           </div>
-          <div className="m-auto">
-            <Image src="/user-flow/sapien.svg" height={400} width={500} />
+          <div className="flex flex-row">
+            <div className="flex-auto w-36 m-4 p-4 items-center font-montserrat text-nci-gray-darkest rounded-md shadow-inner">
+              A repository and knowledge base for cancer researchers who need to
+              understand cancer, its clinical progression, and response to
+              therapy.
+            </div>
+            <ActionButtonBar />
           </div>
+          <div className="flex items-center w-100 pb-5">
+            <div className="w-full">
+              <input
+                type="text"
+                className="h-10 pr-8 w-full pl-5 bg-white border-nci-gray-light rounded-full focus:outline-none focus:ring focus:ring-nci-cyan-light focus:border-nci-teal-light hover:shadow-lg hover:border-nci-teal-lighter"
+                placeholder={`e.g. BRAF, Breast, TCGA-BLCA, TCGA-A5-A0G2`}
+              />
+            </div>
+          </div>
+          <SummaryStatsPanel />
+        </div>
+        <div className="m-auto">
+          <Image src="/user-flow/sapien.svg" height={400} width={500} />
         </div>
       </div>
-    </UserFlowVariedPages>
-  );
-};
+    </div>
+  </UserFlowVariedPages>
+);
 
 export default IndexPage;

@@ -34,7 +34,6 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
   const [prevPath, setPrevPath] = useState("");
   const [currentPath, setCurrentPath] = useState("");
-
   useEffect(() => {
     setPrevPath(currentPath);
     setCurrentPath(globalThis.location.pathname + globalThis.location.search);
@@ -88,10 +87,9 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
               // Add default color from tailwind config to Mantine theme
               ...Object.fromEntries(
                 Object.entries(tailwindConfig.theme.extend.colors).map(
-                  ([key, values]) =>
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-ignore
-                    [key, Array(10).fill(values?.DEFAULT)],
+                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  // @ts-ignore
+                  ([key, values]) => [key, Array(10).fill(values?.DEFAULT)],
                 ),
               ),
             },
