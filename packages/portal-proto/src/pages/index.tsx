@@ -74,6 +74,9 @@ const IndexPage: NextPage = () => {
             <li>
               <HoverLink href="/set-operation">Set Operation Demo</HoverLink>
             </li>
+            <li>
+              <HoverLink href="/scrna-seq-viz">scRNA-Seq</HoverLink>
+            </li>
           </ul>
         </Section>
       </div>
