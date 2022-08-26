@@ -51,9 +51,9 @@ const processChartData = (
     )
     .slice(0, maxBins)
     .map((d) => ({
-      x: truncateString(processLabel(d), 35),
+      x: processLabel(d),
+      truncatedXName: truncateString(processLabel(d), 35),
       y: data[d],
-      fullXName: processLabel(d),
     }));
   return results.reverse();
 };
@@ -125,7 +125,7 @@ interface EnumBarChartTooltipProps {
   readonly y?: number;
   readonly datum?: {
     y: number;
-    fullXName: string;
+    x: string;
   };
 }
 
@@ -140,7 +140,7 @@ const EnumBarChartTooltip: React.FC<EnumBarChartTooltipProps> = ({
         <Tooltip
           label={
             <>
-              <b>{datum.fullXName}</b>
+              <b>{datum.x}</b>
               <p>{datum.y.toLocaleString()} Cases</p>
             </>
           }
@@ -158,6 +158,7 @@ const EnumBarChartTooltip: React.FC<EnumBarChartTooltipProps> = ({
 interface EnumBarChartData {
   x: string;
   y: number;
+  truncatedXName: string;
 }
 
 interface BarChartProps {
@@ -191,6 +192,7 @@ const EnumBarChart: React.FC<BarChartProps> = ({
             dy={-15}
             textAnchor={"start"}
             style={[{ fontSize: 23 }]}
+            text={({ datum }) => data[datum - 1]?.truncatedXName}
           />
         }
         style={{

@@ -1,6 +1,4 @@
 import { PropsWithChildren, ReactNode, useEffect } from "react";
-import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useLocalStorage } from "@mantine/hooks";
 import { Menu } from "@mantine/core";
@@ -13,6 +11,7 @@ import {
   selectBanners,
   useTotalCounts,
   useFacetDictionary,
+  fetchUserDetails,
 } from "@gff/core";
 import {
   MdOutlineLogin as LoginIcon,
@@ -26,6 +25,8 @@ import { Button, LoadingOverlay } from "@mantine/core";
 import { NextLink } from "@mantine/next";
 import { useTour } from "@reactour/tour";
 import steps from "../../features/tour/steps";
+import Image from "next/image";
+import Link from "next/link";
 
 interface UserFlowVariedPagesProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
@@ -45,6 +46,7 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
 
   useEffect(() => {
     setSteps(steps[router.pathname]);
+    dispatch(fetchUserDetails());
     dispatch(fetchNotifications());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

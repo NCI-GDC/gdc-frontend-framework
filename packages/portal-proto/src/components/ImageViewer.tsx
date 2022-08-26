@@ -5,7 +5,7 @@ import { LoadingOverlay } from "@mantine/core";
 import { toggleFullScreen } from "../utils";
 import { SlideDetailButton } from "./SlideDetailButton";
 import { HorizontalTableProps } from "./HorizontalTable";
-
+import { GDC_API } from "@gff/core";
 export interface ImageViewerProp extends HorizontalTableProps {
   imageId: string;
 }
@@ -70,7 +70,7 @@ const ImageViewer = ({ imageId, tableData }: ImageViewerProp): JSX.Element => {
           tileSize: Number(imageDetails.TileSize),
           tileOverlap: Number(imageDetails.Overlap),
           getTileUrl: (level, x, y) => {
-            return `https://api.gdc.cancer.gov/tile/${imageId}?level=${level}&x=${x}&y=${y}`;
+            return `${GDC_API}/tile/${imageId}?level=${level}&x=${x}&y=${y}`;
           },
         });
       }

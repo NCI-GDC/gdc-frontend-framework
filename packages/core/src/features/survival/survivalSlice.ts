@@ -9,7 +9,7 @@ import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import { selectCurrentCohortFilters } from "../cohort/cohortFilterSlice";
 import { GqlOperation } from "../gdcapi/filters";
-import { DAYS_IN_YEAR } from "../../constants";
+import { DAYS_IN_YEAR, GDC_APP_API_AUTH } from "../../constants";
 
 export const MINIMUM_CASES = 10;
 export const MAXIMUM_CURVES = 5;
@@ -84,7 +84,7 @@ export const buildSurvivalFetchError = async (
 export const fetchSurvivalAnalysis = async (
   request: GdcSurvivalApiRequest,
 ): Promise<SurvivalApiResponse> => {
-  const res = await fetch(`https://api.gdc.cancer.gov/analysis/survival`, {
+  const res = await fetch(`${GDC_APP_API_AUTH}/analysis/survival`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
