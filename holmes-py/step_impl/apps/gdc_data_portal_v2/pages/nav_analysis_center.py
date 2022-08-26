@@ -60,7 +60,7 @@ class NavAnalysisCenterPage:
         # Then, click on the nav bar to another location. Validate user arrived at correct screen. Done for all permutations of default
         # navigation. 
         for navigation, location in zip(navigation_icon,check_for_location):
-            HomePage.visit(self)
+            self.driver.locator(HomePageLocators.NAV_NIH_LOGO).click()
             try:
                 # center icon nav card
                  self.driver.locator(navigation[0]).click()
