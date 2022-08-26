@@ -119,9 +119,9 @@ export const Biospecimen = ({
         <>
           <div className="flex justify-between">
             <h1>Biospecimen</h1>
-            <Menu>
+            <Menu width="target">
               <Menu.Target>
-                <Button className="px-1.5 min-h-7 w-28 border-base-light border rounded text-primary-content-lightest bg-primary hover:bg-primary-darker">
+                <Button className="px-1.5 min-h-7 w-28 border-base-lightest border rounded text-primary-content-lightest bg-primary hover:bg-primary-darker">
                   <MdFileDownload size="1.25em" />
                   Download
                 </Button>

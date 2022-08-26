@@ -129,7 +129,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
           href={`https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=${dbGaP_study_accession}`}
           passHref
         >
-          <a className="underline text-primary-content" target="_blank">
+          <a className="underline text-primary" target="_blank">
             {dbGaP_study_accession}
           </a>
         </Link>
@@ -238,10 +238,10 @@ export const ProjectView: React.FC<ProjectViewProps> = (
       <div className="flex flex-col mx-auto mt-20 w-10/12">
         <div className="flex flex-col gap-5">
           <div className="self-end flex gap-3">
-            <Menu>
+            <Menu width="target">
               <Menu.Target>
                 <Button
-                  className="px-1.5 min-h-7 w-32 border-base-light border rounded"
+                  className="px-1.5 min-h-7 w-32 bg-primary border-primary border rounded"
                   leftIcon={<MdFileDownload size="1.25em" />}
                 >
                   Biospecimen
@@ -256,10 +256,10 @@ export const ProjectView: React.FC<ProjectViewProps> = (
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>
-            <Menu>
+            <Menu width="target">
               <Menu.Target>
                 <Button
-                  className="px-1.5 min-h-7 w-24 border-base-light border rounded"
+                  className="px-1.5 min-h-7 w-24 bg-primary border-primary border rounded"
                   leftIcon={<MdFileDownload size="1.25em" />}
                 >
                   Clinical
@@ -283,7 +283,10 @@ Data Transfer Tool is recommended for transferring large volumes of data."
               arrowSize={10}
               withArrow
             >
-              <Button leftIcon={<MdFileDownload size="1.25em" />}>
+              <Button
+                leftIcon={<MdFileDownload size="1.25em" />}
+                className="bg-primary border-primary"
+              >
                 Manifest
               </Button>
             </Tooltip>
@@ -298,7 +301,7 @@ Data Transfer Tool is recommended for transferring large volumes of data."
                       dbGaP Access. See instructions for{" "}
                       <a
                         href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
-                        className="text-primary-content underline"
+                        className="text-utility-link underline"
                         target="_blank"
                         rel="noreferrer"
                       >

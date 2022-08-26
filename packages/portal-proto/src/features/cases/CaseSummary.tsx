@@ -92,8 +92,6 @@ export const CaseSummary = ({
     offset: 60,
   });
 
-  console.log(data);
-
   useEffect(() => {
     if (
       prevPathValue !== undefined &&
@@ -145,7 +143,6 @@ export const CaseSummary = ({
     : false;
 
   const formatDataForCaseSummary = () => {
-    console.log("formatDataForCaseSummary", data);
     const {
       case_id,
       submitter_id,
@@ -171,7 +168,7 @@ export const CaseSummary = ({
       case_id: submitter_id,
       project: (
         <Link href={`/projects/${project_id}`}>
-          <a className="underline text-primary-content"> {project_id}</a>
+          <a className="underline text-primary"> {project_id}</a>
         </Link>
       ),
       project_name,
@@ -192,7 +189,7 @@ export const CaseSummary = ({
             <Link
               href={`/user-flow/workbench/MultipleImageViewerPage?caseId=${case_id}`}
             >
-              <a className="flex gap-1 cursor-pointer text-primary-content">
+              <a className="flex gap-1 cursor-pointer text-primary">
                 <FaMicroscope className="mt-0.5" />
                 <span>({slideCount})</span>
               </a>
@@ -217,8 +214,8 @@ export const CaseSummary = ({
               }}
               className={`cursor-pointer mt-0.5 ${
                 isAllImagesFilesInCart
-                  ? "text-nci-green"
-                  : "text-primary-content"
+                  ? "text-utility-category4"
+                  : "text-primary"
               }`}
             />
           </Tooltip>

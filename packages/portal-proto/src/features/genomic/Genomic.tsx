@@ -80,7 +80,7 @@ export const MutationFacet: React.FC<GeneFacetProps> = ({
           style={{ borderSpacing: "4em" }}
         >
           <thead>
-            <tr className="bg-primary text-primnary-contrast">
+            <tr className="bg-primary text-primary-contrast">
               <th align="left" className="w-1/4 px-2">
                 Mutation
               </th>

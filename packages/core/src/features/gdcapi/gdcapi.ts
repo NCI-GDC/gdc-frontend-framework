@@ -441,7 +441,7 @@ export const fetchGdcFiles = async (
   return fetchGdcEntities("files", request);
 };
 
-export const fetchGdcEntities = async <T>(
+export const fetchGdcEntities = async <T extends Record<string, any>>(
   endpoint: string,
   request?: GdcApiRequest,
   fetchAll = false,

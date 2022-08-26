@@ -72,13 +72,6 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
   field,
   operands,
 }: Includes | Excludes) => {
-  // const [groupType] = useState(operator);
-  //
-  // const filter_set_label_v1 = {
-  //   includes: "any of:",
-  //   excludes: "none:",
-  // };
-
   const removeButton = (
     <ActionIcon
       size="xs"
@@ -196,7 +189,6 @@ export const QueryElement: React.FC<QueryElementProps> = ({
   field,
   children,
 }: PropsWithChildren<QueryElementProps>) => {
-  //  const [showPopup, setShowPopup] = useState(false);
   const coreDispatch = useCoreDispatch();
 
   const handleRemoveFilter = () => {

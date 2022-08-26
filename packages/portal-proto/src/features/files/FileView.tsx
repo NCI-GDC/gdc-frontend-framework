@@ -107,7 +107,7 @@ export const FileView: React.FC<FileViewProps> = ({
     }
     return (
       <Link href={hrefObj}>
-        <a className="text-utility=link hover:underline">{text}</a>
+        <a className="text-utility-link underline">{text}</a>
       </Link>
     );
   };

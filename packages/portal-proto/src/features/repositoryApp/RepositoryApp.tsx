@@ -93,52 +93,58 @@ const RepositoryApp: React.FC<ContextualFilesViewProps> = ({
         <Text transform="uppercase" size="lg" className="mr-6" weight={700}>
           Files
         </Text>
-        <Menu>
-          <Menu.Target>
-            <FunctionButton>
-              <CartIcon size={"1.5rem"} />
-              Update Cart
-            </FunctionButton>
-          </Menu.Target>
-          <Menu.Dropdown>
-            <Menu.Item
-              onClick={() =>
-                addToCart(mapGdcFileToCartFile(allFiles), currentCart, dispatch)
-              }
-            >
-              {"Add All Files"}
-            </Menu.Item>
-            <Menu.Item
-              onClick={() =>
-                addToCart(
-                  mapGdcFileToCartFile(selectedFiles),
-                  currentCart,
-                  dispatch,
-                )
-              }
-            >
-              {"Add Selected Files"}
-            </Menu.Item>
-            <Menu.Item
-              onClick={() =>
-                removeFromCart(
-                  mapGdcFileToCartFile(selectedFiles),
-                  currentCart,
-                  dispatch,
-                )
-              }
-            >
-              {"Remove Selected Files"}
-            </Menu.Item>
-          </Menu.Dropdown>
-        </Menu>
-        <FunctionButton>
-          <DownloadIcon size={"1.5rem"} />
-          Manifest
-        </FunctionButton>
-        <Link href="/user-flow/workbench/MultipleImageViewerPage">
-          <FunctionButton component="a">View Images</FunctionButton>
-        </Link>
+        <div className="flex justify-end gap-2">
+          <Menu>
+            <Menu.Target>
+              <FunctionButton>
+                <CartIcon size={"1.5rem"} />
+                Update Cart
+              </FunctionButton>
+            </Menu.Target>
+            <Menu.Dropdown>
+              <Menu.Item
+                onClick={() =>
+                  addToCart(
+                    mapGdcFileToCartFile(allFiles),
+                    currentCart,
+                    dispatch,
+                  )
+                }
+              >
+                {"Add All Files"}
+              </Menu.Item>
+              <Menu.Item
+                onClick={() =>
+                  addToCart(
+                    mapGdcFileToCartFile(selectedFiles),
+                    currentCart,
+                    dispatch,
+                  )
+                }
+              >
+                {"Add Selected Files"}
+              </Menu.Item>
+              <Menu.Item
+                onClick={() =>
+                  removeFromCart(
+                    mapGdcFileToCartFile(selectedFiles),
+                    currentCart,
+                    dispatch,
+                  )
+                }
+              >
+                {"Remove Selected Files"}
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
+          <FunctionButton>
+            <DownloadIcon size={"1.5rem"} />
+            Manifest
+          </FunctionButton>
+          <Link href="/user-flow/workbench/MultipleImageViewerPage">
+            <FunctionButton component="a">View Images</FunctionButton>
+          </Link>
+        </div>
       </div>
       <div className="flex flex-row mx-3">
         <FileFacetPanel />
