@@ -62,9 +62,13 @@ class NavAnalysisCenterPage:
         for navigation, location in zip(navigation_icon,check_for_location):
             HomePage.visit(self)
             try:
+                # center icon nav card
                  self.driver.locator(navigation[0]).click()
+                # check to see if user landed in correct location
                  self.driver.wait_for_selector(location[0], state="visible")   
+                # nav bar icon     
                  self.driver.locator(navigation[1]).click()
+                # check to see if user landed in correct location 
                  self.driver.wait_for_selector(location[1], state="visible")     
             except:
                 return False
