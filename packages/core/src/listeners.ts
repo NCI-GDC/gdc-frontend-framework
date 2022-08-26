@@ -9,6 +9,7 @@ import { CoreState } from "./reducers";
 import {
   updateCohortFilter,
   removeCohortFilter,
+  clearCohortFilters,
 } from "./features/cohort/cohortFilterSlice";
 import { createCaseSet, clearCaseSet } from "./features/cohort/caseSetSlice";
 
@@ -32,7 +33,7 @@ export const addAppListener = addListener as TypedAddListener<
 startCoreListening({
   matcher: isAnyOf(updateCohortFilter, removeCohortFilter),
   effect: async (_, listenerApi) => {
-    // dispatch createCaseSet
+    // dispatch updateCohortFilter or removeCohortFilter executed
     if (
       listenerApi.getState().cohort.currentFilters.filters == undefined ||
       Object.entries(listenerApi.getState().cohort.currentFilters.filters.root)
@@ -44,9 +45,9 @@ startCoreListening({
 });
 
 startCoreListening({
-  matcher: isAnyOf(updateCohortFilter, removeCohortFilter),
+  matcher: isAnyOf(clearCohortFilters),
   effect: (_, listenerApi) => {
-    // dispatch createCaseSet
+    // dispatch clearCohortFilters executed
     listenerApi.dispatch(clearCaseSet());
   },
 });
