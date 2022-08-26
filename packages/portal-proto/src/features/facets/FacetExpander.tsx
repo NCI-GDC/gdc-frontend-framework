@@ -39,6 +39,7 @@ const FacetExpander: React.FC<FacetExpanderProps> = ({
             <MoreIcon
               key="show-more"
               size="1.5em"
+              data-testid="plus-icon"
               onClick={() => onShowChanged(!isGroupExpanded)}
             />
           </ActionIcon>
@@ -52,6 +53,7 @@ const FacetExpander: React.FC<FacetExpanderProps> = ({
             <LessIcon
               key="show-less"
               size="1.5em"
+              data-testid="minus-icon"
               onClick={() => onShowChanged(!isGroupExpanded)}
             />
           </ActionIcon>

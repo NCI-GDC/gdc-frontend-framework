@@ -69,10 +69,10 @@ const StyledFacetTabs = (props: TabsProps) => {
         root: {
           display: "flex",
           flexDirection: "row",
-          backgroundColor: theme.colors.base[0],
+          backgroundColor: theme.colors.base?.[0],
         },
         panel: {
-          backgroundColor: theme.colors.base[0],
+          backgroundColor: theme.colors.base?.[0],
         },
         tabIcon: {
           marginRight: theme.spacing.xs,
