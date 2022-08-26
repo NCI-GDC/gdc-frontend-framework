@@ -54,7 +54,6 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
         )
         .sort((a, b) => b[1] - a[1])
         .map(([key]) => key)
-
         .slice(0, 2),
     );
 

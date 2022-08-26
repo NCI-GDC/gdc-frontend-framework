@@ -76,7 +76,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
             <Radio.Group
               size="sm"
               className="p-2"
-              onChange={(e) => setDisplayPercent(e === "percent")}
+              onChange={(value) => setDisplayPercent(value === "percent")}
               defaultValue={"counts"}
             >
               <Radio value="counts" label="# of Cases" color="nci-blue" />
