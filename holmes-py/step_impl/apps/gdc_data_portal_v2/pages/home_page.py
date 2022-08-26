@@ -1,6 +1,4 @@
-from telnetlib import DO
 from playwright.sync_api import Page
-import time
 
 
 class HomePageLocators:

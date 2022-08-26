@@ -1,4 +1,4 @@
-GDC data report
+Analysis Center Navigation
 ===================
 Date Created    : 8/3/2022
 Version			: 1.0
@@ -11,4 +11,4 @@ Test analysis center navigation
 
 * On GDC Data Portal V2 app
 * Navigation Bar Icon Checks
-* Navigation Default View Icon Checks
+* Navigation Home Screen Center Icon Checks
