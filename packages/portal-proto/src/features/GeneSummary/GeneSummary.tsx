@@ -118,7 +118,7 @@ export const GeneSummary = ({ gene_id }: { gene_id: string }): JSX.Element => {
       {!isFetching && data?.genes && (
         <>
           <SummaryHeader iconText="GN" headerTitle={data.genes.symbol} />
-          <div className="mx-auto w-9/12 pt-4">
+          <div className="mx-auto mt-20 w-9/12 pt-4">
             <div className="text-primary-content">
               <div className="flex gap-6">
                 <div className="flex-1">

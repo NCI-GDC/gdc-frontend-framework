@@ -260,7 +260,7 @@ export const FileView: React.FC<FileViewProps> = ({
     return <TempTable tableData={formatedTableData} />;
   };
   return (
-    <div className="p-4 text-primary-content w-10/12 m-auto">
+    <div className="p-4 text-primary-content w-10/12 mt-20 m-auto">
       <div className="text-right pb-5">
         <AddToCartButton files={[file]} />
         {file.dataFormat === "BAM" &&

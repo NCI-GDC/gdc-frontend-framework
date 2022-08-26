@@ -293,7 +293,7 @@ export const CaseSummary = ({
       ) : data && Object.keys(data).length > 0 && annotationCountData ? (
         <>
           <SummaryHeader iconText="CA" headerTitle={headerTitle} />
-          <div className="flex flex-col mx-auto mt-5 w-10/12">
+          <div className="flex flex-col mx-auto mt-20 w-10/12">
             <div className="flex flex-col gap-5">
               <Button
                 leftIcon={<FaShoppingCart />}
