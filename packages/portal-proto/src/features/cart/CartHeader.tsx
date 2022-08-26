@@ -19,8 +19,8 @@ const CartHeader: React.FC<CartHeaderProps> = ({
   summaryData,
 }: CartHeaderProps) => (
   <div className="bg-nci-blue-darkest text-white flex items-center gap-x-4 w-full h-16">
-    <Menu
-      control={
+    <Menu>
+      <Menu.Target>
         <Button
           classNames={{
             root: `${buttonStyle} ml-2`,
@@ -31,13 +31,14 @@ const CartHeader: React.FC<CartHeaderProps> = ({
         >
           Download
         </Button>
-      }
-    >
-      <Menu.Item>Manifest</Menu.Item>
-      <Menu.Item>Cart</Menu.Item>
+      </Menu.Target>
+      <Menu.Dropdown>
+        <Menu.Item>Manifest</Menu.Item>
+        <Menu.Item>Cart</Menu.Item>
+      </Menu.Dropdown>
     </Menu>
-    <Menu
-      control={
+    <Menu>
+      <Menu.Target>
         <Button
           classNames={{
             root: `${buttonStyle} ml-2`,
@@ -48,13 +49,14 @@ const CartHeader: React.FC<CartHeaderProps> = ({
         >
           Biospecimen
         </Button>
-      }
-    >
-      <Menu.Item>TSV</Menu.Item>
-      <Menu.Item>JSON</Menu.Item>
+      </Menu.Target>
+      <Menu.Dropdown>
+        <Menu.Item>TSV</Menu.Item>
+        <Menu.Item>JSON</Menu.Item>
+      </Menu.Dropdown>
     </Menu>
-    <Menu
-      control={
+    <Menu>
+      <Menu.Target>
         <Button
           classNames={{
             root: `${buttonStyle} ml-2`,
@@ -65,10 +67,11 @@ const CartHeader: React.FC<CartHeaderProps> = ({
         >
           Clinical
         </Button>
-      }
-    >
-      <Menu.Item>TSV</Menu.Item>
-      <Menu.Item>JSON</Menu.Item>
+      </Menu.Target>
+      <Menu.Dropdown>
+        <Menu.Item>TSV</Menu.Item>
+        <Menu.Item>JSON</Menu.Item>
+      </Menu.Dropdown>
     </Menu>
     <Button className={buttonStyle} leftIcon={<DownloadIcon size={20} />}>
       Sample Sheet

@@ -238,40 +238,43 @@ export const ProjectView: React.FC<ProjectViewProps> = (
       <div className="flex flex-col mx-auto mt-5 w-10/12">
         <div className="flex flex-col gap-5">
           <div className="self-end flex gap-3">
-            <Menu
-              control={
+            <Menu>
+              <Menu.Target>
                 <Button
                   className="px-1.5 min-h-7 w-32 border-nci-gray-light border rounded"
                   leftIcon={<MdFileDownload size="1.25em" />}
                 >
                   Biospecimen
                 </Button>
-              }
-              size="xs"
-            >
-              <Menu.Item icon={<MdFileDownload size="1.25em" />}>TSV</Menu.Item>
-              <Menu.Item icon={<MdFileDownload size="1.25em" />}>
-                JSON
-              </Menu.Item>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Item icon={<MdFileDownload size="1.25em" />}>
+                  TSV
+                </Menu.Item>
+                <Menu.Item icon={<MdFileDownload size="1.25em" />}>
+                  JSON
+                </Menu.Item>
+              </Menu.Dropdown>
             </Menu>
-            <Menu
-              control={
+            <Menu>
+              <Menu.Target>
                 <Button
                   className="px-1.5 min-h-7 w-24 border-nci-gray-light border rounded"
                   leftIcon={<MdFileDownload size="1.25em" />}
                 >
                   Clinical
                 </Button>
-              }
-              size="xs"
-            >
-              <Menu.Item icon={<MdFileDownload size="1.25em" />}>TSV</Menu.Item>
-              <Menu.Item icon={<MdFileDownload size="1.25em" />}>
-                JSON
-              </Menu.Item>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Item icon={<MdFileDownload size="1.25em" />}>
+                  TSV
+                </Menu.Item>
+                <Menu.Item icon={<MdFileDownload size="1.25em" />}>
+                  JSON
+                </Menu.Item>
+              </Menu.Dropdown>
             </Menu>
             <Tooltip
-              wrapLines
               transition="fade"
               transitionDuration={200}
               width={220}

@@ -1,21 +1,20 @@
 import { useState } from "react";
 import FacetSelection from "@/components/FacetSelection";
-import { selectCohortBuilderConfigFilters } from "@gff/core";
+import { selectCohortBuilderConfigFilters, useCoreSelector } from "@gff/core";
 
 import { Modal, Button } from "@mantine/core";
 
 const CohortFacetSelection = (): JSX.Element => {
-  const handleFilterSelected = (facet: string) => {
-    // TODO remove this when actually used
-    console.log("facetSelected", facet);
-  };
+  const handleFilterSelected = () => null;
 
   return (
     <FacetSelection
       title={"Add Cohort Filter"}
       facetType="cases"
       handleFilterSelected={handleFilterSelected}
-      usedFacetsSelector={selectCohortBuilderConfigFilters}
+      usedFacets={useCoreSelector((state) =>
+        selectCohortBuilderConfigFilters(state),
+      )}
     />
   );
 };
@@ -23,9 +22,7 @@ const CohortFacetSelection = (): JSX.Element => {
 export const CohortFacetSelectionModal = (): JSX.Element => {
   const [opened, setOpened] = useState(false);
 
-  const handleFilterSelected = (facet: string) => {
-    // TODO remove this when actually used
-    console.log("facetSelected", facet);
+  const handleFilterSelected = () => {
     setOpened(false);
   };
 
@@ -36,7 +33,9 @@ export const CohortFacetSelectionModal = (): JSX.Element => {
           title={"Add Cohort Filter"}
           facetType="cases"
           handleFilterSelected={handleFilterSelected}
-          usedFacetsSelector={selectCohortBuilderConfigFilters}
+          usedFacets={useCoreSelector((state) =>
+            selectCohortBuilderConfigFilters(state),
+          )}
         />
       </Modal>
 

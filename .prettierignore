@@ -1,2 +1,4 @@
 .next
 dist
+holmes-py
+.gitlab-ci.yml

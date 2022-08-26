@@ -3,8 +3,8 @@ import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
 import Image from "next/image";
 import Link from "next/link";
 import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
-import { Tooltip } from "@mantine/core";
-
+import { Button, Tooltip } from "@mantine/core";
+import { NextLink } from "@mantine/next";
 interface SummaryStatsItemProp {
   readonly title: string;
   readonly icon: string;
@@ -101,150 +101,156 @@ const ActionButtonBar = () => {
           <Tooltip
             label="Explore and analyze harmonized high-quality clinical and genomics data from cancer genomic studies with the tools in the Analysis Center."
             classNames={{
-              body: "shadow-lg bg-white text-nci-gray-darkest",
+              tooltip: "shadow-lg bg-white text-nci-gray-darkest",
             }}
-            position="right"
-            placement="start"
-            wrapLines
+            position="right-start"
+            multiline
             width={220}
           >
-            <button className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 px-5 rounded inline-flex items-center shadow-md transition-colors ">
-              <Image src={"/user-flow/icons/dna.svg"} width={42} height={42} />{" "}
-              <span className="px-4">Analysis Center</span>
-            </button>
+            <Button
+              unstyled
+              component={NextLink}
+              href={{
+                pathname: "/user-flow/workbench/analysis_page",
+                query: { app: undefined },
+              }}
+              classNames={{
+                root: "bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 px-5 rounded shadow-md transition-colors",
+              }}
+            >
+              <div className="flex flex-row items-center">
+                <Image
+                  src={"/user-flow/icons/dna.svg"}
+                  width={42}
+                  height={42}
+                />{" "}
+                <span className="px-4">Analysis Center</span>
+              </div>
+            </Button>
           </Tooltip>
         </Link>
       </div>
       <div className="flex flex-grow flex-row justify-center  align-center pb-4 text-sm ">
-        <Link
-          key="Studies"
-          href={{
-            pathname: "/user-flow/workbench/analysis_page",
-            query: { app: "Studies" },
+        <Tooltip
+          label="View the Studies available within the GDC and select them for further exploration and analysis."
+          classNames={{
+            tooltip: "shadow-lg bg-white text-nci-gray-darkest",
           }}
+          position="bottom-start"
+          multiline
+          width={220}
         >
-          <Tooltip
-            label="View the Studies available within the GDC and select them for further exploration and analysis."
-            classNames={{
-              body: "shadow-lg bg-white text-nci-gray-darkest",
+          <Button
+            unstyled
+            component={NextLink}
+            href={{
+              pathname: "/user-flow/workbench/analysis_page",
+              query: { app: "Studies" },
             }}
-            position="bottom"
-            placement="start"
-            wrapLines
-            width={220}
+            className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md transition-colors"
           >
-            <button className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md transition-colors">
-              <Image
-                src={"/user-flow/icons/crowd-of-users.svg"}
-                width={36}
-                height={36}
-              />{" "}
-              <span> </span>
-            </button>
-          </Tooltip>
-        </Link>
-        <Link
-          key="CohortBuilder"
-          href={{
-            pathname: "/user-flow/workbench/analysis_page",
-            query: { app: "CohortBuilder" },
+            <Image
+              src={"/user-flow/icons/crowd-of-users.svg"}
+              width={36}
+              height={36}
+            />{" "}
+            <span> </span>
+          </Button>
+        </Tooltip>
+        <Tooltip
+          label="Build and define your custom cohorts using a variety of clinical and biospecimen features."
+          classNames={{
+            tooltip: "shadow-lg bg-white text-nci-gray-darkest",
           }}
+          position="bottom-start"
+          multiline
+          width={220}
         >
-          <Tooltip
-            label="Build and define your custom cohorts using a variety of clinical and biospecimen features."
-            classNames={{
-              body: "shadow-lg bg-white text-nci-gray-darkest",
+          <Button
+            unstyled
+            component={NextLink}
+            href={{
+              pathname: "/user-flow/workbench/analysis_page",
+              query: { app: "CohortBuilder" },
             }}
-            position="bottom"
-            placement="start"
-            wrapLines
-            width={220}
+            className="text-sm bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest hover:text-white transition-colors font-bold mx-4 p-2 rounded inline-flex flex-nowrap items-center shadow-md"
           >
-            <button className="text-sm bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest hover:text-white transition-colors font-bold mx-4 p-2 rounded inline-flex flex-nowrap items-center shadow-md">
-              <Image
-                src={"/user-flow/icons/build.svg"}
-                width={36}
-                height={36}
-              />
-              <span />
-            </button>
-          </Tooltip>
-        </Link>
+            <Image src={"/user-flow/icons/build.svg"} width={36} height={36} />
+            <span />
+          </Button>
+        </Tooltip>
 
-        <Link
-          key="Repository"
-          href={{
-            pathname: "/user-flow/workbench/analysis_page",
-            query: { app: "Downloads" },
+        <Tooltip
+          label="Browse and download the files associated with your cohort for more sophisticated analysis."
+          classNames={{
+            tooltip: "shadow-lg bg-white text-nci-gray-darkest",
           }}
+          position="bottom-start"
+          multiline
+          width={220}
         >
-          <Tooltip
-            label="Browse and download the files associated with your cohort for more sophisticated analysis."
-            classNames={{
-              body: "shadow-lg bg-white text-nci-gray-darkest",
+          <Button
+            unstyled
+            component={NextLink}
+            href={{
+              pathname: "/user-flow/workbench/analysis_page",
+              query: { app: "Downloads" },
             }}
-            position="bottom"
-            placement="start"
-            wrapLines
-            width={220}
+            className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md transition-colors"
           >
-            <button className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md transition-colors">
-              <Image
-                src={"/user-flow/icons/database.svg"}
-                width={36}
-                height={36}
-              />{" "}
-              <span> </span>
-            </button>
-          </Tooltip>
-        </Link>
+            <Image
+              src={"/user-flow/icons/database.svg"}
+              width={36}
+              height={36}
+            />{" "}
+            <span> </span>
+          </Button>
+        </Tooltip>
       </div>
     </div>
   );
 };
 
-const IndexPage: NextPage = () => {
-  return (
-    <UserFlowVariedPages
-      {...{ indexPath: "/user-flow/single-page", headerElements }}
-    >
-      <div className="flex flex-col w-100 h-100 bg-gradient-to-r from-nci-gray-lightest  to-nci-gray-lighter">
-        <div className="flex flex-row ">
-          <div className="flex flex-col w-1/2 pl-10">
-            <div className="flex flex-col w-100 bg-nci-gray p-4 rounded-md shadow-lg mt-2  ">
-              <div className="font-montserrat text-nci-gray-lightest text-md pt-5 pb-2">
-                Harmonized Cancer Datasets
-              </div>
-              <div className="font-montserrat text-nci-gray-lightest text-2xl pb-5">
-                Genomic Data Commons Data Portal
-              </div>
+const IndexPage: NextPage = () => (
+  <UserFlowVariedPages
+    {...{ indexPath: "/user-flow/single-page", headerElements }}
+  >
+    <div className="flex flex-col w-100 h-100 bg-gradient-to-r from-nci-gray-lightest  to-nci-gray-lighter">
+      <div className="flex flex-row ">
+        <div className="flex flex-col w-1/2 pl-10">
+          <div className="flex flex-col w-100 bg-nci-gray p-4 rounded-md shadow-lg mt-2  ">
+            <div className="font-montserrat text-nci-gray-lightest text-md pt-5 pb-2">
+              Harmonized Cancer Datasets
             </div>
-            <div className="flex flex-row">
-              <div className="flex-auto w-36 m-4 p-4 items-center font-montserrat text-nci-gray-darkest rounded-md shadow-inner">
-                A repository and knowledge base for cancer researchers who need
-                to understand cancer, its clinical progression, and response to
-                therapy.
-              </div>
-              <ActionButtonBar />
+            <div className="font-montserrat text-nci-gray-lightest text-2xl pb-5">
+              Genomic Data Commons Data Portal
             </div>
-            <div className="flex items-center w-100 pb-5">
-              <div className="w-full">
-                <input
-                  type="text"
-                  className="h-10 pr-8 w-full pl-5 bg-white border-nci-gray-light rounded-full focus:outline-none focus:ring focus:ring-nci-cyan-light focus:border-nci-teal-light hover:shadow-lg hover:border-nci-teal-lighter"
-                  placeholder={`e.g. BRAF, Breast, TCGA-BLCA, TCGA-A5-A0G2`}
-                />
-              </div>
-            </div>
-            <SummaryStatsPanel />
           </div>
-          <div className="m-auto">
-            <Image src="/user-flow/sapien.svg" height={400} width={500} />
+          <div className="flex flex-row">
+            <div className="flex-auto w-36 m-4 p-4 items-center font-montserrat text-nci-gray-darkest rounded-md shadow-inner">
+              A repository and knowledge base for cancer researchers who need to
+              understand cancer, its clinical progression, and response to
+              therapy.
+            </div>
+            <ActionButtonBar />
           </div>
+          <div className="flex items-center w-100 pb-5">
+            <div className="w-full">
+              <input
+                type="text"
+                className="h-10 pr-8 w-full pl-5 bg-white border-nci-gray-light rounded-full focus:outline-none focus:ring focus:ring-nci-cyan-light focus:border-nci-teal-light hover:shadow-lg hover:border-nci-teal-lighter"
+                placeholder={`e.g. BRAF, Breast, TCGA-BLCA, TCGA-A5-A0G2`}
+              />
+            </div>
+          </div>
+          <SummaryStatsPanel />
+        </div>
+        <div className="m-auto">
+          <Image src="/user-flow/sapien.svg" height={400} width={500} />
         </div>
       </div>
-    </UserFlowVariedPages>
-  );
-};
+    </div>
+  </UserFlowVariedPages>
+);
 
 export default IndexPage;
