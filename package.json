@@ -17,7 +17,10 @@
     "test:all": "npm run test:all --workspaces",
     "compile": "lerna run --parallel compile",
     "dev": "lerna run --parallel dev",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "compile": "lerna run compile",
+    "build": "lerna run build",
+    "start": "lerna run --parallel start"
   },
   "lint-staged": {
     "**/*": [
@@ -34,6 +37,7 @@
   "dependencies": {
     "@reactour/tour": "^2.9.0",
     "classnames": "^2.3.1",
+    "file-saver": "^2.0.5",
     "immutability-helper": "^3.1.1",
     "isomorphic-fetch": "^3.0.0",
     "json-server": "^0.17.0",
@@ -45,10 +49,12 @@
     "react-dom": "^17.0.2",
     "react-table": "^7.7.0",
     "react-use": "^17.3.2",
-    "react-window": "^1.8.6"
+    "react-window": "^1.8.6",
+    "url-join": "^5.0.0"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^12.1.5",
+    "@types/file-saver": "^2.0.5",
     "@types/isomorphic-fetch": "^0.0.35",
     "@types/lodash": "^4.14.178",
     "@types/plotly.js": "^1.54.14",

@@ -14,6 +14,7 @@ import {
 import { processDictionaryEntries } from "./facetDictionaryApi";
 import { useCoreDispatch, useCoreSelector } from "../../hooks";
 import { useEffect } from "react";
+import { GDC_APP_API_AUTH } from "../../constants";
 
 const buildGraphMappingFetchError = async (
   res: Response,
@@ -31,7 +32,7 @@ export const fetchFacetDictionary = createAsyncThunk<
   void,
   { dispatch: CoreDispatch; state: CoreState }
 >("facet/fetchFacetDictionary", async () => {
-  const res = await fetch("https://api.gdc.cancer.gov/v0/gql/_mapping", {
+  const res = await fetch(`${GDC_APP_API_AUTH}/gql/_mapping`, {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",

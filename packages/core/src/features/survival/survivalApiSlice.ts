@@ -1,5 +1,5 @@
 import type { Middleware, Reducer } from "@reduxjs/toolkit";
-import { DAYS_IN_YEAR } from "../../constants";
+import { DAYS_IN_YEAR, GDC_APP_API_AUTH } from "../../constants";
 import { coreCreateApi } from "../../coreCreateApi";
 
 interface SurvivalDonor {
@@ -25,7 +25,7 @@ interface SurvivalApiResponse {
 export const survivalApiSlice = coreCreateApi({
   reducerPath: "survivalApi",
   baseQuery: async ({ request }) => {
-    const res = await fetch(`https://api.gdc.cancer.gov/analysis/survival`, {
+    const res = await fetch(`${GDC_APP_API_AUTH}/analysis/survival`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

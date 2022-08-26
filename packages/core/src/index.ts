@@ -55,3 +55,5 @@ export * from "./features/genomic/ssmsSummary/ssmsSummarySlice";
 export * from "./features/genomic/geneSummary/geneSummarySlice";
 export * from "./features/survival/survivalApiSlice";
 export * from "./features/facets/facetsByNameTypeAndFilter";
+export * from "./features/users/usersSlice";
+export * from "./features/modals/modalsSlice";
