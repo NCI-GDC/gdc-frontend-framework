@@ -1,6 +1,6 @@
 import { hideModal, useCoreDispatch } from "@gff/core";
 import { Button, Text } from "@mantine/core";
-import { BaseModal } from "./BaseModal";
+import { BaseModal } from "../BaseModal";
 
 export const BAMSlicingErrorModal = ({
   openModal,
@@ -20,7 +20,9 @@ export const BAMSlicingErrorModal = ({
       openModal={openModal}
     >
       <div className="border-y border-y-nci-gray p-4">
-        <Text size="md">sth is not a valid region.</Text>
+        <Text size="md">
+          You have entered invalid coordinates. Please try again.
+        </Text>
       </div>
       <div className="flex justify-end mt-2.5">
         <Button

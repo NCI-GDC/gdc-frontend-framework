@@ -238,10 +238,10 @@ export const ProjectView: React.FC<ProjectViewProps> = (
       <div className="flex flex-col mx-auto mt-5 w-10/12">
         <div className="flex flex-col gap-5">
           <div className="self-end flex gap-3">
-            <Menu>
+            <Menu width="target">
               <Menu.Target>
                 <Button
-                  className="px-1.5 min-h-7 w-32 border-nci-gray-light border rounded"
+                  className="px-1.5 min-h-7 w-32 bg-nci-blue border-nci-blue-light border rounded"
                   leftIcon={<MdFileDownload size="1.25em" />}
                 >
                   Biospecimen
@@ -256,10 +256,10 @@ export const ProjectView: React.FC<ProjectViewProps> = (
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>
-            <Menu>
+            <Menu width="target">
               <Menu.Target>
                 <Button
-                  className="px-1.5 min-h-7 w-24 border-nci-gray-light border rounded"
+                  className="px-1.5 min-h-7 w-24  bg-nci-blue border-nci-blue-light border rounded"
                   leftIcon={<MdFileDownload size="1.25em" />}
                 >
                   Clinical
@@ -283,7 +283,10 @@ Data Transfer Tool is recommended for transferring large volumes of data."
               arrowSize={10}
               withArrow
             >
-              <Button leftIcon={<MdFileDownload size="1.25em" />}>
+              <Button
+                leftIcon={<MdFileDownload size="1.25em" />}
+                className="bg-nci-blue"
+              >
                 Manifest
               </Button>
             </Tooltip>

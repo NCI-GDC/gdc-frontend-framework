@@ -21,7 +21,8 @@ import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 import { BAMSlicingButton } from "./BamSlicingButton";
 import { NoAccessModal } from "@/components/Modals/NoAccessModal";
 import { BAMSlicingModal } from "@/components/Modals/BAMSlicingModal/BAMSlicingModal";
-import { BAMSlicingErrorModal } from "@/components/Modals/BAMSlicingErrorModal";
+import { BAMSlicingErrorModal } from "@/components/Modals/BAMSlicingModal/BAMSlicingErrorModal";
+import { NoAccessToProjectModal } from "@/components/Modals/NoAccessToProjectModal";
 
 const ImageViewer = dynamic(() => import("../../components/ImageViewer"), {
   ssr: false,
@@ -523,11 +524,13 @@ export const FileView: React.FC<FileViewProps> = ({
           />
         </FullWidthDiv>
       )}
-      {modal === Modals.NoAccessModal && <NoAccessModal openModal />}
+      {modal === Modals.NoAccessToProjectModal && (
+        <NoAccessToProjectModal openModal />
+      )}
       {modal === Modals.BAMSlicingModal && (
         <BAMSlicingModal openModal file={file} setActive={setBamActive} />
       )}
-      {console.log(modal)}
+
       {modal === Modals.BAMSlicingErrorModal && (
         <BAMSlicingErrorModal openModal />
       )}

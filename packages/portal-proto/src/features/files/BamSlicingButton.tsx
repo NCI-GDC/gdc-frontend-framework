@@ -107,6 +107,11 @@ export const BAMSlicingButton = ({
       onClick={() => {
         if (username && userCanDownloadFile({ user: userInfo.data, file })) {
           dispatch(showModal(Modals.BAMSlicingModal));
+        } else if (
+          username &&
+          !userCanDownloadFile({ user: userInfo.data, file })
+        ) {
+          dispatch(showModal(Modals.NoAccessToProjectModal));
         } else {
           dispatch(showModal(Modals.NoAccessModal));
         }

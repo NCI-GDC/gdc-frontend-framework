@@ -8,27 +8,39 @@ import {
   useCoreDispatch,
 } from "@gff/core";
 import { Button, Text, Textarea } from "@mantine/core";
+import { showNotification } from "@mantine/notifications";
 import { saveAs } from "file-saver";
+import Cookies from "js-cookie";
+import { assign, includes, isPlainObject, reduce, uniqueId } from "lodash";
 import { useState } from "react";
 import urlJoin from "url-join";
-import { BAMSlicingErrorModal } from "../BAMSlicingErrorModal";
+import { BAMSlicingErrorModal } from "./BAMSlicingErrorModal";
 import { BaseModal } from "../BaseModal";
 import { NoAccessModal } from "../NoAccessModal";
-import { download } from "./download";
-import downloaddd from "./utils";
-// import  Worker  from "./downloadWorker";
+import download from "./download";
+
+declare global {
+  interface Navigator {
+    msSaveBlob?: (blob: any, defaultName?: string) => boolean;
+  }
+}
 
 export const processBAMSliceInput = (userInput: string): Object => {
   if (userInput) {
+    // console.log("userInput: ", userInput);
     const lines = userInput.split("\n").filter((v) => v.length);
+    // console.log("lines: ", lines);
     return {
       regions: lines.map((line) => {
         const region = line.split("\t");
+        if (region.length > 3) return; //TODO need to show some error validation
+        // console.log("region: ", region);
         const regionTemplates = [
           (r) => `${r[0]}`,
           (r) => `${r[0]}:${r[1]}`,
           (r) => `${r[0]}:${r[1]}-${r[2]}`,
         ];
+        // console.log("regionTemplates: ", regionTemplates);
         return regionTemplates[region.length - 1](region);
       }),
     };
@@ -37,8 +49,10 @@ export const processBAMSliceInput = (userInput: string): Object => {
 };
 
 const setPos = (element: any, caretPos: number): void => {
+  // TODO: probablly need to change these - MIGHT BE OBSOLETE
   if (element.createTextRange) {
     const range = element.createTextRange();
+    console.log("range:: ", range);
     range.move("character", caretPos);
     range.select();
   } else {
@@ -52,14 +66,22 @@ const setPos = (element: any, caretPos: number): void => {
 const allowTab = (event: any, setValue) => {
   if (event.keyCode === 9) {
     event.preventDefault();
+    console.log("tab");
 
+    console.log("target: ", event.target);
     // current caret pos
     const start = event.target.selectionStart;
     const end = event.target.selectionEnd;
     const oldValue = event.target.value;
+    console.log("start, end, oldValue: ", start, end, oldValue);
+    console.log(
+      "`${oldValue.substring(0, start)}\t${oldValue.substring(end)}`: ",
+      `${oldValue.substring(0, start)}\t${oldValue.substring(end)}`,
+    );
     setValue(`${oldValue.substring(0, start)}\t${oldValue.substring(end)}`);
 
     // put caret in correct place
+    console.log("event.target, start + 1: ", event.target, start + 1);
     setPos(event.target, start + 1);
   }
 };
@@ -75,7 +97,6 @@ export const BAMSlicingModal = ({
 }): JSX.Element => {
   const dispatch = useCoreDispatch();
   const [coordinates, setCoordinates] = useState("");
-  const downloadWorker = new Worker("./downloadWorker.js");
   return (
     <BaseModal
       title={
@@ -98,7 +119,7 @@ export const BAMSlicingModal = ({
         <pre className="p-3 border-separate border-1 rounded bg-nci-gray-lighter text-gdc-indigo-darkest mb-2 text-sm">
           chr7:140505783-140511649
           <br />
-          {"chr1	150505782	150511648"}
+          {"chr1	140505783	140511649"}
         </pre>
         <label htmlFor="bed" className="mb-2 text-sm">
           Alternatively, enter "unmapped" to retrieve unmapped reads on this
@@ -133,76 +154,22 @@ export const BAMSlicingModal = ({
         <Button
           onClick={async () => {
             dispatch(hideModal());
+
             if (coordinates) {
+              setActive(true);
               const params = {
                 ...processBAMSliceInput(coordinates),
                 attachment: true,
               };
 
-              setActive(true);
-
-              // download({ url: `slicing/view/${file.fileId}`, params });
-              // const downloadWorker = new Worker(
-              //   new URL("./download.worker.ts", import.meta.url),
-              // );
-              // console.log(downloadWorker);
-
-              // downloadWorker.onmessage = (msg) => {
-              //   console.log(msg);
-              // };
-              // downloadWorker.postMessage({
-              //   url: `slicing/view/${file.fileId}`,
-              //   method: "POST",
-              //   params,
-              // });
-
-              // const res = await fetchSlice(
-              //   `slicing/view/${file.fileId}`,
-              //   params,
-              // );
-
-              // if (res.status === 403) {
-              //   dispatch(showModal(Modals.NoAccessModal));
-              //   return;
-              // }
-              // if (res.status === 400) {
-              //   console.log("got here");
-              //   setActive(false);
-              //   dispatch(showModal(Modals.BAMSlicingErrorModal));
-
-              //   return;
-              // }
-
-              // if (res.ok) {
-              //   const fileName = res.headers
-              //     .get("content-disposition")
-              //     .split("filename=")[1]
-              //     .split(";")[0];
-
-              //   console.log(fileName);
-
-              //   const blob = await res.text();
-              //   saveAs(
-              //     new Blob([blob], {
-              //       type: "text/plain;charset=us-ascii",
-              //     }),
-              //     fileName,
-              //   );
-              //   // saveAs(blob, fileName);
-              // }
-
-              // setActive(false);
-
-              // download({
-              //   params,
-              //   url: urlJoin(GDC_APP_API_AUTH, `slicing/view/${file.fileId}`),
-              //   method: "POST",
-              // })(
-              //   () => {},
-              //   () => setActive(false),
-              // );
+              download({
+                params,
+                url: `slicing/view/${file.fileId}`,
+                method: "POST",
+                done: () => setActive(false),
+                dispatch,
+              });
             }
-            dispatch(hideModal());
           }}
           className="!bg-nci-blue hover:!bg-nci-blue-darker"
         >

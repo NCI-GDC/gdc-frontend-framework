@@ -32,6 +32,7 @@ import { LoginButton } from "@/components/LoginButton";
 import Link from "next/link";
 import { UserProfileModal } from "@/components/Modals/UserProfileModal";
 import { SessionExpireModal } from "@/components/Modals/SessionExpireModal";
+import { NoAccessModal } from "@/components/Modals/NoAccessModal";
 
 interface HeaderProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
@@ -230,6 +231,7 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
       {modal === Modals.UserProfileModal && <UserProfileModal openModal />}
       {modal === Modals.SessionExpireModal && <SessionExpireModal openModal />}
+      {modal === Modals.NoAccessModal && <NoAccessModal openModal />}
     </div>
   );
 };
