@@ -1,7 +1,8 @@
 export interface Trace2d {
   readonly x: ReadonlyArray<number>;
   readonly y: ReadonlyArray<number>;
-  readonly color: ReadonlyArray<number|string>;
+  readonly color: ReadonlyArray<number | string>;
+  readonly name?: string;
 }
 
 export interface ScatterPlot2dProps {

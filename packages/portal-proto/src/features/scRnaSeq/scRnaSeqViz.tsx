@@ -27,30 +27,6 @@ const ViolinPlot = dynamic(() => import("./ViolinPlot"), {
   ssr: false,
 });
 
-const colors = [
-  "#0076d6", // blue
-  "#cf4900", // orange warm
-  "#be32d0", // violet warm
-  "#008817", // green cool
-  "#656bd7", // indigo
-  "#947100", // yellow
-  "#d83933", // red
-  "#0081a1", // cyan
-  "#4866ff", // indigo cool
-  "#936f38", // gold
-  "#fd4496", // magenta
-  "#008480", // mint
-  "#9355dc", // violet
-  "#538200", // green
-  "#d54309", // red warm
-  "#0d7ea2", // blue cool
-  "#2672de", // blue warm
-  "#c05600", // orange
-  "#745fe9", // indigo warm
-  "#6a7d00", // green warm
-  "#e41d3d", // red cool
-  "#008480", // mint cool
-];
 export interface ScRnaSeqVizProps {
   readonly caseId?: string;
 }
@@ -243,64 +219,91 @@ const generateScatterPlot2dData = (
   clusterType: "tSNE" | "UMAP" | "PCA" = "tSNE",
   geneId?: string,
 ): ScatterPlot2dProps => {
-  const trace = seuratAnalysis.reduce<Trace2d>(
-    (trace, cell) => {
-      const coordinates: Coordinates2d = (() => {
-        switch (clusterType) {
-          case "tSNE":
-            return cell.tSneCoordinates2d;
-          case "UMAP":
-            return cell.umapCoordinates2d;
-          case "PCA":
-            return cell.pcaCoordinates2d;
-          default:
-            return assertNever(clusterType);
-        }
-      })();
+  const dataByCluster = seuratAnalysis.reduce<
+    Record<string, ReadonlyArray<CellData>>
+  >((byCluster, cell) => {
+    const cluster = cell.seuratCluster;
+    return {
+      ...byCluster,
+      [cluster]: [...(byCluster[cluster] || []), cell],
+    };
+  }, {});
 
-      const color = (() => {
-        if (geneId === "None" || geneId === undefined) {
-          return lookupColor(cell.seuratCluster);
-        } else if (geneId === "ENSG00000183715") {
-          if (cell.cellId in geENSG00000183715) {
-            return geENSG00000183715[cell.cellId] || "rgba(200,200,200,0.2)";
-          }
-        } else if (geneId === "ENSG00000163638") {
-          if (cell.cellId in geENSG00000163638) {
-            return geENSG00000163638[cell.cellId] || "rgba(200,200,200,0.2)";
-          }
-        } else if (geneId === "ENSG00000245532") {
-          if (cell.cellId in geENSG00000245532) {
-            return geENSG00000245532[cell.cellId] || "rgba(200,200,200,0.2)";
-          }
-        } else if (geneId === "ENSG00000141510") {
-          if (cell.cellId in geENSG00000141510) {
-            return geENSG00000141510[cell.cellId] || "rgba(200,200,200,0.2)";
-          }
-        } else if (geneId === "ENSG00000198938") {
-          if (cell.cellId in geENSG00000198938) {
-            return geENSG00000198938[cell.cellId] || "rgba(200,200,200,0.2)";
-          }
-        } else if (geneId === "ENSG00000138413") {
-          if (cell.cellId in geENSG00000138413) {
-            return geENSG00000138413[cell.cellId] || "rgba(200,200,200,0.2)";
-          }
-        }
-        return undefined;
-      })();
+  const traces = Object.entries(dataByCluster).map<Trace2d>(
+    ([cluster, cells]) => {
+      return cells.reduce<Trace2d>(
+        (trace, cell) => {
+          const coordinates: Coordinates2d = (() => {
+            switch (clusterType) {
+              case "tSNE":
+                return cell.tSneCoordinates2d;
+              case "UMAP":
+                return cell.umapCoordinates2d;
+              case "PCA":
+                return cell.pcaCoordinates2d;
+              default:
+                return assertNever(clusterType);
+            }
+          })();
 
-      return {
-        x: [...trace.x, coordinates.x],
-        y: [...trace.y, coordinates.y],
-        color: [...trace.color, color],
-      };
+          const color = (() => {
+            if (geneId === "None" || geneId === undefined) {
+              return lookupColor(cell.seuratCluster);
+            } else if (geneId === "ENSG00000183715") {
+              if (cell.cellId in geENSG00000183715) {
+                return (
+                  geENSG00000183715[cell.cellId] || "rgba(200,200,200,0.2)"
+                );
+              }
+            } else if (geneId === "ENSG00000163638") {
+              if (cell.cellId in geENSG00000163638) {
+                return (
+                  geENSG00000163638[cell.cellId] || "rgba(200,200,200,0.2)"
+                );
+              }
+            } else if (geneId === "ENSG00000245532") {
+              if (cell.cellId in geENSG00000245532) {
+                return (
+                  geENSG00000245532[cell.cellId] || "rgba(200,200,200,0.2)"
+                );
+              }
+            } else if (geneId === "ENSG00000141510") {
+              if (cell.cellId in geENSG00000141510) {
+                return (
+                  geENSG00000141510[cell.cellId] || "rgba(200,200,200,0.2)"
+                );
+              }
+            } else if (geneId === "ENSG00000198938") {
+              if (cell.cellId in geENSG00000198938) {
+                return (
+                  geENSG00000198938[cell.cellId] || "rgba(200,200,200,0.2)"
+                );
+              }
+            } else if (geneId === "ENSG00000138413") {
+              if (cell.cellId in geENSG00000138413) {
+                return (
+                  geENSG00000138413[cell.cellId] || "rgba(200,200,200,0.2)"
+                );
+              }
+            }
+            return undefined;
+          })();
+
+          return {
+            ...trace,
+            x: [...trace.x, coordinates.x],
+            y: [...trace.y, coordinates.y],
+            color: [...trace.color, color],
+          };
+        },
+        { x: [], y: [], color: [], name: `Cluster ${cluster}` },
+      );
     },
-    { x: [], y: [], color: [] },
   );
 
   return {
     dimensions: 2,
-    data: [trace],
+    data: traces,
   };
 };
 
@@ -308,65 +311,92 @@ const generateScatterPlot3dData = (
   clusterType: "tSNE" | "UMAP" | "PCA" = "tSNE",
   geneId?: string,
 ): ScatterPlot3dProps => {
-  const trace = seuratAnalysis.reduce<Trace3d>(
-    (trace, cell) => {
-      const coordinates: Coordinates3d = (() => {
-        switch (clusterType) {
-          case "tSNE":
-            return cell.tSneCoordinates3d;
-          case "UMAP":
-            return cell.umapCoordinates3d;
-          case "PCA":
-            return cell.pcaCoordinates3d;
-          default:
-            return assertNever(clusterType);
-        }
-      })();
+  const dataByCluster = seuratAnalysis.reduce<
+    Record<string, ReadonlyArray<CellData>>
+  >((byCluster, cell) => {
+    const cluster = cell.seuratCluster;
+    return {
+      ...byCluster,
+      [cluster]: [...(byCluster[cluster] || []), cell],
+    };
+  }, {});
 
-      const color = (() => {
-        if (geneId === "None" || geneId === undefined) {
-          return lookupColor(cell.seuratCluster);
-        } else if (geneId === "ENSG00000183715") {
-          if (cell.cellId in geENSG00000183715) {
-            return geENSG00000183715[cell.cellId] || "rgba(200,200,200,0.9)";
-          }
-        } else if (geneId === "ENSG00000163638") {
-          if (cell.cellId in geENSG00000163638) {
-            return geENSG00000163638[cell.cellId] || "rgba(200,200,200,0.9)";
-          }
-        } else if (geneId === "ENSG00000245532") {
-          if (cell.cellId in geENSG00000245532) {
-            return geENSG00000245532[cell.cellId] || "rgba(200,200,200,0.9)";
-          }
-        } else if (geneId === "ENSG00000141510") {
-          if (cell.cellId in geENSG00000141510) {
-            return geENSG00000141510[cell.cellId] || "rgba(200,200,200,0.9)";
-          }
-        } else if (geneId === "ENSG00000198938") {
-          if (cell.cellId in geENSG00000198938) {
-            return geENSG00000198938[cell.cellId] || "rgba(200,200,200,0.9)";
-          }
-        } else if (geneId === "ENSG00000138413") {
-          if (cell.cellId in geENSG00000138413) {
-            return geENSG00000138413[cell.cellId] || "rgba(200,200,200,0.9)";
-          }
-        }
-        return undefined;
-      })();
+  const traces = Object.entries(dataByCluster).map<Trace3d>(
+    ([cluster, cells]) => {
+      return cells.reduce<Trace3d>(
+        (trace, cell) => {
+          const coordinates: Coordinates3d = (() => {
+            switch (clusterType) {
+              case "tSNE":
+                return cell.tSneCoordinates3d;
+              case "UMAP":
+                return cell.umapCoordinates3d;
+              case "PCA":
+                return cell.pcaCoordinates3d;
+              default:
+                return assertNever(clusterType);
+            }
+          })();
 
-      return {
-        x: [...trace.x, coordinates.x],
-        y: [...trace.y, coordinates.y],
-        z: [...trace.z, coordinates.z],
-        color: [...trace.color, color],
-      };
+          const color = (() => {
+            if (geneId === "None" || geneId === undefined) {
+              return lookupColor(cell.seuratCluster);
+            } else if (geneId === "ENSG00000183715") {
+              if (cell.cellId in geENSG00000183715) {
+                return (
+                  geENSG00000183715[cell.cellId] || "rgba(200,200,200,0.9)"
+                );
+              }
+            } else if (geneId === "ENSG00000163638") {
+              if (cell.cellId in geENSG00000163638) {
+                return (
+                  geENSG00000163638[cell.cellId] || "rgba(200,200,200,0.9)"
+                );
+              }
+            } else if (geneId === "ENSG00000245532") {
+              if (cell.cellId in geENSG00000245532) {
+                return (
+                  geENSG00000245532[cell.cellId] || "rgba(200,200,200,0.9)"
+                );
+              }
+            } else if (geneId === "ENSG00000141510") {
+              if (cell.cellId in geENSG00000141510) {
+                return (
+                  geENSG00000141510[cell.cellId] || "rgba(200,200,200,0.9)"
+                );
+              }
+            } else if (geneId === "ENSG00000198938") {
+              if (cell.cellId in geENSG00000198938) {
+                return (
+                  geENSG00000198938[cell.cellId] || "rgba(200,200,200,0.9)"
+                );
+              }
+            } else if (geneId === "ENSG00000138413") {
+              if (cell.cellId in geENSG00000138413) {
+                return (
+                  geENSG00000138413[cell.cellId] || "rgba(200,200,200,0.9)"
+                );
+              }
+            }
+            return undefined;
+          })();
+
+          return {
+            ...trace,
+            x: [...trace.x, coordinates.x],
+            y: [...trace.y, coordinates.y],
+            z: [...trace.z, coordinates.z],
+            color: [...trace.color, color],
+          };
+        },
+        { x: [], y: [], z: [], color: [], name: `Cluster ${cluster}` },
+      );
     },
-    { x: [], y: [], z: [], color: [] },
   );
 
   return {
     dimensions: 3,
-    data: [trace],
+    data: traces,
   };
 };
 

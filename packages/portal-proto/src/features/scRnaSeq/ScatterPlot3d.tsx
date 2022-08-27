@@ -5,7 +5,9 @@ const ScatterPlot3d: React.VFC<ScatterPlot3dProps> = (
   props: ScatterPlot3dProps,
 ) => {
   const data = props.data.map((trace) => {
+    const name = trace.name ? { name: trace.name } : {};
     return {
+      ...name,
       x: trace.x,
       y: trace.y,
       z: trace.z,

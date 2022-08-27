@@ -2,7 +2,8 @@ export interface Trace3d {
   readonly x: ReadonlyArray<number>;
   readonly y: ReadonlyArray<number>;
   readonly z: ReadonlyArray<number>;
-  readonly color: ReadonlyArray<string|number>;
+  readonly color: ReadonlyArray<string | number>;
+  readonly name?: string;
 }
 
 export interface ScatterPlot3dProps {
