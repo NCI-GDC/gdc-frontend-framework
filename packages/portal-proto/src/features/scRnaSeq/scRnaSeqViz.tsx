@@ -1,13 +1,14 @@
 import dynamic from "next/dynamic";
 import { useState } from "react";
+import { lookupColor } from "./colors";
 import {
   differentiallyExpressedGenes,
+  geENSG00000138413,
+  geENSG00000141510,
   geENSG00000163638,
   geENSG00000183715,
-  geENSG00000245532,
-  geENSG00000141510,
   geENSG00000198938,
-  geENSG00000138413,
+  geENSG00000245532,
   seuratAnalysis,
 } from "./data/scRnaSeqData";
 import { DegTable } from "./DegTable";
@@ -19,6 +20,10 @@ const ScatterPlot2d = dynamic(() => import("./ScatterPlot2d"), {
 });
 
 const ScatterPlot3d = dynamic(() => import("./ScatterPlot3d"), {
+  ssr: false,
+});
+
+const ViolinPlot = dynamic(() => import("./ViolinPlot"), {
   ssr: false,
 });
 
@@ -216,7 +221,12 @@ export const ScRnaSeqViz: React.VFC<ScRnaSeqVizProps> = () => {
       </div>
       <div className="grid grid-cols-2">
         <div>{createPlot(plotData)}</div>
-        <div></div>
+        <div>
+          <ViolinPlot
+            y={seuratAnalysis.map((s) => s.geneCount)}
+            label="Gene Count"
+          />
+        </div>
       </div>
       <div>
         <DegTable data={differentiallyExpressedGenes} />
@@ -250,7 +260,7 @@ const generateScatterPlot2dData = (
 
       const color = (() => {
         if (geneId === "None" || geneId === undefined) {
-          return colors[cell.seuratCluster % colors.length];
+          return lookupColor(cell.seuratCluster);
         } else if (geneId === "ENSG00000183715") {
           if (cell.cellId in geENSG00000183715) {
             return geENSG00000183715[cell.cellId] || "rgba(200,200,200,0.2)";
@@ -315,7 +325,7 @@ const generateScatterPlot3dData = (
 
       const color = (() => {
         if (geneId === "None" || geneId === undefined) {
-          return colors[cell.seuratCluster % colors.length];
+          return lookupColor(cell.seuratCluster);
         } else if (geneId === "ENSG00000183715") {
           if (cell.cellId in geENSG00000183715) {
             return geENSG00000183715[cell.cellId] || "rgba(200,200,200,0.9)";

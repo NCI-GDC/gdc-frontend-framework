@@ -1,3 +1,9 @@
+import dynamic from "next/dynamic";
+import { ScatterPlot2dProps } from "./ScatterPlot2dProps";
+const ScatterPlot2d = dynamic(() => import("./ScatterPlot2d"), {
+  ssr: false,
+});
+
 export interface ScRnaSeqDeg {
   readonly seuratCluster: number;
   readonly geneId: string;
@@ -12,12 +18,44 @@ export interface DegTableProps {
   readonly data: ReadonlyArray<ScRnaSeqDeg>;
 }
 
+const generateVolcanoData = (
+  deg: ReadonlyArray<ScRnaSeqDeg>,
+): ScatterPlot2dProps => {
+  return {
+    dimensions: 2,
+    data: [
+      {
+        x: deg.map((d) => d.avgLog2Fc),
+        y: deg.map((d) => -Math.log10(d.pValAdj)),
+        color: deg.map((d) => {
+          if (d.pValAdj > 0.000001) {
+            return "#000000";
+          }
+
+          if (d.avgLog2Fc > 2) {
+            return "#ff0000";
+          }
+
+          if (d.avgLog2Fc < -2) {
+            return "#00EEFF";
+          }
+
+          return "#cccccc";
+        }),
+      },
+    ],
+  };
+};
+
 export const DegTable: React.VFC<DegTableProps> = (props: DegTableProps) => {
   const subset = props.data.slice(0, 20);
 
   return (
     <>
       <div className="text-lg">Differential Gene Expression</div>
+      <div>
+        <ScatterPlot2d {...generateVolcanoData(props.data)} />
+      </div>
       <div className="grid grid-cols-7 gap-x-4">
         <div key="Cluster" className="font-bold">
           Cluster
