@@ -8,7 +8,12 @@ import {
 } from "react-icons/md";
 import { FaUndo as UndoIcon } from "react-icons/fa";
 import tw from "tailwind-styled-components";
-import { LoadingOverlay, NumberInput, SegmentedControl } from "@mantine/core";
+import {
+  LoadingOverlay,
+  NumberInput,
+  SegmentedControl,
+  Tooltip,
+} from "@mantine/core";
 import {
   DAYS_IN_DECADE,
   DAYS_IN_YEAR,
@@ -900,12 +905,23 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
         } bg-base-max relative shadow-lg border-base-lightest border-1 rounded-b-md text-xs transition `}
       >
         <div className="flex items-center justify-between flex-wrap bg-primary-lighter shadow-md px-1.5">
-          <div className="has-tooltip text-primary-contrast-lighter font-heading font-semibold text-md">
-            {facetName === null ? convertFieldToName(field) : facetName}
-            <div className="inline-block tooltip w-full border-b-2 border-accent-cool-lightest rounded shadow-lg p-2 bg-base-lightest text-base-contrast-lightest mt-8 absolute">
-              {description}
+          <Tooltip
+            label={description}
+            classNames={{
+              arrow: "bg-base-light",
+              tooltip: "bg-base-max text-base-contrast-max",
+            }}
+            position="bottom-start"
+            multiline
+            width={220}
+            withArrow
+            transition="fade"
+            transitionDuration={200}
+          >
+            <div className="text-primary-contrast-lighter font-heading font-semibold text-md">
+              {facetName === null ? convertFieldToName(field) : facetName}
             </div>
-          </div>
+          </Tooltip>
           <div className="flex flex-row">
             <FacetIconButton
               onClick={toggleFlip}

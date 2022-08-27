@@ -168,7 +168,7 @@ export const CaseSummary = ({
       case_id: submitter_id,
       project: (
         <Link href={`/projects/${project_id}`}>
-          <a className="underline text-primary"> {project_id}</a>
+          <a className="underline text-utility-link"> {project_id}</a>
         </Link>
       ),
       project_name,

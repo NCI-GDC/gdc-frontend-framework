@@ -103,13 +103,13 @@ const FilesTable: React.FC = () => {
             remove: <RemoveFromCartButton files={[file]} iconOnly />,
             uuid: (
               <Link href={`/files/${file.fileId}`}>
-                <a className="text-primary-content underline">{file.fileId}</a>
+                <a className="text-utility-link underline">{file.fileId}</a>
               </Link>
             ),
             access: (
               <Badge
                 className={
-                  file.access === "open"
+                  file.access === "open" //TODO: keep or change to theme color
                     ? "bg-nci-green-lighter/50 text-nci-green-darkest capitalize text-sm"
                     : "bg-nci-red-lighter/50 text-nci-red-darkest capitalize text-sm"
                 }
@@ -119,17 +119,13 @@ const FilesTable: React.FC = () => {
             ),
             name: (
               <Link href={`/files/${file.fileId}`}>
-                <a className="text-primary-content underline">
-                  {file.fileName}
-                </a>
+                <a className="text-utility-link underline">{file.fileName}</a>
               </Link>
             ),
             cases: file.cases?.length.toLocaleString() || 0,
             project: (
               <Link href={`/projects/${file.project_id}`}>
-                <a className="text-primary-content underline">
-                  {file.project_id}
-                </a>
+                <a className="text-utility-link underline">{file.project_id}</a>
               </Link>
             ),
             data_category: file.dataCategory,
@@ -242,7 +238,7 @@ const FilesTable: React.FC = () => {
         <Pagination
           size="sm"
           radius="md"
-          color="gray"
+          color="accent"
           className="ml-auto"
           page={activePage}
           onChange={(page: number) => setActivePage(page)}

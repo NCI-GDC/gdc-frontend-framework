@@ -212,7 +212,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
             transition="fade"
             transitionDuration={200}
           >
-            <div className="has-tooltip text-primary-contrast-lighter font-heading font-semibold text-md">
+            <div className="text-primary-contrast-lighter font-heading font-semibold text-md">
               {facetName === null ? convertFieldToName(field) : facetName}
             </div>
           </Tooltip>

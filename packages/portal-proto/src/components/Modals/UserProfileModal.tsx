@@ -106,7 +106,7 @@ export const UserProfileModal = ({
                 href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
                 target="_blank"
                 rel="noreferrer"
-                className="text-nci-blue underline hover:text-nci-blue-darkest"
+                className="text-utility-link underline hover:text-nci-blue-darkest"
               >
                 how to apply for access to controlled data
               </a>
