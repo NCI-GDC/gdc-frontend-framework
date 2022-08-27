@@ -7,6 +7,7 @@ export enum Modals {
   "NoAccessModal" = "NoAccessModal",
   "BAMSlicingModal" = "BAMSlicingModal",
   "BAMSlicingErrorModal" = "BAMSlicingErrorModal",
+  "NoAccessToProjectModal" = "NoAccessToProjectModal",
 }
 
 export interface ModalState {

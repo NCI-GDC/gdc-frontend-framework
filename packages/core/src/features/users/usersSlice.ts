@@ -67,13 +67,11 @@ export const fetchToken = async (): Promise<{
 };
 
 export const fetchSlice = async (endpoint: string, body: any) => {
-  return await fetch(`${GDC_APP_API_AUTH}/${endpoint}`, {
-    method: "POST",
-    body: JSON.stringify(body),
-    headers: {
-      "Access-Control-Allow-Origin": "true",
-      "Content-Type": "application/json",
-    },
+  const queryParams = Object.keys(body)
+    .map((key) => key + "=" + body[key])
+    .join("&");
+  return await fetch(`${GDC_APP_API_AUTH}/${endpoint}?${queryParams}`, {
+    method: "HEAD",
   });
 };
 
