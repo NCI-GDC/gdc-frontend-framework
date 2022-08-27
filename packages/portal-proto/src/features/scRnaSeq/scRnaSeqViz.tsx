@@ -27,6 +27,10 @@ const ViolinPlot = dynamic(() => import("./ViolinPlot"), {
   ssr: false,
 });
 
+const ViolinMultiPlot = dynamic(() => import("./ViolinMultiPlot"), {
+  ssr: false,
+});
+
 export interface ScRnaSeqVizProps {
   readonly caseId?: string;
 }
@@ -203,6 +207,18 @@ export const ScRnaSeqViz: React.VFC<ScRnaSeqVizProps> = () => {
             label="Gene Count"
           />
         </div>
+      </div>
+      <div>
+        <ViolinMultiPlot
+          y={seuratAnalysis.map((s) => s.geneCount)}
+          x={seuratAnalysis.map((s) => `Cluster ${s.seuratCluster}`)}
+          colors={seuratAnalysis.reduce((clusters, s) => {
+            return {
+              ...clusters,
+              [`Cluster ${s.seuratCluster}`]: lookupColor(s.seuratCluster),
+            };
+          }, {})}
+        />
       </div>
       <div>
         <DegTable data={differentiallyExpressedGenes} />
