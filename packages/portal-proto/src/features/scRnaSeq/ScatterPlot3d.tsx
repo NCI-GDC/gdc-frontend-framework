@@ -27,16 +27,17 @@ const ScatterPlot3d: React.VFC<ScatterPlot3dProps> = (
     };
   });
 
-  const layout = {
-    autosize: false,
-    width: 600,
-    height: 600,
-  };
+  const layout = {};
 
   return (
-    <div>
-      <Plot data={data} layout={layout} className="w-full h-full" />
-    </div>
+    <>
+      <Plot
+        data={data}
+        layout={layout}
+        className="w-full h-full"
+        useResizeHandler={true}
+      />
+    </>
   );
 };
 
