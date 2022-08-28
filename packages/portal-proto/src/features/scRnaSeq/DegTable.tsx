@@ -33,14 +33,14 @@ const generateVolcanoData = (
           }
 
           if (d.avgLog2Fc > 2) {
-            return "#ff0000";
+            return "#d83933";
           }
 
           if (d.avgLog2Fc < -2) {
-            return "#00EEFF";
+            return "#0076d6";
           }
 
-          return "#cccccc";
+          return "#757575";
         }),
       },
     ],
