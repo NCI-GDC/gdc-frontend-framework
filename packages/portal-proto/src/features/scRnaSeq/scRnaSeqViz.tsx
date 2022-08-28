@@ -200,8 +200,8 @@ export const ScRnaSeqViz: React.VFC<ScRnaSeqVizProps> = () => {
         </div>
       </div>
       <div className="grid grid-cols-2">
-        <div>{createPlot(plotData)}</div>
-        <div>
+        <div className="aspect-square">{createPlot(plotData)}</div>
+        <div className="aspect-square">
           <ViolinPlot
             y={seuratAnalysis.map((s) => s.geneCount)}
             label="Gene Count"
