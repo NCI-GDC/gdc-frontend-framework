@@ -69,7 +69,7 @@ export const Header: React.FC<HeaderProps> = ({
               src="/NIH_GDC_DataPortal-logo.svg"
               layout="fill"
               objectFit="contain"
-              data-test="NIH_LOGO"
+              data-testid="NIH_LOGO"
             />
           </Button>
         </div>
