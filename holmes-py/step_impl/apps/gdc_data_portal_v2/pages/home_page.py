@@ -4,7 +4,7 @@ from playwright.sync_api import Page
 class HomePageLocators:
     """A class for Home page locators. All home page locators should come here"""
     NAV_NIH_LOGO = "img[data-test='NIH_LOGO']"
-    NAV_BAR_ANALYSIS_ICON= "img[alt='Analysis logo']"
+    NAV_BAR_ANALYSIS_ICON = "img[alt='Analysis logo']"
     NAV_BAR_PROJECT_ICON = "img[alt='Studies logo']"   
     NAV_BAR_COHORT_ICON = "img[alt='Cohort logo']"    
     NAV_BAR_REPOSITORY_ICON = "img[alt='Downloads logo']"   
