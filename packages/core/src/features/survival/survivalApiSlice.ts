@@ -11,7 +11,7 @@ interface SurvivalDonor {
   readonly project_id: string;
 }
 
-interface SurvivalElement {
+export interface SurvivalElement {
   readonly meta: string;
   readonly donors: ReadonlyArray<SurvivalDonor>;
 }
@@ -20,6 +20,11 @@ interface SurvivalApiResponse {
   readonly results: ReadonlyArray<SurvivalElement>;
   readonly overallStats: Record<string, number>;
   readonly warnings: Record<string, string>;
+}
+
+export interface Survival {
+  readonly survivalData: ReadonlyArray<SurvivalElement>;
+  readonly overallStats: Record<string, number>;
 }
 
 export const survivalApiSlice = coreCreateApi({
@@ -45,7 +50,7 @@ export const survivalApiSlice = coreCreateApi({
       query: (request) => ({
         request,
       }),
-      transformResponse: (response: SurvivalApiResponse) => {
+      transformResponse: (response: SurvivalApiResponse): Survival => {
         return {
           survivalData: (response?.results || []).map((r) => ({
             ...r,
