@@ -32,33 +32,30 @@ const FacetExpander: React.FC<FacetExpanderProps> = ({
   onShowChanged,
 }: FacetExpanderProps) => {
   return (
-    <div className={"mt-3"}>
+    <div className="mt-3 flex flex-row justify-end  border-t-2 p-1.5">
       {remainingValues > 0 && !isGroupExpanded ? (
-        <div className="flex flex-row justify-end items-center border-t-2 p-1.5">
-          <ActionIcon size="sm" color="accent">
-            <MoreIcon
-              key="show-more"
-              size="1.5em"
-              data-testid="plus-icon"
-              onClick={() => onShowChanged(!isGroupExpanded)}
-            />
-          </ActionIcon>
-          <ExpanderLabel>{remainingValues} more</ExpanderLabel>
-        </div>
+        <button onClick={() => onShowChanged(!isGroupExpanded)}>
+          <div className="flex flex-row flex-nowrap items-center ">
+            <ActionIcon size="sm" color="accent">
+              <MoreIcon key="show-more" size="1.5em" data-testid="plus-icon" />
+            </ActionIcon>
+            <ExpanderLabel>{remainingValues} more</ExpanderLabel>
+          </div>
+        </button>
       ) : isGroupExpanded ? (
-        <div
-          className={`flex flex-row justify-end items-center border-t-2 border-b-0 border-r-0 border-l-0 p-1.5`}
-        >
-          <ActionIcon size="sm" color="accent">
-            <LessIcon
-              key="show-less"
-              size="1.5em"
-              data-testid="minus-icon"
-              onClick={() => onShowChanged(!isGroupExpanded)}
-            />
-          </ActionIcon>
-          <ExpanderLabel>show less</ExpanderLabel>
-        </div>
+        <button onClick={() => onShowChanged(!isGroupExpanded)}>
+          <div className="flex flex-row flex-nowrap items-center ">
+            <ActionIcon size="sm" color="accent">
+              <LessIcon
+                key="show-less"
+                size="1.5em"
+                data-testid="minus-icon"
+                onClick={() => onShowChanged(!isGroupExpanded)}
+              />
+            </ActionIcon>
+            <ExpanderLabel>show less</ExpanderLabel>
+          </div>
+        </button>
       ) : null}
     </div>
   );
