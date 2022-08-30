@@ -1,9 +1,10 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import { MdSearch } from "react-icons/md";
 import { uniq } from "lodash";
 import tw from "tailwind-styled-components";
-import { FaCheck as CheckIcon } from "react-icons/fa";
 import { Badge, Highlight, Pagination, Tooltip } from "@mantine/core";
+import { useClickOutside } from "@mantine/hooks";
+import { MdSearch } from "react-icons/md";
+import { FaCheck as CheckIcon } from "react-icons/fa";
 import { search_facets } from "@/features/cohortBuilder/dictionary";
 
 const PAGE_SIZE = 5;
@@ -37,6 +38,8 @@ export const SearchInput: React.FC = () => {
   const [filteredCategories, setFilteredCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const ref = useClickOutside(() => setDropdownOpen(false));
 
   const clearSearch = () => {
     setSearchResults([]);
@@ -58,6 +61,10 @@ export const SearchInput: React.FC = () => {
     setPage(1);
   }, [filteredCategories]);
 
+  useEffect(() => {
+    setDropdownOpen(searchTerm.length > 0);
+  }, [searchTerm]);
+
   console.log(searchResults);
 
   const filteredResults = searchResults.filter(
@@ -68,7 +75,10 @@ export const SearchInput: React.FC = () => {
 
   return (
     <>
-      <div className="flex items-center justify-between bg-white w-[400px] p-1 ring-2 rounded-sm">
+      <div
+        ref={ref}
+        className="flex items-center justify-between bg-white w-[400px] p-1 ring-2 rounded-sm"
+      >
         <MdSearch size="1.5em" />
         <input
           type="search"
@@ -76,6 +86,7 @@ export const SearchInput: React.FC = () => {
           value={searchTerm}
           onChange={onSearchChanged}
           className="border-none ring-0 grow-1 w-full"
+          onFocus={() => setDropdownOpen(searchTerm.length > 0)}
         />
         {searchTerm.length > 0 && (
           <span
@@ -87,102 +98,113 @@ export const SearchInput: React.FC = () => {
         )}
       </div>
 
-      {searchResults.length > 1 && (
+      {dropdownOpen && (
         <div className="absolute z-10 bg-white w-[400px] p-4 drop-shadow-md">
-          <P>Related Categories</P>
-          <div className="flex flex-wrap gap-1 my-2">
-            {uniq(searchResults.map((result) => result.subcategory)).map(
-              (subcat) => {
-                const selected = filteredCategories.includes(subcat);
-                return (
-                  <Badge
-                    color="white"
-                    onClick={() =>
-                      selected
-                        ? setFilteredCategories(
-                            filteredCategories.filter((c) => c !== subcat),
-                          )
-                        : setFilteredCategories([...filteredCategories, subcat])
-                    }
-                    leftSection={selected ? <CheckIcon /> : undefined}
-                    className={
-                      selected
-                        ? "text-white bg-nci-blue-darkest capitalize text-sm font-normal"
-                        : "text-nci-blue border-solid border-nci-blue capitalize text-sm font-normal"
-                    }
-                  >
-                    {subcat}
-                  </Badge>
-                );
-              },
-            )}
-          </div>
-          <P>
-            Showing {(page - 1) * PAGE_SIZE + 1} -{" "}
-            {page * PAGE_SIZE > filteredResults.length
-              ? filteredResults.length
-              : page * PAGE_SIZE}{" "}
-            out of {filteredResults.length} for <b>{searchTerm}</b>
-          </P>
-          <ul className="mb-4">
-            {filteredResults
-              .slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
-              .map((result) => {
-                const matchingEnums = result.enum.filter((e) =>
-                  result.terms.some((t) => e.toLowerCase().includes(t)),
-                );
-                return (
-                  <li className="cursor-pointer" key={result.id}>
-                    <Tooltip
-                      label={
-                        <>
-                          <Highlight highlight={result.terms}>
-                            {result.description}
-                          </Highlight>
-                          {matchingEnums.length > 0 && (
+          {searchResults.length === 0 ? (
+            <P>
+              No results for <i>{searchTerm}</i>
+            </P>
+          ) : (
+            <>
+              <P>Related Categories</P>
+              <div className="flex flex-wrap gap-1 my-2">
+                {uniq(searchResults.map((result) => result.subcategory)).map(
+                  (subcat) => {
+                    const selected = filteredCategories.includes(subcat);
+                    return (
+                      <Badge
+                        color="white"
+                        onClick={() =>
+                          selected
+                            ? setFilteredCategories(
+                                filteredCategories.filter((c) => c !== subcat),
+                              )
+                            : setFilteredCategories([
+                                ...filteredCategories,
+                                subcat,
+                              ])
+                        }
+                        leftSection={selected ? <CheckIcon /> : undefined}
+                        className={
+                          selected
+                            ? "text-white bg-nci-blue-darkest capitalize text-sm font-normal"
+                            : "text-nci-blue border-solid border-nci-blue capitalize text-sm font-normal"
+                        }
+                      >
+                        {subcat}
+                      </Badge>
+                    );
+                  },
+                )}
+              </div>
+              <P>
+                Showing {(page - 1) * PAGE_SIZE + 1} -{" "}
+                {page * PAGE_SIZE > filteredResults.length
+                  ? filteredResults.length
+                  : page * PAGE_SIZE}{" "}
+                out of {filteredResults.length} for: <b>{searchTerm}</b>
+              </P>
+              <ul className="mb-4">
+                {filteredResults
+                  .slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+                  .map((result) => {
+                    const matchingEnums = result.enum.filter((e) =>
+                      result.terms.some((t) => e.toLowerCase().includes(t)),
+                    );
+                    return (
+                      <li className="cursor-pointer" key={result.id}>
+                        <Tooltip
+                          label={
                             <>
-                              <br />
-                              <b>Values Matched: </b>
                               <Highlight highlight={result.terms}>
-                                {matchingEnums.join(" • ")}
+                                {result.description}
                               </Highlight>
+                              {matchingEnums.length > 0 && (
+                                <>
+                                  <br />
+                                  <b>Values Matched: </b>
+                                  <Highlight highlight={result.terms}>
+                                    {matchingEnums.join(" • ")}
+                                  </Highlight>
+                                </>
+                              )}
                             </>
-                          )}
-                        </>
-                      }
-                      multiline
-                      position="left-start"
-                      width={400}
-                      color="white"
-                      classNames={{
-                        tooltip: "text-black drop-shadow-md rounded-none",
-                      }}
-                      offset={17}
-                    >
-                      <DivWithHoverCallout>
-                        <div className="p-2 leading-5">
-                          <b>
-                            <Highlight highlight={result.terms}>
-                              {result.name}
-                            </Highlight>
-                          </b>
-                          <span className="text-nci-gray">
-                            <b>Category:</b> {result.subcategory}
-                          </span>
-                        </div>
-                      </DivWithHoverCallout>
-                    </Tooltip>
-                    <hr />
-                  </li>
-                );
-              })}
-          </ul>
-          <Pagination
-            page={page}
-            onChange={setPage}
-            total={Math.ceil(filteredResults.length / PAGE_SIZE)}
-            withEdges
-          />
+                          }
+                          multiline
+                          position="left-start"
+                          width={400}
+                          color="white"
+                          classNames={{
+                            tooltip: "text-black drop-shadow-md rounded-none",
+                          }}
+                          offset={17}
+                        >
+                          <DivWithHoverCallout>
+                            <div className="p-2 leading-5">
+                              <b>
+                                <Highlight highlight={result.terms}>
+                                  {result.name}
+                                </Highlight>
+                              </b>
+                              <span className="text-nci-gray">
+                                <b>Category:</b> {result.subcategory}
+                              </span>
+                            </div>
+                          </DivWithHoverCallout>
+                        </Tooltip>
+                        <hr />
+                      </li>
+                    );
+                  })}
+              </ul>
+              <Pagination
+                page={page}
+                onChange={setPage}
+                total={Math.ceil(filteredResults.length / PAGE_SIZE)}
+                withEdges
+              />
+            </>
+          )}
         </div>
       )}
     </>
