@@ -37,11 +37,11 @@ const QueryItemContainer = tw.div`
 flex
 flex-row
 items-center
-font-heading 
-shadow-md 
+font-heading
+shadow-md
 font-medium
 text-md
-rounded-md 
+rounded-md
 border-1
 mr-1
 border-accent-light

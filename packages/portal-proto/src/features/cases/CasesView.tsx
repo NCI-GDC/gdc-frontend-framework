@@ -22,7 +22,7 @@ import tw from "tailwind-styled-components";
 
 export const CasesTableHeader = tw.th`
 bg-primary-lighter
-text-primary-contrast-lighter 
+text-primary-contrast-lighter
 px-2
 `;
 

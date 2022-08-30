@@ -37,10 +37,10 @@ import isEqual from "lodash/isEqual";
 import { createFacetCard } from "@/features/facets/CreateFacetCard";
 
 const CustomFacetWhenEmptyGroup = tw(Stack)`
-h-64 
-bg-base-lightest 
-w-1/2 
-border-2 
+h-64
+bg-base-lightest
+w-1/2
+border-2
 border-dotted
 m-6
 `;

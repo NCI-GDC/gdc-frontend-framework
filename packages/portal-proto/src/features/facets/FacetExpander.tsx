@@ -9,7 +9,7 @@ import tw from "tailwind-styled-components";
 export const ExpanderLabel = tw.div`
 text-accent-content-darker
 p-1
-font-bold 
+font-bold
 cursor-pointer
 `;
 

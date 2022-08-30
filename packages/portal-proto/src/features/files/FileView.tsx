@@ -17,7 +17,7 @@ export const DownloadButton = tw.button`
 bg-base-lightest
 border
 border-base-darkest
-rounded 
+rounded
 p-1
 hover:bg-base-darkest
 hover:text-base-contrast-darkest

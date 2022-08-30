@@ -26,9 +26,9 @@ import { convertFilterToComponent } from "./QueryRepresentation";
 const CohortGroupButton = tw(Button)`
 p-2
 bg-base-lightest
-transition-colors 
-text-primary-content-darkest 
-hover:bg-primary 
+transition-colors
+text-primary-content-darkest
+hover:bg-primary
 hover:text-primary-content-lightest
 `;
 
