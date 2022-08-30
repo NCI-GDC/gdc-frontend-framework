@@ -328,10 +328,8 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
             setCohortSelectionOpen={setCohortSelectionOpen}
             cohortSelectionOpen={cohortSelectionOpen}
             setActiveApp={handleAppSelected}
+            rightComponent={app === "CohortBuilder" ? <SearchInput /> : null}
           />
-          <div className="w-10/12 m-auto">
-            {app === "CohortBuilder" ? <SearchInput /> : null}
-          </div>
           <ActiveAnalysisToolNoSSR appId={app} />
         </>
       )}

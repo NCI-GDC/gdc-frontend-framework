@@ -7,6 +7,7 @@ interface AnalysisBreadcrumbsProps {
   readonly setCohortSelectionOpen: (open: boolean) => void;
   readonly cohortSelectionOpen: boolean;
   readonly setActiveApp: (app: string) => void;
+  readonly rightComponent?: React.ReactElement;
 }
 
 const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
@@ -14,6 +15,7 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
   setCohortSelectionOpen,
   cohortSelectionOpen,
   setActiveApp,
+  rightComponent,
 }: AnalysisBreadcrumbsProps) => {
   const onDemoApp = currentApp?.includes("Demo");
   const appId = onDemoApp ? currentApp?.split("Demo")[0] : currentApp;
@@ -22,16 +24,16 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
   const displayAdditionalSteps = !onDemoApp && appInfo?.selectAdditionalCohort;
 
   return (
-    <div className="w-full bg-nci-blue-darkest text-white p-2 flex items-center ">
+    <div className="w-full bg-nci-blue-darkest p-2 flex items-center ">
       <Button
         onClick={() => setActiveApp(undefined)}
-        className="bg-white text-nci-blue-darkest"
+        className="bg-white text-nci-blue-darkest text-white"
         aria-label="Close app"
       >
         <MdClose size={20} />
       </Button>
       <span
-        className={`p-2 mx-2 uppercase ${
+        className={`p-2 mx-2 uppercase text-white ${
           !displayAdditionalSteps ? "font-bold" : ""
         }`}
       >
@@ -65,6 +67,7 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
           )}
         </>
       )}
+      <div className="ml-auto mr-0">{rightComponent}</div>
     </div>
   );
 };

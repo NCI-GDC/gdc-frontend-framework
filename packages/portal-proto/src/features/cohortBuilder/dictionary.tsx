@@ -105,21 +105,32 @@ const get_facets_enums_as_documents = (
     .flat();
 };
 
+interface ReturnedFields {
+  name: string;
+  category: string;
+  description: string;
+  enum: string[];
+}
+
 export const miniSearch = new MiniSearch({
   fields: ["name", "description", "enum"], // fields to index for full-text search
-  storeFields: ["name", "category", "subcategory", "description"], // fields to return with search results
+  storeFields: ["name", "category", "description", "enum", "subcategory"], // fields to return with search results
 });
 
 export const init_search_index: () => MiniSearch<any> = () => {
   miniSearch.addAll(get_facets_as_documents("Clinical"));
   miniSearch.addAll(get_facets_enums_as_documents("Clinical"));
   miniSearch.addAll(get_facets_as_documents("Biospecimen"));
+  miniSearch.addAll(get_facets_enums_as_documents("Biospecimen"));
 
   return miniSearch;
 };
 
-export const search_facets: (s: string) => SearchResult[] = (s: string) => {
-  return miniSearch.search(s, { prefix: true, combineWith: "AND" });
+export const search_facets = (s: string) => {
+  return miniSearch.search(s, {
+    prefix: true,
+    combineWith: "AND",
+  }) as (SearchResult & ReturnedFields)[];
 };
 
 init_search_index();
