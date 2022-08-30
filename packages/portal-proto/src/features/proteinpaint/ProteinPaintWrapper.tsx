@@ -1,8 +1,14 @@
 import { useEffect, useRef, FC } from "react";
 import { runproteinpaint } from "@stjude/proteinpaint-client";
+import {
+  useCoreSelector,
+  selectCurrentCohortFilterSet,
+  buildCohortGqlOperator,
+} from "@gff/core";
+//import { useAppSelector } from "./appApi";
 
 // !!! TODO: may determine basepath prop value at runtime !!!
-const basepath = "https://proteinpaint.stjude.org"; // '/auth/api/custom/proteinpaint'
+const basepath = "http://localhost:3000"; // '/auth/api/custom/proteinpaint'
 
 interface PpProps {
   track: string;
@@ -15,33 +21,46 @@ interface PpProps {
 }
 
 export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
-  useEffect(() => {
+  const filter0 = buildCohortGqlOperator(
+    useCoreSelector(selectCurrentCohortFilterSet),
+  );
+
+  // to track reusable instance for mds3 skewer track
+  /*** TODO: bam track should return reusable renderer???? ***/
+  const ppRef = useRef();
+
+  useEffect(async () => {
     const data =
       props.track == "lolliplot"
-        ? getLolliplotTrack(props)
+        ? getLolliplotTrack(props, filter0)
         : props.track == "bam"
-        ? getBamTrack(props)
+        ? getBamTrack(props, filter0)
         : null;
 
     if (!data) return;
-    const rootElem = ref.current as HTMLElement;
-    const pp_holder = rootElem.querySelector(".sja_root_holder");
-    if (pp_holder) pp_holder.remove();
+    const rootElem = divRef.current as HTMLElement;
 
     rootElem.parentNode.parentNode.parentNode.style.backgroundColor = "#fff";
     const arg = Object.assign(
       { holder: rootElem, noheader: true, nobox: true, hide_dsHandles: true },
       JSON.parse(JSON.stringify(data)),
     );
-    runproteinpaint(arg);
+    if (ppRef.current) {
+      ppRef.current.update(arg);
+    } else {
+      const pp_holder = rootElem.querySelector(".sja_root_holder");
+      if (pp_holder) pp_holder.remove();
+      ppRef.current = await runproteinpaint(arg);
+    }
   }, [
     props.gene2canonicalisoform,
     props.mds3_ssm2canonicalisoform,
     props.geneSearch4GDCmds3,
+    filter0,
   ]);
 
-  const ref = useRef();
-  return <div ref={ref} />;
+  const divRef = useRef();
+  return <div ref={divRef} />;
 };
 
 interface Mds3Arg {
@@ -63,7 +82,7 @@ interface mds3_isoform {
   dslabel: string;
 }
 
-function getLolliplotTrack(props: PpProps) {
+function getLolliplotTrack(props: PpProps, filter0: any) {
   // host in gdc is just a relative url path,
   // using the same domain as the GDC portal where PP is embedded
   const arg: Mds3Arg = {
@@ -74,6 +93,7 @@ function getLolliplotTrack(props: PpProps) {
       {
         type: "mds3",
         dslabel: "GDC",
+        filter0,
       },
     ],
   };
@@ -87,6 +107,11 @@ function getLolliplotTrack(props: PpProps) {
     };
   } else {
     arg.geneSearch4GDCmds3 = true;
+
+    /* arg.geneSearch4tk = {
+      tracks:[ {type:'mds3', dslabel:'GDC'} ],
+      foundGeneCallback:()=>{}
+    }*/
   }
 
   return arg;
@@ -97,12 +122,13 @@ interface BamArg {
   gdcbamslice: boolean;
 }
 
-function getBamTrack(props: PpProps) {
+function getBamTrack(props: PpProps, filter0: any) {
   // host in gdc is just a relative url path,
   // using the same domain as the GDC portal where PP is embedded
   const arg: BamArg = {
     host: props.basepath || (basepath as string),
     gdcbamslice: true,
+    filter0,
   };
 
   return arg;
