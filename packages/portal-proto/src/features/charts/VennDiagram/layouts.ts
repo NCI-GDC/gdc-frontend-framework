@@ -17,7 +17,7 @@ const c1c3I = [
 ];
 
 /*
-  Create venn diagram by drawing circles and then drawing the overlaps over top with svg paths. 
+  Create venn diagram by drawing circles and then drawing the overlaps over top with svg paths.
   Plotly limits us here in not supporting arcs so we need to use bezier curves
   to draw the overlaps instead (https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths#curve_commands).
   Bezier control points calculated with this: https://stackoverflow.com/questions/734076/how-to-best-approximate-a-geometrical-arc-with-a-bezier-curve/44829356#44829356

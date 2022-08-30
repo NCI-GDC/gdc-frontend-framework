@@ -38,10 +38,10 @@ import FacetSelection from "@/components/FacetSelection";
 import isEqual from "lodash/isEqual";
 
 const CustomFacetWhenEmptyGroup = tw(Stack)`
-h-64 
-bg-nci-gray-lightest 
-w-1/2 
-border-2 
+h-64
+bg-nci-gray-lightest
+w-1/2
+border-2
 border-dotted
 m-6
 `;
