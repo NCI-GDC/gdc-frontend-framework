@@ -123,7 +123,7 @@ const ActionButtonBar = () => {
                   src={"/user-flow/icons/dna.svg"}
                   width={42}
                   height={42}
-                  alt="Analysis_Center_Card"
+                  alt="Analysis Center Card"
                 />{" "}
                 <span className="px-4">Analysis Center</span>
               </div>
@@ -154,7 +154,7 @@ const ActionButtonBar = () => {
               src={"/user-flow/icons/crowd-of-users.svg"}
               width={36}
               height={36}
-              alt="Studies_Card"
+              alt="Studies Card"
             />{" "}
             <span> </span>
           </Button>
@@ -181,7 +181,7 @@ const ActionButtonBar = () => {
               src={"/user-flow/icons/build.svg"}
               width={36}
               height={36}
-              alt="Cohort_Card"
+              alt="Cohort Card"
             />
             <span />
           </Button>
@@ -209,7 +209,7 @@ const ActionButtonBar = () => {
               src={"/user-flow/icons/database.svg"}
               width={36}
               height={36}
-              alt="Downloads_Card"
+              alt="Downloads Card"
             />{" "}
             <span> </span>
           </Button>

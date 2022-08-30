@@ -9,10 +9,10 @@ class HomePageLocators:
     NAV_BAR_COHORT_ICON = "img[alt='Cohort logo']"    
     NAV_BAR_REPOSITORY_ICON = "img[alt='Downloads logo']"   
 
-    NAV_DEFAULT_ANALYSIS_ICON = "img[alt='Analysis_Center_Card']"
-    NAV_DEFAULT_STUDIES_ICON = "img[alt='Studies_Card']"
-    NAV_DEFAULT_COHORT_ICON = "img[alt='Cohort_Card']"
-    NAV_DEFAULT_REPOSITORY_ICON = "img[alt='Downloads_Card']"
+    NAV_DEFAULT_ANALYSIS_ICON = "img[alt='Analysis Center Card']"
+    NAV_DEFAULT_STUDIES_ICON = "img[alt='Studies Card']"
+    NAV_DEFAULT_COHORT_ICON = "img[alt='Cohort Card']"
+    NAV_DEFAULT_REPOSITORY_ICON = "img[alt='Downloads Card']"
     
 
 
