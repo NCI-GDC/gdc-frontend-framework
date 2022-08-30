@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Image } from "@/components/Image";
 import { Button, Tooltip } from "@mantine/core";
 import { NextLink } from "@mantine/next";
 

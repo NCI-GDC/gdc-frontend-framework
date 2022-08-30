@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from "react";
-import Image from "next/image";
+import { Image } from "@/components/Image";
 import { Case } from "./CasesView";
 import ReactModal from "react-modal";
 

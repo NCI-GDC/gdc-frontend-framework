@@ -4,7 +4,7 @@ import React, { PropsWithChildren, useRef } from "react";
 import { useState } from "react";
 import { ContextualStudiesView } from "../../studies/StudiesView";
 import { StudyView } from "../../studies/StudyView";
-import Image from "next/image";
+import { Image } from "@/components/Image";
 import { FacetChart } from "../../charts/FacetChart";
 import ReactModal from "react-modal";
 import { Case, ContextualCasesView } from "../../cases/CasesView";

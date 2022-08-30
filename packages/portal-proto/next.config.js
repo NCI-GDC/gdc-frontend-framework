@@ -6,8 +6,19 @@ const withTM = require("next-transpile-modules")([
   "@stjude/proteinpaint-client",
 ]);
 
+/**
+ * This basePath defines root of the application. This must match
+ * the intended deployment path. For example, the basePath of "/v2"
+ * means that the application will be available at "https://<host>/v2"
+ */
+const basePath = "/v2";
+
 module.exports = withTM({
   experimental: {
     outputStandalone: true,
+  },
+  basePath,
+  publicRuntimeConfig: {
+    basePath,
   },
 });
