@@ -1,10 +1,36 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { MdSearch } from "react-icons/md";
 import { uniq } from "lodash";
+import tw from "tailwind-styled-components";
+import { FaCheck as CheckIcon } from "react-icons/fa";
 import { Badge, Highlight, Pagination, Tooltip } from "@mantine/core";
 import { search_facets } from "@/features/cohortBuilder/dictionary";
 
 const PAGE_SIZE = 5;
+const DivWithHoverCallout = tw.div`
+  flex
+  items-center
+  hover:bg-nci-blue-lightest
+  hover:before:w-0
+  hover:before:h-0
+  hover:before:absolute
+  hover:before:left-2
+  hover:before:border-t-[10px]
+  hover:before:border-t-solid
+  hover:before:border-t-transparent
+  hover:before:border-b-[10px]
+  hover:before:border-b-solid
+  hover:before:border-b-transparent
+  hover:before:border-r-[10px]
+  hover:before:border-r-solid
+  hover:before:border-r-nci-blue-lightest
+`;
+
+const P = tw.p`
+  uppercase
+  text-nci-gray
+  text-sm
+`;
 
 export const SearchInput: React.FC = () => {
   const [searchResults, setSearchResults] = useState([]);
@@ -42,7 +68,7 @@ export const SearchInput: React.FC = () => {
 
   return (
     <>
-      <div className="flex items-center justify-between bg-white w-80 p-2 ring-2">
+      <div className="flex items-center justify-between bg-white w-[400px] p-1 ring-2 rounded-sm">
         <MdSearch size="1.5em" />
         <input
           type="search"
@@ -52,45 +78,53 @@ export const SearchInput: React.FC = () => {
           className="border-none ring-0 grow-1 w-full"
         />
         {searchTerm.length > 0 && (
-          <span onClick={() => clearSearch()} className="text-xs grow-0">
+          <span
+            onClick={() => clearSearch()}
+            className="text-xs grow-0 mr-1 cursor-pointer"
+          >
             Clear
           </span>
         )}
       </div>
 
       {searchResults.length > 1 && (
-        <div className="absolute z-10 bg-white w-80 p-2 drop-shadow-md">
-          <div className="flex flex-wrap gap-1 mb-2">
+        <div className="absolute z-10 bg-white w-[400px] p-4 drop-shadow-md">
+          <P>Related Categories</P>
+          <div className="flex flex-wrap gap-1 my-2">
             {uniq(searchResults.map((result) => result.subcategory)).map(
-              (subcat) => (
-                <Badge
-                  color="white"
-                  onClick={() =>
-                    filteredCategories.includes(subcat)
-                      ? setFilteredCategories(
-                          filteredCategories.filter((c) => c !== subcat),
-                        )
-                      : setFilteredCategories([...filteredCategories, subcat])
-                  }
-                  className={
-                    filteredCategories.includes(subcat)
-                      ? "text-white bg-nci-blue-darkest"
-                      : "text-nci-blue border-solid border-nci-blue"
-                  }
-                >
-                  {subcat}
-                </Badge>
-              ),
+              (subcat) => {
+                const selected = filteredCategories.includes(subcat);
+                return (
+                  <Badge
+                    color="white"
+                    onClick={() =>
+                      selected
+                        ? setFilteredCategories(
+                            filteredCategories.filter((c) => c !== subcat),
+                          )
+                        : setFilteredCategories([...filteredCategories, subcat])
+                    }
+                    leftSection={selected ? <CheckIcon /> : undefined}
+                    className={
+                      selected
+                        ? "text-white bg-nci-blue-darkest capitalize text-sm font-normal"
+                        : "text-nci-blue border-solid border-nci-blue capitalize text-sm font-normal"
+                    }
+                  >
+                    {subcat}
+                  </Badge>
+                );
+              },
             )}
           </div>
-          <p className="uppercase text-nci-gray">
+          <P>
             Showing {(page - 1) * PAGE_SIZE + 1} -{" "}
             {page * PAGE_SIZE > filteredResults.length
               ? filteredResults.length
               : page * PAGE_SIZE}{" "}
             out of {filteredResults.length} for <b>{searchTerm}</b>
-          </p>
-          <ul className="ml-8 mb-4">
+          </P>
+          <ul className="mb-4">
             {filteredResults
               .slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
               .map((result) => {
@@ -121,18 +155,22 @@ export const SearchInput: React.FC = () => {
                       width={400}
                       color="white"
                       classNames={{
-                        tooltip: "text-black drop-shadow-md",
+                        tooltip: "text-black drop-shadow-md rounded-none",
                       }}
-                      offset={25}
+                      offset={17}
                     >
-                      <div className="hover:bg-nci-blue-lightest">
-                        <b>
-                          <Highlight highlight={result.terms}>
-                            {result.name}
-                          </Highlight>
-                        </b>
-                        <b>Category:</b> {result.subcategory}
-                      </div>
+                      <DivWithHoverCallout>
+                        <div className="p-2 leading-5">
+                          <b>
+                            <Highlight highlight={result.terms}>
+                              {result.name}
+                            </Highlight>
+                          </b>
+                          <span className="text-nci-gray">
+                            <b>Category:</b> {result.subcategory}
+                          </span>
+                        </div>
+                      </DivWithHoverCallout>
                     </Tooltip>
                     <hr />
                   </li>
