@@ -58,3 +58,21 @@ export * from "./features/genomic/geneSummary/geneSummarySlice";
 export * from "./features/facets/facetsByNameTypeAndFilter";
 export * from "./features/users/usersSlice";
 export * from "./features/modals/modalsSlice";
+
+import { datadogRum } from "@datadog/browser-rum";
+
+datadogRum.init({
+  applicationId: "3faf9c0a-311f-4935-a596-3347666ef35d",
+  clientToken: "pub9f7e31eaacd4afa71ac5161cbd5b0c11",
+  site: "datadoghq.com",
+  service: "portal-2.0",
+
+  // Specify a version number to identify the deployed version of your application in Datadog
+  // version: '1.0.0',
+  sampleRate: 100,
+  premiumSampleRate: 100,
+  trackInteractions: true,
+  defaultPrivacyLevel: "mask-user-input",
+});
+
+datadogRum.startSessionReplayRecording();

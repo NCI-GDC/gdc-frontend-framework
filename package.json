@@ -50,7 +50,8 @@
     "react-use": "^17.3.2",
     "react-window": "^1.8.6",
     "url-join": "^5.0.0",
-    "tinycolor2": "^1.4.2"
+    "tinycolor2": "^1.4.2",
+    "@datadog/browser-rum": "4.17.1"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^12.1.5",
