@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
-import Image from "next/image";
+import { Image } from "@/components/Image";
 import Link from "next/link";
 import { headerElements } from "@/features/user-flow/many-pages/navigation-utils";
 
