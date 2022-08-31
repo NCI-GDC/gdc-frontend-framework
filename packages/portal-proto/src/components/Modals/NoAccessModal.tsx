@@ -1,9 +1,4 @@
-import {
-  hideModal,
-  selectUserDetailsInfo,
-  useCoreDispatch,
-  useCoreSelector,
-} from "@gff/core";
+import { hideModal, useCoreDispatch } from "@gff/core";
 import { Button, Text } from "@mantine/core";
 import { LoginButton } from "../LoginButton";
 import { BaseModal } from "./BaseModal";
@@ -14,8 +9,6 @@ export const NoAccessModal = ({
   openModal: boolean;
 }): JSX.Element => {
   const dispatch = useCoreDispatch();
-  const userInfo = useCoreSelector((state) => selectUserDetailsInfo(state));
-  const { username } = userInfo?.data || {};
   return (
     <BaseModal
       title={
@@ -27,7 +20,7 @@ export const NoAccessModal = ({
       openModal={openModal}
     >
       <div className="border-y border-y-nci-gray p-4">
-        <Text size="sm"> You don't have access to this file.</Text>
+        <Text size="sm"> You don&apos;t have access to this file.</Text>
 
         <div className="flex content-center">
           <Text size="sm" className="mt-1">

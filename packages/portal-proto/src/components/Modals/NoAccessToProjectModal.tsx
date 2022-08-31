@@ -19,7 +19,7 @@ export const NoAccessToProjectModal = ({
       openModal={openModal}
     >
       <div className="border-y border-y-nci-gray p-4">
-        <Text size="sm"> You don't have access to this file.</Text>
+        <Text size="sm"> You don&apos;t have access to this file.</Text>
 
         <Text size="sm">
           Please request dbGaP Access to the project{" "}

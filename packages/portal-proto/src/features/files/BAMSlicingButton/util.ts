@@ -7,7 +7,7 @@ export const isUserProject = ({
 }: {
   file: GdcFile;
   user: UserInfo;
-}) => {
+}): boolean => {
   if (!user) {
     return false;
   }
@@ -46,7 +46,7 @@ export const userCanDownloadFiles = ({
 }: {
   files: GdcFile[];
   user: UserInfo;
-}) =>
+}): boolean =>
   files.every((file) => {
     if (file.access === "open") {
       return true;
@@ -79,7 +79,7 @@ export const userCanDownloadFile = ({
 }: {
   user: UserInfo;
   file: GdcFile;
-}) =>
+}): boolean =>
   userCanDownloadFiles({
     files: [file],
     user,

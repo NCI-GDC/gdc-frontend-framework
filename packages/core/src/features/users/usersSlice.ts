@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { GDC_APP_API_AUTH, GDC_AUTH } from "../../constants";
+import { GDC_AUTH } from "../../constants";
 import {
   CoreDataSelectorResponse,
   createUseCoreDataHook,

@@ -4,7 +4,7 @@ import {
   useCoreSelector,
   selectUserDetailsInfo,
 } from "@gff/core";
-import { Button, Modal, Text } from "@mantine/core";
+import { Button, Text } from "@mantine/core";
 import { FaCheck } from "react-icons/fa";
 import { ScrollableTableWithFixedHeader } from "../ScrollableTableWithFixedHeader";
 import { BaseModal } from "./BaseModal";

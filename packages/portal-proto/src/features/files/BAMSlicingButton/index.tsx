@@ -16,7 +16,7 @@ export const BAMSlicingButton = ({
 }: {
   isActive: boolean;
   file: GdcFile;
-}) => {
+}): JSX.Element => {
   const dispatch = useCoreDispatch();
   const userInfo = useCoreSelector((state) => selectUserDetailsInfo(state));
   const { username } = userInfo?.data || {};

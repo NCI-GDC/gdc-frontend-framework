@@ -35,7 +35,7 @@ export const Slides: React.FC<SlidesProps> = ({
         <Badge variant="filled" className="mb-1 text-blue text-xs">
           {submitter_id}
         </Badge>
-
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           alt={`thumbnail of ${submitter_id}`}
           src={`${GDC_API}/tile/${file_id}?level=7&x=0&y=0`}

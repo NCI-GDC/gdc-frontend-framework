@@ -42,7 +42,7 @@ const download = async ({
   dispatch: CoreDispatch;
   queryParams?: string;
   altMessage?: boolean;
-}) => {
+}): Promise<void> => {
   let timeoutPromise = null;
   showNotification({
     message: (

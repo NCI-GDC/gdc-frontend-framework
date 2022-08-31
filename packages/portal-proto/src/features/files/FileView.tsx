@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   GdcFile,
   HistoryDefaults,
@@ -9,7 +9,7 @@ import {
 import ReactModal from "react-modal";
 import { HorizontalTable } from "../../components/HorizontalTable";
 import { Table, Button } from "@mantine/core";
-import { FaShoppingCart, FaDownload, FaCut } from "react-icons/fa";
+import { FaShoppingCart, FaDownload } from "react-icons/fa";
 import { get } from "lodash";
 import dynamic from "next/dynamic";
 import fileSize from "filesize";

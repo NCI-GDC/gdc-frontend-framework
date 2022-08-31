@@ -1,5 +1,5 @@
 import { hideModal, useCoreDispatch } from "@gff/core";
-import { Modal, Text } from "@mantine/core";
+import { Modal } from "@mantine/core";
 import { ReactNode } from "react";
 import { theme } from "tailwind.config";
 
@@ -8,6 +8,7 @@ interface Props {
   title: ReactNode;
   closeButtonLabel: string;
   size?: string | number;
+  children: ReactNode;
 }
 
 export const BaseModal: React.FC<Props> = ({
@@ -16,7 +17,7 @@ export const BaseModal: React.FC<Props> = ({
   closeButtonLabel,
   size,
   children,
-}) => {
+}: Props) => {
   const dispatch = useCoreDispatch();
   return (
     <Modal

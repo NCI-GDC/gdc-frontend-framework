@@ -5,7 +5,15 @@ import { BaseModal } from "../BaseModal";
 import { useForm } from "@mantine/form";
 import download from "src/utils/download";
 
-export const processBAMSliceInput = (userInput: string) => {
+export const processBAMSliceInput = (
+  userInput: string,
+):
+  | {
+      regions: string[];
+    }
+  | {
+      regions?: undefined;
+    } => {
   if (userInput) {
     const lines = userInput.split("\n").filter((v) => v.length);
     return {
@@ -66,7 +74,7 @@ export const BAMSlicingModal = ({
 
           const splittedRegion = region.split(":");
 
-          const referenceSequenceName = splittedRegion[0];
+          // const referenceSequenceName = splittedRegion[0];
           const numVals =
             splittedRegion.length > 1 && splittedRegion[1].split("-");
           if (numVals.length > 2) return true;
@@ -117,8 +125,8 @@ export const BAMSlicingModal = ({
           File name: <Text className="inline font-medium">{file.fileName}</Text>
         </Text>
         <label htmlFor="bed" className="text-sm">
-          Please enter one or more slices' genome coordinates below in one of
-          the following formats:
+          Please enter one or more slices&apos; genome coordinates below in one
+          of the following formats:
         </label>
         <pre className="p-3 border-separate border-1 rounded bg-nci-gray-lighter text-gdc-indigo-darkest mb-2 text-sm">
           chr7:140505783-140511649
@@ -126,8 +134,8 @@ export const BAMSlicingModal = ({
           {"chr1	140505783	140511649"}
         </pre>
         <label htmlFor="textarea" className="mb-2 text-sm">
-          Alternatively, enter "unmapped" to retrieve unmapped reads on this
-          file.
+          Alternatively, enter &quot;unmapped&quot; to retrieve unmapped reads
+          on this file.
         </label>
         <Textarea
           id="textarea"
