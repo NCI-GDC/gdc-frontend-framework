@@ -8,7 +8,7 @@ import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
 
-const graphQLQuery = ` 
+const graphQLQuery = `
   query CartSummary(
     $fileFilters: FiltersArgument
   ) {
