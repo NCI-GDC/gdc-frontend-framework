@@ -3,7 +3,6 @@ import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
 import GenesTable from "../genesTable/GenesTable";
 import MutationsTable from "../mutationsTable/MutationsTable";
 import { Grid, Tabs, LoadingOverlay } from "@mantine/core";
-import isEqual from "lodash/isEqual";
 import { EnumFacet } from "../facets/EnumFacet";
 import dynamic from "next/dynamic";
 import {
@@ -200,10 +199,6 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
       });
     }
   }, [appMode, comparativeSurvival, topGeneSSMS, topGeneSSMSSuccess]);
-
-  const buttonStyle =
-    "flex flex-row items-center bg-white text-nci-blue-darkest border border-solid border-nci-blue-darkest h-12 hover:bg-nci-blue hover:text-white hover:border-nci-blue";
-  const tabStyle = `${buttonStyle} rounded-md first:border-r-0 last:border-l-0 first:rounded-r-none last:rounded-l-none hover:border-nci-blue-darkest data-active:bg-nci-blue-darkest data-active:text-white`;
 
   return (
     <div className="flex flex-row">

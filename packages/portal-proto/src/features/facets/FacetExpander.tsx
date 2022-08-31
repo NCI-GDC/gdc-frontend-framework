@@ -3,7 +3,6 @@ import {
   MdAddCircle as MoreIcon,
   MdRemoveCircle as LessIcon,
 } from "react-icons/md";
-import { ActionIcon } from "@mantine/core";
 import tw from "tailwind-styled-components";
 
 export const ExpanderLabel = tw.div`
