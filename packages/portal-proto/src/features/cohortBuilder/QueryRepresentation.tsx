@@ -30,7 +30,12 @@ flex truncate ... px-2 bg-base-max
 `;
 
 const QueryFieldLabel = tw.span`
-bg-accent-lighter text-accent-contrast-lighter uppercase px-2 border-accent border-r-2
+bg-accent-lighter 
+text-accent-contrast-lighter 
+uppercase 
+px-2 
+border-accent 
+border-r-2
 `;
 
 const QueryItemContainer = tw.div`
@@ -156,30 +161,31 @@ interface ClosedRangeQueryElementProps {
   readonly op?: "and";
 }
 
-export const ClosedRangeQueryElement: React.FC<ClosedRangeQueryElementProps> =
-  ({
-    lower,
-    upper,
-    op = "and",
-  }: PropsWithChildren<ClosedRangeQueryElementProps>) => {
-    const field = lower.field; // As this is a Range the field for both lower and upper will be the same
+export const ClosedRangeQueryElement: React.FC<
+  ClosedRangeQueryElementProps
+> = ({
+  lower,
+  upper,
+  op = "and",
+}: PropsWithChildren<ClosedRangeQueryElementProps>) => {
+  const field = lower.field; // As this is a Range the field for both lower and upper will be the same
 
-    return (
-      <>
-        <QueryElement field={field}>
-          <ComparisonElement operation={lower} />
-          <span
-            className={
-              "uppercase bg-accent-content-max text-accent-contrast-max text-bold"
-            }
-          >
-            {op}
-          </span>
-          <ComparisonElement operation={upper} showLabel={false} />
-        </QueryElement>
-      </>
-    );
-  };
+  return (
+    <>
+      <QueryElement field={field}>
+        <ComparisonElement operation={lower} />
+        <span
+          className={
+            "uppercase bg-accent-content-max text-accent-contrast-max text-bold"
+          }
+        >
+          {op}
+        </span>
+        <ComparisonElement operation={upper} showLabel={false} />
+      </QueryElement>
+    </>
+  );
+};
 
 interface QueryElementProps {
   field: string;

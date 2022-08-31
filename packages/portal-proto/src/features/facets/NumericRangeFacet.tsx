@@ -59,7 +59,7 @@ type NumericFacetData = Pick<
 
 /**
  * Represent a range. Used to configure a row
- * of a range list
+ * of a range list.
  */
 interface RangeBucketElement {
   readonly from: number;
@@ -575,166 +575,165 @@ interface RangeInputWithPrefixedRangesProps {
   readonly showZero?: boolean;
 }
 
-const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> =
-  ({
-    field,
-    docType,
-    indexType,
-    units,
-    numBuckets,
-    minimum,
-    maximum,
-    showZero = false,
-  }: RangeInputWithPrefixedRangesProps) => {
-    const [isGroupExpanded, setIsGroupExpanded] = useState(false); // handles the expanded group
+const RangeInputWithPrefixedRanges: React.FC<
+  RangeInputWithPrefixedRangesProps
+> = ({
+  field,
+  docType,
+  indexType,
+  units,
+  numBuckets,
+  minimum,
+  maximum,
+  showZero = false,
+}: RangeInputWithPrefixedRangesProps) => {
+  const [isGroupExpanded, setIsGroupExpanded] = useState(false); // handles the expanded group
 
-    // get the current filter for this facet
-    const filter = useCoreSelector((state) =>
-      selectCurrentCohortFiltersByName(state, `${field}`),
-    );
+  // get the current filter for this facet
+  const filter = useCoreSelector((state) =>
+    selectCurrentCohortFiltersByName(state, `${field}`),
+  );
 
-    const totalCount = useCoreSelector((state) =>
-      selectTotalCountsByName(state, FacetDocTypeToCountsIndexMap[docType]),
-    );
+  const totalCount = useCoreSelector((state) =>
+    selectTotalCountsByName(state, FacetDocTypeToCountsIndexMap[docType]),
+  );
 
-    // giving the filter value, extract the From/To values and
-    // build it's key
-    const [filterValues, filterKey] = useMemo(() => {
-      const values = ExtractRangeValues(filter);
-      const key = ClassifyRangeType(values);
-      return [values, key];
-    }, [filter]);
+  // giving the filter value, extract the From/To values and
+  // build it's key
+  const [filterValues, filterKey] = useMemo(() => {
+    const values = ExtractRangeValues(filter);
+    const key = ClassifyRangeType(values);
+    return [values, key];
+  }, [filter]);
 
-    // build the range for the useRangeFacet and the facet query
-    const [bucketRanges, ranges] = useMemo(() => {
-      // map unit type to appropriate build range function and unit label
-      const RangeBuilder = {
-        days: {
-          builder: buildDayYearRangeBucket,
-          label: "days",
-        },
-        years: {
-          builder: buildDayYearRangeBucket,
-          label: "years",
-        },
-        percent: {
-          builder: build10UnitRange,
-          label: "%",
-        },
-        year: {
-          builder: build10UnitRange,
-          label: "",
-        },
-      };
-
-      const bucketEntries = BuildRanges(
-        numBuckets,
-        RangeBuilder[units].label,
-        minimum,
-        RangeBuilder[units].builder,
-      );
-      // build ranges for continuous range query
-      const r = Object.keys(bucketEntries).map((x) => {
-        return { from: bucketEntries[x].from, to: bucketEntries[x].to };
-      });
-      return [bucketEntries, r];
-    }, [minimum, numBuckets, units]);
-
-    const [isCustom, setIsCustom] = useState(filterKey === "custom"); // in custom Range Mode
-    const [selectedRange, setSelectedRange] = useState(filterKey); // the current selected range
-
-    const { data: rangeData, isSuccess } = useRangeFacet(
-      field,
-      ranges,
-      docType,
-      indexType,
-    );
-    const rangeLabelsAndValues = BuildRangeLabelsAndValues(
-      bucketRanges,
-      totalCount,
-      rangeData,
-      showZero,
-    );
-
-    const resetToCustom = useCallback(() => {
-      if (!isCustom) {
-        setIsCustom(true);
-        setSelectedRange("custom");
-      }
-    }, [isCustom]);
-
-    useEffect(() => {
-      if (!isCustom)
-        if (Object.keys(rangeLabelsAndValues).includes(filterKey))
-          setSelectedRange(filterKey);
-        else resetToCustom();
-    }, [filterKey, isCustom, rangeLabelsAndValues, resetToCustom]);
-
-    const totalBuckets = Object.keys(rangeLabelsAndValues).length;
-    const bucketsToShow = isGroupExpanded
-      ? totalBuckets
-      : DEFAULT_VISIBLE_ITEMS;
-    const remainingValues = totalBuckets - bucketsToShow;
-
-    const onShowModeChanged = () => {
-      setIsGroupExpanded(!isGroupExpanded);
+  // build the range for the useRangeFacet and the facet query
+  const [bucketRanges, ranges] = useMemo(() => {
+    // map unit type to appropriate build range function and unit label
+    const RangeBuilder = {
+      days: {
+        builder: buildDayYearRangeBucket,
+        label: "days",
+      },
+      years: {
+        builder: buildDayYearRangeBucket,
+        label: "years",
+      },
+      percent: {
+        builder: build10UnitRange,
+        label: "%",
+      },
+      year: {
+        builder: build10UnitRange,
+        label: "",
+      },
     };
 
-    return (
-      <>
-        <LoadingOverlay visible={!isSuccess} />
-        <div className="flex flex-col w-100 space-y-2 mt-1 ">
-          <div className="flex flex-row  justify-items-stretch items-center">
-            <input
-              type="radio"
-              className={RadioStyle}
-              id={`${field}_custom`}
-              name={`${field}_range_selection`}
-              checked={selectedRange === "custom"}
-              onChange={() => {
-                setSelectedRange("custom");
-                setIsCustom(true);
+    const bucketEntries = BuildRanges(
+      numBuckets,
+      RangeBuilder[units].label,
+      minimum,
+      RangeBuilder[units].builder,
+    );
+    // build ranges for continuous range query
+    const r = Object.keys(bucketEntries).map((x) => {
+      return { from: bucketEntries[x].from, to: bucketEntries[x].to };
+    });
+    return [bucketEntries, r];
+  }, [minimum, numBuckets, units]);
+
+  const [isCustom, setIsCustom] = useState(filterKey === "custom"); // in custom Range Mode
+  const [selectedRange, setSelectedRange] = useState(filterKey); // the current selected range
+
+  const { data: rangeData, isSuccess } = useRangeFacet(
+    field,
+    ranges,
+    docType,
+    indexType,
+  );
+  const rangeLabelsAndValues = BuildRangeLabelsAndValues(
+    bucketRanges,
+    totalCount,
+    rangeData,
+    showZero,
+  );
+
+  const resetToCustom = useCallback(() => {
+    if (!isCustom) {
+      setIsCustom(true);
+      setSelectedRange("custom");
+    }
+  }, [isCustom]);
+
+  useEffect(() => {
+    if (!isCustom)
+      if (Object.keys(rangeLabelsAndValues).includes(filterKey))
+        setSelectedRange(filterKey);
+      else resetToCustom();
+  }, [filterKey, isCustom, rangeLabelsAndValues, resetToCustom]);
+
+  const totalBuckets = Object.keys(rangeLabelsAndValues).length;
+  const bucketsToShow = isGroupExpanded ? totalBuckets : DEFAULT_VISIBLE_ITEMS;
+  const remainingValues = totalBuckets - bucketsToShow;
+
+  const onShowModeChanged = () => {
+    setIsGroupExpanded(!isGroupExpanded);
+  };
+
+  return (
+    <>
+      <LoadingOverlay visible={!isSuccess} />
+      <div className="flex flex-col w-100 space-y-2 mt-1 ">
+        <div className="flex flex-row  justify-items-stretch items-center">
+          <input
+            type="radio"
+            className={RadioStyle}
+            id={`${field}_custom`}
+            name={`${field}_range_selection`}
+            checked={selectedRange === "custom"}
+            onChange={() => {
+              setSelectedRange("custom");
+              setIsCustom(true);
+            }}
+          />
+          <FromTo
+            minimum={minimum}
+            maximum={maximum}
+            values={filterValues}
+            field={`${field}`}
+            units={units}
+            changedCallback={resetToCustom}
+          />
+        </div>
+        <div className="flex flex-col border-t-2">
+          {totalBuckets == 0 ? (
+            <div className="mx-4">No data for this field</div>
+          ) : isSuccess ? (
+            <RangeValueSelector
+              field={`${field}`}
+              valueLabel={FacetDocTypeToLabelsMap[docType]}
+              itemsToShow={bucketsToShow}
+              rangeLabelsAndValues={rangeLabelsAndValues}
+              selected={selectedRange}
+              setSelected={(value) => {
+                setIsCustom(false); // no longer a customRange
+                // this is the only way user interaction
+                // can set this to False
+                setSelectedRange(value);
               }}
             />
-            <FromTo
-              minimum={minimum}
-              maximum={maximum}
-              values={filterValues}
-              field={`${field}`}
-              units={units}
-              changedCallback={resetToCustom}
+          ) : null}
+          {
+            <FacetExpander
+              remainingValues={remainingValues}
+              isGroupExpanded={isGroupExpanded}
+              onShowChanged={onShowModeChanged}
             />
-          </div>
-          <div className="flex flex-col border-t-2">
-            {totalBuckets == 0 ? (
-              <div className="mx-4">No data for this field</div>
-            ) : isSuccess ? (
-              <RangeValueSelector
-                field={`${field}`}
-                valueLabel={FacetDocTypeToLabelsMap[docType]}
-                itemsToShow={bucketsToShow}
-                rangeLabelsAndValues={rangeLabelsAndValues}
-                selected={selectedRange}
-                setSelected={(value) => {
-                  setIsCustom(false); // no longer a customRange
-                  // this is the only way user interaction
-                  // can set this to False
-                  setSelectedRange(value);
-                }}
-              />
-            ) : null}
-            {
-              <FacetExpander
-                remainingValues={remainingValues}
-                isGroupExpanded={isGroupExpanded}
-                onShowChanged={onShowModeChanged}
-              />
-            }
-          </div>
+          }
         </div>
-      </>
-    );
-  };
+      </div>
+    </>
+  );
+};
 
 const DaysOrYears: React.FC<NumericFacetData> = ({
   field,

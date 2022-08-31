@@ -227,7 +227,7 @@ const IndexPage: NextPage = () => {
     <UserFlowVariedPages
       {...{ indexPath: "/user-flow/single-page", headerElements }}
     >
-      <div className="flex flex-col w-100 h-100 bg-gradient-to-r from-nci-accent-warm  to-accent-cool">
+      <div className="flex flex-col w-100 h-100 bg-gradient-to-r from-accent-warm  to-accent-cool">
         <div className="flex flex-row ">
           <div className="flex flex-col w-1/2 pl-10">
             <div className="flex flex-col w-100 bg-base p-4 rounded-md shadow-lg mt-2  ">
