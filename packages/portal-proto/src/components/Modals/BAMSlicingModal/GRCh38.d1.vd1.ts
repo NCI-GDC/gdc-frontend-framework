@@ -1,4 +1,4 @@
-chr1
+export const referenceSequenceNames = `chr1
 chr2
 chr3
 chr4
@@ -2776,4 +2776,4 @@ HPV-mKN2
 HPV-mKN3
 HPV-mL55
 HPV-mRTRX7
-HPV-mSD2
+HPV-mSD2`;

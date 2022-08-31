@@ -4,6 +4,7 @@ import { Button, Text, Textarea } from "@mantine/core";
 import { BaseModal } from "../BaseModal";
 import { useForm } from "@mantine/form";
 import download from "src/utils/download";
+import { referenceSequenceNames } from "./GRCh38.d1.vd1";
 
 export const processBAMSliceInput = (
   userInput: string,
@@ -61,20 +62,17 @@ export const BAMSlicingModal = ({
         if (!processedValue)
           return "You have entered invalid coordinates. Please try again.";
 
-        // const reader = new FileReader()
-        // reader.readAsText('./GRCh38.d1.vd1.seqlist')
-        // const res = await fetch('./GRCh38.d1.vd1.seqlist')
-        // const text = await res.text()
-        // console.log(text)
-
+        const refSeqs = referenceSequenceNames.split("\n");
         const flag = processedValue.regions.some((region) => {
           if (!region) return true;
           if (!/^[a-zA-Z0-9]+(:([0-9]+)?(-[0-9]+)?)?$/.test(region))
             return true;
 
           const splittedRegion = region.split(":");
-
-          // const referenceSequenceName = splittedRegion[0];
+          console.log(!refSeqs.find((refSeq) => refSeq === splittedRegion[0]));
+          if (!refSeqs.find((refSeq) => refSeq === splittedRegion[0]))
+            return true;
+          if (splittedRegion.length > 1 && !splittedRegion[1]) return true;
           const numVals =
             splittedRegion.length > 1 && splittedRegion[1].split("-");
           if (numVals.length > 2) return true;
@@ -124,15 +122,19 @@ export const BAMSlicingModal = ({
         <Text size="lg" className="mb-2">
           File name: <Text className="inline font-medium">{file.fileName}</Text>
         </Text>
-        <label htmlFor="bed" className="text-sm">
+        <label htmlFor="textarea" className="text-sm">
           Please enter one or more slices&apos; genome coordinates below in one
           of the following formats:
         </label>
+
         <pre className="p-3 border-separate border-1 rounded bg-nci-gray-lighter text-gdc-indigo-darkest mb-2 text-sm">
           chr7:140505783-140511649
           <br />
-          {"chr1	140505783	140511649"}
+          {"chr7  140505783   140511649"}
         </pre>
+        <label htmlFor="textarea" className="text-sm block">
+          Note that the second example above is a tab-delimited format.
+        </label>
         <label htmlFor="textarea" className="mb-2 text-sm">
           Alternatively, enter &quot;unmapped&quot; to retrieve unmapped reads
           on this file.
