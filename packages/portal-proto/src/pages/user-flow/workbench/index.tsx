@@ -123,6 +123,7 @@ const ActionButtonBar = () => {
                   src={"/user-flow/icons/dna.svg"}
                   width={42}
                   height={42}
+                  alt="Analysis Center Card"
                 />{" "}
                 <span className="px-4">Analysis Center</span>
               </div>
@@ -153,6 +154,7 @@ const ActionButtonBar = () => {
               src={"/user-flow/icons/crowd-of-users.svg"}
               width={36}
               height={36}
+              alt="Studies Card"
             />{" "}
             <span> </span>
           </Button>
@@ -175,7 +177,12 @@ const ActionButtonBar = () => {
             }}
             className="text-sm bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest hover:text-white transition-colors font-bold mx-4 p-2 rounded inline-flex flex-nowrap items-center shadow-md"
           >
-            <Image src={"/user-flow/icons/build.svg"} width={36} height={36} />
+            <Image
+              src={"/user-flow/icons/build.svg"}
+              width={36}
+              height={36}
+              alt="Cohort Card"
+            />
             <span />
           </Button>
         </Tooltip>
@@ -202,6 +209,7 @@ const ActionButtonBar = () => {
               src={"/user-flow/icons/database.svg"}
               width={36}
               height={36}
+              alt="Downloads Card"
             />{" "}
             <span> </span>
           </Button>
