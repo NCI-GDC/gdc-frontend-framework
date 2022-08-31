@@ -1,5 +1,5 @@
 import React from "react";
-import Image from "next/image";
+import { Image } from "@/components/Image";
 import { Divider } from "@mantine/core";
 import {
   MdPlayArrow,

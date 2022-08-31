@@ -15,6 +15,7 @@ import { cohortApiSliceMiddleware } from "./features/api/cohortApiSlice";
 import { caseSetListenerMiddleware } from "./listeners";
 
 import storage from "./storage-persist";
+import { survivalApiSliceMiddleware } from "./features/survival/survivalApiSlice";
 
 const persistConfig = {
   key: "root",
@@ -34,7 +35,7 @@ export const coreStore = configureStore({
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
     })
-      .concat(cohortApiSliceMiddleware)
+      .concat(cohortApiSliceMiddleware, survivalApiSliceMiddleware)
       .prepend(caseSetListenerMiddleware.middleware), // needs to be prepended
 });
 

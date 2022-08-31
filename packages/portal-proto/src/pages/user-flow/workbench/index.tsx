@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
-import Image from "next/image";
+import { Image } from "@/components/Image";
 import Link from "next/link";
 import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
 import { Button, Tooltip } from "@mantine/core";
@@ -129,6 +129,7 @@ const ActionButtonBar = () => {
                   src={"/user-flow/icons/dna.svg"}
                   width={42}
                   height={42}
+                  alt="Analysis Center Card"
                 />{" "}
                 <span className="px-4">Analysis Center</span>
               </div>
@@ -158,6 +159,7 @@ const ActionButtonBar = () => {
               src={"/user-flow/icons/crowd-of-users.svg"}
               width={36}
               height={36}
+              alt="Studies Card"
             />{" "}
             <span> </span>
           </HomePageButton>
@@ -179,7 +181,12 @@ const ActionButtonBar = () => {
               query: { app: "CohortBuilder" },
             }}
           >
-            <Image src={"/user-flow/icons/build.svg"} width={36} height={36} />
+            <Image
+              src={"/user-flow/icons/build.svg"}
+              width={36}
+              height={36}
+              alt="Cohort Card"
+            />
             <span />
           </HomePageButton>
         </Tooltip>
@@ -205,6 +212,7 @@ const ActionButtonBar = () => {
               src={"/user-flow/icons/database.svg"}
               width={36}
               height={36}
+              alt="Downloads Card"
             />{" "}
             <span> </span>
           </HomePageButton>

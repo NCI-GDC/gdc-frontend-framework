@@ -1,5 +1,5 @@
-import Image from "next/image";
 import { ActionIcon, Grid, Text } from "@mantine/core";
+import { Image } from "@/components/Image";
 import { MdPlayArrow } from "react-icons/md";
 import { AppRegistrationEntry } from "./utils";
 

@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
-import Image from "next/image";
+import { Image } from "@/components/Image";
 import { useState } from "react";
 import ReactModal from "react-modal";
 import { ContextualStudiesView } from "@/features/studies/StudiesView";

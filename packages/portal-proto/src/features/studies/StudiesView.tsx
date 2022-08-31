@@ -1,6 +1,6 @@
 import { ProjectDefaults, useProjects } from "@gff/core";
 import { Option, Select } from "../../components/Select";
-import Image from "next/image";
+import { Image } from "@/components/Image";
 import { Button } from "@mantine/core";
 import { MdFlip, MdSearch } from "react-icons/md";
 import { BsQuestionCircleFill, BsFillTriangleFill } from "react-icons/bs";

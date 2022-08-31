@@ -1,6 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
-
+import { Image } from "@/components/Image";
 export const headerElements = [
   <Link key="BuildCohort" href="/cohort-builder">
     <div className="text-sm font-heading  hover:bg-primary-lighter text-primary-content-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md ">

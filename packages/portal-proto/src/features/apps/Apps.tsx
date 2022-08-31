@@ -1,6 +1,5 @@
 import { App, Initials } from "../layout/UserFlowVariedPages";
-import Image from "next/image";
-
+import { Image } from "@/components/Image";
 export interface Clickable {
   readonly onClick?: () => void;
 }

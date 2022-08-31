@@ -3,7 +3,6 @@ import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
 import GenesTable from "../genesTable/GenesTable";
 import MutationsTable from "../mutationsTable/MutationsTable";
 import { Grid, Tabs, LoadingOverlay } from "@mantine/core";
-import isEqual from "lodash/isEqual";
 import { EnumFacet } from "../facets/EnumFacet";
 import dynamic from "next/dynamic";
 import {
@@ -13,12 +12,10 @@ import {
   joinFilters,
   useCoreSelector,
   clearGenomicFilters,
-  fetchSurvival,
-  useSurvivalPlot,
+  useGetSurvivalPlotQuery,
   selectGenomicFilters,
   buildCohortGqlOperator,
   useTopGene,
-  usePrevious,
 } from "@gff/core";
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
 
@@ -129,11 +126,15 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
 
     [cohortFilters, genomicFilters],
   );
-
+  const f = buildGeneHaveAndHaveNotFilters(
+    filters,
+    comparativeSurvival?.symbol,
+    comparativeSurvival?.field,
+  );
   const { data: survivalPlotData, isSuccess: survivalPlotReady } =
-    useSurvivalPlot({ filters: filters ? [filters] : [] });
-
-  const prevComparative = usePrevious(comparativeSurvival);
+    useGetSurvivalPlotQuery({
+      filters: comparativeSurvival !== undefined ? f : filters ? [filters] : [],
+    });
 
   // pass to Survival Plot when survivalPlotData data is undefined/not ready
   const emptySurvivalPlot = {

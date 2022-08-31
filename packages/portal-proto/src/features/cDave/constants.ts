@@ -151,3 +151,5 @@ export const TABS = {
   treatments: "Treatment",
   exposures: "Exposures",
 };
+
+export const SURVIVAL_PLOT_MIN_COUNT = 10;

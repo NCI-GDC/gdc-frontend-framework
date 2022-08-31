@@ -1,4 +1,5 @@
-import Image from "next/image";
+import { Image } from "@/components/Image";
+
 const NullApp: React.FC = () => {
   return (
     <div className=" flex flex-col bg-base-lighter items-center justify-center  w-100 h-screen/2 m-4 rounded-lg shadow-lg">

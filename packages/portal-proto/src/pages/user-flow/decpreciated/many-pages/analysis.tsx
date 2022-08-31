@@ -1,5 +1,5 @@
 import { NextPage } from "next";
-import Image from "next/image";
+import { Image } from "@/components/Image";
 import React, { PropsWithChildren, useState } from "react";
 import ReactModal from "react-modal";
 import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";

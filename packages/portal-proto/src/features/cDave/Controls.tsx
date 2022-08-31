@@ -123,7 +123,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
   field,
   updateFields,
   activeFields,
-  searchTerm,
+  searchTerm = "",
 }: FieldControlProps) => {
   const [checked, setChecked] = useState(DEFAULT_FIELDS.includes(field.full));
 
@@ -174,7 +174,9 @@ const FieldControl: React.FC<FieldControlProps> = ({
               id={`switch-${field.full}`}
             />
           </div>
-          <Highlight highlight={searchTerm}>{field.description}</Highlight>
+          <Highlight highlight={searchTerm}>
+            {field?.description || ""}
+          </Highlight>
         </>
       ) : (
         <div className="flex justify-between cursor-pointer bg-none">
@@ -205,7 +207,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
                   ),
                 },
                 "&:checked": {
-                  color:
+                  backgroundColor:
                     tailwindConfig.theme.extend.colors[
                       COLOR_MAP[field.field_type]
                     ]?.DEFAULT,
@@ -278,6 +280,7 @@ const Controls: React.FC<ControlPanelProps> = ({
           aria-label={"Collapse/Expand controls"}
           aria-controls={"cdave-control-panel"}
           aria-expanded={controlsExpanded}
+          className="text-nci-gray"
         >
           {controlsExpanded ? <DoubleLeftIcon /> : <DoubleRightIcon />}
         </ActionIcon>
