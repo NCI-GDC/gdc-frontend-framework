@@ -2,8 +2,8 @@ import React from "react";
 import { GdcFile, hideModal, useCoreDispatch } from "@gff/core";
 import { Button, Text, Textarea } from "@mantine/core";
 import { BaseModal } from "../BaseModal";
-import download from "./download";
 import { useForm } from "@mantine/form";
+import download from "src/utils/download";
 
 export const processBAMSliceInput = (userInput: string) => {
   if (userInput) {
