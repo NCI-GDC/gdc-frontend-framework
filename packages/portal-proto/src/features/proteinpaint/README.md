@@ -1,5 +1,7 @@
 # Notes for Proteinpaint Developers
 
+## NPM link
+
 When developing analysis tool features using Proteinpaint, `npm link`
 should be used to simplify the dynamic rebundling of updated Proteinpaint
 code as a node_module within the GFF dependencies.
@@ -7,21 +9,30 @@ code as a node_module within the GFF dependencies.
 From the gdc-frontend-framework directory,
 
 ```bash
-cd path/to/proteinpaint/client
-npm link
+npm link path/to/proteinpaint/client
+rm -rf packages/portal-proto/node_modules/@stjude
+rm -rf packages/portal-proto/.next
 
-cd path/to/gdc-frontend-framework
-
-# !!! next.js seems to cache the proteinpaint bundle even after using `npm link` !!!
-# so portal-proto/.next/static/chunks/*proteinpaint* do not get updated with edits to the PP code
+# NOTES for above:
 #
-# !!! TEMPORARY WORKAROUND (do not commit!!!):
-# vim packages/portal-proto/package.json
-# remove the entry for dependencies['@stjude/proteinpaint-client'] ONLY DURING DEV WORK, do not commit
+# An issue with npm link and workspaces: the non-linked @stjude/proteinpaint-client package
+# may be moved to portal-proto/node_modules, creating 2 separate modules of the same package,
+# must ensure only the linked module is used for bundling so delete
 #
-# probable cause: nextjs sees that dependencies['@stjude/proteinpaint-client'] is a tarball
-# and assumes that it is static, with considering that `npm link` has been used for this dependency
+# also not able to do a simpler
+# `cd packages/portal-proto && npm link path/to/proteinpaint/client`,
+# where the linked module would be in portal-proto/node_modules instead of the
+# other way around
+```
 
-npm link @stjude/proteinpaint-client
+## Testing
+
+Uncomment or add this entry to portal-proto/jest.config.ts to make the code is transformed properly:
+
+```ts
+transform: {
+	"proteinpaint/client": "ts-jest"
+},
+transformIgnorePatterns: [..., "!proteinpaint"]
 
 ```
