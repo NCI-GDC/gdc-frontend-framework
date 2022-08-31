@@ -573,6 +573,10 @@ module.exports = {
     "./src/features/**/*.{js,ts,jsx,tsx}",
   ],
   safelist: [
+    "primary",
+    "secondary",
+    "text-accent",
+    "text-accent-content",
     "bg-gdc-survival-0",
     "bg-gdc-survival-1",
     "bg-gdc-survival-2",
