@@ -21,7 +21,7 @@ Install npm:
     - npm install
 
   cache:
-    key: build-cache
+    key: $CI_COMMIT_REF_SLUG
     paths:
       - ../gdc-frontend-framework
     policy: push
@@ -32,7 +32,7 @@ Type Check for core:
     - cd packages/core
     - npm run build:clean
   cache:
-    key: build-cache
+    key: $CI_COMMIT_REF_SLUG
     paths:
       - ../gdc-frontend-framework
   allow_failure: true
@@ -44,7 +44,7 @@ Type Check for portal-proto:
     - cd packages/portal-proto
     - npm run compile
   cache:
-    key: build-cache
+    key: $CI_COMMIT_REF_SLUG
     paths:
       - ../gdc-frontend-framework
   allow_failure: true
@@ -54,7 +54,7 @@ Linting:
   script:
     - npm run lint
   cache:
-    key: build-cache
+    key: $CI_COMMIT_REF_SLUG
     paths:
       - ../gdc-frontend-framework
 
@@ -63,7 +63,7 @@ Prettier Checks:
   script:
     - npm run format:check
   cache:
-    key: build-cache
+    key: $CI_COMMIT_REF_SLUG
     paths:
       - ../gdc-frontend-framework
   allow_failure: true
@@ -74,7 +74,7 @@ Run all tests:
   script:
     - npm run test:all
   cache:
-    key: build-cache
+    key: $CI_COMMIT_REF_SLUG
     paths:
       - ../gdc-frontend-framework
   allow_failure: true
@@ -93,7 +93,7 @@ build docker:
     - docker build --build-arg "NPM_REGISTRY=https://nexus.osdc.io/repository/npm-all/" -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME-${CI_COMMIT_SHORT_SHA} .
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME-${CI_COMMIT_SHORT_SHA}
   cache:
-    key: build-cache
+    key: $CI_COMMIT_REF_SLUG
     paths:
       - ../gdc-frontend-framework
 
