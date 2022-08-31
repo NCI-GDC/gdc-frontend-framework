@@ -11,7 +11,6 @@ import { annotationsReducer } from "./features/annotations/annotationsSlice";
 import { casesReducer } from "./features/cases/casesSlice";
 import { ssmPlotReducer } from "./features/cancerDistribution/ssmPlot";
 import { cnvPlotReducer } from "./features/cancerDistribution/cnvPlot";
-import { survivalReducer } from "./features/survival/survivalSlice";
 import { oncoGridReducer } from "./features/oncoGrid/oncoGridSlice";
 import { genomicReducers } from "./features/genomic/genomicSlice";
 import { imageDetailsReducer } from "./features/imageDetails/imageDetailsSlice";
@@ -26,6 +25,10 @@ import {
   cohortApiReducer,
   cohortApiSliceReducerPath,
 } from "./features/api/cohortApiSlice";
+import {
+  survivalApiSliceReducerPath,
+  survivalApiReducer,
+} from "./features/survival/survivalApiSlice";
 import { biospecimenReducer } from "./features/biospecimen/biospecimenSlice";
 import { clinicalDataAnalysisReducer } from "./features/clinicalDataAnalysis";
 import { caseSummarySliceReducer } from "./features/cases/caseSummarySlice";
@@ -47,7 +50,6 @@ export const reducers = combineReducers({
   cases: casesReducer,
   ssmPlot: ssmPlotReducer,
   cnvPlot: cnvPlotReducer,
-  survival: survivalReducer,
   oncogrid: oncoGridReducer,
   genomic: genomicReducers,
   imageDetails: imageDetailsReducer,
@@ -64,6 +66,7 @@ export const reducers = combineReducers({
   userInfo: userDetailsReducer,
   modals: modalReducer,
   [cohortApiSliceReducerPath]: cohortApiReducer,
+  [survivalApiSliceReducerPath]: survivalApiReducer,
 });
 
 export type CoreState = ReturnType<typeof reducers>;

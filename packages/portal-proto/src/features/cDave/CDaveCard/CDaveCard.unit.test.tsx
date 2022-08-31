@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
 import * as core from "@gff/core";
-import * as facetHooks from "../facets/hooks";
+import * as facetHooks from "../../facets/hooks";
 import CDaveCard from "./CDaveCard";
 
 describe("CDaveCard", () => {
@@ -77,6 +77,31 @@ describe("CDaveCard", () => {
     ).toBeInTheDocument();
   });
 
+  it("categorical results sorted by count", () => {
+    jest
+      .spyOn(core, "useCoreSelector")
+      .mockReturnValue({ field: "demographic.gender", type: "keyword" });
+
+    const data = {
+      buckets: [
+        { doc_count: 500, key: "female" },
+        { doc_count: 1000, key: "_missing" },
+      ],
+    };
+
+    const { getAllByRole } = render(
+      <CDaveCard
+        data={data}
+        field={""}
+        updateFields={jest.fn()}
+        initialDashboardRender
+      />,
+    );
+
+    expect(getAllByRole("row")[1]).toHaveTextContent("missing");
+    expect(getAllByRole("row")[2]).toHaveTextContent("female");
+  });
+
   it("continuous result with data", () => {
     jest.spyOn(core, "useCoreSelector").mockReturnValue({
       field: "diagnosis.days_to_treatment_start",
@@ -85,6 +110,7 @@ describe("CDaveCard", () => {
     jest.spyOn(facetHooks, "useRangeFacet").mockReturnValue({
       data: { "7201.0-12255.8": 10, "12255.8-17310.6": 90 },
       isFetching: false,
+      isSuccess: true,
     } as any);
 
     const { getByRole } = render(
@@ -112,6 +138,7 @@ describe("CDaveCard", () => {
     jest.spyOn(facetHooks, "useRangeFacet").mockReturnValue({
       data: { "-28.0-166.8000001": 38 },
       isFetching: false,
+      isSuccess: true,
     } as any);
 
     const { getByRole } = render(

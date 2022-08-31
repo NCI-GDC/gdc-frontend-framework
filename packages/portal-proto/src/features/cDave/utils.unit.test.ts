@@ -1,4 +1,3 @@
-import { Statistics } from "@gff/core";
 import {
   createBuckets,
   filterUsefulFacets,
@@ -48,13 +47,7 @@ describe("filterUsefulFacets", () => {
 
 describe("createBuckets", () => {
   it("standard bucket", () => {
-    const stats = {
-      count: 1068,
-      max: 32475,
-      min: 7201,
-    };
-
-    expect(createBuckets(stats as Statistics)).toEqual([
+    expect(createBuckets(7201, 32475)).toEqual([
       { from: 7201, to: 12255.8 },
       { from: 12255.8, to: 17310.6 },
       { from: 17310.6, to: 22365.4 },
@@ -64,14 +57,15 @@ describe("createBuckets", () => {
   });
 
   it("min/max the same bucket", () => {
-    const stats = {
-      count: 2,
-      max: 850,
-      min: 850,
-    };
+    expect(createBuckets(850, 850)).toEqual([{ from: 850, to: 851 }]);
+  });
 
-    expect(createBuckets(stats as Statistics)).toEqual([
-      { from: 850, to: 851 },
+  it("custom interval", () => {
+    expect(createBuckets(0, 2.25, 0.5)).toEqual([
+      { from: 0, to: 0.5 },
+      { from: 0.5, to: 1 },
+      { from: 1, to: 1.5 },
+      { from: 1.5, to: 2.25 },
     ]);
   });
 });
