@@ -14,6 +14,7 @@
   "dependencies": {
     "@gff/core": "0.0.1",
     "@mantine/core": "^5.0.2",
+    "@mantine/form": "^5.2.4",
     "@mantine/hooks": "^5.0.2",
     "@mantine/next": "^5.0.2",
     "@mantine/notifications": "^5.0.2",

@@ -1,10 +1,4 @@
-import {
-  CoreDispatch,
-  fetchSlice,
-  GDC_APP_API_AUTH,
-  Modals,
-  showModal,
-} from "@gff/core";
+import { CoreDispatch, GDC_APP_API_AUTH, Modals, showModal } from "@gff/core";
 import { Button } from "@mantine/core";
 import { cleanNotifications, showNotification } from "@mantine/notifications";
 import { isPlainObject, includes, reduce } from "lodash";
@@ -13,11 +7,11 @@ import { RiCloseCircleLine as CloseIcon } from "react-icons/ri";
 
 const getBody = (iframe) => {
   const document = iframe.contentWindow || iframe.contentDocument;
-  console.log("DOCUMENT: ", document);
+  console.log(document);
   return (document.document || document).body;
 };
 
-const toHtml = (key, value) =>
+const toHtml = (key: string, value: any) =>
   `<input
     type="hidden"
     name="${key}"
@@ -33,18 +27,20 @@ const arrayToStringFields = ["expand", "fields", "facets"];
 const arrayToStringOnFields = (key, value, fields) =>
   includes(fields, key) ? [].concat(value).join() : value;
 
-const download = ({
-  url,
+const download = async ({
+  endpoint,
   params,
   method = "GET",
   done,
   dispatch,
+  queryParams,
 }: {
-  url: string;
-  params: any;
+  endpoint: string;
+  params: Record<string, any>;
   method: string;
   done: () => void;
   dispatch: CoreDispatch;
+  queryParams?: string;
   altMessage?: boolean;
 }) => {
   let timeoutPromise = null;
@@ -101,7 +97,6 @@ const download = ({
     "",
   );
 
-  console.log("fields:", fields);
   const iFrame = document.createElement("iframe");
   iFrame.style.display = "none";
   iFrame.src = "about:blank";
@@ -111,16 +106,23 @@ const download = ({
   document.body.appendChild(iFrame);
   const form = document.createElement("form");
   form.method = method.toUpperCase();
-  form.action = urlJoin(GDC_APP_API_AUTH, url);
+  form.action = urlJoin(GDC_APP_API_AUTH, endpoint);
   form.innerHTML = fields;
 
   getBody(iFrame).appendChild(form);
 
+  if (!queryParams) {
+    queryParams = Object.keys(params)
+      .map((key) => key + "=" + params[key])
+      .join("&");
+  }
   timeoutPromise = setTimeout(() => {
-    fetchSlice(url, params).then((res) => {
-      console.log("res: ", res);
+    fetch(`${GDC_APP_API_AUTH}/${endpoint}?${queryParams}`, {
+      method: "HEAD",
+    }).then(async (res) => {
       if (res.status === 403) {
         done();
+        // TODO: need to show modal according to what's being downloaded
         dispatch(showModal(Modals.NoAccessModal));
         return;
       }

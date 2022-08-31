@@ -18,11 +18,10 @@ import { AddToCartButton } from "../cart/updateCart";
 import { formatDataForHorizontalTable, parseSlideDetailsInfo } from "./utils";
 import Link from "next/link";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
-import { BAMSlicingButton } from "./BamSlicingButton";
-import { NoAccessModal } from "@/components/Modals/NoAccessModal";
 import { BAMSlicingModal } from "@/components/Modals/BAMSlicingModal/BAMSlicingModal";
 import { BAMSlicingErrorModal } from "@/components/Modals/BAMSlicingModal/BAMSlicingErrorModal";
 import { NoAccessToProjectModal } from "@/components/Modals/NoAccessToProjectModal";
+import { BAMSlicingButton } from "@/features/files/BAMSlicingButton";
 
 const ImageViewer = dynamic(() => import("../../components/ImageViewer"), {
   ssr: false,

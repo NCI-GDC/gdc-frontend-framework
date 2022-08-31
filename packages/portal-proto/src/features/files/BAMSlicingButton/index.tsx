@@ -1,0 +1,44 @@
+import {
+  useCoreDispatch,
+  useCoreSelector,
+  selectUserDetailsInfo,
+  showModal,
+  Modals,
+  GdcFile,
+} from "@gff/core";
+import { Button } from "@mantine/core";
+import { FaCut } from "react-icons/fa";
+import { userCanDownloadFile } from "./util";
+
+export const BAMSlicingButton = ({
+  isActive,
+  file,
+}: {
+  isActive: boolean;
+  file: GdcFile;
+}) => {
+  const dispatch = useCoreDispatch();
+  const userInfo = useCoreSelector((state) => selectUserDetailsInfo(state));
+  const { username } = userInfo?.data || {};
+  return (
+    <Button
+      className="text-nci-gray-lightest bg-nci-blue hover:bg-nci-blue-darker "
+      leftIcon={<FaCut />}
+      loading={isActive}
+      onClick={() => {
+        if (username && userCanDownloadFile({ user: userInfo.data, file })) {
+          dispatch(showModal(Modals.BAMSlicingModal));
+        } else if (
+          username &&
+          !userCanDownloadFile({ user: userInfo.data, file })
+        ) {
+          dispatch(showModal(Modals.NoAccessToProjectModal));
+        } else {
+          dispatch(showModal(Modals.NoAccessModal));
+        }
+      }}
+    >
+      {isActive ? "Slicing" : "BAM Slicing"}
+    </Button>
+  );
+};

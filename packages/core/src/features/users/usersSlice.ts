@@ -66,15 +66,6 @@ export const fetchToken = async (): Promise<{
   throw Error(await response.text());
 };
 
-export const fetchSlice = async (endpoint: string, body: any) => {
-  const queryParams = Object.keys(body)
-    .map((key) => key + "=" + body[key])
-    .join("&");
-  return await fetch(`${GDC_APP_API_AUTH}/${endpoint}?${queryParams}`, {
-    method: "HEAD",
-  });
-};
-
 export interface userSliceInitialStateInterface {
   projects: {
     phs_ids: Record<string, Array<string>>;
