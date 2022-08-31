@@ -25,7 +25,7 @@ import { Button, LoadingOverlay } from "@mantine/core";
 import { NextLink } from "@mantine/next";
 import { useTour } from "@reactour/tour";
 import steps from "../../features/tour/steps";
-import Image from "next/image";
+import { Image } from "@/components/Image";
 import Link from "next/link";
 
 interface UserFlowVariedPagesProps {

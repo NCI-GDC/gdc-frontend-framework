@@ -11,6 +11,7 @@ text-accent-content-darker
 p-1
 font-bold
 cursor-pointer
+text-xs
 `;
 
 interface FacetExpanderProps {
@@ -34,25 +35,27 @@ const FacetExpander: React.FC<FacetExpanderProps> = ({
   return (
     <div className="mt-3 flex flex-row justify-end  border-t-2 p-1.5">
       {remainingValues > 0 && !isGroupExpanded ? (
-        <button onClick={() => onShowChanged(!isGroupExpanded)}>
+        <button
+          onClick={() => onShowChanged(!isGroupExpanded)}
+          data-testid="plus-icon"
+        >
           <div className="flex flex-row flex-nowrap items-center ">
-            <ActionIcon size="sm" color="accent">
-              <MoreIcon key="show-more" size="1.5em" data-testid="plus-icon" />
-            </ActionIcon>
+            <MoreIcon className="text-accent" key="show-more" size="1.5em" />
             <ExpanderLabel>{remainingValues} more</ExpanderLabel>
           </div>
         </button>
       ) : isGroupExpanded ? (
-        <button onClick={() => onShowChanged(!isGroupExpanded)}>
+        <button
+          onClick={() => onShowChanged(!isGroupExpanded)}
+          data-testid="minus-icon"
+        >
           <div className="flex flex-row flex-nowrap items-center ">
-            <ActionIcon size="sm" color="accent">
-              <LessIcon
-                key="show-less"
-                size="1.5em"
-                data-testid="minus-icon"
-                onClick={() => onShowChanged(!isGroupExpanded)}
-              />
-            </ActionIcon>
+            <LessIcon
+              className="text-accent"
+              key="show-less"
+              size="1.5em"
+              onClick={() => onShowChanged(!isGroupExpanded)}
+            />
             <ExpanderLabel>show less</ExpanderLabel>
           </div>
         </button>
