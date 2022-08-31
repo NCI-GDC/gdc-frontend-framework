@@ -163,7 +163,6 @@ const nciCyan = {
   min: "#092A33",
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const nciCyanContrast = {
   min: "#FFFFFF",
   darkest: "#f1f1f1",
@@ -573,10 +572,6 @@ module.exports = {
     "./src/features/**/*.{js,ts,jsx,tsx}",
   ],
   safelist: [
-    "primary",
-    "secondary",
-    "text-accent",
-    "text-accent-content",
     "bg-gdc-survival-0",
     "bg-gdc-survival-1",
     "bg-gdc-survival-2",

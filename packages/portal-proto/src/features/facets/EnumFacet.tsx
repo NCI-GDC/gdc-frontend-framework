@@ -23,7 +23,7 @@ import {
 import { FaUndo as UndoIcon } from "react-icons/fa";
 import { EnumFacetCardProps } from "@/features/facets/types";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
-import { LoadingOverlay, Tooltip } from "@mantine/core";
+import { Checkbox, LoadingOverlay, Tooltip } from "@mantine/core";
 import { isEqual } from "lodash";
 import { FacetIconButton, controlsIconStyle } from "./components";
 import FacetExpander from "@/features/facets/FacetExpander";
@@ -280,15 +280,18 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
                     return (
                       <div
                         key={`${field}-${value}`}
-                        className="flex flex-row gap-x-1 px-2 "
+                        className="flex flex-row items-center gap-x-1 px-2 "
                       >
                         <div className="flex-none">
-                          <input
-                            type="checkbox"
+                          <Checkbox
                             value={value}
+                            size="xs"
+                            color="accent"
                             onChange={handleChange}
                             aria-label={`checkbox for ${field}`}
-                            className="hover:bg-base-darkest text-primary-content-darkest checked:bg-primary-darkest checked:border-bg-primary-darkest focus:outline-none transition duration-200 bg-no-repeat bg-center bg-contain"
+                            classNames={{
+                              input: "hover:bg-accent-darker",
+                            }}
                             checked={
                               !!(selectedEnums && selectedEnums.includes(value))
                             }
@@ -323,8 +326,8 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
                             className="flex flex-row items-center px-2"
                           >
                             <div className="flex-none">
-                              <input
-                                type="checkbox"
+                              <Checkbox
+                                size="xs"
                                 className="bg-base-lightest text-primary-contrast-lightest hover:bg-base-darkest hover:text-base-contrast-darkest"
                               />
                             </div>
