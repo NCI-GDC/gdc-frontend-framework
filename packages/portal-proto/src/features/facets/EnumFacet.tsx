@@ -420,20 +420,22 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
               isFacetView ? "invisible" : ""
             }`}
           >
-            <EnumFacetChart
-              field={field}
-              data={data}
-              selectedEnums={selectedEnums}
-              isSuccess={isSuccess}
-              showTitle={false}
-              maxBins={Math.min(isGroupExpanded ? 16 : Math.min(6, total))}
-              height={
-                cardRef.current === null ||
-                cardRef.current.getBoundingClientRect().height < 200
-                  ? 400
-                  : cardRef.current.getBoundingClientRect().height + 500
-              }
-            />
+            {!isFacetView && (
+              <EnumFacetChart
+                field={field}
+                data={data}
+                selectedEnums={selectedEnums}
+                isSuccess={isSuccess}
+                showTitle={false}
+                maxBins={Math.min(isGroupExpanded ? 16 : Math.min(6, total))}
+                height={
+                  cardRef.current === null ||
+                  cardRef.current.getBoundingClientRect().height < 200
+                    ? 400
+                    : cardRef.current.getBoundingClientRect().height + 500
+                }
+              />
+            )}
           </div>
         </div>
       </div>

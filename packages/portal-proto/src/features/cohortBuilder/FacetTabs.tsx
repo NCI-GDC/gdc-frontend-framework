@@ -255,21 +255,21 @@ export const FacetTabs = (): JSX.Element => {
       ? (router.query.tab as string)
       : Object.keys(tabsConfig)[0],
   );
-  console.log("query", router.query);
 
   useEffect(() => {
-    router.push({ query: { ...router.query, tab: activeTab } }, undefined, {
-      scroll: false,
-    });
+    if (activeTab !== router.query?.tab && activeTab !== undefined) {
+      router.push({ query: { ...router.query, tab: activeTab } }, undefined, {
+        scroll: false,
+      });
+    }
   }, [activeTab]);
 
   useEffect(() => {
     if (activeTab !== router.query?.tab) {
       setActiveTab(router.query?.tab as string);
     }
-  }, [router.query?.tab]);
+  }, [router.query?.tab, activeTab, setActiveTab]);
 
-  console.log(tabsConfig);
   return (
     <div className="w-100">
       <StyledFacetTabs

@@ -5,11 +5,7 @@ import { Badge, Highlight, Pagination, Tooltip } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
 import { MdSearch } from "react-icons/md";
 import { FaCheck as CheckIcon } from "react-icons/fa";
-import { selectCohortBuilderConfig, useCoreSelector } from "@gff/core";
-import {
-  search_facets,
-  useFacetSearch,
-} from "@/features/cohortBuilder/dictionary";
+import { useFacetSearch } from "@/features/cohortBuilder/dictionary";
 import { useRouter } from "next/router";
 
 const PAGE_SIZE = 5;
