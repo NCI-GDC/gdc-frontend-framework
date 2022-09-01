@@ -122,7 +122,7 @@ describe("<Controls />", () => {
   });
 
   it("tab hides more than 5 fields", async () => {
-    const { queryByText } = render(
+    const { queryByText, queryByTestId } = render(
       <Controls
         updateFields={jest.fn()}
         controlsExpanded
@@ -166,11 +166,11 @@ describe("<Controls />", () => {
       />,
     );
 
-    const more = queryByText("1 More...");
-    expect(more).toBeInTheDocument();
+    const plusIcon = queryByTestId("plus-icon");
+    expect(queryByText("1 more")).toBeInTheDocument();
     expect(queryByText("Something Else")).not.toBeInTheDocument();
-    await userEvent.click(more);
-    expect(queryByText("Less...")).toBeInTheDocument();
+    await userEvent.click(plusIcon);
+    expect(queryByText("show less")).toBeInTheDocument();
     expect(queryByText("Something Else")).toBeInTheDocument();
   });
 

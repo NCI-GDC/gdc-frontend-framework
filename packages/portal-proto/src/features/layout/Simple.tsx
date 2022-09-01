@@ -36,6 +36,7 @@ const Header: React.FC = () => {
             src="/NIH_GDC_DataPortal-logo.svg"
             layout="fill"
             objectFit="contain"
+            alt="NCI GDC Data Portal logo"
           />
         </div>
         <div className="flex-grow">{/* middle section of header */}</div>

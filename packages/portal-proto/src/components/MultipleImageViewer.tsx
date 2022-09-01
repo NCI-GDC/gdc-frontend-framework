@@ -126,8 +126,8 @@ export const MultipleImageViewer = ({
             </Alert>
           </div>
         ) : (
-          <div className="flex flex-col border-2 border-nci-gray-lighter m-2 mt-0">
-            <div className="flex border-b-2 border-b-nci-gray-lighter">
+          <div className="flex flex-col border-2 border-base-lighter m-2 mt-0">
+            <div className="flex border-b-2 border-b-base-lighter">
               <div className="flex flex-col w-1/6">
                 <div className="flex">
                   <h2 className="p-2 text-xl ml-4 text-black">Cases</h2>
@@ -151,7 +151,7 @@ export const MultipleImageViewer = ({
                     onChange={(e) => setSearchText(e.target.value)}
                     rightSection={
                       <Badge
-                        color="blue"
+                        color="primary"
                         variant="filled"
                         className="cursor-pointer"
                         onClick={performSearch}
@@ -217,9 +217,9 @@ export const MultipleImageViewer = ({
                     classNames={{
                       root: "max-h-[550px] overflow-x-hidden min-w-[40%]",
                       tab: "ml-2 mt-1",
-                      tabsList: "bg-grey overflow-y-auto",
+                      tabsList: "bg-base-light overflow-y-auto",
                       tabLabel:
-                        "text-xs text-nci-gray-darkest px-2 font-medium ",
+                        "text-xs text-primary-content-darkest px-2 font-medium ",
                       panel: "max-h-[550px] overflow-y-auto",
                     }}
                     styles={(theme) => ({
@@ -293,7 +293,7 @@ export const MultipleImageViewer = ({
                   }}
                   size="xs"
                   classNames={{
-                    root: "bg-nci-gray-lighter hover:bg-nci-gray-dark",
+                    root: "bg-primary-lighter hover:bg-primary-dark",
                   }}
                 >
                   Show More

@@ -17,7 +17,7 @@ import { useCookies } from "react-cookie";
 
 const ContextApiTest: NextPage = () => {
   const button_class =
-    "text-2xl border rounded bg-nci-gray-lighter opacity-75 hover:opacity-100";
+    "text-2xl border rounded bg-base-lighter opacity-75 hover:opacity-100";
 
   // for testing authorization via cookie
   const [cookie, setCookie] = useCookies(["context-id"]);
@@ -78,7 +78,7 @@ const ContextApiTest: NextPage = () => {
           setCurrentContextId(menu_item.value);
           setCookie("context-id", menu_item.value);
         }}
-        className="border-nci-gray-light w-80 p-0"
+        className="border-base-light w-80 p-0"
         aria-label="Select context"
       />
     );
@@ -114,25 +114,25 @@ const ContextApiTest: NextPage = () => {
   // render page
   return (
     <div>
-      <div className="font-montserrat text-xl text-nci-gray-darker p-4 shadow-md transition-colors">
+      <div className="font-montserrat text-xl text-primary-content-darker p-4 shadow-md transition-colors">
         <h1>Cookie Settings</h1>
         <br></br>
         Current Context-ID in Cookie: {cookie["context-id"]}
       </div>
 
-      <div className="font-montserrat text-xl text-nci-gray-darker p-4 shadow-md transition-colors">
+      <div className="font-montserrat text-xl text-primary-content-darker p-4 shadow-md transition-colors">
         <h1>Context Selector</h1>
         <br></br>
         {contextSelectContent}
       </div>
 
-      <div className="font-montserrat text-xl text-nci-gray-darker p-4 shadow-md transition-colors">
+      <div className="font-montserrat text-xl text-primary-content-darker p-4 shadow-md transition-colors">
         <h1>Current Context</h1>
         <br></br>
         {contextContent}
       </div>
 
-      <div className="font-montserrat text-xl text-nci-gray-darker p-4 shadow-md transition-colors">
+      <div className="font-montserrat text-xl text-primary-content-darker p-4 shadow-md transition-colors">
         <h1>Generate New Context</h1>
         <br></br>
         <button className={button_class} onClick={() => addContext()}>
@@ -140,7 +140,7 @@ const ContextApiTest: NextPage = () => {
         </button>
       </div>
 
-      <div className="font-montserrat text-xl text-nci-gray-darker p-4 shadow-md transition-colors">
+      <div className="font-montserrat text-xl text-primary-content-darker p-4 shadow-md transition-colors">
         <h1>Contexts List</h1>
         <br></br>
         {contextsListContent}

@@ -1,13 +1,20 @@
 import { NextPage } from "next";
-import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
+import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
+import Link from "next/link";
 import { Image } from "@/components/Image";
 import { useState } from "react";
 import ReactModal from "react-modal";
-import { ContextualStudiesView } from "../../../features/studies/StudiesViewLeft";
-import { headerElements } from "@/features/user-flow/many-pages/navigation-utils";
+import { ContextualStudiesView } from "@/features/studies/StudiesView";
 
-const StudiesPageLeft: NextPage = () => {
+const StudiesPage: NextPage = () => {
   const [showModal, setShowModal] = useState(false);
+
+  const headerElements = [
+    "Cohorts",
+    <Link key="Analysis" href="/user-flow/depreciated/many-pages-v2/analysis">
+      Analysis
+    </Link>,
+  ];
 
   const SingleStudyModal = () => {
     return (
@@ -19,7 +26,7 @@ const StudiesPageLeft: NextPage = () => {
               layout="responsive"
               width="100%"
               height="100%"
-            />
+            ></Image>
           </div>
         </div>
       </ReactModal>
@@ -28,7 +35,7 @@ const StudiesPageLeft: NextPage = () => {
 
   return (
     <UserFlowVariedPages
-      {...{ indexPath: "/user-flow/many-pages", headerElements }}
+      {...{ indexPath: "/user-flow/many-pages-v2", headerElements }}
     >
       <div className="flex flex-col p-4 gap-y-4">
         {SingleStudyModal()}
@@ -42,4 +49,4 @@ const StudiesPageLeft: NextPage = () => {
   );
 };
 
-export default StudiesPageLeft;
+export default StudiesPage;

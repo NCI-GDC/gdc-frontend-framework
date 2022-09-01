@@ -27,7 +27,7 @@ export const fetchFacetByNameGQL = createAsyncThunk<
   FetchFacetByNameGQLProps,
   { dispatch: CoreDispatch; state: CoreState }
 >(
-  "facet/fetchCasesFacetByName",
+  "facet/fetchCasesFacetByNameGQL",
   async (
     {
       field,

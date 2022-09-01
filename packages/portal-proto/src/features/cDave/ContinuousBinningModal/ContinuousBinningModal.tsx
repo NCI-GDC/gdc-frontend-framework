@@ -149,7 +149,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
         Configure your bins, then click <b>Save Bins</b> to update the analysis
         plots.
       </p>
-      <div className="flex h-10 items-center border-nci-gray-lightest border-solid border-1 p-2 mb-4 mt-2">
+      <div className="flex h-10 items-center border-base-lightest border-solid border-1 p-2 mb-4 mt-2">
         <p>
           Available values from <b>{stats.min}</b> to{" "}
           <b>
@@ -161,7 +161,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
           Bin size in quarters: <b>{binSize}</b>
         </p>
       </div>
-      <div className="bg-nci-gray-lightest p-4 flex flex-col">
+      <div className="bg-base-lightest p-4 flex flex-col">
         <div className="flex">
           <div className="flex-grow">
             {"Define bins by:"}
@@ -191,7 +191,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                 classNames={{
                   wrapper: `px-2`,
                   input:
-                    binMethod === "ranges" ? "bg-nci-gray-lightest" : undefined,
+                    binMethod === "ranges" ? "bg-base-lightest" : undefined,
                 }}
               />
               <label htmlFor="continuous-bin-modal-interval-min">
@@ -203,7 +203,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                 classNames={{
                   wrapper: `px-2`,
                   input:
-                    binMethod === "ranges" ? "bg-nci-gray-lightest" : undefined,
+                    binMethod === "ranges" ? "bg-base-lightest" : undefined,
                 }}
               />
               <label htmlFor="continuous-bin-modal-interval-max">
@@ -215,14 +215,14 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                 classNames={{
                   wrapper: `px-2`,
                   input:
-                    binMethod === "ranges" ? "bg-nci-gray-lightest" : undefined,
+                    binMethod === "ranges" ? "bg-base-lightest" : undefined,
                 }}
               />
             </div>
           </div>
           <Button
             aria-label="reset bins"
-            className="p-2 bg-white text-nci-gray border-nci-gray"
+            className="p-2 bg-base-min text-base-contrast-min border-base"
             onClick={() => {
               intervalForm.setValues({
                 setIntervalSize: String(binSize),
@@ -264,7 +264,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
             className="border-separate"
             style={{ borderSpacing: "0 10px" }}
           >
-            <thead className="bg-nci-gray-lighter font-bold mb-2 text-left">
+            <thead className="bg-base-lighter font-bold mb-2 text-left">
               <tr>
                 <th className="p-1">Bin Name</th>
                 <th className="p-1">From</th>
@@ -283,7 +283,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                         wrapper: "w-11/12",
                         input:
                           binMethod === "interval"
-                            ? "bg-nci-gray-lightest"
+                            ? "bg-base-lightest"
                             : undefined,
                       }}
                       onBlur={() =>
@@ -301,7 +301,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                         wrapper: "w-11/12",
                         input:
                           binMethod === "interval"
-                            ? "bg-nci-gray-lightest"
+                            ? "bg-base-lightest"
                             : undefined,
                       }}
                       onBlur={() =>
@@ -319,7 +319,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                         wrapper: "w-11/12",
                         input:
                           binMethod === "interval"
-                            ? "bg-nci-gray-lightest"
+                            ? "bg-base-lightest"
                             : undefined,
                       }}
                       onBlur={() =>
@@ -357,8 +357,8 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                             rangeForm.values.ranges[idx].from === "" ||
                             rangeForm.values.ranges[idx].to === ""
                           )
-                            ? "bg-white text-nci-gray border-nci-gray"
-                            : "bg-nci-gray-lighter text-white"
+                            ? "bg-base-min text-base-contrast-min border-base"
+                            : "bg-base-lighter text-base-contrast-lighter"
                         }
                       >
                         Add
@@ -374,8 +374,8 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                         aria-label="delete row"
                         className={
                           binMethod === "ranges"
-                            ? "bg-white text-nci-gray border-nci-gray"
-                            : "bg-nci-gray-lighter"
+                            ? "bg-base text-base-contrast border-base"
+                            : "bg-base-lighter"
                         }
                       >
                         <TrashIcon />
@@ -391,12 +391,12 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
       <div className="mt-2 flex gap-2 justify-end">
         <Button
           onClick={() => setModalOpen(false)}
-          className="bg-nci-blue-darkest"
+          className="bg-primary-darkest"
         >
           Cancel
         </Button>
         <Button
-          className="bg-nci-blue-darkest"
+          className="bg-primary-darkest"
           onClick={saveBins}
           disabled={
             binMethod === "interval"

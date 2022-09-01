@@ -101,7 +101,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <Button
                   rightIcon={<MdArrowDropDown size="2em" />}
                   variant="subtle"
-                  className="text-nci-blue"
+                  className="text-primary"
                   classNames={{ rightIcon: "ml-0" }}
                   data-testid="usernameButton"
                 >

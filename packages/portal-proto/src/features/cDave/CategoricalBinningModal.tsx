@@ -15,6 +15,7 @@ import {
 } from "react-icons/md";
 import { createKeyboardAccessibleFunction } from "src/utils";
 import { CategoricalBins } from "./types";
+import FunctionButton from "@/components/FunctionButton";
 
 const DEFAULT_GROUP_NAME_REGEX = /selected value \d+/;
 
@@ -168,12 +169,12 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
       </p>
       <div
         data-testid="cat-bin-modal-values"
-        className="border-nci-gray-lightest border-solid border-1 mt-2"
+        className="border-base-lightest border-solid border-1 mt-2"
       >
-        <div className="flex justify-between bg-nci-gray-lightest p-2">
+        <div className="flex justify-between bg-base-lightest p-2">
           <h3 className="font-bold my-auto">Values</h3>
           <div className="gap-1 flex">
-            <Button
+            <FunctionButton
               onClick={() => {
                 setEditField(undefined);
                 setHiddenValues({});
@@ -181,11 +182,10 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
                 setSelectedValues({});
               }}
               aria-label="reset groups"
-              className="bg-nci-gray"
             >
               <ResetIcon size={20} />
-            </Button>
-            <Button
+            </FunctionButton>
+            <FunctionButton
               onClick={group}
               disabled={
                 Object.entries(values).filter(([k, v]) =>
@@ -195,11 +195,10 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
                 ).length < 2
               }
               leftIcon={<GroupIcon />}
-              className="bg-nci-gray"
             >
               Group
-            </Button>
-            <Button
+            </FunctionButton>
+            <FunctionButton
               onClick={() => {
                 setEditField(undefined);
                 setValues({
@@ -218,18 +217,16 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
                 )
               }
               leftIcon={<UngroupIcon />}
-              className="bg-nci-gray"
             >
               Ungroup
-            </Button>
-            <Button
+            </FunctionButton>
+            <FunctionButton
               onClick={hideValues}
               disabled={Object.keys(selectedValues).length === 0}
               leftIcon={<HideIcon />}
-              className="bg-nci-gray"
             >
               Hide
-            </Button>
+            </FunctionButton>
           </div>
         </div>
         <ul className="p-2">
@@ -266,11 +263,11 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
       </div>
       <div
         data-testid="cat-bin-modal-hidden-values"
-        className="border-nci-gray-lightest border-solid border-1 mt-2"
+        className="border-base-lightest border-solid border-1 mt-2"
       >
-        <div className="flex justify-between bg-nci-gray-lightest p-2">
+        <div className="flex justify-between bg-base-lightest p-2">
           <h3 className="font-bold my-auto">Hidden Values</h3>
-          <Button
+          <FunctionButton
             disabled={Object.keys(selectedHiddenValues).length === 0}
             onClick={() => {
               setEditField(undefined);
@@ -284,10 +281,9 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
               setSelectedHiddenValues({});
             }}
             leftIcon={<ShowIcon />}
-            className="bg-nci-gray"
           >
             Show
-          </Button>
+          </FunctionButton>
         </div>
         <ul className="min-h-[100px] p-2">
           {Object.entries(hiddenValues)
@@ -307,12 +303,12 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
       <div className="mt-2 flex gap-2 justify-end">
         <Button
           onClick={() => setModalOpen(false)}
-          className="bg-nci-blue-darkest"
+          className="bg-primary-darkest"
         >
           Cancel
         </Button>
         <Button
-          className="bg-nci-blue-darkest"
+          className="bg-primary-darkest"
           onClick={() => {
             setEditField(undefined);
             if (!isEqual(values, results)) {
@@ -356,7 +352,7 @@ const ListValue: React.FC<ListValueProps> = ({
   return (
     <li
       className={`${
-        selectedValues?.[name] ? "bg-nci-yellow-lighter" : ""
+        selectedValues?.[name] ? "bg-accent-warm-light" : ""
       } cursor-pointer list-inside`}
     >
       <div
@@ -465,7 +461,7 @@ const GroupInput: React.FC<GroupInputProps> = ({
           role="button"
           className={`${
             Object.keys(groupValues).every((k) => selectedValues?.[k])
-              ? "bg-nci-yellow-lighter"
+              ? "bg-accent-warm-light"
               : ""
           } cursor-pointer flex items-center`}
         >

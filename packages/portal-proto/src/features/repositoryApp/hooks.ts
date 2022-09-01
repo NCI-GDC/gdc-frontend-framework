@@ -117,17 +117,21 @@ export const useLocalFilters = (
   const prevEnumValues = usePrevious(enumValues);
 
   useEffect(() => {
+    const selectCohortAndRepositoryFilters = () => allFilters;
     if (
       !facet ||
       !isEqual(prevAllFilters, allFilters) ||
       !isEqual(prevEnumValues, enumValues)
     ) {
       coreDispatch(
-        // all filters are handled and cached by gff/core
+        // pass selectCohortAndRepositoryFilters to fetchFacetByNameGQL to
+        // include both the cohort and local Repository filters.
+        // This is an example of cohort centric + local filters
         fetchFacetByNameGQL({
           field: field,
           docType: docType,
           index: indexType,
+          filterSelector: selectCohortAndRepositoryFilters,
         }),
       );
     }

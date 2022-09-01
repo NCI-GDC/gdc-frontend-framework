@@ -134,7 +134,7 @@ export const BaseExplorationPage: React.FC<BaseExplorationPageProps> = ({
   return (
     <UserFlowVariedPages {...{ indexPath, headerElements }}>
       <div className="flex flex-col gap-y-4 p-4">
-        <div className="border p-4 border-nci-gray-lighter bg-white">
+        <div className="border p-4 border-base-lighter bg-base-lightest">
           <CohortManager
             handleFileSelected={(file: GdcFile) => {
               setCurrentFile(file);
@@ -146,13 +146,16 @@ export const BaseExplorationPage: React.FC<BaseExplorationPageProps> = ({
             }}
           />
         </div>
-        <div className="bg-white">
+        <div className="bg-base-lightest">
           <CohortExpressions />
         </div>
-        <div className="bg-white">
+        <div className="bg-base-lightest">
           <CohortSummary />
         </div>
-        <div className="border p-4 border-gray-400 bg-white" ref={topOfApps}>
+        <div
+          className="border p-4 border-gray-400 bg-base-lightest"
+          ref={topOfApps}
+        >
           {currentApp === "cohort-viewer" ? (
             <CohortViewer
               goBack={() => setCurrentApp("appSelector")}

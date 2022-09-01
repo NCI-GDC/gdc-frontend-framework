@@ -1,12 +1,12 @@
 import { NextPage } from "next";
-import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
+import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
 import { Image } from "@/components/Image";
 import { useState } from "react";
 import ReactModal from "react-modal";
-import { ContextualStudiesView } from "../../../features/studies/StudiesView";
+import { ContextualStudiesView } from "@/features/studies/StudiesViewLeft";
 import { headerElements } from "@/features/user-flow/many-pages/navigation-utils";
 
-const StudiesPage: NextPage = () => {
+const StudiesPageLeft: NextPage = () => {
   const [showModal, setShowModal] = useState(false);
 
   const SingleStudyModal = () => {
@@ -42,4 +42,4 @@ const StudiesPage: NextPage = () => {
   );
 };
 
-export default StudiesPage;
+export default StudiesPageLeft;

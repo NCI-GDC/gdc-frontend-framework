@@ -87,7 +87,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
                 <Tooltip label="Download image or data" withArrow withinPortal>
                   <ActionIcon
                     variant="outline"
-                    className="text-nci-blue-darkest border-nci-blue-darkest"
+                    className="bg-base-max text-base-contrast-max- border-primary-darkest"
                     aria-label="Download image or data"
                   >
                     <DownloadIcon />

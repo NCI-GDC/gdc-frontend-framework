@@ -16,7 +16,7 @@ const FullCohortBuilder: React.FC<CohortGroupProps> = ({
   ]);
 
   return (
-    <div className="bg-white">
+    <div className="bg-base-lightest">
       <CohortGroup cohorts={cohorts} simpleMode={simpleMode} />
       <MetaSearch />
       <SummaryCharts fields={summaryFields} />

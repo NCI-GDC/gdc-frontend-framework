@@ -35,7 +35,7 @@ const CardControls: React.FC<CardControlsProps> = ({
             <Menu.Target>
               <Button
                 rightIcon={<DownIcon size={20} />}
-                className="bg-white text-nci-gray-darkest border-nci-gray"
+                className="bg-base-max text-base-contrast-max border-base"
               >
                 Select Action
               </Button>
@@ -46,7 +46,7 @@ const CardControls: React.FC<CardControlsProps> = ({
               <Menu.Item disabled>Remove from cohort</Menu.Item>
             </Menu.Dropdown>
           </Menu>
-          <Button className="bg-white text-nci-gray-darkest border-nci-gray ml-2">
+          <Button className="bg-base-max text-base-contrast-max border-base ml-2">
             TSV
           </Button>
         </div>
@@ -54,7 +54,7 @@ const CardControls: React.FC<CardControlsProps> = ({
           <Menu.Target>
             <Button
               rightIcon={<DownIcon size={20} />}
-              className="bg-white text-nci-gray-darkest border-nci-gray"
+              className="bg-base-max text-base-contrast-max border-base border-base"
             >
               Customize Bins
             </Button>

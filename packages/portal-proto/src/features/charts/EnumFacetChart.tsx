@@ -16,7 +16,7 @@ import {
   VictoryStack,
   VictoryTooltip,
 } from "victory";
-import * as tailwindConfig from "tailwind.config";
+import { useMantineTheme } from "@mantine/core";
 import ChartTitleBar from "./ChartTitleBar";
 import { capitalize, truncateString } from "src/utils";
 
@@ -100,7 +100,7 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
         />
       ) : (
         <div className="flex flex-row items-center justify-center w-100">
-          <Loader color="gray" size={60} />
+          <Loader color="chart" size={60} />
         </div>
       )}
     </div>
@@ -176,6 +176,7 @@ const EnumBarChart: React.FC<BarChartProps> = ({
 }: BarChartProps) => {
   const max = Math.max(...data.map((d) => d.y));
   const formatter = Intl.NumberFormat("en", { notation: "compact" });
+  const theme = useMantineTheme();
 
   return (
     <VictoryChart
@@ -223,7 +224,9 @@ const EnumBarChart: React.FC<BarChartProps> = ({
           }
           style={{
             data: {
-              fill: tailwindConfig.theme.extend.colors["gdc-blue"].darker,
+              fill: theme.colors.chart[6],
+              stroke: theme.colors.chart[6],
+              strokeWidth: 1,
               width: 22,
             },
           }}
@@ -247,7 +250,9 @@ const EnumBarChart: React.FC<BarChartProps> = ({
           y="y"
           style={{
             data: {
-              fill: tailwindConfig.theme.extend.colors["gdc-grey"].lighter,
+              fill: theme.colors.base[1],
+              stroke: theme.colors.base[7],
+              strokeWidth: 1,
               width: 22,
             },
           }}

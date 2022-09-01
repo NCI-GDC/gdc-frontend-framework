@@ -93,9 +93,9 @@ const FacetCard: React.FC<FacetCardProps> = ({
           divId={divId}
         />
       </div>
-      <table className="bg-white w-full text-left text-nci-gray-darker">
+      <table className="bg-base-min w-full text-left text-primary-content-darker">
         <thead>
-          <tr className="bg-nci-gray-lightest">
+          <tr className="bg-base-lightest">
             <th>{FIELD_LABELS[field]}</th>
             <th>
               # Cases S<sub>1</sub>
@@ -113,7 +113,7 @@ const FacetCard: React.FC<FacetCardProps> = ({
             const cohort2Value = formattedData[1][idx].count;
             return (
               <tr
-                className={idx % 2 ? null : "bg-gdc-blue-warm-lightest"}
+                className={idx % 2 ? null : "bg-accent-warm-lightest"}
                 key={`${field}_${value}`}
               >
                 <td>{value}</td>

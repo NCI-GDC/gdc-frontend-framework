@@ -18,7 +18,6 @@
     "compile": "lerna run --parallel compile",
     "dev": "lerna run --parallel dev",
     "prepare": "husky install",
-    "compile": "lerna run compile",
     "build": "lerna run build",
     "start": "lerna run --parallel start"
   },
@@ -51,6 +50,7 @@
     "react-use": "^17.3.2",
     "react-window": "^1.8.6",
     "url-join": "^5.0.0",
+    "tinycolor2": "^1.4.2",
     "@datadog/browser-rum": "4.17.1"
   },
   "devDependencies": {
@@ -68,7 +68,7 @@
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "husky": "^7.0.4",
-    "lerna": "^4.0.0",
+    "lerna": "^5.0.0",
     "lint-staged": "^12.3.7",
     "prettier": "^2.3.2"
   },
