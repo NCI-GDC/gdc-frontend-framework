@@ -84,9 +84,7 @@ export const UserProfileModal = ({
       closeButtonLabel="Done"
       withinPortal={false}
     >
-      <div
-        className={`${!data ? "py-15px" : "py-5px"} border-y border-y-nci-gray`}
-      >
+      <div className={`${!data ? "py-15px" : "py-5px"} border-y border-y-base`}>
         {data.length > 0 ? (
           <ScrollableTableWithFixedHeader
             tableData={{
@@ -106,7 +104,7 @@ export const UserProfileModal = ({
                 href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
                 target="_blank"
                 rel="noreferrer"
-                className="text-utility-link underline hover:text-nci-blue-darkest"
+                className="text-utility-link underline hover:text-accent-cool-darkest"
               >
                 how to apply for access to controlled data
               </a>
@@ -120,7 +118,7 @@ export const UserProfileModal = ({
       <div className="flex justify-end mt-2.5">
         <Button
           onClick={() => dispatch(hideModal())}
-          className="bg-nci-blue hover:bg-nci-blue-darker"
+          className="!bg-primary hover:!bg-primary-darker"
         >
           Done
         </Button>

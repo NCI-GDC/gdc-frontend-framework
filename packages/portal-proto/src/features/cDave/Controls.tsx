@@ -280,7 +280,7 @@ const Controls: React.FC<ControlPanelProps> = ({
           aria-label={"Collapse/Expand controls"}
           aria-controls={"cdave-control-panel"}
           aria-expanded={controlsExpanded}
-          className="text-nci-gray"
+          className="text-base"
         >
           {controlsExpanded ? <DoubleLeftIcon /> : <DoubleRightIcon />}
         </ActionIcon>

@@ -29,7 +29,7 @@ const DownloadOptions: React.FC<ChartDownloadProps> = ({
     <div>
       <Tooltip label="Download image or data">
         <button
-          className="px-1.5 min-h-[28px] nim-w-[40px] border-base-light border rounded-[4px] "
+          className="px-1.5 min-h-[28px] nim-w-[40px] border-base-light text-base-contrast-light border rounded-[4px] "
           onClick={() => setDownloadMenuOpen(!downloadMenuOpen)}
         >
           <DownloadIcon size="1.25em" />

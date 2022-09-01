@@ -8,7 +8,7 @@ import AuthorizationTable from "./AuthorizationTable";
 
 const H2 = tw.h2`
   uppercase
-  text-nci-blue
+  text-primary-content-darkest
   font-montserrat
   text-xl
   font-medium

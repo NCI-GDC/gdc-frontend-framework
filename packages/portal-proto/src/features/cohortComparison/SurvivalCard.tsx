@@ -81,7 +81,7 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
           ) : (
             <SurvivalPlot data={data} hideLegend />
           )}
-          <table className="bg-white w-full text-left text-nci-gray-darker">
+          <table className="bg-base-min w-full text-left text-base-contrast-min">
             <thead>
               <tr className="bg-base-lightest">
                 <th>

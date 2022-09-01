@@ -27,8 +27,8 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
 }: CDaveTableProps) => {
   return (
     <div className="h-40 block overflow-auto w-full relative">
-      <table className="bg-white w-full text-left text-nci-gray-darker mb-2">
-        <thead className="bg-nci-gray-lightest font-bold sticky top-0 z-10">
+      <table className="bg-base-min w-full text-left text-base-contrast-min mb-2">
+        <thead className="bg-primary-light font-bold text-heading text-md sticky top-0 z-10">
           <tr>
             <th>Select</th>
             <th>
@@ -57,11 +57,15 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
 
               return (
                 <tr
-                  className={idx % 2 ? null : "bg-gdc-blue-warm-lightest"}
+                  className={`text-content text-sm ${
+                    idx % 2
+                      ? "bg-accent-cool-lighter text-accent-cool-contrast-lighter"
+                      : "bg-accent-cool-lightest text-accent-cool-contrast-lightest"
+                  }`}
                   key={`${fieldName}-${key}`}
                 >
-                  <td>
-                    <Checkbox color={"nci-blue"} />
+                  <td className="px-2">
+                    <Checkbox color={"accent"} />
                   </td>
                   <td>{key}</td>
                   <td className="text-right">
@@ -91,12 +95,12 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                           variant="outline"
                           className={
                             survivalDisabled
-                              ? "bg-nci-gray-lightest text-white"
+                              ? "bg-base-lightest text-base-contrast-lightest"
                               : survivalSelected
                               ? `bg-gdc-survival-${selectedSurvivalPlots.indexOf(
                                   key,
-                                )} text-white`
-                              : "bg-white text-nci-gray"
+                                )} text-white` // TODO: confirm 508 contrast compliance
+                              : "bg-base-min text-base-contrast-min"
                           }
                           disabled={survivalDisabled}
                           onClick={() =>

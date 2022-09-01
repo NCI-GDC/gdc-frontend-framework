@@ -2,6 +2,7 @@ import { FC } from "react";
 import Plot from "react-plotly.js";
 import GeneData from "./genes.json";
 import MutationData from "./mutations.json";
+import { useMantineTheme } from "@mantine/core";
 
 const createChartData = (which) => {
   const input_data =
@@ -27,6 +28,8 @@ const createChartData = (which) => {
 const GeneMutationChart: FC<{ which }> = ({ which }: { which: string }) => {
   const chart_data = createChartData(which);
 
+  const theme = useMantineTheme();
+
   const chartData = {
     ...chart_data,
     textinfo: "label+percent",
@@ -36,10 +39,10 @@ const GeneMutationChart: FC<{ which }> = ({ which }: { which: string }) => {
     showlegend: false,
     marker: {
       line: {
-        color: "#ffffff",
+        color: theme.colors.white[0],
         width: 2,
       },
-      color: "#FF0000",
+      color: theme.colors.utility[3], // TODO: consider adding a chart color entry into the theme
     },
     textposition: "outside",
     insidetextorientation: "horizontal",

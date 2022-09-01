@@ -47,7 +47,7 @@ export function ScrollableTableWithFixedHeader({
         <thead className={cx(classes.header, { [classes.scrolled]: scrolled })}>
           <tr>
             {tableData.headers.map((text, index) => (
-              <th key={index} className="bg-nci-gray-lighter">
+              <th key={index} className="bg-base-lighter">
                 {text}
               </th>
             ))}
