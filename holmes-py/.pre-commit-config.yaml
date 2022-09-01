@@ -1,0 +1,16 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.4.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: no-commit-to-branch
+        args: [--branch, develop, --branch, staging, --branch, master, --pattern, release/.*]
+  -  repo: git@github.com:Yelp/detect-secrets
+     rev: v1.0.3
+     hooks:
+      - id: detect-secrets
+        args: ['--baseline', '.secrets.baseline']
+  - repo: https://github.com/psf/black
+    rev: 22.3.0
+    hooks:
+      - id: black

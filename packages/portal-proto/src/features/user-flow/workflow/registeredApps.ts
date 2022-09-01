@@ -19,7 +19,8 @@ export const REGISTERED_APPS = [
     tags: ["clinicalAnalysis"],
     hasDemo: true,
     id: "CDave",
-    description: "Display basic statistical analyses for your cohort.",
+    description:
+      "Use clinical variables to perform basic statistical analysis of your cohort.",
   },
   {
     name: "Cohort Builder",
@@ -31,13 +32,13 @@ export const REGISTERED_APPS = [
       "Build and define your custom cohorts using a variety of clinical and biospecimen features.",
   },
   {
-    name: "Mutations Frequency",
+    name: "Mutation Frequency",
     icon: "icons/apps/mutations.svg",
     tags: ["variantAnalysis", "ssm"],
     hasDemo: true,
     id: "MutationFrequencyApp",
     description:
-      "Visualize most frequently mutated genes and most frequent somatic mutations.",
+      "Visualize most frequently mutated genes and somatic mutations.",
     noDataTooltip:
       "Current cohort does not have SSM data available for visualization.",
     optimizeRules: ["something == something"],
@@ -111,7 +112,8 @@ export const REGISTERED_APPS = [
     icon: "sequence-reads.png",
     tags: ["sequenceAnalysis"],
     hasDemo: true,
-    description: "Visualize sequencing reads.",
+    description:
+      "Visualize sequencing reads for a given gene, position, SNP, or variant.",
     id: "SequenceReadApp",
     optimizeRules: ["data format = BAM"],
   },
@@ -121,7 +123,8 @@ export const REGISTERED_APPS = [
     iconSize: { width: 80, height: 48 },
     tags: ["variantAnalysis", "ssm"],
     hasDemo: true,
-    description: "Visualize mutations in protein-coding genes.",
+    description:
+      "Visualize mutations in protein-coding genes by consequence type and protein domain.",
     id: "ProteinPaintApp",
     caseCounts: 0.25,
     optimizeRules: ["available data = ssm"],
