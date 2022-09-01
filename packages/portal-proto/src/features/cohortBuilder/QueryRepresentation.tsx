@@ -30,11 +30,11 @@ flex truncate ... px-2 bg-base-max
 `;
 
 const QueryFieldLabel = tw.span`
-bg-accent-lighter 
-text-accent-contrast-lighter 
-uppercase 
-px-2 
-border-accent 
+bg-accent-lighter
+text-accent-contrast-lighter
+uppercase
+px-2
+border-accent
 border-r-2
 `;
 
