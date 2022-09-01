@@ -89,13 +89,13 @@ const SummaryStatsPanel = () => {
 const ActionButtonBar = () => {
   return (
     <div className="flex flex-grow flex-row align-center pb-4 text-sm ">
-      <Link key="CohortBuilder" href="/cohort-builder">
+      <Link key="CohortBuilder" href="/cohort-builder" passHref>
         <button className="text-sm bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest hover:text-white font-bold mx-4 p-2 rounded inline-flex flex-nowrap items-center shadow-md">
           <Image src={"/user-flow/icons/build.svg"} width={32} height={32} />
           <span className="px-2 whitespace-nowrap">Build</span>
         </button>
       </Link>
-      <Link key="Studies" href="/user-flow/many-pages/studies">
+      <Link key="Studies" href="/user-flow/many-pages/studies" passHref>
         <button className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest  font-bold  mx-4 p-2 rounded inline-flex items-center shadow-md ">
           <Image
             src={"/user-flow/icons/crowd-of-users.svg"}
@@ -105,13 +105,13 @@ const ActionButtonBar = () => {
           <span className="px-2"> View </span>
         </button>
       </Link>
-      <Link key="Analysis" href="/user-flow/many-pages/analysis">
+      <Link key="Analysis" href="/user-flow/many-pages/analysis" passHref>
         <button className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md ">
           <Image src={"/user-flow/icons/dna.svg"} width={32} height={32} />{" "}
           <span className="px-2"> Analyze </span>
         </button>
       </Link>
-      <Link key="Repository" href="/user-flow/many-pages/repository">
+      <Link key="Repository" href="/user-flow/many-pages/repository" passHref>
         <button className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md ">
           <Image src={"/user-flow/icons/database.svg"} width={32} height={32} />{" "}
           <span className="px-2"> Download </span>

@@ -97,6 +97,7 @@ const ActionButtonBar = () => {
             pathname: "/user-flow/workbench/analysis_page",
             query: { app: undefined },
           }}
+          passHref
         >
           <Tooltip
             label="Explore and analyze harmonized high-quality clinical and genomics data from cancer genomic studies with the tools in the Analysis Center."
