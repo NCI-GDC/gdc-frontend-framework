@@ -5,10 +5,9 @@ import { isPlainObject, includes, reduce } from "lodash";
 import urlJoin from "url-join";
 import { RiCloseCircleLine as CloseIcon } from "react-icons/ri";
 
-const getBody = (iframe) => {
+const getBody = (iframe: HTMLIFrameElement) => {
   const document = iframe.contentWindow || iframe.contentDocument;
-  console.log(document);
-  return (document.document || document).body;
+  return (document as Window).document.body || (document as Document).body;
 };
 
 const toHtml = (key: string, value: any) =>
@@ -27,6 +26,18 @@ const arrayToStringFields = ["expand", "fields", "facets"];
 const arrayToStringOnFields = (key, value, fields) =>
   includes(fields, key) ? [].concat(value).join() : value;
 
+/**
+ * @param endpoint endpoint to be attached with  GDC AUTH API
+ * @param params body to be attached with post request
+ * @param method Request Method: GET, PUT, POST
+ * @param done callback function to be called after the download has been initiated
+ * @param dispatch dispatch send from the parent component to dispatch Modals
+ * @param queryParams option param, only to be sent if queryParams need special manipulation
+ * @param Modal400 Modal for 400 error
+ * @param Modal403 Modal for 403 error
+ * @return Promise<void>
+ */
+
 const download = async ({
   endpoint,
   params,
@@ -34,6 +45,8 @@ const download = async ({
   done,
   dispatch,
   queryParams,
+  Modal400,
+  Modal403,
 }: {
   endpoint: string;
   params: Record<string, any>;
@@ -42,6 +55,8 @@ const download = async ({
   dispatch: CoreDispatch;
   queryParams?: string;
   altMessage?: boolean;
+  Modal403: Modals;
+  Modal400: Modals;
 }): Promise<void> => {
   let timeoutPromise = null;
   showNotification({
@@ -122,13 +137,13 @@ const download = async ({
     }).then(async (res) => {
       if (res.status === 403) {
         done();
-        // TODO: need to show modal according to what's being downloaded
-        dispatch(showModal(Modals.NoAccessModal));
+        // TODO: might need to save response error message later if needed in modal slice.
+        dispatch(showModal(Modal403));
         return;
       }
       if (res.status === 400) {
         done();
-        dispatch(showModal(Modals.BAMSlicingErrorModal));
+        dispatch(showModal(Modal400));
         return;
       }
       if (res.ok) {

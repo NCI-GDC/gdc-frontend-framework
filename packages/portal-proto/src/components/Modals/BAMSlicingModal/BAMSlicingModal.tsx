@@ -1,10 +1,11 @@
 import React from "react";
-import { GdcFile, hideModal, useCoreDispatch } from "@gff/core";
+import { GdcFile, hideModal, useCoreDispatch, Modals } from "@gff/core";
 import { Button, Text, Textarea } from "@mantine/core";
 import { BaseModal } from "../BaseModal";
 import { useForm } from "@mantine/form";
 import download from "src/utils/download";
-import { referenceSequenceNames } from "./GRCh38.d1.vd1";
+// TODO: will uncomment this if needed later on
+// import { referenceSequenceNames } from "./GRCh38.d1.vd1";
 
 export const processBAMSliceInput = (
   userInput: string,
@@ -62,16 +63,17 @@ export const BAMSlicingModal = ({
         if (!processedValue)
           return "You have entered invalid coordinates. Please try again.";
 
-        const refSeqs = referenceSequenceNames.split("\n");
+        // TODO: will uncomment this if needed later on
+        // const refSeqs = referenceSequenceNames.split("\n");
         const flag = processedValue.regions.some((region) => {
           if (!region) return true;
           if (!/^[a-zA-Z0-9]+(:([0-9]+)?(-[0-9]+)?)?$/.test(region))
             return true;
 
           const splittedRegion = region.split(":");
-          console.log(!refSeqs.find((refSeq) => refSeq === splittedRegion[0]));
-          if (!refSeqs.find((refSeq) => refSeq === splittedRegion[0]))
-            return true;
+          // TODO: will uncomment this if needed later on
+          // if (!refSeqs.find((refSeq) => refSeq === splittedRegion[0]))
+          //   return true;
           if (splittedRegion.length > 1 && !splittedRegion[1]) return true;
           const numVals =
             splittedRegion.length > 1 && splittedRegion[1].split("-");
@@ -96,7 +98,6 @@ export const BAMSlicingModal = ({
         const start = event.target.selectionStart;
         const end = event.target.selectionEnd;
         const oldValue = event.target.value;
-        console.log(start, end, oldValue);
         setValues({
           coordinates: `${oldValue.substring(0, start)}\t${oldValue.substring(
             end,
@@ -188,6 +189,8 @@ export const BAMSlicingModal = ({
                 done: () => setActive(false),
                 dispatch,
                 queryParams,
+                Modal400: Modals.BAMSlicingErrorModal,
+                Modal403: Modals.NoAccessModal,
               });
             }
 

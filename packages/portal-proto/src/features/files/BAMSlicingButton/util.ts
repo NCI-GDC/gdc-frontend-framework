@@ -12,14 +12,10 @@ export const isUserProject = ({
     return false;
   }
   const projectIds = Array.from(
-    new Set([
-      // ...(file.cases.project || []).map((p) => p.project_id || p),
-      ...(file.cases || []).map((e) => e.project.project_id),
-    ]),
+    new Set([...(file.cases || []).map((e) => e.project.project_id)]),
   );
 
   const gdcIds = Object.keys(get(user, "projects.gdc_ids", {}));
-  console.log(intersection(projectIds, gdcIds));
   return intersection(projectIds, gdcIds).length !== 0;
 };
 
