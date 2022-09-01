@@ -301,7 +301,7 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
   if (rangeLabelsAndValues === undefined) return null;
 
   return (
-    <div className="flex flex-col px-1">
+    <div className="flex flex-col px-1" id={field}>
       {Object.keys(rangeLabelsAndValues).length > 1 ? (
         <div className="flex flex-row items-center justify-between flex-wrap border-b-2 py-1">
           <button

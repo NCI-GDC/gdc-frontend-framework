@@ -1,11 +1,16 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import { uniq } from "lodash";
+import { uniq, debounce } from "lodash";
 import tw from "tailwind-styled-components";
 import { Badge, Highlight, Pagination, Tooltip } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
 import { MdSearch } from "react-icons/md";
 import { FaCheck as CheckIcon } from "react-icons/fa";
-import { search_facets } from "@/features/cohortBuilder/dictionary";
+import { selectCohortBuilderConfig, useCoreSelector } from "@gff/core";
+import {
+  search_facets,
+  useFacetSearch,
+} from "@/features/cohortBuilder/dictionary";
+import { useRouter } from "next/router";
 
 const PAGE_SIZE = 5;
 const DivWithHoverCallout = tw.div`
@@ -39,17 +44,28 @@ export const SearchInput: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const router = useRouter();
   const ref = useClickOutside(() => setDropdownOpen(false));
+
+  const miniSearch = useFacetSearch();
+
+  const searchFacets = (s: string) => {
+    return miniSearch.search(s, {
+      prefix: true,
+      combineWith: "AND",
+    });
+  };
 
   const clearSearch = () => {
     setSearchResults([]);
     setSearchTerm("");
+    setFilteredCategories([]);
   };
 
   const onSearchChanged = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
 
-    const results = search_facets(e.target.value);
+    const results = searchFacets(e.target.value);
     if (results.length == 0) {
       setSearchResults([]);
     } else {
@@ -65,20 +81,15 @@ export const SearchInput: React.FC = () => {
     setDropdownOpen(searchTerm.length > 0);
   }, [searchTerm]);
 
-  console.log(searchResults);
-
   const filteredResults = searchResults.filter(
     (result) =>
       filteredCategories.length === 0 ||
-      filteredCategories.includes(result.subcategory),
+      filteredCategories.includes(result.category),
   );
 
   return (
-    <>
-      <div
-        ref={ref}
-        className="flex items-center justify-between bg-white w-[400px] p-1 ring-2 rounded-sm"
-      >
+    <div ref={ref}>
+      <div className="flex items-center justify-between bg-white w-[400px] p-1 ring-2 rounded-sm">
         <MdSearch size="1.5em" />
         <input
           type="search"
@@ -108,30 +119,31 @@ export const SearchInput: React.FC = () => {
             <>
               <P>Related Categories</P>
               <div className="flex flex-wrap gap-1 my-2">
-                {uniq(searchResults.map((result) => result.subcategory)).map(
-                  (subcat) => {
-                    const selected = filteredCategories.includes(subcat);
+                {uniq(searchResults.map((result) => result.category)).map(
+                  (cat) => {
+                    const selected = filteredCategories.includes(cat);
                     return (
                       <Badge
-                        color="white"
-                        onClick={() =>
-                          selected
-                            ? setFilteredCategories(
-                                filteredCategories.filter((c) => c !== subcat),
-                              )
-                            : setFilteredCategories([
-                                ...filteredCategories,
-                                subcat,
-                              ])
-                        }
-                        leftSection={selected ? <CheckIcon /> : undefined}
                         className={
                           selected
                             ? "text-white bg-nci-blue-darkest capitalize text-sm font-normal"
                             : "text-nci-blue border-solid border-nci-blue capitalize text-sm font-normal"
                         }
+                        color="white"
+                        onClick={() =>
+                          selected
+                            ? setFilteredCategories(
+                                filteredCategories.filter((c) => c !== cat),
+                              )
+                            : setFilteredCategories([
+                                ...filteredCategories,
+                                cat,
+                              ])
+                        }
+                        leftSection={selected ? <CheckIcon /> : undefined}
+                        key={cat}
                       >
-                        {subcat}
+                        {cat}
                       </Badge>
                     );
                   },
@@ -148,7 +160,7 @@ export const SearchInput: React.FC = () => {
                 {filteredResults
                   .slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
                   .map((result) => {
-                    const matchingEnums = result.enum.filter((e) =>
+                    const matchingEnums = result?.enum.filter((e) =>
                       result.terms.some((t) => e.toLowerCase().includes(t)),
                     );
                     return (
@@ -159,9 +171,10 @@ export const SearchInput: React.FC = () => {
                               <Highlight highlight={result.terms}>
                                 {result.description}
                               </Highlight>
+                              {result.description &&
+                                matchingEnums.length > 0 && <br />}
                               {matchingEnums.length > 0 && (
                                 <>
-                                  <br />
                                   <b>Values Matched: </b>
                                   <Highlight highlight={result.terms}>
                                     {matchingEnums.join(" • ")}
@@ -180,14 +193,25 @@ export const SearchInput: React.FC = () => {
                           offset={17}
                         >
                           <DivWithHoverCallout>
-                            <div className="p-2 leading-5">
+                            <div
+                              className="p-2 leading-5"
+                              onClick={() =>
+                                router.push({
+                                  query: {
+                                    ...router.query,
+                                    tab: result.categoryKey,
+                                  },
+                                  hash: result.id,
+                                })
+                              }
+                            >
                               <b>
                                 <Highlight highlight={result.terms}>
                                   {result.name}
                                 </Highlight>
                               </b>
                               <span className="text-nci-gray">
-                                <b>Category:</b> {result.subcategory}
+                                <b>Category:</b> {result.category}
                               </span>
                             </div>
                           </DivWithHoverCallout>
@@ -207,7 +231,7 @@ export const SearchInput: React.FC = () => {
           )}
         </div>
       )}
-    </>
+    </div>
   );
 };
 

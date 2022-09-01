@@ -174,6 +174,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
       className={`flex flex-col ${
         width ? width : "mx-1"
       } bg-white relative shadow-lg border-nci-gray-lightest border-1 rounded-b-md text-xs transition`}
+      id={field}
     >
       <div>
         <div className="flex items-center justify-between flex-wrap bg-nci-blue-lightest shadow-md px-1.5">
