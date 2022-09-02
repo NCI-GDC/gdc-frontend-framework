@@ -191,15 +191,16 @@ export const SearchInput: React.FC = () => {
                           <DivWithHoverCallout>
                             <div
                               className="p-2 leading-5"
-                              onClick={() =>
+                              onClick={() => {
                                 router.push({
                                   query: {
                                     ...router.query,
                                     tab: result.categoryKey,
                                   },
                                   hash: result.id,
-                                })
-                              }
+                                });
+                                setDropdownOpen(false);
+                              }}
                             >
                               <b>
                                 <Highlight highlight={result.terms}>

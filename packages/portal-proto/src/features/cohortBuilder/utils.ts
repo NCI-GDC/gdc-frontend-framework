@@ -1,6 +1,7 @@
 import {
   FacetDefinition,
   selectFacetDefinitionByName,
+  selectFacetDefinition,
   useCoreSelector,
 } from "@gff/core";
 
@@ -13,6 +14,11 @@ import {
 export const getFacetInfo = (
   fields: ReadonlyArray<string>,
 ): ReadonlyArray<FacetDefinition> => {
+  const facets = useCoreSelector((state) => selectFacetDefinition(state));
+  return Object.entries(facets?.data)
+    .filter(([key, facet]) => fields.includes(key) && facet !== null)
+    .map((f) => f[1]);
+  /*
   return fields
     .map(
       (x) =>
@@ -20,4 +26,5 @@ export const getFacetInfo = (
         null,
     )
     .filter((x) => x !== null);
+    */
 };
