@@ -85,14 +85,14 @@ export const SearchInput: React.FC = () => {
 
   return (
     <div ref={ref}>
-      <div className="flex items-center justify-between bg-white w-[400px] p-1 ring-2 rounded-sm">
+      <div className="flex items-center justify-between bg-base-max w-[400px] p-1 focus:outline-2 rounded-sm">
         <MdSearch size="1.5em" />
         <input
           type="search"
           placeholder={`Search`}
           value={searchTerm}
           onChange={onSearchChanged}
-          className="border-none ring-0 grow-1 w-full"
+          className="border-none focus:outline-0 grow-1 w-full"
           onFocus={() => setDropdownOpen(searchTerm.length > 0)}
         />
         {searchTerm.length > 0 && (
@@ -106,7 +106,7 @@ export const SearchInput: React.FC = () => {
       </div>
 
       {dropdownOpen && (
-        <div className="absolute z-10 bg-white w-[400px] p-4 drop-shadow-md">
+        <div className="absolute z-10 bg-base-max w-[400px] p-4 drop-shadow-md">
           {searchResults.length === 0 ? (
             <P>
               No results for <i>{searchTerm}</i>
@@ -122,8 +122,8 @@ export const SearchInput: React.FC = () => {
                       <Badge
                         className={
                           selected
-                            ? "text-white bg-nci-blue-darkest capitalize text-sm font-normal"
-                            : "text-nci-blue border-solid border-nci-blue capitalize text-sm font-normal"
+                            ? "text-white bg-primary-darkest capitalize text-sm font-normal"
+                            : "text-primary-darkest border-solid border-primary-darkest capitalize text-sm font-normal"
                         }
                         color="white"
                         onClick={() =>
@@ -207,7 +207,7 @@ export const SearchInput: React.FC = () => {
                                   {result.name}
                                 </Highlight>
                               </b>
-                              <span className="text-nci-gray">
+                              <span className="text-base-contrast-lighter">
                                 <b>Category:</b> {result.category}
                               </span>
                             </div>
