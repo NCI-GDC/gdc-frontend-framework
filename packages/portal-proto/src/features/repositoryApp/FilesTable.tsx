@@ -19,14 +19,11 @@ const FilesTables: React.FC<FilesViewProps> = ({
     <div className="flex flex-col gap-y-4">
       <Table verticalSpacing="xs" striped highlightOnHover>
         <thead>
-          <tr className="bg-nci-gray-light text-white text-md text-montserrat border border-nci-gray-light">
+          <tr className="bg-base-light text-base-contrast-light text-md text-montserrat border border-base">
             <th className="px-2">
               <input type="checkbox" />
             </th>
-            <th
-              className="px-2 th-nci-gray-lightest"
-              style={{ color: "#FFFFFF" }}
-            >
+            <th className="px-2 th-base-lightest" style={{ color: "#FFFFFF" }}>
               File
             </th>
             <th className="px-2 " style={{ color: "#FFFFFF" }}>
@@ -76,7 +73,7 @@ const FilesTables: React.FC<FilesViewProps> = ({
           ))}
         </tbody>
       </Table>
-      <div className="flex flex-row items-center justify-start border-t border-nci-gray-light">
+      <div className="flex flex-row items-center justify-start border-t border-base-light">
         <p className="px-2">Page Size:</p>
         <Select
           size="sm"
@@ -93,7 +90,7 @@ const FilesTables: React.FC<FilesViewProps> = ({
         <Pagination
           size="sm"
           radius="md"
-          color="gray"
+          color="accent"
           className="ml-auto"
           page={activePage}
           onChange={setPage}

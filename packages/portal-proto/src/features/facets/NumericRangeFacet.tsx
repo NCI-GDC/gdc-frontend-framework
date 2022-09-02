@@ -1,19 +1,24 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  MdAddCircle as MoreIcon,
+  MdClose as CloseIcon,
   MdFlip as FlipIcon,
-  MdRemoveCircle as LessIcon,
   MdSort as SortIcon,
   MdSortByAlpha as AlphaSortIcon,
   MdWarning as WarningIcon,
-  MdClose as CloseIcon,
 } from "react-icons/md";
 import { FaUndo as UndoIcon } from "react-icons/fa";
 import tw from "tailwind-styled-components";
-import { LoadingOverlay, NumberInput, SegmentedControl } from "@mantine/core";
+import {
+  LoadingOverlay,
+  NumberInput,
+  SegmentedControl,
+  Tooltip,
+} from "@mantine/core";
 import {
   DAYS_IN_DECADE,
   DAYS_IN_YEAR,
+  GQLDocType,
+  GQLIndexType,
   Operation,
   removeCohortFilter,
   selectCurrentCohortFiltersByName,
@@ -21,16 +26,14 @@ import {
   updateCohortFilter,
   useCoreDispatch,
   useCoreSelector,
-  GQLDocType,
-  GQLIndexType,
 } from "@gff/core";
 
 import {
-  DEFAULT_VISIBLE_ITEMS,
   convertFieldToName,
+  DEFAULT_VISIBLE_ITEMS,
   getLowerAgeFromYears,
-  getUpperAgeFromYears,
   getLowerAgeYears,
+  getUpperAgeFromYears,
   getUpperAgeYears,
 } from "./utils";
 import { FacetCardProps } from "@/features/facets/types";
@@ -39,7 +42,9 @@ import {
   FacetDocTypeToLabelsMap,
   useRangeFacet,
 } from "@/features/facets/hooks";
-import * as tailwindConfig from "../../../tailwind.config";
+import { controlsIconStyle, FacetIconButton } from "./components";
+import FacetExpander from "@/features/facets/FacetExpander";
+import FacetSortPanel from "@/features/facets/FacetSortPanel";
 
 interface NumericFacetProps extends FacetCardProps {
   readonly rangeDatatype: string;
@@ -54,7 +59,7 @@ type NumericFacetData = Pick<
 
 /**
  * Represent a range. Used to configure a row
- * of a range list
+ * of a range list.
  */
 interface RangeBucketElement {
   readonly from: number;
@@ -66,7 +71,7 @@ interface RangeBucketElement {
 }
 
 const RadioStyle =
-  "form-check-input form-check-input appearance-none rounded-full h-3 w-3 border border-nci-gray-light bg-white checked:bg-nci-blue-dark checked:bg-nci-blue-dark focus:ring-0 focus:ring-offset-0 focus:outline-none focus:bg-nci-blue-darkest active:bg-nci-blue-dark transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer";
+  "form-check-input form-check-input appearance-none rounded-full h-3 w-3 border border-base-light bg-base-lightest checked:bg-primary-dark checked:bg-primary-dark focus:ring-0 focus:ring-offset-0 focus:outline-none focus:bg-primary-darkest active:bg-primary-dark transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer";
 
 export const ApplyButton = tw.div`
         flex
@@ -83,8 +88,8 @@ export const ApplyButton = tw.div`
         justify-center
         align-center
         py-1
-        bg-nci-blue-dark
-        hover:bg-nci-blue-darkest
+        bg-primary-dark
+        hover:bg-primary-darkest
         hover:shadow-[0_4px_5px_0px_rgba(0,0,0,0.35)]
 `;
 
@@ -269,6 +274,7 @@ const buildRangeOperator = (
  * @param field - facet managed by this component
  * @param valueLabel - string representing the datatype of values (e.g. "Cases")
  * @param selected - which range, if any, is selected
+ * @param setSelected - function to handle selected range
  * @param rangeLabelsAndValues - list of range keys, labels and values
  * @param itemsToShow - number of ranges to render
  */
@@ -303,31 +309,34 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
   return (
     <div className="flex flex-col px-1" id={field}>
       {Object.keys(rangeLabelsAndValues).length > 1 ? (
-        <div className="flex flex-row items-center justify-between flex-wrap border-b-2 py-1">
-          <button
-            className={
-              "border rounded-sm border-nci-gray-darkest bg-nci-gray hover:bg-nci-gray-lightest text-white hover:text-nci-gray-darker"
-            }
-            aria-label="Sort alphabetically"
-          >
-            <AlphaSortIcon
-              onClick={() => setIsSortedByValue(false)}
-              scale="1.5em"
-            />
-          </button>
-          <div className={"flex flex-row items-center "}>
+        <>
+          <FacetSortPanel
+            isSortedByValue={isSortedByValue}
+            valueLabel={valueLabel}
+            setIsSortedByValue={setIsSortedByValue}
+          />
+          <div className="flex flex-row items-center justify-between flex-wrap border-b-2 py-1">
             <button
-              onClick={() => setIsSortedByValue(true)}
-              className={
-                "border rounded-sm border-nci-gray-darkest bg-nci-gray hover:bg-nci-gray-lightest text-white hover:text-nci-gray-darker transition-colors"
-              }
-              aria-label="Sort numerically"
+              className={controlsIconStyle}
+              aria-label="Sort alphabetically"
             >
-              <SortIcon scale="1.5em" />
+              <AlphaSortIcon
+                onClick={() => setIsSortedByValue(false)}
+                scale="1.5em"
+              />
             </button>
-            <p className="px-1">{valueLabel}</p>
+            <div className={"flex flex-row items-center "}>
+              <button
+                onClick={() => setIsSortedByValue(true)}
+                className={controlsIconStyle}
+                aria-label="Sort numerically"
+              >
+                <SortIcon scale="1.5em" />
+              </button>
+              <p className="px-1">{valueLabel}</p>
+            </div>
           </div>
-        </div>
+        </>
       ) : null}
       <div role="group" className="mt-1">
         {Object.keys(rangeLabelsAndValues)
@@ -440,8 +449,8 @@ const FromTo: React.FC<FromToProps> = ({
     }
   };
   return (
-    <div className="relative">
-      <div className="flex flex-col text-nci-gray-dark text-md ">
+    <div className="relative w-full">
+      <div className="flex flex-col text-base-contrast-max bg-base-max text-md ">
         <div className="flex flex-row justify-end items-center flex-nowrap border">
           <div className="basis-1/5 text-center">From</div>
           <SegmentedControl
@@ -507,7 +516,7 @@ const FromTo: React.FC<FromToProps> = ({
           />
         </div>
         {isWarning ? (
-          <div className="bg-nci-yellow-lighter round-md border-nci-yellow-light">
+          <div className="bg-utility-warning border-utility-warning">
             <span>
               {" "}
               <WarningIcon size="24px" />
@@ -528,54 +537,6 @@ const FromTo: React.FC<FromToProps> = ({
           <ApplyButton onClick={handleApply}>Apply</ApplyButton>
         </div>
       </div>
-    </div>
-  );
-};
-
-interface FacetExpanderProps {
-  readonly remainingValues: number;
-  readonly isGroupExpanded: boolean;
-  readonly onShowChanged: (v: boolean) => void;
-}
-
-/**
- * Component which manages the compact/expanded state of a FacetCard
- * @param remainingValues - number of remaining values when compact "show 4"
- * @param isGroupExpanded - true if expanded, false if compact
- * @param onShowChanged - callback to call when the expand/compact button is clicked
- * @constructor
- */
-const FacetExpander: React.FC<FacetExpanderProps> = ({
-  remainingValues,
-  isGroupExpanded,
-  onShowChanged,
-}: FacetExpanderProps) => {
-  return (
-    <div className={"mt-3"}>
-      {remainingValues > 0 && !isGroupExpanded ? (
-        <div className="flex flex-row justify-end items-center border-t-2 p-1.5">
-          <MoreIcon
-            key="show-more"
-            size="1.5em"
-            className="text-nci-gray-darkest"
-            onClick={() => onShowChanged(!isGroupExpanded)}
-          />
-          <div className="pl-1 text-nci-gray-darkest font-bold">
-            {" "}
-            {remainingValues} more
-          </div>
-        </div>
-      ) : isGroupExpanded ? (
-        <div className="flex flex-row justify-end items-center border-t-2 border-b-0 border-r-0 border-l-0 p-1.5">
-          <LessIcon
-            key="show-less"
-            size="1.5em"
-            className="text-nci-gray-darkest"
-            onClick={() => onShowChanged(!isGroupExpanded)}
-          />
-          <div className="pl-1 text-nci-gray-darkest font-bold"> show less</div>
-        </div>
-      ) : null}
     </div>
   );
 };
@@ -614,166 +575,165 @@ interface RangeInputWithPrefixedRangesProps {
   readonly showZero?: boolean;
 }
 
-const RangeInputWithPrefixedRanges: React.FC<RangeInputWithPrefixedRangesProps> =
-  ({
-    field,
-    docType,
-    indexType,
-    units,
-    numBuckets,
-    minimum,
-    maximum,
-    showZero = false,
-  }: RangeInputWithPrefixedRangesProps) => {
-    const [isGroupExpanded, setIsGroupExpanded] = useState(false); // handles the expanded group
+const RangeInputWithPrefixedRanges: React.FC<
+  RangeInputWithPrefixedRangesProps
+> = ({
+  field,
+  docType,
+  indexType,
+  units,
+  numBuckets,
+  minimum,
+  maximum,
+  showZero = false,
+}: RangeInputWithPrefixedRangesProps) => {
+  const [isGroupExpanded, setIsGroupExpanded] = useState(false); // handles the expanded group
 
-    // get the current filter for this facet
-    const filter = useCoreSelector((state) =>
-      selectCurrentCohortFiltersByName(state, `${field}`),
-    );
+  // get the current filter for this facet
+  const filter = useCoreSelector((state) =>
+    selectCurrentCohortFiltersByName(state, `${field}`),
+  );
 
-    const totalCount = useCoreSelector((state) =>
-      selectTotalCountsByName(state, FacetDocTypeToCountsIndexMap[docType]),
-    );
+  const totalCount = useCoreSelector((state) =>
+    selectTotalCountsByName(state, FacetDocTypeToCountsIndexMap[docType]),
+  );
 
-    // giving the filter value, extract the From/To values and
-    // build it's key
-    const [filterValues, filterKey] = useMemo(() => {
-      const values = ExtractRangeValues(filter);
-      const key = ClassifyRangeType(values);
-      return [values, key];
-    }, [filter]);
+  // giving the filter value, extract the From/To values and
+  // build it's key
+  const [filterValues, filterKey] = useMemo(() => {
+    const values = ExtractRangeValues(filter);
+    const key = ClassifyRangeType(values);
+    return [values, key];
+  }, [filter]);
 
-    // build the range for the useRangeFacet and the facet query
-    const [bucketRanges, ranges] = useMemo(() => {
-      // map unit type to appropriate build range function and unit label
-      const RangeBuilder = {
-        days: {
-          builder: buildDayYearRangeBucket,
-          label: "days",
-        },
-        years: {
-          builder: buildDayYearRangeBucket,
-          label: "years",
-        },
-        percent: {
-          builder: build10UnitRange,
-          label: "%",
-        },
-        year: {
-          builder: build10UnitRange,
-          label: "",
-        },
-      };
-
-      const bucketEntries = BuildRanges(
-        numBuckets,
-        RangeBuilder[units].label,
-        minimum,
-        RangeBuilder[units].builder,
-      );
-      // build ranges for continuous range query
-      const r = Object.keys(bucketEntries).map((x) => {
-        return { from: bucketEntries[x].from, to: bucketEntries[x].to };
-      });
-      return [bucketEntries, r];
-    }, [minimum, numBuckets, units]);
-
-    const [isCustom, setIsCustom] = useState(filterKey === "custom"); // in custom Range Mode
-    const [selectedRange, setSelectedRange] = useState(filterKey); // the current selected range
-
-    const { data: rangeData, isSuccess } = useRangeFacet(
-      field,
-      ranges,
-      docType,
-      indexType,
-    );
-    const rangeLabelsAndValues = BuildRangeLabelsAndValues(
-      bucketRanges,
-      totalCount,
-      rangeData,
-      showZero,
-    );
-
-    const resetToCustom = useCallback(() => {
-      if (!isCustom) {
-        setIsCustom(true);
-        setSelectedRange("custom");
-      }
-    }, [isCustom]);
-
-    useEffect(() => {
-      if (!isCustom)
-        if (Object.keys(rangeLabelsAndValues).includes(filterKey))
-          setSelectedRange(filterKey);
-        else resetToCustom();
-    }, [filterKey, isCustom, rangeLabelsAndValues, resetToCustom]);
-
-    const totalBuckets = Object.keys(rangeLabelsAndValues).length;
-    const bucketsToShow = isGroupExpanded
-      ? totalBuckets
-      : DEFAULT_VISIBLE_ITEMS;
-    const remainingValues = totalBuckets - bucketsToShow;
-
-    const onShowModeChanged = () => {
-      setIsGroupExpanded(!isGroupExpanded);
+  // build the range for the useRangeFacet and the facet query
+  const [bucketRanges, ranges] = useMemo(() => {
+    // map unit type to appropriate build range function and unit label
+    const RangeBuilder = {
+      days: {
+        builder: buildDayYearRangeBucket,
+        label: "days",
+      },
+      years: {
+        builder: buildDayYearRangeBucket,
+        label: "years",
+      },
+      percent: {
+        builder: build10UnitRange,
+        label: "%",
+      },
+      year: {
+        builder: build10UnitRange,
+        label: "",
+      },
     };
 
-    return (
-      <>
-        <LoadingOverlay visible={!isSuccess} />
-        <div className="flex flex-col w-100 space-y-2 mt-1 ">
-          <div className="flex flex-row justify-between items-center">
-            <input
-              type="radio"
-              className={RadioStyle}
-              id={`${field}_custom`}
-              name={`${field}_range_selection`}
-              checked={selectedRange === "custom"}
-              onChange={() => {
-                setSelectedRange("custom");
-                setIsCustom(true);
+    const bucketEntries = BuildRanges(
+      numBuckets,
+      RangeBuilder[units].label,
+      minimum,
+      RangeBuilder[units].builder,
+    );
+    // build ranges for continuous range query
+    const r = Object.keys(bucketEntries).map((x) => {
+      return { from: bucketEntries[x].from, to: bucketEntries[x].to };
+    });
+    return [bucketEntries, r];
+  }, [minimum, numBuckets, units]);
+
+  const [isCustom, setIsCustom] = useState(filterKey === "custom"); // in custom Range Mode
+  const [selectedRange, setSelectedRange] = useState(filterKey); // the current selected range
+
+  const { data: rangeData, isSuccess } = useRangeFacet(
+    field,
+    ranges,
+    docType,
+    indexType,
+  );
+  const rangeLabelsAndValues = BuildRangeLabelsAndValues(
+    bucketRanges,
+    totalCount,
+    rangeData,
+    showZero,
+  );
+
+  const resetToCustom = useCallback(() => {
+    if (!isCustom) {
+      setIsCustom(true);
+      setSelectedRange("custom");
+    }
+  }, [isCustom]);
+
+  useEffect(() => {
+    if (!isCustom)
+      if (Object.keys(rangeLabelsAndValues).includes(filterKey))
+        setSelectedRange(filterKey);
+      else resetToCustom();
+  }, [filterKey, isCustom, rangeLabelsAndValues, resetToCustom]);
+
+  const totalBuckets = Object.keys(rangeLabelsAndValues).length;
+  const bucketsToShow = isGroupExpanded ? totalBuckets : DEFAULT_VISIBLE_ITEMS;
+  const remainingValues = totalBuckets - bucketsToShow;
+
+  const onShowModeChanged = () => {
+    setIsGroupExpanded(!isGroupExpanded);
+  };
+
+  return (
+    <>
+      <LoadingOverlay visible={!isSuccess} />
+      <div className="flex flex-col w-100 space-y-2 mt-1 ">
+        <div className="flex flex-row  justify-items-stretch items-center">
+          <input
+            type="radio"
+            className={RadioStyle}
+            id={`${field}_custom`}
+            name={`${field}_range_selection`}
+            checked={selectedRange === "custom"}
+            onChange={() => {
+              setSelectedRange("custom");
+              setIsCustom(true);
+            }}
+          />
+          <FromTo
+            minimum={minimum}
+            maximum={maximum}
+            values={filterValues}
+            field={`${field}`}
+            units={units}
+            changedCallback={resetToCustom}
+          />
+        </div>
+        <div className="flex flex-col border-t-2">
+          {totalBuckets == 0 ? (
+            <div className="mx-4">No data for this field</div>
+          ) : isSuccess ? (
+            <RangeValueSelector
+              field={`${field}`}
+              valueLabel={FacetDocTypeToLabelsMap[docType]}
+              itemsToShow={bucketsToShow}
+              rangeLabelsAndValues={rangeLabelsAndValues}
+              selected={selectedRange}
+              setSelected={(value) => {
+                setIsCustom(false); // no longer a customRange
+                // this is the only way user interaction
+                // can set this to False
+                setSelectedRange(value);
               }}
             />
-            <FromTo
-              minimum={minimum}
-              maximum={maximum}
-              values={filterValues}
-              field={`${field}`}
-              units={units}
-              changedCallback={resetToCustom}
+          ) : null}
+          {
+            <FacetExpander
+              remainingValues={remainingValues}
+              isGroupExpanded={isGroupExpanded}
+              onShowChanged={onShowModeChanged}
             />
-          </div>
-          <div className="flex flex-col border-t-2">
-            {totalBuckets == 0 ? (
-              <div className="mx-4">No data for this field</div>
-            ) : isSuccess ? (
-              <RangeValueSelector
-                field={`${field}`}
-                valueLabel={FacetDocTypeToLabelsMap[docType]}
-                itemsToShow={bucketsToShow}
-                rangeLabelsAndValues={rangeLabelsAndValues}
-                selected={selectedRange}
-                setSelected={(value) => {
-                  setIsCustom(false); // no longer a customRange
-                  // this is the only way user interaction
-                  // can set this to False
-                  setSelectedRange(value);
-                }}
-              />
-            ) : null}
-            {
-              <FacetExpander
-                remainingValues={remainingValues}
-                isGroupExpanded={isGroupExpanded}
-                onShowChanged={onShowModeChanged}
-              />
-            }
-          </div>
+          }
         </div>
-      </>
-    );
-  };
+      </div>
+    </>
+  );
+};
 
 const DaysOrYears: React.FC<NumericFacetData> = ({
   field,
@@ -800,6 +760,7 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
           { label: "Years", value: "years" },
         ]}
         value={units}
+        color={"primary.2"}
         onChange={setUnits}
       />
       <RangeInputWithPrefixedRanges
@@ -940,49 +901,46 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
       <div
         className={`flex flex-col ${
           width ? width : "mx-1"
-        } bg-white relative shadow-lg border-nci-gray-lightest border-1 rounded-b-md text-xs transition `}
+        } bg-base-max relative shadow-lg border-base-lightest border-1 rounded-b-md text-xs transition `}
       >
-        <div className="flex items-center justify-between flex-wrap bg-nci-blue-lightest shadow-md px-1.5">
-          <div className="has-tooltip text-nci-gray-darkest font-heading font-semibold text-md">
-            {facetName === null ? convertFieldToName(field) : facetName}
-            <div className="inline-block tooltip w-full border-b-2 border-nci-cyan-lightest rounded shadow-lg p-2 bg-gray-100 text-nci-blue-darkest mt-8 absolute">
-              {description}
+        <div className="flex items-center justify-between flex-wrap bg-primary-lighter shadow-md px-1.5">
+          <Tooltip
+            label={description}
+            classNames={{
+              arrow: "bg-base-light",
+              tooltip: "bg-base-max text-base-contrast-max",
+            }}
+            position="bottom-start"
+            multiline
+            width={220}
+            withArrow
+            transition="fade"
+            transitionDuration={200}
+          >
+            <div className="text-primary-contrast-lighter font-heading font-semibold text-md">
+              {facetName === null ? convertFieldToName(field) : facetName}
             </div>
-          </div>
+          </Tooltip>
           <div className="flex flex-row">
-            <button
-              className="hover:bg-nci-grey-darker text-nci-gray font-bold py-2 px-1 rounded inline-flex items-center"
+            <FacetIconButton
               onClick={toggleFlip}
               aria-label="Flip between form and chart"
             >
-              <FlipIcon
-                size="1.25em"
-                color={tailwindConfig.theme.extend.colors["gdc-blue"].darker}
-              />
-            </button>
-            <button
-              className="hover:bg-nci-grey-darker text-nci-gray font-bold py-2 px-1 rounded inline-flex items-center"
-              onClick={clearFilters}
-            >
-              <UndoIcon
-                size="1.15em"
-                color={tailwindConfig.theme.extend.colors["gdc-blue"].darker}
-              />
-            </button>
+              <FlipIcon size="1.25em" />
+            </FacetIconButton>
+            <FacetIconButton onClick={clearFilters}>
+              <UndoIcon size="1.15em" />
+            </FacetIconButton>
             {dismissCallback ? (
-              <button
-                className="hover:bg-nci-grey-darker text-nci-gray font-bold py-2 px-1 rounded inline-flex items-center"
+              <FacetIconButton
                 onClick={() => {
                   clearFilters();
                   dismissCallback(field);
                 }}
                 aria-label="Remove the facet"
               >
-                <CloseIcon
-                  size="1.25em"
-                  color={tailwindConfig.theme.extend.colors["gdc-blue"].darker}
-                />
-              </button>
+                <CloseIcon size="1.25em" />
+              </FacetIconButton>
             ) : null}
           </div>
         </div>

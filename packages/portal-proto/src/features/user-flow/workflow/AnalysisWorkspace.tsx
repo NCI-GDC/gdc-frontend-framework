@@ -91,10 +91,10 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
     <div className="flex flex-col font-montserrat">
       <div
         data-tour="analysis_tool_management"
-        className="flex flex-row  items-center shadow-lg bg-nci-blue-darkest"
+        className="flex flex-row  items-center shadow-lg bg-primary-lightest"
       >
         <div data-tour="most_common_tools" className="mx-4 my-6 flex">
-          <h2 className="text-white font-bold uppercase pr-6">
+          <h2 className="text-primary-content-darkest font-bold uppercase pr-6">
             {"Featured Tools"}
           </h2>
           <Grid columns={12}>
@@ -118,18 +118,19 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
           </Grid>
         </div>
       </div>
-      <div className="bg-white">
-        <Grid className="p-3 my-2" gutter={"lg"}>
+      <div className="bg-base-lightest">
+        <Grid columns={12} className="p-3 my-2" gutter="md">
           <Grid.Col
             data-tour="analysis_tool_filters"
-            className="flex flex-col p-3"
-            xs={4}
-            sm={4}
+            className="flex flex-col pr-1"
+            span={1}
+            xs={3}
+            sm={3}
             md={3}
             lg={3}
-            xl={2}
+            xl={3}
           >
-            <div className="flex justify-between pb-4 text-nci-blue-darkest">
+            <div className="flex justify-between pb-4 text-primary-content-darkest">
               <div>
                 <h2 className="font-bold text-lg pb-3 uppercase">Tools</h2>
                 <h3 className="text-lg">Categories</h3>
@@ -142,14 +143,14 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
                   transition="pop-bottom-left"
                   transitionDuration={150}
                   classNames={{
-                    label: "text-nci-blue-darkest",
-                    dropdown: "border-t-8 border-nci-blue-darkest w-24",
+                    label: "text-primary-content-darkest",
+                    dropdown: "border-t-8 border-primary-darkest w-24",
                   }}
                 >
                   <Menu.Target>
                     <ActionIcon
                       variant="outline"
-                      className="text-nci-blue-darkest hover:bg-nci-blue hover:text-white hover:border-nci-blue"
+                      className="text-primary-content-darkest hover:bg-primary hover:text-primary-content-lightest hover:border-primary"
                     >
                       <SortIcon size={24} />
                     </ActionIcon>
@@ -211,9 +212,9 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
                     value={x.value}
                     classNames={{
                       label:
-                        "text-nci-blue border border-solid border-nci-blue-darkest hover:bg-nci-blue hover:text-white hover:border-nci-blue data-checked:text-white data-checked:bg-nci-blue-darkest ",
+                        "text-primary-content-darker font-medium border border-solid border-primary-darkest hover:bg-primary hover:text-primary-content-max hover:border-primary data-checked:text-primary-content-lightest data-checked:bg-primary-darkest ",
                       checkIcon: "text-white",
-                      iconWrapper: "text-white",
+                      iconWrapper: "text-primary-content-min",
                     }}
                   >
                     {x.name}
@@ -225,20 +226,21 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
 
           <Grid.Col
             data-tour="all_other_apps"
-            xs={8}
-            sm={8}
+            xs={9}
+            sm={9}
             md={9}
             lg={9}
-            xl={10}
+            xl={9}
+            span={11}
           >
-            <Grid className="mx-2">
+            <Grid className="mx-0" gutter="md">
               {activeApps
                 .map((k) => initialApps[k])
                 .map((x: AppRegistrationEntry, idx: number) => {
                   return (
                     <Grid.Col
                       key={x.name}
-                      xs={12}
+                      xs={8}
                       sm={6}
                       md={4}
                       lg={3}

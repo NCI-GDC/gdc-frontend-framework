@@ -12,7 +12,7 @@ const HoverLink: React.FC<HoverLinkProps> = ({
   children,
 }: PropsWithChildren<HoverLinkProps>) => {
   return (
-    <span className="hover:text-nci-blue">
+    <span className="hover:text-primary-content">
       <Link href={href}>{children}</Link>
     </span>
   );
@@ -21,7 +21,7 @@ const HoverLink: React.FC<HoverLinkProps> = ({
 const Section: React.FC<unknown> = ({
   children,
 }: PropsWithChildren<unknown>) => {
-  return <div className="border border-nci-gray-lighter p-4">{children}</div>;
+  return <div className="border border-base-lighter p-4">{children}</div>;
 };
 
 const IndexPage: NextPage = () => {

@@ -223,7 +223,7 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
 
   return (
     <Button
-      className="text-nci-gray-lightest bg-nci-blue hover:bg-nci-blue-darker"
+      className="text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
       onClick={() => addToCart(files, currentCart, dispatch)}
     >
       <CartIcon className="mr-2" /> Add to Cart
@@ -248,7 +248,7 @@ export const RemoveFromCartButton: React.FC<RemoveFromCartButtonProps> = ({
       aria-label="Remove from cart"
       variant="outline"
       onClick={() => removeFromCart(files, currentCart, dispatch)}
-      className="mx-auto text-nci-blue-darkest border-nci-blue-darkest"
+      className="mx-auto text-primary-content-darkest border-primary-darkest"
     >
       <TrashIcon />
     </ActionIcon>

@@ -157,8 +157,8 @@ export const SSMSSummary = ({ ssm_id }: { ssm_id: string }): JSX.Element => {
       {!isFetching && summaryData ? (
         <>
           <SummaryHeader iconText="MU" headerTitle={summaryData.dna_change} />
-          <div className="mx-auto w-9/12 pt-4">
-            <div className="text-nci-gray">
+          <div className="mx-auto mt-20 w-9/12 pt-4">
+            <div className="text-primary-content">
               <div className="flex gap-6">
                 <div className="flex-1">
                   <SummaryCard

@@ -1,5 +1,4 @@
-import Image from "next/image";
-
+import { Image } from "@/components/Image";
 export const StudyView: React.FC<unknown> = () => {
   return (
     <div className="flex flex-col gap-y-4">

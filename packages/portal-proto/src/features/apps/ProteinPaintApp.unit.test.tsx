@@ -13,11 +13,11 @@ test("renders a search input", async () => {
   );
   const input = queryByPlaceholderText("Gene");
   expect(input instanceof HTMLElement).toBe(true);
-  /* 
-    inital render testing only, the embedded tool behavior 
+  /*
+    inital render testing only, the embedded tool behavior
     is tested within the proteinpaint-client package/module
 
-    TODO: may perform more tests here if the GDC portal 
+    TODO: may perform more tests here if the GDC portal
     updates an active Proteinpaint view
   */
   unmount();

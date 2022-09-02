@@ -1,7 +1,6 @@
 import { NextPage } from "next";
 import { SimpleLayout } from "../features/layout/Simple";
-import Image from "next/image";
-
+import { Image } from "@/components/Image";
 const nciPrimaryColors = ["gray", "red", "blumine", "blue", "teal", "cyan"];
 const nciSecondaryColors = ["green", "violet", "purple", "orange", "yellow"];
 const gdcPrimaryColors = [

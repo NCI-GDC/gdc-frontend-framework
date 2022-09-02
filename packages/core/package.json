@@ -21,8 +21,8 @@
   "author": "",
   "license": "Apache-2.0",
   "peerDependencies": {
-    "@reduxjs/toolkit": "^1.6.0",
-    "react": "^17.0.0",
+    "@reduxjs/toolkit": "^1.8.5",
+    "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.3",
     "redux-persist": "^6.0.0"
@@ -36,6 +36,7 @@
     "@types/react": "^17.0.13",
     "@types/react-dom": "^17.0.8",
     "@types/uuid": "^8.3.1",
+    "@datadog/browser-rum": "4.17.2",
     "jest": "^27.0.6",
     "rimraf": "^3.0.2",
     "rollup": "^2.52.7",

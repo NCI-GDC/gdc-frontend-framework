@@ -15,7 +15,7 @@ import { Button, LoadingOverlay, Menu } from "@mantine/core";
 import { NextLink } from "@mantine/next";
 import { useTour } from "@reactour/tour";
 import { ReactNode } from "react";
-import Image from "next/image";
+import { Image } from "@/components/Image";
 import {
   MdShoppingCart as CartIcon,
   MdOutlineApps as AppsIcon,
@@ -69,6 +69,7 @@ export const Header: React.FC<HeaderProps> = ({
               src="/NIH_GDC_DataPortal-logo.svg"
               layout="fill"
               objectFit="contain"
+              data-testid="NIH_LOGO"
             />
           </Button>
         </div>
@@ -100,7 +101,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <Button
                   rightIcon={<MdArrowDropDown size="2em" />}
                   variant="subtle"
-                  className="text-nci-blue"
+                  className="text-primary"
                   classNames={{ rightIcon: "ml-0" }}
                   data-testid="usernameButton"
                 >

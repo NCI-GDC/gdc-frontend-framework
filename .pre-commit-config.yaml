@@ -6,3 +6,11 @@ repos:
       - id: detect-secrets
         args: [--baseline, .secrets.baseline]
         exclude: package-lock.json
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.5.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+      - id: trailing-whitespace
+        exclude_types: [svg]
+        args: [--markdown-linebreak-ext=md]

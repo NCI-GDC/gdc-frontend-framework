@@ -17,7 +17,7 @@ const MutationFacetHeader: React.FC<MutationFacetProps> = ({
 }: MutationFacetProps) => {
   return (
     <div>
-      <div className="flex items-center border-2 justify-between flex-wrap bg-nci-gray-lighter p-1.5">
+      <div className="flex items-center border-2 justify-between flex-wrap bg-base-lighter p-1.5">
         {field}
         <div className="flex-none text-right w-24">{type}</div>
       </div>
@@ -33,7 +33,7 @@ export const MutationFacet: React.FC<MutationFacetDataProps> = ({
 }: MutationFacetDataProps) => {
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(false);
   return (
-    <div className=" flex flex-col border-2 border-b-0 bg-white relative">
+    <div className=" flex flex-col border-2 border-b-0 bg-base-lightest relative">
       <CollapsibleContainer
         isCollapsed={isGroupCollapsed}
         toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
