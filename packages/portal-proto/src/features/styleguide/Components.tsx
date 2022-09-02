@@ -1,11 +1,10 @@
 import { ReactNode } from "react";
 import { divider_style } from "./style";
-import { Divider, Group } from "@mantine/core";
+import { Divider } from "@mantine/core";
 import { EnumFacet } from "../facets/EnumFacet";
 import NumericRangeFacet from "../facets/NumericRangeFacet";
+import DateRangeFacet from "../facets/DateRangeFacet";
 import GenesTable from "../genesTable/GenesTable";
-import { CohortFacetSelectionModal } from "@/features/cohortBuilder/CohortFacetSelection";
-import { FilesFacetSelectionModal } from "@/features/repositoryApp/FilesFacetSelection";
 
 const Components: ReactNode = () => {
   return (
@@ -27,6 +26,12 @@ const Components: ReactNode = () => {
         field="diagnoses.age_at_diagnosis"
         width="w-1/3"
       />
+      <Divider label="Date Range Facet" classNames={divider_style} />
+      <DateRangeFacet
+        docType="files"
+        field="files.analysis.input_files.created_datetime"
+        width="w-1/3"
+      />
       <Divider label="Percent Range Facet" classNames={divider_style} />
       <NumericRangeFacet
         docType="cases"
@@ -35,11 +40,6 @@ const Components: ReactNode = () => {
         field="samples.portions.slides.percent_tumor_cells"
         width="w-1/3"
       />
-      <Divider label="Facet Filters" classNames={divider_style} />
-      <Group>
-        <CohortFacetSelectionModal />
-        <FilesFacetSelectionModal />
-      </Group>
       <Divider label="Genes Table" classNames={divider_style} />
       <GenesTable
         selectedSurvivalPlot={{ id: undefined }}

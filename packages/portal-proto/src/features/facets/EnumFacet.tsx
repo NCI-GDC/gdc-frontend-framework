@@ -42,7 +42,7 @@ import FacetSortPanel from "@/features/facets/FacetSortPanel";
  * @param startShowingData set = false to show the chart by default
  * @param showPercent show the percentage
  * @param hideIfEmpty if facet has no data, do not render
- * @param dismissCallback if facet can be removed, supply a function which will ensure the dismiss control will be visible
+ * @param dismissCallback if facet can be removed, supply a function which will ensure the "dismiss" control will be visible
  * @param width set the width of the facet
  * @param facetDataFunc function to pull enumerated data with
  * @param updateEnumsFunc function to extract enumeration values (used to set checkboxes)

@@ -26,6 +26,7 @@ export interface FacetCardProps {
   readonly indexType?: GQLIndexType;
   readonly width?: string;
   readonly dismissCallback?: (string) => void;
+  readonly clearFilterFunc?: (string) => void;
 }
 
 export interface EnumFacetCardProps extends FacetCardProps {
@@ -38,5 +39,4 @@ export interface EnumFacetCardProps extends FacetCardProps {
     enumerationFilters: EnumOperandValue,
     field: string,
   ) => void;
-  readonly clearFilterFunc?: (string) => void;
 }
