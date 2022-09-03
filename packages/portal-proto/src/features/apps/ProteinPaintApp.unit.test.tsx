@@ -2,7 +2,6 @@ import "whatwg-fetch";
 import React from "react";
 import { render, waitFor } from "@testing-library/react";
 import { ProteinPaintWrapper } from "../proteinpaint/ProteinPaintWrapper";
-import { runproteinpaint } from "@stjude/proteinpaint-client";
 
 let filter;
 
