@@ -94,7 +94,7 @@ interface PpApi {
   update(arg: any): null;
 }
 
-function getLolliplotTrack(props: PpProps, filter0: FilterSet) {
+function getLolliplotTrack(props: PpProps, filter0: any) {
   // host in gdc is just a relative url path,
   // using the same domain as the GDC portal where PP is embedded
   const arg: Mds3Arg = {
@@ -130,7 +130,7 @@ interface BamArg {
   filter0: FilterSet;
 }
 
-function getBamTrack(props: PpProps, filter0: FilterSet) {
+function getBamTrack(props: PpProps, filter0: any) {
   // host in gdc is just a relative url path,
   // using the same domain as the GDC portal where PP is embedded
   const arg: BamArg = {
