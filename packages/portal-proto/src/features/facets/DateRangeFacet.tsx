@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { FacetCardProps } from "./types";
-import { ActionIcon, TextInput, Tooltip } from "@mantine/core";
+import { ActionIcon, Popover, TextInput, Tooltip } from "@mantine/core";
+import { RangeCalendar } from "@mantine/dates";
 import { convertFieldToName } from "@/features/facets/utils";
 import {
   controlsIconStyle,
@@ -35,6 +36,10 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
       : coreDispatch(removeCohortFilter(field));
   };
 
+  const [opened, setOpened] = useState(false);
+  const [dateRangeValue, setDateRangeValue] = useState<
+    [Date | null, Date | null]
+  >([new Date(2021, 11, 1), new Date(2021, 11, 5)]);
   return (
     <div
       className={`flex flex-col ${
@@ -81,6 +86,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
           size="xs"
           placeholder="Since"
           className="px-1"
+          value={dateRangeValue[0].toDateString()}
           rightSection={<CalendarIcon />}
         ></TextInput>
         <MinusIcon />
@@ -88,11 +94,31 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
           size="xs"
           placeholder="Through"
           className="px-1"
+          value={dateRangeValue?.[1]?.toDateString()}
           rightSection={<CalendarIcon />}
         ></TextInput>
-        <ActionIcon className="bg-accent text-accent-contrast">
-          <PlusIcon />
-        </ActionIcon>
+        <Popover
+          position="bottom-end"
+          withArrow
+          shadow="md"
+          opened={opened}
+          onChange={setOpened}
+        >
+          <Popover.Target>
+            <ActionIcon
+              className="bg-accent text-accent-contrast"
+              onClick={() => setOpened((o) => !o)}
+            >
+              <PlusIcon />
+            </ActionIcon>
+          </Popover.Target>
+          <Popover.Dropdown>
+            <RangeCalendar
+              value={dateRangeValue}
+              onChange={setDateRangeValue}
+            />
+          </Popover.Dropdown>
+        </Popover>
       </div>
     </div>
   );
