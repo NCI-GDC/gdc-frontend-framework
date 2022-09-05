@@ -64,7 +64,7 @@ const MutationFilters: React.FC<MutationFiltersProps> = ({
                 type="checkbox"
                 checked={consequenceTypeFilters.length !== 0}
                 onChange={() => selectDeselectconsequenceTypeType()}
-                className={"text-nci-gray"}
+                className="text-primary-content"
                 id={"consequence_filter_all"}
               ></input>
               <label
@@ -119,7 +119,7 @@ const MutationFilters: React.FC<MutationFiltersProps> = ({
               type="checkbox"
               checked={cnvFilters.length !== 0}
               onChange={() => selectDeselectCnv()}
-              className={"text-nci-gray"}
+              className="text-primary-content"
               id={"cnv_filter_all"}
             ></input>
             <label className="px-2 align-middle" htmlFor={"cnv_filter_all"}>

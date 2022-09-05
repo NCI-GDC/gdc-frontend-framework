@@ -179,7 +179,7 @@ export const BioTree = ({
           />
         ) : (
           <ExpandMoreIcon
-            className="cursor-pointer text-nci-blue-darkest"
+            className="cursor-pointer text-primary-content-darkest"
             size={18}
           />
         )}

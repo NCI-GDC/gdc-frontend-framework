@@ -47,7 +47,7 @@ const RadioButtonGroup: React.FC<RadioSquareButtonGroupProps> = ({
                   />
                   <label
                     htmlFor={`${fieldId}-${index}`}
-                    className={`rounded first:rounded-l last:rounded-r inline-block px-6 py-2.5 peer-checked:bg-nci-cyan-dark bg-nci-cyan-lighter text-white font-medium text-xs leading-tight uppercase hover:bg-nci-cyan focus:bg-nci-cyan focus:outline-none focus:ring-0 transition duration-150 ease-in-out`}
+                    className={`rounded first:rounded-l last:rounded-r inline-block px-6 py-2.5 peer-checked:bg-accent-dark bg-accent-lighter text-accent-content-lightest font-medium text-xs leading-tight uppercase hover:bg-accent focus:bg-accent focus:outline-none focus:ring-0 transition duration-150 ease-in-out`}
                   >
                     {x}
                   </label>

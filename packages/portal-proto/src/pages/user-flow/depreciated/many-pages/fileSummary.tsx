@@ -18,8 +18,8 @@ File functionality changed and moved to /files/[uuid]
 */
 import { NextPage } from "next";
 import { NextRouter, useRouter } from "next/dist/client/router";
-import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
-import { ContextualFileView } from "../../../features/files/FileSummary";
+import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
+import { ContextualFileView } from "@/features/files/FileSummary";
 import { headerElements } from "@/features/user-flow/many-pages/navigation-utils";
 
 const FileSummary: NextPage = () => {

@@ -133,7 +133,9 @@ const OncoGridWrapper: React.FC = () => {
   return (
     <div
       ref={(ref) => (fullOncoGridContainer.current = ref)}
-      className={`bg-white p-16  ${isFullscreen ? "overflow-scroll" : ""}`}
+      className={`bg-base-lightest p-16  ${
+        isFullscreen ? "overflow-scroll" : ""
+      }`}
     >
       <div className="flex pb-8">
         <div className="basis-1/2">{`${donors.length} Most Mutated Cases and Top ${genes.length} Mutated Genes by SSM`}</div>
@@ -216,7 +218,9 @@ const OncoGridWrapper: React.FC = () => {
               onClick={() => {
                 setIsHeatmap(!isHeatmap);
               }}
-              classNames={{ root: `mx-1 ${isHeatmap ? "bg-nci-gray" : null}` }}
+              classNames={{
+                root: `mx-1 ${isHeatmap ? "bg-primary-lighter" : null}`,
+              }}
             >
               <FaFire />
             </Button>
@@ -232,7 +236,7 @@ const OncoGridWrapper: React.FC = () => {
               variant={hasGridlines ? "filled" : "outline"}
               onClick={() => setHasGridlines(!hasGridlines)}
               classNames={{
-                root: `mx-1 ${hasGridlines ? "bg-nci-gray" : null}`,
+                root: `mx-1 ${hasGridlines ? "bg-primary-lighter" : null}`,
               }}
             >
               <MdGridOn />
@@ -249,7 +253,7 @@ const OncoGridWrapper: React.FC = () => {
               variant={showCrosshairs ? "filled" : "outline"}
               onClick={() => setShowCrosshairs(!showCrosshairs)}
               classNames={{
-                root: `mx-1 ${showCrosshairs ? "bg-nci-gray" : null}`,
+                root: `mx-1 ${showCrosshairs ? "bg-primary-lighter" : null}`,
               }}
             >
               <FaCrosshairs />
@@ -266,7 +270,7 @@ const OncoGridWrapper: React.FC = () => {
               variant={isFullscreen ? "filled" : "outline"}
               onClick={() => toggleFullScreen(fullOncoGridContainer)}
               classNames={{
-                root: `mx-1 ${isFullscreen ? "bg-nci-gray" : null}`,
+                root: `mx-1 ${isFullscreen ? "bg-primary-lighter" : null}`,
               }}
             >
               <MdFullscreen />
@@ -308,7 +312,7 @@ const OncoGridWrapper: React.FC = () => {
           <Box>
             <div
               ref={(ref) => (gridContainer.current = ref)}
-              className={`oncogrid-wrapper bg-white ${
+              className={`oncogrid-wrapper bg-base-lightest ${
                 consequenceTypeFilters.length === 0 || isLoading
                   ? "invisible"
                   : "visible"

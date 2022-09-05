@@ -23,7 +23,7 @@ import {
 
 /**
  * Root filter set. Similar to how case filters are
- * manages: as a Object where the key is the field name
+ * manages: as an Object where the key is the field name
  * and the value is the Filter Operation
  *
  * @member root - root Objects of all of the filters
@@ -202,6 +202,14 @@ export const selectCurrentCohortCaseGqlFilters = (
   state: CoreState,
 ): GqlOperation | undefined => {
   return buildCohortGqlOperator(state.cohort.currentFilters.filters);
+};
+
+export const selectCurrentCohortFilterOrCaseSet = (
+  state: CoreState,
+): FilterSet => {
+  if (Object.keys(state.cohort.caseSet.caseSetId.root).length != 0) {
+    return state.cohort.caseSet.caseSetId;
+  } else return state.cohort.currentFilters.filters;
 };
 
 export const selectCurrentCohortFiltersByName = (

@@ -16,7 +16,7 @@ const graphQLQuery = `
     $facets: [String]!
   ) {
     viewer {
-      explore {
+      repository {
         cases {
           facets(facets: $facets, filters: $filters)
           hits(first: 0, filters: $filters) {
@@ -66,7 +66,7 @@ const slice = createSlice({
           state.status = "rejected";
         } else {
           state.data =
-            JSON.parse(action.payload.data.viewer?.explore?.cases?.facets) ||
+            JSON.parse(action.payload.data.viewer?.repository?.cases?.facets) ||
             {};
           state.status = "fulfilled";
         }

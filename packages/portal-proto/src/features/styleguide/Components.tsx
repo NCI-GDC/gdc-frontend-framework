@@ -9,7 +9,7 @@ import { FilesFacetSelectionModal } from "@/features/repositoryApp/FilesFacetSel
 
 const Components: ReactNode = () => {
   return (
-    <div className="flex flex-col font-montserrat text-nci-gray w-100">
+    <div className="flex flex-col font-montserrat text-primary-content w-100">
       <p className="prose font-medium text-2xl">UI Components</p>
       <Divider label="Enumeration Facet" classNames={divider_style} />
       <EnumFacet docType="cases" field="primary_site" width="w-1/2" />

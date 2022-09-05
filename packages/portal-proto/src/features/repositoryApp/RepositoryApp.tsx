@@ -13,7 +13,7 @@ import {
 } from "@gff/core";
 import React, { useEffect, useState } from "react";
 import { AppStore, id, AppContext, useAppSelector } from "./appApi";
-import { Button, Menu, Text } from "@mantine/core";
+import { Menu, Text } from "@mantine/core";
 import {
   MdDownload as DownloadIcon,
   MdShoppingCart as CartIcon,
@@ -25,9 +25,7 @@ import { FilesView } from "@/features/files/FilesView";
 import { mapGdcFileToCartFile } from "../files/utils";
 import { selectFilters } from "@/features/repositoryApp/repositoryFiltersSlice";
 import { isEqual } from "lodash";
-
-const buttonStyle =
-  "mx-1 bg-nci-gray-light hover:bg-nci-gray transition-colors";
+import FunctionButton from "@/components/FunctionButton";
 
 export interface ContextualFilesViewProps {
   readonly handleFileSelected?: (file: GdcFile) => void;
@@ -92,57 +90,61 @@ const RepositoryApp: React.FC<ContextualFilesViewProps> = ({
         <Text className="mx-2" transform="uppercase" size="lg" weight={1000}>
           {isSuccess ? pagination.total : "   "}
         </Text>
-        <Text transform="uppercase" size="lg" weight={700}>
+        <Text transform="uppercase" size="lg" className="mr-6" weight={700}>
           Files
         </Text>
-        <Menu>
-          <Menu.Target>
-            <Button className={buttonStyle}>
-              <CartIcon size={"1.5rem"} />
-              Update Cart
-            </Button>
-          </Menu.Target>
-          <Menu.Dropdown>
-            <Menu.Item
-              onClick={() =>
-                addToCart(mapGdcFileToCartFile(allFiles), currentCart, dispatch)
-              }
-            >
-              {"Add All Files"}
-            </Menu.Item>
-            <Menu.Item
-              onClick={() =>
-                addToCart(
-                  mapGdcFileToCartFile(selectedFiles),
-                  currentCart,
-                  dispatch,
-                )
-              }
-            >
-              {"Add Selected Files"}
-            </Menu.Item>
-            <Menu.Item
-              onClick={() =>
-                removeFromCart(
-                  mapGdcFileToCartFile(selectedFiles),
-                  currentCart,
-                  dispatch,
-                )
-              }
-            >
-              {"Remove Selected Files"}
-            </Menu.Item>
-          </Menu.Dropdown>
-        </Menu>
-        <Button className={buttonStyle}>
-          <DownloadIcon size={"1.5rem"} />
-          Manifest
-        </Button>
-        <Link href="/user-flow/workbench/MultipleImageViewerPage" passHref>
-          <Button component="a" className={buttonStyle}>
-            View Images
-          </Button>
-        </Link>
+        <div className="flex justify-end gap-2">
+          <Menu>
+            <Menu.Target>
+              <FunctionButton>
+                <CartIcon size={"1.5rem"} />
+                Update Cart
+              </FunctionButton>
+            </Menu.Target>
+            <Menu.Dropdown>
+              <Menu.Item
+                onClick={() =>
+                  addToCart(
+                    mapGdcFileToCartFile(allFiles),
+                    currentCart,
+                    dispatch,
+                  )
+                }
+              >
+                {"Add All Files"}
+              </Menu.Item>
+              <Menu.Item
+                onClick={() =>
+                  addToCart(
+                    mapGdcFileToCartFile(selectedFiles),
+                    currentCart,
+                    dispatch,
+                  )
+                }
+              >
+                {"Add Selected Files"}
+              </Menu.Item>
+              <Menu.Item
+                onClick={() =>
+                  removeFromCart(
+                    mapGdcFileToCartFile(selectedFiles),
+                    currentCart,
+                    dispatch,
+                  )
+                }
+              >
+                {"Remove Selected Files"}
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
+          <FunctionButton>
+            <DownloadIcon size={"1.5rem"} />
+            Manifest
+          </FunctionButton>
+          <Link href="/user-flow/workbench/MultipleImageViewerPage">
+            <FunctionButton component="a">View Images</FunctionButton>
+          </Link>
+        </div>
       </div>
       <div className="flex flex-row mx-3">
         <FileFacetPanel />

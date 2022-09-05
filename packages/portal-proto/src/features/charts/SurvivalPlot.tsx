@@ -80,7 +80,7 @@ export const useSurvival: survival = (
             { censored, project_id, submitter_id, survivalEstimate, time = 0 },
           ) => {
             setTooltip(
-              <div className="font-montserrat text-xs text-nci-gray-darkest shadow-md">
+              <div className="font-montserrat text-xs text-primary-content-darkest shadow-md">
                 {`Case ID: ${project_id} / ${submitter_id}`}
                 <br />
                 {`Survival Rate: ${Math.round(survivalEstimate * 100)}%`}
@@ -314,15 +314,15 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   }
 
   return (
-    <div className="flex flex-col">
-      <div className="flex flex-row w-100 justify-center flex-wrap items-center">
-        <div className="flex ml-auto text-montserrat text-lg text-nci-gray-dark ">
+    <div className="flex flex-col shadow-lg">
+      <div className="flex flex-row w-100 items-center justify-center flex-wrap items-center">
+        <div className="flex ml-auto text-montserrat text-lg text-primary-content-dark ">
           {title}
         </div>
         <div className="flex flex-row items-center ml-auto mt-2 ">
           <Tooltip label="Download SurvivalPlot data or image">
             <button
-              className="px-1.5 min-h-[28px] nim-w-[40px] mx-1 border-nci-gray-light border rounded-[4px] transition-colors "
+              className="px-1.5 min-h-[28px] nim-w-[40px] mx-1 border-base-light border rounded-[4px] transition-colors "
               onClick={() => setDownloadMenuOpen(!downloadMenuOpen)}
             >
               <DownloadIcon size="1.25em" />
@@ -330,7 +330,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
           </Tooltip>
           <Tooltip label="Reset SurvivalPlot Zoom">
             <button
-              className="px-1.5 min-h-[28px] nim-w-[40px] border-nci-gray-light border rounded-[4px] transition-colors "
+              className="px-1.5 min-h-[28px] nim-w-[40px] border-base-light border rounded-[4px] transition-colors "
               onClick={() => setXDomain(undefined)}
             >
               <ResetIcon size="1.15rem"></ResetIcon>
@@ -379,14 +379,14 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
           </Tooltip>
         </div>
         <div
-          className={`flex flex-row w-full justify-end text-xs mr-8 text-nci-gray no-print`}
+          className={`flex flex-row w-full justify-end text-xs mr-8 text-primary-content no-print`}
         >
           drag to zoom
         </div>
       </div>
       <div ref={mouseRef} className="relative">
         <Box
-          className="bg-white min-w-[150px]"
+          className="bg-base-lightest min-w-[150px]"
           sx={{ left: x + 20, top: y - 20, position: "absolute" }}
         >
           {survivalPlotLineTooltipContent}

@@ -27,7 +27,7 @@ const SideBar = (
 ) => {
   // default styling
   const navbar_items =
-    "prose font-montserrat text-xl text-nci-gray-darker p-4 shadow-md hover:bg-nci-gray-light transition-colors";
+    "prose font-montserrat text-xl text-primary-content-darker p-4 shadow-md hover:bg-base-light transition-colors";
 
   useTotalCounts();
   return (

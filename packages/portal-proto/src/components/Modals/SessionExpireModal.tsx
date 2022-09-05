@@ -19,7 +19,7 @@ export const SessionExpireModal = ({
       closeButtonLabel="Cancel"
       openModal={openModal}
     >
-      <div className="border-y border-y-nci-gray p-4">
+      <div className="border-y border-y-base p-4">
         <Text size="sm"> Your session has expired.</Text>
         <div className="flex content-center">
           <Text size="sm" className="mt-1">
@@ -31,7 +31,7 @@ export const SessionExpireModal = ({
       <div className="flex justify-end mt-2.5">
         <Button
           onClick={() => dispatch(hideModal())}
-          className="!bg-nci-blue hover:!bg-nci-blue-darker"
+          className="!bg-primary hover:!bg-primary-darker"
         >
           Cancel
         </Button>

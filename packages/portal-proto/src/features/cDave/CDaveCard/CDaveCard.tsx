@@ -63,8 +63,8 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
               variant="outline"
               className={
                 chartType === "histogram" && !noData
-                  ? "bg-nci-blue-darkest text-white"
-                  : "border-nci-blue-darkest text-nci-blue-darkest"
+                  ? "bg-primary-darkest text-primary-contrast-darkest"
+                  : "border-primary-darkest text-primary-content-darkest"
               }
               onClick={() => setChartType("histogram")}
               disabled={noData}
@@ -77,8 +77,8 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
               variant="outline"
               className={
                 chartType === "survival"
-                  ? "bg-nci-blue-darkest text-white"
-                  : "border-nci-blue-darkest text-nci-blue-darkest"
+                  ? "bg-primary-darkest text-primary-contrast-darkest"
+                  : "border-primary-darkest text-primary-content-darkest"
               }
               onClick={() => setChartType("survival")}
               disabled={noData}
@@ -89,7 +89,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
           <Tooltip label={"Remove Card"} withArrow>
             <ActionIcon
               onClick={() => updateFields(field)}
-              className="text-nci-gray"
+              className="text-base-contrast"
             >
               <CloseIcon />
             </ActionIcon>

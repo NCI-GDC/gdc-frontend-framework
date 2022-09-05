@@ -3,9 +3,9 @@ import { Image } from "@/components/Image";
 import Link from "next/link";
 import { useState } from "react";
 import ReactModal from "react-modal";
-import { UserFlowVariedPages } from "../../../features/layout/UserFlowVariedPages";
-import { Select } from "../../../components/Select";
-import { CohortManager } from "../../../features/user-flow/many-pages/cohort";
+import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
+import { Select } from "@/components/Select";
+import { CohortManager } from "@/features/user-flow/many-pages/cohort";
 import {
   GeneExpression,
   OncoGrid,
@@ -14,11 +14,11 @@ import {
   SingleCellRnaSeq,
   CohortComparison,
   ClinicalDataAnalysis,
-} from "../../../features/apps/Apps";
-import { FileModal } from "../../../features/files/FileView";
+} from "@/features/apps/Apps";
+import { FileModal } from "@/features/files/FileView";
 import { GdcFile } from "@gff/core";
-import { CaseModal } from "../../../features/cases/CaseView";
-import { Case } from "../../../features/cases/CasesView";
+import { CaseModal } from "@/features/cases/CaseView";
+import { Case } from "@/features/cases/CasesView";
 
 const AnalysisPage: NextPage = () => {
   const [showCohortBuilderModal, setShowCohortBuilderModal] = useState(false);
@@ -45,7 +45,7 @@ const AnalysisPage: NextPage = () => {
   const [currentCase, setCurrentCase] = useState(undefined as Case);
 
   const headerElements = [
-    <Link key="Studies" href="/user-flow/many-pages-v2/studies">
+    <Link key="Studies" href="/user-flow/depreciated/many-pages-v2/studies">
       Cohorts
     </Link>,
     "Analysis",
@@ -136,7 +136,7 @@ const AnalysisPage: NextPage = () => {
     >
       <AppModal />
       <div className="flex flex-col p-4 gap-y-4">
-        <div className="border p-4 border-gray-400 bg-white">
+        <div className="border p-4 border-gray-400 bg-base-lightest">
           <CohortManager
             setIsModalOpen={setShowCohortBuilderModal}
             setIsExpanded={setIsExpanded}

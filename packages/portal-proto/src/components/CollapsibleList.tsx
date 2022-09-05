@@ -32,7 +32,9 @@ export const CollapsibleList = ({
           <button
             onClick={() => setExpanded((e) => !e)}
             aria-expanded={expanded}
-            className={`text-nci-blue ${customToggleTextStyle || "italic"}`}
+            className={`text-primary-content ${
+              customToggleTextStyle || "italic"
+            }`}
           >
             {expanded ? (
               <div className="flex">

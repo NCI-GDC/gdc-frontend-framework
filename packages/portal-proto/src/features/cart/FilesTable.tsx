@@ -103,13 +103,13 @@ const FilesTable: React.FC = () => {
             remove: <RemoveFromCartButton files={[file]} iconOnly />,
             uuid: (
               <Link href={`/files/${file.fileId}`}>
-                <a className="text-nci-blue underline">{file.fileId}</a>
+                <a className="text-utility-link underline">{file.fileId}</a>
               </Link>
             ),
             access: (
               <Badge
                 className={
-                  file.access === "open"
+                  file.access === "open" //TODO: keep or change to theme color
                     ? "bg-nci-green-lighter/50 text-nci-green-darkest capitalize text-sm"
                     : "bg-nci-red-lighter/50 text-nci-red-darkest capitalize text-sm"
                 }
@@ -119,13 +119,13 @@ const FilesTable: React.FC = () => {
             ),
             name: (
               <Link href={`/files/${file.fileId}`}>
-                <a className="text-nci-blue underline">{file.fileName}</a>
+                <a className="text-utility-link underline">{file.fileName}</a>
               </Link>
             ),
             cases: file.cases?.length.toLocaleString() || 0,
             project: (
               <Link href={`/projects/${file.project_id}`}>
-                <a className="text-nci-blue underline">{file.project_id}</a>
+                <a className="text-utility-link underline">{file.project_id}</a>
               </Link>
             ),
             data_category: file.dataCategory,
@@ -186,14 +186,14 @@ const FilesTable: React.FC = () => {
           <div className="flex gap-2">
             <Button
               className={
-                "bg-white text-nci-blue-darkest border-nci-blue-darkest"
+                "bg-base-lightest text-base-contrast-lightest border-primary-darkest"
               }
             >
               JSON
             </Button>
             <Button
               className={
-                "bg-white text-nci-blue-darkest border-nci-blue-darkest"
+                "bg-base-lightest text-base-contrast-lightest border-primary-darkest"
               }
             >
               TSV
@@ -204,7 +204,7 @@ const FilesTable: React.FC = () => {
                   leftIcon={<TrashIcon />}
                   rightIcon={<DropdownIcon size={20} />}
                   classNames={{
-                    root: "bg-nci-red-darker",
+                    root: "bg-nci-red-darker", //TODO: find good color theme for this
                     rightIcon: "border-l pl-1 -mr-2",
                   }}
                 >
@@ -221,7 +221,7 @@ const FilesTable: React.FC = () => {
           </div>
         }
       />
-      <div className="flex flex-row items-center justify-start border-t border-nci-gray-light w-9/12">
+      <div className="flex flex-row items-center justify-start border-t border-base-light w-9/12">
         <p className="px-2">Page Size:</p>
         <Select
           size="sm"
@@ -238,7 +238,7 @@ const FilesTable: React.FC = () => {
         <Pagination
           size="sm"
           radius="md"
-          color="gray"
+          color="accent"
           className="ml-auto"
           page={activePage}
           onChange={(page: number) => setActivePage(page)}

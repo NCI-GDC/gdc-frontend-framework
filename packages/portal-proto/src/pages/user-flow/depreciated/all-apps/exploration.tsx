@@ -1,5 +1,5 @@
 import { NextPage } from "next";
-import { BaseExplorationPage } from "../../../features/user-flow/all-apps/baseExploration";
+import { BaseExplorationPage } from "@/features/user-flow/all-apps/baseExploration";
 
 const AllAppsExploration: NextPage = () => {
   return (

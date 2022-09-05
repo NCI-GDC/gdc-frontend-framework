@@ -11,12 +11,12 @@ export const TypeIcon = ({
     <>
       {toolTipLabel ? (
         <Tooltip label={toolTipLabel}>
-          <span className="rounded-full bg-nci-blue-darker text-white p-1 align-text-bottom mr-2">
+          <span className="rounded-full bg-primary-darker text-primary-content-lighter p-1 align-text-bottom mr-2">
             {iconText}
           </span>
         </Tooltip>
       ) : (
-        <span className="rounded-full bg-nci-blue-darker text-white p-1 align-text-bottom mr-2">
+        <span className="rounded-full bg-primary-darker text-primary-content-lighter p-1 align-text-bottom mr-2">
           {iconText}
         </span>
       )}

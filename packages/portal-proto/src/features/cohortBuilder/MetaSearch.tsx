@@ -36,7 +36,7 @@ export const MetaSearch: React.FC = () => {
           <div className="relative w-full ">
             <input
               type="text"
-              className="h-10 pr-8 w-full pl-5  shadow-md  border-nci-gray-light rounded-full focus:ring-nci-cyan-light focus:border-nci-teal-light hover:shadow-lg hover:border-nci-teal-lighter"
+              className="h-10 pr-8 w-full pl-5  shadow-md  border-base-light rounded-full focus:ring-accent-light focus:border-accent-light hover:shadow-lg hover:border-accent-lighter"
               placeholder={`Search ...`}
               value={searchTerm}
               onChange={onSearchChanged}
@@ -54,11 +54,11 @@ export const MetaSearch: React.FC = () => {
       <div
         className={`${
           searchResults.length == 0 ? "hidden" : ""
-        } flex-col border-2 mt-14 absolute z-20 bg-nci-teal-lightest w-1/2 m-16 py-4 px-1 drop-shadow ${
+        } flex-col border-2 mt-14 absolute z-20 bg-accent-lightest w-1/2 m-16 py-4 px-1 drop-shadow ${
           searchResults.length > 6 ? "h-48 overflow-y-auto" : ""
         } `}
       >
-        <div className="w-full border-b-2 border-nci-gray ">
+        <div className="w-full border-b-2 border-base ">
           {searchResults.length}{" "}
           {searchResults.length === 1 ? "result" : "results"} found for{" "}
           <em>{searchTerm}</em>:
@@ -67,7 +67,7 @@ export const MetaSearch: React.FC = () => {
           return (
             <div
               key={`${x.name}_${index}`}
-              className="flex flex-row items-center hover:bg-nci-blue-lighter px-4"
+              className="flex flex-row items-center hover:bg-primary-lighter px-4"
             >
               {x.category}
               <MdArrowForward size="1.0em" /> {x.subcategory}

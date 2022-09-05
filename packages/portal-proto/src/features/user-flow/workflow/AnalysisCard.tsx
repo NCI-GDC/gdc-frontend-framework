@@ -26,7 +26,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
   setDescriptionVisible,
 }: AnalysisCardProps) => {
   const cohortCounts = useCoreSelector((state) => selectCohortCounts(state));
-  let caseCounts = cohortCounts?.caseCounts || 0;
+  let caseCounts = cohortCounts?.repositoryCaseCounts || 0;
 
   // TODO - remove, just for demo purposes
   if (entry.name === "scRNA-Seq" || entry.name === "Gene Expression") {
@@ -40,7 +40,9 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
     <Card
       shadow="sm"
       p="xs"
-      className={`border-nci-blue-darkest border ${inactive ? "" : "border-t-6"}
+      className={`bg-base-max border-primary-darkest border ${
+        inactive ? "" : "border-t-6"
+      }
        `}
       aria-label={`${entry.name} Tool`}
     >
@@ -66,7 +68,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
         )}
         <div className="flex flex-col">
           <Button
-            className={`bg-nci-blue-darkest hover:bg-nci-blue hover:border-nci-blue mb-1 w-[50px] ${
+            className={`bg-secondary-darkest hover:bg-secondary hover:border-secondary mb-1 w-[50px] ${
               inactive ? "opacity-50" : ""
             }`}
             variant="filled"
@@ -93,7 +95,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
               radius="sm"
               aria-label={`Navigate to ${entry.name} Demo`}
               variant={"outline"}
-              className="text-nci-blue-darkest border-nci-blue-darkest hover:bg-nci-blue hover:text-white hover:border-nci-blue w-[50px]"
+              className="text-primary-content-darkest border-primary-darkest hover:bg-primary hover:text-primary-content-max hover:border-primary w-[50px]"
             >
               Demo
             </Button>
@@ -114,7 +116,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
             )
           }
           classNames={{
-            root: "text-nci-blue-darkest font-bold",
+            root: "text-primary-content-darkest font-bold",
             rightIcon: "ml-0",
           }}
         >
@@ -122,7 +124,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
         </Button>
         <div
           style={{ height: descriptionVisible ? descHeight : 0 }}
-          className={`transition-[height] duration-300 bg-nci-blue-lightest -mx-2.5 mb-2.5`}
+          className={`transition-[height] duration-300 bg-primary-lightest -mx-2.5 mb-2.5`}
         >
           <div
             className={`${
@@ -136,7 +138,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
         {entry.hideCounts ? (
           <div className="h-4" />
         ) : cohortCounts ? (
-          <div className="flex flex-row items-center text-nci-blue-darkest">
+          <div className="flex flex-row items-center text-primary-content-darkest">
             <span>{`${caseCounts.toLocaleString()} Cases`}</span>
             {caseCounts === 0 && (
               <Tooltip label={entry?.noDataTooltip} withArrow width={200}>

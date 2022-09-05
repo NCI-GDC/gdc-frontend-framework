@@ -74,9 +74,9 @@ const SetOperationsDemo: React.FC = () => {
           onClickHandler={onClickHandler}
         />
         <div className="w-full ml-2">
-          <table className="bg-white w-full text-left text-nci-gray-darker">
+          <table className="bg-base-lightest w-full text-left text-primary-content-darker">
             <thead>
-              <tr className="bg-nci-gray-lightest">
+              <tr className="bg-base-lightest">
                 <th>Alias</th>
                 <th>Item Type</th>
                 <th>Name</th>
@@ -87,14 +87,14 @@ const SetOperationsDemo: React.FC = () => {
               {demoData.summary.map((item, idx) => (
                 <tr
                   key={item.alias}
-                  className={idx % 2 ? null : "bg-gdc-blue-warm-lightest"}
+                  className={idx % 2 ? null : "bg-accent-warm-lightest"}
                 >
                   <td>{item?.alias}</td>
                   <td>{item?.type}</td>
                   <td>{item?.names.join(", ")}</td>
                   <td>
                     {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                    <a href="#" className="underline text-gdc-blue">
+                    <a href="#" className="underline text-utility-link">
                       {item?.total}
                     </a>
                   </td>
@@ -102,9 +102,9 @@ const SetOperationsDemo: React.FC = () => {
               ))}
             </tbody>
           </table>
-          <table className="bg-white w-full text-left text-nci-gray-darker mt-8">
+          <table className="bg-base-lightest w-full text-left text-primary-content-darker mt-8">
             <thead>
-              <tr className="bg-nci-gray-lightest">
+              <tr className="bg-base-lightest">
                 <th>Select</th>
                 <th>Set Operation</th>
                 <th># Items</th>
@@ -117,10 +117,10 @@ const SetOperationsDemo: React.FC = () => {
                   key={item.key}
                   className={
                     selectedSets[item.key]
-                      ? "bg-gdc-yellow-lightest"
+                      ? "bg-nci-yellow-lightest"
                       : idx % 2
                       ? null
-                      : "bg-gdc-blue-warm-lightest"
+                      : "bg-primary-warm-lightest"
                   }
                 >
                   <td>

@@ -9,9 +9,11 @@ export const SummaryHeader = ({
   headerTitle,
 }: SummaryHeaderProps): JSX.Element => {
   return (
-    <div className="bg-white py-3 pl-24 shadow-lg">
-      <TypeIcon iconText={iconText} />
-      <span className="text-2xl text-nci-blue-darker">{headerTitle}</span>
-    </div>
+    <header className="fixed bg-base-max py-3 pl-24 z-10 w-full flex flex-row nowrap items-center shadow-lg">
+      <div className="rounded-full flex flex-row items-center p-1 px-2">
+        <TypeIcon iconText={iconText} />
+      </div>
+      <span className="text-2xl text-base-contrast-max">{headerTitle}</span>
+    </header>
   );
 };

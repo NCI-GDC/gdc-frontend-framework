@@ -17,6 +17,7 @@ import {
   buildCohortGqlOperator,
   useTopGene,
 } from "@gff/core";
+import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
 
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
   ssr: false,
@@ -115,12 +116,14 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilterSet(state),
   );
+
   const genomicFilters = useCoreSelector((state) =>
     selectGenomicFilters(state),
   );
 
   const filters = useMemo(
     () => buildCohortGqlOperator(joinFilters(cohortFilters, genomicFilters)),
+
     [cohortFilters, genomicFilters],
   );
   const f = buildGeneHaveAndHaveNotFilters(
@@ -197,10 +200,6 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     }
   }, [appMode, comparativeSurvival, topGeneSSMS, topGeneSSMSSuccess]);
 
-  const buttonStyle =
-    "flex flex-row items-center bg-white text-nci-blue-darkest border border-solid border-nci-blue-darkest h-12 hover:bg-nci-blue hover:text-white hover:border-nci-blue";
-  const tabStyle = `${buttonStyle} rounded-md first:border-r-0 last:border-l-0 first:rounded-r-none last:rounded-l-none hover:border-nci-blue-darkest data-active:bg-nci-blue-darkest data-active:text-white`;
-
   return (
     <div className="flex flex-row">
       <div className="flex flex-col gap-y-4 mr-3 mt-12 w-min-64 w-max-64">
@@ -237,9 +236,9 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
         value={appMode}
         defaultValue="genes"
         classNames={{
-          tab: tabStyle,
+          tab: SecondaryTabStyle,
           tabsList: "px-2 mt-2 border-0",
-          root: "border-0",
+          root: "bg-base-max border-0",
         }}
         onTabChange={handleTabChanged}
       >
@@ -250,7 +249,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
         <Tabs.Panel value="genes" pt="xs">
           <div className="flex flex-row mt-3">
             <div className="flex flex-col">
-              <Grid className="mx-2  bg-white w-9/12">
+              <Grid className="mx-2  bg-base-max w-9/12">
                 <Grid.Col span={6}>
                   <GeneFrequencyChart marginBottom={95} />
                 </Grid.Col>
@@ -285,7 +284,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
         <Tabs.Panel value="ssms" pt="xs">
           <div className="flex flex-row">
             <div className="flex flex-col">
-              <div className="bg-white w-9/12">
+              <div className="bg-base-lightest w-9/12">
                 <LoadingOverlay
                   visible={!survivalPlotReady && !topGeneSSMSSuccess}
                 />

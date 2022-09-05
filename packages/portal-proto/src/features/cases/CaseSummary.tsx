@@ -168,7 +168,7 @@ export const CaseSummary = ({
       case_id: submitter_id,
       project: (
         <Link href={`/projects/${project_id}`}>
-          <a className="underline text-nci-blue"> {project_id}</a>
+          <a className="underline text-utility-link"> {project_id}</a>
         </Link>
       ),
       project_name,
@@ -189,7 +189,7 @@ export const CaseSummary = ({
             <Link
               href={`/user-flow/workbench/MultipleImageViewerPage?caseId=${case_id}`}
             >
-              <a className="flex gap-1 cursor-pointer text-nci-blue">
+              <a className="flex gap-1 cursor-pointer text-primary">
                 <FaMicroscope className="mt-0.5" />
                 <span>({slideCount})</span>
               </a>
@@ -213,7 +213,9 @@ export const CaseSummary = ({
                     );
               }}
               className={`cursor-pointer mt-0.5 ${
-                isAllImagesFilesInCart ? "text-nci-green" : "text-nci-blue"
+                isAllImagesFilesInCart
+                  ? "text-utility-category4"
+                  : "text-primary"
               }`}
             />
           </Tooltip>
@@ -288,11 +290,11 @@ export const CaseSummary = ({
       ) : data && Object.keys(data).length > 0 && annotationCountData ? (
         <>
           <SummaryHeader iconText="CA" headerTitle={headerTitle} />
-          <div className="flex flex-col mx-auto mt-5 w-10/12">
+          <div className="flex flex-col mx-auto mt-20 w-10/12">
             <div className="flex flex-col gap-5">
               <Button
                 leftIcon={<FaShoppingCart />}
-                className="self-end text-nci-gray-lightest bg-nci-blue hover:bg-nci-blue-darker"
+                className="self-end text-primary-contrast bg-primary hover:bg-primary-darker"
                 onClick={() =>
                   isAllFilesInCart
                     ? removeFromCart(
