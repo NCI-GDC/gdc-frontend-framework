@@ -39,7 +39,7 @@ const buildCaseSetMutationQuery = (index: string) =>
 export const mutateCreateCaseSet = (
   filters: FilterSet,
   index: GQLIndexType = "explore",
-) => {
+): Promise<GraphQLApiResponse<unknown>> => {
   const graphQL = buildCaseSetMutationQuery(index);
   const filtersGQL = {
     filters_0: filters ? filters : {},

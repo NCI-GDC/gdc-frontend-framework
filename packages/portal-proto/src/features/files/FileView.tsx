@@ -285,7 +285,7 @@ export const FileView: React.FC<FileViewProps> = ({
             <BAMSlicingButton isActive={bamActive} file={file} />
           )}
         <Button
-          className="m-1 text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
+          className="text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
           leftIcon={<FaDownload />}
         >
           Download

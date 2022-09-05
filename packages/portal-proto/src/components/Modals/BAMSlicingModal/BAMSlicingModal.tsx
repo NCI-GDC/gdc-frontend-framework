@@ -4,8 +4,7 @@ import { Button, Text, Textarea } from "@mantine/core";
 import { BaseModal } from "../BaseModal";
 import { useForm } from "@mantine/form";
 import download from "src/utils/download";
-// TODO: will uncomment this if needed later on
-// import { referenceSequenceNames } from "./GRCh38.d1.vd1";
+import { referenceSequenceNames } from "./GRCh38.d1.vd1";
 
 export const processBAMSliceInput = (
   userInput: string,
@@ -63,17 +62,16 @@ export const BAMSlicingModal = ({
         if (!processedValue)
           return "You have entered invalid coordinates. Please try again.";
 
-        // TODO: will uncomment this if needed later on
-        // const refSeqs = referenceSequenceNames.split("\n");
+        const refSeqs = referenceSequenceNames.split("\n");
         const flag = processedValue.regions.some((region) => {
           if (!region) return true;
-          if (!/^[a-zA-Z0-9]+(:([0-9]+)?(-[0-9]+)?)?$/.test(region))
+          //eslint-disable-next-line
+          if (!/^[a-zA-Z0-9\_\-]+(:([0-9]+)?(-[0-9]+)?)?$/.test(region))
             return true;
 
           const splittedRegion = region.split(":");
-          // TODO: will uncomment this if needed later on
-          // if (!refSeqs.find((refSeq) => refSeq === splittedRegion[0]))
-          //   return true;
+          if (!refSeqs.find((refSeq) => refSeq === splittedRegion[0]))
+            return true;
           if (splittedRegion.length > 1 && !splittedRegion[1]) return true;
           const numVals =
             splittedRegion.length > 1 && splittedRegion[1].split("-");
