@@ -1,5 +1,13 @@
-import { DAYS_IN_YEAR } from "@gff/core";
+import {
+  DAYS_IN_YEAR,
+  GreaterThan,
+  GreaterThanOrEquals,
+  LessThan,
+  LessThanOrEquals,
+  Operation,
+} from "@gff/core";
 import _ from "lodash";
+import { NumericRange, StringRange } from "@/features/facets/types";
 // TODO write unit test for these
 export const DEFAULT_VISIBLE_ITEMS = 6;
 
@@ -73,4 +81,41 @@ export const AgeDisplay = (
     .map((p) => (!yearsOnly ? _timeString(p) : p[0]))
     .join(" ")
     .trim();
+};
+
+export const partial =
+  (func, ...argsBound) =>
+  (...args) =>
+    func(...argsBound, ...args);
+
+export const buildRangeOperator = (
+  field: string,
+  rangeData: NumericRange | StringRange,
+): Operation | undefined => {
+  // couple of different cases
+  // * no from/to return undefined
+  if (rangeData.from === undefined && rangeData.to === undefined)
+    return undefined;
+
+  const fromOperation: GreaterThan | GreaterThanOrEquals =
+    rangeData.from !== undefined
+      ? {
+          field: field,
+          operator: rangeData.fromOp,
+          operand: rangeData.from,
+        }
+      : undefined;
+  const toOperation: LessThan | LessThanOrEquals =
+    rangeData.to !== undefined
+      ? {
+          field: field,
+          operator: rangeData.toOp,
+          operand: rangeData.to,
+        }
+      : undefined;
+
+  if (fromOperation && toOperation)
+    return { operator: "and", operands: [fromOperation, toOperation] };
+  if (fromOperation) return fromOperation;
+  return toOperation;
 };

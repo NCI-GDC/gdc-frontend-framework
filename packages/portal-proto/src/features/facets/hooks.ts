@@ -31,6 +31,9 @@ import { useEffect } from "react";
 import isEqual from "lodash/isEqual";
 import { EnumFacetResponse, FacetResponse } from "@/features/facets/types";
 import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
+import { TypedUseSelectorHook } from "react-redux";
+import { CoreState } from "@gff/core/dist/dts/reducers";
+import { CoreDispatch } from "@gff/core/dist/dts";
 
 /**
  * Filter selector for all the facet filters
@@ -357,6 +360,32 @@ export const useRangeFacet = (
     isSuccess: facet?.status === "fulfilled",
     isError: facet?.status === "rejected",
   };
+};
+
+// Global Selector for Facet Values
+export const selectFieldValue = (
+  selector: TypedUseSelectorHook<CoreState>,
+  field: string,
+): Operation => {
+  // get the current filter for this facet
+  return selector((state) =>
+    selectCurrentCohortFiltersByName(state, `${field}`),
+  );
+};
+
+// Core Facet Values Dispatcher
+export const dispatchFieldValue = (
+  dispatch: CoreDispatch,
+  field: string,
+  operation: Operation,
+) => {
+  // get the current filter for this facet
+  dispatch(updateCohortFilter({ field: field, operation: operation }));
+};
+
+// Global Clear
+export const clearFilters = (dispatch: CoreDispatch, field: string) => {
+  dispatch(removeCohortFilter(field));
 };
 
 export const UpdateEnums = {

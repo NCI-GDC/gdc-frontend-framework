@@ -1,8 +1,15 @@
-import React, { useState } from "react";
-import { FacetCardProps } from "./types";
+import React, { useState, useEffect } from "react";
+import {
+  FacetCardProps,
+  SelectFacetValueFunction,
+  UpdateFacetValueFunction,
+} from "./types";
 import { ActionIcon, Popover, TextInput, Tooltip } from "@mantine/core";
 import { RangeCalendar } from "@mantine/dates";
-import { convertFieldToName } from "@/features/facets/utils";
+import {
+  convertFieldToName,
+  buildRangeOperator,
+} from "@/features/facets/utils";
 import {
   controlsIconStyle,
   FacetIconButton,
@@ -15,11 +22,18 @@ import {
 } from "react-icons/fa";
 import { ImCalendar as CalendarIcon } from "react-icons/im";
 import { removeCohortFilter, useCoreDispatch } from "@gff/core";
+import { StringRange } from "./types";
 
-type DateRangeFacetProps = Omit<
-  FacetCardProps,
-  "showSearch" | "showFlip" | "showPercent"
->;
+interface DateRangeFacetProps
+  extends Omit<FacetCardProps, "showSearch" | "showFlip" | "showPercent"> {
+  getFacetValue: SelectFacetValueFunction;
+  setFacetValue: UpdateFacetValueFunction;
+}
+
+const convertDateToString = (d: Date | null): string | undefined => {
+  if (d === null) return undefined;
+  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+};
 
 const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
   field,
@@ -27,6 +41,8 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
   facetName = undefined,
   dismissCallback = undefined,
   width = undefined,
+  getFacetValue,
+  setFacetValue,
   clearFilterFunc = undefined,
 }: DateRangeFacetProps) => {
   const coreDispatch = useCoreDispatch();
@@ -36,10 +52,31 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
       : coreDispatch(removeCohortFilter(field));
   };
 
+  console.log("here");
+  const facetValue = getFacetValue(field);
+
+  console.log(facetValue);
+
   const [opened, setOpened] = useState(false);
   const [dateRangeValue, setDateRangeValue] = useState<
     [Date | null, Date | null]
-  >([new Date(2021, 11, 1), new Date(2021, 11, 5)]);
+  >([null, null]);
+
+  useEffect(() => {
+    const data: StringRange = {
+      from: convertDateToString(dateRangeValue[0]),
+      to: convertDateToString(dateRangeValue[1]),
+      fromOp: ">=",
+      toOp: "<=",
+    };
+
+    const rangeFilters = buildRangeOperator(field, data);
+    if (rangeFilters !== undefined) {
+      setFacetValue(field, rangeFilters);
+      console.log("setFacet");
+    }
+  }, [dateRangeValue, field, setFacetValue]);
+
   return (
     <div
       className={`flex flex-col ${
@@ -86,7 +123,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
           size="xs"
           placeholder="Since"
           className="px-1"
-          value={dateRangeValue[0].toDateString()}
+          value={convertDateToString(dateRangeValue[0])}
           rightSection={<CalendarIcon />}
         ></TextInput>
         <MinusIcon />
@@ -94,7 +131,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
           size="xs"
           placeholder="Through"
           className="px-1"
-          value={dateRangeValue?.[1]?.toDateString()}
+          value={convertDateToString(dateRangeValue[1])}
           rightSection={<CalendarIcon />}
         ></TextInput>
         <Popover
@@ -114,6 +151,8 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
           </Popover.Target>
           <Popover.Dropdown>
             <RangeCalendar
+              allowSingleDateInRange={false}
+              amountOfMonths={2}
               value={dateRangeValue}
               onChange={setDateRangeValue}
             />

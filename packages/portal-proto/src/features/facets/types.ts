@@ -1,4 +1,9 @@
-import { EnumOperandValue, GQLDocType, GQLIndexType } from "@gff/core";
+import {
+  EnumOperandValue,
+  GQLDocType,
+  GQLIndexType,
+  Operation,
+} from "@gff/core";
 
 export interface FacetResponse {
   readonly data?: Record<string, number>;
@@ -40,3 +45,24 @@ export interface EnumFacetCardProps extends FacetCardProps {
     field: string,
   ) => void;
 }
+
+export type RangeFromOp = ">" | ">=";
+export type RangeToOp = "<" | "<=";
+
+export interface NumericRange {
+  readonly fromOp?: RangeFromOp;
+  readonly from?: number;
+  readonly toOp?: RangeToOp;
+  readonly to?: number;
+}
+
+export interface StringRange {
+  readonly fromOp?: RangeFromOp;
+  readonly from?: string;
+  readonly toOp?: RangeToOp;
+  readonly to?: string;
+}
+
+export type GetFacetDataFunction = (field: string) => FacetResponse;
+export type SelectFacetValueFunction = (field: string) => Operation;
+export type UpdateFacetValueFunction = (field: string, op: Operation) => void;

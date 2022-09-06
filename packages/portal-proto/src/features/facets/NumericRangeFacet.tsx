@@ -35,8 +35,14 @@ import {
   getLowerAgeYears,
   getUpperAgeFromYears,
   getUpperAgeYears,
+  buildRangeOperator,
 } from "./utils";
-import { FacetCardProps } from "@/features/facets/types";
+import {
+  FacetCardProps,
+  NumericRange,
+  RangeFromOp,
+  RangeToOp,
+} from "@/features/facets/types";
 import {
   FacetDocTypeToCountsIndexMap,
   FacetDocTypeToLabelsMap,
@@ -76,7 +82,7 @@ const RadioStyle =
 export const ApplyButton = tw.div`
         flex
         flex-row
-        subpixel-antialiased
+        subpixel-antialiasing
         rounded-md
         text-base
         font-montserrat
@@ -102,17 +108,7 @@ interface RangeValueSelectorProps {
   setSelected: (value: string) => void;
 }
 
-type RangeFromOp = ">" | ">=";
-type RangeToOp = "<" | "<=";
-
 const WARNING_DAYS = Math.floor(90 * DAYS_IN_YEAR);
-
-interface NumericRange {
-  readonly fromOp?: RangeFromOp;
-  readonly from?: number;
-  readonly toOp?: RangeToOp;
-  readonly to?: number;
-}
 
 /**
  * Given an operation, determine if range is open or closed and extract
@@ -123,13 +119,37 @@ const ExtractRangeValues = (filter?: Operation): NumericRange | undefined => {
   if (filter !== undefined) {
     switch (filter.operator) {
       case ">":
-        return { from: filter.operand, fromOp: filter.operator };
+        return {
+          from:
+            typeof filter.operand === "number"
+              ? (filter.operand as number)
+              : undefined,
+          fromOp: filter.operator,
+        };
       case ">=":
-        return { from: filter.operand, fromOp: filter.operator };
+        return {
+          from:
+            typeof filter.operand === "number"
+              ? (filter.operand as number)
+              : undefined,
+          fromOp: filter.operator,
+        };
       case "<":
-        return { to: filter.operand, toOp: filter.operator };
+        return {
+          to:
+            typeof filter.operand === "number"
+              ? (filter.operand as number)
+              : undefined,
+          toOp: filter.operator,
+        };
       case "<=":
-        return { to: filter.operand, toOp: filter.operator };
+        return {
+          to:
+            typeof filter.operand === "number"
+              ? (filter.operand as number)
+              : undefined,
+          toOp: filter.operator,
+        };
       case "and": {
         const a = ExtractRangeValues(filter.operands[0]);
         const b = ExtractRangeValues(filter.operands[1]);
@@ -234,38 +254,6 @@ const BuildRanges = (
       r[x.key] = x;
       return r;
     }, {} as Record<string, RangeBucketElement>);
-};
-
-const buildRangeOperator = (
-  field: string,
-  rangeData: NumericRange,
-): Operation | undefined => {
-  // couple of different cases
-  // * no from/to return undefined
-  if (rangeData.from === undefined && rangeData.to === undefined)
-    return undefined;
-
-  const fromOperation: Operation =
-    rangeData.from !== undefined
-      ? {
-          field: field,
-          operator: rangeData.fromOp,
-          operand: rangeData.from,
-        }
-      : undefined;
-  const toOperation: Operation =
-    rangeData.to !== undefined
-      ? {
-          field: field,
-          operator: rangeData.toOp,
-          operand: rangeData.to,
-        }
-      : undefined;
-
-  if (fromOperation && toOperation)
-    return { operator: "and", operands: [fromOperation, toOperation] };
-  if (fromOperation) return fromOperation;
-  return toOperation;
 };
 
 /**
@@ -393,7 +381,7 @@ interface FromToProps {
  * @param maximum - range maximum value
  * @param values - the current value of the range
  * @param changedCallback - function called when FromTo values change
- * @param units - string represention of unit: "days" | "years" | "year", "percent" | "numeric"
+ * @param units - string representation of unit: "days" | "years" | "year", "percent" | "numeric"
  * @constructor
  */
 const FromTo: React.FC<FromToProps> = ({
