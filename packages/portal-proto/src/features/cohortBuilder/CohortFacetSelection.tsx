@@ -9,7 +9,7 @@ const CohortFacetSelection = (): JSX.Element => {
 
   return (
     <FacetSelection
-      title={"Add Cohort Filter"}
+      title={"Add a Case Filter"}
       facetType="cases"
       handleFilterSelected={handleFilterSelected}
       usedFacets={useCoreSelector((state) =>
@@ -30,7 +30,7 @@ export const CohortFacetSelectionModal = (): JSX.Element => {
     <>
       <Modal size="lg" opened={opened} onClose={() => setOpened(false)}>
         <FacetSelection
-          title={"Add Cohort Filter"}
+          title={"Add a Case Filter"}
           facetType="cases"
           handleFilterSelected={handleFilterSelected}
           usedFacets={useCoreSelector((state) =>
