@@ -1,10 +1,6 @@
 @tailwind base;
 @tailwind components;
 
-html,
-body {
-  overflow-x: hidden;
-}
 body {
   position: relative;
 }
@@ -61,4 +57,4 @@ body {
 }
 
 @tailwind utilities;
-@tailwind varients;
+@tailwind variants;

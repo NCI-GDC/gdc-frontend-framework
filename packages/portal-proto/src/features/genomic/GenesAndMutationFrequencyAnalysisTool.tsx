@@ -3,7 +3,6 @@ import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
 import GenesTable from "../genesTable/GenesTable";
 import MutationsTable from "../mutationsTable/MutationsTable";
 import { Grid, Tabs, LoadingOverlay } from "@mantine/core";
-import isEqual from "lodash/isEqual";
 import { EnumFacet } from "../facets/EnumFacet";
 import dynamic from "next/dynamic";
 import {
@@ -13,13 +12,12 @@ import {
   joinFilters,
   useCoreSelector,
   clearGenomicFilters,
-  fetchSurvival,
-  useSurvivalPlot,
+  useGetSurvivalPlotQuery,
   selectGenomicFilters,
   buildCohortGqlOperator,
   useTopGene,
-  usePrevious,
 } from "@gff/core";
+import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
 
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
   ssr: false,
@@ -118,18 +116,25 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilterSet(state),
   );
+
   const genomicFilters = useCoreSelector((state) =>
     selectGenomicFilters(state),
   );
 
   const filters = useMemo(
     () => buildCohortGqlOperator(joinFilters(cohortFilters, genomicFilters)),
+
     [cohortFilters, genomicFilters],
   );
+  const f = buildGeneHaveAndHaveNotFilters(
+    filters,
+    comparativeSurvival?.symbol,
+    comparativeSurvival?.field,
+  );
   const { data: survivalPlotData, isSuccess: survivalPlotReady } =
-    useSurvivalPlot({ filters: filters ? [filters] : [] });
-
-  const prevComparative = usePrevious(comparativeSurvival);
+    useGetSurvivalPlotQuery({
+      filters: comparativeSurvival !== undefined ? f : filters ? [filters] : [],
+    });
 
   // pass to Survival Plot when survivalPlotData data is undefined/not ready
   const emptySurvivalPlot = {
@@ -164,7 +169,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   /**
    * remove comparative survival plot when tabs or filters change.
    */
-  const handleTabChanged = (_tabIndex: number, tabKey?: string) => {
+  const handleTabChanged = (tabKey: string) => {
     setAppMode(tabKey as AppModeState);
     setComparativeSurvival(undefined);
   };
@@ -195,23 +200,6 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     }
   }, [appMode, comparativeSurvival, topGeneSSMS, topGeneSSMSSuccess]);
 
-  useEffect(() => {
-    if (comparativeSurvival && !isEqual(comparativeSurvival, prevComparative)) {
-      const f = buildGeneHaveAndHaveNotFilters(
-        filters,
-        comparativeSurvival.symbol,
-        comparativeSurvival.field,
-      );
-      coreDispatch(fetchSurvival({ filters: f }));
-    }
-  }, [
-    cohortFilters,
-    prevComparative,
-    comparativeSurvival,
-    coreDispatch,
-    filters,
-  ]);
-
   return (
     <div className="flex flex-row">
       <div className="flex flex-col gap-y-4 mr-3 mt-12 w-min-64 w-max-64">
@@ -225,6 +213,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
               showPercent={false}
               hideIfEmpty={false}
               description={x.description}
+              width="w-64"
             />
           );
         })}
@@ -238,23 +227,29 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
               showPercent={false}
               hideIfEmpty={false}
               description={x.description}
+              width="w-64"
             />
           );
         })}
       </div>
       <Tabs
-        variant="pills"
+        value={appMode}
+        defaultValue="genes"
         classNames={{
-          root: "mt-6",
-          tabActive:
-            "bg-nci-blue-darkest text-nci-gray-lightest font-medium p-4 hover:bg-nci-blue-dark",
+          tab: SecondaryTabStyle,
+          tabsList: "px-2 mt-2 border-0",
+          root: "bg-base-max border-0",
         }}
         onTabChange={handleTabChanged}
       >
-        <Tabs.Tab label="Genes" tabKey="genes">
-          <div className="flex flex-row">
+        <Tabs.List>
+          <Tabs.Tab value="genes">Genes</Tabs.Tab>
+          <Tabs.Tab value="ssms">Mutations</Tabs.Tab>
+        </Tabs.List>
+        <Tabs.Panel value="genes" pt="xs">
+          <div className="flex flex-row mt-3">
             <div className="flex flex-col">
-              <Grid className="mx-2 bg-white w-9/12">
+              <Grid className="mx-2  bg-base-max w-9/12">
                 <Grid.Col span={6}>
                   <GeneFrequencyChart marginBottom={95} />
                 </Grid.Col>
@@ -285,11 +280,11 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
               />
             </div>
           </div>
-        </Tabs.Tab>
-        <Tabs.Tab label="Mutations" tabKey="ssms">
+        </Tabs.Panel>
+        <Tabs.Panel value="ssms" pt="xs">
           <div className="flex flex-row">
             <div className="flex flex-col">
-              <div className="bg-white w-9/12">
+              <div className="bg-base-lightest w-9/12">
                 <LoadingOverlay
                   visible={!survivalPlotReady && !topGeneSSMSSuccess}
                 />
@@ -316,7 +311,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
               />
             </div>
           </div>
-        </Tabs.Tab>
+        </Tabs.Panel>
       </Tabs>
     </div>
   );

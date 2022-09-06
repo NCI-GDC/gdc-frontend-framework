@@ -45,7 +45,7 @@ const CohortContent = ({ cohort }) => {
 
 const CohortApiTest: NextPage = () => {
   const button_class =
-    "text-2xl border rounded bg-nci-gray-lighter opacity-75 hover:opacity-100";
+    "text-2xl border rounded bg-base-lighter opacity-75 hover:opacity-100";
 
   // redux state, queries and mutations
   const [cookie, setCookie] = useCookies(["context-id"]);
@@ -109,7 +109,7 @@ const CohortApiTest: NextPage = () => {
           setCurrentContextId(menu_item.value);
           setCookie("context-id", menu_item.value);
         }}
-        className="border-nci-gray-light w-80 p-0"
+        className="border-base-light w-80 p-0"
         aria-label="Select context"
       />
     );
@@ -243,13 +243,13 @@ const CohortApiTest: NextPage = () => {
   // render page
   return (
     <div>
-      <div className="font-montserrat text-xl text-nci-gray-darker p-4 shadow-md transition-colors">
+      <div className="font-montserrat text-xl text-primary-content-darker p-4 shadow-md transition-colors">
         <h1>Cookie Settings</h1>
         <br></br>
         Current Context-ID in Cookie: {cookie["context-id"]}
       </div>
 
-      <div className="font-montserrat text-xl text-nci-gray-darker p-4 shadow-md transition-colors">
+      <div className="font-montserrat text-xl text-primary-content-darker p-4 shadow-md transition-colors">
         <h1>Context Selector</h1>
         <br></br>
         {contextSelectContent}
@@ -259,7 +259,7 @@ const CohortApiTest: NextPage = () => {
         </button>
       </div>
 
-      <div className="font-montserrat text-xl text-nci-gray-darker p-4 shadow-md transition-colors">
+      <div className="font-montserrat text-xl text-primary-content-darker p-4 shadow-md transition-colors">
         <h1>Test Cohort</h1>
         <br></br>
         {cohortContent}
@@ -295,21 +295,21 @@ const CohortApiTest: NextPage = () => {
         <br></br>
       </div>
 
-      <div className="font-montserrat text-xl text-nci-gray-darker p-4 shadow-md transition-colors">
+      <div className="font-montserrat text-xl text-primary-content-darker p-4 shadow-md transition-colors">
         <h1>Context Specific Cohort List</h1>
         <p>List of cohorts associated with selected context</p>
         <br></br>
         {cohortsListContent}
       </div>
 
-      <div className="font-montserrat text-xl text-nci-gray-darker p-4 shadow-md transition-colors">
+      <div className="font-montserrat text-xl text-primary-content-darker p-4 shadow-md transition-colors">
         <h1>All Cohorts List</h1>
         <p>List of all cohorts</p>
         <br></br>
         {allCohortsListContent}
       </div>
 
-      <div className="font-montserrat text-xl text-nci-gray-darker p-4 shadow-md transition-colors">
+      <div className="font-montserrat text-xl text-primary-content-darker p-4 shadow-md transition-colors">
         <h1>Control Cohort</h1>
         <br></br>
         {controlCohortContent}

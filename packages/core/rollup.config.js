@@ -20,6 +20,7 @@ const globals = {
   immer: "immer",
   "redux-persist/integration/react": "integration",
   "react-cookie": "reactCookie",
+  "@datadog/browser-rum": "browserRum",
 };
 
 const config = [
@@ -57,6 +58,7 @@ const config = [
       "redux",
       "redux-toolkit",
       "react-cookie",
+      "@datadog/browser-rum",
     ],
     plugins: [
       peerDepsExternal(),

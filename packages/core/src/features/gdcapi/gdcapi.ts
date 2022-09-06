@@ -1,6 +1,7 @@
 import { isObject } from "../../ts-utils";
 import { GqlOperation } from "./filters";
 import "isomorphic-fetch";
+import { GDC_API, GDC_APP_API_AUTH } from "../../constants";
 
 export type UnknownJson = Record<string, unknown>;
 export interface GdcApiResponse<H = UnknownJson> {
@@ -148,7 +149,7 @@ export const buildFetchError = async (
 };
 
 export const fetchGdcCasesMapping = async (): Promise<GdcApiMapping> => {
-  const res = await fetch("https://api.gdc.cancer.gov/cases/_mapping");
+  const res = await fetch(`${GDC_API}/cases/_mapping`);
 
   if (res.ok) {
     return res.json();
@@ -194,20 +195,20 @@ export const fetchGdcCases = async (
 
 export interface ProjectDefaults {
   readonly dbgap_accession_number: string;
-  readonly disease_type: ReadonlyArray<string>;
+  readonly disease_type: Array<string>;
   readonly name: string;
-  readonly primary_site: ReadonlyArray<string>;
+  readonly primary_site: Array<string>;
   readonly project_id: string;
   readonly summary?: {
     readonly case_count: number;
     readonly file_count: number;
     readonly file_size: number;
-    readonly data_categories?: ReadonlyArray<{
+    readonly data_categories?: Array<{
       readonly case_count: number;
       readonly data_category: string;
       readonly file_count: number;
     }>;
-    readonly experimental_strategies?: ReadonlyArray<{
+    readonly experimental_strategies?: Array<{
       readonly case_count: number;
       readonly experimental_strategy: string;
       readonly file_count: number;
@@ -286,7 +287,7 @@ export interface FileDefaults {
   readonly submitter_id: string;
   readonly access: string;
   readonly acl: ReadonlyArray<string>;
-  readonly create_datetime: string;
+  readonly created_datetime: string;
   readonly updated_datetime: string;
   readonly data_category: string;
   readonly data_format: string;
@@ -300,7 +301,7 @@ export interface FileDefaults {
   readonly state: string;
   readonly type: string;
   readonly version: string;
-  readonly experimental_strategy: string;
+  readonly experimental_strategy?: string;
   readonly annotations?: ReadonlyArray<{
     readonly annotation_id: string;
     readonly category: string;
@@ -403,6 +404,19 @@ export interface FileDefaults {
       readonly file_id: string;
     }>;
   }>;
+  readonly index_files?: ReadonlyArray<{
+    readonly submitter_id: string;
+    readonly created_datetime: string;
+    readonly updated_datetime: string;
+    readonly data_category: string;
+    readonly data_format: string;
+    readonly data_type: string;
+    readonly file_id: string;
+    readonly file_name: string;
+    readonly file_size: number;
+    readonly md5sum: string;
+    readonly state: string;
+  }>;
 }
 
 export const fetchGdcProjects = async (
@@ -428,13 +442,13 @@ export const fetchGdcFiles = async (
   return fetchGdcEntities("files", request);
 };
 
-export const fetchGdcEntities = async <T>(
+export const fetchGdcEntities = async <T extends Record<string, any>>(
   endpoint: string,
   request?: GdcApiRequest,
   fetchAll = false,
   previousHits: Record<string, any>[] = [],
 ): Promise<GdcApiResponse<T>> => {
-  const res = await fetch(`https://api.gdc.cancer.gov/${endpoint}`, {
+  const res = await fetch(`${GDC_APP_API_AUTH}/${endpoint}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -499,7 +513,8 @@ export const getGdcInstance = async <T>(
   endpoint: string,
   uuid: string,
 ): Promise<ReadonlyArray<T>> => {
-  const res = await fetch(`https://api.gdc.cancer.gov/${endpoint}/${uuid}`, {
+  // TODO: make sure if we need AUTH API here or not
+  const res = await fetch(`${GDC_API}/${endpoint}/${uuid}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

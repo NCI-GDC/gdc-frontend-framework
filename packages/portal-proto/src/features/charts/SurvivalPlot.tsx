@@ -38,6 +38,7 @@ type survival = (
   data: any,
   xDomain: any,
   setXDomain: any,
+  height: number,
   setTooltip?: (x?: any) => any,
 ) => MutableRefObject<any>;
 
@@ -45,15 +46,17 @@ export const useSurvival: survival = (
   data,
   xDomain,
   setXDomain,
+  height,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setTooltip = (x?) => null,
 ) => {
   const ref = useRef(undefined);
+  const containerSize = ref?.current?.getBoundingClientRect();
 
   useEffect(() => {
     ref.current
       ? renderPlot({
-          height: 380, // TODO: Figure out how to fix size of Survival Plot without setting this.
+          height,
           container: ref.current,
           palette: textColors,
           margins: SVG_MARGINS,
@@ -77,7 +80,7 @@ export const useSurvival: survival = (
             { censored, project_id, submitter_id, survivalEstimate, time = 0 },
           ) => {
             setTooltip(
-              <div className="font-montserrat text-xs text-nci-gray-darkest shadow-md">
+              <div className="font-montserrat text-xs text-primary-content-darkest shadow-md">
                 {`Case ID: ${project_id} / ${submitter_id}`}
                 <br />
                 {`Survival Rate: ${Math.round(survivalEstimate * 100)}%`}
@@ -91,7 +94,7 @@ export const useSurvival: survival = (
           onMouseLeaveDonor: () => setTooltip(undefined),
         })
       : null;
-  }, [data, xDomain, setXDomain, setTooltip]);
+  }, [data, xDomain, setXDomain, setTooltip, height, containerSize]);
   return ref;
 };
 
@@ -190,18 +193,84 @@ const buildTwoPlotLegend = (data, name: string, plotType: string) => {
       ];
 };
 
+const buildManyLegend = (
+  data: readonly SurvivalElement[],
+  names: readonly string[],
+  field: string,
+  plotType: SurvivalPlotTypes,
+) => {
+  const hasEnoughDataOnSomeCurves = enoughDataOnSomeCurves(data);
+
+  return hasEnoughDataOnSomeCurves
+    ? data.map((r, i) => {
+        return data.length === 0
+          ? {
+              key: `${names[i]}-cannot-compare`,
+              style: {
+                marginTop: 5,
+                width: "100%",
+              },
+              value: (
+                <div>
+                  <span>Not enough data to compare</span>
+                </div>
+              ),
+            }
+          : r.donors.length < MINIMUM_CASES
+          ? {
+              key: `${names[i]}-not-enough-data`,
+              value: (
+                <span
+                  className={`text-gdc-survival-${i}`}
+                >{`Not enough survival data for ${names[i]}`}</span>
+              ),
+            }
+          : {
+              key: names[i],
+              value: (
+                <span className={`text-gdc-survival-${i}`}>
+                  S<sub>{i + 1}</sub>
+                  {` (N = ${r.donors.length.toLocaleString()})`}
+                  {plotType === SurvivalPlotTypes.categorical && (
+                    <span>{` - ${names[i]}`}</span>
+                  )}
+                </span>
+              ),
+            };
+      })
+    : [
+        {
+          key: `${field}-not-enough-data`,
+          value: <span>Not enough survival data for this facet</span>,
+        },
+      ];
+};
+
+export enum SurvivalPlotTypes {
+  mutation = "mutation",
+  categorical = "categorical",
+  continuous = "continuous",
+  overall = "overall",
+}
+
 export interface SurvivalPlotProps {
   readonly data: Survival;
   readonly names?: ReadonlyArray<string>;
+  readonly plotType?: SurvivalPlotTypes;
   readonly title?: string;
   readonly hideLegend?: boolean;
+  readonly height?: number;
+  readonly field?: string;
 }
 
 const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   data,
   names = [],
+  plotType = SurvivalPlotTypes.mutation,
   title = "Overall Survival Plot",
   hideLegend = false,
+  height = 380,
+  field,
 }: SurvivalPlotProps) => {
   const [downloadMenuOpen, setDownloadMenuOpen] = useState(false);
   // handle the current range of the xAxis set to undefined to reset
@@ -213,34 +282,47 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   const pValue = data.overallStats.pValue;
   const plotData = data.survivalData;
 
-  const hasEnoughData = enoughData(plotData);
+  const hasEnoughData =
+    plotType == SurvivalPlotTypes.categorical ||
+    plotType === SurvivalPlotTypes.continuous
+      ? enoughDataOnSomeCurves(plotData)
+      : enoughData(plotData);
 
   // hook to call renderSurvivalPlot
   const container = useSurvival(
-    hasEnoughData ? plotData : [], // TODO: when implementing CDave this likely will need more logic
+    hasEnoughData ? plotData : [],
     xDomain,
     setXDomain,
+    height,
     setSurvivalPlotLineTooltipContent,
   );
 
   let legend;
-  if (plotData.length === 1) {
-    legend = buildOnePlotLegend(plotData, "Explorer");
-  } else if (plotData.length === 2) {
-    legend = buildTwoPlotLegend(plotData, names[0], "mutation");
-  } else {
-    legend = undefined;
+  switch (plotType) {
+    case SurvivalPlotTypes.overall:
+      legend = buildOnePlotLegend(plotData, "Explorer");
+      break;
+    case SurvivalPlotTypes.mutation:
+      legend = buildTwoPlotLegend(plotData, names[0], plotType);
+      break;
+    case SurvivalPlotTypes.categorical:
+      legend = buildManyLegend(plotData, names, field, plotType);
+      break;
+    case SurvivalPlotTypes.continuous:
+      legend = buildManyLegend(plotData, names, field, plotType);
+      break;
   }
+
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col shadow-lg">
       <div className="flex flex-row w-100 items-center justify-center flex-wrap items-center">
-        <div className="flex ml-auto text-montserrat text-lg text-nci-gray-dark ">
+        <div className="flex ml-auto text-montserrat text-lg text-primary-content-dark ">
           {title}
         </div>
         <div className="flex flex-row items-center ml-auto mt-2 ">
           <Tooltip label="Download SurvivalPlot data or image">
             <button
-              className="px-1.5 min-h-[28px] nim-w-[40px] mx-1 border-nci-gray-light border rounded-[4px] transition-colors "
+              className="px-1.5 min-h-[28px] nim-w-[40px] mx-1 border-base-light border rounded-[4px] transition-colors "
               onClick={() => setDownloadMenuOpen(!downloadMenuOpen)}
             >
               <DownloadIcon size="1.25em" />
@@ -248,7 +330,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
           </Tooltip>
           <Tooltip label="Reset SurvivalPlot Zoom">
             <button
-              className="px-1.5 min-h-[28px] nim-w-[40px] border-nci-gray-light border rounded-[4px] transition-colors "
+              className="px-1.5 min-h-[28px] nim-w-[40px] border-base-light border rounded-[4px] transition-colors "
               onClick={() => setXDomain(undefined)}
             >
               <ResetIcon size="1.15rem"></ResetIcon>
@@ -256,11 +338,26 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
           </Tooltip>
         </div>
       </div>
-      <div className="flex flex-col items-center">
-        {!hideLegend &&
-          legend?.map((x, idx) => {
-            return <div key={`${x.key}-${idx}`}>{x.value}</div>;
-          })}
+      <div className="flex flex-col items-center ">
+        <div
+          className={
+            [
+              SurvivalPlotTypes.categorical,
+              SurvivalPlotTypes.continuous,
+            ].includes(plotType)
+              ? "flex flex-row flex-wrap justify-center"
+              : undefined
+          }
+        >
+          {!hideLegend &&
+            legend?.map((x, idx) => {
+              return (
+                <div key={`${x.key}-${idx}`} className="px-2">
+                  {x.value}
+                </div>
+              );
+            })}
+        </div>
         <div>
           <Tooltip
             label={
@@ -282,14 +379,14 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
           </Tooltip>
         </div>
         <div
-          className={`flex flex-row w-full justify-end text-xs mr-8 text-nci-gray no-print`}
+          className={`flex flex-row w-full justify-end text-xs mr-8 text-primary-content no-print`}
         >
           drag to zoom
         </div>
       </div>
       <div ref={mouseRef} className="relative">
         <Box
-          className="bg-white min-w-[150px]"
+          className="bg-base-lightest min-w-[150px]"
           sx={{ left: x + 20, top: y - 20, position: "absolute" }}
         >
           {survivalPlotLineTooltipContent}

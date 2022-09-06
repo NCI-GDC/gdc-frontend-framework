@@ -9,7 +9,7 @@ import {
   MdExpandLess as ExpandLessIcon,
 } from "react-icons/md";
 import classNames from "classnames";
-import Image from "next/image";
+import { Image } from "@/components/Image";
 import ReactModal from "react-modal";
 import { Select } from "../../../components/Select";
 import { Case, ContextualCasesView } from "../../cases/CasesView";

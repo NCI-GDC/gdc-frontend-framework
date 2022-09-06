@@ -1,6 +1,9 @@
 // Credits to https://github.com/NCI-GDC/portal-ui/blob/develop/src/packages/%40ncigdc/modern_components/BiospecimenCard/utils.js for useful utilities functions
 
-import { formatDataForHorizontalTable } from "../files/utils";
+import {
+  formatDataForHorizontalTable,
+  mapGdcFileToCartFile,
+} from "../files/utils";
 import { FaMicroscope, FaShoppingCart, FaDownload } from "react-icons/fa";
 import { Tooltip } from "@mantine/core";
 import Link from "next/link";
@@ -150,7 +153,7 @@ export const formatEntityInfo = (
             href={`/user-flow/workbench/MultipleImageViewerPage?caseId=${caseId}&selectedId=${selectedSlide[0]?.file_id}`}
           >
             <a>
-              <FaMicroscope />
+              <FaMicroscope className="text-primary-content" />
             </a>
           </Link>
         </Tooltip>{" "}
@@ -159,20 +162,26 @@ export const formatEntityInfo = (
             onClick={() => {
               isFileInCart
                 ? removeFromCart(
-                    mapFileData(selectedSlide),
+                    mapGdcFileToCartFile(mapFileData(selectedSlide)),
                     currentCart,
                     dispatch,
                   )
-                : addToCart(mapFileData(selectedSlide), currentCart, dispatch);
+                : addToCart(
+                    mapGdcFileToCartFile(mapFileData(selectedSlide)),
+                    currentCart,
+                    dispatch,
+                  );
             }}
-            className={isFileInCart ? "text-nci-green" : ""}
+            className={isFileInCart ? "text-nci-green" : "text-primary-content"}
           />
         </Tooltip>
         <Tooltip label="Download">
           <FaDownload
+            // TODO: change this
             onClick={() => {
               alert("Download coming soon!!!");
             }}
+            className="text-primary-content"
           />
         </Tooltip>
       </div>,

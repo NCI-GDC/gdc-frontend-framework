@@ -22,10 +22,10 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
   const displayAdditionalSteps = !onDemoApp && appInfo?.selectAdditionalCohort;
 
   return (
-    <div className="w-full bg-nci-blue-darkest text-white p-2 flex items-center ">
+    <div className="w-full bg-primary-darkest text-white p-2 flex items-center ">
       <Button
         onClick={() => setActiveApp(undefined)}
-        className="bg-white text-nci-blue-darkest"
+        className="bg-base-lightest text-primary-content-darkest"
         aria-label="Close app"
       >
         <MdClose size={20} />

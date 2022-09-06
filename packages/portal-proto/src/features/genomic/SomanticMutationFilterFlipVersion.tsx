@@ -7,7 +7,7 @@ import {
   SIFT_IMPACT,
   VARIANT_CALLER,
   VEP_IMPACT,
-} from "../cohortBuilder/gene_mutation_facets";
+} from "./gene_mutation_facets";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 import { MdFlip as FlipIcon, MdSearch } from "react-icons/md";
@@ -38,12 +38,12 @@ const SomanticMutationFilterFlipVersion: React.FC<SomaticAppProps> = () => {
     <div className="flex flex-row">
       <div className="flex flex-col relative">
         <div className="flex flex-col">
-          <div className="flex flex-row items-center w-full border-2 border-nci-blue-lighter">
+          <div className="flex flex-row items-center w-full border-2 border-primary-lighter">
             <div className="relative justify-center ml-auto ">
               <div className="p-2">
                 <input
                   type="text"
-                  className="h-2 w-64 pr-8 pl-5 border-nci-gray-light rounded-full z-0 focus:shadow focus:outline-none"
+                  className="h-2 w-64 pr-8 pl-5 border-base-light rounded-full z-0 focus:shadow focus:outline-none"
                   placeholder={`Search Genes`}
                 />
                 <div className="absolute top-3 right-3 h-4">
@@ -53,7 +53,7 @@ const SomanticMutationFilterFlipVersion: React.FC<SomaticAppProps> = () => {
             </div>
             <div className="ml-auto">
               <button
-                className="hover:bg-grey text-grey-darkest font-bold py-2 px-4 rounded"
+                className="hover:bg-accent-lightest text-primary-darkest font-bold py-2 px-4 rounded"
                 onClick={toggleGeneFlip}
               >
                 <FlipIcon />
@@ -65,14 +65,14 @@ const SomanticMutationFilterFlipVersion: React.FC<SomaticAppProps> = () => {
               !showGeneChart ? "flip-card " : "flip-card flip-card-flipped "
             }
           >
-            <div className="card-face bg-white">
+            <div className="card-face bg-base-lightest">
               <GenesTable
                 selectedSurvivalPlot={undefined}
                 handleSurvivalPlotToggled={undefined}
               />
             </div>
-            <div className="card-face card-back bg-white">
-              <div className="flex flex-row justify-center bg-white border-2 border-nci-blumine-lighter">
+            <div className="card-face card-back bg-base-lightest">
+              <div className="flex flex-row justify-center bg-base-lightest border-2 border-base-lighter">
                 <GeneChartWithNoSSR which="gene" />
               </div>
             </div>
@@ -89,12 +89,12 @@ const SomanticMutationFilterFlipVersion: React.FC<SomaticAppProps> = () => {
       </div>
       <div className="flex flex-col relative ">
         <div className="flex flex-col">
-          <div className="flex flex-row items-center w-full border-2 border-nci-blue-lighter ">
+          <div className="flex flex-row items-center w-full border-2 border-primary-lighter ">
             <div className="relative justify-center ml-auto ">
               <div className="p-2">
                 <input
                   type="text"
-                  className="h-2 w-64 pr-8 pl-5 border-nci-gray-light rounded-full z-0 focus:shadow focus:outline-none"
+                  className="h-2 w-64 pr-8 pl-5 border-primary-light rounded-full z-0 focus:shadow focus:outline-none"
                   placeholder={`Search Mutations`}
                 />
                 <div className="absolute top-3 right-3 h-4">
@@ -104,7 +104,7 @@ const SomanticMutationFilterFlipVersion: React.FC<SomaticAppProps> = () => {
             </div>
             <div className="ml-auto">
               <button
-                className="hover:bg-grey text-grey-darkest font-bold py-2 px-4 rounded"
+                className="hover:bg-primary text-primary-contrast font-bold py-2 px-4 rounded"
                 onClick={toggleMutationFlip}
               >
                 <FlipIcon />
@@ -116,14 +116,14 @@ const SomanticMutationFilterFlipVersion: React.FC<SomaticAppProps> = () => {
               !showMutationChart ? "flip-card " : "flip-card flip-card-flipped "
             }
           >
-            <div className="card-face bg-white">
+            <div className="card-face bg-base-lightest">
               <MutationsTable
                 selectedSurvivalPlot={undefined}
                 handleSurvivalPlotToggled={undefined}
               />
             </div>
-            <div className="card-face card-back bg-white">
-              <div className="flex flex-row justify-center bg-white border-2 border-nci-blumine-lighter">
+            <div className="card-face card-back bg-base-lightest">
+              <div className="flex flex-row justify-center bg-base-lightest border-2 border-base-lighter">
                 <GeneChartWithNoSSR which="mutation" />
               </div>
             </div>

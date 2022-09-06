@@ -4,7 +4,7 @@ import React, { PropsWithChildren, useRef } from "react";
 import { useState } from "react";
 import { ContextualStudiesView } from "../../studies/StudiesView";
 import { StudyView } from "../../studies/StudyView";
-import Image from "next/image";
+import { Image } from "@/components/Image";
 import { FacetChart } from "../../charts/FacetChart";
 import ReactModal from "react-modal";
 import { Case, ContextualCasesView } from "../../cases/CasesView";
@@ -32,7 +32,7 @@ import GenesTable from "@/features/genesTable/GenesTable";
 import { FacetGroup } from "../../cohortBuilder/FacetGroup";
 import { get_facets } from "../../cohortBuilder/dictionary";
 import { FileModal } from "../../files/FileView";
-import { GdcFile } from "@gff/core";
+import { GdcFile, FacetDefinition } from "@gff/core";
 import { CaseModal } from "../../cases/CaseView";
 import { Button } from "@mantine/core";
 
@@ -134,7 +134,7 @@ export const BaseExplorationPage: React.FC<BaseExplorationPageProps> = ({
   return (
     <UserFlowVariedPages {...{ indexPath, headerElements }}>
       <div className="flex flex-col gap-y-4 p-4">
-        <div className="border p-4 border-nci-gray-lighter bg-white">
+        <div className="border p-4 border-base-lighter bg-base-lightest">
           <CohortManager
             handleFileSelected={(file: GdcFile) => {
               setCurrentFile(file);
@@ -146,13 +146,16 @@ export const BaseExplorationPage: React.FC<BaseExplorationPageProps> = ({
             }}
           />
         </div>
-        <div className="bg-white">
+        <div className="bg-base-lightest">
           <CohortExpressions />
         </div>
-        <div className="bg-white">
+        <div className="bg-base-lightest">
           <CohortSummary />
         </div>
-        <div className="border p-4 border-gray-400 bg-white" ref={topOfApps}>
+        <div
+          className="border p-4 border-gray-400 bg-base-lightest"
+          ref={topOfApps}
+        >
           {currentApp === "cohort-viewer" ? (
             <CohortViewer
               goBack={() => setCurrentApp("appSelector")}
@@ -194,12 +197,18 @@ export const BaseExplorationPage: React.FC<BaseExplorationPageProps> = ({
           ) : currentApp == "clinical-filters" ? (
             <AllAppViewer title="Clinical Filters" setView={setCurrentApp}>
               {" "}
-              <FacetGroup facetNames={get_facets("Clinical", "All")} />
+              <FacetGroup
+                facetNames={get_facets("Clinical", "All") as FacetDefinition[]}
+              />
             </AllAppViewer>
           ) : currentApp == "biospecimen-filters" ? (
             <AllAppViewer title="Biospecimen Filters" setView={setCurrentApp}>
               {" "}
-              <FacetGroup facetNames={get_facets("Biospecimen", "All")} />
+              <FacetGroup
+                facetNames={
+                  get_facets("Biospecimen", "All") as FacetDefinition[]
+                }
+              />
             </AllAppViewer>
           ) : (
             // app selector

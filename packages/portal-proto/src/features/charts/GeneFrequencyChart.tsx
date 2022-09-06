@@ -40,6 +40,9 @@ const processChartData = (
         y: chartData.geneCounts.map(
           (x) => (x.numCases / chartData.casesTotal) * 100,
         ),
+        marker: {
+          color: "#319fbe",
+        },
         hovertemplate: hovertemplate,
         customdata: chartData.geneCounts.map((d) => [
           d.numCases,

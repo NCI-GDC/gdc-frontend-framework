@@ -24,7 +24,7 @@ const initialState: CasesState = {
 };
 
 /**
- * The requests argument may go away as the contextual data model is built out.
+ * The requests' argument may go away as the contextual data model is built out.
  */
 export const fetchCases = createAsyncThunk<
   GdcApiResponse<CaseDefaults>,

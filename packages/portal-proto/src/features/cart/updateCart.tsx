@@ -6,14 +6,12 @@ import {
   CART_LIMIT,
   removeFilesFromCart,
   addFilesToCart,
-  GdcFile,
   CoreDispatch,
   selectCart,
   useCoreSelector,
   useCoreDispatch,
   CartFile,
 } from "@gff/core";
-import { pick } from "lodash";
 
 interface OverLimitNotificationProps {
   readonly numFilesInCart: number;
@@ -46,7 +44,7 @@ const UndoButton: React.FC<UndoButtonProps> = ({ action }: UndoButtonProps) => {
 };
 
 interface AddNotificationProps {
-  readonly files: GdcFile[];
+  readonly files: CartFile[];
   readonly currentCart: CartFile[];
   dispatch: CoreDispatch;
 }
@@ -55,19 +53,9 @@ const AddNotification: React.FC<AddNotificationProps> = ({
   currentCart,
   dispatch,
 }: AddNotificationProps) => {
-  const filesToAdd = files
-    .filter((f) => !currentCart.map((c) => c.fileId).includes(f.fileId))
-    .map((file) =>
-      pick(file, [
-        "access",
-        "acl",
-        "fileId",
-        "fileSize",
-        "state",
-        "project_id",
-        "fileName",
-      ]),
-    );
+  const filesToAdd = files.filter(
+    (f) => !currentCart.map((c) => c.fileId).includes(f.fileId),
+  );
 
   const newCart = [...currentCart, ...filesToAdd];
 
@@ -132,7 +120,7 @@ const AddNotification: React.FC<AddNotificationProps> = ({
 };
 
 interface RemoveNotificationProps {
-  files: readonly GdcFile[];
+  files: readonly CartFile[];
   readonly currentCart: CartFile[];
   dispatch: CoreDispatch;
 }
@@ -171,7 +159,7 @@ const RemoveNotification: React.FC<RemoveNotificationProps> = ({
 };
 
 export const removeFromCart = (
-  files: readonly GdcFile[],
+  files: readonly CartFile[],
   currentCart: CartFile[],
   dispatch: CoreDispatch,
 ): void => {
@@ -193,7 +181,7 @@ export const removeFromCart = (
 };
 
 export const addToCart = (
-  files: GdcFile[],
+  files: CartFile[],
   currentCart: CartFile[],
   dispatch: CoreDispatch,
 ): void => {
@@ -224,7 +212,7 @@ export const addToCart = (
 };
 
 interface AddToCartButtonProps {
-  readonly files: GdcFile[];
+  readonly files: CartFile[];
 }
 
 export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
@@ -234,14 +222,17 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
   const dispatch = useCoreDispatch();
 
   return (
-    <Button onClick={() => addToCart(files, currentCart, dispatch)}>
+    <Button
+      className="text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
+      onClick={() => addToCart(files, currentCart, dispatch)}
+    >
       <CartIcon className="mr-2" /> Add to Cart
     </Button>
   );
 };
 
 interface RemoveFromCartButtonProps {
-  readonly files: GdcFile[];
+  readonly files: CartFile[];
   readonly iconOnly?: boolean;
 }
 
@@ -257,7 +248,7 @@ export const RemoveFromCartButton: React.FC<RemoveFromCartButtonProps> = ({
       aria-label="Remove from cart"
       variant="outline"
       onClick={() => removeFromCart(files, currentCart, dispatch)}
-      className="mx-auto text-nci-blue-darkest border-nci-blue-darkest"
+      className="mx-auto text-primary-content-darkest border-primary-darkest"
     >
       <TrashIcon />
     </ActionIcon>

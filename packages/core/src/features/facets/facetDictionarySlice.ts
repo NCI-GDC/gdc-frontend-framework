@@ -4,11 +4,17 @@ import { FacetDefinition } from "./types";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import {
+  CoreDataSelector,
   CoreDataSelectorResponse,
-  createUseCoreDataHook,
   DataStatus,
+  FetchDataActionCreator,
+  UseCoreDataResponse,
+  UserCoreDataHook,
 } from "../../dataAccess";
 import { processDictionaryEntries } from "./facetDictionaryApi";
+import { useCoreDispatch, useCoreSelector } from "../../hooks";
+import { useEffect } from "react";
+import { GDC_APP_API_AUTH } from "../../constants";
 
 const buildGraphMappingFetchError = async (
   res: Response,
@@ -26,7 +32,7 @@ export const fetchFacetDictionary = createAsyncThunk<
   void,
   { dispatch: CoreDispatch; state: CoreState }
 >("facet/fetchFacetDictionary", async () => {
-  const res = await fetch("https://api.gdc.cancer.gov/v0/gql/_mapping", {
+  const res = await fetch(`${GDC_APP_API_AUTH}/gql/_mapping`, {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
@@ -103,7 +109,45 @@ export const selectFacetDefinitionByName = (
   return state.facetsGQL.dictionary.entries?.[field];
 };
 
-export const useFacetDictionary = createUseCoreDataHook(
+export const selectFacetDefinitionsByName = (
+  state: CoreState,
+  fields: ReadonlyArray<string>,
+): ReadonlyArray<FacetDefinition> => {
+  return fields.flatMap((field) => {
+    if (field in state.facetsGQL.dictionary.entries)
+      return [state.facetsGQL.dictionary.entries[field]];
+    else return [];
+  });
+};
+
+const createUseDictionaryHook = <P, A, T>(
+  fetchDataActionCreator: FetchDataActionCreator<P, A>,
+  dataSelector: CoreDataSelector<T>,
+): UserCoreDataHook<P, T> => {
+  return (...params: P[]): UseCoreDataResponse<T> => {
+    const coreDispatch = useCoreDispatch();
+    const { data, pagination, status, error } = useCoreSelector(dataSelector);
+    const action = fetchDataActionCreator(...params);
+
+    useEffect(() => {
+      if (status === "uninitialized") {
+        coreDispatch(action as any); // eslint-disable-line
+      }
+    }, [status, coreDispatch, action, params]);
+
+    return {
+      data,
+      error,
+      pagination,
+      isUninitialized: status === "uninitialized",
+      isFetching: status === "pending",
+      isSuccess: status === "fulfilled",
+      isError: status === "rejected",
+    };
+  };
+};
+
+export const useFacetDictionary = createUseDictionaryHook(
   fetchFacetDictionary,
   selectFacetDefinition,
 );

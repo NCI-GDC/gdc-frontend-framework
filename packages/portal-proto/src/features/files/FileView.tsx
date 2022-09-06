@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { GdcFile, HistoryDefaults } from "@gff/core";
 import ReactModal from "react-modal";
-import { HorizontalTable } from "../../components/HorizontalTable";
+import { HorizontalTable } from "@/components/HorizontalTable";
 import { Table, Button } from "@mantine/core";
 import { FaShoppingCart, FaDownload, FaCut } from "react-icons/fa";
 import { get } from "lodash";
@@ -10,8 +10,20 @@ import fileSize from "filesize";
 import tw from "tailwind-styled-components";
 import { AddToCartButton } from "../cart/updateCart";
 import { formatDataForHorizontalTable, parseSlideDetailsInfo } from "./utils";
-
 import Link from "next/link";
+import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
+
+export const DownloadButton = tw.button`
+bg-base-lightest
+border
+border-base-darkest
+rounded
+p-1
+hover:bg-base-darkest
+hover:text-base-contrast-darkest
+focus:bg-base-darkest
+focus:text-base-contrast-darkest
+`;
 
 const ImageViewer = dynamic(() => import("../../components/ImageViewer"), {
   ssr: false,
@@ -23,12 +35,56 @@ export interface FileViewProps {
 }
 
 const FullWidthDiv = tw.div`
-bg-white w-full mt-4
+bg-base-lightest w-full mt-4
 `;
 
 const TitleText = tw.h2`
 text-lg font-bold mx-4 ml-2
 `;
+
+//temp table compoent untill global one is done
+interface TempTableProps {
+  readonly tableData: {
+    readonly headers: string[];
+    readonly tableRows: any[];
+  };
+}
+
+export const TempTable = ({ tableData }: TempTableProps): JSX.Element => {
+  if (!(tableData?.headers?.length > 0 && tableData?.tableRows?.length > 0)) {
+    console.error("bad table data", tableData);
+    return <></>;
+  }
+  return (
+    <Table striped>
+      <thead>
+        <tr>
+          {tableData.headers.map((text, index) => (
+            <th key={index} className="bg-base-lighter">
+              {text}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {tableData.tableRows.map((row, index) => (
+          <tr
+            key={index}
+            className={
+              index % 2 ? "bg-base-lightest" : "bg-accent-warm-lightest"
+            }
+          >
+            {Object.values(row).map((item, index) => (
+              <td key={index} className="text-sm p-1 pl-2.5">
+                {typeof item === "undefined" ? "--" : item}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </Table>
+  );
+};
 
 export const FileView: React.FC<FileViewProps> = ({
   file,
@@ -52,41 +108,8 @@ export const FileView: React.FC<FileViewProps> = ({
     }
     return (
       <Link href={hrefObj}>
-        <a className="text-gdc-blue hover:underline">{text}</a>
+        <a className="text-utility-link underline">{text}</a>
       </Link>
-    );
-  };
-  //temp table compoent untill global one is done
-  interface TempTableProps {
-    readonly tableData: {
-      readonly headers: string[];
-      readonly tableRows: any[];
-    };
-  }
-  const TempTable = ({ tableData }: TempTableProps): JSX.Element => {
-    if (!(tableData?.headers?.length > 0 && tableData?.tableRows?.length > 0)) {
-      console.error("bad table data", tableData);
-      return <></>;
-    }
-    return (
-      <Table striped>
-        <thead>
-          <tr>
-            {tableData.headers.map((text, index) => (
-              <th key={index}>{text}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {tableData.tableRows.map((row, index) => (
-            <tr key={index}>
-              {Object.values(row).map((item, index) => (
-                <td key={index}>{typeof item === "undefined" ? "--" : item}</td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </Table>
     );
   };
 
@@ -110,12 +133,12 @@ export const FileView: React.FC<FileViewProps> = ({
           file_size: fileSize(obj.file_size),
           action: (
             <>
-              <button className="mr-2 bg-white border border-black rounded p-1 hover:bg-black hover:text-white focus:bg-black focus:text-white">
+              <DownloadButton className="mr-2">
                 <FaShoppingCart title="Add to Cart" />
-              </button>
-              <button className="bg-white border border-black rounded p-1 hover:bg-black hover:text-white focus:bg-black focus:text-white">
+              </DownloadButton>
+              <DownloadButton>
                 <FaDownload title="Download" />
-              </button>
+              </DownloadButton>
             </>
           ),
         });
@@ -238,20 +261,28 @@ export const FileView: React.FC<FileViewProps> = ({
     return <TempTable tableData={formatedTableData} />;
   };
   return (
-    <div className="p-4 text-nci-gray w-10/12 m-auto">
+    <div className="p-4 text-primary-content w-10/12 mt-20 m-auto">
       <div className="text-right pb-5">
         <AddToCartButton files={[file]} />
-        {get(file, "dataFormat") === "BAM" && (
-          <Button className="m-1">
-            <FaCut className="mr-2" /> BAM Slicing
-          </Button>
-        )}
-        <Button className="m-1">
-          <FaDownload className="mr-2" /> Download
+        {file.dataFormat === "BAM" &&
+          file.dataType === "Aligned Reads" &&
+          file?.index_files?.length > 0 && (
+            <Button
+              className="m-1 text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
+              leftIcon={<FaCut />}
+            >
+              BAM Slicing
+            </Button>
+          )}
+        <Button
+          className="m-1 text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
+          leftIcon={<FaDownload />}
+        >
+          Download
         </Button>
       </div>
       <div className="flex">
-        <div className="flex-auto bg-white mr-4">
+        <div className="flex-auto bg-base-lightest mr-4">
           <TitleText>File Properties</TitleText>
           <HorizontalTable
             tableData={formatDataForHorizontalTable(file, [
@@ -290,7 +321,7 @@ export const FileView: React.FC<FileViewProps> = ({
             ])}
           />
         </div>
-        <div className="w-1/3 bg-white h-full">
+        <div className="w-1/3 bg-base-lightest h-full">
           <TitleText>Data Information</TitleText>
           <HorizontalTable
             tableData={formatDataForHorizontalTable(file, [
@@ -332,7 +363,7 @@ export const FileView: React.FC<FileViewProps> = ({
             associated_entities={file?.associated_entities}
           />
         ) : (
-          <h3 className="p-2 mx-4 text-nci-gray-darker">
+          <h3 className="p-2 mx-4 text-primary-content-darker">
             No cases or biospecimen found.
           </h3>
         )}
@@ -340,7 +371,7 @@ export const FileView: React.FC<FileViewProps> = ({
       {file?.analysis && (
         <>
           <div className="bg-grey mt-4 flex gap-10">
-            <div className="flex-1 bg-white">
+            <div className="flex-1 bg-base-lightest">
               <TitleText>Analysis</TitleText>
               <HorizontalTable
                 tableData={formatDataForHorizontalTable(file, [
@@ -396,7 +427,7 @@ export const FileView: React.FC<FileViewProps> = ({
                 ])}
               />
             </div>
-            <div className="flex-1 bg-white">
+            <div className="flex-1 bg-base-lightest">
               <TitleText>Reference Genome</TitleText>
               <HorizontalTable
                 tableData={[
@@ -448,12 +479,18 @@ export const FileView: React.FC<FileViewProps> = ({
 
       {fileHistory && (
         <FullWidthDiv>
-          <TitleText className="float-left">File Versions</TitleText>
-          <div className="float-right mt-3 mr-3">
-            <Button color={"gray"} className="mr-2">
+          <TitleText className="float-left mt-3">File Versions</TitleText>
+          <div className="float-right my-2 mr-3">
+            <Button
+              color={"base"}
+              className="mr-2 text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
+            >
               <FaDownload className="mr-2" /> Download JSON
             </Button>
-            <Button color={"gray"} className="">
+            <Button
+              color={"base"}
+              className="text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
+            >
               <FaDownload className="mr-2" /> Download TSV
             </Button>
           </div>
@@ -477,7 +514,7 @@ export const FileView: React.FC<FileViewProps> = ({
                     <>
                       {obj.uuid}
                       {index + 1 === length && (
-                        <span className="inline-block ml-2 border rounded-full bg-nci-blue-darker text-white font-bold text-xs py-0.5 px-1">
+                        <span className="inline-block ml-2 border rounded-full bg-primary-darker text-white font-bold text-xs py-0.5 px-1">
                           Current Version
                         </span>
                       )}
@@ -512,13 +549,7 @@ export const FileModal: React.FC<FileModalProps> = ({
       {file?.fileId ? (
         <FileView file={file} fileHistory={fileHistory} />
       ) : (
-        <div className="p-4 text-nci-gray">
-          <div className="flex">
-            <div className="flex-auto bg-white mr-4">
-              <h2 className="p-2 text-2xl mx-4">File Not Found</h2>
-            </div>
-          </div>
-        </div>
+        <SummaryErrorHeader label="File Not Found" />
       )}
     </ReactModal>
   );

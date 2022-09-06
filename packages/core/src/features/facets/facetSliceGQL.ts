@@ -13,6 +13,7 @@ import { buildGraphGLBucketQuery, processBuckets } from "./facetApiGQL";
 import { FacetBuckets, GQLIndexType, GQLDocType } from "./types";
 import { FacetsState } from "./facetSlice";
 import { facetDictionaryReducer } from "./facetDictionarySlice";
+import { usefulFacetsReducer } from "./usefulFacetsSlice";
 
 export interface FetchFacetByNameGQLProps {
   readonly field: string;
@@ -26,7 +27,7 @@ export const fetchFacetByNameGQL = createAsyncThunk<
   FetchFacetByNameGQLProps,
   { dispatch: CoreDispatch; state: CoreState }
 >(
-  "facet/fetchCasesFacetByName",
+  "facet/fetchCasesFacetByNameGQL",
   async (
     {
       field,
@@ -64,7 +65,7 @@ const initialState: FacetStateGQL = {
   ssms: {},
 };
 
-const facetsGQLSlice = createSlice({
+export const facetsGQLSlice = createSlice({
   name: "facet/facetsGQL",
   initialState,
   reducers: {},
@@ -163,4 +164,5 @@ export const fileCaseGenesMutationsFacetReducers = combineReducers({
   facetsGQL: facetsGQLReducer,
   ranges: rangeFacetsReducer,
   dictionary: facetDictionaryReducer,
+  usefulFacets: usefulFacetsReducer,
 });

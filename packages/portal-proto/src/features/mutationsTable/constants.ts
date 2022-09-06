@@ -94,7 +94,7 @@ export const formatImpact = (annotation: Annotation): any => {
   // * tailwind styles must be declared somewhere to be applied dynamically
   const tailwindRed = `bg-nci-red`; // eslint-disable-line @typescript-eslint/no-unused-vars
   const tailwindGreen = `bg-nci-green`; // eslint-disable-line @typescript-eslint/no-unused-vars
-  const tailwindGray = `bg-nci-gray`; // eslint-disable-line @typescript-eslint/no-unused-vars
+  const tailwindGray = `bg-base`; // eslint-disable-line @typescript-eslint/no-unused-vars
   const {
     vep_impact,
     sift_impact,

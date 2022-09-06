@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useGenesTable } from "@gff/core";
-import { VerticalTable } from "../shared/VerticalTable";
+// import { VerticalTable } from "../shared/VerticalTable";
 import ExpandableTable from "../shared/ExpandableTable";
 import {
+  Box,
   Loader,
   Pagination,
   Select,
@@ -193,8 +194,9 @@ const GenesTable: React.FC<GenesTableProps> = ({
             <div className={`grid place-items-center`}>
               {value ? (
                 <Tooltip label="Is Cancer Census">
-                  {" "}
-                  <GeneAnnotationIcon size="1.15rem" />{" "}
+                  <Box>
+                    <GeneAnnotationIcon size="1.15rem" />
+                  </Box>
                 </Tooltip>
               ) : null}
             </div>
@@ -206,47 +208,25 @@ const GenesTable: React.FC<GenesTableProps> = ({
           accessor: "survival",
           Cell: ({ value }: any) => {
             return (
-              <div className={`grid place-items-center`}>
-                <Tooltip label={`Click icon to plot ${value.symbol}`}>
-                  <Switch
-                    radius="xs"
-                    size="sm"
-                    id={`genetable-survival-${value.symbol}`}
-                    checked={value.checked}
-                    onChange={() => {
-                      handleSurvivalPlotToggled(
-                        value.symbol,
-                        value.name,
-                        "gene.symbol",
-                      );
-                    }}
-                    classNames={{
-                      input:
-                        "bg-nci-gray-light checked:bg-nci-blue-dark  checked:bg-none",
-                    }}
-                  />
-                </Tooltip>
-              </div>
-            );
-          },
-        };
-      case "SSMSAffectedCasesAcrossTheGDC":
-        return {
-          Header: "Cases Affected Across the GDC",
-          id: "expander",
-          accessor: "SSMSAffectedCasesAcrossTheGDC",
-          Cell: ({ value, row }: any) => {
-            return (
-              <div
-                {...row.getToggleRowExpandedProps()}
-                className={`grid place-items-center`}
-              >
-                <button onClick={() => row.toggleRowExpanded()}>{value}</button>
-                {/* <span>{expandedCell.length > 0 ? expandedCell[0] : "no expanded cell"}</span> */}
-                <span onClick={() => console.log("row??", row)}>
-                  {row.isExpanded ? "expanded" : "not expanded"}
-                </span>
-              </div>
+              <Tooltip label={`Click icon to plot ${value.symbol}`}>
+                <Switch
+                  radius="xs"
+                  size="sm"
+                  id={`genetable-survival-${value.symbol}`}
+                  checked={value.checked}
+                  onChange={() => {
+                    handleSurvivalPlotToggled(
+                      value.symbol,
+                      value.name,
+                      "gene.symbol",
+                    );
+                  }}
+                  classNames={{
+                    input:
+                      "bg-base-light checked:bg-primary-dark  checked:bg-none",
+                  }}
+                />
+              </Tooltip>
             );
           },
         };
@@ -387,12 +367,12 @@ const GenesTable: React.FC<GenesTableProps> = ({
         ) : (
           <div className="grid place-items-center h-96 w-full pt-64 pb-72">
             <div className="flex flex-row">
-              <Loader color="gray" size={24} />
+              <Loader color="primary" size={24} />
             </div>
           </div>
         )} */}
       </div>
-      <div className="flex flex-row items-center justify-start border-t border-nci-gray-light w-9/12">
+      <div className="flex flex-row items-center justify-start border-t border-base-light w-9/12">
         <p className="px-2">Page Size:</p>
         <Select
           size="sm"
@@ -407,12 +387,9 @@ const GenesTable: React.FC<GenesTableProps> = ({
           ]}
         />
         <Pagination
-          classNames={{
-            active: "bg-nci-gray",
-          }}
           size="sm"
           radius="md"
-          color="gray"
+          color="accent"
           className="ml-auto"
           page={activePage}
           onChange={(x) => handlePageChange(x)}

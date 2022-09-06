@@ -67,9 +67,9 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
   const currentApp = REGISTERED_APPS.find((a) => a.id === app);
 
   return (
-    <div className="bg-white flex flex-col flex-grow h-full ">
+    <div className="bg-base-lightest flex flex-col flex-grow h-full ">
       <Grid className={`flex-grow p-2 m-2`}>
-        <Grid.Col span={3} className="p-4 text-nci-blue-darkest">
+        <Grid.Col span={3} className="p-4 text-primary-content-darkest">
           <p>Select a cohort to compare with {primaryCohortName}</p>
         </Grid.Col>
         <Grid.Col span={9}>
@@ -87,13 +87,13 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
                 <tr
                   key={cohort.name}
                   className={`${
-                    idx % 2 === 0 ? "bg-white" : "bg-nci-gray-lightest"
+                    idx % 2 === 0 ? "bg-base-lightest" : "bg-base-lightest"
                   } h-4`}
                 >
                   <td className="w-2/6">
                     <input
                       type="radio"
-                      name="additonal-cohort-selection"
+                      name="additional-cohort-selection"
                       id={cohort.id}
                       onChange={() => setSelectedCohort(cohort.name)}
                       checked={selectedCohort === cohort.name}
@@ -131,30 +131,21 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
           </Table>
         </Grid.Col>
       </Grid>
-      <div className={`p-4 bg-nci-gray-lightest w-full justify-between flex`}>
+      <div className={`p-4 bg-base-lightest w-full justify-between flex`}>
         <Button
           onClick={() => {
             setActiveApp(`${currentApp.id}Demo`);
             closeCohortSelection();
           }}
-          className="bg-white border-nci-blue-darkest text-nci-blue-darkest"
+          className="bg-base-lightest border-primary-darkest text-primary-content-darkest"
         >
           Demo
         </Button>
         <div>
           <Button
-            onClick={() => {
-              setActiveApp(undefined);
-              closeCohortSelection();
-            }}
-            className="mr-4 bg-white border-nci-blue-darkest text-nci-blue-darkest"
-          >
-            Cancel
-          </Button>
-          <Button
             disabled={selectedCohort === null}
             variant={"filled"}
-            className="bg-nci-blue-darkest hover:bg-nci-blue"
+            className="bg-primary-darkest hover:bg-primary"
             onClick={() => {
               dispatch(setComparisonCohorts([selectedCohort]));
               closeCohortSelection();

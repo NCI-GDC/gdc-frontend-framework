@@ -1,7 +1,6 @@
 import { PropsWithChildren, ReactNode, useEffect } from "react";
-import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
+import { useLocalStorage } from "@mantine/hooks";
 import { Menu } from "@mantine/core";
 import {
   isString,
@@ -12,6 +11,7 @@ import {
   selectBanners,
   useTotalCounts,
   useFacetDictionary,
+  fetchUserDetails,
 } from "@gff/core";
 import {
   MdOutlineLogin as LoginIcon,
@@ -22,8 +22,11 @@ import {
 } from "react-icons/md";
 import Banner from "@/components/Banner";
 import { Button, LoadingOverlay } from "@mantine/core";
+import { NextLink } from "@mantine/next";
 import { useTour } from "@reactour/tour";
 import steps from "../../features/tour/steps";
+import { Image } from "@/components/Image";
+import Link from "next/link";
 
 interface UserFlowVariedPagesProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
@@ -43,22 +46,24 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
 
   useEffect(() => {
     setSteps(steps[router.pathname]);
+    dispatch(fetchUserDetails());
     dispatch(fetchNotifications());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const banners = useCoreSelector((state) => selectBanners(state));
   return (
-    <div className="flex flex-col min-h-screen min-w-full bg-nci-gray-lightest">
-      <div className="sticky top-0 z-50">
+    <div className="flex flex-col min-h-screen min-w-full bg-base-max">
+      <header className="flex-none bg-base-max sticky top-0 z-50">
         {banners.map((banner) => (
           <Banner {...banner} key={banner.id} />
         ))}
-      </div>
-      <header className="flex-none bg-white">
         <Header {...{ headerElements, indexPath, Options }} />
       </header>
-      <main data-tour="full_page_content" className="flex-grow flex flex-col">
+      <main
+        data-tour="full_page_content"
+        className="flex flex-grow flex-col overflow-x-hidden overflow-y-hidden"
+      >
         {children}
       </main>
       <footer className="flex-none">
@@ -74,6 +79,8 @@ interface HeaderProps {
   readonly Options?: React.FC<unknown>;
 }
 
+const V2Themes = ["default", "invert-primary", "pastel"];
+
 const Header: React.FC<HeaderProps> = ({
   headerElements,
   indexPath,
@@ -83,9 +90,14 @@ const Header: React.FC<HeaderProps> = ({
   const currentCart = useCoreSelector((state) => selectCart(state));
   const { isSuccess: totalSuccess } = useTotalCounts(); // request total counts and facet dictionary
   const { isSuccess: dictSuccess } = useFacetDictionary();
+  const [, setTheme] = useLocalStorage({
+    key: "color-scheme",
+    defaultValue: "default",
+  });
+
   return (
-    <div className="px-6 py-3 border-b border-gdc-grey-lightest">
-      <div className="flex flex-row flex-wrap divide-x divide-gray-300 items-center">
+    <div className={`px-6 py-3 border-b border-base-lightest `}>
+      <div className="flex flex-row flex-wrap divide-x divide-base-light items-center">
         <LoadingOverlay visible={!(totalSuccess || dictSuccess)} />
         <div className="flex-none w-64 h-nci-logo mr-2 relative">
           {/* There's some oddities going on here that need to be explained.  When a
@@ -94,15 +106,15 @@ const Header: React.FC<HeaderProps> = ({
           This causes an accessibility problem because empty anchors confuse screen
           readers. The button tag satisfies both react's requirements and a11y
           requirements.  */}
-          <Link href={indexPath}>
-            <button>
-              <Image
-                src="/NIH_GDC_DataPortal-logo.svg"
-                layout="fill"
-                objectFit="contain"
-              />
-            </button>
-          </Link>
+          <Button unstyled component={NextLink} href={indexPath}>
+            <Image
+              src="/NIH_GDC_DataPortal-logo.svg"
+              layout="fill"
+              objectFit="contain"
+              aria-label="NCI GDC Data Portal logo"
+              alt="NCI GDC Data Portal logo"
+            />
+          </Button>
         </div>
         {headerElements.map((element, i) => (
           <div key={i} className="px-2">
@@ -142,19 +154,27 @@ const Header: React.FC<HeaderProps> = ({
               <CartIcon size="24px" /> Cart ({currentCart.length || 0})
             </div>
           </Link>
-          <Menu
-            withArrow
-            className={"opacity-60 hover:opacity-100 transition-opacity mx-2"}
-            control={
+          <Menu withArrow>
+            <Menu.Target>
               <button className="p-0">
                 <AppsIcon className="mt-2" size="24px" />
               </button>
-            }
-          >
-            <Menu.Item onClick={() => setIsOpen(true)}>
-              <TourIcon size="2.5em" />
-              <div className="text-center text-sm pt-1">{"Tour"}</div>
-            </Menu.Item>
+            </Menu.Target>
+            <Menu.Dropdown>
+              <Menu.Item onClick={() => setIsOpen(true)}>
+                <TourIcon size="2.5em" />
+                <div className="text-center text-sm pt-1">{"Tour"}</div>
+              </Menu.Item>
+              <Menu.Divider />
+              <Menu.Label>Themes</Menu.Label>
+              {V2Themes.map((theme) => (
+                <Menu.Item key={theme} onClick={() => setTheme(theme)}>
+                  <div className="capitalize text-left text-sm pt-1">
+                    {theme}
+                  </div>
+                </Menu.Item>
+              ))}
+            </Menu.Dropdown>
           </Menu>
         </div>
       </div>
@@ -164,7 +184,7 @@ const Header: React.FC<HeaderProps> = ({
 
 const Footer: React.FC<unknown> = () => {
   return (
-    <div className="flex flex-col bg-nci-blumine justify-center text-center p-4 text-white">
+    <div className="flex flex-col bg-primary-darker justify-center text-center p-4 text-primary-contrast-darker">
       <div>Site Home | Policies | Accessibility | FOIA | Support</div>
       <div>
         U.S. Department of Health and Human Services | National Institutes of
@@ -210,7 +230,7 @@ export const CohortGraphs: React.FC<CohortGraphs> = ({
 
 export const Graph: React.FC<unknown> = () => {
   return (
-    <div className="h-52 border pt-2 px-4 pb-4 bg-white">
+    <div className="h-52 border pt-2 px-4 pb-4 bg-base-lightest">
       <div className="flex flex-col h-full gap-y-2">
         <span className="text-center">Graph</span>
         <div className="flex-grow">
@@ -253,7 +273,7 @@ export const App: React.FC<AppProps> = ({
   }
   return (
     <button
-      className="group h-52 border border-nci-gray-lighter px-4 pt-2 pb-4 flex flex-col gap-y-2 bg-white shadow-md hover:shadow-lg hover:border-nci-blumine-darker hover:border-2"
+      className="group h-52 border border-base-lighter px-4 pt-2 pb-4 flex flex-col gap-y-2 bg-base-lightest shadow-md hover:shadow-lg hover:border-accent-cool-darker hover:border-2"
       onClick={onClick}
     >
       <div className="text-center w-full text-lg">{name}</div>
@@ -271,7 +291,7 @@ export const LinePlaceholer: React.FC<LinePlaceholerProps> = ({
 }: LinePlaceholerProps) => {
   return (
     <div className="flex flex-row justify-center">
-      <div className={`w-${length * 4} h-6 bg-gray-200 rounded-md`} />
+      <div className={`w-${length * 4} h-6 bg-base-lighter rounded-md`} />
     </div>
   );
 };
@@ -281,7 +301,7 @@ export const CardPlaceholder: React.FC<unknown> = () => {
   const color = "gray";
   return (
     <div
-      className="h-full w-full border border-nci-gray-light"
+      className="h-full w-full border border-base-light"
       style={{
         background: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 100 100'><line x1='0' y1='0' x2='100' y2='100' stroke='${color}' vector-effect='non-scaling-stroke'/><line x1='0' y1='100' x2='100' y2='0' stroke='${color}' vector-effect='non-scaling-stroke'/></svg>")`,
         backgroundRepeat: "no-repeat",
@@ -304,7 +324,7 @@ export const Initials: React.FC<InitialsProps> = ({ name }: InitialsProps) => {
     .join("");
   return (
     <div className="flex flex-row justify-content-center items-center w-full h-full">
-      <div className="flex-grow text-8xl text-gdc-blue">{initials}</div>
+      <div className="flex-grow text-8xl text-primary">{initials}</div>
     </div>
   );
 };

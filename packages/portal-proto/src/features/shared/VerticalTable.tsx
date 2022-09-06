@@ -4,9 +4,8 @@ import { VariableSizeList as List } from "react-window";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DragDrop } from "./DragDrop";
-import { ToggleSort } from "./ToggleSort";
-import { BsList, BsSortDown } from "react-icons/bs";
-import { Popover } from "@mantine/core";
+import { BsList } from "react-icons/bs";
+import { Box, Popover } from "@mantine/core";
 
 interface VerticalTableProps {
   tableData: any;
@@ -195,22 +194,32 @@ export const VerticalTable: FC<VerticalTableProps> = ({
           [],
         );
         return (
-          <div>
-            {rows.map((row, i) => {
-              prepareRow(row);
+          <div
+            role="row"
+            aria-rowindex={index}
+            {...rows.getRowProps({
+              style,
+            })}
+            className={`tr ${
+              index % 2 === 1 ? "bg-base-lighter" : "bg-base-lightest"
+            }`}
+          >
+            {rows.cells.map((cell, key) => {
               return (
                 <div
-                  {...row.getRowProps()}
-                  {...row.getToggleRowExpandedProps()}
+                  {...cell.getCellProps()}
+                  role="cell"
+                  key={`row-${key}`}
+                  className="td rounded-sm p-1.5 text-sm text-content text-medium text-center h-7"
                 >
                   <div
                     className={`tr`}
-                    {...row.getRowProps()}
+                    {...rows.getRowProps()}
                     onClick={() => {
-                      row.toggleRowExpanded(); // toggle row expand
+                      rows.toggleRowExpanded(); // toggle row expand
                     }}
                   >
-                    {row.cells.map((cell) => {
+                    {rows.cells.map((cell) => {
                       return (
                         <div className={`td`} {...cell.getCellProps()}>
                           {cell.render("Cell")}
@@ -219,13 +228,13 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                     })}
                   </div>
                   {/* TODO: pass the number of currently visible columns for col-span-n property */}
-                  {row.isExpanded ? (
+                  {rows.isExpanded ? (
                     <div className={`tr`}>
                       <div className={`td col-span-6`}>
                         {/*
                       TODO: pass this component as a prop/child from Parent Table
                     */}
-                        {renderRowSubComponent({ row })}
+                        {renderRowSubComponent({ rows })}
                       </div>
                     </div>
                   ) : null}
@@ -257,7 +266,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
           {...getTableProps()}
           className={`table inline-block shadow-3xl`}
         >
-          <div role="rowgroup">
+          <div role="rowgroup" className="bg-primary-lighter">
             {headerGroups.map((headerGroup, key) => (
               <div
                 {...headerGroup.getHeaderGroupProps()}
@@ -270,7 +279,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                   <div
                     role="columnheader"
                     {...column.getHeaderProps()}
-                    className={`th text-black text-center grid place-items-center`}
+                    className="th font-header font-bold text-primary-content-darkest text-center"
                     key={`column-${key}`}
                   >
                     {key === 0 ? (
@@ -319,39 +328,41 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     <div>
       <div className={`h-10 float-left`}>{additionalControls}</div>
       {showControls && (
-        <div className={`float-right`}>
+        <div className="flex flex-row float-right mb-4">
           <Popover
             opened={showColumnMenu}
             onClose={() => setShowColumnMenu(false)}
-            target={
-              <button
-                className={`mr-0 ml-auto border-1 border-gray-300 p-3`}
-                onClick={() => setShowColumnMenu(!showColumnMenu)}
-              >
-                <BsList></BsList>
-              </button>
-            }
             width={260}
             position="bottom"
             transition="scale"
             withArrow
           >
-            <div className={`w-fit`}>
-              {columnListOptions.length > 0 && showColumnMenu && (
-                <div className={`mr-0 ml-auto`}>
-                  <DndProvider backend={HTML5Backend}>
-                    <DragDrop
-                      listOptions={columnListOptions}
-                      handleColumnChange={handleColumnChange}
-                    />
-                  </DndProvider>
-                </div>
-              )}
-            </div>
+            <Popover.Target>
+              <Box
+                className={`mr-0 ml-auto border-1 border-base-lighter p-3`}
+                onClick={() => setShowColumnMenu(!showColumnMenu)}
+              >
+                <BsList></BsList>
+              </Box>
+            </Popover.Target>
+            <Popover.Dropdown>
+              <div className={`w-fit`}>
+                {columnListOptions.length > 0 && showColumnMenu && (
+                  <div className={`mr-0 ml-auto`}>
+                    <DndProvider backend={HTML5Backend}>
+                      <DragDrop
+                        listOptions={columnListOptions}
+                        handleColumnChange={handleColumnChange}
+                      />
+                    </DndProvider>
+                  </div>
+                )}
+              </div>
+            </Popover.Dropdown>
           </Popover>
-          <div className={`flex flex-row w-max float-right mb-4`}>
+          <div className="flex flex-row w-max float-right">
             <input
-              className={`mr-2 rounded-sm border-1 border-gray-300`}
+              className={`mr-2 rounded-sm border-1 border-base-lighter`}
               type="search"
               placeholder="Search"
             />

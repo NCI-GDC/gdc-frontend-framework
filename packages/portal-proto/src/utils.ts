@@ -1,4 +1,8 @@
+import { KeyboardEventHandler } from "react";
+import { CartFile } from "@gff/core";
+import { replace, sortBy } from "lodash";
 import { DocumentWithWebkit } from "./features/types";
+import * as tailwindConfig from "tailwind.config";
 
 export const toggleFullScreen = async (
   ref: React.MutableRefObject<any>,
@@ -22,6 +26,14 @@ export const toggleFullScreen = async (
   }
 };
 
+/* eslint-disable @typescript-eslint/ban-types */
+export const createKeyboardAccessibleFunction = (
+  func: Function,
+): KeyboardEventHandler<any> => {
+  return (e: React.KeyboardEvent<any>) => (e.key === "Enter" ? func() : null);
+};
+/* eslint-enable */
+
 export const capitalize = (original: string): string => {
   const customCapitalizations = {
     id: "ID",
@@ -30,6 +42,7 @@ export const capitalize = (original: string): string => {
     dbsnp: "dbSNP",
     cosmic: "COSMIC",
     civic: "CIViC",
+    dbgap: "dbGaP",
   };
 
   return original
@@ -42,6 +55,13 @@ export const capitalize = (original: string): string => {
     .join(" ");
 };
 
+export const truncateString = (str: string, n: number): string => {
+  if (str.length > n) {
+    return str.substring(0, n) + "...";
+  } else {
+    return str;
+  }
+};
 export const externalLinkNames = {
   civic: "CIViC",
   entrez_gene: "NCBI Gene",
@@ -59,9 +79,9 @@ export const geneExternalLinkNames = {
 };
 
 export const externalLinks = {
-  civic: (id: string): string => `https://civicdb.org/genes/${id}/summary`,
+  civic: (id: string): string => `https://civicdb.org/links/gene/${id}`,
   civicMutaton: (id: string): string =>
-    `https://civicdb.org/variants/${id}/summary`,
+    `https://civicdb.org/links/variant/${id}`,
   cosm: (id: string): string =>
     `http://cancer.sanger.ac.uk/cosmic/mutation/overview?id=${id}`,
   cosn: (id: string): string =>
@@ -79,3 +99,26 @@ export const externalLinks = {
   uniprotkb_swissprot: (id: string): string =>
     `http://www.uniprot.org/uniprot/${id}`,
 };
+
+export const calculatePercentage = (count: number, total: number): string =>
+  ((count / total) * 100).toFixed(2);
+
+export const allFilesInCart = (carts: CartFile[], files: CartFile[]): boolean =>
+  files?.every((file) => carts.some((cart) => cart.fileId === file.fileId));
+
+/**
+ *
+ * @param givenObjects Array of given objects
+ * @param property Property (string) which we want to base the comparison on
+ * @returns the array of given objects (@param givenObject) in ascending order based on the (@param property)
+ */
+export const sortByPropertyAsc = <T>(
+  givenObjects: Array<T>,
+  property: string,
+): Array<T> =>
+  sortBy(givenObjects, [
+    (e) => replace(e[property], /[^a-zA-Z]/g, "").toLocaleLowerCase(),
+  ]);
+
+export const getThemeColor = (key: string): Record<string, string> =>
+  tailwindConfig.plugins.slice(-1)[0].__options.defaultTheme.extend.colors[key];
