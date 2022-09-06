@@ -17,7 +17,18 @@ export interface GeneSubRow {
 }
 
 export interface GenesTableProps {
-  readonly data: ReadonlyArray<Gene>;
+  readonly initialData: ReadonlyArray<Gene>;
   readonly columns: any;
   expanded: ExpandedState;
 }
+
+export const INITIAL_FILTERS = {
+  mode: "and",
+  root: {
+    "genes.is_cancer_gene_census": {
+      field: "genes.is_cancer_gene_census",
+      operator: "includes",
+      operands: ["true"],
+    },
+  },
+};

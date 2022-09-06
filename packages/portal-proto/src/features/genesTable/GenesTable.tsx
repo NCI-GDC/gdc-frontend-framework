@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useGenesTable } from "@gff/core";
 // import { VerticalTable } from "../shared/VerticalTable";
-import ExpandableTable from "../shared/ExpandableTable";
+// import ExpandableTable from "../shared/ExpandableTable";
+import { GTableContainer } from "@/components/expandableTables/genes/GTableContainer";
 import {
   Box,
   Loader,
@@ -346,7 +347,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
       Showing ${(activePage - 1) * pageSize + 1} - ${activePage * pageSize
               } of   ${totalResults} genes */}
       <div ref={ref} className={`flex flex-row w-9/12`}>
-        <ExpandableTable />
+        {/* <ExpandableTable /> */}
         {/* {data && !isFetching ? (
           <VerticalTable
             tableData={tableData}

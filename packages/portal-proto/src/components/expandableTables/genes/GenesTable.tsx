@@ -1,13 +1,13 @@
 // @ts-nocheck
-import { useState, useMemo } from "react";
-import {
-  ExpandedState,
-  useReactTable,
-  getCoreRowModel,
-  getExpandedRowModel,
-  ColumnDef,
-  flexRender,
-} from "@tanstack/react-table";
+import { useState, useMemo, useEffect } from "react";
+// import {
+//   ExpandedState,
+//   useReactTable,
+//   getCoreRowModel,
+//   getExpandedRowModel,
+//   ColumnDef,
+//   flexRender,
+// } from "@tanstack/react-table";
 import { Gene, GeneSubRow, GenesTableProps } from "./types";
 
 // export const renderSubComponent = ({ geneId }: { geneId : GeneSubRow }) => {
@@ -15,7 +15,7 @@ import { Gene, GeneSubRow, GenesTableProps } from "./types";
 // }
 
 export const GenesTable: React.VFC<GenesTableProps> = ({
-  data,
+  initialData,
   columns,
   expanded,
 }: // renderSubComponent,
@@ -23,9 +23,10 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
 GenesTableProps) => {
   return (
     <>
-      <GTableControls />
-      <ExpTable />
-      <Pagination />
+      genestable
+      {/* <GTableControls /> */}
+      {/* <ExpTable /> */}
+      {/* <Pagination /> */}
     </>
   );
 };
