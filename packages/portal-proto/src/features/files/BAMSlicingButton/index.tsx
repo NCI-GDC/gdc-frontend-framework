@@ -37,6 +37,7 @@ export const BAMSlicingButton = ({
           dispatch(showModal(Modals.NoAccessModal));
         }
       }}
+      data-testid="bamButton"
     >
       {isActive ? "Slicing" : "BAM Slicing"}
     </Button>

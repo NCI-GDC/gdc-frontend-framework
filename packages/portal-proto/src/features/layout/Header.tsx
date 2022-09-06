@@ -246,7 +246,6 @@ export const Header: React.FC<HeaderProps> = ({
           </Menu>
         </div>
       </div>
-      {console.log(modal)}
       {modal === Modals.UserProfileModal && <UserProfileModal openModal />}
       {modal === Modals.SessionExpireModal && <SessionExpireModal openModal />}
       {modal === Modals.NoAccessModal && <NoAccessModal openModal />}
