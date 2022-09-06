@@ -33,7 +33,7 @@ Install npm:
     name: "$CI_JOB_STAGE-$CI_COMMIT_REF_NAME"
     when: always
     paths:
-      - .npm/
+      - .npm/_logs
 
 Type Check for core:
   stage: test
