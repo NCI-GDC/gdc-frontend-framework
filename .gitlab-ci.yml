@@ -29,6 +29,10 @@ Install npm:
       - node_modules/
       - .npm/
     policy: push
+  artifacts:
+    name: "$CI_JOB_STAGE-$CI_COMMIT_REF_NAME"
+    paths:
+      - .npm/
 
 Type Check for core:
   stage: test
