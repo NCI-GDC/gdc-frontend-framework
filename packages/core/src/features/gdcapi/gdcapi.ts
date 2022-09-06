@@ -448,7 +448,6 @@ export const fetchGdcEntities = async <T extends Record<string, any>>(
   fetchAll = false,
   previousHits: Record<string, any>[] = [],
 ): Promise<GdcApiResponse<T>> => {
-  console.log(GDC_APP_API_AUTH);
   const res = await fetch(`${GDC_APP_API_AUTH}/${endpoint}`, {
     method: "POST",
     headers: {
