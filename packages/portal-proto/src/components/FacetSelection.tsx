@@ -122,7 +122,7 @@ const FacetSelectionPanel = ({
     }
   }, [facets, searchString]);
 
-  const facetTypeTrimmed = facetType.substring(0, facetType.length - 1);
+  const facetTypeTrimmed = facetType.slice(0, -1);
 
   return (
     <div className="flex flex-col w-1/2">
