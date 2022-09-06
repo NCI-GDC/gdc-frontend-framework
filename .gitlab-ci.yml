@@ -31,6 +31,7 @@ Install npm:
     policy: push
   artifacts:
     name: "$CI_JOB_STAGE-$CI_COMMIT_REF_NAME"
+    when: always
     paths:
       - .npm/
 
