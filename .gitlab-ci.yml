@@ -88,6 +88,8 @@ Run unit tests:
     paths:
       - node_modules/
       - .npm/
+      - packages/
+      - dist/
     policy: pull
 
 Build and push container:
