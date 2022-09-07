@@ -8,9 +8,9 @@ include:
 
 stages:
   - .pre
-  - quality
-  - build
   - test
+  - build
+  - unit
   - release
 
 image: docker.osdc.io/node:16
@@ -35,7 +35,7 @@ Install npm packages:
 
 
 Linting:
-  stage: quality
+  stage: test
   script:
     - npm run lint
   cache:
@@ -46,7 +46,7 @@ Linting:
     policy: pull
 
 Prettier Checks:
-  stage: quality
+  stage: test
   script:
     - npm run format:check
   cache:
@@ -80,7 +80,7 @@ Build core and compile portal:
       policy: push
 
 Run unit tests:
-  stage: test
+  stage: unit
   script:
     - npm run test:all
   cache:
