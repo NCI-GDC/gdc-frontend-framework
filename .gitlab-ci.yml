@@ -14,11 +14,11 @@ stages:
 
 .debug-info:
   script:
-    - echo User: $(whoami)
-    - echo Current directory: $(pwd)
-    - echo Contents of current directory:
+    - 'echo User: "$(whoami)"'
+    - 'echo Current directory: "$(pwd)"'
+    - echo 'Contents of current directory:'
     - ls -lsha
-    - echo Contents of possible directories present:
+    - echo 'Contents of possible directories present:'
     - ls -lsha ./* || exit 0
     - set -x
 
@@ -31,7 +31,7 @@ Install npm:
   stage: .pre
   script:
     - npm install npm@7
-    - npm ci --cache .npm/
+    - npm ci --cache .npm
   variables:
     npm_config_proxy: http://cloud-proxy:3128
     npm_config_https_proxy: http://cloud-proxy:3128
@@ -56,7 +56,6 @@ Type Check for core:
 
 Type Check for portal-proto:
   stage: test
-  needs: [Type Check for core]
   script:
     - cd packages/portal-proto
     - npm run compile
@@ -75,7 +74,6 @@ Prettier Checks:
 
 Run unit tests:
   stage: test
-  needs: [Type Check for portal-proto]
   script:
     - npm run test:all
 
