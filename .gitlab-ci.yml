@@ -56,40 +56,32 @@ Prettier Checks:
       - .npm/
     policy: pull
 
-Run unit tests:
-  stage: Test
-  needs: [ Build core package ]
-  script:
-    - npm run test:all
-  cache:
-    key: $CI_COMMIT_REF_SLUG
-    paths:
-      - node_modules/
-      - .npm/
-    policy: pull
-
-Build core package:
+Build core and compile portal:
   stage: Build
   script:
     - !reference [.debug-info, script]
-    - cd packages/core
+    - cd ${CI_BUILDS_DIR}/packages/core
     - npm run build:clean
-  cache:
-    key: $CI_COMMIT_REF_SLUG
-    paths:
-      - node_modules/
-      - .npm/
-    policy: pull-push
-
-Compile portal-proto:
-  stage: Build
-  needs: [ Build core package ]
-  script:
-    - !reference [ .debug-info, script ]
-    - cd packages/portal-proto
+    - cd ${CI_BUILDS_DIR}/packages/portal-proto
     - npm run compile
   cache:
-    key: $CI_COMMIT_REF_SLUG
+    - key: $CI_COMMIT_REF_SLUG
+      paths:
+        - node_modules/
+        - .npm/
+      policy: pull
+    - key: "Built-$CI_COMMIT_REF_SLUG"
+      paths:
+        - node_modules/
+        - .npm/
+      policy: push
+
+Run unit tests:
+  stage: Test
+  script:
+    - npm run test:all
+  cache:
+    key: "Built-$CI_COMMIT_REF_SLUG"
     paths:
       - node_modules/
       - .npm/
@@ -102,8 +94,9 @@ Build and push container:
   tags:
     - dind
   image: docker:${DOCKER_VERSION}-dind
-  script:
+  before_script:
     - apk add bash
+  script:
     - export CLEAN_BRANCH_NAME=${CI_COMMIT_BRANCH/\//_}
     - export LOWERCASE_BRANCH_NAME="$(bash -c 'tr "[:upper:]" "[:lower:]" <<< "$CLEAN_BRANCH_NAME"')"
     - docker build --build-arg "NPM_REGISTRY=https://nexus.osdc.io/repository/npm-all/" -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME-${CI_COMMIT_SHORT_SHA} .
@@ -120,8 +113,9 @@ Push latest container:
   image: docker:${DOCKER_VERSION}-dind
   only:
     - master
-  script:
+  before_script:
     - apk add bash
+  script:
     - export CLEAN_BRANCH_NAME=${CI_COMMIT_BRANCH/\//_}
     - export LOWERCASE_BRANCH_NAME="$(bash -c 'tr "[:upper:]" "[:lower:]" <<< "$CLEAN_BRANCH_NAME"')"
     - docker pull $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME-${CI_COMMIT_SHORT_SHA}
@@ -139,8 +133,9 @@ Push tagged container:
   image: docker:${DOCKER_VERSION}-dind
   only:
     - tags
-  script:
+  before_script:
     - apk add bash
+  script:
     - export CLEAN_BRANCH_NAME=${CI_COMMIT_BRANCH/\//_}
     - export LOWERCASE_BRANCH_NAME="$(bash -c 'tr "[:upper:]" "[:lower:]" <<< "$CLEAN_BRANCH_NAME"')"
     - docker pull $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME-${CI_COMMIT_SHORT_SHA}
