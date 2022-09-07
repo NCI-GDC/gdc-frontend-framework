@@ -131,6 +131,6 @@ to run it:
    ```
 
 3. Since the `sessionid` cookie can only be send through `HTTPS`, you need to [add https to your localhost](https://dev.to/defite/adding-https-to-your-localhost-15hg).
-4. After these steps, you can access the app on `https://localhost.gdc.cancer.gov:3010/`.
+4. After these steps, you can access the app on `https://localhost.gdc.cancer.gov:3010/v2`.
 5. Even after all these steps you will see `SecurityError: Blocked a frame with origin "https://localhost.gdc.cancer.gov:3010" from accessing a cross-origin frame` error. But you can close the error and refresh the page. This warning will be supressed in production.
 6. Now you can Login and use features that are available with Authentication.
