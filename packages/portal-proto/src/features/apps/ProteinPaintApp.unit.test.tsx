@@ -14,7 +14,7 @@ jest.mock("@gff/core", () => ({
 test("renders a search input", async () => {
   filter = {};
 
-  const { queryByPlaceholderText, unmount, rerender } = render(
+  const { queryByPlaceholderText, unmount } = render(
     <ProteinPaintWrapper track="lolliplot" />,
   );
   await waitFor(
@@ -23,17 +23,17 @@ test("renders a search input", async () => {
   );
   const input = queryByPlaceholderText("Gene") as HTMLInputElement;
   expect(input instanceof HTMLElement).toBe(true);
-  /* 
-    Inital render testing only, the embedded tool behavior 
+  /*
+    Inital render testing only, the embedded tool behavior
     is tested within the proteinpaint-client package/module.
 
-    Also, jsdom breaks on svg element.style.baseval rendering 
+    Also, jsdom breaks on svg element.style.baseval rendering
     which is done within runproteinpaint.
   */
   unmount();
 });
 
-/* !!! 
+/* !!!
   Not sure how to test the argument that gets passed to runproteinpaint().
   If buildCohortgqlOperator is mocked, then testing the returned argument
   depends on the substituted function, so it'll be a useless test.
