@@ -20,6 +20,7 @@ stages:
     - ls -lsha
     - echo 'Contents of possible directories present:'
     - ls -lsha ./* || exit 0
+    - du -h --max-depth 1 .
     - set -x
 
 image: docker.osdc.io/node:16
@@ -50,6 +51,9 @@ Type Check for core:
     - npm run build:clean
   cache:
     key: $CI_COMMIT_REF_SLUG
+    paths:
+      - node_modules/
+      - .npm/
     policy: pull
 
 Type Check for portal-proto:
@@ -59,6 +63,9 @@ Type Check for portal-proto:
     - npm run compile
   cache:
     key: $CI_COMMIT_REF_SLUG
+    paths:
+      - node_modules/
+      - .npm/
     policy: pull
 
 Linting:
@@ -68,6 +75,9 @@ Linting:
     - npm run lint
   cache:
     key: $CI_COMMIT_REF_SLUG
+    paths:
+      - node_modules/
+      - .npm/
     policy: pull
 
 Prettier Checks:
@@ -77,6 +87,9 @@ Prettier Checks:
     - npm run format:check
   cache:
     key: $CI_COMMIT_REF_SLUG
+    paths:
+      - node_modules/
+      - .npm/
     policy: pull
 
 Run unit tests:
@@ -85,6 +98,9 @@ Run unit tests:
     - npm run test:all
   cache:
     key: $CI_COMMIT_REF_SLUG
+    paths:
+      - node_modules/
+      - .npm/
     policy: pull
 
 Build and push container:
