@@ -38,6 +38,7 @@ Install npm:
 Type Check for core:
   stage: test
   script:
+    - !reference [.debug-info, script]
     - cd packages/core
     - npm run build:clean
 
@@ -51,11 +52,13 @@ Type Check for portal-proto:
 Linting:
   stage: test
   script:
+    - !reference [.debug-info, script]
     - npm run lint
 
 Prettier Checks:
   stage: test
   script:
+    - !reference [.debug-info, script]
     - npm run format:check
 
 Run unit tests:
