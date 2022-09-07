@@ -8,10 +8,10 @@ include:
 
 stages:
   - .pre
-  - Quality
-  - Build
-  - Test
-  - Release
+  - quality
+  - build
+  - test
+  - release
 
 image: docker.osdc.io/node:16
 variables:
