@@ -71,9 +71,7 @@ Build core and compile portal:
         - .npm/
       policy: pull
     - key: "Built-$CI_COMMIT_REF_SLUG"
-      paths:
-        - node_modules/
-        - .npm/
+      untracked: true
       policy: push
 
 Run unit tests:
