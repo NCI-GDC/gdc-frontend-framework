@@ -1,9 +1,8 @@
 import { useState, useMemo, useEffect } from "react";
-import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { createTableColumn } from "./genesTableUtils";
 import { GenesColumns } from "@/features/shared/table-utils";
 import { GenesTable } from "./GenesTable";
-import { INITIAL_FILTERS } from "./types";
+import { getGraphQLFilters } from "./types";
 import { useGetGenesTableQuery } from "@gff/core";
 
 export interface GTableContainerProps {
@@ -14,7 +13,8 @@ export const GTableContainer: React.VFC<GTableContainerProps> = ({
   twStyles,
 }: GTableContainerProps) => {
   const [filters, setFilters] = useState([]);
-  const [expanded, setExpanded] = useState<ExpandedState>({});
+  const [pageSize, setPageSize] = useState(10);
+  const [offset, setOffset] = useState(0);
 
   // data frome Genes Table
 
@@ -30,12 +30,12 @@ export const GTableContainer: React.VFC<GTableContainerProps> = ({
   // );
 
   const { data, isLoading, isError } = useGetGenesTableQuery({
-    filters: INITIAL_FILTERS,
+    filters: getGraphQLFilters(pageSize, offset),
   });
 
   useEffect(() => {
     console.log("useGetGenesTableQuery data", data);
   }, [data]);
 
-  return <GenesTable initialData={[]} columns={[]} expanded={expanded} />;
+  return <GenesTable initialData={[]} columns={[]} />;
 };

@@ -13,7 +13,8 @@ export interface ExpTableProps {
   data: any;
   columns: any;
   expanded: ExpandedState;
-  handleExpanded: () => any;
+  handleExpanded: (exp: ExpandedState) => void;
+  handleRowSelect: (row: any) => void; // todo: add row type
 }
 
 export const ExpTable: React.VFC<ExpTableProps> = ({

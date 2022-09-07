@@ -91,10 +91,9 @@ export const GeneAffectedCases: React.VFC<GeneSubRow> = ({
           );
         })}
       </div>
-      {/* note the relative div's height below is derived from the absolute div's height above
+      {/* relative div's height below is derived from the absolute div's height above
         this is to displace the rest of the table when in expanded state
      */}
-      {/* caveats: edge breakpoints for smaller screen widths */}
       <div className={`${containerHeight} relative`}></div>
     </>
   );
