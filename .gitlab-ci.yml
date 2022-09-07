@@ -60,9 +60,9 @@ Build core and compile portal:
   stage: build
   script:
     - !reference [.debug-info, script]
-    - cd ${CI_BUILDS_DIR}/packages/core
+    - cd ${CI_PROJECT_DIR}/packages/core
     - npm run build:clean
-    - cd ${CI_BUILDS_DIR}/packages/portal-proto
+    - cd ${CI_PROJECT_DIR}/packages/portal-proto
     - npm run compile
   cache:
     - key: $CI_COMMIT_REF_SLUG
