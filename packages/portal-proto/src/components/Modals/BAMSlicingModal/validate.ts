@@ -14,7 +14,11 @@ export const validateBamInput = (value: string): string => {
     if (!/^[a-zA-Z0-9\_\-]+(:([0-9]+)?(-[0-9]+)?)?$/.test(region)) return true;
 
     const splittedRegion = region.split(":");
-    if (!refSeqs.find((refSeq) => refSeq === splittedRegion[0])) return true;
+    if (
+      !refSeqs.find((refSeq) => refSeq === splittedRegion[0]) &&
+      splittedRegion[0] !== "unmapped"
+    )
+      return true;
     if (splittedRegion.length > 1 && !splittedRegion[1]) return true;
     const numVals = splittedRegion.length > 1 && splittedRegion[1].split("-");
     if (numVals.length > 2) return true;

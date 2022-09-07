@@ -22,16 +22,16 @@ export const NoAccessToProjectModal = ({
         <Text size="sm"> You don&apos;t have access to this file.</Text>
 
         <Text size="sm">
-          Please request dbGaP Access to the project{" "}
+          Please request dbGaP access to the project{" ("}
           <a
             href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
             target="_blank"
             rel="noreferrer"
             className="text-nci-blue underline"
           >
-            {" "}
-            (click here for more information).
+            click here for more information
           </a>
+          ).
         </Text>
       </div>
       <div className="flex justify-end mt-2.5">
