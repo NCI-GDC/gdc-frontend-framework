@@ -10,18 +10,8 @@ stages:
   - .pre
   - test
   - build
-  - push
-
-.debug-info:
-  script:
-    - 'echo User: "$(whoami)"'
-    - 'echo Current directory: "$(pwd)"'
-    - echo 'Contents of current directory:'
-    - ls -lsha
-    - echo 'Contents of possible directories present:'
-    - ls -lsha ./* || exit 0
-    - du -h --max-depth 1 .
-    - set -x
+  - unit-test
+  - release
 
 image: docker.osdc.io/node:16
 variables:
@@ -43,35 +33,10 @@ Install npm:
       - .npm/
     policy: push
 
-Type Check for core:
-  stage: test
-  script:
-    - !reference [.debug-info, script]
-    - cd packages/core
-    - npm run build:clean
-  cache:
-    key: $CI_COMMIT_REF_SLUG
-    paths:
-      - node_modules/
-      - .npm/
-    policy: pull
-
-Type Check for portal-proto:
-  stage: test
-  script:
-    - cd packages/portal-proto
-    - npm run compile
-  cache:
-    key: $CI_COMMIT_REF_SLUG
-    paths:
-      - node_modules/
-      - .npm/
-    policy: pull
 
 Linting:
   stage: test
   script:
-    - !reference [.debug-info, script]
     - npm run lint
   cache:
     key: $CI_COMMIT_REF_SLUG
@@ -83,7 +48,6 @@ Linting:
 Prettier Checks:
   stage: test
   script:
-    - !reference [.debug-info, script]
     - npm run format:check
   cache:
     key: $CI_COMMIT_REF_SLUG
@@ -93,7 +57,8 @@ Prettier Checks:
     policy: pull
 
 Run unit tests:
-  stage: test
+  stage: unit-test
+  needs: [ Build core package ]
   script:
     - npm run test:all
   cache:
@@ -103,8 +68,35 @@ Run unit tests:
       - .npm/
     policy: pull
 
-Build and push container:
+Build core package:
   stage: build
+  script:
+    - !reference [.debug-info, script]
+    - cd packages/core
+    - npm run build:clean
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - node_modules/
+      - .npm/
+    policy: pull-push
+
+Compile portal-proto:
+  stage: build
+  needs: [ Build core package ]
+  script:
+    - !reference [ .debug-info, script ]
+    - cd packages/portal-proto
+    - npm run compile
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - node_modules/
+      - .npm/
+    policy: pull
+
+Build and push container:
+  stage: release
   services:
     - docker:${DOCKER_VERSION}-dind
   tags:
@@ -118,9 +110,9 @@ Build and push container:
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME-${CI_COMMIT_SHORT_SHA}
 
 Push latest container:
+  stage: release
   variables:
     GIT_STRATEGY: none
-  stage: push
   services:
     - docker:${DOCKER_VERSION}-dind
   tags:
@@ -137,9 +129,9 @@ Push latest container:
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:latest
 
 Push tagged container:
+  stage: release
   variables:
     GIT_STRATEGY: none
-  stage: push
   services:
     - docker:${DOCKER_VERSION}-dind
   tags:
