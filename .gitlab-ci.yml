@@ -35,7 +35,7 @@ Install npm packages:
 
 
 Linting:
-  stage: Quality
+  stage: quality
   script:
     - npm run lint
   cache:
@@ -46,7 +46,7 @@ Linting:
     policy: pull
 
 Prettier Checks:
-  stage: Quality
+  stage: quality
   script:
     - npm run format:check
   cache:
@@ -57,7 +57,7 @@ Prettier Checks:
     policy: pull
 
 Build core and compile portal:
-  stage: Build
+  stage: build
   script:
     - !reference [.debug-info, script]
     - cd ${CI_BUILDS_DIR}/packages/core
@@ -77,7 +77,7 @@ Build core and compile portal:
       policy: push
 
 Run unit tests:
-  stage: Test
+  stage: test
   script:
     - npm run test:all
   cache:
@@ -88,7 +88,7 @@ Run unit tests:
     policy: pull
 
 Build and push container:
-  stage: Release
+  stage: release
   services:
     - docker:${DOCKER_VERSION}-dind
   tags:
@@ -103,7 +103,7 @@ Build and push container:
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME-${CI_COMMIT_SHORT_SHA}
 
 Push latest container:
-  stage: Release
+  stage: release
   variables:
     GIT_STRATEGY: none
   services:
@@ -123,7 +123,7 @@ Push latest container:
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:latest
 
 Push tagged container:
-  stage: Release
+  stage: release
   variables:
     GIT_STRATEGY: none
   services:
