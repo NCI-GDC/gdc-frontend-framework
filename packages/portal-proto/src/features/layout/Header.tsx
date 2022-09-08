@@ -55,6 +55,10 @@ export const Header: React.FC<HeaderProps> = ({
   const modal = useCoreSelector((state) => selectCurrentModal(state));
   const { isSuccess: totalSuccess } = useTotalCounts(); // request total counts and facet dictionary
   const { isSuccess: dictSuccess } = useFacetDictionary();
+  const [, setTheme] = useLocalStorage({
+    key: "color-scheme",
+    defaultValue: "default",
+  });
 
   const [, setTheme] = useLocalStorage({
     key: "color-scheme",

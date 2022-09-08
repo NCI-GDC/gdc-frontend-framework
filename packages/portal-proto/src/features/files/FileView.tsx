@@ -158,6 +158,18 @@ export const FileView: React.FC<FileViewProps> = ({
     return <TempTable tableData={formatedTableData} />;
   };
 
+  const getAnnotationsLinkParams = (
+    annotations: readonly string[],
+    case_id: string,
+  ) => {
+    if (!annotations) return null;
+
+    if (annotations.length === 1) {
+      return `https://portal.gdc.cancer.gov/annotations/${annotations[0]}`;
+    }
+    return `https://portal.gdc.cancer.gov/annotations?filters={"content":[{"content":{"field":"annotations.entity_id","value":["${case_id}"]},"op":"in"}],"op":"and"}`;
+  };
+
   const AssociatedCB = ({
     cases,
     associated_entities,
@@ -195,36 +207,20 @@ export const FileView: React.FC<FileViewProps> = ({
         entityQuery = { bioId: entity.entity_id };
       }
 
-      let annotationsLink = <>0</>;
-      if (caseData?.annotations?.length === 1) {
-        annotationsLink = (
-          <GenericLink
-            path={`/annotations/${caseData?.annotations[0]}`}
-            text={"1"}
-          />
-        );
-      } else if (caseData?.annotations?.length > 1) {
-        annotationsLink = (
-          <GenericLink
-            path={`/annotations`}
-            query={{
-              filters: JSON.stringify({
-                content: [
-                  {
-                    content: {
-                      field: "annotations.entity_id",
-                      value: [entity.case_id],
-                    },
-                    op: "in",
-                  },
-                ],
-                op: "and",
-              }),
-            }}
-            text={`${caseData?.annotations?.length}`}
-          />
-        );
-      }
+      const url = getAnnotationsLinkParams(
+        caseData?.annotations,
+        caseData.case_id,
+      );
+
+      const annotationsLink = url ? (
+        <Link href={url} passHref>
+          <a className="text-utility-link underline" target={"_blank"}>
+            {caseData.annotations.length}
+          </a>
+        </Link>
+      ) : (
+        0
+      );
 
       tableRows.push({
         entity_id: (
