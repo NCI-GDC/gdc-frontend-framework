@@ -20,6 +20,11 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
   const [expanded, setExpanded] = useState<ExpandedState>({});
   const [selectedGenes, setSelectedGenes] = useState<any>({}); // todo: add type
   const [search, setSearch] = useState("");
+  const [columnListOrder, setColumnListOrder] = useState<string[]>([]);
+  const [showColumnMenu, setShowColumnMenu] = useState<boolean>(false);
+
+  // when columnOrder updates, update memoized columns
+  // type of updates: toggle visibility off/on or swap order
 
   const handleSearch = (term: string) => {
     setSearch(term);
@@ -41,6 +46,10 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
     console.log("gene", gene);
   };
 
+  const handleColumnChange = (colUpdate: any) => {
+    console.log("colupdate", colUpdate);
+  };
+
   return (
     <div>
       <div className={`flex flex-row justify-between`}>
@@ -48,7 +57,14 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
           selectedGenes={selectedGenes}
           handleGeneSave={handleGeneSave}
         />
-        <GTableFilters search={search} handleSearch={handleSearch} />
+        <GTableFilters
+          search={search}
+          handleSearch={handleSearch}
+          columnListOrder={columnListOrder}
+          handleColumnChange={handleColumnChange}
+          showColumnMenu={showColumnMenu}
+          setShowColumnMenu={setShowColumnMenu}
+        />
       </div>
       <div className={`flex flex-row`}>
         <ExpTable
