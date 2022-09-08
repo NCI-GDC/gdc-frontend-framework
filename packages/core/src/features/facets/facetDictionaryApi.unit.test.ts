@@ -1,5 +1,5 @@
 import {
-  shortendFieldNameToTitle,
+  trimFirstFieldNameToTitle,
   processDictionaryEntries,
 } from "./facetDictionaryApi";
 
@@ -62,7 +62,7 @@ describe("test facet dictionary api functions", () => {
         field: "case_id",
         full: "cases.case_id",
         type: "keyword",
-        facet_type: "enum",
+        facet_type: "exact",
       },
       "cases.created_datetime": {
         description: "",
@@ -121,7 +121,7 @@ describe("test facet dictionary api functions", () => {
   });
 
   test("should create a shortened facet title", () => {
-    const results = shortendFieldNameToTitle(
+    const results = trimFirstFieldNameToTitle(
       "demographic.age_is_obfuscated",
       true,
     );
@@ -129,10 +129,18 @@ describe("test facet dictionary api functions", () => {
   });
 
   test("should create a longer facet title", () => {
-    const results = shortendFieldNameToTitle(
+    const results = trimFirstFieldNameToTitle(
       "cases.demographic.cause_of_death",
       false,
     );
     expect(results).toEqual("Cases Demographic Cause of Death");
+  });
+
+  test("should create a title minus cases", () => {
+    const results = trimFirstFieldNameToTitle(
+      "cases.demographic.cause_of_death",
+      true,
+    );
+    expect(results).toEqual("Demographic Cause of Death");
   });
 });

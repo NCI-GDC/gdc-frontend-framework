@@ -7,7 +7,6 @@ import {
 import { ActionIcon, Popover, Tooltip } from "@mantine/core";
 import { DatePicker, RangeCalendar } from "@mantine/dates";
 import {
-  convertFieldToName,
   buildRangeOperator,
   extractRangeValues,
 } from "@/features/facets/utils";
@@ -22,7 +21,11 @@ import {
   FaPlus as PlusIcon,
 } from "react-icons/fa";
 import { ImCalendar as CalendarIcon } from "react-icons/im";
-import { removeCohortFilter, useCoreDispatch } from "@gff/core";
+import {
+  removeCohortFilter,
+  useCoreDispatch,
+  trimFirstFieldNameToTitle,
+} from "@gff/core";
 import { StringRange } from "./types";
 
 interface DateRangeFacetProps
@@ -67,7 +70,6 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
   const coreDispatch = useCoreDispatch();
 
   const clearFilters = useCallback(() => {
-    console.log("clearingFilter");
     clearFilterFunc
       ? clearFilterFunc(field)
       : coreDispatch(removeCohortFilter(field));
@@ -122,7 +124,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
           transitionDuration={200}
         >
           <div className="text-primary-contrast-lighter font-heading font-semibold text-md">
-            {facetName === null ? convertFieldToName(field) : facetName}
+            {facetName ? facetName : trimFirstFieldNameToTitle(field, true)}
           </div>
         </Tooltip>
         <div className="flex flex-row">
@@ -155,6 +157,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
             setDateRangeValue([d, dateRangeValue[1]])
           }
           value={dateRangeValue[0]}
+          aria-label="Set the since value"
           icon={<CalendarIcon />}
         ></DatePicker>
         <MinusIcon />
@@ -171,6 +174,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
             setDateRangeValue([dateRangeValue[0], d])
           }
           icon={<CalendarIcon />}
+          aria-label="Set the through value"
         ></DatePicker>
         <Popover
           position="bottom-end"
@@ -181,6 +185,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
         >
           <Popover.Target>
             <ActionIcon
+              aria-label="open the date range picker"
               className="bg-accent text-accent-contrast"
               onClick={() => setOpened((o) => !o)}
             >
@@ -196,6 +201,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
               amountOfMonths={2}
               value={dateRangeValue}
               onChange={(d: [Date | null, Date | null]) => setDateRangeValue(d)}
+              aria-label="date range picker"
             />
           </Popover.Dropdown>
         </Popover>
