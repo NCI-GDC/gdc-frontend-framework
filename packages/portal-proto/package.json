@@ -19,7 +19,7 @@
     "@mantine/notifications": "^5.2.3",
     "@reduxjs/toolkit": "^1.8.5",
     "@mantine/form": "^5.2.3",
-    "@stjude/proteinpaint-client": "https://pecan.stjude.cloud/static/Pk983gP.Rl2410y45/ydbD5DBW0BdkjXJq/stjude-proteinpaint-client-2.1.5.tgz",
+    "@stjude/proteinpaint-client": "https://pecan.stjude.cloud/static/Pk983gP.Rl2410y45/ydbD5DBW0BdkjXJq/stjude-proteinpaint-client-2.3.0.tgz",
     "filesize": "^8.0.7",
     "minisearch": "^3.0.4",
     "next": "^12.2.5",
