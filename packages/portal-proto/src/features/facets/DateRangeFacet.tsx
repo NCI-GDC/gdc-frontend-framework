@@ -95,12 +95,9 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
       toOp: "<=",
     };
     const rangeFilters = buildRangeOperator(field, data);
-    if (rangeFilters !== undefined) {
-      setFacetValue(field, rangeFilters);
-    }
-    if (rangeFilters === undefined) {
-      coreDispatch(removeCohortFilter(field));
-    }
+    if (rangeFilters !== undefined) setFacetValue(field, rangeFilters);
+    // clear filters as range is empty
+    else coreDispatch(removeCohortFilter(field));
   };
 
   return (
