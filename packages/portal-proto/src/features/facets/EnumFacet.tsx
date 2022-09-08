@@ -6,6 +6,7 @@ import {
   usePrevious,
   removeCohortFilter,
   EnumOperandValue,
+  fieldNameToTitle,
 } from "@gff/core";
 import {
   FacetDocTypeToCountsIndexMap,
@@ -13,7 +14,7 @@ import {
   FacetEnumHooks,
   UpdateEnums,
 } from "./hooks";
-import { DEFAULT_VISIBLE_ITEMS, convertFieldToName } from "./utils";
+import { DEFAULT_VISIBLE_ITEMS } from "./utils";
 
 import {
   MdFlip as FlipIcon,
@@ -213,7 +214,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
             transitionDuration={200}
           >
             <div className="text-primary-contrast-lighter font-heading font-semibold text-md">
-              {facetName === null ? convertFieldToName(field) : facetName}
+              {facetName ? facetName : fieldNameToTitle(field)}
             </div>
           </Tooltip>
           <div className="flex flex-row">

@@ -25,10 +25,10 @@ import {
   updateCohortFilter,
   useCoreDispatch,
   useCoreSelector,
+  fieldNameToTitle,
 } from "@gff/core";
 
 import {
-  convertFieldToName,
   DEFAULT_VISIBLE_ITEMS,
   getLowerAgeFromYears,
   getLowerAgeYears,
@@ -857,7 +857,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
             transitionDuration={200}
           >
             <div className="text-primary-contrast-lighter font-heading font-semibold text-md">
-              {facetName === null ? convertFieldToName(field) : facetName}
+              {facetName ? facetName : fieldNameToTitle(field)}
             </div>
           </Tooltip>
           <div className="flex flex-row">

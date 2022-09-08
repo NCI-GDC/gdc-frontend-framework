@@ -1,6 +1,7 @@
 import {
   trimFirstFieldNameToTitle,
   processDictionaryEntries,
+  fieldNameToTitle,
 } from "./facetDictionaryApi";
 
 import { FacetDefinition } from "./types";
@@ -119,6 +120,31 @@ describe("test facet dictionary api functions", () => {
     );
     expect(results).toEqual(expected);
   });
+});
+
+describe("facet label utils", () => {
+  test("should return the name of the field", () => {
+    const name = fieldNameToTitle("analysis.input_files.experimental_strategy");
+    expect(name).toEqual("Experimental Strategy");
+  });
+
+  test("should return two parts of the field", () => {
+    const name = fieldNameToTitle(
+      "analysis.input_files.experimental_strategy",
+      2,
+    );
+    expect(name).toEqual("Input Files Experimental Strategy");
+  });
+
+  test("should return a Project special case", () => {
+    const name = fieldNameToTitle("cases.project.project_id");
+    expect(name).toEqual("Project");
+  });
+
+  test("should return Analysis", () => {
+    const name = fieldNameToTitle("analysis", 2);
+    expect(name).toEqual("Analysis");
+  });
 
   test("should create a shortened facet title", () => {
     const results = trimFirstFieldNameToTitle(
@@ -131,9 +157,9 @@ describe("test facet dictionary api functions", () => {
   test("should create a longer facet title", () => {
     const results = trimFirstFieldNameToTitle(
       "cases.demographic.cause_of_death",
-      false,
+      true,
     );
-    expect(results).toEqual("Cases Demographic Cause of Death");
+    expect(results).toEqual("Demographic Cause of Death");
   });
 
   test("should create a title minus cases", () => {

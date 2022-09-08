@@ -2,6 +2,11 @@ import { FacetDefinition } from "./types";
 import SupplementalFacetDefinitions from "./data/facet_additional_data.json";
 import { some, includes } from "lodash";
 
+const FieldNameOverrides: Record<string, string> = {
+  "cases.project.program.name": "Program Name",
+  "cases.project.project_id": "Project",
+};
+
 const COMMON_PREPOSITIONS = [
   "a",
   "an",
@@ -38,8 +43,19 @@ export const trimFirstFieldNameToTitle = (
   return fieldNameToTitle(fieldName);
 };
 
-export const fieldNameToTitle = (fieldName: string, sections = 1): string =>
-  fieldName
+/**
+ * Converts a GDC filter name to a title,
+ * For example files.input.experimental_strategy will get converted to Experimental Strategy
+ * if sections == 2 then the output would be Input Experimental Strategy
+ * @param fieldName input filter expected to be: string.firstpart_secondpart
+ * @param sections number of "sections" string.string.string to got back from the end of the field
+ */
+
+export const fieldNameToTitle = (fieldName: string, sections = 1): string => {
+  if (fieldName in FieldNameOverrides) {
+    return FieldNameOverrides[fieldName];
+  }
+  return fieldName
     .split(".")
     .slice(-sections)
     .map((s) => s.split("_"))
@@ -48,6 +64,7 @@ export const fieldNameToTitle = (fieldName: string, sections = 1): string =>
       COMMON_PREPOSITIONS.includes(word) ? word : capitalize(word),
     )
     .join(" ");
+};
 
 export const classifyFacetDatatype = (f: FacetDefinition): string => {
   const fieldName = f.field;

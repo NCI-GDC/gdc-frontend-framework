@@ -378,13 +378,13 @@ export const dispatchFieldValue = (
   dispatch: CoreDispatch,
   field: string,
   operation: Operation,
-) => {
+): void => {
   // get the current filter for this facet
   dispatch(updateCohortFilter({ field: field, operation: operation }));
 };
 
 // Global Clear
-export const clearFilters = (dispatch: CoreDispatch, field: string) => {
+export const clearFilters = (dispatch: CoreDispatch, field: string): void => {
   dispatch(removeCohortFilter(field));
 };
 

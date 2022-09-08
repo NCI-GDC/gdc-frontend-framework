@@ -1,35 +1,4 @@
-import {
-  convertFieldToName,
-  buildRangeOperator,
-  extractRangeValues,
-} from "./utils";
-
-describe("facet label utils", () => {
-  test("should return the name of the field", () => {
-    const name = convertFieldToName(
-      "analysis.input_files.experimental_strategy",
-    );
-    expect(name).toEqual("Experimental Strategy");
-  });
-
-  test("should return two parts of the field", () => {
-    const name = convertFieldToName(
-      "analysis.input_files.experimental_strategy",
-      2,
-    );
-    expect(name).toEqual("Input Files Experimental Strategy");
-  });
-
-  test("should return a Project special case", () => {
-    const name = convertFieldToName("cases.project.project_id");
-    expect(name).toEqual("Project");
-  });
-
-  test("should return Analysis", () => {
-    const name = convertFieldToName("analysis", 2);
-    expect(name).toEqual("Analysis");
-  });
-});
+import { buildRangeOperator, extractRangeValues } from "./utils";
 
 describe("Build Range Tests for Numeric Ranges", () => {
   test("a closed numeric range", () => {
