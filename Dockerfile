@@ -10,8 +10,9 @@ ARG NPM_REGISTRY="https://registry.npmjs.org/"
 
 WORKDIR /app
 ENV npm_config_registry=$NPM_REGISTRY
+# Copy .npm if present
+COPY . .np* .
 RUN npm install --location=global lerna --cache .npm
-COPY . .
 
 RUN npm i --cache .npm
 RUN lerna run --scope @gff/core compile
