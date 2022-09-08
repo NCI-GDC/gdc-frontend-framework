@@ -4,6 +4,7 @@ import tw from "tailwind-styled-components";
 import {
   addFilterToCohortBuilder,
   CohortBuilderCategory,
+  CoreContext,
   FacetDefinition,
   GQLDocType,
   GQLIndexType,
@@ -35,6 +36,13 @@ import {
 import FacetSelection from "@/components/FacetSelection";
 import isEqual from "lodash/isEqual";
 import { createFacetCard } from "@/features/facets/CreateFacetCard";
+import { partial } from "lodash";
+import {
+  clearFilters,
+  dispatchFieldValue,
+  selectFieldValue,
+} from "@/features/facets/hooks";
+import { createSelectorHook } from "react-redux";
 
 const CustomFacetWhenEmptyGroup = tw(Stack)`
 h-64
@@ -119,6 +127,7 @@ const CustomFacetGroup = (): JSX.Element => {
   const { isSuccess: isDictionaryReady } = useFacetDictionary();
 
   const coreDispatch = useCoreDispatch();
+  const coreSelector = createSelectorHook(CoreContext);
   const facets = useCoreSelector((state) =>
     selectFacetDefinitionsByName(state, customConfig.facets),
   );
@@ -203,6 +212,9 @@ const CustomFacetGroup = (): JSX.Element => {
             customFacetDefinitions,
             "cases", // Cohort custom filter restricted to "cases"
             customConfig.index as GQLIndexType,
+            partial(selectFieldValue, coreSelector),
+            partial(dispatchFieldValue, coreDispatch),
+            partial(clearFilters, coreDispatch),
             handleRemoveFilter,
           )}
         </FacetGroup>
@@ -215,6 +227,8 @@ export const FacetTabs = (): JSX.Element => {
   const tabsConfig = useCoreSelector((state) =>
     selectCohortBuilderConfig(state),
   );
+  const coreDispatch = useCoreDispatch();
+  const coreSelector = createSelectorHook(CoreContext);
   return (
     <div className="w-100">
       <StyledFacetTabs
@@ -254,6 +268,9 @@ export const FacetTabs = (): JSX.Element => {
                     getFacetInfo(tabEntry.facets),
                     tabEntry.docType as GQLDocType,
                     tabEntry.index as GQLIndexType,
+                    partial(selectFieldValue, coreSelector),
+                    partial(dispatchFieldValue, coreDispatch),
+                    partial(clearFilters, coreDispatch),
                   )}
                 </FacetGroup>
               )}

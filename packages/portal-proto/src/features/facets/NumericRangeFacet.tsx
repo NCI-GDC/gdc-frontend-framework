@@ -530,7 +530,7 @@ const RangeInputWithPrefixedRanges: React.FC<
 
   // get the current filter for this facet
   const filter = useCoreSelector((state) =>
-    selectCurrentCohortFiltersByName(state, `${field}`),
+    selectCurrentCohortFiltersByName(state, field),
   );
 
   const totalCount = useCoreSelector((state) =>
@@ -940,6 +940,15 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
               />
             ),
             integer: (
+              <NumericRangePanel
+                docType={docType}
+                indexType={indexType}
+                field={field}
+                minimum={minimum}
+                maximum={maximum}
+              />
+            ),
+            range: (
               <NumericRangePanel
                 docType={docType}
                 indexType={indexType}
