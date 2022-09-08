@@ -1,4 +1,4 @@
-import { render, waitFor } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import { ProteinPaintWrapper } from "./ProteinPaintWrapper";
 
 let filter, runpparg;
@@ -19,9 +19,7 @@ jest.mock("@stjude/proteinpaint-client", () => ({
 
 test("SSM lolliplot arguments", () => {
   filter = { abc: "xyz" };
-  const { queryByPlaceholderText, unmount } = render(
-    <ProteinPaintWrapper track="lolliplot" />,
-  );
+  const { unmount } = render(<ProteinPaintWrapper track="lolliplot" />);
   expect(typeof runpparg).toBe("object");
   expect(typeof runpparg.host).toBe("string");
   expect(runpparg.noheader).toEqual(true);
@@ -38,9 +36,7 @@ test("SSM lolliplot arguments", () => {
 
 test("Sequence Read arguments", () => {
   filter = { test: 1 };
-  const { queryByPlaceholderText, unmount } = render(
-    <ProteinPaintWrapper track="bam" />,
-  );
+  const { unmount } = render(<ProteinPaintWrapper track="bam" />);
   expect(typeof runpparg).toBe("object");
   expect(typeof runpparg.host).toBe("string");
   expect(runpparg.noheader).toEqual(true);
