@@ -28,6 +28,7 @@ module.exports = {
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
     "react/display-name": "off",
+    "react/no-unknown-property": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-unused-vars": "error",
     //keep this until issue in next js is resolved https://github.com/vercel/next.js/discussions/32233

@@ -10,10 +10,10 @@ ARG NPM_REGISTRY="https://registry.npmjs.org/"
 
 WORKDIR /app
 ENV npm_config_registry=$NPM_REGISTRY
-RUN npm install --location=global lerna
+RUN npm install --location=global lerna --cache .npm
 COPY . .
 
-RUN npm i
+RUN npm i --cache .npm
 RUN lerna run --scope @gff/core compile
 RUN lerna run --scope @gff/core build
 RUN lerna run --scope portal-proto build
