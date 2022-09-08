@@ -6,6 +6,8 @@ const config: InitialOptionsTsJest = {
   transform: {
     ".+\\.(css|styl|less|sass|scss)$": "jest-css-modules-transform",
     "@stjude": "ts-jest",
+    // uncomment when testing with npm linked sjpp client package code
+    // "proteinpaint/client": "ts-jest"
   },
   globals: {
     "ts-jest": {
@@ -20,7 +22,7 @@ const config: InitialOptionsTsJest = {
   },
   modulePaths: ["<rootDir>"],
   setupFiles: ["jest-canvas-mock"],
-  transformIgnorePatterns: ["/node_modules/(?!@stjude)/"],
+  transformIgnorePatterns: ["node_modules/(?!@stjude)", "!proteinpaint"],
 };
 
 export default config;
