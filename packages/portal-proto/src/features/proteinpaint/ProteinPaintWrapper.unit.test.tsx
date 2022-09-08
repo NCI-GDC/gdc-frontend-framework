@@ -13,7 +13,7 @@ jest.mock("@stjude/proteinpaint-client", () => ({
   __esModule: true,
   runproteinpaint: jest.fn(async (arg) => {
     runpparg = arg;
-    return () => {};
+    return {};
   }),
 }));
 
