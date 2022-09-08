@@ -21,8 +21,6 @@ rounded
 p-1
 hover:bg-base-darkest
 hover:text-base-contrast-darkest
-focus:bg-base-darkest
-focus:text-base-contrast-darkest
 `;
 
 const ImageViewer = dynamic(() => import("../../components/ImageViewer"), {
@@ -108,7 +106,7 @@ export const FileView: React.FC<FileViewProps> = ({
     }
     return (
       <Link href={hrefObj}>
-        <a className="text-utility-link underline">{text}</a>
+        <a className="text-utility-link underline text-sm">{text}</a>
       </Link>
     );
   };
@@ -132,14 +130,14 @@ export const FileView: React.FC<FileViewProps> = ({
           workflow_type: workflowType,
           file_size: fileSize(obj.file_size),
           action: (
-            <>
-              <DownloadButton className="mr-2">
+            <div className="flex gap-3">
+              <DownloadButton onClick={() => {}}>
                 <FaShoppingCart title="Add to Cart" />
               </DownloadButton>
               <DownloadButton>
                 <FaDownload title="Download" />
               </DownloadButton>
-            </>
+            </div>
           ),
         });
       });
