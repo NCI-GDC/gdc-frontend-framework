@@ -32,12 +32,15 @@ import { LoginButton } from "@/components/LoginButton";
 import Link from "next/link";
 import { UserProfileModal } from "@/components/Modals/UserProfileModal";
 import { SessionExpireModal } from "@/components/Modals/SessionExpireModal";
+import { useLocalStorage } from "@mantine/hooks";
 
 interface HeaderProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
   readonly indexPath: string;
   readonly Options?: React.FC<unknown>;
 }
+
+const V2Themes = ["default", "invert-primary", "pastel"];
 
 export const Header: React.FC<HeaderProps> = ({
   headerElements,
@@ -52,6 +55,10 @@ export const Header: React.FC<HeaderProps> = ({
   const modal = useCoreSelector((state) => selectCurrentModal(state));
   const { isSuccess: totalSuccess } = useTotalCounts(); // request total counts and facet dictionary
   const { isSuccess: dictSuccess } = useFacetDictionary();
+  const [, setTheme] = useLocalStorage({
+    key: "color-scheme",
+    defaultValue: "default",
+  });
 
   return (
     <div className="px-6 py-3 border-b border-gdc-grey-lightest">
@@ -225,6 +232,15 @@ export const Header: React.FC<HeaderProps> = ({
                 <TourIcon size="2.5em" />
                 <div className="text-center text-sm pt-1">{"Tour"}</div>
               </Menu.Item>
+              <Menu.Divider />
+              <Menu.Label>Themes</Menu.Label>
+              {V2Themes.map((theme) => (
+                <Menu.Item key={theme} onClick={() => setTheme(theme)}>
+                  <div className="capitalize text-left text-sm pt-1">
+                    {theme}
+                  </div>
+                </Menu.Item>
+              ))}
             </Menu.Dropdown>
           </Menu>
         </div>
