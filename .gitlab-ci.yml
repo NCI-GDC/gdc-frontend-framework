@@ -59,7 +59,6 @@ Prettier Checks:
 Build core and compile portal:
   stage: build
   script:
-    - !reference [.debug-info, script]
     - cd ${CI_PROJECT_DIR}/packages/core
     - npm run build:clean
     - cd ${CI_PROJECT_DIR}/packages/portal-proto
@@ -106,6 +105,12 @@ Build and push container:
     - export LOWERCASE_BRANCH_NAME="$(bash -c 'tr "[:upper:]" "[:lower:]" <<< "$CLEAN_BRANCH_NAME"')"
     - docker build --build-arg "NPM_REGISTRY=https://nexus.osdc.io/repository/npm-all/" -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME-${CI_COMMIT_SHORT_SHA} .
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME-${CI_COMMIT_SHORT_SHA}
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - node_modules/
+      - .npm/
+    policy: pull
 
 Push latest container:
   stage: release
