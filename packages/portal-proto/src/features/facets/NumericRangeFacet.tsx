@@ -19,7 +19,6 @@ import {
   DAYS_IN_YEAR,
   GQLDocType,
   GQLIndexType,
-  Operation,
   removeCohortFilter,
   selectCurrentCohortFiltersByName,
   selectTotalCountsByName,
@@ -36,10 +35,11 @@ import {
   getUpperAgeFromYears,
   getUpperAgeYears,
   buildRangeOperator,
+  extractRangeValues,
 } from "./utils";
 import {
   FacetCardProps,
-  NumericRange,
+  FromToRange,
   RangeFromOp,
   RangeToOp,
 } from "@/features/facets/types";
@@ -111,64 +111,15 @@ interface RangeValueSelectorProps {
 const WARNING_DAYS = Math.floor(90 * DAYS_IN_YEAR);
 
 /**
- * Given an operation, determine if range is open or closed and extract
- * the range values and operands as a NumericRange
- * @param filter - operation to test
- */
-const ExtractRangeValues = (filter?: Operation): NumericRange | undefined => {
-  if (filter !== undefined) {
-    switch (filter.operator) {
-      case ">":
-        return {
-          from:
-            typeof filter.operand === "number"
-              ? (filter.operand as number)
-              : undefined,
-          fromOp: filter.operator,
-        };
-      case ">=":
-        return {
-          from:
-            typeof filter.operand === "number"
-              ? (filter.operand as number)
-              : undefined,
-          fromOp: filter.operator,
-        };
-      case "<":
-        return {
-          to:
-            typeof filter.operand === "number"
-              ? (filter.operand as number)
-              : undefined,
-          toOp: filter.operator,
-        };
-      case "<=":
-        return {
-          to:
-            typeof filter.operand === "number"
-              ? (filter.operand as number)
-              : undefined,
-          toOp: filter.operator,
-        };
-      case "and": {
-        const a = ExtractRangeValues(filter.operands[0]);
-        const b = ExtractRangeValues(filter.operands[1]);
-        return { ...a, ...b };
-      }
-      default:
-        return undefined;
-    }
-  } else {
-    return undefined;
-  }
-};
-/**
  * Given a range compute the key if possibly matches a predefined range
  * otherwise classify as "custom"
  * @param range - Range to classify
  * @param precision - number of values after .
  */
-const ClassifyRangeType = (range?: NumericRange, precision = 1): string => {
+const ClassifyRangeType = (
+  range?: FromToRange<number>,
+  precision = 1,
+): string => {
   if (range === undefined) return "custom";
   if (
     range.fromOp == ">=" &&
@@ -281,7 +232,7 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
 
   // process when range is selected
   const handleSelection = (rangeKey) => {
-    const data: NumericRange = {
+    const data: FromToRange<number> = {
       from: rangeLabelsAndValues[rangeKey].from,
       to: rangeLabelsAndValues[rangeKey].to,
       fromOp: ">=",
@@ -369,7 +320,7 @@ interface FromToProps {
   readonly minimum: number;
   readonly maximum: number;
   readonly units: string;
-  readonly values?: NumericRange;
+  readonly values?: FromToRange<number>;
   readonly changedCallback?: () => void;
   readonly field: string;
 }
@@ -589,7 +540,7 @@ const RangeInputWithPrefixedRanges: React.FC<
   // giving the filter value, extract the From/To values and
   // build it's key
   const [filterValues, filterKey] = useMemo(() => {
-    const values = ExtractRangeValues(filter);
+    const values = extractRangeValues<number>(filter);
     const key = ClassifyRangeType(values);
     return [values, key];
   }, [filter]);

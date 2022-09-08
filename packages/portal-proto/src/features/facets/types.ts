@@ -49,11 +49,11 @@ export interface EnumFacetCardProps extends FacetCardProps {
 export type RangeFromOp = ">" | ">=";
 export type RangeToOp = "<" | "<=";
 
-export interface NumericRange {
+export interface FromToRange<T> {
   readonly fromOp?: RangeFromOp;
-  readonly from?: number;
+  readonly from?: T;
   readonly toOp?: RangeToOp;
-  readonly to?: number;
+  readonly to?: T;
 }
 
 export interface StringRange {

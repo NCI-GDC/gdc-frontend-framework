@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import {
   FacetCardProps,
   SelectFacetValueFunction,
   UpdateFacetValueFunction,
 } from "./types";
-import { ActionIcon, Popover, TextInput, Tooltip } from "@mantine/core";
-import { RangeCalendar } from "@mantine/dates";
+import { ActionIcon, Popover, Tooltip } from "@mantine/core";
+import { DatePicker, RangeCalendar } from "@mantine/dates";
 import {
   convertFieldToName,
   buildRangeOperator,
+  extractRangeValues,
 } from "@/features/facets/utils";
 import {
   controlsIconStyle,
@@ -30,10 +31,28 @@ interface DateRangeFacetProps
   setFacetValue: UpdateFacetValueFunction;
 }
 
+/**
+ * Converts a date into a string of YYY/MM/DD padding 0 for months and days < 10.
+ * Note the use of UTC to ensure the GMT timezone.
+ * @param d - date to convert
+ */
 const convertDateToString = (d: Date | null): string | undefined => {
   if (d === null) return undefined;
-  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+  return `${d.getUTCFullYear()}-${(d.getUTCMonth() + 1) //UTC Months start at 0
+    .toString()
+    .padStart(2, "0")}-${d.getUTCDate().toString().padStart(2, "0")}`;
 };
+
+/**
+ * converts a string of the form YYYY/MM/DD to a Date object set to GMT
+ * @param dateStr -
+ */
+const convertStringToDate = (dateStr?: string): Date | null => {
+  if (dateStr === undefined) return null;
+  return new Date(`${dateStr.replaceAll("-", "/")} GMT`);
+};
+
+type DateRange = [Date | null, Date | null];
 
 const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
   field,
@@ -46,36 +65,41 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
   clearFilterFunc = undefined,
 }: DateRangeFacetProps) => {
   const coreDispatch = useCoreDispatch();
-  const clearFilters = () => {
+
+  const clearFilters = useCallback(() => {
+    console.log("clearingFilter");
     clearFilterFunc
       ? clearFilterFunc(field)
       : coreDispatch(removeCohortFilter(field));
-  };
+  }, [clearFilterFunc, coreDispatch, field]);
 
-  console.log("here");
   const facetValue = getFacetValue(field);
-
-  console.log(facetValue);
+  const dateRange = useMemo(
+    () => extractRangeValues<string>(facetValue),
+    [facetValue],
+  );
+  const dateRangeValue: DateRange = [
+    convertStringToDate(dateRange ? dateRange.from : undefined),
+    convertStringToDate(dateRange ? dateRange.to : undefined),
+  ];
 
   const [opened, setOpened] = useState(false);
-  const [dateRangeValue, setDateRangeValue] = useState<
-    [Date | null, Date | null]
-  >([null, null]);
 
-  useEffect(() => {
+  const setDateRangeValue = (d: [Date | null, Date | null]) => {
     const data: StringRange = {
-      from: convertDateToString(dateRangeValue[0]),
-      to: convertDateToString(dateRangeValue[1]),
+      from: convertDateToString(d[0]),
+      to: convertDateToString(d[1]),
       fromOp: ">=",
       toOp: "<=",
     };
-
     const rangeFilters = buildRangeOperator(field, data);
     if (rangeFilters !== undefined) {
       setFacetValue(field, rangeFilters);
-      console.log("setFacet");
     }
-  }, [dateRangeValue, field, setFacetValue]);
+    if (rangeFilters === undefined) {
+      coreDispatch(removeCohortFilter(field));
+    }
+  };
 
   return (
     <div
@@ -119,21 +143,35 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
         </div>
       </div>
       <div className="flex flex row flex-nowrap items-center p-2 ">
-        <TextInput
+        <DatePicker
+          allowFreeInput
+          clearable
           size="xs"
           placeholder="Since"
           className="px-1"
-          value={convertDateToString(dateRangeValue[0])}
-          rightSection={<CalendarIcon />}
-        ></TextInput>
+          maxDate={dateRangeValue[1]}
+          inputFormat="YYYY/MM/DD"
+          onChange={(d: Date | null) =>
+            setDateRangeValue([d, dateRangeValue[1]])
+          }
+          value={dateRangeValue[0]}
+          icon={<CalendarIcon />}
+        ></DatePicker>
         <MinusIcon />
-        <TextInput
+        <DatePicker
+          allowFreeInput
+          clearable
           size="xs"
           placeholder="Through"
           className="px-1"
-          value={convertDateToString(dateRangeValue[1])}
-          rightSection={<CalendarIcon />}
-        ></TextInput>
+          inputFormat="YYYY/MM/DD"
+          value={dateRangeValue[1]}
+          minDate={dateRangeValue[0]}
+          onChange={(d: Date | null) =>
+            setDateRangeValue([dateRangeValue[0], d])
+          }
+          icon={<CalendarIcon />}
+        ></DatePicker>
         <Popover
           position="bottom-end"
           withArrow
@@ -151,10 +189,13 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
           </Popover.Target>
           <Popover.Dropdown>
             <RangeCalendar
+              classNames={{
+                day: "data-first-in-range:bg-accent-lighter data-first-in-range:rounded-full data-first-in-range:rounded-r-none data-last-in-range:bg-accent-lighter data-last-in-range:rounded-full data-last-in-range:rounded-l-none data-in-range:bg-accent-lightest data-in-range:text-accent-contrast-lightest",
+              }}
               allowSingleDateInRange={false}
               amountOfMonths={2}
               value={dateRangeValue}
-              onChange={setDateRangeValue}
+              onChange={(d: [Date | null, Date | null]) => setDateRangeValue(d)}
             />
           </Popover.Dropdown>
         </Popover>

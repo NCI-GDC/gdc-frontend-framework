@@ -7,7 +7,7 @@ import {
   Operation,
 } from "@gff/core";
 import _ from "lodash";
-import { NumericRange, StringRange } from "@/features/facets/types";
+import { FromToRange } from "@/features/facets/types";
 // TODO write unit test for these
 export const DEFAULT_VISIBLE_ITEMS = 6;
 
@@ -83,14 +83,9 @@ export const AgeDisplay = (
     .trim();
 };
 
-export const partial =
-  (func, ...argsBound) =>
-  (...args) =>
-    func(...argsBound, ...args);
-
-export const buildRangeOperator = (
+export const buildRangeOperator = <T extends string | number>(
   field: string,
-  rangeData: NumericRange | StringRange,
+  rangeData: FromToRange<T>,
 ): Operation | undefined => {
   // couple of different cases
   // * no from/to return undefined
@@ -118,4 +113,63 @@ export const buildRangeOperator = (
     return { operator: "and", operands: [fromOperation, toOperation] };
   if (fromOperation) return fromOperation;
   return toOperation;
+};
+
+/**
+ * Given an operation, determine if range is open or closed and extract
+ * the range values and operands as a NumericRange
+ * @param filter - operation to test
+ */
+export const extractRangeValues = <T extends string | number>(
+  filter?: Operation,
+): FromToRange<T> | undefined => {
+  if (filter !== undefined) {
+    switch (filter.operator) {
+      case ">":
+        return {
+          from:
+            typeof filter.operand === "number" ||
+            typeof filter.operand === "string"
+              ? (filter.operand as T)
+              : undefined,
+          fromOp: filter.operator,
+        };
+      case ">=":
+        return {
+          from:
+            typeof filter.operand === "number" ||
+            typeof filter.operand === "string"
+              ? (filter.operand as T)
+              : undefined,
+          fromOp: filter.operator,
+        };
+      case "<":
+        return {
+          to:
+            typeof filter.operand === "number" ||
+            typeof filter.operand === "string"
+              ? (filter.operand as T)
+              : undefined,
+          toOp: filter.operator,
+        };
+      case "<=":
+        return {
+          to:
+            typeof filter.operand === "number" ||
+            typeof filter.operand === "string"
+              ? (filter.operand as T)
+              : undefined,
+          toOp: filter.operator,
+        };
+      case "and": {
+        const a = extractRangeValues<T>(filter.operands[0]);
+        const b = extractRangeValues<T>(filter.operands[1]);
+        return { ...a, ...b };
+      }
+      default:
+        return undefined;
+    }
+  } else {
+    return undefined;
+  }
 };
