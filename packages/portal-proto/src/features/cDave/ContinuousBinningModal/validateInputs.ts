@@ -120,7 +120,6 @@ export const validateRangeInput = (
           ) {
             return;
           }
-          console.log(idx);
           if (
             (Number(value.from) > Number(otherValue.from) &&
               Number(value.from) < Number(otherValue.to)) ||

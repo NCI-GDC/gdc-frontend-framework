@@ -1,5 +1,5 @@
 import { EnumFacet } from "@/features/facets/EnumFacet";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   EnumOperandValue,
   FacetDefinition,
@@ -82,24 +82,32 @@ export const FileFacetPanel = (): JSX.Element => {
     selectCurrentCohortFilterSet(state),
   );
 
-  const appDispatch = useAppDispatch();
   const prevCohortFilters = usePrevious(cohortFilters);
 
-  const handleFilterSelected = (filter: string) => {
-    setOpened(false);
-    appDispatch(addFilter({ facetName: filter }));
-  };
+  const handleFilterSelected = useCallback(
+    (filter: string) => {
+      setOpened(false);
+      dispatch(addFilter({ facetName: filter }));
+    },
+    [dispatch],
+  );
 
-  const handleRemoveFilter = (filter: string) => {
-    appDispatch(removeFilter({ facetName: filter }));
-  };
+  const handleRemoveFilter = useCallback(
+    (filter: string) => {
+      dispatch(removeFilter({ facetName: filter }));
+    },
+    [dispatch],
+  );
 
   // clears all added custom facets
-  const handleClearAll = () => {
-    appDispatch(resetToDefault());
-  };
+  const handleClearAll = useCallback(() => {
+    dispatch(resetToDefault());
+  }, [dispatch]);
 
-  const clearFilters = (f: string) => appDispatch(removeCohortFilter(f));
+  const clearFilters = useCallback(
+    (f: string) => dispatch(removeCohortFilter(f)),
+    [dispatch],
+  );
 
   // rebuild customFacets
   useEffect(() => {
@@ -111,9 +119,13 @@ export const FileFacetPanel = (): JSX.Element => {
   // Clear filters if Cohort Changes
   useEffect(() => {
     if (!isEqual(prevCohortFilters, cohortFilters)) {
-      appDispatch(clearRepositoryFilters());
+      dispatch(clearRepositoryFilters());
     }
-  }, [appDispatch, cohortFilters, prevCohortFilters, prevCustomFacets]);
+  }, [dispatch, cohortFilters, prevCohortFilters, prevCustomFacets]);
+
+  const showReset = facetDefinitions.some(
+    (facetDef) => !getDefaultFacets().includes(facetDef.full),
+  );
 
   return (
     <div className="flex flex-col gap-y-4 mr-3 w-64  ">
@@ -121,16 +133,18 @@ export const FileFacetPanel = (): JSX.Element => {
         <Text size="lg" weight={700} className="text-primary-content-darker">
           Filters
         </Text>
-        <Button
-          size="xs"
-          color="secondary"
-          variant="outline"
-          aria-label="Reset File Filters"
-          onClick={() => handleClearAll()}
-        >
-          <UndoIcon size="0.85em" className="mr-4" />
-          Reset
-        </Button>
+        {showReset && (
+          <Button
+            size="xs"
+            color="secondary"
+            variant="outline"
+            aria-label="Reset File Filters"
+            onClick={() => handleClearAll()}
+          >
+            <UndoIcon size="0.85em" className="mr-4" />
+            Reset
+          </Button>
+        )}
       </Group>
       <Button
         variant="outline"
@@ -147,7 +161,7 @@ export const FileFacetPanel = (): JSX.Element => {
       <div className="flex flex-col gap-y-4 mr-3 h-screen/1.5 overflow-y-scroll">
         <Modal size="lg" opened={opened} onClose={() => setOpened(false)}>
           <FacetSelection
-            title={"Add File Filter"}
+            title={"Add a File Filter"}
             facetType="files"
             handleFilterSelected={handleFilterSelected}
             usedFacets={config.facets}
