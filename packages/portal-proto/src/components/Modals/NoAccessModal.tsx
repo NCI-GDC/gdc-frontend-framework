@@ -32,7 +32,7 @@ export const NoAccessModal = ({
       <div className="flex justify-end mt-2.5">
         <Button
           onClick={() => dispatch(hideModal())}
-          className="!bg-nci-blue hover:!bg-nci-blue-darker"
+          className="!bg-primary hover:!bg-primary-darker"
         >
           Close
         </Button>
