@@ -18,7 +18,7 @@ export const NoAccessToProjectModal = ({
       closeButtonLabel="Close"
       openModal={openModal}
     >
-      <div className="border-y border-y-nci-gray p-4">
+      <div className="border-y border-y-base-darker p-4">
         <Text size="sm"> You don&apos;t have access to this file.</Text>
 
         <Text size="sm">
