@@ -1,9 +1,4 @@
-import {
-  FacetDefinition,
-  selectFacetDefinitionByName,
-  selectFacetDefinition,
-  useCoreSelector,
-} from "@gff/core";
+import { FacetDefinition } from "@gff/core";
 
 /**
  * getFacetInfo: returns information from the GDC API: description, full field, type, etc.
@@ -13,18 +8,9 @@ import {
  */
 export const getFacetInfo = (
   fields: ReadonlyArray<string>,
+  facets: Record<string, FacetDefinition>,
 ): ReadonlyArray<FacetDefinition> => {
-  const facets = useCoreSelector((state) => selectFacetDefinition(state));
-  return Object.entries(facets?.data)
+  return Object.entries(facets)
     .filter(([key, facet]) => fields.includes(key) && facet !== null)
     .map((f) => f[1]);
-  /*
-  return fields
-    .map(
-      (x) =>
-        useCoreSelector((state) => selectFacetDefinitionByName(state, x)) ??
-        null,
-    )
-    .filter((x) => x !== null);
-    */
 };

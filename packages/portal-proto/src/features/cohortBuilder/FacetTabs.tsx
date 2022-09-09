@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Router, { useRouter } from "next/router";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import tw from "tailwind-styled-components";
 import {
@@ -16,6 +17,7 @@ import {
   useCoreSelector,
   useFacetDictionary,
   usePrevious,
+  selectFacetDefinition,
 } from "@gff/core";
 import {
   Button,
@@ -34,7 +36,6 @@ import {
 } from "react-icons/md";
 import FacetSelection from "@/components/FacetSelection";
 import isEqual from "lodash/isEqual";
-import { useRouter } from "next/router";
 import { createFacetCard } from "@/features/facets/CreateFacetCard";
 
 const CustomFacetWhenEmptyGroup = tw(Stack)`
@@ -216,16 +217,18 @@ export const FacetTabs = (): JSX.Element => {
   const tabsConfig = useCoreSelector((state) =>
     selectCohortBuilderConfig(state),
   );
-  const router = useRouter();
+  const facets =
+    useCoreSelector((state) => selectFacetDefinition(state)).data || {};
   const [activeTab, setActiveTab] = useState(
-    router.query?.tab
-      ? (router.query.tab as string)
+    Router.query?.tab
+      ? (Router.query.tab as string)
       : Object.keys(tabsConfig)[0],
   );
+  const router = useRouter();
 
   useEffect(() => {
-    if (activeTab !== router.query?.tab && activeTab !== undefined) {
-      router.push({ query: { ...router.query, tab: activeTab } }, undefined, {
+    if (activeTab !== Router.query?.tab && activeTab !== undefined) {
+      Router.push({ query: { ...Router.query, tab: activeTab } }, undefined, {
         scroll: false,
       });
     }
@@ -263,24 +266,22 @@ export const FacetTabs = (): JSX.Element => {
           )}
         </Tabs.List>
         {Object.entries(tabsConfig).map(
-          ([key, tabEntry]: [string, CohortBuilderCategory]) => {
-            return (
-              <Tabs.Panel key={key} value={key}>
-                {" "}
-                {tabEntry.label === "Custom" ? (
-                  <CustomFacetGroup />
-                ) : (
-                  <FacetGroup>
-                    {createFacetCard(
-                      getFacetInfo(tabEntry.facets),
-                      tabEntry.docType as GQLDocType,
-                      tabEntry.index as GQLIndexType,
-                    )}
-                  </FacetGroup>
-                )}
-              </Tabs.Panel>
-            );
-          },
+          ([key, tabEntry]: [string, CohortBuilderCategory]) => (
+            <Tabs.Panel key={key} value={key}>
+              {" "}
+              {tabEntry.label === "Custom" ? (
+                <CustomFacetGroup />
+              ) : (
+                <FacetGroup>
+                  {createFacetCard(
+                    getFacetInfo(tabEntry.facets, facets),
+                    tabEntry.docType as GQLDocType,
+                    tabEntry.index as GQLIndexType,
+                  )}
+                </FacetGroup>
+              )}
+            </Tabs.Panel>
+          ),
         )}
       </StyledFacetTabs>
     </div>

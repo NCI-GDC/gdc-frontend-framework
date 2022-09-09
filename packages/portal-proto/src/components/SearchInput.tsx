@@ -1,12 +1,17 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import { uniq, debounce } from "lodash";
+import { useRouter } from "next/router";
+import { uniq } from "lodash";
 import tw from "tailwind-styled-components";
 import { Badge, Highlight, Pagination, Tooltip } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
 import { MdSearch } from "react-icons/md";
 import { FaCheck as CheckIcon } from "react-icons/fa";
-import { useFacetSearch } from "@/features/cohortBuilder/dictionary";
-import { useRouter } from "next/router";
+import {
+  FacetSearchDocument,
+  useFacetSearch,
+} from "@/features/cohortBuilder/dictionary";
+import { createKeyboardAccessibleFunction } from "src/utils";
+import { SearchResult } from "minisearch";
 
 const PAGE_SIZE = 5;
 const DivWithHoverCallout = tw.div`
@@ -34,8 +39,10 @@ const P = tw.p`
   text-sm
 `;
 
+type FullResult = SearchResult & FacetSearchDocument;
+
 export const SearchInput: React.FC = () => {
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchResults, setSearchResults] = useState<FullResult[]>([]);
   const [filteredCategories, setFilteredCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
@@ -60,8 +67,9 @@ export const SearchInput: React.FC = () => {
 
   const onSearchChanged = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
+    setFilteredCategories([]);
 
-    const results = searchFacets(e.target.value);
+    const results = searchFacets(e.target.value) as FullResult[];
     if (results.length == 0) {
       setSearchResults([]);
     } else {
@@ -83,6 +91,25 @@ export const SearchInput: React.FC = () => {
       filteredCategories.includes(result.category),
   );
 
+  const clickResult = (result: FullResult) => {
+    router.push({
+      query: {
+        ...router.query,
+        tab: result.categoryKey,
+      },
+      hash: result.id,
+    });
+    setDropdownOpen(false);
+  };
+
+  const toggleCategory = (selected: boolean, cat: string) => {
+    if (selected) {
+      setFilteredCategories(filteredCategories.filter((c) => c !== cat));
+    } else {
+      setFilteredCategories([...filteredCategories, cat]);
+    }
+  };
+
   return (
     <div ref={ref}>
       <div className="flex items-center justify-between bg-base-max w-[400px] p-1 focus:outline-2 rounded-sm">
@@ -97,7 +124,10 @@ export const SearchInput: React.FC = () => {
         />
         {searchTerm.length > 0 && (
           <span
+            role="button"
+            tabIndex={0}
             onClick={() => clearSearch()}
+            onKeyPress={createKeyboardAccessibleFunction(clearSearch)}
             className="text-xs grow-0 mr-1 cursor-pointer"
           >
             Clear
@@ -126,16 +156,11 @@ export const SearchInput: React.FC = () => {
                             : "text-primary-darkest border-solid border-primary-darkest capitalize text-sm font-normal"
                         }
                         color="white"
-                        onClick={() =>
-                          selected
-                            ? setFilteredCategories(
-                                filteredCategories.filter((c) => c !== cat),
-                              )
-                            : setFilteredCategories([
-                                ...filteredCategories,
-                                cat,
-                              ])
-                        }
+                        tabIndex={0}
+                        onClick={() => toggleCategory(selected, cat)}
+                        onKeyPress={createKeyboardAccessibleFunction(() =>
+                          toggleCategory(selected, cat),
+                        )}
                         leftSection={selected ? <CheckIcon /> : undefined}
                         key={cat}
                       >
@@ -162,20 +187,33 @@ export const SearchInput: React.FC = () => {
                     return (
                       <li className="cursor-pointer" key={result.id}>
                         <Tooltip
+                          events={{
+                            hover:
+                              result.description !== "" ||
+                              matchingEnums.length > 0,
+                            focus: true,
+                            touch: false,
+                          }}
                           label={
                             <>
-                              <Highlight highlight={result.terms}>
+                              <Highlight
+                                highlight={result.terms}
+                                highlightStyles={{ fontStyle: "italic" }}
+                              >
                                 {result.description}
                               </Highlight>
                               {result.description &&
                                 matchingEnums.length > 0 && <br />}
                               {matchingEnums.length > 0 && (
-                                <>
+                                <div>
                                   <b>Values Matched: </b>
-                                  <Highlight highlight={result.terms}>
+                                  <Highlight
+                                    highlight={result.terms}
+                                    highlightStyles={{ fontStyle: "italic" }}
+                                  >
                                     {matchingEnums.join(" • ")}
                                   </Highlight>
-                                </>
+                                </div>
                               )}
                             </>
                           }
@@ -191,19 +229,18 @@ export const SearchInput: React.FC = () => {
                           <DivWithHoverCallout>
                             <div
                               className="p-2 leading-5"
-                              onClick={() => {
-                                router.push({
-                                  query: {
-                                    ...router.query,
-                                    tab: result.categoryKey,
-                                  },
-                                  hash: result.id,
-                                });
-                                setDropdownOpen(false);
-                              }}
+                              role="button"
+                              tabIndex={0}
+                              onClick={() => clickResult(result)}
+                              onKeyPress={createKeyboardAccessibleFunction(() =>
+                                clickResult(result),
+                              )}
                             >
                               <b>
-                                <Highlight highlight={result.terms}>
+                                <Highlight
+                                  highlight={result.terms}
+                                  highlightStyles={{ fontStyle: "italic" }}
+                                >
                                   {result.name}
                                 </Highlight>
                               </b>
@@ -223,6 +260,10 @@ export const SearchInput: React.FC = () => {
                 onChange={setPage}
                 total={Math.ceil(filteredResults.length / PAGE_SIZE)}
                 withEdges
+                color={"nci-blue"}
+                classNames={{
+                  item: "border-0",
+                }}
               />
             </>
           )}

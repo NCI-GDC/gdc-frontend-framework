@@ -1,10 +1,12 @@
+import { useMemo } from "react";
 import GDC_Dictionary from "./config/gdc_tooltips.json";
 import GDC_Dictionary_Flattened from "./config/gdc_facet_dictionary_flat.json";
-import MiniSearch, { SearchResult } from "minisearch";
+import MiniSearch from "minisearch";
 import {
   selectCohortBuilderConfig,
   useCoreSelector,
   selectCaseFacets,
+  selectFacetDefinition,
 } from "@gff/core";
 import { toDisplayName } from "../cDave/utils";
 import { getFacetInfo } from "@/features/cohortBuilder/utils";
@@ -46,45 +48,53 @@ export const get_facets = (
     });
 };
 
-interface ReturnedFields {
+export interface FacetSearchDocument {
   name: string;
   category: string;
+  categoryKey: string;
   description: string;
   enum: string[];
 }
 
-export const miniSearch = new MiniSearch({
+export const miniSearch = new MiniSearch<FacetSearchDocument>({
   fields: ["name", "description", "enum"], // fields to index for full-text search
   storeFields: ["name", "category", "categoryKey", "description", "enum", "id"], // fields to return with search results
 });
 
-export const useFacetSearch = () => {
+export const useFacetSearch = (): MiniSearch<FacetSearchDocument> => {
   const tabsConfig = useCoreSelector((state) =>
     selectCohortBuilderConfig(state),
   );
+  const facets =
+    useCoreSelector((state) => selectFacetDefinition(state)).data || {};
 
   const facetResults = useCoreSelector((state) => selectCaseFacets(state));
 
-  miniSearch.removeAll();
+  useMemo(() => {
+    miniSearch.removeAll();
 
-  const searchDocuments = [];
-  Object.entries(tabsConfig).forEach(([categoryKey, category]) => {
-    getFacetInfo(category.facets).forEach((facet) => {
-      const result = facetResults[facet.full];
-      if (result?.status === "fulfilled") {
-        searchDocuments.push({
-          name: toDisplayName(facet.field),
-          enum: Object.keys(result?.buckets),
-          category: category.label,
-          categoryKey,
-          description: facet.description,
-          id: facet.full,
-        });
-      }
+    const searchDocuments = [];
+
+    Object.entries(tabsConfig).forEach(([categoryKey, category]) => {
+      getFacetInfo(category.facets, facets).forEach((facet) => {
+        const result = facetResults[facet.full];
+        if (result?.status === "fulfilled") {
+          searchDocuments.push({
+            name: toDisplayName(facet.field),
+            enum: Object.keys(result?.buckets),
+            category: category.label,
+            categoryKey,
+            description: facet.description,
+            id: facet.full,
+          });
+        }
+      });
     });
-  });
 
-  miniSearch.addAll(searchDocuments);
+    miniSearch.addAll(searchDocuments);
+    // Ignoring `facets`
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tabsConfig, facetResults]);
 
   return miniSearch;
 };
