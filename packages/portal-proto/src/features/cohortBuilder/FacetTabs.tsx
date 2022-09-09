@@ -217,28 +217,34 @@ export const FacetTabs = (): JSX.Element => {
   const tabsConfig = useCoreSelector((state) =>
     selectCohortBuilderConfig(state),
   );
+  const router = useRouter();
   const facets =
     useCoreSelector((state) => selectFacetDefinition(state)).data || {};
   const [activeTab, setActiveTab] = useState(
-    Router.query?.tab
-      ? (Router.query.tab as string)
+    router?.query?.tab
+      ? (router.query.tab as string)
       : Object.keys(tabsConfig)[0],
   );
-  const router = useRouter();
 
   useEffect(() => {
-    if (activeTab !== Router.query?.tab && activeTab !== undefined) {
-      Router.push({ query: { ...Router.query, tab: activeTab } }, undefined, {
+    if (
+      router !== null &&
+      activeTab !== undefined &&
+      activeTab !== router?.query?.tab
+    ) {
+      router.push({ query: { ...Router.query, tab: activeTab } }, undefined, {
         scroll: false,
       });
     }
+    // https://github.com/vercel/next.js/discussions/29403#discussioncomment-1908563
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
   useEffect(() => {
-    if (activeTab !== router.query?.tab) {
-      setActiveTab(router.query?.tab as string);
+    if (router?.query?.tab && activeTab !== router.query.tab) {
+      setActiveTab(router.query.tab as string);
     }
-  }, [router.query?.tab, activeTab, setActiveTab]);
+  }, [router?.query?.tab, activeTab, setActiveTab]);
 
   return (
     <div className="w-100">

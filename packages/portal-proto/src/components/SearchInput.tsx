@@ -17,7 +17,7 @@ const PAGE_SIZE = 5;
 const DivWithHoverCallout = tw.div`
   flex
   items-center
-  hover:bg-nci-blue-lightest
+  hover:bg-primary-lightest
   hover:before:w-0
   hover:before:h-0
   hover:before:absolute
@@ -30,12 +30,12 @@ const DivWithHoverCallout = tw.div`
   hover:before:border-b-transparent
   hover:before:border-r-[10px]
   hover:before:border-r-solid
-  hover:before:border-r-nci-blue-lightest
+  hover:before:border-r-primary-lightest
 `;
 
 const P = tw.p`
   uppercase
-  text-nci-gray
+  text-base
   text-sm
 `;
 
@@ -138,7 +138,7 @@ export const SearchInput: React.FC = () => {
       {dropdownOpen && (
         <div className="absolute z-10 bg-base-max w-[400px] p-4 drop-shadow-md">
           {searchResults.length === 0 ? (
-            <p className="text-nci-gray text-sm">
+            <p className="text-base text-sm">
               No results for{" "}
               <b>
                 <i>{searchTerm}</i>
@@ -263,7 +263,7 @@ export const SearchInput: React.FC = () => {
                 onChange={setPage}
                 total={Math.ceil(filteredResults.length / PAGE_SIZE)}
                 withEdges
-                color={"nci-blue"}
+                color={"primary"}
                 classNames={{
                   item: "border-0",
                 }}

@@ -27,7 +27,7 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
     <div className="w-full bg-primary-darkest p-2 flex items-center ">
       <Button
         onClick={() => setActiveApp(undefined)}
-        className="bg-base-lightest text-primary-content-darkest text-white"
+        className="bg-base-lightest text-primary-content-darkest"
         aria-label="Close app"
       >
         <MdClose size={20} />
@@ -43,9 +43,9 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
         <>
           {appInfo?.selectAdditionalCohort && (
             <>
-              <MdCircle size={8} />
+              <MdCircle size={8} color="white" />
               <span
-                className={`p-2 mx-2 uppercase cursor-pointer ${
+                className={`p-2 mx-2 uppercase cursor-pointer text-white ${
                   cohortSelectionOpen ? "font-bold" : ""
                 }`}
                 role="button"
@@ -61,8 +61,10 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
           )}
           {!cohortSelectionOpen && (
             <>
-              <MdCircle size={8} />
-              <span className="p-2 mx-2 uppercase font-bold">Results</span>
+              <MdCircle size={8} color="white" />
+              <span className="p-2 mx-2 uppercase font-bold text-white">
+                Results
+              </span>
             </>
           )}
         </>
