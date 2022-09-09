@@ -127,7 +127,7 @@ export const BAMSlicingModal = ({
       <div className="flex justify-end mt-2.5 gap-2">
         <Button
           onClick={() => dispatch(hideModal())}
-          className="!bg-nci-blue hover:!bg-nci-blue-darker"
+          className="!bg-primary hover:!bg-primary-darker"
         >
           Cancel
         </Button>
