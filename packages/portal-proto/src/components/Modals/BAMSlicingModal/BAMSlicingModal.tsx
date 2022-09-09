@@ -165,7 +165,7 @@ export const BAMSlicingModal = ({
 
             dispatch(hideModal());
           }}
-          className="!bg-nci-blue hover:!bg-nci-blue-darker"
+          className="!bg-primary hover:!bg-primary-darker"
         >
           Download
         </Button>
