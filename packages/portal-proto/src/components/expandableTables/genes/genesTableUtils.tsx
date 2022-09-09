@@ -1,16 +1,31 @@
-import { JSX_TYPES } from "@babel/types";
 import { GeneAffectedCases } from "./GeneAffectedCases";
+import _ from "lodash";
+
+interface SingleGene {
+  biotype: string;
+  case_cnv_gain: number;
+  case_cnv_loss: number;
+  cnv_case: number;
+  cytoband: string[];
+  gene_id: string;
+  id: string;
+  is_cancer_gene_census: boolean;
+  name: string;
+  numCases: number;
+  ssm_case: number;
+  symbol: string;
+}
 
 const GTableHeader = ({
   twStyles,
-  key,
+  title,
 }: {
   twStyles: string;
-  key: string;
+  title: string;
 }): JSX.Element => {
   return (
     <>
-      <div className={twStyles}>{key}</div>
+      <div className={twStyles}>{_.startCase(title)}</div>
     </>
   );
 };
@@ -18,17 +33,14 @@ const GTableHeader = ({
 const GTableCell = ({
   twStyles,
   row,
-  value,
 }: {
   twStyles: string;
   row: any;
-  value: any;
 }): JSX.Element => {
   return (
     <div>
       <>
-        {row.getCanExpand() ? <></> : null}{" "}
-        <div className={twStyles}>{value}</div>
+        {row.getCanExpand() ? <></> : null} <div className={twStyles}></div>
       </>
     </div>
   );
@@ -69,30 +81,6 @@ const SSMSAffectedCasesAcrossTheGDC = ({
 
 export const createTableColumn = (key: string) => {
   switch (key) {
-    case `${[
-      "symbol",
-      "name",
-      "survival",
-      "SSMSAffectedCasesInCohort",
-      "CNVGain",
-      "CNVLoss",
-      "mutations",
-      "annotations",
-    ].includes(key)}`:
-      return {
-        header: " ",
-        footer: (props) => props.column.id,
-        columns: [
-          {
-            accessorKey: `${key}`,
-            header: ({ table }) => <GTableHeader twStyles={`ml-4`} key={key} />,
-            cell: ({ row, getValue }) => (
-              <GTableCell twStyles={`ml-4`} row={row} value={getValue()} />
-            ),
-            footer: (props) => props.column.id,
-          },
-        ],
-      };
     case "SSMSAffectedCasesAcrossTheGDC":
       return {
         header: " ",
@@ -100,7 +88,7 @@ export const createTableColumn = (key: string) => {
         columns: [
           {
             accessorKey: key,
-            header: ({ table }) => <GTableHeader twStyles={``} key={key} />,
+            header: ({ table }) => <GTableHeader twStyles={``} title={key} />,
             cell: ({ row, getValue }) => (
               <SSMSAffectedCasesAcrossTheGDC
                 twStyles={`w-200 pl-${row.depth * 2}`}
@@ -111,5 +99,77 @@ export const createTableColumn = (key: string) => {
           },
         ],
       };
+    default:
+      return {
+        header: " ",
+        footer: (props) => props.column.id,
+        columns: [
+          {
+            accessorKey: key,
+            header: ({ table }) => (
+              <GTableHeader twStyles={`ml-4`} title={key} />
+            ),
+            cell: ({ row, getValue }) => {
+              return (
+                <div>
+                  <>
+                    {row.getCanExpand() ? <></> : null}{" "}
+                    <div className={""}></div>
+                  </>
+                </div>
+              );
+            },
+            footer: (props) => props.column.id,
+          },
+        ],
+      };
   }
+};
+
+export const getGene = (
+  g: SingleGene,
+  selectedSurvivalPlot: Record<string, string>,
+  mutationCounts: Record<string, string>,
+  filteredCases: number,
+  cases: number,
+) => {
+  return {
+    symbol: g.symbol,
+    name: g.name,
+    survival: {
+      name: g.name,
+      symbol: g.symbol,
+      checked: g.symbol == selectedSurvivalPlot?.symbol,
+    },
+    SSMSAffectedCasesInCohort:
+      g.cnv_case > 0
+        ? `${g.cnv_case + " / " + filteredCases} (${(
+            (100 * g.cnv_case) /
+            filteredCases
+          ).toFixed(2)}%)`
+        : `0`,
+    SSMSAffectedCasesAcrossTheGDC:
+      g.ssm_case > 0
+        ? `${g.ssm_case + " / " + cases} (${(
+            (100 * g.ssm_case) /
+            cases
+          ).toFixed(2)}%)`
+        : `0`,
+    CNVGain:
+      g.cnv_case > 0
+        ? `${g.case_cnv_gain + " / " + g.cnv_case} (${(
+            (100 * g.case_cnv_gain) /
+            g.cnv_case
+          ).toFixed(2)}%)`
+        : `--`,
+    CNVLoss:
+      g.cnv_case > 0
+        ? `${g.case_cnv_loss + " / " + g.cnv_case} (${(
+            (100 * g.case_cnv_loss) /
+            g.cnv_case
+          ).toFixed(2)}%)`
+        : `--`,
+    mutations: mutationCounts[g.gene_id],
+    annotations: g.is_cancer_gene_census,
+  };
 };

@@ -11,7 +11,10 @@ const GenesTablePage: NextPage = () => {
           selectedSurvivalPlot={undefined}
           handleSurvivalPlotToggled={undefined}
         /> */}
-        <GTableContainer twStyles=""></GTableContainer>
+        <GTableContainer
+          selectedSurvivalPlot={undefined}
+          handleSurvivalPlotToggled={undefined}
+        ></GTableContainer>
       </div>
     </SimpleLayout>
   );

@@ -51,35 +51,26 @@ export const GTableControls: React.VFC<GTableControlsProps> = ({
               Save/Edit Gene Set
             </button>
             {/* todo: keep button in place, show list options under */}
-            <div
-              className={`${
-                geneMenu ? "" : "hidden"
-              } z-10 w-60 bg-white rounded`}
-            >
-              <ul className="text-sm text-gray-500 dark:text-gray-200">
-                {GENE_SET_OPTIONS.map((geneOpt, idx) => {
-                  return (
-                    <li>
-                      <button
-                        key={`gene-set-select-${idx}`}
-                        type="button"
-                        className="py-2 px-4 w-full text-sm text-black-500 hover:bg-gray-100"
-                      >
-                        <div className="items-center">{geneOpt.label}</div>
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
+            {geneMenu && (
+              <div className={`z-10 w-60 bg-white rounded`}>
+                <ul className="text-sm text-gray-500 dark:text-gray-200">
+                  {GENE_SET_OPTIONS.map((geneOpt, idx) => {
+                    return (
+                      <li>
+                        <button
+                          key={`gene-set-select-${idx}`}
+                          type="button"
+                          className="py-2 px-4 w-full text-sm text-black-500 hover:bg-gray-100"
+                        >
+                          <div className="items-center">{geneOpt.label}</div>
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
           </div>
-          {/* <NativeSelect
-                    rightSection={<DropDownIcon />}
-                    data={geneOptions}
-                    value={selectedOption.label}
-                    className={`border-none w-80 p-0 z-10 `}
-                    onChange={handleGeneSave}
-                /> */}
         </div>
       </div>
       <div className={`flex flex-row`}>

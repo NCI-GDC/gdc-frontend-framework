@@ -9,9 +9,9 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 
-export interface ExpTableProps {
-  data: any;
-  columns: any;
+export interface ExpTableProps<TData> {
+  data: TData[];
+  columns: ColumnDef<TData>[];
   expanded: ExpandedState;
   handleExpanded: (exp: ExpandedState) => void;
   handleRowSelect: (row: any) => void; // todo: add row type

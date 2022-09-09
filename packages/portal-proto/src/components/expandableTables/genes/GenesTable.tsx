@@ -1,27 +1,51 @@
-import React, { useState, useMemo, useEffect } from "react";
-// import {
-//   ExpandedState,
-//   useReactTable,
-//   getCoreRowModel,
-//   getExpandedRowModel,
-//   ColumnDef,
-//   flexRender,
-// } from "@tanstack/react-table";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { Gene, GeneSubRow, GenesTableProps } from "./types";
 import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { ExpTable } from "../shared/ExpTable";
 import { GTableControls } from "./GTableControls";
 import { GTableFilters } from "./GTableFilters";
+import { getGene, createTableColumn } from "./genesTableUtils";
 
 export const GenesTable: React.VFC<GenesTableProps> = ({
   initialData,
-  columns,
+  mutationCounts,
+  filteredCases,
+  cases,
+  selectedSurvivalPlot,
+  handleSurvivalPlotToggled,
 }: GenesTableProps) => {
   const [expanded, setExpanded] = useState<ExpandedState>({});
   const [selectedGenes, setSelectedGenes] = useState<any>({}); // todo: add type
   const [search, setSearch] = useState("");
   const [columnListOrder, setColumnListOrder] = useState<string[]>([]);
   const [showColumnMenu, setShowColumnMenu] = useState<boolean>(false);
+  //   const [columnz, setColumnz] = useState([]);
+
+  // todo replace this callback w/ transformResponse inside rtk endpoint call
+  const useGeneTableFormat = useCallback(
+    (initialData) => {
+      return (initialData.genes || []).map((g) => {
+        return getGene(
+          g,
+          selectedSurvivalPlot,
+          mutationCounts,
+          filteredCases,
+          cases,
+        );
+      });
+    },
+    [initialData, selectedSurvivalPlot],
+  );
+
+  const transformResponse = useGeneTableFormat(initialData);
+
+  const columnz = useMemo(() => {
+    const cols = [];
+    (Object.keys(transformResponse[0]) || []).map((tR) => {
+      cols.push(createTableColumn(tR));
+    });
+    return cols;
+  }, [transformResponse]);
 
   // when columnOrder updates, update memoized columns
   // type of updates: toggle visibility off/on or swap order
@@ -69,7 +93,7 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
       <div className={`flex flex-row`}>
         <ExpTable
           data={initialData}
-          columns={columns}
+          columns={columnz}
           expanded={expanded}
           handleExpanded={handleExpanded}
           handleRowSelect={handleRowSelect}

@@ -17,8 +17,17 @@ export interface GeneSubRow {
 }
 
 export interface GenesTableProps {
-  readonly initialData: ReadonlyArray<Gene>;
-  readonly columns: any;
+  readonly initialData: any; // need to add this from response
+  //   readonly columns: any;
+  readonly mutationCounts: Record<string, string>;
+  readonly filteredCases: number;
+  readonly cases: number;
+  readonly selectedSurvivalPlot: Record<string, string>;
+  readonly handleSurvivalPlotToggled: (
+    symbol: string,
+    name: string,
+    field: string,
+  ) => void;
 }
 
 export const GENE_SET_OPTIONS = [
