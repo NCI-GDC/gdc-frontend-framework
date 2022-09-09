@@ -88,7 +88,7 @@ export const BAMSlicingModal = ({
       closeButtonLabel="Cancel"
       openModal={openModal}
     >
-      <div className="border-y border-y-nci-gray py-4 px-2">
+      <div className="border-y border-y-base py-4 px-2">
         <Text size="lg" className="mb-2">
           File name: <Text className="inline font-medium">{file.fileName}</Text>
         </Text>
