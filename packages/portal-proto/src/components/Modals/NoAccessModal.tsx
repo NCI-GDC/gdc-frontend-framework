@@ -19,7 +19,7 @@ export const NoAccessModal = ({
       closeButtonLabel="Close"
       openModal={openModal}
     >
-      <div className="border-y border-y-nci-gray p-4">
+      <div className="border-y border-y-base p-4">
         <Text size="sm"> You don&apos;t have access to this file.</Text>
 
         <div className="flex content-center">
