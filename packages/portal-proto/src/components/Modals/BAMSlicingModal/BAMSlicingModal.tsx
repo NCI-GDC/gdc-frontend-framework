@@ -1,5 +1,5 @@
 import React from "react";
-import { GdcFile, hideModal, useCoreDispatch, Modals } from "@gff/core";
+import { GdcFile, hideModal, Modals, useCoreDispatch } from "@gff/core";
 import { Button, Text, Textarea } from "@mantine/core";
 import { BaseModal } from "../BaseModal";
 import { useForm } from "@mantine/form";

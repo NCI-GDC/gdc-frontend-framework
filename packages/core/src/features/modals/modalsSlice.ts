@@ -1,6 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CoreState } from "../../reducers";
 
+export type ModalTypes =
+  | "UserProfileModal"
+  | "SessionExpireModal"
+  | "NoAccessModal"
+  | "BAMSlicingModal"
+  | "BAMSlicingErrorModal"
+  | "NoAccessToProjectModal";
+
 export enum Modals {
   "UserProfileModal" = "UserProfileModal",
   "SessionExpireModal" = "SessionExpireModal",
@@ -11,7 +19,7 @@ export enum Modals {
 }
 
 export interface ModalState {
-  currentModal: Modals | null;
+  currentModal: ModalTypes | null;
 }
 
 const initialState: ModalState = {
@@ -22,8 +30,8 @@ const slice = createSlice({
   name: "modals",
   initialState,
   reducers: {
-    showModal: (state: ModalState, action: PayloadAction<Modals>) => {
-      state.currentModal = action.payload;
+    showModal: (state: ModalState, action: PayloadAction<ModalTypes>) => {
+      state.currentModal = Modals[action.payload];
       return state;
     },
     hideModal: (state: ModalState) => {
@@ -36,5 +44,5 @@ const slice = createSlice({
 export const modalReducer = slice.reducer;
 export const { showModal, hideModal } = slice.actions;
 
-export const selectCurrentModal = (state: CoreState): Modals | null =>
+export const selectCurrentModal = (state: CoreState): ModalTypes | null =>
   state.modals.currentModal;

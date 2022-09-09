@@ -1,4 +1,9 @@
-import { CoreDispatch, GDC_APP_API_AUTH, Modals, showModal } from "@gff/core";
+import {
+  CoreDispatch,
+  GDC_APP_API_AUTH,
+  ModalTypes,
+  showModal,
+} from "@gff/core";
 import { Button } from "@mantine/core";
 import { cleanNotifications, showNotification } from "@mantine/notifications";
 import { isPlainObject, includes, reduce } from "lodash";
@@ -55,8 +60,8 @@ const download = async ({
   dispatch: CoreDispatch;
   queryParams?: string;
   altMessage?: boolean;
-  Modal403: Modals;
-  Modal400: Modals;
+  Modal403: ModalTypes;
+  Modal400: ModalTypes;
 }): Promise<void> => {
   let timeoutPromise = null;
   showNotification({
