@@ -15,24 +15,11 @@ jobs:
           node-version: 16-alpine3.15
 
       - name: Install Packages
-        run: |
-          echo "Current Working Directory"
-          pwd
-          echo "List of Files"
-          ls
-          npm install
+        run: npm install
 
       - name: Compilation/Type Check for core
         run: |
-          echo "Current Working Directory"
-          pwd
-          echo "List of files"
-          ls
-          echo " "
           cd ${{github.workspace}}/packages/core
-          echo "List of files in ./packages/core"
-          ls
-          echo " "
           npm run build:clean
 
       - name: Compilation/Type Check for portal-proto
@@ -48,3 +35,6 @@ jobs:
 
       - name: Check for unit tests
         run: npm run test:all
+
+      - name: Build
+        run: npm run build
