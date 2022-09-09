@@ -138,9 +138,12 @@ export const SearchInput: React.FC = () => {
       {dropdownOpen && (
         <div className="absolute z-10 bg-base-max w-[400px] p-4 drop-shadow-md">
           {searchResults.length === 0 ? (
-            <P>
-              No results for <i>{searchTerm}</i>
-            </P>
+            <p className="text-nci-gray text-sm">
+              No results for{" "}
+              <b>
+                <i>{searchTerm}</i>
+              </b>
+            </p>
           ) : (
             <>
               <P>Related Categories</P>

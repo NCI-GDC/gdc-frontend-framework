@@ -302,16 +302,24 @@ const OncoGridWrapper: React.FC = () => {
             types or reload the page to continue exploration.
           </>
         )}
-        <Box>
-          <div
-            ref={(ref) => (gridContainer.current = ref)}
-            className={`oncogrid-wrapper bg-base-lightest ${
-              consequenceTypeFilters.length === 0 || isLoading
-                ? "invisible"
-                : "visible"
-            }`}
-          />
-        </Box>
+        <Tooltip.Floating
+          withinPortal
+          position="left"
+          offset={10}
+          label={tooltipContent}
+          disabled={tooltipContent === null}
+        >
+          <Box>
+            <div
+              ref={(ref) => (gridContainer.current = ref)}
+              className={`oncogrid-wrapper bg-base-lightest ${
+                consequenceTypeFilters.length === 0 || isLoading
+                  ? "invisible"
+                  : "visible"
+              }`}
+            />
+          </Box>
+        </Tooltip.Floating>
       </div>
     </div>
   );
