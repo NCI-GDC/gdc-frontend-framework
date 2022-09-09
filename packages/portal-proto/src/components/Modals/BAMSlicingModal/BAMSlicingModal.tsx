@@ -97,7 +97,7 @@ export const BAMSlicingModal = ({
           of the following formats:
         </label>
 
-        <pre className="p-3 border-separate border-1 rounded bg-nci-gray-lighter text-gdc-indigo-darkest mb-2 text-sm">
+        <pre className="p-3 border-separate border-1 rounded bg-base-lighter text-primary-darkest mb-2 text-sm">
           chr7:140505783-140511649
           <br />
           {"chr7  140505783   140511649"}
