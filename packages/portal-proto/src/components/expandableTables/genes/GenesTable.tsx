@@ -5,6 +5,7 @@ import { ExpTable } from "../shared/ExpTable";
 import { GTableControls } from "./GTableControls";
 import { GTableFilters } from "./GTableFilters";
 import { getGene, createTableColumn } from "./genesTableUtils";
+import { GenesColumns } from "@/features/shared/table-utils";
 
 export const GenesTable: React.VFC<GenesTableProps> = ({
   initialData,
@@ -39,14 +40,17 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
 
   const transformResponse = useGeneTableFormat(initialData);
 
-  const columnz = useMemo(() => {
-    const cols = [];
-    (Object.keys(transformResponse[0]) || []).map((tR) => {
-      cols.push(createTableColumn(tR));
-    });
-    return cols;
-  }, [transformResponse]);
+  const columns = React.useMemo<ColumnDef<GenesColumns>[]>(
+    () =>
+      Object.keys(transformResponse[0]).map((accessor) => {
+        return createTableColumn(accessor);
+      }),
+    [transformResponse],
+  );
 
+  useEffect(() => {
+    console.log("columns changed", columns);
+  }, [columns]);
   // when columnOrder updates, update memoized columns
   // type of updates: toggle visibility off/on or swap order
 
@@ -93,7 +97,7 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
       <div className={`flex flex-row`}>
         <ExpTable
           data={initialData}
-          columns={columnz}
+          columns={columns}
           expanded={expanded}
           handleExpanded={handleExpanded}
           handleRowSelect={handleRowSelect}
