@@ -19,7 +19,7 @@ export const BAMSlicingErrorModal = ({
       closeButtonLabel="Ok"
       openModal={openModal}
     >
-      <div className="border-y border-y-nci-gray p-4">
+      <div className="border-y border-y-base-darker p-4">
         <Text size="md">
           You have entered invalid coordinates. Please try again.
         </Text>
