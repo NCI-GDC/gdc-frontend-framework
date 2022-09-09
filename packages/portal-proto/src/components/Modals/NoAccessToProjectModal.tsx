@@ -27,7 +27,7 @@ export const NoAccessToProjectModal = ({
             href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
             target="_blank"
             rel="noreferrer"
-            className="text-nci-blue underline"
+            className="text-utility-link underline"
           >
             click here for more information
           </a>
