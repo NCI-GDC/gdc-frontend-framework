@@ -83,7 +83,7 @@ Run unit tests:
   script:
     - npm run test:all
   cache:
-    key: "Built-$CI_COMMIT_REF_SLUG"
+    key: "$CI_COMMIT_REF_SLUG"
     paths:
       - node_modules/
       - .npm/
