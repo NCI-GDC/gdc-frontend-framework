@@ -94,7 +94,7 @@ export const SearchInput: React.FC = () => {
   const clickResult = (result: FullResult) => {
     router.push({
       query: {
-        ...router.query,
+        ...router?.query,
         tab: result.categoryKey,
       },
       hash: result.id,
@@ -138,7 +138,10 @@ export const SearchInput: React.FC = () => {
       {dropdownOpen && (
         <div className="absolute z-10 bg-base-max w-[400px] p-4 drop-shadow-md">
           {searchResults.length === 0 ? (
-            <p className="text-base text-sm">
+            <p
+              className="text-base text-sm"
+              data-testid="cohort-builder-search-no-results"
+            >
               No results for{" "}
               <b>
                 <i>{searchTerm}</i>
@@ -200,7 +203,7 @@ export const SearchInput: React.FC = () => {
                           label={
                             <>
                               <Highlight
-                                highlight={result.terms}
+                                highlight={searchTerm}
                                 highlightStyles={{ fontStyle: "italic" }}
                               >
                                 {result.description}
@@ -208,10 +211,10 @@ export const SearchInput: React.FC = () => {
                               {result.description &&
                                 matchingEnums.length > 0 && <br />}
                               {matchingEnums.length > 0 && (
-                                <div>
+                                <div data-testid="cohort-builder-search-matching-values">
                                   <b>Values Matched: </b>
                                   <Highlight
-                                    highlight={result.terms}
+                                    highlight={searchTerm}
                                     highlightStyles={{ fontStyle: "italic" }}
                                   >
                                     {matchingEnums.join(" • ")}
@@ -241,7 +244,7 @@ export const SearchInput: React.FC = () => {
                             >
                               <b>
                                 <Highlight
-                                  highlight={result.terms}
+                                  highlight={searchTerm}
                                   highlightStyles={{ fontStyle: "italic" }}
                                 >
                                   {result.name}
