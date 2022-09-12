@@ -368,9 +368,7 @@ export const selectFieldValue = (
   field: string,
 ): Operation => {
   // get the current filter for this facet
-  return selector((state) =>
-    selectCurrentCohortFiltersByName(state, `${field}`),
-  );
+  return selector((state) => selectCurrentCohortFiltersByName(state, field));
 };
 
 // Core Facet Values Dispatcher

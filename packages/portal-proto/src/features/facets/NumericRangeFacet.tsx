@@ -82,7 +82,7 @@ const RadioStyle =
 export const ApplyButton = tw.div`
         flex
         flex-row
-        subpixel-antialiasing
+        subpixel-antialiased
         rounded-md
         text-base
         font-montserrat
