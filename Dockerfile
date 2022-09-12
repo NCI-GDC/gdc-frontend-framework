@@ -13,7 +13,7 @@ RUN npm install --location=global lerna
 COPY ./package.json ./package-lock.json lerna.json ./
 COPY ./packages/core/package.json ./packages/core/
 COPY ./packages/portal-proto/package.json ./packages/portal-proto/
-RUN npm i
+RUN npm ci
 COPY ./packages ./packages
 
 RUN lerna run --scope @gff/core compile
