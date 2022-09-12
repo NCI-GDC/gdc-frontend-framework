@@ -16,7 +16,7 @@ interface SingleGene {
   symbol: string;
 }
 
-const GTableHeader = ({
+export const GTableHeader = ({
   twStyles,
   title,
 }: {
@@ -25,33 +25,42 @@ const GTableHeader = ({
 }): JSX.Element => {
   return (
     <>
-      <div className={twStyles}>{_.startCase(title)}</div>
+      <div className={twStyles} onClick={() => console.log("key", title)}>
+        {_.startCase(title)}
+      </div>
     </>
   );
 };
 
-const GTableCell = ({
-  twStyles,
+export const GTableCell = ({
   row,
+  accessor,
 }: {
-  twStyles: string;
   row: any;
+  accessor: string;
 }): JSX.Element => {
   return (
     <div>
       <>
-        {row.getCanExpand() ? <></> : null} <div className={twStyles}></div>
+        {row.getCanExpand() ? <></> : null}{" "}
+        <div
+          style={{
+            marginLeft: `15px`,
+          }}
+        >
+          {row.original[`${accessor}`] ? row.original[`${accessor}`] : ""}
+        </div>
       </>
     </div>
   );
 };
 
-const SSMSAffectedCasesAcrossTheGDC = ({
-  twStyles,
+export const SSMSAffectedCasesAcrossTheGDC = ({
   row,
+  twStyles,
 }: {
-  twStyles: string;
   row: any;
+  twStyles: string;
 }): JSX.Element => {
   return (
     <div className={twStyles}>
@@ -90,10 +99,34 @@ export const createTableColumn = (key: string) => {
             accessorKey: key,
             header: ({ table }) => <GTableHeader twStyles={``} title={key} />,
             cell: ({ row, getValue }) => (
-              <SSMSAffectedCasesAcrossTheGDC
-                twStyles={`w-200 pl-${row.depth * 2}`}
-                row={row}
-              />
+              <div>
+                <>
+                  {row.getCanExpand() ? (
+                    <button
+                      {...{
+                        onClick: row.getToggleExpandedHandler(),
+                        style: { cursor: "pointer" },
+                      }}
+                    >
+                      {row.getIsExpanded() ? "👇" : "👉"}
+                    </button>
+                  ) : (
+                    <>
+                      <div className={`relative`}>
+                        <GeneAffectedCases
+                          geneId={row.value}
+                        ></GeneAffectedCases>
+                      </div>
+                    </>
+                  )}
+                  {""}
+                  {}
+                </>
+              </div>
+              // <SSMSAffectedCasesAcrossTheGDC
+              //     twStyles={`w-200 pl-${row.depth * 2}`}
+              //     row={row}
+              // />
             ),
             footer: (props) => props.column.id,
           },
@@ -113,8 +146,7 @@ export const createTableColumn = (key: string) => {
               return (
                 <div>
                   <>
-                    {row.getCanExpand() ? <></> : null}{" "}
-                    <div className={""}></div>
+                    <GTableCell row={row} accessor={key} />
                   </>
                 </div>
               );
@@ -134,25 +166,25 @@ export const getGene = (
   cases: number,
 ) => {
   return {
-    symbol: g.symbol,
-    name: g.name,
-    survival: {
-      name: g.name,
-      symbol: g.symbol,
-      checked: g.symbol == selectedSurvivalPlot?.symbol,
-    },
-    SSMSAffectedCasesInCohort:
-      g.cnv_case > 0
-        ? `${g.cnv_case + " / " + filteredCases} (${(
-            (100 * g.cnv_case) /
-            filteredCases
-          ).toFixed(2)}%)`
-        : `0`,
     SSMSAffectedCasesAcrossTheGDC:
       g.ssm_case > 0
         ? `${g.ssm_case + " / " + cases} (${(
             (100 * g.ssm_case) /
             cases
+          ).toFixed(2)}%)`
+        : `0`,
+    symbol: g.symbol,
+    name: g.name,
+    // survival: {
+    //     name: g.name,
+    //     symbol: g.symbol,
+    //     checked: g.symbol == selectedSurvivalPlot?.symbol,
+    // },
+    SSMSAffectedCasesInCohort:
+      g.cnv_case > 0
+        ? `${g.cnv_case + " / " + filteredCases} (${(
+            (100 * g.cnv_case) /
+            filteredCases
           ).toFixed(2)}%)`
         : `0`,
     CNVGain:
@@ -171,5 +203,7 @@ export const getGene = (
         : `--`,
     mutations: mutationCounts[g.gene_id],
     annotations: g.is_cancer_gene_census,
+    // do not remove subRows key, its needed for row.getCanExpand() to be true
+    subRows: " ",
   };
 };

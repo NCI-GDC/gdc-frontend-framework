@@ -34,27 +34,21 @@ export const GTableContainer: React.VFC<GTableContainerProps> = ({
   //   filters: getGraphQLFilters(pageSize, offset),
   // });
 
-  const isDataAggregated = () => {
-    return (
-      data?.genes?.mutationCounts &&
-      data?.genes?.filteredCases &&
-      data?.genes?.cases
-    );
-  };
-
   return (
     <div ref={ref} className={`w-9/12`}>
-      {data?.status === "fulfilled" && isDataAggregated() && (
-        <GenesTable
-          initialData={data.genes}
-          mutationCounts={data.genes.mutationCounts}
-          filteredCases={data.genes.filteredCases}
-          cases={data.genes.cases}
-          // columns={[]}
-          selectedSurvivalPlot={selectedSurvivalPlot}
-          handleSurvivalPlotToggled={handleSurvivalPlotToggled}
-        />
-      )}
+      {data?.status === "fulfilled" &&
+        data?.genes?.mutationCounts &&
+        data?.genes?.filteredCases &&
+        data?.genes?.cases && (
+          <GenesTable
+            initialData={data.genes}
+            mutationCounts={data.genes.mutationCounts}
+            filteredCases={data.genes.filteredCases}
+            cases={data.genes.cases}
+            selectedSurvivalPlot={selectedSurvivalPlot}
+            handleSurvivalPlotToggled={handleSurvivalPlotToggled}
+          />
+        )}
     </div>
   );
 };

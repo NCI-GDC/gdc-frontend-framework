@@ -20,12 +20,10 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
   const [search, setSearch] = useState("");
   const [columnListOrder, setColumnListOrder] = useState<string[]>([]);
   const [showColumnMenu, setShowColumnMenu] = useState<boolean>(false);
-  //   const [columnz, setColumnz] = useState([]);
 
-  // todo replace this callback w/ transformResponse inside rtk endpoint call
   const useGeneTableFormat = useCallback(
     (initialData) => {
-      return (initialData.genes || []).map((g) => {
+      return initialData.genes.map((g) => {
         return getGene(
           g,
           selectedSurvivalPlot,
@@ -35,22 +33,28 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
         );
       });
     },
-    [initialData, selectedSurvivalPlot],
+    [selectedSurvivalPlot],
   );
 
   const transformResponse = useGeneTableFormat(initialData);
+
+  // todo replace this callback w/ transformResponse inside rtk endpoint call
 
   const columns = React.useMemo<ColumnDef<GenesColumns>[]>(
     () =>
       Object.keys(transformResponse[0]).map((accessor) => {
         return createTableColumn(accessor);
       }),
-    [transformResponse],
+    [transformResponse, expanded],
   );
 
   useEffect(() => {
     console.log("columns changed", columns);
   }, [columns]);
+
+  useEffect(() => {
+    console.log("what does transformedRes look like", transformResponse);
+  }, [transformResponse]);
   // when columnOrder updates, update memoized columns
   // type of updates: toggle visibility off/on or swap order
 
@@ -67,7 +71,8 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
     // onclick: setExpanded(exp)
     // pageSize, sort change: do nothing
     // page change, search filter: reset/setExpanded({})
-    console.log("exp state", exp);
+    // console.log("exp state", exp);
+    setExpanded(exp);
   };
 
   const handleGeneSave = (gene: Gene) => {
@@ -96,7 +101,7 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
       </div>
       <div className={`flex flex-row`}>
         <ExpTable
-          data={initialData}
+          data={transformResponse}
           columns={columns}
           expanded={expanded}
           handleExpanded={handleExpanded}

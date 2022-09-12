@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useCallback, useEffect, useState } from "react";
+import React from "react";
 import {
   ExpandedState,
   useReactTable,
@@ -30,6 +30,7 @@ export const ExpTable: React.VFC<ExpTableProps> = ({
       expanded,
     },
     onExpandedChange: handleExpanded,
+    getSubRows: (row) => row.subRows,
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
   });
@@ -77,7 +78,9 @@ export const ExpTable: React.VFC<ExpTableProps> = ({
           })}
         </tbody>
       </table>
-      <div>{table.getRowModel().rows.length} Rows</div>
+      <div onClick={() => console.log("expanded", expanded)}>
+        {table.getRowModel().rows.length} Rows
+      </div>
     </div>
   );
 };

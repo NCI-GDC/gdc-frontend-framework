@@ -31,7 +31,7 @@ export const GeneAffectedCases: React.VFC<GeneSubRow> = ({
   const [subData, setSubData] = useState([]);
   const [ref, { height, width }] = useMeasure();
   const [containerHeight, setContainerHeight] = useState(undefined);
-  const [adjustedWidth, setAdjustedWidth] = useState(undefined);
+  const [adjustedWidth, setAdjustedWidth] = useState("w-full");
 
   const getGeneSubRow = (geneId: string) => {
     fetch("https://api.gdc.cancer.gov/v0/graphql", {
@@ -76,7 +76,7 @@ export const GeneAffectedCases: React.VFC<GeneSubRow> = ({
     <>
       <div
         ref={ref}
-        className={`flex flex-wrap bg-gray-200 absolute ${
+        className={`flex flex-wrap bg-gray-200 absolute w-screen ${
           containerHeight ? "w-screen" : `hidden ${adjustedWidth}`
         }`}
       >
@@ -94,7 +94,8 @@ export const GeneAffectedCases: React.VFC<GeneSubRow> = ({
       {/* relative div's height below is derived from the absolute div's height above
         this is to displace the rest of the table when in expanded state
      */}
-      <div className={`${containerHeight} relative`}></div>
+      {/* update height here */}
+      <div className={`relative`}></div>
     </>
   );
 };
