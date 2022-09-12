@@ -57,6 +57,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
   const textValues = useMemo(() => extractTextValues(facetValue), [facetValue]);
 
   const addValue = (s: string) => {
+    if (values.includes(s)) return;
     setTextValue("");
     setValues([...values, s]);
   };
@@ -74,11 +75,19 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
   //   else coreDispatch(removeCohortFilter(field));
   // };
 
-  const removeButton = (
-    <ActionIcon size="xs" color="white" radius="xl" variant="transparent">
-      <CloseIcon size={10} />
-    </ActionIcon>
-  );
+  const removeButton = (x: string) => {
+    return (
+      <ActionIcon
+        size="xs"
+        color="white"
+        radius="xl"
+        variant="transparent"
+        onClick={() => setValues(values.filter((i) => i !== x))}
+      >
+        <CloseIcon size={10} />
+      </ActionIcon>
+    );
+  };
 
   return (
     <div
@@ -146,7 +155,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
             variant="filled"
             color="accent"
             key={x}
-            rightSection={removeButton}
+            rightSection={removeButton(x)}
           >
             {x}
           </Badge>
