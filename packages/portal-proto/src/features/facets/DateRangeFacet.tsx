@@ -21,11 +21,7 @@ import {
   FaPlus as PlusIcon,
 } from "react-icons/fa";
 import { ImCalendar as CalendarIcon } from "react-icons/im";
-import {
-  removeCohortFilter,
-  useCoreDispatch,
-  trimFirstFieldNameToTitle,
-} from "@gff/core";
+import { trimFirstFieldNameToTitle } from "@gff/core";
 import { StringRange } from "./types";
 
 interface DateRangeFacetProps
@@ -65,15 +61,11 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
   width = undefined,
   getFacetValue,
   setFacetValue,
-  clearFilterFunc = undefined,
+  clearFilterFunc,
 }: DateRangeFacetProps) => {
-  const coreDispatch = useCoreDispatch();
-
   const clearFilters = useCallback(() => {
-    clearFilterFunc
-      ? clearFilterFunc(field)
-      : coreDispatch(removeCohortFilter(field));
-  }, [clearFilterFunc, coreDispatch, field]);
+    clearFilterFunc(field);
+  }, [clearFilterFunc, field]);
 
   const facetValue = getFacetValue(field);
   const dateRange = useMemo(
@@ -97,7 +89,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
     const rangeFilters = buildRangeOperator(field, data);
     if (rangeFilters !== undefined) setFacetValue(field, rangeFilters);
     // clear filters as range is empty
-    else coreDispatch(removeCohortFilter(field));
+    else clearFilters();
   };
 
   return (
