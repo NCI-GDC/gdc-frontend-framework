@@ -1,6 +1,5 @@
 import { NextPage } from "next";
 import { UserFlowVariedPages } from "../features/layout/UserFlowVariedPages";
-import FullCohortBuilder from "../features/cohortBuilder/CohortBuilder";
 import { headerElements } from "@/features/user-flow/many-pages/navigation-utils";
 
 export const COHORTS = [
@@ -13,11 +12,13 @@ export const COHORTS = [
   },
 ];
 
+/**
+ * Depreciated
+ * @constructor
+ */
 const CohortBuilder: NextPage = () => {
   return (
-    <UserFlowVariedPages headerElements={headerElements}>
-      <FullCohortBuilder cohorts={COHORTS} />
-    </UserFlowVariedPages>
+    <UserFlowVariedPages headerElements={headerElements}></UserFlowVariedPages>
   );
 };
 
