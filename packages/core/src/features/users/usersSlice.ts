@@ -83,6 +83,8 @@ const userSliceInitialState: userSliceInitialStateInterface = {
   status: "uninitialized",
 };
 
+export type UserInfo = Omit<userSliceInitialStateInterface, "status">;
+
 const slice = createSlice({
   name: "userInfo",
   initialState: userSliceInitialState,
@@ -122,9 +124,7 @@ export const userDetailsReducer = slice.reducer;
 
 export const selectUserDetailsInfo = (
   state: CoreState,
-): CoreDataSelectorResponse<
-  Omit<userSliceInitialStateInterface, "status">
-> => ({
+): CoreDataSelectorResponse<UserInfo> => ({
   data: {
     projects: state.userInfo.projects,
     username: state.userInfo.username,

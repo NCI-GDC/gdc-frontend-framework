@@ -33,6 +33,7 @@ import Link from "next/link";
 import { UserProfileModal } from "@/components/Modals/UserProfileModal";
 import { SessionExpireModal } from "@/components/Modals/SessionExpireModal";
 import { useLocalStorage } from "@mantine/hooks";
+import { NoAccessModal } from "@/components/Modals/NoAccessModal";
 
 interface HeaderProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
@@ -203,7 +204,7 @@ export const Header: React.FC<HeaderProps> = ({
                     window.location.assign(
                       urlJoin(
                         GDC_AUTH,
-                        `logout?next=https://localhost.gdc.cancer.gov:3010/user-flow/workbench`,
+                        `logout?next=https://localhost.gdc.cancer.gov:3010/v2/user-flow/workbench`,
                       ),
                     );
                   }}
@@ -216,7 +217,7 @@ export const Header: React.FC<HeaderProps> = ({
             <LoginButton />
           )}
 
-          <Link href="/cart">
+          <Link href="/cart" passHref>
             <div
               className={
                 "flex flex-row opacity-60 hover:opacity-100 transition-opacity  items-center mx-2 cursor-pointer"
@@ -251,6 +252,7 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
       {modal === Modals.UserProfileModal && <UserProfileModal openModal />}
       {modal === Modals.SessionExpireModal && <SessionExpireModal openModal />}
+      {modal === Modals.NoAccessModal && <NoAccessModal openModal />}
     </div>
   );
 };

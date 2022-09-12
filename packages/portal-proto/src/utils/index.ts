@@ -1,7 +1,7 @@
 import { KeyboardEventHandler } from "react";
 import { CartFile } from "@gff/core";
 import { replace, sortBy } from "lodash";
-import { DocumentWithWebkit } from "./features/types";
+import { DocumentWithWebkit } from "../features/types";
 import * as tailwindConfig from "tailwind.config";
 
 export const toggleFullScreen = async (

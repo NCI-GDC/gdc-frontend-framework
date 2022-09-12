@@ -3,7 +3,7 @@ import { Button, Text } from "@mantine/core";
 import { LoginButton } from "../LoginButton";
 import { BaseModal } from "./BaseModal";
 
-export const SessionExpireModal = ({
+export const NoAccessModal = ({
   openModal,
 }: {
   openModal: boolean;
@@ -13,14 +13,15 @@ export const SessionExpireModal = ({
     <BaseModal
       title={
         <Text size="lg" className="font-medium">
-          Session Expired
+          Access Alert
         </Text>
       }
-      closeButtonLabel="Cancel"
+      closeButtonLabel="Close"
       openModal={openModal}
     >
       <div className="border-y border-y-base p-4">
-        <Text size="sm"> Your session has expired.</Text>
+        <Text size="sm"> You don&apos;t have access to this file.</Text>
+
         <div className="flex content-center">
           <Text size="sm" className="mt-1">
             Please
@@ -33,7 +34,7 @@ export const SessionExpireModal = ({
           onClick={() => dispatch(hideModal())}
           className="!bg-primary hover:!bg-primary-darker"
         >
-          Cancel
+          Close
         </Button>
       </div>
     </BaseModal>
