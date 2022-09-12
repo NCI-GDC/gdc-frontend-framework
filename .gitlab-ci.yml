@@ -63,7 +63,7 @@ Prettier Checks:
       - .npm/
     policy: pull
 
-Build core and compile portal:
+Build core:
   stage: build
   script:
     - cd ${CI_PROJECT_DIR}/packages/core
@@ -83,8 +83,9 @@ Build core and compile portal:
         - dist/
       policy: push
 
-Build compile portal:
+ Compile portal:
   stage: build
+  needs: ["Build core"]
   script:
     - cd ${CI_PROJECT_DIR}/packages/portal-proto
     - npm run compile
@@ -95,13 +96,6 @@ Build compile portal:
         - .npm/
         - dist/
       policy: pull
-    - key: "Built-$CI_COMMIT_REF_SLUG"
-      untracked: true
-      paths:
-        - node_modules/
-        - .npm/
-        - packages/
-      policy: push
 
 Run unit tests:
   stage: unit
