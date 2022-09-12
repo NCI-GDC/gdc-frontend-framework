@@ -103,6 +103,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
         color="white"
         radius="xl"
         variant="transparent"
+        arial-label="remove value from filter"
         onClick={() => setValues(textValues.filter((i) => i !== x))}
       >
         <CloseIcon size={10} />
@@ -156,7 +157,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
           size="xs"
           placeholder={`Enter ${facetTitle}`}
           classNames={{ input: "border-r-0 rounded-r-none py-1" }}
-          aria-label="Enter value"
+          aria-label="Enter value to add to filter"
           value={textValue}
           onChange={(event) => setTextValue(event.currentTarget.value)}
         ></TextInput>
@@ -177,6 +178,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
             color="accent"
             key={x}
             rightSection={removeButton(x)}
+            arial-label="value in filter"
           >
             {x}
           </Badge>
