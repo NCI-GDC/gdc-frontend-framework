@@ -26,7 +26,20 @@ interface ExactValueProps
   setFacetValue: UpdateFacetValueFunction;
 }
 
-const extractTextValues = (operation: Operation): ReadonlyArray<string> => {
+const instanceOfIncludesExcludes = (op: Operation): op is Includes | Excludes =>
+  ["includes", "excludes"].includes(op.operator);
+
+/**
+ * Extracts the operands if the operation is Includes or Excludes. Returns an empty Array
+ * if filter is not the correct type.
+ * @param operation - filters to extract values from
+ */
+const extractValues = (
+  operation?: Operation,
+): ReadonlyArray<string | number> => {
+  if (operation && instanceOfIncludesExcludes(operation)) {
+    return operation.operands;
+  }
   return [];
 };
 
@@ -48,18 +61,34 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
       : coreDispatch(removeCohortFilter(field));
   }, [clearFilterFunc, coreDispatch, field]);
 
-  const [textValue, setTextValue] = useState(undefined);
+  const [textValue, setTextValue] = useState(undefined); // Handle the state of the TextInput
   const [values, setValues] = useState([]); // TODO Remove after attaching facet
   const facetTitle = facetName
     ? facetName
     : trimFirstFieldNameToTitle(field, true);
   const facetValue = getFacetValue(field);
-  const textValues = useMemo(() => extractTextValues(facetValue), [facetValue]);
+  const textValues = useMemo(() => extractValues(facetValue), [facetValue]);
 
   const addValue = (s: string) => {
     if (values.includes(s)) return;
     setTextValue("");
     setValues([...values, s]);
+  };
+
+  const setValue = (values: string[] | number[]) => {
+    if (facetValue && instanceOfIncludesExcludes(facetValue)) {
+      // updating facet value
+      setFacetValue(field, { ...facetValue, operands: values });
+    }
+    if (values.length > 0 && facetValue === undefined) {
+      // TODO: Assuming Includes by default but this might change to Include|Excludes
+      setFacetValue(field, {
+        operator: "includes",
+        field: field,
+        operands: values,
+      });
+    }
+    // no values remove the filter
   };
 
   // const setDateRangeValue = (d: [Date | null, Date | null]) => {
@@ -149,7 +178,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
         </ActionIcon>
       </div>
       <Group spacing="xs" className="px-2 py-1">
-        {values.map((x) => (
+        {textValues.map((x) => (
           <Badge
             size="sm"
             variant="filled"
