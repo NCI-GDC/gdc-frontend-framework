@@ -1,32 +1,18 @@
 import { PropsWithChildren, ReactNode, useEffect } from "react";
 import { useRouter } from "next/router";
-import { useLocalStorage } from "@mantine/hooks";
-import { Menu } from "@mantine/core";
 import {
   isString,
   useCoreSelector,
-  selectCart,
   useCoreDispatch,
   fetchNotifications,
   selectBanners,
-  useTotalCounts,
-  useFacetDictionary,
   fetchUserDetails,
 } from "@gff/core";
-import {
-  MdOutlineLogin as LoginIcon,
-  MdShoppingCart as CartIcon,
-  MdOutlineApps as AppsIcon,
-  MdSearch as SearchIcon,
-  MdOutlineTour as TourIcon,
-} from "react-icons/md";
 import Banner from "@/components/Banner";
-import { Button, LoadingOverlay } from "@mantine/core";
-import { NextLink } from "@mantine/next";
+import { Button } from "@mantine/core";
 import { useTour } from "@reactour/tour";
 import steps from "../../features/tour/steps";
-import { Image } from "@/components/Image";
-import Link from "next/link";
+import { Header } from "./Header";
 
 interface UserFlowVariedPagesProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
@@ -69,115 +55,6 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
       <footer className="flex-none">
         <Footer />
       </footer>
-    </div>
-  );
-};
-
-interface HeaderProps {
-  readonly headerElements: ReadonlyArray<ReactNode>;
-  readonly indexPath: string;
-  readonly Options?: React.FC<unknown>;
-}
-
-const V2Themes = ["default", "invert-primary", "pastel"];
-
-const Header: React.FC<HeaderProps> = ({
-  headerElements,
-  indexPath,
-  Options = () => <div />,
-}: HeaderProps) => {
-  const { setIsOpen } = useTour();
-  const currentCart = useCoreSelector((state) => selectCart(state));
-  const { isSuccess: totalSuccess } = useTotalCounts(); // request total counts and facet dictionary
-  const { isSuccess: dictSuccess } = useFacetDictionary();
-  const [, setTheme] = useLocalStorage({
-    key: "color-scheme",
-    defaultValue: "default",
-  });
-
-  return (
-    <div className={`px-6 py-3 border-b border-base-lightest `}>
-      <div className="flex flex-row flex-wrap divide-x divide-base-light items-center">
-        <LoadingOverlay visible={!(totalSuccess || dictSuccess)} />
-        <div className="flex-none w-64 h-nci-logo mr-2 relative">
-          {/* There's some oddities going on here that need to be explained.  When a
-          <Link> wraps an <Image>, react complains it's expecting a reference to be
-          passed along. A popular fix is to wrap the child with an empty anchor tag.
-          This causes an accessibility problem because empty anchors confuse screen
-          readers. The button tag satisfies both react's requirements and a11y
-          requirements.  */}
-          <Button unstyled component={NextLink} href={indexPath}>
-            <Image
-              src="/NIH_GDC_DataPortal-logo.svg"
-              layout="fill"
-              objectFit="contain"
-              aria-label="NCI GDC Data Portal logo"
-              alt="NCI GDC Data Portal logo"
-            />
-          </Button>
-        </div>
-        {headerElements.map((element, i) => (
-          <div key={i} className="px-2">
-            {typeof element === "string" ? (
-              <span className="font-semibold">{element}</span>
-            ) : (
-              element
-            )}
-          </div>
-        ))}
-        <div className="flex-grow"></div>
-        <div className="w-64">
-          <Options />
-        </div>
-
-        <div className="flex flex-row items-center align-middle flex-nowrap">
-          <div
-            className={
-              "flex flex-row opacity-60 hover:opacity-100 transition-opacity items-center mx-2 "
-            }
-          >
-            <SearchIcon size="24px" />{" "}
-          </div>
-          <div
-            className={
-              "flex flex-row opacity-60 hover:opacity-100 transition-opacity items-center mx-2 "
-            }
-          >
-            <LoginIcon className="mr-1" size="24px" /> Login{" "}
-          </div>
-          <Link href="/cart">
-            <div
-              className={
-                "flex flex-row opacity-60 hover:opacity-100 transition-opacity  items-center mx-2 cursor-pointer"
-              }
-            >
-              <CartIcon size="24px" /> Cart ({currentCart.length || 0})
-            </div>
-          </Link>
-          <Menu withArrow>
-            <Menu.Target>
-              <button className="p-0">
-                <AppsIcon className="mt-2" size="24px" />
-              </button>
-            </Menu.Target>
-            <Menu.Dropdown>
-              <Menu.Item onClick={() => setIsOpen(true)}>
-                <TourIcon size="2.5em" />
-                <div className="text-center text-sm pt-1">{"Tour"}</div>
-              </Menu.Item>
-              <Menu.Divider />
-              <Menu.Label>Themes</Menu.Label>
-              {V2Themes.map((theme) => (
-                <Menu.Item key={theme} onClick={() => setTheme(theme)}>
-                  <div className="capitalize text-left text-sm pt-1">
-                    {theme}
-                  </div>
-                </Menu.Item>
-              ))}
-            </Menu.Dropdown>
-          </Menu>
-        </div>
-      </div>
     </div>
   );
 };

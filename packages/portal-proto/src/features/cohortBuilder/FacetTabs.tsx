@@ -151,7 +151,7 @@ const CustomFacetGroup = (): JSX.Element => {
       <LoadingOverlay visible={!isDictionaryReady} />
       <Modal size="lg" opened={opened} onClose={() => setOpened(false)}>
         <FacetSelection
-          title={"Add Cohort Filter"}
+          title={"Add a Case Filter"}
           facetType="cases"
           handleFilterSelected={handleFilterSelected}
           usedFacets={cohortBuilderFilters}
