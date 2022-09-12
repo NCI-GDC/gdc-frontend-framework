@@ -18,6 +18,7 @@ image: docker.osdc.io/node:16-alpine3.15
 cache:
   key: $CI_COMMIT_REF_SLUG
   paths:
+    - node_modules/
     - .npm/
 
 variables:
@@ -67,6 +68,24 @@ Build core and compile portal:
   script:
     - cd ${CI_PROJECT_DIR}/packages/core
     - npm run build:clean
+  cache:
+    - key: $CI_COMMIT_REF_SLUG
+      paths:
+        - node_modules/
+        - .npm/
+      policy: pull
+    - key: "Built-$CI_COMMIT_REF_SLUG"
+      untracked: true
+      paths:
+        - node_modules/
+        - .npm/
+        - packages/
+        - dist/
+      policy: push
+
+Build compile portal:
+  stage: build
+  script:
     - cd ${CI_PROJECT_DIR}/packages/portal-proto
     - npm run compile
   cache:
@@ -81,7 +100,6 @@ Build core and compile portal:
         - node_modules/
         - .npm/
         - packages/
-        - dist/
       policy: push
 
 Run unit tests:
