@@ -249,6 +249,16 @@ export interface GdcFile {
     readonly case_id: string;
     readonly submitter_id: string;
     readonly annotations?: ReadonlyArray<string>;
+    readonly project?: {
+      readonly dbgap_accession_number?: string;
+      readonly disease_type: string;
+      readonly name: string;
+      readonly primary_site: string;
+      readonly project_id: string;
+      readonly releasable: boolean;
+      readonly released: boolean;
+      readonly state: string;
+    };
     readonly samples?: ReadonlyArray<{
       readonly sample_id: string;
       readonly sample_type: string;
@@ -365,6 +375,18 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
         annotations: caseObj.annotations?.map(
           (annotation) => annotation.annotation_id,
         ),
+        project: caseObj?.project
+          ? {
+              dbgap_accession_number: caseObj.project.dbgap_accession_number,
+              disease_type: caseObj.project.disease_type,
+              name: caseObj.project.name,
+              primary_site: caseObj.project.primary_site,
+              project_id: caseObj.project.project_id,
+              releasable: caseObj.project.releasable,
+              released: caseObj.project.released,
+              state: caseObj.project.state,
+            }
+          : undefined,
         samples: caseObj.samples?.map((sample) => {
           return {
             sample_id: sample.sample_id,
