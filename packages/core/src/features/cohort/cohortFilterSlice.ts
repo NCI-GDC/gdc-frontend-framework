@@ -79,7 +79,7 @@ const slice = createSlice({
 /**
  *  Operand types for filter operations
  */
-export type EnumOperandValue = ReadonlyArray<string> | ReadonlyArray<number>;
+export type EnumOperandValue = ReadonlyArray<string | number>;
 export type RangeOperandValue = string | number;
 export type SetOperandValue = ReadonlyArray<Operation>;
 export type OperandValue =
@@ -95,14 +95,14 @@ export class ValueExtractorHandler implements OperationHandler<OperandValue> {
   handleEquals: (op: Equals) => string | number = (op: Equals) => op.operand;
   handleNotEquals: (op: NotEquals) => string | number = (op: NotEquals) =>
     op.operand;
-  handleExcludes: (op: Excludes) => readonly string[] | readonly number[] = (
+  handleExcludes: (op: Excludes) => ReadonlyArray<string | number> = (
     op: Excludes,
   ) => op.operands;
   handleExcludeIfAny: (
     op: ExcludeIfAny,
-  ) => string | readonly string[] | readonly number[] = (op: ExcludeIfAny) =>
+  ) => string | ReadonlyArray<string | number> = (op: ExcludeIfAny) =>
     op.operands;
-  handleIncludes: (op: Includes) => readonly string[] | readonly number[] = (
+  handleIncludes: (op: Includes) => ReadonlyArray<string | number> = (
     op: Includes,
   ) => op.operands;
   handleGreaterThanOrEquals: (op: GreaterThanOrEquals) => string | number = (
@@ -130,12 +130,12 @@ export class EnumValueExtractorHandler
 {
   handleEquals: (_: Equals) => undefined = (_: Equals) => undefined;
   handleNotEquals: (_: NotEquals) => undefined = (_: NotEquals) => undefined;
-  handleExcludes: (_: Excludes) => readonly string[] | readonly number[] = (
+  handleExcludes: (_: Excludes) => ReadonlyArray<string | number> = (
     op: Excludes,
   ) => op.operands;
   handleExcludeIfAny: (_: ExcludeIfAny) => undefined = (_: ExcludeIfAny) =>
     undefined;
-  handleIncludes: (_: Includes) => readonly string[] | readonly number[] = (
+  handleIncludes: (_: Includes) => ReadonlyArray<string | number> = (
     op: Includes,
   ) => op.operands;
   handleGreaterThanOrEquals: (_: GreaterThanOrEquals) => undefined = (

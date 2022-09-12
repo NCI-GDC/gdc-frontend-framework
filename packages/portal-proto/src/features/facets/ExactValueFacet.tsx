@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useEffect } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import {
   FacetCardProps,
   SelectFacetValueFunction,
@@ -40,7 +40,7 @@ const extractValues = (
   if (operation && instanceOfIncludesExcludes(operation)) {
     return operation.operands;
   }
-  return [];
+  return [] as ReadonlyArray<string>;
 };
 
 const ExactValueFacet: React.FC<ExactValueProps> = ({
@@ -62,56 +62,48 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
   }, [clearFilterFunc, coreDispatch, field]);
 
   const [textValue, setTextValue] = useState(undefined); // Handle the state of the TextInput
-  const [values, setValues] = useState([]); // TODO Remove after attaching facet
+
   const facetTitle = facetName
     ? facetName
     : trimFirstFieldNameToTitle(field, true);
   const facetValue = getFacetValue(field);
   const textValues = useMemo(() => extractValues(facetValue), [facetValue]);
 
-  const addValue = (s: string) => {
-    if (values.includes(s)) return;
-    setTextValue("");
-    setValues([...values, s]);
-  };
-
-  const setValue = (values: string[] | number[]) => {
-    if (facetValue && instanceOfIncludesExcludes(facetValue)) {
-      // updating facet value
-      setFacetValue(field, { ...facetValue, operands: values });
-    }
-    if (values.length > 0 && facetValue === undefined) {
-      // TODO: Assuming Includes by default but this might change to Include|Excludes
-      setFacetValue(field, {
-        operator: "includes",
-        field: field,
-        operands: values,
-      });
+  const setValues = (values: ReadonlyArray<string | number>) => {
+    if (values.length > 0) {
+      if (facetValue && instanceOfIncludesExcludes(facetValue)) {
+        // updating facet value
+        setFacetValue(field, { ...facetValue, operands: values });
+      }
+      if (facetValue === undefined) {
+        // TODO: Assuming Includes by default but this might change to Include|Excludes
+        setFacetValue(field, {
+          operator: "includes",
+          field: field,
+          operands: values,
+        });
+      }
     }
     // no values remove the filter
+    else {
+      clearFilterFunc(field);
+    }
   };
 
-  // const setDateRangeValue = (d: [Date | null, Date | null]) => {
-  //   const data: StringRange = {
-  //     from: convertDateToString(d[0]),
-  //     to: convertDateToString(d[1]),
-  //     fromOp: ">=",
-  //     toOp: "<=",
-  //   };
-  //   const rangeFilters = buildRangeOperator(field, data);
-  //   if (rangeFilters !== undefined) setFacetValue(field, rangeFilters);
-  //   // clear filters as range is empty
-  //   else coreDispatch(removeCohortFilter(field));
-  // };
+  const addValue = (s: string | number) => {
+    if (textValues.includes(s)) return;
+    setTextValue("");
+    setValues([...textValues, s]);
+  };
 
-  const removeButton = (x: string) => {
+  const removeButton = (x: string | number) => {
     return (
       <ActionIcon
         size="xs"
         color="white"
         radius="xl"
         variant="transparent"
-        onClick={() => setValues(values.filter((i) => i !== x))}
+        onClick={() => setValues(textValues.filter((i) => i !== x))}
       >
         <CloseIcon size={10} />
       </ActionIcon>
