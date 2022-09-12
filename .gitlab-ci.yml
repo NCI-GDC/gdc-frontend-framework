@@ -85,7 +85,6 @@ Build core:
 
  Compile portal:
   stage: build
-  needs: ["Build core"]
   script:
     - cd ${CI_PROJECT_DIR}/packages/portal-proto
     - npm run compile
