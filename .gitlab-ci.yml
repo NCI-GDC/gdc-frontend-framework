@@ -93,6 +93,7 @@ Build compile portal:
       paths:
         - node_modules/
         - .npm/
+        - dist/
       policy: pull
     - key: "Built-$CI_COMMIT_REF_SLUG"
       untracked: true
