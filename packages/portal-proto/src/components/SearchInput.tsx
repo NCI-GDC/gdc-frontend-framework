@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, ChangeEvent } from "react";
 import { useRouter } from "next/router";
 import { uniq } from "lodash";
 import tw from "tailwind-styled-components";
@@ -16,7 +16,9 @@ import { SearchResult } from "minisearch";
 const PAGE_SIZE = 5;
 const DivWithHoverCallout = tw.div`
   flex
-  items-center
+  flex-col
+  p-2
+  leading-5
   hover:bg-primary-lightest
   hover:before:w-0
   hover:before:h-0
@@ -70,7 +72,7 @@ export const SearchInput: React.FC = () => {
     setFilteredCategories([]);
 
     const results = searchFacets(e.target.value) as FullResult[];
-    if (results.length == 0) {
+    if (results.length === 0) {
       setSearchResults([]);
     } else {
       setSearchResults(results);
@@ -85,10 +87,16 @@ export const SearchInput: React.FC = () => {
     setDropdownOpen(searchTerm.length > 0);
   }, [searchTerm]);
 
-  const filteredResults = searchResults.filter(
-    (result) =>
-      filteredCategories.length === 0 ||
-      filteredCategories.includes(result.category),
+  const filteredResults = useMemo(
+    () =>
+      searchResults
+        .filter(
+          (result) =>
+            filteredCategories.length === 0 ||
+            filteredCategories.includes(result.category),
+        )
+        .slice(0, PAGE_SIZE * 5),
+    [filteredCategories, searchResults],
   );
 
   const clickResult = (result: FullResult) => {
@@ -112,7 +120,7 @@ export const SearchInput: React.FC = () => {
 
   return (
     <div ref={ref}>
-      <div className="flex items-center justify-between bg-base-max w-[400px] p-1 focus:outline-2 rounded-sm">
+      <div className="flex items-center justify-between bg-base-max w-[400px] p-1 focus:outline-2 rounded-sm border-1">
         <MdSearch size="1.5em" />
         <input
           type="search"
@@ -158,8 +166,8 @@ export const SearchInput: React.FC = () => {
                       <Badge
                         className={
                           selected
-                            ? "text-white bg-primary-darkest capitalize text-sm font-normal"
-                            : "text-primary-darkest border-solid border-primary-darkest capitalize text-sm font-normal"
+                            ? "text-white bg-primary-dark capitalize text-sm font-normal hover: "
+                            : "text-primary-dark border-solid border-primary-dark capitalize text-sm font-normal hover:text-white hover:bg-primary-dark"
                         }
                         color="white"
                         tabIndex={0}
@@ -232,28 +240,25 @@ export const SearchInput: React.FC = () => {
                           }}
                           offset={17}
                         >
-                          <DivWithHoverCallout>
-                            <div
-                              className="p-2 leading-5"
-                              role="button"
-                              tabIndex={0}
-                              onClick={() => clickResult(result)}
-                              onKeyPress={createKeyboardAccessibleFunction(() =>
-                                clickResult(result),
-                              )}
-                            >
-                              <b>
-                                <Highlight
-                                  highlight={searchTerm}
-                                  highlightStyles={{ fontStyle: "italic" }}
-                                >
-                                  {result.name}
-                                </Highlight>
-                              </b>
-                              <span className="text-base-contrast-lighter">
-                                <b>Category:</b> {result.category}
-                              </span>
-                            </div>
+                          <DivWithHoverCallout
+                            role="button"
+                            tabIndex={0}
+                            onClick={() => clickResult(result)}
+                            onKeyPress={createKeyboardAccessibleFunction(() =>
+                              clickResult(result),
+                            )}
+                          >
+                            <b>
+                              <Highlight
+                                highlight={searchTerm}
+                                highlightStyles={{ fontStyle: "italic" }}
+                              >
+                                {result.name}
+                              </Highlight>
+                            </b>
+                            <span className="text-base-content-dark">
+                              <b>Category:</b> {result.category}
+                            </span>
                           </DivWithHoverCallout>
                         </Tooltip>
                         <hr />

@@ -307,7 +307,7 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
   if (rangeLabelsAndValues === undefined) return null;
 
   return (
-    <div className="flex flex-col px-1" id={field}>
+    <div className="flex flex-col px-1">
       {Object.keys(rangeLabelsAndValues).length > 1 ? (
         <>
           <FacetSortPanel
@@ -897,7 +897,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
   };
 
   return (
-    <div>
+    <div id={field}>
       <div
         className={`flex flex-col ${
           width ? width : "mx-1"

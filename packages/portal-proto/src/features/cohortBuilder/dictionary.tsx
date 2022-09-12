@@ -8,8 +8,8 @@ import {
   selectCaseFacets,
   selectFacetDefinition,
 } from "@gff/core";
-import { toDisplayName } from "../cDave/utils";
 import { getFacetInfo } from "@/features/cohortBuilder/utils";
+import { convertFieldToName } from "../facets/utils";
 // TODO: Remove the above JSON config file and replace with the dictionary slice.
 
 export const get_facet_list = (
@@ -67,7 +67,6 @@ export const useFacetSearch = (): MiniSearch<FacetSearchDocument> => {
   );
   const facets =
     useCoreSelector((state) => selectFacetDefinition(state)).data || {};
-
   const facetResults = useCoreSelector((state) => selectCaseFacets(state));
 
   useMemo(() => {
@@ -78,23 +77,25 @@ export const useFacetSearch = (): MiniSearch<FacetSearchDocument> => {
     Object.entries(tabsConfig).forEach(([categoryKey, category]) => {
       getFacetInfo(category.facets, facets).forEach((facet) => {
         const result = facetResults[facet.full];
-        if (result?.status === "fulfilled") {
-          searchDocuments.push({
-            name: toDisplayName(facet.field),
-            enum: Object.keys(result?.buckets),
-            category: category.label,
-            categoryKey,
-            description: facet.description,
-            id: facet.full,
-          });
-        }
+        searchDocuments.push({
+          name: convertFieldToName(facet.full),
+          enum: Object.keys(result?.buckets || {}),
+          category: category.label,
+          categoryKey,
+          description: facet.description,
+          id: facet.full,
+        });
       });
     });
 
     miniSearch.addAll(searchDocuments);
-    // Ignoring `facets`
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tabsConfig, facetResults]);
+    /* eslint-disable react-hooks/exhaustive-deps */
+  }, [
+    JSON.stringify(tabsConfig),
+    JSON.stringify(facetResults),
+    JSON.stringify(facets),
+  ]);
+  /* eslint-enable */
 
   return miniSearch;
 };

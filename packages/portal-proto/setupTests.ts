@@ -1,19 +1,13 @@
 import "@testing-library/jest-dom";
 import { loadEnvConfig } from "@next/env";
 
-class ResizeObserver {
-  observe() {
-    // do nothing.
-  }
-  unobserve() {
-    // do nothing.
-  }
-  disconnect() {
-    // do nothing.
-  }
-}
-
-window.ResizeObserver = ResizeObserver;
+window.ResizeObserver =
+  window.ResizeObserver ||
+  jest.fn().mockImplementation(() => ({
+    disconnect: jest.fn(),
+    observe: jest.fn(),
+    unobserve: jest.fn(),
+  }));
 
 window.URL.createObjectURL = (input: any) => "";
 
