@@ -77,7 +77,7 @@ export const SSMSAffectedCasesAcrossTheGDC = ({
         ) : (
           <>
             <div className={`relative`}>
-              <GeneAffectedCases geneId={row.value}></GeneAffectedCases>
+              {/* <GeneAffectedCases spring={spring} geneId={row.value}></GeneAffectedCases> */}
             </div>
           </>
         )}
@@ -88,7 +88,7 @@ export const SSMSAffectedCasesAcrossTheGDC = ({
   );
 };
 
-export const createTableColumn = (key: string) => {
+export const createTableColumn = (key: string, spring: any, width: number) => {
   switch (key) {
     case "SSMSAffectedCasesAcrossTheGDC":
       return {
@@ -115,6 +115,8 @@ export const createTableColumn = (key: string) => {
                       <div className={`relative`}>
                         <GeneAffectedCases
                           geneId={row.value}
+                          spring={spring}
+                          width={width}
                         ></GeneAffectedCases>
                       </div>
                     </>
@@ -173,13 +175,13 @@ export const getGene = (
             cases
           ).toFixed(2)}%)`
         : `0`,
-    symbol: g.symbol,
-    name: g.name,
     // survival: {
     //     name: g.name,
     //     symbol: g.symbol,
     //     checked: g.symbol == selectedSurvivalPlot?.symbol,
     // },
+    symbol: g.symbol,
+    name: g.name,
     SSMSAffectedCasesInCohort:
       g.cnv_case > 0
         ? `${g.cnv_case + " / " + filteredCases} (${(

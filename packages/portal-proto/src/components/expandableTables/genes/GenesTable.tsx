@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
+import { useSpring, animated, config, easings } from "react-spring";
 import { Gene, GeneSubRow, GenesTableProps } from "./types";
 import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { ExpTable } from "../shared/ExpTable";
@@ -14,6 +15,7 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
   cases,
   selectedSurvivalPlot,
   handleSurvivalPlotToggled,
+  width,
 }: GenesTableProps) => {
   const [expanded, setExpanded] = useState<ExpandedState>({});
   const [selectedGenes, setSelectedGenes] = useState<any>({}); // todo: add type
@@ -38,13 +40,33 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
 
   const transformResponse = useGeneTableFormat(initialData);
 
+  const verticalSpring = useSpring({
+    from: {
+      height: 0,
+      width: 10,
+    },
+    to: {
+      height: 600,
+      width: 10,
+    },
+    config: {
+      mass: 1,
+      tension: 200,
+      friction: 14,
+      duration: 2000,
+      easing: easings.easeInOutQuart,
+    },
+  });
+
   // todo replace this callback w/ transformResponse inside rtk endpoint call
 
   const columns = React.useMemo<ColumnDef<GenesColumns>[]>(
     () =>
-      Object.keys(transformResponse[0]).map((accessor) => {
-        return createTableColumn(accessor);
-      }),
+      Object.keys(transformResponse[0])
+        .filter((tr) => tr !== "subRows")
+        .map((accessor) => {
+          return createTableColumn(accessor, verticalSpring, width);
+        }),
     [transformResponse, expanded],
   );
 

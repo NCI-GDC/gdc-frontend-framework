@@ -47,6 +47,7 @@ export const GTableContainer: React.VFC<GTableContainerProps> = ({
             cases={data.genes.cases}
             selectedSurvivalPlot={selectedSurvivalPlot}
             handleSurvivalPlotToggled={handleSurvivalPlotToggled}
+            width={width}
           />
         )}
     </div>

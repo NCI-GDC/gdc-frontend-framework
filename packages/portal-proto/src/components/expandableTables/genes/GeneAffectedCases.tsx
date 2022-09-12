@@ -1,7 +1,6 @@
-import { useState, useRef, useEffect } from "react";
-import { useMeasure } from "react-use";
+import { useState, useEffect } from "react";
+import { animated, useSpring, config } from "react-spring";
 import { GeneSubRow } from "./types";
-import { get } from "lodash";
 
 export const convertGeneFilter = (geneId: string) => {
   return {
@@ -27,11 +26,23 @@ export const convertGeneFilter = (geneId: string) => {
 
 export const GeneAffectedCases: React.VFC<GeneSubRow> = ({
   geneId,
+  spring,
+  width,
 }: GeneSubRow) => {
   const [subData, setSubData] = useState([]);
-  const [ref, { height, width }] = useMeasure();
+  // const [ref, { height, width }] = useMeasure();
   const [containerHeight, setContainerHeight] = useState(undefined);
-  const [adjustedWidth, setAdjustedWidth] = useState("w-full");
+
+  useEffect(() => {
+    console.log("hi prop width", width);
+    console.log("hmm?", `w-[${width.toString()}px]`);
+  }, [width]);
+
+  const horizontalSpring = useSpring({
+    from: { width: 0, opacity: 0 },
+    to: { width: width, opacity: 1 },
+    config: config.molasses,
+  });
 
   const getGeneSubRow = (geneId: string) => {
     fetch("https://api.gdc.cancer.gov/v0/graphql", {
@@ -72,13 +83,13 @@ export const GeneAffectedCases: React.VFC<GeneSubRow> = ({
     getGeneSubRow(geneId);
   }, []);
 
+  //className={`flex flex-wrap bg-gray-200 absolute w-screen `}
+
   return (
     <>
-      <div
-        ref={ref}
-        className={`flex flex-wrap bg-gray-200 absolute w-screen ${
-          containerHeight ? "w-screen" : `hidden ${adjustedWidth}`
-        }`}
+      <animated.div
+        className={`flex flex-wrap bg-gray-200 absolute`}
+        style={horizontalSpring}
       >
         {subData.map((t, key) => {
           return (
@@ -90,12 +101,14 @@ export const GeneAffectedCases: React.VFC<GeneSubRow> = ({
             </>
           );
         })}
-      </div>
+      </animated.div>
       {/* relative div's height below is derived from the absolute div's height above
         this is to displace the rest of the table when in expanded state
      */}
-      {/* update height here */}
-      <div className={`relative`}></div>
+      <animated.div style={spring}></animated.div>
     </>
   );
 };
+
+// style={verticalSpring}
+//
