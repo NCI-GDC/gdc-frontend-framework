@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import {
   GdcFile,
   HistoryDefaults,
-  Modals,
+  useCoreDispatch,
   useCoreSelector,
+  selectCart,
+  Modals,
   selectCurrentModal,
 } from "@gff/core";
 import ReactModal from "react-modal";
@@ -15,9 +17,15 @@ import dynamic from "next/dynamic";
 import fileSize from "filesize";
 import tw from "tailwind-styled-components";
 import { AddToCartButton } from "../cart/updateCart";
-import { formatDataForHorizontalTable, parseSlideDetailsInfo } from "./utils";
+import {
+  formatDataForHorizontalTable,
+  mapGdcFileToCartFile,
+  parseSlideDetailsInfo,
+} from "./utils";
 import Link from "next/link";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
+import { allFilesInCart } from "src/utils";
+import { addToCart, removeFromCart } from "@/features/cart/updateCart";
 import { BAMSlicingModal } from "@/components/Modals/BAMSlicingModal/BAMSlicingModal";
 import { BAMSlicingErrorModal } from "@/components/Modals/BAMSlicingModal/BAMSlicingErrorModal";
 import { NoAccessToProjectModal } from "@/components/Modals/NoAccessToProjectModal";
@@ -98,6 +106,9 @@ export const FileView: React.FC<FileViewProps> = ({
   file,
   fileHistory,
 }: FileViewProps) => {
+  const currentCart = useCoreSelector((state) => selectCart(state));
+  const dispatch = useCoreDispatch();
+
   const [imageId] = useState(file?.fileId);
   const modal = useCoreSelector((state) => selectCurrentModal(state));
 
@@ -132,6 +143,7 @@ export const FileView: React.FC<FileViewProps> = ({
     downstream_analyses?.forEach((byWorkflowType) => {
       const workflowType = byWorkflowType?.workflow_type;
       byWorkflowType?.output_files?.forEach((obj) => {
+        // const isFileInCart = allFilesInCart(currentCart, [obj]);
         tableRows.push({
           file_name: (
             <GenericLink path={`/files/${obj.file_id}`} text={obj.file_name} />
@@ -143,7 +155,11 @@ export const FileView: React.FC<FileViewProps> = ({
           file_size: fileSize(obj.file_size),
           action: (
             <div className="flex gap-3">
-              <DownloadButton onClick={() => {}}>
+              <DownloadButton
+                onClick={() => {
+                  addToCart([file], currentCart, dispatch);
+                }}
+              >
                 <FaShoppingCart title="Add to Cart" />
               </DownloadButton>
               <DownloadButton>

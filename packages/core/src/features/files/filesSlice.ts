@@ -529,6 +529,7 @@ const slice = createSlice({
     builder
       .addCase(fetchFiles.fulfilled, (state, action) => {
         const response = action.payload;
+        console.log("response: ", response);
         if (response.warnings && Object.keys(response.warnings).length > 0) {
           state.files = [];
           state.status = "rejected";
