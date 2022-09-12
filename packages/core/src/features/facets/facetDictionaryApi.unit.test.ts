@@ -154,14 +154,6 @@ describe("facet label utils", () => {
     expect(results).toEqual("Age is Obfuscated");
   });
 
-  test("should create a longer facet title", () => {
-    const results = trimFirstFieldNameToTitle(
-      "cases.demographic.cause_of_death",
-      true,
-    );
-    expect(results).toEqual("Demographic Cause of Death");
-  });
-
   test("should create a title minus cases", () => {
     const results = trimFirstFieldNameToTitle(
       "cases.demographic.cause_of_death",

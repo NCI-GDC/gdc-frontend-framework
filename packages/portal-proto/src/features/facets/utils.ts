@@ -101,14 +101,6 @@ export const extractRangeValues = <T extends string | number>(
   if (filter !== undefined) {
     switch (filter.operator) {
       case ">":
-        return {
-          from:
-            typeof filter.operand === "number" ||
-            typeof filter.operand === "string"
-              ? (filter.operand as T)
-              : undefined,
-          fromOp: filter.operator,
-        };
       case ">=":
         return {
           from:
@@ -119,14 +111,6 @@ export const extractRangeValues = <T extends string | number>(
           fromOp: filter.operator,
         };
       case "<":
-        return {
-          to:
-            typeof filter.operand === "number" ||
-            typeof filter.operand === "string"
-              ? (filter.operand as T)
-              : undefined,
-          toOp: filter.operator,
-        };
       case "<=":
         return {
           to:

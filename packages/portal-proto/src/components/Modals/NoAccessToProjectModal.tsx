@@ -1,9 +1,8 @@
 import { hideModal, useCoreDispatch } from "@gff/core";
 import { Button, Text } from "@mantine/core";
-import { LoginButton } from "../LoginButton";
 import { BaseModal } from "./BaseModal";
 
-export const SessionExpireModal = ({
+export const NoAccessToProjectModal = ({
   openModal,
 }: {
   openModal: boolean;
@@ -13,27 +12,34 @@ export const SessionExpireModal = ({
     <BaseModal
       title={
         <Text size="lg" className="font-medium">
-          Session Expired
+          Access Alert
         </Text>
       }
-      closeButtonLabel="Cancel"
+      closeButtonLabel="Close"
       openModal={openModal}
     >
-      <div className="border-y border-y-base p-4">
-        <Text size="sm"> Your session has expired.</Text>
-        <div className="flex content-center">
-          <Text size="sm" className="mt-1">
-            Please
-          </Text>{" "}
-          <LoginButton fromSession />
-        </div>
+      <div className="border-y border-y-base-darker p-4">
+        <Text size="sm"> You don&apos;t have access to this file.</Text>
+
+        <Text size="sm">
+          Please request dbGaP access to the project{" ("}
+          <a
+            href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
+            target="_blank"
+            rel="noreferrer"
+            className="text-utility-link underline"
+          >
+            click here for more information
+          </a>
+          ).
+        </Text>
       </div>
       <div className="flex justify-end mt-2.5">
         <Button
           onClick={() => dispatch(hideModal())}
           className="!bg-primary hover:!bg-primary-darker"
         >
-          Cancel
+          Close
         </Button>
       </div>
     </BaseModal>
