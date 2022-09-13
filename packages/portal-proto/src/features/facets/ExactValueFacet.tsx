@@ -61,7 +61,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
       : coreDispatch(removeCohortFilter(field));
   }, [clearFilterFunc, coreDispatch, field]);
 
-  const [textValue, setTextValue] = useState(undefined); // Handle the state of the TextInput
+  const [textValue, setTextValue] = useState(""); // Handle the state of the TextInput
 
   const facetTitle = facetName
     ? facetName
@@ -157,20 +157,20 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
           size="xs"
           placeholder={`Enter ${facetTitle}`}
           classNames={{ input: "border-r-0 rounded-r-none py-1" }}
-          aria-label="Enter value to add to filter"
+          aria-label="enter value to add filter"
           value={textValue}
           onChange={(event) => setTextValue(event.currentTarget.value)}
         ></TextInput>
         <ActionIcon
           size="md"
           aria-label="add string value"
-          className="bg-accent text-accent-contrast border-base-min border-1 rounded-l-none"
+          className="bg-accent text-accent-contrast border-base-min border-1 rounded-l-none h-[30px]"
           onClick={() => addValue(textValue)}
         >
           <PlusIcon />
         </ActionIcon>
       </div>
-      <Group spacing="xs" className="px-2 py-1">
+      <Group spacing="xs" className="px-2 py-1" data-testid="values group">
         {textValues.map((x) => (
           <Badge
             size="sm"
@@ -178,7 +178,6 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
             color="accent"
             key={x}
             rightSection={removeButton(x)}
-            arial-label="value in filter"
           >
             {x}
           </Badge>
