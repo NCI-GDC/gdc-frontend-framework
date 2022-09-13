@@ -24,7 +24,7 @@ import {
 import { FaUndo as UndoIcon } from "react-icons/fa";
 import { EnumFacetCardProps } from "@/features/facets/types";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
-import { Checkbox, LoadingOverlay, Tooltip } from "@mantine/core";
+import { ActionIcon, Checkbox, LoadingOverlay, Tooltip } from "@mantine/core";
 import { isEqual } from "lodash";
 import { FacetIconButton, controlsIconStyle } from "./components";
 import FacetExpander from "@/features/facets/FacetExpander";
@@ -68,6 +68,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
 }: EnumFacetCardProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const [isSortedByValue, setIsSortedByValue] = useState(false);
   const [isFacetView, setIsFacetView] = useState(startShowingData);
   const [visibleItems, setVisibleItems] = useState(DEFAULT_VISIBLE_ITEMS);
@@ -150,7 +151,17 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
     setIsFacetView(!isFacetView);
   };
 
-  const remainingValues = total - maxValuesToDisplay;
+  const filteredData = data
+    ? Object.entries(data)
+        .filter((entry) => entry[0] != "_missing" && entry[0] != "")
+        .filter((entry) =>
+          searchTerm === ""
+            ? entry
+            : entry[0].toLowerCase().includes(searchTerm.toLowerCase()),
+        )
+    : [];
+
+  const remainingValues = filteredData.length - maxValuesToDisplay;
   const cardHeight =
     remainingValues > 16
       ? 96
@@ -173,10 +184,9 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
     ? Math.min(16, totalNumberOfBars)
     : Math.min(maxValuesToDisplay, totalNumberOfBars);
 
-  const sortedData = data
+  const sortedData = filteredData
     ? Object.fromEntries(
-        Object.entries(data)
-          .filter((entry) => entry[0] != "_missing" && entry[0] != "")
+        filteredData
           .sort(
             isSortedByValue
               ? ([, a], [, b]) => b - a
@@ -219,9 +229,32 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
           </Tooltip>
           <div className="flex flex-row">
             {showSearch ? (
-              <FacetIconButton onClick={toggleSearch} aria-label="Search">
-                <SearchIcon size="1.45em" className={controlsIconStyle} />
-              </FacetIconButton>
+              <>
+                {isSearching && (
+                  <div
+                    className="flex items-center bg-base-max focus-within:outline focus-within:outline-2 focus-within:outline-primary rounded-sm border-1 border-solid"
+                    tabIndex={0}
+                  >
+                    <input
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="border-none focus:outline-0"
+                    ></input>
+                    {searchTerm.length > 0 && (
+                      <ActionIcon
+                        onClick={() => {
+                          setSearchTerm("");
+                        }}
+                      >
+                        <CloseIcon />
+                      </ActionIcon>
+                    )}
+                  </div>
+                )}
+                <FacetIconButton onClick={toggleSearch} aria-label="Search">
+                  <SearchIcon size="1.45em" className={controlsIconStyle} />
+                </FacetIconButton>
+              </>
             ) : null}
             {showFlip ? (
               <FacetIconButton
