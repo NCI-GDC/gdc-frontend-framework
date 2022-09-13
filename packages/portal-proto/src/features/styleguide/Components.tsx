@@ -4,7 +4,7 @@ import { Divider } from "@mantine/core";
 import { EnumFacet } from "../facets/EnumFacet";
 import NumericRangeFacet from "../facets/NumericRangeFacet";
 import DateRangeFacet from "../facets/DateRangeFacet";
-import ExactValueFacet from "../facets/DateRangeFacet";
+import ExactValueFacet from "../facets/ExactValueFacet";
 import GenesTable from "../genesTable/GenesTable";
 import {
   selectFieldValue,

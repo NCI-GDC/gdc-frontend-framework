@@ -156,7 +156,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
         <TextInput
           size="xs"
           placeholder={`Enter ${facetTitle}`}
-          classNames={{ input: "border-r-0 rounded-r-none py-1" }}
+          classNames={{ root: "grow", input: "border-r-0 rounded-r-none py-1" }}
           aria-label="enter value to add filter"
           value={textValue}
           onChange={(event) => setTextValue(event.currentTarget.value)}
