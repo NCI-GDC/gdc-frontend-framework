@@ -5,10 +5,11 @@ import { EnumFacet } from "../facets/EnumFacet";
 import NumericRangeFacet from "../facets/NumericRangeFacet";
 import DateRangeFacet from "../facets/DateRangeFacet";
 import ExactValueFacet from "../facets/ExactValueFacet";
+import SwitchFacet from "../facets/SwitchFacet";
 import GenesTable from "../genesTable/GenesTable";
 import {
-  selectFieldValue,
-  dispatchFieldValue,
+  selectFieldFilter,
+  dispatchFieldFilter,
   clearFilters,
 } from "../facets/hooks";
 import { partial } from "lodash";
@@ -22,6 +23,15 @@ const Components: ReactNode = () => {
   return (
     <div className="flex flex-col font-montserrat text-primary-content w-100">
       <p className="prose font-medium text-2xl">UI Components</p>
+
+      <SwitchFacet
+        docType="files"
+        field="files.analysis.input_files.created_datetime"
+        width="w-1/3"
+        getFacetValue={partial(selectFieldFilter, coreSelector)}
+        setFacetValue={partial(dispatchFieldFilter, coreDispatch)}
+        clearFilterFunc={partial(clearFilters, coreDispatch)}
+      />
 
       <Divider label="Enumeration Facet" classNames={divider_style} />
       <EnumFacet docType="cases" field="primary_site" width="w-1/2" />
@@ -44,8 +54,8 @@ const Components: ReactNode = () => {
         docType="files"
         field="files.analysis.input_files.created_datetime"
         width="w-1/3"
-        getFacetValue={partial(selectFieldValue, coreSelector)}
-        setFacetValue={partial(dispatchFieldValue, coreDispatch)}
+        getFacetValue={partial(selectFieldFilter, coreSelector)}
+        setFacetValue={partial(dispatchFieldFilter, coreDispatch)}
         clearFilterFunc={partial(clearFilters, coreDispatch)}
       />
       <Divider label="Percent Range Facet" classNames={divider_style} />
@@ -61,8 +71,8 @@ const Components: ReactNode = () => {
         docType="cases"
         field="cases.diagnoses.annotations.case_id"
         width="w-1/3"
-        getFacetValue={partial(selectFieldValue, coreSelector)}
-        setFacetValue={partial(dispatchFieldValue, coreDispatch)}
+        getFacetValue={partial(selectFieldFilter, coreSelector)}
+        setFacetValue={partial(dispatchFieldFilter, coreDispatch)}
         clearFilterFunc={partial(clearFilters, coreDispatch)}
       />
       <Divider label="Genes Table" classNames={divider_style} />

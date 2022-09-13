@@ -19,8 +19,9 @@ export interface EnumFacetResponse extends FacetResponse {
 }
 
 export type GetFacetDataFunction = (field: string) => FacetResponse;
-export type SelectFacetValueFunction = (field: string) => Operation;
-export type UpdateFacetValueFunction = (field: string, op: Operation) => void;
+export type GetFacetEnumDataFunction = (field: string) => EnumFacetResponse;
+export type SelectFacetFilterFunction = (field: string) => Operation;
+export type UpdateFacetFilterFunction = (field: string, op: Operation) => void;
 export type ClearFacetFunction = (field: string) => void;
 
 export interface FacetCardProps {

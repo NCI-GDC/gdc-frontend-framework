@@ -77,7 +77,7 @@ const useGenomicFilterByName = (field: string): OperandValue => {
 /**
  *  Facet Selector using GQL which will refresh when filters/enum values changes.
  */
-export const useCasesFacet = (
+export const useEnumFacet = (
   field: string,
   docType: GQLDocType,
   indexType: GQLIndexType,
@@ -131,7 +131,8 @@ export const useCasesFacet = (
 };
 
 /**
- * Genes Facet Selector using GQL
+ * Genes Facet Selector using GQL. it combines the Cohort with Gene Filters
+ * to get data for the current cohort and genes filters
  */
 const useGenesFacet = (
   field: string,
@@ -363,7 +364,7 @@ export const useRangeFacet = (
 };
 
 // Global Selector for Facet Values
-export const selectFieldValue = (
+export const selectFieldFilter = (
   selector: TypedUseSelectorHook<CoreState>,
   field: string,
 ): Operation => {
@@ -371,8 +372,8 @@ export const selectFieldValue = (
   return selector((state) => selectCurrentCohortFiltersByName(state, field));
 };
 
-// Core Facet Values Dispatcher
-export const dispatchFieldValue = (
+// Update Core Facet Filter
+export const dispatchFieldFilter = (
   dispatch: CoreDispatch,
   field: string,
   operation: Operation,
@@ -394,8 +395,8 @@ export const UpdateEnums = {
 };
 
 export const FacetEnumHooks = {
-  cases: useCasesFacet,
-  files: useCasesFacet,
+  cases: useEnumFacet,
+  files: useEnumFacet,
   genes: useGenesFacet,
   ssms: useMutationsFacet,
 };
