@@ -11,6 +11,7 @@ import {
   useCoreSelector,
   useFacetDictionary,
   usePrevious,
+  fieldNameToTitle,
 } from "@gff/core";
 import {
   useAppSelector,
@@ -39,7 +40,6 @@ import {
   removeRepositoryFilter,
   clearRepositoryFilters,
 } from "./repositoryFiltersSlice";
-import { convertFieldToName } from "@/features/facets/utils";
 
 const useRepositoryEnumData = (
   field: string,
@@ -170,7 +170,7 @@ export const FileFacetPanel = (): JSX.Element => {
         <LoadingOverlay visible={!isDictionaryReady} />
         {facetDefinitions.map((x, index) => {
           const isDefault = getDefaultFacets().includes(x.full);
-          const facetName = convertFieldToName(x.full, isDefault ? 1 : 2);
+          const facetName = fieldNameToTitle(x.full, isDefault ? 1 : 2);
           return (
             // TODO: add other facet types when available
             <EnumFacet

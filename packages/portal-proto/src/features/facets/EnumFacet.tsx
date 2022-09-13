@@ -6,6 +6,7 @@ import {
   usePrevious,
   removeCohortFilter,
   EnumOperandValue,
+  fieldNameToTitle,
 } from "@gff/core";
 import {
   FacetDocTypeToCountsIndexMap,
@@ -13,7 +14,7 @@ import {
   FacetEnumHooks,
   UpdateEnums,
 } from "./hooks";
-import { DEFAULT_VISIBLE_ITEMS, convertFieldToName } from "./utils";
+import { DEFAULT_VISIBLE_ITEMS } from "./utils";
 
 import {
   MdFlip as FlipIcon,
@@ -42,7 +43,7 @@ import FacetSortPanel from "@/features/facets/FacetSortPanel";
  * @param startShowingData set = false to show the chart by default
  * @param showPercent show the percentage
  * @param hideIfEmpty if facet has no data, do not render
- * @param dismissCallback if facet can be removed, supply a function which will ensure the dismiss control will be visible
+ * @param dismissCallback if facet can be removed, supply a function which will ensure the "dismiss" control will be visible
  * @param width set the width of the facet
  * @param facetDataFunc function to pull enumerated data with
  * @param updateEnumsFunc function to extract enumeration values (used to set checkboxes)
@@ -213,7 +214,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
             transitionDuration={200}
           >
             <div className="text-primary-contrast-lighter font-heading font-semibold text-md">
-              {facetName === null ? convertFieldToName(field) : facetName}
+              {facetName ? facetName : fieldNameToTitle(field)}
             </div>
           </Tooltip>
           <div className="flex flex-row">

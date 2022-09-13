@@ -28,25 +28,25 @@ export interface NotEquals {
 export interface LessThan {
   readonly operator: "<";
   readonly field: string;
-  readonly operand: number;
+  readonly operand: string | number;
 }
 
 export interface LessThanOrEquals {
   readonly operator: "<=";
   readonly field: string;
-  readonly operand: number;
+  readonly operand: string | number;
 }
 
 export interface GreaterThan {
   readonly operator: ">";
   readonly field: string;
-  readonly operand: number;
+  readonly operand: string | number;
 }
 
 export interface GreaterThanOrEquals {
   readonly operator: ">=";
   readonly field: string;
-  readonly operand: number;
+  readonly operand: string | number;
 }
 
 export interface Missing {
@@ -178,7 +178,7 @@ export interface GqlLessThan {
   readonly op: "<";
   readonly content: {
     readonly field: string;
-    readonly value: number;
+    readonly value: string | number;
   };
 }
 
@@ -186,7 +186,7 @@ export interface GqlLessThanOrEquals {
   readonly op: "<=";
   readonly content: {
     readonly field: string;
-    readonly value: number;
+    readonly value: string | number;
   };
 }
 
@@ -194,7 +194,7 @@ export interface GqlGreaterThan {
   readonly op: ">";
   readonly content: {
     readonly field: string;
-    readonly value: number;
+    readonly value: string | number;
   };
 }
 
@@ -202,7 +202,7 @@ export interface GqlGreaterThanOrEquals {
   readonly op: ">=";
   readonly content: {
     readonly field: string;
-    readonly value: number;
+    readonly value: string | number;
   };
 }
 
