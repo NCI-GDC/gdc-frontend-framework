@@ -1,5 +1,8 @@
 import { GeneAffectedCases } from "./GeneAffectedCases";
+import SpringToggle from "../shared/SpringToggle";
+import { MdKeyboardArrowDown } from "react-icons/md";
 import _ from "lodash";
+import { ExpandedState } from "@tanstack/table-core";
 
 interface SingleGene {
   biotype: string;
@@ -55,40 +58,15 @@ export const GTableCell = ({
   );
 };
 
-export const SSMSAffectedCasesAcrossTheGDC = ({
-  row,
-  twStyles,
-}: {
-  row: any;
-  twStyles: string;
-}): JSX.Element => {
-  return (
-    <div className={twStyles}>
-      <>
-        {row.getCanExpand() ? (
-          <button
-            {...{
-              onClick: row.getToggleExpandedHandler(),
-              style: { cursor: "pointer" },
-            }}
-          >
-            {row.getIsExpanded() ? "👇" : "👉"}
-          </button>
-        ) : (
-          <>
-            <div className={`relative`}>
-              {/* <GeneAffectedCases spring={spring} geneId={row.value}></GeneAffectedCases> */}
-            </div>
-          </>
-        )}
-        {""}
-        {}
-      </>
-    </div>
-  );
-};
-
-export const createTableColumn = (key: string, spring: any, width: number) => {
+export const createTableColumn = (
+  key: string,
+  spring: any,
+  width: number,
+  expanded: ExpandedState,
+  height: number,
+) => {
+  console.log("expanded", expanded);
+  console.log("height", height);
   switch (key) {
     case "SSMSAffectedCasesAcrossTheGDC":
       return {
@@ -108,7 +86,13 @@ export const createTableColumn = (key: string, spring: any, width: number) => {
                         style: { cursor: "pointer" },
                       }}
                     >
-                      {row.getIsExpanded() ? "👇" : "👉"}
+                      <SpringToggle
+                        isExpanded={row.getIsExpanded()}
+                        icon={
+                          <MdKeyboardArrowDown size="small" color="white" />
+                        }
+                        twStyles={`bg-red-500 rounded-md h-3 w-3`}
+                      />
                     </button>
                   ) : (
                     <>
@@ -117,6 +101,7 @@ export const createTableColumn = (key: string, spring: any, width: number) => {
                           geneId={row.value}
                           spring={spring}
                           width={width}
+                          height={height}
                         ></GeneAffectedCases>
                       </div>
                     </>

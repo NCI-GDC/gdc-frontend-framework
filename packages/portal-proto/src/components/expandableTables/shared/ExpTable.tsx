@@ -7,6 +7,7 @@ import {
   getExpandedRowModel,
   ColumnDef,
   flexRender,
+  resetExpanded,
 } from "@tanstack/react-table";
 
 export interface ExpTableProps<TData> {
@@ -29,7 +30,8 @@ export const ExpTable: React.VFC<ExpTableProps> = ({
     state: {
       expanded,
     },
-    onExpandedChange: handleExpanded,
+    manualExpanding: true,
+    // onExpandedChange: () => handleExpanded,
     getSubRows: (row) => row.subRows,
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
@@ -78,9 +80,9 @@ export const ExpTable: React.VFC<ExpTableProps> = ({
           })}
         </tbody>
       </table>
-      <div onClick={() => console.log("expanded", expanded)}>
+      {/* <div onClick={() => console.log("expanded", expanded)}>
         {table.getRowModel().rows.length} Rows
-      </div>
+      </div> */}
     </div>
   );
 };

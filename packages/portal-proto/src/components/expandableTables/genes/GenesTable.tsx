@@ -1,4 +1,10 @@
-import React, { useState, useMemo, useEffect, useCallback } from "react";
+import React, {
+  useState,
+  useMemo,
+  useEffect,
+  useCallback,
+  SyntheticEvent,
+} from "react";
 import { useSpring, animated, config, easings } from "react-spring";
 import { Gene, GeneSubRow, GenesTableProps } from "./types";
 import { ExpandedState, ColumnDef } from "@tanstack/react-table";
@@ -16,12 +22,14 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
   selectedSurvivalPlot,
   handleSurvivalPlotToggled,
   width,
+  height,
 }: GenesTableProps) => {
   const [expanded, setExpanded] = useState<ExpandedState>({});
   const [selectedGenes, setSelectedGenes] = useState<any>({}); // todo: add type
   const [search, setSearch] = useState("");
   const [columnListOrder, setColumnListOrder] = useState<string[]>([]);
   const [showColumnMenu, setShowColumnMenu] = useState<boolean>(false);
+  const [subRowListLength, setSubRowListLength] = useState<number>(0);
 
   const useGeneTableFormat = useCallback(
     (initialData) => {
@@ -38,24 +46,31 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
     [selectedSurvivalPlot],
   );
 
+  useEffect(() => {
+    console.log("wasgood width", width);
+  }, [width]);
+
   const transformResponse = useGeneTableFormat(initialData);
 
   const verticalSpring = useSpring({
     from: {
-      height: 0,
+      height: 30,
       width: 10,
+      opacity: 0,
     },
     to: {
-      height: 600,
+      height: subRowListLength === 0 ? 650 : subRowListLength * 9.1,
       width: 10,
+      opacity: 1,
     },
-    config: {
-      mass: 1,
-      tension: 200,
-      friction: 14,
-      duration: 2000,
-      easing: easings.easeInOutQuart,
-    },
+    config: config.slow,
+    // config: {
+    //   mass: 2,
+    //   tension: 200,
+    //   friction: 5,
+    //   duration: 2000,
+    //   easing: easings.easeInOutQuart,
+    // },
   });
 
   // todo replace this callback w/ transformResponse inside rtk endpoint call
@@ -65,7 +80,13 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
       Object.keys(transformResponse[0])
         .filter((tr) => tr !== "subRows")
         .map((accessor) => {
-          return createTableColumn(accessor, verticalSpring, width);
+          return createTableColumn(
+            accessor,
+            verticalSpring,
+            width,
+            expanded,
+            height,
+          );
         }),
     [transformResponse, expanded],
   );
@@ -89,12 +110,24 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
     //setSelectedGenes(rowUpdate)
   };
 
-  const handleExpanded = (exp: ExpandedState) => {
+  const handleExpanded = (expanded: ExpandedState) => {
+    console.log("expanded", expanded);
     // onclick: setExpanded(exp)
+    // console.log('event.target', event.target);
+    // console.log('before', expanded);
+    // console.log('previous key', Object.keys(expanded));
+    // if (expanded === {}) {
+    //     console.log('expanded is empty for now')
+    // }
+    // if (expanded !== {}) {
+    //     console.log('expanded isnt empty')
+    // }
+    // console.log('expfunc', exp);
+    // console.log(typeof exp);
+    setExpanded(expanded);
     // pageSize, sort change: do nothing
     // page change, search filter: reset/setExpanded({})
     // console.log("exp state", exp);
-    setExpanded(exp);
   };
 
   const handleGeneSave = (gene: Gene) => {

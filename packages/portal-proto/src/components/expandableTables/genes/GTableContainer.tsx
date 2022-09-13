@@ -22,7 +22,7 @@ export const GTableContainer: React.VFC<GTableContainerProps> = ({
   const [pageSize, setPageSize] = useState(10);
   const [offset, setOffset] = useState(0);
   const [sorts, setSorts] = useState([]);
-  const [ref, { width }] = useMeasure();
+  const [ref, { width, height }] = useMeasure();
 
   const { data, isFetching } = useGenesTable({
     pageSize: pageSize,
@@ -35,7 +35,7 @@ export const GTableContainer: React.VFC<GTableContainerProps> = ({
   // });
 
   return (
-    <div ref={ref} className={`w-9/12`}>
+    <div ref={ref} className={`w-10/12 h-full`}>
       {data?.status === "fulfilled" &&
         data?.genes?.mutationCounts &&
         data?.genes?.filteredCases &&
@@ -48,6 +48,7 @@ export const GTableContainer: React.VFC<GTableContainerProps> = ({
             selectedSurvivalPlot={selectedSurvivalPlot}
             handleSurvivalPlotToggled={handleSurvivalPlotToggled}
             width={width}
+            height={height}
           />
         )}
     </div>

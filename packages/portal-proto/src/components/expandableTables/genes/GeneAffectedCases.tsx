@@ -28,15 +28,9 @@ export const GeneAffectedCases: React.VFC<GeneSubRow> = ({
   geneId,
   spring,
   width,
+  height,
 }: GeneSubRow) => {
   const [subData, setSubData] = useState([]);
-  // const [ref, { height, width }] = useMeasure();
-  const [containerHeight, setContainerHeight] = useState(undefined);
-
-  useEffect(() => {
-    console.log("hi prop width", width);
-    console.log("hmm?", `w-[${width.toString()}px]`);
-  }, [width]);
 
   const horizontalSpring = useSpring({
     from: { width: 0, opacity: 0 },
@@ -82,22 +76,34 @@ export const GeneAffectedCases: React.VFC<GeneSubRow> = ({
   useEffect(() => {
     getGeneSubRow(geneId);
   }, []);
-
   //className={`flex flex-wrap bg-gray-200 absolute w-screen `}
 
   return (
     <>
       <animated.div
-        className={`flex flex-wrap bg-gray-200 absolute`}
+        className={`flex flex-wrap bg-white absolute mt-5`}
         style={horizontalSpring}
       >
         {subData.map((t, key) => {
           return (
             <>
-              <div key={`key-${key}`} className={`p-2 text-xs`}>
-                <span className="font-bold">{t.key}</span>: {t.doc_count} / 9999
+              <ul key={`key-${key}`} className={`p-2 text-xs list-disc `}>
+                <li className={`text-red-500 pr-1`}>
+                  <span className={`font-medium text-black`}>{t.key}</span>:{" "}
+                  <span
+                    className={`text-blue-500 underline hover:cursor-pointer font-medium`}
+                  >
+                    {t.doc_count}
+                  </span>
+                  <span className={`text-black`}> / </span>
+                  <span
+                    className={`text-blue-500 underline hover:cursor-pointer font-medium`}
+                  >
+                    9999
+                  </span>
+                </li>
                 ({(t.doc_count / 9999).toFixed(2)}%)
-              </div>
+              </ul>
             </>
           );
         })}

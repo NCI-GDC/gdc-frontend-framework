@@ -16,6 +16,7 @@ export interface GeneSubRow {
   geneId: string;
   spring: any;
   width: number;
+  height: number;
 }
 
 export interface GenesTableProps {
@@ -26,6 +27,7 @@ export interface GenesTableProps {
   readonly cases: number;
   readonly selectedSurvivalPlot: Record<string, string>;
   width: number;
+  height: number;
   readonly handleSurvivalPlotToggled: (
     symbol: string,
     name: string,

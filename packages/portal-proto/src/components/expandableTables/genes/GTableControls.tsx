@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { NativeSelect } from "@mantine/core";
-import {
-  MdArrowDropDown as DropDownIcon,
-  MdSearch as SearchIcon,
-} from "react-icons/md";
+// import {
+//   MdArrowDropDown as DropDownIcon,
+//   MdSearch as SearchIcon,
+// } from "react-icons/md";
 import { GENE_SET_OPTIONS } from "./types";
 import { Button } from "@mantine/core";
 
