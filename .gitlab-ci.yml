@@ -5,6 +5,12 @@ include:
     ref: master
     file:
       - templates/global/full.yaml
+      - templates/deployments/salt-service.yaml
+
+.services:
+  parallel:
+    matrix:
+      - DEPLOY_SERVICE_LIST: [ portal2 ]
 
 stages:
   - .pre
@@ -17,6 +23,7 @@ image: docker.osdc.io/node:16-alpine3.15
 variables:
   npm_config_registry: https://nexus.osdc.io/repository/npm-all/
   npm_config_cache: .npm
+  DEPLOY_SERVICE_TAG: ${CI_COMMIT_BRANCH}-${CI_COMMIT_TAG}
 
 Install npm packages:
   stage: .pre
