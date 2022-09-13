@@ -44,6 +44,8 @@ Install npm packages:
 
 Linting:
   stage: test
+  before_script:
+    - eslint -v || npm ci
   script:
     - npm run lint
   cache:
@@ -55,6 +57,8 @@ Linting:
 
 Prettier Checks:
   stage: test
+  before_script:
+    - prettier -v || npm ci
   script:
     - npm run format:check
   cache:
@@ -113,12 +117,6 @@ Build and push container:
     - export LOWERCASE_BRANCH_NAME="$(bash -c 'tr "[:upper:]" "[:lower:]" <<< "$CLEAN_BRANCH_NAME"')"
     - docker build --build-arg "NPM_REGISTRY=https://nexus.osdc.io/repository/npm-all/" -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME-${CI_COMMIT_SHORT_SHA} .
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME-${CI_COMMIT_SHORT_SHA}
-  cache:
-    key: $CI_COMMIT_REF_SLUG
-    paths:
-      - node_modules/
-      - .npm/
-    policy: pull
 
 Push latest container:
   stage: release
