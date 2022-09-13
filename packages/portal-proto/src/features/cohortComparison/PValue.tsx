@@ -54,10 +54,9 @@ const PValue: React.FC<PValueProps> = ({ data }: PValueProps) => {
 
   if (pValue) {
     return (
-      <Tooltip
-        label={`P-Value for ${labels.join(" and ")}`}
-        withArrow
-      >{`P-Value = ${pValue.toExponential(2)}`}</Tooltip>
+      <Tooltip label={`P-Value for ${labels.join(" and ")}`} withArrow>
+        <div>{`P-Value = ${pValue.toExponential(2)}`}</div>
+      </Tooltip>
     );
   } else {
     return null;
