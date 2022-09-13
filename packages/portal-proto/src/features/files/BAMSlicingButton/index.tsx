@@ -22,7 +22,7 @@ export const BAMSlicingButton = ({
   const { username } = userInfo?.data || {};
   return (
     <Button
-      className="text-base-lightest bg-primary hover:bg-primary-darker "
+      className="text-base-lightest bg-primary hover:bg-primary-darker"
       leftIcon={<FaCut />}
       loading={isActive}
       onClick={() => {

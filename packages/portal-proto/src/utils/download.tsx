@@ -1,9 +1,4 @@
-import {
-  CoreDispatch,
-  GDC_APP_API_AUTH,
-  ModalTypes,
-  showModal,
-} from "@gff/core";
+import { CoreDispatch, GDC_APP_API_AUTH, Modals, showModal } from "@gff/core";
 import { Button } from "@mantine/core";
 import { cleanNotifications, showNotification } from "@mantine/notifications";
 import { isPlainObject, includes, reduce } from "lodash";
@@ -60,8 +55,8 @@ const download = async ({
   dispatch: CoreDispatch;
   queryParams?: string;
   altMessage?: boolean;
-  Modal403: ModalTypes;
-  Modal400: ModalTypes;
+  Modal403: Modals;
+  Modal400: Modals;
 }): Promise<void> => {
   let timeoutPromise = null;
   showNotification({
@@ -136,9 +131,18 @@ const download = async ({
       .map((key) => key + "=" + params[key])
       .join("&");
   }
+
   timeoutPromise = setTimeout(() => {
-    fetch(`${GDC_APP_API_AUTH}/${endpoint}?${queryParams}`, {
-      method: "HEAD",
+    // fetch(`${GDC_APP_API_AUTH}/${endpoint}?${queryParams}`, {
+    //   method: "HEAD",
+    fetch(`${GDC_APP_API_AUTH}/data/${queryParams}`, {
+      method: "GET",
+      // fetch(`${GDC_APP_API_AUTH}/${endpoint}`, {
+      //   method: "POST",
+      //   body: JSON.stringify(params),
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
     }).then(async (res) => {
       if (res.status === 403) {
         done();
@@ -158,6 +162,7 @@ const download = async ({
         }, 2000);
       }
     });
+    // form.submit();
   }, 5100);
 };
 

@@ -30,8 +30,11 @@ import { BAMSlicingModal } from "@/components/Modals/BAMSlicingModal/BAMSlicingM
 import { BAMSlicingErrorModal } from "@/components/Modals/BAMSlicingModal/BAMSlicingErrorModal";
 import { NoAccessToProjectModal } from "@/components/Modals/NoAccessToProjectModal";
 import { BAMSlicingButton } from "@/features/files/BAMSlicingButton";
+import { DownloadFile } from "@/components/DownloadButtons";
+import { AgreementModal } from "@/components/Modals/AgreementModal";
+// import { DownloadButton } from "@/components/DownloadButtons";
 
-export const DownloadButton = tw.button`
+export const StyledButton = tw.button`
 bg-base-lightest
 border
 border-base-darkest
@@ -155,16 +158,17 @@ export const FileView: React.FC<FileViewProps> = ({
           file_size: fileSize(obj.file_size),
           action: (
             <div className="flex gap-3">
-              <DownloadButton
+              <StyledButton
                 onClick={() => {
                   addToCart([file], currentCart, dispatch);
                 }}
               >
                 <FaShoppingCart title="Add to Cart" />
-              </DownloadButton>
-              <DownloadButton>
+              </StyledButton>
+
+              <StyledButton>
                 <FaDownload title="Download" />
-              </DownloadButton>
+              </StyledButton>
             </div>
           ),
         });
@@ -294,12 +298,8 @@ export const FileView: React.FC<FileViewProps> = ({
           file?.index_files?.length > 0 && (
             <BAMSlicingButton isActive={bamActive} file={file} />
           )}
-        <Button
-          className="text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
-          leftIcon={<FaDownload />}
-        >
-          Download
-        </Button>
+
+        <DownloadFile inactiveText="Download" file={file} />
       </div>
       <div className="flex">
         <div className="flex-auto bg-base-lightest mr-4">
@@ -556,6 +556,10 @@ export const FileView: React.FC<FileViewProps> = ({
 
       {modal === Modals.BAMSlicingErrorModal && (
         <BAMSlicingErrorModal openModal />
+      )}
+
+      {modal === Modals.AgreementModal && (
+        <AgreementModal openModal file={file} dbGapList={file.acl} />
       )}
     </div>
   );
