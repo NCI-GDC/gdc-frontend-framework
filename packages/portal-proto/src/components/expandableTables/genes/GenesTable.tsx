@@ -24,7 +24,9 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
   width,
   height,
 }: GenesTableProps) => {
-  const [expanded, setExpanded] = useState<ExpandedState>({});
+  const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
+  const [expanded, setExpanded] = useState<any>({});
+  const [expandedId, setExpandedId] = useState<number>(undefined);
   const [selectedGenes, setSelectedGenes] = useState<any>({}); // todo: add type
   const [search, setSearch] = useState("");
   const [columnListOrder, setColumnListOrder] = useState<string[]>([]);
@@ -46,10 +48,6 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
     [selectedSurvivalPlot],
   );
 
-  useEffect(() => {
-    console.log("wasgood width", width);
-  }, [width]);
-
   const transformResponse = useGeneTableFormat(initialData);
 
   const verticalSpring = useSpring({
@@ -59,19 +57,42 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
       opacity: 0,
     },
     to: {
-      height: subRowListLength === 0 ? 650 : subRowListLength * 9.1,
+      height: 650,
       width: 10,
       opacity: 1,
     },
     config: config.slow,
-    // config: {
-    //   mass: 2,
-    //   tension: 200,
-    //   friction: 5,
-    //   duration: 2000,
-    //   easing: easings.easeInOutQuart,
-    // },
   });
+
+  const handleExpandedProxy = (exp: ExpandedState) => {
+    setExpandedProxy(exp);
+  };
+  // `exp` is non-mutable within the lexical scope of handleExpandedProxy
+  //  console logging `exp` returns a function (???)
+  //  this effect hook is a workaround that updates expanded wrt expandedProxy
+  useEffect(() => {
+    const proxy = Object.keys(expandedProxy);
+    const exp = Object.keys(expanded);
+    // before: no rows expanded, after: 1 row expanded
+    if (proxy.length === 1 && exp.length === 0) {
+      setExpandedId(Number(proxy[0]));
+      setExpanded(expandedProxy);
+    }
+    // before: 1 row expanded, after: none expanded
+    if (proxy.length === 0) {
+      setExpandedId(undefined);
+      setExpanded({});
+    }
+    // before: 1 row expanded, after: new row expanded, initial row unexpanded
+    if (proxy.length === 2) {
+      const subsequentExpandId = Number(
+        proxy.filter((key) => Number(key) !== expandedId)[0],
+      );
+      setExpandedId(subsequentExpandId);
+      setExpanded({ [subsequentExpandId]: true });
+      setExpandedProxy({ [subsequentExpandId]: true }); // this line used for rerender
+    }
+  }, [expandedProxy]);
 
   // todo replace this callback w/ transformResponse inside rtk endpoint call
 
@@ -80,24 +101,11 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
       Object.keys(transformResponse[0])
         .filter((tr) => tr !== "subRows")
         .map((accessor) => {
-          return createTableColumn(
-            accessor,
-            verticalSpring,
-            width,
-            expanded,
-            height,
-          );
+          return createTableColumn(accessor, verticalSpring, width, height);
         }),
     [transformResponse, expanded],
   );
 
-  useEffect(() => {
-    console.log("columns changed", columns);
-  }, [columns]);
-
-  useEffect(() => {
-    console.log("what does transformedRes look like", transformResponse);
-  }, [transformResponse]);
   // when columnOrder updates, update memoized columns
   // type of updates: toggle visibility off/on or swap order
 
@@ -108,26 +116,6 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
   const handleRowSelect = (rowUpdate) => {
     // abstract obj add&delete
     //setSelectedGenes(rowUpdate)
-  };
-
-  const handleExpanded = (expanded: ExpandedState) => {
-    console.log("expanded", expanded);
-    // onclick: setExpanded(exp)
-    // console.log('event.target', event.target);
-    // console.log('before', expanded);
-    // console.log('previous key', Object.keys(expanded));
-    // if (expanded === {}) {
-    //     console.log('expanded is empty for now')
-    // }
-    // if (expanded !== {}) {
-    //     console.log('expanded isnt empty')
-    // }
-    // console.log('expfunc', exp);
-    // console.log(typeof exp);
-    setExpanded(expanded);
-    // pageSize, sort change: do nothing
-    // page change, search filter: reset/setExpanded({})
-    // console.log("exp state", exp);
   };
 
   const handleGeneSave = (gene: Gene) => {
@@ -159,7 +147,7 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
           data={transformResponse}
           columns={columns}
           expanded={expanded}
-          handleExpanded={handleExpanded}
+          handleExpandedProxy={handleExpandedProxy}
           handleRowSelect={handleRowSelect}
         />
       </div>

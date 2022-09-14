@@ -1,8 +1,8 @@
 import { GeneAffectedCases } from "./GeneAffectedCases";
-import SpringToggle from "../shared/SpringToggle";
+import ToggleSpring from "../shared/ToggleSpring";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import _ from "lodash";
-import { ExpandedState } from "@tanstack/table-core";
+import { ExpandedState } from "@tanstack/react-table";
 
 interface SingleGene {
   biotype: string;
@@ -62,11 +62,8 @@ export const createTableColumn = (
   key: string,
   spring: any,
   width: number,
-  expanded: ExpandedState,
   height: number,
 ) => {
-  console.log("expanded", expanded);
-  console.log("height", height);
   switch (key) {
     case "SSMSAffectedCasesAcrossTheGDC":
       return {
@@ -76,45 +73,43 @@ export const createTableColumn = (
           {
             accessorKey: key,
             header: ({ table }) => <GTableHeader twStyles={``} title={key} />,
-            cell: ({ row, getValue }) => (
-              <div>
-                <>
-                  {row.getCanExpand() ? (
-                    <button
-                      {...{
-                        onClick: row.getToggleExpandedHandler(),
-                        style: { cursor: "pointer" },
-                      }}
-                    >
-                      <SpringToggle
-                        isExpanded={row.getIsExpanded()}
-                        icon={
-                          <MdKeyboardArrowDown size="small" color="white" />
-                        }
-                        twStyles={`bg-red-500 rounded-md h-3 w-3`}
-                      />
-                    </button>
-                  ) : (
-                    <>
-                      <div className={`relative`}>
-                        <GeneAffectedCases
-                          geneId={row.value}
-                          spring={spring}
-                          width={width}
-                          height={height}
-                        ></GeneAffectedCases>
-                      </div>
-                    </>
-                  )}
-                  {""}
-                  {}
-                </>
-              </div>
-              // <SSMSAffectedCasesAcrossTheGDC
-              //     twStyles={`w-200 pl-${row.depth * 2}`}
-              //     row={row}
-              // />
-            ),
+            cell: ({ row, getValue }) => {
+              return (
+                <div>
+                  <>
+                    {row.getCanExpand() ? (
+                      <button
+                        {...{
+                          onClick: row.getToggleExpandedHandler(),
+                          style: { cursor: "pointer" },
+                        }}
+                      >
+                        <ToggleSpring
+                          isExpanded={row.getIsExpanded()}
+                          icon={
+                            <MdKeyboardArrowDown size="small" color="white" />
+                          }
+                          twStyles={`bg-red-500 rounded-md h-3 w-3`}
+                        />
+                      </button>
+                    ) : (
+                      <>
+                        <div className={`relative`}>
+                          <GeneAffectedCases
+                            geneId={row.value}
+                            spring={spring}
+                            width={width}
+                            height={height}
+                          ></GeneAffectedCases>
+                        </div>
+                      </>
+                    )}
+                    {""}
+                    {}
+                  </>
+                </div>
+              );
+            },
             footer: (props) => props.column.id,
           },
         ],
@@ -192,5 +187,27 @@ export const getGene = (
     annotations: g.is_cancer_gene_census,
     // do not remove subRows key, its needed for row.getCanExpand() to be true
     subRows: " ",
+  };
+};
+
+export const convertGeneFilter = (geneId: string) => {
+  return {
+    op: "and",
+    content: [
+      {
+        content: {
+          field: "genes.gene_id",
+          value: [geneId],
+        },
+        op: "in",
+      },
+      {
+        op: "NOT",
+        content: {
+          field: "cases.gene.ssm.observation.observation_id",
+          value: "MISSING",
+        },
+      },
+    ],
   };
 };

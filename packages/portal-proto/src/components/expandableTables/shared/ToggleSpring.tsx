@@ -1,17 +1,17 @@
 import React, { ReactNode } from "react";
 import { useSpring, animated } from "react-spring";
 
-interface SpringToggleProps {
+interface ToggleSpringProps {
   isExpanded: boolean;
   icon: ReactNode;
   twStyles: string;
 }
 
-const SpringToggle: React.VFC<SpringToggleProps> = ({
+const ToggleSpring: React.VFC<ToggleSpringProps> = ({
   isExpanded,
   icon,
   twStyles,
-}: SpringToggleProps) => {
+}: ToggleSpringProps) => {
   const polarSpring = useSpring({
     transform: isExpanded ? "rotate(0deg)" : "rotate(180deg)",
     config: { mass: 1, tension: 5, friction: 5 },
@@ -26,4 +26,4 @@ const SpringToggle: React.VFC<SpringToggleProps> = ({
   );
 };
 
-export default SpringToggle;
+export default ToggleSpring;
