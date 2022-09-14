@@ -6,34 +6,15 @@ import { Badge, Highlight, Pagination, Tooltip } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
 import { MdSearch } from "react-icons/md";
 import { FaCheck as CheckIcon } from "react-icons/fa";
+import { SearchResult } from "minisearch";
 import {
   FacetSearchDocument,
   useFacetSearch,
 } from "@/features/cohortBuilder/dictionary";
 import { createKeyboardAccessibleFunction } from "src/utils";
-import { SearchResult } from "minisearch";
+import DivWithHoverCallout from "./DivWithHoverCallout";
 
 const PAGE_SIZE = 5;
-const DivWithHoverCallout = tw.div`
-  flex
-  flex-col
-  p-2
-  leading-5
-  hover:bg-primary-lightest
-  hover:before:w-0
-  hover:before:h-0
-  hover:before:absolute
-  hover:before:left-2
-  hover:before:border-t-[10px]
-  hover:before:border-t-solid
-  hover:before:border-t-transparent
-  hover:before:border-b-[10px]
-  hover:before:border-b-solid
-  hover:before:border-b-transparent
-  hover:before:border-r-[10px]
-  hover:before:border-r-solid
-  hover:before:border-r-primary-lightest
-`;
 
 const P = tw.p`
   uppercase
@@ -248,17 +229,19 @@ export const SearchInput: React.FC = () => {
                               clickResult(result),
                             )}
                           >
-                            <b>
-                              <Highlight
-                                highlight={searchTerm}
-                                highlightStyles={{ fontStyle: "italic" }}
-                              >
-                                {result.name}
-                              </Highlight>
-                            </b>
-                            <span className="text-base-content-dark">
-                              <b>Category:</b> {result.category}
-                            </span>
+                            <div className="p-2 leading-5">
+                              <b>
+                                <Highlight
+                                  highlight={searchTerm}
+                                  highlightStyles={{ fontStyle: "italic" }}
+                                >
+                                  {result.name}
+                                </Highlight>
+                              </b>
+                              <span className="text-base-content-dark">
+                                <b>Category:</b> {result.category}
+                              </span>
+                            </div>
                           </DivWithHoverCallout>
                         </Tooltip>
                         <hr />
