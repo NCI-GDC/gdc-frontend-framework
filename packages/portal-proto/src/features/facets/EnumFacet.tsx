@@ -24,7 +24,13 @@ import {
 import { FaUndo as UndoIcon } from "react-icons/fa";
 import { EnumFacetCardProps } from "@/features/facets/types";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
-import { ActionIcon, Checkbox, LoadingOverlay, Tooltip } from "@mantine/core";
+import {
+  ActionIcon,
+  Checkbox,
+  LoadingOverlay,
+  TextInput,
+  Tooltip,
+} from "@mantine/core";
 import { isEqual } from "lodash";
 import { FacetIconButton, controlsIconStyle } from "./components";
 import FacetExpander from "@/features/facets/FacetExpander";
@@ -231,25 +237,22 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
             {showSearch ? (
               <>
                 {isSearching && (
-                  <div
-                    className="flex items-center bg-base-max focus-within:outline focus-within:outline-2 focus-within:outline-primary rounded-sm border-1 border-solid"
-                    tabIndex={0}
-                  >
-                    <input
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="border-none focus:outline-0"
-                    ></input>
-                    {searchTerm.length > 0 && (
-                      <ActionIcon
-                        onClick={() => {
-                          setSearchTerm("");
-                        }}
-                      >
-                        <CloseIcon />
-                      </ActionIcon>
-                    )}
-                  </div>
+                  <TextInput
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    aria-label={"search values"}
+                    rightSection={
+                      searchTerm.length > 0 ? (
+                        <ActionIcon
+                          onClick={() => {
+                            setSearchTerm("");
+                          }}
+                        >
+                          <CloseIcon />
+                        </ActionIcon>
+                      ) : undefined
+                    }
+                  />
                 )}
                 <FacetIconButton onClick={toggleSearch} aria-label="Search">
                   <SearchIcon size="1.45em" className={controlsIconStyle} />
