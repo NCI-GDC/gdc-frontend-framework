@@ -216,6 +216,32 @@ describe("addFilter", () => {
     expect(currentCohortFilters).toEqual({ filters: TwoPopulatedFilters });
   });
 
+  test("should not add a duplicate filter to the current cohort", () => {
+    cohortFilterReducer(
+      { filters: populatedFilters as FilterSet },
+      updateCohortFilter({
+        field: "disease_type",
+        operation: {
+          operator: "includes",
+          field: "disease_type",
+          operands: ["ductal and lobular neoplasms"],
+        },
+      }),
+    );
+    const currentCohortFilters2 = cohortFilterReducer(
+      { filters: populatedFilters as FilterSet },
+      updateCohortFilter({
+        field: "disease_type",
+        operation: {
+          operator: "includes",
+          field: "disease_type",
+          operands: ["ductal and lobular neoplasms"],
+        },
+      }),
+    );
+    expect(currentCohortFilters2).toEqual({ filters: TwoPopulatedFilters });
+  });
+
   test("should remove filter from the current cohort", () => {
     const currentCohortFilters = cohortFilterReducer(
       { filters: TwoPopulatedFilters as FilterSet },

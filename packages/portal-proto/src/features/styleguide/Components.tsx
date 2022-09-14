@@ -5,12 +5,14 @@ import { EnumFacet } from "../facets/EnumFacet";
 import NumericRangeFacet from "../facets/NumericRangeFacet";
 import DateRangeFacet from "../facets/DateRangeFacet";
 import ExactValueFacet from "../facets/ExactValueFacet";
-import SwitchFacet from "../facets/SwitchFacet";
+import ToggleFacet from "../facets/ToggleFacet";
 import GenesTable from "../genesTable/GenesTable";
 import {
+  useEnumFacet,
   selectFieldFilter,
   dispatchFieldFilter,
   clearFilters,
+  updateEnumFilters,
 } from "../facets/hooks";
 import { partial } from "lodash";
 import { useCoreDispatch, CoreContext } from "@gff/core";
@@ -23,15 +25,6 @@ const Components: ReactNode = () => {
   return (
     <div className="flex flex-col font-montserrat text-primary-content w-100">
       <p className="prose font-medium text-2xl">UI Components</p>
-
-      <SwitchFacet
-        docType="files"
-        field="files.analysis.input_files.created_datetime"
-        width="w-1/3"
-        getFacetValue={partial(selectFieldFilter, coreSelector)}
-        setFacetValue={partial(dispatchFieldFilter, coreDispatch)}
-        clearFilterFunc={partial(clearFilters, coreDispatch)}
-      />
 
       <Divider label="Enumeration Facet" classNames={divider_style} />
       <EnumFacet docType="cases" field="primary_site" width="w-1/2" />
@@ -56,6 +49,16 @@ const Components: ReactNode = () => {
         width="w-1/3"
         getFacetValue={partial(selectFieldFilter, coreSelector)}
         setFacetValue={partial(dispatchFieldFilter, coreDispatch)}
+        clearFilterFunc={partial(clearFilters, coreDispatch)}
+      />
+      <Divider label="Toggle Facet" classNames={divider_style} />
+      <ToggleFacet
+        docType="cases"
+        indexType="explore"
+        field="gene.is_cancer_gene_census"
+        width="w-1/3"
+        getFacetData={useEnumFacet}
+        updateFacetEnumerations={partial(updateEnumFilters, coreDispatch)}
         clearFilterFunc={partial(clearFilters, coreDispatch)}
       />
       <Divider label="Percent Range Facet" classNames={divider_style} />

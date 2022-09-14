@@ -1,9 +1,5 @@
 import React, { useCallback, useMemo } from "react";
-import {
-  FacetCardProps,
-  GetFacetEnumDataFunction,
-  UpdateFacetFilterFunction,
-} from "./types";
+import { EnumFacetCardProps } from "./types";
 
 import {
   controlsIconStyle,
@@ -13,26 +9,24 @@ import {
 import { trimFirstFieldNameToTitle } from "@gff/core";
 import { LoadingOverlay, Switch, Tooltip } from "@mantine/core";
 import { MdClose as CloseIcon } from "react-icons/md";
-
-interface ToggleFacetProps
-  extends Omit<FacetCardProps, "showSearch" | "showFlip" | "showPercent"> {
-  getFacetValues: GetFacetEnumDataFunction;
-  setFacetFilter: UpdateFacetFilterFunction;
-}
+import { FacetDocTypeToLabelsMap } from "@/features/facets/hooks";
+import { FaUndo as UndoIcon } from "react-icons/fa";
 
 const extractToggleValue = (values?: ReadonlyArray<string>): boolean =>
-  values && values.length > 0 && values.includes("1");
+  values && values.length > 0 && values.includes("true");
 
-const ToggleFacet: React.FC<ToggleFacetProps> = ({
+const ToggleFacet: React.FC<EnumFacetCardProps> = ({
   field,
+  docType,
+  indexType,
   description,
   facetName = undefined,
   dismissCallback = undefined,
   width = undefined,
-  getFacetValues,
-  setFacetFilter,
+  getFacetData,
+  updateFacetEnumerations,
   clearFilterFunc = undefined,
-}: ToggleFacetProps) => {
+}: EnumFacetCardProps) => {
   const clearFilters = useCallback(() => {
     clearFilterFunc(field);
   }, [clearFilterFunc, field]);
@@ -40,19 +34,18 @@ const ToggleFacet: React.FC<ToggleFacetProps> = ({
   const facetTitle = facetName
     ? facetName
     : trimFirstFieldNameToTitle(field, true);
-  const { data, isSuccess, enumFilters } = getFacetValues(field);
+  const { data, isSuccess, enumFilters } = getFacetData(
+    field,
+    docType,
+    indexType,
+  );
   const toggleValue = useMemo(
     () => extractToggleValue(enumFilters),
     [enumFilters],
   );
 
   const setValue = (bValue: boolean) => {
-    if (bValue)
-      setFacetFilter(field, {
-        operator: "includes",
-        field: field,
-        operands: ["true"],
-      });
+    if (bValue) updateFacetEnumerations(field, ["true"]);
     else clearFilterFunc(field);
   };
 
@@ -81,6 +74,9 @@ const ToggleFacet: React.FC<ToggleFacetProps> = ({
           </div>
         </Tooltip>
         <div className="flex flex-row">
+          <FacetIconButton onClick={clearFilters} aria-label="clear selection">
+            <UndoIcon size="1.15em" className={controlsIconStyle} />
+          </FacetIconButton>
           {dismissCallback ? (
             <FacetIconButton
               onClick={() => {
@@ -93,19 +89,19 @@ const ToggleFacet: React.FC<ToggleFacetProps> = ({
             </FacetIconButton>
           ) : null}
         </div>
-        <div className="w-full ">
+      </div>
+      <div className="flex flex-row items-center justify-end flex-wrap p-1 mb-1 border-b-2">
+        <p className="px-2">{FacetDocTypeToLabelsMap[docType]}</p>
+      </div>
+      <div className="w-full ">
+        <div className="flex flex row flex-nowrap justify-between items-center p-2 ">
           <LoadingOverlay visible={!isSuccess} />
-          {Object.keys(data).length == 0 ? (
-            "No data for this field"
-          ) : (
-            <div className="flex flex row flex-nowrap items-center p-2 ">
-              <Switch
-                checked={toggleValue}
-                onChange={(event) => setValue(event.currentTarget.checked)}
-              />
-              {Object["1"]}
-            </div>
-          )}
+          <Switch
+            color="accent"
+            checked={toggleValue}
+            onChange={(event) => setValue(event.currentTarget.checked)}
+          />
+          <p>{data === undefined ? "No data for this field" : data["1"]}</p>
         </div>
       </div>
     </div>

@@ -134,7 +134,7 @@ export const useEnumFacet = (
  * Genes Facet Selector using GQL. it combines the Cohort with Gene Filters
  * to get data for the current cohort and genes filters
  */
-const useGenesFacet = (
+export const useGenesFacet = (
   field: string,
   docType = "genes" as GQLDocType,
   indexType = "explore" as GQLIndexType,
@@ -254,9 +254,9 @@ const useMutationsFacet = (
 };
 
 type UpdateEnumFiltersFunc = (
-  enumerationFilters: EnumOperandValue,
-  field: string,
   dispatch: ThunkDispatch<any, undefined, AnyAction>,
+  field: string,
+  enumerationFilters: EnumOperandValue,
 ) => void;
 /**
  * Adds an enumeration filter to cohort filters
@@ -265,9 +265,9 @@ type UpdateEnumFiltersFunc = (
  * @param field field to update
  */
 export const updateEnumFilters: UpdateEnumFiltersFunc = (
-  enumerationFilters: EnumOperandValue,
-  field: string,
   dispatch: ThunkDispatch<any, undefined, AnyAction>,
+  field: string,
+  enumerationFilters: EnumOperandValue,
 ) => {
   // undefined just return
   if (enumerationFilters === undefined) return;
@@ -289,9 +289,9 @@ export const updateEnumFilters: UpdateEnumFiltersFunc = (
 };
 
 export const useUpdateGenomicEnumFilters: UpdateEnumFiltersFunc = (
-  enumerationFilters: EnumOperandValue,
-  field: string,
   dispatch: ThunkDispatch<any, undefined, AnyAction>,
+  field: string,
+  enumerationFilters: EnumOperandValue,
 ) => {
   if (enumerationFilters === undefined) dispatch(removeGenomicFilter(field));
   if (enumerationFilters.length > 0) {
@@ -378,7 +378,7 @@ export const dispatchFieldFilter = (
   field: string,
   operation: Operation,
 ): void => {
-  // get the current filter for this facet
+  // update the filter for this facet
   dispatch(updateCohortFilter({ field: field, operation: operation }));
 };
 
