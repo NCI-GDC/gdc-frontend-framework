@@ -70,13 +70,11 @@ export const SearchInput: React.FC = () => {
 
   const filteredResults = useMemo(
     () =>
-      searchResults
-        .filter(
-          (result) =>
-            filteredCategories.length === 0 ||
-            filteredCategories.includes(result.category),
-        )
-        .slice(0, PAGE_SIZE * 5),
+      searchResults.filter(
+        (result) =>
+          filteredCategories.length === 0 ||
+          filteredCategories.includes(result.category),
+      ),
     [filteredCategories, searchResults],
   );
 
@@ -254,6 +252,7 @@ export const SearchInput: React.FC = () => {
                 onChange={setPage}
                 total={Math.ceil(filteredResults.length / PAGE_SIZE)}
                 withEdges
+                siblings={0}
                 color={"primary"}
                 classNames={{
                   item: "border-0",
