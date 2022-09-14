@@ -179,14 +179,14 @@ export const SearchInput: React.FC = () => {
                     const matchingEnums = result?.enum.filter((e) =>
                       result.terms.some((t) => e.toLowerCase().includes(t)),
                     );
+                    const showTooltip =
+                      result.description !== "" || matchingEnums.length > 0;
                     return (
                       <li className="cursor-pointer" key={result.id}>
                         <Tooltip
                           events={{
-                            hover:
-                              result.description !== "" ||
-                              matchingEnums.length > 0,
-                            focus: true,
+                            hover: showTooltip,
+                            focus: showTooltip,
                             touch: false,
                           }}
                           label={
