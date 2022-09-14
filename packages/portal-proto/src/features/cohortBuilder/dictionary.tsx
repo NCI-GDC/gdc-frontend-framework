@@ -7,9 +7,9 @@ import {
   useCoreSelector,
   selectCaseFacets,
   selectFacetDefinition,
+  fieldNameToTitle,
 } from "@gff/core";
 import { getFacetInfo } from "@/features/cohortBuilder/utils";
-import { convertFieldToName } from "../facets/utils";
 // TODO: Remove the above JSON config file and replace with the dictionary slice.
 
 export const get_facet_list = (
@@ -78,7 +78,7 @@ export const useFacetSearch = (): MiniSearch<FacetSearchDocument> => {
       getFacetInfo(category.facets, facets).forEach((facet) => {
         const result = facetResults[facet.full];
         searchDocuments.push({
-          name: convertFieldToName(facet.full),
+          name: fieldNameToTitle(facet.full),
           enum: Object.keys(result?.buckets || {}),
           category: category.label,
           categoryKey,
