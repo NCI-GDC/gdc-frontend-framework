@@ -1,7 +1,7 @@
 import { GdcFile, hideModal, useCoreDispatch } from "@gff/core";
 import { Anchor, Button, Checkbox, Text } from "@mantine/core";
 import { useState } from "react";
-import { DownloadButton, DownloadFile } from "../DownloadButtons";
+import { DownloadButton } from "../DownloadButtons";
 import { BaseModal } from "./BaseModal";
 
 export const AgreementModal = ({
@@ -103,10 +103,10 @@ export const AgreementModal = ({
           disabled={!checked}
           filename={file.fileName}
           extraParams={{ ids: file.fileId }}
-          endpoint="data?annotations=true&related_files=true"
+          endpoint="data"
           activeText="Processing"
           inactiveText="Download"
-          queryParams={file.fileId}
+          queryParams={`annotations=true&related_files=true&ids=${file.fileId}`}
         />
       </div>
     </BaseModal>

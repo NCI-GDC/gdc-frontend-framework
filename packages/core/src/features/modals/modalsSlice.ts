@@ -1,15 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CoreState } from "../../reducers";
 
-// export type ModalTypes =
-//   | "UserProfileModal"
-//   | "SessionExpireModal"
-//   | "NoAccessModal"
-//   | "BAMSlicingModal"
-//   | "BAMSlicingErrorModal"
-//   | "NoAccessToProjectModal"
-//   | "AgreementModal";
-
 export enum Modals {
   "UserProfileModal" = "UserProfileModal",
   "SessionExpireModal" = "SessionExpireModal",

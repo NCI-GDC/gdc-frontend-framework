@@ -8,7 +8,6 @@ export const BAMSlicingErrorModal = ({
   openModal: boolean;
 }): JSX.Element => {
   const dispatch = useCoreDispatch();
-  console.log("openModal: ", openModal);
   return (
     <BaseModal
       title={

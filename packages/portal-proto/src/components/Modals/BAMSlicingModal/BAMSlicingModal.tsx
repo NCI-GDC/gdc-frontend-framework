@@ -153,7 +153,7 @@ export const BAMSlicingModal = ({
 
               download({
                 params,
-                endpoint: `slicing/view/${file.fileId}`,
+                endpoint: `v0/slicing/view/${file.fileId}`,
                 method: "POST",
                 done: () => setActive(false),
                 dispatch,

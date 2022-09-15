@@ -16,23 +16,22 @@ import { get } from "lodash";
 import dynamic from "next/dynamic";
 import fileSize from "filesize";
 import tw from "tailwind-styled-components";
-import { AddToCartButton } from "../cart/updateCart";
+import { AddToCartButton, removeFromCart } from "../cart/updateCart";
 import {
   formatDataForHorizontalTable,
   mapGdcFileToCartFile,
   parseSlideDetailsInfo,
 } from "./utils";
 import Link from "next/link";
-import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
-import { allFilesInCart } from "src/utils";
-import { addToCart, removeFromCart } from "@/features/cart/updateCart";
+import { addToCart } from "@/features/cart/updateCart";
 import { BAMSlicingModal } from "@/components/Modals/BAMSlicingModal/BAMSlicingModal";
 import { BAMSlicingErrorModal } from "@/components/Modals/BAMSlicingModal/BAMSlicingErrorModal";
 import { NoAccessToProjectModal } from "@/components/Modals/NoAccessToProjectModal";
 import { BAMSlicingButton } from "@/features/files/BAMSlicingButton";
 import { DownloadFile } from "@/components/DownloadButtons";
 import { AgreementModal } from "@/components/Modals/AgreementModal";
-// import { DownloadButton } from "@/components/DownloadButtons";
+import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
+import { fileInCart } from "src/utils";
 
 export const StyledButton = tw.button`
 bg-base-lightest
@@ -114,7 +113,8 @@ export const FileView: React.FC<FileViewProps> = ({
 
   const [imageId] = useState(file?.fileId);
   const modal = useCoreSelector((state) => selectCurrentModal(state));
-
+  const [bamActive, setBamActive] = useState(false);
+  const [fileToDownload, setfileToDownload] = useState(file);
   const GenericLink = ({
     path,
     query,
@@ -145,30 +145,42 @@ export const FileView: React.FC<FileViewProps> = ({
     const tableRows = [];
     downstream_analyses?.forEach((byWorkflowType) => {
       const workflowType = byWorkflowType?.workflow_type;
-      byWorkflowType?.output_files?.forEach((obj) => {
-        // const isFileInCart = allFilesInCart(currentCart, [obj]);
+      byWorkflowType?.output_files?.forEach((outputFile) => {
+        const isFileInCart = fileInCart(currentCart, outputFile.fileId);
+        const mappedFileObj = mapGdcFileToCartFile([outputFile]);
         tableRows.push({
           file_name: (
-            <GenericLink path={`/files/${obj.file_id}`} text={obj.file_name} />
+            <GenericLink
+              path={`/files/${outputFile.fileId}`}
+              text={outputFile.fileName}
+            />
           ),
-          data_category: obj.data_category,
-          data_type: obj.data_type,
-          data_format: obj.data_format,
+          data_category: outputFile.dataCategory,
+          data_type: outputFile.dataType,
+          data_format: outputFile.dataFormat,
           workflow_type: workflowType,
-          file_size: fileSize(obj.file_size),
+          file_size: fileSize(outputFile.fileSize),
           action: (
             <div className="flex gap-3">
-              <StyledButton
+              <Button
+                className={`${
+                  isFileInCart
+                    ? "bg-secondary-min text-secondary-contrast-min"
+                    : "bg-base-lightest text-base-min"
+                } border border-base-darkest rounded p-2 hover:bg-base-darkest hover:text-base-contrast-min`}
                 onClick={() => {
-                  addToCart([file], currentCart, dispatch);
+                  isFileInCart
+                    ? removeFromCart(mappedFileObj, currentCart, dispatch)
+                    : addToCart(mappedFileObj, currentCart, dispatch);
                 }}
               >
                 <FaShoppingCart title="Add to Cart" />
-              </StyledButton>
+              </Button>
 
-              <StyledButton>
-                <FaDownload title="Download" />
-              </StyledButton>
+              <DownloadFile
+                file={outputFile}
+                setfileToDownload={setfileToDownload}
+              />
             </div>
           ),
         });
@@ -286,9 +298,6 @@ export const FileView: React.FC<FileViewProps> = ({
     };
     return <TempTable tableData={formatedTableData} />;
   };
-
-  const [bamActive, setBamActive] = useState(false);
-
   return (
     <div className="p-4 text-primary-content w-10/12 mt-20 m-auto">
       <div className="flex justify-end pb-5 gap-2">
@@ -299,7 +308,11 @@ export const FileView: React.FC<FileViewProps> = ({
             <BAMSlicingButton isActive={bamActive} file={file} />
           )}
 
-        <DownloadFile inactiveText="Download" file={file} />
+        <DownloadFile
+          inactiveText="Download"
+          file={file}
+          setfileToDownload={setfileToDownload}
+        />
       </div>
       <div className="flex">
         <div className="flex-auto bg-base-lightest mr-4">
@@ -559,7 +572,11 @@ export const FileView: React.FC<FileViewProps> = ({
       )}
 
       {modal === Modals.AgreementModal && (
-        <AgreementModal openModal file={file} dbGapList={file.acl} />
+        <AgreementModal
+          openModal
+          file={fileToDownload}
+          dbGapList={fileToDownload.acl}
+        />
       )}
     </div>
   );

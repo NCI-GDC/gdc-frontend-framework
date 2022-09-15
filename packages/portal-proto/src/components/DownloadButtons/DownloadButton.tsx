@@ -1,4 +1,3 @@
-import tw from "tailwind-styled-components";
 import { Button } from "@mantine/core";
 import { FaDownload } from "react-icons/fa";
 import download from "src/utils/download";
@@ -19,18 +18,6 @@ interface DownloadButtonProps {
   method?: string;
   queryParams?: string;
 }
-
-// export const StyledButton = tw.Button`
-// bg-base-lightest
-// border
-// border-base-darkest
-// rounded
-// p-1
-// hover:bg-base-darkest
-// hover:text-base-contrast-darkest
-// `;
-
-// className="bg-base-lightest border border-base-darkest rounded p-1 hover:bg-base-darkest hover:text-base-contrast-darkest"
 
 export const DownloadButton: React.FC<DownloadButtonProps> = ({
   endpoint,

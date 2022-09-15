@@ -97,7 +97,6 @@ const download = async ({
       },
     }),
     icon: <div />,
-    autoClose: 5000,
   });
 
   const fields = reduce(
@@ -134,16 +133,23 @@ const download = async ({
 
   timeoutPromise = setTimeout(() => {
     // fetch(`${GDC_APP_API_AUTH}/${endpoint}?${queryParams}`, {
-    //   method: "HEAD",
-    fetch(`${GDC_APP_API_AUTH}/data/${queryParams}`, {
+    //   method: "GET",
+    fetch(`${GDC_APP_API_AUTH}/data/910c33ba-9f3e-4b6d-a5c9-20350d83f8a5`, {
       method: "GET",
+      headers: {
+        Range: "bytes=0-0",
+      },
+      // headers: {}
+      // fetch(`${GDC_APP_API_AUTH}/data/${queryParams}`, {
+      //   method: "HEAD",
       // fetch(`${GDC_APP_API_AUTH}/${endpoint}`, {
       //   method: "POST",
       //   body: JSON.stringify(params),
       //   headers: {
       //     "Content-Type": "application/json",
       //   },
-    }).then(async (res) => {
+    }).then((res) => {
+      cleanNotifications();
       if (res.status === 403) {
         done();
         // TODO: might need to save response error message later if needed in modal slice.
@@ -155,15 +161,14 @@ const download = async ({
         dispatch(showModal(Modal400));
         return;
       }
-      if (res.ok) {
+      if (timeoutPromise && res.ok) {
         form.submit();
         setTimeout(() => {
           done();
         }, 2000);
       }
     });
-    // form.submit();
-  }, 5100);
+  }, 1000);
 };
 
 export default download;

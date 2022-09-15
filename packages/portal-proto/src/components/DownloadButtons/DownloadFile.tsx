@@ -2,7 +2,6 @@ import { userCanDownloadFile } from "@/features/files/BAMSlicingButton/util";
 import {
   GdcFile,
   useCoreSelector,
-  UserInfo,
   selectUserDetailsInfo,
   useCoreDispatch,
   showModal,
@@ -16,12 +15,14 @@ interface DownloadFileProps {
   file: GdcFile;
   activeText?: string;
   inactiveText?: string;
+  setfileToDownload: React.Dispatch<React.SetStateAction<GdcFile>>;
 }
 
 export const DownloadFile: React.FC<DownloadFileProps> = ({
   file,
   activeText,
   inactiveText,
+  setfileToDownload,
 }: DownloadFileProps) => {
   const dispatch = useCoreDispatch();
   const userInfo = useCoreSelector((state) => selectUserDetailsInfo(state));
@@ -38,23 +39,30 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
     );
   }
   return (
-    <Button
-      className="text-base-lightest bg-primary hover:bg-primary-darker"
-      leftIcon={inactiveText && <FaDownload />}
-      onClick={() => {
-        if (username && userCanDownloadFile({ user: userInfo.data, file })) {
-          dispatch(showModal(Modals.AgreementModal));
-        } else if (
-          username &&
-          !userCanDownloadFile({ user: userInfo.data, file })
-        ) {
-          dispatch(showModal(Modals.NoAccessToProjectModal));
-        } else {
-          dispatch(showModal(Modals.NoAccessModal));
-        }
-      }}
-    >
-      {inactiveText || <FaDownload title="download" />}
-    </Button>
+    <>
+      <Button
+        className={`${
+          inactiveText
+            ? "text-base-lightest bg-primary hover:bg-primary-darker"
+            : "bg-base-lightest text-base-min border border-base-darkest rounded p-2 hover:bg-base-darkest hover:text-base-contrast-min"
+        }`}
+        leftIcon={inactiveText && <FaDownload />}
+        onClick={() => {
+          setfileToDownload(file);
+          if (username && userCanDownloadFile({ user: userInfo.data, file })) {
+            dispatch(showModal(Modals.AgreementModal));
+          } else if (
+            username &&
+            !userCanDownloadFile({ user: userInfo.data, file })
+          ) {
+            dispatch(showModal(Modals.NoAccessToProjectModal));
+          } else {
+            dispatch(showModal(Modals.NoAccessModal));
+          }
+        }}
+      >
+        {inactiveText || <FaDownload title="download" />}
+      </Button>
+    </>
   );
 };
