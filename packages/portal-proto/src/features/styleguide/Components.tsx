@@ -4,6 +4,7 @@ import { Divider } from "@mantine/core";
 import { EnumFacet } from "../facets/EnumFacet";
 import NumericRangeFacet from "../facets/NumericRangeFacet";
 import DateRangeFacet from "../facets/DateRangeFacet";
+import ExactValueFacet from "../facets/ExactValueFacet";
 import GenesTable from "../genesTable/GenesTable";
 import {
   selectFieldValue,
@@ -21,6 +22,7 @@ const Components: ReactNode = () => {
   return (
     <div className="flex flex-col font-montserrat text-primary-content w-100">
       <p className="prose font-medium text-2xl">UI Components</p>
+
       <Divider label="Enumeration Facet" classNames={divider_style} />
       <EnumFacet docType="cases" field="primary_site" width="w-1/2" />
       <Divider label="Year Facet" classNames={divider_style} />
@@ -53,6 +55,15 @@ const Components: ReactNode = () => {
         rangeDatatype="percent"
         field="samples.portions.slides.percent_tumor_cells"
         width="w-1/3"
+      />
+      <Divider label="Exact Value Facet" classNames={divider_style} />
+      <ExactValueFacet
+        docType="cases"
+        field="cases.diagnoses.annotations.case_id"
+        width="w-1/3"
+        getFacetValue={partial(selectFieldValue, coreSelector)}
+        setFacetValue={partial(dispatchFieldValue, coreDispatch)}
+        clearFilterFunc={partial(clearFilters, coreDispatch)}
       />
       <Divider label="Genes Table" classNames={divider_style} />
       <GenesTable

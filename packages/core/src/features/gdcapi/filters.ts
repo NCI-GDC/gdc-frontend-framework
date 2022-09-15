@@ -62,19 +62,19 @@ export interface Exists {
 export interface Includes {
   readonly operator: "includes";
   readonly field: string;
-  readonly operands: ReadonlyArray<string> | ReadonlyArray<number>;
+  readonly operands: ReadonlyArray<string | number>;
 }
 
 export interface Excludes {
   readonly operator: "excludes";
   readonly field: string;
-  readonly operands: ReadonlyArray<string> | ReadonlyArray<number>;
+  readonly operands: ReadonlyArray<string | number>;
 }
 
 export interface ExcludeIfAny {
   readonly operator: "excludeifany";
   readonly field: string;
-  readonly operands: string | ReadonlyArray<string> | ReadonlyArray<number>;
+  readonly operands: string | ReadonlyArray<string | number>;
 }
 
 export interface Intersection {
@@ -225,7 +225,7 @@ export interface GqlIncludes {
   readonly op: "in";
   readonly content: {
     readonly field: string;
-    readonly value: ReadonlyArray<string> | ReadonlyArray<number>;
+    readonly value: ReadonlyArray<string | number>;
   };
 }
 
@@ -233,7 +233,7 @@ export interface GqlExcludes {
   readonly op: "exclude";
   readonly content: {
     readonly field: string;
-    readonly value: ReadonlyArray<string> | ReadonlyArray<number>;
+    readonly value: ReadonlyArray<string | number>;
   };
 }
 
@@ -241,7 +241,7 @@ export interface GqlExcludeIfAny {
   readonly op: "excludeifany";
   readonly content: {
     readonly field: string;
-    readonly value: string | ReadonlyArray<string> | ReadonlyArray<number>;
+    readonly value: string | ReadonlyArray<string | number>;
   };
 }
 
