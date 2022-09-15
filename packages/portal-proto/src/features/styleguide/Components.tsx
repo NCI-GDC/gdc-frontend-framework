@@ -56,6 +56,7 @@ const Components: ReactNode = () => {
         docType="cases"
         indexType="explore"
         field="gene.is_cancer_gene_census"
+        facetName="Is Cancer Gene Census"
         width="w-1/3"
         getFacetData={useEnumFacet}
         updateFacetEnumerations={partial(updateEnumFilters, coreDispatch)}

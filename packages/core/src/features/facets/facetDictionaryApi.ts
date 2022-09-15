@@ -5,7 +5,6 @@ import { some, includes } from "lodash";
 const FieldNameOverrides: Record<string, string> = {
   "cases.project.program.name": "Program Name",
   "cases.project.project_id": "Project",
-  "gene.is_cancer_gene_census": "Is Cancer Gene Census",
 };
 
 const COMMON_PREPOSITIONS = [
