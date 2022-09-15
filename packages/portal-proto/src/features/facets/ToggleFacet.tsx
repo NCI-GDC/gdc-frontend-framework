@@ -83,7 +83,7 @@ const ToggleFacet: React.FC<EnumFacetCardProps> = ({
                 clearFilters();
                 dismissCallback(field);
               }}
-              aria-label="Remove the facet"
+              aria-label="remove the facet"
             >
               <CloseIcon size="1.25em" className={controlsIconStyle} />
             </FacetIconButton>
@@ -100,6 +100,7 @@ const ToggleFacet: React.FC<EnumFacetCardProps> = ({
             color="accent"
             checked={toggleValue}
             onChange={(event) => setValue(event.currentTarget.checked)}
+            aria-label="toggle facet value"
           />
           <p>{data === undefined ? "No data for this field" : data["1"]}</p>
         </div>

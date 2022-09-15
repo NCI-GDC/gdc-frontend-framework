@@ -78,6 +78,7 @@ export const classifyFacetDatatype = (f: FacetDefinition): string => {
   if (fieldName.includes("days")) return "days";
   if (fieldName.includes("years")) return "years";
   if (fieldName.includes("year")) return "year";
+  if (fieldName.includes("project_id")) return "enum";
 
   if (f.type === "long" || f.type === "float" || f.type === "double")
     return "range";
