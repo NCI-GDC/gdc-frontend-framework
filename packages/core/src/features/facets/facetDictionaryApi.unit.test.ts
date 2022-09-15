@@ -2,6 +2,7 @@ import {
   trimFirstFieldNameToTitle,
   processDictionaryEntries,
   fieldNameToTitle,
+  classifyFacetDatatype,
 } from "./facetDictionaryApi";
 
 import { FacetDefinition } from "./types";
@@ -160,5 +161,28 @@ describe("facet label utils", () => {
       true,
     );
     expect(results).toEqual("Demographic Cause of Death");
+  });
+});
+
+describe("test facet types", () => {
+  test("should create a title minus cases", () => {
+    // TODO: add additional tests
+    const TO_TEST = [
+      { field: "cases.project.project_id", type: "", expected_type: "enum" },
+      { field: "demographic.age_at_index", type: "", expected_type: "age" },
+      { field: "cases.demographic.race", type: "", expected_type: "enum" },
+    ];
+
+    TO_TEST.map((x) => {
+      expect(
+        classifyFacetDatatype({
+          field: x.field,
+          type: x.type,
+          description: "",
+          doc_type: "cases",
+          full: x.field,
+        }),
+      ).toEqual(x.expected_type);
+    });
   });
 });
