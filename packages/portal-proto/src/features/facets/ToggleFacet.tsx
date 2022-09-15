@@ -34,11 +34,13 @@ const ToggleFacet: React.FC<EnumFacetCardProps> = ({
   const facetTitle = facetName
     ? facetName
     : trimFirstFieldNameToTitle(field, true);
+
   const { data, isSuccess, enumFilters } = getFacetData(
     field,
     docType,
     indexType,
   );
+
   const toggleValue = useMemo(
     () => extractToggleValue(enumFilters),
     [enumFilters],
@@ -102,7 +104,11 @@ const ToggleFacet: React.FC<EnumFacetCardProps> = ({
             onChange={(event) => setValue(event.currentTarget.checked)}
             aria-label="toggle facet value"
           />
-          <p>{data === undefined ? "No data for this field" : data["1"]}</p>
+          <p>
+            {data === undefined || Object.keys(data).length == 0
+              ? "No data for this field"
+              : data["1"].toLocaleString("en-US")}
+          </p>
         </div>
       </div>
     </div>
