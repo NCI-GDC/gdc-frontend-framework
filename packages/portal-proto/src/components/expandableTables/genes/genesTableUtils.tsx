@@ -63,6 +63,7 @@ export const createTableColumn = (
   spring: any,
   width: number,
   height: number,
+  //   firstColumn: string
 ) => {
   switch (key) {
     case "SSMSAffectedCasesAcrossTheGDC":

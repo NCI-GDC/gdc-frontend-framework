@@ -11,7 +11,6 @@ export const GeneAffectedCases: React.VFC<GeneSubRow> = ({
   height,
 }: GeneSubRow) => {
   const [subData, setSubData] = useState([]);
-  const [loading, setLoading] = useState(true);
   const horizontalSpring = useSpring({
     from: { width: 0, opacity: 0 },
     to: { width: width, opacity: 1 },
@@ -65,6 +64,3 @@ export const GeneAffectedCases: React.VFC<GeneSubRow> = ({
     />
   );
 };
-
-// style={verticalSpring}
-//
