@@ -84,13 +84,13 @@ Run unit tests:
   script:
     - npm run test:all
   cache:
-    key: "Built-$CI_COMMIT_REF_SLUG"
-    paths:
-      - node_modules/
-      - .npm/
-      - packages/
-      - dist/
-    policy: pull
+    - key: "Built-$CI_COMMIT_REF_SLUG"
+      paths:
+        - node_modules/
+        - .npm/
+        - packages/
+        - dist/
+      policy: pull
 
 Build and push container:
   stage: release

@@ -213,6 +213,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
       className={`flex flex-col ${
         width ? width : "mx-1"
       } bg-base-max relative border-primary-lightest border-1 rounded-b-md text-xs transition`}
+      id={field}
     >
       <div>
         <div className="flex items-center justify-between flex-wrap bg-primary-lighter shadow-md px-1.5">
@@ -391,23 +392,25 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
               isFacetView ? "invisible" : ""
             }`}
           >
-            <EnumFacetChart
-              field={field}
-              data={data}
-              selectedEnums={selectedEnums}
-              isSuccess={isSuccess}
-              showTitle={false}
-              maxBins={numberOfBarsToDisplay}
-              height={
-                numberOfBarsToDisplay == 1
-                  ? 150
-                  : numberOfBarsToDisplay == 2
-                  ? 220
-                  : numberOfBarsToDisplay == 3
-                  ? 240
-                  : numberOfBarsToDisplay * 65 + 10
-              }
-            />
+            {!isFacetView && (
+              <EnumFacetChart
+                field={field}
+                data={data}
+                selectedEnums={selectedEnums}
+                isSuccess={isSuccess}
+                showTitle={false}
+                maxBins={numberOfBarsToDisplay}
+                height={
+                  numberOfBarsToDisplay == 1
+                    ? 150
+                    : numberOfBarsToDisplay == 2
+                    ? 220
+                    : numberOfBarsToDisplay == 3
+                    ? 240
+                    : numberOfBarsToDisplay * 65 + 10
+                }
+              />
+            )}
           </div>
         </div>
       </div>

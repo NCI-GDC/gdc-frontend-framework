@@ -836,7 +836,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
   };
 
   return (
-    <div>
+    <div id={field}>
       <div
         className={`flex flex-col ${
           width ? width : "mx-1"
