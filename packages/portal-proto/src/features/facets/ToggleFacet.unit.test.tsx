@@ -1,12 +1,10 @@
 import { render } from "@testing-library/react";
 import ToggleFacet from "./ToggleFacet";
-import * as core from "@gff/core";
 import { EnumFacetResponse } from "@/features/facets/types";
 
 describe("<ToggleFacet />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
   });
   it("test if ToggleFacet control has expected components", async () => {
     const { getByRole, getByText } = render(
