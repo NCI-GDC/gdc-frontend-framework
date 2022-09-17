@@ -19,6 +19,7 @@ import {
 import { useMantineTheme } from "@mantine/core";
 import ChartTitleBar from "./ChartTitleBar";
 import { capitalize, truncateString } from "src/utils";
+import { fieldNameToTitle } from "@gff/core";
 
 const maxValuesToDisplay = 7;
 
@@ -84,7 +85,7 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
     <div ref={ref}>
       {showTitle ? (
         <ChartTitleBar
-          title={convertFieldToName(field)}
+          title={fieldNameToTitle(field)}
           divId={chartDivId}
           filename={field}
           jsonData={{}}
@@ -105,13 +106,6 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
       )}
     </div>
   );
-};
-
-const convertFieldToName = (field: string): string => {
-  const property = field.split(".").pop();
-  const tokens = property.split("_");
-  const capitalizedTokens = tokens.map((s) => capitalize(s));
-  return capitalizedTokens.join(" ");
 };
 
 export const processLabel = (label: string): string => {

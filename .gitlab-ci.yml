@@ -14,6 +14,7 @@ stages:
   - release
 
 image: docker.osdc.io/node:16-alpine3.15
+
 variables:
   npm_config_registry: https://nexus.osdc.io/repository/npm-all/
   npm_config_cache: .npm
@@ -83,13 +84,13 @@ Run unit tests:
   script:
     - npm run test:all
   cache:
-    key: "Built-$CI_COMMIT_REF_SLUG"
-    paths:
-      - node_modules/
-      - .npm/
-      - packages/
-      - dist/
-    policy: pull
+    - key: "Built-$CI_COMMIT_REF_SLUG"
+      paths:
+        - node_modules/
+        - .npm/
+        - packages/
+        - dist/
+      policy: pull
 
 Build and push container:
   stage: release

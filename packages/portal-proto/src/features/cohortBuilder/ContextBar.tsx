@@ -34,7 +34,7 @@ import FunctionButton from "@/components/FunctionButton";
 const ContextBar: React.FC<CohortGroupProps> = ({
   cohorts,
 }: CohortGroupProps) => {
-  const [isGroupCollapsed, setIsGroupCollapsed] = useState(false);
+  const [isGroupCollapsed, setIsGroupCollapsed] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handleCohortSelection = (idx) => {

@@ -6,6 +6,7 @@ import {
   usePrevious,
   removeCohortFilter,
   EnumOperandValue,
+  fieldNameToTitle,
 } from "@gff/core";
 import {
   FacetDocTypeToCountsIndexMap,
@@ -13,7 +14,7 @@ import {
   FacetEnumHooks,
   UpdateEnums,
 } from "./hooks";
-import { DEFAULT_VISIBLE_ITEMS, convertFieldToName } from "./utils";
+import { DEFAULT_VISIBLE_ITEMS } from "./utils";
 
 import {
   MdFlip as FlipIcon,
@@ -23,7 +24,13 @@ import {
 import { FaUndo as UndoIcon } from "react-icons/fa";
 import { EnumFacetCardProps } from "@/features/facets/types";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
-import { Checkbox, LoadingOverlay, Tooltip } from "@mantine/core";
+import {
+  ActionIcon,
+  Checkbox,
+  LoadingOverlay,
+  TextInput,
+  Tooltip,
+} from "@mantine/core";
 import { isEqual } from "lodash";
 import { FacetIconButton, controlsIconStyle } from "./components";
 import FacetExpander from "@/features/facets/FacetExpander";
@@ -42,7 +49,7 @@ import FacetSortPanel from "@/features/facets/FacetSortPanel";
  * @param startShowingData set = false to show the chart by default
  * @param showPercent show the percentage
  * @param hideIfEmpty if facet has no data, do not render
- * @param dismissCallback if facet can be removed, supply a function which will ensure the dismiss control will be visible
+ * @param dismissCallback if facet can be removed, supply a function which will ensure the "dismiss" control will be visible
  * @param width set the width of the facet
  * @param facetDataFunc function to pull enumerated data with
  * @param updateEnumsFunc function to extract enumeration values (used to set checkboxes)
@@ -67,6 +74,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
 }: EnumFacetCardProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const [isSortedByValue, setIsSortedByValue] = useState(false);
   const [isFacetView, setIsFacetView] = useState(startShowingData);
   const [visibleItems, setVisibleItems] = useState(DEFAULT_VISIBLE_ITEMS);
@@ -149,7 +157,17 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
     setIsFacetView(!isFacetView);
   };
 
-  const remainingValues = total - maxValuesToDisplay;
+  const filteredData = data
+    ? Object.entries(data)
+        .filter((entry) => entry[0] != "_missing" && entry[0] != "")
+        .filter((entry) =>
+          searchTerm === ""
+            ? entry
+            : entry[0].toLowerCase().includes(searchTerm.toLowerCase()),
+        )
+    : [];
+
+  const remainingValues = filteredData.length - maxValuesToDisplay;
   const cardHeight =
     remainingValues > 16
       ? 96
@@ -172,10 +190,9 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
     ? Math.min(16, totalNumberOfBars)
     : Math.min(maxValuesToDisplay, totalNumberOfBars);
 
-  const sortedData = data
+  const sortedData = filteredData
     ? Object.fromEntries(
-        Object.entries(data)
-          .filter((entry) => entry[0] != "_missing" && entry[0] != "")
+        filteredData
           .sort(
             isSortedByValue
               ? ([, a], [, b]) => b - a
@@ -196,6 +213,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
       className={`flex flex-col ${
         width ? width : "mx-1"
       } bg-base-max relative border-primary-lightest border-1 rounded-b-md text-xs transition`}
+      id={field}
     >
       <div>
         <div className="flex items-center justify-between flex-wrap bg-primary-lighter shadow-md px-1.5">
@@ -213,14 +231,34 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
             transitionDuration={200}
           >
             <div className="text-primary-contrast-lighter font-heading font-semibold text-md">
-              {facetName === null ? convertFieldToName(field) : facetName}
+              {facetName ? facetName : fieldNameToTitle(field)}
             </div>
           </Tooltip>
           <div className="flex flex-row">
             {showSearch ? (
-              <FacetIconButton onClick={toggleSearch} aria-label="Search">
-                <SearchIcon size="1.45em" className={controlsIconStyle} />
-              </FacetIconButton>
+              <>
+                {isSearching && (
+                  <TextInput
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    aria-label={"search values"}
+                    rightSection={
+                      searchTerm.length > 0 ? (
+                        <ActionIcon
+                          onClick={() => {
+                            setSearchTerm("");
+                          }}
+                        >
+                          <CloseIcon />
+                        </ActionIcon>
+                      ) : undefined
+                    }
+                  />
+                )}
+                <FacetIconButton onClick={toggleSearch} aria-label="Search">
+                  <SearchIcon size="1.45em" className={controlsIconStyle} />
+                </FacetIconButton>
+              </>
             ) : null}
             {showFlip ? (
               <FacetIconButton
@@ -354,23 +392,25 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
               isFacetView ? "invisible" : ""
             }`}
           >
-            <EnumFacetChart
-              field={field}
-              data={data}
-              selectedEnums={selectedEnums}
-              isSuccess={isSuccess}
-              showTitle={false}
-              maxBins={numberOfBarsToDisplay}
-              height={
-                numberOfBarsToDisplay == 1
-                  ? 150
-                  : numberOfBarsToDisplay == 2
-                  ? 220
-                  : numberOfBarsToDisplay == 3
-                  ? 240
-                  : numberOfBarsToDisplay * 65 + 10
-              }
-            />
+            {!isFacetView && (
+              <EnumFacetChart
+                field={field}
+                data={data}
+                selectedEnums={selectedEnums}
+                isSuccess={isSuccess}
+                showTitle={false}
+                maxBins={numberOfBarsToDisplay}
+                height={
+                  numberOfBarsToDisplay == 1
+                    ? 150
+                    : numberOfBarsToDisplay == 2
+                    ? 220
+                    : numberOfBarsToDisplay == 3
+                    ? 240
+                    : numberOfBarsToDisplay * 65 + 10
+                }
+              />
+            )}
           </div>
         </div>
       </div>

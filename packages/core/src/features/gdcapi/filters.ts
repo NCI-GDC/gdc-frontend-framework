@@ -28,25 +28,25 @@ export interface NotEquals {
 export interface LessThan {
   readonly operator: "<";
   readonly field: string;
-  readonly operand: number;
+  readonly operand: string | number;
 }
 
 export interface LessThanOrEquals {
   readonly operator: "<=";
   readonly field: string;
-  readonly operand: number;
+  readonly operand: string | number;
 }
 
 export interface GreaterThan {
   readonly operator: ">";
   readonly field: string;
-  readonly operand: number;
+  readonly operand: string | number;
 }
 
 export interface GreaterThanOrEquals {
   readonly operator: ">=";
   readonly field: string;
-  readonly operand: number;
+  readonly operand: string | number;
 }
 
 export interface Missing {
@@ -62,19 +62,19 @@ export interface Exists {
 export interface Includes {
   readonly operator: "includes";
   readonly field: string;
-  readonly operands: ReadonlyArray<string> | ReadonlyArray<number>;
+  readonly operands: ReadonlyArray<string | number>;
 }
 
 export interface Excludes {
   readonly operator: "excludes";
   readonly field: string;
-  readonly operands: ReadonlyArray<string> | ReadonlyArray<number>;
+  readonly operands: ReadonlyArray<string | number>;
 }
 
 export interface ExcludeIfAny {
   readonly operator: "excludeifany";
   readonly field: string;
-  readonly operands: string | ReadonlyArray<string> | ReadonlyArray<number>;
+  readonly operands: string | ReadonlyArray<string | number>;
 }
 
 export interface Intersection {
@@ -178,7 +178,7 @@ export interface GqlLessThan {
   readonly op: "<";
   readonly content: {
     readonly field: string;
-    readonly value: number;
+    readonly value: string | number;
   };
 }
 
@@ -186,7 +186,7 @@ export interface GqlLessThanOrEquals {
   readonly op: "<=";
   readonly content: {
     readonly field: string;
-    readonly value: number;
+    readonly value: string | number;
   };
 }
 
@@ -194,7 +194,7 @@ export interface GqlGreaterThan {
   readonly op: ">";
   readonly content: {
     readonly field: string;
-    readonly value: number;
+    readonly value: string | number;
   };
 }
 
@@ -202,7 +202,7 @@ export interface GqlGreaterThanOrEquals {
   readonly op: ">=";
   readonly content: {
     readonly field: string;
-    readonly value: number;
+    readonly value: string | number;
   };
 }
 
@@ -225,7 +225,7 @@ export interface GqlIncludes {
   readonly op: "in";
   readonly content: {
     readonly field: string;
-    readonly value: ReadonlyArray<string> | ReadonlyArray<number>;
+    readonly value: ReadonlyArray<string | number>;
   };
 }
 
@@ -233,7 +233,7 @@ export interface GqlExcludes {
   readonly op: "exclude";
   readonly content: {
     readonly field: string;
-    readonly value: ReadonlyArray<string> | ReadonlyArray<number>;
+    readonly value: ReadonlyArray<string | number>;
   };
 }
 
@@ -241,7 +241,7 @@ export interface GqlExcludeIfAny {
   readonly op: "excludeifany";
   readonly content: {
     readonly field: string;
-    readonly value: string | ReadonlyArray<string> | ReadonlyArray<number>;
+    readonly value: string | ReadonlyArray<string | number>;
   };
 }
 
