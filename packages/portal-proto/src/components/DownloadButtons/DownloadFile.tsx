@@ -7,8 +7,6 @@ import {
   showModal,
   Modals,
 } from "@gff/core";
-import { Button } from "@mantine/core";
-import { FaDownload } from "react-icons/fa";
 import { DownloadButton } from "./DownloadButton";
 
 interface DownloadFileProps {
@@ -16,6 +14,8 @@ interface DownloadFileProps {
   activeText?: string;
   inactiveText?: string;
   setfileToDownload: React.Dispatch<React.SetStateAction<GdcFile>>;
+  active?: boolean;
+  setActive?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const DownloadFile: React.FC<DownloadFileProps> = ({
@@ -23,9 +23,12 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
   activeText,
   inactiveText,
   setfileToDownload,
+  active,
+  setActive,
 }: DownloadFileProps) => {
   const dispatch = useCoreDispatch();
   const userInfo = useCoreSelector((state) => selectUserDetailsInfo(state));
+
   const { username } = userInfo?.data || {};
   if (file.access === "open") {
     return (
@@ -35,34 +38,44 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
         endpoint="data?annotations=true&related_files=true"
         activeText={activeText}
         inactiveText={inactiveText}
+        queryParams={`data/${file.fileId}`}
+        options={{
+          method: "GET",
+          headers: {
+            Range: "bytes=0-0",
+          },
+        }}
+        setActive={setActive}
+        active={active}
       />
     );
   }
+
+  const customStyle = inactiveText
+    ? "text-base-lightest bg-primary hover:bg-primary-darker"
+    : "bg-base-lightest text-base-min border border-base-darkest rounded p-2 hover:bg-base-darkest hover:text-base-contrast-min";
+
+  const onClick = () => {
+    setfileToDownload(file);
+    if (username && userCanDownloadFile({ user: userInfo.data, file })) {
+      dispatch(showModal(Modals.AgreementModal));
+    } else if (
+      username &&
+      !userCanDownloadFile({ user: userInfo.data, file })
+    ) {
+      dispatch(showModal(Modals.NoAccessToProjectModal));
+    } else {
+      dispatch(showModal(Modals.NoAccessModal));
+    }
+  };
   return (
-    <>
-      <Button
-        className={`${
-          inactiveText
-            ? "text-base-lightest bg-primary hover:bg-primary-darker"
-            : "bg-base-lightest text-base-min border border-base-darkest rounded p-2 hover:bg-base-darkest hover:text-base-contrast-min"
-        }`}
-        leftIcon={inactiveText && <FaDownload />}
-        onClick={() => {
-          setfileToDownload(file);
-          if (username && userCanDownloadFile({ user: userInfo.data, file })) {
-            dispatch(showModal(Modals.AgreementModal));
-          } else if (
-            username &&
-            !userCanDownloadFile({ user: userInfo.data, file })
-          ) {
-            dispatch(showModal(Modals.NoAccessToProjectModal));
-          } else {
-            dispatch(showModal(Modals.NoAccessModal));
-          }
-        }}
-      >
-        {inactiveText || <FaDownload title="download" />}
-      </Button>
-    </>
+    <DownloadButton
+      customStyle={customStyle}
+      inactiveText={inactiveText}
+      activeText={activeText}
+      onClick={onClick}
+      setActive={setActive}
+      active={active}
+    />
   );
 };

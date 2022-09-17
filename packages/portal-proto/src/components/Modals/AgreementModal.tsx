@@ -1,6 +1,6 @@
 import { GdcFile, hideModal, useCoreDispatch } from "@gff/core";
 import { Anchor, Button, Checkbox, Text } from "@mantine/core";
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 import { DownloadButton } from "../DownloadButtons";
 import { BaseModal } from "./BaseModal";
 
@@ -8,10 +8,14 @@ export const AgreementModal = ({
   openModal,
   file,
   dbGapList,
+  active,
+  setActive,
 }: {
   openModal: boolean;
   file: GdcFile;
   dbGapList?: readonly string[];
+  setActive?: React.Dispatch<SetStateAction<boolean>>;
+  active?: boolean;
 }): JSX.Element => {
   let dbGapLink =
     dbGapList.length === 1
@@ -103,10 +107,18 @@ export const AgreementModal = ({
           disabled={!checked}
           filename={file.fileName}
           extraParams={{ ids: file.fileId }}
-          endpoint="data"
+          endpoint="data?annotations=true&related_files=true"
           activeText="Processing"
           inactiveText="Download"
-          queryParams={`annotations=true&related_files=true&ids=${file.fileId}`}
+          queryParams={`data/${file.fileId}`}
+          options={{
+            method: "GET",
+            headers: {
+              Range: "bytes=0-0",
+            },
+          }}
+          setActive={setActive}
+          active={active}
         />
       </div>
     </BaseModal>

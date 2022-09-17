@@ -47,9 +47,11 @@ const download = async ({
   queryParams,
   Modal400,
   Modal403,
+  options,
 }: {
   endpoint: string;
   params: Record<string, any>;
+  options: Record<string, any>;
   method: string;
   done: () => void;
   dispatch: CoreDispatch;
@@ -125,6 +127,7 @@ const download = async ({
 
   getBody(iFrame).appendChild(form);
 
+  console.log(queryParams);
   if (!queryParams) {
     queryParams = Object.keys(params)
       .map((key) => key + "=" + params[key])
@@ -132,23 +135,7 @@ const download = async ({
   }
 
   timeoutPromise = setTimeout(() => {
-    // fetch(`${GDC_APP_API_AUTH}/${endpoint}?${queryParams}`, {
-    //   method: "GET",
-    fetch(`${GDC_APP_API_AUTH}/data/910c33ba-9f3e-4b6d-a5c9-20350d83f8a5`, {
-      method: "GET",
-      headers: {
-        Range: "bytes=0-0",
-      },
-      // headers: {}
-      // fetch(`${GDC_APP_API_AUTH}/data/${queryParams}`, {
-      //   method: "HEAD",
-      // fetch(`${GDC_APP_API_AUTH}/${endpoint}`, {
-      //   method: "POST",
-      //   body: JSON.stringify(params),
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-    }).then((res) => {
+    fetch(`${GDC_APP_API_AUTH}/${queryParams}`, options).then((res) => {
       cleanNotifications();
       if (res.status === 403) {
         done();
@@ -165,7 +152,7 @@ const download = async ({
         form.submit();
         setTimeout(() => {
           done();
-        }, 2000);
+        }, 1000);
       }
     });
   }, 1000);

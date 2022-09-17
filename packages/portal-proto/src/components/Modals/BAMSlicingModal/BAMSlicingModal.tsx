@@ -145,21 +145,25 @@ export const BAMSlicingModal = ({
                 attachment: true,
               };
 
-              const queryParams =
-                processedInput.regions.length > 1 &&
-                processedInput.regions
-                  .map((key) => `region` + "=" + key)
-                  .join("&");
+              const regionsParam =
+                processedInput.regions.length > 1
+                  ? processedInput.regions
+                      .map((key) => `region` + "=" + key)
+                      .join("&")
+                  : `region=${processedInput.regions[0]}`;
 
               download({
                 params,
-                endpoint: `v0/slicing/view/${file.fileId}`,
+                endpoint: `slicing/view/${file.fileId}`,
                 method: "POST",
                 done: () => setActive(false),
                 dispatch,
-                queryParams,
+                queryParams: `slicing/view/${file.fileId}?${regionsParam}`,
                 Modal400: Modals.BAMSlicingErrorModal,
                 Modal403: Modals.NoAccessModal,
+                options: {
+                  method: "HEAD",
+                },
               });
             }
 

@@ -2,21 +2,26 @@ import { Button } from "@mantine/core";
 import { FaDownload } from "react-icons/fa";
 import download from "src/utils/download";
 import { hideModal, Modals, useCoreDispatch } from "@gff/core";
-import { useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 
 interface DownloadButtonProps {
-  endpoint: string;
+  endpoint?: string;
   disabled?: boolean;
   inactiveText: string;
   activeText: string;
-  filename: string;
+  filename?: string;
   size?: number;
   format?: string;
   fields?: Array<string>;
   filters?: Record<string, any>;
-  extraParams: Record<string, string>;
+  extraParams?: Record<string, string>;
   method?: string;
   queryParams?: string;
+  options?: Record<string, any>;
+  customStyle?: string;
+  onClick?: () => void;
+  setActive?: Dispatch<SetStateAction<boolean>>;
+  active?: boolean;
 }
 
 export const DownloadButton: React.FC<DownloadButtonProps> = ({
@@ -32,19 +37,30 @@ export const DownloadButton: React.FC<DownloadButtonProps> = ({
   extraParams,
   method = "POST",
   queryParams,
+  options,
+  customStyle,
+  setActive,
+  onClick,
+  active,
 }: DownloadButtonProps) => {
-  const [active, setActive] = useState(false);
   const text = active ? activeText : inactiveText;
   const dispatch = useCoreDispatch();
   return (
     <Button
-      leftIcon={<FaDownload />}
+      leftIcon={inactiveText && <FaDownload />}
       disabled={disabled}
-      className={`text-base-lightest ${
-        disabled ? "bg-base" : "bg-primary hover:bg-primary-darker"
-      } `}
+      className={
+        customStyle ||
+        `text-base-lightest ${
+          disabled ? "bg-base" : "bg-primary hover:bg-primary-darker"
+        } `
+      }
       loading={active}
       onClick={() => {
+        if (onClick) {
+          onClick();
+          return;
+        }
         dispatch(hideModal());
         const params = {
           size,
@@ -66,10 +82,11 @@ export const DownloadButton: React.FC<DownloadButtonProps> = ({
           dispatch,
           Modal400: Modals.BAMSlicingErrorModal,
           Modal403: Modals.NoAccessModal,
+          options,
         });
       }}
     >
-      {text}
+      {text || <FaDownload title="download" />}
     </Button>
   );
 };
