@@ -1,4 +1,4 @@
-import { userCanDownloadFile } from "@/features/files/BAMSlicingButton/util";
+import { userCanDownloadFile } from "src/utils/userProjectUtils";
 import {
   GdcFile,
   useCoreSelector,
