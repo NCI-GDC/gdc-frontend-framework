@@ -217,29 +217,18 @@ describe("addFilter", () => {
   });
 
   test("should not add a duplicate filter to the current cohort", () => {
-    cohortFilterReducer(
+    const currentCohortFilters = cohortFilterReducer(
       { filters: populatedFilters as FilterSet },
       updateCohortFilter({
-        field: "disease_type",
+        field: "primary_site",
         operation: {
           operator: "includes",
-          field: "disease_type",
-          operands: ["ductal and lobular neoplasms"],
+          field: "primary_site",
+          operands: ["bronchus and lung"],
         },
       }),
     );
-    const currentCohortFilters2 = cohortFilterReducer(
-      { filters: populatedFilters as FilterSet },
-      updateCohortFilter({
-        field: "disease_type",
-        operation: {
-          operator: "includes",
-          field: "disease_type",
-          operands: ["ductal and lobular neoplasms"],
-        },
-      }),
-    );
-    expect(currentCohortFilters2).toEqual({ filters: TwoPopulatedFilters });
+    expect(currentCohortFilters).toEqual({ filters: populatedFilters });
   });
 
   test("should remove filter from the current cohort", () => {
