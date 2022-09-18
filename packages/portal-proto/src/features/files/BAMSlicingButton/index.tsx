@@ -8,7 +8,7 @@ import {
 } from "@gff/core";
 import { Button } from "@mantine/core";
 import { FaCut } from "react-icons/fa";
-import { userCanDownloadFile } from "../../../utils/userProjectUtils";
+import { userCanDownloadFile } from "src/utils/userProjectUtils";
 
 export const BAMSlicingButton = ({
   isActive,

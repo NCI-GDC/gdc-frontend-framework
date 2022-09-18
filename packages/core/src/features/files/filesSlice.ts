@@ -330,7 +330,7 @@ export interface GdcFile {
       readonly fileId: string;
       readonly access: AccessType;
       readonly acl: ReadonlyArray<string>;
-      readonly project_id: string;
+      readonly project_id?: string;
       readonly createdDatetime: string;
       readonly updatedDatetime: string;
       readonly submitterId: string;
@@ -491,7 +491,7 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
             fileId: file.file_id,
             acl: hit.acl,
             access: asAccessType(hit.access),
-            project_id: hit.cases?.[0].project?.project_id || "",
+            project_id: hit.cases?.[0].project?.project_id,
             state: file.state,
             submitterId: file.submitter_id,
             createdDatetime: file.created_datetime,

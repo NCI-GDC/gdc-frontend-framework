@@ -16,7 +16,11 @@ import { get } from "lodash";
 import dynamic from "next/dynamic";
 import fileSize from "filesize";
 import tw from "tailwind-styled-components";
-import { AddToCartButton, removeFromCart } from "../cart/updateCart";
+import {
+  AddToCartButton,
+  removeFromCart,
+  RemoveFromCartButton,
+} from "../cart/updateCart";
 import {
   formatDataForHorizontalTable,
   mapGdcFileToCartFile,
@@ -115,6 +119,9 @@ export const FileView: React.FC<FileViewProps> = ({
   const modal = useCoreSelector((state) => selectCurrentModal(state));
   const [bamActive, setBamActive] = useState(false);
   const [fileToDownload, setfileToDownload] = useState(file);
+
+  const isFileInCart = fileInCart(currentCart, file.fileId);
+
   const GenericLink = ({
     path,
     query,
@@ -146,7 +153,7 @@ export const FileView: React.FC<FileViewProps> = ({
     downstream_analyses?.forEach((byWorkflowType) => {
       const workflowType = byWorkflowType?.workflow_type;
       byWorkflowType?.output_files?.forEach((outputFile) => {
-        const isFileInCart = fileInCart(currentCart, outputFile.fileId);
+        const isOutputFileInCart = fileInCart(currentCart, outputFile.fileId);
         const mappedFileObj = mapGdcFileToCartFile([outputFile]);
         tableRows.push({
           file_name: (
@@ -164,12 +171,12 @@ export const FileView: React.FC<FileViewProps> = ({
             <div className="flex gap-3">
               <Button
                 className={`${
-                  isFileInCart
+                  isOutputFileInCart
                     ? "bg-secondary-min text-secondary-contrast-min"
                     : "bg-base-lightest text-base-min"
                 } border border-base-darkest rounded p-2 hover:bg-base-darkest hover:text-base-contrast-min`}
                 onClick={() => {
-                  isFileInCart
+                  isOutputFileInCart
                     ? removeFromCart(mappedFileObj, currentCart, dispatch)
                     : addToCart(mappedFileObj, currentCart, dispatch);
                 }}
@@ -301,7 +308,11 @@ export const FileView: React.FC<FileViewProps> = ({
   return (
     <div className="p-4 text-primary-content w-10/12 mt-20 m-auto">
       <div className="flex justify-end pb-5 gap-2">
-        <AddToCartButton files={[file]} />
+        {!isFileInCart ? (
+          <AddToCartButton files={[file]} />
+        ) : (
+          <RemoveFromCartButton files={[file]} />
+        )}
         {file.dataFormat === "BAM" &&
           file.dataType === "Aligned Reads" &&
           file?.index_files?.length > 0 && (

@@ -1,8 +1,8 @@
 import {
   hideModal,
   modalReducer,
-  showModal,
   Modals,
+  showModal,
   selectCurrentModal,
 } from "./modalsSlice";
 import { getInitialCoreState } from "../../store.unit.test";

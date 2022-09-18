@@ -12,7 +12,6 @@ import {
   useCoreDispatch,
   CartFile,
 } from "@gff/core";
-import { allFilesInCart } from "src/utils";
 
 interface OverLimitNotificationProps {
   readonly numFilesInCart: number;
@@ -222,19 +221,12 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
 
-  const isFileInCart = allFilesInCart(currentCart, files);
-
   return (
     <Button
       className="text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
-      onClick={() =>
-        !isFileInCart
-          ? addToCart(files, currentCart, dispatch)
-          : removeFromCart(files, currentCart, dispatch)
-      }
+      onClick={() => addToCart(files, currentCart, dispatch)}
     >
-      <CartIcon className="mr-2" />{" "}
-      {!isFileInCart ? "Add to Cart" : "Remove from Cart"}
+      <CartIcon className="mr-2" /> Add to Cart
     </Button>
   );
 };
@@ -261,7 +253,10 @@ export const RemoveFromCartButton: React.FC<RemoveFromCartButtonProps> = ({
       <TrashIcon />
     </ActionIcon>
   ) : (
-    <Button onClick={() => removeFromCart(files, currentCart, dispatch)}>
+    <Button
+      onClick={() => removeFromCart(files, currentCart, dispatch)}
+      className="text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
+    >
       <CartIcon className="mr-2" />
       Remove From Cart
     </Button>

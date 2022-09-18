@@ -127,7 +127,6 @@ const download = async ({
 
   getBody(iFrame).appendChild(form);
 
-  console.log(queryParams);
   if (!queryParams) {
     queryParams = Object.keys(params)
       .map((key) => key + "=" + params[key])
