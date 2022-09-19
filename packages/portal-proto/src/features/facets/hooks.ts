@@ -1,4 +1,6 @@
 import {
+  CoreState,
+  CoreDispatch,
   Operation,
   EnumValueExtractorHandler,
   EnumOperandValue,
@@ -32,8 +34,6 @@ import isEqual from "lodash/isEqual";
 import { EnumFacetResponse, FacetResponse } from "@/features/facets/types";
 import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook } from "react-redux";
-import { CoreState } from "@gff/core/dist/dts/reducers";
-import { CoreDispatch } from "@gff/core/dist/dts";
 
 /**
  * Filter selector for all the facet filters
