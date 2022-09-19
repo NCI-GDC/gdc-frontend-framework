@@ -173,10 +173,10 @@ const ColorPaletteModal: React.FC<ColorPaletteModalProps> = ({
       </div>
       <hr className="m-4" />
       <div className="flex justify-end gap-x-2">
-        <Button className="bg-nci-gray" onClick={closeWithSaving}>
+        <Button className="bg-primary" onClick={closeWithSaving}>
           Cancel
         </Button>
-        <Button className="bg-nci-gray" onClick={savePalette}>
+        <Button className="bg-primary" onClick={savePalette}>
           Save
         </Button>
       </div>

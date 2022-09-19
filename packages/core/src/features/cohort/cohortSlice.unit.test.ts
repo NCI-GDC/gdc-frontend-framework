@@ -83,6 +83,10 @@ describe("selectCurrentCohort", () => {
         availableCohorts: [],
         comparisonCohorts: [],
         builderConfig: {},
+        caseSet: {
+          status: "uninitialized",
+          caseSetId: { mode: "and", root: {} },
+        },
       },
     });
     expect(currentCohort).toEqual("asdf");
@@ -106,6 +110,10 @@ describe("selectCurrentCohort", () => {
         availableCohorts: [],
         comparisonCohorts: [],
         builderConfig: {},
+        caseSet: {
+          status: "uninitialized",
+          caseSetId: { mode: "and", root: {} },
+        },
       },
     });
     expect(currentCohort).toBeUndefined();
@@ -131,6 +139,10 @@ describe("selectCurrentCohortFilters", () => {
         availableCohorts: [],
         comparisonCohorts: [],
         builderConfig: {},
+        caseSet: {
+          status: "uninitialized",
+          caseSetId: { mode: "and", root: {} },
+        },
       },
     });
     expect(currentCohortFilters).toEqual(populatedFilters);
@@ -162,6 +174,10 @@ describe("selectCurrentCohortFilters", () => {
           availableCohorts: [],
           comparisonCohorts: [],
           builderConfig: {},
+          caseSet: {
+            status: "uninitialized",
+            caseSetId: { mode: "and", root: {} },
+          },
         },
       },
       "primary_site",

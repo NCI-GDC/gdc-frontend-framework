@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Switch,
@@ -24,6 +24,7 @@ import { createKeyboardAccessibleFunction } from "src/utils";
 import { COLOR_MAP, DEFAULT_FIELDS, FACET_SORT, TABS } from "./constants";
 import { toDisplayName } from "./utils";
 import tailwindConfig from "../../../tailwind.config";
+import FacetExpander from "../facets/FacetExpander";
 
 interface CDaveField {
   readonly field_type: string;
@@ -81,7 +82,7 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
         )}
         tabIndex={0}
         role="button"
-        className="text-lg text-nci-blue-darkest cursor-pointer bg-nci-gray-lightest flex items-center p-2 sticky top-0 z-10"
+        className="text-md text-primary-contrast-lighter cursor-pointer bg-primary-lighter font-heading font-bold  flex items-center p-2 sticky top-0 z-10"
         aria-controls={`cdave-control-group-${name}`}
         aria-expanded={groupOpen}
       >
@@ -89,7 +90,7 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
       </span>
       <Collapse in={groupOpen} id={`cdave-control-group-${name}`}>
         <div className="flex flex-col">
-          <ul className="bg-white">
+          <ul className="bg-base-max">
             {visibleFields.map((field) => (
               <FieldControl
                 key={field.full}
@@ -100,20 +101,11 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
               />
             ))}
           </ul>
-          <span
-            onClick={() => setFieldsCollapsed(!fieldsCollapsed)}
-            onKeyPress={createKeyboardAccessibleFunction(() =>
-              setFieldsCollapsed(!fieldsCollapsed),
-            )}
-            tabIndex={0}
-            role="button"
-            className="cursor-pointer mr-2 self-end"
-          >
-            {filteredFields.length > 5 &&
-              (fieldsCollapsed
-                ? `${filteredFields.length - 5} More...`
-                : "Less...")}
-          </span>
+          <FacetExpander
+            remainingValues={filteredFields.length - 5}
+            isGroupExpanded={!fieldsCollapsed}
+            onShowChanged={() => setFieldsCollapsed(!fieldsCollapsed)}
+          />
         </div>
       </Collapse>
     </>
@@ -131,7 +123,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
   field,
   updateFields,
   activeFields,
-  searchTerm,
+  searchTerm = "",
 }: FieldControlProps) => {
   const [checked, setChecked] = useState(DEFAULT_FIELDS.includes(field.full));
 
@@ -146,7 +138,10 @@ const FieldControl: React.FC<FieldControlProps> = ({
       {searchTerm ? (
         <>
           <div className="flex justify-between">
-            <label htmlFor={`switch-${field.full}`}>
+            <label
+              className="font-content font-medium text-md"
+              htmlFor={`switch-${field.full}`}
+            >
               <Highlight highlight={searchTerm}>{displayName}</Highlight>
             </label>
             <Switch
@@ -179,7 +174,9 @@ const FieldControl: React.FC<FieldControlProps> = ({
               id={`switch-${field.full}`}
             />
           </div>
-          <Highlight highlight={searchTerm}>{field.description}</Highlight>
+          <Highlight highlight={searchTerm}>
+            {field?.description || ""}
+          </Highlight>
         </>
       ) : (
         <div className="flex justify-between cursor-pointer bg-none">
@@ -210,7 +207,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
                   ),
                 },
                 "&:checked": {
-                  color:
+                  backgroundColor:
                     tailwindConfig.theme.extend.colors[
                       COLOR_MAP[field.field_type]
                     ]?.DEFAULT,
@@ -268,8 +265,10 @@ const Controls: React.FC<ControlPanelProps> = ({
   return (
     <div
       className={`${
-        controlsExpanded ? "w-80 bg-white overflow-scroll -ml-2" : ""
-      } flex flex-col min-h-[560px] max-h-[calc(100vh-50px)]`}
+        controlsExpanded
+          ? "w-80 bg-base-max shadow-md overflow-y-scroll -ml-2"
+          : ""
+      } flex flex-col min-h-[560px] max-h-screen`}
     >
       <Tooltip
         withArrow
@@ -281,6 +280,7 @@ const Controls: React.FC<ControlPanelProps> = ({
           aria-label={"Collapse/Expand controls"}
           aria-controls={"cdave-control-panel"}
           aria-expanded={controlsExpanded}
+          className="text-base"
         >
           {controlsExpanded ? <DoubleLeftIcon /> : <DoubleRightIcon />}
         </ActionIcon>

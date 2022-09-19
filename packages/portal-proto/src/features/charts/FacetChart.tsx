@@ -10,6 +10,7 @@ import {
   selectCurrentCohortFilters,
   useCoreDispatch,
   useCoreSelector,
+  fieldNameToTitle,
 } from "@gff/core";
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
@@ -103,7 +104,7 @@ const processChartData = (
     ],
     tickvals: showXLabels ? xvals : [],
     ticktext: showXLabels ? xlabels : [],
-    title: convertFieldToName(field),
+    title: fieldNameToTitle(field),
     filename: field,
     yAxisTitle: "# of Cases",
   };
@@ -137,7 +138,7 @@ export const FacetChart: React.FC<FacetProps> = ({
     <div className="flex flex-col">
       {showTitle ? (
         <ChartTitleBar
-          title={convertFieldToName(field)}
+          title={fieldNameToTitle(field)}
           divId={chartDivId}
           filename={field}
           jsonData={{}}
@@ -155,18 +156,11 @@ export const FacetChart: React.FC<FacetProps> = ({
         />
       ) : (
         <div className="flex flex-row items-center justify-center w-100">
-          <Loader color="gray" size={height ? height : 24} />
+          <Loader color="primary" size={height ? height : 24} />
         </div>
       )}
     </div>
   );
-};
-
-const convertFieldToName = (field: string): string => {
-  const property = field.split(".").pop();
-  const tokens = property.split("_");
-  const capitalizedTokens = tokens.map((s) => s[0].toUpperCase() + s.substr(1));
-  return capitalizedTokens.join(" ");
 };
 
 function truncateString(str, n) {

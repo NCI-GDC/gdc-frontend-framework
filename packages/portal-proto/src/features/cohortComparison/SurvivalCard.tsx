@@ -1,10 +1,10 @@
 import { useEffect } from "react";
-import { Paper, Tooltip } from "@mantine/core";
+import { Alert, Loader, Paper, Tooltip } from "@mantine/core";
 import {
-  useSurvivalPlot,
   useCoreSelector,
   selectAvailableCohortByName,
   buildCohortGqlOperator,
+  useGetSurvivalPlotQuery,
 } from "@gff/core";
 import SurvivalPlot from "../charts/SurvivalPlot";
 import makeIntersectionFilters from "./makeIntersectionFilters";
@@ -49,9 +49,10 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
     cohort2Filters,
     caseIds,
   );
-  const { data } = useSurvivalPlot({
-    filters: [filters.cohort1, filters.cohort2],
-  });
+  const { data, isUninitialized, isFetching, isError } =
+    useGetSurvivalPlotQuery({
+      filters: [filters.cohort1, filters.cohort2],
+    });
 
   useEffect(() => {
     setSurvivalPlotSelectable(data?.survivalData.length !== 0);
@@ -73,10 +74,16 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
         </div>
       ) : (
         <>
-          <SurvivalPlot data={data} hideLegend />
-          <table className="bg-white w-full text-left text-nci-gray-darker">
+          {isError ? (
+            <Alert>{"Something's gone wrong"}</Alert>
+          ) : isFetching || isUninitialized ? (
+            <Loader />
+          ) : (
+            <SurvivalPlot data={data} hideLegend />
+          )}
+          <table className="bg-base-lightest w-full text-left text-primary-content-darker">
             <thead>
-              <tr className="bg-nci-gray-lightest">
+              <tr className="bg-accent-warm-lightest">
                 <th>
                   <Tooltip label={tooltipLabel}>
                     <span className="underline decoration-dashed">

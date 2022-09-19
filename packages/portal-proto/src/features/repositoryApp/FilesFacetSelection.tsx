@@ -12,7 +12,7 @@ const FilesFacetSelection = (): JSX.Element => {
 
   return (
     <FacetSelection
-      title={"Add Cohort Filter"}
+      title={"Add a File Filter"}
       facetType="files"
       handleFilterSelected={handleFilterSelected}
       usedFacets={useAppSelector((state) =>

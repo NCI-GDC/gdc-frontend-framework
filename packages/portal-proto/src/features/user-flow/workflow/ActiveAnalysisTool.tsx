@@ -64,8 +64,8 @@ const ActiveAnalysisTool: React.FC<AnalysisToolInfo> = ({
         setCohortSelectionOpen={setCohortSelectionOpen}
         cohortSelectionOpen={cohortSelectionOpen}
         setActiveApp={handleAppSelected}
+        rightComponent={appId === "CohortBuilder" ? <SearchInput /> : null}
       />
-
       {cohortSelectionOpen ? (
         <AdditionalCohortSelection
           app={appId}
@@ -73,12 +73,7 @@ const ActiveAnalysisTool: React.FC<AnalysisToolInfo> = ({
           setActiveApp={handleAppSelected}
         />
       ) : (
-        <>
-          <div className="w-10/12 m-auto">
-            {appId === "CohortBuilder" ? <SearchInput /> : null}
-          </div>
-          <div className="mx-2 h-full overflow-hidden">{analysisApp}</div>
-        </>
+        <div className="mx-2 h-full overflow-hidden">{analysisApp}</div>
       )}
     </Suspense>
   );

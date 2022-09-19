@@ -1,0 +1,120 @@
+import { useState, useEffect } from "react";
+import { Card, ActionIcon, Tooltip } from "@mantine/core";
+import { useScrollIntoView } from "@mantine/hooks";
+import {
+  MdBarChart as BarChartIcon,
+  MdTrendingDown as SurvivalChartIcon,
+  MdOutlineClose as CloseIcon,
+} from "react-icons/md";
+import {
+  useCoreSelector,
+  selectFacetDefinitionByName,
+  Buckets,
+  Stats,
+} from "@gff/core";
+import ContinuousData from "./ContinuousData";
+import CategoricalData from "./CategoricalData";
+import { ChartTypes } from "../types";
+import { CONTINUOUS_FACET_TYPES } from "../constants";
+import { toDisplayName } from "../utils";
+
+interface CDaveCardProps {
+  readonly field: string;
+  readonly data: Buckets | Stats;
+  readonly updateFields: (field: string) => void;
+  readonly initialDashboardRender: boolean;
+}
+
+const CDaveCard: React.FC<CDaveCardProps> = ({
+  field,
+  data,
+  updateFields,
+  initialDashboardRender,
+}: CDaveCardProps) => {
+  const [chartType, setChartType] = useState<ChartTypes>("histogram");
+  const { scrollIntoView, targetRef } = useScrollIntoView();
+  const facet = useCoreSelector((state) =>
+    selectFacetDefinitionByName(state, `cases.${field}`),
+  );
+
+  const continuous = CONTINUOUS_FACET_TYPES.includes(facet?.type);
+  const noData = continuous
+    ? (data as Stats)?.stats?.count === 0
+    : data !== undefined &&
+      (data as Buckets).buckets.every((bucket) => bucket.key === "_missing");
+
+  const fieldName = toDisplayName(field);
+
+  useEffect(() => {
+    if (!initialDashboardRender) {
+      scrollIntoView();
+    }
+    // this should only happen on inital component mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <Card ref={(ref) => (targetRef.current = ref)}>
+      <div className="flex justify-between mb-1">
+        <h2>{fieldName}</h2>
+        <div className="flex gap-1">
+          <Tooltip label={"Histogram"} withArrow>
+            <ActionIcon
+              variant="outline"
+              className={
+                chartType === "histogram" && !noData
+                  ? "bg-primary-darkest text-primary-contrast-darkest"
+                  : "border-primary-darkest text-primary-content-darkest"
+              }
+              onClick={() => setChartType("histogram")}
+              disabled={noData}
+            >
+              <BarChartIcon />
+            </ActionIcon>
+          </Tooltip>
+          <Tooltip label={"Survival Plot"} withArrow>
+            <ActionIcon
+              variant="outline"
+              className={
+                chartType === "survival"
+                  ? "bg-primary-darkest text-primary-contrast-darkest"
+                  : "border-primary-darkest text-primary-content-darkest"
+              }
+              onClick={() => setChartType("survival")}
+              disabled={noData}
+            >
+              <SurvivalChartIcon />
+            </ActionIcon>
+          </Tooltip>
+          <Tooltip label={"Remove Card"} withArrow>
+            <ActionIcon
+              onClick={() => updateFields(field)}
+              className="text-base-contrast"
+            >
+              <CloseIcon />
+            </ActionIcon>
+          </Tooltip>
+        </div>
+      </div>
+      {continuous ? (
+        <ContinuousData
+          initialData={(data as Stats)?.stats}
+          field={field}
+          fieldName={fieldName}
+          chartType={chartType}
+          noData={noData}
+        />
+      ) : (
+        <CategoricalData
+          initialData={(data as Buckets)?.buckets}
+          field={field}
+          fieldName={fieldName}
+          chartType={chartType}
+          noData={noData}
+        />
+      )}
+    </Card>
+  );
+};
+
+export default CDaveCard;

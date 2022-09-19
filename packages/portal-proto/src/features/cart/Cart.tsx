@@ -8,7 +8,7 @@ import AuthorizationTable from "./AuthorizationTable";
 
 const H2 = tw.h2`
   uppercase
-  text-nci-blue-darkest
+  text-primary-content-darkest
   font-montserrat
   text-xl
   font-medium
@@ -16,7 +16,7 @@ const H2 = tw.h2`
 `;
 
 const H3 = tw.h3`
-  text-nci-blue-darkest
+  text-primary-content-darkest
   font-montserrat
   text-xl
   font-normal
@@ -26,7 +26,7 @@ const P = tw.p`
   pt-2
   pb-4
   font-montserrat
-  text-nci-gray-darkest
+  text-primary-content-darkest
 `;
 
 const Cart: React.FC = () => {
@@ -38,7 +38,7 @@ const Cart: React.FC = () => {
       <CartHeader summaryData={summaryData} />
       <Grid className="mt-8 mx-2">
         <Grid.Col span={6}>
-          <div className="bg-white p-4 border border-solid border-nci-gray-lighter">
+          <div className="bg-base-lightest p-4 border border-solid border-base-lighter">
             <H2>How to download files in my Cart?</H2>
             <H3>Download Manifest:</H3>
             <P>
@@ -47,7 +47,7 @@ const Cart: React.FC = () => {
                 href="https://gdc.cancer.gov/access-data/gdc-data-transfer-tool"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-nci-blue"
+                className="text-primary-content"
               >
                 GDC Data Transfer Tool
               </a>
@@ -63,7 +63,7 @@ const Cart: React.FC = () => {
                 href="https://gdc.cancer.gov/about-data/gdc-data-processing/gdc-reference-files"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-nci-blue"
+                className="text-primary-content"
               >
                 GDC Reference Files
               </a>{" "}

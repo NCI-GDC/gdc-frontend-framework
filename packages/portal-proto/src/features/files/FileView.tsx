@@ -1,9 +1,15 @@
 import React, { useState } from "react";
-import { GdcFile, HistoryDefaults } from "@gff/core";
+import {
+  GdcFile,
+  HistoryDefaults,
+  Modals,
+  useCoreSelector,
+  selectCurrentModal,
+} from "@gff/core";
 import ReactModal from "react-modal";
-import { HorizontalTable } from "../../components/HorizontalTable";
+import { HorizontalTable } from "@/components/HorizontalTable";
 import { Table, Button } from "@mantine/core";
-import { FaShoppingCart, FaDownload, FaCut } from "react-icons/fa";
+import { FaShoppingCart, FaDownload } from "react-icons/fa";
 import { get } from "lodash";
 import dynamic from "next/dynamic";
 import fileSize from "filesize";
@@ -12,6 +18,22 @@ import { AddToCartButton } from "../cart/updateCart";
 import { formatDataForHorizontalTable, parseSlideDetailsInfo } from "./utils";
 import Link from "next/link";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
+import { BAMSlicingModal } from "@/components/Modals/BAMSlicingModal/BAMSlicingModal";
+import { BAMSlicingErrorModal } from "@/components/Modals/BAMSlicingModal/BAMSlicingErrorModal";
+import { NoAccessToProjectModal } from "@/components/Modals/NoAccessToProjectModal";
+import { BAMSlicingButton } from "@/features/files/BAMSlicingButton";
+
+export const DownloadButton = tw.button`
+bg-base-lightest
+border
+border-base-darkest
+rounded
+p-1
+hover:bg-base-darkest
+hover:text-base-contrast-darkest
+focus:bg-base-darkest
+focus:text-base-contrast-darkest
+`;
 
 const ImageViewer = dynamic(() => import("../../components/ImageViewer"), {
   ssr: false,
@@ -23,7 +45,7 @@ export interface FileViewProps {
 }
 
 const FullWidthDiv = tw.div`
-bg-white w-full mt-4
+bg-base-lightest w-full mt-4
 `;
 
 const TitleText = tw.h2`
@@ -37,6 +59,7 @@ interface TempTableProps {
     readonly tableRows: any[];
   };
 }
+
 export const TempTable = ({ tableData }: TempTableProps): JSX.Element => {
   if (!(tableData?.headers?.length > 0 && tableData?.tableRows?.length > 0)) {
     console.error("bad table data", tableData);
@@ -47,7 +70,7 @@ export const TempTable = ({ tableData }: TempTableProps): JSX.Element => {
       <thead>
         <tr>
           {tableData.headers.map((text, index) => (
-            <th key={index} className="bg-nci-gray-lighter">
+            <th key={index} className="bg-base-lighter">
               {text}
             </th>
           ))}
@@ -57,7 +80,9 @@ export const TempTable = ({ tableData }: TempTableProps): JSX.Element => {
         {tableData.tableRows.map((row, index) => (
           <tr
             key={index}
-            className={index % 2 ? "bg-white" : "bg-gdc-blue-warm-lightest"}
+            className={
+              index % 2 ? "bg-base-lightest" : "bg-accent-warm-lightest"
+            }
           >
             {Object.values(row).map((item, index) => (
               <td key={index} className="text-sm p-1 pl-2.5">
@@ -76,6 +101,8 @@ export const FileView: React.FC<FileViewProps> = ({
   fileHistory,
 }: FileViewProps) => {
   const [imageId] = useState(file?.fileId);
+  const modal = useCoreSelector((state) => selectCurrentModal(state));
+
   const GenericLink = ({
     path,
     query,
@@ -93,7 +120,7 @@ export const FileView: React.FC<FileViewProps> = ({
     }
     return (
       <Link href={hrefObj}>
-        <a className="text-gdc-blue hover:underline">{text}</a>
+        <a className="text-utility-link underline">{text}</a>
       </Link>
     );
   };
@@ -118,12 +145,12 @@ export const FileView: React.FC<FileViewProps> = ({
           file_size: fileSize(obj.file_size),
           action: (
             <>
-              <button className="mr-2 mb-2 bg-white border border-black rounded p-1 hover:bg-black hover:text-white focus:bg-black focus:text-white">
+              <DownloadButton className="mr-2">
                 <FaShoppingCart title="Add to Cart" />
-              </button>
-              <button className="bg-white border border-black rounded p-1 hover:bg-black hover:text-white focus:bg-black focus:text-white">
+              </DownloadButton>
+              <DownloadButton>
                 <FaDownload title="Download" />
-              </button>
+              </DownloadButton>
             </>
           ),
         });
@@ -143,6 +170,18 @@ export const FileView: React.FC<FileViewProps> = ({
       tableRows: tableRows,
     };
     return <TempTable tableData={formatedTableData} />;
+  };
+
+  const getAnnotationsLinkParams = (
+    annotations: readonly string[],
+    case_id: string,
+  ) => {
+    if (!annotations) return null;
+
+    if (annotations.length === 1) {
+      return `https://portal.gdc.cancer.gov/annotations/${annotations[0]}`;
+    }
+    return `https://portal.gdc.cancer.gov/annotations?filters={"content":[{"content":{"field":"annotations.entity_id","value":["${case_id}"]},"op":"in"}],"op":"and"}`;
   };
 
   const AssociatedCB = ({
@@ -182,36 +221,20 @@ export const FileView: React.FC<FileViewProps> = ({
         entityQuery = { bioId: entity.entity_id };
       }
 
-      let annotationsLink = <>0</>;
-      if (caseData?.annotations?.length === 1) {
-        annotationsLink = (
-          <GenericLink
-            path={`/annotations/${caseData?.annotations[0]}`}
-            text={"1"}
-          />
-        );
-      } else if (caseData?.annotations?.length > 1) {
-        annotationsLink = (
-          <GenericLink
-            path={`/annotations`}
-            query={{
-              filters: JSON.stringify({
-                content: [
-                  {
-                    content: {
-                      field: "annotations.entity_id",
-                      value: [entity.case_id],
-                    },
-                    op: "in",
-                  },
-                ],
-                op: "and",
-              }),
-            }}
-            text={`${caseData?.annotations?.length}`}
-          />
-        );
-      }
+      const url = getAnnotationsLinkParams(
+        caseData?.annotations,
+        caseData.case_id,
+      );
+
+      const annotationsLink = url ? (
+        <Link href={url} passHref>
+          <a className="text-utility-link underline" target={"_blank"}>
+            {caseData.annotations.length}
+          </a>
+        </Link>
+      ) : (
+        0
+      );
 
       tableRows.push({
         entity_id: (
@@ -245,29 +268,27 @@ export const FileView: React.FC<FileViewProps> = ({
     };
     return <TempTable tableData={formatedTableData} />;
   };
+
+  const [bamActive, setBamActive] = useState(false);
+
   return (
-    <div className="p-4 text-nci-gray w-10/12 m-auto">
-      <div className="text-right pb-5">
+    <div className="p-4 text-primary-content w-10/12 mt-20 m-auto">
+      <div className="flex justify-end pb-5 gap-2">
         <AddToCartButton files={[file]} />
         {file.dataFormat === "BAM" &&
           file.dataType === "Aligned Reads" &&
           file?.index_files?.length > 0 && (
-            <Button
-              className="m-1 text-nci-gray-lightest bg-nci-blue hover:bg-nci-blue-darker"
-              leftIcon={<FaCut />}
-            >
-              BAM Slicing
-            </Button>
+            <BAMSlicingButton isActive={bamActive} file={file} />
           )}
         <Button
-          className="m-1 text-nci-gray-lightest bg-nci-blue hover:bg-nci-blue-darker"
+          className="text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
           leftIcon={<FaDownload />}
         >
           Download
         </Button>
       </div>
       <div className="flex">
-        <div className="flex-auto bg-white mr-4">
+        <div className="flex-auto bg-base-lightest mr-4">
           <TitleText>File Properties</TitleText>
           <HorizontalTable
             tableData={formatDataForHorizontalTable(file, [
@@ -306,7 +327,7 @@ export const FileView: React.FC<FileViewProps> = ({
             ])}
           />
         </div>
-        <div className="w-1/3 bg-white h-full">
+        <div className="w-1/3 bg-base-lightest h-full">
           <TitleText>Data Information</TitleText>
           <HorizontalTable
             tableData={formatDataForHorizontalTable(file, [
@@ -348,7 +369,7 @@ export const FileView: React.FC<FileViewProps> = ({
             associated_entities={file?.associated_entities}
           />
         ) : (
-          <h3 className="p-2 mx-4 text-nci-gray-darker">
+          <h3 className="p-2 mx-4 text-primary-content-darker">
             No cases or biospecimen found.
           </h3>
         )}
@@ -356,7 +377,7 @@ export const FileView: React.FC<FileViewProps> = ({
       {file?.analysis && (
         <>
           <div className="bg-grey mt-4 flex gap-10">
-            <div className="flex-1 bg-white">
+            <div className="flex-1 bg-base-lightest">
               <TitleText>Analysis</TitleText>
               <HorizontalTable
                 tableData={formatDataForHorizontalTable(file, [
@@ -412,7 +433,7 @@ export const FileView: React.FC<FileViewProps> = ({
                 ])}
               />
             </div>
-            <div className="flex-1 bg-white">
+            <div className="flex-1 bg-base-lightest">
               <TitleText>Reference Genome</TitleText>
               <HorizontalTable
                 tableData={[
@@ -467,14 +488,14 @@ export const FileView: React.FC<FileViewProps> = ({
           <TitleText className="float-left mt-3">File Versions</TitleText>
           <div className="float-right my-2 mr-3">
             <Button
-              color={"gray"}
-              className="mr-2 text-nci-gray-lightest bg-nci-blue hover:bg-nci-blue-darker"
+              color={"base"}
+              className="mr-2 text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
             >
               <FaDownload className="mr-2" /> Download JSON
             </Button>
             <Button
-              color={"gray"}
-              className="text-nci-gray-lightest bg-nci-blue hover:bg-nci-blue-darker"
+              color={"base"}
+              className="text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
             >
               <FaDownload className="mr-2" /> Download TSV
             </Button>
@@ -499,7 +520,7 @@ export const FileView: React.FC<FileViewProps> = ({
                     <>
                       {obj.uuid}
                       {index + 1 === length && (
-                        <span className="inline-block ml-2 border rounded-full bg-nci-blue-darker text-white font-bold text-xs py-0.5 px-1">
+                        <span className="inline-block ml-2 border rounded-full bg-primary-darker text-white font-bold text-xs py-0.5 px-1">
                           Current Version
                         </span>
                       )}
@@ -511,6 +532,16 @@ export const FileView: React.FC<FileViewProps> = ({
             }}
           />
         </FullWidthDiv>
+      )}
+      {modal === Modals.NoAccessToProjectModal && (
+        <NoAccessToProjectModal openModal />
+      )}
+      {modal === Modals.BAMSlicingModal && (
+        <BAMSlicingModal openModal file={file} setActive={setBamActive} />
+      )}
+
+      {modal === Modals.BAMSlicingErrorModal && (
+        <BAMSlicingErrorModal openModal />
       )}
     </div>
   );

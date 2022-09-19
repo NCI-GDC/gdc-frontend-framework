@@ -1,8 +1,9 @@
-import Image from "next/image";
+import { Image } from "@/components/Image";
+
 const NullApp: React.FC = () => {
   return (
-    <div className=" flex flex-col bg-nci-gray-lighter items-center justify-center  w-100 h-screen/2 m-4 rounded-lg shadow-lg">
-      <div className="w-[320] justify-center font-medium font-montserrat text-2xl text-nci-gray-darker">
+    <div className=" flex flex-col bg-base-lighter items-center justify-center  w-100 h-screen/2 m-4 rounded-lg shadow-lg">
+      <div className="w-[320] justify-center font-medium font-montserrat text-2xl text-primary-content-darker">
         This section is not available.
       </div>
       <Image

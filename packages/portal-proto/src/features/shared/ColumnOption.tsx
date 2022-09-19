@@ -4,7 +4,7 @@ import { ItemTypes } from "./ItemTypes";
 import type { XYCoord, Identifier } from "dnd-core";
 import _ from "lodash";
 
-const columnStyles = `cursor-move bg-white mb-2 p-1 border-1`;
+const columnStyles = `cursor-move bg-base-lightest mb-2 p-1 border-1`;
 
 export interface ColumnProps {
   id: any;

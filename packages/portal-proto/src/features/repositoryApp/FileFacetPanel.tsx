@@ -1,5 +1,5 @@
 import { EnumFacet } from "@/features/facets/EnumFacet";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   EnumOperandValue,
   FacetDefinition,
@@ -11,6 +11,7 @@ import {
   useCoreSelector,
   useFacetDictionary,
   usePrevious,
+  fieldNameToTitle,
 } from "@gff/core";
 import {
   useAppSelector,
@@ -39,7 +40,6 @@ import {
   removeRepositoryFilter,
   clearRepositoryFilters,
 } from "./repositoryFiltersSlice";
-import { convertFieldToName } from "@/features/facets/utils";
 
 const useRepositoryEnumData = (
   field: string,
@@ -54,7 +54,7 @@ const useRepositoryEnumData = (
     useRepositoryFilters,
   );
 
-export const FileFacetPanel = () => {
+export const FileFacetPanel = (): JSX.Element => {
   const config = useAppSelector(selectRepositoryConfig);
   const { isSuccess: isDictionaryReady } = useFacetDictionary();
   const facets = useCoreSelector((state) =>
@@ -82,24 +82,32 @@ export const FileFacetPanel = () => {
     selectCurrentCohortFilterSet(state),
   );
 
-  const appDispatch = useAppDispatch();
   const prevCohortFilters = usePrevious(cohortFilters);
 
-  const handleFilterSelected = (filter: string) => {
-    setOpened(false);
-    appDispatch(addFilter({ facetName: filter }));
-  };
+  const handleFilterSelected = useCallback(
+    (filter: string) => {
+      setOpened(false);
+      dispatch(addFilter({ facetName: filter }));
+    },
+    [dispatch],
+  );
 
-  const handleRemoveFilter = (filter: string) => {
-    appDispatch(removeFilter({ facetName: filter }));
-  };
+  const handleRemoveFilter = useCallback(
+    (filter: string) => {
+      dispatch(removeFilter({ facetName: filter }));
+    },
+    [dispatch],
+  );
 
   // clears all added custom facets
-  const handleClearAll = () => {
-    appDispatch(resetToDefault());
-  };
+  const handleClearAll = useCallback(() => {
+    dispatch(resetToDefault());
+  }, [dispatch]);
 
-  const clearFilters = (f: string) => appDispatch(removeCohortFilter(f));
+  const clearFilters = useCallback(
+    (f: string) => dispatch(removeCohortFilter(f)),
+    [dispatch],
+  );
 
   // rebuild customFacets
   useEffect(() => {
@@ -111,34 +119,41 @@ export const FileFacetPanel = () => {
   // Clear filters if Cohort Changes
   useEffect(() => {
     if (!isEqual(prevCohortFilters, cohortFilters)) {
-      appDispatch(clearRepositoryFilters());
+      dispatch(clearRepositoryFilters());
     }
-  }, [appDispatch, cohortFilters, prevCohortFilters, prevCustomFacets]);
+  }, [dispatch, cohortFilters, prevCohortFilters, prevCustomFacets]);
+
+  const showReset = facetDefinitions.some(
+    (facetDef) => !getDefaultFacets().includes(facetDef.full),
+  );
 
   return (
     <div className="flex flex-col gap-y-4 mr-3 w-64  ">
       <Group position="apart">
-        <Text size="lg" weight={700} className="text-nci-blue-darker">
+        <Text size="lg" weight={700} className="text-primary-content-darker">
           Filters
         </Text>
-        <Button
-          size="xs"
-          variant="outline"
-          aria-label="Reset File Filters"
-          onClick={() => handleClearAll()}
-        >
-          <UndoIcon size="0.85em" className="mr-4" />
-          Reset
-        </Button>
+        {showReset && (
+          <Button
+            size="xs"
+            color="secondary"
+            variant="outline"
+            aria-label="Reset File Filters"
+            onClick={() => handleClearAll()}
+          >
+            <UndoIcon size="0.85em" className="mr-4" />
+            Reset
+          </Button>
+        )}
       </Group>
       <Button
         variant="outline"
         aria-label="Add a file filter"
-        className="mx-1 bg-white flex flex-row justify-center align-middle items-center border-nci-blue-darker b-2"
+        className="mx-1 bg-primary-lightest flex flex-row justify-center align-middle items-center border-primary-darker b-2"
         onClick={() => setOpened(true)}
       >
-        <AddAdditionalIcon className="text-nci-blue" size="2em" />
-        <Text size="md" weight={700} className="text-nci-blue-darker">
+        <AddAdditionalIcon className="text-primary-content" size="2em" />
+        <Text size="md" weight={700} className="text-primary-content-darker">
           {" "}
           Add a File Filter
         </Text>
@@ -146,7 +161,7 @@ export const FileFacetPanel = () => {
       <div className="flex flex-col gap-y-4 mr-3 h-screen/1.5 overflow-y-scroll">
         <Modal size="lg" opened={opened} onClose={() => setOpened(false)}>
           <FacetSelection
-            title={"Add File Filter"}
+            title={"Add a File Filter"}
             facetType="files"
             handleFilterSelected={handleFilterSelected}
             usedFacets={config.facets}
@@ -155,7 +170,7 @@ export const FileFacetPanel = () => {
         <LoadingOverlay visible={!isDictionaryReady} />
         {facetDefinitions.map((x, index) => {
           const isDefault = getDefaultFacets().includes(x.full);
-          const facetName = convertFieldToName(x.full, isDefault ? 1 : 2);
+          const facetName = fieldNameToTitle(x.full, isDefault ? 1 : 2);
           return (
             // TODO: add other facet types when available
             <EnumFacet

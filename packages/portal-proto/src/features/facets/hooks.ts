@@ -25,17 +25,25 @@ import {
   selectFacetByDocTypeAndField,
   usePrevious,
   selectGenomicAndCohortFilters,
+  selectCurrentCohortFilterOrCaseSet,
 } from "@gff/core";
 import { useEffect } from "react";
 import isEqual from "lodash/isEqual";
 import { EnumFacetResponse, FacetResponse } from "@/features/facets/types";
 import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
+import { TypedUseSelectorHook } from "react-redux";
+import { CoreState } from "@gff/core/dist/dts/reducers";
+import { CoreDispatch } from "@gff/core/dist/dts";
 
 /**
  * Filter selector for all the facet filters
  */
 const useCohortFacetFilter = (): FilterSet => {
   return useCoreSelector((state) => selectCurrentCohortFilters(state));
+};
+
+const useCohortOrCaseSetFacetFilter = (): FilterSet => {
+  return useCoreSelector((state) => selectCurrentCohortFilterOrCaseSet(state));
 };
 
 const useGenomicFacetFilter = (): FilterSet => {
@@ -136,7 +144,7 @@ const useGenesFacet = (
   );
 
   const enumValues = useGenomicFilterByName(field);
-  const cohortFilters = useCohortFacetFilter();
+  const cohortFilters = useCohortOrCaseSetFacetFilter();
   const genomicFilters = useGenomicFacetFilter();
   const prevCohortFilters = usePrevious(cohortFilters);
   const prevGenomicFilters = usePrevious(genomicFilters);
@@ -197,7 +205,7 @@ const useMutationsFacet = (
   );
 
   const enumValues = useGenomicFilterByName(field);
-  const cohortFilters = useCohortFacetFilter();
+  const cohortFilters = useCohortOrCaseSetFacetFilter();
   const genomicFilters = useGenomicFacetFilter();
   const prevCohortFilters = usePrevious(cohortFilters);
   const prevGenomicFilters = usePrevious(genomicFilters);
@@ -315,9 +323,14 @@ export const useRangeFacet = (
 
   const cohortFilters = useCohortFacetFilter();
   const prevFilters = usePrevious(cohortFilters);
+  const prevRanges = usePrevious(ranges);
 
   useEffect(() => {
-    if (!facet || !isEqual(prevFilters, cohortFilters)) {
+    if (
+      !facet ||
+      !isEqual(prevFilters, cohortFilters) ||
+      !isEqual(ranges, prevRanges)
+    ) {
       coreDispatch(
         fetchFacetContinuousAggregation({
           field: field,
@@ -334,6 +347,7 @@ export const useRangeFacet = (
     cohortFilters,
     prevFilters,
     ranges,
+    prevRanges,
     docType,
     indexType,
   ]);
@@ -346,6 +360,30 @@ export const useRangeFacet = (
     isSuccess: facet?.status === "fulfilled",
     isError: facet?.status === "rejected",
   };
+};
+
+// Global Selector for Facet Values
+export const selectFieldValue = (
+  selector: TypedUseSelectorHook<CoreState>,
+  field: string,
+): Operation => {
+  // get the current filter for this facet
+  return selector((state) => selectCurrentCohortFiltersByName(state, field));
+};
+
+// Core Facet Values Dispatcher
+export const dispatchFieldValue = (
+  dispatch: CoreDispatch,
+  field: string,
+  operation: Operation,
+): void => {
+  // get the current filter for this facet
+  dispatch(updateCohortFilter({ field: field, operation: operation }));
+};
+
+// Global Clear
+export const clearFilters = (dispatch: CoreDispatch, field: string): void => {
+  dispatch(removeCohortFilter(field));
 };
 
 export const UpdateEnums = {

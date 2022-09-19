@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Image } from "@/components/Image";
 import { Button, Tooltip } from "@mantine/core";
 import { NextLink } from "@mantine/next";
 
@@ -7,7 +7,7 @@ export const headerElements = [
     key="Analysis"
     label="Explore and analyze harmonized high-quality clinical and genomics data from cancer genomic studies with the tools in the Analysis Center."
     classNames={{
-      tooltip: "shadow-lg bg-white text-nci-gray-darkest",
+      tooltip: "shadow-lg bg-base-lightest text-primary-content-darkest",
     }}
     position="bottom-start"
     multiline
@@ -20,7 +20,7 @@ export const headerElements = [
         pathname: "/user-flow/workbench/analysis_page",
         query: { app: undefined },
       }}
-      className="text-sm font-heading  hover:bg-nci-blue-lighter transition-colors text-nci-gray-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md "
+      className="text-sm font-heading  hover:bg-primary-lighter transition-colors text-primary-content-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md "
     >
       <Image
         src={"/user-flow/icons/dna.svg"}
@@ -34,7 +34,7 @@ export const headerElements = [
     key="Studies"
     label="View the Projects/Studies available within the GDC and select them for further exploration and analysis."
     classNames={{
-      tooltip: "shadow-lg bg-white text-nci-gray-darkest",
+      tooltip: "shadow-lg bg-base-lightest text-primary-content-darkest",
     }}
     position="bottom-start"
     multiline
@@ -47,7 +47,7 @@ export const headerElements = [
         pathname: "/user-flow/workbench/analysis_page",
         query: { app: "Projects" },
       }}
-      className="text-sm font-heading  hover:bg-nci-blue-lighter transition-colors text-nci-gray-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md "
+      className="text-sm font-heading  hover:bg-primary-lighter transition-colors text-primary-content-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md "
     >
       <Image
         src={"/user-flow/icons/crowd-of-users.svg"}
@@ -61,7 +61,7 @@ export const headerElements = [
     key="Cohort"
     label="Build and define your custom cohorts using a variety of clinical and biospecimen features."
     classNames={{
-      tooltip: "shadow-lg bg-white text-nci-gray-darkest",
+      tooltip: "shadow-lg bg-base-lightest text-primary-content-darkest",
     }}
     position="bottom-start"
     multiline
@@ -74,7 +74,7 @@ export const headerElements = [
         pathname: "/user-flow/workbench/analysis_page",
         query: { app: "CohortBuilder" },
       }}
-      className="text-sm font-heading  hover:bg-nci-blue-lighter transition-colors text-nci-gray-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md "
+      className="text-sm font-heading  hover:bg-primary-lighter transition-colors text-primary-content-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md "
     >
       <Image
         src={"/user-flow/icons/build.svg"}
@@ -88,7 +88,7 @@ export const headerElements = [
     key="Download"
     label="Browse and download the files associated with your cohort for more sophisticated analysis."
     classNames={{
-      tooltip: "shadow-lg bg-white text-nci-gray-darkest",
+      tooltip: "shadow-lg bg-base-lightest text-primary-content-darkest",
     }}
     position="bottom-start"
     multiline
@@ -101,7 +101,7 @@ export const headerElements = [
         pathname: "/user-flow/workbench/analysis_page",
         query: { app: "Downloads" },
       }}
-      className="text-sm font-heading hover:bg-nci-blue-lighter transition-colors text-nci-gray-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md "
+      className="text-sm font-heading hover:bg-primary-lighter transition-colors text-primary-content-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md "
     >
       <Image
         src={"/user-flow/icons/database.svg"}
