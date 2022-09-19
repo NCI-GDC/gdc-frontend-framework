@@ -283,18 +283,18 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
 
   return (
     <div className="relative h-full">
-      <CSSTransition in={app !== undefined} timeout={500}>
+      <CSSTransition in={app !== undefined} timeout={0}>
         {(state) => (
           <div
             className={
               {
                 entering:
-                  "transition-transform scale-y-100 origin-top 5000ms ease ",
+                  "transition-transform scale-y-100 origin-top 50000ms ease ",
 
                 entered:
-                  "transition-transform scale-y-0 origin-top 5000ms ease h-0",
+                  "transition-transform scale-y-0 origin-top 50000ms ease h-0",
                 exiting:
-                  "transition-transform scale-y-100 origin-top 5000ms ease ",
+                  "transition-transform scale-y-100 origin-top 50000ms ease ",
                 exited: "h-full",
               }[state]
             }
@@ -305,9 +305,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
       </CSSTransition>
       <CSSTransition
         in={app !== undefined}
-        timeout={{
-          appear: 500,
-        }}
+        timeout={0}
         onEntered={() => setInTransitionState(true)}
         onExited={() => setInTransitionState(false)}
       >
@@ -316,11 +314,11 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
             className={
               {
                 entering:
-                  "transition-transform scale-y-0 origin-bottom 5000ms ease",
+                  "transition-transform scale-y-0 origin-bottom 50000ms ease",
                 entered:
-                  "transition-transform scale-y-100 origin-bottom 5000ms ease",
+                  "transition-transform scale-y-100 origin-bottom 50000ms ease",
                 exiting:
-                  "transition-transform scale-y-100 origin-bottom 5000ms ease",
+                  "transition-transform scale-y-100 origin-bottom 50000ms ease",
                 exited: "scale-y-0 hidden",
               }[state]
             }
