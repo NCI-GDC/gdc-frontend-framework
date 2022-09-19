@@ -288,6 +288,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
                 <ActionIcon
                   onClick={() => {
                     setSearchTerm("");
+                    searchInputRef.current.focus();
                   }}
                 >
                   <CloseIcon />
