@@ -290,6 +290,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
                     setSearchTerm("");
                     searchInputRef.current.focus();
                   }}
+                  aria-label={"clear search"}
                 >
                   <CloseIcon />
                 </ActionIcon>
