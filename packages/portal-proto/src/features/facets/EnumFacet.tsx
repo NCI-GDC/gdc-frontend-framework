@@ -158,6 +158,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
 
   const toggleSearch = () => {
     setIsSearching(!isSearching);
+    setSearchTerm("");
   };
 
   const toggleFlip = () => {
