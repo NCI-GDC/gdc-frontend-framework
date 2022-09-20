@@ -29,13 +29,13 @@ import {
 import Link from "next/link";
 import { addToCart } from "@/features/cart/updateCart";
 import { BAMSlicingModal } from "@/components/Modals/BAMSlicingModal/BAMSlicingModal";
-import { BAMSlicingErrorModal } from "@/components/Modals/BAMSlicingModal/BAMSlicingErrorModal";
 import { NoAccessToProjectModal } from "@/components/Modals/NoAccessToProjectModal";
 import { BAMSlicingButton } from "@/features/files/BAMSlicingButton";
 import { DownloadFile } from "@/components/DownloadButtons";
 import { AgreementModal } from "@/components/Modals/AgreementModal";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 import { fileInCart } from "src/utils";
+import { GeneralErrorModal } from "@/components/Modals/GeneraErrorModal";
 
 export const StyledButton = tw.button`
 bg-base-lightest
@@ -581,9 +581,7 @@ export const FileView: React.FC<FileViewProps> = ({
         <BAMSlicingModal openModal file={file} setActive={setBamActive} />
       )}
 
-      {modal === Modals.BAMSlicingErrorModal && (
-        <BAMSlicingErrorModal openModal />
-      )}
+      {modal === Modals.GeneralErrorModal && <GeneralErrorModal openModal />}
 
       {modal === Modals.AgreementModal && (
         <AgreementModal

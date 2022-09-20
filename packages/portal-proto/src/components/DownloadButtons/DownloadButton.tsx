@@ -22,6 +22,8 @@ interface DownloadButtonProps {
   onClick?: () => void;
   setActive?: Dispatch<SetStateAction<boolean>>;
   active?: boolean;
+  Modal403?: Modals;
+  Modal400?: Modals;
 }
 
 export const DownloadButton: React.FC<DownloadButtonProps> = ({
@@ -42,6 +44,8 @@ export const DownloadButton: React.FC<DownloadButtonProps> = ({
   setActive,
   onClick,
   active,
+  Modal400,
+  Modal403,
 }: DownloadButtonProps) => {
   const text = active ? activeText : inactiveText;
   const dispatch = useCoreDispatch();
@@ -80,8 +84,8 @@ export const DownloadButton: React.FC<DownloadButtonProps> = ({
           queryParams,
           done: () => setActive(false),
           dispatch,
-          Modal400: Modals.BAMSlicingErrorModal,
-          Modal403: Modals.NoAccessModal,
+          Modal400,
+          Modal403,
           options,
         });
       }}

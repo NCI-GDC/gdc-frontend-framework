@@ -27,14 +27,14 @@ export const BAMSlicingButton = ({
       loading={isActive}
       onClick={() => {
         if (username && userCanDownloadFile({ user: userInfo.data, file })) {
-          dispatch(showModal(Modals.BAMSlicingModal));
+          dispatch(showModal({ modal: Modals.BAMSlicingModal }));
         } else if (
           username &&
           !userCanDownloadFile({ user: userInfo.data, file })
         ) {
-          dispatch(showModal(Modals.NoAccessToProjectModal));
+          dispatch(showModal({ modal: Modals.NoAccessToProjectModal }));
         } else {
-          dispatch(showModal(Modals.NoAccessModal));
+          dispatch(showModal({ modal: Modals.NoAccessModal }));
         }
       }}
       data-testid="bamButton"

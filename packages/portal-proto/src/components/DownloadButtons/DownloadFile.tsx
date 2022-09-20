@@ -58,14 +58,14 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
   const onClick = () => {
     setfileToDownload(file);
     if (username && userCanDownloadFile({ user: userInfo.data, file })) {
-      dispatch(showModal(Modals.AgreementModal));
+      dispatch(showModal({ modal: Modals.AgreementModal }));
     } else if (
       username &&
       !userCanDownloadFile({ user: userInfo.data, file })
     ) {
-      dispatch(showModal(Modals.NoAccessToProjectModal));
+      dispatch(showModal({ modal: Modals.NoAccessToProjectModal }));
     } else {
-      dispatch(showModal(Modals.NoAccessModal));
+      dispatch(showModal({ modal: Modals.NoAccessModal }));
     }
   };
   return (

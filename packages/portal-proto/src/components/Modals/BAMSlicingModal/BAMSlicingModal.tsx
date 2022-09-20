@@ -1,6 +1,6 @@
 import React from "react";
-import { GdcFile, hideModal, Modals, useCoreDispatch } from "@gff/core";
-import { Button, Text, Textarea } from "@mantine/core";
+import { GdcFile, hideModal, useCoreDispatch } from "@gff/core";
+import { Text, Textarea } from "@mantine/core";
 import { BaseModal } from "../BaseModal";
 import { useForm } from "@mantine/form";
 import download from "src/utils/download";
@@ -77,6 +77,41 @@ export const BAMSlicingModal = ({
     }
   };
 
+  const buttonOnClick = async () => {
+    if (validate().hasErrors) {
+      return;
+    }
+
+    if (coordinates) {
+      setActive(true);
+      const processedInput = processBAMSliceInput(coordinates);
+      const params = {
+        ...processedInput,
+        attachment: true,
+      };
+
+      const regionsParam =
+        processedInput.regions.length > 1
+          ? processedInput.regions.map((key) => `region` + "=" + key).join("&")
+          : `region=${processedInput.regions[0]}`;
+
+      download({
+        params,
+        endpoint: `slicing/view/${file.fileId}`,
+        method: "POST",
+        done: () => setActive(false),
+        dispatch,
+        queryParams: `slicing/view/${file.fileId}?${regionsParam}`,
+        customErrorMessage:
+          " You have entered invalid coordinates. Please try again.",
+        options: {
+          method: "HEAD",
+        },
+      });
+    }
+
+    dispatch(hideModal());
+  };
   return (
     <BaseModal
       title={
@@ -87,6 +122,10 @@ export const BAMSlicingModal = ({
       size="60%"
       closeButtonLabel="Cancel"
       openModal={openModal}
+      buttons={[
+        { title: "Cancel" },
+        { onClick: buttonOnClick, title: "Download" },
+      ]}
     >
       <div className="border-y border-y-base py-4 px-2">
         <Text size="lg" className="mb-2">
@@ -123,56 +162,6 @@ export const BAMSlicingModal = ({
           onKeyDown={(e) => allowTab(e)}
           {...getInputProps("coordinates")}
         />
-      </div>
-      <div className="flex justify-end mt-2.5 gap-2">
-        <Button
-          onClick={() => dispatch(hideModal())}
-          className="!bg-primary hover:!bg-primary-darker"
-        >
-          Cancel
-        </Button>
-        <Button
-          onClick={async () => {
-            if (validate().hasErrors) {
-              return;
-            }
-
-            if (coordinates) {
-              setActive(true);
-              const processedInput = processBAMSliceInput(coordinates);
-              const params = {
-                ...processedInput,
-                attachment: true,
-              };
-
-              const regionsParam =
-                processedInput.regions.length > 1
-                  ? processedInput.regions
-                      .map((key) => `region` + "=" + key)
-                      .join("&")
-                  : `region=${processedInput.regions[0]}`;
-
-              download({
-                params,
-                endpoint: `slicing/view/${file.fileId}`,
-                method: "POST",
-                done: () => setActive(false),
-                dispatch,
-                queryParams: `slicing/view/${file.fileId}?${regionsParam}`,
-                Modal400: Modals.BAMSlicingErrorModal,
-                Modal403: Modals.NoAccessModal,
-                options: {
-                  method: "HEAD",
-                },
-              });
-            }
-
-            dispatch(hideModal());
-          }}
-          className="!bg-primary hover:!bg-primary-darker"
-        >
-          Download
-        </Button>
       </div>
     </BaseModal>
   );

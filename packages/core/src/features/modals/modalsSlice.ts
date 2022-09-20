@@ -6,13 +6,14 @@ export enum Modals {
   "SessionExpireModal" = "SessionExpireModal",
   "NoAccessModal" = "NoAccessModal",
   "BAMSlicingModal" = "BAMSlicingModal",
-  "BAMSlicingErrorModal" = "BAMSlicingErrorModal",
   "NoAccessToProjectModal" = "NoAccessToProjectModal",
   "AgreementModal" = " AgreementModal",
+  "GeneralErrorModal" = " GeneralErrorModal",
 }
 
 export interface ModalState {
   currentModal: Modals | null;
+  message?: string;
 }
 
 const initialState: ModalState = {
@@ -23,8 +24,12 @@ const slice = createSlice({
   name: "modals",
   initialState,
   reducers: {
-    showModal: (state: ModalState, action: PayloadAction<Modals>) => {
-      state.currentModal = action.payload;
+    showModal: (
+      state: ModalState,
+      action: PayloadAction<{ modal: Modals; message?: string }>,
+    ) => {
+      state.currentModal = action.payload.modal;
+      state.message = action.payload.message;
       return state;
     },
     hideModal: (state: ModalState) => {
@@ -39,3 +44,6 @@ export const { showModal, hideModal } = slice.actions;
 
 export const selectCurrentModal = (state: CoreState): Modals | null =>
   state.modals.currentModal;
+
+export const selectCurrentMessage = (state: CoreState): string | undefined =>
+  state.modals.message;
