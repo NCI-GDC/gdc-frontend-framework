@@ -494,7 +494,10 @@ const BuildRangeLabelsAndValues = (
       key: x,
       value: rangeData ? rangeData[x] : undefined,
       valueLabel: rangeData
-        ? `${rangeData[x]} (${(((rangeData[x] as number) / totalCount) * 100)
+        ? `${rangeData[x].toLocaleString()} (${(
+            ((rangeData[x] as number) / totalCount) *
+            100
+          )
             .toFixed(2)
             .toLocaleString()}%)`
         : "",
