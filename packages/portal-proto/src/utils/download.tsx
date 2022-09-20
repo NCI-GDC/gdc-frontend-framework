@@ -52,6 +52,7 @@ const DownloadNotification = ({ onClick }: { onClick: () => void }) => {
  * @param queryParams option param, only to be sent if queryParams need special manipulation
  * @param Modal400 Modal for 400 error
  * @param Modal403 Modal for 403 error
+ * @param customErrorMessage custom mesage to be passed for 400 errors
  * @return Promise<void>
  */
 
