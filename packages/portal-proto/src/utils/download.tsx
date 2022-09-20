@@ -80,16 +80,13 @@ const download = async ({
   Modal400?: Modals;
   customErrorMessage?: string;
 }): Promise<void> => {
-  let timeoutPromise = null;
+  let canceled = false;
   showNotification({
     message: (
       <DownloadNotification
         onClick={() => {
           cleanNotifications();
-          if (timeoutPromise) {
-            clearTimeout(timeoutPromise);
-            timeoutPromise = null;
-          }
+          canceled = true;
           done();
         }}
       />
@@ -137,46 +134,43 @@ const download = async ({
       .join("&");
   }
 
-  timeoutPromise = setTimeout(() => {
-    fetch(`${GDC_APP_API_AUTH}/${queryParams}`, options).then(async (res) => {
-      cleanNotifications();
-      if (timeoutPromise && res.ok) {
-        form.submit();
-        // maybe can use forms response to trigger this
-        setTimeout(() => {
-          done();
-        }, 1000);
-        return;
-      }
-      done();
-      let errorMessage;
-      try {
-        const body = await res.json();
-        errorMessage = body.message;
-      } catch (error) {
-        errorMessage = undefined;
-      }
+  fetch(`${GDC_APP_API_AUTH}/${queryParams}`, options).then(async (res) => {
+    cleanNotifications();
+    if (!canceled && res.ok) {
+      form.submit();
+      setTimeout(() => {
+        done();
+      }, 1000);
+      return;
+    }
+    done();
+    let errorMessage;
+    try {
+      const body = await res.json();
+      errorMessage = body.message;
+    } catch (error) {
+      errorMessage = undefined;
+    }
 
-      if (res.status === 404 || res.status === 500) {
-        dispatch(showModal({ modal: Modal400, message: errorMessage }));
-        return;
-      }
+    if (res.status === 404 || res.status === 500) {
+      dispatch(showModal({ modal: Modal400, message: errorMessage }));
+      return;
+    }
 
-      if (res.status === 403) {
-        dispatch(showModal({ modal: Modal403, message: errorMessage }));
-        return;
-      }
-      if (res.status === 400) {
-        dispatch(
-          showModal({
-            modal: Modal400,
-            message: customErrorMessage || errorMessage,
-          }),
-        );
-        return;
-      }
-    });
-  }, 0);
+    if (res.status === 403) {
+      dispatch(showModal({ modal: Modal403, message: errorMessage }));
+      return;
+    }
+    if (res.status === 400) {
+      dispatch(
+        showModal({
+          modal: Modal400,
+          message: customErrorMessage || errorMessage,
+        }),
+      );
+      return;
+    }
+  });
 };
 
 export default download;
