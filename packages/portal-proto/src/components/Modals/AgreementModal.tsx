@@ -110,7 +110,7 @@ export const AgreementModal = ({
           endpoint="data?annotations=true&related_files=true"
           activeText="Processing"
           inactiveText="Download"
-          queryParams={`data/${file.fileId}/asdas`}
+          queryParams={`data/${file.fileId}`}
           options={{
             method: "GET",
             headers: {
