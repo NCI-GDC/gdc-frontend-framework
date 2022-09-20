@@ -195,12 +195,8 @@ export const Header: React.FC<HeaderProps> = ({
                 <Menu.Item
                   icon={<MdLogout size="1.25em" />}
                   onClick={() => {
-                    // TODO: need to change next url to the new URL
                     window.location.assign(
-                      urlJoin(
-                        GDC_AUTH,
-                        `logout?next=https://localhost.gdc.cancer.gov:3010/v2/user-flow/workbench`,
-                      ),
+                      urlJoin(GDC_AUTH, `logout?next=${window.location.href}`),
                     );
                   }}
                 >
