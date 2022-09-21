@@ -17,15 +17,22 @@ export const AgreementModal = ({
   setActive?: React.Dispatch<SetStateAction<boolean>>;
   active?: boolean;
 }): JSX.Element => {
-  let dbGapLink =
+  const dbGapLink =
     dbGapList.length === 1
       ? "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=" +
         dbGapList[0]
       : "https://www.ncbi.nlm.nih.gov/gap/?term=" +
-        dbGapList.reduce((acc, d) => acc + "(" + d + "%5BStudy%5D)+OR+", "");
-  if (dbGapLink.substring(dbGapLink.length - 4) === "+OR+") {
-    dbGapLink = dbGapLink.slice(0, dbGapLink.length - 4);
-  }
+        encodeURIComponent(
+          dbGapList.reduce(
+            (acc, d, idx) =>
+              acc +
+              "(" +
+              d +
+              `[Study])${idx < dbGapList.length - 1 ? " OR " : ""}`,
+            "",
+          ),
+        );
+
   const dispatch = useCoreDispatch();
   const [checked, setChecked] = useState(false);
   return (
