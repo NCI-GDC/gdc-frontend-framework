@@ -52,7 +52,7 @@ const ContextBar: React.FC<CohortGroupProps> = ({
         coreDispatch(clearCohortFilters());
       } else {
         cohorts[idx].facets.map((x) => {
-          updateEnumFilters(x.value, x.field, coreDispatch);
+          updateEnumFilters(coreDispatch, x.field, x.value);
         });
       }
     }

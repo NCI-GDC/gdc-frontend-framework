@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useMemo } from "react";
 import {
   FacetCardProps,
-  SelectFacetValueFunction,
-  UpdateFacetValueFunction,
+  SelectFacetFilterFunction,
+  UpdateFacetFilterFunction,
 } from "./types";
 import { ActionIcon, Popover, Tooltip } from "@mantine/core";
 import { DatePicker, RangeCalendar } from "@mantine/dates";
@@ -26,8 +26,8 @@ import { StringRange } from "./types";
 
 interface DateRangeFacetProps
   extends Omit<FacetCardProps, "showSearch" | "showFlip" | "showPercent"> {
-  getFacetValue: SelectFacetValueFunction;
-  setFacetValue: UpdateFacetValueFunction;
+  getFacetValue: SelectFacetFilterFunction;
+  setFacetValue: UpdateFacetFilterFunction;
 }
 
 /**

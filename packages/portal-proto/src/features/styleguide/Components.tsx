@@ -5,11 +5,14 @@ import { EnumFacet } from "../facets/EnumFacet";
 import NumericRangeFacet from "../facets/NumericRangeFacet";
 import DateRangeFacet from "../facets/DateRangeFacet";
 import ExactValueFacet from "../facets/ExactValueFacet";
+import ToggleFacet from "../facets/ToggleFacet";
 import GenesTable from "../genesTable/GenesTable";
 import {
-  selectFieldValue,
-  dispatchFieldValue,
+  useEnumFacet,
+  selectFieldFilter,
+  dispatchFieldFilter,
   clearFilters,
+  updateEnumFilters,
 } from "../facets/hooks";
 import { partial } from "lodash";
 import { useCoreDispatch, CoreContext } from "@gff/core";
@@ -44,8 +47,19 @@ const Components: ReactNode = () => {
         docType="files"
         field="files.analysis.input_files.created_datetime"
         width="w-1/3"
-        getFacetValue={partial(selectFieldValue, coreSelector)}
-        setFacetValue={partial(dispatchFieldValue, coreDispatch)}
+        getFacetValue={partial(selectFieldFilter, coreSelector)}
+        setFacetValue={partial(dispatchFieldFilter, coreDispatch)}
+        clearFilterFunc={partial(clearFilters, coreDispatch)}
+      />
+      <Divider label="Toggle Facet" classNames={divider_style} />
+      <ToggleFacet
+        docType="cases"
+        indexType="explore"
+        field="gene.is_cancer_gene_census"
+        facetName="Is Cancer Gene Census"
+        width="w-1/3"
+        getFacetData={useEnumFacet}
+        updateFacetEnumerations={partial(updateEnumFilters, coreDispatch)}
         clearFilterFunc={partial(clearFilters, coreDispatch)}
       />
       <Divider label="Percent Range Facet" classNames={divider_style} />
@@ -61,8 +75,8 @@ const Components: ReactNode = () => {
         docType="cases"
         field="cases.diagnoses.annotations.case_id"
         width="w-1/3"
-        getFacetValue={partial(selectFieldValue, coreSelector)}
-        setFacetValue={partial(dispatchFieldValue, coreDispatch)}
+        getFacetValue={partial(selectFieldFilter, coreSelector)}
+        setFacetValue={partial(dispatchFieldFilter, coreDispatch)}
         clearFilterFunc={partial(clearFilters, coreDispatch)}
       />
       <Divider label="Genes Table" classNames={divider_style} />
