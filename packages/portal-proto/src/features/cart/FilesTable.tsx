@@ -17,9 +17,11 @@ import {
   selectCart,
   useFiles,
   useCoreDispatch,
+  useUserDetails,
 } from "@gff/core";
 import { VerticalTable } from "@/features/shared/VerticalTable";
 import { removeFromCart, RemoveFromCartButton } from "./updateCart";
+import { groupByAccess } from "./utils";
 
 const columnCells = [
   { Header: "Remove", accessor: "remove", width: 80 },
@@ -83,6 +85,9 @@ const FilesTable: React.FC = () => {
       },
       expand: ["annotations", "cases", "cases.project"],
     });
+
+  const { data: userDetails } = useUserDetails();
+  const filesByCanAccess = groupByAccess(cart, userDetails);
 
   const columnKeys = visibleColumns
     .filter((column) => column.visible)
@@ -215,7 +220,13 @@ const FilesTable: React.FC = () => {
                 <Menu.Item onClick={() => removeFromCart(data, cart, dispatch)}>
                   All Files
                 </Menu.Item>
-                <Menu.Item>Unauthorized Files</Menu.Item>
+                <Menu.Item
+                  onClick={() =>
+                    removeFromCart(filesByCanAccess.false, cart, dispatch)
+                  }
+                >
+                  Unauthorized Files
+                </Menu.Item>
               </Menu.Dropdown>
             </Menu>
           </div>

@@ -7,7 +7,9 @@ export type ModalTypes =
   | "NoAccessModal"
   | "BAMSlicingModal"
   | "BAMSlicingErrorModal"
-  | "NoAccessToProjectModal";
+  | "NoAccessToProjectModal"
+  | "CartSizeLimitModal"
+  | "UnauthorizedFilesModal";
 
 export enum Modals {
   "UserProfileModal" = "UserProfileModal",
@@ -16,6 +18,8 @@ export enum Modals {
   "BAMSlicingModal" = "BAMSlicingModal",
   "BAMSlicingErrorModal" = "BAMSlicingErrorModal",
   "NoAccessToProjectModal" = "NoAccessToProjectModal",
+  "CartSizeLimitModal" = "CartSizeLimitModal",
+  "UnauthorizedFilesModal" = "UnauthorizedFilesModal",
 }
 
 export interface ModalState {

@@ -1,7 +1,7 @@
-import { groupBy } from "lodash";
 import fileSize from "filesize";
-import { CartFile } from "@gff/core";
+import { CartFile, useUserDetails } from "@gff/core";
 import { VerticalTable } from "@/features/shared/VerticalTable";
+import { groupByAccess } from "./utils";
 
 const columnListOrder = [
   { id: "level", columnName: "Level", visible: true },
@@ -22,24 +22,23 @@ interface AuthorizationTableProps {
 const AuthorizationTable: React.FC<AuthorizationTableProps> = ({
   cart,
 }: AuthorizationTableProps) => {
-  // TODO - account for user's acccess
-
-  const groupedData = groupBy(cart, "access");
+  const { data: userDetails } = useUserDetails();
+  const filesByCanAccess = groupByAccess(cart, userDetails);
   const tableData = [
     {
       level: "Authorized",
-      files: groupedData?.open?.length || 0,
+      files: filesByCanAccess?.true?.length || 0,
       file_size: fileSize(
-        groupedData?.open
+        filesByCanAccess?.true
           ?.map((f) => f.fileSize)
           .reduce((previousFile, file) => previousFile + file) || 0,
       ),
     },
     {
       level: "Unauthorized",
-      files: groupedData?.controlled?.length || 0,
+      files: filesByCanAccess?.false?.length || 0,
       file_size: fileSize(
-        groupedData?.controlled
+        filesByCanAccess?.false
           ?.map((f) => f.fileSize)
           .reduce((previousFile, file) => previousFile + file) || 0,
       ),

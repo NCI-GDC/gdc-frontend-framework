@@ -1,10 +1,20 @@
 import { Grid } from "@mantine/core";
 import tw from "tailwind-styled-components";
-import { useCartSummary, useCoreSelector, selectCart } from "@gff/core";
+import {
+  useCartSummary,
+  useCoreSelector,
+  selectCart,
+  selectCurrentModal,
+  Modals,
+  useUserDetails,
+} from "@gff/core";
 import FilesTable from "./FilesTable";
 import ProjectTable from "./ProjectTable";
 import CartHeader from "./CartHeader";
 import AuthorizationTable from "./AuthorizationTable";
+import CartSizeLimitModal from "@/components/Modals/CartSizeLimitModal";
+import UnauthorizedFileModal from "@/components/Modals/UnauthorizedFilesModal";
+import { groupByAccess } from "./utils";
 
 const H2 = tw.h2`
   uppercase
@@ -32,10 +42,22 @@ const P = tw.p`
 const Cart: React.FC = () => {
   const cart = useCoreSelector((state) => selectCart(state));
   const { data: summaryData } = useCartSummary(cart.map((f) => f.fileId));
+  const modal = useCoreSelector((state) => selectCurrentModal(state));
+  const { data: userDetails } = useUserDetails();
+  const filesByCanAccess = groupByAccess(cart, userDetails);
 
   return (
     <>
-      <CartHeader summaryData={summaryData} />
+      {modal === Modals.CartSizeLimitModal && <CartSizeLimitModal openModal />}
+      {modal === Modals.UnauthorizedFilesModal && (
+        <UnauthorizedFileModal
+          openModal
+          user={userDetails}
+          filesByCanAccess={filesByCanAccess}
+        />
+      )}
+
+      <CartHeader cart={cart} summaryData={summaryData} />
       <Grid className="mt-8 mx-2">
         <Grid.Col span={6}>
           <div className="bg-base-lightest p-4 border border-solid border-base-lighter">

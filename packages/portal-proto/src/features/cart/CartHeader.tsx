@@ -1,4 +1,13 @@
-import { CartSummaryData } from "@gff/core";
+import {
+  CartFile,
+  CartSummaryData,
+  useUserDetails,
+  showModal,
+  Modals,
+  useCoreDispatch,
+  UserInfo,
+  CoreDispatch,
+} from "@gff/core";
 import fileSize from "filesize";
 import { Button, Menu } from "@mantine/core";
 import {
@@ -8,89 +17,119 @@ import {
   MdSave as SaveIcon,
 } from "react-icons/md";
 import { RiFile3Fill as FileIcon } from "react-icons/ri";
+import { groupByAccess } from "./utils";
 
 const buttonStyle =
   "bg-base-lightest text-base-contrast-lightest border-base-darkest";
 
+// 5GB
+const MAX_CART_SIZE = 5 * 10e8;
+
+const downloadCart = (
+  cart: CartFile[],
+  userDetails: UserInfo,
+  dispatch: CoreDispatch,
+) => {
+  const filesByCanAccess = groupByAccess(cart, userDetails);
+  if (
+    filesByCanAccess.true
+      ?.map((file) => file.fileSize)
+      .reduce((a, b) => a + b) > MAX_CART_SIZE
+  ) {
+    dispatch(showModal(Modals.CartSizeLimitModal));
+  } else if (filesByCanAccess.false.length > 0) {
+    dispatch(showModal(Modals.UnauthorizedFilesModal));
+  }
+};
+
 interface CartHeaderProps {
+  cart: CartFile[];
   summaryData: CartSummaryData;
 }
 
 const CartHeader: React.FC<CartHeaderProps> = ({
+  cart,
   summaryData,
-}: CartHeaderProps) => (
-  <div className="bg-primary-darkest text-primary-contrast-darkest flex items-center gap-x-4 w-full h-16">
-    <Menu>
-      <Menu.Target>
-        <Button
-          classNames={{
-            root: `${buttonStyle} ml-2`,
-            rightIcon: "border-l pl-1 -mr-2",
-          }}
-          leftIcon={<DownloadIcon size={20} />}
-          rightIcon={<DropdownIcon size={20} />}
-        >
-          Download
-        </Button>
-      </Menu.Target>
-      <Menu.Dropdown>
-        <Menu.Item>Manifest</Menu.Item>
-        <Menu.Item>Cart</Menu.Item>
-      </Menu.Dropdown>
-    </Menu>
-    <Menu>
-      <Menu.Target>
-        <Button
-          classNames={{
-            root: `${buttonStyle} ml-2`,
-            rightIcon: "border-l pl-1 -mr-2",
-          }}
-          leftIcon={<DownloadIcon size={20} />}
-          rightIcon={<DropdownIcon size={20} />}
-        >
-          Biospecimen
-        </Button>
-      </Menu.Target>
-      <Menu.Dropdown>
-        <Menu.Item>TSV</Menu.Item>
-        <Menu.Item>JSON</Menu.Item>
-      </Menu.Dropdown>
-    </Menu>
-    <Menu>
-      <Menu.Target>
-        <Button
-          classNames={{
-            root: `${buttonStyle} ml-2`,
-            rightIcon: "border-l pl-1 -mr-2",
-          }}
-          leftIcon={<DownloadIcon size={20} />}
-          rightIcon={<DropdownIcon size={20} />}
-        >
-          Clinical
-        </Button>
-      </Menu.Target>
-      <Menu.Dropdown>
-        <Menu.Item>TSV</Menu.Item>
-        <Menu.Item>JSON</Menu.Item>
-      </Menu.Dropdown>
-    </Menu>
-    <Button className={buttonStyle} leftIcon={<DownloadIcon size={20} />}>
-      Sample Sheet
-    </Button>
-    <Button className={buttonStyle} leftIcon={<DownloadIcon size={20} />}>
-      Manifest
-    </Button>
-    <h1 className="uppercase ml-auto mr-4 flex items-center truncate text-2xl">
-      Total of <FileIcon size={25} className="mx-2" />{" "}
-      <b className="mr-2">{summaryData.total_doc_count.toLocaleString()}</b>{" "}
-      {summaryData.total_doc_count === 1 ? "File" : "Files"}
-      <PersonIcon size={25} className="mx-2" />{" "}
-      <b className="mr-2">{summaryData.total_case_count.toLocaleString()}</b>{" "}
-      {summaryData.total_case_count === 1 ? "Case" : "Cases"}{" "}
-      <SaveIcon size={25} className="mx-2" />{" "}
-      {fileSize(summaryData.total_file_size)}
-    </h1>
-  </div>
-);
+}: CartHeaderProps) => {
+  const dispatch = useCoreDispatch();
+  const { data: userDetails } = useUserDetails();
+
+  return (
+    <div className="bg-primary-darkest text-primary-contrast-darkest flex items-center gap-x-4 w-full h-16">
+      <Menu>
+        <Menu.Target>
+          <Button
+            classNames={{
+              root: `${buttonStyle} ml-2`,
+              rightIcon: "border-l pl-1 -mr-2",
+            }}
+            leftIcon={<DownloadIcon size={20} />}
+            rightIcon={<DropdownIcon size={20} />}
+          >
+            Download
+          </Button>
+        </Menu.Target>
+        <Menu.Dropdown>
+          <Menu.Item>Manifest</Menu.Item>
+          <Menu.Item onClick={() => downloadCart(cart, userDetails, dispatch)}>
+            Cart
+          </Menu.Item>
+        </Menu.Dropdown>
+      </Menu>
+      <Menu>
+        <Menu.Target>
+          <Button
+            classNames={{
+              root: `${buttonStyle} ml-2`,
+              rightIcon: "border-l pl-1 -mr-2",
+            }}
+            leftIcon={<DownloadIcon size={20} />}
+            rightIcon={<DropdownIcon size={20} />}
+          >
+            Biospecimen
+          </Button>
+        </Menu.Target>
+        <Menu.Dropdown>
+          <Menu.Item>TSV</Menu.Item>
+          <Menu.Item>JSON</Menu.Item>
+        </Menu.Dropdown>
+      </Menu>
+      <Menu>
+        <Menu.Target>
+          <Button
+            classNames={{
+              root: `${buttonStyle} ml-2`,
+              rightIcon: "border-l pl-1 -mr-2",
+            }}
+            leftIcon={<DownloadIcon size={20} />}
+            rightIcon={<DropdownIcon size={20} />}
+          >
+            Clinical
+          </Button>
+        </Menu.Target>
+        <Menu.Dropdown>
+          <Menu.Item>TSV</Menu.Item>
+          <Menu.Item>JSON</Menu.Item>
+        </Menu.Dropdown>
+      </Menu>
+      <Button className={buttonStyle} leftIcon={<DownloadIcon size={20} />}>
+        Sample Sheet
+      </Button>
+      <Button className={buttonStyle} leftIcon={<DownloadIcon size={20} />}>
+        Metadata
+      </Button>
+      <h1 className="uppercase ml-auto mr-4 flex items-center truncate text-2xl">
+        Total of <FileIcon size={25} className="mx-2" />{" "}
+        <b className="mr-2">{summaryData.total_doc_count.toLocaleString()}</b>{" "}
+        {summaryData.total_doc_count === 1 ? "File" : "Files"}
+        <PersonIcon size={25} className="mx-2" />{" "}
+        <b className="mr-2">{summaryData.total_case_count.toLocaleString()}</b>{" "}
+        {summaryData.total_case_count === 1 ? "Case" : "Cases"}{" "}
+        <SaveIcon size={25} className="mx-2" />{" "}
+        {fileSize(summaryData.total_file_size)}
+      </h1>
+    </div>
+  );
+};
 
 export default CartHeader;
