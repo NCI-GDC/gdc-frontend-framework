@@ -253,7 +253,10 @@ export const RemoveFromCartButton: React.FC<RemoveFromCartButtonProps> = ({
       <TrashIcon />
     </ActionIcon>
   ) : (
-    <Button onClick={() => removeFromCart(files, currentCart, dispatch)}>
+    <Button
+      onClick={() => removeFromCart(files, currentCart, dispatch)}
+      className="text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
+    >
       <CartIcon className="mr-2" />
       Remove From Cart
     </Button>

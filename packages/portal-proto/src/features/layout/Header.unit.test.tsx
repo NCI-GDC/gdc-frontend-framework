@@ -103,11 +103,11 @@ describe("<Header />", () => {
     await fireEvent.click(getByTestId("userdropdown"));
     await fireEvent.click(getByTestId("userprofilemenu"));
     expect(mockDispatch).toBeCalledWith({
-      payload: "SessionExpireModal",
+      payload: { modal: "SessionExpireModal" },
       type: "modals/showModal",
     });
     expect(mockDispatch).not.toBeCalledWith({
-      payload: "UserProfileModal",
+      payload: { modal: "UserProfileModal" },
       type: "modals/showModal",
     });
   });
@@ -138,11 +138,11 @@ test("should show User Profile Modal when fetch token returns 401", async () => 
   await fireEvent.click(getByTestId("userdropdown"));
   await fireEvent.click(getByTestId("userprofilemenu"));
   expect(mockDispatch).not.toBeCalledWith({
-    payload: "SessionExpireModal",
+    payload: { modal: "SessionExpireModal" },
     type: "modals/showModal",
   });
   expect(mockDispatch).toBeCalledWith({
-    payload: "UserProfileModal",
+    payload: { modal: "UserProfileModal" },
     type: "modals/showModal",
   });
 });

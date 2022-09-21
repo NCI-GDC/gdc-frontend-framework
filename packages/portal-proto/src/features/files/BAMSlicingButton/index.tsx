@@ -8,7 +8,7 @@ import {
 } from "@gff/core";
 import { Button } from "@mantine/core";
 import { FaCut } from "react-icons/fa";
-import { userCanDownloadFile } from "./util";
+import { userCanDownloadFile } from "src/utils/userProjectUtils";
 
 export const BAMSlicingButton = ({
   isActive,
@@ -22,19 +22,19 @@ export const BAMSlicingButton = ({
   const { username } = userInfo?.data || {};
   return (
     <Button
-      className="text-base-lightest bg-primary hover:bg-primary-darker "
+      className="text-base-lightest bg-primary hover:bg-primary-darker"
       leftIcon={<FaCut />}
       loading={isActive}
       onClick={() => {
         if (username && userCanDownloadFile({ user: userInfo.data, file })) {
-          dispatch(showModal(Modals.BAMSlicingModal));
+          dispatch(showModal({ modal: Modals.BAMSlicingModal }));
         } else if (
           username &&
           !userCanDownloadFile({ user: userInfo.data, file })
         ) {
-          dispatch(showModal(Modals.NoAccessToProjectModal));
+          dispatch(showModal({ modal: Modals.NoAccessToProjectModal }));
         } else {
-          dispatch(showModal(Modals.NoAccessModal));
+          dispatch(showModal({ modal: Modals.NoAccessModal }));
         }
       }}
       data-testid="bamButton"

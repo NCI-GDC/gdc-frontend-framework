@@ -122,3 +122,6 @@ export const sortByPropertyAsc = <T>(
 
 export const getThemeColor = (key: string): Record<string, string> =>
   tailwindConfig.plugins.slice(-1)[0].__options.defaultTheme.extend.colors[key];
+
+export const fileInCart = (cart: CartFile[], newId: string): boolean =>
+  cart.map((f) => f.fileId).some((id) => id === newId);
