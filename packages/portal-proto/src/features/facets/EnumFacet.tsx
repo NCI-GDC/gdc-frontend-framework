@@ -358,9 +358,9 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
                           {showPercent ? (
                             <div className="flex-none text-right w-18 ">
                               (
-                              {(((count as number) / totalCount) * 100)
-                                .toFixed(2)
-                                .toLocaleString()}
+                              {(((count as number) / totalCount) * 100).toFixed(
+                                2,
+                              )}
                               %)
                             </div>
                           ) : null}
