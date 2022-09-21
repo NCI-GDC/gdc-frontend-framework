@@ -402,6 +402,11 @@ export interface FileDefaults {
       readonly data_format: string;
       readonly file_size: number;
       readonly file_id: string;
+      readonly state: string;
+      readonly submitter_id: string;
+      readonly created_datetime: string;
+      readonly updated_datetime: string;
+      readonly md5sum: string;
     }>;
   }>;
   readonly index_files?: ReadonlyArray<{

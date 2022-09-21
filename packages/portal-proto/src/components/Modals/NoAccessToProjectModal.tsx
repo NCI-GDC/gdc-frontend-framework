@@ -1,5 +1,4 @@
-import { hideModal, useCoreDispatch } from "@gff/core";
-import { Button, Text } from "@mantine/core";
+import { Text } from "@mantine/core";
 import { BaseModal } from "./BaseModal";
 
 export const NoAccessToProjectModal = ({
@@ -7,7 +6,6 @@ export const NoAccessToProjectModal = ({
 }: {
   openModal: boolean;
 }): JSX.Element => {
-  const dispatch = useCoreDispatch();
   return (
     <BaseModal
       title={
@@ -17,6 +15,7 @@ export const NoAccessToProjectModal = ({
       }
       closeButtonLabel="Close"
       openModal={openModal}
+      buttons={[{ title: "Close" }]}
     >
       <div className="border-y border-y-base-darker p-4">
         <Text size="sm"> You don&apos;t have access to this file.</Text>
@@ -33,14 +32,6 @@ export const NoAccessToProjectModal = ({
           </a>
           ).
         </Text>
-      </div>
-      <div className="flex justify-end mt-2.5">
-        <Button
-          onClick={() => dispatch(hideModal())}
-          className="!bg-primary hover:!bg-primary-darker"
-        >
-          Close
-        </Button>
       </div>
     </BaseModal>
   );

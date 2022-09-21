@@ -11,7 +11,7 @@ describe("modals slice reducer", () => {
   test("showModal", () => {
     const state = modalReducer(
       { currentModal: null },
-      showModal(Modals.UserProfileModal),
+      showModal({ modal: Modals.UserProfileModal }),
     );
     expect(state).toEqual({ currentModal: Modals.UserProfileModal });
   });
