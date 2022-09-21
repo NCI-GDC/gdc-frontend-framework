@@ -39,7 +39,7 @@ const CartSizeLimitModal = ({
           onClick={() => dispatch(hideModal())}
           className="!bg-primary hover:!bg-primary-darker"
         >
-          Close
+          Accept
         </Button>
       </div>
     </BaseModal>

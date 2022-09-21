@@ -13,7 +13,8 @@ const UnauthorizedFileModal = ({
   filesByCanAccess: Record<string, CartFile[]>;
 }): JSX.Element => {
   const dispatch = useCoreDispatch();
-  console.log(user);
+  const numFilesCanAccess = filesByCanAccess.true?.length || 0;
+
   return (
     <BaseModal
       title={
@@ -23,29 +24,55 @@ const UnauthorizedFileModal = ({
       }
       closeButtonLabel="Close"
       openModal={openModal}
+      size="xl"
     >
-      <div>
+      <p>
+        You are attempting to download files that you are not authorized to
+        access.
+      </p>
+      <div className="my-4">
         <p>
-          You are attempting to download files that you are not authorized to
-          access.
-        </p>
-        <p>
-          <Badge color="green">{filesByCanAccess.true?.length || 0}</Badge>{" "}
-          files that you are authorized to download.
+          <Badge color="green">{numFilesCanAccess}</Badge> files that you are
+          authorized to download.
         </p>
         <p>
           <Badge color="red">{filesByCanAccess.false?.length || 0}</Badge> files
           that you are not authorized to download.
         </p>
-        {!user.username && <LoginButton />}
-        <div className="flex justify-end mt-2.5">
-          <Button
-            onClick={() => dispatch(hideModal())}
-            className="!bg-primary hover:!bg-primary-darker"
-          >
-            Cancel
-          </Button>
+      </div>
+      {!user.username ? (
+        <div className="flex items-center">
+          Please <LoginButton />
         </div>
+      ) : (
+        !filesByCanAccess.true && (
+          <p>
+            Please request dbGaP Access to the project (
+            <a
+              href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-utility-link"
+            >
+              click here for more information
+            </a>
+            ).
+          </p>
+        )
+      )}
+      <div className="flex justify-end gap-2 mt-2">
+        <Button
+          onClick={() => dispatch(hideModal())}
+          className="!bg-primary hover:!bg-primary-darker"
+        >
+          Cancel
+        </Button>
+        <Button
+          disabled={numFilesCanAccess === 0}
+          className="!bg-primary hover:!bg-primary-darker"
+        >
+          Download {numFilesCanAccess} Authorized Files
+        </Button>
       </div>
     </BaseModal>
   );
