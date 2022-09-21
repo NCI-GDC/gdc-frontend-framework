@@ -52,8 +52,8 @@ import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
  * @param hideIfEmpty if facet has no data, do not render
  * @param dismissCallback if facet can be removed, supply a function which will ensure the "dismiss" control will be visible
  * @param width set the width of the facet
- * @param facetDataFunc function to pull enumerated data with
- * @param updateEnumsFunc function to extract enumeration values (used to set checkboxes)
+ * @param getFacetData function to pull enumerated data with
+ * @param updateFacetEnumerations function to extract enumeration values (used to set checkboxes)
  * @param clearFilterFunc function to call when filter should be reset (all checkboxes cleared)
  */
 export const EnumFacet: React.FC<EnumFacetCardProps> = ({
@@ -69,8 +69,8 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
   hideIfEmpty = true,
   dismissCallback = undefined,
   width = undefined,
-  facetDataFunc = FacetEnumHooks[docType],
-  updateEnumsFunc = undefined,
+  getFacetData = FacetEnumHooks[docType],
+  updateFacetEnumerations = undefined,
   clearFilterFunc = undefined,
 }: EnumFacetCardProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
@@ -80,7 +80,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
   const [isFacetView, setIsFacetView] = useState(startShowingData);
   const [visibleItems, setVisibleItems] = useState(DEFAULT_VISIBLE_ITEMS);
   const cardRef = useRef<HTMLDivElement>(null);
-  const { data, enumFilters, isSuccess } = facetDataFunc(
+  const { data, enumFilters, isSuccess } = getFacetData(
     field,
     docType,
     indexType,
@@ -105,9 +105,9 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
     enumerationFilters: EnumOperandValue,
     fieldname: string,
   ) => {
-    updateEnumsFunc
-      ? updateEnumsFunc(enumerationFilters, fieldname)
-      : UpdateEnums[docType](enumerationFilters, fieldname, coreDispatch);
+    updateFacetEnumerations
+      ? updateFacetEnumerations(fieldname, enumerationFilters)
+      : UpdateEnums[docType](coreDispatch, fieldname, enumerationFilters);
   };
 
   // filter missing and "" strings and update checkboxes

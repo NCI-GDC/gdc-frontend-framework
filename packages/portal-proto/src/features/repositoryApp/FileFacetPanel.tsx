@@ -62,8 +62,8 @@ export const FileFacetPanel = (): JSX.Element => {
   );
   const dispatch = useAppDispatch();
   const useEnumValues = (
-    enumerationFilters: EnumOperandValue,
     field: string,
+    enumerationFilters: EnumOperandValue,
   ) => {
     return updateEnumerationFilters(
       enumerationFilters,
@@ -183,8 +183,8 @@ export const FileFacetPanel = (): JSX.Element => {
               hideIfEmpty={false}
               description={x.description}
               dismissCallback={!isDefault ? handleRemoveFilter : undefined}
-              facetDataFunc={useRepositoryEnumData}
-              updateEnumsFunc={useEnumValues}
+              getFacetData={useRepositoryEnumData}
+              updateFacetEnumerations={useEnumValues}
               clearFilterFunc={clearFilters}
             />
           );

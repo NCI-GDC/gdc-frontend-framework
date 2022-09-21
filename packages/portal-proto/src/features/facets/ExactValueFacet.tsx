@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useMemo } from "react";
 import {
   FacetCardProps,
-  SelectFacetValueFunction,
-  UpdateFacetValueFunction,
+  SelectFacetFilterFunction,
+  UpdateFacetFilterFunction,
 } from "./types";
 import { ActionIcon, Badge, Group, TextInput, Tooltip } from "@mantine/core";
 import {
@@ -22,8 +22,8 @@ import {
 
 interface ExactValueProps
   extends Omit<FacetCardProps, "showSearch" | "showFlip" | "showPercent"> {
-  getFacetValue: SelectFacetValueFunction;
-  setFacetValue: UpdateFacetValueFunction;
+  getFacetValue: SelectFacetFilterFunction;
+  setFacetValue: UpdateFacetFilterFunction;
 }
 
 const instanceOfIncludesExcludes = (op: Operation): op is Includes | Excludes =>
