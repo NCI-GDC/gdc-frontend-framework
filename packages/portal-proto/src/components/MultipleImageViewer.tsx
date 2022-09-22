@@ -36,7 +36,6 @@ export const MultipleImageViewer = ({
   selectedId,
 }: MultipleImageViewerProps): JSX.Element => {
   const [activeTab, setActiveTab] = useState(0);
-  const [isActive, setIsActive] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [showMorePressed, setShowMorePressed] = useState(false);
   const [activeImage, setActiveImage] = useState("");
