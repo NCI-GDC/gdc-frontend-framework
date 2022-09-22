@@ -34,7 +34,7 @@ export const Slides: React.FC<SlidesProps> = ({
           },
         })}
       >
-        <Badge variant="filled" className="mb-1 text-primary-content text-xs">
+        <Badge variant="filled" className="mb-1 text-xs text-primary-contrast">
           {submitter_id}
         </Badge>
         {/* eslint-disable-next-line @next/next/no-img-element */}

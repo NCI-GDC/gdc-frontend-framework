@@ -36,6 +36,7 @@ export const MultipleImageViewer = ({
   selectedId,
 }: MultipleImageViewerProps): JSX.Element => {
   const [activeTab, setActiveTab] = useState(0);
+  const [isActive, setIsActive] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [showMorePressed, setShowMorePressed] = useState(false);
   const [activeImage, setActiveImage] = useState("");
@@ -104,7 +105,11 @@ export const MultipleImageViewer = ({
       <div className="flex justify-between">
         <h1 className="p-2 text-xl ml-4 text-black">Slide Image Viewer</h1>
         {/* TODO: for cases summary push the cases summary page route once it's available (using props to know when to go back or not) */}
-        <Button onClick={() => router.back()} size="xs" className="mr-2 mt-2">
+        <Button
+          onClick={() => router.back()}
+          size="xs"
+          classNames={{ root: "mr-2 mt-2 bg-primary hover:bg-primary-dark" }}
+        >
           Back
         </Button>
       </div>
@@ -128,98 +133,108 @@ export const MultipleImageViewer = ({
         ) : (
           <div className="flex flex-col border-2 border-base-lighter m-2 mt-0">
             <div className="flex border-b-2 border-b-base-lighter">
-              <div className="flex flex-col w-1/6">
-                <div className="flex">
-                  <h2 className="p-2 text-xl ml-4 text-black">Cases</h2>
-                  <Button
-                    onClick={() => setShowSearch((c) => !c)}
-                    variant="subtle"
-                    size="xs"
-                    className="mt-3"
-                    aria-label="Toggle Search Input Box"
-                    compact
-                  >
-                    <MdOutlineSearch size={30} color="black" className="mt-1" />
-                  </Button>
-                </div>
-
-                {showSearch && (
-                  <Input
-                    placeholder="eg. TCGA-DD*, *DD*, TCGA-DD-AAVP"
-                    className="w-1/8 m-2 mt-1"
-                    rightSectionWidth={50}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    rightSection={
-                      <Badge
-                        color="primary"
-                        variant="filled"
-                        className="cursor-pointer"
-                        onClick={performSearch}
+              <div className="w-[460px]">
+                <div className="flex w-full">
+                  <div className="flex-1">
+                    <div className="flex justify-center">
+                      <h2 className="p-2 text-xl ml-4 text-black">Cases</h2>
+                      <Button
+                        onClick={() => setShowSearch((c) => !c)}
+                        variant="subtle"
+                        size="xs"
+                        className="mt-3"
+                        aria-label="Toggle Search Input Box"
+                        compact
                       >
-                        Go!
-                      </Badge>
-                    }
-                    onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                      if (e.key === "Enter") {
-                        performSearch();
-                      }
-                    }}
-                    value={searchText}
-                  />
-                )}
+                        <MdOutlineSearch
+                          size={30}
+                          color="black"
+                          className="mt-1"
+                        />
+                      </Button>
+                    </div>
 
-                {searchValues.length > 0 && (
-                  <div className="mb-2 ml-2 flex flex-col">
-                    {searchValues.map((value) => (
-                      <Tooltip
-                        key={value}
-                        label="Click to Remove"
-                        className="my-1"
-                        position="top-start"
-                        transition="skew-up"
-                        transitionDuration={300}
-                        withArrow
-                        classNames={{
-                          tooltip: "h-7 w-1/8",
+                    {showSearch && (
+                      <Input
+                        placeholder="eg. TCGA-DD*, *DD*, TCGA-DD-AAVP"
+                        className="w-1/8 m-2 mt-1"
+                        rightSectionWidth={50}
+                        onChange={(e) => setSearchText(e.target.value)}
+                        rightSection={
+                          <Badge
+                            color="primary"
+                            variant="filled"
+                            className="cursor-pointer"
+                            onClick={performSearch}
+                          >
+                            Go!
+                          </Badge>
+                        }
+                        onKeyPress={(
+                          e: React.KeyboardEvent<HTMLInputElement>,
+                        ) => {
+                          if (e.key === "Enter") {
+                            performSearch();
+                          }
                         }}
-                      >
-                        <Badge
-                          size="lg"
-                          color="cyan"
-                          variant="filled"
-                          onClick={() => removeFilters(value)}
-                        >
-                          {value}
-                        </Badge>
-                      </Tooltip>
-                    ))}
+                        value={searchText}
+                      />
+                    )}
+
+                    {searchValues.length > 0 && (
+                      <div className="mb-2 ml-2 flex flex-col items-center gap-1">
+                        {searchValues.map((value) => (
+                          <Tooltip
+                            key={value}
+                            label="Click to Remove"
+                            className="my-1"
+                            position="top-start"
+                            transition="skew-up"
+                            transitionDuration={300}
+                            withArrow
+                            classNames={{
+                              tooltip: "h-7 w-1/8",
+                            }}
+                          >
+                            <Badge
+                              className="w-3/5"
+                              size="lg"
+                              color="cyan"
+                              variant="filled"
+                              onClick={() => removeFilters(value)}
+                            >
+                              {value}
+                            </Badge>
+                          </Tooltip>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                )}
+                  <div className="flex-1 text-center">
+                    <h2 className="p-2 text-xl ml-4 text-black">Slides</h2>
+                  </div>
+                </div>
               </div>
 
-              <div className="w-1/6">
-                <h2 className="p-2 text-xl ml-4 text-black">Slides</h2>
-              </div>
-
-              <div className="flex-1">
+              <div className="flex-1 ml-2 text-center">
                 <h2 className="p-2 text-xl mx-4 text-black">Image</h2>
               </div>
             </div>
 
             <div className="flex max-h-[550px]">
               {Object.keys(data?.edges).length > 0 && activeImage && (
-                <div className="flex-1/2">
+                <div className="flex-1/2 w-[460px]">
                   <Tabs
                     orientation="vertical"
                     variant="pills"
                     value={activeTab.toString()}
                     onTabChange={onTabChange}
                     classNames={{
-                      root: "max-h-[550px] overflow-x-hidden min-w-[40%]",
+                      root: "max-h-[555px] gap-2 overflow-x-hidden min-w-[40%]",
                       tab: "ml-2 mt-1",
                       tabsList: "bg-base-light overflow-y-auto",
                       tabLabel:
-                        "text-xs text-primary-content-darkest px-2 font-medium ",
+                        "text-xs text-primary-content-darkest px-2 font-medium",
                       panel: "max-h-[550px] overflow-y-auto",
                     }}
                     styles={(theme) => ({
@@ -238,10 +253,18 @@ export const MultipleImageViewer = ({
                       },
                     })}
                   >
-                    <Tabs.List>
+                    <Tabs.List className="flex-nowrap gap-0">
                       {Object.keys(data?.edges).map((edge, index) => {
                         return (
-                          <Tabs.Tab key={edge} value={index.toString()}>
+                          <Tabs.Tab
+                            key={edge}
+                            value={index.toString()}
+                            className={`mx-2 my-1 ${
+                              activeTab.toString() === index.toString()
+                                ? "[&>div]:text-primary-contrast"
+                                : ""
+                            } truncate ...`}
+                          >
                             {edge}
                           </Tabs.Tab>
                         );
@@ -293,7 +316,7 @@ export const MultipleImageViewer = ({
                   }}
                   size="xs"
                   classNames={{
-                    root: "bg-primary-lighter hover:bg-primary-dark",
+                    root: "bg-primary hover:bg-primary-dark",
                   }}
                 >
                   Show More
