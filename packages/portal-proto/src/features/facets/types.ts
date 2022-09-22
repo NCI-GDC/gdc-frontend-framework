@@ -18,23 +18,37 @@ export interface EnumFacetResponse extends FacetResponse {
   readonly enumFilters?: ReadonlyArray<string>;
 }
 
-export type GetFacetDataFunction = (field: string) => FacetResponse;
-export type GetFacetEnumDataFunction = (
+export type GetFacetDataFunction = <T extends FacetResponse = FacetResponse>(
+  field: string,
+) => T;
+export type GetFacetDataFromDocAndIndexFunction = <
+  T extends FacetResponse = EnumFacetResponse,
+>(
   field: string,
   docType?: GQLDocType,
   indexType?: GQLIndexType,
-) => EnumFacetResponse;
+) => T;
 export type SelectFacetFilterFunction = (field: string) => Operation;
 export type UpdateFacetFilterFunction = (field: string, op: Operation) => void;
-export type UpdateEnumFacetFilterFunction = (
-  field: string,
-  op: Operation,
-) => void;
 export type ClearFacetFunction = (field: string) => void;
+export type GetTotalCountsFunction = (countName: string) => number;
+export type updateArrayFilterValues = (
+  field: string,
+  enumerationFilters: EnumOperandValue,
+) => void;
+
+export interface FacetDataFunctions {
+  getFacetFilters: SelectFacetFilterFunction;
+  updateFacetFilters: UpdateFacetFilterFunction;
+  clearFacetFilters: ClearFacetFunction;
+  getTotalCounts?: GetTotalCountsFunction;
+  getFacetData?: GetFacetDataFunction | GetFacetDataFromDocAndIndexFunction;
+}
 
 export interface FacetCardProps {
   readonly field: string;
-  readonly docType: GQLDocType;
+  dataFunctions: FacetDataFunctions;
+  readonly docType?: GQLDocType;
   readonly indexType?: GQLIndexType;
   readonly description?: string;
   readonly facetName?: string;
@@ -45,19 +59,6 @@ export interface FacetCardProps {
   readonly hideIfEmpty?: boolean;
   readonly width?: string;
   readonly dismissCallback?: (string) => void;
-  readonly clearFilterFunc?: ClearFacetFunction;
-}
-
-export interface EnumFacetCardProps extends FacetCardProps {
-  readonly getFacetData?: (
-    field: string,
-    docType: GQLDocType,
-    indexType: GQLIndexType,
-  ) => EnumFacetResponse;
-  readonly updateFacetEnumerations?: (
-    field: string,
-    enumerationFilters: EnumOperandValue,
-  ) => void;
 }
 
 export type RangeFromOp = ">" | ">=";

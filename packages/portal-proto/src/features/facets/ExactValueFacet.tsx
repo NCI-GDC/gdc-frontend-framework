@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import {
   FacetCardProps,
   SelectFacetFilterFunction,
@@ -15,9 +15,8 @@ import {
   Operation,
   Excludes,
   Includes,
-  removeCohortFilter,
-  useCoreDispatch,
   trimFirstFieldNameToTitle,
+  EnumOperandValue,
 } from "@gff/core";
 
 interface ExactValueProps
@@ -51,16 +50,8 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
   width = undefined,
   getFacetValue,
   setFacetValue,
-  clearFilterFunc = undefined,
+  clearFilters,
 }: ExactValueProps) => {
-  const coreDispatch = useCoreDispatch();
-
-  const clearFilters = useCallback(() => {
-    clearFilterFunc
-      ? clearFilterFunc(field)
-      : coreDispatch(removeCohortFilter(field));
-  }, [clearFilterFunc, coreDispatch, field]);
-
   const [textValue, setTextValue] = useState(""); // Handle the state of the TextInput
 
   const facetTitle = facetName
@@ -69,7 +60,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
   const facetValue = getFacetValue(field);
   const textValues = useMemo(() => extractValues(facetValue), [facetValue]);
 
-  const setValues = (values: ReadonlyArray<string | number>) => {
+  const setValues = (values: EnumOperandValue) => {
     if (values.length > 0) {
       if (facetValue && instanceOfIncludesExcludes(facetValue)) {
         // updating facet value
@@ -86,7 +77,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
     }
     // no values remove the filter
     else {
-      clearFilterFunc(field);
+      clearFilters(field);
     }
   };
 

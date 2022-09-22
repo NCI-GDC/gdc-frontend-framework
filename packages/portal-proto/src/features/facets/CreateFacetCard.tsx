@@ -3,19 +3,16 @@ import { FacetDefinition, GQLDocType, GQLIndexType } from "@gff/core";
 import { EnumFacet } from "@/features/facets/EnumFacet";
 import NumericRangeFacet from "@/features/facets/NumericRangeFacet";
 import DateRangeFacet from "@/features/facets/DateRangeFacet";
-import {
-  ClearFacetFunction,
-  SelectFacetFilterFunction,
-  UpdateFacetFilterFunction,
-} from "@/features/facets/types";
+import ExactValueFacet from "@/features/facets/ExactValueFacet";
+import ToggleFacet from "@/features/facets/ToggleFacet";
+
+import { FacetDataFunctions } from "@/features/facets/types";
 
 export const createFacetCard = (
   facets: ReadonlyArray<FacetDefinition>,
   docType: GQLDocType,
   indexType: GQLIndexType,
-  getFacetValue: SelectFacetFilterFunction,
-  setFacetValue: UpdateFacetFilterFunction,
-  clearFacetValue: ClearFacetFunction,
+  dataFunctions: FacetDataFunctions,
   dismissCallback: (string) => void = undefined,
   hideIfEmpty = false,
 ): ReadonlyArray<React.ReactNode> => {
@@ -31,6 +28,7 @@ export const createFacetCard = (
           description={x.description}
           dismissCallback={dismissCallback}
           hideIfEmpty={hideIfEmpty}
+          dataFunctions={dataFunctions}
         />
       );
     if (x.facet_type === "datetime")
@@ -43,9 +41,7 @@ export const createFacetCard = (
           description={x.description}
           dismissCallback={dismissCallback}
           hideIfEmpty={hideIfEmpty}
-          getFacetValue={getFacetValue}
-          setFacetValue={setFacetValue}
-          clearFilterFunc={clearFacetValue}
+          dataFunctions={dataFunctions}
         />
       );
     if (
@@ -70,8 +66,9 @@ export const createFacetCard = (
           indexType={indexType}
           minimum={x?.range?.minimum}
           maximum={x?.range?.maximum}
-          dismissCallback={dismissCallback}
           hideIfEmpty={hideIfEmpty}
+          dataFunctions={dataFunctions}
+          dismissCallback={dismissCallback}
         />
       );
     }

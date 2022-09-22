@@ -1,19 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
 import {
-  useCoreDispatch,
   useCoreSelector,
   selectTotalCountsByName,
   usePrevious,
-  removeCohortFilter,
   EnumOperandValue,
   fieldNameToTitle,
 } from "@gff/core";
-import {
-  FacetDocTypeToCountsIndexMap,
-  FacetDocTypeToLabelsMap,
-  FacetEnumHooks,
-  UpdateEnums,
-} from "./hooks";
+import { FacetDocTypeToCountsIndexMap, FacetDocTypeToLabelsMap } from "./hooks";
 import { DEFAULT_VISIBLE_ITEMS } from "./utils";
 
 import {
@@ -22,7 +15,7 @@ import {
   MdClose as CloseIcon,
 } from "react-icons/md";
 import { FaUndo as UndoIcon } from "react-icons/fa";
-import { EnumFacetCardProps } from "@/features/facets/types";
+import { EnumFacetResponse, FacetCardProps } from "@/features/facets/types";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
 import {
   ActionIcon,
@@ -55,10 +48,11 @@ import FacetSortPanel from "@/features/facets/FacetSortPanel";
  * @param updateFacetEnumerations function to extract enumeration values (used to set checkboxes)
  * @param clearFilterFunc function to call when filter should be reset (all checkboxes cleared)
  */
-export const EnumFacet: React.FC<EnumFacetCardProps> = ({
+export const EnumFacet: React.FC<FacetCardProps> = ({
   field,
   docType,
   indexType,
+  dataFunctions,
   description,
   facetName = null,
   showSearch = true,
@@ -68,10 +62,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
   hideIfEmpty = true,
   dismissCallback = undefined,
   width = undefined,
-  getFacetData = FacetEnumHooks[docType],
-  updateFacetEnumerations = undefined,
-  clearFilterFunc = undefined,
-}: EnumFacetCardProps) => {
+}: FacetCardProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -79,15 +70,11 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
   const [isFacetView, setIsFacetView] = useState(startShowingData);
   const [visibleItems, setVisibleItems] = useState(DEFAULT_VISIBLE_ITEMS);
   const cardRef = useRef<HTMLDivElement>(null);
-  const { data, enumFilters, isSuccess } = getFacetData(
-    field,
-    docType,
-    indexType,
-  );
+  const { data, enumFilters, isSuccess } =
+    dataFunctions.getFacetData<EnumFacetResponse>(field, docType, indexType);
   const [selectedEnums, setSelectedEnums] = useState(enumFilters);
   const prevFilters = usePrevious(enumFilters);
   const searchInputRef = useRef(null);
-  const coreDispatch = useCoreDispatch();
 
   // get the total count to compute percentages
   // TODO: move this outside of Facet Component
@@ -101,19 +88,20 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
     }
   }, [isSearching]);
 
-  const clearFilters = () => {
-    clearFilterFunc
-      ? clearFilterFunc(field)
-      : coreDispatch(removeCohortFilter(field));
-  };
-
-  const updateFacetEnum = (
-    enumerationFilters: EnumOperandValue,
-    fieldname: string,
-  ) => {
-    updateFacetEnumerations
-      ? updateFacetEnumerations(fieldname, enumerationFilters)
-      : UpdateEnums[docType](coreDispatch, fieldname, enumerationFilters);
+  const updateFacetEnum = (fieldname: string, values: EnumOperandValue) => {
+    if (values === undefined) return;
+    if (values.length > 0) {
+      // TODO: Assuming Includes by default but this might change to Include|Excludes
+      dataFunctions.updateFacetFilters(fieldname, {
+        operator: "includes",
+        field: fieldname,
+        operands: values,
+      });
+    }
+    // no values remove the filter
+    else {
+      dataFunctions.clearFacetFilters(fieldname);
+    }
   };
 
   // filter missing and "" strings and update checkboxes
@@ -140,19 +128,17 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
   }
 
   // update filters when checkbox is selected
-  const handleChange = (e) => {
-    const { value, checked } = e.target;
-
+  const handleChange = (value: string, checked: boolean) => {
     if (checked) {
       const updated = selectedEnums ? [...selectedEnums, value] : [value];
-      updateFacetEnum(updated, field);
+      updateFacetEnum(field, updated);
     } else {
       // TODO: replace with ToggleFacet
       const updated =
         field === "genes.is_cancer_gene_census"
           ? []
           : selectedEnums.filter((x) => x != value);
-      updateFacetEnum(updated, field);
+      updateFacetEnum(field, updated);
     }
   };
 
@@ -257,7 +243,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
               </FacetIconButton>
             ) : null}
             <FacetIconButton
-              onClick={clearFilters}
+              onClick={() => dataFunctions.clearFacetFilters(field)}
               aria-label="clear selection"
             >
               <UndoIcon size="1.15em" className={controlsIconStyle} />
@@ -265,7 +251,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
             {dismissCallback ? (
               <FacetIconButton
                 onClick={() => {
-                  clearFilters();
+                  dataFunctions.clearFacetFilters(field);
                   dismissCallback(field);
                 }}
                 aria-label="Remove the facet"
@@ -337,7 +323,12 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
                               value={value}
                               size="xs"
                               color="accent"
-                              onChange={handleChange}
+                              onChange={(e) =>
+                                handleChange(
+                                  e.currentTarget.value,
+                                  e.currentTarget.checked,
+                                )
+                              }
                               aria-label={`checkbox for ${field}`}
                               classNames={{
                                 input: "hover:bg-accent-darker",
