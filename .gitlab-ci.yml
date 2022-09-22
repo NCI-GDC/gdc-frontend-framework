@@ -95,10 +95,11 @@ Build core and compile portal:
 
 Run unit tests:
   stage: unit
-  script:
-    - npm run test:all
   needs:
     - Build core and compile portal
+  script:
+    - npm run test:all
+  retry: 2
   cache:
     - key: "Built-$CI_COMMIT_REF_SLUG"
       paths:
