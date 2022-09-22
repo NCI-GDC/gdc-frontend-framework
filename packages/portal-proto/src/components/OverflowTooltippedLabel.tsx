@@ -14,41 +14,35 @@ const OverflowTooltippedLabel = (
   const [showTooltip, setShowTooltip] = useState(false);
 
   return (
-    <>
-      {showTooltip ? (
-        <Tooltip label={label} position="top-start" multiline>
-          <div
-            className="flex-grow truncate ... font-heading text-md pt-0.5"
-            ref={(el) => {
-              if (el) {
-                if (el.clientWidth < el.scrollWidth) {
-                  setShowTooltip(true);
-                } else {
-                  setShowTooltip(false);
-                }
-              }
-            }}
-          >
-            {children}
-          </div>
-        </Tooltip>
-      ) : (
-        <div
-          className="flex-grow truncate ... font-heading text-md pt-0.5"
-          ref={(el) => {
-            if (el) {
-              if (el.clientWidth < el.scrollWidth) {
-                setShowTooltip(true);
-              } else {
-                setShowTooltip(false);
-              }
+    <Tooltip
+      label={label}
+      disabled={!showTooltip}
+      position="top-start"
+      offset={0}
+      multiline
+      withArrow
+      arrowSize={6}
+      arrowOffset={20}
+      classNames={{
+        arrow: "bg-base-darker",
+        tooltip: "bg-base-darker text-base-darker-contrast",
+      }}
+    >
+      <div
+        className="flex-grow truncate ... font-heading text-md pt-0.5"
+        ref={(el) => {
+          if (el) {
+            if (el.clientWidth < el.scrollWidth) {
+              setShowTooltip(true);
+            } else {
+              setShowTooltip(false);
             }
-          }}
-        >
-          {children}
-        </div>
-      )}
-    </>
+          }
+        }}
+      >
+        {children}
+      </div>
+    </Tooltip>
   );
 };
 
