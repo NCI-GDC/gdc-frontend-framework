@@ -26,33 +26,35 @@ const buttonStyle =
 const MAX_CART_SIZE = 5 * 10e8;
 
 const downloadCart = (
-  cart: CartFile[],
-  userDetails: UserInfo,
+  filesByCanAccess: Record<string, CartFile[]>,
+  dbGapList: string[],
   dispatch: CoreDispatch,
 ) => {
-  const filesByCanAccess = groupByAccess(cart, userDetails);
   if (
     filesByCanAccess.true
       ?.map((file) => file.fileSize)
       .reduce((a, b) => a + b) > MAX_CART_SIZE
   ) {
-    dispatch(showModal(Modals.CartSizeLimitModal));
-  } else if (filesByCanAccess.false.length > 0) {
-    dispatch(showModal(Modals.UnauthorizedFilesModal));
+    dispatch(showModal({ modal: Modals.CartSizeLimitModal }));
+  } else if (filesByCanAccess.false.length > 0 || dbGapList.length > 0) {
+    dispatch(showModal({ modal: Modals.UnauthorizedFilesModal }));
+  } else {
+    // TODO: download
   }
 };
 
 interface CartHeaderProps {
-  cart: CartFile[];
   summaryData: CartSummaryData;
+  filesByCanAccess: Record<string, CartFile[]>;
+  dbGapList: string[];
 }
 
 const CartHeader: React.FC<CartHeaderProps> = ({
-  cart,
   summaryData,
+  filesByCanAccess,
+  dbGapList,
 }: CartHeaderProps) => {
   const dispatch = useCoreDispatch();
-  const { data: userDetails } = useUserDetails();
 
   return (
     <div className="bg-primary-darkest text-primary-contrast-darkest flex items-center gap-x-4 w-full h-16">
@@ -71,7 +73,9 @@ const CartHeader: React.FC<CartHeaderProps> = ({
         </Menu.Target>
         <Menu.Dropdown>
           <Menu.Item>Manifest</Menu.Item>
-          <Menu.Item onClick={() => downloadCart(cart, userDetails, dispatch)}>
+          <Menu.Item
+            onClick={() => downloadCart(filesByCanAccess, dbGapList, dispatch)}
+          >
             Cart
           </Menu.Item>
         </Menu.Dropdown>

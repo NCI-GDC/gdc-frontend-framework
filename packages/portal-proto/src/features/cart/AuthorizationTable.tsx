@@ -16,14 +16,12 @@ const columnCells = [
 ];
 
 interface AuthorizationTableProps {
-  readonly cart: CartFile[];
+  readonly filesByCanAccess: Record<string, CartFile[]>;
 }
 
 const AuthorizationTable: React.FC<AuthorizationTableProps> = ({
-  cart,
+  filesByCanAccess,
 }: AuthorizationTableProps) => {
-  const { data: userDetails } = useUserDetails();
-  const filesByCanAccess = groupByAccess(cart, userDetails);
   const tableData = [
     {
       level: "Authorized",

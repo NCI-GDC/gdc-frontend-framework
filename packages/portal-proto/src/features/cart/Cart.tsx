@@ -13,7 +13,7 @@ import ProjectTable from "./ProjectTable";
 import CartHeader from "./CartHeader";
 import AuthorizationTable from "./AuthorizationTable";
 import CartSizeLimitModal from "@/components/Modals/CartSizeLimitModal";
-import UnauthorizedFileModal from "@/components/Modals/UnauthorizedFilesModal";
+import CartDownloadModal from "@/components/Modals/CartDownloadModal";
 import { groupByAccess } from "./utils";
 
 const H2 = tw.h2`
@@ -46,18 +46,31 @@ const Cart: React.FC = () => {
   const { data: userDetails } = useUserDetails();
   const filesByCanAccess = groupByAccess(cart, userDetails);
 
+  const dbGapList = Array.from(
+    new Set(
+      filesByCanAccess?.true
+        .reduce((acc, f) => acc.concat(f.acl), [])
+        .filter((f) => f !== "open"),
+    ),
+  );
+
   return (
     <>
       {modal === Modals.CartSizeLimitModal && <CartSizeLimitModal openModal />}
       {modal === Modals.UnauthorizedFilesModal && (
-        <UnauthorizedFileModal
+        <CartDownloadModal
           openModal
           user={userDetails}
           filesByCanAccess={filesByCanAccess}
+          dbGapList={dbGapList}
         />
       )}
 
-      <CartHeader cart={cart} summaryData={summaryData} />
+      <CartHeader
+        summaryData={summaryData}
+        filesByCanAccess={filesByCanAccess}
+        dbGapList={dbGapList}
+      />
       <Grid className="mt-8 mx-2">
         <Grid.Col span={6}>
           <div className="bg-base-lightest p-4 border border-solid border-base-lighter">
@@ -94,7 +107,7 @@ const Cart: React.FC = () => {
           </div>
           <div className="pt-5">
             <H2>File counts by authorization level</H2>
-            <AuthorizationTable cart={cart} />
+            <AuthorizationTable filesByCanAccess={filesByCanAccess} />
           </div>
         </Grid.Col>
         <Grid.Col span={6} className="px-4">
