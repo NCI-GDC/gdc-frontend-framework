@@ -8,7 +8,9 @@ include:
       - templates/deployments/salt-service.yaml
 
 .services:
+  allow_failure: true
   stage: deploy
+  when: manual
   parallel:
     matrix:
       - DEPLOY_SERVICE_LIST: [ portal2 ]
