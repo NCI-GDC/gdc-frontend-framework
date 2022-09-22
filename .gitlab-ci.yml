@@ -71,6 +71,8 @@ Prettier Checks:
 
 Build core and compile portal:
   stage: build
+  before_script:
+    - lerna -v || npm ci
   script:
     - cd ${CI_PROJECT_DIR}/packages/core
     - npm run build:clean
