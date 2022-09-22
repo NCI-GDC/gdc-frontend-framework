@@ -18,7 +18,6 @@ stages:
   - build
   - unit
   - release
-  - deploy
 
 image: docker.osdc.io/node:16-alpine3.15
 
@@ -97,6 +96,8 @@ Run unit tests:
   stage: unit
   script:
     - npm run test:all
+  needs:
+    - Build core and compile portal
   cache:
     - key: "Built-$CI_COMMIT_REF_SLUG"
       paths:
