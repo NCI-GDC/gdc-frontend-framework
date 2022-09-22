@@ -17,7 +17,7 @@ import {
 import { addToCart, removeFromCart } from "@/features/cart/updateCart";
 import { get } from "lodash";
 import { entityTypes } from "@/components/BioTree/types";
-import { capitalize } from "src/utils";
+import { capitalize, fileInCart } from "src/utils";
 
 interface IHumanifyParams {
   term: string;
@@ -139,9 +139,6 @@ export const formatEntityInfo = (
       ]),
   );
 
-  const fileInCart = (cart: CartFile[], newId: string) =>
-    cart.map((f) => f.fileId).some((id) => id === newId);
-
   const isFileInCart = fileInCart(currentCart, selectedSlide[0]?.file_id);
 
   if (foundType === "slide" && !!selectedSlide[0]) {
@@ -172,7 +169,9 @@ export const formatEntityInfo = (
                     dispatch,
                   );
             }}
-            className={isFileInCart ? "text-nci-green" : "text-primary-content"}
+            className={`${
+              isFileInCart ? "text-secondary-min" : "text-primary-content"
+            } cursor-pointer`}
           />
         </Tooltip>
         <Tooltip label="Download">
@@ -181,7 +180,7 @@ export const formatEntityInfo = (
             onClick={() => {
               alert("Download coming soon!!!");
             }}
-            className="text-primary-content"
+            className="text-primary-content cursor-pointer"
           />
         </Tooltip>
       </div>,

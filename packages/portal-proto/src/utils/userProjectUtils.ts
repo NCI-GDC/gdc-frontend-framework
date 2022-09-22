@@ -12,7 +12,10 @@ export const isUserProject = ({
     return false;
   }
   const projectIds = Array.from(
-    new Set([...(file.cases || []).map((e) => e.project.project_id)]),
+    new Set([
+      file.project_id,
+      ...(file.cases || []).map((e) => e.project.project_id),
+    ]),
   );
 
   const gdcIds = Object.keys(get(user, "projects.gdc_ids", {}));

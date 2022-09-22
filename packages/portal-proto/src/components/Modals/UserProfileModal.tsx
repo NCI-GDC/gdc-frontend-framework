@@ -1,10 +1,5 @@
-import {
-  hideModal,
-  useCoreDispatch,
-  useCoreSelector,
-  selectUserDetailsInfo,
-} from "@gff/core";
-import { Button, Text } from "@mantine/core";
+import { useCoreSelector, selectUserDetailsInfo } from "@gff/core";
+import { Text } from "@mantine/core";
 import { FaCheck } from "react-icons/fa";
 import { ScrollableTableWithFixedHeader } from "../ScrollableTableWithFixedHeader";
 import { BaseModal } from "./BaseModal";
@@ -14,7 +9,6 @@ export const UserProfileModal = ({
 }: {
   openModal: boolean;
 }): JSX.Element => {
-  const dispatch = useCoreDispatch();
   const userInfo = useCoreSelector((state) => selectUserDetailsInfo(state));
   const {
     projects: { gdc_ids },
@@ -73,6 +67,7 @@ export const UserProfileModal = ({
       closeButtonLabel="Done"
       openModal={openModal}
       size="60%"
+      buttons={[{ title: "Done" }]}
     >
       <div className={`${!data ? "py-15px" : "py-5px"} border-y border-y-base`}>
         {data.length > 0 ? (
@@ -103,15 +98,6 @@ export const UserProfileModal = ({
             </Text>
           </div>
         )}
-      </div>
-
-      <div className="flex justify-end mt-2.5">
-        <Button
-          onClick={() => dispatch(hideModal())}
-          className="!bg-primary hover:!bg-primary-darker"
-        >
-          Done
-        </Button>
       </div>
     </BaseModal>
   );
