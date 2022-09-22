@@ -1,14 +1,10 @@
-import {
-  CoreDispatch,
-  GDC_APP_API_AUTH,
-  ModalTypes,
-  showModal,
-} from "@gff/core";
+import { CoreDispatch, GDC_APP_API_AUTH, Modals, showModal } from "@gff/core";
 import { Button } from "@mantine/core";
 import { cleanNotifications, showNotification } from "@mantine/notifications";
 import { isPlainObject, includes, reduce } from "lodash";
 import urlJoin from "url-join";
 import { RiCloseCircleLine as CloseIcon } from "react-icons/ri";
+import { theme } from "tailwind.config";
 
 const getBody = (iframe: HTMLIFrameElement) => {
   const document = iframe.contentWindow || iframe.contentDocument;
@@ -26,10 +22,26 @@ const toHtml = (key: string, value: any) =>
     }"
   />`;
 
-const arrayToStringFields = ["expand", "fields", "facets"];
+const customKeys = ["expand", "fields", "facets"];
 
-const arrayToStringOnFields = (key, value, fields) =>
-  includes(fields, key) ? [].concat(value).join() : value;
+const processParamObj = (key: string, value: any) =>
+  includes(customKeys, key) ? [].concat(value).join() : value;
+
+const DownloadNotification = ({ onClick }: { onClick: () => void }) => {
+  return (
+    <div>
+      <p>Download preparation in progress. Please wait...</p>
+      <Button
+        variant="white"
+        leftIcon={<CloseIcon />}
+        style={{ color: "#155276", cursor: "pointer" }}
+        onClick={onClick}
+      >
+        Cancel Download
+      </Button>
+    </div>
+  );
+};
 
 /**
  * @param endpoint endpoint to be attached with  GDC AUTH API
@@ -40,6 +52,7 @@ const arrayToStringOnFields = (key, value, fields) =>
  * @param queryParams option param, only to be sent if queryParams need special manipulation
  * @param Modal400 Modal for 400 error
  * @param Modal403 Modal for 403 error
+ * @param customErrorMessage custom mesage to be passed for 400 errors
  * @return Promise<void>
  */
 
@@ -50,65 +63,49 @@ const download = async ({
   done,
   dispatch,
   queryParams,
-  Modal400,
-  Modal403,
+  Modal400 = Modals.GeneralErrorModal,
+  Modal403 = Modals.NoAccessModal,
+  options,
+  customErrorMessage,
 }: {
   endpoint: string;
   params: Record<string, any>;
+  options: Record<string, any>;
   method: string;
   done: () => void;
   dispatch: CoreDispatch;
   queryParams?: string;
   altMessage?: boolean;
-  Modal403: ModalTypes;
-  Modal400: ModalTypes;
+  Modal403?: Modals;
+  Modal400?: Modals;
+  customErrorMessage?: string;
 }): Promise<void> => {
-  let timeoutPromise = null;
+  let canceled = false;
   showNotification({
     message: (
-      <div>
-        <p>Download preparation in progress. Please wait...</p>
-        <Button
-          variant="white"
-          leftIcon={<CloseIcon />}
-          style={{ color: "#155276", cursor: "pointer" }}
-          onClick={() => {
-            cleanNotifications();
-            if (timeoutPromise) {
-              clearTimeout(timeoutPromise);
-              timeoutPromise = null;
-            }
-            done();
-          }}
-        >
-          Cancel Download
-        </Button>
-      </div>
+      <DownloadNotification
+        onClick={() => {
+          cleanNotifications();
+          canceled = true;
+          done();
+        }}
+      />
     ),
     styles: () => ({
       root: {
-        backgroundColor: "#4dbc97",
         textAlign: "center",
-        borderColor: "#4dbc97",
-        "&::before": { backgroundColor: "#4dbc97" },
       },
       closeButton: {
         color: "black",
-        "&:hover": { backgroundColor: "#e6e6e6" },
-      },
-      icon: {
-        height: 0,
-        width: 0,
+        "&:hover": { backgroundColor: theme.extend.colors["gdc-grey"].lighter },
       },
     }),
-    icon: <div />,
-    autoClose: 5000,
   });
 
   const fields = reduce(
     params,
     (result, value, key) => {
-      const paramValue = arrayToStringOnFields(key, value, arrayToStringFields);
+      const paramValue = processParamObj(key, value);
       return (
         result +
         [].concat(paramValue).reduce((acc, v) => acc + toHtml(key, v), "")
@@ -136,29 +133,44 @@ const download = async ({
       .map((key) => key + "=" + params[key])
       .join("&");
   }
-  timeoutPromise = setTimeout(() => {
-    fetch(`${GDC_APP_API_AUTH}/${endpoint}?${queryParams}`, {
-      method: "HEAD",
-    }).then(async (res) => {
-      if (res.status === 403) {
+
+  fetch(`${GDC_APP_API_AUTH}/${queryParams}`, options).then(async (res) => {
+    cleanNotifications();
+    if (!canceled && res.ok) {
+      form.submit();
+      setTimeout(() => {
         done();
-        // TODO: might need to save response error message later if needed in modal slice.
-        dispatch(showModal(Modal403));
-        return;
-      }
-      if (res.status === 400) {
-        done();
-        dispatch(showModal(Modal400));
-        return;
-      }
-      if (res.ok) {
-        form.submit();
-        setTimeout(() => {
-          done();
-        }, 2000);
-      }
-    });
-  }, 5100);
+      }, 1000);
+      return;
+    }
+    done();
+    let errorMessage;
+    try {
+      const body = await res.json();
+      errorMessage = body.message;
+    } catch (error) {
+      errorMessage = undefined;
+    }
+
+    if (res.status === 404 || res.status === 500) {
+      dispatch(showModal({ modal: Modal400, message: errorMessage }));
+      return;
+    }
+
+    if (res.status === 403) {
+      dispatch(showModal({ modal: Modal403, message: errorMessage }));
+      return;
+    }
+    if (res.status === 400) {
+      dispatch(
+        showModal({
+          modal: Modal400,
+          message: customErrorMessage || errorMessage,
+        }),
+      );
+      return;
+    }
+  });
 };
 
 export default download;

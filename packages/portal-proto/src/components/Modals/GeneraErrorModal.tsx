@@ -1,17 +1,18 @@
+import { useCoreSelector, selectCurrentMessage } from "@gff/core";
 import { Text } from "@mantine/core";
-import { LoginButton } from "../LoginButton";
 import { BaseModal } from "./BaseModal";
 
-export const NoAccessModal = ({
+export const GeneralErrorModal = ({
   openModal,
 }: {
   openModal: boolean;
 }): JSX.Element => {
+  const message = useCoreSelector((state) => selectCurrentMessage(state));
   return (
     <BaseModal
       title={
         <Text size="lg" className="font-medium">
-          Access Alert
+          Error
         </Text>
       }
       closeButtonLabel="Close"
@@ -19,14 +20,7 @@ export const NoAccessModal = ({
       buttons={[{ title: "Close" }]}
     >
       <div className="border-y border-y-base p-4">
-        <Text size="sm"> You don&apos;t have access to this file.</Text>
-
-        <div className="flex content-center">
-          <Text size="sm" className="mt-1">
-            Please
-          </Text>{" "}
-          <LoginButton fromSession />
-        </div>
+        <Text size="md"> {message}</Text>
       </div>
     </BaseModal>
   );

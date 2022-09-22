@@ -86,6 +86,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
   );
   const [selectedEnums, setSelectedEnums] = useState(enumFilters);
   const prevFilters = usePrevious(enumFilters);
+  const searchInputRef = useRef(null);
   const coreDispatch = useCoreDispatch();
 
   // get the total count to compute percentages
@@ -93,6 +94,12 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
   const totalCount = useCoreSelector((state) =>
     selectTotalCountsByName(state, FacetDocTypeToCountsIndexMap[docType]),
   );
+
+  useEffect(() => {
+    if (isSearching) {
+      searchInputRef?.current?.focus();
+    }
+  }, [isSearching]);
 
   const clearFilters = () => {
     clearFilterFunc
@@ -151,6 +158,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
 
   const toggleSearch = () => {
     setIsSearching(!isSearching);
+    setSearchTerm("");
   };
 
   const toggleFlip = () => {
@@ -236,29 +244,9 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
           </Tooltip>
           <div className="flex flex-row">
             {showSearch ? (
-              <>
-                {isSearching && (
-                  <TextInput
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    aria-label={"search values"}
-                    rightSection={
-                      searchTerm.length > 0 ? (
-                        <ActionIcon
-                          onClick={() => {
-                            setSearchTerm("");
-                          }}
-                        >
-                          <CloseIcon />
-                        </ActionIcon>
-                      ) : undefined
-                    }
-                  />
-                )}
-                <FacetIconButton onClick={toggleSearch} aria-label="Search">
-                  <SearchIcon size="1.45em" className={controlsIconStyle} />
-                </FacetIconButton>
-              </>
+              <FacetIconButton onClick={toggleSearch} aria-label="Search">
+                <SearchIcon size="1.45em" className={controlsIconStyle} />
+              </FacetIconButton>
             ) : null}
             {showFlip ? (
               <FacetIconButton
@@ -289,6 +277,27 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
         </div>
       </div>
       <div className="h-full">
+        {isSearching && (
+          <TextInput
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            aria-label={"search values"}
+            ref={searchInputRef}
+            rightSection={
+              searchTerm.length > 0 ? (
+                <ActionIcon
+                  onClick={() => {
+                    setSearchTerm("");
+                    searchInputRef.current.focus();
+                  }}
+                  aria-label={"clear search"}
+                >
+                  <CloseIcon />
+                </ActionIcon>
+              ) : undefined
+            }
+          />
+        )}
         <div
           className={
             isFacetView
@@ -314,45 +323,51 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
                 {total == 0 ? (
                   <div className="mx-4">No data for this field</div>
                 ) : isSuccess ? (
-                  Object.entries(sortedData).map(([value, count]) => {
-                    return (
-                      <div
-                        key={`${field}-${value}`}
-                        className="flex flex-row items-center gap-x-1 px-2 "
-                      >
-                        <div className="flex-none">
-                          <Checkbox
-                            value={value}
-                            size="xs"
-                            color="accent"
-                            onChange={handleChange}
-                            aria-label={`checkbox for ${field}`}
-                            classNames={{
-                              input: "hover:bg-accent-darker",
-                            }}
-                            checked={
-                              !!(selectedEnums && selectedEnums.includes(value))
-                            }
-                          />
-                        </div>
-                        <div className="flex-grow truncate ... font-heading text-md pt-0.5">
-                          {value}
-                        </div>
-                        <div className="flex-none text-right w-14 ">
-                          {count.toLocaleString()}
-                        </div>
-                        {showPercent ? (
-                          <div className="flex-none text-right w-18 ">
-                            (
-                            {(((count as number) / totalCount) * 100)
-                              .toFixed(2)
-                              .toLocaleString()}
-                            %)
+                  Object.entries(sortedData).length === 0 ? (
+                    <div className="mx-4">No results found</div>
+                  ) : (
+                    Object.entries(sortedData).map(([value, count]) => {
+                      return (
+                        <div
+                          key={`${field}-${value}`}
+                          className="flex flex-row items-center gap-x-1 px-2 "
+                        >
+                          <div className="flex-none">
+                            <Checkbox
+                              value={value}
+                              size="xs"
+                              color="accent"
+                              onChange={handleChange}
+                              aria-label={`checkbox for ${field}`}
+                              classNames={{
+                                input: "hover:bg-accent-darker",
+                              }}
+                              checked={
+                                !!(
+                                  selectedEnums && selectedEnums.includes(value)
+                                )
+                              }
+                            />
                           </div>
-                        ) : null}
-                      </div>
-                    );
-                  })
+                          <div className="flex-grow truncate ... font-heading text-md pt-0.5">
+                            {value}
+                          </div>
+                          <div className="flex-none text-right w-14 ">
+                            {count.toLocaleString()}
+                          </div>
+                          {showPercent ? (
+                            <div className="flex-none text-right w-18 ">
+                              (
+                              {(((count as number) / totalCount) * 100).toFixed(
+                                2,
+                              )}
+                              %)
+                            </div>
+                          ) : null}
+                        </div>
+                      );
+                    })
+                  )
                 ) : (
                   <div>
                     {
@@ -392,24 +407,28 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
               isFacetView ? "invisible" : ""
             }`}
           >
-            {!isFacetView && (
-              <EnumFacetChart
-                field={field}
-                data={data}
-                selectedEnums={selectedEnums}
-                isSuccess={isSuccess}
-                showTitle={false}
-                maxBins={numberOfBarsToDisplay}
-                height={
-                  numberOfBarsToDisplay == 1
-                    ? 150
-                    : numberOfBarsToDisplay == 2
-                    ? 220
-                    : numberOfBarsToDisplay == 3
-                    ? 240
-                    : numberOfBarsToDisplay * 65 + 10
-                }
-              />
+            {filteredData.length === 0 ? (
+              <div className="mx-4">No results found</div>
+            ) : (
+              !isFacetView && (
+                <EnumFacetChart
+                  field={field}
+                  data={Object.fromEntries(filteredData)}
+                  selectedEnums={selectedEnums}
+                  isSuccess={isSuccess}
+                  showTitle={false}
+                  maxBins={numberOfBarsToDisplay}
+                  height={
+                    numberOfBarsToDisplay == 1
+                      ? 150
+                      : numberOfBarsToDisplay == 2
+                      ? 220
+                      : numberOfBarsToDisplay == 3
+                      ? 240
+                      : numberOfBarsToDisplay * 65 + 10
+                  }
+                />
+              )
             )}
           </div>
         </div>

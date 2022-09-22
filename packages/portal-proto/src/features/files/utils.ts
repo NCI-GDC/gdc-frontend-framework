@@ -148,9 +148,9 @@ export const mapGdcFileToCartFile = (files: GdcFile[]): CartFile[] =>
   );
 
 export const mapFilesFromCasesToCartFile = (
-  files?: caseFileType[],
+  files: caseFileType[],
 ): CartFile[] =>
-  files?.map((file) => ({
+  files.map((file) => ({
     access: file.access,
     acl: file.acl,
     fileId: file.file_id,

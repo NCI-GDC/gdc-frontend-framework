@@ -16,8 +16,8 @@ export const SlideDetailButton = forwardRef<
     <div ref={wrapperRef} id="details-button" className="absolute -top-[14px]">
       <Button
         onClick={() => setShowDetails((o) => !o)}
-        className="h-5 bg-primary-dark w-20 py-1 mb-3 px-0 rounded-md"
-        size="xs"
+        className="w-20 bg-primary-dark p-2 mb-3 rounded-md"
+        size="sm"
       >
         Details
       </Button>
