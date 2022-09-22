@@ -212,7 +212,7 @@ const asExperimentalStrategy = (
 };
 
 export interface GdcFile {
-  readonly id: string;
+  readonly id?: string;
   readonly submitterId: string;
   readonly access: AccessType;
   readonly acl: ReadonlyArray<string>;
@@ -220,16 +220,16 @@ export interface GdcFile {
   readonly updatedDatetime: string;
   readonly dataCategory: DataCategory;
   readonly dataFormat: DataFormat;
-  readonly dataRelease: string;
+  readonly dataRelease?: string;
   readonly dataType: DataType;
   readonly fileId: string;
   readonly fileName: string;
   readonly fileSize: number;
   readonly md5sum: string;
-  readonly platform: string;
+  readonly platform?: string;
   readonly state: string;
-  readonly fileType: FileType;
-  readonly version: string;
+  readonly fileType?: FileType;
+  readonly version?: string;
   readonly experimentalStrategy?: ExperimentalStrategy;
   readonly project_id?: string;
   readonly annotations?: ReadonlyArray<{
@@ -322,12 +322,20 @@ export interface GdcFile {
   readonly downstream_analyses?: ReadonlyArray<{
     readonly workflow_type: string;
     readonly output_files?: ReadonlyArray<{
-      readonly file_name: string;
-      readonly data_category: string;
-      readonly data_type: string;
-      readonly data_format: string;
-      readonly file_size: number;
-      readonly file_id: string;
+      readonly fileName: string;
+      readonly dataCategory: DataCategory;
+      readonly dataType: DataType;
+      readonly dataFormat: DataFormat;
+      readonly state: string;
+      readonly fileSize: number;
+      readonly fileId: string;
+      readonly access: AccessType;
+      readonly acl: ReadonlyArray<string>;
+      readonly project_id?: string;
+      readonly createdDatetime: string;
+      readonly updatedDatetime: string;
+      readonly submitterId: string;
+      readonly md5sum: string;
     }>;
   }>;
   readonly index_files?: ReadonlyArray<{
@@ -476,12 +484,20 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
         workflow_type: analysis.workflow_type,
         output_files: analysis.output_files?.map((file) => {
           return {
-            file_name: file.file_name,
-            data_category: file.data_category,
-            data_type: file.data_type,
-            data_format: file.data_format,
-            file_size: file.file_size,
-            file_id: file.file_id,
+            fileName: file.file_name,
+            dataCategory: asDataCategory(file.data_category),
+            dataType: asDataType(file.data_type),
+            dataFormat: asDataFormat(file.data_format),
+            fileSize: file.file_size,
+            fileId: file.file_id,
+            acl: hit.acl,
+            access: asAccessType(hit.access),
+            project_id: hit.cases?.[0].project?.project_id,
+            state: file.state,
+            submitterId: file.submitter_id,
+            createdDatetime: file.created_datetime,
+            updatedDatetime: file.updated_datetime,
+            md5sum: file.md5sum,
           };
         }),
       };

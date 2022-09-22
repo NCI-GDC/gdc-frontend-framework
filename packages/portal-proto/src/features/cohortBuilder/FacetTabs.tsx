@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
+import Router, { useRouter } from "next/router";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import tw from "tailwind-styled-components";
 import {
   addFilterToCohortBuilder,
   CohortBuilderCategory,
+  CoreContext,
   FacetDefinition,
   GQLDocType,
   GQLIndexType,
@@ -16,6 +18,7 @@ import {
   useCoreSelector,
   useFacetDictionary,
   usePrevious,
+  selectFacetDefinition,
 } from "@gff/core";
 import {
   Button,
@@ -35,6 +38,13 @@ import {
 import FacetSelection from "@/components/FacetSelection";
 import isEqual from "lodash/isEqual";
 import { createFacetCard } from "@/features/facets/CreateFacetCard";
+import { partial } from "lodash";
+import {
+  clearFilters,
+  dispatchFieldFilter,
+  selectFieldFilter,
+} from "@/features/facets/hooks";
+import { createSelectorHook } from "react-redux";
 
 const CustomFacetWhenEmptyGroup = tw(Stack)`
 h-64
@@ -119,6 +129,7 @@ const CustomFacetGroup = (): JSX.Element => {
   const { isSuccess: isDictionaryReady } = useFacetDictionary();
 
   const coreDispatch = useCoreDispatch();
+  const coreSelector = createSelectorHook(CoreContext);
   const facets = useCoreSelector((state) =>
     selectFacetDefinitionsByName(state, customConfig.facets),
   );
@@ -203,6 +214,9 @@ const CustomFacetGroup = (): JSX.Element => {
             customFacetDefinitions,
             "cases", // Cohort custom filter restricted to "cases"
             customConfig.index as GQLIndexType,
+            partial(selectFieldFilter, coreSelector),
+            partial(dispatchFieldFilter, coreDispatch),
+            partial(clearFilters, coreDispatch),
             handleRemoveFilter,
           )}
         </FacetGroup>
@@ -215,12 +229,44 @@ export const FacetTabs = (): JSX.Element => {
   const tabsConfig = useCoreSelector((state) =>
     selectCohortBuilderConfig(state),
   );
+  const coreDispatch = useCoreDispatch();
+  const coreSelector = createSelectorHook(CoreContext);
+  const router = useRouter();
+  const facets =
+    useCoreSelector((state) => selectFacetDefinition(state)).data || {};
+  const [activeTab, setActiveTab] = useState(
+    router?.query?.tab
+      ? (router.query.tab as string)
+      : Object.keys(tabsConfig)[0],
+  );
+
+  useEffect(() => {
+    if (
+      router !== null &&
+      activeTab !== undefined &&
+      activeTab !== router?.query?.tab
+    ) {
+      router.push({ query: { ...Router.query, tab: activeTab } }, undefined, {
+        scroll: false,
+      });
+    }
+    // https://github.com/vercel/next.js/discussions/29403#discussioncomment-1908563
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab]);
+
+  useEffect(() => {
+    if (router?.query?.tab && activeTab !== router.query.tab) {
+      setActiveTab(router.query.tab as string);
+    }
+  }, [router?.query?.tab, activeTab, setActiveTab]);
+
   return (
     <div className="w-100">
       <StyledFacetTabs
         orientation="vertical"
+        value={activeTab}
+        onTabChange={setActiveTab}
         keepMounted={false}
-        defaultValue={tabsConfig[Object.keys(tabsConfig)[0]].label}
         classNames={{
           tab: "data-active:text-primary-content-darkest text-primary-content-lightest font-medium data-active:border-primary-darker data-active:border-l-1 data-active:border-t-1 data-active:border-b-1 data-active:bg-base-max hover:bg-primary-darker",
           tabsList:
@@ -229,37 +275,37 @@ export const FacetTabs = (): JSX.Element => {
         }}
       >
         <Tabs.List>
-          {Object.values(tabsConfig).map((tabEntry: CohortBuilderCategory) => {
-            return (
-              <Tabs.Tab
-                key={`cohortTab-${tabEntry.label}`}
-                value={tabEntry.label}
-              >
-                {tabEntry.label}
-              </Tabs.Tab>
-            );
-          })}
+          {Object.entries(tabsConfig).map(
+            ([key, tabEntry]: [string, CohortBuilderCategory]) => {
+              return (
+                <Tabs.Tab key={key} value={key}>
+                  {tabEntry.label}
+                </Tabs.Tab>
+              );
+            },
+          )}
         </Tabs.List>
-        {Object.values(tabsConfig).map((tabEntry: CohortBuilderCategory) => {
-          return (
-            <Tabs.Panel
-              key={`cohortTab-${tabEntry.label}`}
-              value={tabEntry.label}
-            >
+        {Object.entries(tabsConfig).map(
+          ([key, tabEntry]: [string, CohortBuilderCategory]) => (
+            <Tabs.Panel key={key} value={key}>
+              {" "}
               {tabEntry.label === "Custom" ? (
                 <CustomFacetGroup />
               ) : (
                 <FacetGroup>
                   {createFacetCard(
-                    getFacetInfo(tabEntry.facets),
+                    getFacetInfo(tabEntry.facets, facets),
                     tabEntry.docType as GQLDocType,
                     tabEntry.index as GQLIndexType,
+                    partial(selectFieldFilter, coreSelector),
+                    partial(dispatchFieldFilter, coreDispatch),
+                    partial(clearFilters, coreDispatch),
                   )}
                 </FacetGroup>
               )}
             </Tabs.Panel>
-          );
-        })}
+          ),
+        )}
       </StyledFacetTabs>
     </div>
   );

@@ -34,7 +34,7 @@ import FunctionButton from "@/components/FunctionButton";
 const ContextBar: React.FC<CohortGroupProps> = ({
   cohorts,
 }: CohortGroupProps) => {
-  const [isGroupCollapsed, setIsGroupCollapsed] = useState(false);
+  const [isGroupCollapsed, setIsGroupCollapsed] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handleCohortSelection = (idx) => {
@@ -52,7 +52,7 @@ const ContextBar: React.FC<CohortGroupProps> = ({
         coreDispatch(clearCohortFilters());
       } else {
         cohorts[idx].facets.map((x) => {
-          updateEnumFilters(x.value, x.field, coreDispatch);
+          updateEnumFilters(coreDispatch, x.field, x.value);
         });
       }
     }

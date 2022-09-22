@@ -58,6 +58,7 @@ export * from "./features/survival/survivalApiSlice";
 export * from "./features/facets/facetsByNameTypeAndFilter";
 export * from "./features/users/usersSlice";
 export * from "./features/modals/modalsSlice";
+export { CoreState } from "./reducers";
 
 import { datadogRum } from "@datadog/browser-rum";
 

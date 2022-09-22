@@ -1,8 +1,8 @@
 import { PropsWithChildren } from "react";
 import { Button, Collapse } from "@mantine/core";
 import {
-  MdChevronRight as ExpandMoreIcon,
-  MdExpandMore as ExpandLessIcon,
+  MdExpandLess as ExpandLessIcon,
+  MdExpandMore as ExpandMoreIcon,
 } from "react-icons/md";
 
 export interface CollapsibleContainerProps {
