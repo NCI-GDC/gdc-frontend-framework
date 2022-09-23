@@ -2,6 +2,7 @@ import { AnchorLink } from "@/components/AnchorLink";
 import { CollapsibleTextArea } from "@/components/CollapsibleTextArea";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
+import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 import { useGenesSummaryData } from "@gff/core";
 import { FaBook, FaTable } from "react-icons/fa";
 import { HiPlus, HiMinus } from "react-icons/hi";
@@ -10,9 +11,67 @@ import { humanify } from "../biospecimen/utils";
 import CNVPlot from "../charts/CNVPlot";
 import SSMPlot from "../charts/SSMPlot";
 import { formatDataForHorizontalTable } from "../files/utils";
+import { LoadingOverlay } from "@mantine/core";
+
+interface GeneSummaryData {
+  symbol: string;
+  name: string;
+  synonyms: Array<string>;
+  biotype: string;
+  gene_chromosome: string;
+  gene_start: number;
+  gene_end: number;
+  gene_strand: number;
+  description: string;
+  is_cancer_gene_census: boolean;
+  civic?: string;
+  gene_id: string;
+  external_db_ids: {
+    entrez_gene: string;
+    uniprotkb_swissprot: string;
+    hgnc: string;
+    omim_gene: string;
+  };
+}
+
+interface GeneViewProps {
+  data: {
+    genes: GeneSummaryData;
+  };
+  gene_id: string;
+}
 
 export const GeneSummary = ({ gene_id }: { gene_id: string }): JSX.Element => {
   const { data, isFetching } = useGenesSummaryData({ gene_id });
+
+  const isValidGeneData = (geneData: GeneSummaryData) => {
+    for (const key in geneData) {
+      if (typeof geneData[key] === "undefined") {
+        return false;
+      } else {
+        return true;
+      }
+    }
+  };
+
+  return (
+    <>
+      {isFetching ? (
+        <LoadingOverlay visible />
+      ) : data &&
+        Object.keys(data).length > 0 &&
+        isValidGeneData(data?.genes) ? (
+        <GeneView data={data} gene_id={gene_id} />
+      ) : (
+        <SummaryErrorHeader label="Gene Not Found" />
+      )}
+    </>
+  );
+};
+
+const GeneView = (props: GeneViewProps) => {
+  const { data, gene_id } = props;
+
   const formatDataForSummary = () => {
     const {
       genes: {
@@ -115,7 +174,7 @@ export const GeneSummary = ({ gene_id }: { gene_id: string }): JSX.Element => {
 
   return (
     <div>
-      {!isFetching && data?.genes && (
+      {data?.genes && (
         <>
           <SummaryHeader iconText="GN" headerTitle={data.genes.symbol} />
           <div className="mx-auto mt-20 w-9/12 pt-4">
