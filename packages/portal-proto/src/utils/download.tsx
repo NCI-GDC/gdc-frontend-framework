@@ -72,7 +72,7 @@ const download = async ({
   params: Record<string, any>;
   options: Record<string, any>;
   method: string;
-  done: () => void;
+  done?: () => void;
   dispatch: CoreDispatch;
   queryParams?: string;
   altMessage?: boolean;

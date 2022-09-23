@@ -59,7 +59,6 @@ const downloadCart = (
         annotations: true,
         related_files: true,
       },
-      done: () => {},
       dispatch,
       queryParams: qs.stringify({
         ids: filesByCanAccess.true.map((file) => file.fileId),

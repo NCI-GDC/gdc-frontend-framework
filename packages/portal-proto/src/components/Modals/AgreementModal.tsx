@@ -1,5 +1,5 @@
 import { GdcFile, hideModal, useCoreDispatch } from "@gff/core";
-import { Anchor, Button, Checkbox, Text } from "@mantine/core";
+import { Button, Text } from "@mantine/core";
 import { SetStateAction, useState } from "react";
 import { DownloadButton } from "../DownloadButtons";
 import { BaseModal } from "./BaseModal";

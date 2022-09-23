@@ -22,7 +22,8 @@ const CartSizeLimitModal = ({
         <p>Your cart contains more than 5 GBs of data.</p>
 
         <p>
-          Please select the "Download {">"} Manifest" option and use the{" "}
+          Please select the &quot;Download &gt; Manifest&quot; option and use
+          the{" "}
           <a
             href="https://gdc.cancer.gov/access-data/gdc-data-transfer-tool"
             target="_blank"

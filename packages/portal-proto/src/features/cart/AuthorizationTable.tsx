@@ -1,7 +1,6 @@
 import fileSize from "filesize";
-import { CartFile, useUserDetails } from "@gff/core";
+import { CartFile } from "@gff/core";
 import { VerticalTable } from "@/features/shared/VerticalTable";
-import { groupByAccess } from "./utils";
 
 const columnListOrder = [
   { id: "level", columnName: "Level", visible: true },
