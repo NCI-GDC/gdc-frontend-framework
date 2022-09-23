@@ -14,7 +14,7 @@ interface DownloadButtonProps {
   format?: string;
   fields?: Array<string>;
   filters?: Record<string, any>;
-  extraParams?: Record<string, string>;
+  extraParams?: Record<string, any>;
   method?: string;
   queryParams?: string;
   options?: Record<string, any>;

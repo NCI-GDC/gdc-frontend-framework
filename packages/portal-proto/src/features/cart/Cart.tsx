@@ -48,7 +48,7 @@ const Cart: React.FC = () => {
 
   const dbGapList = Array.from(
     new Set(
-      filesByCanAccess?.true
+      (filesByCanAccess?.true || [])
         .reduce((acc, f) => acc.concat(f.acl), [])
         .filter((f) => f !== "open"),
     ),
