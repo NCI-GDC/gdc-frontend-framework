@@ -1,11 +1,9 @@
 import {
   CartFile,
   CartSummaryData,
-  useUserDetails,
   showModal,
   Modals,
   useCoreDispatch,
-  UserInfo,
   CoreDispatch,
 } from "@gff/core";
 import fileSize from "filesize";
@@ -17,7 +15,8 @@ import {
   MdSave as SaveIcon,
 } from "react-icons/md";
 import { RiFile3Fill as FileIcon } from "react-icons/ri";
-import { groupByAccess } from "./utils";
+import qs from "querystring";
+import download from "src/utils/download";
 
 const buttonStyle =
   "bg-base-lightest text-base-contrast-lightest border-base-darkest";
@@ -36,10 +35,38 @@ const downloadCart = (
       .reduce((a, b) => a + b) > MAX_CART_SIZE
   ) {
     dispatch(showModal({ modal: Modals.CartSizeLimitModal }));
-  } else if (filesByCanAccess.false.length > 0 || dbGapList.length > 0) {
+  } else if (
+    (filesByCanAccess?.false || []).length > 0 ||
+    dbGapList.length > 0
+  ) {
     dispatch(showModal({ modal: Modals.UnauthorizedFilesModal }));
   } else {
-    // TODO: download
+    download({
+      endpoint: "data",
+      method: "POST",
+      options: {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        method: "POST",
+      },
+      params: {
+        size: 10000,
+        attachment: true,
+        format: "JSON",
+        pretty: true,
+        ids: filesByCanAccess.true.map((file) => file.fileId),
+        annotations: true,
+        related_files: true,
+      },
+      done: () => {},
+      dispatch,
+      queryParams: qs.stringify({
+        ids: filesByCanAccess.true.map((file) => file.fileId),
+        annotations: true,
+        related_files: true,
+      }),
+    });
   }
 };
 
