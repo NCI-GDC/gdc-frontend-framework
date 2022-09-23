@@ -19,7 +19,7 @@ export const fetchGeneSummary = createAsyncThunk(
   },
 );
 
-interface GeneSummaryData {
+export interface GeneSummaryData {
   symbol: string;
   name: string;
   synonyms: Array<string>;

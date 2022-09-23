@@ -3,7 +3,7 @@ import { CollapsibleTextArea } from "@/components/CollapsibleTextArea";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
-import { useGenesSummaryData } from "@gff/core";
+import { useGenesSummaryData, GeneSummaryData } from "@gff/core";
 import { FaBook, FaTable } from "react-icons/fa";
 import { HiPlus, HiMinus } from "react-icons/hi";
 import { externalLinkNames, externalLinks } from "src/utils";
@@ -12,27 +12,6 @@ import CNVPlot from "../charts/CNVPlot";
 import SSMPlot from "../charts/SSMPlot";
 import { formatDataForHorizontalTable } from "../files/utils";
 import { LoadingOverlay } from "@mantine/core";
-
-interface GeneSummaryData {
-  symbol: string;
-  name: string;
-  synonyms: Array<string>;
-  biotype: string;
-  gene_chromosome: string;
-  gene_start: number;
-  gene_end: number;
-  gene_strand: number;
-  description: string;
-  is_cancer_gene_census: boolean;
-  civic?: string;
-  gene_id: string;
-  external_db_ids: {
-    entrez_gene: string;
-    uniprotkb_swissprot: string;
-    hgnc: string;
-    omim_gene: string;
-  };
-}
 
 interface GeneViewProps {
   data: {
