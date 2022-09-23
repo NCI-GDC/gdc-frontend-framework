@@ -57,7 +57,7 @@ const Cart: React.FC = () => {
   return (
     <>
       {modal === Modals.CartSizeLimitModal && <CartSizeLimitModal openModal />}
-      {modal === Modals.UnauthorizedFilesModal && (
+      {modal === Modals.CartDownloadModal && (
         <CartDownloadModal
           openModal
           user={userDetails}

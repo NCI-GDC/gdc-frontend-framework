@@ -39,7 +39,7 @@ const downloadCart = (
     (filesByCanAccess?.false || []).length > 0 ||
     dbGapList.length > 0
   ) {
-    dispatch(showModal({ modal: Modals.UnauthorizedFilesModal }));
+    dispatch(showModal({ modal: Modals.CartDownloadModal }));
   } else {
     download({
       endpoint: "data",

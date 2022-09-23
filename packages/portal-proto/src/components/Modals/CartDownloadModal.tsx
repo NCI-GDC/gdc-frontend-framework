@@ -7,7 +7,7 @@ import { DownloadButton } from "@/components/DownloadButtons";
 import { BaseModal } from "./BaseModal";
 import DownloadAccessAgreement from "./DownloadAccessAgreement";
 
-const UnauthorizedFileModal = ({
+const CartDownloadModal = ({
   openModal,
   user,
   filesByCanAccess,
@@ -124,4 +124,4 @@ const UnauthorizedFileModal = ({
   );
 };
 
-export default UnauthorizedFileModal;
+export default CartDownloadModal;

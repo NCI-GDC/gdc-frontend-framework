@@ -8,7 +8,7 @@ export enum Modals {
   "BAMSlicingModal" = "BAMSlicingModal",
   "NoAccessToProjectModal" = "NoAccessToProjectModal",
   "CartSizeLimitModal" = "CartSizeLimitModal",
-  "UnauthorizedFilesModal" = "UnauthorizedFilesModal",
+  "CartDownloadModal" = "CartDownloadModal",
   "AgreementModal" = " AgreementModal",
   "GeneralErrorModal" = " GeneralErrorModal",
 }
