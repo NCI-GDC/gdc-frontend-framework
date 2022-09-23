@@ -28,7 +28,14 @@ image: docker.osdc.io/node:16-alpine3.15
 variables:
   npm_config_registry: https://nexus.osdc.io/repository/npm-all/
   npm_config_cache: .npm
-  DEPLOY_SERVICE_TAG: ${CI_COMMIT_BRANCH}-${CI_COMMIT_TAG}
+  DEPLOY_SERVICE_TAG: ${CI_COMMIT_BRANCH}-${CI_COMMIT_SHORT_SHA}
+
+workflow:
+  rules:
+    - if: $CI_COMMIT_TAG
+      variables:
+        DEPLOY_SERVICE_TAG: ${CI_COMMIT_BRANCH}-${CI_COMMIT_TAG}
+    - when: always
 
 Install npm packages:
   stage: .pre
