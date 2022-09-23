@@ -42,6 +42,7 @@ import {
   FromToRange,
   RangeFromOp,
   RangeToOp,
+  EnumFacetHooks,
 } from "@/features/facets/types";
 import {
   FacetDocTypeToCountsIndexMap,
@@ -52,7 +53,7 @@ import { controlsIconStyle, FacetIconButton } from "./components";
 import FacetExpander from "@/features/facets/FacetExpander";
 import FacetSortPanel from "@/features/facets/FacetSortPanel";
 
-interface NumericFacetProps extends FacetCardProps {
+interface NumericFacetProps extends FacetCardProps<EnumFacetHooks> {
   readonly rangeDatatype: string;
   readonly minimum?: number;
   readonly maximum?: number;
@@ -817,6 +818,7 @@ const PercentRange: React.FC<NumericFacetData> = ({
 
 const NumericRangeFacet: React.FC<NumericFacetProps> = ({
   field,
+  hooks,
   rangeDatatype,
   docType,
   description,
@@ -828,11 +830,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
   width = undefined,
 }: NumericFacetProps) => {
   const [isFacetView, setIsFacetView] = useState(true);
-  const coreDispatch = useCoreDispatch();
-
-  const clearFilters = () => {
-    coreDispatch(removeCohortFilter(field));
-  };
+  const clearFilters = hooks.useClearFilter();
 
   const toggleFlip = () => {
     setIsFacetView(!isFacetView);
@@ -876,7 +874,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
             {dismissCallback ? (
               <FacetIconButton
                 onClick={() => {
-                  clearFilters();
+                  clearFilters(field);
                   dismissCallback(field);
                 }}
                 aria-label="Remove the facet"

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { FacetCardProps, ValueDataFunctions } from "./types";
+import { FacetCardProps, ValueFacetHooks } from "./types";
 import { ActionIcon, Badge, Group, TextInput, Tooltip } from "@mantine/core";
 import {
   controlsIconStyle,
@@ -16,7 +16,7 @@ import {
 } from "@gff/core";
 
 type ExactValueProps = Omit<
-  FacetCardProps<ValueDataFunctions>,
+  FacetCardProps<ValueFacetHooks>,
   "showSearch" | "showFlip" | "showPercent"
 >;
 
@@ -43,28 +43,29 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
   facetName = undefined,
   dismissCallback = undefined,
   width = undefined,
-  dataFunctions,
+  hooks,
 }: ExactValueProps) => {
   const [textValue, setTextValue] = useState(""); // Handle the state of the TextInput
-  const clearFilters = () => dataFunctions.clearFilter(field);
+  const clearFilters = hooks.useClearFilter();
+  const updateFacetFilters = hooks.useUpdateFacetFilters();
   const facetTitle = facetName
     ? facetName
     : trimFirstFieldNameToTitle(field, true);
-  const facetValue = dataFunctions.getFacetFilters(field);
+  const facetValue = hooks.useGetFacetFilters(field);
   const textValues = useMemo(() => extractValues(facetValue), [facetValue]);
 
   const setValues = (values: EnumOperandValue) => {
     if (values.length > 0) {
       if (facetValue && instanceOfIncludesExcludes(facetValue)) {
         // updating facet value
-        dataFunctions.updateFacetFilters(field, {
+        updateFacetFilters(field, {
           ...facetValue,
           operands: values,
         });
       }
       if (facetValue === undefined) {
         // TODO: Assuming Includes by default but this might change to Include|Excludes
-        dataFunctions.updateFacetFilters(field, {
+        updateFacetFilters(field, {
           operator: "includes",
           field: field,
           operands: values,
@@ -73,7 +74,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
     }
     // no values remove the filter
     else {
-      clearFilters();
+      clearFilters(field);
     }
   };
 
@@ -129,7 +130,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
           {dismissCallback ? (
             <FacetIconButton
               onClick={() => {
-                clearFilters();
+                clearFilters(field);
                 dismissCallback(field);
               }}
               aria-label="Remove the facet"

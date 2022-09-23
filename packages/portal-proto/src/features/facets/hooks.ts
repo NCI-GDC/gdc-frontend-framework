@@ -32,9 +32,15 @@ import {
 } from "@gff/core";
 import { useEffect } from "react";
 import isEqual from "lodash/isEqual";
-import { EnumFacetResponse, FacetResponse } from "@/features/facets/types";
+import {
+  ClearFacetFunction,
+  EnumFacetResponse,
+  FacetResponse,
+  UpdateFacetFilterFunction,
+} from "@/features/facets/types";
 import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook } from "react-redux";
+import { partial } from "lodash";
 
 /**
  * Filter selector for all the facet filters
@@ -260,6 +266,7 @@ type UpdateEnumFiltersFunc = (
   field: string,
   enumerationFilters: EnumOperandValue,
 ) => void;
+
 /**
  * Adds an enumeration filter to cohort filters
  * @param dispatch CoreDispatch instance
@@ -288,6 +295,14 @@ export const updateEnumFilters: UpdateEnumFiltersFunc = (
     // completely remove the field
     dispatch(removeCohortFilter(field));
   }
+};
+
+// Hook version of updateEnumFilters
+
+export const useUpdateEnumFilters = () => {
+  const dispatch = useCoreDispatch();
+  return (field: string, enumerationFilters: EnumOperandValue) =>
+    partial(updateEnumFilters, dispatch, field, enumerationFilters);
 };
 
 export const useUpdateGenomicEnumFilters: UpdateEnumFiltersFunc = (
@@ -382,8 +397,8 @@ export const selectFieldFilter = (
   return selector((state) => selectCurrentCohortFiltersByName(state, field));
 };
 
-// Update Core Facet Filter
-export const updateFieldFilter = (
+// Update Core Filter
+export const updateFacetFilter = (
   dispatch: CoreDispatch,
   field: string,
   operation: Operation,
@@ -392,9 +407,26 @@ export const updateFieldFilter = (
   dispatch(updateCohortFilter({ field: field, operation: operation }));
 };
 
+// Update filter hook
+export const useUpdateFacetFilter = (): UpdateFacetFilterFunction => {
+  const dispatch = useCoreDispatch();
+  // update the filter for this facet
+  return (field: string, operation: Operation) => {
+    dispatch(updateCohortFilter({ field: field, operation: operation }));
+  };
+};
+
 // Global Clear
 export const clearFilters = (dispatch: CoreDispatch, field: string): void => {
   dispatch(removeCohortFilter(field));
+};
+
+// Core ClearFilters hook
+export const useClearFilters = (): ClearFacetFunction => {
+  const dispatch = useCoreDispatch();
+  return (field: string) => {
+    dispatch(removeCohortFilter(field));
+  };
 };
 
 export const useTotalCounts = (name: string): number =>

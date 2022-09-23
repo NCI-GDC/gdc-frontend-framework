@@ -36,26 +36,28 @@ export type updateArrayFilterValues = (
   enumerationFilters: EnumOperandValue,
 ) => void;
 
-export interface FacetDataFunctions {
-  updateFacetFilters: UpdateFacetFilterFunction;
-  clearFilter: ClearFacetFunction;
+export interface FacetDataHooks {
+  useClearFilter: () => ClearFacetFunction;
 }
 
-export interface EnumFacetDataFunctions
-  extends Omit<FacetDataFunctions, "getFacetFilters"> {
-  getFacetData: GetFacetDataFromDocAndIndexFunction;
-  getTotalCounts: GetTotalCountsFunction;
+export interface EnumFacetHooks extends FacetDataHooks {
+  useUpdateFacetFilters: () => UpdateFacetFilterFunction;
+  useGetFacetData: GetFacetDataFromDocAndIndexFunction;
+  useTotalCounts: GetTotalCountsFunction;
 }
 
-export interface ValueDataFunctions extends FacetDataFunctions {
-  getFacetFilters: SelectFacetFilterFunction;
+export interface ValueFacetHooks extends FacetDataHooks {
+  useUpdateFacetFilters: () => UpdateFacetFilterFunction;
+  useGetFacetFilters: SelectFacetFilterFunction;
 }
 
-export interface FacetCardProps<
-  T extends FacetDataFunctions = FacetDataFunctions,
-> {
+export interface ToggleFacetHooks extends FacetDataHooks {
+  useGetFacetFilters: SelectFacetFilterFunction;
+}
+
+export interface FacetCardProps<T extends FacetDataHooks> {
   readonly field: string;
-  dataFunctions: T;
+  readonly hooks: T;
   readonly docType?: GQLDocType;
   readonly indexType?: GQLIndexType;
   readonly description?: string;

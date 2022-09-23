@@ -1,5 +1,6 @@
-import React, { useCallback, useMemo } from "react";
-import { EnumFacetCardProps } from "./types";
+import React, { useMemo } from "react";
+import { EnumFacetHooks, FacetCardProps } from "./types";
+import { updateFacetEnum } from "./utils";
 
 import {
   controlsIconStyle,
@@ -15,30 +16,27 @@ import { FaUndo as UndoIcon } from "react-icons/fa";
 const extractToggleValue = (values?: ReadonlyArray<string>): boolean =>
   values && values.length > 0 && values.includes("true");
 
-const ToggleFacet: React.FC<EnumFacetCardProps> = ({
+const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   field,
   docType,
   indexType,
+  hooks,
   description,
   facetName = undefined,
   dismissCallback = undefined,
   width = undefined,
-  getFacetData,
-  updateFacetEnumerations,
-  clearFilterFunc = undefined,
-}: EnumFacetCardProps) => {
-  const clearFilters = useCallback(() => {
-    clearFilterFunc(field);
-  }, [clearFilterFunc, field]);
+}: FacetCardProps<EnumFacetHooks>) => {
+  const clearFilters = hooks.useClearFilter();
+  const updateFacetFilters = hooks.useUpdateFacetFilters();
 
   const facetTitle = facetName
     ? facetName
     : trimFirstFieldNameToTitle(field, true);
 
-  const { data, isSuccess, enumFilters } = getFacetData(
-    field,
+  const { data, isSuccess, enumFilters } = hooks.useGetFacetData(
     docType,
     indexType,
+    field,
   );
 
   const toggleValue = useMemo(
@@ -47,8 +45,9 @@ const ToggleFacet: React.FC<EnumFacetCardProps> = ({
   );
 
   const setValue = (bValue: boolean) => {
-    if (bValue) updateFacetEnumerations(field, ["true"]);
-    else clearFilterFunc(field);
+    if (bValue)
+      updateFacetEnum(field, ["true"], updateFacetFilters, clearFilters);
+    else clearFilters(field);
   };
 
   return (
@@ -82,7 +81,7 @@ const ToggleFacet: React.FC<EnumFacetCardProps> = ({
           {dismissCallback ? (
             <FacetIconButton
               onClick={() => {
-                clearFilters();
+                clearFilters(field);
                 dismissCallback(field);
               }}
               aria-label="remove the facet"

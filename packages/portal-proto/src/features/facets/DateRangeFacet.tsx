@@ -1,9 +1,5 @@
 import React, { useState, useMemo } from "react";
-import {
-  FacetCardProps,
-  FacetDataFunctions,
-  ValueDataFunctions,
-} from "./types";
+import { FacetCardProps, ValueFacetHooks } from "./types";
 import { ActionIcon, Popover, Tooltip } from "@mantine/core";
 import { DatePicker, RangeCalendar } from "@mantine/dates";
 import {
@@ -25,7 +21,7 @@ import { trimFirstFieldNameToTitle } from "@gff/core";
 import { StringRange } from "./types";
 
 type DateRangeFacetProps = Omit<
-  FacetCardProps<ValueDataFunctions>,
+  FacetCardProps<ValueFacetHooks>,
   "showSearch" | "showFlip" | "showPercent"
 >;
 
@@ -55,14 +51,15 @@ type DateRange = [Date | null, Date | null];
 const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
   field,
   description,
-  dataFunctions,
+  hooks,
   facetName = undefined,
   dismissCallback = undefined,
   width = undefined,
 }: DateRangeFacetProps) => {
-  const clearFilters = () => dataFunctions.clearFilter(field);
+  const clearFilters = hooks.useClearFilter();
+  const facetValue = hooks.useGetFacetFilters(field);
+  const updateFacetFilters = hooks.useUpdateFacetFilters();
 
-  const facetValue = dataFunctions.getFacetFilters(field);
   const dateRange = useMemo(
     () => extractRangeValues<string>(facetValue),
     [facetValue],
@@ -82,10 +79,9 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
       toOp: "<=",
     };
     const rangeFilters = buildRangeOperator(field, data);
-    if (rangeFilters !== undefined)
-      dataFunctions.updateFacetFilters(field, rangeFilters);
+    if (rangeFilters !== undefined) updateFacetFilters(field, rangeFilters);
     // clear filters as range is empty
-    else clearFilters();
+    else clearFilters(field);
   };
 
   return (
@@ -119,7 +115,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
           {dismissCallback ? (
             <FacetIconButton
               onClick={() => {
-                clearFilters();
+                clearFilters(field);
                 dismissCallback(field);
               }}
               aria-label="Remove the facet"
