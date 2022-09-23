@@ -28,6 +28,7 @@ import {
   usePrevious,
   selectGenomicAndCohortFilters,
   selectCurrentCohortFilterOrCaseSet,
+  selectTotalCountsByName,
 } from "@gff/core";
 import { useEffect } from "react";
 import isEqual from "lodash/isEqual";
@@ -77,10 +78,11 @@ const useGenomicFilterByName = (field: string): OperandValue => {
 /**
  *  Facet Selector using GQL which will refresh when filters/enum values changes.
  */
+
 export const useEnumFacet = (
-  field: string,
   docType: GQLDocType,
   indexType: GQLIndexType,
+  field: string,
 ): EnumFacetResponse => {
   const coreDispatch = useCoreDispatch();
 
@@ -364,6 +366,14 @@ export const useRangeFacet = (
 };
 
 // Global Selector for Facet Values
+export const useSelectFieldFilter = (field: string): Operation => {
+  // get the current filter for this facet
+  return useCoreSelector((state) =>
+    selectCurrentCohortFiltersByName(state, field),
+  );
+};
+
+// Global Selector for Facet Values
 export const selectFieldFilter = (
   selector: TypedUseSelectorHook<CoreState>,
   field: string,
@@ -373,7 +383,7 @@ export const selectFieldFilter = (
 };
 
 // Update Core Facet Filter
-export const dispatchFieldFilter = (
+export const updateFieldFilter = (
   dispatch: CoreDispatch,
   field: string,
   operation: Operation,
@@ -386,6 +396,9 @@ export const dispatchFieldFilter = (
 export const clearFilters = (dispatch: CoreDispatch, field: string): void => {
   dispatch(removeCohortFilter(field));
 };
+
+export const useTotalCounts = (name: string): number =>
+  useCoreSelector((state) => selectTotalCountsByName(state, name));
 
 export const UpdateEnums = {
   cases: updateEnumFilters,

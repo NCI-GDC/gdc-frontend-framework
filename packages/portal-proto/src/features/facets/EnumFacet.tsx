@@ -1,11 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import {
-  useCoreSelector,
-  selectTotalCountsByName,
-  usePrevious,
-  EnumOperandValue,
-  fieldNameToTitle,
-} from "@gff/core";
+import { usePrevious, EnumOperandValue, fieldNameToTitle } from "@gff/core";
 import { FacetDocTypeToCountsIndexMap, FacetDocTypeToLabelsMap } from "./hooks";
 import { DEFAULT_VISIBLE_ITEMS } from "./utils";
 
@@ -15,7 +9,10 @@ import {
   MdClose as CloseIcon,
 } from "react-icons/md";
 import { FaUndo as UndoIcon } from "react-icons/fa";
-import { EnumFacetResponse, FacetCardProps } from "@/features/facets/types";
+import {
+  EnumFacetDataFunctions,
+  FacetCardProps,
+} from "@/features/facets/types";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
 import {
   ActionIcon,
@@ -48,7 +45,7 @@ import FacetSortPanel from "@/features/facets/FacetSortPanel";
  * @param updateFacetEnumerations function to extract enumeration values (used to set checkboxes)
  * @param clearFilterFunc function to call when filter should be reset (all checkboxes cleared)
  */
-export const EnumFacet: React.FC<FacetCardProps> = ({
+export const EnumFacet: React.FC<FacetCardProps<EnumFacetDataFunctions>> = ({
   field,
   docType,
   indexType,
@@ -62,7 +59,7 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
   hideIfEmpty = true,
   dismissCallback = undefined,
   width = undefined,
-}: FacetCardProps) => {
+}: FacetCardProps<EnumFacetDataFunctions>) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -70,17 +67,28 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
   const [isFacetView, setIsFacetView] = useState(startShowingData);
   const [visibleItems, setVisibleItems] = useState(DEFAULT_VISIBLE_ITEMS);
   const cardRef = useRef<HTMLDivElement>(null);
-  const { data, enumFilters, isSuccess } =
-    dataFunctions.getFacetData<EnumFacetResponse>(field, docType, indexType);
+  const { data, enumFilters, isSuccess } = dataFunctions.getFacetData(
+    docType,
+    indexType,
+    field,
+  );
   const [selectedEnums, setSelectedEnums] = useState(enumFilters);
   const prevFilters = usePrevious(enumFilters);
   const searchInputRef = useRef(null);
 
   // get the total count to compute percentages
   // TODO: move this outside of Facet Component
-  const totalCount = useCoreSelector((state) =>
-    selectTotalCountsByName(state, FacetDocTypeToCountsIndexMap[docType]),
+  // const totalCount = useCoreSelector((state) =>
+  //   selectTotalCountsByName(state, FacetDocTypeToCountsIndexMap[docType]),
+  // );
+
+  const totalCount = dataFunctions.getTotalCounts(
+    FacetDocTypeToCountsIndexMap[docType],
   );
+
+  const clearFilters = (field: string) => {
+    dataFunctions.clearFilter(field);
+  };
 
   useEffect(() => {
     if (isSearching) {
@@ -88,19 +96,19 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
     }
   }, [isSearching]);
 
-  const updateFacetEnum = (fieldname: string, values: EnumOperandValue) => {
+  const updateFacetEnum = (fieldName: string, values: EnumOperandValue) => {
     if (values === undefined) return;
     if (values.length > 0) {
       // TODO: Assuming Includes by default but this might change to Include|Excludes
-      dataFunctions.updateFacetFilters(fieldname, {
+      dataFunctions.updateFacetFilters(fieldName, {
         operator: "includes",
-        field: fieldname,
+        field: fieldName,
         operands: values,
       });
     }
     // no values remove the filter
     else {
-      dataFunctions.clearFacetFilters(fieldname);
+      clearFilters(fieldName);
     }
   };
 
@@ -243,7 +251,7 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
               </FacetIconButton>
             ) : null}
             <FacetIconButton
-              onClick={() => dataFunctions.clearFacetFilters(field)}
+              onClick={() => clearFilters(field)}
               aria-label="clear selection"
             >
               <UndoIcon size="1.15em" className={controlsIconStyle} />
@@ -251,7 +259,7 @@ export const EnumFacet: React.FC<FacetCardProps> = ({
             {dismissCallback ? (
               <FacetIconButton
                 onClick={() => {
-                  dataFunctions.clearFacetFilters(field);
+                  clearFilters(field);
                   dismissCallback(field);
                 }}
                 aria-label="Remove the facet"

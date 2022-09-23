@@ -1,9 +1,5 @@
 import React, { useState, useMemo } from "react";
-import {
-  FacetCardProps,
-  SelectFacetFilterFunction,
-  UpdateFacetFilterFunction,
-} from "./types";
+import { FacetCardProps, ValueDataFunctions } from "./types";
 import { ActionIcon, Badge, Group, TextInput, Tooltip } from "@mantine/core";
 import {
   controlsIconStyle,
@@ -19,11 +15,10 @@ import {
   EnumOperandValue,
 } from "@gff/core";
 
-interface ExactValueProps
-  extends Omit<FacetCardProps, "showSearch" | "showFlip" | "showPercent"> {
-  getFacetValue: SelectFacetFilterFunction;
-  setFacetValue: UpdateFacetFilterFunction;
-}
+type ExactValueProps = Omit<
+  FacetCardProps<ValueDataFunctions>,
+  "showSearch" | "showFlip" | "showPercent"
+>;
 
 const instanceOfIncludesExcludes = (op: Operation): op is Includes | Excludes =>
   ["includes", "excludes"].includes(op.operator);
@@ -48,27 +43,28 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
   facetName = undefined,
   dismissCallback = undefined,
   width = undefined,
-  getFacetValue,
-  setFacetValue,
-  clearFilters,
+  dataFunctions,
 }: ExactValueProps) => {
   const [textValue, setTextValue] = useState(""); // Handle the state of the TextInput
-
+  const clearFilters = () => dataFunctions.clearFilter(field);
   const facetTitle = facetName
     ? facetName
     : trimFirstFieldNameToTitle(field, true);
-  const facetValue = getFacetValue(field);
+  const facetValue = dataFunctions.getFacetFilters(field);
   const textValues = useMemo(() => extractValues(facetValue), [facetValue]);
 
   const setValues = (values: EnumOperandValue) => {
     if (values.length > 0) {
       if (facetValue && instanceOfIncludesExcludes(facetValue)) {
         // updating facet value
-        setFacetValue(field, { ...facetValue, operands: values });
+        dataFunctions.updateFacetFilters(field, {
+          ...facetValue,
+          operands: values,
+        });
       }
       if (facetValue === undefined) {
         // TODO: Assuming Includes by default but this might change to Include|Excludes
-        setFacetValue(field, {
+        dataFunctions.updateFacetFilters(field, {
           operator: "includes",
           field: field,
           operands: values,
@@ -77,7 +73,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
     }
     // no values remove the filter
     else {
-      clearFilters(field);
+      clearFilters();
     }
   };
 

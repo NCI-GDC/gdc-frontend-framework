@@ -10,9 +10,11 @@ import GenesTable from "../genesTable/GenesTable";
 import {
   useEnumFacet,
   selectFieldFilter,
-  dispatchFieldFilter,
   clearFilters,
   updateEnumFilters,
+  useTotalCounts,
+  useSelectFieldFilter,
+  updateFieldFilter,
 } from "../facets/hooks";
 import { partial } from "lodash";
 import { useCoreDispatch, CoreContext } from "@gff/core";
@@ -27,7 +29,41 @@ const Components: ReactNode = () => {
       <p className="prose font-medium text-2xl">UI Components</p>
 
       <Divider label="Enumeration Facet" classNames={divider_style} />
-      <EnumFacet docType="cases" field="primary_site" width="w-1/2" />
+      <EnumFacet
+        dataFunctions={{
+          updateFacetFilters: partial(updateFieldFilter, coreDispatch),
+          getTotalCounts: useTotalCounts,
+          clearFilter: partial(clearFilters, coreDispatch),
+          getFacetData: useEnumFacet,
+        }}
+        hideIfEmpty={false}
+        docType="cases"
+        field="primary_site"
+        width="w-1/2"
+      />
+      <Divider label="Date Range Facet" classNames={divider_style} />
+      <DateRangeFacet
+        docType="files"
+        field="files.analysis.input_files.created_datetime"
+        width="w-1/3"
+        dataFunctions={{
+          getFacetFilters: useSelectFieldFilter,
+          updateFacetFilters: partial(updateFieldFilter, coreDispatch),
+          clearFilter: partial(clearFilters, coreDispatch),
+        }}
+      />
+      <Divider label="Exact Value Facet" classNames={divider_style} />
+      <ExactValueFacet
+        docType="cases"
+        field="cases.diagnoses.annotations.case_id"
+        width="w-1/3"
+        dataFunctions={{
+          getFacetFilters: useSelectFieldFilter,
+          updateFacetFilters: partial(updateFieldFilter, coreDispatch),
+          clearFilter: partial(clearFilters, coreDispatch),
+        }}
+      />
+      {/* ---
       <Divider label="Year Facet" classNames={divider_style} />
       <NumericRangeFacet
         docType="cases"
@@ -42,15 +78,7 @@ const Components: ReactNode = () => {
         field="diagnoses.age_at_diagnosis"
         width="w-1/3"
       />
-      <Divider label="Date Range Facet" classNames={divider_style} />
-      <DateRangeFacet
-        docType="files"
-        field="files.analysis.input_files.created_datetime"
-        width="w-1/3"
-        getFacetValue={partial(selectFieldFilter, coreSelector)}
-        setFacetValue={partial(dispatchFieldFilter, coreDispatch)}
-        clearFilterFunc={partial(clearFilters, coreDispatch)}
-      />
+
       <Divider label="Toggle Facet" classNames={divider_style} />
       <ToggleFacet
         docType="cases"
@@ -70,20 +98,13 @@ const Components: ReactNode = () => {
         field="samples.portions.slides.percent_tumor_cells"
         width="w-1/3"
       />
-      <Divider label="Exact Value Facet" classNames={divider_style} />
-      <ExactValueFacet
-        docType="cases"
-        field="cases.diagnoses.annotations.case_id"
-        width="w-1/3"
-        getFacetValue={partial(selectFieldFilter, coreSelector)}
-        setFacetValue={partial(dispatchFieldFilter, coreDispatch)}
-        clearFilterFunc={partial(clearFilters, coreDispatch)}
-      />
+
       <Divider label="Genes Table" classNames={divider_style} />
       <GenesTable
         selectedSurvivalPlot={{ id: undefined }}
         handleSurvivalPlotToggled={undefined}
       />
+      === */}
     </div>
   );
 };

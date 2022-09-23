@@ -21,13 +21,12 @@ export interface EnumFacetResponse extends FacetResponse {
 export type GetFacetDataFunction = <T extends FacetResponse = FacetResponse>(
   field: string,
 ) => T;
-export type GetFacetDataFromDocAndIndexFunction = <
-  T extends FacetResponse = EnumFacetResponse,
->(
+
+export type GetFacetDataFromDocAndIndexFunction = (
+  docType: GQLDocType,
+  indexType: GQLIndexType,
   field: string,
-  docType?: GQLDocType,
-  indexType?: GQLIndexType,
-) => T;
+) => EnumFacetResponse;
 export type SelectFacetFilterFunction = (field: string) => Operation;
 export type UpdateFacetFilterFunction = (field: string, op: Operation) => void;
 export type ClearFacetFunction = (field: string) => void;
@@ -38,16 +37,25 @@ export type updateArrayFilterValues = (
 ) => void;
 
 export interface FacetDataFunctions {
-  getFacetFilters: SelectFacetFilterFunction;
   updateFacetFilters: UpdateFacetFilterFunction;
-  clearFacetFilters: ClearFacetFunction;
-  getTotalCounts?: GetTotalCountsFunction;
-  getFacetData?: GetFacetDataFunction | GetFacetDataFromDocAndIndexFunction;
+  clearFilter: ClearFacetFunction;
 }
 
-export interface FacetCardProps {
+export interface EnumFacetDataFunctions
+  extends Omit<FacetDataFunctions, "getFacetFilters"> {
+  getFacetData: GetFacetDataFromDocAndIndexFunction;
+  getTotalCounts: GetTotalCountsFunction;
+}
+
+export interface ValueDataFunctions extends FacetDataFunctions {
+  getFacetFilters: SelectFacetFilterFunction;
+}
+
+export interface FacetCardProps<
+  T extends FacetDataFunctions = FacetDataFunctions,
+> {
   readonly field: string;
-  dataFunctions: FacetDataFunctions;
+  dataFunctions: T;
   readonly docType?: GQLDocType;
   readonly indexType?: GQLIndexType;
   readonly description?: string;
