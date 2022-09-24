@@ -26,6 +26,7 @@ import {
   useCoreDispatch,
   useCoreSelector,
   fieldNameToTitle,
+  NumericFromTo,
 } from "@gff/core";
 
 import {
@@ -43,6 +44,7 @@ import {
   RangeFromOp,
   RangeToOp,
   EnumFacetHooks,
+  FacetResponse,
 } from "@/features/facets/types";
 import {
   FacetDocTypeToCountsIndexMap,
@@ -52,6 +54,13 @@ import {
 import { controlsIconStyle, FacetIconButton } from "./components";
 import FacetExpander from "@/features/facets/FacetExpander";
 import FacetSortPanel from "@/features/facets/FacetSortPanel";
+
+export type GetRangeFacetDataHook = (
+  docType: GQLDocType,
+  indexType: GQLIndexType,
+  field: string,
+  ranges: ReadonlyArray<NumericFromTo>,
+) => FacetResponse;
 
 interface NumericFacetProps extends FacetCardProps<EnumFacetHooks> {
   readonly rangeDatatype: string;
@@ -380,6 +389,7 @@ const FromTo: React.FC<FromToProps> = ({
       to: toValue,
     };
     const rangeFilters = buildRangeOperator(field, data);
+
     if (rangeFilters === undefined) {
       coreDispatch(removeCohortFilter(field));
     } else {
@@ -509,6 +519,7 @@ const BuildRangeLabelsAndValues = (
 
 interface RangeInputWithPrefixedRangesProps {
   readonly field: string;
+  readonly getRangeFacetData: GetRangeFacetDataHook;
   readonly numBuckets: number;
   readonly docType: GQLDocType;
   readonly indexType: GQLIndexType;
@@ -588,10 +599,10 @@ const RangeInputWithPrefixedRanges: React.FC<
   const [selectedRange, setSelectedRange] = useState(filterKey); // the current selected range
 
   const { data: rangeData, isSuccess } = useRangeFacet(
-    field,
-    ranges,
     docType,
     indexType,
+    field,
+    ranges,
   );
   const rangeLabelsAndValues = BuildRangeLabelsAndValues(
     bucketRanges,

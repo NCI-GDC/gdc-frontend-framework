@@ -329,10 +329,10 @@ export const useUpdateGenomicEnumFilters: UpdateEnumFiltersFunc = (
 };
 
 export const useRangeFacet = (
-  field: string,
-  ranges: ReadonlyArray<NumericFromTo>,
   docType: GQLDocType,
   indexType: GQLIndexType,
+  field: string,
+  ranges: ReadonlyArray<NumericFromTo>,
 ): FacetResponse => {
   const coreDispatch = useCoreDispatch();
   const facet: FacetBuckets = useCoreSelector((state) =>

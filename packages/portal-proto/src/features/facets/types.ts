@@ -2,6 +2,7 @@ import {
   EnumOperandValue,
   GQLDocType,
   GQLIndexType,
+  NumericFromTo,
   Operation,
 } from "@gff/core";
 
@@ -27,6 +28,7 @@ export type GetFacetDataFromDocAndIndexFunction = (
   indexType: GQLIndexType,
   field: string,
 ) => EnumFacetResponse;
+
 export type SelectFacetFilterFunction = (field: string) => Operation;
 export type UpdateFacetFilterFunction = (field: string, op: Operation) => void;
 export type ClearFacetFunction = (field: string) => void;
@@ -51,7 +53,7 @@ export interface ValueFacetHooks extends FacetDataHooks {
   useGetFacetFilters: SelectFacetFilterFunction;
 }
 
-export interface ToggleFacetHooks extends FacetDataHooks {
+export interface RangeFacetHooks extends FacetDataHooks {
   useGetFacetFilters: SelectFacetFilterFunction;
 }
 
