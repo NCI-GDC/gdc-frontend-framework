@@ -249,6 +249,8 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
       toOp: "<",
     };
     const rangeFilters = buildRangeOperator(field, data);
+
+    // TODO Add useUpdateFacetFilter hook here
     coreDispatch(updateCohortFilter({ field: field, operation: rangeFilters }));
     setSelected(rangeKey);
   };
@@ -389,7 +391,7 @@ const FromTo: React.FC<FromToProps> = ({
       to: toValue,
     };
     const rangeFilters = buildRangeOperator(field, data);
-
+    // TODO: use useUpdateFacetFilter and clearFilters hooks here
     if (rangeFilters === undefined) {
       coreDispatch(removeCohortFilter(field));
     } else {
@@ -544,10 +546,12 @@ const RangeInputWithPrefixedRanges: React.FC<
   const [isGroupExpanded, setIsGroupExpanded] = useState(false); // handles the expanded group
 
   // get the current filter for this facet
+  // TODO: replace with useSelectFieldFilter
   const filter = useCoreSelector((state) =>
     selectCurrentCohortFiltersByName(state, field),
   );
 
+  // TODO: replace with useTotalCounts
   const totalCount = useCoreSelector((state) =>
     selectTotalCountsByName(state, FacetDocTypeToCountsIndexMap[docType]),
   );
