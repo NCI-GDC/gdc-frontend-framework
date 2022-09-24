@@ -84,7 +84,12 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
             </Radio.Group>
             <Menu>
               <Menu.Target>
-                <Tooltip label="Download image or data" withArrow withinPortal>
+                <Tooltip
+                  label="Download image or data"
+                  withArrow
+                  withinPortal
+                  position={"left"}
+                >
                   <ActionIcon
                     variant="outline"
                     className="bg-base-max text-base-contrast-max- border-primary-darkest"
