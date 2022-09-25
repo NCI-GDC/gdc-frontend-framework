@@ -38,6 +38,13 @@ export type updateArrayFilterValues = (
   enumerationFilters: EnumOperandValue,
 ) => void;
 
+export type GetRangeFacetDataHook = (
+  docType: GQLDocType,
+  indexType: GQLIndexType,
+  field: string,
+  ranges: ReadonlyArray<NumericFromTo>,
+) => FacetResponse;
+
 export interface FacetDataHooks {
   useClearFilter: () => ClearFacetFunction;
 }
@@ -55,6 +62,8 @@ export interface ValueFacetHooks extends FacetDataHooks {
 
 export interface RangeFacetHooks extends FacetDataHooks {
   useGetFacetFilters: SelectFacetFilterFunction;
+  useGetFacetData: GetRangeFacetDataHook;
+  useTotalCounts: GetTotalCountsFunction;
 }
 
 export interface FacetCardProps<T extends FacetDataHooks> {

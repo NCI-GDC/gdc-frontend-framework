@@ -20,11 +20,8 @@ import {
   GQLDocType,
   GQLIndexType,
   removeCohortFilter,
-  selectCurrentCohortFiltersByName,
-  selectTotalCountsByName,
   updateCohortFilter,
   useCoreDispatch,
-  useCoreSelector,
   fieldNameToTitle,
   NumericFromTo,
 } from "@gff/core";
@@ -43,8 +40,7 @@ import {
   FromToRange,
   RangeFromOp,
   RangeToOp,
-  EnumFacetHooks,
-  FacetResponse,
+  RangeFacetHooks,
 } from "@/features/facets/types";
 import {
   FacetDocTypeToCountsIndexMap,
@@ -55,14 +51,7 @@ import { controlsIconStyle, FacetIconButton } from "./components";
 import FacetExpander from "@/features/facets/FacetExpander";
 import FacetSortPanel from "@/features/facets/FacetSortPanel";
 
-export type GetRangeFacetDataHook = (
-  docType: GQLDocType,
-  indexType: GQLIndexType,
-  field: string,
-  ranges: ReadonlyArray<NumericFromTo>,
-) => FacetResponse;
-
-interface NumericFacetProps extends FacetCardProps<EnumFacetHooks> {
+interface NumericFacetProps extends FacetCardProps<RangeFacetHooks> {
   readonly rangeDatatype: string;
   readonly minimum?: number;
   readonly maximum?: number;
@@ -70,7 +59,7 @@ interface NumericFacetProps extends FacetCardProps<EnumFacetHooks> {
 
 type NumericFacetData = Pick<
   NumericFacetProps,
-  "field" | "minimum" | "maximum" | "docType" | "indexType"
+  "field" | "minimum" | "maximum" | "docType" | "indexType" | "hooks"
 >;
 
 /**
@@ -519,9 +508,11 @@ const BuildRangeLabelsAndValues = (
   }, {} as Record<string, RangeBucketElement>);
 };
 
+type RangeInputHooks = Omit<RangeFacetHooks, "useClearFilter">;
+
 interface RangeInputWithPrefixedRangesProps {
   readonly field: string;
-  readonly getRangeFacetData: GetRangeFacetDataHook;
+  readonly hooks: RangeInputHooks;
   readonly numBuckets: number;
   readonly docType: GQLDocType;
   readonly indexType: GQLIndexType;
@@ -537,6 +528,7 @@ const RangeInputWithPrefixedRanges: React.FC<
   field,
   docType,
   indexType,
+  hooks,
   units,
   numBuckets,
   minimum,
@@ -547,13 +539,18 @@ const RangeInputWithPrefixedRanges: React.FC<
 
   // get the current filter for this facet
   // TODO: replace with useSelectFieldFilter
-  const filter = useCoreSelector((state) =>
-    selectCurrentCohortFiltersByName(state, field),
-  );
+  // const filter =
+  //   useCoreSelector((state) =>
+  //   selectCurrentCohortFiltersByName(state, field),
+  // );
+  const filter = hooks.useGetFacetFilters(field);
 
-  // TODO: replace with useTotalCounts
-  const totalCount = useCoreSelector((state) =>
-    selectTotalCountsByName(state, FacetDocTypeToCountsIndexMap[docType]),
+  // // TODO: replace with useTotalCounts
+  // const totalCount = useCoreSelector((state) =>
+  //   selectTotalCountsByName(state, FacetDocTypeToCountsIndexMap[docType]),
+  // );
+  const totalCount = hooks.useTotalCounts(
+    FacetDocTypeToCountsIndexMap[docType],
   );
 
   // giving the filter value, extract the From/To values and
@@ -696,6 +693,7 @@ const RangeInputWithPrefixedRanges: React.FC<
 const DaysOrYears: React.FC<NumericFacetData> = ({
   field,
   docType,
+  hooks,
   indexType,
   minimum = undefined,
   maximum = undefined,
@@ -723,6 +721,7 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
       />
       <RangeInputWithPrefixedRanges
         units={units}
+        hooks={{ ...hooks }}
         minimum={adjMinimum}
         maximum={adjMaximum}
         numBuckets={numBuckets}
@@ -738,6 +737,7 @@ const Year: React.FC<NumericFacetData> = ({
   field,
   docType,
   indexType,
+  hooks,
   minimum = undefined,
   maximum = undefined,
 }: NumericFacetData) => {
@@ -750,6 +750,7 @@ const Year: React.FC<NumericFacetData> = ({
       <RangeInputWithPrefixedRanges
         docType={docType}
         indexType={indexType}
+        hooks={{ ...hooks }}
         units="year"
         minimum={adjMinimum}
         maximum={adjMaximum}
@@ -764,6 +765,7 @@ const Years: React.FC<NumericFacetData> = ({
   field,
   docType,
   indexType,
+  hooks,
   minimum = undefined,
   maximum = undefined,
 }: NumericFacetData) => {
@@ -776,6 +778,7 @@ const Years: React.FC<NumericFacetData> = ({
       <RangeInputWithPrefixedRanges
         docType={docType}
         indexType={indexType}
+        hooks={{ ...hooks }}
         units="years"
         minimum={adjMinimum}
         maximum={adjMaximum}
@@ -821,6 +824,7 @@ const PercentRange: React.FC<NumericFacetData> = ({
       <RangeInputWithPrefixedRanges
         docType={docType}
         indexType={indexType}
+        hooks={{ ...hooks }}
         units="percent"
         minimum={adjMinimum}
         maximum={adjMaximum}
@@ -906,6 +910,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 docType={docType}
                 indexType={indexType}
                 field={field}
+                hooks={{ ...hooks }}
                 minimum={minimum}
                 maximum={maximum}
               />
@@ -915,6 +920,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 docType={docType}
                 indexType={indexType}
                 field={field}
+                hooks={{ ...hooks }}
                 minimum={minimum}
                 maximum={maximum}
               />
@@ -924,6 +930,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 docType={docType}
                 indexType={indexType}
                 field={field}
+                hooks={{ ...hooks }}
                 minimum={minimum}
                 maximum={maximum}
               />
@@ -933,6 +940,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 docType={docType}
                 indexType={indexType}
                 field={field}
+                hooks={{ ...hooks }}
                 minimum={minimum}
                 maximum={maximum}
               />
@@ -942,6 +950,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 docType={docType}
                 indexType={indexType}
                 field={field}
+                hooks={{ ...hooks }}
                 minimum={minimum}
                 maximum={maximum}
               />
@@ -951,6 +960,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 docType={docType}
                 indexType={indexType}
                 field={field}
+                hooks={{ ...hooks }}
                 minimum={minimum}
                 maximum={maximum}
               />
@@ -960,6 +970,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 docType={docType}
                 indexType={indexType}
                 field={field}
+                hooks={{ ...hooks }}
                 minimum={minimum}
                 maximum={maximum}
               />
@@ -969,6 +980,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 docType={docType}
                 indexType={indexType}
                 field={field}
+                hooks={{ ...hooks }}
                 minimum={minimum}
                 maximum={maximum}
               />
