@@ -31,6 +31,7 @@ import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
  * @param field filter this FacetCard manages
  * @param docType document type "cases" "files, etc.
  * @param indexType index this facet uses to get data from
+ * @param hook object defining the hooks required by this facet component
  * @param description describes information about the facet
  * @param facetName name of the Facet in human-readable form
  * @param showSearch if the search icon show be displayed
@@ -40,9 +41,6 @@ import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
  * @param hideIfEmpty if facet has no data, do not render
  * @param dismissCallback if facet can be removed, supply a function which will ensure the "dismiss" control will be visible
  * @param width set the width of the facet
- * @param getFacetData function to pull enumerated data with
- * @param updateFacetEnumerations function to extract enumeration values (used to set checkboxes)
- * @param clearFilterFunc function to call when filter should be reset (all checkboxes cleared)
  */
 export const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   field,

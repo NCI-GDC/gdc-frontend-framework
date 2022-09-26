@@ -31,7 +31,8 @@ export type GetFacetDataFromDocAndIndexFunction = (
 
 export type SelectFacetFilterFunction = (field: string) => Operation;
 export type UpdateFacetFilterFunction = (field: string, op: Operation) => void;
-export type ClearFacetFunction = (field: string) => void;
+export type UpdateFacetFilterHook = () => UpdateFacetFilterFunction;
+export type ClearFacetHook = () => (field: string) => void;
 export type GetTotalCountsFunction = (countName: string) => number;
 export type updateArrayFilterValues = (
   field: string,
@@ -46,24 +47,33 @@ export type GetRangeFacetDataFunction = (
 ) => FacetResponse;
 
 export interface FacetDataHooks {
-  useClearFilter: () => ClearFacetFunction;
+  useClearFilter: ClearFacetHook;
 }
 
 export interface EnumFacetHooks extends FacetDataHooks {
-  useUpdateFacetFilters: () => UpdateFacetFilterFunction;
+  useUpdateFacetFilters: UpdateFacetFilterHook;
   useGetFacetData: GetFacetDataFromDocAndIndexFunction;
   useTotalCounts: GetTotalCountsFunction;
 }
 
 export interface ValueFacetHooks extends FacetDataHooks {
-  useUpdateFacetFilters: () => UpdateFacetFilterFunction;
+  useUpdateFacetFilters: UpdateFacetFilterHook;
   useGetFacetFilters: SelectFacetFilterFunction;
 }
 
 export interface RangeFacetHooks extends FacetDataHooks {
   useGetFacetFilters: SelectFacetFilterFunction;
-  useUpdateFacetFilters: () => UpdateFacetFilterFunction;
+  useUpdateFacetFilters: UpdateFacetFilterHook;
   useGetFacetData: GetRangeFacetDataFunction;
+  useTotalCounts: GetTotalCountsFunction;
+}
+
+export interface AllHooks {
+  useClearFilter: ClearFacetHook;
+  useGetFacetFilters: SelectFacetFilterFunction;
+  useUpdateFacetFilters: UpdateFacetFilterHook;
+  useGetEnumFacetData: GetFacetDataFromDocAndIndexFunction;
+  useGetRangeFacetData: GetRangeFacetDataFunction;
   useTotalCounts: GetTotalCountsFunction;
 }
 

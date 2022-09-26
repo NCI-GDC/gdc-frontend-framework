@@ -6,13 +6,13 @@ import DateRangeFacet from "@/features/facets/DateRangeFacet";
 import ExactValueFacet from "@/features/facets/ExactValueFacet";
 import ToggleFacet from "@/features/facets/ToggleFacet";
 
-import { FacetDataFunctions } from "@/features/facets/types";
+import { AllHooks } from "@/features/facets/types";
 
 export const createFacetCard = (
   facets: ReadonlyArray<FacetDefinition>,
   docType: GQLDocType,
   indexType: GQLIndexType,
-  dataFunctions: FacetDataFunctions,
+  dataFunctions: AllHooks,
   dismissCallback: (string) => void = undefined,
   hideIfEmpty = false,
 ): ReadonlyArray<React.ReactNode> => {
@@ -28,9 +28,37 @@ export const createFacetCard = (
           description={x.description}
           dismissCallback={dismissCallback}
           hideIfEmpty={hideIfEmpty}
-          dataFunctions={dataFunctions}
+          hooks={{
+            useGetFacetData: dataFunctions.useGetEnumFacetData,
+            ...dataFunctions,
+          }}
         />
       );
+    if (x.facet_type == "exact") {
+      return (
+        <ExactValueFacet
+          key={`exact-${x.full}-${index}`}
+          field={x.full}
+          dismissCallback={dismissCallback}
+          hideIfEmpty={hideIfEmpty}
+          hooks={{ ...dataFunctions }}
+        />
+      );
+    }
+    if (x.facet_type == "toggle") {
+      return (
+        <ToggleFacet
+          key={`exact-${x.full}-${index}`}
+          field={x.full}
+          dismissCallback={dismissCallback}
+          hideIfEmpty={hideIfEmpty}
+          hooks={{
+            useGetFacetData: dataFunctions.useGetEnumFacetData,
+            ...dataFunctions,
+          }}
+        />
+      );
+    }
     if (x.facet_type === "datetime")
       return (
         <DateRangeFacet
@@ -41,7 +69,9 @@ export const createFacetCard = (
           description={x.description}
           dismissCallback={dismissCallback}
           hideIfEmpty={hideIfEmpty}
-          dataFunctions={dataFunctions}
+          hooks={{
+            ...dataFunctions,
+          }}
         />
       );
     if (
@@ -67,7 +97,10 @@ export const createFacetCard = (
           minimum={x?.range?.minimum}
           maximum={x?.range?.maximum}
           hideIfEmpty={hideIfEmpty}
-          dataFunctions={dataFunctions}
+          hooks={{
+            useGetFacetData: dataFunctions.useGetRangeFacetData,
+            ...dataFunctions,
+          }}
           dismissCallback={dismissCallback}
         />
       );
