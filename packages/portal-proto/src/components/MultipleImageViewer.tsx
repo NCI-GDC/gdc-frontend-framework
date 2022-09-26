@@ -196,7 +196,7 @@ export const MultipleImageViewer = ({
                             }}
                           >
                             <Badge
-                              className="w-3/5"
+                              className="w-3/5 cursor-pointer"
                               size="lg"
                               color="cyan"
                               variant="filled"
@@ -306,7 +306,7 @@ export const MultipleImageViewer = ({
                 )}
               </div>
             </div>
-            <div className="flex flex-col w-44 ml-3 mt-5">
+            <div className="flex flex-col w-44 ml-8 mt-5 items-center">
               {shouldShowMoreButton && (
                 <Button
                   onClick={() => {
