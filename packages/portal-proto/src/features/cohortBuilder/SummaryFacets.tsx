@@ -1,5 +1,11 @@
 import { EnumFacet } from "../facets/EnumFacet";
 import { GQLDocType, GQLIndexType } from "@gff/core";
+import {
+  useClearFilters,
+  useEnumFacet,
+  useTotalCounts,
+  useUpdateFacetFilter,
+} from "@/features/facets/hooks";
 
 export interface SummaryFacetInfo {
   readonly field: string;
@@ -37,6 +43,12 @@ export const SummaryFacets: React.FC<SummaryFacetProps> = ({
                 key={`summary-chart-${index}`}
                 width="w-64"
                 indexType={entry.indexType}
+                hooks={{
+                  useUpdateFacetFilters: useUpdateFacetFilter,
+                  useTotalCounts: useTotalCounts,
+                  useClearFilter: useClearFilters,
+                  useGetFacetData: useEnumFacet,
+                }}
               />
             </div>
           );

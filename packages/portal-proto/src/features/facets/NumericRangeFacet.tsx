@@ -36,8 +36,9 @@ import {
   RangeFromOp,
   RangeToOp,
   RangeFacetHooks,
-  ClearFacetFunction,
+  ClearFacetHook,
   UpdateFacetFilterFunction,
+  UpdateFacetFilterHook,
 } from "@/features/facets/types";
 import {
   FacetDocTypeToCountsIndexMap,
@@ -238,8 +239,6 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
     };
     const rangeFilters = buildRangeOperator(field, data);
 
-    // TODO Add useUpdateFacetFilter hook here
-    //  coreDispatch(updateCohortFilter({ field: field, operation: rangeFilters }));
     updateFilters(field, rangeFilters);
     setSelected(rangeKey);
   };
@@ -322,8 +321,8 @@ interface FromToProps {
   readonly maximum: number;
   readonly units: string;
   readonly field: string;
-  readonly useClearFilter: () => ClearFacetFunction;
-  readonly useUpdateFacetFilters: () => UpdateFacetFilterFunction;
+  readonly useClearFilter: ClearFacetHook;
+  readonly useUpdateFacetFilters: UpdateFacetFilterHook;
   readonly values?: FromToRange<number>;
   readonly changedCallback?: () => void;
 }
@@ -387,15 +386,10 @@ const FromTo: React.FC<FromToProps> = ({
       to: toValue,
     };
     const rangeFilters = buildRangeOperator(field, data);
-    // TODO: use useUpdateFacetFilter and clearFilters hooks here
     if (rangeFilters === undefined) {
-      // coreDispatch(removeCohortFilter(field));
       clearFilter(field);
     } else {
       updateFacetFilters(field, rangeFilters);
-      // coreDispatch(
-      //   updateCohortFilter({ field: field, operation: rangeFilters }),
-      // );
     }
   };
   return (
@@ -543,17 +537,7 @@ const RangeInputWithPrefixedRanges: React.FC<
   const [isGroupExpanded, setIsGroupExpanded] = useState(false); // handles the expanded group
 
   // get the current filter for this facet
-  // TODO: replace with useSelectFieldFilter
-  // const filter =
-  //   useCoreSelector((state) =>
-  //   selectCurrentCohortFiltersByName(state, field),
-  // );
   const filter = hooks.useGetFacetFilters(field);
-
-  // // TODO: replace with useTotalCounts
-  // const totalCount = useCoreSelector((state) =>
-  //   selectTotalCountsByName(state, FacetDocTypeToCountsIndexMap[docType]),
-  // );
   const totalCount = hooks.useTotalCounts(
     FacetDocTypeToCountsIndexMap[docType],
   );
@@ -944,28 +928,8 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 maximum={maximum}
               />
             ),
-            numeric: (
-              <NumericRangePanel
-                docType={docType}
-                indexType={indexType}
-                field={field}
-                hooks={{ ...hooks }}
-                minimum={minimum}
-                maximum={maximum}
-              />
-            ),
             percent: (
               <PercentRange
-                docType={docType}
-                indexType={indexType}
-                field={field}
-                hooks={{ ...hooks }}
-                minimum={minimum}
-                maximum={maximum}
-              />
-            ),
-            integer: (
-              <NumericRangePanel
                 docType={docType}
                 indexType={indexType}
                 field={field}
@@ -984,7 +948,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 maximum={maximum}
               />
             ),
-          }[rangeDatatype]
+          }[rangeDatatype as string]
         }
       </div>
     </div>

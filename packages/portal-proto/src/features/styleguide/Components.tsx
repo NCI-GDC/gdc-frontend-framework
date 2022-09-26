@@ -45,6 +45,20 @@ const Components: ReactNode = () => {
           useClearFilter: useClearFilters,
         }}
       />
+      <Divider label="Numeric Range Facet" classNames={divider_style} />
+      <NumericRangeFacet
+        docType="cases"
+        field="cases.diagnoses.lymph_nodes_tested"
+        width="w-1/3"
+        rangeDatatype="range"
+        hooks={{
+          useGetFacetData: useRangeFacet,
+          useGetFacetFilters: useSelectFieldFilter,
+          useUpdateFacetFilters: useUpdateFacetFilter,
+          useClearFilter: useClearFilters,
+          useTotalCounts: useTotalCounts,
+        }}
+      />
       <Divider label="Exact Value Facet" classNames={divider_style} />
       <ExactValueFacet
         docType="cases"

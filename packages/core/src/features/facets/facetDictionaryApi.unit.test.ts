@@ -166,11 +166,26 @@ describe("facet label utils", () => {
 
 describe("test facet types", () => {
   test("should create a title minus cases", () => {
-    // TODO: add additional tests
+    // TODO: add additional tests for all types
     const TO_TEST = [
       { field: "cases.project.project_id", type: "", expected_type: "enum" },
       { field: "demographic.age_at_index", type: "", expected_type: "age" },
       { field: "cases.demographic.race", type: "", expected_type: "enum" },
+      {
+        field: "gene.is_cancer_gene_census",
+        type: "",
+        expected_type: "toggle",
+      },
+      {
+        field: "cases.diagnoses.annotations.case_id",
+        type: "",
+        expected_type: "exact",
+      },
+      {
+        field: "cases.diagnoses.lymph_nodes_tested",
+        type: "long",
+        expected_type: "range",
+      },
     ];
 
     TO_TEST.map((x) => {

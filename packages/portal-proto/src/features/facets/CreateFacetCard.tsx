@@ -17,7 +17,6 @@ export const createFacetCard = (
   hideIfEmpty = false,
 ): ReadonlyArray<React.ReactNode> => {
   return facets.map((x, index) => {
-    // TODO Add passed hooks/functions to other Enum and Range Facets
     if (x.facet_type === "enum")
       return (
         <EnumFacet
@@ -75,16 +74,9 @@ export const createFacetCard = (
         />
       );
     if (
-      [
-        "year",
-        "years",
-        "age",
-        "days",
-        "numeric",
-        "integer",
-        "percent",
-        "range",
-      ].includes(x.facet_type)
+      ["year", "years", "age", "days", "percent", "range"].includes(
+        x.facet_type,
+      )
     ) {
       return (
         <NumericRangeFacet

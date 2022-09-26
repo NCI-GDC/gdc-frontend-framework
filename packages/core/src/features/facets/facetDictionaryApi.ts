@@ -1,4 +1,4 @@
-import { FacetDefinition } from "./types";
+import { FacetDefinition, FacetTypes } from "./types";
 import SupplementalFacetDefinitions from "./data/facet_additional_data.json";
 import { some, includes } from "lodash";
 
@@ -66,7 +66,7 @@ export const fieldNameToTitle = (fieldName: string, sections = 1): string => {
     .join(" ");
 };
 
-export const classifyFacetDatatype = (f: FacetDefinition): string => {
+export const classifyFacetDatatype = (f: FacetDefinition): FacetTypes => {
   const fieldName = f.field;
   if (fieldName.includes("age_is_")) return "enum";
   if (fieldName.includes("datetime")) return "datetime";
@@ -78,6 +78,7 @@ export const classifyFacetDatatype = (f: FacetDefinition): string => {
   if (fieldName.includes("years")) return "years";
   if (fieldName.includes("year")) return "year";
   if (fieldName.includes("project_id")) return "enum";
+  if (fieldName.includes("is_cancer_gene_census")) return "toggle";
 
   if (f.type === "long" || f.type === "float" || f.type === "double")
     return "range";
@@ -89,11 +90,12 @@ export const classifyFacetDatatype = (f: FacetDefinition): string => {
   )
     return "exact";
 
-  if (f.type === "terms") {
-    // on Annotations & Repo pages project_id is a terms facet
-    // need a way to force an *_id field to return terms
-    return "terms";
-  }
+  // TODO: Determine if this needs to be handled
+  // if (f.type === "terms") {
+  //   // on Annotations & Repo pages project_id is a terms facet
+  //   // need a way to force an *_id field to return terms
+  //   return "terms";
+  // }
 
   if (f.type === "exact") return "exact";
 
