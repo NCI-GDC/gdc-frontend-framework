@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   CoreDataSelectorResponse,
   createUseCoreDataHook,
+  DataStatus,
 } from "../../dataAccess";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
@@ -10,40 +11,140 @@ import {
   GdcApiRequest,
   GdcApiResponse,
 } from "../gdcapi/gdcapi";
+import { castDraft } from "immer";
 
 export interface caseFileType {
-  access: "open" | "controlled";
-  acl: Array<string>;
-  data_type: string;
-  file_id: string;
-  file_name: string;
-  file_size: number;
-  state: string;
+  readonly access: "open" | "controlled";
+  readonly acl: Array<string>;
+  readonly data_type: string;
+  readonly file_id: string;
+  readonly file_name: string;
+  readonly file_size: number;
+  readonly state: string;
 }
+
+export interface Demographic {
+  readonly demographic_id: string;
+  readonly ethnicity: string;
+  readonly gender: string;
+  readonly race: string;
+  readonly submitter_id: string;
+  readonly vital_status: string;
+  readonly year_of_birth: string | null;
+  readonly year_of_death: string | null;
+}
+
+export interface Diagnoses {
+  readonly age_to_diagnosis: number | null;
+  readonly classification_of_tumor: string | null;
+  readonly days_to_last_follow_up: number | null;
+  readonly days_to_last_known_disease_status: number | null;
+  readonly days_to_recurrence: number | null;
+  readonly diagnosis_id: string | null;
+  readonly last_known_disease_status: string | null;
+  readonly morphology: string | null;
+  readonly primary_diagnosis: string | null;
+  readonly prior_malignancy: string | null;
+  readonly progression_or_recurrence: string | null;
+  readonly site_of_resection_or_biopsy: string | null;
+  readonly submitter_id: string | null;
+  readonly synchronous_malignancy: string | null;
+  readonly tissue_or_organ_of_origin: string | null;
+  readonly treatments: ReadonlyArray<{
+    readonly days_to_treatment_start: number;
+    readonly submitter_id: string | null;
+    readonly therapeutic_agents: string | null;
+    readonly treatment_id: string | null;
+    readonly treatment_intent_type: string | null;
+    readonly treatment_or_therapy: string | null;
+  }>;
+
+  readonly tumor_grade: string | null;
+}
+
+export interface FamilyHistories {
+  readonly family_history_id: string | null;
+  readonly relationship_age_at_diagnosis: string | null;
+  readonly relationship_gender: string | null;
+  readonly relationship_primary_diagnosis: string | null;
+  readonly relationship_type: string | null;
+  readonly relative_with_cancer_history: string | null;
+  readonly submitter_id: string | null;
+}
+
+export interface FollowUps {
+  readonly bmi: number | null;
+  readonly comorbidity: number | null;
+  readonly days_to_follow_up: number | null;
+  readonly disease_response: string | null;
+  readonly ecog_performance_status: string | null;
+  readonly follow_up_id: string | null;
+  readonly height: number | null;
+  readonly karnofsky_performance_status: number | null;
+  readonly molecular_tests: ReadonlyArray<{
+    readonly aa_change: string | null;
+    readonly antigen: string | null;
+    readonly biospecimen_type: string | null;
+    readonly chromosome: string | null;
+    readonly gene_symbol: string | null;
+    readonly laboratory_test: string | null;
+    readonly mismatch_repair_mutation: string | null;
+    readonly molecular_analysis_method: string | null;
+    readonly molecular_test_id: string | null;
+    readonly second_gene_symbol: string | null;
+    readonly submitter_id: string | null;
+    readonly test_result: string | null;
+    readonly test_units: string | null;
+    readonly test_value: number | null;
+    readonly variant_type: string | null;
+  }>;
+  readonly progression_or_recurrence: number | null;
+  readonly progression_or_recurrence_anatomic_site: number | null;
+  readonly progression_or_recurrence_type: number | null;
+  readonly reflux_treatment_type: number | null;
+  readonly risk_factor: number | null;
+  readonly submitter_id: string | null;
+  readonly weight: number | null;
+}
+
+export interface Exposures {
+  readonly alcohol_history: string | null;
+  readonly alcohol_intensity: string | null;
+  readonly exposure_id: string | null;
+  readonly state: string | null;
+  readonly submitter_id: string | null;
+  readonly years_smoked: number | null;
+}
+
 export interface caseSummaryDefaults {
-  case_id: string;
-  disease_type: string;
-  files?: Array<caseFileType>;
-  id: string;
-  primary_site: string;
-  project: {
-    name: string;
-    program: {
-      name: string;
+  readonly case_id: string;
+  readonly disease_type: string;
+  readonly files?: Array<caseFileType>;
+  readonly demographic?: Demographic;
+  readonly diagnoses?: Diagnoses;
+  readonly family_histories?: ReadonlyArray<FamilyHistories>;
+  readonly follow_ups?: ReadonlyArray<FollowUps>;
+  readonly exposures?: ReadonlyArray<Exposures>;
+  readonly id: string;
+  readonly primary_site: string;
+  readonly project: {
+    readonly name: string;
+    readonly program: {
+      readonly name: string;
     };
-    project_id: string;
+    readonly project_id: string;
   };
-  submitter_id: string;
-  summary: {
-    data_categories: Array<{
-      data_category: string;
-      file_count: number;
+  readonly submitter_id: string;
+  readonly summary: {
+    readonly data_categories: Array<{
+      readonly data_category: string;
+      readonly file_count: number;
     }>;
-    experimental_strategies: Array<{
-      experimental_strategy: string;
-      file_count: number;
+    readonly experimental_strategies: Array<{
+      readonly experimental_strategy: string;
+      readonly file_count: number;
     }>;
-    file_count: number;
+    readonly file_count: number;
   };
 }
 
@@ -54,13 +155,12 @@ export const fetchGdcCaseSummary = async (
 };
 
 export interface CaseSummaryState {
-  readonly casesData: CoreDataSelectorResponse<caseSummaryDefaults>;
+  readonly data?: caseSummaryDefaults;
+  readonly status: DataStatus;
 }
 
 export const caseSummaryinitialState: CaseSummaryState = {
-  casesData: {
-    status: "uninitialized",
-  },
+  status: "uninitialized",
 };
 
 export const fetchCasesSummary = createAsyncThunk<
@@ -79,26 +179,20 @@ const slice = createSlice({
     builder
       .addCase(fetchCasesSummary.fulfilled, (state, action) => {
         const response = action.payload.data.hits[0];
-        state.casesData.data = { ...response };
-        state.casesData.status = "fulfilled";
-        state.casesData.error = undefined;
+        state.data = castDraft(response);
+        state.status = "fulfilled";
 
         return state;
       })
       .addCase(fetchCasesSummary.pending, (state) => {
-        state.casesData = {
-          data: undefined,
-          status: "pending",
-          error: undefined,
-        };
+        state.data = undefined;
+        state.status = "pending";
+
         return state;
       })
       .addCase(fetchCasesSummary.rejected, (state) => {
-        state.casesData = {
-          data: undefined,
-          status: "rejected",
-          error: undefined,
-        };
+        state.data = undefined;
+        state.status = "rejected";
         return state;
       });
   },
@@ -109,7 +203,10 @@ export const caseSummarySliceReducer = slice.reducer;
 export const selectCaseSummaryData = (
   state: CoreState,
 ): CoreDataSelectorResponse<caseSummaryDefaults> => {
-  return state.caseSummary.casesData;
+  return {
+    data: state.caseSummary.data,
+    status: state.caseSummary.status,
+  };
 };
 
 export const useCaseSummary = createUseCoreDataHook(
