@@ -59,6 +59,9 @@ const slice = createSlice({
         const response = action.payload;
         state.status = "fulfilled";
 
+        if (response.data.viewer.explore.genes.hits.edges.length === 0)
+          return undefined;
+
         const summary = response.data.viewer.explore.genes.hits.edges.map(
           (gene) => ({
             symbol: gene.node.symbol,

@@ -23,23 +23,11 @@ interface GeneViewProps {
 export const GeneSummary = ({ gene_id }: { gene_id: string }): JSX.Element => {
   const { data, isFetching } = useGenesSummaryData({ gene_id });
 
-  const isValidGeneData = (geneData: GeneSummaryData) => {
-    for (const key in geneData) {
-      if (typeof geneData[key] === "undefined") {
-        return false;
-      } else {
-        return true;
-      }
-    }
-  };
-
   return (
     <>
       {isFetching ? (
         <LoadingOverlay visible />
-      ) : data &&
-        Object.keys(data).length > 0 &&
-        isValidGeneData(data?.genes) ? (
+      ) : data && data.genes ? (
         <GeneView data={data} gene_id={gene_id} />
       ) : (
         <SummaryErrorHeader label="Gene Not Found" />
