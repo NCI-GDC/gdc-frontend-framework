@@ -38,7 +38,7 @@ export type updateArrayFilterValues = (
   enumerationFilters: EnumOperandValue,
 ) => void;
 
-export type GetRangeFacetDataHook = (
+export type GetRangeFacetDataFunction = (
   docType: GQLDocType,
   indexType: GQLIndexType,
   field: string,
@@ -62,7 +62,8 @@ export interface ValueFacetHooks extends FacetDataHooks {
 
 export interface RangeFacetHooks extends FacetDataHooks {
   useGetFacetFilters: SelectFacetFilterFunction;
-  useGetFacetData: GetRangeFacetDataHook;
+  useUpdateFacetFilters: () => UpdateFacetFilterFunction;
+  useGetFacetData: GetRangeFacetDataFunction;
   useTotalCounts: GetTotalCountsFunction;
 }
 

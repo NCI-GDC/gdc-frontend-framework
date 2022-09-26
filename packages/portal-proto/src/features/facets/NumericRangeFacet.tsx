@@ -19,11 +19,7 @@ import {
   DAYS_IN_YEAR,
   GQLDocType,
   GQLIndexType,
-  removeCohortFilter,
-  updateCohortFilter,
-  useCoreDispatch,
   fieldNameToTitle,
-  NumericFromTo,
 } from "@gff/core";
 
 import {
@@ -41,6 +37,8 @@ import {
   RangeFromOp,
   RangeToOp,
   RangeFacetHooks,
+  ClearFacetFunction,
+  UpdateFacetFilterFunction,
 } from "@/features/facets/types";
 import {
   FacetDocTypeToCountsIndexMap,
@@ -105,6 +103,7 @@ interface RangeValueSelectorProps {
   readonly rangeLabelsAndValues: Record<string, RangeBucketElement>;
   selected: string;
   setSelected: (value: string) => void;
+  useUpdateFacetFilters: () => UpdateFacetFilterFunction;
 }
 
 const WARNING_DAYS = Math.floor(90 * DAYS_IN_YEAR);
@@ -223,8 +222,9 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
   setSelected,
   rangeLabelsAndValues,
   itemsToShow,
+  useUpdateFacetFilters,
 }: RangeValueSelectorProps) => {
-  const coreDispatch = useCoreDispatch();
+  const updateFilters = useUpdateFacetFilters();
 
   // toggle to handle sorting by value vs. label
   const [isSortedByValue, setIsSortedByValue] = useState(false);
@@ -240,7 +240,8 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
     const rangeFilters = buildRangeOperator(field, data);
 
     // TODO Add useUpdateFacetFilter hook here
-    coreDispatch(updateCohortFilter({ field: field, operation: rangeFilters }));
+    //  coreDispatch(updateCohortFilter({ field: field, operation: rangeFilters }));
+    updateFilters(field, rangeFilters);
     setSelected(rangeKey);
   };
 
@@ -321,9 +322,11 @@ interface FromToProps {
   readonly minimum: number;
   readonly maximum: number;
   readonly units: string;
+  readonly field: string;
+  readonly useClearFilter: () => ClearFacetFunction;
+  readonly useUpdateFacetFilters: () => UpdateFacetFilterFunction;
   readonly values?: FromToRange<number>;
   readonly changedCallback?: () => void;
-  readonly field: string;
 }
 
 /**
@@ -338,6 +341,8 @@ interface FromToProps {
  */
 const FromTo: React.FC<FromToProps> = ({
   field,
+  useClearFilter,
+  useUpdateFacetFilters,
   minimum,
   maximum,
   values,
@@ -350,7 +355,10 @@ const FromTo: React.FC<FromToProps> = ({
   const [toOp, setToOp] = useState(values?.toOp ?? "<");
   const [toValue, setToValue] = useState(values?.to);
   const [isWarning, setIsWarning] = useState(false);
-  const coreDispatch = useCoreDispatch();
+  //  const coreDispatch = useCoreDispatch();
+
+  const clearFilter = useClearFilter();
+  const updateFacetFilters = useUpdateFacetFilters();
 
   useEffect(() => {
     setFromOp(values?.fromOp ?? ">=");
@@ -382,11 +390,13 @@ const FromTo: React.FC<FromToProps> = ({
     const rangeFilters = buildRangeOperator(field, data);
     // TODO: use useUpdateFacetFilter and clearFilters hooks here
     if (rangeFilters === undefined) {
-      coreDispatch(removeCohortFilter(field));
+      // coreDispatch(removeCohortFilter(field));
+      clearFilter(field);
     } else {
-      coreDispatch(
-        updateCohortFilter({ field: field, operation: rangeFilters }),
-      );
+      updateFacetFilters(field, rangeFilters);
+      // coreDispatch(
+      //   updateCohortFilter({ field: field, operation: rangeFilters }),
+      // );
     }
   };
   return (
@@ -508,11 +518,9 @@ const BuildRangeLabelsAndValues = (
   }, {} as Record<string, RangeBucketElement>);
 };
 
-type RangeInputHooks = Omit<RangeFacetHooks, "useClearFilter">;
-
 interface RangeInputWithPrefixedRangesProps {
   readonly field: string;
-  readonly hooks: RangeInputHooks;
+  readonly hooks: RangeFacetHooks;
   readonly numBuckets: number;
   readonly docType: GQLDocType;
   readonly indexType: GQLIndexType;
@@ -657,6 +665,7 @@ const RangeInputWithPrefixedRanges: React.FC<
             field={`${field}`}
             units={units}
             changedCallback={resetToCustom}
+            {...hooks}
           />
         </div>
         <div className="flex flex-col border-t-2">
@@ -669,6 +678,7 @@ const RangeInputWithPrefixedRanges: React.FC<
               itemsToShow={bucketsToShow}
               rangeLabelsAndValues={rangeLabelsAndValues}
               selected={selectedRange}
+              useUpdateFacetFilters={hooks.useUpdateFacetFilters}
               setSelected={(value) => {
                 setIsCustom(false); // no longer a customRange
                 // this is the only way user interaction
@@ -791,6 +801,7 @@ const Years: React.FC<NumericFacetData> = ({
 
 const NumericRangePanel: React.FC<NumericFacetData> = ({
   field,
+  hooks,
   minimum = undefined,
   maximum = undefined,
 }: NumericFacetData) => {
@@ -803,6 +814,7 @@ const NumericRangePanel: React.FC<NumericFacetData> = ({
         minimum={adjMinimum}
         maximum={adjMaximum}
         units=""
+        {...hooks}
       />
     </div>
   );
@@ -812,6 +824,7 @@ const PercentRange: React.FC<NumericFacetData> = ({
   field,
   docType,
   indexType,
+  hooks,
   minimum = undefined,
   maximum = undefined,
 }: NumericFacetData) => {
@@ -824,7 +837,7 @@ const PercentRange: React.FC<NumericFacetData> = ({
       <RangeInputWithPrefixedRanges
         docType={docType}
         indexType={indexType}
-        hooks={{ ...hooks }}
+        hooks={hooks}
         units="percent"
         minimum={adjMinimum}
         maximum={adjMaximum}
