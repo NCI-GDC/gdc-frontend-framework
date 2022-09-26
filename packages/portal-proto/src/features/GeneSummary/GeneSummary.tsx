@@ -36,9 +36,7 @@ export const GeneSummary = ({ gene_id }: { gene_id: string }): JSX.Element => {
   );
 };
 
-const GeneView = (props: GeneViewProps) => {
-  const { data, gene_id } = props;
-
+const GeneView = ({ data, gene_id }: GeneViewProps) => {
   const formatDataForSummary = () => {
     const {
       genes: {
