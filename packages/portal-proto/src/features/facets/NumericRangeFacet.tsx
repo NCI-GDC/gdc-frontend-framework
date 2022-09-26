@@ -508,9 +508,7 @@ const BuildRangeLabelsAndValues = (
         ? `${rangeData[x].toLocaleString()} (${(
             ((rangeData[x] as number) / totalCount) *
             100
-          )
-            .toFixed(2)
-            .toLocaleString()}%)`
+          ).toFixed(2)}%)`
         : "",
     };
     return b;

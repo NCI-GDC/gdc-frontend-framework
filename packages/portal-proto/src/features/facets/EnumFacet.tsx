@@ -23,6 +23,7 @@ import { FacetIconButton, controlsIconStyle } from "./components";
 import { updateFacetEnum } from "./utils";
 import FacetExpander from "@/features/facets/FacetExpander";
 import FacetSortPanel from "@/features/facets/FacetSortPanel";
+import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 
 /**
  *  Enumeration facet filters handle display and selection of
@@ -344,9 +345,9 @@ export const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                               }
                             />
                           </div>
-                          <div className="flex-grow truncate ... font-heading text-md pt-0.5">
+                          <OverflowTooltippedLabel label={value}>
                             {value}
-                          </div>
+                          </OverflowTooltippedLabel>
                           <div className="flex-none text-right w-14 ">
                             {count.toLocaleString()}
                           </div>
