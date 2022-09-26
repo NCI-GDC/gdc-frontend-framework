@@ -183,10 +183,10 @@ const CustomFacetGroup = (): JSX.Element => {
             <Button
               variant="outline"
               onClick={() => setOpened(true)}
-              aria-label="Add Custom Filter"
+              aria-label="Add a Custom Filter"
               className="bg-base-lightest text-base-contrast-lightest"
             >
-              Add Custom Facet
+              Add a Custom Filter
             </Button>
           </CustomFacetWhenEmptyGroup>
         </Center>
@@ -289,7 +289,7 @@ export const FacetTabs = (): JSX.Element => {
           ([key, tabEntry]: [string, CohortBuilderCategory]) => (
             <Tabs.Panel key={key} value={key}>
               {" "}
-              {tabEntry.label === "Custom" ? (
+              {tabEntry.label === "Custom Filters" ? (
                 <CustomFacetGroup />
               ) : (
                 <FacetGroup>
