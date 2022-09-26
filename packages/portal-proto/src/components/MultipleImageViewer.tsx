@@ -132,7 +132,7 @@ export const MultipleImageViewer = ({
         ) : (
           <div className="flex flex-col border-2 border-base-lighter m-2 mt-0">
             <div className="flex border-b-2 border-b-base-lighter">
-              <div className="w-[460px]">
+              <div className="w-[500px]">
                 <div className="flex w-full">
                   <div className="flex-1">
                     <div className="flex justify-center">
@@ -222,7 +222,7 @@ export const MultipleImageViewer = ({
 
             <div className="flex max-h-[550px]">
               {Object.keys(data?.edges).length > 0 && activeImage && (
-                <div className="flex-1/2 w-[460px]">
+                <div className="flex-1/2 w-[500px]">
                   <Tabs
                     orientation="vertical"
                     variant="pills"
@@ -230,7 +230,7 @@ export const MultipleImageViewer = ({
                     onTabChange={onTabChange}
                     classNames={{
                       root: "max-h-[555px] gap-2 overflow-x-hidden min-w-[40%]",
-                      tab: "ml-2 mt-1",
+                      tab: "bg-white",
                       tabsList: "bg-base-light overflow-y-auto",
                       tabLabel:
                         "text-xs text-primary-content-darkest px-2 font-medium",
@@ -260,7 +260,7 @@ export const MultipleImageViewer = ({
                             value={index.toString()}
                             className={`mx-2 my-1 ${
                               activeTab.toString() === index.toString()
-                                ? "[&>div]:text-primary-contrast"
+                                ? "bg-primary-dark [&>div]:text-primary-contrast"
                                 : ""
                             } truncate ...`}
                           >
