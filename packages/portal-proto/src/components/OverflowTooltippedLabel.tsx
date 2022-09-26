@@ -6,11 +6,10 @@ type OverflowTooltippedLabelProps = {
   label: string;
 };
 
-const OverflowTooltippedLabel = (
-  props: OverflowTooltippedLabelProps,
-): JSX.Element => {
-  const { children, label } = props;
-
+const OverflowTooltippedLabel = ({
+  children,
+  label,
+}: OverflowTooltippedLabelProps): JSX.Element => {
   const [showTooltip, setShowTooltip] = useState(false);
 
   return (
