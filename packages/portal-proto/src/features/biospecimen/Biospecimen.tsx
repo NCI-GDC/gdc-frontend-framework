@@ -5,7 +5,7 @@ import {
   MdFileDownload,
   MdOutlineClear,
 } from "react-icons/md";
-import { Button, Input, Alert, LoadingOverlay, Menu } from "@mantine/core";
+import { Button, Input, LoadingOverlay, Menu } from "@mantine/core";
 import {
   entityType,
   useBiospecimenData,
@@ -119,19 +119,21 @@ export const Biospecimen = ({
         <>
           <div className="flex justify-between">
             <h1>Biospecimen</h1>
-            <Menu
-              control={
-                <Button className="px-1.5 min-h-7 w-28 border-nci-gray-light border rounded">
+            <Menu width="target">
+              <Menu.Target>
+                <Button className="px-1.5 min-h-7 w-28 border-base-lightest border rounded text-primary-content-lightest bg-primary hover:bg-primary-darker">
                   <MdFileDownload size="1.25em" />
                   Download
                 </Button>
-              }
-              size="xs"
-            >
-              <Menu.Item icon={<MdFileDownload size="1.25em" />}>TSV</Menu.Item>
-              <Menu.Item icon={<MdFileDownload size="1.25em" />}>
-                JSON
-              </Menu.Item>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Item icon={<MdFileDownload size="1.25em" />}>
+                  TSV
+                </Menu.Item>
+                <Menu.Item icon={<MdFileDownload size="1.25em" />}>
+                  JSON
+                </Menu.Item>
+              </Menu.Dropdown>
             </Menu>
           </div>
 
@@ -180,7 +182,7 @@ export const Biospecimen = ({
                     );
                     setExpandedCount(0);
                   }}
-                  className="ml-4 w-32"
+                  className="ml-4 w-32 text-primary-content-lightest bg-primary hover:bg-primary-darker "
                   disabled={searchText.length > 0}
                 >
                   {isAllExpanded ? "Collapse All" : "Expand All"}
@@ -221,12 +223,7 @@ export const Biospecimen = ({
             </div>
           </div>
         </>
-      ) : (
-        // TODO: Need to Remove this part after moving this to the case summary
-        <Alert title="Case ID not found" color="red" withCloseButton>
-          Case Not Found with a case id <strong>{caseId}</strong>
-        </Alert>
-      )}
+      ) : null}
     </div>
   );
 };

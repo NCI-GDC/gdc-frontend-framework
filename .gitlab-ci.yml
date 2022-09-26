@@ -1,0 +1,175 @@
+# yaml-language-server: $schema=https://gitlab.com/gitlab-org/gitlab/-/raw/master/app/assets/javascripts/editor/schema/ci.json
+---
+include:
+  - project: nci-gdc/gitlab-templates
+    ref: master
+    file:
+      - templates/global/full.yaml
+      - templates/deployments/salt-service.yaml
+
+.services:
+  allow_failure: true
+  stage: deploy
+  when: manual
+  parallel:
+    matrix:
+      - DEPLOY_SERVICE_LIST: [ portal2 ]
+
+stages:
+  - .pre
+  - test
+  - build
+  - unit
+  - release
+  - deploy
+
+image: docker.osdc.io/node:16-alpine3.15
+
+variables:
+  npm_config_registry: https://nexus.osdc.io/repository/npm-all/
+  npm_config_cache: .npm
+  DEPLOY_SERVICE_TAG: ${CI_COMMIT_BRANCH}-${CI_COMMIT_SHORT_SHA}
+
+workflow:
+  rules:
+    - if: $CI_COMMIT_TAG
+      variables:
+        DEPLOY_SERVICE_TAG: ${CI_COMMIT_BRANCH}-${CI_COMMIT_TAG}
+    - when: always
+
+Install npm packages:
+  stage: .pre
+  script:
+    - npm install npm@7
+    - npm ci --cache .npm
+  variables:
+    npm_config_proxy: http://cloud-proxy:3128
+    npm_config_https_proxy: http://cloud-proxy:3128
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - node_modules/
+      - .npm/
+    policy: push
+
+
+Linting:
+  stage: test
+  before_script:
+    - eslint -v || npm ci
+  script:
+    - npm run lint
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - node_modules/
+      - .npm/
+    policy: pull
+
+Prettier Checks:
+  stage: test
+  before_script:
+    - prettier -v || npm ci
+  script:
+    - npm run format:check
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - node_modules/
+      - .npm/
+    policy: pull
+
+Build core and compile portal:
+  stage: build
+  before_script:
+    - lerna -v || npm ci
+  script:
+    - cd ${CI_PROJECT_DIR}/packages/core
+    - npm run build:clean
+    - cd ${CI_PROJECT_DIR}/packages/portal-proto
+    - npm run compile
+  cache:
+    - key: $CI_COMMIT_REF_SLUG
+      paths:
+        - node_modules/
+        - .npm/
+      policy: pull
+    - key: "Built-$CI_COMMIT_REF_SLUG"
+      untracked: true
+      paths:
+        - node_modules/
+        - .npm/
+        - packages/
+        - dist/
+      policy: push
+
+Run unit tests:
+  stage: unit
+  needs:
+    - Build core and compile portal
+  script:
+    - npm run test:all
+  retry: 2
+  cache:
+    - key: "Built-$CI_COMMIT_REF_SLUG"
+      paths:
+        - node_modules/
+        - .npm/
+        - packages/
+        - dist/
+      policy: pull
+
+Build and push container:
+  stage: release
+  services:
+    - docker:${DOCKER_VERSION}-dind
+  tags:
+    - dind
+  image: docker:${DOCKER_VERSION}-dind
+  before_script:
+    - apk add bash
+  script:
+    - export CLEAN_BRANCH_NAME=${CI_COMMIT_BRANCH/\//_}
+    - export LOWERCASE_BRANCH_NAME="$(bash -c 'tr "[:upper:]" "[:lower:]" <<< "$CLEAN_BRANCH_NAME"')"
+    - docker build --build-arg "NPM_REGISTRY=https://nexus.osdc.io/repository/npm-all/" -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME-${CI_COMMIT_SHORT_SHA} .
+    - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME-${CI_COMMIT_SHORT_SHA}
+
+Push latest container:
+  stage: release
+  variables:
+    GIT_STRATEGY: none
+  services:
+    - docker:${DOCKER_VERSION}-dind
+  tags:
+    - dind
+  image: docker:${DOCKER_VERSION}-dind
+  only:
+    - master
+  before_script:
+    - apk add bash
+  script:
+    - export CLEAN_BRANCH_NAME=${CI_COMMIT_BRANCH/\//_}
+    - export LOWERCASE_BRANCH_NAME="$(bash -c 'tr "[:upper:]" "[:lower:]" <<< "$CLEAN_BRANCH_NAME"')"
+    - docker pull $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME-${CI_COMMIT_SHORT_SHA}
+    - docker tag $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME-${CI_COMMIT_SHORT_SHA} $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:latest
+    - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:latest
+
+Push tagged container:
+  stage: release
+  variables:
+    GIT_STRATEGY: none
+  services:
+    - docker:${DOCKER_VERSION}-dind
+  tags:
+    - dind
+  image: docker:${DOCKER_VERSION}-dind
+  only:
+    - tags
+  before_script:
+    - apk add bash
+  script:
+    - export CLEAN_BRANCH_NAME=${CI_COMMIT_BRANCH/\//_}
+    - export LOWERCASE_BRANCH_NAME="$(bash -c 'tr "[:upper:]" "[:lower:]" <<< "$CLEAN_BRANCH_NAME"')"
+    - docker pull $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME-${CI_COMMIT_SHORT_SHA}
+    - docker tag $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME-${CI_COMMIT_SHORT_SHA} $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:${CI_COMMIT_TAG}
+    - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:${CI_COMMIT_TAG}

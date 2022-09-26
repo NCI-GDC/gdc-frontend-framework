@@ -1,13 +1,16 @@
-import { Button } from "@mantine/core";
+import { ActionIcon, Button } from "@mantine/core";
 import { showNotification, cleanNotifications } from "@mantine/notifications";
-import { FaUndo as UndoIcon } from "react-icons/fa";
+import { VscTrash as TrashIcon } from "react-icons/vsc";
+import { FaUndo as UndoIcon, FaShoppingCart as CartIcon } from "react-icons/fa";
 import {
   CART_LIMIT,
   removeFilesFromCart,
   addFilesToCart,
-  GdcFile,
   CoreDispatch,
-  SlideImageFile,
+  selectCart,
+  useCoreSelector,
+  useCoreDispatch,
+  CartFile,
 } from "@gff/core";
 
 interface OverLimitNotificationProps {
@@ -41,34 +44,34 @@ const UndoButton: React.FC<UndoButtonProps> = ({ action }: UndoButtonProps) => {
 };
 
 interface AddNotificationProps {
-  readonly files: readonly (GdcFile | SlideImageFile)[];
-  readonly currentCart: string[];
-  readonly filesToAdd: readonly (GdcFile | SlideImageFile)[];
-  readonly numAlreadyInCart: number;
+  readonly files: CartFile[];
+  readonly currentCart: CartFile[];
   dispatch: CoreDispatch;
 }
 const AddNotification: React.FC<AddNotificationProps> = ({
   files,
   currentCart,
-  filesToAdd,
-  numAlreadyInCart,
   dispatch,
 }: AddNotificationProps) => {
-  const numFilesAdded = filesToAdd.length;
-  const newCart = [
-    ...currentCart,
-    ...filesToAdd.map((f) => ("id" in f ? f.id : f.file_id)),
-  ];
+  const filesToAdd = files.filter(
+    (f) => !currentCart.map((c) => c.fileId).includes(f.fileId),
+  );
+
+  const newCart = [...currentCart, ...filesToAdd];
+
+  const alreadyInCart = files.filter((f) =>
+    currentCart.map((c) => c.fileId).includes(f.fileId),
+  );
+
+  if (filesToAdd.length > 0) {
+    dispatch(addFilesToCart(filesToAdd));
+  }
 
   if (files.length === 1) {
-    if (numFilesAdded === 1) {
+    if (filesToAdd.length === 1) {
       return (
         <>
-          <p>
-            Added{" "}
-            {"fileName" in files[0] ? files[0].fileName : files[0].file_name} to
-            the cart.
-          </p>
+          <p>Added {files[0].fileName} to the cart.</p>
           <UndoButton
             action={() => removeFromCart(filesToAdd, newCart, dispatch)}
           />
@@ -76,19 +79,16 @@ const AddNotification: React.FC<AddNotificationProps> = ({
       );
     } else {
       return (
-        <>
-          {"fileName" in files[0] ? files[0].fileName : files[0].file_name} was
-          already in the cart and was not added.
-        </>
+        <>{files[0].fileName} was already in the cart and was not added.</>
       );
     }
   } else {
-    if (numAlreadyInCart === 0) {
+    if (alreadyInCart.length === 0) {
       return (
         <>
           <p>
-            Added {numFilesAdded} {numFilesAdded === 1 ? "file" : "files"} to
-            the cart.
+            Added {filesToAdd.length}{" "}
+            {filesToAdd.length === 1 ? "file" : "files"} to the cart.
           </p>
           <UndoButton
             action={() => removeFromCart(filesToAdd, newCart, dispatch)}
@@ -99,15 +99,16 @@ const AddNotification: React.FC<AddNotificationProps> = ({
       return (
         <>
           <p>
-            Added {numFilesAdded} {numFilesAdded === 1 ? "file" : "files"} to
-            the cart.
+            Added {filesToAdd.length}{" "}
+            {filesToAdd.length === 1 ? "file" : "files"} to the cart.
           </p>
           <p>
-            {numAlreadyInCart}{" "}
-            {numAlreadyInCart === 1 ? "file was" : "files were"} already in the
-            cart and {numAlreadyInCart === 1 ? "was" : "were"} not added.
+            {alreadyInCart.length}{" "}
+            {alreadyInCart.length === 1 ? "file was" : "files were"} already in
+            the cart and {alreadyInCart.length === 1 ? "was" : "were"} not
+            added.
           </p>
-          {numFilesAdded !== 0 && (
+          {filesToAdd.length !== 0 && (
             <UndoButton
               action={() => removeFromCart(filesToAdd, newCart, dispatch)}
             />
@@ -119,8 +120,8 @@ const AddNotification: React.FC<AddNotificationProps> = ({
 };
 
 interface RemoveNotificationProps {
-  readonly files: readonly (GdcFile | SlideImageFile)[];
-  readonly currentCart: string[];
+  files: readonly CartFile[];
+  readonly currentCart: CartFile[];
   dispatch: CoreDispatch;
 }
 const RemoveNotification: React.FC<RemoveNotificationProps> = ({
@@ -129,23 +130,15 @@ const RemoveNotification: React.FC<RemoveNotificationProps> = ({
   dispatch,
 }: RemoveNotificationProps) => {
   const filesToRemove = files.filter((f) =>
-    currentCart.includes("id" in f ? f.id : f.file_id),
+    currentCart.map((cartFile) => cartFile.fileId).includes(f.fileId),
   );
 
-  const newCart = files
-    .filter((f) => !filesToRemove.includes(f))
-    .map((f) => ("id" in f ? f.id : f.file_id));
+  const newCart = files.filter((f) => !filesToRemove.includes(f));
 
   if (filesToRemove.length === 1) {
     return (
       <>
-        <p>
-          Removed{" "}
-          {"fileName" in filesToRemove[0]
-            ? filesToRemove[0].fileName
-            : filesToRemove[0].file_name}{" "}
-          from the cart.
-        </p>
+        <p>Removed {filesToRemove[0].fileName} from the cart.</p>
         <UndoButton
           action={() => addToCart(filesToRemove, newCart, dispatch)}
         />
@@ -166,8 +159,8 @@ const RemoveNotification: React.FC<RemoveNotificationProps> = ({
 };
 
 export const removeFromCart = (
-  files: readonly (GdcFile | SlideImageFile)[],
-  currentCart: string[],
+  files: readonly CartFile[],
+  currentCart: CartFile[],
   dispatch: CoreDispatch,
 ): void => {
   cleanNotifications();
@@ -183,13 +176,13 @@ export const removeFromCart = (
       description: "flex flex-col content-center text-center",
     },
   });
-  const filesToRemove = files.map((f) => ("id" in f ? f.id : f.file_id));
+  const filesToRemove = files.map((f) => f.fileId);
   dispatch(removeFilesFromCart(filesToRemove));
 };
 
 export const addToCart = (
-  files: readonly (GdcFile | SlideImageFile)[],
-  currentCart: string[],
+  files: CartFile[],
+  currentCart: CartFile[],
   dispatch: CoreDispatch,
 ): void => {
   const newCartSize = files.length + currentCart.length;
@@ -203,21 +196,11 @@ export const addToCart = (
       },
     });
   } else {
-    const alreadyInCart = files
-      .map((f) => ("id" in f ? f.id : f.file_id))
-      .filter((f) => currentCart.includes(f));
-
-    const filesToAdd = files.filter(
-      (f) => !currentCart.includes("id" in f ? f.id : f.file_id),
-    );
-
     showNotification({
       message: (
         <AddNotification
           files={files}
           currentCart={currentCart}
-          filesToAdd={filesToAdd}
-          numAlreadyInCart={alreadyInCart.length}
           dispatch={dispatch}
         />
       ),
@@ -225,10 +208,57 @@ export const addToCart = (
         description: "flex flex-col content-center text-center",
       },
     });
-    if (filesToAdd.length > 0) {
-      dispatch(
-        addFilesToCart(filesToAdd.map((f) => ("id" in f ? f.id : f.file_id))),
-      );
-    }
   }
+};
+
+interface AddToCartButtonProps {
+  readonly files: CartFile[];
+}
+
+export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
+  files,
+}: AddToCartButtonProps) => {
+  const currentCart = useCoreSelector((state) => selectCart(state));
+  const dispatch = useCoreDispatch();
+
+  return (
+    <Button
+      className="text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
+      onClick={() => addToCart(files, currentCart, dispatch)}
+    >
+      <CartIcon className="mr-2" /> Add to Cart
+    </Button>
+  );
+};
+
+interface RemoveFromCartButtonProps {
+  readonly files: CartFile[];
+  readonly iconOnly?: boolean;
+}
+
+export const RemoveFromCartButton: React.FC<RemoveFromCartButtonProps> = ({
+  files,
+  iconOnly = false,
+}: RemoveFromCartButtonProps) => {
+  const currentCart = useCoreSelector((state) => selectCart(state));
+  const dispatch = useCoreDispatch();
+
+  return iconOnly ? (
+    <ActionIcon
+      aria-label="Remove from cart"
+      variant="outline"
+      onClick={() => removeFromCart(files, currentCart, dispatch)}
+      className="mx-auto text-primary-content-darkest border-primary-darkest"
+    >
+      <TrashIcon />
+    </ActionIcon>
+  ) : (
+    <Button
+      onClick={() => removeFromCart(files, currentCart, dispatch)}
+      className="text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
+    >
+      <CartIcon className="mr-2" />
+      Remove From Cart
+    </Button>
+  );
 };

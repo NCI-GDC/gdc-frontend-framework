@@ -1,6 +1,6 @@
 import { useState } from "react";
 import fileSize from "filesize";
-import { Table, Button, Select, Pagination, Menu } from "@mantine/core";
+import { Table, Button, Select, Pagination, Menu, Text } from "@mantine/core";
 import {
   MdLock as LockedIcon,
   MdLockOpen as OpenIcon,
@@ -17,10 +17,18 @@ import {
 import { EnumFacet } from "../facets/EnumFacet";
 import { addToCart, removeFromCart } from "@/features/cart/updateCart";
 import Link from "next/link";
+import { mapGdcFileToCartFile } from "./utils";
+import tw from "tailwind-styled-components";
 
 export interface ContextualFilesViewProps {
   readonly handleFileSelected?: (file: GdcFile) => void;
 }
+
+export const FilesTableHeader = tw.th`
+bg-primary-lighter
+text-primary-contrast-lighter
+px-2
+`;
 
 const FileFacetNames = [
   {
@@ -61,7 +69,7 @@ const FileFacetNames = [
 ];
 
 const buttonStyle =
-  "mx-1 bg-nci-gray-light hover:bg-nci-gray transition-colors";
+  "mx-1 text-primary-contrast bg-primary hover:bg-primary-darker transition-colors ";
 
 export const ContextualFilesView: React.FC<ContextualFilesViewProps> = ({
   handleFileSelected,
@@ -87,33 +95,50 @@ export const ContextualFilesView: React.FC<ContextualFilesViewProps> = ({
   return (
     <div className="flex flex-col mt-4 ">
       <div className="flex flex-row justify-end m-2">
-        <Menu
-          control={
+        <Menu>
+          <Menu.Target>
             <Button className={buttonStyle}>
               <CartIcon size={"1.5rem"} />
               Update Cart
             </Button>
-          }
-        >
-          <Menu.Item onClick={() => addToCart(allFiles, currentCart, dispatch)}>
-            {"Add All Files"}
-          </Menu.Item>
-          <Menu.Item
-            onClick={() => addToCart(selectedFiles, currentCart, dispatch)}
-          >
-            {"Add Selected Files"}
-          </Menu.Item>
-          <Menu.Item
-            onClick={() => removeFromCart(selectedFiles, currentCart, dispatch)}
-          >
-            {"Remove Selected Files"}
-          </Menu.Item>
+          </Menu.Target>
+          <Menu.Dropdown>
+            <Menu.Item
+              onClick={() =>
+                addToCart(mapGdcFileToCartFile(allFiles), currentCart, dispatch)
+              }
+            >
+              {"Add All Files"}
+            </Menu.Item>
+            <Menu.Item
+              onClick={() =>
+                addToCart(
+                  mapGdcFileToCartFile(selectedFiles),
+                  currentCart,
+                  dispatch,
+                )
+              }
+            >
+              {"Add Selected Files"}
+            </Menu.Item>
+            <Menu.Item
+              onClick={() =>
+                removeFromCart(
+                  mapGdcFileToCartFile(selectedFiles),
+                  currentCart,
+                  dispatch,
+                )
+              }
+            >
+              {"Remove Selected Files"}
+            </Menu.Item>
+          </Menu.Dropdown>
         </Menu>
         <Button className={buttonStyle}>
           <DownloadIcon size={"1.5rem"} />
           Manifest
         </Button>
-        <Link href="/user-flow/workbench/MultipleImageViewerPage">
+        <Link href="/user-flow/workbench/MultipleImageViewerPage" passHref>
           <Button component="a" className={buttonStyle}>
             View Images
           </Button>
@@ -152,7 +177,6 @@ export interface FilesViewProps {
 
 export const FilesView: React.FC<FilesViewProps> = ({
   files = [],
-  handleFileSelected = () => void 0,
   handleCheckedFiles = () => void 0,
 }: FilesViewProps) => {
   const [pageSize, setPageSize] = useState(10);
@@ -162,34 +186,19 @@ export const FilesView: React.FC<FilesViewProps> = ({
     setPageSize(parseInt(x));
   };
   return (
-    <div className="flex flex-col gap-y-4">
+    <div className="flex flex-col w-full gap-y-4">
       <Table verticalSpacing="xs" striped highlightOnHover>
         <thead>
-          <tr className="bg-nci-gray-light text-white text-md text-montserrat border border-nci-gray-light">
-            <th className="px-2">
+          <tr className="bg-base-light text-base-contrast-light text-heading border border-base-light">
+            <FilesTableHeader>
               <input type="checkbox" />
-            </th>
-            <th
-              className="px-2 th-nci-gray-lightest"
-              style={{ color: "#FFFFFF" }}
-            >
-              File
-            </th>
-            <th className="px-2 " style={{ color: "#FFFFFF" }}>
-              Access
-            </th>
-            <th className="px-2" style={{ color: "#FFFFFF" }}>
-              Experimental Strategy
-            </th>
-            <th className="px-2" style={{ color: "#FFFFFF" }}>
-              Data Category
-            </th>
-            <th className="px-2" style={{ color: "#FFFFFF" }}>
-              Data Format
-            </th>
-            <th className="px-2" style={{ color: "#FFFFFF" }}>
-              File Size
-            </th>
+            </FilesTableHeader>
+            <FilesTableHeader>Access</FilesTableHeader>
+            <FilesTableHeader>File</FilesTableHeader>
+            <FilesTableHeader>Experimental Strategy</FilesTableHeader>
+            <FilesTableHeader>Data Category</FilesTableHeader>
+            <FilesTableHeader>Data Format</FilesTableHeader>
+            <FilesTableHeader>File Size</FilesTableHeader>
           </tr>
         </thead>
         <tbody>
@@ -209,10 +218,18 @@ export const FilesView: React.FC<FilesViewProps> = ({
                 )}
                 {file.access}
               </td>
-              <td className="px-2 break-all">
-                <button onClick={() => handleFileSelected(file)}>
-                  {file.fileName}
-                </button>
+              <td className="px-2">
+                <Link
+                  href={{
+                    pathname: "/files/[slug]",
+                    query: { slug: file.id },
+                  }}
+                  passHref
+                >
+                  <Text variant="link" component="a">
+                    {file.fileName}
+                  </Text>
+                </Link>
               </td>
               <td className="px-2">{file.experimentalStrategy}</td>
               <td className="px-2">{file.dataCategory}</td>
@@ -222,7 +239,7 @@ export const FilesView: React.FC<FilesViewProps> = ({
           ))}
         </tbody>
       </Table>
-      <div className="flex flex-row items-center justify-start border-t border-nci-gray-light">
+      <div className="flex flex-row items-center justify-start border-t border-base-light">
         <p className="px-2">Page Size:</p>
         <Select
           size="sm"
@@ -237,12 +254,9 @@ export const FilesView: React.FC<FilesViewProps> = ({
           ]}
         />
         <Pagination
-          classNames={{
-            active: "bg-nci-gray",
-          }}
           size="sm"
           radius="md"
-          color="gray"
+          color="accent"
           className="ml-auto"
           page={activePage}
           onChange={setPage}

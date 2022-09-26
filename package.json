@@ -15,8 +15,11 @@
     "test": "npm run test --workspaces",
     "test:int": "npm run test:int --workspaces",
     "test:all": "npm run test:all --workspaces",
+    "compile": "lerna run --parallel compile",
     "dev": "lerna run --parallel dev",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "build": "lerna run build",
+    "start": "lerna run --parallel start"
   },
   "lint-staged": {
     "**/*": [
@@ -31,9 +34,9 @@
   "license": "Apache-2.0",
   "homepage": "https://github.com/NCI-GDC/gdc-frontend-framework#readme",
   "dependencies": {
-    "@mantine/core": "^4.1.2",
     "@reactour/tour": "^2.9.0",
     "classnames": "^2.3.1",
+    "file-saver": "^2.0.5",
     "immutability-helper": "^3.1.1",
     "isomorphic-fetch": "^3.0.0",
     "json-server": "^0.17.0",
@@ -45,10 +48,14 @@
     "react-dom": "^17.0.2",
     "react-table": "^7.7.0",
     "react-use": "^17.3.2",
-    "react-window": "^1.8.6"
+    "react-window": "^1.8.6",
+    "url-join": "^5.0.0",
+    "tinycolor2": "^1.4.2",
+    "@datadog/browser-rum": "4.17.1"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^12.1.5",
+    "@types/file-saver": "^2.0.5",
     "@types/isomorphic-fetch": "^0.0.35",
     "@types/lodash": "^4.14.178",
     "@types/plotly.js": "^1.54.14",
@@ -59,9 +66,9 @@
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.24.0",
-    "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "husky": "^7.0.4",
-    "lerna": "^4.0.0",
+    "lerna": "^5.0.0",
     "lint-staged": "^12.3.7",
     "prettier": "^2.3.2"
   },

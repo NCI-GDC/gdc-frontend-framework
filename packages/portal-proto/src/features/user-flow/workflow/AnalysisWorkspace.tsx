@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/router";
-import { Chip, Chips, Menu, Grid, ActionIcon } from "@mantine/core";
+import { Chip, Menu, Grid, ActionIcon } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
 import { MdSort as SortIcon } from "react-icons/md";
 import AnalysisCard from "@/features/user-flow/workflow/AnalysisCard";
@@ -91,10 +91,10 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
     <div className="flex flex-col font-montserrat">
       <div
         data-tour="analysis_tool_management"
-        className="flex flex-row  items-center shadow-lg bg-nci-blue-darkest"
+        className="flex flex-row  items-center shadow-lg bg-primary-lightest"
       >
         <div data-tour="most_common_tools" className="mx-4 my-6 flex">
-          <h2 className="text-white font-bold uppercase pr-6">
+          <h2 className="text-primary-content-darkest font-bold uppercase pr-6">
             {"Featured Tools"}
           </h2>
           <Grid columns={12}>
@@ -104,7 +104,6 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
                 return (
                   <Grid.Col
                     key={x.name}
-                    md={4}
                     lg={4}
                     xl={4}
                     style={{ minHeight: 64 }}
@@ -119,48 +118,53 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
           </Grid>
         </div>
       </div>
-      <div className="bg-white">
-        <Grid className="p-3 my-2" gutter={"lg"}>
+      <div className="bg-base-lightest">
+        <Grid columns={12} className="p-3 my-2" gutter="md">
           <Grid.Col
             data-tour="analysis_tool_filters"
-            className="flex flex-col p-3"
-            xs={4}
-            sm={4}
+            className="flex flex-col pr-1"
+            span={1}
+            xs={3}
+            sm={3}
             md={3}
             lg={3}
-            xl={2}
+            xl={3}
           >
-            <div className="flex justify-between pb-4 text-nci-blue-darkest">
+            <div className="flex justify-between pb-4 text-primary-content-darkest">
               <div>
                 <h2 className="font-bold text-lg pb-3 uppercase">Tools</h2>
                 <h3 className="text-lg">Categories</h3>
               </div>
               <div className="flex flex-col justify-around items-end">
                 <Menu
-                  control={
+                  aria-label="Select tools sort"
+                  withinPortal={false}
+                  position="bottom-start"
+                  transition="pop-bottom-left"
+                  transitionDuration={150}
+                  classNames={{
+                    label: "text-primary-content-darkest",
+                    dropdown: "border-t-8 border-primary-darkest w-24",
+                  }}
+                >
+                  <Menu.Target>
                     <ActionIcon
                       variant="outline"
-                      className="text-nci-blue-darkest hover:bg-nci-blue hover:text-white hover:border-nci-blue"
+                      className="text-primary-content-darkest hover:bg-primary hover:text-primary-content-lightest hover:border-primary"
                     >
                       <SortIcon size={24} />
                     </ActionIcon>
-                  }
-                  aria-label="Select tools sort"
-                  withinPortal={false}
-                  classNames={{
-                    body: "border-t-8 border-nci-blue-darkest w-24",
-                    itemHovered: "bg-nci-blue-lightest",
-                    itemLabel: "text-nci-blue-darkest",
-                  }}
-                >
-                  {sortOptions.map((option) => (
-                    <Menu.Item
-                      onClick={() => setSortType(option.value)}
-                      key={option.value}
-                    >
-                      {option.label}
-                    </Menu.Item>
-                  ))}
+                  </Menu.Target>
+                  <Menu.Dropdown>
+                    {sortOptions.map((option) => (
+                      <Menu.Item
+                        onClick={() => setSortType(option.value)}
+                        key={option.value}
+                      >
+                        {option.label}
+                      </Menu.Item>
+                    ))}
+                  </Menu.Dropdown>
                 </Menu>
                 {activeTags.length ? (
                   <span
@@ -194,45 +198,49 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
               </div>
             </div>
             <div className="flex flex-row">
-              <Chips
+              <Chip.Group
                 multiple
                 noWrap={false}
                 value={activeTags}
                 onChange={setActiveTags}
-                size={"xs"}
                 spacing={"xs"}
-                classNames={{
-                  checked: "!text-white bg-nci-blue-darkest",
-                  label:
-                    "text-nci-blue border border-solid border-nci-blue-darkest hover:bg-nci-blue hover:text-white hover:border-nci-blue",
-                  checkIcon: "text-white",
-                }}
               >
                 {appTags.map((x) => (
-                  <Chip key={x.value} value={x.value}>
+                  <Chip
+                    key={x.value}
+                    size="xs"
+                    value={x.value}
+                    classNames={{
+                      label:
+                        "text-primary-content-darker font-medium border border-solid border-primary-darkest hover:bg-primary hover:text-primary-content-max hover:border-primary data-checked:text-primary-content-lightest data-checked:bg-primary-darkest ",
+                      checkIcon: "text-white",
+                      iconWrapper: "text-primary-content-min",
+                    }}
+                  >
                     {x.name}
                   </Chip>
                 ))}
-              </Chips>
+              </Chip.Group>
             </div>
           </Grid.Col>
 
           <Grid.Col
             data-tour="all_other_apps"
-            xs={8}
-            sm={8}
+            xs={9}
+            sm={9}
             md={9}
             lg={9}
-            xl={10}
+            xl={9}
+            span={11}
           >
-            <Grid className="mx-2">
+            <Grid className="mx-0" gutter="md">
               {activeApps
                 .map((k) => initialApps[k])
                 .map((x: AppRegistrationEntry, idx: number) => {
                   return (
                     <Grid.Col
                       key={x.name}
-                      xs={12}
+                      xs={8}
                       sm={6}
                       md={4}
                       lg={3}
@@ -267,7 +275,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   app,
 }: AnalysisWorkspaceProps) => {
   const [cohortSelectionOpen, setCohortSelectionOpen] = useState(false);
-  const { scrollIntoView, targetRef } = useScrollIntoView({ offset: 42 });
+  const { scrollIntoView, targetRef } = useScrollIntoView({ offset: 115 });
   const router = useRouter();
 
   useEffect(() => {
@@ -293,10 +301,10 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
             className={
               {
                 entering:
-                  "block animate-slide-up min-h-[700px] w-full flex flex-col absolute z-[1000]",
-                entered: `block min-h-[700px] w-full flex flex-col absolute z-[1000]`,
+                  "block animate-slide-up min-h-[650px] w-full flex flex-col absolute z-[1000]",
+                entered: `block min-h-[650px] w-full flex flex-col absolute z-[1000]`,
                 exiting:
-                  "block animate-slide-down min-h-[700px] w-full flex flex-col absolute z-[1000]",
+                  "block animate-slide-down min-h-[650px] w-full flex flex-col absolute z-[1000]",
                 exited: "hidden translate-x-0",
               }[state]
             }
@@ -322,10 +330,8 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
             setCohortSelectionOpen={setCohortSelectionOpen}
             cohortSelectionOpen={cohortSelectionOpen}
             setActiveApp={handleAppSelected}
+            rightComponent={app === "CohortBuilder" ? <SearchInput /> : null}
           />
-          <div className="w-10/12 m-auto">
-            {app === "CohortBuilder" ? <SearchInput /> : null}
-          </div>
           <ActiveAnalysisToolNoSSR appId={app} />
         </>
       )}

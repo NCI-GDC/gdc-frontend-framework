@@ -4,7 +4,7 @@
  */
 
 import { useEffect, useState } from "react";
-import { Loader, Tooltip } from "@mantine/core";
+import { Box, Loader, Tooltip } from "@mantine/core";
 import { useElementSize } from "@mantine/hooks";
 import {
   VictoryBar,
@@ -16,9 +16,10 @@ import {
   VictoryStack,
   VictoryTooltip,
 } from "victory";
-import * as tailwindConfig from "tailwind.config";
+import { useMantineTheme } from "@mantine/core";
 import ChartTitleBar from "./ChartTitleBar";
-import { capitalize } from "src/utils";
+import { capitalize, truncateString } from "src/utils";
+import { fieldNameToTitle } from "@gff/core";
 
 const maxValuesToDisplay = 7;
 
@@ -51,9 +52,9 @@ const processChartData = (
     )
     .slice(0, maxBins)
     .map((d) => ({
-      x: truncateString(processLabel(d), 35),
+      x: processLabel(d),
+      truncatedXName: truncateString(processLabel(d), 35),
       y: data[d],
-      fullXName: processLabel(d),
     }));
   return results.reverse();
 };
@@ -84,7 +85,7 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
     <div ref={ref}>
       {showTitle ? (
         <ChartTitleBar
-          title={convertFieldToName(field)}
+          title={fieldNameToTitle(field)}
           divId={chartDivId}
           filename={field}
           jsonData={{}}
@@ -100,26 +101,11 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
         />
       ) : (
         <div className="flex flex-row items-center justify-center w-100">
-          <Loader color="gray" size={60} />
+          <Loader color="chart" size={60} />
         </div>
       )}
     </div>
   );
-};
-
-const convertFieldToName = (field: string): string => {
-  const property = field.split(".").pop();
-  const tokens = property.split("_");
-  const capitalizedTokens = tokens.map((s) => capitalize(s));
-  return capitalizedTokens.join(" ");
-};
-
-const truncateString = (str: string, n: number): string => {
-  if (str.length > n) {
-    return str.substring(0, n) + "...";
-  } else {
-    return str;
-  }
 };
 
 export const processLabel = (label: string): string => {
@@ -133,7 +119,7 @@ interface EnumBarChartTooltipProps {
   readonly y?: number;
   readonly datum?: {
     y: number;
-    fullXName: string;
+    x: string;
   };
 }
 
@@ -143,19 +129,20 @@ const EnumBarChartTooltip: React.FC<EnumBarChartTooltipProps> = ({
   datum,
 }: EnumBarChartTooltipProps) => {
   return (
-    <g transform={`translate(${x}, ${y})`}>
-      <foreignObject>
+    <g style={{ pointerEvents: "none" }}>
+      <foreignObject x={x} y={y}>
         <Tooltip
           label={
             <>
-              <b>{datum.fullXName}</b>
+              <b>{datum.x}</b>
               <p>{datum.y.toLocaleString()} Cases</p>
             </>
           }
           withArrow
           opened
+          withinPortal
         >
-          <></>
+          <Box></Box>
         </Tooltip>
       </foreignObject>
     </g>
@@ -165,6 +152,7 @@ const EnumBarChartTooltip: React.FC<EnumBarChartTooltipProps> = ({
 interface EnumBarChartData {
   x: string;
   y: number;
+  truncatedXName: string;
 }
 
 interface BarChartProps {
@@ -182,6 +170,7 @@ const EnumBarChart: React.FC<BarChartProps> = ({
 }: BarChartProps) => {
   const max = Math.max(...data.map((d) => d.y));
   const formatter = Intl.NumberFormat("en", { notation: "compact" });
+  const theme = useMantineTheme();
 
   return (
     <VictoryChart
@@ -197,6 +186,7 @@ const EnumBarChart: React.FC<BarChartProps> = ({
             dy={-15}
             textAnchor={"start"}
             style={[{ fontSize: 23 }]}
+            text={({ datum }) => data[datum - 1]?.truncatedXName}
           />
         }
         style={{
@@ -228,7 +218,9 @@ const EnumBarChart: React.FC<BarChartProps> = ({
           }
           style={{
             data: {
-              fill: tailwindConfig.theme.extend.colors["gdc-blue"].darker,
+              fill: theme.colors.chart[6],
+              stroke: theme.colors.chart[6],
+              strokeWidth: 1,
               width: 22,
             },
           }}
@@ -252,7 +244,9 @@ const EnumBarChart: React.FC<BarChartProps> = ({
           y="y"
           style={{
             data: {
-              fill: tailwindConfig.theme.extend.colors["gdc-grey"].lighter,
+              fill: theme.colors.base[1],
+              stroke: theme.colors.base[7],
+              strokeWidth: 1,
               width: 22,
             },
           }}

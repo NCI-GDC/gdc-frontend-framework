@@ -1,7 +1,11 @@
 import {
-  shortendFieldNameToTitle,
+  trimFirstFieldNameToTitle,
   processDictionaryEntries,
+  fieldNameToTitle,
+  classifyFacetDatatype,
 } from "./facetDictionaryApi";
+
+import { FacetDefinition } from "./types";
 
 const TestFacetDictionary = {
   "cases.case_id": {
@@ -60,7 +64,7 @@ describe("test facet dictionary api functions", () => {
         field: "case_id",
         full: "cases.case_id",
         type: "keyword",
-        facet_type: "enum",
+        facet_type: "exact",
       },
       "cases.created_datetime": {
         description: "",
@@ -80,7 +84,7 @@ describe("test facet dictionary api functions", () => {
         facet_type: "age",
         range: {
           minimum: 0,
-          maximum: 89,
+          maximum: 32507,
         },
       },
       "cases.demographic.age_is_obfuscated": {
@@ -90,7 +94,7 @@ describe("test facet dictionary api functions", () => {
         field: "demographic.age_is_obfuscated",
         full: "cases.demographic.age_is_obfuscated",
         type: "keyword",
-        facet_type: "age",
+        facet_type: "enum",
         range: {},
       },
       "cases.demographic.cause_of_death": {
@@ -112,23 +116,73 @@ describe("test facet dictionary api functions", () => {
       },
     };
 
-    const results = processDictionaryEntries(TestFacetDictionary);
+    const results = processDictionaryEntries(
+      TestFacetDictionary as Record<string, FacetDefinition>,
+    );
     expect(results).toEqual(expected);
+  });
+});
+
+describe("facet label utils", () => {
+  test("should return the name of the field", () => {
+    const name = fieldNameToTitle("analysis.input_files.experimental_strategy");
+    expect(name).toEqual("Experimental Strategy");
+  });
+
+  test("should return two parts of the field", () => {
+    const name = fieldNameToTitle(
+      "analysis.input_files.experimental_strategy",
+      2,
+    );
+    expect(name).toEqual("Input Files Experimental Strategy");
+  });
+
+  test("should return a Project special case", () => {
+    const name = fieldNameToTitle("cases.project.project_id");
+    expect(name).toEqual("Project");
+  });
+
+  test("should return Analysis", () => {
+    const name = fieldNameToTitle("analysis", 2);
+    expect(name).toEqual("Analysis");
   });
 
   test("should create a shortened facet title", () => {
-    const results = shortendFieldNameToTitle(
+    const results = trimFirstFieldNameToTitle(
       "demographic.age_is_obfuscated",
       true,
     );
     expect(results).toEqual("Age is Obfuscated");
   });
 
-  test("should create a longer facet title", () => {
-    const results = shortendFieldNameToTitle(
+  test("should create a title minus cases", () => {
+    const results = trimFirstFieldNameToTitle(
       "cases.demographic.cause_of_death",
-      false,
+      true,
     );
-    expect(results).toEqual("Cases Demographic Cause of Death");
+    expect(results).toEqual("Demographic Cause of Death");
+  });
+});
+
+describe("test facet types", () => {
+  test("should create a title minus cases", () => {
+    // TODO: add additional tests
+    const TO_TEST = [
+      { field: "cases.project.project_id", type: "", expected_type: "enum" },
+      { field: "demographic.age_at_index", type: "", expected_type: "age" },
+      { field: "cases.demographic.race", type: "", expected_type: "enum" },
+    ];
+
+    TO_TEST.map((x) => {
+      expect(
+        classifyFacetDatatype({
+          field: x.field,
+          type: x.type,
+          description: "",
+          doc_type: "cases",
+          full: x.field,
+        }),
+      ).toEqual(x.expected_type);
+    });
   });
 });

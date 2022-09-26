@@ -2,14 +2,21 @@ import { EnumFacet } from "../facets/EnumFacet";
 import NumericRangeFacet from "../facets/NumericRangeFacet";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import type { ReactTabsFunctionComponent, TabProps } from "react-tabs";
-import { FC, useState } from "react";
+import React, { FC, useState } from "react";
 import Select from "react-select";
 import { get_facet_subcategories, get_facets } from "./dictionary";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
-import { GQLIndexType } from "@gff/core";
+import { GQLIndexType, FacetDefinition } from "@gff/core";
+
+/**
+ *
+ * Note all components in this file are deprecated in favor of FacetTabs
+ * This has not been removed due to dependencies with older demos.
+ *
+ */
 
 interface FacetGroupProps {
-  readonly facetNames: Array<Record<string, any>>;
+  readonly facetNames: ReadonlyArray<FacetDefinition>;
   readonly indexType?: GQLIndexType;
 }
 
@@ -18,7 +25,7 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
   indexType = "explore",
 }: FacetGroupProps) => {
   return (
-    <div className="flex flex-col border-r-2 border-l-2 border-b-2 border-t-0 border-nci-cyan-darker p-3 h-screen/1.5 overflow-y-scroll">
+    <div className="flex flex-col border-r-2 border-l-2 border-b-2 border-t-0 border-accent-cool-darker p-3 h-screen/1.5 overflow-y-scroll">
       <ResponsiveMasonry
         columnsCountBreakPoints={{
           350: 2,
@@ -34,11 +41,11 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
             if (x.facet_type === "enum")
               return (
                 <EnumFacet
-                  key={`${x.facet_filter}-${index}`}
+                  key={`${x.full}-${index}`}
                   docType="cases"
                   indexType={indexType}
-                  field={`${x.facet_filter}`}
-                  facetName={x.name}
+                  field={`${x.field}`}
+                  facetName={x.field}
                   description={x.description}
                 />
               );
@@ -54,15 +61,15 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
             ) {
               return (
                 <NumericRangeFacet
-                  key={`${x.facet_filter}-${index}`}
-                  field={x.facet_filter}
-                  facetName={x.name}
+                  key={`${x.full}-${index}`}
+                  field={x.field}
+                  facetName={x.field}
                   description={x.description}
                   rangeDatatype={x.facet_type}
                   docType="cases"
                   indexType={indexType}
-                  minimum={x.minimum}
-                  maximum={x.maximum}
+                  minimum={x.range?.minimum}
+                  maximum={x.range?.maximum}
                 />
               );
             }
@@ -156,21 +163,34 @@ export const CohortTabbedFacets: FC = () => {
         </TabList>
         <TabPanel>
           <FacetGroup
-            facetNames={get_facets("Clinical", subcategories["Clinical"], 25)}
+            facetNames={
+              get_facets(
+                "Clinical",
+                subcategories["Clinical"],
+                25,
+              ) as FacetDefinition[]
+            }
           />
         </TabPanel>
         <TabPanel>
           <FacetGroup
             indexType="repository"
-            facetNames={get_facets("Biospecimen", subcategories["Biospecimen"])}
+            facetNames={
+              get_facets(
+                "Biospecimen",
+                subcategories["Biospecimen"],
+              ) as FacetDefinition[]
+            }
           />
         </TabPanel>
         <TabPanel>
           <FacetGroup
-            facetNames={get_facets(
-              "Downloadable",
-              subcategories["Downloadable"],
-            )}
+            facetNames={
+              get_facets(
+                "Downloadable",
+                subcategories["Downloadable"],
+              ) as FacetDefinition[]
+            }
           />
         </TabPanel>
       </Tabs>

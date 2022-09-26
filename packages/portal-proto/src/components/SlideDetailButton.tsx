@@ -13,18 +13,18 @@ export const SlideDetailButton = forwardRef<
   );
 
   return (
-    <div ref={wrapperRef} id="details-button" className="absolute -top-3">
+    <div ref={wrapperRef} id="details-button">
       <Button
         onClick={() => setShowDetails((o) => !o)}
-        className="h-5 bg-nci-blue-dark w-20 py-1 mb-3 px-0 rounded-md"
-        size="xs"
+        className="w-20 bg-primary-dark p-2 mb-3 rounded-md"
+        size="sm"
       >
         Details
       </Button>
       {showDetails && (
         <HorizontalTable
           tableData={tableData}
-          customContainerStyles="border-3 border-grey"
+          customContainerStyles="border-3 border-base"
         />
       )}
     </div>

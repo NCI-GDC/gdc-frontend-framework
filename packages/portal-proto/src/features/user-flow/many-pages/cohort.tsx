@@ -9,14 +9,13 @@ import {
   MdExpandLess as ExpandLessIcon,
 } from "react-icons/md";
 import classNames from "classnames";
-import Image from "next/image";
+import { Image } from "@/components/Image";
 import ReactModal from "react-modal";
 import { Select } from "../../../components/Select";
 import { Case, ContextualCasesView } from "../../cases/CasesView";
 import { ContextualFilesView } from "../../files/FilesView";
 import { CohortGroup } from "../../cohortBuilder/CohortGroup";
 import { SummaryCharts } from "../../cohortBuilder/SummaryCharts";
-import { MetaSearch } from "../../cohortBuilder/MetaSearch";
 import { CohortTabbedFacets } from "../../cohortBuilder/FacetGroup";
 import { GdcFile } from "@gff/core";
 import { Button } from "@mantine/core";
@@ -270,7 +269,6 @@ export const CohortBuilder: React.FC<CohortBuilderProps> = ({
     >
       <div className="">
         <CohortGroup cohorts={cohort} simpleMode={true} />
-        <MetaSearch />
         <CohortTabbedFacets />
       </div>
       <div className="pt-4">
@@ -338,7 +336,6 @@ const CohortBuilderModal: React.FC<CohortBuilderModalProps> = ({
     <ReactModal isOpen={isOpen} onRequestClose={closeModal}>
       <div>
         <CohortGroup cohorts={cohort} simpleMode={true} />
-        <MetaSearch />
         <CohortTabbedFacets />
       </div>
     </ReactModal>

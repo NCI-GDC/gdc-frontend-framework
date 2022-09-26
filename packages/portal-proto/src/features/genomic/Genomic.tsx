@@ -17,24 +17,22 @@ export const GeneFacet: React.FC<GeneFacetProps> = ({
   width = "64",
 }: GeneFacetProps) => {
   return (
-    <div className={`border-2 border-nci-gray-lighter pt-2 mx-${width}`}>
+    <div className={`border-2 border-base-lighter pt-2 mx-${width}`}>
       <div className="overflow-y-auto h-96">
         <table
-          className="table-fixed border-collapse border-nci-gray w-full"
+          className="table-fixed border-collapse border-base w-full"
           style={{ borderSpacing: "4em" }}
         >
           <thead>
-            <tr className="bg-nci-blue text-white">
-              <th align="left" className="w-1/2 px-2">
-                Gene
-              </th>
-              <th align="right" className="w-1/4 px-2">
+            <tr className="bg-primary text-primary-contrast">
+              <th className="w-1/2 px-2 text-left">Gene</th>
+              <th className="w-1/4 px-2 text-right">
                 <div className="flex flex-row items-center justify-end">
                   <SortIcon scale="1.5em" />
                   <p className={"px-2"}>Cases</p>
                 </div>
               </th>
-              <th align="right" className="w-1/4 px-2">
+              <th className="w-1/4 px-2 text-right">
                 <div className="flex flex-row items-center justify-end">
                   <SortIcon scale="1.5em" />
                   <p className={"px-2"}>Frequency</p>
@@ -47,18 +45,14 @@ export const GeneFacet: React.FC<GeneFacetProps> = ({
               data.map((x, i) => (
                 <tr
                   key={x.gene_label}
-                  className={i % 2 == 0 ? "bg-gray-200" : ""}
+                  className={i % 2 == 0 ? "bg-base-lighter" : ""}
                 >
                   <td className="px-2 break-all">
                     <input type="checkbox" value={x.gene_label} />
                     <span className={"px-2"}>{x.gene_label}</span>
                   </td>
-                  <td align="right" className="px-2">
-                    {x.count}
-                  </td>
-                  <td align="right" className="px-2">
-                    {x.percent}
-                  </td>
+                  <td className="px-2 text-right">{x.count}</td>
+                  <td className="px-2 text-right">{x.percent}</td>
                 </tr>
               ))}
           </tbody>
@@ -73,27 +67,23 @@ export const MutationFacet: React.FC<GeneFacetProps> = ({
   width = "64",
 }: GeneFacetProps) => {
   return (
-    <div className={`border-2 border-nci-gray-lighter pt-2 mx-${width}`}>
+    <div className={`border-2 border-base-lighter pt-2 mx-${width}`}>
       <div className="overflow-y-auto h-96">
         <table
-          className="table-fixed border-collapse border-nci-gray w-full"
+          className="table-fixed border-collapse border-base w-full"
           style={{ borderSpacing: "4em" }}
         >
           <thead>
-            <tr className="bg-nci-blue text-white">
-              <th align="left" className="w-1/4 px-2">
-                Mutation
-              </th>
-              <th align="left" className="w-1/4 px-2">
-                DNA Change
-              </th>
-              <th align="right" className="w-1/4 px-2">
+            <tr className="bg-primary text-primary-contrast">
+              <th className="w-1/4 px-2 text-left">Mutation</th>
+              <th className="w-1/4 px-2 text-left">DNA Change</th>
+              <th className="w-1/4 px-2 text-right">
                 <div className="flex flex-row items-center justify-end">
                   <SortIcon scale="1.5em" />
                   <p className={"px-2"}>Cases</p>
                 </div>
               </th>
-              <th align="right" className="w-1/4 px-2">
+              <th className="w-1/4 px-2 text-right">
                 <div className="flex flex-row items-center justify-end">
                   <SortIcon scale="1.5em" />
                   <p className={"px-2"}>Frequency</p>
@@ -106,21 +96,15 @@ export const MutationFacet: React.FC<GeneFacetProps> = ({
               data.map((x, i) => (
                 <tr
                   key={x.gene_label}
-                  className={i % 2 == 0 ? "bg-gray-200" : ""}
+                  className={i % 2 == 0 ? "bg-base-lighter" : ""}
                 >
-                  <td align="left" className="px-2 break-all">
+                  <td className="px-2 break-all">
                     <input type="checkbox" value={x.gene_label} />
                     <span className={"px-2"}>{x.gene_label}</span>
                   </td>
-                  <td align="left" className="px-2">
-                    {x.dna_change}
-                  </td>
-                  <td align="right" className="px-2">
-                    {x.count}
-                  </td>
-                  <td align="right" className="px-2">
-                    {x.percent}
-                  </td>
+                  <td className="px-2 text-left">{x.dna_change}</td>
+                  <td className="px-2 text-right">{x.count}</td>
+                  <td className="px-2 text-right">{x.percent}</td>
                 </tr>
               ))}
           </tbody>

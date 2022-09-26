@@ -5,7 +5,7 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DragDrop } from "./DragDrop";
 import { BsList } from "react-icons/bs";
-import { Popover } from "@mantine/core";
+import { Box, Popover } from "@mantine/core";
 
 interface VerticalTableProps {
   tableData: any;
@@ -15,6 +15,8 @@ interface VerticalTableProps {
   selectableRow: boolean;
   tableTitle: string;
   pageSize: string;
+  additionalControls?: React.ReactNode;
+  showControls?: boolean;
 }
 
 interface Column {
@@ -36,6 +38,8 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   selectableRow,
   tableTitle,
   pageSize,
+  additionalControls,
+  showControls = true,
 }: VerticalTableProps) => {
   const [table, setTable] = useState([]);
   const [columnListOptions, setColumnListOptions] = useState([]);
@@ -95,7 +99,9 @@ export const VerticalTable: FC<VerticalTableProps> = ({
             {...row.getRowProps({
               style,
             })}
-            className={`tr ${index % 2 === 1 ? "bg-gray-300" : "bg-white"}`}
+            className={`tr ${
+              index % 2 === 1 ? "bg-base-lighter" : "bg-base-lightest"
+            }`}
           >
             {row.cells.map((cell, key) => {
               return (
@@ -103,7 +109,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                   {...cell.getCellProps()}
                   role="cell"
                   key={`row-${key}`}
-                  className="td rounded-sm p-1.5 text-center h-7"
+                  className="td rounded-sm p-1.5 text-sm text-content text-medium text-center h-7"
                 >
                   {cell.render("Cell")}
                 </div>
@@ -131,7 +137,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
           {...getTableProps()}
           className="table inline-block"
         >
-          <div role="rowgroup" className="bg-gray-200">
+          <div role="rowgroup" className="bg-primary-lighter">
             {headerGroups.map((headerGroup, key) => (
               <div
                 {...headerGroup.getHeaderGroupProps()}
@@ -143,7 +149,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                   <div
                     role="columnheader"
                     {...column.getHeaderProps()}
-                    className="th text-black text-center"
+                    className="th font-header font-bold text-primary-content-darkest text-center"
                     key={`column-${key}`}
                   >
                     {column.render("Header")}
@@ -169,46 +175,50 @@ export const VerticalTable: FC<VerticalTableProps> = ({
 
   return (
     <div>
-      <div className={`h-10`}></div>
-      <div className={`float-right`}>
-        <Popover
-          opened={showColumnMenu}
-          onClose={() => setShowColumnMenu(false)}
-          target={
-            <button
-              className={`mr-0 ml-auto border-1 border-gray-300 p-3`}
-              onClick={() => setShowColumnMenu(!showColumnMenu)}
-            >
-              <BsList></BsList>
-            </button>
-          }
-          width={260}
-          position="bottom"
-          transition="scale"
-          withArrow
-        >
-          <div className={`w-fit`}>
-            {columnListOptions.length > 0 && showColumnMenu && (
-              <div className={`mr-0 ml-auto`}>
-                <DndProvider backend={HTML5Backend}>
-                  <DragDrop
-                    listOptions={columnListOptions}
-                    handleColumnChange={handleColumnChange}
-                  />
-                </DndProvider>
+      <div className={`h-10 float-left`}>{additionalControls}</div>
+      {showControls && (
+        <div className="flex flex-row float-right mb-4">
+          <Popover
+            opened={showColumnMenu}
+            onClose={() => setShowColumnMenu(false)}
+            width={260}
+            position="bottom"
+            transition="scale"
+            withArrow
+          >
+            <Popover.Target>
+              <Box
+                className={`mr-0 ml-auto border-1 border-base-lighter p-3`}
+                onClick={() => setShowColumnMenu(!showColumnMenu)}
+              >
+                <BsList></BsList>
+              </Box>
+            </Popover.Target>
+            <Popover.Dropdown>
+              <div className={`w-fit`}>
+                {columnListOptions.length > 0 && showColumnMenu && (
+                  <div className={`mr-0 ml-auto`}>
+                    <DndProvider backend={HTML5Backend}>
+                      <DragDrop
+                        listOptions={columnListOptions}
+                        handleColumnChange={handleColumnChange}
+                      />
+                    </DndProvider>
+                  </div>
+                )}
               </div>
-            )}
+            </Popover.Dropdown>
+          </Popover>
+          <div className="flex flex-row w-max float-right">
+            <input
+              className={`mr-2 rounded-sm border-1 border-base-lighter`}
+              type="search"
+              placeholder="Search"
+            />
+            <div className={`mt-px`}></div>
           </div>
-        </Popover>
-        <div className={`flex flex-row w-max float-right mb-4`}>
-          <input
-            className={`mr-2 rounded-sm border-1 border-gray-300`}
-            type="search"
-            placeholder="Search"
-          />
-          <div className={`mt-px`}></div>
         </div>
-      </div>
+      )}
       {columnListOptions.length > 0 && (
         <Table columns={headings} data={table}></Table>
       )}

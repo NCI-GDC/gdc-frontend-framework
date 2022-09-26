@@ -64,7 +64,7 @@ const CohortCard: React.FC<CohortCardProps> = ({
         <div key={value}>
           <input
             id={`cohort-comparison-${value}`}
-            className={"disabled:bg-nci-gray hover:disabled:bg-nci-gray"}
+            className={"disabled:bg-base hover:disabled:bg-base"}
             type="checkbox"
             value={value}
             onChange={() =>

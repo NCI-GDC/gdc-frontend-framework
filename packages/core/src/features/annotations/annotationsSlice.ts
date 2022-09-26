@@ -2,18 +2,12 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { DataStatus, CoreDataSelectorResponse } from "../../dataAccess";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
-import { GqlEquals } from "../gdcapi/filters";
 import {
   fetchGdcAnnotations,
   GdcApiRequest,
   GdcApiResponse,
   AnnotationDefaults,
 } from "../gdcapi/gdcapi";
-
-export interface Annotation {
-  readonly projectId: string | number;
-  readonly annotationCount: number;
-}
 
 export const fetchAnnotations = createAsyncThunk<
   GdcApiResponse<AnnotationDefaults>,
@@ -24,60 +18,49 @@ export const fetchAnnotations = createAsyncThunk<
 });
 
 export interface AnnotationsState {
-  // annotations by project id
-  readonly annotations: Record<string, Annotation>;
-  readonly status: DataStatus;
-  readonly error?: string;
+  annotations: {
+    list: Array<AnnotationDefaults>;
+    count: number;
+  };
+
+  status: DataStatus;
+  error?: string;
 }
 
-const initialState: AnnotationsState = {
-  annotations: {},
+export const annotationInitialState: AnnotationsState = {
+  annotations: {
+    list: [],
+    count: 0,
+  },
   status: "uninitialized",
 };
 
 const slice = createSlice({
   name: "annotations",
-  initialState,
+  initialState: annotationInitialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchAnnotations.fulfilled, (state, action) => {
-        //annotations only available through individual project api call
-        const apiFilters = (<GqlEquals>action?.meta?.arg?.filters)?.content;
         const response = action.payload;
-        if (apiFilters?.field !== "project.project_id" && !apiFilters?.value) {
-          state.status = "rejected";
-          state.error = "no project id provided";
-        } else if (
-          response.warnings &&
-          Object.keys(response.warnings).length > 0
-        ) {
-          state.status = "rejected";
-          state.error = response.warnings.facets;
-        } else {
-          if (response.data.pagination) {
-            state.annotations = {
-              [apiFilters.value]: {
-                projectId: apiFilters.value,
-                annotationCount: response.data.pagination.total
-                  ? response.data.pagination.total
-                  : 0,
-              },
-            };
-          } else {
-            state.annotations = {};
-          }
-          state.status = "fulfilled";
-        }
+        state.annotations.list = response.data.hits.map((hit) => hit);
+        state.annotations.count = response.data.pagination.total ?? 0;
+        state.status = "fulfilled";
+
+        return state;
       })
       .addCase(fetchAnnotations.pending, (state) => {
         state.status = "pending";
         state.error = undefined;
+
+        return state;
       })
       .addCase(fetchAnnotations.rejected, (state) => {
         state.status = "rejected";
         // TODO get error from action
         state.error = undefined;
+
+        return state;
       });
   },
 });
@@ -87,17 +70,14 @@ export const annotationsReducer = slice.reducer;
 export const selectAnnotationsState = (state: CoreState): AnnotationsState =>
   state.annotations;
 
-export const selectAnnotations = (
-  state: CoreState,
-): ReadonlyArray<Annotation> => {
-  return Object.values(state.annotations.annotations);
-};
-
 export const selectAnnotationsData = (
   state: CoreState,
-): CoreDataSelectorResponse<ReadonlyArray<Annotation>> => {
+): CoreDataSelectorResponse<{
+  list: Array<AnnotationDefaults>;
+  count: number;
+}> => {
   return {
-    data: Object.values(state.annotations.annotations),
+    data: state.annotations.annotations,
     status: state.annotations.status,
     error: state.annotations.error,
   };

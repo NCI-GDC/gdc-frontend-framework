@@ -1,9 +1,17 @@
 import { NextPage } from "next";
 import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
-import Image from "next/image";
+import { Image } from "@/components/Image";
 import Link from "next/link";
 import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
-import { Tooltip } from "@mantine/core";
+import { Button, Tooltip } from "@mantine/core";
+import { NextLink } from "@mantine/next";
+import tw from "tailwind-styled-components";
+
+export const HomePageButton = tw(Button)`
+bg-base-lighter text-base-contrast-lighter
+hover:bg-primary hover:text-primary-contrast
+font-bold mx-4 p-2 rounded inline-flex items-center shadow-md transition-colors
+`;
 
 interface SummaryStatsItemProp {
   readonly title: string;
@@ -33,13 +41,13 @@ const SummaryStatsItem: React.FC<SummaryStatsItemProp> = ({
 
 const SummaryStatsPanel = () => {
   return (
-    <div className="flex flex-col bg-white border-nci-blue-lighter border-t-8 border-0 p-4 opacity-90 shadow-md hover:shadow-lg  ">
+    <div className="flex flex-col bg-base-lightest border-primary border-t-8 border-0 p-4 opacity-90 shadow-md hover:shadow-lg  ">
       <div className="flex flex-row items-end justify-items-end">
-        <p className="font-heading text-lg text-gdc-grey-darker">
+        <p className="font-heading text-lg text-base-contrast-lightest">
           Data Portal Summary
         </p>
         <a
-          className="text-xs px-4 pb-1 text-gdc-blue"
+          className="text-xs px-4 pb-1 text-accent-cool-content-dark"
           href="https://docs.gdc.cancer.gov/Data/Release_Notes/Data_Release_Notes/"
         >
           Data Release 31.0 - October 29, 2021{" "}
@@ -97,107 +105,119 @@ const ActionButtonBar = () => {
             pathname: "/user-flow/workbench/analysis_page",
             query: { app: undefined },
           }}
+          passHref
         >
           <Tooltip
             label="Explore and analyze harmonized high-quality clinical and genomics data from cancer genomic studies with the tools in the Analysis Center."
             classNames={{
-              body: "shadow-lg bg-white text-nci-gray-darkest",
+              tooltip: "shadow-lg bg-base-lightest text-base-contrast-lightest",
             }}
-            position="right"
-            placement="start"
-            wrapLines
+            position="right-start"
+            multiline
             width={220}
           >
-            <button className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 px-5 rounded inline-flex items-center shadow-md transition-colors ">
-              <Image src={"/user-flow/icons/dna.svg"} width={42} height={42} />{" "}
-              <span className="px-4">Analysis Center</span>
-            </button>
+            <HomePageButton
+              unstyled
+              component={NextLink}
+              href={{
+                pathname: "/user-flow/workbench/analysis_page",
+                query: { app: undefined },
+              }}
+              className="mx-4 p-2 px-5"
+            >
+              <div className="flex flex-row items-center">
+                <Image
+                  src={"/user-flow/icons/dna.svg"}
+                  width={42}
+                  height={42}
+                  alt="Analysis Center Card"
+                />{" "}
+                <span className="px-4">Analysis Center</span>
+              </div>
+            </HomePageButton>
           </Tooltip>
         </Link>
       </div>
       <div className="flex flex-grow flex-row justify-center  align-center pb-4 text-sm ">
-        <Link
-          key="Studies"
-          href={{
-            pathname: "/user-flow/workbench/analysis_page",
-            query: { app: "Studies" },
+        <Tooltip
+          label="View the Studies available within the GDC and select them for further exploration and analysis."
+          classNames={{
+            tooltip: "shadow-lg bg-base-lightest text-base-contrast-lightest",
           }}
+          position="bottom-start"
+          multiline
+          width={220}
         >
-          <Tooltip
-            label="View the Studies available within the GDC and select them for further exploration and analysis."
-            classNames={{
-              body: "shadow-lg bg-white text-nci-gray-darkest",
+          <HomePageButton
+            unstyled
+            component={NextLink}
+            href={{
+              pathname: "/user-flow/workbench/analysis_page",
+              query: { app: "Studies" },
             }}
-            position="bottom"
-            placement="start"
-            wrapLines
-            width={220}
           >
-            <button className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md transition-colors">
-              <Image
-                src={"/user-flow/icons/crowd-of-users.svg"}
-                width={36}
-                height={36}
-              />{" "}
-              <span> </span>
-            </button>
-          </Tooltip>
-        </Link>
-        <Link
-          key="CohortBuilder"
-          href={{
-            pathname: "/user-flow/workbench/analysis_page",
-            query: { app: "CohortBuilder" },
+            <Image
+              src={"/user-flow/icons/crowd-of-users.svg"}
+              width={36}
+              height={36}
+              alt="Studies Card"
+            />{" "}
+            <span> </span>
+          </HomePageButton>
+        </Tooltip>
+        <Tooltip
+          label="Build and define your custom cohorts using a variety of clinical and biospecimen features."
+          classNames={{
+            tooltip: "shadow-lg bg-base-lightest text-base-contrast-lightest",
           }}
+          position="bottom-start"
+          multiline
+          width={220}
         >
-          <Tooltip
-            label="Build and define your custom cohorts using a variety of clinical and biospecimen features."
-            classNames={{
-              body: "shadow-lg bg-white text-nci-gray-darkest",
+          <HomePageButton
+            unstyled
+            component={NextLink}
+            href={{
+              pathname: "/user-flow/workbench/analysis_page",
+              query: { app: "CohortBuilder" },
             }}
-            position="bottom"
-            placement="start"
-            wrapLines
-            width={220}
           >
-            <button className="text-sm bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest hover:text-white transition-colors font-bold mx-4 p-2 rounded inline-flex flex-nowrap items-center shadow-md">
-              <Image
-                src={"/user-flow/icons/build.svg"}
-                width={36}
-                height={36}
-              />
-              <span />
-            </button>
-          </Tooltip>
-        </Link>
+            <Image
+              src={"/user-flow/icons/build.svg"}
+              width={36}
+              height={36}
+              alt="Cohort Card"
+            />
+            <span />
+          </HomePageButton>
+        </Tooltip>
 
-        <Link
-          key="Repository"
-          href={{
-            pathname: "/user-flow/workbench/analysis_page",
-            query: { app: "Downloads" },
+        <Tooltip
+          label="Browse and download the files associated with your cohort for more sophisticated analysis."
+          classNames={{
+            tooltip: "shadow-lg bg-base-lightest text-base-contrast-lightest",
           }}
+          position="bottom-start"
+          multiline
+          width={220}
         >
-          <Tooltip
-            label="Browse and download the files associated with your cohort for more sophisticated analysis."
-            classNames={{
-              body: "shadow-lg bg-white text-nci-gray-darkest",
+          <HomePageButton
+            unstyled
+            component={NextLink}
+            href={{
+              pathname: "/user-flow/workbench/analysis_page",
+              query: { app: "Downloads" },
             }}
-            position="bottom"
-            placement="start"
-            wrapLines
-            width={220}
           >
-            <button className="bg-nci-gray-lighter hover:bg-nci-gray text-nci-gray-darkest font-bold mx-4 p-2 rounded inline-flex items-center shadow-md transition-colors">
-              <Image
-                src={"/user-flow/icons/database.svg"}
-                width={36}
-                height={36}
-              />{" "}
-              <span> </span>
-            </button>
-          </Tooltip>
-        </Link>
+            <Image
+              src={"/user-flow/icons/database.svg"}
+              width={36}
+              height={36}
+              alt="Downloads Card"
+            />{" "}
+            <span> </span>
+          </HomePageButton>
+        </Tooltip>
       </div>
     </div>
   );
@@ -208,19 +228,19 @@ const IndexPage: NextPage = () => {
     <UserFlowVariedPages
       {...{ indexPath: "/user-flow/single-page", headerElements }}
     >
-      <div className="flex flex-col w-100 h-100 bg-gradient-to-r from-nci-gray-lightest  to-nci-gray-lighter">
+      <div className="flex flex-col w-100 h-100 bg-gradient-to-r from-accent-warm  to-accent-cool">
         <div className="flex flex-row ">
           <div className="flex flex-col w-1/2 pl-10">
-            <div className="flex flex-col w-100 bg-nci-gray p-4 rounded-md shadow-lg mt-2  ">
-              <div className="font-montserrat text-nci-gray-lightest text-md pt-5 pb-2">
+            <div className="flex flex-col w-100 bg-base p-4 rounded-md shadow-lg mt-2  ">
+              <div className="font-montserrat text-base-contrast text-md pt-5 pb-2">
                 Harmonized Cancer Datasets
               </div>
-              <div className="font-montserrat text-nci-gray-lightest text-2xl pb-5">
+              <div className="font-heading text-primary-content-lightest text-2xl pb-5">
                 Genomic Data Commons Data Portal
               </div>
             </div>
             <div className="flex flex-row">
-              <div className="flex-auto w-36 m-4 p-4 items-center font-montserrat text-nci-gray-darkest rounded-md shadow-inner">
+              <div className="flex-auto w-36 m-4 p-4 items-center font-content text-primary-content-darkest rounded-md shadow-inner">
                 A repository and knowledge base for cancer researchers who need
                 to understand cancer, its clinical progression, and response to
                 therapy.
@@ -231,7 +251,7 @@ const IndexPage: NextPage = () => {
               <div className="w-full">
                 <input
                   type="text"
-                  className="h-10 pr-8 w-full pl-5 bg-white border-nci-gray-light rounded-full focus:outline-none focus:ring focus:ring-nci-cyan-light focus:border-nci-teal-light hover:shadow-lg hover:border-nci-teal-lighter"
+                  className="h-10 pr-8 w-full pl-5 bg-base-lightest border-primary-light rounded-full focus:outline-none focus:ring focus:ring-accent-cool-light focus:border-accent-cool-light hover:shadow-lg hover:border-accent-cool-lighter"
                   placeholder={`e.g. BRAF, Breast, TCGA-BLCA, TCGA-A5-A0G2`}
                 />
               </div>

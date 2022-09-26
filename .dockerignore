@@ -1,0 +1,5 @@
+node_modules
+packages/core/node_modules
+packages/portal-proto/node_modules
+packages/portal-proto/.next
+.git

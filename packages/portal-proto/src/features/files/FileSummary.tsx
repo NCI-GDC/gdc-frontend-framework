@@ -1,3 +1,5 @@
+import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
+import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { useFiles, useFileHistory } from "@gff/core";
 import { FileView } from "./FileView";
 
@@ -31,6 +33,7 @@ export const ContextualFileView: React.FC<ContextualFileViewProps> = (
       "analysis.metadata.read_groups",
       "downstream_analyses",
       "downstream_analyses.output_files",
+      "index_files",
     ],
     size: 1,
   });
@@ -43,22 +46,11 @@ export const ContextualFileView: React.FC<ContextualFileViewProps> = (
     <div>
       {data && !isFetching ? (
         <>
-          <div className="bg-white py-4 px-8 shadow-lg">
-            <span className="rounded-full bg-nci-blue-darker text-white p-1 align-text-bottom mr-2">
-              FL
-            </span>
-            <span className="text-2xl text-nci-blue-darker">{title}</span>
-          </div>
+          <SummaryHeader iconText="FL" headerTitle={title} />
           {data?.[0] ? (
             <FileView file={data?.[0]} fileHistory={hystory?.data?.[0]} />
           ) : (
-            <div className="p-4 text-nci-gray">
-              <div className="flex">
-                <div className="flex-auto bg-white mr-4">
-                  <h2 className="p-2 text-2xl mx-4">File Not Found</h2>
-                </div>
-              </div>
-            </div>
+            <SummaryErrorHeader label="File Not Found" />
           )}
         </>
       ) : null}

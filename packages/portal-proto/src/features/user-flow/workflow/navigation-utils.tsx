@@ -1,114 +1,114 @@
-import Link from "next/link";
-import Image from "next/image";
-import { Tooltip } from "@mantine/core";
+import { Image } from "@/components/Image";
+import { Button, Tooltip } from "@mantine/core";
+import { NextLink } from "@mantine/next";
 
 export const headerElements = [
-  <Link
+  <Tooltip
     key="Analysis"
-    href={{
-      pathname: "/user-flow/workbench/analysis_page",
-      query: { app: undefined },
+    label="Explore and analyze harmonized high-quality clinical and genomics data from cancer genomic studies with the tools in the Analysis Center."
+    classNames={{
+      tooltip: "shadow-lg bg-base-lightest text-primary-content-darkest",
     }}
+    position="bottom-start"
+    multiline
+    width={220}
   >
-    <Tooltip
-      label="Explore and analyze harmonized high-quality clinical and genomics data from cancer genomic studies with the tools in the Analysis Center."
-      classNames={{
-        body: "shadow-lg bg-white text-nci-gray-darkest",
+    <Button
+      unstyled
+      component={NextLink}
+      href={{
+        pathname: "/user-flow/workbench/analysis_page",
+        query: { app: undefined },
       }}
-      position="bottom"
-      placement="start"
-      wrapLines
-      width={220}
+      className="text-sm font-heading  hover:bg-primary-lighter transition-colors text-primary-content-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md "
     >
-      <div className="text-sm font-heading  hover:bg-nci-blue-lighter transition-colors text-nci-gray-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md ">
-        <Image
-          src={"/user-flow/icons/dna.svg"}
-          alt="Analysis logo"
-          width={24}
-          height={24}
-        />
-      </div>
-    </Tooltip>
-  </Link>,
-  <Link
+      <Image
+        src={"/user-flow/icons/dna.svg"}
+        alt="Analysis logo"
+        width={24}
+        height={24}
+      />
+    </Button>
+  </Tooltip>,
+  <Tooltip
     key="Studies"
-    href={{
-      pathname: "/user-flow/workbench/analysis_page",
-      query: { app: "Projects" },
+    label="View the Projects/Studies available within the GDC and select them for further exploration and analysis."
+    classNames={{
+      tooltip: "shadow-lg bg-base-lightest text-primary-content-darkest",
     }}
+    position="bottom-start"
+    multiline
+    width={220}
   >
-    <Tooltip
-      label="View the Projects/Studies available within the GDC and select them for further exploration and analysis."
-      classNames={{
-        body: "shadow-lg bg-white text-nci-gray-darkest",
+    <Button
+      unstyled
+      component={NextLink}
+      href={{
+        pathname: "/user-flow/workbench/analysis_page",
+        query: { app: "Projects" },
       }}
-      position="bottom"
-      placement="start"
-      wrapLines
-      width={220}
+      className="text-sm font-heading  hover:bg-primary-lighter transition-colors text-primary-content-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md "
     >
-      <div className="text-sm font-heading  hover:bg-nci-blue-lighter transition-colors text-nci-gray-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md ">
-        <Image
-          src={"/user-flow/icons/crowd-of-users.svg"}
-          alt="Studies logo"
-          width={24}
-          height={24}
-        />
-      </div>
-    </Tooltip>
-  </Link>,
-  <Link
+      <Image
+        src={"/user-flow/icons/crowd-of-users.svg"}
+        alt="Studies logo"
+        width={24}
+        height={24}
+      />
+    </Button>
+  </Tooltip>,
+  <Tooltip
     key="Cohort"
-    href={{
-      pathname: "/user-flow/workbench/analysis_page",
-      query: { app: "CohortBuilder" },
+    label="Build and define your custom cohorts using a variety of clinical and biospecimen features."
+    classNames={{
+      tooltip: "shadow-lg bg-base-lightest text-primary-content-darkest",
     }}
+    position="bottom-start"
+    multiline
+    width={220}
   >
-    <Tooltip
-      label="Build and define your custom cohorts using a variety of clinical and biospecimen features."
-      classNames={{
-        body: "shadow-lg bg-white text-nci-gray-darkest",
+    <Button
+      unstyled
+      component={NextLink}
+      href={{
+        pathname: "/user-flow/workbench/analysis_page",
+        query: { app: "CohortBuilder" },
       }}
-      position="bottom"
-      placement="start"
-      wrapLines
-      width={220}
+      className="text-sm font-heading  hover:bg-primary-lighter transition-colors text-primary-content-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md "
     >
-      <div className="text-sm font-heading  hover:bg-nci-blue-lighter transition-colors text-nci-gray-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md ">
-        <Image
-          src={"/user-flow/icons/build.svg"}
-          alt="Cohort logo"
-          width={24}
-          height={24}
-        />
-      </div>
-    </Tooltip>
-  </Link>,
-  <Link
+      <Image
+        src={"/user-flow/icons/build.svg"}
+        alt="Cohort logo"
+        width={24}
+        height={24}
+      />
+    </Button>
+  </Tooltip>,
+  <Tooltip
     key="Download"
-    href={{
-      pathname: "/user-flow/workbench/analysis_page",
-      query: { app: "Downloads" },
+    label="Browse and download the files associated with your cohort for more sophisticated analysis."
+    classNames={{
+      tooltip: "shadow-lg bg-base-lightest text-primary-content-darkest",
     }}
+    position="bottom-start"
+    multiline
+    width={220}
   >
-    <Tooltip
-      label="Browse and download the files associated with your cohort for more sophisticated analysis."
-      classNames={{
-        body: "shadow-lg bg-white text-nci-gray-darkest",
+    <Button
+      unstyled
+      component={NextLink}
+      href={{
+        pathname: "/user-flow/workbench/analysis_page",
+        query: { app: "Downloads" },
       }}
-      position="bottom"
-      placement="start"
-      wrapLines
-      width={220}
+      className="text-sm font-heading hover:bg-primary-lighter transition-colors text-primary-content-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md "
     >
-      <div className="text-sm font-heading hover:bg-nci-blue-lighter transition-colors text-nci-gray-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md ">
-        <Image
-          src={"/user-flow/icons/database.svg"}
-          alt="Downloads logo"
-          width={24}
-          height={24}
-        />
-      </div>
-    </Tooltip>
-  </Link>,
+      <Image
+        src={"/user-flow/icons/database.svg"}
+        alt="Downloads logo"
+        width={24}
+        height={24}
+      />
+    </Button>
+  </Tooltip>,
 ];

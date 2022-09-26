@@ -1,9 +1,10 @@
 import {
+  CoreState,
+  CoreDispatch,
   Operation,
   EnumValueExtractorHandler,
   EnumOperandValue,
   OperandValue,
-  CoreDispatch,
   FacetBuckets,
   handleOperation,
   FilterSet,
@@ -26,15 +27,23 @@ import {
   selectFacetByDocTypeAndField,
   usePrevious,
   selectGenomicAndCohortFilters,
+  selectCurrentCohortFilterOrCaseSet,
 } from "@gff/core";
 import { useEffect } from "react";
 import isEqual from "lodash/isEqual";
+import { EnumFacetResponse, FacetResponse } from "@/features/facets/types";
+import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
+import { TypedUseSelectorHook } from "react-redux";
 
 /**
  * Filter selector for all the facet filters
  */
 const useCohortFacetFilter = (): FilterSet => {
   return useCoreSelector((state) => selectCurrentCohortFilters(state));
+};
+
+const useCohortOrCaseSetFacetFilter = (): FilterSet => {
+  return useCoreSelector((state) => selectCurrentCohortFilterOrCaseSet(state));
 };
 
 const useGenomicFacetFilter = (): FilterSet => {
@@ -65,23 +74,10 @@ const useGenomicFilterByName = (field: string): OperandValue => {
   return enumFilters ? extractValue(enumFilters) : undefined;
 };
 
-interface FacetResponse {
-  readonly data?: Record<string, number>;
-  readonly error?: string;
-  readonly isUninitialized: boolean;
-  readonly isFetching: boolean;
-  readonly isSuccess: boolean;
-  readonly isError: boolean;
-}
-
-interface EnumFacetResponse extends FacetResponse {
-  readonly enumFilters?: ReadonlyArray<string>;
-}
-
 /**
  *  Facet Selector using GQL which will refresh when filters/enum values changes.
  */
-export const useCasesFacet = (
+export const useEnumFacet = (
   field: string,
   docType: GQLDocType,
   indexType: GQLIndexType,
@@ -135,9 +131,10 @@ export const useCasesFacet = (
 };
 
 /**
- * Genes Facet Selector using GQL
+ * Genes Facet Selector using GQL. it combines the Cohort with Gene Filters
+ * to get data for the current cohort and genes filters
  */
-const useGenesFacet = (
+export const useGenesFacet = (
   field: string,
   docType = "genes" as GQLDocType,
   indexType = "explore" as GQLIndexType,
@@ -148,7 +145,7 @@ const useGenesFacet = (
   );
 
   const enumValues = useGenomicFilterByName(field);
-  const cohortFilters = useCohortFacetFilter();
+  const cohortFilters = useCohortOrCaseSetFacetFilter();
   const genomicFilters = useGenomicFacetFilter();
   const prevCohortFilters = usePrevious(cohortFilters);
   const prevGenomicFilters = usePrevious(genomicFilters);
@@ -209,7 +206,7 @@ const useMutationsFacet = (
   );
 
   const enumValues = useGenomicFilterByName(field);
-  const cohortFilters = useCohortFacetFilter();
+  const cohortFilters = useCohortOrCaseSetFacetFilter();
   const genomicFilters = useGenomicFacetFilter();
   const prevCohortFilters = usePrevious(cohortFilters);
   const prevGenomicFilters = usePrevious(genomicFilters);
@@ -256,11 +253,10 @@ const useMutationsFacet = (
   };
 };
 
-type updateEnumFiltersFunc = (
-  dispatch: CoreDispatch,
-  enumerationFilters: EnumOperandValue,
+type UpdateEnumFiltersFunc = (
+  dispatch: ThunkDispatch<any, undefined, AnyAction>,
   field: string,
-  prefix?: string,
+  enumerationFilters: EnumOperandValue,
 ) => void;
 /**
  * Adds an enumeration filter to cohort filters
@@ -268,10 +264,10 @@ type updateEnumFiltersFunc = (
  * @param enumerationFilters values to update
  * @param field field to update
  */
-export const updateEnumFilters: updateEnumFiltersFunc = (
-  dispatch: CoreDispatch,
-  enumerationFilters: EnumOperandValue,
+export const updateEnumFilters: UpdateEnumFiltersFunc = (
+  dispatch: ThunkDispatch<any, undefined, AnyAction>,
   field: string,
+  enumerationFilters: EnumOperandValue,
 ) => {
   // undefined just return
   if (enumerationFilters === undefined) return;
@@ -292,19 +288,12 @@ export const updateEnumFilters: updateEnumFiltersFunc = (
   }
 };
 
-type updateGenomicEnumFiltersFunc = (
-  dispatch: CoreDispatch,
-  enumerationFilters: EnumOperandValue,
+export const useUpdateGenomicEnumFilters: UpdateEnumFiltersFunc = (
+  dispatch: ThunkDispatch<any, undefined, AnyAction>,
   field: string,
-  prefix?: string,
-) => void;
-
-export const updateGenomicEnumFilters: updateGenomicEnumFiltersFunc = (
-  dispatch: CoreDispatch,
   enumerationFilters: EnumOperandValue,
-  field: string,
 ) => {
-  if (enumerationFilters === undefined) return;
+  if (enumerationFilters === undefined) dispatch(removeGenomicFilter(field));
   if (enumerationFilters.length > 0) {
     dispatch(
       updateGenomicFilter({
@@ -335,9 +324,14 @@ export const useRangeFacet = (
 
   const cohortFilters = useCohortFacetFilter();
   const prevFilters = usePrevious(cohortFilters);
+  const prevRanges = usePrevious(ranges);
 
   useEffect(() => {
-    if (!facet || !isEqual(prevFilters, cohortFilters)) {
+    if (
+      !facet ||
+      !isEqual(prevFilters, cohortFilters) ||
+      !isEqual(ranges, prevRanges)
+    ) {
       coreDispatch(
         fetchFacetContinuousAggregation({
           field: field,
@@ -354,6 +348,7 @@ export const useRangeFacet = (
     cohortFilters,
     prevFilters,
     ranges,
+    prevRanges,
     docType,
     indexType,
   ]);
@@ -368,16 +363,40 @@ export const useRangeFacet = (
   };
 };
 
+// Global Selector for Facet Values
+export const selectFieldFilter = (
+  selector: TypedUseSelectorHook<CoreState>,
+  field: string,
+): Operation => {
+  // get the current filter for this facet
+  return selector((state) => selectCurrentCohortFiltersByName(state, field));
+};
+
+// Update Core Facet Filter
+export const dispatchFieldFilter = (
+  dispatch: CoreDispatch,
+  field: string,
+  operation: Operation,
+): void => {
+  // update the filter for this facet
+  dispatch(updateCohortFilter({ field: field, operation: operation }));
+};
+
+// Global Clear
+export const clearFilters = (dispatch: CoreDispatch, field: string): void => {
+  dispatch(removeCohortFilter(field));
+};
+
 export const UpdateEnums = {
   cases: updateEnumFilters,
   files: updateEnumFilters,
-  genes: updateGenomicEnumFilters,
-  ssms: updateGenomicEnumFilters,
+  genes: useUpdateGenomicEnumFilters,
+  ssms: useUpdateGenomicEnumFilters,
 };
 
 export const FacetEnumHooks = {
-  cases: useCasesFacet,
-  files: useCasesFacet,
+  cases: useEnumFacet,
+  files: useEnumFacet,
   genes: useGenesFacet,
   ssms: useMutationsFacet,
 };

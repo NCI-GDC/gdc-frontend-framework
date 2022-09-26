@@ -9,23 +9,6 @@ import {
   ProjectDefaults,
 } from "../gdcapi/gdcapi";
 
-export interface Project {
-  readonly name: string;
-  readonly projectId: string;
-  readonly disease_type: Array<string>;
-  readonly primary_site: Array<string>;
-  readonly summary?: {
-    readonly case_count: number;
-    readonly file_count: number;
-    readonly file_size: number;
-  };
-  readonly program?: {
-    readonly dbgap_accession_number: string;
-    readonly name: string;
-    readonly program_id: string;
-  };
-}
-
 export const fetchProjects = createAsyncThunk<
   GdcApiResponse<ProjectDefaults>,
   GdcApiRequest,
@@ -35,14 +18,13 @@ export const fetchProjects = createAsyncThunk<
 });
 
 export interface ProjectsState {
-  // projects by project id
-  readonly projects: Record<string, Project>;
+  readonly projectData?: ProjectDefaults;
   readonly status: DataStatus;
   readonly error?: string;
 }
 
 const initialState: ProjectsState = {
-  projects: {},
+  projectData: undefined,
   status: "uninitialized",
 };
 
@@ -60,32 +42,21 @@ const slice = createSlice({
           state.error = response.warnings.facets;
         } else {
           if (response.data.hits) {
-            state.projects = response.data.hits.reduce(
-              (projects: Record<string, Project>, hit: ProjectDefaults) => {
-                projects[hit.project_id] = {
-                  name: hit.name,
-                  projectId: hit.project_id,
-                  disease_type: [...hit.disease_type],
-                  primary_site: [...hit.primary_site],
-                  summary: hit.summary,
-                  program: hit.program,
-                };
-                return projects;
-              },
-              {},
-            );
+            state.projectData = { ...response.data.hits[0] };
           } else {
-            state.projects = {};
+            state.projectData = undefined;
           }
           state.status = "fulfilled";
         }
       })
       .addCase(fetchProjects.pending, (state) => {
+        state.projectData = undefined;
         state.status = "pending";
         state.error = undefined;
       })
       .addCase(fetchProjects.rejected, (state) => {
         state.status = "rejected";
+        state.projectData = undefined;
         // TODO get error from action
         state.error = undefined;
       });
@@ -94,18 +65,11 @@ const slice = createSlice({
 
 export const projectsReducer = slice.reducer;
 
-export const selectProjectsState = (state: CoreState): ProjectsState =>
-  state.projects;
-
-export const selectProjects = (state: CoreState): ReadonlyArray<Project> => {
-  return Object.values(state.projects.projects);
-};
-
 export const selectProjectsData = (
   state: CoreState,
-): CoreDataSelectorResponse<ReadonlyArray<Project>> => {
+): CoreDataSelectorResponse<ProjectDefaults> => {
   return {
-    data: Object.values(state.projects.projects),
+    data: state.projects.projectData,
     status: state.projects.status,
     error: state.projects.error,
   };

@@ -14,6 +14,19 @@ export const COHORTS = [
     },
   },
   {
+    name: "Pancreas",
+    filters: {
+      root: {
+        "cases.primary_site": {
+          field: "cases.primary_site",
+          operands: ["Pancreas"],
+          operator: "includes",
+        },
+      },
+      mode: "and",
+    },
+  },
+  {
     name: "Pancreas - KRAS mutated",
     filters: {
       root: {

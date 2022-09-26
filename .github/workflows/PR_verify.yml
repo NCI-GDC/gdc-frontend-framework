@@ -11,6 +11,8 @@ jobs:
           ref: ${{ github.head_ref }}
 
       - uses: actions/setup-node@v3
+        with:
+          node-version: 16
 
       - name: Install Packages
         run: npm install
@@ -33,3 +35,6 @@ jobs:
 
       - name: Check for unit tests
         run: npm run test:all
+
+      - name: Build
+        run: npm run build

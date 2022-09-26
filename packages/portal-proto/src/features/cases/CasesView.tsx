@@ -7,11 +7,24 @@ import {
   useCoreSelector,
   GqlOperation,
 } from "@gff/core";
-import { Table, Pagination, Select } from "@mantine/core";
-import { Biospecimen } from "../biospecimen/Biospecimen";
-import { useEffect, useState, useContext } from "react";
-import { useScrollIntoView } from "@mantine/hooks";
-import { URLContext } from "src/pages/_app";
+import Link from "next/link";
+import {
+  createStyles,
+  Text,
+  LoadingOverlay,
+  Table,
+  Pagination,
+  Select,
+  ScrollArea,
+} from "@mantine/core";
+import { useEffect, useState } from "react";
+import tw from "tailwind-styled-components";
+
+export const CasesTableHeader = tw.th`
+bg-primary-lighter
+text-primary-contrast-lighter
+px-2
+`;
 
 export interface Case {
   readonly id: string;
@@ -32,7 +45,6 @@ export interface CasesViewProps {
 export interface ContextualCasesViewProps {
   readonly handleCaseSelected?: (patient: Case) => void;
   caseId?: string;
-  bioId?: string;
 }
 
 const useCohortFacetFilter = (): GqlOperation => {
@@ -87,30 +99,17 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
   props: ContextualCasesViewProps,
 ) => {
   // TODO useContextualCases() that filters based on the context
-  const { prevPath } = useContext(URLContext);
   const [pageSize, setPageSize] = useState(10);
   const [activePage, setPage] = useState(1);
-  const { data, isSuccess } = useCohortCases(pageSize, activePage);
+  const { data } = useCohortCases(pageSize, activePage);
   const [pages, setPages] = useState(10);
   const caseCounts = useCoreSelector((state) =>
     selectCohortCountsByName(state, "caseCounts"),
   );
 
-  const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>({
-    offset: 60,
-  });
-
-  useEffect(() => {
-    if (prevPath?.includes("MultipleImageViewerPage")) {
-      scrollIntoView();
-    }
-  }, [prevPath, scrollIntoView]);
-
   useEffect(() => {
     setPages(Math.ceil(caseCounts / pageSize));
   }, [caseCounts, pageSize]);
-
-  if (!isSuccess) return <div>Loading...</div>;
 
   const handlePageSizeChange = (x: string) => {
     setPageSize(parseInt(x));
@@ -136,7 +135,7 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
           caption={`Showing ${pageSize} of ${caseCounts} Cases`}
           handleCaseSelected={props.handleCaseSelected}
         />
-        <div className="flex flex-row items-center justify-start border-t border-nci-gray-light">
+        <div className="flex flex-row items-center justify-start border-t border-base-light">
           <p className="px-2">Page Size:</p>
           <Select
             size="sm"
@@ -151,59 +150,94 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
             ]}
           />
           <Pagination
-            classNames={{
-              active: "bg-nci-gray",
-            }}
             size="sm"
             radius="md"
-            color="gray"
+            color="accent"
             className="ml-auto"
             page={activePage}
-            onChange={(x) => setPage(x - 1)}
+            onChange={(x) => setPage(x)}
             total={pages}
           />
         </div>
-      </div>
-      <div ref={targetRef} id="biospecimen">
-        <Biospecimen caseId={props.caseId} bioId={props.bioId} />
       </div>
     </div>
   );
 };
 
+const useStyles = createStyles((theme) => ({
+  header: {
+    position: "sticky",
+    top: 0,
+    transition: "box-shadow 150ms ease",
+
+    "&::after": {
+      content: '""',
+      position: "absolute",
+      left: 0,
+      right: 0,
+      bottom: 0,
+      borderBottom: `1px solid ${
+        theme.colorScheme === "dark"
+          ? theme.colors.dark[3]
+          : theme.colors.gray[2]
+      }`,
+    },
+  },
+
+  scrolled: {
+    boxShadow: theme.shadows.sm,
+  },
+}));
+
 export const CasesView: React.FC<CasesViewProps> = (props: CasesViewProps) => {
-  const { cases, handleCaseSelected = () => void 0 } = props;
+  const { cases } = props;
+  const { classes, cx } = useStyles();
+  const [scrolled, setScrolled] = useState(false);
 
   return (
-    <Table verticalSpacing="xs" striped highlightOnHover>
-      <thead>
-        <tr className="bg-nci-gray-lighter ">
-          <th className="px-2 text-nci-gray-darkest">Case</th>
-          <th className="px-2 text-nci-gray-darkest">Project</th>
-          <th className="px-2 text-nci-gray-darkest">Primary Site</th>
-          <th className="px-2 text-nci-gray-darkest">Gender</th>
-          <th className="px-2 text-nci-gray-darkest">Primary Diagnosis</th>
-          <th className="px-2 text-nci-gray-darkest whitespace-nowrap">
-            Tissue/Organ of Origin
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        {cases?.map((c, i) => (
-          <tr key={c.id} className={i % 2 == 0 ? "bg-nci-gray-lightest" : ""}>
-            <td className="px-2 break-all">
-              <button onClick={() => handleCaseSelected(c)}>
-                {c.submitterId}
-              </button>
-            </td>
-            <td className="px-2 whitespace-nowrap">{c.projectId}</td>
-            <td className="px-2">{c.primarySite}</td>
-            <td className="px-2">{c.gender}</td>
-            <td className="px-2">{c.primaryDiagnosis}</td>
-            <td className="px-2">{c.tissueOrOrganOfOrigin}</td>
+    <ScrollArea
+      sx={{ height: 300 }}
+      onScrollPositionChange={({ y }) => setScrolled(y !== 0)}
+    >
+      <LoadingOverlay visible={cases === undefined} color="primary" />
+      <Table verticalSpacing="xs" striped highlightOnHover>
+        <thead className={cx(classes.header, { [classes.scrolled]: scrolled })}>
+          <tr className="bg-base-lighter ">
+            <CasesTableHeader>Case</CasesTableHeader>
+            <CasesTableHeader>Project</CasesTableHeader>
+            <CasesTableHeader>Primary Site</CasesTableHeader>
+            <CasesTableHeader>Gender</CasesTableHeader>
+            <CasesTableHeader>Primary Diagnosis</CasesTableHeader>
+            <CasesTableHeader className="whitespace-nowrap">
+              Tissue/Organ of Origin
+            </CasesTableHeader>
           </tr>
-        ))}
-      </tbody>
-    </Table>
+        </thead>
+        <tbody>
+          {cases?.map((c, i) => (
+            <tr key={c.id} className={i % 2 == 0 ? "bg-base-lightest" : ""}>
+              <td className="px-2 break-all">
+                <Link
+                  href={{
+                    pathname: "/cases/[slug]",
+                    query: { slug: c.id },
+                  }}
+                  passHref
+                >
+                  <Text variant="link" component="a">
+                    {c.submitterId}
+                  </Text>
+                </Link>
+              </td>
+              <td className="px-2 whitespace-nowrap">{c.projectId}</td>
+              <td className="px-2">{c.primarySite}</td>
+              <td className="px-2">{c.gender}</td>
+              <td className="px-2">{c.primaryDiagnosis}</td>
+              <td className="px-2">{c.tissueOrOrganOfOrigin}</td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </ScrollArea>
   );
 };

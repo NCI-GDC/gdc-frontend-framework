@@ -1,11 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import dynamic from "next/dynamic";
-import {
-  ActionIcon,
-  LoadingOverlay,
-  Tooltip as MTooltip,
-  Menu,
-} from "@mantine/core";
+import { LoadingOverlay, Button, Box, Tooltip, Menu } from "@mantine/core";
 import { FaCrosshairs, FaFire, FaSortAmountDown } from "react-icons/fa";
 import {
   MdColorLens,
@@ -29,8 +23,7 @@ import { cnvTypes, consequenceTypes, defaultColorMap } from "./constants";
 import useOncoGridDisplayData from "./useOncoGridDisplayData";
 import ColorPaletteModal from "./ColorPaletteModal";
 import useOncoGridObject from "./useOncoGridObject";
-
-const Tooltip = dynamic(() => import("./Tooltip"), { ssr: false });
+import PositionedTooltip from "./PositionedTooltip";
 
 const OncoGridWrapper: React.FC = () => {
   const coreDispatch = useCoreDispatch();
@@ -52,6 +45,7 @@ const OncoGridWrapper: React.FC = () => {
   const [cnvFilters, setCnvFilters] = useState(Object.keys(cnvTypes));
   const [showColorModal, setShowColorModal] = useState(false);
   const [colorMap, setColorMap] = useState(defaultColorMap);
+  const [showColorTooltip, setShowColorTooltip] = useState(false);
 
   const { data, isUninitialized, isFetching } = useOncoGrid({
     consequenceTypeFilters,
@@ -141,132 +135,161 @@ const OncoGridWrapper: React.FC = () => {
   return (
     <div
       ref={(ref) => (fullOncoGridContainer.current = ref)}
-      className={`bg-white p-16  ${isFullscreen ? "overflow-scroll" : ""}`}
+      className={`bg-base-lightest p-16  ${
+        isFullscreen ? "overflow-scroll" : ""
+      }`}
     >
       <div className="flex pb-8">
         <div className="basis-1/2">{`${donors.length} Most Mutated Cases and Top ${genes.length} Mutated Genes by SSM`}</div>
         <div className="flex basis-1/2 justify-end">
-          <MTooltip
-            withinPortal={false}
+          <Tooltip
             position="top"
             label={"Customize Colors"}
             withArrow
+            opened={showColorTooltip}
+            onMouseEnter={() => setShowColorTooltip(true)}
+            onMouseLeave={() => setShowColorTooltip(false)}
           >
-            <Menu
-              control={
-                <ActionIcon variant={"outline"} classNames={{ root: "mx-1" }}>
-                  <MdColorLens />
-                </ActionIcon>
-              }
-              withinPortal={false}
-            >
-              <Menu.Item onClick={() => setShowColorModal(true)}>
-                Customize color
-              </Menu.Item>
-              <Menu.Item
-                onClick={() => {
-                  localStorage.setItem(
-                    "oncogridActiveTheme",
-                    JSON.stringify(defaultColorMap),
-                  );
-                  setColorMap(defaultColorMap);
-                }}
-              >
-                Reset to default
-              </Menu.Item>
-            </Menu>
-          </MTooltip>
-          <MTooltip
+            <Box>
+              <Menu>
+                <Menu.Target>
+                  <Button
+                    variant={"outline"}
+                    size="xs"
+                    classNames={{ root: "mx-1" }}
+                  >
+                    <MdColorLens />
+                  </Button>
+                </Menu.Target>
+                <Menu.Dropdown>
+                  <Menu.Item
+                    onClick={() => {
+                      setShowColorModal(true);
+                      setShowColorTooltip(false);
+                    }}
+                  >
+                    Customize color
+                  </Menu.Item>
+                  <Menu.Item
+                    onClick={() => {
+                      localStorage.setItem(
+                        "oncogridActiveTheme",
+                        JSON.stringify(defaultColorMap),
+                      );
+                      setColorMap(defaultColorMap);
+                    }}
+                  >
+                    Reset to default
+                  </Menu.Item>
+                </Menu.Dropdown>
+              </Menu>
+            </Box>
+          </Tooltip>
+          <Tooltip
             label={"Download"}
             withinPortal={false}
             position="top"
             withArrow
           >
-            <ActionIcon variant={"outline"} classNames={{ root: "mx-1" }}>
+            <Button variant={"outline"} size="xs" classNames={{ root: "mx-1" }}>
               <MdDownload />
-            </ActionIcon>
-          </MTooltip>
-          <MTooltip label={"Reload Grid"} withArrow>
-            <ActionIcon
+            </Button>
+          </Tooltip>
+          <Tooltip label={"Reload Grid"} withArrow>
+            <Button
               variant={"outline"}
+              size="xs"
               onClick={resetGrid}
               classNames={{ root: "mx-1" }}
             >
               <MdRefresh />
-            </ActionIcon>
-          </MTooltip>
-          <MTooltip
+            </Button>
+          </Tooltip>
+          <Tooltip
             label={"Cluster Data"}
             withinPortal={false}
             position="top"
             withArrow
           >
-            <ActionIcon
+            <Button
               variant={"outline"}
+              size="xs"
               onClick={() => gridObject.current.cluster()}
               classNames={{ root: "mx-1" }}
             >
               <FaSortAmountDown />
-            </ActionIcon>
-          </MTooltip>
-          <MTooltip
+            </Button>
+          </Tooltip>
+          <Tooltip
             label={"Toggle Heatmap View"}
             withinPortal={false}
             position="top"
             withArrow
           >
-            <ActionIcon
+            <Button
+              size="xs"
               variant={isHeatmap ? "filled" : "outline"}
               onClick={() => {
                 setIsHeatmap(!isHeatmap);
               }}
-              classNames={{ root: "mx-1" }}
+              classNames={{
+                root: `mx-1 ${isHeatmap ? "bg-primary-lighter" : null}`,
+              }}
             >
               <FaFire />
-            </ActionIcon>
-          </MTooltip>
-          <MTooltip
+            </Button>
+          </Tooltip>
+          <Tooltip
             label={"Toggle Gridlines"}
             withinPortal={false}
             position="top"
             withArrow
           >
-            <ActionIcon
+            <Button
+              size="xs"
               variant={hasGridlines ? "filled" : "outline"}
               onClick={() => setHasGridlines(!hasGridlines)}
-              classNames={{ root: "mx-1" }}
+              classNames={{
+                root: `mx-1 ${hasGridlines ? "bg-primary-lighter" : null}`,
+              }}
             >
               <MdGridOn />
-            </ActionIcon>
-          </MTooltip>
-          <MTooltip
+            </Button>
+          </Tooltip>
+          <Tooltip
             label={"Toggle Crosshairs"}
             withinPortal={false}
             position="top"
             withArrow
           >
-            <ActionIcon
+            <Button
+              size="xs"
               variant={showCrosshairs ? "filled" : "outline"}
               onClick={() => setShowCrosshairs(!showCrosshairs)}
-              classNames={{ root: "mx-1" }}
+              classNames={{
+                root: `mx-1 ${showCrosshairs ? "bg-primary-lighter" : null}`,
+              }}
             >
               <FaCrosshairs />
-            </ActionIcon>
-          </MTooltip>
-          <MTooltip
+            </Button>
+          </Tooltip>
+          <Tooltip
             label={"Fullscreen "}
             withinPortal={false}
             position="top"
             withArrow
           >
-            <ActionIcon
+            <Button
+              size="xs"
               variant={isFullscreen ? "filled" : "outline"}
               onClick={() => toggleFullScreen(fullOncoGridContainer)}
-              classNames={{ root: "mx-1" }}
+              classNames={{
+                root: `mx-1 ${isFullscreen ? "bg-primary-lighter" : null}`,
+              }}
             >
               <MdFullscreen />
-            </ActionIcon>
-          </MTooltip>
+            </Button>
+          </Tooltip>
         </div>
       </div>
       <MutationFilters
@@ -277,7 +300,7 @@ const OncoGridWrapper: React.FC = () => {
         cnvFilters={cnvFilters}
         setCnvFilters={setCnvFilters}
       />
-      <Tooltip content={tooltipContent} />
+
       <ColorPaletteModal
         opened={showColorModal}
         closeModal={() => setShowColorModal(false)}
@@ -287,6 +310,7 @@ const OncoGridWrapper: React.FC = () => {
       {tracksModal}
       <div className="relative">
         <LoadingOverlay visible={isLoading} overlayOpacity={0.9} />
+        <PositionedTooltip content={tooltipContent} />
         {consequenceTypeFilters.length === 0 && (
           <>
             The current selection has no results. Please select more mutation
@@ -295,7 +319,7 @@ const OncoGridWrapper: React.FC = () => {
         )}
         <div
           ref={(ref) => (gridContainer.current = ref)}
-          className={`oncogrid-wrapper bg-white ${
+          className={`oncogrid-wrapper bg-base-lightest ${
             consequenceTypeFilters.length === 0 || isLoading
               ? "invisible"
               : "visible"

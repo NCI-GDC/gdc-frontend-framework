@@ -5,6 +5,7 @@ import { cohortCountsReducer } from "./countSlice";
 import { availableCohortsReducer } from "./availableCohortsSlice";
 import { comparisonCohortsReducer } from "./comparisonCohortsSlice";
 import { cohortBuilderConfigReducer } from "./cohortBuilderConfigSlice";
+import { caseSetReducer } from "./caseSetSlice";
 
 export const cohortReducers = combineReducers({
   currentCohort: cohortNameReducer,
@@ -13,4 +14,5 @@ export const cohortReducers = combineReducers({
   availableCohorts: availableCohortsReducer,
   comparisonCohorts: comparisonCohortsReducer,
   builderConfig: cohortBuilderConfigReducer,
+  caseSet: caseSetReducer,
 });

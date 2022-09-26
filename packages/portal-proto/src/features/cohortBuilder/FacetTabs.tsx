@@ -1,115 +1,312 @@
-import { FC } from "react";
+import React, { useEffect, useState } from "react";
+import Router, { useRouter } from "next/router";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
+import tw from "tailwind-styled-components";
 import {
-  GQLIndexType,
-  GQLDocType,
-  selectCohortBuilderConfig,
-  useCoreSelector,
-  FacetDefinition,
-  selectFacetDefinitionByName,
+  addFilterToCohortBuilder,
   CohortBuilderCategory,
+  CoreContext,
+  FacetDefinition,
+  GQLDocType,
+  GQLIndexType,
+  removeFilterFromCohortBuilder,
+  selectCohortBuilderConfig,
+  selectCohortBuilderConfigCategory,
+  selectCohortBuilderConfigFilters,
+  selectFacetDefinitionsByName,
+  useCoreDispatch,
+  useCoreSelector,
+  useFacetDictionary,
+  usePrevious,
+  selectFacetDefinition,
 } from "@gff/core";
-import { EnumFacet } from "../facets/EnumFacet";
-import NumericRangeFacet from "../facets/NumericRangeFacet";
-import { Tabs } from "@mantine/core";
+import {
+  Button,
+  Center,
+  LoadingOverlay,
+  Modal,
+  Stack,
+  Tabs,
+  TabsProps,
+  Text,
+} from "@mantine/core";
+import { getFacetInfo } from "@/features/cohortBuilder/utils";
+import {
+  MdAdd as AddAdditionalIcon,
+  MdLibraryAdd as AddFacetIcon,
+} from "react-icons/md";
+import FacetSelection from "@/components/FacetSelection";
+import isEqual from "lodash/isEqual";
+import { createFacetCard } from "@/features/facets/CreateFacetCard";
+import { partial } from "lodash";
+import {
+  clearFilters,
+  dispatchFieldFilter,
+  selectFieldFilter,
+} from "@/features/facets/hooks";
+import { createSelectorHook } from "react-redux";
 
-const getFacetInfo = (
-  fields: ReadonlyArray<string>,
-): ReadonlyArray<FacetDefinition> => {
-  const results = fields.map((x) =>
-    useCoreSelector((state) => selectFacetDefinitionByName(state, x)),
+const CustomFacetWhenEmptyGroup = tw(Stack)`
+h-64
+bg-base-lightest
+w-1/2
+border-2
+border-dotted
+m-6
+`;
+
+const StyledFacetTabs = (props: TabsProps) => {
+  return (
+    <Tabs
+      unstyled
+      styles={(theme) => ({
+        tab: {
+          ...theme.fn.focusStyles(),
+          padding: `${theme.spacing.xs}px ${theme.spacing.md}px`,
+          cursor: "pointer",
+          fontSize: theme.fontSizes.md,
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          borderTopLeftRadius: theme.radius.md,
+          borderBottomLeftRadius: theme.radius.md,
+
+          "&:disabled": {
+            opacity: 0.5,
+            cursor: "not-allowed",
+          },
+        },
+        root: {
+          display: "flex",
+          flexDirection: "row",
+          backgroundColor: theme.colors.base?.[0],
+        },
+        panel: {
+          backgroundColor: theme.colors.base?.[0],
+        },
+        tabIcon: {
+          marginRight: theme.spacing.xs,
+          display: "flex",
+          alignItems: "center",
+        },
+      })}
+      {...props}
+    />
   );
-  return results;
 };
 
-interface FacetGroupProps {
-  readonly facets: ReadonlyArray<FacetDefinition>;
-  readonly indexType?: GQLIndexType;
-  readonly docType: GQLDocType;
-}
+type FacetGroupProps = {
+  children?: React.ReactNode;
+};
 
 export const FacetGroup: React.FC<FacetGroupProps> = ({
-  facets,
-  docType,
-  indexType = "explore",
+  children,
 }: FacetGroupProps) => {
   return (
-    <div className="flex flex-col w-screen/1.5 bg-white overflow-y-scroll overflow-x-clip">
-      <ResponsiveMasonry columnsCountBreakPoints={{ 640: 3, 1400: 3 }}>
+    <div className="flex flex-col w-screen/1.5 bg-base-max pr-6 overflow-x-clip">
+      <ResponsiveMasonry columnsCountBreakPoints={{ 320: 2, 640: 3, 1200: 4 }}>
         <Masonry gutter="0.5em" className="m-4">
-          {facets.map((x, index) => {
-            if (x.facet_type === "enum")
-              return (
-                <EnumFacet
-                  key={`${x.full}-${index}`}
-                  docType={docType}
-                  indexType={indexType}
-                  field={x.full}
-                  description={x.description}
-                />
-              );
-            if (
-              [
-                "year",
-                "years",
-                "age",
-                "numeric",
-                "integer",
-                "percent",
-              ].includes(x.facet_type)
-            ) {
-              return (
-                <NumericRangeFacet
-                  key={`${x.full}-${index}`}
-                  field={x.full}
-                  description={x.description}
-                  rangeDatatype={x.facet_type}
-                  docType={docType}
-                  indexType={indexType}
-                  minimum={x?.range?.minimum}
-                  maximum={x?.range?.maximum}
-                />
-              );
-            }
-          })}
+          {children}
         </Masonry>
       </ResponsiveMasonry>
     </div>
   );
 };
 
-export const FacetTabs: FC = () => {
+const CustomFacetGroup = (): JSX.Element => {
+  const customConfig = useCoreSelector((state) =>
+    selectCohortBuilderConfigCategory(state, "custom"),
+  );
+  const cohortBuilderFilters = useCoreSelector((state) =>
+    selectCohortBuilderConfigFilters(state),
+  );
+
+  const prevCustomFacets = usePrevious(customConfig.facets);
+  const [customFacetDefinitions, setCustomFacetDefinitions] = useState<
+    ReadonlyArray<FacetDefinition>
+  >([]);
+  const [opened, setOpened] = useState(false);
+  const { isSuccess: isDictionaryReady } = useFacetDictionary();
+
+  const coreDispatch = useCoreDispatch();
+  const coreSelector = createSelectorHook(CoreContext);
+  const facets = useCoreSelector((state) =>
+    selectFacetDefinitionsByName(state, customConfig.facets),
+  );
+
+  // rebuild customFacets
+  useEffect(() => {
+    if (isDictionaryReady && !isEqual(prevCustomFacets, customConfig.facets)) {
+      setCustomFacetDefinitions(facets);
+    }
+  }, [customConfig.facets, facets, isDictionaryReady, prevCustomFacets]);
+
+  const handleFilterSelected = (filter: string) => {
+    setOpened(false);
+    coreDispatch(
+      addFilterToCohortBuilder({ category: "custom", facetName: filter }),
+    );
+  };
+
+  const handleRemoveFilter = (filter: string) => {
+    coreDispatch(
+      removeFilterFromCohortBuilder({ category: "custom", facetName: filter }),
+    );
+  };
+
+  // handle the case where there are no custom filters
+  return (
+    <div className="flex flex-col w-screen/1.5 h-full bg-base-max pr-6 overflow-x-clip">
+      <LoadingOverlay visible={!isDictionaryReady} />
+      <Modal size="lg" opened={opened} onClose={() => setOpened(false)}>
+        <FacetSelection
+          title={"Add a Case Filter"}
+          facetType="cases"
+          handleFilterSelected={handleFilterSelected}
+          usedFacets={cohortBuilderFilters}
+        />
+      </Modal>
+      {customFacetDefinitions.length == 0 ? (
+        <Center>
+          <CustomFacetWhenEmptyGroup align="center" justify="center">
+            <AddFacetIcon
+              className="text-primary-content"
+              size="3em"
+            ></AddFacetIcon>
+            <Text
+              size="md"
+              weight={700}
+              className="text-primary-content-darker"
+            >
+              No custom filters added
+            </Text>
+            <Button
+              variant="outline"
+              onClick={() => setOpened(true)}
+              aria-label="Add a Custom Filter"
+              className="bg-base-lightest text-base-contrast-lightest"
+            >
+              Add a Custom Filter
+            </Button>
+          </CustomFacetWhenEmptyGroup>
+        </Center>
+      ) : (
+        <FacetGroup>
+          <Button
+            variant="outline"
+            className="h-48 bg-primary-lightest flex flex-row justify-center align-middle items-center border-base-darker b-2 border-dotted"
+            onClick={() => setOpened(true)}
+          >
+            <AddAdditionalIcon
+              className="text-primary-contrast-lightest"
+              size="2em"
+            />
+            <Text
+              size="md"
+              weight={700}
+              className="text-primary-contrast-lightest"
+            >
+              {" "}
+              Add a Custom Filter
+            </Text>
+          </Button>
+          {createFacetCard(
+            customFacetDefinitions,
+            "cases", // Cohort custom filter restricted to "cases"
+            customConfig.index as GQLIndexType,
+            partial(selectFieldFilter, coreSelector),
+            partial(dispatchFieldFilter, coreDispatch),
+            partial(clearFilters, coreDispatch),
+            handleRemoveFilter,
+          )}
+        </FacetGroup>
+      )}
+    </div>
+  );
+};
+
+export const FacetTabs = (): JSX.Element => {
   const tabsConfig = useCoreSelector((state) =>
     selectCohortBuilderConfig(state),
   );
+  const coreDispatch = useCoreDispatch();
+  const coreSelector = createSelectorHook(CoreContext);
+  const router = useRouter();
+  const facets =
+    useCoreSelector((state) => selectFacetDefinition(state)).data || {};
+  const [activeTab, setActiveTab] = useState(
+    router?.query?.tab
+      ? (router.query.tab as string)
+      : Object.keys(tabsConfig)[0],
+  );
+
+  useEffect(() => {
+    if (
+      router !== null &&
+      activeTab !== undefined &&
+      activeTab !== router?.query?.tab
+    ) {
+      router.push({ query: { ...Router.query, tab: activeTab } }, undefined, {
+        scroll: false,
+      });
+    }
+    // https://github.com/vercel/next.js/discussions/29403#discussioncomment-1908563
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab]);
+
+  useEffect(() => {
+    if (router?.query?.tab && activeTab !== router.query.tab) {
+      setActiveTab(router.query.tab as string);
+    }
+  }, [router?.query?.tab, activeTab, setActiveTab]);
 
   return (
     <div className="w-100">
-      <Tabs
-        variant="unstyled"
+      <StyledFacetTabs
         orientation="vertical"
+        value={activeTab}
+        onTabChange={setActiveTab}
+        keepMounted={false}
         classNames={{
-          tabControl:
-            "font-bold !font-medium !bg-nci-blue-dark !text-nci-gray-lightest",
-          tabActive: "!bg-white !text-nci-gray-darkest",
-          body: "!pl-0 !ml-0",
+          tab: "data-active:text-primary-content-darkest text-primary-content-lightest font-medium data-active:border-primary-darker data-active:border-l-1 data-active:border-t-1 data-active:border-b-1 data-active:bg-base-max hover:bg-primary-darker",
+          tabsList:
+            "flex flex-col bg-primary-dark text-primary-contrast-dark w-[240px] ",
+          root: "bg-base-max",
         }}
       >
-        {Object.values(tabsConfig).map((tabEntry: CohortBuilderCategory) => {
-          return (
-            <Tabs.Tab
-              key={`cohortTab-${tabEntry.label}`}
-              label={tabEntry.label}
-            >
-              <FacetGroup
-                facets={getFacetInfo(tabEntry.facets)}
-                docType={tabEntry.docType as GQLDocType}
-                indexType={tabEntry.index as GQLIndexType}
-              />
-            </Tabs.Tab>
-          );
-        })}
-      </Tabs>
+        <Tabs.List>
+          {Object.entries(tabsConfig).map(
+            ([key, tabEntry]: [string, CohortBuilderCategory]) => {
+              return (
+                <Tabs.Tab key={key} value={key}>
+                  {tabEntry.label}
+                </Tabs.Tab>
+              );
+            },
+          )}
+        </Tabs.List>
+        {Object.entries(tabsConfig).map(
+          ([key, tabEntry]: [string, CohortBuilderCategory]) => (
+            <Tabs.Panel key={key} value={key}>
+              {" "}
+              {tabEntry.label === "Custom Filters" ? (
+                <CustomFacetGroup />
+              ) : (
+                <FacetGroup>
+                  {createFacetCard(
+                    getFacetInfo(tabEntry.facets, facets),
+                    tabEntry.docType as GQLDocType,
+                    tabEntry.index as GQLIndexType,
+                    partial(selectFieldFilter, coreSelector),
+                    partial(dispatchFieldFilter, coreDispatch),
+                    partial(clearFilters, coreDispatch),
+                  )}
+                </FacetGroup>
+              )}
+            </Tabs.Panel>
+          ),
+        )}
+      </StyledFacetTabs>
     </div>
   );
 };

@@ -1,6 +1,16 @@
+import { useMemo } from "react";
 import GDC_Dictionary from "./config/gdc_tooltips.json";
 import GDC_Dictionary_Flattened from "./config/gdc_facet_dictionary_flat.json";
-import MiniSearch, { SearchResult } from "minisearch";
+import MiniSearch from "minisearch";
+import {
+  selectCohortBuilderConfig,
+  useCoreSelector,
+  selectCaseFacets,
+  selectFacetDefinition,
+  fieldNameToTitle,
+} from "@gff/core";
+import { getFacetInfo } from "@/features/cohortBuilder/utils";
+// TODO: Remove the above JSON config file and replace with the dictionary slice.
 
 export const get_facet_list = (
   category: string,
@@ -38,87 +48,54 @@ export const get_facets = (
     });
 };
 
-const get_facets_as_documents = (category: string): Array<Record<any, any>> => {
-  const root = GDC_Dictionary.dictionary[category];
-  const subcategory = Object.keys(root)
-    .filter((subcategory) => subcategory != "All")
-    .map((subcategory) => {
-      return {
-        subcategory: subcategory,
-        category: category,
-        facets: Object.keys(root[subcategory])
-          .filter((x) => root[subcategory][x].facet_type === "enum")
-          .map((x) => {
-            return { name: x, facet: root[subcategory][x] };
-          }),
-      };
-    });
-  return subcategory
-    .map((x) =>
-      x.facets.map((y) => {
-        return {
-          name: y.name,
-          enum: y.facet.enum,
-          subcategory: x.subcategory,
-          category: x.category,
-          id: y.facet.facet_filter,
-          description: y.facet.description,
-        };
-      }),
-    )
-    .flat();
-};
+export interface FacetSearchDocument {
+  name: string;
+  category: string;
+  categoryKey: string;
+  description: string;
+  enum: string[];
+}
 
-const get_facets_enums_as_documents = (
-  category: string,
-): Array<Record<any, any>> => {
-  const root = GDC_Dictionary.dictionary[category];
-  const subcategory = Object.keys(root)
-    .filter((subcategory) => subcategory === "All")
-    .map((subcategory) => {
-      return {
-        subcategory: subcategory,
-        category: category,
-        facets: Object.keys(root[subcategory])
-          .filter((x) => root[subcategory][x].facet_type === "enum")
-          .map((x) => {
-            return { name: x, facet: root[subcategory][x] };
-          }),
-      };
-    });
-  return subcategory
-    .map((x) =>
-      x.facets
-        .filter((x) => x.name === "Primary Site" || x.name === "Disease Type")
-        .map((y) => {
-          return {
-            name: y.name,
-            enum: y.facet.enum,
-            subcategory: x.subcategory,
-            category: x.category,
-            id: `all_${y.facet.facet_filter}`,
-            description: y.facet.description,
-          };
-        }),
-    )
-    .flat();
-};
-
-export const miniSearch = new MiniSearch({
+export const miniSearch = new MiniSearch<FacetSearchDocument>({
   fields: ["name", "description", "enum"], // fields to index for full-text search
-  storeFields: ["name", "category", "subcategory", "description"], // fields to return with search results
+  storeFields: ["name", "category", "categoryKey", "description", "enum", "id"], // fields to return with search results
 });
 
-export const init_search_index: () => MiniSearch<any> = () => {
-  miniSearch.addAll(get_facets_as_documents("Clinical"));
-  miniSearch.addAll(get_facets_enums_as_documents("Clinical"));
-  miniSearch.addAll(get_facets_as_documents("Biospecimen"));
+export const useFacetSearch = (): MiniSearch<FacetSearchDocument> => {
+  const tabsConfig = useCoreSelector((state) =>
+    selectCohortBuilderConfig(state),
+  );
+  const facets =
+    useCoreSelector((state) => selectFacetDefinition(state)).data || {};
+  const facetResults = useCoreSelector((state) => selectCaseFacets(state));
+
+  useMemo(() => {
+    miniSearch.removeAll();
+
+    const searchDocuments = [];
+
+    Object.entries(tabsConfig).forEach(([categoryKey, category]) => {
+      getFacetInfo(category.facets, facets).forEach((facet) => {
+        const result = facetResults[facet.full];
+        searchDocuments.push({
+          name: fieldNameToTitle(facet.full),
+          enum: Object.keys(result?.buckets || {}),
+          category: category.label,
+          categoryKey,
+          description: facet.description,
+          id: facet.full,
+        });
+      });
+    });
+
+    miniSearch.addAll(searchDocuments);
+    /* eslint-disable react-hooks/exhaustive-deps */
+  }, [
+    JSON.stringify(tabsConfig),
+    JSON.stringify(facetResults),
+    JSON.stringify(facets),
+  ]);
+  /* eslint-enable */
 
   return miniSearch;
 };
-
-export const search_facets: (s: string) => SearchResult[] = (s: string) => {
-  return miniSearch.search(s, { prefix: true, combineWith: "AND" });
-};
-
-init_search_index();

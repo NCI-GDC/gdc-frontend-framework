@@ -33,7 +33,6 @@ export const SummaryFacets: React.FC<SummaryFacetProps> = ({
                 field={entry.field}
                 docType={entry.docType}
                 facetName={entry.name}
-                showSearch={false}
                 startShowingData={false}
                 key={`summary-chart-${index}`}
                 width="w-64"

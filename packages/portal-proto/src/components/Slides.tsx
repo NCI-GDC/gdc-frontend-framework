@@ -1,3 +1,4 @@
+import { GDC_API } from "@gff/core";
 import { Badge, Card } from "@mantine/core";
 
 interface SlidesProps {
@@ -25,19 +26,21 @@ export const Slides: React.FC<SlidesProps> = ({
         shadow="sm"
         p="sm"
         sx={(theme) => ({
-          backgroundColor: isActive ? "#1784ac" : theme.colors.gray[5],
+          backgroundColor: isActive
+            ? theme.colors.accent[3]
+            : theme.colors.gray[3],
           "&:hover": {
             backgroundColor: !isActive && theme.colors.gray[7],
           },
         })}
       >
-        <Badge variant="filled" className="mb-1 text-blue text-xs">
+        <Badge variant="filled" className="mb-1 text-primary-content text-xs">
           {submitter_id}
         </Badge>
-
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           alt={`thumbnail of ${submitter_id}`}
-          src={`https://api.gdc.cancer.gov/tile/${file_id}?level=7&x=0&y=0`}
+          src={`${GDC_API}/tile/${file_id}?level=7&x=0&y=0`}
           className="max-w-[200px] max-h-[90px]"
         />
       </Card>
