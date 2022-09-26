@@ -1,7 +1,8 @@
 import { useGenesTable } from "@gff/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GenesTable } from "./GenesTable";
 import { useMeasure } from "react-use";
+import { useSpring } from "react-spring";
 // import { getGraphQLFilters } from "./types";
 // import { useGetGenesTableQuery } from "@gff/core";
 
@@ -30,6 +31,19 @@ export const GTableContainer: React.VFC<GTableContainerProps> = ({
     sorts: sorts,
   });
 
+  const spring = useSpring({
+    from: {
+      height: 30,
+      width: 10,
+      opacity: 0,
+    },
+    to: {
+      height: 650,
+      width: 10,
+      opacity: 1,
+    },
+  });
+
   // const { data, isLoading, isError } = useGetGenesTableQuery({
   //   filters: getGraphQLFilters(pageSize, offset),
   // });
@@ -49,6 +63,7 @@ export const GTableContainer: React.VFC<GTableContainerProps> = ({
             handleSurvivalPlotToggled={handleSurvivalPlotToggled}
             width={width}
             height={height}
+            spring={spring}
           />
         )}
     </div>

@@ -33,6 +33,7 @@ export interface GenesTableProps {
     name: string,
     field: string,
   ) => void;
+  spring: any;
 }
 
 export const GENE_SET_OPTIONS = [

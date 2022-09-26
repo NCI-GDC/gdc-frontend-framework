@@ -11,10 +11,25 @@ export const GeneAffectedCases: React.VFC<GeneSubRow> = ({
   height,
 }: GeneSubRow) => {
   const [subData, setSubData] = useState([]);
+  const [miniHeight, setMiniHeight] = useState(650);
+
   const horizontalSpring = useSpring({
     from: { width: 0, opacity: 0 },
     to: { width: width, opacity: 1 },
     config: config.molasses,
+  });
+
+  const verticalSpring = useSpring({
+    from: {
+      height: 30,
+      width: 10,
+      opacity: 0,
+    },
+    to: {
+      height: miniHeight,
+      width: 10,
+      opacity: 1,
+    },
   });
 
   const getGeneSubRow = (geneId: string) => {
@@ -57,10 +72,14 @@ export const GeneAffectedCases: React.VFC<GeneSubRow> = ({
   }, []);
 
   return (
-    <ListSpring
-      subData={subData}
-      horizontalSpring={horizontalSpring}
-      verticalSpring={spring}
-    />
+    <>
+      <ListSpring
+        subData={subData}
+        horizontalSpring={horizontalSpring}
+        spring={spring}
+        containerWidth={width}
+        setMiniHeight={setMiniHeight}
+      />
+    </>
   );
 };

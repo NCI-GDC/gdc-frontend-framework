@@ -2,7 +2,6 @@ import { GeneAffectedCases } from "./GeneAffectedCases";
 import ToggleSpring from "../shared/ToggleSpring";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import _ from "lodash";
-import { ExpandedState } from "@tanstack/react-table";
 
 interface SingleGene {
   biotype: string;
@@ -63,7 +62,7 @@ export const createTableColumn = (
   spring: any,
   width: number,
   height: number,
-  //   firstColumn: string
+  firstColumn: string,
 ) => {
   switch (key) {
     case "SSMSAffectedCasesAcrossTheGDC":
@@ -78,33 +77,39 @@ export const createTableColumn = (
               return (
                 <div>
                   <>
-                    {row.getCanExpand() ? (
-                      <button
-                        {...{
-                          onClick: row.getToggleExpandedHandler(),
-                          style: { cursor: "pointer" },
-                        }}
-                      >
-                        <ToggleSpring
-                          isExpanded={row.getIsExpanded()}
-                          icon={
-                            <MdKeyboardArrowDown size="small" color="white" />
-                          }
-                          twStyles={`bg-red-500 rounded-md h-3 w-3`}
-                        />
-                      </button>
-                    ) : (
-                      <>
-                        <div className={`relative`}>
-                          <GeneAffectedCases
-                            geneId={row.value}
-                            spring={spring}
-                            width={width}
-                            height={height}
-                          ></GeneAffectedCases>
-                        </div>
-                      </>
-                    )}
+                    <GTableCell row={row} accessor={key} />
+                    {row.getCanExpand()
+                      ? key === firstColumn && (
+                          <button
+                            {...{
+                              onClick: row.getToggleExpandedHandler(),
+                              style: { cursor: "pointer" },
+                            }}
+                          >
+                            <ToggleSpring
+                              isExpanded={row.getIsExpanded()}
+                              icon={
+                                <MdKeyboardArrowDown
+                                  size="small"
+                                  color="white"
+                                />
+                              }
+                              twStyles={`bg-red-500 rounded-md h-3 w-3`}
+                            />
+                          </button>
+                        )
+                      : firstColumn && (
+                          <>
+                            <div className={`relative`}>
+                              <GeneAffectedCases
+                                geneId={row.value}
+                                spring={spring}
+                                width={width}
+                                height={height}
+                              ></GeneAffectedCases>
+                            </div>
+                          </>
+                        )}
                     {""}
                     {}
                   </>
@@ -130,6 +135,40 @@ export const createTableColumn = (
                 <div>
                   <>
                     <GTableCell row={row} accessor={key} />
+                    {row.getCanExpand()
+                      ? key === firstColumn && (
+                          <button
+                            {...{
+                              onClick: row.getToggleExpandedHandler(),
+                              style: { cursor: "pointer" },
+                            }}
+                          >
+                            <ToggleSpring
+                              isExpanded={row.getIsExpanded()}
+                              icon={
+                                <MdKeyboardArrowDown
+                                  size="small"
+                                  color="white"
+                                />
+                              }
+                              twStyles={`bg-red-500 rounded-md h-3 w-3`}
+                            />
+                          </button>
+                        )
+                      : key === firstColumn && (
+                          <>
+                            <div className={`relative`}>
+                              <GeneAffectedCases
+                                geneId={row.value}
+                                spring={spring}
+                                width={width}
+                                height={height}
+                              ></GeneAffectedCases>
+                            </div>
+                          </>
+                        )}
+                    {""}
+                    {}
                   </>
                 </div>
               );

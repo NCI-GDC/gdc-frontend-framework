@@ -5,7 +5,15 @@ import React, {
   useCallback,
   SyntheticEvent,
 } from "react";
-import { useSpring, animated, config, easings } from "react-spring";
+import {
+  useSpring,
+  animated,
+  config,
+  easings,
+  SpringValue,
+  SpringRef,
+  SpringContext,
+} from "react-spring";
 import { Gene, GeneSubRow, GenesTableProps } from "./types";
 import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { ExpTable } from "../shared/ExpTable";
@@ -23,6 +31,7 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
   handleSurvivalPlotToggled,
   width,
   height,
+  spring,
 }: GenesTableProps) => {
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
   const [expanded, setExpanded] = useState<any>({});
@@ -32,6 +41,7 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
   const [columnListOrder, setColumnListOrder] = useState<string[]>([]);
   const [showColumnMenu, setShowColumnMenu] = useState<boolean>(false);
   const [subRowListLength, setSubRowListLength] = useState<number>(0);
+  // const [spring, setSpring] = useState(undefined);
 
   const useGeneTableFormat = useCallback(
     (initialData) => {
@@ -49,20 +59,6 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
   );
 
   const transformResponse = useGeneTableFormat(initialData);
-
-  const verticalSpring = useSpring({
-    from: {
-      height: 30,
-      width: 10,
-      opacity: 0,
-    },
-    to: {
-      height: 650,
-      width: 10,
-      opacity: 1,
-    },
-    config: config.slow,
-  });
 
   const handleExpandedProxy = (exp: ExpandedState) => {
     setExpandedProxy(exp);
@@ -95,16 +91,56 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
   }, [expandedProxy]);
 
   // todo replace this callback w/ transformResponse inside rtk endpoint call
+  // useEffect(() => {
+  //   const mainSpring = useSpring({
+  //   from: {
+  //     height: 30,
+  //     width: 10,
+  //     opacity: 0,
+  //   },
+  //   to: {
+  //     height: 650,
+  //     width: 10,
+  //     opacity: 1,
+  //   }
+  // });
+  //   setSpring(mainSpring);
+  // }, [width]);
 
-  const columns = React.useMemo<ColumnDef<GenesColumns>[]>(
-    () =>
-      Object.keys(transformResponse[0])
-        .filter((tr) => tr !== "subRows")
-        .map((accessor) => {
-          return createTableColumn(accessor, verticalSpring, width, height);
-        }),
-    [transformResponse, expanded],
-  );
+  const sizeMapPOC = {
+    somegeneId: 650,
+  };
+
+  const getSubrowHeight = (width, height, geneId) => {
+    return sizeMapPOC[geneId];
+  };
+
+  const columns = React.useMemo<ColumnDef<GenesColumns>[]>(() => {
+    //   const newSpring = useSpring({from: {
+    //     height: 30,
+    //     width: 10,
+    //     opacity: 0,
+    //   },
+    //   to: {
+    //     height: getSubrowHeight(width, height, "somegeneId"),
+    //     width: 10,
+    //     opacity: 1,
+    //   }
+    // });
+    return Object.keys(transformResponse[0])
+      .filter((tr) => tr !== "subRows")
+      .map((accessor) => {
+        // define Spring here with knowledge of ratio between
+        // const mySpring = useSpring({});
+        return createTableColumn(
+          accessor,
+          spring,
+          width,
+          height,
+          "name", // replace string with columnListOrder[0]
+        );
+      });
+  }, [transformResponse, expanded]);
 
   // when columnOrder updates, update memoized columns
   // type of updates: toggle visibility off/on or swap order
