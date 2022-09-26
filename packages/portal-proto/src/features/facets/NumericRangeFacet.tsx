@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   MdClose as CloseIcon,
-  MdFlip as FlipIcon,
   MdSort as SortIcon,
   MdSortByAlpha as AlphaSortIcon,
   MdWarning as WarningIcon,
@@ -861,12 +860,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
   dismissCallback = undefined,
   width = undefined,
 }: NumericFacetProps) => {
-  const [isFacetView, setIsFacetView] = useState(true);
   const clearFilters = hooks.useClearFilter();
-
-  const toggleFlip = () => {
-    setIsFacetView(!isFacetView);
-  };
 
   return (
     <div id={field}>
@@ -894,13 +888,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
             </div>
           </Tooltip>
           <div className="flex flex-row">
-            <FacetIconButton
-              onClick={toggleFlip}
-              aria-label="Flip between form and chart"
-            >
-              <FlipIcon size="1.25em" />
-            </FacetIconButton>
-            <FacetIconButton onClick={clearFilters}>
+            <FacetIconButton onClick={() => clearFilters(field)}>
               <UndoIcon size="1.15em" />
             </FacetIconButton>
             {dismissCallback ? (

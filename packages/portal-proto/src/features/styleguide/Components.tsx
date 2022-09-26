@@ -13,10 +13,8 @@ import {
   useSelectFieldFilter,
   useClearFilters,
   useUpdateFacetFilter,
+  useRangeFacet,
 } from "../facets/hooks";
-
-import { useCoreDispatch, CoreContext } from "@gff/core";
-import { createSelectorHook } from "react-redux";
 
 const Components: ReactNode = () => {
   return (
@@ -79,16 +77,29 @@ const Components: ReactNode = () => {
         rangeDatatype="year"
         field="demographic.year_of_death"
         width="w-1/3"
+        hooks={{
+          useGetFacetData: useRangeFacet,
+          useGetFacetFilters: useSelectFieldFilter,
+          useUpdateFacetFilters: useUpdateFacetFilter,
+          useClearFilter: useClearFilters,
+          useTotalCounts: useTotalCounts,
+        }}
       />
-      {/* ---
+
       <Divider label="Age Facet" classNames={divider_style} />
       <NumericRangeFacet
         docType="cases"
         rangeDatatype="age"
         field="diagnoses.age_at_diagnosis"
         width="w-1/3"
+        hooks={{
+          useGetFacetData: useRangeFacet,
+          useGetFacetFilters: useSelectFieldFilter,
+          useUpdateFacetFilters: useUpdateFacetFilter,
+          useClearFilter: useClearFilters,
+          useTotalCounts: useTotalCounts,
+        }}
       />
-
 
       <Divider label="Percent Range Facet" classNames={divider_style} />
       <NumericRangeFacet
@@ -97,6 +108,13 @@ const Components: ReactNode = () => {
         rangeDatatype="percent"
         field="samples.portions.slides.percent_tumor_cells"
         width="w-1/3"
+        hooks={{
+          useGetFacetData: useRangeFacet,
+          useGetFacetFilters: useSelectFieldFilter,
+          useUpdateFacetFilters: useUpdateFacetFilter,
+          useClearFilter: useClearFilters,
+          useTotalCounts: useTotalCounts,
+        }}
       />
 
       <Divider label="Genes Table" classNames={divider_style} />
@@ -104,7 +122,6 @@ const Components: ReactNode = () => {
         selectedSurvivalPlot={{ id: undefined }}
         handleSurvivalPlotToggled={undefined}
       />
-      === */}
     </div>
   );
 };
