@@ -230,10 +230,10 @@ export const MultipleImageViewer = ({
                     onTabChange={onTabChange}
                     classNames={{
                       root: "max-h-[555px] gap-2 overflow-x-hidden min-w-[40%]",
-                      tab: "bg-white",
+                      tab: "group tab bg-white hover:bg-primary",
                       tabsList: "bg-base-light overflow-y-auto",
                       tabLabel:
-                        "text-xs text-primary-content-darkest px-2 font-medium",
+                        "text-xs text-primary-content-darkest px-2 font-medium group-hover:text-primary-contrast",
                       panel: "max-h-[550px] overflow-y-auto",
                     }}
                     styles={(theme) => ({
