@@ -71,9 +71,9 @@ export const classifyFacetDatatype = (f: FacetDefinition): FacetTypes => {
   if (fieldName.includes("age_is_")) return "enum";
   if (fieldName.includes("datetime")) return "datetime";
   if (fieldName.includes("percent")) return "percent";
-  if (fieldName.includes("age_")) return "age";
+  if (fieldName.includes(".age_")) return "age";
   if (fieldName.includes("_age_")) return "age";
-  if (fieldName.includes("_age")) return "age";
+  if (fieldName.endsWith("_age")) return "age";
   if (fieldName.includes("days")) return "days";
   if (fieldName.includes("years")) return "years";
   if (fieldName.includes("year")) return "year";

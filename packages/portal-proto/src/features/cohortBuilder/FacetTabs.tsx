@@ -291,7 +291,7 @@ export const FacetTabs = (): JSX.Element => {
           ([key, tabEntry]: [string, CohortBuilderCategory]) => (
             <Tabs.Panel key={key} value={key}>
               {" "}
-              {tabEntry.label === "Custom Filters" ? (
+              {key === "custom" ? (
                 <CustomFacetGroup />
               ) : (
                 <FacetGroup>

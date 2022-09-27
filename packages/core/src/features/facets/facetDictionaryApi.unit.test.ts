@@ -165,12 +165,17 @@ describe("facet label utils", () => {
 });
 
 describe("test facet types", () => {
-  test("should create a title minus cases", () => {
+  test("should return appropriate enum type", () => {
     // TODO: add additional tests for all types
     const TO_TEST = [
       { field: "cases.project.project_id", type: "", expected_type: "enum" },
       { field: "demographic.age_at_index", type: "", expected_type: "age" },
       { field: "cases.demographic.race", type: "", expected_type: "enum" },
+      {
+        field: "cases.diagnoses.treatments.therapeutic_agents",
+        type: "keyword",
+        expected_type: "enum",
+      },
       {
         field: "gene.is_cancer_gene_census",
         type: "",
