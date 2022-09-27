@@ -1,0 +1,5 @@
+[submodule "holmes-py"]
+	path = holmes-py
+	url = git@github.com:NCI-GDC/holmes-py.git
+[submodule "holmes-py"]
+	branch = data-portal-v2
