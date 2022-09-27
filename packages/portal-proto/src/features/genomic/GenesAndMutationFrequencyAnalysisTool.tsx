@@ -3,7 +3,9 @@ import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
 import GenesTable from "../genesTable/GenesTable";
 import MutationsTable from "../mutationsTable/MutationsTable";
 import { Grid, Tabs, LoadingOverlay } from "@mantine/core";
-import { EnumFacet } from "../facets/EnumFacet";
+import { EnumFacet } from "@/features/facets/EnumFacet";
+import ToggleFacet from "@/features/facets/ToggleFacet";
+import FilterFacets from "./filters.json";
 import dynamic from "next/dynamic";
 import {
   GqlOperation,
@@ -17,52 +19,19 @@ import {
   buildCohortGqlOperator,
   useTopGene,
 } from "@gff/core";
+
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
+import { useTotalCounts } from "@/features/facets/hooks";
+
+import {
+  useClearGenomicFilters,
+  useGenesFacet,
+  useUpdateGenomicEnumFacetFilter,
+} from "./hooks";
 
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
   ssr: false,
 });
-
-const GenesFacetNames = [
-  {
-    facet_filter: "genes.biotype",
-    name: "Biotype",
-    description: "No description",
-  },
-  {
-    facet_filter: "genes.is_cancer_gene_census",
-    name: "Is Cancer Gene Census",
-    description: "No description",
-  },
-];
-
-const MutationFacetNames = [
-  {
-    facet_filter: "ssms.consequence.transcript.annotation.vep_impact",
-    name: "VEP Impact",
-    description: "No description",
-  },
-  {
-    facet_filter: "ssms.consequence.transcript.annotation.sift_impact",
-    name: "SIFT Impact",
-    description: "No description",
-  },
-  {
-    facet_filter: "ssms.consequence.transcript.annotation.polyphen_impact",
-    name: "Polyphen Impact",
-    description: "No description",
-  },
-  {
-    facet_filter: "ssms.consequence.transcript.consequence_type",
-    name: "Consequence Type",
-    description: "No description",
-  },
-  {
-    facet_filter: "ssms.mutation_subtype",
-    name: "Type",
-    description: "No description",
-  },
-];
 
 const buildGeneHaveAndHaveNotFilters = (
   currentFilters: GqlOperation,
@@ -126,6 +95,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
 
     [cohortFilters, genomicFilters],
   );
+
   const f = buildGeneHaveAndHaveNotFilters(
     filters,
     comparativeSurvival?.symbol,
@@ -179,6 +149,11 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     coreDispatch(clearGenomicFilters());
   }, [cohortFilters, coreDispatch]);
 
+  // clear local filters when cohort changes or tabs change
+  useEffect(() => {
+    coreDispatch(clearGenomicFilters());
+  }, [cohortFilters, coreDispatch]);
+
   /**
    * Clear comparative when local filters change
    */
@@ -203,11 +178,37 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   return (
     <div className="flex flex-row">
       <div className="flex flex-col gap-y-4 mr-3 mt-12 w-min-64 w-max-64">
-        {GenesFacetNames.map((x, index) => {
+        {FilterFacets.genes.map((x, index) => {
+          if (x.type == "toggle") {
+            return (
+              <ToggleFacet
+                key={`${x.facet_filter}-${index}`}
+                field={`${x.facet_filter}`}
+                hooks={{
+                  useGetFacetData: useGenesFacet,
+                  useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
+                  useClearFilter: useClearGenomicFilters,
+                  useTotalCounts: useTotalCounts,
+                }}
+                facetName={x.name}
+                docType="genes"
+                showPercent={false}
+                hideIfEmpty={false}
+                description={x.description}
+                width="w-64"
+              />
+            );
+          }
           return (
             <EnumFacet
               key={`${x.facet_filter}-${index}`}
               field={`${x.facet_filter}`}
+              hooks={{
+                useGetFacetData: useGenesFacet,
+                useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
+                useClearFilter: useClearGenomicFilters,
+                useTotalCounts: useTotalCounts,
+              }}
               facetName={x.name}
               docType="genes"
               showPercent={false}
@@ -217,16 +218,21 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
             />
           );
         })}
-        {MutationFacetNames.map((x, index) => {
+        {FilterFacets.ssms.map((x, index) => {
           return (
             <EnumFacet
               key={`${x.facet_filter}-${index}`}
               field={`${x.facet_filter}`}
               facetName={x.name}
               docType="ssms"
+              hooks={{
+                useGetFacetData: useGenesFacet,
+                useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
+                useClearFilter: useClearGenomicFilters,
+                useTotalCounts: useTotalCounts,
+              }}
               showPercent={false}
               hideIfEmpty={false}
-              description={x.description}
               width="w-64"
             />
           );

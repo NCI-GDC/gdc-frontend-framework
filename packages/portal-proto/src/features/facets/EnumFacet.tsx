@@ -65,9 +65,9 @@ export const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   const [visibleItems, setVisibleItems] = useState(DEFAULT_VISIBLE_ITEMS);
   const cardRef = useRef<HTMLDivElement>(null);
   const { data, enumFilters, isSuccess } = hooks.useGetFacetData(
+    field,
     docType,
     indexType,
-    field,
   );
   const [selectedEnums, setSelectedEnums] = useState(enumFilters);
   const prevFilters = usePrevious(enumFilters);

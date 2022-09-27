@@ -24,15 +24,16 @@ export type GetFacetDataFunction = <T extends FacetResponse = FacetResponse>(
 ) => T;
 
 export type GetFacetDataFromDocAndIndexFunction = (
+  field: string,
   docType: GQLDocType,
   indexType: GQLIndexType,
-  field: string,
 ) => EnumFacetResponse;
 
 export type SelectFacetFilterFunction = (field: string) => Operation;
 export type UpdateFacetFilterFunction = (field: string, op: Operation) => void;
 export type UpdateFacetFilterHook = () => UpdateFacetFilterFunction;
-export type ClearFacetHook = () => (field: string) => void;
+export type ClearFacetFunction = (field: string) => void;
+export type ClearFacetHook = () => ClearFacetFunction;
 export type GetTotalCountsFunction = (countName: string) => number;
 export type updateArrayFilterValues = (
   field: string,
@@ -40,10 +41,10 @@ export type updateArrayFilterValues = (
 ) => void;
 
 export type GetRangeFacetDataFunction = (
-  docType: GQLDocType,
-  indexType: GQLIndexType,
   field: string,
   ranges: ReadonlyArray<NumericFromTo>,
+  docType: GQLDocType,
+  indexType: GQLIndexType,
 ) => FacetResponse;
 
 export interface FacetDataHooks {

@@ -2,6 +2,12 @@ import React from "react";
 import FilterFacets from "./filters.json";
 import OncoGrid from "./OncoGridWrapper";
 import { EnumFacet } from "../facets/EnumFacet";
+import {
+  useClearGenomicFilters,
+  useGenesFacet,
+  useUpdateGenomicEnumFacetFilter,
+} from "@/features/genomic/hooks";
+import { useTotalCounts } from "@/features/facets/hooks";
 
 const OncoGridAnalysisTool: React.FC = () => {
   return (
@@ -17,6 +23,12 @@ const OncoGridAnalysisTool: React.FC = () => {
               showPercent={false}
               hideIfEmpty={false}
               description={x.description}
+              hooks={{
+                useGetFacetData: useGenesFacet,
+                useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
+                useClearFilter: useClearGenomicFilters,
+                useTotalCounts: useTotalCounts,
+              }}
             />
           );
         })}
@@ -30,6 +42,12 @@ const OncoGridAnalysisTool: React.FC = () => {
               showPercent={false}
               hideIfEmpty={false}
               description={x.description}
+              hooks={{
+                useGetFacetData: useGenesFacet,
+                useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
+                useClearFilter: useClearGenomicFilters,
+                useTotalCounts: useTotalCounts,
+              }}
             />
           );
         })}

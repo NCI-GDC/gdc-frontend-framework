@@ -34,9 +34,9 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
     : trimFirstFieldNameToTitle(field, true);
 
   const { data, isSuccess, enumFilters } = hooks.useGetFacetData(
+    field,
     docType,
     indexType,
-    field,
   );
 
   const toggleValue = useMemo(

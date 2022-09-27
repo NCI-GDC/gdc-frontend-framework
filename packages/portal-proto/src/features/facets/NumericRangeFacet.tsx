@@ -589,10 +589,10 @@ const RangeInputWithPrefixedRanges: React.FC<
   const [selectedRange, setSelectedRange] = useState(filterKey); // the current selected range
 
   const { data: rangeData, isSuccess } = useRangeFacet(
-    docType,
-    indexType,
     field,
     ranges,
+    docType,
+    indexType,
   );
   const rangeLabelsAndValues = BuildRangeLabelsAndValues(
     bucketRanges,
