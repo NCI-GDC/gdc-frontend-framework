@@ -13,17 +13,27 @@ import {
   useCoreDispatch,
   usePrevious,
   joinFilters,
+  removeCohortFilter,
+  updateCohortFilter,
 } from "@gff/core";
 import { useEffect } from "react";
 import { ThunkDispatch, AnyAction } from "@reduxjs/toolkit";
 import isEqual from "lodash/isEqual";
-import { EnumFacetResponse } from "@/features/facets/types";
+import {
+  ClearFacetFunction,
+  EnumFacetResponse,
+  UpdateFacetFilterFunction,
+} from "@/features/facets/types";
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit/dist/createAction";
 import { extractValue } from "@/features/facets/hooks";
-import { useAppSelector } from "@/features/repositoryApp/appApi";
+import {
+  useAppSelector,
+  useAppDispatch,
+} from "@/features/repositoryApp/appApi";
 import {
   selectFilters,
   selectFiltersByName,
+  updateRepositoryFilter,
 } from "@/features/repositoryApp/repositoryFiltersSlice";
 
 /**
@@ -40,6 +50,13 @@ export const useRepositoryEnumValues = (field: string): OperandValue => {
 
 export const useRepositoryFilters = (): FilterSet => {
   return useAppSelector((state) => selectFilters(state));
+};
+
+export const useClearRepositoryFilters = (): ClearFacetFunction => {
+  const dispatch = useAppDispatch();
+  return (field: string) => {
+    dispatch(removeCohortFilter(field));
+  };
 };
 
 type updateEnumFiltersFunc = (
@@ -155,5 +172,14 @@ export const useLocalFilters = (
     isFetching: facet?.status === "pending",
     isSuccess: facet?.status === "fulfilled",
     isError: facet?.status === "rejected",
+  };
+};
+
+// Update filter hook
+export const useUpdateRepositoryFacetFilter = (): UpdateFacetFilterFunction => {
+  const dispatch = useAppDispatch();
+  // update the filter for this facet
+  return (field: string, operation: Operation) => {
+    dispatch(updateRepositoryFilter({ field: field, operation: operation }));
   };
 };

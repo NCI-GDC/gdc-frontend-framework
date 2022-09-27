@@ -1,4 +1,3 @@
-import { EnumFacet } from "@/features/facets/EnumFacet";
 import React, { useEffect, useState, useCallback } from "react";
 import {
   EnumOperandValue,
@@ -34,7 +33,11 @@ import {
   useRepositoryFilters,
   useRepositoryEnumValues,
   updateEnumerationFilters,
+  useClearRepositoryFilters,
+  useUpdateRepositoryFacetFilter,
 } from "@/features/repositoryApp/hooks";
+import { useTotalCounts } from "@/features/facets/hooks";
+import { EnumFacet } from "@/features/facets/EnumFacet";
 import {
   updateRepositoryFilter,
   removeRepositoryFilter,
@@ -78,6 +81,8 @@ export const FileFacetPanel = (): JSX.Element => {
     useState<ReadonlyArray<FacetDefinition>>(facets);
   const prevCustomFacets = usePrevious(facets);
   const [opened, setOpened] = useState(false);
+
+  // Global cohort filters
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilterSet(state),
   );
@@ -183,9 +188,12 @@ export const FileFacetPanel = (): JSX.Element => {
               hideIfEmpty={false}
               description={x.description}
               dismissCallback={!isDefault ? handleRemoveFilter : undefined}
-              getFacetData={useRepositoryEnumData}
-              updateFacetEnumerations={useEnumValues}
-              clearFilterFunc={clearFilters}
+              hooks={{
+                useGetFacetData: useRepositoryEnumData,
+                useUpdateFacetFilters: useUpdateRepositoryFacetFilter,
+                useClearFilter: useClearRepositoryFilters,
+                useTotalCounts: useTotalCounts,
+              }}
             />
           );
         })}

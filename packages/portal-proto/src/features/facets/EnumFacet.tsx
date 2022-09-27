@@ -73,12 +73,6 @@ export const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   const prevFilters = usePrevious(enumFilters);
   const searchInputRef = useRef(null);
 
-  // get the total count to compute percentages
-  // TODO: move this outside of Facet Component
-  // const totalCount = useCoreSelector((state) =>
-  //   selectTotalCountsByName(state, FacetDocTypeToCountsIndexMap[docType]),
-  // );
-
   const totalCount = hooks.useTotalCounts(
     FacetDocTypeToCountsIndexMap[docType],
   );
@@ -90,22 +84,6 @@ export const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
       searchInputRef?.current?.focus();
     }
   }, [isSearching]);
-
-  // const updateFacetEnum = (fieldName: string, values: EnumOperandValue) => {
-  //   if (values === undefined) return;
-  //   if (values.length > 0) {
-  //     // TODO: Assuming Includes by default but this might change to Include|Excludes
-  //     updateFacetFilters(fieldName, {
-  //       operator: "includes",
-  //       field: fieldName,
-  //       operands: values,
-  //     });
-  //   }
-  //   // no values remove the filter
-  //   else {
-  //     clearFilters(fieldName);
-  //   }
-  // };
 
   // filter missing and "" strings and update checkboxes
   useEffect(() => {
