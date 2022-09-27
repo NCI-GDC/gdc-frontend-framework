@@ -27,9 +27,7 @@ export const GTableHeader = ({
 }): JSX.Element => {
   return (
     <>
-      <div className={twStyles} onClick={() => console.log("key", title)}>
-        {_.startCase(title)}
-      </div>
+      <div className={twStyles}>{_.startCase(title)}</div>
     </>
   );
 };
@@ -64,6 +62,7 @@ export const createTableColumn = (
   height: number,
   firstColumn: string,
 ) => {
+  console.log("firstColumn", firstColumn, "key", key);
   switch (key) {
     case "SSMSAffectedCasesAcrossTheGDC":
       return {
@@ -78,40 +77,34 @@ export const createTableColumn = (
                 <div>
                   <>
                     <GTableCell row={row} accessor={key} />
-                    {row.getCanExpand()
-                      ? key === firstColumn && (
-                          <button
-                            {...{
-                              onClick: row.getToggleExpandedHandler(),
-                              style: { cursor: "pointer" },
-                            }}
-                          >
-                            <ToggleSpring
-                              isExpanded={row.getIsExpanded()}
-                              icon={
-                                <MdKeyboardArrowDown
-                                  size="small"
-                                  color="white"
-                                />
-                              }
-                              twStyles={`bg-red-500 rounded-md h-3 w-3`}
-                            />
-                          </button>
-                        )
-                      : firstColumn && (
-                          <>
-                            <div className={`relative`}>
-                              <GeneAffectedCases
-                                geneId={row.value}
-                                spring={spring}
-                                width={width}
-                                height={height}
-                              ></GeneAffectedCases>
-                            </div>
-                          </>
-                        )}
-                    {""}
-                    {}
+                    {row.getCanExpand() && (
+                      <button
+                        {...{
+                          onClick: row.getToggleExpandedHandler(),
+                          style: { cursor: "pointer" },
+                        }}
+                      >
+                        <ToggleSpring
+                          isExpanded={row.getIsExpanded()}
+                          icon={
+                            <MdKeyboardArrowDown size="small" color="white" />
+                          }
+                          twStyles={`bg-red-500 rounded-md h-3 w-3`}
+                        />
+                      </button>
+                    )}
+                  </>
+                  <>
+                    {!row.getCanExpand() && firstColumn === key && (
+                      <div className={`relative`}>
+                        <GeneAffectedCases
+                          geneId={row.value}
+                          spring={spring}
+                          width={width}
+                          height={height}
+                        ></GeneAffectedCases>
+                      </div>
+                    )}
                   </>
                 </div>
               );
@@ -135,40 +128,18 @@ export const createTableColumn = (
                 <div>
                   <>
                     <GTableCell row={row} accessor={key} />
-                    {row.getCanExpand()
-                      ? key === firstColumn && (
-                          <button
-                            {...{
-                              onClick: row.getToggleExpandedHandler(),
-                              style: { cursor: "pointer" },
-                            }}
-                          >
-                            <ToggleSpring
-                              isExpanded={row.getIsExpanded()}
-                              icon={
-                                <MdKeyboardArrowDown
-                                  size="small"
-                                  color="white"
-                                />
-                              }
-                              twStyles={`bg-red-500 rounded-md h-3 w-3`}
-                            />
-                          </button>
-                        )
-                      : key === firstColumn && (
-                          <>
-                            <div className={`relative`}>
-                              <GeneAffectedCases
-                                geneId={row.value}
-                                spring={spring}
-                                width={width}
-                                height={height}
-                              ></GeneAffectedCases>
-                            </div>
-                          </>
-                        )}
-                    {""}
-                    {}
+                    <>
+                      {!row.getCanExpand() && firstColumn === key && (
+                        <div className={`relative`}>
+                          <GeneAffectedCases
+                            geneId={row.value}
+                            spring={spring}
+                            width={width}
+                            height={height}
+                          ></GeneAffectedCases>
+                        </div>
+                      )}
+                    </>
                   </>
                 </div>
               );
@@ -188,13 +159,6 @@ export const getGene = (
   cases: number,
 ) => {
   return {
-    SSMSAffectedCasesAcrossTheGDC:
-      g.ssm_case > 0
-        ? `${g.ssm_case + " / " + cases} (${(
-            (100 * g.ssm_case) /
-            cases
-          ).toFixed(2)}%)`
-        : `0`,
     // survival: {
     //     name: g.name,
     //     symbol: g.symbol,
@@ -207,6 +171,13 @@ export const getGene = (
         ? `${g.cnv_case + " / " + filteredCases} (${(
             (100 * g.cnv_case) /
             filteredCases
+          ).toFixed(2)}%)`
+        : `0`,
+    SSMSAffectedCasesAcrossTheGDC:
+      g.ssm_case > 0
+        ? `${g.ssm_case + " / " + cases} (${(
+            (100 * g.ssm_case) /
+            cases
           ).toFixed(2)}%)`
         : `0`,
     CNVGain:

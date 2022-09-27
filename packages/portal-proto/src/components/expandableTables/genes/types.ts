@@ -3,9 +3,9 @@ import { ExpandedState } from "@tanstack/table-core";
 export interface Gene {
   symbol: string;
   name: string;
-  survival: string;
+  // survival: string;
   SSMSAffectedCasesInCohort: string;
-  SSMSAffectedCasesAcrossTheGDC: string[];
+  SSMSAffectedCasesAcrossTheGDC: string;
   CNVGain: string;
   CNVLoss: string;
   mutations: number;
@@ -42,6 +42,29 @@ export const GENE_SET_OPTIONS = [
   { label: "Save as new gene set", value: "save" },
   { label: "Add existing gene set", value: "add" },
   { label: "Remove from existing gene set", value: "remove" },
+];
+
+export const DEFAULT_GTABLE_ORDER = [
+  // { id: "geneId", columnName: "Gene ID", visible: true },
+  { id: "symbol", columnName: "Symbol", visisble: true },
+  { id: "name", columnName: "Name", visible: true },
+  // { id: "cytoband", columnName: "Cytoband", visible: false },
+  // { id: "type", columnName: "Type", visisble: false },
+  {
+    id: "SSMSAffectedCasesInCohort",
+    columnName: "# SSMS Affected Cases In Cohort",
+    visible: true,
+  },
+  {
+    id: "SSMSAffectedCasesAcrossTheGDC",
+    columnName: "# SSMS Affected Cases Across The GDC",
+    visible: true,
+  },
+  { id: "CNVGain", columnName: "# CNV Gain", visisble: true },
+  { id: "CNVLoss", columnName: "# CNV Loss", visible: true },
+  { id: "mutations", columnName: "Mutations", visible: true },
+  { id: "annotations", columnName: "Annotations", visible: true },
+  // { id: "survival", columnName: "Survival", visible: true }
 ];
 
 export const INITIAL_FILTERS = {

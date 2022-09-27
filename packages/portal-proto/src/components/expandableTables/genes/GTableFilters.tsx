@@ -8,7 +8,7 @@ import DND from "../shared/DND";
 interface GTableFiltersProps {
   search: string;
   handleSearch: (term: string) => void;
-  columnListOrder: string[];
+  columnListOrder: any;
   handleColumnChange: (newColumnOrder: string[]) => void;
   showColumnMenu: boolean;
   setShowColumnMenu: (s: boolean) => void;

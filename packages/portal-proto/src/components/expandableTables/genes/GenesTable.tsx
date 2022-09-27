@@ -14,7 +14,12 @@ import {
   SpringRef,
   SpringContext,
 } from "react-spring";
-import { Gene, GeneSubRow, GenesTableProps } from "./types";
+import {
+  Gene,
+  GeneSubRow,
+  GenesTableProps,
+  DEFAULT_GTABLE_ORDER,
+} from "./types";
 import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { ExpTable } from "../shared/ExpTable";
 import { GTableControls } from "./GTableControls";
@@ -38,10 +43,8 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
   const [expandedId, setExpandedId] = useState<number>(undefined);
   const [selectedGenes, setSelectedGenes] = useState<any>({}); // todo: add type
   const [search, setSearch] = useState("");
-  const [columnListOrder, setColumnListOrder] = useState<string[]>([]);
+  const [columnListOrder, setColumnListOrder] = useState(DEFAULT_GTABLE_ORDER);
   const [showColumnMenu, setShowColumnMenu] = useState<boolean>(false);
-  const [subRowListLength, setSubRowListLength] = useState<number>(0);
-  // const [spring, setSpring] = useState(undefined);
 
   const useGeneTableFormat = useCallback(
     (initialData) => {
@@ -91,59 +94,32 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
   }, [expandedProxy]);
 
   // todo replace this callback w/ transformResponse inside rtk endpoint call
-  // useEffect(() => {
-  //   const mainSpring = useSpring({
-  //   from: {
-  //     height: 30,
-  //     width: 10,
-  //     opacity: 0,
-  //   },
-  //   to: {
-  //     height: 650,
-  //     width: 10,
-  //     opacity: 1,
-  //   }
-  // });
-  //   setSpring(mainSpring);
-  // }, [width]);
-
-  const sizeMapPOC = {
-    somegeneId: 650,
-  };
-
-  const getSubrowHeight = (width, height, geneId) => {
-    return sizeMapPOC[geneId];
-  };
-
   const columns = React.useMemo<ColumnDef<GenesColumns>[]>(() => {
-    //   const newSpring = useSpring({from: {
-    //     height: 30,
-    //     width: 10,
-    //     opacity: 0,
-    //   },
-    //   to: {
-    //     height: getSubrowHeight(width, height, "somegeneId"),
-    //     width: 10,
-    //     opacity: 1,
-    //   }
-    // });
-    return Object.keys(transformResponse[0])
-      .filter((tr) => tr !== "subRows")
-      .map((accessor) => {
-        // define Spring here with knowledge of ratio between
-        // const mySpring = useSpring({});
-        return createTableColumn(
-          accessor,
-          spring,
-          width,
-          height,
-          "name", // replace string with columnListOrder[0]
-        );
-      });
-  }, [transformResponse, expanded]);
+    return (
+      Object.keys(transformResponse[0])
+        .filter((tr) => tr !== "subRows")
+        // todo here
+        // filter out "invisible" items
+        .map((accessor) => {
+          // todo here
+          // when columnOrder updates, update memoized columns
+          // type of updates: toggle visibility off/on or swap order
+          // allocate partitioned width updates wrt visible columns length & total width passed from GeneTableProps
+          return createTableColumn(
+            accessor,
+            // define Spring here with knowledge of ratio between
+            spring,
+            width,
+            height,
+            columnListOrder[0].id,
+          );
+        })
+    );
+  }, [transformResponse, expanded, columnListOrder]);
 
-  // when columnOrder updates, update memoized columns
-  // type of updates: toggle visibility off/on or swap order
+  // const handleColumnChange = (columnUpdate) => {
+  //   setColumnListOrder(columnUpdate);
+  // };
 
   const handleSearch = (term: string) => {
     setSearch(term);
@@ -187,8 +163,30 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
           handleRowSelect={handleRowSelect}
         />
       </div>
-
-      {/* <Pagination /> */}
+      <div className="flex flex-row items-center justify-start border-t border-base-light">
+        <p className="px-2">Page Size:</p>
+        {/* <Select
+          size="sm"
+          radius="md"
+          onChange={handlePageSizeChange}
+          value={pageSize.toString()}
+          data={[
+            { value: "10", label: "10" },
+            { value: "20", label: "20" },
+            { value: "40", label: "40" },
+            { value: "100", label: "100" },
+          ]}
+        />
+        <Pagination
+          size="sm"
+          radius="md"
+          color="accent"
+          className="ml-auto"
+          page={activePage}
+          onChange={(x) => handlePageChange(x)}
+          total={pages}
+        /> */}
+      </div>
     </div>
   );
 };

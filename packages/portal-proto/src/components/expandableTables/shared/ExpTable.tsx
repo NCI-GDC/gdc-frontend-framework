@@ -15,6 +15,7 @@ export interface ExpTableProps<TData> {
   expanded: ExpandedState;
   handleExpandedProxy: (exp: ExpandedState) => void;
   handleRowSelect: (row: any) => void; // todo: add row type
+  widthProps: any;
 }
 
 export const ExpTable: React.VFC<ExpTableProps> = ({
