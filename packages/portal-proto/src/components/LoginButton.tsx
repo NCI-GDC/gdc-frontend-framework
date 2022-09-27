@@ -16,6 +16,7 @@ export const LoginButton = ({
   const dispatch = useCoreDispatch();
   return (
     <Button
+      id="nav_button_login"
       className={`flex flex-row ${
         fromSession
           ? "opacity-80 text-primary-dark ml-0 hover:text-primary-darkest"

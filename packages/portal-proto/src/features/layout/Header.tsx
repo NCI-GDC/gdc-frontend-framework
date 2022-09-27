@@ -73,7 +73,7 @@ export const Header: React.FC<HeaderProps> = ({
             This causes an accessibility problem because empty anchors confuse screen
             readers. The button tag satisfies both react's requirements and a11y
             requirements.  */}
-          <Button unstyled component={NextLink} href={indexPath}>
+          <Button id="nih_logo" unstyled component={NextLink} href={indexPath}>
             <Image
               src="/NIH_GDC_DataPortal-logo.svg"
               layout="fill"
@@ -108,6 +108,7 @@ export const Header: React.FC<HeaderProps> = ({
             <Menu width="target" data-testid="userdropdown">
               <Menu.Target>
                 <Button
+                  id="nav_button_username"
                   rightIcon={<MdArrowDropDown size="2em" />}
                   variant="subtle"
                   className="text-primary"
@@ -119,6 +120,7 @@ export const Header: React.FC<HeaderProps> = ({
               </Menu.Target>
               <Menu.Dropdown>
                 <Menu.Item
+                  id="nav_menu_user_profile"
                   icon={<FaUserCheck size="1.25em" />}
                   onClick={async () => {
                     // This is just done for the purpose of checking if the session is still active
@@ -134,6 +136,7 @@ export const Header: React.FC<HeaderProps> = ({
                   User Profile
                 </Menu.Item>
                 <Menu.Item
+                  id="nav_menu_download_token"
                   icon={<FaDownload size="1.25em" />}
                   onClick={async () => {
                     if (
@@ -193,6 +196,7 @@ export const Header: React.FC<HeaderProps> = ({
                   Download Token
                 </Menu.Item>
                 <Menu.Item
+                  id="nav_menu_logout"
                   icon={<MdLogout size="1.25em" />}
                   onClick={() => {
                     window.location.assign(
@@ -210,6 +214,7 @@ export const Header: React.FC<HeaderProps> = ({
 
           <Link href="/cart" passHref>
             <div
+              id="nav_link_cart"
               className={
                 "flex flex-row opacity-60 hover:opacity-100 transition-opacity  items-center mx-2 cursor-pointer"
               }
@@ -219,19 +224,25 @@ export const Header: React.FC<HeaderProps> = ({
           </Link>
           <Menu withArrow>
             <Menu.Target>
-              <button className="p-0">
-                <AppsIcon className="mt-2" size="24px" />
-              </button>
+              <div>
+                <button id="nav_button_extra" className="p-0">
+                  <AppsIcon className="mt-2" size="24px" />
+                </button>
+              </div>
             </Menu.Target>
             <Menu.Dropdown>
-              <Menu.Item onClick={() => setIsOpen(true)}>
+              <Menu.Item id="nav_menu_tour" onClick={() => setIsOpen(true)}>
                 <TourIcon size="2.5em" />
                 <div className="text-center text-sm pt-1">{"Tour"}</div>
               </Menu.Item>
               <Menu.Divider />
               <Menu.Label>Themes</Menu.Label>
               {V2Themes.map((theme) => (
-                <Menu.Item key={theme} onClick={() => setTheme(theme)}>
+                <Menu.Item
+                  id={`nav_menu_theme_${theme}`}
+                  key={theme}
+                  onClick={() => setTheme(theme)}
+                >
                   <div className="capitalize text-left text-sm pt-1">
                     {theme}
                   </div>
