@@ -61,13 +61,15 @@ export const ClinicalSummary = ({
   };
 
   const totalTreatmentNodes = diagnoses.reduce(
-    (prev, curr) => prev + curr.treatments?.length || 0,
+    (prev, curr) => prev + (curr.treatments || []).length,
     0,
   );
+
   const totalMolecularTestNodes = follow_ups.reduce(
-    (prev, curr) => prev + curr.molecular_tests?.length || 0,
+    (prev, curr) => prev + (curr.molecular_tests || []).length,
     0,
   );
+
   return (
     <div className="flex flex-col gap-2 mt-5 max-w-full">
       <div className="flex justify-between">
