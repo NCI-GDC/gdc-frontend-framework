@@ -39,17 +39,17 @@ import { ClinicalSummary } from "./ClinicalSummary/ClinicalSummary";
 import { Demographic } from "@gff/core/dist/features/cases/types";
 
 export const CaseSummary = ({
-  case_Id,
+  case_id,
   bio_id,
 }: {
-  case_Id: string;
+  case_id: string;
   bio_id: string;
 }): JSX.Element => {
   const { data, isFetching } = useCaseSummary({
     filters: {
       content: {
         field: "case_id",
-        value: case_Id,
+        value: case_id,
       },
       op: "=",
     },
@@ -164,7 +164,7 @@ export const CaseSummary = ({
         op: "=",
         content: {
           field: "annotations.case_id",
-          value: case_Id,
+          value: case_id,
         },
       },
     });
@@ -417,7 +417,7 @@ export const CaseSummary = ({
                     Icon={FaEdit}
                     href={getAnnotationsLinkParams(
                       annotationCountData,
-                      case_Id,
+                      case_id,
                     )}
                     shouldOpenInNewTab
                   />
@@ -449,7 +449,7 @@ export const CaseSummary = ({
               />
             </div>
             <div ref={targetRef} id="biospecimen">
-              <Biospecimen caseId={case_Id} bioId={bio_id} />
+              <Biospecimen caseId={case_id} bioId={bio_id} />
             </div>
           </div>
         </>
