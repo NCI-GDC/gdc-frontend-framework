@@ -13,12 +13,12 @@ import { AllHooks } from "@/features/facets/types";
  * All facets require a set of functions (e.x hooks) which define get/set data,
  * filters, and counts. As create facets can create any facet all possible
  * function must be supplied:
- * The AllHooks type defines all of possible hooks
+ * The AllHooks type defines all possible hooks
  *
  * @param facet - facet definition
  * @param docType - docType for this facet
  * @param indexType - ES index
- * @param dataFunctions - data getter and settion hooks
+ * @param dataFunctions - data getter and setter hooks
  * @param idPrefix - prefix for generated id; this must be unique for the app
  * @param dismissCallback - callback when defined will remove facet from parent panel
  * @param hideIfEmpty - if there is no date, hide this facet
