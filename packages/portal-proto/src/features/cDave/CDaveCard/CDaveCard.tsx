@@ -58,7 +58,12 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
       <div className="flex justify-between mb-1">
         <h2>{fieldName}</h2>
         <div className="flex gap-1">
-          <Tooltip label={"Histogram"} withArrow>
+          <Tooltip
+            label={"Histogram"}
+            position="bottom-end"
+            withArrow
+            arrowSize={7}
+          >
             <ActionIcon
               variant="outline"
               className={
@@ -72,7 +77,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
               <BarChartIcon />
             </ActionIcon>
           </Tooltip>
-          <Tooltip label={"Survival Plot"} withArrow>
+          <Tooltip label={"Survival Plot"} withArrow arrowSize={7}>
             <ActionIcon
               variant="outline"
               className={
@@ -86,10 +91,15 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
               <SurvivalChartIcon />
             </ActionIcon>
           </Tooltip>
-          <Tooltip label={"Remove Card"} withArrow>
+          <Tooltip
+            label={"Remove Card"}
+            position="bottom-end"
+            withArrow
+            arrowSize={7}
+          >
             <ActionIcon
               onClick={() => updateFields(field)}
-              className="text-base-contrast"
+              className="border-primary-darkest text-primary-content-darkest"
             >
               <CloseIcon />
             </ActionIcon>
