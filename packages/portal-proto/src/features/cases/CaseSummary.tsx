@@ -22,7 +22,6 @@ import {
 } from "react-icons/fa";
 import { URLContext } from "src/pages/_app";
 import { Biospecimen } from "../biospecimen/Biospecimen";
-import { humanify } from "../biospecimen/utils";
 import { addToCart, removeFromCart } from "../cart/updateCart";
 import {
   formatDataForHorizontalTable,
@@ -31,24 +30,26 @@ import {
 import {
   allFilesInCart,
   calculatePercentage,
+  humanify,
   sortByPropertyAsc,
 } from "src/utils";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 import { CategoryTableSummary } from "@/components/Summary/CategoryTableSummary";
-import { ClinicalSummary } from "./ClinicalSummary";
+import { ClinicalSummary } from "./ClinicalSummary/ClinicalSummary";
+import { Demographic } from "@gff/core/dist/features/cases/types";
 
 export const CaseSummary = ({
-  case_id,
+  case_Id,
   bio_id,
 }: {
-  case_id: string;
+  case_Id: string;
   bio_id: string;
 }): JSX.Element => {
   const { data, isFetching } = useCaseSummary({
     filters: {
       content: {
         field: "case_id",
-        value: case_id,
+        value: case_Id,
       },
       op: "=",
     },
@@ -77,8 +78,8 @@ export const CaseSummary = ({
       "demographic.gender",
       "demographic.race",
       "demographic.submitter_id",
-      "demographic.year_of_birth",
-      "demographic.year_of_death",
+      "demographic.days_to_birth",
+      "demographic.days_to_death",
       "demographic.vital_status",
       "diagnoses.submitter_id",
       "diagnoses.diagnosis_id",
@@ -96,7 +97,6 @@ export const CaseSummary = ({
       "diagnoses.site_of_resection_or_biopsy",
       "diagnoses.tissue_or_organ_of_origin",
       "diagnoses.tumor_grade",
-      // "diagnoses.vital_status",
       "diagnoses.treatments.days_to_treatment_start",
       "diagnoses.treatments.submitter_id",
       "diagnoses.treatments.therapeutic_agents",
@@ -106,9 +106,9 @@ export const CaseSummary = ({
       "exposures.alcohol_history",
       "exposures.alcohol_intensity",
       "exposures.exposure_id",
-      "exposures.state",
+      "exposures.tobacco_smoking_status",
       "exposures.submitter_id",
-      "exposures.years_smoked",
+      "exposures.pack_years_smoked",
       "family_histories.family_history_id",
       "family_histories.relationship_age_at_diagnosis",
       "family_histories.relationship_gender",
@@ -150,7 +150,15 @@ export const CaseSummary = ({
     ],
   });
 
-  console.log(data, isFetching);
+  console.log(data);
+
+  const {
+    diagnoses = [],
+    demographic = {} as Demographic,
+    family_histories = [],
+    follow_ups = [],
+    exposures = [],
+  } = data || {};
 
   const { data: annotationCountData, isFetching: isAnnotationCallFetching } =
     useAnnotations({
@@ -158,7 +166,7 @@ export const CaseSummary = ({
         op: "=",
         content: {
           field: "annotations.case_id",
-          value: case_id,
+          value: case_Id,
         },
       },
     });
@@ -411,7 +419,7 @@ export const CaseSummary = ({
                     Icon={FaEdit}
                     href={getAnnotationsLinkParams(
                       annotationCountData,
-                      case_id,
+                      case_Id,
                     )}
                     shouldOpenInNewTab
                   />
@@ -434,10 +442,16 @@ export const CaseSummary = ({
             </div>
 
             <div>
-              <ClinicalSummary />
+              <ClinicalSummary
+                diagnoses={diagnoses}
+                follow_ups={follow_ups}
+                demographic={demographic}
+                family_histories={family_histories}
+                exposures={exposures}
+              />
             </div>
             <div ref={targetRef} id="biospecimen">
-              <Biospecimen caseId={case_id} bioId={bio_id} />
+              <Biospecimen caseId={case_Id} bioId={bio_id} />
             </div>
           </div>
         </>
