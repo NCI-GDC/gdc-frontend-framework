@@ -2,6 +2,7 @@ import React from "react";
 import FilterFacets from "./filters.json";
 import OncoGrid from "./OncoGridWrapper";
 import EnumFacet from "../facets/EnumFacet";
+import ToggleFacet from "@/features/facets/ToggleFacet";
 import {
   useClearGenomicFilters,
   useGenesFacet,
@@ -14,6 +15,25 @@ const OncoGridAnalysisTool: React.FC = () => {
     <div className="flex flex-row">
       <div className="flex flex-col gap-y-4 mr-3 mt-12 w-min-64 w-max-64">
         {FilterFacets.genes.map((x, index) => {
+          if (x.type == "toggle") {
+            return (
+              <ToggleFacet
+                key={`${x.facet_filter}-${index}`}
+                field={`${x.facet_filter}`}
+                hooks={{
+                  useGetFacetData: useGenesFacet,
+                  useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
+                  useClearFilter: useClearGenomicFilters,
+                  useTotalCounts: useTotalCounts,
+                }}
+                facetName={x.name}
+                docType="genes"
+                showPercent={false}
+                hideIfEmpty={false}
+                description={x.description}
+              />
+            );
+          }
           return (
             <EnumFacet
               key={`onco-grid-app-${x.facet_filter}-${index}`}
