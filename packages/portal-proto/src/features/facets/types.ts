@@ -70,12 +70,12 @@ export interface RangeFacetHooks extends FacetDataHooks {
 }
 
 export interface AllHooks {
-  useClearFilter: ClearFacetHook;
-  useGetFacetFilters: SelectFacetFilterFunction;
-  useUpdateFacetFilters: UpdateFacetFilterHook;
-  useGetEnumFacetData: GetFacetDataFromDocAndIndexFunction;
-  useGetRangeFacetData: GetRangeFacetDataFunction;
-  useTotalCounts: GetTotalCountsFunction;
+  useClearFilter: ClearFacetHook; // clear Facet Filters and remove facet from filter set
+  useGetFacetFilters: SelectFacetFilterFunction; // gets the current filters
+  useUpdateFacetFilters: UpdateFacetFilterHook; // updates the filters
+  useGetEnumFacetData: GetFacetDataFromDocAndIndexFunction; // gets data for EnumFacets and ToggleFacet
+  useGetRangeFacetData: GetRangeFacetDataFunction; // gets the data for Range Facets
+  useTotalCounts: GetTotalCountsFunction; // get the totals count by type: cases, files, genes, ssms, projects
 }
 
 export interface FacetCardProps<T extends FacetDataHooks> {

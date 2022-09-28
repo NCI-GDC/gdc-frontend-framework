@@ -143,7 +143,7 @@ export const updateFacetEnum = (
   values: EnumOperandValue,
   updateFacetFilters: UpdateFacetFilterFunction,
   clearFilters: ClearFacetFunction,
-) => {
+): void => {
   if (values === undefined) return;
   if (values.length > 0) {
     // TODO: Assuming Includes by default but this might change to Include|Excludes

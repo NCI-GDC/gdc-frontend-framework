@@ -31,7 +31,7 @@ import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
  * @param field filter this FacetCard manages
  * @param docType document type "cases" "files, etc.
  * @param indexType index this facet uses to get data from
- * @param hook object defining the hooks required by this facet component
+ * @param hooks object defining the hooks required by this facet component
  * @param description describes information about the facet
  * @param facetName name of the Facet in human-readable form
  * @param showSearch if the search icon show be displayed

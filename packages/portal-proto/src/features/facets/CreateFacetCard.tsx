@@ -5,12 +5,16 @@ import NumericRangeFacet from "@/features/facets/NumericRangeFacet";
 import DateRangeFacet from "@/features/facets/DateRangeFacet";
 import ExactValueFacet from "@/features/facets/ExactValueFacet";
 import ToggleFacet from "@/features/facets/ToggleFacet";
-
 import { AllHooks } from "@/features/facets/types";
 
 /**
  * createFacetCard given a facet definition it will create a
  * facet component appropriate for the facet
+ * All facets require a set of functions (e.x hooks) which define get/set data,
+ * filters, and counts. As create facets can create any facet all possible
+ * function must be supplied:
+ * The AllHooks type defines all of possible hooks
+ *
  * @param facet - facet definition
  * @param docType - docType for this facet
  * @param indexType - ES index
@@ -124,6 +128,19 @@ export const createFacetCard = (
   }
 };
 
+/**
+ * Creates and returns an array of Facet components defined by the facet definition array
+ * @param facets - array of FacetDefinitions to create
+ * @param docType - docType: cases, files, genes, ssms, and projects
+ * @param indexType - which index to use explore or repository
+ * @param dataFunctions - get/set hooks
+ * @param idPrefix - prefix for created Facet Component key prop. This is used to ensure the ref
+ *                  has a 1) unique 2) persistent id, so each call to createFacetCardsFromList must
+ *                  have a unique prefix, the name of the analysis tool is a good choice
+ * @param dismissCallback - define if facet should be removable from their parent
+ * @param hideIfEmpty - hide facets if they do not have data
+ * @param width - override the default width.
+ */
 export const createFacetCardsFromList = (
   facets: ReadonlyArray<FacetDefinition>,
   docType: GQLDocType,
