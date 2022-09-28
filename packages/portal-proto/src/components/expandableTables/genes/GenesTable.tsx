@@ -1,31 +1,12 @@
-import React, {
-  useState,
-  useMemo,
-  useEffect,
-  useCallback,
-  SyntheticEvent,
-} from "react";
-import {
-  useSpring,
-  animated,
-  config,
-  easings,
-  SpringValue,
-  SpringRef,
-  SpringContext,
-} from "react-spring";
-import {
-  Gene,
-  GeneSubRow,
-  GenesTableProps,
-  DEFAULT_GTABLE_ORDER,
-} from "./types";
+import React, { useState, useEffect, useCallback } from "react";
+import { Gene, GenesTableProps, DEFAULT_GTABLE_ORDER } from "./types";
 import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { ExpTable } from "../shared/ExpTable";
 import { GTableControls } from "./GTableControls";
 import { GTableFilters } from "./GTableFilters";
 import { getGene, createTableColumn } from "./genesTableUtils";
 import { GenesColumns } from "@/features/shared/table-utils";
+import { useSpring } from "react-spring";
 
 export const GenesTable: React.VFC<GenesTableProps> = ({
   initialData,
@@ -45,6 +26,9 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
   const [search, setSearch] = useState("");
   const [columnListOrder, setColumnListOrder] = useState(DEFAULT_GTABLE_ORDER);
   const [showColumnMenu, setShowColumnMenu] = useState<boolean>(false);
+  const [visibleColumns, setVisibleColumns] = useState(
+    DEFAULT_GTABLE_ORDER.filter((col) => col.visible),
+  );
 
   const useGeneTableFormat = useCallback(
     (initialData) => {
@@ -93,33 +77,42 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
     }
   }, [expandedProxy]);
 
+  const getSpringWidth = (w, vc) => {
+    return Math.floor(w) / vc.length;
+  };
+
+  const partitionWidth = useSpring({
+    from: { width: 0, opacity: 0 },
+    to: { width: getSpringWidth(width, visibleColumns), opacity: 1 },
+  });
+
+  useEffect(() => {
+    setVisibleColumns(columnListOrder.filter((col) => col.visible));
+  }, [columnListOrder]);
+
   // todo replace this callback w/ transformResponse inside rtk endpoint call
   const columns = React.useMemo<ColumnDef<GenesColumns>[]>(() => {
-    return (
-      Object.keys(transformResponse[0])
-        .filter((tr) => tr !== "subRows")
-        // todo here
-        // filter out "invisible" items
-        .map((accessor) => {
-          // todo here
-          // when columnOrder updates, update memoized columns
-          // type of updates: toggle visibility off/on or swap order
-          // allocate partitioned width updates wrt visible columns length & total width passed from GeneTableProps
-          return createTableColumn(
-            accessor,
-            // define Spring here with knowledge of ratio between
-            spring,
-            width,
-            height,
-            columnListOrder[0].id,
-          );
-        })
-    );
-  }, [transformResponse, expanded, columnListOrder]);
+    return columnListOrder
+      .filter((col) => col.visible)
+      .map(({ id }) => id)
+      .map((accessor) => {
+        return createTableColumn(
+          accessor,
+          // todo
+          // height spring needs to know what gene row is clicked for allocated height
+          spring,
+          width,
+          partitionWidth,
+          height,
+          visibleColumns,
+        );
+      });
+  }, [visibleColumns, width]);
+  // transformResponse, expanded,
 
-  // const handleColumnChange = (columnUpdate) => {
-  //   setColumnListOrder(columnUpdate);
-  // };
+  const handleColumnChange = (columnUpdate) => {
+    setColumnListOrder(columnUpdate);
+  };
 
   const handleSearch = (term: string) => {
     setSearch(term);
@@ -134,12 +127,8 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
     console.log("gene", gene);
   };
 
-  const handleColumnChange = (colUpdate: any) => {
-    console.log("colupdate", colUpdate);
-  };
-
   return (
-    <div>
+    <div className={`w-full`}>
       <div className={`flex flex-row justify-between`}>
         <GTableControls
           selectedGenes={selectedGenes}
@@ -154,7 +143,7 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
           setShowColumnMenu={setShowColumnMenu}
         />
       </div>
-      <div className={`flex flex-row`}>
+      <div className={`flex flex-row w-10/12`}>
         <ExpTable
           data={transformResponse}
           columns={columns}

@@ -46,10 +46,10 @@ export const GENE_SET_OPTIONS = [
 
 export const DEFAULT_GTABLE_ORDER = [
   // { id: "geneId", columnName: "Gene ID", visible: true },
-  { id: "symbol", columnName: "Symbol", visisble: true },
+  { id: "symbol", columnName: "Symbol", visible: true },
   { id: "name", columnName: "Name", visible: true },
   // { id: "cytoband", columnName: "Cytoband", visible: false },
-  // { id: "type", columnName: "Type", visisble: false },
+  // { id: "type", columnName: "Type", visible: false },
   {
     id: "SSMSAffectedCasesInCohort",
     columnName: "# SSMS Affected Cases In Cohort",
@@ -60,7 +60,7 @@ export const DEFAULT_GTABLE_ORDER = [
     columnName: "# SSMS Affected Cases Across The GDC",
     visible: true,
   },
-  { id: "CNVGain", columnName: "# CNV Gain", visisble: true },
+  { id: "CNVGain", columnName: "# CNV Gain", visible: true },
   { id: "CNVLoss", columnName: "# CNV Loss", visible: true },
   { id: "mutations", columnName: "Mutations", visible: true },
   { id: "annotations", columnName: "Annotations", visible: true },

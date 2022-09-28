@@ -2,6 +2,7 @@ import { GeneAffectedCases } from "./GeneAffectedCases";
 import ToggleSpring from "../shared/ToggleSpring";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import _ from "lodash";
+import { animated, useSpring } from "react-spring";
 
 interface SingleGene {
   biotype: string;
@@ -16,6 +17,12 @@ interface SingleGene {
   numCases: number;
   ssm_case: number;
   symbol: string;
+}
+
+interface TableColumnState {
+  id: string;
+  columnName: string;
+  visible: boolean;
 }
 
 export const GTableHeader = ({
@@ -35,21 +42,27 @@ export const GTableHeader = ({
 export const GTableCell = ({
   row,
   accessor,
-}: {
+}: // partitionWidth
+{
   row: any;
   accessor: string;
+  // partitionWidth: any;
 }): JSX.Element => {
   return (
     <div>
       <>
         {row.getCanExpand() ? <></> : null}{" "}
-        <div
-          style={{
-            marginLeft: `15px`,
-          }}
+        <animated.div
+          // onClick={() => console.log('width', width, `w-[${width}px]`)}
+          // className={`w-[${width}px]`}
+          // style={{
+          //   marginLeft: `15px`,
+          // }}
+          className={`ml-3.5`}
+          // style={partitionWidth}
         >
           {row.original[`${accessor}`] ? row.original[`${accessor}`] : ""}
-        </div>
+        </animated.div>
       </>
     </div>
   );
@@ -59,10 +72,10 @@ export const createTableColumn = (
   key: string,
   spring: any,
   width: number,
+  partitionWidth: any,
   height: number,
-  firstColumn: string,
+  visibleColumns: TableColumnState[],
 ) => {
-  console.log("firstColumn", firstColumn, "key", key);
   switch (key) {
     case "SSMSAffectedCasesAcrossTheGDC":
       return {
@@ -74,9 +87,14 @@ export const createTableColumn = (
             header: ({ table }) => <GTableHeader twStyles={``} title={key} />,
             cell: ({ row, getValue }) => {
               return (
-                <div>
+                // className={`w-[${Math.floor(width / visibleColumns?.length)}px]`}
+                <animated.div style={partitionWidth}>
                   <>
-                    <GTableCell row={row} accessor={key} />
+                    <GTableCell
+                      row={row}
+                      accessor={key}
+                      // partitionWidth={Math.floor(width / visibleColumns?.length) || 300}
+                    />
                     {row.getCanExpand() && (
                       <button
                         {...{
@@ -95,7 +113,7 @@ export const createTableColumn = (
                     )}
                   </>
                   <>
-                    {!row.getCanExpand() && firstColumn === key && (
+                    {!row.getCanExpand() && visibleColumns[0].id === key && (
                       <div className={`relative`}>
                         <GeneAffectedCases
                           geneId={row.value}
@@ -106,7 +124,7 @@ export const createTableColumn = (
                       </div>
                     )}
                   </>
-                </div>
+                </animated.div>
               );
             },
             footer: (props) => props.column.id,
@@ -125,11 +143,20 @@ export const createTableColumn = (
             ),
             cell: ({ row, getValue }) => {
               return (
-                <div>
+                // Math.floor(width / visibleColumns?.length) || 300
+                //
+                <animated.div
+                  // onClick={() => console.log(`w-[${Math.floor(width / visibleColumns?.length)}px]`)} className={`w-[${Math.floor(width / visibleColumns?.length)}px]`}
+                  style={partitionWidth}
+                >
                   <>
-                    <GTableCell row={row} accessor={key} />
+                    <GTableCell
+                      row={row}
+                      accessor={key}
+                      // width={Math.floor(width / visibleColumns?.length) || 200}
+                    />
                     <>
-                      {!row.getCanExpand() && firstColumn === key && (
+                      {!row.getCanExpand() && visibleColumns[0].id === key && (
                         <div className={`relative`}>
                           <GeneAffectedCases
                             geneId={row.value}
@@ -141,7 +168,7 @@ export const createTableColumn = (
                       )}
                     </>
                   </>
-                </div>
+                </animated.div>
               );
             },
             footer: (props) => props.column.id,

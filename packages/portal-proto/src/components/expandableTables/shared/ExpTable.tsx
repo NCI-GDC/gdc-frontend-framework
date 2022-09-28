@@ -30,6 +30,7 @@ export const ExpTable: React.VFC<ExpTableProps> = ({
     state: {
       expanded,
     },
+    enableColumnResizing: true,
     onExpandedChange: handleExpandedProxy,
     getSubRows: (row) => row.subRows,
     getCoreRowModel: getCoreRowModel(),

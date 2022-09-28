@@ -49,7 +49,7 @@ export const GTableContainer: React.VFC<GTableContainerProps> = ({
   // });
 
   return (
-    <div ref={ref} className={`w-10/12 h-full`}>
+    <div ref={ref} className={`h-full`}>
       {data?.status === "fulfilled" &&
         data?.genes?.mutationCounts &&
         data?.genes?.filteredCases &&
