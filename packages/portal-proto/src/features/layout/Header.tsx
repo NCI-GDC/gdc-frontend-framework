@@ -73,7 +73,13 @@ export const Header: React.FC<HeaderProps> = ({
             This causes an accessibility problem because empty anchors confuse screen
             readers. The button tag satisfies both react's requirements and a11y
             requirements.  */}
-          <Button id="nih_logo" unstyled component={NextLink} href={indexPath}>
+          <Button
+            id="nih_logo"
+            unstyled
+            component={NextLink}
+            href={indexPath}
+            data-testid="NIHLogoButton"
+          >
             <Image
               src="/NIH_GDC_DataPortal-logo.svg"
               layout="fill"
@@ -98,9 +104,11 @@ export const Header: React.FC<HeaderProps> = ({
 
         <div className="flex flex-row items-center align-middle flex-nowrap">
           <div
+            id="nav_button_search"
             className={
               "flex flex-row opacity-60 cursor-pointer hover:opacity-100 transition-opacity items-center mx-2 "
             }
+            data-testid="searchButton"
           >
             <SearchIcon size="24px" />{" "}
           </div>
@@ -138,6 +146,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <Menu.Item
                   id="nav_menu_download_token"
                   icon={<FaDownload size="1.25em" />}
+                  data-testid="downloadTokenMenuItem"
                   onClick={async () => {
                     if (
                       Object.keys(userInfo.data?.projects.gdc_ids).length > 0
@@ -203,6 +212,7 @@ export const Header: React.FC<HeaderProps> = ({
                       urlJoin(GDC_AUTH, `logout?next=${window.location.href}`),
                     );
                   }}
+                  data-testid="logoutMenuItem"
                 >
                   Logout
                 </Menu.Item>
@@ -218,6 +228,7 @@ export const Header: React.FC<HeaderProps> = ({
               className={
                 "flex flex-row opacity-60 hover:opacity-100 transition-opacity  items-center mx-2 cursor-pointer"
               }
+              data-testid="cartLink"
             >
               <CartIcon size="24px" /> Cart ({currentCart.length || 0})
             </div>
@@ -225,13 +236,21 @@ export const Header: React.FC<HeaderProps> = ({
           <Menu withArrow>
             <Menu.Target>
               <div>
-                <button id="nav_button_extra" className="p-0">
+                <button
+                  id="nav_button_extra"
+                  className="p-0"
+                  data-testid="extraButton"
+                >
                   <AppsIcon className="mt-2" size="24px" />
                 </button>
               </div>
             </Menu.Target>
             <Menu.Dropdown>
-              <Menu.Item id="nav_menu_tour" onClick={() => setIsOpen(true)}>
+              <Menu.Item
+                id="nav_menu_tour"
+                onClick={() => setIsOpen(true)}
+                data-testid="tourMenuItem"
+              >
                 <TourIcon size="2.5em" />
                 <div className="text-center text-sm pt-1">{"Tour"}</div>
               </Menu.Item>
@@ -242,6 +261,7 @@ export const Header: React.FC<HeaderProps> = ({
                   id={`nav_menu_theme_${theme}`}
                   key={theme}
                   onClick={() => setTheme(theme)}
+                  data-testid={`${theme}ThemeMenuItem`}
                 >
                   <div className="capitalize text-left text-sm pt-1">
                     {theme}

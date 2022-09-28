@@ -22,6 +22,7 @@ export const headerElements = [
         query: { app: undefined },
       }}
       className="text-sm font-heading  hover:bg-primary-lighter transition-colors text-primary-content-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md "
+      data-testid="analysisButton"
     >
       <Image
         src={"/user-flow/icons/dna.svg"}
@@ -50,6 +51,7 @@ export const headerElements = [
         query: { app: "Projects" },
       }}
       className="text-sm font-heading  hover:bg-primary-lighter transition-colors text-primary-content-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md "
+      data-testid="projectsButton"
     >
       <Image
         src={"/user-flow/icons/crowd-of-users.svg"}
@@ -78,6 +80,7 @@ export const headerElements = [
         query: { app: "CohortBuilder" },
       }}
       className="text-sm font-heading  hover:bg-primary-lighter transition-colors text-primary-content-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md "
+      data-testid="cohortButton"
     >
       <Image
         src={"/user-flow/icons/build.svg"}
@@ -106,6 +109,7 @@ export const headerElements = [
         query: { app: "Downloads" },
       }}
       className="text-sm font-heading hover:bg-primary-lighter transition-colors text-primary-content-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md "
+      data-testid="downloadsButton"
     >
       <Image
         src={"/user-flow/icons/database.svg"}
