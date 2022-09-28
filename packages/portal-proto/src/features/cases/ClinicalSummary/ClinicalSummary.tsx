@@ -26,7 +26,7 @@ export const ClinicalSummary = ({
   readonly family_histories: ReadonlyArray<FamilyHistories>;
   readonly exposures: ReadonlyArray<Exposures>;
   readonly follow_ups: ReadonlyArray<FollowUps>;
-}) => {
+}): JSX.Element => {
   const [activeTab, setActiveTab] = useState<string | null>("demographic");
 
   const formatDataForDemographics = () => {
@@ -119,7 +119,7 @@ export const ClinicalSummary = ({
           </Tabs.List>
 
           <Tabs.Panel value="demographic" pt="xs">
-            {!!demographic ? (
+            {demographic ? (
               <HorizontalTable tableData={formatDataForDemographics()} />
             ) : (
               <Text className="p-5 bg-base-contrast" weight="bold">

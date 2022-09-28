@@ -160,8 +160,8 @@ export const humanify = ({
 /*https://github.com/NCI-GDC/portal-ui/blob/develop/src/packages/%40ncigdc/utils/ageDisplay.js*/
 export const ageDisplay = (
   ageInDays: number,
-  yearsOnly: boolean = false,
-  defaultValue: string = "--",
+  yearsOnly = false,
+  defaultValue = "--",
 ): string => {
   const leapThenPair = (years: number, days: number): number[] =>
     days === 365 ? [years + 1, 0] : [years, days];

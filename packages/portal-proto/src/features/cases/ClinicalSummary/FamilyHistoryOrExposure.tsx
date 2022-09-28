@@ -12,7 +12,7 @@ export const FamilyHistoryOrExposure = ({
   dataInfo,
 }: {
   readonly dataInfo: ReadonlyArray<FamilyHistories> | ReadonlyArray<Exposures>;
-}) => {
+}): JSX.Element => {
   const [activeTab, setActiveTab] = useState(0);
 
   const onTabChange = (sValue: string) => {

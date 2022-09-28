@@ -6,7 +6,11 @@ import { Tabs, Tooltip, Text } from "@mantine/core";
 import { useState } from "react";
 import { ageDisplay, humanify } from "src/utils";
 
-const TableElement = ({ data }: { data: Diagnoses | FollowUps }) => {
+const TableElement = ({
+  data,
+}: {
+  data: Diagnoses | FollowUps;
+}): JSX.Element => {
   const formatDataForDiagnosesorFollowUps = (data: Diagnoses | FollowUps) => {
     let tableData: Record<string, any>;
 
@@ -159,7 +163,7 @@ const TableElement = ({ data }: { data: Diagnoses | FollowUps }) => {
     };
   };
 
-  const InnerComponent = () => {
+  const InnerComponent = (): JSX.Element => {
     if ("diagnosis_id" in data) {
       if (!data.treatments) {
         return <Text>No Treatments Found.</Text>;
@@ -193,7 +197,7 @@ export const DiagnosesOrFollowUps = ({
   dataInfo,
 }: {
   readonly dataInfo: ReadonlyArray<Diagnoses> | ReadonlyArray<FollowUps>;
-}) => {
+}): JSX.Element => {
   const [activeTab, setActiveTab] = useState(0);
 
   const onTabChange = (sValue: string) => {
