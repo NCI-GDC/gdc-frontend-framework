@@ -1,14 +1,11 @@
 import { ExternalLink } from "@/components/ExternalLink";
 import Link from "next/link";
+import { useCoreSelector, selectVersionInfo } from "@gff/core";
 
 export const Footer: React.FC = () => {
   //TODO: retrieve these values from state (?)
-
-  const uiVersion = "1.30.0";
-  const uiCommitHash = "9fbb447b";
-  const apiVersion = "3.0.0";
-  const apiCommitHash = "4dd36805";
-  const dataRelease = "Data Release 34.0 - July 27, 2022";
+  const { uiVersion, uiCommitHash, apiVersion, apiCommitHash, dataRelease } =
+    useCoreSelector((state) => selectVersionInfo(state));
 
   return (
     <div className="flex flex-col bg-primary-darker justify-center text-center p-4 text-primary-contrast-darker">
