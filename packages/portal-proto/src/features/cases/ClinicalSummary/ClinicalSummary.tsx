@@ -9,7 +9,7 @@ import {
 } from "@gff/core/dist/features/cases/types";
 import { Button, Menu, Tabs, Text } from "@mantine/core";
 import { useState } from "react";
-import { MdOutlineFileDownload as DownloadIcon } from "react-icons/md";
+import { MdFileDownload as DownloadIcon } from "react-icons/md";
 import { humanify } from "src/utils";
 import { DiagnosesOrFollowUps } from "./DiagnosesOrFollowUps";
 import { FamilyHistoryOrExposure } from "./FamilyHistoryOrExposure";
@@ -89,8 +89,7 @@ export const ClinicalSummary = ({
       </div>
       <div>
         <Tabs
-          color="gray"
-          variant="outline"
+          variant="pills"
           defaultValue="gallery"
           value={activeTab}
           onTabChange={setActiveTab}
@@ -99,6 +98,14 @@ export const ClinicalSummary = ({
             root: "w-full",
             panel: "max-w-full overflow-x-auto",
           }}
+          styles={(theme) => ({
+            tab: {
+              backgroundColor: theme.white,
+              color: theme.colors.gray[9],
+              border: `2px solid ${theme.colors.gray[4]}`,
+              fontSize: theme.fontSizes.sm,
+            },
+          })}
         >
           <Tabs.List>
             <Tabs.Tab value="demographic" aria-label="Demographic">

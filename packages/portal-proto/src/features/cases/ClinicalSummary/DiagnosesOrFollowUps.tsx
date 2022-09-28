@@ -39,9 +39,10 @@ const TableElement = ({
         diagnosis_uuid,
         classification_of_tumor,
         age_at_diagnosis: ageDisplay(age_at_diagnosis),
-        days_to_last_follow_up,
-        days_to_last_known_disease_status,
-        days_to_recurrence,
+        days_to_last_follow_up: days_to_last_follow_up?.toLocaleString(),
+        days_to_last_known_disease_status:
+          days_to_last_known_disease_status?.toLocaleString(),
+        days_to_recurrence: days_to_recurrence?.toLocaleString(),
         last_known_disease_status,
         morphology,
         primary_diagnosis,
@@ -74,7 +75,7 @@ const TableElement = ({
       tableData = {
         follow_up_id,
         follow_up_uuid,
-        days_to_follow_up,
+        days_to_follow_up: days_to_follow_up?.toLocaleString(),
         comorbidity,
         risk_factor,
         progression_or_recurrence_type,
@@ -209,58 +210,47 @@ export const DiagnosesOrFollowUps = ({
     <>
       {dataInfo.length > 1 ? (
         <Tabs
-          variant="pills"
+          variant="outline"
           orientation="vertical"
           defaultValue="gallery"
           value={activeTab.toString()}
           onTabChange={onTabChange}
           classNames={{
-            tabsList: "mr-5",
             tabLabel: "text-sm px-2 font-medium",
+            tabsList: "pr-4",
           }}
           styles={(theme) => ({
             tab: {
               backgroundColor: theme.white,
               color: theme.colors.gray[9],
-              border: `2px solid ${theme.colors.gray[4]}`,
               fontSize: theme.fontSizes.sm,
               padding: `1em 1em`,
-              borderRadius: theme.radius.md,
             },
           })}
         >
-          <Tabs.List>
-            {dataInfo.map((data: Diagnoses | FollowUps, index: number) => (
-              <Tabs.Tab
-                value={index.toString()}
-                key={
-                  "diagnosis_id" in data ? data.diagnosis_id : data.follow_up_id
-                }
-              >
-                <Tooltip
-                  label={
-                    "diagnosis_id" in data
-                      ? data.diagnosis_id
-                      : data.follow_up_id
+          <div className="max-h-[500px] overflow-y-auto overflow-x-hidden min-w-[160px] mr-3">
+            <Tabs.List>
+              {dataInfo.map((data: Diagnoses | FollowUps, index: number) => (
+                <Tabs.Tab
+                  value={index.toString()}
+                  key={data.submitter_id}
+                  className={
+                    activeTab === index
+                      ? "bg-primary text-primary-contrast"
+                      : ""
                   }
-                  withinPortal={true}
                 >
-                  <div>{`${("diagnosis_id" in data
-                    ? data.diagnosis_id
-                    : data.follow_up_id
-                  ).substring(0, 13)}...`}</div>
-                </Tooltip>
-              </Tabs.Tab>
-            ))}
-          </Tabs.List>
+                  <Tooltip label={data.submitter_id} withinPortal={true}>
+                    <div>{`${data.submitter_id.substring(0, 13)}...`}</div>
+                  </Tooltip>
+                </Tabs.Tab>
+              ))}
+            </Tabs.List>
+          </div>
+
           {dataInfo.map((data: Diagnoses | FollowUps, index: number) => {
             return (
-              <Tabs.Panel
-                value={index.toString()}
-                key={
-                  "diagnosis_id" in data ? data.diagnosis_id : data.follow_up_id
-                }
-              >
+              <Tabs.Panel value={index.toString()} key={data.submitter_id}>
                 <TableElement data={data} />
               </Tabs.Panel>
             );

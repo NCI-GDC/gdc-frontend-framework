@@ -44,6 +44,7 @@ export const capitalize = (original: string): string => {
     civic: "CIViC",
     dbgap: "dbGaP",
     ecog: "ECOG",
+    bmi: "BMI",
   };
 
   return original

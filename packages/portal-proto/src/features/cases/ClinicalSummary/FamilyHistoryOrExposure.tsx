@@ -74,64 +74,46 @@ export const FamilyHistoryOrExposure = ({
     <>
       {dataInfo.length > 1 ? (
         <Tabs
-          variant="pills"
+          variant="outline"
           orientation="vertical"
           defaultValue="gallery"
           value={activeTab.toString()}
           onTabChange={onTabChange}
           classNames={{
-            tabsList: "mr-5 overflow-y-auto",
             tabLabel: "text-sm px-2 font-medium",
           }}
           styles={(theme) => ({
             tab: {
-              backgroundColor: theme.white,
-              color: theme.colors.gray[9],
-              border: `2px solid ${theme.colors.gray[4]}`,
               fontSize: theme.fontSizes.sm,
               padding: `1em 1em`,
-              borderRadius: theme.radius.md,
             },
           })}
+          color="blue"
         >
-          <Tabs.List>
-            {dataInfo.map(
-              (data: FamilyHistories | Exposures, index: number) => (
-                <Tabs.Tab
-                  value={index.toString()}
-                  key={
-                    "family_history_id" in data
-                      ? data.family_history_id
-                      : data.exposure_id
-                  }
-                >
-                  <Tooltip
-                    label={
-                      "family_history_id" in data
-                        ? data.family_history_id
-                        : data.exposure_id
+          <div className="max-h-[500px] overflow-y-auto overflow-x-hidden min-w-[160px] mr-3">
+            <Tabs.List>
+              {dataInfo.map(
+                (data: FamilyHistories | Exposures, index: number) => (
+                  <Tabs.Tab
+                    value={index.toString()}
+                    key={data.submitter_id}
+                    className={
+                      activeTab === index
+                        ? "bg-primary text-primary-contrast"
+                        : ""
                     }
-                    withinPortal={true}
                   >
-                    <div>{`${("family_history_id" in data
-                      ? data.family_history_id
-                      : data.exposure_id
-                    ).substring(0, 13)}...`}</div>
-                  </Tooltip>
-                </Tabs.Tab>
-              ),
-            )}
-          </Tabs.List>
+                    <Tooltip label={data.submitter_id} withinPortal={true}>
+                      <div>{`${data.submitter_id.substring(0, 13)}...`}</div>
+                    </Tooltip>
+                  </Tabs.Tab>
+                ),
+              )}
+            </Tabs.List>
+          </div>
           {dataInfo.map((data: FamilyHistories | Exposures, index: number) => {
             return (
-              <Tabs.Panel
-                value={index.toString()}
-                key={
-                  "family_history_id" in data
-                    ? data.family_history_id
-                    : data.exposure_id
-                }
-              >
+              <Tabs.Panel value={index.toString()} key={data.submitter_id}>
                 <HorizontalTable
                   tableData={formatDataForFamilyHistoriesorExposures(data)}
                 />
