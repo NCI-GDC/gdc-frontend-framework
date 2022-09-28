@@ -2,9 +2,9 @@ import { HorizontalTable } from "@/components/HorizontalTable";
 import { TempTable } from "@/features/files/FileView";
 import { formatDataForHorizontalTable } from "@/features/files/utils";
 import type { Diagnoses, FollowUps } from "@gff/core/dist/features/cases/types";
-import { Tabs, Tooltip, Text, ScrollArea } from "@mantine/core";
+import { Tabs, Tooltip, Text } from "@mantine/core";
 import { useState } from "react";
-import { humanify } from "src/utils";
+import { ageDisplay, humanify } from "src/utils";
 
 const TableElement = ({ data }: { data: Diagnoses | FollowUps }) => {
   const formatDataForDiagnosesorFollowUps = (data: Diagnoses | FollowUps) => {
@@ -15,7 +15,7 @@ const TableElement = ({ data }: { data: Diagnoses | FollowUps }) => {
         submitter_id: diagnosis_id,
         diagnosis_id: diagnosis_uuid,
         classification_of_tumor,
-        age_to_diagnosis,
+        age_at_diagnosis,
         days_to_last_follow_up,
         days_to_last_known_disease_status,
         days_to_recurrence,
@@ -34,7 +34,7 @@ const TableElement = ({ data }: { data: Diagnoses | FollowUps }) => {
         diagnosis_id,
         diagnosis_uuid,
         classification_of_tumor,
-        age_to_diagnosis,
+        age_at_diagnosis: ageDisplay(age_at_diagnosis),
         days_to_last_follow_up,
         days_to_last_known_disease_status,
         days_to_recurrence,
@@ -159,6 +159,22 @@ const TableElement = ({ data }: { data: Diagnoses | FollowUps }) => {
     };
   };
 
+  const InnerComponent = () => {
+    if ("diagnosis_id" in data) {
+      if (!data.treatments) {
+        return <Text>No Treatments Found.</Text>;
+      } else {
+        return <TempTable tableData={formatTreatmentData(data)} />;
+      }
+    } else {
+      if (!data.molecular_tests) {
+        return <Text>No Molecular Tests Found.</Text>;
+      } else {
+        return <TempTable tableData={formatMolecularTestsData(data)} />;
+      }
+    }
+  };
+
   return (
     <>
       <HorizontalTable tableData={formatDataForDiagnosesorFollowUps(data)} />
@@ -168,21 +184,7 @@ const TableElement = ({ data }: { data: Diagnoses | FollowUps }) => {
           : `Total of (${data.molecular_tests?.length || 0}) Molecular Tests`}
       </Text>
 
-      {"diagnosis_id" in data && !data.treatments?.length && (
-        <Text>No Treatments Found.</Text>
-      )}
-
-      {"diagnosis_id" in data && data.treatments?.length && (
-        <TempTable tableData={formatTreatmentData(data)} />
-      )}
-
-      {"follow_up_id" in data && !data.molecular_tests?.length && (
-        <Text>No Molecular Tests Found.</Text>
-      )}
-
-      {"follow_up_id" in data && data.molecular_tests?.length && (
-        <TempTable tableData={formatMolecularTestsData(data)} />
-      )}
+      <InnerComponent />
     </>
   );
 };

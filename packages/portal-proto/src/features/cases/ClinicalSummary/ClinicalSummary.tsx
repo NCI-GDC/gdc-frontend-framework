@@ -27,7 +27,6 @@ export const ClinicalSummary = ({
   readonly exposures: ReadonlyArray<Exposures>;
   readonly follow_ups: ReadonlyArray<FollowUps>;
 }) => {
-  console.log(family_histories, exposures);
   const [activeTab, setActiveTab] = useState<string | null>("demographic");
 
   const formatDataForDemographics = () => {

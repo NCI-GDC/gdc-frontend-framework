@@ -1,6 +1,6 @@
 import { KeyboardEventHandler } from "react";
-import { CartFile } from "@gff/core";
-import { replace, sortBy } from "lodash";
+import { CartFile, DAYS_IN_YEAR } from "@gff/core";
+import { replace, sortBy, spread, zip } from "lodash";
 import { DocumentWithWebkit } from "../features/types";
 import * as tailwindConfig from "tailwind.config";
 
@@ -43,6 +43,7 @@ export const capitalize = (original: string): string => {
     cosmic: "COSMIC",
     civic: "CIViC",
     dbgap: "dbGaP",
+    ecog: "ECOG",
   };
 
   return original
@@ -154,4 +155,39 @@ export const humanify = ({
     }
   }
   return cap ? capitalize(humanified) : humanified;
+};
+
+/*https://github.com/NCI-GDC/portal-ui/blob/develop/src/packages/%40ncigdc/utils/ageDisplay.js*/
+export const ageDisplay = (
+  ageInDays: number,
+  yearsOnly: boolean = false,
+  defaultValue: string = "--",
+): string => {
+  const leapThenPair = (years: number, days: number): number[] =>
+    days === 365 ? [years + 1, 0] : [years, days];
+
+  const timeString = (
+    num: number,
+    singular: string,
+    plural: string,
+  ): string => {
+    const pluralChecked = plural || `${singular}s`;
+    return `${num} ${num === 1 ? singular : pluralChecked}`;
+  };
+  const _timeString = spread(timeString);
+
+  if (!ageInDays) {
+    return defaultValue;
+  }
+  return zip(
+    leapThenPair(
+      Math.floor(ageInDays / DAYS_IN_YEAR),
+      Math.ceil(ageInDays % DAYS_IN_YEAR),
+    ),
+    ["year", "day"],
+  )
+    .filter((p) => (yearsOnly ? p[1] === "year" : p[0] > 0))
+    .map((p) => (!yearsOnly ? _timeString(p) : p[0]))
+    .join(" ")
+    .trim();
 };

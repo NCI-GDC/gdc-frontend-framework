@@ -150,8 +150,6 @@ export const CaseSummary = ({
     ],
   });
 
-  console.log(data);
-
   const {
     diagnoses = [],
     demographic = {} as Demographic,

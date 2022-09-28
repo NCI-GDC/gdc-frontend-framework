@@ -20,7 +20,7 @@ export interface Demographic {
 }
 
 export interface Diagnoses {
-  readonly age_to_diagnosis: number | null;
+  readonly age_at_diagnosis: number | null;
   readonly classification_of_tumor: string | null;
   readonly days_to_last_follow_up: number | null;
   readonly days_to_last_known_disease_status: number | null;
