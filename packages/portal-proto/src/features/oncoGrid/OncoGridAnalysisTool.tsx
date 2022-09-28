@@ -1,7 +1,7 @@
 import React from "react";
 import FilterFacets from "./filters.json";
 import OncoGrid from "./OncoGridWrapper";
-import { EnumFacet } from "../facets/EnumFacet";
+import EnumFacet from "../facets/EnumFacet";
 import {
   useClearGenomicFilters,
   useGenesFacet,
@@ -16,7 +16,7 @@ const OncoGridAnalysisTool: React.FC = () => {
         {FilterFacets.genes.map((x, index) => {
           return (
             <EnumFacet
-              key={`${x.facet_filter}-${index}`}
+              key={`onco-grid-app-${x.facet_filter}-${index}`}
               field={`${x.facet_filter}`}
               facetName={x.name}
               docType="genes"
@@ -35,7 +35,7 @@ const OncoGridAnalysisTool: React.FC = () => {
         {FilterFacets.ssms.map((x, index) => {
           return (
             <EnumFacet
-              key={`${x.facet_filter}-${index}`}
+              key={`onco-grid-app-${x.facet_filter}-${index}`}
               field={`${x.facet_filter}`}
               facetName={x.name}
               docType="ssms"

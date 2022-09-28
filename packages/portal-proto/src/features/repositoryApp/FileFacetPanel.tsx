@@ -1,10 +1,8 @@
 import React, { useEffect, useState, useCallback } from "react";
 import {
-  EnumOperandValue,
   FacetDefinition,
   GQLDocType,
   GQLIndexType,
-  removeCohortFilter,
   selectCurrentCohortFilterSet,
   selectFacetDefinitionsByName,
   useCoreSelector,
@@ -32,17 +30,15 @@ import {
   useLocalFilters,
   useRepositoryFilters,
   useRepositoryEnumValues,
-  updateEnumerationFilters,
   useClearRepositoryFilters,
   useUpdateRepositoryFacetFilter,
+  useSelectFieldFilter,
+  useRepositoryRangeFacet,
 } from "@/features/repositoryApp/hooks";
 import { useTotalCounts } from "@/features/facets/hooks";
-import { EnumFacet } from "@/features/facets/EnumFacet";
-import {
-  updateRepositoryFilter,
-  removeRepositoryFilter,
-  clearRepositoryFilters,
-} from "./repositoryFiltersSlice";
+import { createFacetCard } from "@/features/facets/CreateFacetCard";
+import { clearRepositoryFilters } from "./repositoryFiltersSlice";
+import { AllHooks } from "@/features/facets/types";
 
 const useRepositoryEnumData = (
   field: string,
@@ -63,24 +59,12 @@ export const FileFacetPanel = (): JSX.Element => {
   const facets = useCoreSelector((state) =>
     selectFacetDefinitionsByName(state, config.facets),
   );
-  const dispatch = useAppDispatch();
-  const useEnumValues = (
-    field: string,
-    enumerationFilters: EnumOperandValue,
-  ) => {
-    return updateEnumerationFilters(
-      enumerationFilters,
-      field,
-      dispatch,
-      updateRepositoryFilter,
-      removeRepositoryFilter,
-    );
-  };
 
   const [facetDefinitions, setFacetDefinitions] =
     useState<ReadonlyArray<FacetDefinition>>(facets);
   const prevCustomFacets = usePrevious(facets);
   const [opened, setOpened] = useState(false);
+  const dispatch = useAppDispatch();
 
   // Global cohort filters
   const cohortFilters = useCoreSelector((state) =>
@@ -109,11 +93,6 @@ export const FileFacetPanel = (): JSX.Element => {
     dispatch(resetToDefault());
   }, [dispatch]);
 
-  const clearFilters = useCallback(
-    (f: string) => dispatch(removeCohortFilter(f)),
-    [dispatch],
-  );
-
   // rebuild customFacets
   useEffect(() => {
     if (isDictionaryReady && !isEqual(prevCustomFacets, facets)) {
@@ -132,8 +111,17 @@ export const FileFacetPanel = (): JSX.Element => {
     (facetDef) => !getDefaultFacets().includes(facetDef.full),
   );
 
+  const FileFacetHooks: AllHooks = {
+    useGetEnumFacetData: useRepositoryEnumData,
+    useGetRangeFacetData: useRepositoryRangeFacet,
+    useUpdateFacetFilters: useUpdateRepositoryFacetFilter,
+    useGetFacetFilters: useSelectFieldFilter,
+    useClearFilter: useClearRepositoryFilters,
+    useTotalCounts: useTotalCounts,
+  };
+
   return (
-    <div className="flex flex-col gap-y-4 mr-3 w-64  ">
+    <div className="flex flex-col gap-y-4 mr-3 w-1/5  ">
       <Group position="apart">
         <Text size="lg" weight={700} className="text-primary-content-darker">
           Filters
@@ -173,28 +161,19 @@ export const FileFacetPanel = (): JSX.Element => {
           />
         </Modal>
         <LoadingOverlay visible={!isDictionaryReady} />
-        {facetDefinitions.map((x, index) => {
+        {facetDefinitions.map((x) => {
           const isDefault = getDefaultFacets().includes(x.full);
           const facetName = fieldNameToTitle(x.full, isDefault ? 1 : 2);
-          return (
-            // TODO: add other facet types when available
-            <EnumFacet
-              key={`${x.full}-${index}`}
-              field={`${x.full}`}
-              facetName={facetName}
-              docType="files"
-              indexType="repository"
-              showPercent={false}
-              hideIfEmpty={false}
-              description={x.description}
-              dismissCallback={!isDefault ? handleRemoveFilter : undefined}
-              hooks={{
-                useGetFacetData: useRepositoryEnumData,
-                useUpdateFacetFilters: useUpdateRepositoryFacetFilter,
-                useClearFilter: useClearRepositoryFilters,
-                useTotalCounts: useTotalCounts,
-              }}
-            />
+          return createFacetCard(
+            x,
+            "files",
+            "repository",
+            FileFacetHooks,
+            "repository-app",
+            !isDefault ? handleRemoveFilter : undefined,
+            true,
+            facetName,
+            "w-full",
           );
         })}
       </div>

@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { divider_style } from "./style";
 import { Divider } from "@mantine/core";
-import { EnumFacet } from "../facets/EnumFacet";
+import EnumFacet from "../facets/EnumFacet";
 import NumericRangeFacet from "../facets/NumericRangeFacet";
 import DateRangeFacet from "../facets/DateRangeFacet";
 import ExactValueFacet from "../facets/ExactValueFacet";

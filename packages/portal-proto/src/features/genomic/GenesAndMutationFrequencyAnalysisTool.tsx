@@ -3,7 +3,7 @@ import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
 import GenesTable from "../genesTable/GenesTable";
 import MutationsTable from "../mutationsTable/MutationsTable";
 import { Grid, Tabs, LoadingOverlay } from "@mantine/core";
-import { EnumFacet } from "@/features/facets/EnumFacet";
+import EnumFacet from "@/features/facets/EnumFacet";
 import ToggleFacet from "@/features/facets/ToggleFacet";
 import FilterFacets from "./filters.json";
 import dynamic from "next/dynamic";
@@ -201,7 +201,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
           }
           return (
             <EnumFacet
-              key={`${x.facet_filter}-${index}`}
+              key={`genes-mutations-app-${x.facet_filter}-${index}`}
               field={`${x.facet_filter}`}
               hooks={{
                 useGetFacetData: useGenesFacet,
@@ -221,7 +221,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
         {FilterFacets.ssms.map((x, index) => {
           return (
             <EnumFacet
-              key={`${x.facet_filter}-${index}`}
+              key={`genes-mutations-app-${x.facet_filter}-${index}`}
               field={`${x.facet_filter}`}
               facetName={x.name}
               docType="ssms"

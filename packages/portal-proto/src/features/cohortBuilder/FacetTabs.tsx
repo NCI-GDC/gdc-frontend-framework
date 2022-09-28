@@ -34,9 +34,9 @@ import {
   MdAdd as AddAdditionalIcon,
   MdLibraryAdd as AddFacetIcon,
 } from "react-icons/md";
-import FacetSelection from "@/components/FacetSelection";
 import isEqual from "lodash/isEqual";
-import { createFacetCard } from "@/features/facets/CreateFacetCard";
+import FacetSelection from "@/components/FacetSelection";
+import { createFacetCardsFromList } from "@/features/facets/CreateFacetCard";
 import {
   useClearFilters,
   useEnumFacet,
@@ -209,7 +209,7 @@ const CustomFacetGroup = (): JSX.Element => {
               Add a Custom Filter
             </Text>
           </Button>
-          {createFacetCard(
+          {createFacetCardsFromList(
             customFacetDefinitions,
             "cases", // Cohort custom filter restricted to "cases"
             customConfig.index as GQLIndexType,
@@ -221,6 +221,7 @@ const CustomFacetGroup = (): JSX.Element => {
               useClearFilter: useClearFilters,
               useTotalCounts: useTotalCounts,
             },
+            "cohort-builder",
             handleRemoveFilter,
           )}
         </FacetGroup>
@@ -295,7 +296,7 @@ export const FacetTabs = (): JSX.Element => {
                 <CustomFacetGroup />
               ) : (
                 <FacetGroup>
-                  {createFacetCard(
+                  {createFacetCardsFromList(
                     getFacetInfo(tabEntry.facets, facets),
                     tabEntry.docType as GQLDocType,
                     tabEntry.index as GQLIndexType,
@@ -307,6 +308,8 @@ export const FacetTabs = (): JSX.Element => {
                       useClearFilter: useClearFilters,
                       useTotalCounts: useTotalCounts,
                     },
+                    "cohort-builder",
+                    undefined,
                   )}
                 </FacetGroup>
               )}

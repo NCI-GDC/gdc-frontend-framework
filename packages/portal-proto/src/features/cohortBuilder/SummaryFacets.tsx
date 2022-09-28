@@ -1,4 +1,4 @@
-import { EnumFacet } from "../facets/EnumFacet";
+import EnumFacet from "../facets/EnumFacet";
 import { GQLDocType, GQLIndexType } from "@gff/core";
 import {
   useClearFilters,
@@ -40,7 +40,7 @@ export const SummaryFacets: React.FC<SummaryFacetProps> = ({
                 docType={entry.docType}
                 facetName={entry.name}
                 startShowingData={false}
-                key={`summary-chart-${index}`}
+                key={`summary-chart-${entry.field}-${index}`}
                 width="w-64"
                 indexType={entry.indexType}
                 hooks={{

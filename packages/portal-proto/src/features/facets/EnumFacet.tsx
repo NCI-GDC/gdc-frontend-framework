@@ -42,7 +42,7 @@ import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
  * @param dismissCallback if facet can be removed, supply a function which will ensure the "dismiss" control will be visible
  * @param width set the width of the facet
  */
-export const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
+const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   field,
   docType,
   indexType,
@@ -408,3 +408,5 @@ export const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
     </div>
   );
 };
+
+export default EnumFacet;
