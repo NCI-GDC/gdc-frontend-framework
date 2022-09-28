@@ -76,32 +76,25 @@ export const FamilyHistoryOrExposure = ({
         <Tabs
           variant="outline"
           orientation="vertical"
-          defaultValue="gallery"
           value={activeTab.toString()}
           onTabChange={onTabChange}
           classNames={{
             tabLabel: "text-sm px-2 font-medium",
+            tabsList: "border-r-0",
           }}
-          styles={(theme) => ({
-            tab: {
-              fontSize: theme.fontSizes.sm,
-              padding: `1em 1em`,
-            },
-          })}
-          color="blue"
         >
-          <div className="max-h-[500px] overflow-y-auto overflow-x-hidden min-w-[160px] mr-3">
+          <div className="max-h-[500px] overflow-y-auto overflow-x-hidden min-w-[160px] mr-2">
             <Tabs.List>
               {dataInfo.map(
                 (data: FamilyHistories | Exposures, index: number) => (
                   <Tabs.Tab
                     value={index.toString()}
                     key={data.submitter_id}
-                    className={
+                    className={`bg-base-lighter my-1 ${
                       activeTab === index
                         ? "bg-primary text-primary-contrast"
-                        : ""
-                    }
+                        : "bg-base-lighter text-base-contrast-lightest"
+                    }`}
                   >
                     <Tooltip label={data.submitter_id} withinPortal={true}>
                       <div>{`${data.submitter_id.substring(0, 13)}...`}</div>
