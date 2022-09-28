@@ -114,11 +114,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
       const updated = selectedEnums ? [...selectedEnums, value] : [value];
       updateFacetEnum(field, updated, updateFacetFilters, clearFilters);
     } else {
-      // TODO: replace with ToggleFacet
-      const updated =
-        field === "genes.is_cancer_gene_census"
-          ? []
-          : selectedEnums.filter((x) => x != value);
+      const updated = selectedEnums.filter((x) => x != value);
       updateFacetEnum(field, updated, updateFacetFilters, clearFilters);
     }
   };
@@ -173,13 +169,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
               ? ([, a], [, b]) => b - a
               : ([a], [b]) => a.localeCompare(b),
           )
-          .slice(0, !isGroupExpanded ? maxValuesToDisplay : undefined)
-          .map(([value, count]) => {
-            if (field === "genes.is_cancer_gene_census") {
-              value = value === "1" ? "true" : "false";
-            }
-            return [value, count];
-          }),
+          .slice(0, !isGroupExpanded ? maxValuesToDisplay : undefined),
       )
     : undefined;
 
