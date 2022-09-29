@@ -3,7 +3,6 @@ import Link from "next/link";
 import { useCoreSelector, selectVersionInfo } from "@gff/core";
 
 export const Footer: React.FC = () => {
-  //TODO: retrieve these values from state (?)
   const { uiVersion, uiCommitHash, apiVersion, apiCommitHash, dataRelease } =
     useCoreSelector((state) => selectVersionInfo(state));
 
