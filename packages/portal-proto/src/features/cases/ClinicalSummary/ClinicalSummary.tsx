@@ -102,10 +102,7 @@ export const ClinicalSummary = ({
           }}
           styles={(theme) => ({
             tab: {
-              backgroundColor: theme.white,
-              color: theme.colors.gray[9],
               border: `2px solid ${theme.colors.gray[4]}`,
-              fontSize: theme.fontSizes.sm,
             },
           })}
         >

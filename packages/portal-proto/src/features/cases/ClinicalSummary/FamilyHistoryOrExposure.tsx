@@ -79,8 +79,8 @@ export const FamilyHistoryOrExposure = ({
           value={activeTab.toString()}
           onTabChange={onTabChange}
           classNames={{
-            tabLabel: "text-sm px-2 font-medium",
-            tabsList: "border-r-0",
+            tabLabel: "text-sm pr-2 font-medium",
+            tabsList: "border-r-0 max-w-[160px]",
           }}
         >
           <div className="max-h-[500px] overflow-y-auto overflow-x-hidden min-w-[160px] mr-2">
@@ -90,10 +90,10 @@ export const FamilyHistoryOrExposure = ({
                   <Tabs.Tab
                     value={index.toString()}
                     key={data.submitter_id}
-                    className={`bg-base-lighter my-1 ${
+                    className={`my-1 ${
                       activeTab === index
                         ? "bg-primary text-primary-contrast"
-                        : "bg-base-lighter text-base-contrast-lightest"
+                        : "bg-base-lightest text-base-contrast-lightest"
                     }`}
                   >
                     <Tooltip label={data.submitter_id} withinPortal={true}>
