@@ -143,7 +143,7 @@ export const formatEntityInfo = (
 
   if (foundType === "slide" && !!selectedSlide[0]) {
     filtered.push([
-      "Slides",
+      "Slide Image",
       <div className="flex gap-4" key={selectedSlide[0]?.file_id}>
         <Tooltip label="View Slide Image">
           <div>
