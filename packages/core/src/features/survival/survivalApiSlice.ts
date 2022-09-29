@@ -12,7 +12,7 @@ interface SurvivalDonor {
 }
 
 export interface SurvivalElement {
-  readonly meta: string;
+  readonly meta: Record<string, number>;
   readonly donors: ReadonlyArray<SurvivalDonor>;
 }
 
