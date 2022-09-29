@@ -4,6 +4,8 @@ import { VERSIONINFO } from "./versionInfoFixture";
 
 const initialState: any = VERSIONINFO;
 
+// TODO: fecth actual data from API, discard fixture data
+
 const slice = createSlice({
   name: "versionInfo",
   initialState,
