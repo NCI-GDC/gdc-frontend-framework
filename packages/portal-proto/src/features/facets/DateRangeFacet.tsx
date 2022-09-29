@@ -98,7 +98,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
         width ? width : "mx-1"
       } bg-base-max relative border-primary-lightest border-1 rounded-b-md text-xs transition`}
     >
-      <div className="flex items-center justify-between flex-wrap bg-primary-lighter shadow-md px-1.5">
+      <div className="flex items-start justify-between flex-nowrap bg-primary-lighter shadow-md px-1.5">
         <Tooltip
           label={description}
           classNames={{
@@ -112,7 +112,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
           transition="fade"
           transitionDuration={200}
         >
-          <div className="text-primary-contrast-lighter font-heading font-semibold text-md">
+          <div className="text-primary-contrast-lighter font-heading font-semibold text-md break-words py-2">
             {facetName ? facetName : trimFirstFieldNameToTitle(field, true)}
           </div>
         </Tooltip>
