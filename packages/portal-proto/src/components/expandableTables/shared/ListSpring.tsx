@@ -1,6 +1,7 @@
 import React from "react";
 import { animated, useSpring } from "react-spring";
 import { useMeasure } from "react-use";
+import ItemSpring from "./ItemSpring";
 
 interface ListSpringProps {
   subData: any;
@@ -29,30 +30,16 @@ const ListSpring: React.VFC<ListSpringProps> = ({
     <>
       <animated.div
         ref={subRef}
-        className={`flex flex-wrap bg-white absolute mt-5 ml-2`}
+        className={`flex flex-wrap bg-white absolute mt-2 ml-2`}
         style={horizontalSpring}
       >
-        {subData.map((t, key) => {
+        {subData.map((numerator, index) => {
           return (
-            <>
-              <ul className={`p-2 text-xs list-disc `}>
-                <li key={`subrow-item-${key}`} className={`text-red-500 pr-1`}>
-                  <span className={`font-medium text-black`}>{t.key}</span>:{" "}
-                  <span
-                    className={`text-blue-500 underline hover:cursor-pointer font-medium`}
-                  >
-                    {t.doc_count}
-                  </span>
-                  <span className={`text-black`}> / </span>
-                  <span
-                    className={`text-blue-500 underline hover:cursor-pointer font-medium`}
-                  >
-                    9999
-                  </span>
-                </li>
-                ({(t.doc_count / 9999).toFixed(2)}%)
-              </ul>
-            </>
+            <ItemSpring
+              numerator={numerator}
+              index={index}
+              len={subData.length || 1}
+            />
           );
         })}
       </animated.div>
