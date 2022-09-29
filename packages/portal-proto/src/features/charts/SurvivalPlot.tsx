@@ -422,7 +422,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
             transitionDuration={0}
           >
             <Menu.Target>
-              <div>
+              <div className="flex">
                 <Tooltip label="Download SurvivalPlot data or image">
                   <button className="px-1.5 min-h-[28px] nim-w-[40px] mx-1 border-base-light border rounded-[4px] transition-colors ">
                     <DownloadIcon size="1.25em" />
