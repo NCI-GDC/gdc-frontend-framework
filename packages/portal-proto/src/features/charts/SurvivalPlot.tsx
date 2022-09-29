@@ -5,9 +5,12 @@ import {
   MdDownload as DownloadIcon,
   MdRestartAlt as ResetIcon,
 } from "react-icons/md";
-import { Box, Tooltip } from "@mantine/core";
+import { Box, Menu, Tooltip } from "@mantine/core";
 import isNumber from "lodash/isNumber";
 import { useMouse } from "@mantine/hooks";
+import html2canvas from "html2canvas";
+import { elementToSVG } from "dom-to-svg";
+import { downloadBlob } from "src/utils/download";
 
 // based on schemeCategory10
 // 4.5:1 colour contrast for normal text
@@ -272,12 +275,12 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   height = 380,
   field,
 }: SurvivalPlotProps) => {
-  const [downloadMenuOpen, setDownloadMenuOpen] = useState(false);
   // handle the current range of the xAxis set to undefined to reset
   const [xDomain, setXDomain] = useState(undefined);
   const [survivalPlotLineTooltipContent, setSurvivalPlotLineTooltipContent] =
     useState(undefined);
   const { ref: mouseRef, x, y } = useMouse(); // for survival plot tooltip
+  const downloadRef = useRef<HTMLDivElement | null>(null);
 
   const pValue = data.overallStats.pValue;
   const plotData = data.survivalData;
@@ -290,6 +293,14 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
 
   // hook to call renderSurvivalPlot
   const container = useSurvival(
+    hasEnoughData ? plotData : [],
+    xDomain,
+    setXDomain,
+    height,
+    setSurvivalPlotLineTooltipContent,
+  );
+
+  const containerForDownload = useSurvival(
     hasEnoughData ? plotData : [],
     xDomain,
     setXDomain,
@@ -313,6 +324,89 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
       break;
   }
 
+  const handleDownloadSVG = () => {
+    if (downloadRef.current) {
+      const svg = elementToSVG(downloadRef.current);
+      const svgStr = new XMLSerializer().serializeToString(svg);
+      const blob = new Blob([svgStr], { type: "image/svg+xml" });
+      downloadBlob(blob, "survival-plot.svg");
+    }
+  };
+
+  const handleDownloadPNG = async () => {
+    if (downloadRef.current) {
+      const canvas = await html2canvas(downloadRef.current);
+
+      canvas.toBlob((blob) => {
+        downloadBlob(blob, "survival-plot.png");
+      }, "image/png");
+    }
+  };
+
+  const handleDownloadJSON = async () => {
+    const blob = new Blob(
+      [
+        JSON.stringify(
+          plotData.map((element, index) => ({
+            meta: { ...element.meta, label: `S${index + 1}` },
+            donors: element.donors,
+          })),
+        ),
+      ],
+      { type: "text/json" },
+    );
+
+    downloadBlob(blob, "survival-plot.json");
+  };
+
+  const handleDownloadTSV = async () => {
+    if (plotData.length === 0) {
+      return;
+    }
+
+    const showLabel = plotType !== SurvivalPlotTypes.overall;
+
+    const header = [
+      "id",
+      "time",
+      "censored",
+      "survivalEstimate",
+      "submitter_id",
+      "project_id",
+    ];
+
+    if (showLabel) {
+      header.push("label");
+    }
+
+    const body = plotData
+      .map((element, index) =>
+        element.donors
+          .map((row) => {
+            const rowValues = [
+              row.id,
+              row.time,
+              row.censored,
+              row.survivalEstimate,
+              row.submitter_id,
+              row.project_id,
+            ];
+
+            if (showLabel) {
+              rowValues.push(`S${index + 1}`);
+            }
+
+            return rowValues.join("\t");
+          })
+          .join("\n"),
+      )
+      .join("\n");
+    const tsv = [header.join("\t"), body].join("\n");
+    const blob = new Blob([tsv], { type: "text/csv" });
+
+    downloadBlob(blob, "survival-plot.tsv");
+  };
+
   return (
     <div className="flex flex-col shadow-lg">
       <div className="flex flex-row w-100 items-center justify-center flex-wrap items-center">
@@ -320,14 +414,45 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
           {title}
         </div>
         <div className="flex flex-row items-center ml-auto mt-2 ">
-          <Tooltip label="Download SurvivalPlot data or image">
-            <button
-              className="px-1.5 min-h-[28px] nim-w-[40px] mx-1 border-base-light border rounded-[4px] transition-colors "
-              onClick={() => setDownloadMenuOpen(!downloadMenuOpen)}
-            >
-              <DownloadIcon size="1.25em" />
-            </button>
-          </Tooltip>
+          <Menu
+            position="bottom-start"
+            offset={1}
+            closeOnClickOutside={false}
+            closeOnItemClick={false}
+            transitionDuration={0}
+          >
+            <Menu.Target>
+              <div>
+                <Tooltip label="Download SurvivalPlot data or image">
+                  <button className="px-1.5 min-h-[28px] nim-w-[40px] mx-1 border-base-light border rounded-[4px] transition-colors ">
+                    <DownloadIcon size="1.25em" />
+                  </button>
+                </Tooltip>
+              </div>
+            </Menu.Target>
+            <Menu.Dropdown className="z-10 w-44 absolute bg-base-lightest rounded shadow-md border-none">
+              <Menu.Item className="p-0" onClick={handleDownloadSVG}>
+                <div className="cursor-pointer block py-2 px-4 text-sm text-base-contrast-lightest hover:bg-base-lightest">
+                  SVG
+                </div>
+              </Menu.Item>
+              <Menu.Item className="p-0" onClick={handleDownloadPNG}>
+                <div className="cursor-pointer block py-2 px-4 text-sm text-base-contrast-lightest hover:bg-base-lightest">
+                  PNG
+                </div>
+              </Menu.Item>
+              <Menu.Item className="p-0" onClick={handleDownloadJSON}>
+                <div className="cursor-pointer block py-2 px-4 text-sm text-base-contrast-lightest hover:bg-base-lightest">
+                  JSON
+                </div>
+              </Menu.Item>
+              <Menu.Item className="p-0" onClick={handleDownloadTSV}>
+                <div className="cursor-pointer block py-2 px-4 text-sm text-base-contrast-lightest hover:bg-base-lightest">
+                  TSV
+                </div>
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
           <Tooltip label="Reset SurvivalPlot Zoom">
             <button
               className="px-1.5 min-h-[28px] nim-w-[40px] border-base-light border rounded-[4px] transition-colors "
@@ -392,6 +517,39 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
           {survivalPlotLineTooltipContent}
         </Box>
         <div className="survival-plot" ref={container} />
+      </div>
+      <div className="fixed top-0 -translate-y-full w-[700px] h-[500px]">
+        <div ref={downloadRef}>
+          <h2 className="text-montserrat text-center text-lg text-primary-content-dark">
+            {title}
+          </h2>
+          <div className="flex flex-col items-center ">
+            <div
+              className={
+                [
+                  SurvivalPlotTypes.categorical,
+                  SurvivalPlotTypes.continuous,
+                ].includes(plotType)
+                  ? "flex flex-row flex-wrap justify-center"
+                  : undefined
+              }
+            >
+              {!hideLegend &&
+                legend?.map((x, idx) => {
+                  return (
+                    <div key={`${x.key}-${idx}`} className="px-2">
+                      {x.value}
+                    </div>
+                  );
+                })}
+            </div>
+            <div className="text-xs">
+              {isNumber(pValue) &&
+                `Log-Rank Test P-Value = ${pValue.toExponential(2)}`}
+            </div>
+          </div>
+          <div className="survival-plot" ref={containerForDownload} />
+        </div>
       </div>
     </div>
   );
