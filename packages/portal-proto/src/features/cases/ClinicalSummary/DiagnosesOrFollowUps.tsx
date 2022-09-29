@@ -107,7 +107,8 @@ const TableElement = ({
         therapeutic_agents: diagnosis.therapeutic_agents || "--",
         treatment_intent_type: diagnosis.treatment_intent_type || "--",
         treatment_or_therapy: diagnosis.treatment_or_therapy || "--",
-        days_to_treatment_start: diagnosis.days_to_treatment_start || "--",
+        days_to_treatment_start:
+          diagnosis.days_to_treatment_start.toLocaleString() || "--",
       }));
 
     return {

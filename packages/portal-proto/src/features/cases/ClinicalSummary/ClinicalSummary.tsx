@@ -47,8 +47,8 @@ export const ClinicalSummary = ({
       ethnicity,
       gender,
       race,
-      days_to_birth,
-      days_to_death,
+      days_to_birth: days_to_birth.toLocaleString(),
+      days_to_death: days_to_death.toLocaleString(),
       vital_status,
     };
 
