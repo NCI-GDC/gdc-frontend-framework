@@ -30,7 +30,7 @@ const newGenesColumn = (): GenesColumns => {
 export function makeData(...lens: number[]) {
   const makeDataLevel = (depth = 0): GenesColumns[] => {
     const len = lens[depth]!;
-    return range(len).map((d): GenesColumns => {
+    return range(len).map((): GenesColumns => {
       return {
         ...newGenesColumn(),
         subRows: [

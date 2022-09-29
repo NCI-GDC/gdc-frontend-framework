@@ -1,35 +1,20 @@
 import { useState, useEffect } from "react";
-import { animated, useSpring, config } from "react-spring";
+import { useSpring, config } from "react-spring";
 import { GeneSubRow } from "./types";
 import ListSpring from "../shared/ListSpring";
 import { convertGeneFilter } from "./genesTableUtils";
 
 export const GeneAffectedCases: React.VFC<GeneSubRow> = ({
   geneId,
-  spring,
   width,
-  height,
+  opening,
 }: GeneSubRow) => {
   const [subData, setSubData] = useState([]);
-  const [miniHeight, setMiniHeight] = useState(650);
 
   const horizontalSpring = useSpring({
     from: { width: 0, opacity: 0 },
     to: { width: width, opacity: 1 },
     config: config.molasses,
-  });
-
-  const verticalSpring = useSpring({
-    from: {
-      height: 30,
-      width: 10,
-      opacity: 0,
-    },
-    to: {
-      height: miniHeight,
-      width: 10,
-      opacity: 1,
-    },
   });
 
   const getGeneSubRow = (geneId: string) => {
@@ -69,16 +54,14 @@ export const GeneAffectedCases: React.VFC<GeneSubRow> = ({
 
   useEffect(() => {
     getGeneSubRow(geneId);
-  }, []);
+  }, [geneId]);
 
   return (
     <>
       <ListSpring
         subData={subData}
         horizontalSpring={horizontalSpring}
-        spring={spring}
-        containerWidth={width}
-        setMiniHeight={setMiniHeight}
+        opening={opening}
       />
     </>
   );

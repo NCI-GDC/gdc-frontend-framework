@@ -16,8 +16,6 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
   selectedSurvivalPlot,
   handleSurvivalPlotToggled,
   width,
-  height,
-  spring,
 }: GenesTableProps) => {
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
   const [expanded, setExpanded] = useState<any>({});
@@ -92,18 +90,13 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
 
   // todo replace this callback w/ transformResponse inside rtk endpoint call
   const columns = React.useMemo<ColumnDef<GenesColumns>[]>(() => {
-    return columnListOrder
-      .filter((col) => col.visible)
+    return visibleColumns
       .map(({ id }) => id)
       .map((accessor) => {
         return createTableColumn(
           accessor,
-          // todo
-          // height spring needs to know what gene row is clicked for allocated height
-          spring,
           width,
           partitionWidth,
-          height,
           visibleColumns,
         );
       });

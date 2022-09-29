@@ -2,7 +2,7 @@ import { GeneAffectedCases } from "./GeneAffectedCases";
 import ToggleSpring from "../shared/ToggleSpring";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import _ from "lodash";
-import { animated, useSpring } from "react-spring";
+import { animated } from "react-spring";
 
 interface SingleGene {
   biotype: string;
@@ -42,25 +42,15 @@ export const GTableHeader = ({
 export const GTableCell = ({
   row,
   accessor,
-}: // partitionWidth
-{
+}: {
   row: any;
   accessor: string;
-  // partitionWidth: any;
 }): JSX.Element => {
   return (
     <div>
       <>
         {row.getCanExpand() ? <></> : null}{" "}
-        <animated.div
-          // onClick={() => console.log('width', width, `w-[${width}px]`)}
-          // className={`w-[${width}px]`}
-          // style={{
-          //   marginLeft: `15px`,
-          // }}
-          className={`ml-3.5`}
-          // style={partitionWidth}
-        >
+        <animated.div className={`ml-3.5 text-center`}>
           {row.original[`${accessor}`] ? row.original[`${accessor}`] : ""}
         </animated.div>
       </>
@@ -70,10 +60,8 @@ export const GTableCell = ({
 
 export const createTableColumn = (
   key: string,
-  spring: any,
   width: number,
   partitionWidth: any,
-  height: number,
   visibleColumns: TableColumnState[],
 ) => {
   switch (key) {
@@ -84,32 +72,32 @@ export const createTableColumn = (
         columns: [
           {
             accessorKey: key,
-            header: ({ table }) => <GTableHeader twStyles={``} title={key} />,
-            cell: ({ row, getValue }) => {
+            header: () => <GTableHeader twStyles={``} title={key} />,
+            cell: ({ row }) => {
               return (
-                // className={`w-[${Math.floor(width / visibleColumns?.length)}px]`}
-                <animated.div style={partitionWidth}>
+                <animated.div
+                  style={partitionWidth}
+                  className={`content-center`}
+                >
                   <>
-                    <GTableCell
-                      row={row}
-                      accessor={key}
-                      // partitionWidth={Math.floor(width / visibleColumns?.length) || 300}
-                    />
+                    <GTableCell row={row} accessor={key} />
                     {row.getCanExpand() && (
-                      <button
-                        {...{
-                          onClick: row.getToggleExpandedHandler(),
-                          style: { cursor: "pointer" },
-                        }}
-                      >
-                        <ToggleSpring
-                          isExpanded={row.getIsExpanded()}
-                          icon={
-                            <MdKeyboardArrowDown size="small" color="white" />
-                          }
-                          twStyles={`bg-red-500 rounded-md h-3 w-3`}
-                        />
-                      </button>
+                      <div className={`text-center`}>
+                        <button
+                          {...{
+                            onClick: row.getToggleExpandedHandler(),
+                            style: { cursor: "pointer" },
+                          }}
+                        >
+                          <ToggleSpring
+                            isExpanded={row.getIsExpanded()}
+                            icon={
+                              <MdKeyboardArrowDown size="small" color="white" />
+                            }
+                            twStyles={`bg-red-500 rounded-md h-3 w-3`}
+                          />
+                        </button>
+                      </div>
                     )}
                   </>
                   <>
@@ -117,9 +105,8 @@ export const createTableColumn = (
                       <div className={`relative`}>
                         <GeneAffectedCases
                           geneId={row.value}
-                          spring={spring}
                           width={width}
-                          height={height}
+                          opening={row.getCanExpand()}
                         ></GeneAffectedCases>
                       </div>
                     )}
@@ -138,31 +125,19 @@ export const createTableColumn = (
         columns: [
           {
             accessorKey: key,
-            header: ({ table }) => (
-              <GTableHeader twStyles={`ml-4`} title={key} />
-            ),
-            cell: ({ row, getValue }) => {
+            header: () => <GTableHeader twStyles={`ml-4`} title={key} />,
+            cell: ({ row }) => {
               return (
-                // Math.floor(width / visibleColumns?.length) || 300
-                //
-                <animated.div
-                  // onClick={() => console.log(`w-[${Math.floor(width / visibleColumns?.length)}px]`)} className={`w-[${Math.floor(width / visibleColumns?.length)}px]`}
-                  style={partitionWidth}
-                >
+                <animated.div style={partitionWidth}>
                   <>
-                    <GTableCell
-                      row={row}
-                      accessor={key}
-                      // width={Math.floor(width / visibleColumns?.length) || 200}
-                    />
+                    <GTableCell row={row} accessor={key} />
                     <>
                       {!row.getCanExpand() && visibleColumns[0].id === key && (
                         <div className={`relative`}>
                           <GeneAffectedCases
                             geneId={row.value}
-                            spring={spring}
                             width={width}
-                            height={height}
+                            opening={row.getCanExpand()}
                           ></GeneAffectedCases>
                         </div>
                       )}
@@ -186,6 +161,7 @@ export const getGene = (
   cases: number,
 ) => {
   return {
+    geneId: g.gene_id,
     // survival: {
     //     name: g.name,
     //     symbol: g.symbol,

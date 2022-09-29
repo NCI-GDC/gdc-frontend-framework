@@ -1,5 +1,3 @@
-import { ExpandedState } from "@tanstack/table-core";
-
 export interface Gene {
   symbol: string;
   name: string;
@@ -14,26 +12,22 @@ export interface Gene {
 
 export interface GeneSubRow {
   geneId: string;
-  spring: any;
   width: number;
-  height: number;
+  opening: boolean;
 }
 
 export interface GenesTableProps {
   readonly initialData: any; // need to add this from response
-  //   readonly columns: any;
   readonly mutationCounts: Record<string, string>;
   readonly filteredCases: number;
   readonly cases: number;
   readonly selectedSurvivalPlot: Record<string, string>;
   width: number;
-  height: number;
   readonly handleSurvivalPlotToggled: (
     symbol: string,
     name: string,
     field: string,
   ) => void;
-  spring: any;
 }
 
 export const GENE_SET_OPTIONS = [

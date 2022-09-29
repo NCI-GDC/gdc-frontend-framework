@@ -8,6 +8,7 @@ import {
   ColumnDef,
   flexRender,
 } from "@tanstack/react-table";
+import { animated, useSpring } from "react-spring";
 
 export interface ExpTableProps<TData> {
   data: TData[];
@@ -37,13 +38,19 @@ export const ExpTable: React.VFC<ExpTableProps> = ({
     getExpandedRowModel: getExpandedRowModel(),
   });
 
+  const unitSpring = useSpring({
+    from: { opacity: 0 },
+    to: { opacity: 1 },
+    duration: 100,
+  });
+
   return (
     <div className="p-2">
-      <div className="h-2" />
+      <div className="h-2 shadow-md" />
       <table>
-        <thead>
+        <thead className={`border-2 shadow-md`}>
           {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
+            <animated.tr style={unitSpring} key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
                   <th key={header.id} colSpan={header.colSpan}>
@@ -58,21 +65,24 @@ export const ExpTable: React.VFC<ExpTableProps> = ({
                   </th>
                 );
               })}
-            </tr>
+            </animated.tr>
           ))}
         </thead>
         <tbody>
-          {table.getRowModel().rows.map((row) => {
+          {table.getRowModel().rows.map((row, index) => {
             return (
-              <tr key={row.id}>
+              <tr
+                key={row.id}
+                className={`border-2 ${index % 2 ? `bg-slate-50` : `bg-white`}`}
+              >
                 {row.getVisibleCells().map((cell) => {
                   return (
-                    <td key={cell.id}>
+                    <animated.td style={unitSpring} key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),
                       )}
-                    </td>
+                    </animated.td>
                   );
                 })}
               </tr>

@@ -1,54 +1,35 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { animated, useSpring, config } from "react-spring";
+import React from "react";
+import { animated, useSpring } from "react-spring";
 import { useMeasure } from "react-use";
 
 interface ListSpringProps {
   subData: any;
   horizontalSpring: any;
-  spring: any;
-  containerWidth: number;
-  setMiniHeight: any;
+  opening: boolean;
 }
 
 const ListSpring: React.VFC<ListSpringProps> = ({
   subData,
   horizontalSpring,
-  spring,
-  containerWidth,
-  setMiniHeight,
+  opening,
 }: ListSpringProps) => {
-  const [subRef, { width }] = useMeasure();
-  const [isFull, setIsFull] = useState(false);
-  const [subHeight, setSubHeight] = useState(undefined);
+  const [subRef, { width, height }] = useMeasure();
 
-  // const subSpring = useMemo(() => {
-  //   return subHeight ? spring : useSpring({
-  //     from: {
-  //       height: 30,
-  //       width: 10,
-  //       opacity: 0,
-  //     },
-  //     to: {
-  //       height: subHeight,
-  //       width: 10,
-  //       opacity: 1,
-  //     }
-  //   })}, [subHeight]);
-  //
+  const fudgeFactor = width / 60;
 
-  useEffect(() => {
-    // if subRef width === the width passed from above then lets use a different height for spring below
-    if (containerWidth === width) {
-      setSubHeight(spring?.height?.animation?.to);
-      setIsFull(true);
-    }
-  }, [containerWidth, width]);
+  const verticalSpring = useSpring({
+    from: { opacity: 0, height: 0 },
+    to: {
+      opacity: !opening ? 1 : 0,
+      height: !opening ? height + fudgeFactor : 0,
+    },
+  });
 
   return (
     <>
       <animated.div
         ref={subRef}
-        className={`flex flex-wrap bg-white absolute mt-5`}
+        className={`flex flex-wrap bg-white absolute mt-5 ml-2`}
         style={horizontalSpring}
       >
         {subData.map((t, key) => {
@@ -78,7 +59,7 @@ const ListSpring: React.VFC<ListSpringProps> = ({
       {/* relative div's height below is derived from the absolute div's height above
       this is to displace the rest of the table when in expanded state
    */}
-      <animated.div style={spring}></animated.div>
+      <animated.div style={verticalSpring}></animated.div>
     </>
   );
 };
