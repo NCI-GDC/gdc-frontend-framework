@@ -5,7 +5,7 @@ import { VerticalTable } from "@/features/shared/VerticalTable";
 
 const columnListOrder = [
   { id: "level", columnName: "Level", visible: true },
-  { id: "files", columnName: "Files", visisble: true },
+  { id: "files", columnName: "Files", visible: true },
   { id: "file_size", columnName: "File Name", visible: true },
 ];
 
@@ -52,9 +52,7 @@ const AuthorizationTable: React.FC<AuthorizationTableProps> = ({
       columnListOrder={columnListOrder}
       columnCells={columnCells}
       showControls={false}
-      tableTitle={""}
       selectableRow={false}
-      pageSize={"2"}
       handleColumnChange={undefined}
     />
   );

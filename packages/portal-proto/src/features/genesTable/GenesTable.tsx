@@ -1,14 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useGenesTable } from "@gff/core";
 import { VerticalTable } from "../shared/VerticalTable";
-import {
-  Box,
-  Loader,
-  Pagination,
-  Select,
-  Switch,
-  Tooltip,
-} from "@mantine/core";
+import { Box, Switch, Tooltip } from "@mantine/core";
 import { SiMicrogenetics as GeneAnnotationIcon } from "react-icons/si";
 import _ from "lodash";
 import { useMeasure } from "react-use";
@@ -39,11 +32,10 @@ const GenesTable: React.FC<GenesTableProps> = ({
 
   // using the useSsmsTable from core and the associated useEffect hook
   // exploring different ways to dispatch the pageSize/offset changes
-  const { data, isFetching } = useGenesTable({
+  const { data, isFetching, isSuccess, isError } = useGenesTable({
     pageSize: pageSize,
     offset: offset,
   });
-
   useEffect(() => {
     setActivePage(1);
   }, [pageSize]);
@@ -222,48 +214,32 @@ const GenesTable: React.FC<GenesTableProps> = ({
   return (
     <div className="flex flex-col w-screen pb-3 pt-3">
       <div ref={ref} className={`flex flex-row w-9/12`}>
-        {data && !isFetching ? (
-          <VerticalTable
-            tableData={tableData}
-            columnListOrder={columnListOrder}
-            columnCells={columnCells}
-            handleColumnChange={handleColumnChange}
-            selectableRow={false}
-            tableTitle={`Showing ${(activePage - 1) * pageSize + 1} - ${
-              activePage * pageSize
-            } of   ${totalResults} genes`}
-            pageSize={pageSize.toString()}
-          ></VerticalTable>
-        ) : (
-          <div className="grid place-items-center h-96 w-full pt-64 pb-72">
-            <div className="flex flex-row">
-              <Loader color="primary" size={24} />
-            </div>
-          </div>
-        )}
-      </div>
-      <div className="flex flex-row items-center justify-start border-t border-base-light w-9/12">
-        <p className="px-2">Page Size:</p>
-        <Select
-          size="sm"
-          radius="md"
-          onChange={handlePageSizeChange}
-          value={pageSize.toString()}
-          data={[
-            { value: "10", label: "10" },
-            { value: "20", label: "20" },
-            { value: "40", label: "40" },
-            { value: "100", label: "100" },
-          ]}
-        />
-        <Pagination
-          size="sm"
-          radius="md"
-          color="accent"
-          className="ml-auto"
-          page={activePage}
-          onChange={(x) => handlePageChange(x)}
-          total={pages}
+        <VerticalTable
+          tableData={tableData}
+          columnListOrder={columnListOrder}
+          columnCells={columnCells}
+          handleColumnChange={handleColumnChange}
+          selectableRow={false}
+          tableTitle={`Showing ${(activePage - 1) * pageSize + 1} - ${
+            activePage * pageSize
+          } of   ${totalResults} genes`}
+          pagination={{
+            handlePageSizeChange,
+            handlePageChange,
+            page: activePage,
+            pages: pages,
+            size: pageSize,
+          }}
+          status={
+            // convert to CoreSelector status
+            isFetching
+              ? "pending"
+              : isSuccess
+              ? "fulfilled"
+              : isError
+              ? "rejected"
+              : "uninitialized"
+          }
         />
       </div>
     </div>

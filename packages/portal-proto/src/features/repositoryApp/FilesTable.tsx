@@ -1,103 +1,162 @@
 import { useState } from "react";
-import { Pagination, Select, Table } from "@mantine/core";
-import { MdLock as LockedIcon, MdLockOpen as OpenIcon } from "react-icons/md";
 import fileSize from "filesize";
-import { FilesViewProps } from "@/features/files/FilesView";
+import { VerticalTable } from "../shared/VerticalTable";
+import { SingleItemAddToCartButton } from "../cart/updateCart";
+import Link from "next/link";
+import { Badge, Button } from "@mantine/core";
+import {
+  useCoreDispatch,
+  useCoreSelector,
+  selectCurrentCohortFilterSet,
+  selectFilesData,
+  fetchFiles,
+  buildCohortGqlOperator,
+  joinFilters,
+} from "@gff/core";
+import { useAppSelector } from "@/features/repositoryApp/appApi";
+import { selectFilters } from "@/features/repositoryApp/repositoryFiltersSlice";
 
-const FilesTables: React.FC<FilesViewProps> = ({
-  files = [],
-  handleFileSelected = () => void 0,
-  handleCheckedFiles = () => void 0,
-}: FilesViewProps) => {
-  const [pageSize, setPageSize] = useState(10);
-  const [activePage, setPage] = useState(1);
-  const [pages] = useState(10);
-  const handlePageSizeChange = (x: string) => {
-    setPageSize(parseInt(x));
+const FilesTables: React.FC = () => {
+  const columnListOrder = [
+    { id: "cart", columnName: "Cart", visible: true },
+    { id: "id", columnName: "File UUID", visible: false },
+    { id: "access", columnName: "Access", visible: true },
+    { id: "fileName", columnName: "File Name", visible: true },
+    { id: "cases", columnName: "Cases", visible: true },
+    { id: "project_id", columnName: "Project", visible: true },
+    { id: "dataCategory", columnName: "Data Category ", visible: true },
+    { id: "dataType", columnName: "Data Type", visible: false },
+    { id: "dataFormat", columnName: "Data Format", visible: true },
+    {
+      id: "experimentalStrategy",
+      columnName: "Experimental Strategy",
+      visible: false,
+    },
+    { id: "platform", columnName: "Platform", visible: false },
+    { id: "fileSize", columnName: "File Size", visible: true },
+    { id: "annotations", columnName: "Annotations", visible: true },
+  ];
+  const filterColumnCells = (newList) =>
+    newList.reduce((filtered, obj) => {
+      if (obj.visible) {
+        filtered.push({ Header: obj.columnName, accessor: obj.id });
+      }
+      return filtered;
+    }, []);
+
+  const [columnCells, setColumnCells] = useState(
+    filterColumnCells(columnListOrder),
+  );
+
+  const handleColumnChange = (update) => {
+    setColumnCells(filterColumnCells(update));
   };
+
+  let formattedTableData = [],
+    tempPagination = {
+      count: undefined,
+      from: undefined,
+      page: undefined,
+      pages: undefined,
+      size: undefined,
+      sort: undefined,
+      total: undefined,
+    };
+
+  const { data, pagination, status } = useCoreSelector(selectFilesData);
+
+  if (status === "fulfilled") {
+    tempPagination = pagination;
+    formattedTableData = data.map((file) => ({
+      cart: <SingleItemAddToCartButton file={file} iconOnly />,
+      id: (
+        <Link href={`/files/${file.id}`}>
+          <a className="text-utility-link underline">{file.id}</a>
+        </Link>
+      ),
+      access: (
+        <Badge
+          className={
+            file.access === "open" //TODO: keep or change to theme color
+              ? "bg-nci-green-lighter/50 text-nci-green-darkest capitalize text-sm"
+              : "bg-nci-red-lighter/50 text-nci-red-darkest capitalize text-sm"
+          }
+        >
+          {file.access}
+        </Badge>
+      ),
+      fileName: (
+        <Link href={`/files/${file.id}`}>
+          <a className="text-utility-link underline">{file.fileName}</a>
+        </Link>
+      ),
+      cases: file.cases?.length.toLocaleString() || 0,
+      project_id: (
+        <Link href={`/projects/${file.project_id}`}>
+          <a className="text-utility-link underline">{file.project_id}</a>
+        </Link>
+      ),
+      dataCategory: file.dataCategory,
+      dataType: file.dataType,
+      dataFormat: file.dataFormat,
+      experimentalStrategy: file.experimentalStrategy || "--",
+      platform: file.platform || "--",
+      fileSize: fileSize(file.fileSize),
+      annotations: file.annotations?.length || 0,
+    }));
+  }
+
+  //This if for hanadling pagination changes
+  const repositoryFilters = useAppSelector((state) => selectFilters(state));
+  const cohortFilters = useCoreSelector((state) =>
+    selectCurrentCohortFilterSet(state),
+  );
+  const allFilters = joinFilters(cohortFilters, repositoryFilters);
+  const coreDispatch = useCoreDispatch();
+
+  const getCohortCases = (pageSize = 20, offset = 0) => {
+    coreDispatch(
+      fetchFiles({
+        filters: buildCohortGqlOperator(allFilters),
+        size: pageSize,
+        from: offset * pageSize,
+      }),
+    );
+  };
+  const handlePageSizeChange = (x: string) => {
+    getCohortCases(parseInt(x), 0);
+  };
+  const handlePageChange = (x: number) => {
+    getCohortCases(tempPagination.size, x - 1);
+  };
+  console.log(tempPagination);
+
+  //update everything that uses table component
   return (
-    <div className="flex flex-col gap-y-4">
-      <Table verticalSpacing="xs" striped highlightOnHover>
-        <thead>
-          <tr className="bg-base-light text-base-contrast-light text-md text-montserrat border border-base">
-            <th className="px-2">
-              <input type="checkbox" />
-            </th>
-            <th className="px-2 th-base-lightest" style={{ color: "#FFFFFF" }}>
-              File
-            </th>
-            <th className="px-2 " style={{ color: "#FFFFFF" }}>
-              Access
-            </th>
-            <th className="px-2" style={{ color: "#FFFFFF" }}>
-              Experimental Strategy
-            </th>
-            <th className="px-2" style={{ color: "#FFFFFF" }}>
-              Data Category
-            </th>
-            <th className="px-2" style={{ color: "#FFFFFF" }}>
-              Data Format
-            </th>
-            <th className="px-2" style={{ color: "#FFFFFF" }}>
-              File Size
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {files.map((file) => (
-            <tr key={file.id}>
-              <td className="px-2">
-                <input
-                  type="checkbox"
-                  onChange={(e) => handleCheckedFiles(e, file)}
-                />
-              </td>
-              <td className="flex flex-row items-center flex-nowrap">
-                {file.access === "open" ? (
-                  <OpenIcon className="pr-1" />
-                ) : (
-                  <LockedIcon className="pr-1" />
-                )}
-                {file.access}
-              </td>
-              <td className="px-2 break-all">
-                <button onClick={() => handleFileSelected(file)}>
-                  {file.fileName}
-                </button>
-              </td>
-              <td className="px-2">{file.experimentalStrategy}</td>
-              <td className="px-2">{file.dataCategory}</td>
-              <td className="px-2">{file.dataFormat}</td>
-              <td className="px-2">{fileSize(file.fileSize)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-      <div className="flex flex-row items-center justify-start border-t border-base-light">
-        <p className="px-2">Page Size:</p>
-        <Select
-          size="sm"
-          radius="md"
-          onChange={handlePageSizeChange}
-          value={pageSize.toString()}
-          data={[
-            { value: "10", label: "10" },
-            { value: "20", label: "20" },
-            { value: "40", label: "40" },
-            { value: "100", label: "100" },
-          ]}
-        />
-        <Pagination
-          size="sm"
-          radius="md"
-          color="accent"
-          className="ml-auto"
-          page={activePage}
-          onChange={setPage}
-          total={pages}
-        />
-      </div>
-    </div>
+    <VerticalTable
+      tableTitle={`Total of ${tempPagination?.total} files`}
+      additionalControls={
+        <div>
+          <Button className="mx-auto text-primary-content-darkest border-primary-darkest mr-5">
+            JSON
+          </Button>
+          <Button className="mx-auto text-primary-content-darkest border-primary-darkest">
+            TSV
+          </Button>
+        </div>
+      }
+      tableData={formattedTableData}
+      columnListOrder={columnListOrder}
+      columnCells={columnCells}
+      handleColumnChange={handleColumnChange}
+      selectableRow={false}
+      pagination={{
+        handlePageSizeChange,
+        handlePageChange,
+        ...tempPagination,
+      }}
+      status={status}
+    />
   );
 };
 

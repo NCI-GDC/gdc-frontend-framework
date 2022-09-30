@@ -35,10 +35,8 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
       tableData={tableData}
       columnListOrder={columnListOrder}
       columnCells={columnCells}
-      pageSize={tableData.length.toString()}
       selectableRow={false}
       handleColumnChange={undefined}
-      tableTitle={""}
       showControls={false}
     />
   );

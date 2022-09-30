@@ -211,17 +211,28 @@ export const addToCart = (
   }
 };
 
-interface AddToCartButtonProps {
+interface CartButtonProps {
   readonly files: CartFile[];
+  readonly iconOnly?: boolean;
 }
 
-export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
+export const AddToCartButton: React.FC<CartButtonProps> = ({
   files,
-}: AddToCartButtonProps) => {
+  iconOnly = false,
+}: CartButtonProps) => {
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
 
-  return (
+  return iconOnly ? (
+    <ActionIcon
+      title="Add to cart"
+      aria-label="Add to cart"
+      className="mx-auto text-primary-content-darkest border-primary-darkest"
+      onClick={() => addToCart(files, currentCart, dispatch)}
+    >
+      <CartIcon />
+    </ActionIcon>
+  ) : (
     <Button
       className="text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
       onClick={() => addToCart(files, currentCart, dispatch)}
@@ -231,20 +242,16 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
   );
 };
 
-interface RemoveFromCartButtonProps {
-  readonly files: CartFile[];
-  readonly iconOnly?: boolean;
-}
-
-export const RemoveFromCartButton: React.FC<RemoveFromCartButtonProps> = ({
+export const RemoveFromCartButton: React.FC<CartButtonProps> = ({
   files,
   iconOnly = false,
-}: RemoveFromCartButtonProps) => {
+}: CartButtonProps) => {
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
 
   return iconOnly ? (
     <ActionIcon
+      title="Remove From Cart"
       aria-label="Remove from cart"
       variant="outline"
       onClick={() => removeFromCart(files, currentCart, dispatch)}
@@ -257,5 +264,34 @@ export const RemoveFromCartButton: React.FC<RemoveFromCartButtonProps> = ({
       <CartIcon className="mr-2" />
       Remove From Cart
     </Button>
+  );
+};
+
+interface SingleItemCartButtonProps {
+  readonly file: CartFile;
+  readonly iconOnly?: boolean;
+}
+
+export const SingleItemAddToCartButton: React.FC<SingleItemCartButtonProps> = ({
+  file,
+  iconOnly = false,
+}: SingleItemCartButtonProps) => {
+  const currentCart = useCoreSelector((state) => selectCart(state));
+  const dispatch = useCoreDispatch();
+
+  // check if item is in cart
+  const isInCart = currentCart.find((f) => f.fileId === file.fileId);
+
+  return isInCart ? (
+    <ActionIcon
+      title="Remove From Cart"
+      aria-label="Remove from cart"
+      onClick={() => removeFromCart([file], currentCart, dispatch)}
+      className="mx-auto text-primary-content-darkest border-primary-darkest bg-primary-light"
+    >
+      <CartIcon />
+    </ActionIcon>
+  ) : (
+    <AddToCartButton files={[file]} iconOnly={iconOnly} />
   );
 };
