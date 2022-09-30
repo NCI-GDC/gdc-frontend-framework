@@ -4,6 +4,8 @@ import { CohortFacetDoc, DAYS_IN_YEAR } from "@gff/core";
 import { FIELD_LABELS } from "src/fields";
 import BarChart from "../charts/BarChart";
 import PValue from "./PValue";
+import { Button } from "@mantine/core";
+import saveAs from "file-saver";
 
 const formatBucket = (bucket: number | string, field: string): string => {
   if (field === "diagnoses.age_at_diagnosis") {
@@ -81,6 +83,28 @@ const FacetCard: React.FC<FacetCardProps> = ({
 
   const divId = `cohort_comparison_bar_chart_${field}`;
 
+  const downloadTSVFile = () => {
+    let strOut = `${FIELD_LABELS[field]}  # Cases S1  % Cases S1 # Cases S2  % Cases S2\n`;
+    strOut += "";
+
+    uniqueValues.forEach((value, idx) => {
+      const cohort1Value = formattedData[0][idx].count;
+      const cohort2Value = formattedData[1][idx].count;
+      strOut += `${value}  ${cohort1Value?.toString() || "0"}  ${
+        cohort2Value?.toString() || "0"
+      } ${(((cohort2Value || 0) / counts[1]) * 100).toFixed(2)}\n`;
+    });
+
+    saveAs(
+      new Blob([strOut], {
+        type: "text/plain;charset=us-ascii",
+      }),
+      `${FIELD_LABELS[field]}-comparison.tsv`,
+    );
+
+    return false;
+  };
+
   return (
     <Paper p="md">
       <h2 className="text-lg font-semibold">{FIELD_LABELS[field]}</h2>
@@ -92,6 +116,16 @@ const FacetCard: React.FC<FacetCardProps> = ({
           }}
           divId={divId}
         />
+      </div>
+      <div className="mb-3 float-right">
+        <Button
+          variant="default"
+          onClick={downloadTSVFile}
+          aria-label="Add a Custom Filter"
+          className="bg-base-lightest text-base-contrast-lightest"
+        >
+          TSV
+        </Button>
       </div>
       <table className="bg-base-lightest w-full text-left text-primary-content-darker">
         <thead>
