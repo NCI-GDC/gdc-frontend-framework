@@ -140,11 +140,15 @@ const download = async ({
       if (!canceled && res.ok) {
         form.submit();
         setTimeout(() => {
-          done();
+          if (done) {
+            done();
+          }
         }, 1000);
         return;
       }
-      done();
+      if (done) {
+        done();
+      }
       let errorMessage;
       try {
         const body = await res.json();
