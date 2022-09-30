@@ -13,11 +13,11 @@ export const SlideDetailButton = forwardRef<
   );
 
   return (
-    <div ref={wrapperRef} id="details-button">
+    <div ref={wrapperRef} id="details-button" className="absolute -top-[11px]">
       <Button
         onClick={() => setShowDetails((o) => !o)}
-        className="w-20 bg-primary-dark p-2 mb-3 rounded-md"
-        size="sm"
+        className="bg-primary-dark mb-3"
+        size="xs"
       >
         Details
       </Button>

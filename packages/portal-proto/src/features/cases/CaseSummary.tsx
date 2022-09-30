@@ -186,38 +186,42 @@ export const CaseSummary = ({
       const images = (
         <div className="flex">
           <Tooltip label="View Slide Image">
-            <Link
-              href={`/user-flow/workbench/MultipleImageViewerPage?caseId=${case_id}`}
-            >
-              <a className="flex gap-1 cursor-pointer text-primary">
-                <FaMicroscope className="mt-0.5" />
-                <span>({slideCount})</span>
-              </a>
-            </Link>
+            <div>
+              <Link
+                href={`/user-flow/workbench/MultipleImageViewerPage?caseId=${case_id}`}
+              >
+                <a className="flex gap-1 cursor-pointer text-primary">
+                  <FaMicroscope className="mt-0.5" />
+                  <span>({slideCount})</span>
+                </a>
+              </Link>
+            </div>
           </Tooltip>
           <Tooltip
             label={!isAllImagesFilesInCart ? "Add to Cart" : "Remove from Cart"}
           >
-            <FaShoppingCart
-              onClick={() => {
-                isAllImagesFilesInCart
-                  ? removeFromCart(
-                      mapFilesFromCasesToCartFile(imageFiles),
-                      currentCart,
-                      dispatch,
-                    )
-                  : addToCart(
-                      mapFilesFromCasesToCartFile(imageFiles),
-                      currentCart,
-                      dispatch,
-                    );
-              }}
-              className={`cursor-pointer mt-0.5 ${
-                isAllImagesFilesInCart
-                  ? "text-utility-category4"
-                  : "text-primary"
-              }`}
-            />
+            <div>
+              <FaShoppingCart
+                onClick={() => {
+                  isAllImagesFilesInCart
+                    ? removeFromCart(
+                        mapFilesFromCasesToCartFile(imageFiles),
+                        currentCart,
+                        dispatch,
+                      )
+                    : addToCart(
+                        mapFilesFromCasesToCartFile(imageFiles),
+                        currentCart,
+                        dispatch,
+                      );
+                }}
+                className={`cursor-pointer mt-0.5 ${
+                  isAllImagesFilesInCart
+                    ? "text-utility-category4"
+                    : "text-primary"
+                }`}
+              />
+            </div>
           </Tooltip>
         </div>
       );

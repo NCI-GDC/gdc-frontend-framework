@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import getConfig from "next/config";
 import OpenSeadragon from "openseadragon";
 import { useImageDetails } from "@gff/core";
 import { LoadingOverlay } from "@mantine/core";
@@ -12,6 +13,11 @@ export interface ImageViewerProp extends HorizontalTableProps {
 
 const ImageViewer = ({ imageId, tableData }: ImageViewerProp): JSX.Element => {
   const [viewer, setViewer] = useState<OpenSeadragon.Viewer>(null);
+
+  const {
+    publicRuntimeConfig: { basePath },
+  } = getConfig();
+
   const { data: imageDetails, isFetching, isError } = useImageDetails(imageId);
   const osdContainerRef = useRef(null);
   const detailsButtonWrapperRef = useRef<HTMLDivElement>(null);
@@ -23,7 +29,7 @@ const ImageViewer = ({ imageId, tableData }: ImageViewerProp): JSX.Element => {
 
     const options: OpenSeadragon.Options = {
       id: "osd",
-      prefixUrl: "/OpenseadragonImages/",
+      prefixUrl: `${basePath}/OpenseadragonImages/`,
       visibilityRatio: 1,
       showNavigator: true,
       minZoomLevel: 0,
@@ -33,10 +39,10 @@ const ImageViewer = ({ imageId, tableData }: ImageViewerProp): JSX.Element => {
 
     const fullPageButton = new OpenSeadragon.Button({
       tooltip: "Toggle Full Page",
-      srcRest: "/OpenseadragonImages/fullpage_rest.png",
-      srcGroup: "/OpenseadragonImages/fullpage_grouphover.png",
-      srcHover: "/OpenseadragonImages/fullpage_hover.png",
-      srcDown: "/OpenseadragonImages/fullpage_pressed.png",
+      srcRest: `${basePath}/OpenseadragonImages/fullpage_rest.png`,
+      srcGroup: `${basePath}/OpenseadragonImages/fullpage_grouphover.png`,
+      srcHover: `${basePath}/OpenseadragonImages/fullpage_hover.png`,
+      srcDown: `${basePath}/OpenseadragonImages/fullpage_pressed.png`,
       onClick: () => toggleFullScreen(osdContainerRef),
     });
 
