@@ -43,7 +43,7 @@ export const Footer: React.FC = () => {
           USA.gov
         </ExternalLink>
       </div>
-      <div>NIH... Turning Discovery Into Health ®</div>
+      <div>NIH... Turning Discovery Into Health &reg;</div>
       <div>
         <span
           title={`UI version: ${uiVersion}${
