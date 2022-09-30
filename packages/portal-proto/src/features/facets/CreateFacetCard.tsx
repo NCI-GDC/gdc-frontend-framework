@@ -5,16 +5,16 @@ import NumericRangeFacet from "@/features/facets/NumericRangeFacet";
 import DateRangeFacet from "@/features/facets/DateRangeFacet";
 import {
   ClearFacetFunction,
-  SelectFacetValueFunction,
-  UpdateFacetValueFunction,
+  SelectFacetFilterFunction,
+  UpdateFacetFilterFunction,
 } from "@/features/facets/types";
 
 export const createFacetCard = (
   facets: ReadonlyArray<FacetDefinition>,
   docType: GQLDocType,
   indexType: GQLIndexType,
-  getFacetValue: SelectFacetValueFunction,
-  setFacetValue: UpdateFacetValueFunction,
+  getFacetValue: SelectFacetFilterFunction,
+  setFacetValue: UpdateFacetFilterFunction,
   clearFacetValue: ClearFacetFunction,
   dismissCallback: (string) => void = undefined,
   hideIfEmpty = false,

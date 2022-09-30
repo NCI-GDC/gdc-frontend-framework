@@ -19,13 +19,23 @@ export interface EnumFacetResponse extends FacetResponse {
 }
 
 export type GetFacetDataFunction = (field: string) => FacetResponse;
-export type SelectFacetValueFunction = (field: string) => Operation;
-export type UpdateFacetValueFunction = (field: string, op: Operation) => void;
+export type GetFacetEnumDataFunction = (
+  field: string,
+  docType?: GQLDocType,
+  indexType?: GQLIndexType,
+) => EnumFacetResponse;
+export type SelectFacetFilterFunction = (field: string) => Operation;
+export type UpdateFacetFilterFunction = (field: string, op: Operation) => void;
+export type UpdateEnumFacetFilterFunction = (
+  field: string,
+  op: Operation,
+) => void;
 export type ClearFacetFunction = (field: string) => void;
 
 export interface FacetCardProps {
   readonly field: string;
   readonly docType: GQLDocType;
+  readonly indexType?: GQLIndexType;
   readonly description?: string;
   readonly facetName?: string;
   readonly showSearch?: boolean;
@@ -33,21 +43,20 @@ export interface FacetCardProps {
   readonly showPercent?: boolean;
   readonly startShowingData?: boolean;
   readonly hideIfEmpty?: boolean;
-  readonly indexType?: GQLIndexType;
   readonly width?: string;
   readonly dismissCallback?: (string) => void;
   readonly clearFilterFunc?: ClearFacetFunction;
 }
 
 export interface EnumFacetCardProps extends FacetCardProps {
-  readonly facetDataFunc?: (
+  readonly getFacetData?: (
     field: string,
     docType: GQLDocType,
     indexType: GQLIndexType,
   ) => EnumFacetResponse;
-  readonly updateEnumsFunc?: (
-    enumerationFilters: EnumOperandValue,
+  readonly updateFacetEnumerations?: (
     field: string,
+    enumerationFilters: EnumOperandValue,
   ) => void;
 }
 

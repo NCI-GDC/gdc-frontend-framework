@@ -685,6 +685,7 @@ module.exports = {
         height: "height",
       },
       variants: {
+        textColor: ["responsive", "hover", "focus", "group-hover"],
         extend: {},
       },
       fontSize: {

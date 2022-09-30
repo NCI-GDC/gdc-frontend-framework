@@ -5,6 +5,15 @@ include:
     ref: master
     file:
       - templates/global/full.yaml
+      - templates/deployments/salt-service.yaml
+
+.services:
+  allow_failure: true
+  stage: deploy
+  when: manual
+  parallel:
+    matrix:
+      - DEPLOY_SERVICE_LIST: [ portal2 ]
 
 stages:
   - .pre
@@ -12,12 +21,21 @@ stages:
   - build
   - unit
   - release
+  - deploy
 
 image: docker.osdc.io/node:16-alpine3.15
 
 variables:
   npm_config_registry: https://nexus.osdc.io/repository/npm-all/
   npm_config_cache: .npm
+  DEPLOY_SERVICE_TAG: ${CI_COMMIT_BRANCH}-${CI_COMMIT_SHORT_SHA}
+
+workflow:
+  rules:
+    - if: $CI_COMMIT_TAG
+      variables:
+        DEPLOY_SERVICE_TAG: ${CI_COMMIT_BRANCH}-${CI_COMMIT_TAG}
+    - when: always
 
 Install npm packages:
   stage: .pre
@@ -37,6 +55,8 @@ Install npm packages:
 
 Linting:
   stage: test
+  before_script:
+    - eslint -v || npm ci
   script:
     - npm run lint
   cache:
@@ -48,6 +68,8 @@ Linting:
 
 Prettier Checks:
   stage: test
+  before_script:
+    - prettier -v || npm ci
   script:
     - npm run format:check
   cache:
@@ -59,6 +81,8 @@ Prettier Checks:
 
 Build core and compile portal:
   stage: build
+  before_script:
+    - lerna -v || npm ci
   script:
     - cd ${CI_PROJECT_DIR}/packages/core
     - npm run build:clean
@@ -81,8 +105,11 @@ Build core and compile portal:
 
 Run unit tests:
   stage: unit
+  needs:
+    - Build core and compile portal
   script:
     - npm run test:all
+  retry: 2
   cache:
     - key: "Built-$CI_COMMIT_REF_SLUG"
       paths:
@@ -106,12 +133,6 @@ Build and push container:
     - export LOWERCASE_BRANCH_NAME="$(bash -c 'tr "[:upper:]" "[:lower:]" <<< "$CLEAN_BRANCH_NAME"')"
     - docker build --build-arg "NPM_REGISTRY=https://nexus.osdc.io/repository/npm-all/" -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME-${CI_COMMIT_SHORT_SHA} .
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$LOWERCASE_BRANCH_NAME-${CI_COMMIT_SHORT_SHA}
-  cache:
-    key: $CI_COMMIT_REF_SLUG
-    paths:
-      - node_modules/
-      - .npm/
-    policy: pull
 
 Push latest container:
   stage: release

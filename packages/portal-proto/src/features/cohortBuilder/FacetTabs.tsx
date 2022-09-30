@@ -41,8 +41,8 @@ import { createFacetCard } from "@/features/facets/CreateFacetCard";
 import { partial } from "lodash";
 import {
   clearFilters,
-  dispatchFieldValue,
-  selectFieldValue,
+  dispatchFieldFilter,
+  selectFieldFilter,
 } from "@/features/facets/hooks";
 import { createSelectorHook } from "react-redux";
 
@@ -183,10 +183,10 @@ const CustomFacetGroup = (): JSX.Element => {
             <Button
               variant="outline"
               onClick={() => setOpened(true)}
-              aria-label="Add Custom Filter"
+              aria-label="Add a Custom Filter"
               className="bg-base-lightest text-base-contrast-lightest"
             >
-              Add Custom Facet
+              Add a Custom Filter
             </Button>
           </CustomFacetWhenEmptyGroup>
         </Center>
@@ -214,8 +214,8 @@ const CustomFacetGroup = (): JSX.Element => {
             customFacetDefinitions,
             "cases", // Cohort custom filter restricted to "cases"
             customConfig.index as GQLIndexType,
-            partial(selectFieldValue, coreSelector),
-            partial(dispatchFieldValue, coreDispatch),
+            partial(selectFieldFilter, coreSelector),
+            partial(dispatchFieldFilter, coreDispatch),
             partial(clearFilters, coreDispatch),
             handleRemoveFilter,
           )}
@@ -289,7 +289,7 @@ export const FacetTabs = (): JSX.Element => {
           ([key, tabEntry]: [string, CohortBuilderCategory]) => (
             <Tabs.Panel key={key} value={key}>
               {" "}
-              {tabEntry.label === "Custom" ? (
+              {tabEntry.label === "Custom Filters" ? (
                 <CustomFacetGroup />
               ) : (
                 <FacetGroup>
@@ -297,8 +297,8 @@ export const FacetTabs = (): JSX.Element => {
                     getFacetInfo(tabEntry.facets, facets),
                     tabEntry.docType as GQLDocType,
                     tabEntry.index as GQLIndexType,
-                    partial(selectFieldValue, coreSelector),
-                    partial(dispatchFieldValue, coreDispatch),
+                    partial(selectFieldFilter, coreSelector),
+                    partial(dispatchFieldFilter, coreDispatch),
                     partial(clearFilters, coreDispatch),
                   )}
                 </FacetGroup>
