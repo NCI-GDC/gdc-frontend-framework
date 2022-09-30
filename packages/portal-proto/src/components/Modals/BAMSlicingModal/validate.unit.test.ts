@@ -1,9 +1,5 @@
 import { validateBamInput } from "./validate";
 
-jest.mock("url-join", () => ({
-  urlJoin: jest.fn(),
-}));
-
 describe("validateBamInput", () => {
   const expectedEmptyErrorMessage =
     "You have not entered any coordinates. Please try again.";

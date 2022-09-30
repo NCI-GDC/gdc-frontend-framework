@@ -36,12 +36,12 @@ export interface Diagnoses {
   readonly synchronous_malignancy: string | null;
   readonly tissue_or_organ_of_origin: string | null;
   readonly treatments?: ReadonlyArray<{
-    readonly days_to_treatment_start: number | null;
+    readonly days_to_treatment_start?: number | null;
     readonly submitter_id: string | null;
-    readonly therapeutic_agents: string | null;
+    readonly therapeutic_agents?: string | null;
     readonly treatment_id: string | null;
-    readonly treatment_intent_type: string | null;
-    readonly treatment_or_therapy: string | null;
+    readonly treatment_intent_type?: string | null;
+    readonly treatment_or_therapy?: string | null;
   }>;
   readonly tumor_grade: string | null;
 }

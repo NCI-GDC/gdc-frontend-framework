@@ -186,8 +186,8 @@ const TableElement = ({
       <HorizontalTable tableData={formatDataForDiagnosesorFollowUps(data)} />
       <Text className="my-2" size="lg" weight={700}>
         {"diagnosis_id" in data
-          ? `Total of (${data.treatments?.length || 0}) Treatments`
-          : `Total of (${data.molecular_tests?.length || 0}) Molecular Tests`}
+          ? `Total of (${(data.treatments || []).length}) Treatments`
+          : `Total of (${(data.molecular_tests || []).length}) Molecular Tests`}
       </Text>
 
       <InnerComponent />
@@ -219,6 +219,7 @@ export const DiagnosesOrFollowUps = ({
             tabLabel: "text-sm pr-2 font-medium",
             tabsList: "border-r-0 max-w-[160px]",
           }}
+          data-testid="verticalTabs"
         >
           <div className="max-h-[500px] overflow-y-auto overflow-x-hidden min-w-[160px] mr-2">
             <Tabs.List>
@@ -231,6 +232,7 @@ export const DiagnosesOrFollowUps = ({
                       ? "bg-primary text-primary-contrast"
                       : "bg-base-lightest text-base-contrast-lightest"
                   }`}
+                  data-testid="tab"
                 >
                   <Tooltip label={data.submitter_id} withinPortal={true}>
                     <div>{`${data.submitter_id.substring(0, 13)}...`}</div>

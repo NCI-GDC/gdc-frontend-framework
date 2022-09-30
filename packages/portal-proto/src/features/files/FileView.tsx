@@ -78,7 +78,7 @@ export const TempTable = ({ tableData }: TempTableProps): JSX.Element => {
     return <></>;
   }
   return (
-    <Table striped>
+    <Table striped data-testid="tempTable">
       <thead>
         <tr>
           {tableData.headers.map((text, index) => (
