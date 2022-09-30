@@ -14,7 +14,7 @@ export const GeneAffectedCases: React.VFC<GeneSubRow> = ({
   const horizontalSpring = useSpring({
     from: { width: 0, opacity: 0 },
     to: { width: width, opacity: 1 },
-    config: config.molasses,
+    config: config.slow,
   });
 
   const getGeneSubRow = (geneId: string) => {

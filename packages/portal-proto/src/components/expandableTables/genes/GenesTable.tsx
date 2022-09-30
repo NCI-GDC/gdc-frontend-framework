@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Gene, GenesTableProps, DEFAULT_GTABLE_ORDER } from "./types";
 import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { ExpTable } from "../shared/ExpTable";
@@ -76,7 +76,7 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
   }, [expandedProxy]);
 
   const getSpringWidth = (w, vc) => {
-    return Math.floor(w) / vc.length;
+    return Math.floor(w / vc.length); // todo: decide what to show w/ no columns selected
   };
 
   const partitionWidth = useSpring({
@@ -88,8 +88,43 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
     setVisibleColumns(columnListOrder.filter((col) => col.visible));
   }, [columnListOrder]);
 
+  const selectGene = (row: any) => {
+    const gene = row.original["geneID"];
+    if (gene in selectedGenes) {
+      // deselect single row
+      setSelectedGenes((currentMap) => {
+        const newMap = { ...currentMap };
+        delete newMap[gene];
+        return newMap;
+      });
+    } else {
+      // select single row
+      setSelectedGenes((currentMap) => {
+        return { ...currentMap, [gene]: gene };
+      });
+    }
+  };
+
+  const selectAllGenes = (rows: any) => {
+    if (rows.every((row) => row.original["select"] in selectedGenes)) {
+      // deselect all
+      setSelectedGenes({});
+    } else {
+      // select all
+      setSelectedGenes((currentMap) => {
+        const newMap = { ...currentMap };
+        for (const row of rows) {
+          if (!(row.original["select"] in currentMap)) {
+            newMap[row.original["select"]] = row;
+          }
+        }
+        return newMap;
+      });
+    }
+  };
+
   // todo replace this callback w/ transformResponse inside rtk endpoint call
-  const columns = React.useMemo<ColumnDef<GenesColumns>[]>(() => {
+  const columns = useMemo<ColumnDef<GenesColumns>[]>(() => {
     return visibleColumns
       .map(({ id }) => id)
       .map((accessor) => {
@@ -98,9 +133,11 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
           width,
           partitionWidth,
           visibleColumns,
+          selectedGenes,
+          selectGene,
         );
       });
-  }, [visibleColumns, width]);
+  }, [visibleColumns, width, selectedGenes]);
   // transformResponse, expanded,
 
   const handleColumnChange = (columnUpdate) => {
@@ -142,7 +179,9 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
           columns={columns}
           expanded={expanded}
           handleExpandedProxy={handleExpandedProxy}
-          handleRowSelect={handleRowSelect}
+          selectAll={selectAllGenes}
+          allSelected={selectedGenes}
+          firstColumn={columnListOrder[0].id}
         />
       </div>
       <div className="flex flex-row items-center justify-start border-t border-base-light">

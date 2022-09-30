@@ -9,14 +9,16 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 import { animated, useSpring } from "react-spring";
+import SwitchSpring from "./SwitchSpring";
 
 export interface ExpTableProps<TData> {
   data: TData[];
   columns: ColumnDef<TData>[];
   expanded: ExpandedState;
   handleExpandedProxy: (exp: ExpandedState) => void;
-  handleRowSelect: (row: any) => void; // todo: add row type
-  widthProps: any;
+  selectAll: (rows: any, isActive: boolean) => void; // todo: add row type
+  allSelected: any;
+  firstColumn: string;
 }
 
 export const ExpTable: React.VFC<ExpTableProps> = ({
@@ -24,6 +26,9 @@ export const ExpTable: React.VFC<ExpTableProps> = ({
   columns,
   expanded,
   handleExpandedProxy,
+  selectAll,
+  allSelected,
+  firstColumn,
 }: ExpTableProps) => {
   const table = useReactTable({
     data,
@@ -51,15 +56,30 @@ export const ExpTable: React.VFC<ExpTableProps> = ({
         <thead className={`border-2 shadow-md`}>
           {table.getHeaderGroups().map((headerGroup) => (
             <animated.tr style={unitSpring} key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
+              {headerGroup.headers.map((header, index) => {
                 return (
                   <th key={header.id} colSpan={header.colSpan}>
+                    {header.id === "select" &&
+                    header.id !== `1_ _${firstColumn}` ? (
+                      <SwitchSpring
+                        icon={<></>}
+                        isActive={table
+                          .getRowModel()
+                          .rows.filter((row) => !row.id.includes(".")) // filter out expanded row from select all check
+                          .every(
+                            (row) => row.original["select"] in allSelected,
+                          )}
+                        handleSwitch={selectAll}
+                        selected={table.getRowModel().rows}
+                      />
+                    ) : null}
                     {header.isPlaceholder ? null : (
                       <div>
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                        {header.id !== "select" &&
+                          flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
                       </div>
                     )}
                   </th>

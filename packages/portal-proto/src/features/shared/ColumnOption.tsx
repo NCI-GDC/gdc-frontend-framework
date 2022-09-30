@@ -3,8 +3,7 @@ import { useDrag, useDrop } from "react-dnd";
 import { ItemTypes } from "./ItemTypes";
 import type { XYCoord, Identifier } from "dnd-core";
 import _ from "lodash";
-
-const columnStyles = `cursor-move bg-base-lightest mb-2 p-1 border-1`;
+import { MdDragIndicator } from "react-icons/md";
 
 export interface ColumnProps {
   id: any;
@@ -94,16 +93,25 @@ export const ColumnOption: FC<ColumnProps> = ({
   return (
     <div
       ref={ref}
-      className={`${columnStyles} opacity-${o}`}
+      className={`cursor-move bg-base-lightest mb-2 p-1 border-1 opacity-${o}`}
       data-handler-id={handlerId}
     >
-      <input
-        className={`mr-2 ml-2`}
-        type="checkbox"
-        checked={visible}
-        onChange={() => toggleColumn(columnName)}
-      />
-      <span className={`text-xs`}>{formatColumnName(columnName)}</span>
+      <div className={`flex flex-row text-xs justify-between`}>
+        <div className={`flex flex-row w-fit`}>
+          <div className={`flex flex-row`}>
+            <div className={`my-auto mr-1`}>
+              <MdDragIndicator />
+            </div>
+            {formatColumnName(columnName)}
+          </div>
+        </div>
+        <input
+          className={`mr-2 ml-2`}
+          type="checkbox"
+          checked={visible}
+          onChange={() => toggleColumn(columnName)}
+        />
+      </div>
     </div>
   );
 };

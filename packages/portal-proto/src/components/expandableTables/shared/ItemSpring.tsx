@@ -21,7 +21,7 @@ const ItemSpring: React.VFC<ItemSpringProps> = ({
   const staggeredSpring = useSpring({
     from: { opacity: 0 },
     to: { opacity: 1 },
-    delay: (index % Math.sqrt(len)) * 100,
+    delay: (index % Math.sqrt(len)) * 10,
     config: config.slow,
   });
 
