@@ -117,7 +117,6 @@ const ActionButtonBar = () => {
             width={220}
           >
             <HomePageButton
-              id="homepage_action_button_analysis"
               unstyled
               component={NextLink}
               href={{
@@ -151,7 +150,6 @@ const ActionButtonBar = () => {
           width={220}
         >
           <HomePageButton
-            id="homepage_action_button_studies"
             unstyled
             component={NextLink}
             href={{
@@ -179,7 +177,6 @@ const ActionButtonBar = () => {
           width={220}
         >
           <HomePageButton
-            id="homepage_action_button_cohort"
             unstyled
             component={NextLink}
             href={{
@@ -208,7 +205,6 @@ const ActionButtonBar = () => {
           width={220}
         >
           <HomePageButton
-            id="homepage_action_button_downloads"
             unstyled
             component={NextLink}
             href={{
@@ -258,7 +254,6 @@ const IndexPage: NextPage = () => {
             <div className="flex items-center w-100 pb-5">
               <div className="w-full">
                 <input
-                  id="homepage_search_field"
                   type="text"
                   className="h-10 pr-8 w-full pl-5 bg-base-lightest border-primary-light rounded-full focus:outline-none focus:ring focus:ring-accent-cool-light focus:border-accent-cool-light hover:shadow-lg hover:border-accent-cool-lighter"
                   placeholder={`e.g. BRAF, Breast, TCGA-BLCA, TCGA-A5-A0G2`}

@@ -14,7 +14,6 @@ export const headerElements = [
     width={220}
   >
     <Button
-      id="nav_button_analysis"
       unstyled
       component={NextLink}
       href={{
@@ -43,7 +42,6 @@ export const headerElements = [
     width={220}
   >
     <Button
-      id="nav_button_projects"
       unstyled
       component={NextLink}
       href={{
@@ -72,7 +70,6 @@ export const headerElements = [
     width={220}
   >
     <Button
-      id="nav_button_cohort"
       unstyled
       component={NextLink}
       href={{
@@ -101,7 +98,6 @@ export const headerElements = [
     width={220}
   >
     <Button
-      id="nav_button_downloads"
       unstyled
       component={NextLink}
       href={{

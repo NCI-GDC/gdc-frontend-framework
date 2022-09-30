@@ -74,7 +74,6 @@ export const Header: React.FC<HeaderProps> = ({
             readers. The button tag satisfies both react's requirements and a11y
             requirements.  */}
           <Button
-            id="nih_logo"
             unstyled
             component={NextLink}
             href={indexPath}
@@ -89,7 +88,7 @@ export const Header: React.FC<HeaderProps> = ({
           </Button>
         </div>
         {headerElements.map((element, i) => (
-          <div key={i} className="px-2">
+          <div key={i} className="px-2" data-testid={`headerElement${i}`}>
             {typeof element === "string" ? (
               <span className="font-semibold">{element}</span>
             ) : (
@@ -104,7 +103,6 @@ export const Header: React.FC<HeaderProps> = ({
 
         <div className="flex flex-row items-center align-middle flex-nowrap">
           <div
-            id="nav_button_search"
             className={
               "flex flex-row opacity-60 cursor-pointer hover:opacity-100 transition-opacity items-center mx-2 "
             }
@@ -116,7 +114,6 @@ export const Header: React.FC<HeaderProps> = ({
             <Menu width="target" data-testid="userdropdown">
               <Menu.Target>
                 <Button
-                  id="nav_button_username"
                   rightIcon={<MdArrowDropDown size="2em" />}
                   variant="subtle"
                   className="text-primary"
@@ -128,7 +125,6 @@ export const Header: React.FC<HeaderProps> = ({
               </Menu.Target>
               <Menu.Dropdown>
                 <Menu.Item
-                  id="nav_menu_user_profile"
                   icon={<FaUserCheck size="1.25em" />}
                   onClick={async () => {
                     // This is just done for the purpose of checking if the session is still active
@@ -144,7 +140,6 @@ export const Header: React.FC<HeaderProps> = ({
                   User Profile
                 </Menu.Item>
                 <Menu.Item
-                  id="nav_menu_download_token"
                   icon={<FaDownload size="1.25em" />}
                   data-testid="downloadTokenMenuItem"
                   onClick={async () => {
@@ -205,7 +200,6 @@ export const Header: React.FC<HeaderProps> = ({
                   Download Token
                 </Menu.Item>
                 <Menu.Item
-                  id="nav_menu_logout"
                   icon={<MdLogout size="1.25em" />}
                   onClick={() => {
                     window.location.assign(
@@ -224,7 +218,6 @@ export const Header: React.FC<HeaderProps> = ({
 
           <Link href="/cart" passHref>
             <div
-              id="nav_link_cart"
               className={
                 "flex flex-row opacity-60 hover:opacity-100 transition-opacity  items-center mx-2 cursor-pointer"
               }
@@ -236,18 +229,13 @@ export const Header: React.FC<HeaderProps> = ({
           <Menu withArrow>
             <Menu.Target>
               <div>
-                <button
-                  id="nav_button_extra"
-                  className="p-0"
-                  data-testid="extraButton"
-                >
+                <button className="p-0" data-testid="extraButton">
                   <AppsIcon className="mt-2" size="24px" />
                 </button>
               </div>
             </Menu.Target>
             <Menu.Dropdown>
               <Menu.Item
-                id="nav_menu_tour"
                 onClick={() => setIsOpen(true)}
                 data-testid="tourMenuItem"
               >
@@ -258,7 +246,6 @@ export const Header: React.FC<HeaderProps> = ({
               <Menu.Label>Themes</Menu.Label>
               {V2Themes.map((theme) => (
                 <Menu.Item
-                  id={`nav_menu_theme_${theme}`}
                   key={theme}
                   onClick={() => setTheme(theme)}
                   data-testid={`${theme}ThemeMenuItem`}
