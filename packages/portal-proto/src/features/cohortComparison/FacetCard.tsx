@@ -90,9 +90,13 @@ const FacetCard: React.FC<FacetCardProps> = ({
     uniqueValues.forEach((value, idx) => {
       const cohort1Value = formattedData[0][idx].count;
       const cohort2Value = formattedData[1][idx].count;
-      strOut += `${value}  ${cohort1Value?.toString() || "0"}  ${
-        cohort2Value?.toString() || "0"
-      } ${(((cohort2Value || 0) / counts[1]) * 100).toFixed(2)}\n`;
+      strOut += `${value}  ${cohort1Value?.toString() || "0"} ${(
+        ((cohort1Value || 0) / counts[0]) *
+        100
+      ).toFixed(2)} ${cohort2Value?.toString() || "0"}  ${(
+        ((cohort2Value || 0) / counts[1]) *
+        100
+      ).toFixed(2)}\n`;
     });
 
     saveAs(
