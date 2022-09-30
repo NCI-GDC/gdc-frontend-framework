@@ -3,3 +3,5 @@ node_modules
 venv
 .idea
 *.tsbuildinfo
+.env.local
+.DS_Store

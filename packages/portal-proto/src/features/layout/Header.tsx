@@ -33,6 +33,8 @@ import Link from "next/link";
 import { UserProfileModal } from "@/components/Modals/UserProfileModal";
 import { SessionExpireModal } from "@/components/Modals/SessionExpireModal";
 import { useLocalStorage } from "@mantine/hooks";
+import { NoAccessModal } from "@/components/Modals/NoAccessModal";
+import { theme } from "tailwind.config";
 
 interface HeaderProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
@@ -122,10 +124,10 @@ export const Header: React.FC<HeaderProps> = ({
                     // This is just done for the purpose of checking if the session is still active
                     const token = await fetchToken();
                     if (token.status === 401) {
-                      dispatch(showModal(Modals.SessionExpireModal));
+                      dispatch(showModal({ modal: Modals.SessionExpireModal }));
                       return;
                     }
-                    dispatch(showModal(Modals.UserProfileModal));
+                    dispatch(showModal({ modal: Modals.UserProfileModal }));
                   }}
                   data-testid="userprofilemenu"
                 >
@@ -139,7 +141,9 @@ export const Header: React.FC<HeaderProps> = ({
                     ) {
                       const token = await fetchToken();
                       if (token.status === 401) {
-                        dispatch(showModal(Modals.SessionExpireModal));
+                        dispatch(
+                          showModal({ modal: Modals.SessionExpireModal }),
+                        );
                         return;
                       }
                       saveAs(
@@ -161,7 +165,7 @@ export const Header: React.FC<HeaderProps> = ({
                               rel="noreferrer"
                               style={{
                                 textDecoration: "underline",
-                                color: "#0f4163",
+                                color: theme.extend.colors["nci-blue"].darkest,
                               }}
                             >
                               here
@@ -172,20 +176,16 @@ export const Header: React.FC<HeaderProps> = ({
                         ),
                         styles: () => ({
                           root: {
-                            backgroundColor: "#ffe296",
                             textAlign: "center",
-                            "&::before": { backgroundColor: "#ffe296" },
                           },
                           closeButton: {
                             color: "black",
-                            "&:hover": { backgroundColor: "#e6e6e6" },
-                          },
-                          icon: {
-                            height: 0,
-                            width: 0,
+                            "&:hover": {
+                              backgroundColor:
+                                theme.extend.colors["gdc-grey"].lighter,
+                            },
                           },
                         }),
-                        icon: <div />,
                       });
                     }
                   }}
@@ -195,12 +195,8 @@ export const Header: React.FC<HeaderProps> = ({
                 <Menu.Item
                   icon={<MdLogout size="1.25em" />}
                   onClick={() => {
-                    // TODO: need to change next url to the new URL
                     window.location.assign(
-                      urlJoin(
-                        GDC_AUTH,
-                        `logout?next=https://localhost.gdc.cancer.gov:3010/user-flow/workbench`,
-                      ),
+                      urlJoin(GDC_AUTH, `logout?next=${window.location.href}`),
                     );
                   }}
                 >
@@ -212,7 +208,7 @@ export const Header: React.FC<HeaderProps> = ({
             <LoginButton />
           )}
 
-          <Link href="/cart">
+          <Link href="/cart" passHref>
             <div
               className={
                 "flex flex-row opacity-60 hover:opacity-100 transition-opacity  items-center mx-2 cursor-pointer"
@@ -247,6 +243,7 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
       {modal === Modals.UserProfileModal && <UserProfileModal openModal />}
       {modal === Modals.SessionExpireModal && <SessionExpireModal openModal />}
+      {modal === Modals.NoAccessModal && <NoAccessModal openModal />}
     </div>
   );
 };

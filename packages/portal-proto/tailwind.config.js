@@ -685,6 +685,7 @@ module.exports = {
         height: "height",
       },
       variants: {
+        textColor: ["responsive", "hover", "focus", "group-hover"],
         extend: {},
       },
       fontSize: {
@@ -719,6 +720,9 @@ module.exports = {
       addVariant("data-active", "&[data-active]");
       addVariant("data-selected", "&[data-selected]");
       addVariant("data-hovered", "&[data-hovered]");
+      addVariant("data-in-range", "&[data-in-range]");
+      addVariant("data-first-in-range", "&[data-first-in-range]");
+      addVariant("data-last-in-range", "&[data-last-in-range]");
     }),
     plugin(function ({ addUtilities }) {
       const newUtilities = {

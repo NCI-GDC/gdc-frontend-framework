@@ -1,20 +1,14 @@
-import {
-  hideModal,
-  useCoreDispatch,
-  useCoreSelector,
-  selectUserDetailsInfo,
-} from "@gff/core";
-import { Button, Modal, Text } from "@mantine/core";
+import { useCoreSelector, selectUserDetailsInfo } from "@gff/core";
+import { Text } from "@mantine/core";
 import { FaCheck } from "react-icons/fa";
-import { theme } from "tailwind.config";
 import { ScrollableTableWithFixedHeader } from "../ScrollableTableWithFixedHeader";
+import { BaseModal } from "./BaseModal";
 
 export const UserProfileModal = ({
   openModal,
 }: {
   openModal: boolean;
 }): JSX.Element => {
-  const dispatch = useCoreDispatch();
   const userInfo = useCoreSelector((state) => selectUserDetailsInfo(state));
   const {
     projects: { gdc_ids },
@@ -66,23 +60,14 @@ export const UserProfileModal = ({
   ];
 
   return (
-    <Modal
-      opened={openModal}
-      onClose={() => {
-        dispatch(hideModal());
-      }}
-      title={<Text size="lg">{`Username: ${username}`}</Text>}
-      size="60%"
-      styles={() => ({
-        header: {
-          marginBottom: "5px",
-        },
-        close: {
-          color: theme.extend.colors["gdc-grey"].darkest,
-        },
-      })}
+    <BaseModal
+      title={
+        <Text size="lg" className="font-medium">{`Username: ${username}`}</Text>
+      }
       closeButtonLabel="Done"
-      withinPortal={false}
+      openModal={openModal}
+      size="60%"
+      buttons={[{ title: "Done" }]}
     >
       <div className={`${!data ? "py-15px" : "py-5px"} border-y border-y-base`}>
         {data.length > 0 ? (
@@ -114,15 +99,6 @@ export const UserProfileModal = ({
           </div>
         )}
       </div>
-
-      <div className="flex justify-end mt-2.5">
-        <Button
-          onClick={() => dispatch(hideModal())}
-          className="!bg-primary hover:!bg-primary-darker"
-        >
-          Done
-        </Button>
-      </div>
-    </Modal>
+    </BaseModal>
   );
 };

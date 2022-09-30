@@ -1,19 +1,43 @@
 import React, { useState } from "react";
-import { GdcFile, HistoryDefaults } from "@gff/core";
+import {
+  GdcFile,
+  HistoryDefaults,
+  useCoreDispatch,
+  useCoreSelector,
+  selectCart,
+  Modals,
+  selectCurrentModal,
+} from "@gff/core";
 import ReactModal from "react-modal";
 import { HorizontalTable } from "@/components/HorizontalTable";
 import { Table, Button } from "@mantine/core";
-import { FaShoppingCart, FaDownload, FaCut } from "react-icons/fa";
+import { FaShoppingCart, FaDownload } from "react-icons/fa";
 import { get } from "lodash";
 import dynamic from "next/dynamic";
 import fileSize from "filesize";
 import tw from "tailwind-styled-components";
-import { AddToCartButton } from "../cart/updateCart";
-import { formatDataForHorizontalTable, parseSlideDetailsInfo } from "./utils";
+import {
+  AddToCartButton,
+  removeFromCart,
+  RemoveFromCartButton,
+} from "../cart/updateCart";
+import {
+  formatDataForHorizontalTable,
+  mapGdcFileToCartFile,
+  parseSlideDetailsInfo,
+} from "./utils";
 import Link from "next/link";
+import { addToCart } from "@/features/cart/updateCart";
+import { BAMSlicingModal } from "@/components/Modals/BAMSlicingModal/BAMSlicingModal";
+import { NoAccessToProjectModal } from "@/components/Modals/NoAccessToProjectModal";
+import { BAMSlicingButton } from "@/features/files/BAMSlicingButton";
+import { DownloadFile } from "@/components/DownloadButtons";
+import { AgreementModal } from "@/components/Modals/AgreementModal";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
+import { fileInCart } from "src/utils";
+import { GeneralErrorModal } from "@/components/Modals/GeneraErrorModal";
 
-export const DownloadButton = tw.button`
+export const StyledButton = tw.button`
 bg-base-lightest
 border
 border-base-darkest
@@ -21,8 +45,6 @@ rounded
 p-1
 hover:bg-base-darkest
 hover:text-base-contrast-darkest
-focus:bg-base-darkest
-focus:text-base-contrast-darkest
 `;
 
 const ImageViewer = dynamic(() => import("../../components/ImageViewer"), {
@@ -90,7 +112,16 @@ export const FileView: React.FC<FileViewProps> = ({
   file,
   fileHistory,
 }: FileViewProps) => {
+  const currentCart = useCoreSelector((state) => selectCart(state));
+  const dispatch = useCoreDispatch();
+  const [active, setActive] = useState(false);
   const [imageId] = useState(file?.fileId);
+  const modal = useCoreSelector((state) => selectCurrentModal(state));
+  const [bamActive, setBamActive] = useState(false);
+  const [fileToDownload, setfileToDownload] = useState(file);
+
+  const isFileInCart = fileInCart(currentCart, file.fileId);
+
   const GenericLink = ({
     path,
     query,
@@ -108,7 +139,7 @@ export const FileView: React.FC<FileViewProps> = ({
     }
     return (
       <Link href={hrefObj}>
-        <a className="text-utility-link underline">{text}</a>
+        <a className="text-utility-link underline text-sm">{text}</a>
       </Link>
     );
   };
@@ -121,25 +152,43 @@ export const FileView: React.FC<FileViewProps> = ({
     const tableRows = [];
     downstream_analyses?.forEach((byWorkflowType) => {
       const workflowType = byWorkflowType?.workflow_type;
-      byWorkflowType?.output_files?.forEach((obj) => {
+      byWorkflowType?.output_files?.forEach((outputFile) => {
+        const isOutputFileInCart = fileInCart(currentCart, outputFile.fileId);
+        const mappedFileObj = mapGdcFileToCartFile([outputFile]);
         tableRows.push({
           file_name: (
-            <GenericLink path={`/files/${obj.file_id}`} text={obj.file_name} />
+            <GenericLink
+              path={`/files/${outputFile.fileId}`}
+              text={outputFile.fileName}
+            />
           ),
-          data_category: obj.data_category,
-          data_type: obj.data_type,
-          data_format: obj.data_format,
+          data_category: outputFile.dataCategory,
+          data_type: outputFile.dataType,
+          data_format: outputFile.dataFormat,
           workflow_type: workflowType,
-          file_size: fileSize(obj.file_size),
+          file_size: fileSize(outputFile.fileSize),
           action: (
-            <>
-              <DownloadButton className="mr-2">
+            <div className="flex gap-3">
+              <Button
+                className={`${
+                  isOutputFileInCart
+                    ? "bg-secondary-min text-secondary-contrast-min"
+                    : "bg-base-lightest text-base-min"
+                } border border-base-darkest rounded p-2 hover:bg-base-darkest hover:text-base-contrast-min`}
+                onClick={() => {
+                  isOutputFileInCart
+                    ? removeFromCart(mappedFileObj, currentCart, dispatch)
+                    : addToCart(mappedFileObj, currentCart, dispatch);
+                }}
+              >
                 <FaShoppingCart title="Add to Cart" />
-              </DownloadButton>
-              <DownloadButton>
-                <FaDownload title="Download" />
-              </DownloadButton>
-            </>
+              </Button>
+
+              <DownloadFile
+                file={outputFile}
+                setfileToDownload={setfileToDownload}
+              />
+            </div>
           ),
         });
       });
@@ -258,24 +307,26 @@ export const FileView: React.FC<FileViewProps> = ({
   };
   return (
     <div className="p-4 text-primary-content w-10/12 mt-20 m-auto">
-      <div className="text-right pb-5">
-        <AddToCartButton files={[file]} />
+      <div className="flex justify-end pb-5 gap-2">
+        {!isFileInCart ? (
+          <AddToCartButton files={[file]} />
+        ) : (
+          <RemoveFromCartButton files={[file]} />
+        )}
         {file.dataFormat === "BAM" &&
           file.dataType === "Aligned Reads" &&
           file?.index_files?.length > 0 && (
-            <Button
-              className="m-1 text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
-              leftIcon={<FaCut />}
-            >
-              BAM Slicing
-            </Button>
+            <BAMSlicingButton isActive={bamActive} file={file} />
           )}
-        <Button
-          className="m-1 text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
-          leftIcon={<FaDownload />}
-        >
-          Download
-        </Button>
+
+        <DownloadFile
+          inactiveText="Download"
+          activeText="Processing"
+          file={file}
+          setfileToDownload={setfileToDownload}
+          setActive={setActive}
+          active={active}
+        />
       </div>
       <div className="flex">
         <div className="flex-auto bg-base-lightest mr-4">
@@ -522,6 +573,24 @@ export const FileView: React.FC<FileViewProps> = ({
             }}
           />
         </FullWidthDiv>
+      )}
+      {modal === Modals.NoAccessToProjectModal && (
+        <NoAccessToProjectModal openModal />
+      )}
+      {modal === Modals.BAMSlicingModal && (
+        <BAMSlicingModal openModal file={file} setActive={setBamActive} />
+      )}
+
+      {modal === Modals.GeneralErrorModal && <GeneralErrorModal openModal />}
+
+      {modal === Modals.AgreementModal && (
+        <AgreementModal
+          openModal
+          file={fileToDownload}
+          dbGapList={fileToDownload.acl}
+          active={active}
+          setActive={setActive}
+        />
       )}
     </div>
   );

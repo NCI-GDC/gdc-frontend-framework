@@ -117,8 +117,6 @@ describe("GDC API", () => {
       const cases = await fetchGdcCases({
         format: "TSV",
       });
-
-      console.log(cases);
       expect(cases).toBeDefined();
     });
 

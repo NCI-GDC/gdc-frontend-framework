@@ -62,7 +62,7 @@ const BarChartLabel: React.FC<VictoryLabelProps & { index?: number }> = ({
       <text
         x={x}
         y={y}
-        texta-anchor="start"
+        textAnchor="start"
         transform={`rotate(${angle},${x - 5}, ${y})`}
         style={style as Record<string, string>}
         onMouseOver={() => setShowTooltip(true)}

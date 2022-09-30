@@ -17,7 +17,7 @@ import {
 import { addToCart, removeFromCart } from "@/features/cart/updateCart";
 import { get } from "lodash";
 import { entityTypes } from "@/components/BioTree/types";
-import { capitalize } from "src/utils";
+import { capitalize, fileInCart } from "src/utils";
 
 interface IHumanifyParams {
   term: string;
@@ -139,50 +139,55 @@ export const formatEntityInfo = (
       ]),
   );
 
-  const fileInCart = (cart: CartFile[], newId: string) =>
-    cart.map((f) => f.fileId).some((id) => id === newId);
-
   const isFileInCart = fileInCart(currentCart, selectedSlide[0]?.file_id);
 
   if (foundType === "slide" && !!selectedSlide[0]) {
     filtered.push([
-      "Slides",
+      "Slide Image",
       <div className="flex gap-4" key={selectedSlide[0]?.file_id}>
         <Tooltip label="View Slide Image">
-          <Link
-            href={`/user-flow/workbench/MultipleImageViewerPage?caseId=${caseId}&selectedId=${selectedSlide[0]?.file_id}`}
-          >
-            <a>
-              <FaMicroscope className="text-primary-content" />
-            </a>
-          </Link>
+          <div>
+            <Link
+              href={`/user-flow/workbench/MultipleImageViewerPage?caseId=${caseId}&selectedId=${selectedSlide[0]?.file_id}`}
+            >
+              <a>
+                <FaMicroscope className="text-primary-content" />
+              </a>
+            </Link>
+          </div>
         </Tooltip>{" "}
         <Tooltip label={isFileInCart ? "Remove from Cart" : "Add to Cart"}>
-          <FaShoppingCart
-            onClick={() => {
-              isFileInCart
-                ? removeFromCart(
-                    mapGdcFileToCartFile(mapFileData(selectedSlide)),
-                    currentCart,
-                    dispatch,
-                  )
-                : addToCart(
-                    mapGdcFileToCartFile(mapFileData(selectedSlide)),
-                    currentCart,
-                    dispatch,
-                  );
-            }}
-            className={isFileInCart ? "text-nci-green" : "text-primary-content"}
-          />
+          <div>
+            <FaShoppingCart
+              onClick={() => {
+                isFileInCart
+                  ? removeFromCart(
+                      mapGdcFileToCartFile(mapFileData(selectedSlide)),
+                      currentCart,
+                      dispatch,
+                    )
+                  : addToCart(
+                      mapGdcFileToCartFile(mapFileData(selectedSlide)),
+                      currentCart,
+                      dispatch,
+                    );
+              }}
+              className={`${
+                isFileInCart ? "text-secondary-min" : "text-primary-content"
+              } cursor-pointer`}
+            />
+          </div>
         </Tooltip>
         <Tooltip label="Download">
-          <FaDownload
-            // TODO: change this
-            onClick={() => {
-              alert("Download coming soon!!!");
-            }}
-            className="text-primary-content"
-          />
+          <div>
+            <FaDownload
+              // TODO: change this
+              onClick={() => {
+                alert("Download coming soon!!!");
+              }}
+              className="text-primary-content cursor-pointer"
+            />
+          </div>
         </Tooltip>
       </div>,
     ]);

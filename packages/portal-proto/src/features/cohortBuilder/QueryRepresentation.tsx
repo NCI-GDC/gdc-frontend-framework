@@ -19,9 +19,9 @@ import {
   removeCohortFilter,
   Union,
   useCoreDispatch,
+  fieldNameToTitle,
 } from "@gff/core";
 import { ActionIcon, Badge, Group } from "@mantine/core";
-import { convertFieldToName } from "@/features/facets/utils";
 import { MdClose as ClearIcon } from "react-icons/md";
 import tw from "tailwind-styled-components";
 
@@ -90,7 +90,7 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
 
   return (
     <div className="flex flex-row items-center">
-      <QueryFieldLabel>{convertFieldToName(field)}</QueryFieldLabel>
+      <QueryFieldLabel>{fieldNameToTitle(field)}</QueryFieldLabel>
       <QueryRepresentationText>
         <Group noWrap>
           {operands.map((x, i) => (
@@ -128,7 +128,7 @@ const ComparisonElement: React.FC<ComparisonElementProps> = ({
   return (
     <>
       {showLabel ? (
-        <QueryFieldLabel>{convertFieldToName(operation.field)}</QueryFieldLabel>
+        <QueryFieldLabel>{fieldNameToTitle(operation.field)}</QueryFieldLabel>
       ) : null}
       <div className="flex flex-row items-center bg-accent-contrast-lightest">
         <button
@@ -149,7 +149,7 @@ const ExistsElement: React.FC<Exists | Missing> = ({
 }: Exists | Missing) => {
   return (
     <div className="flex flex-row items-center">
-      {convertFieldToName(field)} is
+      {fieldNameToTitle(field)} is
       <span className="px-1 underline">{operator}</span>
     </div>
   );

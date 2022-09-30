@@ -2,18 +2,6 @@ import { render } from "@testing-library/react";
 import { UserProfileModal } from "./UserProfileModal";
 import * as core from "@gff/core";
 
-class ResizeObserver {
-  observe() {
-    // do nothing.
-  }
-  unobserve() {
-    // do nothing.
-  }
-  disconnect() {
-    // do nothing.
-  }
-}
-
 describe("<UserProfileModal />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -29,14 +17,11 @@ describe("<UserProfileModal />", () => {
         },
       },
     });
-    window.ResizeObserver = ResizeObserver;
 
-    const { getByText, queryByTestId } = render(<UserProfileModal openModal />);
-    expect(
-      getByText(
-        "You do not have any access to controlled access data for projects available in the GDC Data Portal.",
-      ),
-    ).toBeInTheDocument();
+    const { getByTestId, queryByTestId } = render(
+      <UserProfileModal openModal />,
+    );
+    expect(getByTestId("warningText")).toBeInTheDocument();
     expect(queryByTestId("scrolltable")).toBeNull();
   });
 
@@ -50,12 +35,10 @@ describe("<UserProfileModal />", () => {
       },
     });
 
-    const { getByTestId, queryByText } = render(<UserProfileModal openModal />);
+    const { getByTestId, queryByTestId } = render(
+      <UserProfileModal openModal />,
+    );
     expect(getByTestId("scrolltable")).toBeInTheDocument();
-    expect(
-      queryByText(
-        "You do not have any access to controlled access data for projects available in the GDC Data Portal.",
-      ),
-    ).toBeNull();
+    expect(queryByTestId("warningText")).toBeNull();
   });
 });
