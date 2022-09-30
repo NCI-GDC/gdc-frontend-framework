@@ -60,11 +60,11 @@ const downloadCart = (
         related_files: true,
       },
       dispatch,
-      queryParams: qs.stringify({
+      queryParams: `?${qs.stringify({
         ids: filesByCanAccess.true.map((file) => file.fileId),
         annotations: true,
         related_files: true,
-      }),
+      })}`,
     });
   }
 };

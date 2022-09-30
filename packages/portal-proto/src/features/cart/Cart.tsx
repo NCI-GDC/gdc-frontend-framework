@@ -45,7 +45,6 @@ const Cart: React.FC = () => {
   const modal = useCoreSelector((state) => selectCurrentModal(state));
   const { data: userDetails } = useUserDetails();
   const filesByCanAccess = groupByAccess(cart, userDetails);
-
   const dbGapList = Array.from(
     new Set(
       (filesByCanAccess?.true || [])
@@ -115,7 +114,7 @@ const Cart: React.FC = () => {
           <ProjectTable projectData={summaryData} />
         </Grid.Col>
         <Grid.Col span={12} className="p-4">
-          <FilesTable />
+          <FilesTable filesByCanAccess={filesByCanAccess} />
         </Grid.Col>
       </Grid>
     </>

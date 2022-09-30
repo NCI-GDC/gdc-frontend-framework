@@ -134,7 +134,7 @@ const download = async ({
       .join("&");
   }
 
-  fetch(`${GDC_APP_API_AUTH}/${endpoint}?${queryParams}`, options).then(
+  fetch(`${GDC_APP_API_AUTH}/${endpoint}${queryParams}`, options).then(
     async (res) => {
       cleanNotifications();
       if (!canceled && res.ok) {

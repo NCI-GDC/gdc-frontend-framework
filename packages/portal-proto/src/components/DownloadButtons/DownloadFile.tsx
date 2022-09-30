@@ -33,12 +33,16 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
   if (file.access === "open") {
     return (
       <DownloadButton
-        extraParams={{ ids: file.fileId }}
+        extraParams={{
+          ids: file.fileId,
+          annotations: true,
+          related_files: true,
+        }}
         filename={file.fileName}
-        endpoint="data?annotations=true&related_files=true"
+        endpoint="data"
         activeText={activeText}
         inactiveText={inactiveText}
-        queryParams={`data/${file.fileId}`}
+        queryParams={`/${file.fileId}/`}
         options={{
           method: "GET",
           headers: {
