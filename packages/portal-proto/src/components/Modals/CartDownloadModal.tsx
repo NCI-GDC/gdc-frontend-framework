@@ -102,12 +102,12 @@ const CartDownloadModal = ({
           endpoint="data"
           method="POST"
           queryParams={qs.stringify({
-            ids: filesByCanAccess.true.map((file) => file.fileId),
+            ids: (filesByCanAccess?.true || []).map((file) => file.fileId),
             annotations: true,
             related_files: true,
           })}
           extraParams={{
-            ids: filesByCanAccess.true.map((file) => file.fileId),
+            ids: (filesByCanAccess?.true || []).map((file) => file.fileId),
             annotations: true,
             related_files: true,
           }}

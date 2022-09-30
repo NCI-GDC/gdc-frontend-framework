@@ -5,6 +5,9 @@ import * as core from "@gff/core";
 import CartDownloadModal from "./CartDownloadModal";
 
 jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
+jest.mock("url-join", () => ({
+  urlJoin: jest.fn(),
+}));
 
 describe("<CartDownloadModal />", () => {
   it("shows number of auth and unauth files", () => {

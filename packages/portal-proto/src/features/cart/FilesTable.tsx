@@ -17,11 +17,10 @@ import {
   selectCart,
   useFiles,
   useCoreDispatch,
-  useUserDetails,
+  CartFile,
 } from "@gff/core";
 import { VerticalTable } from "@/features/shared/VerticalTable";
 import { removeFromCart, RemoveFromCartButton } from "./updateCart";
-import { groupByAccess } from "./utils";
 
 const columnCells = [
   { Header: "Remove", accessor: "remove", width: 80 },
@@ -59,7 +58,13 @@ const initialVisibleColumns = [
   { id: "annotations", columnName: "Annotations", visible: true },
 ];
 
-const FilesTable: React.FC = () => {
+interface FilesTableProps {
+  readonly filesByCanAccess: Record<string, CartFile[]>;
+}
+
+const FilesTable: React.FC<FilesTableProps> = ({
+  filesByCanAccess,
+}: FilesTableProps) => {
   const [tableData, setTableData] = useState([]);
   const [visibleColumns, setVisibleColumns] = useState(initialVisibleColumns);
   const [pageSize, setPageSize] = useState(20);
@@ -85,9 +90,6 @@ const FilesTable: React.FC = () => {
       },
       expand: ["annotations", "cases", "cases.project"],
     });
-
-  const { data: userDetails } = useUserDetails();
-  const filesByCanAccess = groupByAccess(cart, userDetails);
 
   const columnKeys = visibleColumns
     .filter((column) => column.visible)
