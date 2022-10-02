@@ -3,10 +3,10 @@ import { CoreState } from "../../reducers";
 import { COHORTS } from "./cohortFixture";
 
 export interface CohortName {
-  readonly currentCohort?: string;
+  readonly currentCohort: string;
 }
 
-const initialState: CohortName = { currentCohort: COHORTS[0].name };
+const initialState: CohortName = { currentCohort: COHORTS[0].id };
 
 const slice = createSlice({
   name: "cohort/name",
@@ -16,7 +16,7 @@ const slice = createSlice({
       state.currentCohort = action.payload;
     },
     clearCurrentCohort: (state) => {
-      state.currentCohort = undefined;
+      state.currentCohort = COHORTS[0].id;
     },
   },
   extraReducers: {},

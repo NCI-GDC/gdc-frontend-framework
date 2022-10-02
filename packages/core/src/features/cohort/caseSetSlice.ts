@@ -22,9 +22,8 @@ const buildCaseSetMutationQuery = (index: string) =>
   `
  mutation mutationsCreateRepositoryCaseSetMutation(
   $input: CreateSetInput
-  $never_used: RelayIsDumb
 ) {
-  sets(input: $never_used) {
+  sets {
     create {
       ${index} {
         case(input: $input) {

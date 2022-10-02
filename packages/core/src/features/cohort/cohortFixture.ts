@@ -1,7 +1,13 @@
 export const COHORTS = [
-  { name: "New Custom Cohort", filters: { mode: "and", root: {} } },
+  {
+    name: "All GDC",
+    id: "0000-0000-10000-00000",
+    filters: { mode: "and", root: {} },
+    caseSet: { caseSetId: { mode: "and", root: {} }, status: "uninitialized" },
+  },
   {
     name: "Baily's Cohort",
+    id: "0000-0000-1000-0000",
     filters: {
       mode: "and",
       root: {
@@ -12,9 +18,11 @@ export const COHORTS = [
         },
       },
     },
+    caseSet: { caseSetId: { mode: "and", root: {} }, status: "uninitialized" },
   },
   {
     name: "Pancreas",
+    id: "0000-0000-1001-0000",
     filters: {
       root: {
         "cases.primary_site": {
@@ -25,9 +33,11 @@ export const COHORTS = [
       },
       mode: "and",
     },
+    caseSet: { caseSetId: { mode: "and", root: {} }, status: "uninitialized" },
   },
   {
     name: "Pancreas - KRAS mutated",
+    id: "0000-0000-1002-0000",
     filters: {
       root: {
         "genes.symbol": {
@@ -43,9 +53,11 @@ export const COHORTS = [
       },
       mode: "and",
     },
+    caseSet: { caseSetId: { mode: "and", root: {} }, status: "uninitialized" },
   },
   {
     name: "Pancreas - KRAS not mutated",
+    id: "0000-0000-1003-0000",
     filters: {
       root: {
         "genes.symbol": {
@@ -61,9 +73,11 @@ export const COHORTS = [
       },
       mode: "and",
     },
+    caseSet: { caseSetId: { mode: "and", root: {} }, status: "uninitialized" },
   },
   {
     name: "breast, true",
+    id: "0000-0000-1004-0000",
     filters: {
       root: {
         "cases.primary_site": {
@@ -79,5 +93,6 @@ export const COHORTS = [
       },
       mode: "and",
     },
+    caseSet: { caseSetId: { mode: "and", root: {} }, status: "uninitialized" },
   },
 ];
