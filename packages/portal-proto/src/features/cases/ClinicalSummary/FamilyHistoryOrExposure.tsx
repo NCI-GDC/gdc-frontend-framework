@@ -74,7 +74,7 @@ export const FamilyHistoryOrExposure = ({
     <>
       {dataInfo.length > 1 ? (
         <Tabs
-          variant="outline"
+          variant="default"
           orientation="vertical"
           value={activeTab.toString()}
           onTabChange={onTabChange}
@@ -82,6 +82,7 @@ export const FamilyHistoryOrExposure = ({
             tabLabel: "text-sm pr-2 font-medium",
             tabsList: "border-r-0 max-w-[160px]",
           }}
+          data-testid="verticalTabs"
         >
           <div className="max-h-[500px] overflow-y-auto overflow-x-hidden min-w-[160px] mr-2">
             <Tabs.List>
@@ -95,6 +96,7 @@ export const FamilyHistoryOrExposure = ({
                         ? "bg-primary text-primary-contrast"
                         : "bg-base-lightest text-base-contrast-lightest"
                     }`}
+                    data-testid="tab"
                   >
                     <Tooltip label={data.submitter_id} withinPortal={true}>
                       <div>{`${data.submitter_id.substring(0, 13)}...`}</div>

@@ -102,13 +102,13 @@ const TableElement = ({
       .slice()
       .sort((a, b) => a.days_to_treatment_start - b.days_to_treatment_start)
       .map((diagnosis) => ({
-        id: diagnosis.submitter_id || "--",
-        uuid: diagnosis.treatment_id || "--",
-        therapeutic_agents: diagnosis.therapeutic_agents || "--",
-        treatment_intent_type: diagnosis.treatment_intent_type || "--",
-        treatment_or_therapy: diagnosis.treatment_or_therapy || "--",
+        id: diagnosis.submitter_id,
+        uuid: diagnosis.treatment_id,
+        therapeutic_agents: diagnosis.therapeutic_agents,
+        treatment_intent_type: diagnosis.treatment_intent_type,
+        treatment_or_therapy: diagnosis.treatment_or_therapy,
         days_to_treatment_start:
-          diagnosis.days_to_treatment_start?.toLocaleString() || "--",
+          diagnosis.days_to_treatment_start?.toLocaleString(),
       }));
 
     return {
@@ -126,21 +126,21 @@ const TableElement = ({
 
   const formatMolecularTestsData = (followups: FollowUps) => {
     const rows = followups.molecular_tests.map((followup) => ({
-      id: followup.submitter_id || "--",
-      uuid: followup.molecular_test_id || "--",
-      gene_symbol: followup.gene_symbol || "--",
-      second_gene_symbol: followup.second_gene_symbol || "--",
-      molecular_analysis_method: followup.molecular_analysis_method || "--",
-      laboratory_test: followup.laboratory_test || "--",
-      test_value: followup.test_value || "--",
-      test_result: followup.test_result || "--",
-      test_units: followup.test_units || "--",
-      biospecimen_type: followup.biospecimen_type || "--",
-      variant_type: followup.variant_type || "--",
-      chromosome: followup.chromosome || "--",
-      aa_change: followup.aa_change || "--",
-      antigen: followup.antigen || "--",
-      mismatch_repair_mutation: followup.mismatch_repair_mutation || "--",
+      id: followup.submitter_id,
+      uuid: followup.molecular_test_id,
+      gene_symbol: followup.gene_symbol,
+      second_gene_symbol: followup.second_gene_symbol,
+      molecular_analysis_method: followup.molecular_analysis_method,
+      laboratory_test: followup.laboratory_test,
+      test_value: followup.test_value,
+      test_result: followup.test_result,
+      test_units: followup.test_units,
+      biospecimen_type: followup.biospecimen_type,
+      variant_type: followup.variant_type,
+      chromosome: followup.chromosome,
+      aa_change: followup.aa_change,
+      antigen: followup.antigen,
+      mismatch_repair_mutation: followup.mismatch_repair_mutation,
     }));
 
     return {
@@ -211,7 +211,7 @@ export const DiagnosesOrFollowUps = ({
     <>
       {dataInfo.length > 1 ? (
         <Tabs
-          variant="outline"
+          variant="default"
           orientation="vertical"
           value={activeTab.toString()}
           onTabChange={onTabChange}

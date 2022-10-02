@@ -98,7 +98,7 @@ export const TempTable = ({ tableData }: TempTableProps): JSX.Element => {
           >
             {Object.values(row).map((item, index) => (
               <td key={index} className="text-sm p-1 pl-2.5">
-                {typeof item === "undefined" ? "--" : item}
+                {item || "--"}
               </td>
             ))}
           </tr>

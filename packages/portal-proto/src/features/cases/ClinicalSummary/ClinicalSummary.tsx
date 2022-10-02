@@ -107,25 +107,45 @@ export const ClinicalSummary = ({
           })}
         >
           <Tabs.List>
-            <Tabs.Tab value="demographic" aria-label="Demographic">
+            <Tabs.Tab
+              value="demographic"
+              aria-label="Demographic"
+              data-testid="demographicTab"
+            >
               Demographic
             </Tabs.Tab>
-            <Tabs.Tab value="diagnoses" aria-label="Diagnoses and Treatments`">
+            <Tabs.Tab
+              value="diagnoses"
+              aria-label="Diagnoses and Treatments`"
+              data-testid="diagnosisTab"
+            >
               {` Diagnoses (${diagnoses.length}) > Treatments (${totalTreatmentNodes})`}
             </Tabs.Tab>
-            <Tabs.Tab value="family" aria-label="Family Histories">
+            <Tabs.Tab
+              value="family"
+              aria-label="Family Histories"
+              data-testid="familyTab"
+            >
               {`Family Histories (${family_histories.length})`}
             </Tabs.Tab>
-            <Tabs.Tab value="exposures" aria-label="Exposures">
+            <Tabs.Tab
+              value="exposures"
+              aria-label="Exposures"
+              data-testid="exposuresTab"
+            >
               {`Exposures (${exposures.length})`}
             </Tabs.Tab>
-            <Tabs.Tab value="followups" aria-label="Follow Ups">
+            <Tabs.Tab
+              value="followups"
+              aria-label="Follow Ups"
+              data-testid="followUpsTab"
+            >
               {`Follow-Ups (${follow_ups.length}) > Molecular Tests (${totalMolecularTestNodes})`}
             </Tabs.Tab>
           </Tabs.List>
 
           <Tabs.Panel value="demographic" pt="xs">
-            {demographic ? (
+            {Object.keys(demographic).length > 0 ? (
               <HorizontalTable tableData={formatDataForDemographics()} />
             ) : (
               <Text className="p-5 bg-base-contrast" weight="bold">

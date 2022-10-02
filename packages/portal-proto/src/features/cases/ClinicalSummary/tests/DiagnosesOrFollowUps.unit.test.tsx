@@ -1,15 +1,14 @@
-import { Diagnoses } from "@gff/core/dist/features/cases/types";
 import { render } from "@testing-library/react";
 import { DiagnosesOrFollowUps } from "../DiagnosesOrFollowUps";
 import userEvent from "@testing-library/user-event";
 
 /* diagnoses */
-const mockSingleDiagnoses: Diagnoses[] = [
+export const mockSingleDiagnoses = [
   {
     days_to_recurrence: null,
     synchronous_malignancy: "No",
     morphology: "8140/3",
-    submitter_id: "test",
+    submitter_id: "diagnosis-test",
     treatments: [
       {
         treatment_intent_type: "Neoadjuvant",
@@ -57,7 +56,7 @@ const mockSingleDiagnoses: Diagnoses[] = [
   },
 ];
 
-const mockMultipleDiagnoses: Diagnoses[] = [
+const mockMultipleDiagnoses = [
   {
     days_to_recurrence: null,
     synchronous_malignancy: "No",
@@ -226,7 +225,7 @@ const mockMultipleFollowUps = [
   },
 ];
 
-const mockSingleFollowUps = [
+export const mockSingleFollowUps = [
   {
     karnofsky_performance_status: null,
     follow_up_id: "2650764a-22df-4e21-a792-c60bb61cda92",
@@ -320,7 +319,7 @@ describe("<DiagnosesOrFollowUps /> for dianoses", () => {
   });
 
   it("vertical tabs should be clickable and render appropriate data", async () => {
-    const { getByTestId, getAllByTestId, getByText, queryByText } = render(
+    const { getByTestId, getAllByTestId, getByText } = render(
       <DiagnosesOrFollowUps dataInfo={mockMultipleDiagnoses} />,
     );
 
