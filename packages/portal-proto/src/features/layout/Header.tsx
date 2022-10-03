@@ -106,7 +106,7 @@ export const Header: React.FC<HeaderProps> = ({
             className={
               "flex flex-row opacity-60 cursor-pointer hover:opacity-100 transition-opacity items-center mx-2 "
             }
-            data-testid="searchButton"
+            data-testid="headerSearchButton"
           >
             <SearchIcon size="24px" />{" "}
           </div>
@@ -228,11 +228,9 @@ export const Header: React.FC<HeaderProps> = ({
           </Link>
           <Menu withArrow>
             <Menu.Target>
-              <div>
-                <button className="p-0" data-testid="extraButton">
-                  <AppsIcon className="mt-2" size="24px" />
-                </button>
-              </div>
+              <button className="p-0" data-testid="extraButton">
+                <AppsIcon size="24px" />
+              </button>
             </Menu.Target>
             <Menu.Dropdown>
               <Menu.Item
