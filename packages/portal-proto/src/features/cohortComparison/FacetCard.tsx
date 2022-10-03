@@ -125,7 +125,7 @@ const FacetCard: React.FC<FacetCardProps> = ({
         <Button
           variant="default"
           onClick={downloadTSVFile}
-          aria-label="Add a Custom Filter"
+          aria-label="Download TSV File"
           className="bg-base-lightest text-base-contrast-lightest"
         >
           TSV
