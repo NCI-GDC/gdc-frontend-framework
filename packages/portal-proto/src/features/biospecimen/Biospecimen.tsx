@@ -39,6 +39,8 @@ export const Biospecimen = ({
   const [totalNodeCount, setTotalNodeCount] = useState(0);
   const [searchText, setSearchText] = useState(bioId || "");
   const [entityClicked, setEntityClicked] = useState(false);
+  // biospecimen download active
+  const [downloadActive, setDownloadActive] = useState(false);
 
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
@@ -218,6 +220,8 @@ export const Biospecimen = ({
                   dispatch,
                   currentCart,
                   [selectedSlide],
+                  downloadActive,
+                  setDownloadActive,
                 )}
               />
             </div>
