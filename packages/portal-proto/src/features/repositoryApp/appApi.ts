@@ -6,7 +6,6 @@ import { createAppStore } from "@gff/core";
 const downloadAppReducers = combineReducers({
   facets: repositoryConfigReducer,
   filters: repositoryFiltersReducer,
-  // ranges: rangeFacetsReducer,
 });
 
 // create the store, context and selector for the RepositoryApp

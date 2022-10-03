@@ -353,7 +353,6 @@ const FromTo: React.FC<FromToProps> = ({
   const [toOp, setToOp] = useState(values?.toOp ?? "<");
   const [toValue, setToValue] = useState(values?.to);
   const [isWarning, setIsWarning] = useState(false);
-  //  const coreDispatch = useCoreDispatch();
 
   const clearFilter = useClearFilter();
   const updateFacetFilters = useUpdateFacetFilters();

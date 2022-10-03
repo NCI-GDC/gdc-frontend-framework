@@ -10,7 +10,7 @@ import { AllHooks } from "@/features/facets/types";
 /**
  * createFacetCard given a facet definition it will create a
  * facet component appropriate for the facet
- * All facets require a set of functions (e.x hooks) which define get/set data,
+ * All facets require a set of functions (e.g hooks) which define get/set data,
  * filters, and counts. As create facets can create any facet all possible
  * function must be supplied:
  * The AllHooks type defines all possible hooks
