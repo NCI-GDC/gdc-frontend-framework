@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CoreState } from "../../reducers";
 import {
   Operation,
   GqlOperation,
@@ -37,44 +35,6 @@ export interface FilterSet {
 export interface CohortFilterState {
   readonly filters: FilterSet;
 }
-
-const initialState: CohortFilterState = { filters: { mode: "and", root: {} } };
-
-const slice = createSlice({
-  name: "cohort/filters",
-  initialState,
-  reducers: {
-    updateCohortFilter: (
-      state,
-      action: PayloadAction<{ field: string; operation: Operation }>,
-    ) => {
-      return {
-        ...state,
-        filters: {
-          mode: "and",
-          root: {
-            ...state.filters.root,
-            [action.payload.field]: action.payload.operation,
-          },
-        },
-      };
-    },
-    removeCohortFilter: (state, action: PayloadAction<string>) => {
-      const { [action.payload]: _, ...updated } = state.filters.root;
-      return {
-        ...state,
-        filters: {
-          mode: "and",
-          root: updated,
-        },
-      };
-    },
-    clearCohortFilters: (state) => {
-      state.filters = { mode: "and", root: {} };
-    },
-  },
-  extraReducers: {},
-});
 
 /**
  *  Operand types for filter operations
@@ -173,50 +133,11 @@ export const buildCohortGqlOperator = (
   return undefined;
 };
 
-export const cohortFilterReducer = slice.reducer;
-export const { updateCohortFilter, removeCohortFilter, clearCohortFilters } =
-  slice.actions;
-
-export const selectCurrentCohortFilters = (
-  state: CoreState,
-): FilterSet | undefined => state.cohort.currentFilters.filters;
-
 /**
- * selectCurrentCohortGqlFilters: returns an object representing the filters in the
- * current cohort.
- * @param state
+ * Merged two FilterSets returning the merged pair.
+ * @param a - first FilterSet
+ * @param b - other FilterSet
  */
-export const selectCurrentCohortGqlFilters = (
-  state: CoreState,
-): GqlOperation | undefined => {
-  return buildCohortGqlOperator(state.cohort.currentFilters.filters);
-};
-
-export const selectCurrentCohortFilterSet = (
-  state: CoreState,
-): FilterSet | undefined => {
-  return state.cohort.currentFilters.filters;
-};
-
-export const selectCurrentCohortCaseGqlFilters = (
-  state: CoreState,
-): GqlOperation | undefined => {
-  return buildCohortGqlOperator(state.cohort.currentFilters.filters);
-};
-
-export const selectCurrentCohortFilterOrCaseSet = (
-  state: CoreState,
-): FilterSet => {
-  if (Object.keys(state.cohort.caseSet.caseSetId.root).length != 0) {
-    return state.cohort.caseSet.caseSetId;
-  } else return state.cohort.currentFilters.filters;
-};
-
-export const selectCurrentCohortFiltersByName = (
-  state: CoreState,
-  name: string,
-): Operation | undefined => state.cohort.currentFilters.filters?.root[name];
-
 export const joinFilters = (a: FilterSet, b: FilterSet): FilterSet => {
   return { mode: a.mode, root: { ...a.root, ...b.root } };
 };

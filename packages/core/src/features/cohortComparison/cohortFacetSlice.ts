@@ -7,7 +7,7 @@ import {
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
-import { buildCohortGqlOperator } from "../cohort/cohortFilterSlice";
+import { buildCohortGqlOperator } from "../cohort/filters";
 import { selectAvailableCohortByName } from "../cohort/availableCohortsSlice";
 import { DAYS_IN_YEAR } from "../../constants";
 

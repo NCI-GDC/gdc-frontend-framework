@@ -10,9 +10,9 @@ import {
   updateCohortFilter,
   removeCohortFilter,
   clearCohortFilters,
-} from "./features/cohort/cohortFilterSlice";
-import { createCaseSet, clearCaseSet } from "./features/cohort/caseSetSlice";
-
+  clearCaseSet,
+} from "./features/cohort/availableCohortsSlice";
+import { createCaseSet } from "./cohort/caseSetSlice";
 /**
  * Defines coreListeners for adding middleware.
  * This listener will dispatch a createCaseSet each time the

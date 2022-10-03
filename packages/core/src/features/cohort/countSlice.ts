@@ -5,14 +5,12 @@ import {
   createUseFiltersCoreDataHook,
   DataStatus,
 } from "../../dataAccess";
+import { buildCohortGqlOperator } from "./filters";
 
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
-import {
-  selectCurrentCohortFilters,
-  selectCurrentCohortGqlFilters,
-} from "./cohortFilterSlice";
+import { selectCurrentCohortFilterOrCaseSet } from "./availableCohortsSlice";
 
 export interface CountsState {
   readonly counts: Record<string, number>;
@@ -76,7 +74,9 @@ export const fetchCohortCaseCounts = createAsyncThunk<
   void,
   { dispatch: CoreDispatch; state: CoreState }
 >("cohort/CohortCounts", async (_, thunkAPI): Promise<GraphQLApiResponse> => {
-  const cohortFilters = selectCurrentCohortGqlFilters(thunkAPI.getState());
+  const cohortFilters = buildCohortGqlOperator(
+    selectCurrentCohortFilterOrCaseSet(thunkAPI.getState()),
+  );
   const graphQlFilters = cohortFilters ? { filters: cohortFilters } : {};
   return await graphqlAPI(CountsGraphQLQuery, graphQlFilters);
 });
@@ -151,5 +151,5 @@ export const useCohortCounts = createUseCoreDataHook(
 export const useFilteredCohortCounts = createUseFiltersCoreDataHook(
   fetchCohortCaseCounts,
   selectCohortCountsData,
-  selectCurrentCohortFilters,
+  selectCurrentCohortFilterOrCaseSet,
 );

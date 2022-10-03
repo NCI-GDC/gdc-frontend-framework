@@ -1,7 +1,7 @@
 export const COHORTS = [
   {
     name: "All GDC",
-    id: "0000-0000-10000-00000",
+    id: "ALL-GDC-COHORT",
     filters: { mode: "and", root: {} },
     caseSet: { caseSetId: { mode: "and", root: {} }, status: "uninitialized" },
   },

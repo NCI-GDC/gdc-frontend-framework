@@ -31,7 +31,7 @@ export * from "./features/cases/casesSlice";
 export * from "./features/cohort/cohortBuilderConfigSlice";
 export * from "./features/cohort/cohortSlice";
 export * from "./features/cohort/caseSetSlice";
-export * from "./features/cohort/cohortFilterSlice";
+export * from "./features/cohort/cohortFilterSlice_new";
 export * from "./features/cohort/cohortNameSlice";
 export * from "./features/cohort/availableCohortsSlice";
 export * from "./features/cohort/comparisonCohortsSlice";

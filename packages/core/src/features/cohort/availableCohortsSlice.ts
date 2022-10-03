@@ -4,26 +4,23 @@ import {
   PayloadAction,
 } from "@reduxjs/toolkit";
 import { CoreState } from "../../reducers";
-import { buildCohortGqlOperator, FilterSet } from "./cohortFilterSlice";
+import { buildCohortGqlOperator, FilterSet } from "./filters";
 import { COHORTS } from "./cohortFixture";
 import { GqlOperation, Operation } from "../gdcapi/filters";
 import { createCaseSet } from "./caseSetSlice";
 import { CoreDataSelectorResponse, DataStatus } from "../../dataAccess";
 
-export interface CaseSetState {
+export interface CaseSetDataAndStatus {
   readonly status: DataStatus;
   readonly error?: string;
   readonly caseSetId: FilterSet;
 }
 
 export interface Cohort {
-  readonly name: string;
   readonly id: string;
+  readonly name: string;
   readonly filters: FilterSet;
-  readonly caseSet: CaseSetState;
-  //  readonly status?: DataStatus;
-  //  readonly error?: string;
-  //  readonly caseSetId: FilterSet;
+  readonly caseSet: CaseSetDataAndStatus;
 }
 
 const cohortsAdapter = createEntityAdapter<Cohort>({
@@ -31,7 +28,7 @@ const cohortsAdapter = createEntityAdapter<Cohort>({
 });
 
 const emptyInitialState = cohortsAdapter.getInitialState({
-  currentCohort: COHORTS[0].id,
+  currentCohort: "ALL-GDC-COHORT",
 });
 const initialState = cohortsAdapter.upsertMany(
   emptyInitialState,
@@ -94,6 +91,20 @@ const slice = createSlice({
       cohortsAdapter.updateOne(state, {
         id: state.currentCohort,
         changes: { filters: { mode: "and", root: {} } },
+      });
+    },
+    setCurrentCohortId: (state, action: PayloadAction<string>) => {
+      state.currentCohort = action.payload;
+    },
+    clearCaseSet: (state) => {
+      cohortsAdapter.updateOne(state, {
+        id: state.currentCohort,
+        changes: {
+          caseSet: {
+            status: "uninitialized",
+            caseSetId: { mode: "and", root: {} },
+          },
+        },
       });
     },
   },
@@ -162,9 +173,14 @@ const slice = createSlice({
 
 export const availableCohortsReducer = slice.reducer;
 
-export const { addNewCohort } = slice.actions;
-export const { updateCohortFilter, removeCohortFilter, clearCohortFilters } =
-  slice.actions;
+export const {
+  addNewCohort,
+  setCurrentCohortId,
+  updateCohortFilter,
+  removeCohortFilter,
+  clearCohortFilters,
+  clearCaseSet,
+} = slice.actions;
 
 const cohortSelectors = cohortsAdapter.getSelectors(
   (state: CoreState) => state.cohorts.availableCohorts,
@@ -174,6 +190,9 @@ export const selectAvailableCohorts: (state: CoreState) => any = (
   state: CoreState,
 ) => state.cohort.availableCohorts;
 
+export const selectCurrentCohortId = (state: CoreState): string | undefined =>
+  state.cohort.availableCohorts.currentCohort;
+
 export const selectAvailableCohortByName: (
   state: CoreState,
   name: string,
@@ -182,7 +201,7 @@ export const selectAvailableCohortByName: (
     .selectAll(state)
     .find((cohort: Cohort) => cohort.name === name);
 
-export const selectCurrentCohortFilterSet = (
+export const selectCurrentCohortFilters = (
   state: CoreState,
 ): FilterSet | undefined => {
   const cohort = cohortSelectors.selectById(
@@ -192,7 +211,7 @@ export const selectCurrentCohortFilterSet = (
   return cohort?.filters;
 };
 
-export const selectCurrentCohortCaseGqlFilters = (
+export const selectCurrentCohortGqlFilters = (
   state: CoreState,
 ): GqlOperation | undefined => {
   const cohort = cohortSelectors.selectById(

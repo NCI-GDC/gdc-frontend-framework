@@ -6,7 +6,7 @@ import {
   updateCohortFilter,
   removeCohortFilter,
   cohortFilterReducer,
-} from "./cohortFilterSlice";
+} from "./cohortFilterSlice_new";
 import {
   clearCurrentCohort,
   selectCurrentCohort,

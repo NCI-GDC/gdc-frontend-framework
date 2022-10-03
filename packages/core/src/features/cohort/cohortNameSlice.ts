@@ -25,5 +25,5 @@ const slice = createSlice({
 export const cohortNameReducer = slice.reducer;
 export const { setCurrentCohort, clearCurrentCohort } = slice.actions;
 
-export const selectCurrentCohort = (state: CoreState): string | undefined =>
-  state.cohort.currentCohort.currentCohort;
+// export const selectCurrentCohort = (state: CoreState): string | undefined =>
+//   state.cohort.currentCohort.currentCohort;
