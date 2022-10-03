@@ -18,3 +18,7 @@ jest.mock("next/config", () => () => ({
     basePath: "/v2",
   },
 }));
+
+jest.mock("dom-to-svg", () => ({
+  elementToSVG: jest.fn(),
+}));
