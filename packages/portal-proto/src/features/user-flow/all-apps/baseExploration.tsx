@@ -25,7 +25,7 @@ import {
   Repository,
   CohortViewerApp,
 } from "../../apps/Apps";
-import { ContextualFilesView } from "../../files/FilesView";
+//import { ContextualFilesView } from "../../files/FilesView";
 import { CollapsibleContainer } from "../../../components/CollapsibleContainer";
 import MutationsTable from "@/features/mutationsTable/MutationsTable";
 import GenesTable from "@/features/genesTable/GenesTable";
@@ -356,6 +356,7 @@ const AllAppsRepository = (props: AllAppsRepositoryProps) => {
         <div className="flex-grow text-center">Repository</div>
       </div>
       TODO Fix ContextualFilesView if needed
+      {handleFileSelected}
       {/*<ContextualFilesView handleFileSelected={handleFileSelected} /> */}
     </div>
   );
