@@ -182,8 +182,8 @@ export const {
   clearCaseSet,
 } = slice.actions;
 
-const cohortSelectors = cohortsAdapter.getSelectors(
-  (state: CoreState) => state.cohorts.availableCohorts,
+export const cohortSelectors = cohortsAdapter.getSelectors(
+  (state: CoreState) => state.cohort.availableCohorts,
 );
 
 export const selectAvailableCohorts: (state: CoreState) => any = (

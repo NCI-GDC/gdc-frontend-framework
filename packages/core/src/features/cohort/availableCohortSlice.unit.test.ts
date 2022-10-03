@@ -9,6 +9,9 @@ import {
   Cohort,
   setCurrentCohortId,
   selectCurrentCohortId,
+  selectCurrentCohortFilters,
+  selectCurrentCohortFiltersByName,
+  updateCohortFilter,
 } from "./availableCohortsSlice";
 // import {
 //   clearCurrentCohort,
@@ -24,46 +27,78 @@ import { EntityState } from "@reduxjs/toolkit";
 
 const state = getInitialCoreState();
 
-const INITIAL_IDS = COHORTS.map((x) => x.id);
+const INITIAL_IDS = (COHORTS as unknown as ReadonlyArray<Cohort>).map(
+  (x) => x.id,
+);
 const INITIAL_ENTITIES = COHORTS.reduce((dict, x) => {
   dict[x.id] = x as Cohort;
   return dict;
 }, {} as Record<string, Cohort>);
 
+const INITIAL_STATE = {
+  ids: INITIAL_IDS,
+  entities: INITIAL_ENTITIES,
+  currentCohort: "ALL-GDC-COHORT",
+} as EntityState<Cohort> & { currentCohort: string };
+
+const APP_INITIAL_STATE = {
+  ...state,
+  cohort: {
+    ...state.cohort,
+    availableCohorts: INITIAL_STATE,
+  },
+};
+
+const BAILYS_COHORT = {
+  ...APP_INITIAL_STATE,
+  cohort: {
+    ...state.cohort,
+    availableCohorts: {
+      ...state.cohort.availableCohorts,
+      currentCohort: "0000-0000-1000-0000",
+    },
+  },
+};
+
+// const PANCREAS_KRAS_MUTATED = {
+//   ...APP_INITIAL_STATE,
+//   cohort: {
+//     ...state.cohort,
+//     availableCohorts: {
+//       ...state.cohort.availableCohorts,
+//       currentCohort: "0000-0000-1002-0000"}
+//   }
+// }
+
 // const initialFilters = { mode: "and", root: {} };
-// const populatedFilters = {
-//   mode: "and",
-//   root: {
-//     primary_site: {
-//       operator: "includes",
-//       field: "primary_site",
-//       operands: ["bronchus and lung"],
-//     },
-//   },
-// };
-//
-// const TwoPopulatedFilters = {
-//   mode: "and",
-//   root: {
-//     primary_site: {
-//       operator: "includes",
-//       field: "primary_site",
-//       operands: ["bronchus and lung"],
-//     },
-//     disease_type: {
-//       operator: "includes",
-//       field: "disease_type",
-//       operands: ["ductal and lobular neoplasms"],
-//     },
-//   },
-// };
+const populatedFilters = {
+  mode: "and",
+  root: {
+    "cases.primary_site": {
+      operator: "includes",
+      field: "cases.primary_site",
+      operands: ["bronchus and lung"],
+    },
+  },
+};
+
+const TwoPopulatedFilters = {
+  mode: "and",
+  root: {
+    "cases.primary_site": {
+      operator: "includes",
+      field: "cases.primary_site",
+      operands: ["breast", "bronchus and lung"],
+    },
+    disease_type: {
+      operator: "includes",
+      field: "disease_type",
+      operands: ["ductal and lobular neoplasms"],
+    },
+  },
+};
 
 describe("availableCohortsReducer reducer: currentCohort test", () => {
-  const INITIAL_STATE = {
-    ids: INITIAL_IDS,
-    entities: INITIAL_ENTITIES,
-  } as EntityState<Cohort> & { currentCohort: "ALL-GDC-COHORT" };
-
   test("should return the default state for unknown actions", () => {
     const state = availableCohortsReducer(INITIAL_STATE, { type: "asdf" });
     expect(state).toEqual(INITIAL_STATE);
@@ -78,144 +113,140 @@ describe("availableCohortsReducer reducer: currentCohort test", () => {
   });
 });
 
-describe("selectCurrentCohort", () => {
+describe("test setting/getting currentCohortId", () => {
   const INITIAL_STATE = {
     ids: INITIAL_IDS,
     entities: INITIAL_ENTITIES,
-  } as EntityState<Cohort> & { currentCohort: "asdf" };
+  } as EntityState<Cohort>;
   const cohortState = {
-    cohort: {
-      availableCohorts: INITIAL_STATE,
+    availableCohorts: { ...INITIAL_STATE, currentCohort: "asdf" },
+    counts: {
       counts: {
-        counts: {
-          caseCounts: -1,
-          fileCounts: -1,
-          genesCounts: -1,
-          mutationCounts: -1,
-        },
-        status: "uninitialized" as DataStatus,
+        caseCounts: -1,
+        fileCounts: -1,
+        genesCounts: -1,
+        mutationCounts: -1,
       },
-      comparisonCohorts: [],
-      builderConfig: {},
+      status: "uninitialized" as DataStatus,
     },
+    comparisonCohorts: [],
+    builderConfig: {},
   };
 
   test("should return the current cohort id when it's defined", () => {
     const currentCohortId = selectCurrentCohortId({
       ...state,
-      ...cohortState,
+      cohort: cohortState,
     });
     expect(currentCohortId).toEqual("asdf");
   });
 
   test("should set the current cohort id", () => {
-    availableCohortsReducer(
-      INITIAL_STATE,
-      setCurrentCohortId("0000-0000-1001-0000"),
+    const newState = availableCohortsReducer(
+      { ...INITIAL_STATE, currentCohort: "asdf" },
+      setCurrentCohortId("1111-2222-3333-4444"),
     );
     const currentCohortId = selectCurrentCohortId({
       ...state,
-      ...cohortState,
+      cohort: {
+        ...state.cohort,
+        availableCohorts: newState,
+      },
     });
     expect(currentCohortId).toEqual("1111-2222-3333-4444");
   });
 });
 
-// describe("selectCurrentCohortFilters", () => {
-//   test("should return the current cohort filters", () => {
-//     const currentCohortFilters = selectCurrentCohortFilters({
-//       ...state,
-//       cohort: {
-//         currentCohort: { currentCohort: "asdf" },
-//         currentFilters: { filters: populatedFilters as FilterSet },
-//         counts: {
-//           counts: {
-//             caseCounts: -1,
-//             fileCounts: -1,
-//             genesCounts: -1,
-//             mutationCounts: -1,
-//           },
-//           status: "uninitialized",
-//         },
-//         availableCohorts: { ids: [], entities: {} },
-//         comparisonCohorts: [],
-//         builderConfig: {},
-//         caseSet: {
-//           status: "uninitialized",
-//           caseSetId: { mode: "and", root: {} },
-//         },
-//       },
-//     });
-//     expect(currentCohortFilters).toEqual(populatedFilters);
-//   });
-//
-//   test("should return initial filters when the current cohort is not set", () => {
-//     const currentCohortFilters = selectCurrentCohortFilters({ ...state });
-//     expect(currentCohortFilters).toEqual(initialFilters);
-//   });
-//
-//   test("should return a field's filters", () => {
-//     const currentCohortFilters = selectCurrentCohortFiltersByName(
-//       {
-//         ...state,
-//         cohort: {
-//           currentCohort: { currentCohort: "asdf" },
-//           currentFilters: {
-//             filters: populatedFilters as FilterSet,
-//           },
-//           counts: {
-//             counts: {
-//               caseCounts: -1,
-//               fileCounts: -1,
-//               genesCounts: -1,
-//               mutationCounts: -1,
-//             },
-//             status: "uninitialized",
-//           },
-//           availableCohorts: { ids: [], entities: {} },
-//           comparisonCohorts: [],
-//           builderConfig: {},
-//           caseSet: {
-//             status: "uninitialized",
-//             caseSetId: { mode: "and", root: {} },
-//           },
-//         },
-//       },
-//       "primary_site",
-//     );
-//     expect(currentCohortFilters).toEqual(populatedFilters.root.primary_site);
-//   });
-// });
-//
-// describe("addFilter", () => {
-//   test("should add a filter to the current cohort", () => {
-//     const currentCohortFilters = cohortFilterReducer(
-//       { filters: initialFilters },
-//       updateCohortFilter({
-//         field: "primary_site",
-//         operation: {
-//           operator: "includes",
-//           field: "primary_site",
-//           operands: ["bronchus and lung"],
-//         },
-//       }),
-//     );
-//     expect(currentCohortFilters).toEqual({ filters: populatedFilters });
-//   });
-//   test("should add another filter to the current cohort", () => {
-//     const currentCohortFilters = cohortFilterReducer(
-//       { filters: populatedFilters as FilterSet },
-//       updateCohortFilter({
-//         field: "disease_type",
-//         operation: {
-//           operator: "includes",
-//           field: "disease_type",
-//           operands: ["ductal and lobular neoplasms"],
-//         },
-//       }),
-//     );
-//     expect(currentCohortFilters).toEqual({ filters: TwoPopulatedFilters });
-//   });
+describe("get/set current cohort filters", () => {
+  test("should return the current cohort filters", () => {
+    const currentCohortFilters = selectCurrentCohortFilters({
+      ...APP_INITIAL_STATE,
+      cohort: {
+        ...state.cohort,
+        availableCohorts: {
+          ...state.cohort.availableCohorts,
+          currentCohort: "0000-0000-1000-0000",
+        },
+      },
+    });
+    expect(currentCohortFilters).toEqual(COHORTS[1].filters);
+  });
+
+  // test("should return initial filters when the current cohort is not set", () => {
+  //   const currentCohortFilters = selectCurrentCohortFilters({
+  //     ...APP_INITIAL_STATE,
+  //       cohort: {
+  //       ...APP_INITIAL_STATE.cohort,
+  //           availableCohorts: { currentCohort: undefined },
+  //   },
+  //   });
+  //   expect(currentCohortFilters).toEqual(initialFilters);
+  // });
+
+  test("should return a field's filters", () => {
+    const expected = {
+      mode: "and",
+      root: {
+        "cases.primary_site": {
+          operator: "includes",
+          field: "cases.primary_site",
+          operands: ["breast", "bronchus and lung"],
+        },
+      },
+    };
+
+    const currentCohortFilters = selectCurrentCohortFiltersByName(
+      {
+        ...APP_INITIAL_STATE,
+        cohort: {
+          ...state.cohort,
+          availableCohorts: {
+            ...state.cohort.availableCohorts,
+            currentCohort: "0000-0000-1000-0000",
+          },
+        },
+      },
+      "cases.primary_site",
+    );
+    expect(currentCohortFilters).toEqual(expected.root["cases.primary_site"]);
+  });
+});
+
+describe("addFilter", () => {
+  test("should add a filter to the current cohort", () => {
+    const newState = availableCohortsReducer(
+      INITIAL_STATE,
+      updateCohortFilter({
+        field: "cases.primary_site",
+        operation: {
+          operator: "includes",
+          field: "cases.primary_site",
+          operands: ["bronchus and lung"],
+        },
+      }),
+    );
+    expect(newState.entities[newState.currentCohort]?.filters).toEqual({
+      filters: populatedFilters,
+    });
+  });
+
+  test("should add another filter to the current cohort", () => {
+    const newState = availableCohortsReducer(
+      BAILYS_COHORT.cohort.availableCohorts,
+      updateCohortFilter({
+        field: "disease_type",
+        operation: {
+          operator: "includes",
+          field: "disease_type",
+          operands: ["ductal and lobular neoplasms"],
+        },
+      }),
+    );
+    expect(newState.entities[newState.currentCohort]?.filters).toEqual({
+      filters: TwoPopulatedFilters,
+    });
+  });
+});
 //
 //   test("should not add a duplicate filter to the current cohort", () => {
 //     const currentCohortFilters = cohortFilterReducer(
