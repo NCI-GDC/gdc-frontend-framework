@@ -11,7 +11,7 @@ import { Case } from "@/features/cases/CasesView";
 import { headerElements } from "@/features/user-flow/many-pages/navigation-utils";
 
 const RepositoryPage: NextPage = () => {
-  //const { data } = useFiles({ size: 20 });
+  const { data } = useFiles({ size: 20 });
 
   const options = [
     { value: "cb-expand", label: "Cohort Builder Expand" },
@@ -70,6 +70,7 @@ const RepositoryPage: NextPage = () => {
         </div>
         <div className="border border-gray-400 bg-base-lightest p-4">
           TODO Fix FilesView if needed
+          {data}
           {/*<FilesView
             files={data}
             handleFileSelected={(file: GdcFile) => {
