@@ -218,7 +218,8 @@ const CollapsibleFiles: React.FC<CollapsibleFilesProps> = (
         flex: show,
       })}
     >
-      <ContextualFilesView handleFileSelected={handleFileSelected} />
+      TODO Fix ContextualFilesView if needed
+      {/*<ContextualFilesView handleFileSelected={handleFileSelected} /> */}
     </div>
   );
 };

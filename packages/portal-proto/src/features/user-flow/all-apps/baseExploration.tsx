@@ -355,7 +355,8 @@ const AllAppsRepository = (props: AllAppsRepositoryProps) => {
         </button>
         <div className="flex-grow text-center">Repository</div>
       </div>
-      <ContextualFilesView handleFileSelected={handleFileSelected} />
+      TODO Fix ContextualFilesView if needed
+      {/*<ContextualFilesView handleFileSelected={handleFileSelected} /> */}
     </div>
   );
 };

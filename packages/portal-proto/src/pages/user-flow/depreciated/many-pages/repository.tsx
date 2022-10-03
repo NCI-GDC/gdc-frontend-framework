@@ -69,13 +69,14 @@ const RepositoryPage: NextPage = () => {
           />
         </div>
         <div className="border border-gray-400 bg-base-lightest p-4">
-          <FilesView
+          TODO Fix FilesView if needed
+          {/*<FilesView
             files={data}
             handleFileSelected={(file: GdcFile) => {
               setCurrentFile(file);
               setFileModalOpen(true);
             }}
-          />
+          /> */}
         </div>
       </div>
       <FileModal
