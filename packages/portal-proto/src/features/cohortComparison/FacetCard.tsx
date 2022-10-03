@@ -84,16 +84,16 @@ const FacetCard: React.FC<FacetCardProps> = ({
   const divId = `cohort_comparison_bar_chart_${field}`;
 
   const downloadTSVFile = () => {
-    let strOut = `${FIELD_LABELS[field]}  # Cases S1  % Cases S1 # Cases S2  % Cases S2\n`;
+    let strOut = `${FIELD_LABELS[field]}\t# Cases S1\t% Cases S1\t# Cases S2\t% Cases S2\n`;
     strOut += "";
 
     uniqueValues.forEach((value, idx) => {
       const cohort1Value = formattedData[0][idx].count;
       const cohort2Value = formattedData[1][idx].count;
-      strOut += `${value}  ${cohort1Value?.toString() || "0"} ${(
+      strOut += `${value}\t${cohort1Value?.toString() || "0"}\t${(
         ((cohort1Value || 0) / counts[0]) *
         100
-      ).toFixed(2)} ${cohort2Value?.toString() || "0"}  ${(
+      ).toFixed(2)}\t${cohort2Value?.toString() || "0"}\t${(
         ((cohort2Value || 0) / counts[1]) *
         100
       ).toFixed(2)}\n`;
