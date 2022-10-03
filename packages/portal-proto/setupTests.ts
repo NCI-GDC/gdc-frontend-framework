@@ -22,3 +22,7 @@ jest.mock("next/config", () => () => ({
 jest.mock("dom-to-svg", () => ({
   elementToSVG: jest.fn(),
 }));
+
+jest.mock("url-join", () => ({
+  urlJoin: jest.fn(),
+}));
