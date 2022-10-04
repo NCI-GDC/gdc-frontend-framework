@@ -108,16 +108,20 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
   const selectAllGenes = (rows: any) => {
     if (rows.every((row) => row.original["select"] in selectedGenes)) {
       // deselect all
-      setSelectedGenes({});
+      setSelectedGenes((currentMap) => {
+        const newMap = { ...currentMap };
+        rows.forEach((row) => delete newMap[row.original["select"]]);
+        return newMap;
+      });
     } else {
       // select all
       setSelectedGenes((currentMap) => {
         const newMap = { ...currentMap };
-        for (const row of rows) {
+        rows.forEach((row) => {
           if (!(row.original["select"] in currentMap)) {
             newMap[row.original["select"]] = row;
           }
-        }
+        });
         return newMap;
       });
     }
