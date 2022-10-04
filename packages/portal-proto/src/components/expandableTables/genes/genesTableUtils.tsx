@@ -4,6 +4,7 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 import _ from "lodash";
 import { animated } from "react-spring";
 import SwitchSpring from "../shared/SwitchSpring";
+import PercentageBar from "../shared/PercentageBar";
 
 interface SingleGene {
   biotype: string;
@@ -147,6 +148,47 @@ export const createTableColumn = (
                         </button>
                       </div>
                     )}
+                  </>
+                  <>
+                    {!row.getCanExpand() && visibleColumns[0].id === accessor && (
+                      <div className={`relative`}>
+                        <GeneAffectedCases
+                          geneId={row.value}
+                          width={width}
+                          opening={row.getCanExpand()}
+                        ></GeneAffectedCases>
+                      </div>
+                    )}
+                  </>
+                </animated.div>
+              );
+            },
+            footer: (props) => props.column.id,
+          },
+        ],
+      };
+    case "CNVGain":
+      return {
+        header: " ",
+        footer: (props) => props.column.id,
+        columns: [
+          {
+            accessorKey: accessor,
+            header: () => <GTableHeader twStyles={``} title={accessor} />,
+            cell: ({ row }) => {
+              return (
+                <animated.div
+                  style={partitionWidth}
+                  className={`content-center`}
+                >
+                  <>
+                    {/* <GTableCell row={row} accessor={accessor} /> */}
+
+                    <PercentageBar
+                      numerator={22}
+                      denominator={100}
+                      width={width / visibleColumns.length}
+                    />
                   </>
                   <>
                     {!row.getCanExpand() && visibleColumns[0].id === accessor && (
