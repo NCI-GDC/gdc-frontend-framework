@@ -1,9 +1,9 @@
 /* eslint-disable */
 // TODO need to revisit this file for more changes to fix eslint issues
-import { useState } from "react";
+import { useEffect } from "react";
+import { useCallback, useState } from "react";
 import { CollapsibleContainer } from "@/components/CollapsibleContainer";
-import { Button, NativeSelect, useMantineTheme } from "@mantine/core";
-import Select from "react-select";
+import { Button, NativeSelect, Select } from "@mantine/core";
 import {
   MdAdd as AddIcon,
   MdArrowDropDown as DropDownIcon,
@@ -21,6 +21,9 @@ import {
   selectCurrentCohortFilters,
   useCoreSelector,
   selectAvailableCohorts,
+  useCoreDispatch,
+  addNewCohort,
+  selectCurrentCohort,
   DEFAULT_COHORT_ID,
 } from "@gff/core";
 import { convertFilterToComponent } from "./QueryRepresentation";
@@ -77,13 +80,15 @@ export const CohortBar: React.FC<CohortBarProps> = ({
   const menu_items = cohorts.map((x) => {
     return { value: x.id, label: x.name };
   });
+  const coreDispatch = useCoreDispatch();
+  const cohortName = useCoreSelector((state) => selectCurrentCohort(state));
+  const newCohort = useCallback(() => {
+    // TODO: replace with other UUID function
+    const newId = `${nanoid()}`;
+    coreDispatch(addNewCohort(newId));
+    onSelectionChanged(newId);
+  }, []);
 
-  const [currentCohort, setCurrentCohort] = useState(menu_items[0]);
-
-  const theme = useMantineTheme();
-
-  const buttonStyle =
-    "p-2 bg-base-lightest transition-colors text-primary-content-darkest hover:bg-primary hover:text-primary-content-lightest";
   return (
     <div
       data-tour="cohort_management_bar"
@@ -92,31 +97,19 @@ export const CohortBar: React.FC<CohortBarProps> = ({
       <div className="border-opacity-0">
         {!hide_controls ? (
           <Select
-            inputId="cohort-bar_cohort_select"
-            options={menu_items}
-            isSearchable={false}
-            isClearable={false}
-            value={currentCohort}
+            data={menu_items}
+            searchable
+            clearable={false}
+            value={defaultId}
             onChange={(x) => {
-              setCurrentCohort(x);
-              onSelectionChanged(x.value);
+              onSelectionChanged(x);
             }}
             className="border-base-light w-80 p-0 z-10 "
             aria-items-centerlabel="Select cohort"
-            styles={{
-              dropdownIndicator: (provided) => ({
-                ...provided,
-                color: theme.colors.blue[4],
-              }),
-              singleValue: (provided) => ({
-                ...provided,
-                color: theme.colors.blue[4],
-              }),
-            }}
           />
         ) : (
           <div>
-            <h2>{currentCohort.label}</h2>
+            <h2>{cohortName}</h2>
           </div>
         )}
       </div>
@@ -125,7 +118,7 @@ export const CohortBar: React.FC<CohortBarProps> = ({
           <CohortGroupButton>
             <SaveIcon size="1.5em" aria-label="Save cohort" />
           </CohortGroupButton>
-          <CohortGroupButton>
+          <CohortGroupButton onClick={() => newCohort()}>
             <AddIcon size="1.5em" aria-label="Add cohort" />
           </CohortGroupButton>
           <CohortGroupButton>
@@ -175,19 +168,6 @@ const CohortFacetElement: React.FC<FacetElementProp> = ({
 
 interface RangeFilterProps {
   readonly filter: Operation;
-}
-
-// interface CohortFacet {
-//   readonly field: string;
-//   readonly value: ReadonlyArray<string>;
-// }
-// interface PersistentCohort {
-//   readonly name: string;
-//   readonly facets?: ReadonlyArray<CohortFacet>;
-// }
-
-export interface CohortGroupProps {
-  readonly simpleMode?: boolean;
 }
 
 export const useCohortFacetFilters = (): FilterSet => {

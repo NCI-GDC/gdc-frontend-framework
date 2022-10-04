@@ -66,7 +66,7 @@ const slice = createSlice({
   reducers: {
     addNewCohort: (state, action: PayloadAction<string>) => {
       const newCounts = Object.values(state.entities).reduce(
-        (count, x) => (x?.name == "New Cohort" ? count + 1 : count),
+        (count, x) => (x?.name.includes("New Cohort") ? count + 1 : count),
         0,
       );
       const newName = newCounts > 0 ? `New Cohort ${newCounts}` : "New Cohort";

@@ -7,6 +7,15 @@ import { convertFilterToComponent } from "./QueryRepresentation";
 import { CohortBar, useCohortFacetFilters } from "./CohortGroup";
 
 import {
+  useCoreDispatch,
+  clearCohortFilters,
+  setCurrentCohortId,
+  useCoreSelector,
+  selectAvailableCohorts,
+  DEFAULT_COHORT_ID,
+} from "@gff/core";
+
+import {
   MdDownload as DownloadIcon,
   MdInsertChartOutlined as SummaryChartIcon,
   MdOutlineViewComfy as TableIcon,
@@ -18,21 +27,14 @@ import {
 } from "react-icons/fa";
 
 import SummaryFacets, { SummaryFacetInfo } from "./SummaryFacets";
-import {
-  useCoreDispatch,
-  clearCohortFilters,
-  setCurrentCohortId,
-  useCoreSelector,
-  selectAvailableCohorts,
-} from "@gff/core";
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
 import FunctionButton from "@/components/FunctionButton";
 
 const ContextBar: React.FC = () => {
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(true);
-  const [, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(DEFAULT_COHORT_ID);
 
-  const handleCohortSelection = (idx) => {
+  const handleCohortSelection = (idx: string) => {
     setCurrentIndex(idx);
     setCohort(idx);
   };
@@ -41,18 +43,7 @@ const ContextBar: React.FC = () => {
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
 
   const setCohort = (id: string) => {
-    console.log("cohort id:", id);
     coreDispatch(setCurrentCohortId(id));
-    //
-    // if (cohorts[idx].filters) {
-    //   if (cohorts[idx].filters. == 0) {
-    //     coreDispatch(clearCohortFilters());
-    //   } else {
-    //     cohorts[idx].facets.map((x) => {
-    //       updateEnumFilters(coreDispatch, x.field, x.value);
-    //     });
-    //   }
-    // }
   };
 
   // TODO: move this to a configuration files or slice
@@ -103,7 +94,7 @@ const ContextBar: React.FC = () => {
       // eslint-disable-next-line react/prop-types
       cohorts={cohorts}
       onSelectionChanged={handleCohortSelection}
-      defaultId={"ALL-GDC-COHORT"}
+      defaultId={currentIndex}
     />
   );
 
