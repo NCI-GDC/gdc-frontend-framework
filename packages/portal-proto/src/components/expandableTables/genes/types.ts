@@ -30,9 +30,8 @@ export interface GenesTableProps {
   ) => void;
 }
 
-export const GENE_SET_OPTIONS = [
+export const GENE_MENU = [
   { label: "Save/Edit Gene Set", value: "placeholder" },
-  { label: "0 Genes", value: "numOfGenes" },
   { label: "Save as new gene set", value: "save" },
   { label: "Add existing gene set", value: "add" },
   { label: "Remove from existing gene set", value: "remove" },

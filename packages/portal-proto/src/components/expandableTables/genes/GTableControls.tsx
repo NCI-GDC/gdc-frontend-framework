@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { MdOutlineArrowDropDown } from "react-icons/md";
-import { GENE_SET_OPTIONS } from "./types";
-import { animated, useSpring } from "react-spring";
+// import { GENE_SET_OPTIONS } from "./types";
+import { animated, config, useSpring } from "react-spring";
+import { GENE_MENU } from "./types";
 
 interface GTableControlsProps {
   selectedGenes: any;
@@ -17,10 +18,8 @@ export const GTableControls: React.VFC<GTableControlsProps> = ({
   selectedGenes,
   handleGeneSave,
 }: GTableControlsProps) => {
-  const [geneOptions, setGeneOptions] =
-    useState<GeneSaveOption[]>(GENE_SET_OPTIONS);
   const [selectedOption, setSelectedOption] = useState<GeneSaveOption>(
-    GENE_SET_OPTIONS[0],
+    GENE_MENU[0],
   );
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
@@ -39,15 +38,14 @@ export const GTableControls: React.VFC<GTableControlsProps> = ({
 
   const flipSpring = { transform: y.to((y) => `rotateX(${y}deg)`) };
 
-  useEffect(() => {
-    setGeneOptions((prevOpts) => {
-      const newOpts = [...prevOpts];
-      newOpts[1].label = `${selectedGenes.length} Genes`;
-      return newOpts;
-    });
-  }, [selectedGenes.length]);
-
   const separator = <div className={`h-full w-[1px] text-gray-300`}>|</div>;
+
+  const nGenes = useSpring({
+    immediate: false,
+    config: config.slow,
+    from: { num: 0 },
+    to: { num: Object.keys(selectedGenes).length },
+  });
 
   return (
     <>
@@ -60,35 +58,44 @@ export const GTableControls: React.VFC<GTableControlsProps> = ({
           {/* todo: animated component for number display */}
           {/* <animated.div style={numberSpring}>{selectedGenes.length}</animated.div>  */}
           <div className={`flex flex-row w-80 justify-between`}>
-            <div className={`ml-10`}>
+            <animated.div>{nGenes.num.to((x) => x.toFixed(0))}</animated.div>
+            <div className={`mx-auto`}>
               {selectedOption ? selectedOption.label : ""}
             </div>
             {separator}
-            <animated.div style={flipSpring} className={`mr-10`}>
+            <animated.div className={`mx-auto`} style={flipSpring}>
               <MdOutlineArrowDropDown />
             </animated.div>
           </div>
+
           <animated.div
             className={`absolute bg-gray-100 mt-5 rounded`}
             style={menuSpring}
           >
             {isMenuOpen && (
-              <div className={`w-80`}>
-                {GENE_SET_OPTIONS.map((geneOpt, idx) => {
-                  return (
-                    <li>
-                      <button
-                        key={`gene-set-select-${idx}`}
-                        type="button"
-                        onClick={() => setSelectedOption(geneOpt)}
-                        className="py-2 px-4 text-sm text-black-500 hover:bg-gray-100"
-                      >
-                        <div className="items-center">{geneOpt.label}</div>
-                      </button>
-                    </li>
-                  );
-                })}
-              </div>
+              <>
+                <animated.div className={`mt-1`}>
+                  {nGenes.num.to((x) => x.toFixed(0))}
+                </animated.div>
+                <ul className={`w-fit list-none float-right`}>
+                  {GENE_MENU.filter(
+                    (opt) => opt.value !== selectedOption.value,
+                  ).map((geneOpt, idx) => {
+                    return (
+                      <li>
+                        <button
+                          key={`gene-set-select-${idx}`}
+                          type="button"
+                          onClick={() => setSelectedOption(geneOpt)}
+                          className="py-2 px-4 text-sm text-black-500 hover:bg-gray-100"
+                        >
+                          <div className="">{geneOpt.label}</div>
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </>
             )}
           </animated.div>
         </animated.button>
