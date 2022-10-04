@@ -179,19 +179,59 @@ export const ProjectView: React.FC<ProjectViewProps> = (
       "data_category",
     );
 
-    const rows = sortedDataCategories.map((data_c) => ({
-      data_category: data_c.data_category,
-      // TODO: Need to change it to Link after the href has been finalized
-      case_count: `${data_c.case_count.toLocaleString()} (${calculatePercentage(
+    const rows = sortedDataCategories.map((data_c) => {
+      const caseCountPercentage = calculatePercentage(
         data_c.case_count,
         projectData.summary.case_count,
-      )}%)`,
-      // TODO: Need to change it to Link after the href has been finalized
-      file_count: `${data_c.file_count.toLocaleString()} (${calculatePercentage(
+      );
+
+      const fileCountPercentage = calculatePercentage(
         data_c.file_count,
         projectData.summary.file_count,
-      )}%)`,
-    }));
+      );
+
+      return {
+        data_category: data_c.data_category,
+        // TODO: Need to change it to Link after the href has been finalized
+        case_count: (
+          <div className="flex">
+            <span className="w-1/4 pr-1.5 text-right">
+              {data_c.case_count.toLocaleString()}
+            </span>
+            <div className="w-3/4">
+              <div className="relative bg-chart rounded-sm px-1 w-16 h-full">
+                <span className="absolute z-10 left-0 top-0 w-full h-full text-center">
+                  {`${caseCountPercentage}%`}
+                </span>
+                <div
+                  className="absolute left-0 top-0 w-full h-full bg-chart-darkest rounded-sm"
+                  style={{ width: `${caseCountPercentage}%` }}
+                />
+              </div>
+            </div>
+          </div>
+        ),
+        // TODO: Need to change it to Link after the href has been finalized
+        file_count: (
+          <div className="flex">
+            <span className="w-1/4 pr-1.5 text-right">
+              {data_c.file_count.toLocaleString()}
+            </span>
+            <div className="w-3/4">
+              <div className="relative bg-chart rounded-sm px-1 w-16 h-full">
+                <span className="absolute z-10 left-0 top-0 w-full h-full text-center">
+                  {`${fileCountPercentage}%`}
+                </span>
+                <div
+                  className="absolute left-0 top-0 w-full h-full bg-chart-darkest rounded-sm"
+                  style={{ width: `${fileCountPercentage}%` }}
+                />
+              </div>
+            </div>
+          </div>
+        ),
+      };
+    });
 
     return {
       headers: [
@@ -209,19 +249,59 @@ export const ProjectView: React.FC<ProjectViewProps> = (
       "experimental_strategy",
     );
 
-    const rows = sortedExpCategories.map((exp_c) => ({
-      experimental_strategy: exp_c.experimental_strategy,
-      // TODO: Need to change it to Link after the href has been finalized
-      case_count: `${exp_c.case_count.toLocaleString()} (${calculatePercentage(
+    const rows = sortedExpCategories.map((exp_c) => {
+      const caseCountPercentage = calculatePercentage(
         exp_c.case_count,
         projectData.summary.case_count,
-      )}%)`,
-      // TODO: Need to change it to Link after the href has been finalized
-      file_count: `${exp_c.file_count.toLocaleString()} (${calculatePercentage(
+      );
+
+      const fileCountPercentage = calculatePercentage(
         exp_c.file_count,
         projectData.summary.file_count,
-      )}%)`,
-    }));
+      );
+
+      return {
+        experimental_strategy: exp_c.experimental_strategy,
+        // TODO: Need to change it to Link after the href has been finalized
+        case_count: (
+          <div className="flex">
+            <span className="w-1/4 pr-1.5 text-right">
+              {exp_c.case_count.toLocaleString()}
+            </span>
+            <div className="w-3/4">
+              <div className="relative bg-chart rounded-sm px-1 w-16 h-full">
+                <span className="absolute z-10 left-0 top-0 w-full h-full text-center">
+                  {`${caseCountPercentage}%`}
+                </span>
+                <div
+                  className="absolute left-0 top-0 w-full h-full bg-chart-darkest rounded-sm"
+                  style={{ width: `${caseCountPercentage}%` }}
+                />
+              </div>
+            </div>
+          </div>
+        ),
+        // TODO: Need to change it to Link after the href has been finalized
+        file_count: (
+          <div className="flex">
+            <span className="w-1/4 pr-1.5 text-right">
+              {exp_c.file_count.toLocaleString()}
+            </span>
+            <div className="w-3/4">
+              <div className="relative bg-chart rounded-sm px-1 w-14 h-full">
+                <span className="absolute z-10 left-0 top-0 w-full h-full text-center">
+                  {`${fileCountPercentage}%`}
+                </span>
+                <div
+                  className="absolute left-0 top-0 w-full h-full bg-chart-darkest rounded-sm"
+                  style={{ width: `${fileCountPercentage}%` }}
+                />
+              </div>
+            </div>
+          </div>
+        ),
+      };
+    });
 
     return {
       headers: [
