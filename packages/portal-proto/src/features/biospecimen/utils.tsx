@@ -4,7 +4,7 @@ import {
   formatDataForHorizontalTable,
   mapGdcFileToCartFile,
 } from "../files/utils";
-import { FaMicroscope, FaShoppingCart, FaDownload } from "react-icons/fa";
+import { FaMicroscope, FaShoppingCart } from "react-icons/fa";
 import { Tooltip } from "@mantine/core";
 import Link from "next/link";
 import {
