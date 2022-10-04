@@ -160,7 +160,7 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
     <div className={`w-full`}>
       <div className={`flex flex-row justify-between`}>
         <GTableControls
-          selectedGenes={selectedGenes}
+          selectedGenes={Object.keys(selectedGenes)?.length || 0}
           handleGeneSave={handleGeneSave}
         />
         <GTableFilters

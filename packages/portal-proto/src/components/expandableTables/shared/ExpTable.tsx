@@ -10,6 +10,7 @@ import {
 } from "@tanstack/react-table";
 import { animated, useSpring } from "react-spring";
 import SwitchSpring from "./SwitchSpring";
+import AnimatedRow from "./AnimatedRow";
 
 export interface ExpTableProps<TData> {
   data: TData[];
@@ -44,11 +45,10 @@ export const ExpTable: React.VFC<ExpTableProps> = ({
   });
 
   const unitSpring = useSpring({
-    from: { opacity: 0 },
-    to: { opacity: 1 },
+    from: { opacity: 0, transform: "translate3D(0, -120px, 0)" },
+    to: { opacity: 1, transform: "translate3D(0, 0, 0)" },
     duration: 100,
   });
-
   return (
     <div className="p-2">
       <div className="h-2 shadow-md" />
@@ -90,29 +90,10 @@ export const ExpTable: React.VFC<ExpTableProps> = ({
         </thead>
         <tbody>
           {table.getRowModel().rows.map((row, index) => {
-            return (
-              <tr
-                key={row.id}
-                className={`border-2 ${index % 2 ? `bg-slate-50` : `bg-white`}`}
-              >
-                {row.getVisibleCells().map((cell) => {
-                  return (
-                    <animated.td style={unitSpring} key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </animated.td>
-                  );
-                })}
-              </tr>
-            );
+            return <AnimatedRow row={row} index={index} />;
           })}
         </tbody>
       </table>
-      {/* <div onClick={() => console.log("expanded", expanded)}>
-        {table.getRowModel().rows.length} Rows
-      </div> */}
     </div>
   );
 };

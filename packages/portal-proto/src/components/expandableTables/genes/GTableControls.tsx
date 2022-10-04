@@ -1,11 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { MdOutlineArrowDropDown } from "react-icons/md";
-// import { GENE_SET_OPTIONS } from "./types";
 import { animated, config, useSpring } from "react-spring";
 import { GENE_MENU } from "./types";
 
 interface GTableControlsProps {
-  selectedGenes: any;
+  selectedGenes: number;
   handleGeneSave: (genes: any) => void; //todo: add type
 }
 
@@ -24,7 +23,8 @@ export const GTableControls: React.VFC<GTableControlsProps> = ({
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   const buttonSpring = useSpring({
-    background: isMenuOpen ? "gainsboro" : "white",
+    background: "white",
+    border: "solid 1px rgb(32, 68, 97)",
   });
 
   const menuSpring = useSpring({
@@ -38,13 +38,51 @@ export const GTableControls: React.VFC<GTableControlsProps> = ({
 
   const flipSpring = { transform: y.to((y) => `rotateX(${y}deg)`) };
 
-  const separator = <div className={`h-full w-[1px] text-gray-300`}>|</div>;
+  const separator = <div className={`h-full m-auto text-gray-300`}>|</div>;
+
+  const selectedSpring = useSpring(
+    selectedGenes === 0
+      ? {
+          from: {
+            color: "rgb(32, 68, 97)",
+            backgroundColor: "white",
+          },
+          to: {
+            color: "rgb(32, 68, 97)",
+            backgroundColor: "white",
+          },
+        }
+      : {
+          from: {
+            color: "white",
+            backgroundColor: "rgb(32, 68, 97)",
+          },
+          to: {
+            color: "white",
+            backgroundColor: "rgb(32, 68, 97)",
+          },
+        },
+  );
+
+  const geneLabel = (
+    <animated.span className={`m-auto ml-0.5`} style={selectedSpring}>
+      Genes
+    </animated.span>
+  );
 
   const nGenes = useSpring({
     immediate: false,
     config: config.slow,
     from: { num: 0 },
-    to: { num: Object.keys(selectedGenes).length },
+    to: { num: selectedGenes },
+  });
+
+  const colorSpring = useSpring({
+    color: "rgb(32, 68, 97)",
+  });
+
+  const borderSpring = useSpring({
+    border: "solid 1px rgb(32, 68, 97)",
   });
 
   return (
@@ -55,29 +93,41 @@ export const GTableControls: React.VFC<GTableControlsProps> = ({
           style={buttonSpring}
           onClick={() => setIsMenuOpen((m) => !m)}
         >
-          {/* todo: animated component for number display */}
-          {/* <animated.div style={numberSpring}>{selectedGenes.length}</animated.div>  */}
           <div className={`flex flex-row w-80 justify-between`}>
-            <animated.div>{nGenes.num.to((x) => x.toFixed(0))}</animated.div>
-            <div className={`mx-auto`}>
+            <animated.div
+              style={selectedSpring}
+              className={`mx-auto border-1 py-1 px-2 rounded-md text-xs`}
+            >
+              {nGenes.num.to((x) => x.toFixed(0))}
+            </animated.div>
+            <animated.div style={colorSpring} className={`m-auto`}>
               {selectedOption ? selectedOption.label : ""}
-            </div>
+            </animated.div>
             {separator}
-            <animated.div className={`mx-auto`} style={flipSpring}>
+            <animated.div className={`m-auto`} style={flipSpring}>
               <MdOutlineArrowDropDown />
             </animated.div>
           </div>
-
           <animated.div
-            className={`absolute z-10 bg-gray-100 mt-5 rounded`}
+            className={`absolute z-10 bg-white mt-5`}
             style={menuSpring}
           >
             {isMenuOpen && (
-              <>
-                <animated.div className={`mt-1 bg-blue`}>
-                  {nGenes.num.to((x) => x.toFixed(0))}
+              <div className={`text-center`}>
+                <animated.div
+                  style={selectedSpring}
+                  className={`mt-1 rounded-t-md border-1 border-b-0 border-black py-2 px-1 text-xs flex flex-row`}
+                >
+                  <animated.div className={`m-auto mr-0.5`}>
+                    {nGenes.num.to((x) => x.toFixed(0))}
+                  </animated.div>
+                  {geneLabel}
                 </animated.div>
-                <ul className={`w-fit list-none float-right`}>
+                <animated.ul
+                  style={{ ...colorSpring, ...borderSpring }}
+                  // on hover: rgb(226 232 240)
+                  className={`list-none rounded-b-md`}
+                >
                   {GENE_MENU.filter(
                     (opt) => opt.value !== selectedOption.value,
                   ).map((geneOpt, idx) => {
@@ -85,14 +135,14 @@ export const GTableControls: React.VFC<GTableControlsProps> = ({
                       <li
                         key={`gene-set-select-${idx}`}
                         onClick={() => setSelectedOption(geneOpt)}
-                        className="py-2 px-4 text-sm text-black-500 hover:bg-gray-100"
+                        className={`py-2 px-4 text-sm hover:bg-gray rounded-md`}
                       >
                         {geneOpt.label}
                       </li>
                     );
                   })}
-                </ul>
-              </>
+                </animated.ul>
+              </div>
             )}
           </animated.div>
         </animated.button>

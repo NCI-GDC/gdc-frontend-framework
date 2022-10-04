@@ -24,7 +24,7 @@ const SwitchSpring: React.VFC<SwitchSpringProps> = ({
   });
 
   const sliderSpring = useSpring({
-    backgroundColor: isActive ? "rgb(33, 69, 99)" : "lightgray",
+    backgroundColor: isActive ? "rgb(32, 68, 97)" : "lightgray",
   });
 
   return (
