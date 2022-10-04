@@ -27,7 +27,7 @@ export const COHORTS = [
       root: {
         "cases.primary_site": {
           field: "cases.primary_site",
-          operands: ["Pancreas"],
+          operands: ["pancreas"],
           operator: "includes",
         },
       },
@@ -47,7 +47,7 @@ export const COHORTS = [
         },
         "cases.primary_site": {
           field: "cases.primary_site",
-          operands: ["Pancreas"],
+          operands: ["pancreas"],
           operator: "includes",
         },
       },
@@ -67,7 +67,7 @@ export const COHORTS = [
         },
         "cases.primary_site": {
           field: "cases.primary_site",
-          operands: ["Pancreas"],
+          operands: ["pancreas"],
           operator: "includes",
         },
       },

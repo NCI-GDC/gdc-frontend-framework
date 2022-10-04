@@ -18,20 +18,17 @@ import {
 } from "react-icons/fa";
 
 import SummaryFacets, { SummaryFacetInfo } from "./SummaryFacets";
-import { updateEnumFilters } from "../facets/hooks";
 import {
   useCoreDispatch,
   clearCohortFilters,
   setCurrentCohortId,
   useCoreSelector,
+  selectAvailableCohorts,
 } from "@gff/core";
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
 import FunctionButton from "@/components/FunctionButton";
-import { selectAvailableCohorts } from "@gff/core/dist/dts";
 
-const ContextBar: React.FC<CohortGroupProps> = ({
-  cohorts,
-}: CohortGroupProps) => {
+const ContextBar: React.FC = () => {
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(true);
   const [, setCurrentIndex] = useState(0);
 
@@ -43,18 +40,19 @@ const ContextBar: React.FC<CohortGroupProps> = ({
   const coreDispatch = useCoreDispatch();
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
 
-  const setCohort = (idx: number) => {
-    coreDispatch(setCurrentCohortId(cohorts[idx].id));
-
-    if (cohorts[idx].filters) {
-      if (cohorts[idx].facets.length == 0) {
-        coreDispatch(clearCohortFilters());
-      } else {
-        cohorts[idx].facets.map((x) => {
-          updateEnumFilters(coreDispatch, x.field, x.value);
-        });
-      }
-    }
+  const setCohort = (id: string) => {
+    console.log("cohort id:", id);
+    coreDispatch(setCurrentCohortId(id));
+    //
+    // if (cohorts[idx].filters) {
+    //   if (cohorts[idx].filters. == 0) {
+    //     coreDispatch(clearCohortFilters());
+    //   } else {
+    //     cohorts[idx].facets.map((x) => {
+    //       updateEnumFilters(coreDispatch, x.field, x.value);
+    //     });
+    //   }
+    // }
   };
 
   // TODO: move this to a configuration files or slice

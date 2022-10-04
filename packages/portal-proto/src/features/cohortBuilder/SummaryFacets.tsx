@@ -37,6 +37,7 @@ export const SummaryFacets: React.FC<SummaryFacetProps> = ({
                 key={`summary-chart-${index}`}
                 width="w-64"
                 indexType={entry.indexType}
+                hideIfEmpty={false}
               />
             </div>
           );

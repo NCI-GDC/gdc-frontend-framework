@@ -20,10 +20,11 @@ import {
   Operation,
   selectCurrentCohortFilters,
   useCoreSelector,
-  Cohort,
+  selectAvailableCohorts,
+  DEFAULT_COHORT_ID,
 } from "@gff/core";
 import { convertFilterToComponent } from "./QueryRepresentation";
-import { selectAvailableCohorts } from "@gff/core/dist/dts";
+import { CohortBarProps } from "@/features/cohortBuilder/types";
 
 const CohortGroupButton = tw(Button)`
 p-2
@@ -66,24 +67,18 @@ const CohortGroupSelect: React.FC<unknown> = () => {
   );
 };
 
-export interface CohortBarProps {
-  readonly cohorts: Cohort[];
-  onSelectionChanged: (string) => void;
-  defaultId: string;
-  hide_controls?: boolean;
-}
-
+// TODO: Move this to it's own component.
 export const CohortBar: React.FC<CohortBarProps> = ({
   cohorts,
   onSelectionChanged,
   defaultId,
   hide_controls = false,
 }: CohortBarProps) => {
-  const menu_items = cohorts.map((x, index) => {
+  const menu_items = cohorts.map((x) => {
     return { value: x.id, label: x.name };
   });
 
-  const [currentCohort, setCurrentCohort] = useState(menu_items[defaultId]);
+  const [currentCohort, setCurrentCohort] = useState(menu_items[0]);
 
   const theme = useMantineTheme();
 
@@ -201,7 +196,7 @@ export const useCohortFacetFilters = (): FilterSet => {
 
 export const CohortGroup: React.FC = () => {
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(DEFAULT_COHORT_ID);
   const handleCohortSelection = (idx) => {
     setCurrentIndex(idx);
   };
@@ -214,7 +209,7 @@ export const CohortGroup: React.FC = () => {
     <CohortBar
       cohorts={cohorts}
       onSelectionChanged={handleCohortSelection}
-      defaultIdx={currentIndex}
+      defaultId={currentIndex}
     />
   );
   return (

@@ -176,17 +176,6 @@ describe("get/set current cohort filters", () => {
     expect(currentCohortFilters).toEqual(COHORTS[1].filters);
   });
 
-  // test("should return initial filters when the current cohort is not set", () => {
-  //   const currentCohortFilters = selectCurrentCohortFilters({
-  //     ...APP_INITIAL_STATE,
-  //       cohort: {
-  //       ...APP_INITIAL_STATE.cohort,
-  //           availableCohorts: { currentCohort: undefined },
-  //   },
-  //   });
-  //   expect(currentCohortFilters).toEqual(initialFilters);
-  // });
-
   test("should return a field's filters", () => {
     const expected = {
       mode: "and",
@@ -293,7 +282,7 @@ describe("addFilter", () => {
       root: {
         "cases.primary_site": {
           field: "cases.primary_site",
-          operands: ["Pancreas"],
+          operands: ["pancreas"],
           operator: "includes",
         },
       },
@@ -313,9 +302,63 @@ describe("add, update, and remove cohort", () => {
       ids: ["000-000-000-1"],
       entities: {
         "000-000-000-1": {
-          name: "cohort1",
+          name: "New Cohort",
           filters: { mode: "and", root: {} },
           id: "000-000-000-1",
+          caseSet: {
+            caseSetId: {
+              mode: "and",
+              root: {},
+            },
+            status: "uninitialized",
+          },
+        },
+      },
+    });
+  });
+
+  test("should add new cohort to available cohorts", () => {
+    const availableCohorts = availableCohortsReducer(
+      {
+        currentCohort: "",
+        ids: ["000-000-000-1"],
+        entities: {
+          "000-000-000-1": {
+            name: "New Cohort",
+            filters: { mode: "and", root: {} },
+            id: "000-000-000-1",
+            caseSet: {
+              caseSetId: {
+                mode: "and",
+                root: {},
+              },
+              status: "uninitialized",
+            },
+          },
+        },
+      },
+      addNewCohort("000-000-000-2"),
+    );
+    expect(availableCohorts).toEqual({
+      currentCohort: "",
+      ids: ["000-000-000-1", "000-000-000-2"],
+      entities: {
+        "000-000-000-1": {
+          name: "New Cohort",
+          filters: { mode: "and", root: {} },
+          id: "000-000-000-1",
+          caseSet: {
+            caseSetId: {
+              mode: "and",
+              root: {},
+            },
+            status: "uninitialized",
+          },
+        },
+        "000-000-000-2": {
+          name: "New Cohort 1",
+          filters: { mode: "and", root: {} },
+          id: "000-000-000-2",
           caseSet: {
             caseSetId: {
               mode: "and",

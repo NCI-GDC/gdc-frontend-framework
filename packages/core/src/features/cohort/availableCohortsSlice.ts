@@ -23,6 +23,8 @@ export interface Cohort {
   readonly caseSet: CaseSetDataAndStatus;
 }
 
+export const DEFAULT_COHORT_ID = "ALL-GDC-COHORT";
+
 const cohortsAdapter = createEntityAdapter<Cohort>({
   sortComparer: (a, b) => a.name.localeCompare(b.name),
 });
@@ -57,14 +59,19 @@ interface UpdateFilterParams {
  * clearCaseSet(): resets the caseSet member to all GDC
  *
  */
-// TODO: add remove cohort, automate id management,
+// TODO: add remove cohort, automate id management and/or make compatible with CohortPersistence.
 const slice = createSlice({
   name: "cohort/availableCohorts",
   initialState: initialState,
   reducers: {
     addNewCohort: (state, action: PayloadAction<string>) => {
+      const newCounts = Object.values(state.entities).reduce(
+        (count, x) => (x?.name == "New Cohort" ? count + 1 : count),
+        0,
+      );
+      const newName = newCounts > 0 ? `New Cohort ${newCounts}` : "New Cohort";
       cohortsAdapter.addOne(state, {
-        name: "cohort1",
+        name: newName,
         id: action.payload,
         caseSet: {
           caseSetId: { mode: "and", root: {} },
