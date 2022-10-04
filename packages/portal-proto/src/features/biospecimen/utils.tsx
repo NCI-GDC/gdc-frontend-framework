@@ -185,8 +185,6 @@ export const formatEntityInfo = (
           <div>
             <DownloadFile
               file={mapFileData(selectedSlide)[0]}
-              activeText=""
-              inactiveText=""
               active={downloadActive}
               setActive={setDownloadActive}
               customStyle="text-primary-content px-0 h-3.5 border-0 hover:bg-transparent"
