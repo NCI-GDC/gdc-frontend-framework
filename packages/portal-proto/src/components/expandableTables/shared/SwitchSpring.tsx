@@ -36,9 +36,9 @@ const SwitchSpring: React.VFC<SwitchSpringProps> = ({
       >
         <animated.div
           style={ballSpring}
-          className={`border border-gray-500 w-5 h-5 rounded-xl z-1 text-xs text-center`}
+          className={`border border-gray-500 w-5 h-5 rounded-xl text-xs text-center`}
         >
-          <div>{icon}</div>
+          {icon}
         </animated.div>
       </animated.div>
     </animated.div>

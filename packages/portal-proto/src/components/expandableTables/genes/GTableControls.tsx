@@ -49,7 +49,7 @@ export const GTableControls: React.VFC<GTableControlsProps> = ({
 
   return (
     <>
-      <div className={`relative w-80 h-10 mx-auto my-0 justify-between mt-3`}>
+      <div className={`w-80 h-10 mx-auto my-0 justify-between mt-3`}>
         <animated.button
           className={`h-10 rounded`}
           style={buttonSpring}
@@ -69,12 +69,12 @@ export const GTableControls: React.VFC<GTableControlsProps> = ({
           </div>
 
           <animated.div
-            className={`absolute bg-gray-100 mt-5 rounded`}
+            className={`absolute z-10 bg-gray-100 mt-5 rounded`}
             style={menuSpring}
           >
             {isMenuOpen && (
               <>
-                <animated.div className={`mt-1`}>
+                <animated.div className={`mt-1 bg-blue`}>
                   {nGenes.num.to((x) => x.toFixed(0))}
                 </animated.div>
                 <ul className={`w-fit list-none float-right`}>
@@ -82,15 +82,12 @@ export const GTableControls: React.VFC<GTableControlsProps> = ({
                     (opt) => opt.value !== selectedOption.value,
                   ).map((geneOpt, idx) => {
                     return (
-                      <li>
-                        <button
-                          key={`gene-set-select-${idx}`}
-                          type="button"
-                          onClick={() => setSelectedOption(geneOpt)}
-                          className="py-2 px-4 text-sm text-black-500 hover:bg-gray-100"
-                        >
-                          <div className="">{geneOpt.label}</div>
-                        </button>
+                      <li
+                        key={`gene-set-select-${idx}`}
+                        onClick={() => setSelectedOption(geneOpt)}
+                        className="py-2 px-4 text-sm text-black-500 hover:bg-gray-100"
+                      >
+                        {geneOpt.label}
                       </li>
                     );
                   })}
