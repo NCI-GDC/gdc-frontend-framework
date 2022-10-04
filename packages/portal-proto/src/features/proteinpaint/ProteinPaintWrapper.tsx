@@ -2,7 +2,7 @@ import { useEffect, useRef, FC } from "react";
 import { runproteinpaint } from "@stjude/proteinpaint-client";
 import {
   useCoreSelector,
-  selectCurrentCohortFilterSet,
+  selectCurrentCohortFilters,
   buildCohortGqlOperator,
   FilterSet,
 } from "@gff/core";
@@ -22,7 +22,7 @@ interface PpProps {
 
 export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
   const filter0 = buildCohortGqlOperator(
-    useCoreSelector(selectCurrentCohortFilterSet),
+    useCoreSelector(selectCurrentCohortFilters),
   );
 
   // to track reusable instance for mds3 skewer track

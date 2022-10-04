@@ -4,11 +4,7 @@ import { Menu, Tabs, Divider } from "@mantine/core";
 import { ContextualCasesView } from "../cases/CasesView";
 import CountButton from "./CountButton";
 import { convertFilterToComponent } from "./QueryRepresentation";
-import {
-  CohortGroupProps,
-  CohortBar,
-  useCohortFacetFilters,
-} from "./CohortGroup";
+import { CohortBar, useCohortFacetFilters } from "./CohortGroup";
 
 import {
   MdDownload as DownloadIcon,
@@ -26,16 +22,18 @@ import { updateEnumFilters } from "../facets/hooks";
 import {
   useCoreDispatch,
   clearCohortFilters,
-  setCurrentCohort,
+  setCurrentCohortId,
+  useCoreSelector,
 } from "@gff/core";
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
 import FunctionButton from "@/components/FunctionButton";
+import { selectAvailableCohorts } from "@gff/core/dist/dts";
 
 const ContextBar: React.FC<CohortGroupProps> = ({
   cohorts,
 }: CohortGroupProps) => {
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(true);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [, setCurrentIndex] = useState(0);
 
   const handleCohortSelection = (idx) => {
     setCurrentIndex(idx);
@@ -43,11 +41,12 @@ const ContextBar: React.FC<CohortGroupProps> = ({
   };
 
   const coreDispatch = useCoreDispatch();
+  const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
 
   const setCohort = (idx: number) => {
-    coreDispatch(setCurrentCohort(cohorts[idx].name));
+    coreDispatch(setCurrentCohortId(cohorts[idx].id));
 
-    if (cohorts[idx].facets) {
+    if (cohorts[idx].filters) {
       if (cohorts[idx].facets.length == 0) {
         coreDispatch(clearCohortFilters());
       } else {
@@ -104,9 +103,9 @@ const ContextBar: React.FC<CohortGroupProps> = ({
     <CohortBar
       // TODO: need to connect to cohort persistence
       // eslint-disable-next-line react/prop-types
-      cohort_names={cohorts.map((o) => o.name)}
+      cohorts={cohorts}
       onSelectionChanged={handleCohortSelection}
-      defaultIdx={currentIndex}
+      defaultId={"ALL-GDC-COHORT"}
     />
   );
 

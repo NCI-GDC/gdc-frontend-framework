@@ -40,6 +40,24 @@ interface UpdateFilterParams {
   operation: Operation;
 }
 
+/**
+ * A Cohort Management Slice which allow cohort to be created and updated.
+ * this uses redux-toolkit entity adapter to manage the cohorts
+ * Because it is an entity adapter, the state contains an array of id (string)
+ * and a Dictionary of Cohort objects. It also has member, currentCohortId which
+ * is used to idenify the "current" or active cohort"
+ *
+ * The slice exports the following actions:
+ * addNewCohort(id:string) - create a new cohort with id
+ * updateCohortName(name:string): changes the current cohort's name
+ * updateCohortFilter(filters: FilterSet): updated the filters for this cohort
+ * removeCohortFilter(filter:string): removes the filter from the cohort
+ * clearCohortFilters(): removes all the filters by setting them to the default all GDC state
+ * setCurrentCohortId(id:string): set the id of the current cohort, used to switch between cohorts
+ * clearCaseSet(): resets the caseSet member to all GDC
+ *
+ */
+// TODO: add remove cohort, automate id management,
 const slice = createSlice({
   name: "cohort/availableCohorts",
   initialState: initialState,
@@ -175,6 +193,7 @@ export const availableCohortsReducer = slice.reducer;
 
 export const {
   addNewCohort,
+  updateCohortName,
   setCurrentCohortId,
   updateCohortFilter,
   removeCohortFilter,
@@ -186,12 +205,19 @@ export const cohortSelectors = cohortsAdapter.getSelectors(
   (state: CoreState) => state.cohort.availableCohorts,
 );
 
-export const selectAvailableCohorts: (state: CoreState) => any = (
-  state: CoreState,
-) => state.cohort.availableCohorts;
+export const selectAvailableCohorts = (state: CoreState) =>
+  cohortSelectors.selectAll(state);
 
 export const selectCurrentCohortId = (state: CoreState): string | undefined =>
   state.cohort.availableCohorts.currentCohort;
+
+export const selectCurrentCohort = (state: CoreState): string | undefined => {
+  const cohort = cohortSelectors.selectById(
+    state,
+    state.cohort.availableCohorts.currentCohort,
+  );
+  return cohort?.name;
+};
 
 export const selectAvailableCohortByName: (
   state: CoreState,

@@ -1,7 +1,7 @@
 /* eslint-disable */
 // TODO need to revisit this file for more changes to fix eslint issues
 import { useState } from "react";
-import { CollapsibleContainer } from "../../components/CollapsibleContainer";
+import { CollapsibleContainer } from "@/components/CollapsibleContainer";
 import { Button, NativeSelect, useMantineTheme } from "@mantine/core";
 import Select from "react-select";
 import {
@@ -20,8 +20,10 @@ import {
   Operation,
   selectCurrentCohortFilters,
   useCoreSelector,
+  Cohort,
 } from "@gff/core";
 import { convertFilterToComponent } from "./QueryRepresentation";
+import { selectAvailableCohorts } from "@gff/core/dist/dts";
 
 const CohortGroupButton = tw(Button)`
 p-2
@@ -65,23 +67,23 @@ const CohortGroupSelect: React.FC<unknown> = () => {
 };
 
 export interface CohortBarProps {
-  readonly cohort_names: string[];
-  onSelectionChanged: (number) => void;
-  defaultIdx: number;
+  readonly cohorts: Cohort[];
+  onSelectionChanged: (string) => void;
+  defaultId: string;
   hide_controls?: boolean;
 }
 
 export const CohortBar: React.FC<CohortBarProps> = ({
-  cohort_names,
+  cohorts,
   onSelectionChanged,
-  defaultIdx,
+  defaultId,
   hide_controls = false,
 }: CohortBarProps) => {
-  const menu_items = cohort_names.map((x, index) => {
-    return { value: index, label: x };
+  const menu_items = cohorts.map((x, index) => {
+    return { value: x.id, label: x.name };
   });
 
-  const [currentCohort, setCurrentCohort] = useState(menu_items[defaultIdx]);
+  const [currentCohort, setCurrentCohort] = useState(menu_items[defaultId]);
 
   const theme = useMantineTheme();
 
@@ -180,17 +182,16 @@ interface RangeFilterProps {
   readonly filter: Operation;
 }
 
-interface CohortFacet {
-  readonly field: string;
-  readonly value: ReadonlyArray<string>;
-}
-interface PersistentCohort {
-  readonly name: string;
-  readonly facets?: ReadonlyArray<CohortFacet>;
-}
+// interface CohortFacet {
+//   readonly field: string;
+//   readonly value: ReadonlyArray<string>;
+// }
+// interface PersistentCohort {
+//   readonly name: string;
+//   readonly facets?: ReadonlyArray<CohortFacet>;
+// }
 
 export interface CohortGroupProps {
-  readonly cohorts: ReadonlyArray<PersistentCohort>;
   readonly simpleMode?: boolean;
 }
 
@@ -198,20 +199,20 @@ export const useCohortFacetFilters = (): FilterSet => {
   return useCoreSelector((state) => selectCurrentCohortFilters(state));
 };
 
-export const CohortGroup: React.FC<CohortGroupProps> = ({
-  cohorts,
-}: CohortGroupProps) => {
+export const CohortGroup: React.FC = () => {
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const handleCohortSelection = (idx) => {
     setCurrentIndex(idx);
   };
 
+  const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
+
   const filters = useCohortFacetFilters();
   // eslint-disable-next-line react/prop-types
   const CohortBarWithProps = () => (
     <CohortBar
-      cohort_names={cohorts.map((o) => o.name)}
+      cohorts={cohorts}
       onSelectionChanged={handleCohortSelection}
       defaultIdx={currentIndex}
     />

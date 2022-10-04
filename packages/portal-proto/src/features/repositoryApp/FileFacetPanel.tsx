@@ -6,7 +6,7 @@ import {
   GQLDocType,
   GQLIndexType,
   removeCohortFilter,
-  selectCurrentCohortFilterSet,
+  selectCurrentCohortFilters,
   selectFacetDefinitionsByName,
   useCoreSelector,
   useFacetDictionary,
@@ -79,7 +79,7 @@ export const FileFacetPanel = (): JSX.Element => {
   const prevCustomFacets = usePrevious(facets);
   const [opened, setOpened] = useState(false);
   const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilterSet(state),
+    selectCurrentCohortFilters(state),
   );
 
   const prevCohortFilters = usePrevious(cohortFilters);

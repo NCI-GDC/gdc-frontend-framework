@@ -8,7 +8,7 @@ import dynamic from "next/dynamic";
 import {
   GqlOperation,
   useCoreDispatch,
-  selectCurrentCohortFilterSet,
+  selectCurrentCohortFilters,
   joinFilters,
   useCoreSelector,
   clearGenomicFilters,
@@ -114,7 +114,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const [comparativeSurvival, setComparativeSurvival] = useState(undefined);
   const [appMode, setAppMode] = useState<AppModeState>("genes");
   const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilterSet(state),
+    selectCurrentCohortFilters(state),
   );
 
   const genomicFilters = useCoreSelector((state) =>

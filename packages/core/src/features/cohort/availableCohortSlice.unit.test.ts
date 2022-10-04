@@ -7,11 +7,14 @@ import {
   // updateCohortFilter,
   // removeCohortFilter,
   Cohort,
+  addNewCohort,
+  updateCohortName,
   setCurrentCohortId,
   selectCurrentCohortId,
   selectCurrentCohortFilters,
   selectCurrentCohortFiltersByName,
   updateCohortFilter,
+  removeCohortFilter,
 } from "./availableCohortsSlice";
 // import {
 //   clearCurrentCohort,
@@ -60,15 +63,16 @@ const BAILYS_COHORT = {
   },
 };
 
-// const PANCREAS_KRAS_MUTATED = {
-//   ...APP_INITIAL_STATE,
-//   cohort: {
-//     ...state.cohort,
-//     availableCohorts: {
-//       ...state.cohort.availableCohorts,
-//       currentCohort: "0000-0000-1002-0000"}
-//   }
-// }
+const PANCREAS_KRAS_MUTATED = {
+  ...APP_INITIAL_STATE,
+  cohort: {
+    ...state.cohort,
+    availableCohorts: {
+      ...state.cohort.availableCohorts,
+      currentCohort: "0000-0000-1002-0000",
+    },
+  },
+};
 
 // const initialFilters = { mode: "and", root: {} };
 const populatedFilters = {
@@ -225,9 +229,9 @@ describe("addFilter", () => {
         },
       }),
     );
-    expect(newState.entities[newState.currentCohort]?.filters).toEqual({
-      filters: populatedFilters,
-    });
+    expect(newState.entities[newState.currentCohort]?.filters).toEqual(
+      populatedFilters,
+    );
   });
 
   test("should add another filter to the current cohort", () => {
@@ -242,108 +246,127 @@ describe("addFilter", () => {
         },
       }),
     );
+    expect(newState.entities[newState.currentCohort]?.filters).toEqual(
+      TwoPopulatedFilters,
+    );
+  });
+
+  test("should not add a duplicate filter to the current cohort", () => {
+    const newState = availableCohortsReducer(
+      BAILYS_COHORT.cohort.availableCohorts,
+      updateCohortFilter({
+        field: "cases.primary_site",
+        operation: {
+          operator: "includes",
+          field: "cases.primary_site",
+          operands: ["breast", "bronchus and lung"],
+        },
+      }),
+    );
     expect(newState.entities[newState.currentCohort]?.filters).toEqual({
-      filters: TwoPopulatedFilters,
+      mode: "and",
+      root: {
+        "cases.primary_site": {
+          operator: "includes",
+          field: "cases.primary_site",
+          operands: ["breast", "bronchus and lung"],
+        },
+      },
+    });
+  });
+
+  test("should remove filter from the current cohort", () => {
+    const newState = availableCohortsReducer(
+      PANCREAS_KRAS_MUTATED.cohort.availableCohorts,
+      removeCohortFilter("genes.symbol"),
+    );
+
+    const newFilters = selectCurrentCohortFilters({
+      ...state,
+      cohort: {
+        ...state.cohort,
+        availableCohorts: newState,
+      },
+    });
+
+    expect(newFilters).toEqual({
+      root: {
+        "cases.primary_site": {
+          field: "cases.primary_site",
+          operands: ["Pancreas"],
+          operator: "includes",
+        },
+      },
+      mode: "and",
     });
   });
 });
-//
-//   test("should not add a duplicate filter to the current cohort", () => {
-//     const currentCohortFilters = cohortFilterReducer(
-//       { filters: populatedFilters as FilterSet },
-//       updateCohortFilter({
-//         field: "primary_site",
-//         operation: {
-//           operator: "includes",
-//           field: "primary_site",
-//           operands: ["bronchus and lung"],
-//         },
-//       }),
-//     );
-//     expect(currentCohortFilters).toEqual({ filters: populatedFilters });
-//   });
-//
-//   test("should remove filter from the current cohort", () => {
-//     const currentCohortFilters = cohortFilterReducer(
-//       { filters: TwoPopulatedFilters as FilterSet },
-//       removeCohortFilter("disease_type"),
-//     );
-//     expect(currentCohortFilters).toEqual({ filters: populatedFilters });
-//   });
-// });
-//
-// describe("add, update, and remove cohort", () => {
-//   test("should add new cohort to available cohorts", () => {
-//     const availableCohorts = availableCohortsReducer(
-//       { ids: [], entities: {} },
-//       addNewCohort("000-000-000-1"),
-//     );
-//     expect(availableCohorts).toEqual({
-//       ids: ["000-000-000-1"],
-//       entities: {
-//         "000-000-000-1": {
-//           name: "cohort1",
-//           filters: { mode: "and", root: {} },
-//           id: "000-000-000-1",
-//         },
-//       },
-//     });
-//   });
-//
-//   test("should update cohort with new name", () => {
-//     const availableCohorts = availableCohortsReducer(
-//       {
-//         ids: ["000-000-000-1"],
-//         entities: {
-//           "000-000-000-1": {
-//             name: "cohort1",
-//             filters: { mode: "and", root: {} },
-//             id: "000-000-000-1",
-//           },
-//         },
-//       },
-//       updateCohort({ id: "000-000-000-1", changes: { name: "cohort2" } }),
-//     );
-//     expect(availableCohorts).toEqual({
-//       ids: ["000-000-000-1"],
-//       entities: {
-//         "000-000-000-1": {
-//           name: "cohort2",
-//           filters: { mode: "and", root: {} },
-//           id: "000-000-000-1",
-//         },
-//       },
-//     });
-//   });
-//
-//   test("should update cohort with new filter", () => {
-//     const availableCohorts = availableCohortsReducer(
-//       {
-//         ids: ["000-000-000-1"],
-//         entities: {
-//           "000-000-000-1": {
-//             name: "cohort1",
-//             filters: { mode: "and", root: {} },
-//             id: "000-000-000-1",
-//           },
-//         },
-//       },
-//       updateCohort({
-//         id: "000-000-000-1",
-//         changes: { filters: TwoPopulatedFilters as FilterSet },
-//       }),
-//     );
-//     expect(availableCohorts).toEqual({
-//       ids: ["000-000-000-1"],
-//       entities: {
-//         "000-000-000-1": {
-//           name: "cohort1",
-//           filters: TwoPopulatedFilters as FilterSet,
-//           id: "000-000-000-1",
-//         },
-//       },
-//     });
-//   });
-// });
-//
-//
+
+describe("add, update, and remove cohort", () => {
+  test("should add new cohort to available cohorts", () => {
+    const availableCohorts = availableCohortsReducer(
+      { ids: [], entities: {}, currentCohort: "" },
+      addNewCohort("000-000-000-1"),
+    );
+    expect(availableCohorts).toEqual({
+      currentCohort: "",
+      ids: ["000-000-000-1"],
+      entities: {
+        "000-000-000-1": {
+          name: "cohort1",
+          filters: { mode: "and", root: {} },
+          id: "000-000-000-1",
+          caseSet: {
+            caseSetId: {
+              mode: "and",
+              root: {},
+            },
+            status: "uninitialized",
+          },
+        },
+      },
+    });
+  });
+
+  test("should update cohort with new name", () => {
+    const availableCohorts = availableCohortsReducer(
+      {
+        currentCohort: "000-000-000-1",
+        ids: ["000-000-000-1"],
+        entities: {
+          "000-000-000-1": {
+            name: "cohort1",
+            filters: { mode: "and", root: {} },
+            id: "000-000-000-1",
+            caseSet: {
+              caseSetId: {
+                mode: "and",
+                root: {},
+              },
+              status: "uninitialized",
+            },
+          },
+        },
+      },
+      updateCohortName("cohort2"),
+    );
+    expect(availableCohorts).toEqual({
+      currentCohort: "000-000-000-1",
+      ids: ["000-000-000-1"],
+      entities: {
+        "000-000-000-1": {
+          name: "cohort2",
+          filters: { mode: "and", root: {} },
+          id: "000-000-000-1",
+          caseSet: {
+            caseSetId: {
+              mode: "and",
+              root: {},
+            },
+            status: "uninitialized",
+          },
+        },
+      },
+    });
+  });
+});
