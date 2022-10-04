@@ -51,7 +51,7 @@ export const GTableCell = ({
     <div>
       <>
         {row.getCanExpand() ? <></> : null}{" "}
-        <animated.div className={`ml-3.5 text-center`}>
+        <animated.div className={`ml-3.5 text-center text-xs`}>
           {row.original[`${accessor}`] ? row.original[`${accessor}`] : ""}
         </animated.div>
       </>
@@ -107,22 +107,6 @@ export const createTableColumn = (
                     )}
                   </>
                 </animated.div>
-                // <animated.div style={partitionWidth}>
-
-                // <animated.div style={partitionWidth}>
-                //   <>
-
-                //     {!row.getCanExpand() && visibleColumns[0].id === accessor && (
-                //       <div className={`relative`}>
-                //         <GeneAffectedCases
-                //           geneId={row.value}
-                //           width={width}
-                //           opening={row.getCanExpand()}
-                //         ></GeneAffectedCases>
-                //       </div>
-                //     )}
-                //   </>
-                // </animated.div>
               );
             },
             footer: (props) => props.column.id,
@@ -225,6 +209,7 @@ export const getGene = (
   filteredCases: number,
   cases: number,
 ) => {
+  console.log("gene", g);
   return {
     select: g.gene_id,
     geneID: g.gene_id,
@@ -255,14 +240,14 @@ export const getGene = (
             (100 * g.case_cnv_gain) /
             g.cnv_case
           ).toFixed(2)}%)`
-        : `--`,
+        : `0`,
     CNVLoss:
       g.cnv_case > 0
         ? `${g.case_cnv_loss + " / " + g.cnv_case} (${(
             (100 * g.case_cnv_loss) /
             g.cnv_case
           ).toFixed(2)}%)`
-        : `--`,
+        : `0`,
     mutations: mutationCounts[g.gene_id],
     annotations: g.is_cancer_gene_census,
     // do not remove subRows key, its needed for row.getCanExpand() to be true

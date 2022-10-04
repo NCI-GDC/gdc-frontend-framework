@@ -100,7 +100,7 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
     } else {
       // select single row
       setSelectedGenes((currentMap) => {
-        return { ...currentMap, [gene]: gene };
+        return { ...currentMap, [gene]: row };
       });
     }
   };
@@ -150,11 +150,6 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
 
   const handleSearch = (term: string) => {
     setSearch(term);
-  };
-
-  const handleRowSelect = (rowUpdate) => {
-    // abstract obj add&delete
-    //setSelectedGenes(rowUpdate)
   };
 
   const handleGeneSave = (gene: Gene) => {
