@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { Popover, Box } from "@mantine/core";
-import { BsList } from "react-icons/bs";
+import { BsList, BsX } from "react-icons/bs";
+import { MdSearch as SearchIcon } from "react-icons/md";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DragDrop } from "../../../features/shared/DragDrop";
@@ -20,6 +21,8 @@ const DND: React.VFC<DNDProps> = ({
   columnListOrder,
   defaultColumns,
 }: DNDProps) => {
+  const [columnSearchTerm, setColumnSearchTerm] = useState("");
+
   return (
     <div className="flex flex-row items-center">
       <Popover
@@ -32,24 +35,48 @@ const DND: React.VFC<DNDProps> = ({
       >
         <Popover.Target>
           <Box
-            className={`border-1 border-base p-2.5 rounded-md mx-2 mt-3`}
-            onClick={() => setShowColumnMenu(!showColumnMenu)}
+            className={`border-1 border-base p-2.5 rounded-md mx-2 mt-3 hover:cursor-pointer`}
+            onClick={() => {
+              setShowColumnMenu(!showColumnMenu);
+              setColumnSearchTerm("");
+            }}
           >
-            <BsList></BsList>
+            {!showColumnMenu ? <BsList /> : <BsX size={"16px"} />}
           </Box>
         </Popover.Target>
         <Popover.Dropdown>
           <div className={`w-fit bg-white rounded-md`}>
-            {columnListOrder && (
-              <div>
+            {columnListOrder.length > 0 && (
+              <div className={`p-1 bg-white items-center`}>
+                <div
+                  className={`flex flex-row h-10 items-center border-1 border-black rounded-md`}
+                >
+                  {columnSearchTerm.length === 0 && (
+                    <span
+                      className={`flex flex-row absolute ml-2 text-xs pointer-events-none italic`}
+                    >
+                      <div className={`mt-0.5 ml-1 mr-1`}>
+                        <SearchIcon />
+                      </div>
+                      Search...
+                    </span>
+                  )}
+                  <input
+                    className={`p-1 w-11/12 border-none text-base focus:outline-none h-4 text-sm`}
+                    type="text"
+                    value={columnSearchTerm}
+                    onChange={(e) => setColumnSearchTerm(e.target.value)}
+                  />
+                </div>
                 <div
                   className={`flex flex-row w-72 mb-1 border-b-2 border-dotted`}
                 >
                   <button
-                    className={`text-xs mb-1`}
+                    className={`text-xs my-1`}
                     onClick={() => {
                       handleColumnChange(defaultColumns);
                       setShowColumnMenu(false);
+                      setColumnSearchTerm("");
                     }}
                   >
                     Restore Defaults
@@ -59,6 +86,7 @@ const DND: React.VFC<DNDProps> = ({
                   <DragDrop
                     listOptions={columnListOrder}
                     handleColumnChange={handleColumnChange}
+                    columnSearchTerm={columnSearchTerm}
                   />
                 </DndProvider>
               </div>
