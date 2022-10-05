@@ -20,6 +20,13 @@ import { mapGdcFileToCartFile } from "./utils";
 import tw from "tailwind-styled-components";
 import FilesTables from "../repositoryApp/FilesTable";
 
+import {
+  useClearFilters,
+  useEnumFacet,
+  useTotalCounts,
+  useUpdateFacetFilter,
+} from "@/features/facets/hooks";
+
 export const FilesTableHeader = tw.th`
 bg-primary-lighter
 text-primary-contrast-lighter
