@@ -81,7 +81,6 @@ const slice = createSlice({
       });
     },
     updateCohortName: (state, action: PayloadAction<string>) => {
-      if (state.currentCohort === DEFAULT_COHORT_ID) return;
       cohortsAdapter.updateOne(state, {
         id: state.currentCohort,
         changes: { name: action.payload },
@@ -95,7 +94,6 @@ const slice = createSlice({
       state.currentCohort = state.ids[newIndex] as string;
     },
     updateCohortFilter: (state, action: PayloadAction<UpdateFilterParams>) => {
-      if (state.currentCohort === DEFAULT_COHORT_ID) return;
       const filters = {
         mode: "and",
         root: {
@@ -110,7 +108,6 @@ const slice = createSlice({
     },
 
     removeCohortFilter: (state, action: PayloadAction<string>) => {
-      if (state.currentCohort === DEFAULT_COHORT_ID) return;
       const root = state.entities[state.currentCohort]?.filters.root;
       if (!root) {
         return;
@@ -123,7 +120,6 @@ const slice = createSlice({
       });
     },
     clearCohortFilters: (state) => {
-      if (state.currentCohort === DEFAULT_COHORT_ID) return;
       cohortsAdapter.updateOne(state, {
         id: state.currentCohort,
         changes: { filters: { mode: "and", root: {} } },
@@ -133,7 +129,6 @@ const slice = createSlice({
       state.currentCohort = action.payload;
     },
     clearCaseSet: (state) => {
-      if (state.currentCohort === DEFAULT_COHORT_ID) return;
       cohortsAdapter.updateOne(state, {
         id: state.currentCohort,
         changes: {
