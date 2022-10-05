@@ -71,12 +71,17 @@ export const ExpTable: React.VFC<ExpTableProps> = ({
                         header.id !== `1_ _${firstColumn}` ? (
                           <SwitchSpring
                             icon={<></>}
-                            isActive={table
-                              .getRowModel()
-                              .rows.filter((row) => !row.id.includes(".")) // filter out expanded row from select all check
-                              .every(
-                                (row) => row.original["select"] in allSelected,
-                              )}
+                            isActive={
+                              table.getRowModel().rows.length === 0
+                                ? false
+                                : table
+                                    .getRowModel()
+                                    .rows.filter((row) => !row.id.includes(".")) // filter out expanded row from select all check
+                                    .every(
+                                      (row) =>
+                                        row.original["select"] in allSelected,
+                                    )
+                            }
                             handleSwitch={selectAll}
                             selected={table.getRowModel().rows}
                           />
