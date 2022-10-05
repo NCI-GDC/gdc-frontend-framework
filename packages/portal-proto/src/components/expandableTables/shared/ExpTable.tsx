@@ -55,31 +55,39 @@ export const ExpTable: React.VFC<ExpTableProps> = ({
       <table>
         <thead className={`border-2 shadow-md`}>
           {table.getHeaderGroups().map((headerGroup) => (
-            <animated.tr style={unitSpring} key={headerGroup.id}>
+            <animated.tr
+              onClick={() =>
+                console.log("tableheaers", table.getHeaderGroups())
+              }
+              style={unitSpring}
+              key={headerGroup.id}
+            >
               {headerGroup.headers.map((header, index) => {
                 return (
                   <th key={header.id} colSpan={header.colSpan}>
-                    {header.id === "select" &&
-                    header.id !== `1_ _${firstColumn}` ? (
-                      <SwitchSpring
-                        icon={<></>}
-                        isActive={table
-                          .getRowModel()
-                          .rows.filter((row) => !row.id.includes(".")) // filter out expanded row from select all check
-                          .every(
-                            (row) => row.original["select"] in allSelected,
-                          )}
-                        handleSwitch={selectAll}
-                        selected={table.getRowModel().rows}
-                      />
-                    ) : null}
                     {header.isPlaceholder ? null : (
-                      <div>
-                        {header.id !== "select" &&
-                          flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
+                      <div onClick={() => console.log("header", header)}>
+                        {header.id === "select" &&
+                        header.id !== `1_ _${firstColumn}` ? (
+                          <SwitchSpring
+                            icon={<></>}
+                            isActive={table
+                              .getRowModel()
+                              .rows.filter((row) => !row.id.includes(".")) // filter out expanded row from select all check
+                              .every(
+                                (row) => row.original["select"] in allSelected,
+                              )}
+                            handleSwitch={selectAll}
+                            selected={table.getRowModel().rows}
+                          />
+                        ) : null}
+                        <div>
+                          {header.id !== "select" &&
+                            flexRender(
+                              header.column.columnDef.header,
+                              header.getContext(),
+                            )}
+                        </div>
                       </div>
                     )}
                   </th>

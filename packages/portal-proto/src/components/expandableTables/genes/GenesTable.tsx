@@ -21,7 +21,7 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
   const [expanded, setExpanded] = useState<any>({});
   const [expandedId, setExpandedId] = useState<number>(undefined);
   const [selectedGenes, setSelectedGenes] = useState<any>({}); // todo: add type
-  const [search, setSearch] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [columnListOrder, setColumnListOrder] = useState(DEFAULT_GTABLE_ORDER);
   const [showColumnMenu, setShowColumnMenu] = useState<boolean>(false);
   const [visibleColumns, setVisibleColumns] = useState(
@@ -30,7 +30,7 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
   const searchableFields = ["geneID", "symbol", "name"];
 
   const searchContains = (obj: any, field: string) => {
-    return obj[`${field}`].toLowerCase().includes(search.toLowerCase());
+    return obj[`${field}`].toLowerCase().includes(searchTerm.toLowerCase());
   };
 
   const useGeneTableFormat = useCallback(
@@ -123,7 +123,10 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
       setSelectedGenes((currentMap) => {
         const newMap = { ...currentMap };
         rows.forEach((row) => {
-          if (!(row.original["select"] in currentMap)) {
+          if (
+            !row.id.includes(".") &&
+            !(row.original["select"] in currentMap)
+          ) {
             newMap[row.original["select"]] = row;
           }
         });
@@ -147,14 +150,19 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
         );
       });
   }, [visibleColumns, width, selectedGenes]);
-  // transformResponse, expanded,
+
+  // todo: also reset expanded when pageSize/pageChanges (dont persist expanded across pages)
+  useEffect(() => {
+    setExpandedProxy({});
+    setExpanded({});
+  }, [visibleColumns, selectedGenes, searchTerm]);
 
   const handleColumnChange = (columnUpdate) => {
     setColumnListOrder(columnUpdate);
   };
 
   const handleSearch = (term: string) => {
-    setSearch(term);
+    setSearchTerm(term);
   };
 
   const handleGeneSave = (gene: Gene) => {
@@ -169,7 +177,7 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
           handleGeneSave={handleGeneSave}
         />
         <GTableFilters
-          search={search}
+          search={searchTerm}
           handleSearch={handleSearch}
           columnListOrder={columnListOrder}
           handleColumnChange={handleColumnChange}
