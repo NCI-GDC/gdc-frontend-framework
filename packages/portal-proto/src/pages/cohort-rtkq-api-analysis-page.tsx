@@ -25,6 +25,7 @@ const SingleAppsPage: NextPage = () => {
   } else if (isSuccess) {
     // this map transformation is only necessary until ContextBar is updated
     // to use the property name of filters instead of facets
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     cohort_data = data.map((elm) => ({
       id: elm.id,
       context_id: elm.context_id,
