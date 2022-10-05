@@ -1,9 +1,5 @@
-import React, { useState, useCallback, useMemo } from "react";
-import {
-  FacetCardProps,
-  SelectFacetFilterFunction,
-  UpdateFacetFilterFunction,
-} from "./types";
+import React, { useState, useMemo } from "react";
+import { FacetCardProps, ValueFacetHooks } from "./types";
 import { ActionIcon, Badge, Group, TextInput, Tooltip } from "@mantine/core";
 import {
   controlsIconStyle,
@@ -15,16 +11,14 @@ import {
   Operation,
   Excludes,
   Includes,
-  removeCohortFilter,
-  useCoreDispatch,
   trimFirstFieldNameToTitle,
+  EnumOperandValue,
 } from "@gff/core";
 
-interface ExactValueProps
-  extends Omit<FacetCardProps, "showSearch" | "showFlip" | "showPercent"> {
-  getFacetValue: SelectFacetFilterFunction;
-  setFacetValue: UpdateFacetFilterFunction;
-}
+type ExactValueProps = Omit<
+  FacetCardProps<ValueFacetHooks>,
+  "showSearch" | "showFlip" | "showPercent"
+>;
 
 const instanceOfIncludesExcludes = (op: Operation): op is Includes | Excludes =>
   ["includes", "excludes"].includes(op.operator);
@@ -49,35 +43,29 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
   facetName = undefined,
   dismissCallback = undefined,
   width = undefined,
-  getFacetValue,
-  setFacetValue,
-  clearFilterFunc = undefined,
+  hooks,
 }: ExactValueProps) => {
-  const coreDispatch = useCoreDispatch();
-
-  const clearFilters = useCallback(() => {
-    clearFilterFunc
-      ? clearFilterFunc(field)
-      : coreDispatch(removeCohortFilter(field));
-  }, [clearFilterFunc, coreDispatch, field]);
-
   const [textValue, setTextValue] = useState(""); // Handle the state of the TextInput
-
+  const clearFilters = hooks.useClearFilter();
+  const updateFacetFilters = hooks.useUpdateFacetFilters();
   const facetTitle = facetName
     ? facetName
     : trimFirstFieldNameToTitle(field, true);
-  const facetValue = getFacetValue(field);
+  const facetValue = hooks.useGetFacetFilters(field);
   const textValues = useMemo(() => extractValues(facetValue), [facetValue]);
 
-  const setValues = (values: ReadonlyArray<string | number>) => {
+  const setValues = (values: EnumOperandValue) => {
     if (values.length > 0) {
       if (facetValue && instanceOfIncludesExcludes(facetValue)) {
         // updating facet value
-        setFacetValue(field, { ...facetValue, operands: values });
+        updateFacetFilters(field, {
+          ...facetValue,
+          operands: values,
+        });
       }
       if (facetValue === undefined) {
         // TODO: Assuming Includes by default but this might change to Include|Excludes
-        setFacetValue(field, {
+        updateFacetFilters(field, {
           operator: "includes",
           field: field,
           operands: values,
@@ -86,7 +74,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
     }
     // no values remove the filter
     else {
-      clearFilterFunc(field);
+      clearFilters(field);
     }
   };
 
@@ -142,7 +130,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
           {dismissCallback ? (
             <FacetIconButton
               onClick={() => {
-                clearFilters();
+                clearFilters(field);
                 dismissCallback(field);
               }}
               aria-label="Remove the facet"

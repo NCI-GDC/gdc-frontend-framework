@@ -1,9 +1,5 @@
-import React, { useState, useCallback, useMemo } from "react";
-import {
-  FacetCardProps,
-  SelectFacetFilterFunction,
-  UpdateFacetFilterFunction,
-} from "./types";
+import React, { useState, useMemo } from "react";
+import { FacetCardProps, ValueFacetHooks } from "./types";
 import { ActionIcon, Popover, Tooltip } from "@mantine/core";
 import { DatePicker, RangeCalendar } from "@mantine/dates";
 import {
@@ -24,11 +20,10 @@ import { ImCalendar as CalendarIcon } from "react-icons/im";
 import { trimFirstFieldNameToTitle } from "@gff/core";
 import { StringRange } from "./types";
 
-interface DateRangeFacetProps
-  extends Omit<FacetCardProps, "showSearch" | "showFlip" | "showPercent"> {
-  getFacetValue: SelectFacetFilterFunction;
-  setFacetValue: UpdateFacetFilterFunction;
-}
+type DateRangeFacetProps = Omit<
+  FacetCardProps<ValueFacetHooks>,
+  "showSearch" | "showFlip" | "showPercent"
+>;
 
 /**
  * Converts a date into a string of YYY/MM/DD padding 0 for months and days < 10.
@@ -56,18 +51,15 @@ type DateRange = [Date | null, Date | null];
 const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
   field,
   description,
+  hooks,
   facetName = undefined,
   dismissCallback = undefined,
   width = undefined,
-  getFacetValue,
-  setFacetValue,
-  clearFilterFunc,
 }: DateRangeFacetProps) => {
-  const clearFilters = useCallback(() => {
-    clearFilterFunc(field);
-  }, [clearFilterFunc, field]);
+  const clearFilters = hooks.useClearFilter();
+  const facetValue = hooks.useGetFacetFilters(field);
+  const updateFacetFilters = hooks.useUpdateFacetFilters();
 
-  const facetValue = getFacetValue(field);
   const dateRange = useMemo(
     () => extractRangeValues<string>(facetValue),
     [facetValue],
@@ -87,9 +79,9 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
       toOp: "<=",
     };
     const rangeFilters = buildRangeOperator(field, data);
-    if (rangeFilters !== undefined) setFacetValue(field, rangeFilters);
+    if (rangeFilters !== undefined) updateFacetFilters(field, rangeFilters);
     // clear filters as range is empty
-    else clearFilters();
+    else clearFilters(field);
   };
 
   return (
@@ -123,7 +115,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
           {dismissCallback ? (
             <FacetIconButton
               onClick={() => {
-                clearFilters();
+                clearFilters(field);
                 dismissCallback(field);
               }}
               aria-label="Remove the facet"
