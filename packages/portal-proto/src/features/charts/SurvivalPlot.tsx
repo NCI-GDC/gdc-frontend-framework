@@ -1,4 +1,4 @@
-import { MutableRefObject, useEffect, useRef, useState } from "react";
+import { MutableRefObject, useLayoutEffect, useRef, useState } from "react";
 import { Survival, SurvivalElement } from "@gff/core";
 import { renderPlot } from "@oncojs/survivalplot";
 import {
@@ -8,6 +8,7 @@ import {
 import { Box, Tooltip } from "@mantine/core";
 import isNumber from "lodash/isNumber";
 import { useMouse } from "@mantine/hooks";
+import useWindowResize from "../../hooks/useWindowResize";
 
 // based on schemeCategory10
 // 4.5:1 colour contrast for normal text
@@ -51,9 +52,9 @@ export const useSurvival: survival = (
   setTooltip = (x?) => null,
 ) => {
   const ref = useRef(undefined);
-  const containerSize = ref?.current?.getBoundingClientRect();
+  const documentSize = useWindowResize();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     ref.current
       ? renderPlot({
           height,
@@ -94,7 +95,8 @@ export const useSurvival: survival = (
           onMouseLeaveDonor: () => setTooltip(undefined),
         })
       : null;
-  }, [data, xDomain, setXDomain, setTooltip, height, containerSize]);
+  }, [data, xDomain, setXDomain, setTooltip, height, documentSize]);
+
   return ref;
 };
 
