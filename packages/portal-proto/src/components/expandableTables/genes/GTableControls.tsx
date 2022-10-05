@@ -100,7 +100,7 @@ export const GTableControls: React.VFC<GTableControlsProps> = ({
             >
               {nGenes.num.to((x) => x.toFixed(0))}
             </animated.div>
-            <animated.div style={colorSpring} className={`m-auto`}>
+            <animated.div style={colorSpring} className={`m-auto text-xs`}>
               {selectedOption ? selectedOption.label : ""}
             </animated.div>
             {separator}
@@ -118,7 +118,7 @@ export const GTableControls: React.VFC<GTableControlsProps> = ({
                   style={selectedSpring}
                   className={`mt-1 rounded-t-md border-1 border-b-0 border-black py-2 px-1 text-xs flex flex-row`}
                 >
-                  <animated.div className={`m-auto mr-0.5`}>
+                  <animated.div className={`mx-auto mr-0.5`}>
                     {nGenes.num.to((x) => x.toFixed(0))}
                   </animated.div>
                   {geneLabel}

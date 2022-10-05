@@ -93,20 +93,22 @@ export const ColumnOption: FC<ColumnProps> = ({
   return (
     <div
       ref={ref}
-      className={`cursor-move bg-base-lightest mb-2 p-1 border-1 opacity-${o}`}
+      className={`cursor-move bg-white mb-1 p-0.5 opacity-${o}`}
       data-handler-id={handlerId}
     >
       <div className={`flex flex-row text-xs justify-between`}>
         <div className={`flex flex-row w-fit`}>
           <div className={`flex flex-row`}>
-            <div className={`my-auto mr-1`}>
+            <div className={`my-auto mr-2`}>
               <MdDragIndicator />
             </div>
-            {formatColumnName(columnName)}
+            <div className={`flex flex-row w-60`}>
+              {formatColumnName(columnName)}
+            </div>
           </div>
         </div>
         <input
-          className={`mr-2 ml-2`}
+          className={`mr-0`}
           type="checkbox"
           checked={visible}
           onChange={() => toggleColumn(columnName)}

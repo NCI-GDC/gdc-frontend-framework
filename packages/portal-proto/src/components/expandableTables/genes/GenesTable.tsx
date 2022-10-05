@@ -27,6 +27,11 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
   const [visibleColumns, setVisibleColumns] = useState(
     DEFAULT_GTABLE_ORDER.filter((col) => col.visible),
   );
+  const searchableFields = ["geneID", "symbol", "name"];
+
+  const searchContains = (obj: any, field: string) => {
+    return obj[`${field}`].toLowerCase().includes(search.toLowerCase());
+  };
 
   const useGeneTableFormat = useCallback(
     (initialData) => {
@@ -170,11 +175,16 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
           handleColumnChange={handleColumnChange}
           showColumnMenu={showColumnMenu}
           setShowColumnMenu={setShowColumnMenu}
+          defaultColumns={DEFAULT_GTABLE_ORDER}
         />
       </div>
       <div className={`flex flex-row w-10/12`}>
         <ExpTable
-          data={transformResponse}
+          data={transformResponse.filter((tr) => {
+            if (searchableFields.some((field) => searchContains(tr, field))) {
+              return tr;
+            }
+          })}
           columns={columns}
           expanded={expanded}
           handleExpandedProxy={handleExpandedProxy}
