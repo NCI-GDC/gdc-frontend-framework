@@ -46,6 +46,7 @@ export const Footer: React.FC = () => {
       <div>NIH... Turning Discovery Into Health &reg;</div>
       <div>
         <span
+          data-testid="ftr-uiversion"
           title={`UI version: ${uiVersion}${
             uiVersion ? `, tags: ${uiVersion}` : ""
           }`}
@@ -57,7 +58,7 @@ export const Footer: React.FC = () => {
 
         {", "}
 
-        <span title={`API version: ${apiVersion}`}>
+        <span data-testid="ftr-apiversion" title={`API version: ${apiVersion}`}>
           {`API v${apiVersion}${
             apiCommitHash ? ` @ ${apiCommitHash.slice(0, 8)}` : ""
           }`}
@@ -67,6 +68,7 @@ export const Footer: React.FC = () => {
 
         <span>
           <ExternalLink
+            dataTestId="ftr-release-notes"
             href="https://docs.gdc.cancer.gov/Data/Release_Notes/Data_Release_Notes/"
             separator={false}
           >
