@@ -88,7 +88,7 @@ export const createTableColumn = (
                     {row.getCanExpand() && (
                       <SwitchSpring
                         isActive={row.original["select"] in selectedGenes}
-                        icon={<span>hi</span>}
+                        icon={undefined}
                         firstColumn={visibleColumns[0].id}
                         selected={row}
                         handleSwitch={selectGene}
@@ -181,15 +181,13 @@ export const createTableColumn = (
                   style={partitionWidth}
                   className={`content-center`}
                 >
-                  <>
-                    {/* <GTableCell row={row} accessor={accessor} /> */}
-
+                  {row.getCanExpand() && (
                     <PercentageBar
                       numerator={22}
                       denominator={100}
                       width={width / visibleColumns.length}
                     />
-                  </>
+                  )}
                   <>
                     {!row.getCanExpand() && visibleColumns[0].id === accessor && (
                       <div className={`relative`}>
@@ -251,7 +249,7 @@ export const getGene = (
   filteredCases: number,
   cases: number,
 ) => {
-  console.log("gene", g);
+  // console.log("gene", g);
   return {
     select: g.gene_id,
     geneID: g.gene_id,

@@ -20,6 +20,7 @@ export interface ExpTableProps<TData> {
   selectAll: (rows: any, isActive: boolean) => void; // todo: add row type
   allSelected: any;
   firstColumn: string;
+  headerWidth: number;
 }
 
 export const ExpTable: React.VFC<ExpTableProps> = ({
@@ -30,6 +31,7 @@ export const ExpTable: React.VFC<ExpTableProps> = ({
   selectAll,
   allSelected,
   firstColumn,
+  headerWidth,
 }: ExpTableProps) => {
   const table = useReactTable({
     data,
@@ -45,23 +47,17 @@ export const ExpTable: React.VFC<ExpTableProps> = ({
   });
 
   const unitSpring = useSpring({
-    from: { opacity: 0, transform: "translate3D(0, -120px, 0)" },
-    to: { opacity: 1, transform: "translate3D(0, 0, 0)" },
+    from: { opacity: 0, transform: "translate3D(0, -120px, 0)", width: 0 },
+    to: { opacity: 1, transform: "translate3D(0, 0, 0)", width: headerWidth },
     duration: 100,
   });
   return (
     <div className="p-2">
       <div className="h-2 shadow-md" />
       <table>
-        <thead className={`border-2 shadow-md`}>
+        <thead className={`border-2 shadow-md w-11/12`}>
           {table.getHeaderGroups().map((headerGroup) => (
-            <animated.tr
-              onClick={() =>
-                console.log("tableheaers", table.getHeaderGroups())
-              }
-              style={unitSpring}
-              key={headerGroup.id}
-            >
+            <animated.tr style={unitSpring} key={headerGroup.id}>
               {headerGroup.headers.map((header, index) => {
                 return (
                   <th key={header.id} colSpan={header.colSpan}>
@@ -86,13 +82,13 @@ export const ExpTable: React.VFC<ExpTableProps> = ({
                             selected={table.getRowModel().rows}
                           />
                         ) : null}
-                        <div>
+                        <animated.div style={unitSpring}>
                           {header.id !== "select" &&
                             flexRender(
                               header.column.columnDef.header,
                               header.getContext(),
                             )}
-                        </div>
+                        </animated.div>
                       </div>
                     )}
                   </th>
