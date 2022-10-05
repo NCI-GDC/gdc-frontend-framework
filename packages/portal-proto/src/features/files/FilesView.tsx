@@ -1,3 +1,5 @@
+// Depreciated
+
 import { useState } from "react";
 import { Button, Menu } from "@mantine/core";
 import {
@@ -11,7 +13,7 @@ import {
   useCoreDispatch,
   selectCart,
 } from "@gff/core";
-import { EnumFacet } from "../facets/EnumFacet";
+import EnumFacet from "../facets/EnumFacet";
 import { addToCart, removeFromCart } from "@/features/cart/updateCart";
 import Link from "next/link";
 import { mapGdcFileToCartFile } from "./utils";
@@ -139,6 +141,12 @@ export const ContextualFilesView: React.FC = () => {
                 docType="files"
                 showPercent={false}
                 description={x.description}
+                hooks={{
+                  useUpdateFacetFilters: useUpdateFacetFilter,
+                  useTotalCounts: useTotalCounts,
+                  useClearFilter: useClearFilters,
+                  useGetFacetData: useEnumFacet,
+                }}
               />
             );
           })}
