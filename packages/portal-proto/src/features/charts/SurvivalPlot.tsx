@@ -419,9 +419,11 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
           <Menu
             position="bottom-start"
             offset={1}
-            closeOnClickOutside={false}
-            closeOnItemClick={false}
             transitionDuration={0}
+            zIndex={10}
+            classNames={{
+              item: "hover:bg-base-lighter hover:text-base-lighter-contrast",
+            }}
           >
             <Menu.Target>
               <div className="flex">
@@ -432,27 +434,11 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
                 </Tooltip>
               </div>
             </Menu.Target>
-            <Menu.Dropdown className="z-10 w-44 absolute bg-base-lightest rounded shadow-md border-none">
-              <Menu.Item className="p-0" onClick={handleDownloadSVG}>
-                <div className="cursor-pointer block py-2 px-4 text-sm text-base-contrast-lightest hover:bg-base-lightest">
-                  SVG
-                </div>
-              </Menu.Item>
-              <Menu.Item className="p-0" onClick={handleDownloadPNG}>
-                <div className="cursor-pointer block py-2 px-4 text-sm text-base-contrast-lightest hover:bg-base-lightest">
-                  PNG
-                </div>
-              </Menu.Item>
-              <Menu.Item className="p-0" onClick={handleDownloadJSON}>
-                <div className="cursor-pointer block py-2 px-4 text-sm text-base-contrast-lightest hover:bg-base-lightest">
-                  JSON
-                </div>
-              </Menu.Item>
-              <Menu.Item className="p-0" onClick={handleDownloadTSV}>
-                <div className="cursor-pointer block py-2 px-4 text-sm text-base-contrast-lightest hover:bg-base-lightest">
-                  TSV
-                </div>
-              </Menu.Item>
+            <Menu.Dropdown>
+              <Menu.Item onClick={handleDownloadSVG}>SVG</Menu.Item>
+              <Menu.Item onClick={handleDownloadPNG}>PNG</Menu.Item>
+              <Menu.Item onClick={handleDownloadJSON}>JSON</Menu.Item>
+              <Menu.Item onClick={handleDownloadTSV}>TSV</Menu.Item>
             </Menu.Dropdown>
           </Menu>
           <Tooltip label="Reset SurvivalPlot Zoom">
