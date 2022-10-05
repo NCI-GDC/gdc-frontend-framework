@@ -17,25 +17,26 @@
     {
       "facet_filter": "ssms.consequence.transcript.annotation.vep_impact",
       "name": "VEP Impact",
-      "description": "No description",
       "type": "enum"
     },
     {
       "facet_filter": "ssms.consequence.transcript.annotation.sift_impact",
       "name": "SIFT Impact",
-      "description": "No description",
       "type": "enum"
     },
     {
       "facet_filter": "ssms.consequence.transcript.annotation.polyphen_impact",
       "name": "Polyphen Impact",
-      "description": "No description",
+      "type": "enum"
+    },
+    {
+      "facet_filter": "ssms.consequence.transcript.consequence_type",
+      "name": "Consequence Type",
       "type": "enum"
     },
     {
       "facet_filter": "ssms.mutation_subtype",
       "name": "Type",
-      "description": "No description",
       "type": "enum"
     }
   ]
