@@ -1,6 +1,5 @@
 /* eslint-disable */
 // TODO need to revisit this file for more changes to fix eslint issues
-import { useEffect } from "react";
 import { useCallback, useState } from "react";
 import { CollapsibleContainer } from "@/components/CollapsibleContainer";
 import { Button, NativeSelect, Select } from "@mantine/core";
@@ -151,7 +150,7 @@ const CohortFacetElement: React.FC<FacetElementProp> = ({
   filter,
 }: FacetElementProp) => {
   const { name, op, value } = filter;
-  const [groupType, setGroupTop] = useState(op);
+  const [, setGroupTop] = useState(op);
 
   const handleChange = (event) => {
     setGroupTop(event.target.value);
@@ -170,10 +169,6 @@ const CohortFacetElement: React.FC<FacetElementProp> = ({
     </div>
   );
 };
-
-interface RangeFilterProps {
-  readonly filter: Operation;
-}
 
 export const useCohortFacetFilters = (): FilterSet => {
   return useCoreSelector((state) => selectCurrentCohortFilters(state));
