@@ -1,6 +1,7 @@
 import { GdcFile, hideModal, useCoreDispatch } from "@gff/core";
 import { Button, Text } from "@mantine/core";
 import { SetStateAction, useState } from "react";
+import qs from "qs";
 import { DownloadButton } from "../DownloadButtons";
 import { BaseModal } from "./BaseModal";
 import DownloadAccessAgreement from "./DownloadAccessAgreement";
@@ -53,12 +54,12 @@ export const AgreementModal = ({
           endpoint="data?annotations=true&related_files=true"
           activeText="Processing"
           inactiveText="Download"
-          queryParams={`data/${file.fileId}`}
+          queryParams={`/${file.fileId}/${qs.stringify({
+            annotations: true,
+            related_files: true,
+          })}`}
           options={{
             method: "GET",
-            headers: {
-              Range: "bytes=0-0",
-            },
           }}
           setActive={setActive}
           active={active}

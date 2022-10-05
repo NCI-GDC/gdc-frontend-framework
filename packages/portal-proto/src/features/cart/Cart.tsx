@@ -67,6 +67,7 @@ const Cart: React.FC = () => {
 
       <CartHeader
         summaryData={summaryData}
+        cart={cart}
         filesByCanAccess={filesByCanAccess}
         dbGapList={dbGapList}
       />

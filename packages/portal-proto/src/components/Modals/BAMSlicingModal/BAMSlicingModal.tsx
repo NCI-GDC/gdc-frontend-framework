@@ -85,10 +85,6 @@ export const BAMSlicingModal = ({
     if (coordinates) {
       setActive(true);
       const processedInput = processBAMSliceInput(coordinates);
-      const params = {
-        ...processedInput,
-        attachment: true,
-      };
 
       const regionsParam =
         processedInput.regions.length > 1
@@ -96,12 +92,10 @@ export const BAMSlicingModal = ({
           : `region=${processedInput.regions[0]}`;
 
       download({
-        params,
-        endpoint: `slicing/view/${file.fileId}`,
-        method: "POST",
+        endpoint: `slicing/view/`,
         done: () => setActive(false),
         dispatch,
-        queryParams: `slicing/view/${file.fileId}?${regionsParam}`,
+        queryParams: `${file.fileId}?${regionsParam}`,
         customErrorMessage:
           " You have entered invalid coordinates. Please try again.",
         options: {

@@ -106,11 +106,6 @@ const CartDownloadModal = ({
             annotations: true,
             related_files: true,
           })}`}
-          extraParams={{
-            ids: (filesByCanAccess?.true || []).map((file) => file.fileId),
-            annotations: true,
-            related_files: true,
-          }}
           options={{
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",

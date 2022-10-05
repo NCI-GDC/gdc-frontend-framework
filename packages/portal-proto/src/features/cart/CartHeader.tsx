@@ -43,40 +43,56 @@ const downloadCart = (
   } else {
     download({
       endpoint: "data",
-      method: "POST",
       options: {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
         method: "POST",
       },
-      params: {
-        size: 10000,
-        attachment: true,
-        format: "JSON",
-        pretty: true,
-        ids: filesByCanAccess.true.map((file) => file.fileId),
-        annotations: true,
-        related_files: true,
-      },
       dispatch,
-      queryParams: `?${qs.stringify({
+      queryParams: JSON.stringify({
         ids: filesByCanAccess.true.map((file) => file.fileId),
         annotations: true,
         related_files: true,
-      })}`,
+      }),
     });
   }
 };
 
+const downloadManifest = (cart: CartFile[], dispatch: CoreDispatch) => {
+  download({
+    endpoint: "files",
+    options: {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+    dispatch,
+    queryParams: JSON.stringify({
+      filters: JSON.stringify({
+        op: "in",
+        content: {
+          field: "files.file_id",
+          value: cart.map((file) => file.fileId),
+        },
+      }),
+      return_type: "manifest",
+      size: 10000,
+    }),
+  });
+};
+
 interface CartHeaderProps {
   summaryData: CartSummaryData;
+  cart: CartFile[];
   filesByCanAccess: Record<string, CartFile[]>;
   dbGapList: string[];
 }
 
 const CartHeader: React.FC<CartHeaderProps> = ({
   summaryData,
+  cart,
   filesByCanAccess,
   dbGapList,
 }: CartHeaderProps) => {
@@ -98,7 +114,9 @@ const CartHeader: React.FC<CartHeaderProps> = ({
           </Button>
         </Menu.Target>
         <Menu.Dropdown>
-          <Menu.Item>Manifest</Menu.Item>
+          <Menu.Item onClick={() => downloadManifest(cart, dispatch)}>
+            Manifest
+          </Menu.Item>
           <Menu.Item
             onClick={() => downloadCart(filesByCanAccess, dbGapList, dispatch)}
           >
