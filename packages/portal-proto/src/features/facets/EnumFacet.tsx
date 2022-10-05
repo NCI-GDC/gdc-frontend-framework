@@ -418,6 +418,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
                   selectedEnums={selectedEnums}
                   isSuccess={isSuccess}
                   showTitle={false}
+                  valueLabel={FacetDocTypeToLabelsMap[docType]}
                   maxBins={numberOfBarsToDisplay}
                   height={
                     numberOfBarsToDisplay == 1
