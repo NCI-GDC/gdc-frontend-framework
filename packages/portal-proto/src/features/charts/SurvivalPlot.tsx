@@ -10,7 +10,7 @@ import isNumber from "lodash/isNumber";
 import { useMouse } from "@mantine/hooks";
 import html2canvas from "html2canvas";
 import { elementToSVG } from "dom-to-svg";
-import { downloadBlob } from "src/utils/download";
+import saveAs from "file-saver";
 
 // based on schemeCategory10
 // 4.5:1 colour contrast for normal text
@@ -329,7 +329,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
       const svg = elementToSVG(downloadRef.current);
       const svgStr = new XMLSerializer().serializeToString(svg);
       const blob = new Blob([svgStr], { type: "image/svg+xml" });
-      downloadBlob(blob, "survival-plot.svg");
+      saveAs(blob, "survival-plot.svg");
     }
   };
 
@@ -338,7 +338,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
       const canvas = await html2canvas(downloadRef.current);
 
       canvas.toBlob((blob) => {
-        downloadBlob(blob, "survival-plot.png");
+        saveAs(blob, "survival-plot.png");
       }, "image/png");
     }
   };
@@ -351,12 +351,14 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
             meta: { ...element.meta, label: `S${index + 1}` },
             donors: element.donors,
           })),
+          null,
+          2,
         ),
       ],
       { type: "text/json" },
     );
 
-    downloadBlob(blob, "survival-plot.json");
+    saveAs(blob, "survival-plot.json");
   };
 
   const handleDownloadTSV = async () => {
@@ -404,7 +406,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
     const tsv = [header.join("\t"), body].join("\n");
     const blob = new Blob([tsv], { type: "text/csv" });
 
-    downloadBlob(blob, "survival-plot.tsv");
+    saveAs(blob, "survival-plot.tsv");
   };
 
   return (
