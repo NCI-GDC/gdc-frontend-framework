@@ -15,6 +15,7 @@ import {
   selectCurrentCohortFiltersByName,
   updateCohortFilter,
   removeCohortFilter,
+  removeCohort,
 } from "./availableCohortsSlice";
 // import {
 //   clearCurrentCohort,
@@ -371,6 +372,60 @@ describe("add, update, and remove cohort", () => {
     });
   });
 
+  test("should add new cohort to available cohorts", () => {
+    const availableCohorts = availableCohortsReducer(
+      {
+        currentCohort: "",
+        ids: ["000-000-000-1"],
+        entities: {
+          "000-000-000-1": {
+            name: "New Cohort",
+            filters: { mode: "and", root: {} },
+            id: "000-000-000-1",
+            caseSet: {
+              caseSetId: {
+                mode: "and",
+                root: {},
+              },
+              status: "uninitialized",
+            },
+          },
+        },
+      },
+      addNewCohort("000-000-000-2"),
+    );
+    expect(availableCohorts).toEqual({
+      currentCohort: "",
+      ids: ["000-000-000-1", "000-000-000-2"],
+      entities: {
+        "000-000-000-1": {
+          name: "New Cohort",
+          filters: { mode: "and", root: {} },
+          id: "000-000-000-1",
+          caseSet: {
+            caseSetId: {
+              mode: "and",
+              root: {},
+            },
+            status: "uninitialized",
+          },
+        },
+        "000-000-000-2": {
+          name: "New Cohort 1",
+          filters: { mode: "and", root: {} },
+          id: "000-000-000-2",
+          caseSet: {
+            caseSetId: {
+              mode: "and",
+              root: {},
+            },
+            status: "uninitialized",
+          },
+        },
+      },
+    });
+  });
+
   test("should update cohort with new name", () => {
     const availableCohorts = availableCohortsReducer(
       {
@@ -411,5 +466,98 @@ describe("add, update, and remove cohort", () => {
         },
       },
     });
+  });
+
+  test("should remove the current cohort", () => {
+    const availableCohorts = availableCohortsReducer(
+      {
+        currentCohort: "000-000-000-2",
+        ids: ["000-000-000-1", "000-000-000-2"],
+        entities: {
+          "000-000-000-1": {
+            name: "New Cohort",
+            filters: { mode: "and", root: {} },
+            id: "000-000-000-1",
+            caseSet: {
+              caseSetId: {
+                mode: "and",
+                root: {},
+              },
+              status: "uninitialized",
+            },
+          },
+          "000-000-000-2": {
+            name: "New Cohort 2",
+            filters: { mode: "and", root: {} },
+            id: "000-000-000-2",
+            caseSet: {
+              caseSetId: {
+                mode: "and",
+                root: {},
+              },
+              status: "uninitialized",
+            },
+          },
+        },
+      },
+      removeCohort(),
+    );
+    expect(availableCohorts).toEqual({
+      currentCohort: "000-000-000-1",
+      ids: ["000-000-000-1"],
+      entities: {
+        "000-000-000-1": {
+          name: "New Cohort",
+          filters: { mode: "and", root: {} },
+          id: "000-000-000-1",
+          caseSet: {
+            caseSetId: {
+              mode: "and",
+              root: {},
+            },
+            status: "uninitialized",
+          },
+        },
+      },
+    });
+  });
+
+  test("should not remove the first cohort", () => {
+    const removeState = {
+      currentCohort: "000-000-000-1",
+      ids: ["000-000-000-1", "000-000-000-2"],
+      entities: {
+        "000-000-000-1": {
+          name: "New Cohort",
+          filters: { mode: "and", root: {} },
+          id: "000-000-000-1",
+          caseSet: {
+            caseSetId: {
+              mode: "and",
+              root: {},
+            },
+            status: "uninitialized" as DataStatus,
+          },
+        },
+        "000-000-000-2": {
+          name: "New Cohort 2",
+          filters: { mode: "and", root: {} },
+          id: "000-000-000-2",
+          caseSet: {
+            caseSetId: {
+              mode: "and",
+              root: {},
+            },
+            status: "uninitialized" as DataStatus,
+          },
+        },
+      },
+    };
+
+    const availableCohorts = availableCohortsReducer(
+      removeState,
+      removeCohort(),
+    );
+    expect(availableCohorts).toEqual(removeState);
   });
 });

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CollapsibleContainer } from "@/components/CollapsibleContainer";
 import { Menu, Tabs, Divider } from "@mantine/core";
 import { ContextualCasesView } from "../cases/CasesView";
@@ -13,6 +13,7 @@ import {
   useCoreSelector,
   selectAvailableCohorts,
   DEFAULT_COHORT_ID,
+  selectCurrentCohortId,
 } from "@gff/core";
 
 import {
@@ -35,16 +36,21 @@ const ContextBar: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(DEFAULT_COHORT_ID);
 
   const handleCohortSelection = (idx: string) => {
-    setCurrentIndex(idx);
     setCohort(idx);
   };
 
   const coreDispatch = useCoreDispatch();
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
-
+  const currentCohortId = useCoreSelector((state) =>
+    selectCurrentCohortId(state),
+  );
   const setCohort = (id: string) => {
     coreDispatch(setCurrentCohortId(id));
   };
+
+  useEffect(() => {
+    setCurrentIndex(currentCohortId);
+  }, [currentCohortId]);
 
   // TODO: move this to a configuration files or slice
   const [summaryFields] = useState([

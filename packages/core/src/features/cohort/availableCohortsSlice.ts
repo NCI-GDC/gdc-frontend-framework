@@ -47,7 +47,7 @@ interface UpdateFilterParams {
  * this uses redux-toolkit entity adapter to manage the cohorts
  * Because it is an entity adapter, the state contains an array of id (string)
  * and a Dictionary of Cohort objects. It also has member, currentCohortId which
- * is used to idenify the "current" or active cohort"
+ * is used to identify the "current" or active cohort
  *
  * The slice exports the following actions:
  * addNewCohort(id:string) - create a new cohort with id
@@ -57,9 +57,9 @@ interface UpdateFilterParams {
  * clearCohortFilters(): removes all the filters by setting them to the default all GDC state
  * setCurrentCohortId(id:string): set the id of the current cohort, used to switch between cohorts
  * clearCaseSet(): resets the caseSet member to all GDC
- *
+ * removeCohort(): removes the current cohort
  */
-// TODO: add remove cohort, automate id management and/or make compatible with CohortPersistence.
+// TODO:  automate id management and/or make compatible with CohortPersistence.
 const slice = createSlice({
   name: "cohort/availableCohorts",
   initialState: initialState,
@@ -85,6 +85,13 @@ const slice = createSlice({
         id: state.currentCohort,
         changes: { name: action.payload },
       });
+    },
+    removeCohort: (state) => {
+      const idx = state.ids.findIndex((x) => x === state.currentCohort);
+      if (idx < 1) return; // Do NOT remove the first cohort "All GDC" or if not found
+      const newIndex = idx - 1;
+      cohortsAdapter.removeOne(state, state.currentCohort);
+      state.currentCohort = state.ids[newIndex] as string;
     },
     updateCohortFilter: (state, action: PayloadAction<UpdateFilterParams>) => {
       const filters = {
@@ -200,6 +207,7 @@ export const availableCohortsReducer = slice.reducer;
 
 export const {
   addNewCohort,
+  removeCohort,
   updateCohortName,
   setCurrentCohortId,
   updateCohortFilter,
@@ -212,7 +220,7 @@ export const cohortSelectors = cohortsAdapter.getSelectors(
   (state: CoreState) => state.cohort.availableCohorts,
 );
 
-export const selectAvailableCohorts = (state: CoreState) =>
+export const selectAvailableCohorts = (state: CoreState): Cohort[] =>
   cohortSelectors.selectAll(state);
 
 export const selectCurrentCohortId = (state: CoreState): string | undefined =>

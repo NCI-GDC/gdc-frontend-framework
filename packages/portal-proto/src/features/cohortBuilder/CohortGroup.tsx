@@ -23,6 +23,7 @@ import {
   selectAvailableCohorts,
   useCoreDispatch,
   addNewCohort,
+  removeCohort,
   selectCurrentCohort,
   DEFAULT_COHORT_ID,
 } from "@gff/core";
@@ -89,6 +90,10 @@ export const CohortBar: React.FC<CohortBarProps> = ({
     onSelectionChanged(newId);
   }, []);
 
+  const deleteCohort = () => {
+    coreDispatch(removeCohort());
+  };
+
   return (
     <div
       data-tour="cohort_management_bar"
@@ -121,7 +126,7 @@ export const CohortBar: React.FC<CohortBarProps> = ({
           <CohortGroupButton onClick={() => newCohort()}>
             <AddIcon size="1.5em" aria-label="Add cohort" />
           </CohortGroupButton>
-          <CohortGroupButton>
+          <CohortGroupButton onClick={() => deleteCohort()}>
             <DeleteIcon size="1.5em" aria-label="Delete cohort" />
           </CohortGroupButton>
           <CohortGroupButton>
