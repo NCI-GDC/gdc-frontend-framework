@@ -42,7 +42,14 @@ const useCohortCentricFiles = () => {
   useEffect(() => {
     if (status === "uninitialized" || !isEqual(allFilters, prevFilters)) {
       coreDispatch(
-        fetchFiles({ filters: buildCohortGqlOperator(allFilters), size: 20 }),
+        fetchFiles({
+          filters: buildCohortGqlOperator(allFilters),
+          expand: [
+            "annotations", //annotations
+            "cases.project", //project_id
+          ],
+          size: 20,
+        }),
       ); // eslint-disable-line
     }
   }, [status, coreDispatch, allFilters, prevFilters]);

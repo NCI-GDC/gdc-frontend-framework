@@ -118,6 +118,10 @@ const FilesTables: React.FC = () => {
     coreDispatch(
       fetchFiles({
         filters: buildCohortGqlOperator(allFilters),
+        expand: [
+          "annotations", //annotations
+          "cases.project", //project_id
+        ],
         size: pageSize,
         from: offset * pageSize,
       }),
