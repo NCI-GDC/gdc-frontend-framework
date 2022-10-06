@@ -49,7 +49,7 @@ export const ExpTable: React.VFC<ExpTableProps> = ({
   const unitSpring = useSpring({
     from: { opacity: 0, transform: "translate3D(0, -120px, 0)", width: 0 },
     to: { opacity: 1, transform: "translate3D(0, 0, 0)", width: headerWidth },
-    duration: 100,
+    duration: 20,
   });
   return (
     <div className="p-2">
@@ -62,7 +62,7 @@ export const ExpTable: React.VFC<ExpTableProps> = ({
                 return (
                   <th key={header.id} colSpan={header.colSpan}>
                     {header.isPlaceholder ? null : (
-                      <div onClick={() => console.log("header", header)}>
+                      <div>
                         {header.id === "select" &&
                         header.id !== `1_ _${firstColumn}` ? (
                           <SwitchSpring

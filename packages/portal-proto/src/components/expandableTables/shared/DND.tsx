@@ -28,7 +28,7 @@ const DND: React.VFC<DNDProps> = ({
       <Popover
         opened={showColumnMenu}
         onClose={() => setShowColumnMenu(false)}
-        width={320}
+        width={360}
         position="bottom-end"
         transition="scale"
         withArrow
@@ -69,7 +69,7 @@ const DND: React.VFC<DNDProps> = ({
                   />
                 </div>
                 <div
-                  className={`flex flex-row w-72 mb-1 border-b-2 border-dotted`}
+                  className={`flex flex-row w-80 mb-1 border-b-2 border-dotted`}
                 >
                   <button
                     className={`text-xs my-1`}

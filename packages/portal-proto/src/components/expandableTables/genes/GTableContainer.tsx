@@ -47,6 +47,9 @@ export const GTableContainer: React.VFC<GTableContainerProps> = ({
             selectedSurvivalPlot={selectedSurvivalPlot}
             handleSurvivalPlotToggled={handleSurvivalPlotToggled}
             width={width}
+            pageSize={pageSize}
+            offset={offset}
+            handlePageSize={setPageSize}
           />
         )}
     </div>

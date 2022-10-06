@@ -12,10 +12,10 @@ const AnimatedRow: React.VFC<AnimatedRowProps> = ({
   index,
 }: AnimatedRowProps) => {
   const unitSpring = useSpring({
-    from: { opacity: 0, transform: "translate3D(0px, -200px, 0px)" },
+    from: { opacity: 0, transform: "translate3D(0px, -150px, 0px)" },
     to: { opacity: 1, transform: "translate3D(0px, 0px, 0px)" },
-    duration: 100,
-    delay: index * 80,
+    duration: 10,
+    delay: index * 10,
     immediate: false,
   });
 

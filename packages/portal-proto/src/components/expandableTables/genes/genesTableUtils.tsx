@@ -4,6 +4,7 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 import _ from "lodash";
 import { animated } from "react-spring";
 import SwitchSpring from "../shared/SwitchSpring";
+import SurvivalSpring from "../shared/SurvivalSpring";
 import PercentageBar from "../shared/PercentageBar";
 
 interface SingleGene {
@@ -67,10 +68,14 @@ export const createTableColumn = (
   visibleColumns: TableColumnState[],
   selectedGenes: any, // todo: add type,
   selectGene: (geneId: string) => any,
+  handleSurvivalPlotToggled: (
+    symbol: string,
+    name: string,
+    geneSymbol: string,
+  ) => any,
 ) => {
   switch (accessor) {
     case "select":
-      console.log(selectedGenes);
       return {
         header: " ",
         footer: (props) => props.column.id,
@@ -89,7 +94,6 @@ export const createTableColumn = (
                       <SwitchSpring
                         isActive={row.original["select"] in selectedGenes}
                         icon={undefined}
-                        firstColumn={visibleColumns[0].id}
                         selected={row}
                         handleSwitch={selectGene}
                         selectedGenes={selectedGenes}
@@ -111,6 +115,49 @@ export const createTableColumn = (
               );
             },
             footer: (props) => props.column.id,
+          },
+        ],
+      };
+    case "survival":
+      return {
+        header: " ",
+        footer: (props) => props.column.id,
+        columns: [
+          {
+            accessorKey: accessor,
+            header: () => <GTableHeader twStyles={``} title={accessor} />,
+            cell: ({ row, getValue }) => {
+              return (
+                <>
+                  {/* <Tooltip label={`Click icon to plot ${value.symbol}`}> */}
+                  <SurvivalSpring
+                    isActive={true}
+                    icon={<></>} // survivalIcon
+                    selected={{}}
+                    // selectedGenes={undefined}
+                    handleSurvival={handleSurvivalPlotToggled}
+                  />
+                  {/* <Switch
+                  radius="xs"
+                  size="sm"
+                  id={`genetable-survival-${row.getValue().symbol}`}
+                  checked={row.getValue().checked}
+                  onChange={() => {
+                    handleSurvivalPlotToggled(
+                      value.symbol,
+                      value.name,
+                      "gene.symbol",
+                    );
+                  }}
+                  classNames={{
+                    input:
+                      "bg-base-light checked:bg-primary-dark  checked:bg-none",
+                  }}
+                /> */}
+                  {/* </Tooltip> */}
+                </>
+              );
+            },
           },
         ],
       };
@@ -249,7 +296,6 @@ export const getGene = (
   filteredCases: number,
   cases: number,
 ) => {
-  // console.log("gene", g);
   return {
     select: g.gene_id,
     geneID: g.gene_id,

@@ -25,7 +25,12 @@ export const GTableFilters: React.VFC<GTableFiltersProps> = ({
   const [searchToggled, setSearchToggled] = useState(false);
   const searchSpring = useSpring({
     from: { opacity: 0, width: 0 },
-    to: { opacity: 1, width: searchToggled ? 150 : 39 },
+    to: { opacity: 1, width: searchToggled ? 312 : 39 },
+    immediate: false,
+  });
+  const inputSpring = useSpring({
+    from: { opacity: 0, width: 0 },
+    to: { opacity: 1, width: searchToggled ? 305 : 0, height: 25 },
     immediate: false,
   });
 
@@ -51,8 +56,9 @@ export const GTableFilters: React.VFC<GTableFiltersProps> = ({
                   Search...
                 </span>
               )}
-              <input
-                className={`p-1 w-11/12 border-none text-base focus:outline-none h-4 text-sm`}
+              <animated.input
+                style={inputSpring}
+                className={`p-1 border-none text-base focus:outline-none h-4 text-xs`}
                 type="text"
                 value={search}
                 onChange={(e) => handleSearch(e.target.value)}

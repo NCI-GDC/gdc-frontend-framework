@@ -4,6 +4,8 @@ import { ItemTypes } from "./ItemTypes";
 import type { XYCoord, Identifier } from "dnd-core";
 import _ from "lodash";
 import { MdDragIndicator } from "react-icons/md";
+import SwitchSpring from "../../components/expandableTables/shared/SwitchSpring";
+import { useSpring, animated } from "react-spring";
 
 export interface ColumnProps {
   id: any;
@@ -88,6 +90,10 @@ export const ColumnOption: FC<ColumnProps> = ({
     }),
   });
 
+  const grayS = useSpring({
+    color: "lightgray",
+  });
+
   const o = isDragging ? 0 : 1;
   drag(drop(ref));
   return (
@@ -99,19 +105,20 @@ export const ColumnOption: FC<ColumnProps> = ({
       <div className={`flex flex-row text-xs justify-between`}>
         <div className={`flex flex-row w-fit`}>
           <div className={`flex flex-row`}>
-            <div className={`my-auto mr-2`}>
-              <MdDragIndicator />
-            </div>
-            <div className={`flex flex-row w-60`}>
+            <animated.div style={grayS} className={`my-auto mr-2 ml-0`}>
+              <MdDragIndicator size={"16px"} />
+            </animated.div>
+            <div className={`flex flex-row w-60 my-auto`}>
               {formatColumnName(columnName)}
             </div>
           </div>
         </div>
-        <input
-          className={`mr-0`}
-          type="checkbox"
-          checked={visible}
-          onChange={() => toggleColumn(columnName)}
+        <SwitchSpring
+          isActive={visible}
+          icon={<></>}
+          handleSwitch={toggleColumn}
+          selected={columnName}
+          selectedGenes={undefined}
         />
       </div>
     </div>

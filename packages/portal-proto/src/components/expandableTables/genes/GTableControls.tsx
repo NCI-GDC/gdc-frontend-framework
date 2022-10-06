@@ -64,12 +64,6 @@ export const GTableControls: React.VFC<GTableControlsProps> = ({
         },
   );
 
-  const geneLabel = (
-    <animated.span className={`m-auto ml-0.5`} style={selectedSpring}>
-      Genes
-    </animated.span>
-  );
-
   const nGenes = useSpring({
     immediate: false,
     config: config.slow,
@@ -121,7 +115,7 @@ export const GTableControls: React.VFC<GTableControlsProps> = ({
                   <animated.div className={`mx-auto mr-0.5`}>
                     {nGenes.num.to((x) => x.toFixed(0))}
                   </animated.div>
-                  {geneLabel}
+                  <span className={`m-auto ml-0.5`}>Genes</span>
                 </animated.div>
                 <animated.ul
                   style={{ ...colorSpring, ...borderSpring }}

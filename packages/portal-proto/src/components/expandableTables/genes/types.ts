@@ -28,6 +28,9 @@ export interface GenesTableProps {
     name: string,
     field: string,
   ) => void;
+  pageSize: number;
+  handlePageSize: any;
+  offset: number;
 }
 
 export const GENE_MENU = [

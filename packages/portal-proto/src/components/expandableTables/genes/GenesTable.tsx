@@ -7,6 +7,7 @@ import { GTableFilters } from "./GTableFilters";
 import { getGene, createTableColumn } from "./genesTableUtils";
 import { GenesColumns } from "@/features/shared/table-utils";
 import { useSpring } from "react-spring";
+import PageSize from "../shared/PageSize";
 
 export const GenesTable: React.VFC<GenesTableProps> = ({
   initialData,
@@ -16,6 +17,9 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
   selectedSurvivalPlot,
   handleSurvivalPlotToggled,
   width,
+  pageSize,
+  handlePageSize,
+  offset,
 }: GenesTableProps) => {
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
   const [expanded, setExpanded] = useState<any>({});
@@ -27,7 +31,6 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
   const [visibleColumns, setVisibleColumns] = useState(
     DEFAULT_GTABLE_ORDER.filter((col) => col.visible),
   );
-  const searchableFields = ["geneID", "symbol", "name"];
 
   const searchContains = (obj: any, field: string) => {
     return obj[`${field}`].toLowerCase().includes(searchTerm.toLowerCase());
@@ -147,6 +150,7 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
           visibleColumns,
           selectedGenes,
           selectGene,
+          handleSurvivalPlotToggled,
         );
       });
   }, [visibleColumns, width, selectedGenes]);
@@ -154,7 +158,6 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
   // todo: also reset expanded when pageSize/pageChanges (dont persist expanded across pages)
   useEffect(() => {
     setExpandedProxy({});
-    setExpanded({});
   }, [visibleColumns, selectedGenes, searchTerm]);
 
   const handleColumnChange = (columnUpdate) => {
@@ -169,9 +172,15 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
     console.log("gene", gene);
   };
 
+  // todo add total
+  // data.genes.genes_total
+  const pageDisplay = `Showing ${(offset - 1) * pageSize + 1} - ${
+    offset * pageSize
+  } of ten million genes`;
+
   return (
     <div className={`w-full`}>
-      <div className={`flex flex-row justify-between`}>
+      <div className={`flex flex-row`}>
         <GTableControls
           selectedGenes={Object.keys(selectedGenes)?.length || 0}
           handleGeneSave={handleGeneSave}
@@ -189,7 +198,11 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
       <div className={`flex flex-row w-10/12`}>
         <ExpTable
           data={transformResponse.filter((tr) => {
-            if (searchableFields.some((field) => searchContains(tr, field))) {
+            if (
+              ["geneID", "symbol", "name"].some((field) =>
+                searchContains(tr, field),
+              )
+            ) {
               return tr;
             }
           })}
@@ -199,31 +212,27 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
           selectAll={selectAllGenes}
           allSelected={selectedGenes}
           firstColumn={columnListOrder[0].id}
+          headerWidth={width / visibleColumns.length}
         />
       </div>
-      <div className="flex flex-row items-center justify-start border-t border-base-light">
-        <p className="px-2">Page Size:</p>
-        {/* <Select
-          size="sm"
-          radius="md"
-          onChange={handlePageSizeChange}
-          value={pageSize.toString()}
-          data={[
-            { value: "10", label: "10" },
-            { value: "20", label: "20" },
-            { value: "40", label: "40" },
-            { value: "100", label: "100" },
-          ]}
-        />
-        <Pagination
+      {/* justify-start items-center*/}
+      <div className={`flex flex-row justify-between`}>
+        <div className="flex flex-row m-auto ml-2">
+          <span className="my-auto mx-1 text-xs">Show</span>
+          <PageSize pageSize={pageSize} handlePageSize={handlePageSize} />
+          <span className="my-auto mx-1 text-xs">Entries</span>
+        </div>
+        <div className={`m-auto`}>{pageDisplay}</div>
+        <div className={`m-auto mr-2`}>paginator</div>
+        {/* <Pagination
           size="sm"
           radius="md"
           color="accent"
           className="ml-auto"
-          page={activePage}
+          page={offset}
           onChange={(x) => handlePageChange(x)}
           total={pages}
-        /> */}
+        />  */}
       </div>
     </div>
   );

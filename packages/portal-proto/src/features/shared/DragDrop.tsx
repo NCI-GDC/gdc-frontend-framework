@@ -65,7 +65,7 @@ export const DragDrop: FC<DragDropProps> = ({
 
   return (
     <>
-      <div className="w-72">
+      <div className="w-80">
         {columns.map((column, i) => renderColumn(column, i))}
       </div>
     </>
