@@ -34,15 +34,18 @@ const DND: React.FC<DNDProps> = ({
         withArrow
       >
         <Popover.Target>
-          <Box
-            className={`border-1 border-base p-2.5 rounded-md mx-2 mt-3 hover:cursor-pointer`}
+          <button
             onClick={() => {
               setShowColumnMenu(!showColumnMenu);
               setColumnSearchTerm("");
             }}
           >
-            {!showColumnMenu ? <BsList /> : <BsX size={"16px"} />}
-          </Box>
+            <Box
+              className={`border-1 border-base p-2.5 rounded-md mx-2 mt-3 hover:cursor-pointer`}
+            >
+              {!showColumnMenu ? <BsList /> : <BsX size={"17px"} />}
+            </Box>
+          </button>
         </Popover.Target>
         <Popover.Dropdown>
           <div className={`w-fit bg-white rounded-md`}>
@@ -55,7 +58,7 @@ const DND: React.FC<DNDProps> = ({
                     <span
                       className={`flex flex-row absolute ml-2 text-xs pointer-events-none italic`}
                     >
-                      <div className={`mt-0.5 ml-1 mr-1`}>
+                      <div className={`mt-0.5 ml-2 mr-2`}>
                         <SearchIcon />
                       </div>
                       Search...
@@ -67,6 +70,11 @@ const DND: React.FC<DNDProps> = ({
                     value={columnSearchTerm}
                     onChange={(e) => setColumnSearchTerm(e.target.value)}
                   />
+                  {columnSearchTerm.length > 0 && (
+                    <button onClick={() => setColumnSearchTerm("")}>
+                      <BsX size={"16px"} />
+                    </button>
+                  )}
                 </div>
                 <div
                   className={`flex flex-row w-80 mb-1 border-b-2 border-dotted`}

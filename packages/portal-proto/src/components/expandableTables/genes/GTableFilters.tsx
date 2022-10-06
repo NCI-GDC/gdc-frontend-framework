@@ -66,12 +66,16 @@ export const GTableFilters: React.FC<GTableFiltersProps> = ({
             </div>
           )}
           {!searchToggled && (
-            <div
-              onMouseEnter={() => setSearchToggled(true)}
-              className={`mt-0.5 ml-1 mr-1 p-0.5`}
-            >
-              <SearchIcon />
-            </div>
+            <>
+              <button
+                role="button"
+                onMouseEnter={() => setSearchToggled(true)}
+                onFocus={() => setSearchToggled(true)}
+                className={`mt-0.5 ml-1 mr-1 p-0.5`}
+              >
+                <SearchIcon />
+              </button>
+            </>
           )}
         </animated.div>
       </div>

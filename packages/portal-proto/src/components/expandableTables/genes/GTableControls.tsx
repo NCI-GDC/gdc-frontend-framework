@@ -40,29 +40,16 @@ export const GTableControls: React.FC<GTableControlsProps> = ({
 
   const separator = <div className={`h-full m-auto text-gray-300`}>|</div>;
 
-  const selectedSpring = useSpring(
-    selectedGenes === 0
-      ? {
-          from: {
-            color: "rgb(32, 68, 97)",
-            backgroundColor: "white",
-          },
-          to: {
-            color: "rgb(32, 68, 97)",
-            backgroundColor: "white",
-          },
-        }
-      : {
-          from: {
-            color: "white",
-            backgroundColor: "rgb(32, 68, 97)",
-          },
-          to: {
-            color: "white",
-            backgroundColor: "rgb(32, 68, 97)",
-          },
-        },
-  );
+  const on = {
+    color: "rgb(32, 68, 97)",
+    backgroundColor: "white",
+  };
+  const off = {
+    color: "white",
+    backgroundColor: "rgb(32, 68, 97)",
+  };
+
+  const selectedSpring = useSpring(selectedGenes === 0 ? on : off);
 
   const nGenes = useSpring({
     immediate: false,
@@ -119,17 +106,16 @@ export const GTableControls: React.FC<GTableControlsProps> = ({
                 </animated.div>
                 <animated.ul
                   style={{ ...colorSpring, ...borderSpring }}
-                  // on hover: rgb(226 232 240)
                   className={`list-none rounded-b-md`}
                 >
                   {GENE_MENU.filter(
-                    (opt) => opt.value !== selectedOption.value,
+                    ({ value }) => value !== selectedOption.value,
                   ).map((geneOpt, idx) => {
                     return (
                       <li
                         key={`gene-set-select-${idx}`}
                         onClick={() => setSelectedOption(geneOpt)}
-                        className={`py-2 px-4 text-sm hover:bg-gray rounded-md`}
+                        className={`py-2 px-4 text-sm hover:bg-hoverColor rounded-md`}
                       >
                         {geneOpt.label}
                       </li>
