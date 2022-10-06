@@ -100,7 +100,7 @@ const ContextBar: React.FC = () => {
       // eslint-disable-next-line react/prop-types
       cohorts={cohorts}
       onSelectionChanged={handleCohortSelection}
-      defaultId={currentIndex}
+      startingId={currentIndex}
     />
   );
 

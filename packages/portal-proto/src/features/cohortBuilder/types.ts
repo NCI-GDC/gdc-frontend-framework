@@ -3,6 +3,6 @@ import { Cohort } from "@gff/core";
 export interface CohortBarProps {
   readonly cohorts: Cohort[];
   onSelectionChanged: (string) => void;
-  defaultId: string;
+  startingId: string;
   hide_controls?: boolean;
 }

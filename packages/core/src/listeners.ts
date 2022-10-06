@@ -13,7 +13,7 @@ import {
   clearCaseSet,
   cohortSelectors,
 } from "./features/cohort/availableCohortsSlice";
-import { createCaseSet } from "./features/cohort/caseSetSlice";
+import { createCaseSet } from "./features/cohort/availableCohortsSlice";
 /**
  * Defines coreListeners for adding middleware.
  * This listener will dispatch a createCaseSet each time the

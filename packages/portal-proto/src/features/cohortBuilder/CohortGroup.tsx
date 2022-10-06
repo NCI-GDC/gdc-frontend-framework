@@ -16,7 +16,6 @@ import { nanoid } from "@reduxjs/toolkit";
 import tw from "tailwind-styled-components";
 import {
   FilterSet,
-  Operation,
   selectCurrentCohortFilters,
   useCoreSelector,
   selectAvailableCohorts,
@@ -74,7 +73,7 @@ const CohortGroupSelect: React.FC<unknown> = () => {
 export const CohortBar: React.FC<CohortBarProps> = ({
   cohorts,
   onSelectionChanged,
-  defaultId,
+  startingId,
   hide_controls = false,
 }: CohortBarProps) => {
   const menu_items = cohorts.map((x) => {
@@ -83,10 +82,7 @@ export const CohortBar: React.FC<CohortBarProps> = ({
   const coreDispatch = useCoreDispatch();
   const cohortName = useCoreSelector((state) => selectCurrentCohort(state));
   const newCohort = useCallback(() => {
-    // TODO: replace with other UUID function
-    const newId = `${nanoid()}`;
-    coreDispatch(addNewCohort(newId));
-    onSelectionChanged(newId);
+    coreDispatch(addNewCohort());
   }, []);
 
   const deleteCohort = () => {
@@ -104,7 +100,7 @@ export const CohortBar: React.FC<CohortBarProps> = ({
             data={menu_items}
             searchable
             clearable={false}
-            value={defaultId}
+            value={startingId}
             onChange={(x) => {
               onSelectionChanged(x);
             }}
@@ -125,7 +121,10 @@ export const CohortBar: React.FC<CohortBarProps> = ({
           <CohortGroupButton onClick={() => newCohort()}>
             <AddIcon size="1.5em" aria-label="Add cohort" />
           </CohortGroupButton>
-          <CohortGroupButton onClick={() => deleteCohort()}>
+          <CohortGroupButton
+            onClick={() => deleteCohort()}
+            disabled={startingId === DEFAULT_COHORT_ID}
+          >
             <DeleteIcon size="1.5em" aria-label="Delete cohort" />
           </CohortGroupButton>
           <CohortGroupButton>
@@ -189,7 +188,7 @@ export const CohortGroup: React.FC = () => {
     <CohortBar
       cohorts={cohorts}
       onSelectionChanged={handleCohortSelection}
-      defaultId={currentIndex}
+      startingId={currentIndex}
     />
   );
   return (

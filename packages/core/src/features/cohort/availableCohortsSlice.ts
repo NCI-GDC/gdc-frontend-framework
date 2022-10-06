@@ -3,13 +3,16 @@ import {
   createEntityAdapter,
   PayloadAction,
   nanoid,
+  createAsyncThunk,
 } from "@reduxjs/toolkit";
 import { CoreState } from "../../reducers";
 import { buildCohortGqlOperator, FilterSet } from "./filters";
 import { COHORTS } from "./cohortFixture";
 import { GqlOperation, Operation } from "../gdcapi/filters";
-import { createCaseSet } from "./caseSetSlice";
 import { CoreDataSelectorResponse, DataStatus } from "../../dataAccess";
+import { GQLIndexType } from "../facets/types";
+import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
+import { CoreDispatch } from "../../store";
 
 export interface CaseSetDataAndStatus {
   readonly status: DataStatus;
@@ -23,9 +26,62 @@ export interface Cohort {
   readonly filters: FilterSet;
   readonly caseSet: CaseSetDataAndStatus;
   readonly modified: boolean;
-  readonly modifiedDate?: Date;
+  readonly modifiedDate?: string;
   readonly saved?: boolean;
 }
+
+/*
+ A start at handling how to seamlessly create cohorts that can bridge the explore
+ and repository index. The slice creates a case set using the defined filters
+ Currently only uses the repository index and this will be changed in
+ PEAR-517.
+ Since this is pending unit test are TODO: add unit test for full caseSet support.
+*/
+const buildCaseSetMutationQuery = (index: string) =>
+  `
+ mutation mutationsCreateRepositoryCaseSetMutation(
+  $input: CreateSetInput
+) {
+  sets {
+    create {
+      ${index} {
+        case(input: $input) {
+          set_id
+          size
+        }
+      }
+    }
+  }
+}`;
+
+export interface CreateCaseSetProps {
+  readonly filterSelector?: (state: CoreState) => FilterSet;
+  readonly index?: GQLIndexType;
+}
+
+export const createCaseSet = createAsyncThunk<
+  GraphQLApiResponse<Record<string, any>>,
+  CreateCaseSetProps,
+  { dispatch: CoreDispatch; state: CoreState }
+>(
+  "cohort/createCaseSet",
+  async (
+    {
+      filterSelector = selectCurrentCohortFilters,
+      index = "repository" as GQLIndexType,
+    },
+    thunkAPI,
+  ) => {
+    const filters = buildCohortGqlOperator(filterSelector(thunkAPI.getState()));
+    const graphQL = buildCaseSetMutationQuery(index);
+
+    const filtersGQL = {
+      input: { filters: filters ? filters : {} },
+      never_used: null,
+    };
+    return graphqlAPI(graphQL, filtersGQL);
+  },
+);
 
 export const DEFAULT_COHORT_ID = "ALL-GDC-COHORT";
 
@@ -46,8 +102,8 @@ interface UpdateFilterParams {
   operation: Operation;
 }
 
-const createCohortName = (): string => {
-  return `Custom Cohort ${new Date().toString()}`;
+const createCohortName = (postfix: string): string => {
+  return `Custom Cohort ${postfix}`;
 };
 
 const createCohortId = (): string => nanoid();
@@ -56,7 +112,8 @@ const newCohort = (
   filters: FilterSet = { mode: "and", root: {} },
   modified = false,
 ): Cohort => {
-  const newName = createCohortName();
+  const ts = new Date();
+  const newName = createCohortName(ts.toLocaleString());
   const newId = createCohortId();
   return {
     name: newName,
@@ -68,7 +125,7 @@ const newCohort = (
     filters: filters,
     modified: modified,
     saved: false,
-    modifiedDate: new Date(),
+    modifiedDate: ts.toISOString(),
   };
 };
 
@@ -130,7 +187,7 @@ const slice = createSlice({
           changes: {
             filters: filters,
             modified: true,
-            modifiedDate: new Date(),
+            modifiedDate: new Date().toISOString(),
           },
         });
       }
@@ -145,13 +202,21 @@ const slice = createSlice({
       const { [action.payload]: _, ...updated } = root;
       cohortsAdapter.updateOne(state, {
         id: state.currentCohort,
-        changes: { filters: { mode: "and", root: updated } },
+        changes: {
+          filters: { mode: "and", root: updated },
+          modified: true,
+          modifiedDate: new Date().toISOString(),
+        },
       });
     },
     clearCohortFilters: (state) => {
       cohortsAdapter.updateOne(state, {
         id: state.currentCohort,
-        changes: { filters: { mode: "and", root: {} } },
+        changes: {
+          filters: { mode: "and", root: {} },
+          modified: true,
+          modifiedDate: new Date().toISOString(),
+        },
       });
     },
     setCurrentCohortId: (state, action: PayloadAction<string>) => {
