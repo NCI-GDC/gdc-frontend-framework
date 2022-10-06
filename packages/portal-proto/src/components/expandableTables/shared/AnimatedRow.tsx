@@ -11,11 +11,14 @@ const AnimatedRow: React.VFC<AnimatedRowProps> = ({
   row,
   index,
 }: AnimatedRowProps) => {
+  const rowDelay = (index: number) => {
+    return index < 20 ? index * 50 : 100;
+  };
   const unitSpring = useSpring({
     from: { opacity: 0, transform: "translate3D(0px, -150px, 0px)" },
     to: { opacity: 1, transform: "translate3D(0px, 0px, 0px)" },
-    duration: 10,
-    delay: index * 10,
+    config: config.gentle,
+    delay: rowDelay(index),
     immediate: false,
   });
 

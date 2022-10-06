@@ -12,29 +12,40 @@ const PageSize: React.VFC<PageSizeProps> = ({
   handlePageSize,
 }: PageSizeProps) => {
   const [offsetMenu, setOffsetMenu] = useState(false);
+  const [hovered, setHovered] = useState(pageSize);
 
   const buttonSpring = useSpring({
     background: "white",
-    border: "solid 1px rgb(32, 68, 97)",
+    border: "solid 0.5px rgb(32, 68, 97)",
   });
   const colorSpring = useSpring({
     color: "rgb(32, 68, 97)",
   });
 
   const { y } = useSpring({
-    y: offsetMenu ? 180 : 0,
+    y: offsetMenu ? 0 : 180,
   });
 
   const flipSpring = { transform: y.to((y) => `rotateX(${y}deg)`) };
 
   const borderSpring = useSpring({
-    border: "solid 1px rgb(32, 68, 97)",
+    border: "solid 0.5px rgb(32, 68, 97)",
   });
 
   const menuSpring = useSpring({
     transform: offsetMenu ? "translate3D(0,0,0)" : "translate3D(0,-40px,0)",
     opacity: offsetMenu ? 1 : 0,
   });
+  const pg = useSpring({
+    from: { number: pageSize },
+    to: { number: hovered },
+  });
+
+  useEffect(() => {
+    if (hovered === pageSize) {
+      setOffsetMenu(false);
+    }
+  }, [hovered]);
 
   return (
     <animated.button
@@ -43,21 +54,20 @@ const PageSize: React.VFC<PageSizeProps> = ({
       onClick={() => setOffsetMenu((m) => !m)}
     >
       <div className={`flex flex-row w-12 justify-between`}>
-        {/* {pgSpring.num.to((x) => x.toFixed(0))} */}
-        <animated.div style={colorSpring} className={`m-auto text-xs`}>
-          {pageSize}
+        <animated.div style={colorSpring} className={`m-auto text-xs mr-0.5`}>
+          {offsetMenu ? pg.number.to((x) => x.toFixed(0)) : pageSize}
         </animated.div>
-        <animated.div className={`m-auto`} style={flipSpring}>
+        <animated.div className={`m-auto ml-0.5`} style={flipSpring}>
           <MdOutlineArrowDropDown />
         </animated.div>
       </div>
-      <animated.div className={`absolute z-10 bg-white`} style={menuSpring}>
+      <animated.div className={`z-10 bg-white`} style={menuSpring}>
         {offsetMenu && (
-          <div className={`text-center mt-1.5`}>
+          <div className={`text-center`}>
             <animated.ul
               style={{ ...colorSpring, ...borderSpring }}
               // on hover: rgb(226 232 240)
-              className={`list-none rounded-b-md`}
+              className={`list-none w-12 rounded-b-md`}
             >
               {[
                 { value: 10, label: "10" },
@@ -69,9 +79,13 @@ const PageSize: React.VFC<PageSizeProps> = ({
                 .map((opt, idx) => {
                   return (
                     <li
-                      key={`gene-set-select-${idx}`}
+                      key={`pageSize-select-${opt.label}`}
                       onClick={() => handlePageSize(opt.value)}
-                      className={`py-1 px-2 text-sm hover:bg-gray rounded-md`}
+                      onMouseEnter={() => setHovered(opt.value)}
+                      onMouseLeave={() => {
+                        setHovered(pageSize);
+                      }}
+                      className={`py-1 px-2 text-sm hover:bg-gray rounded-md w-full h-full`}
                     >
                       {opt.label}
                     </li>
