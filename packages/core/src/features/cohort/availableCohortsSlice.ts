@@ -31,11 +31,8 @@ export interface Cohort {
 }
 
 /*
- A start at handling how to seamlessly create cohorts that can bridge the explore
- and repository index. The slice creates a case set using the defined filters
- Currently only uses the repository index and this will be changed in
- PEAR-517.
- Since this is pending unit test are TODO: add unit test for full caseSet support.
+ A start at handling how to seamlessly create cohorts that can bridge explore
+ and repository indexes. The slice creates a case set id using the defined filters
 */
 const buildCaseSetMutationQuery = (index: string) =>
   `
@@ -91,6 +88,7 @@ const cohortsAdapter = createEntityAdapter<Cohort>({
 
 const emptyInitialState = cohortsAdapter.getInitialState({
   currentCohort: "ALL-GDC-COHORT",
+  message: undefined as string | undefined, // message is used to inform frontend components of changes to the cohort.
 });
 const initialState = cohortsAdapter.upsertMany(
   emptyInitialState,
@@ -152,7 +150,9 @@ const slice = createSlice({
   initialState: initialState,
   reducers: {
     addNewCohort: (state) => {
+      const cohort = newCohort();
       cohortsAdapter.addOne(state, newCohort());
+      state.currentCohort = cohort.id;
     },
     updateCohortName: (state, action: PayloadAction<string>) => {
       cohortsAdapter.updateOne(state, {
@@ -177,10 +177,12 @@ const slice = createSlice({
       };
 
       if (state.currentCohort === DEFAULT_COHORT_ID) {
-        // create a new cohort and add it:
+        // create a new cohort and add it
+        // as the GDC All Cohort is immutable
         const cohort = newCohort(filters, true);
         cohortsAdapter.addOne(state, cohort);
         state.currentCohort = cohort.id;
+        state.message = `${cohort.name} has been created "This is now your current cohort.`;
       } else {
         cohortsAdapter.updateOne(state, {
           id: state.currentCohort,
@@ -221,6 +223,9 @@ const slice = createSlice({
     },
     setCurrentCohortId: (state, action: PayloadAction<string>) => {
       state.currentCohort = action.payload;
+    },
+    clearMessage: (state) => {
+      state.message = undefined;
     },
     clearCaseSet: (state) => {
       cohortsAdapter.updateOne(state, {

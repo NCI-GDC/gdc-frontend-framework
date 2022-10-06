@@ -33,7 +33,11 @@ const INITIAL_STATE = {
   ids: INITIAL_IDS,
   entities: INITIAL_ENTITIES,
   currentCohort: "ALL-GDC-COHORT",
-} as EntityState<Cohort> & { currentCohort: string };
+  message: undefined,
+} as EntityState<Cohort> & {
+  currentCohort: string;
+  message: string | undefined;
+};
 
 const APP_INITIAL_STATE = {
   ...state,
@@ -114,7 +118,11 @@ describe("test setting/getting currentCohortId", () => {
     entities: INITIAL_ENTITIES,
   } as EntityState<Cohort>;
   const cohortState = {
-    availableCohorts: { ...INITIAL_STATE, currentCohort: "asdf" },
+    availableCohorts: {
+      ...INITIAL_STATE,
+      currentCohort: "asdf",
+      message: undefined,
+    },
     counts: {
       counts: {
         caseCounts: -1,
@@ -138,7 +146,7 @@ describe("test setting/getting currentCohortId", () => {
 
   test("should set the current cohort id", () => {
     const newState = availableCohortsReducer(
-      { ...INITIAL_STATE, currentCohort: "asdf" },
+      { ...INITIAL_STATE, currentCohort: "asdf", message: undefined },
       setCurrentCohortId("1111-2222-3333-4444"),
     );
     const currentCohortId = selectCurrentCohortId({
@@ -285,7 +293,7 @@ describe("addFilter", () => {
 describe("add, update, and remove cohort", () => {
   test("should add new cohort to available cohorts", () => {
     const availableCohorts = availableCohortsReducer(
-      { ids: [], entities: {}, currentCohort: "" },
+      { ids: [], entities: {}, currentCohort: "", message: undefined },
       addNewCohort(),
     );
     expect(availableCohorts).toEqual({
@@ -312,6 +320,7 @@ describe("add, update, and remove cohort", () => {
     const availableCohorts = availableCohortsReducer(
       {
         currentCohort: "",
+        message: undefined,
         ids: ["000-000-000-1"],
         entities: {
           "000-000-000-1": {
@@ -369,6 +378,7 @@ describe("add, update, and remove cohort", () => {
     const availableCohorts = availableCohortsReducer(
       {
         currentCohort: "000-000-000-1",
+        message: undefined,
         ids: ["000-000-000-1"],
         entities: {
           "000-000-000-1": {
@@ -404,6 +414,7 @@ describe("add, update, and remove cohort", () => {
             status: "uninitialized",
           },
           modified: false,
+          message: undefined,
         },
       },
     });
@@ -413,6 +424,7 @@ describe("add, update, and remove cohort", () => {
     const availableCohorts = availableCohortsReducer(
       {
         currentCohort: "000-000-000-2",
+        message: undefined,
         ids: ["000-000-000-1", "000-000-000-2"],
         entities: {
           "000-000-000-1": {
@@ -469,6 +481,7 @@ describe("add, update, and remove cohort", () => {
   test("should not remove the first cohort", () => {
     const removeState = {
       currentCohort: "000-000-000-1",
+      message: undefined,
       ids: ["000-000-000-1", "000-000-000-2"],
       entities: {
         "000-000-000-1": {

@@ -32,10 +32,6 @@ export interface FilterSet {
   readonly mode: string;
 }
 
-export interface CohortFilterState {
-  readonly filters: FilterSet;
-}
-
 /**
  *  Operand types for filter operations
  */
