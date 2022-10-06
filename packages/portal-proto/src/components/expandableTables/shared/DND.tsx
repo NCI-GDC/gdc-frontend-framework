@@ -14,7 +14,7 @@ interface DNDProps {
   defaultColumns: any;
 }
 
-const DND: React.VFC<DNDProps> = ({
+const DND: React.FC<DNDProps> = ({
   showColumnMenu,
   setShowColumnMenu,
   handleColumnChange,

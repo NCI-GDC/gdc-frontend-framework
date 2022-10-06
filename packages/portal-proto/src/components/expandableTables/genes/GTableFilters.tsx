@@ -13,7 +13,7 @@ interface GTableFiltersProps {
   defaultColumns: any;
 }
 
-export const GTableFilters: React.VFC<GTableFiltersProps> = ({
+export const GTableFilters: React.FC<GTableFiltersProps> = ({
   search,
   handleSearch,
   columnListOrder,

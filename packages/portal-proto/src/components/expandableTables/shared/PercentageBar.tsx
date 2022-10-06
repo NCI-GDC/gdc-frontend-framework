@@ -7,7 +7,7 @@ interface PercentageBarProps {
   width: number;
 }
 
-const PercentageBar: React.VFC<PercentageBarProps> = ({
+const PercentageBar: React.FC<PercentageBarProps> = ({
   numerator,
   denominator,
   width,

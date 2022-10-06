@@ -9,7 +9,7 @@ interface ListSpringProps {
   opening: boolean;
 }
 
-const ListSpring: React.VFC<ListSpringProps> = ({
+const ListSpring: React.FC<ListSpringProps> = ({
   subData,
   horizontalSpring,
   opening,

@@ -4,7 +4,7 @@ import { GeneSubRow } from "./types";
 import ListSpring from "../shared/ListSpring";
 import { convertGeneFilter } from "./genesTableUtils";
 
-export const GeneAffectedCases: React.VFC<GeneSubRow> = ({
+export const GeneAffectedCases: React.FC<GeneSubRow> = ({
   geneId,
   width,
   opening,

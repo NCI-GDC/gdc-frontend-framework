@@ -13,7 +13,7 @@ interface ItemSpringProps {
   len: number;
 }
 
-const ItemSpring: React.VFC<ItemSpringProps> = ({
+const ItemSpring: React.FC<ItemSpringProps> = ({
   numerator,
   index,
   len,

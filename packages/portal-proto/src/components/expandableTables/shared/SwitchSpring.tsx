@@ -9,7 +9,7 @@ interface SwitchSpringProps {
   selectedGenes: any; // add type
 }
 
-const SwitchSpring: React.VFC<SwitchSpringProps> = ({
+const SwitchSpring: React.FC<SwitchSpringProps> = ({
   isActive,
   icon,
   selected,

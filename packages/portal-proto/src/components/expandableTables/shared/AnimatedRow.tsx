@@ -7,12 +7,12 @@ interface AnimatedRowProps {
   index: number;
 }
 
-const AnimatedRow: React.VFC<AnimatedRowProps> = ({
+const AnimatedRow: React.FC<AnimatedRowProps> = ({
   row,
   index,
 }: AnimatedRowProps) => {
   const rowDelay = (index: number) => {
-    return index < 20 ? index * 50 : 100;
+    return index < 20 ? index * 60 : 100;
   };
   const unitSpring = useSpring({
     from: { opacity: 0, transform: "translate3D(0px, -150px, 0px)" },

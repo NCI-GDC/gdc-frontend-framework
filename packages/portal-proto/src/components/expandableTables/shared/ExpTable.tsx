@@ -23,7 +23,7 @@ export interface ExpTableProps<TData> {
   headerWidth: number;
 }
 
-export const ExpTable: React.VFC<ExpTableProps> = ({
+export const ExpTable: React.FC<ExpTableProps> = ({
   data,
   columns,
   expanded,

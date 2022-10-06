@@ -7,7 +7,7 @@ interface PageSizeProps {
   handlePageSize: (pageSize: number) => any;
 }
 
-const PageSize: React.VFC<PageSizeProps> = ({
+const PageSize: React.FC<PageSizeProps> = ({
   pageSize,
   handlePageSize,
 }: PageSizeProps) => {

@@ -8,7 +8,7 @@ interface SurvivalSpringProps {
   handleSurvival: (symbol: string, name: string, gene: string) => any;
 }
 
-const SurvivalSpring: React.VFC<SurvivalSpringProps> = ({
+const SurvivalSpring: React.FC<SurvivalSpringProps> = ({
   isActive,
   icon,
   selected,

@@ -9,7 +9,7 @@ import { GenesColumns } from "@/features/shared/table-utils";
 import { useSpring } from "react-spring";
 import PageSize from "../shared/PageSize";
 
-export const GenesTable: React.VFC<GenesTableProps> = ({
+export const GenesTable: React.FC<GenesTableProps> = ({
   initialData,
   mutationCounts,
   filteredCases,

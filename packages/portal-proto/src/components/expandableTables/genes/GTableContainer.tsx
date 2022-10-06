@@ -14,7 +14,7 @@ export interface GTableContainerProps {
   ) => void;
 }
 
-export const GTableContainer: React.VFC<GTableContainerProps> = ({
+export const GTableContainer: React.FC<GTableContainerProps> = ({
   selectedSurvivalPlot,
   handleSurvivalPlotToggled,
 }: GTableContainerProps) => {

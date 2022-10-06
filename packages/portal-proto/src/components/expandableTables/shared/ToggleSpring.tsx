@@ -7,7 +7,7 @@ interface ToggleSpringProps {
   twStyles: string;
 }
 
-const ToggleSpring: React.VFC<ToggleSpringProps> = ({
+const ToggleSpring: React.FC<ToggleSpringProps> = ({
   isExpanded,
   icon,
   twStyles,

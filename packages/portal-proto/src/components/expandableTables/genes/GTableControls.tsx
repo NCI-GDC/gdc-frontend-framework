@@ -13,7 +13,7 @@ interface GeneSaveOption {
   value: string;
 }
 
-export const GTableControls: React.VFC<GTableControlsProps> = ({
+export const GTableControls: React.FC<GTableControlsProps> = ({
   selectedGenes,
   handleGeneSave,
 }: GTableControlsProps) => {
