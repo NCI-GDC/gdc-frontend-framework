@@ -4,16 +4,12 @@ import {
   useCartSummary,
   useCoreSelector,
   selectCart,
-  selectCurrentModal,
-  Modals,
   useUserDetails,
 } from "@gff/core";
 import FilesTable from "./FilesTable";
 import ProjectTable from "./ProjectTable";
 import CartHeader from "./CartHeader";
 import AuthorizationTable from "./AuthorizationTable";
-import CartSizeLimitModal from "@/components/Modals/CartSizeLimitModal";
-import CartDownloadModal from "@/components/Modals/CartDownloadModal";
 import { groupByAccess } from "./utils";
 
 const H2 = tw.h2`
@@ -42,7 +38,6 @@ const P = tw.p`
 const Cart: React.FC = () => {
   const cart = useCoreSelector((state) => selectCart(state));
   const { data: summaryData } = useCartSummary(cart.map((f) => f.fileId));
-  const modal = useCoreSelector((state) => selectCurrentModal(state));
   const { data: userDetails } = useUserDetails();
   const filesByCanAccess = groupByAccess(cart, userDetails);
   const dbGapList = Array.from(
@@ -55,16 +50,6 @@ const Cart: React.FC = () => {
 
   return (
     <>
-      {modal === Modals.CartSizeLimitModal && <CartSizeLimitModal openModal />}
-      {modal === Modals.CartDownloadModal && (
-        <CartDownloadModal
-          openModal
-          user={userDetails}
-          filesByCanAccess={filesByCanAccess}
-          dbGapList={dbGapList}
-        />
-      )}
-
       <CartHeader
         summaryData={summaryData}
         cart={cart}

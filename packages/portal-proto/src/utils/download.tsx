@@ -116,7 +116,7 @@ const download = async ({
 
     const executePoll = async (resolve: (value?: unknown) => void) => {
       attempts++;
-      if (!downloadStarted) {
+      if (!downloadStarted && !canceled) {
         if (attempts === 6) {
           showNotification({
             message: (
