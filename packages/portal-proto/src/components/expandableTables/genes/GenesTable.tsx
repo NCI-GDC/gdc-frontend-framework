@@ -174,8 +174,8 @@ export const GenesTable: React.VFC<GenesTableProps> = ({
 
   // todo add total
   // data.genes.genes_total
-  const pageDisplay = `Showing ${(offset - 1) * pageSize + 1} - ${
-    offset * pageSize
+  const pageDisplay = `Showing ${offset * pageSize + 1} - ${
+    (offset + 1) * pageSize
   } of ten million genes`;
 
   return (
