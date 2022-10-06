@@ -133,7 +133,6 @@ const FilesTables: React.FC = () => {
   const handlePageChange = (x: number) => {
     getCohortCases(tempPagination.size, x - 1);
   };
-  console.log(tempPagination);
 
   //update everything that uses table component
   return (
