@@ -1,5 +1,4 @@
-import { hideModal, useCoreDispatch } from "@gff/core";
-import { Button, Text } from "@mantine/core";
+import { Text } from "@mantine/core";
 import { BaseModal } from "./BaseModal";
 
 const CartSizeLimitModal = ({
@@ -7,7 +6,6 @@ const CartSizeLimitModal = ({
 }: {
   openModal: boolean;
 }): JSX.Element => {
-  const dispatch = useCoreDispatch();
   return (
     <BaseModal
       title={
@@ -17,6 +15,7 @@ const CartSizeLimitModal = ({
       }
       closeButtonLabel="Close"
       openModal={openModal}
+      buttons={[{ title: "Accept" }]}
     >
       <div>
         <p>Your cart contains more than 5 GBs of data.</p>
@@ -34,14 +33,6 @@ const CartSizeLimitModal = ({
           </a>{" "}
           to download the files in your cart.
         </p>
-      </div>
-      <div className="flex justify-end mt-2.5">
-        <Button
-          onClick={() => dispatch(hideModal())}
-          className="!bg-primary hover:!bg-primary-darker"
-        >
-          Accept
-        </Button>
       </div>
     </BaseModal>
   );
