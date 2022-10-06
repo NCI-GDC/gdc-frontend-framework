@@ -2,6 +2,7 @@ import {
   createSlice,
   createEntityAdapter,
   PayloadAction,
+  nanoid,
 } from "@reduxjs/toolkit";
 import { CoreState } from "../../reducers";
 import { buildCohortGqlOperator, FilterSet } from "./filters";
@@ -21,6 +22,9 @@ export interface Cohort {
   readonly name: string;
   readonly filters: FilterSet;
   readonly caseSet: CaseSetDataAndStatus;
+  readonly modified: boolean;
+  readonly modifiedDate?: Date;
+  readonly saved?: boolean;
 }
 
 export const DEFAULT_COHORT_ID = "ALL-GDC-COHORT";
@@ -41,6 +45,32 @@ interface UpdateFilterParams {
   field: string;
   operation: Operation;
 }
+
+const createCohortName = (): string => {
+  return `Custom Cohort ${new Date().toString()}`;
+};
+
+const createCohortId = (): string => nanoid();
+
+const newCohort = (
+  filters: FilterSet = { mode: "and", root: {} },
+  modified = false,
+): Cohort => {
+  const newName = createCohortName();
+  const newId = createCohortId();
+  return {
+    name: newName,
+    id: newId,
+    caseSet: {
+      caseSetId: { mode: "and", root: {} },
+      status: "uninitialized" as DataStatus,
+    },
+    filters: filters,
+    modified: modified,
+    saved: false,
+    modifiedDate: new Date(),
+  };
+};
 
 /**
  * A Cohort Management Slice which allow cohort to be created and updated.
@@ -64,21 +94,8 @@ const slice = createSlice({
   name: "cohort/availableCohorts",
   initialState: initialState,
   reducers: {
-    addNewCohort: (state, action: PayloadAction<string>) => {
-      const newCounts = Object.values(state.entities).reduce(
-        (count, x) => (x?.name.includes("New Cohort") ? count + 1 : count),
-        0,
-      );
-      const newName = newCounts > 0 ? `New Cohort ${newCounts}` : "New Cohort";
-      cohortsAdapter.addOne(state, {
-        name: newName,
-        id: action.payload,
-        caseSet: {
-          caseSetId: { mode: "and", root: {} },
-          status: "uninitialized",
-        },
-        filters: { mode: "and", root: {} },
-      });
+    addNewCohort: (state) => {
+      cohortsAdapter.addOne(state, newCohort());
     },
     updateCohortName: (state, action: PayloadAction<string>) => {
       cohortsAdapter.updateOne(state, {
@@ -101,10 +118,22 @@ const slice = createSlice({
           [action.payload.field]: action.payload.operation,
         },
       };
-      cohortsAdapter.updateOne(state, {
-        id: state.currentCohort,
-        changes: { filters: filters },
-      });
+
+      if (state.currentCohort === DEFAULT_COHORT_ID) {
+        // create a new cohort and add it:
+        const cohort = newCohort(filters, true);
+        cohortsAdapter.addOne(state, cohort);
+        state.currentCohort = cohort.id;
+      } else {
+        cohortsAdapter.updateOne(state, {
+          id: state.currentCohort,
+          changes: {
+            filters: filters,
+            modified: true,
+            modifiedDate: new Date(),
+          },
+        });
+      }
     },
 
     removeCohortFilter: (state, action: PayloadAction<string>) => {

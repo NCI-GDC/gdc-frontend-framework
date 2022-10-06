@@ -1,11 +1,7 @@
 import { getInitialCoreState } from "../../store.unit.test";
 import { COHORTS } from "./cohortFixture";
 import { DataStatus } from "../../dataAccess";
-//import { FilterSet } from "./filters";
 import {
-  // selectCurrentCohortFiltersByName,
-  // updateCohortFilter,
-  // removeCohortFilter,
   Cohort,
   addNewCohort,
   updateCohortName,
@@ -17,12 +13,6 @@ import {
   removeCohortFilter,
   removeCohort,
 } from "./availableCohortsSlice";
-// import {
-//   clearCurrentCohort,
-//   selectCurrentCohort,
-//   setCurrentCohort,
-//   cohortNameReducer,
-// } from "./availableCohortsSlice";
 import {
   availableCohortsReducer,
   // addNewCohort,
@@ -296,7 +286,7 @@ describe("add, update, and remove cohort", () => {
   test("should add new cohort to available cohorts", () => {
     const availableCohorts = availableCohortsReducer(
       { ids: [], entities: {}, currentCohort: "" },
-      addNewCohort("000-000-000-1"),
+      addNewCohort(),
     );
     expect(availableCohorts).toEqual({
       currentCohort: "",
@@ -335,10 +325,11 @@ describe("add, update, and remove cohort", () => {
               },
               status: "uninitialized",
             },
+            modified: false,
           },
         },
       },
-      addNewCohort("000-000-000-2"),
+      addNewCohort(),
     );
     expect(availableCohorts).toEqual({
       currentCohort: "",
@@ -355,6 +346,7 @@ describe("add, update, and remove cohort", () => {
             },
             status: "uninitialized",
           },
+          modified: false,
         },
         "000-000-000-2": {
           name: "New Cohort 1",
@@ -367,60 +359,7 @@ describe("add, update, and remove cohort", () => {
             },
             status: "uninitialized",
           },
-        },
-      },
-    });
-  });
-
-  test("should add new cohort to available cohorts", () => {
-    const availableCohorts = availableCohortsReducer(
-      {
-        currentCohort: "",
-        ids: ["000-000-000-1"],
-        entities: {
-          "000-000-000-1": {
-            name: "New Cohort",
-            filters: { mode: "and", root: {} },
-            id: "000-000-000-1",
-            caseSet: {
-              caseSetId: {
-                mode: "and",
-                root: {},
-              },
-              status: "uninitialized",
-            },
-          },
-        },
-      },
-      addNewCohort("000-000-000-2"),
-    );
-    expect(availableCohorts).toEqual({
-      currentCohort: "",
-      ids: ["000-000-000-1", "000-000-000-2"],
-      entities: {
-        "000-000-000-1": {
-          name: "New Cohort",
-          filters: { mode: "and", root: {} },
-          id: "000-000-000-1",
-          caseSet: {
-            caseSetId: {
-              mode: "and",
-              root: {},
-            },
-            status: "uninitialized",
-          },
-        },
-        "000-000-000-2": {
-          name: "New Cohort 1",
-          filters: { mode: "and", root: {} },
-          id: "000-000-000-2",
-          caseSet: {
-            caseSetId: {
-              mode: "and",
-              root: {},
-            },
-            status: "uninitialized",
-          },
+          modified: false,
         },
       },
     });
@@ -443,6 +382,7 @@ describe("add, update, and remove cohort", () => {
               },
               status: "uninitialized",
             },
+            modified: false,
           },
         },
       },
@@ -463,6 +403,7 @@ describe("add, update, and remove cohort", () => {
             },
             status: "uninitialized",
           },
+          modified: false,
         },
       },
     });
@@ -485,6 +426,7 @@ describe("add, update, and remove cohort", () => {
               },
               status: "uninitialized",
             },
+            modified: false,
           },
           "000-000-000-2": {
             name: "New Cohort 2",
@@ -497,6 +439,7 @@ describe("add, update, and remove cohort", () => {
               },
               status: "uninitialized",
             },
+            modified: false,
           },
         },
       },
@@ -517,6 +460,7 @@ describe("add, update, and remove cohort", () => {
             },
             status: "uninitialized",
           },
+          modified: false,
         },
       },
     });
@@ -538,6 +482,7 @@ describe("add, update, and remove cohort", () => {
             },
             status: "uninitialized" as DataStatus,
           },
+          modified: false,
         },
         "000-000-000-2": {
           name: "New Cohort 2",
@@ -550,6 +495,7 @@ describe("add, update, and remove cohort", () => {
             },
             status: "uninitialized" as DataStatus,
           },
+          modified: false,
         },
       },
     };

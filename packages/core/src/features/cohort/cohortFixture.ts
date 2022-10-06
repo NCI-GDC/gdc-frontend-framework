@@ -4,6 +4,7 @@ export const COHORTS = [
     id: "ALL-GDC-COHORT",
     filters: { mode: "and", root: {} },
     caseSet: { caseSetId: { mode: "and", root: {} }, status: "uninitialized" },
+    modified: false,
   },
   {
     name: "Baily's Cohort",
@@ -19,6 +20,7 @@ export const COHORTS = [
       },
     },
     caseSet: { caseSetId: { mode: "and", root: {} }, status: "uninitialized" },
+    modified: false,
   },
   {
     name: "Pancreas",
@@ -34,6 +36,7 @@ export const COHORTS = [
       mode: "and",
     },
     caseSet: { caseSetId: { mode: "and", root: {} }, status: "uninitialized" },
+    modified: false,
   },
   {
     name: "Pancreas - KRAS mutated",
@@ -54,6 +57,7 @@ export const COHORTS = [
       mode: "and",
     },
     caseSet: { caseSetId: { mode: "and", root: {} }, status: "uninitialized" },
+    modified: false,
   },
   {
     name: "Pancreas - KRAS not mutated",
@@ -74,6 +78,7 @@ export const COHORTS = [
       mode: "and",
     },
     caseSet: { caseSetId: { mode: "and", root: {} }, status: "uninitialized" },
+    modified: false,
   },
   {
     name: "breast, true",
@@ -94,5 +99,6 @@ export const COHORTS = [
       mode: "and",
     },
     caseSet: { caseSetId: { mode: "and", root: {} }, status: "uninitialized" },
+    modified: false,
   },
 ];
