@@ -112,45 +112,51 @@ export const formatEntityInfo = (
 
   if (foundType === "slide" && !!selectedSlide[0]) {
     filtered.push([
-      "Slides",
+      "Slide Image",
       <div className="flex gap-4" key={selectedSlide[0]?.file_id}>
         <Tooltip label="View Slide Image">
-          <Link
-            href={`/user-flow/workbench/MultipleImageViewerPage?caseId=${caseId}&selectedId=${selectedSlide[0]?.file_id}`}
-          >
-            <a>
-              <FaMicroscope className="text-primary-content" />
-            </a>
-          </Link>
+          <div>
+            <Link
+              href={`/user-flow/workbench/MultipleImageViewerPage?caseId=${caseId}&selectedId=${selectedSlide[0]?.file_id}`}
+            >
+              <a>
+                <FaMicroscope className="text-primary-content" />
+              </a>
+            </Link>
+          </div>
         </Tooltip>{" "}
         <Tooltip label={isFileInCart ? "Remove from Cart" : "Add to Cart"}>
-          <FaShoppingCart
-            onClick={() => {
-              isFileInCart
-                ? removeFromCart(
-                    mapGdcFileToCartFile(mapFileData(selectedSlide)),
-                    currentCart,
-                    dispatch,
-                  )
-                : addToCart(
-                    mapGdcFileToCartFile(mapFileData(selectedSlide)),
-                    currentCart,
-                    dispatch,
-                  );
-            }}
-            className={`${
-              isFileInCart ? "text-secondary-min" : "text-primary-content"
-            } cursor-pointer`}
-          />
+          <div>
+            <FaShoppingCart
+              onClick={() => {
+                isFileInCart
+                  ? removeFromCart(
+                      mapGdcFileToCartFile(mapFileData(selectedSlide)),
+                      currentCart,
+                      dispatch,
+                    )
+                  : addToCart(
+                      mapGdcFileToCartFile(mapFileData(selectedSlide)),
+                      currentCart,
+                      dispatch,
+                    );
+              }}
+              className={`${
+                isFileInCart ? "text-secondary-min" : "text-primary-content"
+              } cursor-pointer`}
+            />
+          </div>
         </Tooltip>
         <Tooltip label="Download">
-          <FaDownload
-            // TODO: change this
-            onClick={() => {
-              alert("Download coming soon!!!");
-            }}
-            className="text-primary-content cursor-pointer"
-          />
+          <div>
+            <FaDownload
+              // TODO: change this
+              onClick={() => {
+                alert("Download coming soon!!!");
+              }}
+              className="text-primary-content cursor-pointer"
+            />
+          </div>
         </Tooltip>
       </div>,
     ]);

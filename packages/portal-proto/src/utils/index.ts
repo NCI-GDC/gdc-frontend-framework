@@ -128,7 +128,7 @@ export const getThemeColor = (key: string): Record<string, string> =>
 export const fileInCart = (cart: CartFile[], newId: string): boolean =>
   cart.map((f) => f.fileId).some((id) => id === newId);
 
-interface IHumanifyParams {
+interface HumanifyParams {
   term: string;
   capitalize?: boolean;
   facetTerm?: boolean;
@@ -137,7 +137,7 @@ export const humanify = ({
   term,
   capitalize: cap = true,
   facetTerm = false,
-}: IHumanifyParams): string => {
+}: HumanifyParams): string => {
   let original;
   let humanified;
   if (facetTerm) {

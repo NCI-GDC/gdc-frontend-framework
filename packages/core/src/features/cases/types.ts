@@ -9,7 +9,7 @@ export interface caseFileType {
 }
 
 export interface Demographic {
-  readonly demographic_id: string | null | null;
+  readonly demographic_id: string | null;
   readonly ethnicity: string | null;
   readonly gender: string | null;
   readonly race: string | null;

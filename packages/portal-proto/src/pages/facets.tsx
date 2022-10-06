@@ -1,6 +1,12 @@
 import { NextPage } from "next";
-import { SimpleLayout } from "../features/layout/Simple";
-import { EnumFacet } from "../features/facets/EnumFacet";
+import { SimpleLayout } from "@/features/layout/Simple";
+import EnumFacet from "../features/facets/EnumFacet";
+import {
+  useClearFilters,
+  useEnumFacet,
+  useTotalCounts,
+  useUpdateFacetFilter,
+} from "@/features/facets/hooks";
 
 const FacetsPage: NextPage = () => {
   return (
@@ -10,6 +16,12 @@ const FacetsPage: NextPage = () => {
           <EnumFacet
             docType="cases"
             field="primary_site"
+            hooks={{
+              useUpdateFacetFilters: useUpdateFacetFilter,
+              useTotalCounts: useTotalCounts,
+              useClearFilter: useClearFilters,
+              useGetFacetData: useEnumFacet,
+            }}
             dismissCallback={() => null}
           />
         </div>

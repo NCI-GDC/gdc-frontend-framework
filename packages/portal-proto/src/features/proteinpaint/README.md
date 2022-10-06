@@ -25,9 +25,14 @@ rm -rf packages/portal-proto/.next
 # other way around
 ```
 
+## Login testing
+
+For Proteinpaint tracks that require user login, such as the Sequence Read tool,
+refer to the "Running Auth" section in the root README.md.
+
 ## Testing
 
-Uncomment or add this entry to portal-proto/jest.config.ts to make the code is transformed properly:
+Uncomment or add this entry to portal-proto/jest.config.ts to make sure the code is transformed properly:
 
 ```ts
 transform: {
