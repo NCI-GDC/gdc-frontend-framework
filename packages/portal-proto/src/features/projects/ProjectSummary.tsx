@@ -18,6 +18,33 @@ import { humanify } from "../biospecimen/utils";
 import Link from "next/link";
 import { CollapsibleList } from "@/components/CollapsibleList";
 import { CategoryTableSummary } from "@/components/Summary/CategoryTableSummary";
+import tw from "tailwind-styled-components";
+const PercentBar = tw.div`
+relative
+bg-chart-lighter
+rounded-sm
+px-1
+w-16 
+h-full`;
+
+const PercentBarLabel = tw.span`
+absolute
+z-10
+left-0 
+top-0 
+w-full 
+h-full 
+text-chart-lighter-contrast 
+text-center`;
+
+const PercentBarComplete = tw.div`
+absolute 
+left-0 
+top-0 
+w-full 
+h-full 
+bg-chart-light 
+rounded-sm`;
 
 export interface ContextualProjectViewProps {
   readonly projectId: string;
@@ -199,15 +226,12 @@ export const ProjectView: React.FC<ProjectViewProps> = (
               {data_c.case_count.toLocaleString()}
             </span>
             <div className="w-3/4">
-              <div className="relative bg-chart rounded-sm px-1 w-16 h-full">
-                <span className="absolute z-10 left-0 top-0 w-full h-full text-center">
-                  {`${caseCountPercentage}%`}
-                </span>
-                <div
-                  className="absolute left-0 top-0 w-full h-full bg-chart-darkest rounded-sm"
+              <PercentBar>
+                <PercentBarLabel>{`${caseCountPercentage}%`}</PercentBarLabel>
+                <PercentBarComplete
                   style={{ width: `${caseCountPercentage}%` }}
                 />
-              </div>
+              </PercentBar>
             </div>
           </div>
         ),
@@ -218,15 +242,12 @@ export const ProjectView: React.FC<ProjectViewProps> = (
               {data_c.file_count.toLocaleString()}
             </span>
             <div className="w-3/4">
-              <div className="relative bg-chart rounded-sm px-1 w-16 h-full">
-                <span className="absolute z-10 left-0 top-0 w-full h-full text-center">
-                  {`${fileCountPercentage}%`}
-                </span>
-                <div
-                  className="absolute left-0 top-0 w-full h-full bg-chart-darkest rounded-sm"
+              <PercentBar>
+                <PercentBarLabel>{`${fileCountPercentage}%`}</PercentBarLabel>
+                <PercentBarComplete
                   style={{ width: `${fileCountPercentage}%` }}
                 />
-              </div>
+              </PercentBar>
             </div>
           </div>
         ),
@@ -269,15 +290,12 @@ export const ProjectView: React.FC<ProjectViewProps> = (
               {exp_c.case_count.toLocaleString()}
             </span>
             <div className="w-3/4">
-              <div className="relative bg-chart rounded-sm px-1 w-16 h-full">
-                <span className="absolute z-10 left-0 top-0 w-full h-full text-center">
-                  {`${caseCountPercentage}%`}
-                </span>
-                <div
-                  className="absolute left-0 top-0 w-full h-full bg-chart-darkest rounded-sm"
+              <PercentBar>
+                <PercentBarLabel>{`${caseCountPercentage}%`}</PercentBarLabel>
+                <PercentBarComplete
                   style={{ width: `${caseCountPercentage}%` }}
                 />
-              </div>
+              </PercentBar>
             </div>
           </div>
         ),
@@ -288,15 +306,12 @@ export const ProjectView: React.FC<ProjectViewProps> = (
               {exp_c.file_count.toLocaleString()}
             </span>
             <div className="w-3/4">
-              <div className="relative bg-chart rounded-sm px-1 w-14 h-full">
-                <span className="absolute z-10 left-0 top-0 w-full h-full text-center">
-                  {`${fileCountPercentage}%`}
-                </span>
-                <div
-                  className="absolute left-0 top-0 w-full h-full bg-chart-darkest rounded-sm"
+              <PercentBar>
+                <PercentBarLabel>{`${fileCountPercentage}%`}</PercentBarLabel>
+                <PercentBarComplete
                   style={{ width: `${fileCountPercentage}%` }}
                 />
-              </div>
+              </PercentBar>
             </div>
           </div>
         ),
