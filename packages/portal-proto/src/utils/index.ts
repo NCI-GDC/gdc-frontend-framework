@@ -1,6 +1,6 @@
 import { KeyboardEventHandler } from "react";
 import { CartFile, DAYS_IN_YEAR } from "@gff/core";
-import { replace, sortBy, spread, zip } from "lodash";
+import { replace, sortBy, zip } from "lodash";
 import { DocumentWithWebkit } from "../features/types";
 import * as tailwindConfig from "tailwind.config";
 
@@ -103,10 +103,13 @@ export const externalLinks = {
 };
 
 export const calculatePercentage = (count: number, total: number): string =>
-  ((count / total) * 100).toFixed(2);
+  `${((count / total) * 100).toFixed(2)}%`;
 
 export const allFilesInCart = (carts: CartFile[], files: CartFile[]): boolean =>
   files?.every((file) => carts.some((cart) => cart.fileId === file.fileId));
+
+export const fileInCart = (cart: CartFile[], newId: string): boolean =>
+  cart.map((f) => f.fileId).some((id) => id === newId);
 
 /**
  *
@@ -124,9 +127,6 @@ export const sortByPropertyAsc = <T>(
 
 export const getThemeColor = (key: string): Record<string, string> =>
   tailwindConfig.plugins.slice(-1)[0].__options.defaultTheme.extend.colors[key];
-
-export const fileInCart = (cart: CartFile[], newId: string): boolean =>
-  cart.map((f) => f.fileId).some((id) => id === newId);
 
 interface HumanifyParams {
   term: string;
@@ -170,16 +170,16 @@ export const ageDisplay = (
   const timeString = (
     num: number,
     singular: string,
-    plural: string,
+    plural?: string,
   ): string => {
     const pluralChecked = plural || `${singular}s`;
     return `${num} ${num === 1 ? singular : pluralChecked}`;
   };
-  const _timeString = spread(timeString);
 
   if (!ageInDays) {
     return defaultValue;
   }
+
   return zip(
     leapThenPair(
       Math.floor(ageInDays / DAYS_IN_YEAR),
@@ -188,7 +188,7 @@ export const ageDisplay = (
     ["year", "day"],
   )
     .filter((p) => (yearsOnly ? p[1] === "year" : p[0] > 0))
-    .map((p) => (!yearsOnly ? _timeString(p) : p[0]))
+    .map((p) => (yearsOnly ? p[0] : timeString(...p)))
     .join(" ")
     .trim();
 };

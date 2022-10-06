@@ -335,7 +335,7 @@ export const CaseSummary = ({
       file_count: `${data_c.file_count.toLocaleString()} (${calculatePercentage(
         data_c.file_count,
         filesCountTotal,
-      )}%)`,
+      )})`,
     }));
 
     return {
@@ -359,7 +359,7 @@ export const CaseSummary = ({
       file_count: `${exp_c.file_count.toLocaleString()} (${calculatePercentage(
         exp_c.file_count,
         filesCountTotal,
-      )}%)`,
+      )})`,
     }));
 
     return {

@@ -184,12 +184,12 @@ export const ProjectView: React.FC<ProjectViewProps> = (
       case_count: `${data_c.case_count.toLocaleString()} (${calculatePercentage(
         data_c.case_count,
         projectData.summary.case_count,
-      )}%)`,
+      )})`,
       // TODO: Need to change it to Link after the href has been finalized
       file_count: `${data_c.file_count.toLocaleString()} (${calculatePercentage(
         data_c.file_count,
         projectData.summary.file_count,
-      )}%)`,
+      )})`,
     }));
 
     return {
@@ -214,12 +214,12 @@ export const ProjectView: React.FC<ProjectViewProps> = (
       case_count: `${exp_c.case_count.toLocaleString()} (${calculatePercentage(
         exp_c.case_count,
         projectData.summary.case_count,
-      )}%)`,
+      )})`,
       // TODO: Need to change it to Link after the href has been finalized
       file_count: `${exp_c.file_count.toLocaleString()} (${calculatePercentage(
         exp_c.file_count,
         projectData.summary.file_count,
-      )}%)`,
+      )})`,
     }));
 
     return {
