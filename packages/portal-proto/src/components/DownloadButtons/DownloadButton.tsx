@@ -76,13 +76,13 @@ export const DownloadButton: React.FC<DownloadButtonProps> = ({
           ...(filename ? { filename } : {}),
           ...extraParams,
         };
-        setActive(true);
+        setActive && setActive(true);
         download({
           params,
           endpoint,
           method,
           queryParams,
-          done: () => setActive(false),
+          done: () => setActive && setActive(false),
           dispatch,
           Modal400,
           Modal403,

@@ -220,14 +220,18 @@ const FilesTable: React.FC<FilesTableProps> = ({
               </Menu.Target>
               <Menu.Dropdown>
                 <Menu.Item onClick={() => removeFromCart(data, cart, dispatch)}>
-                  All Files
+                  All Files ({cart.length})
                 </Menu.Item>
                 <Menu.Item
                   onClick={() =>
-                    removeFromCart(filesByCanAccess.false, cart, dispatch)
+                    removeFromCart(
+                      filesByCanAccess?.false || [],
+                      cart,
+                      dispatch,
+                    )
                   }
                 >
-                  Unauthorized Files
+                  Unauthorized Files ({(filesByCanAccess?.false || []).length})
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>

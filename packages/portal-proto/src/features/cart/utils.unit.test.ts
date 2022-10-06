@@ -27,27 +27,11 @@ describe("groupByAccess", () => {
       [
         { access: "controlled", fileId: "1", project_id: "CAT" },
         { access: "controlled", fileId: "2", project_id: "DOG" },
-        {
-          access: "controlled",
-          fileId: "3",
-          acl: ["phs01"],
-          fileSize: 800,
-          fileName: "file",
-          state: "released",
-        },
-        {
-          access: "controlled",
-          fileId: "4",
-          acl: ["phs02"],
-          fileSize: 800,
-          fileName: "file",
-          state: "released",
-        },
       ] as CartFile[],
       {
         username: "user",
         projects: {
-          phs_ids: { phs02: ["_member_"] },
+          phs_ids: {},
           gdc_ids: { CAT: ["_member_"] },
         },
       },
@@ -61,15 +45,6 @@ describe("groupByAccess", () => {
           canAccess: true,
           project_id: "CAT",
         },
-        {
-          access: "controlled",
-          fileId: "4",
-          acl: ["phs02"],
-          fileSize: 800,
-          fileName: "file",
-          state: "released",
-          canAccess: true,
-        },
       ],
       false: [
         {
@@ -77,15 +52,6 @@ describe("groupByAccess", () => {
           fileId: "2",
           canAccess: false,
           project_id: "DOG",
-        },
-        {
-          access: "controlled",
-          fileId: "3",
-          acl: ["phs01"],
-          fileSize: 800,
-          fileName: "file",
-          state: "released",
-          canAccess: false,
         },
       ],
     });
