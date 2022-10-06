@@ -1,5 +1,5 @@
 import React, { useState, useEffect, FC } from "react";
-import { useTable, useBlockLayout } from "react-table";
+import { useTable } from "react-table";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DragDrop } from "./DragDrop";
@@ -87,34 +87,26 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         {
           columns,
           data,
-          /* TODO for looking into making the table cells variable width
-        defaultColumn: {
-          width: "auto",
-        },*/
         },
-        useBlockLayout,
         selectableRow ? tableAction : null,
       );
 
     return (
-      <table
-        {...getTableProps()}
-        className="inline-block overflow-y-scroll w-full"
-      >
+      <table {...getTableProps()} className="w-full">
         {tableTitle && (
           <caption className="font-semibold text-left">{tableTitle}</caption>
         )}
         <thead>
           {headerGroups.map((headerGroup, key) => (
             <tr
-              className="bg-primary-lighter"
+              className="bg-primary-lighter leading-5"
               {...headerGroup.getHeaderGroupProps()}
               key={`header-${key}`}
             >
               {headerGroup.headers.map((column, key) => (
                 <th
                   {...column.getHeaderProps()}
-                  className=""
+                  className="px-2 py-1"
                   key={`column-${key}`}
                 >
                   {column.render("Header")}
@@ -140,7 +132,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                       <td
                         {...cell.getCellProps()}
                         key={`row-${key}`}
-                        className="rounded-sm p-1.5 text-sm text-content text-medium text-center"
+                        className="rounded-sm p-1 text-sm text-content text-medium text-center"
                       >
                         {cell.render("Cell")}
                       </td>
@@ -237,7 +229,9 @@ export const VerticalTable: FC<VerticalTableProps> = ({
           </div>
         </div>
       )}
-      <Table columns={headings} data={table} />
+      <div className="overflow-y-scroll w-full">
+        <Table columns={headings} data={table} />
+      </div>
       {pagination && (
         <div className="flex flex-row items-center justify-start border-t border-base-light">
           <p className="px-2">Page Size:</p>
