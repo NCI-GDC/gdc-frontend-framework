@@ -2,6 +2,7 @@ import {
   EnumOperandValue,
   GQLDocType,
   GQLIndexType,
+  NumericFromTo,
   Operation,
 } from "@gff/core";
 
@@ -18,23 +19,69 @@ export interface EnumFacetResponse extends FacetResponse {
   readonly enumFilters?: ReadonlyArray<string>;
 }
 
-export type GetFacetDataFunction = (field: string) => FacetResponse;
-export type GetFacetEnumDataFunction = (
+export type GetFacetDataFunction = <T extends FacetResponse = FacetResponse>(
   field: string,
-  docType?: GQLDocType,
-  indexType?: GQLIndexType,
+) => T;
+
+export type GetFacetDataFromDocAndIndexFunction = (
+  field: string,
+  docType: GQLDocType,
+  indexType: GQLIndexType,
 ) => EnumFacetResponse;
+
 export type SelectFacetFilterFunction = (field: string) => Operation;
 export type UpdateFacetFilterFunction = (field: string, op: Operation) => void;
-export type UpdateEnumFacetFilterFunction = (
-  field: string,
-  op: Operation,
-) => void;
+export type UpdateFacetFilterHook = () => UpdateFacetFilterFunction;
 export type ClearFacetFunction = (field: string) => void;
+export type ClearFacetHook = () => ClearFacetFunction;
+export type GetTotalCountsFunction = (countName: string) => number;
+export type updateArrayFilterValues = (
+  field: string,
+  enumerationFilters: EnumOperandValue,
+) => void;
 
-export interface FacetCardProps {
+export type GetRangeFacetDataFunction = (
+  field: string,
+  ranges: ReadonlyArray<NumericFromTo>,
+  docType: GQLDocType,
+  indexType: GQLIndexType,
+) => FacetResponse;
+
+export interface FacetDataHooks {
+  useClearFilter: ClearFacetHook;
+}
+
+export interface EnumFacetHooks extends FacetDataHooks {
+  useUpdateFacetFilters: UpdateFacetFilterHook;
+  useGetFacetData: GetFacetDataFromDocAndIndexFunction;
+  useTotalCounts: GetTotalCountsFunction;
+}
+
+export interface ValueFacetHooks extends FacetDataHooks {
+  useUpdateFacetFilters: UpdateFacetFilterHook;
+  useGetFacetFilters: SelectFacetFilterFunction;
+}
+
+export interface RangeFacetHooks extends FacetDataHooks {
+  useGetFacetFilters: SelectFacetFilterFunction;
+  useUpdateFacetFilters: UpdateFacetFilterHook;
+  useGetFacetData: GetRangeFacetDataFunction;
+  useTotalCounts: GetTotalCountsFunction;
+}
+
+export interface AllHooks {
+  useClearFilter: ClearFacetHook; // clear Facet Filters and remove facet from filter set
+  useGetFacetFilters: SelectFacetFilterFunction; // gets the current filters
+  useUpdateFacetFilters: UpdateFacetFilterHook; // updates the filters
+  useGetEnumFacetData: GetFacetDataFromDocAndIndexFunction; // gets data for EnumFacets and ToggleFacet
+  useGetRangeFacetData: GetRangeFacetDataFunction; // gets the data for Range Facets
+  useTotalCounts: GetTotalCountsFunction; // get the totals count by type: cases, files, genes, ssms, projects
+}
+
+export interface FacetCardProps<T extends FacetDataHooks> {
   readonly field: string;
-  readonly docType: GQLDocType;
+  readonly hooks: T;
+  readonly docType?: GQLDocType;
   readonly indexType?: GQLIndexType;
   readonly description?: string;
   readonly facetName?: string;
@@ -45,19 +92,6 @@ export interface FacetCardProps {
   readonly hideIfEmpty?: boolean;
   readonly width?: string;
   readonly dismissCallback?: (string) => void;
-  readonly clearFilterFunc?: ClearFacetFunction;
-}
-
-export interface EnumFacetCardProps extends FacetCardProps {
-  readonly getFacetData?: (
-    field: string,
-    docType: GQLDocType,
-    indexType: GQLIndexType,
-  ) => EnumFacetResponse;
-  readonly updateFacetEnumerations?: (
-    field: string,
-    enumerationFilters: EnumOperandValue,
-  ) => void;
 }
 
 export type RangeFromOp = ">" | ">=";
