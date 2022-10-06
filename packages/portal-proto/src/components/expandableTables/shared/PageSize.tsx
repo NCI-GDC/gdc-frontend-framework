@@ -66,28 +66,21 @@ const PageSize: React.FC<PageSizeProps> = ({
           <div className={`text-center`}>
             <animated.ul
               style={{ ...colorSpring, ...borderSpring }}
-              // on hover: rgb(226 232 240)
+              // on hover:
               className={`list-none w-12 rounded-b-md`}
             >
-              {[
-                { value: 10, label: "10" },
-                { value: 20, label: "20" },
-                { value: 40, label: "40" },
-                { value: 100, label: "100" },
-              ]
-                .filter((opt) => opt.value !== pageSize)
-                .map((opt, idx) => {
+              {[{ pg: 10 }, { pg: 20 }, { pg: 40 }, { pg: 100 }]
+                .filter(({ pg }) => pg !== pageSize)
+                .map(({ pg }) => {
                   return (
                     <li
-                      key={`pageSize-select-${opt.label}`}
-                      onClick={() => handlePageSize(opt.value)}
-                      onMouseEnter={() => setHovered(opt.value)}
-                      onMouseLeave={() => {
-                        setHovered(pageSize);
-                      }}
-                      className={`py-1 px-2 text-sm hover:bg-gray rounded-md w-full h-full`}
+                      key={`page-size-option-${pg}`}
+                      onClick={() => handlePageSize(pg)}
+                      onMouseEnter={() => setHovered(pg)}
+                      onMouseLeave={() => setHovered(pageSize)}
+                      className={`py-1 px-2 text-sm hover:bg-hoverColor`}
                     >
-                      {opt.label}
+                      {pg}
                     </li>
                   );
                 })}

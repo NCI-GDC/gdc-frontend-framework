@@ -645,6 +645,7 @@ module.exports = {
           8: "#7A7A15",
           9: "#10828E",
         },
+        hoverColor: "rgb(226 232 240)",
       },
       height: {
         "nci-logo": "54px",
