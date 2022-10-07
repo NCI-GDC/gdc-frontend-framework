@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react";
+import { showNotification } from "@mantine/notifications";
 import { CollapsibleContainer } from "@/components/CollapsibleContainer";
 import { Menu, Tabs, Divider } from "@mantine/core";
 import { ContextualCasesView } from "../cases/CasesView";
 import CountButton from "./CountButton";
 import { convertFilterToComponent } from "./QueryRepresentation";
-import { CohortBar, useCohortFacetFilters } from "./CohortGroup";
+import { useCohortFacetFilters } from "./CohortGroup";
+import CohortManager from "./CohortManager";
+import {
+  DeleteCohortNotification,
+  NewCohortNotification,
+} from "@/features/cohortBuilder/CohortNotifications";
 
 import {
   useCoreDispatch,
@@ -14,6 +20,9 @@ import {
   selectAvailableCohorts,
   DEFAULT_COHORT_ID,
   selectCurrentCohortId,
+  selectCohortMessage,
+  selectCurrentCohortName,
+  clearCohortMessage,
 } from "@gff/core";
 
 import {
@@ -44,9 +53,39 @@ const ContextBar: React.FC = () => {
   const currentCohortId = useCoreSelector((state) =>
     selectCurrentCohortId(state),
   );
+  const currentCohortName = useCoreSelector((state) =>
+    selectCurrentCohortName(state),
+  );
   const setCohort = (id: string) => {
     coreDispatch(setCurrentCohortId(id));
   };
+
+  const cohortMessage = useCoreSelector((state) => selectCohortMessage(state));
+
+  useEffect(() => {
+    if (cohortMessage) {
+      const cmdAndParam = cohortMessage.split("|", 2);
+      if (cmdAndParam.length == 2) {
+        if (cmdAndParam[0] === "newCohort") {
+          showNotification({
+            message: <NewCohortNotification cohortName={cmdAndParam[1]} />,
+            classNames: {
+              description: "flex flex-col content-center text-center",
+            },
+          });
+        }
+        if (cmdAndParam[0] === "deleteCohort") {
+          showNotification({
+            message: <DeleteCohortNotification cohortName={cmdAndParam[1]} />,
+            classNames: {
+              description: "flex flex-col content-center text-center",
+            },
+          });
+        }
+      }
+      coreDispatch(clearCohortMessage());
+    }
+  }, [cohortMessage, coreDispatch, currentCohortName]);
 
   useEffect(() => {
     setCurrentIndex(currentCohortId);
@@ -95,7 +134,7 @@ const ContextBar: React.FC = () => {
   const filters = useCohortFacetFilters();
 
   const CohortBarWithProps = () => (
-    <CohortBar
+    <CohortManager
       // TODO: need to connect to cohort persistence
       // eslint-disable-next-line react/prop-types
       cohorts={cohorts}

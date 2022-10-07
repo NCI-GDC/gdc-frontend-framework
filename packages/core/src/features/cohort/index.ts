@@ -11,6 +11,8 @@ import {
 } from "./filters";
 
 import {
+  DEFAULT_COHORT_ID,
+  Cohort,
   addNewCohort,
   removeCohort,
   updateCohortName,
@@ -21,7 +23,7 @@ import {
   clearCaseSet,
   selectAvailableCohorts,
   selectCurrentCohortId,
-  selectCurrentCohort,
+  selectCurrentCohortName,
   selectAvailableCohortByName,
   selectCurrentCohortFilters,
   selectCurrentCohortGqlFilters,
@@ -29,6 +31,8 @@ import {
   selectCurrentCohortFiltersByName,
   selectCurrentCohortCaseSet,
   selectCurrentCohortCaseSetFilter,
+  selectCohortMessage,
+  clearCohortMessage,
 } from "./availableCohortsSlice";
 
 import {
@@ -55,6 +59,8 @@ import {
 } from "./comparisonCohortsSlice";
 
 export {
+  DEFAULT_COHORT_ID,
+  Cohort,
   EnumOperandValue,
   FilterSet,
   RangeOperandValue,
@@ -88,7 +94,7 @@ export {
   selectComparisonCohorts,
   selectAvailableCohorts,
   selectCurrentCohortId,
-  selectCurrentCohort,
+  selectCurrentCohortName,
   selectAvailableCohortByName,
   selectCurrentCohortFilters,
   selectCurrentCohortGqlFilters,
@@ -96,4 +102,6 @@ export {
   selectCurrentCohortFiltersByName,
   selectCurrentCohortCaseSet,
   selectCurrentCohortCaseSetFilter,
+  selectCohortMessage,
+  clearCohortMessage,
 };

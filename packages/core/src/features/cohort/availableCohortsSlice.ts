@@ -131,11 +131,16 @@ const newCohort = (
  * A Cohort Management Slice which allow cohort to be created and updated.
  * this uses redux-toolkit entity adapter to manage the cohorts
  * Because it is an entity adapter, the state contains an array of id (string)
- * and a Dictionary of Cohort objects. It also has member, currentCohortId which
- * is used to identify the "current" or active cohort
+ * and a Dictionary of Cohort objects. There are two additional members:
+ *  currentCohortId: which is used to identify the "current" or active cohort
+ *  message: used to pass a state change message and parameter. NOTE: message is a
+ *  simple string consisting of message|parameter and can be replaced in the future with
+ *  something else like an object, but this keeps the additional member to EntityAdapter
+ *  more normalized.
+ *
  *
  * The slice exports the following actions:
- * addNewCohort(id:string) - create a new cohort with id
+ * addNewCohort() - create a new cohort
  * updateCohortName(name:string): changes the current cohort's name
  * updateCohortFilter(filters: FilterSet): updated the filters for this cohort
  * removeCohortFilter(filter:string): removes the filter from the cohort
@@ -144,15 +149,15 @@ const newCohort = (
  * clearCaseSet(): resets the caseSet member to all GDC
  * removeCohort(): removes the current cohort
  */
-// TODO:  automate id management and/or make compatible with CohortPersistence.
 const slice = createSlice({
   name: "cohort/availableCohorts",
   initialState: initialState,
   reducers: {
     addNewCohort: (state) => {
       const cohort = newCohort();
-      cohortsAdapter.addOne(state, newCohort());
+      cohortsAdapter.addOne(state, cohort);
       state.currentCohort = cohort.id;
+      state.message = `newCohort|${cohort.name}`;
     },
     updateCohortName: (state, action: PayloadAction<string>) => {
       cohortsAdapter.updateOne(state, {
@@ -161,11 +166,11 @@ const slice = createSlice({
       });
     },
     removeCohort: (state) => {
-      const idx = state.ids.findIndex((x) => x === state.currentCohort);
-      if (idx < 1) return; // Do NOT remove the first cohort "All GDC" or if not found
-      const newIndex = idx - 1;
+      if (state.currentCohort === DEFAULT_COHORT_ID) return; // Do NOT remove the "All GDC"
+      const removedCohort = state.entities[state.currentCohort];
       cohortsAdapter.removeOne(state, state.currentCohort);
-      state.currentCohort = state.ids[newIndex] as string;
+      state.message = `deleteCohort|${removedCohort?.name}`;
+      state.currentCohort = DEFAULT_COHORT_ID;
     },
     updateCohortFilter: (state, action: PayloadAction<UpdateFilterParams>) => {
       const filters = {
@@ -175,14 +180,13 @@ const slice = createSlice({
           [action.payload.field]: action.payload.operation,
         },
       };
-
       if (state.currentCohort === DEFAULT_COHORT_ID) {
         // create a new cohort and add it
         // as the GDC All Cohort is immutable
         const cohort = newCohort(filters, true);
         cohortsAdapter.addOne(state, cohort);
         state.currentCohort = cohort.id;
-        state.message = `${cohort.name} has been created "This is now your current cohort.`;
+        state.message = `newCohort|${cohort.name}`;
       } else {
         cohortsAdapter.updateOne(state, {
           id: state.currentCohort,
@@ -224,7 +228,7 @@ const slice = createSlice({
     setCurrentCohortId: (state, action: PayloadAction<string>) => {
       state.currentCohort = action.payload;
     },
-    clearMessage: (state) => {
+    clearCohortMessage: (state) => {
       state.message = undefined;
     },
     clearCaseSet: (state) => {
@@ -313,6 +317,7 @@ export const {
   removeCohortFilter,
   clearCohortFilters,
   clearCaseSet,
+  clearCohortMessage,
 } = slice.actions;
 
 export const cohortSelectors = cohortsAdapter.getSelectors(
@@ -325,7 +330,12 @@ export const selectAvailableCohorts = (state: CoreState): Cohort[] =>
 export const selectCurrentCohortId = (state: CoreState): string | undefined =>
   state.cohort.availableCohorts.currentCohort;
 
-export const selectCurrentCohort = (state: CoreState): string | undefined => {
+export const selectCohortMessage = (state: CoreState): string | undefined =>
+  state.cohort.availableCohorts.message;
+
+export const selectCurrentCohortName = (
+  state: CoreState,
+): string | undefined => {
   const cohort = cohortSelectors.selectById(
     state,
     state.cohort.availableCohorts.currentCohort,

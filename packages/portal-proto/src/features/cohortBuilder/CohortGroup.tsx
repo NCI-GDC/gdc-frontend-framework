@@ -1,41 +1,23 @@
 /* eslint-disable */
 // TODO need to revisit this file for more changes to fix eslint issues
-import { useCallback, useState } from "react";
+import { useState } from "react";
+import { nanoid } from "@reduxjs/toolkit";
 import { CollapsibleContainer } from "@/components/CollapsibleContainer";
-import { Button, NativeSelect, Select } from "@mantine/core";
+import { NativeSelect } from "@mantine/core";
 import {
-  MdAdd as AddIcon,
   MdArrowDropDown as DropDownIcon,
   MdClose as ClearIcon,
-  MdDelete as DeleteIcon,
-  MdFileDownload as DownloadIcon,
-  MdFileUpload as UploadIcon,
-  MdSave as SaveIcon,
 } from "react-icons/md";
-import { nanoid } from "@reduxjs/toolkit";
-import tw from "tailwind-styled-components";
+
 import {
   FilterSet,
   selectCurrentCohortFilters,
   useCoreSelector,
   selectAvailableCohorts,
-  useCoreDispatch,
-  addNewCohort,
-  removeCohort,
-  selectCurrentCohort,
   DEFAULT_COHORT_ID,
 } from "@gff/core";
 import { convertFilterToComponent } from "./QueryRepresentation";
-import { CohortBarProps } from "@/features/cohortBuilder/types";
-
-const CohortGroupButton = tw(Button)`
-p-2
-bg-base-lightest
-transition-colors
-text-primary-content-darkest
-hover:bg-primary
-hover:text-primary-content-lightest
-`;
+import CohortManager from "@/features/cohortBuilder/CohortManager";
 
 const enum_menu_items = [
   { value: "any_of", label: "includes at least one:" },
@@ -65,78 +47,6 @@ const CohortGroupSelect: React.FC<unknown> = () => {
         className="border-base-light w-36"
         onChange={handleChange}
       />
-    </div>
-  );
-};
-
-// TODO: Move this to it's own component.
-export const CohortBar: React.FC<CohortBarProps> = ({
-  cohorts,
-  onSelectionChanged,
-  startingId,
-  hide_controls = false,
-}: CohortBarProps) => {
-  const menu_items = cohorts.map((x) => {
-    return { value: x.id, label: x.name };
-  });
-  const coreDispatch = useCoreDispatch();
-  const cohortName = useCoreSelector((state) => selectCurrentCohort(state));
-  const newCohort = useCallback(() => {
-    coreDispatch(addNewCohort());
-  }, []);
-
-  const deleteCohort = () => {
-    coreDispatch(removeCohort());
-  };
-
-  return (
-    <div
-      data-tour="cohort_management_bar"
-      className="flex flex-row items-center justify-start gap-6 pl-4 h-20 shadow-lg bg-primary-darkest"
-    >
-      <div className="border-opacity-0">
-        {!hide_controls ? (
-          <Select
-            data={menu_items}
-            searchable
-            clearable={false}
-            value={startingId}
-            onChange={(x) => {
-              onSelectionChanged(x);
-            }}
-            className="border-base-light w-80 p-0 z-10 "
-            aria-items-centerlabel="Select cohort"
-          />
-        ) : (
-          <div>
-            <h2>{cohortName}</h2>
-          </div>
-        )}
-      </div>
-      {!hide_controls ? (
-        <>
-          <CohortGroupButton>
-            <SaveIcon size="1.5em" aria-label="Save cohort" />
-          </CohortGroupButton>
-          <CohortGroupButton onClick={() => newCohort()}>
-            <AddIcon size="1.5em" aria-label="Add cohort" />
-          </CohortGroupButton>
-          <CohortGroupButton
-            onClick={() => deleteCohort()}
-            disabled={startingId === DEFAULT_COHORT_ID}
-          >
-            <DeleteIcon size="1.5em" aria-label="Delete cohort" />
-          </CohortGroupButton>
-          <CohortGroupButton>
-            <UploadIcon size="1.5em" aria-label="Upload cohort" />
-          </CohortGroupButton>
-          <CohortGroupButton>
-            <DownloadIcon size="1.5em" aria-label="Download cohort" />
-          </CohortGroupButton>
-        </>
-      ) : (
-        <div />
-      )}
     </div>
   );
 };
@@ -185,7 +95,7 @@ export const CohortGroup: React.FC = () => {
   const filters = useCohortFacetFilters();
   // eslint-disable-next-line react/prop-types
   const CohortBarWithProps = () => (
-    <CohortBar
+    <CohortManager
       cohorts={cohorts}
       onSelectionChanged={handleCohortSelection}
       startingId={currentIndex}
