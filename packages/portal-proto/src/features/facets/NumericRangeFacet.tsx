@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   MdClose as CloseIcon,
-  MdFlip as FlipIcon,
   MdSort as SortIcon,
   MdSortByAlpha as AlphaSortIcon,
   MdWarning as WarningIcon,
@@ -19,12 +18,6 @@ import {
   DAYS_IN_YEAR,
   GQLDocType,
   GQLIndexType,
-  removeCohortFilter,
-  selectCurrentCohortFiltersByName,
-  selectTotalCountsByName,
-  updateCohortFilter,
-  useCoreDispatch,
-  useCoreSelector,
   fieldNameToTitle,
 } from "@gff/core";
 
@@ -42,6 +35,10 @@ import {
   FromToRange,
   RangeFromOp,
   RangeToOp,
+  RangeFacetHooks,
+  ClearFacetHook,
+  UpdateFacetFilterFunction,
+  UpdateFacetFilterHook,
 } from "@/features/facets/types";
 import {
   FacetDocTypeToCountsIndexMap,
@@ -52,7 +49,7 @@ import { controlsIconStyle, FacetIconButton } from "./components";
 import FacetExpander from "@/features/facets/FacetExpander";
 import FacetSortPanel from "@/features/facets/FacetSortPanel";
 
-interface NumericFacetProps extends FacetCardProps {
+interface NumericFacetProps extends FacetCardProps<RangeFacetHooks> {
   readonly rangeDatatype: string;
   readonly minimum?: number;
   readonly maximum?: number;
@@ -60,7 +57,7 @@ interface NumericFacetProps extends FacetCardProps {
 
 type NumericFacetData = Pick<
   NumericFacetProps,
-  "field" | "minimum" | "maximum" | "docType" | "indexType"
+  "field" | "minimum" | "maximum" | "docType" | "indexType" | "hooks"
 >;
 
 /**
@@ -106,6 +103,7 @@ interface RangeValueSelectorProps {
   readonly rangeLabelsAndValues: Record<string, RangeBucketElement>;
   selected: string;
   setSelected: (value: string) => void;
+  useUpdateFacetFilters: () => UpdateFacetFilterFunction;
 }
 
 const WARNING_DAYS = Math.floor(90 * DAYS_IN_YEAR);
@@ -224,8 +222,9 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
   setSelected,
   rangeLabelsAndValues,
   itemsToShow,
+  useUpdateFacetFilters,
 }: RangeValueSelectorProps) => {
-  const coreDispatch = useCoreDispatch();
+  const updateFilters = useUpdateFacetFilters();
 
   // toggle to handle sorting by value vs. label
   const [isSortedByValue, setIsSortedByValue] = useState(false);
@@ -239,7 +238,8 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
       toOp: "<",
     };
     const rangeFilters = buildRangeOperator(field, data);
-    coreDispatch(updateCohortFilter({ field: field, operation: rangeFilters }));
+
+    updateFilters(field, rangeFilters);
     setSelected(rangeKey);
   };
 
@@ -320,9 +320,11 @@ interface FromToProps {
   readonly minimum: number;
   readonly maximum: number;
   readonly units: string;
+  readonly field: string;
+  readonly useClearFilter: ClearFacetHook;
+  readonly useUpdateFacetFilters: UpdateFacetFilterHook;
   readonly values?: FromToRange<number>;
   readonly changedCallback?: () => void;
-  readonly field: string;
 }
 
 /**
@@ -337,6 +339,8 @@ interface FromToProps {
  */
 const FromTo: React.FC<FromToProps> = ({
   field,
+  useClearFilter,
+  useUpdateFacetFilters,
   minimum,
   maximum,
   values,
@@ -349,7 +353,9 @@ const FromTo: React.FC<FromToProps> = ({
   const [toOp, setToOp] = useState(values?.toOp ?? "<");
   const [toValue, setToValue] = useState(values?.to);
   const [isWarning, setIsWarning] = useState(false);
-  const coreDispatch = useCoreDispatch();
+
+  const clearFilter = useClearFilter();
+  const updateFacetFilters = useUpdateFacetFilters();
 
   useEffect(() => {
     setFromOp(values?.fromOp ?? ">=");
@@ -380,11 +386,9 @@ const FromTo: React.FC<FromToProps> = ({
     };
     const rangeFilters = buildRangeOperator(field, data);
     if (rangeFilters === undefined) {
-      coreDispatch(removeCohortFilter(field));
+      clearFilter(field);
     } else {
-      coreDispatch(
-        updateCohortFilter({ field: field, operation: rangeFilters }),
-      );
+      updateFacetFilters(field, rangeFilters);
     }
   };
   return (
@@ -506,6 +510,7 @@ const BuildRangeLabelsAndValues = (
 
 interface RangeInputWithPrefixedRangesProps {
   readonly field: string;
+  readonly hooks: RangeFacetHooks;
   readonly numBuckets: number;
   readonly docType: GQLDocType;
   readonly indexType: GQLIndexType;
@@ -521,6 +526,7 @@ const RangeInputWithPrefixedRanges: React.FC<
   field,
   docType,
   indexType,
+  hooks,
   units,
   numBuckets,
   minimum,
@@ -530,12 +536,9 @@ const RangeInputWithPrefixedRanges: React.FC<
   const [isGroupExpanded, setIsGroupExpanded] = useState(false); // handles the expanded group
 
   // get the current filter for this facet
-  const filter = useCoreSelector((state) =>
-    selectCurrentCohortFiltersByName(state, field),
-  );
-
-  const totalCount = useCoreSelector((state) =>
-    selectTotalCountsByName(state, FacetDocTypeToCountsIndexMap[docType]),
+  const filter = hooks.useGetFacetFilters(field);
+  const totalCount = hooks.useTotalCounts(
+    FacetDocTypeToCountsIndexMap[docType],
   );
 
   // giving the filter value, extract the From/To values and
@@ -642,6 +645,7 @@ const RangeInputWithPrefixedRanges: React.FC<
             field={`${field}`}
             units={units}
             changedCallback={resetToCustom}
+            {...hooks}
           />
         </div>
         <div className="flex flex-col border-t-2">
@@ -654,6 +658,7 @@ const RangeInputWithPrefixedRanges: React.FC<
               itemsToShow={bucketsToShow}
               rangeLabelsAndValues={rangeLabelsAndValues}
               selected={selectedRange}
+              useUpdateFacetFilters={hooks.useUpdateFacetFilters}
               setSelected={(value) => {
                 setIsCustom(false); // no longer a customRange
                 // this is the only way user interaction
@@ -678,6 +683,7 @@ const RangeInputWithPrefixedRanges: React.FC<
 const DaysOrYears: React.FC<NumericFacetData> = ({
   field,
   docType,
+  hooks,
   indexType,
   minimum = undefined,
   maximum = undefined,
@@ -705,6 +711,7 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
       />
       <RangeInputWithPrefixedRanges
         units={units}
+        hooks={{ ...hooks }}
         minimum={adjMinimum}
         maximum={adjMaximum}
         numBuckets={numBuckets}
@@ -720,6 +727,7 @@ const Year: React.FC<NumericFacetData> = ({
   field,
   docType,
   indexType,
+  hooks,
   minimum = undefined,
   maximum = undefined,
 }: NumericFacetData) => {
@@ -732,6 +740,7 @@ const Year: React.FC<NumericFacetData> = ({
       <RangeInputWithPrefixedRanges
         docType={docType}
         indexType={indexType}
+        hooks={{ ...hooks }}
         units="year"
         minimum={adjMinimum}
         maximum={adjMaximum}
@@ -746,6 +755,7 @@ const Years: React.FC<NumericFacetData> = ({
   field,
   docType,
   indexType,
+  hooks,
   minimum = undefined,
   maximum = undefined,
 }: NumericFacetData) => {
@@ -758,6 +768,7 @@ const Years: React.FC<NumericFacetData> = ({
       <RangeInputWithPrefixedRanges
         docType={docType}
         indexType={indexType}
+        hooks={{ ...hooks }}
         units="years"
         minimum={adjMinimum}
         maximum={adjMaximum}
@@ -770,6 +781,7 @@ const Years: React.FC<NumericFacetData> = ({
 
 const NumericRangePanel: React.FC<NumericFacetData> = ({
   field,
+  hooks,
   minimum = undefined,
   maximum = undefined,
 }: NumericFacetData) => {
@@ -782,6 +794,7 @@ const NumericRangePanel: React.FC<NumericFacetData> = ({
         minimum={adjMinimum}
         maximum={adjMaximum}
         units=""
+        {...hooks}
       />
     </div>
   );
@@ -791,6 +804,7 @@ const PercentRange: React.FC<NumericFacetData> = ({
   field,
   docType,
   indexType,
+  hooks,
   minimum = undefined,
   maximum = undefined,
 }: NumericFacetData) => {
@@ -803,6 +817,7 @@ const PercentRange: React.FC<NumericFacetData> = ({
       <RangeInputWithPrefixedRanges
         docType={docType}
         indexType={indexType}
+        hooks={hooks}
         units="percent"
         minimum={adjMinimum}
         maximum={adjMaximum}
@@ -815,6 +830,7 @@ const PercentRange: React.FC<NumericFacetData> = ({
 
 const NumericRangeFacet: React.FC<NumericFacetProps> = ({
   field,
+  hooks,
   rangeDatatype,
   docType,
   description,
@@ -825,16 +841,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
   dismissCallback = undefined,
   width = undefined,
 }: NumericFacetProps) => {
-  const [isFacetView, setIsFacetView] = useState(true);
-  const coreDispatch = useCoreDispatch();
-
-  const clearFilters = () => {
-    coreDispatch(removeCohortFilter(field));
-  };
-
-  const toggleFlip = () => {
-    setIsFacetView(!isFacetView);
-  };
+  const clearFilters = hooks.useClearFilter();
 
   return (
     <div id={field}>
@@ -843,7 +850,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
           width ? width : "mx-1"
         } bg-base-max relative shadow-lg border-base-lightest border-1 rounded-b-md text-xs transition `}
       >
-        <div className="flex items-center justify-between flex-wrap bg-primary-lighter shadow-md px-1.5">
+        <div className="flex items-start justify-between flex-nowrap bg-primary-lighter shadow-md px-1.5">
           <Tooltip
             label={description}
             classNames={{
@@ -857,24 +864,18 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
             transition="fade"
             transitionDuration={200}
           >
-            <div className="text-primary-contrast-lighter font-heading font-semibold text-md">
+            <div className="text-primary-contrast-lighter font-heading font-semibold text-md break-words py-2">
               {facetName ? facetName : fieldNameToTitle(field)}
             </div>
           </Tooltip>
           <div className="flex flex-row">
-            <FacetIconButton
-              onClick={toggleFlip}
-              aria-label="Flip between form and chart"
-            >
-              <FlipIcon size="1.25em" />
-            </FacetIconButton>
-            <FacetIconButton onClick={clearFilters}>
+            <FacetIconButton onClick={() => clearFilters(field)}>
               <UndoIcon size="1.15em" />
             </FacetIconButton>
             {dismissCallback ? (
               <FacetIconButton
                 onClick={() => {
-                  clearFilters();
+                  clearFilters(field);
                   dismissCallback(field);
                 }}
                 aria-label="Remove the facet"
@@ -891,6 +892,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 docType={docType}
                 indexType={indexType}
                 field={field}
+                hooks={{ ...hooks }}
                 minimum={minimum}
                 maximum={maximum}
               />
@@ -900,6 +902,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 docType={docType}
                 indexType={indexType}
                 field={field}
+                hooks={{ ...hooks }}
                 minimum={minimum}
                 maximum={maximum}
               />
@@ -909,6 +912,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 docType={docType}
                 indexType={indexType}
                 field={field}
+                hooks={{ ...hooks }}
                 minimum={minimum}
                 maximum={maximum}
               />
@@ -918,15 +922,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 docType={docType}
                 indexType={indexType}
                 field={field}
-                minimum={minimum}
-                maximum={maximum}
-              />
-            ),
-            numeric: (
-              <NumericRangePanel
-                docType={docType}
-                indexType={indexType}
-                field={field}
+                hooks={{ ...hooks }}
                 minimum={minimum}
                 maximum={maximum}
               />
@@ -936,15 +932,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 docType={docType}
                 indexType={indexType}
                 field={field}
-                minimum={minimum}
-                maximum={maximum}
-              />
-            ),
-            integer: (
-              <NumericRangePanel
-                docType={docType}
-                indexType={indexType}
-                field={field}
+                hooks={{ ...hooks }}
                 minimum={minimum}
                 maximum={maximum}
               />
@@ -954,11 +942,12 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 docType={docType}
                 indexType={indexType}
                 field={field}
+                hooks={{ ...hooks }}
                 minimum={minimum}
                 maximum={maximum}
               />
             ),
-          }[rangeDatatype]
+          }[rangeDatatype as string]
         }
       </div>
     </div>

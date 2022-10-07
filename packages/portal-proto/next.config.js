@@ -23,4 +23,8 @@ module.exports = withTM({
   publicRuntimeConfig: {
     basePath,
   },
+  env: {
+    // passed via command line, `PROTEINPAINT_API=... npm run dev`
+    PROTEINPAINT_API: process.env.PROTEINPAINT_API,
+  },
 });

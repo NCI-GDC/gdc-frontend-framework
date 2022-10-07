@@ -13,17 +13,31 @@ import {
   useCoreDispatch,
   usePrevious,
   joinFilters,
+  NumericFromTo,
+  selectRangeFacetByField,
+  fetchFacetContinuousAggregation,
 } from "@gff/core";
 import { useEffect } from "react";
 import { ThunkDispatch, AnyAction } from "@reduxjs/toolkit";
 import isEqual from "lodash/isEqual";
-import { EnumFacetResponse } from "@/features/facets/types";
+import {
+  ClearFacetFunction,
+  EnumFacetResponse,
+  FacetResponse,
+  UpdateFacetFilterFunction,
+} from "@/features/facets/types";
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit/dist/createAction";
 import { extractValue } from "@/features/facets/hooks";
-import { useAppSelector } from "@/features/repositoryApp/appApi";
+
+import {
+  useAppSelector,
+  useAppDispatch,
+} from "@/features/repositoryApp/appApi";
 import {
   selectFilters,
   selectFiltersByName,
+  updateRepositoryFilter,
+  removeRepositoryFilter,
 } from "@/features/repositoryApp/repositoryFiltersSlice";
 
 /**
@@ -40,6 +54,16 @@ export const useRepositoryEnumValues = (field: string): OperandValue => {
 
 export const useRepositoryFilters = (): FilterSet => {
   return useAppSelector((state) => selectFilters(state));
+};
+
+/**
+ * removes the filter from the repository current/active filters
+ */
+export const useClearRepositoryFilters = (): ClearFacetFunction => {
+  const dispatch = useAppDispatch();
+  return (field: string) => {
+    dispatch(removeRepositoryFilter(field));
+  };
 };
 
 type updateEnumFiltersFunc = (
@@ -156,4 +180,74 @@ export const useLocalFilters = (
     isSuccess: facet?.status === "fulfilled",
     isError: facet?.status === "rejected",
   };
+};
+
+export const useRepositoryRangeFacet = (
+  field: string,
+  ranges: ReadonlyArray<NumericFromTo>,
+  docType: GQLDocType,
+  indexType: GQLIndexType,
+): FacetResponse => {
+  const appDispatch = useAppDispatch();
+  const facet: FacetBuckets = useCoreSelector((state) =>
+    selectRangeFacetByField(state, field),
+  );
+  const localFilters = useRepositoryFilters();
+  const cohortFilters = useCoreSelector((state) =>
+    selectCurrentCohortFilterSet(state),
+  );
+
+  const allFilters = joinFilters(cohortFilters, localFilters);
+  const prevAllFilters = usePrevious(allFilters);
+  const prevRanges = usePrevious(ranges);
+
+  useEffect(() => {
+    if (
+      !facet ||
+      !isEqual(prevAllFilters, allFilters) ||
+      !isEqual(ranges, prevRanges)
+    ) {
+      appDispatch(
+        fetchFacetContinuousAggregation({
+          field: field,
+          ranges: ranges,
+          docType: docType,
+          indexType: indexType,
+        }),
+      );
+    }
+  }, [
+    appDispatch,
+    facet,
+    field,
+    cohortFilters,
+    prevAllFilters,
+    ranges,
+    prevRanges,
+    docType,
+    indexType,
+    allFilters,
+  ]);
+
+  return {
+    data: facet?.buckets,
+    error: facet?.error,
+    isUninitialized: facet === undefined,
+    isFetching: facet?.status === "pending",
+    isSuccess: facet?.status === "fulfilled",
+    isError: facet?.status === "rejected",
+  };
+};
+
+export const useUpdateRepositoryFacetFilter = (): UpdateFacetFilterFunction => {
+  const dispatch = useAppDispatch();
+  // update the filter for this facet
+  return (field: string, operation: Operation) => {
+    dispatch(updateRepositoryFilter({ field: field, operation: operation }));
+  };
+};
+
+//  Selector Hooks for getting repository filters by name
+export const useSelectFieldFilter = (field: string): Operation => {
+  return useAppSelector((state) => selectFiltersByName(state, field));
 };
