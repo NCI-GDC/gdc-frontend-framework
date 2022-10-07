@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Text, Badge } from "@mantine/core";
+import { Button, Text, Badge } from "@mantine/core";
 import qs from "querystring";
-import { UserInfo, CartFile } from "@gff/core";
+import { hideModal, useCoreDispatch, UserInfo, CartFile } from "@gff/core";
 import { LoginButton } from "@/components/LoginButton";
 import { DownloadButton } from "@/components/DownloadButtons";
 import { BaseModal } from "./BaseModal";
@@ -18,6 +18,7 @@ const CartDownloadModal = ({
   filesByCanAccess: Record<string, CartFile[]>;
   dbGapList: string[];
 }): JSX.Element => {
+  const dispatch = useCoreDispatch();
   const [checked, setChecked] = useState(false);
   const numFilesCanAccess = filesByCanAccess.true?.length || 0;
   const numFilesCannotAccess = filesByCanAccess.false?.length || 0;
@@ -28,7 +29,6 @@ const CartDownloadModal = ({
       closeButtonLabel="Close"
       openModal={openModal}
       size="xl"
-      buttons={[{ title: "Cancel" }]}
     >
       <hr />
       {numFilesCannotAccess > 0 && (
@@ -86,7 +86,10 @@ const CartDownloadModal = ({
         </>
       )}
       <hr />
-      <div className="flex justify-end items-center ml-2 mt-2.5 float-right">
+      <div className="flex justify-end gap-2 mt-4">
+        <Button onClick={() => dispatch(hideModal())} color="primary">
+          Cancel
+        </Button>
         <DownloadButton
           inactiveText={`Download ${numFilesCanAccess} Authorized File${
             numFilesCanAccess !== 1 ? "s" : ""
