@@ -7,8 +7,7 @@ import {
 } from "react-icons/md";
 import { Box, Tooltip } from "@mantine/core";
 import isNumber from "lodash/isNumber";
-import { useMouse } from "@mantine/hooks";
-import useWindowResize from "../../hooks/useWindowResize";
+import { useMouse, useViewportSize } from "@mantine/hooks";
 
 // based on schemeCategory10
 // 4.5:1 colour contrast for normal text
@@ -52,7 +51,7 @@ export const useSurvival: survival = (
   setTooltip = (x?) => null,
 ) => {
   const ref = useRef(undefined);
-  const documentSize = useWindowResize();
+  const documentSize = useViewportSize();
 
   useLayoutEffect(() => {
     ref.current
