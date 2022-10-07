@@ -92,7 +92,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
       );
 
     return (
-      <table {...getTableProps()} className="w-full">
+      <table {...getTableProps()} className="w-full text-left">
         {tableTitle && (
           <caption className="font-semibold text-left">{tableTitle}</caption>
         )}
@@ -132,7 +132,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                       <td
                         {...cell.getCellProps()}
                         key={`row-${key}`}
-                        className="p-1 text-sm text-content text-center"
+                        className="px-2 py-1 text-sm text-content"
                       >
                         {cell.render("Cell")}
                       </td>
@@ -143,11 +143,13 @@ export const VerticalTable: FC<VerticalTableProps> = ({
             })
           ) : status === "rejected" ? (
             <tr>
-              <td className="">Error in loading data</td>
+              <td className="" colSpan={10}>
+                Error in loading data
+              </td>
             </tr>
           ) : (
             <tr>
-              <td className="h-32 pl-[25vw] pt-10">
+              <td className="h-32 pl-[25vw] pt-10" colSpan={10}>
                 <Loader color="primary" size={64} />
               </td>
             </tr>
