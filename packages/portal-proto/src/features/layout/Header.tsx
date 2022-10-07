@@ -10,20 +10,19 @@ import {
   selectUserDetailsInfo,
   fetchToken,
   selectCurrentModal,
-  useQuickSearch,
 } from "@gff/core";
-import { Button, LoadingOverlay, Menu, TextInput } from "@mantine/core";
+import { Button, LoadingOverlay, Menu } from "@mantine/core";
 import { NextLink } from "@mantine/next";
 import { useTour } from "@reactour/tour";
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { ReactNode, useState } from "react";
 import { Image } from "@/components/Image";
 import {
   MdShoppingCart as CartIcon,
   MdOutlineApps as AppsIcon,
   MdSearch as SearchIcon,
   MdOutlineTour as TourIcon,
-  MdLogout,
-  MdArrowDropDown,
+  MdLogout as LogoutIcon,
+  MdArrowDropDown as ArrowDropDownIcon,
 } from "react-icons/md";
 import { FaDownload, FaUserCheck } from "react-icons/fa";
 import saveAs from "file-saver";
@@ -36,6 +35,7 @@ import { SessionExpireModal } from "@/components/Modals/SessionExpireModal";
 import { useLocalStorage } from "@mantine/hooks";
 import { NoAccessModal } from "@/components/Modals/NoAccessModal";
 import { theme } from "tailwind.config";
+import { QuickSearch } from "@/components/QuickSearch/QuickSearch";
 
 interface HeaderProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
@@ -63,19 +63,7 @@ export const Header: React.FC<HeaderProps> = ({
     defaultValue: "default",
   });
   const [performSearch, setPerformSearch] = useState(false);
-  const [searchText, setSearchText] = useState("");
-  const quickSearchRef = useRef(null);
-  const {
-    data: { searchList },
-    isFetching,
-  } = useQuickSearch(searchText);
 
-  console.log(searchList, isFetching);
-  useEffect(() => {
-    if (performSearch) {
-      quickSearchRef?.current?.focus();
-    }
-  }, [performSearch]);
   return (
     <div className="px-6 py-3 border-b border-gdc-grey-lightest">
       <div className="flex flex-row flex-wrap divide-x divide-gray-300 items-center">
@@ -121,15 +109,9 @@ export const Header: React.FC<HeaderProps> = ({
           }`}
         >
           {performSearch ? (
-            <TextInput
-              icon={<SearchIcon size={24} />}
-              placeholder="Quick Search"
-              ref={quickSearchRef}
-              onBlur={() => setPerformSearch(false)}
-              // classNames={{
-              //   wrapper: "border-2",
-              // }}
-              onChange={(e) => setSearchText(e.target.value)}
+            <QuickSearch
+              performSearch={performSearch}
+              setPerformSearch={setPerformSearch}
             />
           ) : (
             <>
@@ -147,7 +129,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <Menu width="target" data-testid="userdropdown">
                   <Menu.Target>
                     <Button
-                      rightIcon={<MdArrowDropDown size="2em" />}
+                      rightIcon={<ArrowDropDownIcon size="2em" />}
                       variant="subtle"
                       className="text-primary"
                       classNames={{ rightIcon: "ml-0" }}
@@ -237,7 +219,7 @@ export const Header: React.FC<HeaderProps> = ({
                       Download Token
                     </Menu.Item>
                     <Menu.Item
-                      icon={<MdLogout size="1.25em" />}
+                      icon={<LogoutIcon size="1.25em" />}
                       onClick={() => {
                         window.location.assign(
                           urlJoin(
