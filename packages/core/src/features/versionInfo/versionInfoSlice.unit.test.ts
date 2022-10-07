@@ -1,23 +1,53 @@
-import { selectVersionInfo } from "./versionInfoSlice";
-import { getInitialCoreState } from "../../store.unit.test";
+import {
+  versionInfoReducer,
+  VersionInfoResponse,
+  versionInfoSliceInitialStateInterface,
+  fetchVersionInfo,
+} from "./versionInfoSlice";
 
-const mockData = {
-  apiCommitHash: "9fbb447b",
-  apiVersion: "3.0.0",
-  uiCommitHash: "9fbb436b",
-  uiVersion: "1.30.0",
-  dataRelease: "Data Release 34.0 - July 27, 2022",
+const initialState: versionInfoSliceInitialStateInterface = {
+  data: undefined,
+  status: "uninitialized",
 };
 
 describe("select version info", () => {
-  const state = getInitialCoreState();
+  test("should return the default state for unknown actions", () => {
+    const state = versionInfoReducer(initialState, { type: "asdf" });
+    expect(state).toEqual(initialState);
+  });
 
-  it("Selects app version info", () => {
-    const versionInfo = selectVersionInfo({
-      ...state,
-      versionInfo: mockData,
+  test("should return data with fulfilled status", () => {
+    const mockData: VersionInfoResponse = {
+      commit: "WWW",
+      data_release: "XXX",
+      tag: "YYY",
+      version: "ZZZ",
+    };
+
+    const state = versionInfoReducer(initialState, {
+      type: fetchVersionInfo.fulfilled,
+      payload: { ...mockData },
     });
+    expect(state).toEqual({ data: mockData, status: "fulfilled" });
+  });
 
-    expect(versionInfo).toEqual(mockData);
+  test("return state with rejected status", () => {
+    const state = versionInfoReducer(
+      { status: "uninitialized" },
+      {
+        type: fetchVersionInfo.rejected,
+      },
+    );
+    expect(state).toEqual({ status: "rejected" });
+  });
+
+  test("return state with pending status", () => {
+    const state = versionInfoReducer(
+      { status: "uninitialized" },
+      {
+        type: fetchVersionInfo.pending,
+      },
+    );
+    expect(state).toEqual({ status: "pending" });
   });
 });

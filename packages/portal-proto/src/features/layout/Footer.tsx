@@ -1,10 +1,20 @@
 import { ExternalLink } from "@/components/ExternalLink";
 import Link from "next/link";
-import { useCoreSelector, selectVersionInfo } from "@gff/core";
+import { useEffect } from "react";
+import {
+  useCoreSelector,
+  useCoreDispatch,
+  selectVersionInfo,
+  fetchVersionInfo,
+} from "@gff/core";
 
 export const Footer: React.FC = () => {
-  const { uiVersion, uiCommitHash, apiVersion, apiCommitHash, dataRelease } =
-    useCoreSelector((state) => selectVersionInfo(state));
+  const { status, data } = useCoreSelector((state) => selectVersionInfo(state));
+  const dispatch = useCoreDispatch();
+
+  useEffect(() => {
+    dispatch(fetchVersionInfo());
+  }, [dispatch]);
 
   return (
     <div className="flex flex-col bg-primary-darker justify-center text-center p-4 text-primary-contrast-darker">
@@ -45,36 +55,38 @@ export const Footer: React.FC = () => {
       </div>
       <div>NIH... Turning Discovery Into Health &reg;</div>
       <div>
-        <span
+        {/* TODO: determine actual data to be displayed and how. */}
+        {/* <span
           data-testid="ftr-uiversion"
-          title={`UI version: ${uiVersion}${
-            uiVersion ? `, tags: ${uiVersion}` : ""
+          title={`UI version: ${data.version}${
+            data.version ? `, tags: ${data.tag}` : ""
           }`}
         >
-          {`UI v${uiVersion}${
-            uiCommitHash ? ` @ ${uiCommitHash.slice(0, 8)}` : ""
+          {`UI v${data.version}${
+            data.commit ? ` @ ${data.commit.slice(0, 8)}` : ""
           }`}
         </span>
 
         {", "}
 
-        <span data-testid="ftr-apiversion" title={`API version: ${apiVersion}`}>
-          {`API v${apiVersion}${
-            apiCommitHash ? ` @ ${apiCommitHash.slice(0, 8)}` : ""
+        <span data-testid="ftr-apiversion" title={`API version: ${data.version}`}>
+          {`API v${data.version}${
+            data.commit ? ` @ ${data.commit.slice(0, 8)}` : ""
           }`}
         </span>
 
-        {", "}
-
-        <span>
-          <ExternalLink
-            dataTestId="ftr-release-notes"
-            href="https://docs.gdc.cancer.gov/Data/Release_Notes/Data_Release_Notes/"
-            separator={false}
-          >
-            {dataRelease}
-          </ExternalLink>
-        </span>
+        {", "} */}
+        {status === "fulfilled" && (
+          <span>
+            <ExternalLink
+              dataTestId="ftr-release-notes"
+              href="https://docs.gdc.cancer.gov/Data/Release_Notes/Data_Release_Notes/"
+              separator={false}
+            >
+              {data.data_release}
+            </ExternalLink>
+          </span>
+        )}
       </div>
     </div>
   );
