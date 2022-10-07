@@ -4,7 +4,7 @@ import {
   userCanDownloadFiles,
   fileInCorrectState,
   intersectsWithFileAcl,
-} from "./userProjectUtils";
+} from "../userProjectUtils";
 
 const projectLessUser = {
   username: "iamprojectless",
