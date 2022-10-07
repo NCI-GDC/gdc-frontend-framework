@@ -141,7 +141,12 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
           <div className="flex flex-row items-center text-primary-content-darkest">
             <span>{`${caseCounts.toLocaleString()} Cases`}</span>
             {caseCounts === 0 && (
-              <Tooltip label={entry?.noDataTooltip} withArrow>
+              <Tooltip
+                label={entry?.noDataTooltip}
+                withArrow
+                width={200}
+                multiline
+              >
                 <div>
                   <MdInfo className="inline-block ml-1" />
                 </div>
