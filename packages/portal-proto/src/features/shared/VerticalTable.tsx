@@ -132,7 +132,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                       <td
                         {...cell.getCellProps()}
                         key={`row-${key}`}
-                        className="rounded-sm p-1 text-sm text-content text-medium text-center"
+                        className="p-1 text-sm text-content text-center"
                       >
                         {cell.render("Cell")}
                       </td>
