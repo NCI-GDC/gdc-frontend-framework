@@ -15,6 +15,9 @@ import {
   useCoreSelector,
   useOncoGrid,
 } from "@gff/core";
+import { elementToSVG } from "dom-to-svg";
+import html2canvas from "html2canvas";
+import saveAs from "file-saver";
 import { DocumentWithWebkit } from "../types";
 import { toggleFullScreen } from "../../utils";
 
@@ -24,6 +27,7 @@ import useOncoGridDisplayData from "./useOncoGridDisplayData";
 import ColorPaletteModal from "./ColorPaletteModal";
 import useOncoGridObject from "./useOncoGridObject";
 import PositionedTooltip from "./PositionedTooltip";
+import TrackLegend from "./TrackLegend";
 
 const OncoGridWrapper: React.FC = () => {
   const coreDispatch = useCoreDispatch();
@@ -32,6 +36,7 @@ const OncoGridWrapper: React.FC = () => {
   );
   const fullOncoGridContainer = useRef(null);
   const gridContainer = useRef(null);
+  const downloadContainer = useRef<null | HTMLDivElement>(null);
   const [isHeatmap, setIsHeatmap] = useState(false);
   const [hasGridlines, setHasGridlines] = useState(false);
   const [showCrosshairs, setShowCrosshairs] = useState(false);
@@ -55,7 +60,13 @@ const OncoGridWrapper: React.FC = () => {
   const { donors, genes, ssmObservations, cnvObservations } =
     useOncoGridDisplayData(data);
 
-  const gridObject = useOncoGridObject({
+  const {
+    gridObject,
+    fillColorMap,
+    maxAgeAtDiagnosis,
+    maxDaysToDeath,
+    maxDonorsAffected,
+  } = useOncoGridObject({
     donors,
     genes,
     ssmObservations,
@@ -132,6 +143,46 @@ const OncoGridWrapper: React.FC = () => {
     setTimeout(() => setIsLoading(false), 1000);
   };
 
+  const handleDownloadSVG = () => {
+    if (downloadContainer.current) {
+      const dom = gridContainer.current.cloneNode(true);
+      dom.classList.remove("bg-base-lightest");
+      downloadContainer.current.insertBefore(
+        dom,
+        downloadContainer.current.children[1],
+      );
+      const svg = elementToSVG(downloadContainer.current);
+      const svgStr = new XMLSerializer().serializeToString(svg);
+      const blob = new Blob([svgStr], { type: "image/svg+xml" });
+
+      saveAs(blob, "oncogrid.svg");
+      downloadContainer.current.removeChild(dom);
+      dom && dom.remove();
+    }
+  };
+
+  const handleDownloadPNG = async () => {
+    if (downloadContainer.current) {
+      const dom = gridContainer.current.cloneNode(true);
+      dom.classList.remove("bg-base-lightest");
+      dom
+        .querySelectorAll("foreignObject")
+        .forEach((foreignObject) => foreignObject.remove());
+
+      downloadContainer.current.insertBefore(
+        dom,
+        downloadContainer.current.children[1],
+      );
+      const canvas = await html2canvas(downloadContainer.current);
+
+      canvas.toBlob((blob) => {
+        saveAs(blob, "oncogrid.png");
+      }, "image/png");
+      downloadContainer.current.removeChild(dom);
+      dom && dom.remove();
+    }
+  };
+
   return (
     <div
       ref={(ref) => (fullOncoGridContainer.current = ref)}
@@ -185,16 +236,30 @@ const OncoGridWrapper: React.FC = () => {
               </Menu>
             </Box>
           </Tooltip>
-          <Tooltip
-            label={"Download"}
-            withinPortal={false}
-            position="top"
-            withArrow
-          >
-            <Button variant={"outline"} size="xs" classNames={{ root: "mx-1" }}>
-              <MdDownload />
-            </Button>
-          </Tooltip>
+          <Menu position="bottom-start" offset={1} transitionDuration={0}>
+            <Menu.Target>
+              <div className="flex">
+                <Tooltip
+                  label={"Download"}
+                  withinPortal={false}
+                  position="top"
+                  withArrow
+                >
+                  <Button
+                    variant={"outline"}
+                    size="xs"
+                    classNames={{ root: "mx-1" }}
+                  >
+                    <MdDownload />
+                  </Button>
+                </Tooltip>
+              </div>
+            </Menu.Target>
+            <Menu.Dropdown>
+              <Menu.Item onClick={handleDownloadSVG}>SVG</Menu.Item>
+              <Menu.Item onClick={handleDownloadPNG}>PNG</Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
           <Tooltip label={"Reload Grid"} withArrow>
             <Button
               variant={"outline"}
@@ -325,6 +390,26 @@ const OncoGridWrapper: React.FC = () => {
               : "visible"
           }`}
         />
+      </div>
+
+      <div className="fixed top-0 -translate-y-full w-[1280px] h-[1520px]">
+        <div ref={downloadContainer} className="w-full h-full overflow-hidden">
+          <h2 className="text-montserrat text-center text-lg text-primary-content-dark mb-3">
+            {`${donors.length} Most Mutated Cases and Top ${genes.length} Mutated Genes by SSM`}
+          </h2>
+          <div className="flex justify-evenly">
+            {["Clinical", "Data Types", "GDC", "Gene Sets"].map((track) => (
+              <TrackLegend
+                key={track}
+                track={track}
+                fillMap={fillColorMap}
+                maxAge={maxAgeAtDiagnosis}
+                maxDaysToDeath={maxDaysToDeath}
+                maxDonors={maxDonorsAffected}
+              />
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
