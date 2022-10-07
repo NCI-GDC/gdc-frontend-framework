@@ -1,11 +1,11 @@
 import { useMemo } from "react";
 import { Paper } from "@mantine/core";
 import { CohortFacetDoc, DAYS_IN_YEAR } from "@gff/core";
-import { FIELD_LABELS } from "src/fields";
 import BarChart from "../charts/BarChart";
 import PValue from "./PValue";
 import { Button } from "@mantine/core";
 import saveAs from "file-saver";
+import { humanify } from "../biospecimen/utils";
 
 const formatBucket = (bucket: number | string, field: string): string => {
   if (field === "diagnoses.age_at_diagnosis") {
@@ -53,6 +53,8 @@ const FacetCard: React.FC<FacetCardProps> = ({
     [data, counts, field],
   );
 
+  const fieldLabel = humanify({ term: field });
+
   const uniqueValues = Array.from(
     new Set(formattedData.map((cohort) => cohort.map((b) => b.key)).flat()),
   );
@@ -84,26 +86,29 @@ const FacetCard: React.FC<FacetCardProps> = ({
   const divId = `cohort_comparison_bar_chart_${field}`;
 
   const downloadTSVFile = () => {
-    let strOut = `${FIELD_LABELS[field]}\t# Cases S1\t% Cases S1\t# Cases S2\t% Cases S2\n`;
-    strOut += "";
+    const fmtPct = (val: number, counts: number) => {
+      return (((val || 0) * 100) / counts).toFixed(2);
+    };
+    const fmtVal = (val: number) => {
+      return val?.toString() || "0";
+    };
+
+    let strOut = `${fieldLabel}\t# Cases S1\t% Cases S1\t# Cases S2\t% Cases S2\n`;
 
     uniqueValues.forEach((value, idx) => {
-      const cohort1Value = formattedData[0][idx].count;
-      const cohort2Value = formattedData[1][idx].count;
-      strOut += `${value}\t${cohort1Value?.toString() || "0"}\t${(
-        ((cohort1Value || 0) / counts[0]) *
-        100
-      ).toFixed(2)}\t${cohort2Value?.toString() || "0"}\t${(
-        ((cohort2Value || 0) / counts[1]) *
-        100
-      ).toFixed(2)}\n`;
+      for (let i = 0; i <= formattedData.length - 1; i++) {
+        const cohortValue = formattedData[i][idx].count;
+        strOut += i === 0 ? `${value}\t` : "";
+        strOut += `${fmtVal(cohortValue)}\t${fmtPct(cohortValue, counts[i])}`;
+        strOut += i === 1 ? "\n" : "\t";
+      }
     });
 
     saveAs(
       new Blob([strOut], {
         type: "text/plain;charset=us-ascii",
       }),
-      `${FIELD_LABELS[field]}-comparison.tsv`,
+      `${fieldLabel}-comparison.tsv`,
     );
 
     return false;
@@ -111,7 +116,7 @@ const FacetCard: React.FC<FacetCardProps> = ({
 
   return (
     <Paper p="md">
-      <h2 className="text-lg font-semibold">{FIELD_LABELS[field]}</h2>
+      <h2 className="text-lg font-semibold">{fieldLabel}</h2>
       <div className="h-[400px]">
         <BarChart
           data={{
@@ -134,7 +139,7 @@ const FacetCard: React.FC<FacetCardProps> = ({
       <table className="bg-base-lightest w-full text-left text-primary-content-darker">
         <thead>
           <tr className="bg-base-lightest">
-            <th>{FIELD_LABELS[field]}</th>
+            <th>{fieldLabel}</th>
             <th>
               # Cases S<sub>1</sub>
             </th>
