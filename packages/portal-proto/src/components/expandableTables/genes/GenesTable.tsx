@@ -219,8 +219,8 @@ export const GenesTable: React.FC<GenesTableProps> = ({
           headerWidth={width / visibleColumns.length}
         />
       </div>
-      <div className={`flex flex-row justify-between`}>
-        <div className="flex flex-row m-auto ml-0">
+      <div className={`flex flex-row m-auto`}>
+        <div className="m-auto ml-0">
           <span className="my-auto mx-1 text-xs">Show</span>
           <PageSize pageSize={pageSize} handlePageSize={handlePageSize} />
           <span className="my-auto mx-1 text-xs">Entries</span>
@@ -239,7 +239,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
             genes
           </span>
         </div>
-        <div className={`mr-0`}>
+        <div className={`m-auto mr-0`}>
           <PageStepper
             offset={offset}
             totalPages={Math.ceil(transformResponse[0].genesTotal / pageSize)}

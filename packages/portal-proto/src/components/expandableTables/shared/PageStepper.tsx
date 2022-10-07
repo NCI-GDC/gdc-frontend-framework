@@ -23,79 +23,64 @@ const PageStepper: React.FC<PageStepperProps> = ({
     transform: `rotateY(180deg)`,
   });
 
-  //todo: update the stepview if offset goes out of current stepview range
-  const handleSteps = () => {
-    // () => {
-    //     if (totalPages < 5) {
-    //         return Array.from({ length: totalPages }, (_, i) => i + 1)
-    //     } else {
-    //         if (offset > stepView[stepView.length - 1]) {
-    //             return Array.from({ length: offset + 5 }, (_, i) => i + 1)
-    //         } else if ((offset < stepView[0])) {
-    //             return Array.from({ length: offset - 5 }, (_, i) => i + 1)
-    //         } else  {
-    //             return Array.from({ length:  }, (_, i) => i + 1)
-    //         }
-    //     }
-    // }
-    if (offset === 0) {
-      console.log("offset 0");
-    } else {
-      console.log("offsetchanged", offset);
-    }
-  };
-
   useEffect(() => {
-    handleSteps();
-  }, [offset]);
+    offset > 2
+      ? setStepView([offset - 1, offset, offset + 1, offset + 2, offset + 3])
+      : setStepView([1, 2, 3, 4, 5]);
+  }, [offset, totalPages]);
 
   return (
     <div className={`flex flex-row w-max m-auto`}>
       <animated.button
+        disabled={offset === 0}
         onClick={() => handleOffset(0)}
         style={rotateS}
-        className={`my-auto ml-0 mr-2`}
+        className={`my-auto ml-0 mr-1 text-xs ${
+          offset === 0 ? "" : "hover:text-sm"
+        }`}
       >
         <PagePlus />
       </animated.button>
       <button
         disabled={offset === 0}
         onClick={() => handleOffset(offset - 1)}
-        className={`my-auto ml-2 mr-2 font-bold`}
+        className={`my-auto ml-1 mr-1 font-bold text-xs ${
+          offset === 0 ? "" : "hover:text-sm"
+        }`}
       >
-        <PrevPage size={"20px"} />
+        <PrevPage />
       </button>
       {stepView.map((step) => {
         return (
-          <button
-            onClick={() => handleOffset(step - 1)}
-            disabled={offset === step - 1}
-            className={`mx-2 text-sm ${
-              offset === step - 1 ? "font-bold" : ""
-            } p-2`}
-          >
-            {step}
-          </button>
+          step &&
+          step < totalPages + 1 && (
+            <button
+              onClick={() => handleOffset(step - 1)}
+              disabled={offset === step - 1}
+              className={`mx-1 my-auto text-xs ${
+                offset === step - 1 ? "text-sm font-bold" : "hover:text-sm"
+              } p-1`}
+            >
+              {step}
+            </button>
+          )
         );
       })}
-      {!(offset + 1 in stepView) && (
-        <button
-          onClick={() => handleOffset(offset)}
-          className={`mx-2 text-sm font-bold p-2`}
-        >
-          {offset + 1}
-        </button>
-      )}
       <button
-        disabled={offset === totalPages}
+        disabled={offset === totalPages - 1}
         onClick={() => handleOffset(offset + 1)}
-        className={`ml-2 my-auto mr-4 font-bold`}
+        className={`ml-1 my-auto mr-2 font-bold text-xs ${
+          offset === totalPages - 1 ? `` : `hover:text-sm`
+        }`}
       >
-        <NextPage size={"20px"} />
+        <NextPage />
       </button>
       <button
-        onClick={() => handleOffset(totalPages)}
-        className={`my-auto mr-0`}
+        disabled={offset === totalPages - 1}
+        onClick={() => handleOffset(totalPages - 1)}
+        className={`my-auto mr-0 text-xs ${
+          offset === totalPages - 1 ? `` : `hover:text-sm`
+        }`}
       >
         <PagePlus />
       </button>
