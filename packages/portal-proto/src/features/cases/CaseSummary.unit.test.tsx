@@ -6,10 +6,6 @@ jest.mock("src/pages/_app", () => ({
   URLContext: {},
 }));
 
-jest.mock("url-join", () => ({
-  urlJoin: jest.fn(),
-}));
-
 describe("<CaseSummary />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
