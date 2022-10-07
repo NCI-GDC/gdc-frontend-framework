@@ -229,11 +229,52 @@ export const createTableColumn = (
                   className={`content-center`}
                 >
                   {row.getCanExpand() && (
-                    <PercentageBar
-                      numerator={22}
-                      denominator={100}
-                      width={width / visibleColumns.length}
-                    />
+                    // <PercentageBar
+                    //   numerator={}
+                    //   denominator={}
+                    //   width={width / visibleColumns.length}
+                    // />
+                    <div className={`flex flex-row w-max m-auto`}>sup</div>
+                  )}
+                  <>
+                    {!row.getCanExpand() && visibleColumns[0].id === accessor && (
+                      <div className={`relative`}>
+                        <GeneAffectedCases
+                          geneId={row.value}
+                          width={width}
+                          opening={row.getCanExpand()}
+                        ></GeneAffectedCases>
+                      </div>
+                    )}
+                  </>
+                </animated.div>
+              );
+            },
+            footer: (props) => props.column.id,
+          },
+        ],
+      };
+    case "CNVLoss":
+      return {
+        header: " ",
+        footer: (props) => props.column.id,
+        columns: [
+          {
+            accessorKey: accessor,
+            header: () => <GTableHeader twStyles={``} title={accessor} />,
+            cell: ({ row }) => {
+              return (
+                <animated.div
+                  style={partitionWidth}
+                  className={`content-center`}
+                >
+                  {row.getCanExpand() && (
+                    // <PercentageBar
+                    //   numerator={}
+                    //   denominator={}
+                    //   width={width / visibleColumns.length}
+                    // />
+                    <div className={`flex flex-row w-max m-auto`}>sup</div>
                   )}
                   <>
                     {!row.getCanExpand() && visibleColumns[0].id === accessor && (
@@ -295,6 +336,7 @@ export const getGene = (
   mutationCounts: Record<string, string>,
   filteredCases: number,
   cases: number,
+  genesTotal: number,
 ) => {
   return {
     select: g.gene_id,
@@ -338,6 +380,7 @@ export const getGene = (
     annotations: g.is_cancer_gene_census,
     // do not remove subRows key, its needed for row.getCanExpand() to be true
     subRows: " ",
+    genesTotal,
   };
 };
 

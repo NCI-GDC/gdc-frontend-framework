@@ -42,9 +42,7 @@ const PageSize: React.FC<PageSizeProps> = ({
   });
 
   useEffect(() => {
-    if (hovered === pageSize) {
-      setOffsetMenu(false);
-    }
+    setOffsetMenu(hovered === pageSize ? false : true);
   }, [hovered]);
 
   return (
@@ -66,19 +64,18 @@ const PageSize: React.FC<PageSizeProps> = ({
           <div className={`text-center`}>
             <animated.ul
               style={{ ...colorSpring, ...borderSpring }}
-              // on hover:
               className={`list-none w-12 rounded-b-md`}
             >
-              {[{ pg: 10 }, { pg: 20 }, { pg: 40 }, { pg: 100 }]
-                .filter(({ pg }) => pg !== pageSize)
-                .map(({ pg }) => {
+              {[10, 20, 40, 100]
+                .filter((pg) => pg !== pageSize)
+                .map((pg) => {
                   return (
                     <li
                       key={`page-size-option-${pg}`}
                       onClick={() => handlePageSize(pg)}
                       onMouseEnter={() => setHovered(pg)}
                       onMouseLeave={() => setHovered(pageSize)}
-                      className={`py-1 px-2 text-sm hover:bg-hoverColor`}
+                      className={`py-1 px-2 text-sm hover:bg-hoverColor border-t-0`}
                     >
                       {pg}
                     </li>

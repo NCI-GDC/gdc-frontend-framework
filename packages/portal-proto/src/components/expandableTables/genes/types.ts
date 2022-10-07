@@ -31,6 +31,7 @@ export interface GenesTableProps {
   pageSize: number;
   handlePageSize: any;
   offset: number;
+  handleOffset: (offset: number) => any;
 }
 
 export const GENE_MENU = [

@@ -23,14 +23,17 @@ export const GTableFilters: React.FC<GTableFiltersProps> = ({
   defaultColumns,
 }: GTableFiltersProps) => {
   const [searchToggled, setSearchToggled] = useState(false);
+  let inputWidth = 300;
+
   const searchSpring = useSpring({
     from: { opacity: 0, width: 0 },
-    to: { opacity: 1, width: searchToggled ? 312 : 39 },
+    to: { opacity: 1, width: searchToggled ? inputWidth + 8 : 39 },
     immediate: false,
   });
+
   const inputSpring = useSpring({
     from: { opacity: 0, width: 0 },
-    to: { opacity: 1, width: searchToggled ? 305 : 0, height: 25 },
+    to: { opacity: 1, width: searchToggled ? inputWidth : 0, height: 25 },
     immediate: false,
   });
 

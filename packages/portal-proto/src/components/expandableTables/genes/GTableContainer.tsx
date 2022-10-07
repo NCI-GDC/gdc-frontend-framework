@@ -50,6 +50,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             pageSize={pageSize}
             offset={offset}
             handlePageSize={setPageSize}
+            handleOffset={setOffset}
           />
         )}
     </div>

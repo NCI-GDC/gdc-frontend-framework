@@ -8,6 +8,7 @@ import { getGene, createTableColumn } from "./genesTableUtils";
 import { GenesColumns } from "@/features/shared/table-utils";
 import { useSpring } from "react-spring";
 import PageSize from "../shared/PageSize";
+import PageStepper from "../shared/PageStepper";
 
 export const GenesTable: React.FC<GenesTableProps> = ({
   initialData,
@@ -20,6 +21,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   pageSize,
   handlePageSize,
   offset,
+  handleOffset,
 }: GenesTableProps) => {
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
   const [expanded, setExpanded] = useState<any>({});
@@ -38,13 +40,21 @@ export const GenesTable: React.FC<GenesTableProps> = ({
 
   const useGeneTableFormat = useCallback(
     (initialData) => {
-      return initialData.genes.map((g) => {
+      const {
+        cases,
+        // cnvCases,
+        filteredCases,
+        genes,
+        genes_total,
+      } = initialData;
+      return genes.map((gene) => {
         return getGene(
-          g,
+          gene,
           selectedSurvivalPlot,
           mutationCounts,
           filteredCases,
           cases,
+          genes_total,
         );
       });
     },
@@ -172,12 +182,6 @@ export const GenesTable: React.FC<GenesTableProps> = ({
     console.log("gene", gene);
   };
 
-  // todo add total
-  // data.genes.genes_total
-  const pageDisplay = `Showing ${offset * pageSize + 1} - ${
-    (offset + 1) * pageSize
-  } of ten million genes`;
-
   return (
     <div className={`w-full`}>
       <div className={`flex flex-row`}>
@@ -215,24 +219,33 @@ export const GenesTable: React.FC<GenesTableProps> = ({
           headerWidth={width / visibleColumns.length}
         />
       </div>
-      {/* justify-start items-center*/}
       <div className={`flex flex-row justify-between`}>
-        <div className="flex flex-row m-auto ml-2">
+        <div className="flex flex-row m-auto ml-0">
           <span className="my-auto mx-1 text-xs">Show</span>
           <PageSize pageSize={pageSize} handlePageSize={handlePageSize} />
           <span className="my-auto mx-1 text-xs">Entries</span>
         </div>
-        <div className={`m-auto`}>{pageDisplay}</div>
-        <div className={`m-auto mr-2`}>paginator</div>
-        {/* <Pagination
-          size="sm"
-          radius="md"
-          color="accent"
-          className="ml-auto"
-          page={offset}
-          onChange={(x) => handlePageChange(x)}
-          total={pages}
-        />  */}
+        <div className={`m-auto text-sm`}>
+          <span>
+            Showing
+            <span className={`font-bold`}>{` ${offset * pageSize + 1} `}</span>-
+            <span className={`font-bold`}>
+              {` ${(offset + 1) * pageSize} `}
+            </span>
+            of
+            <span className={`font-bold`}>
+              {` ${transformResponse[0].genesTotal} `}
+            </span>
+            genes
+          </span>
+        </div>
+        <div className={`mr-0`}>
+          <PageStepper
+            offset={offset}
+            totalPages={Math.ceil(transformResponse[0].genesTotal / pageSize)}
+            handleOffset={handleOffset}
+          />
+        </div>
       </div>
     </div>
   );
