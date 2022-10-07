@@ -14,7 +14,6 @@ describe("</Footer>", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    // jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
     jest.spyOn(core, "useCoreSelector").mockImplementation(jest.fn());
     jest.spyOn(core, "useCoreDispatch").mockImplementation(() => dispatch);
   });
