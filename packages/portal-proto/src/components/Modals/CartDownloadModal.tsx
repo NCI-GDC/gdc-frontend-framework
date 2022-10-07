@@ -111,7 +111,6 @@ const CartDownloadModal = ({
           options={{
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",
-              Range: "bytes=0-0",
             },
             method: "POST",
           }}
