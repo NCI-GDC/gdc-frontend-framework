@@ -5,6 +5,7 @@ export const COHORTS = [
     filters: { mode: "and", root: {} },
     caseSet: { caseSetId: { mode: "and", root: {} }, status: "uninitialized" },
     modified: false,
+    modifiedDate: new Date(2999, 1, 1).toISOString(),
   },
   {
     name: "Baily's Cohort",
@@ -21,6 +22,7 @@ export const COHORTS = [
     },
     caseSet: { caseSetId: { mode: "and", root: {} }, status: "uninitialized" },
     modified: false,
+    modifiedDate: new Date(2020, 1, 15).toISOString(),
   },
   {
     name: "Pancreas",
@@ -34,6 +36,7 @@ export const COHORTS = [
         },
       },
       mode: "and",
+      modifiedDate: new Date(2020, 1, 9).toISOString(),
     },
     caseSet: { caseSetId: { mode: "and", root: {} }, status: "uninitialized" },
     modified: false,
@@ -58,6 +61,7 @@ export const COHORTS = [
     },
     caseSet: { caseSetId: { mode: "and", root: {} }, status: "uninitialized" },
     modified: false,
+    modifiedDate: new Date(2020, 1, 8).toISOString(),
   },
   {
     name: "Pancreas - KRAS not mutated",
@@ -79,6 +83,7 @@ export const COHORTS = [
     },
     caseSet: { caseSetId: { mode: "and", root: {} }, status: "uninitialized" },
     modified: false,
+    modifiedDate: new Date(2020, 1, 7).toISOString(),
   },
   {
     name: "breast, true",
@@ -100,5 +105,6 @@ export const COHORTS = [
     },
     caseSet: { caseSetId: { mode: "and", root: {} }, status: "uninitialized" },
     modified: false,
+    modifiedDate: new Date(2020, 1, 6).toISOString(),
   },
 ];

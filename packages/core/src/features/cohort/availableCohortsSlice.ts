@@ -23,11 +23,11 @@ export interface CaseSetDataAndStatus {
 export interface Cohort {
   readonly id: string;
   readonly name: string;
-  readonly filters: FilterSet;
-  readonly caseSet: CaseSetDataAndStatus;
-  readonly modified: boolean;
-  readonly modifiedDate?: string;
-  readonly saved?: boolean;
+  readonly filters: FilterSet; // active filters for cohort
+  readonly caseSet: CaseSetDataAndStatus; // case ids for frozen cohorts
+  readonly modified: boolean; // flag which is set to true if modified and unsaved
+  readonly modifiedDate?: string; // last time cohort was modified
+  readonly saved?: boolean; // flag indicating if cohort has been saved.
 }
 
 /*
@@ -111,7 +111,9 @@ const newCohort = (
   modified = false,
 ): Cohort => {
   const ts = new Date();
-  const newName = createCohortName(ts.toLocaleString());
+  const newName = createCohortName(
+    ts.toLocaleString("en-US", { hour12: false }).replace(",", ""),
+  );
   const newId = createCohortId();
   return {
     name: newName,

@@ -25,6 +25,7 @@ transition-colors
 text-primary-content-darkest
 hover:bg-primary
 hover:text-primary-content-lightest
+disabled:opacity-50
 `;
 
 const CohortManager: React.FC<CohortManagerProps> = ({
@@ -33,9 +34,16 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   startingId,
   hide_controls = false,
 }: CohortManagerProps) => {
-  const menu_items = cohorts.map((x) => {
-    return { value: x.id, label: x.name };
-  });
+  const menu_items = cohorts
+    .sort((a, b) => {
+      if (a.id == DEFAULT_COHORT_ID) return -1; // Put DEFAULT_COHORT_ID first
+      if (b.id == DEFAULT_COHORT_ID) return -1;
+      if (a.modifiedDate < b.modifiedDate) return 1;
+      else return -1;
+    })
+    .map((x) => {
+      return { value: x.id, label: x.name };
+    });
   const coreDispatch = useCoreDispatch();
   const cohortName = useCoreSelector((state) => selectCurrentCohortName(state));
   const newCohort = useCallback(() => {
@@ -83,7 +91,11 @@ const CohortManager: React.FC<CohortManagerProps> = ({
             onChange={(x) => {
               onSelectionChanged(x);
             }}
-            className="border-base-light w-80 p-0 z-10 "
+            classNames={{
+              root: "border-base-light w-80 p-0 z-10 ",
+              input: "text-heading font-[500] text-primary-darkest ",
+              item: "text-heading font-[400] text-primary-darkest data-selected:bg-primary-lighter first:border-b-2 first:rounded-none first:border-primary",
+            }}
             aria-label="Select cohort"
           />
         ) : (
