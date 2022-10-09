@@ -1,5 +1,14 @@
 import React, { useCallback, useState } from "react";
-import { Button, Group, Modal, Select, Text } from "@mantine/core";
+import {
+  Box,
+  Button,
+  Group,
+  Modal,
+  Select,
+  Text,
+  MantineProvider,
+  createEmotionCache,
+} from "@mantine/core";
 import {
   MdAdd as AddIcon,
   MdDelete as DeleteIcon,
@@ -55,32 +64,110 @@ const CohortManager: React.FC<CohortManagerProps> = ({
     coreDispatch(removeCohort());
   };
 
+  const appendCache = createEmotionCache({ key: "mantine", prepend: false });
+
   return (
     <div
       data-tour="cohort_management_bar"
       className="flex flex-row items-center justify-start gap-6 pl-4 h-20 shadow-lg bg-primary-darkest"
     >
-      <Modal
-        title="Delete Cohort"
-        opened={showDelete}
-        onClose={() => setShowDelete(false)}
+      {" "}
+      {
+        // Wrap modal in own theme provider to permit overriding of backgroundColor from tailwind
+      }
+      <MantineProvider
+        emotionCache={appendCache}
+        withGlobalStyles
+        withNormalizeCSS
+        inherit
       >
-        <Text className="font-heading text-md">
-          Are you sure you want to permanently delete the {cohortName}?
-        </Text>
-        <Text className="font-heading text-xs">
-          You cannot undo this action
-        </Text>
-        <Group mt="md" position="right" className="bg-base-light">
-          <Button variant="outline" onClick={() => setShowDelete(false)}>
-            Cancel
-          </Button>
-          <Button variant="outline" onClick={() => deleteCohort()}>
-            Delete
-          </Button>
-        </Group>
-      </Modal>
-
+        <Modal
+          title="Delete Cohort"
+          opened={showDelete}
+          padding={0}
+          radius="md"
+          onClose={() => setShowDelete(false)}
+          styles={(theme) => ({
+            header: {
+              color: theme.colors.primary[8],
+              fontFamily: '"Montserrat", "sans-serif"',
+              fontSize: "1.25em",
+              fontWeight: 500,
+              "letter-spacing": ".1rem",
+              "border-color": theme.colors.base[1],
+              "border-style": "solid",
+              "border-width": "0px 0px 2px 0px",
+              padding: "15px 20px 15px 15px",
+              margin: "5px 5px 5px 5px",
+            },
+            modal: {
+              backgroundColor: theme.colors.base[0],
+            },
+            close: {
+              backgroundColor: theme.colors.base[1],
+              color: theme.colors.primary[8],
+            },
+          })}
+        >
+          <Box
+            sx={() => ({
+              fontFamily: '"Montserrat", "sans-serif"',
+              padding: "20px 25px 20px 10px",
+            })}
+          >
+            <Text
+              sx={(theme) => ({
+                fontFamily: '"Montserrat", "sans-serif"',
+                fontSize: "0.8em",
+                fontWeight: 500,
+                color: theme.colors.base[8],
+              })}
+            >
+              Are you sure you want to permanently delete <b>{cohortName}</b>b?
+            </Text>
+            <Text
+              sx={(theme) => ({
+                fontFamily: '"Montserrat", "sans-serif"',
+                fontSize: "0.6em",
+                color: theme.colors.base[9],
+              })}
+            >
+              You cannot undo this action.
+            </Text>
+          </Box>
+          <Box
+            sx={(theme) => ({
+              backgroundColor: theme.colors.base[1],
+              padding: theme.spacing.md,
+              borderRadius: theme.radius.md,
+              borderTopRightRadius: 0,
+              borderTopLeftRadius: 0,
+            })}
+          >
+            <Group position="right">
+              <Button
+                variant="outline"
+                styles={() => ({
+                  root: {
+                    backgroundColor: "white",
+                  },
+                })}
+                color="primary.5"
+                onClick={() => setShowDelete(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant={"filled"}
+                color="primary.8"
+                onClick={() => deleteCohort()}
+              >
+                Delete
+              </Button>
+            </Group>
+          </Box>
+        </Modal>
+      </MantineProvider>
       <div className="border-opacity-0">
         {!hide_controls ? (
           <Select
