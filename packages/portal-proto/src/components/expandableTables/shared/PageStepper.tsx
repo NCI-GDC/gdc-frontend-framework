@@ -52,7 +52,6 @@ const PageStepper: React.FC<PageStepperProps> = ({
       </button>
       {stepView.map((step) => {
         return (
-          step &&
           step < totalPages + 1 && (
             <button
               onClick={() => handleOffset(step - 1)}

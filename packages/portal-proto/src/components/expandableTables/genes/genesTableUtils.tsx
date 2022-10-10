@@ -3,9 +3,10 @@ import ToggleSpring from "../shared/ToggleSpring";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import _ from "lodash";
 import { animated } from "react-spring";
-import SwitchSpring from "../shared/SwitchSpring";
+// import SwitchSpring from "../shared/SwitchSpring";
 import SurvivalSpring from "../shared/SurvivalSpring";
-import PercentageBar from "../shared/PercentageBar";
+// import PercentageBar from "../shared/PercentageBar";
+import CheckboxContainer from "../shared/CheckboxContainer";
 
 interface SingleGene {
   biotype: string;
@@ -85,21 +86,16 @@ export const createTableColumn = (
             header: () => <GTableHeader twStyles={`ml-4`} title={accessor} />,
             cell: ({ row }) => {
               return (
-                <animated.div
-                  style={partitionWidth}
-                  className={`content-center`}
-                >
-                  <>
-                    {row.getCanExpand() && (
-                      <SwitchSpring
-                        isActive={row.original["select"] in selectedGenes}
-                        icon={undefined}
-                        selected={row}
-                        handleSwitch={selectGene}
-                        selectedGenes={selectedGenes}
-                      />
-                    )}
-                  </>
+                <div>
+                  <div className={`content-center`}>
+                    <CheckboxContainer
+                      isActive={row.original["select"] in selectedGenes}
+                      select={row}
+                      handleCheck={selectGene}
+                      width={width / visibleColumns.length}
+                      wSpring={partitionWidth}
+                    />
+                  </div>
                   <>
                     {!row.getCanExpand() && visibleColumns[0].id === accessor && (
                       <div className={`relative`}>
@@ -111,7 +107,7 @@ export const createTableColumn = (
                       </div>
                     )}
                   </>
-                </animated.div>
+                </div>
               );
             },
             footer: (props) => props.column.id,

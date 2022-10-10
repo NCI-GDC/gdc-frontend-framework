@@ -99,7 +99,13 @@ export const ExpTable: React.FC<ExpTableProps> = ({
         </thead>
         <tbody>
           {table.getRowModel().rows.map((row, index) => {
-            return <AnimatedRow row={row} index={index} />;
+            return (
+              <AnimatedRow
+                row={row}
+                index={index}
+                selected={row.original["select"] in allSelected}
+              />
+            );
           })}
         </tbody>
       </table>

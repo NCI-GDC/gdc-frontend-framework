@@ -2,6 +2,7 @@ import { useGenesTable } from "@gff/core";
 import { useState } from "react";
 import { GenesTable } from "./GenesTable";
 import { useMeasure } from "react-use";
+import { Loader } from "@mantine/core";
 // import { getGraphQLFilters } from "./types";
 // import { useGetGenesTableQuery } from "@gff/core";
 
@@ -34,11 +35,12 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   // });
 
   return (
-    <div ref={ref} className={`h-full`}>
+    <>
       {data?.status === "fulfilled" &&
-        data?.genes?.mutationCounts &&
-        data?.genes?.filteredCases &&
-        data?.genes?.cases && (
+      data?.genes?.mutationCounts &&
+      data?.genes?.filteredCases &&
+      data?.genes?.cases ? (
+        <div ref={ref} className={`h-full`}>
           <GenesTable
             initialData={data.genes}
             mutationCounts={data.genes.mutationCounts}
@@ -52,7 +54,14 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             handlePageSize={setPageSize}
             handleOffset={setOffset}
           />
-        )}
-    </div>
+        </div>
+      ) : (
+        <div className={`flex flex-row h-[500px] w-[100px] m-auto`}>
+          <div className={`my-auto`}>
+            <Loader />
+          </div>
+        </div>
+      )}
+    </>
   );
 };
