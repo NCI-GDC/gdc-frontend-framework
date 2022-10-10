@@ -11,10 +11,9 @@ import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { Button, LoadingOverlay, Menu, Tooltip } from "@mantine/core";
 import { MdFileDownload } from "react-icons/md";
-import { calculatePercentage, sortByPropertyAsc } from "src/utils";
+import { calculatePercentage, humanify, sortByPropertyAsc } from "src/utils";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 import { formatDataForHorizontalTable } from "../files/utils";
-import { humanify } from "../biospecimen/utils";
 import Link from "next/link";
 import { CollapsibleList } from "@/components/CollapsibleList";
 import { CategoryTableSummary } from "@/components/Summary/CategoryTableSummary";
@@ -185,12 +184,12 @@ export const ProjectView: React.FC<ProjectViewProps> = (
       case_count: `${data_c.case_count.toLocaleString()} (${calculatePercentage(
         data_c.case_count,
         projectData.summary.case_count,
-      )}%)`,
+      )})`,
       // TODO: Need to change it to Link after the href has been finalized
       file_count: `${data_c.file_count.toLocaleString()} (${calculatePercentage(
         data_c.file_count,
         projectData.summary.file_count,
-      )}%)`,
+      )})`,
     }));
 
     return {
@@ -215,12 +214,12 @@ export const ProjectView: React.FC<ProjectViewProps> = (
       case_count: `${exp_c.case_count.toLocaleString()} (${calculatePercentage(
         exp_c.case_count,
         projectData.summary.case_count,
-      )}%)`,
+      )})`,
       // TODO: Need to change it to Link after the href has been finalized
       file_count: `${exp_c.file_count.toLocaleString()} (${calculatePercentage(
         exp_c.file_count,
         projectData.summary.file_count,
-      )}%)`,
+      )})`,
     }));
 
     return {
