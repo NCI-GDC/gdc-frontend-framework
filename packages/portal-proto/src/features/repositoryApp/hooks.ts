@@ -194,7 +194,7 @@ export const useRepositoryRangeFacet = (
   );
   const localFilters = useRepositoryFilters();
   const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilterSet(state),
+    selectCurrentCohortFilters(state),
   );
 
   const allFilters = joinFilters(cohortFilters, localFilters);

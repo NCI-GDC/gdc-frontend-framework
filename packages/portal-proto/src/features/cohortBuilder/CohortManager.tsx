@@ -73,7 +73,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   );
   const newCohort = useCallback(() => {
     coreDispatch(addNewCohort());
-  }, []);
+  }, [coreDispatch]);
   const [showDelete, setShowDelete] = useState(false);
 
   const deleteCohort = () => {
