@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Button, Text, Badge } from "@mantine/core";
-import qs from "querystring";
 import { hideModal, useCoreDispatch, UserInfo, CartFile } from "@gff/core";
 import { LoginButton } from "@/components/LoginButton";
 import { DownloadButton } from "@/components/DownloadButtons";
@@ -103,7 +102,7 @@ const CartDownloadModal = ({
           }
           endpoint="data"
           queryParams={JSON.stringify({
-            ids: filesByCanAccess.true.map((file) => file.fileId),
+            ids: (filesByCanAccess?.true || []).map((file) => file.fileId),
             annotations: true,
             related_files: true,
           })}

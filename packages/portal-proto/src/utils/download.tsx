@@ -20,7 +20,7 @@ const DownloadNotification = ({ onClick }: { onClick: () => void }) => {
   );
 };
 
-const SlowDownloadNotification = ({ onClick }) => (
+const SlowDownloadNotification = ({ onClick }: { onClick: () => void }) => (
   <>
     <div>
       <div>
