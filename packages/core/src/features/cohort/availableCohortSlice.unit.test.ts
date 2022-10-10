@@ -12,11 +12,9 @@ import {
   updateCohortFilter,
   removeCohortFilter,
   removeCohort,
-} from "./availableCohortsSlice";
-import {
   availableCohortsReducer,
-  // addNewCohort,
 } from "./availableCohortsSlice";
+import * as cohortSlice from "./availableCohortsSlice";
 import { EntityState } from "@reduxjs/toolkit";
 
 const state = getInitialCoreState();
@@ -207,7 +205,7 @@ describe("get/set current cohort filters", () => {
 describe("addFilter", () => {
   test("should add a filter to the current cohort", () => {
     const newState = availableCohortsReducer(
-      INITIAL_STATE,
+      { ...INITIAL_STATE, currentCohort: "0000-0000-1001-0000" },
       updateCohortFilter({
         field: "cases.primary_site",
         operation: {
@@ -291,13 +289,36 @@ describe("addFilter", () => {
 });
 
 describe("add, update, and remove cohort", () => {
+  afterAll(() => {
+    jest.clearAllMocks();
+  });
+
+  jest
+    .spyOn(cohortSlice, "createCohortId")
+    .mockReturnValueOnce("000-000-000-1")
+    .mockReturnValueOnce("000-000-000-2");
+  jest
+    .spyOn(cohortSlice, "createCohortName")
+    .mockReturnValueOnce("New Cohort")
+    .mockReturnValueOnce("New Cohort 2");
+  const mockedDate = new Date("2020-11-01T00:00:00.000Z");
+  // Override the correct Date function, see https://github.com/DefinitelyTyped/DefinitelyTyped/issues/42067#issuecomment-643674689
+  type PatchedGlobal = {
+    Date: new (...args: ConstructorParameters<DateConstructor>) => Date;
+  };
+
+  jest
+    .spyOn(global as PatchedGlobal, "Date")
+    .mockImplementation(() => mockedDate);
+
   test("should add new cohort to available cohorts", () => {
     const availableCohorts = availableCohortsReducer(
       { ids: [], entities: {}, currentCohort: "", message: undefined },
       addNewCohort(),
     );
     expect(availableCohorts).toEqual({
-      currentCohort: "",
+      currentCohort: "000-000-000-1",
+      message: "newCohort|New Cohort",
       ids: ["000-000-000-1"],
       entities: {
         "000-000-000-1": {
@@ -311,15 +332,18 @@ describe("add, update, and remove cohort", () => {
             },
             status: "uninitialized",
           },
+          modifiedDate: "2020-11-01T00:00:00.000Z",
+          modified: false,
+          saved: false,
         },
       },
     });
   });
 
-  test("should add new cohort to available cohorts", () => {
+  test("should add new cohort to available cohorts when we have existing cohorts", () => {
     const availableCohorts = availableCohortsReducer(
       {
-        currentCohort: "",
+        currentCohort: "000-000-000-1",
         message: undefined,
         ids: ["000-000-000-1"],
         entities: {
@@ -341,7 +365,8 @@ describe("add, update, and remove cohort", () => {
       addNewCohort(),
     );
     expect(availableCohorts).toEqual({
-      currentCohort: "",
+      currentCohort: "000-000-000-2",
+      message: "newCohort|New Cohort 2",
       ids: ["000-000-000-1", "000-000-000-2"],
       entities: {
         "000-000-000-1": {
@@ -358,7 +383,6 @@ describe("add, update, and remove cohort", () => {
           modified: false,
         },
         "000-000-000-2": {
-          name: "New Cohort 1",
           filters: { mode: "and", root: {} },
           id: "000-000-000-2",
           caseSet: {
@@ -369,6 +393,9 @@ describe("add, update, and remove cohort", () => {
             status: "uninitialized",
           },
           modified: false,
+          modifiedDate: "2020-11-01T00:00:00.000Z",
+          name: "New Cohort 2",
+          saved: false,
         },
       },
     });
@@ -425,12 +452,12 @@ describe("add, update, and remove cohort", () => {
       {
         currentCohort: "000-000-000-2",
         message: undefined,
-        ids: ["000-000-000-1", "000-000-000-2"],
+        ids: ["ALL-GDC-COHORT", "000-000-000-2"],
         entities: {
-          "000-000-000-1": {
-            name: "New Cohort",
+          "ALL-GDC-COHORT": {
+            name: "All GDC",
             filters: { mode: "and", root: {} },
-            id: "000-000-000-1",
+            id: "ALL-GDC-COHORT",
             caseSet: {
               caseSetId: {
                 mode: "and",
@@ -458,13 +485,14 @@ describe("add, update, and remove cohort", () => {
       removeCohort(),
     );
     expect(availableCohorts).toEqual({
-      currentCohort: "000-000-000-1",
-      ids: ["000-000-000-1"],
+      currentCohort: "ALL-GDC-COHORT",
+      message: "deleteCohort|New Cohort 2",
+      ids: ["ALL-GDC-COHORT"],
       entities: {
-        "000-000-000-1": {
-          name: "New Cohort",
+        "ALL-GDC-COHORT": {
+          name: "All GDC",
           filters: { mode: "and", root: {} },
-          id: "000-000-000-1",
+          id: "ALL-GDC-COHORT",
           caseSet: {
             caseSetId: {
               mode: "and",
@@ -480,14 +508,14 @@ describe("add, update, and remove cohort", () => {
 
   test("should not remove the first cohort", () => {
     const removeState = {
-      currentCohort: "000-000-000-1",
-      message: undefined,
-      ids: ["000-000-000-1", "000-000-000-2"],
+      currentCohort: "ALL-GDC-COHORT",
+      message: "deleteCohort|New Cohort 2",
+      ids: ["ALL-GDC-COHORT", "000-000-000-1"],
       entities: {
-        "000-000-000-1": {
-          name: "New Cohort",
+        "ALL-GDC-COHORT": {
+          name: "All GDC",
           filters: { mode: "and", root: {} },
-          id: "000-000-000-1",
+          id: "ALL-GDC-COHORT",
           caseSet: {
             caseSetId: {
               mode: "and",
@@ -497,10 +525,10 @@ describe("add, update, and remove cohort", () => {
           },
           modified: false,
         },
-        "000-000-000-2": {
-          name: "New Cohort 2",
+        "000-000-000-1": {
+          name: "New Cohort",
           filters: { mode: "and", root: {} },
-          id: "000-000-000-2",
+          id: "000-000-000-1",
           caseSet: {
             caseSetId: {
               mode: "and",

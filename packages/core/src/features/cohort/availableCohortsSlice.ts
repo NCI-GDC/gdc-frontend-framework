@@ -100,11 +100,11 @@ interface UpdateFilterParams {
   operation: Operation;
 }
 
-const createCohortName = (postfix: string): string => {
+export const createCohortName = (postfix: string): string => {
   return `Custom Cohort ${postfix}`;
 };
 
-const createCohortId = (): string => nanoid();
+export const createCohortId = (): string => nanoid();
 
 const newCohort = (
   filters: FilterSet = { mode: "and", root: {} },
