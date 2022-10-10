@@ -5,7 +5,7 @@ export const COHORTS = [
     filters: { mode: "and", root: {} },
     caseSet: { caseSetId: { mode: "and", root: {} }, status: "uninitialized" },
     modified: false,
-    modifiedDate: new Date(2999, 1, 1).toISOString(),
+    modifiedDate: new Date(2099, 1, 1).toISOString(),
   },
   {
     name: "Baily's Cohort",

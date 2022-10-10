@@ -72,6 +72,7 @@ const ContextBar: React.FC = () => {
             classNames: {
               description: "flex flex-col content-center text-center",
             },
+            autoClose: 5000,
           });
         }
         if (cmdAndParam[0] === "deleteCohort") {
@@ -80,6 +81,7 @@ const ContextBar: React.FC = () => {
             classNames: {
               description: "flex flex-col content-center text-center",
             },
+            autoClose: 5000,
           });
         }
       }

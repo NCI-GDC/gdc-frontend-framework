@@ -150,6 +150,7 @@ const newCohort = (
  * setCurrentCohortId(id:string): set the id of the current cohort, used to switch between cohorts
  * clearCaseSet(): resets the caseSet member to all GDC
  * removeCohort(): removes the current cohort
+ * clearCohortMessage(): clears the current message by setting it to undefined
  */
 const slice = createSlice({
   name: "cohort/availableCohorts",

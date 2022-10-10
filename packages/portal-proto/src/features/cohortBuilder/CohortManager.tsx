@@ -38,22 +38,34 @@ hover:text-primary-content-lightest
 disabled:opacity-50
 `;
 
+/**
+ * Component for selecting, adding, saving, removing, and deleting cohorts
+ * @param cohorts: array of Cohort
+ * @param onSelectionChanged
+ * @param startingId: the selected id
+ * @param hide_controls: set to true to hide the function buttons
+ * @constructor
+ */
 const CohortManager: React.FC<CohortManagerProps> = ({
   cohorts,
   onSelectionChanged,
   startingId,
   hide_controls = false,
 }: CohortManagerProps) => {
-  const menu_items = cohorts
-    .sort((a, b) => {
-      if (a.id == DEFAULT_COHORT_ID) return -1; // Put DEFAULT_COHORT_ID first
-      if (b.id == DEFAULT_COHORT_ID) return -1;
-      if (a.modifiedDate < b.modifiedDate) return 1;
-      else return -1;
-    })
-    .map((x) => {
-      return { value: x.id, label: x.name };
-    });
+  // Sort the Cohors by modification date, The "All GDC" cohort is always first
+  const menu_items = [
+    { value: cohorts[0].id, label: cohorts[0].name },
+    ...cohorts // Make ALL GDC always first
+      .slice(1)
+      .sort((a, b) => {
+        //sort everything else by modified
+        if (a.modifiedDate <= b.modifiedDate) return 1;
+        else return -1;
+      })
+      .map((x) => {
+        return { value: x.id, label: x.name };
+      }),
+  ];
   const coreDispatch = useCoreDispatch();
   const cohortName = useCoreSelector((state) => selectCurrentCohortName(state));
   const cohortModified = useCoreSelector((state) =>
@@ -127,7 +139,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                 color: theme.colors.base[8],
               })}
             >
-              Are you sure you want to permanently delete <b>{cohortName}</b>b?
+              Are you sure you want to permanently delete <b>{cohortName}</b>?
             </Text>
             <Text
               sx={(theme) => ({
@@ -204,30 +216,33 @@ const CohortManager: React.FC<CohortManagerProps> = ({
           </div>
         )}
       </div>
-      {!hide_controls ? (
-        <>
-          <CohortGroupButton>
-            <SaveIcon size="1.5em" aria-label="Save cohort" />
-          </CohortGroupButton>
-          <CohortGroupButton onClick={() => newCohort()}>
-            <AddIcon size="1.5em" aria-label="Add cohort" />
-          </CohortGroupButton>
-          <CohortGroupButton
-            onClick={() => setShowDelete(true)}
-            disabled={startingId === DEFAULT_COHORT_ID}
-          >
-            <DeleteIcon size="1.5em" aria-label="Delete cohort" />
-          </CohortGroupButton>
-          <CohortGroupButton>
-            <UploadIcon size="1.5em" aria-label="Upload cohort" />
-          </CohortGroupButton>
-          <CohortGroupButton>
-            <DownloadIcon size="1.5em" aria-label="Download cohort" />
-          </CohortGroupButton>
-        </>
-      ) : (
-        <div />
-      )}
+      {
+        // TODO: add tooltips with all functions are complete
+        !hide_controls ? (
+          <>
+            <CohortGroupButton>
+              <SaveIcon size="1.5em" aria-label="Save cohort" />
+            </CohortGroupButton>
+            <CohortGroupButton onClick={() => newCohort()}>
+              <AddIcon size="1.5em" aria-label="Add cohort" />
+            </CohortGroupButton>
+            <CohortGroupButton
+              onClick={() => setShowDelete(true)}
+              disabled={startingId === DEFAULT_COHORT_ID}
+            >
+              <DeleteIcon size="1.5em" aria-label="Delete cohort" />
+            </CohortGroupButton>
+            <CohortGroupButton>
+              <UploadIcon size="1.5em" aria-label="Upload cohort" />
+            </CohortGroupButton>
+            <CohortGroupButton>
+              <DownloadIcon size="1.5em" aria-label="Download cohort" />
+            </CohortGroupButton>
+          </>
+        ) : (
+          <div />
+        )
+      }
     </div>
   );
 };
