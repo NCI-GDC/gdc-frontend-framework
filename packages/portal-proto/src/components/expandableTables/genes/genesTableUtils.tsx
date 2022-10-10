@@ -293,7 +293,7 @@ export const createTableColumn = (
                     //   denominator={}
                     //   width={width / visibleColumns.length}
                     // />
-                    <div className={`flex flex-row w-max m-auto`}>sup</div>
+                    <GTableCell row={row} accessor={accessor} />
                   )}
                   <>
                     {!row.getCanExpand() && visibleColumns[0].id === accessor && (
@@ -333,7 +333,7 @@ export const createTableColumn = (
                     //   denominator={}
                     //   width={width / visibleColumns.length}
                     // />
-                    <div className={`flex flex-row w-max m-auto`}>sup</div>
+                    <GTableCell row={row} accessor={accessor} />
                   )}
                   <>
                     {!row.getCanExpand() && visibleColumns[0].id === accessor && (
@@ -427,14 +427,14 @@ export const getGene = (
             (100 * g.case_cnv_gain) /
             g.cnv_case
           ).toFixed(2)}%)`
-        : `0`,
+        : `--`,
     CNVLoss:
       g.cnv_case > 0
         ? `${g.case_cnv_loss + " / " + g.cnv_case} (${(
             (100 * g.case_cnv_loss) /
             g.cnv_case
           ).toFixed(2)}%)`
-        : `0`,
+        : `--`,
     mutations: mutationCounts[g.gene_id],
     annotations: g.is_cancer_gene_census,
     // do not remove subRows key, its needed for row.getCanExpand() to be true

@@ -18,9 +18,6 @@ export interface GeneSubRow {
 
 export interface GenesTableProps {
   readonly initialData: any; // need to add this from response
-  readonly mutationCounts: Record<string, string>;
-  readonly filteredCases: number;
-  readonly cases: number;
   readonly selectedSurvivalPlot: Record<string, string>;
   width: number;
   readonly handleSurvivalPlotToggled: (
@@ -32,6 +29,9 @@ export interface GenesTableProps {
   handlePageSize: any;
   offset: number;
   handleOffset: (offset: number) => any;
+  selectedGenes: any;
+  selectGene: any;
+  selectAll: any;
 }
 
 export const GENE_MENU = [
@@ -43,7 +43,7 @@ export const GENE_MENU = [
 
 export const DEFAULT_GTABLE_ORDER = [
   { id: "select", columnName: "Select", visible: true },
-  { id: "geneID", columnName: "Gene ID", visible: true },
+  { id: "geneID", columnName: "Gene ID", visible: false },
   { id: "symbol", columnName: "Symbol", visible: true },
   { id: "name", columnName: "Name", visible: true },
   // { id: "cytoband", columnName: "Cytoband", visible: false },

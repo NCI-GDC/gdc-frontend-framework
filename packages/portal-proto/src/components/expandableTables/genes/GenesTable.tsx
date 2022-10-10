@@ -12,9 +12,6 @@ import PageStepper from "../shared/PageStepper";
 
 export const GenesTable: React.FC<GenesTableProps> = ({
   initialData,
-  mutationCounts,
-  filteredCases,
-  cases,
   selectedSurvivalPlot,
   handleSurvivalPlotToggled,
   width,
@@ -22,11 +19,13 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   handlePageSize,
   offset,
   handleOffset,
+  selectedGenes,
+  selectGene,
+  selectAll,
 }: GenesTableProps) => {
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
   const [expanded, setExpanded] = useState<any>({});
   const [expandedId, setExpandedId] = useState<number>(undefined);
-  const [selectedGenes, setSelectedGenes] = useState<any>({}); // todo: add type
   const [searchTerm, setSearchTerm] = useState("");
   const [columnListOrder, setColumnListOrder] = useState(DEFAULT_GTABLE_ORDER);
   const [showColumnMenu, setShowColumnMenu] = useState<boolean>(false);
@@ -43,6 +42,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
       const {
         cases,
         // cnvCases,
+        mutationCounts,
         filteredCases,
         genes,
         genes_total,
@@ -105,48 +105,6 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   useEffect(() => {
     setVisibleColumns(columnListOrder.filter((col) => col.visible));
   }, [columnListOrder]);
-
-  const selectGene = (row: any) => {
-    const gene = row.original["geneID"];
-    if (gene in selectedGenes) {
-      // deselect single row
-      setSelectedGenes((currentMap) => {
-        const newMap = { ...currentMap };
-        delete newMap[gene];
-        return newMap;
-      });
-    } else {
-      // select single row
-      setSelectedGenes((currentMap) => {
-        return { ...currentMap, [gene]: row };
-      });
-    }
-  };
-
-  const selectAllGenes = (rows: any) => {
-    if (rows.every((row) => row.original["select"] in selectedGenes)) {
-      // deselect all
-      setSelectedGenes((currentMap) => {
-        const newMap = { ...currentMap };
-        rows.forEach((row) => delete newMap[row.original["select"]]);
-        return newMap;
-      });
-    } else {
-      // select all
-      setSelectedGenes((currentMap) => {
-        const newMap = { ...currentMap };
-        rows.forEach((row) => {
-          if (
-            !row.id.includes(".") &&
-            !(row.original["select"] in currentMap)
-          ) {
-            newMap[row.original["select"]] = row;
-          }
-        });
-        return newMap;
-      });
-    }
-  };
 
   // todo replace this callback w/ transformResponse inside rtk endpoint call
   const columns = useMemo<ColumnDef<GenesColumns>[]>(() => {
@@ -213,7 +171,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
           columns={columns}
           expanded={expanded}
           handleExpandedProxy={handleExpandedProxy}
-          selectAll={selectAllGenes}
+          selectAll={selectAll}
           allSelected={selectedGenes}
           firstColumn={columnListOrder[0].id}
           headerWidth={width / visibleColumns.length}

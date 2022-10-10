@@ -51,11 +51,24 @@ export const ExpTable: React.FC<ExpTableProps> = ({
     to: { opacity: 1, transform: "translate3D(0, 0, 0)", width: headerWidth },
     duration: 20,
   });
+  const selectAllActive =
+    table.getRowModel().rows.length === 0
+      ? false
+      : table
+          .getRowModel()
+          .rows.filter((row) => !row.id.includes(".")) // filter out expanded row from select all check
+          .every((row) => row.original["select"] in allSelected);
   return (
     <div className="p-2">
       <div className="h-2 shadow-md" />
       <table>
-        <thead className={`border-2 shadow-md w-11/12`}>
+        <thead
+          className={`${
+            selectAllActive
+              ? `border-2 border-l-4 border-t-4 border-b-0 border-r-0 border-activeColor`
+              : `border-2`
+          } shadow-md w-11/12`}
+        >
           {table.getHeaderGroups().map((headerGroup) => (
             <animated.tr style={unitSpring} key={headerGroup.id}>
               {headerGroup.headers.map((header, index) => {
@@ -66,17 +79,7 @@ export const ExpTable: React.FC<ExpTableProps> = ({
                         {header.id === "select" &&
                         header.id !== `1_ _${firstColumn}` ? (
                           <CheckboxSpring
-                            isActive={
-                              table.getRowModel().rows.length === 0
-                                ? false
-                                : table
-                                    .getRowModel()
-                                    .rows.filter((row) => !row.id.includes(".")) // filter out expanded row from select all check
-                                    .every(
-                                      (row) =>
-                                        row.original["select"] in allSelected,
-                                    )
-                            }
+                            isActive={selectAllActive}
                             handleCheck={selectAll}
                             select={table.getRowModel().rows}
                           />

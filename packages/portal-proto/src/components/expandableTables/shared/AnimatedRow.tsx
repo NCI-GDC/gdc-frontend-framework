@@ -29,7 +29,9 @@ const AnimatedRow: React.FC<AnimatedRowProps> = ({
       style={unitSpring}
       key={row.id}
       className={`border-2 ${
-        selected ? `border-2 border-0 border-l-4 border-activeColor` : ``
+        selected
+          ? `border-2 border-l-4 border-t-0 border-r-0 border-b-0 border-activeColor`
+          : ``
       } ${index % 2 ? `bg-slate-50` : `bg-white`}`}
     >
       {row.getVisibleCells().map((cell) => {

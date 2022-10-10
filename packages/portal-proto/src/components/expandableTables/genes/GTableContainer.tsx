@@ -23,6 +23,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const [offset, setOffset] = useState(0);
   const [sorts, setSorts] = useState([]);
   const [ref, { width }] = useMeasure();
+  const [selectedGenes, setSelectedGenes] = useState<any>({}); // todo: add type
 
   const { data, isFetching } = useGenesTable({
     pageSize: pageSize,
@@ -34,6 +35,48 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   //   filters: getGraphQLFilters(pageSize, offset),
   // });
 
+  const selectGene = (row: any) => {
+    const gene = row.original["geneID"];
+    if (gene in selectedGenes) {
+      // deselect single row
+      setSelectedGenes((currentMap) => {
+        const newMap = { ...currentMap };
+        delete newMap[gene];
+        return newMap;
+      });
+    } else {
+      // select single row
+      setSelectedGenes((currentMap) => {
+        return { ...currentMap, [gene]: row };
+      });
+    }
+  };
+
+  const selectAllGenes = (rows: any) => {
+    if (rows.every((row) => row.original["select"] in selectedGenes)) {
+      // deselect all
+      setSelectedGenes((currentMap) => {
+        const newMap = { ...currentMap };
+        rows.forEach((row) => delete newMap[row.original["select"]]);
+        return newMap;
+      });
+    } else {
+      // select all
+      setSelectedGenes((currentMap) => {
+        const newMap = { ...currentMap };
+        rows.forEach((row) => {
+          if (
+            !row.id.includes(".") &&
+            !(row.original["select"] in currentMap)
+          ) {
+            newMap[row.original["select"]] = row;
+          }
+        });
+        return newMap;
+      });
+    }
+  };
+
   return (
     <>
       {data?.status === "fulfilled" &&
@@ -43,14 +86,14 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         <div ref={ref} className={`h-full`}>
           <GenesTable
             initialData={data.genes}
-            mutationCounts={data.genes.mutationCounts}
-            filteredCases={data.genes.filteredCases}
-            cases={data.genes.cases}
             selectedSurvivalPlot={selectedSurvivalPlot}
             handleSurvivalPlotToggled={handleSurvivalPlotToggled}
             width={width}
             pageSize={pageSize}
             offset={offset}
+            selectedGenes={selectedGenes}
+            selectGene={selectGene}
+            selectAll={selectAllGenes}
             handlePageSize={setPageSize}
             handleOffset={setOffset}
           />
