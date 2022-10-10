@@ -11,17 +11,17 @@ import {
   useUserDetails,
 } from "@gff/core";
 import fileSize from "filesize";
-import qs from "qs";
 import { Button, Loader, Menu } from "@mantine/core";
 import {
-  MdOutlineFileDownload as DownloadIcon,
   MdArrowDropDown as DropdownIcon,
   MdPerson as PersonIcon,
   MdSave as SaveIcon,
 } from "react-icons/md";
 import { RiFile3Fill as FileIcon } from "react-icons/ri";
+import { FaDownload as DownloadIcon } from "react-icons/fa";
 import CartSizeLimitModal from "@/components/Modals/CartSizeLimitModal";
 import CartDownloadModal from "@/components/Modals/CartDownloadModal";
+import { DownloadButton } from "@/components/DownloadButtons";
 import download from "src/utils/download";
 
 const buttonStyle =
@@ -112,6 +112,9 @@ const CartHeader: React.FC<CartHeaderProps> = ({
   const dispatch = useCoreDispatch();
   const { data: userDetails } = useUserDetails();
   const [downloadActive, setDownloadActive] = useState(false);
+  const [metadataDownloadActive, setMetadataDownloadActive] = useState(false);
+  const [sampleSheetDownloadActice, setSampleSheetDownloadActive] =
+    useState(false);
   const modal = useCoreSelector((state) => selectCurrentModal(state));
 
   return (
@@ -135,11 +138,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 rightIcon: "border-l pl-1 -mr-2",
               }}
               leftIcon={
-                downloadActive ? (
-                  <Loader size={15} />
-                ) : (
-                  <DownloadIcon size={20} />
-                )
+                downloadActive ? <Loader size={15} /> : <DownloadIcon />
               }
               rightIcon={<DropdownIcon size={20} />}
             >
@@ -177,7 +176,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 root: `${buttonStyle} ml-2`,
                 rightIcon: "border-l pl-1 -mr-2",
               }}
-              leftIcon={<DownloadIcon size={20} />}
+              leftIcon={<DownloadIcon />}
               rightIcon={<DropdownIcon size={20} />}
             >
               Biospecimen
@@ -195,7 +194,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 root: `${buttonStyle} ml-2`,
                 rightIcon: "border-l pl-1 -mr-2",
               }}
-              leftIcon={<DownloadIcon size={20} />}
+              leftIcon={<DownloadIcon />}
               rightIcon={<DropdownIcon size={20} />}
             >
               Clinical
@@ -206,12 +205,141 @@ const CartHeader: React.FC<CartHeaderProps> = ({
             <Menu.Item>JSON</Menu.Item>
           </Menu.Dropdown>
         </Menu>
-        <Button className={buttonStyle} leftIcon={<DownloadIcon size={20} />}>
-          Sample Sheet
-        </Button>
-        <Button className={buttonStyle} leftIcon={<DownloadIcon size={20} />}>
-          Metadata
-        </Button>
+        <DownloadButton
+          activeText="Downloading"
+          inactiveText="Sample Sheet"
+          endpoint="files"
+          customStyle={buttonStyle}
+          setActive={setSampleSheetDownloadActive}
+          active={sampleSheetDownloadActice}
+          filename={`gdc_sample_sheet.${new Date()
+            .toISOString()
+            .slice(0, 10)}.tsv`}
+          options={{
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }}
+          queryParams={JSON.stringify({
+            format: "tsv",
+            attachment: "true",
+            fields: [
+              "file_id",
+              "file_name",
+              "data_category",
+              "data_type",
+              "cases.project.project_id",
+              "cases.submitter_id",
+              "cases.samples.submitter_id",
+              "cases.samples.sample_type",
+            ].join(","),
+            tsv_format: "sample-sheet",
+            filters: JSON.stringify({
+              content: [
+                {
+                  content: {
+                    field: "files.file_id",
+                    value: cart.map((file) => file.fileId),
+                  },
+                  op: "in",
+                },
+              ],
+              op: "and",
+            }),
+          })}
+        />
+        <DownloadButton
+          activeText="Downloading"
+          inactiveText="Metadata"
+          endpoint="files"
+          customStyle={buttonStyle}
+          setActive={setMetadataDownloadActive}
+          active={metadataDownloadActive}
+          filename={`metadata.cart.${new Date()
+            .toISOString()
+            .slice(0, 10)}.json`}
+          options={{
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }}
+          queryParams={JSON.stringify({
+            attachment: "true",
+            filters: JSON.stringify({
+              content: [
+                {
+                  content: {
+                    field: "files.file_id",
+                    value: cart.map((file) => file.fileId),
+                  },
+                  op: "in",
+                },
+              ],
+              op: "and",
+            }),
+            fields: [
+              "state",
+              "access",
+              "md5sum",
+              "data_format",
+              "data_type",
+              "data_category",
+              "file_name",
+              "file_size",
+              "file_id",
+              "platform",
+              "experimental_strategy",
+              "center.short_name",
+              "annotations.annotation_id",
+              "annotations.entity_id",
+              "tags",
+              "submitter_id",
+              "archive.archive_id",
+              "archive.submitter_id",
+              "archive.revision",
+              "associated_entities.entity_id",
+              "associated_entities.entity_type",
+              "associated_entities.case_id",
+              "analysis.analysis_id",
+              "analysis.workflow_type",
+              "analysis.updated_datetime",
+              "analysis.input_files.file_id",
+              "analysis.metadata.read_groups.read_group_id",
+              "analysis.metadata.read_groups.is_paired_end",
+              "analysis.metadata.read_groups.read_length",
+              "analysis.metadata.read_groups.library_name",
+              "analysis.metadata.read_groups.sequencing_center",
+              "analysis.metadata.read_groups.sequencing_date",
+              "downstream_analyses.output_files.access",
+              "downstream_analyses.output_files.file_id",
+              "downstream_analyses.output_files.file_name",
+              "downstream_analyses.output_files.data_category",
+              "downstream_analyses.output_files.data_type",
+              "downstream_analyses.output_files.data_format",
+              "downstream_analyses.workflow_type",
+              "downstream_analyses.output_files.file_size",
+              "index_files.file_id",
+            ].join(","),
+            size: 10000,
+            expand: [
+              "metadata_files",
+              "annotations",
+              "archive",
+              "associated_entities",
+              "center",
+              "analysis",
+              "analysis.input_files",
+              "analysis.metadata",
+              "analysis.metadata_files",
+              "analysis.downstream_analyses",
+              "analysis.downstream_analyses.output_files",
+              "reference_genome",
+              "index_file",
+            ].join(","),
+          })}
+        />
         <h1 className="uppercase ml-auto mr-4 flex items-center truncate text-2xl">
           Total of <FileIcon size={25} className="ml-2 mr-1" />{" "}
           <b className="mr-1">{summaryData.total_doc_count.toLocaleString()}</b>{" "}

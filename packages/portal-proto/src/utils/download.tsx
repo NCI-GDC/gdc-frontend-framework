@@ -167,9 +167,12 @@ const download = async ({
         done();
       }
     }
+
+    downloadStarted = true;
     if (done) {
       done();
     }
+
     let errorMessage;
     try {
       const body = await res.json();
