@@ -9,7 +9,7 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 import { animated, useSpring } from "react-spring";
-import SwitchSpring from "./SwitchSpring";
+import CheckboxSpring from "./CheckboxSpring";
 import AnimatedRow from "./AnimatedRow";
 
 export interface ExpTableProps<TData> {
@@ -65,8 +65,7 @@ export const ExpTable: React.FC<ExpTableProps> = ({
                       <div>
                         {header.id === "select" &&
                         header.id !== `1_ _${firstColumn}` ? (
-                          <SwitchSpring
-                            icon={<></>}
+                          <CheckboxSpring
                             isActive={
                               table.getRowModel().rows.length === 0
                                 ? false
@@ -78,8 +77,8 @@ export const ExpTable: React.FC<ExpTableProps> = ({
                                         row.original["select"] in allSelected,
                                     )
                             }
-                            handleSwitch={selectAll}
-                            selected={table.getRowModel().rows}
+                            handleCheck={selectAll}
+                            select={table.getRowModel().rows}
                           />
                         ) : null}
                         <animated.div style={unitSpring}>
