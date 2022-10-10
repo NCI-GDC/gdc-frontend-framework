@@ -335,6 +335,22 @@ export const selectCurrentCohortId = (state: CoreState): string | undefined =>
 export const selectCohortMessage = (state: CoreState): string | undefined =>
   state.cohort.availableCohorts.message;
 
+export const selectCurrentCohortModified = (
+  state: CoreState,
+): boolean | undefined => {
+  const cohort = cohortSelectors.selectById(
+    state,
+    state.cohort.availableCohorts.currentCohort,
+  );
+  return cohort?.modified;
+};
+
+export const selectCurrentCohort = (state: CoreState): Cohort | undefined =>
+  cohortSelectors.selectById(
+    state,
+    state.cohort.availableCohorts.currentCohort,
+  );
+
 export const selectCurrentCohortName = (
   state: CoreState,
 ): string | undefined => {

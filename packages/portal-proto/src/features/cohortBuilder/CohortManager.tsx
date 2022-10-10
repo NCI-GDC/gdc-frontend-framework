@@ -23,6 +23,7 @@ import {
   addNewCohort,
   removeCohort,
   selectCurrentCohortName,
+  selectCurrentCohortModified,
   useCoreDispatch,
   useCoreSelector,
 } from "@gff/core";
@@ -55,6 +56,9 @@ const CohortManager: React.FC<CohortManagerProps> = ({
     });
   const coreDispatch = useCoreDispatch();
   const cohortName = useCoreSelector((state) => selectCurrentCohortName(state));
+  const cohortModified = useCoreSelector((state) =>
+    selectCurrentCohortModified(state),
+  );
   const newCohort = useCallback(() => {
     coreDispatch(addNewCohort());
   }, []);
@@ -170,21 +174,30 @@ const CohortManager: React.FC<CohortManagerProps> = ({
       </MantineProvider>
       <div className="border-opacity-0">
         {!hide_controls ? (
-          <Select
-            data={menu_items}
-            searchable
-            clearable={false}
-            value={startingId}
-            onChange={(x) => {
-              onSelectionChanged(x);
-            }}
-            classNames={{
-              root: "border-base-light w-80 p-0 z-10 ",
-              input: "text-heading font-[500] text-primary-darkest ",
-              item: "text-heading font-[400] text-primary-darkest data-selected:bg-primary-lighter first:border-b-2 first:rounded-none first:border-primary",
-            }}
-            aria-label="Select cohort"
-          />
+          <div className="flex flex-col">
+            <Select
+              data={menu_items}
+              searchable
+              clearable={false}
+              value={startingId}
+              onChange={(x) => {
+                onSelectionChanged(x);
+              }}
+              classNames={{
+                root: "border-base-light w-80 p-0 z-10 pt-5",
+                input: "text-heading font-[500] text-primary-darkest ",
+                item: "text-heading font-[400] text-primary-darkest data-selected:bg-primary-lighter first:border-b-2 first:rounded-none first:border-primary",
+              }}
+              aria-label="Select cohort"
+            />
+            <div
+              className={`ml-auto text-heading text-[0.65em] font-semibold pt-1 text-primary-contrast ${
+                cohortModified ? "visible" : "invisible"
+              }`}
+            >
+              Changes not saved
+            </div>
+          </div>
         ) : (
           <div>
             <h2>{cohortName}</h2>
