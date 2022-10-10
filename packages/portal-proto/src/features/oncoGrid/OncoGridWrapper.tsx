@@ -18,6 +18,7 @@ import {
 import { elementToSVG } from "dom-to-svg";
 import html2canvas from "html2canvas";
 import saveAs from "file-saver";
+import { uniq } from "lodash";
 import { DocumentWithWebkit } from "../types";
 import { toggleFullScreen } from "../../utils";
 
@@ -28,6 +29,7 @@ import ColorPaletteModal from "./ColorPaletteModal";
 import useOncoGridObject from "./useOncoGridObject";
 import PositionedTooltip from "./PositionedTooltip";
 import TrackLegend from "./TrackLegend";
+import { donorTracks, geneTracks } from "./trackConfig";
 
 const OncoGridWrapper: React.FC = () => {
   const coreDispatch = useCoreDispatch();
@@ -392,13 +394,18 @@ const OncoGridWrapper: React.FC = () => {
         />
       </div>
 
-      <div className="fixed top-0 -translate-y-full w-[1280px] h-[1520px]">
+      <div
+        className="fixed top-0 -translate-y-full w-[1280px] h-[1520px]"
+        aria-hidden
+      >
         <div ref={downloadContainer} className="w-full h-full overflow-hidden">
           <h2 className="text-montserrat text-center text-lg text-primary-content-dark mb-3">
             {`${donors.length} Most Mutated Cases and Top ${genes.length} Mutated Genes by SSM`}
           </h2>
           <div className="flex justify-evenly">
-            {["Clinical", "Data Types", "GDC", "Gene Sets"].map((track) => (
+            {uniq(
+              [...donorTracks, ...geneTracks].map((track) => track.group),
+            ).map((track) => (
               <TrackLegend
                 key={track}
                 track={track}
