@@ -5,8 +5,8 @@ interface SwitchSpringProps {
   isActive: boolean;
   icon: ReactNode;
   selected: any;
-  handleSwitch: (row: any) => any;
-  selectedGenes: any; // add type
+  // handleSwitch: (row: any) => any;
+  handleSwitch: any;
 }
 
 const SwitchSpring: React.FC<SwitchSpringProps> = ({
@@ -24,7 +24,7 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
   });
 
   const sliderSpring = useSpring({
-    width: 28,
+    width: 30,
     backgroundColor: isActive ? "rgb(32, 68, 97)" : "lightgray",
   });
 
@@ -32,14 +32,14 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
     <animated.div className={`text-center items-center`}>
       <animated.div
         style={sliderSpring}
-        className={`border border-gray-300 w-10 h-5 mx-auto rounded-xl align-middle`}
+        className={`border border-lightgray w-10 h-5 m-auto align-middle`}
         onClick={() => handleSwitch(selected)}
       >
         <animated.div
           style={ballSpring}
-          className={`border border-gray-300 w-5 h-5 rounded-xl text-xs text-center`}
+          className={`border border-activeColor h-5 text-xs`}
         >
-          {icon}
+          <div className={`mt-1 ml-0.5`}>{icon}</div>
         </animated.div>
       </animated.div>
     </animated.div>
