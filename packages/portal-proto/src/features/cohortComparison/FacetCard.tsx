@@ -7,14 +7,6 @@ import { Button } from "@mantine/core";
 import saveAs from "file-saver";
 import { humanify } from "../biospecimen/utils";
 
-const formatBucket = (bucket: number | string, field: string): string => {
-  if (field === "diagnoses.age_at_diagnosis") {
-    const age = (bucket as number) / DAYS_IN_YEAR;
-    return age === 80 ? "80+ years" : `${age} to <${age + 10} years`;
-  }
-
-  return bucket as string;
-};
 interface FacetCardProps {
   readonly data: { buckets: CohortFacetDoc[] }[];
   readonly field: string;
@@ -22,12 +14,24 @@ interface FacetCardProps {
   readonly cohortNames: string[];
 }
 
-const FacetCard: React.FC<FacetCardProps> = ({
+export const FacetCard: React.FC<FacetCardProps> = ({
   data,
   field,
   counts,
   cohortNames,
 }: FacetCardProps) => {
+  const divId = `cohort_comparison_bar_chart_${field}`;
+  const fieldLabel = humanify({ term: field });
+
+  const formatBucket = (bucket: number | string, field: string): string => {
+    if (field === "diagnoses.age_at_diagnosis") {
+      const age = (bucket as number) / DAYS_IN_YEAR;
+      return age === 80 ? "80+ years" : `${age} to <${age + 10} years`;
+    }
+
+    return bucket as string;
+  };
+
   let formattedData = useMemo(
     () =>
       data.map((cohort, idx) => {
@@ -52,8 +56,6 @@ const FacetCard: React.FC<FacetCardProps> = ({
       }),
     [data, counts, field],
   );
-
-  const fieldLabel = humanify({ term: field });
 
   const uniqueValues = Array.from(
     new Set(formattedData.map((cohort) => cohort.map((b) => b.key)).flat()),
@@ -83,8 +85,6 @@ const FacetCard: React.FC<FacetCardProps> = ({
     },
   }));
 
-  const divId = `cohort_comparison_bar_chart_${field}`;
-
   const downloadTSVFile = () => {
     const fmtPct = (val: number, counts: number) => {
       return (((val || 0) * 100) / counts).toFixed(2);
@@ -95,7 +95,7 @@ const FacetCard: React.FC<FacetCardProps> = ({
 
     let strOut = `${fieldLabel}\t# Cases S1\t% Cases S1\t# Cases S2\t% Cases S2\n`;
 
-    uniqueValues.forEach((value, idx) => {
+    uniqueValues.map((value, idx) => {
       for (let i = 0; i <= formattedData.length - 1; i++) {
         const cohortValue = formattedData[i][idx].count;
         strOut += i === 0 ? `${value}\t` : "";
