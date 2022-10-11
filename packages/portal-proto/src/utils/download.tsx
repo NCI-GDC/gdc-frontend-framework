@@ -1,6 +1,7 @@
 import { CoreDispatch, GDC_APP_API_AUTH, Modals, showModal } from "@gff/core";
 import { Button } from "@mantine/core";
 import { cleanNotifications, showNotification } from "@mantine/notifications";
+import { saveAs } from "file-saver";
 import { RiCloseCircleLine as CloseIcon } from "react-icons/ri";
 import { theme } from "tailwind.config";
 
@@ -86,14 +87,14 @@ const download = async ({
   Modal400?: Modals;
   customErrorMessage?: string;
 }): Promise<void> => {
-  let canceled = false;
-  let downloadStarted = false;
+  const controller = new AbortController();
+  let downloadResolved = false;
   showNotification({
     message: (
       <DownloadNotification
         onClick={() => {
           cleanNotifications();
-          canceled = true;
+          controller.abort();
           if (done) {
             done();
           }
@@ -111,19 +112,19 @@ const download = async ({
     }),
   });
 
-  const pollForCookie = async () => {
+  const slowDownloadNotificationPoll = async () => {
     let attempts = 0;
 
     const executePoll = async (resolve: (value?: unknown) => void) => {
       attempts++;
-      if (!downloadStarted && !canceled) {
+      if (!downloadResolved && !controller.signal.aborted) {
         if (attempts === 6) {
           showNotification({
             message: (
               <SlowDownloadNotification
                 onClick={() => {
                   cleanNotifications();
-                  canceled = true;
+                  controller.abort();
                   if (done) {
                     done();
                   }
@@ -156,19 +157,19 @@ const download = async ({
 
   const handleDownloadResponse = async (res: Response) => {
     cleanNotifications();
-    if (!canceled && res.ok) {
+    if (res.ok) {
       const content = await res.blob();
       const name =
         filename ||
         res.headers.get("content-disposition").split("filename=")[1];
-      downloadBlob(content, name);
-      downloadStarted = true;
+      saveAs(content, name);
+      downloadResolved = true;
       if (done) {
         done();
       }
     }
 
-    downloadStarted = true;
+    downloadResolved = true;
     if (done) {
       done();
     }
@@ -204,28 +205,19 @@ const download = async ({
   const method = options?.method || "GET";
 
   if (method === "GET") {
-    fetch(`${GDC_APP_API_AUTH}/${endpoint}${queryParams}`, options).then(
-      handleDownloadResponse,
-    );
+    fetch(`${GDC_APP_API_AUTH}/${endpoint}${queryParams}`, {
+      ...options,
+      signal: controller.signal,
+    }).then(handleDownloadResponse);
   } else {
     fetch(`${GDC_APP_API_AUTH}/${endpoint}`, {
       ...options,
       body: queryParams,
+      signal: controller.signal,
     }).then(handleDownloadResponse);
   }
 
-  pollForCookie();
+  slowDownloadNotificationPoll();
 };
 
 export default download;
-
-export function downloadBlob(blob: Blob, filename: string): void {
-  const objectUrl = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-
-  link.href = objectUrl;
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-}
