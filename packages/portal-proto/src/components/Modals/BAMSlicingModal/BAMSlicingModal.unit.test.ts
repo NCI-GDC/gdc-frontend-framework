@@ -1,9 +1,5 @@
 import { processBAMSliceInput } from "./BAMSlicingModal";
 
-jest.mock("url-join", () => ({
-  urlJoin: jest.fn(),
-}));
-
 describe("processBAMSliceInput", () => {
   it("should error out in empty value", () => {
     const output = processBAMSliceInput("");
