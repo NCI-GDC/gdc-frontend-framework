@@ -60,11 +60,10 @@ export const userCanDownloadFiles = ({
         file,
         user,
       }) ||
-      (intersectsWithFileAcl({
+      intersectsWithFileAcl({
         file,
         user,
-      }) &&
-        fileInCorrectState(file))
+      })
     ) {
       return true;
     }
