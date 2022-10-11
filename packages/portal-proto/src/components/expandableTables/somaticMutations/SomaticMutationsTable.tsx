@@ -4,7 +4,7 @@ import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { ExpTable } from "../shared/ExpTable";
 // import { SMTableControls } from "./MTableControls";
 // import { SMTableFilters } from "./MTableFilters";
-// import { getMutation, createTableColumn } from "./mutationsTableUtils";
+import { getMutation, createTableColumn } from "./smTableUtils";
 // import { MutationsColumns } from "@/features/shared/table-utils";
 import { useSpring } from "react-spring";
 import PageSize from "../shared/PageSize";
@@ -33,13 +33,27 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
     DEFAULT_SMTABLE_ORDER.filter((col) => col.visible),
   );
 
-  //   useEffect(() => {
-  //     console.log('props', initialData);
-  //   }, [initialData]);
+  const useSomaticMutationsTableFormat = useCallback(
+    (initialData) => {
+      const { cases, filteredCases, ssmsTotal, ssms } = initialData;
+      return ssms.map((sm) => {
+        return getMutation(
+          sm,
+          selectedSurvivalPlot,
+          filteredCases,
+          cases,
+          ssmsTotal,
+        );
+      });
+    },
+    [selectedSurvivalPlot],
+  );
+
+  const transformResponse = useSomaticMutationsTableFormat(initialData);
 
   return (
     <>
-      <div onClick={() => console.log("smtable", initialData)}>SMTable</div>
+      <div onClick={() => console.log("tr", transformResponse)}>SMTable</div>
     </>
   );
 };

@@ -71,16 +71,16 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     }
   };
 
-  const { status, ssms: payload } = data;
+  const { status, ssms: initialData } = data;
 
-  const { cases, filteredCases, ssms } = payload;
+  const { cases, filteredCases } = initialData;
 
   return (
     <>
       {status === "fulfilled" && cases && filteredCases ? (
         <div ref={ref} className={`h-full w-9/12 pb-4`}>
           <SomaticMutationsTable
-            initialData={ssms}
+            initialData={initialData}
             selectedSurvivalPlot={selectedSurvivalPlot}
             handleSurvivalPlotToggled={handleSurvivalPlotToggled}
             width={width}

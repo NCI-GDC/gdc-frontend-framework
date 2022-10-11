@@ -1,12 +1,7 @@
-import { GeneAffectedCases } from "./GeneAffectedCases";
+import { animated, useSpring } from "react-spring";
 import ToggleSpring from "../shared/ToggleSpring";
-import { MdKeyboardArrowDown } from "react-icons/md";
-import _ from "lodash";
-import { animated } from "react-spring";
-// import SwitchSpring from "../shared/SwitchSpring";
-// import PercentageBar from "../shared/PercentageBar";
-import CheckboxContainer from "../shared/CheckboxContainer";
 import SwitchSpring from "../shared/SwitchSpring";
+import { MdKeyboardArrowDown } from "react-icons/md";
 import {
   TableColumnState,
   TableCell,
@@ -14,29 +9,15 @@ import {
   SurvivalIcon,
   AnnotationsIcon,
 } from "../shared/types";
-
-interface SingleGene {
-  biotype: string;
-  case_cnv_gain: number;
-  case_cnv_loss: number;
-  cnv_case: number;
-  cytoband: string[];
-  gene_id: string;
-  id: string;
-  is_cancer_gene_census: boolean;
-  name: string;
-  numCases: number;
-  ssm_case: number;
-  symbol: string;
-}
+import { SomaticMutation } from "./types";
 
 export const createTableColumn = (
   accessor: string,
   width: number,
   partitionWidth: any,
   visibleColumns: TableColumnState[],
-  selectedGenes: any, // todo: add type,
-  selectGene: (geneId: string) => any,
+  selectedMutations: any, // todo: add type,
+  selectMutation: (geneId: string) => any,
   handleSurvivalPlotToggled: (
     symbol: string,
     name: string,
@@ -57,23 +38,24 @@ export const createTableColumn = (
                 <div>
                   <div className={`content-center`}>
                     {row.getCanExpand() && (
-                      <CheckboxContainer
-                        isActive={row.original["select"] in selectedGenes}
-                        select={row}
-                        handleCheck={selectGene}
-                        width={width / visibleColumns.length}
-                        wSpring={partitionWidth}
-                      />
+                      <></>
+                      // <CheckboxContainer
+                      //   isActive={row.original["select"] in selectedGenes}
+                      //   select={row}
+                      //   handleCheck={selectMutation}
+                      //   width={width / visibleColumns.length}
+                      //   wSpring={partitionWidth}
+                      // />
                     )}
                   </div>
                   <>
                     {!row.getCanExpand() && visibleColumns[0].id === accessor && (
                       <div className={`relative`}>
-                        <GeneAffectedCases
-                          geneId={row.value}
-                          width={width}
-                          opening={row.getCanExpand()}
-                        ></GeneAffectedCases>
+                        {/* <GeneAffectedCases
+                            geneId={row.value}
+                            width={width}
+                            opening={row.getCanExpand()}
+                          ></GeneAffectedCases> */}
                       </div>
                     )}
                   </>
@@ -107,11 +89,11 @@ export const createTableColumn = (
                   )}
                   {!row.getCanExpand() && visibleColumns[0].id === accessor && (
                     <div className={`relative`}>
-                      <GeneAffectedCases
-                        geneId={row.value}
-                        width={width}
-                        opening={row.getCanExpand()}
-                      ></GeneAffectedCases>
+                      {/* <GeneAffectedCases
+                          geneId={row.value}
+                          width={width}
+                          opening={row.getCanExpand()}
+                        ></GeneAffectedCases> */}
                     </div>
                   )}
                 </>
@@ -142,11 +124,11 @@ export const createTableColumn = (
                   <>
                     {!row.getCanExpand() && visibleColumns[0].id === accessor && (
                       <div className={`relative`}>
-                        <GeneAffectedCases
-                          geneId={row.value}
-                          width={width}
-                          opening={row.getCanExpand()}
-                        ></GeneAffectedCases>
+                        {/* <GeneAffectedCases
+                            geneId={row.value}
+                            width={width}
+                            opening={row.getCanExpand()}
+                          ></GeneAffectedCases> */}
                       </div>
                     )}
                   </>
@@ -195,11 +177,11 @@ export const createTableColumn = (
                   <>
                     {!row.getCanExpand() && visibleColumns[0].id === accessor && (
                       <div className={`relative`}>
-                        <GeneAffectedCases
-                          geneId={row.value}
-                          width={width}
-                          opening={row.getCanExpand()}
-                        ></GeneAffectedCases>
+                        {/* <GeneAffectedCases
+                            geneId={row.value}
+                            width={width}
+                            opening={row.getCanExpand()}
+                          ></GeneAffectedCases> */}
                       </div>
                     )}
                   </>
@@ -235,11 +217,11 @@ export const createTableColumn = (
                   <>
                     {!row.getCanExpand() && visibleColumns[0].id === accessor && (
                       <div className={`relative`}>
-                        <GeneAffectedCases
-                          geneId={row.value}
-                          width={width}
-                          opening={row.getCanExpand()}
-                        ></GeneAffectedCases>
+                        {/* <GeneAffectedCases
+                            geneId={row.value}
+                            width={width}
+                            opening={row.getCanExpand()}
+                          ></GeneAffectedCases> */}
                       </div>
                     )}
                   </>
@@ -275,11 +257,11 @@ export const createTableColumn = (
                   <>
                     {!row.getCanExpand() && visibleColumns[0].id === accessor && (
                       <div className={`relative`}>
-                        <GeneAffectedCases
-                          geneId={row.value}
-                          width={width}
-                          opening={row.getCanExpand()}
-                        ></GeneAffectedCases>
+                        {/* <GeneAffectedCases
+                            geneId={row.value}
+                            width={width}
+                            opening={row.getCanExpand()}
+                          ></GeneAffectedCases> */}
                       </div>
                     )}
                   </>
@@ -307,11 +289,11 @@ export const createTableColumn = (
                       {!row.getCanExpand() &&
                         visibleColumns[0].id === accessor && (
                           <div className={`relative`}>
-                            <GeneAffectedCases
-                              geneId={row.value}
-                              width={width}
-                              opening={row.getCanExpand()}
-                            ></GeneAffectedCases>
+                            {/* <GeneAffectedCases
+                                geneId={row.value}
+                                width={width}
+                                opening={row.getCanExpand()}
+                              ></GeneAffectedCases> */}
                           </div>
                         )}
                     </>
@@ -326,78 +308,59 @@ export const createTableColumn = (
   }
 };
 
-export const getGene = (
-  g: SingleGene,
+export const getMutation = (
+  sm: SomaticMutation,
   selectedSurvivalPlot: Record<string, string>,
-  mutationCounts: Record<string, string>,
+  // mutationCounts: Record<string, string>,
   filteredCases: number,
   cases: number,
-  genesTotal: number,
+  ssmsTotal: number,
 ) => {
+  console.log("sm", sm);
   return {
-    select: g.gene_id,
-    geneID: g.gene_id,
-    survival: {
-      name: g.name,
-      symbol: g.symbol,
-      checked: g.symbol == selectedSurvivalPlot?.symbol,
-    },
-    symbol: g.symbol,
-    name: g.name,
-    SSMSAffectedCasesInCohort:
-      g.cnv_case > 0
-        ? `${g.cnv_case + " / " + filteredCases} (${(
-            (100 * g.cnv_case) /
-            filteredCases
-          ).toFixed(2)}%)`
-        : `0`,
-    SSMSAffectedCasesAcrossTheGDC:
-      g.ssm_case > 0
-        ? `${g.ssm_case + " / " + cases} (${(
-            (100 * g.ssm_case) /
-            cases
-          ).toFixed(2)}%)`
-        : `0`,
-    CNVGain:
-      g.cnv_case > 0
-        ? `${g.case_cnv_gain + " / " + g.cnv_case} (${(
-            (100 * g.case_cnv_gain) /
-            g.cnv_case
-          ).toFixed(2)}%)`
-        : `--`,
-    CNVLoss:
-      g.cnv_case > 0
-        ? `${g.case_cnv_loss + " / " + g.cnv_case} (${(
-            (100 * g.case_cnv_loss) /
-            g.cnv_case
-          ).toFixed(2)}%)`
-        : `--`,
-    mutations: mutationCounts[g.gene_id],
-    annotations: g.is_cancer_gene_census,
+    select: sm.ssm_id,
+
+    //   select: sm.gene_id,
+    //   mutationID: sm.gene_id,
+    //   survival: {
+    //     name: sm.name,
+    //     symbol: sm.symbol,
+    //     checked: sm.symbol == selectedSurvivalPlot?.symbol,
+    //   },
+    //   symbol: sm.symbol,
+    //   name: sm.name,
+    //   affectedCasesInCohort:
+    //     sm.cnv_case > 0
+    //       ? `${sm.cnv_case + " / " + filteredCases} (${(
+    //           (100 * sm.cnv_case) /
+    //           filteredCases
+    //         ).toFixed(2)}%)`
+    //       : `0`,
+    //   affectedCasesAcrossTheGDC:
+    //     sm.ssm_case > 0
+    //       ? `${sm.ssm_case + " / " + cases} (${(
+    //           (100 * sm.ssm_case) /
+    //           cases
+    //         ).toFixed(2)}%)`
+    //       : `0`,
+    //   CNVsmain:
+    //     sm.cnv_case > 0
+    //       ? `${sm.case_cnv_smain + " / " + sm.cnv_case} (${(
+    //           (100 * sm.case_cnv_smain) /
+    //           sm.cnv_case
+    //         ).toFixed(2)}%)`
+    //       : `--`,
+    //   CNVLoss:
+    //     sm.cnv_case > 0
+    //       ? `${sm.case_cnv_loss + " / " + sm.cnv_case} (${(
+    //           (100 * sm.case_cnv_loss) /
+    //           sm.cnv_case
+    //         ).toFixed(2)}%)`
+    //       : `--`,
+    //   mutations: mutationCounts[sm.ssms_id],
+    //   annotations: sm.is_cancer_gene_census,
     // do not remove subRows key, its needed for row.getCanExpand() to be true
     subRows: " ",
-    genesTotal,
-  };
-};
-
-export const convertGeneFilter = (geneId: string) => {
-  return {
-    op: "and",
-    content: [
-      {
-        content: {
-          field: "genes.gene_id",
-          value: [geneId],
-        },
-        op: "in",
-      },
-      {
-        op: "NOT",
-        content: {
-          field: "cases.gene.ssm.observation.observation_id",
-          value: "MISSING",
-        },
-      },
-    ],
+    ssmsTotal,
   };
 };
