@@ -7,28 +7,89 @@ import { BsList } from "react-icons/bs";
 import { Box, Popover, Select, Pagination, Loader } from "@mantine/core";
 
 interface VerticalTableProps {
+  /**
+   * array of data to go in the table
+   */
   tableData: Record<string, any>[];
+  /**
+   * list of columns in order they appear and if they are visible or not
+   */
   columnListOrder: {
     id: string;
     columnName: string;
     visible: boolean;
   }[];
+  /**
+   * sorted list of columns to display
+   */
   columnCells: Column[];
+  /**
+   * callback for when user changes column order or visibility
+   */
   handleColumnChange: (columns: any) => void;
+  /**
+   * ???
+   */
   selectableRow: boolean;
+  /**
+   * caption to display at top of table
+   */
   tableTitle?: string;
+  /**
+   * html block left of column sorting controls
+   */
   additionalControls?: React.ReactNode;
+  /**
+   * shows column sorting controls and search bar
+   * @defaultValue true
+   */
   showControls?: boolean;
+  /**
+   * optional pagination controls at bottom of table
+   */
   pagination?: {
-    page: number; //page on
-    pages: number; //total pages
-    size: number; //size of data set shown
-    from: number; //0 indexed starting point of data shown
-    total: number; //total size of data set
-    label?: string; // optional lable of data shown
-    handlePageSizeChange: (x: string) => void; //callback to handle page size change
-    handlePageChange: (x: number) => void; //callback to handle page change
+    /**
+     * page on
+     */
+    page: number;
+    /**
+     * total pages
+     */
+    pages: number;
+    /**
+     * size of data set shown
+     */
+    size: number;
+    /**
+     * 0 indexed starting point of data shown
+     */
+    from: number;
+    /**
+     * total size of data set
+     */
+    total: number;
+    /**
+     * optional lable of data shown
+     */
+    label?: string;
+    /**
+     * callback to handle page size change
+     */
+    handlePageSizeChange: (x: string) => void;
+    /**
+     * callback to handle page change
+     */
+    handlePageChange: (x: number) => void;
   };
+  /**
+   * optional shows diferent table content depending on state
+   *
+   * - loading when `uninitialized` and `pending`
+   *
+   * - error message when `rejected`
+   *
+   * - data when `fulfilled`
+   */
   status?: "uninitialized" | "pending" | "fulfilled" | "rejected";
 }
 
@@ -42,7 +103,22 @@ interface TableProps {
   columns: Column[];
   data: any[];
 }
-
+/**
+ * Returns a vertical table with many optional features
+ * @parm {array} tableData - data to go in the table
+ *
+ * //TODO combine next 3
+ * @parm {array} columnListOrder - list of columns in order they appear and if they are visible or not
+ * @parm {array} columnCells - sorted list of columns to display
+ * @parm {function} handleColumnChange - callback for when user changes column order or visibility
+ * @parm {boolean} selectableRow - ???
+ * @parm {string} tableTitle - caption to display at top of table
+ * @parm {React.ReactNode} additionalControls - html block left of column sorting controls
+ * @parm {boolean} showControls - shows column sorting controls and search bar defaults to true
+ * @parm {object} pagination - optional pagination controls at bottom of table
+ * @parm {string} status - optional shows loading state
+ * @returns ReactElement
+ */
 export const VerticalTable: FC<VerticalTableProps> = ({
   tableData,
   columnListOrder,
