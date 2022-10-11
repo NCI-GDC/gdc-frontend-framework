@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ReactNode } from "react";
 
-interface IExternalLink {
+interface ExternalLinkProps {
   href: string;
   title?: string;
   separator?: ReactNode | string | false;
@@ -9,13 +9,13 @@ interface IExternalLink {
   dataTestId?: string;
 }
 
-export const ExternalLink: React.FC<IExternalLink> = ({
+export const ExternalLink: React.FC<ExternalLinkProps> = ({
   title,
   href,
   children,
   dataTestId,
   separator = <span> | </span>,
-}: IExternalLink) => {
+}: ExternalLinkProps) => {
   return (
     <>
       <Link href={href} passHref>
