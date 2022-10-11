@@ -1,11 +1,11 @@
-import { GdcFile, UserInfo } from "@gff/core";
+import { CartFile, GdcFile, UserInfo } from "@gff/core";
 import { get, intersection } from "lodash";
 
 export const isUserProject = ({
   file,
   user,
 }: {
-  file: GdcFile;
+  file: GdcFile | CartFile;
   user: UserInfo;
 }): boolean => {
   if (!user) {
@@ -14,7 +14,7 @@ export const isUserProject = ({
   const projectIds = Array.from(
     new Set([
       file.project_id,
-      ...(file.cases || []).map((e) => e.project.project_id),
+      ...((file as GdcFile)?.cases || []).map((e) => e.project.project_id),
     ]),
   );
 
@@ -22,14 +22,14 @@ export const isUserProject = ({
   return intersection(projectIds, gdcIds).length !== 0;
 };
 
-export const fileInCorrectState = (file: GdcFile): boolean =>
+export const fileInCorrectState = (file: GdcFile | CartFile): boolean =>
   file.state === "submitted";
 
 export const intersectsWithFileAcl = ({
   file,
   user,
 }: {
-  file: GdcFile;
+  file: GdcFile | CartFile;
   user: UserInfo;
 }): boolean =>
   intersection(
@@ -43,7 +43,7 @@ export const userCanDownloadFiles = ({
   files,
   user,
 }: {
-  files: GdcFile[];
+  files: GdcFile[] | CartFile[];
   user: UserInfo;
 }): boolean =>
   files.every((file) => {
@@ -77,7 +77,7 @@ export const userCanDownloadFile = ({
   user,
 }: {
   user: UserInfo;
-  file: GdcFile;
+  file: GdcFile | CartFile;
 }): boolean =>
   userCanDownloadFiles({
     files: [file],
