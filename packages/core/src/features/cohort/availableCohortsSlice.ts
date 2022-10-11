@@ -112,7 +112,9 @@ const newCohort = (
 ): Cohort => {
   const ts = new Date();
   const newName = createCohortName(
-    ts.toLocaleString("en-US", { hour12: false }).replace(",", ""),
+    ts
+      .toLocaleString("en-CA", { timeZone: "America/Chicago", hour12: false })
+      .replace(",", ""),
   );
   const newId = createCohortId();
   return {
