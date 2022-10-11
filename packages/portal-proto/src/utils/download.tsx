@@ -205,7 +205,7 @@ const download = async ({
   const method = options?.method || "GET";
 
   if (method === "GET") {
-    fetch(`${GDC_APP_API_AUTH}/${endpoint}${queryParams}`, {
+    fetch(`${GDC_APP_API_AUTH}/${endpoint}?${queryParams}`, {
       ...options,
       signal: controller.signal,
     }).then(handleDownloadResponse);

@@ -35,13 +35,13 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
     return (
       <DownloadButton
         filename={file.fileName}
-        endpoint="data"
+        endpoint={`data/${file.fileId}`}
         activeText={activeText}
         inactiveText={inactiveText}
-        queryParams={`/${file.fileId}/?=${qs.stringify({
+        queryParams={qs.stringify({
           annotations: true,
           related_files: true,
-        })}`}
+        })}
         options={{
           method: "GET",
         }}

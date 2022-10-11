@@ -95,7 +95,7 @@ export const BAMSlicingModal = ({
         endpoint: `slicing/view/${file.fileId}`,
         done: () => setActive(false),
         dispatch,
-        queryParams: `?${regionsParam}`,
+        queryParams: regionsParam,
         customErrorMessage:
           " You have entered invalid coordinates. Please try again.",
         options: {

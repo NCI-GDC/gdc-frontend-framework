@@ -51,13 +51,13 @@ export const AgreementModal = ({
           disabled={!checked}
           filename={file.fileName}
           extraParams={{ ids: file.fileId }}
-          endpoint="data?annotations=true&related_files=true"
+          endpoint={`data/${file.fileId}`}
           activeText="Processing"
           inactiveText="Download"
-          queryParams={`/${file.fileId}/${qs.stringify({
+          queryParams={qs.stringify({
             annotations: true,
             related_files: true,
-          })}`}
+          })}
           options={{
             method: "GET",
           }}

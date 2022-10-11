@@ -206,7 +206,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
           </Menu.Dropdown>
         </Menu>
         <DownloadButton
-          activeText="Downloading"
+          activeText="Processing"
           inactiveText="Sample Sheet"
           endpoint="files"
           customStyle={buttonStyle}
@@ -250,7 +250,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
           })}
         />
         <DownloadButton
-          activeText="Downloading"
+          activeText="Processing"
           inactiveText="Metadata"
           endpoint="files"
           customStyle={buttonStyle}
