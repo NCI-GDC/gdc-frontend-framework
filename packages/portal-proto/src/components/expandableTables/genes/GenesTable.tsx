@@ -17,8 +17,8 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   width,
   pageSize,
   handlePageSize,
-  offset,
-  handleOffset,
+  page,
+  handlePage,
   selectedGenes,
   selectGene,
   selectAll,
@@ -183,10 +183,8 @@ export const GenesTable: React.FC<GenesTableProps> = ({
         <div className={`m-auto text-sm`}>
           <span>
             Showing
-            <span className={`font-bold`}>{` ${offset * pageSize + 1} `}</span>-
-            <span className={`font-bold`}>
-              {` ${(offset + 1) * pageSize} `}
-            </span>
+            <span className={`font-bold`}>{` ${page * pageSize + 1} `}</span>-
+            <span className={`font-bold`}>{` ${(page + 1) * pageSize} `}</span>
             of
             <span className={`font-bold`}>
               {` ${transformResponse[0].genesTotal} `}
@@ -196,9 +194,9 @@ export const GenesTable: React.FC<GenesTableProps> = ({
         </div>
         <div className={`m-auto mr-0`}>
           <PageStepper
-            offset={offset}
+            page={page}
             totalPages={Math.ceil(transformResponse[0].genesTotal / pageSize)}
-            handleOffset={handleOffset}
+            handlePage={handlePage}
           />
         </div>
       </div>

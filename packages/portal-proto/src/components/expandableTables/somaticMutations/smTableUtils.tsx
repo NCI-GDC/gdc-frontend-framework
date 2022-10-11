@@ -13,6 +13,33 @@ import { SomaticMutation } from "./types";
 import CheckboxContainer from "../shared/CheckboxContainer";
 import { Survival } from "../shared/types";
 
+export interface MConsequence {
+  consequenceType: string;
+  symbol: string;
+  aaChange: string;
+}
+
+export const Consequence = ({
+  consequence,
+}: {
+  consequence: MConsequence;
+}): JSX.Element => {
+  const { consequenceType, symbol, aaChange } = consequence;
+  const fc = consequenceType.split("_")[0] ? consequenceType.split("_")[0] : ``;
+  const formatConsequence = fc
+    ? fc?.charAt(0).toUpperCase() + fc?.slice(1)
+    : ``;
+  return (
+    <>
+      <div className={`flex flex-row w-max m-auto text-xs`}>
+        <span className={`mx-0.5 font-bold`}>{formatConsequence}</span>
+        <span className={`mx-0.5`}>{symbol}</span>
+        <span className={`mx-0.5`}>{aaChange}</span>
+      </div>
+    </>
+  );
+};
+
 export const createTableColumn = (
   accessor: string,
   width: number,
@@ -213,6 +240,9 @@ export const createTableColumn = (
                   {/* {row.getCanExpand() && (
                       <TableCell row={row} accessor={accessor} />
                     )} */}
+                  {row.getCanExpand() && (
+                    <Consequence consequence={row.original["consequences"]} />
+                  )}
                   <>
                     {!row.getCanExpand() && visibleColumns[0].id === accessor && (
                       <div className={`relative`}>
@@ -246,7 +276,14 @@ export const createTableColumn = (
                   className={`content-center`}
                 >
                   {row.getCanExpand() && (
-                    <TableCell row={row} accessor={accessor} />
+                    // <TableCell row={row} accessor={accessor} />
+                    <button
+                      onClick={() =>
+                        console.log("impact", row.original["impact"])
+                      }
+                    >
+                      impact
+                    </button>
                   )}
                   <>
                     {!row.getCanExpand() && visibleColumns[0].id === accessor && (
@@ -308,12 +345,6 @@ export const filterMutationType = (mutationSubType: string): string => {
   return operation.charAt(0).toUpperCase() + operation.slice(1);
 };
 
-export interface MConsequence {
-  consequenceType: string;
-  symbol: string;
-  aaChange: string;
-}
-
 export type MutationsColumn = {
   select: string;
   mutationID: string;
@@ -335,6 +366,7 @@ export const getMutation = (
   cases: number,
   ssmsTotal: number,
 ) => {
+  console.log("sm", sm);
   return {
     select: sm.ssm_id,
     mutationID: sm.ssm_id,
@@ -363,7 +395,7 @@ export const getMutation = (
       symbol: sm.consequence[0].gene.symbol,
       checked: sm.consequence[0].gene.symbol == selectedSurvivalPlot?.symbol,
     },
-    impact: "impact", // todo
+    impact: {}, // todo
     // do not remove subRows key, its needed for row.getCanExpand() to be true
     subRows: " ",
     ssmsTotal,

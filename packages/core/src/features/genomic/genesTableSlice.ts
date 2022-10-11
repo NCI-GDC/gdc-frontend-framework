@@ -125,7 +125,7 @@ export const fetchGenesTable = createAsyncThunk<
 >(
   "genes/genesTable",
   async (
-    { pageSize, offset, sorts = [] }: TablePageOffsetProps,
+    { pageSize, offset }: TablePageOffsetProps,
     thunkAPI,
   ): Promise<GraphQLApiResponse> => {
     const filters = selectGenomicAndCohortGqlFilters(thunkAPI.getState());
@@ -240,7 +240,7 @@ export const fetchGenesTable = createAsyncThunk<
           ...filterContents,
         ],
       },
-      sort: sorts,
+      // sort: sorts,
     };
 
     // get the TableData

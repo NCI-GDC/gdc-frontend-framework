@@ -20,15 +20,15 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   handleSurvivalPlotToggled,
 }: GTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
-  const [offset, setOffset] = useState(0);
+  const [page, setPage] = useState(0); // todo rename
   const [sorts, setSorts] = useState([]);
   const [ref, { width }] = useMeasure();
   const [selectedGenes, setSelectedGenes] = useState<any>({}); // todo: add type
 
   const { data, isFetching } = useGenesTable({
     pageSize: pageSize,
-    offset: offset,
-    sorts: sorts,
+    offset: page * pageSize,
+    // sorts: sorts,
   });
 
   // const { data, isLoading, isError } = useGetGenesTableQuery({
@@ -90,12 +90,12 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             handleSurvivalPlotToggled={handleSurvivalPlotToggled}
             width={width}
             pageSize={pageSize}
-            offset={offset}
+            page={page}
             selectedGenes={selectedGenes}
             selectGene={selectGene}
             selectAll={selectAllGenes}
             handlePageSize={setPageSize}
-            handleOffset={setOffset}
+            handlePage={setPage}
           />
         </div>
       ) : (

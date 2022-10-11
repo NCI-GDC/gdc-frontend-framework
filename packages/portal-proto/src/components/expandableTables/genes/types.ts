@@ -27,8 +27,8 @@ export interface GenesTableProps {
   ) => void;
   pageSize: number;
   handlePageSize: any;
-  offset: number;
-  handleOffset: (offset: number) => any;
+  page: number;
+  handlePage: (page: number) => any;
   selectedGenes: any;
   selectGene: any;
   selectAll: any;
