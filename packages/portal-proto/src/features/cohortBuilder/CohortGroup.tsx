@@ -32,10 +32,10 @@ const CohortGroupSelect: React.FC<unknown> = () => {
     { value: "all_of", label: "is all of" },
     { value: "none_of", label: "is none of" },
   ];
-  const [groupType, setGroupTop] = useState(menu_items[0]);
+  const [groupType, setGroupType] = useState(menu_items[0]);
 
   const handleChange = (value) => {
-    setGroupTop(value);
+    setGroupType(value);
   };
 
   return (

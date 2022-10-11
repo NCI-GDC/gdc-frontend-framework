@@ -362,10 +362,10 @@ export const selectCurrentCohortName = (
   return cohort?.name;
 };
 
-export const selectAvailableCohortByName: (
+export const selectAvailableCohortByName = (
   state: CoreState,
   name: string,
-) => any = (state: CoreState, name: string) =>
+): Cohort | undefined =>
   cohortSelectors
     .selectAll(state)
     .find((cohort: Cohort) => cohort.name === name);

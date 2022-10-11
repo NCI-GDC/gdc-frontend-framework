@@ -8,5 +8,5 @@ export const cohortReducers = combineReducers({
   availableCohorts: availableCohortsReducer,
   comparisonCohorts: comparisonCohortsReducer,
   builderConfig: cohortBuilderConfigReducer,
-  counts: cohortCountsReducer,
+  cohortCounts: cohortCountsReducer,
 });

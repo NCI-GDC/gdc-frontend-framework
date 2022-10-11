@@ -126,20 +126,20 @@ export const selectCohortCountsData = (
   state: CoreState,
 ): CoreDataSelectorResponse<Record<string, number>> => {
   return {
-    data: state.cohort.counts.counts,
-    status: state.cohort.counts.status,
-    error: state.cohort.counts.error,
+    data: state.cohort.cohortCounts.counts,
+    status: state.cohort.cohortCounts.status,
+    error: state.cohort.cohortCounts.error,
   };
 };
 
 export const selectCohortCounts = (state: CoreState): Record<string, number> =>
-  state.cohort.counts.counts;
+  state.cohort.cohortCounts.counts;
 
 export const selectCohortCountsByName = (
   state: CoreState,
   name: string,
 ): number => {
-  const counts = state.cohort.counts.counts;
+  const counts = state.cohort.cohortCounts.counts;
   return counts[name];
 };
 

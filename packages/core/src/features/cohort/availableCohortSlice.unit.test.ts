@@ -121,7 +121,7 @@ describe("test setting/getting currentCohortId", () => {
       currentCohort: "asdf",
       message: undefined,
     },
-    counts: {
+    cohortCounts: {
       counts: {
         caseCounts: -1,
         fileCounts: -1,
