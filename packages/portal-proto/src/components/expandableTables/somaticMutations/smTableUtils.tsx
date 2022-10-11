@@ -10,6 +10,8 @@ import {
   AnnotationsIcon,
 } from "../shared/types";
 import { SomaticMutation } from "./types";
+import CheckboxContainer from "../shared/CheckboxContainer";
+import { Survival } from "../shared/types";
 
 export const createTableColumn = (
   accessor: string,
@@ -38,14 +40,13 @@ export const createTableColumn = (
                 <div>
                   <div className={`content-center`}>
                     {row.getCanExpand() && (
-                      <></>
-                      // <CheckboxContainer
-                      //   isActive={row.original["select"] in selectedGenes}
-                      //   select={row}
-                      //   handleCheck={selectMutation}
-                      //   width={width / visibleColumns.length}
-                      //   wSpring={partitionWidth}
-                      // />
+                      <CheckboxContainer
+                        isActive={row.original["select"] in selectedMutations}
+                        select={row}
+                        handleCheck={selectMutation}
+                        width={width / visibleColumns.length}
+                        wSpring={partitionWidth}
+                      />
                     )}
                   </div>
                   <>
@@ -195,6 +196,41 @@ export const createTableColumn = (
           },
         ],
       };
+    case "consequences":
+      return {
+        header: " ",
+        footer: (props) => props.column.id,
+        columns: [
+          {
+            accessorKey: accessor,
+            header: () => <TableHeader twStyles={``} title={accessor} />,
+            cell: ({ row }) => {
+              return (
+                <animated.div
+                  style={partitionWidth}
+                  className={`content-center`}
+                >
+                  {/* {row.getCanExpand() && (
+                      <TableCell row={row} accessor={accessor} />
+                    )} */}
+                  <>
+                    {!row.getCanExpand() && visibleColumns[0].id === accessor && (
+                      <div className={`relative`}>
+                        {/* <GeneAffectedCases
+                                  geneId={row.value}
+                                  width={width}
+                                  opening={row.getCanExpand()}
+                                ></GeneAffectedCases> */}
+                      </div>
+                    )}
+                  </>
+                </animated.div>
+              );
+            },
+            footer: (props) => props.column.id,
+          },
+        ],
+      };
     case "impact":
       return {
         header: " ",
@@ -272,6 +308,26 @@ export const filterMutationType = (mutationSubType: string): string => {
   return operation.charAt(0).toUpperCase() + operation.slice(1);
 };
 
+export interface MConsequence {
+  consequenceType: string;
+  symbol: string;
+  aaChange: string;
+}
+
+export type MutationsColumn = {
+  select: string;
+  mutationID: string;
+  DNAChange: string;
+  type: string;
+  consequences: MConsequence;
+  affectedCasesInCohort: string;
+  affectedCasesAcrossTheGDC: string;
+  survival: Survival;
+  impact: string;
+  subRows: string;
+  ssmsTotal: number;
+};
+
 export const getMutation = (
   sm: SomaticMutation,
   selectedSurvivalPlot: Record<string, string>,
@@ -284,11 +340,11 @@ export const getMutation = (
     mutationID: sm.ssm_id,
     DNAChange: sm.genomic_dna_change,
     type: filterMutationType(sm.mutation_subtype),
-    consequences: `${{
+    consequences: {
       consequenceType: sm.consequence[0].consequence_type,
       symbol: sm.consequence[0].gene.symbol,
       aaChange: sm.consequence[0].aa_change,
-    }}`,
+    },
     affectedCasesInCohort:
       sm.filteredOccurences > 0
         ? `${sm.filteredOccurences} / ${filteredCases} (${(

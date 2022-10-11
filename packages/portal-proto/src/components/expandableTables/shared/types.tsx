@@ -7,6 +7,12 @@ export interface TableColumnState {
   visible: boolean;
 }
 
+export interface Survival {
+  name: string;
+  symbol: string;
+  checked: boolean;
+}
+
 export const TableHeader = ({
   twStyles,
   title,
@@ -71,4 +77,8 @@ export const AnnotationsIcon = () => {
       </g>
     </svg>
   );
+};
+
+export const searchContains = (obj: any, field: string, searchTerm: string) => {
+  return obj[`${field}`].toLowerCase().includes(searchTerm.toLowerCase());
 };

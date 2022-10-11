@@ -13,6 +13,7 @@ import {
   TableHeader,
   SurvivalIcon,
   AnnotationsIcon,
+  Survival,
 } from "../shared/types";
 
 interface SingleGene {
@@ -324,6 +325,21 @@ export const createTableColumn = (
         ],
       };
   }
+};
+
+export type GenesColumn = {
+  select: string;
+  geneID: string;
+  symbol: string;
+  name: string;
+  survival: Survival;
+  SSMSAffectedCasesInCohort: string;
+  SSMSAffectedCasesAcrossTheGDC: string;
+  CNVGain: string;
+  CNVLoss: string;
+  mutations: number;
+  annotations: boolean;
+  subRows: string;
 };
 
 export const getGene = (

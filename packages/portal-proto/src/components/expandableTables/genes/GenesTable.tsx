@@ -4,11 +4,11 @@ import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { ExpTable } from "../shared/ExpTable";
 import { GTableControls } from "./GTableControls";
 import { GTableFilters } from "./GTableFilters";
-import { getGene, createTableColumn } from "./genesTableUtils";
-import { GenesColumns } from "@/features/shared/table-utils";
+import { getGene, createTableColumn, GenesColumn } from "./genesTableUtils";
 import { useSpring } from "react-spring";
 import PageSize from "../shared/PageSize";
 import PageStepper from "../shared/PageStepper";
+import { searchContains } from "../shared/types";
 
 export const GenesTable: React.FC<GenesTableProps> = ({
   initialData,
@@ -32,10 +32,6 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   const [visibleColumns, setVisibleColumns] = useState(
     DEFAULT_GTABLE_ORDER.filter((col) => col.visible),
   );
-
-  const searchContains = (obj: any, field: string) => {
-    return obj[`${field}`].toLowerCase().includes(searchTerm.toLowerCase());
-  };
 
   const useGeneTableFormat = useCallback(
     (initialData) => {
@@ -107,7 +103,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   }, [columnListOrder]);
 
   // todo replace this callback w/ transformResponse inside rtk endpoint call
-  const columns = useMemo<ColumnDef<GenesColumns>[]>(() => {
+  const columns = useMemo<ColumnDef<GenesColumn>[]>(() => {
     return visibleColumns
       .map(({ id }) => id)
       .map((accessor) => {
@@ -162,7 +158,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
           data={transformResponse.filter((tr) => {
             if (
               ["geneID", "symbol", "name"].some((field) =>
-                searchContains(tr, field),
+                searchContains(tr, field, searchTerm),
               )
             ) {
               return tr;
