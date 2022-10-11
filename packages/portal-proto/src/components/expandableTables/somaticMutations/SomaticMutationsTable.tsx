@@ -191,7 +191,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
             </span>
             of
             <span className={`font-bold`}>
-              {` ${transformResponse[0].genesTotal} `}
+              {` ${transformResponse[0].ssmsTotal} `}
             </span>
             genes
           </span>
@@ -199,7 +199,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
         <div className={`m-auto mr-0`}>
           <PageStepper
             offset={offset}
-            totalPages={Math.ceil(transformResponse[0].genesTotal / pageSize)}
+            totalPages={Math.ceil(transformResponse[0].ssmsTotal / pageSize)}
             handleOffset={handleOffset}
           />
         </div>

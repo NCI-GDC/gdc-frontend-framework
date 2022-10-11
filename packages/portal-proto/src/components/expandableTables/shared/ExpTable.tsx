@@ -56,62 +56,67 @@ export const ExpTable: React.FC<ExpTableProps> = ({
       ? false
       : table
           .getRowModel()
-          .rows.filter((row) => !row.id.includes(".")) // filter out expanded row from select all check
+          .rows.filter((row) => !row.id.includes(".")) // exclude subrow from select-all condition
           .every((row) => row.original["select"] in allSelected);
   return (
     <div className="p-2">
-      <div className="h-2 shadow-md" />
-      <table>
-        <thead
-          className={`${
-            selectAllActive
-              ? `border-2 border-l-4 border-t-4 border-b-0 border-r-0 border-activeColor`
-              : `border-2`
-          } shadow-md w-11/12`}
-        >
-          {table.getHeaderGroups().map((headerGroup) => (
-            <animated.tr style={unitSpring} key={headerGroup.id}>
-              {headerGroup.headers.map((header, index) => {
-                return (
-                  <th key={header.id} colSpan={header.colSpan}>
-                    {header.isPlaceholder ? null : (
-                      <div>
-                        {header.id === "select" &&
-                        header.id !== `1_ _${firstColumn}` ? (
-                          <CheckboxSpring
-                            isActive={selectAllActive}
-                            handleCheck={selectAll}
-                            select={table.getRowModel().rows}
-                          />
-                        ) : null}
-                        <animated.div style={unitSpring}>
-                          {header.id !== "select" &&
-                            flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
-                        </animated.div>
-                      </div>
-                    )}
-                  </th>
-                );
-              })}
-            </animated.tr>
-          ))}
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.map((row, index) => {
-            return (
-              <AnimatedRow
-                key={index}
-                row={row}
-                index={index}
-                selected={row.original["select"] in allSelected}
-              />
-            );
-          })}
-        </tbody>
-      </table>
+      <div
+        className={`shadow-md ${
+          selectAllActive ? `border-b-4 border-r-4 border-activeColor` : ``
+        }`}
+      >
+        <table>
+          <thead
+            className={`${
+              selectAllActive
+                ? `border-l-4 border-t-4 border-b-0 border-r-0 border-activeColor`
+                : `border-2`
+            } shadow-md w-11/12`}
+          >
+            {table.getHeaderGroups().map((headerGroup) => (
+              <animated.tr style={unitSpring} key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <th key={header.id} colSpan={header.colSpan}>
+                      {header.isPlaceholder ? null : (
+                        <div>
+                          {header.id === "select" &&
+                          header.id !== `1_ _${firstColumn}` ? (
+                            <CheckboxSpring
+                              isActive={selectAllActive}
+                              handleCheck={selectAll}
+                              select={table.getRowModel().rows}
+                            />
+                          ) : null}
+                          <animated.div style={unitSpring}>
+                            {header.id !== "select" &&
+                              flexRender(
+                                header.column.columnDef.header,
+                                header.getContext(),
+                              )}
+                          </animated.div>
+                        </div>
+                      )}
+                    </th>
+                  );
+                })}
+              </animated.tr>
+            ))}
+          </thead>
+          <tbody>
+            {table.getRowModel().rows.map((row, index) => {
+              return (
+                <AnimatedRow
+                  key={index}
+                  row={row}
+                  index={index}
+                  selected={row.original["select"] in allSelected}
+                />
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

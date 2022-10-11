@@ -36,7 +36,7 @@ const PageStepper: React.FC<PageStepperProps> = ({
         onClick={() => handleOffset(0)}
         style={rotateS}
         className={`my-auto ml-0 mr-1 text-xs ${
-          offset === 0 ? "" : "hover:text-sm"
+          offset === 0 ? `` : "hover:text-sm"
         }`}
       >
         <PagePlus />
@@ -45,7 +45,7 @@ const PageStepper: React.FC<PageStepperProps> = ({
         disabled={offset === 0}
         onClick={() => handleOffset(offset - 1)}
         className={`my-auto ml-1 mr-1 font-bold text-xs ${
-          offset === 0 ? "" : "hover:text-sm"
+          offset === 0 ? `` : "hover:text-sm"
         }`}
       >
         <PrevPage />
@@ -58,7 +58,7 @@ const PageStepper: React.FC<PageStepperProps> = ({
               onClick={() => handleOffset(step - 1)}
               disabled={offset === step - 1}
               className={`mx-1 my-auto text-xs ${
-                offset === step - 1 ? "text-sm font-bold" : "hover:text-sm"
+                offset === step - 1 ? `text-sm font-bold` : `hover:text-sm`
               } p-1`}
             >
               {step}
