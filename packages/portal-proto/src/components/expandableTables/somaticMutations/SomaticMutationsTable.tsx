@@ -121,6 +121,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
 
   // todo: also reset expanded when pageSize/pageChanges (dont persist expanded across pages)
   useEffect(() => {
+    setExpanded({});
     setExpandedProxy({});
   }, [visibleColumns, selectedMutations, searchTerm]);
 
