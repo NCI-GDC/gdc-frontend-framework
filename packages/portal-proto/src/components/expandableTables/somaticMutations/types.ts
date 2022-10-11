@@ -18,12 +18,36 @@ export const DEFAULT_SMTABLE_ORDER = [
   { id: "survival", columnName: "Surival", visible: true },
 ];
 
+export interface Annotation {
+  polyphen_impact: string;
+  polyphen_score: number;
+  sift_impact: string;
+  sift_score: number;
+  vep_impact: string;
+}
+
+export interface Consequence {
+  aa_change: string;
+  annotation: Annotation;
+  consequence_type: string;
+  gene: Record<string, string>;
+  id: string;
+  is_canonical: boolean;
+}
+
 export interface SomaticMutation {
+  consequence: Consequence[];
+  filteredOccurences: number;
   ssm_id: string;
+  genomic_dna_change: string;
+  mutation_subtype: string;
+  occurence: number;
+  score: number;
+  id: string;
 }
 
 export interface SomaticMutationsTableProps {
-  readonly initialData: any; // need to add this from response
+  readonly initialData: any;
   readonly selectedSurvivalPlot: Record<string, string>;
   width: number;
   readonly handleSurvivalPlotToggled: (

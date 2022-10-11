@@ -102,44 +102,7 @@ export const createTableColumn = (
           },
         ],
       };
-    case "annotations":
-      return {
-        header: " ",
-        footer: (props) => props.column.id,
-        columns: [
-          {
-            accessorKey: accessor,
-            header: () => <TableHeader twStyles={``} title={accessor} />,
-            cell: ({ row }) => {
-              return (
-                <animated.div
-                  style={partitionWidth}
-                  className={`w-max mx-auto`}
-                >
-                  {row.getCanExpand() && (
-                    <div className={`block m-auto w-max`}>
-                      <AnnotationsIcon />
-                    </div>
-                  )}
-                  <>
-                    {!row.getCanExpand() && visibleColumns[0].id === accessor && (
-                      <div className={`relative`}>
-                        {/* <GeneAffectedCases
-                            geneId={row.value}
-                            width={width}
-                            opening={row.getCanExpand()}
-                          ></GeneAffectedCases> */}
-                      </div>
-                    )}
-                  </>
-                </animated.div>
-              );
-            },
-            footer: (props) => props.column.id,
-          },
-        ],
-      };
-    case "SSMSAffectedCasesAcrossTheGDC":
+    case "affectedCasesAcrossTheGDC":
       return {
         header: " ",
         footer: (props) => props.column.id,
@@ -192,7 +155,7 @@ export const createTableColumn = (
           },
         ],
       };
-    case "CNVGain":
+    case "affectedCasesInCohort":
       return {
         header: " ",
         footer: (props) => props.column.id,
@@ -232,7 +195,7 @@ export const createTableColumn = (
           },
         ],
       };
-    case "CNVLoss":
+    case "impact":
       return {
         header: " ",
         footer: (props) => props.column.id,
@@ -247,21 +210,16 @@ export const createTableColumn = (
                   className={`content-center`}
                 >
                   {row.getCanExpand() && (
-                    // <PercentageBar
-                    //   numerator={}
-                    //   denominator={}
-                    //   width={width / visibleColumns.length}
-                    // />
                     <TableCell row={row} accessor={accessor} />
                   )}
                   <>
                     {!row.getCanExpand() && visibleColumns[0].id === accessor && (
                       <div className={`relative`}>
                         {/* <GeneAffectedCases
-                            geneId={row.value}
-                            width={width}
-                            opening={row.getCanExpand()}
-                          ></GeneAffectedCases> */}
+                                geneId={row.value}
+                                width={width}
+                                opening={row.getCanExpand()}
+                              ></GeneAffectedCases> */}
                       </div>
                     )}
                   </>
@@ -308,57 +266,48 @@ export const createTableColumn = (
   }
 };
 
+export const filterMutationType = (mutationSubType: string): string => {
+  const splitStr = mutationSubType.split(" ");
+  const operation = splitStr[splitStr.length - 1];
+  return operation.charAt(0).toUpperCase() + operation.slice(1);
+};
+
 export const getMutation = (
   sm: SomaticMutation,
   selectedSurvivalPlot: Record<string, string>,
-  // mutationCounts: Record<string, string>,
   filteredCases: number,
   cases: number,
   ssmsTotal: number,
 ) => {
-  console.log("sm", sm);
   return {
     select: sm.ssm_id,
-
-    //   select: sm.gene_id,
-    //   mutationID: sm.gene_id,
-    //   survival: {
-    //     name: sm.name,
-    //     symbol: sm.symbol,
-    //     checked: sm.symbol == selectedSurvivalPlot?.symbol,
-    //   },
-    //   symbol: sm.symbol,
-    //   name: sm.name,
-    //   affectedCasesInCohort:
-    //     sm.cnv_case > 0
-    //       ? `${sm.cnv_case + " / " + filteredCases} (${(
-    //           (100 * sm.cnv_case) /
-    //           filteredCases
-    //         ).toFixed(2)}%)`
-    //       : `0`,
-    //   affectedCasesAcrossTheGDC:
-    //     sm.ssm_case > 0
-    //       ? `${sm.ssm_case + " / " + cases} (${(
-    //           (100 * sm.ssm_case) /
-    //           cases
-    //         ).toFixed(2)}%)`
-    //       : `0`,
-    //   CNVsmain:
-    //     sm.cnv_case > 0
-    //       ? `${sm.case_cnv_smain + " / " + sm.cnv_case} (${(
-    //           (100 * sm.case_cnv_smain) /
-    //           sm.cnv_case
-    //         ).toFixed(2)}%)`
-    //       : `--`,
-    //   CNVLoss:
-    //     sm.cnv_case > 0
-    //       ? `${sm.case_cnv_loss + " / " + sm.cnv_case} (${(
-    //           (100 * sm.case_cnv_loss) /
-    //           sm.cnv_case
-    //         ).toFixed(2)}%)`
-    //       : `--`,
-    //   mutations: mutationCounts[sm.ssms_id],
-    //   annotations: sm.is_cancer_gene_census,
+    mutationID: sm.ssm_id,
+    DNAChange: sm.genomic_dna_change,
+    type: filterMutationType(sm.mutation_subtype),
+    consequences: `${{
+      consequenceType: sm.consequence[0].consequence_type,
+      symbol: sm.consequence[0].gene.symbol,
+      aaChange: sm.consequence[0].aa_change,
+    }}`,
+    affectedCasesInCohort:
+      sm.filteredOccurences > 0
+        ? `${sm.filteredOccurences} / ${filteredCases} (${(
+            (100 * sm.filteredOccurences) /
+            filteredCases
+          ).toFixed(2)}%)`
+        : `--`,
+    affectedCasesAcrossTheGDC:
+      sm.occurence > 0
+        ? `${sm.occurence} / ${cases} (${((100 * sm.occurence) / cases).toFixed(
+            2,
+          )}%)`
+        : `--`,
+    survival: {
+      name: sm.consequence[0].gene.name,
+      symbol: sm.consequence[0].gene.symbol,
+      checked: sm.consequence[0].gene.symbol == selectedSurvivalPlot?.symbol,
+    },
+    impact: "impact", // todo
     // do not remove subRows key, its needed for row.getCanExpand() to be true
     subRows: " ",
     ssmsTotal,
