@@ -115,10 +115,9 @@ export const ColumnOption: FC<ColumnProps> = ({
         </div>
         <SwitchSpring
           isActive={visible}
-          icon={<></>}
+          icon={undefined}
           handleSwitch={toggleColumn}
           selected={columnName}
-          selectedGenes={undefined}
         />
       </div>
     </div>

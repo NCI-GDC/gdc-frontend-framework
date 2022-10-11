@@ -83,7 +83,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
       data?.genes?.mutationCounts &&
       data?.genes?.filteredCases &&
       data?.genes?.cases ? (
-        <div ref={ref} className={`h-full`}>
+        <div ref={ref} className={`h-full w-9/12 pb-4`}>
           <GenesTable
             initialData={data.genes}
             selectedSurvivalPlot={selectedSurvivalPlot}

@@ -59,7 +59,7 @@ const PageSize: React.FC<PageSizeProps> = ({
           <MdOutlineArrowDropDown />
         </animated.div>
       </div>
-      <animated.div className={`z-10 bg-white`} style={menuSpring}>
+      <animated.div className={`absolute z-10 bg-white`} style={menuSpring}>
         {offsetMenu && (
           <div className={`text-center`}>
             <animated.ul

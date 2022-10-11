@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
-import GenesTable from "../genesTable/GenesTable";
+// import GenesTable from "../genesTable/GenesTable";
+import { GTableContainer } from "../../components/expandableTables/genes/GTableContainer";
 import MutationsTable from "../mutationsTable/MutationsTable";
 import { Grid, Tabs, LoadingOverlay } from "@mantine/core";
 import { EnumFacet } from "../facets/EnumFacet";
@@ -248,7 +249,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
         </Tabs.List>
         <Tabs.Panel value="genes" pt="xs">
           <div className="flex flex-row mt-3">
-            <div className="flex flex-col">
+            <div className="flex flex-col w-screen">
               <Grid className="mx-2  bg-base-max w-9/12">
                 <Grid.Col span={6}>
                   <GeneFrequencyChart marginBottom={95} />
@@ -272,13 +273,21 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                   />
                 </Grid.Col>
               </Grid>
-              <GenesTable
+              {/* <GenesTable
                 selectedSurvivalPlot={comparativeSurvival}
                 handleSurvivalPlotToggled={(symbol: string, name: string) =>
                   handleSurvivalPlotToggled(symbol, name, "gene.symbol")
                 }
-              />
+              /> */}
             </div>
+          </div>
+          <div className={`flex flex-col w-screen`}>
+            <GTableContainer
+              selectedSurvivalPlot={comparativeSurvival}
+              handleSurvivalPlotToggled={(symbol: string, name: string) =>
+                handleSurvivalPlotToggled(symbol, name, "gene.symbol")
+              }
+            />
           </div>
         </Tabs.Panel>
         <Tabs.Panel value="ssms" pt="xs">
@@ -303,12 +312,12 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                   }
                 />
               </div>
-              <MutationsTable
+              {/* <MutationsTable
                 selectedSurvivalPlot={comparativeSurvival}
                 handleSurvivalPlotToggled={(symbol: string, name: string) =>
                   handleSurvivalPlotToggled(symbol, name, "gene.ssm.ssm_id")
                 }
-              />
+              /> */}
             </div>
           </div>
         </Tabs.Panel>

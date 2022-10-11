@@ -158,13 +158,15 @@ export const createTableColumn = (
             accessorKey: accessor,
             header: () => <GTableHeader twStyles={``} title={accessor} />,
             cell: ({ row, getValue }) => {
+              //<Tooltip label={`Click icon to plot ${value.symbol}`}>
+              //          </Tooltip> */}
               return (
                 <>
                   {row.getCanExpand() && (
                     <SwitchSpring
-                      isActive={true}
+                      isActive={row.original["survival"].checked}
                       icon={<SurvivalIcon />}
-                      selected={{}}
+                      selected={row.original["survival"]}
                       handleSwitch={handleSurvivalPlotToggled}
                     />
                   )}
