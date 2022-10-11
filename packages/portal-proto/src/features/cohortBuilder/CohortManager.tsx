@@ -90,6 +90,8 @@ const CohortManager: React.FC<CohortManagerProps> = ({
       {" "}
       {
         // Wrap modal in own theme provider to permit overriding of backgroundColor from tailwind
+        // Also mantine modal appear to disable tailwind completely which is why the Modal below
+        // is styled via mantine.
       }
       <MantineProvider
         emotionCache={appendCache}
@@ -220,7 +222,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
         // TODO: add tooltips with all functions are complete
         !hide_controls ? (
           <>
-            <CohortGroupButton>
+            <CohortGroupButton disabled={startingId === DEFAULT_COHORT_ID}>
               <SaveIcon size="1.5em" aria-label="Save cohort" />
             </CohortGroupButton>
             <CohortGroupButton onClick={() => newCohort()}>
