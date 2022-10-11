@@ -33,7 +33,15 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
     DEFAULT_SMTABLE_ORDER.filter((col) => col.visible),
   );
 
-  return <></>;
+  //   useEffect(() => {
+  //     console.log('props', initialData);
+  //   }, [initialData]);
+
+  return (
+    <>
+      <div onClick={() => console.log("smtable", initialData)}>SMTable</div>
+    </>
+  );
 };
 
 export default SomaticMutationsTable;

@@ -50,10 +50,11 @@ const PageStepper: React.FC<PageStepperProps> = ({
       >
         <PrevPage />
       </button>
-      {stepView.map((step) => {
+      {stepView.map((step, key) => {
         return (
           step < totalPages + 1 && (
             <button
+              key={key}
               onClick={() => handleOffset(step - 1)}
               disabled={offset === step - 1}
               className={`mx-1 my-auto text-xs ${

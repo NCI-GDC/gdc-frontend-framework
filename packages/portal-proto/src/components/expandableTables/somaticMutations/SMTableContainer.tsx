@@ -3,8 +3,6 @@ import { useState } from "react";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
 import { useMeasure } from "react-use";
 import { Loader } from "@mantine/core";
-// import { getGraphQLFilters } from "./types";
-// import { useGetGenesTableQuery } from "@gff/core";
 
 export interface SMTableContainerProps {
   readonly selectedSurvivalPlot: Record<string, string>;
@@ -48,7 +46,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     }
   };
 
-  const selectAllmutations = (rows: any) => {
+  const selectAllMutations = (rows: any) => {
     if (rows.every((row) => row.original["select"] in selectedMutations)) {
       // deselect all
       setSelectedMutations((currentMap) => {
@@ -73,26 +71,23 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     }
   };
 
+  const { status, ssms: payload } = data;
+
+  const { cases, filteredCases, ssms } = payload;
+
   return (
     <>
-      <button onClick={() => console.log("data", data)}>data</button>
-      {/* <SomaticMutationsTable 
-
-    /> */}
-      {/* {data?.status === "fulfilled" &&
-      data?.mutations?.mutationCounts &&
-      data?.mutations?.filteredCases &&
-      data?.mutations?.cases ? (
+      {status === "fulfilled" && cases && filteredCases ? (
         <div ref={ref} className={`h-full w-9/12 pb-4`}>
           <SomaticMutationsTable
-            initialData={data.mutations}
+            initialData={ssms}
             selectedSurvivalPlot={selectedSurvivalPlot}
             handleSurvivalPlotToggled={handleSurvivalPlotToggled}
             width={width}
             pageSize={pageSize}
             offset={offset}
             selectedMutations={selectedMutations}
-            selectGene={selectGene}
+            selectMutation={selectMutation}
             selectAll={selectAllMutations}
             handlePageSize={setPageSize}
             handleOffset={setOffset}
@@ -104,7 +99,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             <Loader />
           </div>
         </div>
-      )} */}
+      )}
     </>
   );
 };
