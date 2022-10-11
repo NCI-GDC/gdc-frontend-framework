@@ -2,6 +2,7 @@ import { ActionIcon, Button } from "@mantine/core";
 import { showNotification, cleanNotifications } from "@mantine/notifications";
 import { VscTrash as TrashIcon } from "react-icons/vsc";
 import { FaUndo as UndoIcon, FaShoppingCart as CartIcon } from "react-icons/fa";
+import { fileInCart } from "src/utils";
 import {
   CART_LIMIT,
   removeFilesFromCart,
@@ -282,10 +283,7 @@ export const SingleItemAddToCartButton: React.FC<SingleItemCartButtonProps> = ({
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
 
-  // check if item is in cart
-  const isInCart = currentCart.find((f) => f.fileId === file.fileId);
-
-  return isInCart ? (
+  return fileInCart(currentCart, file.fileId) ? (
     <ActionIcon
       title="Remove From Cart"
       aria-label="Remove from cart"
