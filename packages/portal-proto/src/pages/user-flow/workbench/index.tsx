@@ -124,6 +124,7 @@ const ActionButtonBar = () => {
                 query: { app: undefined },
               }}
               className="mx-4 p-2 px-5"
+              data-testid="analysisHomePageButton"
             >
               <div className="flex flex-row items-center">
                 <Image
@@ -155,6 +156,7 @@ const ActionButtonBar = () => {
               pathname: "/user-flow/workbench/analysis_page",
               query: { app: "Studies" },
             }}
+            data-testid="studiesHomePageButton"
           >
             <Image
               src={"/user-flow/icons/crowd-of-users.svg"}
@@ -181,6 +183,7 @@ const ActionButtonBar = () => {
               pathname: "/user-flow/workbench/analysis_page",
               query: { app: "CohortBuilder" },
             }}
+            data-testid="cohortHomePageButton"
           >
             <Image
               src={"/user-flow/icons/build.svg"}
@@ -208,6 +211,7 @@ const ActionButtonBar = () => {
               pathname: "/user-flow/workbench/analysis_page",
               query: { app: "Downloads" },
             }}
+            data-testid="downloadsHomePageButton"
           >
             <Image
               src={"/user-flow/icons/database.svg"}
@@ -253,6 +257,7 @@ const IndexPage: NextPage = () => {
                   type="text"
                   className="h-10 pr-8 w-full pl-5 bg-base-lightest border-primary-light rounded-full focus:outline-none focus:ring focus:ring-accent-cool-light focus:border-accent-cool-light hover:shadow-lg hover:border-accent-cool-lighter"
                   placeholder={`e.g. BRAF, Breast, TCGA-BLCA, TCGA-A5-A0G2`}
+                  data-testid="homepageSearchField"
                 />
               </div>
             </div>

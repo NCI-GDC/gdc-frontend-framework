@@ -1,19 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
-import {
-  useCoreDispatch,
-  useCoreSelector,
-  selectTotalCountsByName,
-  usePrevious,
-  removeCohortFilter,
-  EnumOperandValue,
-  fieldNameToTitle,
-} from "@gff/core";
-import {
-  FacetDocTypeToCountsIndexMap,
-  FacetDocTypeToLabelsMap,
-  FacetEnumHooks,
-  UpdateEnums,
-} from "./hooks";
+import { usePrevious, fieldNameToTitle } from "@gff/core";
+import { FacetDocTypeToCountsIndexMap, FacetDocTypeToLabelsMap } from "./hooks";
 import { DEFAULT_VISIBLE_ITEMS } from "./utils";
 
 import {
@@ -22,7 +9,7 @@ import {
   MdClose as CloseIcon,
 } from "react-icons/md";
 import { FaUndo as UndoIcon } from "react-icons/fa";
-import { EnumFacetCardProps } from "@/features/facets/types";
+import { EnumFacetHooks, FacetCardProps } from "@/features/facets/types";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
 import {
   ActionIcon,
@@ -33,6 +20,7 @@ import {
 } from "@mantine/core";
 import { isEqual } from "lodash";
 import { FacetIconButton, controlsIconStyle } from "./components";
+import { updateFacetEnum } from "./utils";
 import FacetExpander from "@/features/facets/FacetExpander";
 import FacetSortPanel from "@/features/facets/FacetSortPanel";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
@@ -43,6 +31,7 @@ import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
  * @param field filter this FacetCard manages
  * @param docType document type "cases" "files, etc.
  * @param indexType index this facet uses to get data from
+ * @param hooks object defining the hooks required by this facet component
  * @param description describes information about the facet
  * @param facetName name of the Facet in human-readable form
  * @param showSearch if the search icon show be displayed
@@ -52,14 +41,12 @@ import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
  * @param hideIfEmpty if facet has no data, do not render
  * @param dismissCallback if facet can be removed, supply a function which will ensure the "dismiss" control will be visible
  * @param width set the width of the facet
- * @param getFacetData function to pull enumerated data with
- * @param updateFacetEnumerations function to extract enumeration values (used to set checkboxes)
- * @param clearFilterFunc function to call when filter should be reset (all checkboxes cleared)
  */
-export const EnumFacet: React.FC<EnumFacetCardProps> = ({
+const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   field,
   docType,
   indexType,
+  hooks,
   description,
   facetName = null,
   showSearch = true,
@@ -69,10 +56,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
   hideIfEmpty = true,
   dismissCallback = undefined,
   width = undefined,
-  getFacetData = FacetEnumHooks[docType],
-  updateFacetEnumerations = undefined,
-  clearFilterFunc = undefined,
-}: EnumFacetCardProps) => {
+}: FacetCardProps<EnumFacetHooks>) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -80,7 +64,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
   const [isFacetView, setIsFacetView] = useState(startShowingData);
   const [visibleItems, setVisibleItems] = useState(DEFAULT_VISIBLE_ITEMS);
   const cardRef = useRef<HTMLDivElement>(null);
-  const { data, enumFilters, isSuccess } = getFacetData(
+  const { data, enumFilters, isSuccess } = hooks.useGetFacetData(
     field,
     docType,
     indexType,
@@ -88,34 +72,18 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
   const [selectedEnums, setSelectedEnums] = useState(enumFilters);
   const prevFilters = usePrevious(enumFilters);
   const searchInputRef = useRef(null);
-  const coreDispatch = useCoreDispatch();
 
-  // get the total count to compute percentages
-  // TODO: move this outside of Facet Component
-  const totalCount = useCoreSelector((state) =>
-    selectTotalCountsByName(state, FacetDocTypeToCountsIndexMap[docType]),
+  const totalCount = hooks.useTotalCounts(
+    FacetDocTypeToCountsIndexMap[docType],
   );
+  const clearFilters = hooks.useClearFilter();
+  const updateFacetFilters = hooks.useUpdateFacetFilters();
 
   useEffect(() => {
     if (isSearching) {
       searchInputRef?.current?.focus();
     }
   }, [isSearching]);
-
-  const clearFilters = () => {
-    clearFilterFunc
-      ? clearFilterFunc(field)
-      : coreDispatch(removeCohortFilter(field));
-  };
-
-  const updateFacetEnum = (
-    enumerationFilters: EnumOperandValue,
-    fieldname: string,
-  ) => {
-    updateFacetEnumerations
-      ? updateFacetEnumerations(fieldname, enumerationFilters)
-      : UpdateEnums[docType](coreDispatch, fieldname, enumerationFilters);
-  };
 
   // filter missing and "" strings and update checkboxes
   useEffect(() => {
@@ -141,19 +109,13 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
   }
 
   // update filters when checkbox is selected
-  const handleChange = (e) => {
-    const { value, checked } = e.target;
-
+  const handleChange = (value: string, checked: boolean) => {
     if (checked) {
       const updated = selectedEnums ? [...selectedEnums, value] : [value];
-      updateFacetEnum(updated, field);
+      updateFacetEnum(field, updated, updateFacetFilters, clearFilters);
     } else {
-      // TODO: replace with ToggleFacet
-      const updated =
-        field === "genes.is_cancer_gene_census"
-          ? []
-          : selectedEnums.filter((x) => x != value);
-      updateFacetEnum(updated, field);
+      const updated = selectedEnums.filter((x) => x != value);
+      updateFacetEnum(field, updated, updateFacetFilters, clearFilters);
     }
   };
 
@@ -207,13 +169,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
               ? ([, a], [, b]) => b - a
               : ([a], [b]) => a.localeCompare(b),
           )
-          .slice(0, !isGroupExpanded ? maxValuesToDisplay : undefined)
-          .map(([value, count]) => {
-            if (field === "genes.is_cancer_gene_census") {
-              value = value === "1" ? "true" : "false";
-            }
-            return [value, count];
-          }),
+          .slice(0, !isGroupExpanded ? maxValuesToDisplay : undefined),
       )
     : undefined;
 
@@ -225,7 +181,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
       id={field}
     >
       <div>
-        <div className="flex items-center justify-between flex-wrap bg-primary-lighter shadow-md px-1.5">
+        <div className="flex items-start justify-between flex-nowrap bg-primary-lighter shadow-md px-1.5">
           <Tooltip
             label={description}
             classNames={{
@@ -239,7 +195,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
             transition="fade"
             transitionDuration={200}
           >
-            <div className="text-primary-contrast-lighter font-heading font-semibold text-md">
+            <div className="text-primary-contrast-lighter font-heading font-semibold text-md break-words py-2">
               {facetName ? facetName : fieldNameToTitle(field)}
             </div>
           </Tooltip>
@@ -258,7 +214,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
               </FacetIconButton>
             ) : null}
             <FacetIconButton
-              onClick={clearFilters}
+              onClick={() => clearFilters(field)}
               aria-label="clear selection"
             >
               <UndoIcon size="1.15em" className={controlsIconStyle} />
@@ -266,7 +222,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
             {dismissCallback ? (
               <FacetIconButton
                 onClick={() => {
-                  clearFilters();
+                  clearFilters(field);
                   dismissCallback(field);
                 }}
                 aria-label="Remove the facet"
@@ -338,7 +294,12 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
                               value={value}
                               size="xs"
                               color="accent"
-                              onChange={handleChange}
+                              onChange={(e) =>
+                                handleChange(
+                                  e.currentTarget.value,
+                                  e.currentTarget.checked,
+                                )
+                              }
                               aria-label={`checkbox for ${field}`}
                               classNames={{
                                 input: "hover:bg-accent-darker",
@@ -418,6 +379,7 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
                   selectedEnums={selectedEnums}
                   isSuccess={isSuccess}
                   showTitle={false}
+                  valueLabel={FacetDocTypeToLabelsMap[docType]}
                   maxBins={numberOfBarsToDisplay}
                   height={
                     numberOfBarsToDisplay == 1
@@ -437,3 +399,5 @@ export const EnumFacet: React.FC<EnumFacetCardProps> = ({
     </div>
   );
 };
+
+export default EnumFacet;

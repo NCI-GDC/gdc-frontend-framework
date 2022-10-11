@@ -1,5 +1,6 @@
 import {
   DAYS_IN_YEAR,
+  EnumOperandValue,
   GreaterThan,
   GreaterThanOrEquals,
   LessThan,
@@ -7,7 +8,11 @@ import {
   Operation,
 } from "@gff/core";
 import _ from "lodash";
-import { FromToRange } from "@/features/facets/types";
+import {
+  FromToRange,
+  UpdateFacetFilterFunction,
+  ClearFacetFunction,
+} from "@/features/facets/types";
 
 export const DEFAULT_VISIBLE_ITEMS = 6;
 
@@ -130,5 +135,26 @@ export const extractRangeValues = <T extends string | number>(
     }
   } else {
     return undefined;
+  }
+};
+
+export const updateFacetEnum = (
+  fieldName: string,
+  values: EnumOperandValue,
+  updateFacetFilters: UpdateFacetFilterFunction,
+  clearFilters: ClearFacetFunction,
+): void => {
+  if (values === undefined) return;
+  if (values.length > 0) {
+    // TODO: Assuming Includes by default but this might change to Include|Excludes
+    updateFacetFilters(fieldName, {
+      operator: "includes",
+      field: fieldName,
+      operands: values,
+    });
+  }
+  // no values remove the filter
+  else {
+    clearFilters(fieldName);
   }
 };
