@@ -149,6 +149,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
           placeholder="Through"
           className="px-1"
           inputFormat="YYYY/MM/DD"
+          dropdownPosition="bottom-end"
           value={dateRangeValue[1]}
           minDate={dateRangeValue[0]}
           onChange={(d: Date | null) =>
