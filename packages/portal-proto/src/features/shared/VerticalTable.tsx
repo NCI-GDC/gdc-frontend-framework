@@ -20,11 +20,14 @@ interface VerticalTableProps {
   additionalControls?: React.ReactNode;
   showControls?: boolean;
   pagination?: {
-    page: number;
-    pages: number;
-    size: number;
-    handlePageSizeChange: (x: string) => void;
-    handlePageChange: (x: number) => void;
+    page: number; //page on
+    pages: number; //total pages
+    size: number; //size of data set shown
+    from: number; //0 indexed starting point of data shown
+    total: number; //total size of data set
+    label?: string; // optional lable of data shown
+    handlePageSizeChange: (x: string) => void; //callback to handle page size change
+    handlePageChange: (x: number) => void; //callback to handle page change
   };
   status?: "uninitialized" | "pending" | "fulfilled" | "rejected";
 }
@@ -184,6 +187,26 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     setPageOn(newPageNumber);
     pagination.handlePageChange(newPageNumber);
   };
+  const ShowingCount: FC = () => {
+    let outputString = " --";
+    if (!isNaN(pagination.from) && status === "fulfilled") {
+      outputString = ` ${pagination.from + 1} - `;
+
+      const pagnationTo = pagination.from + pageSize;
+      if (pagnationTo < pagination.total) {
+        outputString += pagnationTo;
+      } else {
+        outputString += pagination.total;
+      }
+      outputString += ` of ${pagination.total}`;
+
+      if (pagination.label) {
+        outputString += ` ${pagination.label}`;
+      }
+    }
+
+    return <>Showning {outputString}</>;
+  };
 
   return (
     <div className="grow overflow-hidden">
@@ -249,6 +272,9 @@ export const VerticalTable: FC<VerticalTableProps> = ({
               { value: "100", label: "100" },
             ]}
           />
+          <div className="m-auto">
+            <ShowingCount />
+          </div>
           <Pagination
             size="sm"
             radius="md"

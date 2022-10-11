@@ -206,6 +206,7 @@ const FilesTable: React.FC = () => {
           setPageSize(parseInt(pageSize)),
         handlePageChange: (page: number) => setActivePage(page),
         ...pagination,
+        label: "files",
       }}
       status={
         // convert to CoreSelector status

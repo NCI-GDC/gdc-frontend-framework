@@ -275,6 +275,9 @@ const MutationsTable: React.FC<MutationTableProps> = ({
             page: activePage,
             pages,
             size: pageSize,
+            from: (activePage - 1) * pageSize,
+            total: totalResults,
+            label: "somatic mutations",
           }}
           status={data.status}
         />

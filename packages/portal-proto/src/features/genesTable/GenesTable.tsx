@@ -229,6 +229,9 @@ const GenesTable: React.FC<GenesTableProps> = ({
             page: activePage,
             pages: pages,
             size: pageSize,
+            from: (activePage - 1) * pageSize,
+            total: totalResults,
+            label: "genes",
           }}
           status={
             // convert to CoreSelector status

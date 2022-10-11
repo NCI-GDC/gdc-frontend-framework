@@ -157,6 +157,7 @@ const FilesTables: React.FC = () => {
         handlePageSizeChange,
         handlePageChange,
         ...tempPagination,
+        label: "files",
       }}
       status={status}
     />
