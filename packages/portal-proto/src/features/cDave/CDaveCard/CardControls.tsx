@@ -5,6 +5,7 @@ import { Statistics } from "@gff/core";
 
 import ContinuousBinningModal from "../ContinuousBinningModal/ContinuousBinningModal";
 import CategoricalBinningModal from "../CategoricalBinningModal";
+
 import { CategoricalBins, CustomInterval, NamedFromTo } from "../types";
 
 interface CardControlsProps {

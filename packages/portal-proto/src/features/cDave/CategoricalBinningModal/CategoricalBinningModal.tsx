@@ -1,21 +1,16 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { pickBy, mapKeys, isEqual } from "lodash";
-import { Button, Modal, TextInput } from "@mantine/core";
-import { useClickOutside } from "@mantine/hooks";
-import { useForm } from "@mantine/form";
-import {
-  FaPencilAlt as PencilIcon,
-  FaEyeSlash as HideIcon,
-  FaEye as ShowIcon,
-} from "react-icons/fa";
+import { Button, Modal } from "@mantine/core";
+import { FaEyeSlash as HideIcon, FaEye as ShowIcon } from "react-icons/fa";
 import {
   MdReplay as ResetIcon,
   MdHorizontalSplit as GroupIcon,
   MdOutlineHorizontalSplit as UngroupIcon,
 } from "react-icons/md";
-import { createKeyboardAccessibleFunction } from "src/utils";
-import { CategoricalBins } from "./types";
+import { CategoricalBins } from "../types";
 import FunctionButton from "@/components/FunctionButton";
+import GroupInput from "./GroupInput";
+import ListValue from "./ListValue";
 
 const DEFAULT_GROUP_NAME_REGEX = /selected value \d+/;
 
@@ -38,7 +33,6 @@ const filterOutSelected = (
       }
     }
   });
-
   return newValues;
 };
 
@@ -100,15 +94,14 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
   >({});
   const [editField, setEditField] = useState(undefined);
 
-  const group = () => {
+  const handleGroupBtnClick = () => {
     setEditField(undefined);
-
     const existingGroups = Object.entries(values).filter(
       ([, v]) =>
         v instanceof Object &&
         Object.keys(v).every((subKey) => selectedValues?.[subKey]),
     );
-
+    console.log(existingGroups);
     if (existingGroups.length === 1) {
       setValues({
         ...filterOutSelected(values, selectedValues),
@@ -136,7 +129,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
     setValues(mapKeys(values, (_, key) => (key === oldName ? newName : key)));
   };
 
-  const hideValues = () => {
+  const handleHideValuesBtnClick = () => {
     setEditField(undefined);
     setHiddenValues({
       ...hiddenValues,
@@ -144,13 +137,51 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
     });
 
     setValues(filterOutSelected(values, selectedValues));
-
     setSelectedValues({});
   };
 
-  const sortedValues = Object.entries(values).sort((a, b) =>
+  const sortedValues = Object.entries(values).sort((a: any, b: any) =>
     sortBins(a[1], b[1]),
   );
+
+  const handleSaveBtnClick = () => {
+    () => {
+      setEditField(undefined);
+      if (!isEqual(values, results)) {
+        updateBins(values);
+      } else {
+        updateBins(null);
+      }
+      setModalOpen(false);
+    };
+  };
+
+  const handleRefeshClick = () => {
+    setEditField(undefined);
+    setHiddenValues({});
+    setValues(results);
+    setSelectedValues({});
+  };
+
+  const handleUngroupBtnClick = () => {
+    setEditField(undefined);
+    setValues({
+      ...filterOutSelected(values, selectedValues),
+      ...selectedValues,
+    });
+    setSelectedValues({});
+  };
+
+  const handleShowHiddenBtnClick = () => {
+    setEditField(undefined);
+    setValues({ ...values, ...selectedHiddenValues });
+    setHiddenValues(
+      pickBy(hiddenValues, (_, k) => selectedHiddenValues?.[k] === undefined),
+    );
+    setSelectedHiddenValues({});
+  };
+
+  const handleCancelBtnClick = () => setModalOpen(false);
 
   return (
     <Modal
@@ -159,9 +190,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
       size={800}
       title={`Create Custom Bins: ${field}`}
       withinPortal={false}
-      classNames={{
-        header: "text-xl",
-      }}
+      classNames={{ header: "text-xl" }}
     >
       <p>
         Organize values into groups of your choosing. Click <b>Save Bins</b> to
@@ -175,18 +204,13 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
           <h3 className="font-bold my-auto">Values</h3>
           <div className="gap-1 flex">
             <FunctionButton
-              onClick={() => {
-                setEditField(undefined);
-                setHiddenValues({});
-                setValues(results);
-                setSelectedValues({});
-              }}
+              onClick={handleRefeshClick}
               aria-label="reset groups"
             >
               <ResetIcon size={20} />
             </FunctionButton>
             <FunctionButton
-              onClick={group}
+              onClick={handleGroupBtnClick}
               disabled={
                 Object.entries(values).filter(([k, v]) =>
                   v instanceof Object
@@ -199,14 +223,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
               Group
             </FunctionButton>
             <FunctionButton
-              onClick={() => {
-                setEditField(undefined);
-                setValues({
-                  ...filterOutSelected(values, selectedValues),
-                  ...selectedValues,
-                });
-                setSelectedValues({});
-              }}
+              onClick={handleUngroupBtnClick}
               disabled={
                 !Object.entries(values).some(
                   ([, v]) =>
@@ -221,7 +238,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
               Ungroup
             </FunctionButton>
             <FunctionButton
-              onClick={hideValues}
+              onClick={handleHideValuesBtnClick}
               disabled={Object.keys(selectedValues).length === 0}
               leftIcon={<HideIcon />}
             >
@@ -231,7 +248,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
         </div>
         <ul className="p-2">
           {sortedValues
-            .sort((a, b) => sortBins(a[1], b[1]))
+            .sort((a: any, b: any) => sortBins(a[1], b[1]))
             .map(([k, value], idx) =>
               value instanceof Object ? (
                 <GroupInput
@@ -269,17 +286,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
           <h3 className="font-bold my-auto">Hidden Values</h3>
           <FunctionButton
             disabled={Object.keys(selectedHiddenValues).length === 0}
-            onClick={() => {
-              setEditField(undefined);
-              setValues({ ...values, ...selectedHiddenValues });
-              setHiddenValues(
-                pickBy(
-                  hiddenValues,
-                  (_, k) => selectedHiddenValues?.[k] === undefined,
-                ),
-              );
-              setSelectedHiddenValues({});
-            }}
+            onClick={handleShowHiddenBtnClick}
             leftIcon={<ShowIcon />}
           >
             Show
@@ -287,7 +294,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
         </div>
         <ul className="min-h-[100px] p-2">
           {Object.entries(hiddenValues)
-            .sort((a, b) => b[1] - a[1])
+            .sort((a: any, b: any) => b[1] - a[1])
             .map(([k, v]) => (
               <ListValue
                 name={k}
@@ -301,196 +308,14 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
         </ul>
       </div>
       <div className="mt-2 flex gap-2 justify-end">
-        <Button
-          onClick={() => setModalOpen(false)}
-          className="bg-primary-darkest"
-        >
+        <Button onClick={handleCancelBtnClick} className="bg-primary-darkest">
           Cancel
         </Button>
-        <Button
-          className="bg-primary-darkest"
-          onClick={() => {
-            setEditField(undefined);
-            if (!isEqual(values, results)) {
-              updateBins(values);
-            } else {
-              updateBins(null);
-            }
-            setModalOpen(false);
-          }}
-        >
+        <Button className="bg-primary-darkest" onClick={handleSaveBtnClick}>
           Save Bins
         </Button>
       </div>
     </Modal>
-  );
-};
-
-interface ListValueProps {
-  readonly name: string;
-  readonly count: number;
-  readonly selectedValues: Record<string, number>;
-  readonly setSelectedValues: (selectedValues: Record<string, number>) => void;
-  readonly clearOtherValues: () => void;
-}
-
-const ListValue: React.FC<ListValueProps> = ({
-  name,
-  count,
-  selectedValues,
-  setSelectedValues,
-  clearOtherValues,
-}: ListValueProps) => {
-  const updateSelectedValues = (name: string, count: number) => {
-    if (Object.keys(selectedValues).includes(name)) {
-      setSelectedValues(pickBy(selectedValues, (_, k) => k !== name));
-    } else {
-      setSelectedValues({ ...selectedValues, [name]: count });
-    }
-  };
-
-  return (
-    <li
-      className={`${
-        selectedValues?.[name] ? "bg-accent-warm-light" : ""
-      } cursor-pointer list-inside`}
-    >
-      <div
-        onClick={() => {
-          updateSelectedValues(name, count);
-          clearOtherValues();
-        }}
-        onKeyPress={createKeyboardAccessibleFunction(() => {
-          updateSelectedValues(name, count);
-          clearOtherValues();
-        })}
-        tabIndex={0}
-        role="button"
-        className="inline"
-      >
-        {name} ({count.toLocaleString()})
-      </div>
-    </li>
-  );
-};
-
-interface GroupInputProps {
-  readonly groupName: string;
-  readonly groupValues: Record<string, number>;
-  readonly otherGroups: string[];
-  readonly updateGroupName: (oldName: string, newName: string) => void;
-  readonly selectedValues: Record<string, number>;
-  readonly setSelectedValues: (selectedValues: Record<string, number>) => void;
-  readonly clearOtherValues: () => void;
-  readonly editing: boolean;
-  readonly setEditField: (field: string) => void;
-}
-
-const GroupInput: React.FC<GroupInputProps> = ({
-  groupName,
-  groupValues,
-  otherGroups,
-  updateGroupName,
-  selectedValues,
-  setSelectedValues,
-  clearOtherValues,
-  editing,
-  setEditField,
-}: GroupInputProps) => {
-  const form = useForm({
-    validateInputOnChange: true,
-    initialValues: { group: groupName },
-    validate: {
-      group: (value) =>
-        value === ""
-          ? "Required field"
-          : Object.keys(groupValues).includes(value)
-          ? "The group name cannot be the same as the name of a value"
-          : otherGroups.includes(value)
-          ? `"${value}" already exists`
-          : null,
-    },
-  });
-
-  const closeInput = () => {
-    if (Object.keys(form.errors).length === 0) {
-      updateGroupName(groupName, form.values.group);
-      setEditField(undefined);
-    }
-  };
-
-  const ref = useClickOutside(() => {
-    closeInput();
-  });
-
-  const updateSelectedValues = () => {
-    clearOtherValues();
-
-    if (Object.keys(groupValues).every((k) => selectedValues?.[k])) {
-      setSelectedValues(
-        pickBy(selectedValues, (_, k) => !Object.keys(groupValues).includes(k)),
-      );
-    } else {
-      setSelectedValues({ ...selectedValues, ...groupValues });
-    }
-  };
-
-  useEffect(() => {
-    if (!editing) {
-      form.clearErrors();
-      form.reset();
-    }
-    // Adding form objects to dep array causes infinite rerenders
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editing]);
-
-  return (
-    <li>
-      {editing ? (
-        <TextInput
-          ref={ref}
-          className={"w-1/2"}
-          onKeyPress={createKeyboardAccessibleFunction(closeInput)}
-          {...form.getInputProps("group")}
-        />
-      ) : (
-        <div
-          onClick={updateSelectedValues}
-          onKeyPress={createKeyboardAccessibleFunction(updateSelectedValues)}
-          tabIndex={0}
-          role="button"
-          className={`${
-            Object.keys(groupValues).every((k) => selectedValues?.[k])
-              ? "bg-accent-warm-light"
-              : ""
-          } cursor-pointer flex items-center`}
-        >
-          {groupName}{" "}
-          <PencilIcon
-            className="ml-2"
-            onClick={(e) => {
-              e.stopPropagation();
-              setEditField(groupName);
-            }}
-            aria-label="edit group name"
-          />
-        </div>
-      )}
-      <ul className="list-disc">
-        {Object.entries(groupValues)
-          .sort((a, b) => b[1] - a[1])
-          .map(([k, v]) => (
-            <ListValue
-              name={k}
-              count={v}
-              selectedValues={selectedValues}
-              setSelectedValues={setSelectedValues}
-              clearOtherValues={clearOtherValues}
-              key={k}
-            />
-          ))}
-      </ul>
-    </li>
   );
 };
 
