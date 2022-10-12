@@ -146,7 +146,7 @@ const newCohort = (
  * The slice exports the following actions:
  * addNewCohort() - create a new cohort
  * updateCohortName(name:string): changes the current cohort's name
- * updateCohortFilter(filters: FilterSet): updated the filters for this cohort
+ * updateCohortFilter(filters: FilterSet): update the filters for this cohort
  * removeCohortFilter(filter:string): removes the filter from the cohort
  * clearCohortFilters(): removes all the filters by setting them to the default all GDC state
  * setCurrentCohortId(id:string): set the id of the current cohort, used to switch between cohorts
