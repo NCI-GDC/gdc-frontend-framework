@@ -140,7 +140,7 @@ const FilesTables: React.FC = () => {
     <VerticalTable
       tableTitle={`Total of ${tempPagination?.total} files`}
       additionalControls={
-        <div>
+        <div className="flex gap-2">
           <FunctionButton>JSON</FunctionButton>
           <FunctionButton>TSV</FunctionButton>
         </div>
