@@ -119,11 +119,10 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
       });
   }, [visibleColumns, width, selectedMutations]);
 
-  // todo: also reset expanded when pageSize/pageChanges (dont persist expanded across pages)
   useEffect(() => {
     setExpanded({});
     setExpandedProxy({});
-  }, [visibleColumns, selectedMutations, searchTerm]);
+  }, [visibleColumns, selectedMutations, searchTerm, page, pageSize]);
 
   const handleColumnChange = (columnUpdate) => {
     setColumnListOrder(columnUpdate);
@@ -192,7 +191,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
             <span className={`font-bold`}>
               {` ${transformResponse[0].ssmsTotal} `}
             </span>
-            genes
+            mutations
           </span>
         </div>
         <div className={`m-auto mr-0`}>

@@ -3,8 +3,6 @@ import { useState } from "react";
 import { GenesTable } from "./GenesTable";
 import { useMeasure } from "react-use";
 import { Loader } from "@mantine/core";
-// import { getGraphQLFilters } from "./types";
-// import { useGetGenesTableQuery } from "@gff/core";
 
 export interface GTableContainerProps {
   readonly selectedSurvivalPlot: Record<string, string>;
@@ -20,7 +18,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   handleSurvivalPlotToggled,
 }: GTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
-  const [page, setPage] = useState(0); // todo rename
+  const [page, setPage] = useState(0);
   const [sorts, setSorts] = useState([]);
   const [ref, { width }] = useMeasure();
   const [selectedGenes, setSelectedGenes] = useState<any>({}); // todo: add type
@@ -28,12 +26,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const { data, isFetching } = useGenesTable({
     pageSize: pageSize,
     offset: page * pageSize,
-    // sorts: sorts,
   });
-
-  // const { data, isLoading, isError } = useGetGenesTableQuery({
-  //   filters: getGraphQLFilters(pageSize, offset),
-  // });
 
   const selectGene = (row: any) => {
     const gene = row.original["geneID"];

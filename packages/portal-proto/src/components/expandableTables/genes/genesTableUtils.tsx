@@ -354,28 +354,27 @@ export const getGene = (
     name: g.name,
     SSMSAffectedCasesInCohort:
       g.cnv_case > 0
-        ? `${g.cnv_case + " / " + filteredCases} (${(
+        ? `${g.cnv_case} / ${filteredCases} (${(
             (100 * g.cnv_case) /
             filteredCases
           ).toFixed(2)}%)`
         : `0`,
     SSMSAffectedCasesAcrossTheGDC:
       g.ssm_case > 0
-        ? `${g.ssm_case + " / " + cases} (${(
-            (100 * g.ssm_case) /
-            cases
-          ).toFixed(2)}%)`
+        ? `${g.ssm_case} / ${cases} (${((100 * g.ssm_case) / cases).toFixed(
+            2,
+          )}%)`
         : `0`,
     CNVGain:
       g.cnv_case > 0
-        ? `${g.case_cnv_gain + " / " + g.cnv_case} (${(
+        ? `${g.case_cnv_gain} / ${g.cnv_case} (${(
             (100 * g.case_cnv_gain) /
             g.cnv_case
           ).toFixed(2)}%)`
         : `--`,
     CNVLoss:
       g.cnv_case > 0
-        ? `${g.case_cnv_loss + " / " + g.cnv_case} (${(
+        ? `${g.case_cnv_loss} / ${g.cnv_case} (${(
             (100 * g.case_cnv_loss) /
             g.cnv_case
           ).toFixed(2)}%)`
