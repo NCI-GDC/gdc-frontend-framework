@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { Image } from "@/components/Image";
 import { PropsWithChildren } from "react";
-
+import { Footer } from "./Footer";
 /**
  * This file represents a simple layout for the prototype. This is just to make things look nice.
  * Once we settle on a user flow, we can update these.
@@ -43,20 +43,5 @@ const Header: React.FC = () => {
         <div className="flex-none">{/* right section of header */}</div>
       </div>
     </header>
-  );
-};
-
-const Footer: React.FC = () => {
-  return (
-    <footer>
-      <div className="flex flex-col bg-gray-200 justify-center text-center">
-        <div>Site Home | Policies | Accessibility | FOIA | Support</div>
-        <div>
-          U.S. Department of Health and Human Services | National Institutes of
-          Health | National Cancer Institute | USA.gov
-        </div>
-        <div>NIH... Turning Discovery Into Health ®</div>
-      </div>
-    </footer>
   );
 };
