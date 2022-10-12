@@ -110,3 +110,16 @@ export interface StringRange {
   readonly toOp?: RangeToOp;
   readonly to?: string;
 }
+
+/**
+ * Represent a range. Used to configure a row
+ * of a range list.
+ */
+export interface RangeBucketElement {
+  readonly from: number;
+  readonly to: number;
+  readonly key: string; // key for facet range
+  readonly label: string; // label for value
+  readonly valueLabel?: string; // string representation of the count
+  value?: number; // count of items in range
+}

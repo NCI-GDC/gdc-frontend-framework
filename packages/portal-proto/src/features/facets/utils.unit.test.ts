@@ -1,4 +1,8 @@
-import { buildRangeOperator, extractRangeValues } from "./utils";
+import {
+  buildRangeOperator,
+  extractRangeValues,
+  BuildRangeBuckets,
+} from "./utils";
 
 describe("Build Range Tests for Numeric Ranges", () => {
   test("a closed numeric range", () => {
@@ -179,5 +183,124 @@ describe("Extract Range tests", () => {
       to: 100.2,
       toOp: "<=",
     });
+  });
+});
+
+describe("Build Bucket Range Test", () => {
+  test("test to build positive days range", () => {
+    const expectedBucketRanges = {
+      "0.00-3652.50": {
+        from: 0,
+        key: "0.00-3652.50",
+        label: "≥ 0.00 to < 3652.50 days",
+        to: 3652.5,
+      },
+      "10957.50-14610.00": {
+        from: 10957.5,
+        key: "10957.50-14610.00",
+        label: "≥ 10957.50 to < 14610.00 days",
+        to: 14610,
+      },
+      "14610.00-18262.50": {
+        from: 14610,
+        key: "14610.00-18262.50",
+        label: "≥ 14610.00 to < 18262.50 days",
+        to: 18262.5,
+      },
+      "18262.50-21915.00": {
+        from: 18262.5,
+        key: "18262.50-21915.00",
+        label: "≥ 18262.50 to < 21915.00 days",
+        to: 21915,
+      },
+      "21915.00-25567.50": {
+        from: 21915,
+        key: "21915.00-25567.50",
+        label: "≥ 21915.00 to < 25567.50 days",
+        to: 25567.5,
+      },
+      "25567.50-29220.00": {
+        from: 25567.5,
+        key: "25567.50-29220.00",
+        label: "≥ 25567.50 to < 29220.00 days",
+        to: 29220,
+      },
+      "29220.00-32872.50": {
+        from: 29220,
+        key: "29220.00-32872.50",
+        label: "≥ 29220.00 to < 32872.50 days",
+        to: 32872.5,
+      },
+      "32872.50-36525.00": {
+        from: 32872.5,
+        key: "32872.50-36525.00",
+        label: "≥ 32872.50 to < 36525.00 days",
+        to: 36525,
+      },
+      "3652.50-7305.00": {
+        from: 3652.5,
+        key: "3652.50-7305.00",
+        label: "≥ 3652.50 to < 7305.00 days",
+        to: 7305,
+      },
+      "7305.00-10957.50": {
+        from: 7305,
+        key: "7305.00-10957.50",
+        label: "≥ 7305.00 to < 10957.50 days",
+        to: 10957.5,
+      },
+    };
+    const expectedRanges = [
+      {
+        from: 0,
+        to: 3652.5,
+      },
+      {
+        from: 3652.5,
+        to: 7305,
+      },
+      {
+        from: 7305,
+        to: 10957.5,
+      },
+      {
+        from: 10957.5,
+        to: 14610,
+      },
+      {
+        from: 14610,
+        to: 18262.5,
+      },
+      {
+        from: 18262.5,
+        to: 21915,
+      },
+      {
+        from: 21915,
+        to: 25567.5,
+      },
+      {
+        from: 25567.5,
+        to: 29220,
+      },
+      {
+        from: 29220,
+        to: 32872.5,
+      },
+      {
+        from: 32872.5,
+        to: 36525,
+      },
+    ];
+
+    const [bucketRanges, ranges] = BuildRangeBuckets(10, "days", 0);
+    expect(bucketRanges).toEqual(expectedBucketRanges);
+    expect(ranges).toEqual(expectedRanges);
+  });
+
+  test("test to build -90/90 years range", () => {
+    const [bucketRanges, ranges] = BuildRangeBuckets(19, "days", -32872.5);
+    console.log(bucketRanges);
+    console.log(ranges);
   });
 });

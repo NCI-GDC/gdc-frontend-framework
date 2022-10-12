@@ -29,6 +29,7 @@ import {
   getUpperAgeYears,
   buildRangeOperator,
   extractRangeValues,
+  BuildRangeBuckets,
 } from "./utils";
 import {
   FacetCardProps,
@@ -39,6 +40,7 @@ import {
   ClearFacetHook,
   UpdateFacetFilterFunction,
   UpdateFacetFilterHook,
+  RangeBucketElement,
 } from "@/features/facets/types";
 import {
   FacetDocTypeToCountsIndexMap,
@@ -59,19 +61,6 @@ type NumericFacetData = Pick<
   NumericFacetProps,
   "field" | "minimum" | "maximum" | "docType" | "indexType" | "hooks"
 >;
-
-/**
- * Represent a range. Used to configure a row
- * of a range list.
- */
-interface RangeBucketElement {
-  readonly from: number;
-  readonly to: number;
-  readonly key: string; // key for facet range
-  readonly label: string; // label for value
-  readonly valueLabel?: string; // string representation of the count
-  value?: number; // count of items in range
-}
 
 const RadioStyle =
   "form-check-input form-check-input appearance-none rounded-full h-3 w-3 border border-base-light bg-base-lightest checked:bg-primary-dark checked:bg-primary-dark focus:ring-0 focus:ring-offset-0 focus:outline-none focus:bg-primary-darkest active:bg-primary-dark transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer";
@@ -130,80 +119,80 @@ const ClassifyRangeType = (
 
   return "custom";
 };
-
-/**
- * returns the range [from to] for a "bucket"
- * @param x - current bucket index
- * @param units - custom units for this range: "years" or "days"
- * @param minimum - starting value of range
- */
-const buildDayYearRangeBucket = (
-  x: number,
-  units: string,
-  minimum: number,
-): RangeBucketElement => {
-  const from = minimum + x * DAYS_IN_DECADE;
-  const to = minimum + (x + 1) * DAYS_IN_DECADE;
-  return {
-    from: from,
-    to: to,
-    key: `${from.toFixed(1)}-${to.toFixed(1)}`,
-    label: `\u2265 ${from / (units == "years" ? DAYS_IN_YEAR : 1)} to < ${
-      to / (units == "years" ? DAYS_IN_YEAR : 1)
-    } ${units}`,
-  };
-};
-
-/**
- * returns 10 value range from to for a "bucket"
- * @param x - current bucket index
- * @param units - string to append to label
- * @param minimum - staring value of range
- * @param fractionDigits - number of values to the right of the decimal point
- */
-const build10UnitRange = (
-  x: number,
-  units: string,
-  minimum: number,
-  fractionDigits = 1,
-): RangeBucketElement => {
-  const from = minimum + x * 10;
-  const to = minimum + (x + 1) * 10;
-  return {
-    from: from,
-    to: to,
-    key: `${from.toFixed(fractionDigits)}-${to.toFixed(fractionDigits)}`,
-    label: `\u2265 ${from} to < ${to} ${units}`,
-  };
-};
-
-/**
- * Builds a Dictionary like object contain the range and label for each "bucket" in the range
- * @param numBuckets - number of buckets to create
- * @param units - units such as days or percent
- * @param minimum - start value of range
- * @param rangeFunction - function to compute range boundaries
- */
-const BuildRanges = (
-  numBuckets: number,
-  units: string,
-  minimum,
-  rangeFunction: (
-    index: number,
-    units: string,
-    startValue: number,
-  ) => RangeBucketElement,
-) => {
-  // build the range for the useRangeFacet call
-  return [...Array(numBuckets)]
-    .map((_x, i) => {
-      return rangeFunction(i, units, minimum);
-    })
-    .reduce((r, x) => {
-      r[x.key] = x;
-      return r;
-    }, {} as Record<string, RangeBucketElement>);
-};
+//
+// /**
+//  * returns the range [from to] for a "bucket"
+//  * @param x - current bucket index
+//  * @param units - custom units for this range: "years" or "days"
+//  * @param minimum - starting value of range
+//  */
+// const buildDayYearRangeBucket = (
+//   x: number,
+//   units: string,
+//   minimum: number,
+// ): RangeBucketElement => {
+//   const from = minimum + x * DAYS_IN_DECADE;
+//   const to = minimum + (x + 1) * DAYS_IN_DECADE;
+//   return {
+//     from: from,
+//     to: to,
+//     key: `${from.toFixed(1)}-${to.toFixed(1)}`,
+//     label: `\u2265 ${(from / (units == "years" ? DAYS_IN_YEAR : 1)).toFixed(1)} to < ${
+//       (to / (units == "years" ? DAYS_IN_YEAR : 1)).toFixed(1)
+//     } ${units}`,
+//   };
+// };
+//
+// /**
+//  * returns 10 value range from to for a "bucket"
+//  * @param x - current bucket index
+//  * @param units - string to append to label
+//  * @param minimum - staring value of range
+//  * @param fractionDigits - number of values to the right of the decimal point
+//  */
+// const build10UnitRange = (
+//   x: number,
+//   units: string,
+//   minimum: number,
+//   fractionDigits = 1,
+// ): RangeBucketElement => {
+//   const from = minimum + x * 10;
+//   const to = minimum + (x + 1) * 10;
+//   return {
+//     from: from,
+//     to: to,
+//     key: `${from.toFixed(fractionDigits)}-${to.toFixed(fractionDigits)}`,
+//     label: `\u2265 ${from} to < ${to} ${units}`,
+//   };
+// };
+//
+// /**
+//  * Builds a Dictionary like object contain the range and label for each "bucket" in the range
+//  * @param numBuckets - number of buckets to create
+//  * @param units - units such as days or percent
+//  * @param minimum - start value of range
+//  * @param rangeFunction - function to compute range boundaries
+//  */
+// const BuildRanges = (
+//   numBuckets: number,
+//   units: string,
+//   minimum,
+//   rangeFunction: (
+//     index: number,
+//     units: string,
+//     startValue: number,
+//   ) => RangeBucketElement,
+// ) => {
+//   // build the range for the useRangeFacet call
+//   return [...Array(numBuckets)]
+//     .map((_x, i) => {
+//       return rangeFunction(  i, units, minimum);
+//     })
+//     .reduce((r, x) => {
+//       r[x.key] = x;
+//       return r;
+//     }, {} as Record<string, RangeBucketElement>);
+// };
 
 /**
  * Create a list of radio buttons where each line
@@ -501,7 +490,7 @@ const BuildRangeLabelsAndValues = (
         ? `${rangeData[x].toLocaleString()} (${(
             ((rangeData[x] as number) / totalCount) *
             100
-          ).toFixed(2)}%)`
+          ).toFixed(1)}%)`
         : "",
     };
     return b;
@@ -551,37 +540,38 @@ const RangeInputWithPrefixedRanges: React.FC<
 
   // build the range for the useRangeFacet and the facet query
   const [bucketRanges, ranges] = useMemo(() => {
+    return BuildRangeBuckets(numBuckets, units, minimum);
     // map unit type to appropriate build range function and unit label
-    const RangeBuilder = {
-      days: {
-        builder: buildDayYearRangeBucket,
-        label: "days",
-      },
-      years: {
-        builder: buildDayYearRangeBucket,
-        label: "years",
-      },
-      percent: {
-        builder: build10UnitRange,
-        label: "%",
-      },
-      year: {
-        builder: build10UnitRange,
-        label: "",
-      },
-    };
-
-    const bucketEntries = BuildRanges(
-      numBuckets,
-      RangeBuilder[units].label,
-      minimum,
-      RangeBuilder[units].builder,
-    );
-    // build ranges for continuous range query
-    const r = Object.keys(bucketEntries).map((x) => {
-      return { from: bucketEntries[x].from, to: bucketEntries[x].to };
-    });
-    return [bucketEntries, r];
+    // const RangeBuilder = {
+    //   days: {
+    //     builder: buildDayYearRangeBucket,
+    //     label: "days",
+    //   },
+    //   years: {
+    //     builder: buildDayYearRangeBucket,
+    //     label: "years",
+    //   },
+    //   percent: {
+    //     builder: build10UnitRange,
+    //     label: "%",
+    //   },
+    //   year: {
+    //     builder: build10UnitRange,
+    //     label: "",
+    //   },
+    // };
+    //
+    // const bucketEntries = BuildRanges(
+    //   numBuckets,
+    //   RangeBuilder[units].label,
+    //   minimum,
+    //   RangeBuilder[units].builder,
+    // );
+    // // build ranges for continuous range query
+    // const r = Object.keys(bucketEntries).map((x) => {
+    //   return { from: bucketEntries[x].from, to: bucketEntries[x].to };
+    // });
+    // return [bucketEntries, r];
   }, [minimum, numBuckets, units]);
 
   const [isCustom, setIsCustom] = useState(filterKey === "custom"); // in custom Range Mode
@@ -689,14 +679,10 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
   maximum = undefined,
 }: NumericFacetData) => {
   const [units, setUnits] = useState("years");
-
-  let adjMinimum = minimum != undefined ? minimum : 0;
-  let adjMaximum = maximum != undefined ? maximum : 32872;
-  const numBuckets = Math.round((adjMaximum - adjMinimum) / DAYS_IN_DECADE);
-  adjMinimum =
-    Math.round(10 * (adjMinimum / (units == "years" ? DAYS_IN_YEAR : 1))) / 10;
-  adjMaximum =
-    Math.round(10 * (adjMaximum / (units == "years" ? DAYS_IN_YEAR : 1))) / 10;
+  // set up a fixed range -90 to 90 years over 19 buckets
+  const rangeMinimum = -32872.5;
+  const rangeMaximum = 32872.5;
+  const numBuckets = 19;
 
   return (
     <div className="flex flex-col w-100 space-y-2 px-2  mt-1 ">
@@ -712,8 +698,8 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
       <RangeInputWithPrefixedRanges
         units={units}
         hooks={{ ...hooks }}
-        minimum={adjMinimum}
-        maximum={adjMaximum}
+        minimum={rangeMinimum}
+        maximum={rangeMaximum}
         numBuckets={numBuckets}
         field={field}
         docType={docType}

@@ -1,4 +1,5 @@
 import {
+  DAYS_IN_DECADE,
   DAYS_IN_YEAR,
   EnumOperandValue,
   GreaterThan,
@@ -12,6 +13,7 @@ import {
   FromToRange,
   UpdateFacetFilterFunction,
   ClearFacetFunction,
+  RangeBucketElement,
 } from "@/features/facets/types";
 
 export const DEFAULT_VISIBLE_ITEMS = 6;
@@ -157,4 +159,116 @@ export const updateFacetEnum = (
   else {
     clearFilters(fieldName);
   }
+};
+
+/**
+ * returns the range [from to] for a "bucket"
+ * @param x - current bucket index
+ * @param units - custom units for this range: "years" or "days"
+ * @param minimum - starting value of range
+ */
+const buildDayYearRangeBucket = (
+  x: number,
+  units: string,
+  minimum: number,
+): RangeBucketElement => {
+  const from = minimum + x * DAYS_IN_DECADE;
+  const to = minimum + (x + 1) * DAYS_IN_DECADE;
+  return {
+    from: from,
+    to: to,
+    key: `${from.toFixed(2)}-${to.toFixed(2)}`,
+    label: `\u2265 ${(from / (units == "years" ? DAYS_IN_YEAR : 1)).toFixed(
+      2,
+    )} to < ${(to / (units == "years" ? DAYS_IN_YEAR : 1)).toFixed(
+      2,
+    )} ${units}`,
+  };
+};
+
+/**
+ * returns 10 value range from to for a "bucket"
+ * @param x - current bucket index
+ * @param units - string to append to label
+ * @param minimum - staring value of range
+ * @param fractionDigits - number of values to the right of the decimal point
+ */
+const build10UnitRange = (
+  x: number,
+  units: string,
+  minimum: number,
+  fractionDigits = 2,
+): RangeBucketElement => {
+  const from = minimum + x * 10;
+  const to = minimum + (x + 1) * 10;
+  return {
+    from: from,
+    to: to,
+    key: `${from.toFixed(fractionDigits)}-${to.toFixed(fractionDigits)}`,
+    label: `\u2265 ${from} to < ${to} ${units}`,
+  };
+};
+
+/**
+ * Builds a Dictionary like object contain the range and label for each "bucket" in the range
+ * @param numBuckets - number of buckets to create
+ * @param units - units such as days or percent
+ * @param minimum - start value of range
+ * @param rangeFunction - function to compute range boundaries
+ */
+const BuildRanges = (
+  numBuckets: number,
+  units: string,
+  minimum,
+  rangeFunction: (
+    index: number,
+    units: string,
+    startValue: number,
+  ) => RangeBucketElement,
+): Record<string, RangeBucketElement> => {
+  // build the range for the useRangeFacet call
+  return [...Array(numBuckets)]
+    .map((_x, i) => {
+      return rangeFunction(i, units, minimum);
+    })
+    .reduce((r, x) => {
+      r[x.key] = x;
+      return r;
+    }, {} as Record<string, RangeBucketElement>);
+};
+export const BuildRangeBuckets = (
+  numBuckets: number,
+  units: string,
+  minimum: number,
+): [Record<string, RangeBucketElement>] => {
+  const RangeBuilder = {
+    days: {
+      builder: buildDayYearRangeBucket,
+      label: "days",
+    },
+    years: {
+      builder: buildDayYearRangeBucket,
+      label: "years",
+    },
+    percent: {
+      builder: build10UnitRange,
+      label: "%",
+    },
+    year: {
+      builder: build10UnitRange,
+      label: "",
+    },
+  };
+
+  const bucketEntries = BuildRanges(
+    numBuckets,
+    RangeBuilder[units].label,
+    minimum,
+    RangeBuilder[units].builder,
+  );
+  // build ranges for continuous range query
+  const r = Object.keys(bucketEntries).map((x) => {
+    return { from: bucketEntries[x].from, to: bucketEntries[x].to };
+  });
+  return [bucketEntries, r];
 };
