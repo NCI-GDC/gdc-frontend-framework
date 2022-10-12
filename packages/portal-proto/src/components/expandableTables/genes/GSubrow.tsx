@@ -71,7 +71,7 @@ export const GSubrow: React.FC<GeneSubrowProps> = ({
 
   return (
     <>
-      {!opening && firstColumn === accessor && subData.length && (
+      {!opening && firstColumn === accessor && subData.length > 0 && (
         <div className={`relative`}>
           <ListSpring
             subData={subData}

@@ -88,7 +88,10 @@ export const ExpTable: React.FC<ExpTableProps> = ({
                               select={table.getRowModel().rows}
                             />
                           ) : null}
-                          <animated.div style={unitSpring}>
+                          <animated.div
+                            style={unitSpring}
+                            className={`text-xs font-bold`}
+                          >
                             {header.id !== "select" &&
                               flexRender(
                                 header.column.columnDef.header,

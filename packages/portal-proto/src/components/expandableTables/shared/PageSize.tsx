@@ -39,6 +39,7 @@ const PageSize: React.FC<PageSizeProps> = ({
   const pg = useSpring({
     from: { number: pageSize },
     to: { number: hovered },
+    immediate: true,
   });
 
   useEffect(() => {
