@@ -15,6 +15,7 @@ import {
 } from "@gff/core";
 import { useAppSelector } from "@/features/repositoryApp/appApi";
 import { selectFilters } from "@/features/repositoryApp/repositoryFiltersSlice";
+import FunctionButton from "@/components/FunctionButton";
 
 const FilesTables: React.FC = () => {
   const columnListOrder = [
@@ -140,12 +141,8 @@ const FilesTables: React.FC = () => {
       tableTitle={`Total of ${tempPagination?.total} files`}
       additionalControls={
         <div>
-          <Button className="mx-auto text-primary-content-darkest border-primary-darkest mr-5">
-            JSON
-          </Button>
-          <Button className="mx-auto text-primary-content-darkest border-primary-darkest">
-            TSV
-          </Button>
+          <FunctionButton>JSON</FunctionButton>
+          <FunctionButton>TSV</FunctionButton>
         </div>
       }
       tableData={formattedTableData}

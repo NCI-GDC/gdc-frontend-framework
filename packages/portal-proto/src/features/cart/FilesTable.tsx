@@ -12,6 +12,7 @@ import {
 } from "@gff/core";
 import { VerticalTable } from "@/features/shared/VerticalTable";
 import { removeFromCart, RemoveFromCartButton } from "./updateCart";
+import FunctionButton from "@/components/FunctionButton";
 
 const columnCells = [
   { Header: "Remove", accessor: "remove", width: 80 },
@@ -165,20 +166,8 @@ const FilesTable: React.FC = () => {
       } of ${pagination?.total} files`}
       additionalControls={
         <div className="flex gap-2">
-          <Button
-            className={
-              "bg-base-lightest text-base-contrast-lightest border-primary-darkest"
-            }
-          >
-            JSON
-          </Button>
-          <Button
-            className={
-              "bg-base-lightest text-base-contrast-lightest border-primary-darkest"
-            }
-          >
-            TSV
-          </Button>
+          <FunctionButton>JSON</FunctionButton>
+          <FunctionButton>TSV</FunctionButton>
           <Menu>
             <Menu.Target>
               <Button
