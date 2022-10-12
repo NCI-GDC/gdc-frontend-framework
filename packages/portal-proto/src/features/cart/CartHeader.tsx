@@ -116,7 +116,6 @@ const CartHeader: React.FC<CartHeaderProps> = ({
   const [sampleSheetDownloadActice, setSampleSheetDownloadActive] =
     useState(false);
   const modal = useCoreSelector((state) => selectCurrentModal(state));
-  console.log(userDetails);
 
   return (
     <>
@@ -226,6 +225,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
             format: "tsv",
             attachment: "true",
             pretty: "true",
+            size: cart.length,
             fields: [
               "file_id",
               "file_name",
@@ -270,6 +270,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
           queryParams={JSON.stringify({
             attachment: "true",
             pretty: "true",
+            size: cart.length,
             filters: JSON.stringify({
               content: [
                 {
