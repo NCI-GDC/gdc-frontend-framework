@@ -407,22 +407,24 @@ export const getGene = (
 
 export const convertGeneFilter = (geneId: string) => {
   return {
-    op: "and",
-    content: [
-      {
-        content: {
-          field: "genes.gene_id",
-          value: [geneId],
+    filters_1: {
+      op: "and",
+      content: [
+        {
+          content: {
+            field: "genes.gene_id",
+            value: [geneId],
+          },
+          op: "in",
         },
-        op: "in",
-      },
-      {
-        op: "NOT",
-        content: {
-          field: "cases.gene.ssm.observation.observation_id",
-          value: "MISSING",
+        {
+          op: "NOT",
+          content: {
+            field: "cases.gene.ssm.observation.observation_id",
+            value: "MISSING",
+          },
         },
-      },
-    ],
+      ],
+    },
   };
 };

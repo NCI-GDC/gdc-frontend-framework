@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
+import { gql } from "graphql-request";
 import { useSpring, config } from "react-spring";
 import ListSpring from "../shared/ListSpring";
 import { convertGeneFilter } from "./genesTableUtils";
+import { GDC_APP_API_AUTH } from "../../../../../core/src/constants";
 
 export interface GeneSubRow {
   geneId: any;
@@ -27,47 +29,47 @@ export const GeneAffectedCases: React.FC<GeneSubRow> = ({
   });
 
   const getGeneSubRow = (geneId: string) => {
-    fetch("https://api.gdc.cancer.gov/v0/graphql", {
+    const exploreCasesAggregatedProjectsBucketsQuery = gql`
+      query getProjectDocCountsByGene($filters_1: FiltersArgument) {
+        explore {
+          cases {
+            aggregations(filters: $filters_1) {
+              project__project_id {
+                buckets {
+                  doc_count
+                  key
+                }
+              }
+            }
+          }
+        }
+      }
+    `;
+    fetch(`${GDC_APP_API_AUTH}/graphql`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        query: `
-          query getProjectDocCountsByGene($filters_1: FiltersArgument) {
-            explore {
-              cases {
-                aggregations(filters: $filters_1) {
-                  project__project_id {
-                    buckets {
-                      doc_count
-                      key
-                    }
-                  }
-                }
-              }
-            }
-          }
-        `,
+        query: exploreCasesAggregatedProjectsBucketsQuery,
         variables: convertGeneFilter(geneId),
       }),
     })
       .then((res) => res.json())
-      .then((json) =>
+      .then((json) => {
         setSubData(
           json?.data?.explore?.cases?.aggregations?.project__project_id
             ?.buckets,
-        ),
-      );
+        );
+      });
   };
 
   useEffect(() => {
     // note:
     // when row.canExpand() is false, row.original (the whole row) is undefined...
     // geneId now being passed from GenesTable state variable
-    console.log("geneID", geneId);
-    if (geneId) getGeneSubRow(geneId);
-  }, [geneId]);
+    if (geneId && !opening) getGeneSubRow(geneId);
+  }, [geneId, opening]);
 
   return (
     <>
