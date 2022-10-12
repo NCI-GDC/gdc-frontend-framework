@@ -6,6 +6,7 @@ export interface caseFileType {
   readonly file_name: string;
   readonly file_size: number;
   readonly state: string;
+  readonly project_id: string;
 }
 
 export interface Demographic {
