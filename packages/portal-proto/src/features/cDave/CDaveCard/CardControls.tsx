@@ -4,7 +4,7 @@ import { MdArrowDropDown as DownIcon } from "react-icons/md";
 import { Statistics } from "@gff/core";
 
 import ContinuousBinningModal from "../ContinuousBinningModal/ContinuousBinningModal";
-import CategoricalBinningModal from "../CategoricalBinningModal";
+import CategoricalBinningModal from "../CategoricalBinningModal/CategoricalBinningModal";
 
 import { CategoricalBins, CustomInterval, NamedFromTo } from "../types";
 

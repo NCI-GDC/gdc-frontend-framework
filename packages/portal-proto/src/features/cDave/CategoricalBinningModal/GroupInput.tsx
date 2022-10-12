@@ -10,42 +10,51 @@ import ListValue from "./ListValue";
 interface GroupInputProps {
   readonly groupName: string;
   readonly groupValues: Record<string, number>;
-  readonly otherGroups: string[];
+  // readonly otherGroups: string[];
   readonly updateGroupName: (oldName: string, newName: string) => void;
   readonly selectedValues: Record<string, number>;
   readonly setSelectedValues: (selectedValues: Record<string, number>) => void;
   readonly clearOtherValues: () => void;
   readonly editing: boolean;
   readonly setEditField: (field: string) => void;
+  readonly checkOtherGroups: (groupName: string, newValue: string) => boolean;
 }
 
 const GroupInput: React.FC<GroupInputProps> = ({
   groupName,
   groupValues,
-  otherGroups,
   updateGroupName,
   selectedValues,
   setSelectedValues,
   clearOtherValues,
   editing,
   setEditField,
+  checkOtherGroups,
 }: GroupInputProps) => {
-  if (groupName === "selected value 3") {
-    console.log(otherGroups, groupValues);
-  }
+  // useEffect(() => {
+  //   const updatedOtherGroups =  Object.keys(values).filter(x => x !== groupName);
+  //   console.log(`otherGroups (useEffect) NEXT state ${groupName} `, updatedOtherGroups)
+  //   setOtherGroups(updatedOtherGroups)
+  //   setTimeout(() => {
+  //     console.log(`otherGroups (useEffect) FINAL state for ${groupName}: `, otherGroups)
+  //   }, 500)
+  // },  [values, groupName])
+
+  const doFormValidate = (value) => {
+    return value === ""
+      ? "Required field"
+      : Object.keys(groupValues).includes(value)
+      ? "The group name cannot be the same as the name of a value"
+      : checkOtherGroups(groupName, value)
+      ? `"${value}" already exists`
+      : null;
+  };
 
   const form = useForm({
     validateInputOnChange: true,
     initialValues: { group: groupName },
     validate: {
-      group: (value) =>
-        value === ""
-          ? "Required field"
-          : Object.keys(groupValues).includes(value)
-          ? "The group name cannot be the same as the name of a value"
-          : otherGroups.includes(value)
-          ? `"${value}" already exists`
-          : null,
+      group: doFormValidate,
     },
   });
 

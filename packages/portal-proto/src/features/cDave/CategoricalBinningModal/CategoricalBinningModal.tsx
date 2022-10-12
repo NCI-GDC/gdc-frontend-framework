@@ -101,7 +101,6 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
         v instanceof Object &&
         Object.keys(v).every((subKey) => selectedValues?.[subKey]),
     );
-    console.log(existingGroups);
     if (existingGroups.length === 1) {
       setValues({
         ...filterOutSelected(values, selectedValues),
@@ -115,9 +114,11 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
         ([k, v]) => v instanceof Object && k.match(DEFAULT_GROUP_NAME_REGEX),
       );
 
-      setValues({
-        ...filterOutSelected(values, selectedValues),
-        [`selected value ${defaultNames.length + 1}`]: selectedValues,
+      setValues(() => {
+        return {
+          ...filterOutSelected(values, selectedValues),
+          [`selected value ${defaultNames.length + 1}`]: selectedValues,
+        };
       });
 
       setEditField(`selected value ${defaultNames.length + 1}`);
@@ -179,6 +180,13 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
       pickBy(hiddenValues, (_, k) => selectedHiddenValues?.[k] === undefined),
     );
     setSelectedHiddenValues({});
+  };
+
+  const checkOtherGroups = (groupName: string, value: string) => {
+    console.log(values);
+    return Object.keys(values)
+      .filter((x) => x !== groupName)
+      .includes(value);
   };
 
   const handleCancelBtnClick = () => setModalOpen(false);
@@ -249,14 +257,15 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
         <ul className="p-2">
           {sortedValues
             .sort((a: any, b: any) => sortBins(a[1], b[1]))
-            .map(([k, value], idx) =>
+            .map(([k, value]) =>
               value instanceof Object ? (
                 <GroupInput
                   groupName={k}
                   groupValues={value}
-                  otherGroups={sortedValues
-                    .map((v) => v[0])
-                    .filter((_, i) => idx !== i)}
+                  // otherGroups={sortedValues
+                  //   .map((v) => v[0])
+                  //   .filter((_, i) => idx !== i)}
+                  checkOtherGroups={checkOtherGroups}
                   updateGroupName={updateGroupName}
                   selectedValues={selectedValues}
                   setSelectedValues={setSelectedValues}
