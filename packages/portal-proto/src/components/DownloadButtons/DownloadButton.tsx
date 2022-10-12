@@ -1,4 +1,4 @@
-import { Button } from "@mantine/core";
+import { Button, Loader } from "@mantine/core";
 import { FaDownload } from "react-icons/fa";
 import download from "src/utils/download";
 import { hideModal, Modals, useCoreDispatch } from "@gff/core";
@@ -14,11 +14,12 @@ interface DownloadButtonProps {
   format?: string;
   fields?: Array<string>;
   filters?: Record<string, any>;
-  extraParams?: Record<string, string>;
+  extraParams?: Record<string, any>;
   method?: string;
   queryParams?: string;
   options?: Record<string, any>;
   customStyle?: string;
+  showLoading?: boolean;
   onClick?: () => void;
   setActive?: Dispatch<SetStateAction<boolean>>;
   active?: boolean;
@@ -43,12 +44,18 @@ export const DownloadButton: React.FC<DownloadButtonProps> = ({
   customStyle,
   setActive,
   onClick,
+  showLoading = true,
   active,
   Modal400,
   Modal403,
 }: DownloadButtonProps) => {
   const text = active ? activeText : inactiveText;
   const dispatch = useCoreDispatch();
+  const Icon = active ? (
+    <Loader size="sm" className="p-1" />
+  ) : (
+    <FaDownload title="download" />
+  );
   return (
     <Button
       leftIcon={inactiveText && <FaDownload />}
@@ -59,7 +66,7 @@ export const DownloadButton: React.FC<DownloadButtonProps> = ({
           disabled ? "bg-base" : "bg-primary hover:bg-primary-darker"
         } `
       }
-      loading={active}
+      loading={showLoading && active}
       onClick={() => {
         if (onClick) {
           onClick();
@@ -76,13 +83,13 @@ export const DownloadButton: React.FC<DownloadButtonProps> = ({
           ...(filename ? { filename } : {}),
           ...extraParams,
         };
-        setActive(true);
+        setActive && setActive(true);
         download({
           params,
           endpoint,
           method,
           queryParams,
-          done: () => setActive(false),
+          done: () => setActive && setActive(false),
           dispatch,
           Modal400,
           Modal403,
@@ -90,7 +97,7 @@ export const DownloadButton: React.FC<DownloadButtonProps> = ({
         });
       }}
     >
-      {text || <FaDownload title="download" />}
+      {text || Icon}
     </Button>
   );
 };

@@ -13,9 +13,8 @@ describe("<ToggleFacet />", () => {
         indexType="explore"
         field="gene.is_cancer_gene_census"
         width="w-1/3"
-        getFacetData={
-          /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-          jest.fn((): EnumFacetResponse => {
+        hooks={{
+          useGetFacetData: jest.fn((): EnumFacetResponse => {
             return {
               data: {},
               isSuccess: true,
@@ -24,10 +23,11 @@ describe("<ToggleFacet />", () => {
               isError: false,
               isFetching: false,
             };
-          })
-        }
-        updateFacetEnumerations={jest.fn()}
-        clearFilterFunc={jest.fn()}
+          }),
+          useUpdateFacetFilters: jest.fn(),
+          useClearFilter: jest.fn(),
+          useTotalCounts: jest.fn(),
+        }}
       />,
     );
 
@@ -54,18 +54,21 @@ describe("<ToggleFacet />", () => {
         indexType="explore"
         field="gene.is_cancer_gene_census"
         width="w-1/3"
-        getFacetData={jest.fn((): EnumFacetResponse => {
-          return {
-            data: { "1": 21734 },
-            isSuccess: true,
-            enumFilters: ["true"],
-            isUninitialized: false,
-            isError: false,
-            isFetching: false,
-          };
-        })}
-        updateFacetEnumerations={jest.fn()}
-        clearFilterFunc={jest.fn()}
+        hooks={{
+          useGetFacetData: jest.fn((): EnumFacetResponse => {
+            return {
+              data: { "1": 21734 },
+              isSuccess: true,
+              enumFilters: ["true"],
+              isUninitialized: false,
+              isError: false,
+              isFetching: false,
+            };
+          }),
+          useUpdateFacetFilters: jest.fn(),
+          useClearFilter: jest.fn(),
+          useTotalCounts: jest.fn(),
+        }}
       />,
     );
 

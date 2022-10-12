@@ -26,7 +26,6 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
   );
 
   // to track reusable instance for mds3 skewer track
-  /*** TODO: bam track should return reusable renderer???? ***/
   const ppRef = useRef<PpApi>();
 
   useEffect(() => {
