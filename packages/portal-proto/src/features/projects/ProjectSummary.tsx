@@ -19,9 +19,10 @@ import Link from "next/link";
 import { CollapsibleList } from "@/components/CollapsibleList";
 import { CategoryTableSummary } from "@/components/Summary/CategoryTableSummary";
 import tw from "tailwind-styled-components";
+
 const PercentBar = tw.div`
 relative
-bg-chart-lighter
+bg-percentage-bar-base
 rounded-sm
 px-1
 w-16 
@@ -34,7 +35,7 @@ left-0
 top-0 
 w-full 
 h-full 
-text-chart-lighter-contrast 
+text-percentage-bar-label 
 text-center`;
 
 const PercentBarComplete = tw.div`
@@ -43,7 +44,7 @@ left-0
 top-0 
 w-full 
 h-full 
-bg-chart-light 
+bg-percentage-bar-complete
 rounded-sm`;
 
 export interface ContextualProjectViewProps {
