@@ -66,9 +66,11 @@ export const Header: React.FC<HeaderProps> = ({
   const [cookie] = useCookies(["NCI-Warning"]);
 
   useEffect(() => {
-    cookie["NCI-Warning"] ||
-      dispatch(showModal({ modal: Modals.FirstTimeModal }));
-  }, [cookie, dispatch]);
+    if (cookie["NCI-Warning"]) {
+      dispatch && dispatch(showModal({ modal: Modals.FirstTimeModal }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="px-6 py-3 border-b border-gdc-grey-lightest">
