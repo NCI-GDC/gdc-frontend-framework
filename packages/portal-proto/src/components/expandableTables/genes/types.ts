@@ -10,12 +10,6 @@ export interface Gene {
   annotations: string;
 }
 
-export interface GeneSubRow {
-  geneId: string;
-  width: number;
-  opening: boolean;
-}
-
 export interface GenesTableProps {
   readonly initialData: any; // need to add this from response
   readonly selectedSurvivalPlot: Record<string, string>;
@@ -43,7 +37,7 @@ export const GENE_MENU = [
 
 export const DEFAULT_GTABLE_ORDER = [
   { id: "select", columnName: "Select", visible: true },
-  { id: "geneID", columnName: "Gene ID", visible: false },
+  { id: "geneID", columnName: "Gene ID", visible: true },
   { id: "symbol", columnName: "Symbol", visible: true },
   { id: "name", columnName: "Name", visible: true },
   // { id: "cytoband", columnName: "Cytoband", visible: false },
@@ -58,11 +52,11 @@ export const DEFAULT_GTABLE_ORDER = [
     columnName: "# SSMS Affected Cases Across The GDC",
     visible: true,
   },
-  { id: "CNVGain", columnName: "# CNV Gain", visible: true },
-  { id: "CNVLoss", columnName: "# CNV Loss", visible: true },
-  { id: "mutations", columnName: "Mutations", visible: true },
-  { id: "annotations", columnName: "Annotations", visible: true },
-  { id: "survival", columnName: "Survival", visible: true },
+  { id: "CNVGain", columnName: "# CNV Gain", visible: false },
+  { id: "CNVLoss", columnName: "# CNV Loss", visible: false },
+  { id: "mutations", columnName: "Mutations", visible: false },
+  { id: "annotations", columnName: "Annotations", visible: false },
+  { id: "survival", columnName: "Survival", visible: false },
   // { id: "survival", columnName: "Survival", visible: true }
 ];
 
@@ -193,6 +187,6 @@ export const getGraphQLFilters = (
         ...filterContents,
       ],
     },
-    sorts: sorts,
+    // sorts: sorts,
   };
 };

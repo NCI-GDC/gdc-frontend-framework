@@ -32,6 +32,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   const [visibleColumns, setVisibleColumns] = useState(
     DEFAULT_GTABLE_ORDER.filter((col) => col.visible),
   );
+  const [geneID, setGeneID] = useState(undefined);
 
   const useGeneTableFormat = useCallback(
     (initialData) => {
@@ -115,9 +116,11 @@ export const GenesTable: React.FC<GenesTableProps> = ({
           selectedGenes,
           selectGene,
           handleSurvivalPlotToggled,
+          setGeneID,
+          geneID,
         );
       });
-  }, [visibleColumns, width, selectedGenes]);
+  }, [visibleColumns, width, selectedGenes, geneID]);
 
   // todo: also reset expanded when pageSize/pageChanges (dont persist expanded across pages)
   useEffect(() => {

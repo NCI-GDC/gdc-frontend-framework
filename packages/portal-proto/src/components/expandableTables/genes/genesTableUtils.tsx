@@ -43,6 +43,8 @@ export const createTableColumn = (
     name: string,
     geneSymbol: string,
   ) => any,
+  setGeneID: any,
+  geneID: string,
 ) => {
   switch (accessor) {
     case "select":
@@ -68,15 +70,13 @@ export const createTableColumn = (
                     )}
                   </div>
                   <>
-                    {!row.getCanExpand() && visibleColumns[0].id === accessor && (
-                      <div className={`relative`}>
-                        <GeneAffectedCases
-                          geneId={row.value}
-                          width={width}
-                          opening={row.getCanExpand()}
-                        ></GeneAffectedCases>
-                      </div>
-                    )}
+                    <GeneAffectedCases
+                      geneId={geneID}
+                      firstColumn={visibleColumns[0].id}
+                      accessor={accessor}
+                      width={width}
+                      opening={row.getCanExpand()}
+                    ></GeneAffectedCases>
                   </>
                 </div>
               );
@@ -106,15 +106,16 @@ export const createTableColumn = (
                       handleSwitch={handleSurvivalPlotToggled}
                     />
                   )}
-                  {!row.getCanExpand() && visibleColumns[0].id === accessor && (
+                  {/* {!row.getCanExpand() && visibleColumns[0].id === accessor && (
                     <div className={`relative`}>
                       <GeneAffectedCases
-                        geneId={row.value}
+                        row={row}
+                        accessor={accessor}
                         width={width}
                         opening={row.getCanExpand()}
                       ></GeneAffectedCases>
                     </div>
-                  )}
+                  )} */}
                 </>
               );
             },
@@ -141,15 +142,16 @@ export const createTableColumn = (
                     </div>
                   )}
                   <>
-                    {!row.getCanExpand() && visibleColumns[0].id === accessor && (
+                    {/* {!row.getCanExpand() && visibleColumns[0].id === accessor && (
                       <div className={`relative`}>
                         <GeneAffectedCases
-                          geneId={row.value}
+                          row={row}
+                          accessor={accessor}
                           width={width}
                           opening={row.getCanExpand()}
                         ></GeneAffectedCases>
                       </div>
-                    )}
+                    )} */}
                   </>
                 </animated.div>
               );
@@ -178,7 +180,10 @@ export const createTableColumn = (
                       <div className={`text-center`}>
                         <button
                           {...{
-                            onClick: row.getToggleExpandedHandler(),
+                            onClick: () => {
+                              setGeneID(row.original[`geneID`]);
+                              row.toggleExpanded();
+                            },
                             style: { cursor: "pointer" },
                           }}
                         >
@@ -194,15 +199,16 @@ export const createTableColumn = (
                     )}
                   </>
                   <>
-                    {!row.getCanExpand() && visibleColumns[0].id === accessor && (
+                    {/* {!row.getCanExpand() && visibleColumns[0].id === accessor && (
                       <div className={`relative`}>
                         <GeneAffectedCases
-                          geneId={row.value}
+                          row={row}
+                          accessor={accessor}
                           width={width}
                           opening={row.getCanExpand()}
                         ></GeneAffectedCases>
                       </div>
-                    )}
+                    )} */}
                   </>
                 </animated.div>
               );
@@ -234,15 +240,16 @@ export const createTableColumn = (
                     <TableCell row={row} accessor={accessor} />
                   )}
                   <>
-                    {!row.getCanExpand() && visibleColumns[0].id === accessor && (
+                    {/* {!row.getCanExpand() && visibleColumns[0].id === accessor && (
                       <div className={`relative`}>
                         <GeneAffectedCases
-                          geneId={row.value}
+                          row={row}
+                          accessor={accessor}
                           width={width}
                           opening={row.getCanExpand()}
                         ></GeneAffectedCases>
                       </div>
-                    )}
+                    )} */}
                   </>
                 </animated.div>
               );
@@ -274,15 +281,16 @@ export const createTableColumn = (
                     <TableCell row={row} accessor={accessor} />
                   )}
                   <>
-                    {!row.getCanExpand() && visibleColumns[0].id === accessor && (
+                    {/* {!row.getCanExpand() && visibleColumns[0].id === accessor && (
                       <div className={`relative`}>
                         <GeneAffectedCases
-                          geneId={row.value}
+                          row={row}
+                          accessor={accessor}
                           width={width}
                           opening={row.getCanExpand()}
                         ></GeneAffectedCases>
                       </div>
-                    )}
+                    )} */}
                   </>
                 </animated.div>
               );
@@ -305,16 +313,17 @@ export const createTableColumn = (
                   <>
                     <TableCell row={row} accessor={accessor} />
                     <>
-                      {!row.getCanExpand() &&
+                      {/* {!row.getCanExpand() &&
                         visibleColumns[0].id === accessor && (
                           <div className={`relative`}>
                             <GeneAffectedCases
-                              geneId={row.value}
+                              row={row}
+                              accessor={accessor}
                               width={width}
                               opening={row.getCanExpand()}
                             ></GeneAffectedCases>
                           </div>
-                        )}
+                        )} */}
                     </>
                   </>
                 </animated.div>

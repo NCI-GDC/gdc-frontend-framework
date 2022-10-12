@@ -1,11 +1,20 @@
 import { useState, useEffect } from "react";
 import { useSpring, config } from "react-spring";
-import { GeneSubRow } from "./types";
 import ListSpring from "../shared/ListSpring";
 import { convertGeneFilter } from "./genesTableUtils";
 
+export interface GeneSubRow {
+  geneId: any;
+  firstColumn: string;
+  accessor: string;
+  width: number;
+  opening: boolean;
+}
+
 export const GeneAffectedCases: React.FC<GeneSubRow> = ({
   geneId,
+  firstColumn,
+  accessor,
   width,
   opening,
 }: GeneSubRow) => {
@@ -53,16 +62,24 @@ export const GeneAffectedCases: React.FC<GeneSubRow> = ({
   };
 
   useEffect(() => {
-    getGeneSubRow(geneId);
+    // note:
+    // when row.canExpand() is false, row.original (the whole row) is undefined...
+    // geneId now being passed from GenesTable state variable
+    console.log("geneID", geneId);
+    if (geneId) getGeneSubRow(geneId);
   }, [geneId]);
 
   return (
     <>
-      <ListSpring
-        subData={subData}
-        horizontalSpring={horizontalSpring}
-        opening={opening}
-      />
+      {!opening && firstColumn === accessor && (
+        <div className={`relative`}>
+          <ListSpring
+            subData={subData}
+            horizontalSpring={horizontalSpring}
+            opening={opening}
+          />
+        </div>
+      )}
     </>
   );
 };
