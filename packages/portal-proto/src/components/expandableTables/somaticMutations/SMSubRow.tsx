@@ -28,24 +28,39 @@ export const SMSubrow: React.FC<SMSubrowProps> = ({
     config: config.slow,
   });
 
+  useEffect(() => console.log("mutationId", mutationId), []);
+
   const getMutationSubrow = (mutationId: string) => {
-    // const SMQuery = gql`query getProjectDocCountsByMutation($filters_mutation: FiltersArgument) {
-    //     ...
-    //   }`;
+    const SMQuery = gql`
+      query getProjectDocCountsByMutation($filters_mutation: FiltersArgument) {
+        explore {
+          cases {
+            aggregations(filters: $filters_mutation) {
+              project__project_id {
+                buckets {
+                  doc_count
+                  key
+                }
+              }
+            }
+          }
+        }
+      }
+    `;
     fetch(`${GDC_APP_API_AUTH}/graphql`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        // query: SMQuery,
+        query: SMQuery,
         variables: convertMutationFilter(mutationId),
       }),
     })
       .then((res) => res.json())
       .then((json) => {
-        // const { buckets } = json?.data?.explore?.cases?.aggregations?.project__project_id || [];
-        // setSubData();
+        console.log("mutationId", mutationId);
+        setSubData([]);
       });
   };
 
@@ -57,7 +72,7 @@ export const SMSubrow: React.FC<SMSubrowProps> = ({
 
   return (
     <>
-      {!opening && firstColumn === accessor && subData.length && (
+      {!opening && firstColumn === accessor && subData.length > 0 && (
         <div className={`relative`}>
           <ListSpring
             subData={subData}

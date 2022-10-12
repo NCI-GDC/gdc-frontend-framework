@@ -8,6 +8,15 @@ interface AnimatedRowProps {
   selected: boolean;
 }
 
+/**
+ * This component is row used in ExpTable
+ *
+ * @param row  // single row of table data
+ * @param index // index of row within table
+ * @param selected: // checkbox status for the row
+ * @constructor
+ */
+
 const AnimatedRow: React.FC<AnimatedRowProps> = ({
   row,
   index,

@@ -4,7 +4,7 @@ import _ from "lodash";
 import { animated } from "react-spring";
 // import SwitchSpring from "../shared/SwitchSpring";
 // import PercentageBar from "../shared/PercentageBar";
-import CheckboxContainer from "../shared/CheckboxContainer";
+import CheckboxSpring from "../shared/CheckboxSpring";
 import SwitchSpring from "../shared/SwitchSpring";
 import {
   TableColumnState,
@@ -60,11 +60,10 @@ export const createTableColumn = (
                 <div>
                   <div className={`content-center`}>
                     {row.getCanExpand() && (
-                      <CheckboxContainer
+                      <CheckboxSpring
                         isActive={row.original["select"] in selectedGenes}
                         select={row}
                         handleCheck={selectGene}
-                        width={width / visibleColumns.length}
                         wSpring={partitionWidth}
                       />
                     )}

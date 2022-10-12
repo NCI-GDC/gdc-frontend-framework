@@ -5,7 +5,6 @@ interface SwitchSpringProps {
   isActive: boolean;
   icon: ReactNode;
   selected: any;
-  // handleSwitch: (row: any) => any;
   handleSwitch: any;
 }
 

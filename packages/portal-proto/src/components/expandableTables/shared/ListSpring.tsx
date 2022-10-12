@@ -36,6 +36,7 @@ const ListSpring: React.FC<ListSpringProps> = ({
         {subData.map((numerator, index) => {
           return (
             <ItemSpring
+              key={index}
               numerator={numerator}
               index={index}
               len={subData.length || 1}

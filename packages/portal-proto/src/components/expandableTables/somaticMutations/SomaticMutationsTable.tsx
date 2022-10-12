@@ -42,6 +42,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   const [visibleColumns, setVisibleColumns] = useState(
     DEFAULT_SMTABLE_ORDER.filter((col) => col.visible),
   );
+  const [mutationID, setMutationID] = useState(undefined);
 
   const useSomaticMutationsTableFormat = useCallback(
     (initialData) => {
@@ -115,6 +116,8 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
           selectedMutations,
           selectMutation,
           handleSurvivalPlotToggled,
+          setMutationID,
+          mutationID,
         );
       });
   }, [visibleColumns, width, selectedMutations]);

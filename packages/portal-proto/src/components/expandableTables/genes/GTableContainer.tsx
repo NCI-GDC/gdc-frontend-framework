@@ -19,7 +19,6 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
 }: GTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
-  const [sorts, setSorts] = useState([]);
   const [ref, { width }] = useMeasure();
   const [selectedGenes, setSelectedGenes] = useState<any>({}); // todo: add type
 

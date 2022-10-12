@@ -1,6 +1,5 @@
 import React from "react";
 import { animated, useSpring, config } from "react-spring";
-import { ConfigSet } from "ts-jest/dist/config";
 
 interface CaseCountByProject {
   doc_count: number;

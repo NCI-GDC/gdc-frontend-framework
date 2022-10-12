@@ -94,8 +94,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           />
         </div>
       ) : (
-        <div className={`flex flex-row h-[500px] w-[100px] m-auto`}>
-          <div className={`my-auto`}>
+        <div className={`flex flex-row h-screen w-[1000px]`}>
+          <div className={`m-auto h-9/12`}>
             <Loader />
           </div>
         </div>

@@ -10,8 +10,9 @@ import {
   AnnotationsIcon,
 } from "../shared/types";
 import { SomaticMutation } from "./types";
-import CheckboxContainer from "../shared/CheckboxContainer";
+import CheckboxSpring from "../shared/CheckboxSpring";
 import { Survival } from "../shared/types";
+import { SMSubrow } from "./SMSubRow";
 
 export interface MConsequence {
   consequenceType: string;
@@ -41,9 +42,25 @@ export const Consequence = ({
 };
 
 export const convertMutationFilter = (mutationId: string) => {
+  console.log("mutationId", mutationId);
   return {
     filters_mutation: {
-      // ...
+      content: [
+        {
+          content: {
+            field: "ssms.ssm_id",
+            value: [mutationId],
+          },
+          op: "in",
+        },
+        {
+          content: {
+            field: "cases.gene.ssm.observation.observation_id",
+            value: "MISSING",
+          },
+          op: "NOT",
+        },
+      ],
     },
   };
 };
@@ -60,6 +77,8 @@ export const createTableColumn = (
     name: string,
     geneSymbol: string,
   ) => any,
+  setMutationID,
+  mutationID,
 ) => {
   switch (accessor) {
     case "select":
@@ -75,25 +94,22 @@ export const createTableColumn = (
                 <div>
                   <div className={`content-center`}>
                     {row.getCanExpand() && (
-                      <CheckboxContainer
+                      <CheckboxSpring
                         isActive={row.original["select"] in selectedMutations}
                         select={row}
                         handleCheck={selectMutation}
-                        width={width / visibleColumns.length}
                         wSpring={partitionWidth}
                       />
                     )}
                   </div>
                   <>
-                    {!row.getCanExpand() && visibleColumns[0].id === accessor && (
-                      <div className={`relative`}>
-                        {/* <GeneAffectedCases
-                            geneId={row.value}
-                            width={width}
-                            opening={row.getCanExpand()}
-                          ></GeneAffectedCases> */}
-                      </div>
-                    )}
+                    <SMSubrow
+                      mutationId={mutationID}
+                      firstColumn={visibleColumns[0].id}
+                      accessor={accessor}
+                      width={width}
+                      opening={row.getCanExpand()}
+                    ></SMSubrow>
                   </>
                 </div>
               );
@@ -158,7 +174,10 @@ export const createTableColumn = (
                       <div className={`text-center`}>
                         <button
                           {...{
-                            onClick: row.getToggleExpandedHandler(),
+                            onClick: () => {
+                              setMutationID(row.original[`mutationID`]);
+                              row.toggleExpanded();
+                            },
                             style: { cursor: "pointer" },
                           }}
                         >
