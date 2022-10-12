@@ -2,8 +2,8 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Gene, GenesTableProps, DEFAULT_GTABLE_ORDER } from "./types";
 import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { ExpTable } from "../shared/ExpTable";
-import { GTableControls } from "./GTableControls";
-import { GTableFilters } from "./GTableFilters";
+import { TableControls } from "../shared/TableControls";
+import { TableFilters } from "../shared/TableFilters";
 import { getGene, createTableColumn, GenesColumn } from "./genesTableUtils";
 import { useSpring } from "react-spring";
 import PageSize from "../shared/PageSize";
@@ -143,11 +143,12 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   return (
     <div className={`w-full`}>
       <div className={`flex flex-row`}>
-        <GTableControls
-          selectedGenes={Object.keys(selectedGenes)?.length || 0}
-          handleGeneSave={handleGeneSave}
+        <TableControls
+          numSelected={Object.keys(selectedGenes)?.length || 0}
+          handleSave={handleGeneSave}
+          label={`Genes`}
         />
-        <GTableFilters
+        <TableFilters
           search={searchTerm}
           handleSearch={handleSearch}
           columnListOrder={columnListOrder}

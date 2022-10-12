@@ -18,14 +18,14 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   handleSurvivalPlotToggled,
 }: SMTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
-  const [offset, setOffset] = useState(0);
+  const [page, setPage] = useState(0);
   const [sorts, setSorts] = useState([]);
   const [ref, { width }] = useMeasure();
   const [selectedMutations, setSelectedMutations] = useState<any>({}); // todo: add type
 
   const { data, isFetching } = useSsmsTable({
     pageSize: pageSize,
-    offset: offset,
+    offset: pageSize * page,
     sorts: sorts,
   });
 
@@ -85,12 +85,12 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             handleSurvivalPlotToggled={handleSurvivalPlotToggled}
             width={width}
             pageSize={pageSize}
-            offset={offset}
+            page={page}
             selectedMutations={selectedMutations}
             selectMutation={selectMutation}
             selectAll={selectAllMutations}
             handlePageSize={setPageSize}
-            handleOffset={setOffset}
+            handlePage={setPage}
           />
         </div>
       ) : (

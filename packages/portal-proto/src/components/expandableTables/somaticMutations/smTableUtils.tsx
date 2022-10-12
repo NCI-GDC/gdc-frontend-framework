@@ -40,6 +40,14 @@ export const Consequence = ({
   );
 };
 
+export const convertMutationFilter = (mutationId: string) => {
+  return {
+    filters_mutation: {
+      // ...
+    },
+  };
+};
+
 export const createTableColumn = (
   accessor: string,
   width: number,
@@ -366,7 +374,7 @@ export const getMutation = (
   cases: number,
   ssmsTotal: number,
 ) => {
-  console.log("sm", sm);
+  // console.log("sm", sm);
   return {
     select: sm.ssm_id,
     mutationID: sm.ssm_id,

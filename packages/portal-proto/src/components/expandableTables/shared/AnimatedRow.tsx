@@ -21,7 +21,7 @@ const AnimatedRow: React.FC<AnimatedRowProps> = ({
     to: { opacity: 1, transform: "translate3D(0px, 0px, 0px)" },
     config: config.gentle,
     delay: rowDelay(index),
-    immediate: false,
+    // immediate: true,
   });
 
   return (

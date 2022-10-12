@@ -3,23 +3,23 @@ import { gql } from "graphql-request";
 import { useSpring, config } from "react-spring";
 import ListSpring from "../shared/ListSpring";
 import { convertGeneFilter } from "./genesTableUtils";
-import { GDC_APP_API_AUTH } from "../../../../../core/src/constants";
+import { GDC_APP_API_AUTH } from "@gff/core/src/constants";
 
-export interface GeneSubRow {
-  geneId: any;
+export interface GeneSubrowProps {
+  geneId: string;
   firstColumn: string;
   accessor: string;
   width: number;
   opening: boolean;
 }
 
-export const GeneAffectedCases: React.FC<GeneSubRow> = ({
+export const GSubrow: React.FC<GeneSubrowProps> = ({
   geneId,
   firstColumn,
   accessor,
   width,
   opening,
-}: GeneSubRow) => {
+}: GeneSubrowProps) => {
   const [subData, setSubData] = useState([]);
 
   const horizontalSpring = useSpring({
@@ -30,10 +30,10 @@ export const GeneAffectedCases: React.FC<GeneSubRow> = ({
 
   const getGeneSubRow = (geneId: string) => {
     const exploreCasesAggregatedProjectsBucketsQuery = gql`
-      query getProjectDocCountsByGene($filters_1: FiltersArgument) {
+      query getProjectDocCountsByGene($filters_gene: FiltersArgument) {
         explore {
           cases {
-            aggregations(filters: $filters_1) {
+            aggregations(filters: $filters_gene) {
               project__project_id {
                 buckets {
                   doc_count
@@ -57,23 +57,21 @@ export const GeneAffectedCases: React.FC<GeneSubRow> = ({
     })
       .then((res) => res.json())
       .then((json) => {
-        setSubData(
-          json?.data?.explore?.cases?.aggregations?.project__project_id
-            ?.buckets,
-        );
+        const { buckets } =
+          json?.data?.explore?.cases?.aggregations?.project__project_id || [];
+        setSubData(buckets);
       });
   };
 
   useEffect(() => {
-    // note:
-    // when row.canExpand() is false, row.original (the whole row) is undefined...
-    // geneId now being passed from GenesTable state variable
+    // when row.canExpand() is false, row.original (the whole row) is undefined
+    // geneId state variable set in Genes Table set when row expand btn clicked
     if (geneId && !opening) getGeneSubRow(geneId);
   }, [geneId, opening]);
 
   return (
     <>
-      {!opening && firstColumn === accessor && (
+      {!opening && firstColumn === accessor && subData.length && (
         <div className={`relative`}>
           <ListSpring
             subData={subData}

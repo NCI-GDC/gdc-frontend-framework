@@ -1,19 +1,19 @@
 import React, { useState } from "react";
 import { MdSearch as SearchIcon } from "react-icons/md";
 import { animated, useSpring } from "react-spring";
-import DND from "../shared/DND";
+import DND from "./DND";
 
-interface GTableFiltersProps {
+interface TableFiltersProps {
   search: string;
   handleSearch: (term: string) => void;
   columnListOrder: any;
-  handleColumnChange: (newColumnOrder: string[]) => void;
+  handleColumnChange: (columnListOrder: any) => void;
   showColumnMenu: boolean;
   setShowColumnMenu: (s: boolean) => void;
   defaultColumns: any;
 }
 
-export const GTableFilters: React.FC<GTableFiltersProps> = ({
+export const TableFilters: React.FC<TableFiltersProps> = ({
   search,
   handleSearch,
   columnListOrder,
@@ -21,7 +21,7 @@ export const GTableFilters: React.FC<GTableFiltersProps> = ({
   showColumnMenu,
   setShowColumnMenu,
   defaultColumns,
-}: GTableFiltersProps) => {
+}: TableFiltersProps) => {
   const [searchToggled, setSearchToggled] = useState(false);
   let inputWidth = 300;
 

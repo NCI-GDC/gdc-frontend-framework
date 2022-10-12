@@ -1,4 +1,3 @@
-import { GeneAffectedCases } from "./GeneAffectedCases";
 import ToggleSpring from "../shared/ToggleSpring";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import _ from "lodash";
@@ -15,6 +14,7 @@ import {
   AnnotationsIcon,
   Survival,
 } from "../shared/types";
+import { GSubrow } from "./GSubRow";
 
 interface SingleGene {
   biotype: string;
@@ -70,13 +70,13 @@ export const createTableColumn = (
                     )}
                   </div>
                   <>
-                    <GeneAffectedCases
+                    <GSubrow
                       geneId={geneID}
                       firstColumn={visibleColumns[0].id}
                       accessor={accessor}
                       width={width}
                       opening={row.getCanExpand()}
-                    ></GeneAffectedCases>
+                    ></GSubrow>
                   </>
                 </div>
               );
@@ -106,16 +106,15 @@ export const createTableColumn = (
                       handleSwitch={handleSurvivalPlotToggled}
                     />
                   )}
-                  {/* {!row.getCanExpand() && visibleColumns[0].id === accessor && (
-                    <div className={`relative`}>
-                      <GeneAffectedCases
-                        row={row}
-                        accessor={accessor}
-                        width={width}
-                        opening={row.getCanExpand()}
-                      ></GeneAffectedCases>
-                    </div>
-                  )} */}
+                  <>
+                    <GSubrow
+                      geneId={geneID}
+                      firstColumn={visibleColumns[0].id}
+                      accessor={accessor}
+                      width={width}
+                      opening={row.getCanExpand()}
+                    ></GSubrow>
+                  </>
                 </>
               );
             },
@@ -142,16 +141,13 @@ export const createTableColumn = (
                     </div>
                   )}
                   <>
-                    {/* {!row.getCanExpand() && visibleColumns[0].id === accessor && (
-                      <div className={`relative`}>
-                        <GeneAffectedCases
-                          row={row}
-                          accessor={accessor}
-                          width={width}
-                          opening={row.getCanExpand()}
-                        ></GeneAffectedCases>
-                      </div>
-                    )} */}
+                    <GSubrow
+                      geneId={geneID}
+                      firstColumn={visibleColumns[0].id}
+                      accessor={accessor}
+                      width={width}
+                      opening={row.getCanExpand()}
+                    ></GSubrow>
                   </>
                 </animated.div>
               );
@@ -199,16 +195,13 @@ export const createTableColumn = (
                     )}
                   </>
                   <>
-                    {/* {!row.getCanExpand() && visibleColumns[0].id === accessor && (
-                      <div className={`relative`}>
-                        <GeneAffectedCases
-                          row={row}
-                          accessor={accessor}
-                          width={width}
-                          opening={row.getCanExpand()}
-                        ></GeneAffectedCases>
-                      </div>
-                    )} */}
+                    <GSubrow
+                      geneId={geneID}
+                      firstColumn={visibleColumns[0].id}
+                      accessor={accessor}
+                      width={width}
+                      opening={row.getCanExpand()}
+                    ></GSubrow>
                   </>
                 </animated.div>
               );
@@ -240,16 +233,13 @@ export const createTableColumn = (
                     <TableCell row={row} accessor={accessor} />
                   )}
                   <>
-                    {/* {!row.getCanExpand() && visibleColumns[0].id === accessor && (
-                      <div className={`relative`}>
-                        <GeneAffectedCases
-                          row={row}
-                          accessor={accessor}
-                          width={width}
-                          opening={row.getCanExpand()}
-                        ></GeneAffectedCases>
-                      </div>
-                    )} */}
+                    <GSubrow
+                      geneId={geneID}
+                      firstColumn={visibleColumns[0].id}
+                      accessor={accessor}
+                      width={width}
+                      opening={row.getCanExpand()}
+                    ></GSubrow>
                   </>
                 </animated.div>
               );
@@ -281,16 +271,13 @@ export const createTableColumn = (
                     <TableCell row={row} accessor={accessor} />
                   )}
                   <>
-                    {/* {!row.getCanExpand() && visibleColumns[0].id === accessor && (
-                      <div className={`relative`}>
-                        <GeneAffectedCases
-                          row={row}
-                          accessor={accessor}
-                          width={width}
-                          opening={row.getCanExpand()}
-                        ></GeneAffectedCases>
-                      </div>
-                    )} */}
+                    <GSubrow
+                      geneId={geneID}
+                      firstColumn={visibleColumns[0].id}
+                      accessor={accessor}
+                      width={width}
+                      opening={row.getCanExpand()}
+                    ></GSubrow>
                   </>
                 </animated.div>
               );
@@ -313,17 +300,13 @@ export const createTableColumn = (
                   <>
                     <TableCell row={row} accessor={accessor} />
                     <>
-                      {/* {!row.getCanExpand() &&
-                        visibleColumns[0].id === accessor && (
-                          <div className={`relative`}>
-                            <GeneAffectedCases
-                              row={row}
-                              accessor={accessor}
-                              width={width}
-                              opening={row.getCanExpand()}
-                            ></GeneAffectedCases>
-                          </div>
-                        )} */}
+                      <GSubrow
+                        geneId={geneID}
+                        firstColumn={visibleColumns[0].id}
+                        accessor={accessor}
+                        width={width}
+                        opening={row.getCanExpand()}
+                      ></GSubrow>
                     </>
                   </>
                 </animated.div>
@@ -407,7 +390,7 @@ export const getGene = (
 
 export const convertGeneFilter = (geneId: string) => {
   return {
-    filters_1: {
+    filters_gene: {
       op: "and",
       content: [
         {

@@ -16,9 +16,9 @@ import {
 import { useSpring } from "react-spring";
 import PageSize from "../shared/PageSize";
 import PageStepper from "../shared/PageStepper";
-import { GTableControls } from "../genes/GTableControls";
+import { TableControls } from "../shared/TableControls";
 import { searchContains } from "../shared/types";
-import { GTableFilters } from "../genes/GTableFilters";
+import { TableFilters } from "../shared/TableFilters";
 
 export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   initialData,
@@ -27,8 +27,8 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   width,
   pageSize,
   handlePageSize,
-  offset,
-  handleOffset,
+  page,
+  handlePage,
   selectedMutations,
   selectMutation,
   selectAll,
@@ -142,11 +142,12 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   return (
     <div className={`w-full`}>
       <div className={`flex flex-row`}>
-        <GTableControls
-          selectedGenes={Object.keys(selectedMutations)?.length || 0}
-          handleGeneSave={handleMutationSave}
+        <TableControls
+          numSelected={Object.keys(selectedMutations)?.length || 0}
+          handleSave={handleMutationSave}
+          label={`Mutations`}
         />
-        <GTableFilters
+        <TableFilters
           search={searchTerm}
           handleSearch={handleSearch}
           columnListOrder={columnListOrder}
@@ -185,10 +186,8 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
         <div className={`m-auto text-sm`}>
           <span>
             Showing
-            <span className={`font-bold`}>{` ${offset * pageSize + 1} `}</span>-
-            <span className={`font-bold`}>
-              {` ${(offset + 1) * pageSize} `}
-            </span>
+            <span className={`font-bold`}>{` ${page * pageSize + 1} `}</span>-
+            <span className={`font-bold`}>{` ${(page + 1) * pageSize} `}</span>
             of
             <span className={`font-bold`}>
               {` ${transformResponse[0].ssmsTotal} `}
@@ -198,9 +197,9 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
         </div>
         <div className={`m-auto mr-0`}>
           <PageStepper
-            offset={offset}
+            page={page}
             totalPages={Math.ceil(transformResponse[0].ssmsTotal / pageSize)}
-            handleOffset={handleOffset}
+            handlePage={handlePage}
           />
         </div>
       </div>

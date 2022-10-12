@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 import { animated, config, useSpring } from "react-spring";
-import { GENE_MENU } from "./types";
+import { GENE_MENU } from "../genes/types";
 
-interface GTableControlsProps {
-  selectedGenes: number;
-  handleGeneSave: (genes: any) => void; //todo: add type
+interface TableControlsProps {
+  numSelected: number;
+  handleSave: (selected: any) => void; //todo: add type
+  label: string;
 }
 
 interface GeneSaveOption {
@@ -13,10 +14,11 @@ interface GeneSaveOption {
   value: string;
 }
 
-export const GTableControls: React.FC<GTableControlsProps> = ({
-  selectedGenes,
-  handleGeneSave,
-}: GTableControlsProps) => {
+export const TableControls: React.FC<TableControlsProps> = ({
+  numSelected,
+  handleSave,
+  label,
+}: TableControlsProps) => {
   const [selectedOption, setSelectedOption] = useState<GeneSaveOption>(
     GENE_MENU[0],
   );
@@ -49,13 +51,13 @@ export const GTableControls: React.FC<GTableControlsProps> = ({
     backgroundColor: "rgb(32, 68, 97)",
   };
 
-  const selectedSpring = useSpring(selectedGenes === 0 ? on : off);
+  const selectedSpring = useSpring(numSelected === 0 ? on : off);
 
-  const nGenes = useSpring({
+  const numberSpring = useSpring({
     immediate: false,
     config: config.slow,
     from: { num: 0 },
-    to: { num: selectedGenes },
+    to: { num: numSelected },
   });
 
   const colorSpring = useSpring({
@@ -79,7 +81,7 @@ export const GTableControls: React.FC<GTableControlsProps> = ({
               style={selectedSpring}
               className={`mx-auto border-1 py-1 px-2 rounded-md text-xs`}
             >
-              {nGenes.num.to((x) => x.toFixed(0))}
+              {numberSpring.num.to((x) => x.toFixed(0))}
             </animated.div>
             <animated.div style={colorSpring} className={`m-auto text-xs`}>
               {selectedOption ? selectedOption.label : ""}
@@ -100,9 +102,9 @@ export const GTableControls: React.FC<GTableControlsProps> = ({
                   className={`flex flex-row mt-1 rounded-t-md border-1 border-b-0 border-black py-2 px-1 text-xs`}
                 >
                   <animated.div className={`mx-auto mr-0.5`}>
-                    {nGenes.num.to((x) => x.toFixed(0))}
+                    {numberSpring.num.to((x) => x.toFixed(0))}
                   </animated.div>
-                  <span className={`m-auto ml-0.5`}>Genes</span>
+                  <span className={`m-auto ml-0.5`}>{label}</span>
                 </animated.div>
                 <animated.ul
                   style={{ ...colorSpring, ...borderSpring }}
