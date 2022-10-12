@@ -11,7 +11,11 @@ import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { Button, LoadingOverlay, Menu, Tooltip } from "@mantine/core";
 import { MdFileDownload } from "react-icons/md";
-import { calculatePercentage, humanify, sortByPropertyAsc } from "src/utils";
+import {
+  calculatePercentageAsNumber,
+  humanify,
+  sortByPropertyAsc,
+} from "src/utils";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 import { formatDataForHorizontalTable } from "../files/utils";
 import Link from "next/link";
@@ -207,12 +211,12 @@ export const ProjectView: React.FC<ProjectViewProps> = (
     );
 
     const rows = sortedDataCategories.map((data_c) => {
-      const caseCountPercentage = calculatePercentage(
+      const caseCountPercentage = calculatePercentageAsNumber(
         data_c.case_count,
         projectData.summary.case_count,
       );
 
-      const fileCountPercentage = calculatePercentage(
+      const fileCountPercentage = calculatePercentageAsNumber(
         data_c.file_count,
         projectData.summary.file_count,
       );
@@ -227,7 +231,9 @@ export const ProjectView: React.FC<ProjectViewProps> = (
             </span>
             <div className="w-3/4">
               <PercentBar>
-                <PercentBarLabel>{`${caseCountPercentage}%`}</PercentBarLabel>
+                <PercentBarLabel>{`${caseCountPercentage.toFixed(
+                  2,
+                )}%`}</PercentBarLabel>
                 <PercentBarComplete
                   style={{ width: `${caseCountPercentage}%` }}
                 />
@@ -243,7 +249,9 @@ export const ProjectView: React.FC<ProjectViewProps> = (
             </span>
             <div className="w-3/4">
               <PercentBar>
-                <PercentBarLabel>{`${fileCountPercentage}%`}</PercentBarLabel>
+                <PercentBarLabel>{`${fileCountPercentage.toFixed(
+                  2,
+                )}}%`}</PercentBarLabel>
                 <PercentBarComplete
                   style={{ width: `${fileCountPercentage}%` }}
                 />
@@ -271,12 +279,12 @@ export const ProjectView: React.FC<ProjectViewProps> = (
     );
 
     const rows = sortedExpCategories.map((exp_c) => {
-      const caseCountPercentage = calculatePercentage(
+      const caseCountPercentage = calculatePercentageAsNumber(
         exp_c.case_count,
         projectData.summary.case_count,
       );
 
-      const fileCountPercentage = calculatePercentage(
+      const fileCountPercentage = calculatePercentageAsNumber(
         exp_c.file_count,
         projectData.summary.file_count,
       );
@@ -291,7 +299,9 @@ export const ProjectView: React.FC<ProjectViewProps> = (
             </span>
             <div className="w-3/4">
               <PercentBar>
-                <PercentBarLabel>{`${caseCountPercentage}%`}</PercentBarLabel>
+                <PercentBarLabel>{`${caseCountPercentage.toFixed(
+                  2,
+                )}%`}</PercentBarLabel>
                 <PercentBarComplete
                   style={{ width: `${caseCountPercentage}%` }}
                 />
@@ -307,7 +317,9 @@ export const ProjectView: React.FC<ProjectViewProps> = (
             </span>
             <div className="w-3/4">
               <PercentBar>
-                <PercentBarLabel>{`${fileCountPercentage}%`}</PercentBarLabel>
+                <PercentBarLabel>{`${fileCountPercentage.toFixed(
+                  2,
+                )}%`}</PercentBarLabel>
                 <PercentBarComplete
                   style={{ width: `${fileCountPercentage}%` }}
                 />

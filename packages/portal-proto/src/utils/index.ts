@@ -102,6 +102,11 @@ export const externalLinks = {
     `http://www.uniprot.org/uniprot/${id}`,
 };
 
+export const calculatePercentageAsNumber = (
+  count: number,
+  total: number,
+): number => (count / total) * 100;
+
 export const calculatePercentage = (count: number, total: number): string =>
   `${((count / total) * 100).toFixed(2)}%`;
 
