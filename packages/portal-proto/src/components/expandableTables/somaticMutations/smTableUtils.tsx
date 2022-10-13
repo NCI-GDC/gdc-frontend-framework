@@ -7,12 +7,12 @@ import {
   TableCell,
   TableHeader,
   SurvivalIcon,
-  AnnotationsIcon,
 } from "../shared/types";
 import { SomaticMutation } from "./types";
 import CheckboxSpring from "../shared/CheckboxSpring";
 import { Survival } from "../shared/types";
 import { SMSubrow } from "./SMSubRow";
+import { Tooltip } from "@mantine/core";
 
 export interface MConsequence {
   consequenceType: string;
@@ -41,8 +41,112 @@ export const Consequence = ({
   );
 };
 
+export const handleVep = (vepImpact: string): string => {
+  switch (vepImpact) {
+    case "HIGH":
+      return "HI-red";
+    case "MODERATE":
+      return "MO-gray";
+    case "LOW":
+      return "MO-green";
+    case "MODIFIER":
+      return "MR-gray";
+    default:
+      return "-";
+  }
+};
+
+const Impact = ({ row, accessor }) => {
+  const { polyphenImpact, polyphenScore, siftImpact, siftScore, vepImpact } =
+    row.original[`${accessor}`];
+  const twIconStyles = `w-7 h-7 text-white font-bold border rounded-md text-center`;
+  const blankIconStyles = `w-7 h-7 text-black font-bold text-center`;
+  return (
+    <div
+      className={`flex flex-row m-auto w-max h-max items-center content-center`}
+    >
+      <Tooltip label={`VEP Impact: ${vepImpact}`} disabled={!vepImpact.length}>
+        <div className={`text-xs`}>
+          {vepImpact === "HIGH" ? (
+            <div className={`${twIconStyles} bg-red-500`}>
+              <div className={`mt-1`}>{"HI"}</div>
+            </div>
+          ) : vepImpact === "MODERATE" ? (
+            <div className={`${twIconStyles} bg-gray-500`}>
+              <div className={`mt-1`}>{"MO"}</div>
+            </div>
+          ) : vepImpact === "LOW" ? (
+            <div className={`${twIconStyles} bg-green-500`}>
+              <div className={`mt-1`}>{"LOW"}</div>
+            </div>
+          ) : vepImpact === "MODIFIER" ? (
+            <div className={`${twIconStyles} bg-gray-500`}>
+              <div className={`mt-1`}>{"MO"}</div>
+            </div>
+          ) : (
+            <div className={`${blankIconStyles} bg-white`}>
+              <div className={`mt-1`}>{"_"}</div>
+            </div>
+          )}
+        </div>
+      </Tooltip>
+      <Tooltip
+        label={`SIFT Impact: ${siftImpact} / SIFT Score: ${siftScore}`}
+        disabled={!siftImpact.length || siftScore === null}
+      >
+        <div className={`text-xs`}>
+          {siftImpact === "deleterious" ? (
+            <div className={`${twIconStyles} bg-red-500`}>
+              <div className={`mt-1`}>{"DH"}</div>
+            </div>
+          ) : siftImpact === "deleterious_low_confidence" ? (
+            <div className={`${twIconStyles} bg-gray-500`}>
+              <div className={`mt-1`}>{"DL"}</div>
+            </div>
+          ) : siftImpact === "tolerated" ? (
+            <div className={`${twIconStyles} bg-gray-500`}>
+              <div className={`mt-1`}>{"TO"}</div>
+            </div>
+          ) : siftImpact === "tolerated_low_confidence" ? (
+            <div className={`${twIconStyles} bg-green-500`}>
+              <div className={`mt-1`}>{"TL"}</div>
+            </div>
+          ) : (
+            <div className={`${blankIconStyles} bg-white`}>
+              <div className={`mb-2`}>{"_"}</div>
+            </div>
+          )}
+        </div>
+      </Tooltip>
+      <Tooltip
+        label={`PolyPhen Impact: ${polyphenImpact} / PolyPhen Score: ${polyphenScore}`}
+        disabled={!polyphenImpact.length || polyphenScore === null}
+      >
+        <div className={`text-xs`}>
+          {polyphenImpact === "benign" ? (
+            <div className={`${twIconStyles} bg-green-500`}>
+              <div className={`mt-1`}>{"BE"}</div>
+            </div>
+          ) : polyphenImpact === "probably_damaging" ? (
+            <div className={`${twIconStyles} bg-gray-500`}>
+              <div className={`mt-1`}>{"PO"}</div>
+            </div>
+          ) : polyphenImpact === "uknown" ? (
+            <div className={`${twIconStyles} bg-gray-500`}>
+              <div className={`mt-1`}>{"UN"}</div>
+            </div>
+          ) : (
+            <div className={`${blankIconStyles} bg-white`}>
+              <div className={`mb-2`}>{"_"}</div>
+            </div>
+          )}
+        </div>
+      </Tooltip>
+    </div>
+  );
+};
+
 export const convertMutationFilter = (mutationId: string) => {
-  console.log("mutationId", mutationId);
   return {
     filters_mutation: {
       content: [
@@ -132,12 +236,16 @@ export const createTableColumn = (
               return (
                 <>
                   {row.getCanExpand() && (
+                    // <Tooltip
+                    //   label={`Click icon to plot ${row.original["survival"].symbol}`}
+                    // >
                     <SwitchSpring
                       isActive={row.original["survival"].checked}
                       icon={<SurvivalIcon />}
                       selected={row.original["survival"]}
                       handleSwitch={handleSurvivalPlotToggled}
                     />
+                    // </Tooltip>
                   )}
                   {!row.getCanExpand() && visibleColumns[0].id === accessor && (
                     <div className={`relative`}>
@@ -303,14 +411,7 @@ export const createTableColumn = (
                   className={`content-center`}
                 >
                   {row.getCanExpand() && (
-                    // <TableCell row={row} accessor={accessor} />
-                    <button
-                      onClick={() =>
-                        console.log("impact", row.original["impact"])
-                      }
-                    >
-                      impact
-                    </button>
+                    <Impact row={row} accessor={accessor} />
                   )}
                   <>
                     {!row.getCanExpand() && visibleColumns[0].id === accessor && (
@@ -393,16 +494,16 @@ export const getMutation = (
   cases: number,
   ssmsTotal: number,
 ) => {
-  // console.log("sm", sm);
+  const { gene, annotation, aa_change, consequence_type } = sm.consequence[0];
   return {
     select: sm.ssm_id,
     mutationID: sm.ssm_id,
     DNAChange: sm.genomic_dna_change,
     type: filterMutationType(sm.mutation_subtype),
     consequences: {
-      consequenceType: sm.consequence[0].consequence_type,
-      symbol: sm.consequence[0].gene.symbol,
-      aaChange: sm.consequence[0].aa_change,
+      consequenceType: consequence_type,
+      symbol: gene.symbol,
+      aaChange: aa_change,
     },
     affectedCasesInCohort:
       sm.filteredOccurences > 0
@@ -418,11 +519,17 @@ export const getMutation = (
           )}%)`
         : `--`,
     survival: {
-      name: sm.consequence[0].gene.name,
-      symbol: sm.consequence[0].gene.symbol,
-      checked: sm.consequence[0].gene.symbol == selectedSurvivalPlot?.symbol,
+      name: gene.name,
+      symbol: gene.symbol,
+      checked: gene.symbol == selectedSurvivalPlot?.symbol,
     },
-    impact: {}, // todo
+    impact: {
+      polyphenImpact: annotation.polyphen_impact,
+      polyphenScore: annotation.polyphen_score,
+      siftImpact: annotation.sift_impact,
+      siftScore: annotation.sift_score,
+      vepImpact: annotation.vep_impact,
+    },
     // do not remove subRows key, its needed for row.getCanExpand() to be true
     subRows: " ",
     ssmsTotal,

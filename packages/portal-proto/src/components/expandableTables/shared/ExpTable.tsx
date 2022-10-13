@@ -79,7 +79,7 @@ export const ExpTable: React.FC<ExpTableProps> = ({
                   return (
                     <th key={header.id} colSpan={header.colSpan}>
                       {header.isPlaceholder ? null : (
-                        <div>
+                        <div className={`w-max m-auto`}>
                           {header.id === "select" &&
                           header.id !== `1_ _${firstColumn}` ? (
                             <CheckboxSpring

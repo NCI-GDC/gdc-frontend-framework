@@ -120,7 +120,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           </div>
         </div>
       )}
-      <div className={`flex flex-row w-9/12 ml-2 m-auto`}>
+      <div className={`flex flex-row w-9/12 ml-2 m-auto mb-2`}>
         <div className="m-auto ml-0">
           <span className="my-auto mx-1 text-xs">Show</span>
           <PageSize pageSize={pageSize} handlePageSize={setPageSize} />

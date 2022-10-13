@@ -52,7 +52,8 @@ const PageStepper: React.FC<PageStepperProps> = ({
       </button>
       {stepView.map((step, key) => {
         return (
-          step < totalPages + 1 && (
+          (totalPages > 0 ? step < totalPages + 1 : true) &&
+          (totalPages === 0 ? true : step < totalPages + 1) && (
             <button
               key={key}
               onClick={() => handlePage(step - 1)}

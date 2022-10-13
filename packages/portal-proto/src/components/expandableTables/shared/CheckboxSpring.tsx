@@ -30,9 +30,9 @@ const CheckboxSpring: React.FC<CheckboxSpringProps> = ({
   });
 
   return (
-    <animated.div style={wSpring} className={`w-max`}>
-      <div className={`flex flex-row w-max m-auto h-max`}>
-        <animated.div className={`my-auto mx-12`}>
+    <animated.div style={wSpring} className={`w-max m-auto`}>
+      <div className={`flex flex-row h-max`}>
+        <animated.div className={`m-auto`}>
           <animated.button
             style={box}
             className={`${isActive ? `bg-activeColor` : `bg-white`}`}

@@ -126,7 +126,6 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   useEffect(() => {
     setExpanded({});
     setExpandedProxy({});
-    //
   }, [visibleColumns, selectedGenes, page, searchTerm, pageSize]);
 
   const handleColumnChange = (columnUpdate) => {

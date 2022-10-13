@@ -29,7 +29,7 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
       <animated.div
         style={sliderSpring}
         className={`border border-lightgray h-5 ${icon ? `` : `rounded-xl`} ${
-          isActive ? `bg-activeColor` : `bg-lightgray`
+          isActive ? `bg-activeColor` : `bg-gray-300`
         } m-auto align-middle`}
         onClick={() => {
           !icon
@@ -39,7 +39,7 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
       >
         <animated.div
           style={ballSpring}
-          className={`border border-activeColor bg-white ${
+          className={`border ${isActive ? `border-activeColor` : ``} bg-white ${
             icon ? `` : `rounded-xl`
           } ${isActive ? `bg-lightgray` : ``} h-5 text-xs`}
         >

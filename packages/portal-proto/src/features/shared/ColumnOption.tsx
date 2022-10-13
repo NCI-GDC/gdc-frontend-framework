@@ -90,10 +90,6 @@ export const ColumnOption: FC<ColumnProps> = ({
     }),
   });
 
-  // const grayS = useSpring({
-  //   color: "lightgray",
-  // });
-
   const o = isDragging ? 0 : 1;
   drag(drop(ref));
   return (
@@ -105,12 +101,9 @@ export const ColumnOption: FC<ColumnProps> = ({
       <div className={`flex flex-row text-xs justify-between`}>
         <div className={`flex flex-row w-fit`}>
           <div className={`flex flex-row`}>
-            <animated.div
-              // style={grayS}
-              className={`my-auto mr-2 ml-0`}
-            >
+            <div className={`my-auto mr-2 ml-0 text-gray-500`}>
               <MdDragIndicator size={"16px"} />
-            </animated.div>
+            </div>
             <div className={`flex flex-row w-60 my-auto`}>
               {formatColumnName(columnName)}
             </div>
