@@ -379,6 +379,11 @@ const FromTo: React.FC<FromToProps> = ({
       updateFacetFilters(field, rangeFilters);
     }
   };
+
+  const lowerUnitRange =
+    units !== "years" ? minimum : getLowerAgeYears(minimum);
+  const upperUnitRange =
+    units !== "years" ? maximum : getLowerAgeYears(maximum);
   return (
     <div className="relative w-full">
       <div className="flex flex-col text-base-contrast-max bg-base-max text-md ">
@@ -400,9 +405,9 @@ const FromTo: React.FC<FromToProps> = ({
           />
           <NumberInput
             className="basis-2/5 text-sm"
-            placeholder={`eg. ${minimum}${unitsLabel} `}
-            min={minimum}
-            max={maximum}
+            placeholder={`eg. ${lowerUnitRange}${unitsLabel} `}
+            min={lowerUnitRange}
+            max={upperUnitRange}
             value={units !== "years" ? fromValue : getLowerAgeYears(fromValue)}
             onChange={(value) => {
               units !== "years"
@@ -432,9 +437,9 @@ const FromTo: React.FC<FromToProps> = ({
           />
           <NumberInput
             className="basis-2/5"
-            placeholder={`eg. ${maximum}${unitsLabel} `}
-            min={minimum}
-            max={maximum}
+            placeholder={`eg. ${lowerUnitRange}${unitsLabel} `}
+            min={lowerUnitRange}
+            max={upperUnitRange}
             onChange={(value) => {
               units !== "years"
                 ? setToValue(value)
