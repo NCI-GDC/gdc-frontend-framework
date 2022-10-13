@@ -9,8 +9,8 @@ import {
   buildCohortGqlOperator,
   FilterSet,
   joinFilters,
-  selectCurrentCohortFilterOrCaseSet,
-} from "../cohort/cohortFilterSlice";
+} from "../cohort/filters";
+import { selectCurrentCohortFilterOrCaseSet } from "../cohort/availableCohortsSlice";
 
 const initialState: FilterSet = {
   mode: "and",
