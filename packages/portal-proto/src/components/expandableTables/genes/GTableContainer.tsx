@@ -113,7 +113,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           />
         </div>
       ) : (
-        <TableLoader cellWidth={75} rowHeight={70} />
+        <TableLoader cellWidth={`w-[75px]`} rowHeight={70} />
       )}
       <div className={`flex flex-row w-9/12 ml-2 mt-0 m-auto mb-2`}>
         <div className="m-auto ml-0">

@@ -3,7 +3,7 @@ import { Loader } from "@mantine/core";
 import { animated, useSpring, config } from "react-spring";
 
 interface TableLoaderProps {
-  cellWidth: number;
+  cellWidth: string;
   rowHeight: number;
 }
 
@@ -15,7 +15,7 @@ export const TableLoader: React.FC<TableLoaderProps> = ({
     from: { opacity: 0 },
     to: { opacity: 1 },
   });
-  const getRowSpring = (index: number) => {
+  const useRowSpring = (index: number) => {
     const rowSpring = useSpring({
       from: { opacity: 0, height: rowHeight / 2 },
       to: { opacity: 1, height: rowHeight },
@@ -36,7 +36,7 @@ export const TableLoader: React.FC<TableLoaderProps> = ({
               return (
                 <animated.tr
                   key={`loader-row-${nIdx}`}
-                  style={getRowSpring(nIdx)}
+                  style={useRowSpring(nIdx)}
                   className={`h-[${rowHeight}px] ${
                     n === 1 ? `border border-2 shadow-md` : ``
                   } ${
@@ -52,13 +52,10 @@ export const TableLoader: React.FC<TableLoaderProps> = ({
                       return (
                         <td
                           key={`loader-cell-${nIdx}${mIdx}`}
-                          className={`w-[${cellWidth}px]`}
+                          className={cellWidth}
                         >
                           {n === 4 && m === 7 && (
-                            <div
-                              data-testid="table-loader"
-                              className={`absolute mx-auto mt-12`}
-                            >
+                            <div className={`absolute mx-auto mt-12`}>
                               <Loader />
                             </div>
                           )}
