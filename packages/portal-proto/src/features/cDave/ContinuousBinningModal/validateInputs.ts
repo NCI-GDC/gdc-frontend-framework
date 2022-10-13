@@ -1,3 +1,8 @@
+import {
+  CONTINUOUS_BINNING_MAX_LIMIT,
+  CONTINUOUS_BINNING_MIN_LIMIT,
+} from "../constants";
+
 const validateNumberInput = (value: string) => {
   if (value === "") {
     return "Required field";
@@ -52,6 +57,10 @@ const validateMinInput = (value: string, max: string) => {
     return `Must be less than ${max}`;
   }
 
+  if (Number(value) < CONTINUOUS_BINNING_MIN_LIMIT) {
+    return `Must be greater than or equal with ${CONTINUOUS_BINNING_MIN_LIMIT}`;
+  }
+
   return null;
 };
 
@@ -64,6 +73,10 @@ const validateMaxInput = (value: string, min: string) => {
 
   if (min !== "" && Number(value) <= Number(min)) {
     return `Must be greater than ${min}`;
+  }
+
+  if (Number(value) >= CONTINUOUS_BINNING_MAX_LIMIT) {
+    return `Must be less than ${CONTINUOUS_BINNING_MAX_LIMIT}`;
   }
 
   return null;
