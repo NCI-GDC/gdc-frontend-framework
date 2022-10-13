@@ -1,36 +1,23 @@
 /* eslint-disable */
 // TODO need to revisit this file for more changes to fix eslint issues
 import { useState } from "react";
-import { CollapsibleContainer } from "../../components/CollapsibleContainer";
-import { Button, NativeSelect, useMantineTheme } from "@mantine/core";
-import Select from "react-select";
+import { nanoid } from "@reduxjs/toolkit";
+import { CollapsibleContainer } from "@/components/CollapsibleContainer";
+import { NativeSelect } from "@mantine/core";
 import {
-  MdAdd as AddIcon,
   MdArrowDropDown as DropDownIcon,
   MdClose as ClearIcon,
-  MdDelete as DeleteIcon,
-  MdFileDownload as DownloadIcon,
-  MdFileUpload as UploadIcon,
-  MdSave as SaveIcon,
 } from "react-icons/md";
-import { nanoid } from "@reduxjs/toolkit";
-import tw from "tailwind-styled-components";
+
 import {
   FilterSet,
-  Operation,
   selectCurrentCohortFilters,
   useCoreSelector,
+  selectAvailableCohorts,
+  DEFAULT_COHORT_ID,
 } from "@gff/core";
 import { convertFilterToComponent } from "./QueryRepresentation";
-
-const CohortGroupButton = tw(Button)`
-p-2
-bg-base-lightest
-transition-colors
-text-primary-content-darkest
-hover:bg-primary
-hover:text-primary-content-lightest
-`;
+import CohortManager from "@/features/cohortBuilder/CohortManager";
 
 const enum_menu_items = [
   { value: "any_of", label: "includes at least one:" },
@@ -45,10 +32,10 @@ const CohortGroupSelect: React.FC<unknown> = () => {
     { value: "all_of", label: "is all of" },
     { value: "none_of", label: "is none of" },
   ];
-  const [groupType, setGroupTop] = useState(menu_items[0]);
+  const [groupType, setGroupType] = useState(menu_items[0]);
 
   const handleChange = (value) => {
-    setGroupTop(value);
+    setGroupType(value);
   };
 
   return (
@@ -64,90 +51,6 @@ const CohortGroupSelect: React.FC<unknown> = () => {
   );
 };
 
-export interface CohortBarProps {
-  readonly cohort_names: string[];
-  onSelectionChanged: (number) => void;
-  defaultIdx: number;
-  hide_controls?: boolean;
-}
-
-export const CohortBar: React.FC<CohortBarProps> = ({
-  cohort_names,
-  onSelectionChanged,
-  defaultIdx,
-  hide_controls = false,
-}: CohortBarProps) => {
-  const menu_items = cohort_names.map((x, index) => {
-    return { value: index, label: x };
-  });
-
-  const [currentCohort, setCurrentCohort] = useState(menu_items[defaultIdx]);
-
-  const theme = useMantineTheme();
-
-  const buttonStyle =
-    "p-2 bg-base-lightest transition-colors text-primary-content-darkest hover:bg-primary hover:text-primary-content-lightest";
-  return (
-    <div
-      data-tour="cohort_management_bar"
-      className="flex flex-row items-center justify-start gap-6 pl-4 h-20 shadow-lg bg-primary-darkest"
-    >
-      <div className="border-opacity-0">
-        {!hide_controls ? (
-          <Select
-            inputId="cohort-bar_cohort_select"
-            options={menu_items}
-            isSearchable={false}
-            isClearable={false}
-            value={currentCohort}
-            onChange={(x) => {
-              setCurrentCohort(x);
-              onSelectionChanged(x.value);
-            }}
-            className="border-base-light w-80 p-0 z-10 "
-            aria-items-centerlabel="Select cohort"
-            styles={{
-              dropdownIndicator: (provided) => ({
-                ...provided,
-                color: theme.colors.blue[4],
-              }),
-              singleValue: (provided) => ({
-                ...provided,
-                color: theme.colors.blue[4],
-              }),
-            }}
-          />
-        ) : (
-          <div>
-            <h2>{currentCohort.label}</h2>
-          </div>
-        )}
-      </div>
-      {!hide_controls ? (
-        <>
-          <CohortGroupButton>
-            <SaveIcon size="1.5em" aria-label="Save cohort" />
-          </CohortGroupButton>
-          <CohortGroupButton>
-            <AddIcon size="1.5em" aria-label="Add cohort" />
-          </CohortGroupButton>
-          <CohortGroupButton>
-            <DeleteIcon size="1.5em" aria-label="Delete cohort" />
-          </CohortGroupButton>
-          <CohortGroupButton>
-            <UploadIcon size="1.5em" aria-label="Upload cohort" />
-          </CohortGroupButton>
-          <CohortGroupButton>
-            <DownloadIcon size="1.5em" aria-label="Download cohort" />
-          </CohortGroupButton>
-        </>
-      ) : (
-        <div />
-      )}
-    </div>
-  );
-};
-
 interface FacetElementProp {
   readonly filter: Record<string, any>;
 }
@@ -156,7 +59,7 @@ const CohortFacetElement: React.FC<FacetElementProp> = ({
   filter,
 }: FacetElementProp) => {
   const { name, op, value } = filter;
-  const [groupType, setGroupTop] = useState(op);
+  const [, setGroupTop] = useState(op);
 
   const handleChange = (event) => {
     setGroupTop(event.target.value);
@@ -176,44 +79,26 @@ const CohortFacetElement: React.FC<FacetElementProp> = ({
   );
 };
 
-interface RangeFilterProps {
-  readonly filter: Operation;
-}
-
-interface CohortFacet {
-  readonly field: string;
-  readonly value: ReadonlyArray<string>;
-}
-interface PersistentCohort {
-  readonly name: string;
-  readonly facets?: ReadonlyArray<CohortFacet>;
-}
-
-export interface CohortGroupProps {
-  readonly cohorts: ReadonlyArray<PersistentCohort>;
-  readonly simpleMode?: boolean;
-}
-
 export const useCohortFacetFilters = (): FilterSet => {
   return useCoreSelector((state) => selectCurrentCohortFilters(state));
 };
 
-export const CohortGroup: React.FC<CohortGroupProps> = ({
-  cohorts,
-}: CohortGroupProps) => {
+export const CohortGroup: React.FC = () => {
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(DEFAULT_COHORT_ID);
   const handleCohortSelection = (idx) => {
     setCurrentIndex(idx);
   };
 
+  const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
+
   const filters = useCohortFacetFilters();
   // eslint-disable-next-line react/prop-types
   const CohortBarWithProps = () => (
-    <CohortBar
-      cohort_names={cohorts.map((o) => o.name)}
+    <CohortManager
+      cohorts={cohorts}
       onSelectionChanged={handleCohortSelection}
-      defaultIdx={currentIndex}
+      startingId={currentIndex}
     />
   );
   return (

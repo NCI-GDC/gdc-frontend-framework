@@ -1,13 +1,13 @@
 import {
   useCoreSelector,
-  selectCurrentCohort,
+  selectCurrentCohortName,
   selectComparisonCohorts,
 } from "@gff/core";
 import CohortComparison from "../cohortComparison/CohortComparison";
 
 const CohortComparisonApp: React.FC = () => {
   const primaryCohortName = useCoreSelector((state) =>
-    selectCurrentCohort(state),
+    selectCurrentCohortName(state),
   );
 
   const comparisonCohort = useCoreSelector((state) =>

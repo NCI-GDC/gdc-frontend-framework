@@ -10,7 +10,7 @@ import {
 } from "react-icons/md";
 import {
   clearGenomicFilters,
-  selectCurrentCohortFilterSet,
+  selectCurrentCohortFilters,
   useCoreDispatch,
   useCoreSelector,
   useOncoGrid,
@@ -28,7 +28,7 @@ import PositionedTooltip from "./PositionedTooltip";
 const OncoGridWrapper: React.FC = () => {
   const coreDispatch = useCoreDispatch();
   const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilterSet(state),
+    selectCurrentCohortFilters(state),
   );
   const fullOncoGridContainer = useRef(null);
   const gridContainer = useRef(null);

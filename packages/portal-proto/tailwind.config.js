@@ -645,6 +645,11 @@ module.exports = {
           8: "#7A7A15",
           9: "#10828E",
         },
+        "percentage-bar": {
+          base: "#d5e8e1",
+          complete: "#249c4f",
+          label: "#111111",
+        },
       },
       height: {
         "nci-logo": "54px",
