@@ -7,6 +7,7 @@ import {
   LessThan,
   LessThanOrEquals,
   Operation,
+  NumericFromTo,
 } from "@gff/core";
 import _ from "lodash";
 import {
@@ -17,6 +18,7 @@ import {
 } from "@/features/facets/types";
 
 export const DEFAULT_VISIBLE_ITEMS = 6;
+const RANGE_DECIMAL_PRECISION = 1;
 
 // TODO write unit test for these
 export const getLowerAgeYears = (days?: number): number | undefined =>
@@ -174,15 +176,16 @@ const buildDayYearRangeBucket = (
 ): RangeBucketElement => {
   const from = minimum + x * DAYS_IN_DECADE;
   const to = minimum + (x + 1) * DAYS_IN_DECADE;
+  const denom = units == "years" ? DAYS_IN_YEAR : 1;
   return {
     from: from,
     to: to,
-    key: `${from.toFixed(2)}-${to.toFixed(2)}`,
-    label: `\u2265 ${(from / (units == "years" ? DAYS_IN_YEAR : 1)).toFixed(
-      2,
-    )} to < ${(to / (units == "years" ? DAYS_IN_YEAR : 1)).toFixed(
-      2,
-    )} ${units}`,
+    key: `${from.toFixed(RANGE_DECIMAL_PRECISION)}-${to.toFixed(
+      RANGE_DECIMAL_PRECISION,
+    )}`,
+    label: `\u2265 ${(from / denom).toFixed(RANGE_DECIMAL_PRECISION)} to < ${(
+      to / denom
+    ).toFixed(RANGE_DECIMAL_PRECISION)} ${units}`,
   };
 };
 
@@ -197,7 +200,7 @@ const build10UnitRange = (
   x: number,
   units: string,
   minimum: number,
-  fractionDigits = 2,
+  fractionDigits = RANGE_DECIMAL_PRECISION,
 ): RangeBucketElement => {
   const from = minimum + x * 10;
   const to = minimum + (x + 1) * 10;
@@ -236,11 +239,12 @@ const BuildRanges = (
       return r;
     }, {} as Record<string, RangeBucketElement>);
 };
+
 export const BuildRangeBuckets = (
   numBuckets: number,
   units: string,
   minimum: number,
-): [Record<string, RangeBucketElement>] => {
+): [Record<string, RangeBucketElement>, ReadonlyArray<NumericFromTo>] => {
   const RangeBuilder = {
     days: {
       builder: buildDayYearRangeBucket,

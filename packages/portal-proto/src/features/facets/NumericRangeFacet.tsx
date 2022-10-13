@@ -14,7 +14,6 @@ import {
   Tooltip,
 } from "@mantine/core";
 import {
-  DAYS_IN_DECADE,
   DAYS_IN_YEAR,
   GQLDocType,
   GQLIndexType,
@@ -487,7 +486,7 @@ const BuildRangeLabelsAndValues = (
       key: x,
       value: rangeData ? rangeData[x] : undefined,
       valueLabel: rangeData
-        ? `${rangeData[x].toLocaleString()} (${(
+        ? `${rangeData[x]} (${(
             ((rangeData[x] as number) / totalCount) *
             100
           ).toFixed(1)}%)`
@@ -541,37 +540,6 @@ const RangeInputWithPrefixedRanges: React.FC<
   // build the range for the useRangeFacet and the facet query
   const [bucketRanges, ranges] = useMemo(() => {
     return BuildRangeBuckets(numBuckets, units, minimum);
-    // map unit type to appropriate build range function and unit label
-    // const RangeBuilder = {
-    //   days: {
-    //     builder: buildDayYearRangeBucket,
-    //     label: "days",
-    //   },
-    //   years: {
-    //     builder: buildDayYearRangeBucket,
-    //     label: "years",
-    //   },
-    //   percent: {
-    //     builder: build10UnitRange,
-    //     label: "%",
-    //   },
-    //   year: {
-    //     builder: build10UnitRange,
-    //     label: "",
-    //   },
-    // };
-    //
-    // const bucketEntries = BuildRanges(
-    //   numBuckets,
-    //   RangeBuilder[units].label,
-    //   minimum,
-    //   RangeBuilder[units].builder,
-    // );
-    // // build ranges for continuous range query
-    // const r = Object.keys(bucketEntries).map((x) => {
-    //   return { from: bucketEntries[x].from, to: bucketEntries[x].to };
-    // });
-    // return [bucketEntries, r];
   }, [minimum, numBuckets, units]);
 
   const [isCustom, setIsCustom] = useState(filterKey === "custom"); // in custom Range Mode

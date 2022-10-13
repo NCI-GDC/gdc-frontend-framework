@@ -97,11 +97,14 @@ export interface FacetCardProps<T extends FacetDataHooks> {
 export type RangeFromOp = ">" | ">=";
 export type RangeToOp = "<" | "<=";
 
-export interface FromToRange<T> {
-  readonly fromOp?: RangeFromOp;
+export interface FromToRangeValues<T> {
   readonly from?: T;
-  readonly toOp?: RangeToOp;
   readonly to?: T;
+}
+
+export interface FromToRange<T> extends FromToRangeValues<T> {
+  readonly fromOp?: RangeFromOp;
+  readonly toOp?: RangeToOp;
 }
 
 export interface StringRange {
