@@ -128,6 +128,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           <span>
             Showing
             <span className={`font-bold`}>{` ${page * pageSize + 1} `}</span>-
+            {/* <span className={`font-bold`}>{` ${(page + 1) * pageSize < smTotal ? (page + 1) * pageSize : smTotal} `}</span> */}
             <span className={`font-bold`}>{` ${(page + 1) * pageSize} `}</span>
             of
             <span className={`font-bold`}>{` ${smTotal} `}</span>

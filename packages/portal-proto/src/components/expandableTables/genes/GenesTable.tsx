@@ -57,7 +57,8 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   const transformResponse = useGeneTableFormat(initialData);
 
   useEffect(() => {
-    handleGTotal(transformResponse[0].genesTotal);
+    if (transformResponse[0]?.genesTotal)
+      handleGTotal(transformResponse[0].genesTotal);
   }, [transformResponse]);
 
   const handleExpandedProxy = (exp: ExpandedState) => {

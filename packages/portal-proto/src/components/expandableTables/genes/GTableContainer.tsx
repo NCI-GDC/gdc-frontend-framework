@@ -125,7 +125,9 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           <span>
             Showing
             <span className={`font-bold`}>{` ${page * pageSize + 1} `}</span>-
-            <span className={`font-bold`}>{` ${(page + 1) * pageSize} `}</span>
+            <span className={`font-bold`}>{` ${
+              (page + 1) * pageSize < gTotal ? (page + 1) * pageSize : gTotal
+            } `}</span>
             of
             <span className={`font-bold`}>{` ${gTotal} `}</span>
             genes

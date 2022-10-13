@@ -53,7 +53,8 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   const transformResponse = useSomaticMutationsTableFormat(initialData);
 
   useEffect(() => {
-    handleSMTotal(transformResponse[0].ssmsTotal);
+    if (transformResponse[0]?.ssmsTotal)
+      handleSMTotal(transformResponse[0].ssmsTotal);
   }, [transformResponse]);
 
   const handleExpandedProxy = (exp: ExpandedState) => {
