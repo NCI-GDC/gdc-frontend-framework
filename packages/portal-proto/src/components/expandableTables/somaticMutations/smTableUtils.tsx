@@ -41,21 +41,6 @@ export const Consequence = ({
   );
 };
 
-export const handleVep = (vepImpact: string): string => {
-  switch (vepImpact) {
-    case "HIGH":
-      return "HI-red";
-    case "MODERATE":
-      return "MO-gray";
-    case "LOW":
-      return "MO-green";
-    case "MODIFIER":
-      return "MR-gray";
-    default:
-      return "-";
-  }
-};
-
 const Impact = ({ row, accessor }) => {
   const { polyphenImpact, polyphenScore, siftImpact, siftScore, vepImpact } =
     row.original[`${accessor}`];
@@ -231,8 +216,6 @@ export const createTableColumn = (
             accessorKey: accessor,
             header: () => <TableHeader twStyles={``} title={accessor} />,
             cell: ({ row, getValue }) => {
-              //<Tooltip label={`Click icon to plot ${value.symbol}`}>
-              //          </Tooltip> */}
               return (
                 <>
                   {row.getCanExpand() && (
