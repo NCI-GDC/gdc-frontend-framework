@@ -2,18 +2,6 @@ import { render } from "@testing-library/react";
 import { UserProfileModal } from "./UserProfileModal";
 import * as core from "@gff/core";
 
-class ResizeObserver {
-  observe() {
-    // do nothing.
-  }
-  unobserve() {
-    // do nothing.
-  }
-  disconnect() {
-    // do nothing.
-  }
-}
-
 describe("<UserProfileModal />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -29,7 +17,6 @@ describe("<UserProfileModal />", () => {
         },
       },
     });
-    window.ResizeObserver = ResizeObserver;
 
     const { getByTestId, queryByTestId } = render(
       <UserProfileModal openModal />,

@@ -1,7 +1,15 @@
 export const COHORTS = [
-  { name: "New Custom Cohort", filters: { mode: "and", root: {} } },
+  {
+    name: "All GDC",
+    id: "ALL-GDC-COHORT",
+    filters: { mode: "and", root: {} },
+    caseSet: { caseSetId: { mode: "and", root: {} }, status: "uninitialized" },
+    modified: false,
+    modifiedDate: new Date(2099, 1, 1).toISOString(),
+  },
   {
     name: "Baily's Cohort",
+    id: "0000-0000-1000-0000",
     filters: {
       mode: "and",
       root: {
@@ -12,22 +20,30 @@ export const COHORTS = [
         },
       },
     },
+    caseSet: { caseSetId: { mode: "and", root: {} }, status: "uninitialized" },
+    modified: false,
+    modifiedDate: new Date(2020, 1, 15).toISOString(),
   },
   {
     name: "Pancreas",
+    id: "0000-0000-1001-0000",
     filters: {
       root: {
         "cases.primary_site": {
           field: "cases.primary_site",
-          operands: ["Pancreas"],
+          operands: ["pancreas"],
           operator: "includes",
         },
       },
       mode: "and",
+      modifiedDate: new Date(2020, 1, 9).toISOString(),
     },
+    caseSet: { caseSetId: { mode: "and", root: {} }, status: "uninitialized" },
+    modified: false,
   },
   {
     name: "Pancreas - KRAS mutated",
+    id: "0000-0000-1002-0000",
     filters: {
       root: {
         "genes.symbol": {
@@ -37,15 +53,19 @@ export const COHORTS = [
         },
         "cases.primary_site": {
           field: "cases.primary_site",
-          operands: ["Pancreas"],
+          operands: ["pancreas"],
           operator: "includes",
         },
       },
       mode: "and",
     },
+    caseSet: { caseSetId: { mode: "and", root: {} }, status: "uninitialized" },
+    modified: false,
+    modifiedDate: new Date(2020, 1, 8).toISOString(),
   },
   {
     name: "Pancreas - KRAS not mutated",
+    id: "0000-0000-1003-0000",
     filters: {
       root: {
         "genes.symbol": {
@@ -55,15 +75,19 @@ export const COHORTS = [
         },
         "cases.primary_site": {
           field: "cases.primary_site",
-          operands: ["Pancreas"],
+          operands: ["pancreas"],
           operator: "includes",
         },
       },
       mode: "and",
     },
+    caseSet: { caseSetId: { mode: "and", root: {} }, status: "uninitialized" },
+    modified: false,
+    modifiedDate: new Date(2020, 1, 7).toISOString(),
   },
   {
     name: "breast, true",
+    id: "0000-0000-1004-0000",
     filters: {
       root: {
         "cases.primary_site": {
@@ -79,5 +103,8 @@ export const COHORTS = [
       },
       mode: "and",
     },
+    caseSet: { caseSetId: { mode: "and", root: {} }, status: "uninitialized" },
+    modified: false,
+    modifiedDate: new Date(2020, 1, 6).toISOString(),
   },
 ];

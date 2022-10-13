@@ -1,14 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { showNotification } from "@mantine/notifications";
 import { CollapsibleContainer } from "@/components/CollapsibleContainer";
 import { Menu, Tabs, Divider } from "@mantine/core";
 import { ContextualCasesView } from "../cases/CasesView";
 import CountButton from "./CountButton";
 import { convertFilterToComponent } from "./QueryRepresentation";
+import { useCohortFacetFilters } from "./CohortGroup";
+import CohortManager from "./CohortManager";
 import {
-  CohortGroupProps,
-  CohortBar,
-  useCohortFacetFilters,
-} from "./CohortGroup";
+  DeleteCohortNotification,
+  NewCohortNotification,
+} from "@/features/cohortBuilder/CohortNotifications";
+
+import {
+  useCoreDispatch,
+  clearCohortFilters,
+  setCurrentCohortId,
+  useCoreSelector,
+  selectAvailableCohorts,
+  DEFAULT_COHORT_ID,
+  selectCurrentCohortId,
+  selectCohortMessage,
+  selectCurrentCohortName,
+  clearCohortMessage,
+} from "@gff/core";
 
 import {
   MdDownload as DownloadIcon,
@@ -22,41 +37,61 @@ import {
 } from "react-icons/fa";
 
 import SummaryFacets, { SummaryFacetInfo } from "./SummaryFacets";
-import { updateEnumFilters } from "../facets/hooks";
-import {
-  useCoreDispatch,
-  clearCohortFilters,
-  setCurrentCohort,
-} from "@gff/core";
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
 import FunctionButton from "@/components/FunctionButton";
 
-const ContextBar: React.FC<CohortGroupProps> = ({
-  cohorts,
-}: CohortGroupProps) => {
-  const [isGroupCollapsed, setIsGroupCollapsed] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
+const ContextBar: React.FC = () => {
+  const [isGroupCollapsed, setIsGroupCollapsed] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(DEFAULT_COHORT_ID);
 
-  const handleCohortSelection = (idx) => {
-    setCurrentIndex(idx);
+  const handleCohortSelection = (idx: string) => {
     setCohort(idx);
   };
 
   const coreDispatch = useCoreDispatch();
-
-  const setCohort = (idx: number) => {
-    coreDispatch(setCurrentCohort(cohorts[idx].name));
-
-    if (cohorts[idx].facets) {
-      if (cohorts[idx].facets.length == 0) {
-        coreDispatch(clearCohortFilters());
-      } else {
-        cohorts[idx].facets.map((x) => {
-          updateEnumFilters(x.value, x.field, coreDispatch);
-        });
-      }
-    }
+  const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
+  const currentCohortId = useCoreSelector((state) =>
+    selectCurrentCohortId(state),
+  );
+  const currentCohortName = useCoreSelector((state) =>
+    selectCurrentCohortName(state),
+  );
+  const setCohort = (id: string) => {
+    coreDispatch(setCurrentCohortId(id));
   };
+
+  const cohortMessage = useCoreSelector((state) => selectCohortMessage(state));
+
+  useEffect(() => {
+    if (cohortMessage) {
+      const cmdAndParam = cohortMessage.split("|", 2);
+      if (cmdAndParam.length == 2) {
+        if (cmdAndParam[0] === "newCohort") {
+          showNotification({
+            message: <NewCohortNotification cohortName={cmdAndParam[1]} />,
+            classNames: {
+              description: "flex flex-col content-center text-center",
+            },
+            autoClose: 5000,
+          });
+        }
+        if (cmdAndParam[0] === "deleteCohort") {
+          showNotification({
+            message: <DeleteCohortNotification cohortName={cmdAndParam[1]} />,
+            classNames: {
+              description: "flex flex-col content-center text-center",
+            },
+            autoClose: 5000,
+          });
+        }
+      }
+      coreDispatch(clearCohortMessage());
+    }
+  }, [cohortMessage, coreDispatch, currentCohortName]);
+
+  useEffect(() => {
+    setCurrentIndex(currentCohortId);
+  }, [currentCohortId]);
 
   // TODO: move this to a configuration files or slice
   const [summaryFields] = useState([
@@ -101,12 +136,12 @@ const ContextBar: React.FC<CohortGroupProps> = ({
   const filters = useCohortFacetFilters();
 
   const CohortBarWithProps = () => (
-    <CohortBar
+    <CohortManager
       // TODO: need to connect to cohort persistence
       // eslint-disable-next-line react/prop-types
-      cohort_names={cohorts.map((o) => o.name)}
+      cohorts={cohorts}
       onSelectionChanged={handleCohortSelection}
-      defaultIdx={currentIndex}
+      startingId={currentIndex}
     />
   );
 

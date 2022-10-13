@@ -19,6 +19,8 @@ import {
 import { useMantineTheme } from "@mantine/core";
 import ChartTitleBar from "./ChartTitleBar";
 import { capitalize, truncateString } from "src/utils";
+import { fieldNameToTitle } from "@gff/core";
+import { FacetDocTypeToLabelsMap } from "../facets/hooks";
 
 const maxValuesToDisplay = 7;
 
@@ -30,6 +32,7 @@ interface FacetChartProps {
   readonly height?: number;
   readonly showTitle?: boolean;
   readonly maxBins?: number;
+  readonly valueLabel?: string;
 }
 
 // from https://stackoverflow.com/questions/33053310/remove-value-from-object-without-mutation
@@ -66,6 +69,7 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
   height,
   showTitle = true,
   maxBins = maxValuesToDisplay,
+  valueLabel = FacetDocTypeToLabelsMap.cases,
 }: FacetChartProps) => {
   const [chart_data, setChartData] = useState([]);
   const { ref, width } = useElementSize();
@@ -84,7 +88,7 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
     <div ref={ref}>
       {showTitle ? (
         <ChartTitleBar
-          title={convertFieldToName(field)}
+          title={fieldNameToTitle(field)}
           divId={chartDivId}
           filename={field}
           jsonData={{}}
@@ -96,7 +100,8 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
           data={chart_data}
           height={height}
           width={width * 2.2}
-          label="# of Cases"
+          label={`# of ${valueLabel}`}
+          unitLabel={valueLabel}
         />
       ) : (
         <div className="flex flex-row items-center justify-center w-100">
@@ -105,13 +110,6 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
       )}
     </div>
   );
-};
-
-const convertFieldToName = (field: string): string => {
-  const property = field.split(".").pop();
-  const tokens = property.split("_");
-  const capitalizedTokens = tokens.map((s) => capitalize(s));
-  return capitalizedTokens.join(" ");
 };
 
 export const processLabel = (label: string): string => {
@@ -127,12 +125,14 @@ interface EnumBarChartTooltipProps {
     y: number;
     x: string;
   };
+  readonly unitLabel?: string;
 }
 
 const EnumBarChartTooltip: React.FC<EnumBarChartTooltipProps> = ({
   x,
   y,
   datum,
+  unitLabel = "Cases",
 }: EnumBarChartTooltipProps) => {
   return (
     <g style={{ pointerEvents: "none" }}>
@@ -141,7 +141,9 @@ const EnumBarChartTooltip: React.FC<EnumBarChartTooltipProps> = ({
           label={
             <>
               <b>{datum.x}</b>
-              <p>{datum.y.toLocaleString()} Cases</p>
+              <p>
+                {datum.y.toLocaleString()} {unitLabel}
+              </p>
             </>
           }
           withArrow
@@ -166,6 +168,7 @@ interface BarChartProps {
   readonly width?: number;
   readonly height?: number;
   readonly label: string;
+  readonly unitLabel?: string;
 }
 
 const EnumBarChart: React.FC<BarChartProps> = ({
@@ -173,6 +176,7 @@ const EnumBarChart: React.FC<BarChartProps> = ({
   height,
   width,
   label,
+  unitLabel,
 }: BarChartProps) => {
   const max = Math.max(...data.map((d) => d.y));
   const formatter = Intl.NumberFormat("en", { notation: "compact" });
@@ -220,7 +224,9 @@ const EnumBarChart: React.FC<BarChartProps> = ({
           horizontal
           labels={() => ""}
           labelComponent={
-            <VictoryTooltip flyoutComponent={<EnumBarChartTooltip />} />
+            <VictoryTooltip
+              flyoutComponent={<EnumBarChartTooltip unitLabel={unitLabel} />}
+            />
           }
           style={{
             data: {

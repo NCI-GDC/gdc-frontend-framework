@@ -1,8 +1,8 @@
 import { BAMSlicingButton } from "@/features/files/BAMSlicingButton";
 import * as core from "@gff/core";
 import { render } from "@testing-library/react";
-import * as util from "./util";
 import userEvent from "@testing-library/user-event";
+import * as util from "src/utils/userProjectUtils";
 
 describe("<BAMSlicingButton />", () => {
   beforeEach(() => {
@@ -25,10 +25,9 @@ describe("<BAMSlicingButton />", () => {
     const button = getByTestId("bamButton");
     await userEvent.click(button);
     expect(mockDispatch).toBeCalledWith({
-      payload: "NoAccessModal",
+      payload: { modal: "NoAccessModal" },
       type: "modals/showModal",
     });
-    // jest.spyOn(util, "userCanDownloadFile").mockReturnValueOnce(false);
   });
 
   it("show NoAccessModal when not logged in", async () => {
@@ -47,7 +46,7 @@ describe("<BAMSlicingButton />", () => {
     const button = getByTestId("bamButton");
     await userEvent.click(button);
     expect(mockDispatch).toBeCalledWith({
-      payload: "BAMSlicingModal",
+      payload: { modal: "BAMSlicingModal" },
       type: "modals/showModal",
     });
   });
@@ -68,7 +67,7 @@ describe("<BAMSlicingButton />", () => {
     const button = getByTestId("bamButton");
     await userEvent.click(button);
     expect(mockDispatch).toBeCalledWith({
-      payload: "NoAccessToProjectModal",
+      payload: { modal: "NoAccessToProjectModal" },
       type: "modals/showModal",
     });
   });

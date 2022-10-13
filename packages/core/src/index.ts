@@ -28,14 +28,7 @@ export * from "./features/annotations/annotationsHooks";
 export * from "./features/history/historySlice";
 export * from "./features/history/historyHooks";
 export * from "./features/cases/casesSlice";
-export * from "./features/cohort/cohortBuilderConfigSlice";
-export * from "./features/cohort/cohortSlice";
-export * from "./features/cohort/caseSetSlice";
-export * from "./features/cohort/cohortFilterSlice";
-export * from "./features/cohort/cohortNameSlice";
-export * from "./features/cohort/availableCohortsSlice";
-export * from "./features/cohort/comparisonCohortsSlice";
-export * from "./features/cohort/countSlice";
+export * from "./features/cohort";
 export * from "./features/summary/totalCountsSlice";
 export * from "./features/genomic/ssmsTableSlice";
 export * from "./features/genomic/genesTableSlice";
@@ -59,6 +52,8 @@ export * from "./features/genes/genesTable/genesTableApiSlice";
 export * from "./features/facets/facetsByNameTypeAndFilter";
 export * from "./features/users/usersSlice";
 export * from "./features/modals/modalsSlice";
+export * from "./features/versionInfo/versionInfoSlice";
+export { CoreState } from "./reducers";
 
 import { datadogRum } from "@datadog/browser-rum";
 

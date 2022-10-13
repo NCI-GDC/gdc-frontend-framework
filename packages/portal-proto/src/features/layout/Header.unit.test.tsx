@@ -4,22 +4,6 @@ import { Header } from "./Header";
 import * as core from "@gff/core";
 import * as tour from "@reactour/tour";
 
-jest.mock("url-join", () => ({
-  urlJoin: jest.fn(),
-}));
-
-class ResizeObserver {
-  observe() {
-    // do nothing.
-  }
-  unobserve() {
-    // do nothing.
-  }
-  disconnect() {
-    // do nothing.
-  }
-}
-
 describe("<Header />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -108,7 +92,6 @@ describe("<Header />", () => {
     jest
       .spyOn(core, "fetchToken")
       .mockReturnValue(Promise.resolve({ text: "", status: 401 }));
-    window.ResizeObserver = ResizeObserver;
     const { getByTestId } = render(
       <Header {...{ headerElements, indexPath: "/" }} />,
     );
@@ -116,11 +99,11 @@ describe("<Header />", () => {
     await fireEvent.click(getByTestId("userdropdown"));
     await fireEvent.click(getByTestId("userprofilemenu"));
     expect(mockDispatch).toBeCalledWith({
-      payload: "SessionExpireModal",
+      payload: { modal: "SessionExpireModal" },
       type: "modals/showModal",
     });
     expect(mockDispatch).not.toBeCalledWith({
-      payload: "UserProfileModal",
+      payload: { modal: "UserProfileModal" },
       type: "modals/showModal",
     });
   });
@@ -144,7 +127,6 @@ test("should show User Profile Modal when fetch token returns 401", async () => 
   jest
     .spyOn(core, "fetchToken")
     .mockReturnValue(Promise.resolve({ text: "", status: 200 }));
-  window.ResizeObserver = ResizeObserver;
   const { getByTestId } = render(
     <Header {...{ headerElements, indexPath: "/" }} />,
   );
@@ -152,11 +134,11 @@ test("should show User Profile Modal when fetch token returns 401", async () => 
   await fireEvent.click(getByTestId("userdropdown"));
   await fireEvent.click(getByTestId("userprofilemenu"));
   expect(mockDispatch).not.toBeCalledWith({
-    payload: "SessionExpireModal",
+    payload: { modal: "SessionExpireModal" },
     type: "modals/showModal",
   });
   expect(mockDispatch).toBeCalledWith({
-    payload: "UserProfileModal",
+    payload: { modal: "UserProfileModal" },
     type: "modals/showModal",
   });
 });

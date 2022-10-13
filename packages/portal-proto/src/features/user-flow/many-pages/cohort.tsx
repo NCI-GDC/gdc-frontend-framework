@@ -1,3 +1,7 @@
+/**
+ * This file is depreciated
+ */
+
 import React, { PropsWithChildren, useState } from "react";
 import {
   MdSave as SaveIcon,
@@ -16,7 +20,6 @@ import { Case, ContextualCasesView } from "../../cases/CasesView";
 import { ContextualFilesView } from "../../files/FilesView";
 import { CohortGroup } from "../../cohortBuilder/CohortGroup";
 import { SummaryCharts } from "../../cohortBuilder/SummaryCharts";
-import { MetaSearch } from "../../cohortBuilder/MetaSearch";
 import { CohortTabbedFacets } from "../../cohortBuilder/FacetGroup";
 import { GdcFile } from "@gff/core";
 import { Button } from "@mantine/core";
@@ -251,7 +254,6 @@ export interface CohortBuilderProps {
 }
 
 export const CohortBuilder: React.FC<CohortBuilderProps> = ({
-  cohort,
   show = true,
 }: CohortBuilderProps) => {
   const [summaryFields] = useState([
@@ -269,8 +271,7 @@ export const CohortBuilder: React.FC<CohortBuilderProps> = ({
       })}
     >
       <div className="">
-        <CohortGroup cohorts={cohort} simpleMode={true} />
-        <MetaSearch />
+        <CohortGroup />
         <CohortTabbedFacets />
       </div>
       <div className="pt-4">
@@ -332,13 +333,11 @@ interface CohortBuilderModalProps {
 const CohortBuilderModal: React.FC<CohortBuilderModalProps> = ({
   isOpen,
   closeModal,
-  cohort,
 }: CohortBuilderModalProps) => {
   return (
     <ReactModal isOpen={isOpen} onRequestClose={closeModal}>
       <div>
-        <CohortGroup cohorts={cohort} simpleMode={true} />
-        <MetaSearch />
+        <CohortGroup />
         <CohortTabbedFacets />
       </div>
     </ReactModal>

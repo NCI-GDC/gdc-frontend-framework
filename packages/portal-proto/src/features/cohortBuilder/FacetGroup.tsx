@@ -1,4 +1,4 @@
-import { EnumFacet } from "../facets/EnumFacet";
+import EnumFacet from "../facets/EnumFacet";
 import NumericRangeFacet from "../facets/NumericRangeFacet";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import type { ReactTabsFunctionComponent, TabProps } from "react-tabs";
@@ -7,6 +7,14 @@ import Select from "react-select";
 import { get_facet_subcategories, get_facets } from "./dictionary";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { GQLIndexType, FacetDefinition } from "@gff/core";
+import {
+  useClearFilters,
+  useEnumFacet,
+  useRangeFacet,
+  useSelectFieldFilter,
+  useTotalCounts,
+  useUpdateFacetFilter,
+} from "@/features/facets/hooks";
 
 /**
  *
@@ -47,6 +55,12 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
                   field={`${x.field}`}
                   facetName={x.field}
                   description={x.description}
+                  hooks={{
+                    useUpdateFacetFilters: useUpdateFacetFilter,
+                    useTotalCounts: useTotalCounts,
+                    useClearFilter: useClearFilters,
+                    useGetFacetData: useEnumFacet,
+                  }}
                 />
               );
             if (
@@ -70,6 +84,13 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
                   indexType={indexType}
                   minimum={x.range?.minimum}
                   maximum={x.range?.maximum}
+                  hooks={{
+                    useGetFacetData: useRangeFacet,
+                    useGetFacetFilters: useSelectFieldFilter,
+                    useUpdateFacetFilters: useUpdateFacetFilter,
+                    useClearFilter: useClearFilters,
+                    useTotalCounts: useTotalCounts,
+                  }}
                 />
               );
             }

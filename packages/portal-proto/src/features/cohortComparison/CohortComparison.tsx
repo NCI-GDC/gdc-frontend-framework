@@ -53,7 +53,7 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
           }
         </span>
       )}
-      <div className="flex gap-4 pt-2">
+      <div className="flex gap-4 pt-2 bg-base-lightest">
         <div className="p-1 flex basis-7/12 flex-col gap-4">
           {isFetching || isUninitialized ? (
             <div className="min-w-[600px] min-h-[400px] relative">

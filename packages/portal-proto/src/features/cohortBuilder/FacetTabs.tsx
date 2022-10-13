@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Router, { useRouter } from "next/router";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import tw from "tailwind-styled-components";
 import {
@@ -16,6 +17,7 @@ import {
   useCoreSelector,
   useFacetDictionary,
   usePrevious,
+  selectFacetDefinition,
 } from "@gff/core";
 import {
   Button,
@@ -32,9 +34,17 @@ import {
   MdAdd as AddAdditionalIcon,
   MdLibraryAdd as AddFacetIcon,
 } from "react-icons/md";
-import FacetSelection from "@/components/FacetSelection";
 import isEqual from "lodash/isEqual";
-import { createFacetCard } from "@/features/facets/CreateFacetCard";
+import FacetSelection from "@/components/FacetSelection";
+import { createFacetCardsFromList } from "@/features/facets/CreateFacetCard";
+import {
+  useClearFilters,
+  useEnumFacet,
+  useRangeFacet,
+  useSelectFieldFilter,
+  useTotalCounts,
+  useUpdateFacetFilter,
+} from "@/features/facets/hooks";
 
 const CustomFacetWhenEmptyGroup = tw(Stack)`
 h-64
@@ -172,10 +182,10 @@ const CustomFacetGroup = (): JSX.Element => {
             <Button
               variant="outline"
               onClick={() => setOpened(true)}
-              aria-label="Add Custom Filter"
+              aria-label="Add a Custom Filter"
               className="bg-base-lightest text-base-contrast-lightest"
             >
-              Add Custom Facet
+              Add a Custom Filter
             </Button>
           </CustomFacetWhenEmptyGroup>
         </Center>
@@ -199,10 +209,19 @@ const CustomFacetGroup = (): JSX.Element => {
               Add a Custom Filter
             </Text>
           </Button>
-          {createFacetCard(
+          {createFacetCardsFromList(
             customFacetDefinitions,
             "cases", // Cohort custom filter restricted to "cases"
             customConfig.index as GQLIndexType,
+            {
+              useGetEnumFacetData: useEnumFacet,
+              useGetRangeFacetData: useRangeFacet,
+              useGetFacetFilters: useSelectFieldFilter,
+              useUpdateFacetFilters: useUpdateFacetFilter,
+              useClearFilter: useClearFilters,
+              useTotalCounts: useTotalCounts,
+            },
+            "cohort-builder",
             handleRemoveFilter,
           )}
         </FacetGroup>
@@ -215,12 +234,42 @@ export const FacetTabs = (): JSX.Element => {
   const tabsConfig = useCoreSelector((state) =>
     selectCohortBuilderConfig(state),
   );
+  const router = useRouter();
+  const facets =
+    useCoreSelector((state) => selectFacetDefinition(state)).data || {};
+  const [activeTab, setActiveTab] = useState(
+    router?.query?.tab
+      ? (router.query.tab as string)
+      : Object.keys(tabsConfig)[0],
+  );
+
+  useEffect(() => {
+    if (
+      router !== null &&
+      activeTab !== undefined &&
+      activeTab !== router?.query?.tab
+    ) {
+      router.push({ query: { ...Router.query, tab: activeTab } }, undefined, {
+        scroll: false,
+      });
+    }
+    // https://github.com/vercel/next.js/discussions/29403#discussioncomment-1908563
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab]);
+
+  useEffect(() => {
+    if (router?.query?.tab && activeTab !== router.query.tab) {
+      setActiveTab(router.query.tab as string);
+    }
+  }, [router?.query?.tab, activeTab, setActiveTab]);
+
   return (
     <div className="w-100">
       <StyledFacetTabs
         orientation="vertical"
+        value={activeTab}
+        onTabChange={setActiveTab}
         keepMounted={false}
-        defaultValue={tabsConfig[Object.keys(tabsConfig)[0]].label}
         classNames={{
           tab: "data-active:text-primary-content-darkest text-primary-content-lightest font-medium data-active:border-primary-darker data-active:border-l-1 data-active:border-t-1 data-active:border-b-1 data-active:bg-base-max hover:bg-primary-darker",
           tabsList:
@@ -229,37 +278,44 @@ export const FacetTabs = (): JSX.Element => {
         }}
       >
         <Tabs.List>
-          {Object.values(tabsConfig).map((tabEntry: CohortBuilderCategory) => {
-            return (
-              <Tabs.Tab
-                key={`cohortTab-${tabEntry.label}`}
-                value={tabEntry.label}
-              >
-                {tabEntry.label}
-              </Tabs.Tab>
-            );
-          })}
+          {Object.entries(tabsConfig).map(
+            ([key, tabEntry]: [string, CohortBuilderCategory]) => {
+              return (
+                <Tabs.Tab key={key} value={key}>
+                  {tabEntry.label}
+                </Tabs.Tab>
+              );
+            },
+          )}
         </Tabs.List>
-        {Object.values(tabsConfig).map((tabEntry: CohortBuilderCategory) => {
-          return (
-            <Tabs.Panel
-              key={`cohortTab-${tabEntry.label}`}
-              value={tabEntry.label}
-            >
-              {tabEntry.label === "Custom" ? (
+        {Object.entries(tabsConfig).map(
+          ([key, tabEntry]: [string, CohortBuilderCategory]) => (
+            <Tabs.Panel key={key} value={key}>
+              {" "}
+              {key === "custom" ? (
                 <CustomFacetGroup />
               ) : (
                 <FacetGroup>
-                  {createFacetCard(
-                    getFacetInfo(tabEntry.facets),
+                  {createFacetCardsFromList(
+                    getFacetInfo(tabEntry.facets, facets),
                     tabEntry.docType as GQLDocType,
                     tabEntry.index as GQLIndexType,
+                    {
+                      useGetEnumFacetData: useEnumFacet,
+                      useGetRangeFacetData: useRangeFacet,
+                      useGetFacetFilters: useSelectFieldFilter,
+                      useUpdateFacetFilters: useUpdateFacetFilter,
+                      useClearFilter: useClearFilters,
+                      useTotalCounts: useTotalCounts,
+                    },
+                    "cohort-builder",
+                    undefined,
                   )}
                 </FacetGroup>
               )}
             </Tabs.Panel>
-          );
-        })}
+          ),
+        )}
       </StyledFacetTabs>
     </div>
   );

@@ -10,7 +10,7 @@ import {
 } from "react-icons/md";
 import {
   clearGenomicFilters,
-  selectCurrentCohortFilterSet,
+  selectCurrentCohortFilters,
   useCoreDispatch,
   useCoreSelector,
   useOncoGrid,
@@ -23,11 +23,12 @@ import { cnvTypes, consequenceTypes, defaultColorMap } from "./constants";
 import useOncoGridDisplayData from "./useOncoGridDisplayData";
 import ColorPaletteModal from "./ColorPaletteModal";
 import useOncoGridObject from "./useOncoGridObject";
+import PositionedTooltip from "./PositionedTooltip";
 
 const OncoGridWrapper: React.FC = () => {
   const coreDispatch = useCoreDispatch();
   const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilterSet(state),
+    selectCurrentCohortFilters(state),
   );
   const fullOncoGridContainer = useRef(null);
   const gridContainer = useRef(null);
@@ -44,6 +45,7 @@ const OncoGridWrapper: React.FC = () => {
   const [cnvFilters, setCnvFilters] = useState(Object.keys(cnvTypes));
   const [showColorModal, setShowColorModal] = useState(false);
   const [colorMap, setColorMap] = useState(defaultColorMap);
+  const [showColorTooltip, setShowColorTooltip] = useState(false);
 
   const { data, isUninitialized, isFetching } = useOncoGrid({
     consequenceTypeFilters,
@@ -140,7 +142,14 @@ const OncoGridWrapper: React.FC = () => {
       <div className="flex pb-8">
         <div className="basis-1/2">{`${donors.length} Most Mutated Cases and Top ${genes.length} Mutated Genes by SSM`}</div>
         <div className="flex basis-1/2 justify-end">
-          <Tooltip position="top" label={"Customize Colors"} withArrow>
+          <Tooltip
+            position="top"
+            label={"Customize Colors"}
+            withArrow
+            opened={showColorTooltip}
+            onMouseEnter={() => setShowColorTooltip(true)}
+            onMouseLeave={() => setShowColorTooltip(false)}
+          >
             <Box>
               <Menu>
                 <Menu.Target>
@@ -153,7 +162,12 @@ const OncoGridWrapper: React.FC = () => {
                   </Button>
                 </Menu.Target>
                 <Menu.Dropdown>
-                  <Menu.Item onClick={() => setShowColorModal(true)}>
+                  <Menu.Item
+                    onClick={() => {
+                      setShowColorModal(true);
+                      setShowColorTooltip(false);
+                    }}
+                  >
                     Customize color
                   </Menu.Item>
                   <Menu.Item
@@ -296,30 +310,21 @@ const OncoGridWrapper: React.FC = () => {
       {tracksModal}
       <div className="relative">
         <LoadingOverlay visible={isLoading} overlayOpacity={0.9} />
+        <PositionedTooltip content={tooltipContent} />
         {consequenceTypeFilters.length === 0 && (
           <>
             The current selection has no results. Please select more mutation
             types or reload the page to continue exploration.
           </>
         )}
-        <Tooltip.Floating
-          withinPortal
-          position="left"
-          offset={10}
-          label={tooltipContent}
-          disabled={tooltipContent === null}
-        >
-          <Box>
-            <div
-              ref={(ref) => (gridContainer.current = ref)}
-              className={`oncogrid-wrapper bg-base-lightest ${
-                consequenceTypeFilters.length === 0 || isLoading
-                  ? "invisible"
-                  : "visible"
-              }`}
-            />
-          </Box>
-        </Tooltip.Floating>
+        <div
+          ref={(ref) => (gridContainer.current = ref)}
+          className={`oncogrid-wrapper bg-base-lightest ${
+            consequenceTypeFilters.length === 0 || isLoading
+              ? "invisible"
+              : "visible"
+          }`}
+        />
       </div>
     </div>
   );

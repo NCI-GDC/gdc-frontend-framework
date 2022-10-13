@@ -4,7 +4,7 @@ import {
   formatDataForHorizontalTable,
   mapGdcFileToCartFile,
 } from "../files/utils";
-import { FaMicroscope, FaShoppingCart, FaDownload } from "react-icons/fa";
+import { FaMicroscope, FaShoppingCart } from "react-icons/fa";
 import { Tooltip } from "@mantine/core";
 import Link from "next/link";
 import {
@@ -17,13 +17,8 @@ import {
 import { addToCart, removeFromCart } from "@/features/cart/updateCart";
 import { get } from "lodash";
 import { entityTypes } from "@/components/BioTree/types";
-import { capitalize } from "src/utils";
-
-interface IHumanifyParams {
-  term: string;
-  capitalize?: boolean;
-  facetTerm?: boolean;
-}
+import { humanify, fileInCart } from "src/utils";
+import { DownloadFile } from "@/components/DownloadButtons";
 
 export const match = (query: string, entity: Record<string, any>): boolean =>
   Object.keys(entity).some((k) => {
@@ -59,31 +54,6 @@ export const search = (
   return found;
 };
 
-export const humanify = ({
-  term,
-  capitalize: cap = true,
-  facetTerm = false,
-}: IHumanifyParams): string => {
-  let original;
-  let humanified;
-  if (facetTerm) {
-    // Splits on capital letters followed by lowercase letters to find
-    // words squished together in a string.
-    original = term.split(/(?=[A-Z][a-z])/).join(" ");
-    humanified = term.replace(/\./g, " ").replace(/_/g, " ").trim();
-  } else {
-    const split = (original || term).split(".");
-    humanified = split[split.length - 1].replace(/_/g, " ").trim();
-
-    // Special case 'name' to include any parent nested for sake of
-    // specificity in the UI
-    if (humanified === "name" && split.length > 1) {
-      humanified = `${split[split.length - 2]} ${humanified}`;
-    }
-  }
-  return cap ? capitalize(humanified) : humanified;
-};
-
 export const idFields = [
   "sample_id",
   "portion_id",
@@ -99,6 +69,8 @@ export const formatEntityInfo = (
   dispatch: CoreDispatch,
   currentCart: CartFile[],
   selectedSlide: readonly FileDefaults[],
+  downloadActive: boolean,
+  setDownloadActive: React.Dispatch<React.SetStateAction<boolean>>,
 ): {
   readonly headerName: string;
   readonly values: readonly (
@@ -139,50 +111,55 @@ export const formatEntityInfo = (
       ]),
   );
 
-  const fileInCart = (cart: CartFile[], newId: string) =>
-    cart.map((f) => f.fileId).some((id) => id === newId);
-
   const isFileInCart = fileInCart(currentCart, selectedSlide[0]?.file_id);
 
   if (foundType === "slide" && !!selectedSlide[0]) {
     filtered.push([
-      "Slides",
+      "Slide Image",
       <div className="flex gap-4" key={selectedSlide[0]?.file_id}>
         <Tooltip label="View Slide Image">
-          <Link
-            href={`/user-flow/workbench/MultipleImageViewerPage?caseId=${caseId}&selectedId=${selectedSlide[0]?.file_id}`}
-          >
-            <a>
-              <FaMicroscope className="text-primary-content" />
-            </a>
-          </Link>
+          <div>
+            <Link
+              href={`/user-flow/workbench/MultipleImageViewerPage?caseId=${caseId}&selectedId=${selectedSlide[0]?.file_id}`}
+            >
+              <a>
+                <FaMicroscope className="text-primary-content" />
+              </a>
+            </Link>
+          </div>
         </Tooltip>{" "}
         <Tooltip label={isFileInCart ? "Remove from Cart" : "Add to Cart"}>
-          <FaShoppingCart
-            onClick={() => {
-              isFileInCart
-                ? removeFromCart(
-                    mapGdcFileToCartFile(mapFileData(selectedSlide)),
-                    currentCart,
-                    dispatch,
-                  )
-                : addToCart(
-                    mapGdcFileToCartFile(mapFileData(selectedSlide)),
-                    currentCart,
-                    dispatch,
-                  );
-            }}
-            className={isFileInCart ? "text-nci-green" : "text-primary-content"}
-          />
+          <div>
+            <FaShoppingCart
+              onClick={() => {
+                isFileInCart
+                  ? removeFromCart(
+                      mapGdcFileToCartFile(mapFileData(selectedSlide)),
+                      currentCart,
+                      dispatch,
+                    )
+                  : addToCart(
+                      mapGdcFileToCartFile(mapFileData(selectedSlide)),
+                      currentCart,
+                      dispatch,
+                    );
+              }}
+              className={`${
+                isFileInCart ? "text-secondary-min" : "text-primary-content"
+              } cursor-pointer`}
+            />
+          </div>
         </Tooltip>
         <Tooltip label="Download">
-          <FaDownload
-            // TODO: change this
-            onClick={() => {
-              alert("Download coming soon!!!");
-            }}
-            className="text-primary-content"
-          />
+          <div>
+            <DownloadFile
+              file={mapFileData(selectedSlide)[0]}
+              active={downloadActive}
+              setActive={setDownloadActive}
+              customStyle="text-primary-content px-0 h-3.5 border-0 hover:bg-transparent"
+              showLoading={false}
+            />
+          </div>
         </Tooltip>
       </div>,
     ]);

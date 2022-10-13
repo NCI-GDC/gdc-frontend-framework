@@ -39,6 +39,7 @@ import { caseSummarySliceReducer } from "./features/cases/caseSummarySlice";
 import { facetsByNameTypeAndFilterReducer } from "./features/facets/facetsByNameTypeAndFilter";
 import { userDetailsReducer } from "./features/users/usersSlice";
 import { modalReducer } from "./features/modals/modalsSlice";
+import { versionInfoReducer } from "./features/versionInfo/versionInfoSlice";
 
 export const reducers = combineReducers({
   cohort: cohortReducers,
@@ -71,7 +72,7 @@ export const reducers = combineReducers({
   modals: modalReducer,
   [cohortApiSliceReducerPath]: cohortApiReducer,
   [survivalApiSliceReducerPath]: survivalApiReducer,
-  [genesTableApiSliceReducerPath]: genesTableApiReducer,
+  versionInfo: versionInfoReducer,
 });
 
 export type CoreState = ReturnType<typeof reducers>;

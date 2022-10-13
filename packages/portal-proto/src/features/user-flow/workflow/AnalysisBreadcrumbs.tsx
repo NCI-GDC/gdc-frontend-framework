@@ -7,6 +7,7 @@ interface AnalysisBreadcrumbsProps {
   readonly setCohortSelectionOpen: (open: boolean) => void;
   readonly cohortSelectionOpen: boolean;
   readonly setActiveApp: (app: string) => void;
+  readonly rightComponent?: React.ReactElement;
 }
 
 const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
@@ -14,6 +15,7 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
   setCohortSelectionOpen,
   cohortSelectionOpen,
   setActiveApp,
+  rightComponent,
 }: AnalysisBreadcrumbsProps) => {
   const onDemoApp = currentApp?.includes("Demo");
   const appId = onDemoApp ? currentApp?.split("Demo")[0] : currentApp;
@@ -22,7 +24,7 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
   const displayAdditionalSteps = !onDemoApp && appInfo?.selectAdditionalCohort;
 
   return (
-    <div className="w-full bg-primary-darkest text-white p-2 flex items-center ">
+    <div className="w-full bg-primary-darkest p-2 flex items-center ">
       <Button
         onClick={() => setActiveApp(undefined)}
         className="bg-base-lightest text-primary-content-darkest"
@@ -31,7 +33,7 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
         <MdClose size={20} />
       </Button>
       <span
-        className={`p-2 mx-2 uppercase ${
+        className={`p-2 mx-2 uppercase text-white ${
           !displayAdditionalSteps ? "font-bold" : ""
         }`}
       >
@@ -41,9 +43,9 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
         <>
           {appInfo?.selectAdditionalCohort && (
             <>
-              <MdCircle size={8} />
+              <MdCircle size={8} color="white" />
               <span
-                className={`p-2 mx-2 uppercase cursor-pointer ${
+                className={`p-2 mx-2 uppercase cursor-pointer text-white ${
                   cohortSelectionOpen ? "font-bold" : ""
                 }`}
                 role="button"
@@ -59,12 +61,15 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
           )}
           {!cohortSelectionOpen && (
             <>
-              <MdCircle size={8} />
-              <span className="p-2 mx-2 uppercase font-bold">Results</span>
+              <MdCircle size={8} color="white" />
+              <span className="p-2 mx-2 uppercase font-bold text-white">
+                Results
+              </span>
             </>
           )}
         </>
       )}
+      <div className="ml-auto mr-0">{rightComponent}</div>
     </div>
   );
 };

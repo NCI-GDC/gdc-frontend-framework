@@ -34,6 +34,7 @@ import { UserProfileModal } from "@/components/Modals/UserProfileModal";
 import { SessionExpireModal } from "@/components/Modals/SessionExpireModal";
 import { useLocalStorage } from "@mantine/hooks";
 import { NoAccessModal } from "@/components/Modals/NoAccessModal";
+import { theme } from "tailwind.config";
 
 interface HeaderProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
@@ -72,7 +73,12 @@ export const Header: React.FC<HeaderProps> = ({
             This causes an accessibility problem because empty anchors confuse screen
             readers. The button tag satisfies both react's requirements and a11y
             requirements.  */}
-          <Button unstyled component={NextLink} href={indexPath}>
+          <Button
+            unstyled
+            component={NextLink}
+            href={indexPath}
+            data-testid="NIHLogoButton"
+          >
             <Image
               src="/NIH_GDC_DataPortal-logo.svg"
               layout="fill"
@@ -82,7 +88,7 @@ export const Header: React.FC<HeaderProps> = ({
           </Button>
         </div>
         {headerElements.map((element, i) => (
-          <div key={i} className="px-2">
+          <div key={i} className="px-2" data-testid={`headerElement${i}`}>
             {typeof element === "string" ? (
               <span className="font-semibold">{element}</span>
             ) : (
@@ -100,6 +106,7 @@ export const Header: React.FC<HeaderProps> = ({
             className={
               "flex flex-row opacity-60 cursor-pointer hover:opacity-100 transition-opacity items-center mx-2 "
             }
+            data-testid="headerSearchButton"
           >
             <SearchIcon size="24px" />{" "}
           </div>
@@ -123,10 +130,10 @@ export const Header: React.FC<HeaderProps> = ({
                     // This is just done for the purpose of checking if the session is still active
                     const token = await fetchToken();
                     if (token.status === 401) {
-                      dispatch(showModal(Modals.SessionExpireModal));
+                      dispatch(showModal({ modal: Modals.SessionExpireModal }));
                       return;
                     }
-                    dispatch(showModal(Modals.UserProfileModal));
+                    dispatch(showModal({ modal: Modals.UserProfileModal }));
                   }}
                   data-testid="userprofilemenu"
                 >
@@ -134,13 +141,16 @@ export const Header: React.FC<HeaderProps> = ({
                 </Menu.Item>
                 <Menu.Item
                   icon={<FaDownload size="1.25em" />}
+                  data-testid="downloadTokenMenuItem"
                   onClick={async () => {
                     if (
                       Object.keys(userInfo.data?.projects.gdc_ids).length > 0
                     ) {
                       const token = await fetchToken();
                       if (token.status === 401) {
-                        dispatch(showModal(Modals.SessionExpireModal));
+                        dispatch(
+                          showModal({ modal: Modals.SessionExpireModal }),
+                        );
                         return;
                       }
                       saveAs(
@@ -162,7 +172,7 @@ export const Header: React.FC<HeaderProps> = ({
                               rel="noreferrer"
                               style={{
                                 textDecoration: "underline",
-                                color: "#0f4163",
+                                color: theme.extend.colors["nci-blue"].darkest,
                               }}
                             >
                               here
@@ -173,20 +183,16 @@ export const Header: React.FC<HeaderProps> = ({
                         ),
                         styles: () => ({
                           root: {
-                            backgroundColor: "#ffe296",
                             textAlign: "center",
-                            "&::before": { backgroundColor: "#ffe296" },
                           },
                           closeButton: {
                             color: "black",
-                            "&:hover": { backgroundColor: "#e6e6e6" },
-                          },
-                          icon: {
-                            height: 0,
-                            width: 0,
+                            "&:hover": {
+                              backgroundColor:
+                                theme.extend.colors["gdc-grey"].lighter,
+                            },
                           },
                         }),
-                        icon: <div />,
                       });
                     }
                   }}
@@ -196,14 +202,11 @@ export const Header: React.FC<HeaderProps> = ({
                 <Menu.Item
                   icon={<MdLogout size="1.25em" />}
                   onClick={() => {
-                    // TODO: need to change next url to the new URL
                     window.location.assign(
-                      urlJoin(
-                        GDC_AUTH,
-                        `logout?next=https://localhost.gdc.cancer.gov:3010/v2/user-flow/workbench`,
-                      ),
+                      urlJoin(GDC_AUTH, `logout?next=${window.location.href}`),
                     );
                   }}
+                  data-testid="logoutMenuItem"
                 >
                   Logout
                 </Menu.Item>
@@ -218,25 +221,33 @@ export const Header: React.FC<HeaderProps> = ({
               className={
                 "flex flex-row opacity-60 hover:opacity-100 transition-opacity  items-center mx-2 cursor-pointer"
               }
+              data-testid="cartLink"
             >
               <CartIcon size="24px" /> Cart ({currentCart.length || 0})
             </div>
           </Link>
           <Menu withArrow>
             <Menu.Target>
-              <button className="p-0">
-                <AppsIcon className="mt-2" size="24px" />
+              <button className="p-0" data-testid="extraButton">
+                <AppsIcon size="24px" />
               </button>
             </Menu.Target>
             <Menu.Dropdown>
-              <Menu.Item onClick={() => setIsOpen(true)}>
+              <Menu.Item
+                onClick={() => setIsOpen(true)}
+                data-testid="tourMenuItem"
+              >
                 <TourIcon size="2.5em" />
                 <div className="text-center text-sm pt-1">{"Tour"}</div>
               </Menu.Item>
               <Menu.Divider />
               <Menu.Label>Themes</Menu.Label>
               {V2Themes.map((theme) => (
-                <Menu.Item key={theme} onClick={() => setTheme(theme)}>
+                <Menu.Item
+                  key={theme}
+                  onClick={() => setTheme(theme)}
+                  data-testid={`${theme}ThemeMenuItem`}
+                >
                   <div className="capitalize text-left text-sm pt-1">
                     {theme}
                   </div>

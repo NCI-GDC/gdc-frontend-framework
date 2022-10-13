@@ -5,7 +5,7 @@ import {
   MdFileDownload,
   MdOutlineClear,
 } from "react-icons/md";
-import { Button, Input, LoadingOverlay, Menu } from "@mantine/core";
+import { Button, Input, LoadingOverlay, Menu, Text } from "@mantine/core";
 import {
   entityType,
   useBiospecimenData,
@@ -39,6 +39,9 @@ export const Biospecimen = ({
   const [totalNodeCount, setTotalNodeCount] = useState(0);
   const [searchText, setSearchText] = useState(bioId || "");
   const [entityClicked, setEntityClicked] = useState(false);
+  // biospecimen download active
+  const [biospecimenDownloadActive, setBiospecimenDownloadActive] =
+    useState(false);
 
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
@@ -118,7 +121,9 @@ export const Biospecimen = ({
         selectedType !== undefined ? (
         <>
           <div className="flex justify-between">
-            <h1>Biospecimen</h1>
+            <Text size="xl" weight={500}>
+              Biospecimen
+            </Text>
             <Menu width="target">
               <Menu.Target>
                 <Button className="px-1.5 min-h-7 w-28 border-base-lightest border rounded text-primary-content-lightest bg-primary hover:bg-primary-darker">
@@ -137,7 +142,7 @@ export const Biospecimen = ({
             </Menu>
           </div>
 
-          <div className="flex">
+          <div className="flex mt-2">
             <div className="mr-5">
               <div className="flex mb-4">
                 <Input
@@ -218,6 +223,8 @@ export const Biospecimen = ({
                   dispatch,
                   currentCart,
                   [selectedSlide],
+                  biospecimenDownloadActive,
+                  setBiospecimenDownloadActive,
                 )}
               />
             </div>

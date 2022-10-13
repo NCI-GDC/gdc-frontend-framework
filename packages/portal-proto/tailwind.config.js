@@ -647,6 +647,11 @@ module.exports = {
         },
         hoverColor: "rgb(226 232 240)",
         activeColor: "rgb(32, 68, 97)",
+        "percentage-bar": {
+          base: "#d5e8e1",
+          complete: "#249c4f",
+          label: "#111111",
+        },
       },
       height: {
         "nci-logo": "54px",
@@ -687,6 +692,7 @@ module.exports = {
         height: "height",
       },
       variants: {
+        textColor: ["responsive", "hover", "focus", "group-hover"],
         extend: {},
       },
       fontSize: {
@@ -725,6 +731,9 @@ module.exports = {
       addVariant("data-active", "&[data-active]");
       addVariant("data-selected", "&[data-selected]");
       addVariant("data-hovered", "&[data-hovered]");
+      addVariant("data-in-range", "&[data-in-range]");
+      addVariant("data-first-in-range", "&[data-first-in-range]");
+      addVariant("data-last-in-range", "&[data-last-in-range]");
     }),
     plugin(function ({ addUtilities }) {
       const newUtilities = {

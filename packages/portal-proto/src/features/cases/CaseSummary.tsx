@@ -22,7 +22,6 @@ import {
 } from "react-icons/fa";
 import { URLContext } from "src/pages/_app";
 import { Biospecimen } from "../biospecimen/Biospecimen";
-import { humanify } from "../biospecimen/utils";
 import { addToCart, removeFromCart } from "../cart/updateCart";
 import {
   formatDataForHorizontalTable,
@@ -30,11 +29,14 @@ import {
 } from "../files/utils";
 import {
   allFilesInCart,
-  calculatePercentage,
+  calculatePercentageAsString,
+  humanify,
   sortByPropertyAsc,
 } from "src/utils";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 import { CategoryTableSummary } from "@/components/Summary/CategoryTableSummary";
+import { ClinicalSummary } from "./ClinicalSummary/ClinicalSummary";
+import { Demographic } from "@gff/core/dist/features/cases/types";
 
 export const CaseSummary = ({
   case_id,
@@ -71,8 +73,90 @@ export const CaseSummary = ({
       "summary.data_categories.data_category",
       "summary.experimental_strategies.experimental_strategy",
       "summary.experimental_strategies.file_count",
+      "demographic.ethnicity",
+      "demographic.demographic_id",
+      "demographic.gender",
+      "demographic.race",
+      "demographic.submitter_id",
+      "demographic.days_to_birth",
+      "demographic.days_to_death",
+      "demographic.vital_status",
+      "diagnoses.submitter_id",
+      "diagnoses.diagnosis_id",
+      "diagnoses.classification_of_tumor",
+      "diagnoses.age_at_diagnosis",
+      "diagnoses.days_to_last_follow_up",
+      "diagnoses.days_to_last_known_disease_status",
+      "diagnoses.days_to_recurrence",
+      "diagnoses.last_known_disease_status",
+      "diagnoses.morphology",
+      "diagnoses.primary_diagnosis",
+      "diagnoses.prior_malignancy",
+      "diagnoses.synchronous_malignancy",
+      "diagnoses.progression_or_recurrence",
+      "diagnoses.site_of_resection_or_biopsy",
+      "diagnoses.tissue_or_organ_of_origin",
+      "diagnoses.tumor_grade",
+      "diagnoses.treatments.days_to_treatment_start",
+      "diagnoses.treatments.submitter_id",
+      "diagnoses.treatments.therapeutic_agents",
+      "diagnoses.treatments.treatment_id",
+      "diagnoses.treatments.treatment_intent_type",
+      "diagnoses.treatments.treatment_or_therapy",
+      "exposures.alcohol_history",
+      "exposures.alcohol_intensity",
+      "exposures.exposure_id",
+      "exposures.tobacco_smoking_status",
+      "exposures.submitter_id",
+      "exposures.pack_years_smoked",
+      "family_histories.family_history_id",
+      "family_histories.relationship_age_at_diagnosis",
+      "family_histories.relationship_gender",
+      "family_histories.relationship_primary_diagnosis",
+      "family_histories.relationship_type",
+      "family_histories.relative_with_cancer_history",
+      "family_histories.submitter_id",
+      "follow_ups.follow_up_id",
+      "follow_ups.submitter_id",
+      "follow_ups.days_to_follow_up",
+      "follow_ups.comorbidity",
+      "follow_ups.risk_factor",
+      "follow_ups.progression_or_recurrence_type",
+      "follow_ups.progression_or_recurrence",
+      "follow_ups.disease_response",
+      "follow_ups.bmi",
+      "follow_ups.height",
+      "follow_ups.weight",
+      "follow_ups.ecog_performance_status",
+      "follow_ups.karnofsky_performance_status",
+      "follow_ups.progression_or_recurrence_anatomic_site",
+      "follow_ups.reflux_treatment_type",
+      "follow_ups.molecular_tests.aa_change",
+      "follow_ups.molecular_tests.antigen",
+      "follow_ups.molecular_tests.biospecimen_type",
+      "follow_ups.molecular_tests.chromosome",
+      "follow_ups.molecular_tests.gene_symbol",
+      "follow_ups.molecular_tests.molecular_test_id",
+      "follow_ups.molecular_tests.submitter_id",
+      "follow_ups.molecular_tests.laboratory_test",
+      "follow_ups.molecular_tests.mismatch_repair_mutation",
+      "follow_ups.molecular_tests.molecular_analysis_method",
+      "follow_ups.molecular_tests.molecular_test_id",
+      "follow_ups.molecular_tests.second_gene_symbol",
+      "follow_ups.molecular_tests.test_result",
+      "follow_ups.molecular_tests.test_units",
+      "follow_ups.molecular_tests.test_value",
+      "follow_ups.molecular_tests.variant_type",
     ],
   });
+
+  const {
+    diagnoses = [],
+    demographic = {} as Demographic,
+    family_histories = [],
+    follow_ups = [],
+    exposures = [],
+  } = data || {};
 
   const { data: annotationCountData, isFetching: isAnnotationCallFetching } =
     useAnnotations({
@@ -186,38 +270,42 @@ export const CaseSummary = ({
       const images = (
         <div className="flex">
           <Tooltip label="View Slide Image">
-            <Link
-              href={`/user-flow/workbench/MultipleImageViewerPage?caseId=${case_id}`}
-            >
-              <a className="flex gap-1 cursor-pointer text-primary">
-                <FaMicroscope className="mt-0.5" />
-                <span>({slideCount})</span>
-              </a>
-            </Link>
+            <div>
+              <Link
+                href={`/user-flow/workbench/MultipleImageViewerPage?caseId=${case_id}`}
+              >
+                <a className="flex gap-1 cursor-pointer text-primary">
+                  <FaMicroscope className="mt-0.5" />
+                  <span>({slideCount})</span>
+                </a>
+              </Link>
+            </div>
           </Tooltip>
           <Tooltip
             label={!isAllImagesFilesInCart ? "Add to Cart" : "Remove from Cart"}
           >
-            <FaShoppingCart
-              onClick={() => {
-                isAllImagesFilesInCart
-                  ? removeFromCart(
-                      mapFilesFromCasesToCartFile(imageFiles),
-                      currentCart,
-                      dispatch,
-                    )
-                  : addToCart(
-                      mapFilesFromCasesToCartFile(imageFiles),
-                      currentCart,
-                      dispatch,
-                    );
-              }}
-              className={`cursor-pointer mt-0.5 ${
-                isAllImagesFilesInCart
-                  ? "text-utility-category4"
-                  : "text-primary"
-              }`}
-            />
+            <div>
+              <FaShoppingCart
+                onClick={() => {
+                  isAllImagesFilesInCart
+                    ? removeFromCart(
+                        mapFilesFromCasesToCartFile(imageFiles),
+                        currentCart,
+                        dispatch,
+                      )
+                    : addToCart(
+                        mapFilesFromCasesToCartFile(imageFiles),
+                        currentCart,
+                        dispatch,
+                      );
+                }}
+                className={`cursor-pointer mt-0.5 ${
+                  isAllImagesFilesInCart
+                    ? "text-utility-category4"
+                    : "text-primary"
+                }`}
+              />
+            </div>
           </Tooltip>
         </div>
       );
@@ -244,10 +332,10 @@ export const CaseSummary = ({
     const rows = sortedDataCategories.map((data_c) => ({
       data_category: data_c.data_category,
       // TODO: Need to change it to Link after the href has been finalized
-      file_count: `${data_c.file_count.toLocaleString()} (${calculatePercentage(
+      file_count: `${data_c.file_count.toLocaleString()} (${calculatePercentageAsString(
         data_c.file_count,
         filesCountTotal,
-      )}%)`,
+      )})`,
     }));
 
     return {
@@ -268,10 +356,10 @@ export const CaseSummary = ({
     const rows = sortedExpCategories.map((exp_c) => ({
       experimental_strategy: exp_c.experimental_strategy,
       // TODO: Need to change it to Link after the href has been finalized
-      file_count: `${exp_c.file_count.toLocaleString()} (${calculatePercentage(
+      file_count: `${exp_c.file_count.toLocaleString()} (${calculatePercentageAsString(
         exp_c.file_count,
         filesCountTotal,
-      )}%)`,
+      )})`,
     }));
 
     return {
@@ -355,6 +443,15 @@ export const CaseSummary = ({
               </div>
             </div>
 
+            <div>
+              <ClinicalSummary
+                diagnoses={diagnoses}
+                follow_ups={follow_ups}
+                demographic={demographic}
+                family_histories={family_histories}
+                exposures={exposures}
+              />
+            </div>
             <div ref={targetRef} id="biospecimen">
               <Biospecimen caseId={case_id} bioId={bio_id} />
             </div>

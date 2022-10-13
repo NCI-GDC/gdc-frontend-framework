@@ -6,7 +6,7 @@ import { Provider } from "react-redux";
 import type { AppProps } from "next/app";
 import { CoreProvider } from "@gff/core";
 import { useLocalStorage } from "@mantine/hooks";
-import { MantineProvider } from "@mantine/core";
+import { MantineProvider, createEmotionCache } from "@mantine/core";
 import { NotificationsProvider } from "@mantine/notifications";
 import { TourProvider } from "@reactour/tour";
 import { CustomBadge as Badge } from "../features/tour/CustomBadge";
@@ -43,6 +43,7 @@ type TenStringArray = [
 ];
 
 export const URLContext = createContext({ prevPath: "", currentPath: "" });
+const appendCache = createEmotionCache({ key: "mantine", prepend: false });
 
 const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
@@ -63,6 +64,7 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
         <MantineProvider
           withGlobalStyles
           withNormalizeCSS
+          emotionCache={appendCache}
           theme={{
             // Override default blue color until styles are determined
             colors: {

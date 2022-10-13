@@ -4,7 +4,7 @@ import {
   selectCart,
   useCoreDispatch,
   useCoreSelector,
-  selectCurrentCohortFilterSet,
+  selectCurrentCohortFilters,
   selectFilesData,
   fetchFiles,
   buildCohortGqlOperator,
@@ -37,7 +37,7 @@ const useCohortCentricFiles = () => {
 
   const repositoryFilters = useAppSelector((state) => selectFilters(state));
   const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilterSet(state),
+    selectCurrentCohortFilters(state),
   );
 
   const allFilters = joinFilters(cohortFilters, repositoryFilters);

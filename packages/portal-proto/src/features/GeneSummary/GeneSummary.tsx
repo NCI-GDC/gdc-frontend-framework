@@ -2,17 +2,40 @@ import { AnchorLink } from "@/components/AnchorLink";
 import { CollapsibleTextArea } from "@/components/CollapsibleTextArea";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
-import { useGenesSummaryData } from "@gff/core";
+import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
+import { useGenesSummaryData, GeneSummaryData } from "@gff/core";
 import { FaBook, FaTable } from "react-icons/fa";
 import { HiPlus, HiMinus } from "react-icons/hi";
-import { externalLinkNames, externalLinks } from "src/utils";
-import { humanify } from "../biospecimen/utils";
+import { externalLinkNames, externalLinks, humanify } from "src/utils";
 import CNVPlot from "../charts/CNVPlot";
 import SSMPlot from "../charts/SSMPlot";
 import { formatDataForHorizontalTable } from "../files/utils";
+import { LoadingOverlay } from "@mantine/core";
+
+interface GeneViewProps {
+  data: {
+    genes: GeneSummaryData;
+  };
+  gene_id: string;
+}
 
 export const GeneSummary = ({ gene_id }: { gene_id: string }): JSX.Element => {
   const { data, isFetching } = useGenesSummaryData({ gene_id });
+
+  return (
+    <>
+      {isFetching ? (
+        <LoadingOverlay visible />
+      ) : data && data.genes ? (
+        <GeneView data={data} gene_id={gene_id} />
+      ) : (
+        <SummaryErrorHeader label="Gene Not Found" />
+      )}
+    </>
+  );
+};
+
+const GeneView = ({ data, gene_id }: GeneViewProps) => {
   const formatDataForSummary = () => {
     const {
       genes: {
@@ -115,7 +138,7 @@ export const GeneSummary = ({ gene_id }: { gene_id: string }): JSX.Element => {
 
   return (
     <div>
-      {!isFetching && data?.genes && (
+      {data?.genes && (
         <>
           <SummaryHeader iconText="GN" headerTitle={data.genes.symbol} />
           <div className="mx-auto mt-20 w-9/12 pt-4">

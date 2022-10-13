@@ -4,7 +4,7 @@ import {
   userCanDownloadFiles,
   fileInCorrectState,
   intersectsWithFileAcl,
-} from "./util";
+} from "../userProjectUtils";
 
 const projectLessUser = {
   username: "iamprojectless",
@@ -171,7 +171,7 @@ const KIRPFile = {
   cases: [KIRPCase],
   md5sum: "test",
   platform: "Illumina",
-  project_id: "TCGA-TEST",
+  project_id: "TCGA-KIRP",
   state: "released",
   submitterId: "test",
   updatedDatetime: "2022-02-09T12:11:12.781445-06:00",
@@ -194,7 +194,7 @@ const KIRCFile = {
   cases: [KIRCCase],
   md5sum: "test",
   platform: "Illumina",
-  project_id: "TCGA-TEST",
+  project_id: "TCGA-KIRC",
   state: "released",
   submitterId: "test",
   updatedDatetime: "2022-02-09T12:11:12.781445-06:00",
@@ -377,26 +377,14 @@ describe("userCanDownloadFiles", () => {
           },
         ],
       }),
-    ).toBe(false);
+    ).toBe(true);
     expect(
       userCanDownloadFiles({
         user,
         files: [
           {
             ...TESTFile,
-            cases: undefined,
-            state: "submitted",
-            acl: [],
-          },
-        ],
-      }),
-    ).toBe(false);
-    expect(
-      userCanDownloadFiles({
-        user,
-        files: [
-          {
-            ...TESTFile,
+            project_id: undefined,
             cases: undefined,
             state: "submitted",
             acl: ["NOT IN"],
