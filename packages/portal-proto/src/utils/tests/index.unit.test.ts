@@ -1,4 +1,4 @@
-import { ageDisplay, capitalize, calculatePercentage } from "../index";
+import { ageDisplay, capitalize, calculatePercentageAsString } from "../index";
 
 describe("capitalize", () => {
   it("should captalize a string", () => {
@@ -29,11 +29,11 @@ describe("capitalize", () => {
   });
 });
 
-describe("calculatePercentage", () => {
+describe("calculatePercentageAsString", () => {
   it("should return correct percentage string upto 2 decimal point", () => {
-    expect(calculatePercentage(12, 120)).toEqual("10.00%");
-    expect(calculatePercentage(14, 27)).toEqual("51.85%");
-    expect(calculatePercentage(15, 31)).toEqual("48.39%");
+    expect(calculatePercentageAsString(12, 120)).toEqual("10.00%");
+    expect(calculatePercentageAsString(14, 27)).toEqual("51.85%");
+    expect(calculatePercentageAsString(15, 31)).toEqual("48.39%");
   });
 });
 

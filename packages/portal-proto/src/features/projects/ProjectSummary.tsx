@@ -11,12 +11,44 @@ import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { Button, LoadingOverlay, Menu, Tooltip } from "@mantine/core";
 import { MdFileDownload } from "react-icons/md";
-import { calculatePercentage, humanify, sortByPropertyAsc } from "src/utils";
+import {
+  calculatePercentageAsNumber,
+  humanify,
+  sortByPropertyAsc,
+} from "src/utils";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 import { formatDataForHorizontalTable } from "../files/utils";
 import Link from "next/link";
 import { CollapsibleList } from "@/components/CollapsibleList";
 import { CategoryTableSummary } from "@/components/Summary/CategoryTableSummary";
+import tw from "tailwind-styled-components";
+
+const PercentBar = tw.div`
+relative
+bg-percentage-bar-base
+rounded-sm
+px-1
+w-16 
+h-full`;
+
+const PercentBarLabel = tw.span`
+absolute
+z-10
+left-0 
+top-0 
+w-full 
+h-full 
+text-percentage-bar-label 
+text-center`;
+
+const PercentBarComplete = tw.div`
+absolute 
+left-0 
+top-0 
+w-full 
+h-full 
+bg-percentage-bar-complete
+rounded-sm`;
 
 export interface ContextualProjectViewProps {
   readonly projectId: string;
@@ -178,19 +210,57 @@ export const ProjectView: React.FC<ProjectViewProps> = (
       "data_category",
     );
 
-    const rows = sortedDataCategories.map((data_c) => ({
-      data_category: data_c.data_category,
-      // TODO: Need to change it to Link after the href has been finalized
-      case_count: `${data_c.case_count.toLocaleString()} (${calculatePercentage(
+    const rows = sortedDataCategories.map((data_c) => {
+      const caseCountPercentage = calculatePercentageAsNumber(
         data_c.case_count,
         projectData.summary.case_count,
-      )})`,
-      // TODO: Need to change it to Link after the href has been finalized
-      file_count: `${data_c.file_count.toLocaleString()} (${calculatePercentage(
+      );
+
+      const fileCountPercentage = calculatePercentageAsNumber(
         data_c.file_count,
         projectData.summary.file_count,
-      )})`,
-    }));
+      );
+
+      return {
+        data_category: data_c.data_category,
+        // TODO: Need to change it to Link after the href has been finalized
+        case_count: (
+          <div className="flex">
+            <span className="w-1/4 pr-1.5 text-right">
+              {data_c.case_count.toLocaleString()}
+            </span>
+            <div className="w-3/4">
+              <PercentBar>
+                <PercentBarLabel>{`${caseCountPercentage.toFixed(
+                  2,
+                )}%`}</PercentBarLabel>
+                <PercentBarComplete
+                  style={{ width: `${caseCountPercentage}%` }}
+                />
+              </PercentBar>
+            </div>
+          </div>
+        ),
+        // TODO: Need to change it to Link after the href has been finalized
+        file_count: (
+          <div className="flex">
+            <span className="w-1/4 pr-1.5 text-right">
+              {data_c.file_count.toLocaleString()}
+            </span>
+            <div className="w-3/4">
+              <PercentBar>
+                <PercentBarLabel>{`${fileCountPercentage.toFixed(
+                  2,
+                )}}%`}</PercentBarLabel>
+                <PercentBarComplete
+                  style={{ width: `${fileCountPercentage}%` }}
+                />
+              </PercentBar>
+            </div>
+          </div>
+        ),
+      };
+    });
 
     return {
       headers: [
@@ -208,19 +278,57 @@ export const ProjectView: React.FC<ProjectViewProps> = (
       "experimental_strategy",
     );
 
-    const rows = sortedExpCategories.map((exp_c) => ({
-      experimental_strategy: exp_c.experimental_strategy,
-      // TODO: Need to change it to Link after the href has been finalized
-      case_count: `${exp_c.case_count.toLocaleString()} (${calculatePercentage(
+    const rows = sortedExpCategories.map((exp_c) => {
+      const caseCountPercentage = calculatePercentageAsNumber(
         exp_c.case_count,
         projectData.summary.case_count,
-      )})`,
-      // TODO: Need to change it to Link after the href has been finalized
-      file_count: `${exp_c.file_count.toLocaleString()} (${calculatePercentage(
+      );
+
+      const fileCountPercentage = calculatePercentageAsNumber(
         exp_c.file_count,
         projectData.summary.file_count,
-      )})`,
-    }));
+      );
+
+      return {
+        experimental_strategy: exp_c.experimental_strategy,
+        // TODO: Need to change it to Link after the href has been finalized
+        case_count: (
+          <div className="flex">
+            <span className="w-1/4 pr-1.5 text-right">
+              {exp_c.case_count.toLocaleString()}
+            </span>
+            <div className="w-3/4">
+              <PercentBar>
+                <PercentBarLabel>{`${caseCountPercentage.toFixed(
+                  2,
+                )}%`}</PercentBarLabel>
+                <PercentBarComplete
+                  style={{ width: `${caseCountPercentage}%` }}
+                />
+              </PercentBar>
+            </div>
+          </div>
+        ),
+        // TODO: Need to change it to Link after the href has been finalized
+        file_count: (
+          <div className="flex">
+            <span className="w-1/4 pr-1.5 text-right">
+              {exp_c.file_count.toLocaleString()}
+            </span>
+            <div className="w-3/4">
+              <PercentBar>
+                <PercentBarLabel>{`${fileCountPercentage.toFixed(
+                  2,
+                )}%`}</PercentBarLabel>
+                <PercentBarComplete
+                  style={{ width: `${fileCountPercentage}%` }}
+                />
+              </PercentBar>
+            </div>
+          </div>
+        ),
+      };
+    });
 
     return {
       headers: [
