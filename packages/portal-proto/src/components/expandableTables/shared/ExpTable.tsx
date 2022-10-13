@@ -47,9 +47,13 @@ export const ExpTable: React.FC<ExpTableProps> = ({
   });
 
   const unitSpring = useSpring({
-    from: { opacity: 0, transform: "translate3D(0, -120px, 0)", width: 0 },
+    from: {
+      opacity: 0,
+      transform: "translate3D(0, -120px, 0)",
+      width: headerWidth / 2,
+    },
     to: { opacity: 1, transform: "translate3D(0, 0, 0)", width: headerWidth },
-    duration: 20,
+    immediate: true,
   });
   const selectAllActive =
     table.getRowModel().rows.length === 0
