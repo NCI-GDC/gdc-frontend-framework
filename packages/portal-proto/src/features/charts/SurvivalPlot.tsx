@@ -1,4 +1,4 @@
-import { MutableRefObject, useEffect, useRef, useState } from "react";
+import { MutableRefObject, useLayoutEffect, useRef, useState } from "react";
 import { Survival, SurvivalElement } from "@gff/core";
 import { renderPlot } from "@oncojs/survivalplot";
 import {
@@ -7,7 +7,7 @@ import {
 } from "react-icons/md";
 import { Box, Menu, Tooltip } from "@mantine/core";
 import isNumber from "lodash/isNumber";
-import { useMouse } from "@mantine/hooks";
+import { useMouse, useViewportSize } from "@mantine/hooks";
 import html2canvas from "html2canvas";
 import { elementToSVG } from "dom-to-svg";
 import saveAs from "file-saver";
@@ -54,9 +54,9 @@ export const useSurvival: survival = (
   setTooltip = (x?) => null,
 ) => {
   const ref = useRef(undefined);
-  const containerSize = ref?.current?.getBoundingClientRect();
+  const documentSize = useViewportSize();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     ref.current
       ? renderPlot({
           height,
@@ -97,7 +97,8 @@ export const useSurvival: survival = (
           onMouseLeaveDonor: () => setTooltip(undefined),
         })
       : null;
-  }, [data, xDomain, setXDomain, setTooltip, height, containerSize]);
+  }, [data, xDomain, setXDomain, setTooltip, height, documentSize]);
+
   return ref;
 };
 
