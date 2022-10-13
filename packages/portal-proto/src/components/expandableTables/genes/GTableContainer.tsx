@@ -1,8 +1,12 @@
 import { useGenesTable } from "@gff/core";
+import { Gene, GenesTableProps, DEFAULT_GTABLE_ORDER } from "./types";
 import { useState } from "react";
 import { GenesTable } from "./GenesTable";
 import { useMeasure } from "react-use";
 import { Loader } from "@mantine/core";
+import PageStepper from "../shared/PageStepper";
+import PageSize from "../shared/PageSize";
+import { TableControls } from "../shared/TableControls";
 
 export interface GTableContainerProps {
   readonly selectedSurvivalPlot: Record<string, string>;
@@ -21,11 +25,16 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const [page, setPage] = useState(0);
   const [ref, { width }] = useMeasure();
   const [selectedGenes, setSelectedGenes] = useState<any>({}); // todo: add type
+  const [gTotal, setGTotal] = useState(0);
 
   const { data, isFetching } = useGenesTable({
     pageSize: pageSize,
     offset: page * pageSize,
   });
+
+  const handleGeneSave = (gene: Gene) => {
+    console.log("gene", gene);
+  };
 
   const selectGene = (row: any) => {
     const gene = row.original["geneID"];
@@ -71,11 +80,19 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
 
   return (
     <>
+      <div className={`flex flex-row absolute w-80`}>
+        <TableControls
+          numSelected={Object.keys(selectedGenes).length || 0}
+          handleSave={handleGeneSave}
+          label={`Genes`}
+          options={[]}
+        />
+      </div>
       {data?.status === "fulfilled" &&
       data?.genes?.mutationCounts &&
       data?.genes?.filteredCases &&
       data?.genes?.cases ? (
-        <div ref={ref} className={`h-full w-9/12 pb-4`}>
+        <div ref={ref} className={`h-full w-9/12`}>
           <GenesTable
             initialData={data.genes}
             selectedSurvivalPlot={selectedSurvivalPlot}
@@ -88,6 +105,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             selectAll={selectAllGenes}
             handlePageSize={setPageSize}
             handlePage={setPage}
+            handleGTotal={setGTotal}
           />
         </div>
       ) : (
@@ -97,6 +115,30 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           </div>
         </div>
       )}
+      <div className={`flex flex-row w-9/12 ml-2 m-auto`}>
+        <div className="m-auto ml-0">
+          <span className="my-auto mx-1 text-xs">Show</span>
+          <PageSize pageSize={pageSize} handlePageSize={setPageSize} />
+          <span className="my-auto mx-1 text-xs">Entries</span>
+        </div>
+        <div className={`m-auto text-sm`}>
+          <span>
+            Showing
+            <span className={`font-bold`}>{` ${page * pageSize + 1} `}</span>-
+            <span className={`font-bold`}>{` ${(page + 1) * pageSize} `}</span>
+            of
+            <span className={`font-bold`}>{` ${gTotal} `}</span>
+            genes
+          </span>
+        </div>
+        <div className={`m-auto mr-0`}>
+          <PageStepper
+            page={page}
+            totalPages={Math.ceil(gTotal / pageSize)}
+            handlePage={setPage}
+          />
+        </div>
+      </div>
     </>
   );
 };

@@ -48,7 +48,6 @@ export * from "./features/cases/caseSummarySlice";
 export * from "./features/genomic/ssmsSummary/ssmsSummarySlice";
 export * from "./features/genomic/geneSummary/geneSummarySlice";
 export * from "./features/survival/survivalApiSlice";
-export * from "./features/genes/genesTable/genesTableApiSlice";
 export * from "./features/facets/facetsByNameTypeAndFilter";
 export * from "./features/users/usersSlice";
 export * from "./features/modals/modalsSlice";

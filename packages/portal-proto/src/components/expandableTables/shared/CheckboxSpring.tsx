@@ -25,17 +25,19 @@ const CheckboxSpring: React.FC<CheckboxSpringProps> = ({
   wSpring,
 }) => {
   const box = useSpring({
-    backgroundColor: isActive ? "rgb(32, 68, 97)" : "white",
     height: 15,
     width: 15,
-    color: "rgb(32, 68, 97)",
   });
 
   return (
     <animated.div style={wSpring} className={`w-max`}>
       <div className={`flex flex-row w-max m-auto h-max`}>
         <animated.div className={`my-auto mx-12`}>
-          <animated.button style={box} onClick={() => handleCheck(select)}>
+          <animated.button
+            style={box}
+            className={`${isActive ? `bg-activeColor` : `bg-white`}`}
+            onClick={() => handleCheck(select)}
+          >
             ▢
           </animated.button>
         </animated.div>

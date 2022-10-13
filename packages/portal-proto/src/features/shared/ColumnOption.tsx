@@ -4,8 +4,8 @@ import { ItemTypes } from "./ItemTypes";
 import type { XYCoord, Identifier } from "dnd-core";
 import _ from "lodash";
 import { MdDragIndicator } from "react-icons/md";
-import SwitchSpring from "../../components/expandableTables/shared/SwitchSpring";
 import { useSpring, animated } from "react-spring";
+import SwitchSpring from "../../components/expandableTables/shared/SwitchSpring";
 
 export interface ColumnProps {
   id: any;
@@ -90,9 +90,9 @@ export const ColumnOption: FC<ColumnProps> = ({
     }),
   });
 
-  const grayS = useSpring({
-    color: "lightgray",
-  });
+  // const grayS = useSpring({
+  //   color: "lightgray",
+  // });
 
   const o = isDragging ? 0 : 1;
   drag(drop(ref));
@@ -105,7 +105,10 @@ export const ColumnOption: FC<ColumnProps> = ({
       <div className={`flex flex-row text-xs justify-between`}>
         <div className={`flex flex-row w-fit`}>
           <div className={`flex flex-row`}>
-            <animated.div style={grayS} className={`my-auto mr-2 ml-0`}>
+            <animated.div
+              // style={grayS}
+              className={`my-auto mr-2 ml-0`}
+            >
               <MdDragIndicator size={"16px"} />
             </animated.div>
             <div className={`flex flex-row w-60 my-auto`}>

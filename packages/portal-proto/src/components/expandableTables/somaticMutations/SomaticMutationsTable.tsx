@@ -19,6 +19,7 @@ import PageStepper from "../shared/PageStepper";
 import { TableControls } from "../shared/TableControls";
 import { searchContains } from "../shared/types";
 import { TableFilters } from "../shared/TableFilters";
+// import sm menu options
 
 export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   initialData,
@@ -144,12 +145,12 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   return (
     <div className={`w-full`}>
       <div className={`flex flex-row`}>
-        <TableControls
+        {/* <TableControls
           numSelected={Object.keys(selectedMutations)?.length || 0}
           handleSave={handleMutationSave}
           label={`Mutations`}
-        />
-        <TableFilters
+        /> */}
+        {/* <TableFilters
           search={searchTerm}
           handleSearch={handleSearch}
           columnListOrder={columnListOrder}
@@ -157,7 +158,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
           showColumnMenu={showColumnMenu}
           setShowColumnMenu={setShowColumnMenu}
           defaultColumns={DEFAULT_SMTABLE_ORDER}
-        />
+        /> */}
       </div>
       <div className={`flex flex-row w-10/12`}>
         <ExpTable

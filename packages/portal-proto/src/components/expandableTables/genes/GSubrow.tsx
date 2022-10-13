@@ -3,7 +3,7 @@ import { gql } from "graphql-request";
 import { useSpring, config } from "react-spring";
 import ListSpring from "../shared/ListSpring";
 import { convertGeneFilter } from "./genesTableUtils";
-import { GDC_APP_API_AUTH } from "@gff/core/src/constants";
+import { GDC_APP_API_AUTH } from "../../../../../core/src/constants";
 
 export interface GeneSubrowProps {
   geneId: string;
@@ -83,3 +83,5 @@ export const GSubrow: React.FC<GeneSubrowProps> = ({
     </>
   );
 };
+
+export default GSubrow;

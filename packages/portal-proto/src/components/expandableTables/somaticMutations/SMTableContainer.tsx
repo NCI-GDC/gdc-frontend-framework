@@ -79,7 +79,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     <>
       {status === "fulfilled" && cases && filteredCases ? (
         <div ref={ref} className={`h-full w-9/12 pb-4`}>
-          <SomaticMutationsTable
+          {/* <SomaticMutationsTable
             initialData={initialData}
             selectedSurvivalPlot={selectedSurvivalPlot}
             handleSurvivalPlotToggled={handleSurvivalPlotToggled}
@@ -91,7 +91,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             selectAll={selectAllMutations}
             handlePageSize={setPageSize}
             handlePage={setPage}
-          />
+          /> */}
         </div>
       ) : (
         <div className={`flex flex-row h-screen w-[1000px]`}>

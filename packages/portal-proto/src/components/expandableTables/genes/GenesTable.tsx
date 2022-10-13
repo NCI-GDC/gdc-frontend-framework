@@ -9,6 +9,7 @@ import { useSpring } from "react-spring";
 import PageSize from "../shared/PageSize";
 import PageStepper from "../shared/PageStepper";
 import { searchContains } from "../shared/types";
+// import gene menu options
 
 export const GenesTable: React.FC<GenesTableProps> = ({
   initialData,
@@ -22,6 +23,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   selectedGenes,
   selectGene,
   selectAll,
+  handleGTotal,
 }: GenesTableProps) => {
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
   const [expanded, setExpanded] = useState<any>({});
@@ -59,6 +61,10 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   );
 
   const transformResponse = useGeneTableFormat(initialData);
+
+  useEffect(() => {
+    handleGTotal(transformResponse[0].genesTotal);
+  }, [transformResponse]);
 
   const handleExpandedProxy = (exp: ExpandedState) => {
     setExpandedProxy(exp);
@@ -120,12 +126,13 @@ export const GenesTable: React.FC<GenesTableProps> = ({
           geneID,
         );
       });
-  }, [visibleColumns, width, selectedGenes, geneID]);
+  }, [visibleColumns, width, selectedGenes, geneID, setGeneID]);
 
   useEffect(() => {
     setExpanded({});
     setExpandedProxy({});
-  }, [visibleColumns, selectedGenes, searchTerm, page, pageSize]);
+    //
+  }, [visibleColumns, selectedGenes, page, searchTerm, pageSize]);
 
   const handleColumnChange = (columnUpdate) => {
     setColumnListOrder(columnUpdate);
@@ -135,18 +142,9 @@ export const GenesTable: React.FC<GenesTableProps> = ({
     setSearchTerm(term);
   };
 
-  const handleGeneSave = (gene: Gene) => {
-    console.log("gene", gene);
-  };
-
   return (
     <div className={`w-full`}>
-      <div className={`flex flex-row`}>
-        <TableControls
-          numSelected={Object.keys(selectedGenes)?.length || 0}
-          handleSave={handleGeneSave}
-          label={`Genes`}
-        />
+      <div className={`flex flex-row float-right mb-5`}>
         <TableFilters
           search={searchTerm}
           handleSearch={handleSearch}
@@ -176,32 +174,6 @@ export const GenesTable: React.FC<GenesTableProps> = ({
           firstColumn={columnListOrder[0].id}
           headerWidth={width / visibleColumns.length}
         />
-      </div>
-      <div className={`flex flex-row m-auto`}>
-        <div className="m-auto ml-0">
-          <span className="my-auto mx-1 text-xs">Show</span>
-          <PageSize pageSize={pageSize} handlePageSize={handlePageSize} />
-          <span className="my-auto mx-1 text-xs">Entries</span>
-        </div>
-        <div className={`m-auto text-sm`}>
-          <span>
-            Showing
-            <span className={`font-bold`}>{` ${page * pageSize + 1} `}</span>-
-            <span className={`font-bold`}>{` ${(page + 1) * pageSize} `}</span>
-            of
-            <span className={`font-bold`}>
-              {` ${transformResponse[0].genesTotal} `}
-            </span>
-            genes
-          </span>
-        </div>
-        <div className={`m-auto mr-0`}>
-          <PageStepper
-            page={page}
-            totalPages={Math.ceil(transformResponse[0].genesTotal / pageSize)}
-            handlePage={handlePage}
-          />
-        </div>
       </div>
     </div>
   );

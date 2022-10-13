@@ -29,10 +29,6 @@ import {
   survivalApiSliceReducerPath,
   survivalApiReducer,
 } from "./features/survival/survivalApiSlice";
-import {
-  genesTableApiReducer,
-  genesTableApiSliceReducerPath,
-} from "./features/genes/genesTable/genesTableApiSlice";
 import { biospecimenReducer } from "./features/biospecimen/biospecimenSlice";
 import { clinicalDataAnalysisReducer } from "./features/clinicalDataAnalysis";
 import { caseSummarySliceReducer } from "./features/cases/caseSummarySlice";

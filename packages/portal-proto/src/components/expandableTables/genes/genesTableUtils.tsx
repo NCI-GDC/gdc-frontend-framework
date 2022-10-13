@@ -14,7 +14,7 @@ import {
   AnnotationsIcon,
   Survival,
 } from "../shared/types";
-import { GSubrow } from "./GSubRow";
+import { GSubrow } from "./GSubrow";
 
 interface SingleGene {
   biotype: string;
