@@ -22,9 +22,7 @@ export interface GenesTableProps {
     field: string,
   ) => void;
   pageSize: number;
-  handlePageSize: any;
   page: number;
-  handlePage: (page: number) => any;
   selectedGenes: any;
   selectGene: any;
   selectAll: any;

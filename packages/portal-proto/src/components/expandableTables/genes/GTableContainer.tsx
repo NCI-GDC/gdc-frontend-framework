@@ -1,5 +1,5 @@
 import { useGenesTable } from "@gff/core";
-import { Gene, GenesTableProps, DEFAULT_GTABLE_ORDER } from "./types";
+import { Gene } from "./types";
 import { useState } from "react";
 import { GenesTable } from "./GenesTable";
 import { useMeasure } from "react-use";
@@ -85,7 +85,12 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           numSelected={Object.keys(selectedGenes).length || 0}
           handleSave={handleGeneSave}
           label={`Genes`}
-          options={[]}
+          options={[
+            { label: "Save/Edit Gene Set", value: "placeholder" },
+            { label: "Save as new gene set", value: "save" },
+            { label: "Add existing gene set", value: "add" },
+            { label: "Remove from existing gene set", value: "remove" },
+          ]}
         />
       </div>
       {data?.status === "fulfilled" &&
@@ -103,8 +108,6 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             selectedGenes={selectedGenes}
             selectGene={selectGene}
             selectAll={selectAllGenes}
-            handlePageSize={setPageSize}
-            handlePage={setPage}
             handleGTotal={setGTotal}
           />
         </div>

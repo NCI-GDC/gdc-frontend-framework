@@ -21,10 +21,9 @@ export const TableControls: React.FC<TableControlsProps> = ({
   label,
   options,
 }: TableControlsProps) => {
-  const [selectedOption, setSelectedOption] = useState<ControlOption>({
-    label: "Save/Edit Gene Set",
-    value: "placeholder",
-  });
+  const [selectedOption, setSelectedOption] = useState<ControlOption>(
+    options[0],
+  );
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   const menuSpring = useSpring({
@@ -39,8 +38,7 @@ export const TableControls: React.FC<TableControlsProps> = ({
   const flipSpring = { transform: y.to((y) => `rotateX(${y}deg)`) };
 
   const numberSpring = useSpring({
-    immediate: false,
-    config: config.slow,
+    immediate: true,
     from: { num: 0 },
     to: { num: numSelected },
   });
@@ -91,12 +89,7 @@ export const TableControls: React.FC<TableControlsProps> = ({
                 <animated.ul
                   className={`list-none rounded-b-md text-activeColor border border-1 border-activeColor`}
                 >
-                  {[
-                    { label: "Save/Edit Gene Set", value: "placeholder" },
-                    { label: "Save as new gene set", value: "save" },
-                    { label: "Add existing gene set", value: "add" },
-                    { label: "Remove from existing gene set", value: "remove" },
-                  ]
+                  {options
                     .filter(({ value }) => value !== selectedOption.value)
                     .map((geneOpt, idx) => {
                       return (

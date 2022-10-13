@@ -2,12 +2,9 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Gene, GenesTableProps, DEFAULT_GTABLE_ORDER } from "./types";
 import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { ExpTable } from "../shared/ExpTable";
-import { TableControls } from "../shared/TableControls";
 import { TableFilters } from "../shared/TableFilters";
 import { getGene, createTableColumn, GenesColumn } from "./genesTableUtils";
 import { useSpring } from "react-spring";
-import PageSize from "../shared/PageSize";
-import PageStepper from "../shared/PageStepper";
 import { searchContains } from "../shared/types";
 // import gene menu options
 
@@ -17,9 +14,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   handleSurvivalPlotToggled,
   width,
   pageSize,
-  handlePageSize,
   page,
-  handlePage,
   selectedGenes,
   selectGene,
   selectAll,

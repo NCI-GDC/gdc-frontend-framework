@@ -1,25 +1,15 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import {
-  SomaticMutationsTableProps,
-  DEFAULT_SMTABLE_ORDER,
-  SomaticMutation,
-} from "./types";
+import { SomaticMutationsTableProps, DEFAULT_SMTABLE_ORDER } from "./types";
 import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { ExpTable } from "../shared/ExpTable";
-// import { SMTableControls } from "./MTableControls";
-// import { SMTableFilters } from "./MTableFilters";
 import {
   getMutation,
   createTableColumn,
   MutationsColumn,
 } from "./smTableUtils";
 import { useSpring } from "react-spring";
-import PageSize from "../shared/PageSize";
-import PageStepper from "../shared/PageStepper";
-import { TableControls } from "../shared/TableControls";
 import { searchContains } from "../shared/types";
 import { TableFilters } from "../shared/TableFilters";
-// import sm menu options
 
 export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   initialData,
@@ -27,12 +17,11 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   handleSurvivalPlotToggled,
   width,
   pageSize,
-  handlePageSize,
   page,
-  handlePage,
   selectedMutations,
   selectMutation,
   selectAll,
+  handleSMTotal,
 }: SomaticMutationsTableProps) => {
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
   const [expanded, setExpanded] = useState<any>({});
@@ -47,6 +36,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
 
   const useSomaticMutationsTableFormat = useCallback(
     (initialData) => {
+      console.log("initial", initialData);
       const { cases, filteredCases, ssmsTotal, ssms } = initialData;
       return ssms.map((sm) => {
         return getMutation(
@@ -60,6 +50,12 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
     },
     [selectedSurvivalPlot],
   );
+
+  const transformResponse = useSomaticMutationsTableFormat(initialData);
+
+  useEffect(() => {
+    handleSMTotal(transformResponse[0].ssmsTotal);
+  }, [transformResponse]);
 
   const handleExpandedProxy = (exp: ExpandedState) => {
     setExpandedProxy(exp);
@@ -136,21 +132,10 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
     setSearchTerm(term);
   };
 
-  const handleMutationSave = (mutation: SomaticMutation) => {
-    console.log("mutation", mutation);
-  };
-
-  const transformResponse = useSomaticMutationsTableFormat(initialData);
-
   return (
     <div className={`w-full`}>
-      <div className={`flex flex-row`}>
-        {/* <TableControls
-          numSelected={Object.keys(selectedMutations)?.length || 0}
-          handleSave={handleMutationSave}
-          label={`Mutations`}
-        /> */}
-        {/* <TableFilters
+      <div className={`flex flex-row float-right mb-5`}>
+        <TableFilters
           search={searchTerm}
           handleSearch={handleSearch}
           columnListOrder={columnListOrder}
@@ -158,7 +143,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
           showColumnMenu={showColumnMenu}
           setShowColumnMenu={setShowColumnMenu}
           defaultColumns={DEFAULT_SMTABLE_ORDER}
-        /> */}
+        />
       </div>
       <div className={`flex flex-row w-10/12`}>
         <ExpTable
@@ -179,32 +164,6 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
           firstColumn={columnListOrder[0].id}
           headerWidth={width / visibleColumns.length}
         />
-      </div>
-      <div className={`flex flex-row m-auto`}>
-        <div className="m-auto ml-0">
-          <span className="my-auto mx-1 text-xs">Show</span>
-          <PageSize pageSize={pageSize} handlePageSize={handlePageSize} />
-          <span className="my-auto mx-1 text-xs">Entries</span>
-        </div>
-        <div className={`m-auto text-sm`}>
-          <span>
-            Showing
-            <span className={`font-bold`}>{` ${page * pageSize + 1} `}</span>-
-            <span className={`font-bold`}>{` ${(page + 1) * pageSize} `}</span>
-            of
-            <span className={`font-bold`}>
-              {` ${transformResponse[0].ssmsTotal} `}
-            </span>
-            mutations
-          </span>
-        </div>
-        <div className={`m-auto mr-0`}>
-          <PageStepper
-            page={page}
-            totalPages={Math.ceil(transformResponse[0].ssmsTotal / pageSize)}
-            handlePage={handlePage}
-          />
-        </div>
       </div>
     </div>
   );

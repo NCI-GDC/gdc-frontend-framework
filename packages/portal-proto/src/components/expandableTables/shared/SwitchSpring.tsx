@@ -41,7 +41,7 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
           style={ballSpring}
           className={`border border-activeColor bg-white ${
             icon ? `` : `rounded-xl`
-          } ${isActive ? `bg-activeColor` : `bg-lightgray`} h-5 text-xs`}
+          } ${isActive ? `bg-lightgray` : ``} h-5 text-xs`}
         >
           <div className={`mt-1 ml-0.5`}>{icon}</div>
         </animated.div>
