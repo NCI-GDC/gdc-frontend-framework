@@ -7,7 +7,7 @@ import { Badge } from "@mantine/core";
 import {
   useCoreDispatch,
   useCoreSelector,
-  selectCurrentCohortFilterSet,
+  selectCurrentCohortFilters,
   selectFilesData,
   fetchFiles,
   buildCohortGqlOperator,
@@ -110,7 +110,7 @@ const FilesTables: React.FC = () => {
   //This if for hanadling pagination changes
   const repositoryFilters = useAppSelector((state) => selectFilters(state));
   const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilterSet(state),
+    selectCurrentCohortFilters(state),
   );
   const allFilters = joinFilters(cohortFilters, repositoryFilters);
   const coreDispatch = useCoreDispatch();
