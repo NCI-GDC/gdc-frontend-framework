@@ -1,3 +1,7 @@
+/**
+ * This file is depreciated
+ */
+
 import React, { PropsWithChildren, useState } from "react";
 import {
   MdSave as SaveIcon,
@@ -252,7 +256,6 @@ export interface CohortBuilderProps {
 }
 
 export const CohortBuilder: React.FC<CohortBuilderProps> = ({
-  cohort,
   show = true,
 }: CohortBuilderProps) => {
   const [summaryFields] = useState([
@@ -270,7 +273,7 @@ export const CohortBuilder: React.FC<CohortBuilderProps> = ({
       })}
     >
       <div className="">
-        <CohortGroup cohorts={cohort} simpleMode={true} />
+        <CohortGroup />
         <CohortTabbedFacets />
       </div>
       <div className="pt-4">
@@ -332,12 +335,11 @@ interface CohortBuilderModalProps {
 const CohortBuilderModal: React.FC<CohortBuilderModalProps> = ({
   isOpen,
   closeModal,
-  cohort,
 }: CohortBuilderModalProps) => {
   return (
     <ReactModal isOpen={isOpen} onRequestClose={closeModal}>
       <div>
-        <CohortGroup cohorts={cohort} simpleMode={true} />
+        <CohortGroup />
         <CohortTabbedFacets />
       </div>
     </ReactModal>

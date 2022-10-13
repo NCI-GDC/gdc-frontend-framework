@@ -9,6 +9,7 @@ import {
   selectCart,
   useFiles,
   useCoreDispatch,
+  CartFile,
 } from "@gff/core";
 import { VerticalTable } from "@/features/shared/VerticalTable";
 import { removeFromCart, RemoveFromCartButton } from "./updateCart";
@@ -50,7 +51,13 @@ const initialVisibleColumns = [
   { id: "annotations", columnName: "Annotations", visible: true },
 ];
 
-const FilesTable: React.FC = () => {
+interface FilesTableProps {
+  readonly filesByCanAccess: Record<string, CartFile[]>;
+}
+
+const FilesTable: React.FC<FilesTableProps> = ({
+  filesByCanAccess,
+}: FilesTableProps) => {
   const [tableData, setTableData] = useState([]);
   const [visibleColumns, setVisibleColumns] = useState(initialVisibleColumns);
   const [pageSize, setPageSize] = useState(20);
@@ -183,9 +190,15 @@ const FilesTable: React.FC = () => {
             </Menu.Target>
             <Menu.Dropdown>
               <Menu.Item onClick={() => removeFromCart(data, cart, dispatch)}>
-                All Files
+                All Files ({cart.length})
               </Menu.Item>
-              <Menu.Item>Unauthorized Files</Menu.Item>
+              <Menu.Item
+                onClick={() =>
+                  removeFromCart(filesByCanAccess?.false || [], cart, dispatch)
+                }
+              >
+                Unauthorized Files ({(filesByCanAccess?.false || []).length})
+              </Menu.Item>
             </Menu.Dropdown>
           </Menu>
         </div>
