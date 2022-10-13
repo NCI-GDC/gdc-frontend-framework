@@ -12,6 +12,7 @@ interface TableControlsProps {
   handleSave: (selected: any) => void; //todo: add type
   label: string;
   options: ControlOption[];
+  additionalControls?: React.ReactNode;
 }
 
 export const TableControls: React.FC<TableControlsProps> = ({
@@ -19,6 +20,7 @@ export const TableControls: React.FC<TableControlsProps> = ({
   handleSave,
   label,
   options,
+  additionalControls,
 }: TableControlsProps) => {
   const [selectedOption, setSelectedOption] = useState<ControlOption>(
     options[0],
@@ -90,14 +92,14 @@ export const TableControls: React.FC<TableControlsProps> = ({
                 >
                   {options
                     .filter(({ value }) => value !== selectedOption.value)
-                    .map((geneOpt, idx) => {
+                    .map((option, idx) => {
                       return (
                         <li
                           key={`gene-set-select-${idx}`}
-                          onClick={() => setSelectedOption(geneOpt)}
+                          onClick={() => setSelectedOption(option)}
                           className={`py-2 px-4 text-sm hover:bg-hoverColor rounded-md`}
                         >
-                          {geneOpt.label}
+                          {option.label}
                         </li>
                       );
                     })}
@@ -107,6 +109,7 @@ export const TableControls: React.FC<TableControlsProps> = ({
           </animated.div>
         </button>
       </div>
+      <div className={`ml-3 mt-3.5 float-left`}>{additionalControls}</div>
     </>
   );
 };

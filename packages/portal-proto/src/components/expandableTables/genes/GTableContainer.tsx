@@ -1,9 +1,9 @@
 import { useGenesTable } from "@gff/core";
 import { Gene } from "./types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { GenesTable } from "./GenesTable";
 import { useMeasure } from "react-use";
-import { Loader } from "@mantine/core";
+import { Button } from "@mantine/core";
 import PageStepper from "../shared/PageStepper";
 import PageSize from "../shared/PageSize";
 import TableControls from "../shared/TableControls";
@@ -32,6 +32,10 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     pageSize: pageSize,
     offset: page * pageSize,
   });
+
+  useEffect(() => {
+    setPage(0);
+  }, [pageSize]);
 
   const handleGeneSave = (gene: Gene) => {
     console.log("gene", gene);
@@ -81,7 +85,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
 
   return (
     <>
-      <div className={`flex flex-row absolute w-60`}>
+      <div className={`flex flex-row absolute w-60 ml-2`}>
         <TableControls
           numSelected={Object.keys(selectedGenes).length || 0}
           handleSave={handleGeneSave}
@@ -92,6 +96,24 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             { label: "Add existing gene set", value: "add" },
             { label: "Remove from existing gene set", value: "remove" },
           ]}
+          additionalControls={
+            <div className="flex gap-2">
+              <Button
+                className={
+                  "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
+                }
+              >
+                JSON
+              </Button>
+              <Button
+                className={
+                  "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
+                }
+              >
+                TSV
+              </Button>
+            </div>
+          }
         />
       </div>
       {data?.status === "fulfilled" &&

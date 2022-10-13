@@ -14,7 +14,7 @@ import { Survival } from "../shared/types";
 import { SMSubrow } from "./SMSubRow";
 import { Tooltip } from "@mantine/core";
 
-export interface MConsequence {
+export interface ConsequenceProps {
   consequenceType: string;
   symbol: string;
   aaChange: string;
@@ -23,7 +23,7 @@ export interface MConsequence {
 export const Consequence = ({
   consequence,
 }: {
-  consequence: MConsequence;
+  consequence: ConsequenceProps;
 }): JSX.Element => {
   const { consequenceType, symbol, aaChange } = consequence;
   const fc = consequenceType.split("_")[0] ? consequenceType.split("_")[0] : ``;
@@ -41,9 +41,17 @@ export const Consequence = ({
   );
 };
 
-const Impact = ({ row, accessor }) => {
+interface ImpactProps {
+  polyphenImpact: string;
+  polyphenScore: number;
+  siftImpact: string;
+  siftScore: number;
+  vepImpact: string;
+}
+
+const Impact = ({ impact }: { impact: ImpactProps }): JSX.Element => {
   const { polyphenImpact, polyphenScore, siftImpact, siftScore, vepImpact } =
-    row.original[`${accessor}`];
+    impact;
   const twIconStyles = `w-7 h-7 text-white font-bold border rounded-md text-center`;
   const blankIconStyles = `w-7 h-7 text-black font-bold text-center`;
   return (
@@ -394,7 +402,7 @@ export const createTableColumn = (
                   className={`content-center`}
                 >
                   {row.getCanExpand() && (
-                    <Impact row={row} accessor={accessor} />
+                    <Impact impact={row.original["impact"]} />
                   )}
                   <>
                     {!row.getCanExpand() && visibleColumns[0].id === accessor && (
@@ -461,12 +469,12 @@ export type MutationsColumn = {
   mutationID: string;
   DNAChange: string;
   type: string;
-  consequences: MConsequence;
+  consequences: ConsequenceProps;
   affectedCasesInCohort: string;
   affectedCasesAcrossTheGDC: string;
   survival: Survival;
   impact: string;
-  subRows: string;
+  subRows: ImpactProps;
   ssmsTotal: number;
 };
 
@@ -477,7 +485,9 @@ export const getMutation = (
   cases: number,
   ssmsTotal: number,
 ) => {
+  if (sm.consequence.length === 0) debugger;
   const { gene, annotation, aa_change, consequence_type } = sm.consequence[0];
+
   return {
     select: sm.ssm_id,
     mutationID: sm.ssm_id,

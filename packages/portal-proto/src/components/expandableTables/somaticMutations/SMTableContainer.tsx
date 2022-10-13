@@ -1,12 +1,13 @@
 import { useSsmsTable } from "@gff/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SomaticMutation } from "./types";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
 import { useMeasure } from "react-use";
-import { Loader } from "@mantine/core";
+import { Button } from "@mantine/core";
 import PageStepper from "../shared/PageStepper";
 import PageSize from "../shared/PageSize";
 import { TableControls } from "../shared/TableControls";
+import TableLoader from "../shared/TableLoader";
 
 export interface SMTableContainerProps {
   readonly selectedSurvivalPlot: Record<string, string>;
@@ -31,6 +32,10 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     pageSize: pageSize,
     offset: pageSize * page,
   });
+
+  useEffect(() => {
+    setPage(0);
+  }, [pageSize]);
 
   const handleMutationSave = (mutation: SomaticMutation) =>
     console.log("mutation", mutation);
@@ -94,6 +99,24 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             { label: "Add existing mutation set", value: "add" },
             { label: "Remove from existing mutation set", value: "remove" },
           ]}
+          additionalControls={
+            <div className="flex gap-2">
+              <Button
+                className={
+                  "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
+                }
+              >
+                JSON
+              </Button>
+              <Button
+                className={
+                  "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
+                }
+              >
+                TSV
+              </Button>
+            </div>
+          }
         />
       </div>
       {status === "fulfilled" && cases && filteredCases ? (
@@ -112,11 +135,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           />
         </div>
       ) : (
-        <div className={`flex flex-row h-screen w-[1000px]`}>
-          <div className={`m-auto h-9/12`}>
-            <Loader />
-          </div>
-        </div>
+        <TableLoader cellWidth={`w-[75px]`} rowHeight={70} />
       )}
       <div className={`flex flex-row w-9/12 ml-2 m-auto mb-2`}>
         <div className="m-auto ml-0">
