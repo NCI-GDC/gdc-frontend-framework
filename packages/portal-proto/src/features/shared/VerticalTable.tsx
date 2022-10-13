@@ -4,7 +4,13 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DragDrop } from "./DragDrop";
 import { BsList } from "react-icons/bs";
-import { Box, Popover, Select, Pagination, Loader } from "@mantine/core";
+import {
+  Box,
+  Popover,
+  Select,
+  Pagination,
+  LoadingOverlay,
+} from "@mantine/core";
 
 interface VerticalTableProps {
   /**
@@ -137,8 +143,10 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   const [showColumnMenu, setShowColumnMenu] = useState(false);
 
   useEffect(() => {
-    setTable(tableData);
-  }, [tableData]);
+    if (status === "fulfilled") {
+      setTable(tableData);
+    }
+  }, [status, tableData]);
 
   useEffect(() => {
     setColumnListOptions(columnListOrder);
@@ -195,7 +203,13 @@ export const VerticalTable: FC<VerticalTableProps> = ({
           ))}
         </thead>
         <tbody {...getTableBodyProps()} className="">
-          {columnListOptions.length > 0 && status === "fulfilled" ? (
+          {status === "rejected" ? (
+            <tr>
+              <td className="" colSpan={columns.length}>
+                Error in loading data
+              </td>
+            </tr>
+          ) : (
             rows.map((row, index) => {
               prepareRow(row);
               return (
@@ -220,18 +234,6 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 </tr>
               );
             })
-          ) : status === "rejected" ? (
-            <tr>
-              <td className="" colSpan={10}>
-                Error in loading data
-              </td>
-            </tr>
-          ) : (
-            <tr>
-              <td className="h-32 pl-[25vw] pt-10" colSpan={10}>
-                <Loader color="primary" size={64} />
-              </td>
-            </tr>
           )}
         </tbody>
       </table>
@@ -330,7 +332,10 @@ export const VerticalTable: FC<VerticalTableProps> = ({
           </div>
         </div>
       )}
-      <div className="overflow-y-scroll w-full">
+      <div className="overflow-y-scroll w-full relative">
+        <LoadingOverlay
+          visible={status === "pending" || status === "uninitialized"}
+        />
         <Table columns={headings} data={table} />
       </div>
       {pagination && (

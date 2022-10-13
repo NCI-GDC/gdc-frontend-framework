@@ -3,7 +3,7 @@ import fileSize from "filesize";
 import { VerticalTable } from "../shared/VerticalTable";
 import { SingleItemAddToCartButton } from "../cart/updateCart";
 import Link from "next/link";
-import { Badge, Button } from "@mantine/core";
+import { Badge } from "@mantine/core";
 import {
   useCoreDispatch,
   useCoreSelector,
