@@ -1,6 +1,5 @@
 import ToggleSpring from "../shared/ToggleSpring";
 import { MdKeyboardArrowDown } from "react-icons/md";
-import _ from "lodash";
 import { animated } from "react-spring";
 // import SwitchSpring from "../shared/SwitchSpring";
 // import PercentageBar from "../shared/PercentageBar";
@@ -92,7 +91,7 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => <TableHeader twStyles={``} title={accessor} />,
-            cell: ({ row, getValue }) => {
+            cell: ({ row }) => {
               //<Tooltip label={`Click icon to plot ${value.symbol}`}>
               //          </Tooltip> */}
               return (

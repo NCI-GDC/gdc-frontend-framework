@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { animated, useSpring, config } from "react-spring";
+import { animated, useSpring } from "react-spring";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 
 interface PageSizeProps {
@@ -32,7 +32,7 @@ const PageSize: React.FC<PageSizeProps> = ({
 
   useEffect(() => {
     setOffsetMenu(hovered === pageSize ? false : true);
-  }, [hovered]);
+  }, [hovered, pageSize]);
 
   return (
     <button
@@ -51,21 +51,21 @@ const PageSize: React.FC<PageSizeProps> = ({
         {offsetMenu && (
           <div className={`text-center`}>
             <ul
-              className={`list-none w-12 rounded-b-md text-activeColor border border-1 border-activeColor`}
+              className={`list-none w-12 text-activeColor border border-1 border-activeColor`}
             >
               {[10, 20, 40, 100]
                 .filter((pg) => pg !== pageSize)
                 .map((pg) => {
                   return (
-                    <li
+                    <button
                       key={`page-size-option-${pg}`}
                       onClick={() => handlePageSize(pg)}
                       onMouseEnter={() => setHovered(pg)}
                       onMouseLeave={() => setHovered(pageSize)}
-                      className={`py-1 px-2 text-sm hover:bg-hoverColor border-t-0`}
+                      className={`py-1 px-2 text-sm border-t-0 hover:bg-hoverColor w-10`}
                     >
                       {pg}
-                    </li>
+                    </button>
                   );
                 })}
             </ul>

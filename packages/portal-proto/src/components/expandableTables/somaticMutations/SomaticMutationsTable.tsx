@@ -36,7 +36,6 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
 
   const useSomaticMutationsTableFormat = useCallback(
     (initialData) => {
-      console.log("initial", initialData);
       const { cases, filteredCases, ssmsTotal, ssms } = initialData;
       return ssms.map((sm) => {
         return getMutation(
@@ -61,7 +60,6 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
     setExpandedProxy(exp);
   };
   // `exp` is non-mutable within the lexical scope of handleExpandedProxy
-  //  console logging `exp` returns a function (???)
   //  this effect hook is a workaround that updates expanded wrt expandedProxy
   useEffect(() => {
     const proxy = Object.keys(expandedProxy);

@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { Gene, GenesTableProps, DEFAULT_GTABLE_ORDER } from "./types";
+import { GenesTableProps, DEFAULT_GTABLE_ORDER } from "./types";
 import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { ExpTable } from "../shared/ExpTable";
 import { TableFilters } from "../shared/TableFilters";
 import { getGene, createTableColumn, GenesColumn } from "./genesTableUtils";
 import { useSpring } from "react-spring";
 import { searchContains } from "../shared/types";
-// import gene menu options
 
 export const GenesTable: React.FC<GenesTableProps> = ({
   initialData,
@@ -65,7 +64,6 @@ export const GenesTable: React.FC<GenesTableProps> = ({
     setExpandedProxy(exp);
   };
   // `exp` is non-mutable within the lexical scope of handleExpandedProxy
-  //  console logging `exp` returns a function (???)
   //  this effect hook is a workaround that updates expanded wrt expandedProxy
   useEffect(() => {
     const proxy = Object.keys(expandedProxy);

@@ -110,3 +110,5 @@ export const TableControls: React.FC<TableControlsProps> = ({
     </>
   );
 };
+
+export default TableControls;

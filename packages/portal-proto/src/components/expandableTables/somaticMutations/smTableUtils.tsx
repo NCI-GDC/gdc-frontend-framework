@@ -215,7 +215,7 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => <TableHeader twStyles={``} title={accessor} />,
-            cell: ({ row, getValue }) => {
+            cell: ({ row }) => {
               return (
                 <>
                   {row.getCanExpand() && (

@@ -6,7 +6,8 @@ import { useMeasure } from "react-use";
 import { Loader } from "@mantine/core";
 import PageStepper from "../shared/PageStepper";
 import PageSize from "../shared/PageSize";
-import { TableControls } from "../shared/TableControls";
+import TableControls from "../shared/TableControls";
+import TableLoader from "../shared/TableLoader";
 
 export interface GTableContainerProps {
   readonly selectedSurvivalPlot: Record<string, string>;
@@ -27,7 +28,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const [selectedGenes, setSelectedGenes] = useState<any>({}); // todo: add type
   const [gTotal, setGTotal] = useState(0);
 
-  const { data, isFetching } = useGenesTable({
+  const { data } = useGenesTable({
     pageSize: pageSize,
     offset: page * pageSize,
   });
@@ -80,7 +81,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
 
   return (
     <>
-      <div className={`flex flex-row absolute w-80`}>
+      <div className={`flex flex-row absolute w-60`}>
         <TableControls
           numSelected={Object.keys(selectedGenes).length || 0}
           handleSave={handleGeneSave}
@@ -112,13 +113,9 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           />
         </div>
       ) : (
-        <div className={`flex flex-row h-screen w-[1000px]`}>
-          <div className={`m-auto h-9/12`}>
-            <Loader />
-          </div>
-        </div>
+        <TableLoader cellWidth={`w-[75px]`} rowHeight={`h-[70px]`} />
       )}
-      <div className={`flex flex-row w-9/12 ml-2 m-auto mb-2`}>
+      <div className={`flex flex-row w-9/12 ml-2 mt-0 m-auto mb-2`}>
         <div className="m-auto ml-0">
           <span className="my-auto mx-1 text-xs">Show</span>
           <PageSize pageSize={pageSize} handlePageSize={setPageSize} />

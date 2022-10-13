@@ -56,9 +56,7 @@ export interface SomaticMutationsTableProps {
     field: string,
   ) => void;
   pageSize: number;
-  // handlePageSize: any;
   page: number;
-  // handlePage: (page: number) => any;
   selectedMutations: any;
   selectMutation: any;
   selectAll: any;
