@@ -59,7 +59,7 @@ export const SMSubrow: React.FC<SMSubrowProps> = ({
     })
       .then((res) => res.json())
       .then((json) => {
-        console.log("mutationId", mutationId);
+        console.log("json", json);
         setSubData([]);
       });
   };

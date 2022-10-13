@@ -29,10 +29,10 @@ const PercentageBar: React.FC<PercentageBarProps> = ({
   return (
     <div className={`w-max flex flex-row h-3 m-auto`}>
       <animated.div className={`rounded-tl-md rounded-bl-md`} style={nSpring}>
-        '
+        {"'"}
       </animated.div>
       <animated.div className={`rounded-tr-md rounded-br-md`} style={dSpring}>
-        '
+        {"'"}
       </animated.div>
     </div>
   );

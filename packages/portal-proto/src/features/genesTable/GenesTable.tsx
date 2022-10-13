@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useGenesTable } from "@gff/core";
-// import { VerticalTable } from "../shared/VerticalTable";
-// import ExpandableTable from "../shared/ExpandableTable";
-import { GTableContainer } from "@/components/expandableTables/genes/GTableContainer";
+import { VerticalTable } from "../shared/VerticalTable";
 import {
   Box,
   Loader,
@@ -10,8 +8,6 @@ import {
   Select,
   Switch,
   Tooltip,
-  Collapse,
-  Button,
 } from "@mantine/core";
 import { SiMicrogenetics as GeneAnnotationIcon } from "react-icons/si";
 import _ from "lodash";
@@ -33,7 +29,6 @@ const GenesTable: React.FC<GenesTableProps> = ({
 }: GenesTableProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [offset, setOffset] = useState(0);
-  const [sorts, setSorts] = useState([]);
   const [activePage, setActivePage] = useState(1);
   const [pages, setPages] = useState(0);
   const [totalResults, setTotalResults] = useState(0);
@@ -42,96 +37,16 @@ const GenesTable: React.FC<GenesTableProps> = ({
   const [columnListOrder, setColumnListOrder] = useState([]);
   const [columnListCells, setColumnListCells] = useState([]);
 
-  const [selectedRowsMap, setSelectedRowsMap] = useState({});
-  const [expandedCell, setExpandedCell] = useState([]);
-  const [uuidRowParam] = useState("symbol");
-  const [scrollItem, setScrollItem] = useState(1);
-  const [selectedSorts, setSelectedSorts] = useState([]);
-
   // using the useSsmsTable from core and the associated useEffect hook
   // exploring different ways to dispatch the pageSize/offset changes
   const { data, isFetching } = useGenesTable({
     pageSize: pageSize,
     offset: offset,
-    // sorts: sorts,
   });
 
   useEffect(() => {
     setActivePage(1);
   }, [pageSize]);
-
-  const handleRowSelectChange = (rowUpdate, select, selectAll) => {
-    switch (select) {
-      case "all":
-        if (!selectAll) {
-          // select all rows [displayed] that aren't already selected
-          setSelectedRowsMap((currentMap) => {
-            const newMap = { ...currentMap };
-            for (const singleRow of rowUpdate) {
-              if (!(singleRow.original[uuidRowParam] in currentMap)) {
-                newMap[singleRow.original[uuidRowParam]] = singleRow;
-              }
-            }
-            return newMap;
-          });
-        } else {
-          // deselect all rows [displayed] that are selected
-          setSelectedRowsMap((currentMap) => {
-            const newMap = { ...currentMap };
-            for (const singleRow of rowUpdate) {
-              if (singleRow.original[uuidRowParam] in currentMap) {
-                delete newMap[singleRow.original[uuidRowParam]];
-              }
-            }
-            return newMap;
-          });
-        }
-        break;
-      case "single":
-        const row = rowUpdate.original[uuidRowParam];
-        if (row in selectedRowsMap) {
-          // deselect single row
-          setSelectedRowsMap((currentMap) => {
-            const newMap = { ...currentMap };
-            delete newMap[row];
-            return newMap;
-          });
-          setScrollItem(rowUpdate.index + 1);
-        } else {
-          // select single row
-          setSelectedRowsMap((currentMap) => {
-            return { ...currentMap, [row]: rowUpdate };
-          });
-          setScrollItem(rowUpdate.index + 1);
-        }
-        break;
-    }
-  };
-
-  useEffect(() => {
-    console.log("cellmap", expandedCell);
-  }, [expandedCell]);
-
-  const handleRowExpansion = (rowUpdate) => {
-    // TODO
-    const row = rowUpdate.original[uuidRowParam];
-    if (expandedCell.length === 0) {
-      setExpandedCell((cell) => {
-        return [...cell, row];
-      });
-    } else {
-      if (expandedCell[0] === row) {
-      }
-    }
-    // setExpandedRowsMap((exMap) => {
-    //   return {...exMap, }
-    // })
-    // setScrollItem(...)
-  };
-
-  const handleSortChange = (sortUpdate) => {
-    // console.log("sortUpdate", sortUpdate);
-  };
 
   useEffect(() => {
     const getTableDataMapping = (data) => {
@@ -166,14 +81,14 @@ const GenesTable: React.FC<GenesTableProps> = ({
                   (100 * g.case_cnv_gain) /
                   data.genes.cnvCases
                 ).toFixed(2)}%)`
-              : `--`,
+              : `0%`,
           CNVLoss:
             data.genes.cnvCases > 0
               ? `${g.case_cnv_loss + " / " + data.genes.cnvCases} (${(
                   (100 * g.case_cnv_loss) /
                   data.genes.cnvCases
                 ).toFixed(2)}%)`
-              : `--`,
+              : `0%`,
           mutations: data.genes.mutationCounts[g.gene_id],
           annotations: g.is_cancer_gene_census,
         };
@@ -192,7 +107,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
           Header: "Annotations",
           accessor: "annotations",
           Cell: ({ value }: any) => (
-            <div className={`grid place-items-center`}>
+            <div className="grid place-items-center">
               {value ? (
                 <Tooltip label="Is Cancer Census">
                   <Box>
@@ -203,7 +118,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
             </div>
           ),
         };
-      case "survival":
+      case "survival": {
         return {
           Header: "Survival",
           accessor: "survival",
@@ -231,6 +146,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
             );
           },
         };
+      }
       default:
         return;
     }
@@ -243,16 +159,13 @@ const GenesTable: React.FC<GenesTableProps> = ({
         : {
             Header: _.startCase(key),
             accessor: key,
-            Cell: ({ value }) => {
-              return <div className={`grid place-items-center`}>{value}</div>;
-            },
             width:
-              width / geneKeys.length > 100 ? width / geneKeys.length : 100,
+              width / geneKeys.length > 110 ? width / geneKeys.length : 110,
           };
     });
     return cellMapping;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedSurvivalPlot, width, expandedCell]);
+  }, [selectedSurvivalPlot, width]);
 
   const getTableColumnMapping = () => {
     return geneKeys.map((key, idx) => {
@@ -268,7 +181,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
     setColumnListOrder(getTableColumnMapping());
     setColumnListCells(getTableCellMapping());
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [expandedCell]);
+  }, []);
 
   const handlePageSizeChange = (x: string) => {
     setOffset((activePage - 1) * parseInt(x));
@@ -279,34 +192,6 @@ const GenesTable: React.FC<GenesTableProps> = ({
     setOffset((x - 1) * pageSize);
     setActivePage(x);
   };
-
-  const isVisibleSort = (column) => {
-    // all except -> Select, Cohort, Survival, and Annotations)
-    return column.visible &&
-      !["annotations", "survival"].includes(column.columnName)
-      ? true
-      : false;
-  };
-
-  const updateSortables = () => {
-    const eligibleSorts = columnListOrder
-      .filter((column) => isVisibleSort(column))
-      .map((column) => {
-        return {
-          sortActive: false,
-          field: column.columnName,
-          parity: "desc",
-        };
-      });
-    // console.log("eligibleSorts", eligibleSorts);
-    setSelectedSorts(eligibleSorts);
-  };
-
-  const sortables = useMemo(
-    () => updateSortables(),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [columnListOrder],
-  );
 
   const columnCells = useMemo(() => {
     const updateTableCells = (currentWidth, currentColumnListOrder) => {
@@ -330,40 +215,24 @@ const GenesTable: React.FC<GenesTableProps> = ({
     return updateTableCells(width, columnListOrder);
   }, [width, columnListOrder, columnListCells]);
 
-  const handleColumnChange = (columnUpdate) => {
-    setColumnListOrder(columnUpdate);
+  const handleColumnChange = (update) => {
+    setColumnListOrder(update);
   };
 
   return (
     <div className="flex flex-col w-screen pb-3 pt-3">
-      <div className={`flex flex-row`}>
-        <div className={`flex-2 p-2`}>
-          {Object.keys(selectedRowsMap).length} Map Length?
-        </div>
-        <div className={`flex-2 p-2`}>JSON</div>
-        <div className={`flex-2 p-2`}>TSV</div>
-      </div>
-      {/* TODO: move this & pagination into VerticalTable
-      Showing ${(activePage - 1) * pageSize + 1} - ${activePage * pageSize
-              } of   ${totalResults} genes */}
       <div ref={ref} className={`flex flex-row w-9/12`}>
-        {/* <ExpandableTable /> */}
-        {/* {data && !isFetching ? (
+        {data && !isFetching ? (
           <VerticalTable
             tableData={tableData}
             columnListOrder={columnListOrder}
             columnCells={columnCells}
             handleColumnChange={handleColumnChange}
-            handleRowSelectChange={handleRowSelectChange}
-            uuidRowParam={uuidRowParam}
-            scrollItem={scrollItem}
-            selectedRowsMap={selectedRowsMap}
-            expandedCell={expandedCell}
-            handleSortChange={handleSortChange}
-            selectedSorts={selectedSorts}
-            tableTitle={`Genes Table`}
+            selectableRow={false}
+            tableTitle={`Showing ${(activePage - 1) * pageSize + 1} - ${
+              activePage * pageSize
+            } of   ${totalResults} genes`}
             pageSize={pageSize.toString()}
-            selectableRow={true}
           ></VerticalTable>
         ) : (
           <div className="grid place-items-center h-96 w-full pt-64 pb-72">
@@ -371,7 +240,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
               <Loader color="primary" size={24} />
             </div>
           </div>
-        )} */}
+        )}
       </div>
       <div className="flex flex-row items-center justify-start border-t border-base-light w-9/12">
         <p className="px-2">Page Size:</p>

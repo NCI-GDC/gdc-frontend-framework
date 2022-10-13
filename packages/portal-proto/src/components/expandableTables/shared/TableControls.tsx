@@ -1,7 +1,6 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useState } from "react";
 import { MdOutlineArrowDropDown } from "react-icons/md";
-import { animated, config, useSpring } from "react-spring";
-// import { GENE_MENU } from "./types";
+import { animated, useSpring } from "react-spring";
 
 interface ControlOption {
   label: string;

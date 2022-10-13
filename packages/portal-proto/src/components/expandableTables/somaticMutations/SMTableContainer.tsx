@@ -23,15 +23,13 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
 }: SMTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
-  const [sorts, setSorts] = useState([]);
   const [ref, { width }] = useMeasure();
   const [selectedMutations, setSelectedMutations] = useState<any>({}); // todo: add type
   const [smTotal, setSMTotal] = useState(0);
 
-  const { data, isFetching } = useSsmsTable({
+  const { data } = useSsmsTable({
     pageSize: pageSize,
     offset: pageSize * page,
-    sorts: sorts,
   });
 
   const handleMutationSave = (mutation: SomaticMutation) =>

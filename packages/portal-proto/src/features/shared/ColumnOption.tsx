@@ -4,7 +4,6 @@ import { ItemTypes } from "./ItemTypes";
 import type { XYCoord, Identifier } from "dnd-core";
 import _ from "lodash";
 import { MdDragIndicator } from "react-icons/md";
-import { useSpring, animated } from "react-spring";
 import SwitchSpring from "../../components/expandableTables/shared/SwitchSpring";
 
 export interface ColumnProps {

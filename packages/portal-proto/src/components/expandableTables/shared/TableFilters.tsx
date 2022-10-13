@@ -23,7 +23,7 @@ export const TableFilters: React.FC<TableFiltersProps> = ({
   defaultColumns,
 }: TableFiltersProps) => {
   const [searchToggled, setSearchToggled] = useState(false);
-  let inputWidth = 300;
+  const inputWidth = 300;
 
   const searchSpring = useSpring({
     from: { opacity: 0, width: 0 },
@@ -71,7 +71,6 @@ export const TableFilters: React.FC<TableFiltersProps> = ({
           {!searchToggled && (
             <>
               <button
-                role="button"
                 onMouseEnter={() => setSearchToggled(true)}
                 onFocus={() => setSearchToggled(true)}
                 className={`mt-0.5 ml-1 mr-1 p-0.5`}
