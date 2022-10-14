@@ -30,19 +30,51 @@ export const TableHeader = ({
 export const TableCell = ({
   row,
   accessor,
+  anchor,
 }: {
   row: any;
   accessor: string;
+  anchor: boolean;
 }): JSX.Element => {
   return (
     <div>
       <>
         {row.getCanExpand() ? <></> : null}{" "}
-        <animated.div className={`ml-3.5 text-center text-xs`}>
+        <animated.div
+          className={`ml-3.5 text-center text-xs ${
+            anchor
+              ? `text-activeColor underline hover:cursor-pointer font-bold`
+              : ``
+          }`}
+        >
           {row.original[`${accessor}`] ? row.original[`${accessor}`] : ""}
         </animated.div>
       </>
     </div>
+  );
+};
+
+export interface AffectedCasesProps {
+  row: any;
+  ratio: any;
+}
+
+export const AffectedCases = ({ ratio }: { ratio }): JSX.Element => {
+  const anchorStyles = `font-medium underline hover:cursor-pointer`;
+  const textStyles = `text-xs text-activeColor mx-0.5`;
+  return (
+    <>
+      {
+        <div className={`flex flex-row w-max m-auto`}>
+          <div className={`${textStyles} ${anchorStyles}`}>{ratio[0]}</div>
+          <div className={`text-xs mx-0.5`}>{ratio[1]}</div>
+          <div className={`${textStyles} ${anchorStyles}`}>{ratio[2]}</div>
+        </div>
+      }
+      <div className={`flex flex-row mx-auto content-center w-max`}>
+        {<div className={`text-xs`}>{ratio[3]}</div>}
+      </div>
+    </>
   );
 };
 

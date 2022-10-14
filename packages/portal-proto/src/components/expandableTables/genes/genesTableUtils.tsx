@@ -1,7 +1,6 @@
 import ToggleSpring from "../shared/ToggleSpring";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { animated } from "react-spring";
-// import SwitchSpring from "../shared/SwitchSpring";
 // import PercentageBar from "../shared/PercentageBar";
 import CheckboxSpring from "../shared/CheckboxSpring";
 import SwitchSpring from "../shared/SwitchSpring";
@@ -14,6 +13,7 @@ import {
   Survival,
 } from "../shared/types";
 import { GSubrow } from "./GSubrow";
+import { AffectedCases } from "../shared/types";
 
 interface SingleGene {
   biotype: string;
@@ -169,9 +169,21 @@ export const createTableColumn = (
                   className={`content-center`}
                 >
                   <>
-                    <TableCell row={row} accessor={accessor} />
+                    {
+                      <AffectedCases
+                        ratio={
+                          row?.original[`SSMSAffectedCasesAcrossTheGDC`]?.split(
+                            " ",
+                          )
+                            ? row.original[
+                                `SSMSAffectedCasesAcrossTheGDC`
+                              ].split(" ")
+                            : [0, "", "", ""]
+                        }
+                      />
+                    }
                     {row.getCanExpand() && (
-                      <div className={`text-center`}>
+                      <div className={`text-center content-center`}>
                         <button
                           {...{
                             onClick: () => {
@@ -228,7 +240,7 @@ export const createTableColumn = (
                     //   denominator={}
                     //   width={width / visibleColumns.length}
                     // />
-                    <TableCell row={row} accessor={accessor} />
+                    <TableCell row={row} accessor={accessor} anchor={false} />
                   )}
                   <>
                     <GSubrow
@@ -266,7 +278,7 @@ export const createTableColumn = (
                     //   denominator={}
                     //   width={width / visibleColumns.length}
                     // />
-                    <TableCell row={row} accessor={accessor} />
+                    <TableCell row={row} accessor={accessor} anchor={false} />
                   )}
                   <>
                     <GSubrow
@@ -296,7 +308,11 @@ export const createTableColumn = (
               return (
                 <animated.div style={partitionWidth}>
                   <>
-                    <TableCell row={row} accessor={accessor} />
+                    <TableCell
+                      row={row}
+                      accessor={accessor}
+                      anchor={["symbol"].includes(accessor) ? true : false}
+                    />
                     <>
                       <GSubrow
                         geneId={geneID}

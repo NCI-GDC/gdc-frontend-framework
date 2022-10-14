@@ -268,7 +268,7 @@ export const createTableColumn = (
                   className={`content-center`}
                 >
                   <>
-                    <TableCell row={row} accessor={accessor} />
+                    <TableCell row={row} accessor={accessor} anchor={false} />
                     {row.getCanExpand() && (
                       <div className={`text-center`}>
                         <button
@@ -329,7 +329,7 @@ export const createTableColumn = (
                     //   denominator={}
                     //   width={width / visibleColumns.length}
                     // />
-                    <TableCell row={row} accessor={accessor} />
+                    <TableCell row={row} accessor={accessor} anchor={false} />
                   )}
                   <>
                     {!row.getCanExpand() && visibleColumns[0].id === accessor && (
@@ -434,7 +434,7 @@ export const createTableColumn = (
               return (
                 <animated.div style={partitionWidth}>
                   <>
-                    <TableCell row={row} accessor={accessor} />
+                    <TableCell row={row} accessor={accessor} anchor={false} />
                     <>
                       {!row.getCanExpand() &&
                         visibleColumns[0].id === accessor && (
