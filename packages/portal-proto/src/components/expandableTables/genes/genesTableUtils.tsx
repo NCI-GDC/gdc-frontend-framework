@@ -169,7 +169,7 @@ export const createTableColumn = (
                   className={`content-center`}
                 >
                   <>
-                    {
+                    {row.getCanExpand() && (
                       <AffectedCases
                         ratio={
                           row?.original[`SSMSAffectedCasesAcrossTheGDC`]?.split(
@@ -181,7 +181,7 @@ export const createTableColumn = (
                             : [0, "", "", ""]
                         }
                       />
-                    }
+                    )}
                     {row.getCanExpand() && (
                       <div className={`text-center content-center`}>
                         <button

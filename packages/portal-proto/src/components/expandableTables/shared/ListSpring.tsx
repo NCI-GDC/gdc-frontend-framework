@@ -33,6 +33,9 @@ const ListSpring: React.FC<ListSpringProps> = ({
         className={`flex flex-wrap bg-white absolute mt-2 ml-2`}
         style={horizontalSpring}
       >
+        <h2 className={`flex flex-row w-screen font-bold text-sm p-2`}>
+          # SSMS Affected Cases Across The GDC
+        </h2>
         {subData.map((numerator, index) => {
           return (
             <ItemSpring

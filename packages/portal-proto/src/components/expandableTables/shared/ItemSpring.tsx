@@ -26,22 +26,26 @@ const ItemSpring: React.FC<ItemSpringProps> = ({
 
   return (
     <>
-      <animated.ul style={staggeredSpring} className={`p-2 text-xs list-disc `}>
-        <li key={`subrow-item-${index}`} className={`text-red-500 pr-1`}>
-          <span className={`font-medium text-black`}>{numerator.key}</span>:{" "}
-          <span
-            className={`text-blue-500 underline hover:cursor-pointer font-medium`}
-          >
-            {numerator.doc_count}
-          </span>
-          <span className={`text-black`}> / </span>
-          <span
-            className={`text-blue-500 underline hover:cursor-pointer font-medium`}
-          >
-            9999
-          </span>
+      <animated.ul style={staggeredSpring} className={`p-1 text-xs my-1`}>
+        <li key={`subrow-item-${index}`} className={`list-none`}>
+          <div className={`flex flex-row w-fit`}>
+            <div className={`font-bold text-black mx-0.5`}>
+              {numerator.key}:
+            </div>{" "}
+            <div
+              className={`text-activeColor underline hover:cursor-pointer mx-1`}
+            >
+              {numerator.doc_count}
+            </div>
+            <div className={`text-black mx-0.5`}> / </div>
+            <div className={`text-activeColor underline hover:cursor-pointer`}>
+              9999
+            </div>
+            <div className={`ml-1`}>
+              ({(numerator.doc_count / 9999).toFixed(2)}%)
+            </div>
+          </div>
         </li>
-        ({(numerator.doc_count / 9999).toFixed(2)}%)
       </animated.ul>
     </>
   );

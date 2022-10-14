@@ -31,6 +31,7 @@ export interface GenesTableProps {
 
 export const DEFAULT_GTABLE_ORDER = [
   { id: "select", columnName: "Select", visible: true },
+  { id: "survival", columnName: "Survival", visible: true },
   { id: "geneID", columnName: "Gene ID", visible: false },
   { id: "symbol", columnName: "Symbol", visible: true },
   { id: "name", columnName: "Name", visible: true },
@@ -50,7 +51,6 @@ export const DEFAULT_GTABLE_ORDER = [
   { id: "CNVLoss", columnName: "# CNV Loss", visible: true },
   { id: "mutations", columnName: "Mutations", visible: true },
   { id: "annotations", columnName: "Annotations", visible: true },
-  { id: "survival", columnName: "Survival", visible: true },
 ];
 
 export const INITIAL_FILTERS = {
