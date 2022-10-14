@@ -9,7 +9,7 @@ import {
   isStatsAggregation,
 } from "../gdcapi/gdcapi";
 
-import { selectCurrentCohortFilters } from "../cohort/availableCohortsSlice";
+import { selectCurrentCohortFilters } from "../cohort";
 import { buildCohortGqlOperator } from "../cohort/filters";
 
 export const fetchFacetByName = createAsyncThunk<

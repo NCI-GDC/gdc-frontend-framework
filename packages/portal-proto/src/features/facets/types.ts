@@ -23,6 +23,8 @@ export type GetFacetDataFunction = <T extends FacetResponse = FacetResponse>(
   field: string,
 ) => T;
 
+export type GetEnumFacetDataFunction = (field: string) => EnumFacetResponse;
+
 export type GetFacetDataFromDocAndIndexFunction = (
   field: string,
   docType: GQLDocType,
@@ -34,7 +36,7 @@ export type UpdateFacetFilterFunction = (field: string, op: Operation) => void;
 export type UpdateFacetFilterHook = () => UpdateFacetFilterFunction;
 export type ClearFacetFunction = (field: string) => void;
 export type ClearFacetHook = () => ClearFacetFunction;
-export type GetTotalCountsFunction = (countName: string) => number;
+export type GetTotalCountsFunction = () => number;
 export type updateArrayFilterValues = (
   field: string,
   enumerationFilters: EnumOperandValue,
@@ -43,8 +45,6 @@ export type updateArrayFilterValues = (
 export type GetRangeFacetDataFunction = (
   field: string,
   ranges: ReadonlyArray<NumericFromTo>,
-  docType: GQLDocType,
-  indexType: GQLIndexType,
 ) => FacetResponse;
 
 export interface FacetDataHooks {
@@ -53,7 +53,7 @@ export interface FacetDataHooks {
 
 export interface EnumFacetHooks extends FacetDataHooks {
   useUpdateFacetFilters: UpdateFacetFilterHook;
-  useGetFacetData: GetFacetDataFromDocAndIndexFunction;
+  useGetFacetData: GetEnumFacetDataFunction;
   useTotalCounts: GetTotalCountsFunction;
 }
 
@@ -81,9 +81,8 @@ export interface AllHooks {
 export interface FacetCardProps<T extends FacetDataHooks> {
   readonly field: string;
   readonly hooks: T;
-  readonly docType?: GQLDocType;
-  readonly indexType?: GQLIndexType;
   readonly description?: string;
+  readonly valueLabel?: string;
   readonly facetName?: string;
   readonly showSearch?: boolean;
   readonly showFlip?: boolean;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { usePrevious, fieldNameToTitle } from "@gff/core";
-import { FacetDocTypeToCountsIndexMap, FacetDocTypeToLabelsMap } from "./hooks";
+//import { FacetDocTypeToCountsIndexMap, FacetDocTypeToLabelsMap } from "./hooks";
 import { DEFAULT_VISIBLE_ITEMS } from "./utils";
 
 import {
@@ -9,7 +9,10 @@ import {
   MdClose as CloseIcon,
 } from "react-icons/md";
 import { FaUndo as UndoIcon } from "react-icons/fa";
-import { EnumFacetHooks, FacetCardProps } from "@/features/facets/types";
+import {
+  EnumFacetHooksWithPartial,
+  FacetCardProps,
+} from "@/features/facets/types";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
 import {
   ActionIcon,
@@ -42,11 +45,10 @@ import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
  * @param dismissCallback if facet can be removed, supply a function which will ensure the "dismiss" control will be visible
  * @param width set the width of the facet
  */
-const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
+const EnumFacet: React.FC<FacetCardProps<EnumFacetHooksWithPartial>> = ({
   field,
-  docType,
-  indexType,
   hooks,
+  valueLabel,
   description,
   facetName = null,
   showSearch = true,
@@ -56,7 +58,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   hideIfEmpty = true,
   dismissCallback = undefined,
   width = undefined,
-}: FacetCardProps<EnumFacetHooks>) => {
+}: FacetCardProps<EnumFacetHooksWithPartial>) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -64,18 +66,14 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   const [isFacetView, setIsFacetView] = useState(startShowingData);
   const [visibleItems, setVisibleItems] = useState(DEFAULT_VISIBLE_ITEMS);
   const cardRef = useRef<HTMLDivElement>(null);
-  const { data, enumFilters, isSuccess } = hooks.useGetFacetData(
-    field,
-    docType,
-    indexType,
-  );
+  const { data, enumFilters, isSuccess } = hooks.useGetFacetData(field);
+
   const [selectedEnums, setSelectedEnums] = useState(enumFilters);
   const prevFilters = usePrevious(enumFilters);
   const searchInputRef = useRef(null);
 
-  const totalCount = hooks.useTotalCounts(
-    FacetDocTypeToCountsIndexMap[docType],
-  );
+  const totalCount = hooks.useTotalCounts();
+  console.log("totalCount", totalCount);
   const clearFilters = hooks.useClearFilter();
   const updateFacetFilters = hooks.useUpdateFacetFilters();
 
@@ -271,7 +269,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
             <div>
               <FacetSortPanel
                 isSortedByValue={isSortedByValue}
-                valueLabel={FacetDocTypeToLabelsMap[docType]}
+                valueLabel={valueLabel}
                 setIsSortedByValue={setIsSortedByValue}
               />
 
@@ -379,7 +377,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                   selectedEnums={selectedEnums}
                   isSuccess={isSuccess}
                   showTitle={false}
-                  valueLabel={FacetDocTypeToLabelsMap[docType]}
+                  valueLabel={valueLabel}
                   maxBins={numberOfBarsToDisplay}
                   height={
                     numberOfBarsToDisplay == 1

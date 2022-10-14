@@ -13,13 +13,7 @@ import {
   SegmentedControl,
   Tooltip,
 } from "@mantine/core";
-import {
-  DAYS_IN_DECADE,
-  DAYS_IN_YEAR,
-  GQLDocType,
-  GQLIndexType,
-  fieldNameToTitle,
-} from "@gff/core";
+import { DAYS_IN_DECADE, DAYS_IN_YEAR, fieldNameToTitle } from "@gff/core";
 
 import {
   DEFAULT_VISIBLE_ITEMS,
@@ -40,11 +34,7 @@ import {
   UpdateFacetFilterFunction,
   UpdateFacetFilterHook,
 } from "@/features/facets/types";
-import {
-  FacetDocTypeToCountsIndexMap,
-  FacetDocTypeToLabelsMap,
-  useRangeFacet,
-} from "@/features/facets/hooks";
+import {} from "@/features/facets/hooks";
 import { controlsIconStyle, FacetIconButton } from "./components";
 import FacetExpander from "@/features/facets/FacetExpander";
 import FacetSortPanel from "@/features/facets/FacetSortPanel";
@@ -57,7 +47,7 @@ interface NumericFacetProps extends FacetCardProps<RangeFacetHooks> {
 
 type NumericFacetData = Pick<
   NumericFacetProps,
-  "field" | "minimum" | "maximum" | "docType" | "indexType" | "hooks"
+  "field" | "minimum" | "maximum" | "valueLabel" | "hooks"
 >;
 
 /**
@@ -254,27 +244,6 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
             valueLabel={valueLabel}
             setIsSortedByValue={setIsSortedByValue}
           />
-          <div className="flex flex-row items-center justify-between flex-wrap border-b-2 py-1">
-            <button
-              className={controlsIconStyle}
-              aria-label="Sort alphabetically"
-            >
-              <AlphaSortIcon
-                onClick={() => setIsSortedByValue(false)}
-                scale="1.5em"
-              />
-            </button>
-            <div className={"flex flex-row items-center "}>
-              <button
-                onClick={() => setIsSortedByValue(true)}
-                className={controlsIconStyle}
-                aria-label="Sort numerically"
-              >
-                <SortIcon scale="1.5em" />
-              </button>
-              <p className="px-1">{valueLabel}</p>
-            </div>
-          </div>
         </>
       ) : null}
       <div role="group" className="mt-1">
@@ -512,11 +481,10 @@ interface RangeInputWithPrefixedRangesProps {
   readonly field: string;
   readonly hooks: RangeFacetHooks;
   readonly numBuckets: number;
-  readonly docType: GQLDocType;
-  readonly indexType: GQLIndexType;
   readonly minimum: number;
   readonly maximum: number;
   readonly units: string;
+  readonly valueLabel: string;
   readonly showZero?: boolean;
 }
 
@@ -524,22 +492,19 @@ const RangeInputWithPrefixedRanges: React.FC<
   RangeInputWithPrefixedRangesProps
 > = ({
   field,
-  docType,
-  indexType,
   hooks,
   units,
   numBuckets,
   minimum,
   maximum,
+  valueLabel,
   showZero = false,
 }: RangeInputWithPrefixedRangesProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false); // handles the expanded group
 
   // get the current filter for this facet
   const filter = hooks.useGetFacetFilters(field);
-  const totalCount = hooks.useTotalCounts(
-    FacetDocTypeToCountsIndexMap[docType],
-  );
+  const totalCount = hooks.useTotalCounts();
 
   // giving the filter value, extract the From/To values and
   // build it's key
@@ -587,12 +552,7 @@ const RangeInputWithPrefixedRanges: React.FC<
   const [isCustom, setIsCustom] = useState(filterKey === "custom"); // in custom Range Mode
   const [selectedRange, setSelectedRange] = useState(filterKey); // the current selected range
 
-  const { data: rangeData, isSuccess } = useRangeFacet(
-    field,
-    ranges,
-    docType,
-    indexType,
-  );
+  const { data: rangeData, isSuccess } = hooks.useGetFacetData(field, ranges);
   const rangeLabelsAndValues = BuildRangeLabelsAndValues(
     bucketRanges,
     totalCount,
@@ -654,7 +614,7 @@ const RangeInputWithPrefixedRanges: React.FC<
           ) : isSuccess ? (
             <RangeValueSelector
               field={`${field}`}
-              valueLabel={FacetDocTypeToLabelsMap[docType]}
+              valueLabel={valueLabel}
               itemsToShow={bucketsToShow}
               rangeLabelsAndValues={rangeLabelsAndValues}
               selected={selectedRange}
@@ -682,9 +642,8 @@ const RangeInputWithPrefixedRanges: React.FC<
 
 const DaysOrYears: React.FC<NumericFacetData> = ({
   field,
-  docType,
   hooks,
-  indexType,
+  valueLabel,
   minimum = undefined,
   maximum = undefined,
 }: NumericFacetData) => {
@@ -716,8 +675,7 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
         maximum={adjMaximum}
         numBuckets={numBuckets}
         field={field}
-        docType={docType}
-        indexType={indexType}
+        valueLabel={valueLabel}
       />
     </div>
   );
@@ -725,9 +683,8 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
 
 const Year: React.FC<NumericFacetData> = ({
   field,
-  docType,
-  indexType,
   hooks,
+  valueLabel,
   minimum = undefined,
   maximum = undefined,
 }: NumericFacetData) => {
@@ -738,10 +695,9 @@ const Year: React.FC<NumericFacetData> = ({
   return (
     <div className="flex flex-col w-100 space-y-2 px-2  mt-1 ">
       <RangeInputWithPrefixedRanges
-        docType={docType}
-        indexType={indexType}
         hooks={{ ...hooks }}
         units="year"
+        valueLabel={valueLabel}
         minimum={adjMinimum}
         maximum={adjMaximum}
         numBuckets={numBuckets}
@@ -753,8 +709,7 @@ const Year: React.FC<NumericFacetData> = ({
 
 const Years: React.FC<NumericFacetData> = ({
   field,
-  docType,
-  indexType,
+  valueLabel,
   hooks,
   minimum = undefined,
   maximum = undefined,
@@ -766,8 +721,7 @@ const Years: React.FC<NumericFacetData> = ({
   return (
     <div className="flex flex-col w-100 space-y-2 px-1  mt-1 ">
       <RangeInputWithPrefixedRanges
-        docType={docType}
-        indexType={indexType}
+        valueLabel={valueLabel}
         hooks={{ ...hooks }}
         units="years"
         minimum={adjMinimum}
@@ -802,8 +756,7 @@ const NumericRangePanel: React.FC<NumericFacetData> = ({
 
 const PercentRange: React.FC<NumericFacetData> = ({
   field,
-  docType,
-  indexType,
+  valueLabel,
   hooks,
   minimum = undefined,
   maximum = undefined,
@@ -815,8 +768,7 @@ const PercentRange: React.FC<NumericFacetData> = ({
   return (
     <div className="flex flex-col w-100 space-y-2 px-2  mt-1 ">
       <RangeInputWithPrefixedRanges
-        docType={docType}
-        indexType={indexType}
+        valueLabel={valueLabel}
         hooks={hooks}
         units="percent"
         minimum={adjMinimum}
@@ -832,12 +784,11 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
   field,
   hooks,
   rangeDatatype,
-  docType,
   description,
+  valueLabel,
   minimum = undefined,
   maximum = undefined,
   facetName = null,
-  indexType = "explore",
   dismissCallback = undefined,
   width = undefined,
 }: NumericFacetProps) => {
@@ -889,8 +840,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
           {
             age: (
               <DaysOrYears
-                docType={docType}
-                indexType={indexType}
+                valueLabel={valueLabel}
                 field={field}
                 hooks={{ ...hooks }}
                 minimum={minimum}
@@ -899,8 +849,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
             ),
             year: (
               <Year
-                docType={docType}
-                indexType={indexType}
+                valueLabel={valueLabel}
                 field={field}
                 hooks={{ ...hooks }}
                 minimum={minimum}
@@ -909,8 +858,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
             ),
             years: (
               <Years
-                docType={docType}
-                indexType={indexType}
+                valueLabel={valueLabel}
                 field={field}
                 hooks={{ ...hooks }}
                 minimum={minimum}
@@ -919,8 +867,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
             ),
             days: (
               <DaysOrYears
-                docType={docType}
-                indexType={indexType}
+                valueLabel={valueLabel}
                 field={field}
                 hooks={{ ...hooks }}
                 minimum={minimum}
@@ -929,8 +876,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
             ),
             percent: (
               <PercentRange
-                docType={docType}
-                indexType={indexType}
+                valueLabel={valueLabel}
                 field={field}
                 hooks={{ ...hooks }}
                 minimum={minimum}
@@ -939,8 +885,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
             ),
             range: (
               <NumericRangePanel
-                docType={docType}
-                indexType={indexType}
+                valueLabel={valueLabel}
                 field={field}
                 hooks={{ ...hooks }}
                 minimum={minimum}

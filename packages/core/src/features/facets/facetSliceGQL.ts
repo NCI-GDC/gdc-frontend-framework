@@ -4,8 +4,11 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
-import { buildCohortGqlOperator, FilterSet } from "../cohort/filters";
-import { selectCurrentCohortFilters } from "../cohort/availableCohortsSlice";
+import {
+  buildCohortGqlOperator,
+  selectCurrentCohortFilters,
+  FilterSet,
+} from "../cohort";
 import { buildGraphGLBucketQuery, processBuckets } from "./facetApiGQL";
 import { FacetBuckets, GQLIndexType, GQLDocType } from "./types";
 import { FacetsState } from "./facetSlice";

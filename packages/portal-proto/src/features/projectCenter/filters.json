@@ -1,0 +1,44 @@
+{
+  "project": [
+    {
+      "title": "Primary Site",
+      "field": "primary_site",
+      "full": "projects.primary_site",
+      "doc_type": "project",
+      "description": "No Description",
+      "type": "keyword"
+    },
+    {
+      "title": "Program",
+      "field": "program.name",
+      "full": "projects.program.name",
+      "doc_type": "project",
+      "description": "No Description",
+      "type": "keyword"
+    },
+    {
+      "title": "Disease Type",
+      "field": "disease_type",
+      "full": "projects.disease_type",
+      "doc_type": "project",
+      "description": "No Description",
+      "type": "keyword"
+    },
+    {
+      "title": "Data Category",
+      "field": "summary.data_categories.data_category",
+      "full": "projects.summary.data_categories.data_category",
+      "doc_type": "project",
+      "description": "No Description",
+      "type": "keyword"
+    },
+    {
+      "title": "Experimental Strategy",
+      "field": "summary.experimental_strategies.experimental_strategy",
+      "full": "projects.summary.experimental_strategies.experimental_strategy",
+      "doc_type": "project",
+      "description": "No Description",
+      "type": "keyword"
+    }
+  ]
+}

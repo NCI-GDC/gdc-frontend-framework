@@ -45,6 +45,7 @@ import {
   useTotalCounts,
   useUpdateFacetFilter,
 } from "@/features/facets/hooks";
+import { partial } from "lodash";
 
 const CustomFacetWhenEmptyGroup = tw(Stack)`
 h-64
@@ -214,7 +215,12 @@ const CustomFacetGroup = (): JSX.Element => {
             "cases", // Cohort custom filter restricted to "cases"
             customConfig.index as GQLIndexType,
             {
-              useGetEnumFacetData: useEnumFacet,
+              useGetEnumFacetData: partial(
+                useEnumFacet,
+                null,
+                "cases",
+                customConfig.index as GQLIndexType,
+              ),
               useGetRangeFacetData: useRangeFacet,
               useGetFacetFilters: useSelectFieldFilter,
               useUpdateFacetFilters: useUpdateFacetFilter,
