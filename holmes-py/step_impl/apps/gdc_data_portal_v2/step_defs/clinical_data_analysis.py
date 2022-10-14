@@ -19,10 +19,8 @@ def navigate_to_cdave_page():
 def expand_clinical_property_sections():
     APP.home_page.expand_clinical_property_sections()
 
-@step("Check clinical properties in pannel <properties>")
+@step("Check clinical properties <table>")
 def check_clinical_properties_in_pannel(table):
-    for row, value in enumerate(table):
-        property = table[row][0]
-        print("property", property)
-
+    is_property_table_valid = APP.home_page.validate_property_table(table)
+    assert is_property_table_valid == True, is_property_table_valid
 
