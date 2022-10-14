@@ -1,94 +1,102 @@
-import { Badge } from "@mantine/core";
-import { isObject } from "lodash";
-import { entityShortNameMapping } from "../QuickSearch/entityShortNameMapping";
-import { TypeIcon } from "../TypeIcon";
-
-export const findMatchingToken = (
-  item: Record<string, any>,
-  lq,
-  value = "",
-) => {
-  const ks = Object.keys(item);
-  for (let i = 0; i < ks.length; i++) {
-    const k = ks[i];
-    if (k === "isSelected" || k === "__dataID__") continue;
-    const terms = [].concat(item[k]);
-    for (let j = 0; j < terms.length; j++) {
-      const term = terms[j];
-      if (isObject(term)) {
-        if (term.hits) {
-          const edges = term.hits.edges || [];
-
-          for (let jj = 0; jj < edges; jj++) {
-            const nextValue = findMatchingToken(edges[jj].node, lq, value);
-            if (!(value && value.length < nextValue.length)) {
-              value = nextValue;
-            }
-          }
-        }
-        const nextValue = findMatchingToken(term, lq, value);
-        if (!(value && nextValue && value.length < nextValue.length)) {
-          value = nextValue;
-        }
-        continue;
-      }
-      if (
-        (typeof term === "string" ? term : "")
-          .toLocaleLowerCase()
-          .replace(/[()]/g, "")
-          .indexOf(lq) !== -1
-      ) {
-        value = term;
-      }
-    }
-  }
-  return value;
-};
+import { List } from "@mantine/core";
+import { first, last, nth, isEmpty } from "lodash";
+import { useState } from "react";
 
 export const TraversableList = ({
   data,
-  query,
+  onListBlur,
+  onSelectItem,
+  onCancel,
 }: {
-  data: ReadonlyArray<Record<string, any>>;
-  query: string;
-}) => {
+  data: Array<{
+    elem: JSX.Element;
+    key: string;
+  }>;
+  onListBlur: () => void;
+  onSelectItem: (index: number) => void;
+  onCancel: () => void;
+}): JSX.Element => {
+  const [focusedItem, setFocusedItem] = useState(undefined);
+  const focusPreviousItem = () => {
+    if (isEmpty(data)) return;
+    const nextFocus = getPreviousItem(data, focusedItem);
+    setFocusedItem(nextFocus);
+  };
+
+  const focusNextItem = () => {
+    if (isEmpty(data)) return;
+    const nextFocus = getNextItem(data, focusedItem);
+    setFocusedItem(nextFocus);
+  };
+
+  const selectItem = (idx) => {
+    setFocusedItem(undefined);
+    onSelectItem(idx);
+  };
+
+  const cancel = () => {
+    setFocusedItem(undefined);
+    onCancel();
+  };
+
+  // templatize
+  const getPreviousItem = (items, reference) =>
+    reference ? nth(items, items.indexOf(reference) - 1) : last(items);
+  const getNextItem = (items, reference) =>
+    reference ? nth(items, items.indexOf(reference) + 1) : first(items);
+
   const keyBoardPress = (event: React.KeyboardEvent<HTMLUListElement>) => {
     if (event.key === "ArrowUp") {
-      console.log("ArrowUp");
+      event.preventDefault();
+      focusPreviousItem();
     } else if (event.key === "ArrowDown") {
-      console.log("ArrowDown");
+      event.preventDefault();
+      focusNextItem();
     } else if (event.key === "Escape") {
-      console.log("Escape");
+      event.preventDefault();
+      cancel();
     } else if (event.key === "Enter") {
-      console.log("Enter");
+      event.preventDefault();
+      selectItem(data.indexOf(focusedItem));
     }
   };
 
   return (
-    <ul
-      onKeyDown={keyBoardPress}
-      className="absolute right-5 top-full bg-base-lightest w-[512px]"
-    >
-      {data.map((item) => (
-        <li
-          key={item.id}
-          className="p-2 m-2 border-b-1 border-black hover:bg-primary-darkest hover:text-primary-contrast-darkest"
+    <>
+      {data.length > 0 ? (
+        <List
+          onKeyDown={keyBoardPress}
+          className="absolute md:left-0 sm:left-0 lg:left-auto right-0 top-10 bg-base-lightest w-[512px] border-r-10 border-1 border-base"
+          tabIndex={0}
+          onFocus={() => setFocusedItem(data[0])}
+          onBlur={onListBlur}
         >
-          <div className="flex">
-            <div className="self-center">
-              <TypeIcon
-                iconText={entityShortNameMapping[atob(item.id).split(":")[0]]}
-              />
-            </div>
-            <div className="flex flex-col">
-              <div style={{ width: 200 }}>
-                <Badge>{item.symbol || atob(item.id).split(":")[1]}</Badge>
-              </div>
-              <span>{findMatchingToken(item, query)}</span>
-            </div>
-          </div>
-        </li>
-      ))}
-    </ul>
+          {data?.map((item, idx) => (
+            <List.Item
+              key={item.key}
+              className={`${
+                item === focusedItem &&
+                "bg-primary-darkest text-primary-contrast-darkest"
+              } cursor-pointer`}
+              onMouseEnter={() => {
+                setFocusedItem(item);
+              }}
+              onMouseLeave={() => {
+                setFocusedItem(undefined);
+              }}
+              onClick={() => {
+                selectItem(idx);
+              }}
+            >
+              {item.elem}
+            </List.Item>
+          ))}
+        </List>
+      ) : (
+        <div className="w-80 absolute md:left-0 sm:left-0 lg:left-auto right-0 bg-base-lightest top-10 p-2 border-r-10 border-1 border-base">
+          No results found
+        </div>
+      )}
+    </>
   );
 };

@@ -99,12 +99,12 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         ))}
         <div className="flex-grow"></div>
-        <div className="w-64">
+        <div>
           <Options />
         </div>
 
         <div
-          className={`flex flex-row items-center align-middle flex-nowrap ${
+          className={`flex flex-row items-center align-middle flex-nowrap gap-4 ${
             performSearch && "!border-l-0"
           }`}
         >
@@ -115,16 +115,16 @@ export const Header: React.FC<HeaderProps> = ({
             />
           ) : (
             <>
-              <div
+              <Button
                 className={
-                  "flex flex-row opacity-60 cursor-pointer hover:opacity-100 transition-opacity items-center mx-2 "
+                  "pl-4 pr-0 opacity-60 cursor-pointer hover:opacity-100 transition-opacity items-center"
                 }
                 data-testid="headerSearchButton"
                 onClick={() => setPerformSearch(true)}
+                variant="subtle"
               >
-                <SearchIcon size="24px" />{" "}
-              </div>
-
+                <SearchIcon size="24px" className="text-base-darkest" />{" "}
+              </Button>
               {userInfo.data.username ? (
                 <Menu width="target" data-testid="userdropdown">
                   <Menu.Target>
@@ -237,20 +237,20 @@ export const Header: React.FC<HeaderProps> = ({
               ) : (
                 <LoginButton />
               )}
-
               <Link href="/cart" passHref>
-                <div
+                <Button
                   className={
-                    "flex flex-row opacity-60 hover:opacity-100 transition-opacity  items-center mx-2 cursor-pointer"
+                    "flex flex-row opacity-60 hover:opacity-100 transition-opacity  p-0 m-0 items-center cursor-pointer text-base-darkest"
                   }
+                  variant="subtle"
                   data-testid="cartLink"
                 >
                   <CartIcon size="24px" /> Cart ({currentCart.length || 0})
-                </div>
+                </Button>
               </Link>
               <Menu withArrow>
                 <Menu.Target>
-                  <button className="p-0" data-testid="extraButton">
+                  <button data-testid="extraButton">
                     <AppsIcon size="24px" />
                   </button>
                 </Menu.Target>

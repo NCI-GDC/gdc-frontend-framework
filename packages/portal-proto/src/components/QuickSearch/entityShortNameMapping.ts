@@ -1,5 +1,3 @@
-// @flow
-
 export const entityShortNameMapping = {
   case: "CA",
   file: "FL",
