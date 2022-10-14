@@ -261,20 +261,18 @@ const download = async ({
   };
 
   if (queryParams === undefined) {
-    if ((options?.method || "GET") === "GET") {
+    queryParams = JSON.stringify(
+      {
+        ...params,
+        ...(params.filters ? { filters: JSON.stringify(params.filters) } : {}),
+      },
+      replacer,
+    );
+  } else {
+    if ((options?.method || "GET") === "POST") {
       queryParams = Object.keys(params)
         .map((key) => key + "=" + params[key])
         .join("&");
-    } else {
-      queryParams = JSON.stringify(
-        {
-          ...params,
-          ...(params.filters
-            ? { filters: JSON.stringify(params.filters) }
-            : {}),
-        },
-        replacer,
-      );
     }
   }
 
