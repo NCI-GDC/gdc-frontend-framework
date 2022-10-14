@@ -50,6 +50,7 @@ const downloadCart = (
   } else {
     download({
       endpoint: "data",
+      method: "POST",
       options: {
         headers: {
           "Content-Type": "application/json",
@@ -57,11 +58,11 @@ const downloadCart = (
         method: "POST",
       },
       dispatch,
-      queryParams: JSON.stringify({
+      params: {
         ids: filesByCanAccess.true.map((file) => file.fileId),
         annotations: true,
         related_files: true,
-      }),
+      },
       done: () => setActive(false),
     });
   }
@@ -74,6 +75,7 @@ const downloadManifest = (
 ) => {
   download({
     endpoint: "files",
+    method: "POST",
     options: {
       method: "POST",
       headers: {
@@ -81,17 +83,17 @@ const downloadManifest = (
       },
     },
     dispatch,
-    queryParams: JSON.stringify({
-      filters: JSON.stringify({
+    params: {
+      filters: {
         op: "in",
         content: {
           field: "files.file_id",
           value: cart.map((file) => file.fileId),
         },
-      }),
+      },
       return_type: "manifest",
       size: 10000,
-    }),
+    },
     done: () => setActive(false),
   });
 };
@@ -215,41 +217,39 @@ const CartHeader: React.FC<CartHeaderProps> = ({
           filename={`gdc_sample_sheet.${new Date()
             .toISOString()
             .slice(0, 10)}.tsv`}
+          format="tsv"
+          method="POST"
           options={{
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
           }}
-          queryParams={JSON.stringify({
-            format: "tsv",
-            attachment: "true",
-            pretty: "true",
-            size: cart.length,
-            fields: [
-              "file_id",
-              "file_name",
-              "data_category",
-              "data_type",
-              "cases.project.project_id",
-              "cases.submitter_id",
-              "cases.samples.submitter_id",
-              "cases.samples.sample_type",
-            ].join(","),
-            tsv_format: "sample-sheet",
-            filters: JSON.stringify({
-              content: [
-                {
-                  content: {
-                    field: "files.file_id",
-                    value: cart.map((file) => file.fileId),
-                  },
-                  op: "in",
+          fields={[
+            "file_id",
+            "file_name",
+            "data_category",
+            "data_type",
+            "cases.project.project_id",
+            "cases.submitter_id",
+            "cases.samples.submitter_id",
+            "cases.samples.sample_type",
+          ]}
+          filters={{
+            content: [
+              {
+                content: {
+                  field: "files.file_id",
+                  value: cart.map((file) => file.fileId),
                 },
-              ],
-              op: "and",
-            }),
-          })}
+                op: "in",
+              },
+            ],
+            op: "and",
+          }}
+          extraParams={{
+            tsv_format: "sample-sheet",
+          }}
         />
         <DownloadButton
           activeText="Processing"
@@ -267,66 +267,63 @@ const CartHeader: React.FC<CartHeaderProps> = ({
               "Content-Type": "application/json",
             },
           }}
-          queryParams={JSON.stringify({
-            attachment: "true",
-            pretty: "true",
-            size: cart.length,
-            filters: JSON.stringify({
-              content: [
-                {
-                  content: {
-                    field: "files.file_id",
-                    value: cart.map((file) => file.fileId),
-                  },
-                  op: "in",
+          method="POST"
+          filters={{
+            content: [
+              {
+                content: {
+                  field: "files.file_id",
+                  value: cart.map((file) => file.fileId),
                 },
-              ],
-              op: "and",
-            }),
-            fields: [
-              "state",
-              "access",
-              "md5sum",
-              "data_format",
-              "data_type",
-              "data_category",
-              "file_name",
-              "file_size",
-              "file_id",
-              "platform",
-              "experimental_strategy",
-              "center.short_name",
-              "annotations.annotation_id",
-              "annotations.entity_id",
-              "tags",
-              "submitter_id",
-              "archive.archive_id",
-              "archive.submitter_id",
-              "archive.revision",
-              "associated_entities.entity_id",
-              "associated_entities.entity_type",
-              "associated_entities.case_id",
-              "analysis.analysis_id",
-              "analysis.workflow_type",
-              "analysis.updated_datetime",
-              "analysis.input_files.file_id",
-              "analysis.metadata.read_groups.read_group_id",
-              "analysis.metadata.read_groups.is_paired_end",
-              "analysis.metadata.read_groups.read_length",
-              "analysis.metadata.read_groups.library_name",
-              "analysis.metadata.read_groups.sequencing_center",
-              "analysis.metadata.read_groups.sequencing_date",
-              "downstream_analyses.output_files.access",
-              "downstream_analyses.output_files.file_id",
-              "downstream_analyses.output_files.file_name",
-              "downstream_analyses.output_files.data_category",
-              "downstream_analyses.output_files.data_type",
-              "downstream_analyses.output_files.data_format",
-              "downstream_analyses.workflow_type",
-              "downstream_analyses.output_files.file_size",
-              "index_files.file_id",
-            ].join(","),
-            size: 10000,
+                op: "in",
+              },
+            ],
+            op: "and",
+          }}
+          fields={[
+            "state",
+            "access",
+            "md5sum",
+            "data_format",
+            "data_type",
+            "data_category",
+            "file_name",
+            "file_size",
+            "file_id",
+            "platform",
+            "experimental_strategy",
+            "center.short_name",
+            "annotations.annotation_id",
+            "annotations.entity_id",
+            "tags",
+            "submitter_id",
+            "archive.archive_id",
+            "archive.submitter_id",
+            "archive.revision",
+            "associated_entities.entity_id",
+            "associated_entities.entity_type",
+            "associated_entities.case_id",
+            "analysis.analysis_id",
+            "analysis.workflow_type",
+            "analysis.updated_datetime",
+            "analysis.input_files.file_id",
+            "analysis.metadata.read_groups.read_group_id",
+            "analysis.metadata.read_groups.is_paired_end",
+            "analysis.metadata.read_groups.read_length",
+            "analysis.metadata.read_groups.library_name",
+            "analysis.metadata.read_groups.sequencing_center",
+            "analysis.metadata.read_groups.sequencing_date",
+            "downstream_analyses.output_files.access",
+            "downstream_analyses.output_files.file_id",
+            "downstream_analyses.output_files.file_name",
+            "downstream_analyses.output_files.data_category",
+            "downstream_analyses.output_files.data_type",
+            "downstream_analyses.output_files.data_format",
+            "downstream_analyses.workflow_type",
+            "downstream_analyses.output_files.file_size",
+            "index_files.file_id",
+          ]}
+          extraParams={{
             expand: [
               "metadata_files",
               "annotations",
@@ -342,7 +339,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
               "reference_genome",
               "index_file",
             ].join(","),
-          })}
+          }}
         />
         <h1 className="uppercase ml-auto mr-4 flex items-center truncate text-2xl">
           Total of <FileIcon size={25} className="ml-2 mr-1" />{" "}

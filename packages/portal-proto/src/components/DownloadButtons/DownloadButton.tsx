@@ -30,9 +30,15 @@ interface DownloadButtonProps {
 export const DownloadButton: React.FC<DownloadButtonProps> = ({
   endpoint,
   disabled = false,
+  filename,
+  size = 10000,
+  format = "JSON",
+  fields = [],
+  filters = {},
   inactiveText,
   activeText,
-  filename,
+  extraParams,
+  method = "POST",
   queryParams,
   options,
   customStyle,
@@ -67,12 +73,23 @@ export const DownloadButton: React.FC<DownloadButtonProps> = ({
           return;
         }
         dispatch(hideModal());
-        setActive(true);
+        const params = {
+          size,
+          attachment: true,
+          format,
+          fields: fields.join(),
+          filters,
+          pretty: true,
+          ...(filename ? { filename } : {}),
+          ...extraParams,
+        };
+        setActive && setActive(true);
         download({
+          params,
           endpoint,
+          method,
           queryParams,
-          filename,
-          done: () => setActive(false),
+          done: () => setActive && setActive(false),
           dispatch,
           Modal400,
           Modal403,

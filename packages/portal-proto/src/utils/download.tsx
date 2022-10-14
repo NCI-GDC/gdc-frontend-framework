@@ -1,9 +1,31 @@
+import { isPlainObject, includes, reduce } from "lodash";
+import urlJoin from "url-join";
 import { CoreDispatch, GDC_APP_API_AUTH, Modals, showModal } from "@gff/core";
 import { Button } from "@mantine/core";
 import { cleanNotifications, showNotification } from "@mantine/notifications";
-import { saveAs } from "file-saver";
 import { RiCloseCircleLine as CloseIcon } from "react-icons/ri";
 import { theme } from "tailwind.config";
+
+const getBody = (iframe: HTMLIFrameElement) => {
+  const document = iframe.contentWindow || iframe.contentDocument;
+  return (document as Window).document.body || (document as Document).body;
+};
+
+const toHtml = (key: string, value: any) =>
+  `<input
+    type="hidden"
+    name="${key}"
+    value="${
+      isPlainObject(value)
+        ? JSON.stringify(value).replace(/"/g, "&quot;")
+        : value
+    }"
+  />`;
+
+const customKeys = ["expand", "fields", "facets"];
+
+const processParamObj = (key: string, value: any) =>
+  includes(customKeys, key) ? [].concat(value).join() : value;
 
 const DownloadNotification = ({ onClick }: { onClick: () => void }) => {
   return (
@@ -21,6 +43,7 @@ const DownloadNotification = ({ onClick }: { onClick: () => void }) => {
   );
 };
 
+/*
 const SlowDownloadNotification = ({ onClick }: { onClick: () => void }) => (
   <>
     <div>
@@ -51,9 +74,12 @@ const SlowDownloadNotification = ({ onClick }: { onClick: () => void }) => (
     </div>
   </>
 );
+*/
 
 /**
  * @param endpoint endpoint to be attached with  GDC AUTH API
+ * @param params body to be attached with post request
+ * @param method Request Method: GET, PUT, POST
  * @param dispatch dispatch send from the parent component to dispatch Modals
  * @param options options object provided to fetch, see here for possible values: https://developer.mozilla.org/en-US/docs/Web/API/fetch
  * @param queryParams body to be attached with POST request or url params with GET request
@@ -67,16 +93,19 @@ const SlowDownloadNotification = ({ onClick }: { onClick: () => void }) => (
 
 const download = async ({
   endpoint,
+  params,
+  method,
   options,
   dispatch,
   queryParams,
   done,
-  filename,
   Modal400 = Modals.GeneralErrorModal,
   Modal403 = Modals.NoAccessModal,
   customErrorMessage,
 }: {
   endpoint: string;
+  params: Record<string, any>;
+  method: string;
   options: Record<string, any>;
   dispatch: CoreDispatch;
   queryParams?: string;
@@ -87,14 +116,13 @@ const download = async ({
   Modal400?: Modals;
   customErrorMessage?: string;
 }): Promise<void> => {
-  const controller = new AbortController();
-  let downloadResolved = false;
+  let canceled = false;
   showNotification({
     message: (
       <DownloadNotification
         onClick={() => {
           cleanNotifications();
-          controller.abort();
+          canceled = true;
           if (done) {
             done();
           }
@@ -112,6 +140,34 @@ const download = async ({
     }),
   });
 
+  const fields = reduce(
+    params,
+    (result, value, key) => {
+      const paramValue = processParamObj(key, value);
+      return (
+        result +
+        [].concat(paramValue).reduce((acc, v) => acc + toHtml(key, v), "")
+      );
+    },
+    "",
+  );
+
+  const iFrame = document.createElement("iframe");
+  iFrame.style.display = "none";
+  iFrame.src = "about:blank";
+
+  // Appending to document body to allow navigation away from the current
+  // page and downloads in the background
+  document.body.appendChild(iFrame);
+  const form = document.createElement("form");
+  form.method = method.toUpperCase();
+  form.action = urlJoin(GDC_APP_API_AUTH, endpoint);
+  form.innerHTML = fields;
+
+  getBody(iFrame).appendChild(form);
+
+  // TODO - handle slow download notification PEAR-624
+  /*
   const slowDownloadNotificationPoll = async () => {
     let attempts = 0;
 
@@ -124,7 +180,7 @@ const download = async ({
               <SlowDownloadNotification
                 onClick={() => {
                   cleanNotifications();
-                  controller.abort();
+                  cancel = true;
                   if (done) {
                     done();
                   }
@@ -153,27 +209,22 @@ const download = async ({
     };
 
     return new Promise(executePoll);
-  };
+  };*/
 
   const handleDownloadResponse = async (res: Response) => {
     cleanNotifications();
-    if (res.ok) {
-      const content = await res.blob();
-      const name =
-        filename ||
-        res.headers.get("content-disposition").split("filename=")[1];
-      saveAs(content, name);
-      downloadResolved = true;
-      if (done) {
-        done();
-      }
+    if (!canceled && res.ok) {
+      form.submit();
+      setTimeout(() => {
+        if (done) {
+          done();
+        }
+      }, 1000);
+      return;
     }
-
-    downloadResolved = true;
     if (done) {
       done();
     }
-
     let errorMessage;
     try {
       const body = await res.json();
@@ -202,22 +253,41 @@ const download = async ({
     }
   };
 
-  const method = options?.method || "GET";
+  const replacer = (_: string, value: any) => {
+    if (typeof value === "boolean") {
+      return value ? "True" : "False";
+    }
+    return value;
+  };
 
-  if (method === "GET") {
-    fetch(`${GDC_APP_API_AUTH}/${endpoint}?${queryParams}`, {
-      ...options,
-      signal: controller.signal,
-    }).then(handleDownloadResponse);
-  } else {
+  if (queryParams === undefined) {
+    if ((options?.method || "GET") === "GET") {
+      queryParams = Object.keys(params)
+        .map((key) => key + "=" + params[key])
+        .join("&");
+    } else {
+      queryParams = JSON.stringify(
+        {
+          ...params,
+          ...(params.filters
+            ? { filters: JSON.stringify(params.filters) }
+            : {}),
+        },
+        replacer,
+      );
+    }
+  }
+
+  if ((options?.method || "GET") === "POST") {
     fetch(`${GDC_APP_API_AUTH}/${endpoint}`, {
       ...options,
       body: queryParams,
-      signal: controller.signal,
+    }).then(handleDownloadResponse);
+  } else {
+    fetch(`${GDC_APP_API_AUTH}/${endpoint}?${queryParams}`, {
+      ...options,
     }).then(handleDownloadResponse);
   }
-
-  slowDownloadNotificationPoll();
 };
 
 export default download;

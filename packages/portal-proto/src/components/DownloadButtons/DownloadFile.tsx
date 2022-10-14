@@ -1,4 +1,3 @@
-import qs from "qs";
 import { userCanDownloadFile } from "src/utils/userProjectUtils";
 import {
   GdcFile,
@@ -38,16 +37,21 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
   if (file.access === "open") {
     return (
       <DownloadButton
+        extraParams={{
+          ids: file.fileId,
+          annotations: true,
+          related_files: true,
+        }}
         filename={file.fileName}
         endpoint={`data/${file.fileId}`}
         activeText={activeText}
         inactiveText={inactiveText}
-        queryParams={qs.stringify({
-          annotations: true,
-          related_files: true,
-        })}
+        queryParams={""}
         options={{
           method: "GET",
+          headers: {
+            Range: "bytes=0-0",
+          },
         }}
         setActive={setActive}
         active={active}

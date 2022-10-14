@@ -101,11 +101,12 @@ const CartDownloadModal = ({
             (user.username && dbGapList.length > 0 && !checked)
           }
           endpoint="data"
-          queryParams={JSON.stringify({
+          extraParams={{
             ids: (filesByCanAccess?.true || []).map((file) => file.fileId),
             annotations: true,
             related_files: true,
-          })}
+          }}
+          method="POST"
           options={{
             headers: {
               "Content-Type": "application/json",
