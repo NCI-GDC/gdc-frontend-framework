@@ -1,4 +1,4 @@
-import { animated, useSpring } from "react-spring";
+import { animated } from "react-spring";
 import ToggleSpring from "../shared/ToggleSpring";
 import SwitchSpring from "../shared/SwitchSpring";
 import { MdKeyboardArrowDown } from "react-icons/md";
@@ -485,7 +485,7 @@ export const getMutation = (
   cases: number,
   ssmsTotal: number,
 ) => {
-  if (sm.consequence.length === 0) debugger;
+  // if (sm.consequence.length === 0) debugger;
   const { gene, annotation, aa_change, consequence_type } = sm.consequence[0];
 
   return {

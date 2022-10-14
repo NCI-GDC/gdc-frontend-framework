@@ -1,3 +1,5 @@
+// tanstack/react-table v8 functions trigger typescript linter
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import React from "react";
 import {

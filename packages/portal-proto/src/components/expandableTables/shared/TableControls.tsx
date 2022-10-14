@@ -9,7 +9,6 @@ interface ControlOption {
 
 interface TableControlsProps {
   numSelected: number;
-  handleSave: (selected: any) => void; //todo: add type
   label: string;
   options: ControlOption[];
   additionalControls?: React.ReactNode;
@@ -17,7 +16,6 @@ interface TableControlsProps {
 
 export const TableControls: React.FC<TableControlsProps> = ({
   numSelected,
-  handleSave,
   label,
   options,
   additionalControls,
@@ -94,13 +92,13 @@ export const TableControls: React.FC<TableControlsProps> = ({
                     .filter(({ value }) => value !== selectedOption.value)
                     .map((option, idx) => {
                       return (
-                        <li
+                        <button
                           key={`gene-set-select-${idx}`}
                           onClick={() => setSelectedOption(option)}
                           className={`py-2 px-4 text-sm hover:bg-hoverColor rounded-md`}
                         >
                           {option.label}
-                        </li>
+                        </button>
                       );
                     })}
                 </animated.ul>

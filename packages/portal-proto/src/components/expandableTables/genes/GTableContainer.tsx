@@ -1,5 +1,4 @@
 import { useGenesTable } from "@gff/core";
-import { Gene } from "./types";
 import { useState, useEffect } from "react";
 import { GenesTable } from "./GenesTable";
 import { useMeasure } from "react-use";
@@ -36,10 +35,6 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   useEffect(() => {
     setPage(0);
   }, [pageSize]);
-
-  const handleGeneSave = (gene: Gene) => {
-    console.log("gene", gene);
-  };
 
   const selectGene = (row: any) => {
     const gene = row.original["geneID"];
@@ -88,7 +83,6 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
       <div className={`flex flex-row absolute w-60 ml-2`}>
         <TableControls
           numSelected={Object.keys(selectedGenes).length || 0}
-          handleSave={handleGeneSave}
           label={`Genes`}
           options={[
             { label: "Save/Edit Gene Set", value: "placeholder" },

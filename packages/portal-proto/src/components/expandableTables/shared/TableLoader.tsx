@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Loader } from "@mantine/core";
-import { animated, useSpring, config } from "react-spring";
+import { animated, useSpring } from "react-spring";
 
 interface TableLoaderProps {
   cellWidth: string;
@@ -36,6 +36,8 @@ export const TableLoader: React.FC<TableLoaderProps> = ({
               return (
                 <animated.tr
                   key={`loader-row-${nIdx}`}
+                  // this isn't conventional react hook
+                  // eslint-disable-next-line react-hooks/rules-of-hooks
                   style={useRowSpring(nIdx)}
                   className={`h-[${rowHeight}px] ${
                     n === 1 ? `border border-2 shadow-md` : ``

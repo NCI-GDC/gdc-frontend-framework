@@ -1,6 +1,5 @@
 import { useSsmsTable } from "@gff/core";
 import { useEffect, useState } from "react";
-import { SomaticMutation } from "./types";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
 import { useMeasure } from "react-use";
 import { Button } from "@mantine/core";
@@ -36,9 +35,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   useEffect(() => {
     setPage(0);
   }, [pageSize]);
-
-  const handleMutationSave = (mutation: SomaticMutation) =>
-    console.log("mutation", mutation);
 
   const selectMutation = (row: any) => {
     const mutation = row.original["mutationID"];
@@ -91,7 +87,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       <div className={`flex flex-row absolute w-80`}>
         <TableControls
           numSelected={Object.keys(selectedMutations).length || 0}
-          handleSave={handleMutationSave}
           label={`Mutations`}
           options={[
             { label: "Save/Edit Mutation Set", value: "placeholder" },

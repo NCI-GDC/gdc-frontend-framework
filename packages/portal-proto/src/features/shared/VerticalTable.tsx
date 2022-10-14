@@ -199,10 +199,11 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 {columnListOptions.length > 0 && showColumnMenu && (
                   <div className={`mr-0 ml-auto`}>
                     <DndProvider backend={HTML5Backend}>
-                      {/* <DragDrop
+                      <DragDrop
                         listOptions={columnListOptions}
                         handleColumnChange={handleColumnChange}
-                      /> */}
+                        columnSearchTerm={""}
+                      />
                     </DndProvider>
                   </div>
                 )}
