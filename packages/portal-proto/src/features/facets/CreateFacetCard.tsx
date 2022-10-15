@@ -5,19 +5,26 @@ import NumericRangeFacet from "@/features/facets/NumericRangeFacet";
 import DateRangeFacet from "@/features/facets/DateRangeFacet";
 import ExactValueFacet from "@/features/facets/ExactValueFacet";
 import ToggleFacet from "@/features/facets/ToggleFacet";
-import { AllHooks } from "@/features/facets/types";
+import {
+  FacetRequiredHooks,
+  FacetRequiredHooksGQL,
+} from "@/features/facets/types";
+import {
+  FacetDocTypeToCountsIndexMap,
+  FacetDocTypeToLabelsMap,
+} from "@/features/facets/hooks";
+import partial from "lodash/partial";
 
 /**
  * createFacetCard given a facet definition it will create a
  * facet component appropriate for the facet
- * All facets require a set of functions (e.g hooks) which define get/set data,
+ * All facets require a set of functions (e.g. hooks) which define get/set data,
  * filters, and counts. As create facets can create any facet all possible
  * function must be supplied:
  * The AllHooks type defines all possible hooks
  *
  * @param facet - facet definition
- * @param docType - docType for this facet
- * @param indexType - ES index
+ * @param valueLabel - label for Counts (if present)
  * @param dataFunctions - data getter and setter hooks
  * @param idPrefix - prefix for generated id; this must be unique for the app
  * @param dismissCallback - callback when defined will remove facet from parent panel
@@ -25,11 +32,10 @@ import { AllHooks } from "@/features/facets/types";
  * @param facetName - option name of facet
  * @param width - override width of facet
  */
-export const createFacetCard = (
+export const createFacetCardGQL = (
   facet: FacetDefinition,
-  docType: GQLDocType,
-  indexType: GQLIndexType,
-  dataFunctions: AllHooks,
+  valueLabel: string,
+  dataFunctions: FacetRequiredHooks,
   idPrefix: string,
   dismissCallback: (string) => void = undefined,
   hideIfEmpty = false,
@@ -40,8 +46,7 @@ export const createFacetCard = (
     return (
       <EnumFacet
         key={`${idPrefix}-enum-${facet.full}`}
-        docType={docType}
-        indexType={indexType}
+        valueLabel={valueLabel}
         field={facet.full}
         facetName={facetName}
         description={facet.description}
@@ -72,6 +77,7 @@ export const createFacetCard = (
       <ToggleFacet
         key={`${idPrefix}-toggle-${facet.full}`}
         field={facet.full}
+        valueLabel={valueLabel}
         dismissCallback={dismissCallback}
         hideIfEmpty={hideIfEmpty}
         hooks={{
@@ -87,8 +93,6 @@ export const createFacetCard = (
     return (
       <DateRangeFacet
         key={`${idPrefix}-date-range-${facet.full}`}
-        docType={docType}
-        indexType={indexType}
         field={facet.full}
         description={facet.description}
         dismissCallback={dismissCallback}
@@ -109,10 +113,9 @@ export const createFacetCard = (
       <NumericRangeFacet
         key={`${idPrefix}-range-${facet.full}`}
         field={facet.full}
+        valueLabel={valueLabel}
         description={facet.description}
         rangeDatatype={facet.facet_type}
-        docType={docType}
-        indexType={indexType}
         minimum={facet?.range?.minimum}
         maximum={facet?.range?.maximum}
         hideIfEmpty={hideIfEmpty}
@@ -141,25 +144,46 @@ export const createFacetCard = (
  * @param hideIfEmpty - hide facets if they do not have data
  * @param width - override the default width.
  */
-export const createFacetCardsFromList = (
+export const createFacetCardsFromListGQL = (
   facets: ReadonlyArray<FacetDefinition>,
   docType: GQLDocType,
   indexType: GQLIndexType,
-  dataFunctions: AllHooks,
+  dataFunctions: FacetRequiredHooksGQL,
   idPrefix: string,
   dismissCallback: (string) => void = undefined,
   hideIfEmpty = false,
+  facetName?: string,
   width?: string,
 ): ReadonlyArray<React.ReactNode> => {
-  return facets.map((x) =>
-    createFacetCard(
-      x,
+  const hooks: FacetRequiredHooks = {
+    useGetRangeFacetData: partial(
+      dataFunctions.useGetRangeFacetData,
       docType,
       indexType,
-      dataFunctions,
+    ),
+    useGetEnumFacetData: partial(
+      dataFunctions.useGetEnumFacetData,
+      docType,
+      indexType,
+    ),
+    useTotalCounts: partial(
+      dataFunctions.useTotalCounts,
+      FacetDocTypeToCountsIndexMap[docType],
+    ),
+    useClearFilter: dataFunctions.useClearFilter,
+    useUpdateFacetFilters: dataFunctions.useUpdateFacetFilters,
+    useGetFacetFilters: dataFunctions.useGetFacetFilters,
+  };
+
+  return facets.map((x) =>
+    createFacetCardGQL(
+      x,
+      FacetDocTypeToLabelsMap[docType],
+      hooks,
       idPrefix,
       dismissCallback,
       hideIfEmpty,
+      facetName,
       width,
     ),
   );

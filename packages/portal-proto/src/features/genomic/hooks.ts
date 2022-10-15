@@ -70,9 +70,9 @@ const useGenomicFacetFilter = (): FilterSet => {
  * to get data for the current cohort and genes filters
  */
 export const useGenesFacet = (
+  docType: GQLDocType,
+  indexType: GQLIndexType,
   field: string,
-  docType = "genes" as GQLDocType,
-  indexType = "explore" as GQLIndexType,
 ): EnumFacetResponse => {
   const coreDispatch = useCoreDispatch();
   const facet: FacetBuckets = useCoreSelector((state) =>

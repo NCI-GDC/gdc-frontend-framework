@@ -15,7 +15,7 @@ import {
   useUpdateFacetFilter,
   useRangeFacet,
 } from "../facets/hooks";
-import { partial } from "lodash";
+import partial from "lodash/partial";
 
 const Components: ReactNode = () => {
   return (

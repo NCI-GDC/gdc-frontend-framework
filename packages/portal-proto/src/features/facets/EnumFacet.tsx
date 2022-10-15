@@ -9,10 +9,7 @@ import {
   MdClose as CloseIcon,
 } from "react-icons/md";
 import { FaUndo as UndoIcon } from "react-icons/fa";
-import {
-  EnumFacetHooksWithPartial,
-  FacetCardProps,
-} from "@/features/facets/types";
+import { EnumFacetHooks, FacetCardProps } from "@/features/facets/types";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
 import {
   ActionIcon,
@@ -32,8 +29,6 @@ import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
  *  Enumeration facet filters handle display and selection of
  *  enumerated fields.
  * @param field filter this FacetCard manages
- * @param docType document type "cases" "files, etc.
- * @param indexType index this facet uses to get data from
  * @param hooks object defining the hooks required by this facet component
  * @param description describes information about the facet
  * @param facetName name of the Facet in human-readable form
@@ -45,7 +40,7 @@ import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
  * @param dismissCallback if facet can be removed, supply a function which will ensure the "dismiss" control will be visible
  * @param width set the width of the facet
  */
-const EnumFacet: React.FC<FacetCardProps<EnumFacetHooksWithPartial>> = ({
+const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   field,
   hooks,
   valueLabel,
@@ -58,7 +53,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooksWithPartial>> = ({
   hideIfEmpty = true,
   dismissCallback = undefined,
   width = undefined,
-}: FacetCardProps<EnumFacetHooksWithPartial>) => {
+}: FacetCardProps<EnumFacetHooks>) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");

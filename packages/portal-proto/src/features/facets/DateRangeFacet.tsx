@@ -22,7 +22,7 @@ import { StringRange } from "./types";
 
 type DateRangeFacetProps = Omit<
   FacetCardProps<ValueFacetHooks>,
-  "showSearch" | "showFlip" | "showPercent"
+  "showSearch" | "showFlip" | "showPercent" | "valueLabel"
 >;
 
 /**
@@ -109,7 +109,10 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
           </div>
         </Tooltip>
         <div className="flex flex-row">
-          <FacetIconButton onClick={clearFilters} aria-label="clear selection">
+          <FacetIconButton
+            onClick={() => clearFilters(field)}
+            aria-label="clear selection"
+          >
             <UndoIcon size="1.15em" className={controlsIconStyle} />
           </FacetIconButton>
           {dismissCallback ? (

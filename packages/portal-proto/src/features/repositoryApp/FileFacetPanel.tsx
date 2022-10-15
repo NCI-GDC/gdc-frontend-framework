@@ -26,6 +26,7 @@ import { Group, Button, LoadingOverlay, Text, Modal } from "@mantine/core";
 import { MdAdd as AddAdditionalIcon } from "react-icons/md";
 import { FaUndo as UndoIcon } from "react-icons/fa";
 import isEqual from "lodash/isEqual";
+
 import {
   useLocalFilters,
   useRepositoryFilters,
@@ -36,14 +37,14 @@ import {
   useRepositoryRangeFacet,
 } from "@/features/repositoryApp/hooks";
 import { useTotalCounts } from "@/features/facets/hooks";
-import { createFacetCard } from "@/features/facets/CreateFacetCard";
+import { createFacetCardsFromListGQL } from "@/features/facets/CreateFacetCard";
 import { clearRepositoryFilters } from "./repositoryFiltersSlice";
-import { AllHooks } from "@/features/facets/types";
+import { FacetRequiredHooksGQL } from "@/features/facets/types";
 
 const useRepositoryEnumData = (
-  field: string,
   docType: GQLDocType,
   indexType: GQLIndexType,
+  field: string,
 ) =>
   useLocalFilters(
     field,
@@ -111,7 +112,7 @@ export const FileFacetPanel = (): JSX.Element => {
     (facetDef) => !getDefaultFacets().includes(facetDef.full),
   );
 
-  const FileFacetHooks: AllHooks = {
+  const FileFacetHooks: FacetRequiredHooksGQL = {
     useGetEnumFacetData: useRepositoryEnumData,
     useGetRangeFacetData: useRepositoryRangeFacet,
     useUpdateFacetFilters: useUpdateRepositoryFacetFilter,
@@ -164,7 +165,7 @@ export const FileFacetPanel = (): JSX.Element => {
         {facetDefinitions.map((x) => {
           const isDefault = getDefaultFacets().includes(x.full);
           const facetName = fieldNameToTitle(x.full, isDefault ? 1 : 2);
-          return createFacetCard(
+          return createFacetCardsFromListGQL(
             x,
             "files",
             "repository",
