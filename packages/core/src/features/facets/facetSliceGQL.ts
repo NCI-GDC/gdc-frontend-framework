@@ -56,6 +56,7 @@ export const fetchFacetByNameGQL = createAsyncThunk<
 export interface FacetStateGQL extends FacetsState {
   readonly genes: Record<string, FacetBuckets>;
   readonly ssms: Record<string, FacetBuckets>;
+  readonly projects: Record<string, FacetBuckets>;
 }
 
 const initialState: FacetStateGQL = {
@@ -63,6 +64,7 @@ const initialState: FacetStateGQL = {
   files: {},
   genes: {},
   ssms: {},
+  projects: {},
 };
 
 export const facetsGQLSlice = createSlice({

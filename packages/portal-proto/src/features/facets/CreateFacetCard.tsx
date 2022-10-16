@@ -1,19 +1,11 @@
 import React from "react";
-import { FacetDefinition, GQLDocType, GQLIndexType } from "@gff/core";
+import { FacetDefinition } from "@gff/core";
 import EnumFacet from "@/features/facets/EnumFacet";
 import NumericRangeFacet from "@/features/facets/NumericRangeFacet";
 import DateRangeFacet from "@/features/facets/DateRangeFacet";
 import ExactValueFacet from "@/features/facets/ExactValueFacet";
 import ToggleFacet from "@/features/facets/ToggleFacet";
-import {
-  FacetRequiredHooks,
-  FacetRequiredHooksGQL,
-} from "@/features/facets/types";
-import {
-  FacetDocTypeToCountsIndexMap,
-  FacetDocTypeToLabelsMap,
-} from "@/features/facets/hooks";
-import partial from "lodash/partial";
+import { FacetRequiredHooks } from "@/features/facets/types";
 
 /**
  * createFacetCard given a facet definition it will create a
@@ -32,7 +24,7 @@ import partial from "lodash/partial";
  * @param facetName - option name of facet
  * @param width - override width of facet
  */
-export const createFacetCardGQL = (
+export const createFacetCard = (
   facet: FacetDefinition,
   valueLabel: string,
   dataFunctions: FacetRequiredHooks,
@@ -134,8 +126,6 @@ export const createFacetCardGQL = (
 /**
  * Creates and returns an array of Facet components defined by the facet definition array
  * @param facets - array of FacetDefinitions to create
- * @param docType - docType: cases, files, genes, ssms, and projects
- * @param indexType - which index to use explore or repository
  * @param dataFunctions - get/set hooks
  * @param idPrefix - prefix for created Facet Component key prop. This is used to ensure the ref
  *                  has a 1) unique 2) persistent id, so each call to createFacetCardsFromList must
@@ -144,42 +134,21 @@ export const createFacetCardGQL = (
  * @param hideIfEmpty - hide facets if they do not have data
  * @param width - override the default width.
  */
-export const createFacetCardsFromListGQL = (
+export const createFacetCardsFromList = (
   facets: ReadonlyArray<FacetDefinition>,
-  docType: GQLDocType,
-  indexType: GQLIndexType,
-  dataFunctions: FacetRequiredHooksGQL,
+  dataFunctions: FacetRequiredHooks,
   idPrefix: string,
+  valueLabel: string,
   dismissCallback: (string) => void = undefined,
   hideIfEmpty = false,
   facetName?: string,
   width?: string,
 ): ReadonlyArray<React.ReactNode> => {
-  const hooks: FacetRequiredHooks = {
-    useGetRangeFacetData: partial(
-      dataFunctions.useGetRangeFacetData,
-      docType,
-      indexType,
-    ),
-    useGetEnumFacetData: partial(
-      dataFunctions.useGetEnumFacetData,
-      docType,
-      indexType,
-    ),
-    useTotalCounts: partial(
-      dataFunctions.useTotalCounts,
-      FacetDocTypeToCountsIndexMap[docType],
-    ),
-    useClearFilter: dataFunctions.useClearFilter,
-    useUpdateFacetFilters: dataFunctions.useUpdateFacetFilters,
-    useGetFacetFilters: dataFunctions.useGetFacetFilters,
-  };
-
   return facets.map((x) =>
-    createFacetCardGQL(
+    createFacetCard(
       x,
-      FacetDocTypeToLabelsMap[docType],
-      hooks,
+      valueLabel,
+      dataFunctions,
       idPrefix,
       dismissCallback,
       hideIfEmpty,

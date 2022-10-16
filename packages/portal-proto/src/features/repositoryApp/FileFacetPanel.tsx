@@ -26,6 +26,7 @@ import { Group, Button, LoadingOverlay, Text, Modal } from "@mantine/core";
 import { MdAdd as AddAdditionalIcon } from "react-icons/md";
 import { FaUndo as UndoIcon } from "react-icons/fa";
 import isEqual from "lodash/isEqual";
+import partial from "lodash/partial";
 
 import {
   useLocalFilters,
@@ -36,10 +37,13 @@ import {
   useSelectFieldFilter,
   useRepositoryRangeFacet,
 } from "@/features/repositoryApp/hooks";
-import { useTotalCounts } from "@/features/facets/hooks";
-import { createFacetCardsFromListGQL } from "@/features/facets/CreateFacetCard";
+import {
+  FacetDocTypeToLabelsMap,
+  useTotalCounts,
+} from "@/features/facets/hooks";
+import { createFacetCard } from "@/features/facets/CreateFacetCard";
 import { clearRepositoryFilters } from "./repositoryFiltersSlice";
-import { FacetRequiredHooksGQL } from "@/features/facets/types";
+import { FacetRequiredHooks } from "@/features/facets/types";
 
 const useRepositoryEnumData = (
   docType: GQLDocType,
@@ -112,13 +116,17 @@ export const FileFacetPanel = (): JSX.Element => {
     (facetDef) => !getDefaultFacets().includes(facetDef.full),
   );
 
-  const FileFacetHooks: FacetRequiredHooksGQL = {
-    useGetEnumFacetData: useRepositoryEnumData,
-    useGetRangeFacetData: useRepositoryRangeFacet,
+  const FileFacetHooks: FacetRequiredHooks = {
+    useGetEnumFacetData: partial(useRepositoryEnumData, "files", "repository"),
+    useGetRangeFacetData: partial(
+      useRepositoryRangeFacet,
+      "files",
+      "repository",
+    ),
     useUpdateFacetFilters: useUpdateRepositoryFacetFilter,
     useGetFacetFilters: useSelectFieldFilter,
     useClearFilter: useClearRepositoryFilters,
-    useTotalCounts: useTotalCounts,
+    useTotalCounts: partial(useTotalCounts, FacetDocTypeToLabelsMap["files"]),
   };
 
   return (
@@ -165,10 +173,9 @@ export const FileFacetPanel = (): JSX.Element => {
         {facetDefinitions.map((x) => {
           const isDefault = getDefaultFacets().includes(x.full);
           const facetName = fieldNameToTitle(x.full, isDefault ? 1 : 2);
-          return createFacetCardsFromListGQL(
+          return createFacetCard(
             x,
-            "files",
-            "repository",
+            "Files",
             FileFacetHooks,
             "repository-app",
             !isDefault ? handleRemoveFilter : undefined,

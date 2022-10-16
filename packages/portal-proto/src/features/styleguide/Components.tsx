@@ -37,7 +37,6 @@ const Components: ReactNode = () => {
       />
       <Divider label="Date Range Facet" classNames={divider_style} />
       <DateRangeFacet
-        valueLabel="Files"
         field="files.analysis.input_files.created_datetime"
         width="w-1/3"
         hooks={{
@@ -64,7 +63,6 @@ const Components: ReactNode = () => {
       <ExactValueFacet
         field="cases.diagnoses.annotations.case_id"
         width="w-1/3"
-        valueLabel="cases"
         hooks={{
           useGetFacetFilters: useSelectFieldFilter,
           useUpdateFacetFilters: useUpdateFacetFilter,

@@ -1,10 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  MdClose as CloseIcon,
-  MdSort as SortIcon,
-  MdSortByAlpha as AlphaSortIcon,
-  MdWarning as WarningIcon,
-} from "react-icons/md";
+import { MdClose as CloseIcon, MdWarning as WarningIcon } from "react-icons/md";
 import { FaUndo as UndoIcon } from "react-icons/fa";
 import tw from "tailwind-styled-components";
 import {
@@ -34,8 +29,7 @@ import {
   UpdateFacetFilterFunction,
   UpdateFacetFilterHook,
 } from "@/features/facets/types";
-import {} from "@/features/facets/hooks";
-import { controlsIconStyle, FacetIconButton } from "./components";
+import { FacetIconButton } from "./components";
 import FacetExpander from "@/features/facets/FacetExpander";
 import FacetSortPanel from "@/features/facets/FacetSortPanel";
 

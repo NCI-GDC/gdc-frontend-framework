@@ -21,7 +21,12 @@ import {
 } from "@gff/core";
 
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
-import { useTotalCounts } from "@/features/facets/hooks";
+import {
+  useTotalCounts,
+  FacetDocTypeToCountsIndexMap,
+  FacetDocTypeToLabelsMap,
+} from "@/features/facets/hooks";
+import partial from "lodash/partial";
 
 import {
   useClearGenomicFilters,
@@ -185,13 +190,16 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                 key={`${x.facet_filter}-${index}`}
                 field={`${x.facet_filter}`}
                 hooks={{
-                  useGetFacetData: useGenesFacet,
+                  useGetFacetData: partial(useGenesFacet, "genes", "explore"),
                   useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
                   useClearFilter: useClearGenomicFilters,
-                  useTotalCounts: useTotalCounts,
+                  useTotalCounts: partial(
+                    useTotalCounts,
+                    FacetDocTypeToCountsIndexMap["genes"],
+                  ),
                 }}
                 facetName={x.name}
-                docType="genes"
+                valueLabel={FacetDocTypeToLabelsMap["genes"]}
                 showPercent={false}
                 hideIfEmpty={false}
                 description={x.description}
@@ -204,13 +212,16 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
               key={`genes-mutations-app-${x.facet_filter}-${index}`}
               field={`${x.facet_filter}`}
               hooks={{
-                useGetFacetData: useGenesFacet,
+                useGetFacetData: partial(useGenesFacet, "genes", "explore"),
                 useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
                 useClearFilter: useClearGenomicFilters,
-                useTotalCounts: useTotalCounts,
+                useTotalCounts: partial(
+                  useTotalCounts,
+                  FacetDocTypeToCountsIndexMap["genes"],
+                ),
               }}
               facetName={x.name}
-              docType="genes"
+              valueLabel={FacetDocTypeToLabelsMap["genes"]}
               showPercent={false}
               hideIfEmpty={false}
               description={x.description}
@@ -224,12 +235,15 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
               key={`genes-mutations-app-${x.facet_filter}-${index}`}
               field={`${x.facet_filter}`}
               facetName={x.name}
-              docType="ssms"
+              valueLabel={FacetDocTypeToLabelsMap["ssma"]}
               hooks={{
-                useGetFacetData: useGenesFacet,
+                useGetFacetData: partial(useGenesFacet, "ssms", "explore"),
                 useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
                 useClearFilter: useClearGenomicFilters,
-                useTotalCounts: useTotalCounts,
+                useTotalCounts: partial(
+                  useTotalCounts,
+                  FacetDocTypeToCountsIndexMap["ssms"],
+                ),
               }}
               showPercent={false}
               hideIfEmpty={false}
