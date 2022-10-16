@@ -1,25 +1,24 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React from "react";
 import {
   FacetDefinition,
   GQLDocType,
   GQLIndexType,
-  selectCurrentCohortFilters,
-  selectFacetDefinitionsByName,
-  useCoreSelector,
-  useFacetDictionary,
-  usePrevious,
   fieldNameToTitle,
 } from "@gff/core";
+import { Group, Text } from "@mantine/core";
 import {
-  useAppSelector,
-  useAppDispatch,
-} from "@/features/projectCenter/appApi";
-import { Group, Button, LoadingOverlay, Text, Modal } from "@mantine/core";
-import { useSelectFieldFilter } from "@/features/projectCenter/hooks";
+  useClearProjectsFilters,
+  useSelectFieldFilter,
+  useUpdateProjectsFacetFilter,
+  useLocalFilters,
+  useProjectEnumValues,
+  useProjectsFilters,
+} from "@/features/projectCenter/hooks";
 import { useTotalCounts } from "@/features/facets/hooks";
 import { createFacetCard } from "@/features/facets/CreateFacetCard";
-import { AllHooks } from "@/features/facets/types";
+import { FacetRequiredHooks } from "@/features/facets/types";
 import FilterFacets from "./filters.json";
+import partial from "lodash/partial";
 
 const useProjectEnumData = (
   field: string,
@@ -30,18 +29,17 @@ const useProjectEnumData = (
     field,
     docType,
     indexType,
-    useRepositoryEnumValues,
-    useRepositoryFilters,
+    useProjectEnumValues,
+    useProjectsFilters,
   );
 
 export const ProjectFacetPanel = (): JSX.Element => {
-  const ProjectFacetHooks: AllHooks = {
-    useGetEnumFacetData: useProjectEnumData,
-    useGetRangeFacetData: useRepositoryRangeFacet,
-    useUpdateFacetFilters: useUpdateRepositoryFacetFilter,
+  const ProjectFacetHooks: FacetRequiredHooks = {
+    useGetEnumFacetData: partial(useProjectEnumData, "projects", "explore"),
+    useUpdateFacetFilters: useUpdateProjectsFacetFilter,
     useGetFacetFilters: useSelectFieldFilter,
-    useClearFilter: useClearRepositoryFilters,
-    useTotalCounts: useTotalCounts,
+    useClearFilter: useClearProjectsFilters,
+    useTotalCounts: partial(useTotalCounts, "projectCounts"),
   };
 
   return (
@@ -56,7 +54,6 @@ export const ProjectFacetPanel = (): JSX.Element => {
           const facetName = fieldNameToTitle(x.full);
           return createFacetCard(
             x as FacetDefinition,
-            "projects",
             "projects",
             ProjectFacetHooks,
             "projects-center",

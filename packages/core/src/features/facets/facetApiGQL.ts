@@ -23,8 +23,26 @@ export const buildGraphGLBucketQuery = (
       ? `${convertFacetNameToGQL(alias)} : ${convertFacetNameToGQL(facetName)}`
       : convertFacetNameToGQL(facetName);
 
-  return `
-  query QueryBucketCounts($filters_0: FiltersArgument!) {
+  if (docType == "projects")
+    return `
+    query QueryBucketCounts($filters_0: FiltersArgument!) {
+     viewer {
+             ${docType} {
+              aggregations(
+                filters: $filters_0
+                aggregations_filter_themselves: false
+              ) {
+                  ${queriedFacet} {
+                    buckets {
+                      doc_count
+                      key
+                    }
+                  }
+                }
+            }
+     }`;
+  else
+    return `query QueryBucketCounts($filters_0: FiltersArgument!) {
       viewer {
           ${index} {
             ${docType} {

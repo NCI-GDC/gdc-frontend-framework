@@ -97,7 +97,7 @@ export interface FacetRequiredHooks {
   useGetFacetFilters: SelectFacetFilterFunction; // gets the current filters
   useUpdateFacetFilters: UpdateFacetFilterHook; // updates the filters
   useGetEnumFacetData: GetEnumFacetDataFunction; // gets data for EnumFacets and ToggleFacet
-  useGetRangeFacetData: GetRangeFacetDataFunction; // gets the data for Range Facets
+  useGetRangeFacetData?: GetRangeFacetDataFunction; // gets the data for Range Facets
   useTotalCounts: GetTotalCountsFunction; // get the totals count by type: cases, files, genes, ssms, projects
 }
 

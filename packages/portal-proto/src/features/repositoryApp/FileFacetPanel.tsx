@@ -38,7 +38,7 @@ import {
   useRepositoryRangeFacet,
 } from "@/features/repositoryApp/hooks";
 import {
-  FacetDocTypeToLabelsMap,
+  FacetDocTypeToCountsIndexMap,
   useTotalCounts,
 } from "@/features/facets/hooks";
 import { createFacetCard } from "@/features/facets/CreateFacetCard";
@@ -126,7 +126,10 @@ export const FileFacetPanel = (): JSX.Element => {
     useUpdateFacetFilters: useUpdateRepositoryFacetFilter,
     useGetFacetFilters: useSelectFieldFilter,
     useClearFilter: useClearRepositoryFilters,
-    useTotalCounts: partial(useTotalCounts, FacetDocTypeToLabelsMap["files"]),
+    useTotalCounts: partial(
+      useTotalCounts,
+      FacetDocTypeToCountsIndexMap["files"],
+    ),
   };
 
   return (

@@ -328,7 +328,7 @@ export const FacetTabs = (): JSX.Element => {
                       ),
                     },
                     "cohort-builder",
-                    FacetDocTypeToCountsIndexMap[tabEntry.docType],
+                    FacetDocTypeToLabelsMap[tabEntry.docType],
                     undefined,
                   )}
                 </FacetGroup>

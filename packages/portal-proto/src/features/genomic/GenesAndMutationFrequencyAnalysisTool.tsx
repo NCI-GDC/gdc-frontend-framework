@@ -235,7 +235,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
               key={`genes-mutations-app-${x.facet_filter}-${index}`}
               field={`${x.facet_filter}`}
               facetName={x.name}
-              valueLabel={FacetDocTypeToLabelsMap["ssma"]}
+              valueLabel={FacetDocTypeToLabelsMap["ssms"]}
               hooks={{
                 useGetFacetData: partial(useGenesFacet, "ssms", "explore"),
                 useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
