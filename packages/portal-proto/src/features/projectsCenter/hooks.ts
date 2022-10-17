@@ -20,10 +20,11 @@ import {
   useCoreSelector,
   usePrevious,
   selectProjectsFacetByField,
+  buildCohortGqlOperator,
 } from "@gff/core";
 import {
   removeProjectFilter,
-  selectFiltersByName,
+  selectProjectFiltersByName,
   selectFilters,
   updateProjectFilter,
 } from "@/features/projectsCenter/projectCenterFiltersSlice";
@@ -50,7 +51,8 @@ export const useLocalFilters = (
   const prevEnumValues = usePrevious(enumValues);
 
   useEffect(() => {
-    const selectFilters = () => allFilters;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const selectProjectFilters = (_ignore) => allFilters;
     if (
       !facet ||
       !isEqual(prevAllFilters, allFilters) ||
@@ -64,7 +66,7 @@ export const useLocalFilters = (
           field: field,
           docType: docType,
           index: indexType,
-          filterSelector: selectFilters,
+          filterSelector: selectProjectFilters,
         }),
       );
     }
@@ -94,6 +96,7 @@ export const useLocalFilters = (
 export const useUpdateProjectsFacetFilter = (): UpdateFacetFilterFunction => {
   const dispatch = useAppDispatch();
   // update the filter for this facet
+
   return (field: string, operation: Operation) => {
     dispatch(updateProjectFilter({ field: field, operation: operation }));
   };
@@ -101,7 +104,7 @@ export const useUpdateProjectsFacetFilter = (): UpdateFacetFilterFunction => {
 
 //  Selector Hooks for getting repository filters by name
 export const useSelectFieldFilter = (field: string): Operation => {
-  return useAppSelector((state) => selectFiltersByName(state, field));
+  return useAppSelector((state) => selectProjectFiltersByName(state, field));
 };
 
 export const useProjectsFilters = (): FilterSet => {
@@ -125,7 +128,7 @@ export const useClearProjectsFilters = (): ClearFacetFunction => {
  */
 export const useProjectEnumValues = (field: string): OperandValue => {
   const enumFilters: Operation = useAppSelector((state) =>
-    selectFiltersByName(state, field),
+    selectProjectFiltersByName(state, field),
   );
   return enumFilters ? extractValue(enumFilters) : undefined;
 };

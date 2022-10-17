@@ -54,9 +54,9 @@ export const { updateProjectFilter, removeProjectFilter, clearProjectFilters } =
 export const selectFilters = (state: AppState): FilterSet | undefined =>
   state.filters;
 
-export const selectFiltersByName = (
+export const selectProjectFiltersByName = (
   state: AppState,
   name: string,
 ): Operation | undefined => {
-  return state.filters.filters?.root[name];
+  return state.filters.root[name];
 };

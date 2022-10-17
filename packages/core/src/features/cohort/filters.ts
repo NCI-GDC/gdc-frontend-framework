@@ -114,6 +114,7 @@ export const buildCohortGqlOperator = (
   fs: FilterSet | undefined,
 ): GqlOperation | undefined => {
   if (!fs) return undefined;
+  console.log("fs", fs);
   switch (fs.mode) {
     case "and":
       return Object.keys(fs.root).length == 0
