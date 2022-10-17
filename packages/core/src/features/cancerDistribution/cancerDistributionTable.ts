@@ -209,6 +209,38 @@ export const cancerDistributionTableApiSlice = coreCreateApi({
       query: (request) => ({
         request,
       }),
+      transformResponse: (response) => {
+        return {
+          projects:
+            response?.data?.viewer?.explore?.ssms?.aggregations
+              ?.occurrence__case__project__project_id?.buckets,
+          ssmFiltered: Object.fromEntries(
+            response?.data?.viewer?.explore?.cases?.filtered?.project__project_id?.buckets.map(
+              (b) => [b.key, b.doc_count],
+            ),
+          ),
+          ssmTotal: Object.fromEntries(
+            response?.data?.viewer?.explore?.cases?.total?.project__project_id?.buckets.map(
+              (b) => [b.key, b.doc_count],
+            ),
+          ),
+          cnvGain: Object.fromEntries(
+            response?.data?.viewer?.explore?.cases?.cnvGain?.project__project_id?.buckets.map(
+              (b) => [b.key, b.doc_count],
+            ),
+          ),
+          cnvLoss: Object.fromEntries(
+            response?.data?.viewer?.explore?.cases?.cnvLoss?.project__project_id?.buckets.map(
+              (b) => [b.key, b.doc_count],
+            ),
+          ),
+          cnvTotal: Object.fromEntries(
+            response?.data?.viewer?.explore?.cases?.cnvTotal?.project__project_id?.buckets.map(
+              (b) => [b.key, b.doc_count],
+            ),
+          ),
+        };
+      },
     }),
   }),
 });

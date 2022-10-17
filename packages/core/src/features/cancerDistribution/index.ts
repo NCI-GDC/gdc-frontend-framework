@@ -2,7 +2,7 @@ import { combineReducers } from "@reduxjs/toolkit";
 import { cnvPlotReducer, useCnvPlot } from "./cnvPlot";
 import { ssmPlotReducer, useSsmPlot } from "./ssmPlot";
 import {
-  cancerDistributionTableApiSliceReducerPath,
+  //cancerDistributionTableApiSliceReducerPath,
   cancerDistributionTableApiReducer,
   useGetCancerDistributionTableQuery,
 } from "./cancerDistributionTable";
