@@ -15,7 +15,6 @@ const SummaryStatsItem: React.FC<SummaryStatsItemProp> = ({
   count,
   size = 24,
 }: SummaryStatsItemProp) => {
-  console.log(title, count);
   return (
     <div className="flex flex-col flex-nowrap font-medium justify-center content-center font-heading ">
       <div className="flex flex-row flex-nowrap justify-center content-center text-md">
