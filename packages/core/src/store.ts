@@ -16,6 +16,7 @@ import { caseSetListenerMiddleware } from "./listeners";
 
 import storage from "./storage-persist";
 import { survivalApiSliceMiddleware } from "./features/survival/survivalApiSlice";
+import { cancerDistributionTableApiSliceMiddleware } from "./features/cancerDistribution/cancerDistributionTable";
 
 const persistConfig = {
   key: "root",
@@ -35,7 +36,11 @@ export const coreStore = configureStore({
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
     })
-      .concat(cohortApiSliceMiddleware, survivalApiSliceMiddleware)
+      .concat(
+        cohortApiSliceMiddleware,
+        survivalApiSliceMiddleware,
+        cancerDistributionTableApiSliceMiddleware,
+      )
       .prepend(caseSetListenerMiddleware.middleware), // needs to be prepended
 });
 

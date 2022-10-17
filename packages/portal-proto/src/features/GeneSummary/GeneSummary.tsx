@@ -4,13 +4,14 @@ import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 import { useGenesSummaryData, GeneSummaryData } from "@gff/core";
-import { FaBook, FaTable } from "react-icons/fa";
+import { FaBook, FaTable, FaRegChartBar as BarChartIcon } from "react-icons/fa";
 import { HiPlus, HiMinus } from "react-icons/hi";
 import { externalLinkNames, externalLinks, humanify } from "src/utils";
 import CNVPlot from "../charts/CNVPlot";
 import SSMPlot from "../charts/SSMPlot";
 import { formatDataForHorizontalTable } from "../files/utils";
 import { LoadingOverlay } from "@mantine/core";
+import CancerDistributionTable from "./CancerDistributionTable";
 
 interface GeneViewProps {
   data: {
@@ -159,8 +160,15 @@ const GeneView = ({ data, gene_id }: GeneViewProps) => {
                 </div>
               </div>
             </div>
-            <SSMPlot page={"gene"} gene={gene_id} />
-            <CNVPlot gene={gene_id} />
+            <div className="mt-4">
+              <div className="flex items-center gap-2">
+                <BarChartIcon size={20} />
+                <h2 className="text-xl">Cancer Distribution</h2>
+              </div>
+              <SSMPlot page={"gene"} gene={gene_id} />
+              <CNVPlot gene={gene_id} />
+              <CancerDistributionTable gene={gene_id} />
+            </div>
           </div>
         </>
       )}
