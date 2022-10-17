@@ -112,6 +112,7 @@ export const TraversableList = <T extends unknown>({
             setFocusedItem(0);
             onFocusList && onFocusList(0);
           }}
+          data-testid="list"
         >
           {data?.map((item, idx) => {
             return (
@@ -132,6 +133,7 @@ export const TraversableList = <T extends unknown>({
                 onClick={() => {
                   selectItem(idx);
                 }}
+                data-testid="list-item"
               >
                 {renderItem(item, idx)}
               </List.Item>
