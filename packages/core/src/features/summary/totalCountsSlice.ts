@@ -11,6 +11,18 @@ import {
 const CountsGraphQLQuery = `
   query countsQuery($filters: FiltersArgument) {
   viewer {
+      projects {
+      aggregations {
+        primary_site {
+          buckets {
+            key
+          }
+        }
+      }
+      hits(first: 0) {
+        total
+      }
+    }
     repository {
       cases {
         hits(filters: $filters, first: 0) {
@@ -56,6 +68,8 @@ const initialState: TotalCountsState = {
     genesCounts: -1,
     mutationCounts: -1,
     repositoryCaseCounts: -1,
+    projectsCounts: -1,
+    primarySiteCounts: -1,
   },
   status: "uninitialized",
 };
@@ -86,6 +100,10 @@ const slice = createSlice({
             genesCounts: response.data.viewer.explore.genes.hits.total,
             mutationCounts: response.data.viewer.explore.ssms.hits.total,
             fileCounts: response.data.viewer.repository.files.hits.total,
+            projectsCounts: response.data.viewer.projects.hits.total,
+            primarySiteCounts:
+              response.data.viewer.projects.aggregations.primary_site.buckets
+                .length,
             repositoryCaseCounts:
               response.data.viewer.repository.cases.hits.total,
           };
