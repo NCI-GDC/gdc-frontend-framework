@@ -6,7 +6,7 @@ import {
 import {
   useAppDispatch,
   useAppSelector,
-} from "@/features/repositoryApp/appApi";
+} from "@/features/projectsCenter/appApi";
 import {
   EnumOperandValue,
   FacetBuckets,
@@ -16,17 +16,17 @@ import {
   GQLIndexType,
   OperandValue,
   Operation,
-  selectFacetByDocTypeAndField,
   useCoreDispatch,
   useCoreSelector,
   usePrevious,
+  selectProjectsFacetByField,
 } from "@gff/core";
 import {
   removeProjectFilter,
   selectFiltersByName,
   selectFilters,
   updateProjectFilter,
-} from "@/features/projectCenter/projectCenterFiltersSlice";
+} from "@/features/projectsCenter/projectCenterFiltersSlice";
 import { useEffect } from "react";
 import isEqual from "lodash/isEqual";
 import { extractValue } from "@/features/facets/hooks";
@@ -41,7 +41,7 @@ export const useLocalFilters = (
   const coreDispatch = useCoreDispatch();
 
   const facet: FacetBuckets = useCoreSelector((state) =>
-    selectFacetByDocTypeAndField(state, docType, field),
+    selectProjectsFacetByField(state, field),
   ); // Facet data is always cached in the coreState
 
   const enumValues = selectFieldEnumValues(field);
@@ -50,7 +50,7 @@ export const useLocalFilters = (
   const prevEnumValues = usePrevious(enumValues);
 
   useEffect(() => {
-    const selectCohortAndRepositoryFilters = () => allFilters;
+    const selectFilters = () => allFilters;
     if (
       !facet ||
       !isEqual(prevAllFilters, allFilters) ||
@@ -64,7 +64,7 @@ export const useLocalFilters = (
           field: field,
           docType: docType,
           index: indexType,
-          filterSelector: selectCohortAndRepositoryFilters,
+          filterSelector: selectFilters,
         }),
       );
     }
@@ -124,8 +124,9 @@ export const useClearProjectsFilters = (): ClearFacetFunction => {
  * @return Value of Filters or undefined
  */
 export const useProjectEnumValues = (field: string): OperandValue => {
-  const enumFilters: Operation = useAppSelector((state) =>
-    selectFiltersByName(state, field),
-  );
+  const enumFilters: Operation = useAppSelector((state) => {
+    console.log("state", state);
+    selectFiltersByName(state, field);
+  });
   return enumFilters ? extractValue(enumFilters) : undefined;
 };

@@ -2,7 +2,7 @@ import {
   updateProjectFilter,
   removeProjectFilter,
   clearProjectFilters,
-} from "@/features/projectCenter/projectCenterFiltersSlice";
+} from "@/features/projectsCenter/projectCenterFiltersSlice";
 import {
   projectCenterFiltersReducer,
   ProjectCenterFiltersSlice,

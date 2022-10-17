@@ -17,6 +17,7 @@ import tailwindConfig from "../../tailwind.config";
 // their default exports will trigger registration.
 import "../features/demoApp1/DemoApp";
 import "../features/demoApp2/DemoApp";
+import "@/features/projectsCenter/ProjectsCenter";
 import "@/features/repositoryApp/RepositoryApp";
 
 // import the React tab styles once

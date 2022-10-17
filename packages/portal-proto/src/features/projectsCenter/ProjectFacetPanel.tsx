@@ -13,7 +13,7 @@ import {
   useLocalFilters,
   useProjectEnumValues,
   useProjectsFilters,
-} from "@/features/projectCenter/hooks";
+} from "@/features/projectsCenter/hooks";
 import { useTotalCounts } from "@/features/facets/hooks";
 import { createFacetCard } from "@/features/facets/CreateFacetCard";
 import { FacetRequiredHooks } from "@/features/facets/types";

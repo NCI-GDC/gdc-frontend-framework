@@ -162,6 +162,14 @@ export const selectSSMSFacetByField = (
   return root[field];
 };
 
+export const selectProjectsFacetByField = (
+  state: CoreState,
+  field: string,
+): FacetBuckets => {
+  const root = state.facetsGQL.facetsGQL.projects;
+  return root[field];
+};
+
 export const fileCaseGenesMutationsFacetReducers = combineReducers({
   facetsGQL: facetsGQLReducer,
   ranges: rangeFacetsReducer,

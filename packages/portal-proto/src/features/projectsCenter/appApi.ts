@@ -6,7 +6,7 @@ const projectCenterAppReducers = combineReducers({
   filters: projectCenterFiltersReducer,
 });
 
-// create the store, context and selector for the ProjectCenter
+// create the store, context and selector for the ProjectsCenter
 // Note the project app has a local store and context which isolates
 // the filters and other store/cache values
 
@@ -16,5 +16,13 @@ export const { id, AppStore, AppContext, useAppSelector, useAppDispatch } =
     name: "ProjectCenter",
     version: "0.0.1",
   });
+
+console.log(
+  "projectCenterAppReducers",
+  id,
+  AppStore,
+  AppContext,
+  useAppSelector,
+);
 
 export type AppState = ReturnType<typeof projectCenterFiltersReducer>;

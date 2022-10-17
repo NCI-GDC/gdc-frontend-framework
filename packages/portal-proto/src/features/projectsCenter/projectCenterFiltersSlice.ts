@@ -2,11 +2,11 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Operation, FilterSet } from "@gff/core";
 import { AppState } from "./appApi";
 
-export interface ProjectCenterFiltersSlice {
+export interface ProjectCenterFiltersState {
   readonly filters: FilterSet;
 }
 
-const initialState: ProjectCenterFiltersSlice = {
+const initialState: ProjectCenterFiltersState = {
   filters: { mode: "and", root: {} },
 };
 
@@ -57,4 +57,7 @@ export const selectFilters = (state: AppState): FilterSet | undefined =>
 export const selectFiltersByName = (
   state: AppState,
   name: string,
-): Operation | undefined => state.filters?.root[name];
+): Operation | undefined => {
+  console.log("state", state);
+  return state.filters?.root[name];
+};

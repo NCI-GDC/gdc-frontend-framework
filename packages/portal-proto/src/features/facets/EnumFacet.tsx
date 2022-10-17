@@ -68,7 +68,6 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   const searchInputRef = useRef(null);
 
   const totalCount = hooks.useTotalCounts();
-  console.log("totalCount", totalCount);
   const clearFilters = hooks.useClearFilter();
   const updateFacetFilters = hooks.useUpdateFacetFilters();
 

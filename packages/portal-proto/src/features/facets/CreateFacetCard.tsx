@@ -121,17 +121,20 @@ export const createFacetCard = (
       />
     );
   }
+  return <div> Unknown FacetType {facet.facet_type}</div>;
 };
 
 /**
  * Creates and returns an array of Facet components defined by the facet definition array
  * @param facets - array of FacetDefinitions to create
  * @param dataFunctions - get/set hooks
+ * @param valueLabel - string used to label counts
  * @param idPrefix - prefix for created Facet Component key prop. This is used to ensure the ref
  *                  has a 1) unique 2) persistent id, so each call to createFacetCardsFromList must
  *                  have a unique prefix, the name of the analysis tool is a good choice
  * @param dismissCallback - define if facet should be removable from their parent
  * @param hideIfEmpty - hide facets if they do not have data
+ * @param facetName - optional name of facet (if undefined it will be extracted from the full field name)
  * @param width - override the default width.
  */
 export const createFacetCardsFromList = (
