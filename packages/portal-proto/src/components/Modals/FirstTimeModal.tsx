@@ -30,7 +30,7 @@ export const FirstTimeModal = ({
       closeOnClickOutside={false}
       closeOnEscape={false}
     >
-      <div className="border-y border-y-base-darker p-4">
+      <div className="border-y border-y-base-darker py-4 space-y-4">
         <Text>
           You are accessing a U.S. Government web site which may contain
           information that must be protected under the U. S. Privacy Act or
