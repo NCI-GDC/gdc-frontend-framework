@@ -9,14 +9,17 @@ import {
   isStatsAggregation,
 } from "../gdcapi/gdcapi";
 
-import { selectCurrentCohortGqlFilters } from "../cohort/cohortFilterSlice";
+import { selectCurrentCohortFilters } from "../cohort/availableCohortsSlice";
+import { buildCohortGqlOperator } from "../cohort/filters";
 
 export const fetchFacetByName = createAsyncThunk<
   GdcApiResponse<unknown>,
   string,
   { dispatch: CoreDispatch; state: CoreState }
 >("facet/fetchFacetByName", async (name: string, thunkAPI) => {
-  const filters = selectCurrentCohortGqlFilters(thunkAPI.getState());
+  const filters = buildCohortGqlOperator(
+    selectCurrentCohortFilters(thunkAPI.getState()),
+  );
   return await fetchGdcCases({
     size: 0,
     ...(filters ? { filters: filters } : {}),

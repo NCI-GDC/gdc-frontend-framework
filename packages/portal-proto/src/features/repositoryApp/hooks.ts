@@ -8,7 +8,7 @@ import {
   Operation,
   useCoreSelector,
   fetchFacetByNameGQL,
-  selectCurrentCohortFilterSet,
+  selectCurrentCohortFilters,
   selectFacetByDocTypeAndField,
   useCoreDispatch,
   usePrevious,
@@ -134,7 +134,7 @@ export const useLocalFilters = (
   const enumValues = selectFieldEnumValues(field);
   const localFilters = selectLocalFilters();
   const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilterSet(state),
+    selectCurrentCohortFilters(state),
   );
   const allFilters = joinFilters(cohortFilters, localFilters);
   const prevAllFilters = usePrevious(allFilters);
@@ -194,7 +194,7 @@ export const useRepositoryRangeFacet = (
   );
   const localFilters = useRepositoryFilters();
   const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilterSet(state),
+    selectCurrentCohortFilters(state),
   );
 
   const allFilters = joinFilters(cohortFilters, localFilters);

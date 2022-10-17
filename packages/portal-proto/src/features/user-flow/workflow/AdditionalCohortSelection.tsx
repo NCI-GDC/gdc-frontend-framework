@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { Table, Button, Pagination, Grid } from "@mantine/core";
 import {
   useCoreSelector,
-  selectCurrentCohort,
+  selectCurrentCohortName,
   setComparisonCohorts,
   useCoreDispatch,
   selectAvailableCohorts,
@@ -24,7 +24,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
 }: AdditionalCohortSelectionProps) => {
   const dispatch = useCoreDispatch();
   const primaryCohortName = useCoreSelector((state) =>
-    selectCurrentCohort(state),
+    selectCurrentCohortName(state),
   );
   const availableCohorts = useCoreSelector((state) =>
     selectAvailableCohorts(state),

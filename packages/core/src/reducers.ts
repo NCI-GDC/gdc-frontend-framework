@@ -36,6 +36,7 @@ import { facetsByNameTypeAndFilterReducer } from "./features/facets/facetsByName
 import { userDetailsReducer } from "./features/users/usersSlice";
 import { modalReducer } from "./features/modals/modalsSlice";
 import { quickSearchReducer } from "./features/quickSearch/quickSearch";
+import { versionInfoReducer } from "./features/versionInfo/versionInfoSlice";
 
 export const reducers = combineReducers({
   cohort: cohortReducers,
@@ -69,6 +70,7 @@ export const reducers = combineReducers({
   quickSearch: quickSearchReducer,
   [cohortApiSliceReducerPath]: cohortApiReducer,
   [survivalApiSliceReducerPath]: survivalApiReducer,
+  versionInfo: versionInfoReducer,
 });
 
 export type CoreState = ReturnType<typeof reducers>;

@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
-import { selectCurrentCohortGqlFilters } from "../cohort/cohortFilterSlice";
+import { selectCurrentCohortGqlFilters } from "../cohort/availableCohortsSlice";
 import { convertFacetNameToGQL } from "./facetApiGQL";
 import { FacetBuckets, GQLIndexType, GQLDocType } from "./types";
 
