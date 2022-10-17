@@ -40,6 +40,7 @@ export const buildGraphGLBucketQuery = (
                   }
                 }
             }
+       }
      }`;
   else
     return `query QueryBucketCounts($filters_0: FiltersArgument!) {

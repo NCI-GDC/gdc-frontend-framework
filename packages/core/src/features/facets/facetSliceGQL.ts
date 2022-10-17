@@ -85,7 +85,9 @@ export const facetsGQLSlice = createSlice({
           };
         } else {
           const aggregations =
-            Object(response).data.viewer[index][docType].aggregations;
+            docType === "projects"
+              ? Object(response).data.viewer[docType].aggregations
+              : Object(response).data.viewer[index][docType].aggregations;
           aggregations && processBuckets(aggregations, state[docType]);
         }
       })

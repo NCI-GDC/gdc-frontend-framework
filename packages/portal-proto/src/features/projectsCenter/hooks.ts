@@ -124,9 +124,8 @@ export const useClearProjectsFilters = (): ClearFacetFunction => {
  * @return Value of Filters or undefined
  */
 export const useProjectEnumValues = (field: string): OperandValue => {
-  const enumFilters: Operation = useAppSelector((state) => {
-    console.log("state", state);
-    selectFiltersByName(state, field);
-  });
+  const enumFilters: Operation = useAppSelector((state) =>
+    selectFiltersByName(state, field),
+  );
   return enumFilters ? extractValue(enumFilters) : undefined;
 };

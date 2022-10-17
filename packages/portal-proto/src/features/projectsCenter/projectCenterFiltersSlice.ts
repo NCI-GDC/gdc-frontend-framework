@@ -58,6 +58,5 @@ export const selectFiltersByName = (
   state: AppState,
   name: string,
 ): Operation | undefined => {
-  console.log("state", state);
-  return state.filters?.root[name];
+  return state.filters.filters?.root[name];
 };

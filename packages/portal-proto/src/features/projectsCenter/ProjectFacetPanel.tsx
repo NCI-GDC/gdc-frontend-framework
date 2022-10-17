@@ -21,9 +21,9 @@ import FilterFacets from "./filters.json";
 import partial from "lodash/partial";
 
 const useProjectEnumData = (
-  field: string,
   docType: GQLDocType,
   indexType: GQLIndexType,
+  field: string,
 ) =>
   useLocalFilters(
     field,
@@ -39,7 +39,7 @@ export const ProjectFacetPanel = (): JSX.Element => {
     useUpdateFacetFilters: useUpdateProjectsFacetFilter,
     useGetFacetFilters: useSelectFieldFilter,
     useClearFilter: useClearProjectsFilters,
-    useTotalCounts: partial(useTotalCounts, "projectCounts"),
+    useTotalCounts: partial(useTotalCounts, "projectsCounts"),
   };
 
   return (
@@ -54,7 +54,7 @@ export const ProjectFacetPanel = (): JSX.Element => {
           const facetName = fieldNameToTitle(x.full);
           return createFacetCard(
             x as FacetDefinition,
-            "projects",
+            "Projects",
             ProjectFacetHooks,
             "projects-center",
             undefined,

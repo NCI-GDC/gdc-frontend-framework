@@ -17,12 +17,4 @@ export const { id, AppStore, AppContext, useAppSelector, useAppDispatch } =
     version: "0.0.1",
   });
 
-console.log(
-  "projectCenterAppReducers",
-  id,
-  AppStore,
-  AppContext,
-  useAppSelector,
-);
-
 export type AppState = ReturnType<typeof projectCenterFiltersReducer>;
