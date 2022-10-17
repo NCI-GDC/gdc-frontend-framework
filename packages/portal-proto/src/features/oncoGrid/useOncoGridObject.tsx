@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useRef } from "react";
+import React, { ReactNode, useEffect, useMemo, useRef } from "react";
 import OncoGrid from "oncogrid";
 import { heatMapColor } from "./constants";
 import {
@@ -6,6 +6,7 @@ import {
   geneTracks,
   dataTypesTrack,
   getFillColorMap,
+  FillMap,
 } from "./trackConfig";
 import TrackLegend from "./TrackLegend";
 import TrackSelectionModal from "./TrackSelectionModal";
@@ -33,6 +34,14 @@ interface useOncoGridObjectParams {
   readonly gridContainer: React.MutableRefObject<any>;
 }
 
+interface useOncoGridObjectReturnType {
+  readonly gridObject: React.MutableRefObject<any>;
+  readonly fillColorMap: FillMap;
+  readonly maxDaysToDeath: number;
+  readonly maxAgeAtDiagnosis: number;
+  readonly maxDonorsAffected: number;
+}
+
 const useOncoGridObject = ({
   donors,
   genes,
@@ -43,14 +52,31 @@ const useOncoGridObject = ({
   isHeatmap,
   colorMap,
   gridContainer,
-}: useOncoGridObjectParams): React.MutableRefObject<any> => {
+}: useOncoGridObjectParams): useOncoGridObjectReturnType => {
   const gridObject = useRef(null);
 
-  useEffect(() => {
-    const maxDaysToDeath = Math.max(...donors.map((d) => d.daysToDeath));
-    const maxAgeAtDiagnosis = Math.max(...donors.map((d) => d.age));
-    const maxDonorsAffected = Math.max(...genes.map((g) => g.totalDonors));
+  const fillColorMap = useMemo(
+    () =>
+      getFillColorMap(
+        Array.from(new Set(donors.map((d) => d.race))),
+        Array.from(new Set(donors.map((d) => d.ethnicity))),
+      ),
+    [donors],
+  );
+  const maxDaysToDeath = useMemo(
+    () => Math.max(...donors.map((d) => d.daysToDeath)),
+    [donors],
+  );
+  const maxAgeAtDiagnosis = useMemo(
+    () => Math.max(...donors.map((d) => d.age)),
+    [donors],
+  );
+  const maxDonorsAffected = useMemo(
+    () => Math.max(...genes.map((g) => g.totalDonors)),
+    [genes],
+  );
 
+  useEffect(() => {
     const donorOpacityFunc = ({
       fieldName,
       value,
@@ -90,11 +116,6 @@ const useOncoGridObject = ({
           return 1;
       }
     };
-
-    const fillColorMap = getFillColorMap(
-      Array.from(new Set(donors.map((d) => d.race))),
-      Array.from(new Set(donors.map((d) => d.ethnicity))),
-    );
 
     const fillFunc = ({
       fieldName,
@@ -271,9 +292,19 @@ const useOncoGridObject = ({
     donors,
     genes,
     gridContainer,
+    fillColorMap,
+    maxAgeAtDiagnosis,
+    maxDaysToDeath,
+    maxDonorsAffected,
   ]);
 
-  return gridObject;
+  return {
+    gridObject,
+    fillColorMap,
+    maxDaysToDeath,
+    maxAgeAtDiagnosis,
+    maxDonorsAffected,
+  };
 };
 
 export default useOncoGridObject;
