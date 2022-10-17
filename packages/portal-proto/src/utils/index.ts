@@ -1,6 +1,6 @@
 import { KeyboardEventHandler } from "react";
 import { CartFile, DAYS_IN_YEAR } from "@gff/core";
-import { isObject, replace, sortBy, zip } from "lodash";
+import { replace, sortBy, zip } from "lodash";
 import { DocumentWithWebkit } from "../features/types";
 import * as tailwindConfig from "tailwind.config";
 

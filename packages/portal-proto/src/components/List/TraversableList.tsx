@@ -1,77 +1,82 @@
 import { List } from "@mantine/core";
-import { first, last, nth, isEmpty } from "lodash";
+import { isEmpty } from "lodash";
 import { useState } from "react";
 
-export const TraversableList = ({
+interface Props<T> {
+  /**
+   * Array of any kinds
+   */
+  data: T[];
+  /**
+   * function to render list element
+   */
+  renderItem: (item: T, idx: number) => React.ReactNode;
+  /**
+   * function to create a key for the list
+   */
+  keyExtractor: (item: T) => string;
+  /**
+   * optional: function to be called when Escape key is pressed
+   */
+  onCancel?: () => void;
+  /**
+   * optional: function to be called when Shift + Tab key is pressed
+   */
+  onListBlur?: () => void;
+  /**
+   * optional: function to be called when Tab key is pressed
+   */
+  onListTab?: () => void;
+  /**
+   * optional: function to be called when the list element is selected
+   */
+  onSelectItem?: (index: number) => void;
+  /**
+   * optional: function to be called when the list is focused
+   */
+  onFocusList?: (index: number) => void;
+}
+
+export const TraversableList = <T extends unknown>({
   data,
   onListBlur,
   onSelectItem,
   onCancel,
   onFocusList,
+  keyExtractor,
   onListTab,
-}: {
-  data: Array<{
-    elem: JSX.Element;
-    key: string;
-  }>;
-  onListBlur: () => void;
-  onSelectItem: (index: number) => void;
-  onCancel: () => void;
-  onFocusList: (index: number) => void; //name it better
-  onListTab: () => void;
-}): JSX.Element => {
-  const [focusedItem, setFocusedItem] = useState(undefined);
+  renderItem,
+}: Props<T>): JSX.Element => {
+  const [focusedItem, setFocusedItem] = useState<undefined | number>(undefined);
 
-  const getPreviousItem = (
-    items: Array<{
-      elem: JSX.Element;
-      key: string;
-    }>,
-    reference: {
-      elem: JSX.Element;
-      key: string;
-    },
-  ) =>
-    items.indexOf(
-      reference ? nth(items, items.indexOf(reference) - 1) : last(items),
-    );
+  const getPreviousItem = (items: Array<T>, reference: number) =>
+    reference !== undefined ? Math.max(0, reference - 1) : items.length - 1;
 
-  const getNextItem = (
-    items: Array<{
-      elem: JSX.Element;
-      key: string;
-    }>,
-    reference: {
-      elem: JSX.Element;
-      key: string;
-    },
-  ) =>
-    items.indexOf(
-      reference ? nth(items, items.indexOf(reference) + 1) : first(items),
-    );
+  const getNextItem = (items: Array<T>, reference: number) =>
+    reference !== undefined ? Math.min(items.length - 1, reference + 1) : 0;
 
   const focusPreviousItem = () => {
     if (isEmpty(data)) return;
-    const prevFocusIdx = getPreviousItem(data, data[focusedItem]);
+    const prevFocusIdx = getPreviousItem(data, focusedItem);
     setFocusedItem(prevFocusIdx);
-    onFocusList(prevFocusIdx);
+    onFocusList && onFocusList(prevFocusIdx);
   };
 
   const focusNextItem = () => {
     if (isEmpty(data)) return;
-    const nextFocusIdx = getNextItem(data, data[focusedItem]);
+    const nextFocusIdx = getNextItem(data, focusedItem);
     setFocusedItem(nextFocusIdx);
-    onFocusList(nextFocusIdx);
+    onFocusList && onFocusList(nextFocusIdx);
   };
 
   const selectItem = (idx: number) => {
-    onSelectItem(idx);
+    onSelectItem && onSelectItem(idx);
   };
 
   const cancel = () => {
     setFocusedItem(undefined);
-    onFocusList(undefined);
-    onCancel();
+    onFocusList && onFocusList(undefined);
+    onCancel && onCancel();
   };
 
   const keyBoardPress = (event: React.KeyboardEvent<HTMLUListElement>) => {
@@ -89,10 +94,10 @@ export const TraversableList = ({
       selectItem(focusedItem);
     } else if (event.shiftKey && event.key === "Tab") {
       setFocusedItem(undefined);
-      onFocusList(undefined);
-      onListBlur();
+      onFocusList && onFocusList(undefined);
+      onListBlur && onListBlur();
     } else if (event.key === "Tab") {
-      onListTab();
+      onListTab && onListTab();
     }
   };
 
@@ -105,30 +110,30 @@ export const TraversableList = ({
           tabIndex={0}
           onFocus={() => {
             setFocusedItem(0);
-            onFocusList(0);
+            onFocusList && onFocusList(0);
           }}
         >
           {data?.map((item, idx) => {
             return (
               <List.Item
-                key={item.key}
+                key={keyExtractor(item)}
                 className={`${
                   idx === focusedItem &&
                   "bg-primary-darkest text-primary-contrast-darkest"
                 } cursor-pointer`}
                 onMouseEnter={() => {
                   setFocusedItem(idx);
-                  onFocusList(idx);
+                  onFocusList && onFocusList(idx);
                 }}
                 onMouseLeave={() => {
                   setFocusedItem(undefined);
-                  onFocusList(undefined);
+                  onFocusList && onFocusList(undefined);
                 }}
                 onClick={() => {
                   selectItem(idx);
                 }}
               >
-                {item.elem}
+                {renderItem(item, idx)}
               </List.Item>
             );
           })}

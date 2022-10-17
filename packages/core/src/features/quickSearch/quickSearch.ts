@@ -9,7 +9,7 @@ import { CoreState } from "../../reducers";
 import { CoreDispatch } from "../../store";
 
 export interface QuickSearchState {
-  searchList: ReadonlyArray<Record<string, any>>;
+  searchList: Array<Record<string, any>>;
   status: DataStatus;
 }
 
@@ -72,7 +72,7 @@ export const quickSearchReducer = slice.reducer;
 export const selectSearchLists = (
   state: CoreState,
 ): CoreDataSelectorResponse<{
-  searchList: ReadonlyArray<Record<string, any>>;
+  searchList: Array<Record<string, any>>;
 }> => ({
   data: {
     searchList: state.quickSearch.searchList,
