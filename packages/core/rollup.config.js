@@ -25,7 +25,7 @@ const globals = {
 
 const config = [
   {
-    input: "src/register.ts",
+    input: "src/index.ts",
     output: [
       {
         file: "dist/index.js",
