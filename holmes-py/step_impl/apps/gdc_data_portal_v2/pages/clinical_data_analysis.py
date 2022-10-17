@@ -47,6 +47,7 @@ class ClinicalDataAnalysisPage:
             break
 
         # Group value determines what table we look into
+        # There is a 'match' function, but only on python 3.10>
         if group == "Demographic":
             table_locator = ClinicalDataAnalysisLocators.DEMOGRAPHIC_TABLE
         elif group == "Diagnosis":
@@ -63,7 +64,7 @@ class ClinicalDataAnalysisPage:
             try:
                 self.driver.wait_for_selector(property_locator, state="visible")
             except:
-                # If there is a property value missing, the table is invalid and we return false
+                # If there is a property value missing, the table is invalid and we return error information
                 return "The table '" + group + "' is missing the property '" + property + "'"
         # If we find all values in the table, it passes the test
         return True
