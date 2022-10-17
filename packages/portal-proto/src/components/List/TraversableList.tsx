@@ -7,6 +7,8 @@ export const TraversableList = ({
   onListBlur,
   onSelectItem,
   onCancel,
+  onFocusList,
+  onListTab,
 }: {
   data: Array<{
     elem: JSX.Element;
@@ -15,35 +17,62 @@ export const TraversableList = ({
   onListBlur: () => void;
   onSelectItem: (index: number) => void;
   onCancel: () => void;
+  onFocusList: (index: number) => void; //name it better
+  onListTab: () => void;
 }): JSX.Element => {
   const [focusedItem, setFocusedItem] = useState(undefined);
+
+  const getPreviousItem = (
+    items: Array<{
+      elem: JSX.Element;
+      key: string;
+    }>,
+    reference: {
+      elem: JSX.Element;
+      key: string;
+    },
+  ) =>
+    items.indexOf(
+      reference ? nth(items, items.indexOf(reference) - 1) : last(items),
+    );
+
+  const getNextItem = (
+    items: Array<{
+      elem: JSX.Element;
+      key: string;
+    }>,
+    reference: {
+      elem: JSX.Element;
+      key: string;
+    },
+  ) =>
+    items.indexOf(
+      reference ? nth(items, items.indexOf(reference) + 1) : first(items),
+    );
+
   const focusPreviousItem = () => {
     if (isEmpty(data)) return;
-    const nextFocus = getPreviousItem(data, focusedItem);
-    setFocusedItem(nextFocus);
+    const prevFocusIdx = getPreviousItem(data, data[focusedItem]);
+    setFocusedItem(prevFocusIdx);
+    onFocusList(prevFocusIdx);
   };
 
   const focusNextItem = () => {
     if (isEmpty(data)) return;
-    const nextFocus = getNextItem(data, focusedItem);
-    setFocusedItem(nextFocus);
+    const nextFocusIdx = getNextItem(data, data[focusedItem]);
+    setFocusedItem(nextFocusIdx);
+    onFocusList(nextFocusIdx);
   };
 
-  const selectItem = (idx) => {
-    setFocusedItem(undefined);
+  const selectItem = (idx: number) => {
     onSelectItem(idx);
   };
 
   const cancel = () => {
     setFocusedItem(undefined);
+    onFocusList(undefined);
     onCancel();
   };
-
-  // templatize
-  const getPreviousItem = (items, reference) =>
-    reference ? nth(items, items.indexOf(reference) - 1) : last(items);
-  const getNextItem = (items, reference) =>
-    reference ? nth(items, items.indexOf(reference) + 1) : first(items);
 
   const keyBoardPress = (event: React.KeyboardEvent<HTMLUListElement>) => {
     if (event.key === "ArrowUp") {
@@ -57,7 +86,13 @@ export const TraversableList = ({
       cancel();
     } else if (event.key === "Enter") {
       event.preventDefault();
-      selectItem(data.indexOf(focusedItem));
+      selectItem(focusedItem);
+    } else if (event.shiftKey && event.key === "Tab") {
+      setFocusedItem(undefined);
+      onFocusList(undefined);
+      onListBlur();
+    } else if (event.key === "Tab") {
+      onListTab();
     }
   };
 
@@ -68,29 +103,35 @@ export const TraversableList = ({
           onKeyDown={keyBoardPress}
           className="absolute md:left-0 sm:left-0 lg:left-auto right-0 top-10 bg-base-lightest w-[512px] border-r-10 border-1 border-base"
           tabIndex={0}
-          onFocus={() => setFocusedItem(data[0])}
-          onBlur={onListBlur}
+          onFocus={() => {
+            setFocusedItem(0);
+            onFocusList(0);
+          }}
         >
-          {data?.map((item, idx) => (
-            <List.Item
-              key={item.key}
-              className={`${
-                item === focusedItem &&
-                "bg-primary-darkest text-primary-contrast-darkest"
-              } cursor-pointer`}
-              onMouseEnter={() => {
-                setFocusedItem(item);
-              }}
-              onMouseLeave={() => {
-                setFocusedItem(undefined);
-              }}
-              onClick={() => {
-                selectItem(idx);
-              }}
-            >
-              {item.elem}
-            </List.Item>
-          ))}
+          {data?.map((item, idx) => {
+            return (
+              <List.Item
+                key={item.key}
+                className={`${
+                  idx === focusedItem &&
+                  "bg-primary-darkest text-primary-contrast-darkest"
+                } cursor-pointer`}
+                onMouseEnter={() => {
+                  setFocusedItem(idx);
+                  onFocusList(idx);
+                }}
+                onMouseLeave={() => {
+                  setFocusedItem(undefined);
+                  onFocusList(undefined);
+                }}
+                onClick={() => {
+                  selectItem(idx);
+                }}
+              >
+                {item.elem}
+              </List.Item>
+            );
+          })}
         </List>
       ) : (
         <div className="w-80 absolute md:left-0 sm:left-0 lg:left-auto right-0 bg-base-lightest top-10 p-2 border-r-10 border-1 border-base">

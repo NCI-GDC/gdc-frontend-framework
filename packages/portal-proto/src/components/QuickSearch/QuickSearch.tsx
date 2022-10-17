@@ -1,21 +1,20 @@
 import { useQuickSearch } from "@gff/core";
-import { Badge, Loader, TextInput } from "@mantine/core";
+import { Badge, Loader, TextInput, Highlight } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
 import { useRouter } from "next/router";
 import {
   Dispatch,
   SetStateAction,
-  useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
 import { MdSearch as SearchIcon, MdClose as CloseIcon } from "react-icons/md";
-import { extractEntityPath, findMatchingToken } from "src/utils";
 import { TraversableList } from "../List/TraversableList";
 import { TypeIcon } from "../TypeIcon";
 import { entityShortNameMapping } from "./entityShortNameMapping";
-import Highlight from "@/components/Highlight";
+import { extractEntityPath, findMatchingToken } from "./utils";
 
 export const QuickSearch = ({
   performSearch,
@@ -25,13 +24,15 @@ export const QuickSearch = ({
   setPerformSearch: Dispatch<SetStateAction<boolean>>;
 }): JSX.Element => {
   const [searchText, setSearchText] = useState("");
+  const [focusedListElemIdx, setFocusedListElemIdx] = useState(undefined);
   const quickSearchRef = useRef(null);
+  const ref = useClickOutside(() => setPerformSearch(false));
+  const router = useRouter();
+
   const {
     data: { searchList },
     isFetching,
   } = useQuickSearch(searchText);
-  const ref = useClickOutside(() => setPerformSearch(false));
-  const router = useRouter();
 
   useEffect(() => {
     if (performSearch) {
@@ -39,46 +40,64 @@ export const QuickSearch = ({
     }
   }, [performSearch]);
 
-  console.log("searchList: ", searchList);
-  const mappedData = searchList?.map((item) => ({
-    elem: (
-      <div className="flex p-2 mx-2">
-        <div className="self-center">
-          <TypeIcon
-            iconText={entityShortNameMapping[atob(item.id).split(":")[0]]}
-            // TODO fix this changeOnHover={item === focusedItem}
-          />
-        </div>
-        <div className="flex flex-col">
-          <div style={{ width: 200 }}>
-            <Badge
-              classNames={{
-                inner: "text-xs",
-                // TODO: put hover for this too.
-                root: "bg-primary-darker text-primary-contrast-darker",
-              }}
-              className="cursor-pointer"
-            >
-              {item.symbol || atob(item.id).split(":")[1]}
-            </Badge>
+  const mappedData = useMemo(
+    () =>
+      searchList?.map((item, idx) => ({
+        elem: (
+          <div className="flex p-2 mx-2">
+            <div className="self-center">
+              <TypeIcon
+                iconText={entityShortNameMapping[atob(item.id).split(":")[0]]}
+                changeOnHover={idx === focusedListElemIdx}
+              />
+            </div>
+            <div className="flex flex-col">
+              <div style={{ width: 200 }}>
+                <Badge
+                  classNames={{
+                    inner: "text-xs",
+                    root: `${
+                      idx === focusedListElemIdx
+                        ? "bg-primary-contrast-darker text-primary-darker"
+                        : "bg-primary-darker text-primary-contrast-darker"
+                    }`,
+                  }}
+                  className="cursor-pointer"
+                >
+                  {item.symbol || atob(item.id).split(":")[1]}
+                </Badge>
+              </div>
+              <span className="text-sm">
+                <Highlight
+                  highlight={searchText.trim()}
+                  highlightStyles={{
+                    fontStyle: "italic",
+                    fontWeight: "bold",
+                    fontSize: "14px",
+                    color: `${idx === focusedListElemIdx && "black"}`, //might need to change the color
+                  }}
+                >
+                  {findMatchingToken(item, searchText.trim())}
+                </Highlight>
+              </span>
+            </div>
           </div>
-          {/* TODO need to highlight the token here (there should already be a component for it, when selected or hoverd need to change the text) */}
-          <span className="text-sm">
-            <Highlight
-              search={searchText.trim()}
-              text={findMatchingToken(item, searchText.trim())}
-            />
-          </span>
-        </div>
-      </div>
-    ),
-    key: item.id,
-  }));
+        ),
+        key: item.id,
+      })),
+    [searchList, focusedListElemIdx, searchText],
+  );
 
-  const onInputKeyDown = (e) => {
+  const onInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Escape") {
       searchText.length > 0 ? setSearchText("") : setPerformSearch(false);
+    } else if (e.shiftKey && e.key === "Tab") {
+      setPerformSearch(false);
     }
+  };
+
+  const onInputBlur = () => {
+    searchText.length === 0 && setPerformSearch(false);
   };
 
   const onInputFocus = () => {
@@ -88,27 +107,33 @@ export const QuickSearch = ({
     );
   };
 
-  const onSelectItem = useCallback(
-    (index: number) => {
-      setSearchText("");
-      setPerformSearch(false);
-      if (extractEntityPath(searchList[index]).includes("annotations")) {
-        window.open(extractEntityPath(searchList[index]), "_ blank");
-        return;
-      }
-      router.push(extractEntityPath(searchList[index]));
-    },
-    [router, searchList, setPerformSearch],
-  );
+  const onSelectItem = (index: number) => {
+    setPerformSearch(false);
+    const entityPath = extractEntityPath(searchList[index]);
+    // for annotations we need to open v1 portal in a new tab
+    if (entityPath.includes("annotations")) {
+      window.open(entityPath, "_ blank");
+      return;
+    }
+    router.push(entityPath);
+  };
 
-  const onListBlur = useCallback(() => {
-    quickSearchRef.current.focus();
-  }, []);
+  const onListBlur = () => {
+    onInputFocus();
+  };
 
-  const onCancel = useCallback(() => {
+  const onListTab = () => {
+    setPerformSearch(false);
+  };
+
+  const onCancel = () => {
     setSearchText("");
     quickSearchRef.current.focus();
-  }, []);
+  };
+
+  const onListFocus = (idx: number) => {
+    setFocusedListElemIdx(idx);
+  };
 
   return (
     <>
@@ -120,18 +145,19 @@ export const QuickSearch = ({
           ref={quickSearchRef}
           onKeyDown={onInputKeyDown}
           onFocus={onInputFocus}
-          onBlur={() => {
-            searchText.length === 0 && setPerformSearch(false);
-          }}
+          onBlur={onInputBlur}
           classNames={{
-            input: "focus:border-2 focus:drop-shadow-xl",
+            input: "focus:border-2 fo  cus:drop-shadow-xl",
             wrapper: "w-72",
           }}
           size="sm"
           rightSection={
             searchText.length > 0 && (
               <CloseIcon
-                onClick={() => setSearchText("")}
+                onClick={() => {
+                  setSearchText("");
+                  quickSearchRef.current.focus();
+                }}
                 className="cursor-pointer"
               ></CloseIcon>
             )
@@ -146,6 +172,8 @@ export const QuickSearch = ({
             onListBlur={onListBlur}
             onCancel={onCancel}
             onSelectItem={onSelectItem}
+            onFocusList={onListFocus}
+            onListTab={onListTab}
           />
         )}
       </div>
