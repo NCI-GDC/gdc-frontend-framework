@@ -8,14 +8,13 @@ import {
   Modals,
 } from "@gff/core";
 import { DownloadButton } from "./DownloadButton";
+import { useState } from "react";
 
 interface DownloadFileProps {
   file: GdcFile;
   activeText?: string;
   inactiveText?: string;
   setfileToDownload?: React.Dispatch<React.SetStateAction<GdcFile>>;
-  active?: boolean;
-  setActive?: React.Dispatch<React.SetStateAction<boolean>>;
   customStyle?: string;
   showLoading?: boolean;
 }
@@ -25,13 +24,13 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
   activeText,
   inactiveText,
   setfileToDownload,
-  active,
-  setActive,
   customStyle,
   showLoading = true,
 }: DownloadFileProps) => {
   const dispatch = useCoreDispatch();
   const userInfo = useCoreSelector((state) => selectUserDetailsInfo(state));
+
+  const [active, setActive] = useState(false);
 
   const { username } = userInfo?.data || {};
   if (file.access === "open") {
@@ -78,6 +77,7 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
       dispatch(showModal({ modal: Modals.NoAccessModal }));
     }
   };
+
   return (
     <DownloadButton
       customStyle={customStyleFile}

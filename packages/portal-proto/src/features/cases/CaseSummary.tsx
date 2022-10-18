@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import Link from "next/link";
 import {
   useCaseSummary,
@@ -7,11 +7,12 @@ import {
   selectCart,
   useAnnotations,
   AnnotationDefaults,
+  mapFileData,
 } from "@gff/core";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
 import SummaryCount from "@/components/Summary/SummaryCount";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
-import { Button, LoadingOverlay, Tooltip } from "@mantine/core";
+import { Badge, Button, LoadingOverlay, Tooltip } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
 import {
   FaFile,
@@ -30,13 +31,19 @@ import {
 import {
   allFilesInCart,
   calculatePercentageAsString,
+  fileInCart,
   humanify,
   sortByPropertyAsc,
 } from "src/utils";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 import { CategoryTableSummary } from "@/components/Summary/CategoryTableSummary";
 import { ClinicalSummary } from "./ClinicalSummary/ClinicalSummary";
-import { Demographic } from "@gff/core/dist/features/cases/types";
+import { caseFileType, Demographic } from "@gff/core/dist/features/cases/types";
+import fileSize from "filesize";
+import { TempTable } from "../files/FileView";
+import { DownloadFile } from "@/components/DownloadButtons";
+
+// TODO: break it down
 
 export const CaseSummary = ({
   case_id,
@@ -45,6 +52,8 @@ export const CaseSummary = ({
   case_id: string;
   bio_id: string;
 }): JSX.Element => {
+  console.log("RENDERED: ", case_id);
+
   const { data, isFetching } = useCaseSummary({
     filters: {
       content: {
@@ -60,7 +69,14 @@ export const CaseSummary = ({
       "files.file_name",
       "files.file_size",
       "files.file_id",
+      "files.data_format",
       "files.state",
+      "files.created_datetime",
+      "files.updated_datetime",
+      "files.submitter_id",
+      "files.data_category",
+      "files.type",
+      "files.md5sum",
       "case_id",
       "submitter_id",
       "project.name",
@@ -149,14 +165,23 @@ export const CaseSummary = ({
       "follow_ups.molecular_tests.variant_type",
     ],
   });
-
+  console.log("isFetching: ", isFetching);
   const {
     diagnoses = [],
     demographic = {} as Demographic,
     family_histories = [],
     follow_ups = [],
     exposures = [],
+    files = [],
   } = data || {};
+
+  const clinicalFilteredFiles = files?.filter(
+    (file) => file.data_type === "Clinical Supplement",
+  );
+
+  const biospecimenFilteredFiles = files?.filter(
+    (file) => file.data_type === "Biospecimen Supplement",
+  );
 
   const { data: annotationCountData, isFetching: isAnnotationCallFetching } =
     useAnnotations({
@@ -227,6 +252,7 @@ export const CaseSummary = ({
     : false;
 
   const formatDataForCaseSummary = () => {
+    console.log("data: ", data);
     const {
       case_id,
       submitter_id,
@@ -371,6 +397,86 @@ export const CaseSummary = ({
     };
   };
 
+  const supplementFilesRender = (files: caseFileType[]) => {
+    const rows = files.map((file) => {
+      const isOutputFileInCart = fileInCart(currentCart, file.file_id);
+      return {
+        // can generalize this too and use proper colors
+        access: (
+          <Badge
+            className={
+              file.access === "open" //TODO: keep or change to theme color
+                ? "bg-nci-green-lighter/50 text-nci-green-darkest capitalize text-sm"
+                : "bg-nci-red-lighter/50 text-nci-red-darkest capitalize text-sm"
+            }
+          >
+            {file.access}
+          </Badge>
+        ),
+        file_name: file.file_name,
+        data_format: file.data_format,
+        file_size: fileSize(file.file_size),
+        // most probably can generalize this as it's being used in other places too
+        action: (
+          <div className="flex gap-3">
+            {/* this can be a component too */}
+            <Button
+              className={`${
+                isOutputFileInCart
+                  ? "bg-secondary-min text-secondary-contrast-min"
+                  : "bg-base-lightest text-base-min"
+              } border border-base-darkest rounded p-2 hover:bg-base-darkest hover:text-base-contrast-min`}
+              onClick={() => {
+                isOutputFileInCart
+                  ? removeFromCart(
+                      mapFilesFromCasesToCartFile([file]),
+                      currentCart,
+                      dispatch,
+                    )
+                  : addToCart(
+                      mapFilesFromCasesToCartFile([file]),
+                      currentCart,
+                      dispatch,
+                    );
+              }}
+            >
+              <FaShoppingCart title="Add to Cart" />
+            </Button>
+            <DownloadFile
+              file={mapFileData([file])[0]}
+              showLoading={false}
+              customStyle="bg-base-lightest text-base-min border border-base-darkest rounded p-2 hover:bg-base-darkest hover:text-base-contrast-min"
+            />
+          </div>
+        ),
+      };
+    });
+
+    return {
+      headers: ["Access", "File Name", "Data Format", "File Size", "Action"],
+      tableRows: rows,
+    };
+  };
+
+  const formatDataForClinicalFiles = () => {
+    const { files } = data;
+
+    const filteredFiles = files.filter(
+      (file) => file.data_type === "Clinical Supplement",
+    );
+
+    return supplementFilesRender(filteredFiles);
+  };
+
+  const formatDataForBioSpecimenFiles = () => {
+    const { files } = data;
+
+    const filteredFiles = files.filter(
+      (file) => file.data_type === "Biospecimen Supplement",
+    );
+
+    return supplementFilesRender(filteredFiles);
+  };
   return (
     <>
       {isFetching || isAnnotationCallFetching ? (
@@ -452,9 +558,26 @@ export const CaseSummary = ({
                 exposures={exposures}
               />
             </div>
+            {clinicalFilteredFiles?.length > 0 && (
+              <div className="my-5">
+                <div className="flex gap-2 bg-base-lightest text-primary-content p-2">
+                  <h2 className="text-lg font-medium"> Clinical Files</h2>
+                </div>
+                <TempTable tableData={formatDataForClinicalFiles()} />
+              </div>
+            )}
+
             <div ref={targetRef} id="biospecimen">
               <Biospecimen caseId={case_id} bioId={bio_id} />
             </div>
+            {biospecimenFilteredFiles?.length > 0 && (
+              <div className="my-5">
+                <div className="flex gap-2 bg-base-lightest text-primary-content p-2">
+                  <h2 className="text-lg font-medium"> Biospecimen Files</h2>
+                </div>
+                <TempTable tableData={formatDataForBioSpecimenFiles()} />
+              </div>
+            )}
           </div>
         </>
       ) : (

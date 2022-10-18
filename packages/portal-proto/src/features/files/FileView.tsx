@@ -324,8 +324,6 @@ export const FileView: React.FC<FileViewProps> = ({
           activeText="Processing"
           file={file}
           setfileToDownload={setfileToDownload}
-          setActive={setActive}
-          active={active}
         />
       </div>
       <div className="flex">
@@ -588,8 +586,8 @@ export const FileView: React.FC<FileViewProps> = ({
           openModal
           file={fileToDownload}
           dbGapList={fileToDownload.acl}
-          active={active}
-          setActive={setActive}
+          // active={active}
+          // setActive={setActive}
         />
       )}
     </div>

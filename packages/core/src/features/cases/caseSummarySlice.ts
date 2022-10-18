@@ -34,6 +34,7 @@ export const fetchCasesSummary = createAsyncThunk<
   GdcApiRequest,
   { dispatch: CoreDispatch; state: CoreState }
 >("cases/fetchCases", async (request?: GdcApiRequest) => {
+  console.log("fetching more: ", request);
   return fetchGdcCaseSummary(request);
 });
 
