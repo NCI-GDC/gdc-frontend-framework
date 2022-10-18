@@ -465,6 +465,7 @@ const RangeInputWithPrefixedRanges: React.FC<
   const [filterValues, filterKey] = useMemo(() => {
     const values = extractRangeValues<number>(filter);
     const key = ClassifyRangeType(values);
+    console.log(values);
     return [values, key];
   }, [filter]);
 
