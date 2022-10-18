@@ -42,6 +42,7 @@ export const SummaryFacets: React.FC<SummaryFacetProps> = ({
                 startShowingData={false}
                 key={`summary-chart-${entry.field}-${index}`}
                 width="w-64"
+                hideIfEmpty={false}
                 indexType={entry.indexType}
                 hooks={{
                   useUpdateFacetFilters: useUpdateFacetFilter,

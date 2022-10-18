@@ -40,7 +40,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
     <Card
       shadow="sm"
       p="xs"
-      className={`bg-base-max border-primary-darkest border ${
+      className={`bg-base-max border-primary-darkest overflow-visible border ${
         inactive ? "" : "border-t-6"
       }
        `}
@@ -116,7 +116,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
             )
           }
           classNames={{
-            root: "text-primary-content-darkest font-bold",
+            root: "text-primary-content-darkest font-bold bg-transparent",
             rightIcon: "ml-0",
           }}
         >
@@ -124,7 +124,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
         </Button>
         <div
           style={{ height: descriptionVisible ? descHeight : 0 }}
-          className={`transition-[height] duration-300 bg-primary-lightest -mx-2.5 mb-2.5`}
+          className={`transition-[height] duration-300 bg-primary-lightest overflow-hidden -mx-2.5 mb-2.5`}
         >
           <div
             className={`${
@@ -141,7 +141,12 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
           <div className="flex flex-row items-center text-primary-content-darkest">
             <span>{`${caseCounts.toLocaleString()} Cases`}</span>
             {caseCounts === 0 && (
-              <Tooltip label={entry?.noDataTooltip} withArrow width={200}>
+              <Tooltip
+                label={entry?.noDataTooltip}
+                withArrow
+                width={200}
+                multiline
+              >
                 <div>
                   <MdInfo className="inline-block ml-1" />
                 </div>

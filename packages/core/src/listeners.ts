@@ -10,9 +10,10 @@ import {
   updateCohortFilter,
   removeCohortFilter,
   clearCohortFilters,
-} from "./features/cohort/cohortFilterSlice";
-import { createCaseSet, clearCaseSet } from "./features/cohort/caseSetSlice";
-
+  clearCaseSet,
+  cohortSelectors,
+} from "./features/cohort/availableCohortsSlice";
+import { createCaseSet } from "./features/cohort/availableCohortsSlice";
 /**
  * Defines coreListeners for adding middleware.
  * This listener will dispatch a createCaseSet each time the
@@ -34,10 +35,14 @@ startCoreListening({
   matcher: isAnyOf(updateCohortFilter, removeCohortFilter),
   effect: async (_, listenerApi) => {
     // dispatch updateCohortFilter or removeCohortFilter executed
+    const cohort = cohortSelectors.selectById(
+      listenerApi.getState(),
+      listenerApi.getState().cohort.availableCohorts.currentCohort,
+    );
+    if (cohort === undefined) return;
     if (
-      listenerApi.getState().cohort.currentFilters.filters == undefined ||
-      Object.entries(listenerApi.getState().cohort.currentFilters.filters.root)
-        .length === 0
+      cohort.filters == undefined ||
+      Object.entries(cohort.filters.root).length === 0
     )
       await listenerApi.dispatch(clearCaseSet());
     else await listenerApi.dispatch(createCaseSet({ index: "repository" }));

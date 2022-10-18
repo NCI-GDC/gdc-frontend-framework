@@ -13,9 +13,11 @@ interface DownloadFileProps {
   file: GdcFile;
   activeText?: string;
   inactiveText?: string;
-  setfileToDownload: React.Dispatch<React.SetStateAction<GdcFile>>;
+  setfileToDownload?: React.Dispatch<React.SetStateAction<GdcFile>>;
   active?: boolean;
   setActive?: React.Dispatch<React.SetStateAction<boolean>>;
+  customStyle?: string;
+  showLoading?: boolean;
 }
 
 export const DownloadFile: React.FC<DownloadFileProps> = ({
@@ -25,6 +27,8 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
   setfileToDownload,
   active,
   setActive,
+  customStyle,
+  showLoading = true,
 }: DownloadFileProps) => {
   const dispatch = useCoreDispatch();
   const userInfo = useCoreSelector((state) => selectUserDetailsInfo(state));
@@ -51,16 +55,18 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
         }}
         setActive={setActive}
         active={active}
+        customStyle={customStyle}
+        showLoading={showLoading}
       />
     );
   }
 
-  const customStyle = inactiveText
+  const customStyleFile = inactiveText
     ? "text-base-lightest bg-primary hover:bg-primary-darker"
     : "bg-base-lightest text-base-min border border-base-darkest rounded p-2 hover:bg-base-darkest hover:text-base-contrast-min";
 
   const onClick = () => {
-    setfileToDownload(file);
+    setfileToDownload && setfileToDownload(file);
     if (username && userCanDownloadFile({ user: userInfo.data, file })) {
       dispatch(showModal({ modal: Modals.AgreementModal }));
     } else if (
@@ -74,12 +80,13 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
   };
   return (
     <DownloadButton
-      customStyle={customStyle}
+      customStyle={customStyleFile}
       inactiveText={inactiveText}
       activeText={activeText}
       onClick={onClick}
       setActive={setActive}
       active={active}
+      showLoading={showLoading}
     />
   );
 };

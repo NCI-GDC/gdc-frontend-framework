@@ -3,7 +3,7 @@ import {
   createUseFiltersCoreDataHook,
 } from "../../dataAccess";
 import { fetchFiles, selectFilesData } from "./filesSlice";
-import { selectCurrentCohortFilters } from "../cohort/cohortFilterSlice";
+import { selectCurrentCohortFilters } from "../cohort/availableCohortsSlice";
 
 export const useFiles = createUseCoreDataHook(fetchFiles, selectFilesData);
 

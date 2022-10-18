@@ -4,7 +4,7 @@ import {
   formatDataForHorizontalTable,
   mapGdcFileToCartFile,
 } from "../files/utils";
-import { FaMicroscope, FaShoppingCart, FaDownload } from "react-icons/fa";
+import { FaMicroscope, FaShoppingCart } from "react-icons/fa";
 import { Tooltip } from "@mantine/core";
 import Link from "next/link";
 import {
@@ -17,7 +17,8 @@ import {
 import { addToCart, removeFromCart } from "@/features/cart/updateCart";
 import { get } from "lodash";
 import { entityTypes } from "@/components/BioTree/types";
-import { fileInCart, humanify } from "src/utils";
+import { humanify, fileInCart } from "src/utils";
+import { DownloadFile } from "@/components/DownloadButtons";
 
 export const match = (query: string, entity: Record<string, any>): boolean =>
   Object.keys(entity).some((k) => {
@@ -68,6 +69,8 @@ export const formatEntityInfo = (
   dispatch: CoreDispatch,
   currentCart: CartFile[],
   selectedSlide: readonly FileDefaults[],
+  downloadActive: boolean,
+  setDownloadActive: React.Dispatch<React.SetStateAction<boolean>>,
 ): {
   readonly headerName: string;
   readonly values: readonly (
@@ -149,12 +152,12 @@ export const formatEntityInfo = (
         </Tooltip>
         <Tooltip label="Download">
           <div>
-            <FaDownload
-              // TODO: change this
-              onClick={() => {
-                alert("Download coming soon!!!");
-              }}
-              className="text-primary-content cursor-pointer"
+            <DownloadFile
+              file={mapFileData(selectedSlide)[0]}
+              active={downloadActive}
+              setActive={setDownloadActive}
+              customStyle="text-primary-content px-0 h-3.5 border-0 hover:bg-transparent"
+              showLoading={false}
             />
           </div>
         </Tooltip>

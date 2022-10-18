@@ -4,6 +4,7 @@ import { useForm } from "@mantine/form";
 import { MdReplay as ResetIcon } from "react-icons/md";
 import { FaPlusCircle as PlusIcon, FaTrash as TrashIcon } from "react-icons/fa";
 import { Statistics } from "@gff/core";
+import _ from "lodash";
 import { validateIntervalInput, validateRangeInput } from "./validateInputs";
 import { CustomInterval, NamedFromTo } from "../types";
 import { isInterval } from "../utils";
@@ -26,8 +27,10 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
   const customIntervalSet = isInterval(customBins);
 
   const binSize = (stats.max + 1 - stats.min) / 4;
+  const initialBinMethod =
+    !customIntervalSet && customBins?.length > 0 ? "ranges" : "interval";
   const [binMethod, setBinMethod] = useState<"interval" | "ranges">(
-    !customIntervalSet && customBins?.length > 0 ? "ranges" : "interval",
+    initialBinMethod,
   );
   const [savedRangeRows, setSavedRangeRows] = useState(
     !customIntervalSet && customBins?.length > 0
@@ -39,43 +42,57 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
       : [],
   );
   const [hasReset, setHasReset] = useState(false);
+  const [customizedIntervalForm, setCustomizedIntervalForm] = useState(false);
+  const [customizedRangeForm, setCustomizedRangeForm] = useState(false);
+  const [customizedBinMethod, setCustomizedBinMethod] = useState(false);
+
+  const initialIntervalForm = {
+    setIntervalSize: customIntervalSet
+      ? String(customBins.interval)
+      : String(binSize),
+    setIntervalMin: customIntervalSet
+      ? String(customBins.min)
+      : String(stats.min),
+    setIntervalMax: customIntervalSet
+      ? String(customBins.max)
+      : String(stats.max + 1),
+  };
 
   const intervalForm = useForm({
     validateInputOnChange: true,
-    initialValues: {
-      setIntervalSize: customIntervalSet
-        ? String(customBins.interval)
-        : String(binSize),
-      setIntervalMin: customIntervalSet
-        ? String(customBins.min)
-        : String(stats.min),
-      setIntervalMax: customIntervalSet
-        ? String(customBins.max)
-        : String(stats.max + 1),
-    },
-    validate: (values) =>
-      validateIntervalInput(
+    initialValues: initialIntervalForm,
+    validate: (values) => {
+      setCustomizedIntervalForm(!_.isEqual(values, initialIntervalForm));
+
+      return validateIntervalInput(
         values.setIntervalSize,
         values.setIntervalMin,
         values.setIntervalMax,
-      ),
+      );
+    },
   });
 
+  const initialRangeForm = {
+    ranges:
+      !customIntervalSet && customBins?.length > 0
+        ? [
+            ...customBins.map((b) => ({
+              name: b.name,
+              from: String(b.from),
+              to: String(b.to),
+            })),
+            { name: "", from: "", to: "" },
+          ]
+        : [{ name: "", from: "", to: "" }],
+  };
+
   const rangeForm = useForm({
-    initialValues: {
-      ranges:
-        !customIntervalSet && customBins?.length > 0
-          ? [
-              ...customBins.map((b) => ({
-                name: b.name,
-                from: String(b.from),
-                to: String(b.to),
-              })),
-              { name: "", from: "", to: "" },
-            ]
-          : [{ name: "", from: "", to: "" }],
+    initialValues: initialRangeForm,
+    validate: (values) => {
+      setCustomizedRangeForm(!_.isEqual(values, initialRangeForm));
+
+      return validateRangeInput(values.ranges);
     },
-    validate: (values) => validateRangeInput(values.ranges),
   });
 
   useEffect(() => {
@@ -86,6 +103,8 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
   }, [intervalForm.values]);
 
   useEffect(() => {
+    setCustomizedBinMethod(binMethod !== initialBinMethod);
+
     if (binMethod === "interval") {
       rangeForm.clearErrors();
       intervalForm.validate();
@@ -235,7 +254,15 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
               setSavedRangeRows([]);
               setBinMethod("interval");
               setHasReset(true);
+              setCustomizedBinMethod(false);
+              setCustomizedIntervalForm(false);
+              setCustomizedRangeForm(false);
             }}
+            disabled={
+              !customizedBinMethod &&
+              !customizedIntervalForm &&
+              !customizedRangeForm
+            }
           >
             <ResetIcon size={20} />
           </Button>
