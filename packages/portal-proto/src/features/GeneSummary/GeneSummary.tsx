@@ -167,7 +167,10 @@ const GeneView = ({ data, gene_id }: GeneViewProps) => {
               </div>
               <SSMPlot page={"gene"} gene={gene_id} />
               <CNVPlot gene={gene_id} />
-              <CancerDistributionTable gene={gene_id} />
+              <CancerDistributionTable
+                gene={gene_id}
+                symbol={data.genes.symbol}
+              />
             </div>
           </div>
         </>
