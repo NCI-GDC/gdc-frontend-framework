@@ -7,6 +7,8 @@ const initialCounts = {
     genesCounts: -1,
     mutationCounts: -1,
     repositoryCaseCounts: -1,
+    projectsCounts: -1,
+    primarySiteCounts: -1,
   },
   status: "uninitialized",
 };
@@ -26,6 +28,8 @@ describe("totalCounts reducer", () => {
           genesCounts: -1,
           mutationCounts: -1,
           repositoryCaseCounts: -1,
+          projectsCounts: -1,
+          primarySiteCounts: -1,
         },
         status: "uninitialized",
       },
@@ -34,6 +38,23 @@ describe("totalCounts reducer", () => {
         payload: {
           data: {
             viewer: {
+              projects: {
+                aggregations: {
+                  primary_site: {
+                    buckets: [
+                      {
+                        key: "hematopoietic and reticuloendothelial systems",
+                      },
+                      {
+                        key: "kidney",
+                      },
+                    ],
+                  },
+                },
+                hits: {
+                  total: 70,
+                },
+              },
               explore: {
                 cases: {
                   hits: {
@@ -75,6 +96,8 @@ describe("totalCounts reducer", () => {
         genesCounts: 20000,
         mutationCounts: 30000,
         repositoryCaseCounts: 5000,
+        projectsCounts: 70,
+        primarySiteCounts: 2,
       },
       status: "fulfilled",
     });

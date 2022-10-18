@@ -4,7 +4,7 @@ import { CohortManager } from "@/features/user-flow/many-pages/cohort";
 import { Select } from "@/components/Select";
 import { useState } from "react";
 import { GdcFile, useFiles } from "@gff/core";
-import { FilesView } from "@/features/files/FilesView";
+//import { FilesView } from "@/features/files/FilesView";
 import { FileModal } from "@/features/files/FileView";
 import { CaseModal } from "@/features/cases/CaseView";
 import { Case } from "@/features/cases/CasesView";
@@ -69,13 +69,15 @@ const RepositoryPage: NextPage = () => {
           />
         </div>
         <div className="border border-gray-400 bg-base-lightest p-4">
-          <FilesView
+          TODO Fix FilesView if needed
+          {data}
+          {/*<FilesView
             files={data}
             handleFileSelected={(file: GdcFile) => {
               setCurrentFile(file);
               setFileModalOpen(true);
             }}
-          />
+          /> */}
         </div>
       </div>
       <FileModal

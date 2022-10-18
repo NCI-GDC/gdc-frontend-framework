@@ -4,11 +4,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
-import {
-  buildCohortGqlOperator,
-  FilterSet,
-  selectCurrentCohortFilterSet,
-} from "../cohort/cohortFilterSlice";
+import { buildCohortGqlOperator, FilterSet } from "../cohort/filters";
+import { selectCurrentCohortFilters } from "../cohort/availableCohortsSlice";
 import { buildGraphGLBucketQuery, processBuckets } from "./facetApiGQL";
 import { FacetBuckets, GQLIndexType, GQLDocType } from "./types";
 import { FacetsState } from "./facetSlice";
@@ -33,7 +30,7 @@ export const fetchFacetByNameGQL = createAsyncThunk<
       field,
       docType = "cases",
       index = "explore" as GQLIndexType,
-      filterSelector = selectCurrentCohortFilterSet,
+      filterSelector = selectCurrentCohortFilters,
     },
     thunkAPI,
   ) => {

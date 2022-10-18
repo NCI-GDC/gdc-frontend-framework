@@ -1,11 +1,8 @@
 // Depreciated
 
 import { useState } from "react";
-import fileSize from "filesize";
-import { Table, Button, Select, Pagination, Menu, Text } from "@mantine/core";
+import { Button, Menu } from "@mantine/core";
 import {
-  MdLock as LockedIcon,
-  MdLockOpen as OpenIcon,
   MdDownload as DownloadIcon,
   MdShoppingCart as CartIcon,
 } from "react-icons/md";
@@ -21,16 +18,14 @@ import { addToCart, removeFromCart } from "@/features/cart/updateCart";
 import Link from "next/link";
 import { mapGdcFileToCartFile } from "./utils";
 import tw from "tailwind-styled-components";
+import FilesTables from "../repositoryApp/FilesTable";
+
 import {
   useClearFilters,
   useEnumFacet,
   useTotalCounts,
   useUpdateFacetFilter,
 } from "@/features/facets/hooks";
-
-export interface ContextualFilesViewProps {
-  readonly handleFileSelected?: (file: GdcFile) => void;
-}
 
 export const FilesTableHeader = tw.th`
 bg-primary-lighter
@@ -79,21 +74,11 @@ const FileFacetNames = [
 const buttonStyle =
   "mx-1 text-primary-contrast bg-primary hover:bg-primary-darker transition-colors ";
 
-export const ContextualFilesView: React.FC<ContextualFilesViewProps> = ({
-  handleFileSelected,
-}: ContextualFilesViewProps) => {
+export const ContextualFilesView: React.FC = () => {
   const { data } = useFilteredFiles();
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
-  const [selectedFiles, setSelectedFiles] = useState<GdcFile[]>([]);
-
-  const handleCheckedFiles = (e, file: GdcFile) => {
-    if (e.target.checked) {
-      setSelectedFiles([...selectedFiles, file]);
-    } else {
-      setSelectedFiles(selectedFiles.filter((f) => f.id !== file.id));
-    }
-  };
+  const [selectedFiles] = useState<GdcFile[]>([]);
 
   // TODO: remove, mock data for cart
   const allFiles = Array(10001)
@@ -173,110 +158,13 @@ export const ContextualFilesView: React.FC<ContextualFilesViewProps> = ({
             );
           })}
         </div>
-        <FilesView
-          files={data}
-          handleFileSelected={handleFileSelected}
-          handleCheckedFiles={handleCheckedFiles}
-        />
+        <FilesView />
       </div>
     </div>
   );
 };
 
-export interface FilesViewProps {
-  readonly files?: ReadonlyArray<GdcFile>;
-  readonly handleFileSelected?: (file: GdcFile) => void;
-  readonly handleCheckedFiles?: (e, file: GdcFile) => void;
-}
-
-export const FilesView: React.FC<FilesViewProps> = ({
-  files = [],
-  handleCheckedFiles = () => void 0,
-}: FilesViewProps) => {
-  const [pageSize, setPageSize] = useState(10);
-  const [activePage, setPage] = useState(1);
-  const [pages] = useState(10);
-  const handlePageSizeChange = (x: string) => {
-    setPageSize(parseInt(x));
-  };
-  return (
-    <div className="flex flex-col w-full gap-y-4">
-      <Table verticalSpacing="xs" striped highlightOnHover>
-        <thead>
-          <tr className="bg-base-light text-base-contrast-light text-heading border border-base-light">
-            <FilesTableHeader>
-              <input type="checkbox" />
-            </FilesTableHeader>
-            <FilesTableHeader>Access</FilesTableHeader>
-            <FilesTableHeader>File</FilesTableHeader>
-            <FilesTableHeader>Experimental Strategy</FilesTableHeader>
-            <FilesTableHeader>Data Category</FilesTableHeader>
-            <FilesTableHeader>Data Format</FilesTableHeader>
-            <FilesTableHeader>File Size</FilesTableHeader>
-          </tr>
-        </thead>
-        <tbody>
-          {files.map((file) => (
-            <tr key={file.id}>
-              <td className="px-2">
-                <input
-                  type="checkbox"
-                  onChange={(e) => handleCheckedFiles(e, file)}
-                />
-              </td>
-              <td className="flex flex-row items-center flex-nowrap">
-                {file.access === "open" ? (
-                  <OpenIcon className="pr-1" />
-                ) : (
-                  <LockedIcon className="pr-1" />
-                )}
-                {file.access}
-              </td>
-              <td className="px-2">
-                <Link
-                  href={{
-                    pathname: "/files/[slug]",
-                    query: { slug: file.id },
-                  }}
-                  passHref
-                >
-                  <Text variant="link" component="a">
-                    {file.fileName}
-                  </Text>
-                </Link>
-              </td>
-              <td className="px-2">{file.experimentalStrategy}</td>
-              <td className="px-2">{file.dataCategory}</td>
-              <td className="px-2">{file.dataFormat}</td>
-              <td className="px-2">{fileSize(file.fileSize)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-      <div className="flex flex-row items-center justify-start border-t border-base-light">
-        <p className="px-2">Page Size:</p>
-        <Select
-          size="sm"
-          radius="md"
-          onChange={handlePageSizeChange}
-          value={pageSize.toString()}
-          data={[
-            { value: "10", label: "10" },
-            { value: "20", label: "20" },
-            { value: "40", label: "40" },
-            { value: "100", label: "100" },
-          ]}
-        />
-        <Pagination
-          size="sm"
-          radius="md"
-          color="accent"
-          className="ml-auto"
-          page={activePage}
-          onChange={setPage}
-          total={pages}
-        />
-      </div>
-    </div>
-  );
+// TODO eliminate this??
+export const FilesView: React.FC = () => {
+  return <FilesTables />;
 };
