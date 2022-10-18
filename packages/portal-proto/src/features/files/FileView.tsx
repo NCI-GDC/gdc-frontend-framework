@@ -227,6 +227,8 @@ export const FileView: React.FC<FileViewProps> = ({
       [...fileHistory]?.sort(
         (a, b) => Number.parseFloat(a.version) - Number.parseFloat(b.version),
       ),
+      null,
+      2,
     );
     const fileDate = new Date(file.createdDatetime).toISOString().slice(0, 10);
 
