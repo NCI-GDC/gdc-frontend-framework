@@ -1,10 +1,4 @@
-import {
-  EnumOperandValue,
-  GQLDocType,
-  GQLIndexType,
-  NumericFromTo,
-  Operation,
-} from "@gff/core";
+import { GQLDocType, GQLIndexType, NumericFromTo, Operation } from "@gff/core";
 
 export interface FacetResponse {
   readonly data?: Record<string, number>;
@@ -19,10 +13,6 @@ export interface EnumFacetResponse extends FacetResponse {
   readonly enumFilters?: ReadonlyArray<string>;
 }
 
-export type GetFacetDataFunction = <T extends FacetResponse = FacetResponse>(
-  field: string,
-) => T;
-
 export type GetFacetDataFromDocAndIndexFunction = (
   field: string,
   docType: GQLDocType,
@@ -35,10 +25,6 @@ export type UpdateFacetFilterHook = () => UpdateFacetFilterFunction;
 export type ClearFacetFunction = (field: string) => void;
 export type ClearFacetHook = () => ClearFacetFunction;
 export type GetTotalCountsFunction = (countName: string) => number;
-export type updateArrayFilterValues = (
-  field: string,
-  enumerationFilters: EnumOperandValue,
-) => void;
 
 export type GetRangeFacetDataFunction = (
   field: string,

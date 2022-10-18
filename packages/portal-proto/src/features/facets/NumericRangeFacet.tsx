@@ -1,10 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  MdClose as CloseIcon,
-  MdSort as SortIcon,
-  MdSortByAlpha as AlphaSortIcon,
-  MdWarning as WarningIcon,
-} from "react-icons/md";
+import { MdClose as CloseIcon, MdWarning as WarningIcon } from "react-icons/md";
 import { FaUndo as UndoIcon } from "react-icons/fa";
 import tw from "tailwind-styled-components";
 import {
@@ -46,7 +41,7 @@ import {
   FacetDocTypeToLabelsMap,
   useRangeFacet,
 } from "@/features/facets/hooks";
-import { controlsIconStyle, FacetIconButton } from "./components";
+import { FacetIconButton } from "./components";
 import FacetExpander from "@/features/facets/FacetExpander";
 import FacetSortPanel from "@/features/facets/FacetSortPanel";
 
@@ -135,6 +130,7 @@ const ClassifyRangeType = (
  * @param setSelected - function to handle selected range
  * @param rangeLabelsAndValues - list of range keys, labels and values
  * @param itemsToShow - number of ranges to render
+ * @param useUpdateFacetFilters - hook to update facet filters with new values
  */
 const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
   field,
@@ -174,28 +170,8 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
             isSortedByValue={isSortedByValue}
             valueLabel={valueLabel}
             setIsSortedByValue={setIsSortedByValue}
+            isNumberSort={true}
           />
-          <div className="flex flex-row items-center justify-between flex-wrap border-b-2 py-1">
-            <button
-              className={controlsIconStyle}
-              aria-label="Sort alphabetically"
-            >
-              <AlphaSortIcon
-                onClick={() => setIsSortedByValue(false)}
-                scale="1.5em"
-              />
-            </button>
-            <div className={"flex flex-row items-center "}>
-              <button
-                onClick={() => setIsSortedByValue(true)}
-                className={controlsIconStyle}
-                aria-label="Sort numerically"
-              >
-                <SortIcon scale="1.5em" />
-              </button>
-              <p className="px-1">{valueLabel}</p>
-            </div>
-          </div>
         </>
       ) : null}
       <div role="group" className="mt-1">
@@ -206,9 +182,7 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
               ? (a, b) =>
                   rangeLabelsAndValues[b].value - rangeLabelsAndValues[a].value
               : (a, b) =>
-                  rangeLabelsAndValues[a].label.localeCompare(
-                    rangeLabelsAndValues[b].label,
-                  ),
+                  rangeLabelsAndValues[a].from - rangeLabelsAndValues[b].from,
           )
           .map((rangeKey, i) => {
             return (
@@ -257,8 +231,9 @@ interface FromToProps {
  * @param values - the current value of the range
  * @param changedCallback - function called when FromTo values change
  * @param units - string representation of unit: "days" | "years" | "year", "percent" | "numeric"
- * @param useClearFIlter - hook to clear (e.x. reset)  field (facet) filters
+ * @param useClearFilter - hook to clear (e.x. reset)  field (facet) filters
  * @param clearValues: prop set to true to clear FromTo input fields
+ * @param useUpdateFacetFilters - hook to update facet filters with new values
  * @constructor
  */
 const FromTo: React.FC<FromToProps> = ({
@@ -381,7 +356,7 @@ const FromTo: React.FC<FromToProps> = ({
           />
           <NumberInput
             className="basis-2/5"
-            placeholder={`eg. ${lowerUnitRange}${unitsLabel} `}
+            placeholder={`eg. ${upperUnitRange}${unitsLabel} `}
             min={lowerUnitRange}
             max={upperUnitRange}
             onChange={(value) => {
