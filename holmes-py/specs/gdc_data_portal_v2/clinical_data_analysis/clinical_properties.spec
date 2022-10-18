@@ -1,12 +1,12 @@
 Clinical Properties
 ===================
-Date Created    : 8/3/2022
+Date Created    : 10/14/2022
 Version			: 1.0
 Owner		    : GDC QA
-Description		: Test properties section
+Description		: Test clinical data properties section
 tags: gdc-data-portal-v2, clinical-data-analysis
 
-Test properties section
+Test clinical data properties section
 -----------------------------------
 
 * Clinical Data Analysis - On GDC Data Portal V2 app

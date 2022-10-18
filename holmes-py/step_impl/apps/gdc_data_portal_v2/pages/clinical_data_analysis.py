@@ -1,4 +1,3 @@
-from ast import Try
 from playwright.sync_api import Page
 
 from step_impl.apps.gdc_data_portal_v2.pages.home_page import HomePage
@@ -8,16 +7,10 @@ class ClinicalDataAnalysisLocators:
     CLINICAL_DATA_ANALYSIS_PLAY_BUTTON = "button[aria-label='Navigate to Clinical Data Analysis tool']"
     PLEASE_WAIT_SPINNER = "svg[data-testid='please_wait_spinner']"
 
-    DEMOGRAPHIC_TABLE = "div[id=cdave-control-group-Demographic]"
-    DIAGNOSIS_TABLE = "div[id=cdave-control-group-Diagnosis]"
-    TREATMENT_TABLE = "div[id=cdave-control-group-Treatment]"
-    EXPOSURES_TABLE = "div[id=cdave-control-group-Exposures]"
+    GROUP_TABLE = lambda group: f"div[id=cdave-control-group-{group}]"
+    GROUP_TABLE_PLUS_BUTTON = lambda group: f"div[id='cdave-control-group-{group}'] >> button[data-testid='plus-icon']"
     PROPERTY_ROW = lambda property: f"label:text('{property}')"
-
-    DEMOGRAPHIC_PLUS_BUTTON = "div[id='cdave-control-group-Demographic'] >> button[data-testid='plus-icon']"
-    DIAGNOSIS_PLUS_BUTTON = "div[id='cdave-control-group-Diagnosis'] >> button[data-testid='plus-icon']"
-    TREATMENT_PLUS_BUTTON = "div[id='cdave-control-group-Treatment'] >> button[data-testid='plus-icon']"
-    EXPOSURES_PLUS_BUTTON = "div[id='cdave-control-group-Exposures'] >> button[data-testid='plus-icon']"
+    
 
 class ClinicalDataAnalysisPage:
     def __init__(self, driver: Page, url):
@@ -32,13 +25,13 @@ class ClinicalDataAnalysisPage:
         self.driver.locator(HomePageLocators.NAV_BAR_ANALYSIS_ICON).click()
         self.driver.locator(ClinicalDataAnalysisLocators.CLINICAL_DATA_ANALYSIS_PLAY_BUTTON).click()
         self.driver.wait_for_selector(ClinicalDataAnalysisLocators.PLEASE_WAIT_SPINNER, state="hidden")
-        self.driver.wait_for_selector(ClinicalDataAnalysisLocators.DEMOGRAPHIC_TABLE, state="visible")
+        self.driver.wait_for_selector(ClinicalDataAnalysisLocators.GROUP_TABLE('Demographic'), state="visible")
 
     def expand_clinical_property_sections(self):
-        self.driver.locator(ClinicalDataAnalysisLocators.DEMOGRAPHIC_PLUS_BUTTON).click()
-        self.driver.locator(ClinicalDataAnalysisLocators.DIAGNOSIS_PLUS_BUTTON).click()
-        self.driver.locator(ClinicalDataAnalysisLocators.TREATMENT_PLUS_BUTTON).click()
-        self.driver.locator(ClinicalDataAnalysisLocators.EXPOSURES_PLUS_BUTTON).click()
+        self.driver.locator(ClinicalDataAnalysisLocators.GROUP_TABLE_PLUS_BUTTON('Demographic')).click()
+        self.driver.locator(ClinicalDataAnalysisLocators.GROUP_TABLE_PLUS_BUTTON('Diagnosis')).click()
+        self.driver.locator(ClinicalDataAnalysisLocators.GROUP_TABLE_PLUS_BUTTON('Treatment')).click()
+        self.driver.locator(ClinicalDataAnalysisLocators.GROUP_TABLE_PLUS_BUTTON('Exposures')).click()
 
     def validate_property_table(self,table):
         # Grab the group value
@@ -46,16 +39,8 @@ class ClinicalDataAnalysisPage:
             group = table[0][1]
             break
 
-        # Group value determines what table we look into
-        # There is a 'match' function, but only on python 3.10>
-        if group == "Demographic":
-            table_locator = ClinicalDataAnalysisLocators.DEMOGRAPHIC_TABLE
-        elif group == "Diagnosis":
-            table_locator = ClinicalDataAnalysisLocators.DIAGNOSIS_TABLE
-        elif group == "Treatment":
-            table_locator = ClinicalDataAnalysisLocators.TREATMENT_TABLE
-        elif group == "Exposures":
-            table_locator = ClinicalDataAnalysisLocators.EXPOSURES_TABLE
+        # From the group value, select the correct table
+        table_locator = ClinicalDataAnalysisLocators.GROUP_TABLE(group)
 
         # search for the property value in the specified table
         for row, value in enumerate(table):
@@ -65,6 +50,6 @@ class ClinicalDataAnalysisPage:
                 self.driver.wait_for_selector(property_locator, state="visible")
             except:
                 # If there is a property value missing, the table is invalid and we return error information
-                return "The table '" + group + "' is missing the property '" + property + "'"
+                return f"The table '{group}' is missing the property '{property}'"
         # If we find all values in the table, it passes the test
         return True

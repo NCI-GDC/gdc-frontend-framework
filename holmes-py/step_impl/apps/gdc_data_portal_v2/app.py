@@ -14,5 +14,5 @@ class GDCDataPortalV2App:
 
     def init_pages(self):
         self.home_page = HomePage(self.driver, self.url)
-        self.home_page = NavAnalysisCenterPage(self.driver, self.url)
-        self.home_page = ClinicalDataAnalysisPage(self.driver, self.url)
+        self.nav_analysis_center = NavAnalysisCenterPage(self.driver, self.url)
+        self.clinical_data_analysis = ClinicalDataAnalysisPage(self.driver, self.url)
