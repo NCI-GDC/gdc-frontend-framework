@@ -75,7 +75,7 @@ interface VerticalTableProps {
      */
     total: number;
     /**
-     * optional lable of data shown
+     * optional label of data shown
      */
     label?: string;
     /**
@@ -88,7 +88,7 @@ interface VerticalTableProps {
     handlePageChange: (x: number) => void;
   };
   /**
-   * optional shows diferent table content depending on state
+   * optional shows different table content depending on state
    *
    * - loading when `uninitialized` and `pending`
    *

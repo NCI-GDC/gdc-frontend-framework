@@ -1,5 +1,6 @@
 import React from "react";
 import ProjectFacetPanel from "./ProjectFacetPanel";
+import ProjectsTable from "./ProjectsTable";
 import { createGdcAppWithOwnStore } from "@gff/core";
 import { AppContext, AppStore, id } from "@/features/projectsCenter/appApi";
 
@@ -8,6 +9,7 @@ export const ProjectsCenter = () => {
     <div className="flex flex-col mt-4 ">
       <div className="flex flex-row mx-3">
         <ProjectFacetPanel />
+        <ProjectsTable />
       </div>
     </div>
   );

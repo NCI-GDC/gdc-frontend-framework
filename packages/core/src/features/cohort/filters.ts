@@ -114,7 +114,6 @@ export const buildCohortGqlOperator = (
   fs: FilterSet | undefined,
 ): GqlOperation | undefined => {
   if (!fs) return undefined;
-  console.log("fs", fs);
   switch (fs.mode) {
     case "and":
       return Object.keys(fs.root).length == 0
@@ -124,6 +123,24 @@ export const buildCohortGqlOperator = (
             op: fs.mode,
             content: Object.keys(fs.root).map((k): GqlOperation => {
               return convertFilterToGqlFilter(fs.root[k]);
+            }),
+          };
+  }
+  return undefined;
+};
+
+export const filterSetToOperation = (
+  fs: FilterSet | undefined,
+): Operation | undefined => {
+  if (!fs) return undefined;
+  switch (fs.mode) {
+    case "and":
+      return Object.keys(fs.root).length == 0
+        ? undefined
+        : {
+            operator: fs.mode,
+            operands: Object.keys(fs.root).map((k): Operation => {
+              return fs.root[k];
             }),
           };
   }
