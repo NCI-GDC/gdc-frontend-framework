@@ -17,7 +17,7 @@ import { Image } from "@/components/Image";
 import ReactModal from "react-modal";
 import { Select } from "../../../components/Select";
 import { Case, ContextualCasesView } from "../../cases/CasesView";
-import { ContextualFilesView } from "../../files/FilesView";
+//import { ContextualFilesView } from "../../files/FilesView";
 import { CohortGroup } from "../../cohortBuilder/CohortGroup";
 import { SummaryCharts } from "../../cohortBuilder/SummaryCharts";
 import { CohortTabbedFacets } from "../../cohortBuilder/FacetGroup";
@@ -222,7 +222,9 @@ const CollapsibleFiles: React.FC<CollapsibleFilesProps> = (
         flex: show,
       })}
     >
-      <ContextualFilesView handleFileSelected={handleFileSelected} />
+      TODO Fix ContextualFilesView if needed
+      {handleFileSelected}
+      {/*<ContextualFilesView handleFileSelected={handleFileSelected} /> */}
     </div>
   );
 };
