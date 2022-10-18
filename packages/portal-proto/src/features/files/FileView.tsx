@@ -223,20 +223,14 @@ export const FileView: React.FC<FileViewProps> = ({
   };
 
   const downloadVersionJSON = () => {
-    const jsonData = JSON.stringify(
-      [...fileHistory]?.sort(
-        (a, b) => Number.parseFloat(a.version) - Number.parseFloat(b.version),
-      ),
-      null,
-      2,
-    );
-    const fileDate = new Date(file.createdDatetime).toISOString().slice(0, 10);
+    const jsonData = JSON.stringify([...fileHistory], null, 2);
+    const currentDate = new Date().toJSON().slice(0, 10);
 
     saveAs(
       new Blob([jsonData], {
         type: "application/json",
       }),
-      `${file.id}_history.${fileDate}.json`,
+      `${file.fileId}_history.${currentDate}.json`,
     );
   };
 
