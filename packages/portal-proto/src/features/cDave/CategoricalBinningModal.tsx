@@ -17,7 +17,7 @@ import { createKeyboardAccessibleFunction } from "src/utils";
 import { CategoricalBins } from "./types";
 import FunctionButton from "@/components/FunctionButton";
 
-const DEFAULT_GROUP_NAME_REGEX = /selected value \d+/;
+const DEFAULT_GROUP_NAME_PREFIX = "selected value ";
 
 const filterOutSelected = (
   values: CategoricalBins,
@@ -118,16 +118,23 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
         },
       });
     } else {
-      const defaultNames = Object.entries(values).filter(
-        ([k, v]) => v instanceof Object && k.match(DEFAULT_GROUP_NAME_REGEX),
-      );
+      const valueCount = Object.keys(values).length;
+      let index = 1;
+
+      for (; index <= valueCount; index++) {
+        if (!values[DEFAULT_GROUP_NAME_PREFIX + index]) {
+          break;
+        }
+      }
+
+      const newGroupName = DEFAULT_GROUP_NAME_PREFIX + index;
 
       setValues({
         ...filterOutSelected(values, selectedValues),
-        [`selected value ${defaultNames.length + 1}`]: selectedValues,
+        [newGroupName]: selectedValues,
       });
 
-      setEditField(`selected value ${defaultNames.length + 1}`);
+      setEditField(newGroupName);
     }
     setSelectedValues({});
   };
