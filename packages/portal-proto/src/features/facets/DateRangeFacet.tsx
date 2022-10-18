@@ -26,7 +26,7 @@ type DateRangeFacetProps = Omit<
 >;
 
 /**
- * Converts a date into a string of YYY/MM/DD padding 0 for months and days < 10.
+ * Converts a date into a string of YYYY/MM/DD padding 0 for months and days < 10.
  * Note the use of UTC to ensure the GMT timezone.
  * @param d - date to convert
  */
@@ -109,7 +109,10 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
           </div>
         </Tooltip>
         <div className="flex flex-row">
-          <FacetIconButton onClick={clearFilters} aria-label="clear selection">
+          <FacetIconButton
+            onClick={() => clearFilters(field)}
+            aria-label="clear selection"
+          >
             <UndoIcon size="1.15em" className={controlsIconStyle} />
           </FacetIconButton>
           {dismissCallback ? (
@@ -133,7 +136,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
           placeholder="Since"
           className="px-1"
           maxDate={dateRangeValue[1]}
-          inputFormat="YYYY/MM/DD"
+          inputFormat="YYYY-MM-DD"
           onChange={(d: Date | null) =>
             setDateRangeValue([d, dateRangeValue[1]])
           }
@@ -148,7 +151,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
           size="xs"
           placeholder="Through"
           className="px-1"
-          inputFormat="YYYY/MM/DD"
+          inputFormat="YYYY-MM-DD"
           value={dateRangeValue[1]}
           minDate={dateRangeValue[0]}
           onChange={(d: Date | null) =>

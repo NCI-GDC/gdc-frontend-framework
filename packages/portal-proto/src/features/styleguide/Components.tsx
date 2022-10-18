@@ -35,7 +35,7 @@ const Components: ReactNode = () => {
           useTotalCounts: useTotalCounts,
         }}
       />
-      {/*--
+
       <Divider label="Enumeration Facet" classNames={divider_style} />
       <EnumFacet
         hooks={{
@@ -151,7 +151,6 @@ const Components: ReactNode = () => {
         selectedSurvivalPlot={{ id: undefined }}
         handleSurvivalPlotToggled={undefined}
       />
-      -- */}
     </div>
   );
 };
