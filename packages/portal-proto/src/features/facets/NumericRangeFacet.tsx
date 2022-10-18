@@ -1,12 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  useImperativeHandle,
-  useRef,
-  ReactNode,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   MdClose as CloseIcon,
   MdSort as SortIcon,
@@ -265,6 +257,8 @@ interface FromToProps {
  * @param values - the current value of the range
  * @param changedCallback - function called when FromTo values change
  * @param units - string representation of unit: "days" | "years" | "year", "percent" | "numeric"
+ * @param useClearFIlter - hook to clear (e.x. reset)  field (facet) filters
+ * @param clearValues: prop set to true to clear FromTo input fields
  * @constructor
  */
 const FromTo: React.FC<FromToProps> = ({
@@ -601,8 +595,7 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
   docType,
   hooks,
   indexType,
-  minimum = undefined,
-  maximum = undefined,
+  clearValues,
 }: NumericFacetData) => {
   const [units, setUnits] = useState("years");
   // set up a fixed range -90 to 90 years over 19 buckets
@@ -630,6 +623,7 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
         field={field}
         docType={docType}
         indexType={indexType}
+        clearValues={clearValues}
       />
     </div>
   );
@@ -640,6 +634,7 @@ const Year: React.FC<NumericFacetData> = ({
   docType,
   indexType,
   hooks,
+  clearValues,
   minimum = undefined,
   maximum = undefined,
 }: NumericFacetData) => {
@@ -658,6 +653,7 @@ const Year: React.FC<NumericFacetData> = ({
         maximum={adjMaximum}
         numBuckets={numBuckets}
         field={field}
+        clearValues={clearValues}
       />
     </div>
   );
@@ -668,6 +664,7 @@ const Years: React.FC<NumericFacetData> = ({
   docType,
   indexType,
   hooks,
+  clearValues,
   minimum = undefined,
   maximum = undefined,
 }: NumericFacetData) => {
@@ -686,6 +683,7 @@ const Years: React.FC<NumericFacetData> = ({
         maximum={adjMaximum}
         numBuckets={numBuckets}
         field={field}
+        clearValues={clearValues}
       />
     </div>
   );
@@ -719,6 +717,7 @@ const PercentRange: React.FC<NumericFacetData> = ({
   docType,
   indexType,
   hooks,
+  clearValues,
   minimum = undefined,
   maximum = undefined,
 }: NumericFacetData) => {
@@ -737,6 +736,7 @@ const PercentRange: React.FC<NumericFacetData> = ({
         maximum={adjMaximum}
         numBuckets={numBuckets}
         field={field}
+        clearValues={clearValues}
       />
     </div>
   );
@@ -760,7 +760,9 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
   const [clearValues, setClearValues] = useState(false);
 
   useEffect(() => {
-    if (clearValues) setClearValues(false);
+    if (clearValues) {
+      setClearValues(false);
+    }
   }, [clearValues]);
   return (
     <div id={field}>
