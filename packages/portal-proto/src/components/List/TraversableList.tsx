@@ -1,6 +1,8 @@
-import { List } from "@mantine/core";
+/* eslint jsx-a11y/no-noninteractive-tabindex: 0 */
+/* eslint jsx-a11y/no-noninteractive-element-interactions: 0*/
+
 import { isEmpty } from "lodash";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 interface Props<T> {
   /**
@@ -49,6 +51,9 @@ export const TraversableList = <T extends unknown>({
 }: Props<T>): JSX.Element => {
   const [focusedItem, setFocusedItem] = useState<undefined | number>(undefined);
 
+  const itemRefs = Array.from({ length: data.length }, () =>
+    React.createRef<HTMLLIElement>(),
+  );
   const getPreviousItem = (items: Array<T>, reference: number) =>
     reference !== undefined ? Math.max(0, reference - 1) : items.length - 1;
 
@@ -79,7 +84,7 @@ export const TraversableList = <T extends unknown>({
     onCancel && onCancel();
   };
 
-  const keyBoardPress = (event: React.KeyboardEvent<HTMLUListElement>) => {
+  const keyBoardPress = (event: React.KeyboardEvent<HTMLLIElement>) => {
     if (event.key === "ArrowUp") {
       event.preventDefault();
       focusPreviousItem();
@@ -101,27 +106,25 @@ export const TraversableList = <T extends unknown>({
     }
   };
 
+  useEffect(() => {
+    if (focusedItem !== undefined) {
+      itemRefs[focusedItem].current.focus();
+    }
+  }, [focusedItem, itemRefs]);
+
   return (
     <>
       {data.length > 0 ? (
-        <List
-          onKeyDown={keyBoardPress}
+        <ul
           className="absolute md:left-0 sm:left-0 lg:left-auto right-0 top-10 bg-base-lightest w-[512px] border-r-10 border-1 border-base"
           tabIndex={0}
-          onFocus={() => {
-            setFocusedItem(0);
-            onFocusList && onFocusList(0);
-          }}
           data-testid="list"
         >
           {data?.map((item, idx) => {
             return (
-              <List.Item
+              <li
                 key={keyExtractor(item)}
-                className={`${
-                  idx === focusedItem &&
-                  "bg-primary-darkest text-primary-contrast-darkest"
-                } cursor-pointer`}
+                className="focus:bg-primary-darkest focus:text-primary-contrast-darkest cursor-pointer"
                 onMouseEnter={() => {
                   setFocusedItem(idx);
                   onFocusList && onFocusList(idx);
@@ -129,17 +132,25 @@ export const TraversableList = <T extends unknown>({
                 onMouseLeave={() => {
                   setFocusedItem(undefined);
                   onFocusList && onFocusList(undefined);
+                  itemRefs[idx]?.current?.blur();
                 }}
                 onClick={() => {
                   selectItem(idx);
                 }}
                 data-testid="list-item"
+                ref={itemRefs[idx]}
+                tabIndex={0}
+                onKeyDown={keyBoardPress}
+                onFocus={() => {
+                  setFocusedItem(idx);
+                  onFocusList && onFocusList(idx);
+                }}
               >
                 {renderItem(item, idx)}
-              </List.Item>
+              </li>
             );
           })}
-        </List>
+        </ul>
       ) : (
         <div className="w-80 absolute md:left-0 sm:left-0 lg:left-auto right-0 bg-base-lightest top-10 p-2 border-r-10 border-1 border-base">
           No results found

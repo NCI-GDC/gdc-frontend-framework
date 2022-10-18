@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { render, waitFor } from "@testing-library/react";
 import { TraversableList } from "../TraversableList";
 import userEvent from "@testing-library/user-event";
 
@@ -33,7 +33,6 @@ describe("<TraversableList />", () => {
   });
 
   it("should traversable using keyboard keys", async () => {
-    const expectedStyle = "bg-primary-darkest text-primary-contrast-darkest";
     const data = [
       { elem: "hi", id: "1" },
       { elem: "hola", id: "2" },
@@ -51,24 +50,25 @@ describe("<TraversableList />", () => {
     const listcomp = getByTestId("list");
     const listElems = getAllByTestId("list-item");
     listcomp.focus();
+    await userEvent.keyboard("{Tab}");
 
-    expect(listElems[0].className).toContain(expectedStyle);
-
-    await userEvent.keyboard("{ArrowDown}");
-    expect(listElems[1].className).toContain(expectedStyle);
+    await waitFor(() => expect(listElems[0]).toHaveFocus());
 
     await userEvent.keyboard("{ArrowDown}");
-    expect(listElems[2].className).toContain(expectedStyle);
+    await waitFor(() => expect(listElems[1]).toHaveFocus());
+
+    await userEvent.keyboard("{ArrowDown}");
+    await waitFor(() => expect(listElems[2]).toHaveFocus());
 
     await userEvent.keyboard("{ArrowUp}");
-    expect(listElems[1].className).toContain(expectedStyle);
+    await waitFor(() => expect(listElems[1]).toHaveFocus());
 
     await userEvent.keyboard("{ArrowUp}");
-    expect(listElems[0].className).toContain(expectedStyle);
+    await waitFor(() => expect(listElems[0]).toHaveFocus());
 
     // should still be selected once reached the top of the list
     await userEvent.keyboard("{ArrowUp}");
-    expect(listElems[0].className).toContain(expectedStyle);
+    await waitFor(() => expect(listElems[0]).toHaveFocus());
 
     await userEvent.keyboard("{Enter}");
     expect(mockOnSelectItem).toBeCalledWith(0);
