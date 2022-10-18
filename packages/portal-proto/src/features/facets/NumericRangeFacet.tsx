@@ -1,4 +1,12 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  useImperativeHandle,
+  useRef,
+  ReactNode,
+} from "react";
 import {
   MdClose as CloseIcon,
   MdSort as SortIcon,
@@ -54,11 +62,18 @@ interface NumericFacetProps extends FacetCardProps<RangeFacetHooks> {
   readonly rangeDatatype: string;
   readonly minimum?: number;
   readonly maximum?: number;
+  readonly clearValues?: boolean;
 }
 
 type NumericFacetData = Pick<
   NumericFacetProps,
-  "field" | "minimum" | "maximum" | "docType" | "indexType" | "hooks"
+  | "field"
+  | "minimum"
+  | "maximum"
+  | "docType"
+  | "indexType"
+  | "hooks"
+  | "clearValues"
 >;
 
 const RadioStyle =
@@ -239,6 +254,7 @@ interface FromToProps {
   readonly useUpdateFacetFilters: UpdateFacetFilterHook;
   readonly values?: FromToRange<number>;
   readonly changedCallback?: () => void;
+  readonly clearValues?: boolean;
 }
 
 /**
@@ -260,6 +276,7 @@ const FromTo: React.FC<FromToProps> = ({
   values,
   changedCallback = () => null,
   units = "years",
+  clearValues = undefined,
 }: FromToProps) => {
   const unitsLabel = "%" != units ? ` ${units}` : "%";
   const [fromOp, setFromOp] = useState(values?.fromOp ?? ">=");
@@ -277,6 +294,13 @@ const FromTo: React.FC<FromToProps> = ({
     setToOp(values?.toOp ?? "<");
     setToValue(values?.to);
   }, [values]);
+
+  useEffect(() => {
+    if (clearValues) {
+      setFromValue(undefined);
+      setToValue(undefined);
+    }
+  }, [clearValues]);
 
   useEffect(() => {
     if (["diagnoses.age_at_diagnosis"].includes(field)) {
@@ -437,6 +461,7 @@ interface RangeInputWithPrefixedRangesProps {
   readonly maximum: number;
   readonly units: string;
   readonly showZero?: boolean;
+  readonly clearValues?: boolean;
 }
 
 const RangeInputWithPrefixedRanges: React.FC<
@@ -451,6 +476,7 @@ const RangeInputWithPrefixedRanges: React.FC<
   minimum,
   maximum,
   showZero = false,
+  clearValues = undefined,
 }: RangeInputWithPrefixedRangesProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false); // handles the expanded group
 
@@ -465,7 +491,6 @@ const RangeInputWithPrefixedRanges: React.FC<
   const [filterValues, filterKey] = useMemo(() => {
     const values = extractRangeValues<number>(filter);
     const key = ClassifyRangeType(values);
-    console.log(values);
     return [values, key];
   }, [filter]);
 
@@ -536,6 +561,7 @@ const RangeInputWithPrefixedRanges: React.FC<
             units={units}
             changedCallback={resetToCustom}
             {...hooks}
+            clearValues={clearValues}
           />
         </div>
         <div className="flex flex-col border-t-2">
@@ -668,6 +694,7 @@ const Years: React.FC<NumericFacetData> = ({
 const NumericRangePanel: React.FC<NumericFacetData> = ({
   field,
   hooks,
+  clearValues,
   minimum = undefined,
   maximum = undefined,
 }: NumericFacetData) => {
@@ -681,6 +708,7 @@ const NumericRangePanel: React.FC<NumericFacetData> = ({
         maximum={adjMaximum}
         units=""
         {...hooks}
+        clearValues={clearValues}
       />
     </div>
   );
@@ -729,6 +757,11 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
 }: NumericFacetProps) => {
   const clearFilters = hooks.useClearFilter();
 
+  const [clearValues, setClearValues] = useState(false);
+
+  useEffect(() => {
+    if (clearValues) setClearValues(false);
+  }, [clearValues]);
   return (
     <div id={field}>
       <div
@@ -755,7 +788,12 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
             </div>
           </Tooltip>
           <div className="flex flex-row">
-            <FacetIconButton onClick={() => clearFilters(field)}>
+            <FacetIconButton
+              onClick={() => {
+                clearFilters(field);
+                setClearValues(true);
+              }}
+            >
               <UndoIcon size="1.15em" />
             </FacetIconButton>
             {dismissCallback ? (
@@ -781,6 +819,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 hooks={{ ...hooks }}
                 minimum={minimum}
                 maximum={maximum}
+                clearValues={clearValues}
               />
             ),
             year: (
@@ -791,6 +830,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 hooks={{ ...hooks }}
                 minimum={minimum}
                 maximum={maximum}
+                clearValues={clearValues}
               />
             ),
             years: (
@@ -801,6 +841,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 hooks={{ ...hooks }}
                 minimum={minimum}
                 maximum={maximum}
+                clearValues={clearValues}
               />
             ),
             days: (
@@ -811,6 +852,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 hooks={{ ...hooks }}
                 minimum={minimum}
                 maximum={maximum}
+                clearValues={clearValues}
               />
             ),
             percent: (
@@ -821,6 +863,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 hooks={{ ...hooks }}
                 minimum={minimum}
                 maximum={maximum}
+                clearValues={clearValues}
               />
             ),
             range: (
@@ -831,6 +874,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 hooks={{ ...hooks }}
                 minimum={minimum}
                 maximum={maximum}
+                clearValues={clearValues}
               />
             ),
           }[rangeDatatype as string]
