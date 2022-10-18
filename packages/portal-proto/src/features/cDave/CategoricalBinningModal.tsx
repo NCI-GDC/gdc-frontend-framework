@@ -86,6 +86,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
   customBins,
   updateBins,
 }: CategoricalBinningModalProps) => {
+  const [customized, setCustomized] = useState<boolean>(false);
   const [values, setValues] = useState<CategoricalBins>(
     customBins !== null ? customBins : results,
   );
@@ -130,10 +131,12 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
       setEditField(`selected value ${defaultNames.length + 1}`);
     }
     setSelectedValues({});
+    setCustomized(true);
   };
 
   const updateGroupName = (oldName: string, newName: string) => {
     setValues(mapKeys(values, (_, key) => (key === oldName ? newName : key)));
+    setCustomized(true);
   };
 
   const hideValues = () => {
@@ -146,6 +149,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
     setValues(filterOutSelected(values, selectedValues));
 
     setSelectedValues({});
+    setCustomized(true);
   };
 
   const sortedValues = Object.entries(values).sort((a, b) =>
@@ -180,7 +184,9 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
                 setHiddenValues({});
                 setValues(results);
                 setSelectedValues({});
+                setCustomized(false);
               }}
+              disabled={!customized}
               aria-label="reset groups"
             >
               <ResetIcon size={20} />

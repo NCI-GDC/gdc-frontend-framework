@@ -28,25 +28,25 @@ relative
 bg-percentage-bar-base
 rounded-sm
 px-1
-w-16 
+w-16
 h-full`;
 
 const PercentBarLabel = tw.span`
 absolute
 z-10
-left-0 
-top-0 
-w-full 
-h-full 
-text-percentage-bar-label 
+left-0
+top-0
+w-full
+h-full
+text-percentage-bar-label
 text-center`;
 
 const PercentBarComplete = tw.div`
-absolute 
-left-0 
-top-0 
-w-full 
-h-full 
+absolute
+left-0
+top-0
+w-full
+h-full
 bg-percentage-bar-complete
 rounded-sm`;
 
