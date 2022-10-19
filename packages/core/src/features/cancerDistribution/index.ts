@@ -4,7 +4,8 @@ import { ssmPlotReducer, useSsmPlot } from "./ssmPlot";
 import {
   //cancerDistributionTableApiSliceReducerPath,
   cancerDistributionTableApiReducer,
-  useGetCancerDistributionTableQuery,
+  useGetGeneCancerDistributionTableQuery,
+  useGetSSMSCancerDistributionTableQuery,
 } from "./cancerDistributionTable";
 
 export const cancerDistributionReducer = combineReducers({
@@ -17,6 +18,7 @@ export const cancerDistributionReducer = combineReducers({
 export {
   useCnvPlot,
   useSsmPlot,
-  useGetCancerDistributionTableQuery,
+  useGetGeneCancerDistributionTableQuery,
+  useGetSSMSCancerDistributionTableQuery,
   cancerDistributionTableApiReducer,
 };

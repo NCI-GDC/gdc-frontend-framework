@@ -11,7 +11,7 @@ import CNVPlot from "../charts/CNVPlot";
 import SSMPlot from "../charts/SSMPlot";
 import { formatDataForHorizontalTable } from "../files/utils";
 import { LoadingOverlay } from "@mantine/core";
-import CancerDistributionTable from "./CancerDistributionTable";
+import { GeneCancerDistributionTable } from "./CancerDistributionTable";
 
 interface GeneViewProps {
   data: {
@@ -167,7 +167,7 @@ const GeneView = ({ data, gene_id }: GeneViewProps) => {
               </div>
               <SSMPlot page={"gene"} gene={gene_id} />
               <CNVPlot gene={gene_id} />
-              <CancerDistributionTable
+              <GeneCancerDistributionTable
                 gene={gene_id}
                 symbol={data.genes.symbol}
               />
