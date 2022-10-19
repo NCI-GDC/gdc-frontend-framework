@@ -6,31 +6,35 @@
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { coreCreateApi } from "../../coreCreateApi";
 import type { Middleware, Reducer } from "@reduxjs/toolkit";
-import { CohortModel, ContextModel } from "./cohortApiTypes";
+import { CohortModel } from "./cohortApiTypes";
 
 export const cohortApiSlice = coreCreateApi({
   reducerPath: "cohortApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:3500",
-    prepareHeaders: async (headers) => {
-      headers.set("X-Context-ID", "FAKE-UUID-FOR-TESTING-CONTEXT-HEADER-BAD");
-      return headers;
-    },
+    baseUrl: "https://api.gdc.cancer.gov/v0",
+    // prepareHeaders: async (headers) => {
+    //   headers.set("X-Context-ID", "FAKE-UUID-FOR-TESTING-CONTEXT-HEADER-BAD");
+    //   return headers;
+    // },
+    // prepareHeaders: async (headers) => {
+    //   headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    //   return headers;
+    // },
     credentials: "include",
   }),
-  tagTypes: ["Cohort", "Context"],
+  tagTypes: ["Cohort"],
   endpoints: (builder) => ({
-    // cohort endpoints
-    getCohorts: builder.query<CohortModel[], void>({
-      query: () => "/cohorts",
-      providesTags: (result = []) => [
-        //"Cohort",
-        { type: "Cohort", id: "LIST" },
-        ...result.map(({ id }) => ({ type: "Cohort" as const, id })),
-      ],
-    }),
+    // // cohort endpoints
+    // getCohorts: builder.query<CohortModel[], void>({
+    //   query: () => "/cohorts",
+    //   providesTags: (result = []) => [
+    //     //"Cohort",
+    //     { type: "Cohort", id: "LIST" },
+    //     ...result.map(({ id }) => ({ type: "Cohort" as const, id })),
+    //   ],
+    // }),
     getCohortsByContextId: builder.query<CohortModel[], string>({
-      query: (context_id) => `/cohorts?context_id=${context_id}`,
+      query: () => "/cohorts",
       providesTags: (result = []) => [
         { type: "Cohort", id: "LIST" },
         ...result.map(({ id }) => ({ type: "Cohort" as const, id })),
@@ -48,11 +52,25 @@ export const cohortApiSlice = coreCreateApi({
       }),
       invalidatesTags: [{ type: "Cohort", id: "LIST" }],
     }),
+    // updateCohort: builder.mutation<CohortModel, Partial<CohortModel>>({
+    //   query: (cohort) => ({
+    //     url: `/cohorts/${cohort.id}`,
+    //     method: "PUT",
+    //     body: cohort,
+    //   }),
+    //   invalidatesTags: (_result, _error, arg) => [
+    //     { type: "Cohort", id: arg.id },
+    //   ],
+    // }),
     updateCohort: builder.mutation<CohortModel, Partial<CohortModel>>({
       query: (cohort) => ({
         url: `/cohorts/${cohort.id}`,
-        method: "PATCH",
-        body: cohort,
+        method: "PUT",
+        body: {
+          name: cohort.name,
+          filters: cohort.filters,
+          type: cohort.type,
+        },
       }),
       invalidatesTags: (_result, _error, arg) => [
         { type: "Cohort", id: arg.id },
@@ -65,39 +83,16 @@ export const cohortApiSlice = coreCreateApi({
       }),
       invalidatesTags: (_result, _error, arg) => [{ type: "Cohort", id: arg }],
     }),
-
-    // context endpoints
-    getContexts: builder.query<ContextModel[], void>({
-      query: () => "/contexts",
-      providesTags: (result = []) => [
-        { type: "Context", id: "LIST" },
-        ...result.map(({ id }) => ({ type: "Context" as const, id })),
-      ],
-    }),
-    getContextById: builder.query<ContextModel, string>({
-      query: (id) => `/contexts/${id}`,
-      providesTags: (_result, _error, arg) => [{ type: "Context", id: arg }],
-    }),
-    addContext: builder.mutation<ContextModel, void>({
-      query: () => ({
-        url: "/contexts",
-        method: "POST",
-      }),
-      invalidatesTags: [{ type: "Context", id: "LIST" }],
-    }),
   }),
 });
 
 export const {
-  useGetCohortsQuery,
+  // useGetCohortsQuery,
   useGetCohortsByContextIdQuery,
   useGetCohortByIdQuery,
   useAddCohortMutation,
   useUpdateCohortMutation,
   useDeleteCohortMutation,
-  useGetContextsQuery,
-  useGetContextByIdQuery,
-  useAddContextMutation,
 } = cohortApiSlice;
 
 export const cohortApiSliceMiddleware = cohortApiSlice.middleware as Middleware;
