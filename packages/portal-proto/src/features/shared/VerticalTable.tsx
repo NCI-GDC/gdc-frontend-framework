@@ -1,5 +1,5 @@
 import React, { useState, useEffect, FC } from "react";
-import { useTable } from "react-table";
+import { useTable, useExpanded } from "react-table";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DragDrop } from "./DragDrop";
@@ -151,7 +151,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   useEffect(() => {
     setColumnListOptions(columnListOrder);
   }, [columnListOrder]);
-  //TODO combine columnCells and columnListOrder and handle column rordering in this component
+  //TODO combine columnCells and columnListOrder and handle column re-ordering in this component
   useEffect(() => {
     setHeadings(columnCells);
   }, [columnCells]);

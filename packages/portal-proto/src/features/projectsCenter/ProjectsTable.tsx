@@ -8,17 +8,31 @@ import {
   useProjects,
   filterSetToOperation,
   buildCohortGqlOperator,
+  ProjectDefaults,
 } from "@gff/core";
 import { useAppSelector } from "@/features/projectsCenter/appApi";
 import { selectFilters } from "@/features/projectsCenter/projectCenterFiltersSlice";
 import FunctionButton from "@/components/FunctionButton";
+
+const extractValue = (
+  data: ReadonlyArray<Record<string, number | string>>,
+  key: string,
+  value: string,
+): number | string | undefined => {
+  const results = data.find(
+    (obj) => Object.keys(obj).includes(key) && obj[key] === value,
+  );
+  if (results === undefined) return undefined;
+
+  return results[key];
+};
 
 const ProjectsTable: React.FC = () => {
   const [pageSize, setPageSize] = useState(10);
   const [offset, setOffset] = useState(0);
 
   const columnListOrder = [
-    { id: "project", columnName: "Project", visible: true },
+    { id: "project_id", columnName: "Project", visible: true },
     { id: "disease_type", columnName: "Disease Type", visible: true },
     { id: "primary_site", columnName: "Primary Site", visible: true },
     { id: "program", columnName: "Program", visible: true },
@@ -64,26 +78,36 @@ const ProjectsTable: React.FC = () => {
       total: undefined,
     };
   const projectFilters = useAppSelector((state) => selectFilters(state));
-  const { data, pagination, isSuccess } = useProjects({
-    filters: buildCohortGqlOperator(projectFilters),
-    expand: [
-      "summary", //annotations
-      "summary.experimental_strategies",
-      "summary.data_categories",
-    ],
-    size: pageSize,
-    from: offset * pageSize,
-  });
+  const { data, pagination, isSuccess, isFetching, isUninitialized, isError } =
+    useProjects({
+      filters: buildCohortGqlOperator(projectFilters),
+      expand: [
+        "summary", //annotations
+        "summary.experimental_strategies",
+        "summary.data_categories",
+      ],
+      size: pageSize,
+      from: offset * pageSize,
+    });
 
   console.log("ProjectTable", data, isSuccess, pagination);
 
   if (isSuccess) {
     tempPagination = pagination;
     formattedTableData = data.map((project) => ({
-      project: (
-        <Link href={`/projects/${project.id}`}>
-          <a className="text-utility-link underline">{project.id}</a>
+      project_id: (
+        <Link href={`/projects/${project.project_id}`}>
+          <a className="text-utility-link underline">{project.project_id}</a>
         </Link>
+      ),
+      disease_type: project.disease_type.length,
+      primary_site: project.primary_site.length,
+      program: project.program,
+      cases: project.summary.case_count,
+      seq: extractValue(
+        project.summary.data_categories,
+        "data_category",
+        "Sequencing Reads",
       ),
       //   fileName: (
       //     <Link href={`/files/${project.id}`}>
@@ -107,6 +131,14 @@ const ProjectsTable: React.FC = () => {
     }));
   }
 
+  const status = isSuccess
+    ? "fullfilled"
+    : isFetching
+    ? "pending"
+    : isError
+    ? "error"
+    : "unfulfilled";
+
   //This if for handling pagination changes
 
   // const coreDispatch = useCoreDispatch();
@@ -125,36 +157,37 @@ const ProjectsTable: React.FC = () => {
   //     }),
   //   );
   // };
-  // const handlePageSizeChange = (x: string) => {
-  //   getCohortCases(parseInt(x), 0);
-  // };
-  // const handlePageChange = (x: number) => {
-  //   getCohortCases(tempPagination.size, x - 1);
-  // };
+  const handlePageSizeChange = (x: string) => {
+    //getCohortCases(parseInt(x), 0);
+  };
+  const handlePageChange = (x: number) => {
+    //  getCohortCases(tempPagination.size, x - 1);
+  };
 
   //update everything that uses table component
-  return <div>Table</div>;
-  // <VerticalTable
-  //   tableTitle={`Total of ${tempPagination?.total} Projects`}
-  //   additionalControls={
-  //     <div className="flex gap-2">
-  //       <FunctionButton>JSON</FunctionButton>
-  //       <FunctionButton>TSV</FunctionButton>
-  //     </div>
-  //   }
-  //   tableData={formattedTableData}
-  //   columnListOrder={columnListOrder}
-  //   columnCells={columnCells}
-  //   handleColumnChange={handleColumnChange}
-  //   selectableRow={false}
-  //   pagination={{
-  //     handlePageSizeChange,
-  //     handlePageChange,
-  //     ...tempPagination,
-  //     label: "files",
-  //   }}
-  //   status={status}
-  // />
+  return (
+    <VerticalTable
+      tableTitle={`Total of ${tempPagination?.total} Projects`}
+      additionalControls={
+        <div className="flex gap-2">
+          <FunctionButton>JSON</FunctionButton>
+          <FunctionButton>TSV</FunctionButton>
+        </div>
+      }
+      tableData={formattedTableData}
+      columnListOrder={columnListOrder}
+      columnCells={columnCells}
+      handleColumnChange={handleColumnChange}
+      selectableRow={false}
+      pagination={{
+        handlePageSizeChange,
+        handlePageChange,
+        ...tempPagination,
+        label: "files",
+      }}
+      status={status}
+    />
+  );
 };
 
 export default ProjectsTable;
