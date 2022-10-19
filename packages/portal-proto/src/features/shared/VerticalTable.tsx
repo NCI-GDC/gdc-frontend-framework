@@ -283,7 +283,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
       }
     }
 
-    return <>Showning {outputString}</>;
+    return <>Showing {outputString}</>;
   };
 
   return (
