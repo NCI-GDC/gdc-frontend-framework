@@ -11,7 +11,7 @@ import CNVPlot from "../charts/CNVPlot";
 import SSMPlot from "../charts/SSMPlot";
 import { formatDataForHorizontalTable } from "../files/utils";
 import { LoadingOverlay } from "@mantine/core";
-import { GeneCancerDistributionTable } from "./CancerDistributionTable";
+import { GeneCancerDistributionTable } from "../cancerDistributionTable/CancerDistributionTable";
 
 interface GeneViewProps {
   data: {

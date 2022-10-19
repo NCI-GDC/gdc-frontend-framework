@@ -9,7 +9,7 @@ import { FaBook, FaTable } from "react-icons/fa";
 import { CollapsibleList } from "@/components/CollapsibleList";
 import { AnchorLink } from "@/components/AnchorLink";
 import SSMPlot from "../charts/SSMPlot";
-import { SSMSCancerDistributionTable } from "../GeneSummary/CancerDistributionTable";
+import { SSMSCancerDistributionTable } from "../cancerDistributionTable/CancerDistributionTable";
 
 export const SSMSSummary = ({ ssm_id }: { ssm_id: string }): JSX.Element => {
   const { data: summaryData, isFetching } = useSSMS({
