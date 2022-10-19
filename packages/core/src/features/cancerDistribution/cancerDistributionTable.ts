@@ -1,6 +1,6 @@
 import type { Middleware, Reducer } from "@reduxjs/toolkit";
 import { coreCreateApi } from "../../coreCreateApi";
-import { Buckets } from "../gdcapi/gdcapi";
+import { Buckets, Bucket } from "../gdcapi/gdcapi";
 import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
 
 interface GeneCancerDistributionTableResponse {
@@ -50,6 +50,15 @@ interface SSMSCancerDistributionTableResponse {
       };
     };
   };
+}
+
+export interface CancerDistributionTableData {
+  projects: readonly Bucket[];
+  ssmFiltered: Record<string, number>;
+  ssmTotal: Record<string, number>;
+  cnvGain?: Record<string, number>;
+  cnvLoss?: Record<string, number>;
+  cnvTotal?: Record<string, number>;
 }
 
 export const cancerDistributionTableApiSlice = coreCreateApi({
@@ -258,7 +267,7 @@ export const cancerDistributionTableApiSlice = coreCreateApi({
       }),
       transformResponse: (
         response: GraphQLApiResponse<GeneCancerDistributionTableResponse>,
-      ) => {
+      ): CancerDistributionTableData => {
         return {
           projects:
             response?.data?.viewer?.explore?.ssms?.aggregations
@@ -386,7 +395,7 @@ export const cancerDistributionTableApiSlice = coreCreateApi({
       }),
       transformResponse: (
         response: GraphQLApiResponse<SSMSCancerDistributionTableResponse>,
-      ) => {
+      ): CancerDistributionTableData => {
         return {
           projects:
             response?.data?.viewer?.explore?.ssms?.aggregations
@@ -402,7 +411,7 @@ export const cancerDistributionTableApiSlice = coreCreateApi({
               (b) => [b.key, b.doc_count],
             ),
           ),
-        } as any;
+        };
       },
     }),
   }),

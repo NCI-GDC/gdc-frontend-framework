@@ -6,6 +6,7 @@ import {
   cancerDistributionTableApiReducer,
   useGetGeneCancerDistributionTableQuery,
   useGetSSMSCancerDistributionTableQuery,
+  CancerDistributionTableData,
 } from "./cancerDistributionTable";
 
 export const cancerDistributionReducer = combineReducers({
@@ -21,4 +22,5 @@ export {
   useGetGeneCancerDistributionTableQuery,
   useGetSSMSCancerDistributionTableQuery,
   cancerDistributionTableApiReducer,
+  CancerDistributionTableData,
 };
