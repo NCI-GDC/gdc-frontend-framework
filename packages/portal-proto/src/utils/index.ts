@@ -1,6 +1,6 @@
 import { KeyboardEventHandler } from "react";
-import { CartFile } from "@gff/core";
-import { replace, sortBy } from "lodash";
+import { CartFile, DAYS_IN_YEAR } from "@gff/core";
+import { replace, sortBy, zip } from "lodash";
 import { DocumentWithWebkit } from "../features/types";
 import * as tailwindConfig from "tailwind.config";
 
@@ -43,6 +43,8 @@ export const capitalize = (original: string): string => {
     cosmic: "COSMIC",
     civic: "CIViC",
     dbgap: "dbGaP",
+    ecog: "ECOG",
+    bmi: "BMI",
   };
 
   return original
@@ -100,11 +102,21 @@ export const externalLinks = {
     `http://www.uniprot.org/uniprot/${id}`,
 };
 
-export const calculatePercentage = (count: number, total: number): string =>
-  ((count / total) * 100).toFixed(2);
+export const calculatePercentageAsNumber = (
+  count: number,
+  total: number,
+): number => (count / total) * 100;
+
+export const calculatePercentageAsString = (
+  count: number,
+  total: number,
+): string => `${((count / total) * 100).toFixed(2)}%`;
 
 export const allFilesInCart = (carts: CartFile[], files: CartFile[]): boolean =>
   files?.every((file) => carts.some((cart) => cart.fileId === file.fileId));
+
+export const fileInCart = (cart: CartFile[], newId: string): boolean =>
+  cart.map((f) => f.fileId).some((id) => id === newId);
 
 /**
  *
@@ -123,5 +135,67 @@ export const sortByPropertyAsc = <T>(
 export const getThemeColor = (key: string): Record<string, string> =>
   tailwindConfig.plugins.slice(-1)[0].__options.defaultTheme.extend.colors[key];
 
-export const fileInCart = (cart: CartFile[], newId: string): boolean =>
-  cart.map((f) => f.fileId).some((id) => id === newId);
+interface HumanifyParams {
+  term: string;
+  capitalize?: boolean;
+  facetTerm?: boolean;
+}
+export const humanify = ({
+  term,
+  capitalize: cap = true,
+  facetTerm = false,
+}: HumanifyParams): string => {
+  let original;
+  let humanified;
+  if (facetTerm) {
+    // Splits on capital letters followed by lowercase letters to find
+    // words squished together in a string.
+    original = term.split(/(?=[A-Z][a-z])/).join(" ");
+    humanified = term.replace(/\./g, " ").replace(/_/g, " ").trim();
+  } else {
+    const split = (original || term).split(".");
+    humanified = split[split.length - 1].replace(/_/g, " ").trim();
+
+    // Special case 'name' to include any parent nested for sake of
+    // specificity in the UI
+    if (humanified === "name" && split.length > 1) {
+      humanified = `${split[split.length - 2]} ${humanified}`;
+    }
+  }
+  return cap ? capitalize(humanified) : humanified;
+};
+
+/*https://github.com/NCI-GDC/portal-ui/blob/develop/src/packages/%40ncigdc/utils/ageDisplay.js*/
+export const ageDisplay = (
+  ageInDays: number,
+  yearsOnly = false,
+  defaultValue = "--",
+): string => {
+  const leapThenPair = (years: number, days: number): number[] =>
+    days === 365 ? [years + 1, 0] : [years, days];
+
+  const timeString = (
+    num: number,
+    singular: string,
+    plural?: string,
+  ): string => {
+    const pluralChecked = plural || `${singular}s`;
+    return `${num} ${num === 1 ? singular : pluralChecked}`;
+  };
+
+  if (!ageInDays) {
+    return defaultValue;
+  }
+
+  return zip(
+    leapThenPair(
+      Math.floor(ageInDays / DAYS_IN_YEAR),
+      Math.ceil(ageInDays % DAYS_IN_YEAR),
+    ),
+    ["year", "day"],
+  )
+    .filter((p) => (yearsOnly ? p[1] === "year" : p[0] > 0))
+    .map((p) => (yearsOnly ? p[0] : timeString(...p)))
+    .join(" ")
+    .trim();
+};

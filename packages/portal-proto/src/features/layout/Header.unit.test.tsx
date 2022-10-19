@@ -4,10 +4,6 @@ import { Header } from "./Header";
 import * as core from "@gff/core";
 import * as tour from "@reactour/tour";
 
-jest.mock("url-join", () => ({
-  urlJoin: jest.fn(),
-}));
-
 describe("<Header />", () => {
   beforeEach(() => {
     jest.clearAllMocks();

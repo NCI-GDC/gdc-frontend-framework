@@ -1,5 +1,6 @@
-import React, { useCallback, useMemo } from "react";
-import { EnumFacetCardProps } from "./types";
+import React, { useMemo } from "react";
+import { EnumFacetHooks, FacetCardProps } from "./types";
+import { updateFacetEnum } from "./utils";
 
 import {
   controlsIconStyle,
@@ -15,27 +16,24 @@ import { FaUndo as UndoIcon } from "react-icons/fa";
 const extractToggleValue = (values?: ReadonlyArray<string>): boolean =>
   values && values.length > 0 && values.includes("true");
 
-const ToggleFacet: React.FC<EnumFacetCardProps> = ({
+const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   field,
   docType,
   indexType,
+  hooks,
   description,
   facetName = undefined,
   dismissCallback = undefined,
   width = undefined,
-  getFacetData,
-  updateFacetEnumerations,
-  clearFilterFunc = undefined,
-}: EnumFacetCardProps) => {
-  const clearFilters = useCallback(() => {
-    clearFilterFunc(field);
-  }, [clearFilterFunc, field]);
+}: FacetCardProps<EnumFacetHooks>) => {
+  const clearFilters = hooks.useClearFilter();
+  const updateFacetFilters = hooks.useUpdateFacetFilters();
 
   const facetTitle = facetName
     ? facetName
     : trimFirstFieldNameToTitle(field, true);
 
-  const { data, isSuccess, enumFilters } = getFacetData(
+  const { data, isSuccess, enumFilters } = hooks.useGetFacetData(
     field,
     docType,
     indexType,
@@ -47,8 +45,9 @@ const ToggleFacet: React.FC<EnumFacetCardProps> = ({
   );
 
   const setValue = (bValue: boolean) => {
-    if (bValue) updateFacetEnumerations(field, ["true"]);
-    else clearFilterFunc(field);
+    if (bValue)
+      updateFacetEnum(field, ["true"], updateFacetFilters, clearFilters);
+    else clearFilters(field);
   };
 
   return (
@@ -57,7 +56,7 @@ const ToggleFacet: React.FC<EnumFacetCardProps> = ({
         width ? width : "mx-1"
       } bg-base-max relative border-primary-lightest border-1 rounded-b-md text-xs transition`}
     >
-      <div className="flex items-center justify-between flex-wrap bg-primary-lighter shadow-md px-1.5">
+      <div className="flex items-start justify-between flex-nowrap bg-primary-lighter shadow-md px-1.5">
         <Tooltip
           label={description || "No description available"}
           classNames={{
@@ -71,7 +70,7 @@ const ToggleFacet: React.FC<EnumFacetCardProps> = ({
           transition="fade"
           transitionDuration={200}
         >
-          <div className="text-primary-contrast-lighter font-heading font-semibold text-md">
+          <div className="text-primary-contrast-lighter font-heading font-semibold text-md break-words py-2">
             {facetTitle}
           </div>
         </Tooltip>
@@ -82,7 +81,7 @@ const ToggleFacet: React.FC<EnumFacetCardProps> = ({
           {dismissCallback ? (
             <FacetIconButton
               onClick={() => {
-                clearFilters();
+                clearFilters(field);
                 dismissCallback(field);
               }}
               aria-label="remove the facet"

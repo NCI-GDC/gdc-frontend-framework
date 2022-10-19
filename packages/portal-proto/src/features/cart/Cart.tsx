@@ -1,10 +1,20 @@
 import { Grid } from "@mantine/core";
 import tw from "tailwind-styled-components";
-import { useCartSummary, useCoreSelector, selectCart } from "@gff/core";
+import {
+  useCartSummary,
+  useCoreSelector,
+  selectCart,
+  selectCurrentModal,
+  Modals,
+  useUserDetails,
+} from "@gff/core";
 import FilesTable from "./FilesTable";
 import ProjectTable from "./ProjectTable";
 import CartHeader from "./CartHeader";
 import AuthorizationTable from "./AuthorizationTable";
+import CartSizeLimitModal from "@/components/Modals/CartSizeLimitModal";
+import CartDownloadModal from "@/components/Modals/CartDownloadModal";
+import { groupByAccess } from "./utils";
 
 const H2 = tw.h2`
   uppercase
@@ -32,10 +42,34 @@ const P = tw.p`
 const Cart: React.FC = () => {
   const cart = useCoreSelector((state) => selectCart(state));
   const { data: summaryData } = useCartSummary(cart.map((f) => f.fileId));
+  const modal = useCoreSelector((state) => selectCurrentModal(state));
+  const { data: userDetails } = useUserDetails();
+  const filesByCanAccess = groupByAccess(cart, userDetails);
+  const dbGapList = Array.from(
+    new Set(
+      (filesByCanAccess?.true || [])
+        .reduce((acc, f) => acc.concat(f.acl), [])
+        .filter((f) => f !== "open"),
+    ),
+  );
 
   return (
     <>
-      <CartHeader summaryData={summaryData} />
+      {modal === Modals.CartSizeLimitModal && <CartSizeLimitModal openModal />}
+      {modal === Modals.CartDownloadModal && (
+        <CartDownloadModal
+          openModal
+          user={userDetails}
+          filesByCanAccess={filesByCanAccess}
+          dbGapList={dbGapList}
+        />
+      )}
+
+      <CartHeader
+        summaryData={summaryData}
+        filesByCanAccess={filesByCanAccess}
+        dbGapList={dbGapList}
+      />
       <Grid className="mt-8 mx-2">
         <Grid.Col span={6}>
           <div className="bg-base-lightest p-4 border border-solid border-base-lighter">
@@ -72,7 +106,7 @@ const Cart: React.FC = () => {
           </div>
           <div className="pt-5">
             <H2>File counts by authorization level</H2>
-            <AuthorizationTable cart={cart} />
+            <AuthorizationTable filesByCanAccess={filesByCanAccess} />
           </div>
         </Grid.Col>
         <Grid.Col span={6} className="px-4">
@@ -80,7 +114,7 @@ const Cart: React.FC = () => {
           <ProjectTable projectData={summaryData} />
         </Grid.Col>
         <Grid.Col span={12} className="p-4">
-          <FilesTable />
+          <FilesTable filesByCanAccess={filesByCanAccess} />
         </Grid.Col>
       </Grid>
     </>

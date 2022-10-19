@@ -6,94 +6,13 @@ import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
 import { Button, Tooltip } from "@mantine/core";
 import { NextLink } from "@mantine/next";
 import tw from "tailwind-styled-components";
+import SummaryTotalsPanel from "@/features/summary/SummaryTotalsPanel";
 
 export const HomePageButton = tw(Button)`
 bg-base-lighter text-base-contrast-lighter
 hover:bg-primary hover:text-primary-contrast
 font-bold mx-4 p-2 rounded inline-flex items-center shadow-md transition-colors
 `;
-
-interface SummaryStatsItemProp {
-  readonly title: string;
-  readonly icon: string;
-  readonly count: number;
-  readonly size?: number;
-}
-
-const SummaryStatsItem: React.FC<SummaryStatsItemProp> = ({
-  title,
-  icon,
-  count,
-  size = 24,
-}: SummaryStatsItemProp) => {
-  return (
-    <div className="flex flex-col flex-nowrap font-medium justify-center content-center font-heading ">
-      <div className="flex flex-row flex-nowrap justify-center content-center text-md">
-        {title}{" "}
-      </div>
-      <div className="flex flex-row flex-nowrap justify-center content-center text-2xl ">
-        <Image src={icon} width={size} height={size} />{" "}
-        <span className="pl-2">{count.toLocaleString()}</span>
-      </div>
-    </div>
-  );
-};
-
-const SummaryStatsPanel = () => {
-  return (
-    <div className="flex flex-col bg-base-lightest border-primary border-t-8 border-0 p-4 opacity-90 shadow-md hover:shadow-lg  ">
-      <div className="flex flex-row items-end justify-items-end">
-        <p className="font-heading text-lg text-base-contrast-lightest">
-          Data Portal Summary
-        </p>
-        <a
-          className="text-xs px-4 pb-1 text-accent-cool-content-dark"
-          href="https://docs.gdc.cancer.gov/Data/Release_Notes/Data_Release_Notes/"
-        >
-          Data Release 31.0 - October 29, 2021{" "}
-        </a>
-      </div>
-      <div className="grid grid-cols-3 gap-4 pt-4 p-4 bg-opacity-0">
-        <SummaryStatsItem
-          title="PROJECTS"
-          count={70}
-          size={24}
-          icon="/user-flow/icons/projects.svg"
-        />
-        <SummaryStatsItem
-          title="PRIMARY SITES"
-          count={67}
-          size={24}
-          icon="/user-flow/icons/primary_sites.svg"
-        />
-        <SummaryStatsItem
-          title="CASES"
-          count={85415}
-          size={24}
-          icon="/user-flow/icons/user.svg"
-        />
-        <SummaryStatsItem
-          title="FILES"
-          count={649152}
-          size={24}
-          icon="/user-flow/icons/files.svg"
-        />
-        <SummaryStatsItem
-          title="GENES"
-          count={23621}
-          size={24}
-          icon="/user-flow/icons/genes.svg"
-        />
-        <SummaryStatsItem
-          title="MUTATIONS"
-          count={3599319}
-          size={32}
-          icon="/user-flow/icons/gene-mutation.svg"
-        />
-      </div>
-    </div>
-  );
-};
 
 const ActionButtonBar = () => {
   return (
@@ -124,6 +43,7 @@ const ActionButtonBar = () => {
                 query: { app: undefined },
               }}
               className="mx-4 p-2 px-5"
+              data-testid="analysisHomePageButton"
             >
               <div className="flex flex-row items-center">
                 <Image
@@ -155,6 +75,7 @@ const ActionButtonBar = () => {
               pathname: "/user-flow/workbench/analysis_page",
               query: { app: "Studies" },
             }}
+            data-testid="studiesHomePageButton"
           >
             <Image
               src={"/user-flow/icons/crowd-of-users.svg"}
@@ -181,6 +102,7 @@ const ActionButtonBar = () => {
               pathname: "/user-flow/workbench/analysis_page",
               query: { app: "CohortBuilder" },
             }}
+            data-testid="cohortHomePageButton"
           >
             <Image
               src={"/user-flow/icons/build.svg"}
@@ -208,6 +130,7 @@ const ActionButtonBar = () => {
               pathname: "/user-flow/workbench/analysis_page",
               query: { app: "Downloads" },
             }}
+            data-testid="downloadsHomePageButton"
           >
             <Image
               src={"/user-flow/icons/database.svg"}
@@ -253,10 +176,11 @@ const IndexPage: NextPage = () => {
                   type="text"
                   className="h-10 pr-8 w-full pl-5 bg-base-lightest border-primary-light rounded-full focus:outline-none focus:ring focus:ring-accent-cool-light focus:border-accent-cool-light hover:shadow-lg hover:border-accent-cool-lighter"
                   placeholder={`e.g. BRAF, Breast, TCGA-BLCA, TCGA-A5-A0G2`}
+                  data-testid="homepageSearchField"
                 />
               </div>
             </div>
-            <SummaryStatsPanel />
+            <SummaryTotalsPanel />
           </div>
           <div className="m-auto">
             <Image src="/user-flow/sapien.svg" height={400} width={500} />

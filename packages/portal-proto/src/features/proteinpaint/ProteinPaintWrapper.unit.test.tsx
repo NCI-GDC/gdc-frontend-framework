@@ -7,6 +7,7 @@ jest.mock("@gff/core", () => ({
   useCoreSelector: jest.fn().mockReturnValue({}),
   selectCurrentCohortFilterSet: jest.fn().mockReturnValue({}),
   buildCohortGqlOperator: jest.fn(() => filter),
+  PROTEINPAINT_API: "host:port/basepath",
 }));
 
 jest.mock("@stjude/proteinpaint-client", () => ({
@@ -43,7 +44,7 @@ test("Sequence Read arguments", () => {
   expect(runpparg.nobox).toEqual(true);
   expect(runpparg.hide_dsHandles).toEqual(true);
   expect(runpparg.holder instanceof HTMLElement).toBe(true);
-  expect(runpparg.gdcbamslice).toEqual(true);
+  expect(runpparg.gdcbamslice).toEqual({ hideTokenInput: true });
   expect(runpparg.filter0).toEqual({ test: 1 });
   unmount();
 });

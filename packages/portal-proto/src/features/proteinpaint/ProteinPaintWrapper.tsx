@@ -2,13 +2,13 @@ import { useEffect, useRef, FC } from "react";
 import { runproteinpaint } from "@stjude/proteinpaint-client";
 import {
   useCoreSelector,
-  selectCurrentCohortFilterSet,
+  selectCurrentCohortFilters,
   buildCohortGqlOperator,
   FilterSet,
+  PROTEINPAINT_API,
 } from "@gff/core";
 
-// !!! TODO: may determine basepath prop value at runtime !!!
-const basepath = "https://portal.gdc.cancer.gov/auth/api/custom/proteinpaint";
+const basepath = PROTEINPAINT_API;
 
 interface PpProps {
   track: string;
@@ -22,11 +22,10 @@ interface PpProps {
 
 export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
   const filter0 = buildCohortGqlOperator(
-    useCoreSelector(selectCurrentCohortFilterSet),
+    useCoreSelector(selectCurrentCohortFilters),
   );
 
   // to track reusable instance for mds3 skewer track
-  /*** TODO: bam track should return reusable renderer???? ***/
   const ppRef = useRef<PpApi>();
 
   useEffect(() => {
@@ -126,16 +125,22 @@ function getLolliplotTrack(props: PpProps, filter0: any) {
 
 interface BamArg {
   host: string;
-  gdcbamslice: boolean;
+  gdcbamslice: GdcBamSlice;
   filter0: FilterSet;
 }
+
+type GdcBamSlice = {
+  hideTokenInput: boolean;
+};
 
 function getBamTrack(props: PpProps, filter0: any) {
   // host in gdc is just a relative url path,
   // using the same domain as the GDC portal where PP is embedded
   const arg: BamArg = {
     host: props.basepath || (basepath as string),
-    gdcbamslice: true,
+    gdcbamslice: {
+      hideTokenInput: true,
+    },
     filter0,
   };
 

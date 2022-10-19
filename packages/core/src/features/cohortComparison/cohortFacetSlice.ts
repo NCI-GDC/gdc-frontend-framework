@@ -7,8 +7,7 @@ import {
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
-import { buildCohortGqlOperator } from "../cohort/cohortFilterSlice";
-import { selectAvailableCohortByName } from "../cohort/availableCohortsSlice";
+import { buildCohortGqlOperator, selectAvailableCohortByName } from "../cohort";
 import { DAYS_IN_YEAR } from "../../constants";
 
 const graphQLQuery = `
@@ -121,11 +120,11 @@ export const fetchCohortFacets = createAsyncThunk<
   "cohortComparison/cohortFacets",
   async ({ facetFields, primaryCohort, comparisonCohort }, thunkAPI) => {
     const cohortFilters = buildCohortGqlOperator(
-      selectAvailableCohortByName(thunkAPI.getState(), primaryCohort).filters,
+      selectAvailableCohortByName(thunkAPI.getState(), primaryCohort)?.filters,
     );
     const cohort2Filters = buildCohortGqlOperator(
       selectAvailableCohortByName(thunkAPI.getState(), comparisonCohort)
-        .filters,
+        ?.filters,
     );
 
     const graphQLFilters = {

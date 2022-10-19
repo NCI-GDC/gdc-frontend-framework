@@ -30,3 +30,15 @@ export interface FacetDefinition {
   readonly range?: AllowableRange; // range of value types
   readonly hasData?: boolean;
 }
+
+export type FacetTypes =
+  | "enum"
+  | "exact"
+  | "range"
+  | "age"
+  | "year"
+  | "years"
+  | "days"
+  | "percent"
+  | "datetime"
+  | "toggle";
