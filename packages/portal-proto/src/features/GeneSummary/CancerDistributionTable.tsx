@@ -1,64 +1,13 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { Tooltip } from "@mantine/core";
 import {
-  MdKeyboardArrowDown as DownIcon,
-  MdKeyboardArrowUp as UpIcon,
-} from "react-icons/md";
-import {
   useGetGeneCancerDistributionTableQuery,
   useGetSSMSCancerDistributionTableQuery,
   useProjects,
   CancerDistributionTableData,
 } from "@gff/core";
 import { VerticalTable } from "@/features/shared/VerticalTable";
-import { createKeyboardAccessibleFunction } from "src/utils";
-
-const CollapsibleRow = ({
-  value,
-  label,
-}: {
-  value: string[];
-  label: string;
-}): JSX.Element => {
-  const [collapsed, setCollapsed] = useState(true);
-
-  if (value.length === 1) {
-    return <>{value[0]}</>;
-  } else {
-    return (
-      <>
-        {collapsed ? (
-          <span
-            onClick={() => setCollapsed(false)}
-            onKeyDown={createKeyboardAccessibleFunction(() =>
-              setCollapsed(false),
-            )}
-            className="text-primary cursor-pointer flex items-center"
-          >
-            {value.length} {label} <DownIcon />
-          </span>
-        ) : (
-          <>
-            <ul className="list-disc">
-              {value.map((v) => (
-                <li>{v}</li>
-              ))}
-            </ul>
-            <span
-              onClick={() => setCollapsed(true)}
-              onKeyDown={createKeyboardAccessibleFunction(() =>
-                setCollapsed(true),
-              )}
-              className="text-primary cursor-pointer flex items-center"
-            >
-              collapse <UpIcon />
-            </span>
-          </>
-        )}
-      </>
-    );
-  }
-};
+import CollapsibleRow from "@/features/shared/CollapsibleRow";
 
 interface GeneCancerDistributionTableProps {
   readonly gene: string;
