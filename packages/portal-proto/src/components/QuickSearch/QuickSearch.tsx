@@ -83,7 +83,8 @@ export const QuickSearch = ({
   };
 
   const onInputBlur = () => {
-    searchText.length === 0 && setPerformSearch(false);
+    (searchText.length === 0 || searchList.length === 0) &&
+      setPerformSearch(false);
   };
 
   const onInputFocus = () => {
