@@ -13,6 +13,7 @@ import CheckboxSpring from "../shared/CheckboxSpring";
 import { Survival } from "../shared/types";
 import { SMSubrow } from "./SMSubRow";
 import { Tooltip } from "@mantine/core";
+import { useEffect, useState } from "react";
 
 export interface ConsequenceProps {
   consequenceType: string;
@@ -25,15 +26,29 @@ export const Consequence = ({
 }: {
   consequence: ConsequenceProps;
 }): JSX.Element => {
-  const { consequenceType, symbol, aaChange } = consequence;
-  const fc = consequenceType.split("_")[0] ? consequenceType.split("_")[0] : ``;
-  const formatConsequence = fc
-    ? fc?.charAt(0).toUpperCase() + fc?.slice(1)
-    : ``;
+  const [fc, setFc] = useState(undefined);
+  const [symbol, setSymbol] = useState(undefined);
+  const [aaChange, setAaChange] = useState(undefined);
+
+  useEffect(() => {
+    if (Object.keys(consequence).length) {
+      let { consequenceType, symbol, aaChange } = consequence;
+      const cType = consequenceType.split("_")[0]
+        ? consequenceType.split("_")[0]
+        : ``;
+      const formatFc = cType
+        ? cType?.charAt(0).toUpperCase() + cType?.slice(1)
+        : ``;
+      setFc(formatFc);
+      setSymbol(symbol);
+      setAaChange(aaChange);
+    }
+  }, [consequence]);
+
   return (
     <>
       <div className={`flex flex-row w-max m-auto text-xs`}>
-        <span className={`mx-0.5 font-bold`}>{formatConsequence}</span>
+        <span className={`mx-0.5 font-bold`}>{fc}</span>
         <span className={`mx-0.5`}>{symbol}</span>
         <span className={`mx-0.5`}>{aaChange}</span>
       </div>
