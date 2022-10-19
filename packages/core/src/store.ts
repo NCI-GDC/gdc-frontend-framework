@@ -16,7 +16,7 @@ import { caseSetListenerMiddleware } from "./listeners";
 
 import storage from "./storage-persist";
 import { survivalApiSliceMiddleware } from "./features/survival/survivalApiSlice";
-import { cancerDistributionTableApiSliceMiddleware } from "./features/cancerDistribution/cancerDistributionTable";
+import { graphqlAPISliceMiddleware } from "./features/gdcapi/gdcgraphql";
 
 const persistConfig = {
   key: "root",
@@ -39,7 +39,7 @@ export const coreStore = configureStore({
       .concat(
         cohortApiSliceMiddleware,
         survivalApiSliceMiddleware,
-        cancerDistributionTableApiSliceMiddleware,
+        graphqlAPISliceMiddleware,
       )
       .prepend(caseSetListenerMiddleware.middleware), // needs to be prepended
 });

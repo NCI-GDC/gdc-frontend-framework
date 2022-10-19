@@ -36,9 +36,9 @@ import { modalReducer } from "./features/modals/modalsSlice";
 import { versionInfoReducer } from "./features/versionInfo/versionInfoSlice";
 import { cancerDistributionReducer } from "./features/cancerDistribution";
 import {
-  cancerDistributionTableApiSliceReducerPath,
-  cancerDistributionTableApiReducer,
-} from "./features/cancerDistribution/cancerDistributionTable";
+  graphqlAPISliceReducerPath,
+  graphqlAPIReducer,
+} from "./features/gdcapi/gdcgraphql";
 
 export const reducers = combineReducers({
   cohort: cohortReducers,
@@ -70,8 +70,7 @@ export const reducers = combineReducers({
   modals: modalReducer,
   [cohortApiSliceReducerPath]: cohortApiReducer,
   [survivalApiSliceReducerPath]: survivalApiReducer,
-  [cancerDistributionTableApiSliceReducerPath]:
-    cancerDistributionTableApiReducer,
+  [graphqlAPISliceReducerPath]: graphqlAPIReducer,
   versionInfo: versionInfoReducer,
 });
 

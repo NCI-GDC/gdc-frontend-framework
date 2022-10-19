@@ -1,7 +1,5 @@
-import type { Middleware, Reducer } from "@reduxjs/toolkit";
-import { coreCreateApi } from "../../coreCreateApi";
 import { Buckets, Bucket } from "../gdcapi/gdcapi";
-import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
+import { GraphQLApiResponse, graphqlAPISlice } from "../gdcapi/gdcgraphql";
 
 interface GeneCancerDistributionTableResponse {
   viewer: {
@@ -61,16 +59,7 @@ export interface CancerDistributionTableData {
   cnvTotal?: Record<string, number>;
 }
 
-export const cancerDistributionTableApiSlice = coreCreateApi({
-  reducerPath: "cancerDistributionTable",
-  baseQuery: async (request) => {
-    const results: GraphQLApiResponse<any> = await graphqlAPI(
-      request.graphQLQuery,
-      request.graphQLFilters,
-    );
-
-    return { data: results };
-  },
+export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
   endpoints: (builder) => ({
     getGeneCancerDistributionTable: builder.query({
       query: (request: { gene: string }) => ({
@@ -421,10 +410,3 @@ export const {
   useGetGeneCancerDistributionTableQuery,
   useGetSSMSCancerDistributionTableQuery,
 } = cancerDistributionTableApiSlice;
-
-export const cancerDistributionTableApiSliceMiddleware =
-  cancerDistributionTableApiSlice.middleware as Middleware;
-export const cancerDistributionTableApiSliceReducerPath: string =
-  cancerDistributionTableApiSlice.reducerPath;
-export const cancerDistributionTableApiReducer: Reducer =
-  cancerDistributionTableApiSlice.reducer as Reducer;

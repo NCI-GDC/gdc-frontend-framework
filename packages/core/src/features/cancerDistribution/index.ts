@@ -3,7 +3,6 @@ import { cnvPlotReducer, useCnvPlot } from "./cnvPlot";
 import { ssmPlotReducer, useSsmPlot } from "./ssmPlot";
 import {
   //cancerDistributionTableApiSliceReducerPath,
-  cancerDistributionTableApiReducer,
   useGetGeneCancerDistributionTableQuery,
   useGetSSMSCancerDistributionTableQuery,
   CancerDistributionTableData,
@@ -12,8 +11,6 @@ import {
 export const cancerDistributionReducer = combineReducers({
   cnvPlot: cnvPlotReducer,
   ssmPlot: ssmPlotReducer,
-  //[cancerDistributionTableApiSliceReducerPath]:
-  //cancerDistributionTableApiReducer,
 });
 
 export {
@@ -21,6 +18,5 @@ export {
   useSsmPlot,
   useGetGeneCancerDistributionTableQuery,
   useGetSSMSCancerDistributionTableQuery,
-  cancerDistributionTableApiReducer,
   CancerDistributionTableData,
 };
