@@ -67,7 +67,16 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
   symbol,
   isGene,
 }: CancerDistributionTableProps) => {
-  const { data: projects } = useProjects({ size: 1000 });
+  const { data: projects, isFetching: projectsFetching } = useProjects({
+    filters: {
+      op: "in",
+      content: {
+        field: "project_id",
+        value: data?.projects.map((p) => p.key),
+      },
+    },
+    size: data?.projects.length,
+  });
   const [pageSize, setPageSize] = useState(10);
   const [activePage, setActivePage] = useState(1);
   const [displayedData, setDisplayedData] = useState([]);
@@ -96,7 +105,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
           ]
         : []),
     ];
-  }, []);
+  }, [isGene]);
 
   const columnCells = useMemo(() => {
     const columns = [
@@ -104,14 +113,14 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       {
         Header: "Disease Type",
         accessor: "disease_type",
-        Cell: ({ value }) => (
+        Cell: ({ value }: { value: string[] }) => (
           <CollapsibleRow value={value} label={"Disease Types"} />
         ),
       },
       {
         Header: "Primary Site",
         accessor: "primary_site",
-        Cell: ({ value }) => (
+        Cell: ({ value }: { value: string[] }) => (
           <CollapsibleRow value={value} label={"Primary Sites"} />
         ),
       },
@@ -194,7 +203,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
           ]
         : []),
     ];
-  }, [symbol]);
+  }, [symbol, isGene]);
 
   const formattedData = useMemo(
     () =>
@@ -242,7 +251,8 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
             })
             .sort((a, b) => b.ssm_percent - a.ssm_percent)
         : [],
-    [isSuccess],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [isSuccess, projectsFetching],
   );
 
   useEffect(() => {

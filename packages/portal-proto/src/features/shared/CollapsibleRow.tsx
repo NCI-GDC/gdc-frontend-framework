@@ -5,6 +5,7 @@ import {
 } from "react-icons/md";
 import { createKeyboardAccessibleFunction } from "src/utils";
 
+// TODO - replace after PEAR-328 is finished
 const CollapsibleRow = ({
   value,
   label,
