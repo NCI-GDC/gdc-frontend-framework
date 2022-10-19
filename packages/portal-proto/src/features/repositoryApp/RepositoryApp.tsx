@@ -27,10 +27,6 @@ import { selectFilters } from "@/features/repositoryApp/repositoryFiltersSlice";
 import { isEqual } from "lodash";
 import FunctionButton from "@/components/FunctionButton";
 
-export interface ContextualFilesViewProps {
-  readonly handleFileSelected?: (file: GdcFile) => void;
-}
-
 const useCohortCentricFiles = () => {
   const coreDispatch = useCoreDispatch();
   const { data, pagination, status, error } = useCoreSelector(selectFilesData);
@@ -45,7 +41,16 @@ const useCohortCentricFiles = () => {
 
   useEffect(() => {
     if (status === "uninitialized" || !isEqual(allFilters, prevFilters)) {
-      coreDispatch(fetchFiles({ filters: buildCohortGqlOperator(allFilters) })); // eslint-disable-line
+      coreDispatch(
+        fetchFiles({
+          filters: buildCohortGqlOperator(allFilters),
+          expand: [
+            "annotations", //annotations
+            "cases.project", //project_id
+          ],
+          size: 20,
+        }),
+      ); // eslint-disable-line
     }
   }, [status, coreDispatch, allFilters, prevFilters]);
 
@@ -60,22 +65,12 @@ const useCohortCentricFiles = () => {
   };
 };
 
-const RepositoryApp: React.FC<ContextualFilesViewProps> = ({
-  handleFileSelected,
-}: ContextualFilesViewProps) => {
+const RepositoryApp = () => {
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
-  const [selectedFiles, setSelectedFiles] = useState<GdcFile[]>([]);
+  const [selectedFiles] = useState<GdcFile[]>([]);
 
   const { data, pagination, isSuccess } = useCohortCentricFiles();
-
-  const handleCheckedFiles = (e, file: GdcFile) => {
-    if (e.target.checked) {
-      setSelectedFiles([...selectedFiles, file]);
-    } else {
-      setSelectedFiles(selectedFiles.filter((f) => f.id !== file.id));
-    }
-  };
 
   // TODO: remove, mock data for cart
   const allFiles = Array(10001)
@@ -148,11 +143,7 @@ const RepositoryApp: React.FC<ContextualFilesViewProps> = ({
       </div>
       <div className="flex flex-row mx-3">
         <FileFacetPanel />
-        <FilesView
-          files={data}
-          handleFileSelected={handleFileSelected}
-          handleCheckedFiles={handleCheckedFiles}
-        />
+        <FilesView />
       </div>
     </div>
   );
