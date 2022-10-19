@@ -108,7 +108,7 @@ export const ProjectSummary: React.FC<ContextualProjectViewProps> = ({
     );
 
   const projectWithAnnotation = {
-    ...projectData,
+    ...projectData?.[0],
     annotation: annotationCountData,
     hasControlledAccess,
   };
