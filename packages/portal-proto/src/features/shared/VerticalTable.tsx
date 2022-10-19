@@ -97,12 +97,15 @@ interface VerticalTableProps {
    * - data when `fulfilled`
    */
   status?: "uninitialized" | "pending" | "fulfilled" | "rejected";
+
+  renderRowSubComponent?: (_: Record<string, any>) => JSX.Element;
 }
 
 interface Column {
   Header: string;
   accessor: string;
   width?: number;
+  Cell?: (tableInfo: any) => JSX.Element;
 }
 
 interface TableProps {
@@ -136,6 +139,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   showControls = true,
   pagination,
   status = "fulfilled",
+  renderRowSubComponent = () => null,
 }: VerticalTableProps) => {
   const [table, setTable] = useState([]);
   const [columnListOptions, setColumnListOptions] = useState([]);
@@ -175,7 +179,8 @@ export const VerticalTable: FC<VerticalTableProps> = ({
           columns,
           data,
         },
-        selectableRow ? tableAction : null,
+        useExpanded,
+        selectableRow ? tableAction : () => null,
       );
 
     return (
@@ -213,25 +218,41 @@ export const VerticalTable: FC<VerticalTableProps> = ({
             rows.map((row, index) => {
               prepareRow(row);
               return (
-                <tr
-                  key={index}
-                  {...row.getRowProps()}
-                  className={
-                    index % 2 === 1 ? "bg-base-lighter" : "bg-base-lightest"
-                  }
-                >
-                  {row.cells.map((cell, key) => {
-                    return (
-                      <td
-                        {...cell.getCellProps()}
-                        key={`row-${key}`}
-                        className="px-2 py-1 text-sm text-content"
-                      >
-                        {cell.render("Cell")}
+                <React.Fragment {...row.getRowProps()}>
+                  <tr
+                    key={index}
+                    {...row.getRowProps()}
+                    className={
+                      index % 2 === 1 ? "bg-base-lighter" : "bg-base-lightest"
+                    }
+                  >
+                    {row.cells.map((cell, key) => {
+                      return (
+                        <td
+                          {...cell.getCellProps()}
+                          key={`row-${key}`}
+                          className="px-2 py-1 text-sm text-content"
+                        >
+                          {cell.render("Cell")}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                  {row.isExpanded ? (
+                    <tr>
+                      <td colSpan={headings.length}>
+                        {/*
+                          Inside it, call our renderRowSubComponent function. In reality,
+                          you could pass whatever you want as props to
+                          a component like this, including the entire
+                          table instance. But for this example, we'll just
+                          pass the row
+                        */}
+                        {renderRowSubComponent({ row })}
                       </td>
-                    );
-                  })}
-                </tr>
+                    </tr>
+                  ) : null}
+                </React.Fragment>
               );
             })
           )}

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { VerticalTable } from "../shared/VerticalTable";
 import Link from "next/link";
-import { Badge } from "@mantine/core";
 import {
   useCoreDispatch,
   useCoreSelector,
@@ -16,15 +15,16 @@ import FunctionButton from "@/components/FunctionButton";
 
 const extractValue = (
   data: ReadonlyArray<Record<string, number | string>>,
-  key: string,
-  value: string,
+  nodeKey: string,
+  nodeValue: string,
+  valueKey: string,
 ): number | string | undefined => {
   const results = data.find(
-    (obj) => Object.keys(obj).includes(key) && obj[key] === value,
+    (obj) => Object.keys(obj).includes(nodeKey) && obj[nodeKey] === nodeValue,
   );
-  if (results === undefined) return undefined;
+  if (results === undefined) return 0;
 
-  return results[key];
+  return results[valueKey];
 };
 
 const ProjectsTable: React.FC = () => {
@@ -78,19 +78,22 @@ const ProjectsTable: React.FC = () => {
       total: undefined,
     };
   const projectFilters = useAppSelector((state) => selectFilters(state));
-  const { data, pagination, isSuccess, isFetching, isUninitialized, isError } =
-    useProjects({
-      filters: buildCohortGqlOperator(projectFilters),
-      expand: [
-        "summary", //annotations
-        "summary.experimental_strategies",
-        "summary.data_categories",
-      ],
-      size: pageSize,
-      from: offset * pageSize,
-    });
+  const { data, pagination, isSuccess, isFetching, isError } = useProjects({
+    filters: buildCohortGqlOperator(projectFilters),
+    expand: [
+      "summary", //annotations
+      "summary.experimental_strategies",
+      "summary.data_categories",
+    ],
+    size: pageSize,
+    from: offset * pageSize,
+  });
 
-  console.log("ProjectTable", data, isSuccess, pagination);
+  /// console.log("ProjectTable", data, isSuccess, pagination);
+
+  const renderExpandedRow = () => {
+    return <div> Expanded </div>;
+  };
 
   if (isSuccess) {
     tempPagination = pagination;
@@ -108,55 +111,62 @@ const ProjectsTable: React.FC = () => {
         project.summary.data_categories,
         "data_category",
         "Sequencing Reads",
+        "case_count",
       ),
-      //   fileName: (
-      //     <Link href={`/files/${project.id}`}>
-      //       <a className="text-utility-link underline">{project.fileName}</a>
-      //     </Link>
-      //   ),
-      //   cases: project.cases?.length.toLocaleString() || 0,
-      //   project_id: (
-      //     <Link href={`/projects/${project.project_id}`}>
-      //       <a className="text-utility-link underline">{project.project_id}</a>
-      //     </Link>
-      //   ),
-      //   dataCategory: project.dataCategory,
-      //   dataType: project.dataType,
-      //   dataFormat: project.dataFormat,
-      //   experimentalStrategy: project.experimentalStrategy || "--",
-      //   platform: project.platform || "--",
-      //   fileSize: fileSize(project.fileSize),
-      //   annotations: project.annotations?.length || 0,
-      // }));
+      exp: extractValue(
+        project.summary.data_categories,
+        "data_category",
+        "Sequencing Reads",
+        "case_count",
+      ),
+      snv: extractValue(
+        project.summary.data_categories,
+        "data_category",
+        "Simple Nucleotide Variation",
+        "case_count",
+      ),
+      meth: extractValue(
+        project.summary.data_categories,
+        "data_category",
+        "DNA Methylation",
+        "case_count",
+      ),
+      clinical: extractValue(
+        project.summary.data_categories,
+        "data_category",
+        "Clinical",
+        "case_count",
+      ),
+      clinical_supplement: extractValue(
+        project.summary.data_categories,
+        "data_category",
+        "Sequencing Reads",
+        "case_count",
+      ),
+      bio: extractValue(
+        project.summary.data_categories,
+        "data_category",
+        "Sequencing Reads",
+        "case_count",
+      ),
+      bio_supplement: extractValue(
+        project.summary.data_categories,
+        "data_category",
+        "Sequencing Reads",
+        "case_count",
+      ),
+      files: project.summary.file_count,
     }));
   }
 
-  const status = isSuccess
-    ? "fullfilled"
-    : isFetching
+  const status = isFetching
     ? "pending"
+    : isSuccess
+    ? "fulfilled"
     : isError
-    ? "error"
-    : "unfulfilled";
+    ? "rejected"
+    : "uninitialized";
 
-  //This if for handling pagination changes
-
-  // const coreDispatch = useCoreDispatch();
-
-  // const getCohortCases = (pageSize = 20, offset = 0) => {
-  //   coreDispatch(
-  //     fetchFiles({
-  //       filters: FilterSetToOperation(projectFilters),
-  //       expand: [
-  //         "summary", //annotations
-  //         "summary.experimental_strategies",
-  //         "summary.data_categories"
-  //       ],
-  //       size: pageSize,
-  //       from: offset * pageSize,
-  //     }),
-  //   );
-  // };
   const handlePageSizeChange = (x: string) => {
     //getCohortCases(parseInt(x), 0);
   };
@@ -179,6 +189,7 @@ const ProjectsTable: React.FC = () => {
       columnCells={columnCells}
       handleColumnChange={handleColumnChange}
       selectableRow={false}
+      showControls={true}
       pagination={{
         handlePageSizeChange,
         handlePageChange,
@@ -186,6 +197,7 @@ const ProjectsTable: React.FC = () => {
         label: "files",
       }}
       status={status}
+      renderRowSubComponent={renderExpandedRow}
     />
   );
 };
