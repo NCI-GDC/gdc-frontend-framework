@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   GdcFile,
   HistoryDefaults,
@@ -15,6 +15,7 @@ import { FaShoppingCart, FaDownload } from "react-icons/fa";
 import { get } from "lodash";
 import dynamic from "next/dynamic";
 import fileSize from "filesize";
+import saveAs from "file-saver";
 import tw from "tailwind-styled-components";
 import {
   AddToCartButton,
@@ -119,6 +120,36 @@ export const FileView: React.FC<FileViewProps> = ({
   const modal = useCoreSelector((state) => selectCurrentModal(state));
   const [bamActive, setBamActive] = useState(false);
   const [fileToDownload, setfileToDownload] = useState(file);
+  const sortedFileHistory = useMemo(
+    () =>
+      [...fileHistory]?.sort(
+        (a, b) =>
+          //sort based on relese number biggest at top
+          Number.parseFloat(a.version) - Number.parseFloat(b.version),
+      ),
+    [fileHistory],
+  );
+
+  const handleDownloadTSV = () => {
+    const header = ["Version", "File UUID", "Release Date", "Release Number"];
+
+    const body = sortedFileHistory
+      .map((obj, index, { length }) =>
+        [
+          obj.version,
+          `${obj.uuid}${index + 1 === length ? " Current Version" : ""}`,
+          obj.release_date,
+          obj.data_release,
+        ].join("\t"),
+      )
+      .join("\n");
+
+    const tsv = [header.join("\t"), body].join("\n");
+    const blob = new Blob([tsv], { type: "text/csv" });
+    const uuid = sortedFileHistory[sortedFileHistory.length - 1].uuid;
+
+    saveAs(blob, `file-history-${uuid}.tsv`);
+  };
 
   const isFileInCart = fileInCart(currentCart, file.fileId);
 
@@ -537,6 +568,7 @@ export const FileView: React.FC<FileViewProps> = ({
             <Button
               color={"base"}
               className="text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
+              onClick={handleDownloadTSV}
             >
               <FaDownload className="mr-2" /> Download TSV
             </Button>
@@ -549,27 +581,21 @@ export const FileView: React.FC<FileViewProps> = ({
                 "Release Date",
                 "Release Number",
               ],
-              tableRows: [...fileHistory]
-                ?.sort(
-                  (a, b) =>
-                    //sort based on relese number biggest at top
-                    Number.parseFloat(a.version) - Number.parseFloat(b.version),
-                )
-                .map((obj, index, { length }) => ({
-                  version: obj.version,
-                  file_id: (
-                    <>
-                      {obj.uuid}
-                      {index + 1 === length && (
-                        <span className="inline-block ml-2 border rounded-full bg-primary-darker text-white font-bold text-xs py-0.5 px-1">
-                          Current Version
-                        </span>
-                      )}
-                    </>
-                  ),
-                  release_date: obj.release_date,
-                  data_release: obj.data_release,
-                })),
+              tableRows: sortedFileHistory.map((obj, index, { length }) => ({
+                version: obj.version,
+                file_id: (
+                  <>
+                    {obj.uuid}
+                    {index + 1 === length && (
+                      <span className="inline-block ml-2 border rounded-full bg-primary-darker text-white font-bold text-xs py-0.5 px-1">
+                        Current Version
+                      </span>
+                    )}
+                  </>
+                ),
+                release_date: obj.release_date,
+                data_release: obj.data_release,
+              })),
             }}
           />
         </FullWidthDiv>
