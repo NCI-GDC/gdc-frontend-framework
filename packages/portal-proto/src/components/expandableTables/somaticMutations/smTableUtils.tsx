@@ -156,6 +156,18 @@ const Impact = ({ impact }: { impact: ImpactProps }): JSX.Element => {
 
 export const convertMutationFilter = (mutationId: string) => {
   return {
+    filters_case: {
+      content: [
+        {
+          content: {
+            field: "cases.available_variation_data",
+            value: ["ssm"],
+          },
+          op: "in",
+        },
+      ],
+      op: "and",
+    },
     filters_mutation: {
       content: [
         {
@@ -173,6 +185,7 @@ export const convertMutationFilter = (mutationId: string) => {
           op: "NOT",
         },
       ],
+      op: "and",
     },
   };
 };

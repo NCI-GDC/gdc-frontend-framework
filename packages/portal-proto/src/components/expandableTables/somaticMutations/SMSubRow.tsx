@@ -28,14 +28,23 @@ export const SMSubrow: React.FC<SMSubrowProps> = ({
     config: config.slow,
   });
 
-  useEffect(() => console.log("mutationId", mutationId), []);
-
   const getMutationSubrow = (mutationId: string) => {
     const SMQuery = gql`
-      query getProjectDocCountsByMutation($filters_mutation: FiltersArgument) {
+      query getProjectDocCountsByMutation(
+        $filters_case: FiltersArgument
+        $filters_mutation: FiltersArgument
+      ) {
         explore {
           cases {
-            aggregations(filters: $filters_mutation) {
+            something: aggregations(filters: $filters_case) {
+              project__project_id {
+                buckets {
+                  key
+                  doc_count
+                }
+              }
+            }
+            somethingElse: aggregations(filters: $filters_mutation) {
               project__project_id {
                 buckets {
                   doc_count
