@@ -11,14 +11,9 @@ const CreateContent = (items: Record<string, ReadonlyArray<string>>) => {
     <Stack>
       {Object.entries(items).map(([x, values], index) => {
         return (
-          <Stack
-            key={`${x}-${values.length}-${index}`}
-            align="flex-start"
-            justify="flex-start"
-            spacing="xs"
-          >
+          <div className="flex flex-col" key={`${x}-${values.length}-${index}`}>
             {index > 0 ? <Divider /> : null}
-            <Text>{x}</Text>
+            <p className={"text-header text-sm font-bold"}>{x}</p>
             <div className="columns-4 h-max-96 text-content text-xs p-4">
               <ul className="list-disc">
                 {[...values].sort().map((y) => (
@@ -28,7 +23,7 @@ const CreateContent = (items: Record<string, ReadonlyArray<string>>) => {
                 ))}
               </ul>
             </div>
-          </Stack>
+          </div>
         );
       })}
     </Stack>

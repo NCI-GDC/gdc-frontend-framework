@@ -191,7 +191,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
       );
 
     return (
-      <table {...getTableProps()} className="w-full text-left">
+      <table {...getTableProps()} className="w-full text-left font-content">
         {tableTitle && (
           <caption className="font-semibold text-left">{tableTitle}</caption>
         )}
