@@ -1,16 +1,14 @@
 // model for cohort endpoints
 
-import { FilterSet } from "../cohort";
-
-export interface DataRelease {
-  id: string;
-}
+import { GqlEquals } from "../gdcapi/filters";
 
 export interface CohortModel {
   id: string;
   name: string;
-  filters: FilterSet;
+  filters: GqlEquals;
   type: string;
   case_ids: string[];
-  data_release: DataRelease;
+  data_release: {
+    id: string;
+  };
 }

@@ -1,7 +1,5 @@
 // This page tests the cohort API middleware
 
-/* eslint-disable react/prop-types */
-
 import React from "react";
 import { NextPage } from "next";
 import {
@@ -47,7 +45,7 @@ const CohortApiTest: NextPage = () => {
     type: "static",
     filters: {
       content: { field: "cases.primary_site", value: "trachea" },
-      op: "=",
+      op: "=" as const,
     },
   };
 
@@ -58,7 +56,7 @@ const CohortApiTest: NextPage = () => {
     type: "static",
     filters: {
       content: { field: "cases.primary_site", value: "lip" },
-      op: "=",
+      op: "=" as const,
     },
   };
 
@@ -104,7 +102,6 @@ const CohortApiTest: NextPage = () => {
     isLoading: isCohortLoading,
     isSuccess: isCohortSuccess,
     isError: isCohortError,
-    //error: cohortError
   } = useGetCohortByIdQuery(testCohortId);
 
   // render specific cohort

@@ -13,7 +13,7 @@ export const cohortApiSlice = coreCreateApi({
   }),
   tagTypes: ["Cohort"],
   endpoints: (builder) => ({
-    getCohortsByContextId: builder.query<CohortModel[], string>({
+    getCohortsByContextId: builder.query<CohortModel[], void>({
       query: () => "/cohorts",
       providesTags: (result = []) => [
         { type: "Cohort", id: "LIST" },
