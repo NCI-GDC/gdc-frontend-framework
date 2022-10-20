@@ -2,7 +2,7 @@
 
 /* eslint-disable react/prop-types */
 
-import React, { useState } from "react";
+import React from "react";
 import { NextPage } from "next";
 import {
   useGetCohortsByContextIdQuery,
@@ -11,7 +11,6 @@ import {
   useUpdateCohortMutation,
   useDeleteCohortMutation,
 } from "@gff/core";
-import { useCookies } from "react-cookie";
 
 // for displaying cohort data
 const CohortContent = ({ cohort }) => {
@@ -32,8 +31,6 @@ const CohortApiTest: NextPage = () => {
     "text-2xl border rounded bg-base-lighter opacity-75 hover:opacity-100";
 
   // redux state, queries and mutations
-  const [cookie] = useCookies(["gdc_context_id"]);
-  const [currentContextId] = useState("");
   const [addCohort, { data: addCohortData, isSuccess: isAddCohortSuccess }] =
     useAddCohortMutation();
   const [updateCohort] = useUpdateCohortMutation();
@@ -71,7 +68,7 @@ const CohortApiTest: NextPage = () => {
     isLoading: isCohortsListLoading,
     isSuccess: isCohortsListSuccess,
     isError: isCohortsListError,
-  } = useGetCohortsByContextIdQuery(currentContextId);
+  } = useGetCohortsByContextIdQuery();
 
   // render list of cohorts for a context
   let cohortsListContent;
@@ -92,7 +89,13 @@ const CohortApiTest: NextPage = () => {
       </div>
     ));
   } else if (isCohortsListError || !cohortsListData) {
-    cohortsListContent = <div>Error loading list</div>;
+    cohortsListContent = (
+      <div>
+        Error loading list, check if valid context cookie exists.
+        <br></br>
+        Adding a new cohort will provide a valid context cookie.
+      </div>
+    );
   }
 
   // use rtk query to get a specific target test cohort
@@ -121,12 +124,6 @@ const CohortApiTest: NextPage = () => {
   // render page
   return (
     <div>
-      <div className="font-montserrat text-xl text-primary-content-darker p-4 shadow-md transition-colors">
-        <h1>Cookie Settings</h1>
-        <br></br>
-        Current gdc_context_id in Cookie: {cookie["gdc_context_id"]}
-      </div>
-
       <div className="font-montserrat text-xl text-primary-content-darker p-4 shadow-md transition-colors">
         <h1>Test Cohort</h1>
         <br></br>
