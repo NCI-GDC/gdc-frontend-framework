@@ -1,13 +1,7 @@
-// This page tests integration of the cohort API middleware with the existing
-// analysis page. That page was copied in whole and then modified to grab
-// cohorts from the API middleware instead of a static const.
-
-// For this page to work, the mock cohort api must be started. See
-// data/cohort-api-server.js for additional details.
+// This page tests the cohort API middleware
 
 /* eslint-disable react/prop-types */
 
-//import React, { useEffect, useState } from "react";
 import React, { useState } from "react";
 import { NextPage } from "next";
 import {

@@ -1,8 +1,5 @@
 // This defines the middleware for the cohort API POC.
 
-// For this slice to work, the mock cohort api must be started. See
-// data/cohort-api-server.js for additional details.
-
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { coreCreateApi } from "../../coreCreateApi";
 import type { Middleware, Reducer } from "@reduxjs/toolkit";
@@ -12,27 +9,10 @@ export const cohortApiSlice = coreCreateApi({
   reducerPath: "cohortApi",
   baseQuery: fetchBaseQuery({
     baseUrl: "https://api.gdc.cancer.gov/v0",
-    // prepareHeaders: async (headers) => {
-    //   headers.set("X-Context-ID", "FAKE-UUID-FOR-TESTING-CONTEXT-HEADER-BAD");
-    //   return headers;
-    // },
-    // prepareHeaders: async (headers) => {
-    //   headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-    //   return headers;
-    // },
     credentials: "include",
   }),
   tagTypes: ["Cohort"],
   endpoints: (builder) => ({
-    // // cohort endpoints
-    // getCohorts: builder.query<CohortModel[], void>({
-    //   query: () => "/cohorts",
-    //   providesTags: (result = []) => [
-    //     //"Cohort",
-    //     { type: "Cohort", id: "LIST" },
-    //     ...result.map(({ id }) => ({ type: "Cohort" as const, id })),
-    //   ],
-    // }),
     getCohortsByContextId: builder.query<CohortModel[], string>({
       query: () => "/cohorts",
       providesTags: (result = []) => [
@@ -52,16 +32,6 @@ export const cohortApiSlice = coreCreateApi({
       }),
       invalidatesTags: [{ type: "Cohort", id: "LIST" }],
     }),
-    // updateCohort: builder.mutation<CohortModel, Partial<CohortModel>>({
-    //   query: (cohort) => ({
-    //     url: `/cohorts/${cohort.id}`,
-    //     method: "PUT",
-    //     body: cohort,
-    //   }),
-    //   invalidatesTags: (_result, _error, arg) => [
-    //     { type: "Cohort", id: arg.id },
-    //   ],
-    // }),
     updateCohort: builder.mutation<CohortModel, Partial<CohortModel>>({
       query: (cohort) => ({
         url: `/cohorts/${cohort.id}`,
