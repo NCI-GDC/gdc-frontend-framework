@@ -473,7 +473,7 @@ const GroupInput: React.FC<GroupInputProps> = ({
         >
           {groupName}{" "}
           <PencilIcon
-            className="ml-2"
+            className="ml-2 shrink-0"
             onClick={(e) => {
               e.stopPropagation();
               setEditField(groupName);
