@@ -1,5 +1,5 @@
 import React, { useState, useEffect, FC } from "react";
-import { useTable, useExpanded } from "react-table";
+import { useTable, useRowState } from "react-table";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DragDrop } from "./DragDrop";
@@ -98,14 +98,14 @@ interface VerticalTableProps {
    */
   status?: "uninitialized" | "pending" | "fulfilled" | "rejected";
 
-  renderRowSubComponent?: (_: Record<string, any>) => JSX.Element;
+  renderRowSubComponent?: (any) => JSX.Element;
 }
 
 interface Column {
   Header: string;
   accessor: string;
   width?: number;
-  Cell?: (tableInfo: any) => JSX.Element;
+  Cell?: (value: any) => JSX.Element;
 }
 
 interface TableProps {
@@ -178,8 +178,15 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         {
           columns,
           data,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          initialRowStateAccessor: () => ({
+            expanded: 0,
+            values: {},
+            content: {},
+          }),
         },
-        useExpanded,
+        useRowState,
         selectableRow ? tableAction : () => null,
       );
 
@@ -217,9 +224,13 @@ export const VerticalTable: FC<VerticalTableProps> = ({
           ) : (
             rows.map((row, index) => {
               prepareRow(row);
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+
               return (
-                <React.Fragment {...row.getRowProps()}>
+                <>
                   <tr
+                    {...row.getRowProps()}
                     key={index}
                     {...row.getRowProps()}
                     className={
@@ -238,21 +249,26 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                       );
                     })}
                   </tr>
-                  {row.isExpanded ? (
-                    <tr>
-                      <td colSpan={headings.length}>
-                        {/*
+
+                  {
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    row.state.expanded > 0 ? (
+                      <tr {...row.getRowProps()}>
+                        <td colSpan={headings.length}>
+                          {/*
                           Inside it, call our renderRowSubComponent function. In reality,
                           you could pass whatever you want as props to
                           a component like this, including the entire
                           table instance. But for this example, we'll just
                           pass the row
                         */}
-                        {renderRowSubComponent({ row })}
-                      </td>
-                    </tr>
-                  ) : null}
-                </React.Fragment>
+                          {row.state.content}
+                        </td>
+                      </tr>
+                    ) : null
+                  }
+                </>
               );
             })
           )}

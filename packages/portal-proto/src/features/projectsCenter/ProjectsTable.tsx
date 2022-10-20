@@ -1,14 +1,8 @@
 import { useState } from "react";
 import { VerticalTable } from "../shared/VerticalTable";
+import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import Link from "next/link";
-import {
-  useCoreDispatch,
-  useCoreSelector,
-  useProjects,
-  filterSetToOperation,
-  buildCohortGqlOperator,
-  ProjectDefaults,
-} from "@gff/core";
+import { useProjects, buildCohortGqlOperator } from "@gff/core";
 import { useAppSelector } from "@/features/projectsCenter/appApi";
 import { selectFilters } from "@/features/projectsCenter/projectCenterFiltersSlice";
 import FunctionButton from "@/components/FunctionButton";
@@ -33,8 +27,24 @@ const ProjectsTable: React.FC = () => {
 
   const columnListOrder = [
     { id: "project_id", columnName: "Project", visible: true },
-    { id: "disease_type", columnName: "Disease Type", visible: true },
-    { id: "primary_site", columnName: "Primary Site", visible: true },
+    {
+      id: "disease_type",
+      columnName: "Disease Type",
+      visible: true,
+      Cell: ({ value, row }) => {
+        return (
+          <CollapsibleRow value={value} row={row} label={"Disease Type"} />
+        );
+      },
+    },
+    {
+      id: "primary_site",
+      columnName: "Primary Site",
+      visible: true,
+      Cell: ({ value, row }) => (
+        <CollapsibleRow value={value} row={row} label={"Primary Site"} />
+      ),
+    },
     { id: "program", columnName: "Program", visible: true },
     { id: "cases", columnName: "Cases", visible: true },
     { id: "seq", columnName: "Seq", visible: true },
@@ -54,7 +64,7 @@ const ProjectsTable: React.FC = () => {
   const filterColumnCells = (newList) =>
     newList.reduce((filtered, obj) => {
       if (obj.visible) {
-        filtered.push({ Header: obj.columnName, accessor: obj.id });
+        filtered.push({ Header: obj.columnName, accessor: obj.id, ...obj });
       }
       return filtered;
     }, []);
@@ -91,8 +101,10 @@ const ProjectsTable: React.FC = () => {
 
   /// console.log("ProjectTable", data, isSuccess, pagination);
 
-  const renderExpandedRow = () => {
-    return <div> Expanded </div>;
+  const renderExpandedRow = (content) => {
+    return {
+      content,
+    };
   };
 
   if (isSuccess) {
@@ -103,8 +115,8 @@ const ProjectsTable: React.FC = () => {
           <a className="text-utility-link underline">{project.project_id}</a>
         </Link>
       ),
-      disease_type: project.disease_type.length,
-      primary_site: project.primary_site.length,
+      disease_type: project.disease_type,
+      primary_site: project.primary_site,
       program: project.program,
       cases: project.summary.case_count,
       seq: extractValue(
