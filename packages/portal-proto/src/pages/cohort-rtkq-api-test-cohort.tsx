@@ -86,12 +86,12 @@ const CohortApiTest: NextPage = () => {
   if (isCohortsListLoading) {
     cohortsListContent = <div>Loading</div>;
   } else if (isCohortsListSuccess) {
-    cohortsListContent = cohortsListData.map((cohortItem) => (
-      <div key={cohortItem.id}>
-        <CohortContent cohort={cohortItem} />
+    cohortsListContent = cohortsListData.map((cohort) => (
+      <div key={cohort.id}>
+        <CohortContent cohort={cohort} />
         <button
           className={button_class}
-          onClick={() => deleteCohort(cohortItem.id)}
+          onClick={() => deleteCohort(cohort.id)}
         >
           Delete
         </button>
