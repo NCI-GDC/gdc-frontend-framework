@@ -146,9 +146,8 @@ export const FileView: React.FC<FileViewProps> = ({
 
     const tsv = [header.join("\t"), body].join("\n");
     const blob = new Blob([tsv], { type: "text/csv" });
-    const uuid = sortedFileHistory[sortedFileHistory.length - 1].uuid;
 
-    saveAs(blob, `file-history-${uuid}.tsv`);
+    saveAs(blob, `file-history-${file.fileId}.tsv`);
   };
 
   const isFileInCart = fileInCart(currentCart, file.fileId);
