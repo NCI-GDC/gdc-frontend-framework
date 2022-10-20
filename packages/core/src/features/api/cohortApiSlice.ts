@@ -3,7 +3,7 @@
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { coreCreateApi } from "../../coreCreateApi";
 import type { Middleware, Reducer } from "@reduxjs/toolkit";
-import { CohortModel } from "./cohortApiTypes";
+import { CohortModel, CohortAdd, CohortUpdate } from "./cohortApiTypes";
 
 export const cohortApiSlice = coreCreateApi({
   reducerPath: "cohortApi",
@@ -24,7 +24,7 @@ export const cohortApiSlice = coreCreateApi({
       query: (id) => `/cohorts/${id}`,
       providesTags: (_result, _error, arg) => [{ type: "Cohort", id: arg }],
     }),
-    addCohort: builder.mutation<CohortModel, Partial<CohortModel>>({
+    addCohort: builder.mutation<CohortModel, CohortAdd>({
       query: (cohort) => ({
         url: "/cohorts",
         method: "POST",
@@ -32,7 +32,7 @@ export const cohortApiSlice = coreCreateApi({
       }),
       invalidatesTags: [{ type: "Cohort", id: "LIST" }],
     }),
-    updateCohort: builder.mutation<CohortModel, Partial<CohortModel>>({
+    updateCohort: builder.mutation<CohortModel, CohortUpdate>({
       query: (cohort) => ({
         url: `/cohorts/${cohort.id}`,
         method: "PUT",
