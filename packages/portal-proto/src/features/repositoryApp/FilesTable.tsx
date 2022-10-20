@@ -1,6 +1,7 @@
 import { useState } from "react";
 import fileSize from "filesize";
 import { VerticalTable } from "../shared/VerticalTable";
+import { downloadJSON, downloadTSV } from "../shared/TableUtils";
 import { SingleItemAddToCartButton } from "../cart/updateCart";
 import Link from "next/link";
 import { Badge } from "@mantine/core";
@@ -16,6 +17,7 @@ import {
 import { useAppSelector } from "@/features/repositoryApp/appApi";
 import { selectFilters } from "@/features/repositoryApp/repositoryFiltersSlice";
 import FunctionButton from "@/components/FunctionButton";
+import { convertDateToString } from "src/utils/date";
 
 const FilesTables: React.FC = () => {
   const columnListOrder = [
@@ -37,6 +39,47 @@ const FilesTables: React.FC = () => {
     { id: "fileSize", columnName: "File Size", visible: true },
     { id: "annotations", columnName: "Annotations", visible: true },
   ];
+
+  const columnListForDownload = [
+    { id: "access", columnName: "Access" },
+    { id: "fileName", columnName: "File Name" },
+    {
+      id: "cases",
+      columnName: "Cases",
+      composer: (file) => file.cases?.length.toLocaleString() || 0,
+    },
+    { id: "project_id", columnName: "Project" },
+    { id: "dataCategory", columnName: "Data Category " },
+    { id: "dataFormat", columnName: "Data Format" },
+    {
+      id: "fileSize",
+      columnName: "File Size",
+      composer: (file) => fileSize(file.fileSize),
+    },
+    {
+      id: "annotations",
+      columnName: "Annotations",
+      composer: (file) => file.annotations?.length || 0,
+    },
+  ];
+
+  const keysForDownload = [
+    { path: "data_format", composer: "dataFormat" },
+    {
+      path: "cases",
+      composer: (file) =>
+        file.cases?.map((caseObj) => ({
+          case_id: caseObj.case_id,
+          project: { project_id: caseObj.project.project_id },
+        })),
+    },
+    { path: "access" },
+    { path: "file_name", composer: "fileName" },
+    { path: "file_id", composer: "fileId" },
+    { path: "data_category", composer: "dataCategory" },
+    { path: "file_size", composer: "fileSize" },
+  ];
+
   const filterColumnCells = (newList) =>
     newList.reduce((filtered, obj) => {
       if (obj.visible) {
@@ -141,8 +184,28 @@ const FilesTables: React.FC = () => {
       tableTitle={`Total of ${tempPagination?.total} files`}
       additionalControls={
         <div className="flex gap-2">
-          <FunctionButton>JSON</FunctionButton>
-          <FunctionButton>TSV</FunctionButton>
+          <FunctionButton
+            onClick={() =>
+              downloadJSON(
+                data,
+                keysForDownload,
+                `files.${convertDateToString(new Date())}.json`,
+              )
+            }
+          >
+            JSON
+          </FunctionButton>
+          <FunctionButton
+            onClick={() =>
+              downloadTSV(
+                data,
+                columnListForDownload,
+                `files.${convertDateToString(new Date())}.tsv`,
+              )
+            }
+          >
+            TSV
+          </FunctionButton>
         </div>
       }
       tableData={formattedTableData}
