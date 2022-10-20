@@ -1,11 +1,11 @@
 // models for cohort endpoints
 
-import { GqlEquals } from "../gdcapi/filters";
+import { GqlIntersection, GqlUnion } from "../gdcapi/filters";
 
 export interface CohortModel {
   id: string;
   name: string;
-  filters: GqlEquals;
+  filters: GqlIntersection | GqlUnion;
   type: string;
   case_ids: string[];
   data_release: {
@@ -13,15 +13,8 @@ export interface CohortModel {
   };
 }
 
-export interface CohortAdd {
-  name: string;
-  filters: GqlEquals;
-  type: string;
-}
-
-export interface CohortUpdate {
-  id: string;
-  name: string;
-  filters: GqlEquals;
-  type: string;
-}
+export type CohortAdd = Pick<CohortModel, "name" | "filters" | "type">;
+export type CohortUpdate = Pick<
+  CohortModel,
+  "id" | "name" | "filters" | "type"
+>;

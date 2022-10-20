@@ -8,18 +8,21 @@ import {
   useAddCohortMutation,
   useUpdateCohortMutation,
   useDeleteCohortMutation,
+  GqlIntersection,
+  CohortModel,
 } from "@gff/core";
 
 // for displaying cohort data
-const CohortContent = ({ cohort }) => {
+const CohortContent = ({ cohort }: { cohort: CohortModel }) => {
+  const { id, name, type, filters, case_ids, data_release } = cohort;
   return (
     <article>
-      <p>Cohort ID: {cohort.id}</p>
-      <p>Cohort Name: {cohort.name}</p>
-      <p>Cohort Type: {cohort.type}</p>
-      <p>Filters: {JSON.stringify(cohort.filters)}</p>
-      <p>Case IDs: {JSON.stringify(cohort.case_ids)}</p>
-      <p>Data Release: {JSON.stringify(cohort.data_release)}</p>
+      <p>Cohort ID: {id}</p>
+      <p>Cohort Name: {name}</p>
+      <p>Cohort Type: {type}</p>
+      <p>Filters: {JSON.stringify(filters)}</p>
+      <p>Case IDs: {JSON.stringify(case_ids)}</p>
+      <p>Data Release: {JSON.stringify(data_release)}</p>
     </article>
   );
 };
@@ -44,9 +47,14 @@ const CohortApiTest: NextPage = () => {
     name: "New Test Cohort",
     type: "static",
     filters: {
-      content: { field: "cases.primary_site", value: "trachea" },
-      op: "=" as const,
-    },
+      op: "and",
+      content: [
+        {
+          content: { field: "cases.primary_site", value: "trachea" },
+          op: "=",
+        },
+      ],
+    } as GqlIntersection,
   };
 
   // request body for updates
@@ -55,9 +63,14 @@ const CohortApiTest: NextPage = () => {
     name: "Updated Test Cohort",
     type: "static",
     filters: {
-      content: { field: "cases.primary_site", value: "lip" },
-      op: "=" as const,
-    },
+      op: "and",
+      content: [
+        {
+          content: { field: "cases.primary_site", value: "lip" },
+          op: "=",
+        },
+      ],
+    } as GqlIntersection,
   };
 
   // using rtkquery to get list of cohorts for a context
@@ -73,12 +86,12 @@ const CohortApiTest: NextPage = () => {
   if (isCohortsListLoading) {
     cohortsListContent = <div>Loading</div>;
   } else if (isCohortsListSuccess) {
-    cohortsListContent = cohortsListData.map((cohort) => (
-      <div key={cohort.id}>
-        <CohortContent cohort={cohort} />
+    cohortsListContent = cohortsListData.map((cohortItem) => (
+      <div key={cohortItem.id}>
+        <CohortContent cohort={cohortItem} />
         <button
           className={button_class}
-          onClick={() => deleteCohort(cohort.id)}
+          onClick={() => deleteCohort(cohortItem.id)}
         >
           Delete
         </button>
@@ -126,7 +139,7 @@ const CohortApiTest: NextPage = () => {
         <br></br>
         {cohortContent}
         <br></br>
-        <div className="flex flex-row gap-x-1">
+        <div className="flex flex-row gap-x-4">
           <button className={button_class} onClick={() => addCohort(addBody)}>
             Add
           </button>
@@ -140,7 +153,6 @@ const CohortApiTest: NextPage = () => {
             className={button_class}
             onClick={() => {
               deleteCohort(testCohortId);
-              // setTestCohortName("");
             }}
           >
             Delete
