@@ -26,29 +26,18 @@ export const Consequence = ({
 }: {
   consequence: ConsequenceProps;
 }): JSX.Element => {
-  const [fc, setFc] = useState(undefined);
-  const [symbol, setSymbol] = useState(undefined);
-  const [aaChange, setAaChange] = useState(undefined);
-
-  useEffect(() => {
-    if (Object.keys(consequence).length) {
-      let { consequenceType, symbol, aaChange } = consequence;
-      const cType = consequenceType.split("_")[0]
-        ? consequenceType.split("_")[0]
-        : ``;
-      const formatFc = cType
-        ? cType?.charAt(0).toUpperCase() + cType?.slice(1)
-        : ``;
-      setFc(formatFc);
-      setSymbol(symbol);
-      setAaChange(aaChange);
-    }
-  }, [consequence]);
+  const { consequenceType = "", symbol = "", aaChange = "" } = consequence;
+  const cType = consequenceType.split("_")[0]
+    ? consequenceType.split("_")[0]
+    : ``;
+  let formatConsequence = cType
+    ? cType?.charAt(0).toUpperCase() + cType?.slice(1)
+    : ``;
 
   return (
     <>
       <div className={`flex flex-row w-max m-auto text-xs`}>
-        <span className={`mx-0.5 font-bold`}>{fc}</span>
+        <span className={`mx-0.5 font-bold`}>{formatConsequence}</span>
         <span className={`mx-0.5`}>{symbol}</span>
         <span className={`mx-0.5`}>{aaChange}</span>
       </div>
@@ -266,15 +255,15 @@ export const createTableColumn = (
                     />
                     // </Tooltip>
                   )}
-                  {!row.getCanExpand() && visibleColumns[0].id === accessor && (
-                    <div className={`relative`}>
-                      {/* <GeneAffectedCases
-                          geneId={row.value}
-                          width={width}
-                          opening={row.getCanExpand()}
-                        ></GeneAffectedCases> */}
-                    </div>
-                  )}
+                  <>
+                    <SMSubrow
+                      mutationId={mutationID}
+                      firstColumn={visibleColumns[0].id}
+                      accessor={accessor}
+                      width={width}
+                      opening={row.getCanExpand()}
+                    ></SMSubrow>
+                  </>
                 </>
               );
             },
@@ -320,15 +309,13 @@ export const createTableColumn = (
                     )}
                   </>
                   <>
-                    {!row.getCanExpand() && visibleColumns[0].id === accessor && (
-                      <div className={`relative`}>
-                        {/* <GeneAffectedCases
-                            geneId={row.value}
-                            width={width}
-                            opening={row.getCanExpand()}
-                          ></GeneAffectedCases> */}
-                      </div>
-                    )}
+                    <SMSubrow
+                      mutationId={mutationID}
+                      firstColumn={visibleColumns[0].id}
+                      accessor={accessor}
+                      width={width}
+                      opening={row.getCanExpand()}
+                    ></SMSubrow>
                   </>
                 </animated.div>
               );
@@ -352,23 +339,16 @@ export const createTableColumn = (
                   className={`content-center`}
                 >
                   {row.getCanExpand() && (
-                    // <PercentageBar
-                    //   numerator={}
-                    //   denominator={}
-                    //   width={width / visibleColumns.length}
-                    // />
                     <TableCell row={row} accessor={accessor} anchor={false} />
                   )}
                   <>
-                    {!row.getCanExpand() && visibleColumns[0].id === accessor && (
-                      <div className={`relative`}>
-                        {/* <GeneAffectedCases
-                            geneId={row.value}
-                            width={width}
-                            opening={row.getCanExpand()}
-                          ></GeneAffectedCases> */}
-                      </div>
-                    )}
+                    <SMSubrow
+                      mutationId={mutationID}
+                      firstColumn={visibleColumns[0].id}
+                      accessor={accessor}
+                      width={width}
+                      opening={row.getCanExpand()}
+                    ></SMSubrow>
                   </>
                 </animated.div>
               );
@@ -391,22 +371,17 @@ export const createTableColumn = (
                   style={partitionWidth}
                   className={`content-center`}
                 >
-                  {/* {row.getCanExpand() && (
-                      <TableCell row={row} accessor={accessor} />
-                    )} */}
                   {row.getCanExpand() && (
                     <Consequence consequence={row.original["consequences"]} />
                   )}
                   <>
-                    {!row.getCanExpand() && visibleColumns[0].id === accessor && (
-                      <div className={`relative`}>
-                        {/* <GeneAffectedCases
-                                  geneId={row.value}
-                                  width={width}
-                                  opening={row.getCanExpand()}
-                                ></GeneAffectedCases> */}
-                      </div>
-                    )}
+                    <SMSubrow
+                      mutationId={mutationID}
+                      firstColumn={visibleColumns[0].id}
+                      accessor={accessor}
+                      width={width}
+                      opening={row.getCanExpand()}
+                    ></SMSubrow>
                   </>
                 </animated.div>
               );
@@ -433,15 +408,13 @@ export const createTableColumn = (
                     <Impact impact={row.original["impact"]} />
                   )}
                   <>
-                    {!row.getCanExpand() && visibleColumns[0].id === accessor && (
-                      <div className={`relative`}>
-                        {/* <GeneAffectedCases
-                                geneId={row.value}
-                                width={width}
-                                opening={row.getCanExpand()}
-                              ></GeneAffectedCases> */}
-                      </div>
-                    )}
+                    <SMSubrow
+                      mutationId={mutationID}
+                      firstColumn={visibleColumns[0].id}
+                      accessor={accessor}
+                      width={width}
+                      opening={row.getCanExpand()}
+                    ></SMSubrow>
                   </>
                 </animated.div>
               );
@@ -464,16 +437,13 @@ export const createTableColumn = (
                   <>
                     <TableCell row={row} accessor={accessor} anchor={false} />
                     <>
-                      {!row.getCanExpand() &&
-                        visibleColumns[0].id === accessor && (
-                          <div className={`relative`}>
-                            {/* <GeneAffectedCases
-                                geneId={row.value}
-                                width={width}
-                                opening={row.getCanExpand()}
-                              ></GeneAffectedCases> */}
-                          </div>
-                        )}
+                      <SMSubrow
+                        mutationId={mutationID}
+                        firstColumn={visibleColumns[0].id}
+                        accessor={accessor}
+                        width={width}
+                        opening={row.getCanExpand()}
+                      ></SMSubrow>
                     </>
                   </>
                 </animated.div>
@@ -514,7 +484,18 @@ export const getMutation = (
   ssmsTotal: number,
 ) => {
   // if (sm.consequence.length === 0) debugger;
-  const { gene, annotation, aa_change, consequence_type } = sm.consequence[0];
+  const {
+    gene = { symbol: "" },
+    annotation = {
+      polyphen_impact: "",
+      polyphen_score: "",
+      sift_impact: "",
+      sift_score: "",
+      vep_impact: "",
+    },
+    aa_change = "",
+    consequence_type = "",
+  } = sm.consequence[0];
 
   return {
     select: sm.ssm_id,
