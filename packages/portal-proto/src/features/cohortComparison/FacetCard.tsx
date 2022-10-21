@@ -1,20 +1,12 @@
 import { useMemo } from "react";
 import { Paper } from "@mantine/core";
 import { CohortFacetDoc, DAYS_IN_YEAR } from "@gff/core";
-import { FIELD_LABELS } from "src/fields";
 import BarChart from "../charts/BarChart";
 import PValue from "./PValue";
 import { Button } from "@mantine/core";
 import saveAs from "file-saver";
+import { calculatePercentageAsNumber, humanify } from "src/utils";
 
-const formatBucket = (bucket: number | string, field: string): string => {
-  if (field === "diagnoses.age_at_diagnosis") {
-    const age = (bucket as number) / DAYS_IN_YEAR;
-    return age === 80 ? "80+ years" : `${age} to <${age + 10} years`;
-  }
-
-  return bucket as string;
-};
 interface FacetCardProps {
   readonly data: { buckets: CohortFacetDoc[] }[];
   readonly field: string;
@@ -22,12 +14,24 @@ interface FacetCardProps {
   readonly cohortNames: string[];
 }
 
-const FacetCard: React.FC<FacetCardProps> = ({
+export const FacetCard: React.FC<FacetCardProps> = ({
   data,
   field,
   counts,
   cohortNames,
 }: FacetCardProps) => {
+  const divId = `cohort_comparison_bar_chart_${field}`;
+  const fieldLabel = humanify({ term: field });
+
+  const formatBucket = (bucket: number | string, field: string): string => {
+    if (field === "diagnoses.age_at_diagnosis") {
+      const age = (bucket as number) / DAYS_IN_YEAR;
+      return age === 80 ? "80+ years" : `${age} to <${age + 10} years`;
+    }
+
+    return bucket as string;
+  };
+
   let formattedData = useMemo(
     () =>
       data.map((cohort, idx) => {
@@ -81,37 +85,43 @@ const FacetCard: React.FC<FacetCardProps> = ({
     },
   }));
 
-  const divId = `cohort_comparison_bar_chart_${field}`;
-
   const downloadTSVFile = () => {
-    let strOut = `${FIELD_LABELS[field]}\t# Cases S1\t% Cases S1\t# Cases S2\t% Cases S2\n`;
-    strOut += "";
+    const header = [
+      `${fieldLabel}`,
+      "# Cases S1",
+      "% Cases S1",
+      "# Cases S2",
+      "% Cases S2",
+    ];
 
-    uniqueValues.forEach((value, idx) => {
-      const cohort1Value = formattedData[0][idx].count;
-      const cohort2Value = formattedData[1][idx].count;
-      strOut += `${value}\t${cohort1Value?.toString() || "0"}\t${(
-        ((cohort1Value || 0) / counts[0]) *
-        100
-      ).toFixed(2)}\t${cohort2Value?.toString() || "0"}\t${(
-        ((cohort2Value || 0) / counts[1]) *
-        100
-      ).toFixed(2)}\n`;
+    const body = [];
+    uniqueValues.map((value, uniqueValuesIdx) => {
+      const arr = [];
+      formattedData.map((item, formattedDataIdx) => {
+        const cohortValue = item[uniqueValuesIdx].count;
+        if (formattedDataIdx === 0) arr.push(value);
+        arr.push(cohortValue || 0);
+        arr.push(
+          calculatePercentageAsNumber(cohortValue, counts[formattedDataIdx]),
+        );
+        return arr;
+      });
+      body.push(arr.join("\t"));
     });
 
-    saveAs(
-      new Blob([strOut], {
-        type: "text/plain;charset=us-ascii",
-      }),
-      `${FIELD_LABELS[field]}-comparison.tsv`,
-    );
+    const tsv = [header.join("\t"), body.join("\n")].join("\n");
 
-    return false;
+    saveAs(
+      new Blob([tsv], {
+        type: "text/tsv",
+      }),
+      `${fieldLabel}-comparison.tsv`,
+    );
   };
 
   return (
     <Paper p="md">
-      <h2 className="text-lg font-semibold">{FIELD_LABELS[field]}</h2>
+      <h2 className="text-lg font-semibold">{fieldLabel}</h2>
       <div className="h-[400px]">
         <BarChart
           data={{
@@ -134,7 +144,7 @@ const FacetCard: React.FC<FacetCardProps> = ({
       <table className="bg-base-lightest w-full text-left text-primary-content-darker">
         <thead>
           <tr className="bg-base-lightest">
-            <th>{FIELD_LABELS[field]}</th>
+            <th>{fieldLabel}</th>
             <th>
               # Cases S<sub>1</sub>
             </th>
