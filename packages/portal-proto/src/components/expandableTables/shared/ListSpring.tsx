@@ -36,11 +36,11 @@ const ListSpring: React.FC<ListSpringProps> = ({
         <h2 className={`flex flex-row w-screen font-bold text-sm p-2`}>
           # SSMS Affected Cases Across The GDC
         </h2>
-        {subData.map((numerator, index) => {
+        {subData.map((ratio, index) => {
           return (
             <ItemSpring
               key={index}
-              numerator={numerator}
+              ratio={ratio}
               index={index}
               len={subData.length || 1}
             />

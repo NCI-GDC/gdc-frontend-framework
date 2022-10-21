@@ -68,10 +68,15 @@ export const GSubrow: React.FC<GeneSubrowProps> = ({
     })
       .then((res) => res.json())
       .then((json) => {
-        console.log("json", json);
-        // const { buckets } =
-        //   json?.data?.explore?.cases?.aggregations?.project__project_id || [];
-        // setSubData(buckets);
+        // todo: refactor
+        const { numerators, denominators } = json?.data?.explore?.cases;
+        const { buckets: nBuckets } = numerators?.project__project_id;
+        const { buckets: dBuckets } = denominators?.project__project_id;
+        const agg = [];
+        nBuckets.forEach(({ doc_count: nCount, key: nKey }) => {
+          agg.push([dBuckets.find(({ key: dKey }) => nKey === dKey), nCount]);
+        });
+        setSubData(agg);
       });
   };
 

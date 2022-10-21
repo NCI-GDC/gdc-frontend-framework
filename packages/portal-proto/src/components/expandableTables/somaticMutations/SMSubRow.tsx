@@ -71,12 +71,11 @@ export const SMSubrow: React.FC<SMSubrowProps> = ({
         const { numerators, denominators } = json?.data?.explore?.cases;
         const { buckets: nBuckets } = numerators?.project__project_id;
         const { buckets: dBuckets } = denominators?.project__project_id;
-        nBuckets.forEach(({ key: nKey }) => {
-          console.log(dBuckets.find(({ key: dKey }) => nKey === dKey));
+        const agg = [];
+        nBuckets.forEach(({ doc_count: nCount, key: nKey }) => {
+          agg.push([dBuckets.find(({ key: dKey }) => nKey === dKey), nCount]);
         });
-        // const projectBuckets = numerator.project__project_id.buckets;
-        // projectBuckets.forEach((project) => denominator.project__project_id.buckets)
-        // setSubData([]);
+        setSubData(agg);
       });
   };
 
@@ -88,7 +87,7 @@ export const SMSubrow: React.FC<SMSubrowProps> = ({
 
   return (
     <>
-      {/* {!opening && firstColumn === accessor && subData.length > 0 && (
+      {!opening && firstColumn === accessor && subData.length > 0 && (
         <div className={`relative`}>
           <ListSpring
             subData={subData}
@@ -96,7 +95,7 @@ export const SMSubrow: React.FC<SMSubrowProps> = ({
             opening={opening}
           />
         </div>
-      )} */}
+      )}
     </>
   );
 };
