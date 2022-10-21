@@ -13,7 +13,6 @@ import CheckboxSpring from "../shared/CheckboxSpring";
 import { Survival } from "../shared/types";
 import { SMSubrow } from "./SMSubRow";
 import { Tooltip } from "@mantine/core";
-import { useEffect, useState } from "react";
 
 export interface ConsequenceProps {
   consequenceType: string;
@@ -30,7 +29,7 @@ export const Consequence = ({
   const cType = consequenceType.split("_")[0]
     ? consequenceType.split("_")[0]
     : ``;
-  let formatConsequence = cType
+  const formatConsequence = cType
     ? cType?.charAt(0).toUpperCase() + cType?.slice(1)
     : ``;
 
