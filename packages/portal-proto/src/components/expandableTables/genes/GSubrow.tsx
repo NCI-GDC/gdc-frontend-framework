@@ -30,10 +30,21 @@ export const GSubrow: React.FC<GeneSubrowProps> = ({
 
   const getGeneSubRow = (geneId: string) => {
     const exploreCasesAggregatedProjectsBucketsQuery = gql`
-      query getProjectDocCountsByGene($filters_gene: FiltersArgument) {
+      query getProjectDocCountsByGene(
+        $filters_case: FiltersArgument
+        $filters_gene: FiltersArgument
+      ) {
         explore {
           cases {
-            aggregations(filters: $filters_gene) {
+            denominators: aggregations(filters: $filters_case) {
+              project__project_id {
+                buckets {
+                  key
+                  doc_count
+                }
+              }
+            }
+            numerators: aggregations(filters: $filters_gene) {
               project__project_id {
                 buckets {
                   doc_count
@@ -57,9 +68,10 @@ export const GSubrow: React.FC<GeneSubrowProps> = ({
     })
       .then((res) => res.json())
       .then((json) => {
-        const { buckets } =
-          json?.data?.explore?.cases?.aggregations?.project__project_id || [];
-        setSubData(buckets);
+        console.log("json", json);
+        // const { buckets } =
+        //   json?.data?.explore?.cases?.aggregations?.project__project_id || [];
+        // setSubData(buckets);
       });
   };
 

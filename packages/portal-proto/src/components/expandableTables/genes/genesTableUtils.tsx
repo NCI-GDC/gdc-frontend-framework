@@ -403,6 +403,18 @@ export const getGene = (
 
 export const convertGeneFilter = (geneId: string) => {
   return {
+    filters_case: {
+      content: [
+        {
+          content: {
+            field: "cases.available_variation_data",
+            value: ["ssm"],
+          },
+          op: "in",
+        },
+      ],
+      op: "and",
+    },
     filters_gene: {
       op: "and",
       content: [

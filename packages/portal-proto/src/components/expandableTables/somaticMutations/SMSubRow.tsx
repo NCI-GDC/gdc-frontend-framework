@@ -36,7 +36,7 @@ export const SMSubrow: React.FC<SMSubrowProps> = ({
       ) {
         explore {
           cases {
-            something: aggregations(filters: $filters_case) {
+            denominators: aggregations(filters: $filters_case) {
               project__project_id {
                 buckets {
                   key
@@ -44,7 +44,7 @@ export const SMSubrow: React.FC<SMSubrowProps> = ({
                 }
               }
             }
-            somethingElse: aggregations(filters: $filters_mutation) {
+            numerators: aggregations(filters: $filters_mutation) {
               project__project_id {
                 buckets {
                   doc_count
@@ -68,8 +68,15 @@ export const SMSubrow: React.FC<SMSubrowProps> = ({
     })
       .then((res) => res.json())
       .then((json) => {
-        console.log("json", json);
-        setSubData([]);
+        const { numerators, denominators } = json?.data?.explore?.cases;
+        const { buckets: nBuckets } = numerators?.project__project_id;
+        const { buckets: dBuckets } = denominators?.project__project_id;
+        nBuckets.forEach(({ key: nKey }) => {
+          console.log(dBuckets.find(({ key: dKey }) => nKey === dKey));
+        });
+        // const projectBuckets = numerator.project__project_id.buckets;
+        // projectBuckets.forEach((project) => denominator.project__project_id.buckets)
+        // setSubData([]);
       });
   };
 
@@ -81,7 +88,7 @@ export const SMSubrow: React.FC<SMSubrowProps> = ({
 
   return (
     <>
-      {!opening && firstColumn === accessor && subData.length > 0 && (
+      {/* {!opening && firstColumn === accessor && subData.length > 0 && (
         <div className={`relative`}>
           <ListSpring
             subData={subData}
@@ -89,7 +96,7 @@ export const SMSubrow: React.FC<SMSubrowProps> = ({
             opening={opening}
           />
         </div>
-      )}
+      )} */}
     </>
   );
 };
