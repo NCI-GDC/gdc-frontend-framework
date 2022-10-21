@@ -4,16 +4,16 @@ import {
   MdKeyboardArrowUp as UpIcon,
 } from "react-icons/md";
 import { createKeyboardAccessibleFunction } from "src/utils";
-import { Stack, Divider, Text } from "@mantine/core";
+import { Divider } from "@mantine/core";
 
 const CreateContent = (items: Record<string, ReadonlyArray<string>>) => {
   return (
-    <Stack>
+    <div className="flex flex-col transition-transform">
       {Object.entries(items).map(([x, values], index) => {
         return (
           <div className="flex flex-col" key={`${x}-${values.length}-${index}`}>
             {index > 0 ? <Divider /> : null}
-            <p className={"text-header text-sm font-bold"}>{x}</p>
+            <p className={"text-header text-[0.75em] font-semibold"}>{x}</p>
             <div className="columns-4 h-max-96 text-content text-xs p-4">
               <ul className="list-disc">
                 {[...values].sort().map((y) => (
@@ -26,7 +26,7 @@ const CreateContent = (items: Record<string, ReadonlyArray<string>>) => {
           </div>
         );
       })}
-    </Stack>
+    </div>
   );
 };
 

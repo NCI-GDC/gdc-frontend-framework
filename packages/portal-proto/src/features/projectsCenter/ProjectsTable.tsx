@@ -21,6 +21,11 @@ const extractValue = (
   return results[valueKey];
 };
 
+const extractToArray = (
+  data: ReadonlyArray<Record<string, number | string>>,
+  nodeKey: string,
+) => data.map((x) => x[nodeKey]);
+
 const ProjectsTable: React.FC = () => {
   const [pageSize, setPageSize] = useState(10);
   const [offset, setOffset] = useState(0);
@@ -47,18 +52,26 @@ const ProjectsTable: React.FC = () => {
     },
     { id: "program", columnName: "Program", visible: true },
     { id: "cases", columnName: "Cases", visible: true },
-    { id: "seq", columnName: "Seq", visible: true },
-    { id: "exp", columnName: "Exp", visible: true },
-    { id: "snv", columnName: "SNV", visible: true },
-    { id: "meth", columnName: "Meth", visible: true },
-    { id: "clinical", columnName: "Clinical", visible: false },
     {
-      id: "clinical_supplement",
-      columnName: "Clinical Supplement",
+      id: "data_categories",
+      columnName: "Data Categories",
       visible: true,
+      Cell: ({ value, row }) => (
+        <CollapsibleRow value={value} row={row} label={"Data Categories"} />
+      ),
     },
-    { id: "bio", columnName: "Bio", visible: true },
-    { id: "bio_supplement", columnName: "Bio Supplement", visible: true },
+    {
+      id: "experimental_strategies",
+      columnName: "Experimental Strategies",
+      visible: true,
+      Cell: ({ value, row }) => (
+        <CollapsibleRow
+          value={value}
+          row={row}
+          label={"Experimental Strategies"}
+        />
+      ),
+    },
     { id: "files", columnName: "Files", visible: true },
   ];
   const filterColumnCells = (newList) =>
@@ -94,12 +107,13 @@ const ProjectsTable: React.FC = () => {
       "summary", //annotations
       "summary.experimental_strategies",
       "summary.data_categories",
+      "program",
     ],
     size: pageSize,
     from: offset * pageSize,
   });
 
-  /// console.log("ProjectTable", data, isSuccess, pagination);
+  console.log("ProjectTable", data, isSuccess, pagination);
 
   const renderExpandedRow = (content) => {
     return {
@@ -117,55 +131,15 @@ const ProjectsTable: React.FC = () => {
       ),
       disease_type: project.disease_type,
       primary_site: project.primary_site,
-      program: project.program,
+      program: project.program.name,
       cases: project.summary.case_count,
-      seq: extractValue(
+      data_categories: extractToArray(
         project.summary.data_categories,
         "data_category",
-        "Sequencing Reads",
-        "case_count",
       ),
-      exp: extractValue(
-        project.summary.data_categories,
-        "data_category",
-        "Sequencing Reads",
-        "case_count",
-      ),
-      snv: extractValue(
-        project.summary.data_categories,
-        "data_category",
-        "Simple Nucleotide Variation",
-        "case_count",
-      ),
-      meth: extractValue(
-        project.summary.data_categories,
-        "data_category",
-        "DNA Methylation",
-        "case_count",
-      ),
-      clinical: extractValue(
-        project.summary.data_categories,
-        "data_category",
-        "Clinical",
-        "case_count",
-      ),
-      clinical_supplement: extractValue(
-        project.summary.data_categories,
-        "data_category",
-        "Sequencing Reads",
-        "case_count",
-      ),
-      bio: extractValue(
-        project.summary.data_categories,
-        "data_category",
-        "Sequencing Reads",
-        "case_count",
-      ),
-      bio_supplement: extractValue(
-        project.summary.data_categories,
-        "data_category",
-        "Sequencing Reads",
-        "case_count",
+      experimental_strategies: extractToArray(
+        project.summary.experimental_strategies,
+        "experimental_strategy",
       ),
       files: project.summary.file_count,
     }));
