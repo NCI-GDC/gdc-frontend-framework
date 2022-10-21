@@ -15,7 +15,6 @@ import { FaShoppingCart, FaDownload } from "react-icons/fa";
 import { get } from "lodash";
 import dynamic from "next/dynamic";
 import fileSize from "filesize";
-import saveAs from "file-saver";
 import tw from "tailwind-styled-components";
 import {
   AddToCartButton,
