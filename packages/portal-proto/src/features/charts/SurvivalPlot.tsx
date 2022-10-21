@@ -287,6 +287,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   const plotData = data.survivalData;
 
   const hasEnoughData =
+    plotType === SurvivalPlotTypes.mutation ||
     plotType == SurvivalPlotTypes.categorical ||
     plotType === SurvivalPlotTypes.continuous
       ? enoughDataOnSomeCurves(plotData)
