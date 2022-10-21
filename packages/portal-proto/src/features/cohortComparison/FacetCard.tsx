@@ -6,6 +6,7 @@ import PValue from "./PValue";
 import { Button } from "@mantine/core";
 import saveAs from "file-saver";
 import { calculatePercentageAsNumber, humanify } from "src/utils";
+import { Data } from "victory";
 
 interface FacetCardProps {
   readonly data: { buckets: CohortFacetDoc[] }[];
@@ -94,20 +95,17 @@ export const FacetCard: React.FC<FacetCardProps> = ({
       "% Cases S2",
     ];
 
-    const body = [];
-    uniqueValues.map((value, uniqueValuesIdx) => {
-      const arr = [];
-      formattedData.map((item, formattedDataIdx) => {
-        const cohortValue = item[uniqueValuesIdx].count;
-        if (formattedDataIdx === 0) arr.push(value);
-        arr.push(cohortValue || 0);
-        arr.push(
-          calculatePercentageAsNumber(cohortValue, counts[formattedDataIdx]),
-        );
-        return arr;
-      });
-      body.push(arr.join("\t"));
-    });
+    const body = uniqueValues.map((key, index) =>
+      [
+        key,
+        ...formattedData
+          .map((sub, idx) => [
+            sub[index].count ?? 0,
+            calculatePercentageAsNumber(sub[index].count, counts[idx]),
+          ])
+          .flat(),
+      ].join("\t"),
+    );
 
     const tsv = [header.join("\t"), body.join("\n")].join("\n");
 
