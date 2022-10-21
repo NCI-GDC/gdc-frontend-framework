@@ -6,7 +6,6 @@ import PValue from "./PValue";
 import { Button } from "@mantine/core";
 import saveAs from "file-saver";
 import { calculatePercentageAsNumber, humanify } from "src/utils";
-import { Data } from "victory";
 
 interface FacetCardProps {
   readonly data: { buckets: CohortFacetDoc[] }[];
