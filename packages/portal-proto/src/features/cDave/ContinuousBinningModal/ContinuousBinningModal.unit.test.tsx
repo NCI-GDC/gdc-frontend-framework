@@ -248,4 +248,52 @@ describe("<ContinuousBinningModal />", () => {
 
     expect(input).toHaveDisplayValue("0.5");
   });
+
+  it("can save changes to custom bins", async () => {
+    const saveBins = jest.fn();
+    const { getAllByLabelText, getByRole } = render(
+      <ContinuousBinningModal
+        setModalOpen={jest.fn()}
+        field={"Gender"}
+        stats={{ min: 0, max: 1 } as Statistics}
+        updateBins={saveBins}
+        customBins={[
+          { name: "bin 1", from: 0, to: 10 },
+          { name: "bin 2", from: 10, to: 20 },
+        ]}
+      />,
+    );
+
+    const rangeName = getAllByLabelText("range name")[0];
+    await userEvent.clear(rangeName);
+    await userEvent.type(rangeName, "bin 1000");
+    await userEvent.click(getByRole("button", { name: "Save Bins" }));
+
+    expect(saveBins).toHaveBeenCalledWith([
+      { name: "bin 1000", from: 0, to: 10 },
+      { name: "bin 2", from: 10, to: 20 },
+    ]);
+  });
+
+  it("changes to range inputs validates overlapping bins", async () => {
+    const { getAllByLabelText, getByText } = render(
+      <ContinuousBinningModal
+        setModalOpen={jest.fn()}
+        field={"Gender"}
+        stats={{ min: 0, max: 1 } as Statistics}
+        updateBins={jest.fn()}
+        customBins={[
+          { name: "bin 1", from: 0, to: 10 },
+          { name: "bin 2", from: 10, to: 20 },
+        ]}
+      />,
+    );
+
+    const rangeFrom = getAllByLabelText("range from")[1];
+    await userEvent.clear(rangeFrom);
+    await userEvent.type(rangeFrom, "5");
+    await userEvent.click(document.body);
+
+    expect(getByText("'bin 2' overlaps with 'bin 1'")).toBeInTheDocument();
+  });
 });
