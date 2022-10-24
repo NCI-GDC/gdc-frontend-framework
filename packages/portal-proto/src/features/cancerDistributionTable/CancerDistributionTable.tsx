@@ -6,8 +6,9 @@ import {
   useProjects,
   CancerDistributionTableData,
 } from "@gff/core";
-import { VerticalTable } from "@/features/shared/VerticalTable";
+import VerticalTable from "@/features/shared/VerticalTable";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
+import { Row } from "react-table";
 
 interface GeneCancerDistributionTableProps {
   readonly gene: string;
@@ -33,6 +34,12 @@ export const GeneCancerDistributionTable: React.FC<
 interface SSMSCancerDistributionTableProps {
   readonly ssms: string;
 }
+
+interface CellProps {
+  value: string[];
+  row: Row;
+}
+
 export const SSMSCancerDistributionTable: React.FC<
   SSMSCancerDistributionTableProps
 > = ({ ssms }: SSMSCancerDistributionTableProps) => {
@@ -87,8 +94,22 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
   const columnListOrder = useMemo(() => {
     const columns = [
       { id: "project", columnName: "Project", visible: true },
-      { id: "disease_type", columnName: "Disease Type", visible: true },
-      { id: "primary_site", columnName: "Primary Site", visible: true },
+      {
+        id: "disease_type",
+        columnName: "Disease Type",
+        visible: true,
+        Cell: ({ value, row }: CellProps) => (
+          <CollapsibleRow value={value} row={row} label={"Disease Types"} />
+        ),
+      },
+      {
+        id: "primary_site",
+        columnName: "Primary Site",
+        visible: true,
+        Cell: ({ value, row }: CellProps) => (
+          <CollapsibleRow value={value} row={row} label={"Primary Site"} />
+        ),
+      },
       {
         id: "ssm_affected_cases",
         columnName: "# SSM Affected Cases",
@@ -113,15 +134,15 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       {
         Header: "Disease Type",
         accessor: "disease_type",
-        Cell: ({ value }: { value: string[] }) => (
-          <CollapsibleRow value={value} label={"Disease Types"} />
+        Cell: ({ value, row }: CellProps) => (
+          <CollapsibleRow value={value} row={row} label={"Disease Types"} />
         ),
       },
       {
         Header: "Primary Site",
         accessor: "primary_site",
-        Cell: ({ value }: { value: string[] }) => (
-          <CollapsibleRow value={value} label={"Primary Sites"} />
+        Cell: ({ value, row }: CellProps) => (
+          <CollapsibleRow value={value} row={row} label={"Primary Sites"} />
         ),
       },
       {
@@ -244,7 +265,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                         style: "percent",
                         minimumFractionDigits: 2,
                       })})`,
-                      num_mutations: d.doc_count,
+                      num_mutations: d.doc_count.toLocaleString(),
                     }
                   : {}),
               };

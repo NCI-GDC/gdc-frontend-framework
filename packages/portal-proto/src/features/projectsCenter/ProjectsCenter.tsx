@@ -4,7 +4,7 @@ import ProjectsTable from "./ProjectsTable";
 import { createGdcAppWithOwnStore } from "@gff/core";
 import { AppContext, AppStore, id } from "@/features/projectsCenter/appApi";
 
-export const ProjectsCenter = () => {
+export const ProjectsCenter = (): JSX.Element => {
   return (
     <div className="flex flex-col mt-4 ">
       <div className="flex flex-row mx-3">

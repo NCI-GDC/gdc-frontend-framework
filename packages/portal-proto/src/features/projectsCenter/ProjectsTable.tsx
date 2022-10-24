@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { VerticalTable } from "../shared/VerticalTable";
+import VerticalTable from "../shared/VerticalTable";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import Link from "next/link";
 import { useProjects, buildCohortGqlOperator } from "@gff/core";
@@ -20,7 +20,7 @@ interface CellProps {
 
 const ProjectsTable: React.FC = () => {
   const [pageSize, setPageSize] = useState(10);
-  const [offset, setOffset] = useState(0);
+  const [activePage, setActivePage] = useState(1);
 
   const columnListOrder = [
     { id: "project_id", columnName: "Project", visible: true, sortable: false },
@@ -102,7 +102,7 @@ const ProjectsTable: React.FC = () => {
       "program",
     ],
     size: pageSize,
-    from: offset * pageSize,
+    from: activePage * pageSize,
   });
 
   if (isSuccess) {
@@ -138,10 +138,11 @@ const ProjectsTable: React.FC = () => {
     : "uninitialized";
 
   const handlePageSizeChange = (x: string) => {
-    //getCohortCases(parseInt(x), 0);
+    setPageSize(parseInt(x));
+    setActivePage(1);
   };
   const handlePageChange = (x: number) => {
-    //  getCohortCases(tempPagination.size, x - 1);
+    setActivePage(x);
   };
 
   //update everything that uses table component

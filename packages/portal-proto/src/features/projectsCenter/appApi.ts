@@ -1,10 +1,5 @@
-import { combineReducers } from "@reduxjs/toolkit";
 import { projectCenterFiltersReducer } from "./projectCenterFiltersSlice";
 import { createAppStore } from "@gff/core";
-
-// const projectCenterAppReducers = combineReducers({
-//   filters: projectCenterFiltersReducer,
-// });
 
 // create the store, context and selector for the ProjectsCenter
 // Note the project app has a local store and context which isolates

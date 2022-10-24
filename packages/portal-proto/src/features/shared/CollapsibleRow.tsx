@@ -7,12 +7,6 @@ import { createKeyboardAccessibleFunction } from "src/utils";
 import { Row } from "react-table";
 import { Divider } from "@mantine/core";
 
-interface ExpandedRow {
-  expanded: number;
-  values: Record<string, any>;
-  content: JSX.Element;
-}
-
 const CreateContent = (
   items: Record<string, ReadonlyArray<string>>,
 ): JSX.Element => {
@@ -51,8 +45,9 @@ const CollapsibleRow = ({
   const [collapsed, setCollapsed] = useState(true);
 
   const handleExpand = (row: Row) => {
+    console.log(row);
     const update = {
-      ...row.state.values,
+      ...(row.state.values as Record<string, string[]>),
       [label]: value,
     };
     setCollapsed(false);
@@ -66,7 +61,11 @@ const CollapsibleRow = ({
   };
 
   const handleCollapse = (row: Row): void => {
-    const { [label]: _, ...update } = row.state.values; // remove value from state
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { [label]: _, ...update } = row.state.values as Record<
+      string,
+      string[]
+    >; // remove value from state
 
     setCollapsed(true);
     row.setState((old) => ({

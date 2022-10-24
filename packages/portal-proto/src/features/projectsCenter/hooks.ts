@@ -20,7 +20,6 @@ import {
   useCoreSelector,
   usePrevious,
   selectProjectsFacetByField,
-  buildCohortGqlOperator,
 } from "@gff/core";
 import {
   removeProjectFilter,

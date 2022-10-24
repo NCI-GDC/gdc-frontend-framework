@@ -110,6 +110,7 @@ interface TableProps {
   columns: Column[];
   data: any[];
 }
+
 /**
  * Returns a vertical table with many optional features
  * @parm {array} tableData - data to go in the table
@@ -126,7 +127,7 @@ interface TableProps {
  * @parm {string} status - optional shows loading state
  * @returns ReactElement
  */
-export const VerticalTable: FC<VerticalTableProps> = ({
+const VerticalTable: FC<VerticalTableProps> = ({
   tableData,
   columnListOrder,
   columnCells,
@@ -200,7 +201,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
               {headerGroup.headers.map((column, key) => (
                 <th
                   {...column.getHeaderProps()}
-                  className="px-2 pt-3 pb-1 text-heading text-primary-contrast-darker font-medium text-sm "
+                  className="px-2 pt-3 pb-1 text-heading text-primary-contrast-darker font-medium text-md"
                   key={`column-${key}`}
                 >
                   <div className="flex flex-row nowrap items-center px-1">
@@ -236,23 +237,18 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                         <td
                           {...cell.getCellProps()}
                           key={`row-${key}`}
-                          className="px-2 py-1 text-[0.65em] text-content"
+                          className="px-2 py-1 text-[0.85em] text-content"
                         >
                           {cell.render("Cell")}
                         </td>
                       );
                     })}
                   </tr>
-
-                  {
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-ignore
-                    row.state.expanded > 0 ? (
-                      <tr {...row.getRowProps()}>
-                        <td colSpan={headings.length}>{row.state.content}</td>
-                      </tr>
-                    ) : null
-                  }
+                  {row.state.expanded > 0 ? (
+                    <tr {...row.getRowProps()}>
+                      <td colSpan={headings.length}>{row.state.content}</td>
+                    </tr>
+                  ) : null}
                 </>
               );
             })
@@ -292,9 +288,9 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     if (!isNaN(pagination.from) && status === "fulfilled") {
       outputString = ` ${pagination.from + 1} - `;
 
-      const pagnationTo = pagination.from + pageSize;
-      if (pagnationTo < pagination.total) {
-        outputString += pagnationTo;
+      const paginationTo = pagination.from + pageSize;
+      if (paginationTo < pagination.total) {
+        outputString += paginationTo;
       } else {
         outputString += pagination.total;
       }
@@ -307,7 +303,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
 
     return (
       <p className={"text-heading text-medium text-sm"}>
-        Showning {outputString}
+        Showing {outputString}
       </p>
     );
   };
@@ -397,3 +393,5 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     </div>
   );
 };
+
+export default VerticalTable;
