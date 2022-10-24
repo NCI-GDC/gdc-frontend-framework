@@ -25,7 +25,7 @@ export const SMSubrow: React.FC<SMSubrowProps> = ({
   const horizontalSpring = useSpring({
     from: { width: 0, opacity: 0 },
     to: { width: width, opacity: 1 },
-    config: config.slow,
+    immediate: true,
   });
 
   const getMutationSubrow = (mutationId: string) => {

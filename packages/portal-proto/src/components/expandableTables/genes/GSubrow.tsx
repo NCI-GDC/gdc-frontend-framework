@@ -23,9 +23,9 @@ export const GSubrow: React.FC<GeneSubrowProps> = ({
   const [subData, setSubData] = useState([]);
 
   const horizontalSpring = useSpring({
-    from: { width: 0, opacity: 0 },
+    from: { width: width / 2, opacity: 0 },
     to: { width: width, opacity: 1 },
-    config: config.slow,
+    immediate: true,
   });
 
   const getGeneSubRow = (geneId: string) => {

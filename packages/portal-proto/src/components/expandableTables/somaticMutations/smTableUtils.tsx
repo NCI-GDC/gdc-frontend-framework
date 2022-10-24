@@ -14,6 +14,10 @@ import { Survival } from "../shared/types";
 import { SMSubrow } from "./SMSubRow";
 import { Tooltip } from "@mantine/core";
 
+// export interface Mutation {
+
+// }
+
 export interface ConsequenceProps {
   consequenceType: string;
   symbol: string;
@@ -32,7 +36,6 @@ export const Consequence = ({
   const formatConsequence = cType
     ? cType?.charAt(0).toUpperCase() + cType?.slice(1)
     : ``;
-
   return (
     <>
       <div className={`flex flex-row w-max m-auto text-xs`}>
@@ -183,7 +186,7 @@ export const createTableColumn = (
   width: number,
   partitionWidth: any,
   visibleColumns: TableColumnState[],
-  selectedMutations: any, // todo: add type,
+  selectedMutations: any,
   selectMutation: (geneId: string) => any,
   handleSurvivalPlotToggled: (
     symbol: string,
@@ -193,6 +196,7 @@ export const createTableColumn = (
   setMutationID,
   mutationID,
 ) => {
+  console.log("selectedMutations", selectedMutations);
   switch (accessor) {
     case "select":
       return {
@@ -243,16 +247,13 @@ export const createTableColumn = (
               return (
                 <>
                   {row.getCanExpand() && (
-                    // <Tooltip
-                    //   label={`Click icon to plot ${row.original["survival"].symbol}`}
-                    // >
                     <SwitchSpring
                       isActive={row.original["survival"].checked}
                       icon={<SurvivalIcon />}
                       selected={row.original["survival"]}
                       handleSwitch={handleSurvivalPlotToggled}
+                      tooltip={`Click icon to plot ${row.original["survival"].symbol}`}
                     />
-                    // </Tooltip>
                   )}
                   <>
                     <SMSubrow
@@ -482,7 +483,6 @@ export const getMutation = (
   cases: number,
   ssmsTotal: number,
 ) => {
-  // if (sm.consequence.length === 0) debugger;
   const {
     gene = { symbol: "" },
     annotation = {

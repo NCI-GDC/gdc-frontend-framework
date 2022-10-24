@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
-// import GenesTable from "../genesTable/GenesTable";
 import { GTableContainer } from "../../components/expandableTables/genes/GTableContainer";
 import { SMTableContainer } from "../../components/expandableTables/somaticMutations/SMTableContainer";
 import { Grid, Tabs, LoadingOverlay } from "@mantine/core";
@@ -279,12 +278,6 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                   />
                 </Grid.Col>
               </Grid>
-              {/* <GenesTable
-                selectedSurvivalPlot={comparativeSurvival}
-                handleSurvivalPlotToggled={(symbol: string, name: string) =>
-                  handleSurvivalPlotToggled(symbol, name, "gene.symbol")
-                }
-              /> */}
             </div>
           </div>
           <div className={`flex flex-col w-screen`}>
@@ -318,12 +311,6 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                   }
                 />
               </div>
-              {/* <MutationsTable
-                selectedSurvivalPlot={comparativeSurvival}
-                handleSurvivalPlotToggled={(symbol: string, name: string) =>
-                  handleSurvivalPlotToggled(symbol, name, "gene.ssm.ssm_id")
-                }
-              /> */}
             </div>
           </div>
           <div className={`flex flex-col w-screen`}>

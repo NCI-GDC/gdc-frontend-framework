@@ -24,6 +24,7 @@ const ListSpring: React.FC<ListSpringProps> = ({
       opacity: !opening ? 1 : 0,
       height: !opening ? height + fudgeFactor : 0,
     },
+    immediate: true,
   });
 
   return (

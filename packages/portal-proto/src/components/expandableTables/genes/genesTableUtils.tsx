@@ -1,7 +1,6 @@
 import ToggleSpring from "../shared/ToggleSpring";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { animated } from "react-spring";
-// import PercentageBar from "../shared/PercentageBar";
 import CheckboxSpring from "../shared/CheckboxSpring";
 import SwitchSpring from "../shared/SwitchSpring";
 import {
@@ -14,6 +13,7 @@ import {
 } from "../shared/types";
 import { GSubrow } from "./GSubrow";
 import { AffectedCases } from "../shared/types";
+import { Tooltip } from "@mantine/core";
 
 interface SingleGene {
   biotype: string;
@@ -92,8 +92,6 @@ export const createTableColumn = (
             accessorKey: accessor,
             header: () => <TableHeader twStyles={``} title={accessor} />,
             cell: ({ row }) => {
-              //<Tooltip label={`Click icon to plot ${value.symbol}`}>
-              //          </Tooltip> */}
               return (
                 <>
                   {row.getCanExpand() && (
@@ -102,6 +100,7 @@ export const createTableColumn = (
                       icon={<SurvivalIcon />}
                       selected={row.original["survival"]}
                       handleSwitch={handleSurvivalPlotToggled}
+                      tooltip={`Click icon to plot ${row.original["survival"].symbol}`}
                     />
                   )}
                   <>
@@ -235,11 +234,6 @@ export const createTableColumn = (
                   className={`content-center`}
                 >
                   {row.getCanExpand() && (
-                    // <PercentageBar
-                    //   numerator={}
-                    //   denominator={}
-                    //   width={width / visibleColumns.length}
-                    // />
                     <TableCell row={row} accessor={accessor} anchor={false} />
                   )}
                   <>
@@ -273,11 +267,6 @@ export const createTableColumn = (
                   className={`content-center`}
                 >
                   {row.getCanExpand() && (
-                    // <PercentageBar
-                    //   numerator={}
-                    //   denominator={}
-                    //   width={width / visibleColumns.length}
-                    // />
                     <TableCell row={row} accessor={accessor} anchor={false} />
                   )}
                   <>

@@ -2,7 +2,7 @@ import React from "react";
 import { animated, useSpring, config } from "react-spring";
 
 interface ItemSpringProps {
-  ratio: any; //  [ { key: string, doc_count: string }, number ]
+  ratio: any; //  [ { key: string, doc_count: number }, number ]
   index: number;
   len: number;
 }
