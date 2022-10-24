@@ -281,7 +281,7 @@ export const FacetTabs = (): JSX.Element => {
         onTabChange={setActiveTab}
         keepMounted={false}
         classNames={{
-          tab: "data-active:text-primary-content-darkest text-primary-content-lightest font-medium data-active:border-primary-darker data-active:border-l-1 data-active:border-t-1 data-active:border-b-1 data-active:bg-base-max hover:bg-primary-darker",
+          tab: "data-active:text-primary-content-darkest text-primary-content-lightest font-medium data-active:border-primary-darker data-active:border-l-1 data-active:border-b-1 data-active:bg-base-max hover:bg-primary-darker",
           tabsList:
             "flex flex-col bg-primary-dark text-primary-contrast-dark w-[240px] ",
           root: "bg-base-max",

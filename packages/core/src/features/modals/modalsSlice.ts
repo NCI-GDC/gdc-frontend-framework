@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CoreState } from "../../reducers";
 
 export enum Modals {
+  "FirstTimeModal" = "FirstTimeModal",
   "UserProfileModal" = "UserProfileModal",
   "SessionExpireModal" = "SessionExpireModal",
   "NoAccessModal" = "NoAccessModal",
