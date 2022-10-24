@@ -1,4 +1,4 @@
-import { PropsWithChildren } from "react";
+import { useState, PropsWithChildren } from "react";
 import {
   Equals,
   ExcludeIfAny,
@@ -22,16 +22,20 @@ import {
   fieldNameToTitle,
 } from "@gff/core";
 import { ActionIcon, Badge, Group } from "@mantine/core";
-import { MdClose as ClearIcon } from "react-icons/md";
+import {
+  MdClose as ClearIcon,
+  MdOutlineArrowBack as LeftArrow,
+  MdOutlineArrowForward as RightArrow,
+} from "react-icons/md";
 import tw from "tailwind-styled-components";
 
 const QueryRepresentationText = tw.div`
-flex truncate ... px-2 bg-base-max
+flex truncate ... px-2 bg-base-max h-full
 `;
 
 const QueryFieldLabel = tw.span`
-bg-accent-lighter
-text-accent-contrast-lighter
+bg-accent-lightest
+text-primary-darkest
 uppercase
 px-2
 border-accent
@@ -49,7 +53,8 @@ text-md
 rounded-md
 border-1
 mr-1
-border-accent-light
+mb-2
+border-primary
 `;
 
 type RangeOperation =
@@ -75,37 +80,75 @@ export const isValueOperation = (x: Operation): x is ValueOperation => {
 
 const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
   field,
+  operator,
   operands,
 }: Includes | Excludes) => {
-  const removeButton = (
+  const [isCollapsed, setCollapsed] = useState(false);
+  const dispatch = useCoreDispatch();
+
+  const RemoveButton = ({
+    operand,
+  }: {
+    operand: string | number;
+  }): JSX.Element => (
     <ActionIcon
       size="xs"
       color="accent-content.0"
       radius="xl"
       variant="transparent"
+      onClick={() => {
+        const newOperands = operands.filter((o) => o !== operand);
+        dispatch(
+          updateCohortFilter({
+            field,
+            operation: {
+              operator,
+              field,
+              operands: newOperands,
+            },
+          }),
+        );
+        if (newOperands.length === 0) {
+          dispatch(removeCohortFilter(field));
+        }
+      }}
     >
       <ClearIcon />
     </ActionIcon>
   );
 
   return (
-    <div className="flex flex-row items-center">
+    <div className="flex flex-row items-center h-full">
       <QueryFieldLabel>{fieldNameToTitle(field)}</QueryFieldLabel>
+      {operands.length > 1 && (
+        <ActionIcon
+          variant="transparent"
+          className="bg-white rounded-none"
+          onClick={() => setCollapsed(!isCollapsed)}
+        >
+          {isCollapsed ? <RightArrow /> : <LeftArrow />}
+        </ActionIcon>
+      )}
       <QueryRepresentationText>
-        <Group noWrap>
-          {operands.map((x, i) => (
-            <Badge
-              key={`query-rep-${field}-${x}-${i}`}
-              variant="filled"
-              color="accent.3"
-              size="md"
-              className="normal-case"
-              rightSection={removeButton}
-            >
-              {x}
-            </Badge>
-          ))}
-        </Group>
+        {isCollapsed ? (
+          <>{operands.length}</>
+        ) : (
+          <Group noWrap>
+            {operands.map((x, i) => (
+              <Badge
+                key={`query-rep-${field}-${x}-${i}`}
+                variant="filled"
+                color="primary.9"
+                size="md"
+                className="normal-case max-w-[144px]"
+                rightSection={<RemoveButton operand={x} />}
+                title={x.toString()}
+              >
+                {x}
+              </Badge>
+            ))}
+          </Group>
+        )}
       </QueryRepresentationText>
     </div>
   );
@@ -130,9 +173,9 @@ const ComparisonElement: React.FC<ComparisonElementProps> = ({
       {showLabel ? (
         <QueryFieldLabel>{fieldNameToTitle(operation.field)}</QueryFieldLabel>
       ) : null}
-      <div className="flex flex-row items-center bg-accent-contrast-lightest">
+      <div className="flex flex-row items-center bg-white">
         <button
-          className="p-1 mx-2 rounded-md bg-accent-lightest "
+          className="p-1 mx-2 rounded-[50%] bg-accent-lightest "
           onClick={() => handleKeepMember(operation)}
         >
           {operation.operator}
@@ -175,9 +218,7 @@ export const ClosedRangeQueryElement: React.FC<
       <QueryElement field={field}>
         <ComparisonElement operation={lower} />
         <span
-          className={
-            "uppercase bg-accent-content-max text-accent-contrast-max text-bold"
-          }
+          className={"uppercase bg-white text-accent-contrast-max font-bold"}
         >
           {op}
         </span>
@@ -216,7 +257,7 @@ export const QueryElement: React.FC<QueryElementProps> = ({
       </button>
       -- */}
       <button
-        className="bg-accent p-0 m-0 h-full round-r-lg text-accent-contrast "
+        className="bg-primary-darkest p-0 m-0 h-full round-r-lg text-accent-contrast "
         onClick={handleRemoveFilter}
       >
         <ClearIcon size="1.5em" className="px-1" />
