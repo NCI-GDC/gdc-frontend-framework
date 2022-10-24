@@ -116,7 +116,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
             )
           }
           classNames={{
-            root: "text-primary-content-darkest font-bold",
+            root: "text-primary-content-darkest font-bold bg-transparent",
             rightIcon: "ml-0",
           }}
         >
