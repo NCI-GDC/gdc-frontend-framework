@@ -309,7 +309,8 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
       <div className="mt-2 flex gap-2 justify-end">
         <Button
           onClick={() => setModalOpen(false)}
-          className="bg-primary-darkest"
+          variant="outline"
+          color="primary.5"
         >
           Cancel
         </Button>

@@ -92,7 +92,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
           header: {
             color: theme.colors.primary[8],
             fontFamily: '"Montserrat", "sans-serif"',
-            fontSize: "1.25em",
+            fontSize: "1.65em",
             fontWeight: 500,
             "letter-spacing": ".1rem",
             "border-color": theme.colors.base[1],
