@@ -8,40 +8,6 @@ import { useAppSelector } from "@/features/projectsCenter/appApi";
 import { selectFilters } from "@/features/projectsCenter/projectCenterFiltersSlice";
 import FunctionButton from "@/components/FunctionButton";
 
-// const extractValue = (
-//   data: ReadonlyArray<Record<string, number | string>>,
-//   nodeKey: string,
-//   nodeValue: string,
-//   valueKey: string,
-// ): number | string | undefined => {
-//   const results = data.find(
-//     (obj) => Object.keys(obj).includes(nodeKey) && obj[nodeKey] === nodeValue,
-//   );
-//   if (results === undefined) return 0;
-//
-//   return results[valueKey];
-// };
-
-const columnHeaderClick = async (column: any) => {
-  switch (column.sortDirection) {
-    case "none":
-      setSort({ direction: "ASC", accessor: column.id });
-      const desc = await getClients("ASC", column.id);
-      setData(desc);
-      break;
-    case "ASC":
-      setSort({ direction: "DESC", accessor: column.id });
-      const asc = await getClients("DESC", column.id);
-      setData(asc);
-      break;
-    case "DESC":
-      setSort({ direction: "none", accessor: column.id });
-      const newData = await getClients("none", column.id);
-      setData(newData);
-      break;
-  }
-};
-
 const extractToArray = (
   data: ReadonlyArray<Record<string, number | string>>,
   nodeKey: string,
@@ -138,8 +104,6 @@ const ProjectsTable: React.FC = () => {
     size: pageSize,
     from: offset * pageSize,
   });
-
-  console.log("ProjectTable", data, isSuccess, pagination);
 
   if (isSuccess) {
     tempPagination = pagination;

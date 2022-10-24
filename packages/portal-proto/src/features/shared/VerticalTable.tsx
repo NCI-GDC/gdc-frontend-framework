@@ -1,15 +1,10 @@
 import React, { useState, useEffect, FC } from "react";
-import { useTable, useRowState, useSortBy } from "react-table";
+import { useTable, useRowState } from "react-table";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DragDrop } from "./DragDrop";
 import { BsList } from "react-icons/bs";
 import {
-  MdArrowDropDown as ArrowDropDown,
-  MdArrowDropUp as ArrowDropUp,
-} from "react-icons/md";
-import {
-  ActionIcon,
   Box,
   Popover,
   Select,
@@ -103,8 +98,6 @@ interface VerticalTableProps {
    * - data when `fulfilled`
    */
   status?: "uninitialized" | "pending" | "fulfilled" | "rejected";
-
-  onHeaderClick?: () => void;
 }
 
 interface Column {
@@ -145,7 +138,6 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   showControls = true,
   pagination,
   status = "fulfilled",
-  onHeaderClick = () => {},
 }: VerticalTableProps) => {
   const [table, setTable] = useState([]);
   const [columnListOptions, setColumnListOptions] = useState([]);
@@ -179,35 +171,20 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   };
 
   const Table: FC<TableProps> = ({ columns, data }: TableProps) => {
-    const {
-      getTableProps,
-      getTableBodyProps,
-      headerGroups,
-      rows,
-      prepareRow,
-      state: { sortBy },
-    } = useTable(
-      {
-        columns,
-        data,
-        manualSortBy: true,
-        defaultCanSort: false,
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        initialRowStateAccessor: () => ({
-          expanded: 0,
-          values: {},
-          content: {},
-        }),
-      },
-      useRowState,
-      useSortBy,
-      selectableRow ? tableAction : () => null,
-    );
-
-    useEffect(() => {
-      console.log("sortBy", sortBy);
-    }, [sortBy]);
+    const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
+      useTable(
+        {
+          columns,
+          data,
+          initialRowStateAccessor: () => ({
+            expanded: 0,
+            values: {},
+            content: {},
+          }),
+        },
+        useRowState,
+        selectableRow ? tableAction : () => null,
+      );
 
     return (
       <table {...getTableProps()} className="w-full text-left font-content">
@@ -223,28 +200,12 @@ export const VerticalTable: FC<VerticalTableProps> = ({
             >
               {headerGroup.headers.map((column, key) => (
                 <th
-                  {...column.getHeaderProps(
-                    column.getSortByToggleProps({ title: undefined }),
-                  )}
+                  {...column.getHeaderProps()}
                   className="px-2 pt-3 pb-1 text-heading text-primary-contrast-darker font-medium text-sm "
                   key={`column-${key}`}
-                  onClick={() => column.toggleSortBy(!column.isSortedDesc)}
                 >
                   <div className="flex flex-row nowrap items-center px-1">
                     <span>{column.render("Header")}</span>
-                    {column.sortable && column.isSorted ? (
-                      <span>
-                        {column.isSortedDesc ? (
-                          <ActionIcon className={"bg-transparent"}>
-                            <ArrowDropDown size={"2em"} />
-                          </ActionIcon>
-                        ) : (
-                          <ActionIcon className={"bg-transparent"}>
-                            <ArrowDropUp size={"2em"} />
-                          </ActionIcon>
-                        )}
-                      </span>
-                    ) : null}
                   </div>
                 </th>
               ))}
@@ -261,9 +222,6 @@ export const VerticalTable: FC<VerticalTableProps> = ({
           ) : (
             rows.map((row, index) => {
               prepareRow(row);
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-
               return (
                 <>
                   <tr

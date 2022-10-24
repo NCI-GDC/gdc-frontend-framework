@@ -3,34 +3,38 @@ import {
   MdKeyboardArrowDown as DownIcon,
   MdKeyboardArrowUp as UpIcon,
 } from "react-icons/md";
-import { Row } from "react-table";
 import { createKeyboardAccessibleFunction } from "src/utils";
+import { Row } from "react-table";
 import { Divider } from "@mantine/core";
+
+interface ExpandedRow {
+  expanded: number;
+  values: Record<string, any>;
+  content: JSX.Element;
+}
 
 const CreateContent = (
   items: Record<string, ReadonlyArray<string>>,
 ): JSX.Element => {
   return (
     <div className="flex flex-col transition-transform">
-      {Object.entries(items).map(([x, values], index) => {
-        return (
-          <div className="flex flex-col" key={`${x}-${values.length}-${index}`}>
-            {index > 0 ? <Divider /> : null}
-            <p className={"text-header text-[0.75em] font-semibold"}>{x}</p>
-            <div className="columns-4 h-max-96 text-content text-xs p-4">
-              <ul className="list-disc">
-                {[...values].sort().map((y) => (
-                  <span className="flex flex-row items-center" key={y}>
-                    <li className="marker:text-primary marker:w-2 marker:h-2 text-primary-min">
-                      {y}
-                    </li>
-                  </span>
-                ))}
-              </ul>
-            </div>
+      {Object.entries(items).map(([x, values], index) => (
+        <div className="flex flex-col" key={`${x}-${values.length}-${index}`}>
+          {index > 0 ? <Divider /> : null}
+          <p className={"text-header text-[0.75em] font-semibold"}>{x}</p>
+          <div className="columns-4 h-max-96 text-content text-xs p-4">
+            <ul className="list-disc">
+              {[...values].sort().map((y) => (
+                <span className="flex flex-row items-center" key={y}>
+                  <li className="marker:text-primary marker:w-2 marker:h-2 text-primary-min">
+                    {y}
+                  </li>
+                </span>
+              ))}
+            </ul>
           </div>
-        );
-      })}
+        </div>
+      ))}
     </div>
   );
 };
