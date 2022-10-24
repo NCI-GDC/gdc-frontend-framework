@@ -101,7 +101,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                           variant="outline"
                           className={
                             survivalDisabled
-                              ? "bg-base-light text-base-contrast-light bg-opacity-80 text-opacity-80 border-opacity-80"
+                              ? "bg-base-light text-base-contrast-light bg-opacity-80 text-opacity-60"
                               : survivalSelected
                               ? `bg-gdc-survival-${selectedSurvivalPlots.indexOf(
                                   key,
