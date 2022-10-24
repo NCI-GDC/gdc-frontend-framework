@@ -24,7 +24,6 @@ interface VerticalTableProps {
     id: string;
     columnName: string;
     visible: boolean;
-    sortable: boolean;
   }[];
   /**
    * sorted list of columns to display
@@ -101,7 +100,7 @@ interface VerticalTableProps {
 }
 
 interface Column {
-  Header: string;
+  Header: string | JSX.Element;
   accessor: string;
   width?: number;
   Cell?: (value: any) => JSX.Element;
