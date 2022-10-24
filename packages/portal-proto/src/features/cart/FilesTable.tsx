@@ -190,7 +190,6 @@ const FilesTable: React.FC<FilesTableProps> = ({
   };
 
   const handleDownloadTSV = () => {
-    console.log({ data, visibleColumnCells });
     downloadTSV(
       data,
       visibleColumnCells,
