@@ -69,8 +69,6 @@ export const formatEntityInfo = (
   dispatch: CoreDispatch,
   currentCart: CartFile[],
   selectedSlide: readonly FileDefaults[],
-  downloadActive: boolean,
-  setDownloadActive: React.Dispatch<React.SetStateAction<boolean>>,
 ): {
   readonly headerName: string;
   readonly values: readonly (

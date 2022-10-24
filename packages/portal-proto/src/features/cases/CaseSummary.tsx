@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import Link from "next/link";
 import {
   useCaseSummary,
@@ -52,8 +52,6 @@ export const CaseSummary = ({
   case_id: string;
   bio_id: string;
 }): JSX.Element => {
-  console.log("RENDERED: ", case_id);
-
   const { data, isFetching } = useCaseSummary({
     filters: {
       content: {
@@ -165,7 +163,7 @@ export const CaseSummary = ({
       "follow_ups.molecular_tests.variant_type",
     ],
   });
-  console.log("isFetching: ", isFetching);
+
   const {
     diagnoses = [],
     demographic = {} as Demographic,
@@ -252,7 +250,6 @@ export const CaseSummary = ({
     : false;
 
   const formatDataForCaseSummary = () => {
-    console.log("data: ", data);
     const {
       case_id,
       submitter_id,

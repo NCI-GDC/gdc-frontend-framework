@@ -18,9 +18,7 @@ const CaseSummaryPage: NextPage = () => {
     }
   }, [router]);
 
-  console.log("reached here", router.query);
-
-  // make case view like file view
+  // TODO: ake case view like file view
   return (
     <UserFlowVariedPages headerElements={headerElements}>
       {ready && (
