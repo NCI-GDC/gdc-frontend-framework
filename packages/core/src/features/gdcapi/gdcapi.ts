@@ -404,6 +404,7 @@ export interface FileDefaults {
       readonly file_id: string;
       readonly state: string;
       readonly submitter_id: string;
+      readonly access: string;
       readonly created_datetime: string;
       readonly updated_datetime: string;
       readonly md5sum: string;

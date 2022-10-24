@@ -114,7 +114,6 @@ export const FileView: React.FC<FileViewProps> = ({
 }: FileViewProps) => {
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
-  const [active, setActive] = useState(false);
   const [imageId] = useState(file?.fileId);
   const modal = useCoreSelector((state) => selectCurrentModal(state));
   const [bamActive, setBamActive] = useState(false);
@@ -186,6 +185,7 @@ export const FileView: React.FC<FileViewProps> = ({
 
               <DownloadFile
                 file={outputFile}
+                showLoading={false}
                 setfileToDownload={setfileToDownload}
               />
             </div>
@@ -586,8 +586,6 @@ export const FileView: React.FC<FileViewProps> = ({
           openModal
           file={fileToDownload}
           dbGapList={fileToDownload.acl}
-          // active={active}
-          // setActive={setActive}
         />
       )}
     </div>

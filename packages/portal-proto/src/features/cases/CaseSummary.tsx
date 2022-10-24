@@ -405,7 +405,7 @@ export const CaseSummary = ({
         access: (
           <Badge
             className={
-              file.access === "open" //TODO: keep or change to theme color
+              file.access === "open" //TODO: keep or change to theme color (used same from the repository file table)
                 ? "bg-nci-green-lighter/50 text-nci-green-darkest capitalize text-sm"
                 : "bg-nci-red-lighter/50 text-nci-red-darkest capitalize text-sm"
             }
@@ -442,11 +442,7 @@ export const CaseSummary = ({
             >
               <FaShoppingCart title="Add to Cart" />
             </Button>
-            <DownloadFile
-              file={mapFileData([file])[0]}
-              showLoading={false}
-              customStyle="bg-base-lightest text-base-min border border-base-darkest rounded p-2 hover:bg-base-darkest hover:text-base-contrast-min"
-            />
+            <DownloadFile file={mapFileData([file])[0]} showLoading={false} />
           </div>
         ),
       };

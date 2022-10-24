@@ -32,6 +32,12 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
 
   const [active, setActive] = useState(false);
 
+  const customStyleFile = inactiveText
+    ? "text-base-lightest bg-primary hover:bg-primary-darker"
+    : `bg-base-lightest text-base-min border border-base-darkest rounded hover:bg-base-darkest hover:text-base-contrast-min ${
+        !inactiveText && !activeText ? "w-8 p-0" : "p-2"
+      }`;
+
   const { username } = userInfo?.data || {};
   if (file.access === "open") {
     return (
@@ -54,15 +60,11 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
         }}
         setActive={setActive}
         active={active}
-        customStyle={customStyle}
+        customStyle={customStyle || customStyleFile}
         showLoading={showLoading}
       />
     );
   }
-
-  const customStyleFile = inactiveText
-    ? "text-base-lightest bg-primary hover:bg-primary-darker"
-    : "bg-base-lightest text-base-min border border-base-darkest rounded p-2 hover:bg-base-darkest hover:text-base-contrast-min";
 
   const onClick = () => {
     setfileToDownload && setfileToDownload(file);
@@ -78,9 +80,11 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
     }
   };
 
+  // TODO: need to send set active to agreement modal in a better way
+  // TODO: rethink of a better architecture for it
   return (
     <DownloadButton
-      customStyle={customStyleFile}
+      customStyle={customStyle || customStyleFile}
       inactiveText={inactiveText}
       activeText={activeText}
       onClick={onClick}
