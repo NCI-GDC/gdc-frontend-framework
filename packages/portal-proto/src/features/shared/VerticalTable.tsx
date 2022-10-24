@@ -1,10 +1,15 @@
 import React, { useState, useEffect, FC } from "react";
-import { useTable, useRowState } from "react-table";
+import { useTable, useRowState, useSortBy } from "react-table";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DragDrop } from "./DragDrop";
 import { BsList } from "react-icons/bs";
 import {
+  MdArrowDropDown as ArrowDropDown,
+  MdArrowDropUp as ArrowDropUp,
+} from "react-icons/md";
+import {
+  ActionIcon,
   Box,
   Popover,
   Select,
@@ -24,6 +29,7 @@ interface VerticalTableProps {
     id: string;
     columnName: string;
     visible: boolean;
+    sortable: boolean;
   }[];
   /**
    * sorted list of columns to display
@@ -98,7 +104,7 @@ interface VerticalTableProps {
    */
   status?: "uninitialized" | "pending" | "fulfilled" | "rejected";
 
-  renderRowSubComponent?: (any) => JSX.Element;
+  onHeaderClick?: () => void;
 }
 
 interface Column {
@@ -139,7 +145,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   showControls = true,
   pagination,
   status = "fulfilled",
-  renderRowSubComponent = () => null,
+  onHeaderClick = () => {},
 }: VerticalTableProps) => {
   const [table, setTable] = useState([]);
   const [columnListOptions, setColumnListOptions] = useState([]);
@@ -173,22 +179,35 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   };
 
   const Table: FC<TableProps> = ({ columns, data }: TableProps) => {
-    const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-      useTable(
-        {
-          columns,
-          data,
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          initialRowStateAccessor: () => ({
-            expanded: 0,
-            values: {},
-            content: {},
-          }),
-        },
-        useRowState,
-        selectableRow ? tableAction : () => null,
-      );
+    const {
+      getTableProps,
+      getTableBodyProps,
+      headerGroups,
+      rows,
+      prepareRow,
+      state: { sortBy },
+    } = useTable(
+      {
+        columns,
+        data,
+        manualSortBy: true,
+        defaultCanSort: false,
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        initialRowStateAccessor: () => ({
+          expanded: 0,
+          values: {},
+          content: {},
+        }),
+      },
+      useRowState,
+      useSortBy,
+      selectableRow ? tableAction : () => null,
+    );
+
+    useEffect(() => {
+      console.log("sortBy", sortBy);
+    }, [sortBy]);
 
     return (
       <table {...getTableProps()} className="w-full text-left font-content">
@@ -198,17 +217,35 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         <thead>
           {headerGroups.map((headerGroup, key) => (
             <tr
-              className="bg-primary-lighter leading-5"
+              className="bg-primary-darker py-4 leading-5  "
               {...headerGroup.getHeaderGroupProps()}
               key={`header-${key}`}
             >
               {headerGroup.headers.map((column, key) => (
                 <th
-                  {...column.getHeaderProps()}
-                  className="px-2 py-1"
+                  {...column.getHeaderProps(
+                    column.getSortByToggleProps({ title: undefined }),
+                  )}
+                  className="px-2 pt-3 pb-1 text-heading text-primary-contrast-darker font-medium text-sm "
                   key={`column-${key}`}
+                  onClick={() => column.toggleSortBy(!column.isSortedDesc)}
                 >
-                  {column.render("Header")}
+                  <div className="flex flex-row nowrap items-center px-1">
+                    <span>{column.render("Header")}</span>
+                    {column.sortable && column.isSorted ? (
+                      <span>
+                        {column.isSortedDesc ? (
+                          <ActionIcon className={"bg-transparent"}>
+                            <ArrowDropDown size={"2em"} />
+                          </ActionIcon>
+                        ) : (
+                          <ActionIcon className={"bg-transparent"}>
+                            <ArrowDropUp size={"2em"} />
+                          </ActionIcon>
+                        )}
+                      </span>
+                    ) : null}
+                  </div>
                 </th>
               ))}
             </tr>
@@ -242,7 +279,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                         <td
                           {...cell.getCellProps()}
                           key={`row-${key}`}
-                          className="px-2 py-1 text-sm text-content"
+                          className="px-2 py-1 text-[0.65em] text-content"
                         >
                           {cell.render("Cell")}
                         </td>
@@ -255,16 +292,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                     // @ts-ignore
                     row.state.expanded > 0 ? (
                       <tr {...row.getRowProps()}>
-                        <td colSpan={headings.length}>
-                          {/*
-                          Inside it, call our renderRowSubComponent function. In reality,
-                          you could pass whatever you want as props to
-                          a component like this, including the entire
-                          table instance. But for this example, we'll just
-                          pass the row
-                        */}
-                          {row.state.content}
-                        </td>
+                        <td colSpan={headings.length}>{row.state.content}</td>
                       </tr>
                     ) : null
                   }
@@ -320,7 +348,11 @@ export const VerticalTable: FC<VerticalTableProps> = ({
       }
     }
 
-    return <>Showning {outputString}</>;
+    return (
+      <p className={"text-heading text-medium text-sm"}>
+        Showning {outputString}
+      </p>
+    );
   };
 
   return (
@@ -376,11 +408,12 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         <Table columns={headings} data={table} />
       </div>
       {pagination && (
-        <div className="flex flex-row items-center justify-start border-t border-base-light">
+        <div className="flex flex-row items-center text-content justify-start border-t border-base-light pt-2">
           <p className="px-2">Page Size:</p>
           <Select
             size="sm"
             radius="md"
+            width={100}
             onChange={handlePageSizeChange}
             value={pageSize?.toString()}
             data={[

@@ -43,13 +43,13 @@ export const ProjectFacetPanel = (): JSX.Element => {
   };
 
   return (
-    <div className="flex flex-col gap-y-4 mr-3 w-1/5  ">
+    <div className="flex flex-col gap-y-4 mr-3 w-1/5 mx-2 ">
       <Group position="apart">
         <Text size="lg" weight={700} className="text-primary-content-darker">
           Filters
         </Text>
       </Group>
-      <div className="flex flex-col gap-y-4 mr-3 h-screen/1.5 overflow-y-scroll">
+      <div className="flex flex-col gap-y-4  h-screen/1.5 overflow-y-scroll px-4">
         {FilterFacets.project.map((x) => {
           const facetName = fieldNameToTitle(x.full);
           return createFacetCard(

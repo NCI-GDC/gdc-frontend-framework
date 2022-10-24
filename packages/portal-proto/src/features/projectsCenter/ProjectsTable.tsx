@@ -3,22 +3,43 @@ import { VerticalTable } from "../shared/VerticalTable";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import Link from "next/link";
 import { useProjects, buildCohortGqlOperator } from "@gff/core";
+import { Row } from "react-table";
 import { useAppSelector } from "@/features/projectsCenter/appApi";
 import { selectFilters } from "@/features/projectsCenter/projectCenterFiltersSlice";
 import FunctionButton from "@/components/FunctionButton";
 
-const extractValue = (
-  data: ReadonlyArray<Record<string, number | string>>,
-  nodeKey: string,
-  nodeValue: string,
-  valueKey: string,
-): number | string | undefined => {
-  const results = data.find(
-    (obj) => Object.keys(obj).includes(nodeKey) && obj[nodeKey] === nodeValue,
-  );
-  if (results === undefined) return 0;
+// const extractValue = (
+//   data: ReadonlyArray<Record<string, number | string>>,
+//   nodeKey: string,
+//   nodeValue: string,
+//   valueKey: string,
+// ): number | string | undefined => {
+//   const results = data.find(
+//     (obj) => Object.keys(obj).includes(nodeKey) && obj[nodeKey] === nodeValue,
+//   );
+//   if (results === undefined) return 0;
+//
+//   return results[valueKey];
+// };
 
-  return results[valueKey];
+const columnHeaderClick = async (column: any) => {
+  switch (column.sortDirection) {
+    case "none":
+      setSort({ direction: "ASC", accessor: column.id });
+      const desc = await getClients("ASC", column.id);
+      setData(desc);
+      break;
+    case "ASC":
+      setSort({ direction: "DESC", accessor: column.id });
+      const asc = await getClients("DESC", column.id);
+      setData(asc);
+      break;
+    case "DESC":
+      setSort({ direction: "none", accessor: column.id });
+      const newData = await getClients("none", column.id);
+      setData(newData);
+      break;
+  }
 };
 
 const extractToArray = (
@@ -26,17 +47,22 @@ const extractToArray = (
   nodeKey: string,
 ) => data.map((x) => x[nodeKey]);
 
+interface CellProps {
+  value: string[];
+  row: Row;
+}
+
 const ProjectsTable: React.FC = () => {
   const [pageSize, setPageSize] = useState(10);
   const [offset, setOffset] = useState(0);
 
   const columnListOrder = [
-    { id: "project_id", columnName: "Project", visible: true },
+    { id: "project_id", columnName: "Project", visible: true, sortable: false },
     {
       id: "disease_type",
       columnName: "Disease Type",
       visible: true,
-      Cell: ({ value, row }) => {
+      Cell: ({ value, row }: CellProps) => {
         return (
           <CollapsibleRow value={value} row={row} label={"Disease Type"} />
         );
@@ -46,7 +72,7 @@ const ProjectsTable: React.FC = () => {
       id: "primary_site",
       columnName: "Primary Site",
       visible: true,
-      Cell: ({ value, row }) => (
+      Cell: ({ value, row }: CellProps) => (
         <CollapsibleRow value={value} row={row} label={"Primary Site"} />
       ),
     },
@@ -56,7 +82,7 @@ const ProjectsTable: React.FC = () => {
       id: "data_categories",
       columnName: "Data Categories",
       visible: true,
-      Cell: ({ value, row }) => (
+      Cell: ({ value, row }: CellProps) => (
         <CollapsibleRow value={value} row={row} label={"Data Categories"} />
       ),
     },
@@ -64,7 +90,7 @@ const ProjectsTable: React.FC = () => {
       id: "experimental_strategies",
       columnName: "Experimental Strategies",
       visible: true,
-      Cell: ({ value, row }) => (
+      Cell: ({ value, row }: CellProps) => (
         <CollapsibleRow
           value={value}
           row={row}
@@ -115,12 +141,6 @@ const ProjectsTable: React.FC = () => {
 
   console.log("ProjectTable", data, isSuccess, pagination);
 
-  const renderExpandedRow = (content) => {
-    return {
-      content,
-    };
-  };
-
   if (isSuccess) {
     tempPagination = pagination;
     formattedTableData = data.map((project) => ({
@@ -132,7 +152,7 @@ const ProjectsTable: React.FC = () => {
       disease_type: project.disease_type,
       primary_site: project.primary_site,
       program: project.program.name,
-      cases: project.summary.case_count,
+      cases: project.summary.case_count.toLocaleString(),
       data_categories: extractToArray(
         project.summary.data_categories,
         "data_category",
@@ -141,11 +161,11 @@ const ProjectsTable: React.FC = () => {
         project.summary.experimental_strategies,
         "experimental_strategy",
       ),
-      files: project.summary.file_count,
+      files: project.summary.file_count.toLocaleString(),
     }));
   }
 
-  const status = isFetching
+  const status = isFetching // useProjects hooks returns status as a set of bools
     ? "pending"
     : isSuccess
     ? "fulfilled"
@@ -180,10 +200,9 @@ const ProjectsTable: React.FC = () => {
         handlePageSizeChange,
         handlePageChange,
         ...tempPagination,
-        label: "files",
+        label: "projects",
       }}
       status={status}
-      renderRowSubComponent={renderExpandedRow}
     />
   );
 };
