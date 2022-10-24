@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import fileSize from "filesize";
 import { Badge, Button, Menu } from "@mantine/core";
@@ -14,6 +14,8 @@ import {
 import { VerticalTable } from "@/features/shared/VerticalTable";
 import { removeFromCart, RemoveFromCartButton } from "./updateCart";
 import FunctionButton from "@/components/FunctionButton";
+import { downloadJSON, downloadTSV } from "../shared/TableUtils";
+import { convertDateToString } from "src/utils/date";
 
 const columnCells = [
   { Header: "Remove", accessor: "remove", width: 80 },
@@ -95,6 +97,11 @@ const FilesTable: React.FC<FilesTableProps> = ({
     ),
   );
 
+  const visibleColumnCells = useMemo(
+    () => columnCells.filter((column) => columnKeys.includes(column.accessor)),
+    [columnKeys],
+  );
+
   useEffect(() => {
     setTableData(
       isSuccess
@@ -157,13 +164,83 @@ const FilesTable: React.FC<FilesTableProps> = ({
     setVisibleColumns(columns);
   };
 
+  const handleDownloadJSON = () => {
+    const keysForDownload = [
+      { path: "data_format", composer: "dataFormat" },
+      {
+        path: "cases",
+        composer: (file) =>
+          file.cases?.map((caseObj) => ({
+            case_id: caseObj.case_id,
+            project: { project_id: caseObj.project.project_id },
+          })),
+      },
+      { path: "access" },
+      { path: "file_name", composer: "fileName" },
+      { path: "file_id", composer: "fileId" },
+      { path: "data_category", composer: "dataCategory" },
+      { path: "file_size", composer: "fileSize" },
+    ];
+
+    downloadJSON(
+      data,
+      keysForDownload,
+      `files.${convertDateToString(new Date())}.json`,
+    );
+  };
+
+  const handleDownloadTSV = () => {
+    console.log({ data, visibleColumnCells });
+    downloadTSV(
+      data,
+      visibleColumnCells,
+      `files-table.${convertDateToString(new Date())}.tsv`,
+      {
+        blacklist: ["remove"],
+        overwrite: {
+          uuid: {
+            composer: "fileId",
+          },
+          name: {
+            composer: "fileName",
+          },
+          cases: {
+            composer: (file) => file.cases?.length.toLocaleString() || 0,
+          },
+          project: {
+            composer: "project_id",
+          },
+          data_category: {
+            composer: "dataCategory",
+          },
+          data_format: {
+            composer: "dataFormat",
+          },
+          file_size: {
+            composer: (file) => fileSize(file.fileSize),
+          },
+          annotations: {
+            composer: (file) => file.annotations?.length || 0,
+          },
+          data_type: {
+            composer: "dataType",
+          },
+          experimental_strategy: {
+            composer: (file) => file.experimentalStrategy || "--",
+          },
+          platform: {
+            composer: (file) => file.platform || "--",
+          },
+        },
+      },
+    );
+  };
+
   return (
     <VerticalTable
       tableData={visibleData}
       columnListOrder={visibleColumns}
-      columnCells={columnCells.filter((column) =>
-        columnKeys.includes(column.accessor),
-      )}
+      columnCells={visibleColumnCells}
       selectableRow={false}
       handleColumnChange={handleColumnChange}
       tableTitle={`Showing ${(activePage - 1) * pageSize + 1} - ${
@@ -173,8 +250,8 @@ const FilesTable: React.FC<FilesTableProps> = ({
       } of ${pagination?.total} files`}
       additionalControls={
         <div className="flex gap-2">
-          <FunctionButton>JSON</FunctionButton>
-          <FunctionButton>TSV</FunctionButton>
+          <FunctionButton onClick={handleDownloadJSON}>JSON</FunctionButton>
+          <FunctionButton onClick={handleDownloadTSV}>TSV</FunctionButton>
           <Menu>
             <Menu.Target>
               <Button

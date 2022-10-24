@@ -40,29 +40,6 @@ const FilesTables: React.FC = () => {
     { id: "annotations", columnName: "Annotations", visible: true },
   ];
 
-  const columnListForDownload = [
-    { id: "access", columnName: "Access" },
-    { id: "fileName", columnName: "File Name" },
-    {
-      id: "cases",
-      columnName: "Cases",
-      composer: (file) => file.cases?.length.toLocaleString() || 0,
-    },
-    { id: "project_id", columnName: "Project" },
-    { id: "dataCategory", columnName: "Data Category " },
-    { id: "dataFormat", columnName: "Data Format" },
-    {
-      id: "fileSize",
-      columnName: "File Size",
-      composer: (file) => fileSize(file.fileSize),
-    },
-    {
-      id: "annotations",
-      columnName: "Annotations",
-      composer: (file) => file.annotations?.length || 0,
-    },
-  ];
-
   const keysForDownload = [
     { path: "data_format", composer: "dataFormat" },
     {
@@ -178,34 +155,44 @@ const FilesTables: React.FC = () => {
     getCohortCases(tempPagination.size, x - 1);
   };
 
+  const handleDownloadJSON = () => {
+    downloadJSON(
+      data,
+      keysForDownload,
+      `files.${convertDateToString(new Date())}.json`,
+    );
+  };
+
+  const handleDownloadTSV = () => {
+    downloadTSV(
+      data,
+      columnCells,
+      `files-table.${convertDateToString(new Date())}.tsv`,
+      {
+        blacklist: ["cart"],
+        overwrite: {
+          cases: {
+            composer: (file) => file.cases?.length.toLocaleString() || 0,
+          },
+          fileSize: {
+            composer: (file) => fileSize(file.fileSize),
+          },
+          annotations: {
+            composer: (file) => file.annotations?.length || 0,
+          },
+        },
+      },
+    );
+  };
+
   //update everything that uses table component
   return (
     <VerticalTable
       tableTitle={`Total of ${tempPagination?.total} files`}
       additionalControls={
         <div className="flex gap-2">
-          <FunctionButton
-            onClick={() =>
-              downloadJSON(
-                data,
-                keysForDownload,
-                `files.${convertDateToString(new Date())}.json`,
-              )
-            }
-          >
-            JSON
-          </FunctionButton>
-          <FunctionButton
-            onClick={() =>
-              downloadTSV(
-                data,
-                columnListForDownload,
-                `files.${convertDateToString(new Date())}.tsv`,
-              )
-            }
-          >
-            TSV
-          </FunctionButton>
+          <FunctionButton onClick={handleDownloadJSON}>JSON</FunctionButton>
+          <FunctionButton onClick={handleDownloadTSV}>TSV</FunctionButton>
         </div>
       }
       tableData={formattedTableData}

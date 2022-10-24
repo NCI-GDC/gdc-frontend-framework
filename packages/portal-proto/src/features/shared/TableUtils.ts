@@ -2,30 +2,59 @@ import saveAs from "file-saver";
 import set from "lodash/set";
 import get from "lodash/get";
 
+type ColumnComposerFunction = (
+  row: Record<string, any>,
+  accessor: string,
+  Header: string,
+  rowIndex: number,
+) => string;
+
 export function downloadTSV(
   tableData: readonly Record<string, any>[],
   columns: {
-    id: string;
-    columnName: string;
-    composer?: (
-      row: Record<string, any>,
-      columnId: string,
-      columnName: string,
-      rowIndex: number,
-    ) => string;
+    accessor: string;
+    Header: string;
+    composer?: string | ColumnComposerFunction;
   }[],
   fileName: string,
+  option?: {
+    blacklist?: string[];
+    overwrite?: Record<
+      string,
+      {
+        Header?: string;
+        composer?: string | ColumnComposerFunction;
+      }
+    >;
+  },
 ): void {
-  const header = columns.map((column) => column.columnName).join("\t");
+  const filteredColumns = columns.filter(
+    (column) => !option?.blacklist?.includes(column.accessor),
+  );
+
+  const getOverwriteHeader = (column) =>
+    option?.overwrite?.[column.accessor]?.Header;
+
+  const header = filteredColumns
+    .map((column) => getOverwriteHeader(column) ?? column.Header)
+    .join("\t");
 
   const body = (tableData || [])
     .map((obj, index) =>
-      columns
-        .map((column) =>
-          column.composer
-            ? column.composer(obj, column.id, column.columnName, index)
-            : obj[column.id],
-        )
+      filteredColumns
+        .map((column) => {
+          const overwriteComposer =
+            option?.overwrite?.[column.accessor]?.composer;
+          const overwriteHeader = getOverwriteHeader(column);
+          const composer = overwriteComposer ?? column.composer;
+          const Header = overwriteHeader ?? column.Header;
+
+          return composer
+            ? typeof composer === "string"
+              ? get(obj, composer)
+              : composer(obj, column.accessor, Header, index)
+            : obj[column.accessor];
+        })
         .join("\t"),
     )
     .join("\n");
@@ -50,6 +79,10 @@ export function downloadJSON(
   }[],
   fileName: string,
 ): void {
+  if (!tableData || tableData.length < 1) {
+    return;
+  }
+
   const json = (tableData || []).map((row, index) => {
     const rowJson = {};
 
