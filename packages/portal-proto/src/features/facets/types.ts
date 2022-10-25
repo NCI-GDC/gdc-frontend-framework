@@ -76,11 +76,14 @@ export interface FacetCardProps<T extends FacetDataHooks> {
 export type RangeFromOp = ">" | ">=";
 export type RangeToOp = "<" | "<=";
 
-export interface FromToRange<T> {
-  readonly fromOp?: RangeFromOp;
+export interface FromToRangeValues<T> {
   readonly from?: T;
-  readonly toOp?: RangeToOp;
   readonly to?: T;
+}
+
+export interface FromToRange<T> extends FromToRangeValues<T> {
+  readonly fromOp?: RangeFromOp;
+  readonly toOp?: RangeToOp;
 }
 
 export interface StringRange {
@@ -88,4 +91,17 @@ export interface StringRange {
   readonly from?: string;
   readonly toOp?: RangeToOp;
   readonly to?: string;
+}
+
+/**
+ * Represent a range. Used to configure a row
+ * of a range list.
+ */
+export interface RangeBucketElement {
+  readonly from: number;
+  readonly to: number;
+  readonly key: string; // key for facet range
+  readonly label: string; // label for value
+  readonly valueLabel?: string; // string representation of the count
+  value?: number; // count of items in range
 }
