@@ -5,6 +5,7 @@ import { facetsReducer } from "./features/facets/facetSlice";
 import { fileCaseGenesMutationsFacetReducers } from "./features/facets/facetSliceGQL";
 import { gdcAppReducer } from "./features/gdcapps/gdcAppsSlice";
 import { filesReducer } from "./features/files/filesSlice";
+import { filesSizeReducer } from "./features/files/totalFileSizeSlice";
 import { historyReducer } from "./features/history/historySlice";
 import { projectsReducer } from "./features/projects/projectsSlice";
 import { annotationsReducer } from "./features/annotations/annotationsSlice";
@@ -45,6 +46,7 @@ export const reducers = combineReducers({
   facetsByNameTypeFilter: facetsByNameTypeAndFilterReducer,
   gdcApps: gdcAppReducer,
   files: filesReducer,
+  filesSize: filesSizeReducer,
   history: historyReducer,
   projects: projectsReducer,
   annotations: annotationsReducer,
