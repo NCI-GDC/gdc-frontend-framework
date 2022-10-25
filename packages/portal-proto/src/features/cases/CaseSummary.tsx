@@ -12,7 +12,7 @@ import {
 import { SummaryCard } from "@/components/Summary/SummaryCard";
 import SummaryCount from "@/components/Summary/SummaryCount";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
-import { Badge, Button, LoadingOverlay, Tooltip } from "@mantine/core";
+import { Button, LoadingOverlay, Tooltip } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
 import {
   FaFile,
@@ -41,7 +41,8 @@ import { ClinicalSummary } from "./ClinicalSummary/ClinicalSummary";
 import { caseFileType, Demographic } from "@gff/core/dist/features/cases/types";
 import fileSize from "filesize";
 import { TempTable } from "../files/FileView";
-import { DownloadFile } from "@/components/DownloadButtons";
+import { FileAccessBadge } from "@/components/FileAccessBadge";
+import { TableActionButtons } from "@/components/TableActionButtons";
 
 // TODO: break it down
 
@@ -398,49 +399,16 @@ export const CaseSummary = ({
     const rows = files.map((file) => {
       const isOutputFileInCart = fileInCart(currentCart, file.file_id);
       return {
-        // can generalize this too and use proper colors
-        access: (
-          <Badge
-            className={
-              file.access === "open" //TODO: keep or change to theme color (used same from the repository file table)
-                ? "bg-nci-green-lighter/50 text-nci-green-darkest capitalize text-sm"
-                : "bg-nci-red-lighter/50 text-nci-red-darkest capitalize text-sm"
-            }
-          >
-            {file.access}
-          </Badge>
-        ),
+        access: <FileAccessBadge access={file.access} />,
         file_name: file.file_name,
         data_format: file.data_format,
         file_size: fileSize(file.file_size),
-        // most probably can generalize this as it's being used in other places too
         action: (
-          <div className="flex gap-3">
-            {/* this can be a component too */}
-            <Button
-              className={`${
-                isOutputFileInCart
-                  ? "bg-secondary-min text-secondary-contrast-min"
-                  : "bg-base-lightest text-base-min"
-              } border border-base-darkest rounded p-2 hover:bg-base-darkest hover:text-base-contrast-min`}
-              onClick={() => {
-                isOutputFileInCart
-                  ? removeFromCart(
-                      mapFilesFromCasesToCartFile([file]),
-                      currentCart,
-                      dispatch,
-                    )
-                  : addToCart(
-                      mapFilesFromCasesToCartFile([file]),
-                      currentCart,
-                      dispatch,
-                    );
-              }}
-            >
-              <FaShoppingCart title="Add to Cart" />
-            </Button>
-            <DownloadFile file={mapFileData([file])[0]} showLoading={false} />
-          </div>
+          <TableActionButtons
+            isOutputFileInCart={isOutputFileInCart}
+            file={mapFilesFromCasesToCartFile([file])}
+            downloadFile={mapFileData([file])[0]}
+          />
         ),
       };
     });

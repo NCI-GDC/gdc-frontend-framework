@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import fileSize from "filesize";
-import { Badge, Button, Menu } from "@mantine/core";
+import { Button, Menu } from "@mantine/core";
 import { MdArrowDropDown as DropdownIcon } from "react-icons/md";
 import { VscTrash as TrashIcon } from "react-icons/vsc";
 import {
@@ -14,6 +14,7 @@ import {
 import { VerticalTable } from "@/features/shared/VerticalTable";
 import { removeFromCart, RemoveFromCartButton } from "./updateCart";
 import FunctionButton from "@/components/FunctionButton";
+import { FileAccessBadge } from "@/components/FileAccessBadge";
 
 const columnCells = [
   { Header: "Remove", accessor: "remove", width: 80 },
@@ -105,17 +106,7 @@ const FilesTable: React.FC<FilesTableProps> = ({
                 <a className="text-utility-link underline">{file.fileId}</a>
               </Link>
             ),
-            access: (
-              <Badge
-                className={
-                  file.access === "open" //TODO: keep or change to theme color
-                    ? "bg-nci-green-lighter/50 text-nci-green-darkest capitalize text-sm"
-                    : "bg-nci-red-lighter/50 text-nci-red-darkest capitalize text-sm"
-                }
-              >
-                {file.access}
-              </Badge>
-            ),
+            access: <FileAccessBadge access={file.access} />,
             name: (
               <Link href={`/files/${file.fileId}`}>
                 <a className="text-utility-link underline">{file.fileName}</a>
