@@ -412,7 +412,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   };
 
   return (
-    <div className="flex flex-col shadow-lg">
+    <div className="flex flex-col">
       <div className="flex flex-row w-100 items-center justify-center flex-wrap">
         <div className="flex ml-auto text-montserrat text-lg text-primary-content-dark ">
           {title}
