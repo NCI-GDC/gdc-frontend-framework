@@ -79,6 +79,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
   };
 
   const addValue = (s: string | number) => {
+    if (s === "") return;
     if (textValues.includes(s)) return;
     setTextValue("");
     setValues([...textValues, s]);
@@ -124,7 +125,10 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
           </div>
         </Tooltip>
         <div className="flex flex-row">
-          <FacetIconButton onClick={clearFilters} aria-label="clear selection">
+          <FacetIconButton
+            onClick={() => clearFilters(field)}
+            aria-label="clear selection"
+          >
             <UndoIcon size="1.15em" className={controlsIconStyle} />
           </FacetIconButton>
           {dismissCallback ? (
@@ -153,7 +157,9 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
           size="md"
           aria-label="add string value"
           className="bg-accent text-accent-contrast border-base-min border-1 rounded-l-none h-[30px]"
-          onClick={() => addValue(textValue)}
+          onClick={() => {
+            if (textValue.length > 0) addValue(textValue);
+          }}
         >
           <PlusIcon />
         </ActionIcon>

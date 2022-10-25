@@ -10,8 +10,6 @@ import { historyReducer } from "./features/history/historySlice";
 import { projectsReducer } from "./features/projects/projectsSlice";
 import { annotationsReducer } from "./features/annotations/annotationsSlice";
 import { casesReducer } from "./features/cases/casesSlice";
-import { ssmPlotReducer } from "./features/cancerDistribution/ssmPlot";
-import { cnvPlotReducer } from "./features/cancerDistribution/cnvPlot";
 import { oncoGridReducer } from "./features/oncoGrid/oncoGridSlice";
 import { genomicReducers } from "./features/genomic/genomicSlice";
 import { imageDetailsReducer } from "./features/imageDetails/imageDetailsSlice";
@@ -36,7 +34,13 @@ import { caseSummarySliceReducer } from "./features/cases/caseSummarySlice";
 import { facetsByNameTypeAndFilterReducer } from "./features/facets/facetsByNameTypeAndFilter";
 import { userDetailsReducer } from "./features/users/usersSlice";
 import { modalReducer } from "./features/modals/modalsSlice";
+import { quickSearchReducer } from "./features/quickSearch/quickSearch";
 import { versionInfoReducer } from "./features/versionInfo/versionInfoSlice";
+import { cancerDistributionReducer } from "./features/cancerDistribution";
+import {
+  graphqlAPISliceReducerPath,
+  graphqlAPIReducer,
+} from "./features/gdcapi/gdcgraphql";
 
 export const reducers = combineReducers({
   cohort: cohortReducers,
@@ -51,8 +55,7 @@ export const reducers = combineReducers({
   projects: projectsReducer,
   annotations: annotationsReducer,
   cases: casesReducer,
-  ssmPlot: ssmPlotReducer,
-  cnvPlot: cnvPlotReducer,
+  cancerDistribution: cancerDistributionReducer,
   oncogrid: oncoGridReducer,
   genomic: genomicReducers,
   imageDetails: imageDetailsReducer,
@@ -68,8 +71,10 @@ export const reducers = combineReducers({
   genesSummary: genesSummaryReducer,
   userInfo: userDetailsReducer,
   modals: modalReducer,
+  quickSearch: quickSearchReducer,
   [cohortApiSliceReducerPath]: cohortApiReducer,
   [survivalApiSliceReducerPath]: survivalApiReducer,
+  [graphqlAPISliceReducerPath]: graphqlAPIReducer,
   versionInfo: versionInfoReducer,
 });
 

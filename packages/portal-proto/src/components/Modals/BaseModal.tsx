@@ -11,8 +11,12 @@ interface Props {
   children: ReactNode;
   buttons?: Array<{
     onClick?: () => void;
+    hideModalOnClick?: boolean;
     title: string;
   }>;
+  withCloseButton?: boolean;
+  closeOnClickOutside?: boolean;
+  closeOnEscape?: boolean;
 }
 
 export const BaseModal: React.FC<Props> = ({
@@ -22,6 +26,9 @@ export const BaseModal: React.FC<Props> = ({
   size,
   children,
   buttons,
+  withCloseButton,
+  closeOnClickOutside,
+  closeOnEscape,
 }: Props) => {
   const dispatch = useCoreDispatch();
   return (
@@ -41,16 +48,27 @@ export const BaseModal: React.FC<Props> = ({
       })}
       closeButtonLabel={closeButtonLabel}
       withinPortal={false}
+      withCloseButton={withCloseButton ?? true}
+      closeOnClickOutside={closeOnClickOutside ?? true}
+      closeOnEscape={closeOnEscape ?? true}
       size={size && size}
     >
       {children}
       {buttons && (
         <div className="flex justify-end mt-2.5 gap-2">
-          {buttons.map(({ onClick, title }) => (
+          {buttons.map(({ onClick, title, hideModalOnClick }) => (
             <Button
               key={title}
               onClick={() => {
-                onClick ? onClick() : dispatch(hideModal());
+                if (onClick) {
+                  onClick();
+
+                  if (hideModalOnClick) {
+                    dispatch(hideModal());
+                  }
+                } else {
+                  dispatch(hideModal());
+                }
               }}
               className="!bg-primary hover:!bg-primary-darker"
             >
