@@ -4,11 +4,12 @@ import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { coreCreateApi } from "../../coreCreateApi";
 import type { Middleware, Reducer } from "@reduxjs/toolkit";
 import { CohortModel, CohortAdd, CohortUpdate } from "./cohortApiTypes";
+import { GDC_API } from "../../constants";
 
 export const cohortApiSlice = coreCreateApi({
   reducerPath: "cohortApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://api.gdc.cancer.gov/v0",
+    baseUrl: `${GDC_API}`,
     credentials: "include",
   }),
   tagTypes: ["Cohort"],
@@ -57,7 +58,6 @@ export const cohortApiSlice = coreCreateApi({
 });
 
 export const {
-  // useGetCohortsQuery,
   useGetCohortsByContextIdQuery,
   useGetCohortByIdQuery,
   useAddCohortMutation,
