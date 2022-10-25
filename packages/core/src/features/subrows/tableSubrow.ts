@@ -14,7 +14,8 @@ interface SubrowResponse {
   };
 }
 
-// commented out because couldn't resolve type error lines 92, 171
+// todo: add to lines 92, 171
+// fails to compile when uncommented
 // export interface TableSubrowData {
 //   project?: string;
 //   numerator?: number;
@@ -90,9 +91,26 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
       transformResponse: (
         response: GraphQLApiResponse<SubrowResponse>,
       ): any => {
-        const { cases } = response.data.explore;
-        const { buckets: nBuckets } = cases.numerators.project__project_id;
-        const { buckets: dBuckets } = cases.denominators.project__project_id;
+        const {
+          data: {
+            explore: {
+              cases: {
+                numerators: {
+                  project__project_id: { buckets: nBuckets },
+                },
+              },
+            },
+          },
+          data: {
+            explore: {
+              cases: {
+                denominators: {
+                  project__project_id: { buckets: dBuckets },
+                },
+              },
+            },
+          },
+        } = response;
         const transformedBuckets = nBuckets.map(({ doc_count, key }) => {
           return {
             project: key,
@@ -169,10 +187,10 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
       transformResponse: (
         response: GraphQLApiResponse<SubrowResponse>,
       ): any => {
-        const { cases } = response.data.explore;
-        const { buckets: nBuckets } = cases.numerators.project__project_id;
-        const { buckets: dBuckets } = cases.denominators.project__project_id;
-        let transformedBuckets = nBuckets.map(({ doc_count, key }) => {
+        const { numerators, denominators } = response.data.explore.cases;
+        const { buckets: nBuckets } = numerators.project__project_id;
+        const { buckets: dBuckets } = denominators.project__project_id;
+        const transformedBuckets = nBuckets.map(({ doc_count, key }) => {
           return {
             project: key,
             numerator: doc_count,
