@@ -10,7 +10,7 @@ class ClinicalDataAnalysisLocators:
     GROUP_TABLE = lambda group: f"div[id=cdave-control-group-{group}]"
     GROUP_TABLE_PLUS_BUTTON = lambda group: f"div[id='cdave-control-group-{group}'] >> button[data-testid='plus-icon']"
     PROPERTY_ROW = lambda property: f"label:text('{property}')"
-    
+
 
 class ClinicalDataAnalysisPage:
     def __init__(self, driver: Page, url):
@@ -45,7 +45,7 @@ class ClinicalDataAnalysisPage:
         # search for the property value in the specified table
         for row, value in enumerate(table):
             property = table[row][0]
-            property_locator = table_locator + ">>" + ClinicalDataAnalysisLocators.PROPERTY_ROW(property)                
+            property_locator = table_locator + ">>" + ClinicalDataAnalysisLocators.PROPERTY_ROW(property)
             try:
                 self.driver.wait_for_selector(property_locator, state="visible")
             except:
