@@ -13,6 +13,7 @@ import {
   fetchFiles,
   buildCohortGqlOperator,
   joinFilters,
+  fetchGdcEntities,
 } from "@gff/core";
 import { useAppSelector } from "@/features/repositoryApp/appApi";
 import { selectFilters } from "@/features/repositoryApp/repositoryFiltersSlice";
@@ -38,23 +39,6 @@ const FilesTables: React.FC = () => {
     { id: "platform", columnName: "Platform", visible: false },
     { id: "fileSize", columnName: "File Size", visible: true },
     { id: "annotations", columnName: "Annotations", visible: true },
-  ];
-
-  const keysForDownload = [
-    { path: "data_format", composer: "dataFormat" },
-    {
-      path: "cases",
-      composer: (file) =>
-        file.cases?.map((caseObj) => ({
-          case_id: caseObj.case_id,
-          project: { project_id: caseObj.project.project_id },
-        })),
-    },
-    { path: "access" },
-    { path: "file_name", composer: "fileName" },
-    { path: "file_id", composer: "fileId" },
-    { path: "data_category", composer: "dataCategory" },
-    { path: "file_size", composer: "fileSize" },
   ];
 
   const filterColumnCells = (newList) =>
@@ -155,7 +139,37 @@ const FilesTables: React.FC = () => {
     getCohortCases(tempPagination.size, x - 1);
   };
 
-  const handleDownloadJSON = () => {
+  const handleDownloadJSON = async () => {
+    const keysForDownload = [
+      { path: "data_format" },
+      {
+        path: "cases",
+        composer: (file) =>
+          file.cases?.map((caseObj) => ({
+            case_id: caseObj.case_id,
+            project: { project_id: caseObj.project.project_id },
+          })),
+      },
+      { path: "access" },
+      { path: "file_name" },
+      { path: "file_id" },
+      { path: "data_category" },
+      { path: "file_size" },
+    ];
+
+    const {
+      data: { hits: data },
+    } = await fetchGdcEntities(
+      "files",
+      {
+        filters: buildCohortGqlOperator(allFilters),
+        expand: ["cases.project"],
+        size: 200,
+        from: 0,
+      },
+      true,
+    );
+
     downloadJSON(
       data,
       keysForDownload,

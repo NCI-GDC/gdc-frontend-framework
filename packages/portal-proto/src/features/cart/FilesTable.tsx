@@ -10,6 +10,7 @@ import {
   useFiles,
   useCoreDispatch,
   CartFile,
+  fetchGdcEntities,
 } from "@gff/core";
 import { VerticalTable } from "@/features/shared/VerticalTable";
 import { removeFromCart, RemoveFromCartButton } from "./updateCart";
@@ -164,9 +165,9 @@ const FilesTable: React.FC<FilesTableProps> = ({
     setVisibleColumns(columns);
   };
 
-  const handleDownloadJSON = () => {
+  const handleDownloadJSON = async () => {
     const keysForDownload = [
-      { path: "data_format", composer: "dataFormat" },
+      { path: "data_format" },
       {
         path: "cases",
         composer: (file) =>
@@ -176,14 +177,33 @@ const FilesTable: React.FC<FilesTableProps> = ({
           })),
       },
       { path: "access" },
-      { path: "file_name", composer: "fileName" },
-      { path: "file_id", composer: "fileId" },
-      { path: "data_category", composer: "dataCategory" },
-      { path: "file_size", composer: "fileSize" },
+      { path: "file_name" },
+      { path: "file_id" },
+      { path: "data_category" },
+      { path: "file_size" },
     ];
 
+    const {
+      data: { hits: dataForDownload },
+    } = await fetchGdcEntities(
+      "files",
+      {
+        size: pageSize,
+        from: pageSize * (activePage - 1),
+        filters: {
+          op: "in",
+          content: {
+            field: "files.file_id",
+            value: cart.map((f) => f.fileId),
+          },
+        },
+        expand: ["annotations", "cases", "cases.project"],
+      },
+      true,
+    );
+
     downloadJSON(
-      data,
+      dataForDownload,
       keysForDownload,
       `files.${convertDateToString(new Date())}.json`,
     );
