@@ -19,7 +19,7 @@ interface CellProps {
 }
 
 const ProjectsTable: React.FC = () => {
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(20);
   const [activePage, setActivePage] = useState(1);
 
   const columnListOrder = [
@@ -164,7 +164,7 @@ const ProjectsTable: React.FC = () => {
         handlePageSizeChange,
         handlePageChange,
         ...tempPagination,
-        label: "projects",
+        label: "Projects",
       }}
       status={status}
     />

@@ -187,7 +187,7 @@ const VerticalTable: FC<VerticalTableProps> = ({
       );
 
     return (
-      <table {...getTableProps()} className="w-full text-left font-content">
+      <table {...getTableProps()} className="w-full text-left font-content ">
         {tableTitle && (
           <caption className="font-semibold text-left">{tableTitle}</caption>
         )}
@@ -309,7 +309,7 @@ const VerticalTable: FC<VerticalTableProps> = ({
   };
 
   return (
-    <div className="grow overflow-hidden mb-2">
+    <div className="grow overflow-hidden mb-2 border-1 border-base-lightest shadow-md">
       <div className={`h-10 float-left`}>{additionalControls}</div>
       {showControls && (
         <div className="flex flex-row float-right">
