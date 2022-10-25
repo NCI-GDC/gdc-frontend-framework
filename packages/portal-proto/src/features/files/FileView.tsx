@@ -31,6 +31,7 @@ import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 import { fileInCart } from "src/utils";
 import { GeneralErrorModal } from "@/components/Modals/GeneraErrorModal";
 import { TableActionButtons } from "@/components/TableActionButtons";
+import saveAs from "file-saver";
 
 export const StyledButton = tw.button`
 bg-base-lightest
@@ -196,6 +197,18 @@ export const FileView: React.FC<FileViewProps> = ({
       return `https://portal.gdc.cancer.gov/annotations/${annotations[0]}`;
     }
     return `https://portal.gdc.cancer.gov/annotations?filters={"content":[{"content":{"field":"annotations.entity_id","value":["${case_id}"]},"op":"in"}],"op":"and"}`;
+  };
+
+  const downloadVersionJSON = () => {
+    const jsonData = JSON.stringify([...fileHistory], null, 2);
+    const currentDate = new Date().toJSON().slice(0, 10);
+
+    saveAs(
+      new Blob([jsonData], {
+        type: "application/json",
+      }),
+      `${file.fileId}_history.${currentDate}.json`,
+    );
   };
 
   const AssociatedCB = ({
@@ -504,6 +517,7 @@ export const FileView: React.FC<FileViewProps> = ({
           <TitleText className="float-left mt-3">File Versions</TitleText>
           <div className="float-right my-2 mr-3">
             <Button
+              onClick={downloadVersionJSON}
               color={"base"}
               className="mr-2 text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
             >

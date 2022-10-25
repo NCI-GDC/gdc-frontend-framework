@@ -276,9 +276,9 @@ export const selectCnvPlotData = (
   state: CoreState,
 ): CoreDataSelectorResponse<CNVData> => {
   return {
-    data: state.cnvPlot.cnv,
-    status: state.cnvPlot.status,
-    error: state.cnvPlot.error,
+    data: state.cancerDistribution.cnvPlot.cnv,
+    status: state.cancerDistribution.cnvPlot.status,
+    error: state.cancerDistribution.cnvPlot.error,
   };
 };
 

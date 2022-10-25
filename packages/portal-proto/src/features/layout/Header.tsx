@@ -14,8 +14,9 @@ import {
 import { Button, LoadingOverlay, Menu } from "@mantine/core";
 import { NextLink } from "@mantine/next";
 import { useTour } from "@reactour/tour";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { Image } from "@/components/Image";
+import { useCookies } from "react-cookie";
 import {
   MdShoppingCart as CartIcon,
   MdOutlineApps as AppsIcon,
@@ -33,6 +34,7 @@ import Link from "next/link";
 import { UserProfileModal } from "@/components/Modals/UserProfileModal";
 import { SessionExpireModal } from "@/components/Modals/SessionExpireModal";
 import { useLocalStorage } from "@mantine/hooks";
+import { FirstTimeModal } from "@/components/Modals/FirstTimeModal";
 import { NoAccessModal } from "@/components/Modals/NoAccessModal";
 import { theme } from "tailwind.config";
 
@@ -61,6 +63,14 @@ export const Header: React.FC<HeaderProps> = ({
     key: "color-scheme",
     defaultValue: "default",
   });
+  const [cookie] = useCookies(["NCI-Warning"]);
+
+  useEffect(() => {
+    if (!cookie["NCI-Warning"]) {
+      dispatch && dispatch(showModal({ modal: Modals.FirstTimeModal }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="px-6 py-3 border-b border-gdc-grey-lightest">
@@ -260,6 +270,7 @@ export const Header: React.FC<HeaderProps> = ({
       {modal === Modals.UserProfileModal && <UserProfileModal openModal />}
       {modal === Modals.SessionExpireModal && <SessionExpireModal openModal />}
       {modal === Modals.NoAccessModal && <NoAccessModal openModal />}
+      {modal === Modals.FirstTimeModal && <FirstTimeModal openModal />}
     </div>
   );
 };

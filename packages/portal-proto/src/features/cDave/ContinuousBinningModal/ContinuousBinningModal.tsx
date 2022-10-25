@@ -95,6 +95,11 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
     },
   });
 
+  const validateRangeField = (field: string, idx: number) => {
+    rangeForm.validateField(`ranges.${idx}.${field}`);
+    rangeForm.validateField(`ranges.${idx}.name`);
+  };
+
   useEffect(() => {
     intervalForm.clearErrors();
     intervalForm.validate();
@@ -140,11 +145,13 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
         updateBins(null);
       }
     } else {
-      const newBins = savedRangeRows.map((r) => ({
-        name: r.name,
-        to: Number(r.to),
-        from: Number(r.from),
-      }));
+      const newBins = rangeForm.values.ranges
+        .map((r) => ({
+          name: r.name,
+          to: Number(r.to),
+          from: Number(r.from),
+        }))
+        .slice(0, -1);
       if (!hasReset || rangeForm.isDirty()) {
         updateBins(newBins);
       } else {
@@ -333,7 +340,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                       }}
                       onBlur={() =>
                         idx !== rangeForm.values.ranges.length - 1
-                          ? rangeForm.validateField(`ranges.${idx}.from`)
+                          ? validateRangeField("from", idx)
                           : undefined
                       }
                     />
@@ -351,7 +358,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                       }}
                       onBlur={() =>
                         idx !== rangeForm.values.ranges.length - 1
-                          ? rangeForm.validateField(`ranges.${idx}.to`)
+                          ? validateRangeField("to", idx)
                           : undefined
                       }
                     />
