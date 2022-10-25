@@ -400,7 +400,11 @@ export const CaseSummary = ({
       const isOutputFileInCart = fileInCart(currentCart, file.file_id);
       return {
         access: <FileAccessBadge access={file.access} />,
-        file_name: file.file_name,
+        file_name: (
+          <Link href={`/files/${file.file_id}`}>
+            <a className="text-utility-link underline">{file.file_name}</a>
+          </Link>
+        ),
         data_format: file.data_format,
         file_size: fileSize(file.file_size),
         action: (
