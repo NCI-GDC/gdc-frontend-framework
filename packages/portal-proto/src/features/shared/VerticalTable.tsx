@@ -100,9 +100,10 @@ interface VerticalTableProps {
 }
 
 interface Column {
-  Header: string;
+  Header: string | JSX.Element;
   accessor: string;
   width?: number;
+  Cell?: (tableInfo: any) => JSX.Element;
 }
 
 interface TableProps {

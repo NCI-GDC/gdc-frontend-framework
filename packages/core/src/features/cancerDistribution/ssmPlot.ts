@@ -229,9 +229,9 @@ export const selectSsmPlotData = (
   state: CoreState,
 ): CoreDataSelectorResponse<SsmPlotData> => {
   return {
-    data: state.ssmPlot.ssm,
-    status: state.ssmPlot.status,
-    error: state.ssmPlot.error,
+    data: state.cancerDistribution.ssmPlot.ssm,
+    status: state.cancerDistribution.ssmPlot.status,
+    error: state.cancerDistribution.ssmPlot.error,
   };
 };
 
