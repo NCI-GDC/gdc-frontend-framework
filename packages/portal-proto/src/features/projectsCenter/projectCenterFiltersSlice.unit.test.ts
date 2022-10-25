@@ -5,10 +5,10 @@ import {
 } from "@/features/projectsCenter/projectCenterFiltersSlice";
 import {
   projectCenterFiltersReducer,
-  ProjectCenterFiltersSlice,
+  ProjectCenterFiltersState,
 } from "./projectCenterFiltersSlice";
 
-const initialFilters: ProjectCenterFiltersSlice = {
+const initialFilters: ProjectCenterFiltersState = {
   filters: { mode: "and", root: {} },
 };
 
@@ -49,7 +49,7 @@ describe("project center filter reducer", () => {
 
   test("add same file filter, state should not change", () => {
     const state = projectCenterFiltersReducer(
-      populatedFilters as ProjectCenterFiltersSlice,
+      populatedFilters as ProjectCenterFiltersState,
       updateProjectFilter({
         field: "projects.program.name",
         operation: {
@@ -65,7 +65,7 @@ describe("project center filter reducer", () => {
 
   test("remove file filter", () => {
     const state = projectCenterFiltersReducer(
-      populatedFilters as ProjectCenterFiltersSlice,
+      populatedFilters as ProjectCenterFiltersState,
       removeProjectFilter("projects.program.name"),
     );
 
@@ -74,7 +74,7 @@ describe("project center filter reducer", () => {
 
   test("remove unknown filter, state should remain unchanged", () => {
     const state = projectCenterFiltersReducer(
-      populatedFilters as ProjectCenterFiltersSlice,
+      populatedFilters as ProjectCenterFiltersState,
       removeProjectFilter("projects.program.owner"),
     );
 
@@ -83,7 +83,7 @@ describe("project center filter reducer", () => {
 
   test("reset to default state should be initialFilters", () => {
     const state = projectCenterFiltersReducer(
-      populatedFilters as ProjectCenterFiltersSlice,
+      populatedFilters as ProjectCenterFiltersState,
       clearProjectFilters(),
     );
 
