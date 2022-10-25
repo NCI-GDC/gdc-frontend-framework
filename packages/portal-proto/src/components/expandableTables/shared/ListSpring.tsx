@@ -1,5 +1,5 @@
 import React from "react";
-import { animated, useSpring } from "react-spring";
+import { animated, useSpring, config } from "react-spring";
 import { useMeasure } from "react-use";
 import ItemSpring from "./ItemSpring";
 
@@ -24,7 +24,7 @@ const ListSpring: React.FC<ListSpringProps> = ({
       opacity: !opening ? 1 : 0,
       height: !opening ? height + fudgeFactor : 0,
     },
-    immediate: true,
+    duration: config.slow,
   });
 
   return (
@@ -41,7 +41,7 @@ const ListSpring: React.FC<ListSpringProps> = ({
           return (
             <ItemSpring
               key={index}
-              ratio={ratio}
+              item={ratio}
               index={index}
               len={subData.length || 1}
             />
