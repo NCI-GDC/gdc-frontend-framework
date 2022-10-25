@@ -1,10 +1,4 @@
-import React, {
-  useContext,
-  useLayoutEffect,
-  useRef,
-  useState,
-  useEffect,
-} from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { ActionIcon } from "@mantine/core";
 import {
   MdKeyboardArrowLeft as LeftArrowIcon,
@@ -21,8 +15,7 @@ interface QueryExpressionSectionProps {
   readonly currentCohortName: string;
 }
 
-export const QueryExpressionsExpandedStateContext =
-  React.createContext(undefined);
+export const QueryExpressionsExpandedContext = React.createContext(undefined);
 
 const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
   filters,
@@ -34,7 +27,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
   const [filtersSectionCollapsed, setFiltersSectionCollapsed] = useState(true);
   const [filterSectionOverflowing, setFilterSectionOverflowing] =
     useState(false);
-  const filtersRef = useRef(null);
+  const filtersRef = useRef<HTMLDivElement>(null);
 
   const dispatch = useCoreDispatch();
 
@@ -46,16 +39,22 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
     const overflowing =
       (filtersRef?.current?.scrollHeight || 0) >
       (filtersRef?.current?.clientHeight || 0);
-    console.log(filtersRef?.current?.scrollHeight || 0);
-    console.log(filtersRef?.current?.clientHeight || 0);
-    console.log(filtersRef);
     setFilterSectionOverflowing(overflowing);
-  }, [filtersRef?.current?.scrollHeight, filtersRef?.current?.clientHeight]);
+  }, [
+    filtersSectionCollapsed,
+    queryExpressionsExpanded,
+    filtersRef?.current?.scrollHeight,
+    filtersRef?.current?.clientHeight,
+  ]);
+
+  const allQueryExpressionsCollapsed = Object.values(
+    queryExpressionsExpanded,
+  ).every((q) => !q);
 
   return (
     <div className="flex items-center bg-white shadow-[0_-2px_6px_0_rgba(0,0,0,0.16)] border-primary-darkest border-l-4 p-4 mt-3">
       {Object.keys(filters.root).length !== 0 ? (
-        <QueryExpressionsExpandedStateContext.Provider
+        <QueryExpressionsExpandedContext.Provider
           value={[queryExpressionsExpanded, setQueryExpressionsExpanded]}
         >
           <div className="flex flex-col w-full">
@@ -76,15 +75,11 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
               </button>
               <div className="display flex gap-2 ml-auto">
                 <ActionIcon
-                  variant="outline"
-                  className={`border-primary-darkest ${
-                    Object.values(queryExpressionsExpanded).every((q) => !q)
-                      ? "bg-primary-darkest"
-                      : "bg-white"
-                  }`}
+                  variant={allQueryExpressionsCollapsed ? "outline" : "filled"}
+                  color="primary.9"
                   onClick={() =>
                     setQueryExpressionsExpanded(
-                      Object.values(queryExpressionsExpanded).every((q) => !q)
+                      allQueryExpressionsCollapsed
                         ? Object.fromEntries(
                             Object.keys(queryExpressionsExpanded).map((q) => [
                               q,
@@ -101,23 +96,21 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                   }
                   aria-label="Expand/collapse all queries"
                 >
-                  {Object.values(queryExpressionsExpanded).every((q) => !q) ? (
-                    <>
-                      <LeftArrowIcon size={30} color="white" />
-                      <RightArrowIcon size={30} color="white" />
-                    </>
-                  ) : (
+                  {allQueryExpressionsCollapsed ? (
                     <>
                       <RightArrowIcon size={30} color="primary.9" />
                       <LeftArrowIcon size={30} color="primary.9" />
                     </>
+                  ) : (
+                    <>
+                      <LeftArrowIcon size={30} color="white" />
+                      <RightArrowIcon size={30} color="white" />
+                    </>
                   )}
                 </ActionIcon>
                 <ActionIcon
-                  variant="outline"
-                  className={`border-primary-darkest ${
-                    filtersSectionCollapsed ? "bg-white" : "bg-primary-darkest"
-                  }`}
+                  variant={filtersSectionCollapsed ? "outline" : "filled"}
+                  color={"primary.9"}
                   onClick={() =>
                     setFiltersSectionCollapsed(!filtersSectionCollapsed)
                   }
@@ -149,7 +142,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
               })}
             </div>
           </div>
-        </QueryExpressionsExpandedStateContext.Provider>
+        </QueryExpressionsExpandedContext.Provider>
       ) : (
         <span className="text-md text-primary-darkest ">
           Currently viewing all cases in the GDC. Further refine your cohort

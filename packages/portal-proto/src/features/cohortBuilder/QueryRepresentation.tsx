@@ -29,7 +29,7 @@ import {
   MdOutlineArrowForward as RightArrow,
 } from "react-icons/md";
 import tw from "tailwind-styled-components";
-import { QueryExpressionsExpandedStateContext } from "./QueryExpressionSection";
+import { QueryExpressionsExpandedContext } from "./QueryExpressionSection";
 
 const QueryRepresentationText = tw.div`
 flex truncate ... px-2 bg-base-max h-full
@@ -87,7 +87,7 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
 }: Includes | Excludes) => {
   const dispatch = useCoreDispatch();
   const [queryExpressionsExpanded, setQueryExpressionsExpanded] = useContext(
-    QueryExpressionsExpandedStateContext,
+    QueryExpressionsExpandedContext,
   );
 
   useEffect(() => {
