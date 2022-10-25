@@ -219,7 +219,7 @@ const build10UnitRange = (
  * @param minimum - start value of range
  * @param rangeFunction - function to compute range boundaries
  */
-const BuildRanges = (
+const buildRanges = (
   numBuckets: number,
   units: string,
   minimum,
@@ -240,7 +240,7 @@ const BuildRanges = (
     }, {} as Record<string, RangeBucketElement>);
 };
 
-export const BuildRangeBuckets = (
+export const buildRangeBuckets = (
   numBuckets: number,
   units: string,
   minimum: number,
@@ -264,7 +264,7 @@ export const BuildRangeBuckets = (
     },
   };
 
-  const bucketEntries = BuildRanges(
+  const bucketEntries = buildRanges(
     numBuckets,
     RangeBuilder[units].label,
     minimum,

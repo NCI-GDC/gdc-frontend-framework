@@ -23,7 +23,7 @@ import {
   getUpperAgeYears,
   buildRangeOperator,
   extractRangeValues,
-  BuildRangeBuckets,
+  buildRangeBuckets,
 } from "./utils";
 import {
   FacetCardProps,
@@ -465,7 +465,7 @@ const RangeInputWithPrefixedRanges: React.FC<
 
   // build the range for the useRangeFacet and the facet query
   const [bucketRanges, ranges] = useMemo(() => {
-    return BuildRangeBuckets(numBuckets, units, minimum);
+    return buildRangeBuckets(numBuckets, units, minimum);
   }, [minimum, numBuckets, units]);
 
   const [isCustom, setIsCustom] = useState(filterKey === "custom"); // in custom Range Mode

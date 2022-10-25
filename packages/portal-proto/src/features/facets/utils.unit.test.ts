@@ -1,7 +1,7 @@
 import {
   buildRangeOperator,
   extractRangeValues,
-  BuildRangeBuckets,
+  buildRangeBuckets,
 } from "./utils";
 
 describe("Build Range Tests for Numeric Ranges", () => {
@@ -293,7 +293,7 @@ describe("Build Bucket Range Test", () => {
       },
     ];
 
-    const [bucketRanges, ranges] = BuildRangeBuckets(10, "days", 0);
+    const [bucketRanges, ranges] = buildRangeBuckets(10, "days", 0);
     expect(bucketRanges).toEqual(expectedBucketRanges);
     expect(ranges).toEqual(expectedRanges);
   });
@@ -493,7 +493,7 @@ describe("Build Bucket Range Test", () => {
         to: 36525,
       },
     ];
-    const [bucketRanges, ranges] = BuildRangeBuckets(19, "days", -32872.5);
+    const [bucketRanges, ranges] = buildRangeBuckets(19, "days", -32872.5);
     expect(bucketRanges).toEqual(expectedBucketRanges);
     expect(ranges).toEqual(expectedRanges);
   });
