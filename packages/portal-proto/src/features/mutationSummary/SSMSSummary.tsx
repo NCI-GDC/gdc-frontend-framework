@@ -9,6 +9,7 @@ import { FaBook, FaTable } from "react-icons/fa";
 import { CollapsibleList } from "@/components/CollapsibleList";
 import { AnchorLink } from "@/components/AnchorLink";
 import SSMPlot from "../charts/SSMPlot";
+import { SSMSCancerDistributionTable } from "../cancerDistributionTable/CancerDistributionTable";
 
 export const SSMSSummary = ({ ssm_id }: { ssm_id: string }): JSX.Element => {
   const { data: summaryData, isFetching } = useSSMS({
@@ -176,6 +177,7 @@ export const SSMSSummary = ({ ssm_id }: { ssm_id: string }): JSX.Element => {
             </div>
             <div>
               <SSMPlot page={"ssms"} ssms={ssm_id} />
+              <SSMSCancerDistributionTable ssms={ssm_id} />
             </div>
           </div>
         </>

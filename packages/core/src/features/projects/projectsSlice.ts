@@ -18,7 +18,7 @@ export const fetchProjects = createAsyncThunk<
 });
 
 export interface ProjectsState {
-  readonly projectData?: ProjectDefaults;
+  readonly projectData?: ProjectDefaults[];
   readonly status: DataStatus;
   readonly error?: string;
 }
@@ -42,7 +42,7 @@ const slice = createSlice({
           state.error = response.warnings.facets;
         } else {
           if (response.data.hits) {
-            state.projectData = { ...response.data.hits[0] };
+            state.projectData = [...response.data.hits];
           } else {
             state.projectData = undefined;
           }
@@ -67,7 +67,7 @@ export const projectsReducer = slice.reducer;
 
 export const selectProjectsData = (
   state: CoreState,
-): CoreDataSelectorResponse<ProjectDefaults> => {
+): CoreDataSelectorResponse<ProjectDefaults[]> => {
   return {
     data: state.projects.projectData,
     status: state.projects.status,
