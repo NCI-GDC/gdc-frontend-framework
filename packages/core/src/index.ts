@@ -35,8 +35,7 @@ export * from "./features/genomic/genesTableSlice";
 export * from "./features/genomic/genesFrequencyChartSlice";
 export * from "./features/genomic/genomicFilters";
 export * from "./features/genomic/topGenesSSMSSlice";
-export * from "./features/cancerDistribution/ssmPlot";
-export * from "./features/cancerDistribution/cnvPlot";
+export * from "./features/cancerDistribution";
 export * from "./features/oncoGrid/oncoGridSlice";
 export * from "./features/cohortComparison";
 export * from "./features/biospecimen/biospecimenSlice";
@@ -51,6 +50,7 @@ export * from "./features/survival/survivalApiSlice";
 export * from "./features/facets/facetsByNameTypeAndFilter";
 export * from "./features/users/usersSlice";
 export * from "./features/modals/modalsSlice";
+export * from "./features/quickSearch/quickSearch";
 export * from "./features/versionInfo/versionInfoSlice";
 export { CoreState } from "./reducers";
 
