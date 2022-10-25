@@ -23,17 +23,16 @@ const Components: ReactNode = () => {
       <p className="prose font-medium text-2xl">UI Components</p>
       <Divider label="Numeric Range Facet" classNames={divider_style} />
       <NumericRangeFacet
-        docType="cases"
-        indexType="repository"
         field="cases.follow_ups.days_to_progression"
         width="w-1/3"
         rangeDatatype="days"
+        valueLabel="Cases"
         hooks={{
-          useGetFacetData: useRangeFacet,
+          useGetFacetData: partial(useRangeFacet, "cases", "explore"),
           useGetFacetFilters: useSelectFieldFilter,
           useUpdateFacetFilters: useUpdateFacetFilter,
           useClearFilter: useClearFilters,
-          useTotalCounts: useTotalCounts,
+          useTotalCounts: partial(useTotalCounts, "caseCounts"),
         }}
       />
 
