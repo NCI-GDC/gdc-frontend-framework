@@ -23,7 +23,7 @@ export const SMSubrow: React.FC<SMSubrowProps> = ({
   opening,
 }: SMSubrowProps) => {
   const horizontalSpring = useSpring({
-    from: { width: 0, opacity: 0 },
+    from: { width: width / 2, opacity: 0 },
     to: { width: width, opacity: 1 },
     immediate: true,
   });

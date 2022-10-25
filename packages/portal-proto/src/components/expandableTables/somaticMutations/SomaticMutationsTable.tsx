@@ -116,7 +116,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
           mutationID,
         );
       });
-  }, [visibleColumns, width, selectedMutations]);
+  }, [visibleColumns, width, selectedMutations, mutationID, setMutationID]);
 
   useEffect(() => {
     setExpanded({});

@@ -226,7 +226,7 @@ export const createTableColumn = (
                       accessor={accessor}
                       width={width}
                       opening={row.getCanExpand()}
-                    ></SMSubrow>
+                    />
                   </>
                 </div>
               );
@@ -262,7 +262,7 @@ export const createTableColumn = (
                       accessor={accessor}
                       width={width}
                       opening={row.getCanExpand()}
-                    ></SMSubrow>
+                    />
                   </>
                 </>
               );
@@ -315,7 +315,7 @@ export const createTableColumn = (
                       accessor={accessor}
                       width={width}
                       opening={row.getCanExpand()}
-                    ></SMSubrow>
+                    />
                   </>
                 </animated.div>
               );
@@ -348,7 +348,7 @@ export const createTableColumn = (
                       accessor={accessor}
                       width={width}
                       opening={row.getCanExpand()}
-                    ></SMSubrow>
+                    />
                   </>
                 </animated.div>
               );
@@ -381,7 +381,7 @@ export const createTableColumn = (
                       accessor={accessor}
                       width={width}
                       opening={row.getCanExpand()}
-                    ></SMSubrow>
+                    />
                   </>
                 </animated.div>
               );
@@ -414,7 +414,7 @@ export const createTableColumn = (
                       accessor={accessor}
                       width={width}
                       opening={row.getCanExpand()}
-                    ></SMSubrow>
+                    />
                   </>
                 </animated.div>
               );
@@ -443,7 +443,7 @@ export const createTableColumn = (
                         accessor={accessor}
                         width={width}
                         opening={row.getCanExpand()}
-                      ></SMSubrow>
+                      />
                     </>
                   </>
                 </animated.div>

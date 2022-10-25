@@ -73,7 +73,7 @@ export const createTableColumn = (
                       accessor={accessor}
                       width={width}
                       opening={row.getCanExpand()}
-                    ></GSubrow>
+                    />
                   </>
                 </div>
               );
@@ -109,7 +109,7 @@ export const createTableColumn = (
                       accessor={accessor}
                       width={width}
                       opening={row.getCanExpand()}
-                    ></GSubrow>
+                    />
                   </>
                 </>
               );
@@ -143,7 +143,7 @@ export const createTableColumn = (
                       accessor={accessor}
                       width={width}
                       opening={row.getCanExpand()}
-                    ></GSubrow>
+                    />
                   </>
                 </animated.div>
               );
@@ -209,7 +209,7 @@ export const createTableColumn = (
                       accessor={accessor}
                       width={width}
                       opening={row.getCanExpand()}
-                    ></GSubrow>
+                    />
                   </>
                 </animated.div>
               );
@@ -242,7 +242,7 @@ export const createTableColumn = (
                       accessor={accessor}
                       width={width}
                       opening={row.getCanExpand()}
-                    ></GSubrow>
+                    />
                   </>
                 </animated.div>
               );
@@ -275,7 +275,7 @@ export const createTableColumn = (
                       accessor={accessor}
                       width={width}
                       opening={row.getCanExpand()}
-                    ></GSubrow>
+                    />
                   </>
                 </animated.div>
               );
@@ -308,7 +308,7 @@ export const createTableColumn = (
                         accessor={accessor}
                         width={width}
                         opening={row.getCanExpand()}
-                      ></GSubrow>
+                      />
                     </>
                   </>
                 </animated.div>

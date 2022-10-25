@@ -14,11 +14,12 @@ interface SubrowResponse {
   };
 }
 
-export interface TableSubrowData {
-  project: string;
-  numerator: number;
-  denominator: number;
-}
+// commented out because couldn't resolve type error lines 92, 171
+// export interface TableSubrowData {
+//   project?: string;
+//   numerator?: number;
+//   denominator?: number;
+// }
 
 // include in export @ core index
 export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
@@ -92,7 +93,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
         const { cases } = response.data.explore;
         const { buckets: nBuckets } = cases.numerators.project__project_id;
         const { buckets: dBuckets } = cases.denominators.project__project_id;
-        let transformedBuckets = nBuckets.map(({ doc_count, key }) => {
+        const transformedBuckets = nBuckets.map(({ doc_count, key }) => {
           return {
             project: key,
             numerator: doc_count,
