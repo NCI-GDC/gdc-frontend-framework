@@ -82,7 +82,7 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
         )}
         tabIndex={0}
         role="button"
-        className="text-md text-primary-contrast-lighter cursor-pointer bg-primary-lighter font-heading font-bold  flex items-center p-2 sticky top-0 z-10"
+        className="text-md text-primary-contrast-lighter cursor-pointer bg-primary-lighter font-heading font-semibold flex items-center p-2 sticky top-0 z-10"
         aria-controls={`cdave-control-group-${name}`}
         aria-expanded={groupOpen}
       >

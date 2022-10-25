@@ -8,6 +8,7 @@ import _ from "lodash";
 import { validateIntervalInput, validateRangeInput } from "./validateInputs";
 import { CustomInterval, NamedFromTo } from "../types";
 import { isInterval } from "../utils";
+import FunctionButton from "@/components/FunctionButton";
 
 interface ContinuousBinningModalProps {
   readonly setModalOpen: (open: boolean) => void;
@@ -246,9 +247,9 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
               />
             </div>
           </div>
-          <Button
+          <FunctionButton
             aria-label="reset bins"
-            className="p-2 bg-base-min text-base-contrast-min border-base"
+            className="p-2"
             onClick={() => {
               intervalForm.setValues({
                 setIntervalSize: String(binSize),
@@ -272,7 +273,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
             }
           >
             <ResetIcon size={20} />
-          </Button>
+          </FunctionButton>
         </div>
         {/* This switches the bin method when a user clicks on the "area", no keyboard equivalent is needed to accessibly navigate the form */}
         {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
@@ -365,7 +366,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                   </td>
                   <td className="float-right">
                     {idx === rangeForm.values.ranges.length - 1 ? (
-                      <Button
+                      <FunctionButton
                         leftIcon={<PlusIcon />}
                         onClick={() => {
                           const result = rangeForm.validate();
@@ -384,21 +385,11 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                           rangeForm.values.ranges[idx].from === "" ||
                           rangeForm.values.ranges[idx].to === ""
                         }
-                        className={
-                          binMethod === "ranges" &&
-                          !(
-                            rangeForm.values.ranges[idx].name === "" ||
-                            rangeForm.values.ranges[idx].from === "" ||
-                            rangeForm.values.ranges[idx].to === ""
-                          )
-                            ? "bg-base-min text-base-contrast-min border-base"
-                            : "bg-base-lighter text-base-contrast-lighter"
-                        }
                       >
                         Add
-                      </Button>
+                      </FunctionButton>
                     ) : (
-                      <Button
+                      <FunctionButton
                         onClick={() => {
                           rangeForm.removeListItem("ranges", idx);
                           setSavedRangeRows(
@@ -406,14 +397,9 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                           );
                         }}
                         aria-label="delete row"
-                        className={
-                          binMethod === "ranges"
-                            ? "bg-base text-base-contrast border-base"
-                            : "bg-base-lighter"
-                        }
                       >
                         <TrashIcon />
-                      </Button>
+                      </FunctionButton>
                     )}
                   </td>
                 </tr>
@@ -424,13 +410,14 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
       </div>
       <div className="mt-2 flex gap-2 justify-end">
         <Button
+          variant="outline"
+          color="primary.5"
           onClick={() => setModalOpen(false)}
-          className="bg-primary-darkest"
         >
           Cancel
         </Button>
         <Button
-          className="bg-primary-darkest"
+          className="bg-primary-darkest text-primary-contrast-darkest disabled:bg-opacity-60 disabled:text-opacity-60"
           onClick={saveBins}
           disabled={
             binMethod === "interval"
