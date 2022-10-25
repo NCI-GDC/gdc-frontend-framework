@@ -4,6 +4,8 @@ import { ActionIcon, Badge, Group, TextInput, Tooltip } from "@mantine/core";
 import {
   controlsIconStyle,
   FacetIconButton,
+  FacetText,
+  FacetHeader,
 } from "@/features/facets/components";
 import { MdClose as CloseIcon } from "react-icons/md";
 import { FaUndo as UndoIcon, FaPlus as PlusIcon } from "react-icons/fa";
@@ -106,7 +108,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
         width ? width : "mx-1"
       } bg-base-max relative border-primary-lightest border-1 rounded-b-md text-xs transition`}
     >
-      <div className="flex items-start justify-between flex-nowrap bg-primary-lighter shadow-md px-1.5">
+      <FacetHeader>
         <Tooltip
           label={description || "No description available"}
           classNames={{
@@ -120,9 +122,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
           transition="fade"
           transitionDuration={200}
         >
-          <div className="text-primary-contrast-lighter font-heading font-semibold text-md break-words py-2">
-            {facetTitle}
-          </div>
+          <FacetText>{facetTitle}</FacetText>
         </Tooltip>
         <div className="flex flex-row">
           <FacetIconButton
@@ -143,7 +143,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
             </FacetIconButton>
           ) : null}
         </div>
-      </div>
+      </FacetHeader>
       <div className="flex flex row flex-nowrap items-center p-2 ">
         <TextInput
           size="xs"
