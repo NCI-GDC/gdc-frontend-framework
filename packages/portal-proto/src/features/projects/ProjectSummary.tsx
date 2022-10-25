@@ -107,9 +107,10 @@ export const ProjectSummary: React.FC<ContextualProjectViewProps> = ({
       (bucket) => bucket === "controlled" && filesFacetData?.access[bucket] > 0,
     );
 
-  const projectData = projectsData.length > 0 ? projectsData[0] : undefined;
+  const projectData =
+    projectsData && projectsData.length > 0 ? projectsData[0] : undefined;
   const projectWithAnnotation = {
-    ...projectData?.[0],
+    ...projectData,
     annotation: annotationCountData,
     hasControlledAccess,
   };
