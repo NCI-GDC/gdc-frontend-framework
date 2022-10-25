@@ -204,7 +204,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                   className="px-2 pt-3 pb-1 font-heading text-primary-contrast-darker font-medium text-md"
                   key={`column-${key}`}
                 >
-                  <div className="text-center px-1">
+                  <div className="px-1">
                     <span>{column.render("Header")}</span>
                   </div>
                 </th>
@@ -237,7 +237,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                         <td
                           {...cell.getCellProps()}
                           key={`row-${key}`}
-                          className="px-2 py-1 text-[0.85em] text-right font-content"
+                          className="px-2 py-1 text-[0.85em] font-content"
                         >
                           {cell.render("Cell")}
                         </td>

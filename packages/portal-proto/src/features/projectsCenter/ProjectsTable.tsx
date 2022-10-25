@@ -115,7 +115,7 @@ const ProjectsTable: React.FC = () => {
       disease_type: project.disease_type,
       primary_site: project.primary_site,
       program: project.program.name,
-      cases: project.summary.case_count.toLocaleString(),
+      cases: project.summary.case_count.toLocaleString().padStart(9),
       data_categories: extractToArray(
         project.summary.data_categories,
         "data_category",

@@ -11,7 +11,7 @@ const CreateContent = (
   items: Record<string, ReadonlyArray<string>>,
 ): JSX.Element => {
   return (
-    <div className="flex flex-col transition-transform">
+    <div className="flex flex-col transition-transform px-3">
       {Object.entries(items).map(([x, values], index) => (
         <div className="flex flex-col" key={`${x}-${values.length}-${index}`}>
           {index > 0 ? <Divider /> : null}
@@ -107,7 +107,7 @@ const CollapsibleRow = ({
             )}
             role="button"
             tabIndex={0}
-            className="flex flex-row whitespace-nowrap items-center justify-end text-primary cursor-pointer"
+            className="flex flex-row whitespace-nowrap items-center justify-between text-primary cursor-pointer"
           >
             <span className="whitespace-nowrap">
               {value.length.toLocaleString()} {label}
