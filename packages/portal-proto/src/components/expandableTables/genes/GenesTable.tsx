@@ -105,6 +105,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
 
   // todo replace this callback w/ transformResponse inside rtk endpoint call
   const columns = useMemo<ColumnDef<GenesColumn>[]>(() => {
+    console.log("selectedGenes", selectedGenes);
     return visibleColumns
       .map(({ id }) => id)
       .map((accessor) => {

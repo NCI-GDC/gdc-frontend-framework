@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { gql } from "graphql-request";
-import { useSpring, config } from "react-spring";
+import { useSpring } from "react-spring";
 import ListSpring from "../shared/ListSpring";
 import { convertGeneFilter } from "./genesTableUtils";
 import { GDC_APP_API_AUTH } from "../../../../../core/src/constants";

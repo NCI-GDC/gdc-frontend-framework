@@ -1,5 +1,5 @@
-import GenesTable from "../genesTable/GenesTable";
-import MutationsTable from "../mutationsTable/MutationsTable";
+import { GTableContainer } from "../../components/expandableTables/genes/GTableContainer";
+import { SMTableContainer } from "../../components/expandableTables/somaticMutations/SMTableContainer";
 import MutationFacet from "../cohortBuilder/MutationFacet";
 import {
   BIOTYPE,
@@ -46,7 +46,7 @@ const SomanticMutationFilterFixedVersion: React.FC = () => {
               </div>
             </div>
           </div>
-          <GenesTable
+          <GTableContainer
             selectedSurvivalPlot={undefined}
             handleSurvivalPlotToggled={undefined}
           />
@@ -95,7 +95,7 @@ const SomanticMutationFilterFixedVersion: React.FC = () => {
               </div>
             </div>
           </div>
-          <MutationsTable
+          <SMTableContainer
             selectedSurvivalPlot={undefined}
             handleSurvivalPlotToggled={undefined}
           />

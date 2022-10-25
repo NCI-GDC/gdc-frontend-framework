@@ -130,7 +130,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           />
         </div>
       ) : (
-        <TableLoader cellWidth={`w-[75px]`} rowHeight={70} />
+        <TableLoader cellWidth={`w-[75px]`} rowHeight={60} />
       )}
       <div className={`flex flex-row w-9/12 ml-2 m-auto mb-2`}>
         <div className="m-auto ml-0">

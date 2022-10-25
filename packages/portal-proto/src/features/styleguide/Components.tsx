@@ -6,7 +6,7 @@ import NumericRangeFacet from "../facets/NumericRangeFacet";
 import DateRangeFacet from "../facets/DateRangeFacet";
 import ExactValueFacet from "../facets/ExactValueFacet";
 import ToggleFacet from "../facets/ToggleFacet";
-import GenesTable from "../genesTable/GenesTable";
+import { GTableContainer } from "../../components/expandableTables/genes/GTableContainer";
 import {
   useEnumFacet,
   useTotalCounts,
@@ -114,7 +114,6 @@ const Components: ReactNode = () => {
           useTotalCounts: useTotalCounts,
         }}
       />
-
       <Divider label="Percent Range Facet" classNames={divider_style} />
       <NumericRangeFacet
         docType="cases"
@@ -130,10 +129,9 @@ const Components: ReactNode = () => {
           useTotalCounts: useTotalCounts,
         }}
       />
-
       <Divider label="Genes Table" classNames={divider_style} />
-      <GenesTable
-        selectedSurvivalPlot={{ id: undefined }}
+      <GTableContainer
+        selectedSurvivalPlot={undefined}
         handleSurvivalPlotToggled={undefined}
       />
     </div>

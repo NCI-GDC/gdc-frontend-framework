@@ -39,7 +39,7 @@ export const TableLoader: React.FC<TableLoaderProps> = ({
                   // this isn't conventional react hook
                   // eslint-disable-next-line react-hooks/rules-of-hooks
                   style={useRowSpring(nIdx)}
-                  className={`h-[${rowHeight}px] ${
+                  className={`h-[${rowHeight}px] ${n === 0 ? "hidden" : ""} ${
                     n === 1 ? `border border-2 shadow-md` : ``
                   } ${
                     n === 9

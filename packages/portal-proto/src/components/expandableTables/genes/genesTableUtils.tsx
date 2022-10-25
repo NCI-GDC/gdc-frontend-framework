@@ -13,7 +13,6 @@ import {
 } from "../shared/types";
 import { GSubrow } from "./GSubrow";
 import { AffectedCases } from "../shared/types";
-import { Tooltip } from "@mantine/core";
 
 interface SingleGene {
   biotype: string;

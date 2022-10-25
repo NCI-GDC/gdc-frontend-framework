@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { gql } from "graphql-request";
-import { useSpring, config } from "react-spring";
+import { useSpring } from "react-spring";
 import ListSpring from "../shared/ListSpring";
 import { convertMutationFilter } from "./smTableUtils";
 import { GDC_APP_API_AUTH } from "@gff/core/src/constants";
