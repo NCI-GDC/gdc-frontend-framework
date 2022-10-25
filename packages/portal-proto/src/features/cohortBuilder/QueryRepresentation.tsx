@@ -1,4 +1,5 @@
-import { useState, PropsWithChildren } from "react";
+import { useState, PropsWithChildren, useContext, useEffect } from "react";
+import { omit } from "lodash";
 import {
   Equals,
   ExcludeIfAny,
@@ -28,6 +29,7 @@ import {
   MdOutlineArrowForward as RightArrow,
 } from "react-icons/md";
 import tw from "tailwind-styled-components";
+import { QueryExpressionsExpandedStateContext } from "./QueryExpressionSection";
 
 const QueryRepresentationText = tw.div`
 flex truncate ... px-2 bg-base-max h-full
@@ -83,8 +85,14 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
   operator,
   operands,
 }: Includes | Excludes) => {
-  const [isCollapsed, setCollapsed] = useState(false);
   const dispatch = useCoreDispatch();
+  const [queryExpressionsExpanded, setQueryExpressionsExpanded] = useContext(
+    QueryExpressionsExpandedStateContext,
+  );
+
+  useEffect(() => {
+    setQueryExpressionsExpanded({ ...queryExpressionsExpanded, [field]: true });
+  }, []);
 
   const RemoveButton = ({
     operand,
@@ -111,6 +119,7 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
         if (newOperands.length === 0) {
           dispatch(removeCohortFilter(field));
         }
+        setQueryExpressionsExpanded(omit(queryExpressionsExpanded, field));
       }}
     >
       <ClearIcon />
@@ -120,17 +129,20 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
   return (
     <div className="flex flex-row items-center h-full">
       <QueryFieldLabel>{fieldNameToTitle(field)}</QueryFieldLabel>
-      {operands.length > 1 && (
-        <ActionIcon
-          variant="transparent"
-          className="bg-white rounded-none"
-          onClick={() => setCollapsed(!isCollapsed)}
-        >
-          {isCollapsed ? <RightArrow /> : <LeftArrow />}
-        </ActionIcon>
-      )}
+      <ActionIcon
+        variant="transparent"
+        className="bg-white rounded-none"
+        onClick={() =>
+          setQueryExpressionsExpanded({
+            ...queryExpressionsExpanded,
+            [field]: !queryExpressionsExpanded[field],
+          })
+        }
+      >
+        {queryExpressionsExpanded[field] ? <LeftArrow /> : <RightArrow />}
+      </ActionIcon>
       <QueryRepresentationText>
-        {isCollapsed ? (
+        {!queryExpressionsExpanded[field] ? (
           <>{operands.length}</>
         ) : (
           <Group noWrap>

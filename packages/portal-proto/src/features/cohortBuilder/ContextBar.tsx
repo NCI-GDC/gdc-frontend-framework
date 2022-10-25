@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { showNotification } from "@mantine/notifications";
 import { CollapsibleContainer } from "@/components/CollapsibleContainer";
-import { Menu, Tabs, Divider } from "@mantine/core";
+import { Menu, Tabs, Divider, ActionIcon } from "@mantine/core";
 import { ContextualCasesView } from "../cases/CasesView";
 import CountButton from "./CountButton";
 import { convertFilterToComponent } from "./QueryRepresentation";
@@ -31,12 +31,15 @@ import {
   MdInsertChartOutlined as SummaryChartIcon,
   MdOutlineViewComfy as TableIcon,
   MdFileCopy as FilesIcon,
+  MdArrowLeft as LeftArrowIcon,
+  MdArrowRight as RightArrowIcon,
 } from "react-icons/md";
 import { FaCartPlus as AddToCartIcon } from "react-icons/fa";
 
 import SummaryFacets, { SummaryFacetInfo } from "./SummaryFacets";
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
 import FunctionButton from "@/components/FunctionButton";
+import QueryExpressionSection from "./QueryExpressionSection";
 
 const ContextBar: React.FC = () => {
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(true);
@@ -143,10 +146,6 @@ const ContextBar: React.FC = () => {
     />
   );
 
-  const clearAllFilters = () => {
-    coreDispatch(clearCohortFilters());
-  };
-
   return (
     <div
       className="font-heading bg-base-lightest flex flex-col"
@@ -229,38 +228,10 @@ const ContextBar: React.FC = () => {
           </div>
         </div>
       </CollapsibleContainer>
-      <div className="flex items-center bg-white shadow-[0_-2px_6px_0_rgba(0,0,0,0.16)] border-primary-darkest border-l-4 p-4 mt-3">
-        {Object.keys(filters.root).length !== 0 ? (
-          <div className="flex flex-col w-full">
-            <div className="flex">
-              <p
-                className="font-bold text-primary-darkest pr-4"
-                title={
-                  currentCohortName.length > 30 ? currentCohortName : undefined
-                }
-              >
-                {truncateString(currentCohortName, 30)}
-              </p>
-              <button
-                className="text-primary-darkest text-sm font-montserrat"
-                onClick={clearAllFilters}
-              >
-                Clear All
-              </button>
-            </div>
-            <div className="flex flex-wrap bg-base-lightest w-full overflow-scroll max-h-32 p-2">
-              {Object.keys(filters.root).map((k) => {
-                return convertFilterToComponent(filters.root[k]);
-              })}
-            </div>
-          </div>
-        ) : (
-          <span className="text-md text-primary-darkest ">
-            Currently viewing all cases in the GDC. Further refine your cohort
-            with tools such as the Cohort Builder.
-          </span>
-        )}
-      </div>
+      <QueryExpressionSection
+        filters={filters}
+        currentCohortName={currentCohortName}
+      />
       <hr className="border-2" />
     </div>
   );
