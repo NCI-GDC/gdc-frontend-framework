@@ -23,48 +23,46 @@ const ProjectsTable: React.FC = () => {
   const [activePage, setActivePage] = useState(1);
 
   const columnListOrder = [
-    { id: "project_id", columnName: "Project", visible: true, sortable: false },
+    { id: "project_id", columnName: "Project", visible: true },
     {
       id: "disease_type",
       columnName: "Disease Type",
       visible: true,
       Cell: ({ value, row }: CellProps) => {
-        return (
-          <CollapsibleRow value={value} row={row} label={"Disease Type"} />
-        );
+        return <CollapsibleRow value={value} row={row} label="Disease Types" />;
       },
     },
     {
       id: "primary_site",
       columnName: "Primary Site",
       visible: true,
-      Cell: ({ value, row }: CellProps) => (
-        <CollapsibleRow value={value} row={row} label={"Primary Site"} />
-      ),
+      Cell: ({ value, row }: CellProps) => {
+        return <CollapsibleRow value={value} row={row} label="Primary Sites" />;
+      },
     },
     { id: "program", columnName: "Program", visible: true },
     { id: "cases", columnName: "Cases", visible: true },
     {
       id: "data_categories",
-      columnName: "Data Categories",
+      columnName: "Data Category",
       visible: true,
       Cell: ({ value, row }: CellProps) => (
-        <CollapsibleRow value={value} row={row} label={"Data Categories"} />
+        <CollapsibleRow value={value} row={row} label="Data Categories" />
       ),
     },
     {
       id: "experimental_strategies",
-      columnName: "Experimental Strategies",
+      columnName: "Experimental Strategy",
       visible: true,
       Cell: ({ value, row }: CellProps) => (
         <CollapsibleRow
           value={value}
           row={row}
-          label={"Experimental Strategies"}
+          label="Experimental Strategies"
         />
       ),
     },
-    { id: "files", columnName: "Files", visible: true },
+    { id: "files", columnName: "Files", visible: false },
   ];
   const filterColumnCells = (newList) =>
     newList.reduce((filtered, obj) => {
@@ -102,7 +100,8 @@ const ProjectsTable: React.FC = () => {
       "program",
     ],
     size: pageSize,
-    from: activePage * pageSize,
+    from: (activePage - 1) * pageSize,
+    sortBy: [{ field: "summary.case_count", direction: "desc" }],
   });
 
   if (isSuccess) {

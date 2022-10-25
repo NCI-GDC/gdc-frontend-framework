@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import {
-  MdKeyboardArrowDown as DownIcon,
-  MdKeyboardArrowUp as UpIcon,
-} from "react-icons/md";
+  IoIosArrowDropdownCircle as DownIcon,
+  IoIosArrowDropupCircle as UpIcon,
+} from "react-icons/io";
 import { createKeyboardAccessibleFunction } from "src/utils";
 import { Row } from "react-table";
 import { Divider } from "@mantine/core";
@@ -20,7 +20,7 @@ const CreateContent = (
             <ul className="list-disc">
               {[...values].sort().map((y) => (
                 <span className="flex flex-row items-center" key={y}>
-                  <li className="marker:text-primary marker:w-2 marker:h-2 text-primary-min">
+                  <li className="marker:text-primary text-sm text-primary-min">
                     {y}
                   </li>
                 </span>
@@ -45,7 +45,6 @@ const CollapsibleRow = ({
   const [collapsed, setCollapsed] = useState(true);
 
   const handleExpand = (row: Row) => {
-    console.log(row);
     const update = {
       ...(row.state.values as Record<string, string[]>),
       [label]: value,
@@ -77,40 +76,40 @@ const CollapsibleRow = ({
   };
 
   if (value.length === 1) {
-    return (
-      <p className="flex flex-row nowrap justify-start mr-6">{value[0]}</p>
-    );
+    return <div className="text-right mr-6">{value[0]}</div>;
   } else {
     return (
-      <div className="flex flex-row nowrap justify-start items-center">
+      <div className="flex flex-row nowrap justify-end items-center">
         {collapsed ? (
-          <span
+          <div
             onClick={() => handleExpand(row)}
             onKeyDown={createKeyboardAccessibleFunction(() =>
               handleExpand(row),
             )}
             role="button"
             tabIndex={0}
-            className="flex flex-row nowrap justify-end items-center text-primary cursor-pointer "
+            className="flex flex-row whitespace-nowrap items-center justify-between text-primary cursor-pointer"
           >
-            {value.length} {label}{" "}
-            <DownIcon className="bg-secondary-light rounded mx-2" />
-          </span>
-        ) : (
-          <>
-            <span
-              onClick={() => handleCollapse(row)}
-              onKeyDown={createKeyboardAccessibleFunction(() =>
-                handleCollapse(row),
-              )}
-              role="button"
-              tabIndex={0}
-              className="flex flex-row nowrap justify-end items-center text-primary cursor-pointer flex justify-end"
-            >
-              {value.length} {label}{" "}
-              <UpIcon className="bg-secondary-light rounded mx-2" />
+            <span className="whitespace-nowrap">
+              {value.length.toLocaleString()} {label}
             </span>
-          </>
+            <DownIcon size="1.25em" className="text-secondary-light mx-2" />
+          </div>
+        ) : (
+          <div
+            onClick={() => handleCollapse(row)}
+            onKeyDown={createKeyboardAccessibleFunction(() =>
+              handleCollapse(row),
+            )}
+            role="button"
+            tabIndex={0}
+            className="flex flex-row whitespace-nowrap items-center justify-end text-primary cursor-pointer"
+          >
+            <span className="whitespace-nowrap">
+              {value.length.toLocaleString()} {label}
+            </span>
+            <UpIcon size="1.25em" className="text-secondary-light mx-2" />
+          </div>
         )}
       </div>
     );

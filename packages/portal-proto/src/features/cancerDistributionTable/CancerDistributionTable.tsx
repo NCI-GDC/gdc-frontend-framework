@@ -9,6 +9,7 @@ import {
 import VerticalTable from "@/features/shared/VerticalTable";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import { Row } from "react-table";
+import Link from "next/link";
 
 interface GeneCancerDistributionTableProps {
   readonly gene: string;
@@ -232,7 +233,11 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         ? data?.projects
             .map((d) => {
               const row = {
-                project: d.key,
+                project: (
+                  <Link href={`/projects/${d.key}`}>
+                    <a className="text-utility-link underline">{d.key}</a>
+                  </Link>
+                ),
                 disease_type: projectsById[d.key]?.disease_type || [],
                 primary_site: projectsById[d.key]?.primary_site || [],
                 ssm_affected_cases: `${data.ssmFiltered[d.key]} / ${

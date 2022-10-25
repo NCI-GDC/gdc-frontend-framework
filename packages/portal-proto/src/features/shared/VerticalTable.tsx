@@ -201,10 +201,10 @@ const VerticalTable: FC<VerticalTableProps> = ({
               {headerGroup.headers.map((column, key) => (
                 <th
                   {...column.getHeaderProps()}
-                  className="px-2 pt-3 pb-1 text-heading text-primary-contrast-darker font-medium text-md"
+                  className="px-2 pt-3 pb-1 font-heading text-primary-contrast-darker font-medium text-md"
                   key={`column-${key}`}
                 >
-                  <div className="flex flex-row nowrap items-center px-1">
+                  <div className="text-center px-1">
                     <span>{column.render("Header")}</span>
                   </div>
                 </th>
@@ -237,7 +237,7 @@ const VerticalTable: FC<VerticalTableProps> = ({
                         <td
                           {...cell.getCellProps()}
                           key={`row-${key}`}
-                          className="px-2 py-1 text-[0.85em] text-content"
+                          className="px-2 py-1 text-[0.85em] text-right font-content"
                         >
                           {cell.render("Cell")}
                         </td>
@@ -309,7 +309,7 @@ const VerticalTable: FC<VerticalTableProps> = ({
   };
 
   return (
-    <div className="grow overflow-hidden">
+    <div className="grow overflow-hidden mb-2">
       <div className={`h-10 float-left`}>{additionalControls}</div>
       {showControls && (
         <div className="flex flex-row float-right">
@@ -350,7 +350,7 @@ const VerticalTable: FC<VerticalTableProps> = ({
               type="search"
               placeholder="Search"
             />
-            <div className={`mt-px`}></div>
+            <div className="mt-px"></div>
           </div>
         </div>
       )}
@@ -366,7 +366,6 @@ const VerticalTable: FC<VerticalTableProps> = ({
           <Select
             size="sm"
             radius="md"
-            width={100}
             onChange={handlePageSizeChange}
             value={pageSize?.toString()}
             data={[
@@ -375,6 +374,9 @@ const VerticalTable: FC<VerticalTableProps> = ({
               { value: "40", label: "40" },
               { value: "100", label: "100" },
             ]}
+            classNames={{
+              root: "w-20",
+            }}
           />
           <div className="m-auto">
             <ShowingCount />
