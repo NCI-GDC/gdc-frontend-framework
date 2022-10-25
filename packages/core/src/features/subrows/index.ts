@@ -1,11 +1,11 @@
 import {
   useGetGeneTableSubrowQuery,
-  // useGetSomaticMutationTableSubrowQuery,
+  useGetSomaticMutationTableSubrowQuery,
   TableSubrowData,
 } from "./tableSubrow";
 
 export {
   useGetGeneTableSubrowQuery,
-  // useGetSomaticMutationTableSubrowQuery,
+  useGetSomaticMutationTableSubrowQuery,
   TableSubrowData,
 };

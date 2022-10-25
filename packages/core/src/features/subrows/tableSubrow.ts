@@ -15,8 +15,11 @@ interface SubrowResponse {
 }
 
 export interface TableSubrowData {
-  something: any;
+  project: string;
+  numerator: number;
+  denominator: number;
 }
+
 // include in export @ core index
 export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -29,14 +32,14 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
                     ) {
                         explore {
                             cases {
-                                denominators: aggregations(filters: $filters_case) {
-                                    project__project_id {
-                                        buckets {
-                                            key
-                                            doc_count
-                                        }
+                              denominators: aggregations(filters: $filters_case) { 
+                                project__project_id {
+                                    buckets {
+                                        key
+                                        doc_count
                                     }
                                 }
+                              }
                                 numerators: aggregations(filters: $filters_gene) {
                                     project__project_id {
                                         buckets {
@@ -86,88 +89,102 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
       transformResponse: (
         response: GraphQLApiResponse<SubrowResponse>,
       ): any => {
-        console.log("gene res", response);
-        return {
-          something: response,
-        };
+        const { cases } = response.data.explore;
+        const { buckets: nBuckets } = cases.numerators.project__project_id;
+        const { buckets: dBuckets } = cases.denominators.project__project_id;
+        let transformedBuckets = nBuckets.map(({ doc_count, key }) => {
+          return {
+            project: key,
+            numerator: doc_count,
+            denominator: dBuckets.find((d) => d.key === key)?.doc_count,
+          };
+        });
+        return transformedBuckets;
       },
     }),
-    // getSomaticMutationTableSubrow: builder.query({
-    //   query: (request: { mutationId: string }) => ({
-    //     graphQLQuery: `
-    //             query SomaticMutationTableSubrow(
-    //               $filters_case: FiltersArgument
-    //               $filters_mutation: FiltersArgument
-    //             ) {
-    //               explore {
-    //                 cases {
-    //                   denominators: aggregations(filters: $filters_case) {
-    //                     project__project_id {
-    //                       buckets {
-    //                         key
-    //                         doc_count
-    //                       }
-    //                     }
-    //                   }
-    //                   numerators: aggregations(filters: $filters_mutation) {
-    //                     project__project_id {
-    //                       buckets {
-    //                         doc_count
-    //                         key
-    //                       }
-    //                     }
-    //                   }
-    //                 }
-    //               }
-    //             }
-    //           `,
-    //     graphQLFilters: {
-    //       filters_case: {
-    //         content: [
-    //           {
-    //             content: {
-    //               field: "cases.available_variation_data",
-    //               value: ["ssm"],
-    //             },
-    //             op: "in",
-    //           },
-    //         ],
-    //         op: "and",
-    //       },
-    //       filters_mutation: {
-    //         content: [
-    //           {
-    //             content: {
-    //               field: "ssms.ssm_id",
-    //               value: [request.mutationId],
-    //             },
-    //             op: "in",
-    //           },
-    //           {
-    //             content: {
-    //               field: "cases.gene.ssm.observation.observation_id",
-    //               value: "MISSING",
-    //             },
-    //             op: "NOT",
-    //           },
-    //         ],
-    //         op: "and",
-    //       },
-    //     },
-    //   }),
-    //   transformResponse: (
-    //     response: GraphQLApiResponse<SubrowResponse>,
-    //   ): any => {
-    //     console.log("mtn res", response);
-    //     return {
-    //       something: response,
-    //     };
-    //   },
-    // }),
+    getSomaticMutationTableSubrow: builder.query({
+      query: (request: { mutationId: string }) => ({
+        graphQLQuery: `
+                query SomaticMutationTableSubrow(
+                  $filters_case: FiltersArgument
+                  $filters_mutation: FiltersArgument
+                ) {
+                  explore {
+                    cases {
+                      denominators: aggregations(filters: $filters_case) { 
+                        project__project_id {
+                            buckets {
+                                key
+                                doc_count
+                            }
+                        }
+                      }
+                      numerators: aggregations(filters: $filters_mutation) {
+                        project__project_id {
+                          buckets {
+                            doc_count
+                            key
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              `,
+        graphQLFilters: {
+          filters_case: {
+            content: [
+              {
+                content: {
+                  field: "cases.available_variation_data",
+                  value: ["ssm"],
+                },
+                op: "in",
+              },
+            ],
+            op: "and",
+          },
+          filters_mutation: {
+            content: [
+              {
+                content: {
+                  field: "ssms.ssm_id",
+                  value: [request.mutationId],
+                },
+                op: "in",
+              },
+              {
+                content: {
+                  field: "cases.gene.ssm.observation.observation_id",
+                  value: "MISSING",
+                },
+                op: "NOT",
+              },
+            ],
+            op: "and",
+          },
+        },
+      }),
+      transformResponse: (
+        response: GraphQLApiResponse<SubrowResponse>,
+      ): any => {
+        const { cases } = response.data.explore;
+        const { buckets: nBuckets } = cases.numerators.project__project_id;
+        const { buckets: dBuckets } = cases.denominators.project__project_id;
+        let transformedBuckets = nBuckets.map(({ doc_count, key }) => {
+          return {
+            project: key,
+            numerator: doc_count,
+            denominator: dBuckets.find((d) => d.key === key)?.doc_count,
+          };
+        });
+        return transformedBuckets;
+      },
+    }),
   }),
 });
 
 export const {
   useGetGeneTableSubrowQuery,
-  // useGetSomaticMutationTableSubrowQuery,
+  useGetSomaticMutationTableSubrowQuery,
 } = tableSubrowApiSlice;

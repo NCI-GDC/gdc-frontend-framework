@@ -25,14 +25,19 @@ export const GSubrow: React.FC<GeneSubrowProps> = ({
     immediate: true,
   });
 
-  const { data: subData } = useGetGeneTableSubrowQuery({ geneId });
+  const {
+    data: subData,
+    isFetching,
+    isSuccess,
+  } = useGetGeneTableSubrowQuery({ geneId });
 
   return (
     <>
-      {!opening && firstColumn === accessor && subData?.length > 0 && (
+      {!opening && firstColumn === accessor && isSuccess && (
         <div className={`relative`}>
           <ListSpring
             subData={subData}
+            isFetching={isFetching}
             horizontalSpring={horizontalSpring}
             opening={opening}
           />

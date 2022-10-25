@@ -1,18 +1,21 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { animated, useSpring, config } from "react-spring";
 import { useMeasure } from "react-use";
 import ItemSpring from "./ItemSpring";
+import { Loader } from "@mantine/core";
 
 interface ListSpringProps {
   subData: any;
   horizontalSpring: any;
   opening: boolean;
+  isFetching: boolean;
 }
 
 const ListSpring: React.FC<ListSpringProps> = ({
   subData,
   horizontalSpring,
   opening,
+  isFetching,
 }: ListSpringProps) => {
   const [subRef, { width, height }] = useMeasure();
 
@@ -21,11 +24,35 @@ const ListSpring: React.FC<ListSpringProps> = ({
   const verticalSpring = useSpring({
     from: { opacity: 0, height: 0 },
     to: {
-      opacity: !opening ? 1 : 0,
-      height: !opening ? height + fudgeFactor : 0,
+      opacity: !isFetching ? 1 : 0,
+      height: !isFetching ? height + fudgeFactor : 0,
     },
     duration: config.slow,
   });
+
+  const renderItems = useCallback(
+    (
+      item: { numerator: number; denominator: number; project: string },
+      index: number,
+    ) => {
+      return (
+        <>
+          {isFetching ? (
+            <Loader />
+          ) : (
+            <ItemSpring
+              key={index}
+              item={item}
+              index={index}
+              len={subData.length}
+            />
+          )}
+        </>
+      );
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [subData.length, isFetching],
+  );
 
   return (
     <>
@@ -37,20 +64,8 @@ const ListSpring: React.FC<ListSpringProps> = ({
         <h2 className={`flex flex-row w-screen font-bold text-sm p-2`}>
           # SSMS Affected Cases Across The GDC
         </h2>
-        {subData.map((ratio, index) => {
-          return (
-            <ItemSpring
-              key={index}
-              item={ratio}
-              index={index}
-              len={subData.length || 1}
-            />
-          );
-        })}
+        {subData.map((item, i) => renderItems(item, i))}
       </animated.div>
-      {/* relative div's height below is derived from the absolute div's height above
-      this is to displace the rest of the table when in expanded state
-   */}
       <animated.div style={verticalSpring}></animated.div>
     </>
   );
