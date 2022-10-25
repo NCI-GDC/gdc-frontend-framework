@@ -18,7 +18,6 @@ const CaseSummaryPage: NextPage = () => {
     }
   }, [router]);
 
-  // TODO: ake case view like file view
   return (
     <UserFlowVariedPages headerElements={headerElements}>
       {ready && (
