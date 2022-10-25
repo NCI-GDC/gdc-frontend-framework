@@ -33,6 +33,7 @@ import { caseSummarySliceReducer } from "./features/cases/caseSummarySlice";
 import { facetsByNameTypeAndFilterReducer } from "./features/facets/facetsByNameTypeAndFilter";
 import { userDetailsReducer } from "./features/users/usersSlice";
 import { modalReducer } from "./features/modals/modalsSlice";
+import { quickSearchReducer } from "./features/quickSearch/quickSearch";
 import { versionInfoReducer } from "./features/versionInfo/versionInfoSlice";
 import { cancerDistributionReducer } from "./features/cancerDistribution";
 import {
@@ -68,6 +69,7 @@ export const reducers = combineReducers({
   genesSummary: genesSummaryReducer,
   userInfo: userDetailsReducer,
   modals: modalReducer,
+  quickSearch: quickSearchReducer,
   [cohortApiSliceReducerPath]: cohortApiReducer,
   [survivalApiSliceReducerPath]: survivalApiReducer,
   [graphqlAPISliceReducerPath]: graphqlAPIReducer,

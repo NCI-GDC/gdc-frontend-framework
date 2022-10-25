@@ -14,7 +14,7 @@ import {
 import { Button, LoadingOverlay, Menu } from "@mantine/core";
 import { NextLink } from "@mantine/next";
 import { useTour } from "@reactour/tour";
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { Image } from "@/components/Image";
 import { useCookies } from "react-cookie";
 import {
@@ -22,8 +22,8 @@ import {
   MdOutlineApps as AppsIcon,
   MdSearch as SearchIcon,
   MdOutlineTour as TourIcon,
-  MdLogout,
-  MdArrowDropDown,
+  MdLogout as LogoutIcon,
+  MdArrowDropDown as ArrowDropDownIcon,
 } from "react-icons/md";
 import { FaDownload, FaUserCheck } from "react-icons/fa";
 import saveAs from "file-saver";
@@ -37,6 +37,7 @@ import { useLocalStorage } from "@mantine/hooks";
 import { FirstTimeModal } from "@/components/Modals/FirstTimeModal";
 import { NoAccessModal } from "@/components/Modals/NoAccessModal";
 import { theme } from "tailwind.config";
+import { QuickSearch } from "@/components/QuickSearch/QuickSearch";
 
 interface HeaderProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
@@ -63,6 +64,7 @@ export const Header: React.FC<HeaderProps> = ({
     key: "color-scheme",
     defaultValue: "default",
   });
+  const [performSearch, setPerformSearch] = useState(false);
   const [cookie] = useCookies(["NCI-Warning"]);
 
   useEffect(() => {
@@ -107,164 +109,186 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         ))}
         <div className="flex-grow"></div>
-        <div className="w-64">
+        <div>
           <Options />
         </div>
 
-        <div className="flex flex-row items-center align-middle flex-nowrap">
-          <div
-            className={
-              "flex flex-row opacity-60 cursor-pointer hover:opacity-100 transition-opacity items-center mx-2 "
-            }
-            data-testid="headerSearchButton"
-          >
-            <SearchIcon size="24px" />{" "}
-          </div>
-          {userInfo.data.username ? (
-            <Menu width="target" data-testid="userdropdown">
-              <Menu.Target>
-                <Button
-                  rightIcon={<MdArrowDropDown size="2em" />}
-                  variant="subtle"
-                  className="text-primary"
-                  classNames={{ rightIcon: "ml-0" }}
-                  data-testid="usernameButton"
-                >
-                  {userInfo.data.username}
-                </Button>
-              </Menu.Target>
-              <Menu.Dropdown>
-                <Menu.Item
-                  icon={<FaUserCheck size="1.25em" />}
-                  onClick={async () => {
-                    // This is just done for the purpose of checking if the session is still active
-                    const token = await fetchToken();
-                    if (token.status === 401) {
-                      dispatch(showModal({ modal: Modals.SessionExpireModal }));
-                      return;
-                    }
-                    dispatch(showModal({ modal: Modals.UserProfileModal }));
-                  }}
-                  data-testid="userprofilemenu"
-                >
-                  User Profile
-                </Menu.Item>
-                <Menu.Item
-                  icon={<FaDownload size="1.25em" />}
-                  data-testid="downloadTokenMenuItem"
-                  onClick={async () => {
-                    if (
-                      Object.keys(userInfo.data?.projects.gdc_ids).length > 0
-                    ) {
-                      const token = await fetchToken();
-                      if (token.status === 401) {
-                        dispatch(
-                          showModal({ modal: Modals.SessionExpireModal }),
-                        );
-                        return;
-                      }
-                      saveAs(
-                        new Blob([token.text], {
-                          type: "text/plain;charset=us-ascii",
-                        }),
-                        `gdc-user-token.${new Date().toISOString()}.txt`,
-                      );
-                    } else {
-                      cleanNotifications();
-                      showNotification({
-                        message: (
-                          <p>
-                            {userInfo.data.username} does not have access to any
-                            protected data within the GDC. Click{" "}
-                            <a
-                              href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
-                              target="_blank"
-                              rel="noreferrer"
-                              style={{
-                                textDecoration: "underline",
-                                color: theme.extend.colors["nci-blue"].darkest,
-                              }}
-                            >
-                              here
-                            </a>{" "}
-                            to learn more about obtaining access to protected
-                            data.
-                          </p>
-                        ),
-                        styles: () => ({
-                          root: {
-                            textAlign: "center",
-                          },
-                          closeButton: {
-                            color: "black",
-                            "&:hover": {
-                              backgroundColor:
-                                theme.extend.colors["gdc-grey"].lighter,
-                            },
-                          },
-                        }),
-                      });
-                    }
-                  }}
-                >
-                  Download Token
-                </Menu.Item>
-                <Menu.Item
-                  icon={<MdLogout size="1.25em" />}
-                  onClick={() => {
-                    window.location.assign(
-                      urlJoin(GDC_AUTH, `logout?next=${window.location.href}`),
-                    );
-                  }}
-                  data-testid="logoutMenuItem"
-                >
-                  Logout
-                </Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
+        <div
+          className={`flex flex-row items-center align-middle flex-nowrap gap-4 ${
+            performSearch && "!border-l-0"
+          }`}
+        >
+          {performSearch ? (
+            <QuickSearch
+              performSearch={performSearch}
+              setPerformSearch={setPerformSearch}
+            />
           ) : (
-            <LoginButton />
-          )}
-
-          <Link href="/cart" passHref>
-            <div
-              className={
-                "flex flex-row opacity-60 hover:opacity-100 transition-opacity  items-center mx-2 cursor-pointer"
-              }
-              data-testid="cartLink"
-            >
-              <CartIcon size="24px" /> Cart ({currentCart.length || 0})
-            </div>
-          </Link>
-          <Menu withArrow>
-            <Menu.Target>
-              <button className="p-0" data-testid="extraButton">
-                <AppsIcon size="24px" />
-              </button>
-            </Menu.Target>
-            <Menu.Dropdown>
-              <Menu.Item
-                onClick={() => setIsOpen(true)}
-                data-testid="tourMenuItem"
+            <>
+              <Button
+                className={
+                  "pl-4 pr-0 opacity-60 cursor-pointer hover:opacity-100 transition-opacity items-center"
+                }
+                data-testid="headerSearchButton"
+                onClick={() => setPerformSearch(true)}
+                variant="subtle"
               >
-                <TourIcon size="2.5em" />
-                <div className="text-center text-sm pt-1">{"Tour"}</div>
-              </Menu.Item>
-              <Menu.Divider />
-              <Menu.Label>Themes</Menu.Label>
-              {V2Themes.map((theme) => (
-                <Menu.Item
-                  key={theme}
-                  onClick={() => setTheme(theme)}
-                  data-testid={`${theme}ThemeMenuItem`}
+                <SearchIcon size="24px" className="text-base-darkest" />{" "}
+              </Button>
+              {userInfo.data.username ? (
+                <Menu width="target" data-testid="userdropdown">
+                  <Menu.Target>
+                    <Button
+                      rightIcon={<ArrowDropDownIcon size="2em" />}
+                      variant="subtle"
+                      className="text-primary"
+                      classNames={{ rightIcon: "ml-0" }}
+                      data-testid="usernameButton"
+                    >
+                      {userInfo.data.username}
+                    </Button>
+                  </Menu.Target>
+                  <Menu.Dropdown>
+                    <Menu.Item
+                      icon={<FaUserCheck size="1.25em" />}
+                      onClick={async () => {
+                        // This is just done for the purpose of checking if the session is still active
+                        const token = await fetchToken();
+                        if (token.status === 401) {
+                          dispatch(
+                            showModal({ modal: Modals.SessionExpireModal }),
+                          );
+                          return;
+                        }
+                        dispatch(showModal({ modal: Modals.UserProfileModal }));
+                      }}
+                      data-testid="userprofilemenu"
+                    >
+                      User Profile
+                    </Menu.Item>
+                    <Menu.Item
+                      icon={<FaDownload size="1.25em" />}
+                      data-testid="downloadTokenMenuItem"
+                      onClick={async () => {
+                        if (
+                          Object.keys(userInfo.data?.projects.gdc_ids).length >
+                          0
+                        ) {
+                          const token = await fetchToken();
+                          if (token.status === 401) {
+                            dispatch(
+                              showModal({ modal: Modals.SessionExpireModal }),
+                            );
+                            return;
+                          }
+                          saveAs(
+                            new Blob([token.text], {
+                              type: "text/plain;charset=us-ascii",
+                            }),
+                            `gdc-user-token.${new Date().toISOString()}.txt`,
+                          );
+                        } else {
+                          cleanNotifications();
+                          showNotification({
+                            message: (
+                              <p>
+                                {userInfo.data.username} does not have access to
+                                any protected data within the GDC. Click{" "}
+                                <a
+                                  href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  style={{
+                                    textDecoration: "underline",
+                                    color:
+                                      theme.extend.colors["nci-blue"].darkest,
+                                  }}
+                                >
+                                  here
+                                </a>{" "}
+                                to learn more about obtaining access to
+                                protected data.
+                              </p>
+                            ),
+                            styles: () => ({
+                              root: {
+                                textAlign: "center",
+                              },
+                              closeButton: {
+                                color: "black",
+                                "&:hover": {
+                                  backgroundColor:
+                                    theme.extend.colors["gdc-grey"].lighter,
+                                },
+                              },
+                            }),
+                          });
+                        }
+                      }}
+                    >
+                      Download Token
+                    </Menu.Item>
+                    <Menu.Item
+                      icon={<LogoutIcon size="1.25em" />}
+                      onClick={() => {
+                        window.location.assign(
+                          urlJoin(
+                            GDC_AUTH,
+                            `logout?next=${window.location.href}`,
+                          ),
+                        );
+                      }}
+                      data-testid="logoutMenuItem"
+                    >
+                      Logout
+                    </Menu.Item>
+                  </Menu.Dropdown>
+                </Menu>
+              ) : (
+                <LoginButton />
+              )}
+              <Link href="/cart" passHref>
+                <Button
+                  className={
+                    "flex flex-row opacity-60 hover:opacity-100 transition-opacity  p-0 m-0 items-center cursor-pointer text-base-darkest"
+                  }
+                  variant="subtle"
+                  data-testid="cartLink"
                 >
-                  <div className="capitalize text-left text-sm pt-1">
-                    {theme}
-                  </div>
-                </Menu.Item>
-              ))}
-            </Menu.Dropdown>
-          </Menu>
+                  <CartIcon size="24px" /> Cart ({currentCart.length || 0})
+                </Button>
+              </Link>
+              <Menu withArrow>
+                <Menu.Target>
+                  <button data-testid="extraButton">
+                    <AppsIcon size="24px" />
+                  </button>
+                </Menu.Target>
+                <Menu.Dropdown>
+                  <Menu.Item
+                    onClick={() => setIsOpen(true)}
+                    data-testid="tourMenuItem"
+                  >
+                    <TourIcon size="2.5em" />
+                    <div className="text-center text-sm pt-1">{"Tour"}</div>
+                  </Menu.Item>
+                  <Menu.Divider />
+                  <Menu.Label>Themes</Menu.Label>
+                  {V2Themes.map((theme) => (
+                    <Menu.Item
+                      key={theme}
+                      onClick={() => setTheme(theme)}
+                      data-testid={`${theme}ThemeMenuItem`}
+                    >
+                      <div className="capitalize text-left text-sm pt-1">
+                        {theme}
+                      </div>
+                    </Menu.Item>
+                  ))}
+                </Menu.Dropdown>
+              </Menu>
+            </>
+          )}
         </div>
       </div>
       {modal === Modals.UserProfileModal && <UserProfileModal openModal />}

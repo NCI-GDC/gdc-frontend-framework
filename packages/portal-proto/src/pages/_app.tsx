@@ -4,6 +4,7 @@ import "../styles/oncogrid.css";
 import { createContext, useState } from "react";
 import { Provider } from "react-redux";
 import type { AppProps } from "next/app";
+import Script from "next/script";
 import { CoreProvider } from "@gff/core";
 import { useLocalStorage } from "@mantine/hooks";
 import { MantineProvider, createEmotionCache } from "@mantine/core";
@@ -118,6 +119,10 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
               <NotificationsProvider position="top-center">
                 <TourProvider steps={[]} components={{ Badge }}>
                   <Component {...pageProps} />
+                  <Script
+                    src="https://static.cancer.gov/webanalytics/wa_gdc_pageload.js"
+                    strategy="afterInteractive"
+                  />
                 </TourProvider>
               </NotificationsProvider>
             </URLContext.Provider>
