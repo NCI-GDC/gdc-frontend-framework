@@ -50,6 +50,7 @@ export * from "./features/survival/survivalApiSlice";
 export * from "./features/facets/facetsByNameTypeAndFilter";
 export * from "./features/users/usersSlice";
 export * from "./features/modals/modalsSlice";
+export * from "./features/quickSearch/quickSearch";
 export * from "./features/versionInfo/versionInfoSlice";
 export { CoreState } from "./reducers";
 
