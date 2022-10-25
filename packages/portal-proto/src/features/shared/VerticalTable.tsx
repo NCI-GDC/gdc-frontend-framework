@@ -127,7 +127,7 @@ interface TableProps {
  * @parm {string} status - optional shows loading state
  * @returns ReactElement
  */
-const VerticalTable: FC<VerticalTableProps> = ({
+export const VerticalTable: FC<VerticalTableProps> = ({
   tableData,
   columnListOrder,
   columnCells,
@@ -395,5 +395,3 @@ const VerticalTable: FC<VerticalTableProps> = ({
     </div>
   );
 };
-
-export default VerticalTable;

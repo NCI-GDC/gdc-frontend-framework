@@ -6,7 +6,7 @@ import {
   useProjects,
   CancerDistributionTableData,
 } from "@gff/core";
-import VerticalTable from "@/features/shared/VerticalTable";
+import { VerticalTable } from "@/features/shared/VerticalTable";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import { Row } from "react-table";
 import Link from "next/link";

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import VerticalTable from "../shared/VerticalTable";
+import { VerticalTable } from "../shared/VerticalTable";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import Link from "next/link";
 import { useProjects, buildCohortGqlOperator } from "@gff/core";
