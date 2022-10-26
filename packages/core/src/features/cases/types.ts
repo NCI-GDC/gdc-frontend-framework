@@ -1,12 +1,21 @@
+import { DataCategory, DataFormat, DataType } from "../files/filesSlice";
+
 export interface caseFileType {
   readonly access: "open" | "controlled";
   readonly acl: Array<string>;
-  readonly data_type: string;
+  readonly data_type: DataType;
   readonly file_id: string;
   readonly file_name: string;
   readonly file_size: number;
   readonly state: string;
   readonly project_id: string;
+  readonly data_format: DataFormat;
+  readonly created_datetime: string;
+  readonly submitter_id: string;
+  readonly updated_datetime: string;
+  readonly data_category: DataCategory;
+  readonly md5sum: string;
+  readonly type: string;
 }
 
 export interface Demographic {
