@@ -31,11 +31,6 @@ import {
   UpdateFacetFilterHook,
   RangeBucketElement,
 } from "@/features/facets/types";
-import {
-  FacetDocTypeToCountsIndexMap,
-  FacetDocTypeToLabelsMap,
-  useRangeFacet,
-} from "@/features/facets/hooks";
 import { FacetIconButton, FacetText, FacetHeader } from "./components";
 import FacetExpander from "@/features/facets/FacetExpander";
 import FacetSortPanel from "@/features/facets/FacetSortPanel";
