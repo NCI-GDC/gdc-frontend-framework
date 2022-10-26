@@ -41,7 +41,7 @@ import {
   FacetDocTypeToLabelsMap,
   useRangeFacet,
 } from "@/features/facets/hooks";
-import { FacetIconButton } from "./components";
+import { FacetIconButton, FacetText, FacetHeader } from "./components";
 import FacetExpander from "@/features/facets/FacetExpander";
 import FacetSortPanel from "@/features/facets/FacetSortPanel";
 
@@ -746,7 +746,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
           width ? width : "mx-1"
         } bg-base-max relative shadow-lg border-base-lightest border-1 rounded-b-md text-xs transition `}
       >
-        <div className="flex items-start justify-between flex-nowrap bg-primary-lighter shadow-md px-1.5">
+        <FacetHeader>
           <Tooltip
             label={description}
             classNames={{
@@ -760,9 +760,9 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
             transition="fade"
             transitionDuration={200}
           >
-            <div className="text-primary-contrast-lighter font-heading font-semibold text-md break-words py-2">
+            <FacetText>
               {facetName ? facetName : fieldNameToTitle(field)}
-            </div>
+            </FacetText>
           </Tooltip>
           <div className="flex flex-row">
             <FacetIconButton
@@ -785,7 +785,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
               </FacetIconButton>
             ) : null}
           </div>
-        </div>
+        </FacetHeader>
         {
           {
             age: (
