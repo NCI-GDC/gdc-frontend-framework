@@ -88,7 +88,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
       }),
       transformResponse: (
         response: GraphQLApiResponse<SubrowResponse>,
-      ): any => {
+      ): TableSubrowData => {
         const { cases } = response?.data?.explore;
         const {
           numerators: {
@@ -173,7 +173,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
       }),
       transformResponse: (
         response: GraphQLApiResponse<SubrowResponse>,
-      ): any => {
+      ): TableSubrowData => {
         const { cases } = response?.data?.explore;
         const {
           numerators: {
