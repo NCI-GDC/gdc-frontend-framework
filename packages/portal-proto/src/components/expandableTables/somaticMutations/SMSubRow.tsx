@@ -1,11 +1,6 @@
-import { useState, useEffect } from "react";
-import { gql } from "graphql-request";
 import { useSpring } from "react-spring";
 import ListSpring from "../shared/ListSpring";
-import {
-  useGetSomaticMutationTableSubrowQuery,
-  TableSubrowData,
-} from "@gff/core";
+import { useGetSomaticMutationTableSubrowQuery } from "@gff/core";
 
 export interface SMSubrowProps {
   mutationId: string;
@@ -41,8 +36,8 @@ export const SMSubrow: React.FC<SMSubrowProps> = ({
           <ListSpring
             subData={subData}
             horizontalSpring={horizontalSpring}
-            opening={opening}
             isFetching={isFetching}
+            subrowTitle={`Affected Cases Across The GDC`}
           />
         </div>
       )}

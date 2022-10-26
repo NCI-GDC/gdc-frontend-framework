@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { gql } from "graphql-request";
 import { useSpring } from "react-spring";
 import ListSpring from "../shared/ListSpring";
-import { useGetGeneTableSubrowQuery, TableSubrowData } from "@gff/core";
+import { useGetGeneTableSubrowQuery } from "@gff/core";
 
 export interface GeneSubrowProps {
   geneId: string;
@@ -39,7 +39,7 @@ export const GSubrow: React.FC<GeneSubrowProps> = ({
             subData={subData}
             isFetching={isFetching}
             horizontalSpring={horizontalSpring}
-            opening={opening}
+            subrowTitle={`# SSMS Affected Cases Across The GDC`}
           />
         </div>
       )}
