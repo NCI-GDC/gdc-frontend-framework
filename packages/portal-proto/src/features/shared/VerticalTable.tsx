@@ -245,13 +245,8 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                     })}
                   </tr>
                   {row.state.expanded > 0 ? (
-                    <tr {...row.getRowProps()}>
-                      <td
-                        className="transition-transform transition-[height]"
-                        colSpan={headings.length}
-                      >
-                        {row.state.content}
-                      </td>
+                    <tr {...row.getRowProps()} className="transition-[height]">
+                      <td colSpan={headings.length}>{row.state.content}</td>
                     </tr>
                   ) : null}
                 </>

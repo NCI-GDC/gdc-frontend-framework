@@ -23,7 +23,14 @@ const ProjectsTable: React.FC = () => {
   const [activePage, setActivePage] = useState(1);
 
   const columnListOrder = [
-    { id: "project_id", columnName: "Project", visible: true },
+    {
+      id: "project_id",
+      columnName: "Project",
+      visible: true,
+      Cell: ({ value }: CellProps) => {
+        return <div className="text-left w-24">{value} </div>;
+      },
+    },
     {
       id: "disease_type",
       columnName: "Disease Type",
@@ -69,7 +76,14 @@ const ProjectsTable: React.FC = () => {
         />
       ),
     },
-    { id: "files", columnName: "Files", visible: false },
+    {
+      id: "files",
+      columnName: "Files",
+      visible: false,
+      Cell: ({ value }: CellProps) => {
+        return <div className="text-right w-12">{value} </div>;
+      },
+    },
   ];
   const filterColumnCells = (newList) =>
     newList.reduce((filtered, obj) => {

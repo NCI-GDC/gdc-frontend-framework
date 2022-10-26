@@ -76,14 +76,18 @@ const CollapsibleRow = ({
   };
 
   if (value.length === 0) {
-    return <div className="text-right px-8 mr-6">---</div>;
+    return <div className="text-left mr-6 w-48">---</div>;
   }
 
   if (value.length === 1) {
-    return <div className="text-right mr-6">{value[0]}</div>;
+    return (
+      <div className="flex flex-row justify-start mr-6  w-48 mr-6">
+        {value[0]}
+      </div>
+    );
   } else {
     return (
-      <div className="flex flex-row nowrap justify-end items-center">
+      <div className="flex flex-row nowrap justify-between items-center">
         {collapsed ? (
           <div
             onClick={() => handleExpand(row)}
@@ -92,10 +96,10 @@ const CollapsibleRow = ({
             )}
             role="button"
             tabIndex={0}
-            className="flex flex-row whitespace-nowrap items-center justify-between text-primary cursor-pointer"
+            className="flex flex-row items-center justify-between text-primary cursor-pointer w-48"
           >
             <span className="whitespace-nowrap">
-              {value.length.toLocaleString()} {label}
+              {value.length.toLocaleString().padStart(6)} {label}
             </span>
             <DownIcon size="1.25em" className="text-secondary-light mx-2" />
           </div>
@@ -107,11 +111,11 @@ const CollapsibleRow = ({
             )}
             role="button"
             tabIndex={0}
-            className="flex flex-row whitespace-nowrap items-center justify-between text-primary cursor-pointer"
+            className="flex flex-row items-center justify-between text-primary cursor-pointer w-48"
           >
             <span className="whitespace-nowrap text-bold">
               <b>
-                {value.length.toLocaleString()} {label}
+                {value.length.toLocaleString().padStart(6)} {label}
               </b>
             </span>
             <UpIcon size="1.25em" className="text-secondary-light mx-2" />
