@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { Button, Menu } from "@mantine/core";
 import { MdArrowDropDown as DownIcon } from "react-icons/md";
-import { Statistics } from "@gff/core";
+import {
+  selectFacetDefinitionByName,
+  Statistics,
+  useCoreSelector,
+} from "@gff/core";
 
 import ContinuousBinningModal from "../ContinuousBinningModal/ContinuousBinningModal";
 import CategoricalBinningModal from "../CategoricalBinningModal";
@@ -9,6 +13,7 @@ import { CategoricalBins, CustomInterval, NamedFromTo } from "../types";
 
 interface CardControlsProps {
   readonly continuous: boolean;
+  readonly fieldName: string;
   readonly field: string;
   readonly results: Record<string, number>;
   readonly customBinnedData: CategoricalBins | NamedFromTo[] | CustomInterval;
@@ -20,6 +25,7 @@ interface CardControlsProps {
 
 const CardControls: React.FC<CardControlsProps> = ({
   continuous,
+  fieldName,
   field,
   results,
   customBinnedData,
@@ -27,6 +33,9 @@ const CardControls: React.FC<CardControlsProps> = ({
   stats,
 }: CardControlsProps) => {
   const [modalOpen, setModalOpen] = useState(false);
+  const facet = useCoreSelector((state) =>
+    selectFacetDefinitionByName(state, `cases.${field}`),
+  );
   return (
     <>
       <div className="flex justify-between p-2">
@@ -75,6 +84,7 @@ const CardControls: React.FC<CardControlsProps> = ({
           <ContinuousBinningModal
             setModalOpen={setModalOpen}
             field={field}
+            inputRange={facet.range}
             stats={stats}
             updateBins={
               setCustomBinnedData as (
@@ -86,7 +96,7 @@ const CardControls: React.FC<CardControlsProps> = ({
         ) : (
           <CategoricalBinningModal
             setModalOpen={setModalOpen}
-            field={field}
+            field={fieldName}
             results={results}
             updateBins={setCustomBinnedData as (bins: CategoricalBins) => void}
             customBins={customBinnedData as CategoricalBins}

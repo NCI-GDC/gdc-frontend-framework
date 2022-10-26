@@ -153,5 +153,3 @@ export const TABS = {
 };
 
 export const SURVIVAL_PLOT_MIN_COUNT = 10;
-export const CONTINUOUS_BINNING_MAX_LIMIT = 32874;
-export const CONTINUOUS_BINNING_MIN_LIMIT = 0;

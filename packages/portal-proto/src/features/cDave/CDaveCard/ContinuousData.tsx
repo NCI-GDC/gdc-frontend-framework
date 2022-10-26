@@ -118,7 +118,8 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
       )}
       <CardControls
         continuous={true}
-        field={fieldName}
+        fieldName={fieldName}
+        field={field}
         results={resultData}
         customBinnedData={customBinnedData}
         setCustomBinnedData={setCustomBinnedData}

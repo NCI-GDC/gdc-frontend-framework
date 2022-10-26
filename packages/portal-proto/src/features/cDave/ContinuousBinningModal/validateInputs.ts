@@ -1,7 +1,4 @@
-import {
-  CONTINUOUS_BINNING_MAX_LIMIT,
-  CONTINUOUS_BINNING_MIN_LIMIT,
-} from "../constants";
+import { AllowableRange } from "@gff/core";
 
 const validateNumberInput = (value: string) => {
   if (value === "") {
@@ -46,7 +43,7 @@ const validateIntervalSize = (size: string, min: string, max: string) => {
   return null;
 };
 
-const validateMinInput = (value: string, max: string) => {
+const validateMinMaxInput = (value: string, min: string, max: string) => {
   const validNumberError = validateNumberInput(value);
 
   if (validNumberError) {
@@ -57,26 +54,8 @@ const validateMinInput = (value: string, max: string) => {
     return `Must be less than ${max}`;
   }
 
-  if (Number(value) < CONTINUOUS_BINNING_MIN_LIMIT) {
-    return `Must be greater than or equal with ${CONTINUOUS_BINNING_MIN_LIMIT}`;
-  }
-
-  return null;
-};
-
-const validateMaxInput = (value: string, min: string) => {
-  const validNumberError = validateNumberInput(value);
-
-  if (validNumberError) {
-    return validNumberError;
-  }
-
   if (min !== "" && Number(value) <= Number(min)) {
     return `Must be greater than ${min}`;
-  }
-
-  if (Number(value) >= CONTINUOUS_BINNING_MAX_LIMIT) {
-    return `Must be less than ${CONTINUOUS_BINNING_MAX_LIMIT}`;
   }
 
   return null;
@@ -86,6 +65,7 @@ export const validateIntervalInput = (
   size: string,
   min: string,
   max: string,
+  range?: AllowableRange,
 ): Record<string, string> => {
   const errors = {};
 
@@ -94,12 +74,21 @@ export const validateIntervalInput = (
     errors["setIntervalSize"] = intervalSizeResult;
   }
 
-  const minResult = validateMinInput(min, max);
+  const rangeMin =
+      typeof range?.minimum === "number"
+        ? (range.minimum - 1).toString()
+        : (Number(min) - 1).toString(),
+    rangeMax =
+      typeof range?.maximum === "number"
+        ? (range.maximum + 1).toString()
+        : (Number(max) + 1).toString();
+
+  const minResult = validateMinMaxInput(min, rangeMin, max);
   if (minResult) {
     errors["setIntervalMin"] = minResult;
   }
 
-  const maxResult = validateMaxInput(max, min);
+  const maxResult = validateMinMaxInput(max, min, rangeMax);
   if (maxResult) {
     errors["setIntervalMax"] = maxResult;
   }

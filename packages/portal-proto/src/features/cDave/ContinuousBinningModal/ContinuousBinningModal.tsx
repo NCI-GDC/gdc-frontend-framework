@@ -3,7 +3,7 @@ import { Button, Divider, Modal, Radio, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { MdReplay as ResetIcon } from "react-icons/md";
 import { FaPlusCircle as PlusIcon, FaTrash as TrashIcon } from "react-icons/fa";
-import { Statistics } from "@gff/core";
+import { AllowableRange, Statistics } from "@gff/core";
 import { validateIntervalInput, validateRangeInput } from "./validateInputs";
 import { CustomInterval, NamedFromTo } from "../types";
 import { isInterval } from "../utils";
@@ -12,6 +12,7 @@ interface ContinuousBinningModalProps {
   readonly setModalOpen: (open: boolean) => void;
   readonly field: string;
   readonly stats: Statistics;
+  readonly inputRange?: AllowableRange;
   readonly updateBins: (bins: NamedFromTo[] | CustomInterval) => void;
   readonly customBins: NamedFromTo[] | CustomInterval;
 }
@@ -19,6 +20,7 @@ interface ContinuousBinningModalProps {
 const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
   setModalOpen,
   field,
+  inputRange,
   stats,
   updateBins,
   customBins,
@@ -58,6 +60,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
         values.setIntervalSize,
         values.setIntervalMin,
         values.setIntervalMax,
+        inputRange,
       ),
   });
 
