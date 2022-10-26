@@ -215,14 +215,14 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                 onClick={toggleFlip}
                 aria-label="Flip between form and chart"
               >
-                <FlipIcon size="1.25em" className={controlsIconStyle} />
+                <FlipIcon size="1.45em" className={controlsIconStyle} />
               </FacetIconButton>
             ) : null}
             <FacetIconButton
               onClick={() => clearFilters(field)}
               aria-label="clear selection"
             >
-              <UndoIcon size="1.15em" className={controlsIconStyle} />
+              <UndoIcon size="1.25em" className={controlsIconStyle} />
             </FacetIconButton>
             {dismissCallback ? (
               <FacetIconButton

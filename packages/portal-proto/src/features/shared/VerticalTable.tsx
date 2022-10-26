@@ -277,7 +277,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
       } else {
         outputString += pagination.total;
       }
-      outputString += ` of ${pagination.total}`;
+      outputString += ` of ${pagination.total.toLocaleString()}`;
 
       if (pagination.label) {
         outputString += ` ${pagination.label}`;

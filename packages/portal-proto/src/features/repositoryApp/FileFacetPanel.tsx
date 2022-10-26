@@ -171,7 +171,7 @@ export const FileFacetPanel = (): JSX.Element => {
             FileFacetHooks,
             "repository-app",
             !isDefault ? handleRemoveFilter : undefined,
-            true,
+            false,
             facetName,
             "w-full",
           );

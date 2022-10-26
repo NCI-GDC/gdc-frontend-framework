@@ -138,7 +138,7 @@ const FilesTables: React.FC = () => {
   //update everything that uses table component
   return (
     <VerticalTable
-      tableTitle={`Total of ${tempPagination?.total} files`}
+      tableTitle={`Total of ${tempPagination?.total?.toLocaleString()} files`}
       additionalControls={
         <div className="flex gap-2">
           <FunctionButton>JSON</FunctionButton>
