@@ -484,7 +484,10 @@ export const getMutation = (
   ssmsTotal: number,
 ) => {
   const {
-    gene = { symbol: "" },
+    gene = {
+      symbol: "",
+      name: "",
+    },
     annotation = {
       polyphen_impact: "",
       polyphen_score: "",
@@ -494,7 +497,7 @@ export const getMutation = (
     },
     aa_change = "",
     consequence_type = "",
-  } = sm.consequence[0];
+  } = sm.consequence[0] ?? {};
 
   return {
     select: sm.ssm_id,
