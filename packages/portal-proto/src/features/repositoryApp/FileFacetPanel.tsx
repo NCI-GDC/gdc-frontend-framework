@@ -3,7 +3,7 @@ import {
   FacetDefinition,
   GQLDocType,
   GQLIndexType,
-  selectCurrentCohortFilterSet,
+  selectCurrentCohortFilters,
   selectFacetDefinitionsByName,
   useCoreSelector,
   useFacetDictionary,
@@ -68,7 +68,7 @@ export const FileFacetPanel = (): JSX.Element => {
 
   // Global cohort filters
   const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilterSet(state),
+    selectCurrentCohortFilters(state),
   );
 
   const prevCohortFilters = usePrevious(cohortFilters);
@@ -151,7 +151,7 @@ export const FileFacetPanel = (): JSX.Element => {
           Add a File Filter
         </Text>
       </Button>
-      <div className="flex flex-col gap-y-4 mr-3 h-screen/1.5 overflow-y-scroll">
+      <div className="flex flex-col gap-y-4 mr-3 h-screen overflow-y-scroll">
         <Modal size="lg" opened={opened} onClose={() => setOpened(false)}>
           <FacetSelection
             title={"Add a File Filter"}
@@ -171,7 +171,7 @@ export const FileFacetPanel = (): JSX.Element => {
             FileFacetHooks,
             "repository-app",
             !isDefault ? handleRemoveFilter : undefined,
-            true,
+            false,
             facetName,
             "w-full",
           );

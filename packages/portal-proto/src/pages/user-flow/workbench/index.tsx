@@ -6,94 +6,13 @@ import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
 import { Button, Tooltip } from "@mantine/core";
 import { NextLink } from "@mantine/next";
 import tw from "tailwind-styled-components";
+import SummaryTotalsPanel from "@/features/summary/SummaryTotalsPanel";
 
 export const HomePageButton = tw(Button)`
-bg-base-lighter text-base-contrast-lighter
-hover:bg-primary hover:text-primary-contrast
-font-bold mx-4 p-2 rounded inline-flex items-center shadow-md transition-colors
+bg-accent-lightest text-accent-contrast-lighter border-base-light border-1
+hover:bg-primary-lighter hover:text-primary-lighter-contrast
+font-semibold font-heading mx-4 p-2 rounded-md inline-flex items-center shadow-md transition-colors
 `;
-
-interface SummaryStatsItemProp {
-  readonly title: string;
-  readonly icon: string;
-  readonly count: number;
-  readonly size?: number;
-}
-
-const SummaryStatsItem: React.FC<SummaryStatsItemProp> = ({
-  title,
-  icon,
-  count,
-  size = 24,
-}: SummaryStatsItemProp) => {
-  return (
-    <div className="flex flex-col flex-nowrap font-medium justify-center content-center font-heading ">
-      <div className="flex flex-row flex-nowrap justify-center content-center text-md">
-        {title}{" "}
-      </div>
-      <div className="flex flex-row flex-nowrap justify-center content-center text-2xl ">
-        <Image src={icon} width={size} height={size} />{" "}
-        <span className="pl-2">{count.toLocaleString()}</span>
-      </div>
-    </div>
-  );
-};
-
-const SummaryStatsPanel = () => {
-  return (
-    <div className="flex flex-col bg-base-lightest border-primary border-t-8 border-0 p-4 opacity-90 shadow-md hover:shadow-lg  ">
-      <div className="flex flex-row items-end justify-items-end">
-        <p className="font-heading text-lg text-base-contrast-lightest">
-          Data Portal Summary
-        </p>
-        <a
-          className="text-xs px-4 pb-1 text-accent-cool-content-dark"
-          href="https://docs.gdc.cancer.gov/Data/Release_Notes/Data_Release_Notes/"
-        >
-          Data Release 31.0 - October 29, 2021{" "}
-        </a>
-      </div>
-      <div className="grid grid-cols-3 gap-4 pt-4 p-4 bg-opacity-0">
-        <SummaryStatsItem
-          title="PROJECTS"
-          count={70}
-          size={24}
-          icon="/user-flow/icons/projects.svg"
-        />
-        <SummaryStatsItem
-          title="PRIMARY SITES"
-          count={67}
-          size={24}
-          icon="/user-flow/icons/primary_sites.svg"
-        />
-        <SummaryStatsItem
-          title="CASES"
-          count={85415}
-          size={24}
-          icon="/user-flow/icons/user.svg"
-        />
-        <SummaryStatsItem
-          title="FILES"
-          count={649152}
-          size={24}
-          icon="/user-flow/icons/files.svg"
-        />
-        <SummaryStatsItem
-          title="GENES"
-          count={23621}
-          size={24}
-          icon="/user-flow/icons/genes.svg"
-        />
-        <SummaryStatsItem
-          title="MUTATIONS"
-          count={3599319}
-          size={32}
-          icon="/user-flow/icons/gene-mutation.svg"
-        />
-      </div>
-    </div>
-  );
-};
 
 const ActionButtonBar = () => {
   return (
@@ -232,19 +151,19 @@ const IndexPage: NextPage = () => {
     <UserFlowVariedPages
       {...{ indexPath: "/user-flow/single-page", headerElements }}
     >
-      <div className="flex flex-col w-100 h-100 bg-gradient-to-r from-accent-warm  to-accent-cool">
-        <div className="flex flex-row ">
+      <div className="flex flex-col w-100 h-100 bg-gradient-to-r from-accent-cool-darker  to-accent-cool">
+        <div className="flex flex-row">
           <div className="flex flex-col w-1/2 pl-10">
-            <div className="flex flex-col w-100 bg-base p-4 rounded-md shadow-lg mt-2  ">
-              <div className="font-montserrat text-base-contrast text-md pt-5 pb-2">
+            <div className="flex flex-col w-100 bg-base-lightest p-4 rounded-md shadow-lg mt-2  ">
+              <div className="font-heading  text-primary-darker text-md pt-5 pb-2">
                 Harmonized Cancer Datasets
               </div>
-              <div className="font-heading text-primary-content-lightest text-2xl pb-5">
+              <div className="font-heading font-semibold text-primary-darker text-2xl pb-5">
                 Genomic Data Commons Data Portal
               </div>
             </div>
             <div className="flex flex-row">
-              <div className="flex-auto w-36 m-4 p-4 items-center font-content text-primary-content-darkest rounded-md shadow-inner">
+              <div className="flex-auto w-36 mt-4 mx-6 mb-8 p-4 items-center font-content bg-base-max text-primary-content-darker rounded-md shadow-inner">
                 A repository and knowledge base for cancer researchers who need
                 to understand cancer, its clinical progression, and response to
                 therapy.
@@ -261,7 +180,7 @@ const IndexPage: NextPage = () => {
                 />
               </div>
             </div>
-            <SummaryStatsPanel />
+            <SummaryTotalsPanel />
           </div>
           <div className="m-auto">
             <Image src="/user-flow/sapien.svg" height={400} width={500} />

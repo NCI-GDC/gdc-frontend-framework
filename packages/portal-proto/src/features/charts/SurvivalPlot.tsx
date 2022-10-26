@@ -1,4 +1,4 @@
-import { MutableRefObject, useEffect, useRef, useState } from "react";
+import { MutableRefObject, useLayoutEffect, useRef, useState } from "react";
 import { Survival, SurvivalElement } from "@gff/core";
 import { renderPlot } from "@oncojs/survivalplot";
 import {
@@ -7,7 +7,7 @@ import {
 } from "react-icons/md";
 import { Box, Menu, Tooltip } from "@mantine/core";
 import isNumber from "lodash/isNumber";
-import { useMouse } from "@mantine/hooks";
+import { useMouse, useViewportSize } from "@mantine/hooks";
 import html2canvas from "html2canvas";
 import { elementToSVG } from "dom-to-svg";
 import saveAs from "file-saver";
@@ -54,9 +54,9 @@ export const useSurvival: survival = (
   setTooltip = (x?) => null,
 ) => {
   const ref = useRef(undefined);
-  const containerSize = ref?.current?.getBoundingClientRect();
+  const documentSize = useViewportSize();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     ref.current
       ? renderPlot({
           height,
@@ -97,7 +97,8 @@ export const useSurvival: survival = (
           onMouseLeaveDonor: () => setTooltip(undefined),
         })
       : null;
-  }, [data, xDomain, setXDomain, setTooltip, height, containerSize]);
+  }, [data, xDomain, setXDomain, setTooltip, height, documentSize]);
+
   return ref;
 };
 
@@ -286,6 +287,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   const plotData = data.survivalData;
 
   const hasEnoughData =
+    plotType === SurvivalPlotTypes.mutation ||
     plotType == SurvivalPlotTypes.categorical ||
     plotType === SurvivalPlotTypes.continuous
       ? enoughDataOnSomeCurves(plotData)
@@ -410,7 +412,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   };
 
   return (
-    <div className="flex flex-col shadow-lg">
+    <div className="flex flex-col">
       <div className="flex flex-row w-100 items-center justify-center flex-wrap">
         <div className="flex ml-auto text-montserrat text-lg text-primary-content-dark ">
           {title}

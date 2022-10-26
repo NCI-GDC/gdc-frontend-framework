@@ -19,8 +19,8 @@ export const LoginButton = ({
       className={`flex flex-row ${
         fromSession
           ? "opacity-80 text-primary-dark ml-0 hover:text-primary-darkest"
-          : "opacity-60 text-inherit font-normal ml-1"
-      } hover:opacity-100 hover:bg-transparent transition-opacity mx-2 cursor-pointer pl-0`}
+          : "opacity-60 text-inherit font-normal"
+      } hover:opacity-100 hover:bg-transparent transition-opacity cursor-pointer px-0 mx-0`}
       onClick={async () => {
         fromSession && dispatch(hideModal());
         await openAuthWindow();

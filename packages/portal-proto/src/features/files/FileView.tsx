@@ -36,6 +36,7 @@ import { AgreementModal } from "@/components/Modals/AgreementModal";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 import { fileInCart } from "src/utils";
 import { GeneralErrorModal } from "@/components/Modals/GeneraErrorModal";
+import saveAs from "file-saver";
 
 export const StyledButton = tw.button`
 bg-base-lightest
@@ -57,14 +58,18 @@ export interface FileViewProps {
 }
 
 const FullWidthDiv = tw.div`
-bg-base-lightest w-full mt-4
+bg-base-lighter w-full text-base-contrast-lighter rounded-t-md mt-4
 `;
 
 const TitleText = tw.h2`
-text-lg font-bold mx-4 ml-2
+text-lg font-semibold font-heading mx-4 ml-2
 `;
 
-//temp table compoent untill global one is done
+const TitleHeader = tw.div`
+bg-base-lighter text-base-contrast-lighter rounded-t-md
+`;
+
+//temp table component until global one is done
 interface TempTableProps {
   readonly tableData: {
     readonly headers: string[];
@@ -78,11 +83,18 @@ export const TempTable = ({ tableData }: TempTableProps): JSX.Element => {
     return <></>;
   }
   return (
-    <Table striped data-testid="tempTable">
+    <Table
+      striped
+      data-testid="tempTable"
+      className="drop-shadow-sm rounded-md border-2 border-base-lightest"
+    >
       <thead>
         <tr>
           {tableData.headers.map((text, index) => (
-            <th key={index} className="bg-base-lighter">
+            <th
+              key={index}
+              className="bg-base-max font-heading font-semibold border-b-1 border-base"
+            >
               {text}
             </th>
           ))}
@@ -93,7 +105,7 @@ export const TempTable = ({ tableData }: TempTableProps): JSX.Element => {
           <tr
             key={index}
             className={
-              index % 2 ? "bg-base-lightest" : "bg-accent-warm-lightest"
+              index % 2 ? "bg-base-lightest" : "bg-accent-cool-lighter"
             }
           >
             {Object.values(row).map((item, index) => (
@@ -194,7 +206,7 @@ export const FileView: React.FC<FileViewProps> = ({
       });
     });
 
-    const formatedTableData = {
+    const formattedTableData = {
       headers: [
         "File Name",
         "Data Category",
@@ -206,7 +218,7 @@ export const FileView: React.FC<FileViewProps> = ({
       ],
       tableRows: tableRows,
     };
-    return <TempTable tableData={formatedTableData} />;
+    return <TempTable tableData={formattedTableData} />;
   };
 
   const getAnnotationsLinkParams = (
@@ -219,6 +231,18 @@ export const FileView: React.FC<FileViewProps> = ({
       return `https://portal.gdc.cancer.gov/annotations/${annotations[0]}`;
     }
     return `https://portal.gdc.cancer.gov/annotations?filters={"content":[{"content":{"field":"annotations.entity_id","value":["${case_id}"]},"op":"in"}],"op":"and"}`;
+  };
+
+  const downloadVersionJSON = () => {
+    const jsonData = JSON.stringify([...fileHistory], null, 2);
+    const currentDate = new Date().toJSON().slice(0, 10);
+
+    saveAs(
+      new Blob([jsonData], {
+        type: "application/json",
+      }),
+      `${file.fileId}_history.${currentDate}.json`,
+    );
   };
 
   const AssociatedCB = ({
@@ -329,7 +353,7 @@ export const FileView: React.FC<FileViewProps> = ({
         />
       </div>
       <div className="flex">
-        <div className="flex-auto bg-base-lightest mr-4">
+        <TitleHeader className="flex-auto mr-4 ">
           <TitleText>File Properties</TitleText>
           <HorizontalTable
             tableData={formatDataForHorizontalTable(file, [
@@ -367,8 +391,8 @@ export const FileView: React.FC<FileViewProps> = ({
               },
             ])}
           />
-        </div>
-        <div className="w-1/3 bg-base-lightest h-full">
+        </TitleHeader>
+        <TitleHeader className="w-1/3  h-full">
           <TitleText>Data Information</TitleText>
           <HorizontalTable
             tableData={formatDataForHorizontalTable(file, [
@@ -390,7 +414,7 @@ export const FileView: React.FC<FileViewProps> = ({
               },
             ])}
           />
-        </div>
+        </TitleHeader>
       </div>
 
       {get(file, "dataType") === "Slide Image" && (
@@ -418,7 +442,7 @@ export const FileView: React.FC<FileViewProps> = ({
       {file?.analysis && (
         <>
           <div className="bg-grey mt-4 flex gap-10">
-            <div className="flex-1 bg-base-lightest">
+            <TitleHeader className="flex-1 ">
               <TitleText>Analysis</TitleText>
               <HorizontalTable
                 tableData={formatDataForHorizontalTable(file, [
@@ -473,8 +497,8 @@ export const FileView: React.FC<FileViewProps> = ({
                   },
                 ])}
               />
-            </div>
-            <div className="flex-1 bg-base-lightest">
+            </TitleHeader>
+            <TitleHeader className="flex-1 ">
               <TitleText>Reference Genome</TitleText>
               <HorizontalTable
                 tableData={[
@@ -482,7 +506,7 @@ export const FileView: React.FC<FileViewProps> = ({
                   { headerName: "Genome Name	", values: ["GRCh38.d1.vd1"] },
                 ]}
               />
-            </div>
+            </TitleHeader>
           </div>
           {file?.analysis?.metadata && (
             <FullWidthDiv>
@@ -529,6 +553,7 @@ export const FileView: React.FC<FileViewProps> = ({
           <TitleText className="float-left mt-3">File Versions</TitleText>
           <div className="float-right my-2 mr-3">
             <Button
+              onClick={downloadVersionJSON}
               color={"base"}
               className="mr-2 text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
             >

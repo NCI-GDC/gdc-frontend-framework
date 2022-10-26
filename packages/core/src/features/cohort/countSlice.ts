@@ -5,14 +5,12 @@ import {
   createUseFiltersCoreDataHook,
   DataStatus,
 } from "../../dataAccess";
+import { buildCohortGqlOperator } from "./filters";
 
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
-import {
-  selectCurrentCohortFilters,
-  selectCurrentCohortGqlFilters,
-} from "./cohortFilterSlice";
+import { selectCurrentCohortFilterOrCaseSet } from "./availableCohortsSlice";
 
 export interface CountsState {
   readonly counts: Record<string, number>;
@@ -76,7 +74,9 @@ export const fetchCohortCaseCounts = createAsyncThunk<
   void,
   { dispatch: CoreDispatch; state: CoreState }
 >("cohort/CohortCounts", async (_, thunkAPI): Promise<GraphQLApiResponse> => {
-  const cohortFilters = selectCurrentCohortGqlFilters(thunkAPI.getState());
+  const cohortFilters = buildCohortGqlOperator(
+    selectCurrentCohortFilterOrCaseSet(thunkAPI.getState()),
+  );
   const graphQlFilters = cohortFilters ? { filters: cohortFilters } : {};
   return await graphqlAPI(CountsGraphQLQuery, graphQlFilters);
 });
@@ -126,20 +126,20 @@ export const selectCohortCountsData = (
   state: CoreState,
 ): CoreDataSelectorResponse<Record<string, number>> => {
   return {
-    data: state.cohort.counts.counts,
-    status: state.cohort.counts.status,
-    error: state.cohort.counts.error,
+    data: state.cohort.cohortCounts.counts,
+    status: state.cohort.cohortCounts.status,
+    error: state.cohort.cohortCounts.error,
   };
 };
 
 export const selectCohortCounts = (state: CoreState): Record<string, number> =>
-  state.cohort.counts.counts;
+  state.cohort.cohortCounts.counts;
 
 export const selectCohortCountsByName = (
   state: CoreState,
   name: string,
 ): number => {
-  const counts = state.cohort.counts.counts;
+  const counts = state.cohort.cohortCounts.counts;
   return counts[name];
 };
 
@@ -151,5 +151,5 @@ export const useCohortCounts = createUseCoreDataHook(
 export const useFilteredCohortCounts = createUseFiltersCoreDataHook(
   fetchCohortCaseCounts,
   selectCohortCountsData,
-  selectCurrentCohortFilters,
+  selectCurrentCohortFilterOrCaseSet,
 );

@@ -17,7 +17,7 @@ import { createKeyboardAccessibleFunction } from "src/utils";
 import { CategoricalBins } from "./types";
 import FunctionButton from "@/components/FunctionButton";
 
-const DEFAULT_GROUP_NAME_REGEX = /selected value \d+/;
+const DEFAULT_GROUP_NAME_PREFIX = "selected value ";
 
 const filterOutSelected = (
   values: CategoricalBins,
@@ -86,6 +86,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
   customBins,
   updateBins,
 }: CategoricalBinningModalProps) => {
+  const [customized, setCustomized] = useState<boolean>(false);
   const [values, setValues] = useState<CategoricalBins>(
     customBins !== null ? customBins : results,
   );
@@ -118,22 +119,31 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
         },
       });
     } else {
-      const defaultNames = Object.entries(values).filter(
-        ([k, v]) => v instanceof Object && k.match(DEFAULT_GROUP_NAME_REGEX),
-      );
+      const valueCount = Object.keys(values).length;
+      let index = 1;
+
+      for (; index <= valueCount; index++) {
+        if (!values[DEFAULT_GROUP_NAME_PREFIX + index]) {
+          break;
+        }
+      }
+
+      const newGroupName = DEFAULT_GROUP_NAME_PREFIX + index;
 
       setValues({
         ...filterOutSelected(values, selectedValues),
-        [`selected value ${defaultNames.length + 1}`]: selectedValues,
+        [newGroupName]: selectedValues,
       });
 
-      setEditField(`selected value ${defaultNames.length + 1}`);
+      setEditField(newGroupName);
     }
     setSelectedValues({});
+    setCustomized(true);
   };
 
   const updateGroupName = (oldName: string, newName: string) => {
     setValues(mapKeys(values, (_, key) => (key === oldName ? newName : key)));
+    setCustomized(true);
   };
 
   const hideValues = () => {
@@ -146,6 +156,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
     setValues(filterOutSelected(values, selectedValues));
 
     setSelectedValues({});
+    setCustomized(true);
   };
 
   const sortedValues = Object.entries(values).sort((a, b) =>
@@ -180,7 +191,9 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
                 setHiddenValues({});
                 setValues(results);
                 setSelectedValues({});
+                setCustomized(false);
               }}
+              disabled={!customized}
               aria-label="reset groups"
             >
               <ResetIcon size={20} />
@@ -303,7 +316,8 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
       <div className="mt-2 flex gap-2 justify-end">
         <Button
           onClick={() => setModalOpen(false)}
-          className="bg-primary-darkest"
+          variant="outline"
+          color="primary.5"
         >
           Cancel
         </Button>
@@ -467,7 +481,7 @@ const GroupInput: React.FC<GroupInputProps> = ({
         >
           {groupName}{" "}
           <PencilIcon
-            className="ml-2"
+            className="ml-2 shrink-0"
             onClick={(e) => {
               e.stopPropagation();
               setEditField(groupName);

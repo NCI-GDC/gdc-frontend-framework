@@ -20,6 +20,21 @@ const Components: ReactNode = () => {
   return (
     <div className="flex flex-col font-montserrat text-primary-content w-100">
       <p className="prose font-medium text-2xl">UI Components</p>
+      <Divider label="Numeric Range Facet" classNames={divider_style} />
+      <NumericRangeFacet
+        docType="cases"
+        indexType="repository"
+        field="cases.follow_ups.days_to_progression"
+        width="w-1/3"
+        rangeDatatype="days"
+        hooks={{
+          useGetFacetData: useRangeFacet,
+          useGetFacetFilters: useSelectFieldFilter,
+          useUpdateFacetFilters: useUpdateFacetFilter,
+          useClearFilter: useClearFilters,
+          useTotalCounts: useTotalCounts,
+        }}
+      />
 
       <Divider label="Enumeration Facet" classNames={divider_style} />
       <EnumFacet

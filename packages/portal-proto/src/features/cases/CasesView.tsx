@@ -1,6 +1,6 @@
 import {
   fetchCases,
-  selectCurrentCohortCaseGqlFilters,
+  selectCurrentCohortGqlFilters,
   selectCohortCountsByName,
   useCoreDispatch,
   selectCasesData,
@@ -48,7 +48,7 @@ export interface ContextualCasesViewProps {
 }
 
 const useCohortFacetFilter = (): GqlOperation => {
-  return useCoreSelector((state) => selectCurrentCohortCaseGqlFilters(state));
+  return useCoreSelector((state) => selectCurrentCohortGqlFilters(state));
 };
 
 /**
@@ -88,7 +88,7 @@ const useCohortCases = (pageSize = 10, offset = 0) => {
   return {
     data: cases.data,
     error: cases?.error,
-    isUninitialized: cases === undefined,
+    isUninitialized: false,
     isFetching: cases?.status === "pending",
     isSuccess: cases?.status === "fulfilled",
     isError: cases?.status === "rejected",
