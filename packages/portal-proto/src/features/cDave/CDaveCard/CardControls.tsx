@@ -40,11 +40,16 @@ const CardControls: React.FC<CardControlsProps> = ({
     <>
       <div className="flex justify-between p-2">
         <div>
-          <Menu>
+          <Menu
+            classNames={{
+              label: "font-heading",
+              item: "data-hovered:bg-base-lighter data-hovered:text-base-contrast-lighter",
+            }}
+          >
             <Menu.Target>
               <Button
                 rightIcon={<DownIcon size={20} />}
-                className="bg-base-max text-base-contrast-max border-base"
+                className="bg-base-max text-base-content-darker border-base border-base-lighter"
               >
                 Select Action
               </Button>
@@ -55,15 +60,20 @@ const CardControls: React.FC<CardControlsProps> = ({
               <Menu.Item disabled>Remove from cohort</Menu.Item>
             </Menu.Dropdown>
           </Menu>
-          <Button className="bg-base-max text-base-contrast-max border-base ml-2">
+          <Button className="bg-base-max text-base-content-darker border-base border-base-lighter ml-2">
             TSV
           </Button>
         </div>
-        <Menu>
+        <Menu
+          classNames={{
+            label: "font-heading",
+            item: "data-hovered:bg-base-lighter data-hovered:text-base-contrast-lighter",
+          }}
+        >
           <Menu.Target>
             <Button
               rightIcon={<DownIcon size={20} />}
-              className="bg-base-max text-base-contrast-max border-base border-base"
+              className="bg-base-max text-base-content-darker border-base border-base-lighter"
             >
               Customize Bins
             </Button>

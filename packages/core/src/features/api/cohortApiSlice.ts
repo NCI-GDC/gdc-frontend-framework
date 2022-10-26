@@ -1,36 +1,21 @@
 // This defines the middleware for the cohort API POC.
 
-// For this slice to work, the mock cohort api must be started. See
-// data/cohort-api-server.js for additional details.
-
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { coreCreateApi } from "../../coreCreateApi";
 import type { Middleware, Reducer } from "@reduxjs/toolkit";
-import { CohortModel, ContextModel } from "./cohortApiTypes";
+import { CohortModel, CohortAdd, CohortUpdate } from "./cohortApiTypes";
+import { GDC_API } from "../../constants";
 
 export const cohortApiSlice = coreCreateApi({
   reducerPath: "cohortApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:3500",
-    prepareHeaders: async (headers) => {
-      headers.set("X-Context-ID", "FAKE-UUID-FOR-TESTING-CONTEXT-HEADER-BAD");
-      return headers;
-    },
+    baseUrl: `${GDC_API}`,
     credentials: "include",
   }),
-  tagTypes: ["Cohort", "Context"],
+  tagTypes: ["Cohort"],
   endpoints: (builder) => ({
-    // cohort endpoints
-    getCohorts: builder.query<CohortModel[], void>({
+    getCohortsByContextId: builder.query<CohortModel[], void>({
       query: () => "/cohorts",
-      providesTags: (result = []) => [
-        //"Cohort",
-        { type: "Cohort", id: "LIST" },
-        ...result.map(({ id }) => ({ type: "Cohort" as const, id })),
-      ],
-    }),
-    getCohortsByContextId: builder.query<CohortModel[], string>({
-      query: (context_id) => `/cohorts?context_id=${context_id}`,
       providesTags: (result = []) => [
         { type: "Cohort", id: "LIST" },
         ...result.map(({ id }) => ({ type: "Cohort" as const, id })),
@@ -40,7 +25,7 @@ export const cohortApiSlice = coreCreateApi({
       query: (id) => `/cohorts/${id}`,
       providesTags: (_result, _error, arg) => [{ type: "Cohort", id: arg }],
     }),
-    addCohort: builder.mutation<CohortModel, Partial<CohortModel>>({
+    addCohort: builder.mutation<CohortModel, CohortAdd>({
       query: (cohort) => ({
         url: "/cohorts",
         method: "POST",
@@ -48,11 +33,15 @@ export const cohortApiSlice = coreCreateApi({
       }),
       invalidatesTags: [{ type: "Cohort", id: "LIST" }],
     }),
-    updateCohort: builder.mutation<CohortModel, Partial<CohortModel>>({
+    updateCohort: builder.mutation<CohortModel, CohortUpdate>({
       query: (cohort) => ({
         url: `/cohorts/${cohort.id}`,
-        method: "PATCH",
-        body: cohort,
+        method: "PUT",
+        body: {
+          name: cohort.name,
+          filters: cohort.filters,
+          type: cohort.type,
+        },
       }),
       invalidatesTags: (_result, _error, arg) => [
         { type: "Cohort", id: arg.id },
@@ -65,39 +54,15 @@ export const cohortApiSlice = coreCreateApi({
       }),
       invalidatesTags: (_result, _error, arg) => [{ type: "Cohort", id: arg }],
     }),
-
-    // context endpoints
-    getContexts: builder.query<ContextModel[], void>({
-      query: () => "/contexts",
-      providesTags: (result = []) => [
-        { type: "Context", id: "LIST" },
-        ...result.map(({ id }) => ({ type: "Context" as const, id })),
-      ],
-    }),
-    getContextById: builder.query<ContextModel, string>({
-      query: (id) => `/contexts/${id}`,
-      providesTags: (_result, _error, arg) => [{ type: "Context", id: arg }],
-    }),
-    addContext: builder.mutation<ContextModel, void>({
-      query: () => ({
-        url: "/contexts",
-        method: "POST",
-      }),
-      invalidatesTags: [{ type: "Context", id: "LIST" }],
-    }),
   }),
 });
 
 export const {
-  useGetCohortsQuery,
   useGetCohortsByContextIdQuery,
   useGetCohortByIdQuery,
   useAddCohortMutation,
   useUpdateCohortMutation,
   useDeleteCohortMutation,
-  useGetContextsQuery,
-  useGetContextByIdQuery,
-  useAddContextMutation,
 } = cohortApiSlice;
 
 export const cohortApiSliceMiddleware = cohortApiSlice.middleware as Middleware;

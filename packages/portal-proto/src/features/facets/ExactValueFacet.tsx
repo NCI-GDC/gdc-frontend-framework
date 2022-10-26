@@ -4,6 +4,8 @@ import { ActionIcon, Badge, Group, TextInput, Tooltip } from "@mantine/core";
 import {
   controlsIconStyle,
   FacetIconButton,
+  FacetText,
+  FacetHeader,
 } from "@/features/facets/components";
 import { MdClose as CloseIcon } from "react-icons/md";
 import { FaUndo as UndoIcon, FaPlus as PlusIcon } from "react-icons/fa";
@@ -79,6 +81,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
   };
 
   const addValue = (s: string | number) => {
+    if (s === "") return;
     if (textValues.includes(s)) return;
     setTextValue("");
     setValues([...textValues, s]);
@@ -103,9 +106,9 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
     <div
       className={`flex flex-col ${
         width ? width : "mx-1"
-      } bg-base-max relative border-primary-lightest border-1 rounded-b-md text-xs transition`}
+      } bg-base-max relative shadow-lg border-primary-lightest border-1 rounded-b-md text-xs transition`}
     >
-      <div className="flex items-start justify-between flex-nowrap bg-primary-lighter shadow-md px-1.5">
+      <FacetHeader>
         <Tooltip
           label={description || "No description available"}
           classNames={{
@@ -119,12 +122,13 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
           transition="fade"
           transitionDuration={200}
         >
-          <div className="text-primary-contrast-lighter font-heading font-semibold text-md break-words py-2">
-            {facetTitle}
-          </div>
+          <FacetText>{facetTitle}</FacetText>
         </Tooltip>
         <div className="flex flex-row">
-          <FacetIconButton onClick={clearFilters} aria-label="clear selection">
+          <FacetIconButton
+            onClick={() => clearFilters(field)}
+            aria-label="clear selection"
+          >
             <UndoIcon size="1.15em" className={controlsIconStyle} />
           </FacetIconButton>
           {dismissCallback ? (
@@ -139,7 +143,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
             </FacetIconButton>
           ) : null}
         </div>
-      </div>
+      </FacetHeader>
       <div className="flex flex row flex-nowrap items-center p-2 ">
         <TextInput
           size="xs"
@@ -153,7 +157,9 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
           size="md"
           aria-label="add string value"
           className="bg-accent text-accent-contrast border-base-min border-1 rounded-l-none h-[30px]"
-          onClick={() => addValue(textValue)}
+          onClick={() => {
+            if (textValue.length > 0) addValue(textValue);
+          }}
         >
           <PlusIcon />
         </ActionIcon>

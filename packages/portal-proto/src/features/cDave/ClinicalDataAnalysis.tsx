@@ -46,7 +46,7 @@ const ClinicalDataAnalysis: React.FC = () => {
   };
 
   return isFetching ? (
-    <Loader size={80} />
+    <Loader size={80} data-testid="please_wait_spinner" />
   ) : (
     <div className="flex">
       <Controls

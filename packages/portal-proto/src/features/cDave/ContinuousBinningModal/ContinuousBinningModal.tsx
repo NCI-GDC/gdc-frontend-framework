@@ -4,9 +4,11 @@ import { useForm } from "@mantine/form";
 import { MdReplay as ResetIcon } from "react-icons/md";
 import { FaPlusCircle as PlusIcon, FaTrash as TrashIcon } from "react-icons/fa";
 import { AllowableRange, Statistics } from "@gff/core";
+import _ from "lodash";
 import { validateIntervalInput, validateRangeInput } from "./validateInputs";
 import { CustomInterval, NamedFromTo } from "../types";
 import { isInterval } from "../utils";
+import FunctionButton from "@/components/FunctionButton";
 
 interface ContinuousBinningModalProps {
   readonly setModalOpen: (open: boolean) => void;
@@ -28,8 +30,10 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
   const customIntervalSet = isInterval(customBins);
 
   const binSize = (stats.max + 1 - stats.min) / 4;
+  const initialBinMethod =
+    !customIntervalSet && customBins?.length > 0 ? "ranges" : "interval";
   const [binMethod, setBinMethod] = useState<"interval" | "ranges">(
-    !customIntervalSet && customBins?.length > 0 ? "ranges" : "interval",
+    initialBinMethod,
   );
   const [savedRangeRows, setSavedRangeRows] = useState(
     !customIntervalSet && customBins?.length > 0
@@ -41,45 +45,64 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
       : [],
   );
   const [hasReset, setHasReset] = useState(false);
+  const [customizedIntervalForm, setCustomizedIntervalForm] = useState(false);
+  const [customizedRangeForm, setCustomizedRangeForm] = useState(false);
+  const [customizedBinMethod, setCustomizedBinMethod] = useState(false);
+
+  const initialIntervalForm = {
+    setIntervalSize: customIntervalSet
+      ? String(customBins.interval)
+      : String(binSize),
+    setIntervalMin: customIntervalSet
+      ? String(customBins.min)
+      : String(stats.min),
+    setIntervalMax: customIntervalSet
+      ? String(customBins.max)
+      : String(stats.max + 1),
+  };
 
   const intervalForm = useForm({
     validateInputOnChange: true,
-    initialValues: {
-      setIntervalSize: customIntervalSet
-        ? String(customBins.interval)
-        : String(binSize),
-      setIntervalMin: customIntervalSet
-        ? String(customBins.min)
-        : String(stats.min),
-      setIntervalMax: customIntervalSet
-        ? String(customBins.max)
-        : String(stats.max + 1),
-    },
-    validate: (values) =>
-      validateIntervalInput(
+    initialValues: initialIntervalForm,
+    validate: (values) => {
+      setCustomizedIntervalForm(!_.isEqual(values, initialIntervalForm));
+
+      return validateIntervalInput(
         values.setIntervalSize,
         values.setIntervalMin,
         values.setIntervalMax,
         inputRange,
-      ),
+      );
+    },
   });
 
+  const initialRangeForm = {
+    ranges:
+      !customIntervalSet && customBins?.length > 0
+        ? [
+            ...customBins.map((b) => ({
+              name: b.name,
+              from: String(b.from),
+              to: String(b.to),
+            })),
+            { name: "", from: "", to: "" },
+          ]
+        : [{ name: "", from: "", to: "" }],
+  };
+
   const rangeForm = useForm({
-    initialValues: {
-      ranges:
-        !customIntervalSet && customBins?.length > 0
-          ? [
-              ...customBins.map((b) => ({
-                name: b.name,
-                from: String(b.from),
-                to: String(b.to),
-              })),
-              { name: "", from: "", to: "" },
-            ]
-          : [{ name: "", from: "", to: "" }],
+    initialValues: initialRangeForm,
+    validate: (values) => {
+      setCustomizedRangeForm(!_.isEqual(values, initialRangeForm));
+
+      return validateRangeInput(values.ranges);
     },
-    validate: (values) => validateRangeInput(values.ranges),
   });
+
+  const validateRangeField = (field: string, idx: number) => {
+    rangeForm.validateField(`ranges.${idx}.${field}`);
+    rangeForm.validateField(`ranges.${idx}.name`);
+  };
 
   useEffect(() => {
     intervalForm.clearErrors();
@@ -89,6 +112,8 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
   }, [intervalForm.values]);
 
   useEffect(() => {
+    setCustomizedBinMethod(binMethod !== initialBinMethod);
+
     if (binMethod === "interval") {
       rangeForm.clearErrors();
       intervalForm.validate();
@@ -124,11 +149,13 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
         updateBins(null);
       }
     } else {
-      const newBins = savedRangeRows.map((r) => ({
-        name: r.name,
-        to: Number(r.to),
-        from: Number(r.from),
-      }));
+      const newBins = rangeForm.values.ranges
+        .map((r) => ({
+          name: r.name,
+          to: Number(r.to),
+          from: Number(r.from),
+        }))
+        .slice(0, -1);
       if (!hasReset || rangeForm.isDirty()) {
         updateBins(newBins);
       } else {
@@ -223,9 +250,9 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
               />
             </div>
           </div>
-          <Button
+          <FunctionButton
             aria-label="reset bins"
-            className="p-2 bg-base-min text-base-contrast-min border-base"
+            className="p-2"
             onClick={() => {
               intervalForm.setValues({
                 setIntervalSize: String(binSize),
@@ -238,10 +265,18 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
               setSavedRangeRows([]);
               setBinMethod("interval");
               setHasReset(true);
+              setCustomizedBinMethod(false);
+              setCustomizedIntervalForm(false);
+              setCustomizedRangeForm(false);
             }}
+            disabled={
+              !customizedBinMethod &&
+              !customizedIntervalForm &&
+              !customizedRangeForm
+            }
           >
             <ResetIcon size={20} />
-          </Button>
+          </FunctionButton>
         </div>
         {/* This switches the bin method when a user clicks on the "area", no keyboard equivalent is needed to accessibly navigate the form */}
         {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
@@ -309,7 +344,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                       }}
                       onBlur={() =>
                         idx !== rangeForm.values.ranges.length - 1
-                          ? rangeForm.validateField(`ranges.${idx}.from`)
+                          ? validateRangeField("from", idx)
                           : undefined
                       }
                     />
@@ -327,14 +362,14 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                       }}
                       onBlur={() =>
                         idx !== rangeForm.values.ranges.length - 1
-                          ? rangeForm.validateField(`ranges.${idx}.to`)
+                          ? validateRangeField("to", idx)
                           : undefined
                       }
                     />
                   </td>
                   <td className="float-right">
                     {idx === rangeForm.values.ranges.length - 1 ? (
-                      <Button
+                      <FunctionButton
                         leftIcon={<PlusIcon />}
                         onClick={() => {
                           const result = rangeForm.validate();
@@ -353,21 +388,11 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                           rangeForm.values.ranges[idx].from === "" ||
                           rangeForm.values.ranges[idx].to === ""
                         }
-                        className={
-                          binMethod === "ranges" &&
-                          !(
-                            rangeForm.values.ranges[idx].name === "" ||
-                            rangeForm.values.ranges[idx].from === "" ||
-                            rangeForm.values.ranges[idx].to === ""
-                          )
-                            ? "bg-base-min text-base-contrast-min border-base"
-                            : "bg-base-lighter text-base-contrast-lighter"
-                        }
                       >
                         Add
-                      </Button>
+                      </FunctionButton>
                     ) : (
-                      <Button
+                      <FunctionButton
                         onClick={() => {
                           rangeForm.removeListItem("ranges", idx);
                           setSavedRangeRows(
@@ -375,14 +400,9 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                           );
                         }}
                         aria-label="delete row"
-                        className={
-                          binMethod === "ranges"
-                            ? "bg-base text-base-contrast border-base"
-                            : "bg-base-lighter"
-                        }
                       >
                         <TrashIcon />
-                      </Button>
+                      </FunctionButton>
                     )}
                   </td>
                 </tr>
@@ -393,13 +413,14 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
       </div>
       <div className="mt-2 flex gap-2 justify-end">
         <Button
+          variant="outline"
+          color="primary.5"
           onClick={() => setModalOpen(false)}
-          className="bg-primary-darkest"
         >
           Cancel
         </Button>
         <Button
-          className="bg-primary-darkest"
+          className="bg-primary-darkest text-primary-contrast-darkest disabled:bg-opacity-60 disabled:text-opacity-60"
           onClick={saveBins}
           disabled={
             binMethod === "interval"
