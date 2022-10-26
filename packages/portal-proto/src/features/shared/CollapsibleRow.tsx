@@ -11,16 +11,16 @@ const CreateContent = (
   items: Record<string, ReadonlyArray<string>>,
 ): JSX.Element => {
   return (
-    <div className="flex flex-col transition-transform px-3">
+    <div className="flex flex-col transition-transform transition-[height] px-3">
       {Object.entries(items).map(([x, values], index) => (
         <div className="flex flex-col" key={`${x}-${values.length}-${index}`}>
           {index > 0 ? <Divider /> : null}
-          <p className={"text-header text-[0.75em] font-semibold"}>{x}</p>
+          <p className={"text-header text-[0.95em] font-semibold"}>{x}</p>
           <div className="columns-4 h-max-96 text-content text-xs p-4">
             <ul className="list-disc">
               {[...values].sort().map((y) => (
                 <span className="flex flex-row items-center" key={y}>
-                  <li className="marker:text-primary text-sm text-primary-min">
+                  <li className="marker:text-primary text-[1.15em] text-primary-min">
                     {y}
                   </li>
                 </span>
@@ -109,8 +109,10 @@ const CollapsibleRow = ({
             tabIndex={0}
             className="flex flex-row whitespace-nowrap items-center justify-between text-primary cursor-pointer"
           >
-            <span className="whitespace-nowrap">
-              {value.length.toLocaleString()} {label}
+            <span className="whitespace-nowrap text-bold">
+              <b>
+                {value.length.toLocaleString()} {label}
+              </b>
             </span>
             <UpIcon size="1.25em" className="text-secondary-light mx-2" />
           </div>

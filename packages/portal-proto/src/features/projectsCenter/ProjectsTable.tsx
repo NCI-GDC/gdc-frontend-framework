@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { VerticalTable } from "../shared/VerticalTable";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import Link from "next/link";
@@ -41,7 +41,14 @@ const ProjectsTable: React.FC = () => {
       },
     },
     { id: "program", columnName: "Program", visible: true },
-    { id: "cases", columnName: "Cases", visible: true },
+    {
+      id: "cases",
+      columnName: "Cases",
+      visible: true,
+      Cell: ({ value }: CellProps) => {
+        return <div className="text-right w-12">{value} </div>;
+      },
+    },
     {
       id: "data_categories",
       columnName: "Data Category",
@@ -103,6 +110,8 @@ const ProjectsTable: React.FC = () => {
     from: (activePage - 1) * pageSize,
     sortBy: [{ field: "summary.case_count", direction: "desc" }],
   });
+
+  useEffect(() => setActivePage(1), [projectFilters]);
 
   if (isSuccess) {
     tempPagination = pagination;
