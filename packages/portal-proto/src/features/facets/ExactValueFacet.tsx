@@ -106,7 +106,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
     <div
       className={`flex flex-col ${
         width ? width : "mx-1"
-      } bg-base-max relative border-primary-lightest border-1 rounded-b-md text-xs transition`}
+      } bg-base-max relative shadow-lg border-primary-lightest border-1 rounded-b-md text-xs transition`}
     >
       <FacetHeader>
         <Tooltip
