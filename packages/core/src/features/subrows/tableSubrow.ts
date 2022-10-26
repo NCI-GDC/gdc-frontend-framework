@@ -14,13 +14,11 @@ interface SubrowResponse {
   };
 }
 
-// todo: add to lines 92, 171
-// fails to compile when uncommented
-// export interface TableSubrowData {
-//   project?: string;
-//   numerator?: number;
-//   denominator?: number;
-// }
+export interface TableSubrowData {
+  project?: string;
+  numerator?: number;
+  denominator?: number;
+}
 
 // include in export @ core index
 export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
@@ -91,26 +89,15 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
       transformResponse: (
         response: GraphQLApiResponse<SubrowResponse>,
       ): any => {
+        const { cases } = response?.data?.explore;
         const {
-          data: {
-            explore: {
-              cases: {
-                numerators: {
-                  project__project_id: { buckets: nBuckets },
-                },
-              },
-            },
+          numerators: {
+            project__project_id: { buckets: nBuckets = [] },
           },
-          data: {
-            explore: {
-              cases: {
-                denominators: {
-                  project__project_id: { buckets: dBuckets },
-                },
-              },
-            },
+          denominators: {
+            project__project_id: { buckets: dBuckets = [] },
           },
-        } = response;
+        } = cases;
         const transformedBuckets = nBuckets.map(({ doc_count, key }) => {
           return {
             project: key,
@@ -187,9 +174,15 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
       transformResponse: (
         response: GraphQLApiResponse<SubrowResponse>,
       ): any => {
-        const { numerators, denominators } = response.data.explore.cases;
-        const { buckets: nBuckets } = numerators.project__project_id;
-        const { buckets: dBuckets } = denominators.project__project_id;
+        const { cases } = response?.data?.explore;
+        const {
+          numerators: {
+            project__project_id: { buckets: nBuckets = [] },
+          },
+          denominators: {
+            project__project_id: { buckets: dBuckets = [] },
+          },
+        } = cases;
         const transformedBuckets = nBuckets.map(({ doc_count, key }) => {
           return {
             project: key,
@@ -197,7 +190,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
             denominator: dBuckets.find((d) => d.key === key)?.doc_count,
           };
         });
-        return transformedBuckets;
+        return transformedBuckets as TableSubrowData;
       },
     }),
   }),
