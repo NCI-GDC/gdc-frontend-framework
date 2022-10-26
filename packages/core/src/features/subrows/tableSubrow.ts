@@ -105,7 +105,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
             denominator: dBuckets.find((d) => d.key === key)?.doc_count,
           };
         });
-        return transformedBuckets;
+        return transformedBuckets as TableSubrowData;
       },
     }),
     getSomaticMutationTableSubrow: builder.query({
