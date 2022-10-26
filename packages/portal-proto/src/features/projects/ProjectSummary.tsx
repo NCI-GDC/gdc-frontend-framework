@@ -251,7 +251,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
               <PercentBar>
                 <PercentBarLabel>{`${fileCountPercentage.toFixed(
                   2,
-                )}}%`}</PercentBarLabel>
+                )}%`}</PercentBarLabel>
                 <PercentBarComplete
                   style={{ width: `${fileCountPercentage}%` }}
                 />
