@@ -19,7 +19,12 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { isEqual } from "lodash";
-import { FacetIconButton, controlsIconStyle } from "./components";
+import {
+  FacetIconButton,
+  controlsIconStyle,
+  FacetText,
+  FacetHeader,
+} from "./components";
 import { updateFacetEnum } from "./utils";
 import FacetExpander from "@/features/facets/FacetExpander";
 import FacetSortPanel from "@/features/facets/FacetSortPanel";
@@ -177,11 +182,11 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
     <div
       className={`flex flex-col ${
         width ? width : "mx-1"
-      } bg-base-max relative border-primary-lightest border-1 rounded-b-md text-xs transition`}
+      } bg-base-max relative shadow-lg border-primary-lightest border-1 rounded-b-md text-xs transition`}
       id={field}
     >
       <div>
-        <div className="flex items-start justify-between flex-nowrap bg-primary-lighter shadow-md px-1.5">
+        <FacetHeader>
           <Tooltip
             label={description}
             classNames={{
@@ -195,9 +200,9 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
             transition="fade"
             transitionDuration={200}
           >
-            <div className="text-primary-contrast-lighter font-heading font-semibold text-md break-words py-2">
+            <FacetText>
               {facetName ? facetName : fieldNameToTitle(field)}
-            </div>
+            </FacetText>
           </Tooltip>
           <div className="flex flex-row">
             {showSearch ? (
@@ -210,14 +215,14 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                 onClick={toggleFlip}
                 aria-label="Flip between form and chart"
               >
-                <FlipIcon size="1.25em" className={controlsIconStyle} />
+                <FlipIcon size="1.45em" className={controlsIconStyle} />
               </FacetIconButton>
             ) : null}
             <FacetIconButton
               onClick={() => clearFilters(field)}
               aria-label="clear selection"
             >
-              <UndoIcon size="1.15em" className={controlsIconStyle} />
+              <UndoIcon size="1.25em" className={controlsIconStyle} />
             </FacetIconButton>
             {dismissCallback ? (
               <FacetIconButton
@@ -231,7 +236,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
               </FacetIconButton>
             ) : null}
           </div>
-        </div>
+        </FacetHeader>
       </div>
       <div className="h-full">
         {isSearching && (

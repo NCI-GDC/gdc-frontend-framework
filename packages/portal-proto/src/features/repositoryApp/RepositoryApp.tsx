@@ -83,7 +83,7 @@ const RepositoryApp = () => {
           Total of{" "}
         </Text>
         <Text className="mx-2" transform="uppercase" size="lg" weight={1000}>
-          {isSuccess ? pagination.total : "   "}
+          {isSuccess ? pagination.total.toLocaleString() : "   "}
         </Text>
         <Text transform="uppercase" size="lg" className="mr-6" weight={700}>
           Files

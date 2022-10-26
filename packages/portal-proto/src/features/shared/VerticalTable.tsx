@@ -100,9 +100,10 @@ interface VerticalTableProps {
 }
 
 interface Column {
-  Header: string;
+  Header: string | JSX.Element;
   accessor: string;
   width?: number;
+  Cell?: (tableInfo: any) => JSX.Element;
 }
 
 interface TableProps {
@@ -276,7 +277,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
       } else {
         outputString += pagination.total;
       }
-      outputString += ` of ${pagination.total}`;
+      outputString += ` of ${pagination.total.toLocaleString()}`;
 
       if (pagination.label) {
         outputString += ` ${pagination.label}`;
