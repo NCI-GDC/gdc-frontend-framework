@@ -501,7 +501,7 @@ export const CaseSummary = ({
 
               <div className="flex gap-4 mt-4">
                 <CategoryTableSummary
-                  title=" File Counts by Data Category"
+                  title="File Counts by Data Category"
                   dataObject={data.summary.data_categories}
                   tableData={formatDataForDataCateogryTable()}
                 />
@@ -527,7 +527,6 @@ export const CaseSummary = ({
               <div className="my-5">
                 <div className="flex gap-2 bg-base-lightest text-primary-content p-2">
                   <h2 className="text-lg font-medium">
-                    {" "}
                     Clinical Supplement File
                   </h2>
                 </div>
@@ -542,7 +541,6 @@ export const CaseSummary = ({
               <div className="my-5">
                 <div className="flex gap-2 bg-base-lightest text-primary-content p-2">
                   <h2 className="text-lg font-medium">
-                    {" "}
                     Biospecimen Supplement File
                   </h2>
                 </div>
