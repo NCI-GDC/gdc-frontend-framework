@@ -206,7 +206,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
     return `https://portal.gdc.cancer.gov/annotations?filters={"content":[{"content":{"field":"annotations.project.project_id","value":["${projectData.project_id}"]},"op":"in"}],"op":"and"}`;
   };
 
-  const formatDataForDataCateogryTable = () => {
+  const formatDataForDataCategoryTable = () => {
     const sortedDataCategories = sortByPropertyAsc(
       projectData.summary.data_categories,
       "data_category",
@@ -253,7 +253,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
               <PercentBar>
                 <PercentBarLabel>{`${fileCountPercentage.toFixed(
                   2,
-                )}}%`}</PercentBarLabel>
+                )}%`}</PercentBarLabel>
                 <PercentBarComplete
                   style={{ width: `${fileCountPercentage}%` }}
                 />
@@ -450,7 +450,7 @@ Data Transfer Tool is recommended for transferring large volumes of data."
             <CategoryTableSummary
               title="Cases and File Counts by Data Category"
               dataObject={projectData?.summary?.data_categories}
-              tableData={formatDataForDataCateogryTable()}
+              tableData={formatDataForDataCategoryTable()}
             />
 
             <CategoryTableSummary

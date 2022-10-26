@@ -5,6 +5,8 @@ import { updateFacetEnum } from "./utils";
 import {
   controlsIconStyle,
   FacetIconButton,
+  FacetText,
+  FacetHeader,
 } from "@/features/facets/components";
 
 import { trimFirstFieldNameToTitle } from "@gff/core";
@@ -48,9 +50,9 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
     <div
       className={`flex flex-col ${
         width ? width : "mx-1"
-      } bg-base-max relative border-primary-lightest border-1 rounded-b-md text-xs transition`}
+      } bg-base-max relative shadow-lg border-primary-lightest border-1 rounded-b-md text-xs transition`}
     >
-      <div className="flex items-start justify-between flex-nowrap bg-primary-lighter shadow-md px-1.5">
+      <FacetHeader>
         <Tooltip
           label={description || "No description available"}
           classNames={{
@@ -64,9 +66,7 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
           transition="fade"
           transitionDuration={200}
         >
-          <div className="text-primary-contrast-lighter font-heading font-semibold text-md break-words py-2">
-            {facetTitle}
-          </div>
+          <FacetText>{facetTitle}</FacetText>
         </Tooltip>
         <div className="flex flex-row">
           <FacetIconButton onClick={clearFilters} aria-label="clear selection">
@@ -84,7 +84,7 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
             </FacetIconButton>
           ) : null}
         </div>
-      </div>
+      </FacetHeader>
       <div className="flex flex-row items-center justify-end flex-wrap p-1 mb-1 border-b-2">
         <p className="px-2">{valueLabel}</p>
       </div>
