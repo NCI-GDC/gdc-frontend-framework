@@ -4,7 +4,6 @@ import { VerticalTable } from "../shared/VerticalTable";
 import { downloadTSV } from "../shared/TableUtils";
 import { SingleItemAddToCartButton } from "../cart/updateCart";
 import Link from "next/link";
-import { Badge } from "@mantine/core";
 import {
   useCoreDispatch,
   useCoreSelector,
@@ -19,6 +18,7 @@ import { selectFilters } from "@/features/repositoryApp/repositoryFiltersSlice";
 import FunctionButton from "@/components/FunctionButton";
 import { convertDateToString } from "src/utils/date";
 import download from "src/utils/download";
+import { FileAccessBadge } from "@/components/FileAccessBadge";
 
 const FilesTables: React.FC = () => {
   const columnListOrder = [
@@ -79,17 +79,7 @@ const FilesTables: React.FC = () => {
           <a className="text-utility-link underline">{file.id}</a>
         </Link>
       ),
-      access: (
-        <Badge
-          className={
-            file.access === "open" //TODO: keep or change to theme color
-              ? "bg-nci-green-lighter/50 text-nci-green-darkest capitalize text-sm"
-              : "bg-nci-red-lighter/50 text-nci-red-darkest capitalize text-sm"
-          }
-        >
-          {file.access}
-        </Badge>
-      ),
+      access: <FileAccessBadge access={file.access} />,
       fileName: (
         <Link href={`/files/${file.id}`}>
           <a className="text-utility-link underline">{file.fileName}</a>
@@ -205,7 +195,7 @@ const FilesTables: React.FC = () => {
   //update everything that uses table component
   return (
     <VerticalTable
-      tableTitle={`Total of ${tempPagination?.total} files`}
+      tableTitle={`Total of ${tempPagination?.total?.toLocaleString()} files`}
       additionalControls={
         <div className="flex gap-2">
           <FunctionButton onClick={handleDownloadJSON}>JSON</FunctionButton>

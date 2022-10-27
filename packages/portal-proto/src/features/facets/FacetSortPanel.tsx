@@ -3,25 +3,29 @@ import {
   MdSort as SortIcon,
   MdSortByAlpha as AlphaSortIcon,
 } from "react-icons/md";
+import { ImSortAmountAsc as NumberSortAsc } from "react-icons/im";
 import React from "react";
 
 interface FacetSortPanelProps {
   isSortedByValue: boolean;
   valueLabel: string;
   setIsSortedByValue: (boolean) => void;
+  isNumberSort?: boolean;
 }
 
 /**
  * FacetCards "sort" header supporting sort by A-Z (ascending) or by Value (descending)
  * @param isSortedByValue - true if softBy Value
- * @param valueLabel - Value labels, typically "case" "file"
  * @param setIsSortedByValue - function to set state
+ * @param valueLabel - Value labels, typically "case" "file"
+ * @param isNumberSort - set to true to change icon from A-Z to numeric sort
  * @constructor
  */
 const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
   isSortedByValue,
-  valueLabel,
   setIsSortedByValue,
+  valueLabel,
+  isNumberSort = false,
 }: FacetSortPanelProps) => {
   return (
     <div className="flex flex-row items-center justify-between flex-wrap p-1 mb-1 border-b-2">
@@ -34,10 +38,17 @@ const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
         }  hover:bg-accent-darker  hover:text-accent-contrast-darker`}
         aria-label="Sort alphabetically"
       >
-        <AlphaSortIcon
-          onClick={() => setIsSortedByValue(false)}
-          scale="1.5em"
-        />
+        {isNumberSort ? (
+          <NumberSortAsc
+            onClick={() => setIsSortedByValue(false)}
+            scale="1.5em"
+          />
+        ) : (
+          <AlphaSortIcon
+            onClick={() => setIsSortedByValue(false)}
+            scale="1.5em"
+          />
+        )}
       </ActionIcon>
       <div className={"flex flex-row items-center "}>
         <ActionIcon

@@ -128,7 +128,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         Header: (
           <div>
             <Tooltip
-              label={`# Cases tested for Simple Somatic Mutations in the Project affected by ${symbol} 
+              label={`# Cases tested for Simple Somatic Mutations in the Project affected by ${symbol}
     / # Cases tested for Simple Somatic Mutations in the Project`}
               multiline
               withArrow
@@ -150,7 +150,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
               Header: (
                 <div>
                   <Tooltip
-                    label={`# Cases tested for CNV in the Project affected by CNV gain event in ${symbol} 
+                    label={`# Cases tested for CNV in the Project affected by CNV gain event in ${symbol}
           / # Cases tested for Copy Number Variation in the Project
           `}
                     multiline
@@ -168,7 +168,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
               Header: (
                 <div>
                   <Tooltip
-                    label={`# Cases tested for CNV in Project affected by CNV loss event in ${symbol} 
+                    label={`# Cases tested for CNV in Project affected by CNV loss event in ${symbol}
           / # Cases tested for Copy Number Variation in Project
           `}
                     multiline
@@ -186,7 +186,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
               Header: (
                 <div>
                   <Tooltip
-                    label={`# Cases tested for CNV in Project affected by CNV loss event in ${symbol} 
+                    label={`# Cases tested for CNV in Project affected by CNV loss event in ${symbol}
           / # Cases tested for Copy Number Variation in Project
           `}
                     multiline
