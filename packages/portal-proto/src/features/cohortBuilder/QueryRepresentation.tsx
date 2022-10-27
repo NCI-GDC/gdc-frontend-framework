@@ -1,4 +1,4 @@
-import { useState, PropsWithChildren, useContext, useEffect } from "react";
+import { PropsWithChildren, useContext, useEffect } from "react";
 import { omit } from "lodash";
 import {
   Equals,
@@ -22,7 +22,7 @@ import {
   useCoreDispatch,
   fieldNameToTitle,
 } from "@gff/core";
-import { ActionIcon, Badge, Group } from "@mantine/core";
+import { ActionIcon, Badge, Divider, Group } from "@mantine/core";
 import {
   MdClose as ClearIcon,
   MdOutlineArrowBack as LeftArrow,
@@ -40,8 +40,8 @@ bg-accent-lightest
 text-primary-darkest
 uppercase
 px-2
-border-accent
-border-r-2
+border-primary-darkest
+border-r-[1.5px]
 `;
 
 const QueryItemContainer = tw.div`
@@ -52,11 +52,11 @@ font-heading
 shadow-md
 font-medium
 text-md
-rounded-md
-border-1
+rounded-sm
+border-[1.5px]
 mr-1
 mb-2
-border-primary
+border-primary-darkest
 `;
 
 type RangeOperation =
@@ -92,12 +92,16 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
 
   useEffect(() => {
     setQueryExpressionsExpanded({ ...queryExpressionsExpanded, [field]: true });
+    // Should only be run on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const RemoveButton = ({
     operand,
+    operands,
   }: {
-    operand: string | number;
+    readonly operand: string | number;
+    readonly operands: readonly (string | number)[];
   }): JSX.Element => (
     <ActionIcon
       size="xs"
@@ -127,23 +131,31 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
   );
 
   return (
-    <div className="flex flex-row items-center h-full">
+    <div className="flex flex-row items-center h-full bg-white">
       <QueryFieldLabel>{fieldNameToTitle(field)}</QueryFieldLabel>
-      <ActionIcon
-        variant="transparent"
-        className="bg-white rounded-none"
-        onClick={() =>
-          setQueryExpressionsExpanded({
-            ...queryExpressionsExpanded,
-            [field]: !queryExpressionsExpanded[field],
-          })
-        }
-      >
-        {queryExpressionsExpanded[field] ? <LeftArrow /> : <RightArrow />}
-      </ActionIcon>
+      <div className="p-1 h-full">
+        <ActionIcon
+          variant="transparent"
+          size={"xs"}
+          onClick={() =>
+            setQueryExpressionsExpanded({
+              ...queryExpressionsExpanded,
+              [field]: !queryExpressionsExpanded[field],
+            })
+          }
+        >
+          {queryExpressionsExpanded[field] ? <LeftArrow /> : <RightArrow />}
+        </ActionIcon>
+      </div>
+      <Divider
+        orientation="vertical"
+        size="xs"
+        className="m-1"
+        color="base.2"
+      />
       <QueryRepresentationText>
         {!queryExpressionsExpanded[field] ? (
-          <>{operands.length}</>
+          <b className="text-primary-darkest">{operands.length}</b>
         ) : (
           <Group noWrap>
             {operands.map((x, i) => (
@@ -153,7 +165,7 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
                 color="primary.9"
                 size="md"
                 className="normal-case max-w-[144px]"
-                rightSection={<RemoveButton operand={x} />}
+                rightSection={<RemoveButton operand={x} operands={operands} />}
                 title={x.toString()}
               >
                 {x}
@@ -185,7 +197,7 @@ const ComparisonElement: React.FC<ComparisonElementProps> = ({
       {showLabel ? (
         <QueryFieldLabel>{fieldNameToTitle(operation.field)}</QueryFieldLabel>
       ) : null}
-      <div className="flex flex-row items-center bg-white">
+      <div className="flex flex-row items-center">
         <button
           className="p-1 mx-2 rounded-[50%] bg-accent-lightest "
           onClick={() => handleKeepMember(operation)}
@@ -229,9 +241,7 @@ export const ClosedRangeQueryElement: React.FC<
     <>
       <QueryElement field={field}>
         <ComparisonElement operation={lower} />
-        <span
-          className={"uppercase bg-white text-accent-contrast-max font-bold"}
-        >
+        <span className={"uppercase text-accent-contrast-max font-bold"}>
           {op}
         </span>
         <ComparisonElement operation={upper} showLabel={false} />
@@ -261,7 +271,7 @@ export const QueryElement: React.FC<QueryElementProps> = ({
 
   return (
     <QueryItemContainer>
-      {children}
+      <div className="bg-white flex">{children}</div>
       {/* ---
         // TODO: enable facet dropdown
          <button onClick={handlePopupFacet}>

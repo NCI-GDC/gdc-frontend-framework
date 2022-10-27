@@ -1,21 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { showNotification } from "@mantine/notifications";
 import { CollapsibleContainer } from "@/components/CollapsibleContainer";
-import { Menu, Tabs, Divider, ActionIcon } from "@mantine/core";
+import { Menu, Tabs } from "@mantine/core";
 import { ContextualCasesView } from "../cases/CasesView";
 import CountButton from "./CountButton";
-import { convertFilterToComponent } from "./QueryRepresentation";
 import { useCohortFacetFilters } from "./CohortGroup";
 import CohortManager from "./CohortManager";
 import {
   DeleteCohortNotification,
   NewCohortNotification,
 } from "@/features/cohortBuilder/CohortNotifications";
-import { truncateString } from "src/utils";
 
 import {
   useCoreDispatch,
-  clearCohortFilters,
   setCurrentCohortId,
   useCoreSelector,
   selectAvailableCohorts,
@@ -31,8 +28,6 @@ import {
   MdInsertChartOutlined as SummaryChartIcon,
   MdOutlineViewComfy as TableIcon,
   MdFileCopy as FilesIcon,
-  MdArrowLeft as LeftArrowIcon,
-  MdArrowRight as RightArrowIcon,
 } from "react-icons/md";
 import { FaCartPlus as AddToCartIcon } from "react-icons/fa";
 
