@@ -1,6 +1,10 @@
 import { omitBy, some, capitalize } from "lodash";
 import { NumericFromTo, Buckets, Stats } from "@gff/core";
-import { CAPILIZED_TERMS, SPECIAL_CASE_FIELDS } from "./constants";
+import {
+  BUCKETS_MAX_COUNT,
+  CAPILIZED_TERMS,
+  SPECIAL_CASE_FIELDS,
+} from "./constants";
 import { CustomInterval, NamedFromTo } from "./types";
 
 export const filterUsefulFacets = (
@@ -27,7 +31,7 @@ export const createBuckets = (
   }
 
   const numBuckets = customInterval
-    ? Math.floor((max - min) / customInterval)
+    ? Math.min(Math.floor((max - min) / customInterval), BUCKETS_MAX_COUNT)
     : 5;
   const interval = customInterval ? customInterval : (max - min) / 5;
 
