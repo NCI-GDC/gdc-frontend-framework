@@ -491,7 +491,7 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
             fileSize: file.file_size,
             fileId: file.file_id,
             acl: hit.acl,
-            access: asAccessType(hit.access),
+            access: asAccessType(file.access),
             project_id: hit.cases?.[0].project?.project_id,
             state: file.state,
             submitterId: file.submitter_id,
