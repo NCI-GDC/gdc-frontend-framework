@@ -8,6 +8,7 @@ export interface caseFileType {
   readonly file_name: string;
   readonly file_size: number;
   readonly state: string;
+  readonly project_id: string;
   readonly data_format: DataFormat;
   readonly created_datetime: string;
   readonly submitter_id: string;

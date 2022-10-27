@@ -48,10 +48,10 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
           related_files: true,
         }}
         filename={file.fileName}
-        endpoint="data"
+        endpoint={`data/${file.fileId}`}
         activeText={activeText}
         inactiveText={inactiveText}
-        queryParams={`/${file.fileId}/`}
+        queryParams={""}
         options={{
           method: "GET",
           headers: {

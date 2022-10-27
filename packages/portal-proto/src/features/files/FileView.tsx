@@ -310,9 +310,9 @@ export const FileView: React.FC<FileViewProps> = ({
     <div className="p-4 text-primary-content w-10/12 mt-20 m-auto">
       <div className="flex justify-end pb-5 gap-2">
         {!isFileInCart ? (
-          <AddToCartButton files={[file]} />
+          <AddToCartButton files={mapGdcFileToCartFile([file])} />
         ) : (
-          <RemoveFromCartButton files={[file]} />
+          <RemoveFromCartButton files={mapGdcFileToCartFile([file])} />
         )}
         {file.dataFormat === "BAM" &&
           file.dataType === "Aligned Reads" &&

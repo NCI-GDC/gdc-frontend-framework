@@ -28,6 +28,7 @@ export * from "./features/annotations/annotationsHooks";
 export * from "./features/history/historySlice";
 export * from "./features/history/historyHooks";
 export * from "./features/cases/casesSlice";
+export * from "./features/cases/types";
 export * from "./features/cohort";
 export * from "./features/summary/totalCountsSlice";
 export * from "./features/genomic/ssmsTableSlice";
