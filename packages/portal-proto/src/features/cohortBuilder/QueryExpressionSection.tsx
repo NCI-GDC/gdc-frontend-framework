@@ -1,8 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
 import { ActionIcon } from "@mantine/core";
 import {
-  MdKeyboardArrowLeft as LeftArrowIcon,
-  MdKeyboardArrowRight as RightArrowIcon,
+  MdOutlineArrowBackIos as LeftArrowIcon,
+  MdOutlineArrowForwardIos as RightArrowIcon,
   MdKeyboardArrowDown as DownArrowIcon,
   MdKeyboardArrowUp as UpArrowIcon,
 } from "react-icons/md";
@@ -98,13 +98,13 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                 >
                   {allQueryExpressionsCollapsed ? (
                     <>
-                      <RightArrowIcon size={30} color="primary.9" />
-                      <LeftArrowIcon size={30} color="primary.9" />
+                      <RightArrowIcon size={20} color="primary.9" />
+                      <LeftArrowIcon size={20} color="primary.9" />
                     </>
                   ) : (
                     <>
-                      <LeftArrowIcon size={30} color="white" />
-                      <RightArrowIcon size={30} color="white" />
+                      <LeftArrowIcon size={20} color="white" />
+                      <RightArrowIcon size={20} color="white" />
                     </>
                   )}
                 </ActionIcon>

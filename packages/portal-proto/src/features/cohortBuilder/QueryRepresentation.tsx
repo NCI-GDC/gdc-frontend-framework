@@ -164,7 +164,7 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
                 variant="filled"
                 color="primary.9"
                 size="md"
-                className="normal-case max-w-[144px]"
+                className="normal-case max-w-[162px]"
                 rightSection={<RemoveButton operand={x} operands={operands} />}
                 title={x.toString()}
               >
@@ -199,7 +199,7 @@ const ComparisonElement: React.FC<ComparisonElementProps> = ({
       ) : null}
       <div className="flex flex-row items-center">
         <button
-          className="p-1 mx-2 rounded-[50%] bg-accent-lightest "
+          className="h-[25px] w-[25px] mx-2 rounded-[50%] bg-accent-lightest "
           onClick={() => handleKeepMember(operation)}
         >
           {operation.operator}
