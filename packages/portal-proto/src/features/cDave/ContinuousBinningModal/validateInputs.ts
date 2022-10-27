@@ -1,5 +1,3 @@
-import { AllowableRange } from "@gff/core";
-
 const validateNumberInput = (value: string) => {
   if (value === "") {
     return "Required field";
@@ -43,7 +41,7 @@ const validateIntervalSize = (size: string, min: string, max: string) => {
   return null;
 };
 
-const validateMinMaxInput = (value: string, min: string, max: string) => {
+const validateMinInput = (value: string, max: string) => {
   const validNumberError = validateNumberInput(value);
 
   if (validNumberError) {
@@ -52,6 +50,16 @@ const validateMinMaxInput = (value: string, min: string, max: string) => {
 
   if (max !== "" && Number(value) >= Number(max)) {
     return `Must be less than ${max}`;
+  }
+
+  return null;
+};
+
+const validateMaxInput = (value: string, min: string) => {
+  const validNumberError = validateNumberInput(value);
+
+  if (validNumberError) {
+    return validNumberError;
   }
 
   if (min !== "" && Number(value) <= Number(min)) {
@@ -65,7 +73,6 @@ export const validateIntervalInput = (
   size: string,
   min: string,
   max: string,
-  range?: AllowableRange,
 ): Record<string, string> => {
   const errors = {};
 
@@ -74,21 +81,12 @@ export const validateIntervalInput = (
     errors["setIntervalSize"] = intervalSizeResult;
   }
 
-  const rangeMin =
-      typeof range?.minimum === "number"
-        ? (range.minimum - 1).toString()
-        : (Number(min) - 1).toString(),
-    rangeMax =
-      typeof range?.maximum === "number"
-        ? (range.maximum + 1).toString()
-        : (Number(max) + 1).toString();
-
-  const minResult = validateMinMaxInput(min, rangeMin, max);
+  const minResult = validateMinInput(min, max);
   if (minResult) {
     errors["setIntervalMin"] = minResult;
   }
 
-  const maxResult = validateMinMaxInput(max, min, rangeMax);
+  const maxResult = validateMaxInput(max, min);
   if (maxResult) {
     errors["setIntervalMax"] = maxResult;
   }

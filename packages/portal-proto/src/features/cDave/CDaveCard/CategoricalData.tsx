@@ -85,8 +85,7 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
       )}
       <CardControls
         continuous={false}
-        fieldName={fieldName}
-        field={field}
+        field={fieldName}
         results={resultData}
         customBinnedData={customBinnedData}
         setCustomBinnedData={setCustomBinnedData}
