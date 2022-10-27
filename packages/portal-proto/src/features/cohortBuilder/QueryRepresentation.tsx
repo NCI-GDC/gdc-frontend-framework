@@ -32,7 +32,7 @@ import tw from "tailwind-styled-components";
 import { QueryExpressionsExpandedContext } from "./QueryExpressionSection";
 
 const QueryRepresentationText = tw.div`
-flex truncate ... px-2 bg-base-max h-full
+flex truncate ... px-2 py-1 bg-base-max h-full
 `;
 
 const QueryFieldLabel = tw.span`
@@ -57,6 +57,7 @@ border-[1.5px]
 mr-1
 mb-2
 border-primary-darkest
+w-inherit
 `;
 
 type RangeOperation =
@@ -133,20 +134,18 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
   return (
     <div className="flex flex-row items-center h-full bg-white">
       <QueryFieldLabel>{fieldNameToTitle(field)}</QueryFieldLabel>
-      <div className="p-1 h-full">
-        <ActionIcon
-          variant="transparent"
-          size={"xs"}
-          onClick={() =>
-            setQueryExpressionsExpanded({
-              ...queryExpressionsExpanded,
-              [field]: !queryExpressionsExpanded[field],
-            })
-          }
-        >
-          {queryExpressionsExpanded[field] ? <LeftArrow /> : <RightArrow />}
-        </ActionIcon>
-      </div>
+      <ActionIcon
+        variant="transparent"
+        size={"xs"}
+        onClick={() =>
+          setQueryExpressionsExpanded({
+            ...queryExpressionsExpanded,
+            [field]: !queryExpressionsExpanded[field],
+          })
+        }
+      >
+        {queryExpressionsExpanded[field] ? <LeftArrow /> : <RightArrow />}
+      </ActionIcon>
       <Divider
         orientation="vertical"
         size="xs"
@@ -157,7 +156,7 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
         {!queryExpressionsExpanded[field] ? (
           <b className="text-primary-darkest">{operands.length}</b>
         ) : (
-          <Group noWrap>
+          <Group>
             {operands.map((x, i) => (
               <Badge
                 key={`query-rep-${field}-${x}-${i}`}
