@@ -192,7 +192,7 @@ const ComparisonElement: React.FC<ComparisonElementProps> = ({
   };
 
   return (
-    <>
+    <div className="flex flex-row items-center h-full bg-white">
       {showLabel ? (
         <QueryFieldLabel>{fieldNameToTitle(operation.field)}</QueryFieldLabel>
       ) : null}
@@ -205,7 +205,7 @@ const ComparisonElement: React.FC<ComparisonElementProps> = ({
         </button>
         <QueryRepresentationText>{operation.operand}</QueryRepresentationText>
       </div>
-    </>
+    </div>
   );
 };
 
@@ -240,9 +240,11 @@ export const ClosedRangeQueryElement: React.FC<
     <>
       <QueryElement field={field}>
         <ComparisonElement operation={lower} />
-        <span className={"uppercase text-accent-contrast-max font-bold"}>
-          {op}
-        </span>
+        <div className="flex items-center">
+          <span className={"uppercase text-accent-contrast-max font-bold"}>
+            {op}
+          </span>
+        </div>
         <ComparisonElement operation={upper} showLabel={false} />
       </QueryElement>
     </>
