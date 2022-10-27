@@ -1,7 +1,7 @@
 import { useState } from "react";
 import fileSize from "filesize";
 import { VerticalTable } from "../shared/VerticalTable";
-import { downloadJSON, downloadTSV } from "../shared/TableUtils";
+import { downloadTSV } from "../shared/TableUtils";
 import { SingleItemAddToCartButton } from "../cart/updateCart";
 import Link from "next/link";
 import { Badge } from "@mantine/core";
@@ -13,12 +13,12 @@ import {
   fetchFiles,
   buildCohortGqlOperator,
   joinFilters,
-  fetchGdcEntities,
 } from "@gff/core";
 import { useAppSelector } from "@/features/repositoryApp/appApi";
 import { selectFilters } from "@/features/repositoryApp/repositoryFiltersSlice";
 import FunctionButton from "@/components/FunctionButton";
 import { convertDateToString } from "src/utils/date";
+import download from "src/utils/download";
 
 const FilesTables: React.FC = () => {
   const columnListOrder = [
@@ -140,41 +140,44 @@ const FilesTables: React.FC = () => {
   };
 
   const handleDownloadJSON = async () => {
-    const keysForDownload = [
-      { path: "data_format" },
-      {
-        path: "cases",
-        composer: (file) =>
-          file.cases?.map((caseObj) => ({
-            case_id: caseObj.case_id,
-            project: { project_id: caseObj.project.project_id },
-          })),
+    await download({
+      endpoint: "files",
+      method: "POST",
+      options: {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        method: "POST",
       },
-      { path: "access" },
-      { path: "file_name" },
-      { path: "file_id" },
-      { path: "data_category" },
-      { path: "file_size" },
-    ];
-
-    const {
-      data: { hits: data },
-    } = await fetchGdcEntities(
-      "files",
-      {
-        filters: buildCohortGqlOperator(allFilters),
-        expand: ["cases.project"],
-        size: 200,
-        from: 0,
+      params: {
+        filters: buildCohortGqlOperator(allFilters) ?? {},
+        size: 10000,
+        attachment: true,
+        format: "JSON",
+        pretty: true,
+        annotations: true,
+        related_files: true,
+        fields: [
+          "file_id",
+          "access",
+          "file_name",
+          "cases.case_id",
+          "cases.project.project_id",
+          "data_category",
+          "data_type",
+          "data_format",
+          "experimental_strategy",
+          "platform",
+          "file_size",
+          "annotations.annotation_id",
+        ].join(","),
       },
-      true,
-    );
-
-    downloadJSON(
-      data,
-      keysForDownload,
-      `files.${convertDateToString(new Date())}.json`,
-    );
+      dispatch: coreDispatch,
+      queryParams: `?${new URLSearchParams({
+        annotations: "true",
+        related_files: "true",
+      }).toString()}`,
+    });
   };
 
   const handleDownloadTSV = () => {

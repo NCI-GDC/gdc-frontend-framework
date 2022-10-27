@@ -10,13 +10,13 @@ import {
   useFiles,
   useCoreDispatch,
   CartFile,
-  fetchGdcEntities,
 } from "@gff/core";
 import { VerticalTable } from "@/features/shared/VerticalTable";
 import { removeFromCart, RemoveFromCartButton } from "./updateCart";
 import FunctionButton from "@/components/FunctionButton";
-import { downloadJSON, downloadTSV } from "../shared/TableUtils";
+import { downloadTSV } from "../shared/TableUtils";
 import { convertDateToString } from "src/utils/date";
+import download from "src/utils/download";
 
 const columnCells = [
   { Header: "Remove", accessor: "remove", width: 80 },
@@ -166,30 +166,16 @@ const FilesTable: React.FC<FilesTableProps> = ({
   };
 
   const handleDownloadJSON = async () => {
-    const keysForDownload = [
-      { path: "data_format" },
-      {
-        path: "cases",
-        composer: (file) =>
-          file.cases?.map((caseObj) => ({
-            case_id: caseObj.case_id,
-            project: { project_id: caseObj.project.project_id },
-          })),
+    await download({
+      endpoint: "files",
+      method: "POST",
+      options: {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        method: "POST",
       },
-      { path: "access" },
-      { path: "file_name" },
-      { path: "file_id" },
-      { path: "data_category" },
-      { path: "file_size" },
-    ];
-
-    const {
-      data: { hits: dataForDownload },
-    } = await fetchGdcEntities(
-      "files",
-      {
-        size: pageSize,
-        from: pageSize * (activePage - 1),
+      params: {
         filters: {
           op: "in",
           content: {
@@ -197,16 +183,33 @@ const FilesTable: React.FC<FilesTableProps> = ({
             value: cart.map((f) => f.fileId),
           },
         },
-        expand: ["annotations", "cases", "cases.project"],
+        size: 10000,
+        attachment: true,
+        format: "JSON",
+        pretty: true,
+        annotations: true,
+        related_files: true,
+        fields: [
+          "file_id",
+          "access",
+          "file_name",
+          "cases.case_id",
+          "cases.project.project_id",
+          "data_category",
+          "data_type",
+          "data_format",
+          "experimental_strategy",
+          "platform",
+          "file_size",
+          "annotations.annotation_id",
+        ].join(","),
       },
-      true,
-    );
-
-    downloadJSON(
-      dataForDownload,
-      keysForDownload,
-      `files.${convertDateToString(new Date())}.json`,
-    );
+      dispatch,
+      queryParams: `?${new URLSearchParams({
+        annotations: "true",
+        related_files: "true",
+      }).toString()}`,
+    });
   };
 
   const handleDownloadTSV = () => {
