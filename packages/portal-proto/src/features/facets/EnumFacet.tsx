@@ -1,8 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { usePrevious, fieldNameToTitle } from "@gff/core";
-//import { FacetDocTypeToCountsIndexMap, FacetDocTypeToLabelsMap } from "./hooks";
-import { DEFAULT_VISIBLE_ITEMS } from "./utils";
-
+import { DEFAULT_VISIBLE_ITEMS, updateFacetEnum } from "./utils";
 import {
   MdFlip as FlipIcon,
   MdSearch as SearchIcon,
@@ -25,7 +23,6 @@ import {
   FacetText,
   FacetHeader,
 } from "./components";
-import { updateFacetEnum } from "./utils";
 import FacetExpander from "@/features/facets/FacetExpander";
 import FacetSortPanel from "@/features/facets/FacetSortPanel";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
@@ -35,6 +32,7 @@ import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
  *  enumerated fields.
  * @param field filter this FacetCard manages
  * @param hooks object defining the hooks required by this facet component
+ * @param valueLabel label for the values column (e.g. "Cases" "Projects")
  * @param description describes information about the facet
  * @param facetName name of the Facet in human-readable form
  * @param showSearch if the search icon show be displayed

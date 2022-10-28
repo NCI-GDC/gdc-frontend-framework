@@ -2,11 +2,16 @@ import { useEffect, useState } from "react";
 import { VerticalTable } from "../shared/VerticalTable";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import Link from "next/link";
-import { useProjects, buildCohortGqlOperator } from "@gff/core";
+import {
+  useProjects,
+  buildCohortGqlOperator,
+  ProjectDefaults,
+} from "@gff/core";
 import { Row } from "react-table";
 import { useAppSelector } from "@/features/projectsCenter/appApi";
 import { selectFilters } from "@/features/projectsCenter/projectCenterFiltersSlice";
 import FunctionButton from "@/components/FunctionButton";
+import { statusBooleansToDataStatus } from "@/features/shared/utils";
 
 const extractToArray = (
   data: ReadonlyArray<Record<string, number | string>>,
@@ -129,35 +134,35 @@ const ProjectsTable: React.FC = () => {
 
   if (isSuccess) {
     tempPagination = pagination;
-    formattedTableData = data.map((project) => ({
-      project_id: (
-        <Link href={`/projects/${project.project_id}`}>
-          <a className="text-utility-link underline">{project.project_id}</a>
-        </Link>
-      ),
-      disease_type: project.disease_type,
-      primary_site: project.primary_site,
-      program: project.program.name,
-      cases: project.summary.case_count.toLocaleString().padStart(9),
-      data_categories: extractToArray(
-        project.summary.data_categories,
-        "data_category",
-      ),
-      experimental_strategies: extractToArray(
-        project.summary.experimental_strategies,
-        "experimental_strategy",
-      ),
-      files: project.summary.file_count.toLocaleString(),
-    }));
+    formattedTableData = data.map(
+      ({
+        project_id,
+        disease_type,
+        primary_site,
+        program,
+        summary,
+      }: ProjectDefaults) => ({
+        project_id: (
+          <Link href={`/projects/${project_id}`}>
+            <a className="text-utility-link underline">{project_id}</a>
+          </Link>
+        ),
+        disease_type: disease_type,
+        primary_site: primary_site,
+        program: program.name,
+        cases: summary.case_count.toLocaleString().padStart(9),
+        data_categories: extractToArray(
+          summary.data_categories,
+          "data_category",
+        ),
+        experimental_strategies: extractToArray(
+          summary.experimental_strategies,
+          "experimental_strategy",
+        ),
+        files: summary.file_count.toLocaleString(),
+      }),
+    );
   }
-
-  const status = isFetching // useProjects hooks returns status as a set of bools
-    ? "pending"
-    : isSuccess
-    ? "fulfilled"
-    : isError
-    ? "rejected"
-    : "uninitialized";
 
   const handlePageSizeChange = (x: string) => {
     setPageSize(parseInt(x));
@@ -189,7 +194,7 @@ const ProjectsTable: React.FC = () => {
         ...tempPagination,
         label: "Projects",
       }}
-      status={status}
+      status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
     />
   );
 };

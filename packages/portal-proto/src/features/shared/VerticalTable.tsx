@@ -4,6 +4,7 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DragDrop } from "./DragDrop";
 import { BsList } from "react-icons/bs";
+import { DataStatus } from "@gff/core";
 import {
   Box,
   Popover,
@@ -96,7 +97,7 @@ interface VerticalTableProps {
    *
    * - data when `fulfilled`
    */
-  status?: "uninitialized" | "pending" | "fulfilled" | "rejected";
+  status?: DataStatus;
 }
 
 interface Column {
@@ -227,7 +228,6 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                   <tr
                     {...row.getRowProps()}
                     key={index}
-                    {...row.getRowProps()}
                     className={
                       index % 2 === 1 ? "bg-base-lighter" : "bg-base-lightest"
                     }
@@ -245,7 +245,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                     })}
                   </tr>
                   {row.state.expanded > 0 ? (
-                    <tr {...row.getRowProps()} className="transition-[height]">
+                    <tr {...row.getRowProps()}>
                       <td colSpan={headings.length}>{row.state.content}</td>
                     </tr>
                   ) : null}
