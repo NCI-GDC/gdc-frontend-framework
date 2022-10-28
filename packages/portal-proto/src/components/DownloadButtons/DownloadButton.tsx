@@ -56,6 +56,7 @@ export const DownloadButton: React.FC<DownloadButtonProps> = ({
   ) : (
     <FaDownload title="download" />
   );
+
   return (
     <Button
       leftIcon={inactiveText && <FaDownload />}

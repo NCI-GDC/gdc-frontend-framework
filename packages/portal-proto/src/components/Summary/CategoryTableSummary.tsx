@@ -15,7 +15,7 @@ export const CategoryTableSummary = ({
   tableData,
 }: CategoryTableSummaryProps): JSX.Element => (
   <div className="flex-1">
-    <div className="bg-base-lightest text-primary-content p-2">
+    <div className="bg-base-lighter text-base-contrast-lighter p-2 rounded-t-md">
       <h2 className="text-lg font-medium">{title}</h2>
       {!dataObject && (
         <span className="block text-center text-sm pt-4">No results found</span>

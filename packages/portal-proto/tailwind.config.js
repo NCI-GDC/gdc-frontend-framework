@@ -117,7 +117,7 @@ const nciBlumineContrast = {
   darker: "#f1f1f1",
   dark: "#f1f1f1",
   DEFAULT: "#f1f1f1",
-  vivid: "#000000",
+  vivid: "#f1f1f1",
   light: "#1b1b1b",
   lighter: "#1b1b1b",
   lightest: "#1b1b1b",

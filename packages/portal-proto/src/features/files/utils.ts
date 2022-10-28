@@ -1,5 +1,4 @@
-import { CartFile, GdcFile } from "@gff/core";
-import { caseFileType } from "@gff/core/dist/features/cases/types";
+import { CartFile, GdcFile, caseFileType } from "@gff/core";
 import { get, omit, pick } from "lodash";
 import { HorizontalTableProps } from "../../components/HorizontalTable";
 import { JSONObject } from "../types";
@@ -158,4 +157,5 @@ export const mapFilesFromCasesToCartFile = (
     fileSize: file.file_size,
     state: file.state,
     fileName: file.file_name,
+    project_id: file.project_id,
   }));

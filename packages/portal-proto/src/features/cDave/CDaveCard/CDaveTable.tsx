@@ -26,17 +26,19 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
   continuous,
 }: CDaveTableProps) => {
   return (
-    <div className="h-40 block overflow-auto w-full relative">
-      <table className="bg-base-min w-full text-left text-base-contrast-min mb-2">
-        <thead className="bg-primary-light font-bold text-heading text-md sticky top-0 z-10">
+    <div className="h-44 block overflow-auto w-full relative">
+      <table className="bg-base-min w-full text-left text-base-contrast-min mb-2 table-auto">
+        <thead className="bg-primary-light font-semibold text-heading text-md sticky top-0 z-10">
           <tr>
-            <th>Select</th>
             <th>
+              <span className="pl-2">Select</span>
+            </th>
+            <th className="pl-2">
               {fieldName}{" "}
               {customBinnedData !== null && "(User Defined Bins Applied)"}
             </th>
-            <th className="text-right"># Cases</th>
-            {survival && <th className="text-right">Survival</th>}
+            <th className="text-right pr-2"># Cases</th>
+            {survival && <th className="text-right pr-2">Survival</th>}
           </tr>
         </thead>
         <tbody>
@@ -57,26 +59,30 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
 
               return (
                 <tr
-                  className={`text-content text-sm ${
+                  className={`text-content text-sm text-content ${
                     idx % 2
                       ? "bg-accent-cool-lighter text-accent-cool-contrast-lighter"
                       : "bg-accent-cool-lightest text-accent-cool-contrast-lightest"
                   }`}
                   key={`${fieldName}-${key}`}
                 >
-                  <td className="px-2">
+                  <td className="pl-2 py-1">
                     <Checkbox color={"accent"} />
                   </td>
-                  <td>{key}</td>
+                  <td>
+                    <div className="pl-2">{key}</div>
+                  </td>
                   <td className="text-right">
-                    {count.toLocaleString()} (
-                    {yTotal === 0
-                      ? "0.00%"
-                      : (count / yTotal).toLocaleString(undefined, {
-                          style: "percent",
-                          minimumFractionDigits: 2,
-                        })}
-                    )
+                    <div className="pr-2 whitespace-nowrap">
+                      {count.toLocaleString()} (
+                      {yTotal === 0
+                        ? "0.00%"
+                        : (count / yTotal).toLocaleString(undefined, {
+                            style: "percent",
+                            minimumFractionDigits: 2,
+                          })}
+                      )
+                    </div>
                   </td>
                   {survival && (
                     <td className="float-right">
@@ -95,12 +101,12 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                           variant="outline"
                           className={
                             survivalDisabled
-                              ? "bg-base-lightest text-base-contrast-lightest"
+                              ? "bg-base-light text-base-contrast-light bg-opacity-80 text-opacity-60"
                               : survivalSelected
                               ? `bg-gdc-survival-${selectedSurvivalPlots.indexOf(
                                   key,
                                 )} text-white` // TODO: confirm 508 contrast compliance
-                              : "bg-base-min text-base-contrast-min"
+                              : "bg-base-lightest text-base-contrast-lightest"
                           }
                           disabled={survivalDisabled}
                           onClick={() =>

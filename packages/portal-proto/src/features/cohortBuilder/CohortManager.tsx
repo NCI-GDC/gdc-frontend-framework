@@ -92,12 +92,12 @@ const CohortManager: React.FC<CohortManagerProps> = ({
           header: {
             color: theme.colors.primary[8],
             fontFamily: '"Montserrat", "sans-serif"',
-            fontSize: "1.25em",
+            fontSize: "1.65em",
             fontWeight: 500,
-            "letter-spacing": ".1rem",
-            "border-color": theme.colors.base[1],
-            "border-style": "solid",
-            "border-width": "0px 0px 2px 0px",
+            letterSpacing: ".1rem",
+            borderColor: theme.colors.base[1],
+            borderStyle: "solid",
+            borderWidth: "0px 0px 2px 0px",
             padding: "15px 20px 15px 15px",
             margin: "5px 5px 5px 5px",
           },
@@ -119,7 +119,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
           <Text
             sx={(theme) => ({
               fontFamily: '"Montserrat", "sans-serif"',
-              fontSize: "0.8em",
+              fontSize: "0.95em",
               fontWeight: 500,
               color: theme.colors.base[8],
             })}
@@ -129,8 +129,9 @@ const CohortManager: React.FC<CohortManagerProps> = ({
           <Text
             sx={(theme) => ({
               fontFamily: '"Montserrat", "sans-serif"',
-              fontSize: "0.6em",
+              fontSize: "0.85em",
               color: theme.colors.base[9],
+              paddingTop: "1em",
             })}
           >
             You cannot undo this action.
