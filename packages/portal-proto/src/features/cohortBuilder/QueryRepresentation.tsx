@@ -164,7 +164,9 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
         color="base.2"
       />
       {!queryExpressionsExpanded[field] ? (
-        <b className="text-primary-darkest px-2 py-[1px]">{operands.length}</b>
+        <b className="text-primary-darkest px-2 py-1 flex items-center">
+          {operands.length}
+        </b>
       ) : (
         <QueryRepresentationText>
           <Group spacing="xs">
