@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   GdcFile,
   HistoryDefaults,
-  useCoreDispatch,
   useCoreSelector,
   selectCart,
   Modals,
@@ -11,23 +10,18 @@ import {
 import ReactModal from "react-modal";
 import { HorizontalTable } from "@/components/HorizontalTable";
 import { Table, Button } from "@mantine/core";
-import { FaShoppingCart, FaDownload } from "react-icons/fa";
+import { FaDownload } from "react-icons/fa";
 import { get } from "lodash";
 import dynamic from "next/dynamic";
 import fileSize from "filesize";
 import tw from "tailwind-styled-components";
-import {
-  AddToCartButton,
-  removeFromCart,
-  RemoveFromCartButton,
-} from "../cart/updateCart";
+import { AddToCartButton, RemoveFromCartButton } from "../cart/updateCart";
 import {
   formatDataForHorizontalTable,
   mapGdcFileToCartFile,
   parseSlideDetailsInfo,
 } from "./utils";
 import Link from "next/link";
-import { addToCart } from "@/features/cart/updateCart";
 import { BAMSlicingModal } from "@/components/Modals/BAMSlicingModal/BAMSlicingModal";
 import { NoAccessToProjectModal } from "@/components/Modals/NoAccessToProjectModal";
 import { BAMSlicingButton } from "@/features/files/BAMSlicingButton";
@@ -36,6 +30,7 @@ import { AgreementModal } from "@/components/Modals/AgreementModal";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 import { fileInCart } from "src/utils";
 import { GeneralErrorModal } from "@/components/Modals/GeneraErrorModal";
+import { TableActionButtons } from "@/components/TableActionButtons";
 import saveAs from "file-saver";
 
 export const StyledButton = tw.button`
@@ -125,12 +120,38 @@ export const FileView: React.FC<FileViewProps> = ({
   fileHistory,
 }: FileViewProps) => {
   const currentCart = useCoreSelector((state) => selectCart(state));
-  const dispatch = useCoreDispatch();
-  const [active, setActive] = useState(false);
-  const [imageId] = useState(file?.fileId);
   const modal = useCoreSelector((state) => selectCurrentModal(state));
   const [bamActive, setBamActive] = useState(false);
   const [fileToDownload, setfileToDownload] = useState(file);
+  const sortedFileHistory = useMemo(
+    () =>
+      [...fileHistory]?.sort(
+        (a, b) =>
+          //sort based on relese number biggest at top
+          Number.parseFloat(a.version) - Number.parseFloat(b.version),
+      ),
+    [fileHistory],
+  );
+
+  const handleDownloadTSV = () => {
+    const header = ["Version", "File UUID", "Release Date", "Release Number"];
+
+    const body = sortedFileHistory
+      .map((obj, index, { length }) =>
+        [
+          obj.version,
+          `${obj.uuid}${index + 1 === length ? " Current Version" : ""}`,
+          obj.release_date,
+          obj.data_release,
+        ].join("\t"),
+      )
+      .join("\n");
+
+    const tsv = [header.join("\t"), body].join("\n");
+    const blob = new Blob([tsv], { type: "text/csv" });
+
+    saveAs(blob, `file-history-${file.fileId}.tsv`);
+  };
 
   const isFileInCart = fileInCart(currentCart, file.fileId);
 
@@ -180,27 +201,12 @@ export const FileView: React.FC<FileViewProps> = ({
           workflow_type: workflowType,
           file_size: fileSize(outputFile.fileSize),
           action: (
-            <div className="flex gap-3">
-              <Button
-                className={`${
-                  isOutputFileInCart
-                    ? "bg-secondary-min text-secondary-contrast-min"
-                    : "bg-base-lightest text-base-min"
-                } border border-base-darkest rounded p-2 hover:bg-base-darkest hover:text-base-contrast-min`}
-                onClick={() => {
-                  isOutputFileInCart
-                    ? removeFromCart(mappedFileObj, currentCart, dispatch)
-                    : addToCart(mappedFileObj, currentCart, dispatch);
-                }}
-              >
-                <FaShoppingCart title="Add to Cart" />
-              </Button>
-
-              <DownloadFile
-                file={outputFile}
-                setfileToDownload={setfileToDownload}
-              />
-            </div>
+            <TableActionButtons
+              isOutputFileInCart={isOutputFileInCart}
+              file={mappedFileObj}
+              downloadFile={outputFile}
+              setFileToDownload={setfileToDownload}
+            />
           ),
         });
       });
@@ -333,9 +339,9 @@ export const FileView: React.FC<FileViewProps> = ({
     <div className="p-4 text-primary-content w-10/12 mt-20 m-auto">
       <div className="flex justify-end pb-5 gap-2">
         {!isFileInCart ? (
-          <AddToCartButton files={[file]} />
+          <AddToCartButton files={mapGdcFileToCartFile([file])} />
         ) : (
-          <RemoveFromCartButton files={[file]} />
+          <RemoveFromCartButton files={mapGdcFileToCartFile([file])} />
         )}
         {file.dataFormat === "BAM" &&
           file.dataType === "Aligned Reads" &&
@@ -348,8 +354,6 @@ export const FileView: React.FC<FileViewProps> = ({
           activeText="Processing"
           file={file}
           setfileToDownload={setfileToDownload}
-          setActive={setActive}
-          active={active}
         />
       </div>
       <div className="flex">
@@ -421,7 +425,7 @@ export const FileView: React.FC<FileViewProps> = ({
         <FullWidthDiv>
           <TitleText>Slide Image Viewer</TitleText>
           <ImageViewer
-            imageId={imageId}
+            imageId={file?.fileId}
             tableData={parseSlideDetailsInfo(file)}
           />
         </FullWidthDiv>
@@ -562,6 +566,7 @@ export const FileView: React.FC<FileViewProps> = ({
             <Button
               color={"base"}
               className="text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
+              onClick={handleDownloadTSV}
             >
               <FaDownload className="mr-2" /> Download TSV
             </Button>
@@ -574,27 +579,21 @@ export const FileView: React.FC<FileViewProps> = ({
                 "Release Date",
                 "Release Number",
               ],
-              tableRows: [...fileHistory]
-                ?.sort(
-                  (a, b) =>
-                    //sort based on relese number biggest at top
-                    Number.parseFloat(a.version) - Number.parseFloat(b.version),
-                )
-                .map((obj, index, { length }) => ({
-                  version: obj.version,
-                  file_id: (
-                    <>
-                      {obj.uuid}
-                      {index + 1 === length && (
-                        <span className="inline-block ml-2 border rounded-full bg-primary-darker text-white font-bold text-xs py-0.5 px-1">
-                          Current Version
-                        </span>
-                      )}
-                    </>
-                  ),
-                  release_date: obj.release_date,
-                  data_release: obj.data_release,
-                })),
+              tableRows: sortedFileHistory.map((obj, index, { length }) => ({
+                version: obj.version,
+                file_id: (
+                  <>
+                    {obj.uuid}
+                    {index + 1 === length && (
+                      <span className="inline-block ml-2 border rounded-full bg-primary-darker text-white font-bold text-xs py-0.5 px-1">
+                        Current Version
+                      </span>
+                    )}
+                  </>
+                ),
+                release_date: obj.release_date,
+                data_release: obj.data_release,
+              })),
             }}
           />
         </FullWidthDiv>
@@ -613,8 +612,6 @@ export const FileView: React.FC<FileViewProps> = ({
           openModal
           file={fileToDownload}
           dbGapList={fileToDownload.acl}
-          active={active}
-          setActive={setActive}
         />
       )}
     </div>

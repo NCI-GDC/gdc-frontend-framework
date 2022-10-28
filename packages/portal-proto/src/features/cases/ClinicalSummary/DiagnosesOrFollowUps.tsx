@@ -186,8 +186,8 @@ const TableElement = ({
       <HorizontalTable tableData={formatDataForDiagnosesorFollowUps(data)} />
       <Text className="my-2" size="lg" weight={700}>
         {"diagnosis_id" in data
-          ? `Total of (${(data.treatments || []).length}) Treatments`
-          : `Total of (${(data.molecular_tests || []).length}) Molecular Tests`}
+          ? `Total of ${(data.treatments || []).length} Treatments`
+          : `Total of ${(data.molecular_tests || []).length} Molecular Tests`}
       </Text>
 
       <InnerComponent />
