@@ -88,10 +88,14 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                     <td className="float-right">
                       <Tooltip
                         label={
-                          survivalDisabled
+                          !enoughCasesForSurvival
                             ? "Not enough data"
+                            : key === "missing"
+                            ? `Plot cannot be generated for this value`
                             : survivalSelected
                             ? `Click to remove ${key} from plot`
+                            : selectedSurvivalPlots.length === 5
+                            ? `A maximum of 5 plots can be displayed at a time`
                             : `Click to plot ${key}`
                         }
                         withArrow
