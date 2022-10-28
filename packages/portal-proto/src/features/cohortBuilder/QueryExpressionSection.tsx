@@ -107,6 +107,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                     )
                   }
                   aria-label="Expand/collapse all queries"
+                  aria-aria-expanded={!allQueryExpressionsCollapsed}
                 >
                   {allQueryExpressionsCollapsed ? (
                     <>
@@ -130,6 +131,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                     !filterSectionOverflowing && filtersSectionCollapsed
                   }
                   aria-label="Expand/collapse filters section"
+                  aria-expanded={!filtersSectionCollapsed}
                 >
                   {filtersSectionCollapsed ? (
                     <>
