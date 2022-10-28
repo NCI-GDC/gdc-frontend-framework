@@ -6,9 +6,21 @@ import {
   MdKeyboardArrowDown as DownArrowIcon,
   MdKeyboardArrowUp as UpArrowIcon,
 } from "react-icons/md";
+import tw from "tailwind-styled-components";
 import { useCoreDispatch, clearCohortFilters, FilterSet } from "@gff/core";
 import { truncateString } from "src/utils";
 import { convertFilterToComponent } from "./QueryRepresentation";
+
+const QueryExpressionContainer = tw.div`
+  flex
+  items-center
+  bg-white
+  shadow-[0_-2px_6px_0_rgba(0,0,0,0.16)]
+  border-primary-darkest
+  border-l-4
+  p-4
+  mt-3
+`;
 
 interface QueryExpressionSectionProps {
   readonly filters: FilterSet;
@@ -52,7 +64,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
   ).every((q) => !q);
 
   return (
-    <div className="flex items-center bg-white shadow-[0_-2px_6px_0_rgba(0,0,0,0.16)] border-primary-darkest border-l-4 p-4 mt-3">
+    <QueryExpressionContainer>
       {Object.keys(filters.root).length !== 0 ? (
         <QueryExpressionsExpandedContext.Provider
           value={[queryExpressionsExpanded, setQueryExpressionsExpanded]}
@@ -149,7 +161,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
           with tools such as the Cohort Builder.
         </span>
       )}
-    </div>
+    </QueryExpressionContainer>
   );
 };
 

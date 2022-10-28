@@ -35,13 +35,15 @@ const QueryRepresentationText = tw.div`
 flex truncate ... px-2 py-1 bg-base-max h-full
 `;
 
-const QueryFieldLabel = tw.span`
+const QueryFieldLabel = tw.div`
 bg-accent-lightest
 text-primary-darkest
 uppercase
 px-2
 border-primary-darkest
 border-r-[1.5px]
+flex
+items-center
 `;
 
 const QueryItemContainer = tw.div`
@@ -51,13 +53,21 @@ items-center
 font-heading
 shadow-md
 font-medium
-text-md
+text-sm
 rounded-sm
 border-[1.5px]
 mr-1
 mb-2
 border-primary-darkest
 w-inherit
+`;
+
+const QueryContainer = tw.div`
+flex
+flex-row
+items-stretch
+h-full
+bg-white
 `;
 
 type RangeOperation =
@@ -123,8 +133,8 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
         );
         if (newOperands.length === 0) {
           dispatch(removeCohortFilter(field));
+          setQueryExpressionsExpanded(omit(queryExpressionsExpanded, field));
         }
-        setQueryExpressionsExpanded(omit(queryExpressionsExpanded, field));
       }}
     >
       <ClearIcon />
@@ -132,7 +142,7 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
   );
 
   return (
-    <div className="flex flex-row items-center h-full bg-white">
+    <QueryContainer>
       <QueryFieldLabel>{fieldNameToTitle(field)}</QueryFieldLabel>
       <ActionIcon
         variant="transparent"
@@ -143,6 +153,7 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
             [field]: !queryExpressionsExpanded[field],
           })
         }
+        className="ml-1 my-auto"
       >
         {queryExpressionsExpanded[field] ? <LeftArrow /> : <RightArrow />}
       </ActionIcon>
@@ -152,11 +163,11 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
         className="m-1"
         color="base.2"
       />
-      <QueryRepresentationText>
-        {!queryExpressionsExpanded[field] ? (
-          <b className="text-primary-darkest">{operands.length}</b>
-        ) : (
-          <Group>
+      {!queryExpressionsExpanded[field] ? (
+        <b className="text-primary-darkest px-2 py-[1px]">{operands.length}</b>
+      ) : (
+        <QueryRepresentationText>
+          <Group spacing="xs">
             {operands.map((x, i) => (
               <Badge
                 key={`query-rep-${field}-${x}-${i}`}
@@ -171,9 +182,9 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
               </Badge>
             ))}
           </Group>
-        )}
-      </QueryRepresentationText>
-    </div>
+        </QueryRepresentationText>
+      )}
+    </QueryContainer>
   );
 };
 
@@ -192,7 +203,7 @@ const ComparisonElement: React.FC<ComparisonElementProps> = ({
   };
 
   return (
-    <div className="flex flex-row items-center h-full bg-white">
+    <>
       {showLabel ? (
         <QueryFieldLabel>{fieldNameToTitle(operation.field)}</QueryFieldLabel>
       ) : null}
@@ -205,7 +216,7 @@ const ComparisonElement: React.FC<ComparisonElementProps> = ({
         </button>
         <QueryRepresentationText>{operation.operand}</QueryRepresentationText>
       </div>
-    </div>
+    </>
   );
 };
 
@@ -239,13 +250,15 @@ export const ClosedRangeQueryElement: React.FC<
   return (
     <>
       <QueryElement field={field}>
-        <ComparisonElement operation={lower} />
-        <div className="flex items-center">
-          <span className={"uppercase text-accent-contrast-max font-bold"}>
-            {op}
-          </span>
-        </div>
-        <ComparisonElement operation={upper} showLabel={false} />
+        <QueryContainer>
+          <ComparisonElement operation={lower} />
+          <div className="flex items-center">
+            <span className={"uppercase text-accent-contrast-max font-bold"}>
+              {op}
+            </span>
+          </div>
+          <ComparisonElement operation={upper} showLabel={false} />
+        </QueryContainer>
       </QueryElement>
     </>
   );
@@ -272,7 +285,7 @@ export const QueryElement: React.FC<QueryElementProps> = ({
 
   return (
     <QueryItemContainer>
-      <div className="bg-white flex">{children}</div>
+      {children}
       {/* ---
         // TODO: enable facet dropdown
          <button onClick={handlePopupFacet}>
