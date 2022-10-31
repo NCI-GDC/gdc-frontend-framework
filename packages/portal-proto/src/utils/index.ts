@@ -105,7 +105,7 @@ export const externalLinks = {
 export const calculatePercentageAsNumber = (
   count: number,
   total: number,
-): number => (count / total) * 100;
+): number => (count ? (count / total) * 100 : 0);
 
 export const calculatePercentageAsString = (
   count: number,
