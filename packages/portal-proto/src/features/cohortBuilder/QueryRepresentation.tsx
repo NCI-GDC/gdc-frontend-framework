@@ -1,5 +1,5 @@
 import { PropsWithChildren, useContext, useEffect } from "react";
-import { omit } from "lodash";
+import { get } from "lodash";
 import {
   Equals,
   ExcludeIfAny,
@@ -21,8 +21,10 @@ import {
   Union,
   useCoreDispatch,
   fieldNameToTitle,
+  useCoreSelector,
+  selectCurrentCohortId,
 } from "@gff/core";
-import { ActionIcon, Badge, Divider, Group } from "@mantine/core";
+import { ActionIcon, Badge, Divider, Group, Tooltip } from "@mantine/core";
 import {
   MdClose as ClearIcon,
   MdOutlineArrowBack as LeftArrow,
@@ -100,42 +102,34 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
   const [queryExpressionsExpanded, setQueryExpressionsExpanded] = useContext(
     QueryExpressionsExpandedContext,
   );
+  const currentCohortId = useCoreSelector((state) =>
+    selectCurrentCohortId(state),
+  );
 
   useEffect(() => {
-    setQueryExpressionsExpanded({ ...queryExpressionsExpanded, [field]: true });
-    // Should only be run on mount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (get(queryExpressionsExpanded, field) === undefined) {
+      console.log(field);
+      setQueryExpressionsExpanded({
+        type: "expand",
+        cohortId: currentCohortId,
+        field,
+      });
+    }
+  }, [
+    field,
+    currentCohortId,
+    queryExpressionsExpanded,
+    setQueryExpressionsExpanded,
+  ]);
 
-  const RemoveButton = ({
-    operand,
-    operands,
-  }: {
-    readonly operand: string | number;
-    readonly operands: readonly (string | number)[];
-  }): JSX.Element => (
+  const expanded = get(queryExpressionsExpanded, field, true);
+
+  const RemoveButton = () => (
     <ActionIcon
       size="xs"
       color="accent-content.0"
       radius="xl"
       variant="transparent"
-      onClick={() => {
-        const newOperands = operands.filter((o) => o !== operand);
-        dispatch(
-          updateCohortFilter({
-            field,
-            operation: {
-              operator,
-              field,
-              operands: newOperands,
-            },
-          }),
-        );
-        if (newOperands.length === 0) {
-          dispatch(removeCohortFilter(field));
-          setQueryExpressionsExpanded(omit(queryExpressionsExpanded, field));
-        }
-      }}
     >
       <ClearIcon />
     </ActionIcon>
@@ -147,15 +141,16 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
       <ActionIcon
         variant="transparent"
         size={"xs"}
-        onClick={() =>
+        onClick={() => {
           setQueryExpressionsExpanded({
-            ...queryExpressionsExpanded,
-            [field]: !queryExpressionsExpanded[field],
-          })
-        }
+            type: expanded ? "collapse" : "expand",
+            cohortId: currentCohortId,
+            field,
+          });
+        }}
         className="ml-1 my-auto"
       >
-        {queryExpressionsExpanded[field] ? <LeftArrow /> : <RightArrow />}
+        {expanded ? <LeftArrow /> : <RightArrow />}
       </ActionIcon>
       <Divider
         orientation="vertical"
@@ -163,7 +158,7 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
         className="m-1"
         color="base.2"
       />
-      {!queryExpressionsExpanded[field] ? (
+      {!expanded ? (
         <b className="text-primary-darkest px-2 py-1 flex items-center">
           {operands.length}
         </b>
@@ -171,17 +166,38 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
         <QueryRepresentationText>
           <Group spacing="xs">
             {operands.map((x, i) => (
-              <Badge
-                key={`query-rep-${field}-${x}-${i}`}
-                variant="filled"
-                color="primary.9"
-                size="md"
-                className="normal-case max-w-[162px]"
-                rightSection={<RemoveButton operand={x} operands={operands} />}
-                title={x.toString()}
-              >
-                {x}
-              </Badge>
+              <Tooltip label={x} key={`query-rep-${field}-${x}-${i}`}>
+                <Badge
+                  variant="filled"
+                  color="primary.9"
+                  size="md"
+                  className="normal-case max-w-[162px]"
+                  rightSection={<RemoveButton />}
+                  onClick={() => {
+                    const newOperands = operands.filter((o) => o !== x);
+                    dispatch(
+                      updateCohortFilter({
+                        field,
+                        operation: {
+                          operator,
+                          field,
+                          operands: newOperands,
+                        },
+                      }),
+                    );
+                    if (newOperands.length === 0) {
+                      setQueryExpressionsExpanded({
+                        type: "clear",
+                        cohortId: currentCohortId,
+                        field,
+                      });
+                      dispatch(removeCohortFilter(field));
+                    }
+                  }}
+                >
+                  {x}
+                </Badge>
+              </Tooltip>
             ))}
           </Group>
         </QueryRepresentationText>
@@ -275,9 +291,20 @@ export const QueryElement: React.FC<QueryElementProps> = ({
   children,
 }: PropsWithChildren<QueryElementProps>) => {
   const coreDispatch = useCoreDispatch();
+  const [, setQueryExpressionsExpanded] = useContext(
+    QueryExpressionsExpandedContext,
+  );
+  const currentCohortId = useCoreSelector((state) =>
+    selectCurrentCohortId(state),
+  );
 
   const handleRemoveFilter = () => {
     coreDispatch(removeCohortFilter(field));
+    setQueryExpressionsExpanded({
+      type: "clear",
+      cohortId: currentCohortId,
+      field,
+    });
   };
 
   // TODO: Enable facet dropdown
