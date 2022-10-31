@@ -14,7 +14,7 @@ rounded
 inline-flex 
 flex-nowrap 
 items-center 
-shadow-md
+shadow-lg
 `;
 
 export const headerElements = [
