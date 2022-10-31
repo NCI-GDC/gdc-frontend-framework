@@ -96,6 +96,7 @@ export const Header: React.FC<HeaderProps> = ({
               layout="fill"
               objectFit="contain"
               data-testid="NIH_LOGO"
+              alt="GDC Data Portal"
             />
           </Button>
         </div>
@@ -132,6 +133,7 @@ export const Header: React.FC<HeaderProps> = ({
                 data-testid="headerSearchButton"
                 onClick={() => setPerformSearch(true)}
                 variant="subtle"
+                aria-label="search button"
               >
                 <SearchIcon size="24px" className="text-base-darkest" />{" "}
               </Button>
@@ -260,7 +262,10 @@ export const Header: React.FC<HeaderProps> = ({
               </Link>
               <Menu withArrow>
                 <Menu.Target>
-                  <button data-testid="extraButton">
+                  <button
+                    data-testid="extraButton"
+                    aria-label="GDC apps button"
+                  >
                     <AppsIcon size="24px" />
                   </button>
                 </Menu.Target>
