@@ -373,7 +373,7 @@ export const CaseSummary = ({
 
   return (
     <>
-      {isFetching || isAnnotationCallFetching ? (
+      {isFetching || isAnnotationCallFetching || data?.case_id !== case_id ? (
         <LoadingOverlay visible data-testid="loading" />
       ) : data && Object.keys(data).length > 0 && annotationCountData ? (
         <>
