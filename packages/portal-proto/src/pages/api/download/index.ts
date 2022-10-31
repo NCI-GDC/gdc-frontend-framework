@@ -1,76 +1,86 @@
 import { GDC_API } from "@gff/core";
-import { NextApiHandler } from "next";
+import { NextApiHandler, NextApiRequest } from "next";
 import axios, { AxiosResponse } from "axios";
 import { Stream } from "stream";
 
 export const config = {
   api: {
+    // This api route is effectively a download proxy. Disabling the response size limt.
     responseLimit: false,
   },
 };
 
-const getApiResponse = async (url: string): Promise<AxiosResponse> => {
-  try {
-    return await axios.get(url, {
-      responseType: "stream",
-    });
-  } catch (error) {
-    return error.response;
-  }
-};
-
-const postApiResponse = async (
-  url: string,
-  data: any,
-  contentType: string,
+const extractAxiosResponse = async (
+  axiosPromise: Promise<AxiosResponse>,
 ): Promise<AxiosResponse> => {
   try {
-    return await axios.post(url, data, {
-      responseType: "stream",
-      headers: {
-        "content-type": contentType,
-      },
-    });
+    return await axiosPromise;
   } catch (error) {
-    console.log(error);
     return error.response;
   }
 };
 
-const downloadHandler: NextApiHandler = async (request, response) => {
-  let apiResponse: AxiosResponse;
-
+const makeGdcApiRequest = async (
+  request: NextApiRequest,
+): Promise<AxiosResponse> => {
+  // TODO:  Add X-Forward headers to ensure client ip address makes it to the server for logging
   if (request.method === "GET") {
     const { fileId } = request.query;
-
     const search = new URL(request.url, "http://placeholder").search;
-    apiResponse = await getApiResponse(`${GDC_API}/data/${fileId}${search}`);
+    return await extractAxiosResponse(
+      axios.get(`${GDC_API}/data/${fileId}${search}`, {
+        responseType: "stream",
+      }),
+    );
   } else if (request.method === "POST") {
     const search = new URL(request.url, "http://placeholder").search;
-    apiResponse = await postApiResponse(
-      `${GDC_API}/data${search}`,
-      request.body,
-      request.headers["content-type"],
+    return await extractAxiosResponse(
+      axios.post(`${GDC_API}/data${search}`, request.body, {
+        responseType: "stream",
+        headers: {
+          "content-type": request.headers["content-type"],
+        },
+      }),
     );
   }
+};
 
-  Object.entries(apiResponse.headers).forEach(([tag, value]) => {
+/**
+ * This endpoint should have the same signature as the GDC API /data endpoint.
+ */
+const downloadHandler: NextApiHandler = async (request, response) => {
+  if (!["GET", "POST"].includes(request.method)) {
+    response
+      .status(405)
+      .json({ message: `Method Not Allowed: ${request.method}` });
+    return;
+  }
+
+  const gdcApiResponse = await makeGdcApiRequest(request);
+
+  // Pass along the headers and status. This is a bit of a lie.
+  Object.entries(gdcApiResponse.headers).forEach(([tag, value]) => {
     response.setHeader(tag, value);
   });
-  response.status(apiResponse.status);
+  response.status(gdcApiResponse.status);
 
-  if (apiResponse.status === 200) {
-    const stream: Stream = apiResponse.data;
-    stream.on("data", (data) => {
-      response.write(data);
-    });
+  if (gdcApiResponse.status === 200) {
+    const stream: Stream = gdcApiResponse.data;
+    stream.pipe(response);
 
     await new Promise((resolve, reject) => {
-      stream.on("end", () => resolve(response.end()));
-      stream.on("error", () => reject(response.end()));
+      stream.on("close", () => {
+        console.log("successfully closed");
+        resolve(response.end());
+      });
+      // NOTE: This error handling has not been tested yet
+      stream.on("error", () => {
+        console.log("error");
+        reject(response.end());
+      });
     });
   } else {
-    response.send(apiResponse.data);
+    response.send(gdcApiResponse.data);
   }
 };
 
