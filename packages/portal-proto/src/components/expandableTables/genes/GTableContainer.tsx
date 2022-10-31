@@ -1,4 +1,5 @@
 import { useGenesTable } from "@gff/core";
+import { useGetGeneTableQuery } from "@gff/core";
 import { useState, useEffect } from "react";
 import { GenesTable } from "./GenesTable";
 import { useMeasure } from "react-use";
@@ -27,9 +28,22 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const [selectedGenes, setSelectedGenes] = useState<any>({}); // todo: add type
   const [gTotal, setGTotal] = useState(0);
 
-  const { data } = useGenesTable({
+  // const { data } = useGenesTable({
+  //   pageSize: pageSize,
+  //   offset: page * pageSize,
+  // });
+
+  const { data, isFetching, isSuccess, isError } = useGetGeneTableQuery({
     pageSize: pageSize,
     offset: page * pageSize,
+    filters: [
+      {
+        content: {
+          field: "genes.is_cancer_gene_census",
+          value: ["true"],
+        },
+      },
+    ],
   });
 
   useEffect(() => {
@@ -110,7 +124,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           }
         />
       </div>
-      {data?.status === "fulfilled" &&
+      {/* {data?.status === "fulfilled" &&
       data?.genes?.mutationCounts &&
       data?.genes?.filteredCases &&
       data?.genes?.cases ? (
@@ -130,7 +144,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         </div>
       ) : (
         <TableLoader cellWidth={`w-[75px]`} rowHeight={60} />
-      )}
+      )} */}
       <div className={`flex flex-row w-9/12 ml-2 mt-0 m-auto mb-2`}>
         <div className="m-auto ml-0">
           <span className="my-auto mx-1 text-xs">Show</span>

@@ -1,9 +1,14 @@
 import React from "react";
 import { animated, useSpring, config } from "react-spring";
 
+interface Item {
+  project: string;
+  numerator: number;
+  denominator: number;
+}
+
 interface ItemSpringProps {
-  item: any; // prev [ { key: string, doc_count: number }, number ]
-  // new item // [ numerator: number, denominator: number, project: string ]
+  item: Item;
   index: number;
   len: number;
 }

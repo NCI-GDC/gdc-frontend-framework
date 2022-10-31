@@ -6,11 +6,17 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DragDrop } from "../../../features/shared/DragDrop";
 
+interface Column {
+  visible: boolean;
+  columnName: string;
+  id: string;
+}
+
 interface DNDProps {
   showColumnMenu: any;
   setShowColumnMenu: (s: boolean) => void;
-  handleColumnChange: (colUpdate: any) => void; // todo add type
-  columnListOrder: any[]; // todo add type
+  handleColumnChange: (columnUpdate: Column[]) => void;
+  columnListOrder: Column[];
   defaultColumns: any;
 }
 
