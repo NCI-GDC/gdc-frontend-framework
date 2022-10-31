@@ -24,13 +24,14 @@ import {
   useCoreSelector,
   selectCurrentCohortId,
 } from "@gff/core";
-import { ActionIcon, Badge, Divider, Group, Tooltip } from "@mantine/core";
+import { ActionIcon, Badge, Divider, Group } from "@mantine/core";
 import {
   MdClose as ClearIcon,
   MdOutlineArrowBack as LeftArrow,
   MdOutlineArrowForward as RightArrow,
 } from "react-icons/md";
 import tw from "tailwind-styled-components";
+import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 import { QueryExpressionsExpandedContext } from "./QueryExpressionSection";
 
 const QueryRepresentationText = tw.div`
@@ -108,7 +109,6 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
 
   useEffect(() => {
     if (get(queryExpressionsExpanded, field) === undefined) {
-      console.log(field);
       setQueryExpressionsExpanded({
         type: "expand",
         cohortId: currentCohortId,
@@ -166,38 +166,38 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
         <QueryRepresentationText>
           <Group spacing="xs">
             {operands.map((x, i) => (
-              <Tooltip label={x} key={`query-rep-${field}-${x}-${i}`}>
-                <Badge
-                  variant="filled"
-                  color="primary.9"
-                  size="md"
-                  className="normal-case max-w-[162px]"
-                  rightSection={<RemoveButton />}
-                  onClick={() => {
-                    const newOperands = operands.filter((o) => o !== x);
-                    dispatch(
-                      updateCohortFilter({
+              <Badge
+                variant="filled"
+                color="primary.9"
+                size="md"
+                className="normal-case max-w-[162px]"
+                rightSection={<RemoveButton />}
+                onClick={() => {
+                  const newOperands = operands.filter((o) => o !== x);
+                  dispatch(
+                    updateCohortFilter({
+                      field,
+                      operation: {
+                        operator,
                         field,
-                        operation: {
-                          operator,
-                          field,
-                          operands: newOperands,
-                        },
-                      }),
-                    );
-                    if (newOperands.length === 0) {
-                      setQueryExpressionsExpanded({
-                        type: "clear",
-                        cohortId: currentCohortId,
-                        field,
-                      });
-                      dispatch(removeCohortFilter(field));
-                    }
-                  }}
-                >
+                        operands: newOperands,
+                      },
+                    }),
+                  );
+                  if (newOperands.length === 0) {
+                    setQueryExpressionsExpanded({
+                      type: "clear",
+                      cohortId: currentCohortId,
+                      field,
+                    });
+                    dispatch(removeCohortFilter(field));
+                  }
+                }}
+              >
+                <OverflowTooltippedLabel label={x.toString()}>
                   {x}
-                </Badge>
-              </Tooltip>
+                </OverflowTooltippedLabel>
+              </Badge>
             ))}
           </Group>
         </QueryRepresentationText>
@@ -227,7 +227,7 @@ const ComparisonElement: React.FC<ComparisonElementProps> = ({
       ) : null}
       <div className="flex flex-row items-center">
         <button
-          className="h-[25px] w-[25px] mx-2 rounded-[50%] bg-accent-lightest "
+          className="h-[25px] w-[25px] mx-2 rounded-[50%] bg-accent-lightest text-base"
           onClick={() => handleKeepMember(operation)}
         >
           {operation.operator}

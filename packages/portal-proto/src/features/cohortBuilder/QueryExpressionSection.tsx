@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer } from "react";
-import { ActionIcon, Tooltip } from "@mantine/core";
+import { ActionIcon } from "@mantine/core";
 import {
   MdOutlineArrowBackIos as LeftArrowIcon,
   MdOutlineArrowForwardIos as RightArrowIcon,
@@ -14,7 +14,7 @@ import {
   FilterSet,
   DEFAULT_COHORT_ID,
 } from "@gff/core";
-import { truncateString } from "src/utils";
+import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 import { convertFilterToComponent } from "./QueryRepresentation";
 
 const QueryExpressionContainer = tw.div`
@@ -124,11 +124,12 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
         >
           <div className="flex flex-col w-full">
             <div className="flex mb-2 items-center">
-              <Tooltip label={currentCohortName}>
-                <p className="font-bold text-primary-darkest pr-4 max-w-[260px] truncate ...">
-                  {currentCohortName}
-                </p>
-              </Tooltip>
+              <OverflowTooltippedLabel
+                label={currentCohortName}
+                className="font-bold text-primary-darkest pr-4 max-w-[260px]"
+              >
+                {currentCohortName}
+              </OverflowTooltippedLabel>
               {Object.keys(filters.root).length !== 0 && (
                 <>
                   <button
