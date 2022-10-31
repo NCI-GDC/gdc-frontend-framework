@@ -33,9 +33,9 @@ export const fetchCasesSummary = createAsyncThunk<
   GdcApiResponse<caseSummaryDefaults>,
   GdcApiRequest,
   { dispatch: CoreDispatch; state: CoreState }
->("cases/fetchCases", async (request?: GdcApiRequest) => {
-  return fetchGdcCaseSummary(request);
-});
+>("cases/fetchCases", async (request?: GdcApiRequest) =>
+  fetchGdcCaseSummary(request),
+);
 
 const slice = createSlice({
   name: "caseSummary",

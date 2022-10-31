@@ -17,6 +17,7 @@ describe("<CartDownloadModal />", () => {
           false: [{ fileId: "2" }, { fileId: "3" }] as CartFile[],
         }}
         dbGapList={[]}
+        setActive={jest.fn()}
       />,
     );
 
@@ -41,6 +42,7 @@ describe("<CartDownloadModal />", () => {
           false: [{ fileId: "2" }, { fileId: "3" }] as CartFile[],
         }}
         dbGapList={[]}
+        setActive={jest.fn()}
       />,
     );
 
@@ -57,6 +59,7 @@ describe("<CartDownloadModal />", () => {
           false: [{ fileId: "2" }, { fileId: "3" }] as CartFile[],
         }}
         dbGapList={[]}
+        setActive={jest.fn()}
       />,
     );
 
@@ -78,6 +81,7 @@ describe("<CartDownloadModal />", () => {
           false: [{ fileId: "2" }, { fileId: "3" }] as CartFile[],
         }}
         dbGapList={["TCGA"]}
+        setActive={jest.fn()}
       />,
     );
 
@@ -97,6 +101,7 @@ describe("<CartDownloadModal />", () => {
           false: [{ fileId: "2" }, { fileId: "3" }] as CartFile[],
         }}
         dbGapList={[]}
+        setActive={jest.fn()}
       />,
     );
 
@@ -115,6 +120,7 @@ describe("<CartDownloadModal />", () => {
           false: [{ fileId: "2" }, { fileId: "3" }] as CartFile[],
         }}
         dbGapList={["TCGA"]}
+        setActive={jest.fn()}
       />,
     );
 

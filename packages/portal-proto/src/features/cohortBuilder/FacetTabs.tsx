@@ -103,7 +103,7 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
   children,
 }: FacetGroupProps) => {
   return (
-    <div className="flex flex-col w-screen/1.5 bg-base-max pr-6 overflow-x-clip">
+    <div className="flex flex-col w-screen/1.5 bg-base-max pr-6">
       <ResponsiveMasonry columnsCountBreakPoints={{ 320: 2, 640: 3, 1200: 4 }}>
         <Masonry gutter="0.5em" className="m-4">
           {children}
@@ -155,7 +155,7 @@ const CustomFacetGroup = (): JSX.Element => {
 
   // handle the case where there are no custom filters
   return (
-    <div className="flex flex-col w-screen/1.5 h-full bg-base-max pr-6 overflow-x-clip">
+    <div className="flex flex-col w-screen/1.5 h-full bg-base-max pr-6">
       <LoadingOverlay visible={!isDictionaryReady} />
       <Modal size="lg" opened={opened} onClose={() => setOpened(false)}>
         <FacetSelection

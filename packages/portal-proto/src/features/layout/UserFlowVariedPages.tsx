@@ -7,12 +7,15 @@ import {
   fetchNotifications,
   selectBanners,
   fetchUserDetails,
+  selectCurrentModal,
+  Modals,
 } from "@gff/core";
 import Banner from "@/components/Banner";
 import { Button } from "@mantine/core";
 import { useTour } from "@reactour/tour";
 import steps from "../../features/tour/steps";
 import { Header } from "./Header";
+import { GeneralErrorModal } from "@/components/Modals/GeneraErrorModal";
 import { Footer } from "./Footer";
 
 interface UserFlowVariedPagesProps {
@@ -30,6 +33,7 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
   const { setSteps } = useTour();
   const router = useRouter();
   const dispatch = useCoreDispatch();
+  const modal = useCoreSelector((state) => selectCurrentModal(state));
 
   useEffect(() => {
     setSteps(steps[router.pathname]);
@@ -51,6 +55,7 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
         data-tour="full_page_content"
         className="flex flex-grow flex-col overflow-x-hidden overflow-y-hidden"
       >
+        {modal === Modals.GeneralErrorModal && <GeneralErrorModal openModal />}
         {children}
       </main>
       <footer className="flex-none">
