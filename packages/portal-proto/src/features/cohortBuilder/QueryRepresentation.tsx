@@ -167,6 +167,7 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
           <Group spacing="xs">
             {operands.map((x, i) => (
               <Badge
+                key={`query-rep-${field}-${x}-${i}`}
                 variant="filled"
                 color="primary.9"
                 size="md"
@@ -227,7 +228,7 @@ const ComparisonElement: React.FC<ComparisonElementProps> = ({
       ) : null}
       <div className="flex flex-row items-center">
         <button
-          className="h-[25px] w-[25px] mx-2 rounded-[50%] bg-accent-lightest text-base"
+          className="h-[25px] w-[25px] mx-2 rounded-[50%] bg-accent-lightest text-base pb-1"
           onClick={() => handleKeepMember(operation)}
         >
           {operation.operator}
