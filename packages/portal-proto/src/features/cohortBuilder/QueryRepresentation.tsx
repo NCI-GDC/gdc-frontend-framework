@@ -123,6 +123,7 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
   ]);
 
   const expanded = get(queryExpressionsExpanded, field, true);
+  const fieldName = fieldNameToTitle(field);
 
   const RemoveButton = () => (
     <ActionIcon
@@ -130,6 +131,7 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
       color="accent-content.0"
       radius="xl"
       variant="transparent"
+      aria-label="remove value"
     >
       <ClearIcon />
     </ActionIcon>
@@ -137,7 +139,7 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
 
   return (
     <QueryContainer>
-      <QueryFieldLabel>{fieldNameToTitle(field)}</QueryFieldLabel>
+      <QueryFieldLabel>{fieldName}</QueryFieldLabel>
       <ActionIcon
         variant="transparent"
         size={"xs"}
@@ -149,6 +151,8 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
           });
         }}
         className="ml-1 my-auto"
+        aria-label={expanded ? `collapse ${fieldName}` : `expand ${fieldName}`}
+        aria-expanded={expanded}
       >
         {expanded ? <LeftArrow /> : <RightArrow />}
       </ActionIcon>
@@ -325,6 +329,7 @@ export const QueryElement: React.FC<QueryElementProps> = ({
       <button
         className="bg-primary-darkest p-0 m-0 h-full round-r-lg text-accent-contrast "
         onClick={handleRemoveFilter}
+        aria-label="remove field"
       >
         <ClearIcon size="1.5em" className="px-1" />
       </button>
