@@ -34,6 +34,7 @@ export const GeneCancerDistributionTable: React.FC<
 
 interface SSMSCancerDistributionTableProps {
   readonly ssms: string;
+  readonly symbol: string;
 }
 
 interface CellProps {
@@ -43,7 +44,7 @@ interface CellProps {
 
 export const SSMSCancerDistributionTable: React.FC<
   SSMSCancerDistributionTableProps
-> = ({ ssms }: SSMSCancerDistributionTableProps) => {
+> = ({ ssms, symbol }: SSMSCancerDistributionTableProps) => {
   const { data, isFetching, isError, isSuccess } =
     useGetSSMSCancerDistributionTableQuery({ ssms });
   return (
@@ -52,7 +53,7 @@ export const SSMSCancerDistributionTable: React.FC<
       isFetching={isFetching}
       isError={isError}
       isSuccess={isSuccess}
-      symbol={ssms}
+      symbol={symbol}
       isGene={false}
     />
   );
@@ -240,9 +241,11 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 ),
                 disease_type: projectsById[d.key]?.disease_type || [],
                 primary_site: projectsById[d.key]?.primary_site || [],
-                ssm_affected_cases: `${data.ssmFiltered[d.key]} / ${
-                  data.ssmTotal[d.key]
-                } (${(
+                ssm_affected_cases: `${data.ssmFiltered[
+                  d.key
+                ].toLocaleString()} / ${data.ssmTotal[
+                  d.key
+                ].toLocaleString()} (${(
                   data.ssmFiltered[d.key] / data.ssmTotal[d.key]
                 ).toLocaleString(undefined, {
                   style: "percent",
@@ -254,17 +257,21 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 ...row,
                 ...(isGene
                   ? {
-                      cnv_gains: `${data.cnvGain[d.key] || 0} / ${
+                      cnv_gains: `${(
+                        data.cnvGain[d.key] || 0
+                      ).toLocaleString()} / ${(
                         data.cnvTotal[d.key] || 0
-                      } (${(
+                      ).toLocaleString()} (${(
                         data.cnvGain[d.key] / data.cnvTotal[d.key] || 0
                       ).toLocaleString(undefined, {
                         style: "percent",
                         minimumFractionDigits: 2,
                       })})`,
-                      cnv_losses: `${data.cnvLoss[d.key] || 0} / ${
+                      cnv_losses: `${(
+                        data.cnvLoss[d.key] || 0
+                      ).toLocaleString()} / ${(
                         data.cnvTotal[d.key] || 0
-                      } (${(
+                      ).toLocaleString()} (${(
                         data.cnvLoss[d.key] / data.cnvTotal[d.key] || 0
                       ).toLocaleString(undefined, {
                         style: "percent",
