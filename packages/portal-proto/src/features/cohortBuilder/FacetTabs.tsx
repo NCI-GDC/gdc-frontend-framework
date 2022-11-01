@@ -44,7 +44,10 @@ import {
   useSelectFieldFilter,
   useTotalCounts,
   useUpdateFacetFilter,
+  FacetDocTypeToCountsIndexMap,
+  FacetDocTypeToLabelsMap,
 } from "@/features/facets/hooks";
+import { partial } from "lodash";
 
 const CustomFacetWhenEmptyGroup = tw(Stack)`
 h-64
@@ -211,17 +214,24 @@ const CustomFacetGroup = (): JSX.Element => {
           </Button>
           {createFacetCardsFromList(
             customFacetDefinitions,
-            "cases", // Cohort custom filter restricted to "cases"
-            customConfig.index as GQLIndexType,
             {
-              useGetEnumFacetData: useEnumFacet,
-              useGetRangeFacetData: useRangeFacet,
+              useGetEnumFacetData: partial(
+                useEnumFacet,
+                "cases",
+                customConfig.index as GQLIndexType,
+              ),
+              useGetRangeFacetData: partial(
+                useRangeFacet,
+                "cases",
+                customConfig.index,
+              ),
               useGetFacetFilters: useSelectFieldFilter,
               useUpdateFacetFilters: useUpdateFacetFilter,
               useClearFilter: useClearFilters,
-              useTotalCounts: useTotalCounts,
+              useTotalCounts: partial(useTotalCounts, "cases"),
             },
             "cohort-builder",
+            FacetDocTypeToLabelsMap["cases"],
             handleRemoveFilter,
           )}
         </FacetGroup>
@@ -298,17 +308,27 @@ export const FacetTabs = (): JSX.Element => {
                 <FacetGroup>
                   {createFacetCardsFromList(
                     getFacetInfo(tabEntry.facets, facets),
-                    tabEntry.docType as GQLDocType,
-                    tabEntry.index as GQLIndexType,
                     {
-                      useGetEnumFacetData: useEnumFacet,
-                      useGetRangeFacetData: useRangeFacet,
+                      useGetEnumFacetData: partial(
+                        useEnumFacet,
+                        tabEntry.docType as GQLDocType,
+                        tabEntry.index as GQLIndexType,
+                      ),
+                      useGetRangeFacetData: partial(
+                        useRangeFacet,
+                        tabEntry.docType as GQLDocType,
+                        tabEntry.index as GQLIndexType,
+                      ),
                       useGetFacetFilters: useSelectFieldFilter,
                       useUpdateFacetFilters: useUpdateFacetFilter,
                       useClearFilter: useClearFilters,
-                      useTotalCounts: useTotalCounts,
+                      useTotalCounts: partial(
+                        useTotalCounts,
+                        FacetDocTypeToCountsIndexMap[tabEntry.docType],
+                      ),
                     },
                     "cohort-builder",
+                    FacetDocTypeToLabelsMap[tabEntry.docType],
                     undefined,
                   )}
                 </FacetGroup>
