@@ -170,7 +170,7 @@ const CustomFacetGroup = (): JSX.Element => {
       </Modal>
       {customFacetDefinitions.length == 0 ? (
         <Center>
-          <CustomFacetWhenEmptyGroup align="center" justify="left">
+          <CustomFacetWhenEmptyGroup align="center" justify="center">
             <AddFacetIcon
               className="text-primary-content"
               size="3em"
