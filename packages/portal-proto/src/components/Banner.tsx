@@ -28,9 +28,16 @@ const textColor = {
 };
 
 const icon = {
-  INFO: <InfoIcon color="white" title="Info icon." />,
-  WARNING: <WarningIcon color="white" title="Warning icon." />,
-  ERROR: <ErrorIcon color="white" title="Error icon." />,
+  INFO: <InfoIcon className="text-utility-contrast-info" title="Info icon." />,
+  WARNING: (
+    <WarningIcon
+      className="text-utility-contrast-warning"
+      title="Warning icon."
+    />
+  ),
+  ERROR: (
+    <ErrorIcon className="text-utility-contrast-error" title="Error icon." />
+  ),
 };
 
 const Banner: React.FC<BannerProps> = ({
@@ -66,7 +73,7 @@ const Banner: React.FC<BannerProps> = ({
         <div className="flex items-center pl-1">
           <Button
             onClick={() => dispatch(dismissNotification(id))}
-            rightIcon={<MdClose color="white" />}
+            rightIcon={<MdClose color={`${textColor[level]}`} />}
             styles={{
               root: {
                 background: "transparent",
@@ -76,7 +83,7 @@ const Banner: React.FC<BannerProps> = ({
               },
             }}
           >
-            Dismiss
+            <div className={`${textColor[level]}`}>Dismiss</div>
           </Button>
         </div>
       )}

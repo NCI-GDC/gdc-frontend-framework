@@ -1,4 +1,5 @@
 import { NextPage } from "next";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
 import ContextBar from "@/features/cohortBuilder/ContextBar";
@@ -15,6 +16,14 @@ const SingleAppsPage: NextPage = () => {
     <UserFlowVariedPages
       {...{ indexPath: "/user-flow/workbench", headerElements }}
     >
+      <Head>
+        <title>GDC Analysis Center</title>
+        <meta
+          property="og:title"
+          content="GDC Analysis Centere"
+          key="gdc-analysis-center"
+        />
+      </Head>
       <ContextBar />
       <AnalysisWorkspace
         app={app && app.length > 0 ? app.toString() : undefined}
