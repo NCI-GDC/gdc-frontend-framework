@@ -96,7 +96,7 @@ export const Header: React.FC<HeaderProps> = ({
               layout="fill"
               objectFit="contain"
               data-testid="NIH_LOGO"
-              alt="GDC Data Portal"
+              alt="NIH GDC Data Portal logo"
             />
           </Button>
         </div>

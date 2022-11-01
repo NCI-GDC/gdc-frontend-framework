@@ -59,11 +59,10 @@ const useCohortFacetFilterByName = (field: string): OperandValue => {
 /**
  *  Facet Selector using GQL which will refresh when filters/enum values changes.
  */
-
 export const useEnumFacet = (
-  field: string,
   docType: GQLDocType,
   indexType: GQLIndexType,
+  field: string,
 ): EnumFacetResponse => {
   const coreDispatch = useCoreDispatch();
 
@@ -150,10 +149,10 @@ export const updateEnumFilters: UpdateEnumFiltersFunc = (
 };
 
 export const useRangeFacet = (
-  field: string,
-  ranges: ReadonlyArray<NumericFromTo>,
   docType: GQLDocType,
   indexType: GQLIndexType,
+  field: string,
+  ranges: ReadonlyArray<NumericFromTo>,
 ): FacetResponse => {
   const coreDispatch = useCoreDispatch();
   const facet: FacetBuckets = useCoreSelector((state) =>
@@ -226,14 +225,16 @@ export const useClearFilters = (): ClearFacetFunction => {
   };
 };
 
-export const useTotalCounts = (name: string): number =>
-  useCoreSelector((state) => selectTotalCountsByName(state, name));
+export const useTotalCounts = (name: string): number => {
+  return useCoreSelector((state) => selectTotalCountsByName(state, name));
+};
 
 export const FacetDocTypeToCountsIndexMap = {
   cases: "caseCounts",
   files: "fileCounts",
   genes: "genesCounts",
   ssms: "mutationCounts",
+  projects: "projectCounts",
 };
 
 export const FacetDocTypeToLabelsMap = {
@@ -241,4 +242,5 @@ export const FacetDocTypeToLabelsMap = {
   files: "Files",
   genes: "Genes",
   ssms: "Mutations",
+  projects: "Projects",
 };

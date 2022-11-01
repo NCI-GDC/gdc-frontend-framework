@@ -7,6 +7,7 @@ import {
   EnumValueExtractorHandler,
   joinFilters,
   buildCohortGqlOperator,
+  filterSetToOperation,
   ValueExtractorHandler,
 } from "./filters";
 
@@ -74,6 +75,7 @@ export {
   CohortBuilderCategory,
   joinFilters,
   buildCohortGqlOperator,
+  filterSetToOperation,
   addNewCohort,
   removeCohort,
   updateCohortName,
