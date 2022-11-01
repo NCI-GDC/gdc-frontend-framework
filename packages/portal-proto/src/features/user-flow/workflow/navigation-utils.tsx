@@ -5,15 +5,15 @@ import tw from "tailwind-styled-components";
 
 const NavButton = tw(Button)`
 text-sm
-font-heading  
-hover:bg-primary-lighter 
-transition-colors 
-text-primary-content-darkest 
-p-2 
-rounded 
-inline-flex 
-flex-nowrap 
-items-center 
+font-heading
+hover:bg-primary-lighter
+transition-colors
+text-primary-content-darkest
+p-2
+rounded
+inline-flex
+flex-nowrap
+items-center
 shadow-lg
 `;
 
