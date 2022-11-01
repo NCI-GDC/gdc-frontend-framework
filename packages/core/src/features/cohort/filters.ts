@@ -129,6 +129,24 @@ export const buildCohortGqlOperator = (
   return undefined;
 };
 
+export const filterSetToOperation = (
+  fs: FilterSet | undefined,
+): Operation | undefined => {
+  if (!fs) return undefined;
+  switch (fs.mode) {
+    case "and":
+      return Object.keys(fs.root).length == 0
+        ? undefined
+        : {
+            operator: fs.mode,
+            operands: Object.keys(fs.root).map((k): Operation => {
+              return fs.root[k];
+            }),
+          };
+  }
+  return undefined;
+};
+
 /**
  * Merged two FilterSets returning the merged pair.
  * @param a - first FilterSet

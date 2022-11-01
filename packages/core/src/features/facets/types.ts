@@ -12,7 +12,7 @@ export interface FacetBuckets {
   readonly buckets?: Record<string, number>;
 }
 
-export type GQLDocType = "cases" | "files" | "genes" | "ssms";
+export type GQLDocType = "cases" | "files" | "genes" | "ssms" | "projects";
 export type GQLIndexType = "explore" | "repository";
 
 export interface AllowableRange {

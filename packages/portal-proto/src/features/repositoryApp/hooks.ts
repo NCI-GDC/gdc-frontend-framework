@@ -183,10 +183,10 @@ export const useLocalFilters = (
 };
 
 export const useRepositoryRangeFacet = (
-  field: string,
-  ranges: ReadonlyArray<NumericFromTo>,
   docType: GQLDocType,
   indexType: GQLIndexType,
+  field: string,
+  ranges: ReadonlyArray<NumericFromTo>,
 ): FacetResponse => {
   const appDispatch = useAppDispatch();
   const facet: FacetBuckets = useCoreSelector((state) =>

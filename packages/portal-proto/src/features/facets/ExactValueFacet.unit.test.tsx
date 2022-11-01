@@ -13,7 +13,6 @@ describe("<ExactValueFacet />", () => {
   it("test if ExactValueFacet control has expected components", async () => {
     const { getByRole, getByTestId } = render(
       <ExactValueFacet
-        docType="files"
         field="cases.diagnoses.annotations.case_id"
         width="w-1/3"
         hooks={{
@@ -43,7 +42,6 @@ describe("<ExactValueFacet />", () => {
     let values = undefined;
     const { getByRole, getByLabelText, getByText } = render(
       <ExactValueFacet
-        docType="files"
         field="cases.diagnoses.annotations.case_id"
         width="w-1/3"
         hooks={{
