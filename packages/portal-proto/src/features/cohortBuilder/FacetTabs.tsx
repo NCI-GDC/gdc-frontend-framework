@@ -170,7 +170,7 @@ const CustomFacetGroup = (): JSX.Element => {
       </Modal>
       {customFacetDefinitions.length == 0 ? (
         <Center>
-          <CustomFacetWhenEmptyGroup align="center" justify="center">
+          <CustomFacetWhenEmptyGroup align="center" justify="left">
             <AddFacetIcon
               className="text-primary-content"
               size="3em"
@@ -228,7 +228,7 @@ const CustomFacetGroup = (): JSX.Element => {
               useGetFacetFilters: useSelectFieldFilter,
               useUpdateFacetFilters: useUpdateFacetFilter,
               useClearFilter: useClearFilters,
-              useTotalCounts: partial(useTotalCounts, "cases"),
+              useTotalCounts: partial(useTotalCounts, "caseCounts"),
             },
             "cohort-builder",
             FacetDocTypeToLabelsMap["cases"],

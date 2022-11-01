@@ -23,7 +23,7 @@ const Components: ReactNode = () => {
       <p className="prose font-medium text-2xl">UI Components</p>
       <Divider label="Numeric Range Facet" classNames={divider_style} />
       <NumericRangeFacet
-        field="cases.follow_ups.days_to_progression"
+        field="cases.demographic.age_at_index"
         width="w-1/3"
         rangeDatatype="days"
         valueLabel="Cases"
