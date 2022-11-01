@@ -228,7 +228,7 @@ const CustomFacetGroup = (): JSX.Element => {
               useGetFacetFilters: useSelectFieldFilter,
               useUpdateFacetFilters: useUpdateFacetFilter,
               useClearFilter: useClearFilters,
-              useTotalCounts: partial(useTotalCounts, "cases"),
+              useTotalCounts: partial(useTotalCounts, "caseCounts"),
             },
             "cohort-builder",
             FacetDocTypeToLabelsMap["cases"],
