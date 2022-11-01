@@ -1,6 +1,21 @@
 import { Image } from "@/components/Image";
 import { Button, Tooltip } from "@mantine/core";
 import { NextLink } from "@mantine/next";
+import tw from "tailwind-styled-components";
+
+const NavButton = tw(Button)`
+text-sm
+font-heading
+hover:bg-primary-lighter
+transition-colors
+text-primary-content-darkest
+p-2
+rounded
+inline-flex
+flex-nowrap
+items-center
+shadow-lg
+`;
 
 export const headerElements = [
   <Tooltip
@@ -13,15 +28,16 @@ export const headerElements = [
     multiline
     width={220}
   >
-    <Button
+    <NavButton
       unstyled
       component={NextLink}
       href={{
         pathname: "/user-flow/workbench/analysis_page",
         query: { app: undefined },
       }}
-      className="text-sm font-heading  hover:bg-primary-lighter transition-colors text-primary-content-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md "
+      className=" "
       data-testid="analysisButton"
+      aria-label="analysis center button"
     >
       <Image
         src={"/user-flow/icons/dna.svg"}
@@ -29,7 +45,7 @@ export const headerElements = [
         width={24}
         height={24}
       />
-    </Button>
+    </NavButton>
   </Tooltip>,
   <Tooltip
     key="Studies"
@@ -41,15 +57,15 @@ export const headerElements = [
     multiline
     width={220}
   >
-    <Button
+    <NavButton
       unstyled
       component={NextLink}
       href={{
         pathname: "/user-flow/workbench/analysis_page",
         query: { app: "Projects" },
       }}
-      className="text-sm font-heading  hover:bg-primary-lighter transition-colors text-primary-content-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md "
       data-testid="projectsButton"
+      aria-label="project/studies center button"
     >
       <Image
         src={"/user-flow/icons/crowd-of-users.svg"}
@@ -57,7 +73,7 @@ export const headerElements = [
         width={24}
         height={24}
       />
-    </Button>
+    </NavButton>
   </Tooltip>,
   <Tooltip
     key="Cohort"
@@ -69,15 +85,15 @@ export const headerElements = [
     multiline
     width={220}
   >
-    <Button
+    <NavButton
       unstyled
       component={NextLink}
       href={{
         pathname: "/user-flow/workbench/analysis_page",
         query: { app: "CohortBuilder" },
       }}
-      className="text-sm font-heading  hover:bg-primary-lighter transition-colors text-primary-content-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md "
       data-testid="cohortButton"
+      aria-label="cohort builder button"
     >
       <Image
         src={"/user-flow/icons/build.svg"}
@@ -85,7 +101,7 @@ export const headerElements = [
         width={24}
         height={24}
       />
-    </Button>
+    </NavButton>
   </Tooltip>,
   <Tooltip
     key="Download"
@@ -97,15 +113,15 @@ export const headerElements = [
     multiline
     width={220}
   >
-    <Button
+    <NavButton
       unstyled
       component={NextLink}
       href={{
         pathname: "/user-flow/workbench/analysis_page",
         query: { app: "Downloads" },
       }}
-      className="text-sm font-heading hover:bg-primary-lighter transition-colors text-primary-content-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md "
       data-testid="downloadsButton"
+      aria-label="download center button"
     >
       <Image
         src={"/user-flow/icons/database.svg"}
@@ -113,6 +129,6 @@ export const headerElements = [
         width={24}
         height={24}
       />
-    </Button>
+    </NavButton>
   </Tooltip>,
 ];
