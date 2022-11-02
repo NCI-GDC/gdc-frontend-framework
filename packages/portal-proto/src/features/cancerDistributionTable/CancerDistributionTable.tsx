@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { Tooltip } from "@mantine/core";
+import { Row } from "react-table";
+import Link from "next/link";
 import {
   useGetGeneCancerDistributionTableQuery,
   useGetSSMSCancerDistributionTableQuery,
@@ -8,8 +10,7 @@ import {
 } from "@gff/core";
 import { VerticalTable } from "@/features/shared/VerticalTable";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
-import { Row } from "react-table";
-import Link from "next/link";
+import FunctionButton from "@/components/FunctionButton";
 
 interface GeneCancerDistributionTableProps {
   readonly gene: string;
@@ -311,6 +312,12 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       selectableRow={false}
       handleColumnChange={undefined}
       showControls={false}
+      additionalControls={
+        <div className="flex gap-2">
+          <FunctionButton>JSON</FunctionButton>
+          <FunctionButton>TSV</FunctionButton>
+        </div>
+      }
       pagination={{
         handlePageSizeChange,
         handlePageChange,
