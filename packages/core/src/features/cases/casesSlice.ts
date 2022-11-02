@@ -42,6 +42,7 @@ const slice = createSlice({
     builder
       .addCase(fetchCases.fulfilled, (state, action) => {
         state.casesData.data = castDraft(action.payload.data.hits);
+        state.casesData.pagination = castDraft(action.payload.data.pagination);
         state.casesData.status = "fulfilled";
         state.casesData.error = undefined;
         return state;

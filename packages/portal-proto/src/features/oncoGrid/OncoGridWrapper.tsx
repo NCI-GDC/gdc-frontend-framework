@@ -186,20 +186,21 @@ const OncoGridWrapper: React.FC = () => {
   };
 
   const handleDownloadJSON = async () => {
+    const { genes, cases, totalCases, ssmOccurrences, cnvOccurrences } = data;
     const json = {
-      genes: data.genes,
-      ssm_occurrences: data.ssmOccurrences.map((occurrence) => ({
+      genes,
+      ssm_occurrences: ssmOccurrences.map(({ ssm, ...occurrence }) => ({
         ...occurrence,
         ssm: {
-          ...occurrence.ssm,
-          consequence: occurrence.ssm.consequence.filter(
-            (item) => item.transcript.is_canonical,
+          ...(ssm ?? {}),
+          consequence: ssm?.consequence.filter(
+            ({ transcript }) => transcript.is_canonical,
           ),
         },
       })),
-      cnv_occurrences: data.cnvOccurrences,
-      cases: data.cases,
-      totalCases: donors.length,
+      cnv_occurrences: cnvOccurrences,
+      cases,
+      totalCases,
     };
 
     const blob = new Blob([JSON.stringify(json, null, 2)], {
