@@ -35,7 +35,15 @@ export interface Consequence {
   is_canonical: boolean;
 }
 
-export interface SomaticMutation {
+export interface Impacts {
+  polyphenImpact: string;
+  polyphenScore: number;
+  siftImpact: string;
+  siftScore: number;
+  vepImpact: string;
+}
+
+export interface SingleSomaticMutation {
   consequence: Consequence[];
   filteredOccurences: number;
   ssm_id: string;
@@ -44,6 +52,28 @@ export interface SomaticMutation {
   occurence: number;
   score: number;
   id: string;
+}
+
+export interface Impact {
+  polyphenImpact: string;
+  polyphenScore: number | string;
+  siftImpact: string;
+  siftScore: number | string;
+  vepImpact: string;
+}
+
+export interface SomaticMutation {
+  select: string;
+  mutationID: string;
+  DNAChange: string;
+  type: string;
+  consequences: any;
+  affectedCasesInCohort: string;
+  affectedCasesAcrossTheGDC: string;
+  survival: any;
+  impact: Impact;
+  subRows: string;
+  ssmsTotal: number;
 }
 
 export interface SomaticMutationsTableProps {

@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from "react";
 import { animated } from "react-spring";
 import ToggleSpring from "../shared/ToggleSpring";
 import SwitchSpring from "../shared/SwitchSpring";
@@ -8,16 +9,12 @@ import {
   TableHeader,
   SurvivalIcon,
 } from "../shared/types";
-import { SomaticMutation } from "./types";
+import { SingleSomaticMutation, SomaticMutation, Impacts } from "./types";
 import CheckboxSpring from "../shared/CheckboxSpring";
 import { Survival } from "../shared/types";
 import { SMSubrow } from "./SMSubRow";
 import { Tooltip } from "@mantine/core";
-import { TableColumnDefinition } from "../shared/types";
-
-// export interface Mutation {
-
-// }
+import { TableColumnDefinition, WidthSpring } from "../shared/types";
 
 export interface ConsequenceProps {
   consequenceType: string;
@@ -48,15 +45,7 @@ export const Consequence = ({
   );
 };
 
-interface ImpactProps {
-  polyphenImpact: string;
-  polyphenScore: number;
-  siftImpact: string;
-  siftScore: number;
-  vepImpact: string;
-}
-
-const Impact = ({ impact }: { impact: ImpactProps }): JSX.Element => {
+const Impact = ({ impact }: { impact: Impacts }): JSX.Element => {
   const { polyphenImpact, polyphenScore, siftImpact, siftScore, vepImpact } =
     impact;
   const twIconStyles = `w-7 h-7 text-white font-bold border rounded-md text-center`;
@@ -149,17 +138,17 @@ const Impact = ({ impact }: { impact: ImpactProps }): JSX.Element => {
 export const createTableColumn = (
   accessor: string,
   width: number,
-  partitionWidth: any,
+  partitionWidth: WidthSpring,
   visibleColumns: TableColumnState[],
-  selectedMutations: any,
+  selectedMutations: Record<string, MutationsColumn>[],
   selectMutation: (geneId: string) => any,
   handleSurvivalPlotToggled: (
     symbol: string,
     name: string,
     geneSymbol: string,
   ) => any,
-  setMutationID,
-  mutationID,
+  setMutationID: Dispatch<SetStateAction<string>>,
+  mutationID: string,
 ): TableColumnDefinition => {
   console.log("selectedMutations", selectedMutations);
   switch (accessor) {
@@ -430,18 +419,18 @@ export type MutationsColumn = {
   affectedCasesInCohort: string;
   affectedCasesAcrossTheGDC: string;
   survival: Survival;
-  impact: string;
-  subRows: ImpactProps;
+  impact: Impacts;
+  subRows: string;
   ssmsTotal: number;
 };
 
 export const getMutation = (
-  sm: SomaticMutation,
+  sm: SingleSomaticMutation,
   selectedSurvivalPlot: Record<string, string>,
   filteredCases: number,
   cases: number,
   ssmsTotal: number,
-) => {
+): SomaticMutation => {
   const {
     gene = {
       symbol: "",

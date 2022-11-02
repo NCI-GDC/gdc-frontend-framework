@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from "react";
 import ToggleSpring from "../shared/ToggleSpring";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { animated } from "react-spring";
@@ -10,9 +11,11 @@ import {
   SurvivalIcon,
   AnnotationsIcon,
   Survival,
+  AffectedCases,
+  TableColumnDefinition,
+  WidthSpring,
 } from "../shared/types";
 import { GSubrow } from "./GSubrow";
-import { AffectedCases, TableColumnDefinition } from "../shared/types";
 
 interface SingleGene {
   biotype: string;
@@ -29,21 +32,39 @@ interface SingleGene {
   symbol: string;
 }
 
+interface Gene {
+  select: string;
+  geneID: string;
+  name: string;
+  symbol: string;
+  survival: Survival;
+  CNVGain: string;
+  CNVLoss: string;
+  cytoband: string[];
+  annotations: boolean;
+  mutations: string;
+  subRows: string;
+  genesTotal: number;
+  SSMSAffectedCasesInCohort: string;
+  SSMSAffectedCasesAcrossTheGDC: string;
+}
+
 export const createTableColumn = (
   accessor: string,
   width: number,
-  partitionWidth: any,
+  partitionWidth: WidthSpring,
   visibleColumns: TableColumnState[],
-  selectedGenes: any, // todo: add type,
+  selectedGenes: Record<string, GenesColumn>[],
   selectGene: (geneId: string) => any,
   handleSurvivalPlotToggled: (
     symbol: string,
     name: string,
     geneSymbol: string,
   ) => any,
-  setGeneID: any,
+  setGeneID: Dispatch<SetStateAction<string>>,
   geneID: string,
 ): TableColumnDefinition => {
+  console.log("hm", setGeneID);
   switch (accessor) {
     case "select":
       return {
@@ -292,15 +313,17 @@ export const createTableColumn = (
                 <animated.div style={partitionWidth}>
                   <>
                     {row.getCanExpand() && (
-                      <div className={`flex flex-col`}>
-                        {/* {row.original["cytoband"].map(({ cytoband }) => {
-                          return <div className={`my-0.5`}>{cytoband}</div>
-                        })} */}
-                        <button
-                          onClick={() => console.log(row.original["cytoband"])}
-                        >
-                          hm
-                        </button>
+                      <div className={`flex flex-col items-center`}>
+                        {row.original["cytoband"].map((cytoband, key) => {
+                          return (
+                            <div
+                              key={`cytoband-${key}`}
+                              className={`my-0.5 text-xs`}
+                            >
+                              {cytoband}
+                            </div>
+                          );
+                        })}
                       </div>
                     )}
                     <>
@@ -377,7 +400,7 @@ export const getGene = (
   filteredCases: number,
   cases: number,
   genesTotal: number,
-) => {
+): Gene => {
   return {
     select: g.gene_id,
     geneID: g.gene_id,

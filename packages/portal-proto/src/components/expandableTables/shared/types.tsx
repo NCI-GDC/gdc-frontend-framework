@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { animated } from "react-spring";
+import { animated, SpringValue } from "react-spring";
 
 export interface TableColumnState {
   id: string;
@@ -41,7 +41,7 @@ export const TableCell = ({
       <>
         {row.getCanExpand() ? <></> : null}{" "}
         <animated.div
-          className={`ml-3.5 text-center text-xs ${
+          className={`text-center text-xs ${
             anchor
               ? `text-activeColor underline hover:cursor-pointer font-bold`
               : ``
@@ -129,4 +129,9 @@ export interface TableColumnDefinition {
   header: string;
   footer: (props: any) => string;
   columns: ColumnDefinition[];
+}
+
+export interface WidthSpring {
+  width: SpringValue; // number [ 0 - maxWidth ] (in pixels)
+  opacity: SpringValue; // number [ 0 - 1 ]
 }
