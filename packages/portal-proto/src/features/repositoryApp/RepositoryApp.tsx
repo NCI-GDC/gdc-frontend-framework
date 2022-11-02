@@ -1,5 +1,5 @@
 import {
-  createGdcAppWithOwnStore,
+  createGdcAppWithPersistentStore,
   GdcFile,
   selectCart,
   useCoreDispatch,
@@ -150,7 +150,7 @@ const RepositoryApp = () => {
 };
 
 // creates and registers the App with the Analysis Tool Framework
-export default createGdcAppWithOwnStore({
+export default createGdcAppWithPersistentStore({
   App: RepositoryApp,
   id: id,
   name: "Repository Tool",

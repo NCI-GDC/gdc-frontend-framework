@@ -176,6 +176,42 @@ export const createGdcAppWithOwnStore = <A extends Action = AnyAction, S = any>(
       document.title = `GDC - ${name}`;
     });
 
+    return (
+      <Provider store={store} context={context}>
+        <CookiesProvider>
+          <App />
+        </CookiesProvider>
+      </Provider>
+    );
+  };
+
+  // add the app to the store
+  coreStore.dispatch(
+    addGdcAppMetadata({
+      id,
+      name,
+      version,
+      requiredEntityTypes,
+    }),
+  );
+  registerGdcApp(id, GdcAppWrapper);
+  return GdcAppWrapper;
+};
+
+export const createGdcAppWithPersistentStore = <
+  A extends Action = AnyAction,
+  S = any,
+>(
+  options: CreateGdcAppWithOwnStoreOptions<A, S>,
+): React.ReactNode => {
+  const { App, id, name, version, requiredEntityTypes, store, context } =
+    options;
+
+  const GdcAppWrapper: React.FC = () => {
+    useEffect(() => {
+      document.title = `GDC - ${name}`;
+    });
+
     const persistor = persistStore(store);
 
     return (
