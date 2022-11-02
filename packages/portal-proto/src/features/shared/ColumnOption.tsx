@@ -113,6 +113,7 @@ export const ColumnOption: FC<ColumnProps> = ({
           icon={undefined}
           handleSwitch={toggleColumn}
           selected={columnName}
+          tooltip={""}
         />
       </div>
     </div>

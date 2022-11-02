@@ -217,6 +217,32 @@ export const createTableColumn = (
           },
         ],
       };
+    case "DNAChange":
+      return {
+        header: " ",
+        footer: (props) => props.column.id,
+        columns: [
+          {
+            accessorKey: accessor,
+            header: () => <TableHeader twStyles={`ml-4`} title={accessor} />,
+            cell: ({ row }) => {
+              return (
+                <animated.div style={partitionWidth}>
+                  <>
+                    <TableCell
+                      row={row}
+                      accessor={accessor}
+                      anchor={false}
+                      tooltip={row.original["DNAChange"]}
+                    />
+                    <>{!row.getCanExpand() && subrow}</>
+                  </>
+                </animated.div>
+              );
+            },
+          },
+        ],
+      };
     case "affectedCasesAcrossTheGDC":
       return {
         header: " ",
@@ -232,7 +258,12 @@ export const createTableColumn = (
                   className={`content-center`}
                 >
                   <>
-                    <TableCell row={row} accessor={accessor} anchor={false} />
+                    <TableCell
+                      row={row}
+                      accessor={accessor}
+                      anchor={false}
+                      tooltip={""}
+                    />
                     {row.getCanExpand() && (
                       <div className={`text-center`}>
                         <button
@@ -277,7 +308,12 @@ export const createTableColumn = (
                   className={`content-center`}
                 >
                   {row.getCanExpand() && (
-                    <TableCell row={row} accessor={accessor} anchor={false} />
+                    <TableCell
+                      row={row}
+                      accessor={accessor}
+                      anchor={false}
+                      tooltip={""}
+                    />
                   )}
                   <>{!row.getCanExpand() && subrow}</>
                 </animated.div>
@@ -346,7 +382,12 @@ export const createTableColumn = (
               return (
                 <animated.div style={partitionWidth}>
                   <>
-                    <TableCell row={row} accessor={accessor} anchor={false} />
+                    <TableCell
+                      row={row}
+                      accessor={accessor}
+                      anchor={false}
+                      tooltip={""}
+                    />
                     <>{!row.getCanExpand() && subrow}</>
                   </>
                 </animated.div>

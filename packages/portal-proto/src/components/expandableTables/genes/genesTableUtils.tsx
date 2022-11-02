@@ -229,7 +229,12 @@ export const createTableColumn = (
                   className={`content-center`}
                 >
                   {row.getCanExpand() && (
-                    <TableCell row={row} accessor={accessor} anchor={false} />
+                    <TableCell
+                      row={row}
+                      accessor={accessor}
+                      anchor={false}
+                      tooltip={""}
+                    />
                   )}
                   <>{!row.getCanExpand() && subrow}</>
                 </animated.div>
@@ -253,7 +258,12 @@ export const createTableColumn = (
                   className={`content-center`}
                 >
                   {row.getCanExpand() && (
-                    <TableCell row={row} accessor={accessor} anchor={false} />
+                    <TableCell
+                      row={row}
+                      accessor={accessor}
+                      anchor={false}
+                      tooltip={""}
+                    />
                   )}
                   <>{!row.getCanExpand() && subrow}</>
                 </animated.div>
@@ -312,6 +322,7 @@ export const createTableColumn = (
                       row={row}
                       accessor={accessor}
                       anchor={["symbol"].includes(accessor) ? true : false}
+                      tooltip={""}
                     />
                     <>{!row.getCanExpand() && subrow}</>
                   </>

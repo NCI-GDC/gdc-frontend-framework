@@ -1,5 +1,6 @@
 import _ from "lodash";
 import { animated, SpringValue } from "react-spring";
+import { Tooltip } from "@mantine/core";
 
 export interface TableColumnState {
   id: string;
@@ -27,15 +28,19 @@ export const TableHeader = ({
   );
 };
 
+interface TableCellProps {
+  row: any;
+  accessor: string;
+  anchor: boolean;
+  tooltip: string;
+}
+
 export const TableCell = ({
   row,
   accessor,
   anchor,
-}: {
-  row: any;
-  accessor: string;
-  anchor: boolean;
-}): JSX.Element => {
+  tooltip,
+}: TableCellProps): JSX.Element => {
   return (
     <div>
       <>
@@ -47,7 +52,11 @@ export const TableCell = ({
               : ``
           }`}
         >
-          {row.original[`${accessor}`] ? row.original[`${accessor}`] : ""}
+          <Tooltip label={`${tooltip}`} disabled={!tooltip.length}>
+            <div>
+              {row.original[`${accessor}`] ? row.original[`${accessor}`] : ""}
+            </div>
+          </Tooltip>
         </animated.div>
       </>
     </div>
