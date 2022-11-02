@@ -70,70 +70,9 @@ const useGenomicFacetFilter = (): FilterSet => {
  * to get data for the current cohort and genes filters
  */
 export const useGenesFacet = (
+  docType: GQLDocType,
+  indexType: GQLIndexType,
   field: string,
-  docType = "genes" as GQLDocType,
-  indexType = "explore" as GQLIndexType,
-): EnumFacetResponse => {
-  const coreDispatch = useCoreDispatch();
-  const facet: FacetBuckets = useCoreSelector((state) =>
-    selectFacetByDocTypeAndField(state, docType, field),
-  );
-
-  const enumValues = useGenomicFilterByName(field);
-  const cohortFilters = useCohortOrCaseSetFacetFilter();
-  const genomicFilters = useGenomicFacetFilter();
-  const prevCohortFilters = usePrevious(cohortFilters);
-  const prevGenomicFilters = usePrevious(genomicFilters);
-  const prevEnumValues = usePrevious(enumValues);
-
-  useEffect(() => {
-    if (
-      !facet ||
-      !isEqual(prevCohortFilters, cohortFilters) ||
-      !isEqual(prevGenomicFilters, genomicFilters) ||
-      !isEqual(prevEnumValues, enumValues)
-    ) {
-      coreDispatch(
-        fetchFacetByNameGQL({
-          field: field,
-          docType: docType,
-          index: indexType,
-          filterSelector: selectGenomicAndCohortFilters,
-        }),
-      );
-    }
-  }, [
-    coreDispatch,
-    facet,
-    field,
-    cohortFilters,
-    docType,
-    indexType,
-    prevCohortFilters,
-    prevEnumValues,
-    enumValues,
-    prevGenomicFilters,
-    genomicFilters,
-  ]);
-
-  return {
-    data: facet?.buckets,
-    enumFilters: (enumValues as EnumOperandValue)?.map((x) => x.toString()),
-    error: facet?.error,
-    isUninitialized: facet === undefined,
-    isFetching: facet?.status === "pending",
-    isSuccess: facet?.status === "fulfilled",
-    isError: facet?.status === "rejected",
-  };
-};
-
-/**
- * Mutations Facet Selector using GQL
- */
-export const useMutationsFacet = (
-  field: string,
-  docType = "ssms" as GQLDocType,
-  indexType = "explore" as GQLIndexType,
 ): EnumFacetResponse => {
   const coreDispatch = useCoreDispatch();
   const facet: FacetBuckets = useCoreSelector((state) =>

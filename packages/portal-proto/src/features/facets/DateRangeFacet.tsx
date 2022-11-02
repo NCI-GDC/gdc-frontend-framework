@@ -24,7 +24,7 @@ import { StringRange } from "./types";
 
 type DateRangeFacetProps = Omit<
   FacetCardProps<ValueFacetHooks>,
-  "showSearch" | "showFlip" | "showPercent"
+  "showSearch" | "showFlip" | "showPercent" | "valueLabel"
 >;
 
 /**

@@ -12,7 +12,6 @@ import {
 import { trimFirstFieldNameToTitle } from "@gff/core";
 import { LoadingOverlay, Switch, Tooltip } from "@mantine/core";
 import { MdClose as CloseIcon } from "react-icons/md";
-import { FacetDocTypeToLabelsMap } from "@/features/facets/hooks";
 import { FaUndo as UndoIcon } from "react-icons/fa";
 
 const extractToggleValue = (values?: ReadonlyArray<string>): boolean =>
@@ -20,10 +19,9 @@ const extractToggleValue = (values?: ReadonlyArray<string>): boolean =>
 
 const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   field,
-  docType,
-  indexType,
   hooks,
   description,
+  valueLabel,
   facetName = undefined,
   dismissCallback = undefined,
   width = undefined,
@@ -35,11 +33,7 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
     ? facetName
     : trimFirstFieldNameToTitle(field, true);
 
-  const { data, isSuccess, enumFilters } = hooks.useGetFacetData(
-    field,
-    docType,
-    indexType,
-  );
+  const { data, isSuccess, enumFilters } = hooks.useGetFacetData(field);
 
   const toggleValue = useMemo(
     () => extractToggleValue(enumFilters),
@@ -92,7 +86,7 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
         </div>
       </FacetHeader>
       <div className="flex flex-row items-center justify-end flex-wrap p-1 mb-1 border-b-2">
-        <p className="px-2">{FacetDocTypeToLabelsMap[docType]}</p>
+        <p className="px-2">{valueLabel}</p>
       </div>
       <div className="w-full ">
         <div className="flex flex row flex-nowrap justify-between items-center p-2 ">

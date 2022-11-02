@@ -7,6 +7,7 @@ import {
   GdcApiRequest,
   GdcApiResponse,
   ProjectDefaults,
+  Pagination,
 } from "../gdcapi/gdcapi";
 
 export const fetchProjects = createAsyncThunk<
@@ -19,6 +20,7 @@ export const fetchProjects = createAsyncThunk<
 
 export interface ProjectsState {
   readonly projectData?: ProjectDefaults[];
+  readonly pagination?: Pagination;
   readonly status: DataStatus;
   readonly error?: string;
 }
@@ -43,6 +45,7 @@ const slice = createSlice({
         } else {
           if (response.data.hits) {
             state.projectData = [...response.data.hits];
+            state.pagination = response.data.pagination;
           } else {
             state.projectData = undefined;
           }
@@ -70,6 +73,7 @@ export const selectProjectsData = (
 ): CoreDataSelectorResponse<ProjectDefaults[]> => {
   return {
     data: state.projects.projectData,
+    pagination: state.projects.pagination,
     status: state.projects.status,
     error: state.projects.error,
   };

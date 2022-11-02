@@ -5,7 +5,10 @@ import {
   useEnumFacet,
   useTotalCounts,
   useUpdateFacetFilter,
+  FacetDocTypeToLabelsMap,
+  FacetDocTypeToCountsIndexMap,
 } from "@/features/facets/hooks";
+import partial from "lodash/partial";
 
 export interface SummaryFacetInfo {
   readonly field: string;
@@ -37,18 +40,24 @@ export const SummaryFacets: React.FC<SummaryFacetProps> = ({
             >
               <EnumFacet
                 field={entry.field}
-                docType={entry.docType}
+                valueLabel={FacetDocTypeToLabelsMap[entry.docType]}
                 facetName={entry.name}
                 startShowingData={false}
                 key={`summary-chart-${entry.field}-${index}`}
                 width="w-64"
                 hideIfEmpty={false}
-                indexType={entry.indexType}
                 hooks={{
                   useUpdateFacetFilters: useUpdateFacetFilter,
-                  useTotalCounts: useTotalCounts,
+                  useTotalCounts: partial(
+                    useTotalCounts,
+                    FacetDocTypeToCountsIndexMap[entry.docType],
+                  ),
                   useClearFilter: useClearFilters,
-                  useGetFacetData: useEnumFacet,
+                  useGetFacetData: partial(
+                    useEnumFacet,
+                    entry.docType,
+                    entry.indexType,
+                  ),
                 }}
               />
             </div>
