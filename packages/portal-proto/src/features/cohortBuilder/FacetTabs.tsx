@@ -44,7 +44,10 @@ import {
   useSelectFieldFilter,
   useTotalCounts,
   useUpdateFacetFilter,
+  FacetDocTypeToCountsIndexMap,
+  FacetDocTypeToLabelsMap,
 } from "@/features/facets/hooks";
+import { partial } from "lodash";
 
 const CustomFacetWhenEmptyGroup = tw(Stack)`
 h-64
@@ -103,7 +106,7 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
   children,
 }: FacetGroupProps) => {
   return (
-    <div className="flex flex-col w-screen/1.5 bg-base-max pr-6 overflow-x-clip">
+    <div className="flex flex-col w-screen/1.5 bg-base-max pr-6">
       <ResponsiveMasonry columnsCountBreakPoints={{ 320: 2, 640: 3, 1200: 4 }}>
         <Masonry gutter="0.5em" className="m-4">
           {children}
@@ -155,7 +158,7 @@ const CustomFacetGroup = (): JSX.Element => {
 
   // handle the case where there are no custom filters
   return (
-    <div className="flex flex-col w-screen/1.5 h-full bg-base-max pr-6 overflow-x-clip">
+    <div className="flex flex-col w-screen/1.5 h-full bg-base-max pr-6">
       <LoadingOverlay visible={!isDictionaryReady} />
       <Modal size="lg" opened={opened} onClose={() => setOpened(false)}>
         <FacetSelection
@@ -211,17 +214,24 @@ const CustomFacetGroup = (): JSX.Element => {
           </Button>
           {createFacetCardsFromList(
             customFacetDefinitions,
-            "cases", // Cohort custom filter restricted to "cases"
-            customConfig.index as GQLIndexType,
             {
-              useGetEnumFacetData: useEnumFacet,
-              useGetRangeFacetData: useRangeFacet,
+              useGetEnumFacetData: partial(
+                useEnumFacet,
+                "cases",
+                customConfig.index as GQLIndexType,
+              ),
+              useGetRangeFacetData: partial(
+                useRangeFacet,
+                "cases",
+                customConfig.index,
+              ),
               useGetFacetFilters: useSelectFieldFilter,
               useUpdateFacetFilters: useUpdateFacetFilter,
               useClearFilter: useClearFilters,
-              useTotalCounts: useTotalCounts,
+              useTotalCounts: partial(useTotalCounts, "caseCounts"),
             },
             "cohort-builder",
+            FacetDocTypeToLabelsMap["cases"],
             handleRemoveFilter,
           )}
         </FacetGroup>
@@ -298,17 +308,27 @@ export const FacetTabs = (): JSX.Element => {
                 <FacetGroup>
                   {createFacetCardsFromList(
                     getFacetInfo(tabEntry.facets, facets),
-                    tabEntry.docType as GQLDocType,
-                    tabEntry.index as GQLIndexType,
                     {
-                      useGetEnumFacetData: useEnumFacet,
-                      useGetRangeFacetData: useRangeFacet,
+                      useGetEnumFacetData: partial(
+                        useEnumFacet,
+                        tabEntry.docType as GQLDocType,
+                        tabEntry.index as GQLIndexType,
+                      ),
+                      useGetRangeFacetData: partial(
+                        useRangeFacet,
+                        tabEntry.docType as GQLDocType,
+                        tabEntry.index as GQLIndexType,
+                      ),
                       useGetFacetFilters: useSelectFieldFilter,
                       useUpdateFacetFilters: useUpdateFacetFilter,
                       useClearFilter: useClearFilters,
-                      useTotalCounts: useTotalCounts,
+                      useTotalCounts: partial(
+                        useTotalCounts,
+                        FacetDocTypeToCountsIndexMap[tabEntry.docType],
+                      ),
                     },
                     "cohort-builder",
+                    FacetDocTypeToLabelsMap[tabEntry.docType],
                     undefined,
                   )}
                 </FacetGroup>

@@ -9,6 +9,8 @@ import {
 import {
   controlsIconStyle,
   FacetIconButton,
+  FacetText,
+  FacetHeader,
 } from "@/features/facets/components";
 import { MdClose as CloseIcon } from "react-icons/md";
 import {
@@ -22,7 +24,7 @@ import { StringRange } from "./types";
 
 type DateRangeFacetProps = Omit<
   FacetCardProps<ValueFacetHooks>,
-  "showSearch" | "showFlip" | "showPercent"
+  "showSearch" | "showFlip" | "showPercent" | "valueLabel"
 >;
 
 /**
@@ -88,9 +90,9 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
     <div
       className={`flex flex-col ${
         width ? width : "mx-1"
-      } bg-base-max relative border-primary-lightest border-1 rounded-b-md text-xs transition`}
+      } bg-base-max relative shadow-lg border-primary-lightest border-1 rounded-b-md text-xs transition`}
     >
-      <div className="flex items-start justify-between flex-nowrap bg-primary-lighter shadow-md px-1.5">
+      <FacetHeader>
         <Tooltip
           label={description}
           classNames={{
@@ -104,9 +106,9 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
           transition="fade"
           transitionDuration={200}
         >
-          <div className="text-primary-contrast-lighter font-heading font-semibold text-md break-words py-2">
+          <FacetText>
             {facetName ? facetName : trimFirstFieldNameToTitle(field, true)}
-          </div>
+          </FacetText>
         </Tooltip>
         <div className="flex flex-row">
           <FacetIconButton
@@ -127,7 +129,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
             </FacetIconButton>
           ) : null}
         </div>
-      </div>
+      </FacetHeader>
       <div className="flex flex row flex-nowrap items-center p-2 ">
         <DatePicker
           allowFreeInput

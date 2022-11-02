@@ -4,8 +4,11 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
-import { buildCohortGqlOperator, FilterSet } from "../cohort/filters";
-import { selectCurrentCohortFilters } from "../cohort/availableCohortsSlice";
+import {
+  buildCohortGqlOperator,
+  selectCurrentCohortFilters,
+  FilterSet,
+} from "../cohort";
 import { buildGraphGLBucketQuery, processBuckets } from "./facetApiGQL";
 import { FacetBuckets, GQLIndexType, GQLDocType } from "./types";
 import { FacetsState } from "./facetSlice";
@@ -53,6 +56,7 @@ export const fetchFacetByNameGQL = createAsyncThunk<
 export interface FacetStateGQL extends FacetsState {
   readonly genes: Record<string, FacetBuckets>;
   readonly ssms: Record<string, FacetBuckets>;
+  readonly projects: Record<string, FacetBuckets>;
 }
 
 const initialState: FacetStateGQL = {
@@ -60,6 +64,7 @@ const initialState: FacetStateGQL = {
   files: {},
   genes: {},
   ssms: {},
+  projects: {},
 };
 
 export const facetsGQLSlice = createSlice({
@@ -80,7 +85,9 @@ export const facetsGQLSlice = createSlice({
           };
         } else {
           const aggregations =
-            Object(response).data.viewer[index][docType].aggregations;
+            docType === "projects"
+              ? Object(response).data.viewer[docType].aggregations
+              : Object(response).data.viewer[index][docType].aggregations;
           aggregations && processBuckets(aggregations, state[docType]);
         }
       })
@@ -154,6 +161,14 @@ export const selectSSMSFacetByField = (
   field: string,
 ): FacetBuckets => {
   const root = state.facetsGQL.facetsGQL.ssms;
+  return root[field];
+};
+
+export const selectProjectsFacetByField = (
+  state: CoreState,
+  field: string,
+): FacetBuckets => {
+  const root = state.facetsGQL.facetsGQL.projects;
   return root[field];
 };
 

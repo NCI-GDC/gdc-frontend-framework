@@ -7,6 +7,7 @@ import {
   useTotalCounts,
   useUpdateFacetFilter,
 } from "@/features/facets/hooks";
+import partial from "lodash/partial";
 
 const FacetsPage: NextPage = () => {
   return (
@@ -14,13 +15,13 @@ const FacetsPage: NextPage = () => {
       <div className="flex flex-col content-center">
         <div className="grid grid-cols-3 gap-4">
           <EnumFacet
-            docType="cases"
+            valueLabel="Cases"
             field="primary_site"
             hooks={{
               useUpdateFacetFilters: useUpdateFacetFilter,
-              useTotalCounts: useTotalCounts,
+              useTotalCounts: partial(useTotalCounts, "caseCounts"),
               useClearFilter: useClearFilters,
-              useGetFacetData: useEnumFacet,
+              useGetFacetData: partial(useEnumFacet, "cases", "explore"),
             }}
             dismissCallback={() => null}
           />

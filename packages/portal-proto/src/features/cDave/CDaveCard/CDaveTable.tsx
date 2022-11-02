@@ -88,42 +88,48 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                     <td className="float-right">
                       <Tooltip
                         label={
-                          !enoughCasesForSurvival
+                          key === "missing"
+                            ? `Plot cannot be generated for this value`
+                            : !enoughCasesForSurvival
                             ? "Not enough data"
                             : survivalSelected
                             ? `Click to remove ${key} from plot`
+                            : selectedSurvivalPlots.length === 5
+                            ? `A maximum of 5 plots can be displayed at a time`
                             : `Click to plot ${key}`
                         }
                         withArrow
                         withinPortal={true}
                       >
-                        <ActionIcon
-                          variant="outline"
-                          className={
-                            survivalDisabled
-                              ? "bg-base-light text-base-contrast-light bg-opacity-80 text-opacity-60"
-                              : survivalSelected
-                              ? `bg-gdc-survival-${selectedSurvivalPlots.indexOf(
-                                  key,
-                                )} text-white` // TODO: confirm 508 contrast compliance
-                              : "bg-base-lightest text-base-contrast-lightest"
-                          }
-                          disabled={survivalDisabled}
-                          onClick={() =>
-                            survivalSelected
-                              ? setSelectedSurvivalPlots(
-                                  selectedSurvivalPlots.filter(
-                                    (s) => s !== key,
-                                  ),
-                                )
-                              : setSelectedSurvivalPlots([
-                                  ...selectedSurvivalPlots,
-                                  key,
-                                ])
-                          }
-                        >
-                          <SurvivalChartIcon />
-                        </ActionIcon>
+                        <div>
+                          <ActionIcon
+                            variant="outline"
+                            className={
+                              survivalDisabled
+                                ? "bg-base-light text-base-contrast-light bg-opacity-80 text-opacity-60"
+                                : survivalSelected
+                                ? `bg-gdc-survival-${selectedSurvivalPlots.indexOf(
+                                    key,
+                                  )} text-white` // TODO: confirm 508 contrast compliance
+                                : "bg-base-lightest text-base-contrast-lightest"
+                            }
+                            disabled={survivalDisabled}
+                            onClick={() =>
+                              survivalSelected
+                                ? setSelectedSurvivalPlots(
+                                    selectedSurvivalPlots.filter(
+                                      (s) => s !== key,
+                                    ),
+                                  )
+                                : setSelectedSurvivalPlots([
+                                    ...selectedSurvivalPlots,
+                                    key,
+                                  ])
+                            }
+                          >
+                            <SurvivalChartIcon />
+                          </ActionIcon>
+                        </div>
                       </Tooltip>
                     </td>
                   )}

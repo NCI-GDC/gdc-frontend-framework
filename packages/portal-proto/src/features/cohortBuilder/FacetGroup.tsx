@@ -6,7 +6,7 @@ import React, { FC, useState } from "react";
 import Select from "react-select";
 import { get_facet_subcategories, get_facets } from "./dictionary";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
-import { GQLIndexType, FacetDefinition } from "@gff/core";
+import { FacetDefinition } from "@gff/core";
 import {
   useClearFilters,
   useEnumFacet,
@@ -15,6 +15,7 @@ import {
   useTotalCounts,
   useUpdateFacetFilter,
 } from "@/features/facets/hooks";
+import partial from "lodash/partial";
 
 /**
  *
@@ -25,12 +26,10 @@ import {
 
 interface FacetGroupProps {
   readonly facetNames: ReadonlyArray<FacetDefinition>;
-  readonly indexType?: GQLIndexType;
 }
 
 export const FacetGroup: React.FC<FacetGroupProps> = ({
   facetNames,
-  indexType = "explore",
 }: FacetGroupProps) => {
   return (
     <div className="flex flex-col border-r-2 border-l-2 border-b-2 border-t-0 border-accent-cool-darker p-3 h-screen/1.5 overflow-y-scroll">
@@ -50,16 +49,15 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
               return (
                 <EnumFacet
                   key={`${x.full}-${index}`}
-                  docType="cases"
-                  indexType={indexType}
+                  valueLabel="Cases"
                   field={`${x.field}`}
                   facetName={x.field}
                   description={x.description}
                   hooks={{
                     useUpdateFacetFilters: useUpdateFacetFilter,
-                    useTotalCounts: useTotalCounts,
+                    useTotalCounts: partial(useTotalCounts, "caseCounts"),
                     useClearFilter: useClearFilters,
-                    useGetFacetData: useEnumFacet,
+                    useGetFacetData: partial(useEnumFacet, "cases", "explore"),
                   }}
                 />
               );
@@ -80,16 +78,15 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
                   facetName={x.field}
                   description={x.description}
                   rangeDatatype={x.facet_type}
-                  docType="cases"
-                  indexType={indexType}
+                  valueLabel="Cases"
                   minimum={x.range?.minimum}
                   maximum={x.range?.maximum}
                   hooks={{
-                    useGetFacetData: useRangeFacet,
                     useGetFacetFilters: useSelectFieldFilter,
                     useUpdateFacetFilters: useUpdateFacetFilter,
                     useClearFilter: useClearFilters,
-                    useTotalCounts: useTotalCounts,
+                    useTotalCounts: partial(useTotalCounts, "caseCounts"),
+                    useGetFacetData: partial(useRangeFacet, "cases", "explore"),
                   }}
                 />
               );
@@ -195,7 +192,6 @@ export const CohortTabbedFacets: FC = () => {
         </TabPanel>
         <TabPanel>
           <FacetGroup
-            indexType="repository"
             facetNames={
               get_facets(
                 "Biospecimen",

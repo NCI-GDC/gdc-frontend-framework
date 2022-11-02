@@ -1,8 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { usePrevious, fieldNameToTitle } from "@gff/core";
-import { FacetDocTypeToCountsIndexMap, FacetDocTypeToLabelsMap } from "./hooks";
-import { DEFAULT_VISIBLE_ITEMS } from "./utils";
-
+import { DEFAULT_VISIBLE_ITEMS, updateFacetEnum } from "./utils";
 import {
   MdFlip as FlipIcon,
   MdSearch as SearchIcon,
@@ -19,8 +17,12 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { isEqual } from "lodash";
-import { FacetIconButton, controlsIconStyle } from "./components";
-import { updateFacetEnum } from "./utils";
+import {
+  FacetIconButton,
+  controlsIconStyle,
+  FacetText,
+  FacetHeader,
+} from "./components";
 import FacetExpander from "@/features/facets/FacetExpander";
 import FacetSortPanel from "@/features/facets/FacetSortPanel";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
@@ -29,9 +31,8 @@ import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
  *  Enumeration facet filters handle display and selection of
  *  enumerated fields.
  * @param field filter this FacetCard manages
- * @param docType document type "cases" "files, etc.
- * @param indexType index this facet uses to get data from
  * @param hooks object defining the hooks required by this facet component
+ * @param valueLabel label for the values column (e.g. "Cases" "Projects")
  * @param description describes information about the facet
  * @param facetName name of the Facet in human-readable form
  * @param showSearch if the search icon show be displayed
@@ -44,9 +45,8 @@ import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
  */
 const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   field,
-  docType,
-  indexType,
   hooks,
+  valueLabel,
   description,
   facetName = null,
   showSearch = true,
@@ -64,18 +64,13 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   const [isFacetView, setIsFacetView] = useState(startShowingData);
   const [visibleItems, setVisibleItems] = useState(DEFAULT_VISIBLE_ITEMS);
   const cardRef = useRef<HTMLDivElement>(null);
-  const { data, enumFilters, isSuccess } = hooks.useGetFacetData(
-    field,
-    docType,
-    indexType,
-  );
+  const { data, enumFilters, isSuccess } = hooks.useGetFacetData(field);
+
   const [selectedEnums, setSelectedEnums] = useState(enumFilters);
   const prevFilters = usePrevious(enumFilters);
   const searchInputRef = useRef(null);
 
-  const totalCount = hooks.useTotalCounts(
-    FacetDocTypeToCountsIndexMap[docType],
-  );
+  const totalCount = hooks.useTotalCounts();
   const clearFilters = hooks.useClearFilter();
   const updateFacetFilters = hooks.useUpdateFacetFilters();
 
@@ -177,11 +172,11 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
     <div
       className={`flex flex-col ${
         width ? width : "mx-1"
-      } bg-base-max relative border-primary-lightest border-1 rounded-b-md text-xs transition`}
+      } bg-base-max relative shadow-lg border-primary-lightest border-1 rounded-b-md text-xs transition`}
       id={field}
     >
       <div>
-        <div className="flex items-start justify-between flex-nowrap bg-primary-lighter shadow-md px-1.5">
+        <FacetHeader>
           <Tooltip
             label={description}
             classNames={{
@@ -195,9 +190,9 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
             transition="fade"
             transitionDuration={200}
           >
-            <div className="text-primary-contrast-lighter font-heading font-semibold text-md break-words py-2">
+            <FacetText>
               {facetName ? facetName : fieldNameToTitle(field)}
-            </div>
+            </FacetText>
           </Tooltip>
           <div className="flex flex-row">
             {showSearch ? (
@@ -210,14 +205,14 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                 onClick={toggleFlip}
                 aria-label="Flip between form and chart"
               >
-                <FlipIcon size="1.25em" className={controlsIconStyle} />
+                <FlipIcon size="1.45em" className={controlsIconStyle} />
               </FacetIconButton>
             ) : null}
             <FacetIconButton
               onClick={() => clearFilters(field)}
               aria-label="clear selection"
             >
-              <UndoIcon size="1.15em" className={controlsIconStyle} />
+              <UndoIcon size="1.25em" className={controlsIconStyle} />
             </FacetIconButton>
             {dismissCallback ? (
               <FacetIconButton
@@ -231,7 +226,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
               </FacetIconButton>
             ) : null}
           </div>
-        </div>
+        </FacetHeader>
       </div>
       <div className="h-full">
         {isSearching && (
@@ -271,7 +266,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
             <div>
               <FacetSortPanel
                 isSortedByValue={isSortedByValue}
-                valueLabel={FacetDocTypeToLabelsMap[docType]}
+                valueLabel={valueLabel}
                 setIsSortedByValue={setIsSortedByValue}
               />
 
@@ -379,7 +374,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                   selectedEnums={selectedEnums}
                   isSuccess={isSuccess}
                   showTitle={false}
-                  valueLabel={FacetDocTypeToLabelsMap[docType]}
+                  valueLabel={valueLabel}
                   maxBins={numberOfBarsToDisplay}
                   height={
                     numberOfBarsToDisplay == 1

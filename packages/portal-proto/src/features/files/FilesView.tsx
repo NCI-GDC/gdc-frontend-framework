@@ -26,6 +26,7 @@ import {
   useTotalCounts,
   useUpdateFacetFilter,
 } from "@/features/facets/hooks";
+import partial from "lodash/partial";
 
 export const FilesTableHeader = tw.th`
 bg-primary-lighter
@@ -145,14 +146,14 @@ export const ContextualFilesView: React.FC = () => {
                 key={`${x.facet_filter}-${index}`}
                 field={`${x.facet_filter}`}
                 facetName={x.name}
-                docType="files"
+                valueLabel="Files"
                 showPercent={false}
                 description={x.description}
                 hooks={{
                   useUpdateFacetFilters: useUpdateFacetFilter,
-                  useTotalCounts: useTotalCounts,
+                  useTotalCounts: partial(useTotalCounts, "fileCounts"),
                   useClearFilter: useClearFilters,
-                  useGetFacetData: useEnumFacet,
+                  useGetFacetData: partial(useEnumFacet, "files", "repository"),
                 }}
               />
             );

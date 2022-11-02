@@ -1,9 +1,10 @@
 import React, { useState, useEffect, FC } from "react";
-import { useTable } from "react-table";
+import { useTable, useRowState } from "react-table";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DragDrop } from "./DragDrop";
 import { BsList } from "react-icons/bs";
+import { DataStatus } from "@gff/core";
 import {
   Box,
   Popover,
@@ -75,7 +76,7 @@ interface VerticalTableProps {
      */
     total: number;
     /**
-     * optional lable of data shown
+     * optional label of data shown
      */
     label?: string;
     /**
@@ -88,7 +89,7 @@ interface VerticalTableProps {
     handlePageChange: (x: number) => void;
   };
   /**
-   * optional shows diferent table content depending on state
+   * optional shows different table content depending on state
    *
    * - loading when `uninitialized` and `pending`
    *
@@ -96,20 +97,21 @@ interface VerticalTableProps {
    *
    * - data when `fulfilled`
    */
-  status?: "uninitialized" | "pending" | "fulfilled" | "rejected";
+  status?: DataStatus;
 }
 
 interface Column {
   Header: string | JSX.Element;
   accessor: string;
   width?: number;
-  Cell?: (tableInfo: any) => JSX.Element;
+  Cell?: (value: any) => JSX.Element;
 }
 
 interface TableProps {
   columns: Column[];
   data: any[];
 }
+
 /**
  * Returns a vertical table with many optional features
  * @parm {array} tableData - data to go in the table
@@ -152,7 +154,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   useEffect(() => {
     setColumnListOptions(columnListOrder);
   }, [columnListOrder]);
-  //TODO combine columnCells and columnListOrder and handle column rordering in this component
+  //TODO combine columnCells and columnListOrder and handle column re-ordering in this component
   useEffect(() => {
     setHeadings(columnCells);
   }, [columnCells]);
@@ -175,29 +177,37 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         {
           columns,
           data,
+          initialRowStateAccessor: () => ({
+            expanded: 0,
+            values: {},
+            content: {},
+          }),
         },
-        selectableRow ? tableAction : null,
+        useRowState,
+        selectableRow ? tableAction : () => null,
       );
 
     return (
-      <table {...getTableProps()} className="w-full text-left">
+      <table {...getTableProps()} className="w-full text-left font-content ">
         {tableTitle && (
           <caption className="font-semibold text-left">{tableTitle}</caption>
         )}
         <thead>
           {headerGroups.map((headerGroup, key) => (
             <tr
-              className="bg-primary-lighter leading-5"
+              className="bg-primary-darker py-4 leading-5  "
               {...headerGroup.getHeaderGroupProps()}
               key={`header-${key}`}
             >
               {headerGroup.headers.map((column, key) => (
                 <th
                   {...column.getHeaderProps()}
-                  className="px-2 py-1"
+                  className="px-2 pt-3 pb-1 font-heading text-primary-contrast-darker font-medium text-md"
                   key={`column-${key}`}
                 >
-                  {column.render("Header")}
+                  <div className="px-1">
+                    <span>{column.render("Header")}</span>
+                  </div>
                 </th>
               ))}
             </tr>
@@ -214,25 +224,32 @@ export const VerticalTable: FC<VerticalTableProps> = ({
             rows.map((row, index) => {
               prepareRow(row);
               return (
-                <tr
-                  key={index}
-                  {...row.getRowProps()}
-                  className={
-                    index % 2 === 1 ? "bg-base-lighter" : "bg-base-lightest"
-                  }
-                >
-                  {row.cells.map((cell, key) => {
-                    return (
-                      <td
-                        {...cell.getCellProps()}
-                        key={`row-${key}`}
-                        className="px-2 py-1 text-sm text-content"
-                      >
-                        {cell.render("Cell")}
-                      </td>
-                    );
-                  })}
-                </tr>
+                <>
+                  <tr
+                    {...row.getRowProps()}
+                    key={index}
+                    className={
+                      index % 2 === 1 ? "bg-base-lighter" : "bg-base-lightest"
+                    }
+                  >
+                    {row.cells.map((cell, key) => {
+                      return (
+                        <td
+                          {...cell.getCellProps()}
+                          key={`row-${key}`}
+                          className="px-2 py-1 text-[0.85em] font-content"
+                        >
+                          {cell.render("Cell")}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                  {row.state.expanded > 0 ? (
+                    <tr {...row.getRowProps()}>
+                      <td colSpan={headings.length}>{row.state.content}</td>
+                    </tr>
+                  ) : null}
+                </>
               );
             })
           )}
@@ -271,69 +288,75 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     if (!isNaN(pagination.from) && status === "fulfilled") {
       outputString = ` ${pagination.from + 1} - `;
 
-      const pagnationTo = pagination.from + pageSize;
-      if (pagnationTo < pagination.total) {
-        outputString += pagnationTo;
+      const paginationTo = pagination.from + pageSize;
+      if (paginationTo < pagination.total) {
+        outputString += paginationTo;
       } else {
         outputString += pagination.total;
       }
-      outputString += ` of ${pagination.total}`;
+      outputString += ` of ${pagination.total.toLocaleString()}`;
 
       if (pagination.label) {
         outputString += ` ${pagination.label}`;
       }
     }
 
-    return <>Showing {outputString}</>;
+    return (
+      <p className={"text-heading text-medium text-sm"}>
+        Showing {outputString}
+      </p>
+    );
   };
 
   return (
     <div className="grow overflow-hidden">
-      <div className={`h-10 float-left`}>{additionalControls}</div>
-      {showControls && (
-        <div className="flex flex-row float-right">
-          <Popover
-            opened={showColumnMenu}
-            onClose={() => setShowColumnMenu(false)}
-            width={260}
-            position="bottom"
-            transition="scale"
-            withArrow
-          >
-            <Popover.Target>
-              <Box
-                className={`mr-0 ml-auto border-1 border-base-lighter p-3`}
-                onClick={() => setShowColumnMenu(!showColumnMenu)}
-              >
-                <BsList></BsList>
-              </Box>
-            </Popover.Target>
-            <Popover.Dropdown>
-              <div className={`w-fit`}>
-                {columnListOptions.length > 0 && showColumnMenu && (
-                  <div className={`mr-0 ml-auto`}>
-                    <DndProvider backend={HTML5Backend}>
-                      <DragDrop
-                        listOptions={columnListOptions}
-                        handleColumnChange={handleColumnChange}
-                        columnSearchTerm={""}
-                      />
-                    </DndProvider>
-                  </div>
-                )}
-              </div>
-            </Popover.Dropdown>
-          </Popover>
-          <div className="flex flex-row w-max float-right">
-            <input
-              className="mr-2 rounded-sm border-1 border-base-lighter px-1"
-              type="search"
-              placeholder="Search"
-            />
-            <div className={`mt-px`}></div>
+      <div className="flex">
+        <div className={"flex-auto h-10"}>{additionalControls}</div>
+        {showControls && (
+          <div className="flex flex-row">
+            <Popover
+              opened={showColumnMenu}
+              onClose={() => setShowColumnMenu(false)}
+              width={260}
+              position="bottom"
+              transition="scale"
+              withArrow
+            >
+              <Popover.Target>
+                <Box
+                  className={`mr-0 ml-auto border-1 border-base-lighter p-3`}
+                  onClick={() => setShowColumnMenu(!showColumnMenu)}
+                >
+                  <BsList></BsList>
+                </Box>
+              </Popover.Target>
+              <Popover.Dropdown>
+                <div className={`w-fit`}>
+                  {columnListOptions.length > 0 && showColumnMenu && (
+                    <div className={`mr-0 ml-auto`}>
+                      <DndProvider backend={HTML5Backend}>
+                        <DragDrop
+                          listOptions={columnListOptions}
+                          handleColumnChange={handleColumnChange}
+                          columnSearchTerm={""}
+                        />
+                      </DndProvider>
+                    </div>
+                  )}
+                </div>
+              </Popover.Dropdown>
+            </Popover>
+            <div className="flex flex-row w-max float-right">
+              <input
+                className="mr-2 rounded-sm border-1 border-base-lighter px-1"
+                type="search"
+                placeholder="Search"
+              />
+              <div className={`mt-px`}></div>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
       <div className="overflow-y-scroll w-full relative">
         <LoadingOverlay
           visible={status === "pending" || status === "uninitialized"}
@@ -341,7 +364,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         <Table columns={headings} data={table} />
       </div>
       {pagination && (
-        <div className="flex flex-row items-center justify-start border-t border-base-light">
+        <div className="flex flex-row items-center text-content justify-start border-t border-base-light pt-2">
           <p className="px-2">Page Size:</p>
           <Select
             size="sm"
@@ -354,6 +377,9 @@ export const VerticalTable: FC<VerticalTableProps> = ({
               { value: "40", label: "40" },
               { value: "100", label: "100" },
             ]}
+            classNames={{
+              root: "w-20",
+            }}
           />
           <div className="m-auto">
             <ShowingCount />

@@ -293,7 +293,7 @@ describe("<DiagnosesOrFollowUps /> for dianoses", () => {
     const { queryByText, getByText } = render(
       <DiagnosesOrFollowUps dataInfo={mockSingleDiagnoses} />,
     );
-    expect(getByText("Total of (4) Treatments")).toBeInTheDocument();
+    expect(getByText("Total of 4 Treatments")).toBeInTheDocument();
     expect(queryByText("No Treatments Found.")).toBe(null);
   });
 
@@ -305,7 +305,7 @@ describe("<DiagnosesOrFollowUps /> for dianoses", () => {
         ]}
       />,
     );
-    expect(getByText("Total of (0) Treatments")).toBeInTheDocument();
+    expect(getByText("Total of 0 Treatments")).toBeInTheDocument();
     expect(getByText("No Treatments Found.")).toBeInTheDocument();
   });
 
@@ -314,7 +314,7 @@ describe("<DiagnosesOrFollowUps /> for dianoses", () => {
       <DiagnosesOrFollowUps dataInfo={mockMultipleDiagnoses} />,
     );
     expect(getByTestId("verticalTabs")).toBeInTheDocument();
-    expect(getByText("Total of (3) Treatments")).toBeInTheDocument();
+    expect(getByText("Total of 3 Treatments")).toBeInTheDocument();
     expect(queryByText("No Treatments Found.")).toBe(null);
   });
 
@@ -325,11 +325,11 @@ describe("<DiagnosesOrFollowUps /> for dianoses", () => {
 
     expect(getByTestId("verticalTabs")).toBeInTheDocument();
     expect(getByText("diag-test")).toBeInTheDocument();
-    expect(getByText("Total of (3) Treatments")).toBeInTheDocument();
+    expect(getByText("Total of 3 Treatments")).toBeInTheDocument();
     const tab = getAllByTestId("tab");
     await userEvent.click(tab[1]);
     expect(getByText("diag-test-1")).toBeInTheDocument();
-    expect(getByText("Total of (4) Treatments")).toBeInTheDocument();
+    expect(getByText("Total of 4 Treatments")).toBeInTheDocument();
   });
 });
 
@@ -346,7 +346,7 @@ describe("<DiagnosesOrFollowUps /> for Followups", () => {
     const { queryByText, getByText } = render(
       <DiagnosesOrFollowUps dataInfo={mockSingleFollowUps} />,
     );
-    expect(getByText("Total of (2) Molecular Tests")).toBeInTheDocument();
+    expect(getByText("Total of 2 Molecular Tests")).toBeInTheDocument();
     expect(queryByText("No Molecular Tests Found.")).toBe(null);
   });
 
@@ -360,7 +360,7 @@ describe("<DiagnosesOrFollowUps /> for Followups", () => {
         ]}
       />,
     );
-    expect(getByText("Total of (0) Molecular Tests")).toBeInTheDocument();
+    expect(getByText("Total of 0 Molecular Tests")).toBeInTheDocument();
     expect(getByText("No Molecular Tests Found.")).toBeInTheDocument();
   });
 
@@ -369,7 +369,7 @@ describe("<DiagnosesOrFollowUps /> for Followups", () => {
       <DiagnosesOrFollowUps dataInfo={mockMultipleFollowUps} />,
     );
     expect(getByTestId("verticalTabs")).toBeInTheDocument();
-    expect(getByText("Total of (0) Molecular Tests")).toBeInTheDocument();
+    expect(getByText("Total of 0 Molecular Tests")).toBeInTheDocument();
     expect(queryByText("No Molecular Tests Found.")).not.toBe(null);
   });
 
@@ -380,10 +380,10 @@ describe("<DiagnosesOrFollowUps /> for Followups", () => {
 
     expect(getByTestId("verticalTabs")).toBeInTheDocument();
     expect(getByText("follow-up-test")).toBeInTheDocument();
-    expect(getByText("Total of (0) Molecular Tests")).toBeInTheDocument();
+    expect(getByText("Total of 0 Molecular Tests")).toBeInTheDocument();
     const tab = getAllByTestId("tab");
     await userEvent.click(tab[1]);
     expect(getByText("follow-up-test-1")).toBeInTheDocument();
-    expect(getByText("Total of (2) Molecular Tests")).toBeInTheDocument();
+    expect(getByText("Total of 2 Molecular Tests")).toBeInTheDocument();
   });
 });

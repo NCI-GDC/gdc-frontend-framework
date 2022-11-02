@@ -19,7 +19,6 @@ describe("<DateRangeFacet />", () => {
   it("render DataRangeFacet control", async () => {
     const { getByRole } = render(
       <DateRangeFacet
-        docType="files"
         field="files.analysis.input_files.created_datetime"
         width="w-1/3"
         hooks={{
