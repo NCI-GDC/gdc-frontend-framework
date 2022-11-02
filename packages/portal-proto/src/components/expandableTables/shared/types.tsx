@@ -15,15 +15,17 @@ export interface Survival {
 }
 
 export const TableHeader = ({
-  twStyles,
   title,
+  tooltip,
 }: {
-  twStyles: string;
   title: string;
+  tooltip: string;
 }): JSX.Element => {
   return (
     <>
-      <div className={twStyles}>{_.startCase(title)}</div>
+      <Tooltip label={tooltip} disabled={!tooltip?.length}>
+        <div>{_.startCase(title)}</div>
+      </Tooltip>
     </>
   );
 };

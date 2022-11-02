@@ -11,6 +11,7 @@ import {
 } from "../shared/types";
 import { SingleSomaticMutation, SomaticMutation, Impacts } from "./types";
 import CheckboxSpring from "../shared/CheckboxSpring";
+import Percentagebar from "../shared/PercentageBar";
 import { Survival } from "../shared/types";
 import { Tooltip } from "@mantine/core";
 import { TableColumnDefinition, WidthSpring } from "../shared/types";
@@ -171,7 +172,7 @@ export const createTableColumn = (
         columns: [
           {
             accessorKey: accessor,
-            header: () => <TableHeader twStyles={`ml-4`} title={accessor} />,
+            header: () => <TableHeader title={accessor} tooltip={""} />,
             cell: ({ row }) => {
               return (
                 <>
@@ -197,7 +198,7 @@ export const createTableColumn = (
         columns: [
           {
             accessorKey: accessor,
-            header: () => <TableHeader twStyles={``} title={accessor} />,
+            header: () => <TableHeader title={accessor} tooltip={""} />,
             cell: ({ row }) => {
               return (
                 <>
@@ -224,7 +225,7 @@ export const createTableColumn = (
         columns: [
           {
             accessorKey: accessor,
-            header: () => <TableHeader twStyles={``} title={accessor} />,
+            header: () => <TableHeader title={accessor} tooltip={""} />,
             cell: ({ row }) => {
               return (
                 <>
@@ -251,7 +252,14 @@ export const createTableColumn = (
         columns: [
           {
             accessorKey: accessor,
-            header: () => <TableHeader twStyles={`ml-4`} title={accessor} />,
+            header: () => (
+              <TableHeader
+                title={accessor}
+                tooltip={
+                  "Genomic DNA Change, shown as {chromosome}:g{start}{ref}>{tumor}"
+                }
+              />
+            ),
             cell: ({ row }) => {
               return (
                 <animated.div style={partitionWidth}>
@@ -277,7 +285,14 @@ export const createTableColumn = (
         columns: [
           {
             accessorKey: accessor,
-            header: () => <TableHeader twStyles={``} title={accessor} />,
+            header: () => (
+              <TableHeader
+                title={accessor}
+                tooltip={
+                  "# of Cases where Mutation is observed / # Cases tested for Simple Somatic Mutations portal wide | Expand to see breakdown by project"
+                }
+              />
+            ),
             cell: ({ row }) => {
               return (
                 <animated.div
@@ -327,7 +342,14 @@ export const createTableColumn = (
         columns: [
           {
             accessorKey: accessor,
-            header: () => <TableHeader twStyles={``} title={accessor} />,
+            header: () => (
+              <TableHeader
+                title={accessor}
+                tooltip={
+                  "# of Cases where Mutation is observed in Cohort / # of Cases tested for Simple Somatic Mutations in Cohort"
+                }
+              />
+            ),
             cell: ({ row }) => {
               return (
                 <animated.div
@@ -356,7 +378,12 @@ export const createTableColumn = (
         columns: [
           {
             accessorKey: accessor,
-            header: () => <TableHeader twStyles={``} title={accessor} />,
+            header: () => (
+              <TableHeader
+                title={accessor}
+                tooltip={"Consequences for canonical transcript"}
+              />
+            ),
             cell: ({ row }) => {
               return (
                 <animated.div
@@ -380,7 +407,13 @@ export const createTableColumn = (
         columns: [
           {
             accessorKey: accessor,
-            header: () => <TableHeader twStyles={``} title={accessor} />,
+            header: () => (
+              <TableHeader
+                title={accessor}
+                // todo: tooltip
+                tooltip={""}
+              />
+            ),
             cell: ({ row }) => {
               return (
                 <animated.div
@@ -404,7 +437,7 @@ export const createTableColumn = (
         columns: [
           {
             accessorKey: accessor,
-            header: () => <TableHeader twStyles={`ml-4`} title={accessor} />,
+            header: () => <TableHeader title={accessor} tooltip={""} />,
             cell: ({ row }) => {
               return (
                 <animated.div style={partitionWidth}>

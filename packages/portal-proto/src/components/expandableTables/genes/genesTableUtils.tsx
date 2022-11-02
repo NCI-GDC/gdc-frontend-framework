@@ -84,7 +84,9 @@ export const createTableColumn = (
         columns: [
           {
             accessorKey: accessor,
-            header: () => <TableHeader twStyles={`ml-4`} title={accessor} />,
+            header: () => (
+              <TableHeader twStyles={`ml-4`} title={accessor} tooltip={""} />
+            ),
             cell: ({ row }) => {
               return (
                 <>
@@ -110,7 +112,7 @@ export const createTableColumn = (
         columns: [
           {
             accessorKey: accessor,
-            header: () => <TableHeader twStyles={``} title={accessor} />,
+            header: () => <TableHeader title={accessor} tooltip={""} />,
             cell: ({ row }) => {
               return (
                 <>
@@ -137,7 +139,7 @@ export const createTableColumn = (
         columns: [
           {
             accessorKey: accessor,
-            header: () => <TableHeader twStyles={``} title={accessor} />,
+            header: () => <TableHeader title={accessor} tooltip={""} />,
             cell: ({ row }) => {
               return (
                 <animated.div
@@ -156,6 +158,47 @@ export const createTableColumn = (
           },
         ],
       };
+    case "SSMSAffectedCasesInCohort":
+      return {
+        header: " ",
+        footer: (props) => props.column.id,
+        columns: [
+          {
+            accessorKey: accessor,
+            header: () => (
+              <TableHeader
+                title={accessor}
+                tooltip={
+                  "Breakdown of Affected Cases in Cohort # of Cases where Gene is mutated / # Cases tested for Simple Somatic Mutations"
+                }
+              />
+            ),
+            cell: ({ row }) => {
+              return (
+                <animated.div
+                  style={partitionWidth}
+                  className={`content-center`}
+                >
+                  <div className={`flex flex-col`}>
+                    {row.getCanExpand() && (
+                      <AffectedCases
+                        ratio={
+                          row?.original[`SSMSAffectedCasesInCohort`]?.split(" ")
+                            ? row.original[`SSMSAffectedCasesInCohort`].split(
+                                " ",
+                              )
+                            : [0, "", "", ""]
+                        }
+                      />
+                    )}
+                  </div>
+                  <>{!row.getCanExpand() && subrow}</>
+                </animated.div>
+              );
+            },
+          },
+        ],
+      };
     case "SSMSAffectedCasesAcrossTheGDC":
       return {
         header: " ",
@@ -163,7 +206,14 @@ export const createTableColumn = (
         columns: [
           {
             accessorKey: accessor,
-            header: () => <TableHeader twStyles={``} title={accessor} />,
+            header: () => (
+              <TableHeader
+                title={accessor}
+                tooltip={
+                  "# of Cases where Gene contains Simple Somatic Mutations / # Cases tested for Simple Somatic Mutations portal wide | Expand to see breakdown by project"
+                }
+              />
+            ),
             cell: ({ row }) => {
               return (
                 <animated.div
@@ -220,7 +270,14 @@ export const createTableColumn = (
         columns: [
           {
             accessorKey: accessor,
-            header: () => <TableHeader twStyles={``} title={accessor} />,
+            header: () => (
+              <TableHeader
+                title={accessor}
+                tooltip={
+                  "# of Cases where CNV gain events are observed in Gene / # of Cases tested for Copy Number Alteration in Gene"
+                }
+              />
+            ),
             cell: ({ row }) => {
               return (
                 <animated.div
@@ -249,7 +306,14 @@ export const createTableColumn = (
         columns: [
           {
             accessorKey: accessor,
-            header: () => <TableHeader twStyles={``} title={accessor} />,
+            header: () => (
+              <TableHeader
+                title={accessor}
+                tooltip={
+                  "# of Cases where CNV loss events are observed in Gene / # of Cases tested for Copy Number Alteration in Gene"
+                }
+              />
+            ),
             cell: ({ row }) => {
               return (
                 <animated.div
@@ -278,7 +342,9 @@ export const createTableColumn = (
         columns: [
           {
             accessorKey: accessor,
-            header: () => <TableHeader twStyles={`ml-4`} title={accessor} />,
+            header: () => (
+              <TableHeader twStyles={`ml-4`} title={accessor} tooltip={""} />
+            ),
             cell: ({ row }) => {
               return (
                 <animated.div style={partitionWidth}>
@@ -305,6 +371,37 @@ export const createTableColumn = (
           },
         ],
       };
+    case "mutations":
+      return {
+        header: " ",
+        footer: (props) => props.column.id,
+        columns: [
+          {
+            accessorKey: accessor,
+            header: () => (
+              <TableHeader
+                title={accessor}
+                tooltip={"# Simple Somatic Mutations in the Gene in Cohort"}
+              />
+            ),
+            cell: ({ row }) => {
+              return (
+                <animated.div style={partitionWidth}>
+                  <>
+                    <TableCell
+                      row={row}
+                      accessor={accessor}
+                      anchor={false}
+                      tooltip={""}
+                    />
+                    <>{!row.getCanExpand() && subrow}</>
+                  </>
+                </animated.div>
+              );
+            },
+          },
+        ],
+      };
     default:
       return {
         header: " ",
@@ -312,7 +409,7 @@ export const createTableColumn = (
         columns: [
           {
             accessorKey: accessor,
-            header: () => <TableHeader twStyles={`ml-4`} title={accessor} />,
+            header: () => <TableHeader title={accessor} tooltip={""} />,
             cell: ({ row }) => {
               return (
                 <animated.div style={partitionWidth}>
@@ -357,6 +454,8 @@ export const getGene = (
   cases: number,
   genesTotal: number,
 ): Gene => {
+  console.log("filtered", filteredCases);
+  console.log("g", g);
   return {
     select: g.gene_id,
     geneID: g.gene_id,
@@ -370,9 +469,9 @@ export const getGene = (
     type: g.biotype,
     cytoband: g.cytoband,
     SSMSAffectedCasesInCohort:
-      g.cnv_case > 0
-        ? `${g.cnv_case} / ${filteredCases} (${(
-            (100 * g.cnv_case) /
+      g.ssm_case > 0
+        ? `${g.ssm_case} / ${filteredCases} (${(
+            (100 * g.ssm_case) /
             filteredCases
           ).toFixed(2)}%)`
         : `0`,
