@@ -174,19 +174,17 @@ export const createTableColumn = (
             header: () => <TableHeader twStyles={`ml-4`} title={accessor} />,
             cell: ({ row }) => {
               return (
-                <div>
-                  <div className={`content-center`}>
-                    {row.getCanExpand() && (
-                      <CheckboxSpring
-                        isActive={row.original["select"] in selectedMutations}
-                        select={row}
-                        handleCheck={selectMutation}
-                        wSpring={partitionWidth}
-                      />
-                    )}
-                  </div>
+                <>
+                  {/* todo: make select/toggle columns fixed smaller width */}
+                  {row.getCanExpand() && (
+                    <CheckboxSpring
+                      isActive={row.original["select"] in selectedMutations}
+                      select={row}
+                      handleCheck={selectMutation}
+                    />
+                  )}
                   <>{!row.getCanExpand() && subrow}</>
-                </div>
+                </>
               );
             },
           },
@@ -470,7 +468,7 @@ export const getMutation = (
     aa_change = "",
     consequence_type = "",
   } = sm.consequence[0] ?? {};
-
+  console.log("sm", sm);
   return {
     select: sm.ssm_id,
     mutationID: sm.ssm_id,
@@ -482,17 +480,18 @@ export const getMutation = (
       aaChange: aa_change,
     },
     affectedCasesInCohort:
-      sm.filteredOccurences > 0
-        ? `${sm.filteredOccurences} / ${filteredCases} (${(
-            (100 * sm.filteredOccurences) /
+      sm.filteredOccurrences > 0
+        ? `${sm.filteredOccurrences} / ${filteredCases} (${(
+            (100 * sm.filteredOccurrences) /
             filteredCases
           ).toFixed(2)}%)`
         : `--`,
     affectedCasesAcrossTheGDC:
-      sm.occurence > 0
-        ? `${sm.occurence} / ${cases} (${((100 * sm.occurence) / cases).toFixed(
-            2,
-          )}%)`
+      sm.occurrence > 0
+        ? `${sm.occurrence} / ${cases} (${(
+            (100 * sm.occurrence) /
+            cases
+          ).toFixed(2)}%)`
         : `--`,
     cohort: {
       checked: true,

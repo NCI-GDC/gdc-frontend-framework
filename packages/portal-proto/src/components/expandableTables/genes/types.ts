@@ -36,7 +36,7 @@ export const DEFAULT_GTABLE_ORDER = [
   { id: "symbol", columnName: "Symbol", visible: true },
   { id: "name", columnName: "Name", visible: true },
   { id: "cytoband", columnName: "Cytoband", visible: true },
-  // { id: "type", columnName: "Type", visible: false },
+  { id: "type", columnName: "Type", visible: false },
   {
     id: "SSMSAffectedCasesInCohort",
     columnName: "# SSMS Affected Cases In Cohort",

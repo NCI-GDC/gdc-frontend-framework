@@ -37,6 +37,7 @@ interface Gene {
   select: string;
   geneID: string;
   name: string;
+  type: string;
   symbol: string;
   survival: Survival;
   CNVGain: string;
@@ -86,19 +87,17 @@ export const createTableColumn = (
             header: () => <TableHeader twStyles={`ml-4`} title={accessor} />,
             cell: ({ row }) => {
               return (
-                <div>
-                  <div className={`content-center`}>
-                    {row.getCanExpand() && (
-                      <CheckboxSpring
-                        isActive={row.original["select"] in selectedGenes}
-                        select={row}
-                        handleCheck={selectGene}
-                        wSpring={partitionWidth}
-                      />
-                    )}
-                  </div>
+                <>
+                  {/* todo: make select/toggle columns fixed smaller width */}
+                  {row.getCanExpand() && (
+                    <CheckboxSpring
+                      isActive={row.original["select"] in selectedGenes}
+                      select={row}
+                      handleCheck={selectGene}
+                    />
+                  )}
                   <>{!row.getCanExpand() && subrow}</>
-                </div>
+                </>
               );
             },
           },
@@ -368,6 +367,7 @@ export const getGene = (
     },
     symbol: g.symbol,
     name: g.name,
+    type: g.biotype,
     cytoband: g.cytoband,
     SSMSAffectedCasesInCohort:
       g.cnv_case > 0

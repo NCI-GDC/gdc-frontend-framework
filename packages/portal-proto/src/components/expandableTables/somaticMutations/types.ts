@@ -4,7 +4,7 @@ export const DEFAULT_SMTABLE_ORDER = [
   { id: "survival", columnName: "Survival", visible: true },
   { id: "mutationID", columnName: "Mutation ID", visible: false },
   { id: "DNAChange", columnName: "DNA Change", visible: true },
-  { id: "type", columnName: "Type", visible: true },
+  { id: "type", columnName: "Type", visible: false },
   { id: "consequences", columnName: "Consequences", visible: true },
   {
     id: "affectedCasesInCohort",
@@ -46,11 +46,11 @@ export interface Impacts {
 
 export interface SingleSomaticMutation {
   consequence: Consequence[];
-  filteredOccurences: number;
+  filteredOccurrences: number;
   ssm_id: string;
   genomic_dna_change: string;
   mutation_subtype: string;
-  occurence: number;
+  occurrence: number;
   score: number;
   id: string;
 }

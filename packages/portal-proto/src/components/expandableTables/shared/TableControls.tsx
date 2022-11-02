@@ -60,7 +60,6 @@ export const TableControls: React.FC<TableControlsProps> = ({
               {numberSpring.num.to((x) => x.toFixed(0))}
             </animated.div>
             <div className={`m-auto text-xs text-activeColor`}>
-              {/* {selectedOption ? selectedOption.label : ""} */}
               Save/Edit {label} Set
             </div>
             <div className={`h-full m-auto text-gray-300`}>|</div>
