@@ -85,6 +85,12 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         value: data?.projects.map((p) => p.key),
       },
     },
+    expand: [
+      "summary",
+      "summary.data_categories",
+      "summary.experimental_strategies",
+      "program",
+    ],
     size: data?.projects.length,
   });
   const [pageSize, setPageSize] = useState(10);
