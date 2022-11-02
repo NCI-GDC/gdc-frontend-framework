@@ -269,7 +269,7 @@ const download = async ({
       replacer,
     );
   } else {
-    if ((options?.method || "GET") === "POST") {
+    if ((options?.method || "GET") === "GET") {
       queryParams = Object.keys(params)
         .map((key) => key + "=" + params[key])
         .join("&");
