@@ -60,7 +60,8 @@ export const TableControls: React.FC<TableControlsProps> = ({
               {numberSpring.num.to((x) => x.toFixed(0))}
             </animated.div>
             <div className={`m-auto text-xs text-activeColor`}>
-              {selectedOption ? selectedOption.label : ""}
+              {/* {selectedOption ? selectedOption.label : ""} */}
+              Save/Edit {label} Set
             </div>
             <div className={`h-full m-auto text-gray-300`}>|</div>
             <animated.div className={`m-auto`} style={flipSpring}>
@@ -83,7 +84,10 @@ export const TableControls: React.FC<TableControlsProps> = ({
                   <animated.div className={`mx-auto mr-0.5`}>
                     {numberSpring.num.to((x) => x.toFixed(0))}
                   </animated.div>
-                  <span className={`m-auto ml-0.5`}>{label}</span>
+                  <span className={`m-auto ml-0.5`}>
+                    {label}
+                    {numSelected === 1 ? "" : "s"}
+                  </span>
                 </animated.div>
                 <animated.ul
                   className={`list-none rounded-b-md text-activeColor border border-1 border-activeColor`}

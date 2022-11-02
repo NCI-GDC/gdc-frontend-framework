@@ -87,7 +87,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       <div className={`flex flex-row absolute w-80`}>
         <TableControls
           numSelected={Object.keys(selectedMutations).length || 0}
-          label={`Mutations`}
+          label={`Mutation`}
           options={[
             { label: "Save/Edit Mutation Set", value: "placeholder" },
             { label: "Save as new mutation set", value: "save" },

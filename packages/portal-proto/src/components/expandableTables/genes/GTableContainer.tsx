@@ -83,7 +83,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
       <div className={`flex flex-row absolute w-60 ml-2`}>
         <TableControls
           numSelected={Object.keys(selectedGenes).length || 0}
-          label={`Genes`}
+          label={`Gene`}
           options={[
             { label: "Save/Edit Gene Set", value: "placeholder" },
             { label: "Save as new gene set", value: "save" },
