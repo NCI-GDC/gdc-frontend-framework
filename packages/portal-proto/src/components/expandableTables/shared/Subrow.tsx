@@ -1,12 +1,38 @@
+import {
+  GraphQLApiResponse,
+  GraphqlApiSliceRequest,
+  TableSubrowData,
+} from "@gff/core";
+import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
+import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { useSpring } from "react-spring";
 import ListSpring from "./ListSpring";
 
 export interface SubrowProps {
-  id: Record<string, string>;
+  id: string;
   firstColumn: string;
   accessor: string;
   width: number;
-  query: Function;
+  query: UseQuery<
+    QueryDefinition<
+      {
+        id: string;
+      },
+      (request: GraphqlApiSliceRequest) => Promise<
+        | {
+            error: unknown;
+            data?: undefined;
+          }
+        | {
+            data: GraphQLApiResponse<any>;
+            error?: undefined;
+          }
+      >,
+      never,
+      TableSubrowData,
+      "graphql"
+    >
+  >;
   subrowTitle: string;
 }
 

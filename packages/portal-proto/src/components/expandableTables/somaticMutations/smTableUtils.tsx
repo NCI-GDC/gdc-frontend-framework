@@ -153,9 +153,7 @@ export const createTableColumn = (
 ): TableColumnDefinition => {
   const subrow = (
     <Subrow
-      id={{
-        id: mutationID,
-      }}
+      id={mutationID}
       firstColumn={visibleColumns[0].id}
       accessor={accessor}
       width={width}

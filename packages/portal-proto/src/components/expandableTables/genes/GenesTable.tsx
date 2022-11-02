@@ -32,14 +32,8 @@ export const GenesTable: React.FC<GenesTableProps> = ({
 
   const useGeneTableFormat = useCallback(
     (initialData) => {
-      const {
-        cases,
-        // cnvCases,
-        mutationCounts,
-        filteredCases,
-        genes,
-        genes_total,
-      } = initialData;
+      const { cases, mutationCounts, filteredCases, genes, genes_total } =
+        initialData;
       return genes.map((gene) => {
         return getGene(
           gene,
@@ -107,7 +101,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
 
   // todo replace this callback w/ transformResponse inside rtk endpoint call
   const columns = useMemo<ColumnDef<GenesColumn>[]>(() => {
-    return visibleColumns
+    const vis = visibleColumns
       .map(({ id }) => id)
       .map((accessor) => {
         return createTableColumn(
@@ -122,6 +116,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
           geneID,
         );
       });
+    return vis;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visibleColumns, width, selectedGenes, geneID, setGeneID]);
 

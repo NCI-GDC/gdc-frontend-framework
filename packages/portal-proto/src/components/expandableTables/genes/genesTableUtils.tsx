@@ -67,9 +67,7 @@ export const createTableColumn = (
 ): TableColumnDefinition => {
   const subrow = (
     <Subrow
-      id={{
-        id: geneID,
-      }}
+      id={geneID}
       firstColumn={visibleColumns[0].id}
       accessor={accessor}
       width={width}

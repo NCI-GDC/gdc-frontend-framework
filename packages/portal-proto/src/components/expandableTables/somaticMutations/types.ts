@@ -1,6 +1,6 @@
 export const DEFAULT_SMTABLE_ORDER = [
   { id: "select", columnName: "Select", visible: true },
-  { id: "survival", columnName: "Surival", visible: true },
+  { id: "survival", columnName: "Survival", visible: true },
   { id: "mutationID", columnName: "Mutation ID", visible: false },
   { id: "DNAChange", columnName: "DNA Change", visible: true },
   { id: "type", columnName: "Type", visible: true },
