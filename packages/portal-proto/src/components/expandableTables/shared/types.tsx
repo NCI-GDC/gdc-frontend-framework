@@ -52,7 +52,7 @@ export const TableCell = ({
               : ``
           }`}
         >
-          <Tooltip label={`${tooltip}`} disabled={!tooltip.length}>
+          <Tooltip label={`${tooltip}`} disabled={!tooltip?.length}>
             <div>
               {row.original[`${accessor}`] ? row.original[`${accessor}`] : ""}
             </div>

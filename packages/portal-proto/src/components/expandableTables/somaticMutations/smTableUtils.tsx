@@ -40,7 +40,9 @@ export const Consequence = ({
       <div className={`flex flex-row w-max m-auto text-xs`}>
         <span className={`mx-0.5 font-bold`}>{formatConsequence}</span>
         <span className={`mx-0.5`}>{symbol}</span>
-        <span className={`mx-0.5`}>{aaChange}</span>
+        <Tooltip label={aaChange}>
+          <span className={`mx-0.5`}>{aaChange}</span>
+        </Tooltip>
       </div>
     </>
   );
@@ -190,6 +192,33 @@ export const createTableColumn = (
           },
         ],
       };
+    case "cohort":
+      return {
+        header: " ",
+        footer: (props) => props.column.id,
+        columns: [
+          {
+            accessorKey: accessor,
+            header: () => <TableHeader twStyles={``} title={accessor} />,
+            cell: ({ row }) => {
+              return (
+                <>
+                  {row.getCanExpand() && (
+                    <SwitchSpring
+                      isActive={row.original["cohort"].checked}
+                      icon={undefined} // todo add cohort icon
+                      selected={row.original["cohort"]}
+                      handleSwitch={undefined} // handleCohortSwitch
+                      tooltip={""}
+                    />
+                  )}
+                  <>{!row.getCanExpand() && subrow}</>
+                </>
+              );
+            },
+          },
+        ],
+      };
     case "survival":
       return {
         header: " ",
@@ -232,7 +261,7 @@ export const createTableColumn = (
                     <TableCell
                       row={row}
                       accessor={accessor}
-                      anchor={false}
+                      anchor={true}
                       tooltip={row.original["DNAChange"]}
                     />
                     <>{!row.getCanExpand() && subrow}</>
@@ -465,6 +494,9 @@ export const getMutation = (
             2,
           )}%)`
         : `--`,
+    cohort: {
+      checked: true,
+    },
     survival: {
       name: gene.name,
       symbol: gene.symbol,

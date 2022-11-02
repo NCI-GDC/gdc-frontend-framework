@@ -1,5 +1,6 @@
 export const DEFAULT_SMTABLE_ORDER = [
   { id: "select", columnName: "Select", visible: true },
+  { id: "cohort", columnName: "cohort", visible: false },
   { id: "survival", columnName: "Survival", visible: true },
   { id: "mutationID", columnName: "Mutation ID", visible: false },
   { id: "DNAChange", columnName: "DNA Change", visible: true },
@@ -70,7 +71,14 @@ export interface SomaticMutation {
   consequences: any;
   affectedCasesInCohort: string;
   affectedCasesAcrossTheGDC: string;
-  survival: any;
+  cohort: {
+    checked: boolean;
+  };
+  survival: {
+    checked: boolean;
+    symbol: string;
+    name: string;
+  };
   impact: Impact;
   subRows: string;
   ssmsTotal: number;
