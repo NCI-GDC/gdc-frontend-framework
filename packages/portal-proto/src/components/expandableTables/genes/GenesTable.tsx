@@ -101,7 +101,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
 
   // todo replace this callback w/ transformResponse inside rtk endpoint call
   const columns = useMemo<ColumnDef<GenesColumn>[]>(() => {
-    const vis = visibleColumns
+    return visibleColumns
       .map(({ id }) => id)
       .map((accessor) => {
         return createTableColumn(
@@ -116,7 +116,6 @@ export const GenesTable: React.FC<GenesTableProps> = ({
           geneID,
         );
       });
-    return vis;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visibleColumns, width, selectedGenes, geneID, setGeneID]);
 

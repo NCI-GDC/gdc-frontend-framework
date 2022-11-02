@@ -1,5 +1,4 @@
 import { useGenesTable } from "@gff/core";
-import { useGetGeneTableQuery } from "@gff/core";
 import { useState, useEffect } from "react";
 import { GenesTable } from "./GenesTable";
 import { useMeasure } from "react-use";
@@ -25,25 +24,12 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
   const [ref, { width }] = useMeasure();
-  const [selectedGenes, setSelectedGenes] = useState<any>({}); // todo: add type
+  const [selectedGenes, setSelectedGenes] = useState({});
   const [gTotal, setGTotal] = useState(0);
 
-  // const { data } = useGenesTable({
-  //   pageSize: pageSize,
-  //   offset: page * pageSize,
-  // });
-
-  const { data, isFetching, isSuccess, isError } = useGetGeneTableQuery({
+  const { data } = useGenesTable({
     pageSize: pageSize,
     offset: page * pageSize,
-    filters: [
-      {
-        content: {
-          field: "genes.is_cancer_gene_census",
-          value: ["true"],
-        },
-      },
-    ],
   });
 
   useEffect(() => {
@@ -124,7 +110,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           }
         />
       </div>
-      {/* {data?.status === "fulfilled" &&
+      {data?.status === "fulfilled" &&
       data?.genes?.mutationCounts &&
       data?.genes?.filteredCases &&
       data?.genes?.cases ? (
@@ -144,7 +130,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         </div>
       ) : (
         <TableLoader cellWidth={`w-[75px]`} rowHeight={60} />
-      )} */}
+      )}
       <div className={`flex flex-row w-9/12 ml-2 mt-0 m-auto mb-2`}>
         <div className="m-auto ml-0">
           <span className="my-auto mx-1 text-xs">Show</span>
@@ -155,9 +141,11 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           <span>
             Showing
             <span className={`font-bold`}>{` ${page * pageSize + 1} `}</span>-
-            <span className={`font-bold`}>{` ${
-              (page + 1) * pageSize < gTotal ? (page + 1) * pageSize : gTotal
-            } `}</span>
+            <span className={`font-bold`}>
+              {` ${
+                (page + 1) * pageSize < gTotal ? (page + 1) * pageSize : gTotal
+              } `}
+            </span>
             of
             <span className={`font-bold`}>{` ${gTotal} `}</span>
             genes
