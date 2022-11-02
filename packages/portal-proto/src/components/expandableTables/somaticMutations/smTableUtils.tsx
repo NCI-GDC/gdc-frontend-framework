@@ -12,9 +12,10 @@ import {
 import { SingleSomaticMutation, SomaticMutation, Impacts } from "./types";
 import CheckboxSpring from "../shared/CheckboxSpring";
 import { Survival } from "../shared/types";
-import { SMSubrow } from "./SMSubRow";
 import { Tooltip } from "@mantine/core";
 import { TableColumnDefinition, WidthSpring } from "../shared/types";
+import { Subrow } from "../shared/Subrow";
+import { useGetSomaticMutationTableSubrowQuery } from "@gff/core";
 
 export interface ConsequenceProps {
   consequenceType: string;
@@ -150,7 +151,18 @@ export const createTableColumn = (
   setMutationID: Dispatch<SetStateAction<string>>,
   mutationID: string,
 ): TableColumnDefinition => {
-  console.log("selectedMutations", selectedMutations);
+  const subrow = (
+    <Subrow
+      id={{
+        id: mutationID,
+      }}
+      firstColumn={visibleColumns[0].id}
+      accessor={accessor}
+      width={width}
+      query={useGetSomaticMutationTableSubrowQuery}
+      subrowTitle={`Affected Cases Across The GDC`}
+    />
+  );
   switch (accessor) {
     case "select":
       return {
@@ -173,15 +185,7 @@ export const createTableColumn = (
                       />
                     )}
                   </div>
-                  <>
-                    <SMSubrow
-                      mutationId={mutationID}
-                      firstColumn={visibleColumns[0].id}
-                      accessor={accessor}
-                      width={width}
-                      opening={row.getCanExpand()}
-                    />
-                  </>
+                  <>{!row.getCanExpand() && subrow}</>
                 </div>
               );
             },
@@ -208,15 +212,7 @@ export const createTableColumn = (
                       tooltip={`Click icon to plot ${row.original["survival"].symbol}`}
                     />
                   )}
-                  <>
-                    <SMSubrow
-                      mutationId={mutationID}
-                      firstColumn={visibleColumns[0].id}
-                      accessor={accessor}
-                      width={width}
-                      opening={row.getCanExpand()}
-                    />
-                  </>
+                  <>{!row.getCanExpand() && subrow}</>
                 </>
               );
             },
@@ -261,15 +257,7 @@ export const createTableColumn = (
                       </div>
                     )}
                   </>
-                  <>
-                    <SMSubrow
-                      mutationId={mutationID}
-                      firstColumn={visibleColumns[0].id}
-                      accessor={accessor}
-                      width={width}
-                      opening={row.getCanExpand()}
-                    />
-                  </>
+                  <>{!row.getCanExpand() && subrow}</>
                 </animated.div>
               );
             },
@@ -293,15 +281,7 @@ export const createTableColumn = (
                   {row.getCanExpand() && (
                     <TableCell row={row} accessor={accessor} anchor={false} />
                   )}
-                  <>
-                    <SMSubrow
-                      mutationId={mutationID}
-                      firstColumn={visibleColumns[0].id}
-                      accessor={accessor}
-                      width={width}
-                      opening={row.getCanExpand()}
-                    />
-                  </>
+                  <>{!row.getCanExpand() && subrow}</>
                 </animated.div>
               );
             },
@@ -325,15 +305,7 @@ export const createTableColumn = (
                   {row.getCanExpand() && (
                     <Consequence consequence={row.original["consequences"]} />
                   )}
-                  <>
-                    <SMSubrow
-                      mutationId={mutationID}
-                      firstColumn={visibleColumns[0].id}
-                      accessor={accessor}
-                      width={width}
-                      opening={row.getCanExpand()}
-                    />
-                  </>
+                  <>{!row.getCanExpand() && subrow}</>
                 </animated.div>
               );
             },
@@ -357,15 +329,7 @@ export const createTableColumn = (
                   {row.getCanExpand() && (
                     <Impact impact={row.original["impact"]} />
                   )}
-                  <>
-                    <SMSubrow
-                      mutationId={mutationID}
-                      firstColumn={visibleColumns[0].id}
-                      accessor={accessor}
-                      width={width}
-                      opening={row.getCanExpand()}
-                    />
-                  </>
+                  <>{!row.getCanExpand() && subrow}</>
                 </animated.div>
               );
             },
@@ -385,15 +349,7 @@ export const createTableColumn = (
                 <animated.div style={partitionWidth}>
                   <>
                     <TableCell row={row} accessor={accessor} anchor={false} />
-                    <>
-                      <SMSubrow
-                        mutationId={mutationID}
-                        firstColumn={visibleColumns[0].id}
-                        accessor={accessor}
-                        width={width}
-                        opening={row.getCanExpand()}
-                      />
-                    </>
+                    <>{!row.getCanExpand() && subrow}</>
                   </>
                 </animated.div>
               );

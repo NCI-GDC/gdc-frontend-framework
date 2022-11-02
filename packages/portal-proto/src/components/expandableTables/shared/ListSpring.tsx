@@ -8,7 +8,7 @@ interface ListSpringProps {
   subData: any;
   horizontalSpring: any;
   isFetching: boolean;
-  subrowTitle: string;
+  subrowTitle;
 }
 
 const ListSpring: React.FC<ListSpringProps> = ({
@@ -55,13 +55,15 @@ const ListSpring: React.FC<ListSpringProps> = ({
         className={`flex flex-wrap bg-white absolute mt-2 ml-2`}
         style={horizontalSpring}
       >
-        <h2 className={`flex flex-row w-screen font-bold text-sm p-2`}>
-          {subrowTitle}
-        </h2>
         {isFetching ? (
           <Loader />
         ) : (
-          subData.map((item, i) => renderItems(item, i))
+          <>
+            <h2 className={`flex flex-row w-screen font-bold text-sm p-2`}>
+              {subrowTitle}
+            </h2>
+            {subData.map((item, i) => renderItems(item, i))}
+          </>
         )}
       </animated.div>
       <animated.div style={verticalSpring}></animated.div>

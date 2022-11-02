@@ -51,10 +51,14 @@ export const ExpTable: React.FC<ExpTableProps> = ({
   const unitSpring = useSpring({
     from: {
       opacity: 0,
-      transform: "translate3D(0, -120px, 0)",
-      width: headerWidth / 2,
+      transform: "translate3D(0, -100px, 0)",
+      width: 0,
     },
-    to: { opacity: 1, transform: "translate3D(0, 0, 0)", width: headerWidth },
+    to: {
+      opacity: 1,
+      transform: "translate3D(0, 0, 0)",
+      width: headerWidth,
+    },
     immediate: true,
   });
   const selectAllActive =

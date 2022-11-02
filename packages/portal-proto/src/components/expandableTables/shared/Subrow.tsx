@@ -1,43 +1,40 @@
 import { useSpring } from "react-spring";
-import ListSpring from "../shared/ListSpring";
-import { useGetGeneTableSubrowQuery } from "@gff/core";
+import ListSpring from "./ListSpring";
 
-export interface GeneSubrowProps {
-  geneId: string;
+export interface SubrowProps {
+  id: Record<string, string>;
   firstColumn: string;
   accessor: string;
   width: number;
-  opening: boolean;
+  query: Function;
+  subrowTitle: string;
 }
 
-export const GSubrow: React.FC<GeneSubrowProps> = ({
-  geneId,
+export const Subrow: React.FC<SubrowProps> = ({
+  id,
   firstColumn,
   accessor,
   width,
-  opening,
-}: GeneSubrowProps) => {
+  query,
+  subrowTitle,
+}: SubrowProps) => {
   const horizontalSpring = useSpring({
     from: { width: width / 2, opacity: 0 },
     to: { width: width, opacity: 1 },
     immediate: true,
   });
 
-  const {
-    data: subData,
-    isFetching,
-    isSuccess,
-  } = useGetGeneTableSubrowQuery({ geneId });
+  const { data: subData, isFetching, isSuccess } = query({ id });
 
   return (
     <>
-      {!opening && firstColumn === accessor && isSuccess && (
+      {firstColumn === accessor && isSuccess && (
         <div className={`relative`}>
           <ListSpring
             subData={subData}
             isFetching={isFetching}
             horizontalSpring={horizontalSpring}
-            subrowTitle={`# SSMS Affected Cases Across The GDC`}
+            subrowTitle={subrowTitle}
           />
         </div>
       )}
@@ -45,4 +42,4 @@ export const GSubrow: React.FC<GeneSubrowProps> = ({
   );
 };
 
-export default GSubrow;
+export default Subrow;

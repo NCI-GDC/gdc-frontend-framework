@@ -15,7 +15,8 @@ import {
   TableColumnDefinition,
   WidthSpring,
 } from "../shared/types";
-import { GSubrow } from "./GSubrow";
+import { Subrow } from "../shared/Subrow";
+import { useGetGeneTableSubrowQuery } from "@gff/core";
 
 interface SingleGene {
   biotype: string;
@@ -64,7 +65,18 @@ export const createTableColumn = (
   setGeneID: Dispatch<SetStateAction<string>>,
   geneID: string,
 ): TableColumnDefinition => {
-  console.log("hm", setGeneID);
+  const subrow = (
+    <Subrow
+      id={{
+        id: geneID,
+      }}
+      firstColumn={visibleColumns[0].id}
+      accessor={accessor}
+      width={width}
+      query={useGetGeneTableSubrowQuery}
+      subrowTitle={`# SSMS Affected Cases Across The GDC`}
+    />
+  );
   switch (accessor) {
     case "select":
       return {
@@ -87,15 +99,7 @@ export const createTableColumn = (
                       />
                     )}
                   </div>
-                  <>
-                    <GSubrow
-                      geneId={geneID}
-                      firstColumn={visibleColumns[0].id}
-                      accessor={accessor}
-                      width={width}
-                      opening={row.getCanExpand()}
-                    />
-                  </>
+                  <>{!row.getCanExpand() && subrow}</>
                 </div>
               );
             },
@@ -122,15 +126,7 @@ export const createTableColumn = (
                       tooltip={`Click icon to plot ${row.original["survival"].symbol}`}
                     />
                   )}
-                  <>
-                    <GSubrow
-                      geneId={geneID}
-                      firstColumn={visibleColumns[0].id}
-                      accessor={accessor}
-                      width={width}
-                      opening={row.getCanExpand()}
-                    />
-                  </>
+                  <>{!row.getCanExpand() && subrow}</>
                 </>
               );
             },
@@ -156,15 +152,7 @@ export const createTableColumn = (
                       <AnnotationsIcon />
                     </div>
                   )}
-                  <>
-                    <GSubrow
-                      geneId={geneID}
-                      firstColumn={visibleColumns[0].id}
-                      accessor={accessor}
-                      width={width}
-                      opening={row.getCanExpand()}
-                    />
-                  </>
+                  <>{!row.getCanExpand() && subrow}</>
                 </animated.div>
               );
             },
@@ -221,15 +209,7 @@ export const createTableColumn = (
                       </div>
                     )}
                   </>
-                  <>
-                    <GSubrow
-                      geneId={geneID}
-                      firstColumn={visibleColumns[0].id}
-                      accessor={accessor}
-                      width={width}
-                      opening={row.getCanExpand()}
-                    />
-                  </>
+                  <>{!row.getCanExpand() && subrow}</>
                 </animated.div>
               );
             },
@@ -253,15 +233,7 @@ export const createTableColumn = (
                   {row.getCanExpand() && (
                     <TableCell row={row} accessor={accessor} anchor={false} />
                   )}
-                  <>
-                    <GSubrow
-                      geneId={geneID}
-                      firstColumn={visibleColumns[0].id}
-                      accessor={accessor}
-                      width={width}
-                      opening={row.getCanExpand()}
-                    />
-                  </>
+                  <>{!row.getCanExpand() && subrow}</>
                 </animated.div>
               );
             },
@@ -285,15 +257,7 @@ export const createTableColumn = (
                   {row.getCanExpand() && (
                     <TableCell row={row} accessor={accessor} anchor={false} />
                   )}
-                  <>
-                    <GSubrow
-                      geneId={geneID}
-                      firstColumn={visibleColumns[0].id}
-                      accessor={accessor}
-                      width={width}
-                      opening={row.getCanExpand()}
-                    />
-                  </>
+                  <>{!row.getCanExpand() && subrow}</>
                 </animated.div>
               );
             },
@@ -326,15 +290,7 @@ export const createTableColumn = (
                         })}
                       </div>
                     )}
-                    <>
-                      <GSubrow
-                        geneId={geneID}
-                        firstColumn={visibleColumns[0].id}
-                        accessor={accessor}
-                        width={width}
-                        opening={row.getCanExpand()}
-                      />
-                    </>
+                    <>{!row.getCanExpand() && subrow}</>
                   </>
                 </animated.div>
               );
@@ -359,15 +315,7 @@ export const createTableColumn = (
                       accessor={accessor}
                       anchor={["symbol"].includes(accessor) ? true : false}
                     />
-                    <>
-                      <GSubrow
-                        geneId={geneID}
-                        firstColumn={visibleColumns[0].id}
-                        accessor={accessor}
-                        width={width}
-                        opening={row.getCanExpand()}
-                      />
-                    </>
+                    <>{!row.getCanExpand() && subrow}</>
                   </>
                 </animated.div>
               );

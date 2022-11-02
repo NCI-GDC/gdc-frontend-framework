@@ -24,7 +24,7 @@ export interface TableSubrowData {
 export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
   endpoints: (builder) => ({
     getGeneTableSubrow: builder.query({
-      query: (request: { geneId: string }) => ({
+      query: (request: { id: string }) => ({
         graphQLQuery: `
                     query GeneTableSubrow(
                         $filters_case: FiltersArgument
@@ -71,7 +71,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
               {
                 content: {
                   field: "genes.gene_id",
-                  value: [request.geneId],
+                  value: [request.id],
                 },
                 op: "in",
               },
@@ -109,7 +109,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
       },
     }),
     getSomaticMutationTableSubrow: builder.query({
-      query: (request: { mutationId: string }) => ({
+      query: (request: { id: string }) => ({
         graphQLQuery: `
                 query SomaticMutationTableSubrow(
                   $filters_case: FiltersArgument
@@ -155,7 +155,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
               {
                 content: {
                   field: "ssms.ssm_id",
-                  value: [request.mutationId],
+                  value: [request.id],
                 },
                 op: "in",
               },
