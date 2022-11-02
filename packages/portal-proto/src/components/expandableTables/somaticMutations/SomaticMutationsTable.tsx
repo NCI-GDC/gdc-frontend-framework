@@ -55,6 +55,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   useEffect(() => {
     if (transformResponse[0]?.ssmsTotal)
       handleSMTotal(transformResponse[0].ssmsTotal);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transformResponse]);
 
   const handleExpandedProxy = (exp: ExpandedState) => {
@@ -84,6 +85,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
       setExpanded({ [subsequentExpandId]: true });
       setExpandedProxy({ [subsequentExpandId]: true }); // this line used for rerender
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [expandedProxy]);
 
   const getSpringWidth = (w, vc) => {
@@ -99,7 +101,6 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
     setVisibleColumns(columnListOrder.filter((col) => col.visible));
   }, [columnListOrder]);
 
-  // todo replace this callback w/ transformResponse inside rtk endpoint call
   const columns = useMemo<ColumnDef<MutationsColumn>[]>(() => {
     return visibleColumns
       .map(({ id }) => id)
@@ -116,6 +117,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
           mutationID,
         );
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visibleColumns, width, selectedMutations, mutationID, setMutationID]);
 
   useEffect(() => {

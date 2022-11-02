@@ -1,5 +1,3 @@
-import { useState, useEffect } from "react";
-import { gql } from "graphql-request";
 import { useSpring } from "react-spring";
 import ListSpring from "../shared/ListSpring";
 import { useGetGeneTableSubrowQuery } from "@gff/core";

@@ -13,6 +13,7 @@ import CheckboxSpring from "../shared/CheckboxSpring";
 import { Survival } from "../shared/types";
 import { SMSubrow } from "./SMSubRow";
 import { Tooltip } from "@mantine/core";
+import { TableColumnDefinition } from "../shared/types";
 
 // export interface Mutation {
 
@@ -145,42 +146,6 @@ const Impact = ({ impact }: { impact: ImpactProps }): JSX.Element => {
   );
 };
 
-export const convertMutationFilter = (mutationId: string) => {
-  return {
-    filters_case: {
-      content: [
-        {
-          content: {
-            field: "cases.available_variation_data",
-            value: ["ssm"],
-          },
-          op: "in",
-        },
-      ],
-      op: "and",
-    },
-    filters_mutation: {
-      content: [
-        {
-          content: {
-            field: "ssms.ssm_id",
-            value: [mutationId],
-          },
-          op: "in",
-        },
-        {
-          content: {
-            field: "cases.gene.ssm.observation.observation_id",
-            value: "MISSING",
-          },
-          op: "NOT",
-        },
-      ],
-      op: "and",
-    },
-  };
-};
-
 export const createTableColumn = (
   accessor: string,
   width: number,
@@ -195,7 +160,7 @@ export const createTableColumn = (
   ) => any,
   setMutationID,
   mutationID,
-) => {
+): TableColumnDefinition => {
   console.log("selectedMutations", selectedMutations);
   switch (accessor) {
     case "select":
@@ -231,7 +196,6 @@ export const createTableColumn = (
                 </div>
               );
             },
-            footer: (props) => props.column.id,
           },
         ],
       };
@@ -320,7 +284,6 @@ export const createTableColumn = (
                 </animated.div>
               );
             },
-            footer: (props) => props.column.id,
           },
         ],
       };
@@ -353,7 +316,6 @@ export const createTableColumn = (
                 </animated.div>
               );
             },
-            footer: (props) => props.column.id,
           },
         ],
       };
@@ -386,7 +348,6 @@ export const createTableColumn = (
                 </animated.div>
               );
             },
-            footer: (props) => props.column.id,
           },
         ],
       };
@@ -419,7 +380,6 @@ export const createTableColumn = (
                 </animated.div>
               );
             },
-            footer: (props) => props.column.id,
           },
         ],
       };
@@ -449,7 +409,6 @@ export const createTableColumn = (
                 </animated.div>
               );
             },
-            footer: (props) => props.column.id,
           },
         ],
       };

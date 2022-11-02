@@ -35,7 +35,7 @@ export const DEFAULT_GTABLE_ORDER = [
   { id: "geneID", columnName: "Gene ID", visible: false },
   { id: "symbol", columnName: "Symbol", visible: true },
   { id: "name", columnName: "Name", visible: true },
-  // { id: "cytoband", columnName: "Cytoband", visible: false },
+  { id: "cytoband", columnName: "Cytoband", visible: true },
   // { id: "type", columnName: "Type", visible: false },
   {
     id: "SSMSAffectedCasesInCohort",

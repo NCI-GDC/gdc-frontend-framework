@@ -59,6 +59,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   useEffect(() => {
     if (transformResponse[0]?.genesTotal)
       handleGTotal(transformResponse[0].genesTotal);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transformResponse]);
 
   const handleExpandedProxy = (exp: ExpandedState) => {
@@ -88,6 +89,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
       setExpanded({ [subsequentExpandId]: true });
       setExpandedProxy({ [subsequentExpandId]: true }); // this line used for rerender
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [expandedProxy]);
 
   const getSpringWidth = (w, vc) => {
@@ -105,7 +107,6 @@ export const GenesTable: React.FC<GenesTableProps> = ({
 
   // todo replace this callback w/ transformResponse inside rtk endpoint call
   const columns = useMemo<ColumnDef<GenesColumn>[]>(() => {
-    console.log("selectedGenes", selectedGenes);
     return visibleColumns
       .map(({ id }) => id)
       .map((accessor) => {
@@ -121,6 +122,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
           geneID,
         );
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visibleColumns, width, selectedGenes, geneID, setGeneID]);
 
   useEffect(() => {

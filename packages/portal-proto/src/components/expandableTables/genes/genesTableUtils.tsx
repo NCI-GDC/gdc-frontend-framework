@@ -12,7 +12,7 @@ import {
   Survival,
 } from "../shared/types";
 import { GSubrow } from "./GSubrow";
-import { AffectedCases } from "../shared/types";
+import { AffectedCases, TableColumnDefinition } from "../shared/types";
 
 interface SingleGene {
   biotype: string;
@@ -43,7 +43,7 @@ export const createTableColumn = (
   ) => any,
   setGeneID: any,
   geneID: string,
-) => {
+): TableColumnDefinition => {
   switch (accessor) {
     case "select":
       return {
@@ -78,7 +78,6 @@ export const createTableColumn = (
                 </div>
               );
             },
-            footer: (props) => props.column.id,
           },
         ],
       };
@@ -148,7 +147,6 @@ export const createTableColumn = (
                 </animated.div>
               );
             },
-            footer: (props) => props.column.id,
           },
         ],
       };
@@ -214,7 +212,6 @@ export const createTableColumn = (
                 </animated.div>
               );
             },
-            footer: (props) => props.column.id,
           },
         ],
       };
@@ -247,7 +244,6 @@ export const createTableColumn = (
                 </animated.div>
               );
             },
-            footer: (props) => props.column.id,
           },
         ],
       };
@@ -280,7 +276,46 @@ export const createTableColumn = (
                 </animated.div>
               );
             },
-            footer: (props) => props.column.id,
+          },
+        ],
+      };
+    case "cytoband":
+      return {
+        header: " ",
+        footer: (props) => props.column.id,
+        columns: [
+          {
+            accessorKey: accessor,
+            header: () => <TableHeader twStyles={`ml-4`} title={accessor} />,
+            cell: ({ row }) => {
+              return (
+                <animated.div style={partitionWidth}>
+                  <>
+                    {row.getCanExpand() && (
+                      <div className={`flex flex-col`}>
+                        {/* {row.original["cytoband"].map(({ cytoband }) => {
+                          return <div className={`my-0.5`}>{cytoband}</div>
+                        })} */}
+                        <button
+                          onClick={() => console.log(row.original["cytoband"])}
+                        >
+                          hm
+                        </button>
+                      </div>
+                    )}
+                    <>
+                      <GSubrow
+                        geneId={geneID}
+                        firstColumn={visibleColumns[0].id}
+                        accessor={accessor}
+                        width={width}
+                        opening={row.getCanExpand()}
+                      />
+                    </>
+                  </>
+                </animated.div>
+              );
+            },
           },
         ],
       };
@@ -314,7 +349,6 @@ export const createTableColumn = (
                 </animated.div>
               );
             },
-            footer: (props) => props.column.id,
           },
         ],
       };
@@ -354,6 +388,7 @@ export const getGene = (
     },
     symbol: g.symbol,
     name: g.name,
+    cytoband: g.cytoband,
     SSMSAffectedCasesInCohort:
       g.cnv_case > 0
         ? `${g.cnv_case} / ${filteredCases} (${(
@@ -386,41 +421,5 @@ export const getGene = (
     // do not remove subRows key, its needed for row.getCanExpand() to be true
     subRows: " ",
     genesTotal,
-  };
-};
-
-export const convertGeneFilter = (geneId: string) => {
-  return {
-    filters_case: {
-      content: [
-        {
-          content: {
-            field: "cases.available_variation_data",
-            value: ["ssm"],
-          },
-          op: "in",
-        },
-      ],
-      op: "and",
-    },
-    filters_gene: {
-      op: "and",
-      content: [
-        {
-          content: {
-            field: "genes.gene_id",
-            value: [geneId],
-          },
-          op: "in",
-        },
-        {
-          op: "NOT",
-          content: {
-            field: "cases.gene.ssm.observation.observation_id",
-            value: "MISSING",
-          },
-        },
-      ],
-    },
   };
 };

@@ -78,7 +78,7 @@ export const AffectedCases = ({ ratio }: { ratio }): JSX.Element => {
   );
 };
 
-export const SurvivalIcon = () => {
+export const SurvivalIcon = (): JSX.Element => {
   return (
     <svg
       viewBox="0 0 2048 1536"
@@ -94,7 +94,7 @@ export const SurvivalIcon = () => {
   );
 };
 
-export const AnnotationsIcon = () => {
+export const AnnotationsIcon = (): JSX.Element => {
   return (
     <svg height={20} width={20} viewBox="0 0 950 742" version="1.1">
       <g>
@@ -111,6 +111,22 @@ export const AnnotationsIcon = () => {
   );
 };
 
-export const searchContains = (obj: any, field: string, searchTerm: string) => {
+export const searchContains = (
+  obj: unknown,
+  field: string,
+  searchTerm: string,
+): boolean => {
   return obj[`${field}`].toLowerCase().includes(searchTerm.toLowerCase());
 };
+
+export interface ColumnDefinition {
+  accessorKey: string;
+  header: () => JSX.Element;
+  cell: ({ row }: { row: any }) => JSX.Element;
+}
+
+export interface TableColumnDefinition {
+  header: string;
+  footer: (props: any) => string;
+  columns: ColumnDefinition[];
+}
