@@ -102,6 +102,7 @@ const dataFormats = [
   "BCR SSF XML",
   "BEDPE",
   "BCR AUXILIARY XML",
+  "BCR Auxiliary XML",
   "BCR OMF XML",
   "BCR BIOTAB",
   "BCR Biotab",
