@@ -12,6 +12,12 @@ import { useAppSelector } from "@/features/projectsCenter/appApi";
 import { selectFilters } from "@/features/projectsCenter/projectCenterFiltersSlice";
 import FunctionButton from "@/components/FunctionButton";
 import { statusBooleansToDataStatus } from "@/features/shared/utils";
+import { selectPickedProjects } from "@/features/projectsCenter/selectedProjectsSlice";
+import {
+  SelectProjectButton,
+  SelectAllProjectsButton,
+} from "@/features/projectsCenter/SelectProjectButton";
+import { Checkbox } from "@mantine/core";
 
 const extractToArray = (
   data: ReadonlyArray<Record<string, number | string>>,
@@ -23,11 +29,38 @@ interface CellProps {
   row: Row;
 }
 
+interface SelectableCellProps {
+  value: string;
+}
+
 const ProjectsTable: React.FC = () => {
   const [pageSize, setPageSize] = useState(20);
   const [activePage, setActivePage] = useState(1);
 
+  const projectFilters = useAppSelector((state) => selectFilters(state));
+  const { data, pagination, isSuccess, isFetching, isError } = useProjects({
+    filters: buildCohortGqlOperator(projectFilters),
+    expand: [
+      "summary", //annotations
+      "summary.experimental_strategies",
+      "summary.data_categories",
+      "program",
+    ],
+    size: pageSize,
+    from: (activePage - 1) * pageSize,
+    sortBy: [{ field: "summary.case_count", direction: "desc" }],
+  });
+
   const columnListOrder = [
+    {
+      id: "selected",
+      columnName: "Selected",
+      visible: true,
+      Header: <SelectAllProjectsButton></SelectAllProjectsButton>,
+      Cell: ({ value }: SelectableCellProps) => {
+        return <SelectProjectButton></SelectProjectButton>;
+      },
+    },
     {
       id: "project_id",
       columnName: "Project",
@@ -116,19 +149,6 @@ const ProjectsTable: React.FC = () => {
       sort: undefined,
       total: undefined,
     };
-  const projectFilters = useAppSelector((state) => selectFilters(state));
-  const { data, pagination, isSuccess, isFetching, isError } = useProjects({
-    filters: buildCohortGqlOperator(projectFilters),
-    expand: [
-      "summary", //annotations
-      "summary.experimental_strategies",
-      "summary.data_categories",
-      "program",
-    ],
-    size: pageSize,
-    from: (activePage - 1) * pageSize,
-    sortBy: [{ field: "summary.case_count", direction: "desc" }],
-  });
 
   useEffect(() => setActivePage(1), [projectFilters]);
 
@@ -142,6 +162,7 @@ const ProjectsTable: React.FC = () => {
         program,
         summary,
       }: ProjectDefaults) => ({
+        selected: project_id,
         project_id: (
           <Link href={`/projects/${project_id}`}>
             <a className="text-utility-link underline">{project_id}</a>
@@ -175,7 +196,7 @@ const ProjectsTable: React.FC = () => {
   //update everything that uses table component
   return (
     <VerticalTable
-      tableTitle={`Total of ${tempPagination?.total} Projects`}
+      tableTitle={`Total of ${tempPagination?.total} projects`}
       additionalControls={
         <div className="flex gap-2">
           <FunctionButton>JSON</FunctionButton>
