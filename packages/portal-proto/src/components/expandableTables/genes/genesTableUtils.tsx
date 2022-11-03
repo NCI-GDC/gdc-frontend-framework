@@ -116,6 +116,7 @@ export const createTableColumn = (
                 <>
                   {row.getCanExpand() && (
                     <SwitchSpring
+                      margin={`mt-1 ml-0.5`}
                       isActive={row.original["survival"].checked}
                       icon={<SurvivalIcon />}
                       selected={row.original["survival"]}
