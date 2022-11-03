@@ -89,7 +89,7 @@ const Impact = ({ impact }: { impact: Impacts }): JSX.Element => {
               <div className={`mt-1`}>{"MO"}</div>
             </div>
           ) : (
-            <div className={`${blankIconStyles} bg-white`}>
+            <div className={`${blankIconStyles} bg-inherit`}>
               <div className={`mt-1`}>{"_"}</div>
             </div>
           )}
@@ -117,7 +117,7 @@ const Impact = ({ impact }: { impact: Impacts }): JSX.Element => {
               <div className={`mt-1`}>{"TL"}</div>
             </div>
           ) : (
-            <div className={`${blankIconStyles} bg-white`}>
+            <div className={`${blankIconStyles} bg-inherit`}>
               <div className={`mb-2`}>{"_"}</div>
             </div>
           )}
@@ -141,7 +141,7 @@ const Impact = ({ impact }: { impact: Impacts }): JSX.Element => {
               <div className={`mt-1`}>{"UN"}</div>
             </div>
           ) : (
-            <div className={`${blankIconStyles} bg-white`}>
+            <div className={`${blankIconStyles} bg-inherit`}>
               <div className={`mb-2`}>{"_"}</div>
             </div>
           )}

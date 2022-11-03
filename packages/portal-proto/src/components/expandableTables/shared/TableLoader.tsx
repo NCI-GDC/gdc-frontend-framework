@@ -36,9 +36,7 @@ export const TableLoader: React.FC<TableLoaderProps> = ({
               return (
                 <animated.tr
                   key={`loader-row-${nIdx}`}
-                  // springs in the loop are constant wrt respective row index
-                  // "breaks" the rule because linter thinks im adding standard hook
-                  // like useEffect/useCallback/useMemo
+                  // linter wrong
                   // eslint-disable-next-line react-hooks/rules-of-hooks
                   style={useRowSpring(nIdx)}
                   className={`h-[${rowHeight}px] ${n === 0 ? "hidden" : ""} ${
