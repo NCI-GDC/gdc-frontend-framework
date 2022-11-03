@@ -76,7 +76,7 @@ const CollapsibleRow = ({
   };
 
   if (value.length === 0) {
-    return <div className="text-left mr-6 w-48">---</div>;
+    return <div className="text-left mr-6 w-48">--</div>;
   }
 
   if (value.length === 1) {
