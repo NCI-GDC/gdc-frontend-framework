@@ -9,8 +9,7 @@ describe("<ToggleFacet />", () => {
   it("test if ToggleFacet control has expected components", async () => {
     const { getByRole, getByText } = render(
       <ToggleFacet
-        docType="cases"
-        indexType="explore"
+        valueLabel="Cases"
         field="gene.is_cancer_gene_census"
         width="w-1/3"
         hooks={{
@@ -50,8 +49,7 @@ describe("<ToggleFacet />", () => {
   it("test when ToggleFacet control has data", async () => {
     const { getByRole, getByText } = render(
       <ToggleFacet
-        docType="cases"
-        indexType="explore"
+        valueLabel="Cases"
         field="gene.is_cancer_gene_census"
         width="w-1/3"
         hooks={{

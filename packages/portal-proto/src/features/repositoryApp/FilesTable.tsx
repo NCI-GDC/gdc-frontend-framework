@@ -12,7 +12,9 @@ import {
   fetchFiles,
   buildCohortGqlOperator,
   joinFilters,
+  useFilesSize,
 } from "@gff/core";
+import { MdSave } from "react-icons/md";
 import { useAppSelector } from "@/features/repositoryApp/appApi";
 import { selectFilters } from "@/features/repositoryApp/repositoryFiltersSlice";
 import FunctionButton from "@/components/FunctionButton";
@@ -107,12 +109,13 @@ const FilesTables: React.FC = () => {
     selectCurrentCohortFilters(state),
   );
   const allFilters = joinFilters(cohortFilters, repositoryFilters);
+  const cohortGqlOperator = buildCohortGqlOperator(allFilters);
   const coreDispatch = useCoreDispatch();
 
   const getCohortCases = (pageSize = 20, offset = 0) => {
     coreDispatch(
       fetchFiles({
-        filters: buildCohortGqlOperator(allFilters),
+        filters: cohortGqlOperator,
         expand: [
           "annotations", //annotations
           "cases.project", //project_id
@@ -193,13 +196,32 @@ const FilesTables: React.FC = () => {
   };
 
   //update everything that uses table component
+  let totalFileSize = "--";
+
+  const fileSizeSliceData = useFilesSize(cohortGqlOperator);
+  if (fileSizeSliceData.isSuccess && fileSizeSliceData?.data?.total_file_size) {
+    totalFileSize = fileSize(fileSizeSliceData.data.total_file_size);
+  }
+
   return (
     <VerticalTable
-      tableTitle={`Total of ${tempPagination?.total?.toLocaleString()} files`}
       additionalControls={
-        <div className="flex gap-2">
-          <FunctionButton onClick={handleDownloadJSON}>JSON</FunctionButton>
-          <FunctionButton onClick={handleDownloadTSV}>TSV</FunctionButton>
+        <div className="flex">
+          <div className="flex gap-2">
+            <FunctionButton onClick={handleDownloadJSON}>JSON</FunctionButton>
+            <FunctionButton onClick={handleDownloadTSV}>TSV</FunctionButton>
+          </div>
+          <div className="flex gap-2 w-full flex-row-reverse text-xl">
+            <div className="pr-5">
+              <MdSave className="ml-2 mr-1 mb-1 inline-block" />
+              <span>{totalFileSize}</span>
+            </div>
+            <div className="">
+              Total of{" "}
+              <strong>{tempPagination?.total?.toLocaleString() || "--"}</strong>{" "}
+              Files
+            </div>
+          </div>
         </div>
       }
       tableData={formattedTableData}

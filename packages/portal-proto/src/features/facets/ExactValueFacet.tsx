@@ -19,7 +19,7 @@ import {
 
 type ExactValueProps = Omit<
   FacetCardProps<ValueFacetHooks>,
-  "showSearch" | "showFlip" | "showPercent"
+  "showSearch" | "showFlip" | "showPercent" | "valueLabel"
 >;
 
 const instanceOfIncludesExcludes = (op: Operation): op is Includes | Excludes =>
