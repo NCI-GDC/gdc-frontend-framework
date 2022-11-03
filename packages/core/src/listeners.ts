@@ -64,17 +64,17 @@ startCoreListening({
     const cohort = cohortSelectors.selectById(
       listenerApi.getState(),
       listenerApi.getState().cohort.availableCohorts.currentCohort,
-    );
+    ); // not cohort or no filters do not create a caseSet
     if (cohort === undefined) return;
     if (
       cohort.filters == undefined ||
       Object.entries(cohort.filters.root).length === 0
     )
       return;
-    // cohort switched to a cohort without a caseSet defined.
-    // so create a caseSetId in the explore index that will used
+    // cohort switched to a cohort that has defined filters
+    // so create a caseSetId in the explore index that will be used
     // to query across all indexes
-    if (Object.keys(cohort.caseSet.caseSetId.root).length == 0) {
+    if (cohort.caseSet.status == "uninitialized") {
       await listenerApi.dispatch(createCaseSet({ index: "explore" }));
     }
   },
