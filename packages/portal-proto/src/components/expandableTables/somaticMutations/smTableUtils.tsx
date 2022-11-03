@@ -357,18 +357,20 @@ export const createTableColumn = (
                   className={`content-center`}
                 >
                   {row.getCanExpand() && (
-                    <TableCell
-                      row={row}
-                      accessor={accessor}
-                      anchor={false}
-                      tooltip={""}
-                    />
+                    <>
+                      <TableCell
+                        row={row}
+                        accessor={accessor}
+                        anchor={false}
+                        tooltip={""}
+                      />
+                      <PercentageBar
+                        numerator={50}
+                        denominator={100}
+                        width={width / visibleColumns?.length ?? 80}
+                      />
+                    </>
                   )}
-                  <PercentageBar
-                    numerator={50}
-                    denominator={100}
-                    width={width / visibleColumns?.length ?? 80}
-                  />
                   <>{!row.getCanExpand() && subrow}</>
                 </animated.div>
               );
