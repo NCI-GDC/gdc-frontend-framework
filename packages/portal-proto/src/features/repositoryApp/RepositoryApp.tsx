@@ -158,6 +158,7 @@ export default createGdcAppWithOwnStore({
   requiredEntityTypes: ["file"],
   store: AppStore,
   context: AppContext,
+  persist: true,
 });
 
 export const RepositoryAppId: string = id;

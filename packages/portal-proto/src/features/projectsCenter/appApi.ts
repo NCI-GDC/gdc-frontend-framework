@@ -1,5 +1,5 @@
-import { projectCenterFiltersReducer } from "./projectCenterFiltersSlice";
 import { createAppStore } from "@gff/core";
+import { projectCenterFiltersReducer } from "./projectCenterFiltersSlice";
 
 // create the store, context and selector for the ProjectsCenter
 // Note the project app has a local store and context which isolates
