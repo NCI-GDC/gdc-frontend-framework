@@ -11,7 +11,7 @@ import {
 } from "../shared/types";
 import { SingleSomaticMutation, SomaticMutation, Impacts } from "./types";
 import CheckboxSpring from "../shared/CheckboxSpring";
-import Percentagebar from "../shared/PercentageBar";
+import PercentageBar from "../shared/PercentageBar";
 import { Survival } from "../shared/types";
 import { Tooltip } from "@mantine/core";
 import { TableColumnDefinition, WidthSpring } from "../shared/types";
@@ -154,16 +154,16 @@ export const createTableColumn = (
   setMutationID: Dispatch<SetStateAction<string>>,
   mutationID: string,
 ): TableColumnDefinition => {
-  const subrow = (
-    <Subrow
-      id={mutationID}
-      firstColumn={visibleColumns[0].id}
-      accessor={accessor}
-      width={width}
-      query={useGetSomaticMutationTableSubrowQuery}
-      subrowTitle={`Affected Cases Across The GDC`}
-    />
-  );
+  // subrow position relative to first column
+  const subrow =
+    visibleColumns[0].id === accessor ? (
+      <Subrow
+        id={mutationID}
+        width={width}
+        query={useGetSomaticMutationTableSubrowQuery}
+        subrowTitle={`Affected Cases Across The GDC`}
+      />
+    ) : null;
   switch (accessor) {
     case "select":
       return {
@@ -364,6 +364,11 @@ export const createTableColumn = (
                       tooltip={""}
                     />
                   )}
+                  <PercentageBar
+                    numerator={50}
+                    denominator={100}
+                    width={width / visibleColumns?.length ?? 80}
+                  />
                   <>{!row.getCanExpand() && subrow}</>
                 </animated.div>
               );

@@ -66,16 +66,16 @@ export const createTableColumn = (
   setGeneID: Dispatch<SetStateAction<string>>,
   geneID: string,
 ): TableColumnDefinition => {
-  const subrow = (
-    <Subrow
-      id={geneID}
-      firstColumn={visibleColumns[0].id}
-      accessor={accessor}
-      width={width}
-      query={useGetGeneTableSubrowQuery}
-      subrowTitle={`# SSMS Affected Cases Across The GDC`}
-    />
-  );
+  // subrow position relative to first column
+  const subrow =
+    visibleColumns[0].id === accessor ? (
+      <Subrow
+        id={geneID}
+        width={width}
+        query={useGetGeneTableSubrowQuery}
+        subrowTitle={`# SSMS Affected Cases Across The GDC`}
+      />
+    ) : null;
   switch (accessor) {
     case "select":
       return {
@@ -84,9 +84,7 @@ export const createTableColumn = (
         columns: [
           {
             accessorKey: accessor,
-            header: () => (
-              <TableHeader twStyles={`ml-4`} title={accessor} tooltip={""} />
-            ),
+            header: () => <TableHeader title={accessor} tooltip={""} />,
             cell: ({ row }) => {
               return (
                 <>
@@ -342,9 +340,7 @@ export const createTableColumn = (
         columns: [
           {
             accessorKey: accessor,
-            header: () => (
-              <TableHeader twStyles={`ml-4`} title={accessor} tooltip={""} />
-            ),
+            header: () => <TableHeader title={accessor} tooltip={""} />,
             cell: ({ row }) => {
               return (
                 <animated.div style={partitionWidth}>
@@ -454,8 +450,6 @@ export const getGene = (
   cases: number,
   genesTotal: number,
 ): Gene => {
-  console.log("filtered", filteredCases);
-  console.log("g", g);
   return {
     select: g.gene_id,
     geneID: g.gene_id,

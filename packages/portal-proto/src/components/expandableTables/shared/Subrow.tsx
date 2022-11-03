@@ -10,8 +10,6 @@ import ListSpring from "./ListSpring";
 
 export interface SubrowProps {
   id: string;
-  firstColumn: string;
-  accessor: string;
   width: number;
   query: UseQuery<
     QueryDefinition<
@@ -38,8 +36,6 @@ export interface SubrowProps {
 
 export const Subrow: React.FC<SubrowProps> = ({
   id,
-  firstColumn,
-  accessor,
   width,
   query,
   subrowTitle,
@@ -54,7 +50,7 @@ export const Subrow: React.FC<SubrowProps> = ({
 
   return (
     <>
-      {firstColumn === accessor && isSuccess && (
+      {isSuccess && (
         <div className={`relative`}>
           <ListSpring
             subData={subData}
