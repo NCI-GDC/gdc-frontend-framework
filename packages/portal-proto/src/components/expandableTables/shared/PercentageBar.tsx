@@ -1,47 +1,50 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { animated, useSpring } from "react-spring";
 
 interface PercentageBarProps {
   numerator: number;
   denominator: number;
-  width: number;
+  scale: number;
 }
 
 const PercentageBar: React.FC<PercentageBarProps> = ({
   numerator,
   denominator,
-  width,
+  scale,
 }: PercentageBarProps) => {
-  const handleWidth = (ratio) => {
-    return Math.floor(ratio * 100) < 3
-      ? 0.035
-      : Math.floor(ratio * 100) > 97
-      ? 0.965
+  const handleEdgeWidth = (ratio) => {
+    return Math.floor(ratio * 100) <= 6
+      ? 0.055
+      : Math.floor(ratio * 100) >= 94
+      ? 0.945
       : ratio;
   };
 
   const nSpring = useSpring({
     from: { width: 0 },
-    to: { width: handleWidth(numerator / denominator) * (width / 2) },
+    to: { width: handleEdgeWidth(numerator / denominator) * (scale / 2) },
+    immediate: true,
   });
 
   const dSpring = useSpring({
-    from: { width: 0 },
+    from: { width: scale / 2 },
     to: {
-      width: handleWidth((denominator - numerator) / denominator) * (width / 2),
+      width:
+        handleEdgeWidth((denominator - numerator) / denominator) * (scale / 2),
     },
+    immediate: true,
   });
 
   return (
     <div className={`w-max flex flex-row h-3 m-auto mt-0.5`}>
       <animated.div
-        className={`border-1 border-r-0 rounded-tl-md rounded-bl-md bg-green-500`}
+        className={`border-1 border-r-0 rounded-tl-sm rounded-bl-sm bg-green-500`}
         style={nSpring}
       >
         {}
       </animated.div>
       <animated.div
-        className={`border-1 border-l-0 rounded-tr-md rounded-br-md bg-white`}
+        className={`border-1 border-l-0 rounded-tr-sm rounded-br-sm bg-white`}
         style={dSpring}
       >
         {}

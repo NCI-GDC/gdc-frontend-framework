@@ -8,6 +8,7 @@ interface SwitchSpringProps {
   selected: any;
   handleSwitch: any;
   tooltip: string;
+  margin: string;
 }
 
 const SwitchSpring: React.FC<SwitchSpringProps> = ({
@@ -16,6 +17,7 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
   selected,
   handleSwitch,
   tooltip = undefined,
+  margin,
 }: SwitchSpringProps) => {
   const ballSpring = useSpring({
     width: 20,
@@ -47,9 +49,9 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
               isActive ? `border-activeColor` : ``
             } bg-white ${icon ? `` : `rounded-xl`} ${
               isActive ? `bg-lightgray` : ``
-            } h-5 text-xs`}
+            } text-xs h-5`}
           >
-            <div className={`mt-1 ml-0.5`}>{icon}</div>
+            <div className={margin}>{icon}</div>
           </animated.div>
         </animated.div>
       </animated.div>

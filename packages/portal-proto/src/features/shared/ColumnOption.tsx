@@ -109,6 +109,7 @@ export const ColumnOption: FC<ColumnProps> = ({
           </div>
         </div>
         <SwitchSpring
+          margin={`mt-1 ml-0.5`}
           isActive={visible}
           icon={undefined}
           handleSwitch={toggleColumn}

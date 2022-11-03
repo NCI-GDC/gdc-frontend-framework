@@ -17,6 +17,7 @@ import { Tooltip } from "@mantine/core";
 import { TableColumnDefinition, WidthSpring } from "../shared/types";
 import { Subrow } from "../shared/Subrow";
 import { useGetSomaticMutationTableSubrowQuery } from "@gff/core";
+import { Image } from "@/components/Image";
 
 export const ProteinChange = ({
   proteinChange,
@@ -26,7 +27,7 @@ export const ProteinChange = ({
     aaChange: string;
   };
 }): JSX.Element => {
-  const { symbol, aaChange } = proteinChange;
+  const { symbol = "", aaChange = "" } = proteinChange;
   return (
     <div className={`flex flex-row w-max m-auto text-xs`}>
       <span className={`mx-0.5`}>{symbol}</span>
@@ -216,7 +217,14 @@ export const createTableColumn = (
                   {row.getCanExpand() && (
                     <SwitchSpring
                       isActive={row.original["cohort"].checked}
-                      icon={undefined} // todo add cohort icon
+                      margin={`my-0.5 ml-0`}
+                      icon={
+                        <Image
+                          src={"/user-flow/icons/cohort-dna.svg"}
+                          width={16}
+                          height={16}
+                        />
+                      }
                       selected={row.original["cohort"]}
                       handleSwitch={undefined} // handleCohortSwitch
                       tooltip={""}
@@ -242,6 +250,7 @@ export const createTableColumn = (
                 <>
                   {row.getCanExpand() && (
                     <SwitchSpring
+                      margin={`mt-1 ml-0.5`}
                       isActive={row.original["survival"].checked}
                       icon={<SurvivalIcon />}
                       selected={row.original["survival"]}
@@ -362,6 +371,10 @@ export const createTableColumn = (
               />
             ),
             cell: ({ row }) => {
+              const [numerator, slash, denominator, fraction] = row.original[
+                "affectedCasesInCohort"
+              ]?.split(" ") ?? ["0", "", "", ""];
+
               return (
                 <animated.div
                   style={partitionWidth}
@@ -376,9 +389,9 @@ export const createTableColumn = (
                         tooltip={""}
                       />
                       <PercentageBar
-                        numerator={50}
-                        denominator={100}
-                        width={width / visibleColumns?.length ?? 80}
+                        numerator={numerator}
+                        denominator={denominator}
+                        scale={width / visibleColumns?.length ?? 80}
                       />
                     </>
                   )}
