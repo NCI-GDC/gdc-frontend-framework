@@ -6,6 +6,7 @@ export const DEFAULT_SMTABLE_ORDER = [
   { id: "DNAChange", columnName: "DNA Change", visible: true },
   { id: "type", columnName: "Type", visible: false },
   { id: "consequences", columnName: "Consequences", visible: true },
+  { id: "proteinChange", columnName: "Protein Change", visible: true },
   {
     id: "affectedCasesInCohort",
     columnName: "# Affected Cases in Cohort",
@@ -68,7 +69,13 @@ export interface SomaticMutation {
   mutationID: string;
   DNAChange: string;
   type: string;
-  consequences: any;
+  consequences: {
+    consequenceType: string;
+  };
+  proteinChange: {
+    symbol: string;
+    aaChange: string;
+  };
   affectedCasesInCohort: string;
   affectedCasesAcrossTheGDC: string;
   cohort: {

@@ -18,18 +18,33 @@ import { TableColumnDefinition, WidthSpring } from "../shared/types";
 import { Subrow } from "../shared/Subrow";
 import { useGetSomaticMutationTableSubrowQuery } from "@gff/core";
 
-export interface ConsequenceProps {
-  consequenceType: string;
-  symbol: string;
-  aaChange: string;
-}
+export const ProteinChange = ({
+  proteinChange,
+}: {
+  proteinChange: {
+    symbol: string;
+    aaChange: string;
+  };
+}): JSX.Element => {
+  const { symbol, aaChange } = proteinChange;
+  return (
+    <div className={`flex flex-row w-max m-auto text-xs`}>
+      <span className={`mx-0.5`}>{symbol}</span>
+      <Tooltip label={aaChange}>
+        <span className={`mx-0.5`}>{aaChange}</span>
+      </Tooltip>
+    </div>
+  );
+};
 
 export const Consequence = ({
   consequence,
 }: {
-  consequence: ConsequenceProps;
+  consequence: {
+    consequenceType: string;
+  };
 }): JSX.Element => {
-  const { consequenceType = "", symbol = "", aaChange = "" } = consequence;
+  const { consequenceType = "" } = consequence;
   const cType = consequenceType.split("_")[0]
     ? consequenceType.split("_")[0]
     : ``;
@@ -40,10 +55,6 @@ export const Consequence = ({
     <>
       <div className={`flex flex-row w-max m-auto text-xs`}>
         <span className={`mx-0.5 font-bold`}>{formatConsequence}</span>
-        <span className={`mx-0.5`}>{symbol}</span>
-        <Tooltip label={aaChange}>
-          <span className={`mx-0.5`}>{aaChange}</span>
-        </Tooltip>
       </div>
     </>
   );
@@ -378,6 +389,32 @@ export const createTableColumn = (
           },
         ],
       };
+    case "proteinChange":
+      return {
+        header: " ",
+        footer: (props) => props.column.id,
+        columns: [
+          {
+            accessorKey: accessor,
+            header: () => <TableHeader title={accessor} tooltip={""} />,
+            cell: ({ row }) => {
+              return (
+                <animated.div
+                  style={partitionWidth}
+                  className={`content-center`}
+                >
+                  {row.getCanExpand() && (
+                    <ProteinChange
+                      proteinChange={row.original["proteinChange"]}
+                    />
+                  )}
+                  <>{!row.getCanExpand() && subrow}</>
+                </animated.div>
+              );
+            },
+          },
+        ],
+      };
     case "consequences":
       return {
         header: " ",
@@ -477,7 +514,13 @@ export type MutationsColumn = {
   mutationID: string;
   DNAChange: string;
   type: string;
-  consequences: ConsequenceProps;
+  consequences: {
+    consequenceType: string;
+  };
+  proteinChange: {
+    symbol: string;
+    aaChange: string;
+  };
   affectedCasesInCohort: string;
   affectedCasesAcrossTheGDC: string;
   survival: Survival;
@@ -516,6 +559,8 @@ export const getMutation = (
     type: filterMutationType(sm.mutation_subtype),
     consequences: {
       consequenceType: consequence_type,
+    },
+    proteinChange: {
       symbol: gene.symbol,
       aaChange: aa_change,
     },
