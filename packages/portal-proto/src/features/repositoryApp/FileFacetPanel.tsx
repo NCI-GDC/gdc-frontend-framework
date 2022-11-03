@@ -26,6 +26,8 @@ import { Group, Button, LoadingOverlay, Text, Modal } from "@mantine/core";
 import { MdAdd as AddAdditionalIcon } from "react-icons/md";
 import { FaUndo as UndoIcon } from "react-icons/fa";
 import isEqual from "lodash/isEqual";
+import partial from "lodash/partial";
+
 import {
   useLocalFilters,
   useRepositoryFilters,
@@ -35,15 +37,18 @@ import {
   useSelectFieldFilter,
   useRepositoryRangeFacet,
 } from "@/features/repositoryApp/hooks";
-import { useTotalCounts } from "@/features/facets/hooks";
+import {
+  FacetDocTypeToCountsIndexMap,
+  useTotalCounts,
+} from "@/features/facets/hooks";
 import { createFacetCard } from "@/features/facets/CreateFacetCard";
 import { clearRepositoryFilters } from "./repositoryFiltersSlice";
-import { AllHooks } from "@/features/facets/types";
+import { FacetRequiredHooks } from "@/features/facets/types";
 
 const useRepositoryEnumData = (
-  field: string,
   docType: GQLDocType,
   indexType: GQLIndexType,
+  field: string,
 ) =>
   useLocalFilters(
     field,
@@ -111,13 +116,20 @@ export const FileFacetPanel = (): JSX.Element => {
     (facetDef) => !getDefaultFacets().includes(facetDef.full),
   );
 
-  const FileFacetHooks: AllHooks = {
-    useGetEnumFacetData: useRepositoryEnumData,
-    useGetRangeFacetData: useRepositoryRangeFacet,
+  const FileFacetHooks: FacetRequiredHooks = {
+    useGetEnumFacetData: partial(useRepositoryEnumData, "files", "repository"),
+    useGetRangeFacetData: partial(
+      useRepositoryRangeFacet,
+      "files",
+      "repository",
+    ),
     useUpdateFacetFilters: useUpdateRepositoryFacetFilter,
     useGetFacetFilters: useSelectFieldFilter,
     useClearFilter: useClearRepositoryFilters,
-    useTotalCounts: useTotalCounts,
+    useTotalCounts: partial(
+      useTotalCounts,
+      FacetDocTypeToCountsIndexMap["files"],
+    ),
   };
 
   return (
@@ -151,7 +163,7 @@ export const FileFacetPanel = (): JSX.Element => {
           Add a File Filter
         </Text>
       </Button>
-      <div className="flex flex-col gap-y-4 mr-3 h-screen/1.5 overflow-y-scroll">
+      <div className="flex flex-col gap-y-4 mr-3 h-screen overflow-y-scroll">
         <Modal size="lg" opened={opened} onClose={() => setOpened(false)}>
           <FacetSelection
             title={"Add a File Filter"}
@@ -166,12 +178,11 @@ export const FileFacetPanel = (): JSX.Element => {
           const facetName = fieldNameToTitle(x.full, isDefault ? 1 : 2);
           return createFacetCard(
             x,
-            "files",
-            "repository",
+            "Files",
             FileFacetHooks,
             "repository-app",
             !isDefault ? handleRemoveFilter : undefined,
-            true,
+            false,
             facetName,
             "w-full",
           );

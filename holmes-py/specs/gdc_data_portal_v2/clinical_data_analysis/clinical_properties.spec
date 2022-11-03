@@ -17,7 +17,7 @@ Test clinical data properties section
     |---------------|-----------|
     |Gender         |Demographic|
     |Race           |           |
-    |Ethnicity      |           |       
+    |Ethnicity      |           |
     |Vital Status   |           |
     |Cause Of Death |           |
     |Days To Death  |           |

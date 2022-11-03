@@ -17,7 +17,7 @@ export const DeleteCohortNotification: React.FC<CohortNotificationProps> = ({
 }: CohortNotificationProps) => {
   return (
     <>
-      <p>{cohortName} has been deleted..</p>
+      <p>{cohortName} has been deleted.</p>
     </>
   );
 };

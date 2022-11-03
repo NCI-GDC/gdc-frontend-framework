@@ -11,5 +11,9 @@ border
 border-solid
 border-primary-darker
 hover:bg-primary-darker
+font-heading
 hover:text-primary-contrast-darker
+disabled:opacity-60
+disabled:border-opacity-60
+disabled:text-opacity-60
 `;

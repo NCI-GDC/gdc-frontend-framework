@@ -3,7 +3,6 @@ import fileSize from "filesize";
 import { VerticalTable } from "../shared/VerticalTable";
 import { SingleItemAddToCartButton } from "../cart/updateCart";
 import Link from "next/link";
-import { Badge } from "@mantine/core";
 import {
   useCoreDispatch,
   useCoreSelector,
@@ -12,10 +11,13 @@ import {
   fetchFiles,
   buildCohortGqlOperator,
   joinFilters,
+  useFilesSize,
 } from "@gff/core";
+import { MdSave } from "react-icons/md";
 import { useAppSelector } from "@/features/repositoryApp/appApi";
 import { selectFilters } from "@/features/repositoryApp/repositoryFiltersSlice";
 import FunctionButton from "@/components/FunctionButton";
+import { FileAccessBadge } from "@/components/FileAccessBadge";
 
 const FilesTables: React.FC = () => {
   const columnListOrder = [
@@ -75,17 +77,7 @@ const FilesTables: React.FC = () => {
           <a className="text-utility-link underline">{file.id}</a>
         </Link>
       ),
-      access: (
-        <Badge
-          className={
-            file.access === "open" //TODO: keep or change to theme color
-              ? "bg-nci-green-lighter/50 text-nci-green-darkest capitalize text-sm"
-              : "bg-nci-red-lighter/50 text-nci-red-darkest capitalize text-sm"
-          }
-        >
-          {file.access}
-        </Badge>
-      ),
+      access: <FileAccessBadge access={file.access} />,
       fileName: (
         <Link href={`/files/${file.id}`}>
           <a className="text-utility-link underline">{file.fileName}</a>
@@ -113,12 +105,13 @@ const FilesTables: React.FC = () => {
     selectCurrentCohortFilters(state),
   );
   const allFilters = joinFilters(cohortFilters, repositoryFilters);
+  const cohortGqlOperator = buildCohortGqlOperator(allFilters);
   const coreDispatch = useCoreDispatch();
 
   const getCohortCases = (pageSize = 20, offset = 0) => {
     coreDispatch(
       fetchFiles({
-        filters: buildCohortGqlOperator(allFilters),
+        filters: cohortGqlOperator,
         expand: [
           "annotations", //annotations
           "cases.project", //project_id
@@ -135,14 +128,32 @@ const FilesTables: React.FC = () => {
     getCohortCases(tempPagination.size, x - 1);
   };
 
-  //update everything that uses table component
+  let totalFileSize = "--";
+
+  const fileSizeSliceData = useFilesSize(cohortGqlOperator);
+  if (fileSizeSliceData.isSuccess && fileSizeSliceData?.data?.total_file_size) {
+    totalFileSize = fileSize(fileSizeSliceData.data.total_file_size);
+  }
+
   return (
     <VerticalTable
-      tableTitle={`Total of ${tempPagination?.total} files`}
       additionalControls={
-        <div className="flex gap-2">
-          <FunctionButton>JSON</FunctionButton>
-          <FunctionButton>TSV</FunctionButton>
+        <div className="flex">
+          <div className="flex gap-2">
+            <FunctionButton>JSON</FunctionButton>
+            <FunctionButton>TSV</FunctionButton>
+          </div>
+          <div className="flex gap-2 w-full flex-row-reverse text-xl">
+            <div className="pr-5">
+              <MdSave className="ml-2 mr-1 mb-1 inline-block" />
+              <span>{totalFileSize}</span>
+            </div>
+            <div className="">
+              Total of{" "}
+              <strong>{tempPagination?.total?.toLocaleString() || "--"}</strong>{" "}
+              Files
+            </div>
+          </div>
         </div>
       }
       tableData={formattedTableData}

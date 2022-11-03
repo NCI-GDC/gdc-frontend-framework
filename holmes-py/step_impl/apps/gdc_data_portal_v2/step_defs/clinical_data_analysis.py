@@ -12,7 +12,7 @@ def navigate_to_app():
     APP.clinical_data_analysis.visit()
 
 @step("Navigate to clinical data analysis page")
-def navigate_to_cdave_page(): 
+def navigate_to_cdave_page():
     APP.clinical_data_analysis.navigate_to_cdave_page()
 
 @step("Expand clinical property sections")
@@ -23,4 +23,3 @@ def expand_clinical_property_sections():
 def check_clinical_properties_in_pannel(table):
     is_property_table_valid = APP.clinical_data_analysis.validate_property_table(table)
     assert is_property_table_valid == True, is_property_table_valid
-

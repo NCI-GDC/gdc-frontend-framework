@@ -8,6 +8,8 @@ import {
 } from "@gff/core";
 import { VerticalTable } from "@/features/shared/VerticalTable";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
+import { Row } from "react-table";
+import Link from "next/link";
 
 interface GeneCancerDistributionTableProps {
   readonly gene: string;
@@ -33,6 +35,12 @@ export const GeneCancerDistributionTable: React.FC<
 interface SSMSCancerDistributionTableProps {
   readonly ssms: string;
 }
+
+interface CellProps {
+  value: string[];
+  row: Row;
+}
+
 export const SSMSCancerDistributionTable: React.FC<
   SSMSCancerDistributionTableProps
 > = ({ ssms }: SSMSCancerDistributionTableProps) => {
@@ -87,8 +95,22 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
   const columnListOrder = useMemo(() => {
     const columns = [
       { id: "project", columnName: "Project", visible: true },
-      { id: "disease_type", columnName: "Disease Type", visible: true },
-      { id: "primary_site", columnName: "Primary Site", visible: true },
+      {
+        id: "disease_type",
+        columnName: "Disease Type",
+        visible: true,
+        Cell: ({ value, row }: CellProps) => (
+          <CollapsibleRow value={value} row={row} label={"Disease Types"} />
+        ),
+      },
+      {
+        id: "primary_site",
+        columnName: "Primary Site",
+        visible: true,
+        Cell: ({ value, row }: CellProps) => (
+          <CollapsibleRow value={value} row={row} label={"Primary Site"} />
+        ),
+      },
       {
         id: "ssm_affected_cases",
         columnName: "# SSM Affected Cases",
@@ -113,22 +135,22 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       {
         Header: "Disease Type",
         accessor: "disease_type",
-        Cell: ({ value }: { value: string[] }) => (
-          <CollapsibleRow value={value} label={"Disease Types"} />
+        Cell: ({ value, row }: CellProps) => (
+          <CollapsibleRow value={value} row={row} label={"Disease Types"} />
         ),
       },
       {
         Header: "Primary Site",
         accessor: "primary_site",
-        Cell: ({ value }: { value: string[] }) => (
-          <CollapsibleRow value={value} label={"Primary Sites"} />
+        Cell: ({ value, row }: CellProps) => (
+          <CollapsibleRow value={value} row={row} label={"Primary Sites"} />
         ),
       },
       {
         Header: (
           <div>
             <Tooltip
-              label={`# Cases tested for Simple Somatic Mutations in the Project affected by ${symbol} 
+              label={`# Cases tested for Simple Somatic Mutations in the Project affected by ${symbol}
     / # Cases tested for Simple Somatic Mutations in the Project`}
               multiline
               withArrow
@@ -150,7 +172,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
               Header: (
                 <div>
                   <Tooltip
-                    label={`# Cases tested for CNV in the Project affected by CNV gain event in ${symbol} 
+                    label={`# Cases tested for CNV in the Project affected by CNV gain event in ${symbol}
           / # Cases tested for Copy Number Variation in the Project
           `}
                     multiline
@@ -168,7 +190,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
               Header: (
                 <div>
                   <Tooltip
-                    label={`# Cases tested for CNV in Project affected by CNV loss event in ${symbol} 
+                    label={`# Cases tested for CNV in Project affected by CNV loss event in ${symbol}
           / # Cases tested for Copy Number Variation in Project
           `}
                     multiline
@@ -186,7 +208,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
               Header: (
                 <div>
                   <Tooltip
-                    label={`# Cases tested for CNV in Project affected by CNV loss event in ${symbol} 
+                    label={`# Cases tested for CNV in Project affected by CNV loss event in ${symbol}
           / # Cases tested for Copy Number Variation in Project
           `}
                     multiline
@@ -211,7 +233,11 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         ? data?.projects
             .map((d) => {
               const row = {
-                project: d.key,
+                project: (
+                  <Link href={`/projects/${d.key}`}>
+                    <a className="text-utility-link underline">{d.key}</a>
+                  </Link>
+                ),
                 disease_type: projectsById[d.key]?.disease_type || [],
                 primary_site: projectsById[d.key]?.primary_site || [],
                 ssm_affected_cases: `${data.ssmFiltered[d.key]} / ${
@@ -244,7 +270,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                         style: "percent",
                         minimumFractionDigits: 2,
                       })})`,
-                      num_mutations: d.doc_count,
+                      num_mutations: d.doc_count.toLocaleString(),
                     }
                   : {}),
               };

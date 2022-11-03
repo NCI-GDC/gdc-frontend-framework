@@ -1,4 +1,5 @@
 import { NextPage } from "next";
+import Head from "next/head";
 import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
 import { Image } from "@/components/Image";
 import Link from "next/link";
@@ -151,6 +152,14 @@ const IndexPage: NextPage = () => {
     <UserFlowVariedPages
       {...{ indexPath: "/user-flow/single-page", headerElements }}
     >
+      <Head>
+        <title>GDC Data Portal Homepage</title>
+        <meta
+          property="og:title"
+          content="GDC Data Portal Homepage"
+          key="gdc-homepage"
+        />
+      </Head>
       <div className="flex flex-col w-100 h-100 bg-gradient-to-r from-accent-cool-darker  to-accent-cool">
         <div className="flex flex-row">
           <div className="flex flex-col w-1/2 pl-10">

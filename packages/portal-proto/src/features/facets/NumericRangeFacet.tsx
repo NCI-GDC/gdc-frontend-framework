@@ -1,10 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  MdClose as CloseIcon,
-  MdSort as SortIcon,
-  MdSortByAlpha as AlphaSortIcon,
-  MdWarning as WarningIcon,
-} from "react-icons/md";
+import { MdClose as CloseIcon, MdWarning as WarningIcon } from "react-icons/md";
 import { FaUndo as UndoIcon } from "react-icons/fa";
 import tw from "tailwind-styled-components";
 import {
@@ -13,13 +8,7 @@ import {
   SegmentedControl,
   Tooltip,
 } from "@mantine/core";
-import {
-  DAYS_IN_DECADE,
-  DAYS_IN_YEAR,
-  GQLDocType,
-  GQLIndexType,
-  fieldNameToTitle,
-} from "@gff/core";
+import { DAYS_IN_YEAR, fieldNameToTitle } from "@gff/core";
 
 import {
   DEFAULT_VISIBLE_ITEMS,
@@ -29,6 +18,7 @@ import {
   getUpperAgeYears,
   buildRangeOperator,
   extractRangeValues,
+  buildRangeBuckets,
 } from "./utils";
 import {
   FacetCardProps,
@@ -39,13 +29,9 @@ import {
   ClearFacetHook,
   UpdateFacetFilterFunction,
   UpdateFacetFilterHook,
+  RangeBucketElement,
 } from "@/features/facets/types";
-import {
-  FacetDocTypeToCountsIndexMap,
-  FacetDocTypeToLabelsMap,
-  useRangeFacet,
-} from "@/features/facets/hooks";
-import { controlsIconStyle, FacetIconButton } from "./components";
+import { FacetIconButton, FacetText, FacetHeader } from "./components";
 import FacetExpander from "@/features/facets/FacetExpander";
 import FacetSortPanel from "@/features/facets/FacetSortPanel";
 
@@ -53,25 +39,13 @@ interface NumericFacetProps extends FacetCardProps<RangeFacetHooks> {
   readonly rangeDatatype: string;
   readonly minimum?: number;
   readonly maximum?: number;
+  readonly clearValues?: boolean;
 }
 
 type NumericFacetData = Pick<
   NumericFacetProps,
-  "field" | "minimum" | "maximum" | "docType" | "indexType" | "hooks"
+  "field" | "minimum" | "maximum" | "valueLabel" | "hooks" | "clearValues"
 >;
-
-/**
- * Represent a range. Used to configure a row
- * of a range list.
- */
-interface RangeBucketElement {
-  readonly from: number;
-  readonly to: number;
-  readonly key: string; // key for facet range
-  readonly label: string; // label for value
-  readonly valueLabel?: string; // string representation of the count
-  value?: number; // count of items in range
-}
 
 const RadioStyle =
   "form-check-input form-check-input appearance-none rounded-full h-3 w-3 border border-base-light bg-base-lightest checked:bg-primary-dark checked:bg-primary-dark focus:ring-0 focus:ring-offset-0 focus:outline-none focus:bg-primary-darkest active:bg-primary-dark transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer";
@@ -132,80 +106,6 @@ const ClassifyRangeType = (
 };
 
 /**
- * returns the range [from to] for a "bucket"
- * @param x - current bucket index
- * @param units - custom units for this range: "years" or "days"
- * @param minimum - starting value of range
- */
-const buildDayYearRangeBucket = (
-  x: number,
-  units: string,
-  minimum: number,
-): RangeBucketElement => {
-  const from = minimum + x * DAYS_IN_DECADE;
-  const to = minimum + (x + 1) * DAYS_IN_DECADE;
-  return {
-    from: from,
-    to: to,
-    key: `${from.toFixed(1)}-${to.toFixed(1)}`,
-    label: `\u2265 ${from / (units == "years" ? DAYS_IN_YEAR : 1)} to < ${
-      to / (units == "years" ? DAYS_IN_YEAR : 1)
-    } ${units}`,
-  };
-};
-
-/**
- * returns 10 value range from to for a "bucket"
- * @param x - current bucket index
- * @param units - string to append to label
- * @param minimum - staring value of range
- * @param fractionDigits - number of values to the right of the decimal point
- */
-const build10UnitRange = (
-  x: number,
-  units: string,
-  minimum: number,
-  fractionDigits = 1,
-): RangeBucketElement => {
-  const from = minimum + x * 10;
-  const to = minimum + (x + 1) * 10;
-  return {
-    from: from,
-    to: to,
-    key: `${from.toFixed(fractionDigits)}-${to.toFixed(fractionDigits)}`,
-    label: `\u2265 ${from} to < ${to} ${units}`,
-  };
-};
-
-/**
- * Builds a Dictionary like object contain the range and label for each "bucket" in the range
- * @param numBuckets - number of buckets to create
- * @param units - units such as days or percent
- * @param minimum - start value of range
- * @param rangeFunction - function to compute range boundaries
- */
-const BuildRanges = (
-  numBuckets: number,
-  units: string,
-  minimum,
-  rangeFunction: (
-    index: number,
-    units: string,
-    startValue: number,
-  ) => RangeBucketElement,
-) => {
-  // build the range for the useRangeFacet call
-  return [...Array(numBuckets)]
-    .map((_x, i) => {
-      return rangeFunction(i, units, minimum);
-    })
-    .reduce((r, x) => {
-      r[x.key] = x;
-      return r;
-    }, {} as Record<string, RangeBucketElement>);
-};
-
-/**
  * Create a list of radio buttons where each line
  * represents bucket for a range > "from" <= "to"
  * @param field - facet managed by this component
@@ -214,6 +114,7 @@ const BuildRanges = (
  * @param setSelected - function to handle selected range
  * @param rangeLabelsAndValues - list of range keys, labels and values
  * @param itemsToShow - number of ranges to render
+ * @param useUpdateFacetFilters - hook to update facet filters with new values
  */
 const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
   field,
@@ -253,28 +154,8 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
             isSortedByValue={isSortedByValue}
             valueLabel={valueLabel}
             setIsSortedByValue={setIsSortedByValue}
+            isNumberSort={true}
           />
-          <div className="flex flex-row items-center justify-between flex-wrap border-b-2 py-1">
-            <button
-              className={controlsIconStyle}
-              aria-label="Sort alphabetically"
-            >
-              <AlphaSortIcon
-                onClick={() => setIsSortedByValue(false)}
-                scale="1.5em"
-              />
-            </button>
-            <div className={"flex flex-row items-center "}>
-              <button
-                onClick={() => setIsSortedByValue(true)}
-                className={controlsIconStyle}
-                aria-label="Sort numerically"
-              >
-                <SortIcon scale="1.5em" />
-              </button>
-              <p className="px-1">{valueLabel}</p>
-            </div>
-          </div>
         </>
       ) : null}
       <div role="group" className="mt-1">
@@ -285,9 +166,7 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
               ? (a, b) =>
                   rangeLabelsAndValues[b].value - rangeLabelsAndValues[a].value
               : (a, b) =>
-                  rangeLabelsAndValues[a].label.localeCompare(
-                    rangeLabelsAndValues[b].label,
-                  ),
+                  rangeLabelsAndValues[a].from - rangeLabelsAndValues[b].from,
           )
           .map((rangeKey, i) => {
             return (
@@ -325,6 +204,7 @@ interface FromToProps {
   readonly useUpdateFacetFilters: UpdateFacetFilterHook;
   readonly values?: FromToRange<number>;
   readonly changedCallback?: () => void;
+  readonly clearValues?: boolean;
 }
 
 /**
@@ -335,6 +215,9 @@ interface FromToProps {
  * @param values - the current value of the range
  * @param changedCallback - function called when FromTo values change
  * @param units - string representation of unit: "days" | "years" | "year", "percent" | "numeric"
+ * @param useClearFilter - hook to clear (e.x. reset)  field (facet) filters
+ * @param clearValues: prop set to true to clear FromTo input fields
+ * @param useUpdateFacetFilters - hook to update facet filters with new values
  * @constructor
  */
 const FromTo: React.FC<FromToProps> = ({
@@ -346,6 +229,7 @@ const FromTo: React.FC<FromToProps> = ({
   values,
   changedCallback = () => null,
   units = "years",
+  clearValues = undefined,
 }: FromToProps) => {
   const unitsLabel = "%" != units ? ` ${units}` : "%";
   const [fromOp, setFromOp] = useState(values?.fromOp ?? ">=");
@@ -363,6 +247,13 @@ const FromTo: React.FC<FromToProps> = ({
     setToOp(values?.toOp ?? "<");
     setToValue(values?.to);
   }, [values]);
+
+  useEffect(() => {
+    if (clearValues) {
+      setFromValue(undefined);
+      setToValue(undefined);
+    }
+  }, [clearValues]);
 
   useEffect(() => {
     if (["diagnoses.age_at_diagnosis"].includes(field)) {
@@ -391,6 +282,11 @@ const FromTo: React.FC<FromToProps> = ({
       updateFacetFilters(field, rangeFilters);
     }
   };
+
+  const lowerUnitRange =
+    units !== "years" ? minimum : getLowerAgeYears(minimum);
+  const upperUnitRange =
+    units !== "years" ? maximum : getLowerAgeYears(maximum);
   return (
     <div className="relative w-full">
       <div className="flex flex-col text-base-contrast-max bg-base-max text-md ">
@@ -412,9 +308,9 @@ const FromTo: React.FC<FromToProps> = ({
           />
           <NumberInput
             className="basis-2/5 text-sm"
-            placeholder={`eg. ${minimum}${unitsLabel} `}
-            min={minimum}
-            max={maximum}
+            placeholder={`eg. ${lowerUnitRange}${unitsLabel} `}
+            min={lowerUnitRange}
+            max={upperUnitRange}
             value={units !== "years" ? fromValue : getLowerAgeYears(fromValue)}
             onChange={(value) => {
               units !== "years"
@@ -444,9 +340,9 @@ const FromTo: React.FC<FromToProps> = ({
           />
           <NumberInput
             className="basis-2/5"
-            placeholder={`eg. ${maximum}${unitsLabel} `}
-            min={minimum}
-            max={maximum}
+            placeholder={`eg. ${upperUnitRange}${unitsLabel} `}
+            min={lowerUnitRange}
+            max={upperUnitRange}
             onChange={(value) => {
               units !== "years"
                 ? setToValue(value)
@@ -498,10 +394,10 @@ const BuildRangeLabelsAndValues = (
       key: x,
       value: rangeData ? rangeData[x] : undefined,
       valueLabel: rangeData
-        ? `${rangeData[x].toLocaleString()} (${(
+        ? `${rangeData[x]} (${(
             ((rangeData[x] as number) / totalCount) *
             100
-          ).toFixed(2)}%)`
+          ).toFixed(1)}%)`
         : "",
     };
     return b;
@@ -512,34 +408,32 @@ interface RangeInputWithPrefixedRangesProps {
   readonly field: string;
   readonly hooks: RangeFacetHooks;
   readonly numBuckets: number;
-  readonly docType: GQLDocType;
-  readonly indexType: GQLIndexType;
   readonly minimum: number;
   readonly maximum: number;
   readonly units: string;
+  readonly valueLabel: string;
   readonly showZero?: boolean;
+  readonly clearValues?: boolean;
 }
 
 const RangeInputWithPrefixedRanges: React.FC<
   RangeInputWithPrefixedRangesProps
 > = ({
   field,
-  docType,
-  indexType,
   hooks,
   units,
   numBuckets,
   minimum,
   maximum,
+  valueLabel,
   showZero = false,
+  clearValues = undefined,
 }: RangeInputWithPrefixedRangesProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false); // handles the expanded group
 
   // get the current filter for this facet
   const filter = hooks.useGetFacetFilters(field);
-  const totalCount = hooks.useTotalCounts(
-    FacetDocTypeToCountsIndexMap[docType],
-  );
+  const totalCount = hooks.useTotalCounts();
 
   // giving the filter value, extract the From/To values and
   // build it's key
@@ -551,48 +445,13 @@ const RangeInputWithPrefixedRanges: React.FC<
 
   // build the range for the useRangeFacet and the facet query
   const [bucketRanges, ranges] = useMemo(() => {
-    // map unit type to appropriate build range function and unit label
-    const RangeBuilder = {
-      days: {
-        builder: buildDayYearRangeBucket,
-        label: "days",
-      },
-      years: {
-        builder: buildDayYearRangeBucket,
-        label: "years",
-      },
-      percent: {
-        builder: build10UnitRange,
-        label: "%",
-      },
-      year: {
-        builder: build10UnitRange,
-        label: "",
-      },
-    };
-
-    const bucketEntries = BuildRanges(
-      numBuckets,
-      RangeBuilder[units].label,
-      minimum,
-      RangeBuilder[units].builder,
-    );
-    // build ranges for continuous range query
-    const r = Object.keys(bucketEntries).map((x) => {
-      return { from: bucketEntries[x].from, to: bucketEntries[x].to };
-    });
-    return [bucketEntries, r];
+    return buildRangeBuckets(numBuckets, units, minimum);
   }, [minimum, numBuckets, units]);
 
   const [isCustom, setIsCustom] = useState(filterKey === "custom"); // in custom Range Mode
   const [selectedRange, setSelectedRange] = useState(filterKey); // the current selected range
 
-  const { data: rangeData, isSuccess } = useRangeFacet(
-    field,
-    ranges,
-    docType,
-    indexType,
-  );
+  const { data: rangeData, isSuccess } = hooks.useGetFacetData(field, ranges);
   const rangeLabelsAndValues = BuildRangeLabelsAndValues(
     bucketRanges,
     totalCount,
@@ -646,6 +505,7 @@ const RangeInputWithPrefixedRanges: React.FC<
             units={units}
             changedCallback={resetToCustom}
             {...hooks}
+            clearValues={clearValues}
           />
         </div>
         <div className="flex flex-col border-t-2">
@@ -654,7 +514,7 @@ const RangeInputWithPrefixedRanges: React.FC<
           ) : isSuccess ? (
             <RangeValueSelector
               field={`${field}`}
-              valueLabel={FacetDocTypeToLabelsMap[docType]}
+              valueLabel={valueLabel}
               itemsToShow={bucketsToShow}
               rangeLabelsAndValues={rangeLabelsAndValues}
               selected={selectedRange}
@@ -682,21 +542,15 @@ const RangeInputWithPrefixedRanges: React.FC<
 
 const DaysOrYears: React.FC<NumericFacetData> = ({
   field,
-  docType,
   hooks,
-  indexType,
-  minimum = undefined,
-  maximum = undefined,
+  valueLabel,
+  clearValues,
 }: NumericFacetData) => {
   const [units, setUnits] = useState("years");
-
-  let adjMinimum = minimum != undefined ? minimum : 0;
-  let adjMaximum = maximum != undefined ? maximum : 32872;
-  const numBuckets = Math.round((adjMaximum - adjMinimum) / DAYS_IN_DECADE);
-  adjMinimum =
-    Math.round(10 * (adjMinimum / (units == "years" ? DAYS_IN_YEAR : 1))) / 10;
-  adjMaximum =
-    Math.round(10 * (adjMaximum / (units == "years" ? DAYS_IN_YEAR : 1))) / 10;
+  // set up a fixed range -90 to 90 years over 19 buckets
+  const rangeMinimum = -32872.5;
+  const rangeMaximum = 32872.5;
+  const numBuckets = 19;
 
   return (
     <div className="flex flex-col w-100 space-y-2 px-2  mt-1 ">
@@ -712,12 +566,12 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
       <RangeInputWithPrefixedRanges
         units={units}
         hooks={{ ...hooks }}
-        minimum={adjMinimum}
-        maximum={adjMaximum}
+        minimum={rangeMinimum}
+        maximum={rangeMaximum}
         numBuckets={numBuckets}
         field={field}
-        docType={docType}
-        indexType={indexType}
+        valueLabel={valueLabel}
+        clearValues={clearValues}
       />
     </div>
   );
@@ -725,9 +579,9 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
 
 const Year: React.FC<NumericFacetData> = ({
   field,
-  docType,
-  indexType,
   hooks,
+  valueLabel,
+  clearValues,
   minimum = undefined,
   maximum = undefined,
 }: NumericFacetData) => {
@@ -738,14 +592,14 @@ const Year: React.FC<NumericFacetData> = ({
   return (
     <div className="flex flex-col w-100 space-y-2 px-2  mt-1 ">
       <RangeInputWithPrefixedRanges
-        docType={docType}
-        indexType={indexType}
         hooks={{ ...hooks }}
         units="year"
+        valueLabel={valueLabel}
         minimum={adjMinimum}
         maximum={adjMaximum}
         numBuckets={numBuckets}
         field={field}
+        clearValues={clearValues}
       />
     </div>
   );
@@ -753,9 +607,9 @@ const Year: React.FC<NumericFacetData> = ({
 
 const Years: React.FC<NumericFacetData> = ({
   field,
-  docType,
-  indexType,
+  valueLabel,
   hooks,
+  clearValues,
   minimum = undefined,
   maximum = undefined,
 }: NumericFacetData) => {
@@ -766,14 +620,14 @@ const Years: React.FC<NumericFacetData> = ({
   return (
     <div className="flex flex-col w-100 space-y-2 px-1  mt-1 ">
       <RangeInputWithPrefixedRanges
-        docType={docType}
-        indexType={indexType}
+        valueLabel={valueLabel}
         hooks={{ ...hooks }}
         units="years"
         minimum={adjMinimum}
         maximum={adjMaximum}
         numBuckets={numBuckets}
         field={field}
+        clearValues={clearValues}
       />
     </div>
   );
@@ -782,6 +636,7 @@ const Years: React.FC<NumericFacetData> = ({
 const NumericRangePanel: React.FC<NumericFacetData> = ({
   field,
   hooks,
+  clearValues,
   minimum = undefined,
   maximum = undefined,
 }: NumericFacetData) => {
@@ -795,6 +650,7 @@ const NumericRangePanel: React.FC<NumericFacetData> = ({
         maximum={adjMaximum}
         units=""
         {...hooks}
+        clearValues={clearValues}
       />
     </div>
   );
@@ -802,9 +658,9 @@ const NumericRangePanel: React.FC<NumericFacetData> = ({
 
 const PercentRange: React.FC<NumericFacetData> = ({
   field,
-  docType,
-  indexType,
+  valueLabel,
   hooks,
+  clearValues,
   minimum = undefined,
   maximum = undefined,
 }: NumericFacetData) => {
@@ -815,14 +671,14 @@ const PercentRange: React.FC<NumericFacetData> = ({
   return (
     <div className="flex flex-col w-100 space-y-2 px-2  mt-1 ">
       <RangeInputWithPrefixedRanges
-        docType={docType}
-        indexType={indexType}
+        valueLabel={valueLabel}
         hooks={hooks}
         units="percent"
         minimum={adjMinimum}
         maximum={adjMaximum}
         numBuckets={numBuckets}
         field={field}
+        clearValues={clearValues}
       />
     </div>
   );
@@ -832,17 +688,23 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
   field,
   hooks,
   rangeDatatype,
-  docType,
   description,
+  valueLabel,
   minimum = undefined,
   maximum = undefined,
   facetName = null,
-  indexType = "explore",
   dismissCallback = undefined,
   width = undefined,
 }: NumericFacetProps) => {
   const clearFilters = hooks.useClearFilter();
 
+  const [clearValues, setClearValues] = useState(false);
+
+  useEffect(() => {
+    if (clearValues) {
+      setClearValues(false);
+    }
+  }, [clearValues]);
   return (
     <div id={field}>
       <div
@@ -850,7 +712,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
           width ? width : "mx-1"
         } bg-base-max relative shadow-lg border-base-lightest border-1 rounded-b-md text-xs transition `}
       >
-        <div className="flex items-start justify-between flex-nowrap bg-primary-lighter shadow-md px-1.5">
+        <FacetHeader>
           <Tooltip
             label={description}
             classNames={{
@@ -864,12 +726,17 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
             transition="fade"
             transitionDuration={200}
           >
-            <div className="text-primary-contrast-lighter font-heading font-semibold text-md break-words py-2">
+            <FacetText>
               {facetName ? facetName : fieldNameToTitle(field)}
-            </div>
+            </FacetText>
           </Tooltip>
           <div className="flex flex-row">
-            <FacetIconButton onClick={() => clearFilters(field)}>
+            <FacetIconButton
+              onClick={() => {
+                clearFilters(field);
+                setClearValues(true);
+              }}
+            >
               <UndoIcon size="1.15em" />
             </FacetIconButton>
             {dismissCallback ? (
@@ -884,67 +751,67 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
               </FacetIconButton>
             ) : null}
           </div>
-        </div>
+        </FacetHeader>
         {
           {
             age: (
               <DaysOrYears
-                docType={docType}
-                indexType={indexType}
+                valueLabel={valueLabel}
                 field={field}
                 hooks={{ ...hooks }}
                 minimum={minimum}
                 maximum={maximum}
+                clearValues={clearValues}
               />
             ),
             year: (
               <Year
-                docType={docType}
-                indexType={indexType}
+                valueLabel={valueLabel}
                 field={field}
                 hooks={{ ...hooks }}
                 minimum={minimum}
                 maximum={maximum}
+                clearValues={clearValues}
               />
             ),
             years: (
               <Years
-                docType={docType}
-                indexType={indexType}
+                valueLabel={valueLabel}
                 field={field}
                 hooks={{ ...hooks }}
                 minimum={minimum}
                 maximum={maximum}
+                clearValues={clearValues}
               />
             ),
             days: (
               <DaysOrYears
-                docType={docType}
-                indexType={indexType}
+                valueLabel={valueLabel}
                 field={field}
                 hooks={{ ...hooks }}
                 minimum={minimum}
                 maximum={maximum}
+                clearValues={clearValues}
               />
             ),
             percent: (
               <PercentRange
-                docType={docType}
-                indexType={indexType}
+                valueLabel={valueLabel}
                 field={field}
                 hooks={{ ...hooks }}
                 minimum={minimum}
                 maximum={maximum}
+                clearValues={clearValues}
               />
             ),
             range: (
               <NumericRangePanel
-                docType={docType}
-                indexType={indexType}
+                valueLabel={valueLabel}
                 field={field}
                 hooks={{ ...hooks }}
                 minimum={minimum}
                 maximum={maximum}
+                clearValues={clearValues}
               />
             ),
           }[rangeDatatype as string]

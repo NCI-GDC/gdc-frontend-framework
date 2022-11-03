@@ -1,23 +1,22 @@
 import React from "react";
-import { FacetDefinition, GQLDocType, GQLIndexType } from "@gff/core";
+import { FacetDefinition } from "@gff/core";
 import EnumFacet from "@/features/facets/EnumFacet";
 import NumericRangeFacet from "@/features/facets/NumericRangeFacet";
 import DateRangeFacet from "@/features/facets/DateRangeFacet";
 import ExactValueFacet from "@/features/facets/ExactValueFacet";
 import ToggleFacet from "@/features/facets/ToggleFacet";
-import { AllHooks } from "@/features/facets/types";
+import { FacetRequiredHooks } from "@/features/facets/types";
 
 /**
  * createFacetCard given a facet definition it will create a
  * facet component appropriate for the facet
- * All facets require a set of functions (e.g hooks) which define get/set data,
+ * All facets require a set of functions (e.g. hooks) which define get/set data,
  * filters, and counts. As create facets can create any facet all possible
  * function must be supplied:
  * The AllHooks type defines all possible hooks
  *
  * @param facet - facet definition
- * @param docType - docType for this facet
- * @param indexType - ES index
+ * @param valueLabel - label for Counts (if present)
  * @param dataFunctions - data getter and setter hooks
  * @param idPrefix - prefix for generated id; this must be unique for the app
  * @param dismissCallback - callback when defined will remove facet from parent panel
@@ -27,9 +26,8 @@ import { AllHooks } from "@/features/facets/types";
  */
 export const createFacetCard = (
   facet: FacetDefinition,
-  docType: GQLDocType,
-  indexType: GQLIndexType,
-  dataFunctions: AllHooks,
+  valueLabel: string,
+  dataFunctions: FacetRequiredHooks,
   idPrefix: string,
   dismissCallback: (string) => void = undefined,
   hideIfEmpty = false,
@@ -40,8 +38,7 @@ export const createFacetCard = (
     return (
       <EnumFacet
         key={`${idPrefix}-enum-${facet.full}`}
-        docType={docType}
-        indexType={indexType}
+        valueLabel={valueLabel}
         field={facet.full}
         facetName={facetName}
         description={facet.description}
@@ -72,6 +69,7 @@ export const createFacetCard = (
       <ToggleFacet
         key={`${idPrefix}-toggle-${facet.full}`}
         field={facet.full}
+        valueLabel={valueLabel}
         dismissCallback={dismissCallback}
         hideIfEmpty={hideIfEmpty}
         hooks={{
@@ -87,8 +85,6 @@ export const createFacetCard = (
     return (
       <DateRangeFacet
         key={`${idPrefix}-date-range-${facet.full}`}
-        docType={docType}
-        indexType={indexType}
         field={facet.full}
         description={facet.description}
         dismissCallback={dismissCallback}
@@ -109,10 +105,9 @@ export const createFacetCard = (
       <NumericRangeFacet
         key={`${idPrefix}-range-${facet.full}`}
         field={facet.full}
+        valueLabel={valueLabel}
         description={facet.description}
         rangeDatatype={facet.facet_type}
-        docType={docType}
-        indexType={indexType}
         minimum={facet?.range?.minimum}
         maximum={facet?.range?.maximum}
         hideIfEmpty={hideIfEmpty}
@@ -126,40 +121,41 @@ export const createFacetCard = (
       />
     );
   }
+  return <div> Unknown FacetType {facet.facet_type}</div>;
 };
 
 /**
  * Creates and returns an array of Facet components defined by the facet definition array
  * @param facets - array of FacetDefinitions to create
- * @param docType - docType: cases, files, genes, ssms, and projects
- * @param indexType - which index to use explore or repository
  * @param dataFunctions - get/set hooks
+ * @param valueLabel - string used to label counts
  * @param idPrefix - prefix for created Facet Component key prop. This is used to ensure the ref
  *                  has a 1) unique 2) persistent id, so each call to createFacetCardsFromList must
  *                  have a unique prefix, the name of the analysis tool is a good choice
  * @param dismissCallback - define if facet should be removable from their parent
  * @param hideIfEmpty - hide facets if they do not have data
+ * @param facetName - optional name of facet (if undefined it will be extracted from the full field name)
  * @param width - override the default width.
  */
 export const createFacetCardsFromList = (
   facets: ReadonlyArray<FacetDefinition>,
-  docType: GQLDocType,
-  indexType: GQLIndexType,
-  dataFunctions: AllHooks,
+  dataFunctions: FacetRequiredHooks,
   idPrefix: string,
+  valueLabel: string,
   dismissCallback: (string) => void = undefined,
   hideIfEmpty = false,
+  facetName?: string,
   width?: string,
 ): ReadonlyArray<React.ReactNode> => {
   return facets.map((x) =>
     createFacetCard(
       x,
-      docType,
-      indexType,
+      valueLabel,
       dataFunctions,
       idPrefix,
       dismissCallback,
       hideIfEmpty,
+      facetName,
       width,
     ),
   );

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Button, Text, Badge } from "@mantine/core";
-import qs from "querystring";
 import { hideModal, useCoreDispatch, UserInfo, CartFile } from "@gff/core";
 import { LoginButton } from "@/components/LoginButton";
 import { DownloadButton } from "@/components/DownloadButtons";
@@ -12,11 +11,13 @@ const CartDownloadModal = ({
   user,
   filesByCanAccess,
   dbGapList,
+  setActive,
 }: {
   openModal: boolean;
   user: UserInfo;
   filesByCanAccess: Record<string, CartFile[]>;
   dbGapList: string[];
+  setActive: (active: boolean) => void;
 }): JSX.Element => {
   const dispatch = useCoreDispatch();
   const [checked, setChecked] = useState(false);
@@ -100,23 +101,19 @@ const CartDownloadModal = ({
             (user.username && dbGapList.length > 0 && !checked)
           }
           endpoint="data"
-          method="POST"
-          queryParams={`?${qs.stringify({
-            ids: (filesByCanAccess?.true || []).map((file) => file.fileId),
-            annotations: true,
-            related_files: true,
-          })}`}
           extraParams={{
             ids: (filesByCanAccess?.true || []).map((file) => file.fileId),
             annotations: true,
             related_files: true,
           }}
+          method="POST"
           options={{
             headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
+              "Content-Type": "application/json",
             },
             method: "POST",
           }}
+          setActive={setActive}
         />
       </div>
     </BaseModal>
