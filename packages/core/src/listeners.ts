@@ -11,6 +11,7 @@ import {
   removeCohortFilter,
   clearCohortFilters,
   clearCaseSet,
+  setCurrentCohortId,
   cohortSelectors,
 } from "./features/cohort/availableCohortsSlice";
 import { createCaseSet } from "./features/cohort/availableCohortsSlice";
@@ -45,14 +46,36 @@ startCoreListening({
       Object.entries(cohort.filters.root).length === 0
     )
       await listenerApi.dispatch(clearCaseSet());
-    else await listenerApi.dispatch(createCaseSet({ index: "repository" }));
+    else await listenerApi.dispatch(createCaseSet({ index: "explore" }));
   },
 });
 
 startCoreListening({
   matcher: isAnyOf(clearCohortFilters),
-  effect: (_, listenerApi) => {
+  effect: async (_, listenerApi) => {
     // dispatch clearCohortFilters executed
-    listenerApi.dispatch(clearCaseSet());
+    await listenerApi.dispatch(clearCaseSet());
+  },
+});
+
+startCoreListening({
+  matcher: isAnyOf(setCurrentCohortId),
+  effect: async (_, listenerApi) => {
+    const cohort = cohortSelectors.selectById(
+      listenerApi.getState(),
+      listenerApi.getState().cohort.availableCohorts.currentCohort,
+    );
+    if (cohort === undefined) return;
+    if (
+      cohort.filters == undefined ||
+      Object.entries(cohort.filters.root).length === 0
+    )
+      return;
+    // cohort switched to a cohort without a caseSet defined.
+    // so create a caseSetId in the explore index that will used
+    // to query across all indexes
+    if (Object.keys(cohort.caseSet.caseSetId.root).length == 0) {
+      await listenerApi.dispatch(createCaseSet({ index: "explore" }));
+    }
   },
 });

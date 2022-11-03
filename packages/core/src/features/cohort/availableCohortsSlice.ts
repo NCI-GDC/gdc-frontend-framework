@@ -65,7 +65,7 @@ export const createCaseSet = createAsyncThunk<
   async (
     {
       filterSelector = selectCurrentCohortFilters,
-      index = "repository" as GQLIndexType,
+      index = "explore" as GQLIndexType,
     },
     thunkAPI,
   ) => {
@@ -372,7 +372,7 @@ export const selectAvailableCohortByName = (
     .selectAll(state)
     .find((cohort: Cohort) => cohort.name === name);
 
-export const selectCurrentCohortFilters = (
+export const selectCurrentCohortFilterSet = (
   state: CoreState,
 ): FilterSet | undefined => {
   const cohort = cohortSelectors.selectById(
@@ -392,6 +392,12 @@ export const selectCurrentCohortGqlFilters = (
   return buildCohortGqlOperator(cohort?.filters);
 };
 
+/**
+ * Returns either a filterSet or a filter containing a caseSetId that was created
+ * for the current cohort. If the cohort is undefined a empty FilterSet is returned.
+ * Used to create a cohort that work with both the explore and repository indexes
+ * @param state
+ */
 export const selectCurrentCohortFilterOrCaseSet = (
   state: CoreState,
 ): FilterSet => {
@@ -406,6 +412,20 @@ export const selectCurrentCohortFilterOrCaseSet = (
   } else return cohort.filters;
 };
 
+/**
+ * Main selector of the current Cohort Filters.
+ * @param state
+ */
+export const selectCurrentCohortFilters = (
+  state: CoreState,
+): FilterSet | undefined => selectCurrentCohortFilterOrCaseSet(state);
+
+/**
+ * Select a filter by its name from the current cohort. If the filter is not found
+ * returns undefined.
+ * @param state
+ * @param name
+ */
 export const selectCurrentCohortFiltersByName = (
   state: CoreState,
   name: string,
@@ -417,6 +437,11 @@ export const selectCurrentCohortFiltersByName = (
   return cohort?.filters?.root[name];
 };
 
+/**
+ * Returns the current caseSetId filter representing the cohort
+ * if the cohort is undefined it returns an empty caseSetIdFilter
+ * @param state
+ */
 export const selectCurrentCohortCaseSet = (
   state: CoreState,
 ): CoreDataSelectorResponse<FilterSet> => {
@@ -430,16 +455,4 @@ export const selectCurrentCohortCaseSet = (
       status: "uninitialized",
     };
   return { ...cohort.caseSet };
-};
-
-export const selectCurrentCohortCaseSetFilter = (
-  state: CoreState,
-): FilterSet => {
-  const cohort = cohortSelectors.selectById(
-    state,
-    state.cohort.availableCohorts.currentCohort,
-  );
-  return cohort === undefined
-    ? { mode: "and", root: {} }
-    : cohort.caseSet.caseSetId;
 };
