@@ -11,12 +11,16 @@ const BarChart = dynamic(() => import("./BarChart"), {
 const CHART_NAME = "cancer-distribution-bar-chart-cnv";
 interface CNVPlotProps {
   readonly gene: string;
+  readonly height?: number;
 }
 
 const hovertemplate =
   "%{customdata[0]} Cases Affected in <b>%{x}</b><br />%{customdata[0]} / %{customdata[1]} (%{y:.2f}%)<extra></extra>";
 
-const CNVPlot: React.FC<CNVPlotProps> = ({ gene }: CNVPlotProps) => {
+const CNVPlot: React.FC<CNVPlotProps> = ({
+  gene,
+  height = undefined,
+}: CNVPlotProps) => {
   const router = useRouter();
   const [gainChecked, setGainChecked] = useState(true);
   const [lossChecked, setLossChecked] = useState(true);
@@ -43,7 +47,10 @@ const CNVPlot: React.FC<CNVPlotProps> = ({ gene }: CNVPlotProps) => {
   const caseData = data.cases.filter(
     (d) => d.gain !== undefined || d.loss !== undefined,
   );
-  const title = `${data.caseTotal} CASES AFFECTED BY ${data.mutationTotal} CNV EVENTS ACROSS ${caseData.length} PROJECTS`;
+  const caseTotal = data.caseTotal.toLocaleString();
+  const mutationTotal = data.mutationTotal.toLocaleString();
+  const projectCount = caseData.length.toLocaleString();
+  const title = `${caseTotal} CASES AFFECTED BY ${mutationTotal} CNV EVENTS ACROSS ${projectCount} PROJECTS`;
 
   let chartData;
   if (gainChecked && lossChecked) {
@@ -114,7 +121,7 @@ const CNVPlot: React.FC<CNVPlotProps> = ({ gene }: CNVPlotProps) => {
   };
   const chartDivId = `${CHART_NAME}_${Math.floor(Math.random() * 100)}`;
   return (
-    <>
+    <div className="relative">
       <div>
         <ChartTitleBar
           title={title}
@@ -123,33 +130,38 @@ const CNVPlot: React.FC<CNVPlotProps> = ({ gene }: CNVPlotProps) => {
           jsonData={{}}
         />
       </div>
-      <BarChart
-        divId={chartDivId}
-        data={chartConfig}
-        onClickHandler={onClickHandler}
-        stacked
-      />
-      <input
-        type="checkbox"
-        checked={gainChecked}
-        onChange={() => setGainChecked(!gainChecked)}
-        className="form-checkbox text-gdc-red"
-        id="cancer-dist-gain"
-      />
-      <label htmlFor="cancer-dist-gain" className="pl-1 pr-2 align-middle">
-        Gain
-      </label>
-      <input
-        type="checkbox"
-        checked={lossChecked}
-        onChange={() => setLossChecked(!lossChecked)}
-        className="form-checkbox text-gdc-blue"
-        id="cancer-dist-loss"
-      />
-      <label htmlFor="cancer-dist-loss" className="pl-1 pr-2 align-middle">
-        Loss
-      </label>
-    </>
+      <div className="w-100 h-100">
+        <BarChart
+          divId={chartDivId}
+          data={chartConfig}
+          onClickHandler={onClickHandler}
+          height={height}
+          stacked
+        />
+      </div>
+      <div className="text-center">
+        <input
+          type="checkbox"
+          checked={gainChecked}
+          onChange={() => setGainChecked(!gainChecked)}
+          className="form-checkbox text-gdc-red"
+          id="cancer-dist-gain"
+        />
+        <label htmlFor="cancer-dist-gain" className="pl-1 pr-2 align-middle">
+          Gain
+        </label>
+        <input
+          type="checkbox"
+          checked={lossChecked}
+          onChange={() => setLossChecked(!lossChecked)}
+          className="form-checkbox text-gdc-blue"
+          id="cancer-dist-loss"
+        />
+        <label htmlFor="cancer-dist-loss" className="pl-1 pr-2 align-middle">
+          Loss
+        </label>
+      </div>
+    </div>
   );
 };
 

@@ -148,6 +148,7 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
               { value: "40", label: "40" },
               { value: "100", label: "100" },
             ]}
+            aria-label="Select page size"
           />
           <Pagination
             size="sm"

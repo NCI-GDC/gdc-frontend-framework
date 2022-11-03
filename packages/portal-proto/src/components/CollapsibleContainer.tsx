@@ -27,6 +27,7 @@ export const CollapsibleContainer: React.FC<CollapsibleContainerProps> = (
             className="bg-base-lightest text-base-contrast-lightest p-2 hover:bg-primary hover:text-primary-contrast"
             onClick={toggle}
             aria-expanded={!isCollapsed}
+            aria-label="expand/collapse container"
           >
             {isCollapsed ? (
               <ExpandMoreIcon size="1.75em" />

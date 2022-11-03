@@ -68,10 +68,10 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
     : createBuckets(initialData.min, initialData.max);
 
   const { data, isFetching, isSuccess } = useRangeFacet(
-    field,
-    ranges,
     "cases",
     "repository",
+    field,
+    ranges,
   );
 
   const resultData = useMemo(
