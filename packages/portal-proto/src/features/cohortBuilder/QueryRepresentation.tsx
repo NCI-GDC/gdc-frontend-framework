@@ -125,13 +125,13 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
   const expanded = get(queryExpressionsExpanded, field, true);
   const fieldName = fieldNameToTitle(field);
 
-  const RemoveButton = () => (
+  const RemoveButton = ({ value }: { value: string }) => (
     <ActionIcon
       size="xs"
       color="accent-content.0"
       radius="xl"
       variant="transparent"
-      aria-label="remove value"
+      aria-label={`remove ${value}`}
     >
       <ClearIcon />
     </ActionIcon>
@@ -175,8 +175,8 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
                 variant="filled"
                 color="primary.9"
                 size="md"
-                className="normal-case max-w-[162px]"
-                rightSection={<RemoveButton />}
+                className="normal-case max-w-[162px] cursor-pointer"
+                rightSection={<RemoveButton value={x.toString()} />}
                 onClick={() => {
                   const newOperands = operands.filter((o) => o !== x);
                   dispatch(
@@ -329,7 +329,7 @@ export const QueryElement: React.FC<QueryElementProps> = ({
       <button
         className="bg-primary-darkest p-0 m-0 h-full round-r-lg text-accent-contrast "
         onClick={handleRemoveFilter}
-        aria-label="remove field"
+        aria-label={`remove ${fieldNameToTitle(field)}`}
       >
         <ClearIcon size="1.5em" className="px-1" />
       </button>

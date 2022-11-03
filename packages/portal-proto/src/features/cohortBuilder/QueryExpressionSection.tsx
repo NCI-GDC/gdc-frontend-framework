@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useReducer } from "react";
-import { ActionIcon } from "@mantine/core";
+import React, { useState, useEffect, useReducer, useRef } from "react";
+import { ActionIcon, Button } from "@mantine/core";
 import {
   MdOutlineArrowBackIos as LeftArrowIcon,
   MdOutlineArrowForwardIos as RightArrowIcon,
@@ -110,6 +110,8 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
     expandedState?.[currentCohortId] || {},
   ).every((q) => !q);
 
+  const noFilters = Object.keys(filters.root).length === 0;
+
   useEffect(() => {
     if (expandedState?.[currentCohortId] === undefined) {
       setExpandedState({ type: "init", cohortId: currentCohortId });
@@ -130,84 +132,87 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
               >
                 {currentCohortName}
               </OverflowTooltippedLabel>
-              {Object.keys(filters.root).length !== 0 && (
-                <>
-                  <button
-                    className="text-primary-darkest text-sm font-montserrat"
-                    onClick={clearAllFilters}
+              <>
+                <button
+                  className={`text-sm font-montserrat ${
+                    noFilters
+                      ? "cursor-not-allowed text-base-content"
+                      : "cursor-pointer text-primary-darkest"
+                  }`}
+                  onClick={clearAllFilters}
+                  disabled={noFilters}
+                >
+                  Clear All
+                </button>
+                <div className="display flex gap-2 ml-auto">
+                  <ActionIcon
+                    variant={
+                      allQueryExpressionsCollapsed ? "filled" : "outline"
+                    }
+                    color="primary.9"
+                    onClick={() =>
+                      allQueryExpressionsCollapsed
+                        ? setExpandedState({
+                            type: "expandAll",
+                            cohortId: currentCohortId,
+                          })
+                        : setExpandedState({
+                            type: "collapseAll",
+                            cohortId: currentCohortId,
+                          })
+                    }
+                    aria-label="Expand/collapse all queries"
+                    aria-expanded={!allQueryExpressionsCollapsed}
+                    disabled={noFilters}
                   >
-                    Clear All
-                  </button>
-                  <div className="display flex gap-2 ml-auto">
-                    <ActionIcon
-                      variant={
-                        allQueryExpressionsCollapsed ? "filled" : "outline"
-                      }
-                      color="primary.9"
-                      onClick={() =>
-                        allQueryExpressionsCollapsed
-                          ? setExpandedState({
-                              type: "expandAll",
-                              cohortId: currentCohortId,
-                            })
-                          : setExpandedState({
-                              type: "collapseAll",
-                              cohortId: currentCohortId,
-                            })
-                      }
-                      aria-label="Expand/collapse all queries"
-                      aria-expanded={!allQueryExpressionsCollapsed}
-                    >
-                      {allQueryExpressionsCollapsed ? (
-                        <>
-                          <LeftArrowIcon size={20} color="white" />
-                          <RightArrowIcon size={20} color="white" />
-                        </>
-                      ) : (
-                        <>
-                          <RightArrowIcon size={20} color="primary.9" />
-                          <LeftArrowIcon size={20} color="primary.9" />
-                        </>
-                      )}
-                    </ActionIcon>
-                    <ActionIcon
-                      variant={filtersSectionCollapsed ? "outline" : "filled"}
-                      color={"primary.9"}
-                      onClick={() =>
-                        setFiltersSectionCollapsed(!filtersSectionCollapsed)
-                      }
-                      aria-label="Expand/collapse filters section"
-                      aria-expanded={!filtersSectionCollapsed}
-                    >
-                      {filtersSectionCollapsed ? (
-                        <>
-                          <DownArrowIcon size={30} color="primary.9" />
-                        </>
-                      ) : (
-                        <>
-                          <UpArrowIcon size={30} color="white" />
-                        </>
-                      )}
-                    </ActionIcon>
-                  </div>
-                </>
+                    {allQueryExpressionsCollapsed ? (
+                      <>
+                        <LeftArrowIcon size={20} color="white" />
+                        <RightArrowIcon size={20} color="white" />
+                      </>
+                    ) : (
+                      <>
+                        <RightArrowIcon size={20} color="primary.9" />
+                        <LeftArrowIcon size={20} color="primary.9" />
+                      </>
+                    )}
+                  </ActionIcon>
+                  <ActionIcon
+                    variant={filtersSectionCollapsed ? "outline" : "filled"}
+                    color={"primary.9"}
+                    onClick={() =>
+                      setFiltersSectionCollapsed(!filtersSectionCollapsed)
+                    }
+                    aria-label="Expand/collapse filters section"
+                    aria-expanded={!filtersSectionCollapsed}
+                    disabled={noFilters}
+                  >
+                    {filtersSectionCollapsed ? (
+                      <>
+                        <DownArrowIcon size={30} color="primary.9" />
+                      </>
+                    ) : (
+                      <>
+                        <UpArrowIcon size={30} color="white" />
+                      </>
+                    )}
+                  </ActionIcon>
+                </div>
+              </>
+            </div>
+            <div
+              className={`flex flex-wrap bg-base-lightest w-full p-2 rounded-md overflow-x-hidden ${
+                filtersSectionCollapsed ? "overflow-y-auto max-h-36" : "h-full"
+              }`}
+            >
+              {noFilters ? (
+                <>No filters currently applied.</>
+              ) : (
+                Object.keys(filters.root).map((k) => {
+                  return convertFilterToComponent(filters.root[k]);
+                })
               )}
             </div>
-            {Object.keys(filters.root).length === 0 ? (
-              <>No filters currently applied.</>
-            ) : (
-              <div
-                className={`flex flex-wrap bg-base-lightest w-full p-2 rounded-md overflow-x-hidden ${
-                  filtersSectionCollapsed
-                    ? "overflow-y-auto max-h-36"
-                    : "h-full"
-                }`}
-              >
-                {Object.keys(filters.root).map((k) => {
-                  return convertFilterToComponent(filters.root[k]);
-                })}
-              </div>
-            )}
           </div>
         </QueryExpressionsExpandedContext.Provider>
       ) : (
