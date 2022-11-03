@@ -52,8 +52,9 @@ const buildCaseSetMutationQuery = (index: string) =>
 }`;
 
 export interface CreateCaseSetProps {
-  readonly filterSelector?: (state: CoreState) => FilterSet;
-  readonly index?: GQLIndexType;
+  readonly caseSetId?: string; // pass a caseSetId to use
+  readonly filterSelector?: (state: CoreState) => FilterSet; // function to get cohort filters
+  readonly index?: GQLIndexType; // which index to use (defaults to "explore")
 }
 
 export const createCaseSet = createAsyncThunk<
@@ -64,6 +65,7 @@ export const createCaseSet = createAsyncThunk<
   "cohort/createCaseSet",
   async (
     {
+      caseSetId = undefined,
       filterSelector = selectCurrentCohortFilters,
       index = "explore" as GQLIndexType,
     },
@@ -73,7 +75,10 @@ export const createCaseSet = createAsyncThunk<
     const graphQL = buildCaseSetMutationQuery(index);
 
     const filtersGQL = {
-      input: { filters: filters ? filters : {} },
+      input:
+        caseSetId !== undefined
+          ? { filters: filters ? filters : {}, set_id: caseSetId }
+          : { filters: filters ? filters : {} },
       never_used: null,
     };
     return graphqlAPI(graphQL, filtersGQL);
@@ -372,6 +377,10 @@ export const selectAvailableCohortByName = (
     .selectAll(state)
     .find((cohort: Cohort) => cohort.name === name);
 
+/**
+ * Returns the current cohort filters as a FilterSet
+ * @param state
+ */
 export const selectCurrentCohortFilterSet = (
   state: CoreState,
 ): FilterSet | undefined => {
@@ -382,6 +391,10 @@ export const selectCurrentCohortFilterSet = (
   return cohort?.filters;
 };
 
+/**
+ * Returns the currentCohortFilters as a GqlOperation
+ * @param state
+ */
 export const selectCurrentCohortGqlFilters = (
   state: CoreState,
 ): GqlOperation | undefined => {
@@ -394,8 +407,8 @@ export const selectCurrentCohortGqlFilters = (
 
 /**
  * Returns either a filterSet or a filter containing a caseSetId that was created
- * for the current cohort. If the cohort is undefined a empty FilterSet is returned.
- * Used to create a cohort that work with both the explore and repository indexes
+ * for the current cohort. If the cohort is undefined an empty FilterSet is returned.
+ * Used to create a cohort that work with both explore and repository indexes
  * @param state
  */
 export const selectCurrentCohortFilterOrCaseSet = (

@@ -46,7 +46,10 @@ startCoreListening({
       Object.entries(cohort.filters.root).length === 0
     )
       await listenerApi.dispatch(clearCaseSet());
-    else await listenerApi.dispatch(createCaseSet({ index: "explore" }));
+    else
+      await listenerApi.dispatch(
+        createCaseSet({ index: "explore", caseSetId: cohort.id }),
+      );
   },
 });
 
@@ -72,10 +75,10 @@ startCoreListening({
     )
       return;
     // cohort switched to a cohort that has defined filters
-    // so create a caseSetId in the explore index that will be used
-    // to query across all indexes
-    if (cohort.caseSet.status == "uninitialized") {
-      await listenerApi.dispatch(createCaseSet({ index: "explore" }));
-    }
+    // so (re)create a caseSetId in the explore index using the cohortId as the caseSetId to
+    // minimize the number of caseSet ids
+    await listenerApi.dispatch(
+      createCaseSet({ index: "explore", caseSetId: cohort.id }),
+    );
   },
 });
