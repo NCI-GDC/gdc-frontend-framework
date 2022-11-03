@@ -61,6 +61,8 @@ startCoreListening({
   },
 });
 
+// TODO: Determine if this is only needed because of the use of the fixture,
+//  once cohort persistence is working this likely will not be required
 startCoreListening({
   matcher: isAnyOf(setCurrentCohortId),
   effect: async (_, listenerApi) => {
