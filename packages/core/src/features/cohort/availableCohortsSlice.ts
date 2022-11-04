@@ -268,7 +268,7 @@ const slice = createSlice({
         const additionalFilters =
           filters === undefined
             ? {}
-            : divideFilterSetByPrefix(filters, "files.").withPrefix;
+            : divideFilterSetByPrefix(filters, "files.").withPrefix.root;
         const caseSetFilter: FilterSet = {
           mode: "and",
           root: {
@@ -276,8 +276,8 @@ const slice = createSlice({
               field: "cases.case_id",
               operator: "includes",
               operands: [`set_id:${data.case.set_id}`],
-              ...additionalFilters,
             },
+            ...additionalFilters,
           },
         };
         cohortsAdapter.updateOne(state, {
