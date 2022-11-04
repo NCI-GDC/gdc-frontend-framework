@@ -11,10 +11,7 @@ import { SingleSomaticMutation, SomaticMutation, Impact } from "./types";
 import CheckboxSpring from "../shared/CheckboxSpring";
 import PercentageBar from "../shared/PercentageBar";
 import { Survival } from "../shared/types";
-
 import { TableColumnDefinition, WidthSpring } from "../shared/types";
-import { Subrow } from "../shared/Subrow";
-import { useGetSomaticMutationTableSubrowQuery } from "@gff/core";
 import { Image } from "@/components/Image";
 
 export const createTableColumn = (
@@ -30,18 +27,7 @@ export const createTableColumn = (
     geneSymbol: string,
   ) => any,
   setMutationID: Dispatch<SetStateAction<string>>,
-  mutationID: string,
 ): TableColumnDefinition => {
-  // subrow position relative to first column
-  const subrow =
-    visibleColumns[0].id === accessor ? (
-      <Subrow
-        id={mutationID}
-        width={width}
-        query={useGetSomaticMutationTableSubrowQuery}
-        subrowTitle={`Affected Cases Across The GDC`}
-      />
-    ) : null;
   switch (accessor) {
     case "select":
       return {
@@ -62,7 +48,6 @@ export const createTableColumn = (
                       handleCheck={selectMutation}
                     />
                   )}
-                  <>{!row.getCanExpand() && subrow}</>
                 </>
               );
             },
@@ -96,7 +81,6 @@ export const createTableColumn = (
                       tooltip={""}
                     />
                   )}
-                  <>{!row.getCanExpand() && subrow}</>
                 </>
               );
             },
@@ -124,7 +108,6 @@ export const createTableColumn = (
                       tooltip={`Click icon to plot ${row.original["survival"].symbol}`}
                     />
                   )}
-                  <>{!row.getCanExpand() && subrow}</>
                 </>
               );
             },
@@ -156,7 +139,6 @@ export const createTableColumn = (
                       anchor={true}
                       tooltip={row.original["DNAChange"]}
                     />
-                    <>{!row.getCanExpand() && subrow}</>
                   </>
                 </animated.div>
               );
@@ -214,7 +196,6 @@ export const createTableColumn = (
                       </div>
                     )}
                   </>
-                  <>{!row.getCanExpand() && subrow}</>
                 </animated.div>
               );
             },
@@ -261,7 +242,6 @@ export const createTableColumn = (
                       />
                     </>
                   )}
-                  <>{!row.getCanExpand() && subrow}</>
                 </animated.div>
               );
             },
@@ -287,7 +267,6 @@ export const createTableColumn = (
                       proteinChange={row.original["proteinChange"]}
                     />
                   )}
-                  <>{!row.getCanExpand() && subrow}</>
                 </animated.div>
               );
             },
@@ -316,7 +295,6 @@ export const createTableColumn = (
                   {row.getCanExpand() && (
                     <Consequences consequences={row.original["consequences"]} />
                   )}
-                  <>{!row.getCanExpand() && subrow}</>
                 </animated.div>
               );
             },
@@ -346,7 +324,6 @@ export const createTableColumn = (
                   {row.getCanExpand() && (
                     <Impacts impact={row.original["impact"]} />
                   )}
-                  <>{!row.getCanExpand() && subrow}</>
                 </animated.div>
               );
             },
@@ -371,7 +348,6 @@ export const createTableColumn = (
                       anchor={false}
                       tooltip={""}
                     />
-                    <>{!row.getCanExpand() && subrow}</>
                   </>
                 </animated.div>
               );

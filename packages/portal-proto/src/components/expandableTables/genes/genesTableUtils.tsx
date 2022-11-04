@@ -15,8 +15,6 @@ import {
   TableHeader,
   AffectedCases,
 } from "../shared/sharedTableCells";
-import { Subrow } from "../shared/Subrow";
-import { useGetGeneTableSubrowQuery } from "@gff/core";
 import { GenesColumn, SingleGene, Gene } from "./types";
 import { Tooltip } from "@mantine/core";
 
@@ -24,7 +22,6 @@ export const createTableColumn = (
   accessor: string,
   width: number,
   partitionWidth: WidthSpring,
-  visibleColumns: TableColumnState[],
   selectedGenes: Record<string, GenesColumn>[],
   selectGene: (geneId: string) => any,
   handleSurvivalPlotToggled: (
@@ -33,18 +30,7 @@ export const createTableColumn = (
     geneSymbol: string,
   ) => any,
   setGeneID: Dispatch<SetStateAction<string>>,
-  geneID: string,
 ): TableColumnDefinition => {
-  // subrow position relative to first column
-  const subrow =
-    visibleColumns[0].id === accessor ? (
-      <Subrow
-        id={geneID}
-        width={width}
-        query={useGetGeneTableSubrowQuery}
-        subrowTitle={`# SSMS Affected Cases Across The GDC`}
-      />
-    ) : null;
   switch (accessor) {
     case "select":
       return {
@@ -65,7 +51,6 @@ export const createTableColumn = (
                       handleCheck={selectGene}
                     />
                   )}
-                  <>{!row.getCanExpand() && subrow}</>
                 </>
               );
             },
@@ -93,7 +78,6 @@ export const createTableColumn = (
                       tooltip={`Click icon to plot ${row.original["survival"].symbol}`}
                     />
                   )}
-                  <>{!row.getCanExpand() && subrow}</>
                 </>
               );
             },
@@ -121,7 +105,6 @@ export const createTableColumn = (
                       </div>
                     </Tooltip>
                   )}
-                  <>{!row.getCanExpand() && subrow}</>
                 </animated.div>
               );
             },
@@ -162,7 +145,6 @@ export const createTableColumn = (
                       />
                     )}
                   </div>
-                  <>{!row.getCanExpand() && subrow}</>
                 </animated.div>
               );
             },
@@ -226,7 +208,6 @@ export const createTableColumn = (
                       </div>
                     )}
                   </>
-                  <>{!row.getCanExpand() && subrow}</>
                 </animated.div>
               );
             },
@@ -262,7 +243,6 @@ export const createTableColumn = (
                       tooltip={""}
                     />
                   )}
-                  <>{!row.getCanExpand() && subrow}</>
                 </animated.div>
               );
             },
@@ -298,7 +278,6 @@ export const createTableColumn = (
                       tooltip={""}
                     />
                   )}
-                  <>{!row.getCanExpand() && subrow}</>
                 </animated.div>
               );
             },
@@ -331,7 +310,6 @@ export const createTableColumn = (
                         })}
                       </div>
                     )}
-                    <>{!row.getCanExpand() && subrow}</>
                   </>
                 </animated.div>
               );
@@ -362,7 +340,6 @@ export const createTableColumn = (
                       anchor={false}
                       tooltip={""}
                     />
-                    <>{!row.getCanExpand() && subrow}</>
                   </>
                 </animated.div>
               );
@@ -388,7 +365,6 @@ export const createTableColumn = (
                       anchor={["symbol"].includes(accessor) ? true : false}
                       tooltip={""}
                     />
-                    <>{!row.getCanExpand() && subrow}</>
                   </>
                 </animated.div>
               );

@@ -10,6 +10,8 @@ import {
 import { useSpring } from "react-spring";
 import { searchContains } from "../shared/sharedTableUtils";
 import { TableFilters } from "../shared/TableFilters";
+import { useGetSomaticMutationTableSubrowQuery } from "@gff/core";
+import { Subrow } from "../shared/Subrow";
 
 export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   initialData,
@@ -114,7 +116,6 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
           selectMutation,
           handleSurvivalPlotToggled,
           setMutationID,
-          mutationID,
         );
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -164,6 +165,14 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
           allSelected={selectedMutations}
           firstColumn={columnListOrder[0].id}
           headerWidth={width / visibleColumns.length}
+          subrow={
+            <Subrow
+              id={mutationID}
+              width={width}
+              query={useGetSomaticMutationTableSubrowQuery}
+              subrowTitle={`Affected Cases Across The GDC`}
+            />
+          }
         />
       </div>
     </div>

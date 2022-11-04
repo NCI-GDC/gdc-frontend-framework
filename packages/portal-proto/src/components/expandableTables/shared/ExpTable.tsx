@@ -23,6 +23,7 @@ export interface ExpTableProps<TData> {
   allSelected: any;
   firstColumn: string;
   headerWidth: number;
+  subrow: React.FC;
 }
 
 export const ExpTable: React.FC<ExpTableProps> = ({
@@ -34,6 +35,7 @@ export const ExpTable: React.FC<ExpTableProps> = ({
   allSelected,
   firstColumn,
   headerWidth,
+  subrow,
 }: ExpTableProps) => {
   const table = useReactTable({
     data,
@@ -124,6 +126,7 @@ export const ExpTable: React.FC<ExpTableProps> = ({
                   row={row}
                   index={index}
                   selected={row.original["select"] in allSelected}
+                  subrow={subrow}
                 />
               );
             })}

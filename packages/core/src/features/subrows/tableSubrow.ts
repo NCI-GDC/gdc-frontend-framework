@@ -20,7 +20,6 @@ export interface TableSubrowData {
   denominator?: number;
 }
 
-// include in export @ core index
 export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
   endpoints: (builder) => ({
     getGeneTableSubrow: builder.query({

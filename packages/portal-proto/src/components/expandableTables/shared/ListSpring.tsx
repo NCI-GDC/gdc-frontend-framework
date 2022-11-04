@@ -52,7 +52,7 @@ const ListSpring: React.FC<ListSpringProps> = ({
     <>
       <animated.div
         ref={subRef}
-        className={`flex flex-wrap bg-white absolute mt-2 ml-2`}
+        className={`flex flex-wrap bg-inherit absolute mt-2 ml-2`}
         style={horizontalSpring}
       >
         {isFetching ? (

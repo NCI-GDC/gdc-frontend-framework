@@ -6,6 +6,7 @@ interface AnimatedRowProps {
   row: any;
   index: number;
   selected: boolean;
+  subrow: React.FC;
 }
 
 /**
@@ -21,6 +22,7 @@ const AnimatedRow: React.FC<AnimatedRowProps> = ({
   row,
   index,
   selected,
+  subrow,
 }: AnimatedRowProps) => {
   const rowDelay = (index: number) => {
     return index < 20 ? index * 60 : 1200;
@@ -42,10 +44,11 @@ const AnimatedRow: React.FC<AnimatedRowProps> = ({
           : ``
       } ${index % 2 ? `bg-slate-50` : `bg-white`}`}
     >
-      {row.getVisibleCells().map((cell) => {
+      {row.getVisibleCells().map((cell, cellIdx) => {
         return (
           <animated.td key={cell.id} className={`mt-0 m-auto`}>
             {flexRender(cell.column.columnDef.cell, cell.getContext())}
+            {row.id.includes(".") && cellIdx === 0 && subrow}
           </animated.td>
         );
       })}

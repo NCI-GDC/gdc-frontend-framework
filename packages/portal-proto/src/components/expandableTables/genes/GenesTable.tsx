@@ -7,6 +7,8 @@ import { getGene, createTableColumn } from "./genesTableUtils";
 import { GenesColumn } from "./types";
 import { useSpring } from "react-spring";
 import { searchContains } from "../shared/sharedTableUtils";
+import { Subrow } from "../shared/Subrow";
+import { useGetGeneTableSubrowQuery } from "@gff/core";
 
 export const GenesTable: React.FC<GenesTableProps> = ({
   initialData,
@@ -109,12 +111,10 @@ export const GenesTable: React.FC<GenesTableProps> = ({
           accessor,
           width,
           partitionWidth,
-          visibleColumns,
           selectedGenes,
           selectGene,
           handleSurvivalPlotToggled,
           setGeneID,
-          geneID,
         );
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -164,6 +164,14 @@ export const GenesTable: React.FC<GenesTableProps> = ({
           allSelected={selectedGenes}
           firstColumn={columnListOrder[0].id}
           headerWidth={width / visibleColumns.length}
+          subrow={
+            <Subrow
+              id={geneID}
+              width={width}
+              query={useGetGeneTableSubrowQuery}
+              subrowTitle={`# SSMS Affected Cases Across The GDC`}
+            />
+          }
         />
       </div>
     </div>
