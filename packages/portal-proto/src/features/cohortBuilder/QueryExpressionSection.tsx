@@ -99,6 +99,9 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
 }: QueryExpressionSectionProps) => {
   const [expandedState, setExpandedState] = useReducer(reducer, {});
   const [filtersSectionCollapsed, setFiltersSectionCollapsed] = useState(true);
+  const [numOfRows, setNumberOfRows] = useState(0);
+  const [collapsedHeight, setCollapsedHeight] = useState(0);
+  const filtersRef = useRef<HTMLDivElement>(null);
 
   const dispatch = useCoreDispatch();
 
@@ -117,6 +120,31 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
       setExpandedState({ type: "init", cohortId: currentCohortId });
     }
   }, [currentCohortId, expandedState]);
+
+  useEffect(() => {
+    if (filtersRef.current) {
+      let tempNumRows = 0;
+      let tempCollapsedHeight = 0;
+      const filterElements = Array.from(
+        filtersRef.current.children,
+      ) as HTMLDivElement[];
+      filterElements.forEach((f, i) => {
+        if (i === 0) {
+          tempNumRows++;
+          const style = window.getComputedStyle(f);
+          tempCollapsedHeight += f.clientHeight + parseInt(style.marginBottom);
+        } else if (f.offsetLeft <= filterElements[i - 1].offsetLeft) {
+          // If the current element is further to the left than the previous, we are on a new row
+          tempNumRows++;
+          const style = window.getComputedStyle(f);
+          tempCollapsedHeight += f.clientHeight + parseInt(style.marginBottom);
+        }
+      });
+
+      setNumberOfRows(tempNumRows);
+      setCollapsedHeight(tempCollapsedHeight);
+    }
+  }, [filters, filtersRef?.current?.clientHeight, expandedState]);
 
   return (
     <QueryExpressionContainer>
@@ -185,7 +213,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                     }
                     aria-label="Expand/collapse filters section"
                     aria-expanded={!filtersSectionCollapsed}
-                    disabled={noFilters}
+                    disabled={noFilters || numOfRows < 4}
                   >
                     {filtersSectionCollapsed ? (
                       <>
@@ -202,8 +230,14 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
             </div>
             <div
               className={`flex flex-wrap bg-base-lightest w-full p-2 rounded-md overflow-x-hidden ${
-                filtersSectionCollapsed ? "overflow-y-auto max-h-36" : "h-full"
+                filtersSectionCollapsed ? "overflow-y-auto" : "h-full"
               }`}
+              style={
+                filtersSectionCollapsed && numOfRows > 3
+                  ? { maxHeight: collapsedHeight }
+                  : undefined
+              }
+              ref={filtersRef}
             >
               {noFilters ? (
                 <>No filters currently applied.</>
