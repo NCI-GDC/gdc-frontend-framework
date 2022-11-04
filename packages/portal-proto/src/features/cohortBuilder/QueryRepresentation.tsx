@@ -61,6 +61,7 @@ rounded-sm
 border-[1.5px]
 mr-1
 mb-2
+last:mb-0
 border-primary-darkest
 w-inherit
 `;
