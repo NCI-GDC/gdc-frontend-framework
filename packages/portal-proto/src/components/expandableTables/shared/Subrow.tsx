@@ -9,6 +9,8 @@ import { useSpring } from "react-spring";
 import ListSpring from "./ListSpring";
 import { Loader } from "@mantine/core";
 import { animated } from "react-spring";
+import { useScrollIntoView } from "@mantine/hooks";
+import { useEffect } from "react";
 
 export interface SubrowProps {
   id: string;
@@ -42,6 +44,11 @@ export const Subrow: React.FC<SubrowProps> = ({
   query,
   subrowTitle,
 }: SubrowProps) => {
+  const scrollOffset: number = 100;
+  const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>({
+    offset: scrollOffset,
+  });
+
   const horizontalSpring = useSpring({
     from: { width: width / 2, opacity: 0 },
     to: { width: width, opacity: 1 },
@@ -60,12 +67,16 @@ export const Subrow: React.FC<SubrowProps> = ({
 
   const { data: subData, isFetching, isSuccess, isError } = query({ id });
 
+  useEffect(() => {
+    scrollIntoView();
+  }, [isSuccess]);
+
   return (
-    <>
+    <div>
       {isFetching && (
         <div className={`relative`}>
           <animated.div
-            className={`flex flex-wrap bg-inherit absolute w-screen`}
+            className={`flex bg-inherit absolute w-screen`}
             style={loaderWidth}
           >
             <div className={`m-auto mt-2`}>
@@ -77,7 +88,7 @@ export const Subrow: React.FC<SubrowProps> = ({
       )}
       {isError && <span>Error: Failed to fetch {subrowTitle}</span>}
       {isSuccess && (
-        <div className={`relative`}>
+        <div ref={targetRef} className={`relative`}>
           <ListSpring
             subData={subData}
             horizontalSpring={horizontalSpring}
@@ -85,7 +96,7 @@ export const Subrow: React.FC<SubrowProps> = ({
           />
         </div>
       )}
-    </>
+    </div>
   );
 };
 
