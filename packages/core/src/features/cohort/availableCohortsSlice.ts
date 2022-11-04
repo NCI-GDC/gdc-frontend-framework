@@ -10,21 +10,22 @@ import { buildCohortGqlOperator, FilterSet } from "./filters";
 import { COHORTS } from "./cohortFixture";
 import { GqlOperation, Operation } from "../gdcapi/filters";
 import { CoreDataSelectorResponse, DataStatus } from "../../dataAccess";
-import { GQLIndexType } from "../facets/types";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import { CoreDispatch } from "../../store";
 
 export interface CaseSetDataAndStatus {
-  readonly status: DataStatus;
-  readonly error?: string;
-  readonly caseSetId: FilterSet;
+  readonly status: DataStatus; // status of create caseSet
+  readonly error?: string; // any error message
+  readonly caseSetId: FilterSet; // A filter set containing the caseID and additional Filters
+  // TODO this could also hold the cohort
+  //  id for query by cohort
 }
 
 export interface Cohort {
   readonly id: string;
   readonly name: string;
   readonly filters: FilterSet; // active filters for cohort
-  readonly caseSet: CaseSetDataAndStatus; // case ids for frozen cohorts
+  readonly caseSet: CaseSetDataAndStatus;
   readonly modified: boolean; // flag which is set to true if modified and unsaved
   readonly modifiedDate?: string; // last time cohort was modified
   readonly saved?: boolean; // flag indicating if cohort has been saved.
@@ -34,14 +35,14 @@ export interface Cohort {
  A start at handling how to seamlessly create cohorts that can bridge explore
  and repository indexes. The slice creates a case set id using the defined filters
 */
-const buildCaseSetMutationQuery = (index: string) =>
+const buildCaseSetMutationQuery = () =>
   `
  mutation mutationsCreateRepositoryCaseSetMutation(
   $input: CreateSetInput
 ) {
   sets {
     create {
-      ${index} {
+      explore {
         case(input: $input) {
           set_id
           size
@@ -53,37 +54,29 @@ const buildCaseSetMutationQuery = (index: string) =>
 
 export interface CreateCaseSetProps {
   readonly caseSetId?: string; // pass a caseSetId to use
-  readonly filterSelector?: (state: CoreState) => FilterSet; // function to get cohort filters
-  readonly index?: GQLIndexType; // which index to use (defaults to "explore")
 }
 
 export const createCaseSet = createAsyncThunk<
   GraphQLApiResponse<Record<string, any>>,
   CreateCaseSetProps,
   { dispatch: CoreDispatch; state: CoreState }
->(
-  "cohort/createCaseSet",
-  async (
-    {
-      caseSetId = undefined,
-      filterSelector = selectCurrentCohortFilters,
-      index = "explore" as GQLIndexType,
-    },
-    thunkAPI,
-  ) => {
-    const filters = buildCohortGqlOperator(filterSelector(thunkAPI.getState()));
-    const graphQL = buildCaseSetMutationQuery(index);
+>("cohort/createCaseSet", async ({ caseSetId = undefined }, thunkAPI) => {
+  const dividedFilters = divideCurrentCohortFilterSetFilterByPrefix(
+    thunkAPI.getState(),
+    "files.",
+  );
+  const graphQL = buildCaseSetMutationQuery();
 
-    const filtersGQL = {
-      input:
-        caseSetId !== undefined
-          ? { filters: filters ? filters : {}, set_id: caseSetId }
-          : { filters: filters ? filters : {} },
-      never_used: null,
-    };
-    return graphqlAPI(graphQL, filtersGQL);
-  },
-);
+  const filtersGQL = {
+    input: {
+      filters: dividedFilters?.withoutPrefix
+        ? buildCohortGqlOperator(dividedFilters.withoutPrefix)
+        : {},
+      set_id: `${caseSetId}`,
+    },
+  };
+  return graphqlAPI(graphQL, filtersGQL);
+});
 
 export const DEFAULT_COHORT_ID = "ALL-GDC-COHORT";
 
@@ -269,8 +262,13 @@ const slice = createSlice({
             },
           });
         }
-        const index = action.meta.arg.index ?? "explore";
-        const data = response.data.sets.create[index];
+        const data = response.data.sets.create.explore;
+        const cohort = state.entities[state.currentCohort] as Cohort;
+        const filters = cohort?.filters;
+        const additionalFilters =
+          filters === undefined
+            ? {}
+            : divideFilterSetByPrefix(filters, "files.").withPrefix;
         const caseSetFilter: FilterSet = {
           mode: "and",
           root: {
@@ -278,6 +276,7 @@ const slice = createSlice({
               field: "cases.case_id",
               operator: "includes",
               operands: [`set_id:${data.case.set_id}`],
+              ...additionalFilters,
             },
           },
         };
@@ -389,6 +388,55 @@ export const selectCurrentCohortFilterSet = (
     state.cohort.availableCohorts.currentCohort,
   );
   return cohort?.filters;
+};
+
+interface SplitFilterSet {
+  withPrefix: FilterSet;
+  withoutPrefix: FilterSet;
+}
+
+const divideFilterSetByPrefix = (
+  filters: FilterSet,
+  prefix: string,
+): SplitFilterSet => {
+  const results = Object.entries(filters.root).reduce(
+    (
+      newObj: {
+        withPrefix: Record<string, Operation>;
+        withoutPrefix: Record<string, Operation>;
+      },
+      [key, val],
+    ) => {
+      if (key.startsWith(prefix)) newObj.withPrefix[key] = val;
+      else newObj.withoutPrefix[key] = val;
+      return newObj;
+    },
+    { withPrefix: {}, withoutPrefix: {} },
+  );
+
+  return {
+    withPrefix: { mode: "and", root: results.withPrefix },
+    withoutPrefix: { mode: "and", root: results.withoutPrefix },
+  };
+};
+
+/**
+ * Divides the current cohort into prefix and not prefix. This is
+ * used to create caseSets for files and cases
+ * @param state
+ * @parm prefix - filter prefix to separate on (typically "files.")
+ */
+export const divideCurrentCohortFilterSetFilterByPrefix = (
+  state: CoreState,
+  prefix: string,
+): SplitFilterSet | undefined => {
+  const cohort = cohortSelectors.selectById(
+    state,
+    state.cohort.availableCohorts.currentCohort,
+  );
+  if (cohort === undefined) return undefined;
+
+  return divideFilterSetByPrefix(cohort?.filters, prefix);
 };
 
 /**
