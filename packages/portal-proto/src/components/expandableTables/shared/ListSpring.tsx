@@ -7,14 +7,12 @@ import { Loader } from "@mantine/core";
 interface ListSpringProps {
   subData: any;
   horizontalSpring: any;
-  isFetching: boolean;
   subrowTitle;
 }
 
 const ListSpring: React.FC<ListSpringProps> = ({
   subData,
   horizontalSpring,
-  isFetching,
   subrowTitle,
 }: ListSpringProps) => {
   const [subRef, { width, height }] = useMeasure();
@@ -24,8 +22,8 @@ const ListSpring: React.FC<ListSpringProps> = ({
   const verticalSpring = useSpring({
     from: { opacity: 0, height: 0 },
     to: {
-      opacity: !isFetching ? 1 : 0,
-      height: !isFetching ? height + fudgeFactor : 0,
+      opacity: 1,
+      height: height + fudgeFactor,
     },
     duration: config.slow,
   });
@@ -45,7 +43,7 @@ const ListSpring: React.FC<ListSpringProps> = ({
       );
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [subData.length, isFetching],
+    [subData],
   );
 
   return (
@@ -55,16 +53,12 @@ const ListSpring: React.FC<ListSpringProps> = ({
         className={`flex flex-wrap bg-inherit absolute mt-2 ml-2`}
         style={horizontalSpring}
       >
-        {isFetching ? (
-          <Loader />
-        ) : (
-          <>
-            <h2 className={`flex flex-row w-screen font-bold text-sm p-2`}>
-              {subrowTitle}
-            </h2>
-            {subData.map((item, i) => renderItems(item, i))}
-          </>
-        )}
+        <>
+          <h2 className={`flex flex-row w-screen font-bold text-sm p-2`}>
+            {subrowTitle}
+          </h2>
+          {subData.map((item, i) => renderItems(item, i))}
+        </>
       </animated.div>
       <animated.div style={verticalSpring}></animated.div>
     </>

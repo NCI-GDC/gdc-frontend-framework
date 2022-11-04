@@ -7,6 +7,8 @@ import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
 import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { useSpring } from "react-spring";
 import ListSpring from "./ListSpring";
+import { Loader } from "@mantine/core";
+import { animated } from "react-spring";
 
 export interface SubrowProps {
   id: string;
@@ -46,15 +48,38 @@ export const Subrow: React.FC<SubrowProps> = ({
     immediate: true,
   });
 
-  const { data: subData, isFetching, isSuccess } = query({ id });
+  const loaderWidth = useSpring({
+    from: { width: 0 },
+    to: { width: width },
+    immediate: true,
+  });
+  const loaderSpring = useSpring({
+    from: { height: 0 },
+    to: { height: 50 },
+  });
+
+  const { data: subData, isFetching, isSuccess, isError } = query({ id });
 
   return (
     <>
+      {isFetching && (
+        <div className={`relative`}>
+          <animated.div
+            className={`flex flex-wrap bg-inherit absolute w-screen`}
+            style={loaderWidth}
+          >
+            <div className={`m-auto mt-2`}>
+              <Loader />
+            </div>
+          </animated.div>
+          <animated.div style={loaderSpring}></animated.div>
+        </div>
+      )}
+      {isError && <span>Error: Failed to fetch {subrowTitle}</span>}
       {isSuccess && (
         <div className={`relative`}>
           <ListSpring
             subData={subData}
-            isFetching={isFetching}
             horizontalSpring={horizontalSpring}
             subrowTitle={subrowTitle}
           />
