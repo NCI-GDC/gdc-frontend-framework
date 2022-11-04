@@ -11,6 +11,7 @@ import {
 import { VerticalTable } from "@/features/shared/VerticalTable";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import FunctionButton from "@/components/FunctionButton";
+import useStandardPagination from "@/hooks/useStandardPagination";
 
 interface GeneCancerDistributionTableProps {
   readonly gene: string;
@@ -93,9 +94,6 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     ],
     size: data?.projects.length,
   });
-  const [pageSize, setPageSize] = useState(10);
-  const [activePage, setActivePage] = useState(1);
-  const [displayedData, setDisplayedData] = useState([]);
 
   const projectsById = Object.fromEntries(
     (projects || []).map((project) => [project.project_id, project]),
@@ -295,20 +293,16 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     [isSuccess, projectsFetching],
   );
 
-  useEffect(() => {
-    setDisplayedData(
-      formattedData.slice((activePage - 1) * pageSize, activePage * pageSize),
-    );
-  }, [formattedData, activePage, pageSize]);
-
-  const handlePageSizeChange = (x: string) => {
-    setPageSize(parseInt(x));
-    setActivePage(1);
-  };
-
-  const handlePageChange = (x: number) => {
-    setActivePage(x);
-  };
+  const {
+    handlePageChange,
+    handlePageSizeChange,
+    page,
+    pages,
+    size,
+    from,
+    total,
+    displayedData,
+  } = useStandardPagination(formattedData);
 
   return (
     <VerticalTable
@@ -327,11 +321,11 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       pagination={{
         handlePageSizeChange,
         handlePageChange,
-        page: activePage,
-        pages: Math.ceil(data?.projects?.length / pageSize),
-        size: pageSize,
-        from: (activePage - 1) * pageSize,
-        total: data?.projects?.length,
+        page,
+        pages,
+        size,
+        from,
+        total,
       }}
       status={
         isFetching
