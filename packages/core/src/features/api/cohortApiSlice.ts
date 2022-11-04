@@ -5,6 +5,7 @@ import { coreCreateApi } from "../../coreCreateApi";
 import type { Middleware, Reducer } from "@reduxjs/toolkit";
 import { CohortModel, CohortAdd, CohortUpdate } from "./cohortApiTypes";
 import { GDC_API } from "../../constants";
+import { buildGqlOperationToFilterSet } from "../cohort";
 
 export const cohortApiSlice = coreCreateApi({
   reducerPath: "cohortApi",
@@ -16,6 +17,18 @@ export const cohortApiSlice = coreCreateApi({
   endpoints: (builder) => ({
     getCohortsByContextId: builder.query<CohortModel[], void>({
       query: () => "/cohorts",
+      transformResponse: (response: CohortModel[]) => {
+        console.log("Response: ", response);
+        const trans = response.map((item) => ({
+          ...item,
+          filters: buildGqlOperationToFilterSet(item.filters),
+          saved: true,
+          modified: false,
+        }));
+
+        console.log("trans: ", trans);
+        return trans;
+      },
       providesTags: (result = []) => [
         { type: "Cohort", id: "LIST" },
         ...result.map(({ id }) => ({ type: "Cohort" as const, id })),

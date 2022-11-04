@@ -472,3 +472,43 @@ export const convertGqlFilterToFilter = (
   const handler: GqlOperationHandler<Operation> = new ToOperationHandler();
   return handleGqlOperation(handler, gqlFilter);
 };
+
+// const fil = {
+//   filters: {
+//     content: [
+//       {
+//         content: {
+//           field: "cases.diagnoses.primary_diagnosis",
+//           value: ["acinar adenocarcinoma", "duct adenocarcinoma, nos"],
+//         },
+//         op: "in",
+//       },
+//       {
+//         content: {
+//           field: "cases.project.program.name",
+//           value: ["FM"],
+//         },
+//         op: "in",
+//       },
+//       {
+//         content: {
+//           field: "cases.diagnoses.tissue_or_organ_of_origin",
+//           value: ["prostate gland"],
+//         },
+//         op: "in",
+//       },
+//     ],
+//     op: "and",
+//   },
+// };
+
+// const app = {
+//   mode: "and",
+//   root: {
+//     "cases.diagnoses.primary_diagnosis": {
+//       operator: "includes",
+//       field: "cases.diagnoses.primary_diagnosis",
+//       operands: ["acinar adenocarcinoma", "duct adenocarcinoma, nos"],
+//     },
+//   },
+// };

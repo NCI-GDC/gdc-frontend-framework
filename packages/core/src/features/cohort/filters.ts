@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { isArray } from "lodash";
 import {
   Operation,
   GqlOperation,
@@ -17,6 +18,9 @@ import {
   NotEquals,
   Intersection,
   Union,
+  convertGqlFilterToFilter,
+  GqlIntersection,
+  GqlUnion,
 } from "../gdcapi/filters";
 
 /**
@@ -124,6 +128,36 @@ export const buildCohortGqlOperator = (
             content: Object.keys(fs.root).map((k): GqlOperation => {
               return convertFilterToGqlFilter(fs.root[k]);
             }),
+          };
+  }
+  return undefined;
+};
+
+export const buildGqlOperationToFilterSet = (
+  fs: GqlIntersection | GqlUnion | undefined,
+): FilterSet | undefined => {
+  if (!fs) return undefined;
+  console.log("fs: ", fs);
+
+  const obj = fs.content.reduce((acc, item) => {
+    const key = isArray(item.content)
+      ? item.content?.at(0).field
+      : (item.content as any).field;
+
+    return {
+      ...acc,
+      [key]: convertGqlFilterToFilter(item),
+    };
+  }, {});
+
+  // console.log("obj: ", obj);
+  switch (fs.op) {
+    case "and":
+      return fs.content.length == 0
+        ? undefined
+        : {
+            mode: fs.op,
+            root: obj,
           };
   }
   return undefined;

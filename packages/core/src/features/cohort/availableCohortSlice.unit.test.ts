@@ -351,14 +351,9 @@ describe("add, update, and remove cohort", () => {
             name: "New Cohort",
             filters: { mode: "and", root: {} },
             id: "000-000-000-1",
-            caseSet: {
-              caseSetId: {
-                mode: "and",
-                root: {},
-              },
-              status: "uninitialized",
-            },
+            case_ids: [""],
             modified: false,
+            modifiedDate: new Date().toISOString(),
           },
         },
       },
@@ -412,14 +407,9 @@ describe("add, update, and remove cohort", () => {
             name: "cohort1",
             filters: { mode: "and", root: {} },
             id: "000-000-000-1",
-            caseSet: {
-              caseSetId: {
-                mode: "and",
-                root: {},
-              },
-              status: "uninitialized",
-            },
+            case_ids: [""],
             modified: false,
+            modifiedDate: new Date().toISOString(),
           },
         },
       },
@@ -458,27 +448,17 @@ describe("add, update, and remove cohort", () => {
             name: "All GDC",
             filters: { mode: "and", root: {} },
             id: "ALL-GDC-COHORT",
-            caseSet: {
-              caseSetId: {
-                mode: "and",
-                root: {},
-              },
-              status: "uninitialized",
-            },
+            case_ids: [""],
             modified: false,
+            modifiedDate: new Date().toISOString(),
           },
           "000-000-000-2": {
             name: "New Cohort 2",
             filters: { mode: "and", root: {} },
             id: "000-000-000-2",
-            caseSet: {
-              caseSetId: {
-                mode: "and",
-                root: {},
-              },
-              status: "uninitialized",
-            },
+            case_ids: [""],
             modified: false,
+            modifiedDate: new Date().toISOString(),
           },
         },
       },
@@ -516,27 +496,17 @@ describe("add, update, and remove cohort", () => {
           name: "All GDC",
           filters: { mode: "and", root: {} },
           id: "ALL-GDC-COHORT",
-          caseSet: {
-            caseSetId: {
-              mode: "and",
-              root: {},
-            },
-            status: "uninitialized" as DataStatus,
-          },
+          case_ids: [""],
           modified: false,
+          modifiedDate: new Date().toISOString(),
         },
         "000-000-000-1": {
           name: "New Cohort",
           filters: { mode: "and", root: {} },
           id: "000-000-000-1",
-          caseSet: {
-            caseSetId: {
-              mode: "and",
-              root: {},
-            },
-            status: "uninitialized" as DataStatus,
-          },
+          case_ids: [""],
           modified: false,
+          modifiedDate: new Date().toISOString(),
         },
       },
     };

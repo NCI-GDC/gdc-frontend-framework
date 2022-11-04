@@ -8,6 +8,7 @@ import {
   joinFilters,
   buildCohortGqlOperator,
   ValueExtractorHandler,
+  buildGqlOperationToFilterSet,
 } from "./filters";
 
 import {
@@ -35,6 +36,11 @@ import {
   selectCohortMessage,
   clearCohortMessage,
   selectCurrentCohort,
+  setCohortList,
+  setModifed,
+  selectCurrentCohortSaved,
+  setSaved,
+  discardCohortChanges,
 } from "./availableCohortsSlice";
 
 import {
@@ -110,4 +116,10 @@ export {
   selectCohortMessage,
   clearCohortMessage,
   selectCurrentCohort,
+  setCohortList,
+  buildGqlOperationToFilterSet,
+  setModifed,
+  selectCurrentCohortSaved,
+  setSaved,
+  discardCohortChanges,
 };

@@ -67,7 +67,7 @@ export const QuickSearch = ({
               color: `${idx === focusedListElemIdx && "#38393a"}`, //nciGrayDarkest : might need to change the color
             }}
           >
-            {findMatchingToken(item, searchText.trim())}
+            {findMatchingToken(item, searchText.trim().toLowerCase())}
           </Highlight>
         </span>
       </div>
@@ -134,7 +134,7 @@ export const QuickSearch = ({
                   quickSearchRef.current.focus();
                 }}
                 className="cursor-pointer"
-              ></CloseIcon>
+              />
             )
           }
           value={searchText}
