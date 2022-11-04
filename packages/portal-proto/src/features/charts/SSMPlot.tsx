@@ -13,12 +13,14 @@ interface SSMPlotProps {
   readonly page: "gene" | "ssms";
   readonly gene?: string;
   readonly ssms?: string;
+  readonly height?: number;
 }
 
 const SSMPlot: React.FC<SSMPlotProps> = ({
   page,
   gene,
   ssms,
+  height = undefined,
 }: SSMPlotProps) => {
   const router = useRouter();
 
@@ -50,12 +52,16 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
 
   const caseCount = data.cases
     .map((d) => d.ssmCount)
-    .reduce((a, b) => a + b, 0);
+    .reduce((a, b) => a + b, 0)
+    .toLocaleString();
+
+  const ssmCount = data.ssmCount.toLocaleString();
+  const projectCount = data.cases.length.toLocaleString();
 
   const title =
     page === "gene"
-      ? `${caseCount} CASES AFFECTED BY ${data.ssmCount} MUTATIONS ACROSS ${data.cases.length} PROJECTS`
-      : `THIS MUTATION AFFECTS ${caseCount} CASES ACROSS ${data.cases.length} PROJECTS`;
+      ? `${caseCount} CASES AFFECTED BY ${ssmCount} MUTATIONS ACROSS ${projectCount} PROJECTS`
+      : `THIS MUTATION AFFECTS ${caseCount} CASES ACROSS ${projectCount} PROJECTS`;
 
   const chartData = {
     datasets: [
@@ -77,7 +83,7 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
   };
 
   return (
-    <>
+    <div className="relative">
       <div>
         <ChartTitleBar
           title={title}
@@ -86,12 +92,15 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
           jsonData={{}}
         />
       </div>
-      <BarChart
-        divId={chartDivId}
-        data={chartData}
-        onClickHandler={onClickHandler}
-      />
-    </>
+      <div className="w-100 h-100">
+        <BarChart
+          divId={chartDivId}
+          data={chartData}
+          onClickHandler={onClickHandler}
+          height={height}
+        />
+      </div>
+    </div>
   );
 };
 

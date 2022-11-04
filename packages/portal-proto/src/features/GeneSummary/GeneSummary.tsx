@@ -10,7 +10,7 @@ import { externalLinkNames, externalLinks, humanify } from "src/utils";
 import CNVPlot from "../charts/CNVPlot";
 import SSMPlot from "../charts/SSMPlot";
 import { formatDataForHorizontalTable } from "../files/utils";
-import { LoadingOverlay } from "@mantine/core";
+import { Grid, LoadingOverlay } from "@mantine/core";
 import { GeneCancerDistributionTable } from "../cancerDistributionTable/CancerDistributionTable";
 
 interface GeneViewProps {
@@ -165,8 +165,14 @@ const GeneView = ({ data, gene_id }: GeneViewProps) => {
                 <BarChartIcon size={20} />
                 <h2 className="text-xl">Cancer Distribution</h2>
               </div>
-              <SSMPlot page={"gene"} gene={gene_id} />
-              <CNVPlot gene={gene_id} />
+              <Grid>
+                <Grid.Col span={6}>
+                  <SSMPlot page={"gene"} gene={gene_id} height={200} />
+                </Grid.Col>
+                <Grid.Col span={6}>
+                  <CNVPlot gene={gene_id} height={200} />
+                </Grid.Col>
+              </Grid>
               <GeneCancerDistributionTable
                 gene={gene_id}
                 symbol={data.genes.symbol}

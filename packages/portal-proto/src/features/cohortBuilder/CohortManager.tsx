@@ -27,6 +27,7 @@ import {
 import { buildCohortGqlOperator } from "@gff/core";
 import { useCohortFacetFilters } from "./CohortGroup";
 import { useAddCohortMutation } from "@gff/core";
+import CountButton from "./CountButton";
 
 const CohortGroupButton = tw(Button)`
 p-2
@@ -372,6 +373,12 @@ const CohortManager: React.FC<CohortManagerProps> = ({
           <div />
         )
       }
+      <CountButton
+        countName="casesMax"
+        label="CASES"
+        className="text-white ml-auto mr-6 text-lg"
+        bold
+      />
     </div>
   );
 };

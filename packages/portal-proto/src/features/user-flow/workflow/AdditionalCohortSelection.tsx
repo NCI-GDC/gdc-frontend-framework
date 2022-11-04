@@ -97,6 +97,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
                       id={cohort.id}
                       onChange={() => setSelectedCohort(cohort.name)}
                       checked={selectedCohort === cohort.name}
+                      aria-label={`Select ${cohort.name}`}
                     />
                   </td>
                   <td className="w-3/6">

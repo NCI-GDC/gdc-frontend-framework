@@ -1,9 +1,8 @@
-import React from "react";
+import React, { ComponentType, useEffect } from "react";
 import { coreStore } from "../../store";
 import { v5 as uuidv5 } from "uuid";
 import { addGdcAppMetadata, EntityType } from "./gdcAppsSlice";
 import { configureStore, AnyAction } from "@reduxjs/toolkit";
-import { ComponentType, useEffect } from "react";
 import { Store, Action } from "redux";
 import {
   Provider,
@@ -13,6 +12,16 @@ import {
   createDispatchHook,
   createStoreHook,
 } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import {
+  persistStore,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist";
 import { registerGdcApp } from "./gdcAppRegistry";
 import { DataStatus } from "../../dataAccess";
 import { CookiesProvider } from "react-cookie";
@@ -106,6 +115,12 @@ export const createAppStore = (
     devTools: {
       name: `${nameVersion}::${id}`,
     },
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: {
+          ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        },
+      }),
   });
   type AppState = ReturnType<typeof reducers>;
   const context = React.createContext(
@@ -139,13 +154,22 @@ export interface CreateGdcAppWithOwnStoreOptions<
   readonly requiredEntityTypes: ReadonlyArray<EntityType>;
   readonly store: Store<S, A>;
   readonly context: any;
+  readonly persist?: boolean;
 }
 
 export const createGdcAppWithOwnStore = <A extends Action = AnyAction, S = any>(
   options: CreateGdcAppWithOwnStoreOptions<A, S>,
 ): React.ReactNode => {
-  const { App, id, name, version, requiredEntityTypes, store, context } =
-    options;
+  const {
+    App,
+    id,
+    name,
+    version,
+    requiredEntityTypes,
+    store,
+    context,
+    persist = false,
+  } = options;
 
   // need to create store and provider.
   // return a component representing this app
@@ -164,7 +188,13 @@ export const createGdcAppWithOwnStore = <A extends Action = AnyAction, S = any>(
     return (
       <Provider store={store} context={context}>
         <CookiesProvider>
-          <App />
+          {persist ? (
+            <PersistGate loading={null} persistor={persistStore(store)}>
+              <App />
+            </PersistGate>
+          ) : (
+            <App />
+          )}
         </CookiesProvider>
       </Provider>
     );

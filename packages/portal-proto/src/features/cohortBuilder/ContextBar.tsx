@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { showNotification } from "@mantine/notifications";
 import { CollapsibleContainer } from "@/components/CollapsibleContainer";
-import { Menu, Tabs, Divider } from "@mantine/core";
+import { Menu, Tabs } from "@mantine/core";
 import { ContextualCasesView } from "../cases/CasesView";
 import CountButton from "./CountButton";
-import { convertFilterToComponent } from "./QueryRepresentation";
 import { useCohortFacetFilters } from "./CohortGroup";
 import CohortManager from "./CohortManager";
 import {
@@ -14,7 +13,6 @@ import {
 
 import {
   useCoreDispatch,
-  clearCohortFilters,
   setCurrentCohortId,
   useCoreSelector,
   selectAvailableCohorts,
@@ -31,14 +29,12 @@ import {
   MdOutlineViewComfy as TableIcon,
   MdFileCopy as FilesIcon,
 } from "react-icons/md";
-import {
-  FaCartPlus as AddToCartIcon,
-  FaUndo as UndoIcon,
-} from "react-icons/fa";
+import { FaCartPlus as AddToCartIcon } from "react-icons/fa";
 
 import SummaryFacets, { SummaryFacetInfo } from "./SummaryFacets";
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
 import FunctionButton from "@/components/FunctionButton";
+import QueryExpressionSection from "./QueryExpressionSection";
 
 const ContextBar: React.FC = () => {
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(true);
@@ -146,13 +142,9 @@ const ContextBar: React.FC = () => {
     />
   );
 
-  const clearAllFilters = () => {
-    coreDispatch(clearCohortFilters());
-  };
-
   return (
     <div
-      className="mb-2 font-heading bg-base-lightest flex flex-col"
+      className="font-heading bg-base-lightest flex flex-col"
       data-tour="context_bar"
     >
       <CollapsibleContainer
@@ -232,40 +224,11 @@ const ContextBar: React.FC = () => {
           </div>
         </div>
       </CollapsibleContainer>
-      <div className="flex items-center bg-primary-lightest shadow border-y-1 border-primary-lighter h-20 ml-2 my-2 mr-1">
-        <CountButton
-          countName="casesMax"
-          label="CASES"
-          className="text-primary-contrast-lightest pl-4"
-          bold
-        />
-        <Divider
-          orientation="vertical"
-          my="md"
-          className="m-2 h-[80%] border-accent-darkest"
-        />
-
-        {Object.keys(filters.root).length !== 0 ? (
-          <div className="flex flex-row items-center w-full">
-            <div className="flex flex-row flex-wrap w-100 p-2 gap-y-1 ">
-              {Object.keys(filters.root).map((k) => {
-                return convertFilterToComponent(filters.root[k]);
-              })}
-            </div>
-            <button
-              className="hover:text-primary-darkest text-primary-contrast-lightest font-bold py-2 px-1 rounded ml-auto mr-4 "
-              onClick={clearAllFilters}
-            >
-              <UndoIcon size="1.15em" color="secondary" />
-            </button>
-          </div>
-        ) : (
-          <span className="text-lg text-primary-darkest ">
-            Currently viewing all cases in the GDC. Further refine your cohort
-            with tools such as the Cohort Builder.
-          </span>
-        )}
-      </div>
+      <QueryExpressionSection
+        filters={filters}
+        currentCohortName={currentCohortName}
+      />
+      <hr className="border-2" />
     </div>
   );
 };

@@ -13,3 +13,25 @@ Use `data-testid={elementIdentifierName}` within a tag to help locate the elemen
 Reference:
 1. **Using "data-test" in Tests** - https://blog.rstankov.com/using-rel-in-testing/
 2. **data-\*** - https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/data-*
+
+### Target Test Environment setup
+The following environment are supported:
+
+| environment | environment variable  | value    | target url                        |
+|-------------|-----------------------|----------|-----------------------------------|
+| Shared QA / Prod  | APP_ENVIRONMENT | (default)| https://portal.gdc.cancer.gov/v2  |
+| Local / Localhost | APP_ENVIRONMENT | _LOCAL   | http://localhost:3000/v2          |
+
+Example: run the following command in your CLI before running tests
+1. Run tests in particular environment
+```bash
+# localhost
+export APP_ENVIRONMENT=_LOCAL
+
+# Shared QA / Prod
+unset APP_ENVIRONMENT
+```
+2. Then run tests
+```bash
+gauge run specs
+```
