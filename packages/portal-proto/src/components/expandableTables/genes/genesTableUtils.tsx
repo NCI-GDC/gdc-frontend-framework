@@ -6,7 +6,6 @@ import CheckboxSpring from "../shared/CheckboxSpring";
 import SwitchSpring from "../shared/SwitchSpring";
 import {
   TableColumnState,
-  Survival,
   TableColumnDefinition,
   WidthSpring,
 } from "../shared/types";
@@ -19,6 +18,7 @@ import {
 import { Subrow } from "../shared/Subrow";
 import { useGetGeneTableSubrowQuery } from "@gff/core";
 import { GenesColumn, SingleGene, Gene } from "./types";
+import { Tooltip } from "@mantine/core";
 
 export const createTableColumn = (
   accessor: string,
@@ -115,9 +115,11 @@ export const createTableColumn = (
                   className={`w-max mx-auto`}
                 >
                   {row.getCanExpand() && (
-                    <div className={`block m-auto w-max`}>
-                      <AnnotationsIcon />
-                    </div>
+                    <Tooltip label={"Cancer Gene Census"}>
+                      <div className={`block m-auto w-max`}>
+                        <AnnotationsIcon />
+                      </div>
+                    </Tooltip>
                   )}
                   <>{!row.getCanExpand() && subrow}</>
                 </animated.div>
