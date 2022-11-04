@@ -21,8 +21,7 @@ const ItemSpring: React.FC<ItemSpringProps> = ({
   const staggeredSpring = useSpring({
     from: { opacity: 0 },
     to: { opacity: 1 },
-    delay: (index % Math.sqrt(len)) * 10,
-    config: config.slow,
+    immediate: true,
   });
 
   const { numerator, denominator, project } = item;

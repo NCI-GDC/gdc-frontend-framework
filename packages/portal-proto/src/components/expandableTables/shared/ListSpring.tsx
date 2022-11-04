@@ -25,7 +25,7 @@ const ListSpring: React.FC<ListSpringProps> = ({
       opacity: 1,
       height: height + fudgeFactor,
     },
-    duration: config.slow,
+    immediate: true,
   });
 
   const renderItems = useCallback(
