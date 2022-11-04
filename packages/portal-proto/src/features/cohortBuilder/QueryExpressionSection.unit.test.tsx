@@ -22,7 +22,7 @@ describe("<QueryExpressionSection />", () => {
   });
 
   it("Non-default cohort with no filters shows empty message", () => {
-    const { getByText } = render(
+    const { getByText, getByRole } = render(
       <QueryExpressionSection
         filters={{ mode: "and", root: {} }}
         currentCohortId={"1"}
@@ -30,6 +30,13 @@ describe("<QueryExpressionSection />", () => {
       />,
     );
     expect(getByText("No filters currently applied.")).toBeInTheDocument();
+    expect(getByRole("button", { name: "Clear All" })).toBeDisabled();
+    expect(
+      getByRole("button", { name: "Expand/collapse all queries" }),
+    ).toBeDisabled();
+    expect(
+      getByRole("button", { name: "Expand/collapse filters section" }),
+    ).toBeDisabled();
   });
 
   it("Non-default cohort with filters shows cohort name and controls", () => {
@@ -51,12 +58,9 @@ describe("<QueryExpressionSection />", () => {
     );
 
     expect(getByText("Pancreas")).toBeInTheDocument();
-    expect(getByRole("button", { name: "Clear All" })).toBeInTheDocument();
+    expect(getByRole("button", { name: "Clear All" })).not.toBeDisabled();
     expect(
       getByRole("button", { name: "Expand/collapse all queries" }),
-    ).toBeInTheDocument();
-    expect(
-      getByRole("button", { name: "Expand/collapse filters section" }),
-    ).toBeInTheDocument();
+    ).not.toBeDisabled();
   });
 });

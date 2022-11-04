@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer, useRef } from "react";
-import { ActionIcon, Button } from "@mantine/core";
+import { ActionIcon } from "@mantine/core";
 import {
   MdOutlineArrowBackIos as LeftArrowIcon,
   MdOutlineArrowForwardIos as RightArrowIcon,
