@@ -5,11 +5,15 @@ import { animated, useSpring } from "react-spring";
 interface TableLoaderProps {
   cellWidth: string;
   rowHeight: number;
+  numOfRows: number;
+  numOfColumns: number;
 }
 
 export const TableLoader: React.FC<TableLoaderProps> = ({
   cellWidth,
   rowHeight,
+  numOfRows,
+  numOfColumns,
 }: TableLoaderProps) => {
   const tableSpring = useSpring({
     from: { opacity: 0 },
@@ -32,7 +36,7 @@ export const TableLoader: React.FC<TableLoaderProps> = ({
         <table>
           <thead className={`border border-2 shadow-md w-10/12`}></thead>
           <tbody>
-            {Array.from({ length: 10 }, (_, i) => i).map((n, nIdx) => {
+            {Array.from({ length: numOfRows }, (_, i) => i).map((n, nIdx) => {
               return (
                 <animated.tr
                   key={`loader-row-${nIdx}`}
@@ -49,20 +53,22 @@ export const TableLoader: React.FC<TableLoaderProps> = ({
                     n > 1 ? `border-l-2 border-r-2 border-t-0 border-b-0` : ``
                   }`}
                 >
-                  {Array.from({ length: 15 }, (_, i) => i).map((m, mIdx) => {
-                    return (
-                      <td
-                        key={`loader-cell-${nIdx}${mIdx}`}
-                        className={cellWidth}
-                      >
-                        {n === 4 && m === 7 && (
-                          <div className={`absolute mx-auto mt-12`}>
-                            <Loader />
-                          </div>
-                        )}
-                      </td>
-                    );
-                  })}
+                  {Array.from({ length: numOfColumns }, (_, i) => i).map(
+                    (m, mIdx) => {
+                      return (
+                        <td
+                          key={`loader-cell-${nIdx}${mIdx}`}
+                          className={cellWidth}
+                        >
+                          {n === 4 && m === 7 && (
+                            <div className={`absolute mx-auto mt-12`}>
+                              <Loader />
+                            </div>
+                          )}
+                        </td>
+                      );
+                    },
+                  )}
                 </animated.tr>
               );
             })}
