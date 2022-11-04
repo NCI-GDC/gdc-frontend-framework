@@ -3,153 +3,19 @@ import { animated } from "react-spring";
 import ToggleSpring from "../shared/ToggleSpring";
 import SwitchSpring from "../shared/SwitchSpring";
 import { MdKeyboardArrowDown } from "react-icons/md";
-import {
-  TableColumnState,
-  TableCell,
-  TableHeader,
-  SurvivalIcon,
-} from "../shared/types";
-import { SingleSomaticMutation, SomaticMutation, Impacts } from "./types";
+import { TableColumnState } from "../shared/types";
+import { SurvivalIcon } from "../shared/sharedTableUtils";
+import { TableCell, TableHeader } from "../shared/sharedTableCells";
+import { ProteinChange, Impacts, Consequences } from "./smTableCells";
+import { SingleSomaticMutation, SomaticMutation, Impact } from "./types";
 import CheckboxSpring from "../shared/CheckboxSpring";
 import PercentageBar from "../shared/PercentageBar";
 import { Survival } from "../shared/types";
-import { Tooltip } from "@mantine/core";
+
 import { TableColumnDefinition, WidthSpring } from "../shared/types";
 import { Subrow } from "../shared/Subrow";
 import { useGetSomaticMutationTableSubrowQuery } from "@gff/core";
 import { Image } from "@/components/Image";
-
-export const ProteinChange = ({
-  proteinChange,
-}: {
-  proteinChange: {
-    symbol: string;
-    aaChange: string;
-  };
-}): JSX.Element => {
-  const { symbol = "", aaChange = "" } = proteinChange;
-  return (
-    <div className={`flex flex-row w-max m-auto text-xs`}>
-      <span className={`mx-0.5`}>{symbol}</span>
-      <Tooltip label={aaChange}>
-        <span className={`mx-0.5`}>{aaChange}</span>
-      </Tooltip>
-    </div>
-  );
-};
-
-export const Consequence = ({
-  consequence,
-}: {
-  consequence: {
-    consequenceType: string;
-  };
-}): JSX.Element => {
-  const { consequenceType = "" } = consequence;
-  const cType = consequenceType.split("_")[0]
-    ? consequenceType.split("_")[0]
-    : ``;
-  const formatConsequence = cType
-    ? cType?.charAt(0).toUpperCase() + cType?.slice(1)
-    : ``;
-  return (
-    <>
-      <div className={`flex flex-row w-max m-auto text-xs`}>
-        <span className={`mx-0.5 font-bold`}>{formatConsequence}</span>
-      </div>
-    </>
-  );
-};
-
-const Impact = ({ impact }: { impact: Impacts }): JSX.Element => {
-  const { polyphenImpact, polyphenScore, siftImpact, siftScore, vepImpact } =
-    impact;
-  const twIconStyles = `w-7 h-7 text-white font-bold border rounded-md text-center`;
-  const blankIconStyles = `w-7 h-7 text-black font-bold text-center`;
-  return (
-    <div
-      className={`flex flex-row m-auto w-max h-max items-center content-center`}
-    >
-      <Tooltip label={`VEP Impact: ${vepImpact}`} disabled={!vepImpact.length}>
-        <div className={`text-xs`}>
-          {vepImpact === "HIGH" ? (
-            <div className={`${twIconStyles} bg-red-500`}>
-              <div className={`mt-1`}>{"HI"}</div>
-            </div>
-          ) : vepImpact === "MODERATE" ? (
-            <div className={`${twIconStyles} bg-gray-500`}>
-              <div className={`mt-1`}>{"MO"}</div>
-            </div>
-          ) : vepImpact === "LOW" ? (
-            <div className={`${twIconStyles} bg-green-500`}>
-              <div className={`mt-1`}>{"LOW"}</div>
-            </div>
-          ) : vepImpact === "MODIFIER" ? (
-            <div className={`${twIconStyles} bg-gray-500`}>
-              <div className={`mt-1`}>{"MO"}</div>
-            </div>
-          ) : (
-            <div className={`${blankIconStyles} bg-inherit`}>
-              <div className={`mt-1`}>{"_"}</div>
-            </div>
-          )}
-        </div>
-      </Tooltip>
-      <Tooltip
-        label={`SIFT Impact: ${siftImpact} / SIFT Score: ${siftScore}`}
-        disabled={!siftImpact.length || siftScore === null}
-      >
-        <div className={`text-xs`}>
-          {siftImpact === "deleterious" ? (
-            <div className={`${twIconStyles} bg-red-500`}>
-              <div className={`mt-1`}>{"DH"}</div>
-            </div>
-          ) : siftImpact === "deleterious_low_confidence" ? (
-            <div className={`${twIconStyles} bg-gray-500`}>
-              <div className={`mt-1`}>{"DL"}</div>
-            </div>
-          ) : siftImpact === "tolerated" ? (
-            <div className={`${twIconStyles} bg-gray-500`}>
-              <div className={`mt-1`}>{"TO"}</div>
-            </div>
-          ) : siftImpact === "tolerated_low_confidence" ? (
-            <div className={`${twIconStyles} bg-green-500`}>
-              <div className={`mt-1`}>{"TL"}</div>
-            </div>
-          ) : (
-            <div className={`${blankIconStyles} bg-inherit`}>
-              <div className={`mb-2`}>{"_"}</div>
-            </div>
-          )}
-        </div>
-      </Tooltip>
-      <Tooltip
-        label={`PolyPhen Impact: ${polyphenImpact} / PolyPhen Score: ${polyphenScore}`}
-        disabled={!polyphenImpact.length || polyphenScore === null}
-      >
-        <div className={`text-xs`}>
-          {polyphenImpact === "benign" ? (
-            <div className={`${twIconStyles} bg-green-500`}>
-              <div className={`mt-1`}>{"BE"}</div>
-            </div>
-          ) : polyphenImpact === "probably_damaging" ? (
-            <div className={`${twIconStyles} bg-gray-500`}>
-              <div className={`mt-1`}>{"PO"}</div>
-            </div>
-          ) : polyphenImpact === "uknown" ? (
-            <div className={`${twIconStyles} bg-gray-500`}>
-              <div className={`mt-1`}>{"UN"}</div>
-            </div>
-          ) : (
-            <div className={`${blankIconStyles} bg-inherit`}>
-              <div className={`mb-2`}>{"_"}</div>
-            </div>
-          )}
-        </div>
-      </Tooltip>
-    </div>
-  );
-};
 
 export const createTableColumn = (
   accessor: string,
@@ -448,7 +314,7 @@ export const createTableColumn = (
                   className={`content-center`}
                 >
                   {row.getCanExpand() && (
-                    <Consequence consequence={row.original["consequences"]} />
+                    <Consequences consequences={row.original["consequences"]} />
                   )}
                   <>{!row.getCanExpand() && subrow}</>
                 </animated.div>
@@ -478,7 +344,7 @@ export const createTableColumn = (
                   className={`content-center`}
                 >
                   {row.getCanExpand() && (
-                    <Impact impact={row.original["impact"]} />
+                    <Impacts impact={row.original["impact"]} />
                   )}
                   <>{!row.getCanExpand() && subrow}</>
                 </animated.div>
@@ -537,7 +403,7 @@ export type MutationsColumn = {
   affectedCasesInCohort: string;
   affectedCasesAcrossTheGDC: string;
   survival: Survival;
-  impact: Impacts;
+  impact: Impact;
   subRows: string;
   ssmsTotal: number;
 };
@@ -570,9 +436,7 @@ export const getMutation = (
     mutationID: sm.ssm_id,
     DNAChange: sm.genomic_dna_change,
     type: filterMutationType(sm.mutation_subtype),
-    consequences: {
-      consequenceType: consequence_type,
-    },
+    consequences: consequence_type,
     proteinChange: {
       symbol: gene.symbol,
       aaChange: aa_change,

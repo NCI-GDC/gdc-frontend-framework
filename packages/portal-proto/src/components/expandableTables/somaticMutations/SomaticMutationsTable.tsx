@@ -8,7 +8,7 @@ import {
   MutationsColumn,
 } from "./smTableUtils";
 import { useSpring } from "react-spring";
-import { searchContains } from "../shared/types";
+import { searchContains } from "../shared/sharedTableUtils";
 import { TableFilters } from "../shared/TableFilters";
 
 export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({

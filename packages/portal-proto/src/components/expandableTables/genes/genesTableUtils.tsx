@@ -6,50 +6,19 @@ import CheckboxSpring from "../shared/CheckboxSpring";
 import SwitchSpring from "../shared/SwitchSpring";
 import {
   TableColumnState,
-  TableCell,
-  TableHeader,
-  SurvivalIcon,
-  AnnotationsIcon,
   Survival,
-  AffectedCases,
   TableColumnDefinition,
   WidthSpring,
 } from "../shared/types";
+import { SurvivalIcon, AnnotationsIcon } from "../shared/sharedTableUtils";
+import {
+  TableCell,
+  TableHeader,
+  AffectedCases,
+} from "../shared/sharedTableCells";
 import { Subrow } from "../shared/Subrow";
 import { useGetGeneTableSubrowQuery } from "@gff/core";
-
-interface SingleGene {
-  biotype: string;
-  case_cnv_gain: number;
-  case_cnv_loss: number;
-  cnv_case: number;
-  cytoband: string[];
-  gene_id: string;
-  id: string;
-  is_cancer_gene_census: boolean;
-  name: string;
-  numCases: number;
-  ssm_case: number;
-  symbol: string;
-}
-
-interface Gene {
-  select: string;
-  geneID: string;
-  name: string;
-  type: string;
-  symbol: string;
-  survival: Survival;
-  CNVGain: string;
-  CNVLoss: string;
-  cytoband: string[];
-  annotations: boolean;
-  mutations: string;
-  subRows: string;
-  genesTotal: number;
-  SSMSAffectedCasesInCohort: string;
-  SSMSAffectedCasesAcrossTheGDC: string;
-}
+import { GenesColumn, SingleGene, Gene } from "./types";
 
 export const createTableColumn = (
   accessor: string,
@@ -426,21 +395,6 @@ export const createTableColumn = (
         ],
       };
   }
-};
-
-export type GenesColumn = {
-  select: string;
-  geneID: string;
-  symbol: string;
-  name: string;
-  survival: Survival;
-  SSMSAffectedCasesInCohort: string;
-  SSMSAffectedCasesAcrossTheGDC: string;
-  CNVGain: string;
-  CNVLoss: string;
-  mutations: number;
-  annotations: boolean;
-  subRows: string;
 };
 
 export const getGene = (

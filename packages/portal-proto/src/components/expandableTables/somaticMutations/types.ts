@@ -69,9 +69,7 @@ export interface SomaticMutation {
   mutationID: string;
   DNAChange: string;
   type: string;
-  consequences: {
-    consequenceType: string;
-  };
+  consequences: string;
   proteinChange: {
     symbol: string;
     aaChange: string;

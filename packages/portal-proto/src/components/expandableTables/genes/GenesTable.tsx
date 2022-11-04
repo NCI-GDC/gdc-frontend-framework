@@ -3,9 +3,10 @@ import { GenesTableProps, DEFAULT_GTABLE_ORDER } from "./types";
 import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { ExpTable } from "../shared/ExpTable";
 import { TableFilters } from "../shared/TableFilters";
-import { getGene, createTableColumn, GenesColumn } from "./genesTableUtils";
+import { getGene, createTableColumn } from "./genesTableUtils";
+import { GenesColumn } from "./types";
 import { useSpring } from "react-spring";
-import { searchContains } from "../shared/types";
+import { searchContains } from "../shared/sharedTableUtils";
 
 export const GenesTable: React.FC<GenesTableProps> = ({
   initialData,

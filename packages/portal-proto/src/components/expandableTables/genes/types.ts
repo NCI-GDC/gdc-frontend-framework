@@ -1,4 +1,52 @@
-import { Survival } from "@gff/core";
+import { Survival } from "../shared/types";
+
+export interface SingleGene {
+  biotype: string;
+  case_cnv_gain: number;
+  case_cnv_loss: number;
+  cnv_case: number;
+  cytoband: string[];
+  gene_id: string;
+  id: string;
+  is_cancer_gene_census: boolean;
+  name: string;
+  numCases: number;
+  ssm_case: number;
+  symbol: string;
+}
+
+export interface Gene {
+  select: string;
+  geneID: string;
+  name: string;
+  type: string;
+  symbol: string;
+  survival: Survival;
+  CNVGain: string;
+  CNVLoss: string;
+  cytoband: string[];
+  annotations: boolean;
+  mutations: string;
+  subRows: string;
+  genesTotal: number;
+  SSMSAffectedCasesInCohort: string;
+  SSMSAffectedCasesAcrossTheGDC: string;
+}
+
+export type GenesColumn = {
+  select: string;
+  geneID: string;
+  symbol: string;
+  name: string;
+  survival: Survival;
+  SSMSAffectedCasesInCohort: string;
+  SSMSAffectedCasesAcrossTheGDC: string;
+  CNVGain: string;
+  CNVLoss: string;
+  mutations: number;
+  annotations: boolean;
+  subRows: string;
+};
 
 export interface Gene {
   symbol: string;
@@ -8,8 +56,8 @@ export interface Gene {
   SSMSAffectedCasesAcrossTheGDC: string;
   CNVGain: string;
   CNVLoss: string;
-  mutations: number;
-  annotations: string;
+  mutations: string;
+  annotations: boolean;
 }
 
 export interface GenesTableProps {
@@ -52,14 +100,3 @@ export const DEFAULT_GTABLE_ORDER = [
   { id: "mutations", columnName: "Mutations", visible: true },
   { id: "annotations", columnName: "Annotations", visible: true },
 ];
-
-export const INITIAL_FILTERS = {
-  mode: "and",
-  root: {
-    "genes.is_cancer_gene_census": {
-      field: "genes.is_cancer_gene_census",
-      operator: "includes",
-      operands: ["true"],
-    },
-  },
-};
