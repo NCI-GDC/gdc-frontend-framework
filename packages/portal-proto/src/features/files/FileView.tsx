@@ -127,7 +127,7 @@ export const FileView: React.FC<FileViewProps> = ({
   const [fileToDownload, setfileToDownload] = useState(file);
   const sortedFileHistory = useMemo(
     () =>
-      [...fileHistory]?.sort(
+      [...(fileHistory ?? [])].sort(
         (a, b) =>
           //sort based on relese number biggest at top
           Number.parseFloat(a.version) - Number.parseFloat(b.version),
