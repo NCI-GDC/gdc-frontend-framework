@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { VerticalTable } from "../shared/VerticalTable";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
+import { TableInstance } from "react-table";
 import Link from "next/link";
 import {
   useProjects,
@@ -56,9 +57,16 @@ const ProjectsTable: React.FC = () => {
       id: "selected",
       columnName: "Selected",
       visible: true,
-      Header: <SelectAllProjectsButton></SelectAllProjectsButton>,
+      Header: ({ data }: TableInstance) => {
+        const projectIds = data.map((x) => x.projectId);
+        return (
+          <SelectAllProjectsButton
+            projectIds={projectIds}
+          ></SelectAllProjectsButton>
+        );
+      },
       Cell: ({ value }: SelectableCellProps) => {
-        return <SelectProjectButton></SelectProjectButton>;
+        return <SelectProjectButton projectId={value}></SelectProjectButton>;
       },
     },
     {
