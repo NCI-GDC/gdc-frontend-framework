@@ -13,6 +13,41 @@ import {
   LoadingOverlay,
 } from "@mantine/core";
 
+export interface PaginationOptions {
+  /**
+   * page on
+   */
+  page: number;
+  /**
+   * total pages
+   */
+  pages: number;
+  /**
+   * size of data set shown
+   */
+  size: number;
+  /**
+   * 0 indexed starting point of data shown
+   */
+  from: number;
+  /**
+   * total size of data set
+   */
+  total: number;
+  /**
+   * optional label of data shown
+   */
+  label?: string;
+  /**
+   * callback to handle page size change
+   */
+  handlePageSizeChange: (x: string) => void;
+  /**
+   * callback to handle page change
+   */
+  handlePageChange: (x: number) => void;
+}
+
 interface VerticalTableProps {
   /**
    * array of data to go in the table
@@ -54,40 +89,7 @@ interface VerticalTableProps {
   /**
    * optional pagination controls at bottom of table
    */
-  pagination?: {
-    /**
-     * page on
-     */
-    page: number;
-    /**
-     * total pages
-     */
-    pages: number;
-    /**
-     * size of data set shown
-     */
-    size: number;
-    /**
-     * 0 indexed starting point of data shown
-     */
-    from: number;
-    /**
-     * total size of data set
-     */
-    total: number;
-    /**
-     * optional label of data shown
-     */
-    label?: string;
-    /**
-     * callback to handle page size change
-     */
-    handlePageSizeChange: (x: string) => void;
-    /**
-     * callback to handle page change
-     */
-    handlePageChange: (x: number) => void;
-  };
+  pagination?: PaginationOptions;
   /**
    * optional shows different table content depending on state
    *
