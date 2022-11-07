@@ -98,6 +98,16 @@ interface VerticalTableProps {
    * - data when `fulfilled`
    */
   status?: DataStatus;
+  search?: {
+    /**
+     * placeholder to display in search input
+     */
+    placeholder?: string;
+    /**
+     * callback to handle search term change
+     */
+    handleSearchChange: (term: string) => void;
+  };
 }
 
 interface Column {
@@ -126,6 +136,7 @@ interface TableProps {
  * @parm {boolean} showControls - shows column sorting controls and search bar defaults to true
  * @parm {object} pagination - optional pagination controls at bottom of table
  * @parm {string} status - optional shows loading state
+ * @parm {object} search - optional, search options
  * @returns ReactElement
  */
 export const VerticalTable: FC<VerticalTableProps> = ({
@@ -139,11 +150,13 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   showControls = true,
   pagination,
   status = "fulfilled",
+  search,
 }: VerticalTableProps) => {
   const [table, setTable] = useState([]);
   const [columnListOptions, setColumnListOptions] = useState([]);
   const [headings, setHeadings] = useState([]);
   const [showColumnMenu, setShowColumnMenu] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     if (status === "fulfilled") {
@@ -312,8 +325,8 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     <div className="grow overflow-hidden">
       <div className="flex">
         <div className={"flex-auto h-10"}>{additionalControls}</div>
-        {showControls && (
-          <div className="flex flex-row">
+        <div className="flex flex-row">
+          {showControls && (
             <Popover
               opened={showColumnMenu}
               onClose={() => setShowColumnMenu(false)}
@@ -345,16 +358,23 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 </div>
               </Popover.Dropdown>
             </Popover>
+          )}
+          {search && (
             <div className="flex flex-row w-max float-right">
               <input
                 className="mr-2 rounded-sm border-1 border-base-lighter px-1"
                 type="search"
-                placeholder="Search"
+                placeholder={search.placeholder ?? "Search"}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  search.handleSearchChange(e.target.value);
+                }}
+                value={searchTerm}
               />
               <div className={`mt-px`}></div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
       <div className="overflow-y-scroll w-full relative">
         <LoadingOverlay

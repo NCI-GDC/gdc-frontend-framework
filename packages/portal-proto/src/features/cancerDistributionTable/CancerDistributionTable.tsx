@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useMemo } from "react";
 import { Tooltip } from "@mantine/core";
 import { Row } from "react-table";
 import Link from "next/link";

@@ -260,6 +260,8 @@ export const FileView: React.FC<FileViewProps> = ({
     cases: GdcFile["cases"];
     associated_entities: GdcFile["associated_entities"];
   }): JSX.Element => {
+    const [associatedCBSearchTerm, setAssociatedCBSearchTerm] = useState("");
+
     const data = useMemo(() => {
       const tableRows = [];
 
@@ -307,28 +309,42 @@ export const FileView: React.FC<FileViewProps> = ({
           0
         );
 
-        tableRows.push({
-          entity_id: (
-            <GenericLink
-              path={`/cases/${entity.case_id}`}
-              query={entityQuery}
-              text={entity.entity_submitter_id}
-            />
-          ),
-          entity_type: entity.entity_type,
-          sample_type: sample_type,
-          case_id: (
-            <GenericLink
-              path={`/cases/${entity.case_id}`}
-              text={caseData.submitter_id}
-            />
-          ),
-          annotations: annotationsLink,
-        });
+        if (
+          associatedCBSearchTerm === "" ||
+          entity.entity_submitter_id
+            .toLowerCase()
+            .includes(associatedCBSearchTerm.toLowerCase()) ||
+          caseData.submitter_id
+            .toLowerCase()
+            .includes(associatedCBSearchTerm.toLowerCase())
+        ) {
+          tableRows.push({
+            entity_id: (
+              <GenericLink
+                path={`/cases/${entity.case_id}`}
+                query={entityQuery}
+                text={entity.entity_submitter_id}
+              />
+            ),
+            entity_type: entity.entity_type,
+            sample_type: sample_type,
+            case_id: (
+              <GenericLink
+                path={`/cases/${entity.case_id}`}
+                text={caseData.submitter_id}
+              />
+            ),
+            annotations: annotationsLink,
+          });
+        }
       });
 
       return tableRows;
-    }, []);
+    }, [associatedCBSearchTerm, associated_entities, cases]);
+
+    const handleSearchChange = (term: string) => {
+      setAssociatedCBSearchTerm(term);
+    };
 
     const {
       handlePageChange,
@@ -345,7 +361,7 @@ export const FileView: React.FC<FileViewProps> = ({
       { id: "entity_id", columnName: "Entity ID", visible: true },
       { id: "entity_type", columnName: "Entity Type", visible: true },
       { id: "sample_type", columnName: "Sample Type", visible: true },
-      { id: "case_id", columnName: "Case ID", visible: true },
+      { id: "case_uuid", columnName: "Case UUID", visible: true },
       { id: "annotations", columnName: "Annotations", visible: true },
     ];
 
@@ -376,6 +392,9 @@ export const FileView: React.FC<FileViewProps> = ({
           label: "associated cases/biospecimen",
         }}
         status={"fulfilled"}
+        search={{
+          handleSearchChange,
+        }}
       />
     );
   };
