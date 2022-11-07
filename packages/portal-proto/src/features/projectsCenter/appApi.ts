@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import { createAppStore } from "@gff/core";
 import { projectCenterFiltersReducer } from "./projectCenterFiltersSlice";
-import { selectedProjectsReducer } from "./selectedProjectsSlice";
+import { pickedProjectsReducer } from "./pickedProjectsSlice";
 
 // create the store, context and selector for the ProjectsCenter
 // Note the project app has a local store and context which isolates
@@ -9,7 +9,7 @@ import { selectedProjectsReducer } from "./selectedProjectsSlice";
 
 const reducers = combineReducers({
   projectApp: projectCenterFiltersReducer,
-  selected: selectedProjectsReducer,
+  selected: pickedProjectsReducer,
 });
 
 export const { id, AppStore, AppContext, useAppSelector, useAppDispatch } =

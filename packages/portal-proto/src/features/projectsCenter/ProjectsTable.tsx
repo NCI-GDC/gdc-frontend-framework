@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { VerticalTable } from "../shared/VerticalTable";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import Link from "next/link";
@@ -12,12 +12,11 @@ import { useAppSelector } from "@/features/projectsCenter/appApi";
 import { selectFilters } from "@/features/projectsCenter/projectCenterFiltersSlice";
 import FunctionButton from "@/components/FunctionButton";
 import { statusBooleansToDataStatus } from "@/features/shared/utils";
-import { selectPickedProjects } from "@/features/projectsCenter/selectedProjectsSlice";
 import {
   SelectProjectButton,
   SelectAllProjectsButton,
 } from "@/features/projectsCenter/SelectProjectButton";
-import { Checkbox } from "@mantine/core";
+import { selectPickedProjects } from "@/features/projectsCenter/pickedProjectsSlice";
 
 const extractToArray = (
   data: ReadonlyArray<Record<string, number | string>>,
@@ -29,8 +28,13 @@ interface CellProps {
   row: Row;
 }
 
+interface SelectableData {
+  projectId: string;
+  projects: string[];
+}
+
 interface SelectableCellProps {
-  value: string;
+  value: SelectableData;
 }
 
 const ProjectsTable: React.FC = () => {
@@ -51,14 +55,25 @@ const ProjectsTable: React.FC = () => {
     sortBy: [{ field: "summary.case_count", direction: "desc" }],
   });
 
+  const pickedProjects = useAppSelector((state) => selectPickedProjects(state));
+  console.log("table picked proj", pickedProjects);
   const columnListOrder = [
     {
       id: "selected",
       columnName: "Selected",
+      // eslint-disable-next-line react/prop-types
+      Header: (data1, data2, data3) => {
+        console.log(data1, data2, data3);
+        return (
+          <div>
+            <SelectAllProjectsButton projectIds={[]} />
+          </div>
+        );
+      },
       visible: true,
-      Header: <SelectAllProjectsButton></SelectAllProjectsButton>,
-      Cell: ({ value }: SelectableCellProps) => {
-        return <SelectProjectButton></SelectProjectButton>;
+      Cell: (value: string) => {
+        console.log("Cell value", value);
+        return <SelectProjectButton projectId={value}></SelectProjectButton>;
       },
     },
     {
@@ -207,7 +222,7 @@ const ProjectsTable: React.FC = () => {
       columnListOrder={columnListOrder}
       columnCells={columnCells}
       handleColumnChange={handleColumnChange}
-      selectableRow={false}
+      selectableRow={true}
       showControls={true}
       pagination={{
         handlePageSizeChange,

@@ -163,7 +163,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     action.visibleColumns.push((columns) => [
       {
         id: "Checkbox",
-        Header: "",
+        Header: () => <input type="checkbox" />,
         Cell: () => <input type="checkbox" />,
         width: 30,
       },
