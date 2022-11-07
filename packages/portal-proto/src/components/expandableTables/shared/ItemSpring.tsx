@@ -10,13 +10,11 @@ interface Item {
 interface ItemSpringProps {
   item: Item;
   index: number;
-  len: number;
 }
 
 const ItemSpring: React.FC<ItemSpringProps> = ({
   item,
   index,
-  len,
 }: ItemSpringProps) => {
   const staggeredSpring = useSpring({
     from: { opacity: 0 },

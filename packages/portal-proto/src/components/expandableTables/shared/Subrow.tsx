@@ -44,7 +44,7 @@ export const Subrow: React.FC<SubrowProps> = ({
   query,
   subrowTitle,
 }: SubrowProps) => {
-  const scrollOffset: number = 100;
+  const scrollOffset = 100;
   const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>({
     offset: scrollOffset,
   });
@@ -56,7 +56,7 @@ export const Subrow: React.FC<SubrowProps> = ({
   });
 
   const loaderWidth = useSpring({
-    from: { width: 0 },
+    from: { width: width / 2 },
     to: { width: width },
     immediate: true,
   });

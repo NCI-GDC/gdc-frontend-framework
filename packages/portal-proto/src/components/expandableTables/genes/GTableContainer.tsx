@@ -1,5 +1,5 @@
 import { useGenesTable } from "@gff/core";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useReducer, createContext } from "react";
 import { GenesTable } from "./GenesTable";
 import { useMeasure } from "react-use";
 import { Button } from "@mantine/core";
@@ -7,6 +7,37 @@ import PageStepper from "../shared/PageStepper";
 import PageSize from "../shared/PageSize";
 import TableControls from "../shared/TableControls";
 import TableLoader from "../shared/TableLoader";
+import { Row } from "@tanstack/react-table";
+import { GenesColumn } from "./types";
+
+interface SelectReducerAction {
+  type: "select" | "deselect" | "selectAll" | "deselectAll";
+  row: Row<GenesColumn>;
+}
+
+const reducer = (
+  selected: Record<string, Row<GenesColumn>>,
+  action: SelectReducerAction,
+) => {
+  const id = action.row.original[`geneID`];
+  switch (action.type) {
+    case "select":
+      return { ...selected, [id]: action.row };
+    case "deselect":
+      const updateRows = { ...selected };
+      delete updateRows[id];
+      return updateRows;
+    case "selectAll":
+    //todo
+    case "deselectAll":
+    //todo
+  }
+};
+
+export const SelectedRowContext =
+  createContext<[Row<GenesColumn>, (action: SelectReducerAction) => void]>(
+    undefined,
+  );
 
 export interface GTableContainerProps {
   readonly selectedSurvivalPlot: Record<string, string>;
@@ -24,7 +55,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
   const [ref, { width }] = useMeasure();
-  const [selectedGenes, setSelectedGenes] = useState({});
+  const [selectedGenes, setSelectedGenes] = useReducer(reducer, {});
   const [gTotal, setGTotal] = useState(0);
 
   const { data } = useGenesTable({
@@ -36,47 +67,47 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     setPage(0);
   }, [pageSize]);
 
-  const selectGene = (row: any) => {
-    const gene = row.original["geneID"];
-    if (gene in selectedGenes) {
-      // deselect single row
-      setSelectedGenes((currentMap) => {
-        const newMap = { ...currentMap };
-        delete newMap[gene];
-        return newMap;
-      });
-    } else {
-      // select single row
-      setSelectedGenes((currentMap) => {
-        return { ...currentMap, [gene]: row };
-      });
-    }
-  };
+  // const selectGene = (row: any) => {
+  //   const gene = row.original["geneID"];
+  //   if (gene in selectedGenes) {
+  //     // deselect single row
+  // setSelectedGenes((currentMap) => {
+  //   const newMap = { ...currentMap };
+  //   delete newMap[gene];
+  //   return newMap;
+  // });
+  //   } else {
+  //     // select single row
+  //     setSelectedGenes((currentMap) => {
+  //       return { ...currentMap, [gene]: row };
+  //     });
+  //   }
+  // };
 
-  const selectAllGenes = (rows: any) => {
-    if (rows.every((row) => row.original["select"] in selectedGenes)) {
-      // deselect all
-      setSelectedGenes((currentMap) => {
-        const newMap = { ...currentMap };
-        rows.forEach((row) => delete newMap[row.original["select"]]);
-        return newMap;
-      });
-    } else {
-      // select all
-      setSelectedGenes((currentMap) => {
-        const newMap = { ...currentMap };
-        rows.forEach((row) => {
-          if (
-            !row.id.includes(".") &&
-            !(row.original["select"] in currentMap)
-          ) {
-            newMap[row.original["select"]] = row;
-          }
-        });
-        return newMap;
-      });
-    }
-  };
+  // const selectAllGenes = (rows: any) => {
+  //   if (rows.every((row) => row.original["select"] in selectedGenes)) {
+  //     // deselect all
+  //     setSelectedGenes((currentMap) => {
+  //       const newMap = { ...currentMap };
+  //       rows.forEach((row) => delete newMap[row.original["select"]]);
+  //       return newMap;
+  //     });
+  //   } else {
+  //     // select all
+  //     setSelectedGenes((currentMap) => {
+  //       const newMap = { ...currentMap };
+  //       rows.forEach((row) => {
+  //         if (
+  //           !row.id.includes(".") &&
+  //           !(row.original["select"] in currentMap)
+  //         ) {
+  //           newMap[row.original["select"]] = row;
+  //         }
+  //       });
+  //       return newMap;
+  //     });
+  //   }
+  // };
 
   return (
     <>
@@ -123,8 +154,10 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             pageSize={pageSize}
             page={page}
             selectedGenes={selectedGenes}
-            selectGene={selectGene}
-            selectAll={selectAllGenes}
+            // selectGene={ }
+            selectGene={console.log("selectGene")}
+            // selectGene={selectGene}
+            selectAll={console.log("selectAllGenes")}
             handleGTotal={setGTotal}
           />
         </div>

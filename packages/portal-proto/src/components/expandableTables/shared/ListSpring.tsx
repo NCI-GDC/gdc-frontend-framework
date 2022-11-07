@@ -1,8 +1,7 @@
 import React, { useCallback } from "react";
-import { animated, useSpring, config } from "react-spring";
+import { animated, useSpring } from "react-spring";
 import { useMeasure } from "react-use";
 import ItemSpring from "./ItemSpring";
-import { Loader } from "@mantine/core";
 
 interface ListSpringProps {
   subData: any;
@@ -20,7 +19,7 @@ const ListSpring: React.FC<ListSpringProps> = ({
   const fudgeFactor = width / 60;
 
   const verticalSpring = useSpring({
-    from: { opacity: 0, height: 0 },
+    from: { opacity: 0, height: 50 },
     to: {
       opacity: 1,
       height: height + fudgeFactor,
@@ -33,14 +32,7 @@ const ListSpring: React.FC<ListSpringProps> = ({
       item: { numerator: number; denominator: number; project: string },
       index: number,
     ) => {
-      return (
-        <ItemSpring
-          key={index}
-          item={item}
-          index={index}
-          len={subData.length}
-        />
-      );
+      return <ItemSpring key={index} item={item} index={index} />;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [subData],

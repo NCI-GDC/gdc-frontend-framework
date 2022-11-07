@@ -359,8 +359,8 @@ export const createTableColumn = (
 };
 
 export const filterMutationType = (mutationSubType: string): string => {
-  const splitStr = mutationSubType.split(" ");
-  const operation = splitStr[splitStr.length - 1];
+  const split = mutationSubType.split(" ");
+  const operation = split[split.length - 1];
   return operation.charAt(0).toUpperCase() + operation.slice(1);
 };
 
