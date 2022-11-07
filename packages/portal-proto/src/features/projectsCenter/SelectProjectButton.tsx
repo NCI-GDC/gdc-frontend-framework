@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Checkbox } from "@mantine/core";
 import {
   useAppSelector,
@@ -9,32 +10,38 @@ import {
   addProjects,
   removeProject,
   removeProjects,
-} from "@/features/projectsCenter/selectedProjectsSlice";
+} from "@/features/projectsCenter/pickedProjectsSlice";
 import { isEqual } from "lodash";
-
-interface SelectProjectButtonProps {
-  readonly projectId: string;
-}
 
 interface SelectAllProjectButtonProps {
   projectIds: ReadonlyArray<string>;
 }
 
+interface SelectProjectButtonProps {
+  readonly projectId: string;
+}
+
 export const SelectProjectButton = ({
   projectId,
-}: SelectProjectButtonProps) => {
-  const selectedProjects = useAppSelector((state) =>
-    selectPickedProjects(state),
-  );
+}: SelectProjectButtonProps): JSX.Element => {
+  const pickedProjects = useAppSelector((state) => selectPickedProjects(state));
   const dispatch = useAppDispatch();
+  const [checked, setChecked] = useState(pickedProjects.includes(projectId));
+
+  useEffect(() => {
+    setChecked(pickedProjects.includes(projectId));
+  }, [projectId, pickedProjects]);
 
   return (
     <Checkbox
-      checked={Object.keys(selectedProjects).includes(projectId)}
-      onClick={(event) => {
-        event
-          ? dispatch(addProject({ projectId: projectId }))
-          : dispatch(removeProject(projectId));
+      size="xs"
+      checked={checked}
+      className="ml-1"
+      onChange={(event) => {
+        setChecked(event.currentTarget.checked);
+        if (event.currentTarget.checked)
+          dispatch(addProject({ projectId: projectId }));
+        else dispatch(removeProject(projectId));
       }}
     ></Checkbox>
   );
@@ -42,26 +49,30 @@ export const SelectProjectButton = ({
 
 export const SelectAllProjectsButton = ({
   projectIds,
-}: SelectAllProjectButtonProps) => {
-  const selectedProjects = useAppSelector((state) =>
-    selectPickedProjects(state),
-  );
+}: SelectAllProjectButtonProps): JSX.Element => {
+  const pickedProjects = useAppSelector((state) => selectPickedProjects(state));
   const dispatch = useAppDispatch();
-
+  const [checked, setChecked] = useState(false);
+  useEffect(() => {
+    // projectIds need to be in alphabetical order to compare
+    setChecked(isEqual([...projectIds].sort(), pickedProjects));
+  }, [projectIds, pickedProjects]);
   return (
     <Checkbox
-      checked={isEqual(projectIds, selectedProjects)}
-      onClick={(event) => {
-        event
-          ? dispatch(
-              addProjects(
-                projectIds.map((x) => {
-                  return { projectId: x };
-                }),
-              ),
-            )
-          : dispatch(removeProjects(projectIds));
+      size="xs"
+      checked={checked}
+      onChange={(event) => {
+        setChecked(event.currentTarget.checked);
+        if (event.currentTarget.checked)
+          dispatch(
+            addProjects(
+              projectIds.map((x) => {
+                return { projectId: x };
+              }),
+            ),
+          );
+        else dispatch(removeProjects(projectIds));
       }}
-    ></Checkbox>
+    />
   );
 };

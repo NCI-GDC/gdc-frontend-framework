@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { VerticalTable } from "../shared/VerticalTable";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import { TableInstance } from "react-table";
@@ -13,12 +13,11 @@ import { useAppSelector } from "@/features/projectsCenter/appApi";
 import { selectFilters } from "@/features/projectsCenter/projectCenterFiltersSlice";
 import FunctionButton from "@/components/FunctionButton";
 import { statusBooleansToDataStatus } from "@/features/shared/utils";
-import { selectPickedProjects } from "@/features/projectsCenter/selectedProjectsSlice";
 import {
   SelectProjectButton,
   SelectAllProjectsButton,
 } from "@/features/projectsCenter/SelectProjectButton";
-import { Checkbox } from "@mantine/core";
+import ProjectsButton from "./ProjectsButton";
 
 const extractToArray = (
   data: ReadonlyArray<Record<string, number | string>>,
@@ -30,7 +29,7 @@ interface CellProps {
   row: Row;
 }
 
-interface SelectableCellProps {
+interface SelectColumnProps {
   value: string;
 }
 
@@ -42,7 +41,7 @@ const ProjectsTable: React.FC = () => {
   const { data, pagination, isSuccess, isFetching, isError } = useProjects({
     filters: buildCohortGqlOperator(projectFilters),
     expand: [
-      "summary", //annotations
+      "summary",
       "summary.experimental_strategies",
       "summary.data_categories",
       "program",
@@ -52,21 +51,19 @@ const ProjectsTable: React.FC = () => {
     sortBy: [{ field: "summary.case_count", direction: "desc" }],
   });
 
+  // const pickedProjects = useAppSelector((state) => selectPickedProjects(state));
+  // console.log("table picked proj", pickedProjects);
   const columnListOrder = [
     {
       id: "selected",
-      columnName: "Selected",
+      columnName: "",
       visible: true,
       Header: ({ data }: TableInstance) => {
-        const projectIds = data.map((x) => x.projectId);
-        return (
-          <SelectAllProjectsButton
-            projectIds={projectIds}
-          ></SelectAllProjectsButton>
-        );
+        const projectIds = data.map((x) => x.selected);
+        return <SelectAllProjectsButton projectIds={projectIds} />;
       },
-      Cell: ({ value }: SelectableCellProps) => {
-        return <SelectProjectButton projectId={value}></SelectProjectButton>;
+      Cell: ({ value }: SelectColumnProps) => {
+        return <SelectProjectButton projectId={value} />;
       },
     },
     {
@@ -207,6 +204,7 @@ const ProjectsTable: React.FC = () => {
       tableTitle={`Total of ${tempPagination?.total} projects`}
       additionalControls={
         <div className="flex gap-2">
+          <ProjectsButton></ProjectsButton>
           <FunctionButton>JSON</FunctionButton>
           <FunctionButton>TSV</FunctionButton>
         </div>
