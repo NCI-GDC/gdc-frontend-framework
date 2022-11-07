@@ -23,7 +23,8 @@ export const createTableColumn = (
   width: number,
   partitionWidth: WidthSpring,
   selectedGenes: Record<string, GenesColumn>[],
-  selectGene: (geneId: string) => any,
+  // selectGene: (geneId: string) => any,
+  setSelectedGenes,
   handleSurvivalPlotToggled: (
     symbol: string,
     name: string,
@@ -41,14 +42,15 @@ export const createTableColumn = (
             accessorKey: accessor,
             header: () => <TableHeader title={accessor} tooltip={""} />,
             cell: ({ row }) => {
+              let activeStatus = row.original["select"] in selectedGenes;
               return (
                 <>
                   {/* todo: make select/toggle columns fixed smaller width */}
                   {row.getCanExpand() && (
                     <CheckboxSpring
-                      isActive={row.original["select"] in selectedGenes}
+                      isActive={activeStatus}
                       select={row}
-                      handleCheck={selectGene}
+                      handleCheck={setSelectedGenes}
                     />
                   )}
                 </>

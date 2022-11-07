@@ -18,7 +18,8 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   pageSize,
   page,
   selectedGenes,
-  selectGene,
+  // selectGene,
+  setSelectedGenes,
   selectAll,
   handleGTotal,
 }: GenesTableProps) => {
@@ -112,7 +113,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
           width,
           partitionWidth,
           selectedGenes,
-          selectGene,
+          setSelectedGenes,
           handleSurvivalPlotToggled,
           setGeneID,
         );

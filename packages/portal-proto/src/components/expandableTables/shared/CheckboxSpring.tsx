@@ -31,7 +31,12 @@ const CheckboxSpring: React.FC<CheckboxSpringProps> = ({
         <animated.button
           style={box}
           className={`${isActive ? `bg-activeColor` : `bg-white`}`}
-          onClick={() => handleCheck(select)}
+          onClick={() =>
+            handleCheck({
+              type: !isActive ? "select" : "deselect",
+              row: select,
+            })
+          }
         >
           ▢
         </animated.button>

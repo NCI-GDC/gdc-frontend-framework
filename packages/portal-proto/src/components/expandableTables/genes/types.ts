@@ -72,7 +72,8 @@ export interface GenesTableProps {
   pageSize: number;
   page: number;
   selectedGenes: any;
-  selectGene: any;
+  setSelectedGenes: any;
+  // selectGene: any;
   selectAll: any;
   handleGTotal: (gTotal: number) => any;
 }
