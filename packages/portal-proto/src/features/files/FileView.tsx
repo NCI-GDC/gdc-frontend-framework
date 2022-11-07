@@ -361,7 +361,7 @@ export const FileView: React.FC<FileViewProps> = ({
       { id: "entity_id", columnName: "Entity ID", visible: true },
       { id: "entity_type", columnName: "Entity Type", visible: true },
       { id: "sample_type", columnName: "Sample Type", visible: true },
-      { id: "case_uuid", columnName: "Case UUID", visible: true },
+      { id: "case_id", columnName: "Case ID", visible: true },
       { id: "annotations", columnName: "Annotations", visible: true },
     ];
 
