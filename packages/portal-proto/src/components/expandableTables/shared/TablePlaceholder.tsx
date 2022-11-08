@@ -1,20 +1,21 @@
 import React from "react";
-import { Loader } from "@mantine/core";
 import { animated, useSpring } from "react-spring";
 
-interface TableLoaderProps {
+interface TablePlaceholderProps {
   cellWidth: string;
   rowHeight: number;
   numOfRows: number;
   numOfColumns: number;
+  content: React.ReactNode;
 }
 
-export const TableLoader: React.FC<TableLoaderProps> = ({
+export const TablePlaceholder: React.FC<TablePlaceholderProps> = ({
   cellWidth,
   rowHeight,
   numOfRows,
   numOfColumns,
-}: TableLoaderProps) => {
+  content,
+}: TablePlaceholderProps) => {
   const tableSpring = useSpring({
     from: { opacity: 0 },
     to: { opacity: 1 },
@@ -62,7 +63,7 @@ export const TableLoader: React.FC<TableLoaderProps> = ({
                         >
                           {n === 4 && m === 7 && (
                             <div className={`absolute mx-auto mt-12`}>
-                              <Loader />
+                              {content}
                             </div>
                           )}
                         </td>
@@ -79,4 +80,4 @@ export const TableLoader: React.FC<TableLoaderProps> = ({
   );
 };
 
-export default TableLoader;
+export default TablePlaceholder;

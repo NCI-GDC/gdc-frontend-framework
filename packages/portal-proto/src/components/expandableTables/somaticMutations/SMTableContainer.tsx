@@ -2,11 +2,11 @@ import { useSsmsTable } from "@gff/core";
 import { useEffect, useState, useReducer, createContext } from "react";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
 import { useMeasure } from "react-use";
-import { Button } from "@mantine/core";
+import { Button, Loader } from "@mantine/core";
 import PageStepper from "../shared/PageStepper";
 import PageSize from "../shared/PageSize";
 import { TableControls } from "../shared/TableControls";
-import TableLoader from "../shared/TableLoader";
+import TablePlaceholder from "../shared/TablePlaceholder";
 import { SomaticMutations } from "./types";
 import { SelectedReducer, SelectReducerAction } from "../shared/types";
 
@@ -140,11 +140,12 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             />
           </div>
         ) : (
-          <TableLoader
+          <TablePlaceholder
             cellWidth={`w-[75px]`}
             rowHeight={60}
             numOfColumns={15}
             numOfRows={10}
+            content={<Loader />}
           />
         )}
         <div className={`flex flex-row w-9/12 ml-2 m-auto mb-2`}>

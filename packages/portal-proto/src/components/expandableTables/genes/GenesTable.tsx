@@ -22,7 +22,9 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   handleGTotal,
 }: GenesTableProps) => {
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
-  const [expanded, setExpanded] = useState<any>({} as Record<number, boolean>);
+  const [expanded, setExpanded] = useState<ExpandedState>(
+    {} as Record<number, boolean>,
+  );
   const [expandedId, setExpandedId] = useState<number>(undefined);
   const [searchTerm, setSearchTerm] = useState("");
   const [columnListOrder, setColumnListOrder] = useState(DEFAULT_GTABLE_ORDER);

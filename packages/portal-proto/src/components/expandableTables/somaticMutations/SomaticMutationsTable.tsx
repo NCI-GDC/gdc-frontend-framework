@@ -25,7 +25,9 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   handleSMTotal,
 }: SomaticMutationsTableProps) => {
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
-  const [expanded, setExpanded] = useState<any>({});
+  const [expanded, setExpanded] = useState<ExpandedState>(
+    {} as Record<number, boolean>,
+  );
   const [expandedId, setExpandedId] = useState<number>(undefined);
   const [searchTerm, setSearchTerm] = useState("");
   const [columnListOrder, setColumnListOrder] = useState(DEFAULT_SMTABLE_ORDER);

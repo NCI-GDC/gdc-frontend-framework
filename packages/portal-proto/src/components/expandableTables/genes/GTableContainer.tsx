@@ -2,11 +2,11 @@ import { useGenesTable } from "@gff/core";
 import { useState, useEffect, useReducer, createContext } from "react";
 import { GenesTable } from "./GenesTable";
 import { useMeasure } from "react-use";
-import { Button } from "@mantine/core";
+import { Button, Loader } from "@mantine/core";
 import PageStepper from "../shared/PageStepper";
 import PageSize from "../shared/PageSize";
 import TableControls from "../shared/TableControls";
-import TableLoader from "../shared/TableLoader";
+import TablePlaceholder from "../shared/TablePlaceholder";
 import { Genes } from "./types";
 import { SelectedReducer, SelectReducerAction } from "../shared/types";
 
@@ -136,11 +136,12 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             />
           </div>
         ) : (
-          <TableLoader
+          <TablePlaceholder
             cellWidth={`w-[75px]`}
             rowHeight={60}
             numOfColumns={15}
             numOfRows={10}
+            content={<Loader />}
           />
         )}
         <div className={`flex flex-row w-9/12 ml-2 mt-0 m-auto mb-2`}>
