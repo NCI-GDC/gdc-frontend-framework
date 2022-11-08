@@ -100,7 +100,7 @@ const CollapsibleRow = ({
             role="button"
             tabIndex={0}
             aria-label="Expand section"
-            className="flex flex-row items-center justify-between text-primary cursor-pointer w-48"
+            className="flex flex-row items-center justify-between text-primary cursor-pointer w-full mr-6"
           >
             <span className="whitespace-nowrap">
               {value.length.toLocaleString().padStart(6)} {label}
@@ -116,7 +116,7 @@ const CollapsibleRow = ({
             role="button"
             tabIndex={0}
             aria-label="Collapse section"
-            className="flex flex-row items-center justify-between text-primary cursor-pointer w-48"
+            className="flex flex-row items-center justify-between text-primary cursor-pointer w-full mr-6"
           >
             <span className="whitespace-nowrap text-bold">
               <b>

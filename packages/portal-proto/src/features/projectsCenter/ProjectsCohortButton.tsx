@@ -68,16 +68,16 @@ const ProjectsCohortButton = (): JSX.Element => {
       disabled={pickedProjects.length == 0}
       leftIcon={
         pickedProjects.length ? (
-          <div className="inline-flex items-center justify-center bg-primary w-6 h-6 text-primary-contrast rounded-md">
+          <div className="inline-flex items-center justify-center bg-primary w-8 h-6 text-primary-contrast rounded-md">
             {pickedProjects.length}
           </div>
         ) : (
-          <div className="inline-flex items-center justify-center bg-transparent w-6 h-6 text-primary-contrast rounded-md" />
+          <div className="inline-flex items-center justify-center bg-transparent w-8 h-6 text-primary-contrast rounded-md" />
         )
       }
       onClick={() => createCohortFromProjects()}
     >
-      Create Cohort
+      Create New Cohort
     </Button>
   );
 };
