@@ -1,4 +1,18 @@
 import { SpringValue } from "react-spring";
+import { Row } from "@tanstack/react-table";
+import { SomaticMutations } from "../somaticMutations/types";
+import { Genes } from "../genes/types";
+
+export type TableType = SomaticMutations | Genes;
+
+export type SelectedReducer<T extends TableType> = {
+  selected: Record<string, Row<T>[]>;
+};
+
+export type SelectReducerAction<T extends TableType> = {
+  type: "select" | "deselect" | "selectAll" | "deselectAll";
+  rows: Row<T>[];
+};
 
 export interface TableColumnState {
   id: string;

@@ -64,7 +64,7 @@ export interface Impact {
   vepImpact: string;
 }
 
-export interface SomaticMutation {
+export interface SomaticMutations {
   select: string;
   mutationID: string;
   DNAChange: string;
@@ -101,7 +101,6 @@ export interface SomaticMutationsTableProps {
   pageSize: number;
   page: number;
   selectedMutations: any;
-  selectMutation: any;
-  selectAll: any;
+  setSelectedMutations: any;
   handleSMTotal: (smTotal: number) => any;
 }

@@ -8,16 +8,12 @@ import PageSize from "../shared/PageSize";
 import TableControls from "../shared/TableControls";
 import TableLoader from "../shared/TableLoader";
 import { Row } from "@tanstack/react-table";
-import { GenesColumn } from "./types";
-
-interface SelectReducerAction {
-  type: "select" | "deselect" | "selectAll" | "deselectAll";
-  rows: Row<GenesColumn>[];
-}
+import { Genes } from "./types";
+import { SelectedReducer, SelectReducerAction } from "../shared/types";
 
 export const SelectedRowContext =
   createContext<
-    [Record<string, Row<GenesColumn>>, (action: SelectReducerAction) => void]
+    [SelectedReducer<Genes>, (action: SelectReducerAction<Genes>) => void]
   >(undefined);
 
 export interface GTableContainerProps {
@@ -38,8 +34,8 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const [ref, { width }] = useMeasure();
 
   const reducer = (
-    selected: Record<string, Row<GenesColumn>>,
-    action: SelectReducerAction,
+    selected: SelectedReducer<Genes>,
+    action: SelectReducerAction<Genes>,
   ) => {
     const { type, rows } = action;
     const allSelected = { ...selected };
@@ -75,7 +71,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
 
   const [selectedGenes, setSelectedGenes] = useReducer(
     reducer,
-    {} as Record<string, Row<GenesColumn>>,
+    {} as Record<string, Row<Genes>>,
   );
   const [gTotal, setGTotal] = useState(0);
 
@@ -128,7 +124,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         {status === "fulfilled" && mutationCounts && filteredCases && cases ? (
           <div ref={ref} className={`h-full w-9/12`}>
             <GenesTable
-              initialData={data.genes}
+              initialData={initialData}
               selectedSurvivalPlot={selectedSurvivalPlot}
               handleSurvivalPlotToggled={handleSurvivalPlotToggled}
               width={width}

@@ -7,7 +7,7 @@ import { TableColumnState } from "../shared/types";
 import { SurvivalIcon } from "../shared/sharedTableUtils";
 import { TableCell, TableHeader } from "../shared/sharedTableCells";
 import { ProteinChange, Impacts, Consequences } from "./smTableCells";
-import { SingleSomaticMutation, SomaticMutation, Impact } from "./types";
+import { SingleSomaticMutation, SomaticMutations, Impact } from "./types";
 import CheckboxSpring from "../shared/CheckboxSpring";
 import PercentageBar from "../shared/PercentageBar";
 import { Survival } from "../shared/types";
@@ -20,7 +20,7 @@ export const createTableColumn = (
   partitionWidth: WidthSpring,
   visibleColumns: TableColumnState[],
   selectedMutations: Record<string, MutationsColumn>[],
-  selectMutation: (geneId: string) => any,
+  setSelectedMutations: any,
   handleSurvivalPlotToggled: (
     symbol: string,
     name: string,
@@ -45,7 +45,7 @@ export const createTableColumn = (
                     <CheckboxSpring
                       isActive={row.original["select"] in selectedMutations}
                       select={row}
-                      handleCheck={selectMutation}
+                      handleCheck={setSelectedMutations}
                       multi={false}
                     />
                   )}
@@ -391,7 +391,7 @@ export const getMutation = (
   filteredCases: number,
   cases: number,
   ssmsTotal: number,
-): SomaticMutation => {
+): SomaticMutations => {
   const {
     gene = {
       symbol: "",

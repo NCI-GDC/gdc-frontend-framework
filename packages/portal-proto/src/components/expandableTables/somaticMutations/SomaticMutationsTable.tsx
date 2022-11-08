@@ -21,8 +21,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   pageSize,
   page,
   selectedMutations,
-  selectMutation,
-  selectAll,
+  setSelectedMutations,
   handleSMTotal,
 }: SomaticMutationsTableProps) => {
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
@@ -113,7 +112,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
           partitionWidth,
           visibleColumns,
           selectedMutations,
-          selectMutation,
+          setSelectedMutations,
           handleSurvivalPlotToggled,
           setMutationID,
         );
@@ -161,7 +160,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
           columns={columns}
           expanded={expanded}
           handleExpandedProxy={handleExpandedProxy}
-          selectAll={selectAll}
+          selectAll={setSelectedMutations}
           allSelected={selectedMutations}
           firstColumn={columnListOrder[0].id}
           headerWidth={width / visibleColumns.length}

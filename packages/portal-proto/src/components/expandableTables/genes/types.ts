@@ -33,7 +33,7 @@ export interface Gene {
   SSMSAffectedCasesAcrossTheGDC: string;
 }
 
-export type GenesColumn = {
+export type Genes = {
   select: string;
   geneID: string;
   symbol: string;
