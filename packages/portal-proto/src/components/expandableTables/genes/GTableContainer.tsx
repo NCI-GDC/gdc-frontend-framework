@@ -45,16 +45,16 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     const allSelected = { ...selected };
     switch (type) {
       case "select": {
-        const select = rows.map((row) => row.original["select"]);
+        const select = rows.map(({ original: { select } }) => select);
         return { ...selected, [select[0]]: rows[0] };
       }
       case "deselect": {
-        const deselect = rows.map((row) => row.original["select"]);
+        const deselect = rows.map(({ original: { select } }) => select);
         const { [deselect[0]]: deselected, ...remaining } = selected;
         return remaining;
       }
       case "selectAll": {
-        const selectAll = rows.map((row) => row.original["select"]);
+        const selectAll = rows.map(({ original: { select } }) => select);
         selectAll.forEach((id, idx) => {
           // excludes subrow(s)
           if (!rows[idx].id.includes(".")) {
@@ -64,7 +64,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         return allSelected;
       }
       case "deselectAll": {
-        const deselectAll = rows.map((row) => row.original["select"]);
+        const deselectAll = rows.map(({ original: { select } }) => select);
         deselectAll.forEach((id) => {
           delete allSelected[id];
         });

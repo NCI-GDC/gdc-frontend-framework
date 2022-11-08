@@ -13,14 +13,12 @@ const PageSize: React.FC<PageSizeProps> = ({
 }: PageSizeProps) => {
   const [offsetMenu, setOffsetMenu] = useState(false);
   const [hovered, setHovered] = useState(pageSize);
-
+  const tablePageSizeOptions = [10, 20, 40, 100] as number[];
   const toggleDegreeOfRotation = offsetMenu ? 0 : 180;
   const { y } = useSpring({
     y: toggleDegreeOfRotation,
   });
-
   const flipSpring = { transform: y.to((y) => `rotateX(${y}deg)`) };
-
   const menuSpring = useSpring({
     transform: offsetMenu ? "translate3D(0,0,0)" : "translate3D(0,-40px,0)",
     opacity: offsetMenu ? 1 : 0,
@@ -54,7 +52,7 @@ const PageSize: React.FC<PageSizeProps> = ({
             <ul
               className={`list-none w-12 text-activeColor border border-1 border-activeColor`}
             >
-              {[10, 20, 40, 100]
+              {tablePageSizeOptions
                 .filter((page) => page !== pageSize)
                 .map((page) => {
                   return (
