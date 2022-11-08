@@ -173,42 +173,40 @@ export const createTableColumn = (
                   style={partitionWidth}
                   className={`content-center`}
                 >
-                  <>
-                    {row.getCanExpand() && (
-                      <AffectedCases
-                        ratio={
-                          row?.original[`SSMSAffectedCasesAcrossTheGDC`]?.split(
-                            " ",
-                          )
-                            ? row.original[
-                                `SSMSAffectedCasesAcrossTheGDC`
-                              ].split(" ")
-                            : [0, "", "", ""]
-                        }
-                      />
-                    )}
-                    {row.getCanExpand() && (
-                      <div className={`text-center content-center`}>
-                        <button
-                          {...{
-                            onClick: () => {
-                              setGeneID(row.original[`geneID`]);
-                              row.toggleExpanded();
-                            },
-                            style: { cursor: "pointer" },
-                          }}
-                        >
-                          <ToggleSpring
-                            isExpanded={row.getIsExpanded()}
-                            icon={
-                              <MdKeyboardArrowDown size="small" color="white" />
-                            }
-                            twStyles={`bg-red-500 rounded-md h-3 w-3`}
-                          />
-                        </button>
-                      </div>
-                    )}
-                  </>
+                  {row.getCanExpand() && (
+                    <AffectedCases
+                      ratio={
+                        row?.original[`SSMSAffectedCasesAcrossTheGDC`]?.split(
+                          " ",
+                        )
+                          ? row.original[`SSMSAffectedCasesAcrossTheGDC`].split(
+                              " ",
+                            )
+                          : [0, "", "", ""]
+                      }
+                    />
+                  )}
+                  {row.getCanExpand() && (
+                    <div className={`text-center content-center`}>
+                      <button
+                        {...{
+                          onClick: () => {
+                            setGeneID(row.original[`geneID`]);
+                            row.toggleExpanded();
+                          },
+                          style: { cursor: "pointer" },
+                        }}
+                      >
+                        <ToggleSpring
+                          isExpanded={row.getIsExpanded()}
+                          icon={
+                            <MdKeyboardArrowDown size="small" color="white" />
+                          }
+                          twStyles={`bg-red-500 rounded-md h-3 w-3`}
+                        />
+                      </button>
+                    </div>
+                  )}
                 </animated.div>
               );
             },
@@ -296,22 +294,20 @@ export const createTableColumn = (
             cell: ({ row }) => {
               return (
                 <animated.div style={partitionWidth}>
-                  <>
-                    {row.getCanExpand() && (
-                      <div className={`flex flex-col items-center`}>
-                        {row.original["cytoband"].map((cytoband, key) => {
-                          return (
-                            <div
-                              key={`cytoband-${key}`}
-                              className={`my-0.5 text-xs`}
-                            >
-                              {cytoband}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </>
+                  {row.getCanExpand() && (
+                    <div className={`flex flex-col items-center`}>
+                      {row.original["cytoband"].map((cytoband, key) => {
+                        return (
+                          <div
+                            key={`cytoband-${key}`}
+                            className={`my-0.5 text-xs`}
+                          >
+                            {cytoband}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
                 </animated.div>
               );
             },
@@ -334,14 +330,12 @@ export const createTableColumn = (
             cell: ({ row }) => {
               return (
                 <animated.div style={partitionWidth}>
-                  <>
-                    <TableCell
-                      row={row}
-                      accessor={accessor}
-                      anchor={false}
-                      tooltip={""}
-                    />
-                  </>
+                  <TableCell
+                    row={row}
+                    accessor={accessor}
+                    anchor={false}
+                    tooltip={""}
+                  />
                 </animated.div>
               );
             },
@@ -359,14 +353,12 @@ export const createTableColumn = (
             cell: ({ row }) => {
               return (
                 <animated.div style={partitionWidth}>
-                  <>
-                    <TableCell
-                      row={row}
-                      accessor={accessor}
-                      anchor={["symbol"].includes(accessor) ? true : false}
-                      tooltip={""}
-                    />
-                  </>
+                  <TableCell
+                    row={row}
+                    accessor={accessor}
+                    anchor={["symbol"].includes(accessor) ? true : false}
+                    tooltip={""}
+                  />
                 </animated.div>
               );
             },

@@ -137,14 +137,12 @@ export const createTableColumn = (
             cell: ({ row }) => {
               return (
                 <animated.div style={partitionWidth}>
-                  <>
-                    <TableCell
-                      row={row}
-                      accessor={accessor}
-                      anchor={true}
-                      tooltip={row.original["DNAChange"]}
-                    />
-                  </>
+                  <TableCell
+                    row={row}
+                    accessor={accessor}
+                    anchor={true}
+                    tooltip={row.original["DNAChange"]}
+                  />
                 </animated.div>
               );
             },
@@ -172,35 +170,33 @@ export const createTableColumn = (
                   style={partitionWidth}
                   className={`content-center`}
                 >
-                  <>
-                    <TableCell
-                      row={row}
-                      accessor={accessor}
-                      anchor={false}
-                      tooltip={""}
-                    />
-                    {row.getCanExpand() && (
-                      <div className={`text-center`}>
-                        <button
-                          {...{
-                            onClick: () => {
-                              setMutationID(row.original[`mutationID`]);
-                              row.toggleExpanded();
-                            },
-                            style: { cursor: "pointer" },
-                          }}
-                        >
-                          <ToggleSpring
-                            isExpanded={row.getIsExpanded()}
-                            icon={
-                              <MdKeyboardArrowDown size="small" color="white" />
-                            }
-                            twStyles={`bg-red-500 rounded-md h-3 w-3`}
-                          />
-                        </button>
-                      </div>
-                    )}
-                  </>
+                  <TableCell
+                    row={row}
+                    accessor={accessor}
+                    anchor={false}
+                    tooltip={""}
+                  />
+                  {row.getCanExpand() && (
+                    <div className={`text-center`}>
+                      <button
+                        {...{
+                          onClick: () => {
+                            setMutationID(row.original[`mutationID`]);
+                            row.toggleExpanded();
+                          },
+                          style: { cursor: "pointer" },
+                        }}
+                      >
+                        <ToggleSpring
+                          isExpanded={row.getIsExpanded()}
+                          icon={
+                            <MdKeyboardArrowDown size="small" color="white" />
+                          }
+                          twStyles={`bg-red-500 rounded-md h-3 w-3`}
+                        />
+                      </button>
+                    </div>
+                  )}
                 </animated.div>
               );
             },
