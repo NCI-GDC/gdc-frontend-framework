@@ -14,8 +14,9 @@ const PageSize: React.FC<PageSizeProps> = ({
   const [offsetMenu, setOffsetMenu] = useState(false);
   const [hovered, setHovered] = useState(pageSize);
 
+  const toggleDegreeOfRotation = offsetMenu ? 0 : 180;
   const { y } = useSpring({
-    y: offsetMenu ? 0 : 180,
+    y: toggleDegreeOfRotation,
   });
 
   const flipSpring = { transform: y.to((y) => `rotateX(${y}deg)`) };
@@ -24,7 +25,7 @@ const PageSize: React.FC<PageSizeProps> = ({
     transform: offsetMenu ? "translate3D(0,0,0)" : "translate3D(0,-40px,0)",
     opacity: offsetMenu ? 1 : 0,
   });
-  const pg = useSpring({
+  const pageSpring = useSpring({
     from: { number: 0 },
     to: { number: hovered },
     immediate: true,
@@ -41,7 +42,7 @@ const PageSize: React.FC<PageSizeProps> = ({
     >
       <div className={`flex flex-row w-12 justify-between`}>
         <animated.div className={`m-auto text-xs mr-0.5 text-activeColor`}>
-          {offsetMenu ? pg.number.to((x) => x.toFixed(0)) : pageSize}
+          {offsetMenu ? pageSpring.number.to((x) => x.toFixed(0)) : pageSize}
         </animated.div>
         <animated.div className={`m-auto ml-0.5`} style={flipSpring}>
           <MdOutlineArrowDropDown />
@@ -54,17 +55,17 @@ const PageSize: React.FC<PageSizeProps> = ({
               className={`list-none w-12 text-activeColor border border-1 border-activeColor`}
             >
               {[10, 20, 40, 100]
-                .filter((pg) => pg !== pageSize)
-                .map((pg) => {
+                .filter((page) => page !== pageSize)
+                .map((page) => {
                   return (
                     <button
-                      key={`page-size-option-${pg}`}
-                      onClick={() => handlePageSize(pg)}
-                      onMouseEnter={() => setHovered(pg)}
+                      key={`page-size-option-${page}`}
+                      onClick={() => handlePageSize(page)}
+                      onMouseEnter={() => setHovered(page)}
                       onMouseLeave={() => setHovered(pageSize)}
                       className={`py-1 px-2 text-sm border-t-0 hover:bg-hoverColor w-10`}
                     >
-                      {pg}
+                      {page}
                     </button>
                   );
                 })}
