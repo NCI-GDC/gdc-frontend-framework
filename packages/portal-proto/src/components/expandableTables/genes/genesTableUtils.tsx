@@ -4,27 +4,31 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 import { animated } from "react-spring";
 import CheckboxSpring from "../shared/CheckboxSpring";
 import SwitchSpring from "../shared/SwitchSpring";
-import { TableColumnDefinition, WidthSpring } from "../shared/types";
+import {
+  SelectedReducer,
+  TableColumnDefinition,
+  WidthSpring,
+} from "../shared/types";
 import { SurvivalIcon, AnnotationsIcon } from "../shared/sharedTableUtils";
 import {
   TableCell,
   TableHeader,
   AffectedCases,
 } from "../shared/sharedTableCells";
-import { GenesColumn, SingleGene, Gene } from "./types";
+import { Genes, SingleGene, Gene } from "./types";
 import { Tooltip } from "@mantine/core";
-import { Row } from "@tanstack/react-table";
+import { SelectReducerAction } from "../shared/types";
 
 export const createTableColumn = (
   accessor: string,
   partitionWidth: WidthSpring,
-  selectedGenes: Record<string, Row<GenesColumn>>,
-  setSelectedGenes,
+  selectedGenes: SelectedReducer<Genes>,
+  setSelectedGenes: Dispatch<SelectReducerAction<Genes>>,
   handleSurvivalPlotToggled: (
     symbol: string,
     name: string,
     geneSymbol: string,
-  ) => any,
+  ) => void,
   setGeneID: Dispatch<SetStateAction<string>>,
 ): TableColumnDefinition => {
   switch (accessor) {

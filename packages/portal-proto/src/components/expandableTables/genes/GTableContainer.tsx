@@ -45,9 +45,9 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
       }
       case "deselect": {
         const deselect = rows.map(({ original: { select } }) => select);
-        const { [deselect[0]]: deselected, ...remaining } =
+        const { [deselect[0]]: deselected, ...rest } =
           selected as SelectedReducer<Genes>;
-        return remaining;
+        return rest;
       }
       case "selectAll": {
         const selectAll = rows.map(({ original: { select } }) => select);

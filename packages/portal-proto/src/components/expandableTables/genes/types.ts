@@ -73,7 +73,7 @@ export interface GenesTableProps {
   page: number;
   selectedGenes: any;
   setSelectedGenes: any;
-  handleGTotal: (gTotal: number) => any;
+  handleGTotal: (gTotal: number) => void;
 }
 
 export const DEFAULT_GTABLE_ORDER = [

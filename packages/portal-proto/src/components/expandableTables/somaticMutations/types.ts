@@ -1,3 +1,6 @@
+import { Dispatch } from "react";
+import { SelectedReducer, SelectReducerAction } from "../shared/types";
+
 export const DEFAULT_SMTABLE_ORDER = [
   { id: "select", columnName: "Select", visible: true },
   { id: "cohort", columnName: "cohort", visible: false },
@@ -100,7 +103,7 @@ export interface SomaticMutationsTableProps {
   ) => void;
   pageSize: number;
   page: number;
-  selectedMutations: any;
-  setSelectedMutations: any;
-  handleSMTotal: (smTotal: number) => any;
+  selectedMutations: SelectedReducer<SomaticMutations>;
+  setSelectedMutations: Dispatch<SelectReducerAction<SomaticMutations>>;
+  handleSMTotal: (smTotal: number) => void;
 }

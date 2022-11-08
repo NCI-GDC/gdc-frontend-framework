@@ -3,7 +3,11 @@ import { animated } from "react-spring";
 import ToggleSpring from "../shared/ToggleSpring";
 import SwitchSpring from "../shared/SwitchSpring";
 import { MdKeyboardArrowDown } from "react-icons/md";
-import { TableColumnState } from "../shared/types";
+import {
+  SelectedReducer,
+  SelectReducerAction,
+  TableColumnState,
+} from "../shared/types";
 import { SurvivalIcon } from "../shared/sharedTableUtils";
 import { TableCell, TableHeader } from "../shared/sharedTableCells";
 import { ProteinChange, Impacts, Consequences } from "./smTableCells";
@@ -19,13 +23,13 @@ export const createTableColumn = (
   width: number,
   partitionWidth: WidthSpring,
   visibleColumns: TableColumnState[],
-  selectedMutations: Record<string, MutationsColumn>[],
-  setSelectedMutations: any,
+  selectedMutations: SelectedReducer<SomaticMutations>,
+  setSelectedMutations: Dispatch<SelectReducerAction<SomaticMutations>>,
   handleSurvivalPlotToggled: (
     symbol: string,
     name: string,
     geneSymbol: string,
-  ) => any,
+  ) => void,
   setMutationID: Dispatch<SetStateAction<string>>,
 ): TableColumnDefinition => {
   switch (accessor) {
@@ -219,7 +223,8 @@ export const createTableColumn = (
               />
             ),
             cell: ({ row }) => {
-              const [numerator, slash, denominator, fraction] = row.original[
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
+              const [numerator, _, denominator, __] = row.original[
                 "affectedCasesInCohort"
               ]?.split(" ") ?? ["0", "", "", ""];
 

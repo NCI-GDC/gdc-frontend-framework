@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { GenesTableProps, DEFAULT_GTABLE_ORDER } from "./types";
-import { ExpandedState, ColumnDef, Row } from "@tanstack/react-table";
+import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { ExpTable } from "../shared/ExpTable";
 import { TableFilters } from "../shared/TableFilters";
 import { getGene, createTableColumn } from "./genesTableUtils";
