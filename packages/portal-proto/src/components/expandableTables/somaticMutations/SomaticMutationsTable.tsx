@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { SomaticMutationsTableProps, DEFAULT_SMTABLE_ORDER } from "./types";
+import {
+  SomaticMutationsTableProps,
+  DEFAULT_SMTABLE_ORDER,
+  SomaticMutations,
+} from "./types";
 import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { ExpTable } from "../shared/ExpTable";
-import {
-  getMutation,
-  createTableColumn,
-  MutationsColumn,
-} from "./smTableUtils";
+import { getMutation, createTableColumn } from "./smTableUtils";
 import { useSpring } from "react-spring";
 import { searchContains } from "../shared/sharedTableUtils";
 import { TableFilters } from "../shared/TableFilters";
@@ -102,7 +102,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
     setVisibleColumns(columnListOrder.filter((col) => col.visible));
   }, [columnListOrder]);
 
-  const columns = useMemo<ColumnDef<MutationsColumn>[]>(() => {
+  const columns = useMemo<ColumnDef<SomaticMutations>[]>(() => {
     return visibleColumns
       .map(({ id }) => id)
       .map((accessor) => {

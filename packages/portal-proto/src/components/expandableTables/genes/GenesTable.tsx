@@ -4,7 +4,7 @@ import { ExpandedState, ColumnDef, Row } from "@tanstack/react-table";
 import { ExpTable } from "../shared/ExpTable";
 import { TableFilters } from "../shared/TableFilters";
 import { getGene, createTableColumn } from "./genesTableUtils";
-import { GenesColumn } from "./types";
+import { Genes } from "./types";
 import { useSpring } from "react-spring";
 import { searchContains } from "../shared/sharedTableUtils";
 import { Subrow } from "../shared/Subrow";
@@ -102,7 +102,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   }, [columnListOrder]);
 
   // todo replace this callback w/ transformResponse inside rtk endpoint call
-  const columns = useMemo<ColumnDef<GenesColumn>[]>(() => {
+  const columns = useMemo<ColumnDef<Genes>[]>(() => {
     return visibleColumns
       .map(({ id }) => id)
       .map((accessor) => {
