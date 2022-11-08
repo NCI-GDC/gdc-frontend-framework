@@ -38,9 +38,10 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
             isActive ? `bg-activeColor` : `bg-gray-300`
           } m-auto align-middle`}
           onClick={() => {
-            !icon
-              ? handleSwitch(selected)
-              : handleSwitch(selected?.symbol, selected?.name, "gene.symbol");
+            // todo: if used for > 2 icons refactor to use switch(icon) statement
+            icon
+              ? handleSwitch(selected?.symbol, selected?.name, "gene.symbol")
+              : handleSwitch(selected);
           }}
         >
           <animated.div
