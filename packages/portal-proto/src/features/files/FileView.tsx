@@ -558,8 +558,10 @@ export const FileView: React.FC<FileViewProps> = ({
           <div className="float-right my-2 mr-3">
             <Menu width="target">
               <Menu.Target>
-                <Button className="px-1.5 min-h-7 w-28 rounded text-primary-content-lightest bg-primary hover:bg-primary-darker">
-                  <FaDownload className="mr-2" />
+                <Button
+                  className="px-1.5 min-h-7 w-28 rounded text-primary-content-lightest bg-primary hover:bg-primary-darker"
+                  leftIcon={<FaDownload />}
+                >
                   Download
                 </Button>
               </Menu.Target>
