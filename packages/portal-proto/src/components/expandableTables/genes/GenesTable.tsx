@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { GenesTableProps, DEFAULT_GTABLE_ORDER } from "./types";
-import { ExpandedState, ColumnDef } from "@tanstack/react-table";
+import { ExpandedState, ColumnDef, Row } from "@tanstack/react-table";
 import { ExpTable } from "../shared/ExpTable";
 import { TableFilters } from "../shared/TableFilters";
 import { getGene, createTableColumn } from "./genesTableUtils";
@@ -22,7 +22,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   handleGTotal,
 }: GenesTableProps) => {
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
-  const [expanded, setExpanded] = useState<any>({});
+  const [expanded, setExpanded] = useState<any>({} as Record<number, boolean>);
   const [expandedId, setExpandedId] = useState<number>(undefined);
   const [searchTerm, setSearchTerm] = useState("");
   const [columnListOrder, setColumnListOrder] = useState(DEFAULT_GTABLE_ORDER);
@@ -62,7 +62,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
     setExpandedProxy(exp);
   };
   // `exp` is non-mutable within the lexical scope of handleExpandedProxy
-  //  this effect hook is a workaround that updates expanded wrt expandedProxy
+  //  this effect hook is a workaround that updates expanded after expandedProxy updates
   useEffect(() => {
     const proxy = Object.keys(expandedProxy);
     const exp = Object.keys(expanded);

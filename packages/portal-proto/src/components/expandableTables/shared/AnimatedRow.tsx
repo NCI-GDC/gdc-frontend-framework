@@ -10,7 +10,7 @@ interface AnimatedRowProps {
 }
 
 /**
- * This component is row used in ExpTable
+ * This component is the row used in ExpTable
  *
  * @param row  // single row of table data
  * @param index // index of row within table

@@ -240,7 +240,6 @@ export const fetchGenesTable = createAsyncThunk<
           ...filterContents,
         ],
       },
-      // sort: sorts,
     };
 
     // get the TableData

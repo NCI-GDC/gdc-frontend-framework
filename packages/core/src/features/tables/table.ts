@@ -1,11 +1,13 @@
-// import { Buckets } from "../gdcapi/gdcapi";
 import { GraphQLApiResponse, graphqlAPISlice } from "../gdcapi/gdcgraphql";
 
+// WIP: refactor useGenesTable
 interface TableResponse {
+  //todo
   something: any;
 }
 
 export interface TableData {
+  //todo
   another: any;
 }
 

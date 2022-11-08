@@ -46,6 +46,7 @@ export const createTableColumn = (
                       isActive={row.original["select"] in selectedMutations}
                       select={row}
                       handleCheck={selectMutation}
+                      multi={false}
                     />
                   )}
                 </>

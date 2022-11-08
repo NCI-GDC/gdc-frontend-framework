@@ -73,7 +73,10 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     }
   };
 
-  const [selectedGenes, setSelectedGenes] = useReducer(reducer, {});
+  const [selectedGenes, setSelectedGenes] = useReducer(
+    reducer,
+    {} as Record<string, Row<GenesColumn>>,
+  );
   const [gTotal, setGTotal] = useState(0);
 
   const { data } = useGenesTable({
@@ -94,7 +97,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
       <SelectedRowContext.Provider value={[selectedGenes, setSelectedGenes]}>
         <div className={`flex flex-row absolute w-60 ml-2`}>
           <TableControls
-            numSelected={0}
+            numSelected={Object.keys(selectedGenes).length ?? 0}
             label={`Gene`}
             options={[
               { label: "Save/Edit Gene Set", value: "placeholder" },
@@ -144,7 +147,6 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             numOfRows={10}
           />
         )}
-
         <div className={`flex flex-row w-9/12 ml-2 mt-0 m-auto mb-2`}>
           <div className="m-auto ml-0">
             <span className="my-auto mx-1 text-xs">Show</span>

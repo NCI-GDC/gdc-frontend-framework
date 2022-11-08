@@ -4,11 +4,7 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 import { animated } from "react-spring";
 import CheckboxSpring from "../shared/CheckboxSpring";
 import SwitchSpring from "../shared/SwitchSpring";
-import {
-  TableColumnState,
-  TableColumnDefinition,
-  WidthSpring,
-} from "../shared/types";
+import { TableColumnDefinition, WidthSpring } from "../shared/types";
 import { SurvivalIcon, AnnotationsIcon } from "../shared/sharedTableUtils";
 import {
   TableCell,
@@ -17,11 +13,12 @@ import {
 } from "../shared/sharedTableCells";
 import { GenesColumn, SingleGene, Gene } from "./types";
 import { Tooltip } from "@mantine/core";
+import { Row } from "@tanstack/react-table";
 
 export const createTableColumn = (
   accessor: string,
   partitionWidth: WidthSpring,
-  selectedGenes: any,
+  selectedGenes: Record<string, Row<GenesColumn>>,
   setSelectedGenes,
   handleSurvivalPlotToggled: (
     symbol: string,

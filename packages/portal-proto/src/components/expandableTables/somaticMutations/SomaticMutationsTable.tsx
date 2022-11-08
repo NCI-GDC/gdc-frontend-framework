@@ -64,7 +64,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
     setExpandedProxy(exp);
   };
   // `exp` is non-mutable within the lexical scope of handleExpandedProxy
-  //  this effect hook is a workaround that updates expanded wrt expandedProxy
+  //  this effect hook is a workaround that updates expanded after expandedProxy updates
   useEffect(() => {
     const proxy = Object.keys(expandedProxy);
     const exp = Object.keys(expanded);
