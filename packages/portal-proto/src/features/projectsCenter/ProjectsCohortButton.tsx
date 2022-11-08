@@ -71,7 +71,9 @@ const ProjectsCohortButton = (): JSX.Element => {
           <div className="inline-flex items-center justify-center bg-primary w-6 h-6 text-primary-contrast rounded-md">
             {pickedProjects.length}
           </div>
-        ) : null
+        ) : (
+          <div className="inline-flex items-center justify-center bg-transparent w-6 h-6 text-primary-contrast rounded-md" />
+        )
       }
       onClick={() => createCohortFromProjects()}
     >
