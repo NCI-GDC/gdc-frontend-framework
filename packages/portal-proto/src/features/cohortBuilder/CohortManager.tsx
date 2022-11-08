@@ -18,7 +18,6 @@ import {
   useCoreDispatch,
   useCoreSelector,
   discardCohortChanges,
-  selectCurrentCohortSaved,
   useDeleteCohortMutation,
   selectCurrentCohortId,
   setCurrentCohortId,
@@ -68,9 +67,6 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   const cohortModified = useCoreSelector((state) =>
     selectCurrentCohortModified(state),
   );
-  const cohortSaved = useCoreSelector((state) =>
-    selectCurrentCohortSaved(state),
-  );
   const cohortId = useCoreSelector((state) => selectCurrentCohortId(state));
   const filters = useCohortFacetFilters(); // make sure using this one //TODO maybe use from one amongst the selectors
 
@@ -94,12 +90,13 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   );
 
   const deleteCohort = () => {
-    coreDispatch(removeCohort(true));
+    coreDispatch(removeCohort({ shouldShowMessage: true }));
   };
 
   // Cohort persistence
   const [addCohort, { isLoading: isAddCohortLoading }] = useAddCohortMutation();
-  const [deleteCohortBE] = useDeleteCohortMutation();
+  const [deleteCohortBE, { isLoading: isDeleteCohortLoading }] =
+    useDeleteCohortMutation();
   const [updateCohort] = useUpdateCohortMutation();
   const [trigger, { isFetching: isCohortIdFetching }] =
     useLazyGetCohortByIdQuery();
@@ -125,7 +122,9 @@ const CohortManager: React.FC<CohortManagerProps> = ({
       className="flex flex-row items-center justify-start gap-6 pl-4 h-20 shadow-lg bg-primary-darkest"
     >
       {/*  Modals Start   */}
-      {(isAddCohortLoading || isCohortIdFetching) && <LoadingOverlay visible />}
+      {(isAddCohortLoading || isCohortIdFetching || isDeleteCohortLoading) && (
+        <LoadingOverlay visible />
+      )}
       <GenericCohortModal
         title="Delete Cohort"
         opened={showDelete}
@@ -140,12 +139,14 @@ const CohortManager: React.FC<CohortManagerProps> = ({
         onActionClick={async () => {
           // only if it's been saved to BE before
           // also unhappy paths for all these???
+          setShowDelete(false);
           if (currentCohort?.saved) {
             await deleteCohortBE(cohortId);
             deleteCohort();
           } else {
             deleteCohort();
           }
+          // maybe do this inside action itself as deleteCohort is being called in both instances
           coreDispatch(setCurrentCohortId("ALL-GDC-COHORT"));
         }}
       />
@@ -196,6 +197,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
         opened={showSaveCohort}
         onClose={() => setShowSaveCohort(false)}
         onSaveClick={async (newName: string) => {
+          const prevCohort = cohortId;
           const addBody = {
             name: newName,
             type: "static",
@@ -204,11 +206,13 @@ const CohortManager: React.FC<CohortManagerProps> = ({
           const data = await addCohort(addBody).unwrap();
           if (Object.keys(data).length > 0) {
             batch(() => {
-              coreDispatch(removeCohort(false));
               coreDispatch(setCurrentCohortId(data.id));
               coreDispatch(sendCohortMessage(`savedCohort|`));
             });
             onSelectionChanged(data.id);
+            coreDispatch(
+              removeCohort({ shouldShowMessage: false, currentID: prevCohort }),
+            );
           }
         }}
         onSaveCohort={onSaveCohort}

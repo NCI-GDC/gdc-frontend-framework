@@ -23,7 +23,6 @@ import {
   selectCohortMessage,
   selectCurrentCohortName,
   clearCohortMessage,
-  usePrevious,
   setCohortList,
   useGetCohortsByContextIdQuery,
 } from "@gff/core";
@@ -39,46 +38,33 @@ import SummaryFacets, { SummaryFacetInfo } from "./SummaryFacets";
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
 import FunctionButton from "@/components/FunctionButton";
 import QueryExpressionSection from "./QueryExpressionSection";
-import { isEqual } from "lodash";
 
 const ContextBar: React.FC = () => {
-  const [isGroupCollapsed, setIsGroupCollapsed] = useState(true);
-  const [currentIndex, setCurrentIndex] = useState(DEFAULT_COHORT_ID);
-
-  const handleCohortSelection = (idx: string) => {
-    setCohort(idx);
-  };
-
-  const {
-    data: cohortsListData,
-    isLoading: isCohortsListLoading,
-    isSuccess: isCohortsListSuccess,
-    isError: isCohortsListError,
-  } = useGetCohortsByContextIdQuery();
-
   const coreDispatch = useCoreDispatch();
-  const prevCohortsListData = usePrevious(cohortsListData);
-
-  // TODO: need to check the if
+  const { data: cohortsListData } = useGetCohortsByContextIdQuery();
   useEffect(() => {
-    if (cohortsListData && !isEqual(prevCohortsListData, cohortsListData)) {
+    if (cohortsListData) {
       coreDispatch(setCohortList(cohortsListData));
     }
   }, [coreDispatch, cohortsListData]);
 
-  const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
+  const [isGroupCollapsed, setIsGroupCollapsed] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(DEFAULT_COHORT_ID);
 
-  console.log("COHORTS: ", cohorts);
+  const setCohort = (id: string) => {
+    coreDispatch(setCurrentCohortId(id));
+  };
+  const handleCohortSelection = (idx: string) => {
+    setCohort(idx);
+  };
+
+  const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
   const currentCohortId = useCoreSelector((state) =>
     selectCurrentCohortId(state),
   );
   const currentCohortName = useCoreSelector((state) =>
     selectCurrentCohortName(state),
   );
-  const setCohort = (id: string) => {
-    coreDispatch(setCurrentCohortId(id));
-  };
-
   const cohortMessage = useCoreSelector((state) => selectCohortMessage(state));
 
   useEffect(() => {
@@ -121,8 +107,6 @@ const ContextBar: React.FC = () => {
             autoClose: 5000,
           });
         }
-
-        // add notification here for discarding changes
       }
       coreDispatch(clearCohortMessage());
     }

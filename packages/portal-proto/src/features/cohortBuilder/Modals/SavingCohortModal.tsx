@@ -88,6 +88,7 @@ export const SavingCohortModal = ({
           withAsterisk
           label="Name"
           placeholder="New Cohort Name"
+          aria-label="Input field for new cohort name"
           description={description}
           styles={() => ({
             description: {
