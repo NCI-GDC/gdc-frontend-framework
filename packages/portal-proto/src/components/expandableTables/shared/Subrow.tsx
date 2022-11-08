@@ -69,7 +69,7 @@ export const Subrow: React.FC<SubrowProps> = ({
 
   useEffect(() => {
     scrollIntoView();
-  }, [isSuccess]);
+  }, [isSuccess, scrollIntoView]);
 
   return (
     <div>

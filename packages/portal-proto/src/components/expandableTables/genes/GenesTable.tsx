@@ -18,9 +18,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   pageSize,
   page,
   selectedGenes,
-  // selectGene,
   setSelectedGenes,
-  selectAll,
   handleGTotal,
 }: GenesTableProps) => {
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
@@ -110,7 +108,6 @@ export const GenesTable: React.FC<GenesTableProps> = ({
       .map((accessor) => {
         return createTableColumn(
           accessor,
-          width,
           partitionWidth,
           selectedGenes,
           setSelectedGenes,
@@ -119,7 +116,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
         );
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visibleColumns, width, selectedGenes, geneID, setGeneID]);
+  }, [visibleColumns, selectedGenes, setSelectedGenes, geneID, setGeneID]);
 
   useEffect(() => {
     setExpanded({});
@@ -161,7 +158,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
           columns={columns}
           expanded={expanded}
           handleExpandedProxy={handleExpandedProxy}
-          selectAll={selectAll}
+          selectAll={setSelectedGenes}
           allSelected={selectedGenes}
           firstColumn={columnListOrder[0].id}
           headerWidth={width / visibleColumns.length}

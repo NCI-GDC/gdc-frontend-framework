@@ -12,11 +12,13 @@ import { GenesColumn } from "./types";
 
 interface SelectReducerAction {
   type: "select" | "deselect" | "selectAll" | "deselectAll";
-  rows: string[];
+  rows: Row<GenesColumn>[];
 }
 
 export const SelectedRowContext =
-  createContext<(action: SelectReducerAction) => void>(undefined);
+  createContext<
+    [Record<string, Row<GenesColumn>>, (action: SelectReducerAction) => void]
+  >(undefined);
 
 export interface GTableContainerProps {
   readonly selectedSurvivalPlot: Record<string, string>;
@@ -40,25 +42,37 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     action: SelectReducerAction,
   ) => {
     const { type, rows } = action;
+    const allSelected = { ...selected };
     switch (type) {
-      case "select" || "deselect":
-        console.log("selected", selected, "action", action);
-        debugger;
-        const id = 1;
-        // const id = rows.original[`geneID`];
-        switch (type) {
-          case "select":
-            return { ...selected, [id]: rows };
-          case "deselect":
-            const updateRows = { ...selected };
-            delete updateRows[id];
-            return updateRows;
-        }
-      case "selectAll" || "deselectAll":
-        const ids = rows;
-        console.log("ids", ids);
+      case "select": {
+        const select = rows.map((row) => row.original["select"]);
+        return { ...selected, [select[0]]: rows[0] };
+      }
+      case "deselect": {
+        const deselect = rows.map((row) => row.original["select"]);
+        const { [deselect[0]]: deselected, ...remaining } = selected;
+        return remaining;
+      }
+      case "selectAll": {
+        const selectAll = rows.map((row) => row.original["select"]);
+        selectAll.forEach((id, idx) => {
+          // excludes subrow(s)
+          if (!rows[idx].id.includes(".")) {
+            allSelected[id] = rows[idx];
+          }
+        });
+        return allSelected;
+      }
+      case "deselectAll": {
+        const deselectAll = rows.map((row) => row.original["select"]);
+        deselectAll.forEach((id) => {
+          delete allSelected[id];
+        });
+        return allSelected;
+      }
     }
   };
+
   const [selectedGenes, setSelectedGenes] = useReducer(reducer, {});
   const [gTotal, setGTotal] = useState(0);
 
@@ -71,51 +85,13 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     setPage(0);
   }, [pageSize]);
 
-  // const selectGene = (row: any) => {
-  //   const gene = row.original["geneID"];
-  //   if (gene in selectedGenes) {
-  //     // deselect single row
-  // setSelectedGenes((currentMap) => {
-  //   const newMap = { ...currentMap };
-  //   delete newMap[gene];
-  //   return newMap;
-  // });
-  //   } else {
-  //     // select single row
-  //     setSelectedGenes((currentMap) => {
-  //       return { ...currentMap, [gene]: row };
-  //     });
-  //   }
-  // };
+  const { status, genes: initialData } = data;
 
-  // const selectAllGenes = (rows: any) => {
-  //   if (rows.every((row) => row.original["select"] in selectedGenes)) {
-  //     // deselect all
-  //     setSelectedGenes((currentMap) => {
-  //       const newMap = { ...currentMap };
-  //       rows.forEach((row) => delete newMap[row.original["select"]]);
-  //       return newMap;
-  //     });
-  //   } else {
-  //     // select all
-  //     setSelectedGenes((currentMap) => {
-  //       const newMap = { ...currentMap };
-  //       rows.forEach((row) => {
-  //         if (
-  //           !row.id.includes(".") &&
-  //           !(row.original["select"] in currentMap)
-  //         ) {
-  //           newMap[row.original["select"]] = row;
-  //         }
-  //       });
-  //       return newMap;
-  //     });
-  //   }
-  // };
+  const { cases, filteredCases, mutationCounts } = initialData;
 
   return (
     <>
-      <SelectedRowContext.Provider value={setSelectedGenes}>
+      <SelectedRowContext.Provider value={[selectedGenes, setSelectedGenes]}>
         <div className={`flex flex-row absolute w-60 ml-2`}>
           <TableControls
             numSelected={0}
@@ -146,10 +122,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             }
           />
         </div>
-        {data?.status === "fulfilled" &&
-        data?.genes?.mutationCounts &&
-        data?.genes?.filteredCases &&
-        data?.genes?.cases ? (
+        {status === "fulfilled" && mutationCounts && filteredCases && cases ? (
           <div ref={ref} className={`h-full w-9/12`}>
             <GenesTable
               initialData={data.genes}
@@ -158,12 +131,8 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               width={width}
               pageSize={pageSize}
               page={page}
-              selectedGenes={{}}
+              selectedGenes={selectedGenes}
               setSelectedGenes={setSelectedGenes}
-              // selectGene={setSelectedGenes({
-              //   type: "select"
-              // })}
-              selectAll={console.log("selectAllGenes")}
               handleGTotal={setGTotal}
             />
           </div>

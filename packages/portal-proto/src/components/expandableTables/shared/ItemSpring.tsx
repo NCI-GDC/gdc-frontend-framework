@@ -1,5 +1,5 @@
 import React from "react";
-import { animated, useSpring, config } from "react-spring";
+import { animated, useSpring } from "react-spring";
 
 interface Item {
   project: string;

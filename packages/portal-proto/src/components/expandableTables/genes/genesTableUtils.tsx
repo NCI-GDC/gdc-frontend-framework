@@ -20,10 +20,8 @@ import { Tooltip } from "@mantine/core";
 
 export const createTableColumn = (
   accessor: string,
-  width: number,
   partitionWidth: WidthSpring,
-  selectedGenes: Record<string, GenesColumn>[],
-  // selectGene: (geneId: string) => any,
+  selectedGenes: any,
   setSelectedGenes,
   handleSurvivalPlotToggled: (
     symbol: string,
@@ -42,15 +40,15 @@ export const createTableColumn = (
             accessorKey: accessor,
             header: () => <TableHeader title={accessor} tooltip={""} />,
             cell: ({ row }) => {
-              let activeStatus = row.original["select"] in selectedGenes;
               return (
                 <>
                   {/* todo: make select/toggle columns fixed smaller width */}
                   {row.getCanExpand() && (
                     <CheckboxSpring
-                      isActive={activeStatus}
+                      isActive={row.original["select"] in selectedGenes}
                       select={row}
                       handleCheck={setSelectedGenes}
+                      multi={false}
                     />
                   )}
                 </>

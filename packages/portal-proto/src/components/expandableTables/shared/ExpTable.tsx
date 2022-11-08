@@ -19,7 +19,7 @@ export interface ExpTableProps<TData> {
   columns: ColumnDef<TData>[];
   expanded: ExpandedState;
   handleExpandedProxy: (exp: ExpandedState) => void;
-  selectAll: (rows: any, isActive: boolean) => void; // todo: add row type
+  selectAll: (type: string, rows: any) => void; // todo: add row type
   allSelected: any;
   firstColumn: string;
   headerWidth: number;
@@ -97,7 +97,8 @@ export const ExpTable: React.FC<ExpTableProps> = ({
                             <CheckboxSpring
                               isActive={selectAllActive}
                               handleCheck={selectAll}
-                              select={table.getRowModel().rows}
+                              select={table.getRowModel().rows ?? []}
+                              multi={true}
                             />
                           ) : null}
                           <animated.div
