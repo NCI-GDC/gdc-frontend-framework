@@ -645,8 +645,8 @@ module.exports = {
           8: "#7A7A15",
           9: "#10828E",
         },
-        hoverColor: "rgb(226 232 240)",
-        activeColor: "rgb(32, 68, 97)",
+        hoverColor: "#E8F0E2",
+        activeColor: "#204461",
         "percentage-bar": {
           base: "#d5e8e1",
           complete: "#249c4f",
