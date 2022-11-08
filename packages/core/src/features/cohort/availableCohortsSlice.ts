@@ -131,6 +131,11 @@ const newCohort = (
   };
 };
 
+interface NewCohortParams {
+  filters?: FilterSet;
+  message?: string;
+}
+
 /**
  * A Cohort Management Slice which allow cohort to be created and updated.
  * this uses redux-toolkit entity adapter to manage the cohorts
@@ -145,6 +150,7 @@ const newCohort = (
  *
  * The slice exports the following actions:
  * addNewCohort() - create a new cohort
+ * addNewCohortWithFilterAndMessage - create a cohort with the passed filters and message id
  * updateCohortName(name:string): changes the current cohort's name
  * updateCohortFilter(filters: FilterSet): update the filters for this cohort
  * removeCohortFilter(filter:string): removes the filter from the cohort
@@ -162,7 +168,15 @@ const slice = createSlice({
       const cohort = newCohort();
       cohortsAdapter.addOne(state, cohort);
       state.currentCohort = cohort.id;
-      state.message = `newCohort|${cohort.name}`;
+      state.message = `newCohort|${cohort.name}|${cohort.id}`;
+    },
+    addNewCohortWithFilterAndMessage: (
+      state,
+      action: PayloadAction<NewCohortParams>,
+    ) => {
+      const cohort = newCohort(action.payload.filters);
+      cohortsAdapter.addOne(state, cohort); // Note: does not set the current cohort
+      state.message = `${action.payload.message}|${cohort.name}|${cohort.id}`;
     },
     updateCohortName: (state, action: PayloadAction<string>) => {
       cohortsAdapter.updateOne(state, {
@@ -174,7 +188,7 @@ const slice = createSlice({
       if (state.currentCohort === DEFAULT_COHORT_ID) return; // Do NOT remove the "All GDC"
       const removedCohort = state.entities[state.currentCohort];
       cohortsAdapter.removeOne(state, state.currentCohort);
-      state.message = `deleteCohort|${removedCohort?.name}`;
+      state.message = `deleteCohort|${removedCohort?.name}|${state.currentCohort}`;
       state.currentCohort = DEFAULT_COHORT_ID;
     },
     updateCohortFilter: (state, action: PayloadAction<UpdateFilterParams>) => {
@@ -191,7 +205,7 @@ const slice = createSlice({
         const cohort = newCohort(filters, true);
         cohortsAdapter.addOne(state, cohort);
         state.currentCohort = cohort.id;
-        state.message = `newCohort|${cohort.name}`;
+        state.message = `newCohort|${cohort.name}|{cohort.id`;
       } else {
         cohortsAdapter.updateOne(state, {
           id: state.currentCohort,
@@ -235,6 +249,9 @@ const slice = createSlice({
     },
     clearCohortMessage: (state) => {
       state.message = undefined;
+    },
+    setCohortMessage: (state, action: PayloadAction<string>) => {
+      state.message = action.payload;
     },
     clearCaseSet: (state) => {
       cohortsAdapter.updateOne(state, {
@@ -315,6 +332,7 @@ export const availableCohortsReducer = slice.reducer;
 
 export const {
   addNewCohort,
+  addNewCohortWithFilterAndMessage,
   removeCohort,
   updateCohortName,
   setCurrentCohortId,

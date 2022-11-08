@@ -17,7 +17,7 @@ import {
   SelectProjectButton,
   SelectAllProjectsButton,
 } from "@/features/projectsCenter/SelectProjectButton";
-import ProjectsButton from "./ProjectsButton";
+import ProjectsCohortButton from "./ProjectsCohortButton";
 
 const extractToArray = (
   data: ReadonlyArray<Record<string, number | string>>,
@@ -51,8 +51,6 @@ const ProjectsTable: React.FC = () => {
     sortBy: [{ field: "summary.case_count", direction: "desc" }],
   });
 
-  // const pickedProjects = useAppSelector((state) => selectPickedProjects(state));
-  // console.log("table picked proj", pickedProjects);
   const columnListOrder = [
     {
       id: "selected",
@@ -204,7 +202,7 @@ const ProjectsTable: React.FC = () => {
       tableTitle={`Total of ${tempPagination?.total} projects`}
       additionalControls={
         <div className="flex gap-2">
-          <ProjectsButton></ProjectsButton>
+          <ProjectsCohortButton></ProjectsCohortButton>
           <FunctionButton>JSON</FunctionButton>
           <FunctionButton>TSV</FunctionButton>
         </div>
@@ -219,7 +217,7 @@ const ProjectsTable: React.FC = () => {
         handlePageSizeChange,
         handlePageChange,
         ...tempPagination,
-        label: "Projects",
+        label: "projects",
       }}
       status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
     />
