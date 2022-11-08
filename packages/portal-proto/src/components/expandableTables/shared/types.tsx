@@ -6,7 +6,7 @@ import { Genes } from "../genes/types";
 export type TableType = SomaticMutations | Genes;
 
 export type SelectedReducer<T extends TableType> = {
-  selected: Record<string, Row<T>[]>;
+  selected?: Record<string, Row<T>[]>;
 };
 
 export type SelectReducerAction<T extends TableType> = {

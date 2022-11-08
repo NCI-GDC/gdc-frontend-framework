@@ -7,7 +7,6 @@ import PageStepper from "../shared/PageStepper";
 import PageSize from "../shared/PageSize";
 import TableControls from "../shared/TableControls";
 import TableLoader from "../shared/TableLoader";
-import { Row } from "@tanstack/react-table";
 import { Genes } from "./types";
 import { SelectedReducer, SelectReducerAction } from "../shared/types";
 
@@ -46,7 +45,8 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
       }
       case "deselect": {
         const deselect = rows.map(({ original: { select } }) => select);
-        const { [deselect[0]]: deselected, ...remaining } = selected;
+        const { [deselect[0]]: deselected, ...remaining } =
+          selected as SelectedReducer<Genes>;
         return remaining;
       }
       case "selectAll": {
@@ -71,7 +71,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
 
   const [selectedGenes, setSelectedGenes] = useReducer(
     reducer,
-    {} as Record<string, Row<Genes>>,
+    {} as SelectedReducer<Genes>,
   );
   const [gTotal, setGTotal] = useState(0);
 

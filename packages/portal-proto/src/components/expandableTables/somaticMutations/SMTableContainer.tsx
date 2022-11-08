@@ -7,7 +7,6 @@ import PageStepper from "../shared/PageStepper";
 import PageSize from "../shared/PageSize";
 import { TableControls } from "../shared/TableControls";
 import TableLoader from "../shared/TableLoader";
-import { Row } from "@tanstack/react-table";
 import { SomaticMutations } from "./types";
 import { SelectedReducer, SelectReducerAction } from "../shared/types";
 
@@ -49,7 +48,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       }
       case "deselect": {
         const deselect = rows.map(({ original: { select } }) => select);
-        const { [deselect[0]]: deselected, ...remaining } = selected;
+        const { [deselect[0]]: deselected, ...remaining } =
+          selected as SelectedReducer<SomaticMutations>;
         return remaining;
       }
       case "selectAll": {
@@ -73,7 +73,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   };
   const [selectedMutations, setSelectedMutations] = useReducer(
     reducer,
-    {} as Record<string, Row<SomaticMutations>>,
+    {} as SelectedReducer<SomaticMutations>,
   );
   const [smTotal, setSMTotal] = useState(0);
 

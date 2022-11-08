@@ -13,13 +13,15 @@ import {
 import { animated, useSpring } from "react-spring";
 import CheckboxSpring from "./CheckboxSpring";
 import AnimatedRow from "./AnimatedRow";
+import { Row } from "@tanstack/react-table";
+import { Genes, SomaticMutations } from "./types";
 
 export interface ExpTableProps<TData> {
   data: TData[];
   columns: ColumnDef<TData>[];
   expanded: ExpandedState;
   handleExpandedProxy: (exp: ExpandedState) => void;
-  selectAll: (type: string, rows: any) => void; // todo: add row type
+  selectAll: (type: string, rows: Row<Genes | SomaticMutations>) => void;
   allSelected: any;
   firstColumn: string;
   headerWidth: number;
