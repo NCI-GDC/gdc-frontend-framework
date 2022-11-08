@@ -69,27 +69,23 @@ export const TableFilters: React.FC<TableFiltersProps> = ({
             </div>
           )}
           {!searchToggled && (
-            <>
-              <button
-                onMouseEnter={() => setSearchToggled(true)}
-                onFocus={() => setSearchToggled(true)}
-                className={`mt-0.5 ml-1 mr-1 p-0.5`}
-              >
-                <SearchIcon />
-              </button>
-            </>
+            <button
+              onMouseEnter={() => setSearchToggled(true)}
+              onFocus={() => setSearchToggled(true)}
+              className={`mt-0.5 ml-1 mr-1 p-0.5`}
+            >
+              <SearchIcon />
+            </button>
           )}
         </animated.div>
       </div>
-      <>
-        <DND
-          showColumnMenu={showColumnMenu}
-          setShowColumnMenu={setShowColumnMenu}
-          handleColumnChange={handleColumnChange}
-          columnListOrder={columnListOrder}
-          defaultColumns={defaultColumns}
-        />
-      </>
+      <DND
+        showColumnMenu={showColumnMenu}
+        setShowColumnMenu={setShowColumnMenu}
+        handleColumnChange={handleColumnChange}
+        columnListOrder={columnListOrder}
+        defaultColumns={defaultColumns}
+      />
     </>
   );
 };
