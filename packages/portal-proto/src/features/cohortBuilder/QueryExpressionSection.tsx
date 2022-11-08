@@ -65,7 +65,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
 
   return (
     <QueryExpressionContainer>
-      {Object.keys(filters.root).length !== 0 ? (
+      {Object.keys(filters?.root || {}).length !== 0 ? (
         <QueryExpressionsExpandedContext.Provider
           value={[queryExpressionsExpanded, setQueryExpressionsExpanded]}
         >

@@ -83,13 +83,12 @@ export const DEFAULT_COHORT_ID = "ALL-GDC-COHORT";
 
 const cohortsAdapter = createEntityAdapter<Cohort>({
   sortComparer: (a, b) => {
-    //sort everything else by modified
+    // Sort the Cohorts by modification date, The "All GDC" cohort is always first
     if (a.modifiedDate <= b.modifiedDate) return 1;
     else return -1;
   },
 });
 
-// console.log("cohortsAdapter: ", cohortsAdapter);
 const emptyInitialState = cohortsAdapter.getInitialState({
   currentCohort: "ALL-GDC-COHORT",
   message: undefined as string | undefined, // message is used to inform frontend components of changes to the cohort.
@@ -173,16 +172,17 @@ const slice = createSlice({
       });
     },
     setCohortList: (state, action: PayloadAction<Cohort[]>) => {
-      // console.log("here: ", action);
-      cohortsAdapter.upsertMany(state, (action.payload as Cohort[]) || []);
-      //  console.log("cohortsAdapter: ", cohortsAdapter);
+      cohortsAdapter.upsertMany(state, [...action.payload] as Cohort[]);
     },
-    removeCohort: (state) => {
+    //try to make payload optional
+    removeCohort: (state, action?: PayloadAction<boolean>) => {
       if (state.currentCohort === DEFAULT_COHORT_ID) return; // Do NOT remove the "All GDC"
       const removedCohort = state.entities[state.currentCohort];
       cohortsAdapter.removeOne(state, state.currentCohort);
-      state.message = `deleteCohort|${removedCohort?.name}`;
-      state.currentCohort = DEFAULT_COHORT_ID;
+      if (action?.payload) {
+        state.message = `deleteCohort|${removedCohort?.name}`;
+        state.currentCohort = DEFAULT_COHORT_ID;
+      }
     },
     updateCohortFilter: (state, action: PayloadAction<UpdateFilterParams>) => {
       const filters = {
@@ -200,35 +200,16 @@ const slice = createSlice({
         state.currentCohort = cohort.id;
         state.message = `newCohort|${cohort.name}`;
       } else {
-        console.log("filters: ", filters);
         cohortsAdapter.updateOne(state, {
           id: state.currentCohort,
           changes: {
             filters: filters,
-            modified: Object.keys(filters.root).length > 0 || true,
+            modified: true,
             modifiedDate: new Date().toISOString(),
           },
         });
       }
     },
-    setModifed: (state) => {
-      cohortsAdapter.updateOne(state, {
-        id: state.currentCohort,
-        changes: {
-          modified: false,
-          modifiedDate: new Date().toISOString(),
-        },
-      });
-    },
-    setSaved: (state) => {
-      cohortsAdapter.updateOne(state, {
-        id: state.currentCohort,
-        changes: {
-          saved: true,
-        },
-      });
-    },
-
     removeCohortFilter: (state, action: PayloadAction<string>) => {
       const root = state.entities[state.currentCohort]?.filters.root;
       if (!root) {
@@ -255,20 +236,27 @@ const slice = createSlice({
         },
       });
     },
-    discardCohortChanges: (state) => {
-      // need to get the filters of the cohort saved in BE
+    //try to make payload optional
+    discardCohortChanges: (
+      state,
+      action: PayloadAction<FilterSet | undefined>,
+    ) => {
+      console.log("action.payload: ", action.payload);
       cohortsAdapter.updateOne(state, {
         id: state.currentCohort,
         changes: {
-          filters: { mode: "and", root: {} },
+          filters: action.payload || { mode: "and", root: {} },
           modified: false,
-          saved: true,
           modifiedDate: new Date().toISOString(),
         },
       });
+      state.message = "discardChanges|";
     },
     setCurrentCohortId: (state, action: PayloadAction<string>) => {
       state.currentCohort = action.payload;
+    },
+    sendCohortMessage: (state, action: PayloadAction<string>) => {
+      state.message = action.payload;
     },
     clearCohortMessage: (state) => {
       state.message = undefined;
@@ -345,9 +333,8 @@ export const {
   clearCaseSet,
   clearCohortMessage,
   setCohortList,
-  setModifed,
-  setSaved,
   discardCohortChanges,
+  sendCohortMessage,
 } = slice.actions;
 
 export const cohortSelectors = cohortsAdapter.getSelectors(
@@ -436,7 +423,7 @@ export const selectCurrentCohortFilterOrCaseSet = (
   );
   if (cohort === undefined) return { mode: "and", root: {} };
 
-  if (Object.keys(cohort.case_ids).length != 0) {
+  if (cohort.case_ids && Object.keys(cohort.case_ids)?.length != 0) {
     return cohort.filters;
   } else return cohort.filters;
 };

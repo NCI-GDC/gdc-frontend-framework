@@ -155,8 +155,6 @@ export const buildGqlOperationToFilterSet = (
   fs: GqlIntersection | GqlUnion | undefined,
 ): FilterSet | undefined => {
   if (!fs) return undefined;
-  console.log("fs: ", fs);
-
   const obj = fs.content.reduce((acc, item) => {
     const key = isArray(item.content)
       ? item.content?.at(0).field
@@ -168,7 +166,6 @@ export const buildGqlOperationToFilterSet = (
     };
   }, {});
 
-  // console.log("obj: ", obj);
   switch (fs.op) {
     case "and":
       return fs.content.length == 0

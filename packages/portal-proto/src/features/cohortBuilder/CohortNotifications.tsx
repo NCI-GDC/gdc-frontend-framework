@@ -21,3 +21,19 @@ export const DeleteCohortNotification: React.FC<CohortNotificationProps> = ({
     </>
   );
 };
+
+export const SavedCohortNotification: React.FC = () => {
+  return (
+    <>
+      <p>Cohort has been saved.</p>
+    </>
+  );
+};
+
+export const DiscardChangesCohortNotification: React.FC = () => {
+  return (
+    <>
+      <p>Cohort changes have been discarded.</p>
+    </>
+  );
+};

@@ -18,16 +18,13 @@ export const cohortApiSlice = coreCreateApi({
     getCohortsByContextId: builder.query<CohortModel[], void>({
       query: () => "/cohorts",
       transformResponse: (response: CohortModel[]) => {
-        console.log("Response: ", response);
-        const trans = response.map((item) => ({
+        return response.map((item) => ({
           ...item,
           filters: buildGqlOperationToFilterSet(item.filters),
           saved: true,
           modified: false,
+          modifiedDate: new Date().toISOString(), // just added for now
         }));
-
-        console.log("trans: ", trans);
-        return trans;
       },
       providesTags: (result = []) => [
         { type: "Cohort", id: "LIST" },
@@ -36,6 +33,10 @@ export const cohortApiSlice = coreCreateApi({
     }),
     getCohortById: builder.query<CohortModel, string>({
       query: (id) => `/cohorts/${id}`,
+      transformResponse: (response: CohortModel) => ({
+        ...response,
+        filters: buildGqlOperationToFilterSet(response.filters),
+      }),
       providesTags: (_result, _error, arg) => [{ type: "Cohort", id: arg }],
     }),
     addCohort: builder.mutation<CohortModel, CohortAdd>({
@@ -76,6 +77,7 @@ export const {
   useAddCohortMutation,
   useUpdateCohortMutation,
   useDeleteCohortMutation,
+  useLazyGetCohortByIdQuery,
 } = cohortApiSlice;
 
 export const cohortApiSliceMiddleware = cohortApiSlice.middleware as Middleware;

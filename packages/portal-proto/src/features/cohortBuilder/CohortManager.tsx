@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Box, Button, Group, Modal, Select, Text } from "@mantine/core";
+import React, { useCallback, useState } from "react";
+import { Button, LoadingOverlay, Select } from "@mantine/core";
 import {
   MdAdd as AddIcon,
   MdDelete as DeleteIcon,
@@ -17,17 +17,24 @@ import {
   selectCurrentCohortModified,
   useCoreDispatch,
   useCoreSelector,
-  useGetCohortsByContextIdQuery,
-  setCohortList,
   discardCohortChanges,
-  setModifed,
   selectCurrentCohortSaved,
-  setSaved,
+  useDeleteCohortMutation,
+  selectCurrentCohortId,
+  setCurrentCohortId,
+  selectCurrentCohort,
+  useUpdateCohortMutation,
+  sendCohortMessage,
+  useLazyGetCohortByIdQuery,
+  FilterSet,
 } from "@gff/core";
 import { buildCohortGqlOperator } from "@gff/core";
 import { useCohortFacetFilters } from "./CohortGroup";
 import { useAddCohortMutation } from "@gff/core";
 import CountButton from "./CountButton";
+import { SavingCohortModal } from "./Modals/SavingCohortModal";
+import { GenericCohortModal } from "./Modals/GenericCohortModal";
+import { batch } from "react-redux";
 
 const CohortGroupButton = tw(Button)`
 p-2
@@ -53,20 +60,55 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   startingId,
   hide_controls = false,
 }: CohortManagerProps) => {
-  // Sort the Cohors by modification date, The "All GDC" cohort is always first
-  const {
-    data: cohortsListData,
-    isLoading: isCohortsListLoading,
-    isSuccess: isCohortsListSuccess,
-    isError: isCohortsListError,
-  } = useGetCohortsByContextIdQuery();
-
   const coreDispatch = useCoreDispatch();
 
-  useEffect(() => {
-    console.log("inside efffffectttt");
-    coreDispatch(setCohortList(cohortsListData));
-  }, [coreDispatch, cohortsListData]);
+  // Info about current Cohort
+  const currentCohort = useCoreSelector((state) => selectCurrentCohort(state));
+  const cohortName = useCoreSelector((state) => selectCurrentCohortName(state));
+  const cohortModified = useCoreSelector((state) =>
+    selectCurrentCohortModified(state),
+  );
+  const cohortSaved = useCoreSelector((state) =>
+    selectCurrentCohortSaved(state),
+  );
+  const cohortId = useCoreSelector((state) => selectCurrentCohortId(state));
+  const filters = useCohortFacetFilters(); // make sure using this one //TODO maybe use from one amongst the selectors
+
+  // util function to check for names while saving the cohort
+  // passed to SavingCohortModal as a prop
+  const onSaveCohort = (name: string) =>
+    cohorts
+      .filter((cohort) => cohort.id !== cohortId)
+      .every((cohort) => cohort.name !== name);
+
+  // Cohort specific actions
+  const newCohort = useCallback(() => {
+    coreDispatch(addNewCohort());
+  }, [coreDispatch]);
+
+  const discardChanges = useCallback(
+    (filters: FilterSet | undefined) => {
+      coreDispatch(discardCohortChanges(filters));
+    },
+    [coreDispatch],
+  );
+
+  const deleteCohort = () => {
+    coreDispatch(removeCohort(true));
+  };
+
+  // Cohort persistence
+  const [addCohort, { isLoading: isAddCohortLoading }] = useAddCohortMutation();
+  const [deleteCohortBE] = useDeleteCohortMutation();
+  const [updateCohort] = useUpdateCohortMutation();
+  const [trigger, { isFetching: isCohortIdFetching }] =
+    useLazyGetCohortByIdQuery();
+
+  // Modals Setters
+  const [showDelete, setShowDelete] = useState(false);
+  const [showDiscard, setShowDiscard] = useState(false);
+  const [showSaveCohort, setShowSaveCohort] = useState(false);
+  const [showUpdateCohort, setShowUpdateCohort] = useState(false);
 
   const menu_items = [
     { value: cohorts[0].id, label: cohorts[0].name },
@@ -77,222 +119,106 @@ const CohortManager: React.FC<CohortManagerProps> = ({
       }),
   ];
 
-  const cohortName = useCoreSelector((state) => selectCurrentCohortName(state));
-  const cohortModified = useCoreSelector((state) =>
-    selectCurrentCohortModified(state),
-  );
-  const cohortSaved = useCoreSelector((state) =>
-    selectCurrentCohortSaved(state),
-  );
-
-  const newCohort = useCallback(() => {
-    coreDispatch(addNewCohort());
-  }, [coreDispatch]);
-
-  const discardChanges = useCallback(() => {
-    coreDispatch(discardCohortChanges());
-  }, [coreDispatch]);
-
-  const [showDelete, setShowDelete] = useState(false);
-  const [showDiscard, setShowDiscard] = useState(false);
-
-  const deleteCohort = () => {
-    coreDispatch(removeCohort());
-  };
-  const filters = useCohortFacetFilters();
-  const [addCohort, { data: addCohortData, isSuccess: isAddCohortSuccess }] =
-    useAddCohortMutation();
-
   return (
     <div
       data-tour="cohort_management_bar"
       className="flex flex-row items-center justify-start gap-6 pl-4 h-20 shadow-lg bg-primary-darkest"
     >
-      {" "}
-      {
-        // Wrap modal in own theme provider to permit overriding of backgroundColor from tailwind
-        // Also mantine modal appear to disable tailwind completely which is why the Modal below
-        // is styled via mantine.
-      }
-      <Modal
+      {/*  Modals Start   */}
+      {(isAddCohortLoading || isCohortIdFetching) && <LoadingOverlay visible />}
+      <GenericCohortModal
         title="Delete Cohort"
         opened={showDelete}
-        padding={0}
-        radius="md"
         onClose={() => setShowDelete(false)}
-        styles={(theme) => ({
-          header: {
-            color: theme.colors.primary[8],
-            fontFamily: '"Montserrat", "sans-serif"',
-            fontSize: "1.65em",
-            fontWeight: 500,
-            letterSpacing: ".1rem",
-            borderColor: theme.colors.base[1],
-            borderStyle: "solid",
-            borderWidth: "0px 0px 2px 0px",
-            padding: "15px 20px 15px 15px",
-            margin: "5px 5px 5px 5px",
-          },
-          modal: {
-            backgroundColor: theme.colors.base[0],
-          },
-          close: {
-            backgroundColor: theme.colors.base[1],
-            color: theme.colors.primary[8],
-          },
-        })}
-      >
-        <Box
-          sx={() => ({
-            fontFamily: '"Montserrat", "sans-serif"',
-            padding: "20px 25px 20px 10px",
-          })}
-        >
-          <Text
-            sx={(theme) => ({
-              fontFamily: '"Montserrat", "sans-serif"',
-              fontSize: "0.95em",
-              fontWeight: 500,
-              color: theme.colors.base[8],
-            })}
-          >
+        actionText="Delete"
+        mainText={
+          <>
             Are you sure you want to permanently delete <b>{cohortName}</b>?
-          </Text>
-          <Text
-            sx={(theme) => ({
-              fontFamily: '"Montserrat", "sans-serif"',
-              fontSize: "0.85em",
-              color: theme.colors.base[9],
-              paddingTop: "1em",
-            })}
-          >
-            You cannot undo this action.
-          </Text>
-        </Box>
-        <Box
-          sx={(theme) => ({
-            backgroundColor: theme.colors.base[1],
-            padding: theme.spacing.md,
-            borderRadius: theme.radius.md,
-            borderTopRightRadius: 0,
-            borderTopLeftRadius: 0,
-          })}
-        >
-          <Group position="right">
-            <Button
-              variant="outline"
-              styles={() => ({
-                root: {
-                  backgroundColor: "white",
-                },
-              })}
-              color="primary.5"
-              onClick={() => setShowDelete(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant={"filled"}
-              color="primary.8"
-              onClick={() => deleteCohort()}
-            >
-              Delete
-            </Button>
-          </Group>
-        </Box>
-      </Modal>
-      <Modal
+          </>
+        }
+        subText={<>You cannot undo this action.</>}
+        onActionClick={async () => {
+          // only if it's been saved to BE before
+          // also unhappy paths for all these???
+          if (currentCohort?.saved) {
+            await deleteCohortBE(cohortId);
+            deleteCohort();
+          } else {
+            deleteCohort();
+          }
+          coreDispatch(setCurrentCohortId("ALL-GDC-COHORT"));
+        }}
+      />
+      <GenericCohortModal
         title="Discard Changes"
         opened={showDiscard}
-        padding={0}
-        radius="md"
         onClose={() => setShowDiscard(false)}
-        styles={(theme) => ({
-          header: {
-            color: theme.colors.primary[8],
-            fontFamily: '"Montserrat", "sans-serif"',
-            fontSize: "1.65em",
-            fontWeight: 500,
-            letterSpacing: ".1rem",
-            borderColor: theme.colors.base[1],
-            borderStyle: "solid",
-            borderWidth: "0px 0px 2px 0px",
-            padding: "15px 20px 15px 15px",
-            margin: "5px 5px 5px 5px",
-          },
-          modal: {
-            backgroundColor: theme.colors.base[0],
-          },
-          close: {
-            backgroundColor: theme.colors.base[1],
-            color: theme.colors.primary[8],
-          },
-        })}
-      >
-        <Box
-          sx={() => ({
-            fontFamily: '"Montserrat", "sans-serif"',
-            padding: "20px 25px 20px 10px",
-          })}
-        >
-          <Text
-            sx={(theme) => ({
-              fontFamily: '"Montserrat", "sans-serif"',
-              fontSize: "0.95em",
-              fontWeight: 500,
-              color: theme.colors.base[8],
-            })}
-          >
-            Are you sure you want to permanently discard the unsaved changes?
-          </Text>
-          <Text
-            sx={(theme) => ({
-              fontFamily: '"Montserrat", "sans-serif"',
-              fontSize: "0.85em",
-              color: theme.colors.base[9],
-              paddingTop: "1em",
-            })}
-          >
-            You cannot undo this action.
-          </Text>
-        </Box>
-        <Box
-          sx={(theme) => ({
-            backgroundColor: theme.colors.base[1],
-            padding: theme.spacing.md,
-            borderRadius: theme.radius.md,
-            borderTopRightRadius: 0,
-            borderTopLeftRadius: 0,
-          })}
-        >
-          <Group position="right">
-            <Button
-              variant="outline"
-              styles={() => ({
-                root: {
-                  backgroundColor: "white",
-                },
-              })}
-              color="primary.5"
-              onClick={() => setShowDiscard(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant={"filled"}
-              color="primary.8"
-              onClick={() => discardChanges()}
-            >
-              Discard
-            </Button>
-          </Group>
-        </Box>
-      </Modal>
+        actionText="Discard"
+        mainText={
+          <>Are you sure you want to permanently discard the unsaved changes?</>
+        }
+        subText={<>You cannot undo this action.</>}
+        onActionClick={async () => {
+          if (currentCohort.saved) {
+            const data = await trigger(cohortId).unwrap();
+            discardChanges(data.filters);
+          } else {
+            discardChanges(undefined);
+          }
+        }}
+      />
+      <GenericCohortModal
+        title="Save Cohort"
+        opened={showUpdateCohort}
+        onClose={() => setShowUpdateCohort(false)}
+        actionText="Save"
+        mainText={
+          <>
+            Are you sure you want to save <b>{cohortName}</b>? This will
+            overwrite your previously saved changes.
+          </>
+        }
+        subText={<>You cannot undo this action.</>}
+        onActionClick={async () => {
+          const updateBody = {
+            id: cohortId,
+            name: cohortName,
+            type: "static",
+            filters: buildCohortGqlOperator(filters),
+          };
+          await updateCohort(updateBody);
+          coreDispatch(sendCohortMessage(`savedCohort|`));
+          //unhappy path
+        }}
+      />
+      <SavingCohortModal
+        initialName={cohortName}
+        opened={showSaveCohort}
+        onClose={() => setShowSaveCohort(false)}
+        onSaveClick={async (newName: string) => {
+          const addBody = {
+            name: newName,
+            type: "static",
+            filters: buildCohortGqlOperator(filters),
+          };
+          const data = await addCohort(addBody).unwrap();
+          if (Object.keys(data).length > 0) {
+            batch(() => {
+              coreDispatch(removeCohort(false));
+              coreDispatch(setCurrentCohortId(data.id));
+              coreDispatch(sendCohortMessage(`savedCohort|`));
+            });
+            onSelectionChanged(data.id);
+          }
+        }}
+        onSaveCohort={onSaveCohort}
+      />
+      {/*  Modals End   */}
       <div className="border-opacity-0">
         {!hide_controls ? (
           <div className="flex justify-center items-center gap-2">
             <Button
-              disabled={cohortSaved || !cohortModified}
+              disabled={!cohortModified}
               onClick={() => setShowDiscard(true)}
             >
               Discard Changes
@@ -315,7 +241,6 @@ const CohortManager: React.FC<CohortManagerProps> = ({
               />
               <div
                 className={`ml-auto text-heading text-[0.65em] font-semibold pt-1 text-primary-contrast ${
-                  // !cohortSaved || cohortModified ? "visible" : "invisible"
                   cohortModified ? "visible" : "invisible"
                 }`}
               >
@@ -335,20 +260,10 @@ const CohortManager: React.FC<CohortManagerProps> = ({
           <>
             <CohortGroupButton
               disabled={startingId === DEFAULT_COHORT_ID}
-              onClick={async () => {
-                const addBody = {
-                  name: cohortName,
-                  type: "static",
-                  filters: buildCohortGqlOperator(filters),
-                  // modified: false,
-                  // modified_date: new Date().toISOString(),
-                };
-                const data = await addCohort(addBody).unwrap();
-                if (Object.keys(data).length > 0) {
-                  coreDispatch(setSaved());
-                  coreDispatch(setModifed());
-                }
-                // addCohort(addBody)
+              onClick={() => {
+                !currentCohort?.saved
+                  ? setShowSaveCohort(true)
+                  : setShowUpdateCohort(true);
               }}
             >
               <SaveIcon size="1.5em" aria-label="Save cohort" />

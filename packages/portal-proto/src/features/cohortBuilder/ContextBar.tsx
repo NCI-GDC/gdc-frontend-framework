@@ -8,7 +8,9 @@ import { useCohortFacetFilters } from "./CohortGroup";
 import CohortManager from "./CohortManager";
 import {
   DeleteCohortNotification,
+  DiscardChangesCohortNotification,
   NewCohortNotification,
+  SavedCohortNotification,
 } from "@/features/cohortBuilder/CohortNotifications";
 
 import {
@@ -21,6 +23,9 @@ import {
   selectCohortMessage,
   selectCurrentCohortName,
   clearCohortMessage,
+  usePrevious,
+  setCohortList,
+  useGetCohortsByContextIdQuery,
 } from "@gff/core";
 
 import {
@@ -30,11 +35,11 @@ import {
   MdFileCopy as FilesIcon,
 } from "react-icons/md";
 import { FaCartPlus as AddToCartIcon } from "react-icons/fa";
-
 import SummaryFacets, { SummaryFacetInfo } from "./SummaryFacets";
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
 import FunctionButton from "@/components/FunctionButton";
 import QueryExpressionSection from "./QueryExpressionSection";
+import { isEqual } from "lodash";
 
 const ContextBar: React.FC = () => {
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(true);
@@ -44,8 +49,26 @@ const ContextBar: React.FC = () => {
     setCohort(idx);
   };
 
+  const {
+    data: cohortsListData,
+    isLoading: isCohortsListLoading,
+    isSuccess: isCohortsListSuccess,
+    isError: isCohortsListError,
+  } = useGetCohortsByContextIdQuery();
+
   const coreDispatch = useCoreDispatch();
+  const prevCohortsListData = usePrevious(cohortsListData);
+
+  // TODO: need to check the if
+  useEffect(() => {
+    if (cohortsListData && !isEqual(prevCohortsListData, cohortsListData)) {
+      coreDispatch(setCohortList(cohortsListData));
+    }
+  }, [coreDispatch, cohortsListData]);
+
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
+
+  console.log("COHORTS: ", cohorts);
   const currentCohortId = useCoreSelector((state) =>
     selectCurrentCohortId(state),
   );
@@ -80,6 +103,25 @@ const ContextBar: React.FC = () => {
             autoClose: 5000,
           });
         }
+        if (cmdAndParam[0] === "savedCohort") {
+          showNotification({
+            message: <SavedCohortNotification />,
+            classNames: {
+              description: "flex flex-col content-center text-center",
+            },
+            autoClose: 5000,
+          });
+        }
+        if (cmdAndParam[0] === "discardChanges") {
+          showNotification({
+            message: <DiscardChangesCohortNotification />,
+            classNames: {
+              description: "flex flex-col content-center text-center",
+            },
+            autoClose: 5000,
+          });
+        }
+
         // add notification here for discarding changes
       }
       coreDispatch(clearCohortMessage());

@@ -462,7 +462,7 @@ describe("add, update, and remove cohort", () => {
           },
         },
       },
-      removeCohort(),
+      removeCohort(true),
     );
     expect(availableCohorts).toEqual({
       currentCohort: "ALL-GDC-COHORT",
@@ -513,7 +513,7 @@ describe("add, update, and remove cohort", () => {
 
     const availableCohorts = availableCohortsReducer(
       removeState,
-      removeCohort(),
+      removeCohort(true),
     );
     expect(availableCohorts).toEqual(removeState);
   });
