@@ -37,7 +37,7 @@ describe("<ProjectCohortButton />", () => {
     jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
 
     const { getByRole } = render(<ProjectsCohortButton />);
-    expect(getByRole("button").textContent).toBe("2Create New Cohort");
+    expect(getByRole("button").textContent).toBe(" 2 Create New Cohort");
   });
 
   it("dispatch an add cohort action", async () => {
