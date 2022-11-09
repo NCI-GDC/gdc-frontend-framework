@@ -1,6 +1,7 @@
 import { getInitialCoreState } from "../../store.unit.test";
 import { COHORTS } from "./cohortFixture";
 import { DataStatus } from "../../dataAccess";
+import { FilterSet } from "./filters";
 import {
   Cohort,
   addNewCohort,
@@ -13,9 +14,10 @@ import {
   removeCohortFilter,
   removeCohort,
   availableCohortsReducer,
+  divideCurrentCohortFilterSetFilterByPrefix,
 } from "./availableCohortsSlice";
 import * as cohortSlice from "./availableCohortsSlice";
-import { EntityState } from "@reduxjs/toolkit";
+import { Dictionary, EntityState } from "@reduxjs/toolkit";
 
 const state = getInitialCoreState();
 
@@ -284,6 +286,82 @@ describe("addFilter", () => {
         },
       },
       mode: "and",
+    });
+  });
+});
+
+describe("filter by prefix", () => {
+  test("should extract all filter prefixed by file", () => {
+    const filter = {
+      mode: "and",
+      root: {
+        "cases.diagnoses.tissue_or_organ_of_origin": {
+          operator: "includes",
+          field: "cases.diagnoses.tissue_or_organ_of_origin",
+          operands: ["anterior mediastinum"],
+        },
+        "files.data_category": {
+          operator: "includes",
+          field: "files.data_category",
+          operands: ["clinical", "proteome profiling"],
+        },
+      },
+    } as FilterSet;
+
+    const localState = {
+      ...APP_INITIAL_STATE,
+      cohort: {
+        ...state.cohort,
+        availableCohorts: {
+          currentCohort: "000-000-000-1",
+          message: "newCohort|New Cohort",
+          ids: ["000-000-000-1"],
+          entities: {
+            "000-000-000-1": {
+              name: "New Cohort",
+              filters: filter,
+              id: "000-000-000-1",
+              caseSet: {
+                caseSetId: {
+                  mode: "and",
+                  root: {},
+                },
+                status: "uninitialized",
+              },
+              modifiedDate: "2020-11-01T00:00:00.000Z",
+              modified: false,
+              saved: false,
+            },
+          } as Dictionary<Cohort>,
+        },
+      },
+    };
+
+    const res = divideCurrentCohortFilterSetFilterByPrefix(
+      localState,
+      "files.",
+    );
+    expect(res).toEqual({
+      withPrefix: {
+        mode: "and",
+        root: {
+          "files.data_category": {
+            field: "files.data_category",
+            operands: ["clinical", "proteome profiling"],
+            operator: "includes",
+          },
+        },
+      },
+      withoutPrefix: {
+        mode: "and",
+        root: {
+          "cases.diagnoses.tissue_or_organ_of_origin": {
+            field: "cases.diagnoses.tissue_or_organ_of_origin",
+            operands: ["anterior mediastinum"],
+            operator: "includes",
+          },
+        },
+      },
     });
   });
 });

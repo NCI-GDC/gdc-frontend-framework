@@ -86,6 +86,7 @@ export const fetchOncoGrid = createAsyncThunk<
 export interface OncoGridData {
   readonly genes?: Gene[];
   readonly cases?: OncoGridDonor[];
+  readonly totalCases?: number;
   readonly ssmOccurrences?: SSMOccurrence[];
   readonly cnvOccurrences?: CNVOccurrence[];
 }
@@ -98,6 +99,7 @@ export interface OncoGridState {
 
 const initialState: OncoGridState = {
   data: {
+    totalCases: 0,
     genes: [],
     cases: [],
     ssmOccurrences: [],
@@ -121,6 +123,7 @@ const slice = createSlice({
           return state;
         }
         state.status = "fulfilled";
+        state.data.totalCases = response.caseData?.pagination?.total;
         state.data.genes = [...(response.geneData?.hits || [])];
         state.data.cases = [...(response.caseData?.hits || [])];
         state.data.ssmOccurrences = [...(response.ssmData?.hits || [])];

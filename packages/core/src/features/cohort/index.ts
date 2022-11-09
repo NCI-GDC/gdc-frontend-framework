@@ -32,7 +32,6 @@ import {
   selectCurrentCohortFilterOrCaseSet,
   selectCurrentCohortFiltersByName,
   selectCurrentCohortCaseSet,
-  selectCurrentCohortCaseSetFilter,
   selectCurrentCohortModified,
   selectCohortMessage,
   clearCohortMessage,
@@ -41,6 +40,7 @@ import {
   selectCurrentCohortSaved,
   discardCohortChanges,
   sendCohortMessage,
+  selectCurrentCohortFilterSet,
 } from "./availableCohortsSlice";
 
 import {
@@ -112,7 +112,6 @@ export {
   selectCurrentCohortFilterOrCaseSet,
   selectCurrentCohortFiltersByName,
   selectCurrentCohortCaseSet,
-  selectCurrentCohortCaseSetFilter,
   selectCurrentCohortModified,
   selectCohortMessage,
   clearCohortMessage,
@@ -122,4 +121,5 @@ export {
   selectCurrentCohortSaved,
   discardCohortChanges,
   sendCohortMessage,
+  selectCurrentCohortFilterSet,
 };

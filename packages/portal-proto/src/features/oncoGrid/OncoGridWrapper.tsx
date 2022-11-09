@@ -185,6 +185,31 @@ const OncoGridWrapper: React.FC = () => {
     }
   };
 
+  const handleDownloadJSON = async () => {
+    const { genes, cases, totalCases, ssmOccurrences, cnvOccurrences } = data;
+    const json = {
+      genes,
+      ssm_occurrences: ssmOccurrences.map(({ ssm, ...occurrence }) => ({
+        ...occurrence,
+        ssm: {
+          ...(ssm ?? {}),
+          consequence: ssm?.consequence.filter(
+            ({ transcript }) => transcript.is_canonical,
+          ),
+        },
+      })),
+      cnv_occurrences: cnvOccurrences,
+      cases,
+      totalCases,
+    };
+
+    const blob = new Blob([JSON.stringify(json, null, 2)], {
+      type: "text/json",
+    });
+
+    saveAs(blob, "oncogrid.json");
+  };
+
   return (
     <div
       ref={(ref) => (fullOncoGridContainer.current = ref)}
@@ -260,6 +285,7 @@ const OncoGridWrapper: React.FC = () => {
             <Menu.Dropdown>
               <Menu.Item onClick={handleDownloadSVG}>SVG</Menu.Item>
               <Menu.Item onClick={handleDownloadPNG}>PNG</Menu.Item>
+              <Menu.Item onClick={handleDownloadJSON}>JSON</Menu.Item>
             </Menu.Dropdown>
           </Menu>
           <Tooltip label={"Reload Grid"} withArrow>

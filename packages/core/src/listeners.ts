@@ -11,6 +11,7 @@ import {
   removeCohortFilter,
   clearCohortFilters,
   clearCaseSet,
+  setCurrentCohortId,
   cohortSelectors,
 } from "./features/cohort/availableCohortsSlice";
 import { createCaseSet } from "./features/cohort/availableCohortsSlice";
@@ -46,14 +47,36 @@ startCoreListening({
       Object.entries(cohort.filters.root).length === 0
     )
       await listenerApi.dispatch(clearCaseSet());
-    else await listenerApi.dispatch(createCaseSet({ index: "repository" }));
+    else await listenerApi.dispatch(createCaseSet({ caseSetId: cohort.id }));
   },
 });
 
 startCoreListening({
   matcher: isAnyOf(clearCohortFilters),
-  effect: (_, listenerApi) => {
+  effect: async (_, listenerApi) => {
     // dispatch clearCohortFilters executed
-    listenerApi.dispatch(clearCaseSet());
+    await listenerApi.dispatch(clearCaseSet());
+  },
+});
+
+// TODO: Determine if this is only needed because of the use of the fixture,
+//  once cohort persistence is working this likely will not be required
+startCoreListening({
+  matcher: isAnyOf(setCurrentCohortId),
+  effect: async (_, listenerApi) => {
+    const cohort = cohortSelectors.selectById(
+      listenerApi.getState(),
+      listenerApi.getState().cohort.availableCohorts.currentCohort,
+    ); // not cohort or no filters do not create a caseSet
+    if (cohort === undefined) return;
+    if (
+      cohort.filters == undefined ||
+      Object.entries(cohort.filters.root).length === 0
+    )
+      return;
+    // cohort switched to a cohort that has defined filters
+    // so (re)create a caseSetId in the explore index using the cohortId as the caseSetId to
+    // minimize the number of caseSet ids
+    await listenerApi.dispatch(createCaseSet({ caseSetId: cohort.id }));
   },
 });

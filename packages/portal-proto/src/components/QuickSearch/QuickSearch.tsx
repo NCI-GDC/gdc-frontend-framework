@@ -67,7 +67,7 @@ export const QuickSearch = ({
               color: `${idx === focusedListElemIdx && "#38393a"}`, //nciGrayDarkest : might need to change the color
             }}
           >
-            {findMatchingToken(item, searchText.trim().toLowerCase())}
+            {findMatchingToken(item, searchText.trim().toLocaleLowerCase())}
           </Highlight>
         </span>
       </div>

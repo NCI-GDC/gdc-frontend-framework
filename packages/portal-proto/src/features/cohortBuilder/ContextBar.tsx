@@ -253,6 +253,7 @@ const ContextBar: React.FC = () => {
       <QueryExpressionSection
         filters={filters}
         currentCohortName={currentCohortName}
+        currentCohortId={currentCohortId}
       />
       <hr className="border-2" />
     </div>
