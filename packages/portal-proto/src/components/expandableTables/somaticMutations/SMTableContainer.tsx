@@ -191,37 +191,42 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             />
           )}
         </div>
-        <div className={`flex flex-row w-9/12 ml-2 m-auto mb-2`}>
-          <div className="m-auto ml-0">
-            <span className="my-auto mx-1 text-xs">Show</span>
-            <PageSize pageSize={pageSize} handlePageSize={setPageSize} />
-            <span className="my-auto mx-1 text-xs">Entries</span>
-          </div>
-          <div className={`m-auto text-sm`}>
-            <span>
-              Showing
-              <span className={`font-bold`}>{` ${page * pageSize + 1} `}</span>-
-              <span className={`font-bold`}>{` ${
-                (page + 1) * pageSize < smTotal
-                  ? (page + 1) * pageSize
-                  : smTotal
-              } `}</span>
-              {/* <span className={`font-bold`}>{` ${
+        {visibleColumns.length ? (
+          <div className={`flex flex-row w-9/12 ml-2 m-auto mb-2`}>
+            <div className="m-auto ml-0">
+              <span className="my-auto mx-1 text-xs">Show</span>
+              <PageSize pageSize={pageSize} handlePageSize={setPageSize} />
+              <span className="my-auto mx-1 text-xs">Entries</span>
+            </div>
+            <div className={`m-auto text-sm`}>
+              <span>
+                Showing
+                <span className={`font-bold`}>{` ${
+                  page * pageSize + 1
+                } `}</span>
+                -
+                <span className={`font-bold`}>{` ${
+                  (page + 1) * pageSize < smTotal
+                    ? (page + 1) * pageSize
+                    : smTotal
+                } `}</span>
+                {/* <span className={`font-bold`}>{` ${
                 (page + 1) * pageSize
               } `}</span> */}
-              of
-              <span className={`font-bold`}>{` ${smTotal} `}</span>
-              mutations
-            </span>
+                of
+                <span className={`font-bold`}>{` ${smTotal} `}</span>
+                mutations
+              </span>
+            </div>
+            <div className={`m-auto mr-0`}>
+              <PageStepper
+                page={page}
+                totalPages={Math.ceil(smTotal / pageSize)}
+                handlePage={setPage}
+              />
+            </div>
           </div>
-          <div className={`m-auto mr-0`}>
-            <PageStepper
-              page={page}
-              totalPages={Math.ceil(smTotal / pageSize)}
-              handlePage={setPage}
-            />
-          </div>
-        </div>
+        ) : null}
       </SelectedRowContext.Provider>
     </>
   );

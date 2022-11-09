@@ -87,17 +87,13 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   }, [expandedProxy]);
 
   const getSpringWidth = (w, vc) => {
-    return Math.floor(w / vc.length); // todo: decide what to show w/ no columns selected
+    return Math.floor(w / vc.length);
   };
 
   const partitionWidth = useSpring({
     from: { width: 0, opacity: 0 },
     to: { width: getSpringWidth(width, visibleColumns), opacity: 1 },
   });
-
-  // useEffect(() => {
-  //   setVisibleColumns(columnListOrder.filter((col) => col.visible));
-  // }, [columnListOrder]);
 
   // todo replace this callback w/ transformResponse inside rtk endpoint call
   const columns = useMemo<ColumnDef<Genes>[]>(() => {
@@ -120,10 +116,6 @@ export const GenesTable: React.FC<GenesTableProps> = ({
     setExpanded({});
     setExpandedProxy({});
   }, [visibleColumns, selectedGenes, page, searchTerm, pageSize]);
-
-  // const handleColumnChange = (columnUpdate) => {
-  //   setColumnListOrder(columnUpdate);
-  // };
 
   return (
     <div>
