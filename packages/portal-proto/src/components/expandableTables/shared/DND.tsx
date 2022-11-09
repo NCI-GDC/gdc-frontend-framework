@@ -5,12 +5,7 @@ import { MdSearch as SearchIcon } from "react-icons/md";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DragDrop } from "../../../features/shared/DragDrop";
-
-interface Column {
-  visible: boolean;
-  columnName: string;
-  id: string;
-}
+import { Column } from "./types";
 
 interface DNDProps {
   showColumnMenu: any;

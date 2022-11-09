@@ -3,6 +3,12 @@ import { Row } from "@tanstack/react-table";
 import { SomaticMutations } from "../somaticMutations/types";
 import { Genes } from "../genes/types";
 
+export interface Column {
+  visible: boolean;
+  columnName: string;
+  id: string;
+}
+
 export type TableType = SomaticMutations | Genes;
 
 export type SelectedReducer<T extends TableType> = {

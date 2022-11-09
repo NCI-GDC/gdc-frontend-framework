@@ -31,7 +31,7 @@ export const TablePlaceholder: React.FC<TablePlaceholderProps> = ({
   return (
     <animated.div
       style={tableSpring}
-      className={`flex flex-row h-screen w-max`}
+      className={`flex flex-row h-max w-max py-4`}
     >
       <div className={`mr-0 m-auto`}>
         <table>

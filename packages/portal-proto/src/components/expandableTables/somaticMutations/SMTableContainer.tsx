@@ -7,8 +7,9 @@ import PageStepper from "../shared/PageStepper";
 import PageSize from "../shared/PageSize";
 import { TableControls } from "../shared/TableControls";
 import TablePlaceholder from "../shared/TablePlaceholder";
-import { SomaticMutations } from "./types";
+import { SomaticMutations, DEFAULT_SMTABLE_ORDER } from "./types";
 import { SelectedReducer, SelectReducerAction } from "../shared/types";
+import { TableFilters } from "../shared/TableFilters";
 
 export const SelectedRowContext =
   createContext<
@@ -34,6 +35,20 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
   const [ref, { width }] = useMeasure();
+  const [columnListOrder, setColumnListOrder] = useState(DEFAULT_SMTABLE_ORDER);
+  const [visibleColumns, setVisibleColumns] = useState(
+    DEFAULT_SMTABLE_ORDER.filter((col) => col.visible),
+  );
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showColumnMenu, setShowColumnMenu] = useState<boolean>(false);
+
+  useEffect(() => {
+    setVisibleColumns(columnListOrder.filter((col) => col.visible));
+  }, [columnListOrder]);
+
+  const handleColumnChange = (columnUpdate) => {
+    setColumnListOrder(columnUpdate);
+  };
 
   const reducer = (
     selected: SelectedReducer<SomaticMutations>,
@@ -97,59 +112,85 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       <SelectedRowContext.Provider
         value={[selectedMutations, setSelectedMutations]}
       >
-        <div className={`flex flex-row absolute w-80`}>
-          <TableControls
-            numSelected={Object.keys(selectedMutations).length || 0}
-            label={`Mutation`}
-            options={[
-              { label: "Save/Edit Mutation Set", value: "placeholder" },
-              { label: "Save as new mutation set", value: "save" },
-              { label: "Add existing mutation set", value: "add" },
-              { label: "Remove from existing mutation set", value: "remove" },
-            ]}
-            additionalControls={
-              <div className="flex gap-2">
-                <Button
-                  className={
-                    "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
-                  }
-                >
-                  JSON
-                </Button>
-                <Button
-                  className={
-                    "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
-                  }
-                >
-                  TSV
-                </Button>
-              </div>
-            }
-          />
-        </div>
-        {status === "fulfilled" && cases && filteredCases ? (
-          <div ref={ref} className={`h-full w-9/12 pb-4`}>
-            <SomaticMutationsTable
-              initialData={initialData}
-              selectedSurvivalPlot={selectedSurvivalPlot}
-              handleSurvivalPlotToggled={handleSurvivalPlotToggled}
-              width={width}
-              pageSize={pageSize}
-              page={page}
-              selectedMutations={selectedMutations}
-              setSelectedMutations={setSelectedMutations}
-              handleSMTotal={setSMTotal}
+        <div className={`w-max`}>
+          <div className={`flex flex-row float-left`}>
+            <TableControls
+              numSelected={Object.keys(selectedMutations).length ?? 0}
+              label={`Gene`}
+              options={[
+                { label: "Save/Edit Gene Set", value: "placeholder" },
+                { label: "Save as new gene set", value: "save" },
+                { label: "Add existing gene set", value: "add" },
+                { label: "Remove from existing gene set", value: "remove" },
+              ]}
+              additionalControls={
+                <div className="flex gap-2">
+                  <Button
+                    className={
+                      "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
+                    }
+                  >
+                    JSON
+                  </Button>
+                  <Button
+                    className={
+                      "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
+                    }
+                  >
+                    TSV
+                  </Button>
+                </div>
+              }
             />
+            <div className={`flex flex-row mb-5`}>
+              <TableFilters
+                search={searchTerm}
+                handleSearch={setSearchTerm}
+                columnListOrder={columnListOrder}
+                handleColumnChange={handleColumnChange}
+                showColumnMenu={showColumnMenu}
+                setShowColumnMenu={setShowColumnMenu}
+                defaultColumns={DEFAULT_SMTABLE_ORDER}
+              />
+            </div>
           </div>
-        ) : (
-          <TablePlaceholder
-            cellWidth={`w-[75px]`}
-            rowHeight={60}
-            numOfColumns={15}
-            numOfRows={10}
-            content={<Loader />}
-          />
-        )}
+        </div>
+        <div>
+          {!visibleColumns.length ? (
+            <TablePlaceholder
+              cellWidth={`w-[75px]`}
+              rowHeight={60}
+              numOfColumns={15}
+              numOfRows={10}
+              content={<span>No columns selected</span>}
+            />
+          ) : status === "fulfilled" && cases && filteredCases ? (
+            <div ref={ref} className={`h-full w-9/12`}>
+              <SomaticMutationsTable
+                initialData={initialData}
+                selectedSurvivalPlot={selectedSurvivalPlot}
+                handleSurvivalPlotToggled={handleSurvivalPlotToggled}
+                width={width}
+                pageSize={pageSize}
+                page={page}
+                selectedMutations={selectedMutations}
+                setSelectedMutations={setSelectedMutations}
+                handleSMTotal={setSMTotal}
+                columnListOrder={columnListOrder}
+                visibleColumns={visibleColumns}
+                searchTerm={searchTerm}
+              />
+            </div>
+          ) : (
+            <TablePlaceholder
+              cellWidth={`w-[75px]`}
+              rowHeight={60}
+              numOfColumns={15}
+              numOfRows={10}
+              content={<Loader />}
+            />
+          )}
+        </div>
         <div className={`flex flex-row w-9/12 ml-2 m-auto mb-2`}>
           <div className="m-auto ml-0">
             <span className="my-auto mx-1 text-xs">Show</span>
@@ -160,10 +201,14 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             <span>
               Showing
               <span className={`font-bold`}>{` ${page * pageSize + 1} `}</span>-
-              {/* <span className={`font-bold`}>{` ${(page + 1) * pageSize < smTotal ? (page + 1) * pageSize : smTotal} `}</span> */}
               <span className={`font-bold`}>{` ${
-                (page + 1) * pageSize
+                (page + 1) * pageSize < smTotal
+                  ? (page + 1) * pageSize
+                  : smTotal
               } `}</span>
+              {/* <span className={`font-bold`}>{` ${
+                (page + 1) * pageSize
+              } `}</span> */}
               of
               <span className={`font-bold`}>{` ${smTotal} `}</span>
               mutations

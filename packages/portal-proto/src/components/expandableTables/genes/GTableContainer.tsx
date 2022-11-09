@@ -1,5 +1,6 @@
 import { useGenesTable } from "@gff/core";
 import { useState, useEffect, useReducer, createContext } from "react";
+import { Genes, DEFAULT_GTABLE_ORDER } from "./types";
 import { GenesTable } from "./GenesTable";
 import { useMeasure } from "react-use";
 import { Button, Loader } from "@mantine/core";
@@ -7,8 +8,8 @@ import PageStepper from "../shared/PageStepper";
 import PageSize from "../shared/PageSize";
 import TableControls from "../shared/TableControls";
 import TablePlaceholder from "../shared/TablePlaceholder";
-import { Genes } from "./types";
 import { SelectedReducer, SelectReducerAction } from "../shared/types";
+import { TableFilters } from "../shared/TableFilters";
 
 export const SelectedRowContext =
   createContext<
@@ -31,6 +32,20 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
   const [ref, { width }] = useMeasure();
+  const [columnListOrder, setColumnListOrder] = useState(DEFAULT_GTABLE_ORDER);
+  const [visibleColumns, setVisibleColumns] = useState(
+    DEFAULT_GTABLE_ORDER.filter((col) => col.visible),
+  );
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showColumnMenu, setShowColumnMenu] = useState<boolean>(false);
+
+  useEffect(() => {
+    setVisibleColumns(columnListOrder.filter((col) => col.visible));
+  }, [columnListOrder]);
+
+  const handleColumnChange = (columnUpdate) => {
+    setColumnListOrder(columnUpdate);
+  };
 
   const reducer = (
     selected: SelectedReducer<Genes>,
@@ -92,59 +107,88 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   return (
     <>
       <SelectedRowContext.Provider value={[selectedGenes, setSelectedGenes]}>
-        <div className={`flex flex-row absolute w-60 ml-2`}>
-          <TableControls
-            numSelected={Object.keys(selectedGenes).length ?? 0}
-            label={`Gene`}
-            options={[
-              { label: "Save/Edit Gene Set", value: "placeholder" },
-              { label: "Save as new gene set", value: "save" },
-              { label: "Add existing gene set", value: "add" },
-              { label: "Remove from existing gene set", value: "remove" },
-            ]}
-            additionalControls={
-              <div className="flex gap-2">
-                <Button
-                  className={
-                    "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
-                  }
-                >
-                  JSON
-                </Button>
-                <Button
-                  className={
-                    "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
-                  }
-                >
-                  TSV
-                </Button>
-              </div>
-            }
-          />
-        </div>
-        {status === "fulfilled" && mutationCounts && filteredCases && cases ? (
-          <div ref={ref} className={`h-full w-9/12`}>
-            <GenesTable
-              initialData={initialData}
-              selectedSurvivalPlot={selectedSurvivalPlot}
-              handleSurvivalPlotToggled={handleSurvivalPlotToggled}
-              width={width}
-              pageSize={pageSize}
-              page={page}
-              selectedGenes={selectedGenes}
-              setSelectedGenes={setSelectedGenes}
-              handleGTotal={setGTotal}
+        <div className={`w-max`}>
+          <div className={`flex flex-row float-left`}>
+            <TableControls
+              numSelected={Object.keys(selectedGenes).length ?? 0}
+              label={`Gene`}
+              options={[
+                { label: "Save/Edit Gene Set", value: "placeholder" },
+                { label: "Save as new gene set", value: "save" },
+                { label: "Add existing gene set", value: "add" },
+                { label: "Remove from existing gene set", value: "remove" },
+              ]}
+              additionalControls={
+                <div className="flex gap-2">
+                  <Button
+                    className={
+                      "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
+                    }
+                  >
+                    JSON
+                  </Button>
+                  <Button
+                    className={
+                      "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
+                    }
+                  >
+                    TSV
+                  </Button>
+                </div>
+              }
             />
+            <div className={`flex flex-row mb-5`}>
+              <TableFilters
+                search={searchTerm}
+                handleSearch={setSearchTerm}
+                columnListOrder={columnListOrder}
+                handleColumnChange={handleColumnChange}
+                showColumnMenu={showColumnMenu}
+                setShowColumnMenu={setShowColumnMenu}
+                defaultColumns={DEFAULT_GTABLE_ORDER}
+              />
+            </div>
           </div>
-        ) : (
-          <TablePlaceholder
-            cellWidth={`w-[75px]`}
-            rowHeight={60}
-            numOfColumns={15}
-            numOfRows={10}
-            content={<Loader />}
-          />
-        )}
+        </div>
+        <div>
+          {!visibleColumns.length ? (
+            <TablePlaceholder
+              cellWidth={`w-[75px]`}
+              rowHeight={60}
+              numOfColumns={15}
+              numOfRows={10}
+              content={<span>No columns selected</span>}
+            />
+          ) : status === "fulfilled" &&
+            mutationCounts &&
+            filteredCases &&
+            cases ? (
+            <div ref={ref} className={`h-full w-9/12`}>
+              <GenesTable
+                initialData={initialData}
+                selectedSurvivalPlot={selectedSurvivalPlot}
+                handleSurvivalPlotToggled={handleSurvivalPlotToggled}
+                width={width}
+                pageSize={pageSize}
+                page={page}
+                selectedGenes={selectedGenes}
+                setSelectedGenes={setSelectedGenes}
+                handleGTotal={setGTotal}
+                columnListOrder={columnListOrder}
+                visibleColumns={visibleColumns}
+                searchTerm={searchTerm}
+              />
+            </div>
+          ) : (
+            <TablePlaceholder
+              cellWidth={`w-[75px]`}
+              rowHeight={60}
+              numOfColumns={15}
+              numOfRows={10}
+              content={<Loader />}
+            />
+          )}
+        </div>
         <div className={`flex flex-row w-9/12 ml-2 mt-0 m-auto mb-2`}>
           <div className="m-auto ml-0">
             <span className="my-auto mx-1 text-xs">Show</span>

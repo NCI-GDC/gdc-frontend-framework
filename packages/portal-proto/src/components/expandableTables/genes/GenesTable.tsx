@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { GenesTableProps, DEFAULT_GTABLE_ORDER } from "./types";
+import { GenesTableProps } from "./types";
 import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { ExpTable } from "../shared/ExpTable";
-import { TableFilters } from "../shared/TableFilters";
 import { getGene, createTableColumn } from "./genesTableUtils";
 import { Genes } from "./types";
 import { useSpring } from "react-spring";
@@ -20,18 +19,15 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   selectedGenes,
   setSelectedGenes,
   handleGTotal,
+  columnListOrder,
+  visibleColumns,
+  searchTerm,
 }: GenesTableProps) => {
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
   const [expanded, setExpanded] = useState<ExpandedState>(
     {} as Record<number, boolean>,
   );
   const [expandedId, setExpandedId] = useState<number>(undefined);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [columnListOrder, setColumnListOrder] = useState(DEFAULT_GTABLE_ORDER);
-  const [showColumnMenu, setShowColumnMenu] = useState<boolean>(false);
-  const [visibleColumns, setVisibleColumns] = useState(
-    DEFAULT_GTABLE_ORDER.filter((col) => col.visible),
-  );
   const [geneID, setGeneID] = useState(undefined);
 
   const useGeneTableFormat = useCallback(
@@ -99,9 +95,9 @@ export const GenesTable: React.FC<GenesTableProps> = ({
     to: { width: getSpringWidth(width, visibleColumns), opacity: 1 },
   });
 
-  useEffect(() => {
-    setVisibleColumns(columnListOrder.filter((col) => col.visible));
-  }, [columnListOrder]);
+  // useEffect(() => {
+  //   setVisibleColumns(columnListOrder.filter((col) => col.visible));
+  // }, [columnListOrder]);
 
   // todo replace this callback w/ transformResponse inside rtk endpoint call
   const columns = useMemo<ColumnDef<Genes>[]>(() => {
@@ -125,55 +121,38 @@ export const GenesTable: React.FC<GenesTableProps> = ({
     setExpandedProxy({});
   }, [visibleColumns, selectedGenes, page, searchTerm, pageSize]);
 
-  const handleColumnChange = (columnUpdate) => {
-    setColumnListOrder(columnUpdate);
-  };
-
-  const handleSearch = (term: string) => {
-    setSearchTerm(term);
-  };
+  // const handleColumnChange = (columnUpdate) => {
+  //   setColumnListOrder(columnUpdate);
+  // };
 
   return (
-    <div className={`w-full`}>
-      <div className={`flex flex-row float-right mb-5`}>
-        <TableFilters
-          search={searchTerm}
-          handleSearch={handleSearch}
-          columnListOrder={columnListOrder}
-          handleColumnChange={handleColumnChange}
-          showColumnMenu={showColumnMenu}
-          setShowColumnMenu={setShowColumnMenu}
-          defaultColumns={DEFAULT_GTABLE_ORDER}
-        />
-      </div>
-      <div className={`flex flex-row w-10/12`}>
-        <ExpTable
-          data={transformResponse.filter((tr) => {
-            if (
-              ["geneID", "symbol", "name"].some((field) =>
-                searchContains(tr, field, searchTerm),
-              )
-            ) {
-              return tr;
-            }
-          })}
-          columns={columns}
-          expanded={expanded}
-          handleExpandedProxy={handleExpandedProxy}
-          selectAll={setSelectedGenes}
-          allSelected={selectedGenes}
-          firstColumn={columnListOrder[0].id}
-          headerWidth={width / visibleColumns.length}
-          subrow={
-            <Subrow
-              id={geneID}
-              width={width}
-              query={useGetGeneTableSubrowQuery}
-              subrowTitle={`# SSMS Affected Cases Across The GDC`}
-            />
+    <div>
+      <ExpTable
+        data={transformResponse.filter((tr) => {
+          if (
+            ["geneID", "symbol", "name"].some((field) =>
+              searchContains(tr, field, searchTerm),
+            )
+          ) {
+            return tr;
           }
-        />
-      </div>
+        })}
+        columns={columns}
+        expanded={expanded}
+        handleExpandedProxy={handleExpandedProxy}
+        selectAll={setSelectedGenes}
+        allSelected={selectedGenes}
+        firstColumn={columnListOrder[0].id}
+        headerWidth={width / visibleColumns.length}
+        subrow={
+          <Subrow
+            id={geneID}
+            width={width}
+            query={useGetGeneTableSubrowQuery}
+            subrowTitle={`# SSMS Affected Cases Across The GDC`}
+          />
+        }
+      />
     </div>
   );
 };

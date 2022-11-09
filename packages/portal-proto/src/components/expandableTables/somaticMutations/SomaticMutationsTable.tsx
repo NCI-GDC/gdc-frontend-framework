@@ -1,15 +1,10 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import {
-  SomaticMutationsTableProps,
-  DEFAULT_SMTABLE_ORDER,
-  SomaticMutations,
-} from "./types";
+import { SomaticMutationsTableProps, SomaticMutations } from "./types";
 import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { ExpTable } from "../shared/ExpTable";
 import { getMutation, createTableColumn } from "./smTableUtils";
 import { useSpring } from "react-spring";
 import { searchContains } from "../shared/sharedTableUtils";
-import { TableFilters } from "../shared/TableFilters";
 import { useGetSomaticMutationTableSubrowQuery } from "@gff/core";
 import { Subrow } from "../shared/Subrow";
 
@@ -23,18 +18,15 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   selectedMutations,
   setSelectedMutations,
   handleSMTotal,
+  columnListOrder,
+  visibleColumns,
+  searchTerm,
 }: SomaticMutationsTableProps) => {
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
   const [expanded, setExpanded] = useState<ExpandedState>(
     {} as Record<number, boolean>,
   );
   const [expandedId, setExpandedId] = useState<number>(undefined);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [columnListOrder, setColumnListOrder] = useState(DEFAULT_SMTABLE_ORDER);
-  const [showColumnMenu, setShowColumnMenu] = useState<boolean>(false);
-  const [visibleColumns, setVisibleColumns] = useState(
-    DEFAULT_SMTABLE_ORDER.filter((col) => col.visible),
-  );
   const [mutationID, setMutationID] = useState(undefined);
 
   const useSomaticMutationsTableFormat = useCallback(
@@ -92,17 +84,13 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   }, [expandedProxy]);
 
   const getSpringWidth = (w, vc) => {
-    return Math.floor(w / vc.length); // todo: decide what to show w/ no columns selected
+    return Math.floor(w / vc.length);
   };
 
   const partitionWidth = useSpring({
     from: { width: 0, opacity: 0 },
     to: { width: getSpringWidth(width, visibleColumns), opacity: 1 },
   });
-
-  useEffect(() => {
-    setVisibleColumns(columnListOrder.filter((col) => col.visible));
-  }, [columnListOrder]);
 
   const columns = useMemo<ColumnDef<SomaticMutations>[]>(() => {
     return visibleColumns
@@ -127,55 +115,34 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
     setExpandedProxy({});
   }, [visibleColumns, selectedMutations, searchTerm, page, pageSize]);
 
-  const handleColumnChange = (columnUpdate) => {
-    setColumnListOrder(columnUpdate);
-  };
-
-  const handleSearch = (term: string) => {
-    setSearchTerm(term);
-  };
-
   return (
-    <div className={`w-full`}>
-      <div className={`flex flex-row float-right mb-5`}>
-        <TableFilters
-          search={searchTerm}
-          handleSearch={handleSearch}
-          columnListOrder={columnListOrder}
-          handleColumnChange={handleColumnChange}
-          showColumnMenu={showColumnMenu}
-          setShowColumnMenu={setShowColumnMenu}
-          defaultColumns={DEFAULT_SMTABLE_ORDER}
-        />
-      </div>
-      <div className={`flex flex-row w-10/12`}>
-        <ExpTable
-          data={transformResponse.filter((tr) => {
-            if (
-              ["mutationID", "type", "DNAChange"].some((field) =>
-                searchContains(tr, field, searchTerm),
-              )
-            ) {
-              return tr;
-            }
-          })}
-          columns={columns}
-          expanded={expanded}
-          handleExpandedProxy={handleExpandedProxy}
-          selectAll={setSelectedMutations}
-          allSelected={selectedMutations}
-          firstColumn={columnListOrder[0].id}
-          headerWidth={width / visibleColumns.length}
-          subrow={
-            <Subrow
-              id={mutationID}
-              width={width}
-              query={useGetSomaticMutationTableSubrowQuery}
-              subrowTitle={`Affected Cases Across The GDC`}
-            />
+    <div>
+      <ExpTable
+        data={transformResponse.filter((tr) => {
+          if (
+            ["mutationID", "type", "DNAChange"].some((field) =>
+              searchContains(tr, field, searchTerm),
+            )
+          ) {
+            return tr;
           }
-        />
-      </div>
+        })}
+        columns={columns}
+        expanded={expanded}
+        handleExpandedProxy={handleExpandedProxy}
+        selectAll={setSelectedMutations}
+        allSelected={selectedMutations}
+        firstColumn={columnListOrder[0].id}
+        headerWidth={width / visibleColumns.length}
+        subrow={
+          <Subrow
+            id={mutationID}
+            width={width}
+            query={useGetSomaticMutationTableSubrowQuery}
+            subrowTitle={`Affected Cases Across The GDC`}
+          />
+        }
+      />
     </div>
   );
 };

@@ -1,4 +1,6 @@
-import { Survival } from "../shared/types";
+import { Row } from "@tanstack/react-table";
+import { Dispatch } from "react";
+import { SelectReducerAction, Survival, Column } from "../shared/types";
 
 export interface SingleGene {
   biotype: string;
@@ -71,9 +73,12 @@ export interface GenesTableProps {
   ) => void;
   pageSize: number;
   page: number;
-  selectedGenes: any;
-  setSelectedGenes: any;
+  selectedGenes: Record<string, Row<Genes>>;
+  setSelectedGenes: Dispatch<SelectReducerAction<Genes>>;
   handleGTotal: (gTotal: number) => void;
+  columnListOrder: Column[];
+  visibleColumns: Column[];
+  searchTerm: string;
 }
 
 export const DEFAULT_GTABLE_ORDER = [

@@ -75,7 +75,7 @@ export const ExpTable: React.FC<ExpTableProps> = ({
   return (
     <div className="p-2">
       <div
-        className={`shadow-md ${
+        className={`${
           selectAllActive ? `border-b-4 border-r-4 border-activeColor` : ``
         }`}
       >
