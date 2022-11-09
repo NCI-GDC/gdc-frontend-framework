@@ -153,3 +153,4 @@ export const TABS = {
 };
 
 export const SURVIVAL_PLOT_MIN_COUNT = 10;
+export const BUCKETS_MAX_COUNT = 500;

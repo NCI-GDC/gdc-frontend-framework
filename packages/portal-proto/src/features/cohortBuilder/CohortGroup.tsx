@@ -11,7 +11,7 @@ import {
 
 import {
   FilterSet,
-  selectCurrentCohortFilters,
+  selectCurrentCohortFilterSet,
   useCoreSelector,
   selectAvailableCohorts,
   DEFAULT_COHORT_ID,
@@ -80,7 +80,7 @@ const CohortFacetElement: React.FC<FacetElementProp> = ({
 };
 
 export const useCohortFacetFilters = (): FilterSet => {
-  return useCoreSelector((state) => selectCurrentCohortFilters(state));
+  return useCoreSelector((state) => selectCurrentCohortFilterSet(state));
 };
 
 export const CohortGroup: React.FC = () => {
