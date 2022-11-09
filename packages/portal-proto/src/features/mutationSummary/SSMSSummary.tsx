@@ -55,6 +55,8 @@ export const SSMSSummary = ({ ssm_id }: { ssm_id: string }): JSX.Element => {
       },
     } = summaryData;
 
+    console.log("SUMMARY DATA: ", summaryData);
+
     const functionalImpact = {
       functional_impact: (
         <>
@@ -70,16 +72,22 @@ export const SSMSSummary = ({ ssm_id }: { ssm_id: string }): JSX.Element => {
               {vep_impact && (
                 <span className="-mt-1 block">VEP: {vep_impact}</span>
               )}
-              {sift_impact && (
+
+              {(sift_impact || sift_score !== undefined) && (
                 <div>
-                  <span>SIFT: {sift_impact}</span>
-                  <span>&#44; score: {sift_score}</span>
+                  {sift_impact && <span>SIFT: {sift_impact}</span>}
+                  {sift_score !== undefined && (
+                    <span>&#44; score: {sift_score}</span>
+                  )}
                 </div>
               )}
-              {polyphen_impact && (
+
+              {(polyphen_impact || polyphen_score !== undefined) && (
                 <div>
-                  <span>PolyPhen: {polyphen_impact}</span>
-                  <span>&#44; score: {polyphen_score}</span>
+                  {polyphen_impact && <span>PolyPhen: {polyphen_impact}</span>}
+                  {polyphen_score !== undefined && (
+                    <span>&#44; score: {polyphen_score}</span>
+                  )}
                 </div>
               )}
             </div>
