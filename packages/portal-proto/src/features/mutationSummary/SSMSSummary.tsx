@@ -177,7 +177,10 @@ export const SSMSSummary = ({ ssm_id }: { ssm_id: string }): JSX.Element => {
             </div>
             <div>
               <SSMPlot page={"ssms"} ssms={ssm_id} />
-              <SSMSCancerDistributionTable ssms={ssm_id} />
+              <SSMSCancerDistributionTable
+                ssms={ssm_id}
+                symbol={summaryData.dna_change}
+              />
             </div>
           </div>
         </>

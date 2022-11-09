@@ -22,7 +22,10 @@ const CreateContent = (
           <div className="columns-4 font-content text-sm  p-4">
             {[...values].sort().map((y) => (
               <div className="flex flex-row items-center" key={y}>
-                <Circle size="0.65em" className="text-primary "></Circle>
+                <Circle
+                  size="0.65em"
+                  className="text-primary shrink-0 "
+                ></Circle>
                 <p className="pl-2">{y}</p>
               </div>
             ))}
@@ -76,7 +79,7 @@ const CollapsibleRow = ({
   };
 
   if (value.length === 0) {
-    return <div className="text-left mr-6 w-48">---</div>;
+    return <div className="text-left mr-6 w-48">--</div>;
   }
 
   if (value.length === 1) {
