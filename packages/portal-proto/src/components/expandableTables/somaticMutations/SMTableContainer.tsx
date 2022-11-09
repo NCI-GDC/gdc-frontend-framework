@@ -47,9 +47,11 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         return { ...selected, [select[0]]: rows[0] };
       }
       case "deselect": {
-        const deselect = rows.map(({ original: { select } }) => select);
-        const { [deselect[0]]: deselected, ...remaining } =
-          selected as SelectedReducer<SomaticMutations>;
+        //todo https://github.com/microsoft/TypeScript/issues/29259
+        const deselect = rows.map(({ original: { select } }) => select)[0];
+        const { [deselect]: deselected, ...remaining } = selected as
+          | any
+          | SelectedReducer<SomaticMutations>;
         return remaining;
       }
       case "selectAll": {
