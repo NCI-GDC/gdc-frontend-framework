@@ -1,3 +1,5 @@
+import { BUCKETS_MAX_COUNT } from "../constants";
+
 const validateNumberInput = (value: string) => {
   if (value === "") {
     return "Required field";
@@ -36,6 +38,12 @@ const validateIntervalSize = (size: string, min: string, max: string) => {
     Number(size) > Number(max) - Number(min)
   ) {
     return `Must be less than or equal to ${Number(max) - Number(min)}`;
+  }
+
+  if (
+    Math.floor((Number(max) - Number(min)) / Number(size)) > BUCKETS_MAX_COUNT
+  ) {
+    return `Number of bins will exceed the maximum of ${BUCKETS_MAX_COUNT} bins.`;
   }
 
   return null;

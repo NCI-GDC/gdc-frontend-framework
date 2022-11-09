@@ -18,6 +18,7 @@ import {
   Intersection,
   Union,
 } from "../gdcapi/filters";
+import { isEqual } from "lodash";
 
 /**
  * Root filter set. Similar to how case filters are
@@ -31,6 +32,9 @@ export interface FilterSet {
   readonly root: Record<string, Operation>;
   readonly mode: string;
 }
+
+export const isFilterSetEmpty = (fs: FilterSet): boolean =>
+  isEqual({ root: {} }, fs);
 
 /**
  *  Operand types for filter operations
