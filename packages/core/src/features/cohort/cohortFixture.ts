@@ -6,6 +6,6 @@ export const COHORTS = [
     caseSet: { caseSetId: { mode: "and", root: {} }, status: "uninitialized" },
     modified: false,
     saved: true,
-    modifiedDate: new Date(2099, 1, 1).toISOString(),
+    modified_datetime: new Date(2099, 1, 1).toISOString(),
   },
 ];

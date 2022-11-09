@@ -15,7 +15,7 @@ const CountButton: React.FC<CountButtonProp> = ({
   bold = false,
 }: CountButtonProp) => {
   const cohortCounts = useFilteredCohortCounts();
-  console.log("COHORTCOUNTS: ", cohortCounts);
+  // console.log("COHORTCOUNTS: ", cohortCounts);
   return (
     <div className={className}>
       <div className="flex flex-row flex-nowrap items-center">

@@ -26,7 +26,7 @@ export interface Cohort {
   readonly filters: FilterSet; // active filters for cohort
   readonly caseSet?: CaseSetDataAndStatus; // case ids for frozen cohorts
   readonly modified: boolean; // flag which is set to true if modified and unsaved
-  readonly modifiedDate: string; // last time cohort was modified
+  readonly modified_datetime: string; // last time cohort was modified
   readonly saved?: boolean; // flag indicating if cohort has been saved.
 }
 
@@ -84,7 +84,7 @@ export const DEFAULT_COHORT_ID = "ALL-GDC-COHORT";
 const cohortsAdapter = createEntityAdapter<Cohort>({
   sortComparer: (a, b) => {
     // Sort the Cohorts by modification date, The "All GDC" cohort is always first
-    if (a.modifiedDate <= b.modifiedDate) return 1;
+    if (a.modified_datetime <= b.modified_datetime) return 1;
     else return -1;
   },
 });
@@ -98,6 +98,8 @@ const initialState = cohortsAdapter.upsertMany(
   emptyInitialState,
   COHORTS as Cohort[],
 );
+
+console.log("initialState: ", initialState);
 
 interface UpdateFilterParams {
   field: string;
@@ -131,7 +133,7 @@ const newCohort = (
     filters: filters,
     modified: modified,
     saved: false,
-    modifiedDate: ts.toISOString(),
+    modified_datetime: ts.toISOString(),
   };
 };
 
@@ -219,7 +221,7 @@ const slice = createSlice({
           changes: {
             filters: filters,
             modified: true,
-            modifiedDate: new Date().toISOString(),
+            modified_datetime: new Date().toISOString(),
           },
         });
       }
@@ -236,7 +238,7 @@ const slice = createSlice({
         changes: {
           filters: { mode: "and", root: updated },
           modified: true,
-          modifiedDate: new Date().toISOString(),
+          modified_datetime: new Date().toISOString(),
         },
       });
     },
@@ -246,7 +248,7 @@ const slice = createSlice({
         changes: {
           filters: { mode: "and", root: {} },
           modified: true,
-          modifiedDate: new Date().toISOString(),
+          modified_datetime: new Date().toISOString(),
         },
       });
     },
@@ -261,7 +263,7 @@ const slice = createSlice({
         changes: {
           filters: action.payload || { mode: "and", root: {} },
           modified: false,
-          modifiedDate: new Date().toISOString(),
+          modified_datetime: new Date().toISOString(),
         },
       });
       state.message = "discardChanges|";

@@ -97,7 +97,8 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   const [addCohort, { isLoading: isAddCohortLoading }] = useAddCohortMutation();
   const [deleteCohortBE, { isLoading: isDeleteCohortLoading }] =
     useDeleteCohortMutation();
-  const [updateCohort] = useUpdateCohortMutation();
+  const [updateCohort, { isLoading: isUpdateCohortLoading }] =
+    useUpdateCohortMutation();
   const [trigger, { isFetching: isCohortIdFetching }] =
     useLazyGetCohortByIdQuery();
 
@@ -122,9 +123,10 @@ const CohortManager: React.FC<CohortManagerProps> = ({
       className="flex flex-row items-center justify-start gap-6 pl-4 h-20 shadow-lg bg-primary-darkest"
     >
       {/*  Modals Start   */}
-      {(isAddCohortLoading || isCohortIdFetching || isDeleteCohortLoading) && (
-        <LoadingOverlay visible />
-      )}
+      {(isAddCohortLoading ||
+        isCohortIdFetching ||
+        isDeleteCohortLoading ||
+        isUpdateCohortLoading) && <LoadingOverlay visible />}
       <GenericCohortModal
         title="Delete Cohort"
         opened={showDelete}
@@ -181,6 +183,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
         }
         subText={<>You cannot undo this action.</>}
         onActionClick={async () => {
+          setShowUpdateCohort(false);
           const updateBody = {
             id: cohortId,
             name: cohortName,
@@ -188,6 +191,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
             filters: buildCohortGqlOperator(filters),
           };
           await updateCohort(updateBody);
+          // only on Happy Path
           coreDispatch(sendCohortMessage(`savedCohort|`));
           //unhappy path
         }}
@@ -205,6 +209,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
           };
           const data = await addCohort(addBody).unwrap();
           if (Object.keys(data).length > 0) {
+            //maybe use of isError?
             batch(() => {
               coreDispatch(setCurrentCohortId(data.id));
               coreDispatch(sendCohortMessage(`savedCohort|`));

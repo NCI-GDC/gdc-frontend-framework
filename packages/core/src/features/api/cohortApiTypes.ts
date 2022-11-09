@@ -5,14 +5,14 @@
 export interface CohortModel {
   id: string;
   name: string;
-  filters: any;
+  filters: any; // TODO Fix this
   type: string;
   case_ids: string[];
   data_release: {
     id: string;
   };
-  modified: boolean; // flag which is set to true if modified and unsaved
-  modifiedDate: string;
+  created_datetime: string;
+  modified_datetime: string;
 }
 
 export type CohortAdd = Pick<CohortModel, "name" | "filters" | "type">;

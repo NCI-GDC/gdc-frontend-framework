@@ -23,7 +23,6 @@ export const cohortApiSlice = coreCreateApi({
           filters: buildGqlOperationToFilterSet(item.filters),
           saved: true,
           modified: false,
-          modifiedDate: new Date().toISOString(), // just added for now
         }));
       },
       providesTags: (result = []) => [
