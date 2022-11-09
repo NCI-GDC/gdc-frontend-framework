@@ -12,6 +12,25 @@ import {
 } from "@gff/core";
 import { showNotification } from "@mantine/notifications";
 import { NewCohortNotificationWithSetAsCurrent } from "@/features/cohortBuilder/CohortNotifications";
+import tw from "tailwind-styled-components";
+
+interface CountsIconProps {
+  $count?: number;
+}
+
+export const CountsIcon = tw.div<CountsIconProps>`
+${(p) =>
+  p.$count !== undefined && p.$count > 0 ? "bg-primary" : "bg-transparent"}
+inline-flex
+items-center
+justify-center
+w-8
+h-6
+text-primary-contrast
+font-heading
+rounded-md
+
+`;
 
 const ProjectsCohortButton = (): JSX.Element => {
   const pickedProjects: ReadonlyArray<string> = useAppSelector((state) =>
@@ -65,14 +84,16 @@ const ProjectsCohortButton = (): JSX.Element => {
   return (
     <Button
       variant="outline"
+      color="primary"
       disabled={pickedProjects.length == 0}
       leftIcon={
         pickedProjects.length ? (
-          <div className="inline-flex items-center justify-center bg-primary w-8 h-6 text-primary-contrast rounded-md">
-            {pickedProjects.length}
-          </div>
+          <CountsIcon $count={pickedProjects.length}>
+            {" "}
+            {pickedProjects.length}{" "}
+          </CountsIcon>
         ) : (
-          <div className="inline-flex items-center justify-center bg-transparent w-8 h-6 text-primary-contrast rounded-md" />
+          <CountsIcon />
         )
       }
       onClick={() => createCohortFromProjects()}
