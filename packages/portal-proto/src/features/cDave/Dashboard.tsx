@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import {
   GqlOperation,
   Buckets,
@@ -43,8 +43,19 @@ const Dashboard: React.FC<DashboardProps> = ({
       initialDashboardRender.current = false;
     }
   });
+
+  const [colCountInLastRow, colSpanInLastRow] = useMemo(() => {
+    const colCount = activeFields.length - 1;
+    const colCountInRow = controlsExpanded ? 2 : 3;
+    const colCountInLastRow = colCount % colCountInRow;
+    const colSpanInLastRow = colCountInLastRow
+      ? 12 / colCountInLastRow
+      : 12 / colCountInRow;
+    return [colCountInLastRow, colSpanInLastRow];
+  }, [activeFields, controlsExpanded]);
+
   return (
-    <Grid className="w-full p-4" grow>
+    <Grid className="w-full p-4">
       <Grid.Col span={controlsExpanded ? 6 : 4}>
         <Card className="h-full">
           <h2>Overall Survival</h2>
@@ -61,9 +72,12 @@ const Dashboard: React.FC<DashboardProps> = ({
           )}
         </Card>
       </Grid.Col>
-      {activeFields.map((field) => {
+      {activeFields.map((field, index) => {
+        const isLastRow = index >= activeFields.length - colCountInLastRow;
+        const colSpan = isLastRow ? colSpanInLastRow : controlsExpanded ? 6 : 4;
+
         return (
-          <Grid.Col span={controlsExpanded ? 6 : 4} key={field}>
+          <Grid.Col span={colSpan} key={field}>
             <CDaveCard
               field={field}
               data={results[field]}

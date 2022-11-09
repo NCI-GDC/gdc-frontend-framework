@@ -506,7 +506,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
         >
           {survivalPlotLineTooltipContent}
         </Box>
-        <div className="survival-plot" ref={container} />
+        <div className="survival-plot flex justify-center" ref={container} />
       </div>
       <div className="fixed top-0 -translate-y-full w-[700px] h-[500px]">
         <div ref={downloadRef}>
