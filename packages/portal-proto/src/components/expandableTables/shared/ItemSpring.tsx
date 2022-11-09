@@ -2,7 +2,7 @@ import React from "react";
 import { animated, useSpring } from "react-spring";
 
 interface Item {
-  project: string;
+  project?: string | undefined;
   numerator: number;
   denominator: number;
 }
@@ -29,7 +29,9 @@ const ItemSpring: React.FC<ItemSpringProps> = ({
       <animated.ul style={staggeredSpring} className={`p-1 text-xs my-1`}>
         <li key={`subrow-item-${index}`} className={`list-none`}>
           <div className={`flex flex-row w-fit`}>
-            <div className={`font-bold text-black mx-0.5`}>{project}:</div>{" "}
+            {project && (
+              <div className={`font-bold text-black mx-0.5`}>{project}:</div>
+            )}{" "}
             <div
               className={`text-activeColor underline hover:cursor-pointer mx-1`}
             >

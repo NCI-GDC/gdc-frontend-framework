@@ -74,7 +74,7 @@ export const Subrow: React.FC<SubrowProps> = ({
   return (
     <div>
       {isFetching && (
-        <div className={`relative`}>
+        <div aria-labelledby="expandedSubrow" className={`relative`}>
           <animated.div
             className={`flex bg-inherit absolute w-screen`}
             style={loaderWidth}

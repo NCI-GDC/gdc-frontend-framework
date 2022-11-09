@@ -107,8 +107,8 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   return (
     <>
       <SelectedRowContext.Provider value={[selectedGenes, setSelectedGenes]}>
-        <div className={`w-max`}>
-          <div className={`flex flex-row float-left`}>
+        <div className={`w-9/12`}>
+          <div className={`flex flex-row float-left ml-2 mb-4`}>
             <TableControls
               numSelected={Object.keys(selectedGenes).length ?? 0}
               label={`Gene`}
@@ -137,17 +137,17 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 </div>
               }
             />
-            <div className={`flex flex-row mb-5`}>
-              <TableFilters
-                search={searchTerm}
-                handleSearch={setSearchTerm}
-                columnListOrder={columnListOrder}
-                handleColumnChange={handleColumnChange}
-                showColumnMenu={showColumnMenu}
-                setShowColumnMenu={setShowColumnMenu}
-                defaultColumns={DEFAULT_GTABLE_ORDER}
-              />
-            </div>
+          </div>
+          <div className={`flex flex-row float-right mr-2`}>
+            <TableFilters
+              search={searchTerm}
+              handleSearch={setSearchTerm}
+              columnListOrder={columnListOrder}
+              handleColumnChange={handleColumnChange}
+              showColumnMenu={showColumnMenu}
+              setShowColumnMenu={setShowColumnMenu}
+              defaultColumns={DEFAULT_GTABLE_ORDER}
+            />
           </div>
         </div>
         <div>

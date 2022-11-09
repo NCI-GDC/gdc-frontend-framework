@@ -179,6 +179,8 @@ export const createTableColumn = (
                   {row.getCanExpand() && (
                     <div className={`text-center`}>
                       <button
+                        aria-controls={`expandedSubrow`}
+                        aria-expanded={row.getCanExpand() ? "true" : "false"}
                         {...{
                           onClick: () => {
                             setMutationID(row.original[`mutationID`]);
@@ -192,7 +194,6 @@ export const createTableColumn = (
                           icon={
                             <MdKeyboardArrowDown size="small" color="white" />
                           }
-                          twStyles={`bg-red-500 rounded-md h-3 w-3`}
                         />
                       </button>
                     </div>
@@ -408,6 +409,7 @@ export const getMutation = (
     aa_change = "",
     consequence_type = "",
   } = sm.consequence[0] ?? {};
+
   return {
     select: sm.ssm_id,
     mutationID: sm.ssm_id,

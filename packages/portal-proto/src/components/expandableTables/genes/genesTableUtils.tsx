@@ -189,6 +189,8 @@ export const createTableColumn = (
                   {row.getCanExpand() && (
                     <div className={`text-center content-center`}>
                       <button
+                        aria-controls={`expandedSubrow`}
+                        aria-expanded={row.getCanExpand() ? "true" : "false"}
                         {...{
                           onClick: () => {
                             setGeneID(row.original[`geneID`]);
@@ -202,7 +204,6 @@ export const createTableColumn = (
                           icon={
                             <MdKeyboardArrowDown size="small" color="white" />
                           }
-                          twStyles={`bg-red-500 rounded-md h-3 w-3`}
                         />
                       </button>
                     </div>

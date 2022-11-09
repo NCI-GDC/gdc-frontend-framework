@@ -4,24 +4,20 @@ import { useSpring, animated } from "react-spring";
 interface ToggleSpringProps {
   isExpanded: boolean;
   icon: ReactNode;
-  twStyles: string;
 }
 
 const ToggleSpring: React.FC<ToggleSpringProps> = ({
   isExpanded,
   icon,
-  twStyles,
 }: ToggleSpringProps) => {
   const polarSpring = useSpring({
     transform: isExpanded ? "rotate(0deg)" : "rotate(180deg)",
   });
 
   return (
-    <>
-      <animated.div style={polarSpring}>
-        <div className={twStyles}>{icon}</div>
-      </animated.div>
-    </>
+    <animated.div style={polarSpring}>
+      <div className={`bg-red-500 rounded-md h-3 w-3`}>{icon}</div>
+    </animated.div>
   );
 };
 
