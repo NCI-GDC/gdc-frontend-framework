@@ -70,16 +70,16 @@ export const SSMSSummary = ({ ssm_id }: { ssm_id: string }): JSX.Element => {
               {vep_impact && (
                 <span className="-mt-1 block">VEP: {vep_impact}</span>
               )}
-              {sift_impact && sift_score && (
+              {sift_impact && (
                 <div>
                   <span>SIFT: {sift_impact}</span>
-                  <span>, score: {sift_score}</span>
+                  <span>&#44; score: {sift_score}</span>
                 </div>
               )}
-              {polyphen_impact && polyphen_score && (
+              {polyphen_impact && (
                 <div>
                   <span>PolyPhen: {polyphen_impact}</span>
-                  <span>, score: {polyphen_score}</span>
+                  <span>&#44; score: {polyphen_score}</span>
                 </div>
               )}
             </div>
