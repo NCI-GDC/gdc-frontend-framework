@@ -44,7 +44,7 @@ export const Subrow: React.FC<SubrowProps> = ({
   query,
   subrowTitle,
 }: SubrowProps) => {
-  const scrollOffset = 100;
+  const scrollOffset = 200;
   const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>({
     offset: scrollOffset,
   });
