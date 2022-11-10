@@ -112,11 +112,11 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       <SelectedRowContext.Provider
         value={[selectedMutations, setSelectedMutations]}
       >
-        <div className={`w-max`}>
-          <div className={`flex flex-row float-left`}>
+        <div className={`w-9/12`}>
+          <div className={`flex flex-row float-left ml-2 mb-4`}>
             <TableControls
               numSelected={Object.keys(selectedMutations).length ?? 0}
-              label={`Gene`}
+              label={`Mutation`}
               options={[
                 { label: "Save/Edit Gene Set", value: "placeholder" },
                 { label: "Save as new gene set", value: "save" },
@@ -142,17 +142,17 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 </div>
               }
             />
-            <div className={`flex flex-row mb-5`}>
-              <TableFilters
-                search={searchTerm}
-                handleSearch={setSearchTerm}
-                columnListOrder={columnListOrder}
-                handleColumnChange={handleColumnChange}
-                showColumnMenu={showColumnMenu}
-                setShowColumnMenu={setShowColumnMenu}
-                defaultColumns={DEFAULT_SMTABLE_ORDER}
-              />
-            </div>
+          </div>
+          <div className={`flex flex-row float-right mr-2`}>
+            <TableFilters
+              search={searchTerm}
+              handleSearch={setSearchTerm}
+              columnListOrder={columnListOrder}
+              handleColumnChange={handleColumnChange}
+              showColumnMenu={showColumnMenu}
+              setShowColumnMenu={setShowColumnMenu}
+              defaultColumns={DEFAULT_SMTABLE_ORDER}
+            />
           </div>
         </div>
         <div>

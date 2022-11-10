@@ -39,7 +39,7 @@ export const TableFilters: React.FC<TableFiltersProps> = ({
 
   return (
     <>
-      <div className={`flex flex-row-reverse w-80`}>
+      <div className={`flex flex-row-reverse w-80 w-fit`}>
         <animated.div
           style={searchSpring}
           onMouseLeave={() =>
