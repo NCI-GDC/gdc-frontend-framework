@@ -1,5 +1,4 @@
 import { Survival } from "../shared/types";
-import { Dispatch } from "react";
 import { Column, SelectedReducer, SelectReducerAction } from "../shared/types";
 
 export const DEFAULT_SMTABLE_ORDER = [

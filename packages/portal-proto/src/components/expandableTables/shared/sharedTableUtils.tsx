@@ -1,5 +1,3 @@
-import { SelectedReducer, SelectReducerAction, TableType } from "./types";
-
 export const SurvivalIcon = (): JSX.Element => {
   return (
     <svg

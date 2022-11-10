@@ -1,5 +1,4 @@
 import { Row } from "@tanstack/react-table";
-import { Dispatch } from "react";
 import { SelectReducerAction, Survival, Column } from "../shared/types";
 
 export interface SingleGene {
