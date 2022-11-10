@@ -36,7 +36,7 @@ const RatioSpring: React.FC<RatioSpringProps> = ({
           orientation === "vertical" && <div className={`w-max m-auto`}>0</div>
         ) : (
           <li key={`subrow-item-${index}`} className={`list-none`}>
-            <div className={`flex flex-row w-fit`}>
+            <div className={`flex flex-row m-auto w-fit`}>
               {project && (
                 <div className={`font-bold text-black mx-0.5`}>{project}:</div>
               )}{" "}
