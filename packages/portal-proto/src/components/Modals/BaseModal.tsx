@@ -15,6 +15,7 @@ interface Props {
     title: string;
   }>;
   withCloseButton?: boolean;
+  onClose?: () => void;
   closeOnClickOutside?: boolean;
   closeOnEscape?: boolean;
 }
@@ -27,6 +28,7 @@ export const BaseModal: React.FC<Props> = ({
   children,
   buttons,
   withCloseButton,
+  onClose,
   closeOnClickOutside,
   closeOnEscape,
 }: Props) => {
@@ -37,6 +39,9 @@ export const BaseModal: React.FC<Props> = ({
       title={title}
       onClose={() => {
         dispatch(hideModal());
+        if (onClose) {
+          onClose();
+        }
       }}
       styles={() => ({
         header: {
