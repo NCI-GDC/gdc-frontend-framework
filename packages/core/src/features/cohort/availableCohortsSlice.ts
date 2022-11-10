@@ -63,7 +63,7 @@ export const createCaseSet = createAsyncThunk<
 >("cohort/createCaseSet", async ({ caseSetId = undefined }, thunkAPI) => {
   const dividedFilters = divideCurrentCohortFilterSetFilterByPrefix(
     thunkAPI.getState(),
-    "files.",
+    ["files."],
   );
   const graphQL = buildCaseSetMutationQuery();
 
@@ -268,7 +268,7 @@ const slice = createSlice({
         const additionalFilters =
           filters === undefined
             ? {}
-            : divideFilterSetByPrefix(filters, "files.").withPrefix.root;
+            : divideFilterSetByPrefix(filters, ["files."]).withPrefix.root;
         const caseSetFilter: FilterSet = {
           mode: "and",
           root: {
