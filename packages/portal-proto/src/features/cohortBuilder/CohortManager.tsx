@@ -18,6 +18,7 @@ import {
   useCoreDispatch,
   useCoreSelector,
 } from "@gff/core";
+import CountButton from "./CountButton";
 
 const CohortGroupButton = tw(Button)`
 p-2
@@ -94,10 +95,10 @@ const CohortManager: React.FC<CohortManagerProps> = ({
             fontFamily: '"Montserrat", "sans-serif"',
             fontSize: "1.65em",
             fontWeight: 500,
-            "letter-spacing": ".1rem",
-            "border-color": theme.colors.base[1],
-            "border-style": "solid",
-            "border-width": "0px 0px 2px 0px",
+            letterSpacing: ".1rem",
+            borderColor: theme.colors.base[1],
+            borderStyle: "solid",
+            borderWidth: "0px 0px 2px 0px",
             padding: "15px 20px 15px 15px",
             margin: "5px 5px 5px 5px",
           },
@@ -228,6 +229,12 @@ const CohortManager: React.FC<CohortManagerProps> = ({
           <div />
         )
       }
+      <CountButton
+        countName="casesMax"
+        label="CASES"
+        className="text-white ml-auto mr-6 text-lg"
+        bold
+      />
     </div>
   );
 };

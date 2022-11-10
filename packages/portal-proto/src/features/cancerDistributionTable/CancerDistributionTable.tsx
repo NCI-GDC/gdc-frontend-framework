@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { Tooltip } from "@mantine/core";
+import { Row } from "react-table";
+import Link from "next/link";
 import {
   useGetGeneCancerDistributionTableQuery,
   useGetSSMSCancerDistributionTableQuery,
@@ -11,6 +13,7 @@ import {
   HandleChangeInput,
 } from "@/features/shared/VerticalTable";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
+import FunctionButton from "@/components/FunctionButton";
 
 interface GeneCancerDistributionTableProps {
   readonly gene: string;
@@ -35,10 +38,17 @@ export const GeneCancerDistributionTable: React.FC<
 
 interface SSMSCancerDistributionTableProps {
   readonly ssms: string;
+  readonly symbol: string;
 }
+
+interface CellProps {
+  value: string[];
+  row: Row;
+}
+
 export const SSMSCancerDistributionTable: React.FC<
   SSMSCancerDistributionTableProps
-> = ({ ssms }: SSMSCancerDistributionTableProps) => {
+> = ({ ssms, symbol }: SSMSCancerDistributionTableProps) => {
   const { data, isFetching, isError, isSuccess } =
     useGetSSMSCancerDistributionTableQuery({ ssms });
   return (
@@ -47,7 +57,7 @@ export const SSMSCancerDistributionTable: React.FC<
       isFetching={isFetching}
       isError={isError}
       isSuccess={isSuccess}
-      symbol={ssms}
+      symbol={symbol}
       isGene={false}
     />
   );
@@ -78,6 +88,12 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         value: data?.projects.map((p) => p.key),
       },
     },
+    expand: [
+      "summary",
+      "summary.data_categories",
+      "summary.experimental_strategies",
+      "program",
+    ],
     size: data?.projects.length,
   });
   const [pageSize, setPageSize] = useState(10);
@@ -90,8 +106,22 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
   const columnListOrder = useMemo(() => {
     const columns = [
       { id: "project", columnName: "Project", visible: true },
-      { id: "disease_type", columnName: "Disease Type", visible: true },
-      { id: "primary_site", columnName: "Primary Site", visible: true },
+      {
+        id: "disease_type",
+        columnName: "Disease Type",
+        visible: true,
+        Cell: ({ value, row }: CellProps) => (
+          <CollapsibleRow value={value} row={row} label={"Disease Types"} />
+        ),
+      },
+      {
+        id: "primary_site",
+        columnName: "Primary Site",
+        visible: true,
+        Cell: ({ value, row }: CellProps) => (
+          <CollapsibleRow value={value} row={row} label={"Primary Site"} />
+        ),
+      },
       {
         id: "ssm_affected_cases",
         columnName: "# SSM Affected Cases",
@@ -116,15 +146,15 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       {
         Header: "Disease Type",
         accessor: "disease_type",
-        Cell: ({ value }: { value: string[] }) => (
-          <CollapsibleRow value={value} label={"Disease Types"} />
+        Cell: ({ value, row }: CellProps) => (
+          <CollapsibleRow value={value} row={row} label={"Disease Types"} />
         ),
       },
       {
         Header: "Primary Site",
         accessor: "primary_site",
-        Cell: ({ value }: { value: string[] }) => (
-          <CollapsibleRow value={value} label={"Primary Sites"} />
+        Cell: ({ value, row }: CellProps) => (
+          <CollapsibleRow value={value} row={row} label={"Primary Sites"} />
         ),
       },
       {
@@ -214,12 +244,18 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         ? data?.projects
             .map((d) => {
               const row = {
-                project: d.key,
+                project: (
+                  <Link href={`/projects/${d.key}`}>
+                    <a className="text-utility-link underline">{d.key}</a>
+                  </Link>
+                ),
                 disease_type: projectsById[d.key]?.disease_type || [],
                 primary_site: projectsById[d.key]?.primary_site || [],
-                ssm_affected_cases: `${data.ssmFiltered[d.key]} / ${
-                  data.ssmTotal[d.key]
-                } (${(
+                ssm_affected_cases: `${data.ssmFiltered[
+                  d.key
+                ].toLocaleString()} / ${data.ssmTotal[
+                  d.key
+                ].toLocaleString()} (${(
                   data.ssmFiltered[d.key] / data.ssmTotal[d.key]
                 ).toLocaleString(undefined, {
                   style: "percent",
@@ -231,23 +267,27 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 ...row,
                 ...(isGene
                   ? {
-                      cnv_gains: `${data.cnvGain[d.key] || 0} / ${
+                      cnv_gains: `${(
+                        data.cnvGain[d.key] || 0
+                      ).toLocaleString()} / ${(
                         data.cnvTotal[d.key] || 0
-                      } (${(
+                      ).toLocaleString()} (${(
                         data.cnvGain[d.key] / data.cnvTotal[d.key] || 0
                       ).toLocaleString(undefined, {
                         style: "percent",
                         minimumFractionDigits: 2,
                       })})`,
-                      cnv_losses: `${data.cnvLoss[d.key] || 0} / ${
+                      cnv_losses: `${(
+                        data.cnvLoss[d.key] || 0
+                      ).toLocaleString()} / ${(
                         data.cnvTotal[d.key] || 0
-                      } (${(
+                      ).toLocaleString()} (${(
                         data.cnvLoss[d.key] / data.cnvTotal[d.key] || 0
                       ).toLocaleString(undefined, {
                         style: "percent",
                         minimumFractionDigits: 2,
                       })})`,
-                      num_mutations: d.doc_count,
+                      num_mutations: d.doc_count.toLocaleString(),
                     }
                   : {}),
               };
@@ -284,6 +324,12 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       selectableRow={false}
       handleColumnChange={undefined}
       showControls={false}
+      additionalControls={
+        <div className="flex gap-2">
+          <FunctionButton>JSON</FunctionButton>
+          <FunctionButton>TSV</FunctionButton>
+        </div>
+      }
       pagination={{
         page: activePage,
         pages: Math.ceil(data?.projects?.length / pageSize),

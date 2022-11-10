@@ -3,7 +3,6 @@ import fileSize from "filesize";
 import { VerticalTable, HandleChangeInput } from "../shared/VerticalTable";
 import { SingleItemAddToCartButton } from "../cart/updateCart";
 import Link from "next/link";
-import { Badge } from "@mantine/core";
 import {
   useCoreDispatch,
   useCoreSelector,
@@ -18,6 +17,7 @@ import { MdSave } from "react-icons/md";
 import { useAppSelector } from "@/features/repositoryApp/appApi";
 import { selectFilters } from "@/features/repositoryApp/repositoryFiltersSlice";
 import FunctionButton from "@/components/FunctionButton";
+import { FileAccessBadge } from "@/components/FileAccessBadge";
 
 const FilesTables: React.FC = () => {
   const columnListOrder = [
@@ -92,17 +92,7 @@ const FilesTables: React.FC = () => {
           <a className="text-utility-link underline">{file.id}</a>
         </Link>
       ),
-      access: (
-        <Badge
-          className={
-            file.access === "open" //TODO: keep or change to theme color
-              ? "bg-nci-green-lighter/50 text-nci-green-darkest capitalize text-sm"
-              : "bg-nci-red-lighter/50 text-nci-red-darkest capitalize text-sm"
-          }
-        >
-          {file.access}
-        </Badge>
-      ),
+      access: <FileAccessBadge access={file.access} />,
       file_name: (
         <Link href={`/files/${file.id}`}>
           <a className="text-utility-link underline">{file.file_name}</a>

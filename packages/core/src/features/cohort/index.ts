@@ -7,6 +7,7 @@ import {
   EnumValueExtractorHandler,
   joinFilters,
   buildCohortGqlOperator,
+  filterSetToOperation,
   ValueExtractorHandler,
 } from "./filters";
 
@@ -30,11 +31,11 @@ import {
   selectCurrentCohortFilterOrCaseSet,
   selectCurrentCohortFiltersByName,
   selectCurrentCohortCaseSet,
-  selectCurrentCohortCaseSetFilter,
   selectCurrentCohortModified,
   selectCohortMessage,
   clearCohortMessage,
   selectCurrentCohort,
+  selectCurrentCohortFilterSet,
 } from "./availableCohortsSlice";
 
 import {
@@ -74,6 +75,7 @@ export {
   CohortBuilderCategory,
   joinFilters,
   buildCohortGqlOperator,
+  filterSetToOperation,
   addNewCohort,
   removeCohort,
   updateCohortName,
@@ -105,9 +107,9 @@ export {
   selectCurrentCohortFilterOrCaseSet,
   selectCurrentCohortFiltersByName,
   selectCurrentCohortCaseSet,
-  selectCurrentCohortCaseSetFilter,
   selectCurrentCohortModified,
   selectCohortMessage,
   clearCohortMessage,
   selectCurrentCohort,
+  selectCurrentCohortFilterSet,
 };

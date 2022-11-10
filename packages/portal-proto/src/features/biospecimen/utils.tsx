@@ -69,8 +69,6 @@ export const formatEntityInfo = (
   dispatch: CoreDispatch,
   currentCart: CartFile[],
   selectedSlide: readonly FileDefaults[],
-  downloadActive: boolean,
-  setDownloadActive: React.Dispatch<React.SetStateAction<boolean>>,
 ): {
   readonly headerName: string;
   readonly values: readonly (
@@ -154,9 +152,7 @@ export const formatEntityInfo = (
           <div>
             <DownloadFile
               file={mapFileData(selectedSlide)[0]}
-              active={downloadActive}
-              setActive={setDownloadActive}
-              customStyle="text-primary-content px-0 h-3.5 border-0 hover:bg-transparent"
+              customStyle="text-primary-content px-0 h-3.5 border-0 bg-transparent"
               showLoading={false}
             />
           </div>

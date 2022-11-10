@@ -12,7 +12,7 @@ import {
 } from "redux-persist";
 import { reducers } from "./reducers";
 import { cohortApiSliceMiddleware } from "./features/api/cohortApiSlice";
-import { caseSetListenerMiddleware } from "./listeners";
+// import { caseSetListenerMiddleware } from "./listeners";
 
 import storage from "./storage-persist";
 import { survivalApiSliceMiddleware } from "./features/survival/survivalApiSlice";
@@ -22,7 +22,7 @@ const persistConfig = {
   key: "root",
   version: 1,
   storage,
-  whitelist: ["cart", "bannerNotification"],
+  whitelist: ["cart", "bannerNotification", "cohort"],
 };
 
 export const coreStore = configureStore({
@@ -35,13 +35,13 @@ export const coreStore = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    })
-      .concat(
-        cohortApiSliceMiddleware,
-        survivalApiSliceMiddleware,
-        graphqlAPISliceMiddleware,
-      )
-      .prepend(caseSetListenerMiddleware.middleware), // needs to be prepended
+    }).concat(
+      cohortApiSliceMiddleware,
+      survivalApiSliceMiddleware,
+      graphqlAPISliceMiddleware,
+    ),
+  // TODO: fix caseSet creation
+  //  .prepend(caseSetListenerMiddleware.middleware), // needs to be prepended
 });
 
 setupListeners(coreStore.dispatch);

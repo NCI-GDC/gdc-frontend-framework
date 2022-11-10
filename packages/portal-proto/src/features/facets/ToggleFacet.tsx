@@ -5,12 +5,13 @@ import { updateFacetEnum } from "./utils";
 import {
   controlsIconStyle,
   FacetIconButton,
+  FacetText,
+  FacetHeader,
 } from "@/features/facets/components";
 
 import { trimFirstFieldNameToTitle } from "@gff/core";
 import { LoadingOverlay, Switch, Tooltip } from "@mantine/core";
 import { MdClose as CloseIcon } from "react-icons/md";
-import { FacetDocTypeToLabelsMap } from "@/features/facets/hooks";
 import { FaUndo as UndoIcon } from "react-icons/fa";
 
 const extractToggleValue = (values?: ReadonlyArray<string>): boolean =>
@@ -18,10 +19,9 @@ const extractToggleValue = (values?: ReadonlyArray<string>): boolean =>
 
 const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   field,
-  docType,
-  indexType,
   hooks,
   description,
+  valueLabel,
   facetName = undefined,
   dismissCallback = undefined,
   width = undefined,
@@ -33,11 +33,7 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
     ? facetName
     : trimFirstFieldNameToTitle(field, true);
 
-  const { data, isSuccess, enumFilters } = hooks.useGetFacetData(
-    field,
-    docType,
-    indexType,
-  );
+  const { data, isSuccess, enumFilters } = hooks.useGetFacetData(field);
 
   const toggleValue = useMemo(
     () => extractToggleValue(enumFilters),
@@ -54,9 +50,9 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
     <div
       className={`flex flex-col ${
         width ? width : "mx-1"
-      } bg-base-max relative border-primary-lightest border-1 rounded-b-md text-xs transition`}
+      } bg-base-max relative shadow-lg border-primary-lightest border-1 rounded-b-md text-xs transition`}
     >
-      <div className="flex items-start justify-between flex-nowrap bg-primary-lighter shadow-md px-1.5">
+      <FacetHeader>
         <Tooltip
           label={description || "No description available"}
           classNames={{
@@ -70,9 +66,7 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
           transition="fade"
           transitionDuration={200}
         >
-          <div className="text-primary-contrast-lighter font-heading font-semibold text-md break-words py-2">
-            {facetTitle}
-          </div>
+          <FacetText>{facetTitle}</FacetText>
         </Tooltip>
         <div className="flex flex-row">
           <FacetIconButton onClick={clearFilters} aria-label="clear selection">
@@ -90,9 +84,9 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
             </FacetIconButton>
           ) : null}
         </div>
-      </div>
+      </FacetHeader>
       <div className="flex flex-row items-center justify-end flex-wrap p-1 mb-1 border-b-2">
-        <p className="px-2">{FacetDocTypeToLabelsMap[docType]}</p>
+        <p className="px-2">{valueLabel}</p>
       </div>
       <div className="w-full ">
         <div className="flex flex row flex-nowrap justify-between items-center p-2 ">

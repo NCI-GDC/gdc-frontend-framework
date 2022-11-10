@@ -18,6 +18,7 @@ import {
   Intersection,
   Union,
 } from "../gdcapi/filters";
+import { isEqual } from "lodash";
 
 /**
  * Root filter set. Similar to how case filters are
@@ -31,6 +32,9 @@ export interface FilterSet {
   readonly root: Record<string, Operation>;
   readonly mode: string;
 }
+
+export const isFilterSetEmpty = (fs: FilterSet): boolean =>
+  isEqual({ root: {} }, fs);
 
 /**
  *  Operand types for filter operations
@@ -123,6 +127,24 @@ export const buildCohortGqlOperator = (
             op: fs.mode,
             content: Object.keys(fs.root).map((k): GqlOperation => {
               return convertFilterToGqlFilter(fs.root[k]);
+            }),
+          };
+  }
+  return undefined;
+};
+
+export const filterSetToOperation = (
+  fs: FilterSet | undefined,
+): Operation | undefined => {
+  if (!fs) return undefined;
+  switch (fs.mode) {
+    case "and":
+      return Object.keys(fs.root).length == 0
+        ? undefined
+        : {
+            operator: fs.mode,
+            operands: Object.keys(fs.root).map((k): Operation => {
+              return fs.root[k];
             }),
           };
   }
