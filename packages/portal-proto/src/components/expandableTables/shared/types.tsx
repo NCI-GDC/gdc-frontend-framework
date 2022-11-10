@@ -33,11 +33,6 @@ export interface Survival {
   checked: boolean;
 }
 
-export interface AffectedCasesProps {
-  row: any;
-  ratio: any;
-}
-
 export interface ColumnDefinition {
   accessorKey: string;
   header: () => JSX.Element;
