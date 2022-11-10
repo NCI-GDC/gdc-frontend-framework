@@ -231,6 +231,7 @@ const slice = createSlice({
           state.error = response.errors.filters;
         }
         const data = action.payload.data.viewer.explore;
+        state.ssms.ssmsTotal = data.ssms.hits.total;
         state.ssms.cases = data.cases.hits.total;
         state.ssms.filteredCases = data.filteredCases.hits.total;
         state.ssms.ssms = data.ssms.hits.edges.map(
