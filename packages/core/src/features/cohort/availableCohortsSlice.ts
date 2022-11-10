@@ -26,7 +26,7 @@ export interface Cohort {
   readonly name: string;
   readonly filters: FilterSet; // active filters for cohort
   readonly caseSet?: CaseSetDataAndStatus; // case ids for frozen cohorts
-  readonly modified: boolean; // flag which is set to true if modified and unsaved
+  readonly modified?: boolean; // flag which is set to true if modified and unsaved
   readonly modified_datetime: string; // last time cohort was modified
   readonly saved?: boolean; // flag indicating if cohort has been saved.
 }

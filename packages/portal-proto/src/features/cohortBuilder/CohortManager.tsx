@@ -205,7 +205,10 @@ const CohortManager: React.FC<CohortManagerProps> = ({
           const addBody = {
             name: newName,
             type: "static",
-            filters: buildCohortGqlOperator(filters),
+            filters:
+              Object.keys(filters.root).length > 0
+                ? buildCohortGqlOperator(filters)
+                : {},
           };
           const data = await addCohort(addBody).unwrap();
           if (Object.keys(data).length > 0) {

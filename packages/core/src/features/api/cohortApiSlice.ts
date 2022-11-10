@@ -20,7 +20,10 @@ export const cohortApiSlice = coreCreateApi({
       transformResponse: (response: CohortModel[]) => {
         return response.map((item) => ({
           ...item,
-          filters: buildGqlOperationToFilterSet(item.filters),
+          filters:
+            Object.keys(item.filters).length > 0
+              ? buildGqlOperationToFilterSet(item.filters)
+              : { mode: "and", root: {} },
           saved: true,
           modified: false,
         }));

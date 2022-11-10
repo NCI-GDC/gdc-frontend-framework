@@ -328,7 +328,7 @@ describe("filter by prefix", () => {
                 },
                 status: "uninitialized",
               },
-              modifiedDate: "2020-11-01T00:00:00.000Z",
+              modified_datetime: "2020-11-01T00:00:00.000Z",
               modified: false,
               saved: false,
             },

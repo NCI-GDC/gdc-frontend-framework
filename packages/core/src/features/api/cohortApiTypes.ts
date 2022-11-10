@@ -1,7 +1,4 @@
 // models for cohort endpoints
-
-// import { FilterSet } from "../cohort/filters";
-
 export interface CohortModel {
   id: string;
   name: string;
