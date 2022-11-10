@@ -33,7 +33,7 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
     width: 35,
   });
 
-  const { plot = "" } = survivalProps;
+  const { plot } = survivalProps ?? { plot: "" };
 
   return (
     <Tooltip label={`${tooltip}`} disabled={!tooltip}>
