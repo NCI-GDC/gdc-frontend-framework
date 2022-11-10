@@ -199,19 +199,21 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             <div className={`m-auto text-sm`}>
               <span>
                 Showing
-                <span className={`font-bold`}>{` ${
-                  page * pageSize + 1
-                } `}</span>
+                <span className={`font-bold`}>{` ${(
+                  page * pageSize +
+                  1
+                ).toLocaleString("en-US")} `}</span>
                 -
                 <span className={`font-bold`}>
-                  {` ${
-                    (page + 1) * pageSize < gTotal
-                      ? (page + 1) * pageSize
-                      : gTotal
-                  } `}
+                  {`${((page + 1) * pageSize < gTotal
+                    ? (page + 1) * pageSize
+                    : gTotal
+                  ).toLocaleString("en-US")}`}
                 </span>
                 of
-                <span className={`font-bold`}>{` ${gTotal} `}</span>
+                <span className={`font-bold`}>{` ${gTotal.toLocaleString(
+                  "en-US",
+                )} `}</span>
                 genes
               </span>
             </div>
