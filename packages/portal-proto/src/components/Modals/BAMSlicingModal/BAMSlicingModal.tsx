@@ -129,7 +129,8 @@ export const BAMSlicingModal = ({
     >
       <div className="border-y border-y-base py-4 px-2">
         <Text size="lg" className="mb-2">
-          File name: <Text className="inline font-medium">{file.fileName}</Text>
+          File name:{" "}
+          <Text className="inline font-medium">{file.file_name}</Text>
         </Text>
         <label htmlFor="textarea" className="text-sm">
           Please enter one or more slices&apos; genome coordinates below in one

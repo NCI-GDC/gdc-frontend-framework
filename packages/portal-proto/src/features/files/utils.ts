@@ -141,10 +141,10 @@ export const mapGdcFileToCartFile = (files: GdcFile[]): CartFile[] =>
       "access",
       "acl",
       "fileId",
-      "fileSize",
+      "file_size",
       "state",
       "project_id",
-      "fileName",
+      "file_name",
     ]),
   );
 
@@ -155,7 +155,7 @@ export const mapFilesFromCasesToCartFile = (
     access: file.access,
     acl: file.acl,
     fileId: file.file_id,
-    fileSize: file.file_size,
+    file_size: file.file_size,
     state: file.state,
-    fileName: file.file_name,
+    file_name: file.file_name,
   }));

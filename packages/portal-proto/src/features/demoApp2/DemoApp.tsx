@@ -56,7 +56,7 @@ const Demo: React.FC = () => {
     <div>
       This demo app lists files:
       {data.map((file) => (
-        <div key={file.id}>{file.fileName}</div>
+        <div key={file.id}>{file.file_name}</div>
       ))}
     </div>
   );

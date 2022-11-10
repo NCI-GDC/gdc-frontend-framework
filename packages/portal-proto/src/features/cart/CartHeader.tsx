@@ -31,7 +31,7 @@ const downloadCart = (
 ) => {
   if (
     filesByCanAccess.true
-      ?.map((file) => file.fileSize)
+      ?.map((file) => file.file_size)
       .reduce((a, b) => a + b) > MAX_CART_SIZE
   ) {
     dispatch(showModal({ modal: Modals.CartSizeLimitModal }));

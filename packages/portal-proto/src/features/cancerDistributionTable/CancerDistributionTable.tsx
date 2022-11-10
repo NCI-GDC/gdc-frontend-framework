@@ -6,7 +6,10 @@ import {
   useProjects,
   CancerDistributionTableData,
 } from "@gff/core";
-import { VerticalTable } from "@/features/shared/VerticalTable";
+import {
+  VerticalTable,
+  HandleChangeInput,
+} from "@/features/shared/VerticalTable";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
 
 interface GeneCancerDistributionTableProps {
@@ -261,13 +264,16 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     );
   }, [formattedData, activePage, pageSize]);
 
-  const handlePageSizeChange = (x: string) => {
-    setPageSize(parseInt(x));
-    setActivePage(1);
-  };
-
-  const handlePageChange = (x: number) => {
-    setActivePage(x);
+  const handleChange = (obj: HandleChangeInput) => {
+    switch (Object.keys(obj)?.[0]) {
+      case "newPageSize":
+        setPageSize(parseInt(obj.newPageSize));
+        setActivePage(1);
+        break;
+      case "newPageNumber":
+        setActivePage(obj.newPageNumber);
+        break;
+    }
   };
 
   return (
@@ -279,8 +285,6 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       handleColumnChange={undefined}
       showControls={false}
       pagination={{
-        handlePageSizeChange,
-        handlePageChange,
         page: activePage,
         pages: Math.ceil(data?.projects?.length / pageSize),
         size: pageSize,
@@ -296,6 +300,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
           ? "rejected"
           : "uninitialized"
       }
+      handleChange={handleChange}
     />
   );
 };

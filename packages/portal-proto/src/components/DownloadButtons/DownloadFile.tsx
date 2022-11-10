@@ -42,7 +42,7 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
           annotations: true,
           related_files: true,
         }}
-        filename={file.fileName}
+        filename={file.file_name}
         endpoint="data"
         activeText={activeText}
         inactiveText={inactiveText}
