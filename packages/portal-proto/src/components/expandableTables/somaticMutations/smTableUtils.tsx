@@ -174,11 +174,13 @@ export const createTableColumn = (
                   style={partitionWidth}
                   className={`content-center`}
                 >
-                  <RatioSpring
-                    index={0}
-                    item={{ numerator, denominator }}
-                    orientation={"vertical"}
-                  />
+                  {row.getCanExpand() && (
+                    <RatioSpring
+                      index={0}
+                      item={{ numerator, denominator }}
+                      orientation={"vertical"}
+                    />
+                  )}
                   {row.getCanExpand() && (
                     <div className={`text-center`}>
                       <button

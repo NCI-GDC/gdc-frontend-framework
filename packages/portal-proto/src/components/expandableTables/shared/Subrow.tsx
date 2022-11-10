@@ -72,7 +72,7 @@ export const Subrow: React.FC<SubrowProps> = ({
   }, [isSuccess, scrollIntoView]);
 
   return (
-    <div>
+    <div ref={targetRef}>
       {isFetching && (
         <div aria-labelledby="expandedSubrow" className={`relative`}>
           <animated.div
@@ -88,7 +88,7 @@ export const Subrow: React.FC<SubrowProps> = ({
       )}
       {isError && <span>Error: Failed to fetch {subrowTitle}</span>}
       {isSuccess && (
-        <div ref={targetRef} className={`relative`}>
+        <div className={`relative`}>
           <ListSpring
             subData={subData}
             horizontalSpring={horizontalSpring}
