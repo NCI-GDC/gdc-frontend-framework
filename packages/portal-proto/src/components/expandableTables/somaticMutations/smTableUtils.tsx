@@ -420,7 +420,6 @@ export const getMutation = (
     aa_change = "",
     consequence_type = "",
   } = sm.consequence[0] ?? {};
-  console.log("sm", selectedSurvivalPlot, "hmmm", sm);
   return {
     select: sm.ssm_id,
     mutationID: sm.ssm_id,
