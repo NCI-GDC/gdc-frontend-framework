@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { PaginationOptions } from "@/features/shared/VerticalTable";
 
 const useStandardPagination = (
-  fullData: any[],
-): PaginationOptions & { displayedData: any[] } => {
+  fullData: Record<string, any>[],
+): PaginationOptions & { displayedData: Record<string, any>[] } => {
   const [pageSize, setPageSize] = useState(10);
   const [activePage, setActivePage] = useState(1);
   const [displayedData, setDisplayedData] = useState([]);
