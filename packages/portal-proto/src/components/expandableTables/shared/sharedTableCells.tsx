@@ -49,22 +49,3 @@ export const TableCell = ({
     </div>
   );
 };
-
-export const AffectedCases = ({ ratio }: { ratio }): JSX.Element => {
-  const anchorStyles = `font-medium underline hover:cursor-pointer`;
-  const textStyles = `text-xs text-activeColor mx-0.5`;
-  return (
-    <>
-      {
-        <div className={`flex flex-row w-max m-auto`}>
-          <div className={`${textStyles} ${anchorStyles}`}>{ratio[0]}</div>
-          <div className={`text-xs mx-0.5`}>{ratio[1]}</div>
-          <div className={`${textStyles} ${anchorStyles}`}>{ratio[2]}</div>
-        </div>
-      }
-      <div className={`flex flex-row mx-auto content-center w-max`}>
-        {<div className={`text-xs`}>{ratio[3]}</div>}
-      </div>
-    </>
-  );
-};
