@@ -76,16 +76,18 @@ export const ExpTable: React.FC<ExpTableProps> = ({
     <div className="p-2">
       <div
         className={`${
-          selectAllActive ? `border-b-4 border-r-4 border-activeColor` : ``
+          selectAllActive ? `border-r-0 border-b-4 border-activeColor` : ``
         }`}
       >
         <table>
           <thead
-            className={`${
+            className={`
+            ${
               selectAllActive
-                ? `border-l-4 border-t-4 border-b-0 border-r-0 border-activeColor`
+                ? `border-l-4 border-t-4 border-r-4 border-activeColor`
                 : `border-2`
-            } shadow-md w-11/12`}
+            }
+            shadow-md w-11/12`}
           >
             {table.getHeaderGroups().map((headerGroup) => (
               <animated.tr style={unitSpring} key={headerGroup.id}>

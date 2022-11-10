@@ -108,7 +108,7 @@ export interface SomaticMutationsTableProps {
   pageSize: number;
   page: number;
   selectedMutations: SelectedReducer<SomaticMutations>;
-  setSelectedMutations: Dispatch<SelectReducerAction<SomaticMutations>>;
+  setSelectedMutations: (action: SelectReducerAction<SomaticMutations>) => void;
   handleSMTotal: (smTotal: number) => void;
   columnListOrder: Column[];
   visibleColumns: Column[];

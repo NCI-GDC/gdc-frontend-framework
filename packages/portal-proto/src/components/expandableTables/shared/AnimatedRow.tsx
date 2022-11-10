@@ -40,7 +40,7 @@ const AnimatedRow: React.FC<AnimatedRowProps> = ({
       key={row.id}
       className={`border-2 ${
         selected
-          ? `border-2 border-l-4 border-t-0 border-r-0 border-b-0 border-activeColor`
+          ? `border-l-4 border-t-0 border-r-4 border-b-0 border-activeColor`
           : ``
       } ${index % 2 ? `bg-slate-50` : `bg-white`}`}
     >

@@ -71,7 +71,7 @@ export interface GenesTableProps {
   pageSize: number;
   page: number;
   selectedGenes: Record<string, Row<Genes>>;
-  setSelectedGenes: Dispatch<SelectReducerAction<Genes>>;
+  setSelectedGenes: (action: SelectReducerAction<Genes>) => void;
   handleGTotal: (gTotal: number) => void;
   columnListOrder: Column[];
   visibleColumns: Column[];
