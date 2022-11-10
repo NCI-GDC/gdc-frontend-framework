@@ -2,15 +2,16 @@ import React, { useState } from "react";
 import { MdSearch as SearchIcon } from "react-icons/md";
 import { animated, useSpring } from "react-spring";
 import DND from "./DND";
+import { Column } from "./types";
 
 interface TableFiltersProps {
   search: string;
   handleSearch: (term: string) => void;
-  columnListOrder: any;
+  columnListOrder: Column[];
   handleColumnChange: (columnListOrder: any) => void;
   showColumnMenu: boolean;
   setShowColumnMenu: (s: boolean) => void;
-  defaultColumns: any;
+  defaultColumns: Column[];
 }
 
 export const TableFilters: React.FC<TableFiltersProps> = ({
