@@ -110,7 +110,14 @@ export const GenesTable: React.FC<GenesTableProps> = ({
         );
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visibleColumns, selectedGenes, setSelectedGenes, geneID, setGeneID]);
+  }, [
+    visibleColumns,
+    selectedGenes,
+    setSelectedGenes,
+    geneID,
+    setGeneID,
+    handleSurvivalPlotToggled,
+  ]);
 
   useEffect(() => {
     setExpanded({});

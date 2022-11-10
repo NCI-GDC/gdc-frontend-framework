@@ -63,7 +63,7 @@ export interface GenesTableProps {
   readonly initialData: any; // need to add this from response
   readonly selectedSurvivalPlot: Record<string, string>;
   width: number;
-  readonly handleSurvivalPlotToggled: (
+  handleSurvivalPlotToggled: (
     symbol: string,
     name: string,
     field: string,

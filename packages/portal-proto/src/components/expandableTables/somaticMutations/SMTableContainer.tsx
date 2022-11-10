@@ -21,7 +21,7 @@ export const SelectedRowContext =
 
 export interface SMTableContainerProps {
   readonly selectedSurvivalPlot: Record<string, string>;
-  readonly handleSurvivalPlotToggled: (
+  handleSurvivalPlotToggled: (
     symbol: string,
     name: string,
     field: string,

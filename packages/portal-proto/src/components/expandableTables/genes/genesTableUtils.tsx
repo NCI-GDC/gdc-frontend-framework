@@ -24,7 +24,7 @@ export const createTableColumn = (
   handleSurvivalPlotToggled: (
     symbol: string,
     name: string,
-    geneSymbol: string,
+    field: string,
   ) => void,
   setGeneID: Dispatch<SetStateAction<string>>,
 ): TableColumnDefinition => {
@@ -73,6 +73,7 @@ export const createTableColumn = (
                       icon={<SurvivalIcon />}
                       selected={row.original["survival"]}
                       handleSwitch={handleSurvivalPlotToggled}
+                      survivalProps={{ plot: "gene.symbol" }}
                       tooltip={`Click icon to plot ${row.original["survival"].symbol}`}
                     />
                   )}
@@ -374,6 +375,7 @@ export const getGene = (
     select: g.gene_id,
     geneID: g.gene_id,
     survival: {
+      label: g.symbol,
       name: g.name,
       symbol: g.symbol,
       checked: g.symbol == selectedSurvivalPlot?.symbol,

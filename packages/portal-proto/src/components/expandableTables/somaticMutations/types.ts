@@ -1,3 +1,4 @@
+import { Survival } from "../shared/types";
 import { Dispatch } from "react";
 import { Column, SelectedReducer, SelectReducerAction } from "../shared/types";
 
@@ -32,6 +33,7 @@ export interface Annotation {
 }
 
 export interface Consequence {
+  ssm_id: string;
   aa_change: string;
   annotation: Annotation;
   consequence_type: string;
@@ -88,11 +90,7 @@ export interface SomaticMutations {
   cohort: {
     checked: boolean;
   };
-  survival: {
-    checked: boolean;
-    symbol: string;
-    name: string;
-  };
+  survival: Survival;
   impact: Impact;
   subRows: string;
   ssmsTotal: number;
@@ -102,7 +100,7 @@ export interface SomaticMutationsTableProps {
   readonly initialData: any;
   readonly selectedSurvivalPlot: Record<string, string>;
   width: number;
-  readonly handleSurvivalPlotToggled: (
+  handleSurvivalPlotToggled: (
     symbol: string,
     name: string,
     field: string,

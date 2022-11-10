@@ -297,9 +297,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
           <div className={`flex flex-col w-screen`}>
             <GTableContainer
               selectedSurvivalPlot={comparativeSurvival}
-              handleSurvivalPlotToggled={(symbol: string, name: string) =>
-                handleSurvivalPlotToggled(symbol, name, "gene.symbol")
-              }
+              handleSurvivalPlotToggled={handleSurvivalPlotToggled}
             />
           </div>
         </Tabs.Panel>
@@ -330,9 +328,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
           <div className={`flex flex-col w-screen`}>
             <SMTableContainer
               selectedSurvivalPlot={comparativeSurvival}
-              handleSurvivalPlotToggled={(symbol: string, name: string) =>
-                handleSurvivalPlotToggled(symbol, name, "gene.ssm.ssm_id")
-              }
+              handleSurvivalPlotToggled={handleSurvivalPlotToggled}
             />
           </div>
         </Tabs.Panel>

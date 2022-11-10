@@ -108,7 +108,14 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
         );
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visibleColumns, width, selectedMutations, mutationID, setMutationID]);
+  }, [
+    visibleColumns,
+    width,
+    selectedMutations,
+    mutationID,
+    setMutationID,
+    handleSurvivalPlotToggled,
+  ]);
 
   useEffect(() => {
     setExpanded({});

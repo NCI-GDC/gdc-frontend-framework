@@ -9,6 +9,9 @@ interface SwitchSpringProps {
   handleSwitch: any;
   tooltip: string;
   margin: string;
+  survivalProps?: {
+    plot: string;
+  };
 }
 
 const SwitchSpring: React.FC<SwitchSpringProps> = ({
@@ -18,6 +21,7 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
   handleSwitch,
   tooltip = undefined,
   margin,
+  survivalProps,
 }: SwitchSpringProps) => {
   const ballSpring = useSpring({
     width: 20,
@@ -28,6 +32,8 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
   const sliderSpring = useSpring({
     width: 35,
   });
+
+  const { plot = "" } = survivalProps;
 
   return (
     <Tooltip label={`${tooltip}`} disabled={!tooltip}>
@@ -40,7 +46,7 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
           onClick={() => {
             // todo: if used for > 2 icons refactor to use switch(icon) statement
             icon
-              ? handleSwitch(selected?.symbol, selected?.name, "gene.symbol")
+              ? handleSwitch(selected[`symbol`], selected[`name`], plot)
               : handleSwitch(selected);
           }}
         >

@@ -18,7 +18,7 @@ export const SelectedRowContext =
 
 export interface GTableContainerProps {
   readonly selectedSurvivalPlot: Record<string, string>;
-  readonly handleSurvivalPlotToggled: (
+  handleSurvivalPlotToggled: (
     symbol: string,
     name: string,
     field: string,

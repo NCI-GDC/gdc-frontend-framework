@@ -29,7 +29,7 @@ export const createTableColumn = (
   handleSurvivalPlotToggled: (
     symbol: string,
     name: string,
-    geneSymbol: string,
+    field: string,
   ) => void,
   setMutationID: Dispatch<SetStateAction<string>>,
 ): TableColumnDefinition => {
@@ -109,6 +109,7 @@ export const createTableColumn = (
                       margin={`mt-1 ml-0.5`}
                       isActive={row.original["survival"].checked}
                       icon={<SurvivalIcon />}
+                      survivalProps={{ plot: "gene.ssm.ssm_id" }}
                       selected={row.original["survival"]}
                       handleSwitch={handleSurvivalPlotToggled}
                       tooltip={`Click icon to plot ${row.original["survival"].symbol}`}
@@ -403,6 +404,7 @@ export const getMutation = (
   cases: number,
   ssmsTotal: number,
 ): SomaticMutations => {
+  const { ssm_id, genomic_dna_change } = sm;
   const {
     gene = {
       symbol: "",
@@ -418,6 +420,7 @@ export const getMutation = (
     aa_change = "",
     consequence_type = "",
   } = sm.consequence[0] ?? {};
+  console.log("sm", selectedSurvivalPlot, "hmmm", sm);
   return {
     select: sm.ssm_id,
     mutationID: sm.ssm_id,
@@ -440,9 +443,10 @@ export const getMutation = (
       checked: true,
     },
     survival: {
-      name: gene.name,
-      symbol: gene.symbol,
-      checked: gene.symbol == selectedSurvivalPlot?.symbol,
+      label: gene.symbol + " " + aa_change,
+      name: genomic_dna_change,
+      symbol: ssm_id,
+      checked: ssm_id == selectedSurvivalPlot?.symbol,
     },
     impact: {
       polyphenImpact: annotation.polyphen_impact,
