@@ -1,3 +1,5 @@
+import { SelectedReducer, SelectReducerAction, TableType } from "./types";
+
 export const SurvivalIcon = (): JSX.Element => {
   return (
     <svg
@@ -44,4 +46,42 @@ export const searchContains = (
   searchTerm: string,
 ): boolean => {
   return obj[`${field}`].toLowerCase().includes(searchTerm.toLowerCase());
+};
+
+export const genericReducer = <T extends TableType>(
+  selected: SelectedReducer<T>,
+  action: SelectReducerAction<T>,
+) => {
+  const { type, rows } = action;
+  const allSelected = { ...selected };
+  switch (type) {
+    case "select": {
+      const select = rows.map(({ original: { select } }) => select);
+      return { ...selected, [select[0]]: rows[0] };
+    }
+    case "deselect": {
+      const deselect = rows.map(({ original: { select } }) => select)[0];
+      const { [deselect]: deselected, ...rest } = selected as
+        | any
+        | SelectedReducer<T>;
+      return rest;
+    }
+    case "selectAll": {
+      const selectAll = rows.map(({ original: { select } }) => select);
+      selectAll.forEach((id, idx) => {
+        // excludes subrow(s)
+        if (!rows[idx].id.includes(".")) {
+          allSelected[id] = rows[idx];
+        }
+      });
+      return allSelected;
+    }
+    case "deselectAll": {
+      const deselectAll = rows.map(({ original: { select } }) => select);
+      deselectAll.forEach((id) => {
+        delete allSelected[id];
+      });
+      return allSelected;
+    }
+  }
 };

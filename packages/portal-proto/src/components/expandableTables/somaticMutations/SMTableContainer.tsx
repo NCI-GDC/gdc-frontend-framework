@@ -10,6 +10,7 @@ import TablePlaceholder from "../shared/TablePlaceholder";
 import { SomaticMutations, DEFAULT_SMTABLE_ORDER } from "./types";
 import { SelectedReducer, SelectReducerAction } from "../shared/types";
 import { TableFilters } from "../shared/TableFilters";
+import { genericReducer } from "../shared/sharedTableUtils";
 
 export const SelectedRowContext =
   createContext<
@@ -50,46 +51,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     setColumnListOrder(columnUpdate);
   };
 
-  const reducer = (
-    selected: SelectedReducer<SomaticMutations>,
-    action: SelectReducerAction<SomaticMutations>,
-  ) => {
-    const { type, rows } = action;
-    const allSelected = { ...selected };
-    switch (type) {
-      case "select": {
-        const select = rows.map(({ original: { select } }) => select);
-        return { ...selected, [select[0]]: rows[0] };
-      }
-      case "deselect": {
-        //todo https://github.com/microsoft/TypeScript/issues/29259
-        const deselect = rows.map(({ original: { select } }) => select)[0];
-        const { [deselect]: deselected, ...remaining } = selected as
-          | any
-          | SelectedReducer<SomaticMutations>;
-        return remaining;
-      }
-      case "selectAll": {
-        const selectAll = rows.map(({ original: { select } }) => select);
-        selectAll.forEach((id, idx) => {
-          // excludes subrow(s)
-          if (!rows[idx].id.includes(".")) {
-            allSelected[id] = rows[idx];
-          }
-        });
-        return allSelected;
-      }
-      case "deselectAll": {
-        const deselectAll = rows.map(({ original: { select } }) => select);
-        deselectAll.forEach((id) => {
-          delete allSelected[id];
-        });
-        return allSelected;
-      }
-    }
-  };
   const [selectedMutations, setSelectedMutations] = useReducer(
-    reducer,
+    genericReducer,
     {} as SelectedReducer<SomaticMutations>,
   );
   const [smTotal, setSMTotal] = useState(0);

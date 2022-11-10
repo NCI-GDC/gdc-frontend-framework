@@ -10,6 +10,7 @@ import TableControls from "../shared/TableControls";
 import TablePlaceholder from "../shared/TablePlaceholder";
 import { SelectedReducer, SelectReducerAction } from "../shared/types";
 import { TableFilters } from "../shared/TableFilters";
+import { genericReducer } from "../shared/sharedTableUtils";
 
 export const SelectedRowContext =
   createContext<
@@ -47,46 +48,8 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     setColumnListOrder(columnUpdate);
   };
 
-  const reducer = (
-    selected: SelectedReducer<Genes>,
-    action: SelectReducerAction<Genes>,
-  ) => {
-    const { type, rows } = action;
-    const allSelected = { ...selected };
-    switch (type) {
-      case "select": {
-        const select = rows.map(({ original: { select } }) => select);
-        return { ...selected, [select[0]]: rows[0] };
-      }
-      case "deselect": {
-        const deselect = rows.map(({ original: { select } }) => select)[0];
-        const { [deselect]: deselected, ...rest } = selected as
-          | any
-          | SelectedReducer<Genes>;
-        return rest;
-      }
-      case "selectAll": {
-        const selectAll = rows.map(({ original: { select } }) => select);
-        selectAll.forEach((id, idx) => {
-          // excludes subrow(s)
-          if (!rows[idx].id.includes(".")) {
-            allSelected[id] = rows[idx];
-          }
-        });
-        return allSelected;
-      }
-      case "deselectAll": {
-        const deselectAll = rows.map(({ original: { select } }) => select);
-        deselectAll.forEach((id) => {
-          delete allSelected[id];
-        });
-        return allSelected;
-      }
-    }
-  };
-
   const [selectedGenes, setSelectedGenes] = useReducer(
-    reducer,
+    genericReducer,
     {} as SelectedReducer<Genes>,
   );
   const [gTotal, setGTotal] = useState(0);
