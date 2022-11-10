@@ -90,7 +90,7 @@ const CollapsibleRow = ({
     );
   } else {
     return (
-      <div className="flex flex-row nowrap justify-between items-center">
+      <div className="flex flex-row nowrap justify-between items-center w-full">
         {collapsed ? (
           <div
             onClick={() => handleExpand(row)}
@@ -105,7 +105,7 @@ const CollapsibleRow = ({
             <span className="whitespace-nowrap">
               {value.length.toLocaleString().padStart(6)} {label}
             </span>
-            <DownIcon size="1.25em" className="text-secondary-light mx-2" />
+            <DownIcon size="1.25em" className="text-secondary-light" />
           </div>
         ) : (
           <div
@@ -123,7 +123,7 @@ const CollapsibleRow = ({
                 {value.length.toLocaleString().padStart(6)} {label}
               </b>
             </span>
-            <UpIcon size="1.25em" className="text-secondary-light mx-2" />
+            <UpIcon size="1.25em" className="text-secondary-light" />
           </div>
         )}
       </div>
