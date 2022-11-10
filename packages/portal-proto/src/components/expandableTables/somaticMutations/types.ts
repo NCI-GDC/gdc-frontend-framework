@@ -77,8 +77,14 @@ export interface SomaticMutations {
     symbol: string;
     aaChange: string;
   };
-  affectedCasesInCohort: string;
-  affectedCasesAcrossTheGDC: string;
+  affectedCasesInCohort: {
+    numerator: number;
+    denominator: number;
+  };
+  affectedCasesAcrossTheGDC: {
+    numerator: number;
+    denominator: number;
+  };
   cohort: {
     checked: boolean;
   };

@@ -4,17 +4,14 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 import { animated } from "react-spring";
 import CheckboxSpring from "../shared/CheckboxSpring";
 import SwitchSpring from "../shared/SwitchSpring";
+import RatioSpring from "../shared/RatioSpring";
 import {
   SelectedReducer,
   TableColumnDefinition,
   WidthSpring,
 } from "../shared/types";
 import { SurvivalIcon, AnnotationsIcon } from "../shared/sharedTableUtils";
-import {
-  TableCell,
-  TableHeader,
-  AffectedCases,
-} from "../shared/sharedTableCells";
+import { TableCell, TableHeader } from "../shared/sharedTableCells";
 import { Genes, SingleGene, Gene } from "./types";
 import { Tooltip } from "@mantine/core";
 import { SelectReducerAction } from "../shared/types";
@@ -128,6 +125,9 @@ export const createTableColumn = (
               />
             ),
             cell: ({ row }) => {
+              const { numerator, denominator } = row?.original[
+                "SSMSAffectedCasesInCohort"
+              ] ?? { numerator: 0, denominator: 1 };
               return (
                 <animated.div
                   style={partitionWidth}
@@ -135,14 +135,10 @@ export const createTableColumn = (
                 >
                   <div className={`flex flex-col`}>
                     {row.getCanExpand() && (
-                      <AffectedCases
-                        ratio={
-                          row?.original[`SSMSAffectedCasesInCohort`]?.split(" ")
-                            ? row.original[`SSMSAffectedCasesInCohort`].split(
-                                " ",
-                              )
-                            : [0, "", "", ""]
-                        }
+                      <RatioSpring
+                        index={0}
+                        item={{ numerator, denominator }}
+                        orientation={"vertical"}
                       />
                     )}
                   </div>
@@ -168,22 +164,19 @@ export const createTableColumn = (
               />
             ),
             cell: ({ row }) => {
+              const { numerator, denominator } = row?.original[
+                "SSMSAffectedCasesAcrossTheGDC"
+              ] ?? { numerator: 0, denominator: 1 };
               return (
                 <animated.div
                   style={partitionWidth}
                   className={`content-center`}
                 >
                   {row.getCanExpand() && (
-                    <AffectedCases
-                      ratio={
-                        row?.original[`SSMSAffectedCasesAcrossTheGDC`]?.split(
-                          " ",
-                        )
-                          ? row.original[`SSMSAffectedCasesAcrossTheGDC`].split(
-                              " ",
-                            )
-                          : [0, "", "", ""]
-                      }
+                    <RatioSpring
+                      index={0}
+                      item={{ numerator, denominator }}
+                      orientation={"vertical"}
                     />
                   )}
                   {row.getCanExpand() && (
@@ -389,19 +382,14 @@ export const getGene = (
     name: g.name,
     type: g.biotype,
     cytoband: g.cytoband,
-    SSMSAffectedCasesInCohort:
-      g.ssm_case > 0
-        ? `${g.ssm_case} / ${filteredCases} (${(
-            (100 * g.ssm_case) /
-            filteredCases
-          ).toFixed(2)}%)`
-        : `0`,
-    SSMSAffectedCasesAcrossTheGDC:
-      g.ssm_case > 0
-        ? `${g.ssm_case} / ${cases} (${((100 * g.ssm_case) / cases).toFixed(
-            2,
-          )}%)`
-        : `0`,
+    SSMSAffectedCasesInCohort: {
+      numerator: g.ssm_case,
+      denominator: filteredCases,
+    },
+    SSMSAffectedCasesAcrossTheGDC: {
+      numerator: g.ssm_case,
+      denominator: cases,
+    },
     CNVGain:
       g.cnv_case > 0
         ? `${g.case_cnv_gain} / ${g.cnv_case} (${(

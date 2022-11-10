@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { animated, useSpring } from "react-spring";
 import { useMeasure } from "react-use";
-import ItemSpring from "./ItemSpring";
+import RatioSpring from "./RatioSpring";
 
 interface ListSpringProps {
   subData: any;
@@ -32,7 +32,9 @@ const ListSpring: React.FC<ListSpringProps> = ({
       item: { numerator: number; denominator: number; project: string },
       index: number,
     ) => {
-      return <ItemSpring key={index} item={item} index={index} />;
+      return (
+        <RatioSpring item={item} index={index} orientation={"horizontal"} />
+      );
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [subData],

@@ -31,8 +31,14 @@ export interface Gene {
   mutations: string;
   subRows: string;
   genesTotal: number;
-  SSMSAffectedCasesInCohort: string;
-  SSMSAffectedCasesAcrossTheGDC: string;
+  SSMSAffectedCasesInCohort: {
+    numerator: number;
+    denominator: number;
+  };
+  SSMSAffectedCasesAcrossTheGDC: {
+    numerator: number;
+    denominator: number;
+  };
 }
 
 export type Genes = {
@@ -41,7 +47,10 @@ export type Genes = {
   symbol: string;
   name: string;
   survival: Survival;
-  SSMSAffectedCasesInCohort: string;
+  SSMSAffectedCasesInCohort: {
+    numerator: number;
+    denominator: number;
+  };
   SSMSAffectedCasesAcrossTheGDC: string;
   CNVGain: string;
   CNVLoss: string;
@@ -49,18 +58,6 @@ export type Genes = {
   annotations: boolean;
   subRows: string;
 };
-
-export interface Gene {
-  symbol: string;
-  name: string;
-  survival: Survival;
-  SSMSAffectedCasesInCohort: string;
-  SSMSAffectedCasesAcrossTheGDC: string;
-  CNVGain: string;
-  CNVLoss: string;
-  mutations: string;
-  annotations: boolean;
-}
 
 export interface GenesTableProps {
   readonly initialData: any; // need to add this from response

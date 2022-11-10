@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction } from "react";
 import { animated } from "react-spring";
 import ToggleSpring from "../shared/ToggleSpring";
 import SwitchSpring from "../shared/SwitchSpring";
+import RatioSpring from "../shared/RatioSpring";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import {
   SelectedReducer,
@@ -165,16 +166,18 @@ export const createTableColumn = (
               />
             ),
             cell: ({ row }) => {
+              const { numerator, denominator } = row?.original[
+                "affectedCasesAcrossTheGDC"
+              ] ?? { numerator: 0, denominator: 1 };
               return (
                 <animated.div
                   style={partitionWidth}
                   className={`content-center`}
                 >
-                  <TableCell
-                    row={row}
-                    accessor={accessor}
-                    anchor={false}
-                    tooltip={""}
+                  <RatioSpring
+                    index={0}
+                    item={{ numerator, denominator }}
+                    orientation={"vertical"}
                   />
                   {row.getCanExpand() && (
                     <div className={`text-center`}>
@@ -221,10 +224,9 @@ export const createTableColumn = (
             ),
             cell: ({ row }) => {
               // eslint-disable-next-line @typescript-eslint/no-unused-vars
-              const [numerator, _, denominator, __] = row.original[
+              const { numerator, denominator } = row?.original[
                 "affectedCasesInCohort"
-              ]?.split(" ") ?? ["0", "", "", ""];
-
+              ] ?? { numerator: 0, denominator: 1 };
               return (
                 <animated.div
                   style={partitionWidth}
@@ -232,11 +234,10 @@ export const createTableColumn = (
                 >
                   {row.getCanExpand() && (
                     <>
-                      <TableCell
-                        row={row}
-                        accessor={accessor}
-                        anchor={false}
-                        tooltip={""}
+                      <RatioSpring
+                        index={0}
+                        item={{ numerator, denominator }}
+                        orientation={"vertical"}
                       />
                       <PercentageBar
                         numerator={numerator}
@@ -379,8 +380,14 @@ export type MutationsColumn = {
     symbol: string;
     aaChange: string;
   };
-  affectedCasesInCohort: string;
-  affectedCasesAcrossTheGDC: string;
+  affectedCasesInCohort: {
+    numerator: number;
+    denominator: number;
+  };
+  affectedCasesAcrossTheGDC: {
+    numerator: number;
+    denominator: number;
+  };
   survival: Survival;
   impact: Impact;
   subRows: string;
@@ -409,7 +416,7 @@ export const getMutation = (
     aa_change = "",
     consequence_type = "",
   } = sm.consequence[0] ?? {};
-
+  console.log("filtered cases", filteredCases);
   return {
     select: sm.ssm_id,
     mutationID: sm.ssm_id,
@@ -420,20 +427,14 @@ export const getMutation = (
       symbol: gene.symbol,
       aaChange: aa_change,
     },
-    affectedCasesInCohort:
-      sm.filteredOccurrences > 0
-        ? `${sm.filteredOccurrences} / ${filteredCases} (${(
-            (100 * sm.filteredOccurrences) /
-            filteredCases
-          ).toFixed(2)}%)`
-        : `--`,
-    affectedCasesAcrossTheGDC:
-      sm.occurrence > 0
-        ? `${sm.occurrence} / ${cases} (${(
-            (100 * sm.occurrence) /
-            cases
-          ).toFixed(2)}%)`
-        : `--`,
+    affectedCasesInCohort: {
+      numerator: sm.filteredOccurrences,
+      denominator: filteredCases,
+    },
+    affectedCasesAcrossTheGDC: {
+      numerator: sm.occurrence,
+      denominator: cases,
+    },
     cohort: {
       checked: true,
     },
