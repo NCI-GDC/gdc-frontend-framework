@@ -397,7 +397,7 @@ interface SplitFilterSet {
 
 const divideFilterSetByPrefix = (
   filters: FilterSet,
-  prefix: string,
+  prefixes: string[],
 ): SplitFilterSet => {
   const results = Object.entries(filters.root).reduce(
     (
@@ -407,7 +407,8 @@ const divideFilterSetByPrefix = (
       },
       [key, val],
     ) => {
-      if (key.startsWith(prefix)) newObj.withPrefix[key] = val;
+      if (prefixes.some((prefix) => key.startsWith(prefix)))
+        newObj.withPrefix[key] = val;
       else newObj.withoutPrefix[key] = val;
       return newObj;
     },
@@ -428,7 +429,7 @@ const divideFilterSetByPrefix = (
  */
 export const divideCurrentCohortFilterSetFilterByPrefix = (
   state: CoreState,
-  prefix: string,
+  prefixes: string[],
 ): SplitFilterSet | undefined => {
   const cohort = cohortSelectors.selectById(
     state,
@@ -436,7 +437,7 @@ export const divideCurrentCohortFilterSetFilterByPrefix = (
   );
   if (cohort === undefined) return undefined;
 
-  return divideFilterSetByPrefix(cohort?.filters, prefix);
+  return divideFilterSetByPrefix(cohort?.filters, prefixes);
 };
 
 /**
