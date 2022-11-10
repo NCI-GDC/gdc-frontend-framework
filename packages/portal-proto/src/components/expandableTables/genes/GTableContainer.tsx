@@ -208,7 +208,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                   {`${((page + 1) * pageSize < gTotal
                     ? (page + 1) * pageSize
                     : gTotal
-                  ).toLocaleString("en-US")}`}
+                  ).toLocaleString("en-US")} `}
                 </span>
                 of
                 <span className={`font-bold`}>{` ${gTotal.toLocaleString(
