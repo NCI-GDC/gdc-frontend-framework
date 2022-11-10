@@ -12,6 +12,10 @@ const PercentageBar: React.FC<PercentageBarProps> = ({
   denominator,
   scale,
 }: PercentageBarProps) => {
+  const [n, d] = [
+    denominator === 0 ? 0 : numerator,
+    denominator === 0 ? 1 : denominator,
+  ];
   const handleEdgeWidth = (ratio) => {
     return Math.floor(ratio * 100) <= 6
       ? 0.055
@@ -22,15 +26,14 @@ const PercentageBar: React.FC<PercentageBarProps> = ({
 
   const nSpring = useSpring({
     from: { width: 0 },
-    to: { width: handleEdgeWidth(numerator / denominator) * (scale / 2) },
+    to: { width: handleEdgeWidth(n / d) * (scale / 2) },
     immediate: true,
   });
 
   const dSpring = useSpring({
     from: { width: scale / 2 },
     to: {
-      width:
-        handleEdgeWidth((denominator - numerator) / denominator) * (scale / 2),
+      width: handleEdgeWidth((d - n) / d) * (scale / 2),
     },
     immediate: true,
   });

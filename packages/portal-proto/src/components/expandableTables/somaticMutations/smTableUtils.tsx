@@ -416,7 +416,7 @@ export const getMutation = (
     aa_change = "",
     consequence_type = "",
   } = sm.consequence[0] ?? {};
-  console.log("filtered cases", filteredCases);
+
   return {
     select: sm.ssm_id,
     mutationID: sm.ssm_id,

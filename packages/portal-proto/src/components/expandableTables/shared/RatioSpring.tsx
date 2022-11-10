@@ -27,7 +27,7 @@ const RatioSpring: React.FC<RatioSpringProps> = ({
   const { numerator, denominator, project } = item;
   const [n, d] = [
     denominator === 0 ? 0 : numerator,
-    denominator === 0 ? 0 : denominator,
+    denominator === 0 ? 1 : denominator,
   ];
   return (
     <>
