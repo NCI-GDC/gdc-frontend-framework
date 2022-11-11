@@ -243,10 +243,6 @@ const AssociatedCB = ({
     return tableRows;
   }, [associatedCBSearchTerm, associated_entities, cases]);
 
-  const handleSearchChange = (term: string) => {
-    setAssociatedCBSearchTerm(term);
-  };
-
   const {
     handlePageChange,
     handlePageSizeChange,
@@ -265,6 +261,9 @@ const AssociatedCB = ({
         break;
       case "newPageNumber":
         handlePageChange(obj.newPageNumber);
+        break;
+      case "newSearch":
+        setAssociatedCBSearchTerm(obj.newSearch);
         break;
     }
   };
@@ -303,7 +302,7 @@ const AssociatedCB = ({
       }}
       status={"fulfilled"}
       search={{
-        handleSearchChange,
+        enabled: true,
       }}
       handleChange={handleChange}
     />

@@ -119,23 +119,27 @@ interface VerticalTableProps {
    * - data when `fulfilled`
    */
   status?: DataStatus;
+  /**
+   * optional search bar to display in top right of table
+   */
   search?: {
+    /**
+     * show search bar
+     */
+    enabled: boolean;
     /**
      * placeholder to display in search input
      */
     placeholder?: string;
-    /**
-     * callback to handle search term change
-     */
-    handleSearchChange: (term: string) => void;
   };
 }
 
 /**
  * Callback to handle changes to table
- * @parm {number} showControls - optional page on
- * @parm {string} pagination - optional size of data set shown
- * @parm  {id: string,  desc: boolean} status - optional column sort
+ * @parm {number} newPageNumber - optional page on
+ * @parm {string} newPageSize - optional size of data set shown
+ * @parm  {id: string,  desc: boolean} sortBy - optional column sort
+ * @parm {string} newSearch - optional search term change
  */
 export interface HandleChangeInput {
   /**
@@ -153,6 +157,10 @@ export interface HandleChangeInput {
     id: string;
     desc: boolean;
   }[];
+  /**
+   * search term change
+   */
+  newSearch?: string;
 }
 
 interface Column {
@@ -179,7 +187,7 @@ interface TableProps {
  * @parm {string} tableTitle - caption to display at top of table
  * @parm {React.ReactNode} additionalControls - html block left of column sorting controls
  * @parm {string} columnSorting - allow sorting by column
- * @parm {boolean} showControls - shows column sorting controls and search bar defaults to true
+ * @parm {boolean} showControls - shows column sorting controls defaults to true
  * @parm {object} pagination - optional pagination controls at bottom of table
  * @parm {string} status - optional shows loading state
  * @parm {object} search - optional, search options
@@ -459,7 +467,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
               </Popover.Dropdown>
             </Popover>
           )}
-          {search && (
+          {search?.enabled && (
             <div className="flex flex-row w-max float-right">
               <input
                 className="mr-2 rounded-sm border-1 border-base-lighter px-1"
@@ -467,7 +475,9 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 placeholder={search.placeholder ?? "Search"}
                 onChange={(e) => {
                   setSearchTerm(e.target.value);
-                  search.handleSearchChange(e.target.value);
+                  handleChange({
+                    newSearch: e.target.value,
+                  });
                 }}
                 value={searchTerm}
               />
