@@ -54,7 +54,7 @@ const ProjectsTable: React.FC = () => {
   const columnListOrder = [
     {
       id: "selected",
-      columnName: "",
+      columnName: "Selecti ",
       visible: true,
       Header: ({ data }: TableInstance) => {
         const projectIds = data.map((x) => x.selected);
