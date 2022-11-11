@@ -202,7 +202,7 @@ const ProjectsTable: React.FC = () => {
       tableTitle={`Total of ${tempPagination?.total} projects`}
       additionalControls={
         <div className="flex gap-2">
-          <ProjectsCohortButton></ProjectsCohortButton>
+          <ProjectsCohortButton />
           <FunctionButton>JSON</FunctionButton>
           <FunctionButton>TSV</FunctionButton>
         </div>

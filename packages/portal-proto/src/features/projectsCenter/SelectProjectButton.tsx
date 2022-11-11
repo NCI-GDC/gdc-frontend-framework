@@ -17,13 +17,7 @@ interface SelectAllProjectButtonProps {
   projectIds: ReadonlyArray<string>;
 }
 
-interface SelectProjectButtonProps {
-  readonly projectId: string;
-}
-
-export const SelectProjectButton = ({
-  projectId,
-}: SelectProjectButtonProps): JSX.Element => {
+export const SelectProjectButton = (projectId: string): JSX.Element => {
   const pickedProjects = useAppSelector((state) => selectPickedProjects(state));
   const dispatch = useAppDispatch();
   const [checked, setChecked] = useState(pickedProjects.includes(projectId));
@@ -43,13 +37,13 @@ export const SelectProjectButton = ({
           dispatch(addProject({ projectId: projectId }));
         else dispatch(removeProject(projectId));
       }}
-    ></Checkbox>
+    />
   );
 };
 
-export const SelectAllProjectsButton = ({
-  projectIds,
-}: SelectAllProjectButtonProps): JSX.Element => {
+export const SelectAllProjectsButton = (
+  projectIds: ReadonlyArray<string>,
+): JSX.Element => {
   const pickedProjects = useAppSelector((state) => selectPickedProjects(state));
   const dispatch = useAppDispatch();
   const [checked, setChecked] = useState(false);
