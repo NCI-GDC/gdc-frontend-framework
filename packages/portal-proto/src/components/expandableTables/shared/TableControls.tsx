@@ -12,6 +12,7 @@ interface TableControlsProps {
   label: string;
   options: ControlOption[];
   additionalControls?: React.ReactNode;
+  total: number;
 }
 
 export const TableControls: React.FC<TableControlsProps> = ({
@@ -19,6 +20,7 @@ export const TableControls: React.FC<TableControlsProps> = ({
   label,
   options,
   additionalControls,
+  total,
 }: TableControlsProps) => {
   const [selectedOption, setSelectedOption] = useState<ControlOption>(
     options[0],
@@ -111,6 +113,14 @@ export const TableControls: React.FC<TableControlsProps> = ({
         </button>
       </div>
       <div className={`ml-3 mt-3.5 float-left`}>{additionalControls}</div>
+      <div className={`ml-2 text-sm relative`}>
+        {total !== 0 && (
+          <div className={`flex flex-row absolute w-60 mt-5 ml-5 font-bold`}>
+            Total of {total.toLocaleString("en-US")} {label}
+            {"s"}
+          </div>
+        )}
+      </div>
     </>
   );
 };

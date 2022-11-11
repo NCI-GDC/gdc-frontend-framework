@@ -114,6 +114,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         <div className={`w-9/12`}>
           <div className={`flex flex-row float-left ml-2 mb-4`}>
             <TableControls
+              total={smTotal}
               numSelected={Object.keys(selectedMutations).length ?? 0}
               label={`Mutation`}
               options={[

@@ -15,6 +15,7 @@ import { TableCell, TableHeader } from "../shared/sharedTableCells";
 import { Genes, SingleGene, Gene } from "./types";
 import { Tooltip } from "@mantine/core";
 import { SelectReducerAction } from "../shared/types";
+import { Image } from "@/components/Image";
 
 export const createTableColumn = (
   accessor: string,
@@ -47,6 +48,39 @@ export const createTableColumn = (
                       select={row}
                       handleCheck={setSelectedGenes}
                       multi={false}
+                    />
+                  )}
+                </>
+              );
+            },
+          },
+        ],
+      };
+    case "cohort":
+      return {
+        header: " ",
+        footer: (props) => props.column.id,
+        columns: [
+          {
+            accessorKey: accessor,
+            header: () => <TableHeader title={accessor} tooltip={""} />,
+            cell: ({ row }) => {
+              return (
+                <>
+                  {row.getCanExpand() && (
+                    <SwitchSpring
+                      isActive={row.original["cohort"].checked}
+                      margin={`my-0.5 ml-0`}
+                      icon={
+                        <Image
+                          src={"/user-flow/icons/cohort-dna.svg"}
+                          width={16}
+                          height={16}
+                        />
+                      }
+                      selected={row.original["cohort"]}
+                      handleSwitch={undefined} // handleCohortSwitch
+                      tooltip={""}
                     />
                   )}
                 </>
@@ -100,7 +134,7 @@ export const createTableColumn = (
                   {row.getCanExpand() && (
                     <Tooltip label={"Cancer Gene Census"}>
                       <div className={`block m-auto w-max`}>
-                        <AnnotationsIcon />
+                        {row.original["annotations"] && <AnnotationsIcon />}
                       </div>
                     </Tooltip>
                   )}
@@ -324,13 +358,8 @@ export const createTableColumn = (
             ),
             cell: ({ row }) => {
               return (
-                <animated.div style={partitionWidth}>
-                  <TableCell
-                    row={row}
-                    accessor={accessor}
-                    anchor={false}
-                    tooltip={""}
-                  />
+                <animated.div className={`text-xs`} style={partitionWidth}>
+                  {row.original["mutations"].toLocaleString("en-US")}
                 </animated.div>
               );
             },
@@ -371,6 +400,7 @@ export const getGene = (
   cases: number,
   genesTotal: number,
 ): Gene => {
+  console.log("g", g);
   return {
     select: g.gene_id,
     geneID: g.gene_id,
@@ -379,6 +409,9 @@ export const getGene = (
       name: g.name,
       symbol: g.symbol,
       checked: g.symbol == selectedSurvivalPlot?.symbol,
+    },
+    cohort: {
+      checked: true,
     },
     symbol: g.symbol,
     name: g.name,

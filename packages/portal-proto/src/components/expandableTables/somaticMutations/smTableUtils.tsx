@@ -14,16 +14,13 @@ import { TableCell, TableHeader } from "../shared/sharedTableCells";
 import { ProteinChange, Impacts, Consequences } from "./smTableCells";
 import { SingleSomaticMutation, SomaticMutations, Impact } from "./types";
 import CheckboxSpring from "../shared/CheckboxSpring";
-import PercentageBar from "../shared/PercentageBar";
 import { Survival } from "../shared/types";
 import { TableColumnDefinition, WidthSpring } from "../shared/types";
 import { Image } from "@/components/Image";
 
 export const createTableColumn = (
   accessor: string,
-  width: number,
   partitionWidth: WidthSpring,
-  visibleColumns: TableColumnState[],
   selectedMutations: SelectedReducer<SomaticMutations>,
   setSelectedMutations: Dispatch<SelectReducerAction<SomaticMutations>>,
   handleSurvivalPlotToggled: (
@@ -241,11 +238,6 @@ export const createTableColumn = (
                         index={0}
                         item={{ numerator, denominator }}
                         orientation={"vertical"}
-                      />
-                      <PercentageBar
-                        numerator={numerator}
-                        denominator={denominator}
-                        scale={width / visibleColumns?.length ?? 80}
                       />
                     </>
                   )}

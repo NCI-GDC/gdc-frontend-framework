@@ -12,7 +12,10 @@ export const TableHeader = ({
   return (
     <>
       <Tooltip label={tooltip} disabled={!tooltip?.length}>
-        <div>{_.startCase(title)}</div>
+        <div>
+          {(title.includes("CNV") || title.includes("Affected")) && "#"}{" "}
+          {_.startCase(title)}
+        </div>
       </Tooltip>
     </>
   );

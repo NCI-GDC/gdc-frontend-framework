@@ -21,6 +21,9 @@ export interface Gene {
   geneID: string;
   name: string;
   type: string;
+  cohort: {
+    checked: boolean;
+  };
   symbol: string;
   survival: Survival;
   CNVGain: string;
@@ -79,6 +82,7 @@ export interface GenesTableProps {
 
 export const DEFAULT_GTABLE_ORDER = [
   { id: "select", columnName: "Select", visible: true },
+  { id: "cohort", columnName: "cohort", visible: true },
   { id: "survival", columnName: "Survival", visible: true },
   { id: "geneID", columnName: "Gene ID", visible: false },
   { id: "symbol", columnName: "Symbol", visible: true },
@@ -87,16 +91,16 @@ export const DEFAULT_GTABLE_ORDER = [
   { id: "type", columnName: "Type", visible: false },
   {
     id: "SSMSAffectedCasesInCohort",
-    columnName: "# SSMS Affected Cases In Cohort",
+    columnName: "#SSM Affected Cases In Cohort",
     visible: true,
   },
   {
     id: "SSMSAffectedCasesAcrossTheGDC",
-    columnName: "# SSMS Affected Cases Across The GDC",
+    columnName: "SSM Affected Cases Across The GDC",
     visible: true,
   },
-  { id: "CNVGain", columnName: "# CNV Gain", visible: true },
-  { id: "CNVLoss", columnName: "# CNV Loss", visible: true },
+  { id: "CNVGain", columnName: "CNV Gain", visible: true },
+  { id: "CNVLoss", columnName: "CNV Loss", visible: true },
   { id: "mutations", columnName: "Mutations", visible: true },
   { id: "annotations", columnName: "Annotations", visible: true },
 ];

@@ -110,6 +110,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         <div className={`w-9/12`}>
           <div className={`flex flex-row float-left ml-2 mb-4`}>
             <TableControls
+              total={gTotal}
               numSelected={Object.keys(selectedGenes).length ?? 0}
               label={`Gene`}
               options={[
@@ -138,6 +139,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               }
             />
           </div>
+
           <div className={`flex flex-row float-right mr-2`}>
             <TableFilters
               search={searchTerm}

@@ -98,9 +98,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
       .map((accessor) => {
         return createTableColumn(
           accessor,
-          width,
           partitionWidth,
-          visibleColumns,
           selectedMutations,
           setSelectedMutations,
           handleSurvivalPlotToggled,

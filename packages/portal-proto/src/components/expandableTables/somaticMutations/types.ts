@@ -3,11 +3,11 @@ import { Column, SelectedReducer, SelectReducerAction } from "../shared/types";
 
 export const DEFAULT_SMTABLE_ORDER = [
   { id: "select", columnName: "Select", visible: true },
-  { id: "cohort", columnName: "cohort", visible: false },
+  { id: "cohort", columnName: "cohort", visible: true },
   { id: "survival", columnName: "Survival", visible: true },
   { id: "mutationID", columnName: "Mutation ID", visible: false },
   { id: "DNAChange", columnName: "DNA Change", visible: true },
-  { id: "type", columnName: "Type", visible: false },
+  { id: "type", columnName: "Type", visible: true },
   { id: "consequences", columnName: "Consequences", visible: true },
   { id: "proteinChange", columnName: "Protein Change", visible: true },
   {
