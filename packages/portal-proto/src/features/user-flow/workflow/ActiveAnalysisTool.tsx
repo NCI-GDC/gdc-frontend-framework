@@ -10,21 +10,23 @@ const importApplication = (app) =>
 
 export interface AnalysisToolInfo {
   readonly appId: string;
+  readonly onLoaded: () => void;
 }
 
 const ActiveAnalysisTool: React.FC<AnalysisToolInfo> = ({
   appId,
+  onLoaded,
 }: AnalysisToolInfo) => {
   const [analysisApp, setAnalysisApp] = useState(undefined);
 
   useEffect(() => {
     async function loadApp() {
       const AnalysisApp = await importApplication(appId);
-      return <AnalysisApp />;
+      return <AnalysisApp onLoaded={onLoaded} />;
     }
 
     loadApp().then(setAnalysisApp);
-  }, [appId]);
+  }, [appId, onLoaded]);
 
   return (
     <Suspense
