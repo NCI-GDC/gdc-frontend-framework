@@ -32,6 +32,8 @@ import { fileInCart } from "src/utils";
 import { GeneralErrorModal } from "@/components/Modals/GeneraErrorModal";
 import { TableActionButtons } from "@/components/TableActionButtons";
 import saveAs from "file-saver";
+import { VerticalTable } from "@/features/shared/VerticalTable";
+import useStandardPagination from "@/hooks/useStandardPagination";
 
 export const StyledButton = tw.button`
 bg-base-lightest
@@ -63,6 +65,18 @@ text-lg font-semibold font-heading mx-4 ml-2
 const TitleHeader = tw.div`
 bg-base-lighter text-base-contrast-lighter rounded-t-md
 `;
+
+const getAnnotationsLinkParams = (
+  annotations: readonly string[],
+  case_id: string,
+) => {
+  if (!annotations) return null;
+
+  if (annotations.length === 1) {
+    return `https://portal.gdc.cancer.gov/annotations/${annotations[0]}`;
+  }
+  return `https://portal.gdc.cancer.gov/annotations?filters={"content":[{"content":{"field":"annotations.entity_id","value":["${case_id}"]},"op":"in"}],"op":"and"}`;
+};
 
 //temp table component until global one is done
 interface TempTableProps {
@@ -115,6 +129,174 @@ export const TempTable = ({ tableData }: TempTableProps): JSX.Element => {
   );
 };
 
+const GenericLink = ({
+  path,
+  query,
+  text,
+}: {
+  path: string;
+  query?: Record<string, string>;
+  text: string;
+}): JSX.Element => {
+  const hrefObj: { pathname: string; query?: Record<string, string> } = {
+    pathname: path,
+  };
+  if (query) {
+    hrefObj.query = query;
+  }
+  return (
+    <Link href={hrefObj}>
+      <a className="text-utility-link underline text-sm">{text}</a>
+    </Link>
+  );
+};
+
+const AssociatedCB = ({
+  cases,
+  associated_entities,
+}: {
+  cases: GdcFile["cases"];
+  associated_entities: GdcFile["associated_entities"];
+}): JSX.Element => {
+  const [associatedCBSearchTerm, setAssociatedCBSearchTerm] = useState("");
+
+  const data = useMemo(() => {
+    const tableRows = [];
+
+    associated_entities?.forEach((entity) => {
+      // find matching id from cases
+      const caseData = cases?.find(
+        (caseObj) => caseObj.case_id === entity.case_id,
+      );
+
+      // get sample_type from casedata through matching its submitter_id
+      const sample_type =
+        caseData?.samples?.find((sample) => {
+          // match entity_submitter_id
+
+          // get submitter_id from diferent paths
+          const portion = sample.portions?.[0];
+          let entity_id = sample.submitter_id;
+          if (portion.analytes?.[0]?.aliquots?.[0]?.submitter_id) {
+            entity_id = portion.analytes?.[0]?.aliquots?.[0]?.submitter_id;
+          } else if (portion.slides?.[0]?.submitter_id) {
+            entity_id = portion.slides?.[0]?.submitter_id;
+          } else if (portion.submitter_id) {
+            entity_id = portion.submitter_id;
+          }
+          return entity_id === entity.entity_submitter_id;
+        })?.sample_type || "--";
+
+      let entityQuery;
+      if (entity.entity_type !== "case") {
+        entityQuery = { bioId: entity.entity_id };
+      }
+
+      const url = getAnnotationsLinkParams(
+        caseData?.annotations,
+        caseData.case_id,
+      );
+
+      const annotationsLink = url ? (
+        <Link href={url} passHref>
+          <a className="text-utility-link underline" target={"_blank"}>
+            {caseData.annotations.length}
+          </a>
+        </Link>
+      ) : (
+        0
+      );
+
+      if (
+        associatedCBSearchTerm === "" ||
+        entity.entity_submitter_id
+          .toLowerCase()
+          .includes(associatedCBSearchTerm.toLowerCase()) ||
+        caseData.submitter_id
+          .toLowerCase()
+          .includes(associatedCBSearchTerm.toLowerCase())
+      ) {
+        tableRows.push({
+          entity_id: (
+            <GenericLink
+              path={`/cases/${entity.case_id}`}
+              query={entityQuery}
+              text={entity.entity_submitter_id}
+            />
+          ),
+          entity_type: entity.entity_type,
+          sample_type: sample_type,
+          case_id: (
+            <GenericLink
+              path={`/cases/${entity.case_id}`}
+              text={caseData.submitter_id}
+            />
+          ),
+          annotations: annotationsLink,
+        });
+      }
+    });
+
+    return tableRows;
+  }, [associatedCBSearchTerm, associated_entities, cases]);
+
+  const handleSearchChange = (term: string) => {
+    setAssociatedCBSearchTerm(term);
+  };
+
+  const {
+    handlePageChange,
+    handlePageSizeChange,
+    page,
+    pages,
+    size,
+    from,
+    total,
+    displayedData,
+  } = useStandardPagination(data);
+
+  const columnListOrder = [
+    { id: "entity_id", columnName: "Entity ID", visible: true },
+    { id: "entity_type", columnName: "Entity Type", visible: true },
+    { id: "sample_type", columnName: "Sample Type", visible: true },
+    { id: "case_id", columnName: "Case ID", visible: true },
+    { id: "annotations", columnName: "Annotations", visible: true },
+  ];
+
+  const columnCells = [
+    { accessor: "entity_id", Header: "Entity ID" },
+    { accessor: "entity_type", Header: "Entity Type" },
+    { accessor: "sample_type", Header: "Sample Type" },
+    { accessor: "case_id", Header: "Case ID" },
+    { accessor: "annotations", Header: "Annotations" },
+  ];
+
+  return (
+    <VerticalTable
+      tableData={displayedData}
+      columnListOrder={columnListOrder}
+      columnCells={columnCells}
+      selectableRow={false}
+      handleColumnChange={undefined}
+      showControls={false}
+      pagination={{
+        handlePageSizeChange,
+        handlePageChange,
+        page,
+        pages,
+        size,
+        from,
+        total,
+        label: "associated cases/biospecimen",
+      }}
+      status={"fulfilled"}
+      search={{
+        handleSearchChange,
+      }}
+    />
+  );
+};
+
 export const FileView: React.FC<FileViewProps> = ({
   file,
   fileHistory,
@@ -125,7 +307,7 @@ export const FileView: React.FC<FileViewProps> = ({
   const [fileToDownload, setfileToDownload] = useState(file);
   const sortedFileHistory = useMemo(
     () =>
-      [...fileHistory]?.sort(
+      [...(fileHistory ?? [])].sort(
         (a, b) =>
           //sort based on relese number biggest at top
           Number.parseFloat(a.version) - Number.parseFloat(b.version),
@@ -154,28 +336,6 @@ export const FileView: React.FC<FileViewProps> = ({
   };
 
   const isFileInCart = fileInCart(currentCart, file.fileId);
-
-  const GenericLink = ({
-    path,
-    query,
-    text,
-  }: {
-    path: string;
-    query?: Record<string, string>;
-    text: string;
-  }): JSX.Element => {
-    const hrefObj: { pathname: string; query?: Record<string, string> } = {
-      pathname: path,
-    };
-    if (query) {
-      hrefObj.query = query;
-    }
-    return (
-      <Link href={hrefObj}>
-        <a className="text-utility-link underline text-sm">{text}</a>
-      </Link>
-    );
-  };
 
   const DownstreamAnalyses = ({
     downstream_analyses,
@@ -227,18 +387,6 @@ export const FileView: React.FC<FileViewProps> = ({
     return <TempTable tableData={formattedTableData} />;
   };
 
-  const getAnnotationsLinkParams = (
-    annotations: readonly string[],
-    case_id: string,
-  ) => {
-    if (!annotations) return null;
-
-    if (annotations.length === 1) {
-      return `https://portal.gdc.cancer.gov/annotations/${annotations[0]}`;
-    }
-    return `https://portal.gdc.cancer.gov/annotations?filters={"content":[{"content":{"field":"annotations.entity_id","value":["${case_id}"]},"op":"in"}],"op":"and"}`;
-  };
-
   const downloadVersionJSON = () => {
     const jsonData = JSON.stringify([...fileHistory], null, 2);
     const currentDate = new Date().toJSON().slice(0, 10);
@@ -251,90 +399,6 @@ export const FileView: React.FC<FileViewProps> = ({
     );
   };
 
-  const AssociatedCB = ({
-    cases,
-    associated_entities,
-  }: {
-    cases: GdcFile["cases"];
-    associated_entities: GdcFile["associated_entities"];
-  }): JSX.Element => {
-    const tableRows = [];
-
-    associated_entities?.forEach((entity) => {
-      // find matching id from cases
-      const caseData = cases?.find(
-        (caseObj) => caseObj.case_id === entity.case_id,
-      );
-
-      // get sample_type from casedata through matching its submitter_id
-      const sample_type = caseData?.samples?.find((sample) => {
-        // match entity_submitter_id
-
-        // get submitter_id from diferent paths
-        const portion = sample.portions?.[0];
-        let entity_id = sample.submitter_id;
-        if (portion.analytes?.[0]?.aliquots?.[0]?.submitter_id) {
-          entity_id = portion.analytes?.[0]?.aliquots?.[0]?.submitter_id;
-        } else if (portion.slides?.[0]?.submitter_id) {
-          entity_id = portion.slides?.[0]?.submitter_id;
-        } else if (portion.submitter_id) {
-          entity_id = portion.submitter_id;
-        }
-        return entity_id === entity.entity_submitter_id;
-      })?.sample_type;
-
-      let entityQuery;
-      if (entity.entity_type !== "case") {
-        entityQuery = { bioId: entity.entity_id };
-      }
-
-      const url = getAnnotationsLinkParams(
-        caseData?.annotations,
-        caseData.case_id,
-      );
-
-      const annotationsLink = url ? (
-        <Link href={url} passHref>
-          <a className="text-utility-link underline" target={"_blank"}>
-            {caseData.annotations.length}
-          </a>
-        </Link>
-      ) : (
-        0
-      );
-
-      tableRows.push({
-        entity_id: (
-          <GenericLink
-            path={`/cases/${entity.case_id}`}
-            query={entityQuery}
-            text={entity.entity_submitter_id}
-          />
-        ),
-        entity_type: entity.entity_type,
-        sample_type: sample_type,
-        case_id: (
-          <GenericLink
-            path={`/cases/${entity.case_id}`}
-            text={caseData.submitter_id}
-          />
-        ),
-        annotations: annotationsLink,
-      });
-    });
-
-    const formatedTableData = {
-      headers: [
-        "Entity ID",
-        "Entity Type",
-        "Sample Type",
-        "Case ID",
-        "Annotations",
-      ],
-      tableRows: tableRows,
-    };
-    return <TempTable tableData={formatedTableData} />;
-  };
   return (
     <div className="p-4 text-primary-content w-10/12 mt-20 m-auto">
       <div className="flex justify-end pb-5 gap-2">
