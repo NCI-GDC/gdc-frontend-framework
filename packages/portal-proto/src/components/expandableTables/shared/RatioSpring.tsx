@@ -56,7 +56,9 @@ const RatioSpring: React.FC<RatioSpringProps> = ({
               )}
             </div>
             {orientation === "vertical" && (
-              <div className={`w-max mx-auto`}>({(n / d).toFixed(2)}%)</div>
+              <div className={`w-max mx-auto`}>
+                ({((n * 100) / d).toFixed(2)}%)
+              </div>
             )}
           </li>
         )}
