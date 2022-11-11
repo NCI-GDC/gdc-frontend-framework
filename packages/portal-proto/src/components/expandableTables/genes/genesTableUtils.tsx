@@ -359,7 +359,7 @@ export const createTableColumn = (
             cell: ({ row }) => {
               return (
                 <animated.div className={`text-xs`} style={partitionWidth}>
-                  {row.original["mutations"].toLocaleString("en-US")}
+                  {row?.original["mutations"]?.toLocaleString("en-US") ?? 0}
                 </animated.div>
               );
             },
