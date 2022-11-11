@@ -314,6 +314,22 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                     {...column.getHeaderProps(column.getSortByToggleProps())}
                     className="px-2 pt-3 pb-1 font-heading text-primary-contrast-darker font-medium text-md"
                     key={`hcolumn-${key}`}
+                    aria-sort={
+                      column.isSorted
+                        ? column.isSortedDesc
+                          ? "descending"
+                          : "ascending"
+                        : "none"
+                    }
+                    tabIndex={column.canSort === false ? -1 : 0}
+                    onKeyPress={(event) => {
+                      if (
+                        column.canSort !== false &&
+                        (event.key === "Enter" || event.key === " ")
+                      )
+                        column.toggleSortBy();
+                    }}
+                    role={column.canSort ? "button" : "columnheader"}
                   >
                     {column.render("Header")}
                     <span key={`span-${key}`}>
