@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useMemo } from "react";
 import { Tooltip } from "@mantine/core";
 import { Row } from "react-table";
 import Link from "next/link";
@@ -14,6 +14,7 @@ import {
 } from "@/features/shared/VerticalTable";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import FunctionButton from "@/components/FunctionButton";
+import useStandardPagination from "@/hooks/useStandardPagination";
 
 interface GeneCancerDistributionTableProps {
   readonly gene: string;
@@ -96,9 +97,6 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     ],
     size: data?.projects.length,
   });
-  const [pageSize, setPageSize] = useState(10);
-  const [activePage, setActivePage] = useState(1);
-  const [displayedData, setDisplayedData] = useState([]);
 
   const projectsById = Object.fromEntries(
     (projects || []).map((project) => [project.project_id, project]),
@@ -298,20 +296,24 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     [isSuccess, projectsFetching],
   );
 
-  useEffect(() => {
-    setDisplayedData(
-      formattedData.slice((activePage - 1) * pageSize, activePage * pageSize),
-    );
-  }, [formattedData, activePage, pageSize]);
+  const {
+    handlePageChange,
+    handlePageSizeChange,
+    page,
+    pages,
+    size,
+    from,
+    total,
+    displayedData,
+  } = useStandardPagination(formattedData);
 
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
       case "newPageSize":
-        setPageSize(parseInt(obj.newPageSize));
-        setActivePage(1);
+        handlePageSizeChange(obj.newPageSize);
         break;
       case "newPageNumber":
-        setActivePage(obj.newPageNumber);
+        handlePageChange(obj.newPageNumber);
         break;
     }
   };
@@ -331,11 +333,11 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         </div>
       }
       pagination={{
-        page: activePage,
-        pages: Math.ceil(data?.projects?.length / pageSize),
-        size: pageSize,
-        from: (activePage - 1) * pageSize,
-        total: data?.projects?.length,
+        page,
+        pages,
+        size,
+        from,
+        total,
       }}
       status={
         isFetching
