@@ -4,11 +4,7 @@ import ToggleSpring from "../shared/ToggleSpring";
 import SwitchSpring from "../shared/SwitchSpring";
 import RatioSpring from "../shared/RatioSpring";
 import { MdKeyboardArrowDown } from "react-icons/md";
-import {
-  SelectedReducer,
-  SelectReducerAction,
-  TableColumnState,
-} from "../shared/types";
+import { SelectedReducer, SelectReducerAction } from "../shared/types";
 import { SurvivalIcon } from "../shared/sharedTableUtils";
 import { TableCell, TableHeader } from "../shared/sharedTableCells";
 import { ProteinChange, Impacts, Consequences } from "./smTableCells";
