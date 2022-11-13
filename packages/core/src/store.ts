@@ -41,7 +41,6 @@ export const coreStore = configureStore({
         survivalApiSliceMiddleware,
         graphqlAPISliceMiddleware,
       )
-      // TODO: fix caseSet creation
       .prepend(caseSetListenerMiddleware.middleware), // needs to be prepended
 });
 
