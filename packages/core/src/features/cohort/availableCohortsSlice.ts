@@ -174,7 +174,17 @@ const slice = createSlice({
       });
     },
     setCohortList: (state, action: PayloadAction<Cohort[]>) => {
-      cohortsAdapter.upsertMany(state, [...action.payload] as Cohort[]);
+      // When the query errors out or user deletes context id from their cookies
+      // All the cohorts that was previously saved should be removed from the adapter
+      if (action.payload.length === 0) {
+        cohortsAdapter.removeMany(
+          state,
+          state.ids.filter((id) => state.entities[id]?.id !== "ALL-GDC-COHORT"),
+        );
+        state.currentCohort = "ALL-GDC-COHORT";
+      } else {
+        cohortsAdapter.upsertMany(state, [...action.payload] as Cohort[]);
+      }
     },
     //try to make payload optional and more meaningful variable name
     removeCohort: (

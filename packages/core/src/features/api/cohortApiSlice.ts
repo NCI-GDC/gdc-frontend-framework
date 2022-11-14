@@ -23,7 +23,7 @@ export const cohortApiSlice = coreCreateApi({
           filters:
             Object.keys(item.filters).length > 0
               ? buildGqlOperationToFilterSet(item.filters)
-              : { mode: "and", root: {} },
+              : { mode: "and", root: {} }, // BE returns empty filter as {} which will not work in the FE so casting it as empty FilterSet
           saved: true,
           modified: false,
         }));

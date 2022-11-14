@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { Button, LoadingOverlay, Select } from "@mantine/core";
+import { LoadingOverlay, Select } from "@mantine/core";
 import {
   MdAdd as AddIcon,
   MdDelete as DeleteIcon,
@@ -7,6 +7,10 @@ import {
   MdFileUpload as UploadIcon,
   MdSave as SaveIcon,
 } from "react-icons/md";
+import {
+  FaCaretDown as DownArrowIcon,
+  FaUndo as DiscardIcon,
+} from "react-icons/fa";
 import tw from "tailwind-styled-components";
 import { CohortManagerProps } from "@/features/cohortBuilder/types";
 import {
@@ -35,14 +39,22 @@ import { SavingCohortModal } from "./Modals/SavingCohortModal";
 import { GenericCohortModal } from "./Modals/GenericCohortModal";
 import { batch } from "react-redux";
 
-const CohortGroupButton = tw(Button)`
+interface CohortGroupButtonProps {
+  $buttonDisabled?: boolean;
+  $isDiscard?: boolean;
+}
+
+const CohortGroupButton = tw.button<CohortGroupButtonProps>`
+${(p) =>
+  p.$buttonDisabled
+    ? "text-primary-content-darkest"
+    : "hover:bg-primary hover:text-primary-content-lightest"}
+${(p) => (p.$isDiscard ? "rounded-l" : "rounded")}
 p-2
 bg-base-lightest
 transition-colors
-text-primary-content-darkest
-hover:bg-primary
-hover:text-primary-content-lightest
 disabled:opacity-50
+h-9
 `;
 
 /**
@@ -94,7 +106,8 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   };
 
   // Cohort persistence
-  const [addCohort, { isLoading: isAddCohortLoading }] = useAddCohortMutation();
+  const [addCohort, { isLoading: isAddCohortLoading, isError: isAddingError }] =
+    useAddCohortMutation();
   const [deleteCohortBE, { isLoading: isDeleteCohortLoading }] =
     useDeleteCohortMutation();
   const [updateCohort, { isLoading: isUpdateCohortLoading }] =
@@ -116,6 +129,8 @@ const CohortManager: React.FC<CohortManagerProps> = ({
         return { value: x.id, label: x.name };
       }),
   ];
+
+  const isDefaultCohort = startingId === DEFAULT_COHORT_ID;
 
   return (
     <div
@@ -143,6 +158,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
           // also unhappy paths for all these???
           setShowDelete(false);
           if (currentCohort?.saved) {
+            // dont delete if not able to delete from the BE
             await deleteCohortBE(cohortId);
             deleteCohort();
           } else {
@@ -210,9 +226,13 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                 ? buildCohortGqlOperator(filters)
                 : {},
           };
+          // getting 500 for this call when it's being triggered for the first time. Looks like server asleep or sth
+          // generic error messages for unhappy path would suffice IMO
+          // maybe use of isError
+          // take care of that
           const data = await addCohort(addBody).unwrap();
+          console.log("data: ", data);
           if (Object.keys(data).length > 0) {
-            //maybe use of isError?
             batch(() => {
               coreDispatch(setCurrentCohortId(data.id));
               coreDispatch(sendCohortMessage(`savedCohort|`));
@@ -228,13 +248,17 @@ const CohortManager: React.FC<CohortManagerProps> = ({
       {/*  Modals End   */}
       <div className="border-opacity-0">
         {!hide_controls ? (
-          <div className="flex justify-center items-center gap-2">
-            <Button
+          <div className="flex justify-center items-center">
+            <CohortGroupButton
               disabled={!cohortModified}
               onClick={() => setShowDiscard(true)}
+              className="mr-0.5"
+              $buttonDisabled={!cohortModified}
+              $isDiscard={true}
             >
-              Discard Changes
-            </Button>
+              <DiscardIcon size="16" aria-label="Add cohort" />
+            </CohortGroupButton>
+
             <div className="flex flex-col">
               <Select
                 data={menu_items}
@@ -246,10 +270,14 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                 }}
                 classNames={{
                   root: "border-base-light w-80 p-0 z-10 pt-5",
-                  input: "text-heading font-[500] text-primary-darkest ",
+                  input:
+                    "text-heading font-[500] text-primary-darkest rounded-l-none",
                   item: "text-heading font-[400] text-primary-darkest data-selected:bg-primary-lighter first:border-b-2 first:rounded-none first:border-primary",
                 }}
                 aria-label="Select cohort"
+                rightSection={<DownArrowIcon size={20} />}
+                rightSectionWidth={30}
+                styles={{ rightSection: { pointerEvents: "none" } }}
               />
               <div
                 className={`ml-auto text-heading text-[0.65em] font-semibold pt-1 text-primary-contrast ${
@@ -271,12 +299,13 @@ const CohortManager: React.FC<CohortManagerProps> = ({
         !hide_controls ? (
           <>
             <CohortGroupButton
-              disabled={startingId === DEFAULT_COHORT_ID}
+              disabled={isDefaultCohort}
               onClick={() => {
                 !currentCohort?.saved
                   ? setShowSaveCohort(true)
                   : setShowUpdateCohort(true);
               }}
+              $buttonDisabled={isDefaultCohort}
             >
               <SaveIcon size="1.5em" aria-label="Save cohort" />
             </CohortGroupButton>
@@ -285,7 +314,8 @@ const CohortManager: React.FC<CohortManagerProps> = ({
             </CohortGroupButton>
             <CohortGroupButton
               onClick={() => setShowDelete(true)}
-              disabled={startingId === DEFAULT_COHORT_ID}
+              disabled={isDefaultCohort}
+              $buttonDisabled={isDefaultCohort}
             >
               <DeleteIcon size="1.5em" aria-label="Delete cohort" />
             </CohortGroupButton>

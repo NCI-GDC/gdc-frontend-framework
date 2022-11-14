@@ -129,6 +129,7 @@ export const SavingCohortModal = ({
           <Button
             variant={"filled"}
             color="primary.8"
+            aria-label="Save button to add a cohort"
             onClick={() => {
               if (form.validate().hasErrors) return;
               onSaveClick(form.values.name);

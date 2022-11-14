@@ -39,3 +39,11 @@ export const DiscardChangesCohortNotification: React.FC = () => {
     </>
   );
 };
+
+export const ErrorCohortList: React.FC = () => {
+  return (
+    <>
+      <p>There was a problem getting your saved cohorts. Please try again.</p>
+    </>
+  );
+};
