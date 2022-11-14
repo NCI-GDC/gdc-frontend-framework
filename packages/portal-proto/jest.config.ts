@@ -19,6 +19,7 @@ const config: InitialOptionsTsJest = {
     "^@/app(.*)$": "<rootDir>/src/app/$1",
     "^@/components(.*)$": "<rootDir>/src/components/$1",
     "^@/features/(.*)$": "<rootDir>/src/features/$1",
+    "^@/hooks/(.*)$": "<rootDir>/src/hooks/$1",
   },
   modulePaths: ["<rootDir>"],
   setupFiles: ["jest-canvas-mock"],

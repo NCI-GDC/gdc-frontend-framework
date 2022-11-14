@@ -45,11 +45,11 @@ interface CohortGroupButtonProps {
 }
 
 const CohortGroupButton = tw.button<CohortGroupButtonProps>`
-${(p) =>
+${(p: CohortGroupButtonProps) =>
   p.$buttonDisabled
     ? "text-primary-content-darkest"
     : "hover:bg-primary hover:text-primary-content-lightest"}
-${(p) => (p.$isDiscard ? "rounded-l" : "rounded")}
+${(p: CohortGroupButtonProps) => (p.$isDiscard ? "rounded-l" : "rounded")}
 p-2
 bg-base-lightest
 transition-colors

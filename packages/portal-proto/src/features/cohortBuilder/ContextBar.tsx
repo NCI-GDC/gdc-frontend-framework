@@ -80,8 +80,8 @@ const ContextBar: React.FC = () => {
 
   useEffect(() => {
     if (cohortMessage) {
-      const cmdAndParam = cohortMessage.split("|", 2);
-      if (cmdAndParam.length == 2) {
+      const cmdAndParam = cohortMessage.split("|", 3);
+      if (cmdAndParam.length == 3) {
         if (cmdAndParam[0] === "newCohort") {
           showNotification({
             message: <NewCohortNotification cohortName={cmdAndParam[1]} />,
