@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { VerticalTable, HandleChangeInput } from "../shared/VerticalTable";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
+import { TableInstance } from "react-table";
 import Link from "next/link";
 import {
   useProjects,
@@ -12,6 +13,11 @@ import { useAppSelector } from "@/features/projectsCenter/appApi";
 import { selectFilters } from "@/features/projectsCenter/projectCenterFiltersSlice";
 import FunctionButton from "@/components/FunctionButton";
 import { statusBooleansToDataStatus } from "@/features/shared/utils";
+import {
+  SelectProjectButton,
+  SelectAllProjectsButton,
+} from "@/features/projectsCenter/SelectProjectButton";
+import ProjectsCohortButton from "./ProjectsCohortButton";
 
 const extractToArray = (
   data: ReadonlyArray<Record<string, number | string>>,
@@ -23,11 +29,41 @@ interface CellProps {
   row: Row;
 }
 
+interface SelectColumnProps {
+  value: string;
+}
+
 const ProjectsTable: React.FC = () => {
   const [pageSize, setPageSize] = useState(20);
   const [activePage, setActivePage] = useState(1);
 
+  const projectFilters = useAppSelector((state) => selectFilters(state));
+  const { data, pagination, isSuccess, isFetching, isError } = useProjects({
+    filters: buildCohortGqlOperator(projectFilters),
+    expand: [
+      "summary",
+      "summary.experimental_strategies",
+      "summary.data_categories",
+      "program",
+    ],
+    size: pageSize,
+    from: (activePage - 1) * pageSize,
+    sortBy: [{ field: "summary.case_count", direction: "desc" }],
+  });
+
   const columnListOrder = [
+    {
+      id: "selected",
+      columnName: "Select",
+      visible: true,
+      Header: ({ data }: TableInstance) => {
+        const projectIds = data.map((x) => x.selected);
+        return <SelectAllProjectsButton projectIds={projectIds} />;
+      },
+      Cell: ({ value }: SelectColumnProps) => {
+        return <SelectProjectButton projectId={value} />;
+      },
+    },
     {
       id: "project_id",
       columnName: "Project",
@@ -116,19 +152,6 @@ const ProjectsTable: React.FC = () => {
       sort: undefined,
       total: undefined,
     };
-  const projectFilters = useAppSelector((state) => selectFilters(state));
-  const { data, pagination, isSuccess, isFetching, isError } = useProjects({
-    filters: buildCohortGqlOperator(projectFilters),
-    expand: [
-      "summary", //annotations
-      "summary.experimental_strategies",
-      "summary.data_categories",
-      "program",
-    ],
-    size: pageSize,
-    from: (activePage - 1) * pageSize,
-    sortBy: [{ field: "summary.case_count", direction: "desc" }],
-  });
 
   useEffect(() => setActivePage(1), [projectFilters]);
 
@@ -142,6 +165,7 @@ const ProjectsTable: React.FC = () => {
         program,
         summary,
       }: ProjectDefaults) => ({
+        selected: project_id,
         project_id: (
           <Link href={`/projects/${project_id}`}>
             <a className="text-utility-link underline">{project_id}</a>
@@ -179,9 +203,10 @@ const ProjectsTable: React.FC = () => {
   //update everything that uses table component
   return (
     <VerticalTable
-      tableTitle={`Total of ${tempPagination?.total} Projects`}
+      tableTitle={`Total of ${tempPagination?.total} projects`}
       additionalControls={
         <div className="flex gap-2">
+          <ProjectsCohortButton />
           <FunctionButton>JSON</FunctionButton>
           <FunctionButton>TSV</FunctionButton>
         </div>
@@ -194,7 +219,7 @@ const ProjectsTable: React.FC = () => {
       showControls={true}
       pagination={{
         ...tempPagination,
-        label: "Projects",
+        label: "projects",
       }}
       status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
       handleChange={handleChange}
