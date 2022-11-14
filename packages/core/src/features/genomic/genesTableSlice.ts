@@ -13,7 +13,9 @@ import {
   graphqlAPI,
   TablePageOffsetProps,
 } from "../gdcapi/gdcgraphql";
+import { buildCohortGqlOperator } from "../cohort/filters";
 import { selectGenomicAndCohortGqlFilters } from "./genomicFilters";
+import { selectCurrentCohortFilters } from "../cohort";
 
 const GenesTableGraphQLQuery = `
           query GenesTable_relayQuery(
@@ -128,6 +130,12 @@ export const fetchGenesTable = createAsyncThunk<
     { pageSize, offset }: TablePageOffsetProps,
     thunkAPI,
   ): Promise<GraphQLApiResponse> => {
+    const cohortFilters = buildCohortGqlOperator(
+      selectCurrentCohortFilters(thunkAPI.getState()),
+    );
+    const cohortFiltersContent = cohortFilters?.content
+      ? Object(cohortFilters?.content)
+      : [];
     const filters = selectGenomicAndCohortGqlFilters(thunkAPI.getState());
     const filterContents = filters?.content ? Object(filters?.content) : [];
     const graphQlFilters = {
@@ -165,7 +173,7 @@ export const fetchGenesTable = createAsyncThunk<
               op: "in",
             },
           ],
-          ...filterContents,
+          ...cohortFiltersContent,
         ],
         op: "and",
       },

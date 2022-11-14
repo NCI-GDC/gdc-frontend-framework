@@ -102,7 +102,7 @@ export const createTableColumn = (
                 <>
                   {row.getCanExpand() && (
                     <SwitchSpring
-                      margin={`mt-1 ml-0.5`}
+                      margin="mt-1 ml-0.5"
                       isActive={row.original["survival"].checked}
                       icon={<SurvivalIcon />}
                       selected={row.original["survival"]}
@@ -400,7 +400,7 @@ export const getGene = (
   cases: number,
   genesTotal: number,
 ): Gene => {
-  console.log("g", g);
+  console.log("g ", g);
   return {
     select: g.gene_id,
     geneID: g.gene_id,
@@ -418,7 +418,7 @@ export const getGene = (
     type: g.biotype,
     cytoband: g.cytoband,
     SSMSAffectedCasesInCohort: {
-      numerator: g.ssm_case,
+      numerator: g.numCases,
       denominator: filteredCases,
     },
     SSMSAffectedCasesAcrossTheGDC: {
