@@ -178,7 +178,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     action.visibleColumns.push((columns) => [
       {
         id: "Checkbox",
-        Header: "",
+        Header: () => <input type="checkbox" />,
         Cell: () => <input type="checkbox" />,
         width: 30,
       },
@@ -386,9 +386,9 @@ export const VerticalTable: FC<VerticalTableProps> = ({
       </div>
       {pagination && (
         <div className="flex flex-row items-center text-content justify-start border-t border-base-light pt-2">
-          <p className="px-2">Page Size:</p>
+          <p className="px-2 font-heading text-md">Page Size:</p>
           <Select
-            size="sm"
+            size="xs"
             radius="md"
             onChange={handlePageSizeChange}
             value={pageSize?.toString()}
@@ -399,7 +399,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
               { value: "100", label: "100" },
             ]}
             classNames={{
-              root: "w-20",
+              root: "w-20 pb-2",
             }}
           />
           <div className="m-auto">
