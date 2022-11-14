@@ -293,6 +293,10 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
     router.push({ query: { app } });
   };
 
+  const handleAppLoaded = useCallback(() => {
+    scrollIntoView();
+  }, [scrollIntoView]);
+
   return (
     <div ref={(ref) => (targetRef.current = ref)}>
       <CSSTransition in={cohortSelectionOpen} timeout={500}>
@@ -332,7 +336,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
             setActiveApp={handleAppSelected}
             rightComponent={app === "CohortBuilder" ? <SearchInput /> : null}
           />
-          <ActiveAnalysisToolNoSSR appId={app} />
+          <ActiveAnalysisToolNoSSR appId={app} onLoaded={handleAppLoaded} />
         </>
       )}
       {!app && <AnalysisGrid onAppSelected={handleAppSelected} />}
