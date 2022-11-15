@@ -111,7 +111,7 @@ export const REGISTERED_APPS = [
     name: "Sequence Reads",
     icon: "sequence-reads.png",
     tags: ["sequenceAnalysis"],
-    hasDemo: true,
+    hasDemo: false,
     description:
       "Visualize sequencing reads for a given gene, position, SNP, or variant.",
     id: "SequenceReadApp",
@@ -131,6 +131,7 @@ export const REGISTERED_APPS = [
     noDataTooltip:
       "Current cohort does not have SSM data available for visualization.",
   },
+  /*
   {
     name: "scRNA-Seq",
     icon: "scRnaSeqViz.png",
@@ -144,6 +145,7 @@ export const REGISTERED_APPS = [
     noDataTooltip:
       "Current cohort does not have scRNA-Seq data available for visualization.",
   },
+  */
 ];
 
 export const APPTAGS = [

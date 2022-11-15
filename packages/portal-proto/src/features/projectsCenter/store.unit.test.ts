@@ -4,9 +4,15 @@ export const getInitialAppState = (): AppState => AppStore.getState();
 
 test("initial state", () => {
   expect(getInitialAppState()).toEqual({
-    filters: {
-      mode: "and",
-      root: {},
+    projectApp: {
+      filters: {
+        mode: "and",
+        root: {},
+      },
+    },
+    selected: {
+      entities: {},
+      ids: [],
     },
   });
 });

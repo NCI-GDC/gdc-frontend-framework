@@ -154,13 +154,22 @@ export interface CreateGdcAppWithOwnStoreOptions<
   readonly requiredEntityTypes: ReadonlyArray<EntityType>;
   readonly store: Store<S, A>;
   readonly context: any;
+  readonly persist?: boolean;
 }
 
 export const createGdcAppWithOwnStore = <A extends Action = AnyAction, S = any>(
   options: CreateGdcAppWithOwnStoreOptions<A, S>,
 ): React.ReactNode => {
-  const { App, id, name, version, requiredEntityTypes, store, context } =
-    options;
+  const {
+    App,
+    id,
+    name,
+    version,
+    requiredEntityTypes,
+    store,
+    context,
+    persist = false,
+  } = options;
 
   // need to create store and provider.
   // return a component representing this app
@@ -176,14 +185,16 @@ export const createGdcAppWithOwnStore = <A extends Action = AnyAction, S = any>(
       document.title = `GDC - ${name}`;
     });
 
-    const persistor = persistStore(store);
-
     return (
       <Provider store={store} context={context}>
         <CookiesProvider>
-          <PersistGate loading={null} persistor={persistor}>
+          {persist ? (
+            <PersistGate loading={null} persistor={persistStore(store)}>
+              <App />
+            </PersistGate>
+          ) : (
             <App />
-          </PersistGate>
+          )}
         </CookiesProvider>
       </Provider>
     );

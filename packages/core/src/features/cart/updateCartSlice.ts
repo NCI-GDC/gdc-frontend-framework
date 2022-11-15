@@ -5,7 +5,13 @@ import { GdcFile } from "../files/filesSlice";
 
 export type CartFile = Pick<
   GdcFile,
-  "access" | "acl" | "fileId" | "fileSize" | "state" | "project_id" | "fileName"
+  | "access"
+  | "acl"
+  | "fileId"
+  | "file_size"
+  | "state"
+  | "project_id"
+  | "file_name"
 >;
 
 const initialState: CartFile[] = [];

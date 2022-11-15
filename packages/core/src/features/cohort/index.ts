@@ -15,6 +15,7 @@ import {
   DEFAULT_COHORT_ID,
   Cohort,
   addNewCohort,
+  addNewCohortWithFilterAndMessage,
   removeCohort,
   updateCohortName,
   setCurrentCohortId,
@@ -31,11 +32,11 @@ import {
   selectCurrentCohortFilterOrCaseSet,
   selectCurrentCohortFiltersByName,
   selectCurrentCohortCaseSet,
-  selectCurrentCohortCaseSetFilter,
   selectCurrentCohortModified,
   selectCohortMessage,
   clearCohortMessage,
   selectCurrentCohort,
+  selectCurrentCohortFilterSet,
 } from "./availableCohortsSlice";
 
 import {
@@ -77,6 +78,7 @@ export {
   buildCohortGqlOperator,
   filterSetToOperation,
   addNewCohort,
+  addNewCohortWithFilterAndMessage,
   removeCohort,
   updateCohortName,
   setCurrentCohortId,
@@ -107,9 +109,9 @@ export {
   selectCurrentCohortFilterOrCaseSet,
   selectCurrentCohortFiltersByName,
   selectCurrentCohortCaseSet,
-  selectCurrentCohortCaseSetFilter,
   selectCurrentCohortModified,
   selectCohortMessage,
   clearCohortMessage,
   selectCurrentCohort,
+  selectCurrentCohortFilterSet,
 };

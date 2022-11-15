@@ -1,15 +1,20 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useMemo } from "react";
 import { Tooltip } from "@mantine/core";
+import { Row } from "react-table";
+import Link from "next/link";
 import {
   useGetGeneCancerDistributionTableQuery,
   useGetSSMSCancerDistributionTableQuery,
   useProjects,
   CancerDistributionTableData,
 } from "@gff/core";
-import { VerticalTable } from "@/features/shared/VerticalTable";
+import {
+  VerticalTable,
+  HandleChangeInput,
+} from "@/features/shared/VerticalTable";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
-import { Row } from "react-table";
-import Link from "next/link";
+import FunctionButton from "@/components/FunctionButton";
+import useStandardPagination from "@/hooks/useStandardPagination";
 
 interface GeneCancerDistributionTableProps {
   readonly gene: string;
@@ -34,6 +39,7 @@ export const GeneCancerDistributionTable: React.FC<
 
 interface SSMSCancerDistributionTableProps {
   readonly ssms: string;
+  readonly symbol: string;
 }
 
 interface CellProps {
@@ -43,7 +49,7 @@ interface CellProps {
 
 export const SSMSCancerDistributionTable: React.FC<
   SSMSCancerDistributionTableProps
-> = ({ ssms }: SSMSCancerDistributionTableProps) => {
+> = ({ ssms, symbol }: SSMSCancerDistributionTableProps) => {
   const { data, isFetching, isError, isSuccess } =
     useGetSSMSCancerDistributionTableQuery({ ssms });
   return (
@@ -52,7 +58,7 @@ export const SSMSCancerDistributionTable: React.FC<
       isFetching={isFetching}
       isError={isError}
       isSuccess={isSuccess}
-      symbol={ssms}
+      symbol={symbol}
       isGene={false}
     />
   );
@@ -83,11 +89,14 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         value: data?.projects.map((p) => p.key),
       },
     },
+    expand: [
+      "summary",
+      "summary.data_categories",
+      "summary.experimental_strategies",
+      "program",
+    ],
     size: data?.projects.length,
   });
-  const [pageSize, setPageSize] = useState(10);
-  const [activePage, setActivePage] = useState(1);
-  const [displayedData, setDisplayedData] = useState([]);
 
   const projectsById = Object.fromEntries(
     (projects || []).map((project) => [project.project_id, project]),
@@ -240,9 +249,11 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 ),
                 disease_type: projectsById[d.key]?.disease_type || [],
                 primary_site: projectsById[d.key]?.primary_site || [],
-                ssm_affected_cases: `${data.ssmFiltered[d.key]} / ${
-                  data.ssmTotal[d.key]
-                } (${(
+                ssm_affected_cases: `${data.ssmFiltered[
+                  d.key
+                ].toLocaleString()} / ${data.ssmTotal[
+                  d.key
+                ].toLocaleString()} (${(
                   data.ssmFiltered[d.key] / data.ssmTotal[d.key]
                 ).toLocaleString(undefined, {
                   style: "percent",
@@ -254,17 +265,21 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 ...row,
                 ...(isGene
                   ? {
-                      cnv_gains: `${data.cnvGain[d.key] || 0} / ${
+                      cnv_gains: `${(
+                        data.cnvGain[d.key] || 0
+                      ).toLocaleString()} / ${(
                         data.cnvTotal[d.key] || 0
-                      } (${(
+                      ).toLocaleString()} (${(
                         data.cnvGain[d.key] / data.cnvTotal[d.key] || 0
                       ).toLocaleString(undefined, {
                         style: "percent",
                         minimumFractionDigits: 2,
                       })})`,
-                      cnv_losses: `${data.cnvLoss[d.key] || 0} / ${
+                      cnv_losses: `${(
+                        data.cnvLoss[d.key] || 0
+                      ).toLocaleString()} / ${(
                         data.cnvTotal[d.key] || 0
-                      } (${(
+                      ).toLocaleString()} (${(
                         data.cnvLoss[d.key] / data.cnvTotal[d.key] || 0
                       ).toLocaleString(undefined, {
                         style: "percent",
@@ -281,19 +296,26 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     [isSuccess, projectsFetching],
   );
 
-  useEffect(() => {
-    setDisplayedData(
-      formattedData.slice((activePage - 1) * pageSize, activePage * pageSize),
-    );
-  }, [formattedData, activePage, pageSize]);
+  const {
+    handlePageChange,
+    handlePageSizeChange,
+    page,
+    pages,
+    size,
+    from,
+    total,
+    displayedData,
+  } = useStandardPagination(formattedData);
 
-  const handlePageSizeChange = (x: string) => {
-    setPageSize(parseInt(x));
-    setActivePage(1);
-  };
-
-  const handlePageChange = (x: number) => {
-    setActivePage(x);
+  const handleChange = (obj: HandleChangeInput) => {
+    switch (Object.keys(obj)?.[0]) {
+      case "newPageSize":
+        handlePageSizeChange(obj.newPageSize);
+        break;
+      case "newPageNumber":
+        handlePageChange(obj.newPageNumber);
+        break;
+    }
   };
 
   return (
@@ -304,14 +326,18 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       selectableRow={false}
       handleColumnChange={undefined}
       showControls={false}
+      additionalControls={
+        <div className="flex gap-2">
+          <FunctionButton>JSON</FunctionButton>
+          <FunctionButton>TSV</FunctionButton>
+        </div>
+      }
       pagination={{
-        handlePageSizeChange,
-        handlePageChange,
-        page: activePage,
-        pages: Math.ceil(data?.projects?.length / pageSize),
-        size: pageSize,
-        from: (activePage - 1) * pageSize,
-        total: data?.projects?.length,
+        page,
+        pages,
+        size,
+        from,
+        total,
       }}
       status={
         isFetching
@@ -322,6 +348,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
           ? "rejected"
           : "uninitialized"
       }
+      handleChange={handleChange}
     />
   );
 };

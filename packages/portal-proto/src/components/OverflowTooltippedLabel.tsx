@@ -4,11 +4,13 @@ import { Tooltip } from "@mantine/core";
 type OverflowTooltippedLabelProps = {
   children: ReactNode;
   label: string;
+  className?: string;
 };
 
 const OverflowTooltippedLabel = ({
   children,
   label,
+  className = "flex-grow font-heading text-md pt-0.5",
 }: OverflowTooltippedLabelProps): JSX.Element => {
   const [showTooltip, setShowTooltip] = useState(false);
 
@@ -24,11 +26,11 @@ const OverflowTooltippedLabel = ({
       arrowOffset={20}
       classNames={{
         arrow: "bg-base-darker",
-        tooltip: "bg-base-darker text-base-darker-contrast",
+        tooltip: "bg-base-darker text-base-darker-contrast font-normal",
       }}
     >
       <div
-        className="flex-grow truncate ... font-heading text-md pt-0.5"
+        className={`${className} truncate ... `}
         ref={(el) => {
           if (el) {
             if (el.clientWidth < el.scrollWidth) {
