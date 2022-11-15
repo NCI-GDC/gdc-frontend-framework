@@ -37,7 +37,7 @@ const P = tw.p`
 
 const Cart: React.FC = () => {
   const cart = useCoreSelector((state) => selectCart(state));
-  const { data: summaryData } = useCartSummary(cart.map((f) => f.fileId));
+  const { data: summaryData } = useCartSummary(cart.map((f) => f.file_id));
   const { data: userDetails } = useUserDetails();
   const filesByCanAccess = groupByAccess(cart, userDetails);
   const dbGapList = Array.from(

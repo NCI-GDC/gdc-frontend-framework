@@ -4,29 +4,29 @@ import { groupByAccess } from "./utils";
 describe("groupByAccess", () => {
   it("user can access open access files", () => {
     const result = groupByAccess(
-      [{ access: "open", fileId: "1" }] as CartFile[],
+      [{ access: "open", file_id: "1" }] as CartFile[],
       { username: undefined, projects: { phs_ids: {}, gdc_ids: {} } },
     );
     expect(result).toEqual({
-      true: [{ access: "open", fileId: "1", canAccess: true }],
+      true: [{ access: "open", file_id: "1", canAccess: true }],
     });
   });
 
   it("a user that isn't logged in can't access controlled files", () => {
     const result = groupByAccess(
-      [{ access: "controlled", fileId: "1" }] as CartFile[],
+      [{ access: "controlled", file_id: "1" }] as CartFile[],
       { username: undefined, projects: { phs_ids: {}, gdc_ids: {} } },
     );
     expect(result).toEqual({
-      false: [{ access: "controlled", fileId: "1", canAccess: false }],
+      false: [{ access: "controlled", file_id: "1", canAccess: false }],
     });
   });
 
   it("a logged in user can access files in projects they have access to", () => {
     const result = groupByAccess(
       [
-        { access: "controlled", fileId: "1", project_id: "CAT" },
-        { access: "controlled", fileId: "2", project_id: "DOG" },
+        { access: "controlled", file_id: "1", project_id: "CAT" },
+        { access: "controlled", file_id: "2", project_id: "DOG" },
       ] as CartFile[],
       {
         username: "user",
@@ -41,7 +41,7 @@ describe("groupByAccess", () => {
       true: [
         {
           access: "controlled",
-          fileId: "1",
+          file_id: "1",
           canAccess: true,
           project_id: "CAT",
         },
@@ -49,7 +49,7 @@ describe("groupByAccess", () => {
       false: [
         {
           access: "controlled",
-          fileId: "2",
+          file_id: "2",
           canAccess: false,
           project_id: "DOG",
         },
