@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { animated } from "react-spring";
-import { Tooltip } from "@mantine/core";
+import { Text, Tooltip } from "@mantine/core";
 
 export const TableHeader = ({
   title,
@@ -11,7 +11,20 @@ export const TableHeader = ({
 }): JSX.Element => {
   return (
     <>
-      <Tooltip label={tooltip} disabled={!tooltip?.length}>
+      <Tooltip
+        label={<Text className="text-xs whitespace-pre-line">{tooltip}</Text>}
+        disabled={!tooltip?.length}
+        width={300}
+        withArrow
+        arrowSize={6}
+        transition="fade"
+        transitionDuration={200}
+        multiline
+        classNames={{
+          tooltip:
+            "bg-base-lightest text-base-contrast-lightest font-heading text-left",
+        }}
+      >
         <div>
           {(title.includes("CNV") || title.includes("Affected")) && "#"}{" "}
           {_.startCase(title)}

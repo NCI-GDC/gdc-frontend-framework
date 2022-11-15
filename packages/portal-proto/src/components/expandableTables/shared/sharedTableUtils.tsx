@@ -43,5 +43,11 @@ export const searchContains = (
   field: string,
   searchTerm: string,
 ): boolean => {
-  return obj[`${field}`].toLowerCase().includes(searchTerm.toLowerCase());
+  if (Array.isArray(obj[field]))
+    return (
+      obj[field].find((x) =>
+        x.toLowerCase().includes(searchTerm.toLowerCase()),
+      ) !== undefined
+    );
+  return obj[field].toLowerCase().includes(searchTerm.toLowerCase());
 };

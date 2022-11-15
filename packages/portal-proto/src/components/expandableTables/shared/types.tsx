@@ -49,3 +49,8 @@ export interface WidthSpring {
   width: SpringValue; // number [ 0 - maxWidth ] (in pixels)
   opacity: SpringValue; // number [ 0 - 1 ]
 }
+
+export interface PageSizeProps {
+  pageSize: number;
+  handlePageSize: (pageSize: number) => any;
+}

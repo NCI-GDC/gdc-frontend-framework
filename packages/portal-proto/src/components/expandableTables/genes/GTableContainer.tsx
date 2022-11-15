@@ -1,15 +1,57 @@
 import { useGenesTable } from "@gff/core";
-import { useState, useEffect, useReducer, createContext } from "react";
+import {
+  useState,
+  useEffect,
+  useReducer,
+  createContext,
+  PropsWithChildren,
+} from "react";
 import { Genes, DEFAULT_GTABLE_ORDER } from "./types";
 import { GenesTable } from "./GenesTable";
 import { useMeasure } from "react-use";
-import { Button, Loader } from "@mantine/core";
+import { Button, Loader, Text, Tooltip } from "@mantine/core";
 import PageStepper from "../shared/PageStepper";
-import PageSize from "../shared/PageSize";
 import TableControls from "../shared/TableControls";
 import TablePlaceholder from "../shared/TablePlaceholder";
 import { SelectedReducer, SelectReducerAction } from "../shared/types";
 import { TableFilters } from "../shared/TableFilters";
+import PageSize from "@/components/expandableTables/shared/PageSize";
+
+interface ButtonTooltipPros {
+  label: string;
+  width?: number | "auto";
+}
+
+/**
+ * Styled Tooltip to for buttons
+ * @param children - child component to wrap tooltip with
+ * @param label - the text label
+ * @param width - width of the tooltip. Default: "auto"
+ */
+const ButtonTooltip: React.FC<ButtonTooltipPros> = ({
+  children,
+  label,
+  width = "auto",
+}: PropsWithChildren<ButtonTooltipPros>) => {
+  return (
+    <Tooltip
+      label={<Text className="text-xs whitespace-pre-line">{label}</Text>}
+      disabled={!label?.length}
+      width={width}
+      withArrow
+      arrowSize={6}
+      transition="fade"
+      transitionDuration={200}
+      multiline
+      classNames={{
+        tooltip:
+          "bg-base-lightest text-base-contrast-lightest font-heading text-left",
+      }}
+    >
+      {children}
+    </Tooltip>
+  );
+};
 
 export const SelectedRowContext =
   createContext<
@@ -121,20 +163,26 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               ]}
               additionalControls={
                 <div className="flex gap-2">
-                  <Button
-                    className={
-                      "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
-                    }
+                  <ButtonTooltip
+                    label={`Export All Except #Genes and #Mutations`}
                   >
-                    JSON
-                  </Button>
-                  <Button
-                    className={
-                      "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
-                    }
-                  >
-                    TSV
-                  </Button>
+                    <Button
+                      className={
+                        "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
+                      }
+                    >
+                      JSON
+                    </Button>
+                  </ButtonTooltip>
+                  <ButtonTooltip label={`Export current view`}>
+                    <Button
+                      className={
+                        "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
+                      }
+                    >
+                      TSV
+                    </Button>
+                  </ButtonTooltip>
                 </div>
               }
             />
@@ -155,7 +203,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         <div>
           {!visibleColumns.length ? (
             <TablePlaceholder
-              cellWidth={`w-[75px]`}
+              cellWidth="w-24"
               rowHeight={60}
               numOfColumns={15}
               numOfRows={10}
@@ -183,7 +231,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             </div>
           ) : (
             <TablePlaceholder
-              cellWidth={`w-[75px]`}
+              cellWidth="w-24"
               rowHeight={60}
               numOfColumns={15}
               numOfRows={10}
@@ -192,9 +240,9 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           )}
         </div>
         {visibleColumns.length ? (
-          <div className={`flex flex-row w-9/12 ml-2 mt-0 m-auto mb-2`}>
-            <div className="m-auto ml-0">
-              <span className="my-auto mx-1 text-xs">Show</span>
+          <div className="flex flex-row w-9/12 ml-2 mt-0 m-auto">
+            <div className="flex flex-row items-center m-auto ml-0">
+              <span className="my-auto mx-1 text-sm">Show</span>
               <PageSize pageSize={pageSize} handlePageSize={setPageSize} />
               <span className="my-auto mx-1 text-xs">Entries</span>
             </div>
@@ -206,20 +254,20 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                   1
                 ).toLocaleString("en-US")} `}</span>
                 -
-                <span className={`font-bold`}>
+                <span className="font-bold">
                   {`${((page + 1) * pageSize < gTotal
                     ? (page + 1) * pageSize
                     : gTotal
                   ).toLocaleString("en-US")} `}
                 </span>
                 of
-                <span className={`font-bold`}>{` ${gTotal.toLocaleString(
+                <span className="font-bold">{` ${gTotal.toLocaleString(
                   "en-US",
                 )} `}</span>
                 genes
               </span>
             </div>
-            <div className={`m-auto mr-0`}>
+            <div className="m-auto mr-0">
               <PageStepper
                 page={page}
                 totalPages={Math.ceil(gTotal / pageSize)}

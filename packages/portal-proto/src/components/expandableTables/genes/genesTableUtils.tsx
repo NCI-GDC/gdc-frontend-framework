@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import ToggleSpring from "../shared/ToggleSpring";
+import { Tooltip } from "@mantine/core";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { animated } from "react-spring";
 import CheckboxSpring from "../shared/CheckboxSpring";
@@ -13,7 +14,6 @@ import {
 import { SurvivalIcon, AnnotationsIcon } from "../shared/sharedTableUtils";
 import { TableCell, TableHeader } from "../shared/sharedTableCells";
 import { Genes, SingleGene, Gene } from "./types";
-import { Tooltip } from "@mantine/core";
 import { SelectReducerAction } from "../shared/types";
 import { Image } from "@/components/Image";
 
@@ -154,9 +154,8 @@ export const createTableColumn = (
             header: () => (
               <TableHeader
                 title={accessor}
-                tooltip={
-                  "Breakdown of Affected Cases in Cohort # of Cases where Gene is mutated / # Cases tested for Simple Somatic Mutations"
-                }
+                tooltip={`Breakdown of Affected Cases in Cohort:
+# of Cases where Gene is mutated / # Cases tested for Simple Somatic Mutations`}
               />
             ),
             cell: ({ row }) => {
@@ -193,9 +192,8 @@ export const createTableColumn = (
             header: () => (
               <TableHeader
                 title={accessor}
-                tooltip={
-                  "# of Cases where Gene contains Simple Somatic Mutations / # Cases tested for Simple Somatic Mutations portal wide | Expand to see breakdown by project"
-                }
+                tooltip={`# of Cases where Gene contains Simple Somatic Mutations / # Cases tested for Simple Somatic Mutations portal wide.
+                Expand to see breakdown by project`}
               />
             ),
             cell: ({ row }) => {
@@ -353,7 +351,9 @@ export const createTableColumn = (
             header: () => (
               <TableHeader
                 title={accessor}
-                tooltip={"# Simple Somatic Mutations in the Gene in Cohort"}
+                tooltip={
+                  "# Unique Simple Somatic Mutations in the Gene in Cohort"
+                }
               />
             ),
             cell: ({ row }) => {
@@ -380,7 +380,7 @@ export const createTableColumn = (
                   <TableCell
                     row={row}
                     accessor={accessor}
-                    anchor={["symbol"].includes(accessor) ? true : false}
+                    anchor={["symbol"].includes(accessor)}
                     tooltip={""}
                   />
                 </animated.div>
@@ -398,9 +398,9 @@ export const getGene = (
   mutationCounts: Record<string, string>,
   filteredCases: number,
   cases: number,
+  cnvCases: number,
   genesTotal: number,
 ): Gene => {
-  console.log("g ", g);
   return {
     select: g.gene_id,
     geneID: g.gene_id,
@@ -426,22 +426,22 @@ export const getGene = (
       denominator: cases,
     },
     CNVGain:
-      g.cnv_case > 0
-        ? `${g.case_cnv_gain} / ${g.cnv_case} (${(
+      cnvCases > 0
+        ? `${g.case_cnv_gain.toLocaleString()} / ${cnvCases.toLocaleString()} (${(
             (100 * g.case_cnv_gain) /
-            g.cnv_case
+            cnvCases
           ).toFixed(2)}%)`
         : `--`,
     CNVLoss:
-      g.cnv_case > 0
-        ? `${g.case_cnv_loss} / ${g.cnv_case} (${(
+      cnvCases > 0
+        ? `${g.case_cnv_loss.toLocaleString()} / ${cnvCases.toLocaleString()} (${(
             (100 * g.case_cnv_loss) /
-            g.cnv_case
+            cnvCases
           ).toFixed(2)}%)`
         : `--`,
     mutations: mutationCounts[g.gene_id],
     annotations: g.is_cancer_gene_census,
-    // do not remove subRows key, its needed for row.getCanExpand() to be true
+    // do not remove subRows key, It's needed for row.getCanExpand() to be true
     subRows: " ",
     genesTotal,
   };

@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { animated, useSpring } from "react-spring";
 import { MdOutlineArrowDropDown } from "react-icons/md";
-
-interface PageSizeProps {
-  pageSize: number;
-  handlePageSize: (pageSize: number) => any;
-}
+import { PageSizeProps } from "@/components/expandableTables/shared/types";
 
 const PageSize: React.FC<PageSizeProps> = ({
   pageSize,

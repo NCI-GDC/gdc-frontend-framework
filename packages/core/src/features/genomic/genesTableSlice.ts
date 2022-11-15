@@ -277,7 +277,7 @@ export const fetchGenesTable = createAsyncThunk<
               counts: Record<string, number>,
               apiBucket: Record<string, any>,
             ) => {
-              counts[apiBucket.key] = apiBucket.doc_count;
+              counts[apiBucket.key] = apiBucket.doc_count.toLocaleString();
               return counts;
             },
             {} as Record<string, number>,

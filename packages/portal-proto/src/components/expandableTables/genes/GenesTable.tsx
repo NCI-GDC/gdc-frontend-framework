@@ -31,9 +31,15 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   const [geneID, setGeneID] = useState(undefined);
 
   const useGeneTableFormat = useCallback(
-    (initialData) => {
-      const { cases, mutationCounts, filteredCases, genes, genes_total } =
-        initialData;
+    (initialData: Record<string, any>) => {
+      const {
+        cases,
+        cnvCases,
+        mutationCounts,
+        filteredCases,
+        genes,
+        genes_total,
+      } = initialData;
       return genes.map((gene) => {
         return getGene(
           gene,
@@ -41,6 +47,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
           mutationCounts,
           filteredCases,
           cases,
+          cnvCases,
           genes_total,
         );
       });
@@ -127,15 +134,19 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   return (
     <div>
       <ExpTable
-        data={transformResponse.filter((tr) => {
-          if (
-            ["geneID", "symbol", "name"].some((field) =>
-              searchContains(tr, field, searchTerm),
-            )
-          ) {
-            return tr;
-          }
-        })}
+        data={
+          searchTerm.length > 0
+            ? transformResponse.filter((tr) => {
+                if (
+                  ["geneID", "symbol", "name", "cytoband"].some((field) =>
+                    searchContains(tr, field, searchTerm),
+                  )
+                ) {
+                  return tr;
+                }
+              })
+            : transformResponse
+        }
         columns={columns}
         expanded={expanded}
         handleExpandedProxy={handleExpandedProxy}
