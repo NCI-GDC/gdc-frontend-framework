@@ -52,6 +52,7 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
         activeText={activeText}
         inactiveText={inactiveText}
         queryParams={""}
+        method="GET"
         options={{
           method: "GET",
           headers: {
