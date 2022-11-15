@@ -77,8 +77,6 @@ export const fetchCohortCaseCounts = createAsyncThunk<
   const cohortFilters = buildCohortGqlOperator(
     selectCurrentCohortFilterOrCaseSet(thunkAPI.getState()),
   );
-
-  // check here to see if diff filter is coming
   const graphQlFilters = cohortFilters ? { filters: cohortFilters } : {};
   return await graphqlAPI(CountsGraphQLQuery, graphQlFilters);
 });

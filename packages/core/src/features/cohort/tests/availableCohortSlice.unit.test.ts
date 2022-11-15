@@ -1,7 +1,6 @@
-import { getInitialCoreState } from "../../store.unit.test";
-import { COHORTS } from "./cohortFixture";
-import { DataStatus } from "../../dataAccess";
-import { FilterSet } from "./filters";
+import { getInitialCoreState } from "../../../store.unit.test";
+import { DataStatus } from "../../../dataAccess";
+import { FilterSet } from "../filters";
 import {
   Cohort,
   addNewCohort,
@@ -16,16 +15,17 @@ import {
   availableCohortsReducer,
   addNewCohortWithFilterAndMessage,
   divideCurrentCohortFilterSetFilterByPrefix,
-} from "./availableCohortsSlice";
-import * as cohortSlice from "./availableCohortsSlice";
+} from "../availableCohortsSlice";
+import * as cohortSlice from "../availableCohortsSlice";
 import { Dictionary, EntityState } from "@reduxjs/toolkit";
+import { MOCK_COHORTS } from "./mockData";
 
 const state = getInitialCoreState();
 
-const INITIAL_IDS = (COHORTS as unknown as ReadonlyArray<Cohort>).map(
+const INITIAL_IDS = (MOCK_COHORTS as unknown as ReadonlyArray<Cohort>).map(
   (x) => x.id,
 );
-const INITIAL_ENTITIES = COHORTS.reduce((dict, x) => {
+const INITIAL_ENTITIES = MOCK_COHORTS.reduce((dict, x) => {
   dict[x.id] = x as Cohort;
   return dict;
 }, {} as Record<string, Cohort>);
@@ -51,9 +51,9 @@ const APP_INITIAL_STATE = {
 const BAILYS_COHORT = {
   ...APP_INITIAL_STATE,
   cohort: {
-    ...state.cohort,
+    ...APP_INITIAL_STATE.cohort,
     availableCohorts: {
-      ...state.cohort.availableCohorts,
+      ...APP_INITIAL_STATE.cohort.availableCohorts,
       currentCohort: "0000-0000-1000-0000",
     },
   },
@@ -62,9 +62,9 @@ const BAILYS_COHORT = {
 const PANCREAS_KRAS_MUTATED = {
   ...APP_INITIAL_STATE,
   cohort: {
-    ...state.cohort,
+    ...APP_INITIAL_STATE.cohort,
     availableCohorts: {
-      ...state.cohort.availableCohorts,
+      ...APP_INITIAL_STATE.cohort.availableCohorts,
       currentCohort: "0000-0000-1002-0000",
     },
   },
@@ -166,14 +166,14 @@ describe("get/set current cohort filters", () => {
     const currentCohortFilters = selectCurrentCohortFilters({
       ...APP_INITIAL_STATE,
       cohort: {
-        ...state.cohort,
+        ...APP_INITIAL_STATE.cohort,
         availableCohorts: {
-          ...state.cohort.availableCohorts,
+          ...APP_INITIAL_STATE.cohort.availableCohorts,
           currentCohort: "0000-0000-1000-0000",
         },
       },
     });
-    expect(currentCohortFilters).toEqual(COHORTS[1].filters);
+    expect(currentCohortFilters).toEqual(MOCK_COHORTS[1].filters);
   });
 
   test("should return a field's filters", () => {
@@ -192,9 +192,9 @@ describe("get/set current cohort filters", () => {
       {
         ...APP_INITIAL_STATE,
         cohort: {
-          ...state.cohort,
+          ...APP_INITIAL_STATE.cohort,
           availableCohorts: {
-            ...state.cohort.availableCohorts,
+            ...APP_INITIAL_STATE.cohort.availableCohorts,
             currentCohort: "0000-0000-1000-0000",
           },
         },
@@ -432,6 +432,13 @@ describe("add, update, and remove cohort", () => {
             name: "New Cohort",
             filters: { mode: "and", root: {} },
             id: "000-000-000-1",
+            caseSet: {
+              caseSetId: {
+                mode: "and",
+                root: {},
+              },
+              status: "uninitialized",
+            },
             modified: false,
             modified_datetime: new Date().toISOString(),
           },
@@ -468,6 +475,7 @@ describe("add, update, and remove cohort", () => {
             status: "uninitialized",
           },
           modified: false,
+          modified_datetime: "2020-11-01T00:00:00.000Z",
         },
         "000-000-000-2": {
           filters: {
@@ -516,6 +524,7 @@ describe("add, update, and remove cohort", () => {
               status: "uninitialized",
             },
             modified: false,
+            modified_datetime: "2020-11-01T00:00:00.000Z",
           },
         },
       },
@@ -538,6 +547,7 @@ describe("add, update, and remove cohort", () => {
             status: "uninitialized",
           },
           modified: false,
+          modified_datetime: "2020-11-01T00:00:00.000Z",
         },
         "000-000-000-3": {
           filters: { mode: "and", root: {} },
@@ -550,7 +560,7 @@ describe("add, update, and remove cohort", () => {
             status: "uninitialized",
           },
           modified: false,
-          modifiedDate: "2020-11-01T00:00:00.000Z",
+          modified_datetime: "2020-11-01T00:00:00.000Z",
           name: "New Cohort 3",
           saved: false,
         },
@@ -569,6 +579,13 @@ describe("add, update, and remove cohort", () => {
             name: "cohort1",
             filters: { mode: "and", root: {} },
             id: "000-000-000-1",
+            caseSet: {
+              caseSetId: {
+                mode: "and",
+                root: {},
+              },
+              status: "uninitialized",
+            },
             modified: false,
             modified_datetime: new Date().toISOString(),
           },
@@ -592,9 +609,10 @@ describe("add, update, and remove cohort", () => {
             status: "uninitialized",
           },
           modified: false,
-          message: undefined,
+          modified_datetime: "2020-11-01T00:00:00.000Z",
         },
       },
+      message: undefined,
     });
   });
 
@@ -609,6 +627,13 @@ describe("add, update, and remove cohort", () => {
             name: "All GDC",
             filters: { mode: "and", root: {} },
             id: "ALL-GDC-COHORT",
+            caseSet: {
+              caseSetId: {
+                mode: "and",
+                root: {},
+              },
+              status: "uninitialized",
+            },
             modified: false,
             modified_datetime: new Date().toISOString(),
           },
@@ -616,6 +641,13 @@ describe("add, update, and remove cohort", () => {
             name: "New Cohort 2",
             filters: { mode: "and", root: {} },
             id: "000-000-000-2",
+            caseSet: {
+              caseSetId: {
+                mode: "and",
+                root: {},
+              },
+              status: "uninitialized",
+            },
             modified: false,
             modified_datetime: new Date().toISOString(),
           },
@@ -640,6 +672,7 @@ describe("add, update, and remove cohort", () => {
             status: "uninitialized",
           },
           modified: false,
+          modified_datetime: "2020-11-01T00:00:00.000Z",
         },
       },
     });
@@ -655,7 +688,13 @@ describe("add, update, and remove cohort", () => {
           name: "All GDC",
           filters: { mode: "and", root: {} },
           id: "ALL-GDC-COHORT",
-          case_ids: [""],
+          caseSet: {
+            caseSetId: {
+              mode: "and",
+              root: {},
+            },
+            status: "uninitialized" as DataStatus,
+          },
           modified: false,
           modified_datetime: new Date().toISOString(),
         },
@@ -663,7 +702,13 @@ describe("add, update, and remove cohort", () => {
           name: "New Cohort",
           filters: { mode: "and", root: {} },
           id: "000-000-000-1",
-          case_ids: [""],
+          caseSet: {
+            caseSetId: {
+              mode: "and",
+              root: {},
+            },
+            status: "uninitialized" as DataStatus,
+          },
           modified: false,
           modified_datetime: new Date().toISOString(),
         },
