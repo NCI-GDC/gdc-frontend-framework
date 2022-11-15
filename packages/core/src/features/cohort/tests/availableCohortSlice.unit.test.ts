@@ -70,7 +70,6 @@ const PANCREAS_KRAS_MUTATED = {
   },
 };
 
-// const initialFilters = { mode: "and", root: {} };
 const populatedFilters = {
   mode: "and",
   root: {

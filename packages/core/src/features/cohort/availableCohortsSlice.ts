@@ -152,6 +152,7 @@ interface NewCohortParams {
  *
  *
  * The slice exports the following actions:
+ * setCohortList() - set saved cohort to the adapter that comes from the server
  * addNewCohort() - create a new cohort
  * addNewCohortWithFilterAndMessage - create a cohort with the passed filters and message id
  * updateCohortName(name:string): changes the current cohort's name
@@ -161,12 +162,27 @@ interface NewCohortParams {
  * setCurrentCohortId(id:string): set the id of the current cohort, used to switch between cohorts
  * clearCaseSet(): resets the caseSet member to all GDC
  * removeCohort(): removes the current cohort
+ * setCohortMessage(): sets the current cohort message
  * clearCohortMessage(): clears the current message by setting it to undefined
  */
 const slice = createSlice({
   name: "cohort/availableCohorts",
   initialState: initialState,
   reducers: {
+    setCohortList: (state, action: PayloadAction<Cohort[]>) => {
+      // TODO: Behavior TBD
+      // When the user deletes context id from their cookies
+      // All the cohorts that was previously were saved or unsaved should be removed from the adapter
+      if (!action.payload) {
+        cohortsAdapter.removeMany(
+          state,
+          state.ids.filter((id) => state.entities[id]?.id !== "ALL-GDC-COHORT"),
+        );
+        state.currentCohort = "ALL-GDC-COHORT";
+      } else {
+        cohortsAdapter.upsertMany(state, [...action.payload] as Cohort[]);
+      }
+    },
     addNewCohort: (state) => {
       const cohort = newCohort();
       cohortsAdapter.addOne(state, cohort);
@@ -187,19 +203,6 @@ const slice = createSlice({
         changes: { name: action.payload },
       });
     },
-    setCohortList: (state, action: PayloadAction<Cohort[]>) => {
-      // When the user deletes context id from their cookies
-      // All the cohorts that was previously were saved or unsaved should be removed from the adapter
-      if (!action.payload) {
-        cohortsAdapter.removeMany(
-          state,
-          state.ids.filter((id) => state.entities[id]?.id !== "ALL-GDC-COHORT"),
-        );
-        state.currentCohort = "ALL-GDC-COHORT";
-      } else {
-        cohortsAdapter.upsertMany(state, [...action.payload] as Cohort[]);
-      }
-    },
     removeCohort: (
       state,
       action?: PayloadAction<{
@@ -215,6 +218,9 @@ const slice = createSlice({
         state,
         action?.payload?.currentID || state.currentCohort,
       );
+
+      // TODO: this will be removed after cohort id issue is fixed in the BE
+      // This is just a hack to remove cohort without trigerring notification and changing the cohort to the default
       if (action?.payload?.shouldShowMessage) {
         state.message = `deleteCohort|${removedCohort?.name}|${state.currentCohort}`;
         state.currentCohort = DEFAULT_COHORT_ID;

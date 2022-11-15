@@ -53,7 +53,7 @@ h-10
 w-10
 flex
 justify-center
-items-center		
+items-center
 bg-base-lightest
 transition-colors
 disabled:opacity-50
