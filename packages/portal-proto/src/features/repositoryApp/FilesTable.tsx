@@ -28,7 +28,7 @@ const FilesTables: React.FC = () => {
       arrangeable: false,
       disableSortBy: true,
     },
-    { id: "id", columnName: "File UUID", visible: false },
+    { id: "file_id", columnName: "File UUID", visible: false },
     { id: "access", columnName: "Access", visible: true },
     { id: "file_name", columnName: "File Name", visible: true },
     { id: "cases", columnName: "Cases", visible: true, disableSortBy: true },
@@ -87,9 +87,9 @@ const FilesTables: React.FC = () => {
     tempPagination = pagination;
     formattedTableData = data.map((file) => ({
       cart: <SingleItemAddToCartButton file={file} iconOnly />,
-      id: (
-        <Link href={`/files/${file.id}`}>
-          <a className="text-utility-link underline">{file.id}</a>
+      file_id: (
+        <Link href={`/files/${file.file_id}`}>
+          <a className="text-utility-link underline">{file.file_id}</a>
         </Link>
       ),
       access: <FileAccessBadge access={file.access} />,

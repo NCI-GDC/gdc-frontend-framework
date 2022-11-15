@@ -13,8 +13,8 @@ describe("<CartDownloadModal />", () => {
         openModal
         user={{ username: undefined, projects: {} as any }}
         filesByCanAccess={{
-          true: [{ fileId: "1" }] as CartFile[],
-          false: [{ fileId: "2" }, { fileId: "3" }] as CartFile[],
+          true: [{ file_id: "1" }] as CartFile[],
+          false: [{ file_id: "2" }, { file_id: "3" }] as CartFile[],
         }}
         dbGapList={[]}
         setActive={jest.fn()}
@@ -38,8 +38,8 @@ describe("<CartDownloadModal />", () => {
         openModal
         user={{ username: undefined, projects: {} as any }}
         filesByCanAccess={{
-          true: [{ fileId: "1" }] as CartFile[],
-          false: [{ fileId: "2" }, { fileId: "3" }] as CartFile[],
+          true: [{ file_id: "1" }] as CartFile[],
+          false: [{ file_id: "2" }, { file_id: "3" }] as CartFile[],
         }}
         dbGapList={[]}
         setActive={jest.fn()}
@@ -55,8 +55,8 @@ describe("<CartDownloadModal />", () => {
         openModal
         user={{ username: "USERGUY", projects: {} as any }}
         filesByCanAccess={{
-          true: [{ fileId: "1" }] as CartFile[],
-          false: [{ fileId: "2" }, { fileId: "3" }] as CartFile[],
+          true: [{ file_id: "1" }] as CartFile[],
+          false: [{ file_id: "2" }, { file_id: "3" }] as CartFile[],
         }}
         dbGapList={[]}
         setActive={jest.fn()}
@@ -77,8 +77,8 @@ describe("<CartDownloadModal />", () => {
         openModal
         user={{ username: "USERGUY", projects: {} as any }}
         filesByCanAccess={{
-          true: [{ fileId: "1" }] as CartFile[],
-          false: [{ fileId: "2" }, { fileId: "3" }] as CartFile[],
+          true: [{ file_id: "1" }] as CartFile[],
+          false: [{ file_id: "2" }, { file_id: "3" }] as CartFile[],
         }}
         dbGapList={["TCGA"]}
         setActive={jest.fn()}
@@ -98,7 +98,7 @@ describe("<CartDownloadModal />", () => {
         openModal
         user={{ username: undefined, projects: {} as any }}
         filesByCanAccess={{
-          false: [{ fileId: "2" }, { fileId: "3" }] as CartFile[],
+          false: [{ file_id: "2" }, { file_id: "3" }] as CartFile[],
         }}
         dbGapList={[]}
         setActive={jest.fn()}
@@ -116,8 +116,8 @@ describe("<CartDownloadModal />", () => {
         openModal
         user={{ username: "USERGUY", projects: {} as any }}
         filesByCanAccess={{
-          true: [{ fileId: "1" }] as CartFile[],
-          false: [{ fileId: "2" }, { fileId: "3" }] as CartFile[],
+          true: [{ file_id: "1" }] as CartFile[],
+          false: [{ file_id: "2" }, { file_id: "3" }] as CartFile[],
         }}
         dbGapList={["TCGA"]}
         setActive={jest.fn()}
