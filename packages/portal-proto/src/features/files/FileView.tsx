@@ -32,7 +32,10 @@ import { fileInCart } from "src/utils";
 import { GeneralErrorModal } from "@/components/Modals/GeneraErrorModal";
 import { TableActionButtons } from "@/components/TableActionButtons";
 import saveAs from "file-saver";
-import { VerticalTable } from "@/features/shared/VerticalTable";
+import {
+  VerticalTable,
+  HandleChangeInput,
+} from "@/features/shared/VerticalTable";
 import useStandardPagination from "@/hooks/useStandardPagination";
 
 export const StyledButton = tw.button`
@@ -240,10 +243,6 @@ const AssociatedCB = ({
     return tableRows;
   }, [associatedCBSearchTerm, associated_entities, cases]);
 
-  const handleSearchChange = (term: string) => {
-    setAssociatedCBSearchTerm(term);
-  };
-
   const {
     handlePageChange,
     handlePageSizeChange,
@@ -254,6 +253,20 @@ const AssociatedCB = ({
     total,
     displayedData,
   } = useStandardPagination(data);
+
+  const handleChange = (obj: HandleChangeInput) => {
+    switch (Object.keys(obj)?.[0]) {
+      case "newPageSize":
+        handlePageSizeChange(obj.newPageSize);
+        break;
+      case "newPageNumber":
+        handlePageChange(obj.newPageNumber);
+        break;
+      case "newSearch":
+        setAssociatedCBSearchTerm(obj.newSearch);
+        break;
+    }
+  };
 
   const columnListOrder = [
     { id: "entity_id", columnName: "Entity ID", visible: true },
@@ -280,8 +293,6 @@ const AssociatedCB = ({
       handleColumnChange={undefined}
       showControls={false}
       pagination={{
-        handlePageSizeChange,
-        handlePageChange,
         page,
         pages,
         size,
@@ -291,8 +302,9 @@ const AssociatedCB = ({
       }}
       status={"fulfilled"}
       search={{
-        handleSearchChange,
+        enabled: true,
       }}
+      handleChange={handleChange}
     />
   );
 };
@@ -352,14 +364,14 @@ export const FileView: React.FC<FileViewProps> = ({
           file_name: (
             <GenericLink
               path={`/files/${outputFile.fileId}`}
-              text={outputFile.fileName}
+              text={outputFile.file_name}
             />
           ),
-          data_category: outputFile.dataCategory,
-          data_type: outputFile.dataType,
-          data_format: outputFile.dataFormat,
+          data_category: outputFile.data_category,
+          data_type: outputFile.data_type,
+          data_format: outputFile.data_format,
           workflow_type: workflowType,
-          file_size: fileSize(outputFile.fileSize),
+          file_size: fileSize(outputFile.file_size),
           action: (
             <TableActionButtons
               isOutputFileInCart={isOutputFileInCart}
@@ -407,8 +419,8 @@ export const FileView: React.FC<FileViewProps> = ({
         ) : (
           <RemoveFromCartButton files={mapGdcFileToCartFile([file])} />
         )}
-        {file.dataFormat === "BAM" &&
-          file.dataType === "Aligned Reads" &&
+        {file.data_format === "BAM" &&
+          file.data_type === "Aligned Reads" &&
           file?.index_files?.length > 0 && (
             <BAMSlicingButton isActive={bamActive} file={file} />
           )}
@@ -426,7 +438,7 @@ export const FileView: React.FC<FileViewProps> = ({
           <HorizontalTable
             tableData={formatDataForHorizontalTable(file, [
               {
-                field: "fileName",
+                field: "file_name",
                 name: "Name",
               },
               {
@@ -438,11 +450,11 @@ export const FileView: React.FC<FileViewProps> = ({
                 name: "UUID",
               },
               {
-                field: "dataFormat",
+                field: "data_format",
                 name: "Data Format",
               },
               {
-                field: "fileSize",
+                field: "file_size",
                 name: "Size",
                 modifier: fileSize,
               },
@@ -465,15 +477,15 @@ export const FileView: React.FC<FileViewProps> = ({
           <HorizontalTable
             tableData={formatDataForHorizontalTable(file, [
               {
-                field: "dataCategory",
+                field: "data_category",
                 name: "Data Category",
               },
               {
-                field: "dataType",
+                field: "data_type",
                 name: "Data Type",
               },
               {
-                field: "experimentalStrategy",
+                field: "experimental_strategy",
                 name: "Experimental Strategy",
               },
               {
@@ -485,7 +497,7 @@ export const FileView: React.FC<FileViewProps> = ({
         </TitleHeader>
       </div>
 
-      {get(file, "dataType") === "Slide Image" && (
+      {get(file, "data_type") === "Slide Image" && (
         <FullWidthDiv>
           <TitleText>Slide Image Viewer</TitleText>
           <ImageViewer

@@ -219,19 +219,19 @@ export interface GdcFile {
   readonly acl: ReadonlyArray<string>;
   readonly createdDatetime: string;
   readonly updatedDatetime: string;
-  readonly dataCategory: DataCategory;
-  readonly dataFormat: DataFormat;
+  readonly data_category: DataCategory;
+  readonly data_format: DataFormat;
   readonly dataRelease?: string;
-  readonly dataType: DataType;
+  readonly data_type: DataType;
   readonly fileId: string;
-  readonly fileName: string;
-  readonly fileSize: number;
+  readonly file_name: string;
+  readonly file_size: number;
   readonly md5sum: string;
   readonly platform?: string;
   readonly state: string;
   readonly fileType?: FileType;
   readonly version?: string;
-  readonly experimentalStrategy?: ExperimentalStrategy;
+  readonly experimental_strategy?: ExperimentalStrategy;
   readonly project_id?: string;
   readonly annotations?: ReadonlyArray<{
     readonly annotation_id: string;
@@ -323,12 +323,12 @@ export interface GdcFile {
   readonly downstream_analyses?: ReadonlyArray<{
     readonly workflow_type: string;
     readonly output_files?: ReadonlyArray<{
-      readonly fileName: string;
-      readonly dataCategory: DataCategory;
-      readonly dataType: DataType;
-      readonly dataFormat: DataFormat;
+      readonly file_name: string;
+      readonly data_category: DataCategory;
+      readonly data_type: DataType;
+      readonly data_format: DataFormat;
       readonly state: string;
-      readonly fileSize: number;
+      readonly file_size: number;
       readonly fileId: string;
       readonly access: AccessType;
       readonly acl: ReadonlyArray<string>;
@@ -343,12 +343,12 @@ export interface GdcFile {
     readonly submitterId: string;
     readonly createdDatetime: string;
     readonly updatedDatetime: string;
-    readonly dataCategory: DataCategory;
-    readonly dataFormat: DataFormat;
-    readonly dataType: DataType;
+    readonly data_category: DataCategory;
+    readonly data_format: DataFormat;
+    readonly data_type: DataType;
     readonly fileId: string;
-    readonly fileName: string;
-    readonly fileSize: number;
+    readonly file_name: string;
+    readonly file_size: number;
     readonly md5sum: string;
     readonly state: string;
   }>;
@@ -362,19 +362,19 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
     acl: [...hit.acl],
     createdDatetime: hit.created_datetime,
     updatedDatetime: hit.updated_datetime,
-    dataCategory: asDataCategory(hit.data_category),
-    dataFormat: asDataFormat(hit.data_format),
+    data_category: asDataCategory(hit.data_category),
+    data_format: asDataFormat(hit.data_format),
     dataRelease: hit.data_release,
-    dataType: asDataType(hit.data_type),
+    data_type: asDataType(hit.data_type),
     fileId: hit.file_id,
-    fileName: hit.file_name,
-    fileSize: hit.file_size,
+    file_name: hit.file_name,
+    file_size: hit.file_size,
     md5sum: hit.md5sum,
     platform: hit.platform,
     state: hit.state,
     fileType: asFileType(hit.type),
     version: hit.version,
-    experimentalStrategy: asExperimentalStrategy(hit.experimental_strategy),
+    experimental_strategy: asExperimentalStrategy(hit.experimental_strategy),
     project_id: hit.cases?.[0]?.project?.project_id,
     annotations: hit.annotations?.map((annotation) => annotation),
     cases: hit.cases?.map((caseObj) => {
@@ -485,11 +485,11 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
         workflow_type: analysis.workflow_type,
         output_files: analysis.output_files?.map((file) => {
           return {
-            fileName: file.file_name,
-            dataCategory: asDataCategory(file.data_category),
-            dataType: asDataType(file.data_type),
-            dataFormat: asDataFormat(file.data_format),
-            fileSize: file.file_size,
+            file_name: file.file_name,
+            data_category: asDataCategory(file.data_category),
+            data_type: asDataType(file.data_type),
+            data_format: asDataFormat(file.data_format),
+            file_size: file.file_size,
             fileId: file.file_id,
             acl: hit.acl,
             access: asAccessType(file.access),
@@ -507,12 +507,12 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
       submitterId: idx.submitter_id,
       createdDatetime: idx.created_datetime,
       updatedDatetime: idx.updated_datetime,
-      dataCategory: asDataCategory(idx.data_category),
-      dataFormat: asDataFormat(idx.data_format),
-      dataType: asDataType(idx.data_type),
+      data_category: asDataCategory(idx.data_category),
+      data_format: asDataFormat(idx.data_format),
+      data_type: asDataType(idx.data_type),
       fileId: idx.file_id,
-      fileName: idx.file_name,
-      fileSize: idx.file_size,
+      file_name: idx.file_name,
+      file_size: idx.file_size,
       md5sum: idx.md5sum,
       state: idx.state,
     })),
