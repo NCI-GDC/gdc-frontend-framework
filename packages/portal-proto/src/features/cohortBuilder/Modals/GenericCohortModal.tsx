@@ -16,7 +16,7 @@ export const GenericCohortModal = ({
   mainText: JSX.Element;
   subText: JSX.Element;
   onActionClick: () => void;
-}) => {
+}): JSX.Element => {
   // Mantine modal appear to disable tailwind completely which is why the Modal below
   // is styled via mantine.
   return (

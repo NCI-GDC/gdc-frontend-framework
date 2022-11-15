@@ -9,7 +9,7 @@ import CohortManager from "./CohortManager";
 import {
   DeleteCohortNotification,
   DiscardChangesCohortNotification,
-  ErrorCohortList,
+  ErrorCohortNotification,
   NewCohortNotification,
   SavedCohortNotification,
 } from "@/features/cohortBuilder/CohortNotifications";
@@ -25,7 +25,6 @@ import {
   clearCohortMessage,
   setCohortList,
   useGetCohortsByContextIdQuery,
-  sendCohortMessage,
 } from "@gff/core";
 
 import {
@@ -39,25 +38,36 @@ import SummaryFacets, { SummaryFacetInfo } from "./SummaryFacets";
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
 import FunctionButton from "@/components/FunctionButton";
 import QueryExpressionSection from "./QueryExpressionSection";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+
+interface Error {
+  data: {
+    message: string;
+  };
+  status: number;
+}
 
 const ContextBar: React.FC = () => {
   const coreDispatch = useCoreDispatch();
-  const { data: cohortsListData, error } = useGetCohortsByContextIdQuery();
+  const { data: cohortsListData, error: getCohortError } =
+    useGetCohortsByContextIdQuery();
 
   useEffect(() => {
-    // if cohortsListData is undefined that means either user doesn't have any cohorts saved as of now
-    // or call to fetch the cohort list errored out. In that case we need to send an empty array so as to not
-    // show previously saved / locally persisted cohort in the dropdown menu
-    if (
-      (error as FetchBaseQueryError)?.status === 500 ||
-      (error as FetchBaseQueryError)?.status === 404
-    ) {
-      coreDispatch(sendCohortMessage("error|"));
-      return;
+    // If cohortsListData is undefined that means either user doesn't have any cohorts saved as of now
+    // or call to fetch the cohort list errored out.
+    // In that case we need to check if the error is due to context id not being provided.
+    // If that's case then we get rid of all saved, unsaved cohort from the local cohortAdapter by unsending undefined payload
+
+    if (cohortsListData) {
+      coreDispatch(setCohortList(cohortsListData));
+    } else if ((getCohortError as Error)?.status === 400) {
+      const noGdcContext =
+        ((getCohortError as Error)?.data.message as string) ===
+        "Bad Request: [400] - Context id not provided.";
+      if (noGdcContext) {
+        coreDispatch(setCohortList(undefined));
+      }
     }
-    coreDispatch(setCohortList(cohortsListData ?? []));
-  }, [error, coreDispatch, cohortsListData]);
+  }, [getCohortError, coreDispatch, cohortsListData]);
 
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(DEFAULT_COHORT_ID);
@@ -120,7 +130,7 @@ const ContextBar: React.FC = () => {
         }
         if (cmdAndParam[0] === "error") {
           showNotification({
-            message: <ErrorCohortList />,
+            message: <ErrorCohortNotification errorType={cmdAndParam[1]} />,
             classNames: {
               description: "flex flex-col content-center text-center",
             },
@@ -128,6 +138,7 @@ const ContextBar: React.FC = () => {
           });
         }
       }
+
       coreDispatch(clearCohortMessage());
     }
   }, [cohortMessage, coreDispatch, currentCohortName]);

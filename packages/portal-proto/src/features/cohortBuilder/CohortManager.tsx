@@ -27,7 +27,7 @@ import {
   setCurrentCohortId,
   selectCurrentCohort,
   useUpdateCohortMutation,
-  sendCohortMessage,
+  setCohortMessage,
   useLazyGetCohortByIdQuery,
   FilterSet,
 } from "@gff/core";
@@ -37,7 +37,6 @@ import { useAddCohortMutation } from "@gff/core";
 import CountButton from "./CountButton";
 import { SavingCohortModal } from "./Modals/SavingCohortModal";
 import { GenericCohortModal } from "./Modals/GenericCohortModal";
-import { batch } from "react-redux";
 
 interface CohortGroupButtonProps {
   $buttonDisabled?: boolean;
@@ -50,11 +49,14 @@ ${(p: CohortGroupButtonProps) =>
     ? "text-primary-content-darkest"
     : "hover:bg-primary hover:text-primary-content-lightest"}
 ${(p: CohortGroupButtonProps) => (p.$isDiscard ? "rounded-l" : "rounded")}
-p-2
+h-10
+w-10
+flex
+justify-center
+items-center		
 bg-base-lightest
 transition-colors
 disabled:opacity-50
-h-9
 `;
 
 /**
@@ -106,9 +108,8 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   };
 
   // Cohort persistence
-  const [addCohort, { isLoading: isAddCohortLoading, isError: isAddingError }] =
-    useAddCohortMutation();
-  const [deleteCohortBE, { isLoading: isDeleteCohortLoading }] =
+  const [addCohort, { isLoading: isAddCohortLoading }] = useAddCohortMutation();
+  const [deleteCohortFromBE, { isLoading: isDeleteCohortLoading }] =
     useDeleteCohortMutation();
   const [updateCohort, { isLoading: isUpdateCohortLoading }] =
     useUpdateCohortMutation();
@@ -137,11 +138,11 @@ const CohortManager: React.FC<CohortManagerProps> = ({
       data-tour="cohort_management_bar"
       className="flex flex-row items-center justify-start gap-6 pl-4 h-20 shadow-lg bg-primary-darkest"
     >
-      {/*  Modals Start   */}
       {(isAddCohortLoading ||
         isCohortIdFetching ||
         isDeleteCohortLoading ||
         isUpdateCohortLoading) && <LoadingOverlay visible />}
+      {/*  Modals Start   */}
       <GenericCohortModal
         title="Delete Cohort"
         opened={showDelete}
@@ -154,18 +155,19 @@ const CohortManager: React.FC<CohortManagerProps> = ({
         }
         subText={<>You cannot undo this action.</>}
         onActionClick={async () => {
-          // only if it's been saved to BE before
-          // also unhappy paths for all these???
           setShowDelete(false);
+          // only delete cohort from BE if it's been saved before
           if (currentCohort?.saved) {
-            // dont delete if not able to delete from the BE
-            await deleteCohortBE(cohortId);
-            deleteCohort();
+            // dont delete it from the local adapter if not able to delete from the BE
+            await deleteCohortFromBE(cohortId)
+              .unwrap()
+              .then(() => deleteCohort())
+              .catch(() =>
+                coreDispatch(setCohortMessage("error|deleting|allId")),
+              );
           } else {
             deleteCohort();
           }
-          // maybe do this inside action itself as deleteCohort is being called in both instances
-          coreDispatch(setCurrentCohortId("ALL-GDC-COHORT"));
         }}
       />
       <GenericCohortModal
@@ -179,8 +181,14 @@ const CohortManager: React.FC<CohortManagerProps> = ({
         subText={<>You cannot undo this action.</>}
         onActionClick={async () => {
           if (currentCohort.saved) {
-            const data = await trigger(cohortId).unwrap();
-            discardChanges(data.filters);
+            await trigger(cohortId)
+              .unwrap()
+              .then((payload) => {
+                discardChanges(payload.filters);
+              })
+              .catch(() =>
+                coreDispatch(setCohortMessage("error|discarding|allId")),
+              );
           } else {
             discardChanges(undefined);
           }
@@ -206,10 +214,15 @@ const CohortManager: React.FC<CohortManagerProps> = ({
             type: "static",
             filters: buildCohortGqlOperator(filters),
           };
-          await updateCohort(updateBody);
-          // only on Happy Path
-          coreDispatch(sendCohortMessage(`savedCohort|`));
-          //unhappy path
+
+          await updateCohort(updateBody)
+            .unwrap()
+            .then(() =>
+              coreDispatch(
+                setCohortMessage(`savedCohort|${cohortName}|${cohortId}`),
+              ),
+            )
+            .catch(() => coreDispatch(setCohortMessage("error|saving|allId")));
         }}
       />
       <SavingCohortModal
@@ -226,26 +239,28 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                 ? buildCohortGqlOperator(filters)
                 : {},
           };
-          // getting 500 for this call when it's being triggered for the first time. Looks like server asleep or sth
-          // generic error messages for unhappy path would suffice IMO
-          // maybe use of isError
-          // take care of that
-          const data = await addCohort(addBody).unwrap();
-          console.log("data: ", data);
-          if (Object.keys(data).length > 0) {
-            batch(() => {
-              coreDispatch(setCurrentCohortId(data.id));
-              coreDispatch(sendCohortMessage(`savedCohort|`));
-            });
-            onSelectionChanged(data.id);
-            coreDispatch(
-              removeCohort({ shouldShowMessage: false, currentID: prevCohort }),
-            );
-          }
+
+          await addCohort(addBody)
+            .unwrap()
+            .then((payload) => {
+              coreDispatch(setCurrentCohortId(payload.id));
+              coreDispatch(
+                setCohortMessage(`savedCohort|${newName}|${payload.id}`),
+              );
+              onSelectionChanged(payload.id);
+              coreDispatch(
+                removeCohort({
+                  shouldShowMessage: false,
+                  currentID: prevCohort,
+                }),
+              );
+            })
+            .catch(() => coreDispatch(setCohortMessage("error|saving|allId")));
         }}
         onSaveCohort={onSaveCohort}
       />
       {/*  Modals End   */}
+
       <div className="border-opacity-0">
         {!hide_controls ? (
           <div className="flex justify-center items-center">
@@ -271,7 +286,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                 classNames={{
                   root: "border-base-light w-80 p-0 z-10 pt-5",
                   input:
-                    "text-heading font-[500] text-primary-darkest rounded-l-none",
+                    "text-heading font-[500] text-primary-darkest rounded-l-none h-10",
                   item: "text-heading font-[400] text-primary-darkest data-selected:bg-primary-lighter first:border-b-2 first:rounded-none first:border-primary",
                 }}
                 aria-label="Select cohort"

@@ -73,10 +73,22 @@ export const DiscardChangesCohortNotification: React.FC = () => {
   );
 };
 
-export const ErrorCohortList: React.FC = () => {
+export const ErrorCohortNotification = ({
+  errorType,
+}: {
+  errorType: string;
+}): JSX.Element => {
+  let errorText = "";
+  if (errorType === "saving") {
+    errorText = "There was a problem saving the cohort.";
+  } else if (errorType === "deleting") {
+    errorText = "There was a problem deleting the cohort.";
+  } else if (errorType === "discarding") {
+    errorText = "There was a problem discarding the unsaved changes";
+  }
   return (
     <>
-      <p>There was a problem getting your saved cohorts. Please try again.</p>
+      <p>{errorText}</p>
     </>
   );
 };

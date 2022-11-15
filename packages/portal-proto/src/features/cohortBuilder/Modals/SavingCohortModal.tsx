@@ -14,7 +14,7 @@ export const SavingCohortModal = ({
   onClose: () => void;
   onSaveClick: (name: string) => void;
   onSaveCohort: (name: string) => boolean;
-}) => {
+}): JSX.Element => {
   const form = useForm({
     initialValues: {
       name: initialName,

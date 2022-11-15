@@ -188,9 +188,9 @@ const slice = createSlice({
       });
     },
     setCohortList: (state, action: PayloadAction<Cohort[]>) => {
-      // When the query errors out or user deletes context id from their cookies
-      // All the cohorts that was previously saved should be removed from the adapter
-      if (action.payload.length === 0) {
+      // When the user deletes context id from their cookies
+      // All the cohorts that was previously were saved or unsaved should be removed from the adapter
+      if (!action.payload) {
         cohortsAdapter.removeMany(
           state,
           state.ids.filter((id) => state.entities[id]?.id !== "ALL-GDC-COHORT"),
@@ -200,7 +200,6 @@ const slice = createSlice({
         cohortsAdapter.upsertMany(state, [...action.payload] as Cohort[]);
       }
     },
-    //try to make payload optional and more meaningful variable name
     removeCohort: (
       state,
       action?: PayloadAction<{
@@ -235,7 +234,7 @@ const slice = createSlice({
         const cohort = newCohort(filters, true);
         cohortsAdapter.addOne(state, cohort);
         state.currentCohort = cohort.id;
-        state.message = `newCohort|${cohort.name}|{cohort.id`;
+        state.message = `newCohort|${cohort.name}|${cohort.id}`;
       } else {
         cohortsAdapter.updateOne(state, {
           id: state.currentCohort,
@@ -273,7 +272,6 @@ const slice = createSlice({
         },
       });
     },
-    //try to make payload optional
     discardCohortChanges: (
       state,
       action: PayloadAction<FilterSet | undefined>,
@@ -287,13 +285,12 @@ const slice = createSlice({
           modified_datetime: new Date().toISOString(),
         },
       });
-      state.message = "discardChanges|";
+      state.message = `discardChanges|${
+        state.entities[state.currentCohort]?.name
+      }|${state.currentCohort}`;
     },
     setCurrentCohortId: (state, action: PayloadAction<string>) => {
       state.currentCohort = action.payload;
-    },
-    sendCohortMessage: (state, action: PayloadAction<string>) => {
-      state.message = action.payload;
     },
     clearCohortMessage: (state) => {
       state.message = undefined;
@@ -397,7 +394,7 @@ export const {
   clearCohortMessage,
   setCohortList,
   discardCohortChanges,
-  sendCohortMessage,
+  setCohortMessage,
 } = slice.actions;
 
 export const cohortSelectors = cohortsAdapter.getSelectors(

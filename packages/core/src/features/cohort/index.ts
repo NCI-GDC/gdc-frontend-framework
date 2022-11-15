@@ -40,7 +40,7 @@ import {
   setCohortList,
   selectCurrentCohortSaved,
   discardCohortChanges,
-  sendCohortMessage,
+  setCohortMessage,
   selectCurrentCohortFilterSet,
 } from "./availableCohortsSlice";
 
@@ -122,6 +122,6 @@ export {
   buildGqlOperationToFilterSet,
   selectCurrentCohortSaved,
   discardCohortChanges,
-  sendCohortMessage,
+  setCohortMessage,
   selectCurrentCohortFilterSet,
 };
