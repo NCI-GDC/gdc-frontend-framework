@@ -4,7 +4,8 @@ import { ItemTypes } from "./ItemTypes";
 import type { XYCoord, Identifier } from "dnd-core";
 import _ from "lodash";
 
-const columnStyles = `cursor-move bg-base-lightest mb-2 p-1 border-1`;
+const columnStyles = `cursor-move bg-base-lightest mb-2 p-1 border-1 block`;
+const columnStylesDisabled = `cursor-not-allowed bg-base-lightest mb-2 p-1 border-1`;
 
 export interface ColumnProps {
   id: any;
@@ -13,6 +14,7 @@ export interface ColumnProps {
   visible: boolean;
   moveColumn: (dragIndex: number, hoverIndex: number) => void;
   toggleColumn: (update: any) => void;
+  arrangeable: boolean;
 }
 
 interface DragItem {
@@ -28,12 +30,13 @@ export const ColumnOption: FC<ColumnProps> = ({
   index,
   moveColumn,
   toggleColumn,
+  arrangeable = true,
 }: ColumnProps) => {
   const formatColumnName = (colName: string) => {
     return _.startCase(colName);
   };
 
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLLabelElement>(null);
 
   const [{ handlerId }, drop] = useDrop<
     DragItem,
@@ -92,18 +95,33 @@ export const ColumnOption: FC<ColumnProps> = ({
   const o = isDragging ? 0 : 1;
   drag(drop(ref));
   return (
-    <div
-      ref={ref}
-      className={`${columnStyles} opacity-${o}`}
-      data-handler-id={handlerId}
-    >
-      <input
-        className={`mr-2 ml-2`}
-        type="checkbox"
-        checked={visible}
-        onChange={() => toggleColumn(columnName)}
-      />
-      <span className={`text-xs`}>{formatColumnName(columnName)}</span>
-    </div>
+    <>
+      {arrangeable ? (
+        <label
+          ref={ref}
+          className={`${columnStyles} opacity-${o}`}
+          data-handler-id={handlerId}
+        >
+          <input
+            className={"mr-2 ml-2"}
+            type="checkbox"
+            checked={visible}
+            onChange={() => toggleColumn(columnName)}
+          />
+          <span className={`text-xs`}>{formatColumnName(columnName)}</span>
+        </label>
+      ) : (
+        <div className={columnStylesDisabled} data-handler-id={handlerId}>
+          <input
+            className={"mr-2 ml-2"}
+            type="checkbox"
+            checked={visible}
+            onChange={() => toggleColumn(columnName)}
+            disabled
+          />
+          <span className={`text-xs`}>{formatColumnName(columnName)}</span>
+        </div>
+      )}
+    </>
   );
 };

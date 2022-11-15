@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { fetchSsmsTable, useCoreDispatch, useSsmsTable } from "@gff/core";
-import { VerticalTable } from "../shared/VerticalTable";
+import { VerticalTable, HandleChangeInput } from "../shared/VerticalTable";
 import { Switch, Tooltip } from "@mantine/core";
 import _ from "lodash";
 import { useMeasure } from "react-use";
@@ -223,14 +223,17 @@ const MutationsTable: React.FC<MutationTableProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedSurvivalPlot]);
 
-  const handlePageSizeChange = (x: string) => {
-    setOffset((activePage - 1) * parseInt(x));
-    setPageSize(parseInt(x));
-  };
-
-  const handlePageChange = (x: number) => {
-    setOffset((x - 1) * pageSize);
-    setActivePage(x);
+  const handleChange = (obj: HandleChangeInput) => {
+    switch (Object.keys(obj)?.[0]) {
+      case "newPageSize":
+        setOffset((activePage - 1) * parseInt(obj.newPageSize));
+        setPageSize(parseInt(obj.newPageSize));
+        break;
+      case "newPageNumber":
+        setOffset((obj.newPageNumber - 1) * pageSize);
+        setActivePage(obj.newPageNumber);
+        break;
+    }
   };
 
   const updateTableCells = () => {
@@ -270,8 +273,6 @@ const MutationsTable: React.FC<MutationTableProps> = ({
             activePage * pageSize
           } of  ${totalResults} somatic mutations`}
           pagination={{
-            handlePageSizeChange,
-            handlePageChange,
             page: activePage,
             pages,
             size: pageSize,
@@ -280,6 +281,7 @@ const MutationsTable: React.FC<MutationTableProps> = ({
             label: "somatic mutations",
           }}
           status={data.status}
+          handleChange={handleChange}
         />
       </div>
     </div>

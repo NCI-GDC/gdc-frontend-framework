@@ -1,6 +1,6 @@
 import { useState } from "react";
 import fileSize from "filesize";
-import { VerticalTable } from "../shared/VerticalTable";
+import { VerticalTable, HandleChangeInput } from "../shared/VerticalTable";
 import { SingleItemAddToCartButton } from "../cart/updateCart";
 import Link from "next/link";
 import {
@@ -21,28 +21,43 @@ import { FileAccessBadge } from "@/components/FileAccessBadge";
 
 const FilesTables: React.FC = () => {
   const columnListOrder = [
-    { id: "cart", columnName: "Cart", visible: true },
+    {
+      id: "cart",
+      columnName: "Cart",
+      visible: true,
+      arrangeable: false,
+      disableSortBy: true,
+    },
     { id: "id", columnName: "File UUID", visible: false },
     { id: "access", columnName: "Access", visible: true },
-    { id: "fileName", columnName: "File Name", visible: true },
-    { id: "cases", columnName: "Cases", visible: true },
+    { id: "file_name", columnName: "File Name", visible: true },
+    { id: "cases", columnName: "Cases", visible: true, disableSortBy: true },
     { id: "project_id", columnName: "Project", visible: true },
-    { id: "dataCategory", columnName: "Data Category ", visible: true },
-    { id: "dataType", columnName: "Data Type", visible: false },
-    { id: "dataFormat", columnName: "Data Format", visible: true },
+    { id: "data_category", columnName: "Data Category ", visible: true },
+    { id: "data_type", columnName: "Data Type", visible: false },
+    { id: "data_format", columnName: "Data Format", visible: true },
     {
-      id: "experimentalStrategy",
+      id: "experimental_strategy",
       columnName: "Experimental Strategy",
       visible: false,
     },
     { id: "platform", columnName: "Platform", visible: false },
-    { id: "fileSize", columnName: "File Size", visible: true },
-    { id: "annotations", columnName: "Annotations", visible: true },
+    { id: "file_size", columnName: "File Size", visible: true },
+    {
+      id: "annotations",
+      columnName: "Annotations",
+      visible: true,
+      disableSortBy: true,
+    },
   ];
   const filterColumnCells = (newList) =>
     newList.reduce((filtered, obj) => {
       if (obj.visible) {
-        filtered.push({ Header: obj.columnName, accessor: obj.id });
+        filtered.push({
+          Header: obj.columnName,
+          accessor: obj.id,
+          disableSortBy: obj.disableSortBy || false,
+        });
       }
       return filtered;
     }, []);
@@ -78,9 +93,9 @@ const FilesTables: React.FC = () => {
         </Link>
       ),
       access: <FileAccessBadge access={file.access} />,
-      fileName: (
+      file_name: (
         <Link href={`/files/${file.id}`}>
-          <a className="text-utility-link underline">{file.fileName}</a>
+          <a className="text-utility-link underline">{file.file_name}</a>
         </Link>
       ),
       cases: file.cases?.length.toLocaleString() || 0,
@@ -89,12 +104,12 @@ const FilesTables: React.FC = () => {
           <a className="text-utility-link underline">{file.project_id}</a>
         </Link>
       ),
-      dataCategory: file.dataCategory,
-      dataType: file.dataType,
-      dataFormat: file.dataFormat,
-      experimentalStrategy: file.experimentalStrategy || "--",
+      data_category: file.data_category,
+      data_type: file.data_type,
+      data_format: file.data_format,
+      experimental_strategy: file.experimental_strategy || "--",
       platform: file.platform || "--",
-      fileSize: fileSize(file.fileSize),
+      file_size: fileSize(file.file_size),
       annotations: file.annotations?.length || 0,
     }));
   }
@@ -108,7 +123,9 @@ const FilesTables: React.FC = () => {
   const cohortGqlOperator = buildCohortGqlOperator(allFilters);
   const coreDispatch = useCoreDispatch();
 
-  const getCohortCases = (pageSize = 20, offset = 0) => {
+  const [sortBy, setSortBy] = useState([]);
+
+  const getCohortCases = (pageSize = 20, offset = 0, sortBy = []) => {
     coreDispatch(
       fetchFiles({
         filters: cohortGqlOperator,
@@ -118,14 +135,40 @@ const FilesTables: React.FC = () => {
         ],
         size: pageSize,
         from: offset * pageSize,
+        sortBy: sortBy,
       }),
     );
   };
-  const handlePageSizeChange = (x: string) => {
-    getCohortCases(parseInt(x), 0);
+
+  const sortByActions = (sortByObj) => {
+    const tempSortBy = sortByObj.map((sortObj) => {
+      let tempSortId = sortObj.id;
+      // map sort ids to api ids
+      if (sortObj.id === "project_id") {
+        //cases.project.project_id = project_id
+        tempSortId = "cases.project.project_id";
+      }
+      return {
+        field: tempSortId,
+        direction: sortObj.desc ? "desc" : "asc",
+      };
+    });
+    setSortBy(tempSortBy);
+    getCohortCases(tempPagination.size, tempPagination.page - 1, tempSortBy);
   };
-  const handlePageChange = (x: number) => {
-    getCohortCases(tempPagination.size, x - 1);
+
+  const handleChange = (obj: HandleChangeInput) => {
+    switch (Object.keys(obj)?.[0]) {
+      case "sortBy":
+        sortByActions(obj.sortBy);
+        break;
+      case "newPageSize":
+        getCohortCases(parseInt(obj.newPageSize), 0, sortBy);
+        break;
+      case "newPageNumber":
+        getCohortCases(tempPagination.size, obj.newPageNumber - 1, sortBy);
+        break;
+    }
   };
 
   let totalFileSize = "--";
@@ -158,16 +201,16 @@ const FilesTables: React.FC = () => {
       }
       tableData={formattedTableData}
       columnListOrder={columnListOrder}
+      columnSorting={"manual"}
       columnCells={columnCells}
       handleColumnChange={handleColumnChange}
       selectableRow={false}
       pagination={{
-        handlePageSizeChange,
-        handlePageChange,
         ...tempPagination,
         label: "files",
       }}
       status={status}
+      handleChange={handleChange}
     />
   );
 };

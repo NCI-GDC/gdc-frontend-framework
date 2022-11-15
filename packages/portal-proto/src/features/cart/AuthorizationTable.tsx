@@ -27,7 +27,7 @@ const AuthorizationTable: React.FC<AuthorizationTableProps> = ({
       files: filesByCanAccess?.true?.length || 0,
       file_size: fileSize(
         filesByCanAccess?.true
-          ?.map((f) => f.fileSize)
+          ?.map((f) => f.file_size)
           .reduce((previousFile, file) => previousFile + file) || 0,
       ),
     },
@@ -36,7 +36,7 @@ const AuthorizationTable: React.FC<AuthorizationTableProps> = ({
       files: filesByCanAccess?.false?.length || 0,
       file_size: fileSize(
         filesByCanAccess?.false
-          ?.map((f) => f.fileSize)
+          ?.map((f) => f.file_size)
           .reduce((previousFile, file) => previousFile + file) || 0,
       ),
     },

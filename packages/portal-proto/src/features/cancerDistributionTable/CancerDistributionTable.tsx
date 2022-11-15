@@ -8,7 +8,10 @@ import {
   useProjects,
   CancerDistributionTableData,
 } from "@gff/core";
-import { VerticalTable } from "@/features/shared/VerticalTable";
+import {
+  VerticalTable,
+  HandleChangeInput,
+} from "@/features/shared/VerticalTable";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import FunctionButton from "@/components/FunctionButton";
 import useStandardPagination from "@/hooks/useStandardPagination";
@@ -304,6 +307,17 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     displayedData,
   } = useStandardPagination(formattedData);
 
+  const handleChange = (obj: HandleChangeInput) => {
+    switch (Object.keys(obj)?.[0]) {
+      case "newPageSize":
+        handlePageSizeChange(obj.newPageSize);
+        break;
+      case "newPageNumber":
+        handlePageChange(obj.newPageNumber);
+        break;
+    }
+  };
+
   return (
     <VerticalTable
       tableData={displayedData}
@@ -319,8 +333,6 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         </div>
       }
       pagination={{
-        handlePageSizeChange,
-        handlePageChange,
         page,
         pages,
         size,
@@ -336,6 +348,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
           ? "rejected"
           : "uninitialized"
       }
+      handleChange={handleChange}
     />
   );
 };
