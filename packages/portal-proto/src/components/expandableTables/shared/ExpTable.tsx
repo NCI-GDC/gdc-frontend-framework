@@ -10,7 +10,6 @@ import {
   ColumnDef,
   flexRender,
 } from "@tanstack/react-table";
-import { useSpring } from "react-spring";
 import CheckboxSpring from "./CheckboxSpring";
 import AnimatedRow from "./AnimatedRow";
 import { Row } from "@tanstack/react-table";
@@ -36,6 +35,7 @@ export const ExpTable: React.FC<ExpTableProps> = ({
   selectAll,
   allSelected,
   firstColumn,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   headerWidth,
   subrow,
 }: ExpTableProps) => {
