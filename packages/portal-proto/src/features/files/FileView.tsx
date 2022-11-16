@@ -344,10 +344,10 @@ export const FileView: React.FC<FileViewProps> = ({
     const tsv = [header.join("\t"), body].join("\n");
     const blob = new Blob([tsv], { type: "text/csv" });
 
-    saveAs(blob, `file-history-${file.fileId}.tsv`);
+    saveAs(blob, `file-history-${file.file_id}.tsv`);
   };
 
-  const isFileInCart = fileInCart(currentCart, file.fileId);
+  const isFileInCart = fileInCart(currentCart, file.file_id);
 
   const DownstreamAnalyses = ({
     downstream_analyses,
@@ -358,12 +358,12 @@ export const FileView: React.FC<FileViewProps> = ({
     downstream_analyses?.forEach((byWorkflowType) => {
       const workflowType = byWorkflowType?.workflow_type;
       byWorkflowType?.output_files?.forEach((outputFile) => {
-        const isOutputFileInCart = fileInCart(currentCart, outputFile.fileId);
+        const isOutputFileInCart = fileInCart(currentCart, outputFile.file_id);
         const mappedFileObj = mapGdcFileToCartFile([outputFile]);
         tableRows.push({
           file_name: (
             <GenericLink
-              path={`/files/${outputFile.fileId}`}
+              path={`/files/${outputFile.file_id}`}
               text={outputFile.file_name}
             />
           ),
@@ -407,7 +407,7 @@ export const FileView: React.FC<FileViewProps> = ({
       new Blob([jsonData], {
         type: "application/json",
       }),
-      `${file.fileId}_history.${currentDate}.json`,
+      `${file.file_id}_history.${currentDate}.json`,
     );
   };
 
@@ -501,7 +501,7 @@ export const FileView: React.FC<FileViewProps> = ({
         <FullWidthDiv>
           <TitleText>Slide Image Viewer</TitleText>
           <ImageViewer
-            imageId={file?.fileId}
+            imageId={file?.file_id}
             tableData={parseSlideDetailsInfo(file)}
           />
         </FullWidthDiv>
@@ -709,7 +709,7 @@ export const FileModal: React.FC<FileModalProps> = ({
 }: FileModalProps) => {
   return (
     <ReactModal isOpen={isOpen} onRequestClose={closeModal}>
-      {file?.fileId ? (
+      {file?.file_id ? (
         <FileView file={file} fileHistory={fileHistory} />
       ) : (
         <SummaryErrorHeader label="File Not Found" />

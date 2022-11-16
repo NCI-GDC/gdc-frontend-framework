@@ -90,7 +90,7 @@ const FilesTable: React.FC<FilesTableProps> = ({
           op: "in",
           content: {
             field: "files.file_id",
-            value: cart.map((f) => f.fileId),
+            value: cart.map((f) => f.file_id),
           },
         },
       ],
@@ -116,13 +116,13 @@ const FilesTable: React.FC<FilesTableProps> = ({
         ? data.map((file) => ({
             remove: <RemoveFromCartButton files={[file]} iconOnly />,
             uuid: (
-              <Link href={`/files/${file.fileId}`}>
-                <a className="text-utility-link underline">{file.fileId}</a>
+              <Link href={`/files/${file.file_id}`}>
+                <a className="text-utility-link underline">{file.file_id}</a>
               </Link>
             ),
             access: <FileAccessBadge access={file.access} />,
             name: (
-              <Link href={`/files/${file.fileId}`}>
+              <Link href={`/files/${file.file_id}`}>
                 <a className="text-utility-link underline">{file.file_name}</a>
               </Link>
             ),

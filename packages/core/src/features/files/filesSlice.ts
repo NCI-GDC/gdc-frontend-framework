@@ -223,7 +223,7 @@ export interface GdcFile {
   readonly data_format: DataFormat;
   readonly dataRelease?: string;
   readonly data_type: DataType;
-  readonly fileId: string;
+  readonly file_id: string;
   readonly file_name: string;
   readonly file_size: number;
   readonly md5sum: string;
@@ -329,7 +329,7 @@ export interface GdcFile {
       readonly data_format: DataFormat;
       readonly state: string;
       readonly file_size: number;
-      readonly fileId: string;
+      readonly file_id: string;
       readonly access: AccessType;
       readonly acl: ReadonlyArray<string>;
       readonly project_id?: string;
@@ -346,7 +346,7 @@ export interface GdcFile {
     readonly data_category: DataCategory;
     readonly data_format: DataFormat;
     readonly data_type: DataType;
-    readonly fileId: string;
+    readonly file_id: string;
     readonly file_name: string;
     readonly file_size: number;
     readonly md5sum: string;
@@ -366,7 +366,7 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
     data_format: asDataFormat(hit.data_format),
     dataRelease: hit.data_release,
     data_type: asDataType(hit.data_type),
-    fileId: hit.file_id,
+    file_id: hit.file_id,
     file_name: hit.file_name,
     file_size: hit.file_size,
     md5sum: hit.md5sum,
@@ -490,7 +490,7 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
             data_type: asDataType(file.data_type),
             data_format: asDataFormat(file.data_format),
             file_size: file.file_size,
-            fileId: file.file_id,
+            file_id: file.file_id,
             acl: hit.acl,
             access: asAccessType(file.access),
             project_id: hit.cases?.[0].project?.project_id,
@@ -510,7 +510,7 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
       data_category: asDataCategory(idx.data_category),
       data_format: asDataFormat(idx.data_format),
       data_type: asDataType(idx.data_type),
-      fileId: idx.file_id,
+      file_id: idx.file_id,
       file_name: idx.file_name,
       file_size: idx.file_size,
       md5sum: idx.md5sum,

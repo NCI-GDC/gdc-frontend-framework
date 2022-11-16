@@ -59,7 +59,7 @@ const downloadCart = (
       },
       dispatch,
       params: {
-        ids: filesByCanAccess.true.map((file) => file.fileId),
+        ids: filesByCanAccess.true.map((file) => file.file_id),
         annotations: true,
         related_files: true,
       },
@@ -88,7 +88,7 @@ const downloadManifest = (
         op: "in",
         content: {
           field: "files.file_id",
-          value: cart.map((file) => file.fileId),
+          value: cart.map((file) => file.file_id),
         },
       },
       return_type: "manifest",
@@ -240,7 +240,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
               {
                 content: {
                   field: "files.file_id",
-                  value: cart.map((file) => file.fileId),
+                  value: cart.map((file) => file.file_id),
                 },
                 op: "in",
               },
@@ -273,7 +273,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
               {
                 content: {
                   field: "files.file_id",
-                  value: cart.map((file) => file.fileId),
+                  value: cart.map((file) => file.file_id),
                 },
                 op: "in",
               },
