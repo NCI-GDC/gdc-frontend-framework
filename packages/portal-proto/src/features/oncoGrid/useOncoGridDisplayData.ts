@@ -54,7 +54,7 @@ const useOncoGridDisplayData = (data: OncoGridData): OncoGridDisplayData =>
           ...Object.fromEntries(
             donor.summary.data_categories.map((cat) => [
               cat.data_category,
-              cat.filecount,
+              cat.file_count,
             ]),
           ),
         };

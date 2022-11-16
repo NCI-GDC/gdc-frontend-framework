@@ -29,23 +29,22 @@ type DateRangeFacetProps = Omit<
 
 /**
  * Converts a date into a string of YYYY/MM/DD padding 0 for months and days < 10.
- * Note the use of UTC to ensure the GMT timezone.
  * @param d - date to convert
  */
 const convertDateToString = (d: Date | null): string | undefined => {
   if (d === null) return undefined;
-  return `${d.getUTCFullYear()}-${(d.getUTCMonth() + 1) //UTC Months start at 0
+  return `${d.getFullYear()}-${(d.getMonth() + 1) //Months start at 0
     .toString()
-    .padStart(2, "0")}-${d.getUTCDate().toString().padStart(2, "0")}`;
+    .padStart(2, "0")}-${d.getDate().toString().padStart(2, "0")}`;
 };
 
 /**
- * converts a string of the form YYYY/MM/DD to a Date object set to GMT
+ * converts a string of the form YYYY/MM/DD to a Date object
  * @param dateStr -
  */
 const convertStringToDate = (dateStr?: string): Date | null => {
   if (dateStr === undefined) return null;
-  return new Date(`${dateStr.replaceAll("-", "/")} GMT`);
+  return new Date(dateStr.replaceAll("-", "/"));
 };
 
 type DateRange = [Date | null, Date | null];

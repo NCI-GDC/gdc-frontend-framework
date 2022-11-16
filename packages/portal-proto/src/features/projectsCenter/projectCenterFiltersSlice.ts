@@ -52,11 +52,11 @@ export const { updateProjectFilter, removeProjectFilter, clearProjectFilters } =
   slice.actions;
 
 export const selectFilters = (state: AppState): FilterSet | undefined =>
-  state.filters;
+  state.projectApp.filters;
 
 export const selectProjectFiltersByName = (
   state: AppState,
   name: string,
 ): Operation | undefined => {
-  return state.filters.root[name];
+  return state.projectApp.filters.root[name];
 };

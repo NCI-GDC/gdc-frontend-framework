@@ -30,6 +30,7 @@ const CartDownloadModal = ({
       closeButtonLabel="Close"
       openModal={openModal}
       size="xl"
+      onClose={() => setActive(false)}
     >
       <hr />
       {numFilesCannotAccess > 0 && (
@@ -88,7 +89,13 @@ const CartDownloadModal = ({
       )}
       <hr />
       <div className="flex justify-end gap-2 mt-4">
-        <Button onClick={() => dispatch(hideModal())} color="primary">
+        <Button
+          onClick={() => {
+            dispatch(hideModal());
+            setActive(false);
+          }}
+          color="primary"
+        >
           Cancel
         </Button>
         <DownloadButton

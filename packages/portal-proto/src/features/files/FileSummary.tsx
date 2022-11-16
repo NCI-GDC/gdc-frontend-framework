@@ -40,7 +40,7 @@ export const ContextualFileView: React.FC<ContextualFileViewProps> = (
   const hystory = useFileHistory(props.setCurrentFile);
 
   const title = data?.[0]
-    ? data[0].fileName
+    ? data[0].file_name
     : `${props.setCurrentFile} not found`;
   return (
     <div>

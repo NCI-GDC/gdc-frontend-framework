@@ -11,7 +11,10 @@ import {
   useCoreDispatch,
   CartFile,
 } from "@gff/core";
-import { VerticalTable } from "@/features/shared/VerticalTable";
+import {
+  VerticalTable,
+  HandleChangeInput,
+} from "@/features/shared/VerticalTable";
 import { removeFromCart, RemoveFromCartButton } from "./updateCart";
 import FunctionButton from "@/components/FunctionButton";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
@@ -64,6 +67,17 @@ const FilesTable: React.FC<FilesTableProps> = ({
   const [pageSize, setPageSize] = useState(20);
   const [activePage, setActivePage] = useState(1);
 
+  const handleChange = (obj: HandleChangeInput) => {
+    switch (Object.keys(obj)?.[0]) {
+      case "newPageSize":
+        setPageSize(parseInt(obj.newPageSize));
+        break;
+      case "newPageNumber":
+        setActivePage(obj.newPageNumber);
+        break;
+    }
+  };
+
   const dispatch = useCoreDispatch();
   const cart = useCoreSelector((state) => selectCart(state));
   const { data, isFetching, isSuccess, isError, pagination } = useFiles({
@@ -109,7 +123,7 @@ const FilesTable: React.FC<FilesTableProps> = ({
             access: <FileAccessBadge access={file.access} />,
             name: (
               <Link href={`/files/${file.fileId}`}>
-                <a className="text-utility-link underline">{file.fileName}</a>
+                <a className="text-utility-link underline">{file.file_name}</a>
               </Link>
             ),
             cases: file.cases?.length.toLocaleString() || 0,
@@ -118,12 +132,12 @@ const FilesTable: React.FC<FilesTableProps> = ({
                 <a className="text-utility-link underline">{file.project_id}</a>
               </Link>
             ),
-            data_category: file.dataCategory,
-            data_format: file.dataFormat,
-            file_size: fileSize(file.fileSize),
+            data_category: file.data_category,
+            data_format: file.data_format,
+            file_size: fileSize(file.file_size),
             annotations: file.annotations?.length || 0,
-            data_type: file.dataType,
-            experimental_strategy: file.experimentalStrategy || "--",
+            data_type: file.data_type,
+            experimental_strategy: file.experimental_strategy || "--",
             platform: file.platform || "--",
           }))
         : [],
@@ -195,12 +209,10 @@ const FilesTable: React.FC<FilesTableProps> = ({
         </div>
       }
       pagination={{
-        handlePageSizeChange: (pageSize: string) =>
-          setPageSize(parseInt(pageSize)),
-        handlePageChange: (page: number) => setActivePage(page),
         ...pagination,
         label: "files",
       }}
+      handleChange={handleChange}
       status={
         // convert to CoreSelector status
         isFetching
