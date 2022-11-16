@@ -1,6 +1,7 @@
 import { Tooltip } from "@mantine/core";
 import { Impact } from "./types";
 import { humanify } from "src/utils";
+import { truncate } from "lodash";
 
 export const ProteinChange = ({
   proteinChange,
@@ -12,10 +13,14 @@ export const ProteinChange = ({
 }): JSX.Element => {
   const { symbol = "", aaChange = "" } = proteinChange;
   return (
-    <div className={`flex flex-row w-max m-auto text-xs`}>
+    <div className={`flex flex-row w-max justify-start text-xs`}>
       <span className={`mx-0.5`}>{symbol}</span>
       <Tooltip label={aaChange}>
-        <span className={`mx-0.5`}>{aaChange}</span>
+        <span className={`mx-0.5`}>
+          {truncate(aaChange, {
+            length: 12,
+          })}
+        </span>
       </Tooltip>
     </div>
   );
@@ -109,10 +114,14 @@ export const Impacts = ({ impact }: { impact: Impact }): JSX.Element => {
               <div className={`mt-1`}>{"BE"}</div>
             </div>
           ) : polyphenImpact === "probably_damaging" ? (
+            <div className={`${twIconStyles} bg-red-500`}>
+              <div className={`mt-1`}>{"PR"}</div>
+            </div>
+          ) : polyphenImpact === "possibly_damaging" ? (
             <div className={`${twIconStyles} bg-gray-500`}>
               <div className={`mt-1`}>{"PO"}</div>
             </div>
-          ) : polyphenImpact === "uknown" ? (
+          ) : polyphenImpact === "unknown" ? (
             <div className={`${twIconStyles} bg-gray-500`}>
               <div className={`mt-1`}>{"UN"}</div>
             </div>

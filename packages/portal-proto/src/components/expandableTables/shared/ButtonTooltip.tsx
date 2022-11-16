@@ -1,0 +1,38 @@
+import { PropsWithChildren } from "react";
+import { Text, Tooltip } from "@mantine/core";
+
+interface ButtonTooltipPros {
+  label: string;
+  width?: number | "auto";
+}
+
+/**
+ * Styled Tooltip to for buttons
+ * @param children - child component to wrap tooltip with
+ * @param label - the text label
+ * @param width - width of the tooltip. Default: "auto"
+ */
+export const ButtonTooltip: React.FC<ButtonTooltipPros> = ({
+  children,
+  label,
+  width = "auto",
+}: PropsWithChildren<ButtonTooltipPros>) => {
+  return (
+    <Tooltip
+      label={<Text className="text-xs whitespace-pre-line">{label}</Text>}
+      disabled={!label?.length}
+      width={width}
+      withArrow
+      arrowSize={6}
+      transition="fade"
+      transitionDuration={200}
+      multiline
+      classNames={{
+        tooltip:
+          "bg-base-lightest text-base-contrast-lightest font-heading text-left",
+      }}
+    >
+      {children}
+    </Tooltip>
+  );
+};

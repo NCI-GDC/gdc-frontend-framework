@@ -10,7 +10,7 @@ import {
   ColumnDef,
   flexRender,
 } from "@tanstack/react-table";
-import { animated, useSpring } from "react-spring";
+import { useSpring } from "react-spring";
 import CheckboxSpring from "./CheckboxSpring";
 import AnimatedRow from "./AnimatedRow";
 import { Row } from "@tanstack/react-table";
@@ -52,19 +52,6 @@ export const ExpTable: React.FC<ExpTableProps> = ({
     getExpandedRowModel: getExpandedRowModel(),
   });
 
-  const unitSpring = useSpring({
-    from: {
-      opacity: 0,
-      transform: "translate3D(0, -100px, 0)",
-      width: 0,
-    },
-    to: {
-      opacity: 1,
-      transform: "translate3D(0, 0, 0)",
-      width: headerWidth,
-    },
-    immediate: true,
-  });
   const selectAllActive =
     table.getRowModel().rows.length === 0
       ? false
@@ -73,13 +60,13 @@ export const ExpTable: React.FC<ExpTableProps> = ({
           .rows.filter((row) => !row.id.includes(".")) // exclude subrow from select-all condition
           .every((row) => row.original["select"] in allSelected);
   return (
-    <div className="p-2">
+    <>
       <div
         className={`${
           selectAllActive ? `border-r-0 border-b-4 border-activeColor` : ``
         }`}
       >
-        <table>
+        <table className="w-full">
           <thead
             className={`
             ${
@@ -87,10 +74,10 @@ export const ExpTable: React.FC<ExpTableProps> = ({
                 ? `border-l-4 border-t-4 border-r-4 border-activeColor`
                 : `border-2`
             }
-            shadow-md w-11/12`}
+            shadow-md`}
           >
             {table.getHeaderGroups().map((headerGroup) => (
-              <animated.tr style={unitSpring} key={headerGroup.id}>
+              <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
                     <th key={header.id} colSpan={header.colSpan}>
@@ -105,22 +92,19 @@ export const ExpTable: React.FC<ExpTableProps> = ({
                               multi={true}
                             />
                           ) : null}
-                          <animated.div
-                            style={unitSpring}
-                            className={`text-xs font-bold`}
-                          >
+                          <div className={`text-xs font-bold`}>
                             {header.id !== "select" &&
                               flexRender(
                                 header.column.columnDef.header,
                                 header.getContext(),
                               )}
-                          </animated.div>
+                          </div>
                         </div>
                       )}
                     </th>
                   );
                 })}
-              </animated.tr>
+              </tr>
             ))}
           </thead>
           <tbody>
@@ -138,7 +122,7 @@ export const ExpTable: React.FC<ExpTableProps> = ({
           </tbody>
         </table>
       </div>
-    </div>
+    </>
   );
 };
 

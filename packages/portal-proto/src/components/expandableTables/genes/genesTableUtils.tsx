@@ -172,7 +172,7 @@ export const createTableColumn = (
                       <RatioSpring
                         index={0}
                         item={{ numerator, denominator }}
-                        orientation={"vertical"}
+                        orientation="horizontal"
                       />
                     )}
                   </div>
@@ -209,7 +209,7 @@ export const createTableColumn = (
                     <RatioSpring
                       index={0}
                       item={{ numerator, denominator }}
-                      orientation={"vertical"}
+                      orientation="horizontal"
                     />
                   )}
                   {row.getCanExpand() && (

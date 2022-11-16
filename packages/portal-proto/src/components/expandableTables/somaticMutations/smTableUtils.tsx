@@ -1,5 +1,4 @@
 import { Dispatch, SetStateAction } from "react";
-import { animated } from "react-spring";
 import ToggleSpring from "../shared/ToggleSpring";
 import SwitchSpring from "../shared/SwitchSpring";
 import RatioSpring from "../shared/RatioSpring";
@@ -11,12 +10,12 @@ import { ProteinChange, Impacts, Consequences } from "./smTableCells";
 import { SingleSomaticMutation, SomaticMutations, Impact } from "./types";
 import CheckboxSpring from "../shared/CheckboxSpring";
 import { Survival } from "../shared/types";
-import { TableColumnDefinition, WidthSpring } from "../shared/types";
+import { TableColumnDefinition } from "../shared/types";
 import { Image } from "@/components/Image";
+import { Text, Tooltip } from "@mantine/core";
 
 export const createTableColumn = (
   accessor: string,
-  partitionWidth: WidthSpring,
   selectedMutations: SelectedReducer<SomaticMutations>,
   setSelectedMutations: Dispatch<SelectReducerAction<SomaticMutations>>,
   handleSurvivalPlotToggled: (
@@ -25,6 +24,7 @@ export const createTableColumn = (
     field: string,
   ) => void,
   setMutationID: Dispatch<SetStateAction<string>>,
+  width?: string | number,
 ): TableColumnDefinition => {
   switch (accessor) {
     case "select":
@@ -34,10 +34,15 @@ export const createTableColumn = (
         columns: [
           {
             accessorKey: accessor,
-            header: () => <TableHeader title={accessor} tooltip={""} />,
+            header: () => (
+              <div className="ml-0">
+                {" "}
+                <TableHeader title={accessor} tooltip={""} />{" "}
+              </div>
+            ),
             cell: ({ row }) => {
               return (
-                <>
+                <div className={`${width ? width : ""}`}>
                   {/* todo: make select/toggle columns fixed smaller width */}
                   {row.getCanExpand() && (
                     <CheckboxSpring
@@ -47,7 +52,7 @@ export const createTableColumn = (
                       multi={false}
                     />
                   )}
-                </>
+                </div>
               );
             },
           },
@@ -60,10 +65,15 @@ export const createTableColumn = (
         columns: [
           {
             accessorKey: accessor,
-            header: () => <TableHeader title={accessor} tooltip={""} />,
+            header: () => (
+              <div className="text-center">
+                {" "}
+                <TableHeader title={accessor} tooltip={""} />{" "}
+              </div>
+            ),
             cell: ({ row }) => {
               return (
-                <>
+                <div className={`${width ? width : ""}`}>
                   {row.getCanExpand() && (
                     <SwitchSpring
                       isActive={row.original["cohort"].checked}
@@ -80,7 +90,7 @@ export const createTableColumn = (
                       tooltip={""}
                     />
                   )}
-                </>
+                </div>
               );
             },
           },
@@ -96,7 +106,7 @@ export const createTableColumn = (
             header: () => <TableHeader title={accessor} tooltip={""} />,
             cell: ({ row }) => {
               return (
-                <>
+                <div className={`${width ? width : ""}`}>
                   {row.getCanExpand() && (
                     <SwitchSpring
                       margin={`mt-1 ml-0.5`}
@@ -108,7 +118,7 @@ export const createTableColumn = (
                       tooltip={`Click icon to plot ${row.original["survival"].symbol}`}
                     />
                   )}
-                </>
+                </div>
               );
             },
           },
@@ -122,23 +132,28 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => (
-              <TableHeader
-                title={accessor}
-                tooltip={
-                  "Genomic DNA Change, shown as {chromosome}:g{start}{ref}>{tumor}"
-                }
-              />
+              <div className="text-left">
+                <TableHeader
+                  title={accessor}
+                  tooltip={`Genomic DNA Change, shown as
+                   {chromosome}:g{start}{ref}>{tumor}`}
+                />
+              </div>
             ),
             cell: ({ row }) => {
+              const originalLabel = row.original["DNAChange"];
+              const label = originalLabel
+                ? truncateAfterMarker(originalLabel, 8)
+                : originalLabel;
               return (
-                <animated.div style={partitionWidth}>
-                  <TableCell
-                    row={row}
-                    accessor={accessor}
-                    anchor={true}
-                    tooltip={row.original["DNAChange"]}
-                  />
-                </animated.div>
+                <div className={`${width ? width : ""} text-left pl-2`}>
+                  <Tooltip
+                    label={originalLabel}
+                    disabled={!originalLabel?.length}
+                  >
+                    <Text size="sm">{label}</Text>
+                  </Tooltip>
+                </div>
               );
             },
           },
@@ -154,9 +169,9 @@ export const createTableColumn = (
             header: () => (
               <TableHeader
                 title={accessor}
-                tooltip={
-                  "# of Cases where Mutation is observed / # Cases tested for Simple Somatic Mutations portal wide | Expand to see breakdown by project"
-                }
+                tooltip={`# of Cases where Mutation is observed / 
+                  # Cases tested for Simple Somatic Mutations portal wide
+                  Expand to see breakdown by project`}
               />
             ),
             cell: ({ row }) => {
@@ -164,15 +179,12 @@ export const createTableColumn = (
                 "affectedCasesAcrossTheGDC"
               ] ?? { numerator: 0, denominator: 1 };
               return (
-                <animated.div
-                  style={partitionWidth}
-                  className={`content-center`}
-                >
+                <div className={`${width ? width : ""} content-center`}>
                   {row.getCanExpand() && (
                     <RatioSpring
                       index={0}
                       item={{ numerator, denominator }}
-                      orientation={"vertical"}
+                      orientation="horizontal"
                     />
                   )}
                   {row.getCanExpand() && (
@@ -197,7 +209,7 @@ export const createTableColumn = (
                       </button>
                     </div>
                   )}
-                </animated.div>
+                </div>
               );
             },
           },
@@ -224,20 +236,17 @@ export const createTableColumn = (
                 "affectedCasesInCohort"
               ] ?? { numerator: 0, denominator: 1 };
               return (
-                <animated.div
-                  style={partitionWidth}
-                  className={`content-center`}
-                >
+                <div className={`${width ? width : ""} content-center`}>
                   {row.getCanExpand() && (
                     <>
                       <RatioSpring
                         index={0}
                         item={{ numerator, denominator }}
-                        orientation={"vertical"}
+                        orientation="horizontal"
                       />
                     </>
                   )}
-                </animated.div>
+                </div>
               );
             },
           },
@@ -253,16 +262,13 @@ export const createTableColumn = (
             header: () => <TableHeader title={accessor} tooltip={""} />,
             cell: ({ row }) => {
               return (
-                <animated.div
-                  style={partitionWidth}
-                  className={`content-center`}
-                >
+                <div className={`${width ? width : ""}`}>
                   {row.getCanExpand() && (
                     <ProteinChange
                       proteinChange={row.original["proteinChange"]}
                     />
                   )}
-                </animated.div>
+                </div>
               );
             },
           },
@@ -283,14 +289,11 @@ export const createTableColumn = (
             ),
             cell: ({ row }) => {
               return (
-                <animated.div
-                  style={partitionWidth}
-                  className={`content-center`}
-                >
+                <div className={`${width ? width : ""} content-center`}>
                   {row.getCanExpand() && (
                     <Consequences consequences={row.original["consequences"]} />
                   )}
-                </animated.div>
+                </div>
               );
             },
           },
@@ -303,23 +306,94 @@ export const createTableColumn = (
         columns: [
           {
             accessorKey: accessor,
-            header: () => (
-              <TableHeader
-                title={accessor}
-                // todo: tooltip
-                tooltip={""}
-              />
-            ),
+            header: () => {
+              const twIconStyles = `w-7 h-7 text-white font-bold border rounded-md text-center`;
+              return (
+                <Tooltip
+                  label={
+                    <div className="flex flex-col">
+                      <Text>Impact for canonical transcript:</Text>
+                      <div className="flex flex-row items-bottom">
+                        VEP:
+                        <div className={`${twIconStyles} bg-red-500 mx-1`}>
+                          <div className={`mt-1`}>{"HI"}</div>
+                        </div>
+                        high
+                        <div className={`${twIconStyles} bg-green-500 mx-1`}>
+                          <div className={`mt-1`}>{"LO"}</div>
+                        </div>
+                        low
+                        <div className={`${twIconStyles} bg-gray-500 mx-1`}>
+                          <div className={`mt-1`}>{"MO"}</div>
+                        </div>
+                        moderate
+                        <div className={`${twIconStyles} bg-gray-500 mx-1`}>
+                          <div className={`mt-1`}>{"MR"}</div>
+                        </div>
+                        modifier
+                      </div>
+                      <div className="flex flex-row items-bottom">
+                        SIFT:
+                        <div className={`${twIconStyles} bg-red-500 mx-1`}>
+                          <div className={`mt-1`}>{"DH"}</div>
+                        </div>
+                        deleterious
+                        <div className={`${twIconStyles} bg-gray-500 mx-1`}>
+                          <div className={`mt-1`}>{"DL"}</div>
+                        </div>
+                        deleterious_low_confidence
+                        <div className={`${twIconStyles} bg-gray-500 mx-1`}>
+                          <div className={`mt-1`}>{"TO"}</div>
+                        </div>
+                        tolerated
+                        <div className={`${twIconStyles} bg-green-500 mx-1`}>
+                          <div className={`mt-1`}>{"TL"}</div>
+                        </div>
+                        tolerated_low_confidence
+                      </div>
+                      <div className="flex flex-row items-bottom">
+                        PolyPhen:
+                        <div className={`${twIconStyles} bg-green-500 mx-1`}>
+                          <div className={`mt-1`}>{"BE"}</div>
+                        </div>
+                        benign
+                        <div className={`${twIconStyles} bg-gray-500 mx-1`}>
+                          <div className={`mt-1`}>{"PO"}</div>
+                        </div>
+                        possibly_damaging
+                        <div className={`${twIconStyles} bg-red-500 mx-1`}>
+                          <div className={`mt-1`}>{"PR"}</div>
+                        </div>
+                        probably_damaging
+                        <div className={`${twIconStyles} bg-gray-500 mx-1`}>
+                          <div className={`mt-1`}>{"UN"}</div>
+                        </div>
+                        unknown
+                      </div>
+                    </div>
+                  }
+                  width="auto"
+                  withArrow
+                  arrowSize={6}
+                  transition="fade"
+                  transitionDuration={200}
+                  multiline
+                  classNames={{
+                    tooltip:
+                      "bg-base-lightest text-base-contrast-lightest font-heading text-left",
+                  }}
+                >
+                  <div>Impact</div>
+                </Tooltip>
+              );
+            },
             cell: ({ row }) => {
               return (
-                <animated.div
-                  style={partitionWidth}
-                  className={`content-center`}
-                >
+                <div className={`${width ? width : ""} content-center`}>
                   {row.getCanExpand() && (
                     <Impacts impact={row.original["impact"]} />
                   )}
-                </animated.div>
+                </div>
               );
             },
           },
@@ -335,7 +409,7 @@ export const createTableColumn = (
             header: () => <TableHeader title={accessor} tooltip={""} />,
             cell: ({ row }) => {
               return (
-                <animated.div style={partitionWidth}>
+                <div className={`${width ? width : ""}`}>
                   <>
                     <TableCell
                       row={row}
@@ -344,7 +418,7 @@ export const createTableColumn = (
                       tooltip={""}
                     />
                   </>
-                </animated.div>
+                </div>
               );
             },
           },
@@ -354,6 +428,12 @@ export const createTableColumn = (
 };
 
 export const filterMutationType = (mutationSubType: string): string => {
+  if (
+    ["Oligo-nucleotide polymorphism", "Tri-nucleotide polymorphism"].includes(
+      mutationSubType,
+    )
+  )
+    return mutationSubType;
   const split = mutationSubType.split(" ");
   const operation = split[split.length - 1];
   return operation.charAt(0).toUpperCase() + operation.slice(1);
@@ -442,8 +522,33 @@ export const getMutation = (
       siftScore: annotation.sift_score,
       vepImpact: annotation.vep_impact,
     },
-    // do not remove subRows key, its needed for row.getCanExpand() to be true
+    // do not remove subRows key, it's needed for row.getCanExpand() to be true
     subRows: " ",
     ssmsTotal,
   };
+};
+
+export const DNA_CHANGE_MARKERS = ["del", "ins", ">"];
+
+export const truncateAfterMarker = (
+  term: string,
+  length: number,
+  markers: string[] = DNA_CHANGE_MARKERS,
+  omission = "…",
+): string => {
+  const markersByIndex = markers.reduce(
+    (acc, marker) => {
+      const index = term.indexOf(marker);
+      if (index !== -1) {
+        return { index, marker };
+      }
+      return acc;
+    },
+    { index: -1, marker: "" },
+  );
+  const { index, marker } = markersByIndex;
+  if (index !== -1 && term.length > index + marker.length + 8) {
+    return `${term.substring(0, index + marker.length + 8)}${omission}`;
+  }
+  return term;
 };

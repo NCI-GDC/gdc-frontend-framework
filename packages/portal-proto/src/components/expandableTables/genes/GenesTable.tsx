@@ -132,7 +132,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   }, [visibleColumns, selectedGenes, page, searchTerm, pageSize]);
 
   return (
-    <div>
+    <>
       <ExpTable
         data={
           searchTerm.length > 0
@@ -163,6 +163,6 @@ export const GenesTable: React.FC<GenesTableProps> = ({
           />
         }
       />
-    </div>
+    </>
   );
 };

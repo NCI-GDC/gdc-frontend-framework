@@ -1,57 +1,16 @@
 import { useGenesTable } from "@gff/core";
-import {
-  useState,
-  useEffect,
-  useReducer,
-  createContext,
-  PropsWithChildren,
-} from "react";
-import { Genes, DEFAULT_GTABLE_ORDER } from "./types";
+import { createContext, useEffect, useReducer, useState } from "react";
+import { DEFAULT_GTABLE_ORDER, Genes } from "./types";
 import { GenesTable } from "./GenesTable";
 import { useMeasure } from "react-use";
-import { Button, Loader, Text, Tooltip } from "@mantine/core";
+import { Button, Loader } from "@mantine/core";
 import PageStepper from "../shared/PageStepper";
 import TableControls from "../shared/TableControls";
 import TablePlaceholder from "../shared/TablePlaceholder";
 import { SelectedReducer, SelectReducerAction } from "../shared/types";
 import { TableFilters } from "../shared/TableFilters";
 import PageSize from "@/components/expandableTables/shared/PageSize";
-
-interface ButtonTooltipPros {
-  label: string;
-  width?: number | "auto";
-}
-
-/**
- * Styled Tooltip to for buttons
- * @param children - child component to wrap tooltip with
- * @param label - the text label
- * @param width - width of the tooltip. Default: "auto"
- */
-const ButtonTooltip: React.FC<ButtonTooltipPros> = ({
-  children,
-  label,
-  width = "auto",
-}: PropsWithChildren<ButtonTooltipPros>) => {
-  return (
-    <Tooltip
-      label={<Text className="text-xs whitespace-pre-line">{label}</Text>}
-      disabled={!label?.length}
-      width={width}
-      withArrow
-      arrowSize={6}
-      transition="fade"
-      transitionDuration={200}
-      multiline
-      classNames={{
-        tooltip:
-          "bg-base-lightest text-base-contrast-lightest font-heading text-left",
-      }}
-    >
-      {children}
-    </Tooltip>
-  );
-};
+import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 
 export const SelectedRowContext =
   createContext<
@@ -149,8 +108,8 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   return (
     <>
       <SelectedRowContext.Provider value={[selectedGenes, setSelectedGenes]}>
-        <div className={`w-9/12`}>
-          <div className={`flex flex-row float-left ml-2 mb-4`}>
+        <div className="flex flex-row justify-between items-center flex-nowrap w-[80%]">
+          <div className="flex flex-row ml-2 mb-4">
             <TableControls
               total={gTotal}
               numSelected={Object.keys(selectedGenes).length ?? 0}
@@ -162,10 +121,8 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 { label: "Remove from existing gene set", value: "remove" },
               ]}
               additionalControls={
-                <div className="flex gap-2">
-                  <ButtonTooltip
-                    label={`Export All Except #Genes and #Mutations`}
-                  >
+                <div className="flex flex-row gap-2">
+                  <ButtonTooltip label="Export All Except #Genes and #Mutations">
                     <Button
                       className={
                         "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
@@ -174,7 +131,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                       JSON
                     </Button>
                   </ButtonTooltip>
-                  <ButtonTooltip label={`Export current view`}>
+                  <ButtonTooltip label="Export current view">
                     <Button
                       className={
                         "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
@@ -188,7 +145,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             />
           </div>
 
-          <div className={`flex flex-row float-right mr-2`}>
+          <div className="flex flex-row flex-nowrap mr-2">
             <TableFilters
               search={searchTerm}
               handleSearch={setSearchTerm}
@@ -200,7 +157,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             />
           </div>
         </div>
-        <div>
+        <div className="h-full w-[90%]">
           {!visibleColumns.length ? (
             <TablePlaceholder
               cellWidth="w-24"
@@ -213,7 +170,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             mutationCounts &&
             filteredCases &&
             cases ? (
-            <div ref={ref} className={`h-full w-9/12`}>
+            <div ref={ref} className="h-full w-[90%]">
               <GenesTable
                 initialData={initialData}
                 selectedSurvivalPlot={selectedSurvivalPlot}

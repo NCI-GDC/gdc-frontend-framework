@@ -10,6 +10,7 @@ import TablePlaceholder from "../shared/TablePlaceholder";
 import { SomaticMutations, DEFAULT_SMTABLE_ORDER } from "./types";
 import { SelectedReducer, SelectReducerAction } from "../shared/types";
 import { TableFilters } from "../shared/TableFilters";
+import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 
 export const SelectedRowContext =
   createContext<
@@ -111,8 +112,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       <SelectedRowContext.Provider
         value={[selectedMutations, setSelectedMutations]}
       >
-        <div className={`w-9/12`}>
-          <div className={`flex flex-row float-left ml-2 mb-4`}>
+        <div className="flex flex-row justify-between items-center flex-nowrap w-[80%]">
+          <div className="flex flex-row ml-2 mb-4">
             <TableControls
               total={smTotal}
               numSelected={Object.keys(selectedMutations).length ?? 0}
@@ -125,25 +126,29 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               ]}
               additionalControls={
                 <div className="flex gap-2">
-                  <Button
-                    className={
-                      "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
-                    }
-                  >
-                    JSON
-                  </Button>
-                  <Button
-                    className={
-                      "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
-                    }
-                  >
-                    TSV
-                  </Button>
+                  <ButtonTooltip label="Export All Except #Genes and #Mutations">
+                    <Button
+                      className={
+                        "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
+                      }
+                    >
+                      JSON
+                    </Button>
+                  </ButtonTooltip>
+                  <ButtonTooltip label="Export current view">
+                    <Button
+                      className={
+                        "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
+                      }
+                    >
+                      TSV
+                    </Button>
+                  </ButtonTooltip>
                 </div>
               }
             />
           </div>
-          <div className={`flex flex-row float-right mr-2`}>
+          <div className="flex flex-row flex-nowrap mr-2">
             <TableFilters
               search={searchTerm}
               handleSearch={setSearchTerm}
@@ -155,7 +160,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             />
           </div>
         </div>
-        <div>
+        <div className="h-full w-11/12">
           {!visibleColumns.length ? (
             <TablePlaceholder
               cellWidth={`w-[75px]`}
@@ -165,7 +170,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               content={<span>No columns selected</span>}
             />
           ) : status === "fulfilled" && cases && filteredCases ? (
-            <div ref={ref} className={`h-full w-9/12`}>
+            <div ref={ref} className="w-11/12">
               <SomaticMutationsTable
                 initialData={initialData}
                 selectedSurvivalPlot={selectedSurvivalPlot}
@@ -192,13 +197,15 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           )}
         </div>
         {visibleColumns.length ? (
-          <div className={`flex flex-row w-9/12 ml-2 m-auto mb-2`}>
+          <div className={`flex flex-row ml-2 m-auto w-9/12 mb-2`}>
             <div className="m-auto ml-0">
               <span className="my-auto mx-1 text-xs">Show</span>
               <PageSize pageSize={pageSize} handlePageSize={setPageSize} />
               <span className="my-auto mx-1 text-xs">Entries</span>
             </div>
-            <div className={`m-auto text-sm`}>
+            <div
+              className={`flex flex-row justify-between items-center  text-sm`}
+            >
               <span>
                 Showing
                 <span className={`font-bold`}>{` ${(
