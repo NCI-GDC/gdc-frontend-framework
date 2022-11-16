@@ -45,7 +45,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   });
 
   const [colCountInLastRow, colSpanInLastRow] = useMemo(() => {
-    const colCount = activeFields.length - 1;
+    const colCount = activeFields.length + 1;
     const colCountInRow = controlsExpanded ? 2 : 3;
     const colCountInLastRow = colCount % colCountInRow;
     const colSpanInLastRow = colCountInLastRow
