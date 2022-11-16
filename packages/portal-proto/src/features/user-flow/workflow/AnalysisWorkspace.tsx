@@ -274,14 +274,12 @@ interface AnalysisWorkspaceProps {
 const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   app,
 }: AnalysisWorkspaceProps) => {
-  const [cohortSelectionOpen, setCohortSelectionOpen] = useState(false);
+  const [inTransitionState, setInTransitionState] = useState(false);
+
   const { scrollIntoView, targetRef } = useScrollIntoView({ offset: 115 });
   const router = useRouter();
 
   useEffect(() => {
-    const appInfo = REGISTERED_APPS.find((a) => a.id === app);
-    setCohortSelectionOpen(appInfo?.selectAdditionalCohort);
-
     if (app) {
       scrollIntoView();
     } else {
@@ -289,57 +287,68 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
     }
   }, [app, scrollIntoView]);
 
-  const handleAppSelected = (app: string) => {
-    router.push({ query: { app } });
-  };
-
   const handleAppLoaded = useCallback(() => {
     scrollIntoView();
   }, [scrollIntoView]);
 
+  const handleAppSelected = (app: string) => {
+    router.push({ query: { app } });
+  };
+
   return (
-    <div ref={(ref) => (targetRef.current = ref)}>
-      <CSSTransition in={cohortSelectionOpen} timeout={500}>
+    <div
+      ref={(ref) => (targetRef.current = ref)}
+      className="flex flex-col flex-grow"
+    >
+      <CSSTransition in={app !== undefined} timeout={0}>
         {(state) => (
           <div
             className={
               {
                 entering:
-                  "block animate-slide-up min-h-[650px] w-full flex flex-col absolute z-[1000]",
-                entered: `block min-h-[650px] w-full flex flex-col absolute z-[1000]`,
+                  "transition-transform scale-y-100 origin-top 50000ms ease ",
+
+                entered:
+                  "transition-transform scale-y-0 origin-top 50000ms ease h-0",
                 exiting:
-                  "block animate-slide-down min-h-[650px] w-full flex flex-col absolute z-[1000]",
-                exited: "hidden translate-x-0",
+                  "transition-transform scale-y-100 origin-top 50000ms ease ",
+                exited: "h-full",
               }[state]
             }
           >
-            <AnalysisBreadcrumbs
-              currentApp={app}
-              setCohortSelectionOpen={setCohortSelectionOpen}
-              cohortSelectionOpen={cohortSelectionOpen}
-              setActiveApp={handleAppSelected}
-            />
-            <AdditionalCohortSelection
-              app={app}
-              setOpen={setCohortSelectionOpen}
-              setActiveApp={handleAppSelected}
+            <AnalysisGrid onAppSelected={handleAppSelected} />
+          </div>
+        )}
+      </CSSTransition>
+      <CSSTransition
+        in={app !== undefined}
+        timeout={0}
+        onEntering={() => setInTransitionState(true)}
+        onEntered={() => setInTransitionState(false)}
+        onExited={() => setInTransitionState(false)}
+      >
+        {(state) => (
+          <div
+            className={
+              {
+                entering:
+                  "transition-transform scale-y-0 origin-bottom 50000ms ease",
+                entered:
+                  "transition-transform scale-y-100 origin-bottom 50000ms ease flex flex-col flex-grow",
+                exiting:
+                  "transition-transform scale-y-100 origin-bottom 50000ms ease",
+                exited: "scale-y-0 hidden",
+              }[state]
+            }
+          >
+            <ActiveAnalysisToolNoSSR
+              appId={app}
+              onLoaded={handleAppLoaded}
+              inTransitionState={inTransitionState}
             />
           </div>
         )}
       </CSSTransition>
-      {app && !cohortSelectionOpen && (
-        <>
-          <AnalysisBreadcrumbs
-            currentApp={app}
-            setCohortSelectionOpen={setCohortSelectionOpen}
-            cohortSelectionOpen={cohortSelectionOpen}
-            setActiveApp={handleAppSelected}
-            rightComponent={app === "CohortBuilder" ? <SearchInput /> : null}
-          />
-          <ActiveAnalysisToolNoSSR appId={app} onLoaded={handleAppLoaded} />
-        </>
-      )}
-      {!app && <AnalysisGrid onAppSelected={handleAppSelected} />}
     </div>
   );
 };

@@ -448,7 +448,9 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   return (
     <div className="grow overflow-hidden">
       <div className="flex">
-        <div className={"flex-auto h-10"}>{additionalControls}</div>
+        {additionalControls && (
+          <div className={"flex-auto h-10"}>{additionalControls}</div>
+        )}
         <div className="flex flex-row">
           {showControls && (
             <Popover
@@ -502,7 +504,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
           )}
         </div>
       </div>
-      <div className="overflow-y-scroll w-full relative">
+      <div className="overflow-y-auto w-full relative">
         <LoadingOverlay
           visible={status === "pending" || status === "uninitialized"}
         />
