@@ -83,25 +83,28 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [expandedProxy]);
 
-  const columns = useMemo<ColumnDef<SomaticMutations>[]>(() => {
-    return visibleColumns.map(({ id: accessor, width }: Column) => {
-      return createTableColumn(
-        accessor,
-        selectedMutations,
-        setSelectedMutations,
-        handleSurvivalPlotToggled,
-        setMutationID,
-        width,
-      );
-    });
-  }, [
-    visibleColumns,
-    width,
-    selectedMutations,
-    mutationID,
-    setMutationID,
-    handleSurvivalPlotToggled,
-  ]);
+  const columns = useMemo<ColumnDef<SomaticMutations>[]>(
+    () => {
+      return visibleColumns.map(({ id: accessor, width }: Column) => {
+        return createTableColumn(
+          accessor,
+          selectedMutations,
+          setSelectedMutations,
+          handleSurvivalPlotToggled,
+          setMutationID,
+          width,
+        );
+      });
+    }, // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      visibleColumns,
+      width,
+      selectedMutations,
+      mutationID,
+      setMutationID,
+      handleSurvivalPlotToggled,
+    ],
+  );
 
   useEffect(() => {
     setExpanded({});

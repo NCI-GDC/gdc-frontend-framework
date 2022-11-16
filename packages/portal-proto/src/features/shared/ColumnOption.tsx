@@ -5,6 +5,8 @@ import type { XYCoord, Identifier } from "dnd-core";
 import _ from "lodash";
 import { MdDragIndicator } from "react-icons/md";
 import SwitchSpring from "../../components/expandableTables/shared/SwitchSpring";
+const columnStyles = `cursor-move bg-base-lightest mb-2 p-1 border-1 block`;
+const columnStylesDisabled = `cursor-not-allowed bg-base-lightest mb-2 p-1 border-1`;
 
 export interface ColumnProps {
   id: any;
@@ -13,6 +15,7 @@ export interface ColumnProps {
   visible: boolean;
   moveColumn: (dragIndex: number, hoverIndex: number) => void;
   toggleColumn: (update: any) => void;
+  arrangeable: boolean;
 }
 
 interface DragItem {
@@ -28,6 +31,7 @@ export const ColumnOption: FC<ColumnProps> = ({
   index,
   moveColumn,
   toggleColumn,
+  arrangeable = true,
 }: ColumnProps) => {
   const formatColumnName = (colName: string) => {
     return _.startCase(colName);
@@ -92,31 +96,58 @@ export const ColumnOption: FC<ColumnProps> = ({
   const o = isDragging ? 0 : 1;
   drag(drop(ref));
   return (
-    <div
-      ref={ref}
-      className={`cursor-move bg-white mb-1 p-0.5 opacity-${o}`}
-      data-handler-id={handlerId}
-    >
-      <div className={`flex flex-row text-xs justify-between`}>
-        <div className={`flex flex-row w-fit`}>
-          <div className={`flex flex-row`}>
-            <div className={`my-auto mr-2 ml-0 text-gray-500`}>
-              <MdDragIndicator size={"16px"} />
+    <>
+      {arrangeable ? (
+        <div
+          ref={ref}
+          className={`${columnStyles} opacity-${o}`}
+          data-handler-id={handlerId}
+        >
+          <div className={`flex flex-row text-xs justify-between`}>
+            <div className={`flex flex-row w-fit`}>
+              <div className={`flex flex-row`}>
+                <div className={`my-auto mr-2 ml-0 text-gray-500`}>
+                  <MdDragIndicator size={"16px"} />
+                </div>
+                <div className={`flex flex-row w-60 my-auto`}>
+                  {formatColumnName(columnName)}
+                </div>
+              </div>
             </div>
-            <div className={`flex flex-row w-60 my-auto`}>
-              {formatColumnName(columnName)}
-            </div>
+            <SwitchSpring
+              margin={`mt-1 ml-0.5`}
+              isActive={visible}
+              icon={undefined}
+              handleSwitch={toggleColumn}
+              selected={columnName}
+              tooltip={""}
+            />
           </div>
         </div>
-        <SwitchSpring
-          margin={`mt-1 ml-0.5`}
-          isActive={visible}
-          icon={undefined}
-          handleSwitch={toggleColumn}
-          selected={columnName}
-          tooltip={""}
-        />
-      </div>
-    </div>
+      ) : (
+        <div className={columnStylesDisabled} data-handler-id={handlerId}>
+          <div className={`flex flex-row text-xs justify-between`}>
+            <div className={`flex flex-row w-fit`}>
+              <div className={`flex flex-row`}>
+                <div className={`my-auto mr-2 ml-0 text-gray-500`}>
+                  <MdDragIndicator size={"16px"} />
+                </div>
+                <div className={`flex flex-row w-60 my-auto`}>
+                  {formatColumnName(columnName)}
+                </div>
+              </div>
+            </div>
+            <SwitchSpring
+              margin={`mt-1 ml-0.5`}
+              isActive={visible}
+              icon={undefined}
+              handleSwitch={toggleColumn}
+              selected={columnName}
+              tooltip={""}
+            />
+          </div>
+        </div>
+      )}
+    </>
   );
 };

@@ -1,9 +1,10 @@
 import React, { useState, useEffect, FC } from "react";
-import { useTable, useRowState } from "react-table";
+import { useTable, useRowState, useSortBy } from "react-table";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DragDrop } from "./DragDrop";
 import { BsList } from "react-icons/bs";
+import { isEqual } from "lodash";
 import { DataStatus } from "@gff/core";
 import {
   Box,
@@ -38,14 +39,6 @@ export interface PaginationOptions {
    * optional label of data shown
    */
   label?: string;
-  /**
-   * callback to handle page size change
-   */
-  handlePageSizeChange: (x: string) => void;
-  /**
-   * callback to handle page change
-   */
-  handlePageChange: (x: number) => void;
 }
 
 interface VerticalTableProps {
@@ -60,6 +53,16 @@ interface VerticalTableProps {
     id: string;
     columnName: string;
     visible: boolean;
+    /**
+     * Flag to activate or disable sorting feature of column sorting
+     * @defaultValue false
+     */
+    disableSortBy?: boolean;
+    /**
+     * Flag to activate or disable ability to rearrange column order
+     * @defaultValue true
+     */
+    arrangeable?: boolean;
   }[];
   /**
    * sorted list of columns to display
@@ -82,6 +85,18 @@ interface VerticalTableProps {
    */
   additionalControls?: React.ReactNode;
   /**
+   * Column sorting
+   *
+   * - `none` - no sorting
+   *
+   * - `enable` - sorts data in table
+   *
+   * - `manual` - uses handleChange callback to enable manual sorting
+   *
+   * @defaultValue 'none'
+   */
+  columnSorting?: "none" | "enable" | "manual";
+  /**
    * shows column sorting controls and search bar
    * @defaultValue true
    */
@@ -90,6 +105,10 @@ interface VerticalTableProps {
    * optional pagination controls at bottom of table
    */
   pagination?: PaginationOptions;
+  /**
+   * optional callback to handle changes
+   */
+  handleChange?: (HandleChangeInput) => void;
   /**
    * optional shows different table content depending on state
    *
@@ -100,16 +119,48 @@ interface VerticalTableProps {
    * - data when `fulfilled`
    */
   status?: DataStatus;
+  /**
+   * optional search bar to display in top right of table
+   */
   search?: {
+    /**
+     * show search bar
+     */
+    enabled: boolean;
     /**
      * placeholder to display in search input
      */
     placeholder?: string;
-    /**
-     * callback to handle search term change
-     */
-    handleSearchChange: (term: string) => void;
   };
+}
+
+/**
+ * Callback to handle changes to table
+ * @parm {number} newPageNumber - optional page on
+ * @parm {string} newPageSize - optional size of data set shown
+ * @parm  {id: string,  desc: boolean} sortBy - optional column sort
+ * @parm {string} newSearch - optional search term change
+ */
+export interface HandleChangeInput {
+  /**
+   * page on
+   */
+  newPageNumber?: number;
+  /**
+   * size of data set shown
+   */
+  newPageSize?: string;
+  /**
+   * column sort
+   */
+  sortBy?: {
+    id: string;
+    desc: boolean;
+  }[];
+  /**
+   * search term change
+   */
+  newSearch?: string;
 }
 
 interface Column {
@@ -135,7 +186,8 @@ interface TableProps {
  * @parm {boolean} selectableRow - ???
  * @parm {string} tableTitle - caption to display at top of table
  * @parm {React.ReactNode} additionalControls - html block left of column sorting controls
- * @parm {boolean} showControls - shows column sorting controls and search bar defaults to true
+ * @parm {string} columnSorting - allow sorting by column
+ * @parm {boolean} showControls - shows column sorting controls defaults to true
  * @parm {object} pagination - optional pagination controls at bottom of table
  * @parm {string} status - optional shows loading state
  * @parm {object} search - optional, search options
@@ -148,10 +200,14 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   handleColumnChange,
   selectableRow,
   tableTitle,
+  columnSorting = "none",
   additionalControls,
   showControls = true,
   pagination,
   status = "fulfilled",
+  handleChange = (a) => {
+    console.error("handleChange was not set and called with:", a);
+  },
   search,
 }: VerticalTableProps) => {
   const [table, setTable] = useState([]);
@@ -178,7 +234,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     action.visibleColumns.push((columns) => [
       {
         id: "Checkbox",
-        Header: "",
+        Header: () => <input type="checkbox" />,
         Cell: () => <input type="checkbox" />,
         width: 30,
       },
@@ -186,21 +242,51 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     ]);
   };
 
+  // save sorting state
+  const [colSort, setColSort] = useState([]);
+  const useTableConditionalProps = [];
+  if (columnSorting !== "none") {
+    useTableConditionalProps.push(useSortBy);
+  }
+  if (selectableRow) {
+    useTableConditionalProps.push(tableAction);
+  }
   const Table: FC<TableProps> = ({ columns, data }: TableProps) => {
-    const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-      useTable(
-        {
-          columns,
-          data,
-          initialRowStateAccessor: () => ({
-            expanded: 0,
-            values: {},
-            content: {},
-          }),
-        },
-        useRowState,
-        selectableRow ? tableAction : () => null,
-      );
+    const {
+      getTableProps,
+      getTableBodyProps,
+      headerGroups,
+      rows,
+      prepareRow,
+      state: { sortBy },
+    } = useTable(
+      {
+        columns,
+        data,
+        initialRowStateAccessor: () => ({
+          expanded: 0,
+          values: {},
+          content: {},
+        }),
+        manualSortBy: columnSorting === "manual",
+        initialState: { sortBy: colSort },
+      },
+      useRowState,
+      ...useTableConditionalProps,
+    );
+
+    // for manual sorting
+    useEffect(() => {
+      //check if properties have changed
+      if (!isEqual(sortBy, colSort)) {
+        setColSort(sortBy);
+        if (columnSorting === "manual") {
+          handleChange({
+            sortBy: sortBy,
+          });
+        }
+      }
+    }, [sortBy]);
 
     return (
       <table {...getTableProps()} className="w-full text-left font-content ">
@@ -212,19 +298,50 @@ export const VerticalTable: FC<VerticalTableProps> = ({
             <tr
               className="bg-primary-darker py-4 leading-5  "
               {...headerGroup.getHeaderGroupProps()}
-              key={`header-${key}`}
+              key={`hrow-${key}`}
             >
-              {headerGroup.headers.map((column, key) => (
-                <th
-                  {...column.getHeaderProps()}
-                  className="px-2 pt-3 pb-1 font-heading text-primary-contrast-darker font-medium text-md"
-                  key={`column-${key}`}
-                >
-                  <div className="px-1">
-                    <span>{column.render("Header")}</span>
-                  </div>
-                </th>
-              ))}
+              {headerGroup.headers.map((column, key) => {
+                return columnSorting === "none" ? (
+                  <th
+                    {...column.getHeaderProps()}
+                    className="px-2 pt-3 pb-1 font-heading text-primary-contrast-darker font-medium text-md"
+                    key={`hcolumn-${key}`}
+                  >
+                    {column.render("Header")}
+                  </th>
+                ) : (
+                  <th
+                    {...column.getHeaderProps(column.getSortByToggleProps())}
+                    className="px-2 pt-3 pb-1 font-heading text-primary-contrast-darker font-medium text-md"
+                    key={`hcolumn-${key}`}
+                    aria-sort={
+                      column.isSorted
+                        ? column.isSortedDesc
+                          ? "descending"
+                          : "ascending"
+                        : "none"
+                    }
+                    tabIndex={column.canSort === false ? -1 : 0}
+                    onKeyPress={(event) => {
+                      if (
+                        column.canSort !== false &&
+                        (event.key === "Enter" || event.key === " ")
+                      )
+                        column.toggleSortBy();
+                    }}
+                    role={column.canSort ? "button" : "columnheader"}
+                  >
+                    {column.render("Header")}
+                    <span key={`span-${key}`}>
+                      {column.isSorted
+                        ? column.isSortedDesc
+                          ? " 🔽"
+                          : " 🔼"
+                        : ""}
+                    </span>
+                  </th>
+                );
+              })}
             </tr>
           ))}
         </thead>
@@ -241,8 +358,8 @@ export const VerticalTable: FC<VerticalTableProps> = ({
               return (
                 <>
                   <tr
+                    key={`row-${index}`}
                     {...row.getRowProps()}
-                    key={index}
                     className={
                       index % 2 === 1 ? "bg-base-lighter" : "bg-base-lightest"
                     }
@@ -251,8 +368,8 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                       return (
                         <td
                           {...cell.getCellProps()}
-                          key={`row-${key}`}
-                          className="px-2 py-1 text-[0.85em] font-content"
+                          key={`column-${key}`}
+                          className="px-2 py-1 text-sm text-content"
                         >
                           {cell.render("Cell")}
                         </td>
@@ -292,12 +409,17 @@ export const VerticalTable: FC<VerticalTableProps> = ({
 
   const handlePageSizeChange = (newPageSize) => {
     setPageSize(newPageSize);
-    pagination.handlePageSizeChange(newPageSize);
+    handleChange({
+      newPageSize: newPageSize,
+    });
   };
   const handlePageChange = (newPageNumber) => {
     setPageOn(newPageNumber);
-    pagination.handlePageChange(newPageNumber);
+    handleChange({
+      newPageNumber: newPageNumber,
+    });
   };
+
   const ShowingCount: FC = () => {
     let outputString = " --";
     if (!isNaN(pagination.from) && status === "fulfilled") {
@@ -362,7 +484,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
               </Popover.Dropdown>
             </Popover>
           )}
-          {search && (
+          {search?.enabled && (
             <div className="flex flex-row w-max float-right">
               <input
                 className="mr-2 rounded-sm border-1 border-base-lighter px-1"
@@ -370,7 +492,9 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 placeholder={search.placeholder ?? "Search"}
                 onChange={(e) => {
                   setSearchTerm(e.target.value);
-                  search.handleSearchChange(e.target.value);
+                  handleChange({
+                    newSearch: e.target.value,
+                  });
                 }}
                 value={searchTerm}
               />
@@ -387,9 +511,9 @@ export const VerticalTable: FC<VerticalTableProps> = ({
       </div>
       {pagination && (
         <div className="flex flex-row items-center text-content justify-start border-t border-base-light pt-2">
-          <p className="px-2">Page Size:</p>
+          <p className="px-2 font-heading text-md">Page Size:</p>
           <Select
-            size="sm"
+            size="xs"
             radius="md"
             onChange={handlePageSizeChange}
             value={pageSize?.toString()}
@@ -400,7 +524,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
               { value: "100", label: "100" },
             ]}
             classNames={{
-              root: "w-20",
+              root: "w-20 pb-2",
             }}
           />
           <div className="m-auto">

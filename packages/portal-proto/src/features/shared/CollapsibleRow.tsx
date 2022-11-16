@@ -90,7 +90,7 @@ const CollapsibleRow = ({
     );
   } else {
     return (
-      <div className="flex flex-row nowrap justify-between items-center">
+      <div className="flex flex-row nowrap justify-between items-center w-full">
         {collapsed ? (
           <div
             onClick={() => handleExpand(row)}
@@ -100,12 +100,12 @@ const CollapsibleRow = ({
             role="button"
             tabIndex={0}
             aria-label="Expand section"
-            className="flex flex-row items-center justify-between text-primary cursor-pointer w-48"
+            className="flex flex-row items-center justify-between text-primary cursor-pointer w-full mr-6"
           >
             <span className="whitespace-nowrap">
               {value.length.toLocaleString().padStart(6)} {label}
             </span>
-            <DownIcon size="1.25em" className="text-secondary-light mx-2" />
+            <DownIcon size="1.25em" className="text-secondary-light" />
           </div>
         ) : (
           <div
@@ -116,14 +116,14 @@ const CollapsibleRow = ({
             role="button"
             tabIndex={0}
             aria-label="Collapse section"
-            className="flex flex-row items-center justify-between text-primary cursor-pointer w-48"
+            className="flex flex-row items-center justify-between text-primary cursor-pointer w-full mr-6"
           >
             <span className="whitespace-nowrap text-bold">
               <b>
                 {value.length.toLocaleString().padStart(6)} {label}
               </b>
             </span>
-            <UpIcon size="1.25em" className="text-secondary-light mx-2" />
+            <UpIcon size="1.25em" className="text-secondary-light" />
           </div>
         )}
       </div>

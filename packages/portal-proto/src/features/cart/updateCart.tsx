@@ -72,7 +72,7 @@ const AddNotification: React.FC<AddNotificationProps> = ({
     if (filesToAdd.length === 1) {
       return (
         <>
-          <p>Added {files[0].fileName} to the cart.</p>
+          <p>Added {files[0].file_name} to the cart.</p>
           <UndoButton
             action={() => removeFromCart(filesToAdd, newCart, dispatch)}
           />
@@ -80,7 +80,7 @@ const AddNotification: React.FC<AddNotificationProps> = ({
       );
     } else {
       return (
-        <>{files[0].fileName} was already in the cart and was not added.</>
+        <>{files[0].file_name} was already in the cart and was not added.</>
       );
     }
   } else {
@@ -139,7 +139,7 @@ const RemoveNotification: React.FC<RemoveNotificationProps> = ({
   if (filesToRemove.length === 1) {
     return (
       <>
-        <p>Removed {filesToRemove[0].fileName} from the cart.</p>
+        <p>Removed {filesToRemove[0].file_name} from the cart.</p>
         <UndoButton
           action={() => addToCart(filesToRemove, newCart, dispatch)}
         />

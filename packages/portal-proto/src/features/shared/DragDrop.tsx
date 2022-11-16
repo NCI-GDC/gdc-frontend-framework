@@ -40,7 +40,12 @@ export const DragDrop: FC<DragDropProps> = ({
 
   const renderColumn = useCallback(
     (
-      column: { id: number; columnName: string; visible: boolean },
+      column: {
+        id: number;
+        columnName: string;
+        visible: boolean;
+        arrangeable?: boolean;
+      },
       index: number,
     ) => {
       return (
@@ -55,6 +60,7 @@ export const DragDrop: FC<DragDropProps> = ({
             moveColumn={moveColumn}
             visible={column.visible}
             toggleColumn={toggleColumn}
+            arrangeable={column.arrangeable}
           />
         )
       );

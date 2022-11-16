@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Loader } from "@mantine/core";
 import {
   useCoreSelector,
@@ -12,7 +12,13 @@ import Dashboard from "./Dashboard";
 import { DEFAULT_FIELDS, FACET_SORT } from "./constants";
 import { filterUsefulFacets, parseFieldName } from "./utils";
 
-const ClinicalDataAnalysis: React.FC = () => {
+export interface ClinicalDataAnalysisProps {
+  onLoaded?: () => void;
+}
+
+const ClinicalDataAnalysis: React.FC<ClinicalDataAnalysisProps> = ({
+  onLoaded,
+}: ClinicalDataAnalysisProps) => {
   const [controlsExpanded, setControlsExpanded] = useState(true);
   const [activeFields, setActiveFields] = useState(DEFAULT_FIELDS);
 
@@ -44,6 +50,12 @@ const ClinicalDataAnalysis: React.FC = () => {
       setActiveFields([...activeFields, field]);
     }
   };
+
+  useEffect(() => {
+    if (!isFetching) {
+      onLoaded && onLoaded();
+    }
+  }, [isFetching, onLoaded]);
 
   return isFetching ? (
     <Loader size={80} data-testid="please_wait_spinner" />
