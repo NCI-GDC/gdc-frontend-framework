@@ -12,6 +12,7 @@ import {
   buildCohortGqlOperator,
   joinFilters,
   useFilesSize,
+  GdcFile,
 } from "@gff/core";
 import { MdSave } from "react-icons/md";
 import { useAppSelector } from "@/features/repositoryApp/appApi";
@@ -83,6 +84,19 @@ const FilesTables: React.FC = () => {
 
   const { data, pagination, status } = useCoreSelector(selectFilesData);
 
+  const getAnnotationsLinkParams = (file: GdcFile): string | null => {
+    if (!file?.annotations) return null;
+
+    if (file?.annotations?.length === 1) {
+      return `https://portal.gdc.cancer.gov/annotations/${file.annotations[0].annotation_id}`;
+    }
+    return `https://portal.gdc.cancer.gov/annotations?filters={"content":[{"content":{"field":"annotations.annotation_id","value":[${[
+      file.annotations.map((annotation) => `"${annotation.annotation_id}"`),
+    ]}]},"op":"in"}],"op":"and"}`;
+  };
+
+  console.log({ data });
+
   if (status === "fulfilled") {
     tempPagination = pagination;
     formattedTableData = data.map((file) => ({
@@ -110,7 +124,19 @@ const FilesTables: React.FC = () => {
       experimental_strategy: file.experimental_strategy || "--",
       platform: file.platform || "--",
       file_size: fileSize(file.file_size),
-      annotations: file.annotations?.length || 0,
+      annotations: (
+        <>
+          {getAnnotationsLinkParams(file) ? (
+            <Link href={getAnnotationsLinkParams(file)} passHref>
+              <a className="text-utility-link underline" target={"_blank"}>
+                {file.annotations.length}
+              </a>
+            </Link>
+          ) : (
+            0
+          )}
+        </>
+      ),
     }));
   }
 
