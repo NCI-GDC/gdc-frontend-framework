@@ -468,9 +468,9 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 </Box>
               </Popover.Target>
               <Popover.Dropdown>
-                <div className={`w-fit`}>
+                <div className={`w-100`}>
                   {columnListOptions.length > 0 && showColumnMenu && (
-                    <div className={`mr-0 ml-auto`}>
+                    <div className={`w-100 mr-0`}>
                       <DndProvider backend={HTML5Backend}>
                         <DragDrop
                           listOptions={columnListOptions}
