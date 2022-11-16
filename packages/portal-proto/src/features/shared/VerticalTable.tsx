@@ -3,7 +3,7 @@ import { useTable, useRowState, useSortBy } from "react-table";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DragDrop } from "./DragDrop";
-import { BsList } from "react-icons/bs";
+import { BsList, BsCaretDownFill, BsCaretUpFill } from "react-icons/bs";
 import { isEqual } from "lodash";
 import { DataStatus } from "@gff/core";
 import {
@@ -287,7 +287,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         }
       }
     }, [sortBy]);
-
+    //TODO have focus stay on selection, also only reload table data not headers
     return (
       <table {...getTableProps()} className="w-full text-left font-content ">
         {tableTitle && (
@@ -312,7 +312,10 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 ) : (
                   <th
                     {...column.getHeaderProps(column.getSortByToggleProps())}
-                    className="px-2 pt-3 pb-1 font-heading text-primary-contrast-darker font-medium text-md"
+                    className={`px-2 pt-3 pb-1 font-heading text-primary-contrast-darker font-medium text-md whitespace-nowrap ${
+                      column.canSort &&
+                      "hover:bg-primary-darkest focus:bg-primary-darkest focus:outline focus:outline-white outline-offset-[-3px] outline-1"
+                    }`}
                     key={`hcolumn-${key}`}
                     aria-sort={
                       column.isSorted
@@ -332,13 +335,27 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                     role={column.canSort ? "button" : "columnheader"}
                   >
                     {column.render("Header")}
-                    <span key={`span-${key}`}>
-                      {column.isSorted
-                        ? column.isSortedDesc
-                          ? " 🔽"
-                          : " 🔼"
-                        : ""}
-                    </span>
+                    {column.canSort && (
+                      <div
+                        key={`span-${key}`}
+                        className="inline-block text-xs pl-3 align-middle text-base-content-light"
+                      >
+                        <BsCaretUpFill
+                          className={
+                            column.isSorted && !column.isSortedDesc
+                              ? "text-white"
+                              : ""
+                          }
+                        />
+                        <BsCaretDownFill
+                          className={`${
+                            column.isSorted && column.isSortedDesc
+                              ? "text-white"
+                              : ""
+                          } relative top-[-2px]`}
+                        />
+                      </div>
+                    )}
                   </th>
                 );
               })}
@@ -464,7 +481,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                   className={`mr-0 ml-auto border-1 border-base-lighter p-3`}
                   onClick={() => setShowColumnMenu(!showColumnMenu)}
                 >
-                  <BsList></BsList>
+                  <BsList />
                 </Box>
               </Popover.Target>
               <Popover.Dropdown>
