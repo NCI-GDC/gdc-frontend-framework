@@ -41,6 +41,7 @@ export const MOCK_COHORTS: Cohort[] = [
     },
     modified_datetime: new Date(2020, 1, 9).toISOString(),
     caseSet: { caseSetId: { mode: "and", root: {} }, status: "uninitialized" },
+    saved: false,
     modified: false,
   },
   {
@@ -63,6 +64,7 @@ export const MOCK_COHORTS: Cohort[] = [
     },
     caseSet: { caseSetId: { mode: "and", root: {} }, status: "uninitialized" },
     modified: false,
+    saved: true,
     modified_datetime: new Date(2020, 1, 8).toISOString(),
   },
   {
@@ -85,6 +87,7 @@ export const MOCK_COHORTS: Cohort[] = [
     },
     caseSet: { caseSetId: { mode: "and", root: {} }, status: "uninitialized" },
     modified: false,
+    saved: false,
     modified_datetime: new Date(2020, 1, 7).toISOString(),
   },
   {
@@ -107,6 +110,7 @@ export const MOCK_COHORTS: Cohort[] = [
     },
     caseSet: { caseSetId: { mode: "and", root: {} }, status: "uninitialized" },
     modified: false,
+    saved: false,
     modified_datetime: new Date(2020, 1, 6).toISOString(),
   },
 ];

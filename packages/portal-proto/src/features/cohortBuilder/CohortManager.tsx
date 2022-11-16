@@ -321,23 +321,28 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                   : setShowUpdateCohort(true);
               }}
               $buttonDisabled={isDefaultCohort}
+              data-testid="saveButton"
             >
               <SaveIcon size="1.5em" aria-label="Save cohort" />
             </CohortGroupButton>
-            <CohortGroupButton onClick={() => newCohort()}>
+            <CohortGroupButton
+              onClick={() => newCohort()}
+              data-testid="addButton"
+            >
               <AddIcon size="1.5em" aria-label="Add cohort" />
             </CohortGroupButton>
             <CohortGroupButton
               onClick={() => setShowDelete(true)}
               disabled={isDefaultCohort}
               $buttonDisabled={isDefaultCohort}
+              data-testid="deleteButton"
             >
               <DeleteIcon size="1.5em" aria-label="Delete cohort" />
             </CohortGroupButton>
-            <CohortGroupButton>
+            <CohortGroupButton data-testid="uploadButton">
               <UploadIcon size="1.5em" aria-label="Upload cohort" />
             </CohortGroupButton>
-            <CohortGroupButton>
+            <CohortGroupButton data-testid="downloadButton">
               <DownloadIcon size="1.5em" aria-label="Download cohort" />
             </CohortGroupButton>
           </>
