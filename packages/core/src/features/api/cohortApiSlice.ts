@@ -5,7 +5,6 @@ import { coreCreateApi } from "../../coreCreateApi";
 import type { Middleware, Reducer } from "@reduxjs/toolkit";
 import { CohortModel, CohortAdd, CohortUpdate } from "./cohortApiTypes";
 import { GDC_API } from "../../constants";
-import { buildGqlOperationToFilterSet } from "../cohort";
 
 export const cohortApiSlice = coreCreateApi({
   reducerPath: "cohortApi",
@@ -20,10 +19,6 @@ export const cohortApiSlice = coreCreateApi({
       transformResponse: (response: CohortModel[]) => {
         return response.map((item) => ({
           ...item,
-          filters:
-            Object.keys(item.filters).length > 0
-              ? buildGqlOperationToFilterSet(item.filters)
-              : { mode: "and", root: {} }, // BE returns empty filter as {} which will not work in the FE so casting it as empty FilterSet
           saved: true,
           modified: false,
         }));
@@ -35,10 +30,6 @@ export const cohortApiSlice = coreCreateApi({
     }),
     getCohortById: builder.query<CohortModel, string>({
       query: (id) => `/cohorts/${id}`,
-      transformResponse: (response: CohortModel) => ({
-        ...response,
-        filters: buildGqlOperationToFilterSet(response.filters),
-      }),
       providesTags: (_result, _error, arg) => [{ type: "Cohort", id: arg }],
     }),
     addCohort: builder.mutation<CohortModel, CohortAdd>({

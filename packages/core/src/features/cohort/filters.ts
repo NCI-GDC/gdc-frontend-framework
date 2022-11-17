@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { isArray } from "lodash";
+import { isArray, isEmpty } from "lodash";
 import {
   Operation,
   GqlOperation,
@@ -156,10 +156,11 @@ export const filterSetToOperation = (
 };
 
 export const buildGqlOperationToFilterSet = (
-  fs: GqlIntersection | GqlUnion | undefined,
-): FilterSet | undefined => {
-  if (!fs) return undefined;
-  const obj = fs.content.reduce((acc, item) => {
+  fs: GqlIntersection | GqlUnion | Record<string, never>,
+): FilterSet => {
+  if (isEmpty(fs)) return { mode: "and", root: {} };
+
+  const obj = (fs as GqlIntersection | GqlUnion).content.reduce((acc, item) => {
     const key = isArray(item.content)
       ? item.content?.at(0).field
       : (item.content as any).field;
@@ -170,16 +171,10 @@ export const buildGqlOperationToFilterSet = (
     };
   }, {});
 
-  switch (fs.op) {
-    case "and":
-      return fs.content.length == 0
-        ? undefined
-        : {
-            mode: fs.op,
-            root: obj,
-          };
-  }
-  return undefined;
+  return {
+    mode: (fs as GqlIntersection | GqlUnion).op,
+    root: obj,
+  };
 };
 
 /**

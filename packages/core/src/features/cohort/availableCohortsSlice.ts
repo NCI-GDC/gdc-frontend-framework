@@ -170,7 +170,7 @@ const slice = createSlice({
   initialState: initialState,
   reducers: {
     setCohortList: (state, action: PayloadAction<Cohort[]>) => {
-      // TODO: Behavior TBD
+      // TODO: Behavior TBD - https://jira.opensciencedatacloud.org/browse/PEAR-762
       // When the user deletes context id from their cookies
       // All the cohorts that was previously were saved or unsaved should be removed from the adapter
       if (!action.payload) {

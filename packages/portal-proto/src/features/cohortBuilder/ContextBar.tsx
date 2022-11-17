@@ -25,6 +25,7 @@ import {
   clearCohortMessage,
   setCohortList,
   useGetCohortsByContextIdQuery,
+  buildGqlOperationToFilterSet,
 } from "@gff/core";
 
 import {
@@ -58,7 +59,11 @@ const ContextBar: React.FC = () => {
     // If that's case then we get rid of all saved, unsaved cohort from the local cohortAdapter by unsending undefined payload
 
     if (cohortsListData) {
-      coreDispatch(setCohortList(cohortsListData));
+      const updatedList = cohortsListData.map((data) => ({
+        ...data,
+        filters: buildGqlOperationToFilterSet(data.filters),
+      }));
+      coreDispatch(setCohortList(updatedList));
     } else if ((getCohortError as Error)?.status === 400) {
       const noGdcContext =
         ((getCohortError as Error)?.data.message as string) ===

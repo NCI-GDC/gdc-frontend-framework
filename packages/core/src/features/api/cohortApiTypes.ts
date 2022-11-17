@@ -1,8 +1,10 @@
+import { GqlIntersection, GqlUnion } from "../gdcapi/filters";
+
 // models for cohort endpoints
 export interface CohortModel {
   id: string;
   name: string;
-  filters: any; // TODO Fix this
+  filters: GqlIntersection | GqlUnion | Record<string, never>;
   type: string;
   case_ids: string[];
   data_release: {

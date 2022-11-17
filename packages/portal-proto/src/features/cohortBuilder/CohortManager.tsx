@@ -30,6 +30,7 @@ import {
   setCohortMessage,
   useLazyGetCohortByIdQuery,
   FilterSet,
+  buildGqlOperationToFilterSet,
 } from "@gff/core";
 import { buildCohortGqlOperator } from "@gff/core";
 import { useCohortFacetFilters } from "./CohortGroup";
@@ -184,7 +185,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
             await trigger(cohortId)
               .unwrap()
               .then((payload) => {
-                discardChanges(payload.filters);
+                discardChanges(buildGqlOperationToFilterSet(payload.filters));
               })
               .catch(() =>
                 coreDispatch(setCohortMessage("error|discarding|allId")),
@@ -212,7 +213,10 @@ const CohortManager: React.FC<CohortManagerProps> = ({
             id: cohortId,
             name: cohortName,
             type: "static",
-            filters: buildCohortGqlOperator(filters),
+            filters:
+              Object.keys(filters.root).length > 0
+                ? buildCohortGqlOperator(filters)
+                : {},
           };
 
           await updateCohort(updateBody)
