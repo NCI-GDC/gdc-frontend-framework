@@ -86,8 +86,8 @@ const FilesTables: React.FC = () => {
 
   const getAnnotationsLinkParams = (file: GdcFile): string | null => {
     // Due to limitation in the length of URI, we decided to cap a link to be created for files which has < 150 annotations for now
-    // 150 annotations was a safe number. It was tested in Chrome, Firefox, Safari and Edge
-    // TODO: after the fix for v2 this needs to be updated (https://jira.opensciencedatacloud.org/browse/PEAR-758)
+    // 150 annotations was a safe number. It was tested in Chrome, Firefox, Safari and Edge.
+    // TODO: Follow Up Ticket - https://jira.opensciencedatacloud.org/browse/PEAR-758
     const MAX_ANNOATATION_COUNT = 150;
     if (!file?.annotations || file.annotations.length > MAX_ANNOATATION_COUNT)
       return null;
