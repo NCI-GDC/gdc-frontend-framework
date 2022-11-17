@@ -85,7 +85,12 @@ const FilesTables: React.FC = () => {
   const { data, pagination, status } = useCoreSelector(selectFilesData);
 
   const getAnnotationsLinkParams = (file: GdcFile): string | null => {
-    if (!file?.annotations) return null;
+    // Due to limitation in the length of URI, we decided to cap a link to be created for files which has < 150 annotations for now
+    // 150 annotations was a safe number. It was tested in Chrome, Firefox, Safari and Edge
+    // TODO: after the fix for v2 this needs to be updated (https://jira.opensciencedatacloud.org/browse/PEAR-758)
+    const MAX_ANNOATATION_COUNT = 150;
+    if (!file?.annotations || file.annotations.length > MAX_ANNOATATION_COUNT)
+      return null;
 
     if (file?.annotations?.length === 1) {
       return `https://portal.gdc.cancer.gov/annotations/${file.annotations[0].annotation_id}`;
@@ -94,8 +99,6 @@ const FilesTables: React.FC = () => {
       file.annotations.map((annotation) => `"${annotation.annotation_id}"`),
     ]}]},"op":"in"}],"op":"and"}`;
   };
-
-  console.log({ data });
 
   if (status === "fulfilled") {
     tempPagination = pagination;
@@ -133,7 +136,7 @@ const FilesTables: React.FC = () => {
               </a>
             </Link>
           ) : (
-            0
+            file?.annotations?.length ?? 0
           )}
         </>
       ),
