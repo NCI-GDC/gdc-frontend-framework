@@ -67,7 +67,6 @@ import {
   clearComparisonCohorts,
   selectComparisonCohorts,
 } from "./comparisonCohortsSlice";
-import { MOCK_COHORTS } from "./tests/mockData";
 
 export {
   DEFAULT_COHORT_ID,
@@ -125,5 +124,4 @@ export {
   discardCohortChanges,
   setCohortMessage,
   selectCurrentCohortFilterSet,
-  MOCK_COHORTS,
 };

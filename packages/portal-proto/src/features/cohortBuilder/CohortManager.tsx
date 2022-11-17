@@ -286,8 +286,8 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                 classNames={{
                   root: "border-base-light w-80 p-0 z-10 pt-5",
                   input:
-                    "text-heading font-[500] text-primary-darkest rounded-l-none h-10",
-                  item: "text-heading font-[400] text-primary-darkest data-selected:bg-primary-lighter first:border-b-2 first:rounded-none first:border-primary",
+                    "text-heading font-medium text-primary-darkest rounded-l-none h-10",
+                  item: "text-heading font-normal text-primary-darkest data-selected:bg-primary-lighter first:border-b-2 first:rounded-none first:border-primary",
                 }}
                 aria-label="Select cohort"
                 rightSection={<DownArrowIcon size={20} />}
