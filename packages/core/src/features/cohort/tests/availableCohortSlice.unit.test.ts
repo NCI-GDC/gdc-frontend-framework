@@ -16,9 +16,9 @@ import {
 import * as cohortSlice from "../availableCohortsSlice";
 import { Dictionary, EntityState } from "@reduxjs/toolkit";
 import { MOCK_COHORTS } from "./mockData";
+import { FilterSet } from "../filters";
 import { getInitialCoreState } from "src/store.unit.test";
 import { DataStatus } from "src/dataAccess";
-import { FilterSet } from "../filters";
 
 const state = getInitialCoreState();
 
