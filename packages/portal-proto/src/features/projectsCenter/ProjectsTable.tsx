@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { VerticalTable, HandleChangeInput } from "../shared/VerticalTable";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import { TableInstance } from "react-table";
@@ -7,9 +7,10 @@ import {
   useProjects,
   buildCohortGqlOperator,
   ProjectDefaults,
+  joinFilters,
 } from "@gff/core";
-import { Row } from "react-table";
 import { useAppSelector } from "@/features/projectsCenter/appApi";
+import { Row } from "react-table";
 import { selectFilters } from "@/features/projectsCenter/projectCenterFiltersSlice";
 import FunctionButton from "@/components/FunctionButton";
 import { statusBooleansToDataStatus } from "@/features/shared/utils";
@@ -36,10 +37,25 @@ interface SelectColumnProps {
 const ProjectsTable: React.FC = () => {
   const [pageSize, setPageSize] = useState(20);
   const [activePage, setActivePage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   const projectFilters = useAppSelector((state) => selectFilters(state));
   const { data, pagination, isSuccess, isFetching, isError } = useProjects({
-    filters: buildCohortGqlOperator(projectFilters),
+    filters:
+      searchTerm.length > 0
+        ? buildCohortGqlOperator(
+            joinFilters(projectFilters, {
+              mode: "and",
+              root: {
+                "projects.project_id": {
+                  operator: "includes",
+                  field: "projects.project_id",
+                  operands: [`*${searchTerm}*`],
+                },
+              },
+            }),
+          )
+        : buildCohortGqlOperator(projectFilters),
     expand: [
       "summary",
       "summary.experimental_strategies",
@@ -142,51 +158,56 @@ const ProjectsTable: React.FC = () => {
     setColumnCells(filterColumnCells(update));
   };
 
-  let formattedTableData = [],
-    tempPagination = {
-      count: undefined,
-      from: undefined,
-      page: undefined,
-      pages: undefined,
-      size: undefined,
-      sort: undefined,
-      total: undefined,
-    };
-
   useEffect(() => setActivePage(1), [projectFilters]);
 
-  if (isSuccess) {
-    tempPagination = pagination;
-    formattedTableData = data.map(
-      ({
-        project_id,
-        disease_type,
-        primary_site,
-        program,
-        summary,
-      }: ProjectDefaults) => ({
-        selected: project_id,
-        project_id: (
-          <Link href={`/projects/${project_id}`}>
-            <a className="text-utility-link underline">{project_id}</a>
-          </Link>
+  const [formattedTableData, tempPagination] = useMemo(() => {
+    if (isSuccess) {
+      return [
+        data.map(
+          ({
+            project_id,
+            disease_type,
+            primary_site,
+            program,
+            summary,
+          }: ProjectDefaults) => ({
+            selected: project_id,
+            project_id: (
+              <Link href={`/projects/${project_id}`}>
+                <a className="text-utility-link underline">{project_id}</a>
+              </Link>
+            ),
+            disease_type: disease_type,
+            primary_site: primary_site,
+            program: program.name,
+            cases: summary.case_count.toLocaleString().padStart(9),
+            data_categories: extractToArray(
+              summary.data_categories,
+              "data_category",
+            ),
+            experimental_strategies: extractToArray(
+              summary.experimental_strategies,
+              "experimental_strategy",
+            ),
+            files: summary.file_count.toLocaleString(),
+          }),
         ),
-        disease_type: disease_type,
-        primary_site: primary_site,
-        program: program.name,
-        cases: summary.case_count.toLocaleString().padStart(9),
-        data_categories: extractToArray(
-          summary.data_categories,
-          "data_category",
-        ),
-        experimental_strategies: extractToArray(
-          summary.experimental_strategies,
-          "experimental_strategy",
-        ),
-        files: summary.file_count.toLocaleString(),
-      }),
-    );
-  }
+        pagination,
+      ];
+    } else
+      return [
+        [],
+        {
+          count: undefined,
+          from: undefined,
+          page: undefined,
+          pages: undefined,
+          size: undefined,
+          sort: undefined,
+          total: undefined,
+        },
+      ];
+  }, [isSuccess, data, pagination]);
 
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
@@ -197,6 +218,8 @@ const ProjectsTable: React.FC = () => {
       case "newPageNumber":
         setActivePage(obj.newPageNumber);
         break;
+      case "newSearch":
+        setSearchTerm(obj.newSearch.toLowerCase());
     }
   };
 
@@ -220,6 +243,9 @@ const ProjectsTable: React.FC = () => {
       pagination={{
         ...tempPagination,
         label: "projects",
+      }}
+      search={{
+        enabled: true,
       }}
       status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
       handleChange={handleChange}
