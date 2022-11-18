@@ -1,5 +1,6 @@
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
+import { Grid } from "@mantine/core";
 import { useSsmPlot } from "@gff/core";
 import ChartTitleBar from "./ChartTitleBar";
 
@@ -83,7 +84,7 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
   };
 
   return (
-    <div className="relative">
+    <Grid.Col span={6}>
       <div>
         <ChartTitleBar
           title={title}
@@ -100,7 +101,7 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
           height={height}
         />
       </div>
-    </div>
+    </Grid.Col>
   );
 };
 

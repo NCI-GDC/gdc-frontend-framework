@@ -7,7 +7,7 @@ import {
 } from "react-icons/md";
 import { Box, Menu, Tooltip } from "@mantine/core";
 import isNumber from "lodash/isNumber";
-import { useMouse, useViewportSize } from "@mantine/hooks";
+import { useMouse, useResizeObserver } from "@mantine/hooks";
 import html2canvas from "html2canvas";
 import { elementToSVG } from "dom-to-svg";
 import saveAs from "file-saver";
@@ -53,8 +53,7 @@ export const useSurvival: survival = (
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setTooltip = (x?) => null,
 ) => {
-  const ref = useRef(undefined);
-  const documentSize = useViewportSize();
+  const [ref, rect] = useResizeObserver();
 
   useLayoutEffect(() => {
     ref.current
@@ -97,7 +96,7 @@ export const useSurvival: survival = (
           onMouseLeaveDonor: () => setTooltip(undefined),
         })
       : null;
-  }, [data, xDomain, setXDomain, setTooltip, height, documentSize]);
+  }, [ref, data, xDomain, setXDomain, setTooltip, height, rect]);
 
   return ref;
 };

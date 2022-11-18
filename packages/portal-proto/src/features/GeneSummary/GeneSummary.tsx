@@ -166,12 +166,8 @@ const GeneView = ({ data, gene_id }: GeneViewProps) => {
                 <h2 className="text-xl">Cancer Distribution</h2>
               </div>
               <Grid>
-                <Grid.Col span={6}>
-                  <SSMPlot page={"gene"} gene={gene_id} height={200} />
-                </Grid.Col>
-                <Grid.Col span={6}>
-                  <CNVPlot gene={gene_id} height={200} />
-                </Grid.Col>
+                <SSMPlot page={"gene"} gene={gene_id} height={200} />
+                <CNVPlot gene={gene_id} height={200} />
               </Grid>
               <GeneCancerDistributionTable
                 gene={gene_id}
