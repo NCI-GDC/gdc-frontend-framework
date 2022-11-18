@@ -1,11 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useGenesTable } from "@gff/core";
 import { VerticalTable, HandleChangeInput } from "../shared/VerticalTable";
 import { Box, Switch, Tooltip } from "@mantine/core";
 import { SiMicrogenetics as GeneAnnotationIcon } from "react-icons/si";
 import _ from "lodash";
-import { useMeasure } from "react-use";
-import { geneKeys, customGeneKeys } from "./constants";
+import { geneKeys } from "./constants";
 
 interface GenesTableProps {
   readonly selectedSurvivalPlot: Record<string, string>;
@@ -25,10 +24,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
   const [activePage, setActivePage] = useState(1);
   const [pages, setPages] = useState(0);
   const [totalResults, setTotalResults] = useState(0);
-  const [ref, { width }] = useMeasure();
   const [tableData, setTableData] = useState([]);
-  const [columnListOrder, setColumnListOrder] = useState([]);
-  const [columnListCells, setColumnListCells] = useState([]);
 
   // using the useSsmsTable from core and the associated useEffect hook
   // exploring different ways to dispatch the pageSize/offset changes
@@ -92,89 +88,6 @@ const GenesTable: React.FC<GenesTableProps> = ({
     }
   }, [data, pageSize, selectedSurvivalPlot]);
 
-  const getCustomGridCell = (key: string) => {
-    switch (key) {
-      case "annotations":
-        return {
-          Header: "Annotations",
-          accessor: "annotations",
-          Cell: ({ value }: any) => (
-            <div className="grid place-items-center">
-              {value ? (
-                <Tooltip label="Is Cancer Census">
-                  <Box>
-                    <GeneAnnotationIcon size="1.15rem" />
-                  </Box>
-                </Tooltip>
-              ) : null}
-            </div>
-          ),
-        };
-      case "survival": {
-        return {
-          Header: "Survival",
-          accessor: "survival",
-          Cell: ({ value }: any) => {
-            return (
-              <Tooltip label={`Click icon to plot ${value.symbol}`}>
-                <Switch
-                  radius="xs"
-                  size="sm"
-                  id={`genetable-survival-${value.symbol}`}
-                  checked={value.checked}
-                  onChange={() => {
-                    handleSurvivalPlotToggled(
-                      value.symbol,
-                      value.name,
-                      "gene.symbol",
-                    );
-                  }}
-                  classNames={{
-                    input:
-                      "bg-base-light checked:bg-primary-dark  checked:bg-none",
-                  }}
-                />
-              </Tooltip>
-            );
-          },
-        };
-      }
-      default:
-        return;
-    }
-  };
-
-  const getTableCellMapping = useCallback(() => {
-    const cellMapping = geneKeys.map((key) => {
-      return customGeneKeys.includes(key)
-        ? getCustomGridCell(key)
-        : {
-            Header: _.startCase(key),
-            accessor: key,
-            width:
-              width / geneKeys.length > 110 ? width / geneKeys.length : 110,
-          };
-    });
-    return cellMapping;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedSurvivalPlot, width]);
-
-  const getTableColumnMapping = () => {
-    return geneKeys.map((key, idx) => {
-      return {
-        id: idx,
-        columnName: key,
-        visible: true,
-      };
-    });
-  };
-
-  useEffect(() => {
-    setColumnListOrder(getTableColumnMapping());
-    setColumnListCells(getTableCellMapping());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
       case "newPageSize":
@@ -188,40 +101,66 @@ const GenesTable: React.FC<GenesTableProps> = ({
     }
   };
 
-  const columnCells = useMemo(() => {
-    const updateTableCells = (currentWidth, currentColumnListOrder) => {
-      const filteredColumnList = currentColumnListOrder.filter(
-        (item) => item.visible,
-      );
-      const headingOrder = filteredColumnList.map((item) => {
-        return columnListCells[
-          columnListCells.findIndex((find) => find.accessor === item.columnName)
-        ];
-      });
-      headingOrder.forEach((heading) => {
-        heading.width =
-          currentWidth / headingOrder.length > 110
-            ? width / headingOrder.length
-            : 110;
-      });
-      return headingOrder;
-    };
-
-    return updateTableCells(width, columnListOrder);
-  }, [width, columnListOrder, columnListCells]);
-
-  const handleColumnChange = (update) => {
-    setColumnListOrder(update);
-  };
+  const columnListOrder = useMemo(() => {
+    return geneKeys.map((key) => {
+      const colObj: {
+        id: string;
+        columnName: string;
+        visible: boolean;
+        Cell?: (value: any) => JSX.Element;
+      } = {
+        id: key,
+        columnName: _.startCase(key),
+        visible: true,
+      };
+      switch (key) {
+        case "annotations":
+          colObj.Cell = ({ value }: any) => (
+            <div className="grid place-items-center">
+              {value ? (
+                <Tooltip label="Is Cancer Census">
+                  <Box>
+                    <GeneAnnotationIcon size="1.15rem" />
+                  </Box>
+                </Tooltip>
+              ) : null}
+            </div>
+          );
+          break;
+        case "survival": {
+          colObj.Cell = ({ value }: any) => (
+            <Tooltip label={`Click icon to plot ${value.symbol}`}>
+              <Switch
+                radius="xs"
+                size="sm"
+                id={`genetable-survival-${value.symbol}`}
+                checked={value.checked}
+                onChange={() => {
+                  handleSurvivalPlotToggled(
+                    value.symbol,
+                    value.name,
+                    "gene.symbol",
+                  );
+                }}
+                classNames={{
+                  input:
+                    "bg-base-light checked:bg-primary-dark  checked:bg-none",
+                }}
+              />
+            </Tooltip>
+          );
+        }
+      }
+      return colObj;
+    });
+  }, [handleSurvivalPlotToggled]);
 
   return (
     <div className="flex flex-col w-screen pb-3 pt-3">
-      <div ref={ref} className={`flex flex-row w-9/12`}>
+      <div className={`flex flex-row w-9/12`}>
         <VerticalTable
           tableData={tableData}
-          columnListOrder={columnListOrder}
-          columnCells={columnCells}
-          handleColumnChange={handleColumnChange}
+          columns={columnListOrder}
           selectableRow={false}
           tableTitle={`Showing ${(activePage - 1) * pageSize + 1} - ${
             activePage * pageSize

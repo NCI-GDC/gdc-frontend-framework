@@ -7,7 +7,6 @@ export const ssmsKeys = [
   "affectedCasesAcrossTheGDC",
   "impact",
 ];
-export const customSsmsKeys = ["impact", "survival"];
 
 export const filterMutationType = (typeText: string): string => {
   const splitStr = typeText.split(" ");
