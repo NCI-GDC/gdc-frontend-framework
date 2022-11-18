@@ -338,10 +338,9 @@ describe("filter by prefix", () => {
       },
     };
 
-    const res = divideCurrentCohortFilterSetFilterByPrefix(
-      localState,
+    const res = divideCurrentCohortFilterSetFilterByPrefix(localState, [
       "files.",
-    );
+    ]);
     expect(res).toEqual({
       withPrefix: {
         mode: "and",
