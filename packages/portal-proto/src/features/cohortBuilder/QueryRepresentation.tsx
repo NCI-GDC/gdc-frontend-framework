@@ -94,11 +94,13 @@ export const isValueOperation = (x: Operation): x is ValueOperation => {
   return "field" in x;
 };
 
-const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
+const IncludeExcludeQueryElement: React.FC<
+  Includes | Excludes | ExcludeIfAny
+> = ({
   field,
   operator,
-  operands,
-}: Includes | Excludes) => {
+  operands: operandsProp,
+}: Includes | Excludes | ExcludeIfAny) => {
   const dispatch = useCoreDispatch();
   const [queryExpressionsExpanded, setQueryExpressionsExpanded] = useContext(
     QueryExpressionsExpandedContext,
@@ -124,6 +126,8 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
 
   const expanded = get(queryExpressionsExpanded, field, true);
   const fieldName = fieldNameToTitle(field);
+  const operands =
+    typeof operandsProp === "string" ? [operandsProp] : operandsProp;
 
   const RemoveButton = ({ value }: { value: string }) => (
     <ActionIcon
@@ -139,7 +143,9 @@ const IncludeExcludeQueryElement: React.FC<Includes | Excludes> = ({
 
   return (
     <QueryContainer>
-      <QueryFieldLabel>{fieldName}</QueryFieldLabel>
+      <QueryFieldLabel>
+        {operator === "excludeifany" ? "EXCLUDES IF ANY" : fieldName}
+      </QueryFieldLabel>
       <ActionIcon
         variant="transparent"
         size={"xs"}
@@ -391,8 +397,11 @@ class CohortFilterToComponent implements OperationHandler<JSX.Element> {
       <ExistsElement {...f} />
     </QueryElement>
   );
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  handleExcludeIfAny = (_f: ExcludeIfAny) => null;
+  handleExcludeIfAny = (f: ExcludeIfAny) => (
+    <QueryElement key={f.field} {...f}>
+      <IncludeExcludeQueryElement {...f} />
+    </QueryElement>
+  );
   handleIntersection = (f: Intersection) => {
     if (f.operands.length < 1) return null;
 
