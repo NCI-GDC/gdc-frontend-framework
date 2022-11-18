@@ -13,7 +13,7 @@ import { createCaseSet } from "./features/cohort/availableCohortsSlice";
 /**
  * Defines coreListeners for adding middleware.
  * This listener will dispatch a createCaseSet each time the
- * current cohort filters mutate, and it contains a filer in REQUIRES_CASE_SET_FILTERS
+ * current cohort filters mutate, and it contains a filter entry in REQUIRES_CASE_SET_FILTERS
  */
 
 export const caseSetListenerMiddleware = createListenerMiddleware();
