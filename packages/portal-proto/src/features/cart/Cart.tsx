@@ -1,5 +1,7 @@
 import { Grid } from "@mantine/core";
 import tw from "tailwind-styled-components";
+import { MdShoppingCart as CartIcon } from "react-icons/md";
+
 import {
   useCartSummary,
   useCoreSelector,
@@ -48,7 +50,18 @@ const Cart: React.FC = () => {
     ),
   );
 
-  return (
+  return cart.length === 0 ? (
+    <Grid justify="center" className="bg-base-lightest flex-grow">
+      <Grid.Col span={4} className="mt-20 flex flex-col items-center">
+        <div className="h-[150px] w-[150px] rounded-[50%] bg-[#e0e9f0] flex justify-center items-center">
+          <CartIcon size={80} className="text-primary-darkest" />
+        </div>
+        <p className="uppercase text-primary-darkest text-2xl font-montserrat mt-4">
+          Your cart is empty.
+        </p>
+      </Grid.Col>
+    </Grid>
+  ) : (
     <>
       <CartHeader
         summaryData={summaryData}

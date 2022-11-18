@@ -131,7 +131,10 @@ const CartHeader: React.FC<CartHeaderProps> = ({
           setActive={setDownloadActive}
         />
       )}
-      <div className="bg-primary-darkest text-primary-contrast-darkest flex items-center gap-x-4 w-full h-16">
+      <div
+        className="bg-primary-darkest text-primary-contrast-darkest flex items-center gap-x-4 w-full h-16"
+        data-testid="cart-header"
+      >
         <Menu>
           <Menu.Target>
             <Button
