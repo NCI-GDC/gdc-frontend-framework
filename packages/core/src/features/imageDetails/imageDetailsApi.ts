@@ -11,9 +11,9 @@ export interface ImageMetadataResponse {
 }
 
 export const fetchSlideImages = async (
-  fileId: string,
+  file_id: string,
 ): Promise<ImageMetadataResponse> => {
-  const response = await fetch(`${GDC_API}/tile/metadata/${fileId}`);
+  const response = await fetch(`${GDC_API}/tile/metadata/${file_id}`);
 
   if (response.ok) {
     return response.json();

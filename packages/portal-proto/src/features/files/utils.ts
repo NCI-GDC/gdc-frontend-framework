@@ -129,7 +129,7 @@ export const parseSlideDetailsInfo: parseSlideDetailsInfoFunc = (
     "updated_datetime",
     "state",
   ]);
-  const slideDetailsInfo = { file_id: file.fileId, ...slidesInfo };
+  const slideDetailsInfo = { file_id: file.file_id, ...slidesInfo };
 
   return formatImageDetailsInfo(slideDetailsInfo);
 };
@@ -139,7 +139,7 @@ export const mapGdcFileToCartFile = (files: GdcFile[]): CartFile[] =>
     pick(file, [
       "access",
       "acl",
-      "fileId",
+      "file_id",
       "file_size",
       "state",
       "project_id",
@@ -153,7 +153,7 @@ export const mapFilesFromCasesToCartFile = (
   files.map((file) => ({
     access: file.access,
     acl: file.acl,
-    fileId: file.file_id,
+    file_id: file.file_id,
     file_size: file.file_size,
     state: file.state,
     file_name: file.file_name,

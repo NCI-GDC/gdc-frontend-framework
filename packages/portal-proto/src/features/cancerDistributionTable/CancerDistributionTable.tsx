@@ -217,9 +217,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
               Header: (
                 <div>
                   <Tooltip
-                    label={`# Cases tested for CNV in Project affected by CNV loss event in ${symbol}
-          / # Cases tested for Copy Number Variation in Project
-          `}
+                    label={`# Unique Simple Somatic Mutations observed in ${symbol} in the Project`}
                     multiline
                     withArrow
                   >
@@ -249,12 +247,12 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 ),
                 disease_type: projectsById[d.key]?.disease_type || [],
                 primary_site: projectsById[d.key]?.primary_site || [],
-                ssm_affected_cases: `${data.ssmFiltered[
-                  d.key
-                ].toLocaleString()} / ${data.ssmTotal[
+                ssm_affected_cases: `${(
+                  data.ssmFiltered[d.key] || 0
+                ).toLocaleString()} / ${data.ssmTotal[
                   d.key
                 ].toLocaleString()} (${(
-                  data.ssmFiltered[d.key] / data.ssmTotal[d.key]
+                  (data.ssmFiltered[d.key] || 0) / data.ssmTotal[d.key]
                 ).toLocaleString(undefined, {
                   style: "percent",
                   minimumFractionDigits: 2,
@@ -285,7 +283,10 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                         style: "percent",
                         minimumFractionDigits: 2,
                       })})`,
-                      num_mutations: d.doc_count.toLocaleString(),
+                      num_mutations:
+                        (data.ssmFiltered[d.key] || 0) === 0
+                          ? 0
+                          : d.doc_count.toLocaleString(),
                     }
                   : {}),
               };

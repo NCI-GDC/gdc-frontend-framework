@@ -109,7 +109,7 @@ const CartDownloadModal = ({
           }
           endpoint="data"
           extraParams={{
-            ids: (filesByCanAccess?.true || []).map((file) => file.fileId),
+            ids: (filesByCanAccess?.true || []).map((file) => file.file_id),
             annotations: true,
             related_files: true,
           }}

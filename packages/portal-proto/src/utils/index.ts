@@ -113,10 +113,10 @@ export const calculatePercentageAsString = (
 ): string => `${((count / total) * 100).toFixed(2)}%`;
 
 export const allFilesInCart = (carts: CartFile[], files: CartFile[]): boolean =>
-  files?.every((file) => carts.some((cart) => cart.fileId === file.fileId));
+  files?.every((file) => carts.some((cart) => cart.file_id === file.file_id));
 
 export const fileInCart = (cart: CartFile[], newId: string): boolean =>
-  cart.map((f) => f.fileId).some((id) => id === newId);
+  cart.map((f) => f.file_id).some((id) => id === newId);
 
 /**
  *

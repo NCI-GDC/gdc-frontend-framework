@@ -260,7 +260,11 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
         return {
           projects:
             response?.data?.viewer?.explore?.ssms?.aggregations
-              ?.occurrence__case__project__project_id?.buckets,
+              ?.occurrence__case__project__project_id?.buckets.length > 0
+              ? response?.data?.viewer?.explore?.ssms?.aggregations
+                  ?.occurrence__case__project__project_id?.buckets
+              : response?.data?.viewer?.explore?.cases?.cnvTotal
+                  .project__project_id.buckets,
           ssmFiltered: Object.fromEntries(
             response?.data?.viewer?.explore?.cases?.filtered?.project__project_id?.buckets.map(
               (b) => [b.key, b.doc_count],
