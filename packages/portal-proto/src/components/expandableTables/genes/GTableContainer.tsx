@@ -5,7 +5,7 @@ import { GenesTable } from "./GenesTable";
 import { useMeasure } from "react-use";
 import { Button, Loader } from "@mantine/core";
 import PageStepper from "../shared/PageStepper";
-import TableControls from "../shared/TableControls";
+import { TableControlsMantine as TableControls } from "../shared/TableControlsMantine";
 import TablePlaceholder from "../shared/TablePlaceholder";
 import { SelectedReducer, SelectReducerAction } from "../shared/types";
 import { TableFilters } from "../shared/TableFilters";

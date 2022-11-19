@@ -42,6 +42,13 @@ export const TableControlsMantine: React.FC<TableControlsProps> = ({
         </Menu.Target>
 
         <Menu.Dropdown>
+          <Menu.Label className="bg-primary text-primary-contrast font-heading font-bold">
+            {numSelected === 0
+              ? `${total} ${label}s`
+              : numSelected === 1
+              ? "1 ${Mutation"
+              : `${numSelected} Mutations`}
+          </Menu.Label>
           {options.map(({ value, label }: ControlOption) => {
             if (value !== "placeholder") {
               return <Menu.Item key={label}>{label}</Menu.Item>;

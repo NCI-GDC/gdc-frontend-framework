@@ -35,7 +35,7 @@ export const Consequences = ({
     <>
       <span className={`mx-0.5 font-content text-xs`}>
         {humanify({
-          term: consequences?.replace("_variant", "").split("_")[0],
+          term: consequences?.replace("_variant", "").replace("_", " "),
         }) ?? ``}
       </span>
     </>
