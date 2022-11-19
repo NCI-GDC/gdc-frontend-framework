@@ -13,7 +13,7 @@ import {
   graphqlAPI,
   TablePageOffsetProps,
 } from "../gdcapi/gdcgraphql";
-import { buildCohortGqlOperator } from "../cohort/filters";
+import { buildCohortGqlOperator } from "../cohort";
 import { selectGenomicAndCohortGqlFilters } from "./genomicFilters";
 import { selectCurrentCohortFilters } from "../cohort";
 
@@ -201,7 +201,7 @@ export const fetchGenesTable = createAsyncThunk<
               op: "in",
             },
           ],
-          ...filterContents,
+          ...cohortFiltersContent,
         ],
       },
       cnvGainFilters: {
@@ -223,7 +223,7 @@ export const fetchGenesTable = createAsyncThunk<
               op: "in",
             },
           ],
-          ...filterContents,
+          ...cohortFiltersContent,
         ],
       },
       cnvLossFilters: {
@@ -245,7 +245,7 @@ export const fetchGenesTable = createAsyncThunk<
               op: "in",
             },
           ],
-          ...filterContents,
+          ...cohortFiltersContent,
         ],
       },
     };

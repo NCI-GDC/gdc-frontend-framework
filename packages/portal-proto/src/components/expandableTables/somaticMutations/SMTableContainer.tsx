@@ -5,7 +5,7 @@ import { useMeasure } from "react-use";
 import { Button, Loader } from "@mantine/core";
 import PageStepper from "../shared/PageStepper";
 import PageSize from "../shared/PageSize";
-import { TableControls } from "../shared/TableControls";
+import { TableControlsMantine as TableControls } from "../shared/TableControlsMantine";
 import TablePlaceholder from "../shared/TablePlaceholder";
 import { SomaticMutations, DEFAULT_SMTABLE_ORDER } from "./types";
 import { SelectedReducer, SelectReducerAction } from "../shared/types";
@@ -117,7 +117,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             <TableControls
               total={smTotal}
               numSelected={Object.keys(selectedMutations).length ?? 0}
-              label={`Mutation`}
+              label={`Somatic Mutations`}
               options={[
                 { label: "Save/Edit Gene Set", value: "placeholder" },
                 { label: "Save as new gene set", value: "save" },
@@ -126,7 +126,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               ]}
               additionalControls={
                 <div className="flex gap-2">
-                  <ButtonTooltip label="Export All Except #Genes and #Mutations">
+                  <ButtonTooltip label="Export All Except #Genes">
                     <Button
                       className={
                         "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
@@ -222,7 +222,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 <span className={`font-bold`}>{` ${smTotal.toLocaleString(
                   "en-US",
                 )} `}</span>
-                mutations
+                somatic mutations
               </span>
             </div>
             <div className={`m-auto mr-0`}>

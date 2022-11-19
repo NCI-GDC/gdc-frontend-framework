@@ -103,12 +103,12 @@ export const ColumnOption: FC<ColumnProps> = ({
           className={`${columnStyles} opacity-${o}`}
           data-handler-id={handlerId}
         >
-          <div className={`flex flex-row text-xs justify-between`}>
+          <div className={`flex flex-row text-xs items-center justify-between`}>
             <div className={`flex flex-row`}>
               <div className={`my-auto mr-2 ml-0 text-gray-500`}>
                 <MdDragIndicator size={"16px"} />
               </div>
-              {formatColumnName(columnName)}
+              {columnName}
             </div>
             <SwitchSpring
               margin={`mt-1 ml-0.5`}

@@ -13,10 +13,10 @@ export const ProteinChange = ({
 }): JSX.Element => {
   const { symbol = "", aaChange = "" } = proteinChange;
   return (
-    <div className={`flex flex-row w-max justify-start text-xs`}>
+    <div className={`flex flex-row w-max justify-start font-content text-xs`}>
       <span className={`mx-0.5`}>{symbol}</span>
       <Tooltip label={aaChange}>
-        <span className={`mx-0.5`}>
+        <span className="mx-0.5 ">
           {truncate(aaChange, {
             length: 12,
           })}
@@ -33,11 +33,11 @@ export const Consequences = ({
 }): JSX.Element => {
   return (
     <>
-      <div className={`flex flex-row w-max m-auto text-xs`}>
-        <span className={`mx-0.5 font-bold`}>
-          {humanify({ term: consequences?.split("_")[0] }) ?? ``}
-        </span>
-      </div>
+      <span className={`mx-0.5 font-content text-xs`}>
+        {humanify({
+          term: consequences?.replace("_variant", "").split("_")[0],
+        }) ?? ``}
+      </span>
     </>
   );
 };
@@ -45,34 +45,22 @@ export const Consequences = ({
 export const Impacts = ({ impact }: { impact: Impact }): JSX.Element => {
   const { polyphenImpact, polyphenScore, siftImpact, siftScore, vepImpact } =
     impact;
-  const twIconStyles = `w-7 h-7 text-white font-bold border rounded-md text-center`;
-  const blankIconStyles = `w-7 h-7 text-black font-bold text-center`;
+  const twIconStyles = `w-7 h-6 text-white font-bold border rounded-md flex justify-center items-center`;
+  const blankIconStyles = `w-7 h-6 text-black font-bold flex justify-center items-center`;
   return (
-    <div
-      className={`flex flex-row m-auto w-max h-max items-center content-center`}
-    >
+    <>
       <Tooltip label={`VEP Impact: ${vepImpact}`} disabled={!vepImpact.length}>
         <div className={`text-xs`}>
           {vepImpact === "HIGH" ? (
-            <div className={`${twIconStyles} bg-red-500`}>
-              <div className={`mt-1`}>{"HI"}</div>
-            </div>
+            <div className={`${twIconStyles} bg-red-500`}>HI</div>
           ) : vepImpact === "MODERATE" ? (
-            <div className={`${twIconStyles} bg-gray-500`}>
-              <div className={`mt-1`}>{"MO"}</div>
-            </div>
+            <div className={`${twIconStyles} bg-gray-500`}>MO</div>
           ) : vepImpact === "LOW" ? (
-            <div className={`${twIconStyles} bg-green-500`}>
-              <div className={`mt-1`}>{"LOW"}</div>
-            </div>
+            <div className={`${twIconStyles} bg-green-500`}>LO</div>
           ) : vepImpact === "MODIFIER" ? (
-            <div className={`${twIconStyles} bg-gray-500`}>
-              <div className={`mt-1`}>{"MO"}</div>
-            </div>
+            <div className={`${twIconStyles} bg-gray-500`}>MO</div>
           ) : (
-            <div className={`${blankIconStyles} bg-inherit`}>
-              <div className={`mt-1`}>{"_"}</div>
-            </div>
+            <div className={`${blankIconStyles} bg-inherit`}>--</div>
           )}
         </div>
       </Tooltip>
@@ -80,27 +68,17 @@ export const Impacts = ({ impact }: { impact: Impact }): JSX.Element => {
         label={`SIFT Impact: ${siftImpact} / SIFT Score: ${siftScore}`}
         disabled={!siftImpact.length || siftScore === null}
       >
-        <div className={`text-xs`}>
+        <div className={`text-xs mx-0.5 align-middle`}>
           {siftImpact === "deleterious" ? (
-            <div className={`${twIconStyles} bg-red-500`}>
-              <div className={`mt-1`}>{"DH"}</div>
-            </div>
+            <div className={`${twIconStyles} bg-red-500`}>DH</div>
           ) : siftImpact === "deleterious_low_confidence" ? (
-            <div className={`${twIconStyles} bg-gray-500`}>
-              <div className={`mt-1`}>{"DL"}</div>
-            </div>
+            <div className={`${twIconStyles} bg-gray-500`}>DL</div>
           ) : siftImpact === "tolerated" ? (
-            <div className={`${twIconStyles} bg-gray-500`}>
-              <div className={`mt-1`}>{"TO"}</div>
-            </div>
+            <div className={`${twIconStyles} bg-gray-500`}>TO</div>
           ) : siftImpact === "tolerated_low_confidence" ? (
-            <div className={`${twIconStyles} bg-green-500`}>
-              <div className={`mt-1`}>{"TL"}</div>
-            </div>
+            <div className={`${twIconStyles} bg-green-500`}>TL</div>
           ) : (
-            <div className={`${blankIconStyles} bg-inherit`}>
-              <div className={`mb-2`}>{"_"}</div>
-            </div>
+            <div className={`${blankIconStyles} bg-inherit`}>--</div>
           )}
         </div>
       </Tooltip>
@@ -110,28 +88,18 @@ export const Impacts = ({ impact }: { impact: Impact }): JSX.Element => {
       >
         <div className={`text-xs`}>
           {polyphenImpact === "benign" ? (
-            <div className={`${twIconStyles} bg-green-500`}>
-              <div className={`mt-1`}>{"BE"}</div>
-            </div>
+            <div className={`${twIconStyles} bg-green-500`}>BE</div>
           ) : polyphenImpact === "probably_damaging" ? (
-            <div className={`${twIconStyles} bg-red-500`}>
-              <div className={`mt-1`}>{"PR"}</div>
-            </div>
+            <div className={`${twIconStyles} bg-red-500`}>PR</div>
           ) : polyphenImpact === "possibly_damaging" ? (
-            <div className={`${twIconStyles} bg-gray-500`}>
-              <div className={`mt-1`}>{"PO"}</div>
-            </div>
+            <div className={`${twIconStyles} bg-gray-500`}>PO</div>
           ) : polyphenImpact === "unknown" ? (
-            <div className={`${twIconStyles} bg-gray-500`}>
-              <div className={`mt-1`}>{"UN"}</div>
-            </div>
+            <div className={`${twIconStyles} bg-gray-500`}>UN</div>
           ) : (
-            <div className={`${blankIconStyles} bg-inherit`}>
-              <div className={`mb-2`}>{"_"}</div>
-            </div>
+            <div className={`${blankIconStyles} bg-inherit`}>--</div>
           )}
         </div>
       </Tooltip>
-    </div>
+    </>
   );
 };

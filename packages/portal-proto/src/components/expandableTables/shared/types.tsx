@@ -7,7 +7,6 @@ export interface Column {
   visible: boolean;
   columnName: string;
   id: string;
-  width?: number | string;
 }
 
 export type TableType = SomaticMutations | Genes;

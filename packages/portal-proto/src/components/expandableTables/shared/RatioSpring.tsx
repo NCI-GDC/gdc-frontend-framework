@@ -52,7 +52,7 @@ const RatioSpring: React.FC<RatioSpringProps> = ({
                 {denominator.toLocaleString("en-US")}
               </div>
               {orientation === "horizontal" && (
-                <div className={`ml-1`}>({(n / d).toFixed(2)}%)</div>
+                <div className={`ml-1`}>({((n * 100) / d).toFixed(2)}%)</div>
               )}
             </div>
             {orientation === "vertical" && (

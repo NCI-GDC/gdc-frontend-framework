@@ -16,6 +16,7 @@ import { TableCell, TableHeader } from "../shared/sharedTableCells";
 import { Genes, SingleGene, Gene } from "./types";
 import { SelectReducerAction } from "../shared/types";
 import { Image } from "@/components/Image";
+import { startCase } from "lodash";
 
 export const createTableColumn = (
   accessor: string,
@@ -37,10 +38,16 @@ export const createTableColumn = (
         columns: [
           {
             accessorKey: accessor,
-            header: () => <TableHeader title={accessor} tooltip={""} />,
+            header: () => (
+              <TableHeader
+                title={startCase(accessor)}
+                tooltip={""}
+                className="mx-3"
+              />
+            ),
             cell: ({ row }) => {
               return (
-                <>
+                <div className="mr-2">
                   {/* todo: make select/toggle columns fixed smaller width */}
                   {row.getCanExpand() && (
                     <CheckboxSpring
@@ -50,7 +57,7 @@ export const createTableColumn = (
                       multi={false}
                     />
                   )}
-                </>
+                </div>
               );
             },
           },
@@ -63,7 +70,13 @@ export const createTableColumn = (
         columns: [
           {
             accessorKey: accessor,
-            header: () => <TableHeader title={accessor} tooltip={""} />,
+            header: () => (
+              <TableHeader
+                title={startCase(accessor)}
+                tooltip={""}
+                className="mx-3"
+              />
+            ),
             cell: ({ row }) => {
               return (
                 <>
@@ -96,7 +109,13 @@ export const createTableColumn = (
         columns: [
           {
             accessorKey: accessor,
-            header: () => <TableHeader title={accessor} tooltip={""} />,
+            header: () => (
+              <TableHeader
+                title={startCase(accessor)}
+                tooltip={""}
+                className="mx-3"
+              />
+            ),
             cell: ({ row }) => {
               return (
                 <>
@@ -124,13 +143,12 @@ export const createTableColumn = (
         columns: [
           {
             accessorKey: accessor,
-            header: () => <TableHeader title={accessor} tooltip={""} />,
+            header: () => (
+              <TableHeader title={startCase(accessor)} tooltip={""} />
+            ),
             cell: ({ row }) => {
               return (
-                <animated.div
-                  style={partitionWidth}
-                  className={`w-max mx-auto`}
-                >
+                <div className={`w-max mx-auto`}>
                   {row.getCanExpand() && (
                     <Tooltip label={"Cancer Gene Census"}>
                       <div className={`block m-auto w-max`}>
@@ -138,7 +156,7 @@ export const createTableColumn = (
                       </div>
                     </Tooltip>
                   )}
-                </animated.div>
+                </div>
               );
             },
           },
@@ -153,9 +171,11 @@ export const createTableColumn = (
             accessorKey: accessor,
             header: () => (
               <TableHeader
-                title={accessor}
+                title={`# SSM Affected Cases
+               in Cohort`}
+                className="flex flex-row justify-start w-36 mr-2 "
                 tooltip={`Breakdown of Affected Cases in Cohort:
-# of Cases where Gene is mutated / # Cases tested for Simple Somatic Mutations`}
+                # Cases where Gene is mutated / # Cases tested for Simple Somatic Mutations`}
               />
             ),
             cell: ({ row }) => {
@@ -163,20 +183,15 @@ export const createTableColumn = (
                 "SSMSAffectedCasesInCohort"
               ] ?? { numerator: 0, denominator: 1 };
               return (
-                <animated.div
-                  style={partitionWidth}
-                  className={`content-center`}
-                >
-                  <div className={`flex flex-col`}>
-                    {row.getCanExpand() && (
-                      <RatioSpring
-                        index={0}
-                        item={{ numerator, denominator }}
-                        orientation="horizontal"
-                      />
-                    )}
-                  </div>
-                </animated.div>
+                <div className={`flex flex-row justify-start`}>
+                  {row.getCanExpand() && (
+                    <RatioSpring
+                      index={0}
+                      item={{ numerator, denominator }}
+                      orientation="horizontal"
+                    />
+                  )}
+                </div>
               );
             },
           },
@@ -191,8 +206,10 @@ export const createTableColumn = (
             accessorKey: accessor,
             header: () => (
               <TableHeader
-                title={accessor}
-                tooltip={`# of Cases where Gene contains Simple Somatic Mutations / # Cases tested for Simple Somatic Mutations portal wide.
+                title={`# SSM Affected Cases
+                 Across the GDC`}
+                className="flex flex-row justify-start mx-4 w-36"
+                tooltip={`# Cases where Gene contains Simple Somatic Mutations / # Cases tested for Simple Somatic Mutations portal wide.
                 Expand to see breakdown by project`}
               />
             ),
@@ -201,10 +218,7 @@ export const createTableColumn = (
                 "SSMSAffectedCasesAcrossTheGDC"
               ] ?? { numerator: 0, denominator: 1 };
               return (
-                <animated.div
-                  style={partitionWidth}
-                  className={`content-center`}
-                >
+                <div className="flex flex-row justify-between flex-nowrap items-center">
                   {row.getCanExpand() && (
                     <RatioSpring
                       index={0}
@@ -213,7 +227,7 @@ export const createTableColumn = (
                     />
                   )}
                   {row.getCanExpand() && (
-                    <div className={`text-center content-center`}>
+                    <div className="text-center content-center mr-6">
                       <button
                         aria-controls={`expandedSubrow`}
                         aria-expanded={row.getCanExpand() ? "true" : "false"}
@@ -234,7 +248,7 @@ export const createTableColumn = (
                       </button>
                     </div>
                   )}
-                </animated.div>
+                </div>
               );
             },
           },
@@ -249,9 +263,10 @@ export const createTableColumn = (
             accessorKey: accessor,
             header: () => (
               <TableHeader
-                title={accessor}
+                title={`# ${startCase(accessor)}`}
+                className="flex flex-row justify-start mr-8"
                 tooltip={
-                  "# of Cases where CNV gain events are observed in Gene / # of Cases tested for Copy Number Alteration in Gene"
+                  "# Cases where CNV gain events are observed in Gene / # Cases tested for Copy Number Alterations in Gene"
                 }
               />
             ),
@@ -284,9 +299,10 @@ export const createTableColumn = (
             accessorKey: accessor,
             header: () => (
               <TableHeader
-                title={accessor}
+                title={`# ${startCase(accessor)}`}
+                className="flex flex-row justify-start mr-2"
                 tooltip={
-                  "# of Cases where CNV loss events are observed in Gene / # of Cases tested for Copy Number Alteration in Gene"
+                  "# Cases where CNV loss events are observed in Gene / # Cases tested for Copy Number Alterations in Gene"
                 }
               />
             ),
@@ -317,7 +333,9 @@ export const createTableColumn = (
         columns: [
           {
             accessorKey: accessor,
-            header: () => <TableHeader title={accessor} tooltip={""} />,
+            header: () => (
+              <TableHeader title={startCase(accessor)} tooltip={""} />
+            ),
             cell: ({ row }) => {
               return (
                 <animated.div style={partitionWidth}>
@@ -350,17 +368,70 @@ export const createTableColumn = (
             accessorKey: accessor,
             header: () => (
               <TableHeader
-                title={accessor}
+                title="# Mutations"
                 tooltip={
                   "# Unique Simple Somatic Mutations in the Gene in Cohort"
                 }
+                className="w-18 mx-4"
               />
             ),
             cell: ({ row }) => {
               return (
-                <animated.div className={`text-xs`} style={partitionWidth}>
+                <div className="text-center text-xs">
                   {row?.original["mutations"]?.toLocaleString("en-US") ?? 0}
-                </animated.div>
+                </div>
+              );
+            },
+          },
+        ],
+      };
+    case "symbol":
+      return {
+        header: " ",
+        footer: (props) => props.column.id,
+        columns: [
+          {
+            accessorKey: accessor,
+            header: () => (
+              <TableHeader
+                title="Symbol"
+                tooltip=""
+                className="flex flex-row justify-start w-14 mr-2"
+              />
+            ),
+            cell: ({ row }) => {
+              return (
+                <div className={`text-xs`}>
+                  {row.original[`${accessor}`]
+                    ? row.original[`${accessor}`]
+                    : ""}
+                </div>
+              );
+            },
+          },
+        ],
+      };
+    case "name":
+      return {
+        header: " ",
+        footer: (props) => props.column.id,
+        columns: [
+          {
+            accessorKey: accessor,
+            header: () => (
+              <TableHeader
+                title="Name"
+                tooltip=""
+                className="flex flex-row justify-start"
+              />
+            ),
+            cell: ({ row }) => {
+              return (
+                <div className={`text-xs`}>
+                  {row.original[`${accessor}`]
+                    ? row.original[`${accessor}`]
+                    : ""}
+                </div>
               );
             },
           },
@@ -373,17 +444,23 @@ export const createTableColumn = (
         columns: [
           {
             accessorKey: accessor,
-            header: () => <TableHeader title={accessor} tooltip={""} />,
+            header: () => (
+              <TableHeader
+                title={startCase(accessor)}
+                tooltip={""}
+                className="w-fit"
+              />
+            ),
             cell: ({ row }) => {
               return (
-                <animated.div style={partitionWidth}>
+                <div className="flex flex-row justify-start">
                   <TableCell
                     row={row}
                     accessor={accessor}
                     anchor={["symbol"].includes(accessor)}
                     tooltip={""}
                   />
-                </animated.div>
+                </div>
               );
             },
           },

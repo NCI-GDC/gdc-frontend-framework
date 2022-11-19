@@ -13,6 +13,7 @@ import {
   TablePageOffsetProps,
 } from "../gdcapi/gdcgraphql";
 import { selectGenomicAndCohortGqlFilters } from "./genomicFilters";
+import { buildCohortGqlOperator, selectCurrentCohortFilters } from "../cohort";
 
 const SSMSTableGraphQLQuery = `query SsmsTable_relayQuery(
   $ssmTested: FiltersArgument
@@ -136,8 +137,13 @@ export const fetchSsmsTable = createAsyncThunk<
     { pageSize, offset }: TablePageOffsetProps,
     thunkAPI,
   ): Promise<GraphQLApiResponse> => {
+    const cohortFilters = buildCohortGqlOperator(
+      selectCurrentCohortFilters(thunkAPI.getState()),
+    );
+    const cohortFiltersContent = cohortFilters?.content
+      ? Object(cohortFilters?.content)
+      : [];
     const filters = selectGenomicAndCohortGqlFilters(thunkAPI.getState());
-    const filterContents = filters?.content ? Object(filters?.content) : [];
 
     const graphQlFilters = {
       ssmTested: {
@@ -163,7 +169,7 @@ export const fetchSsmsTable = createAsyncThunk<
               op: "in",
             },
           ],
-          ...filterContents,
+          ...cohortFiltersContent,
         ],
         op: "and",
       },
