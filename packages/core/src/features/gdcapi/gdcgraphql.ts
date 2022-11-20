@@ -26,6 +26,7 @@ export interface TablePageOffsetProps {
   readonly pageSize?: number;
   readonly offset?: number;
   readonly sorts?: Array<SortOption>;
+  readonly searchTerm?: string;
 }
 
 const buildGraphQLFetchError = async (

@@ -13,9 +13,17 @@ import {
   graphqlAPI,
   TablePageOffsetProps,
 } from "../gdcapi/gdcgraphql";
-import { buildCohortGqlOperator } from "../cohort";
-import { selectGenomicAndCohortGqlFilters } from "./genomicFilters";
+import { buildCohortGqlOperator, filterSetToOperation } from "../cohort";
+import {
+  selectGenomicAndCohortFilters,
+  selectGenomicAndCohortGqlFilters,
+} from "./genomicFilters";
 import { selectCurrentCohortFilters } from "../cohort";
+import {
+  convertFilterToGqlFilter,
+  Intersection,
+  Union,
+} from "../gdcapi/filters";
 
 const GenesTableGraphQLQuery = `
           query GenesTable_relayQuery(
@@ -120,6 +128,44 @@ export interface GDCGenesTable {
   readonly mutationCounts?: Record<string, string>;
 }
 
+export const buildGeneTableSearchFilters = (
+  term?: string,
+): Union | undefined => {
+  if (term !== undefined) {
+    return {
+      operator: "or",
+      operands: [
+        {
+          operator: "includes",
+          field: "genes.cytoband",
+          operands: [`*${term}*`],
+        },
+        {
+          operator: "includes",
+          field: "genes.gene_id",
+          operands: [`*${term}*`],
+        },
+        {
+          operator: "includes",
+          field: "genes.symbol",
+          operands: [`*${term}*`],
+        },
+        { operator: "includes", field: "genes.name", operands: [`*${term}*`] },
+      ],
+    };
+  }
+  return undefined;
+};
+
+export const appendFilterToOperation = (
+  filter: Intersection | Union | undefined,
+  addition: Intersection | Union | undefined,
+): Intersection | Union => {
+  if (filter === undefined) return { operator: "and", operands: [] };
+  if (addition === undefined) return filter;
+  return { ...filter, operands: [...filter.operands, addition] };
+};
+
 export const fetchGenesTable = createAsyncThunk<
   GraphQLApiResponse,
   TablePageOffsetProps,
@@ -127,7 +173,8 @@ export const fetchGenesTable = createAsyncThunk<
 >(
   "genes/genesTable",
   async (
-    { pageSize, offset }: TablePageOffsetProps,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    { pageSize, offset, searchTerm }: TablePageOffsetProps,
     thunkAPI,
   ): Promise<GraphQLApiResponse> => {
     const cohortFilters = buildCohortGqlOperator(
@@ -136,10 +183,24 @@ export const fetchGenesTable = createAsyncThunk<
     const cohortFiltersContent = cohortFilters?.content
       ? Object(cohortFilters?.content)
       : [];
-    const filters = selectGenomicAndCohortGqlFilters(thunkAPI.getState());
+    const geneAndCohortFilters = selectGenomicAndCohortFilters(
+      thunkAPI.getState(),
+    );
+    const filters = buildCohortGqlOperator(geneAndCohortFilters);
     const filterContents = filters?.content ? Object(filters?.content) : [];
+    const searchFilters = buildGeneTableSearchFilters(searchTerm);
+    const tableFilters = convertFilterToGqlFilter(
+      appendFilterToOperation(
+        filterSetToOperation(geneAndCohortFilters) as
+          | Union
+          | Intersection
+          | undefined,
+        searchFilters,
+      ),
+    );
+
     const graphQlFilters = {
-      genesTable_filters: filters ? filters : {},
+      genesTable_filters: tableFilters ? tableFilters : {},
       genesTable_size: pageSize,
       genesTable_offset: offset,
       score: "case.project.project_id",

@@ -46,8 +46,8 @@ export const TableControlsMantine: React.FC<TableControlsProps> = ({
             {numSelected === 0
               ? `${total} ${label}s`
               : numSelected === 1
-              ? "1 ${Mutation"
-              : `${numSelected} Mutations`}
+              ? `1 ${label}`
+              : `${numSelected} ${label}s`}
           </Menu.Label>
           {options.map(({ value, label }: ControlOption) => {
             if (value !== "placeholder") {
@@ -60,7 +60,8 @@ export const TableControlsMantine: React.FC<TableControlsProps> = ({
       <div>
         {total !== 0 && (
           <Text className="font-heading font-bold text-md">
-            TOTAL OF {total.toLocaleString("en-US")} {label.toUpperCase()}
+            TOTAL OF {total.toLocaleString("en-US")}{" "}
+            {total == 1 ? label.toUpperCase() : `${label.toUpperCase()}S`}
           </Text>
         )}
       </div>

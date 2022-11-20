@@ -95,6 +95,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const { data } = useGenesTable({
     pageSize: pageSize,
     offset: page * pageSize,
+    searchTerm: searchTerm.length > 0 ? searchTerm : undefined,
   });
 
   useEffect(() => {

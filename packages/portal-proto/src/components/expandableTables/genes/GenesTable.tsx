@@ -5,7 +5,6 @@ import { ExpTable } from "../shared/ExpTable";
 import { getGene, createTableColumn } from "./genesTableUtils";
 import { Genes } from "./types";
 import { useSpring } from "react-spring";
-import { searchContains } from "../shared/sharedTableUtils";
 import { Subrow } from "../shared/Subrow";
 import { useGetGeneTableSubrowQuery } from "@gff/core";
 
@@ -134,19 +133,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   return (
     <>
       <ExpTable
-        data={
-          searchTerm.length > 0
-            ? transformResponse.filter((tr) => {
-                if (
-                  ["geneID", "symbol", "name", "cytoband"].some((field) =>
-                    searchContains(tr, field, searchTerm),
-                  )
-                ) {
-                  return tr;
-                }
-              })
-            : transformResponse
-        }
+        data={transformResponse}
         columns={columns}
         expanded={expanded}
         handleExpandedProxy={handleExpandedProxy}
