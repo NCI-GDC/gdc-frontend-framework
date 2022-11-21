@@ -41,8 +41,8 @@ export interface FilterSet {
  * Return true if a FilterSet's root value is an empty object
  * @param fs - FilterSet to test
  */
-export const isFilterSetRootEmpty = (fs?: FilterSet): boolean =>
-  isEqual({}, fs?.root);
+export const isFilterSetRootEmpty = (fs: FilterSet): boolean =>
+  isEqual({}, fs.root);
 
 /**
  *  Operand types for filter operations
