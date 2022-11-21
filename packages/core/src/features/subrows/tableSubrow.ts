@@ -14,11 +14,13 @@ interface SubrowResponse {
   };
 }
 
-export interface TableSubrowData {
-  project?: string;
-  numerator?: number;
-  denominator?: number;
+export interface TableSubrowItem {
+  project: string;
+  numerator: number;
+  denominator: number;
 }
+
+export type TableSubrowData = Partial<TableSubrowItem>;
 
 export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
   endpoints: (builder) => ({

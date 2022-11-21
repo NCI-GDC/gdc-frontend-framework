@@ -199,8 +199,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         </div>
         {visibleColumns.length ? (
           <div className={`flex flex-row ml-2 m-auto w-9/12 mb-2`}>
-            <div className="m-auto ml-0">
-              <span className="my-auto mx-1 text-xs">Show</span>
+            <div className="flex flex-row flex-nowrap items-center m-auto ml-0">
+              <span className=" mx-1 text-xs">Show</span>
               <PageSize pageSize={pageSize} handlePageSize={setPageSize} />
               <span className="my-auto mx-1 text-xs">Entries</span>
             </div>

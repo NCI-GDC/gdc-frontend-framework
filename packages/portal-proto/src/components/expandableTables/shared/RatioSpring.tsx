@@ -31,7 +31,7 @@ const RatioSpring: React.FC<RatioSpringProps> = ({
   ];
   return (
     <>
-      <animated.ul style={staggeredSpring} className={`p-1 text-xs my-1`}>
+      <animated.ul style={staggeredSpring} className={`p-1 text-xs`}>
         {numerator === 0 ? (
           orientation === "vertical" && <div className={`w-max m-auto`}>0</div>
         ) : (

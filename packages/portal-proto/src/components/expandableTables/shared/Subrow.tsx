@@ -31,7 +31,7 @@ export interface SubrowProps {
           }
       >,
       never,
-      TableSubrowData,
+      TableSubrowData[],
       "graphql"
     >
   >;

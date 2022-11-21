@@ -35,7 +35,7 @@ export const TablePlaceholder: React.FC<TablePlaceholderProps> = ({
     >
       <div className={`mr-0 m-auto`}>
         <table>
-          <thead className={`border border-2 shadow-md w-10/12`}></thead>
+          <thead className={`border border-2 shadow-md w-[90%`}></thead>
           <tbody>
             {Array.from({ length: numOfRows }, (_, i) => i).map((n, nIdx) => {
               return (
