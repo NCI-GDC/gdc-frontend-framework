@@ -422,7 +422,7 @@ const slice = createSlice({
       .addCase(createCaseSet.fulfilled, (state, action) => {
         const response = action.payload;
         const cohort = state.entities[state.currentCohort] as Cohort;
-        if (cohort.caseSet?.pendingFilters === undefined) {
+        if (cohort?.caseSet?.pendingFilters === undefined) {
           console.error(
             "trying to create a case set with no pending filters",
             cohort.id,
@@ -433,7 +433,7 @@ const slice = createSlice({
           cohortsAdapter.updateOne(state, {
             id: state.currentCohort,
             changes: {
-              filters: cohort.caseSet?.pendingFilters,
+              filters: cohort?.caseSet?.pendingFilters,
               caseSet: {
                 caseSetId: { mode: "and", root: {} },
                 status: "rejected",
@@ -462,7 +462,7 @@ const slice = createSlice({
         cohortsAdapter.updateOne(state, {
           id: state.currentCohort,
           changes: {
-            filters: cohort.caseSet?.pendingFilters,
+            filters: cohort?.caseSet?.pendingFilters,
             caseSet: {
               caseSetId: caseSetFilter,
               status: "fulfilled",
@@ -477,8 +477,8 @@ const slice = createSlice({
           id: state.currentCohort,
           changes: {
             caseSet: {
-              pendingFilters: cohort.caseSet?.pendingFilters,
-              caseSetId: cohort.caseSet.caseSetId,
+              pendingFilters: cohort?.caseSet?.pendingFilters,
+              caseSetId: cohort?.caseSet.caseSetId,
               status: "pending",
             },
           },
@@ -491,7 +491,7 @@ const slice = createSlice({
           changes: {
             caseSet: {
               caseSetId: { mode: "and", root: {} },
-              pendingFilters: cohort.caseSet?.pendingFilters,
+              pendingFilters: cohort?.caseSet?.pendingFilters,
               status: "rejected",
             },
           },
@@ -672,8 +672,8 @@ export const selectCurrentCohortFilterOrCaseSet = (
   );
   if (cohort === undefined) return { mode: "and", root: {} };
 
-  if (!isFilterSetRootEmpty(cohort.caseSet.caseSetId)) {
-    return cohort.caseSet.caseSetId;
+  if (!isFilterSetRootEmpty(cohort?.caseSet.caseSetId)) {
+    return cohort?.caseSet.caseSetId;
   } else {
     return cohort.filters;
   }
@@ -716,7 +716,7 @@ export const selectCurrentCohortCaseSet = (
     state,
     state.cohort.availableCohorts.currentCohort,
   );
-  if (cohort === undefined || cohort.caseSet === undefined)
+  if (cohort === undefined || cohort?.caseSet === undefined)
     return {
       data: { mode: "and", root: {} },
       status: "uninitialized",

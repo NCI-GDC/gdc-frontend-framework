@@ -66,7 +66,6 @@ const ContextBar: React.FC = () => {
         caseSet: {
           caseSetId: buildGqlOperationToFilterSet(data.filters),
           status: "fulfilled" as DataStatus,
-          pendingFilters: undefined,
         },
       }));
       coreDispatch(setCohortList(updatedList));
