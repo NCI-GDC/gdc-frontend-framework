@@ -7,6 +7,7 @@ import {
   useProjects,
   buildCohortGqlOperator,
   ProjectDefaults,
+  useCoreDispatch,
 } from "@gff/core";
 import { Row } from "react-table";
 import { useAppSelector } from "@/features/projectsCenter/appApi";
@@ -18,6 +19,7 @@ import {
   SelectAllProjectsButton,
 } from "@/features/projectsCenter/SelectProjectButton";
 import ProjectsCohortButton from "./ProjectsCohortButton";
+import download from "src/utils/download";
 
 const extractToArray = (
   data: ReadonlyArray<Record<string, number | string>>,
@@ -34,6 +36,7 @@ interface SelectColumnProps {
 }
 
 const ProjectsTable: React.FC = () => {
+  const coreDispatch = useCoreDispatch();
   const [pageSize, setPageSize] = useState(20);
   const [activePage, setActivePage] = useState(1);
 
@@ -200,6 +203,39 @@ const ProjectsTable: React.FC = () => {
     }
   };
 
+  const handleDownloadJSON = async () => {
+    await download({
+      endpoint: "projects",
+      method: "POST",
+      options: {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        method: "POST",
+      },
+      params: {
+        filters: buildCohortGqlOperator(projectFilters) ?? {},
+        size: 10000,
+        attachment: true,
+        format: "JSON",
+        pretty: true,
+        fields: [
+          "project_id",
+          "disease_type",
+          "primary_site",
+          "program.name",
+          "summary.case_count",
+          "summary.data_categories.data_category",
+          "summary.data_categories.case_count",
+          "summary.experimental_strategies.experimental_strategy",
+          "summary.experimental_strategies.case_count",
+          "summary.file_count",
+        ].join(","),
+      },
+      dispatch: coreDispatch,
+    });
+  };
+
   //update everything that uses table component
   return (
     <VerticalTable
@@ -207,7 +243,7 @@ const ProjectsTable: React.FC = () => {
       additionalControls={
         <div className="flex gap-2">
           <ProjectsCohortButton />
-          <FunctionButton>JSON</FunctionButton>
+          <FunctionButton onClick={handleDownloadJSON}>JSON</FunctionButton>
           <FunctionButton>TSV</FunctionButton>
         </div>
       }
