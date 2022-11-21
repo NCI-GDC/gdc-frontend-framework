@@ -3,7 +3,6 @@ import { SomaticMutationsTableProps, SomaticMutations } from "./types";
 import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { ExpTable } from "../shared/ExpTable";
 import { getMutation, createTableColumn } from "./smTableUtils";
-import { searchContains } from "../shared/sharedTableUtils";
 import { useGetSomaticMutationTableSubrowQuery } from "@gff/core";
 import { Subrow } from "../shared/Subrow";
 import { Column } from "@/components/expandableTables/shared/types";
@@ -85,14 +84,13 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
 
   const columns = useMemo<ColumnDef<SomaticMutations>[]>(
     () => {
-      return visibleColumns.map(({ id: accessor, width }: Column) => {
+      return visibleColumns.map(({ id: accessor }: Column) => {
         return createTableColumn(
           accessor,
           selectedMutations,
           setSelectedMutations,
           handleSurvivalPlotToggled,
           setMutationID,
-          width,
         );
       });
     }, // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -114,23 +112,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   return (
     <>
       <ExpTable
-        data={
-          searchTerm.length > 0
-            ? transformResponse.filter((tr) => {
-                if (
-                  [
-                    "mutationID",
-                    "type",
-                    "DNAChange",
-                    "proteinChange.symbol",
-                    "proteinChange.aaChange",
-                  ].some((field) => searchContains(tr, field, searchTerm))
-                ) {
-                  return tr;
-                }
-              })
-            : transformResponse
-        }
+        data={transformResponse}
         columns={columns}
         expanded={expanded}
         handleExpandedProxy={handleExpandedProxy}

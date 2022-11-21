@@ -17,7 +17,7 @@ export const ProteinChange = ({
       <span className={`mx-0.5`}>{symbol}</span>
       <Tooltip label={aaChange}>
         <span className="mx-0.5 ">
-          {truncate(aaChange, {
+          {truncate(aaChange == "" ? "--" : aaChange, {
             length: 12,
           })}
         </span>

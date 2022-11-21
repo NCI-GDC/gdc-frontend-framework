@@ -12,8 +12,21 @@ import {
   graphqlAPI,
   TablePageOffsetProps,
 } from "../gdcapi/gdcgraphql";
-import { selectGenomicAndCohortGqlFilters } from "./genomicFilters";
-import { buildCohortGqlOperator, selectCurrentCohortFilters } from "../cohort";
+import {
+  selectGenomicAndCohortFilters,
+  selectGenomicAndCohortGqlFilters,
+} from "./genomicFilters";
+import {
+  buildCohortGqlOperator,
+  filterSetToOperation,
+  selectCurrentCohortFilters,
+} from "../cohort";
+import {
+  convertFilterToGqlFilter,
+  Intersection,
+  Union,
+} from "../gdcapi/filters";
+import { appendFilterToOperation } from "./utils";
 
 const SSMSTableGraphQLQuery = `query SsmsTable_relayQuery(
   $ssmTested: FiltersArgument
@@ -127,6 +140,29 @@ export interface GDCSsmsTable {
   readonly offset: number;
 }
 
+export const buildSSMSTableSearchFilters = (
+  term?: string,
+): Union | undefined => {
+  if (term !== undefined) {
+    return {
+      operator: "or",
+      operands: [
+        {
+          operator: "includes",
+          field: "ssms.genomic_dna_change",
+          operands: [`*${term}*`],
+        },
+        {
+          operator: "includes",
+          field: "ssms.consequence.transcript.gene.symbol",
+          operands: [`*${term}*`],
+        },
+      ],
+    };
+  }
+  return undefined;
+};
+
 export const fetchSsmsTable = createAsyncThunk<
   GraphQLApiResponse,
   TablePageOffsetProps,
@@ -134,7 +170,7 @@ export const fetchSsmsTable = createAsyncThunk<
 >(
   "genomic/ssmsTable",
   async (
-    { pageSize, offset }: TablePageOffsetProps,
+    { pageSize, offset, searchTerm }: TablePageOffsetProps,
     thunkAPI,
   ): Promise<GraphQLApiResponse> => {
     const cohortFilters = buildCohortGqlOperator(
@@ -143,7 +179,21 @@ export const fetchSsmsTable = createAsyncThunk<
     const cohortFiltersContent = cohortFilters?.content
       ? Object(cohortFilters?.content)
       : [];
-    const filters = selectGenomicAndCohortGqlFilters(thunkAPI.getState());
+
+    const geneAndCohortFilters = selectGenomicAndCohortFilters(
+      thunkAPI.getState(),
+    );
+
+    const searchFilters = buildSSMSTableSearchFilters(searchTerm);
+    const tableFilters = convertFilterToGqlFilter(
+      appendFilterToOperation(
+        filterSetToOperation(geneAndCohortFilters) as
+          | Union
+          | Intersection
+          | undefined,
+        searchFilters,
+      ),
+    );
 
     const graphQlFilters = {
       ssmTested: {
@@ -187,7 +237,7 @@ export const fetchSsmsTable = createAsyncThunk<
         op: "and",
       },
       ssmsTable_offset: offset,
-      ssmsTable_filters: filters ? filters : {},
+      ssmsTable_filters: tableFilters ? tableFilters : {},
       score: "occurrence.case.project.project_id",
       sort: [
         {

@@ -4,7 +4,6 @@ import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { ExpTable } from "../shared/ExpTable";
 import { getGene, createTableColumn } from "./genesTableUtils";
 import { Genes } from "./types";
-import { useSpring } from "react-spring";
 import { Subrow } from "../shared/Subrow";
 import { useGetGeneTableSubrowQuery } from "@gff/core";
 
@@ -92,15 +91,6 @@ export const GenesTable: React.FC<GenesTableProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [expandedProxy]);
 
-  const getSpringWidth = (w, vc) => {
-    return Math.floor(w / vc.length);
-  };
-
-  const partitionWidth = useSpring({
-    from: { width: 0, opacity: 0 },
-    to: { width: getSpringWidth(width, visibleColumns), opacity: 1 },
-  });
-
   // todo replace this callback w/ transformResponse inside rtk endpoint call
   const columns = useMemo<ColumnDef<Genes>[]>(() => {
     return visibleColumns
@@ -108,7 +98,6 @@ export const GenesTable: React.FC<GenesTableProps> = ({
       .map((accessor) => {
         return createTableColumn(
           accessor,
-          partitionWidth,
           selectedGenes,
           setSelectedGenes,
           handleSurvivalPlotToggled,

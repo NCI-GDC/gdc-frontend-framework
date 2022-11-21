@@ -4,12 +4,12 @@ import { DEFAULT_GTABLE_ORDER, Genes } from "./types";
 import { GenesTable } from "./GenesTable";
 import { useMeasure } from "react-use";
 import { Button, Loader } from "@mantine/core";
-import PageStepper from "../shared/PageStepper";
-import { TableControlsMantine as TableControls } from "../shared/TableControlsMantine";
+import { default as PageStepper } from "../shared/PageStepperMantine";
+import { default as TableControls } from "../shared/TableControlsMantine";
 import TablePlaceholder from "../shared/TablePlaceholder";
 import { SelectedReducer, SelectReducerAction } from "../shared/types";
 import { TableFilters } from "../shared/TableFilters";
-import PageSize from "@/components/expandableTables/shared/PageSize";
+import { default as PageSize } from "@/components/expandableTables/shared/PageSizeMantine";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 
 export const SelectedRowContext =
@@ -164,7 +164,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               cellWidth="w-24"
               rowHeight={60}
               numOfColumns={15}
-              numOfRows={10}
+              numOfRows={pageSize}
               content={<span>No columns selected</span>}
             />
           ) : status === "fulfilled" &&
@@ -192,7 +192,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               cellWidth="w-24"
               rowHeight={60}
               numOfColumns={15}
-              numOfRows={10}
+              numOfRows={pageSize}
               content={<Loader />}
             />
           )}
@@ -207,7 +207,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             <div className={`m-auto text-sm`}>
               <span>
                 Showing
-                <span className={`font-bold`}>{` ${(
+                <span className="font-bold">{` ${(
                   page * pageSize +
                   1
                 ).toLocaleString("en-US")} `}</span>

@@ -15,7 +15,7 @@ interface TableControlsProps {
   total: number;
 }
 
-export const TableControlsMantine: React.FC<TableControlsProps> = ({
+const TableControlsMantine: React.FC<TableControlsProps> = ({
   numSelected,
   label,
   options,

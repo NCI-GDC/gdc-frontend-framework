@@ -2,15 +2,10 @@ import { Dispatch, SetStateAction } from "react";
 import ToggleSpring from "../shared/ToggleSpring";
 import { Tooltip } from "@mantine/core";
 import { MdKeyboardArrowDown } from "react-icons/md";
-import { animated } from "react-spring";
 import CheckboxSpring from "../shared/CheckboxSpring";
 import SwitchSpring from "../shared/SwitchSpring";
 import RatioSpring from "../shared/RatioSpring";
-import {
-  SelectedReducer,
-  TableColumnDefinition,
-  WidthSpring,
-} from "../shared/types";
+import { SelectedReducer, TableColumnDefinition } from "../shared/types";
 import { SurvivalIcon, AnnotationsIcon } from "../shared/sharedTableUtils";
 import { TableCell, TableHeader } from "../shared/sharedTableCells";
 import { Genes, SingleGene, Gene } from "./types";
@@ -20,7 +15,6 @@ import { startCase } from "lodash";
 
 export const createTableColumn = (
   accessor: string,
-  partitionWidth: WidthSpring,
   selectedGenes: SelectedReducer<Genes>,
   setSelectedGenes: Dispatch<SelectReducerAction<Genes>>,
   handleSurvivalPlotToggled: (
@@ -42,12 +36,12 @@ export const createTableColumn = (
               <TableHeader
                 title={startCase(accessor)}
                 tooltip={""}
-                className="mx-3"
+                className="ml-1 mr-2"
               />
             ),
             cell: ({ row }) => {
               return (
-                <div className="mr-2">
+                <div className="ml-1.5 mr-2">
                   {/* todo: make select/toggle columns fixed smaller width */}
                   {row.getCanExpand() && (
                     <CheckboxSpring
@@ -272,10 +266,7 @@ export const createTableColumn = (
             ),
             cell: ({ row }) => {
               return (
-                <animated.div
-                  style={partitionWidth}
-                  className={`content-center`}
-                >
+                <div className={`content-center`}>
                   {row.getCanExpand() && (
                     <TableCell
                       row={row}
@@ -284,7 +275,7 @@ export const createTableColumn = (
                       tooltip={""}
                     />
                   )}
-                </animated.div>
+                </div>
               );
             },
           },
@@ -308,10 +299,7 @@ export const createTableColumn = (
             ),
             cell: ({ row }) => {
               return (
-                <animated.div
-                  style={partitionWidth}
-                  className={`content-center`}
-                >
+                <div className={`content-center`}>
                   {row.getCanExpand() && (
                     <TableCell
                       row={row}
@@ -320,7 +308,7 @@ export const createTableColumn = (
                       tooltip={""}
                     />
                   )}
-                </animated.div>
+                </div>
               );
             },
           },
@@ -338,7 +326,7 @@ export const createTableColumn = (
             ),
             cell: ({ row }) => {
               return (
-                <animated.div style={partitionWidth}>
+                <div>
                   {row.getCanExpand() && (
                     <div className={`flex flex-col items-center`}>
                       {row.original["cytoband"].map((cytoband, key) => {
@@ -353,7 +341,7 @@ export const createTableColumn = (
                       })}
                     </div>
                   )}
-                </animated.div>
+                </div>
               );
             },
           },
@@ -372,7 +360,7 @@ export const createTableColumn = (
                 tooltip={
                   "# Unique Simple Somatic Mutations in the Gene in Cohort"
                 }
-                className="w-18 mx-4"
+                className="w-20 mx-4 whitespace-nowrap"
               />
             ),
             cell: ({ row }) => {

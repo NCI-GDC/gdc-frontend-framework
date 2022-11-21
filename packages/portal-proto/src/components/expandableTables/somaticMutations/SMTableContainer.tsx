@@ -3,9 +3,9 @@ import { useEffect, useState, useReducer, createContext } from "react";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
 import { useMeasure } from "react-use";
 import { Button, Loader } from "@mantine/core";
-import PageStepper from "../shared/PageStepper";
-import PageSize from "../shared/PageSize";
-import { TableControlsMantine as TableControls } from "../shared/TableControlsMantine";
+import { default as PageStepper } from "../shared/PageStepperMantine";
+import { default as PageSize } from "../shared/PageSizeMantine";
+import { default as TableControls } from "../shared/TableControlsMantine";
 import TablePlaceholder from "../shared/TablePlaceholder";
 import { SomaticMutations, DEFAULT_SMTABLE_ORDER } from "./types";
 import { SelectedReducer, SelectReducerAction } from "../shared/types";
@@ -97,6 +97,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const { data } = useSsmsTable({
     pageSize: pageSize,
     offset: pageSize * page,
+    searchTerm: searchTerm.length > 0 ? searchTerm : undefined,
   });
 
   useEffect(() => {
@@ -160,17 +161,17 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             />
           </div>
         </div>
-        <div className="h-full w-11/12">
+        <div ref={ref} className="h-full w-[90%]">
           {!visibleColumns.length ? (
             <TablePlaceholder
               cellWidth={`w-[75px]`}
               rowHeight={60}
               numOfColumns={15}
-              numOfRows={10}
+              numOfRows={pageSize}
               content={<span>No columns selected</span>}
             />
           ) : status === "fulfilled" && cases && filteredCases ? (
-            <div ref={ref} className="w-11/12">
+            <div ref={ref} className="h-full w-[90%]">
               <SomaticMutationsTable
                 initialData={initialData}
                 selectedSurvivalPlot={selectedSurvivalPlot}

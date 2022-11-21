@@ -37,36 +37,3 @@ export const AnnotationsIcon = (): JSX.Element => {
     </svg>
   );
 };
-
-const getFromPath = (from, ...selectors): string[] =>
-  [...selectors].map((s) =>
-    s
-      .replace(/\[([^[\]]*)\]/g, ".$1.")
-      .split(".")
-      .filter((t) => t !== "")
-      .reduce((prev, cur) => prev && prev[cur], from),
-  );
-
-/**
- * Searches object for a searchTerm, returns true if found. The field can be an object path
- * allowing searches in child objects.
- * @param obj - object to search: Object or Array
- * @param fieldPath - field name or path in the form parent.child
- * @param searchTerm - string to search for
- */
-export const searchContains = (
-  obj: unknown,
-  fieldPath: string,
-  searchTerm: string,
-): boolean => {
-  if (Array.isArray(obj[fieldPath]))
-    return (
-      obj[fieldPath].find((x) =>
-        x.toLowerCase().includes(searchTerm.toLowerCase()),
-      ) !== undefined
-    );
-  const res = getFromPath(obj, fieldPath);
-  return (
-    res.length > 0 && res[0].toLowerCase().includes(searchTerm.toLowerCase())
-  );
-};

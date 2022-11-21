@@ -2,9 +2,9 @@ import { Survival } from "../shared/types";
 import { Column, SelectedReducer, SelectReducerAction } from "../shared/types";
 
 export const DEFAULT_SMTABLE_ORDER: Column[] = [
-  { id: "select", columnName: "Select", visible: true, width: "w-12" },
-  { id: "cohort", columnName: "cohort", visible: true, width: "w-12" },
-  { id: "survival", columnName: "Survival", visible: true, width: "w-12" },
+  { id: "select", columnName: "Select", visible: true },
+  { id: "cohort", columnName: "cohort", visible: true },
+  { id: "survival", columnName: "Survival", visible: true },
   { id: "mutationID", columnName: "Mutation ID", visible: false },
   { id: "DNAChange", columnName: "DNA Change", visible: true },
   { id: "proteinChange", columnName: "Protein Change", visible: true },
@@ -13,19 +13,16 @@ export const DEFAULT_SMTABLE_ORDER: Column[] = [
     id: "consequences",
     columnName: "Consequences",
     visible: true,
-    width: "w-32",
   },
   {
     id: "affectedCasesInCohort",
     columnName: "# Affected Cases in Cohort",
     visible: true,
-    width: "w-32",
   },
   {
     id: "affectedCasesAcrossTheGDC",
     columnName: "# Affected Cases Across the GDC",
     visible: true,
-    width: "w-32",
   },
   { id: "impact", columnName: "Impact", visible: true },
 ];

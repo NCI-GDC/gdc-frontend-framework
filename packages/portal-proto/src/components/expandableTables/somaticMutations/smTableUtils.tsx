@@ -25,7 +25,6 @@ export const createTableColumn = (
     field: string,
   ) => void,
   setMutationID: Dispatch<SetStateAction<string>>,
-  width?: string | number,
 ): TableColumnDefinition => {
   switch (accessor) {
     case "select":
@@ -43,7 +42,7 @@ export const createTableColumn = (
             ),
             cell: ({ row }) => {
               return (
-                <div className={`${width ? width : ""}`}>
+                <div>
                   {/* todo: make select/toggle columns fixed smaller width */}
                   {row.getCanExpand() && (
                     <CheckboxSpring
@@ -281,7 +280,7 @@ export const createTableColumn = (
             ),
             cell: ({ row }) => {
               return (
-                <div className={`${width ? width : ""}`}>
+                <div>
                   {row.getCanExpand() && (
                     <ProteinChange
                       proteinChange={row.original["proteinChange"]}
