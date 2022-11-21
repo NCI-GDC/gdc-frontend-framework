@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { VerticalTable } from "../shared/VerticalTable";
+import { VerticalTable, HandleChangeInput } from "../shared/VerticalTable";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import { TableInstance } from "react-table";
 import Link from "next/link";
@@ -188,12 +188,16 @@ const ProjectsTable: React.FC = () => {
     );
   }
 
-  const handlePageSizeChange = (x: string) => {
-    setPageSize(parseInt(x));
-    setActivePage(1);
-  };
-  const handlePageChange = (x: number) => {
-    setActivePage(x);
+  const handleChange = (obj: HandleChangeInput) => {
+    switch (Object.keys(obj)?.[0]) {
+      case "newPageSize":
+        setPageSize(parseInt(obj.newPageSize));
+        setActivePage(1);
+        break;
+      case "newPageNumber":
+        setActivePage(obj.newPageNumber);
+        break;
+    }
   };
 
   //update everything that uses table component
@@ -214,12 +218,11 @@ const ProjectsTable: React.FC = () => {
       selectableRow={false}
       showControls={true}
       pagination={{
-        handlePageSizeChange,
-        handlePageChange,
         ...tempPagination,
         label: "projects",
       }}
       status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
+      handleChange={handleChange}
     />
   );
 };

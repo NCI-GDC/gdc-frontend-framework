@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useGenesTable } from "@gff/core";
-import { VerticalTable } from "../shared/VerticalTable";
+import { VerticalTable, HandleChangeInput } from "../shared/VerticalTable";
 import { Box, Switch, Tooltip } from "@mantine/core";
 import { SiMicrogenetics as GeneAnnotationIcon } from "react-icons/si";
 import _ from "lodash";
@@ -175,14 +175,17 @@ const GenesTable: React.FC<GenesTableProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handlePageSizeChange = (x: string) => {
-    setOffset((activePage - 1) * parseInt(x));
-    setPageSize(parseInt(x));
-  };
-
-  const handlePageChange = (x: number) => {
-    setOffset((x - 1) * pageSize);
-    setActivePage(x);
+  const handleChange = (obj: HandleChangeInput) => {
+    switch (Object.keys(obj)?.[0]) {
+      case "newPageSize":
+        setOffset((activePage - 1) * parseInt(obj.newPageSize));
+        setPageSize(parseInt(obj.newPageSize));
+        break;
+      case "newPageNumber":
+        setOffset((obj.newPageNumber - 1) * pageSize);
+        setActivePage(obj.newPageNumber);
+        break;
+    }
   };
 
   const columnCells = useMemo(() => {
@@ -224,8 +227,6 @@ const GenesTable: React.FC<GenesTableProps> = ({
             activePage * pageSize
           } of   ${totalResults} genes`}
           pagination={{
-            handlePageSizeChange,
-            handlePageChange,
             page: activePage,
             pages: pages,
             size: pageSize,
@@ -243,6 +244,7 @@ const GenesTable: React.FC<GenesTableProps> = ({
               ? "rejected"
               : "uninitialized"
           }
+          handleChange={handleChange}
         />
       </div>
     </div>

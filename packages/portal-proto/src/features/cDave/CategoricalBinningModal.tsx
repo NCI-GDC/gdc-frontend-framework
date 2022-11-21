@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import { pickBy, mapKeys, isEqual } from "lodash";
-import { Button, Modal, TextInput } from "@mantine/core";
+import { pickBy, mapKeys, isEqual, isEmpty } from "lodash";
+import { Button, Group, Modal, Text, TextInput } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 import {
   FaPencilAlt as PencilIcon,
   FaEyeSlash as HideIcon,
   FaEye as ShowIcon,
+  FaExclamationCircle as AlertIcon,
 } from "react-icons/fa";
 import {
   MdReplay as ResetIcon,
@@ -100,6 +101,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
     Record<string, number>
   >({});
   const [editField, setEditField] = useState(undefined);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const group = () => {
     setEditField(undefined);
@@ -139,21 +141,31 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
     }
     setSelectedValues({});
     setCustomized(true);
+    setErrorMessage("");
   };
 
   const updateGroupName = (oldName: string, newName: string) => {
     setValues(mapKeys(values, (_, key) => (key === oldName ? newName : key)));
     setCustomized(true);
+    setErrorMessage("");
   };
 
   const hideValues = () => {
+    const restValues = filterOutSelected(values, selectedValues);
+
+    if (isEmpty(restValues)) {
+      setErrorMessage("At least one bin must be displayed.");
+      return;
+    }
+
+    setErrorMessage("");
     setEditField(undefined);
     setHiddenValues({
       ...hiddenValues,
       ...selectedValues,
     });
 
-    setValues(filterOutSelected(values, selectedValues));
+    setValues(restValues);
 
     setSelectedValues({});
     setCustomized(true);
@@ -192,6 +204,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
                 setValues(results);
                 setSelectedValues({});
                 setCustomized(false);
+                setErrorMessage("");
               }}
               disabled={!customized}
               aria-label="reset groups"
@@ -314,27 +327,35 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
         </ul>
       </div>
       <div className="mt-2 flex gap-2 justify-end">
-        <Button
-          onClick={() => setModalOpen(false)}
-          variant="outline"
-          color="primary.5"
-        >
-          Cancel
-        </Button>
-        <Button
-          className="bg-primary-darkest"
-          onClick={() => {
-            setEditField(undefined);
-            if (!isEqual(values, results)) {
-              updateBins(values);
-            } else {
-              updateBins(null);
-            }
-            setModalOpen(false);
-          }}
-        >
-          Save Bins
-        </Button>
+        {errorMessage && (
+          <Group className="grow" spacing={8} position="center">
+            <AlertIcon color="red" />
+            <Text color="red">{errorMessage}</Text>
+          </Group>
+        )}
+        <Group spacing={8}>
+          <Button
+            onClick={() => setModalOpen(false)}
+            variant="outline"
+            color="primary.5"
+          >
+            Cancel
+          </Button>
+          <Button
+            className="bg-primary-darkest"
+            onClick={() => {
+              setEditField(undefined);
+              if (!isEqual(values, results)) {
+                updateBins(values);
+              } else {
+                updateBins(null);
+              }
+              setModalOpen(false);
+            }}
+          >
+            Save Bins
+          </Button>
+        </Group>
       </div>
     </Modal>
   );

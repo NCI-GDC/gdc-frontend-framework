@@ -43,12 +43,12 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
     return (
       <DownloadButton
         extraParams={{
-          ids: file.fileId,
+          ids: file.file_id,
           annotations: true,
           related_files: true,
         }}
-        filename={file.fileName}
-        endpoint={`data/${file.fileId}`}
+        filename={file.file_name}
+        endpoint={`data/${file.file_id}`}
         activeText={activeText}
         inactiveText={inactiveText}
         queryParams={""}

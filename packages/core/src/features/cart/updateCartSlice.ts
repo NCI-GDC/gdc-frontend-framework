@@ -5,7 +5,13 @@ import { GdcFile } from "../files/filesSlice";
 
 export type CartFile = Pick<
   GdcFile,
-  "access" | "acl" | "fileId" | "fileSize" | "state" | "project_id" | "fileName"
+  | "access"
+  | "acl"
+  | "file_id"
+  | "file_size"
+  | "state"
+  | "project_id"
+  | "file_name"
 >;
 
 const initialState: CartFile[] = [];
@@ -19,7 +25,7 @@ const slice = createSlice({
       return state;
     },
     removeFilesFromCart: (state, action: PayloadAction<string[]>) => {
-      state = state.filter((f) => !action.payload.includes(f.fileId));
+      state = state.filter((f) => !action.payload.includes(f.file_id));
       return state;
     },
   },

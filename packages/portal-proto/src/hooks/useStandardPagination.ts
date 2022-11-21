@@ -3,7 +3,17 @@ import { PaginationOptions } from "@/features/shared/VerticalTable";
 
 const useStandardPagination = (
   fullData: Record<string, any>[],
-): PaginationOptions & { displayedData: Record<string, any>[] } => {
+): PaginationOptions & {
+  displayedData: Record<string, any>[];
+  /**
+   * callback to handle page size change
+   */
+  handlePageSizeChange: (x: string) => void;
+  /**
+   * callback to handle page change
+   */
+  handlePageChange: (x: number) => void;
+} => {
   const [pageSize, setPageSize] = useState(10);
   const [activePage, setActivePage] = useState(1);
   const [displayedData, setDisplayedData] = useState([]);

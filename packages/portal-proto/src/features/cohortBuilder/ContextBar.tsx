@@ -26,6 +26,7 @@ import {
   setCohortList,
   useGetCohortsByContextIdQuery,
   buildGqlOperationToFilterSet,
+  DataStatus,
 } from "@gff/core";
 
 import {
@@ -62,6 +63,11 @@ const ContextBar: React.FC = () => {
       const updatedList = cohortsListData.map((data) => ({
         ...data,
         filters: buildGqlOperationToFilterSet(data.filters),
+        caseSet: {
+          caseSetId: buildGqlOperationToFilterSet(data.filters),
+          status: "fulfilled" as DataStatus,
+          pendingFilters: undefined,
+        },
       }));
       coreDispatch(setCohortList(updatedList));
     } else if ((getCohortError as Error)?.status === 400) {

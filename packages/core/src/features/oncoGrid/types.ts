@@ -21,7 +21,7 @@ export interface OncoGridDonor {
   };
   readonly summary: {
     data_categories: Array<{
-      filecount: number;
+      file_count: number;
       data_category: string;
     }>;
   };

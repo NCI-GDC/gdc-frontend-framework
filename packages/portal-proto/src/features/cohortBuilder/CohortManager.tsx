@@ -31,10 +31,10 @@ import {
   useLazyGetCohortByIdQuery,
   FilterSet,
   buildGqlOperationToFilterSet,
+  buildCohortGqlOperator,
+  useAddCohortMutation,
 } from "@gff/core";
-import { buildCohortGqlOperator } from "@gff/core";
 import { useCohortFacetFilters } from "./CohortGroup";
-import { useAddCohortMutation } from "@gff/core";
 import CountButton from "./CountButton";
 import { SavingCohortModal } from "./Modals/SavingCohortModal";
 import { GenericCohortModal } from "./Modals/GenericCohortModal";
