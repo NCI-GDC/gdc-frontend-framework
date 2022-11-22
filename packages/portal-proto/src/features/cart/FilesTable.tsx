@@ -185,7 +185,7 @@ const FilesTable: React.FC<FilesTableProps> = ({
           op: "in",
           content: {
             field: "files.file_id",
-            value: cart.map((f) => f.fileId),
+            value: cart.map((f) => f.file_id),
           },
         },
         size: 10000,
@@ -226,10 +226,10 @@ const FilesTable: React.FC<FilesTableProps> = ({
         blacklist: ["remove"],
         overwrite: {
           uuid: {
-            composer: "fileId",
+            composer: "file_id",
           },
           name: {
-            composer: "fileName",
+            composer: "file_name",
           },
           cases: {
             composer: (file) => file.cases?.length.toLocaleString() || 0,
@@ -237,20 +237,11 @@ const FilesTable: React.FC<FilesTableProps> = ({
           project: {
             composer: "project_id",
           },
-          data_category: {
-            composer: "dataCategory",
-          },
-          data_format: {
-            composer: "dataFormat",
-          },
           file_size: {
-            composer: (file) => fileSize(file.fileSize),
+            composer: (file) => fileSize(file.file_size),
           },
           annotations: {
             composer: (file) => file.annotations?.length || 0,
-          },
-          data_type: {
-            composer: "dataType",
           },
           experimental_strategy: {
             composer: (file) => file.experimentalStrategy || "--",
