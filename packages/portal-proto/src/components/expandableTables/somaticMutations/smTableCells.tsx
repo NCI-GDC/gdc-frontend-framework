@@ -58,7 +58,7 @@ export const Impacts = ({ impact }: { impact: Impact }): JSX.Element => {
           ) : vepImpact === "LOW" ? (
             <div className={`${twIconStyles} bg-green-500`}>LO</div>
           ) : vepImpact === "MODIFIER" ? (
-            <div className={`${twIconStyles} bg-gray-500`}>MO</div>
+            <div className={`${twIconStyles} bg-gray-500`}>MR</div>
           ) : (
             <div className={`${blankIconStyles} bg-inherit`}>--</div>
           )}
