@@ -125,12 +125,12 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               options={[
                 { label: "Save/Edit Gene Set", value: "placeholder" },
                 { label: "Save as new gene set", value: "save" },
-                { label: "Add existing gene set", value: "add" },
+                { label: "Add to existing gene set", value: "add" },
                 { label: "Remove from existing gene set", value: "remove" },
               ]}
               additionalControls={
                 <div className="flex flex-row gap-2">
-                  <ButtonTooltip label="Export All Except #Genes and #Mutations">
+                  <ButtonTooltip label="Export All Except #Cases and #Mutations">
                     <Button
                       className={
                         "bg-white text-activeColor border border-0.5 border-activeColor text-xs"

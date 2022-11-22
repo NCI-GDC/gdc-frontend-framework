@@ -3,7 +3,7 @@ import { Column, SelectedReducer, SelectReducerAction } from "../shared/types";
 
 export const DEFAULT_SMTABLE_ORDER: Column[] = [
   { id: "select", columnName: "Select", visible: true },
-  { id: "cohort", columnName: "cohort", visible: true },
+  { id: "cohort", columnName: "Cohort", visible: true },
   { id: "survival", columnName: "Survival", visible: true },
   { id: "mutationID", columnName: "Mutation ID", visible: false },
   { id: "DNAChange", columnName: "DNA Change", visible: true },

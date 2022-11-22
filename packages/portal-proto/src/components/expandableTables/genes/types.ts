@@ -85,7 +85,7 @@ export interface GenesTableProps {
 
 export const DEFAULT_GTABLE_ORDER = [
   { id: "select", columnName: "Select", visible: true },
-  { id: "cohort", columnName: "cohort", visible: true },
+  { id: "cohort", columnName: "Cohort", visible: true },
   { id: "survival", columnName: "Survival", visible: true },
   { id: "geneID", columnName: "Gene ID", visible: false },
   { id: "symbol", columnName: "Symbol", visible: true },

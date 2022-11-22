@@ -123,16 +123,16 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             <TableControls
               total={smTotal}
               numSelected={Object.keys(selectedMutations).length ?? 0}
-              label={`Somatic Mutations`}
+              label={`Somatic Mutation`}
               options={[
-                { label: "Save/Edit Gene Set", value: "placeholder" },
-                { label: "Save as new gene set", value: "save" },
-                { label: "Add existing gene set", value: "add" },
-                { label: "Remove from existing gene set", value: "remove" },
+                { label: "Save/Edit Mutation Set", value: "placeholder" },
+                { label: "Save as new mutation set", value: "save" },
+                { label: "Add to existing mutation set", value: "add" },
+                { label: "Remove from existing mutation set", value: "remove" },
               ]}
               additionalControls={
                 <div className="flex gap-2">
-                  <ButtonTooltip label="Export All Except #Genes">
+                  <ButtonTooltip label="Export All Except #Cases">
                     <Button
                       className={
                         "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
