@@ -154,7 +154,7 @@ export const buildSSMSTableSearchFilters = (
         },
         {
           operator: "includes",
-          field: "ssms.consequence.transcript.gene.symbol",
+          field: "ssms.gene_aa_change",
           operands: [`*${term}*`],
         },
       ],

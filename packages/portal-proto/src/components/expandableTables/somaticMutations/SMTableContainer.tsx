@@ -43,6 +43,11 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const [searchTerm, setSearchTerm] = useState("");
   const [showColumnMenu, setShowColumnMenu] = useState<boolean>(false);
 
+  const handleSearch = (term: string) => {
+    setSearchTerm(term);
+    setPage(0);
+  };
+
   useEffect(() => {
     setVisibleColumns(columnListOrder.filter((col) => col.visible));
   }, [columnListOrder]);
@@ -152,7 +157,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           <div className="flex flex-row flex-nowrap mr-2">
             <TableFilters
               search={searchTerm}
-              handleSearch={setSearchTerm}
+              handleSearch={handleSearch}
               columnListOrder={columnListOrder}
               handleColumnChange={handleColumnChange}
               showColumnMenu={showColumnMenu}

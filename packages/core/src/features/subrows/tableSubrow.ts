@@ -89,7 +89,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
       }),
       transformResponse: (
         response: GraphQLApiResponse<SubrowResponse>,
-      ): TableSubrowData => {
+      ): TableSubrowData[] => {
         const { cases } = response?.data?.explore;
         const {
           numerators: {
@@ -106,7 +106,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
             denominator: dBuckets.find((d) => d.key === key)?.doc_count,
           };
         });
-        return transformedBuckets as TableSubrowData;
+        return transformedBuckets as TableSubrowData[];
       },
     }),
     getSomaticMutationTableSubrow: builder.query({
@@ -174,7 +174,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
       }),
       transformResponse: (
         response: GraphQLApiResponse<SubrowResponse>,
-      ): TableSubrowData => {
+      ): TableSubrowData[] => {
         const { cases } = response?.data?.explore;
         const {
           numerators: {
@@ -191,7 +191,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
             denominator: dBuckets.find((d) => d.key === key)?.doc_count,
           };
         });
-        return transformedBuckets as TableSubrowData;
+        return transformedBuckets as TableSubrowData[];
       },
     }),
   }),

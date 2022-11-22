@@ -8,7 +8,7 @@ import RatioSpring from "../shared/RatioSpring";
 import { SelectedReducer, TableColumnDefinition } from "../shared/types";
 import { SurvivalIcon, AnnotationsIcon } from "../shared/sharedTableUtils";
 import { TableCell, TableHeader } from "../shared/sharedTableCells";
-import { Genes, SingleGene, Gene } from "./types";
+import { Genes, SingleGene, Gene, GeneToggledHandler } from "./types";
 import { SelectReducerAction } from "../shared/types";
 import { Image } from "@/components/Image";
 import { startCase } from "lodash";
@@ -22,6 +22,7 @@ export const createTableColumn = (
     name: string,
     field: string,
   ) => void,
+  handleGeneToggled: GeneToggledHandler,
   setGeneID: Dispatch<SetStateAction<string>>,
 ): TableColumnDefinition => {
   switch (accessor) {
@@ -86,7 +87,7 @@ export const createTableColumn = (
                         />
                       }
                       selected={row.original["cohort"]}
-                      handleSwitch={undefined} // handleCohortSwitch
+                      handleSwitch={handleGeneToggled} // handleCohortSwitch
                       tooltip={""}
                     />
                   )}

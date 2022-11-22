@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
-import { GTableContainer } from "../../components/expandableTables/genes/GTableContainer";
-import { SMTableContainer } from "../../components/expandableTables/somaticMutations/SMTableContainer";
+import { GTableContainer } from "@/components/expandableTables/genes/GTableContainer";
+import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMTableContainer";
 import { Grid, Tabs, LoadingOverlay } from "@mantine/core";
 import EnumFacet from "@/features/facets/EnumFacet";
 import ToggleFacet from "@/features/facets/ToggleFacet";
@@ -140,6 +140,9 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
       setComparativeSurvival({ symbol: symbol, name: name, field: field });
     }
   };
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleGeneToggled = (_: Record<string, any>) => null;
 
   /**
    * remove comparative survival plot when tabs or filters change.
@@ -298,13 +301,14 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
             <GTableContainer
               selectedSurvivalPlot={comparativeSurvival}
               handleSurvivalPlotToggled={handleSurvivalPlotToggled}
+              handleGeneToggled={handleGeneToggled}
             />
           </div>
         </Tabs.Panel>
         <Tabs.Panel value="ssms" pt="xs">
           <div className="flex flex-row">
             <div className="flex flex-col w-screen">
-              <div className="bg-base-lightest w-2/5">
+              <div className="bg-base-max  w-2/5">
                 <LoadingOverlay
                   visible={!survivalPlotReady && !topGeneSSMSSuccess}
                 />

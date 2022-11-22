@@ -1,6 +1,6 @@
 import { useGenesTable } from "@gff/core";
 import { createContext, useEffect, useReducer, useState } from "react";
-import { DEFAULT_GTABLE_ORDER, Genes } from "./types";
+import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
 import { GenesTable } from "./GenesTable";
 import { useMeasure } from "react-use";
 import { Button, Loader } from "@mantine/core";
@@ -24,11 +24,13 @@ export interface GTableContainerProps {
     name: string,
     field: string,
   ) => void;
+  handleGeneToggled: GeneToggledHandler;
 }
 
 export const GTableContainer: React.FC<GTableContainerProps> = ({
   selectedSurvivalPlot,
   handleSurvivalPlotToggled,
+  handleGeneToggled,
 }: GTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
@@ -46,6 +48,11 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
 
   const handleColumnChange = (columnUpdate) => {
     setColumnListOrder(columnUpdate);
+  };
+
+  const handleSearch = (term: string) => {
+    setSearchTerm(term);
+    setPage(0);
   };
 
   const gReducer = (
@@ -149,7 +156,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           <div className="flex flex-row flex-nowrap mr-2">
             <TableFilters
               search={searchTerm}
-              handleSearch={setSearchTerm}
+              handleSearch={handleSearch}
               columnListOrder={columnListOrder}
               handleColumnChange={handleColumnChange}
               showColumnMenu={showColumnMenu}
@@ -176,6 +183,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 initialData={initialData}
                 selectedSurvivalPlot={selectedSurvivalPlot}
                 handleSurvivalPlotToggled={handleSurvivalPlotToggled}
+                handleGeneToggled={handleGeneToggled}
                 width={width}
                 pageSize={pageSize}
                 page={page}
