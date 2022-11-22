@@ -1,3 +1,4 @@
+import { Grid } from "@mantine/core";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { useSSMS } from "@gff/core";
@@ -182,7 +183,9 @@ export const SSMSSummary = ({ ssm_id }: { ssm_id: string }): JSX.Element => {
               </div>
             </div>
             <div>
-              <SSMPlot page={"ssms"} ssms={ssm_id} />
+              <Grid>
+                <SSMPlot page={"ssms"} ssms={ssm_id} />
+              </Grid>
               <SSMSCancerDistributionTable
                 ssms={ssm_id}
                 symbol={summaryData.dna_change}
