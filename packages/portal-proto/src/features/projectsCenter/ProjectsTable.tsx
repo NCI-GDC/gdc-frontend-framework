@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { VerticalTable, HandleChangeInput } from "../shared/VerticalTable";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
-import { TableInstance } from "react-table";
+import { Row, TableInstance } from "react-table";
 import Link from "next/link";
 import {
   useProjects,
@@ -10,7 +10,6 @@ import {
   joinFilters,
 } from "@gff/core";
 import { useAppSelector } from "@/features/projectsCenter/appApi";
-import { Row } from "react-table";
 import { selectFilters } from "@/features/projectsCenter/projectCenterFiltersSlice";
 import FunctionButton from "@/components/FunctionButton";
 import { statusBooleansToDataStatus } from "@/features/shared/utils";
@@ -220,6 +219,8 @@ const ProjectsTable: React.FC = () => {
         break;
       case "newSearch":
         setSearchTerm(obj.newSearch.toLowerCase());
+        setActivePage(1);
+        break;
     }
   };
 
