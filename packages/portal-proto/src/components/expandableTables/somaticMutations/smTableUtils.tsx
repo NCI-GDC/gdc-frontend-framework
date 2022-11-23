@@ -176,9 +176,9 @@ export const createTableColumn = (
             accessorKey: accessor,
             header: () => (
               <TableHeader
-                title={`# Affected Cases 
+                title={`# Affected Cases
                   Across the GDC`}
-                tooltip={`# Cases where Mutation is observed / 
+                tooltip={`# Cases where Mutation is observed /
                   # Cases tested for Simple Somatic Mutations portal wide
                   Expand to see breakdown by project`}
                 className="flex flex-row justify-start w-32"

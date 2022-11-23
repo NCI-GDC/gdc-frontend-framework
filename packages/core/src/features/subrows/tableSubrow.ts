@@ -33,7 +33,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
                     ) {
                         explore {
                             cases {
-                              denominators: aggregations(filters: $filters_case) { 
+                              denominators: aggregations(filters: $filters_case) {
                                 project__project_id {
                                     buckets {
                                         key
@@ -118,7 +118,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
                 ) {
                   explore {
                     cases {
-                      denominators: aggregations(filters: $filters_case) { 
+                      denominators: aggregations(filters: $filters_case) {
                         project__project_id {
                             buckets {
                                 key
