@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from "react";
-import { animated, useSpring } from "react-spring";
+import { animated, useSpring } from "@react-spring/web";
 import { useMeasure } from "react-use";
 import RatioSpring from "./RatioSpring";
 import { FaCircle as Circle } from "react-icons/fa";

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { MdSearch as SearchIcon } from "react-icons/md";
-import { animated, useSpring } from "react-spring";
+import { animated, useSpring } from "@react-spring/web";
 import DND from "./DND";
 import { Column } from "./types";
 

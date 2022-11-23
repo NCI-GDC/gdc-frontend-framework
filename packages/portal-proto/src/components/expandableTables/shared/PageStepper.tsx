@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { animated, useSpring } from "react-spring";
+import { animated, useSpring } from "@react-spring/web";
 import {
   MdChevronRight as NextPage,
   MdChevronLeft as PrevPage,

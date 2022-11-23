@@ -5,10 +5,10 @@ import {
 } from "@gff/core";
 import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
 import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
-import { useSpring } from "react-spring";
+import { useSpring } from "@react-spring/web";
 import ListSpring from "./ListSpring";
 import { Loader } from "@mantine/core";
-import { animated } from "react-spring";
+import { animated } from "@react-spring/web";
 import { useScrollIntoView } from "@mantine/hooks";
 import { useEffect } from "react";
 

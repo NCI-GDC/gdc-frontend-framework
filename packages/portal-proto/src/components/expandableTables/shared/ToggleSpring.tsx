@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { useSpring, animated } from "react-spring";
+import { useSpring, animated } from "@react-spring/web";
 
 interface ToggleSpringProps {
   isExpanded: boolean;

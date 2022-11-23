@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { MdOutlineArrowDropDown } from "react-icons/md";
-import { animated, useSpring } from "react-spring";
+import { animated, useSpring } from "@react-spring/web";
 
 interface ControlOption {
   label: string;

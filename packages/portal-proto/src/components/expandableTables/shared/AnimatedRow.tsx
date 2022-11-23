@@ -1,5 +1,5 @@
 import React from "react";
-import { animated, useSpring, config } from "react-spring";
+import { animated, useSpring, config } from "@react-spring/web";
 import { flexRender } from "@tanstack/react-table";
 
 interface AnimatedRowProps {

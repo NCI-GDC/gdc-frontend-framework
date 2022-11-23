@@ -1,4 +1,4 @@
-import { animated } from "react-spring";
+import { animated } from "@react-spring/web";
 import { Text, Tooltip } from "@mantine/core";
 
 export const TableHeader = ({

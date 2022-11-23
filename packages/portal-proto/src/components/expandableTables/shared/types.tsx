@@ -1,4 +1,4 @@
-import { SpringValue } from "react-spring";
+import { SpringValue } from "@react-spring/web";
 import { Row } from "@tanstack/react-table";
 import { SomaticMutations } from "../somaticMutations/types";
 import { Genes } from "../genes/types";
