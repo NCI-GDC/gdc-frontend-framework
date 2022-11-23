@@ -11,6 +11,7 @@ import { SelectedReducer, SelectReducerAction } from "../shared/types";
 import { TableFilters } from "../shared/TableFilters";
 import { default as PageSize } from "@/components/expandableTables/shared/PageSizeMantine";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
+import { useDebouncedValue } from "@mantine/hooks";
 
 export const SelectedRowContext =
   createContext<
@@ -33,13 +34,22 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   handleGeneToggled,
 }: GTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
-  const [page, setPage] = useState(0);
+  const [pageAndSearch, setPageAndSearch] = useState({
+    page: 0,
+    searchTerm: "",
+  });
+  const [debouncedSearchTerm] = useDebouncedValue(
+    pageAndSearch.searchTerm,
+    400,
+  );
+  // TODO when move to React 18 (batches setState), split pageAndSearch state into:
+  // const [page, setPage] = useState(0);
+  // const [searchTerm, setSearchTerm] = useState("");
   const [ref, { width }] = useMeasure();
   const [columnListOrder, setColumnListOrder] = useState(DEFAULT_GTABLE_ORDER);
   const [visibleColumns, setVisibleColumns] = useState(
     DEFAULT_GTABLE_ORDER.filter((col) => col.visible),
   );
-  const [searchTerm, setSearchTerm] = useState("");
   const [showColumnMenu, setShowColumnMenu] = useState<boolean>(false);
 
   useEffect(() => {
@@ -51,8 +61,14 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   };
 
   const handleSearch = (term: string) => {
-    setSearchTerm(term);
-    setPage(0);
+    setPageAndSearch({ page: 0, searchTerm: term });
+  };
+
+  const handleSetPage = (pageIndex: number) => {
+    setPageAndSearch((previousState) => ({
+      page: pageIndex,
+      searchTerm: previousState.searchTerm,
+    }));
   };
 
   const gReducer = (
@@ -101,12 +117,16 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
 
   const { data } = useGenesTable({
     pageSize: pageSize,
-    offset: page * pageSize,
-    searchTerm: searchTerm.length > 0 ? searchTerm : undefined,
+    offset: pageAndSearch.page * pageSize,
+    searchTerm:
+      debouncedSearchTerm.length > 0 ? debouncedSearchTerm : undefined,
   });
 
   useEffect(() => {
-    setPage(0);
+    setPageAndSearch((previousState) => ({
+      page: 0,
+      searchTerm: previousState.searchTerm,
+    }));
   }, [pageSize]);
 
   const { status, genes: initialData } = data;
@@ -155,7 +175,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
 
           <div className="flex flex-row flex-nowrap mr-2">
             <TableFilters
-              search={searchTerm}
+              search={pageAndSearch.searchTerm}
               handleSearch={handleSearch}
               columnListOrder={columnListOrder}
               handleColumnChange={handleColumnChange}
@@ -186,13 +206,13 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 handleGeneToggled={handleGeneToggled}
                 width={width}
                 pageSize={pageSize}
-                page={page}
+                page={pageAndSearch.page}
                 selectedGenes={selectedGenes}
                 setSelectedGenes={setSelectedGenes}
                 handleGTotal={setGTotal}
                 columnListOrder={columnListOrder}
                 visibleColumns={visibleColumns}
-                searchTerm={searchTerm}
+                searchTerm={pageAndSearch.searchTerm}
               />
             </div>
           ) : (
@@ -216,13 +236,13 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               <span>
                 Showing
                 <span className="font-bold">{` ${(
-                  page * pageSize +
+                  pageAndSearch.page * pageSize +
                   1
                 ).toLocaleString("en-US")} `}</span>
                 -
                 <span className="font-bold">
-                  {`${((page + 1) * pageSize < gTotal
-                    ? (page + 1) * pageSize
+                  {`${((pageAndSearch.page + 1) * pageSize < gTotal
+                    ? (pageAndSearch.page + 1) * pageSize
                     : gTotal
                   ).toLocaleString("en-US")} `}
                 </span>
@@ -235,9 +255,9 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             </div>
             <div className="m-auto mr-0">
               <PageStepper
-                page={page}
+                page={pageAndSearch.page}
                 totalPages={Math.ceil(gTotal / pageSize)}
-                handlePage={setPage}
+                handlePage={handleSetPage}
               />
             </div>
           </div>

@@ -44,10 +44,10 @@ const TableControlsMantine: React.FC<TableControlsProps> = ({
         <Menu.Dropdown>
           <Menu.Label className="bg-primary text-primary-contrast font-heading font-bold">
             {numSelected === 0
-              ? `${total} ${label}s`
+              ? `${total.toLocaleString()} ${label}s`
               : numSelected === 1
               ? `1 ${label}`
-              : `${numSelected} ${label}s`}
+              : `${numSelected.toLocaleString()} ${label}s`}
           </Menu.Label>
           {options.map(({ value, label }: ControlOption) => {
             if (value !== "placeholder") {

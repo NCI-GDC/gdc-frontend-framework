@@ -34,18 +34,31 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   handleSurvivalPlotToggled,
 }: SMTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
-  const [page, setPage] = useState(0);
+  const [pageAndSearch, setPageAndSearch] = useState({
+    page: 0,
+    searchTerm: "",
+  });
+  // TODO when move to React 18 (batches setState), split pageAndSearch state into:
+  // const [page, setPage] = useState(0);
+  // const [searchTerm, setSearchTerm] = useState("");
+
   const [ref, { width }] = useMeasure();
   const [columnListOrder, setColumnListOrder] = useState(DEFAULT_SMTABLE_ORDER);
   const [visibleColumns, setVisibleColumns] = useState(
     DEFAULT_SMTABLE_ORDER.filter((col) => col.visible),
   );
-  const [searchTerm, setSearchTerm] = useState("");
+
   const [showColumnMenu, setShowColumnMenu] = useState<boolean>(false);
 
   const handleSearch = (term: string) => {
-    setSearchTerm(term);
-    setPage(0);
+    setPageAndSearch({ page: 0, searchTerm: term });
+  };
+
+  const handleSetPage = (pageIndex: number) => {
+    setPageAndSearch((previousState) => ({
+      page: pageIndex,
+      searchTerm: previousState.searchTerm,
+    }));
   };
 
   useEffect(() => {
@@ -101,12 +114,18 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
 
   const { data } = useSsmsTable({
     pageSize: pageSize,
-    offset: pageSize * page,
-    searchTerm: searchTerm.length > 0 ? searchTerm : undefined,
+    offset: pageSize * pageAndSearch.page,
+    searchTerm:
+      pageAndSearch.searchTerm.length > 0
+        ? pageAndSearch.searchTerm
+        : undefined,
   });
 
   useEffect(() => {
-    setPage(0);
+    setPageAndSearch((previousState) => ({
+      page: 0,
+      searchTerm: previousState.searchTerm,
+    }));
   }, [pageSize]);
 
   const { status, ssms: initialData } = data;
@@ -156,7 +175,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           </div>
           <div className="flex flex-row flex-nowrap mr-2">
             <TableFilters
-              search={searchTerm}
+              search={pageAndSearch.searchTerm}
               handleSearch={handleSearch}
               columnListOrder={columnListOrder}
               handleColumnChange={handleColumnChange}
@@ -183,13 +202,13 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 handleSurvivalPlotToggled={handleSurvivalPlotToggled}
                 width={width}
                 pageSize={pageSize}
-                page={page}
+                page={pageAndSearch.page}
                 selectedMutations={selectedMutations}
                 setSelectedMutations={setSelectedMutations}
                 handleSMTotal={setSMTotal}
                 columnListOrder={columnListOrder}
                 visibleColumns={visibleColumns}
-                searchTerm={searchTerm}
+                searchTerm={pageAndSearch.searchTerm}
               />
             </div>
           ) : (
@@ -215,13 +234,14 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               <span>
                 Showing
                 <span className={`font-bold`}>{` ${(
-                  page * pageSize +
+                  pageAndSearch.page * pageSize +
                   1
                 ).toLocaleString("en-US")} `}</span>
                 -
-                <span className={`font-bold`}>{`${((page + 1) * pageSize <
+                <span className={`font-bold`}>{`${((pageAndSearch.page + 1) *
+                  pageSize <
                 smTotal
-                  ? (page + 1) * pageSize
+                  ? (pageAndSearch.page + 1) * pageSize
                   : smTotal
                 ).toLocaleString("en-US")} `}</span>
                 of
@@ -233,9 +253,9 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             </div>
             <div className={`m-auto mr-0`}>
               <PageStepper
-                page={page}
+                page={pageAndSearch.page}
                 totalPages={Math.ceil(smTotal / pageSize)}
-                handlePage={setPage}
+                handlePage={handleSetPage}
               />
             </div>
           </div>

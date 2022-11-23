@@ -366,8 +366,13 @@ export const createTableColumn = (
             ),
             cell: ({ row }) => {
               return (
-                <div className="text-center text-xs">
-                  {row?.original["mutations"]?.toLocaleString("en-US") ?? 0}
+                <div>
+                  {row.getCanExpand() && (
+                    <div className="text-center text-xs">
+                      {row?.original["mutations"]?.toLocaleString("en-US") ??
+                        ""}
+                    </div>
+                  )}
                 </div>
               );
             },
