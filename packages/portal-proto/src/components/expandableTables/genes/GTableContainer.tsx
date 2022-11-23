@@ -1,4 +1,4 @@
-import { useGenesTable } from "@gff/core";
+import { GDCGenesTable, useGenesTable } from "@gff/core";
 import { createContext, useEffect, useReducer, useState } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
 import { GenesTable } from "./GenesTable";
@@ -43,7 +43,13 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     DEFAULT_GTABLE_ORDER.filter((col) => col.visible),
   );
   const [showColumnMenu, setShowColumnMenu] = useState<boolean>(false);
-  const [tableData, setTableData] = useState({ genes: [] });
+  const [tableData, setTableData] = useState<GDCGenesTable>({
+    cases: 0,
+    cnvCases: 0,
+    filteredCases: 0,
+    genes_total: 0,
+    genes: [],
+  });
 
   useEffect(() => {
     setVisibleColumns(columnListOrder.filter((col) => col.visible));

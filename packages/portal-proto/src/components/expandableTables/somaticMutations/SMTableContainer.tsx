@@ -1,4 +1,4 @@
-import { useSsmsTable } from "@gff/core";
+import { useSsmsTable, GDCSsmsTable } from "@gff/core";
 import { useEffect, useState, useReducer, createContext } from "react";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
 import { useMeasure } from "react-use";
@@ -45,7 +45,14 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   );
 
   const [showColumnMenu, setShowColumnMenu] = useState<boolean>(false);
-  // const [tableData, setTableData] = useState<GDCSsmsTable>(undefined);
+  const [tableData, setTableData] = useState<GDCSsmsTable>({
+    cases: 0,
+    filteredCases: 0,
+    ssmsTotal: 0,
+    pageSize: 10,
+    offset: 0,
+    ssms: [],
+  });
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
@@ -118,6 +125,12 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
 
   const { status, ssms: initialData } = data;
 
+  useEffect(() => {
+    if (status === "fulfilled") {
+      setTableData(initialData);
+    }
+  }, [status, initialData]);
+
   return (
     <>
       <SelectedRowContext.Provider
@@ -184,7 +197,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             <div ref={ref} className="h-full w-[90%]">
               <SomaticMutationsTable
                 status={status}
-                initialData={initialData}
+                initialData={tableData}
                 selectedSurvivalPlot={selectedSurvivalPlot}
                 handleSurvivalPlotToggled={handleSurvivalPlotToggled}
                 width={width}
