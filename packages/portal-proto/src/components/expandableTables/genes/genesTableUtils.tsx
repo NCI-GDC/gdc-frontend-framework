@@ -259,7 +259,7 @@ export const createTableColumn = (
             header: () => (
               <TableHeader
                 title={`# ${startCase(accessor)}`}
-                className="flex flex-row justify-start mr-8"
+                className="flex flex-row justify-start mr-8 w-20"
                 tooltip={
                   "# Cases where CNV gain events are observed in Gene / # Cases tested for Copy Number Alterations in Gene"
                 }
@@ -292,7 +292,7 @@ export const createTableColumn = (
             header: () => (
               <TableHeader
                 title={`# ${startCase(accessor)}`}
-                className="flex flex-row justify-start mr-2"
+                className="flex flex-row justify-start mr-2 w-24"
                 tooltip={
                   "# Cases where CNV loss events are observed in Gene / # Cases tested for Copy Number Alterations in Gene"
                 }
@@ -323,7 +323,11 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => (
-              <TableHeader title={startCase(accessor)} tooltip={""} />
+              <TableHeader
+                title={startCase(accessor)}
+                tooltip={""}
+                className="mx-4 whitespace-nowrap"
+              />
             ),
             cell: ({ row }) => {
               return (

@@ -181,7 +181,7 @@ export const createTableColumn = (
                 tooltip={`# Cases where Mutation is observed / 
                   # Cases tested for Simple Somatic Mutations portal wide
                   Expand to see breakdown by project`}
-                className="flex justify-start"
+                className="flex flex-row justify-start w-32"
               />
             ),
             cell: ({ row }) => {

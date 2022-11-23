@@ -64,6 +64,7 @@ export type Genes = {
 export type GeneToggledHandler = (symbol: Record<string, any>) => void;
 
 export interface GenesTableProps {
+  readonly status: string;
   readonly initialData: Record<string, any>; // need to add this from response
   readonly selectedSurvivalPlot: Record<string, string>;
   width: number;

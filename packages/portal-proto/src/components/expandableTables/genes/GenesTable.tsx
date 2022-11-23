@@ -8,6 +8,7 @@ import { Subrow } from "../shared/Subrow";
 import { useGetGeneTableSubrowQuery } from "@gff/core";
 
 export const GenesTable: React.FC<GenesTableProps> = ({
+  status,
   initialData,
   selectedSurvivalPlot,
   handleSurvivalPlotToggled,
@@ -129,6 +130,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   return (
     <>
       <ExpTable
+        status={status}
         data={transformResponse}
         columns={columns}
         expanded={expanded}
@@ -136,7 +138,6 @@ export const GenesTable: React.FC<GenesTableProps> = ({
         selectAll={setSelectedGenes}
         allSelected={selectedGenes}
         firstColumn={columnListOrder[0].id}
-        headerWidth={width / visibleColumns.length}
         subrow={
           <Subrow
             id={geneID}

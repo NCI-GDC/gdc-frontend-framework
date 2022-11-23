@@ -8,6 +8,7 @@ import { Subrow } from "../shared/Subrow";
 import { Column } from "@/components/expandableTables/shared/types";
 
 export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
+  status,
   initialData,
   selectedSurvivalPlot,
   handleSurvivalPlotToggled,
@@ -114,6 +115,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   return (
     <>
       <ExpTable
+        status={status}
         data={transformResponse}
         columns={columns}
         expanded={expanded}
@@ -121,7 +123,6 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
         selectAll={setSelectedMutations}
         allSelected={selectedMutations}
         firstColumn={columnListOrder[0].id}
-        headerWidth={width / visibleColumns.length}
         subrow={
           <Subrow
             id={mutationID}

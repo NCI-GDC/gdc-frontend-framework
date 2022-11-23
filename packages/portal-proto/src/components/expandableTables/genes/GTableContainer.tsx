@@ -3,7 +3,7 @@ import { createContext, useEffect, useReducer, useState } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
 import { GenesTable } from "./GenesTable";
 import { useMeasure } from "react-use";
-import { Button, Loader } from "@mantine/core";
+import { Button } from "@mantine/core";
 import { default as PageStepper } from "../shared/PageStepperMantine";
 import { default as TableControls } from "../shared/TableControlsMantine";
 import TablePlaceholder from "../shared/TablePlaceholder";
@@ -43,6 +43,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     DEFAULT_GTABLE_ORDER.filter((col) => col.visible),
   );
   const [showColumnMenu, setShowColumnMenu] = useState<boolean>(false);
+  const [tableData, setTableData] = useState({ genes: [] });
 
   useEffect(() => {
     setVisibleColumns(columnListOrder.filter((col) => col.visible));
@@ -116,7 +117,12 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   }, [pageSize]);
 
   const { status, genes: initialData } = data;
-  const { cases, filteredCases, mutationCounts } = initialData;
+
+  useEffect(() => {
+    if (status === "fulfilled") {
+      setTableData(initialData);
+    }
+  }, [status, initialData]);
 
   return (
     <>
@@ -179,13 +185,11 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               numOfRows={pageSize}
               content={<span>No columns selected</span>}
             />
-          ) : status === "fulfilled" &&
-            mutationCounts &&
-            filteredCases &&
-            cases ? (
+          ) : (
             <div ref={ref} className="h-full w-[90%]">
               <GenesTable
-                initialData={initialData}
+                status={status}
+                initialData={tableData}
                 selectedSurvivalPlot={selectedSurvivalPlot}
                 handleSurvivalPlotToggled={handleSurvivalPlotToggled}
                 handleGeneToggled={handleGeneToggled}
@@ -200,20 +204,12 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 searchTerm={searchTerm}
               />
             </div>
-          ) : (
-            <TablePlaceholder
-              cellWidth="w-24"
-              rowHeight={60}
-              numOfColumns={15}
-              numOfRows={pageSize}
-              content={<Loader />}
-            />
           )}
         </div>
         {visibleColumns.length ? (
           <div className="flex flex-row w-9/12 ml-2 mt-0 m-auto">
             <div className="flex flex-row items-center m-auto ml-0">
-              <span className="my-auto mx-1 text-sm">Show</span>
+              <span className="my-auto mx-1 text-xs">Show</span>
               <PageSize pageSize={pageSize} handlePageSize={setPageSize} />
               <span className="my-auto mx-1 text-xs">Entries</span>
             </div>

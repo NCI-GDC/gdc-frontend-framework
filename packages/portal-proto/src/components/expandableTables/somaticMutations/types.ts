@@ -100,6 +100,7 @@ export interface SomaticMutations {
 }
 
 export interface SomaticMutationsTableProps {
+  status: string;
   readonly initialData: any;
   readonly selectedSurvivalPlot: Record<string, string>;
   width: number;
