@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { capitalize } from "lodash";
 import fileSize from "filesize";
 import { VerticalTable, HandleChangeInput } from "../shared/VerticalTable";
 import { downloadTSV } from "../shared/TableUtils";
@@ -210,7 +211,7 @@ const FilesTables: React.FC = () => {
       method: "POST",
       options: {
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+          "Content-Type": "application/json",
         },
         method: "POST",
       },
@@ -253,14 +254,23 @@ const FilesTables: React.FC = () => {
       {
         blacklist: ["cart"],
         overwrite: {
+          access: {
+            composer: (file) => capitalize(file.access),
+          },
           cases: {
             composer: (file) => file.cases?.length.toLocaleString() || 0,
           },
-          fileSize: {
-            composer: (file) => fileSize(file.fileSize),
+          file_size: {
+            composer: (file) => fileSize(file.file_size),
           },
           annotations: {
             composer: (file) => file.annotations?.length || 0,
+          },
+          experimental_strategy: {
+            composer: (file) => file.experimental_strategy || "--",
+          },
+          platform: {
+            composer: (file) => file.platform || "--",
           },
         },
       },

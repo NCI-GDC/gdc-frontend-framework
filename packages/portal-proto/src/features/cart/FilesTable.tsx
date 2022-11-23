@@ -4,6 +4,7 @@ import fileSize from "filesize";
 import { Button, Menu } from "@mantine/core";
 import { MdArrowDropDown as DropdownIcon } from "react-icons/md";
 import { VscTrash as TrashIcon } from "react-icons/vsc";
+import { capitalize } from "lodash";
 import {
   useCoreSelector,
   selectCart,
@@ -176,7 +177,7 @@ const FilesTable: React.FC<FilesTableProps> = ({
       method: "POST",
       options: {
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+          "Content-Type": "application/json",
         },
         method: "POST",
       },
@@ -228,6 +229,9 @@ const FilesTable: React.FC<FilesTableProps> = ({
           uuid: {
             composer: "file_id",
           },
+          access: {
+            composer: (file) => capitalize(file.access),
+          },
           name: {
             composer: "file_name",
           },
@@ -244,7 +248,7 @@ const FilesTable: React.FC<FilesTableProps> = ({
             composer: (file) => file.annotations?.length || 0,
           },
           experimental_strategy: {
-            composer: (file) => file.experimentalStrategy || "--",
+            composer: (file) => file.experimental_strategy || "--",
           },
           platform: {
             composer: (file) => file.platform || "--",
