@@ -11,6 +11,8 @@ import { SomaticMutations, DEFAULT_SMTABLE_ORDER } from "./types";
 import { SelectedReducer, SelectReducerAction } from "../shared/types";
 import { TableFilters } from "../shared/TableFilters";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
+import { GDCSsmsTable } from "@gff/core/dist/dts";
+import { useDebouncedValue } from "@mantine/hooks";
 
 export const SelectedRowContext =
   createContext<
@@ -34,14 +36,9 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   handleSurvivalPlotToggled,
 }: SMTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
-  const [pageAndSearch, setPageAndSearch] = useState({
-    page: 0,
-    searchTerm: "",
-  });
-  // TODO when move to React 18 (batches setState), split pageAndSearch state into:
-  // const [page, setPage] = useState(0);
-  // const [searchTerm, setSearchTerm] = useState("");
-
+  const [page, setPage] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [deboucedSearchTern] = useDebouncedValue(searchTerm, 400);
   const [ref, { width }] = useMeasure();
   const [columnListOrder, setColumnListOrder] = useState(DEFAULT_SMTABLE_ORDER);
   const [visibleColumns, setVisibleColumns] = useState(
@@ -49,16 +46,14 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   );
 
   const [showColumnMenu, setShowColumnMenu] = useState<boolean>(false);
+  // const [tableData, setTableData] = useState<GDCSsmsTable>(undefined);
 
   const handleSearch = (term: string) => {
-    setPageAndSearch({ page: 0, searchTerm: term });
+    setSearchTerm(term);
   };
 
   const handleSetPage = (pageIndex: number) => {
-    setPageAndSearch((previousState) => ({
-      page: pageIndex,
-      searchTerm: previousState.searchTerm,
-    }));
+    setPage(pageIndex);
   };
 
   useEffect(() => {
@@ -114,23 +109,17 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
 
   const { data } = useSsmsTable({
     pageSize: pageSize,
-    offset: pageSize * pageAndSearch.page,
-    searchTerm:
-      pageAndSearch.searchTerm.length > 0
-        ? pageAndSearch.searchTerm
-        : undefined,
+    offset: pageSize * page,
+    searchTerm: deboucedSearchTern.length > 0 ? deboucedSearchTern : undefined,
   });
 
   useEffect(() => {
-    setPageAndSearch((previousState) => ({
-      page: 0,
-      searchTerm: previousState.searchTerm,
-    }));
+    setPage(0);
   }, [pageSize]);
 
-  const { status, ssms: initialData, searchTerm: querySearchTerm } = data;
+  const { status, ssms: initialData } = data;
 
-  const { cases, filteredCases } = useMemo;
+  const { cases, filteredCases } = initialData as GDCSsmsTable;
 
   return (
     <>
@@ -175,7 +164,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           </div>
           <div className="flex flex-row flex-nowrap mr-2">
             <TableFilters
-              search={pageAndSearch.searchTerm}
+              search={searchTerm}
               handleSearch={handleSearch}
               columnListOrder={columnListOrder}
               handleColumnChange={handleColumnChange}
@@ -194,10 +183,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               numOfRows={pageSize}
               content={<span>No columns selected</span>}
             />
-          ) : status === "fulfilled" &&
-            cases &&
-            filteredCases &&
-            querySearchTerm === pageAndSearch ? (
+          ) : status === "fulfilled" && cases && filteredCases ? (
             <div ref={ref} className="h-full w-[90%]">
               <SomaticMutationsTable
                 initialData={initialData}
@@ -205,13 +191,13 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 handleSurvivalPlotToggled={handleSurvivalPlotToggled}
                 width={width}
                 pageSize={pageSize}
-                page={pageAndSearch.page}
+                page={page}
                 selectedMutations={selectedMutations}
                 setSelectedMutations={setSelectedMutations}
                 handleSMTotal={setSMTotal}
                 columnListOrder={columnListOrder}
                 visibleColumns={visibleColumns}
-                searchTerm={pageAndSearch.searchTerm}
+                searchTerm={searchTerm}
               />
             </div>
           ) : (
@@ -237,14 +223,13 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               <span>
                 Showing
                 <span className={`font-bold`}>{` ${(
-                  pageAndSearch.page * pageSize +
+                  page * pageSize +
                   1
                 ).toLocaleString("en-US")} `}</span>
                 -
-                <span className={`font-bold`}>{`${((pageAndSearch.page + 1) *
-                  pageSize <
+                <span className={`font-bold`}>{`${((page + 1) * pageSize <
                 smTotal
-                  ? (pageAndSearch.page + 1) * pageSize
+                  ? (page + 1) * pageSize
                   : smTotal
                 ).toLocaleString("en-US")} `}</span>
                 of
@@ -256,7 +241,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             </div>
             <div className={`m-auto mr-0`}>
               <PageStepper
-                page={pageAndSearch.page}
+                page={page}
                 totalPages={Math.ceil(smTotal / pageSize)}
                 handlePage={handleSetPage}
               />

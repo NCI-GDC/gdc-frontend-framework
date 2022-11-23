@@ -316,7 +316,6 @@ const slice = createSlice({
             };
           },
         );
-
         state.status = "fulfilled";
         state.error = undefined;
         return state;

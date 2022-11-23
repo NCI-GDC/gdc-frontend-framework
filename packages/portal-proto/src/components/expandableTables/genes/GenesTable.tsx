@@ -56,11 +56,16 @@ export const GenesTable: React.FC<GenesTableProps> = ({
 
   const transformResponse = useGeneTableFormat(initialData);
 
-  useEffect(() => {
-    if (transformResponse[0]?.genesTotal)
-      handleGTotal(transformResponse[0].genesTotal);
+  useEffect(
+    () => {
+      if (transformResponse[0]?.genesTotal)
+        handleGTotal(transformResponse[0].genesTotal);
+      else handleGTotal(0);
+    },
+    // TODO resolve dependencies
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [transformResponse]);
+    [transformResponse],
+  );
 
   const handleExpandedProxy = (exp: ExpandedState) => {
     setExpandedProxy(exp);

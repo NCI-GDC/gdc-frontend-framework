@@ -34,17 +34,9 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   handleGeneToggled,
 }: GTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
-  const [pageAndSearch, setPageAndSearch] = useState({
-    page: 0,
-    searchTerm: "",
-  });
-  const [debouncedSearchTerm] = useDebouncedValue(
-    pageAndSearch.searchTerm,
-    400,
-  );
-  // TODO when move to React 18 (batches setState), split pageAndSearch state into:
-  // const [page, setPage] = useState(0);
-  // const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [deboucedSearchTern] = useDebouncedValue(searchTerm, 400);
   const [ref, { width }] = useMeasure();
   const [columnListOrder, setColumnListOrder] = useState(DEFAULT_GTABLE_ORDER);
   const [visibleColumns, setVisibleColumns] = useState(
@@ -61,14 +53,12 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   };
 
   const handleSearch = (term: string) => {
-    setPageAndSearch({ page: 0, searchTerm: term });
+    setSearchTerm(term);
+    setPage(0);
   };
 
   const handleSetPage = (pageIndex: number) => {
-    setPageAndSearch((previousState) => ({
-      page: pageIndex,
-      searchTerm: previousState.searchTerm,
-    }));
+    setPage(pageIndex);
   };
 
   const gReducer = (
@@ -117,20 +107,15 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
 
   const { data } = useGenesTable({
     pageSize: pageSize,
-    offset: pageAndSearch.page * pageSize,
-    searchTerm:
-      debouncedSearchTerm.length > 0 ? debouncedSearchTerm : undefined,
+    offset: page * pageSize,
+    searchTerm: deboucedSearchTern.length > 0 ? deboucedSearchTern : undefined,
   });
 
   useEffect(() => {
-    setPageAndSearch((previousState) => ({
-      page: 0,
-      searchTerm: previousState.searchTerm,
-    }));
+    setPage(0);
   }, [pageSize]);
 
   const { status, genes: initialData } = data;
-
   const { cases, filteredCases, mutationCounts } = initialData;
 
   return (
@@ -175,7 +160,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
 
           <div className="flex flex-row flex-nowrap mr-2">
             <TableFilters
-              search={pageAndSearch.searchTerm}
+              search={searchTerm}
               handleSearch={handleSearch}
               columnListOrder={columnListOrder}
               handleColumnChange={handleColumnChange}
@@ -206,13 +191,13 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 handleGeneToggled={handleGeneToggled}
                 width={width}
                 pageSize={pageSize}
-                page={pageAndSearch.page}
+                page={page}
                 selectedGenes={selectedGenes}
                 setSelectedGenes={setSelectedGenes}
                 handleGTotal={setGTotal}
                 columnListOrder={columnListOrder}
                 visibleColumns={visibleColumns}
-                searchTerm={pageAndSearch.searchTerm}
+                searchTerm={searchTerm}
               />
             </div>
           ) : (
@@ -236,13 +221,13 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               <span>
                 Showing
                 <span className="font-bold">{` ${(
-                  pageAndSearch.page * pageSize +
+                  page * pageSize +
                   1
                 ).toLocaleString("en-US")} `}</span>
                 -
                 <span className="font-bold">
-                  {`${((pageAndSearch.page + 1) * pageSize < gTotal
-                    ? (pageAndSearch.page + 1) * pageSize
+                  {`${((page + 1) * pageSize < gTotal
+                    ? (page + 1) * pageSize
                     : gTotal
                   ).toLocaleString("en-US")} `}
                 </span>
@@ -255,7 +240,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             </div>
             <div className="m-auto mr-0">
               <PageStepper
-                page={pageAndSearch.page}
+                page={page}
                 totalPages={Math.ceil(gTotal / pageSize)}
                 handlePage={handleSetPage}
               />
