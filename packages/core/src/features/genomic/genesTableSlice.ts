@@ -344,6 +344,7 @@ export const fetchGenesTable = createAsyncThunk<
 
 export interface GenesTableState {
   readonly genes: GDCGenesTable;
+  readonly searchTerm?: string;
   readonly status: DataStatus;
   readonly error?: string;
 }
@@ -356,6 +357,7 @@ const initialState: GenesTableState = {
     genes: [],
     genes_total: 0,
   },
+  searchTerm: "",
   status: "uninitialized",
 };
 
@@ -407,7 +409,7 @@ const slice = createSlice({
             };
           },
         );
-
+        state.searchTerm = action.meta.arg.searchTerm ?? ""; // makes handling empty search simpler in table
         state.status = "fulfilled";
         state.error = undefined;
         return state;

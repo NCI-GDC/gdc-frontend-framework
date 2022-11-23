@@ -128,9 +128,9 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     }));
   }, [pageSize]);
 
-  const { status, ssms: initialData } = data;
+  const { status, ssms: initialData, searchTerm: querySearchTerm } = data;
 
-  const { cases, filteredCases } = initialData;
+  const { cases, filteredCases } = useMemo;
 
   return (
     <>
@@ -194,7 +194,10 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               numOfRows={pageSize}
               content={<span>No columns selected</span>}
             />
-          ) : status === "fulfilled" && cases && filteredCases ? (
+          ) : status === "fulfilled" &&
+            cases &&
+            filteredCases &&
+            querySearchTerm === pageAndSearch ? (
             <div ref={ref} className="h-full w-[90%]">
               <SomaticMutationsTable
                 initialData={initialData}
