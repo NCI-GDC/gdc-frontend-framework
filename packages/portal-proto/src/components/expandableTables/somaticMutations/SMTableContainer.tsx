@@ -1,4 +1,4 @@
-import { useSsmsTable } from "@gff/core";
+import { useSsmsTable, GDCSsmsTable } from "@gff/core";
 import { useEffect, useState, useReducer, createContext } from "react";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
 import { useMeasure } from "react-use";
@@ -9,9 +9,8 @@ import { default as TableControls } from "../shared/TableControlsMantine";
 import TablePlaceholder from "../shared/TablePlaceholder";
 import { SomaticMutations, DEFAULT_SMTABLE_ORDER } from "./types";
 import { SelectedReducer, SelectReducerAction } from "../shared/types";
-import { TableFilters } from "../shared/TableFilters";
+import { default as TableFilters } from "../shared/TableFiltersMantine";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
-import { GDCSsmsTable } from "@gff/core/dist/dts";
 import { useDebouncedValue } from "@mantine/hooks";
 
 export const SelectedRowContext =

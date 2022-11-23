@@ -8,7 +8,7 @@ import { default as PageStepper } from "../shared/PageStepperMantine";
 import { default as TableControls } from "../shared/TableControlsMantine";
 import TablePlaceholder from "../shared/TablePlaceholder";
 import { SelectedReducer, SelectReducerAction } from "../shared/types";
-import { TableFilters } from "../shared/TableFilters";
+import { default as TableFilters } from "../shared/TableFiltersMantine";
 import { default as PageSize } from "@/components/expandableTables/shared/PageSizeMantine";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import { useDebouncedValue } from "@mantine/hooks";

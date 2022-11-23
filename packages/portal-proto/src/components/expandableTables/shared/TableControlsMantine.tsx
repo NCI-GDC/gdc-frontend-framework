@@ -58,12 +58,12 @@ const TableControlsMantine: React.FC<TableControlsProps> = ({
       </Menu>
       <Group className="mx-2">{additionalControls}</Group>
       <div>
-        {total !== 0 && (
+        {
           <Text className="font-heading font-bold text-md">
             TOTAL OF {total.toLocaleString("en-US")}{" "}
             {total == 1 ? label.toUpperCase() : `${label.toUpperCase()}S`}
           </Text>
-        )}
+        }
       </div>
     </div>
   );

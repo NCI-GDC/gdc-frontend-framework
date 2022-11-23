@@ -4,7 +4,7 @@ import { BsList, BsX } from "react-icons/bs";
 import { MdSearch as SearchIcon } from "react-icons/md";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { DragDrop } from "../../../features/shared/DragDrop";
+import { DragDrop } from "@/features/shared/DragDrop";
 import { Column } from "./types";
 
 interface DNDProps {
@@ -42,7 +42,7 @@ const DND: React.FC<DNDProps> = ({
             }}
           >
             <Box
-              className={`border-1 border-base p-2.5 rounded-md mx-2 mt-3 hover:cursor-pointer`}
+              className={`border-1 border-base p-2 rounded-md mx-2 hover:cursor-pointer`}
             >
               {!showColumnMenu ? <BsList /> : <BsX size={"17px"} />}
             </Box>
