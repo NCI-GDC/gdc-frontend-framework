@@ -59,9 +59,6 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
     setPrevPath(currentPath);
     setCurrentPath(globalThis.location.pathname + globalThis.location.search);
   }, [currentPath, router.asPath]);
-
-  console.log(tailwindConfig.plugins);
-
   return (
     <CoreProvider>
       <Provider store={store}>
