@@ -5,11 +5,13 @@ import update from "immutability-helper";
 interface DragDropProps {
   listOptions: any;
   handleColumnChange: (columns: any) => void;
+  columnSearchTerm: string;
 }
 
 export const DragDrop: FC<DragDropProps> = ({
   listOptions,
   handleColumnChange,
+  columnSearchTerm,
 }: DragDropProps) => {
   const [columns, setColumns] = useState(listOptions);
 
@@ -47,25 +49,29 @@ export const DragDrop: FC<DragDropProps> = ({
       index: number,
     ) => {
       return (
-        <ColumnOption
-          key={column.id}
-          index={index}
-          id={column.id}
-          columnName={column.columnName}
-          moveColumn={moveColumn}
-          visible={column.visible}
-          toggleColumn={toggleColumn}
-          arrangeable={column.arrangeable}
-        />
+        column["columnName"]
+          .toLowerCase()
+          .includes(columnSearchTerm.toLowerCase()) && (
+          <ColumnOption
+            key={column.id}
+            index={index}
+            id={column.id}
+            columnName={column.columnName}
+            moveColumn={moveColumn}
+            visible={column.visible}
+            toggleColumn={toggleColumn}
+            arrangeable={column.arrangeable}
+          />
+        )
       );
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [columns],
+    [columns, columnSearchTerm],
   );
 
   return (
     <>
-      <div className="w-70">
+      <div className="w-full">
         {columns.map((column, i) => renderColumn(column, i))}
       </div>
     </>
