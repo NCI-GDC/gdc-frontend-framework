@@ -1,3 +1,5 @@
+// TODO: Depreciate/remove this file
+
 import { NextPage } from "next";
 import { SimpleLayout } from "../features/layout/Simple";
 import { GTableContainer } from "../components/expandableTables/genes/GTableContainer";
@@ -9,6 +11,7 @@ const GenesTablePage: NextPage = () => {
         <GTableContainer
           selectedSurvivalPlot={undefined}
           handleSurvivalPlotToggled={undefined}
+          handleGeneToggled={() => null}
         />
       </div>
     </SimpleLayout>

@@ -213,7 +213,7 @@ export const createTableColumn = (
                         <ToggleSpring
                           isExpanded={row.getIsExpanded()}
                           icon={
-                            <MdKeyboardArrowDown size="small" color="white" />
+                            <MdKeyboardArrowDown size="0.75em" color="white" />
                           }
                         />
                       </button>

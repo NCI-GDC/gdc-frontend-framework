@@ -60,7 +60,8 @@ export const ExpTable: React.FC<ExpTableProps> = ({
           .rows.filter((row) => !row.id.includes(".")) // exclude subrow from select-all condition
           .every((row) => row.original["select"] in allSelected);
   return (
-    <div>
+    <div className="relative">
+      <LoadingOverlay visible={status === "pending"} />
       <table className="w-full">
         <thead
           className={`
@@ -103,7 +104,6 @@ export const ExpTable: React.FC<ExpTableProps> = ({
           ))}
         </thead>
         <tbody className="relative">
-          <LoadingOverlay visible={status === "pending"} />
           {table.getRowModel().rows.map((row, index) => {
             return (
               <AnimatedRow

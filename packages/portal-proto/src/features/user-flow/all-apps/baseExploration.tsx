@@ -1,3 +1,5 @@
+// TODO: Depreciate this file
+
 import { UserFlowVariedPages } from "../../layout/UserFlowVariedPages";
 import { CohortManager } from "../many-pages/cohort";
 import React, { PropsWithChildren, useRef } from "react";
@@ -187,6 +189,7 @@ export const BaseExplorationPage: React.FC<BaseExplorationPageProps> = ({
                 <GTableContainer
                   selectedSurvivalPlot={undefined}
                   handleSurvivalPlotToggled={undefined}
+                  handleGeneToggled={() => null}
                 />
                 <SMTableContainer
                   selectedSurvivalPlot={undefined}

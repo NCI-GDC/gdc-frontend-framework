@@ -26,6 +26,9 @@ const SomanticMutationFilterFlipVersion: React.FC<SomaticAppProps> = () => {
   const [showGeneChart, setShowGeneChart] = useState(false);
   const [showMutationChart, setShowMutationChart] = useState(false);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleGeneToggled = (_: Record<string, any>) => null;
+
   const toggleGeneFlip = () => {
     setShowGeneChart(!showGeneChart);
   };
@@ -69,6 +72,7 @@ const SomanticMutationFilterFlipVersion: React.FC<SomaticAppProps> = () => {
               <GTableContainer
                 selectedSurvivalPlot={undefined}
                 handleSurvivalPlotToggled={undefined}
+                handleGeneToggled={handleGeneToggled}
               />
             </div>
             <div className="card-face card-back bg-base-lightest">

@@ -5,7 +5,7 @@ import { Tooltip } from "@mantine/core";
 interface SwitchSpringProps {
   isActive: boolean;
   icon: ReactNode;
-  selected: Record<string, any>;
+  selected: string | Record<string, any>;
   handleSwitch: any;
   tooltip: string;
   margin: string;
