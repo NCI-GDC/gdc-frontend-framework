@@ -276,21 +276,11 @@ const AssociatedCB = ({
     { id: "annotations", columnName: "Annotations", visible: true },
   ];
 
-  const columnCells = [
-    { accessor: "entity_id", Header: "Entity ID" },
-    { accessor: "entity_type", Header: "Entity Type" },
-    { accessor: "sample_type", Header: "Sample Type" },
-    { accessor: "case_id", Header: "Case ID" },
-    { accessor: "annotations", Header: "Annotations" },
-  ];
-
   return (
     <VerticalTable
       tableData={displayedData}
-      columnListOrder={columnListOrder}
-      columnCells={columnCells}
+      columns={columnListOrder}
       selectableRow={false}
-      handleColumnChange={undefined}
       showControls={false}
       pagination={{
         page,

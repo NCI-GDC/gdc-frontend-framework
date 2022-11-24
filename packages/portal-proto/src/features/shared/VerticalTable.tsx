@@ -47,11 +47,20 @@ interface VerticalTableProps {
    */
   tableData: Record<string, any>[];
   /**
-   * list of columns in order they appear and if they are visible or not
+   * list of columns in default order they appear and a number of properties
    */
-  columnListOrder: {
+  columns: {
+    /**
+     * Id that matches tableData
+     */
     id: string;
-    columnName: string;
+    /**
+     * HTML that user will see at top of column
+     */
+    columnName: JSX.Element | string;
+    /**
+     * Flag to show / hide column
+     */
     visible: boolean;
     /**
      * Flag to activate or disable sorting feature of column sorting
@@ -63,15 +72,11 @@ interface VerticalTableProps {
      * @defaultValue true
      */
     arrangeable?: boolean;
+    /**
+     * Allows a data cell to have a custom function attached to it that will be run on the data in that cell
+     */
+    Cell?: (value: any) => JSX.Element;
   }[];
-  /**
-   * sorted list of columns to display
-   */
-  columnCells: Column[];
-  /**
-   * callback for when user changes column order or visibility
-   */
-  handleColumnChange: (columns: any) => void;
   /**
    * ???
    */
@@ -166,6 +171,7 @@ export interface HandleChangeInput {
 interface Column {
   Header: string | JSX.Element;
   accessor: string;
+  disableSortBy?: boolean;
   width?: number;
   Cell?: (value: any) => JSX.Element;
 }
@@ -178,11 +184,7 @@ interface TableProps {
 /**
  * Returns a vertical table with many optional features
  * @parm {array} tableData - data to go in the table
- *
- * //TODO combine next 3
- * @parm {array} columnListOrder - list of columns in order they appear and if they are visible or not
- * @parm {array} columnCells - sorted list of columns to display
- * @parm {function} handleColumnChange - callback for when user changes column order or visibility
+ * @parm {array} columns - list of columns in default order they appear and a number of properties
  * @parm {boolean} selectableRow - ???
  * @parm {string} tableTitle - caption to display at top of table
  * @parm {React.ReactNode} additionalControls - html block left of column sorting controls
@@ -195,9 +197,7 @@ interface TableProps {
  */
 export const VerticalTable: FC<VerticalTableProps> = ({
   tableData,
-  columnListOrder,
-  columnCells,
-  handleColumnChange,
+  columns,
   selectableRow,
   tableTitle,
   columnSorting = "none",
@@ -210,9 +210,27 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   },
   search,
 }: VerticalTableProps) => {
+  const filterColumnCells = (newList) =>
+    newList.reduce((filtered, obj) => {
+      if (obj.visible) {
+        const colObj: Column = {
+          Header: obj.columnName,
+          accessor: obj.id,
+          disableSortBy: obj.disableSortBy || false,
+        };
+        if (obj.Cell) {
+          colObj.Cell = obj.Cell;
+        }
+        if (obj.width) {
+          colObj.width = obj.width;
+        }
+        filtered.push(colObj);
+      }
+      return filtered;
+    }, []);
+
   const [table, setTable] = useState([]);
-  const [columnListOptions, setColumnListOptions] = useState([]);
-  const [headings, setHeadings] = useState([]);
+  const [headings, setHeadings] = useState(filterColumnCells(columns));
   const [showColumnMenu, setShowColumnMenu] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -222,13 +240,9 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     }
   }, [status, tableData]);
 
-  useEffect(() => {
-    setColumnListOptions(columnListOrder);
-  }, [columnListOrder]);
-  //TODO combine columnCells and columnListOrder and handle column re-ordering in this component
-  useEffect(() => {
-    setHeadings(columnCells);
-  }, [columnCells]);
+  const handleColumnChange = (update) => {
+    setHeadings(filterColumnCells(update));
+  };
 
   const tableAction = (action) => {
     action.visibleColumns.push((columns) => [
@@ -392,11 +406,11 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                       );
                     })}
                   </tr>
-                  {row.state.expanded > 0 ? (
-                    <tr {...row.getRowProps()}>
+                  {row.state.expanded > 0 && (
+                    <tr {...row.getRowProps()} key={`row-${index}-2`}>
                       <td colSpan={headings.length}>{row.state.content}</td>
                     </tr>
-                  ) : null}
+                  )}
                 </Fragment>
               );
             })
@@ -439,7 +453,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   const ShowingCount: FC = () => {
     let outputString = " --";
     if (!isNaN(pagination.from) && status === "fulfilled") {
-      outputString = ` ${pagination.from + 1} - `;
+      outputString = ` ${pagination.from ? pagination.from + 1 : 0} - `;
 
       const paginationTo = pagination.from + pageSize;
       if (paginationTo < pagination.total) {
@@ -484,12 +498,12 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 </Box>
               </Popover.Target>
               <Popover.Dropdown>
-                <div className={`w-100`}>
-                  {columnListOptions.length > 0 && showColumnMenu && (
-                    <div className={`w-100 mr-0`}>
+                <div className={`w-fit`}>
+                  {columns.length > 0 && showColumnMenu && (
+                    <div className={`mr-0 ml-auto`}>
                       <DndProvider backend={HTML5Backend}>
                         <DragDrop
-                          listOptions={columnListOptions}
+                          listOptions={columns}
                           handleColumnChange={handleColumnChange}
                           columnSearchTerm={""}
                         />
