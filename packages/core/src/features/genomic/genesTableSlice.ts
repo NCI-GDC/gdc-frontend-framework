@@ -13,7 +13,18 @@ import {
   graphqlAPI,
   TablePageOffsetProps,
 } from "../gdcapi/gdcgraphql";
-import { selectGenomicAndCohortGqlFilters } from "./genomicFilters";
+import { buildCohortGqlOperator, filterSetToOperation } from "../cohort";
+import {
+  selectGenomicAndCohortFilters,
+  selectGenomicAndCohortGqlFilters,
+} from "./genomicFilters";
+import { selectCurrentCohortFilters } from "../cohort";
+import {
+  convertFilterToGqlFilter,
+  Intersection,
+  Union,
+} from "../gdcapi/filters";
+import { appendFilterToOperation } from "./utils";
 
 const GenesTableGraphQLQuery = `
           query GenesTable_relayQuery(
@@ -27,6 +38,7 @@ const GenesTableGraphQLQuery = `
             $cnvTested: FiltersArgument
             $cnvGainFilters: FiltersArgument
             $cnvLossFilters: FiltersArgument
+            $sort: [Sort]
           ) {
             genesTableViewer: viewer {
               explore {
@@ -51,6 +63,7 @@ const GenesTableGraphQLQuery = `
                     offset: $genesTable_offset
                     filters: $genesTable_filters
                     score: $score
+                    sort: $sort
                   ) {
                     total
                     edges {
@@ -116,6 +129,35 @@ export interface GDCGenesTable {
   readonly mutationCounts?: Record<string, string>;
 }
 
+export const buildGeneTableSearchFilters = (
+  term?: string,
+): Union | undefined => {
+  if (term !== undefined) {
+    return {
+      operator: "or",
+      operands: [
+        {
+          operator: "includes",
+          field: "genes.cytoband",
+          operands: [`*${term}*`],
+        },
+        {
+          operator: "includes",
+          field: "genes.gene_id",
+          operands: [`*${term}*`],
+        },
+        {
+          operator: "includes",
+          field: "genes.symbol",
+          operands: [`*${term}*`],
+        },
+        { operator: "includes", field: "genes.name", operands: [`*${term}*`] },
+      ],
+    };
+  }
+  return undefined;
+};
+
 export const fetchGenesTable = createAsyncThunk<
   GraphQLApiResponse,
   TablePageOffsetProps,
@@ -123,13 +165,34 @@ export const fetchGenesTable = createAsyncThunk<
 >(
   "genes/genesTable",
   async (
-    { pageSize, offset }: TablePageOffsetProps,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    { pageSize, offset, searchTerm }: TablePageOffsetProps,
     thunkAPI,
   ): Promise<GraphQLApiResponse> => {
-    const filters = selectGenomicAndCohortGqlFilters(thunkAPI.getState());
+    const cohortFilters = buildCohortGqlOperator(
+      selectCurrentCohortFilters(thunkAPI.getState()),
+    );
+    const cohortFiltersContent = cohortFilters?.content
+      ? Object(cohortFilters?.content)
+      : [];
+    const geneAndCohortFilters = selectGenomicAndCohortFilters(
+      thunkAPI.getState(),
+    );
+    const filters = buildCohortGqlOperator(geneAndCohortFilters);
     const filterContents = filters?.content ? Object(filters?.content) : [];
+    const searchFilters = buildGeneTableSearchFilters(searchTerm);
+    const tableFilters = convertFilterToGqlFilter(
+      appendFilterToOperation(
+        filterSetToOperation(geneAndCohortFilters) as
+          | Union
+          | Intersection
+          | undefined,
+        searchFilters,
+      ),
+    );
+
     const graphQlFilters = {
-      genesTable_filters: filters ? filters : {},
+      genesTable_filters: tableFilters ? tableFilters : {},
       genesTable_size: pageSize,
       genesTable_offset: offset,
       score: "case.project.project_id",
@@ -163,7 +226,7 @@ export const fetchGenesTable = createAsyncThunk<
               op: "in",
             },
           ],
-          ...filterContents,
+          ...cohortFiltersContent,
         ],
         op: "and",
       },
@@ -191,7 +254,7 @@ export const fetchGenesTable = createAsyncThunk<
               op: "in",
             },
           ],
-          ...filterContents,
+          ...cohortFiltersContent,
         ],
       },
       cnvGainFilters: {
@@ -213,7 +276,7 @@ export const fetchGenesTable = createAsyncThunk<
               op: "in",
             },
           ],
-          ...filterContents,
+          ...cohortFiltersContent,
         ],
       },
       cnvLossFilters: {
@@ -235,11 +298,13 @@ export const fetchGenesTable = createAsyncThunk<
               op: "in",
             },
           ],
-          ...filterContents,
+          ...cohortFiltersContent,
         ],
       },
     };
+
     // get the TableData
+
     const results: GraphQLApiResponse<any> = await graphqlAPI(
       GenesTableGraphQLQuery,
       graphQlFilters,
@@ -265,7 +330,7 @@ export const fetchGenesTable = createAsyncThunk<
               counts: Record<string, number>,
               apiBucket: Record<string, any>,
             ) => {
-              counts[apiBucket.key] = apiBucket.doc_count;
+              counts[apiBucket.key] = apiBucket.doc_count.toLocaleString();
               return counts;
             },
             {} as Record<string, number>,
@@ -342,7 +407,6 @@ const slice = createSlice({
             };
           },
         );
-
         state.status = "fulfilled";
         state.error = undefined;
         return state;

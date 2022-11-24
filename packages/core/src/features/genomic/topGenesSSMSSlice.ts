@@ -230,7 +230,7 @@ const slice = createSlice({
               },
               ssms: {
                 symbol: ssms[0].ssm_id,
-                name: ssms[0].consequence[0].aa_change,
+                name: ssms[0].consequence[0]?.aa_change,
               },
             },
           ],

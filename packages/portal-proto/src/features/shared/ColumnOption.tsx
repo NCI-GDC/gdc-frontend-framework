@@ -3,7 +3,8 @@ import { useDrag, useDrop } from "react-dnd";
 import { ItemTypes } from "./ItemTypes";
 import type { XYCoord, Identifier } from "dnd-core";
 import _ from "lodash";
-
+import { MdDragIndicator } from "react-icons/md";
+import SwitchSpring from "../../components/expandableTables/shared/SwitchSpring";
 const columnStyles = `cursor-move bg-base-lightest mb-2 p-1 border-1 block`;
 const columnStylesDisabled = `cursor-not-allowed bg-base-lightest mb-2 p-1 border-1`;
 
@@ -36,7 +37,7 @@ export const ColumnOption: FC<ColumnProps> = ({
     return _.startCase(colName);
   };
 
-  const ref = useRef<HTMLLabelElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
 
   const [{ handlerId }, drop] = useDrop<
     DragItem,
@@ -97,29 +98,50 @@ export const ColumnOption: FC<ColumnProps> = ({
   return (
     <>
       {arrangeable ? (
-        <label
+        <div
           ref={ref}
           className={`${columnStyles} opacity-${o}`}
           data-handler-id={handlerId}
         >
-          <input
-            className={"mr-2 ml-2"}
-            type="checkbox"
-            checked={visible}
-            onChange={() => toggleColumn(columnName)}
-          />
-          <span className={`text-xs`}>{formatColumnName(columnName)}</span>
-        </label>
+          <div className={`flex flex-row text-xs items-center justify-between`}>
+            <div className={`flex flex-row`}>
+              <div className={`my-auto mr-2 ml-0 text-gray-500`}>
+                <MdDragIndicator size={"16px"} />
+              </div>
+              {columnName}
+            </div>
+            <SwitchSpring
+              margin={`mt-1 ml-0.5`}
+              isActive={visible}
+              icon={undefined}
+              handleSwitch={toggleColumn}
+              selected={columnName}
+              tooltip={""}
+            />
+          </div>
+        </div>
       ) : (
         <div className={columnStylesDisabled} data-handler-id={handlerId}>
-          <input
-            className={"mr-2 ml-2"}
-            type="checkbox"
-            checked={visible}
-            onChange={() => toggleColumn(columnName)}
-            disabled
-          />
-          <span className={`text-xs`}>{formatColumnName(columnName)}</span>
+          <div className={`flex flex-row text-xs justify-between`}>
+            <div className={`flex flex-row w-fit`}>
+              <div className={`flex flex-row`}>
+                <div className={`my-auto mr-2 ml-0 text-gray-500`}>
+                  <MdDragIndicator size={"16px"} />
+                </div>
+                <div className={`flex flex-row w-60 my-auto`}>
+                  {formatColumnName(columnName)}
+                </div>
+              </div>
+            </div>
+            <SwitchSpring
+              margin={`mt-1 ml-0.5`}
+              isActive={visible}
+              icon={undefined}
+              handleSwitch={toggleColumn}
+              selected={columnName}
+              tooltip={""}
+            />
+          </div>
         </div>
       )}
     </>

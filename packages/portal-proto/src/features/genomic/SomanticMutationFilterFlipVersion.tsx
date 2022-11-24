@@ -1,5 +1,5 @@
-import GenesTable from "../genesTable/GenesTable";
-import MutationsTable from "../mutationsTable/MutationsTable";
+import { GTableContainer } from "../../components/expandableTables/genes/GTableContainer";
+import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMTableContainer";
 import MutationFacet from "../cohortBuilder/MutationFacet";
 import {
   BIOTYPE,
@@ -25,6 +25,9 @@ const GeneChartWithNoSSR = dynamic(() => import("./Charts"), {
 const SomanticMutationFilterFlipVersion: React.FC<SomaticAppProps> = () => {
   const [showGeneChart, setShowGeneChart] = useState(false);
   const [showMutationChart, setShowMutationChart] = useState(false);
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleGeneToggled = (_: Record<string, any>) => null;
 
   const toggleGeneFlip = () => {
     setShowGeneChart(!showGeneChart);
@@ -66,9 +69,10 @@ const SomanticMutationFilterFlipVersion: React.FC<SomaticAppProps> = () => {
             }
           >
             <div className="card-face bg-base-lightest">
-              <GenesTable
+              <GTableContainer
                 selectedSurvivalPlot={undefined}
                 handleSurvivalPlotToggled={undefined}
+                handleGeneToggled={handleGeneToggled}
               />
             </div>
             <div className="card-face card-back bg-base-lightest">
@@ -117,7 +121,7 @@ const SomanticMutationFilterFlipVersion: React.FC<SomaticAppProps> = () => {
             }
           >
             <div className="card-face bg-base-lightest">
-              <MutationsTable
+              <SMTableContainer
                 selectedSurvivalPlot={undefined}
                 handleSurvivalPlotToggled={undefined}
               />

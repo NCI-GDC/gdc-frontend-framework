@@ -28,40 +28,44 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
   // to track reusable instance for mds3 skewer track
   const ppRef = useRef<PpApi>();
 
-  useEffect(() => {
-    const data =
-      props.track == "lolliplot"
-        ? getLolliplotTrack(props, filter0)
-        : props.track == "bam"
-        ? getBamTrack(props, filter0)
-        : null;
+  useEffect(
+    () => {
+      const data =
+        props.track == "lolliplot"
+          ? getLolliplotTrack(props, filter0)
+          : props.track == "bam"
+          ? getBamTrack(props, filter0)
+          : null;
 
-    if (!data) return;
-    const rootElem = divRef.current as HTMLElement;
-    const toolContainer = rootElem.parentNode.parentNode
-      .parentNode as HTMLElement;
-    toolContainer.style.backgroundColor = "#fff";
+      if (!data) return;
+      const rootElem = divRef.current as HTMLElement;
+      const toolContainer = rootElem.parentNode.parentNode
+        .parentNode as HTMLElement;
+      toolContainer.style.backgroundColor = "#fff";
 
-    const arg = Object.assign(
-      { holder: rootElem, noheader: true, nobox: true, hide_dsHandles: true },
-      JSON.parse(JSON.stringify(data)),
-    ) as PpArg;
+      const arg = Object.assign(
+        { holder: rootElem, noheader: true, nobox: true, hide_dsHandles: true },
+        JSON.parse(JSON.stringify(data)),
+      ) as PpArg;
 
-    if (ppRef.current) {
-      ppRef.current.update(arg);
-    } else {
-      const pp_holder = rootElem.querySelector(".sja_root_holder");
-      if (pp_holder) pp_holder.remove();
-      runproteinpaint(arg).then((pp) => {
-        ppRef.current = pp;
-      });
-    }
-  }, [
-    props.gene2canonicalisoform,
-    props.mds3_ssm2canonicalisoform,
-    props.geneSearch4GDCmds3,
-    filter0,
-  ]);
+      if (ppRef.current) {
+        ppRef.current.update(arg);
+      } else {
+        const pp_holder = rootElem.querySelector(".sja_root_holder");
+        if (pp_holder) pp_holder.remove();
+        runproteinpaint(arg).then((pp) => {
+          ppRef.current = pp;
+        });
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      props.gene2canonicalisoform,
+      props.mds3_ssm2canonicalisoform,
+      props.geneSearch4GDCmds3,
+      filter0,
+    ],
+  );
 
   const divRef = useRef();
   return <div ref={divRef} />;

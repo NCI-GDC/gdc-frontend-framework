@@ -1,5 +1,5 @@
-import GenesTable from "../genesTable/GenesTable";
-import MutationsTable from "../mutationsTable/MutationsTable";
+import { GTableContainer } from "../../components/expandableTables/genes/GTableContainer";
+import { SMTableContainer } from "../../components/expandableTables/somaticMutations/SMTableContainer";
 import MutationFacet from "../cohortBuilder/MutationFacet";
 import {
   BIOTYPE,
@@ -16,6 +16,9 @@ const GeneChartWithNoSSR = dynamic(() => import("./Charts"), {
 });
 
 const SomanticMutationFilterFixedVersion: React.FC = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleGeneToggled = (_: Record<string, any>) => null;
+
   return (
     <div className="flex flex-row">
       <div className="flex flex-col">
@@ -46,9 +49,10 @@ const SomanticMutationFilterFixedVersion: React.FC = () => {
               </div>
             </div>
           </div>
-          <GenesTable
+          <GTableContainer
             selectedSurvivalPlot={undefined}
             handleSurvivalPlotToggled={undefined}
+            handleGeneToggled={handleGeneToggled}
           />
         </div>
       </div>
@@ -95,7 +99,7 @@ const SomanticMutationFilterFixedVersion: React.FC = () => {
               </div>
             </div>
           </div>
-          <MutationsTable
+          <SMTableContainer
             selectedSurvivalPlot={undefined}
             handleSurvivalPlotToggled={undefined}
           />
