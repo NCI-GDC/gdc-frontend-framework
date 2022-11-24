@@ -1,4 +1,4 @@
-import React, { useState, useEffect, FC } from "react";
+import React, { useState, useEffect, FC, Fragment } from "react";
 import { useTable, useRowState, useSortBy } from "react-table";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -387,9 +387,8 @@ export const VerticalTable: FC<VerticalTableProps> = ({
             rows.map((row, index) => {
               prepareRow(row);
               return (
-                <React.Fragment key={index}>
+                <Fragment key={`row-${index}`}>
                   <tr
-                    key={`row-${index}`}
                     {...row.getRowProps()}
                     className={
                       index % 2 === 1 ? "bg-base-lighter" : "bg-base-lightest"
@@ -412,7 +411,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                       <td colSpan={headings.length}>{row.state.content}</td>
                     </tr>
                   )}
-                </React.Fragment>
+                </Fragment>
               );
             })
           )}
@@ -506,6 +505,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                         <DragDrop
                           listOptions={columns}
                           handleColumnChange={handleColumnChange}
+                          columnSearchTerm={""}
                         />
                       </DndProvider>
                     </div>

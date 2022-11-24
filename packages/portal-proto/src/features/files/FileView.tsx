@@ -9,7 +9,7 @@ import {
 } from "@gff/core";
 import ReactModal from "react-modal";
 import { HorizontalTable } from "@/components/HorizontalTable";
-import { Table, Button } from "@mantine/core";
+import { Table, Button, Menu } from "@mantine/core";
 import { FaDownload } from "react-icons/fa";
 import { get } from "lodash";
 import dynamic from "next/dynamic";
@@ -622,20 +622,30 @@ export const FileView: React.FC<FileViewProps> = ({
         <FullWidthDiv>
           <TitleText className="float-left mt-3">File Versions</TitleText>
           <div className="float-right my-2 mr-3">
-            <Button
-              onClick={downloadVersionJSON}
-              color={"base"}
-              className="mr-2 text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
-            >
-              <FaDownload className="mr-2" /> Download JSON
-            </Button>
-            <Button
-              color={"base"}
-              className="text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
-              onClick={handleDownloadTSV}
-            >
-              <FaDownload className="mr-2" /> Download TSV
-            </Button>
+            <Menu width="target">
+              <Menu.Target>
+                <Button
+                  className="px-1.5 min-h-7 w-28 rounded text-primary-content-lightest bg-primary hover:bg-primary-darker"
+                  leftIcon={<FaDownload />}
+                >
+                  Download
+                </Button>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Item
+                  onClick={handleDownloadTSV}
+                  icon={<FaDownload className="mr-2" />}
+                >
+                  TSV
+                </Menu.Item>
+                <Menu.Item
+                  onClick={downloadVersionJSON}
+                  icon={<FaDownload className="mr-2" />}
+                >
+                  JSON
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
           </div>
           <TempTable
             tableData={{

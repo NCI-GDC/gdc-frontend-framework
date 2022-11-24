@@ -37,6 +37,8 @@ export * from "./features/genomic/genesFrequencyChartSlice";
 export * from "./features/genomic/genomicFilters";
 export * from "./features/genomic/topGenesSSMSSlice";
 export * from "./features/cancerDistribution";
+export * from "./features/subrows";
+export * from "./features/tables";
 export * from "./features/oncoGrid/oncoGridSlice";
 export * from "./features/cohortComparison";
 export * from "./features/biospecimen/biospecimenSlice";
