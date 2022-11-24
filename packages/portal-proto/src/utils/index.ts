@@ -1,8 +1,7 @@
 import { KeyboardEventHandler } from "react";
 import { CartFile, DAYS_IN_YEAR } from "@gff/core";
 import { replace, sortBy, zip } from "lodash";
-import { DocumentWithWebkit } from "../features/types";
-import * as tailwindConfig from "tailwind.config";
+import { DocumentWithWebkit } from "@/features/types";
 
 export const toggleFullScreen = async (
   ref: React.MutableRefObject<any>,
@@ -131,9 +130,6 @@ export const sortByPropertyAsc = <T>(
   sortBy(givenObjects, [
     (e) => replace(e[property], /[^a-zA-Z]/g, "").toLocaleLowerCase(),
   ]);
-
-export const getThemeColor = (key: string): Record<string, string> =>
-  tailwindConfig.plugins.slice(-1)[0].__options.defaultTheme.extend.colors[key];
 
 interface HumanifyParams {
   term: string;
