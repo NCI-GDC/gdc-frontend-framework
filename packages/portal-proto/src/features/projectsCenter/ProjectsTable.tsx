@@ -209,7 +209,7 @@ const ProjectsTable: React.FC = () => {
       method: "POST",
       options: {
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+          "Content-Type": "application/json",
         },
         method: "POST",
       },
