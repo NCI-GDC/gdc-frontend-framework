@@ -137,6 +137,9 @@ interface VerticalTableProps {
      */
     placeholder?: string;
   };
+  /**
+   * Optional default table sort state
+   */
   initialSort?: Array<SortingRule<any>>;
 }
 
@@ -194,6 +197,7 @@ interface TableProps {
  * @parm {object} pagination - optional pagination controls at bottom of table
  * @parm {string} status - optional shows loading state
  * @parm {object} search - optional, search options
+ * @parm {object} initialSort - optional, initial sort state
  * @returns ReactElement
  */
 export const VerticalTable: FC<VerticalTableProps> = ({
