@@ -19,6 +19,7 @@ import {
   SelectAllProjectsButton,
 } from "@/features/projectsCenter/SelectProjectButton";
 import ProjectsCohortButton from "./ProjectsCohortButton";
+import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 
 const extractToArray = (
   data: ReadonlyArray<Record<string, number | string>>,
@@ -88,7 +89,7 @@ const ProjectsTable: React.FC = () => {
       columnName: "Project",
       visible: true,
       Cell: ({ value }: CellProps) => {
-        return <div className="text-left w-24">{value} </div>;
+        return <div className="text-left w-24">{value}</div>;
       },
     },
     {
@@ -109,7 +110,14 @@ const ProjectsTable: React.FC = () => {
       },
       disableSortBy: true,
     },
-    { id: "program", columnName: "Program", visible: true },
+    {
+      id: "program",
+      columnName: "Program",
+      visible: true,
+      Cell: ({ value }: CellProps) => {
+        return <div className="text-left w-24">{value} </div>;
+      },
+    },
     {
       id: "cases",
       columnName: "Cases",
@@ -183,13 +191,19 @@ const ProjectsTable: React.FC = () => {
           }: ProjectDefaults) => ({
             selected: project_id,
             project_id: (
-              <Link href={`/projects/${project_id}`}>
-                <a className="text-utility-link underline">{project_id}</a>
-              </Link>
+              <OverflowTooltippedLabel label={project_id}>
+                <Link href={`/projects/${project_id}`}>
+                  <a className="text-utility-link underline">{project_id}</a>
+                </Link>
+              </OverflowTooltippedLabel>
             ),
             disease_type: disease_type,
             primary_site: primary_site,
-            program: program.name,
+            program: (
+              <OverflowTooltippedLabel label={program.name}>
+                {program.name}
+              </OverflowTooltippedLabel>
+            ),
             cases: summary.case_count.toLocaleString().padStart(9),
             data_categories: extractToArray(
               summary.data_categories,
@@ -262,6 +276,7 @@ const ProjectsTable: React.FC = () => {
       }}
       status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
       handleChange={handleChange}
+      initialSort={[{ id: "cases", desc: true }]}
     />
   );
 };

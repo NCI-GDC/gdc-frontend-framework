@@ -1,5 +1,5 @@
 import React, { useState, useEffect, FC, Fragment } from "react";
-import { useTable, useRowState, useSortBy } from "react-table";
+import { useTable, useRowState, useSortBy, SortingRule } from "react-table";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DragDrop } from "./DragDrop";
@@ -137,6 +137,7 @@ interface VerticalTableProps {
      */
     placeholder?: string;
   };
+  initialSort?: Array<SortingRule<any>>;
 }
 
 /**
@@ -209,6 +210,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     console.error("handleChange was not set and called with:", a);
   },
   search,
+  initialSort = [],
 }: VerticalTableProps) => {
   const filterColumnCells = (newList) =>
     newList.reduce((filtered, obj) => {
@@ -257,7 +259,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   };
 
   // save sorting state
-  const [colSort, setColSort] = useState([]);
+  const [colSort, setColSort] = useState(initialSort);
   const useTableConditionalProps = [];
   if (columnSorting !== "none") {
     useTableConditionalProps.push(useSortBy);
