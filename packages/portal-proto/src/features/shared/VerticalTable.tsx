@@ -57,7 +57,7 @@ interface VerticalTableProps {
     /**
      * HTML that user will see at top of column
      */
-    columnName: JSX.Element | string;
+    columnName: JSX.Element | string | ((value: any) => JSX.Element);
     /**
      * Flag to show / hide column
      */
@@ -169,7 +169,7 @@ export interface HandleChangeInput {
 }
 
 interface Column {
-  Header: string | JSX.Element;
+  Header: string | JSX.Element | ((value: any) => JSX.Element);
   accessor: string;
   disableSortBy?: boolean;
   width?: number;

@@ -8,6 +8,7 @@ import {
   buildCohortGqlOperator,
   ProjectDefaults,
   joinFilters,
+  SortBy,
 } from "@gff/core";
 import { useAppSelector } from "@/features/projectsCenter/appApi";
 import { selectFilters } from "@/features/projectsCenter/projectCenterFiltersSlice";
@@ -37,6 +38,9 @@ const ProjectsTable: React.FC = () => {
   const [pageSize, setPageSize] = useState(20);
   const [activePage, setActivePage] = useState(1);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [sortBy, setSortBy] = useState<SortBy[]>([
+    { field: "summary.case_count", direction: "desc" },
+  ]);
 
   const projectFilters = useAppSelector((state) => selectFilters(state));
   const { data, pagination, isSuccess, isFetching, isError } = useProjects({
@@ -63,21 +67,21 @@ const ProjectsTable: React.FC = () => {
     ],
     size: pageSize,
     from: (activePage - 1) * pageSize,
-    sortBy: [{ field: "summary.case_count", direction: "desc" }],
+    sortBy: sortBy,
   });
 
   const columnListOrder = [
     {
       id: "selected",
-      columnName: "Select",
       visible: true,
-      Header: ({ data }: TableInstance) => {
+      columnName: ({ data }: TableInstance) => {
         const projectIds = data.map((x) => x.selected);
         return <SelectAllProjectsButton projectIds={projectIds} />;
       },
       Cell: ({ value }: SelectColumnProps) => {
         return <SelectProjectButton projectId={value} />;
       },
+      disableSortBy: true,
     },
     {
       id: "project_id",
@@ -94,6 +98,7 @@ const ProjectsTable: React.FC = () => {
       Cell: ({ value, row }: CellProps) => {
         return <CollapsibleRow value={value} row={row} label="Disease Types" />;
       },
+      disableSortBy: true,
     },
     {
       id: "primary_site",
@@ -102,6 +107,7 @@ const ProjectsTable: React.FC = () => {
       Cell: ({ value, row }: CellProps) => {
         return <CollapsibleRow value={value} row={row} label="Primary Sites" />;
       },
+      disableSortBy: true,
     },
     { id: "program", columnName: "Program", visible: true },
     {
@@ -119,6 +125,7 @@ const ProjectsTable: React.FC = () => {
       Cell: ({ value, row }: CellProps) => (
         <CollapsibleRow value={value} row={row} label="Data Categories" />
       ),
+      disableSortBy: true,
     },
     {
       id: "experimental_strategies",
@@ -131,6 +138,7 @@ const ProjectsTable: React.FC = () => {
           label="Experimental Strategies"
         />
       ),
+      disableSortBy: true,
     },
     {
       id: "files",
@@ -143,6 +151,24 @@ const ProjectsTable: React.FC = () => {
   ];
 
   useEffect(() => setActivePage(1), [projectFilters]);
+
+  const sortByActions = (sortByObj) => {
+    const COLUMN_ID_TO_FIELD = {
+      project_id: "project_id",
+      files: "summary.file_count",
+      cases: "summary.case_count",
+      program: "program.name",
+    };
+    const tempSortBy = sortByObj.map((sortObj) => {
+      ///const tempSortId = COLUMN_ID_TO_FIELD[sortObj.id];
+      // map sort ids to api ids
+      return {
+        field: COLUMN_ID_TO_FIELD[sortObj.id],
+        direction: sortObj.desc ? "desc" : "asc",
+      };
+    });
+    setSortBy(tempSortBy);
+  };
 
   const [formattedTableData, tempPagination] = useMemo(() => {
     if (isSuccess) {
@@ -195,6 +221,9 @@ const ProjectsTable: React.FC = () => {
 
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
+      case "sortBy":
+        sortByActions(obj.sortBy);
+        break;
       case "newPageSize":
         setPageSize(parseInt(obj.newPageSize));
         setActivePage(1);
@@ -221,6 +250,7 @@ const ProjectsTable: React.FC = () => {
       }
       tableData={formattedTableData}
       columns={columnListOrder}
+      columnSorting={"manual"}
       selectableRow={false}
       showControls={true}
       pagination={{
