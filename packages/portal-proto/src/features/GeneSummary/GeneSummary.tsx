@@ -14,7 +14,6 @@ import { formatDataForHorizontalTable } from "../files/utils";
 import { Grid, LoadingOverlay } from "@mantine/core";
 import { GeneCancerDistributionTable } from "../cancerDistributionTable/CancerDistributionTable";
 import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMTableContainer";
-import { Image } from "@/components/Image";
 import { DEFAULT_GENE_SUMMARY_TABLE_ORDER } from "./mutationTableConfig";
 
 interface GeneViewProps {
@@ -179,12 +178,7 @@ const GeneView = ({ data, gene_id }: GeneViewProps) => {
               />
               <div className="mt-4">
                 <div className="flex items-center gap-2">
-                  <Image
-                    src="/user-flow/icons/gene-mutation.svg"
-                    className="text-primary-content"
-                    width="24rem"
-                    height="24rem"
-                  />{" "}
+                  <BarChartIcon size={20} />
                   <h2 className="text-xl">Most Frequent Somatic Mutations</h2>
                 </div>
                 <SMTableContainer
