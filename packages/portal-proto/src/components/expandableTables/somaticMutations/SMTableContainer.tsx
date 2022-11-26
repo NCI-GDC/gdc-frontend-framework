@@ -121,6 +121,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     pageSize: pageSize,
     offset: pageSize * page,
     searchTerm: deboucedSearchTern.length > 0 ? deboucedSearchTern : undefined,
+    geneSymbol: geneSymbol,
   });
 
   useEffect(() => {

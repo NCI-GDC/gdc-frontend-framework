@@ -27,6 +27,7 @@ import {
   Union,
 } from "../gdcapi/filters";
 import { appendFilterToOperation } from "./utils";
+import { joinFilters } from "../cohort";
 
 const SSMSTableGraphQLQuery = `query SsmsTable_relayQuery(
   $ssmTested: FiltersArgument
@@ -163,26 +164,55 @@ export const buildSSMSTableSearchFilters = (
   return undefined;
 };
 
+export interface SsmsTableRequestParameters extends TablePageOffsetProps {
+  readonly geneSymbol?: string;
+}
+
 export const fetchSsmsTable = createAsyncThunk<
   GraphQLApiResponse,
-  TablePageOffsetProps,
+  SsmsTableRequestParameters,
   { dispatch: CoreDispatch; state: CoreState }
 >(
   "genomic/ssmsTable",
   async (
-    { pageSize, offset, searchTerm }: TablePageOffsetProps,
+    { pageSize, offset, searchTerm, geneSymbol }: SsmsTableRequestParameters,
     thunkAPI,
   ): Promise<GraphQLApiResponse> => {
     const cohortFilters = buildCohortGqlOperator(
-      selectCurrentCohortFilters(thunkAPI.getState()),
+      geneSymbol
+        ? joinFilters(
+            selectCurrentCohortFilters(thunkAPI.getState()) ?? {
+              mode: "and",
+              root: {},
+            },
+            {
+              mode: "and",
+              root: {
+                "genes.symbol": {
+                  field: "genes.symbol",
+                  operator: "includes",
+                  operands: [geneSymbol],
+                },
+              },
+            },
+          )
+        : selectCurrentCohortFilters(thunkAPI.getState()),
     );
     const cohortFiltersContent = cohortFilters?.content
       ? Object(cohortFilters?.content)
       : [];
-
-    const geneAndCohortFilters = selectGenomicAndCohortFilters(
-      thunkAPI.getState(),
-    );
+    const geneAndCohortFilters = geneSymbol
+      ? joinFilters(selectGenomicAndCohortFilters(thunkAPI.getState()), {
+          mode: "and",
+          root: {
+            "genes.symbol": {
+              field: "genes.symbol",
+              operator: "includes",
+              operands: [geneSymbol],
+            },
+          },
+        })
+      : selectGenomicAndCohortFilters(thunkAPI.getState());
 
     const searchFilters = buildSSMSTableSearchFilters(searchTerm);
     const tableFilters = convertFilterToGqlFilter(
