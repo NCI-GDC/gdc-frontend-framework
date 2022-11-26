@@ -8,7 +8,7 @@ import { default as PageSize } from "../shared/PageSizeMantine";
 import { default as TableControls } from "../shared/TableControlsMantine";
 import TablePlaceholder from "../shared/TablePlaceholder";
 import { SomaticMutations, DEFAULT_SMTABLE_ORDER } from "./types";
-import { SelectedReducer, SelectReducerAction } from "../shared/types";
+import { Column, SelectedReducer, SelectReducerAction } from "../shared/types";
 import { default as TableFilters } from "../shared/TableFiltersMantine";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import { useDebouncedValue } from "@mantine/hooks";
@@ -28,20 +28,24 @@ export interface SMTableContainerProps {
     name: string,
     field: string,
   ) => void;
+  columnsList?: Array<Column>;
+  geneSymbol?: string;
 }
 
 export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   selectedSurvivalPlot,
   handleSurvivalPlotToggled,
+  columnsList = DEFAULT_SMTABLE_ORDER,
+  geneSymbol = undefined,
 }: SMTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
   const [deboucedSearchTern] = useDebouncedValue(searchTerm, 400);
   const [ref, { width }] = useMeasure();
-  const [columnListOrder, setColumnListOrder] = useState(DEFAULT_SMTABLE_ORDER);
+  const [columnListOrder, setColumnListOrder] = useState(columnsList);
   const [visibleColumns, setVisibleColumns] = useState(
-    DEFAULT_SMTABLE_ORDER.filter((col) => col.visible),
+    columnsList.filter((col) => col.visible),
   );
 
   const [showColumnMenu, setShowColumnMenu] = useState<boolean>(false);
@@ -136,7 +140,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       <SelectedRowContext.Provider
         value={[selectedMutations, setSelectedMutations]}
       >
-        <div className="flex flex-row justify-between items-center flex-nowrap w-[80%]">
+        <div className="flex flex-row justify-between items-center flex-nowrap w-100">
           <div className="flex flex-row ml-2 mb-4">
             <TableControls
               total={smTotal}
@@ -184,17 +188,17 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             />
           </div>
         </div>
-        <div ref={ref} className="h-full w-[90%]">
+        <div ref={ref}>
           {!visibleColumns.length ? (
             <TablePlaceholder
-              cellWidth={`w-[75px]`}
+              cellWidth={`w-48`}
               rowHeight={60}
               numOfColumns={15}
               numOfRows={pageSize}
               content={<span>No columns selected</span>}
             />
           ) : (
-            <div ref={ref} className="h-full w-[90%]">
+            <div ref={ref}>
               <SomaticMutationsTable
                 status={status}
                 initialData={tableData}
@@ -209,6 +213,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 columnListOrder={columnListOrder}
                 visibleColumns={visibleColumns}
                 searchTerm={searchTerm}
+                geneSymbol={geneSymbol}
               />
             </div>
           )}

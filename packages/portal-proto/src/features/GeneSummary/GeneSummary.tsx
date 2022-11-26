@@ -1,3 +1,4 @@
+import React from "react";
 import { AnchorLink } from "@/components/AnchorLink";
 import { CollapsibleTextArea } from "@/components/CollapsibleTextArea";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
@@ -12,6 +13,9 @@ import SSMPlot from "../charts/SSMPlot";
 import { formatDataForHorizontalTable } from "../files/utils";
 import { Grid, LoadingOverlay } from "@mantine/core";
 import { GeneCancerDistributionTable } from "../cancerDistributionTable/CancerDistributionTable";
+import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMTableContainer";
+import { Image } from "@/components/Image";
+import { DEFAULT_GENE_SUMMARY_TABLE_ORDER } from "./mutationTableConfig";
 
 interface GeneViewProps {
   data: {
@@ -173,6 +177,23 @@ const GeneView = ({ data, gene_id }: GeneViewProps) => {
                 gene={gene_id}
                 symbol={data.genes.symbol}
               />
+              <div className="mt-4">
+                <div className="flex items-center gap-2">
+                  <Image
+                    src="/user-flow/icons/gene-mutation.svg"
+                    className="text-primary-content"
+                    width="24rem"
+                    height="24rem"
+                  />{" "}
+                  <h2 className="text-xl">Most Frequent Somatic Mutations</h2>
+                </div>
+                <SMTableContainer
+                  selectedSurvivalPlot={{}}
+                  handleSurvivalPlotToggled={() => null}
+                  columnsList={DEFAULT_GENE_SUMMARY_TABLE_ORDER}
+                  geneSymbol={data.genes.symbol}
+                />
+              </div>
             </div>
           </div>
         </>

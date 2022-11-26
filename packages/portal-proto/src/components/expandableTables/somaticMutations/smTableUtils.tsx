@@ -25,6 +25,7 @@ export const createTableColumn = (
     field: string,
   ) => void,
   setMutationID: Dispatch<SetStateAction<string>>,
+  geneSymbol: string = undefined,
 ): TableColumnDefinition => {
   switch (accessor) {
     case "select":
@@ -235,11 +236,11 @@ export const createTableColumn = (
             header: () => (
               <TableHeader
                 title={`# Affected Cases
-                   in Cohort `}
+                   in ${geneSymbol ? geneSymbol : "Cohort"}`}
                 className="flex justify-start"
-                tooltip={
-                  "# Cases where Mutation is observed in Cohort / # Cases tested for Simple Somatic Mutations in Cohort"
-                }
+                tooltip={`# Cases where Mutation is observed in ${
+                  geneSymbol ? geneSymbol : "Cohort"
+                } / # Cases tested for Simple Somatic Mutations in Cohort`}
               />
             ),
             cell: ({ row }) => {
@@ -414,6 +415,37 @@ export const createTableColumn = (
                   {row.getCanExpand() && (
                     <Impacts impact={row.original["impact"]} />
                   )}
+                </div>
+              );
+            },
+          },
+        ],
+      };
+    case "mutationID":
+      return {
+        header: " ",
+        footer: (props) => props.column.id,
+        columns: [
+          {
+            accessorKey: accessor,
+            header: () => (
+              <TableHeader
+                title={startCase(accessor)}
+                tooltip={""}
+                className="flex flex-row justify-start w-32 ml-4"
+              />
+            ),
+            cell: ({ row }) => {
+              return (
+                <div className="flex justify-start ml-4 ">
+                  <>
+                    <TableCell
+                      row={row}
+                      accessor={accessor}
+                      anchor={false}
+                      tooltip={""}
+                    />
+                  </>
                 </div>
               );
             },
