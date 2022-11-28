@@ -19,7 +19,7 @@ interface CountsIconProps {
 }
 
 export const CountsIcon = tw.div<CountsIconProps>`
-${(p) =>
+${(p: CountsIconProps) =>
   p.$count !== undefined && p.$count > 0 ? "bg-primary" : "bg-transparent"}
 inline-flex
 items-center

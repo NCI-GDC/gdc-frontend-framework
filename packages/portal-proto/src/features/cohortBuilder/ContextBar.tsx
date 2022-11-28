@@ -8,9 +8,11 @@ import { useCohortFacetFilters } from "./CohortGroup";
 import CohortManager from "./CohortManager";
 import {
   DeleteCohortNotification,
+  DiscardChangesCohortNotification,
+  ErrorCohortNotification,
   NewCohortNotification,
+  SavedCohortNotification,
 } from "@/features/cohortBuilder/CohortNotifications";
-
 import {
   useCoreDispatch,
   setCurrentCohortId,
@@ -21,6 +23,10 @@ import {
   selectCohortMessage,
   selectCurrentCohortName,
   clearCohortMessage,
+  setCohortList,
+  useGetCohortsByContextIdQuery,
+  buildGqlOperationToFilterSet,
+  DataStatus,
 } from "@gff/core";
 
 import {
@@ -30,21 +36,59 @@ import {
   MdFileCopy as FilesIcon,
 } from "react-icons/md";
 import { FaCartPlus as AddToCartIcon } from "react-icons/fa";
-
 import SummaryFacets, { SummaryFacetInfo } from "./SummaryFacets";
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
 import FunctionButton from "@/components/FunctionButton";
 import QueryExpressionSection from "./QueryExpressionSection";
 
+interface Error {
+  data: {
+    message: string;
+  };
+  status: number;
+}
+
 const ContextBar: React.FC = () => {
+  const coreDispatch = useCoreDispatch();
+  const { data: cohortsListData, error: getCohortError } =
+    useGetCohortsByContextIdQuery();
+
+  useEffect(() => {
+    // If cohortsListData is undefined that means either user doesn't have any cohorts saved as of now
+    // or call to fetch the cohort list errored out.
+    // In that case we need to check if the error is due to context id not being provided.
+    // If that's case then we get rid of all saved, unsaved cohort from the local cohortAdapter by unsending undefined payload
+
+    if (cohortsListData) {
+      const updatedList = cohortsListData.map((data) => ({
+        ...data,
+        filters: buildGqlOperationToFilterSet(data.filters),
+        caseSet: {
+          caseSetId: buildGqlOperationToFilterSet(data.filters),
+          status: "fulfilled" as DataStatus,
+        },
+      }));
+      coreDispatch(setCohortList(updatedList));
+    } else if ((getCohortError as Error)?.status === 400) {
+      const noGdcContext =
+        ((getCohortError as Error)?.data.message as string) ===
+        "Bad Request: [400] - Context id not provided.";
+      if (noGdcContext) {
+        coreDispatch(setCohortList(undefined));
+      }
+    }
+  }, [getCohortError, coreDispatch, cohortsListData]);
+
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(DEFAULT_COHORT_ID);
 
+  const setCohort = (id: string) => {
+    coreDispatch(setCurrentCohortId(id));
+  };
   const handleCohortSelection = (idx: string) => {
     setCohort(idx);
   };
 
-  const coreDispatch = useCoreDispatch();
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
   const currentCohortId = useCoreSelector((state) =>
     selectCurrentCohortId(state),
@@ -52,10 +96,6 @@ const ContextBar: React.FC = () => {
   const currentCohortName = useCoreSelector((state) =>
     selectCurrentCohortName(state),
   );
-  const setCohort = (id: string) => {
-    coreDispatch(setCurrentCohortId(id));
-  };
-
   const cohortMessage = useCoreSelector((state) => selectCohortMessage(state));
 
   useEffect(() => {
@@ -80,7 +120,35 @@ const ContextBar: React.FC = () => {
             autoClose: 5000,
           });
         }
+        if (cmdAndParam[0] === "savedCohort") {
+          showNotification({
+            message: <SavedCohortNotification />,
+            classNames: {
+              description: "flex flex-col content-center text-center",
+            },
+            autoClose: 5000,
+          });
+        }
+        if (cmdAndParam[0] === "discardChanges") {
+          showNotification({
+            message: <DiscardChangesCohortNotification />,
+            classNames: {
+              description: "flex flex-col content-center text-center",
+            },
+            autoClose: 5000,
+          });
+        }
+        if (cmdAndParam[0] === "error") {
+          showNotification({
+            message: <ErrorCohortNotification errorType={cmdAndParam[1]} />,
+            classNames: {
+              description: "flex flex-col content-center text-center",
+            },
+            autoClose: 5000,
+          });
+        }
       }
+
       coreDispatch(clearCohortMessage());
     }
   }, [cohortMessage, coreDispatch, currentCohortName]);

@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { FacetTabs } from "./FacetTabs";
+import { FacetTabs } from "../FacetTabs";
 import * as core from "@gff/core";
 import * as func from "@gff/core";
 

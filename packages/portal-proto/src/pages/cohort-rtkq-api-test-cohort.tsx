@@ -20,7 +20,7 @@ const CohortContent = ({ cohort }: { cohort: CohortModel }) => {
       <p>Cohort ID: {id}</p>
       <p>Cohort Name: {name}</p>
       <p>Cohort Type: {type}</p>
-      <p>Filters: {JSON.stringify(filters)}</p>
+      <p>Filters: {JSON.stringify(filters, null, 4)}</p>
       <p>Case IDs: {JSON.stringify(case_ids)}</p>
       <p>Data Release: {JSON.stringify(data_release)}</p>
     </article>
