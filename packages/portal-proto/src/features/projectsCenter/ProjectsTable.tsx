@@ -144,21 +144,6 @@ const ProjectsTable: React.FC = () => {
       },
     },
   ];
-  const filterColumnCells = (newList) =>
-    newList.reduce((filtered, obj) => {
-      if (obj.visible) {
-        filtered.push({ Header: obj.columnName, accessor: obj.id, ...obj });
-      }
-      return filtered;
-    }, []);
-
-  const [columnCells, setColumnCells] = useState(
-    filterColumnCells(columnListOrder),
-  );
-
-  const handleColumnChange = (update) => {
-    setColumnCells(filterColumnCells(update));
-  };
 
   useEffect(() => setActivePage(1), [projectFilters]);
 
@@ -272,9 +257,7 @@ const ProjectsTable: React.FC = () => {
         </div>
       }
       tableData={formattedTableData}
-      columnListOrder={columnListOrder}
-      columnCells={columnCells}
-      handleColumnChange={handleColumnChange}
+      columns={columnListOrder}
       selectableRow={false}
       showControls={true}
       pagination={{
