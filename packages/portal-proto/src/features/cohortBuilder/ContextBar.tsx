@@ -214,9 +214,9 @@ const ContextBar: React.FC = () => {
                 </Tabs.Tab>
               </Tabs.List>
               <Tabs.Panel value="summary">
-                <SummaryFacets fields={summaryFields} />{" "}
+                <SummaryFacets fields={summaryFields} />
               </Tabs.Panel>
-              <Tabs.Panel value={"table"}>
+              <Tabs.Panel value="table">
                 <ContextualCasesView />
               </Tabs.Panel>
             </Tabs>

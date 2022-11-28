@@ -6,6 +6,7 @@ import {
   selectCasesData,
   useCoreSelector,
   GqlOperation,
+  useCases,
 } from "@gff/core";
 import Link from "next/link";
 import {
@@ -19,6 +20,8 @@ import {
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import tw from "tailwind-styled-components";
+import { VerticalTable } from "../shared/VerticalTable";
+import useStandardPagination from "@/hooks/useStandardPagination";
 
 export const CasesTableHeader = tw.th`
 bg-primary-lighter
@@ -37,7 +40,7 @@ export interface Case {
 }
 
 export interface CasesViewProps {
-  readonly cases?: ReadonlyArray<Case>;
+  readonly cases?: Record<string, any>[];
   readonly handleCaseSelected?: (patient: Case) => void;
   readonly caption?: string;
 }
@@ -59,39 +62,66 @@ const useCohortFacetFilter = (): GqlOperation => {
 const useCohortCases = (pageSize = 10, offset = 0) => {
   const coreDispatch = useCoreDispatch();
   const cohortFilters = useCohortFacetFilter();
-  const cases = useCoreSelector((state) => selectCasesData(state));
+  // const cases = useCoreSelector((state) => selectCasesData(state));
+  const { data, error, pagination, isError, isFetching, isSuccess } = useCases({
+    fields: [
+      "case_id",
+      "submitter_id",
+      "primary_site",
+      "project.project_id",
+      "project.disease_type",
+      "project.program.name",
+      "diagnoses.primary_diagnosis",
+      "diagnoses.tissue_or_organ_of_origin",
+      "diagnoses.age_at_diagnosis",
+      "demographic.race",
+      "demographic.gender",
+      "demographic.ethnicity",
+      "demographic.vital_status",
+      "demographic.days_to_death",
+      "files.file_id",
+    ],
+    filters: cohortFilters, // TODO: move filter setting to core
+    size: pageSize,
+    from: offset * pageSize,
+  });
 
   // cohortFilters is generated each time, use string representation
   // to control when useEffects are called
+
+  // console.log({cohortFilters})
   const filters = JSON.stringify(cohortFilters);
 
-  useEffect(() => {
-    coreDispatch(
-      fetchCases({
-        fields: [
-          "case_id",
-          "submitter_id",
-          "primary_site",
-          "project.project_id",
-          "demographic.gender",
-          "diagnoses.primary_diagnosis",
-          "diagnoses.tissue_or_organ_of_origin",
-        ],
-        filters: cohortFilters, // TODO: move filter setting to core
-        size: pageSize,
-        from: offset * pageSize,
-      }),
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters, pageSize, offset]);
+  console.log(filters);
+
+  // useEffect(() => {
+  //   coreDispatch(
+  //     fetchCases({
+  //       fields: [
+  //         "case_id",
+  //         "submitter_id",
+  //         "primary_site",
+  //         "project.project_id",
+  //         "demographic.gender",
+  //         "diagnoses.primary_diagnosis",
+  //         "diagnoses.tissue_or_organ_of_origin",
+  //       ],
+  //       filters: cohortFilters, // TODO: move filter setting to core
+  //       size: pageSize,
+  //       from: offset * pageSize,
+  //     }),
+  //   );
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [filters, pageSize, offset]);
 
   return {
-    data: cases.data,
-    error: cases?.error,
+    data: data,
+    error: error,
     isUninitialized: false,
-    isFetching: cases?.status === "pending",
-    isSuccess: cases?.status === "fulfilled",
-    isError: cases?.status === "rejected",
+    isFetching,
+    isSuccess,
+    isError,
+    pagination,
   };
 };
 
@@ -117,7 +147,9 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
 
   // this mapping logic should get moved to a selector.  and the
   // case model probably needs to be generalized or generated.
-  const cases: ReadonlyArray<Case> = data?.map((datum) => ({
+
+  console.log(data);
+  const cases = data?.map((datum) => ({
     id: datum.case_id,
     submitterId: datum.submitter_id,
     primarySite: datum.primary_site,
@@ -194,6 +226,16 @@ export const CasesView: React.FC<CasesViewProps> = (props: CasesViewProps) => {
   const { cases } = props;
   const { classes, cx } = useStyles();
   const [scrolled, setScrolled] = useState(false);
+  // const {
+  //   handlePageChange,
+  //   handlePageSizeChange,
+  //   page,
+  //   pages,
+  //   size,
+  //   from,
+  //   total,
+  //   displayedData,
+  // } = useStandardPagination(cases);
 
   return (
     <ScrollArea
@@ -201,7 +243,13 @@ export const CasesView: React.FC<CasesViewProps> = (props: CasesViewProps) => {
       onScrollPositionChange={({ y }) => setScrolled(y !== 0)}
     >
       <LoadingOverlay visible={cases === undefined} color="primary" />
-      <Table verticalSpacing="xs" striped highlightOnHover>
+      <VerticalTable
+        tableData={cases}
+        columns={[]}
+        handleChange={() => {}}
+        selectableRow={true}
+      />
+      {/* <Table verticalSpacing="xs" striped highlightOnHover>
         <thead className={cx(classes.header, { [classes.scrolled]: scrolled })}>
           <tr className="bg-base-lighter ">
             <CasesTableHeader>Case</CasesTableHeader>
@@ -238,7 +286,7 @@ export const CasesView: React.FC<CasesViewProps> = (props: CasesViewProps) => {
             </tr>
           ))}
         </tbody>
-      </Table>
+      </Table> */}
     </ScrollArea>
   );
 };
