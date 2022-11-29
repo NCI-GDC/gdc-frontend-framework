@@ -3,7 +3,6 @@ import { setupListeners } from "@reduxjs/toolkit/query";
 
 import {
   persistReducer,
-  persistStore,
   FLUSH,
   REHYDRATE,
   PAUSE,
@@ -44,8 +43,6 @@ export const coreStore = configureStore({
       )
       .prepend(caseSetListenerMiddleware.middleware), // needs to be prepended
 });
-
-export const persistor = persistStore(coreStore);
 
 setupListeners(coreStore.dispatch);
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment

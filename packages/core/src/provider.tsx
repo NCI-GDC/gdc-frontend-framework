@@ -1,9 +1,12 @@
 import React, { PropsWithChildren } from "react";
 import { Provider } from "react-redux";
+import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
 
-import { coreStore, persistor } from "./store";
+import { coreStore } from "./store";
 import { CoreContext } from "./hooks";
+
+const persistor = persistStore(coreStore);
 
 export const CoreProvider: React.FC<unknown> = ({
   children,
