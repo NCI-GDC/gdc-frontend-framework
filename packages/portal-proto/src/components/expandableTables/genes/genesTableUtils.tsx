@@ -87,7 +87,12 @@ export const createTableColumn = (
                         />
                       }
                       selected={row.original["cohort"]}
-                      handleSwitch={handleGeneToggled} // handleCohortSwitch
+                      handleSwitch={() =>
+                        handleGeneToggled({
+                          geneID: row.original?.geneID,
+                          symbol: row.original?.symbol,
+                        })
+                      } // handleCohortSwitch
                       tooltip={""}
                     />
                   )}

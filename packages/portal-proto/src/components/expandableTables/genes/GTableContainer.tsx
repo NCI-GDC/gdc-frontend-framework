@@ -36,7 +36,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
-  const [deboucedSearchTern] = useDebouncedValue(searchTerm, 400);
+  const [debouncedSearchTern] = useDebouncedValue(searchTerm, 400);
   const [ref, { width }] = useMeasure();
   const [columnListOrder, setColumnListOrder] = useState(DEFAULT_GTABLE_ORDER);
   const [visibleColumns, setVisibleColumns] = useState(
@@ -115,7 +115,8 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const { data } = useGenesTable({
     pageSize: pageSize,
     offset: page * pageSize,
-    searchTerm: deboucedSearchTern.length > 0 ? deboucedSearchTern : undefined,
+    searchTerm:
+      debouncedSearchTern.length > 0 ? debouncedSearchTern : undefined,
   });
 
   useEffect(() => {

@@ -7,6 +7,7 @@ import EnumFacet from "@/features/facets/EnumFacet";
 import ToggleFacet from "@/features/facets/ToggleFacet";
 import FilterFacets from "./filters.json";
 import dynamic from "next/dynamic";
+import { useAppDispatch } from "@/features/genomic/appApi";
 import {
   GqlOperation,
   useCoreDispatch,
@@ -31,8 +32,11 @@ import partial from "lodash/partial";
 import {
   useClearGenomicFilters,
   useGenesFacet,
+  useSelectFilterContent,
+  useUpdateGeneAndSSMFilters,
   useUpdateGenomicEnumFacetFilter,
 } from "./hooks";
+import { removeGeneAndSSMFilter } from "@/features/genomic/geneAndSSMFiltersSlice";
 
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
   ssr: false,
@@ -85,6 +89,7 @@ type AppModeState = "genes" | "ssms";
 
 const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const coreDispatch = useCoreDispatch();
+  const appDispatch = useAppDispatch();
   const [comparativeSurvival, setComparativeSurvival] = useState(undefined);
   const [appMode, setAppMode] = useState<AppModeState>("genes");
   const cohortFilters = useCoreSelector((state) =>
@@ -94,6 +99,11 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const genomicFilters = useCoreSelector((state) =>
     selectGenomicFilters(state),
   );
+
+  const currentGenes = useSelectFilterContent("genes.gene_id");
+  console.log("currentGenes", currentGenes);
+
+  const updateLocalGeneAndSSMFilters = useUpdateGeneAndSSMFilters();
 
   const filters = useMemo(
     () => buildCohortGqlOperator(joinFilters(cohortFilters, genomicFilters)),
@@ -142,7 +152,24 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   };
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleGeneToggled = (_: Record<string, any>) => null;
+  const handleGeneToggled = (payload: Record<string, any>) => {
+    console.log("gene toggled", payload.geneID);
+    if (currentGenes.includes(payload.geneID)) {
+      const update = currentGenes.filter((x) => x != payload.geneID);
+      if (update.length > 0)
+        updateLocalGeneAndSSMFilters("genes.gene_id", {
+          field: "genes.gene_id",
+          operator: "includes",
+          operands: currentGenes.filter((x) => x != payload.geneID),
+        });
+      else appDispatch(removeGeneAndSSMFilter("genes.gene_id"));
+    } else
+      updateLocalGeneAndSSMFilters("genes.gene_id", {
+        field: "genes.gene_id",
+        operator: "includes",
+        operands: [...currentGenes, payload.geneID.toString()],
+      });
+  };
 
   /**
    * remove comparative survival plot when tabs or filters change.

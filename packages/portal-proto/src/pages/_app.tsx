@@ -20,6 +20,7 @@ import "../features/demoApp1/DemoApp";
 import "../features/demoApp2/DemoApp";
 import "@/features/projectsCenter/ProjectsCenter";
 import "@/features/repositoryApp/RepositoryApp";
+import "@/features/genomic/registerApp";
 
 // import the React tab styles once
 import "react-tabs/style/react-tabs.css";

@@ -472,3 +472,19 @@ export const convertGqlFilterToFilter = (
   const handler: GqlOperationHandler<Operation> = new ToOperationHandler();
   return handleGqlOperation(handler, gqlFilter);
 };
+
+/**
+ * Type guard for Union or Intersection
+ * @param o - operator to check
+ */
+export const isIntersectionOrUnion = (
+  o: Operation,
+): o is Intersection | Union =>
+  (o as Intersection).operator === "and" || (o as Union).operator === "or";
+
+/**
+ * Type guard for Includes
+ * @param o - operator to check
+ */
+export const isIncludes = (o: Operation): o is Includes =>
+  (o as Includes).operator === "includes";

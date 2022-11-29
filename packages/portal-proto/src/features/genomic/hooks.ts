@@ -10,6 +10,7 @@ import {
   FilterSet,
   GQLDocType,
   GQLIndexType,
+  isIncludes,
   OperandValue,
   Operation,
   removeGenomicFilter,
@@ -26,6 +27,11 @@ import {
 import { useEffect } from "react";
 import isEqual from "lodash/isEqual";
 import { extractValue } from "@/features/facets/hooks";
+import { useAppDispatch, useAppSelector } from "@/features/genomic/appApi";
+import {
+  updateGeneAndSSMFilter,
+  selectGeneAndSSMFiltersByName,
+} from "@/features/genomic/geneAndSSMFiltersSlice";
 
 /**
  * Update Gene Enum Facets filters. These are local updates and are not added
@@ -124,5 +130,28 @@ export const useGenesFacet = (
     isFetching: facet?.status === "pending",
     isSuccess: facet?.status === "fulfilled",
     isError: facet?.status === "rejected",
+  };
+};
+
+//  Selector Hooks for getting repository filters by name
+export const useSelectFilterContent = (
+  field: string,
+): readonly (string | number)[] => {
+  const filter = useAppSelector((state) =>
+    selectGeneAndSSMFiltersByName(state, field),
+  );
+  if (filter === undefined) return [];
+  if (isIncludes(filter)) {
+    return filter.operands.map((x) => x.toString());
+  }
+  return [];
+};
+
+export const useUpdateGeneAndSSMFilters = (): UpdateFacetFilterFunction => {
+  const dispatch = useAppDispatch();
+  // update the filter for this facet
+
+  return (field: string, operation: Operation) => {
+    dispatch(updateGeneAndSSMFilter({ field: field, operation: operation }));
   };
 };
