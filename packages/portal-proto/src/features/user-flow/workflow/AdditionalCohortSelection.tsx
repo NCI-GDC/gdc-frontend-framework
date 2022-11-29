@@ -77,7 +77,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
     displayedData,
   } = useStandardPagination(tableData);
 
-  const columnListOrder = [
+  const columns = [
     {
       id: "select",
       columnName: "Select",
@@ -89,11 +89,6 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
       visible: true,
     },
     { id: "count", columnName: "# Cases", visible: true },
-  ];
-  const columnCells = [
-    { Header: "Select", accessor: "select" },
-    { Header: "Name", accessor: "name" },
-    { Header: "# Cases", accessor: "count" },
   ];
 
   const handleChange = (obj: HandleChangeInput) => {
@@ -116,10 +111,8 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
         <Grid.Col span={9}>
           <VerticalTable
             tableData={displayedData}
-            columnListOrder={columnListOrder}
-            columnCells={columnCells}
+            columns={columns}
             selectableRow={false}
-            handleColumnChange={undefined}
             showControls={false}
             pagination={{
               page,
