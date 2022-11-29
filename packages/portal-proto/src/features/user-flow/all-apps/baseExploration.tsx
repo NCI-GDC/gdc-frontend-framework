@@ -29,7 +29,7 @@ import {
 } from "../../apps/Apps";
 //import { ContextualFilesView } from "../../files/FilesView";
 import { CollapsibleContainer } from "../../../components/CollapsibleContainer";
-import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMSConsequenceTable";
+import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMTableContainer";
 import { GTableContainer } from "@/components/expandableTables/genes/GTableContainer";
 import { FacetGroup } from "../../cohortBuilder/FacetGroup";
 import { get_facets } from "../../cohortBuilder/dictionary";

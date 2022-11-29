@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 import { SimpleLayout } from "../features/layout/Simple";
-import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMSConsequenceTable";
+import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMTableContainer";
 
 const SSMSTablePage: NextPage = () => {
   return (
