@@ -113,7 +113,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
     expandedState?.[currentCohortId] || {},
   ).every((q) => !q);
 
-  const noFilters = Object.keys(filters.root).length === 0;
+  const noFilters = Object.keys(filters?.root || {}).length === 0;
 
   useEffect(() => {
     if (expandedState?.[currentCohortId] === undefined) {

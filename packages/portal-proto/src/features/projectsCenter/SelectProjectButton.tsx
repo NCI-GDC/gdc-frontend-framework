@@ -59,6 +59,7 @@ export const SelectAllProjectsButton = ({
   }, [projectIds, pickedProjects]);
   return (
     <Checkbox
+      className="ml-1"
       size="xs"
       checked={checked}
       onChange={(event) => {

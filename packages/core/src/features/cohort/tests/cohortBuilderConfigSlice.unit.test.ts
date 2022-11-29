@@ -1,3 +1,4 @@
+import { getInitialCoreState } from "src/store.unit.test";
 import {
   addFilterToCohortBuilder,
   removeFilterFromCohortBuilder,
@@ -6,9 +7,8 @@ import {
   selectCohortBuilderConfig,
   selectCohortBuilderConfigCategory,
   selectCohortBuilderConfigFilters,
-} from "./cohortBuilderConfigSlice";
-import CohortBuilderDefaultConfig from "./data/cohort_builder.json";
-import { getInitialCoreState } from "../../store.unit.test";
+} from "../cohortBuilderConfigSlice";
+import CohortBuilderDefaultConfig from "../data/cohort_builder.json";
 
 const defaultState = {
   general: {
