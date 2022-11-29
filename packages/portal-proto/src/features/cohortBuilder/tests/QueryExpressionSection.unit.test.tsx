@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react";
 import * as core from "@gff/core";
 import { DEFAULT_COHORT_ID } from "@gff/core";
-import QueryExpressionSection from "./QueryExpressionSection";
+import QueryExpressionSection from "../QueryExpressionSection";
 
 jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
 jest.spyOn(core, "useCoreSelector").mockImplementation(jest.fn());

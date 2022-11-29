@@ -16,6 +16,10 @@
     "strict": true,
     "resolveJsonModule": true,
     "target": "esnext",
-    "lib": ["dom", "esnext"]
+    "lib": ["dom", "esnext"],
+    "baseUrl": ".",
+    "paths": {
+      "@/core/*": ["src/core/*"]
+    }
   }
 }
