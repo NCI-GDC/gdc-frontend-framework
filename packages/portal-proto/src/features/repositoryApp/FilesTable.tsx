@@ -56,25 +56,7 @@ const FilesTables: React.FC = () => {
     },
   ];
 
-  const filterColumnCells = (newList) =>
-    newList.reduce((filtered, obj) => {
-      if (obj.visible) {
-        filtered.push({
-          Header: obj.columnName,
-          accessor: obj.id,
-          disableSortBy: obj.disableSortBy || false,
-        });
-      }
-      return filtered;
-    }, []);
-
-  const [columnCells, setColumnCells] = useState(
-    filterColumnCells(columnListOrder),
-  );
-
-  const handleColumnChange = (update) => {
-    setColumnCells(filterColumnCells(update));
-  };
+  const [columnCells, setColumnCells] = useState([]);
 
   let formattedTableData = [],
     tempPagination = {
@@ -202,6 +184,9 @@ const FilesTables: React.FC = () => {
       case "newPageNumber":
         getCohortCases(tempPagination.size, obj.newPageNumber - 1, sortBy);
         break;
+      case "newHeadings":
+        setColumnCells(obj.newHeadings);
+        break;
     }
   };
 
@@ -307,10 +292,8 @@ const FilesTables: React.FC = () => {
         </div>
       }
       tableData={formattedTableData}
-      columnListOrder={columnListOrder}
+      columns={columnListOrder}
       columnSorting={"manual"}
-      columnCells={columnCells}
-      handleColumnChange={handleColumnChange}
       selectableRow={false}
       pagination={{
         ...tempPagination,

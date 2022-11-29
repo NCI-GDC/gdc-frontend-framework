@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import fileSize from "filesize";
 import { Button, Menu } from "@mantine/core";
@@ -22,22 +22,6 @@ import { downloadTSV } from "../shared/TableUtils";
 import { convertDateToString } from "src/utils/date";
 import download from "src/utils/download";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
-
-const columnCells = [
-  { Header: "Remove", accessor: "remove", width: 80 },
-  { Header: "File UUID", accessor: "uuid" },
-  { Header: "Access", accessor: "access" },
-  { Header: "File Name", accessor: "name", width: 300 },
-  { Header: "Cases", accessor: "cases", width: 80 },
-  { Header: "Project", accessor: "project", width: 300 },
-  { Header: "Data Category", accessor: "data_category" },
-  { Header: "Data Type", accessor: "data_type" },
-  { Header: "Data Format", accessor: "data_format", width: 80 },
-  { Header: "Experimental Strategy", accessor: "experimental_strategy" },
-  { Header: "Platform", accessor: "platform" },
-  { Header: "File Size", accessor: "file_size" },
-  { Header: "Annotations", accessor: "annotations", width: 100 },
-];
 
 const initialVisibleColumns = [
   { id: "remove", columnName: "Remove", visible: true },
@@ -67,9 +51,9 @@ const FilesTable: React.FC<FilesTableProps> = ({
   filesByCanAccess,
 }: FilesTableProps) => {
   const [tableData, setTableData] = useState([]);
-  const [visibleColumns, setVisibleColumns] = useState(initialVisibleColumns);
   const [pageSize, setPageSize] = useState(20);
   const [activePage, setActivePage] = useState(1);
+  const [visibleColumns, setVisibleColumns] = useState([]);
 
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
@@ -78,6 +62,9 @@ const FilesTable: React.FC<FilesTableProps> = ({
         break;
       case "newPageNumber":
         setActivePage(obj.newPageNumber);
+        break;
+      case "newHeadings":
+        setVisibleColumns(obj.newHeadings);
         break;
     }
   };
@@ -101,23 +88,6 @@ const FilesTable: React.FC<FilesTableProps> = ({
     },
     expand: ["annotations", "cases", "cases.project"],
   });
-
-  const columnKeys = visibleColumns
-    .filter((column) => column.visible)
-    .map((column) => column.id);
-
-  const [visibleData, setVisibleData] = useState(
-    tableData.map((row) =>
-      Object.fromEntries(
-        Object.entries(row).filter(([key]) => columnKeys.includes(key)),
-      ),
-    ),
-  );
-
-  const visibleColumnCells = useMemo(
-    () => columnCells.filter((column) => columnKeys.includes(column.accessor)),
-    [columnKeys],
-  );
 
   useEffect(() => {
     setTableData(
@@ -152,24 +122,6 @@ const FilesTable: React.FC<FilesTableProps> = ({
         : [],
     );
   }, [isSuccess, data]);
-
-  useEffect(() => {
-    const columnKeys = visibleColumns
-      .filter((column) => column.visible)
-      .map((column) => column.id);
-
-    setVisibleData(
-      tableData.map((row) =>
-        Object.fromEntries(
-          Object.entries(row).filter(([key]) => columnKeys.includes(key)),
-        ),
-      ),
-    );
-  }, [visibleColumns, tableData]);
-
-  const handleColumnChange = (columns) => {
-    setVisibleColumns(columns);
-  };
 
   const handleDownloadJSON = async () => {
     await download({
@@ -221,7 +173,7 @@ const FilesTable: React.FC<FilesTableProps> = ({
   const handleDownloadTSV = () => {
     downloadTSV(
       data,
-      visibleColumnCells,
+      visibleColumns,
       `files-table.${convertDateToString(new Date())}.tsv`,
       {
         blacklist: ["remove"],
@@ -260,11 +212,9 @@ const FilesTable: React.FC<FilesTableProps> = ({
 
   return (
     <VerticalTable
-      tableData={visibleData}
-      columnListOrder={visibleColumns}
-      columnCells={visibleColumnCells}
+      tableData={tableData}
+      columns={initialVisibleColumns}
       selectableRow={false}
-      handleColumnChange={handleColumnChange}
       tableTitle={`Showing ${(activePage - 1) * pageSize + 1} - ${
         activePage * pageSize < pagination?.total
           ? activePage * pageSize

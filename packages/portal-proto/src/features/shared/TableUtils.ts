@@ -1,20 +1,17 @@
 import saveAs from "file-saver";
 import get from "lodash/get";
+import { Column } from "./VerticalTable";
 
 type ColumnComposerFunction = (
   row: Record<string, any>,
   accessor: string,
-  Header: string,
+  Header: Column["Header"],
   rowIndex: number,
 ) => string;
 
 export function downloadTSV(
   tableData: readonly Record<string, any>[],
-  columns: {
-    accessor: string;
-    Header: string;
-    composer?: string | ColumnComposerFunction;
-  }[],
+  columns: Column[],
   fileName: string,
   option?: {
     blacklist?: string[];
@@ -42,10 +39,8 @@ export function downloadTSV(
     .map((obj, index) =>
       filteredColumns
         .map((column) => {
-          const overwriteComposer =
-            option?.overwrite?.[column.accessor]?.composer;
+          const composer = option?.overwrite?.[column.accessor]?.composer;
           const overwriteHeader = getOverwriteHeader(column);
-          const composer = overwriteComposer ?? column.composer;
           const Header = overwriteHeader ?? column.Header;
 
           return composer
