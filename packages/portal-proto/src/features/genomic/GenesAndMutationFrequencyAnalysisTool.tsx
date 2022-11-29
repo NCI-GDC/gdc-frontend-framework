@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
-import GenesTable from "../genesTable/GenesTable";
-import MutationsTable from "../mutationsTable/MutationsTable";
+import { GTableContainer } from "@/components/expandableTables/genes/GTableContainer";
+import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMTableContainer";
 import { Grid, Tabs, LoadingOverlay } from "@mantine/core";
 import EnumFacet from "@/features/facets/EnumFacet";
 import ToggleFacet from "@/features/facets/ToggleFacet";
@@ -141,6 +141,9 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleGeneToggled = (_: Record<string, any>) => null;
+
   /**
    * remove comparative survival plot when tabs or filters change.
    */
@@ -268,7 +271,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
         </Tabs.List>
         <Tabs.Panel value="genes" pt="xs">
           <div className="flex flex-row mt-3">
-            <div className="flex flex-col">
+            <div className="flex flex-col w-screen">
               <Grid className="mx-2  bg-base-max w-9/12">
                 <Grid.Col span={6}>
                   <GeneFrequencyChart marginBottom={95} />
@@ -292,19 +295,20 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                   />
                 </Grid.Col>
               </Grid>
-              <GenesTable
-                selectedSurvivalPlot={comparativeSurvival}
-                handleSurvivalPlotToggled={(symbol: string, name: string) =>
-                  handleSurvivalPlotToggled(symbol, name, "gene.symbol")
-                }
-              />
             </div>
+          </div>
+          <div className={`flex flex-col w-screen`}>
+            <GTableContainer
+              selectedSurvivalPlot={comparativeSurvival}
+              handleSurvivalPlotToggled={handleSurvivalPlotToggled}
+              handleGeneToggled={handleGeneToggled}
+            />
           </div>
         </Tabs.Panel>
         <Tabs.Panel value="ssms" pt="xs">
           <div className="flex flex-row">
-            <div className="flex flex-col">
-              <div className="bg-base-lightest w-9/12">
+            <div className="flex flex-col w-screen">
+              <div className="bg-base-max  w-2/5">
                 <LoadingOverlay
                   visible={!survivalPlotReady && !topGeneSSMSSuccess}
                 />
@@ -323,13 +327,13 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                   }
                 />
               </div>
-              <MutationsTable
-                selectedSurvivalPlot={comparativeSurvival}
-                handleSurvivalPlotToggled={(symbol: string, name: string) =>
-                  handleSurvivalPlotToggled(symbol, name, "gene.ssm.ssm_id")
-                }
-              />
             </div>
+          </div>
+          <div className={`flex flex-col w-screen`}>
+            <SMTableContainer
+              selectedSurvivalPlot={comparativeSurvival}
+              handleSurvivalPlotToggled={handleSurvivalPlotToggled}
+            />
           </div>
         </Tabs.Panel>
       </Tabs>

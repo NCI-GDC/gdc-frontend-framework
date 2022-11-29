@@ -59,7 +59,6 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
     setPrevPath(currentPath);
     setCurrentPath(globalThis.location.pathname + globalThis.location.search);
   }, [currentPath, router.asPath]);
-
   return (
     <CoreProvider>
       <Provider store={store}>
@@ -92,8 +91,11 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
               // note that now getting colors from the tailwindcss-themer which assumes that plugin is last in the
               // plugins declaration.
               // TODO: refactor how the configuration get loaded
+
               ...Object.fromEntries(
                 Object.entries(
+                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  // @ts-ignore
                   tailwindConfig.plugins.slice(-1)[0].__options.defaultTheme
                     .extend.colors,
                 ).map(([key, values]) => [key, Object.values(values)]),

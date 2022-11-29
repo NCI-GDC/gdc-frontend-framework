@@ -1,3 +1,5 @@
+// TODO: Depreciate this file
+
 import { UserFlowVariedPages } from "../../layout/UserFlowVariedPages";
 import { CohortManager } from "../many-pages/cohort";
 import React, { PropsWithChildren, useRef } from "react";
@@ -27,8 +29,8 @@ import {
 } from "../../apps/Apps";
 //import { ContextualFilesView } from "../../files/FilesView";
 import { CollapsibleContainer } from "../../../components/CollapsibleContainer";
-import MutationsTable from "@/features/mutationsTable/MutationsTable";
-import GenesTable from "@/features/genesTable/GenesTable";
+import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMTableContainer";
+import { GTableContainer } from "@/components/expandableTables/genes/GTableContainer";
 import { FacetGroup } from "../../cohortBuilder/FacetGroup";
 import { get_facets } from "../../cohortBuilder/dictionary";
 import { FileModal } from "../../files/FileView";
@@ -184,11 +186,12 @@ export const BaseExplorationPage: React.FC<BaseExplorationPageProps> = ({
           ) : currentApp == "somatic-mutations" ? (
             <AllAppViewer title="Somatic Mutations" setView={setCurrentApp}>
               <div className="flex flex-row">
-                <GenesTable
+                <GTableContainer
                   selectedSurvivalPlot={undefined}
                   handleSurvivalPlotToggled={undefined}
+                  handleGeneToggled={() => null}
                 />
-                <MutationsTable
+                <SMTableContainer
                   selectedSurvivalPlot={undefined}
                   handleSurvivalPlotToggled={undefined}
                 />

@@ -645,6 +645,8 @@ module.exports = {
           8: "#7A7A15",
           9: "#10828E",
         },
+        hoverColor: "#E8F0E2",
+        activeColor: "#204461",
         "percentage-bar": {
           base: "#d5e8e1",
           complete: "#249c4f",
@@ -695,6 +697,10 @@ module.exports = {
       },
       fontSize: {
         "2xs": ".85rem",
+      },
+      boxShadow: {
+        "3xl": "0 0 5px 2px rgba(0, 0, 0, 0.25)",
+        inset: "inset 0 0 20px 5px rgba(0, 0, 0, 0.1)",
       },
       keyframes: {
         "slide-up": {
