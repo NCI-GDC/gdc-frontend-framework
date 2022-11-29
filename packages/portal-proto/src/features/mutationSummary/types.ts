@@ -11,7 +11,7 @@ export interface ConsequenceTableData {
     polyphenImpact: string;
     polyphenScore: number;
     siftImpact: string;
-    siftScore: number;
+    siftScore: string | number;
     vepImpact: string;
   };
   subRows: string;
