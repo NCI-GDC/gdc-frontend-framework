@@ -44,8 +44,11 @@ export const SMSConsequenceTableContainer: React.FC<
     displayedData,
   } = useStandardPagination(tableData);
 
-  const handleSetPageSize = (pageIndex: number) => {
-    handlePageSizeChange(pageIndex.toString());
+  const handleSetPage = (pageIndex: number) => {
+    handlePageChange(pageIndex + 1);
+  };
+  const handleSetPageSize = (size: number) => {
+    handlePageSizeChange(size.toString());
   };
 
   useEffect(() => {
@@ -170,22 +173,22 @@ export const SMSConsequenceTableContainer: React.FC<
           <div className={`flex flex-row justify-between items-center text-sm`}>
             <span>
               Showing
-              <span className={`font-bold`}>
+              <span className={`font-bold px-1`}>
                 {from.toLocaleString("en-US")}
               </span>
               -
-              <span className={`font-bold`}>
-                {page.toLocaleString("en-US")}
+              <span className={`font-bold  px-1`}>
+                {Math.min(page * size, total).toLocaleString("en-US")}
               </span>
               of
-              <span className={`font-bold`}>{pages}</span>
+              <span className={`font-bold  px-1`}>{total}</span>
             </span>
           </div>
           <div className={`ml-auto mr-0`}>
             <PageStepper
-              page={page}
-              totalPages={total}
-              handlePage={handlePageChange}
+              page={page - 1}
+              totalPages={pages}
+              handlePage={handleSetPage}
             />
           </div>
         </div>

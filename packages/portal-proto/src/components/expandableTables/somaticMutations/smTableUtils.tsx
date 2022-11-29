@@ -504,22 +504,22 @@ export const createTableColumn = (
               const isC = row.original["is_canonical"] as boolean;
               return (
                 <div className="flex flex-row justify-start ">
-                  <div className="flex flex-row flex-nowrap font-content items-center text-sm">
-                    (transcript_id !== undefined ?
-                    <AnchorLink
-                      href={externalLinks.transcript(transcript_id)}
-                      title={transcript_id}
-                      toolTipLabel={"transcript_id"}
-                    />
-                    {isC ? (
-                      <Tooltip label={"Canconical"}>
-                        <div className="rounded-full bg-primary text-primary-contrast flex justify-center text-center ml-1.5 w-5 h-5 aspect-square">
-                          C
-                        </div>
-                      </Tooltip>
-                    ) : null}
-                    : {"--"})
-                  </div>
+                  {transcript_id ? (
+                    <div className="flex flex-row flex-nowrap font-content items-center text-sm">
+                      <AnchorLink
+                        href={externalLinks.transcript(transcript_id)}
+                        title={transcript_id}
+                        toolTipLabel={"transcript_id"}
+                      />
+                      {isC ? (
+                        <Tooltip label={"Canconical"}>
+                          <div className="rounded-full bg-primary text-primary-contrast flex justify-center text-center ml-1.5 w-5 h-5 aspect-square">
+                            C
+                          </div>
+                        </Tooltip>
+                      ) : null}
+                    </div>
+                  ) : null}
                 </div>
               );
             },
