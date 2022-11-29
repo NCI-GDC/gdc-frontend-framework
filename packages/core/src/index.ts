@@ -56,6 +56,7 @@ export * from "./features/modals/modalsSlice";
 export * from "./features/quickSearch/quickSearch";
 export * from "./features/versionInfo/versionInfoSlice";
 export * from "./features/api/cohortApiTypes";
+export * from "./features/sets/setsSlice";
 export { CoreState } from "./reducers";
 
 import { datadogRum } from "@datadog/browser-rum";
