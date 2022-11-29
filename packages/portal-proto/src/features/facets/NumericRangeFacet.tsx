@@ -1,5 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { MdClose as CloseIcon, MdWarning as WarningIcon } from "react-icons/md";
+import {
+  MdClose as CloseIcon,
+  MdFlip as FlipIcon,
+  MdWarning as WarningIcon,
+} from "react-icons/md";
 import { FaUndo as UndoIcon } from "react-icons/fa";
 import tw from "tailwind-styled-components";
 import {
@@ -31,9 +35,15 @@ import {
   UpdateFacetFilterHook,
   RangeBucketElement,
 } from "@/features/facets/types";
-import { FacetIconButton, FacetText, FacetHeader } from "./components";
+import {
+  FacetIconButton,
+  FacetText,
+  FacetHeader,
+  controlsIconStyle,
+} from "./components";
 import FacetExpander from "@/features/facets/FacetExpander";
 import FacetSortPanel from "@/features/facets/FacetSortPanel";
+import { EnumFacetChart } from "../charts/EnumFacetChart";
 
 interface NumericFacetProps extends FacetCardProps<RangeFacetHooks> {
   readonly rangeDatatype: string;
@@ -44,7 +54,13 @@ interface NumericFacetProps extends FacetCardProps<RangeFacetHooks> {
 
 type NumericFacetData = Pick<
   NumericFacetProps,
-  "field" | "minimum" | "maximum" | "valueLabel" | "hooks" | "clearValues"
+  | "field"
+  | "minimum"
+  | "maximum"
+  | "valueLabel"
+  | "hooks"
+  | "clearValues"
+  | "isFacetView"
 >;
 
 const RadioStyle =
@@ -414,6 +430,7 @@ interface RangeInputWithPrefixedRangesProps {
   readonly valueLabel: string;
   readonly showZero?: boolean;
   readonly clearValues?: boolean;
+  readonly isFacetView?: boolean;
 }
 
 const RangeInputWithPrefixedRanges: React.FC<
@@ -428,6 +445,7 @@ const RangeInputWithPrefixedRanges: React.FC<
   valueLabel,
   showZero = false,
   clearValues = undefined,
+  isFacetView = true,
 }: RangeInputWithPrefixedRangesProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false); // handles the expanded group
 
@@ -458,6 +476,16 @@ const RangeInputWithPrefixedRanges: React.FC<
     rangeData,
     showZero,
   );
+  const chartData = useMemo(
+    () =>
+      Object.fromEntries(
+        Object.values(rangeLabelsAndValues).map((range) => [
+          range.label,
+          range.value,
+        ]),
+      ),
+    [rangeLabelsAndValues],
+  );
 
   const resetToCustom = useCallback(() => {
     if (!isCustom) {
@@ -476,6 +504,7 @@ const RangeInputWithPrefixedRanges: React.FC<
   const totalBuckets = Object.keys(rangeLabelsAndValues).length;
   const bucketsToShow = isGroupExpanded ? totalBuckets : DEFAULT_VISIBLE_ITEMS;
   const remainingValues = totalBuckets - bucketsToShow;
+  const numberOfBarsToDisplay = Object.keys(chartData).length;
 
   const onShowModeChanged = () => {
     setIsGroupExpanded(!isGroupExpanded);
@@ -508,32 +537,70 @@ const RangeInputWithPrefixedRanges: React.FC<
             clearValues={clearValues}
           />
         </div>
-        <div className="flex flex-col border-t-2">
-          {totalBuckets == 0 ? (
-            <div className="mx-4">No data for this field</div>
-          ) : isSuccess ? (
-            <RangeValueSelector
-              field={`${field}`}
-              valueLabel={valueLabel}
-              itemsToShow={bucketsToShow}
-              rangeLabelsAndValues={rangeLabelsAndValues}
-              selected={selectedRange}
-              useUpdateFacetFilters={hooks.useUpdateFacetFilters}
-              setSelected={(value) => {
-                setIsCustom(false); // no longer a customRange
-                // this is the only way user interaction
-                // can set this to False
-                setSelectedRange(value);
-              }}
-            />
-          ) : null}
-          {
-            <FacetExpander
-              remainingValues={remainingValues}
-              isGroupExpanded={isGroupExpanded}
-              onShowChanged={onShowModeChanged}
-            />
+        <div
+          className={
+            isFacetView
+              ? `flip-card h-full `
+              : `flip-card flip-card-flipped h-full`
           }
+        >
+          <div
+            className={`flex flex-col border-t-2 card-face bg-base-max ${
+              !isFacetView ? "invisible" : ""
+            }`}
+          >
+            {totalBuckets == 0 ? (
+              <div className="mx-4">No data for this field</div>
+            ) : isSuccess ? (
+              <RangeValueSelector
+                field={`${field}`}
+                valueLabel={valueLabel}
+                itemsToShow={bucketsToShow}
+                rangeLabelsAndValues={rangeLabelsAndValues}
+                selected={selectedRange}
+                useUpdateFacetFilters={hooks.useUpdateFacetFilters}
+                setSelected={(value) => {
+                  setIsCustom(false); // no longer a customRange
+                  // this is the only way user interaction
+                  // can set this to False
+                  setSelectedRange(value);
+                }}
+              />
+            ) : null}
+            {
+              <FacetExpander
+                remainingValues={remainingValues}
+                isGroupExpanded={isGroupExpanded}
+                onShowChanged={onShowModeChanged}
+              />
+            }
+          </div>
+          <div
+            className={`card-face card-back bg-base-max h-full pb-1 ${
+              isFacetView ? "invisible" : ""
+            }`}
+          >
+            {!isFacetView && (
+              <EnumFacetChart
+                field={field}
+                data={chartData}
+                selectedEnums={[]}
+                showTitle={false}
+                isSuccess={isSuccess}
+                valueLabel={valueLabel}
+                maxBins={numberOfBarsToDisplay}
+                height={
+                  numberOfBarsToDisplay == 1
+                    ? 150
+                    : numberOfBarsToDisplay == 2
+                    ? 220
+                    : numberOfBarsToDisplay == 3
+                    ? 240
+                    : numberOfBarsToDisplay * 65 + 10
+                }
+              />
+            )}
+          </div>
         </div>
       </div>
     </>
@@ -545,6 +612,7 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
   hooks,
   valueLabel,
   clearValues,
+  isFacetView,
 }: NumericFacetData) => {
   const [units, setUnits] = useState("years");
   // set up a fixed range -90 to 90 years over 19 buckets
@@ -572,6 +640,7 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
         field={field}
         valueLabel={valueLabel}
         clearValues={clearValues}
+        isFacetView={isFacetView}
       />
     </div>
   );
@@ -584,6 +653,7 @@ const Year: React.FC<NumericFacetData> = ({
   clearValues,
   minimum = undefined,
   maximum = undefined,
+  isFacetView,
 }: NumericFacetData) => {
   const adjMinimum = minimum != undefined ? minimum : 1900;
   const adjMaximum = maximum != undefined ? maximum : 2050;
@@ -600,6 +670,7 @@ const Year: React.FC<NumericFacetData> = ({
         numBuckets={numBuckets}
         field={field}
         clearValues={clearValues}
+        isFacetView={isFacetView}
       />
     </div>
   );
@@ -612,6 +683,7 @@ const Years: React.FC<NumericFacetData> = ({
   clearValues,
   minimum = undefined,
   maximum = undefined,
+  isFacetView,
 }: NumericFacetData) => {
   const adjMinimum = minimum != undefined ? minimum : 0;
   const adjMaximum = maximum != undefined ? maximum : 89;
@@ -628,6 +700,7 @@ const Years: React.FC<NumericFacetData> = ({
         numBuckets={numBuckets}
         field={field}
         clearValues={clearValues}
+        isFacetView={isFacetView}
       />
     </div>
   );
@@ -663,6 +736,7 @@ const PercentRange: React.FC<NumericFacetData> = ({
   clearValues,
   minimum = undefined,
   maximum = undefined,
+  isFacetView,
 }: NumericFacetData) => {
   const adjMinimum = minimum != undefined ? minimum : 0;
   const adjMaximum = maximum != undefined ? maximum : 100;
@@ -679,6 +753,7 @@ const PercentRange: React.FC<NumericFacetData> = ({
         numBuckets={numBuckets}
         field={field}
         clearValues={clearValues}
+        isFacetView={isFacetView}
       />
     </div>
   );
@@ -697,6 +772,11 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
   width = undefined,
 }: NumericFacetProps) => {
   const clearFilters = hooks.useClearFilter();
+  const [isFacetView, setIsFacetView] = useState(true);
+
+  const toggleFlip = () => {
+    setIsFacetView(!isFacetView);
+  };
 
   const [clearValues, setClearValues] = useState(false);
 
@@ -732,6 +812,12 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
           </Tooltip>
           <div className="flex flex-row">
             <FacetIconButton
+              onClick={toggleFlip}
+              aria-label="Flip between form and chart"
+            >
+              <FlipIcon size="1.45em" className={controlsIconStyle} />
+            </FacetIconButton>
+            <FacetIconButton
               onClick={() => {
                 clearFilters(field);
                 setClearValues(true);
@@ -762,6 +848,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 minimum={minimum}
                 maximum={maximum}
                 clearValues={clearValues}
+                isFacetView={isFacetView}
               />
             ),
             year: (
@@ -772,6 +859,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 minimum={minimum}
                 maximum={maximum}
                 clearValues={clearValues}
+                isFacetView={isFacetView}
               />
             ),
             years: (
@@ -782,6 +870,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 minimum={minimum}
                 maximum={maximum}
                 clearValues={clearValues}
+                isFacetView={isFacetView}
               />
             ),
             days: (
@@ -792,6 +881,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 minimum={minimum}
                 maximum={maximum}
                 clearValues={clearValues}
+                isFacetView={isFacetView}
               />
             ),
             percent: (
@@ -802,6 +892,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 minimum={minimum}
                 maximum={maximum}
                 clearValues={clearValues}
+                isFacetView={isFacetView}
               />
             ),
             range: (
@@ -812,6 +903,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 minimum={minimum}
                 maximum={maximum}
                 clearValues={clearValues}
+                isFacetView={isFacetView}
               />
             ),
           }[rangeDatatype as string]
