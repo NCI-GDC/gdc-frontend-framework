@@ -500,11 +500,12 @@ export const createTableColumn = (
               />
             ),
             cell: ({ row }) => {
-              const transcript_id = row.original["transcript_id"];
+              const transcript_id = row.original?.transcript_id;
               const isC = row.original["is_canonical"] as boolean;
               return (
                 <div className="flex flex-row justify-start ">
                   <div className="flex flex-row flex-nowrap font-content items-center text-sm">
+                    (transcript_id !== undefined ?
                     <AnchorLink
                       href={externalLinks.transcript(transcript_id)}
                       title={transcript_id}
@@ -517,6 +518,7 @@ export const createTableColumn = (
                         </div>
                       </Tooltip>
                     ) : null}
+                    : {"--"})
                   </div>
                 </div>
               );
@@ -575,7 +577,9 @@ export const createTableColumn = (
                 <div className="flex justify-start ml-1.5">
                   <Link href={`/genes/${geneSymbol}`}>
                     <a className="text-utility-link font-content text-xs underline">
-                      {row.original["gene"]}
+                      {row.original[`${accessor}`]
+                        ? row.original[`${accessor}`]
+                        : ""}
                     </a>
                   </Link>
                 </div>

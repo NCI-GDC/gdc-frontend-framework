@@ -22,8 +22,8 @@ export const SelectedRowContext =
   >(undefined);
 
 export interface SMTableContainerProps {
-  readonly selectedSurvivalPlot: Record<string, string>;
-  handleSurvivalPlotToggled: (
+  readonly selectedSurvivalPlot?: Record<string, string>;
+  handleSurvivalPlotToggled?: (
     symbol: string,
     name: string,
     field: string,
@@ -33,8 +33,9 @@ export interface SMTableContainerProps {
 }
 
 export const SMTableContainer: React.FC<SMTableContainerProps> = ({
-  selectedSurvivalPlot,
-  handleSurvivalPlotToggled,
+  selectedSurvivalPlot = {},
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  handleSurvivalPlotToggled = (_1: string, _2: string, _3: string) => null,
   columnsList = DEFAULT_SMTABLE_ORDER,
   geneSymbol = undefined,
 }: SMTableContainerProps) => {

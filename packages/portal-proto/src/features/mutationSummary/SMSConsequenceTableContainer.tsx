@@ -11,17 +11,12 @@ import DND from "@/components/expandableTables/shared/DND";
 import ConsequenceTable from "@/features/mutationSummary/ConsequenceTable";
 import { DEFAULT_CONSEQUENCE_TABLE_ORDER } from "@/features/mutationSummary/mutationTableConfig";
 import { ConsequenceTableData } from "@/features/mutationSummary/types";
+import useStandardPagination from "@/hooks/useStandardPagination";
 
 export interface SMSConsequenceTableContainerProps {
   ssmsId: string;
   columnsList?: Array<Column>;
 }
-
-const sliceTableData = (
-  data: ConsequenceTableData[],
-  pageSize: number,
-  page: number,
-) => data.slice(page * pageSize, (page + 1) * pageSize);
 
 export const SMSConsequenceTableContainer: React.FC<
   SMSConsequenceTableContainerProps
@@ -29,8 +24,6 @@ export const SMSConsequenceTableContainer: React.FC<
   ssmsId,
   columnsList = DEFAULT_CONSEQUENCE_TABLE_ORDER,
 }: SMSConsequenceTableContainerProps) => {
-  const [pageSize, setPageSize] = useState(10);
-  const [page, setPage] = useState(0);
   const [ref] = useMeasure();
   const [columnListOrder, setColumnListOrder] = useState(columnsList);
   const [visibleColumns, setVisibleColumns] = useState(
@@ -40,8 +33,19 @@ export const SMSConsequenceTableContainer: React.FC<
   const [showColumnMenu, setShowColumnMenu] = useState<boolean>(false);
   const [tableData, setTableData] = useState<ConsequenceTableData[]>([]);
 
-  const handleSetPage = (pageIndex: number) => {
-    setPage(pageIndex);
+  const {
+    handlePageChange,
+    handlePageSizeChange,
+    page,
+    pages,
+    size,
+    from,
+    total,
+    displayedData,
+  } = useStandardPagination(tableData);
+
+  const handleSetPageSize = (pageIndex: number) => {
+    handlePageSizeChange(pageIndex.toString());
   };
 
   useEffect(() => {
@@ -52,18 +56,11 @@ export const SMSConsequenceTableContainer: React.FC<
     setColumnListOrder(columnUpdate);
   };
 
-  const [consequenceTotal, setConsequenceTotal] = useState(0);
-
   const { data } = useSsmsConsequenceTable({
     pageSize: 99, // get max 100 entries
     offset: 0,
     mutationId: ssmsId,
   });
-
-  useEffect(() => {
-    setPage(0);
-  }, [pageSize]);
-
   const { status, ssmsConsequence: initialData } = data;
 
   useEffect(() => {
@@ -102,7 +99,6 @@ export const SMSConsequenceTableContainer: React.FC<
         };
       });
       setTableData(sortedData);
-      setConsequenceTotal(initialData.consequenceTotal);
     }
   }, [status, initialData]);
 
@@ -147,7 +143,7 @@ export const SMSConsequenceTableContainer: React.FC<
             cellWidth={`w-48`}
             rowHeight={60}
             numOfColumns={15}
-            numOfRows={pageSize}
+            numOfRows={size}
             content={<span>No columns selected</span>}
           />
         ) : (
@@ -155,8 +151,8 @@ export const SMSConsequenceTableContainer: React.FC<
             <ConsequenceTable
               ssmsId={ssmsId}
               status={status}
-              tableData={sliceTableData(tableData, pageSize, page)}
-              pageSize={pageSize}
+              tableData={displayedData as ConsequenceTableData[]}
+              pageSize={size}
               page={page}
               columnListOrder={columnListOrder}
               visibleColumns={visibleColumns}
@@ -168,35 +164,28 @@ export const SMSConsequenceTableContainer: React.FC<
         <div className={`flex flex-row ml-2 m-auto w-9/12 mb-2`}>
           <div className="flex flex-row flex-nowrap items-center m-auto ml-0">
             <span className=" mx-1 text-xs">Show</span>
-            <PageSize pageSize={pageSize} handlePageSize={setPageSize} />
+            <PageSize pageSize={size} handlePageSize={handleSetPageSize} />
             <span className="my-auto mx-1 text-xs">Entries</span>
           </div>
-          <div
-            className={`flex flex-row justify-between items-center  text-sm`}
-          >
+          <div className={`flex flex-row justify-between items-center text-sm`}>
             <span>
               Showing
-              <span className={`font-bold`}>{` ${(
-                page * pageSize +
-                1
-              ).toLocaleString("en-US")} `}</span>
+              <span className={`font-bold`}>
+                {from.toLocaleString("en-US")}
+              </span>
               -
-              <span className={`font-bold`}>{`${((page + 1) * pageSize <
-              consequenceTotal
-                ? (page + 1) * pageSize
-                : consequenceTotal
-              ).toLocaleString("en-US")} `}</span>
+              <span className={`font-bold`}>
+                {page.toLocaleString("en-US")}
+              </span>
               of
-              <span
-                className={`font-bold`}
-              >{` ${consequenceTotal.toLocaleString("en-US")} `}</span>
+              <span className={`font-bold`}>{pages}</span>
             </span>
           </div>
-          <div className={`m-auto mr-0`}>
+          <div className={`ml-auto mr-0`}>
             <PageStepper
               page={page}
-              totalPages={Math.ceil(consequenceTotal / pageSize)}
-              handlePage={handleSetPage}
+              totalPages={total}
+              handlePage={handlePageChange}
             />
           </div>
         </div>
