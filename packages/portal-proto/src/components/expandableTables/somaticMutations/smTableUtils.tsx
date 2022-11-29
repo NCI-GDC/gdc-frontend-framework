@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import ToggleSpring from "../shared/ToggleSpring";
 import SwitchSpring from "../shared/SwitchSpring";
 import RatioSpring from "../shared/RatioSpring";
@@ -14,6 +14,9 @@ import { TableColumnDefinition } from "../shared/types";
 import { Image } from "@/components/Image";
 import { Text, Tooltip } from "@mantine/core";
 import { startCase } from "lodash";
+import { AnchorLink } from "@/components/AnchorLink";
+import { externalLinks } from "../../../utils";
+import Link from "next/link";
 
 export const createTableColumn = (
   accessor: string,
@@ -491,21 +494,28 @@ export const createTableColumn = (
             accessorKey: accessor,
             header: () => (
               <TableHeader
-                title="Transcript(s)"
+                title="Transcript"
                 tooltip={""}
                 className="flex flex-row justify-start w-18"
               />
             ),
             cell: ({ row }) => {
+              const transcript_id = row.original["transcript_id"];
               const isC = row.original["is_canonical"] as boolean;
               return (
                 <div className="flex flex-row justify-start ">
                   <div className="flex flex-row flex-nowrap font-content items-center text-sm">
-                    {row.original["transcript_id"]}
+                    <AnchorLink
+                      href={externalLinks.transcript(transcript_id)}
+                      title={transcript_id}
+                      toolTipLabel={"transcript_id"}
+                    />
                     {isC ? (
-                      <div className="rounded-full bg-primary text-primary-contrast flex justify-center text-center ml-2 w-5 h-5 aspect-square">
-                        C
-                      </div>
+                      <Tooltip label={"Canconical"}>
+                        <div className="rounded-full bg-primary text-primary-contrast flex justify-center text-center ml-1.5 w-5 h-5 aspect-square">
+                          C
+                        </div>
+                      </Tooltip>
                     ) : null}
                   </div>
                 </div>
@@ -560,16 +570,14 @@ export const createTableColumn = (
               />
             ),
             cell: ({ row }) => {
+              const geneSymbol = row.original["gene_id"];
               return (
                 <div className="flex justify-start ml-1.5">
-                  <>
-                    <TableCell
-                      row={row}
-                      accessor={accessor}
-                      anchor={false}
-                      tooltip={""}
-                    />
-                  </>
+                  <Link href={`/genes/${geneSymbol}`}>
+                    <a className="text-utility-link font-content text-xs underline">
+                      {row.original["gene"]}
+                    </a>
+                  </Link>
                 </div>
               );
             },

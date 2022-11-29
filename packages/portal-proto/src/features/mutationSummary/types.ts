@@ -1,5 +1,6 @@
 export interface ConsequenceTableData {
   gene: string;
+  gene_id: string;
   aa_change: string;
   DNAChange: string;
   consequences: string;

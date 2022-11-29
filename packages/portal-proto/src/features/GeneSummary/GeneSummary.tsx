@@ -13,7 +13,7 @@ import SSMPlot from "../charts/SSMPlot";
 import { formatDataForHorizontalTable } from "../files/utils";
 import { Grid, LoadingOverlay } from "@mantine/core";
 import { GeneCancerDistributionTable } from "../cancerDistributionTable/CancerDistributionTable";
-import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMSConsequenceTable";
+import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMTableContainer";
 import { DEFAULT_GENE_SUMMARY_TABLE_ORDER } from "./mutationTableConfig";
 
 interface GeneViewProps {

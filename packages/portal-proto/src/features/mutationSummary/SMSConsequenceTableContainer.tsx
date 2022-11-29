@@ -69,7 +69,7 @@ export const SMSConsequenceTableContainer: React.FC<
   useEffect(() => {
     if (status === "fulfilled") {
       // need to sort the table data and then store all entries in tableData
-      const sortedData = [
+      const sortedData: ConsequenceTableData[] = [
         ...initialData.consequence.filter((x) => x.is_canonical),
         ...initialData.consequence
           .filter((x) => !x.is_canonical)
@@ -84,6 +84,7 @@ export const SMSConsequenceTableContainer: React.FC<
       ].map((c) => {
         return {
           gene: c.gene.symbol,
+          gene_id: c.gene.gene_id,
           aa_change: c.aa_change,
           DNAChange: c.annotation.hgvsc,
           consequences: c.consequence_type,
