@@ -158,14 +158,14 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
       if (update.length > 0)
         updateLocalGeneAndSSMFilters("genes.gene_id", {
           field: "genes.gene_id",
-          operator: "includes",
+          operator: "excludeifany",
           operands: currentGenes.filter((x) => x != payload.geneID),
         });
       else appDispatch(removeGeneAndSSMFilter("genes.gene_id"));
     } else
       updateLocalGeneAndSSMFilters("genes.gene_id", {
         field: "genes.gene_id",
-        operator: "includes",
+        operator: "excludeifany",
         operands: [...currentGenes, payload.geneID.toString()],
       });
   };

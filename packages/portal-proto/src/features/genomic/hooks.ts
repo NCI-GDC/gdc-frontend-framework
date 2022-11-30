@@ -10,7 +10,7 @@ import {
   FilterSet,
   GQLDocType,
   GQLIndexType,
-  isIncludes,
+  isExcludeIfAny,
   OperandValue,
   Operation,
   selectCurrentCohortFilterOrCaseSet,
@@ -146,7 +146,7 @@ export const useSelectFilterContent = (
     selectGeneAndSSMFiltersByName(state, field),
   );
   if (filter === undefined) return [];
-  if (isIncludes(filter)) {
+  if (isExcludeIfAny(filter)) {
     return filter.operands.map((x) => x.toString());
   }
   return [];

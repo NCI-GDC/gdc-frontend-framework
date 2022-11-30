@@ -488,3 +488,6 @@ export const isIntersectionOrUnion = (
  */
 export const isIncludes = (o: Operation): o is Includes =>
   (o as Includes).operator === "includes";
+
+export const isExcludeIfAny = (o: Operation): o is Includes =>
+  (o as ExcludeIfAny).operator === "excludeifany";
