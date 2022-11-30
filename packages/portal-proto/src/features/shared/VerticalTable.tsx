@@ -1,5 +1,5 @@
 import React, { useState, useEffect, FC, Fragment } from "react";
-import { useTable, useRowState, useSortBy } from "react-table";
+import { useTable, useRowState, useSortBy, SortingRule } from "react-table";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DragDrop } from "./DragDrop";
@@ -57,7 +57,7 @@ interface VerticalTableProps {
     /**
      * HTML that user will see at top of column
      */
-    columnName: JSX.Element | string;
+    columnName: JSX.Element | string | ((value: any) => JSX.Element);
     /**
      * Flag to show / hide column
      */
@@ -137,6 +137,10 @@ interface VerticalTableProps {
      */
     placeholder?: string;
   };
+  /**
+   * Optional default table sort state
+   */
+  initialSort?: Array<SortingRule<any>>;
 }
 
 /**
@@ -166,10 +170,14 @@ export interface HandleChangeInput {
    * search term change
    */
   newSearch?: string;
+  /**
+   * headings change
+   */
+  newHeadings?: Column[];
 }
 
-interface Column {
-  Header: string | JSX.Element;
+export interface Column {
+  Header: string | JSX.Element | ((value: any) => JSX.Element);
   accessor: string;
   disableSortBy?: boolean;
   width?: number;
@@ -193,6 +201,7 @@ interface TableProps {
  * @parm {object} pagination - optional pagination controls at bottom of table
  * @parm {string} status - optional shows loading state
  * @parm {object} search - optional, search options
+ * @parm {object} initialSort - optional, initial sort state
  * @returns ReactElement
  */
 export const VerticalTable: FC<VerticalTableProps> = ({
@@ -209,6 +218,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     console.error("handleChange was not set and called with:", a);
   },
   search,
+  initialSort = [],
 }: VerticalTableProps) => {
   const filterColumnCells = (newList) =>
     newList.reduce((filtered, obj) => {
@@ -240,6 +250,10 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     }
   }, [status, tableData]);
 
+  useEffect(() => {
+    handleChange({ newHeadings: headings });
+  }, [headings, handleChange]);
+
   const handleColumnChange = (update) => {
     setHeadings(filterColumnCells(update));
   };
@@ -257,7 +271,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   };
 
   // save sorting state
-  const [colSort, setColSort] = useState([]);
+  const [colSort, setColSort] = useState(initialSort);
   const useTableConditionalProps = [];
   if (columnSorting !== "none") {
     useTableConditionalProps.push(useSortBy);
@@ -478,7 +492,9 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   return (
     <div className="grow overflow-hidden">
       <div className="flex">
-        <div className={"flex-auto h-10"}>{additionalControls}</div>
+        {additionalControls && (
+          <div className={"flex-auto h-10"}>{additionalControls}</div>
+        )}
         <div className="flex flex-row">
           {showControls && (
             <Popover

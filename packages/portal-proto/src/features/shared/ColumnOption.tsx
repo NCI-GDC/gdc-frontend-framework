@@ -2,7 +2,7 @@ import { FC, useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { ItemTypes } from "./ItemTypes";
 import type { XYCoord, Identifier } from "dnd-core";
-import _ from "lodash";
+import { startCase } from "lodash";
 import { MdDragIndicator } from "react-icons/md";
 import SwitchSpring from "../../components/expandableTables/shared/SwitchSpring";
 const columnStyles = `cursor-move bg-base-lightest mb-2 p-1 border-1 block`;
@@ -34,7 +34,7 @@ export const ColumnOption: FC<ColumnProps> = ({
   arrangeable = true,
 }: ColumnProps) => {
   const formatColumnName = (colName: string) => {
-    return _.startCase(colName);
+    return startCase(colName);
   };
 
   const ref = useRef<HTMLDivElement>(null);

@@ -110,16 +110,19 @@ export interface SSMSConsequence {
   readonly annotation: {
     readonly polyphen_impact: string;
     readonly polyphen_score: number;
-    readonly shift_impact: string;
+    readonly sift_impact: string;
     readonly sift_score: string;
     readonly vep_impact: string;
+    readonly hgvsc?: string;
   };
   consequence_type: string;
   readonly gene: {
     readonly gene_id: string;
     readonly symbol: string;
+    readonly gene_strand?: number;
   };
   readonly is_canonical: boolean;
+  readonly transcript_id?: string;
 }
 export interface SSMSData {
   readonly ssm_id: string;

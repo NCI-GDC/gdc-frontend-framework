@@ -182,8 +182,6 @@ const GeneView = ({ data, gene_id }: GeneViewProps) => {
                   <h2 className="text-xl">Most Frequent Somatic Mutations</h2>
                 </div>
                 <SMTableContainer
-                  selectedSurvivalPlot={{}}
-                  handleSurvivalPlotToggled={() => null}
                   columnsList={DEFAULT_GENE_SUMMARY_TABLE_ORDER}
                   geneSymbol={data.genes.symbol}
                 />

@@ -6,6 +6,7 @@ import {
   buildCohortGqlOperator,
   FilterSet,
   PROTEINPAINT_API,
+  useUserDetails,
 } from "@gff/core";
 
 const basepath = PROTEINPAINT_API;
@@ -25,20 +26,34 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
     useCoreSelector(selectCurrentCohortFilters),
   );
 
+  const { data: userDetails } = useUserDetails();
+
   // to track reusable instance for mds3 skewer track
   const ppRef = useRef<PpApi>();
 
   useEffect(
     () => {
+      const rootElem = divRef.current as HTMLElement;
+      if (props.track == "bam") {
+        if (!userDetails.username) {
+          rootElem.innerHTML = `<div style='margin: 32px'><b>Access alert</b><hr><p>Please login to access the Sequence Read visualization tool.</p></div>`;
+          return;
+        } else if (!ppRef.current) {
+          rootElem.innerHTML = "";
+        }
+      }
+
       const data =
         props.track == "lolliplot"
           ? getLolliplotTrack(props, filter0)
           : props.track == "bam"
           ? getBamTrack(props, filter0)
+          : props.track == "matrix"
+          ? getMatrixTrack(props, filter0)
           : null;
 
       if (!data) return;
-      const rootElem = divRef.current as HTMLElement;
+
       const toolContainer = rootElem.parentNode.parentNode
         .parentNode as HTMLElement;
       toolContainer.style.backgroundColor = "#fff";
@@ -64,6 +79,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
       props.mds3_ssm2canonicalisoform,
       props.geneSearch4GDCmds3,
       filter0,
+      userDetails,
     ],
   );
 
@@ -145,6 +161,24 @@ function getBamTrack(props: PpProps, filter0: any) {
     gdcbamslice: {
       hideTokenInput: true,
     },
+    filter0,
+  };
+
+  return arg;
+}
+
+interface MatrixArg {
+  host: string;
+  launchGdcMatrix: boolean;
+  filter0: FilterSet;
+}
+
+function getMatrixTrack(props: PpProps, filter0: any) {
+  // host in gdc is just a relative url path,
+  // using the same domain as the GDC portal where PP is embedded
+  const arg: MatrixArg = {
+    host: props.basepath || (basepath as string),
+    launchGdcMatrix: true,
     filter0,
   };
 
