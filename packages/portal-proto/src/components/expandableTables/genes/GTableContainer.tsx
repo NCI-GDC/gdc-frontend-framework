@@ -1,4 +1,4 @@
-import { GDCGenesTable, useGenesTable } from "@gff/core";
+import { GDCGenesTable, useGenesTable, FilterSet } from "@gff/core";
 import { createContext, useEffect, useReducer, useState } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
 import { GenesTable } from "./GenesTable";
@@ -26,12 +26,14 @@ export interface GTableContainerProps {
     field: string,
   ) => void;
   handleGeneToggled: GeneToggledHandler;
+  genomicFilters?: FilterSet;
 }
 
 export const GTableContainer: React.FC<GTableContainerProps> = ({
   selectedSurvivalPlot,
   handleSurvivalPlotToggled,
   handleGeneToggled,
+  genomicFilters,
 }: GTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
@@ -117,6 +119,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     offset: page * pageSize,
     searchTerm:
       debouncedSearchTern.length > 0 ? debouncedSearchTern : undefined,
+    genomicFilters: genomicFilters,
   });
 
   useEffect(() => {

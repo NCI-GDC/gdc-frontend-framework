@@ -13,13 +13,8 @@ import {
   isIncludes,
   OperandValue,
   Operation,
-  removeGenomicFilter,
   selectCurrentCohortFilterOrCaseSet,
   selectFacetByDocTypeAndField,
-  selectGenomicAndCohortFilters,
-  selectGenomicFilters,
-  selectGenomicFiltersByName,
-  updateGenomicFilter,
   useCoreDispatch,
   useCoreSelector,
   usePrevious,
@@ -31,18 +26,20 @@ import { useAppDispatch, useAppSelector } from "@/features/genomic/appApi";
 import {
   updateGeneAndSSMFilter,
   selectGeneAndSSMFiltersByName,
+  selectGeneAndSSMFilters,
+  removeGeneAndSSMFilter,
 } from "@/features/genomic/geneAndSSMFiltersSlice";
 
 /**
- * Update Gene Enum Facets filters. These are local updates and are not added
- * to the current (global) cohort
+ * Update Genomic Enum Facets filters. These are app local updates and are not added
+ * to the current (global) cohort.
  */
 export const useUpdateGenomicEnumFacetFilter =
   (): UpdateFacetFilterFunction => {
-    const dispatch = useCoreDispatch();
+    const dispatch = useAppDispatch();
     // update the filter for this facet
     return (field: string, operation: Operation) => {
-      dispatch(updateGenomicFilter({ field: field, operation: operation }));
+      dispatch(updateGeneAndSSMFilter({ field: field, operation: operation }));
     };
   };
 
@@ -50,15 +47,15 @@ export const useUpdateGenomicEnumFacetFilter =
  * clears the genomic (local filters)
  */
 export const useClearGenomicFilters = (): ClearFacetFunction => {
-  const dispatch = useCoreDispatch();
+  const dispatch = useAppDispatch();
   return (field: string) => {
-    dispatch(removeGenomicFilter(field));
+    dispatch(removeGeneAndSSMFilter(field));
   };
 };
 
 const useGenomicFilterByName = (field: string): OperandValue => {
-  const enumFilters: Operation = useCoreSelector((state) =>
-    selectGenomicFiltersByName(state, field),
+  const enumFilters: Operation = useAppSelector((state) =>
+    selectGeneAndSSMFiltersByName(state, field),
   );
   return enumFilters ? extractValue(enumFilters) : undefined;
 };
@@ -68,7 +65,7 @@ const useCohortOrCaseSetFacetFilter = (): FilterSet => {
 };
 
 const useGenomicFacetFilter = (): FilterSet => {
-  return useCoreSelector((state) => selectGenomicFilters(state));
+  return useAppSelector((state) => selectGeneAndSSMFilters(state));
 };
 
 /**
@@ -81,6 +78,7 @@ export const useGenesFacet = (
   field: string,
 ): EnumFacetResponse => {
   const coreDispatch = useCoreDispatch();
+  // facet data is store in core
   const facet: FacetBuckets = useCoreSelector((state) =>
     selectFacetByDocTypeAndField(state, docType, field),
   );
@@ -93,6 +91,8 @@ export const useGenesFacet = (
   const prevEnumValues = usePrevious(enumValues);
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const selectLocalGenomicFilters = (_ignore) => cohortFilters;
     if (
       !facet ||
       !isEqual(prevCohortFilters, cohortFilters) ||
@@ -104,7 +104,7 @@ export const useGenesFacet = (
           field: field,
           docType: docType,
           index: indexType,
-          filterSelector: selectGenomicAndCohortFilters,
+          filterSelector: selectLocalGenomicFilters,
         }),
       );
     }
@@ -133,7 +133,12 @@ export const useGenesFacet = (
   };
 };
 
-//  Selector Hooks for getting repository filters by name
+/**
+ * returns the values of a files. Assumes required field
+ * is of type Includes. Returns an empty array if filter is undefined or not
+ * of type Includes.
+ * @param field to get values of
+ */
 export const useSelectFilterContent = (
   field: string,
 ): readonly (string | number)[] => {

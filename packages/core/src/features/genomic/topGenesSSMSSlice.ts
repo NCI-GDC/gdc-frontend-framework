@@ -8,11 +8,9 @@ import {
   DataStatus,
 } from "../../dataAccess";
 import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
-import {
-  mergeGenomicAndCohortFilters,
-  selectGenomicAndCohortGqlFilters,
-} from "./genomicFilters";
+import { mergeGenomicAndCohortFilters } from "./genomicFilters";
 import { buildCohortGqlOperator, FilterSet } from "../cohort";
+import { selectCurrentCohortFiltersGQL } from "../cohort/availableCohortsSlice";
 
 const TopGeneFrequencyQuery = `
 query TopGeneQuery (
@@ -100,7 +98,7 @@ export interface GeneSSMSEntry {
 
 export const fetchTopGene = createAsyncThunk<
   GraphQLApiResponse,
-  FilterSet,
+  FilterSet, // additional local filters
   { dispatch: CoreDispatch; state: CoreState }
 >(
   "genes/topGene",
@@ -280,5 +278,5 @@ export const selectTopGeneData = (
 export const useTopGene = createUseFiltersCoreDataHook(
   fetchTopGene,
   selectTopGeneData,
-  selectGenomicAndCohortGqlFilters,
+  selectCurrentCohortFiltersGQL,
 );

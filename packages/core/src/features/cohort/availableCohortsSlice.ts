@@ -688,12 +688,13 @@ export const selectCurrentCohortFilters = (
 ): FilterSet | undefined => selectCurrentCohortFilterOrCaseSet(state);
 
 /**
- * Main selector of the current Cohort Filters.
+ * CurrentCohort filters for GraphQL
  * @param state
  */
-export const selectCurrentCohortFilters = (
+export const selectCurrentCohortFiltersGQL = (
   state: CoreState,
-): FilterSet | undefined => selectCurrentCohortFilterOrCaseSet(state);
+): GqlOperation | undefined =>
+  buildCohortGqlOperator(selectCurrentCohortFilterOrCaseSet(state));
 
 /**
  * Select a filter by its name from the current cohort. If the filter is not found

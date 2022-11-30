@@ -1,4 +1,4 @@
-import { useSsmsTable, GDCSsmsTable } from "@gff/core";
+import { useSsmsTable, GDCSsmsTable, FilterSet } from "@gff/core";
 import { useEffect, useState, useReducer, createContext } from "react";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
 import { useMeasure } from "react-use";
@@ -28,11 +28,13 @@ export interface SMTableContainerProps {
     name: string,
     field: string,
   ) => void;
+  genomicFilters?: FilterSet;
 }
 
 export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   selectedSurvivalPlot,
   handleSurvivalPlotToggled,
+  genomicFilters,
 }: SMTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
@@ -117,6 +119,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     pageSize: pageSize,
     offset: pageSize * page,
     searchTerm: deboucedSearchTern.length > 0 ? deboucedSearchTern : undefined,
+    genomicFilters: genomicFilters,
   });
 
   useEffect(() => {

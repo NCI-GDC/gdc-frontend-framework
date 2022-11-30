@@ -7,15 +7,8 @@ import {
 import { castDraft } from "immer";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
-import {
-  GraphQLApiResponse,
-  graphqlAPI,
-  TablePageOffsetProps,
-} from "../gdcapi/gdcgraphql";
-import {
-  selectGenomicAndCohortFilters,
-  selectGenomicAndCohortGqlFilters,
-} from "./genomicFilters";
+import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
+import { mergeGenomicAndCohortFilters } from "./genomicFilters";
 import {
   buildCohortGqlOperator,
   filterSetToOperation,
@@ -27,6 +20,8 @@ import {
   Union,
 } from "../gdcapi/filters";
 import { appendFilterToOperation } from "./utils";
+import { GenomicTableProps } from "./types";
+import { selectCurrentCohortFiltersGQL } from "../cohort/availableCohortsSlice";
 
 const SSMSTableGraphQLQuery = `query SsmsTable_relayQuery(
   $ssmTested: FiltersArgument
@@ -165,12 +160,12 @@ export const buildSSMSTableSearchFilters = (
 
 export const fetchSsmsTable = createAsyncThunk<
   GraphQLApiResponse,
-  TablePageOffsetProps,
+  GenomicTableProps,
   { dispatch: CoreDispatch; state: CoreState }
 >(
   "genomic/ssmsTable",
   async (
-    { pageSize, offset, searchTerm }: TablePageOffsetProps,
+    { pageSize, offset, searchTerm, genomicFilters }: GenomicTableProps,
     thunkAPI,
   ): Promise<GraphQLApiResponse> => {
     const cohortFilters = buildCohortGqlOperator(
@@ -180,8 +175,9 @@ export const fetchSsmsTable = createAsyncThunk<
       ? Object(cohortFilters?.content)
       : [];
 
-    const geneAndCohortFilters = selectGenomicAndCohortFilters(
+    const geneAndCohortFilters = mergeGenomicAndCohortFilters(
       thunkAPI.getState(),
+      genomicFilters,
     );
 
     const searchFilters = buildSSMSTableSearchFilters(searchTerm);
@@ -352,5 +348,5 @@ export const selectSsmsTableData = (
 export const useSsmsTable = createUseFiltersCoreDataHook(
   fetchSsmsTable,
   selectSsmsTableData,
-  selectGenomicAndCohortGqlFilters,
+  selectCurrentCohortFiltersGQL,
 );

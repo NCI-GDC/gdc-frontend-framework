@@ -11,10 +11,7 @@ import { fetchSmsAggregations } from "./smsAggregationsApi";
 import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
 import { GenomicTableProps } from "./types";
 import { buildCohortGqlOperator, filterSetToOperation } from "../cohort";
-import {
-  mergeGenomicAndCohortFilters,
-  selectGenomicAndCohortGqlFilters,
-} from "./genomicFilters";
+import { mergeGenomicAndCohortFilters } from "./genomicFilters";
 import { selectCurrentCohortFilters } from "../cohort";
 import {
   convertFilterToGqlFilter,
@@ -22,6 +19,7 @@ import {
   Union,
 } from "../gdcapi/filters";
 import { appendFilterToOperation } from "./utils";
+import { selectCurrentCohortFiltersGQL } from "../cohort/availableCohortsSlice";
 
 const GenesTableGraphQLQuery = `
           query GenesTable_relayQuery(
@@ -441,5 +439,5 @@ export const selectGenesTableData = (
 export const useGenesTable = createUseFiltersCoreDataHook(
   fetchGenesTable,
   selectGenesTableData,
-  selectGenomicAndCohortGqlFilters,
+  selectCurrentCohortFiltersGQL,
 );

@@ -1,33 +1,30 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
-import { GTableContainer } from "@/components/expandableTables/genes/GTableContainer";
-import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMTableContainer";
-import { Grid, Tabs, LoadingOverlay } from "@mantine/core";
-import EnumFacet from "@/features/facets/EnumFacet";
-import ToggleFacet from "@/features/facets/ToggleFacet";
-import FilterFacets from "./filters.json";
 import dynamic from "next/dynamic";
-import { useAppDispatch } from "@/features/genomic/appApi";
+import partial from "lodash/partial";
+import { Grid, Tabs, LoadingOverlay } from "@mantine/core";
 import {
+  FilterSet,
   GqlOperation,
-  useCoreDispatch,
   selectCurrentCohortFilters,
   joinFilters,
   useCoreSelector,
-  clearGenomicFilters,
   useGetSurvivalPlotQuery,
-  selectGenomicFilters,
   buildCohortGqlOperator,
   useTopGene,
 } from "@gff/core";
-
+import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
+import { GTableContainer } from "@/components/expandableTables/genes/GTableContainer";
+import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMTableContainer";
+import EnumFacet from "@/features/facets/EnumFacet";
+import ToggleFacet from "@/features/facets/ToggleFacet";
+import FilterFacets from "./filters.json";
+import { useAppDispatch, useAppSelector } from "@/features/genomic/appApi";
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
 import {
   useTotalCounts,
   FacetDocTypeToCountsIndexMap,
   FacetDocTypeToLabelsMap,
 } from "@/features/facets/hooks";
-import partial from "lodash/partial";
 
 import {
   useClearGenomicFilters,
@@ -36,7 +33,11 @@ import {
   useUpdateGeneAndSSMFilters,
   useUpdateGenomicEnumFacetFilter,
 } from "./hooks";
-import { removeGeneAndSSMFilter } from "@/features/genomic/geneAndSSMFiltersSlice";
+import {
+  removeGeneAndSSMFilter,
+  selectGeneAndSSMFilters,
+  clearGeneAndSSMFilters,
+} from "@/features/genomic/geneAndSSMFiltersSlice";
 
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
   ssr: false,
@@ -88,7 +89,6 @@ const buildGeneHaveAndHaveNotFilters = (
 type AppModeState = "genes" | "ssms";
 
 const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
-  const coreDispatch = useCoreDispatch();
   const appDispatch = useAppDispatch();
   const [comparativeSurvival, setComparativeSurvival] = useState(undefined);
   const [appMode, setAppMode] = useState<AppModeState>("genes");
@@ -96,13 +96,11 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     selectCurrentCohortFilters(state),
   );
 
-  const genomicFilters = useCoreSelector((state) =>
-    selectGenomicFilters(state),
+  const genomicFilters: FilterSet = useAppSelector((state) =>
+    selectGeneAndSSMFilters(state),
   );
 
   const currentGenes = useSelectFilterContent("genes.gene_id");
-  console.log("currentGenes", currentGenes);
-
   const updateLocalGeneAndSSMFilters = useUpdateGeneAndSSMFilters();
 
   const filters = useMemo(
@@ -127,7 +125,8 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     survivalData: [],
   };
 
-  const { data: topGeneSSMS, isSuccess: topGeneSSMSSuccess } = useTopGene(); // get the default top gene/ssms to show by default
+  const { data: topGeneSSMS, isSuccess: topGeneSSMSSuccess } =
+    useTopGene(genomicFilters); // get the default top gene/ssms to show by default
   /**
    * Update survival plot in response to user actions. There are two "states"
    * for the survival plot: If comparativeSurvival is undefined it will show the
@@ -181,13 +180,13 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
 
   // clear local filters when cohort changes or tabs change
   useEffect(() => {
-    coreDispatch(clearGenomicFilters());
-  }, [cohortFilters, coreDispatch]);
+    appDispatch(clearGeneAndSSMFilters());
+  }, [cohortFilters, appDispatch]);
 
   // clear local filters when cohort changes or tabs change
   useEffect(() => {
-    coreDispatch(clearGenomicFilters());
-  }, [cohortFilters, coreDispatch]);
+    appDispatch(clearGeneAndSSMFilters());
+  }, [cohortFilters, appDispatch]);
 
   /**
    * Clear comparative when local filters change
@@ -329,6 +328,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
               selectedSurvivalPlot={comparativeSurvival}
               handleSurvivalPlotToggled={handleSurvivalPlotToggled}
               handleGeneToggled={handleGeneToggled}
+              genomicFilters={genomicFilters}
             />
           </div>
         </Tabs.Panel>
@@ -360,6 +360,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
             <SMTableContainer
               selectedSurvivalPlot={comparativeSurvival}
               handleSurvivalPlotToggled={handleSurvivalPlotToggled}
+              genomicFilters={genomicFilters}
             />
           </div>
         </Tabs.Panel>
