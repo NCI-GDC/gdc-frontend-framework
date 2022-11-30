@@ -50,7 +50,45 @@ export const DeleteCohortNotification: React.FC<CohortNotificationProps> = ({
 }: CohortNotificationProps) => {
   return (
     <>
-      <p>{cohortName} has been deleted.</p>
+      <p>
+        <b>{cohortName}</b> has been deleted.
+      </p>
+    </>
+  );
+};
+
+export const SavedCohortNotification: React.FC = () => {
+  return (
+    <>
+      <p>Cohort has been saved.</p>
+    </>
+  );
+};
+
+export const DiscardChangesCohortNotification: React.FC = () => {
+  return (
+    <>
+      <p>Cohort changes have been discarded.</p>
+    </>
+  );
+};
+
+export const ErrorCohortNotification = ({
+  errorType,
+}: {
+  errorType: string;
+}): JSX.Element => {
+  let errorText = "";
+  if (errorType === "saving") {
+    errorText = "There was a problem saving the cohort.";
+  } else if (errorType === "deleting") {
+    errorText = "There was a problem deleting the cohort.";
+  } else if (errorType === "discarding") {
+    errorText = "There was a problem discarding the unsaved changes";
+  }
+  return (
+    <>
+      <p>{errorText}</p>
     </>
   );
 };

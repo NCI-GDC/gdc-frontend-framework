@@ -16,6 +16,13 @@ export const cohortApiSlice = coreCreateApi({
   endpoints: (builder) => ({
     getCohortsByContextId: builder.query<CohortModel[], void>({
       query: () => "/cohorts",
+      transformResponse: (response: CohortModel[]) => {
+        return response.map((item) => ({
+          ...item,
+          saved: true,
+          modified: false,
+        }));
+      },
       providesTags: (result = []) => [
         { type: "Cohort", id: "LIST" },
         ...result.map(({ id }) => ({ type: "Cohort" as const, id })),
@@ -63,6 +70,7 @@ export const {
   useAddCohortMutation,
   useUpdateCohortMutation,
   useDeleteCohortMutation,
+  useLazyGetCohortByIdQuery,
 } = cohortApiSlice;
 
 export const cohortApiSliceMiddleware = cohortApiSlice.middleware as Middleware;

@@ -134,7 +134,7 @@ export const QuickSearch = ({
                   quickSearchRef.current.focus();
                 }}
                 className="cursor-pointer"
-              ></CloseIcon>
+              />
             )
           }
           value={searchText}

@@ -80,6 +80,11 @@ const useCohortCases = (pageSize = 10, offset = 0) => {
       "demographic.vital_status",
       "demographic.days_to_death",
       "files.file_id",
+      "summary.data_categories.file_count",
+      "summary.data_categories.data_category",
+      "summary.experimental_strategies.experimental_strategy",
+      "summary.experimental_strategies.file_count",
+      // annotation
     ],
     filters: cohortFilters, // TODO: move filter setting to core
     size: pageSize,
@@ -92,7 +97,8 @@ const useCohortCases = (pageSize = 10, offset = 0) => {
   // console.log({cohortFilters})
   const filters = JSON.stringify(cohortFilters);
 
-  console.log(filters);
+  console.log({ cohortFilters });
+  console.log({ casedata: data });
 
   // useEffect(() => {
   //   coreDispatch(
@@ -226,16 +232,30 @@ export const CasesView: React.FC<CasesViewProps> = (props: CasesViewProps) => {
   const { cases } = props;
   const { classes, cx } = useStyles();
   const [scrolled, setScrolled] = useState(false);
-  // const {
-  //   handlePageChange,
-  //   handlePageSizeChange,
-  //   page,
-  //   pages,
-  //   size,
-  //   from,
-  //   total,
-  //   displayedData,
-  // } = useStandardPagination(cases);
+
+  const columnListOrder = [
+    // cart (default)
+    // slides (default)
+    { id: "submitterId", columnName: "Case ID", visible: true },
+    { id: "id", columnName: "Case UUID", visible: false },
+    { id: "projectId", columnName: "Project", visible: true },
+    { id: "programName", columnName: "Program", visible: false },
+    { id: "primarySite", columnName: "Primary Site", visible: true },
+    // Disease Type
+    // Primary Diagnosis
+    // Age at Diagnosis display as "X years Y days" in the same way as age_at_diagnosis
+    // Vital Status
+    // Days to Death display as "X years Y days" in the same way as age_at_diagnosis
+    { id: "gender", columnName: "Gender", visible: true },
+    // Race
+    // Ethnicity
+    // Files # files associated with the case (default)
+    // Data Category (default) -> more details in the ticket
+    // Experimental Strategy -> more details in the ticket
+    // Annotations (Default) -> same as case summary logic
+  ];
+
+  console.log({ cases });
 
   return (
     <ScrollArea
@@ -244,8 +264,8 @@ export const CasesView: React.FC<CasesViewProps> = (props: CasesViewProps) => {
     >
       <LoadingOverlay visible={cases === undefined} color="primary" />
       <VerticalTable
-        tableData={cases}
-        columns={[]}
+        tableData={cases || []}
+        columns={columnListOrder}
         handleChange={() => {}}
         selectableRow={true}
       />

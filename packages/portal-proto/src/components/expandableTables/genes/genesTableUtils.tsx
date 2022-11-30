@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import ToggleSpring from "../shared/ToggleSpring";
 import { Tooltip } from "@mantine/core";
 import { MdKeyboardArrowDown } from "react-icons/md";
@@ -12,6 +12,7 @@ import { Genes, SingleGene, Gene, GeneToggledHandler } from "./types";
 import { SelectReducerAction } from "../shared/types";
 import { Image } from "@/components/Image";
 import { startCase } from "lodash";
+import Link from "next/link";
 
 export const createTableColumn = (
   accessor: string,
@@ -399,11 +400,13 @@ export const createTableColumn = (
             ),
             cell: ({ row }) => {
               return (
-                <div className={`text-xs`}>
-                  {row.original[`${accessor}`]
-                    ? row.original[`${accessor}`]
-                    : ""}
-                </div>
+                <Link href={`/genes/${row.original[accessor]}`}>
+                  <a className="text-utility-link underline">
+                    {row.original[`${accessor}`]
+                      ? row.original[`${accessor}`]
+                      : ""}
+                  </a>
+                </Link>
               );
             },
           },
