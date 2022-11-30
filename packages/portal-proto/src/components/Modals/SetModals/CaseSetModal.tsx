@@ -2,7 +2,6 @@ import { useCoreDispatch, hideModal } from "@gff/core";
 import { Modal } from "@mantine/core";
 import SetModalButtons from "./SetModalButtons";
 import InputSet from "./InputSet";
-import SetModal from "./SetModal";
 
 const CaseSetModal = () => {
   const dispatch = useCoreDispatch();
@@ -16,7 +15,7 @@ const CaseSetModal = () => {
       withinPortal={false}
       classNames={{
         modal: "p-0",
-        title: "mt-2 ml-4",
+        title: "mt-2 ml-4 uppercase text-primary lg",
         close: "mt-2 mr-4",
       }}
     >
@@ -40,6 +39,7 @@ const CaseSetModal = () => {
           textInputPlaceholder={
             "e.g. TCGA-DD-AAVP, TCGA-DD-AAVP-10A-01D-A40U-10, 0004d251-3f70-4395-b175-c94c2f5b1b81"
           }
+          identifier="case"
         />
       </div>
       <SetModalButtons />

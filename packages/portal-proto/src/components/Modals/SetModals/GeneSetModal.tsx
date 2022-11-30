@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { Modal, Tabs } from "@mantine/core";
 import {
   useCoreDispatch,
@@ -18,6 +19,8 @@ const GeneSetModal: React.FC<GeneSetModalProps> = ({
   modalTitle,
   inputInstructions,
 }: GeneSetModalProps) => {
+  const [activeTab, setActiveTab] = useState<string | null>("input");
+  const [savedSetSelected, setSavedSetSelected] = useState(false);
   const sets = useCoreSelector((state) => selectSets(state, "gene"));
   const dispatch = useCoreDispatch();
 
@@ -30,11 +33,11 @@ const GeneSetModal: React.FC<GeneSetModalProps> = ({
       withinPortal={false}
       classNames={{
         modal: "p-0",
-        title: "mt-2 ml-4",
+        title: "mt-2 ml-4 uppercase text-primary-darkest lg",
         close: "mt-2 mr-4",
       }}
     >
-      <Tabs defaultValue="input">
+      <Tabs value={activeTab} onTabChange={setActiveTab}>
         <Tabs.List>
           <Tabs.Tab value="input">Enter Genes</Tabs.Tab>
           <Tabs.Tab value="saved">Saved Sets</Tabs.Tab>
@@ -43,6 +46,7 @@ const GeneSetModal: React.FC<GeneSetModalProps> = ({
           <InputSet
             inputInstructions={inputInstructions}
             textInputPlaceholder="e.g. ENSG00000141510, TP53, 7273, HGNC:11998, 191170, P04637"
+            identifier="gene"
             identifierToolTip={
               <div>
                 <p>
@@ -59,10 +63,24 @@ const GeneSetModal: React.FC<GeneSetModalProps> = ({
           />
         </Tabs.Panel>
         <Tabs.Panel value="saved" className="p-4">
-          <SavedSets sets={sets} createSetsInstructions="" />
+          <SavedSets
+            sets={sets}
+            createSetsInstructions={
+              <p>
+                Gene sets can be created from the <b>Enter Genes tabs</b>, or
+                from the Mutation Frequency app.
+              </p>
+            }
+            fieldName={"gene"}
+            setSavedSetSelected={setSavedSetSelected}
+          />
         </Tabs.Panel>
       </Tabs>
-      <SetModalButtons />
+      <SetModalButtons
+        saveButtonDisabled={activeTab === "saved"}
+        clearButtonDisabled={activeTab === "saved" && !savedSetSelected}
+        submitButtonDisabled={activeTab === "saved" && !savedSetSelected}
+      />
     </Modal>
   );
 };

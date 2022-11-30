@@ -1,14 +1,42 @@
+import React, { useState, useEffect } from "react";
+import { Checkbox } from "@mantine/core";
 import { AiOutlineFileAdd as FileAddIcon } from "react-icons/ai";
+import { VerticalTable } from "@/features/shared/VerticalTable";
 
 interface SavedSetsProps {
   readonly sets: Record<string, string>;
   readonly createSetsInstructions: React.ReactNode;
+  readonly fieldName: string;
+  readonly setSavedSetSelected: (setSelected: boolean) => void;
 }
 
 const SavedSets: React.FC<SavedSetsProps> = ({
   sets,
   createSetsInstructions,
+  fieldName,
+  setSavedSetSelected,
 }: SavedSetsProps) => {
+  const [selectedSets, setSelectedSets] = useState([]);
+
+  useEffect(() => {
+    setSavedSetSelected(selectedSets.length > 0);
+  }, [selectedSets]);
+
+  const tableData = Object.entries(sets).map(([id, name]) => ({
+    select: (
+      <Checkbox
+        value={id}
+        checked={selectedSets.includes(id)}
+        onChange={() =>
+          selectedSets.includes(id)
+            ? setSelectedSets(selectedSets.filter((i) => i !== id))
+            : setSelectedSets([...selectedSets, id])
+        }
+      />
+    ),
+    name,
+  }));
+
   return (
     <>
       {Object.keys(sets).length === 0 ? (
@@ -20,7 +48,20 @@ const SavedSets: React.FC<SavedSetsProps> = ({
           {createSetsInstructions}
         </div>
       ) : (
-        <></>
+        <VerticalTable
+          tableData={tableData}
+          columns={[
+            { columnName: "Select", id: "select", visible: true },
+            { columnName: "Name", id: "name", visible: true },
+            {
+              columnName: `# ${fieldName}`,
+              id: "count",
+              visible: true,
+            },
+          ]}
+          selectableRow={false}
+          showControls={false}
+        />
       )}
     </>
   );

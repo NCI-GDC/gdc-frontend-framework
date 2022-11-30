@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Textarea, FileInput, Tooltip } from "@mantine/core";
+import { Textarea, FileInput, Tooltip, ActionIcon } from "@mantine/core";
 import { RiFile3Fill as FileIcon } from "react-icons/ri";
 import { MdInfo as InfoIcon } from "react-icons/md";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
@@ -8,12 +8,14 @@ interface InputSetProps {
   readonly inputInstructions: string;
   readonly identifierToolTip: React.ReactNode;
   readonly textInputPlaceholder: string;
+  readonly identifier: string;
 }
 
 const InputSet: React.FC<InputSetProps> = ({
   inputInstructions,
   identifierToolTip,
   textInputPlaceholder,
+  identifier,
 }: InputSetProps) => {
   const [file, setFile] = useState<File | null>(null);
 
@@ -21,13 +23,13 @@ const InputSet: React.FC<InputSetProps> = ({
     <>
       <p className="mb-2">{inputInstructions}</p>
       <div className="flex items-center justify-between w-full">
-        <label className="font-bold" htmlFor="indentifier-input">
-          Type or copy-and-paste a list of mutation identifiers
+        <label className="font-bold text-sm" htmlFor="indentifier-input">
+          Type or copy-and-paste a list of {identifier} identifiers
         </label>
         <Tooltip label={identifierToolTip}>
-          <div>
+          <ActionIcon>
             <InfoIcon size={16} className="text-primary-darkest" />
-          </div>
+          </ActionIcon>
         </Tooltip>
       </div>
       <Textarea
@@ -39,9 +41,13 @@ const InputSet: React.FC<InputSetProps> = ({
       <FileInput
         value={file}
         onChange={setFile}
-        icon={file !== null ? <FileIcon /> : undefined}
+        icon={
+          file !== null ? (
+            <FileIcon className="text-primary-darkest" />
+          ) : undefined
+        }
         label={<b>Or choose a file to upload</b>}
-        rightSection={<DarkFunctionButton size="xs">Browse</DarkFunctionButton>}
+        rightSection={<label>Browse</label>}
         rightSectionWidth={80}
         className="mt-2"
         accept=".tsv,.txt,.csv"
