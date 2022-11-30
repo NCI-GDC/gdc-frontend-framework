@@ -92,7 +92,7 @@ export const useGenesFacet = (
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const selectLocalGenomicFilters = (_ignore) => cohortFilters;
+    const selectLocalGenomicFilters = (_ignore) => genomicFilters;
     if (
       !facet ||
       !isEqual(prevCohortFilters, cohortFilters) ||

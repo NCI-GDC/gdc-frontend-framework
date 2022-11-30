@@ -22,7 +22,7 @@ import { appendFilterToOperation } from "./utils";
 import { selectCurrentCohortFiltersGQL } from "../cohort/availableCohortsSlice";
 
 const GenesTableGraphQLQuery = `
-          query GenesTable_relayQuery(
+          query GenesTable(
             $genesTable_filters: FiltersArgument
             $genesTable_size: Int
             $genesTable_offset: Int

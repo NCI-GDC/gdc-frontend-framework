@@ -300,7 +300,10 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
             <div className="flex flex-col w-screen">
               <Grid className="mx-2  bg-base-max w-9/12">
                 <Grid.Col span={6}>
-                  <GeneFrequencyChart marginBottom={95} />
+                  <GeneFrequencyChart
+                    marginBottom={95}
+                    genomicFilters={genomicFilters}
+                  />
                 </Grid.Col>
                 <Grid.Col span={6} className="relative">
                   <LoadingOverlay

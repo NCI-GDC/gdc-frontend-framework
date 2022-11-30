@@ -6,7 +6,16 @@ export interface GeneAndSSMFiltersState {
   readonly filters: FilterSet;
 }
 
-const initialState: FilterSet = { mode: "and", root: {} };
+const initialState: FilterSet = {
+  mode: "and",
+  root: {
+    "genes.is_cancer_gene_census": {
+      field: "genes.is_cancer_gene_census",
+      operator: "includes",
+      operands: ["true"],
+    },
+  },
+};
 
 const slice = createSlice({
   name: "geneFrequencyApp/filters",
@@ -33,7 +42,7 @@ const slice = createSlice({
       };
     },
     clearGeneAndSSMFilters: () => {
-      return { mode: "and", root: {} };
+      return { mode: "and", root: initialState.root };
     },
   },
   extraReducers: {},

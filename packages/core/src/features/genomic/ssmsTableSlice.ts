@@ -23,7 +23,7 @@ import { appendFilterToOperation } from "./utils";
 import { GenomicTableProps } from "./types";
 import { selectCurrentCohortFiltersGQL } from "../cohort/availableCohortsSlice";
 
-const SSMSTableGraphQLQuery = `query SsmsTable_relayQuery(
+const SSMSTableGraphQLQuery = `query SsmsTable(
   $ssmTested: FiltersArgument
 $ssmCaseFilter: FiltersArgument
 $ssmsTable_size: Int
