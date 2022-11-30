@@ -170,9 +170,13 @@ export interface HandleChangeInput {
    * search term change
    */
   newSearch?: string;
+  /**
+   * headings change
+   */
+  newHeadings?: Column[];
 }
 
-interface Column {
+export interface Column {
   Header: string | JSX.Element | ((value: any) => JSX.Element);
   accessor: string;
   disableSortBy?: boolean;
@@ -245,6 +249,10 @@ export const VerticalTable: FC<VerticalTableProps> = ({
       setTable(tableData);
     }
   }, [status, tableData]);
+
+  useEffect(() => {
+    handleChange({ newHeadings: headings });
+  }, [headings, handleChange]);
 
   const handleColumnChange = (update) => {
     setHeadings(filterColumnCells(update));
