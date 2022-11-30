@@ -1,4 +1,4 @@
-import { Button, Loader } from "@mantine/core";
+import { Button, ButtonProps, Loader } from "@mantine/core";
 import { FaDownload } from "react-icons/fa";
 import download from "src/utils/download";
 import { hideModal, Modals, useCoreDispatch } from "@gff/core";
@@ -20,6 +20,8 @@ interface DownloadButtonProps {
   options?: Record<string, any>;
   customStyle?: string;
   showLoading?: boolean;
+  showIcon?: boolean;
+  preventClickEvent?: boolean;
   onClick?: () => void;
   setActive?: Dispatch<SetStateAction<boolean>>;
   active?: boolean;
@@ -27,7 +29,7 @@ interface DownloadButtonProps {
   Modal400?: Modals;
 }
 
-export const DownloadButton: React.FC<DownloadButtonProps> = ({
+export const DownloadButton: React.FC<DownloadButtonProps & ButtonProps> = ({
   endpoint,
   disabled = false,
   filename,
@@ -45,9 +47,12 @@ export const DownloadButton: React.FC<DownloadButtonProps> = ({
   setActive,
   onClick,
   showLoading = true,
+  showIcon = true,
+  preventClickEvent = false,
   active,
   Modal400,
   Modal403,
+  ...buttonProps
 }: DownloadButtonProps) => {
   const text = active ? activeText : inactiveText;
   const dispatch = useCoreDispatch();
@@ -59,7 +64,7 @@ export const DownloadButton: React.FC<DownloadButtonProps> = ({
 
   return (
     <Button
-      leftIcon={inactiveText && <FaDownload />}
+      leftIcon={showIcon && inactiveText && <FaDownload />}
       disabled={disabled}
       className={
         customStyle ||
@@ -69,7 +74,7 @@ export const DownloadButton: React.FC<DownloadButtonProps> = ({
       }
       loading={showLoading && active}
       onClick={() => {
-        if (onClick) {
+        if (!preventClickEvent && onClick) {
           onClick();
           return;
         }
@@ -97,6 +102,7 @@ export const DownloadButton: React.FC<DownloadButtonProps> = ({
           options,
         });
       }}
+      {...buttonProps}
     >
       {text || Icon}
     </Button>
