@@ -209,7 +209,7 @@ const FilesTable: React.FC<FilesTableProps> = ({
       },
     );
   };
-  
+
   return (
     <VerticalTable
       tableData={tableData}
