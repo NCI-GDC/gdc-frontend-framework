@@ -688,6 +688,14 @@ export const selectCurrentCohortFilters = (
 ): FilterSet | undefined => selectCurrentCohortFilterOrCaseSet(state);
 
 /**
+ * Main selector of the current Cohort Filters.
+ * @param state
+ */
+export const selectCurrentCohortFilters = (
+  state: CoreState,
+): FilterSet | undefined => selectCurrentCohortFilterOrCaseSet(state);
+
+/**
  * Select a filter by its name from the current cohort. If the filter is not found
  * returns undefined.
  * @param state

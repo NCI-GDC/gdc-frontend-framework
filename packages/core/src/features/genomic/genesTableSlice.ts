@@ -8,14 +8,11 @@ import { castDraft } from "immer";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import { fetchSmsAggregations } from "./smsAggregationsApi";
-import {
-  GraphQLApiResponse,
-  graphqlAPI,
-  TablePageOffsetProps,
-} from "../gdcapi/gdcgraphql";
+import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
+import { GenomicTableProps } from "./types";
 import { buildCohortGqlOperator, filterSetToOperation } from "../cohort";
 import {
-  selectGenomicAndCohortFilters,
+  mergeGenomicAndCohortFilters,
   selectGenomicAndCohortGqlFilters,
 } from "./genomicFilters";
 import { selectCurrentCohortFilters } from "../cohort";
@@ -160,13 +157,13 @@ export const buildGeneTableSearchFilters = (
 
 export const fetchGenesTable = createAsyncThunk<
   GraphQLApiResponse,
-  TablePageOffsetProps,
+  GenomicTableProps,
   { dispatch: CoreDispatch; state: CoreState }
 >(
   "genes/genesTable",
   async (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    { pageSize, offset, searchTerm }: TablePageOffsetProps,
+    { pageSize, offset, searchTerm, genomicFilters }: GenomicTableProps,
     thunkAPI,
   ): Promise<GraphQLApiResponse> => {
     const cohortFilters = buildCohortGqlOperator(
@@ -175,8 +172,9 @@ export const fetchGenesTable = createAsyncThunk<
     const cohortFiltersContent = cohortFilters?.content
       ? Object(cohortFilters?.content)
       : [];
-    const geneAndCohortFilters = selectGenomicAndCohortFilters(
+    const geneAndCohortFilters = mergeGenomicAndCohortFilters(
       thunkAPI.getState(),
+      genomicFilters,
     );
     const filters = buildCohortGqlOperator(geneAndCohortFilters);
     const filterContents = filters?.content ? Object(filters?.content) : [];

@@ -8,7 +8,11 @@ import {
   DataStatus,
 } from "../../dataAccess";
 import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
-import { selectGenomicAndCohortGqlFilters } from "./genomicFilters";
+import {
+  mergeGenomicAndCohortFilters,
+  selectGenomicAndCohortGqlFilters,
+} from "./genomicFilters";
+import { buildCohortGqlOperator, FilterSet } from "../cohort";
 
 const TopGeneFrequencyQuery = `
 query TopGeneQuery (
@@ -96,71 +100,76 @@ export interface GeneSSMSEntry {
 
 export const fetchTopGene = createAsyncThunk<
   GraphQLApiResponse,
-  void,
+  FilterSet,
   { dispatch: CoreDispatch; state: CoreState }
->("genes/topGene", async (_, thunkAPI): Promise<GraphQLApiResponse> => {
-  const filters = selectGenomicAndCohortGqlFilters(thunkAPI.getState());
-  const filterContents = filters?.content ? Object(filters?.content) : [];
+>(
+  "genes/topGene",
+  async (genomicFilters, thunkAPI): Promise<GraphQLApiResponse> => {
+    const filters = buildCohortGqlOperator(
+      mergeGenomicAndCohortFilters(thunkAPI.getState(), genomicFilters),
+    );
+    const filterContents = filters?.content ? Object(filters?.content) : [];
 
-  const graphQlVariables = {
-    ssmTested: {
-      content: [
-        {
-          content: {
-            field: "cases.available_variation_data",
-            value: ["ssm"],
-          },
-          op: "in",
-        },
-      ],
-      op: "and",
-    },
-    ssmCaseFilter: {
-      content: [
-        ...[
+    const graphQlVariables = {
+      ssmTested: {
+        content: [
           {
             content: {
-              field: "available_variation_data",
+              field: "cases.available_variation_data",
               value: ["ssm"],
             },
             op: "in",
           },
         ],
-        ...filterContents,
-      ],
-      op: "and",
-    },
-    topTable_size: 1,
-    consequenceFilters: {
-      content: [
-        {
-          content: {
-            field: "consequence.transcript.is_canonical",
-            value: ["true"],
+        op: "and",
+      },
+      ssmCaseFilter: {
+        content: [
+          ...[
+            {
+              content: {
+                field: "available_variation_data",
+                value: ["ssm"],
+              },
+              op: "in",
+            },
+          ],
+          ...filterContents,
+        ],
+        op: "and",
+      },
+      topTable_size: 1,
+      consequenceFilters: {
+        content: [
+          {
+            content: {
+              field: "consequence.transcript.is_canonical",
+              value: ["true"],
+            },
+            op: "in",
           },
-          op: "in",
+        ],
+        op: "and",
+      },
+      topTable_offset: 0,
+      topTable_filters: filters ? filters : {},
+      ssmsScore: "occurrence.case.project.project_id",
+      geneScore: "case.project.project_id",
+      ssmsSort: [
+        {
+          field: "_score",
+          order: "desc",
+        },
+        {
+          field: "_uid",
+          order: "asc",
         },
       ],
-      op: "and",
-    },
-    topTable_offset: 0,
-    topTable_filters: filters ? filters : {},
-    ssmsScore: "occurrence.case.project.project_id",
-    geneScore: "case.project.project_id",
-    ssmsSort: [
-      {
-        field: "_score",
-        order: "desc",
-      },
-      {
-        field: "_uid",
-        order: "asc",
-      },
-    ],
-  };
+    };
 
-  return graphqlAPI(TopGeneFrequencyQuery, graphQlVariables);
-});
+    return graphqlAPI(TopGeneFrequencyQuery, graphQlVariables);
+  },
+);
 
 export interface TopGeneState {
   readonly top: ReadonlyArray<GeneSSMSEntry>;

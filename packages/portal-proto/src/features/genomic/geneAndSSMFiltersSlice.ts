@@ -46,8 +46,9 @@ export const {
   clearGeneAndSSMFilters,
 } = slice.actions;
 
-export const selectFilters = (state: AppState): FilterSet | undefined =>
-  state.filters;
+export const selectGeneAndSSMFilters = (
+  state: AppState,
+): FilterSet | undefined => state.filters;
 
 export const selectGeneAndSSMFiltersByName = (
   state: AppState,
