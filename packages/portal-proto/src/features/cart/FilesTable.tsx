@@ -271,4 +271,4 @@ const FilesTable: React.FC<FilesTableProps> = ({
   );
 };
 
-export default FilesTable; // Need to fix the lint issue
+export default FilesTable;
