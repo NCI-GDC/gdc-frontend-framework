@@ -305,10 +305,10 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
             className={
               {
                 entering:
-                  "block animate-slide-up min-h-[650px] w-full flex flex-col absolute z-[1000]",
-                entered: `block min-h-[650px] w-full flex flex-col absolute z-[1000]`,
+                  "animate-slide-up min-h-[550px] w-full flex flex-col absolute z-[1000]",
+                entered: "min-h-[550px] w-full flex flex-col absolute z-[1000]",
                 exiting:
-                  "block animate-slide-down min-h-[650px] w-full flex flex-col absolute z-[1000]",
+                  "animate-slide-down min-h-[550px] w-full flex flex-col absolute z-[1000]",
                 exited: "hidden translate-x-0",
               }[state]
             }

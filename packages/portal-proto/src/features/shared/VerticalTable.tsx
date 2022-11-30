@@ -484,7 +484,9 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   return (
     <div className="grow overflow-hidden">
       <div className="flex">
-        <div className={"flex-auto h-10"}>{additionalControls}</div>
+        {additionalControls && (
+          <div className={"flex-auto h-10"}>{additionalControls}</div>
+        )}
         <div className="flex flex-row">
           {showControls && (
             <Popover
