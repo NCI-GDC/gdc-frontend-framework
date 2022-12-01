@@ -23,6 +23,7 @@ export const createTableColumn = (
     field: string,
   ) => void,
   handleGeneToggled: GeneToggledHandler,
+  toggledGenes: ReadonlyArray<string>,
   setGeneID: Dispatch<SetStateAction<string>>,
 ): TableColumnDefinition => {
   switch (accessor) {
@@ -77,7 +78,7 @@ export const createTableColumn = (
                 <>
                   {row.getCanExpand() && (
                     <SwitchSpring
-                      isActive={row.original["cohort"].checked}
+                      isActive={toggledGenes.includes(row.original?.geneID)}
                       margin={`my-0.5 ml-0`}
                       icon={
                         <Image

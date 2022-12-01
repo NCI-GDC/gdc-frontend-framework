@@ -27,6 +27,7 @@ export interface GTableContainerProps {
   ) => void;
   handleGeneToggled: GeneToggledHandler;
   genomicFilters?: FilterSet;
+  toggledGenes?: ReadonlyArray<string>;
 }
 
 export const GTableContainer: React.FC<GTableContainerProps> = ({
@@ -34,6 +35,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   handleSurvivalPlotToggled,
   handleGeneToggled,
   genomicFilters,
+  toggledGenes = [],
 }: GTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
@@ -206,6 +208,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 width={width}
                 pageSize={pageSize}
                 page={page}
+                toggledGenes={toggledGenes}
                 selectedGenes={selectedGenes}
                 setSelectedGenes={setSelectedGenes}
                 handleGTotal={setGTotal}

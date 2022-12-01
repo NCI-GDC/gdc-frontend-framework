@@ -342,6 +342,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
               selectedSurvivalPlot={comparativeSurvival}
               handleSurvivalPlotToggled={handleSurvivalPlotToggled}
               handleGeneToggled={handleGeneToggled}
+              toggledGenes={currentGenes}
               genomicFilters={genomicFilters}
             />
           </div>

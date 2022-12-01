@@ -142,7 +142,7 @@ export const useGenesFacet = (
  */
 export const useSelectFilterContent = (
   field: string,
-): readonly (string | number)[] => {
+): ReadonlyArray<string> => {
   const filter = useCoreSelector((state) =>
     selectCurrentCohortFiltersByName(state, field),
   );

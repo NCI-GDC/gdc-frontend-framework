@@ -74,6 +74,7 @@ export interface GenesTableProps {
     field: string,
   ) => void;
   handleGeneToggled: GeneToggledHandler;
+  toggledGenes: ReadonlyArray<string>;
   pageSize: number;
   page: number;
   selectedGenes: Record<string, Row<Genes>>;
