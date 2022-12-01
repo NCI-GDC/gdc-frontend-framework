@@ -40,7 +40,6 @@ const InputSet: React.FC<InputSetProps> = ({
         </div>
         <Textarea
           minRows={5}
-          classNames={{ label: "w-full" }}
           id="identifier-input"
           placeholder={textInputPlaceholder}
           disabled
