@@ -21,6 +21,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   columnListOrder,
   visibleColumns,
   searchTerm,
+  geneSymbol,
 }: SomaticMutationsTableProps) => {
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
   const [expanded, setExpanded] = useState<ExpandedState>(
@@ -94,6 +95,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
           setSelectedMutations,
           handleSurvivalPlotToggled,
           setMutationID,
+          geneSymbol,
         );
       });
     }, // eslint-disable-next-line react-hooks/exhaustive-deps
