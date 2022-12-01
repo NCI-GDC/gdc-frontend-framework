@@ -11,6 +11,9 @@ import {
   useGetSurvivalPlotQuery,
   buildCohortGqlOperator,
   useTopGene,
+  useCoreDispatch,
+  updateCohortFilter,
+  removeCohortFilter,
 } from "@gff/core";
 import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
 import { GTableContainer } from "@/components/expandableTables/genes/GTableContainer";
@@ -89,6 +92,7 @@ const buildGeneHaveAndHaveNotFilters = (
 type AppModeState = "genes" | "ssms";
 
 const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
+  const coreDipatch = useCoreDispatch();
   const appDispatch = useAppDispatch();
   const [comparativeSurvival, setComparativeSurvival] = useState(undefined);
   const [appMode, setAppMode] = useState<AppModeState>("genes");
@@ -156,18 +160,28 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     if (currentGenes.includes(payload.geneID)) {
       const update = currentGenes.filter((x) => x != payload.geneID);
       if (update.length > 0)
-        updateLocalGeneAndSSMFilters("genes.gene_id", {
-          field: "genes.gene_id",
-          operator: "excludeifany",
-          operands: currentGenes.filter((x) => x != payload.geneID),
-        });
-      else appDispatch(removeGeneAndSSMFilter("genes.gene_id"));
+        coreDipatch(
+          updateCohortFilter({
+            field: "genes.gene_id",
+            operation: {
+              field: "genes.gene_id",
+              operator: "includes",
+              operands: currentGenes.filter((x) => x != payload.geneID),
+            },
+          }),
+        );
+      else coreDipatch(removeCohortFilter("genes.gene_id"));
     } else
-      updateLocalGeneAndSSMFilters("genes.gene_id", {
-        field: "genes.gene_id",
-        operator: "excludeifany",
-        operands: [...currentGenes, payload.geneID.toString()],
-      });
+      coreDipatch(
+        updateCohortFilter({
+          field: "genes.gene_id",
+          operation: {
+            field: "genes.gene_id",
+            operator: "includes",
+            operands: [...currentGenes, payload.geneID.toString()],
+          },
+        }),
+      );
   };
 
   /**
