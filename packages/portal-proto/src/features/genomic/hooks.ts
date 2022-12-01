@@ -10,10 +10,11 @@ import {
   FilterSet,
   GQLDocType,
   GQLIndexType,
-  isExcludeIfAny,
+  isIncludes,
   OperandValue,
   Operation,
   selectCurrentCohortFilterOrCaseSet,
+  selectCurrentCohortFiltersByName,
   selectFacetByDocTypeAndField,
   useCoreDispatch,
   useCoreSelector,
@@ -142,11 +143,11 @@ export const useGenesFacet = (
 export const useSelectFilterContent = (
   field: string,
 ): readonly (string | number)[] => {
-  const filter = useAppSelector((state) =>
-    selectGeneAndSSMFiltersByName(state, field),
+  const filter = useCoreSelector((state) =>
+    selectCurrentCohortFiltersByName(state, field),
   );
   if (filter === undefined) return [];
-  if (isExcludeIfAny(filter)) {
+  if (isIncludes(filter)) {
     return filter.operands.map((x) => x.toString());
   }
   return [];

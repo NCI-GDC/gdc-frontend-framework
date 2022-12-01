@@ -33,11 +33,9 @@ import {
   useClearGenomicFilters,
   useGenesFacet,
   useSelectFilterContent,
-  useUpdateGeneAndSSMFilters,
   useUpdateGenomicEnumFacetFilter,
 } from "./hooks";
 import {
-  removeGeneAndSSMFilter,
   selectGeneAndSSMFilters,
   clearGeneAndSSMFilters,
 } from "@/features/genomic/geneAndSSMFiltersSlice";
@@ -105,7 +103,6 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   );
 
   const currentGenes = useSelectFilterContent("genes.gene_id");
-  const updateLocalGeneAndSSMFilters = useUpdateGeneAndSSMFilters();
 
   const filters = useMemo(
     () => buildCohortGqlOperator(joinFilters(cohortFilters, genomicFilters)),

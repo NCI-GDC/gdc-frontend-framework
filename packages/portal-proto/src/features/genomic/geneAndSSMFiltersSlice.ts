@@ -2,10 +2,6 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Operation, FilterSet } from "@gff/core";
 import { AppState } from "./appApi";
 
-export interface GeneAndSSMFiltersState {
-  readonly filters: FilterSet;
-}
-
 const initialState: FilterSet = {
   mode: "and",
   root: {
