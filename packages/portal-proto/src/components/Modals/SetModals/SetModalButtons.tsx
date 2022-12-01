@@ -6,12 +6,16 @@ interface SetModalButtonsProps {
   readonly saveButtonDisabled?: boolean;
   readonly clearButtonDisabled?: boolean;
   readonly submitButtonDisabled?: boolean;
+  readonly onClearCallback?: () => void;
+  readonly onSubmitCallback?: () => void;
 }
 
 const SetModalButtons: React.FC<SetModalButtonsProps> = ({
   saveButtonDisabled = false,
   clearButtonDisabled = false,
   submitButtonDisabled = false,
+  onClearCallback,
+  onSubmitCallback,
 }: SetModalButtonsProps) => {
   const dispatch = useCoreDispatch();
 
@@ -23,10 +27,16 @@ const SetModalButtons: React.FC<SetModalButtonsProps> = ({
       <FunctionButton onClick={() => dispatch(hideModal())}>
         Cancel
       </FunctionButton>
-      <DarkFunctionButton disabled={clearButtonDisabled}>
+      <DarkFunctionButton
+        disabled={clearButtonDisabled}
+        onClick={onClearCallback}
+      >
         Clear
       </DarkFunctionButton>
-      <DarkFunctionButton disabled={submitButtonDisabled}>
+      <DarkFunctionButton
+        disabled={submitButtonDisabled}
+        onClick={onSubmitCallback}
+      >
         Submit
       </DarkFunctionButton>
     </div>

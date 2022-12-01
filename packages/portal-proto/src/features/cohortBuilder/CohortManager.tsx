@@ -1,11 +1,12 @@
 import React, { useCallback, useState } from "react";
-import { LoadingOverlay, Select } from "@mantine/core";
+import { LoadingOverlay, Select, Menu } from "@mantine/core";
 import {
   MdAdd as AddIcon,
   MdDelete as DeleteIcon,
   MdFileDownload as DownloadIcon,
   MdFileUpload as UploadIcon,
   MdSave as SaveIcon,
+  MdFilterAlt as CohortFilterIcon,
 } from "react-icons/md";
 import {
   FaCaretDown as DownArrowIcon,
@@ -33,11 +34,17 @@ import {
   buildGqlOperationToFilterSet,
   buildCohortGqlOperator,
   useAddCohortMutation,
+  showModal,
+  Modals,
+  selectCurrentModal,
 } from "@gff/core";
 import { useCohortFacetFilters } from "./CohortGroup";
 import CountButton from "./CountButton";
 import { SavingCohortModal } from "./Modals/SavingCohortModal";
 import { GenericCohortModal } from "./Modals/GenericCohortModal";
+import CaseSetModal from "@/components/Modals/SetModals/CaseSetModal";
+import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
+import MutationSetModal from "@/components/Modals/SetModals/MutationSetModal";
 
 interface CohortGroupButtonProps {
   $buttonDisabled?: boolean;
@@ -122,6 +129,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   const [showDiscard, setShowDiscard] = useState(false);
   const [showSaveCohort, setShowSaveCohort] = useState(false);
   const [showUpdateCohort, setShowUpdateCohort] = useState(false);
+  const modal = useCoreSelector((state) => selectCurrentModal(state));
 
   const menu_items = [
     { value: cohorts[0].id, label: cohorts[0].name },
@@ -263,6 +271,21 @@ const CohortManager: React.FC<CohortManagerProps> = ({
         }}
         onSaveCohort={onSaveCohort}
       />
+      {modal === Modals.CaseSetModal && <CaseSetModal />}
+      {modal === Modals.GeneSetModal && (
+        <GeneSetModal
+          modalTitle="Filter Current Cohort by Genes"
+          inputInstructions="Enter one or more gene identifiers in the field below or upload a file to filter your cohort."
+          selectSetInstructions="Select one or more sets below to filter your cohort."
+        />
+      )}
+      {modal === Modals.MutationSetModal && (
+        <MutationSetModal
+          modalTitle="Filter Current Cohort by Mutations"
+          inputInstructions="Enter one or more mutation identifiers in the field below or upload a file to filter your cohort."
+          selectSetInstructions="Select one or more sets below to filter your cohort."
+        />
+      )}
       {/*  Modals End   */}
 
       <div className="border-opacity-0">
@@ -349,11 +372,45 @@ const CohortManager: React.FC<CohortManagerProps> = ({
             <CohortGroupButton data-testid="downloadButton">
               <DownloadIcon size="1.5em" aria-label="Download cohort" />
             </CohortGroupButton>
+            <Menu>
+              <Menu.Target>
+                <CohortGroupButton>
+                  <CohortFilterIcon
+                    size="1.5rem"
+                    aria-label="Custom cohort filters"
+                  />
+                </CohortGroupButton>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Item
+                  onClick={() =>
+                    coreDispatch(showModal({ modal: Modals.CaseSetModal }))
+                  }
+                >
+                  cases
+                </Menu.Item>
+                <Menu.Item
+                  onClick={() =>
+                    coreDispatch(showModal({ modal: Modals.GeneSetModal }))
+                  }
+                >
+                  genes
+                </Menu.Item>
+                <Menu.Item
+                  onClick={() =>
+                    coreDispatch(showModal({ modal: Modals.MutationSetModal }))
+                  }
+                >
+                  mutations
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
           </>
         ) : (
           <div />
         )
       }
+
       <CountButton
         countName="casesMax"
         label="CASES"
