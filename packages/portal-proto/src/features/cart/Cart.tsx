@@ -113,6 +113,7 @@ const Cart: React.FC = () => {
           <ProjectTable projectData={summaryData} />
         </Grid.Col>
         <Grid.Col span={12} className="p-4">
+          <H2>Cart Items</H2>
           <FilesTable filesByCanAccess={filesByCanAccess} />
         </Grid.Col>
       </Grid>

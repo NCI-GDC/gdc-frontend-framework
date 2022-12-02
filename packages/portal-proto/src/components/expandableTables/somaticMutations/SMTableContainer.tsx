@@ -12,7 +12,7 @@ import {
   DEFAULT_SMTABLE_ORDER,
   SsmToggledHandler,
 } from "./types";
-import { SelectedReducer, SelectReducerAction } from "../shared/types";
+import { Column, SelectedReducer, SelectReducerAction } from "../shared/types";
 import { default as TableFilters } from "../shared/TableFiltersMantine";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import { useDebouncedValue } from "@mantine/hooks";
@@ -26,8 +26,8 @@ export const SelectedRowContext =
   >(undefined);
 
 export interface SMTableContainerProps {
-  readonly selectedSurvivalPlot: Record<string, string>;
-  handleSurvivalPlotToggled: (
+  readonly selectedSurvivalPlot?: Record<string, string>;
+  handleSurvivalPlotToggled?: (
     symbol: string,
     name: string,
     field: string,
@@ -35,12 +35,17 @@ export interface SMTableContainerProps {
   genomicFilters?: FilterSet;
   handleSsmToggled?: SsmToggledHandler;
   toggledSsms?: ReadonlyArray<string>;
+  columnsList?: Array<Column>;
+  geneSymbol?: string;
 }
 
 export const SMTableContainer: React.FC<SMTableContainerProps> = ({
-  selectedSurvivalPlot,
-  handleSurvivalPlotToggled,
-  genomicFilters,
+  selectedSurvivalPlot = {},
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  handleSurvivalPlotToggled = (_1: string, _2: string, _3: string) => null,
+  columnsList = DEFAULT_SMTABLE_ORDER,
+  geneSymbol = undefined,
+  genomicFilters = { mode: "and", root: {} },
   handleSsmToggled = () => null,
   toggledSsms = [],
 }: SMTableContainerProps) => {
@@ -49,9 +54,9 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTern] = useDebouncedValue(searchTerm, 400);
   const [ref, { width }] = useMeasure();
-  const [columnListOrder, setColumnListOrder] = useState(DEFAULT_SMTABLE_ORDER);
+  const [columnListOrder, setColumnListOrder] = useState(columnsList);
   const [visibleColumns, setVisibleColumns] = useState(
-    DEFAULT_SMTABLE_ORDER.filter((col) => col.visible),
+    columnsList.filter((col) => col.visible),
   );
 
   const [showColumnMenu, setShowColumnMenu] = useState<boolean>(false);
@@ -129,6 +134,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     searchTerm:
       debouncedSearchTern.length > 0 ? debouncedSearchTern : undefined,
     genomicFilters: genomicFilters,
+    geneSymbol: geneSymbol,
   });
 
   useEffect(() => {
@@ -148,7 +154,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       <SelectedRowContext.Provider
         value={[selectedMutations, setSelectedMutations]}
       >
-        <div className="flex flex-row justify-between items-center flex-nowrap w-[80%]">
+        <div className="flex flex-row justify-between items-center flex-nowrap w-100">
           <div className="flex flex-row ml-2 mb-4">
             <TableControls
               total={smTotal}
@@ -196,17 +202,17 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             />
           </div>
         </div>
-        <div ref={ref} className="h-full w-[90%]">
+        <div ref={ref}>
           {!visibleColumns.length ? (
             <TablePlaceholder
-              cellWidth={`w-[75px]`}
+              cellWidth={`w-48`}
               rowHeight={60}
               numOfColumns={15}
               numOfRows={pageSize}
               content={<span>No columns selected</span>}
             />
           ) : (
-            <div ref={ref} className="h-full w-[90%]">
+            <div ref={ref}>
               <SomaticMutationsTable
                 status={status}
                 initialData={tableData}

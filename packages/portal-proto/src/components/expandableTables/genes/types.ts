@@ -108,4 +108,4 @@ export const DEFAULT_GTABLE_ORDER = [
   { id: "CNVLoss", columnName: "# CNV Loss", visible: true },
   { id: "mutations", columnName: "# Mutations", visible: true },
   { id: "annotations", columnName: "Annotations", visible: true },
-];
+] as Column[];

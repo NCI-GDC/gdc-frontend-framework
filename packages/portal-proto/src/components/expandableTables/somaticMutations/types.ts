@@ -25,7 +25,7 @@ export const DEFAULT_SMTABLE_ORDER: Column[] = [
     visible: true,
   },
   { id: "impact", columnName: "Impact", visible: true },
-];
+] as Column[];
 
 export interface Annotation {
   polyphen_impact: string;
