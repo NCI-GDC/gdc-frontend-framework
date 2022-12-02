@@ -35,6 +35,7 @@ export const createTableColumn = (
   setMutationID: Dispatch<SetStateAction<string>>,
   handleSsmToggled: SsmToggledHandler,
   toggledSsms: ReadonlyArray<string>,
+  geneSymbol: string = undefined,
 ): TableColumnDefinition => {
   switch (accessor) {
     case "select":

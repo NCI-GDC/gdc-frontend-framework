@@ -407,7 +407,7 @@ export const createTableColumn = (
             cell: ({ row }) => {
               return (
                 <Link href={`/genes/${row.original[accessor]}`}>
-                  <a className="text-utility-link underline">
+                  <a className="text-utility-link underline text-sm">
                     {row.original[`${accessor}`]
                       ? row.original[`${accessor}`]
                       : ""}

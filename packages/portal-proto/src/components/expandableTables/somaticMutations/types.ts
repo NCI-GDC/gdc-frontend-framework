@@ -121,4 +121,5 @@ export interface SomaticMutationsTableProps {
   searchTerm: string;
   handleSsmToggled?: SsmToggledHandler;
   toggledSsms?: ReadonlyArray<string>;
+  geneSymbol?: string;
 }

@@ -126,7 +126,8 @@ const IncludeExcludeQueryElement: React.FC<
   ]);
 
   const expanded = get(queryExpressionsExpanded, field, true);
-  const fieldName = fieldNameToTitle(field);
+  const fieldName =
+    field === "genes.gene_id" ? "GENE" : fieldNameToTitle(field);
   const operands =
     typeof operandsProp === "string" ? [operandsProp] : operandsProp;
 
