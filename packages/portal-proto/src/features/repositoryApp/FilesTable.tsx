@@ -15,6 +15,7 @@ import {
   joinFilters,
   useFilesSize,
   GdcFile,
+  Operation,
 } from "@gff/core";
 import { MdSave } from "react-icons/md";
 import { useAppSelector } from "@/features/repositoryApp/appApi";
@@ -23,6 +24,7 @@ import FunctionButton from "@/components/FunctionButton";
 import { convertDateToString } from "src/utils/date";
 import download from "src/utils/download";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
+import { useUpdateRepositoryFacetFilter } from "@/features/repositoryApp/hooks";
 
 const FilesTables: React.FC = () => {
   const columnListOrder = [
@@ -157,6 +159,7 @@ const FilesTables: React.FC = () => {
         sortBy: sortBy,
       }),
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageSize, offset, sortBy]);
 
   const sortByActions = (sortByObj) => {
@@ -175,10 +178,28 @@ const FilesTables: React.FC = () => {
     setSortBy(tempSortBy);
   };
 
+  const buildSearchFilters = (term: string): Operation => {
+    return {
+      operator: "or",
+      operands: [
+        {
+          operator: "=",
+          field: "file_name",
+          operand: `*${term}*`,
+        },
+        {
+          operator: "=",
+          field: "file_id",
+          operand: `*${term}*`,
+        },
+      ],
+    };
+  };
+
+  const updateFilter = useUpdateRepositoryFacetFilter();
   const newSearchActions = (searchTerm: string) => {
-    if (searchTerm) {
-      //setCohortGqlOperator(setFilters(searchTerm.toLowerCase()));
-    }
+    //TODO if lots of calls fast last call might not be displayed
+    updateFilter("files", buildSearchFilters(searchTerm));
   };
 
   const handleChange = (obj: HandleChangeInput) => {

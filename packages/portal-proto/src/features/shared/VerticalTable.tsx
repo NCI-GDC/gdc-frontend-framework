@@ -246,11 +246,13 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   const [headings, setHeadings] = useState(filterColumnCells(columns));
   const [showColumnMenu, setShowColumnMenu] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [showLoading, setShowLoading] = useState(true);
 
   useEffect(() => {
     if (status === "fulfilled") {
       setTable(tableData);
     }
+    setShowLoading(status === "pending" || status === "uninitialized");
   }, [status, tableData]);
 
   useEffect(() => {
@@ -492,6 +494,19 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     );
   };
 
+  useEffect(() => {
+    setShowLoading(true);
+    //prevents unneeded api calls if user is typing something
+    const delayDebounceFn = setTimeout(() => {
+      handleChange({
+        newSearch: searchTerm,
+      });
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTerm]);
+
   return (
     <div className="grow overflow-hidden">
       <div className="flex">
@@ -515,9 +530,6 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                     <MdClose
                       onClick={() => {
                         setSearchTerm("");
-                        handleChange({
-                          newSearch: "",
-                        });
                       }}
                       className="cursor-pointer"
                     ></MdClose>
@@ -526,9 +538,6 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 value={searchTerm}
                 onChange={(e) => {
                   setSearchTerm(e.target.value);
-                  handleChange({
-                    newSearch: e.target.value,
-                  });
                 }}
               />
             </div>
@@ -569,9 +578,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         </div>
       </div>
       <div className="overflow-y-scroll w-full relative">
-        <LoadingOverlay
-          visible={status === "pending" || status === "uninitialized"}
-        />
+        <LoadingOverlay visible={showLoading} />
         <Table columns={headings} data={table} />
       </div>
       {pagination && (
