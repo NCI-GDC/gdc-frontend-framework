@@ -22,11 +22,7 @@ import {
 import ProjectsCohortButton from "./ProjectsCohortButton";
 import download from "src/utils/download";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
-
-const extractToArray = (
-  data: ReadonlyArray<Record<string, number | string>>,
-  nodeKey: string,
-) => data.map((x) => x[nodeKey]);
+import { extractToArray } from "src/utils";
 
 interface CellProps {
   value: string[];

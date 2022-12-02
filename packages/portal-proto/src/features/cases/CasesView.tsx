@@ -1,33 +1,50 @@
 import {
-  fetchCases,
   selectCurrentCohortGqlFilters,
   selectCohortCountsByName,
-  useCoreDispatch,
-  selectCasesData,
   useCoreSelector,
   GqlOperation,
-  useCases,
+  selectCart,
+  useQlCases,
+  useCoreDispatch,
 } from "@gff/core";
-import Link from "next/link";
-import {
-  createStyles,
-  Text,
-  LoadingOverlay,
-  Table,
-  Pagination,
-  Select,
-  ScrollArea,
-} from "@mantine/core";
-import { useEffect, useState } from "react";
+import { Button, createStyles, LoadingOverlay, Menu } from "@mantine/core";
+import { useEffect, useMemo, useState } from "react";
 import tw from "tailwind-styled-components";
-import { VerticalTable } from "../shared/VerticalTable";
+import {
+  VerticalTable,
+  PaginationOptions,
+  HandleChangeInput,
+} from "../shared/VerticalTable";
 import useStandardPagination from "@/hooks/useStandardPagination";
+import { ageDisplay, allFilesInCart, extractToArray } from "src/utils";
+import { Row, TableInstance } from "react-table";
+import CollapsibleRow from "../shared/CollapsibleRow";
+import FunctionButton from "@/components/FunctionButton";
+import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
+import Link from "next/link";
+import { SelectAlCasesButton, SelectCaseButton } from "./SelectCasesButton";
+import CasesCohortButton from "./CasesCohortButton";
+import { GiMicroscope } from "react-icons/gi";
+import { FaShoppingCart as CartIcon } from "react-icons/fa";
+import { BiAddToQueue } from "react-icons/bi";
+import { BsTrash } from "react-icons/bs";
+import { addToCart, removeFromCart } from "../cart/updateCart";
 
 export const CasesTableHeader = tw.th`
 bg-primary-lighter
 text-primary-contrast-lighter
 px-2
 `;
+
+const useStyles = createStyles((theme) => ({
+  item: {
+    "&[data-hovered]": {
+      backgroundColor:
+        theme.colors[theme.primaryColor][theme.fn.primaryShade()],
+      color: theme.white,
+    },
+  },
+}));
 
 export interface Case {
   readonly id: string;
@@ -43,6 +60,12 @@ export interface CasesViewProps {
   readonly cases?: Record<string, any>[];
   readonly handleCaseSelected?: (patient: Case) => void;
   readonly caption?: string;
+  pagination?: PaginationOptions;
+}
+
+interface CellProps {
+  value: string[];
+  row: Row;
 }
 
 export interface ContextualCasesViewProps {
@@ -54,82 +77,37 @@ const useCohortFacetFilter = (): GqlOperation => {
   return useCoreSelector((state) => selectCurrentCohortGqlFilters(state));
 };
 
-/**
- * TODO: This needs to move to core
- * @param pageSize
- * @param offset
- */
-const useCohortCases = (pageSize = 10, offset = 0) => {
-  const coreDispatch = useCoreDispatch();
-  const cohortFilters = useCohortFacetFilter();
-  // const cases = useCoreSelector((state) => selectCasesData(state));
-  const { data, error, pagination, isError, isFetching, isSuccess } = useCases({
-    fields: [
-      "case_id",
-      "submitter_id",
-      "primary_site",
-      "project.project_id",
-      "project.disease_type",
-      "project.program.name",
-      "diagnoses.primary_diagnosis",
-      "diagnoses.tissue_or_organ_of_origin",
-      "diagnoses.age_at_diagnosis",
-      "demographic.race",
-      "demographic.gender",
-      "demographic.ethnicity",
-      "demographic.vital_status",
-      "demographic.days_to_death",
-      "files.file_id",
-      "summary.data_categories.file_count",
-      "summary.data_categories.data_category",
-      "summary.experimental_strategies.experimental_strategy",
-      "summary.experimental_strategies.file_count",
-      // annotation
-    ],
-    filters: cohortFilters, // TODO: move filter setting to core
-    size: pageSize,
-    from: offset * pageSize,
-  });
-
-  // cohortFilters is generated each time, use string representation
-  // to control when useEffects are called
-
-  // console.log({cohortFilters})
-  const filters = JSON.stringify(cohortFilters);
-
-  console.log({ cohortFilters });
-  console.log({ casedata: data });
-
-  // useEffect(() => {
-  //   coreDispatch(
-  //     fetchCases({
-  //       fields: [
-  //         "case_id",
-  //         "submitter_id",
-  //         "primary_site",
-  //         "project.project_id",
-  //         "demographic.gender",
-  //         "diagnoses.primary_diagnosis",
-  //         "diagnoses.tissue_or_organ_of_origin",
-  //       ],
-  //       filters: cohortFilters, // TODO: move filter setting to core
-  //       size: pageSize,
-  //       from: offset * pageSize,
-  //     }),
-  //   );
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [filters, pageSize, offset]);
-
-  return {
-    data: data,
-    error: error,
-    isUninitialized: false,
-    isFetching,
-    isSuccess,
-    isError,
-    pagination,
-  };
+const getSlideCountFromCaseSummary = (
+  experimental_strategies: Array<{
+    experimental_strategy: string;
+    file_count: number;
+  }>,
+): number => {
+  const slideTypes = ["Diagnostic Slide", "Tissue Slide"];
+  return (experimental_strategies || []).reduce(
+    (slideCount, { file_count, experimental_strategy }) =>
+      slideTypes.includes(experimental_strategy)
+        ? slideCount + file_count
+        : slideCount,
+    0,
+  );
 };
+
+export const SlideCountsIcon = tw.div<{
+  $count?: number;
+}>`
+${(p: { $count?: number }) =>
+  p.$count !== undefined && p.$count > 0 ? "bg-primary" : "bg-base"}
+inline-flex
+items-center
+w-5
+h-4
+justify-center
+text-primary-contrast
+font-heading
+rounded-md
+
+`;
 
 export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
   props: ContextualCasesViewProps,
@@ -137,33 +115,177 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
   // TODO useContextualCases() that filters based on the context
   const [pageSize, setPageSize] = useState(10);
   const [activePage, setPage] = useState(1);
-  const { data } = useCohortCases(pageSize, activePage);
-  const [pages, setPages] = useState(10);
+  const cohortFilters = useCohortFacetFilter();
+  const dispatch = useCoreDispatch();
+  const currentCart = useCoreSelector((state) => selectCart(state));
+  const { data } = useQlCases({
+    filters: cohortFilters,
+    cases_size: pageSize,
+    cases_offset: (activePage - 1) * pageSize,
+    score: "annotations.annotation_id",
+  });
+
+  console.log({ data });
   const caseCounts = useCoreSelector((state) =>
     selectCohortCountsByName(state, "caseCounts"),
   );
 
-  useEffect(() => {
-    setPages(Math.ceil(caseCounts / pageSize));
-  }, [caseCounts, pageSize]);
+  const getAnnotationsLinkParams = (
+    annotations: {
+      annotation_id: string;
+      total: number;
+    },
+    case_id: string,
+  ) => {
+    if (annotations.total === 0) return null;
 
-  const handlePageSizeChange = (x: string) => {
-    setPageSize(parseInt(x));
+    if (annotations.total === 1) {
+      return `https://portal.gdc.cancer.gov/annotations/${annotations.annotation_id}`;
+    }
+    return `https://portal.gdc.cancer.gov/annotations?filters={"content":[{"content":{"field":"annotations.case_id","value":["${case_id}"]},"op":"in"}],"op":"and"}`;
   };
+  const { classes } = useStyles();
+  console.log("Current cart: ", currentCart);
+  const cases = useMemo(
+    () =>
+      data?.map((datum) => {
+        const isAllFilesInCart = datum?.files
+          ? allFilesInCart(currentCart, datum.files)
+          : false;
+        const numberOfFilesToRemove = datum.files
+          ?.map((file) =>
+            currentCart.filter(
+              (data_file) => data_file.file_id === file.file_id,
+            ),
+          )
+          .filter((item) => item.length > 0).length;
+        console.log({ numberOfFilesToRemove });
+        const slideCount = getSlideCountFromCaseSummary(
+          datum.experimental_strategies,
+        );
+        return {
+          selected: datum.case_uuid,
+          slides: (
+            <div>
+              <Link
+                href={`/user-flow/workbench/MultipleImageViewerPage?caseId=${datum.case_uuid}`}
+              >
+                <Button
+                  compact
+                  disabled={slideCount === 0}
+                  leftIcon={<GiMicroscope className="mt-0.5" size="1.25em" />}
+                  size="xs"
+                  variant="outline"
+                >
+                  <SlideCountsIcon $count={slideCount}>
+                    {slideCount === 0 ? "--" : slideCount}
+                  </SlideCountsIcon>
+                </Button>
+              </Link>
+            </div>
+          ),
+          cart: (
+            <Menu position="bottom-start" classNames={classes}>
+              <Menu.Target>
+                {/* // height and width should be same as the slides button */}
+                <Button
+                  leftIcon={
+                    <CartIcon
+                      className={
+                        isAllFilesInCart && "text-primary-contrast-darkest"
+                      }
+                    />
+                  }
+                  rightIcon={
+                    <Dropdown
+                      size="1.25rem"
+                      className={
+                        isAllFilesInCart && "text-primary-contrast-darkest"
+                      }
+                    />
+                  }
+                  variant="outline"
+                  compact
+                  classNames={{
+                    leftIcon: "m-0",
+                  }}
+                  className={isAllFilesInCart && "bg-primary-darkest"}
+                />
+              </Menu.Target>
+              {/* // singular / plural */}
+              <Menu.Dropdown>
+                {numberOfFilesToRemove < datum.filesCount && (
+                  <Menu.Item
+                    icon={<BiAddToQueue />}
+                    onClick={() => {
+                      addToCart(datum.files, currentCart, dispatch);
+                    }}
+                  >
+                    Add {datum.filesCount} Case files to the Cart
+                  </Menu.Item>
+                )}
 
-  // this mapping logic should get moved to a selector.  and the
-  // case model probably needs to be generalized or generated.
-
-  console.log(data);
-  const cases = data?.map((datum) => ({
-    id: datum.case_id,
-    submitterId: datum.submitter_id,
-    primarySite: datum.primary_site,
-    projectId: datum.project?.project_id,
-    gender: datum.demographic?.gender,
-    primaryDiagnosis: datum.diagnoses?.[0]?.primary_diagnosis,
-    tissueOrOrganOfOrigin: datum.diagnoses?.[0]?.tissue_or_organ_of_origin,
-  }));
+                {numberOfFilesToRemove > 0 && (
+                  <Menu.Item
+                    icon={<BsTrash />}
+                    onClick={() => {
+                      removeFromCart(datum.files, currentCart, dispatch);
+                    }}
+                  >
+                    Remove{" "}
+                    {numberOfFilesToRemove === 0
+                      ? datum.filesCount
+                      : numberOfFilesToRemove}{" "}
+                    Case files from the Cart
+                  </Menu.Item>
+                )}
+              </Menu.Dropdown>
+            </Menu>
+          ),
+          case_id: datum.case_id,
+          case_uuid: datum.case_uuid,
+          projectId: datum.project_id,
+          program: datum.program,
+          primarySite: datum.primary_site,
+          disease_type: datum.disease_type,
+          primary_diagnosis: datum?.primary_diagnosis,
+          age_at_diagnosis: ageDisplay(datum?.age_at_diagnosis),
+          vital_status: datum?.vital_status,
+          days_to_death: ageDisplay(datum?.days_to_death),
+          gender: datum?.gender,
+          race: datum?.race,
+          ethnicity: datum?.ethnicity,
+          files: datum?.filesCount?.toLocaleString(),
+          data_categories: extractToArray(
+            datum?.data_categories,
+            "data_category",
+          ),
+          experimental_strategies: extractToArray(
+            datum?.experimental_strategies,
+            "experimental_strategy",
+          ),
+          annotations: getAnnotationsLinkParams(
+            datum.annotations,
+            datum.case_uuid,
+          ) ? (
+            <Link
+              href={getAnnotationsLinkParams(
+                datum.annotations,
+                datum.case_uuid,
+              )}
+              passHref
+            >
+              <a className="text-utility-link underline" target={"_blank"}>
+                {datum.annotations.total}
+              </a>
+            </Link>
+          ) : (
+            0
+          ),
+        };
+      }),
+    [data, currentCart],
+  );
 
   return (
     <div className="flex flex-col m-auto w-10/12">
@@ -172,141 +294,165 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
           cases={cases}
           caption={`Showing ${pageSize} of ${caseCounts} Cases`}
           handleCaseSelected={props.handleCaseSelected}
+          // pagination={{ ...pagination, label: "cases" }}
         />
-        <div className="flex flex-row items-center justify-start border-t border-base-light">
-          <p className="px-2">Page Size:</p>
-          <Select
-            size="sm"
-            radius="md"
-            onChange={handlePageSizeChange}
-            value={pageSize.toString()}
-            data={[
-              { value: "10", label: "10" },
-              { value: "20", label: "20" },
-              { value: "40", label: "40" },
-              { value: "100", label: "100" },
-            ]}
-            aria-label="Select page size"
-          />
-          <Pagination
-            size="sm"
-            radius="md"
-            color="accent"
-            className="ml-auto"
-            page={activePage}
-            onChange={(x) => setPage(x)}
-            total={pages}
-          />
-        </div>
       </div>
     </div>
   );
 };
 
-const useStyles = createStyles((theme) => ({
-  header: {
-    position: "sticky",
-    top: 0,
-    transition: "box-shadow 150ms ease",
-
-    "&::after": {
-      content: '""',
-      position: "absolute",
-      left: 0,
-      right: 0,
-      bottom: 0,
-      borderBottom: `1px solid ${
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[3]
-          : theme.colors.gray[2]
-      }`,
-    },
-  },
-
-  scrolled: {
-    boxShadow: theme.shadows.sm,
-  },
-}));
-
-export const CasesView: React.FC<CasesViewProps> = (props: CasesViewProps) => {
-  const { cases } = props;
-  const { classes, cx } = useStyles();
-  const [scrolled, setScrolled] = useState(false);
-
+export const CasesView: React.FC<CasesViewProps> = ({
+  cases,
+  pagination,
+}: CasesViewProps) => {
   const columnListOrder = [
-    // cart (default)
-    // slides (default)
-    { id: "submitterId", columnName: "Case ID", visible: true },
-    { id: "id", columnName: "Case UUID", visible: false },
+    {
+      id: "selected",
+      visible: true,
+      columnName: ({ data }: TableInstance) => {
+        const caseIds = data.map((x) => x.selected);
+        return <SelectAlCasesButton caseIds={caseIds} />;
+      },
+      Cell: ({ value }: { value: string }) => {
+        return <SelectCaseButton caseId={value} />;
+      },
+      disableSortBy: true,
+    },
+    {
+      id: "cart",
+      columnName: "Cart",
+      visible: true,
+      disableSortBy: true,
+    },
+    {
+      id: "slides",
+      columnName: "Slides",
+      visible: true,
+      disableSortBy: true,
+    },
+
+    { id: "case_id", columnName: "Case ID", visible: true },
+    { id: "case_uuid", columnName: "Case UUID", visible: false },
     { id: "projectId", columnName: "Project", visible: true },
-    { id: "programName", columnName: "Program", visible: false },
+    { id: "program", columnName: "Program", visible: false },
     { id: "primarySite", columnName: "Primary Site", visible: true },
-    // Disease Type
-    // Primary Diagnosis
-    // Age at Diagnosis display as "X years Y days" in the same way as age_at_diagnosis
-    // Vital Status
-    // Days to Death display as "X years Y days" in the same way as age_at_diagnosis
+    { id: "disease_type", columnName: "Disease Type", visible: false },
+    {
+      id: "primary_diagnosis",
+      columnName: "Primary Diagnosis",
+      visible: false,
+    },
+    { id: "age_at_diagnosis", columnName: "Age at Diagnosis", visible: false },
+    { id: "vital_status", columnName: "Vital Status", visible: false },
+    { id: "days_to_death", columnName: "Days to Death", visible: false },
     { id: "gender", columnName: "Gender", visible: true },
-    // Race
-    // Ethnicity
-    // Files # files associated with the case (default)
-    // Data Category (default) -> more details in the ticket
-    // Experimental Strategy -> more details in the ticket
-    // Annotations (Default) -> same as case summary logic
+    { id: "race", columnName: "Race", visible: false },
+    { id: "ethnicity", columnName: "Ethnicity", visible: false },
+    { id: "files", columnName: "Files", visible: true },
+    {
+      id: "data_categories",
+      columnName: "Data Category",
+      visible: true,
+      Cell: ({ value, row }: CellProps) => (
+        <CollapsibleRow value={value} row={row} label="Data Categories" />
+      ),
+      disableSortBy: true,
+    },
+    {
+      id: "experimental_strategies",
+      columnName: "Experimental Strategy",
+      visible: false,
+      Cell: ({ value, row }: CellProps) => (
+        <CollapsibleRow
+          value={value}
+          row={row}
+          label="Experimental Strategies"
+        />
+      ),
+      disableSortBy: true,
+    },
+    { id: "annotations", columnName: "Annotations", visible: true },
   ];
 
-  console.log({ cases });
+  // const {
+  //   handlePageChange,
+  //   handlePageSizeChange,
+  //   page,
+  //   pages,
+  //   size,
+  //   from,
+  //   total,
+  //   displayedData,
+  // } = useStandardPagination(cases || []);
+
+  // const handleChange = (obj: HandleChangeInput) => {
+  //   switch (Object.keys(obj)?.[0]) {
+  //     case "newPageSize":
+  //       handlePageSizeChange(obj.newPageSize);
+  //       break;
+  //     case "newPageNumber":
+  //       handlePageChange(obj.newPageNumber);
+  //       break;
+  //   }
+  // };
 
   return (
-    <ScrollArea
-      sx={{ height: 300 }}
-      onScrollPositionChange={({ y }) => setScrolled(y !== 0)}
-    >
+    <>
       <LoadingOverlay visible={cases === undefined} color="primary" />
       <VerticalTable
         tableData={cases || []}
         columns={columnListOrder}
-        handleChange={() => {}}
-        selectableRow={true}
-      />
-      {/* <Table verticalSpacing="xs" striped highlightOnHover>
-        <thead className={cx(classes.header, { [classes.scrolled]: scrolled })}>
-          <tr className="bg-base-lighter ">
-            <CasesTableHeader>Case</CasesTableHeader>
-            <CasesTableHeader>Project</CasesTableHeader>
-            <CasesTableHeader>Primary Site</CasesTableHeader>
-            <CasesTableHeader>Gender</CasesTableHeader>
-            <CasesTableHeader>Primary Diagnosis</CasesTableHeader>
-            <CasesTableHeader className="whitespace-nowrap">
-              Tissue/Organ of Origin
-            </CasesTableHeader>
-          </tr>
-        </thead>
-        <tbody>
-          {cases?.map((c, i) => (
-            <tr key={c.id} className={i % 2 == 0 ? "bg-base-lightest" : ""}>
-              <td className="px-2 break-all">
-                <Link
-                  href={{
-                    pathname: "/cases/[slug]",
-                    query: { slug: c.id },
-                  }}
-                  passHref
+        // pagination={{
+        //   page,
+        //   pages,
+        //   size,
+        //   from,
+        //   total,
+        // }}
+        // handleChange={handleChange}
+        additionalControls={
+          <div className="flex gap-2">
+            {/* need to be diff */}
+            <CasesCohortButton />
+            <Menu width="target">
+              <Menu.Target>
+                <FunctionButton
+                  className="ml-2"
+                  rightIcon={<Dropdown size="1.25rem" />}
                 >
-                  <Text variant="link" component="a">
-                    {c.submitterId}
-                  </Text>
-                </Link>
-              </td>
-              <td className="px-2 whitespace-nowrap">{c.projectId}</td>
-              <td className="px-2">{c.primarySite}</td>
-              <td className="px-2">{c.gender}</td>
-              <td className="px-2">{c.primaryDiagnosis}</td>
-              <td className="px-2">{c.tissueOrOrganOfOrigin}</td>
-            </tr>
-          ))}
-        </tbody>
-      </Table> */}
-    </ScrollArea>
+                  Biospecimen
+                </FunctionButton>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Item>JSON</Menu.Item>
+                <Menu.Item>TSV</Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+            <Menu width="target">
+              <Menu.Target>
+                <FunctionButton
+                  className="ml-2"
+                  rightIcon={<Dropdown size="1.25rem" />}
+                >
+                  Clinical
+                </FunctionButton>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Item>JSON</Menu.Item>
+                <Menu.Item>TSV</Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+            <FunctionButton>JSON</FunctionButton>
+            <FunctionButton>TSV</FunctionButton>
+          </div>
+        }
+        showControls={true}
+        columnSorting={"manual"}
+        selectableRow={false}
+        search={{
+          enabled: true,
+        }}
+      />
+    </>
   );
 };
