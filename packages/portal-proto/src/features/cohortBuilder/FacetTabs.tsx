@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Router, { useRouter } from "next/router";
-import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import tw from "tailwind-styled-components";
 import {
   addFilterToCohortBuilder,
@@ -106,12 +105,8 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
   children,
 }: FacetGroupProps) => {
   return (
-    <div className="flex flex-col w-screen/1.5 bg-base-max pr-6">
-      <ResponsiveMasonry columnsCountBreakPoints={{ 320: 2, 640: 3, 1200: 4 }}>
-        <Masonry gutter="0.5em" className="m-4">
-          {children}
-        </Masonry>
-      </ResponsiveMasonry>
+    <div className="bg-base-max pr-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2">
+      {children}
     </div>
   );
 };

@@ -40,15 +40,11 @@ const RatioSpring: React.FC<RatioSpringProps> = ({
               {project && (
                 <div className={`font-bold text-black mx-0.5`}>{project}:</div>
               )}{" "}
-              <div
-                className={`text-activeColor underline hover:cursor-pointer mx-1`}
-              >
+              <div className={`text-activeColor mx-1`}>
                 {numerator.toLocaleString("en-US")}
               </div>
               <div className={`text-black mx-0.5`}> / </div>
-              <div
-                className={`text-activeColor underline hover:cursor-pointer`}
-              >
+              <div className={`text-activeColor`}>
                 {denominator.toLocaleString("en-US")}
               </div>
               {orientation === "horizontal" && (

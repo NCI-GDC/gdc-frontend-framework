@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { capitalize } from "lodash";
 import fileSize from "filesize";
 import { VerticalTable, HandleChangeInput } from "../shared/VerticalTable";
+import { downloadTSV } from "../shared/TableUtils";
 import { SingleItemAddToCartButton } from "../cart/updateCart";
 import Link from "next/link";
 import {
@@ -18,6 +20,8 @@ import { MdSave } from "react-icons/md";
 import { useAppSelector } from "@/features/repositoryApp/appApi";
 import { selectFilters } from "@/features/repositoryApp/repositoryFiltersSlice";
 import FunctionButton from "@/components/FunctionButton";
+import { convertDateToString } from "src/utils/date";
+import download from "src/utils/download";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
 
 const FilesTables: React.FC = () => {
@@ -51,6 +55,8 @@ const FilesTables: React.FC = () => {
       disableSortBy: true,
     },
   ];
+
+  const [columnCells, setColumnCells] = useState([]);
 
   let formattedTableData = [],
     tempPagination = {
@@ -178,9 +184,85 @@ const FilesTables: React.FC = () => {
       case "newPageNumber":
         getCohortCases(tempPagination.size, obj.newPageNumber - 1, sortBy);
         break;
+      case "newHeadings":
+        setColumnCells(obj.newHeadings);
+        break;
     }
   };
 
+  const handleDownloadJSON = async () => {
+    await download({
+      endpoint: "files",
+      method: "POST",
+      options: {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      },
+      params: {
+        filters: buildCohortGqlOperator(allFilters) ?? {},
+        size: 10000,
+        attachment: true,
+        format: "JSON",
+        pretty: true,
+        annotations: true,
+        related_files: true,
+        fields: [
+          "file_id",
+          "access",
+          "file_name",
+          "cases.case_id",
+          "cases.project.project_id",
+          "data_category",
+          "data_type",
+          "data_format",
+          "experimental_strategy",
+          "platform",
+          "file_size",
+          "annotations.annotation_id",
+        ].join(","),
+      },
+      dispatch: coreDispatch,
+      queryParams: `?${new URLSearchParams({
+        annotations: "true",
+        related_files: "true",
+      }).toString()}`,
+    });
+  };
+
+  const handleDownloadTSV = () => {
+    downloadTSV(
+      data,
+      columnCells,
+      `files-table.${convertDateToString(new Date())}.tsv`,
+      {
+        blacklist: ["cart"],
+        overwrite: {
+          access: {
+            composer: (file) => capitalize(file.access),
+          },
+          cases: {
+            composer: (file) => file.cases?.length.toLocaleString() || 0,
+          },
+          file_size: {
+            composer: (file) => fileSize(file.file_size),
+          },
+          annotations: {
+            composer: (file) => file.annotations?.length || 0,
+          },
+          experimental_strategy: {
+            composer: (file) => file.experimental_strategy || "--",
+          },
+          platform: {
+            composer: (file) => file.platform || "--",
+          },
+        },
+      },
+    );
+  };
+
+  //update everything that uses table component
   let totalFileSize = "--";
 
   const fileSizeSliceData = useFilesSize(cohortGqlOperator);
@@ -193,8 +275,8 @@ const FilesTables: React.FC = () => {
       additionalControls={
         <div className="flex">
           <div className="flex gap-2">
-            <FunctionButton>JSON</FunctionButton>
-            <FunctionButton>TSV</FunctionButton>
+            <FunctionButton onClick={handleDownloadJSON}>JSON</FunctionButton>
+            <FunctionButton onClick={handleDownloadTSV}>TSV</FunctionButton>
           </div>
           <div className="flex gap-2 w-full flex-row-reverse text-xl">
             <div className="pr-5">

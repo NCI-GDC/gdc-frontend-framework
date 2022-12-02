@@ -6,11 +6,11 @@ import { PersistGate } from "redux-persist/integration/react";
 import { coreStore } from "./store";
 import { CoreContext } from "./hooks";
 
+const persistor = persistStore(coreStore);
+
 export const CoreProvider: React.FC<unknown> = ({
   children,
 }: PropsWithChildren<unknown>) => {
-  const persistor = persistStore(coreStore);
-
   return (
     <Provider store={coreStore} context={CoreContext}>
       <PersistGate loading={null} persistor={persistor}>

@@ -1,5 +1,5 @@
 import { GTableContainer } from "../../components/expandableTables/genes/GTableContainer";
-import { SMTableContainer } from "../../components/expandableTables/somaticMutations/SMTableContainer";
+import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMTableContainer";
 import MutationFacet from "../cohortBuilder/MutationFacet";
 import {
   BIOTYPE,

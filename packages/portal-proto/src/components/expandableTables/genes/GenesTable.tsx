@@ -13,6 +13,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   selectedSurvivalPlot,
   handleSurvivalPlotToggled,
   handleGeneToggled,
+  toggledGenes,
   width,
   pageSize,
   page,
@@ -109,6 +110,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
           setSelectedGenes,
           handleSurvivalPlotToggled,
           handleGeneToggled,
+          toggledGenes,
           setGeneID,
         );
       });

@@ -22,6 +22,7 @@ import {
 import { appendFilterToOperation } from "./utils";
 import { GenomicTableProps } from "./types";
 import { selectCurrentCohortFiltersGQL } from "../cohort/availableCohortsSlice";
+import { joinFilters } from "../cohort";
 
 const SSMSTableGraphQLQuery = `query SsmsTable(
   $ssmTested: FiltersArgument
@@ -104,16 +105,19 @@ export interface SSMSConsequence {
   readonly annotation: {
     readonly polyphen_impact: string;
     readonly polyphen_score: number;
-    readonly shift_impact: string;
+    readonly sift_impact: string;
     readonly sift_score: string;
     readonly vep_impact: string;
+    readonly hgvsc?: string;
   };
   consequence_type: string;
   readonly gene: {
     readonly gene_id: string;
     readonly symbol: string;
+    readonly gene_strand?: number;
   };
   readonly is_canonical: boolean;
+  readonly transcript_id?: string;
 }
 export interface SSMSData {
   readonly ssm_id: string;
@@ -158,27 +162,67 @@ export const buildSSMSTableSearchFilters = (
   return undefined;
 };
 
+export interface SsmsTableRequestParameters extends GenomicTableProps {
+  readonly geneSymbol?: string;
+}
+
 export const fetchSsmsTable = createAsyncThunk<
   GraphQLApiResponse,
-  GenomicTableProps,
+  SsmsTableRequestParameters,
   { dispatch: CoreDispatch; state: CoreState }
 >(
   "genomic/ssmsTable",
   async (
-    { pageSize, offset, searchTerm, genomicFilters }: GenomicTableProps,
+    {
+      pageSize,
+      offset,
+      searchTerm,
+      genomicFilters,
+      geneSymbol,
+    }: SsmsTableRequestParameters,
     thunkAPI,
   ): Promise<GraphQLApiResponse> => {
     const cohortFilters = buildCohortGqlOperator(
-      selectCurrentCohortFilters(thunkAPI.getState()),
+      geneSymbol
+        ? joinFilters(
+            selectCurrentCohortFilters(thunkAPI.getState()) ?? {
+              mode: "and",
+              root: {},
+            },
+            {
+              mode: "and",
+              root: {
+                "genes.symbol": {
+                  field: "genes.symbol",
+                  operator: "includes",
+                  operands: [geneSymbol],
+                },
+              },
+            },
+          )
+        : selectCurrentCohortFilters(thunkAPI.getState()),
     );
     const cohortFiltersContent = cohortFilters?.content
       ? Object(cohortFilters?.content)
       : [];
 
-    const geneAndCohortFilters = mergeGenomicAndCohortFilters(
+    const localPlusCohortFilters = mergeGenomicAndCohortFilters(
       thunkAPI.getState(),
       genomicFilters,
     );
+
+    const geneAndCohortFilters = geneSymbol
+      ? joinFilters(localPlusCohortFilters, {
+          mode: "and",
+          root: {
+            "genes.symbol": {
+              field: "genes.symbol",
+              operator: "includes",
+              operands: [geneSymbol],
+            },
+          },
+        })
+      : localPlusCohortFilters;
 
     const searchFilters = buildSSMSTableSearchFilters(searchTerm);
     const tableFilters = convertFilterToGqlFilter(

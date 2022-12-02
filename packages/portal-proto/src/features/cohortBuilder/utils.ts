@@ -10,7 +10,5 @@ export const getFacetInfo = (
   fields: ReadonlyArray<string>,
   facets: Record<string, FacetDefinition>,
 ): ReadonlyArray<FacetDefinition> => {
-  return Object.entries(facets)
-    .filter(([key, facet]) => fields.includes(key) && facet !== null)
-    .map((f) => f[1]);
+  return fields.map((field) => facets[field]).filter((facet) => facet);
 };
