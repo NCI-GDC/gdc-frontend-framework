@@ -23,6 +23,7 @@ import {
   fieldNameToTitle,
   useCoreSelector,
   selectCurrentCohortId,
+  useGeneSymbol,
 } from "@gff/core";
 import { ActionIcon, Badge, Divider, Group } from "@mantine/core";
 import {
@@ -129,6 +130,16 @@ const IncludeExcludeQueryElement: React.FC<
   const operands =
     typeof operandsProp === "string" ? [operandsProp] : operandsProp;
 
+  const { data: geneSymbolDict, isSuccess } = useGeneSymbol(
+    field === "genes.gene_id" ? operands.map((x) => x.toString()) : [],
+  );
+  const labels =
+    field === "genes.gene_id"
+      ? operands.map((x) =>
+          isSuccess ? geneSymbolDict[x.toString()] ?? "..." : "...",
+        )
+      : operands;
+
   const RemoveButton = ({ value }: { value: string }) => (
     <ActionIcon
       size="xs"
@@ -206,7 +217,7 @@ const IncludeExcludeQueryElement: React.FC<
                 }}
               >
                 <OverflowTooltippedLabel label={x.toString()}>
-                  {x}
+                  {labels[i]}
                 </OverflowTooltippedLabel>
               </Badge>
             ))}

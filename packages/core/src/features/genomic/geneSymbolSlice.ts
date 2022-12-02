@@ -8,42 +8,45 @@ import {
   DataStatus,
 } from "../../dataAccess";
 import { castDraft } from "immer";
-import { GenesDefaults } from "../gdcapi/gdcapi";
 
 const GeneSymbolQuery = `
-           viewer {
+          query GeneSymbol(
+            $filters: FiltersArgument
+          ) {
+            viewer {
               explore {
                 genes {
-                  hits(filters: $filters, first: 1) {
+                  hits(filters: $filters, first: 1000) {
                     edges {
                       node {
                         symbol
+                        gene_id
                       }
                     }
                   }
                 }
               }
-            }`;
+            }
+          }
+`;
 
 export const fetchGeneSymbol = createAsyncThunk<
   GraphQLApiResponse,
-  string,
+  string[],
   { dispatch: CoreDispatch; state: CoreState }
->("genes/geneFrequencyChart", async (geneId): Promise<GraphQLApiResponse> => {
+>("genomic/fetchGeneSymbol", async (geneIds): Promise<GraphQLApiResponse> => {
   const filters = {
-    variables: {
-      filters: {
-        op: "and",
-        content: [
-          {
-            op: "in",
-            content: {
-              field: "genes.gene_id",
-              value: [geneId],
-            },
+    filters: {
+      content: [
+        {
+          content: {
+            field: "genes.gene_id",
+            value: geneIds,
           },
-        ],
-      },
+          op: "in",
+        },
+      ],
+      op: "and",
     },
   };
   return await graphqlAPI(GeneSymbolQuery, filters);
@@ -60,6 +63,11 @@ const initialState: GeneSymbolState = {
   status: "uninitialized",
 };
 
+interface GQLGeneSymbolResponse {
+  readonly gene_id: string;
+  readonly symbol: string;
+}
+
 const slice = createSlice({
   name: "genomic/geneSymbol",
   initialState,
@@ -73,10 +81,19 @@ const slice = createSlice({
           state.status = "rejected";
           state.error = response.errors.toString();
         }
-        const data = response.data as GenesDefaults;
+        const data = response.data.viewer.explore.genes.hits.edges;
+        const newSymbols = data
+          .map((e: Record<string, never>) => e.node)
+          .reduce(
+            (symbols: Record<string, string>, x: GQLGeneSymbolResponse) => {
+              symbols[x.gene_id] = x.symbol;
+              return symbols;
+            },
+            {},
+          );
         state.geneSymbols = {
           ...state.geneSymbols,
-          [action.meta.arg]: data.symbol,
+          ...newSymbols,
         };
         state.status = "fulfilled";
         state.error = undefined;

@@ -102,7 +102,11 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     selectGeneAndSSMFilters(state),
   );
 
+  /**
+   * Get genes in cohort
+   */
   const currentGenes = useSelectFilterContent("genes.gene_id");
+  const currentMutations = useSelectFilterContent("ssms.ssm_id");
 
   const filters = useMemo(
     () => buildCohortGqlOperator(joinFilters(cohortFilters, genomicFilters)),
@@ -153,7 +157,6 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleGeneToggled = (payload: Record<string, any>) => {
-    console.log("gene toggled", payload.geneID);
     if (currentGenes.includes(payload.geneID)) {
       const update = currentGenes.filter((x) => x != payload.geneID);
       if (update.length > 0)
@@ -176,6 +179,39 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
             field: "genes.gene_id",
             operator: "includes",
             operands: [...currentGenes, payload.geneID.toString()],
+          },
+        }),
+      );
+  };
+
+  const handleGeneAndSSmToggled = (
+    cohortStatus: string[],
+    field: string,
+    idField: string,
+    payload: Record<string, any>,
+  ) => {
+    if (cohortStatus.includes(payload[idField])) {
+      const update = currentGenes.filter((x) => x != payload[idField]);
+      if (update.length > 0)
+        coreDipatch(
+          updateCohortFilter({
+            field: field,
+            operation: {
+              field: field,
+              operator: "includes",
+              operands: currentGenes.filter((x) => x != payload[idField]),
+            },
+          }),
+        );
+      else coreDipatch(removeCohortFilter(field));
+    } else
+      coreDipatch(
+        updateCohortFilter({
+          field: field,
+          operation: {
+            field: field,
+            operator: "includes",
+            operands: [...currentGenes, payload[idField]],
           },
         }),
       );
@@ -341,7 +377,12 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
             <GTableContainer
               selectedSurvivalPlot={comparativeSurvival}
               handleSurvivalPlotToggled={handleSurvivalPlotToggled}
-              handleGeneToggled={handleGeneToggled}
+              handleGeneToggled={partial(
+                handleGeneAndSSmToggled,
+                currentGenes,
+                "genes.gene_id",
+                "geneID",
+              )}
               toggledGenes={currentGenes}
               genomicFilters={genomicFilters}
             />
@@ -375,6 +416,8 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
             <SMTableContainer
               selectedSurvivalPlot={comparativeSurvival}
               handleSurvivalPlotToggled={handleSurvivalPlotToggled}
+              //  handleSsmToggled={handleGeneToggled}
+              //  toggledSsm={currentMutations}
               genomicFilters={genomicFilters}
             />
           </div>
