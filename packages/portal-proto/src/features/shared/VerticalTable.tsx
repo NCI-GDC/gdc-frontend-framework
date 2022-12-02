@@ -4,6 +4,7 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DragDrop } from "./DragDrop";
 import { BsList, BsCaretDownFill, BsCaretUpFill } from "react-icons/bs";
+import { MdClose, MdSearch } from "react-icons/md";
 import { isEqual } from "lodash";
 import { DataStatus } from "@gff/core";
 import {
@@ -12,6 +13,7 @@ import {
   Select,
   Pagination,
   LoadingOverlay,
+  TextInput,
 } from "@mantine/core";
 
 export interface PaginationOptions {
@@ -134,6 +136,7 @@ interface VerticalTableProps {
     enabled: boolean;
     /**
      * placeholder to display in search input
+     * @defaultValue "Search"
      */
     placeholder?: string;
   };
@@ -170,9 +173,13 @@ export interface HandleChangeInput {
    * search term change
    */
   newSearch?: string;
+  /**
+   * headings change
+   */
+  newHeadings?: Column[];
 }
 
-interface Column {
+export interface Column {
   Header: string | JSX.Element | ((value: any) => JSX.Element);
   accessor: string;
   disableSortBy?: boolean;
@@ -245,6 +252,10 @@ export const VerticalTable: FC<VerticalTableProps> = ({
       setTable(tableData);
     }
   }, [status, tableData]);
+
+  useEffect(() => {
+    handleChange({ newHeadings: headings });
+  }, [headings, handleChange]);
 
   const handleColumnChange = (update) => {
     setHeadings(filterColumnCells(update));
@@ -432,13 +443,13 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   const [pageTotal, setPageTotal] = useState(1);
 
   useEffect(() => {
-    if (pagination?.size) {
+    if (pagination?.size !== undefined) {
       setPageSize(pagination.size);
     }
-    if (pagination?.page) {
+    if (pagination?.page !== undefined) {
       setPageOn(pagination.page);
     }
-    if (pagination?.pages) {
+    if (pagination?.pages !== undefined) {
       setPageTotal(pagination.pages);
     }
   }, [pagination]);
@@ -488,11 +499,44 @@ export const VerticalTable: FC<VerticalTableProps> = ({
           <div className={"flex-auto h-10"}>{additionalControls}</div>
         )}
         <div className="flex flex-row">
+          {search?.enabled && (
+            <div className="flex flex-row w-max">
+              <TextInput
+                icon={<MdSearch size={24} />}
+                placeholder={search.placeholder ?? "Search"}
+                aria-label="Table Search Input"
+                classNames={{
+                  input: "focus:border-2 cus:drop-shadow-xl",
+                  wrapper: "w-72 mr-2",
+                }}
+                size="sm"
+                rightSection={
+                  searchTerm.length > 0 && (
+                    <MdClose
+                      onClick={() => {
+                        setSearchTerm("");
+                        handleChange({
+                          newSearch: "",
+                        });
+                      }}
+                      className="cursor-pointer"
+                    ></MdClose>
+                  )
+                }
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  handleChange({
+                    newSearch: e.target.value,
+                  });
+                }}
+              />
+            </div>
+          )}
           {showControls && (
             <Popover
               opened={showColumnMenu}
               onClose={() => setShowColumnMenu(false)}
-              width={260}
               position="bottom"
               transition="scale"
               withArrow
@@ -521,23 +565,6 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 </div>
               </Popover.Dropdown>
             </Popover>
-          )}
-          {search?.enabled && (
-            <div className="flex flex-row w-max float-right">
-              <input
-                className="mr-2 rounded-sm border-1 border-base-lighter px-1"
-                type="search"
-                placeholder={search.placeholder ?? "Search"}
-                onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                  handleChange({
-                    newSearch: e.target.value,
-                  });
-                }}
-                value={searchTerm}
-              />
-              <div className={`mt-px`}></div>
-            </div>
           )}
         </div>
       </div>
