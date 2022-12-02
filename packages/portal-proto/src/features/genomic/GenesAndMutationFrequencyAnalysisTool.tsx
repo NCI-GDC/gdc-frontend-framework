@@ -33,11 +33,9 @@ import {
   useClearGenomicFilters,
   useGenesFacet,
   useSelectFilterContent,
-  useUpdateGeneAndSSMFilters,
   useUpdateGenomicEnumFacetFilter,
 } from "./hooks";
 import {
-  removeGeneAndSSMFilter,
   selectGeneAndSSMFilters,
   clearGeneAndSSMFilters,
 } from "@/features/genomic/geneAndSSMFiltersSlice";
@@ -362,7 +360,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                     visible={!survivalPlotReady && !topGeneSSMSSuccess}
                   />
                   <SurvivalPlot
-                    plotType={SurvivalPlotTypes.overall}
+                    plotType={SurvivalPlotTypes.mutation}
                     data={
                       survivalPlotReady &&
                       survivalPlotData.survivalData.length > 1
@@ -402,7 +400,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                   visible={!survivalPlotReady && !topGeneSSMSSuccess}
                 />
                 <SurvivalPlot
-                  plotType={SurvivalPlotTypes.overall}
+                  plotType={SurvivalPlotTypes.mutation}
                   data={
                     survivalPlotReady &&
                     comparativeSurvival &&
