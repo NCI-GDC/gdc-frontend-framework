@@ -15,7 +15,7 @@ import { COHORTS } from "./cohortFixture";
 import { GqlOperation, Operation } from "../gdcapi/filters";
 import { CoreDataSelectorResponse, DataStatus } from "../../dataAccess";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
-import { CoreDispatch } from "src/store";
+import { CoreDispatch } from "../../store";
 
 export interface CaseSetDataAndStatus {
   readonly status: DataStatus; // status of create caseSet

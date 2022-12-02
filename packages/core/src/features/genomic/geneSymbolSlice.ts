@@ -2,12 +2,10 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
-import {
-  CoreDataSelectorResponse,
-  createUseCoreDataHook,
-  DataStatus,
-} from "../../dataAccess";
+import { CoreDataSelectorResponse, DataStatus } from "../../dataAccess";
 import { castDraft } from "immer";
+import { useCoreDispatch, useCoreSelector } from "../../hooks";
+import { useEffect } from "react";
 
 const GeneSymbolQuery = `
           query GeneSymbol(
@@ -99,12 +97,32 @@ const slice = createSlice({
         state.error = undefined;
         return state;
       })
-      .addCase(fetchGeneSymbol.pending, (state) => {
+      .addCase(fetchGeneSymbol.pending, (state, action) => {
+        const pendingSymbols = action.meta.arg.reduce(
+          (prev: Record<string, string>, x) => {
+            prev[x] = "pending";
+            return prev;
+          },
+          {},
+        );
         state.status = "pending";
+        state.geneSymbols = {
+          ...state.geneSymbols,
+          ...pendingSymbols,
+        };
         return state;
       })
       .addCase(fetchGeneSymbol.rejected, (state, action) => {
+        const rejectedSymbols = action.meta.arg.reduce(
+          (prev: Record<string, string>, x) => {
+            prev[x] = "No gene found.";
+            return prev;
+          },
+          {},
+        );
+
         state.status = "rejected";
+        state.geneSymbols = rejectedSymbols;
         if (action.error) {
           state.error = action.error.message;
         }
@@ -130,7 +148,25 @@ export const selectGeneSymbol = (
   };
 };
 
-export const useGeneSymbol = createUseCoreDataHook(
-  fetchGeneSymbol,
-  selectGeneSymbol,
-);
+export const useGeneSymbol = (geneIds: string[]) => {
+  const coreDispatch = useCoreDispatch();
+  const { data, status, error } = useCoreSelector(selectGeneSymbol);
+
+  const neededSymbols = geneIds.filter(
+    (x) => !Object.keys(data ?? {}).includes(x),
+  );
+
+  useEffect(() => {
+    if (neededSymbols.length > 0) {
+      coreDispatch(fetchGeneSymbol(neededSymbols));
+    }
+  }, [coreDispatch, neededSymbols]);
+  return {
+    data,
+    error,
+    isUninitialized: status === "uninitialized",
+    isFetching: status === "pending",
+    isSuccess: status === "fulfilled",
+    isError: status === "rejected",
+  };
+};
