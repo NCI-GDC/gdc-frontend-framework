@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { capitalize } from "lodash";
 import fileSize from "filesize";
 import { VerticalTable, HandleChangeInput } from "../shared/VerticalTable";
@@ -137,11 +137,14 @@ const FilesTables: React.FC = () => {
   );
   const allFilters = joinFilters(cohortFilters, repositoryFilters);
   const cohortGqlOperator = buildCohortGqlOperator(allFilters);
-  const coreDispatch = useCoreDispatch();
 
   const [sortBy, setSortBy] = useState([]);
+  const [pageSize, setPageSize] = useState(20);
+  const [offset, setOffset] = useState(0);
 
-  const getCohortCases = (pageSize = 20, offset = 0, sortBy = []) => {
+  const coreDispatch = useCoreDispatch();
+
+  useEffect(() => {
     coreDispatch(
       fetchFiles({
         filters: cohortGqlOperator,
@@ -154,7 +157,7 @@ const FilesTables: React.FC = () => {
         sortBy: sortBy,
       }),
     );
-  };
+  }, [pageSize, offset, sortBy]);
 
   const sortByActions = (sortByObj) => {
     const tempSortBy = sortByObj.map((sortObj) => {
@@ -170,7 +173,12 @@ const FilesTables: React.FC = () => {
       };
     });
     setSortBy(tempSortBy);
-    getCohortCases(tempPagination.size, tempPagination.page - 1, tempSortBy);
+  };
+
+  const newSearchActions = (searchTerm: string) => {
+    if (searchTerm) {
+      //setCohortGqlOperator(setFilters(searchTerm.toLowerCase()));
+    }
   };
 
   const handleChange = (obj: HandleChangeInput) => {
@@ -179,10 +187,15 @@ const FilesTables: React.FC = () => {
         sortByActions(obj.sortBy);
         break;
       case "newPageSize":
-        getCohortCases(parseInt(obj.newPageSize), 0, sortBy);
+        setOffset(0);
+        setPageSize(parseInt(obj.newPageSize));
         break;
       case "newPageNumber":
-        getCohortCases(tempPagination.size, obj.newPageNumber - 1, sortBy);
+        setOffset(obj.newPageNumber - 1);
+        break;
+      case "newSearch":
+        setOffset(0);
+        newSearchActions(obj.newSearch);
         break;
       case "newHeadings":
         setColumnCells(obj.newHeadings);
@@ -301,6 +314,9 @@ const FilesTables: React.FC = () => {
       }}
       status={status}
       handleChange={handleChange}
+      search={{
+        enabled: true,
+      }}
     />
   );
 };
