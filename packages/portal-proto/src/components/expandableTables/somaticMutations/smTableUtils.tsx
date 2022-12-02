@@ -7,7 +7,12 @@ import { SelectedReducer, SelectReducerAction } from "../shared/types";
 import { SurvivalIcon } from "../shared/sharedTableUtils";
 import { TableCell, TableHeader } from "../shared/sharedTableCells";
 import { ProteinChange, Impacts, Consequences } from "./smTableCells";
-import { SingleSomaticMutation, SomaticMutations, Impact } from "./types";
+import {
+  SingleSomaticMutation,
+  SomaticMutations,
+  Impact,
+  SsmToggledHandler,
+} from "./types";
 import CheckboxSpring from "../shared/CheckboxSpring";
 import { Survival } from "../shared/types";
 import { TableColumnDefinition } from "../shared/types";
@@ -25,6 +30,8 @@ export const createTableColumn = (
     field: string,
   ) => void,
   setMutationID: Dispatch<SetStateAction<string>>,
+  handleSsmToggled: SsmToggledHandler,
+  toggledSsms: ReadonlyArray<string>,
 ): TableColumnDefinition => {
   switch (accessor) {
     case "select":
@@ -77,7 +84,7 @@ export const createTableColumn = (
                 <div className="flex justify-start">
                   {row.getCanExpand() && (
                     <SwitchSpring
-                      isActive={row.original["cohort"].checked}
+                      isActive={toggledSsms.includes(row.original?.mutationID)}
                       margin={`my-0.5 ml-0`}
                       icon={
                         <Image
@@ -87,7 +94,12 @@ export const createTableColumn = (
                         />
                       }
                       selected={row.original["cohort"]}
-                      handleSwitch={undefined} // handleCohortSwitch
+                      handleSwitch={() =>
+                        handleSsmToggled({
+                          mutationID: row.original?.mutationID,
+                          symbol: row.original?.DNAChange,
+                        })
+                      } // handleCohortSwitch
                       tooltip={""}
                     />
                   )}

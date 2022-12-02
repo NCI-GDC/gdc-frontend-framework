@@ -39,6 +39,7 @@ import {
   selectGeneAndSSMFilters,
   clearGeneAndSSMFilters,
 } from "@/features/genomic/geneAndSSMFiltersSlice";
+import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot";
 
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
   ssr: false,
@@ -357,6 +358,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                     visible={!survivalPlotReady && !topGeneSSMSSuccess}
                   />
                   <SurvivalPlot
+                    plotType={SurvivalPlotTypes.overall}
                     data={
                       survivalPlotReady &&
                       survivalPlotData.survivalData.length > 1
@@ -396,6 +398,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                   visible={!survivalPlotReady && !topGeneSSMSSuccess}
                 />
                 <SurvivalPlot
+                  plotType={SurvivalPlotTypes.overall}
                   data={
                     survivalPlotReady &&
                     comparativeSurvival &&
@@ -416,9 +419,14 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
             <SMTableContainer
               selectedSurvivalPlot={comparativeSurvival}
               handleSurvivalPlotToggled={handleSurvivalPlotToggled}
-              //  handleSsmToggled={handleGeneToggled}
-              //  toggledSsm={currentMutations}
               genomicFilters={genomicFilters}
+              handleSsmToggled={partial(
+                handleGeneAndSSmToggled,
+                currentMutations,
+                "ssms.ssm_id",
+                "mutationID",
+              )}
+              toggledSsms={currentMutations}
             />
           </div>
         </Tabs.Panel>

@@ -91,7 +91,7 @@ export const createCaseSet = createAsyncThunk<
 });
 
 export const DEFAULT_COHORT_ID = "ALL-GDC-COHORT";
-const REQUIRES_CASE_SET_FILTERS = ["genes."];
+const REQUIRES_CASE_SET_FILTERS = ["genes.", "ssms."];
 
 const cohortsAdapter = createEntityAdapter<Cohort>({
   sortComparer: (a, b) => {

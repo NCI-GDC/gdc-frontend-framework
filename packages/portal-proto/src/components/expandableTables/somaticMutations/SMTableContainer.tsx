@@ -7,7 +7,11 @@ import { default as PageStepper } from "../shared/PageStepperMantine";
 import { default as PageSize } from "../shared/PageSizeMantine";
 import { default as TableControls } from "../shared/TableControlsMantine";
 import TablePlaceholder from "../shared/TablePlaceholder";
-import { SomaticMutations, DEFAULT_SMTABLE_ORDER } from "./types";
+import {
+  SomaticMutations,
+  DEFAULT_SMTABLE_ORDER,
+  SsmToggledHandler,
+} from "./types";
 import { SelectedReducer, SelectReducerAction } from "../shared/types";
 import { default as TableFilters } from "../shared/TableFiltersMantine";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
@@ -29,12 +33,16 @@ export interface SMTableContainerProps {
     field: string,
   ) => void;
   genomicFilters?: FilterSet;
+  handleSsmToggled?: SsmToggledHandler;
+  toggledSsms?: ReadonlyArray<string>;
 }
 
 export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   selectedSurvivalPlot,
   handleSurvivalPlotToggled,
   genomicFilters,
+  handleSsmToggled = () => null,
+  toggledSsms = [],
 }: SMTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
@@ -213,6 +221,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 columnListOrder={columnListOrder}
                 visibleColumns={visibleColumns}
                 searchTerm={searchTerm}
+                handleSsmToggled={handleSsmToggled}
+                toggledSsms={toggledSsms}
               />
             </div>
           )}

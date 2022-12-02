@@ -21,6 +21,8 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   columnListOrder,
   visibleColumns,
   searchTerm,
+  handleSsmToggled = () => null,
+  toggledSsms = [],
 }: SomaticMutationsTableProps) => {
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
   const [expanded, setExpanded] = useState<ExpandedState>(
@@ -94,6 +96,8 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
           setSelectedMutations,
           handleSurvivalPlotToggled,
           setMutationID,
+          handleSsmToggled,
+          toggledSsms,
         );
       });
     }, // eslint-disable-next-line react-hooks/exhaustive-deps

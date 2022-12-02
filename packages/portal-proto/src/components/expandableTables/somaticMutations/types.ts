@@ -99,6 +99,8 @@ export interface SomaticMutations {
   ssmsTotal: number;
 }
 
+export type SsmToggledHandler = (symbol: Record<string, any>) => void;
+
 export interface SomaticMutationsTableProps {
   status: string;
   readonly initialData: any;
@@ -117,4 +119,6 @@ export interface SomaticMutationsTableProps {
   columnListOrder: Column[];
   visibleColumns: Column[];
   searchTerm: string;
+  handleSsmToggled?: SsmToggledHandler;
+  toggledSsms?: ReadonlyArray<string>;
 }
