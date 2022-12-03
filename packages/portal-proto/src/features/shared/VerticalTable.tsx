@@ -530,6 +530,9 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                     <MdClose
                       onClick={() => {
                         setSearchTerm("");
+                        handleChange({
+                          newSearch: "",
+                        });
                       }}
                       className="cursor-pointer"
                     ></MdClose>
@@ -538,6 +541,9 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 value={searchTerm}
                 onChange={(e) => {
                   setSearchTerm(e.target.value);
+                  handleChange({
+                    newSearch: e.target.value,
+                  });
                 }}
               />
             </div>
@@ -578,7 +584,9 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         </div>
       </div>
       <div className="overflow-y-scroll w-full relative">
-        <LoadingOverlay visible={showLoading} />
+        <LoadingOverlay
+          visible={status === "pending" || status === "uninitialized"}
+        />
         <Table columns={headings} data={table} />
       </div>
       {pagination && (
