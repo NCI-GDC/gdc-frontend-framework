@@ -18,19 +18,13 @@ import {
   Operation,
 } from "@gff/core";
 import { MdSave } from "react-icons/md";
-import {
-  useAppSelector,
-  useAppDispatch,
-} from "@/features/repositoryApp/appApi";
-import {
-  selectFilters,
-  updateRepositoryFilter,
-} from "@/features/repositoryApp/repositoryFiltersSlice";
+import { useAppSelector } from "@/features/repositoryApp/appApi";
+import { selectFilters } from "@/features/repositoryApp/repositoryFiltersSlice";
 import FunctionButton from "@/components/FunctionButton";
 import { convertDateToString } from "src/utils/date";
 import download from "src/utils/download";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
-import { useDebouncedValue } from "@mantine/hooks";
+import { useUpdateRepositoryFacetFilter } from "@/features/repositoryApp/hooks";
 
 const FilesTables: React.FC = () => {
   const columnListOrder = [
@@ -149,9 +143,7 @@ const FilesTables: React.FC = () => {
   const [sortBy, setSortBy] = useState([]);
   const [pageSize, setPageSize] = useState(20);
   const [offset, setOffset] = useState(0);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [debouncedSearchTerm] = useDebouncedValue(searchTerm, 400);
-  // const [debouncedSearchTern] = useDebouncedValue(searchTerm, 400);
+
   const coreDispatch = useCoreDispatch();
 
   useEffect(() => {
@@ -204,15 +196,11 @@ const FilesTables: React.FC = () => {
     };
   };
 
-  const appDispatch = useAppDispatch();
-  useEffect(() => {
-    appDispatch(
-      updateRepositoryFilter({
-        field: "files",
-        operation: buildSearchFilters(debouncedSearchTerm),
-      }),
-    );
-  }, [appDispatch, debouncedSearchTerm]);
+  const updateFilter = useUpdateRepositoryFacetFilter();
+  const newSearchActions = (searchTerm: string) => {
+    //TODO if lots of calls fast last call might not be displayed
+    updateFilter("files", buildSearchFilters(searchTerm));
+  };
 
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
@@ -228,7 +216,7 @@ const FilesTables: React.FC = () => {
         break;
       case "newSearch":
         setOffset(0);
-        setSearchTerm(obj.newSearch);
+        newSearchActions(obj.newSearch);
         break;
       case "newHeadings":
         setColumnCells(obj.newHeadings);
