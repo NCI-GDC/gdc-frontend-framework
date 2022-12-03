@@ -584,9 +584,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         </div>
       </div>
       <div className="overflow-y-scroll w-full relative">
-        <LoadingOverlay
-          visible={status === "pending" || status === "uninitialized"}
-        />
+        <LoadingOverlay visible={showLoading} />
         <Table columns={headings} data={table} />
       </div>
       {pagination && (
