@@ -2,9 +2,10 @@ import React, { Dispatch, SetStateAction } from "react";
 import ToggleSpring from "../shared/ToggleSpring";
 import SwitchSpring from "../shared/SwitchSpring";
 import RatioSpring from "../shared/RatioSpring";
+import ToggledCheck from "@/components/expandableTables/shared/ToggledCheck";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { SelectedReducer, SelectReducerAction } from "../shared/types";
-import { SurvivalIcon } from "../shared/sharedTableUtils";
+import { IoMdTrendingDown as SurvivalIcon } from "react-icons/io";
 import { TableCell, TableHeader } from "../shared/sharedTableCells";
 import { ProteinChange, Impacts, Consequences } from "./smTableCells";
 import {
@@ -131,8 +132,8 @@ export const createTableColumn = (
               return (
                 <div className="flex justify-start">
                   {row.getCanExpand() && (
-                    <SwitchSpring
-                      margin={`mt-1 ml-0.5`}
+                    <ToggledCheck
+                      margin="mt-[0.42em] ml-0.5"
                       isActive={row.original["survival"].checked}
                       icon={<SurvivalIcon />}
                       survivalProps={{ plot: "gene.ssm.ssm_id" }}

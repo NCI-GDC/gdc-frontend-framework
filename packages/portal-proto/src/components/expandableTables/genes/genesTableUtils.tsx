@@ -6,13 +6,15 @@ import CheckboxSpring from "../shared/CheckboxSpring";
 import SwitchSpring from "../shared/SwitchSpring";
 import RatioSpring from "../shared/RatioSpring";
 import { SelectedReducer, TableColumnDefinition } from "../shared/types";
-import { SurvivalIcon, AnnotationsIcon } from "../shared/sharedTableUtils";
+import { AnnotationsIcon } from "../shared/sharedTableUtils";
 import { TableCell, TableHeader } from "../shared/sharedTableCells";
 import { Genes, SingleGene, Gene, GeneToggledHandler } from "./types";
 import { SelectReducerAction } from "../shared/types";
 import { Image } from "@/components/Image";
 import { startCase } from "lodash";
 import Link from "next/link";
+import ToggledCheck from "@/components/expandableTables/shared/ToggledCheck";
+import { IoMdTrendingDown as SurvivalIcon } from "react-icons/io";
 
 export const createTableColumn = (
   accessor: string,
@@ -115,17 +117,17 @@ export const createTableColumn = (
               <TableHeader
                 title={startCase(accessor)}
                 tooltip={""}
-                className="mx-3"
+                className="flex flex-row justify-start w-14"
               />
             ),
             cell: ({ row }) => {
               return (
                 <>
                   {row.getCanExpand() && (
-                    <SwitchSpring
-                      margin="mt-1 ml-0.5"
+                    <ToggledCheck
+                      margin="mt-[0.42em] ml-0.5"
                       isActive={row.original["survival"].checked}
-                      icon={<SurvivalIcon />}
+                      icon={<SurvivalIcon size={24} />}
                       selected={row.original["survival"]}
                       handleSwitch={handleSurvivalPlotToggled}
                       survivalProps={{ plot: "gene.symbol" }}
