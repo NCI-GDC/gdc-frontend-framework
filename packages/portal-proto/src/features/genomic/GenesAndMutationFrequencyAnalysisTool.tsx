@@ -32,6 +32,8 @@ import {
 import {
   useClearGenomicFilters,
   useGenesFacet,
+  useGenesFacets,
+  useGenesFacetValues,
   useSelectFilterContent,
   useUpdateGenomicEnumFacetFilter,
 } from "./hooks";
@@ -257,6 +259,11 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     }
   }, [appMode, comparativeSurvival, topGeneSSMS, topGeneSSMSSuccess]);
 
+  useGenesFacets(
+    "genes",
+    "explore",
+    FilterFacets.genes.map((x) => x.facet_filter),
+  );
   return (
     <div className="flex flex-row">
       <div className="flex flex-col gap-y-4 mr-3 mt-12 w-min-64 w-max-64">
@@ -267,7 +274,11 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                 key={`${x.facet_filter}-${index}`}
                 field={`${x.facet_filter}`}
                 hooks={{
-                  useGetFacetData: partial(useGenesFacet, "genes", "explore"),
+                  useGetFacetData: partial(
+                    useGenesFacetValues,
+                    "genes",
+                    "explore",
+                  ),
                   useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
                   useClearFilter: useClearGenomicFilters,
                   useTotalCounts: partial(

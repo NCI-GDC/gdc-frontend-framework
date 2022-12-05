@@ -61,3 +61,12 @@ export const selectGeneAndSSMFiltersByName = (
 ): Operation | undefined => {
   return state.filters.root?.[name];
 };
+
+export const selectGeneAndSSMFiltersByNames = (
+  state: AppState,
+  names: ReadonlyArray<string>,
+): Record<string, Operation> =>
+  names.reduce((obj, name) => {
+    obj[name] = state.filters.root?.[name];
+    return obj;
+  }, {});
