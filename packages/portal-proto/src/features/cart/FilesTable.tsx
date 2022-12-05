@@ -224,32 +224,6 @@ const FilesTable: React.FC<FilesTableProps> = ({
         <div className="flex gap-2">
           <FunctionButton onClick={handleDownloadJSON}>JSON</FunctionButton>
           <FunctionButton onClick={handleDownloadTSV}>TSV</FunctionButton>
-          <Menu>
-            <Menu.Target>
-              <Button
-                leftIcon={<TrashIcon />}
-                rightIcon={<DropdownIcon size={20} />}
-                classNames={{
-                  root: "bg-nci-red-darker", //TODO: find good color theme for this
-                  rightIcon: "border-l pl-1 -mr-2",
-                }}
-              >
-                Remove From Cart
-              </Button>
-            </Menu.Target>
-            <Menu.Dropdown>
-              <Menu.Item onClick={() => removeFromCart(data, cart, dispatch)}>
-                All Files ({cart.length})
-              </Menu.Item>
-              <Menu.Item
-                onClick={() =>
-                  removeFromCart(filesByCanAccess?.false || [], cart, dispatch)
-                }
-              >
-                Unauthorized Files ({(filesByCanAccess?.false || []).length})
-              </Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
         </div>
       }
       pagination={{
