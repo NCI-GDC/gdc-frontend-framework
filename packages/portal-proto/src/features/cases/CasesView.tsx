@@ -6,9 +6,10 @@ import {
   selectCart,
   useQlCases,
   useCoreDispatch,
+  selectSelectedCases,
 } from "@gff/core";
 import { Button, createStyles, LoadingOverlay, Menu } from "@mantine/core";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import tw from "tailwind-styled-components";
 import {
   VerticalTable,
@@ -19,11 +20,10 @@ import useStandardPagination from "@/hooks/useStandardPagination";
 import { ageDisplay, allFilesInCart, extractToArray } from "src/utils";
 import { Row, TableInstance } from "react-table";
 import CollapsibleRow from "../shared/CollapsibleRow";
-import FunctionButton from "@/components/FunctionButton";
 import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
 import Link from "next/link";
 import { SelectAlCasesButton, SelectCaseButton } from "./SelectCasesButton";
-import CasesCohortButton from "./CasesCohortButton";
+import { CasesCohortButton, CountsIcon } from "./CasesCohortButton";
 import { GiMicroscope } from "react-icons/gi";
 import { FaShoppingCart as CartIcon } from "react-icons/fa";
 import { BiAddToQueue } from "react-icons/bi";
@@ -44,6 +44,12 @@ const useStyles = createStyles((theme) => ({
       color: theme.white,
     },
   },
+  root: {
+    "&[data-disabled]": {
+      border: "1px solid gray",
+      margin: "2px 0",
+    },
+  },
 }));
 
 export interface Case {
@@ -61,6 +67,11 @@ export interface CasesViewProps {
   readonly handleCaseSelected?: (patient: Case) => void;
   readonly caption?: string;
   pagination?: PaginationOptions;
+  status: {
+    isFetching: boolean;
+    isSuccess: boolean;
+    isError: boolean;
+  };
 }
 
 interface CellProps {
@@ -97,13 +108,16 @@ export const SlideCountsIcon = tw.div<{
   $count?: number;
 }>`
 ${(p: { $count?: number }) =>
-  p.$count !== undefined && p.$count > 0 ? "bg-primary" : "bg-base"}
+  p.$count !== undefined && p.$count > 0 ? "bg-primary" : "bg-base-dark"}
+  ${(p: { $count?: number }) =>
+    p.$count !== undefined && p.$count > 0
+      ? "text-primary-contrast"
+      : "text-base-contrast-lighter"}
 inline-flex
 items-center
 w-5
 h-4
 justify-center
-text-primary-contrast
 font-heading
 rounded-md
 
@@ -118,7 +132,7 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
   const cohortFilters = useCohortFacetFilter();
   const dispatch = useCoreDispatch();
   const currentCart = useCoreSelector((state) => selectCart(state));
-  const { data } = useQlCases({
+  const { data, isFetching, isSuccess, isError } = useQlCases({
     filters: cohortFilters,
     cases_size: pageSize,
     cases_offset: (activePage - 1) * pageSize,
@@ -145,7 +159,7 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
     return `https://portal.gdc.cancer.gov/annotations?filters={"content":[{"content":{"field":"annotations.case_id","value":["${case_id}"]},"op":"in"}],"op":"and"}`;
   };
   const { classes } = useStyles();
-  console.log("Current cart: ", currentCart);
+
   const cases = useMemo(
     () =>
       data?.map((datum) => {
@@ -159,35 +173,41 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
             ),
           )
           .filter((item) => item.length > 0).length;
-        console.log({ numberOfFilesToRemove });
         const slideCount = getSlideCountFromCaseSummary(
           datum.experimental_strategies,
         );
+        const isPlural = datum.filesCount > 1;
         return {
           selected: datum.case_uuid,
           slides: (
-            <div>
-              <Link
-                href={`/user-flow/workbench/MultipleImageViewerPage?caseId=${datum.case_uuid}`}
+            <Link
+              href={`/user-flow/workbench/MultipleImageViewerPage?caseId=${datum.case_uuid}`}
+            >
+              <Button
+                compact
+                disabled={slideCount === 0}
+                leftIcon={
+                  <GiMicroscope
+                    className={`mt-0.5 ${
+                      slideCount === 0 && "text-base-contrast-lightest"
+                    }`}
+                    size="1.25em"
+                  />
+                }
+                size="xs"
+                variant="outline"
+                classNames={classes}
+                className="my-2"
               >
-                <Button
-                  compact
-                  disabled={slideCount === 0}
-                  leftIcon={<GiMicroscope className="mt-0.5" size="1.25em" />}
-                  size="xs"
-                  variant="outline"
-                >
-                  <SlideCountsIcon $count={slideCount}>
-                    {slideCount === 0 ? "--" : slideCount}
-                  </SlideCountsIcon>
-                </Button>
-              </Link>
-            </div>
+                <SlideCountsIcon $count={slideCount}>
+                  {slideCount === 0 ? "--" : slideCount}
+                </SlideCountsIcon>
+              </Button>
+            </Link>
           ),
           cart: (
             <Menu position="bottom-start" classNames={classes}>
               <Menu.Target>
-                {/* // height and width should be same as the slides button */}
                 <Button
                   leftIcon={
                     <CartIcon
@@ -209,7 +229,8 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
                   classNames={{
                     leftIcon: "m-0",
                   }}
-                  className={isAllFilesInCart && "bg-primary-darkest"}
+                  size="xs"
+                  className={`${isAllFilesInCart && "bg-primary-darkest"}`}
                 />
               </Menu.Target>
               {/* // singular / plural */}
@@ -221,7 +242,8 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
                       addToCart(datum.files, currentCart, dispatch);
                     }}
                   >
-                    Add {datum.filesCount} Case files to the Cart
+                    Add {datum.filesCount} Case {isPlural ? "files" : "file"} to
+                    the Cart
                   </Menu.Item>
                 )}
 
@@ -236,7 +258,7 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
                     {numberOfFilesToRemove === 0
                       ? datum.filesCount
                       : numberOfFilesToRemove}{" "}
-                    Case files from the Cart
+                    Case {isPlural ? "files" : "file"} from the Cart
                   </Menu.Item>
                 )}
               </Menu.Dropdown>
@@ -247,14 +269,14 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
           projectId: datum.project_id,
           program: datum.program,
           primarySite: datum.primary_site,
-          disease_type: datum.disease_type,
-          primary_diagnosis: datum?.primary_diagnosis,
+          disease_type: datum.disease_type ?? "--",
+          primary_diagnosis: datum?.primary_diagnosis ?? "--",
           age_at_diagnosis: ageDisplay(datum?.age_at_diagnosis),
-          vital_status: datum?.vital_status,
+          vital_status: datum?.vital_status ?? "--",
           days_to_death: ageDisplay(datum?.days_to_death),
-          gender: datum?.gender,
-          race: datum?.race,
-          ethnicity: datum?.ethnicity,
+          gender: datum?.gender ?? "--",
+          race: datum?.race ?? "--",
+          ethnicity: datum?.ethnicity ?? "--",
           files: datum?.filesCount?.toLocaleString(),
           data_categories: extractToArray(
             datum?.data_categories,
@@ -294,6 +316,7 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
           cases={cases}
           caption={`Showing ${pageSize} of ${caseCounts} Cases`}
           handleCaseSelected={props.handleCaseSelected}
+          status={{ isError, isFetching, isSuccess }}
           // pagination={{ ...pagination, label: "cases" }}
         />
       </div>
@@ -304,7 +327,14 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
 export const CasesView: React.FC<CasesViewProps> = ({
   cases,
   pagination,
+  status,
 }: CasesViewProps) => {
+  const pickedCases: ReadonlyArray<string> = useCoreSelector((state) =>
+    selectSelectedCases(state),
+  );
+  const { classes } = useStyles();
+  const { isFetching, isError, isSuccess } = status;
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const columnListOrder = [
     {
       id: "selected",
@@ -385,16 +415,16 @@ export const CasesView: React.FC<CasesViewProps> = ({
   //   displayedData,
   // } = useStandardPagination(cases || []);
 
-  // const handleChange = (obj: HandleChangeInput) => {
-  //   switch (Object.keys(obj)?.[0]) {
-  //     case "newPageSize":
-  //       handlePageSizeChange(obj.newPageSize);
-  //       break;
-  //     case "newPageNumber":
-  //       handlePageChange(obj.newPageNumber);
-  //       break;
-  //   }
-  // };
+  const handleChange = (obj: HandleChangeInput) => {
+    // switch (Object.keys(obj)?.[0]) {
+    //   case "newPageSize":
+    //     handlePageSizeChange(obj.newPageSize);
+    //     break;
+    //   case "newPageNumber":
+    //     handlePageChange(obj.newPageNumber);
+    //     break;
+    // }
+  };
 
   return (
     <>
@@ -409,41 +439,60 @@ export const CasesView: React.FC<CasesViewProps> = ({
         //   from,
         //   total,
         // }}
-        // handleChange={handleChange}
+        handleChange={handleChange}
         additionalControls={
           <div className="flex gap-2">
-            {/* need to be diff */}
             <CasesCohortButton />
-            <Menu width="target">
+            <Menu width="target" classNames={classes}>
               <Menu.Target>
-                <FunctionButton
-                  className="ml-2"
+                <Button
+                  variant="outline"
+                  color="primary"
+                  leftIcon={
+                    pickedCases.length ? (
+                      <CountsIcon $count={pickedCases.length}>
+                        {pickedCases.length}{" "}
+                      </CountsIcon>
+                    ) : null
+                  }
                   rightIcon={<Dropdown size="1.25rem" />}
                 >
                   Biospecimen
-                </FunctionButton>
+                </Button>
               </Menu.Target>
               <Menu.Dropdown>
                 <Menu.Item>JSON</Menu.Item>
                 <Menu.Item>TSV</Menu.Item>
               </Menu.Dropdown>
             </Menu>
-            <Menu width="target">
+            <Menu width="target" classNames={classes}>
               <Menu.Target>
-                <FunctionButton
-                  className="ml-2"
+                <Button
+                  variant="outline"
+                  color="primary"
+                  leftIcon={
+                    pickedCases.length ? (
+                      <CountsIcon $count={pickedCases.length}>
+                        {pickedCases.length}{" "}
+                      </CountsIcon>
+                    ) : null
+                  }
                   rightIcon={<Dropdown size="1.25rem" />}
                 >
                   Clinical
-                </FunctionButton>
+                </Button>
               </Menu.Target>
               <Menu.Dropdown>
                 <Menu.Item>JSON</Menu.Item>
                 <Menu.Item>TSV</Menu.Item>
               </Menu.Dropdown>
             </Menu>
-            <FunctionButton>JSON</FunctionButton>
-            <FunctionButton>TSV</FunctionButton>
+            <Button variant="outline" color="primary">
+              JSON
+            </Button>
+            <Button variant="outline" color="primary">
+              TSV
+            </Button>
           </div>
         }
         showControls={true}
@@ -452,6 +501,15 @@ export const CasesView: React.FC<CasesViewProps> = ({
         search={{
           enabled: true,
         }}
+        status={
+          isFetching
+            ? "pending"
+            : isSuccess
+            ? "fulfilled"
+            : isError
+            ? "rejected"
+            : "uninitialized"
+        }
       />
     </>
   );

@@ -21,7 +21,7 @@ rounded-md
 
 `;
 
-const CasesCohortButton = (): JSX.Element => {
+export const CasesCohortButton = (): JSX.Element => {
   const pickedCases: ReadonlyArray<string> = useCoreSelector((state) =>
     selectSelectedCases(state),
   );
@@ -45,5 +45,3 @@ const CasesCohortButton = (): JSX.Element => {
     </Button>
   );
 };
-
-export default CasesCohortButton;

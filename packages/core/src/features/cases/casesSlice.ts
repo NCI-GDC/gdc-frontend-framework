@@ -293,9 +293,9 @@ const slice = createSlice({
           data_categories: node.summary.data_categories,
           experimental_strategies: node.summary.experimental_strategies,
           annotations: {
-            total: node.annotations?.hits?.total,
+            total: node?.annotations?.hits?.total,
             annotation_id:
-              node.annotations?.hits?.edges?.[0].node.annotation_id,
+              node?.annotations?.hits?.edges?.[0]?.node?.annotation_id,
           },
           files: node.files.hits.edges.map(({ node }) => ({
             file_id: node.file_id,
