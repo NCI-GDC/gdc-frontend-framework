@@ -273,7 +273,12 @@ const FromTo: React.FC<FromToProps> = ({
       fromOp: fromOp as RangeFromOp,
       from: fromValue,
       toOp: toOp as RangeToOp,
-      to: toValue,
+      to:
+        units !== "years"
+          ? toValue
+          : toOp === "<"
+          ? Math.floor(toValue / DAYS_IN_YEAR) * DAYS_IN_YEAR
+          : getUpperAgeFromYears(Math.floor(toValue / DAYS_IN_YEAR)),
     };
     const rangeFilters = buildRangeOperator(field, data);
     if (rangeFilters === undefined) {
@@ -346,6 +351,8 @@ const FromTo: React.FC<FromToProps> = ({
             onChange={(value) => {
               units !== "years"
                 ? setToValue(value)
+                : toOp === "<"
+                ? setToValue(value * DAYS_IN_YEAR)
                 : setToValue(getUpperAgeFromYears(value));
               changedCallback();
             }}
