@@ -1,11 +1,18 @@
 import React, { useCallback, useState } from "react";
-import { LoadingOverlay, Select } from "@mantine/core";
+import {
+  LoadingOverlay,
+  Select,
+  //TODO uncomment to show set modals menu
+  // Menu
+} from "@mantine/core";
 import {
   MdAdd as AddIcon,
   MdDelete as DeleteIcon,
   MdFileDownload as DownloadIcon,
   MdFileUpload as UploadIcon,
   MdSave as SaveIcon,
+  //TODO uncomment to show set modals menu
+  // MdFilterAlt as CohortFilterIcon,
 } from "react-icons/md";
 import {
   FaCaretDown as DownArrowIcon,
@@ -33,6 +40,8 @@ import {
   buildGqlOperationToFilterSet,
   buildCohortGqlOperator,
   useAddCohortMutation,
+  //TODO uncomment to show set modals menu
+  // showModal,
   Modals,
   selectCurrentModal,
 } from "@gff/core";
@@ -165,7 +174,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
           setShowDelete(false);
           // only delete cohort from BE if it's been saved before
           if (currentCohort?.saved) {
-            // don't delete it from the local adapter if not able to delete from the BE
+            // dont delete it from the local adapter if not able to delete from the BE
             await deleteCohortFromBE(cohortId)
               .unwrap()
               .then(() => deleteCohort())
