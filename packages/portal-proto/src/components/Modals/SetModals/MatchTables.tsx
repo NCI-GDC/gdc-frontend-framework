@@ -1,8 +1,14 @@
 import React, { useState, useMemo } from "react";
 import { flatten, uniq, upperFirst } from "lodash";
-import { Tabs, Badge } from "@mantine/core";
+import { Tabs, Badge, Collapse } from "@mantine/core";
+import {
+  IoIosArrowDropdownCircle as ExpandIcon,
+  IoIosArrowDropupCircle as CollapseIcon,
+} from "react-icons/io";
 import { VerticalTable } from "@/features/shared/VerticalTable";
 import { tabStyles } from "./constants";
+import { createKeyboardAccessibleFunction } from "src/utils";
+import useStandardPagination from "@/hooks/useStandardPagination";
 
 interface MatchTablesProps {
   readonly matched: {
@@ -21,6 +27,7 @@ const MatchTables: React.FC<MatchTablesProps> = ({
   fieldDisplay,
 }: MatchTablesProps) => {
   const [activeTab, setActiveTab] = useState("matched");
+  const [showTable, setShowTable] = useState(true);
 
   const matchedColumns = useMemo(() => {
     const uniqueMappedToFields = uniq(
@@ -52,7 +59,7 @@ const MatchTables: React.FC<MatchTablesProps> = ({
         })),
       },
     ];
-  }, [matched]);
+  }, [matched, fieldDisplay, identifier]);
 
   const matchedTableData = useMemo(() => {
     return matched.map((d) => ({
@@ -71,69 +78,108 @@ const MatchTables: React.FC<MatchTablesProps> = ({
     }));
   }, [matched]);
 
+  const { displayedData: displayedMatchData, ...matchPaginationProps } =
+    useStandardPagination(matchedTableData);
+  const { displayedData: displayedUnmatchedData, ...unmatchedPaginationProps } =
+    useStandardPagination(unmatched.map((id) => ({ id })));
+
   const numMatched = flatten(matched.map((d) => d.givenIdentifiers)).length;
 
   return (
-    <Tabs value={activeTab} onTabChange={setActiveTab} classNames={tabStyles}>
-      <Tabs.List>
-        <Tabs.Tab value="matched">
-          Matched
-          <Badge
-            variant="filled"
-            color={activeTab === "matched" ? "primary.9" : "gray"}
-            radius="xs"
-            size="xs"
-            className="ml-1"
-          >
-            {numMatched}
-          </Badge>
-        </Tabs.Tab>
-        <Tabs.Tab value="unmatched">
-          Unmatched
-          <Badge
-            variant="filled"
-            color={activeTab === "unmatched" ? "primary.9" : "gray"}
-            radius="xs"
-            size="xs"
-            className="ml-1"
-          >
-            {unmatched.length}
-          </Badge>
-        </Tabs.Tab>
-      </Tabs.List>
-      <Tabs.Panel value="matched">
-        <div className="my-4">
-          <p className="text-sm">
-            {numMatched} submitted {identifier} identifier
-            {numMatched !== 1 && "s"} mapped to {matched.length} unique GDC{" "}
-            {identifier}
-            {matched.length !== 1 && "s"}{" "}
-          </p>
-          <VerticalTable
-            tableData={matchedTableData}
-            columns={matchedColumns}
-            selectableRow={false}
-            showControls={false}
-          />
-        </div>
-      </Tabs.Panel>
-      <Tabs.Panel value="unmatched">
-        <div className="my-4">
-          <p className="text-sm">
-            {unmatched.length} submitted {identifier} identifier
-            {unmatched.length !== 1 && "s"} not recognized
-          </p>
-          <VerticalTable
-            tableData={unmatched.map((id) => ({ id }))}
-            columns={[
-              { columnName: "Submitted Identifier", id: "id", visible: true },
-            ]}
-            selectableRow={false}
-            showControls={false}
-          />
-        </div>
-      </Tabs.Panel>
-    </Tabs>
+    <>
+      <span
+        className="flex items-center font-header font-bold cursor-pointer w-full bg-primary-lightest py-2 px-3 gap-2 mt-4"
+        role="button"
+        tabIndex={0}
+        onClick={() => setShowTable(!showTable)}
+        onKeyDown={createKeyboardAccessibleFunction(() =>
+          setShowTable(!showTable),
+        )}
+      >
+        {showTable ? (
+          <CollapseIcon size={18} className="text-primary-darkest" />
+        ) : (
+          <ExpandIcon size={18} className="text-primary-darkest" />
+        )}
+        Summary Table
+      </span>
+      <Collapse in={showTable}>
+        <Tabs
+          value={activeTab}
+          onTabChange={setActiveTab}
+          classNames={tabStyles}
+        >
+          <Tabs.List>
+            <Tabs.Tab value="matched">
+              Matched
+              <Badge
+                variant="filled"
+                color={activeTab === "matched" ? "primary.9" : "gray"}
+                radius="xs"
+                size="xs"
+                className="ml-1"
+              >
+                {numMatched}
+              </Badge>
+            </Tabs.Tab>
+            <Tabs.Tab value="unmatched">
+              Unmatched
+              <Badge
+                variant="filled"
+                color={activeTab === "unmatched" ? "primary.9" : "gray"}
+                radius="xs"
+                size="xs"
+                className="ml-1"
+              >
+                {unmatched.length}
+              </Badge>
+            </Tabs.Tab>
+          </Tabs.List>
+          <Tabs.Panel value="matched">
+            <div className="m-4">
+              <p className="text-sm">
+                {numMatched} submitted {identifier} identifier
+                {numMatched !== 1 && "s"} mapped to {matched.length} unique GDC{" "}
+                {identifier}
+                {matched.length !== 1 && "s"}{" "}
+              </p>
+              {matched.length > 0 && (
+                <VerticalTable
+                  tableData={displayedMatchData}
+                  columns={matchedColumns}
+                  selectableRow={false}
+                  showControls={false}
+                  pagination={matchPaginationProps}
+                />
+              )}
+            </div>
+          </Tabs.Panel>
+          <Tabs.Panel value="unmatched">
+            <div className="m-4">
+              <p className="text-sm">
+                {unmatched.length} submitted {identifier} identifier
+                {unmatched.length !== 1 && "s"} not recognized
+              </p>
+              {unmatched.length > 0 && (
+                <VerticalTable
+                  tableData={displayedUnmatchedData}
+                  columns={[
+                    {
+                      columnName: "Submitted Identifier",
+                      id: "id",
+                      visible: true,
+                    },
+                  ]}
+                  selectableRow={false}
+                  showControls={false}
+                  pagination={unmatchedPaginationProps}
+                />
+              )}
+            </div>
+          </Tabs.Panel>
+        </Tabs>
+      </Collapse>
+    </>
   );
 };
 

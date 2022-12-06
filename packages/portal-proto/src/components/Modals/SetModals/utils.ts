@@ -1,3 +1,8 @@
+interface Match {
+  readonly field: string;
+  readonly value: string;
+}
+
 /** 
   Parses through the API response to figure out what fields our matched values correspond to
   @param data: API response for the matches
@@ -11,13 +16,13 @@ export const getMatchedIdentifiers = (
   mappedToFields: string[],
   givenIdentifierFields: string[],
   tokens: string[],
-) => {
+): { mappedTo: Match[]; givenIdentifiers: Match[] }[] => {
   return data.map((d) => {
-    let mappedTo: { field: string; value: string }[] = [];
+    const mappedTo: Match[] = [];
     // fields we are mapping to don't need to be compared to user input
     findAllIdentifiers(d, mappedToFields, undefined, "", mappedTo);
 
-    let givenIdentifiers: { field: string; value: string }[] = [];
+    const givenIdentifiers: Match[] = [];
     findAllIdentifiers(d, givenIdentifierFields, tokens, "", givenIdentifiers);
 
     return {

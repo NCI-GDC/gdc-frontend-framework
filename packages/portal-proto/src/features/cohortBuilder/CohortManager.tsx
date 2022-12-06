@@ -373,7 +373,6 @@ const CohortManager: React.FC<CohortManagerProps> = ({
               <DownloadIcon size="1.5em" aria-label="Download cohort" />
             </CohortGroupButton>
             {/* Uncomment to test set modals */}
-            {/*
             <Menu>
               <Menu.Target>
                 <CohortGroupButton>
@@ -407,7 +406,6 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>
-            */}
           </>
         ) : (
           <div />

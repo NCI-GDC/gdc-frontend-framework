@@ -4,7 +4,7 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DragDrop } from "./DragDrop";
 import { BsList, BsCaretDownFill, BsCaretUpFill } from "react-icons/bs";
-import { isEqual } from "lodash";
+import { isEqual, iteratee } from "lodash";
 import { DataStatus } from "@gff/core";
 import {
   Box,
@@ -41,6 +41,37 @@ export interface PaginationOptions {
   label?: string;
 }
 
+interface VerticalTableColumn {
+  /**
+   * Id that matches tableData
+   */
+  id: string;
+  /**
+   * HTML that user will see at top of column
+   */
+  columnName: JSX.Element | string | ((value: any) => JSX.Element);
+  /**
+   * Flag to show / hide column
+   */
+  visible: boolean;
+  /**
+   * Flag to activate or disable sorting feature of column sorting
+   * @defaultValue false
+   */
+  disableSortBy?: boolean;
+  /**
+   * Flag to activate or disable ability to rearrange column order
+   * @defaultValue true
+   */
+  arrangeable?: boolean;
+  /**
+   * Allows a data cell to have a custom function attached to it that will be run on the data in that cell
+   */
+  Cell?: (value: any) => JSX.Element;
+  columns?: VerticalTableColumn[];
+  width?: number;
+}
+
 interface VerticalTableProps {
   /**
    * array of data to go in the table
@@ -49,34 +80,7 @@ interface VerticalTableProps {
   /**
    * list of columns in default order they appear and a number of properties
    */
-  columns: {
-    /**
-     * Id that matches tableData
-     */
-    id: string;
-    /**
-     * HTML that user will see at top of column
-     */
-    columnName: JSX.Element | string | ((value: any) => JSX.Element);
-    /**
-     * Flag to show / hide column
-     */
-    visible: boolean;
-    /**
-     * Flag to activate or disable sorting feature of column sorting
-     * @defaultValue false
-     */
-    disableSortBy?: boolean;
-    /**
-     * Flag to activate or disable ability to rearrange column order
-     * @defaultValue true
-     */
-    arrangeable?: boolean;
-    /**
-     * Allows a data cell to have a custom function attached to it that will be run on the data in that cell
-     */
-    Cell?: (value: any) => JSX.Element;
-  }[];
+  columns: VerticalTableColumn[];
   /**
    * ???
    */
@@ -178,12 +182,29 @@ interface Column {
   disableSortBy?: boolean;
   width?: number;
   Cell?: (value: any) => JSX.Element;
+  columns?: Column[];
 }
 
 interface TableProps {
   columns: Column[];
   data: any[];
 }
+
+const mapColumn = (obj: VerticalTableColumn): Column => {
+  const colObj: Column = {
+    Header: obj.columnName,
+    accessor: obj.id,
+    disableSortBy: obj.disableSortBy || false,
+  };
+
+  if (obj.Cell) {
+    colObj.Cell = obj.Cell;
+  }
+  if (obj.width) {
+    colObj.width = obj.width;
+  }
+  return colObj;
+};
 
 /**
  * Returns a vertical table with many optional features
@@ -217,18 +238,12 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   initialSort = [],
 }: VerticalTableProps) => {
   const filterColumnCells = (newList) =>
-    newList.reduce((filtered, obj) => {
+    newList.reduce((filtered, obj: VerticalTableColumn) => {
       if (obj.visible) {
-        const colObj: Column = {
-          Header: obj.columnName,
-          accessor: obj.id,
-          disableSortBy: obj.disableSortBy || false,
-        };
-        if (obj.Cell) {
-          colObj.Cell = obj.Cell;
-        }
-        if (obj.width) {
-          colObj.width = obj.width;
+        const colObj = mapColumn(obj);
+
+        if (obj.columns) {
+          colObj.columns = obj.columns.map((col) => mapColumn(col));
         }
         filtered.push(colObj);
       }

@@ -1,5 +1,6 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
+import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
 import {
   Textarea,
   FileInput,
@@ -24,7 +25,7 @@ interface InputSetProps {
   readonly identifier: string;
   readonly mappedToFields: string[];
   readonly matchAgainstIdentifiers: string[];
-  readonly dataHook: UseQuery<any>;
+  readonly dataHook: UseQuery<QueryDefinition<any, any, any, any, any>>;
   readonly searchField: string;
   readonly fieldDisplay: Record<string, string>;
 }
@@ -47,7 +48,7 @@ const InputSet: React.FC<InputSetProps> = ({
   const [screenReaderMessage, setScreenReaderMessage] = useState("");
   const inputRef = useRef(null);
 
-  const { data, isFetching, isSuccess, isUninitialized } = dataHook({
+  const { data, isSuccess } = dataHook({
     filters: {
       op: "in",
       content: {
@@ -59,14 +60,18 @@ const InputSet: React.FC<InputSetProps> = ({
     size: MATCH_LIMIT,
   });
 
-  const matched = isSuccess
-    ? getMatchedIdentifiers(
-        data,
-        mappedToFields,
-        matchAgainstIdentifiers,
-        tokens,
-      )
-    : [];
+  const matched = useMemo(
+    () =>
+      isSuccess
+        ? getMatchedIdentifiers(
+            data,
+            mappedToFields,
+            matchAgainstIdentifiers,
+            tokens,
+          )
+        : [],
+    [data, mappedToFields, matchAgainstIdentifiers, tokens, isSuccess],
+  );
 
   const matchedIds = flatten(
     matched.map((m) => m.givenIdentifiers.map((i) => i.value)),
@@ -74,7 +79,9 @@ const InputSet: React.FC<InputSetProps> = ({
   const unmatched = tokens.filter((t) => !matchedIds.includes(t));
 
   useEffect(() => {
-    setTokens(input.trim().split(/[\s,]+/));
+    if (input !== "") {
+      setTokens(input.trim().split(/[\s,]+/));
+    }
   }, [input]);
 
   useEffect(() => {
@@ -87,76 +94,80 @@ const InputSet: React.FC<InputSetProps> = ({
 
       inputRef.current.focus();
     }
-  }, matched);
+  }, [matched, identifier]);
 
   return (
     <>
-      <div className="px-4 max-h-[400px] overflow-y-auto">
-        <p className="mb-2 text-sm">{inputInstructions}</p>
-        <div className="flex items-center justify-between w-full">
-          <label className="font-bold text-sm" htmlFor="indentifier-input">
-            Type or copy-and-paste a list of {identifier} identifiers
-          </label>
-          <Tooltip
-            label={identifierToolTip}
-            events={{ hover: true, focus: true, touch: false }}
-            withArrow
-          >
-            <ActionIcon aria-label="accepted identifier info">
-              <InfoIcon size={16} className="text-primary-darkest" />
-            </ActionIcon>
-          </Tooltip>
-        </div>
-        <Textarea
-          ref={inputRef}
-          value={input}
-          onChange={(event) => setInput(event.currentTarget.value)}
-          minRows={5}
-          id="identifier-input"
-          placeholder={textInputPlaceholder}
-          error={
-            matched.length > MATCH_LIMIT
-              ? `Identifiers must not exceed ${MATCH_LIMIT.toLocaleString()} matched items.`
-              : undefined
-          }
-        />
-        <FileInput
-          value={file}
-          onChange={async (file) => {
-            if (file !== null) {
-              setProcessingFile(true);
-              setFile(file);
-              const contents = await file.text();
-              setInput(contents);
-              setScreenReaderMessage("File successfully uploaded.");
-              setProcessingFile(false);
+      <div className="max-h-[550px] overflow-y-auto">
+        <div className="px-4">
+          <p className="mb-2 text-sm">{inputInstructions}</p>
+          <div className="flex items-center justify-between w-full">
+            <label className="font-bold text-sm" htmlFor="indentifier-input">
+              Type or copy-and-paste a list of {identifier} identifiers
+            </label>
+            <Tooltip
+              label={identifierToolTip}
+              events={{ hover: true, focus: true, touch: false }}
+              withArrow
+            >
+              <ActionIcon aria-label="accepted identifier info">
+                <InfoIcon size={16} className="text-primary-darkest" />
+              </ActionIcon>
+            </Tooltip>
+          </div>
+          <Textarea
+            ref={inputRef}
+            value={input}
+            onChange={(event) => setInput(event.currentTarget.value)}
+            minRows={5}
+            id="identifier-input"
+            placeholder={textInputPlaceholder}
+            error={
+              matched.length > MATCH_LIMIT
+                ? `Identifiers must not exceed ${MATCH_LIMIT.toLocaleString()} matched items.`
+                : undefined
             }
-          }}
-          icon={
-            processingFile ? (
-              <Loader size="xs" />
-            ) : file !== null ? (
-              <FileIcon className="text-primary-darkest" />
-            ) : undefined
-          }
-          label={<b>Or choose a file to upload</b>}
-          classNames={{
-            root: "my-2",
-            rightSection: "pointer-events-none",
-          }}
-          accept=".tsv,.txt,.csv"
-          rightSection={
-            <DarkFunctionButton size="xs">Browse</DarkFunctionButton>
-          }
-          rightSectionWidth={80}
-          aria-description={screenReaderMessage}
-        />
-        <MatchTables
-          matched={matched}
-          unmatched={unmatched}
-          identifier={identifier}
-          fieldDisplay={fieldDisplay}
-        />
+          />
+          <FileInput
+            value={file}
+            onChange={async (file) => {
+              if (file !== null) {
+                setProcessingFile(true);
+                setFile(file);
+                const contents = await file.text();
+                setInput(contents);
+                setScreenReaderMessage("File successfully uploaded.");
+                setProcessingFile(false);
+              }
+            }}
+            icon={
+              processingFile ? (
+                <Loader size="xs" />
+              ) : file !== null ? (
+                <FileIcon className="text-primary-darkest" />
+              ) : undefined
+            }
+            label={<b>Or choose a file to upload</b>}
+            classNames={{
+              root: "my-2",
+              rightSection: "pointer-events-none",
+            }}
+            accept=".tsv,.txt,.csv"
+            rightSection={
+              <DarkFunctionButton size="xs">Browse</DarkFunctionButton>
+            }
+            rightSectionWidth={80}
+            aria-details={screenReaderMessage}
+          />
+        </div>
+        {(matched.length > 0 || unmatched.length > 0) && (
+          <MatchTables
+            matched={matched}
+            unmatched={unmatched}
+            identifier={identifier}
+            fieldDisplay={fieldDisplay}
+          />
+        )}
       </div>
       <SetModalButtons
         saveButtonDisabled
