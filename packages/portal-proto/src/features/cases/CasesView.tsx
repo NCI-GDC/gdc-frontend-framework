@@ -1,22 +1,23 @@
 import {
-  selectCurrentCohortGqlFilters,
-  selectCohortCountsByName,
+  selectCurrentCohortFilterSet,
   useCoreSelector,
-  GqlOperation,
   selectCart,
-  useQlCases,
   useCoreDispatch,
   selectSelectedCases,
+  useAllCases,
+  SortBy,
+  buildCohortGqlOperator,
+  joinFilters,
+  AnnotationDefaults,
 } from "@gff/core";
-import { Button, createStyles, LoadingOverlay, Menu } from "@mantine/core";
-import { useMemo, useState } from "react";
+import { Button, createStyles, Menu } from "@mantine/core";
+import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import tw from "tailwind-styled-components";
 import {
   VerticalTable,
   PaginationOptions,
   HandleChangeInput,
 } from "../shared/VerticalTable";
-import useStandardPagination from "@/hooks/useStandardPagination";
 import { ageDisplay, allFilesInCart, extractToArray } from "src/utils";
 import { Row, TableInstance } from "react-table";
 import CollapsibleRow from "../shared/CollapsibleRow";
@@ -72,6 +73,8 @@ export interface CasesViewProps {
     isSuccess: boolean;
     isError: boolean;
   };
+  setPageSize: Dispatch<SetStateAction<number>>;
+  setPage: Dispatch<SetStateAction<number>>;
 }
 
 interface CellProps {
@@ -79,15 +82,9 @@ interface CellProps {
   row: Row;
 }
 
-export interface ContextualCasesViewProps {
-  readonly handleCaseSelected?: (patient: Case) => void;
-  caseId?: string;
-}
-
-const useCohortFacetFilter = (): GqlOperation => {
-  return useCoreSelector((state) => selectCurrentCohortGqlFilters(state));
+const useCohortFacetFilter = () => {
+  return useCoreSelector((state) => selectCurrentCohortFilterSet(state));
 };
-
 const getSlideCountFromCaseSummary = (
   experimental_strategies: Array<{
     experimental_strategy: string;
@@ -104,6 +101,18 @@ const getSlideCountFromCaseSummary = (
   );
 };
 
+const getAnnotationsLinkParams = (
+  annotations: AnnotationDefaults[],
+  case_id: string,
+) => {
+  if (annotations.length === 0) return null;
+
+  if (annotations.length === 1) {
+    return `https://portal.gdc.cancer.gov/annotations/${annotations[0].annotation_id}`;
+  }
+  return `https://portal.gdc.cancer.gov/annotations?filters={"content":[{"content":{"field":"annotations.case_id","value":["${case_id}"]},"op":"in"}],"op":"and"}`;
+};
+
 export const SlideCountsIcon = tw.div<{
   $count?: number;
 }>`
@@ -113,52 +122,78 @@ ${(p: { $count?: number }) =>
     p.$count !== undefined && p.$count > 0
       ? "text-primary-contrast"
       : "text-base-contrast-lighter"}
-inline-flex
-items-center
-w-5
-h-4
-justify-center
-font-heading
-rounded-md
+  inline-flex
+  items-center
+  w-5
+  h-4
+  justify-center
+  font-heading
+  rounded-md
 
 `;
 
-export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
-  props: ContextualCasesViewProps,
-) => {
-  // TODO useContextualCases() that filters based on the context
+export const ContextualCasesView: React.FC = () => {
   const [pageSize, setPageSize] = useState(10);
-  const [activePage, setPage] = useState(1);
-  const cohortFilters = useCohortFacetFilter();
+  const [offset, setOffset] = useState(0);
   const dispatch = useCoreDispatch();
   const currentCart = useCoreSelector((state) => selectCart(state));
-  const { data, isFetching, isSuccess, isError } = useQlCases({
-    filters: cohortFilters,
-    cases_size: pageSize,
-    cases_offset: (activePage - 1) * pageSize,
-    score: "annotations.annotation_id",
-  });
-
-  console.log({ data });
-  const caseCounts = useCoreSelector((state) =>
-    selectCohortCountsByName(state, "caseCounts"),
-  );
-
-  const getAnnotationsLinkParams = (
-    annotations: {
-      annotation_id: string;
-      total: number;
-    },
-    case_id: string,
-  ) => {
-    if (annotations.total === 0) return null;
-
-    if (annotations.total === 1) {
-      return `https://portal.gdc.cancer.gov/annotations/${annotations.annotation_id}`;
-    }
-    return `https://portal.gdc.cancer.gov/annotations?filters={"content":[{"content":{"field":"annotations.case_id","value":["${case_id}"]},"op":"in"}],"op":"and"}`;
-  };
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const { classes } = useStyles();
+  const cohortFilters = useCohortFacetFilter();
+  const [sortBy, setSortBy] = useState<SortBy[]>([]);
+
+  const { data, isFetching, isSuccess, isError, pagination } = useAllCases({
+    fields: [
+      "case_id",
+      "submitter_id",
+      "primary_site",
+      "disease_type",
+      "project.project_id",
+      "project.program.name",
+      "demographic.gender",
+      "demographic.race",
+      "demographic.ethnicity",
+      "demographic.days_to_death",
+      "demographic.vital_status",
+      "diagnoses.primary_diagnosis",
+      "diagnoses.age_at_diagnosis",
+      "summary.file_count",
+      "summary.data_categories.data_category",
+      "summary.data_categories.file_count",
+      "summary.experimental_strategies.experimental_strategy",
+      "summary.experimental_strategies.file_count",
+      "files.file_id",
+      "files.access",
+      "files.acl",
+      "files.file_name",
+      "files.file_size",
+      "files.state",
+      "files.data_type",
+    ],
+    size: pageSize,
+    filters:
+      searchTerm.length > 0
+        ? buildCohortGqlOperator(
+            joinFilters(cohortFilters, {
+              mode: "or",
+              root: {
+                submitter_id: {
+                  operator: "includes",
+                  field: "submitter_id",
+                  operands: [`*${searchTerm}*`],
+                },
+                case_id: {
+                  operator: "includes",
+                  field: "case_id",
+                  operands: [`*${searchTerm}*`],
+                },
+              },
+            }),
+          )
+        : buildCohortGqlOperator(cohortFilters),
+    from: offset * pageSize,
+    sortBy: sortBy,
+  });
 
   const cases = useMemo(
     () =>
@@ -233,7 +268,6 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
                   className={`${isAllFilesInCart && "bg-primary-darkest"}`}
                 />
               </Menu.Target>
-              {/* // singular / plural */}
               <Menu.Dropdown>
                 {numberOfFilesToRemove < datum.filesCount && (
                   <Menu.Item
@@ -266,9 +300,9 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
           ),
           case_id: datum.case_id,
           case_uuid: datum.case_uuid,
-          projectId: datum.project_id,
+          project_id: datum.project_id,
           program: datum.program,
-          primarySite: datum.primary_site,
+          primary_site: datum.primary_site,
           disease_type: datum.disease_type ?? "--",
           primary_diagnosis: datum?.primary_diagnosis ?? "--",
           age_at_diagnosis: ageDisplay(datum?.age_at_diagnosis),
@@ -298,7 +332,7 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
               passHref
             >
               <a className="text-utility-link underline" target={"_blank"}>
-                {datum.annotations.total}
+                {datum.annotations.length}
               </a>
             </Link>
           ) : (
@@ -306,35 +340,40 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = (
           ),
         };
       }),
-    [data, currentCart],
+    [data, currentCart, classes, dispatch],
   );
 
-  return (
-    <div className="flex flex-col m-auto w-10/12">
-      <div>
-        <CasesView
-          cases={cases}
-          caption={`Showing ${pageSize} of ${caseCounts} Cases`}
-          handleCaseSelected={props.handleCaseSelected}
-          status={{ isError, isFetching, isSuccess }}
-          // pagination={{ ...pagination, label: "cases" }}
-        />
-      </div>
-    </div>
-  );
-};
-
-export const CasesView: React.FC<CasesViewProps> = ({
-  cases,
-  pagination,
-  status,
-}: CasesViewProps) => {
   const pickedCases: ReadonlyArray<string> = useCoreSelector((state) =>
     selectSelectedCases(state),
   );
-  const { classes } = useStyles();
-  const { isFetching, isError, isSuccess } = status;
-  const [searchTerm, setSearchTerm] = useState<string>("");
+
+  const sortByActions = (sortByObj) => {
+    const COLUMN_ID_TO_FIELD = {
+      case_id: "submitter_id",
+      case_uuid: "case_id",
+      project_id: "project.project_id",
+      program: "project.program.name",
+      primary_site: "primary_site",
+      disease_type: "disease_type",
+      vital_status: "demographic.vital_status",
+      days_to_death: "demographic.days_to_death",
+      gender: "demographic.gender",
+      race: "demographic.race",
+      ethnicity: "demographic.ethnicity",
+      files: "summary.file_count",
+      // annotations: "summary.case_count",
+    };
+    const tempSortBy = sortByObj.map((sortObj) => {
+      ///const tempSortId = COLUMN_ID_TO_FIELD[sortObj.id];
+      // map sort ids to api ids
+      return {
+        field: COLUMN_ID_TO_FIELD[sortObj.id],
+        direction: sortObj.desc ? "desc" : "asc",
+      };
+    });
+    setSortBy(tempSortBy);
+  };
+
   const columnListOrder = [
     {
       id: "selected",
@@ -363,16 +402,22 @@ export const CasesView: React.FC<CasesViewProps> = ({
 
     { id: "case_id", columnName: "Case ID", visible: true },
     { id: "case_uuid", columnName: "Case UUID", visible: false },
-    { id: "projectId", columnName: "Project", visible: true },
+    { id: "project_id", columnName: "Project", visible: true },
     { id: "program", columnName: "Program", visible: false },
-    { id: "primarySite", columnName: "Primary Site", visible: true },
+    { id: "primary_site", columnName: "Primary Site", visible: true },
     { id: "disease_type", columnName: "Disease Type", visible: false },
     {
       id: "primary_diagnosis",
       columnName: "Primary Diagnosis",
       visible: false,
+      disableSortBy: true,
     },
-    { id: "age_at_diagnosis", columnName: "Age at Diagnosis", visible: false },
+    {
+      id: "age_at_diagnosis",
+      columnName: "Age at Diagnosis",
+      visible: false,
+      disableSortBy: true,
+    },
     { id: "vital_status", columnName: "Vital Status", visible: false },
     { id: "days_to_death", columnName: "Days to Death", visible: false },
     { id: "gender", columnName: "Gender", visible: true },
@@ -401,44 +446,39 @@ export const CasesView: React.FC<CasesViewProps> = ({
       ),
       disableSortBy: true,
     },
-    { id: "annotations", columnName: "Annotations", visible: true },
+    {
+      id: "annotations",
+      columnName: "Annotations",
+      visible: true,
+      disableSortBy: true,
+    },
   ];
 
-  // const {
-  //   handlePageChange,
-  //   handlePageSizeChange,
-  //   page,
-  //   pages,
-  //   size,
-  //   from,
-  //   total,
-  //   displayedData,
-  // } = useStandardPagination(cases || []);
-
   const handleChange = (obj: HandleChangeInput) => {
-    // switch (Object.keys(obj)?.[0]) {
-    //   case "newPageSize":
-    //     handlePageSizeChange(obj.newPageSize);
-    //     break;
-    //   case "newPageNumber":
-    //     handlePageChange(obj.newPageNumber);
-    //     break;
-    // }
+    switch (Object.keys(obj)?.[0]) {
+      case "sortBy":
+        sortByActions(obj.sortBy);
+        break;
+      case "newPageSize":
+        setOffset(0);
+        setPageSize(parseInt(obj.newPageSize));
+        break;
+      case "newPageNumber":
+        setOffset(obj.newPageNumber - 1);
+        break;
+      case "newSearch":
+        setOffset(0);
+        setSearchTerm(obj.newSearch.toLowerCase());
+        break;
+    }
   };
 
   return (
-    <>
-      <LoadingOverlay visible={cases === undefined} color="primary" />
+    <div className="flex flex-col m-auto w-10/12">
       <VerticalTable
         tableData={cases || []}
         columns={columnListOrder}
-        // pagination={{
-        //   page,
-        //   pages,
-        //   size,
-        //   from,
-        //   total,
-        // }}
+        pagination={{ ...pagination, label: "cases" }}
         handleChange={handleChange}
         additionalControls={
           <div className="flex gap-2">
@@ -495,6 +535,7 @@ export const CasesView: React.FC<CasesViewProps> = ({
             </Button>
           </div>
         }
+        tableTitle={`Total of ${pagination?.total} cases`}
         showControls={true}
         columnSorting={"manual"}
         selectableRow={false}
@@ -511,6 +552,6 @@ export const CasesView: React.FC<CasesViewProps> = ({
             : "uninitialized"
         }
       />
-    </>
+    </div>
   );
 };

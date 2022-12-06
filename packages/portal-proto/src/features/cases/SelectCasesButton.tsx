@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { Checkbox } from "@mantine/core";
-
-import { isEqual } from "lodash";
 import {
   addCase,
   addCases,
@@ -52,8 +50,7 @@ export const SelectAlCasesButton = ({
   const dispatch = useCoreDispatch();
   const [checked, setChecked] = useState(false);
   useEffect(() => {
-    // projectIds need to be in alphabetical order to compare
-    setChecked(isEqual([...caseIds].sort(), pickedCases));
+    setChecked(caseIds.every((id) => pickedCases.includes(id)));
   }, [caseIds, pickedCases]);
   return (
     <Checkbox

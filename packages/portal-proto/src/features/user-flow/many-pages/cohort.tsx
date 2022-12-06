@@ -17,7 +17,6 @@ import { Image } from "@/components/Image";
 import ReactModal from "react-modal";
 import { Select } from "../../../components/Select";
 import { Case, ContextualCasesView } from "../../cases/CasesView";
-//import { ContextualFilesView } from "../../files/FilesView";
 import { CohortGroup } from "../../cohortBuilder/CohortGroup";
 import { SummaryCharts } from "../../cohortBuilder/SummaryCharts";
 import { CohortTabbedFacets } from "../../cohortBuilder/FacetGroup";
@@ -191,7 +190,7 @@ interface CollapsibleCasesProps {
 const CollapsibleCases: React.FC<CollapsibleCasesProps> = (
   props: CollapsibleCasesProps,
 ) => {
-  const { show, handleCaseSelected = () => void 0 } = props;
+  const { show } = props;
 
   return (
     <div
@@ -200,7 +199,7 @@ const CollapsibleCases: React.FC<CollapsibleCasesProps> = (
         flex: show,
       })}
     >
-      <ContextualCasesView handleCaseSelected={handleCaseSelected} />
+      <ContextualCasesView />
     </div>
   );
 };

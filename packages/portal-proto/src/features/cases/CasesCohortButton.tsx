@@ -39,7 +39,6 @@ export const CasesCohortButton = (): JSX.Element => {
           </CountsIcon>
         ) : null
       }
-      onClick={() => {}}
     >
       Create New Cohort
     </Button>

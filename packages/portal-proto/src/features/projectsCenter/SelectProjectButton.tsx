@@ -11,7 +11,6 @@ import {
   removeProject,
   removeProjects,
 } from "@/features/projectsCenter/pickedProjectsSlice";
-import { isEqual } from "lodash";
 
 interface SelectAllProjectButtonProps {
   projectIds: ReadonlyArray<string>;
@@ -55,8 +54,10 @@ export const SelectAllProjectsButton = ({
   const [checked, setChecked] = useState(false);
   useEffect(() => {
     // projectIds need to be in alphabetical order to compare
-    setChecked(isEqual([...projectIds].sort(), pickedProjects));
+    // setChecked(isEqual([...projectIds].sort(), pickedProjects));
+    setChecked(projectIds.every((id) => pickedProjects.includes(id)));
   }, [projectIds, pickedProjects]);
+
   return (
     <Checkbox
       className="ml-1"
