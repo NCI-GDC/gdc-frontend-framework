@@ -314,7 +314,7 @@ const FromTo: React.FC<FromToProps> = ({
                 units === "years"
                   ? value === ">"
                     ? getUpperAgeFromYears(Math.floor(fromValue / DAYS_IN_YEAR))
-                    : Math.floor(fromValue / DAYS_IN_YEAR) * (DAYS_IN_YEAR - 1)
+                    : Math.floor(fromValue / DAYS_IN_YEAR) * DAYS_IN_YEAR
                   : null,
               );
 
@@ -326,7 +326,7 @@ const FromTo: React.FC<FromToProps> = ({
                       ),
                     )
                   : setFromValue(
-                      Math.floor(fromValue / DAYS_IN_YEAR) * (DAYS_IN_YEAR - 1),
+                      Math.floor(fromValue / DAYS_IN_YEAR) * DAYS_IN_YEAR,
                     )
                 : null;
               changedCallback();
