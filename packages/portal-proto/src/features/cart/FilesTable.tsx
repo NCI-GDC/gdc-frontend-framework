@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import fileSize from "filesize";
-import { Button, Menu } from "@mantine/core";
-import { MdArrowDropDown as DropdownIcon } from "react-icons/md";
-import { VscTrash as TrashIcon } from "react-icons/vsc";
 import { capitalize } from "lodash";
 import {
   useCoreSelector,
@@ -16,7 +13,7 @@ import {
   VerticalTable,
   HandleChangeInput,
 } from "@/features/shared/VerticalTable";
-import { removeFromCart, RemoveFromCartButton } from "./updateCart";
+import { RemoveFromCartButton } from "./updateCart";
 import FunctionButton from "@/components/FunctionButton";
 import { downloadTSV } from "../shared/TableUtils";
 import { convertDateToString } from "src/utils/date";
@@ -47,9 +44,7 @@ interface FilesTableProps {
   readonly filesByCanAccess: Record<string, CartFile[]>;
 }
 
-const FilesTable: React.FC<FilesTableProps> = ({
-  filesByCanAccess,
-}: FilesTableProps) => {
+const FilesTable: React.FC<FilesTableProps> = () => {
   const [tableData, setTableData] = useState([]);
   const [pageSize, setPageSize] = useState(20);
   const [activePage, setActivePage] = useState(1);
@@ -224,32 +219,6 @@ const FilesTable: React.FC<FilesTableProps> = ({
         <div className="flex gap-2">
           <FunctionButton onClick={handleDownloadJSON}>JSON</FunctionButton>
           <FunctionButton onClick={handleDownloadTSV}>TSV</FunctionButton>
-          <Menu>
-            <Menu.Target>
-              <Button
-                leftIcon={<TrashIcon />}
-                rightIcon={<DropdownIcon size={20} />}
-                classNames={{
-                  root: "bg-nci-red-darker", //TODO: find good color theme for this
-                  rightIcon: "border-l pl-1 -mr-2",
-                }}
-              >
-                Remove From Cart
-              </Button>
-            </Menu.Target>
-            <Menu.Dropdown>
-              <Menu.Item onClick={() => removeFromCart(data, cart, dispatch)}>
-                All Files ({cart.length})
-              </Menu.Item>
-              <Menu.Item
-                onClick={() =>
-                  removeFromCart(filesByCanAccess?.false || [], cart, dispatch)
-                }
-              >
-                Unauthorized Files ({(filesByCanAccess?.false || []).length})
-              </Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
         </div>
       }
       pagination={{
