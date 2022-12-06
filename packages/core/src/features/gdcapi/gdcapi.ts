@@ -1,7 +1,9 @@
+import type { Middleware, Reducer } from "@reduxjs/toolkit";
 import { isObject } from "../../ts-utils";
 import { GqlOperation } from "./filters";
 import "isomorphic-fetch";
 import { GDC_API, GDC_APP_API_AUTH } from "../../constants";
+import { coreCreateApi } from "src/coreCreateApi";
 
 export type UnknownJson = Record<string, unknown>;
 export interface GdcApiResponse<H = UnknownJson> {
@@ -541,3 +543,53 @@ export const getGdcInstance = async <T>(
  *   - convert mapping field to nested structure
  * - add auth header
  */
+
+const endpointSlice = coreCreateApi({
+  reducerPath: "entities",
+  baseQuery: async ({
+    request,
+    endpoint,
+  }: {
+    request: GdcApiRequest;
+    endpoint: gdcEndpoint;
+  }) => {
+    let results;
+
+    try {
+      results = await fetchGdcEntities(endpoint, request, true);
+    } catch (e) {
+      return { error: e };
+    }
+
+    return { data: results };
+  },
+  endpoints: (builder) => ({
+    getGenes: builder.query({
+      query: (request: GdcApiRequest) => ({
+        request,
+        endpoint: "genes",
+      }),
+      transformResponse: (response) => response.data.hits,
+    }),
+    getCases: builder.query({
+      query: (request: GdcApiRequest) => ({
+        request,
+        endpoint: "cases",
+      }),
+      transformResponse: (response) => response.data.hits,
+    }),
+    getSsms: builder.query({
+      query: (request: GdcApiRequest) => ({
+        request,
+        endpoint: "ssms",
+      }),
+      transformResponse: (response) => response.data.hits,
+    }),
+  }),
+});
+
+export const { useGetGenesQuery, useGetCasesQuery, useGetSsmsQuery } =
+  endpointSlice;
+export const endpointSliceMiddleware = endpointSlice.middleware as Middleware;
+export const endpointSliceReducerPath: string = endpointSlice.reducerPath;
+export const endpointReducer: Reducer = endpointSlice.reducer as Reducer;

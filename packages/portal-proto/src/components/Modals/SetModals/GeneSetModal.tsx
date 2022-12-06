@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { Modal, Tabs } from "@mantine/core";
-import { useCoreDispatch, hideModal } from "@gff/core";
+import { useCoreDispatch, hideModal, useGetGenesQuery } from "@gff/core";
 import InputSet from "./InputSet";
 import SavedSets from "./SavedSets";
 import { modalStyles, tabStyles } from "./constants";
@@ -52,6 +52,25 @@ const GeneSetModal: React.FC<GeneSetModalProps> = ({
                 <p>- File formats accepted: .txt, .csv, .tsv</p>
               </div>
             }
+            dataHook={useGetGenesQuery}
+            searchField="gene_autocomplete"
+            mappedToFields={["gene_id", "symbol"]}
+            matchAgainstIdentifiers={[
+              "gene_id",
+              "symbol",
+              "external_db_ids.entrez_gene",
+              "external_db_ids.hgnc",
+              "external_db_ids.omim_gene",
+              "external_db_ids.uniprotkb_swissprot",
+            ]}
+            fieldDisplay={{
+              symbol: "Symbol",
+              gene_id: "Ensembl",
+              "external_db_ids.entrez_gene": "Entrez",
+              "external_db_ids.hgnc": "HGNC",
+              "external_db_ids.uniprotkb_swissprot": "UniProtKB/Swiss-Prot",
+              "external_db_ids.omim_gene": "OMIM",
+            }}
           />
         </Tabs.Panel>
         <Tabs.Panel value="saved">

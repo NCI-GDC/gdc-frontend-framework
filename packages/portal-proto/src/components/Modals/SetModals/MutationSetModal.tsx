@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { Modal, Tabs } from "@mantine/core";
-import { useCoreDispatch, hideModal } from "@gff/core";
+import { useCoreDispatch, hideModal, useGetSsmsQuery } from "@gff/core";
 import InputSet from "./InputSet";
 import SavedSets from "./SavedSets";
 import { modalStyles, tabStyles } from "./constants";
@@ -51,6 +51,14 @@ const MutationSetModal: React.FC<MutationSetModalProps> = ({
                 <p>- File formats accepted: .txt, .csv, .tsv</p>
               </div>
             }
+            dataHook={useGetSsmsQuery}
+            searchField={"ssm_autocomplete"}
+            mappedToFields={["ssm_id"]}
+            matchAgainstIdentifiers={["ssm_id", "genomic_dna_change"]}
+            fieldDisplay={{
+              ssm_id: "Mutation UUID",
+              genomic_dna_change: "DNA Change",
+            }}
           />
         </Tabs.Panel>
         <Tabs.Panel value="saved">
