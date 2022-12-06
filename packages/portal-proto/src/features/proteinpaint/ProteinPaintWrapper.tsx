@@ -34,11 +34,14 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
   useEffect(
     () => {
       const rootElem = divRef.current as HTMLElement;
+      const loginPrompt =
+        "Please login to access the Sequence Read visualization tool.";
       if (props.track == "bam") {
         if (!userDetails.username) {
-          rootElem.innerHTML = `<div style='margin: 32px'><b>Access alert</b><hr><p>Please login to access the Sequence Read visualization tool.</p></div>`;
+          rootElem.innerHTML = `<div style='margin: 32px'><b>Access alert</b><hr><p>${loginPrompt}</p></div>`;
+          ppRef.current = null;
           return;
-        } else if (!ppRef.current) {
+        } else if (rootElem.innerHTML.includes(loginPrompt)) {
           rootElem.innerHTML = "";
         }
       }
@@ -46,7 +49,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
       const data =
         props.track == "lolliplot"
           ? getLolliplotTrack(props, filter0)
-          : props.track == "bam"
+          : props.track == "bam" && userDetails?.username
           ? getBamTrack(props, filter0)
           : props.track == "matrix"
           ? getMatrixTrack(props, filter0)
@@ -65,7 +68,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
 
       if (ppRef.current) {
         ppRef.current.update(arg);
-      } else {
+      } else if (userDetails?.username) {
         const pp_holder = rootElem.querySelector(".sja_root_holder");
         if (pp_holder) pp_holder.remove();
         runproteinpaint(arg).then((pp) => {
