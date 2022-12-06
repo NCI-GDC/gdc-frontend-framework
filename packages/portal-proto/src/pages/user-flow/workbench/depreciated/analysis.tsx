@@ -23,7 +23,7 @@ import { MdClose as CloseIcon } from "react-icons/md";
 import { FileModal } from "@/features/files/FileView";
 import { GdcFile } from "@gff/core";
 import { CaseModal } from "@/features/cases/CaseView";
-import { Case } from "@/features/cases/CasesView";
+import { Case } from "@/features/user-flow/all-apps/baseExploration";
 
 const AnalysisPage: NextPage = () => {
   const [showCohortBuilderModal, setShowCohortBuilderModal] = useState(false);

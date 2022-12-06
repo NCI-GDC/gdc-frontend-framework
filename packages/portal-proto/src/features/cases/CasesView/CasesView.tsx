@@ -8,34 +8,24 @@ import {
   SortBy,
   buildCohortGqlOperator,
   joinFilters,
-  AnnotationDefaults,
 } from "@gff/core";
 import { Button, createStyles, Menu } from "@mantine/core";
-import { Dispatch, SetStateAction, useMemo, useState } from "react";
-import tw from "tailwind-styled-components";
-import {
-  VerticalTable,
-  PaginationOptions,
-  HandleChangeInput,
-} from "../shared/VerticalTable";
+import { useMemo, useState } from "react";
+import { VerticalTable, HandleChangeInput } from "../../shared/VerticalTable";
 import { ageDisplay, allFilesInCart, extractToArray } from "src/utils";
-import { Row, TableInstance } from "react-table";
-import CollapsibleRow from "../shared/CollapsibleRow";
 import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
 import Link from "next/link";
-import { SelectAlCasesButton, SelectCaseButton } from "./SelectCasesButton";
-import { CasesCohortButton, CountsIcon } from "./CasesCohortButton";
+import { CasesCohortButton, CountsIcon } from "../CasesCohortButton";
 import { GiMicroscope } from "react-icons/gi";
 import { FaShoppingCart as CartIcon } from "react-icons/fa";
 import { BiAddToQueue } from "react-icons/bi";
 import { BsTrash } from "react-icons/bs";
-import { addToCart, removeFromCart } from "../cart/updateCart";
-
-export const CasesTableHeader = tw.th`
-bg-primary-lighter
-text-primary-contrast-lighter
-px-2
-`;
+import { addToCart, removeFromCart } from "../../cart/updateCart";
+import {
+  columnListOrder,
+  getCasesTableAnnotationsLinkParams,
+  SlideCountsIcon,
+} from "./utils";
 
 const useStyles = createStyles((theme) => ({
   item: {
@@ -53,38 +43,6 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export interface Case {
-  readonly id: string;
-  readonly submitterId: string;
-  readonly primarySite: string;
-  readonly projectId: string;
-  readonly gender: string;
-  readonly primaryDiagnosis: string;
-  readonly tissueOrOrganOfOrigin: string;
-}
-
-export interface CasesViewProps {
-  readonly cases?: Record<string, any>[];
-  readonly handleCaseSelected?: (patient: Case) => void;
-  readonly caption?: string;
-  pagination?: PaginationOptions;
-  status: {
-    isFetching: boolean;
-    isSuccess: boolean;
-    isError: boolean;
-  };
-  setPageSize: Dispatch<SetStateAction<number>>;
-  setPage: Dispatch<SetStateAction<number>>;
-}
-
-interface CellProps {
-  value: string[];
-  row: Row;
-}
-
-const useCohortFacetFilter = () => {
-  return useCoreSelector((state) => selectCurrentCohortFilterSet(state));
-};
 const getSlideCountFromCaseSummary = (
   experimental_strategies: Array<{
     experimental_strategy: string;
@@ -101,46 +59,18 @@ const getSlideCountFromCaseSummary = (
   );
 };
 
-const getAnnotationsLinkParams = (
-  annotations: AnnotationDefaults[],
-  case_id: string,
-) => {
-  if (annotations.length === 0) return null;
-
-  if (annotations.length === 1) {
-    return `https://portal.gdc.cancer.gov/annotations/${annotations[0].annotation_id}`;
-  }
-  return `https://portal.gdc.cancer.gov/annotations?filters={"content":[{"content":{"field":"annotations.case_id","value":["${case_id}"]},"op":"in"}],"op":"and"}`;
-};
-
-export const SlideCountsIcon = tw.div<{
-  $count?: number;
-}>`
-${(p: { $count?: number }) =>
-  p.$count !== undefined && p.$count > 0 ? "bg-primary" : "bg-base-dark"}
-  ${(p: { $count?: number }) =>
-    p.$count !== undefined && p.$count > 0
-      ? "text-primary-contrast"
-      : "text-base-contrast-lighter"}
-  inline-flex
-  items-center
-  w-5
-  h-4
-  justify-center
-  font-heading
-  rounded-md
-
-`;
-
 export const ContextualCasesView: React.FC = () => {
+  const dispatch = useCoreDispatch();
+  const { classes } = useStyles();
   const [pageSize, setPageSize] = useState(10);
   const [offset, setOffset] = useState(0);
-  const dispatch = useCoreDispatch();
-  const currentCart = useCoreSelector((state) => selectCart(state));
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const { classes } = useStyles();
-  const cohortFilters = useCohortFacetFilter();
   const [sortBy, setSortBy] = useState<SortBy[]>([]);
+  const cohortFilters = useCoreSelector((state) =>
+    selectCurrentCohortFilterSet(state),
+  );
+  const pickedCases = useCoreSelector((state) => selectSelectedCases(state));
+  const currentCart = useCoreSelector((state) => selectCart(state));
 
   const { data, isFetching, isSuccess, isError, pagination } = useAllCases({
     fields: [
@@ -320,12 +250,12 @@ export const ContextualCasesView: React.FC = () => {
             datum?.experimental_strategies,
             "experimental_strategy",
           ),
-          annotations: getAnnotationsLinkParams(
+          annotations: getCasesTableAnnotationsLinkParams(
             datum.annotations,
             datum.case_uuid,
           ) ? (
             <Link
-              href={getAnnotationsLinkParams(
+              href={getCasesTableAnnotationsLinkParams(
                 datum.annotations,
                 datum.case_uuid,
               )}
@@ -343,10 +273,6 @@ export const ContextualCasesView: React.FC = () => {
     [data, currentCart, classes, dispatch],
   );
 
-  const pickedCases: ReadonlyArray<string> = useCoreSelector((state) =>
-    selectSelectedCases(state),
-  );
-
   const sortByActions = (sortByObj) => {
     const COLUMN_ID_TO_FIELD = {
       case_id: "submitter_id",
@@ -361,11 +287,8 @@ export const ContextualCasesView: React.FC = () => {
       race: "demographic.race",
       ethnicity: "demographic.ethnicity",
       files: "summary.file_count",
-      // annotations: "summary.case_count",
     };
     const tempSortBy = sortByObj.map((sortObj) => {
-      ///const tempSortId = COLUMN_ID_TO_FIELD[sortObj.id];
-      // map sort ids to api ids
       return {
         field: COLUMN_ID_TO_FIELD[sortObj.id],
         direction: sortObj.desc ? "desc" : "asc",
@@ -373,86 +296,6 @@ export const ContextualCasesView: React.FC = () => {
     });
     setSortBy(tempSortBy);
   };
-
-  const columnListOrder = [
-    {
-      id: "selected",
-      visible: true,
-      columnName: ({ data }: TableInstance) => {
-        const caseIds = data.map((x) => x.selected);
-        return <SelectAlCasesButton caseIds={caseIds} />;
-      },
-      Cell: ({ value }: { value: string }) => {
-        return <SelectCaseButton caseId={value} />;
-      },
-      disableSortBy: true,
-    },
-    {
-      id: "cart",
-      columnName: "Cart",
-      visible: true,
-      disableSortBy: true,
-    },
-    {
-      id: "slides",
-      columnName: "Slides",
-      visible: true,
-      disableSortBy: true,
-    },
-
-    { id: "case_id", columnName: "Case ID", visible: true },
-    { id: "case_uuid", columnName: "Case UUID", visible: false },
-    { id: "project_id", columnName: "Project", visible: true },
-    { id: "program", columnName: "Program", visible: false },
-    { id: "primary_site", columnName: "Primary Site", visible: true },
-    { id: "disease_type", columnName: "Disease Type", visible: false },
-    {
-      id: "primary_diagnosis",
-      columnName: "Primary Diagnosis",
-      visible: false,
-      disableSortBy: true,
-    },
-    {
-      id: "age_at_diagnosis",
-      columnName: "Age at Diagnosis",
-      visible: false,
-      disableSortBy: true,
-    },
-    { id: "vital_status", columnName: "Vital Status", visible: false },
-    { id: "days_to_death", columnName: "Days to Death", visible: false },
-    { id: "gender", columnName: "Gender", visible: true },
-    { id: "race", columnName: "Race", visible: false },
-    { id: "ethnicity", columnName: "Ethnicity", visible: false },
-    { id: "files", columnName: "Files", visible: true },
-    {
-      id: "data_categories",
-      columnName: "Data Category",
-      visible: true,
-      Cell: ({ value, row }: CellProps) => (
-        <CollapsibleRow value={value} row={row} label="Data Categories" />
-      ),
-      disableSortBy: true,
-    },
-    {
-      id: "experimental_strategies",
-      columnName: "Experimental Strategy",
-      visible: false,
-      Cell: ({ value, row }: CellProps) => (
-        <CollapsibleRow
-          value={value}
-          row={row}
-          label="Experimental Strategies"
-        />
-      ),
-      disableSortBy: true,
-    },
-    {
-      id: "annotations",
-      columnName: "Annotations",
-      visible: true,
-      disableSortBy: true,
-    },
-  ];
 
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {

@@ -16,12 +16,13 @@ import classNames from "classnames";
 import { Image } from "@/components/Image";
 import ReactModal from "react-modal";
 import { Select } from "../../../components/Select";
-import { Case, ContextualCasesView } from "../../cases/CasesView";
+import { ContextualCasesView } from "../../cases/CasesView/CasesView";
 import { CohortGroup } from "../../cohortBuilder/CohortGroup";
 import { SummaryCharts } from "../../cohortBuilder/SummaryCharts";
 import { CohortTabbedFacets } from "../../cohortBuilder/FacetGroup";
 import { GdcFile } from "@gff/core";
 import { Button } from "@mantine/core";
+import { Case } from "../all-apps/baseExploration";
 
 // this is an example of where composition makes it hards to read and understand the code
 export type CohortManagerProps = Partial<ModalOrExpandProps> &

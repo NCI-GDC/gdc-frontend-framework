@@ -50,7 +50,7 @@ interface CaseSliceResponseData {
   annotations: AnnotationDefaults[];
 }
 
-interface CaseResponseData extends Omit<caseSummaryDefaults, "annotations"> {
+interface CaseResponseData extends caseSummaryDefaults {
   annotations: AnnotationDefaults[];
 }
 
@@ -154,25 +154,15 @@ const slice = createSlice({
           data_categories: datum.summary?.data_categories,
           experimental_strategies: datum.summary?.experimental_strategies,
           annotations: datum.annotations,
-          files: datum?.files?.map(
-            (file: {
-              file_id: any;
-              file_name: any;
-              file_size: any;
-              access: any;
-              state: any;
-              acl: any;
-              data_type: any;
-            }) => ({
-              file_id: file.file_id,
-              file_name: file.file_name,
-              file_size: file.file_size,
-              access: file.access,
-              state: file.state,
-              acl: file.acl,
-              data_type: file.data_type,
-            }),
-          ),
+          files: datum?.files?.map((file) => ({
+            file_id: file.file_id,
+            file_name: file.file_name,
+            file_size: file.file_size,
+            access: file.access,
+            state: file.state,
+            acl: file.acl,
+            data_type: file.data_type,
+          })),
         }));
         state.allCasesData = {
           status: "fulfilled",

@@ -140,7 +140,4 @@ export interface caseSummaryDefaults {
     }>;
     readonly file_count: number;
   };
-  readonly annotations?: {
-    annotation_id: string;
-  };
 }

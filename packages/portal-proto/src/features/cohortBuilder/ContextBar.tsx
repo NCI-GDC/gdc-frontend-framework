@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { showNotification } from "@mantine/notifications";
 import { CollapsibleContainer } from "@/components/CollapsibleContainer";
 import { Menu, Tabs } from "@mantine/core";
-import { ContextualCasesView } from "../cases/CasesView";
+import { ContextualCasesView } from "../cases/CasesView/CasesView";
 import CountButton from "./CountButton";
 import { useCohortFacetFilters } from "./CohortGroup";
 import CohortManager from "./CohortManager";
