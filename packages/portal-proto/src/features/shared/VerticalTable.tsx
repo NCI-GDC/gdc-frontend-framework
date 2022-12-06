@@ -4,7 +4,8 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DragDrop } from "./DragDrop";
 import { BsList, BsCaretDownFill, BsCaretUpFill } from "react-icons/bs";
-import { isEqual, iteratee } from "lodash";
+import { MdClose, MdSearch } from "react-icons/md";
+import { isEqual } from "lodash";
 import { DataStatus } from "@gff/core";
 import {
   Box,
@@ -12,6 +13,7 @@ import {
   Select,
   Pagination,
   LoadingOverlay,
+  TextInput,
 } from "@mantine/core";
 
 export interface PaginationOptions {
@@ -138,6 +140,7 @@ interface VerticalTableProps {
     enabled: boolean;
     /**
      * placeholder to display in search input
+     * @defaultValue "Search"
      */
     placeholder?: string;
   };
@@ -174,9 +177,13 @@ export interface HandleChangeInput {
    * search term change
    */
   newSearch?: string;
+  /**
+   * headings change
+   */
+  newHeadings?: Column[];
 }
 
-interface Column {
+export interface Column {
   Header: string | JSX.Element | ((value: any) => JSX.Element);
   accessor: string;
   disableSortBy?: boolean;
@@ -254,12 +261,18 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   const [headings, setHeadings] = useState(filterColumnCells(columns));
   const [showColumnMenu, setShowColumnMenu] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [showLoading, setShowLoading] = useState(true);
 
   useEffect(() => {
     if (status === "fulfilled") {
       setTable(tableData);
     }
+    setShowLoading(status === "pending" || status === "uninitialized");
   }, [status, tableData]);
+
+  useEffect(() => {
+    handleChange({ newHeadings: headings });
+  }, [headings, handleChange]);
 
   const handleColumnChange = (update) => {
     setHeadings(filterColumnCells(update));
@@ -447,13 +460,13 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   const [pageTotal, setPageTotal] = useState(1);
 
   useEffect(() => {
-    if (pagination?.size) {
+    if (pagination?.size !== undefined) {
       setPageSize(pagination.size);
     }
-    if (pagination?.page) {
+    if (pagination?.page !== undefined) {
       setPageOn(pagination.page);
     }
-    if (pagination?.pages) {
+    if (pagination?.pages !== undefined) {
       setPageTotal(pagination.pages);
     }
   }, [pagination]);
@@ -496,16 +509,64 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     );
   };
 
+  useEffect(() => {
+    setShowLoading(true);
+    //prevents unneeded api calls if user is typing something
+    const delayDebounceFn = setTimeout(() => {
+      handleChange({
+        newSearch: searchTerm,
+      });
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTerm]);
+
   return (
     <div className="grow overflow-hidden">
       <div className="flex">
-        <div className={"flex-auto h-10"}>{additionalControls}</div>
+        {additionalControls && (
+          <div className={"flex-auto h-10"}>{additionalControls}</div>
+        )}
         <div className="flex flex-row">
+          {search?.enabled && (
+            <div className="flex flex-row w-max">
+              <TextInput
+                icon={<MdSearch size={24} />}
+                placeholder={search.placeholder ?? "Search"}
+                aria-label="Table Search Input"
+                classNames={{
+                  input: "focus:border-2 cus:drop-shadow-xl",
+                  wrapper: "w-72 mr-2",
+                }}
+                size="sm"
+                rightSection={
+                  searchTerm.length > 0 && (
+                    <MdClose
+                      onClick={() => {
+                        setSearchTerm("");
+                        handleChange({
+                          newSearch: "",
+                        });
+                      }}
+                      className="cursor-pointer"
+                    ></MdClose>
+                  )
+                }
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  handleChange({
+                    newSearch: e.target.value,
+                  });
+                }}
+              />
+            </div>
+          )}
           {showControls && (
             <Popover
               opened={showColumnMenu}
               onClose={() => setShowColumnMenu(false)}
-              width={260}
               position="bottom"
               transition="scale"
               withArrow
@@ -535,29 +596,10 @@ export const VerticalTable: FC<VerticalTableProps> = ({
               </Popover.Dropdown>
             </Popover>
           )}
-          {search?.enabled && (
-            <div className="flex flex-row w-max float-right">
-              <input
-                className="mr-2 rounded-sm border-1 border-base-lighter px-1"
-                type="search"
-                placeholder={search.placeholder ?? "Search"}
-                onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                  handleChange({
-                    newSearch: e.target.value,
-                  });
-                }}
-                value={searchTerm}
-              />
-              <div className={`mt-px`}></div>
-            </div>
-          )}
         </div>
       </div>
       <div className="overflow-y-scroll w-full relative">
-        <LoadingOverlay
-          visible={status === "pending" || status === "uninitialized"}
-        />
+        <LoadingOverlay visible={showLoading} />
         <Table columns={headings} data={table} />
       </div>
       {pagination && (

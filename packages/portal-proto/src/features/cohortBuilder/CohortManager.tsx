@@ -1,12 +1,18 @@
 import React, { useCallback, useState } from "react";
-import { LoadingOverlay, Select, Menu } from "@mantine/core";
+import {
+  LoadingOverlay,
+  Select,
+  //TODO uncomment to show set modals menu
+  // Menu
+} from "@mantine/core";
 import {
   MdAdd as AddIcon,
   MdDelete as DeleteIcon,
   MdFileDownload as DownloadIcon,
   MdFileUpload as UploadIcon,
   MdSave as SaveIcon,
-  MdFilterAlt as CohortFilterIcon,
+  //TODO uncomment to show set modals menu
+  // MdFilterAlt as CohortFilterIcon,
 } from "react-icons/md";
 import {
   FaCaretDown as DownArrowIcon,
@@ -34,7 +40,8 @@ import {
   buildGqlOperationToFilterSet,
   buildCohortGqlOperator,
   useAddCohortMutation,
-  showModal,
+  //TODO uncomment to show set modals menu
+  // showModal,
   Modals,
   selectCurrentModal,
 } from "@gff/core";
@@ -373,6 +380,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
               <DownloadIcon size="1.5em" aria-label="Download cohort" />
             </CohortGroupButton>
             {/* Uncomment to test set modals */}
+            {/*
             <Menu>
               <Menu.Target>
                 <CohortGroupButton>
@@ -406,6 +414,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>
+            */}
           </>
         ) : (
           <div />

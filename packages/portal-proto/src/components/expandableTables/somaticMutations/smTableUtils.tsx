@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import ToggleSpring from "../shared/ToggleSpring";
 import SwitchSpring from "../shared/SwitchSpring";
 import RatioSpring from "../shared/RatioSpring";
@@ -14,6 +14,9 @@ import { TableColumnDefinition } from "../shared/types";
 import { Image } from "@/components/Image";
 import { Text, Tooltip } from "@mantine/core";
 import { startCase } from "lodash";
+import { AnchorLink } from "@/components/AnchorLink";
+import { externalLinks } from "../../../utils";
+import Link from "next/link";
 
 export const createTableColumn = (
   accessor: string,
@@ -25,6 +28,7 @@ export const createTableColumn = (
     field: string,
   ) => void,
   setMutationID: Dispatch<SetStateAction<string>>,
+  geneSymbol: string = undefined,
 ): TableColumnDefinition => {
   switch (accessor) {
     case "select":
@@ -154,13 +158,17 @@ export const createTableColumn = (
                 ? truncateAfterMarker(originalLabel, 8)
                 : originalLabel;
               return (
-                <div className="flex justify-start">
-                  <Tooltip
-                    label={originalLabel}
-                    disabled={!originalLabel?.length}
-                  >
-                    <div className="font-content text-xs">{label}</div>
-                  </Tooltip>
+                <div className="font-content flex justify-start">
+                  {label !== "" ? (
+                    <Tooltip
+                      label={originalLabel}
+                      disabled={!originalLabel?.length}
+                    >
+                      <div className="text-xs">{label}</div>
+                    </Tooltip>
+                  ) : (
+                    <div className="text-lg ml-3">{"--"}</div>
+                  )}
                 </div>
               );
             },
@@ -235,11 +243,11 @@ export const createTableColumn = (
             header: () => (
               <TableHeader
                 title={`# Affected Cases
-                   in Cohort `}
+                   in ${geneSymbol ? geneSymbol : "Cohort"}`}
                 className="flex justify-start"
-                tooltip={
-                  "# Cases where Mutation is observed in Cohort / # Cases tested for Simple Somatic Mutations in Cohort"
-                }
+                tooltip={`# Cases where Mutation is observed in ${
+                  geneSymbol ? geneSymbol : "Cohort"
+                } / # Cases tested for Simple Somatic Mutations in Cohort`}
               />
             ),
             cell: ({ row }) => {
@@ -420,6 +428,167 @@ export const createTableColumn = (
           },
         ],
       };
+    case "gene_strand":
+      return {
+        header: " ",
+        footer: (props) => props.column.id,
+        columns: [
+          {
+            accessorKey: accessor,
+            header: () => (
+              <TableHeader
+                title="Gene Strand"
+                tooltip={""}
+                className="flex flex-row justify-start w-18"
+              />
+            ),
+            cell: ({ row }) => {
+              return (
+                <div className="flex justify-start ml-4 ">
+                  <div className="font-content text-lg font-bold">
+                    {`${row.original["gene_strand"] > 0 ? "+" : "-"}`}
+                  </div>
+                </div>
+              );
+            },
+          },
+        ],
+      };
+    case "aa_change":
+      return {
+        header: " ",
+        footer: (props) => props.column.id,
+        columns: [
+          {
+            accessorKey: accessor,
+            header: () => (
+              <TableHeader
+                title="AA Change"
+                tooltip={""}
+                className="flex flex-row justify-start w-18"
+              />
+            ),
+            cell: ({ row }) => {
+              const label = row.original["aa_change"];
+              return (
+                <div className="flex justify-start ml-4 ">
+                  {label !== null ? (
+                    <div className="font-content text-xs">{label}</div>
+                  ) : (
+                    <div className="font-content text-center text-lg ml-3">
+                      {"--"}
+                    </div>
+                  )}
+                </div>
+              );
+            },
+          },
+        ],
+      };
+    case "transcript_id":
+      return {
+        header: " ",
+        footer: (props) => props.column.id,
+        columns: [
+          {
+            accessorKey: accessor,
+            header: () => (
+              <TableHeader
+                title="Transcript"
+                tooltip={""}
+                className="flex flex-row justify-start w-18"
+              />
+            ),
+            cell: ({ row }) => {
+              const transcript_id = row.original?.transcript_id;
+              const isC = row.original["is_canonical"] as boolean;
+              return (
+                <div className="flex flex-row justify-start ">
+                  {transcript_id ? (
+                    <div className="flex flex-row flex-nowrap font-content items-center text-sm">
+                      <AnchorLink
+                        href={externalLinks.transcript(transcript_id)}
+                        title={transcript_id}
+                        toolTipLabel={"transcript_id"}
+                      />
+                      {isC ? (
+                        <Tooltip label={"Canconical"}>
+                          <div className="rounded-full bg-primary text-primary-contrast flex justify-center text-center ml-1.5 w-5 h-5 aspect-square">
+                            C
+                          </div>
+                        </Tooltip>
+                      ) : null}
+                    </div>
+                  ) : null}
+                </div>
+              );
+            },
+          },
+        ],
+      };
+    case "mutationID":
+      return {
+        header: " ",
+        footer: (props) => props.column.id,
+        columns: [
+          {
+            accessorKey: accessor,
+            header: () => (
+              <TableHeader
+                title={startCase(accessor)}
+                tooltip={""}
+                className="flex flex-row justify-start w-32 ml-4"
+              />
+            ),
+            cell: ({ row }) => {
+              return (
+                <div className="flex justify-start ml-4 ">
+                  <>
+                    <TableCell
+                      row={row}
+                      accessor={accessor}
+                      anchor={false}
+                      tooltip={""}
+                    />
+                  </>
+                </div>
+              );
+            },
+          },
+        ],
+      };
+    case "gene": {
+      return {
+        header: " ",
+        footer: (props) => props.column.id,
+        columns: [
+          {
+            accessorKey: accessor,
+            header: () => (
+              <TableHeader
+                title={startCase(accessor)}
+                tooltip={""}
+                className="flex flex-row justify-start ml-1.5"
+              />
+            ),
+            cell: ({ row }) => {
+              const geneSymbol = row.original["gene_id"];
+              return (
+                <div className="flex justify-start ml-1.5">
+                  <Link href={`/genes/${geneSymbol}`}>
+                    <a className="text-utility-link font-content text-xs underline">
+                      {row.original[`${accessor}`]
+                        ? row.original[`${accessor}`]
+                        : ""}
+                    </a>
+                  </Link>
+                </div>
+              );
+            },
+          },
+        ],
+      };
+    }
     default:
       return {
         header: " ",

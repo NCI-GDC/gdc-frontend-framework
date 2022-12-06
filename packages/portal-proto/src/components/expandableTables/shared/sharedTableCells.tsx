@@ -49,7 +49,7 @@ export const TableCell = ({
     <div>
       <>
         <animated.div
-          className={`text-center text-xs ${
+          className={`font-content text-center text-xs ${
             anchor
               ? `text-activeColor underline hover:cursor-pointer font-bold`
               : ``
