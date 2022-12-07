@@ -53,7 +53,7 @@ const GeneSetModal: React.FC<GeneSetModalProps> = ({
               </div>
             }
             dataHook={useGetGenesQuery}
-            searchField="gene_autocomplete"
+            searchField="gene_autocomplete.lowercase"
             mappedToFields={["gene_id", "symbol"]}
             matchAgainstIdentifiers={[
               "gene_id",

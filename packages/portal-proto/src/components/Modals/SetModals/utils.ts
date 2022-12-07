@@ -8,28 +8,39 @@ interface Match {
   @param data: API response for the matches
   @param mappedToFields: fields we mapped to, will be used to create set
   @param givenIdentifierFields: fields that we accept from the user
-  @param tokens: the list of identifiers the user input   
+  @param tokens: the list of identifiers the user input
 **/
 
 export const getMatchedIdentifiers = (
-  data: readonly any[],
+  data: readonly Record<string, any>[],
   mappedToFields: string[],
   givenIdentifierFields: string[],
   tokens: string[],
 ): { mappedTo: Match[]; givenIdentifiers: Match[] }[] => {
-  return data.map((d) => {
+  const matchedData = [];
+  data.forEach((d) => {
     const mappedTo: Match[] = [];
     // fields we are mapping to don't need to be compared to user input
     findAllIdentifiers(d, mappedToFields, undefined, "", mappedTo);
 
     const givenIdentifiers: Match[] = [];
-    findAllIdentifiers(d, givenIdentifierFields, tokens, "", givenIdentifiers);
-
-    return {
-      mappedTo,
+    findAllIdentifiers(
+      d,
+      givenIdentifierFields,
+      tokens.map((t) => t.toLowerCase()),
+      "",
       givenIdentifiers,
-    };
+    );
+
+    if (givenIdentifiers.length > 0) {
+      matchedData.push({
+        mappedTo,
+        givenIdentifiers,
+      });
+    }
   });
+
+  return matchedData;
 };
 
 /**
@@ -59,7 +70,7 @@ const findAllIdentifiers = (
       object[k].forEach((v) => {
         if (
           searchFields.includes(fullPath) &&
-          (tokens === undefined || tokens.includes(v))
+          (tokens === undefined || tokens.includes(v.toLowerCase()))
         ) {
           results.push({
             field: fullPath,
@@ -72,7 +83,7 @@ const findAllIdentifiers = (
     } else {
       if (
         searchFields.includes(fullPath) &&
-        (tokens === undefined || tokens.includes(object[k]))
+        (tokens === undefined || tokens.includes(object[k].toLowerCase()))
       ) {
         results.push({
           field: fullPath,

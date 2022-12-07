@@ -52,7 +52,7 @@ const MutationSetModal: React.FC<MutationSetModalProps> = ({
               </div>
             }
             dataHook={useGetSsmsQuery}
-            searchField={"ssm_autocomplete"}
+            searchField={"ssm_autocomplete.lowercase"}
             mappedToFields={["ssm_id"]}
             matchAgainstIdentifiers={["ssm_id", "genomic_dna_change"]}
             fieldDisplay={{

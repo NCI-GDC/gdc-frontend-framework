@@ -44,7 +44,7 @@ const InputSet: React.FC<InputSetProps> = ({
   const [file, setFile] = useState<File | null>(null);
   const [processingFile, setProcessingFile] = useState(false);
   const [input, setInput] = useState("");
-  const [tokens, setTokens] = useState([]);
+  const [tokens, setTokens] = useState<string[]>([]);
   const [screenReaderMessage, setScreenReaderMessage] = useState("");
   const inputRef = useRef(null);
 
@@ -53,7 +53,7 @@ const InputSet: React.FC<InputSetProps> = ({
       op: "in",
       content: {
         field: searchField,
-        value: tokens,
+        value: tokens.map((t) => t.toLowerCase()),
       },
     },
     fields: [...mappedToFields, ...matchAgainstIdentifiers],
@@ -75,8 +75,8 @@ const InputSet: React.FC<InputSetProps> = ({
 
   const matchedIds = flatten(
     matched.map((m) => m.givenIdentifiers.map((i) => i.value)),
-  );
-  const unmatched = tokens.filter((t) => !matchedIds.includes(t));
+  ).map((id) => id.toLowerCase());
+  const unmatched = tokens.filter((t) => !matchedIds.includes(t.toLowerCase()));
 
   useEffect(() => {
     if (input !== "") {
@@ -176,6 +176,8 @@ const InputSet: React.FC<InputSetProps> = ({
         onClearCallback={() => {
           setInput("");
           setFile(null);
+          setScreenReaderMessage("");
+          setTokens([]);
         }}
       />
     </>

@@ -5,10 +5,13 @@ import {
   IoIosArrowDropdownCircle as ExpandIcon,
   IoIosArrowDropupCircle as CollapseIcon,
 } from "react-icons/io";
-import { VerticalTable } from "@/features/shared/VerticalTable";
-import { tabStyles } from "./constants";
+import {
+  VerticalTable,
+  HandleChangeInput,
+} from "@/features/shared/VerticalTable";
 import { createKeyboardAccessibleFunction } from "src/utils";
 import useStandardPagination from "@/hooks/useStandardPagination";
+import { tabStyles } from "./constants";
 
 interface MatchTablesProps {
   readonly matched: {
@@ -78,10 +81,44 @@ const MatchTables: React.FC<MatchTablesProps> = ({
     }));
   }, [matched]);
 
-  const { displayedData: displayedMatchData, ...matchPaginationProps } =
-    useStandardPagination(matchedTableData);
-  const { displayedData: displayedUnmatchedData, ...unmatchedPaginationProps } =
-    useStandardPagination(unmatched.map((id) => ({ id })));
+  const unmatchedTableData = useMemo(
+    () => unmatched.map((id) => ({ id })),
+    [unmatched],
+  );
+
+  const {
+    displayedData: displayedMatchData,
+    handlePageChange: handleMatchedPageChange,
+    handlePageSizeChange: handleMatchedPageSizeChange,
+    ...matchPaginationProps
+  } = useStandardPagination(matchedTableData);
+  const {
+    displayedData: displayedUnmatchedData,
+    handlePageChange: handleUnmatchedPageChange,
+    handlePageSizeChange: handleUnmatchedPageSizeChange,
+    ...unmatchedPaginationProps
+  } = useStandardPagination(unmatchedTableData);
+
+  const handleMatchedTableChange = (obj: HandleChangeInput) => {
+    switch (Object.keys(obj)?.[0]) {
+      case "newPageSize":
+        handleMatchedPageSizeChange(obj.newPageSize);
+        break;
+      case "newPageNumber":
+        handleMatchedPageChange(obj.newPageNumber);
+        break;
+    }
+  };
+  const handleUnmatchedTableChange = (obj: HandleChangeInput) => {
+    switch (Object.keys(obj)?.[0]) {
+      case "newPageSize":
+        handleUnmatchedPageSizeChange(obj.newPageSize);
+        break;
+      case "newPageNumber":
+        handleUnmatchedPageChange(obj.newPageNumber);
+        break;
+    }
+  };
 
   const numMatched = flatten(matched.map((d) => d.givenIdentifiers)).length;
 
@@ -137,7 +174,7 @@ const MatchTables: React.FC<MatchTablesProps> = ({
           </Tabs.List>
           <Tabs.Panel value="matched">
             <div className="m-4">
-              <p className="text-sm">
+              <p className="text-sm mb-2">
                 {numMatched} submitted {identifier} identifier
                 {numMatched !== 1 && "s"} mapped to {matched.length} unique GDC{" "}
                 {identifier}
@@ -149,14 +186,18 @@ const MatchTables: React.FC<MatchTablesProps> = ({
                   columns={matchedColumns}
                   selectableRow={false}
                   showControls={false}
-                  pagination={matchPaginationProps}
+                  pagination={{
+                    ...matchPaginationProps,
+                    label: `${identifier}s`,
+                  }}
+                  handleChange={handleMatchedTableChange}
                 />
               )}
             </div>
           </Tabs.Panel>
           <Tabs.Panel value="unmatched">
             <div className="m-4">
-              <p className="text-sm">
+              <p className="text-sm mb-2">
                 {unmatched.length} submitted {identifier} identifier
                 {unmatched.length !== 1 && "s"} not recognized
               </p>
@@ -165,14 +206,20 @@ const MatchTables: React.FC<MatchTablesProps> = ({
                   tableData={displayedUnmatchedData}
                   columns={[
                     {
-                      columnName: "Submitted Identifier",
+                      columnName: `Submitted ${upperFirst(
+                        identifier,
+                      )} Identifier`,
                       id: "id",
                       visible: true,
                     },
                   ]}
                   selectableRow={false}
                   showControls={false}
-                  pagination={unmatchedPaginationProps}
+                  pagination={{
+                    ...unmatchedPaginationProps,
+                    label: `${identifier}s`,
+                  }}
+                  handleChange={handleUnmatchedTableChange}
                 />
               )}
             </div>

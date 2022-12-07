@@ -55,7 +55,7 @@ const CaseSetModal: React.FC = () => {
           "samples.portions.slides.submitter_id",
         ]}
         dataHook={useGetCasesQuery}
-        searchField="case_autocomplete"
+        searchField="case_autocomplete.lowercase"
         fieldDisplay={{
           case_id: "Case UUID",
           submitter_id: "Case ID",
