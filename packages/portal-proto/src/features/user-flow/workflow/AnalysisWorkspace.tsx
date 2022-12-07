@@ -13,13 +13,10 @@ import {
   AppRegistrationEntry,
   sortAlphabetically,
 } from "@/features/user-flow/workflow/utils";
-import SearchInput from "@/components/SearchInput";
 import dynamic from "next/dynamic";
 import FeaturedToolCard from "./FeaturedToolCard";
 
 import { CSSTransition } from "react-transition-group";
-import AnalysisBreadcrumbs from "./AnalysisBreadcrumbs";
-import AdditionalCohortSelection from "./AdditionalCohortSelection";
 import { clearComparisonCohorts } from "@gff/core";
 
 const ActiveAnalysisToolNoSSR = dynamic(

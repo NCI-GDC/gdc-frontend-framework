@@ -9,7 +9,7 @@ import {
 } from "@gff/core";
 import ReactModal from "react-modal";
 import { HorizontalTable } from "@/components/HorizontalTable";
-import { Table, Button } from "@mantine/core";
+import { Table, Button, Menu } from "@mantine/core";
 import { FaDownload } from "react-icons/fa";
 import { get } from "lodash";
 import dynamic from "next/dynamic";
@@ -276,21 +276,11 @@ const AssociatedCB = ({
     { id: "annotations", columnName: "Annotations", visible: true },
   ];
 
-  const columnCells = [
-    { accessor: "entity_id", Header: "Entity ID" },
-    { accessor: "entity_type", Header: "Entity Type" },
-    { accessor: "sample_type", Header: "Sample Type" },
-    { accessor: "case_id", Header: "Case ID" },
-    { accessor: "annotations", Header: "Annotations" },
-  ];
-
   return (
     <VerticalTable
       tableData={displayedData}
-      columnListOrder={columnListOrder}
-      columnCells={columnCells}
+      columns={columnListOrder}
       selectableRow={false}
-      handleColumnChange={undefined}
       showControls={false}
       pagination={{
         page,
@@ -344,10 +334,10 @@ export const FileView: React.FC<FileViewProps> = ({
     const tsv = [header.join("\t"), body].join("\n");
     const blob = new Blob([tsv], { type: "text/csv" });
 
-    saveAs(blob, `file-history-${file.fileId}.tsv`);
+    saveAs(blob, `file-history-${file.file_id}.tsv`);
   };
 
-  const isFileInCart = fileInCart(currentCart, file.fileId);
+  const isFileInCart = fileInCart(currentCart, file.file_id);
 
   const DownstreamAnalyses = ({
     downstream_analyses,
@@ -358,12 +348,12 @@ export const FileView: React.FC<FileViewProps> = ({
     downstream_analyses?.forEach((byWorkflowType) => {
       const workflowType = byWorkflowType?.workflow_type;
       byWorkflowType?.output_files?.forEach((outputFile) => {
-        const isOutputFileInCart = fileInCart(currentCart, outputFile.fileId);
+        const isOutputFileInCart = fileInCart(currentCart, outputFile.file_id);
         const mappedFileObj = mapGdcFileToCartFile([outputFile]);
         tableRows.push({
           file_name: (
             <GenericLink
-              path={`/files/${outputFile.fileId}`}
+              path={`/files/${outputFile.file_id}`}
               text={outputFile.file_name}
             />
           ),
@@ -407,7 +397,7 @@ export const FileView: React.FC<FileViewProps> = ({
       new Blob([jsonData], {
         type: "application/json",
       }),
-      `${file.fileId}_history.${currentDate}.json`,
+      `${file.file_id}_history.${currentDate}.json`,
     );
   };
 
@@ -501,7 +491,7 @@ export const FileView: React.FC<FileViewProps> = ({
         <FullWidthDiv>
           <TitleText>Slide Image Viewer</TitleText>
           <ImageViewer
-            imageId={file?.fileId}
+            imageId={file?.file_id}
             tableData={parseSlideDetailsInfo(file)}
           />
         </FullWidthDiv>
@@ -632,20 +622,30 @@ export const FileView: React.FC<FileViewProps> = ({
         <FullWidthDiv>
           <TitleText className="float-left mt-3">File Versions</TitleText>
           <div className="float-right my-2 mr-3">
-            <Button
-              onClick={downloadVersionJSON}
-              color={"base"}
-              className="mr-2 text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
-            >
-              <FaDownload className="mr-2" /> Download JSON
-            </Button>
-            <Button
-              color={"base"}
-              className="text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
-              onClick={handleDownloadTSV}
-            >
-              <FaDownload className="mr-2" /> Download TSV
-            </Button>
+            <Menu width="target">
+              <Menu.Target>
+                <Button
+                  className="px-1.5 min-h-7 w-28 rounded text-primary-content-lightest bg-primary hover:bg-primary-darker"
+                  leftIcon={<FaDownload />}
+                >
+                  Download
+                </Button>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Item
+                  onClick={handleDownloadTSV}
+                  icon={<FaDownload className="mr-2" />}
+                >
+                  TSV
+                </Menu.Item>
+                <Menu.Item
+                  onClick={downloadVersionJSON}
+                  icon={<FaDownload className="mr-2" />}
+                >
+                  JSON
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
           </div>
           <TempTable
             tableData={{
@@ -709,7 +709,7 @@ export const FileModal: React.FC<FileModalProps> = ({
 }: FileModalProps) => {
   return (
     <ReactModal isOpen={isOpen} onRequestClose={closeModal}>
-      {file?.fileId ? (
+      {file?.file_id ? (
         <FileView file={file} fileHistory={fileHistory} />
       ) : (
         <SummaryErrorHeader label="File Not Found" />

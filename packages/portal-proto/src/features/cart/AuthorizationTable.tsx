@@ -8,12 +8,6 @@ const columnListOrder = [
   { id: "file_size", columnName: "File Name", visible: true },
 ];
 
-const columnCells = [
-  { Header: "Level", accessor: "level" },
-  { Header: "Files", accessor: "files" },
-  { Header: "File Size", accessor: "file_size" },
-];
-
 interface AuthorizationTableProps {
   readonly filesByCanAccess: Record<string, CartFile[]>;
 }
@@ -45,11 +39,9 @@ const AuthorizationTable: React.FC<AuthorizationTableProps> = ({
   return (
     <VerticalTable
       tableData={tableData}
-      columnListOrder={columnListOrder}
-      columnCells={columnCells}
+      columns={columnListOrder}
       showControls={false}
       selectableRow={false}
-      handleColumnChange={undefined}
     />
   );
 };

@@ -12,6 +12,7 @@ import {
 } from "@gff/core";
 import fileSize from "filesize";
 import { Button, Loader, Menu } from "@mantine/core";
+import { VscTrash as TrashIcon } from "react-icons/vsc";
 import {
   MdArrowDropDown as DropdownIcon,
   MdPerson as PersonIcon,
@@ -23,6 +24,7 @@ import CartSizeLimitModal from "@/components/Modals/CartSizeLimitModal";
 import CartDownloadModal from "@/components/Modals/CartDownloadModal";
 import { DownloadButton } from "@/components/DownloadButtons";
 import download from "src/utils/download";
+import { removeFromCart } from "./updateCart";
 
 const buttonStyle =
   "bg-base-lightest text-base-contrast-lightest border-base-darkest";
@@ -59,7 +61,7 @@ const downloadCart = (
       },
       dispatch,
       params: {
-        ids: filesByCanAccess.true.map((file) => file.fileId),
+        ids: filesByCanAccess.true.map((file) => file.file_id),
         annotations: true,
         related_files: true,
       },
@@ -88,7 +90,7 @@ const downloadManifest = (
         op: "in",
         content: {
           field: "files.file_id",
-          value: cart.map((file) => file.fileId),
+          value: cart.map((file) => file.file_id),
         },
       },
       return_type: "manifest",
@@ -131,7 +133,10 @@ const CartHeader: React.FC<CartHeaderProps> = ({
           setActive={setDownloadActive}
         />
       )}
-      <div className="bg-primary-darkest text-primary-contrast-darkest flex items-center gap-x-4 w-full h-16">
+      <div
+        className="bg-primary-darkest text-primary-contrast-darkest flex items-center gap-x-4 w-full h-16"
+        data-testid="cart-header"
+      >
         <Menu>
           <Menu.Target>
             <Button
@@ -144,7 +149,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
               }
               rightIcon={<DropdownIcon size={20} />}
             >
-              Download
+              Download Cart
             </Button>
           </Menu.Target>
           <Menu.Dropdown>
@@ -175,172 +180,193 @@ const CartHeader: React.FC<CartHeaderProps> = ({
           <Menu.Target>
             <Button
               classNames={{
-                root: buttonStyle,
+                root: `${buttonStyle} ml-2`,
                 rightIcon: "border-l pl-1 -mr-2",
               }}
-              leftIcon={<DownloadIcon />}
+              leftIcon={
+                downloadActive ? <Loader size={15} /> : <DownloadIcon />
+              }
               rightIcon={<DropdownIcon size={20} />}
             >
-              Biospecimen
+              Download Associated Data
             </Button>
           </Menu.Target>
           <Menu.Dropdown>
-            <Menu.Item>TSV</Menu.Item>
-            <Menu.Item>JSON</Menu.Item>
+            <Menu.Item>Clinical: TSV</Menu.Item>
+            <Menu.Item>Clinical: JSON</Menu.Item>
+            <Menu.Item>Biospecimen: TSV</Menu.Item>
+            <Menu.Item>Biospecimen: JSON</Menu.Item>
+            <Menu.Item
+              component={DownloadButton}
+              classNames={{ inner: "font-normal" }}
+              variant="subtle"
+              activeText="Processing"
+              inactiveText="Sample Sheet"
+              preventClickEvent
+              showIcon={false}
+              endpoint="files"
+              setActive={setSampleSheetDownloadActive}
+              active={sampleSheetDownloadActice}
+              filename={`gdc_sample_sheet.${new Date()
+                .toISOString()
+                .slice(0, 10)}.tsv`}
+              format="tsv"
+              method="POST"
+              options={{
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }}
+              fields={[
+                "file_id",
+                "file_name",
+                "data_category",
+                "data_type",
+                "cases.project.project_id",
+                "cases.submitter_id",
+                "cases.samples.submitter_id",
+                "cases.samples.sample_type",
+              ]}
+              filters={{
+                content: [
+                  {
+                    content: {
+                      field: "files.file_id",
+                      value: cart.map((file) => file.file_id),
+                    },
+                    op: "in",
+                  },
+                ],
+                op: "and",
+              }}
+              extraParams={{
+                tsv_format: "sample-sheet",
+              }}
+            />
+            <Menu.Item
+              component={DownloadButton}
+              classNames={{ inner: "font-normal" }}
+              activeText="Processing"
+              inactiveText="Metadata"
+              showIcon={false}
+              variant="subtle"
+              preventClickEvent
+              endpoint="files"
+              setActive={setMetadataDownloadActive}
+              active={metadataDownloadActive}
+              filename={`metadata.cart.${new Date()
+                .toISOString()
+                .slice(0, 10)}.json`}
+              options={{
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }}
+              method="POST"
+              filters={{
+                content: [
+                  {
+                    content: {
+                      field: "files.file_id",
+                      value: cart.map((file) => file.file_id),
+                    },
+                    op: "in",
+                  },
+                ],
+                op: "and",
+              }}
+              fields={[
+                "state",
+                "access",
+                "md5sum",
+                "data_format",
+                "data_type",
+                "data_category",
+                "file_name",
+                "file_size",
+                "file_id",
+                "platform",
+                "experimental_strategy",
+                "center.short_name",
+                "annotations.annotation_id",
+                "annotations.entity_id",
+                "tags",
+                "submitter_id",
+                "archive.archive_id",
+                "archive.submitter_id",
+                "archive.revision",
+                "associated_entities.entity_id",
+                "associated_entities.entity_type",
+                "associated_entities.case_id",
+                "analysis.analysis_id",
+                "analysis.workflow_type",
+                "analysis.updated_datetime",
+                "analysis.input_files.file_id",
+                "analysis.metadata.read_groups.read_group_id",
+                "analysis.metadata.read_groups.is_paired_end",
+                "analysis.metadata.read_groups.read_length",
+                "analysis.metadata.read_groups.library_name",
+                "analysis.metadata.read_groups.sequencing_center",
+                "analysis.metadata.read_groups.sequencing_date",
+                "downstream_analyses.output_files.access",
+                "downstream_analyses.output_files.file_id",
+                "downstream_analyses.output_files.file_name",
+                "downstream_analyses.output_files.data_category",
+                "downstream_analyses.output_files.data_type",
+                "downstream_analyses.output_files.data_format",
+                "downstream_analyses.workflow_type",
+                "downstream_analyses.output_files.file_size",
+                "index_files.file_id",
+              ]}
+              extraParams={{
+                expand: [
+                  "metadata_files",
+                  "annotations",
+                  "archive",
+                  "associated_entities",
+                  "center",
+                  "analysis",
+                  "analysis.input_files",
+                  "analysis.metadata",
+                  "analysis.metadata_files",
+                  "analysis.downstream_analyses",
+                  "analysis.downstream_analyses.output_files",
+                  "reference_genome",
+                  "index_file",
+                ].join(","),
+              }}
+            />
           </Menu.Dropdown>
         </Menu>
         <Menu>
           <Menu.Target>
             <Button
+              leftIcon={<TrashIcon />}
+              rightIcon={<DropdownIcon size={20} />}
               classNames={{
-                root: buttonStyle,
+                root: "bg-nci-red-darker", //TODO: find good color theme for this
                 rightIcon: "border-l pl-1 -mr-2",
               }}
-              leftIcon={<DownloadIcon />}
-              rightIcon={<DropdownIcon size={20} />}
             >
-              Clinical
+              Remove From Cart
             </Button>
           </Menu.Target>
           <Menu.Dropdown>
-            <Menu.Item>TSV</Menu.Item>
-            <Menu.Item>JSON</Menu.Item>
+            <Menu.Item onClick={() => removeFromCart(cart, cart, dispatch)}>
+              All Files ({cart.length})
+            </Menu.Item>
+            <Menu.Item
+              onClick={() =>
+                removeFromCart(filesByCanAccess?.false || [], cart, dispatch)
+              }
+            >
+              Unauthorized Files ({(filesByCanAccess?.false || []).length})
+            </Menu.Item>
           </Menu.Dropdown>
         </Menu>
-        <DownloadButton
-          activeText="Processing"
-          inactiveText="Sample Sheet"
-          endpoint="files"
-          customStyle={buttonStyle}
-          setActive={setSampleSheetDownloadActive}
-          active={sampleSheetDownloadActice}
-          filename={`gdc_sample_sheet.${new Date()
-            .toISOString()
-            .slice(0, 10)}.tsv`}
-          format="tsv"
-          method="POST"
-          options={{
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }}
-          fields={[
-            "file_id",
-            "file_name",
-            "data_category",
-            "data_type",
-            "cases.project.project_id",
-            "cases.submitter_id",
-            "cases.samples.submitter_id",
-            "cases.samples.sample_type",
-          ]}
-          filters={{
-            content: [
-              {
-                content: {
-                  field: "files.file_id",
-                  value: cart.map((file) => file.fileId),
-                },
-                op: "in",
-              },
-            ],
-            op: "and",
-          }}
-          extraParams={{
-            tsv_format: "sample-sheet",
-          }}
-        />
-        <DownloadButton
-          activeText="Processing"
-          inactiveText="Metadata"
-          endpoint="files"
-          customStyle={buttonStyle}
-          setActive={setMetadataDownloadActive}
-          active={metadataDownloadActive}
-          filename={`metadata.cart.${new Date()
-            .toISOString()
-            .slice(0, 10)}.json`}
-          options={{
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }}
-          method="POST"
-          filters={{
-            content: [
-              {
-                content: {
-                  field: "files.file_id",
-                  value: cart.map((file) => file.fileId),
-                },
-                op: "in",
-              },
-            ],
-            op: "and",
-          }}
-          fields={[
-            "state",
-            "access",
-            "md5sum",
-            "data_format",
-            "data_type",
-            "data_category",
-            "file_name",
-            "file_size",
-            "file_id",
-            "platform",
-            "experimental_strategy",
-            "center.short_name",
-            "annotations.annotation_id",
-            "annotations.entity_id",
-            "tags",
-            "submitter_id",
-            "archive.archive_id",
-            "archive.submitter_id",
-            "archive.revision",
-            "associated_entities.entity_id",
-            "associated_entities.entity_type",
-            "associated_entities.case_id",
-            "analysis.analysis_id",
-            "analysis.workflow_type",
-            "analysis.updated_datetime",
-            "analysis.input_files.file_id",
-            "analysis.metadata.read_groups.read_group_id",
-            "analysis.metadata.read_groups.is_paired_end",
-            "analysis.metadata.read_groups.read_length",
-            "analysis.metadata.read_groups.library_name",
-            "analysis.metadata.read_groups.sequencing_center",
-            "analysis.metadata.read_groups.sequencing_date",
-            "downstream_analyses.output_files.access",
-            "downstream_analyses.output_files.file_id",
-            "downstream_analyses.output_files.file_name",
-            "downstream_analyses.output_files.data_category",
-            "downstream_analyses.output_files.data_type",
-            "downstream_analyses.output_files.data_format",
-            "downstream_analyses.workflow_type",
-            "downstream_analyses.output_files.file_size",
-            "index_files.file_id",
-          ]}
-          extraParams={{
-            expand: [
-              "metadata_files",
-              "annotations",
-              "archive",
-              "associated_entities",
-              "center",
-              "analysis",
-              "analysis.input_files",
-              "analysis.metadata",
-              "analysis.metadata_files",
-              "analysis.downstream_analyses",
-              "analysis.downstream_analyses.output_files",
-              "reference_genome",
-              "index_file",
-            ].join(","),
-          }}
-        />
+
         <h1 className="uppercase ml-auto mr-4 flex items-center truncate text-2xl">
           Total of <FileIcon size={25} className="ml-2 mr-1" />{" "}
           <b className="mr-1">{summaryData.total_doc_count.toLocaleString()}</b>{" "}

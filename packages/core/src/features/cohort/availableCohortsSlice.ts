@@ -6,17 +6,22 @@ import {
   createAsyncThunk,
 } from "@reduxjs/toolkit";
 import { CoreState } from "../../reducers";
-import { buildCohortGqlOperator, FilterSet } from "./filters";
+import {
+  buildCohortGqlOperator,
+  FilterSet,
+  isFilterSetRootEmpty,
+} from "./filters";
 import { COHORTS } from "./cohortFixture";
 import { GqlOperation, Operation } from "../gdcapi/filters";
 import { CoreDataSelectorResponse, DataStatus } from "../../dataAccess";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
-import { CoreDispatch } from "../../store";
+import { CoreDispatch } from "src/store";
 
 export interface CaseSetDataAndStatus {
   readonly status: DataStatus; // status of create caseSet
   readonly error?: string; // any error message
   readonly caseSetId: FilterSet; // A filter set containing the caseID and additional Filters
+  readonly pendingFilters?: FilterSet; // Filters that require creation of a internal/hidden case set
   // TODO this could also hold the cohort
   //  id for query by cohort
 }
@@ -25,9 +30,9 @@ export interface Cohort {
   readonly id: string;
   readonly name: string;
   readonly filters: FilterSet; // active filters for cohort
-  readonly caseSet: CaseSetDataAndStatus;
-  readonly modified: boolean; // flag which is set to true if modified and unsaved
-  readonly modifiedDate?: string; // last time cohort was modified
+  readonly caseSet: CaseSetDataAndStatus; // case ids for frozen cohorts
+  readonly modified?: boolean; // flag which is set to true if modified and unsaved
+  readonly modified_datetime: string; // last time cohort was modified
   readonly saved?: boolean; // flag indicating if cohort has been saved.
 }
 
@@ -61,16 +66,23 @@ export const createCaseSet = createAsyncThunk<
   CreateCaseSetProps,
   { dispatch: CoreDispatch; state: CoreState }
 >("cohort/createCaseSet", async ({ caseSetId = undefined }, thunkAPI) => {
-  const dividedFilters = divideCurrentCohortFilterSetFilterByPrefix(
+  const cohort = cohortSelectors.selectById(
     thunkAPI.getState(),
-    "files.",
+    thunkAPI.getState().cohort.availableCohorts.currentCohort,
+  );
+  const filters = cohort?.caseSet?.pendingFilters
+    ? cohort.caseSet.pendingFilters
+    : { mode: "and", root: {} };
+  const dividedFilters = divideFilterSetByPrefix(
+    filters,
+    REQUIRES_CASE_SET_FILTERS,
   );
   const graphQL = buildCaseSetMutationQuery();
 
   const filtersGQL = {
     input: {
-      filters: dividedFilters?.withoutPrefix
-        ? buildCohortGqlOperator(dividedFilters.withoutPrefix)
+      filters: dividedFilters?.withPrefix
+        ? buildCohortGqlOperator(dividedFilters.withPrefix)
         : {},
       set_id: `${caseSetId}`,
     },
@@ -79,15 +91,21 @@ export const createCaseSet = createAsyncThunk<
 });
 
 export const DEFAULT_COHORT_ID = "ALL-GDC-COHORT";
+const REQUIRES_CASE_SET_FILTERS = ["genes."];
 
 const cohortsAdapter = createEntityAdapter<Cohort>({
-  sortComparer: (a, b) => a.name.localeCompare(b.name),
+  sortComparer: (a, b) => {
+    // Sort the Cohorts by modification date, The "All GDC" cohort is always first
+    if (a.modified_datetime <= b.modified_datetime) return 1;
+    else return -1;
+  },
 });
 
 const emptyInitialState = cohortsAdapter.getInitialState({
   currentCohort: "ALL-GDC-COHORT",
   message: undefined as string | undefined, // message is used to inform frontend components of changes to the cohort.
 });
+
 const initialState = cohortsAdapter.upsertMany(
   emptyInitialState,
   COHORTS as Cohort[],
@@ -104,9 +122,20 @@ export const createCohortName = (postfix: string): string => {
 
 export const createCohortId = (): string => nanoid();
 
+const willRequireCaseSet = (
+  filters: FilterSet,
+  prefixes: string[] = REQUIRES_CASE_SET_FILTERS,
+): boolean => {
+  return (
+    Object.keys(divideFilterSetByPrefix(filters, prefixes).withPrefix.root)
+      .length > 0
+  );
+};
+
 const newCohort = (
   filters: FilterSet = { mode: "and", root: {} },
   modified = false,
+  pendingFilters?: FilterSet,
 ): Cohort => {
   const ts = new Date();
   const newName = createCohortName(
@@ -121,11 +150,12 @@ const newCohort = (
     caseSet: {
       caseSetId: { mode: "and", root: {} },
       status: "uninitialized" as DataStatus,
+      pendingFilters: pendingFilters,
     },
     filters: filters,
     modified: modified,
     saved: false,
-    modifiedDate: ts.toISOString(),
+    modified_datetime: ts.toISOString(),
   };
 };
 
@@ -147,6 +177,7 @@ interface NewCohortParams {
  *
  *
  * The slice exports the following actions:
+ * setCohortList() - set saved cohort to the adapter that comes from the server
  * addNewCohort() - create a new cohort
  * addNewCohortWithFilterAndMessage - create a cohort with the passed filters and message id
  * updateCohortName(name:string): changes the current cohort's name
@@ -156,12 +187,27 @@ interface NewCohortParams {
  * setCurrentCohortId(id:string): set the id of the current cohort, used to switch between cohorts
  * clearCaseSet(): resets the caseSet member to all GDC
  * removeCohort(): removes the current cohort
+ * setCohortMessage(): sets the current cohort message
  * clearCohortMessage(): clears the current message by setting it to undefined
  */
 const slice = createSlice({
   name: "cohort/availableCohorts",
   initialState: initialState,
   reducers: {
+    setCohortList: (state, action: PayloadAction<Cohort[]>) => {
+      // TODO: Behavior TBD - https://jira.opensciencedatacloud.org/browse/PEAR-762
+      // When the user deletes context id from their cookies
+      // All the cohorts that was previously were saved or unsaved should be removed from the adapter
+      if (!action.payload) {
+        cohortsAdapter.removeMany(
+          state,
+          state.ids.filter((id) => state.entities[id]?.id !== "ALL-GDC-COHORT"),
+        );
+        state.currentCohort = "ALL-GDC-COHORT";
+      } else {
+        cohortsAdapter.upsertMany(state, [...action.payload] as Cohort[]);
+      }
+    },
     addNewCohort: (state) => {
       const cohort = newCohort();
       cohortsAdapter.addOne(state, cohort);
@@ -182,12 +228,28 @@ const slice = createSlice({
         changes: { name: action.payload },
       });
     },
-    removeCohort: (state) => {
+    removeCohort: (
+      state,
+      action?: PayloadAction<{
+        shouldShowMessage?: boolean;
+        currentID?: string;
+      }>,
+    ) => {
       if (state.currentCohort === DEFAULT_COHORT_ID) return; // Do NOT remove the "All GDC"
-      const removedCohort = state.entities[state.currentCohort];
-      cohortsAdapter.removeOne(state, state.currentCohort);
-      state.message = `deleteCohort|${removedCohort?.name}|${state.currentCohort}`;
-      state.currentCohort = DEFAULT_COHORT_ID;
+
+      const removedCohort =
+        state.entities[action?.payload?.currentID || state.currentCohort];
+      cohortsAdapter.removeOne(
+        state,
+        action?.payload?.currentID || state.currentCohort,
+      );
+
+      // TODO: this will be removed after cohort id issue is fixed in the BE
+      // This is just a hack to remove cohort without trigerring notification and changing the cohort to the default
+      if (action?.payload?.shouldShowMessage) {
+        state.message = `deleteCohort|${removedCohort?.name}|${state.currentCohort}`;
+        state.currentCohort = DEFAULT_COHORT_ID;
+      }
     },
     updateCohortFilter: (state, action: PayloadAction<UpdateFilterParams>) => {
       const filters = {
@@ -197,40 +259,95 @@ const slice = createSlice({
           [action.payload.field]: action.payload.operation,
         },
       };
+
+      const requiresCaseSet = willRequireCaseSet(filters);
+
       if (state.currentCohort === DEFAULT_COHORT_ID) {
         // create a new cohort and add it
         // as the GDC All Cohort is immutable
-        const cohort = newCohort(filters, true);
+        const cohort = requiresCaseSet
+          ? newCohort({ mode: "and", root: {} }, true, filters)
+          : newCohort(filters, true);
         cohortsAdapter.addOne(state, cohort);
         state.currentCohort = cohort.id;
-        state.message = `newCohort|${cohort.name}|{cohort.id`;
+        state.message = `newCohort|${cohort.name}|${cohort.id}`;
       } else {
-        cohortsAdapter.updateOne(state, {
-          id: state.currentCohort,
-          changes: {
-            filters: filters,
-            modified: true,
-            modifiedDate: new Date().toISOString(),
-          },
-        });
+        if (requiresCaseSet) {
+          const cohortCaseSetFilters =
+            state.entities[state.currentCohort]?.caseSet?.caseSetId;
+          // don't update the filter as they will be updated when the caseSet is created
+          cohortsAdapter.updateOne(state, {
+            id: state.currentCohort,
+            changes: {
+              modified: true,
+              modified_datetime: new Date().toISOString(),
+              caseSet: {
+                pendingFilters: filters,
+                caseSetId:
+                  cohortCaseSetFilters === undefined
+                    ? { mode: "and", root: {} }
+                    : cohortCaseSetFilters,
+                status: "uninitialized",
+              },
+            },
+          });
+        } else
+          cohortsAdapter.updateOne(state, {
+            id: state.currentCohort,
+            changes: {
+              filters: filters,
+              modified: true,
+              modified_datetime: new Date().toISOString(),
+            },
+          });
       }
     },
-
     removeCohortFilter: (state, action: PayloadAction<string>) => {
+      // todo clear case set if not needed
       const root = state.entities[state.currentCohort]?.filters.root;
       if (!root) {
         return;
       }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { [action.payload]: _, ...updated } = root;
-      cohortsAdapter.updateOne(state, {
-        id: state.currentCohort,
-        changes: {
-          filters: { mode: "and", root: updated },
-          modified: true,
-          modifiedDate: new Date().toISOString(),
-        },
+
+      const requiresCaseSet = willRequireCaseSet({
+        mode: "and",
+        root: updated,
       });
+
+      if (requiresCaseSet) {
+        const cohortCaseSetFilters =
+          state.entities[state.currentCohort]?.caseSet?.caseSetId;
+        cohortsAdapter.updateOne(state, {
+          id: state.currentCohort,
+          changes: {
+            modified: true,
+            modified_datetime: new Date().toISOString(),
+            caseSet: {
+              pendingFilters: { mode: "and", root: updated },
+              caseSetId:
+                cohortCaseSetFilters === undefined
+                  ? { mode: "and", root: {} }
+                  : cohortCaseSetFilters,
+              status: "uninitialized",
+            },
+          },
+        });
+      } else
+        cohortsAdapter.updateOne(state, {
+          id: state.currentCohort,
+          changes: {
+            filters: { mode: "and", root: updated },
+            modified: true,
+            modified_datetime: new Date().toISOString(),
+            caseSet: {
+              pendingFilters: undefined,
+              caseSetId: { mode: "and", root: {} },
+              status: "uninitialized",
+            },
+          },
+        });
     },
     clearCohortFilters: (state) => {
       cohortsAdapter.updateOne(state, {
@@ -238,12 +355,48 @@ const slice = createSlice({
         changes: {
           filters: { mode: "and", root: {} },
           modified: true,
-          modifiedDate: new Date().toISOString(),
+          modified_datetime: new Date().toISOString(),
+          caseSet: {
+            pendingFilters: undefined,
+            caseSetId: { mode: "and", root: {} },
+            status: "uninitialized",
+          },
         },
       });
     },
+    discardCohortChanges: (
+      state,
+      action: PayloadAction<FilterSet | undefined>,
+    ) => {
+      cohortsAdapter.updateOne(state, {
+        id: state.currentCohort,
+        changes: {
+          filters: action.payload || { mode: "and", root: {} },
+          modified: false,
+          modified_datetime: new Date().toISOString(),
+        },
+      });
+      state.message = `discardChanges|${
+        state.entities[state.currentCohort]?.name
+      }|${state.currentCohort}`;
+    },
     setCurrentCohortId: (state, action: PayloadAction<string>) => {
-      state.currentCohort = action.payload;
+      const currentCohort = state.entities[state.currentCohort];
+      const cohort = state.entities[action.payload];
+      state.currentCohort = action.payload; // todo create pending caseSet if needed
+      if (cohort && willRequireCaseSet(cohort.filters)) {
+        cohortsAdapter.updateOne(state, {
+          id: action.payload,
+          changes: {
+            filters: currentCohort?.filters,
+            caseSet: {
+              status: "uninitialized",
+              caseSetId: { mode: "and", root: {} },
+              pendingFilters: cohort.filters,
+            },
+          },
+        });
+      }
     },
     clearCohortMessage: (state) => {
       state.message = undefined;
@@ -258,6 +411,7 @@ const slice = createSlice({
           caseSet: {
             status: "uninitialized",
             caseSetId: { mode: "and", root: {} },
+            pendingFilters: undefined,
           },
         },
       });
@@ -267,10 +421,19 @@ const slice = createSlice({
     builder
       .addCase(createCaseSet.fulfilled, (state, action) => {
         const response = action.payload;
+        const cohort = state.entities[state.currentCohort] as Cohort;
+        if (cohort?.caseSet?.pendingFilters === undefined) {
+          console.error(
+            "trying to create a case set with no pending filters",
+            cohort.id,
+          );
+        }
         if (response.errors && Object.keys(response.errors).length > 0) {
+          // get pending filter and set them as the cohort filters
           cohortsAdapter.updateOne(state, {
             id: state.currentCohort,
             changes: {
+              filters: cohort?.caseSet?.pendingFilters,
               caseSet: {
                 caseSetId: { mode: "and", root: {} },
                 status: "rejected",
@@ -280,12 +443,11 @@ const slice = createSlice({
           });
         }
         const data = response.data.sets.create.explore;
-        const cohort = state.entities[state.currentCohort] as Cohort;
-        const filters = cohort?.filters;
+        const filters = cohort?.caseSet?.pendingFilters;
         const additionalFilters =
           filters === undefined
             ? {}
-            : divideFilterSetByPrefix(filters, "files.").withPrefix.root;
+            : divideFilterSetByPrefix(filters, ["genes."]).withoutPrefix.root;
         const caseSetFilter: FilterSet = {
           mode: "and",
           root: {
@@ -300,30 +462,36 @@ const slice = createSlice({
         cohortsAdapter.updateOne(state, {
           id: state.currentCohort,
           changes: {
+            filters: cohort?.caseSet?.pendingFilters,
             caseSet: {
               caseSetId: caseSetFilter,
               status: "fulfilled",
+              pendingFilters: undefined,
             },
           },
         });
       })
       .addCase(createCaseSet.pending, (state) => {
+        const cohort = state.entities[state.currentCohort] as Cohort;
         cohortsAdapter.updateOne(state, {
           id: state.currentCohort,
           changes: {
             caseSet: {
-              caseSetId: { mode: "and", root: {} },
+              pendingFilters: cohort?.caseSet?.pendingFilters,
+              caseSetId: cohort?.caseSet.caseSetId,
               status: "pending",
             },
           },
         });
       })
       .addCase(createCaseSet.rejected, (state) => {
+        const cohort = state.entities[state.currentCohort] as Cohort;
         cohortsAdapter.updateOne(state, {
           id: state.currentCohort,
           changes: {
             caseSet: {
               caseSetId: { mode: "and", root: {} },
+              pendingFilters: cohort?.caseSet?.pendingFilters,
               status: "rejected",
             },
           },
@@ -345,6 +513,9 @@ export const {
   clearCohortFilters,
   clearCaseSet,
   clearCohortMessage,
+  setCohortList,
+  discardCohortChanges,
+  setCohortMessage,
 } = slice.actions;
 
 export const cohortSelectors = cohortsAdapter.getSelectors(
@@ -368,6 +539,16 @@ export const selectCurrentCohortModified = (
     state.cohort.availableCohorts.currentCohort,
   );
   return cohort?.modified;
+};
+
+export const selectCurrentCohortSaved = (
+  state: CoreState,
+): boolean | undefined => {
+  const cohort = cohortSelectors.selectById(
+    state,
+    state.cohort.availableCohorts.currentCohort,
+  );
+  return cohort?.saved;
 };
 
 export const selectCurrentCohort = (state: CoreState): Cohort | undefined =>
@@ -415,7 +596,7 @@ interface SplitFilterSet {
 
 const divideFilterSetByPrefix = (
   filters: FilterSet,
-  prefix: string,
+  prefixes: string[],
 ): SplitFilterSet => {
   const results = Object.entries(filters.root).reduce(
     (
@@ -425,7 +606,8 @@ const divideFilterSetByPrefix = (
       },
       [key, val],
     ) => {
-      if (key.startsWith(prefix)) newObj.withPrefix[key] = val;
+      if (prefixes.some((prefix) => key.startsWith(prefix)))
+        newObj.withPrefix[key] = val;
       else newObj.withoutPrefix[key] = val;
       return newObj;
     },
@@ -442,19 +624,23 @@ const divideFilterSetByPrefix = (
  * Divides the current cohort into prefix and not prefix. This is
  * used to create caseSets for files and cases
  * @param state
- * @parm prefix - filter prefix to separate on (typically "files.")
+ * @param prefixes - and array of filter prefix to separate on (typically ["genes."])
  */
 export const divideCurrentCohortFilterSetFilterByPrefix = (
   state: CoreState,
-  prefix: string,
-): SplitFilterSet | undefined => {
+  prefixes: string[],
+): SplitFilterSet => {
   const cohort = cohortSelectors.selectById(
     state,
     state.cohort.availableCohorts.currentCohort,
   );
-  if (cohort === undefined) return undefined;
+  if (cohort === undefined)
+    return {
+      withPrefix: { mode: "and", root: {} },
+      withoutPrefix: { mode: "and", root: {} },
+    };
 
-  return divideFilterSetByPrefix(cohort?.filters, prefix);
+  return divideFilterSetByPrefix(cohort?.filters, prefixes);
 };
 
 /**
@@ -486,9 +672,11 @@ export const selectCurrentCohortFilterOrCaseSet = (
   );
   if (cohort === undefined) return { mode: "and", root: {} };
 
-  if (Object.keys(cohort.caseSet.caseSetId.root).length != 0) {
-    return cohort.caseSet.caseSetId;
-  } else return cohort.filters;
+  if (!isFilterSetRootEmpty(cohort?.caseSet.caseSetId)) {
+    return cohort?.caseSet.caseSetId;
+  } else {
+    return cohort.filters;
+  }
 };
 
 /**
@@ -528,7 +716,7 @@ export const selectCurrentCohortCaseSet = (
     state,
     state.cohort.availableCohorts.currentCohort,
   );
-  if (cohort === undefined)
+  if (cohort === undefined || cohort?.caseSet === undefined)
     return {
       data: { mode: "and", root: {} },
       status: "uninitialized",

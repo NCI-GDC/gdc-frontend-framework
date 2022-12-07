@@ -1,12 +1,23 @@
 import React, { useCallback, useState } from "react";
-import { Box, Button, Group, Modal, Select, Text } from "@mantine/core";
+import {
+  LoadingOverlay,
+  Select,
+  //TODO uncomment to show set modals menu
+  // Menu
+} from "@mantine/core";
 import {
   MdAdd as AddIcon,
   MdDelete as DeleteIcon,
   MdFileDownload as DownloadIcon,
   MdFileUpload as UploadIcon,
   MdSave as SaveIcon,
+  //TODO uncomment to show set modals menu
+  // MdFilterAlt as CohortFilterIcon,
 } from "react-icons/md";
+import {
+  FaCaretDown as DownArrowIcon,
+  FaUndo as DiscardIcon,
+} from "react-icons/fa";
 import tw from "tailwind-styled-components";
 import { CohortManagerProps } from "@/features/cohortBuilder/types";
 import {
@@ -17,16 +28,49 @@ import {
   selectCurrentCohortModified,
   useCoreDispatch,
   useCoreSelector,
+  discardCohortChanges,
+  useDeleteCohortMutation,
+  selectCurrentCohortId,
+  setCurrentCohortId,
+  selectCurrentCohort,
+  useUpdateCohortMutation,
+  setCohortMessage,
+  useLazyGetCohortByIdQuery,
+  FilterSet,
+  buildGqlOperationToFilterSet,
+  buildCohortGqlOperator,
+  useAddCohortMutation,
+  //TODO uncomment to show set modals menu
+  // showModal,
+  Modals,
+  selectCurrentModal,
 } from "@gff/core";
+import { useCohortFacetFilters } from "./CohortGroup";
 import CountButton from "./CountButton";
+import { SavingCohortModal } from "./Modals/SavingCohortModal";
+import { GenericCohortModal } from "./Modals/GenericCohortModal";
+import CaseSetModal from "@/components/Modals/SetModals/CaseSetModal";
+import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
+import MutationSetModal from "@/components/Modals/SetModals/MutationSetModal";
 
-const CohortGroupButton = tw(Button)`
-p-2
+interface CohortGroupButtonProps {
+  $buttonDisabled?: boolean;
+  $isDiscard?: boolean;
+}
+
+const CohortGroupButton = tw.button<CohortGroupButtonProps>`
+${(p: CohortGroupButtonProps) =>
+  p.$buttonDisabled
+    ? "text-primary-content-darkest"
+    : "hover:bg-primary hover:text-primary-content-lightest"}
+${(p: CohortGroupButtonProps) => (p.$isDiscard ? "rounded-l" : "rounded")}
+h-10
+w-10
+flex
+justify-center
+items-center
 bg-base-lightest
 transition-colors
-text-primary-content-darkest
-hover:bg-primary
-hover:text-primary-content-lightest
 disabled:opacity-50
 `;
 
@@ -44,156 +88,253 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   startingId,
   hide_controls = false,
 }: CohortManagerProps) => {
-  // Sort the Cohors by modification date, The "All GDC" cohort is always first
-  const menu_items = [
-    { value: cohorts[0].id, label: cohorts[0].name },
-    ...cohorts // Make ALL GDC always first
-      .slice(1)
-      .sort((a, b) => {
-        //sort everything else by modified
-        if (a.modifiedDate <= b.modifiedDate) return 1;
-        else return -1;
-      })
-      .map((x) => {
-        return { value: x.id, label: x.name };
-      }),
-  ];
   const coreDispatch = useCoreDispatch();
+
+  // Info about current Cohort
+  const currentCohort = useCoreSelector((state) => selectCurrentCohort(state));
   const cohortName = useCoreSelector((state) => selectCurrentCohortName(state));
   const cohortModified = useCoreSelector((state) =>
     selectCurrentCohortModified(state),
   );
+  const cohortId = useCoreSelector((state) => selectCurrentCohortId(state));
+  const filters = useCohortFacetFilters(); // make sure using this one //TODO maybe use from one amongst the selectors
+
+  // util function to check for names while saving the cohort
+  // passed to SavingCohortModal as a prop
+  const onSaveCohort = (name: string) =>
+    cohorts
+      .filter((cohort) => cohort.id !== cohortId)
+      .every((cohort) => cohort.name !== name);
+
+  // Cohort specific actions
   const newCohort = useCallback(() => {
     coreDispatch(addNewCohort());
   }, [coreDispatch]);
-  const [showDelete, setShowDelete] = useState(false);
+
+  const discardChanges = useCallback(
+    (filters: FilterSet | undefined) => {
+      coreDispatch(discardCohortChanges(filters));
+    },
+    [coreDispatch],
+  );
 
   const deleteCohort = () => {
-    coreDispatch(removeCohort());
+    coreDispatch(removeCohort({ shouldShowMessage: true }));
   };
+
+  // Cohort persistence
+  const [addCohort, { isLoading: isAddCohortLoading }] = useAddCohortMutation();
+  const [deleteCohortFromBE, { isLoading: isDeleteCohortLoading }] =
+    useDeleteCohortMutation();
+  const [updateCohort, { isLoading: isUpdateCohortLoading }] =
+    useUpdateCohortMutation();
+  const [trigger, { isFetching: isCohortIdFetching }] =
+    useLazyGetCohortByIdQuery();
+
+  // Modals Setters
+  const [showDelete, setShowDelete] = useState(false);
+  const [showDiscard, setShowDiscard] = useState(false);
+  const [showSaveCohort, setShowSaveCohort] = useState(false);
+  const [showUpdateCohort, setShowUpdateCohort] = useState(false);
+  const modal = useCoreSelector((state) => selectCurrentModal(state));
+
+  const menu_items = [
+    { value: cohorts[0].id, label: cohorts[0].name },
+    ...cohorts // Make ALL GDC always first
+      .slice(1)
+      .map((x) => {
+        return { value: x.id, label: x.name };
+      }),
+  ];
+
+  const isDefaultCohort = startingId === DEFAULT_COHORT_ID;
 
   return (
     <div
       data-tour="cohort_management_bar"
       className="flex flex-row items-center justify-start gap-6 pl-4 h-20 shadow-lg bg-primary-darkest"
     >
-      {" "}
-      {
-        // Wrap modal in own theme provider to permit overriding of backgroundColor from tailwind
-        // Also mantine modal appear to disable tailwind completely which is why the Modal below
-        // is styled via mantine.
-      }
-      <Modal
+      {(isAddCohortLoading ||
+        isCohortIdFetching ||
+        isDeleteCohortLoading ||
+        isUpdateCohortLoading) && <LoadingOverlay visible />}
+      {/*  Modals Start   */}
+      <GenericCohortModal
         title="Delete Cohort"
         opened={showDelete}
-        padding={0}
-        radius="md"
         onClose={() => setShowDelete(false)}
-        styles={(theme) => ({
-          header: {
-            color: theme.colors.primary[8],
-            fontFamily: '"Montserrat", "sans-serif"',
-            fontSize: "1.65em",
-            fontWeight: 500,
-            letterSpacing: ".1rem",
-            borderColor: theme.colors.base[1],
-            borderStyle: "solid",
-            borderWidth: "0px 0px 2px 0px",
-            padding: "15px 20px 15px 15px",
-            margin: "5px 5px 5px 5px",
-          },
-          modal: {
-            backgroundColor: theme.colors.base[0],
-          },
-          close: {
-            backgroundColor: theme.colors.base[1],
-            color: theme.colors.primary[8],
-          },
-        })}
-      >
-        <Box
-          sx={() => ({
-            fontFamily: '"Montserrat", "sans-serif"',
-            padding: "20px 25px 20px 10px",
-          })}
-        >
-          <Text
-            sx={(theme) => ({
-              fontFamily: '"Montserrat", "sans-serif"',
-              fontSize: "0.95em",
-              fontWeight: 500,
-              color: theme.colors.base[8],
-            })}
-          >
+        actionText="Delete"
+        mainText={
+          <>
             Are you sure you want to permanently delete <b>{cohortName}</b>?
-          </Text>
-          <Text
-            sx={(theme) => ({
-              fontFamily: '"Montserrat", "sans-serif"',
-              fontSize: "0.85em",
-              color: theme.colors.base[9],
-              paddingTop: "1em",
-            })}
-          >
-            You cannot undo this action.
-          </Text>
-        </Box>
-        <Box
-          sx={(theme) => ({
-            backgroundColor: theme.colors.base[1],
-            padding: theme.spacing.md,
-            borderRadius: theme.radius.md,
-            borderTopRightRadius: 0,
-            borderTopLeftRadius: 0,
-          })}
-        >
-          <Group position="right">
-            <Button
-              variant="outline"
-              styles={() => ({
-                root: {
-                  backgroundColor: "white",
-                },
-              })}
-              color="primary.5"
-              onClick={() => setShowDelete(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant={"filled"}
-              color="primary.8"
-              onClick={() => deleteCohort()}
-            >
-              Delete
-            </Button>
-          </Group>
-        </Box>
-      </Modal>
+          </>
+        }
+        subText={<>You cannot undo this action.</>}
+        onActionClick={async () => {
+          setShowDelete(false);
+          // only delete cohort from BE if it's been saved before
+          if (currentCohort?.saved) {
+            // dont delete it from the local adapter if not able to delete from the BE
+            await deleteCohortFromBE(cohortId)
+              .unwrap()
+              .then(() => deleteCohort())
+              .catch(() =>
+                coreDispatch(setCohortMessage("error|deleting|allId")),
+              );
+          } else {
+            deleteCohort();
+          }
+        }}
+      />
+      <GenericCohortModal
+        title="Discard Changes"
+        opened={showDiscard}
+        onClose={() => setShowDiscard(false)}
+        actionText="Discard"
+        mainText={
+          <>Are you sure you want to permanently discard the unsaved changes?</>
+        }
+        subText={<>You cannot undo this action.</>}
+        onActionClick={async () => {
+          if (currentCohort.saved) {
+            await trigger(cohortId)
+              .unwrap()
+              .then((payload) => {
+                discardChanges(buildGqlOperationToFilterSet(payload.filters));
+              })
+              .catch(() =>
+                coreDispatch(setCohortMessage("error|discarding|allId")),
+              );
+          } else {
+            discardChanges(undefined);
+          }
+        }}
+      />
+      <GenericCohortModal
+        title="Save Cohort"
+        opened={showUpdateCohort}
+        onClose={() => setShowUpdateCohort(false)}
+        actionText="Save"
+        mainText={
+          <>
+            Are you sure you want to save <b>{cohortName}</b>? This will
+            overwrite your previously saved changes.
+          </>
+        }
+        subText={<>You cannot undo this action.</>}
+        onActionClick={async () => {
+          setShowUpdateCohort(false);
+          const updateBody = {
+            id: cohortId,
+            name: cohortName,
+            type: "static",
+            filters:
+              Object.keys(filters.root).length > 0
+                ? buildCohortGqlOperator(filters)
+                : {},
+          };
+
+          await updateCohort(updateBody)
+            .unwrap()
+            .then(() =>
+              coreDispatch(
+                setCohortMessage(`savedCohort|${cohortName}|${cohortId}`),
+              ),
+            )
+            .catch(() => coreDispatch(setCohortMessage("error|saving|allId")));
+        }}
+      />
+      <SavingCohortModal
+        initialName={cohortName}
+        opened={showSaveCohort}
+        onClose={() => setShowSaveCohort(false)}
+        onSaveClick={async (newName: string) => {
+          const prevCohort = cohortId;
+          const addBody = {
+            name: newName,
+            type: "static",
+            filters:
+              Object.keys(filters.root).length > 0
+                ? buildCohortGqlOperator(filters)
+                : {},
+          };
+
+          await addCohort(addBody)
+            .unwrap()
+            .then((payload) => {
+              coreDispatch(setCurrentCohortId(payload.id));
+              coreDispatch(
+                setCohortMessage(`savedCohort|${newName}|${payload.id}`),
+              );
+              onSelectionChanged(payload.id);
+              coreDispatch(
+                removeCohort({
+                  shouldShowMessage: false,
+                  currentID: prevCohort,
+                }),
+              );
+            })
+            .catch(() => coreDispatch(setCohortMessage("error|saving|allId")));
+        }}
+        onSaveCohort={onSaveCohort}
+      />
+      {modal === Modals.CaseSetModal && <CaseSetModal />}
+      {modal === Modals.GeneSetModal && (
+        <GeneSetModal
+          modalTitle="Filter Current Cohort by Genes"
+          inputInstructions="Enter one or more gene identifiers in the field below or upload a file to filter your cohort."
+          selectSetInstructions="Select one or more sets below to filter your cohort."
+        />
+      )}
+      {modal === Modals.MutationSetModal && (
+        <MutationSetModal
+          modalTitle="Filter Current Cohort by Mutations"
+          inputInstructions="Enter one or more mutation identifiers in the field below or upload a file to filter your cohort."
+          selectSetInstructions="Select one or more sets below to filter your cohort."
+        />
+      )}
+      {/*  Modals End   */}
+
       <div className="border-opacity-0">
         {!hide_controls ? (
-          <div className="flex flex-col">
-            <Select
-              data={menu_items}
-              searchable
-              clearable={false}
-              value={startingId}
-              onChange={(x) => {
-                onSelectionChanged(x);
-              }}
-              classNames={{
-                root: "border-base-light w-80 p-0 z-10 pt-5",
-                input: "text-heading font-[500] text-primary-darkest ",
-                item: "text-heading font-[400] text-primary-darkest data-selected:bg-primary-lighter first:border-b-2 first:rounded-none first:border-primary",
-              }}
-              aria-label="Select cohort"
-            />
-            <div
-              className={`ml-auto text-heading text-[0.65em] font-semibold pt-1 text-primary-contrast ${
-                cohortModified ? "visible" : "invisible"
-              }`}
+          <div className="flex justify-center items-center">
+            <CohortGroupButton
+              disabled={!cohortModified}
+              onClick={() => setShowDiscard(true)}
+              className="mr-0.5"
+              $buttonDisabled={!cohortModified}
+              $isDiscard={true}
             >
-              Changes not saved
+              <DiscardIcon size="16" aria-label="Add cohort" />
+            </CohortGroupButton>
+
+            <div className="flex flex-col">
+              <Select
+                data={menu_items}
+                searchable
+                clearable={false}
+                value={startingId}
+                onChange={(x) => {
+                  onSelectionChanged(x);
+                }}
+                classNames={{
+                  root: "border-base-light w-80 p-0 z-10 pt-5",
+                  input:
+                    "text-heading font-medium text-primary-darkest rounded-l-none h-10",
+                  item: "text-heading font-normal text-primary-darkest data-selected:bg-primary-lighter first:border-b-2 first:rounded-none first:border-primary",
+                }}
+                aria-label="Select cohort"
+                rightSection={<DownArrowIcon size={20} />}
+                rightSectionWidth={30}
+                styles={{ rightSection: { pointerEvents: "none" } }}
+              />
+              <div
+                className={`ml-auto text-heading text-[0.65em] font-semibold pt-1 text-primary-contrast ${
+                  cohortModified ? "visible" : "invisible"
+                }`}
+              >
+                Changes not saved
+              </div>
             </div>
           </div>
         ) : (
@@ -206,29 +347,80 @@ const CohortManager: React.FC<CohortManagerProps> = ({
         // TODO: add tooltips with all functions are complete
         !hide_controls ? (
           <>
-            <CohortGroupButton disabled={startingId === DEFAULT_COHORT_ID}>
+            <CohortGroupButton
+              disabled={isDefaultCohort}
+              onClick={() => {
+                !currentCohort?.saved
+                  ? setShowSaveCohort(true)
+                  : setShowUpdateCohort(true);
+              }}
+              $buttonDisabled={isDefaultCohort}
+              data-testid="saveButton"
+            >
               <SaveIcon size="1.5em" aria-label="Save cohort" />
             </CohortGroupButton>
-            <CohortGroupButton onClick={() => newCohort()}>
+            <CohortGroupButton
+              onClick={() => newCohort()}
+              data-testid="addButton"
+            >
               <AddIcon size="1.5em" aria-label="Add cohort" />
             </CohortGroupButton>
             <CohortGroupButton
               onClick={() => setShowDelete(true)}
-              disabled={startingId === DEFAULT_COHORT_ID}
+              disabled={isDefaultCohort}
+              $buttonDisabled={isDefaultCohort}
+              data-testid="deleteButton"
             >
               <DeleteIcon size="1.5em" aria-label="Delete cohort" />
             </CohortGroupButton>
-            <CohortGroupButton>
+            <CohortGroupButton data-testid="uploadButton">
               <UploadIcon size="1.5em" aria-label="Upload cohort" />
             </CohortGroupButton>
-            <CohortGroupButton>
+            <CohortGroupButton data-testid="downloadButton">
               <DownloadIcon size="1.5em" aria-label="Download cohort" />
             </CohortGroupButton>
+            {/* Uncomment to test set modals */}
+            {/*
+            <Menu>
+              <Menu.Target>
+                <CohortGroupButton>
+                  <CohortFilterIcon
+                    size="1.5rem"
+                    aria-label="Custom cohort filters"
+                  />
+                </CohortGroupButton>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Item
+                  onClick={() =>
+                    coreDispatch(showModal({ modal: Modals.CaseSetModal }))
+                  }
+                >
+                  cases
+                </Menu.Item>
+                <Menu.Item
+                  onClick={() =>
+                    coreDispatch(showModal({ modal: Modals.GeneSetModal }))
+                  }
+                >
+                  genes
+                </Menu.Item>
+                <Menu.Item
+                  onClick={() =>
+                    coreDispatch(showModal({ modal: Modals.MutationSetModal }))
+                  }
+                >
+                  mutations
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+            */}
           </>
         ) : (
           <div />
         )
       }
+
       <CountButton
         countName="casesMax"
         label="CASES"

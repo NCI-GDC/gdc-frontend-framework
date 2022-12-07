@@ -55,13 +55,13 @@ const AddNotification: React.FC<AddNotificationProps> = ({
   dispatch,
 }: AddNotificationProps) => {
   const filesToAdd = files.filter(
-    (f) => !currentCart.map((c) => c.fileId).includes(f.fileId),
+    (f) => !currentCart.map((c) => c.file_id).includes(f.file_id),
   );
 
   const newCart = [...currentCart, ...filesToAdd];
 
   const alreadyInCart = files.filter((f) =>
-    currentCart.map((c) => c.fileId).includes(f.fileId),
+    currentCart.map((c) => c.file_id).includes(f.file_id),
   );
 
   if (filesToAdd.length > 0) {
@@ -131,7 +131,7 @@ const RemoveNotification: React.FC<RemoveNotificationProps> = ({
   dispatch,
 }: RemoveNotificationProps) => {
   const filesToRemove = files.filter((f) =>
-    currentCart.map((cartFile) => cartFile.fileId).includes(f.fileId),
+    currentCart.map((cartFile) => cartFile.file_id).includes(f.file_id),
   );
 
   const newCart = files.filter((f) => !filesToRemove.includes(f));
@@ -177,7 +177,7 @@ export const removeFromCart = (
       description: "flex flex-col content-center text-center",
     },
   });
-  const filesToRemove = files.map((f) => f.fileId);
+  const filesToRemove = files.map((f) => f.file_id);
   dispatch(removeFilesFromCart(filesToRemove));
 };
 
@@ -283,7 +283,7 @@ export const SingleItemAddToCartButton: React.FC<SingleItemCartButtonProps> = ({
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
 
-  return fileInCart(currentCart, file.fileId) ? (
+  return fileInCart(currentCart, file.file_id) ? (
     <ActionIcon
       title="Remove From Cart"
       aria-label="Remove from cart"

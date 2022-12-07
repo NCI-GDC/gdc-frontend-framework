@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { capitalize } from "lodash";
 import fileSize from "filesize";
 import { VerticalTable, HandleChangeInput } from "../shared/VerticalTable";
+import { downloadTSV } from "../shared/TableUtils";
 import { SingleItemAddToCartButton } from "../cart/updateCart";
 import Link from "next/link";
 import {
@@ -12,12 +14,17 @@ import {
   buildCohortGqlOperator,
   joinFilters,
   useFilesSize,
+  GdcFile,
+  Operation,
 } from "@gff/core";
 import { MdSave } from "react-icons/md";
 import { useAppSelector } from "@/features/repositoryApp/appApi";
 import { selectFilters } from "@/features/repositoryApp/repositoryFiltersSlice";
 import FunctionButton from "@/components/FunctionButton";
+import { convertDateToString } from "src/utils/date";
+import download from "src/utils/download";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
+import { useUpdateRepositoryFacetFilter } from "@/features/repositoryApp/hooks";
 
 const FilesTables: React.FC = () => {
   const columnListOrder = [
@@ -28,7 +35,7 @@ const FilesTables: React.FC = () => {
       arrangeable: false,
       disableSortBy: true,
     },
-    { id: "id", columnName: "File UUID", visible: false },
+    { id: "file_id", columnName: "File UUID", visible: false },
     { id: "access", columnName: "Access", visible: true },
     { id: "file_name", columnName: "File Name", visible: true },
     { id: "cases", columnName: "Cases", visible: true, disableSortBy: true },
@@ -50,25 +57,8 @@ const FilesTables: React.FC = () => {
       disableSortBy: true,
     },
   ];
-  const filterColumnCells = (newList) =>
-    newList.reduce((filtered, obj) => {
-      if (obj.visible) {
-        filtered.push({
-          Header: obj.columnName,
-          accessor: obj.id,
-          disableSortBy: obj.disableSortBy || false,
-        });
-      }
-      return filtered;
-    }, []);
 
-  const [columnCells, setColumnCells] = useState(
-    filterColumnCells(columnListOrder),
-  );
-
-  const handleColumnChange = (update) => {
-    setColumnCells(filterColumnCells(update));
-  };
+  const [columnCells, setColumnCells] = useState([]);
 
   let formattedTableData = [],
     tempPagination = {
@@ -83,13 +73,29 @@ const FilesTables: React.FC = () => {
 
   const { data, pagination, status } = useCoreSelector(selectFilesData);
 
+  const getAnnotationsLinkParams = (file: GdcFile): string | null => {
+    // Due to limitation in the length of URI, we decided to cap a link to be created for files which has < 150 annotations for now
+    // 150 annotations was a safe number. It was tested in Chrome, Firefox, Safari and Edge.
+    // TODO: Follow Up Ticket - https://jira.opensciencedatacloud.org/browse/PEAR-758
+    const MAX_ANNOATATION_COUNT = 150;
+    if (!file?.annotations || file.annotations.length > MAX_ANNOATATION_COUNT)
+      return null;
+
+    if (file?.annotations?.length === 1) {
+      return `https://portal.gdc.cancer.gov/annotations/${file.annotations[0].annotation_id}`;
+    }
+    return `https://portal.gdc.cancer.gov/annotations?filters={"content":[{"content":{"field":"annotations.annotation_id","value":[${[
+      file.annotations.map((annotation) => `"${annotation.annotation_id}"`),
+    ]}]},"op":"in"}],"op":"and"}`;
+  };
+
   if (status === "fulfilled") {
     tempPagination = pagination;
     formattedTableData = data.map((file) => ({
       cart: <SingleItemAddToCartButton file={file} iconOnly />,
-      id: (
-        <Link href={`/files/${file.id}`}>
-          <a className="text-utility-link underline">{file.id}</a>
+      file_id: (
+        <Link href={`/files/${file.file_id}`}>
+          <a className="text-utility-link underline">{file.file_id}</a>
         </Link>
       ),
       access: <FileAccessBadge access={file.access} />,
@@ -110,7 +116,19 @@ const FilesTables: React.FC = () => {
       experimental_strategy: file.experimental_strategy || "--",
       platform: file.platform || "--",
       file_size: fileSize(file.file_size),
-      annotations: file.annotations?.length || 0,
+      annotations: (
+        <>
+          {getAnnotationsLinkParams(file) ? (
+            <Link href={getAnnotationsLinkParams(file)} passHref>
+              <a className="text-utility-link underline" target={"_blank"}>
+                {file.annotations.length}
+              </a>
+            </Link>
+          ) : (
+            file?.annotations?.length ?? 0
+          )}
+        </>
+      ),
     }));
   }
 
@@ -121,11 +139,14 @@ const FilesTables: React.FC = () => {
   );
   const allFilters = joinFilters(cohortFilters, repositoryFilters);
   const cohortGqlOperator = buildCohortGqlOperator(allFilters);
-  const coreDispatch = useCoreDispatch();
 
   const [sortBy, setSortBy] = useState([]);
+  const [pageSize, setPageSize] = useState(20);
+  const [offset, setOffset] = useState(0);
 
-  const getCohortCases = (pageSize = 20, offset = 0, sortBy = []) => {
+  const coreDispatch = useCoreDispatch();
+
+  useEffect(() => {
     coreDispatch(
       fetchFiles({
         filters: cohortGqlOperator,
@@ -138,7 +159,8 @@ const FilesTables: React.FC = () => {
         sortBy: sortBy,
       }),
     );
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageSize, offset, sortBy]);
 
   const sortByActions = (sortByObj) => {
     const tempSortBy = sortByObj.map((sortObj) => {
@@ -154,7 +176,30 @@ const FilesTables: React.FC = () => {
       };
     });
     setSortBy(tempSortBy);
-    getCohortCases(tempPagination.size, tempPagination.page - 1, tempSortBy);
+  };
+
+  const buildSearchFilters = (term: string): Operation => {
+    return {
+      operator: "or",
+      operands: [
+        {
+          operator: "=",
+          field: "file_name",
+          operand: `*${term}*`,
+        },
+        {
+          operator: "=",
+          field: "file_id",
+          operand: `*${term}*`,
+        },
+      ],
+    };
+  };
+
+  const updateFilter = useUpdateRepositoryFacetFilter();
+  const newSearchActions = (searchTerm: string) => {
+    //TODO if lots of calls fast last call might not be displayed
+    updateFilter("files", buildSearchFilters(searchTerm));
   };
 
   const handleChange = (obj: HandleChangeInput) => {
@@ -163,14 +208,95 @@ const FilesTables: React.FC = () => {
         sortByActions(obj.sortBy);
         break;
       case "newPageSize":
-        getCohortCases(parseInt(obj.newPageSize), 0, sortBy);
+        setOffset(0);
+        setPageSize(parseInt(obj.newPageSize));
         break;
       case "newPageNumber":
-        getCohortCases(tempPagination.size, obj.newPageNumber - 1, sortBy);
+        setOffset(obj.newPageNumber - 1);
+        break;
+      case "newSearch":
+        setOffset(0);
+        newSearchActions(obj.newSearch);
+        break;
+      case "newHeadings":
+        setColumnCells(obj.newHeadings);
         break;
     }
   };
 
+  const handleDownloadJSON = async () => {
+    await download({
+      endpoint: "files",
+      method: "POST",
+      options: {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      },
+      params: {
+        filters: buildCohortGqlOperator(allFilters) ?? {},
+        size: 10000,
+        attachment: true,
+        format: "JSON",
+        pretty: true,
+        annotations: true,
+        related_files: true,
+        fields: [
+          "file_id",
+          "access",
+          "file_name",
+          "cases.case_id",
+          "cases.project.project_id",
+          "data_category",
+          "data_type",
+          "data_format",
+          "experimental_strategy",
+          "platform",
+          "file_size",
+          "annotations.annotation_id",
+        ].join(","),
+      },
+      dispatch: coreDispatch,
+      queryParams: `?${new URLSearchParams({
+        annotations: "true",
+        related_files: "true",
+      }).toString()}`,
+    });
+  };
+
+  const handleDownloadTSV = () => {
+    downloadTSV(
+      data,
+      columnCells,
+      `files-table.${convertDateToString(new Date())}.tsv`,
+      {
+        blacklist: ["cart"],
+        overwrite: {
+          access: {
+            composer: (file) => capitalize(file.access),
+          },
+          cases: {
+            composer: (file) => file.cases?.length.toLocaleString() || 0,
+          },
+          file_size: {
+            composer: (file) => fileSize(file.file_size),
+          },
+          annotations: {
+            composer: (file) => file.annotations?.length || 0,
+          },
+          experimental_strategy: {
+            composer: (file) => file.experimental_strategy || "--",
+          },
+          platform: {
+            composer: (file) => file.platform || "--",
+          },
+        },
+      },
+    );
+  };
+
+  //update everything that uses table component
   let totalFileSize = "--";
 
   const fileSizeSliceData = useFilesSize(cohortGqlOperator);
@@ -183,8 +309,8 @@ const FilesTables: React.FC = () => {
       additionalControls={
         <div className="flex">
           <div className="flex gap-2">
-            <FunctionButton>JSON</FunctionButton>
-            <FunctionButton>TSV</FunctionButton>
+            <FunctionButton onClick={handleDownloadJSON}>JSON</FunctionButton>
+            <FunctionButton onClick={handleDownloadTSV}>TSV</FunctionButton>
           </div>
           <div className="flex gap-2 w-full flex-row-reverse text-xl">
             <div className="pr-5">
@@ -200,10 +326,8 @@ const FilesTables: React.FC = () => {
         </div>
       }
       tableData={formattedTableData}
-      columnListOrder={columnListOrder}
+      columns={columnListOrder}
       columnSorting={"manual"}
-      columnCells={columnCells}
-      handleColumnChange={handleColumnChange}
       selectableRow={false}
       pagination={{
         ...tempPagination,
@@ -211,6 +335,9 @@ const FilesTables: React.FC = () => {
       }}
       status={status}
       handleChange={handleChange}
+      search={{
+        enabled: true,
+      }}
     />
   );
 };

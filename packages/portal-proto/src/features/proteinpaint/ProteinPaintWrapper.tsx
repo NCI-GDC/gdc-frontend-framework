@@ -6,6 +6,7 @@ import {
   buildCohortGqlOperator,
   FilterSet,
   PROTEINPAINT_API,
+  useUserDetails,
 } from "@gff/core";
 
 const basepath = PROTEINPAINT_API;
@@ -25,43 +26,65 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
     useCoreSelector(selectCurrentCohortFilters),
   );
 
+  const { data: userDetails } = useUserDetails();
+
   // to track reusable instance for mds3 skewer track
   const ppRef = useRef<PpApi>();
 
-  useEffect(() => {
-    const data =
-      props.track == "lolliplot"
-        ? getLolliplotTrack(props, filter0)
-        : props.track == "bam"
-        ? getBamTrack(props, filter0)
-        : null;
+  useEffect(
+    () => {
+      const rootElem = divRef.current as HTMLElement;
+      const loginPrompt =
+        "Please login to access the Sequence Read visualization tool.";
+      if (props.track == "bam") {
+        if (!userDetails.username) {
+          rootElem.innerHTML = `<div style='margin: 32px'><b>Access alert</b><hr><p>${loginPrompt}</p></div>`;
+          ppRef.current = null;
+          return;
+        } else if (rootElem.innerHTML.includes(loginPrompt)) {
+          rootElem.innerHTML = "";
+        }
+      }
 
-    if (!data) return;
-    const rootElem = divRef.current as HTMLElement;
-    const toolContainer = rootElem.parentNode.parentNode
-      .parentNode as HTMLElement;
-    toolContainer.style.backgroundColor = "#fff";
+      const data =
+        props.track == "lolliplot"
+          ? getLolliplotTrack(props, filter0)
+          : props.track == "bam" && userDetails?.username
+          ? getBamTrack(props, filter0)
+          : props.track == "matrix"
+          ? getMatrixTrack(props, filter0)
+          : null;
 
-    const arg = Object.assign(
-      { holder: rootElem, noheader: true, nobox: true, hide_dsHandles: true },
-      JSON.parse(JSON.stringify(data)),
-    ) as PpArg;
+      if (!data) return;
 
-    if (ppRef.current) {
-      ppRef.current.update(arg);
-    } else {
-      const pp_holder = rootElem.querySelector(".sja_root_holder");
-      if (pp_holder) pp_holder.remove();
-      runproteinpaint(arg).then((pp) => {
-        ppRef.current = pp;
-      });
-    }
-  }, [
-    props.gene2canonicalisoform,
-    props.mds3_ssm2canonicalisoform,
-    props.geneSearch4GDCmds3,
-    filter0,
-  ]);
+      const toolContainer = rootElem.parentNode.parentNode
+        .parentNode as HTMLElement;
+      toolContainer.style.backgroundColor = "#fff";
+
+      const arg = Object.assign(
+        { holder: rootElem, noheader: true, nobox: true, hide_dsHandles: true },
+        JSON.parse(JSON.stringify(data)),
+      ) as PpArg;
+
+      if (ppRef.current) {
+        ppRef.current.update(arg);
+      } else if (userDetails?.username) {
+        const pp_holder = rootElem.querySelector(".sja_root_holder");
+        if (pp_holder) pp_holder.remove();
+        runproteinpaint(arg).then((pp) => {
+          ppRef.current = pp;
+        });
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      props.gene2canonicalisoform,
+      props.mds3_ssm2canonicalisoform,
+      props.geneSearch4GDCmds3,
+      filter0,
+      userDetails,
+    ],
+  );
 
   const divRef = useRef();
   return <div ref={divRef} />;
@@ -141,6 +164,24 @@ function getBamTrack(props: PpProps, filter0: any) {
     gdcbamslice: {
       hideTokenInput: true,
     },
+    filter0,
+  };
+
+  return arg;
+}
+
+interface MatrixArg {
+  host: string;
+  launchGdcMatrix: boolean;
+  filter0: FilterSet;
+}
+
+function getMatrixTrack(props: PpProps, filter0: any) {
+  // host in gdc is just a relative url path,
+  // using the same domain as the GDC portal where PP is embedded
+  const arg: MatrixArg = {
+    host: props.basepath || (basepath as string),
+    launchGdcMatrix: true,
     filter0,
   };
 

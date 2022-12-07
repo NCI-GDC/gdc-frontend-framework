@@ -9,13 +9,6 @@ const columnListOrder = [
   { id: "file_size", columnName: "File Size", visible: true },
 ];
 
-const columnCells = [
-  { Header: "Project", accessor: "key", width: 200 },
-  { Header: "Cases", accessor: "case_count" },
-  { Header: "Files", accessor: "doc_count" },
-  { Header: "File Size", accessor: "file_size" },
-];
-
 interface ProjectTableProps {
   readonly projectData: CartSummaryData;
 }
@@ -33,10 +26,8 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
   return (
     <VerticalTable
       tableData={tableData}
-      columnListOrder={columnListOrder}
-      columnCells={columnCells}
+      columns={columnListOrder}
       selectableRow={false}
-      handleColumnChange={undefined}
       showControls={false}
     />
   );

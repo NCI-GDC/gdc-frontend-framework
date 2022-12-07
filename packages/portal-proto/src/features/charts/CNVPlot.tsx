@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useCnvPlot } from "@gff/core";
 import ChartTitleBar from "./ChartTitleBar";
+import { Grid } from "@mantine/core";
 const BarChart = dynamic(() => import("./BarChart"), {
   ssr: false,
 });
@@ -121,7 +122,7 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
   };
   const chartDivId = `${CHART_NAME}_${Math.floor(Math.random() * 100)}`;
   return (
-    <div className="relative">
+    <Grid.Col span={6}>
       <div>
         <ChartTitleBar
           title={title}
@@ -161,7 +162,7 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
           Loss
         </label>
       </div>
-    </div>
+    </Grid.Col>
   );
 };
 

@@ -122,41 +122,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       },
       {
         id: "ssm_affected_cases",
-        columnName: "# SSM Affected Cases",
-        visible: true,
-      },
-    ];
-    return [
-      ...columns,
-      ...(isGene
-        ? [
-            { id: "cnv_gains", columnName: "# CNV Gains", visible: true },
-            { id: "cnv_losses", columnName: "# CNV Losses", visible: true },
-            { id: "num_mutations", columnName: "# Mutations", visible: true },
-          ]
-        : []),
-    ];
-  }, [isGene]);
-
-  const columnCells = useMemo(() => {
-    const columns = [
-      { Header: "Project", accessor: "project" },
-      {
-        Header: "Disease Type",
-        accessor: "disease_type",
-        Cell: ({ value, row }: CellProps) => (
-          <CollapsibleRow value={value} row={row} label={"Disease Types"} />
-        ),
-      },
-      {
-        Header: "Primary Site",
-        accessor: "primary_site",
-        Cell: ({ value, row }: CellProps) => (
-          <CollapsibleRow value={value} row={row} label={"Primary Sites"} />
-        ),
-      },
-      {
-        Header: (
+        columnName: (
           <div>
             <Tooltip
               label={`# Cases tested for Simple Somatic Mutations in the Project affected by ${symbol}
@@ -170,7 +136,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
             </Tooltip>
           </div>
         ),
-        accessor: "ssm_affected_cases",
+        visible: true,
       },
     ];
     return [
@@ -178,12 +144,13 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       ...(isGene
         ? [
             {
-              Header: (
+              id: "cnv_gains",
+              columnName: (
                 <div>
                   <Tooltip
                     label={`# Cases tested for CNV in the Project affected by CNV gain event in ${symbol}
-          / # Cases tested for Copy Number Variation in the Project
-          `}
+        / # Cases tested for Copy Number Variation in the Project
+        `}
                     multiline
                     withArrow
                   >
@@ -193,15 +160,16 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                   </Tooltip>
                 </div>
               ),
-              accessor: "cnv_gains",
+              visible: true,
             },
             {
-              Header: (
+              id: "cnv_losses",
+              columnName: (
                 <div>
                   <Tooltip
                     label={`# Cases tested for CNV in Project affected by CNV loss event in ${symbol}
-          / # Cases tested for Copy Number Variation in Project
-          `}
+        / # Cases tested for Copy Number Variation in Project
+        `}
                     multiline
                     withArrow
                   >
@@ -211,15 +179,14 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                   </Tooltip>
                 </div>
               ),
-              accessor: "cnv_losses",
+              visible: true,
             },
             {
-              Header: (
+              id: "num_mutations",
+              columnName: (
                 <div>
                   <Tooltip
-                    label={`# Cases tested for CNV in Project affected by CNV loss event in ${symbol}
-          / # Cases tested for Copy Number Variation in Project
-          `}
+                    label={`# Unique Simple Somatic Mutations observed in ${symbol} in the Project`}
                     multiline
                     withArrow
                   >
@@ -229,12 +196,12 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                   </Tooltip>
                 </div>
               ),
-              accessor: "num_mutations",
+              visible: true,
             },
           ]
         : []),
     ];
-  }, [symbol, isGene]);
+  }, [isGene, symbol]);
 
   const formattedData = useMemo(
     () =>
@@ -249,12 +216,12 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 ),
                 disease_type: projectsById[d.key]?.disease_type || [],
                 primary_site: projectsById[d.key]?.primary_site || [],
-                ssm_affected_cases: `${data.ssmFiltered[
-                  d.key
-                ].toLocaleString()} / ${data.ssmTotal[
+                ssm_affected_cases: `${(
+                  data.ssmFiltered[d.key] || 0
+                ).toLocaleString()} / ${data.ssmTotal[
                   d.key
                 ].toLocaleString()} (${(
-                  data.ssmFiltered[d.key] / data.ssmTotal[d.key]
+                  (data.ssmFiltered[d.key] || 0) / data.ssmTotal[d.key]
                 ).toLocaleString(undefined, {
                   style: "percent",
                   minimumFractionDigits: 2,
@@ -285,7 +252,10 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                         style: "percent",
                         minimumFractionDigits: 2,
                       })})`,
-                      num_mutations: d.doc_count.toLocaleString(),
+                      num_mutations:
+                        (data.ssmFiltered[d.key] || 0) === 0
+                          ? 0
+                          : d.doc_count.toLocaleString(),
                     }
                   : {}),
               };
@@ -321,10 +291,8 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
   return (
     <VerticalTable
       tableData={displayedData}
-      columnListOrder={columnListOrder}
-      columnCells={columnCells}
+      columns={columnListOrder}
       selectableRow={false}
-      handleColumnChange={undefined}
       showControls={false}
       additionalControls={
         <div className="flex gap-2">

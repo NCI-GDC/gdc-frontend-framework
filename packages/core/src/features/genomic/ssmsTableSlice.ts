@@ -12,7 +12,22 @@ import {
   graphqlAPI,
   TablePageOffsetProps,
 } from "../gdcapi/gdcgraphql";
-import { selectGenomicAndCohortGqlFilters } from "./genomicFilters";
+import {
+  selectGenomicAndCohortFilters,
+  selectGenomicAndCohortGqlFilters,
+} from "./genomicFilters";
+import {
+  buildCohortGqlOperator,
+  filterSetToOperation,
+  selectCurrentCohortFilters,
+} from "../cohort";
+import {
+  convertFilterToGqlFilter,
+  Intersection,
+  Union,
+} from "../gdcapi/filters";
+import { appendFilterToOperation } from "./utils";
+import { joinFilters } from "../cohort";
 
 const SSMSTableGraphQLQuery = `query SsmsTable_relayQuery(
   $ssmTested: FiltersArgument
@@ -95,16 +110,19 @@ export interface SSMSConsequence {
   readonly annotation: {
     readonly polyphen_impact: string;
     readonly polyphen_score: number;
-    readonly shift_impact: string;
+    readonly sift_impact: string;
     readonly sift_score: string;
     readonly vep_impact: string;
+    readonly hgvsc?: string;
   };
   consequence_type: string;
   readonly gene: {
     readonly gene_id: string;
     readonly symbol: string;
+    readonly gene_strand?: number;
   };
   readonly is_canonical: boolean;
+  readonly transcript_id?: string;
 }
 export interface SSMSData {
   readonly ssm_id: string;
@@ -126,18 +144,89 @@ export interface GDCSsmsTable {
   readonly offset: number;
 }
 
+export const buildSSMSTableSearchFilters = (
+  term?: string,
+): Union | undefined => {
+  if (term !== undefined) {
+    return {
+      operator: "or",
+      operands: [
+        {
+          operator: "includes",
+          field: "ssms.genomic_dna_change",
+          operands: [`*${term}*`],
+        },
+        {
+          operator: "includes",
+          field: "ssms.gene_aa_change",
+          operands: [`*${term}*`],
+        },
+      ],
+    };
+  }
+  return undefined;
+};
+
+export interface SsmsTableRequestParameters extends TablePageOffsetProps {
+  readonly geneSymbol?: string;
+}
+
 export const fetchSsmsTable = createAsyncThunk<
   GraphQLApiResponse,
-  TablePageOffsetProps,
+  SsmsTableRequestParameters,
   { dispatch: CoreDispatch; state: CoreState }
 >(
   "genomic/ssmsTable",
   async (
-    { pageSize, offset }: TablePageOffsetProps,
+    { pageSize, offset, searchTerm, geneSymbol }: SsmsTableRequestParameters,
     thunkAPI,
   ): Promise<GraphQLApiResponse> => {
-    const filters = selectGenomicAndCohortGqlFilters(thunkAPI.getState());
-    const filterContents = filters?.content ? Object(filters?.content) : [];
+    const cohortFilters = buildCohortGqlOperator(
+      geneSymbol
+        ? joinFilters(
+            selectCurrentCohortFilters(thunkAPI.getState()) ?? {
+              mode: "and",
+              root: {},
+            },
+            {
+              mode: "and",
+              root: {
+                "genes.symbol": {
+                  field: "genes.symbol",
+                  operator: "includes",
+                  operands: [geneSymbol],
+                },
+              },
+            },
+          )
+        : selectCurrentCohortFilters(thunkAPI.getState()),
+    );
+    const cohortFiltersContent = cohortFilters?.content
+      ? Object(cohortFilters?.content)
+      : [];
+    const geneAndCohortFilters = geneSymbol
+      ? joinFilters(selectGenomicAndCohortFilters(thunkAPI.getState()), {
+          mode: "and",
+          root: {
+            "genes.symbol": {
+              field: "genes.symbol",
+              operator: "includes",
+              operands: [geneSymbol],
+            },
+          },
+        })
+      : selectGenomicAndCohortFilters(thunkAPI.getState());
+
+    const searchFilters = buildSSMSTableSearchFilters(searchTerm);
+    const tableFilters = convertFilterToGqlFilter(
+      appendFilterToOperation(
+        filterSetToOperation(geneAndCohortFilters) as
+          | Union
+          | Intersection
+          | undefined,
+        searchFilters,
+      ),
+    );
 
     const graphQlFilters = {
       ssmTested: {
@@ -163,7 +252,7 @@ export const fetchSsmsTable = createAsyncThunk<
               op: "in",
             },
           ],
-          ...filterContents,
+          ...cohortFiltersContent,
         ],
         op: "and",
       },
@@ -181,7 +270,7 @@ export const fetchSsmsTable = createAsyncThunk<
         op: "and",
       },
       ssmsTable_offset: offset,
-      ssmsTable_filters: filters ? filters : {},
+      ssmsTable_filters: tableFilters ? tableFilters : {},
       score: "occurrence.case.project.project_id",
       sort: [
         {
@@ -231,6 +320,7 @@ const slice = createSlice({
           state.error = response.errors.filters;
         }
         const data = action.payload.data.viewer.explore;
+        state.ssms.ssmsTotal = data.ssms.hits.total;
         state.ssms.cases = data.cases.hits.total;
         state.ssms.filteredCases = data.filteredCases.hits.total;
         state.ssms.ssms = data.ssms.hits.edges.map(
@@ -259,7 +349,6 @@ const slice = createSlice({
             };
           },
         );
-
         state.status = "fulfilled";
         state.error = undefined;
         return state;

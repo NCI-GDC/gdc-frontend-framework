@@ -1,9 +1,10 @@
-import React, { useState, useEffect, FC } from "react";
-import { useTable, useRowState, useSortBy } from "react-table";
+import React, { useState, useEffect, FC, Fragment } from "react";
+import { useTable, useRowState, useSortBy, SortingRule } from "react-table";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DragDrop } from "./DragDrop";
-import { BsList } from "react-icons/bs";
+import { BsList, BsCaretDownFill, BsCaretUpFill } from "react-icons/bs";
+import { MdClose, MdSearch } from "react-icons/md";
 import { isEqual } from "lodash";
 import { DataStatus } from "@gff/core";
 import {
@@ -12,6 +13,7 @@ import {
   Select,
   Pagination,
   LoadingOverlay,
+  TextInput,
 } from "@mantine/core";
 
 export interface PaginationOptions {
@@ -47,11 +49,20 @@ interface VerticalTableProps {
    */
   tableData: Record<string, any>[];
   /**
-   * list of columns in order they appear and if they are visible or not
+   * list of columns in default order they appear and a number of properties
    */
-  columnListOrder: {
+  columns: {
+    /**
+     * Id that matches tableData
+     */
     id: string;
-    columnName: string;
+    /**
+     * HTML that user will see at top of column
+     */
+    columnName: JSX.Element | string | ((value: any) => JSX.Element);
+    /**
+     * Flag to show / hide column
+     */
     visible: boolean;
     /**
      * Flag to activate or disable sorting feature of column sorting
@@ -63,15 +74,11 @@ interface VerticalTableProps {
      * @defaultValue true
      */
     arrangeable?: boolean;
+    /**
+     * Allows a data cell to have a custom function attached to it that will be run on the data in that cell
+     */
+    Cell?: (value: any) => JSX.Element;
   }[];
-  /**
-   * sorted list of columns to display
-   */
-  columnCells: Column[];
-  /**
-   * callback for when user changes column order or visibility
-   */
-  handleColumnChange: (columns: any) => void;
   /**
    * ???
    */
@@ -129,9 +136,14 @@ interface VerticalTableProps {
     enabled: boolean;
     /**
      * placeholder to display in search input
+     * @defaultValue "Search"
      */
     placeholder?: string;
   };
+  /**
+   * Optional default table sort state
+   */
+  initialSort?: Array<SortingRule<any>>;
 }
 
 /**
@@ -161,11 +173,16 @@ export interface HandleChangeInput {
    * search term change
    */
   newSearch?: string;
+  /**
+   * headings change
+   */
+  newHeadings?: Column[];
 }
 
-interface Column {
-  Header: string | JSX.Element;
+export interface Column {
+  Header: string | JSX.Element | ((value: any) => JSX.Element);
   accessor: string;
+  disableSortBy?: boolean;
   width?: number;
   Cell?: (value: any) => JSX.Element;
 }
@@ -178,11 +195,7 @@ interface TableProps {
 /**
  * Returns a vertical table with many optional features
  * @parm {array} tableData - data to go in the table
- *
- * //TODO combine next 3
- * @parm {array} columnListOrder - list of columns in order they appear and if they are visible or not
- * @parm {array} columnCells - sorted list of columns to display
- * @parm {function} handleColumnChange - callback for when user changes column order or visibility
+ * @parm {array} columns - list of columns in default order they appear and a number of properties
  * @parm {boolean} selectableRow - ???
  * @parm {string} tableTitle - caption to display at top of table
  * @parm {React.ReactNode} additionalControls - html block left of column sorting controls
@@ -191,13 +204,12 @@ interface TableProps {
  * @parm {object} pagination - optional pagination controls at bottom of table
  * @parm {string} status - optional shows loading state
  * @parm {object} search - optional, search options
+ * @parm {object} initialSort - optional, initial sort state
  * @returns ReactElement
  */
 export const VerticalTable: FC<VerticalTableProps> = ({
   tableData,
-  columnListOrder,
-  columnCells,
-  handleColumnChange,
+  columns,
   selectableRow,
   tableTitle,
   columnSorting = "none",
@@ -209,26 +221,47 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     console.error("handleChange was not set and called with:", a);
   },
   search,
+  initialSort = [],
 }: VerticalTableProps) => {
+  const filterColumnCells = (newList) =>
+    newList.reduce((filtered, obj) => {
+      if (obj.visible) {
+        const colObj: Column = {
+          Header: obj.columnName,
+          accessor: obj.id,
+          disableSortBy: obj.disableSortBy || false,
+        };
+        if (obj.Cell) {
+          colObj.Cell = obj.Cell;
+        }
+        if (obj.width) {
+          colObj.width = obj.width;
+        }
+        filtered.push(colObj);
+      }
+      return filtered;
+    }, []);
+
   const [table, setTable] = useState([]);
-  const [columnListOptions, setColumnListOptions] = useState([]);
-  const [headings, setHeadings] = useState([]);
+  const [headings, setHeadings] = useState(filterColumnCells(columns));
   const [showColumnMenu, setShowColumnMenu] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [showLoading, setShowLoading] = useState(true);
 
   useEffect(() => {
     if (status === "fulfilled") {
       setTable(tableData);
     }
+    setShowLoading(status === "pending" || status === "uninitialized");
   }, [status, tableData]);
 
   useEffect(() => {
-    setColumnListOptions(columnListOrder);
-  }, [columnListOrder]);
-  //TODO combine columnCells and columnListOrder and handle column re-ordering in this component
-  useEffect(() => {
-    setHeadings(columnCells);
-  }, [columnCells]);
+    handleChange({ newHeadings: headings });
+  }, [headings, handleChange]);
+
+  const handleColumnChange = (update) => {
+    setHeadings(filterColumnCells(update));
+  };
 
   const tableAction = (action) => {
     action.visibleColumns.push((columns) => [
@@ -243,7 +276,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   };
 
   // save sorting state
-  const [colSort, setColSort] = useState([]);
+  const [colSort, setColSort] = useState(initialSort);
   const useTableConditionalProps = [];
   if (columnSorting !== "none") {
     useTableConditionalProps.push(useSortBy);
@@ -287,7 +320,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         }
       }
     }, [sortBy]);
-
+    //TODO have focus stay on selection, also only reload table data not headers
     return (
       <table {...getTableProps()} className="w-full text-left font-content ">
         {tableTitle && (
@@ -312,7 +345,10 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 ) : (
                   <th
                     {...column.getHeaderProps(column.getSortByToggleProps())}
-                    className="px-2 pt-3 pb-1 font-heading text-primary-contrast-darker font-medium text-md"
+                    className={`px-2 pt-3 pb-1 font-heading text-primary-contrast-darker font-medium text-md whitespace-nowrap ${
+                      column.canSort &&
+                      "hover:bg-primary-darkest focus:bg-primary-darkest focus:outline focus:outline-white outline-offset-[-3px] outline-1"
+                    }`}
                     key={`hcolumn-${key}`}
                     aria-sort={
                       column.isSorted
@@ -332,13 +368,27 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                     role={column.canSort ? "button" : "columnheader"}
                   >
                     {column.render("Header")}
-                    <span key={`span-${key}`}>
-                      {column.isSorted
-                        ? column.isSortedDesc
-                          ? " 🔽"
-                          : " 🔼"
-                        : ""}
-                    </span>
+                    {column.canSort && (
+                      <div
+                        key={`span-${key}`}
+                        className="inline-block text-xs pl-3 align-middle text-base-content-light"
+                      >
+                        <BsCaretUpFill
+                          className={
+                            column.isSorted && !column.isSortedDesc
+                              ? "text-white"
+                              : ""
+                          }
+                        />
+                        <BsCaretDownFill
+                          className={`${
+                            column.isSorted && column.isSortedDesc
+                              ? "text-white"
+                              : ""
+                          } relative top-[-2px]`}
+                        />
+                      </div>
+                    )}
                   </th>
                 );
               })}
@@ -356,9 +406,8 @@ export const VerticalTable: FC<VerticalTableProps> = ({
             rows.map((row, index) => {
               prepareRow(row);
               return (
-                <>
+                <Fragment key={`row-${index}`}>
                   <tr
-                    key={`row-${index}`}
                     {...row.getRowProps()}
                     className={
                       index % 2 === 1 ? "bg-base-lighter" : "bg-base-lightest"
@@ -376,12 +425,12 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                       );
                     })}
                   </tr>
-                  {row.state.expanded > 0 ? (
-                    <tr {...row.getRowProps()}>
+                  {row.state.expanded > 0 && (
+                    <tr {...row.getRowProps()} key={`row-${index}-2`}>
                       <td colSpan={headings.length}>{row.state.content}</td>
                     </tr>
-                  ) : null}
-                </>
+                  )}
+                </Fragment>
               );
             })
           )}
@@ -396,13 +445,13 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   const [pageTotal, setPageTotal] = useState(1);
 
   useEffect(() => {
-    if (pagination?.size) {
+    if (pagination?.size !== undefined) {
       setPageSize(pagination.size);
     }
-    if (pagination?.page) {
+    if (pagination?.page !== undefined) {
       setPageOn(pagination.page);
     }
-    if (pagination?.pages) {
+    if (pagination?.pages !== undefined) {
       setPageTotal(pagination.pages);
     }
   }, [pagination]);
@@ -423,7 +472,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   const ShowingCount: FC = () => {
     let outputString = " --";
     if (!isNaN(pagination.from) && status === "fulfilled") {
-      outputString = ` ${pagination.from + 1} - `;
+      outputString = ` ${pagination.from ? pagination.from + 1 : 0} - `;
 
       const paginationTo = pagination.from + pageSize;
       if (paginationTo < pagination.total) {
@@ -445,6 +494,19 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     );
   };
 
+  useEffect(() => {
+    setShowLoading(true);
+    //prevents unneeded api calls if user is typing something
+    const delayDebounceFn = setTimeout(() => {
+      handleChange({
+        newSearch: searchTerm,
+      });
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTerm]);
+
   return (
     <div className="grow overflow-hidden">
       <div className="flex">
@@ -452,11 +514,44 @@ export const VerticalTable: FC<VerticalTableProps> = ({
           <div className={"flex-auto h-10"}>{additionalControls}</div>
         )}
         <div className="flex flex-row">
+          {search?.enabled && (
+            <div className="flex flex-row w-max">
+              <TextInput
+                icon={<MdSearch size={24} />}
+                placeholder={search.placeholder ?? "Search"}
+                aria-label="Table Search Input"
+                classNames={{
+                  input: "focus:border-2 cus:drop-shadow-xl",
+                  wrapper: "w-72 mr-2",
+                }}
+                size="sm"
+                rightSection={
+                  searchTerm.length > 0 && (
+                    <MdClose
+                      onClick={() => {
+                        setSearchTerm("");
+                        handleChange({
+                          newSearch: "",
+                        });
+                      }}
+                      className="cursor-pointer"
+                    ></MdClose>
+                  )
+                }
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  handleChange({
+                    newSearch: e.target.value,
+                  });
+                }}
+              />
+            </div>
+          )}
           {showControls && (
             <Popover
               opened={showColumnMenu}
               onClose={() => setShowColumnMenu(false)}
-              width={260}
               position="bottom"
               transition="scale"
               withArrow
@@ -466,17 +561,18 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                   className={`mr-0 ml-auto border-1 border-base-lighter p-3`}
                   onClick={() => setShowColumnMenu(!showColumnMenu)}
                 >
-                  <BsList></BsList>
+                  <BsList />
                 </Box>
               </Popover.Target>
               <Popover.Dropdown>
                 <div className={`w-fit`}>
-                  {columnListOptions.length > 0 && showColumnMenu && (
+                  {columns.length > 0 && showColumnMenu && (
                     <div className={`mr-0 ml-auto`}>
                       <DndProvider backend={HTML5Backend}>
                         <DragDrop
-                          listOptions={columnListOptions}
+                          listOptions={columns}
                           handleColumnChange={handleColumnChange}
+                          columnSearchTerm={""}
                         />
                       </DndProvider>
                     </div>
@@ -485,29 +581,10 @@ export const VerticalTable: FC<VerticalTableProps> = ({
               </Popover.Dropdown>
             </Popover>
           )}
-          {search?.enabled && (
-            <div className="flex flex-row w-max float-right">
-              <input
-                className="mr-2 rounded-sm border-1 border-base-lighter px-1"
-                type="search"
-                placeholder={search.placeholder ?? "Search"}
-                onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                  handleChange({
-                    newSearch: e.target.value,
-                  });
-                }}
-                value={searchTerm}
-              />
-              <div className={`mt-px`}></div>
-            </div>
-          )}
         </div>
       </div>
-      <div className="overflow-y-auto w-full relative">
-        <LoadingOverlay
-          visible={status === "pending" || status === "uninitialized"}
-        />
+      <div className="overflow-y-scroll w-full relative">
+        <LoadingOverlay visible={showLoading} />
         <Table columns={headings} data={table} />
       </div>
       {pagination && (

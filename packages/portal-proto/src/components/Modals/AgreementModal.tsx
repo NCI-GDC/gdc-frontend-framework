@@ -50,11 +50,11 @@ export const AgreementModal = ({
           disabled={!checked}
           filename={file.file_name}
           extraParams={{
-            ids: file.fileId,
+            ids: file.file_id,
             annotations: true,
             related_files: true,
           }}
-          endpoint={`data/${file.fileId}`}
+          endpoint={`data/${file.file_id}`}
           queryParams={""}
           activeText="Processing"
           inactiveText="Download"

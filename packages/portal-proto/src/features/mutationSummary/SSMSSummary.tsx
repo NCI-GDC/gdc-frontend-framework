@@ -1,3 +1,5 @@
+import React from "react";
+import { Grid } from "@mantine/core";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { useSSMS } from "@gff/core";
@@ -5,11 +7,13 @@ import { pick } from "lodash";
 import { HorizontalTableProps } from "@/components/HorizontalTable";
 import { formatDataForHorizontalTable } from "../files/utils";
 import { externalLinks, humanify } from "src/utils";
-import { FaBook, FaTable } from "react-icons/fa";
+import { FaBook, FaRegChartBar as BarChartIcon, FaTable } from "react-icons/fa";
 import { CollapsibleList } from "@/components/CollapsibleList";
 import { AnchorLink } from "@/components/AnchorLink";
 import SSMPlot from "../charts/SSMPlot";
 import { SSMSCancerDistributionTable } from "../cancerDistributionTable/CancerDistributionTable";
+import { DEFAULT_CONSEQUENCE_TABLE_ORDER } from "./mutationTableConfig";
+import SMSConsequenceTableContainer from "@/features/mutationSummary/SMSConsequenceTableContainer";
 
 export const SSMSSummary = ({ ssm_id }: { ssm_id: string }): JSX.Element => {
   const { data: summaryData, isFetching } = useSSMS({
@@ -182,10 +186,22 @@ export const SSMSSummary = ({ ssm_id }: { ssm_id: string }): JSX.Element => {
               </div>
             </div>
             <div>
-              <SSMPlot page={"ssms"} ssms={ssm_id} />
+              <Grid>
+                <SSMPlot page={"ssms"} ssms={ssm_id} />
+              </Grid>
               <SSMSCancerDistributionTable
                 ssms={ssm_id}
                 symbol={summaryData.dna_change}
+              />
+            </div>
+            <div className="mt-4">
+              <div className="flex items-center gap-2 mb-4">
+                <BarChartIcon size={20} />
+                <h2 className="text-xl">Consequences</h2>
+              </div>
+              <SMSConsequenceTableContainer
+                columnsList={DEFAULT_CONSEQUENCE_TABLE_ORDER}
+                ssmsId={ssm_id}
               />
             </div>
           </div>

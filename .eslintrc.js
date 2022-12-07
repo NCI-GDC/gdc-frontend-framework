@@ -29,7 +29,10 @@ module.exports = {
     "react/react-in-jsx-scope": "off",
     "react/display-name": "off",
     "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      { ignoreRestSiblings: true },
+    ],
     //keep this until issue in next js is resolved https://github.com/vercel/next.js/discussions/32233
     "jsx-a11y/anchor-is-valid": [
       "error",
@@ -43,6 +46,9 @@ module.exports = {
   settings: {
     react: {
       version: "detect",
+    },
+    next: {
+      rootDir: "packages/portal-proto",
     },
   },
 };

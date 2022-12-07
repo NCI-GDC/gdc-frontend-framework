@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { isArray, isEmpty } from "lodash";
 import {
   Operation,
   GqlOperation,
@@ -17,6 +18,9 @@ import {
   NotEquals,
   Intersection,
   Union,
+  convertGqlFilterToFilter,
+  GqlIntersection,
+  GqlUnion,
 } from "../gdcapi/filters";
 import { isEqual } from "lodash";
 
@@ -33,8 +37,12 @@ export interface FilterSet {
   readonly mode: string;
 }
 
-export const isFilterSetEmpty = (fs: FilterSet): boolean =>
-  isEqual({ root: {} }, fs);
+/**
+ * Return true if a FilterSet's root value is an empty object
+ * @param fs - FilterSet to test
+ */
+export const isFilterSetRootEmpty = (fs: FilterSet): boolean =>
+  isEqual({}, fs.root);
 
 /**
  *  Operand types for filter operations
@@ -149,6 +157,28 @@ export const filterSetToOperation = (
           };
   }
   return undefined;
+};
+
+export const buildGqlOperationToFilterSet = (
+  fs: GqlIntersection | GqlUnion | Record<string, never>,
+): FilterSet => {
+  if (isEmpty(fs)) return { mode: "and", root: {} };
+
+  const obj = (fs as GqlIntersection | GqlUnion).content.reduce((acc, item) => {
+    const key = isArray(item.content)
+      ? item.content?.at(0).field
+      : (item.content as any).field;
+
+    return {
+      ...acc,
+      [key]: convertGqlFilterToFilter(item),
+    };
+  }, {});
+
+  return {
+    mode: (fs as GqlIntersection | GqlUnion).op,
+    root: obj,
+  };
 };
 
 /**

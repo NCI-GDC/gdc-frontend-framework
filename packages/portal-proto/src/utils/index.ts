@@ -1,8 +1,7 @@
 import { KeyboardEventHandler } from "react";
 import { CartFile, DAYS_IN_YEAR } from "@gff/core";
 import { replace, sortBy, zip } from "lodash";
-import { DocumentWithWebkit } from "../features/types";
-import * as tailwindConfig from "tailwind.config";
+import { DocumentWithWebkit } from "@/features/types";
 
 export const toggleFullScreen = async (
   ref: React.MutableRefObject<any>,
@@ -88,8 +87,7 @@ export const externalLinks = {
     `http://cancer.sanger.ac.uk/cosmic/mutation/overview?id=${id}`,
   cosn: (id: string): string =>
     `http://cancer.sanger.ac.uk/cosmic/ncv/overview?id=${id}`,
-  dbsnp: (id: string): string =>
-    `https://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs=${id}`,
+  dbsnp: (id: string): string => `https://www.ncbi.nlm.nih.gov/snp/${id}`,
   ensembl: (id: string): string =>
     `http://nov2020.archive.ensembl.org/Homo_sapiens/Gene/Summary?db=core;g=${id}`,
   entrez_gene: (id: string): string => `http://www.ncbi.nlm.nih.gov/gene/${id}`,
@@ -113,10 +111,10 @@ export const calculatePercentageAsString = (
 ): string => `${((count / total) * 100).toFixed(2)}%`;
 
 export const allFilesInCart = (carts: CartFile[], files: CartFile[]): boolean =>
-  files?.every((file) => carts.some((cart) => cart.fileId === file.fileId));
+  files?.every((file) => carts.some((cart) => cart.file_id === file.file_id));
 
 export const fileInCart = (cart: CartFile[], newId: string): boolean =>
-  cart.map((f) => f.fileId).some((id) => id === newId);
+  cart.map((f) => f.file_id).some((id) => id === newId);
 
 /**
  *
@@ -131,9 +129,6 @@ export const sortByPropertyAsc = <T>(
   sortBy(givenObjects, [
     (e) => replace(e[property], /[^a-zA-Z]/g, "").toLocaleLowerCase(),
   ]);
-
-export const getThemeColor = (key: string): Record<string, string> =>
-  tailwindConfig.plugins.slice(-1)[0].__options.defaultTheme.extend.colors[key];
 
 interface HumanifyParams {
   term: string;

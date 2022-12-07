@@ -1,12 +1,12 @@
 import { NextPage } from "next";
 import { SimpleLayout } from "../features/layout/Simple";
-import MutationsTable from "../features/mutationsTable/MutationsTable";
+import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMTableContainer";
 
 const SSMSTablePage: NextPage = () => {
   return (
     <SimpleLayout>
       <div>
-        <MutationsTable
+        <SMTableContainer
           selectedSurvivalPlot={undefined}
           handleSurvivalPlotToggled={undefined}
         />
