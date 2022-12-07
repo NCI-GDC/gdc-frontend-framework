@@ -1,6 +1,5 @@
 import { combineReducers } from "redux";
 import { createAppStore } from "@gff/core";
-import { pickedGenesReducer } from "./pickedGenesSlice";
 import { geneFrequencyFiltersReducer } from "./geneAndSSMFiltersSlice";
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
@@ -14,7 +13,6 @@ const persistConfig = {
 
 const reducers = combineReducers({
   filters: geneFrequencyFiltersReducer,
-  selectedGenes: pickedGenesReducer,
 });
 
 export const { id, AppStore, AppContext, useAppSelector, useAppDispatch } =

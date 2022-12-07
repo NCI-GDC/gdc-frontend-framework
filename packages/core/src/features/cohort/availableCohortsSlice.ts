@@ -16,6 +16,7 @@ import { GqlOperation, Operation } from "../gdcapi/filters";
 import { CoreDataSelectorResponse, DataStatus } from "../../dataAccess";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import { CoreDispatch } from "../../store";
+import { useCoreSelector } from "../../hooks";
 
 export interface CaseSetDataAndStatus {
   readonly status: DataStatus; // status of create caseSet
@@ -36,36 +37,68 @@ export interface Cohort {
   readonly saved?: boolean; // flag indicating if cohort has been saved.
 }
 
+export const buildCaseSetGQLQueryAndVariables = (
+  filters: FilterSet,
+  id: string,
+): Record<string, any> => {
+  const prefix = Object.keys(filters.root).map((x) => x.split(".")[0]);
+  return {
+    query: prefix
+      .map(
+        (name) => `${name}Cases : case (input: $input${name}) { set_id size }`,
+      )
+      .join(","),
+
+    parameters: prefix
+      .map((name) => ` $input${name}: CreateSetInput`)
+      .join(","),
+
+    variables: Object.keys(filters.root).reduce(
+      (obj, name, index) => ({
+        ...obj,
+
+        [`input${prefix[index]}`]: {
+          filters: buildCohortGqlOperator({
+            mode: "and",
+            root: { [name]: filters.root[name] },
+          }),
+          set_id: `${id}-${prefix[index][0]}`,
+        },
+      }),
+      {},
+    ),
+  };
+};
+
 /*
  A start at handling how to seamlessly create cohorts that can bridge explore
  and repository indexes. The slice creates a case set id using the defined filters
 */
-const buildCaseSetMutationQuery = () =>
-  `
- mutation mutationsCreateRepositoryCaseSetMutation(
-  $input: CreateSetInput
+export const buildCaseSetMutationQuery = (
+  parameters: string,
+  query: string,
+): string => `
+mutation mutationsCreateRepositoryCaseSetMutation(
+  ${parameters}
 ) {
   sets {
     create {
       explore {
-        case(input: $input) {
-          set_id
-          size
-        }
-      }
+       ${query}
     }
   }
+ }
 }`;
 
 export interface CreateCaseSetProps {
-  readonly caseSetId?: string; // pass a caseSetId to use
+  readonly caseSetId: string; // pass a caseSetId to use
 }
 
 export const createCaseSet = createAsyncThunk<
   GraphQLApiResponse<Record<string, any>>,
   CreateCaseSetProps,
   { dispatch: CoreDispatch; state: CoreState }
->("cohort/createCaseSet", async ({ caseSetId = undefined }, thunkAPI) => {
+>("cohort/createCaseSet", async ({ caseSetId }, thunkAPI) => {
   const cohort = cohortSelectors.selectById(
     thunkAPI.getState(),
     thunkAPI.getState().cohort.availableCohorts.currentCohort,
@@ -77,21 +110,18 @@ export const createCaseSet = createAsyncThunk<
     filters,
     REQUIRES_CASE_SET_FILTERS,
   );
-  const graphQL = buildCaseSetMutationQuery();
 
-  const filtersGQL = {
-    input: {
-      filters: dividedFilters?.withPrefix
-        ? buildCohortGqlOperator(dividedFilters.withPrefix)
-        : {},
-      set_id: `${caseSetId}`,
-    },
-  };
-  return graphqlAPI(graphQL, filtersGQL);
+  const { query, parameters, variables } = buildCaseSetGQLQueryAndVariables(
+    dividedFilters.withPrefix,
+    caseSetId,
+  );
+
+  const graphQL = buildCaseSetMutationQuery(parameters, query);
+  return graphqlAPI(graphQL, variables);
 });
 
 export const DEFAULT_COHORT_ID = "ALL-GDC-COHORT";
-const REQUIRES_CASE_SET_FILTERS = ["genes.", "ssms."];
+export const REQUIRES_CASE_SET_FILTERS = ["genes.", "ssms."];
 
 const cohortsAdapter = createEntityAdapter<Cohort>({
   sortComparer: (a, b) => {
@@ -130,6 +160,34 @@ const willRequireCaseSet = (
     Object.keys(divideFilterSetByPrefix(filters, prefixes).withPrefix.root)
       .length > 0
   );
+};
+
+const processCaseSetResponse = (
+  data: Record<string, any>,
+): Record<string, Operation> | undefined => {
+  if (Object.keys(data).length == 1) {
+    return {
+      "cases.case_id": {
+        field: "cases.case_id",
+        operator: "includes",
+        operands: [`set_id:${Object.values(data)[0].set_id}`],
+      },
+    };
+  }
+  if (Object.keys(data).length > 1) {
+    // build composite of the two case sets
+    return {
+      internalCaseset: {
+        operator: "and",
+        operands: Object.values(data).map((caseSet) => ({
+          field: "cases.case_id",
+          operator: "includes",
+          operands: [`set_id:${caseSet.set_id}`],
+        })),
+      },
+    };
+  }
+  return undefined;
 };
 
 const newCohort = (
@@ -245,7 +303,7 @@ const slice = createSlice({
       );
 
       // TODO: this will be removed after cohort id issue is fixed in the BE
-      // This is just a hack to remove cohort without trigerring notification and changing the cohort to the default
+      // This is just a hack to remove cohort without triggering notification and changing the cohort to the default
       if (action?.payload?.shouldShowMessage) {
         state.message = `deleteCohort|${removedCohort?.name}|${state.currentCohort}`;
         state.currentCohort = DEFAULT_COHORT_ID;
@@ -447,15 +505,14 @@ const slice = createSlice({
         const additionalFilters =
           filters === undefined
             ? {}
-            : divideFilterSetByPrefix(filters, ["genes."]).withoutPrefix.root;
+            : divideFilterSetByPrefix(filters, ["genes.", "ssms."])
+                .withoutPrefix.root;
+
+        const caseSetIntersection = processCaseSetResponse(data);
         const caseSetFilter: FilterSet = {
           mode: "and",
           root: {
-            "cases.case_id": {
-              field: "cases.case_id",
-              operator: "includes",
-              operands: [`set_id:${data.case.set_id}`],
-            },
+            ...caseSetIntersection,
             ...additionalFilters,
           },
         };
@@ -579,14 +636,12 @@ export const selectAvailableCohortByName = (
  * Returns the current cohort filters as a FilterSet
  * @param state
  */
-export const selectCurrentCohortFilterSet = (
-  state: CoreState,
-): FilterSet | undefined => {
+export const selectCurrentCohortFilterSet = (state: CoreState): FilterSet => {
   const cohort = cohortSelectors.selectById(
     state,
     state.cohort.availableCohorts.currentCohort,
   );
-  return cohort?.filters;
+  return cohort?.filters ?? { mode: "and", root: {} };
 };
 
 interface SplitFilterSet {
@@ -594,7 +649,7 @@ interface SplitFilterSet {
   withoutPrefix: FilterSet;
 }
 
-const divideFilterSetByPrefix = (
+export const divideFilterSetByPrefix = (
   filters: FilterSet,
   prefixes: string[],
 ): SplitFilterSet => {
@@ -673,6 +728,7 @@ export const selectCurrentCohortFilterOrCaseSet = (
   if (cohort === undefined) return { mode: "and", root: {} };
 
   if (!isFilterSetRootEmpty(cohort?.caseSet.caseSetId)) {
+    // we are using caseSet
     return cohort?.caseSet.caseSetId;
   } else {
     return cohort.filters;
@@ -731,4 +787,8 @@ export const selectCurrentCohortCaseSet = (
       status: "uninitialized",
     };
   return { ...cohort.caseSet };
+};
+
+export const useCurrentCohortFilters = (): FilterSet => {
+  return useCoreSelector((state) => selectCurrentCohortFilterSet(state));
 };

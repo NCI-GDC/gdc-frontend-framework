@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import dynamic from "next/dynamic";
 import partial from "lodash/partial";
 import { Grid, Tabs, LoadingOverlay } from "@mantine/core";
@@ -18,28 +18,15 @@ import {
 import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
 import { GTableContainer } from "@/components/expandableTables/genes/GTableContainer";
 import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMTableContainer";
-import EnumFacet from "@/features/facets/EnumFacet";
-import ToggleFacet from "@/features/facets/ToggleFacet";
-import FilterFacets from "./filters.json";
 import { useAppDispatch, useAppSelector } from "@/features/genomic/appApi";
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
-import {
-  useTotalCounts,
-  FacetDocTypeToCountsIndexMap,
-  FacetDocTypeToLabelsMap,
-} from "@/features/facets/hooks";
-
-import {
-  useClearGenomicFilters,
-  useGenesFacet,
-  useSelectFilterContent,
-  useUpdateGenomicEnumFacetFilter,
-} from "./hooks";
+import { useSelectFilterContent } from "./hooks";
 import {
   selectGeneAndSSMFilters,
   clearGeneAndSSMFilters,
 } from "@/features/genomic/geneAndSSMFiltersSlice";
 import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot";
+import GeneAndSSMFilterPanel from "@/features/genomic/FilterPanel";
 
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
   ssr: false,
@@ -143,93 +130,61 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
    * @param name used as the label for the symbol in the Survival Plot
    * @param field  which gene or ssms field the symbol applied to
    */
-  const handleSurvivalPlotToggled = (
-    symbol: string,
-    name: string,
-    field: string,
-  ) => {
-    if (comparativeSurvival && comparativeSurvival.symbol === symbol) {
-      // remove toggle
-      setComparativeSurvival(undefined);
-    } else {
-      setComparativeSurvival({ symbol: symbol, name: name, field: field });
-    }
-  };
+  const handleSurvivalPlotToggled = useCallback(
+    (symbol: string, name: string, field: string) => {
+      if (comparativeSurvival && comparativeSurvival.symbol === symbol) {
+        // remove toggle
+        setComparativeSurvival(undefined);
+      } else {
+        setComparativeSurvival({ symbol: symbol, name: name, field: field });
+      }
+    },
+    [comparativeSurvival],
+  );
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleGeneToggled = (payload: Record<string, any>) => {
-    if (currentGenes.includes(payload.geneID)) {
-      const update = currentGenes.filter((x) => x != payload.geneID);
-      if (update.length > 0)
-        coreDipatch(
-          updateCohortFilter({
-            field: "genes.gene_id",
-            operation: {
-              field: "genes.gene_id",
-              operator: "includes",
-              operands: currentGenes.filter((x) => x != payload.geneID),
-            },
-          }),
-        );
-      else coreDipatch(removeCohortFilter("genes.gene_id"));
-    } else
-      coreDipatch(
-        updateCohortFilter({
-          field: "genes.gene_id",
-          operation: {
-            field: "genes.gene_id",
-            operator: "includes",
-            operands: [...currentGenes, payload.geneID.toString()],
-          },
-        }),
-      );
-  };
-
-  const handleGeneAndSSmToggled = (
-    cohortStatus: string[],
-    field: string,
-    idField: string,
-    payload: Record<string, any>,
-  ) => {
-    if (cohortStatus.includes(payload[idField])) {
-      const update = currentGenes.filter((x) => x != payload[idField]);
-      if (update.length > 0)
+  const handleGeneAndSSmToggled = useCallback(
+    (
+      cohortStatus: string[],
+      field: string,
+      idField: string,
+      payload: Record<string, any>,
+    ) => {
+      if (cohortStatus.includes(payload[idField])) {
+        const update = cohortStatus.filter((x) => x != payload[idField]);
+        if (update.length > 0)
+          coreDipatch(
+            updateCohortFilter({
+              field: field,
+              operation: {
+                field: field,
+                operator: "includes",
+                operands: cohortStatus.filter((x) => x != payload[idField]),
+              },
+            }),
+          );
+        else coreDipatch(removeCohortFilter(field));
+      } else
         coreDipatch(
           updateCohortFilter({
             field: field,
             operation: {
               field: field,
               operator: "includes",
-              operands: currentGenes.filter((x) => x != payload[idField]),
+              operands: [...cohortStatus, payload[idField]],
             },
           }),
         );
-      else coreDipatch(removeCohortFilter(field));
-    } else
-      coreDipatch(
-        updateCohortFilter({
-          field: field,
-          operation: {
-            field: field,
-            operator: "includes",
-            operands: [...currentGenes, payload[idField]],
-          },
-        }),
-      );
-  };
+    },
+    [coreDipatch],
+  );
 
   /**
    * remove comparative survival plot when tabs or filters change.
    */
-  const handleTabChanged = (tabKey: string) => {
+  const handleTabChanged = useCallback((tabKey: string) => {
     setAppMode(tabKey as AppModeState);
     setComparativeSurvival(undefined);
-  };
-
-  // clear local filters when cohort changes or tabs change
-  useEffect(() => {
-    appDispatch(clearGeneAndSSMFilters());
-  }, [cohortFilters, appDispatch]);
+  }, []);
 
   // clear local filters when cohort changes or tabs change
   useEffect(() => {
@@ -259,76 +214,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
 
   return (
     <div className="flex flex-row">
-      <div className="flex flex-col gap-y-4 mr-3 mt-12 w-min-64 w-max-64">
-        {FilterFacets.genes.map((x, index) => {
-          if (x.type == "toggle") {
-            return (
-              <ToggleFacet
-                key={`${x.facet_filter}-${index}`}
-                field={`${x.facet_filter}`}
-                hooks={{
-                  useGetFacetData: partial(useGenesFacet, "genes", "explore"),
-                  useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
-                  useClearFilter: useClearGenomicFilters,
-                  useTotalCounts: partial(
-                    useTotalCounts,
-                    FacetDocTypeToCountsIndexMap["genes"],
-                  ),
-                }}
-                facetName={x.name}
-                valueLabel={FacetDocTypeToLabelsMap["genes"]}
-                showPercent={false}
-                hideIfEmpty={false}
-                description={x.description}
-                width="w-64"
-              />
-            );
-          }
-          return (
-            <EnumFacet
-              key={`genes-mutations-app-${x.facet_filter}-${index}`}
-              field={`${x.facet_filter}`}
-              hooks={{
-                useGetFacetData: partial(useGenesFacet, "genes", "explore"),
-                useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
-                useClearFilter: useClearGenomicFilters,
-                useTotalCounts: partial(
-                  useTotalCounts,
-                  FacetDocTypeToCountsIndexMap["genes"],
-                ),
-              }}
-              facetName={x.name}
-              valueLabel={FacetDocTypeToLabelsMap["genes"]}
-              showPercent={false}
-              hideIfEmpty={false}
-              description={x.description}
-              width="w-64"
-            />
-          );
-        })}
-        {FilterFacets.ssms.map((x, index) => {
-          return (
-            <EnumFacet
-              key={`genes-mutations-app-${x.facet_filter}-${index}`}
-              field={`${x.facet_filter}`}
-              facetName={x.name}
-              valueLabel={FacetDocTypeToLabelsMap["ssms"]}
-              hooks={{
-                useGetFacetData: partial(useGenesFacet, "ssms", "explore"),
-                useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
-                useClearFilter: useClearGenomicFilters,
-                useTotalCounts: partial(
-                  useTotalCounts,
-                  FacetDocTypeToCountsIndexMap["ssms"],
-                ),
-              }}
-              showPercent={false}
-              hideIfEmpty={false}
-              width="w-64"
-            />
-          );
-        })}
-      </div>
+      <GeneAndSSMFilterPanel />
       <Tabs
         value={appMode}
         defaultValue="genes"

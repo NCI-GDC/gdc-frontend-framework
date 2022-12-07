@@ -11,11 +11,13 @@ import {
   GQLDocType,
   GQLIndexType,
   isIncludes,
+  joinFilters,
   OperandValue,
   Operation,
   selectCurrentCohortFilterOrCaseSet,
   selectCurrentCohortFiltersByName,
   selectFacetByDocTypeAndField,
+  useCurrentCohortFilters,
   useCoreDispatch,
   useCoreSelector,
   usePrevious,
@@ -85,18 +87,23 @@ export const useGenesFacet = (
   );
 
   const enumValues = useGenomicFilterByName(field);
+  // used to detect changes to cohort filters
+  const currentCohortFilters = useCurrentCohortFilters();
+  // current cohort filter, if it contains a caseSet it is possible it will not change
   const cohortFilters = useCohortOrCaseSetFacetFilter();
+
   const genomicFilters = useGenomicFacetFilter();
-  const prevCohortFilters = usePrevious(cohortFilters);
+  const prevCohortFilters = usePrevious(currentCohortFilters);
   const prevGenomicFilters = usePrevious(genomicFilters);
   const prevEnumValues = usePrevious(enumValues);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const selectLocalGenomicFilters = (_ignore) => genomicFilters;
+    const selectLocalGenomicFiltersPlusCohortFilters = (_ignore) =>
+      joinFilters(cohortFilters, genomicFilters);
     if (
       !facet ||
-      !isEqual(prevCohortFilters, cohortFilters) ||
+      !isEqual(prevCohortFilters, currentCohortFilters) ||
       !isEqual(prevGenomicFilters, genomicFilters) ||
       !isEqual(prevEnumValues, enumValues)
     ) {
@@ -105,7 +112,7 @@ export const useGenesFacet = (
           field: field,
           docType: docType,
           index: indexType,
-          filterSelector: selectLocalGenomicFilters,
+          filterSelector: selectLocalGenomicFiltersPlusCohortFilters,
         }),
       );
     }
@@ -113,7 +120,7 @@ export const useGenesFacet = (
     coreDispatch,
     facet,
     field,
-    cohortFilters,
+    currentCohortFilters,
     docType,
     indexType,
     prevCohortFilters,
@@ -121,6 +128,7 @@ export const useGenesFacet = (
     enumValues,
     prevGenomicFilters,
     genomicFilters,
+    cohortFilters,
   ]);
 
   return {
@@ -135,7 +143,7 @@ export const useGenesFacet = (
 };
 
 /**
- * returns the values of a files. Assumes required field
+ * returns the values of a field. Assumes required field
  * is of type Includes. Returns an empty array if filter is undefined or not
  * of type Includes.
  * @param field to get values of

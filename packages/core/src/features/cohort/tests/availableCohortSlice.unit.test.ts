@@ -12,6 +12,10 @@ import {
   availableCohortsReducer,
   addNewCohortWithFilterAndMessage,
   divideCurrentCohortFilterSetFilterByPrefix,
+  divideFilterSetByPrefix,
+  buildCaseSetGQLQueryAndVariables,
+  buildCaseSetMutationQuery,
+  REQUIRES_CASE_SET_FILTERS,
 } from "../availableCohortsSlice";
 import * as cohortSlice from "../availableCohortsSlice";
 import { Dictionary, EntityState } from "@reduxjs/toolkit";
@@ -718,5 +722,132 @@ describe("add, update, and remove cohort", () => {
       removeCohort({ shouldShowMessage: true }),
     );
     expect(availableCohorts).toEqual(removeState);
+  });
+});
+
+describe("caseSet creation", () => {
+  afterAll(() => {
+    jest.clearAllMocks();
+  });
+
+  const cohortFilters: FilterSet = {
+    mode: "and",
+    root: {
+      "genes.symbol": {
+        field: "genes.symbol",
+        operands: ["KRAS"],
+        operator: "includes",
+      },
+      "ssms.ssm_id": {
+        field: "ssms.ssm_id",
+        operands: ["84aef48f-31e6-52e4-8e05-7d5b9ab15087"],
+        operator: "includes",
+      },
+      "cases.primary_site": {
+        field: "cases.primary_site",
+        operands: ["pancreas"],
+        operator: "includes",
+      },
+    },
+  };
+
+  test("divide the cohort filters", () => {
+    const dividedFilters = divideFilterSetByPrefix(
+      cohortFilters,
+      REQUIRES_CASE_SET_FILTERS,
+    );
+
+    const expected = {
+      withPrefix: {
+        mode: "and",
+        root: {
+          "genes.symbol": {
+            field: "genes.symbol",
+            operands: ["KRAS"],
+            operator: "includes",
+          },
+          "ssms.ssm_id": {
+            field: "ssms.ssm_id",
+            operands: ["84aef48f-31e6-52e4-8e05-7d5b9ab15087"],
+            operator: "includes",
+          },
+        },
+      },
+      withoutPrefix: {
+        mode: "and",
+        root: {
+          "cases.primary_site": {
+            field: "cases.primary_site",
+            operands: ["pancreas"],
+            operator: "includes",
+          },
+        },
+      },
+    };
+    expect(dividedFilters).toEqual(expected);
+  });
+
+  test("build the createSetQuery", () => {
+    const dividedFilters = divideFilterSetByPrefix(
+      cohortFilters,
+      REQUIRES_CASE_SET_FILTERS,
+    );
+    const { query, parameters, variables } = buildCaseSetGQLQueryAndVariables(
+      dividedFilters.withPrefix,
+      "2394944y3",
+    );
+
+    expect(query).toEqual(
+      "genesCases : case (input: $inputgenes) { set_id size }," +
+        "ssmsCases : case (input: $inputssms) { set_id size }",
+    );
+
+    const expected = {
+      inputgenes: {
+        filters: {
+          content: [
+            {
+              content: {
+                field: "genes.symbol",
+                value: ["KRAS"],
+              },
+              op: "in",
+            },
+          ],
+          op: "and",
+        },
+        set_id: "2394944y3-g",
+      },
+      inputssms: {
+        filters: {
+          content: [
+            {
+              content: {
+                field: "ssms.ssm_id",
+                value: ["84aef48f-31e6-52e4-8e05-7d5b9ab15087"],
+              },
+              op: "in",
+            },
+          ],
+          op: "and",
+        },
+        set_id: "2394944y3-s",
+      },
+    };
+
+    expect(variables).toEqual(expected);
+    const graphQL = buildCaseSetMutationQuery(parameters, query);
+    expect(graphQL).toEqual(`
+mutation mutationsCreateRepositoryCaseSetMutation(
+   $inputgenes: CreateSetInput, $inputssms: CreateSetInput
+) {
+  sets {
+    create {
+      explore {
+       genesCases : case (input: $inputgenes) { set_id size },ssmsCases : case (input: $inputssms) { set_id size }
+    }
+  }
+ }
+}`);
   });
 });
