@@ -49,9 +49,11 @@ export const SelectAlCasesButton = ({
   const pickedCases = useCoreSelector((state) => selectSelectedCases(state));
   const dispatch = useCoreDispatch();
   const [checked, setChecked] = useState(false);
+
   useEffect(() => {
     setChecked(caseIds.every((id) => pickedCases.includes(id)));
   }, [caseIds, pickedCases]);
+
   return (
     <Checkbox
       className="ml-1"

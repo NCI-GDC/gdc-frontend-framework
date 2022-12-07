@@ -52,9 +52,8 @@ export const SelectAllProjectsButton = ({
   const pickedProjects = useAppSelector((state) => selectPickedProjects(state));
   const dispatch = useAppDispatch();
   const [checked, setChecked] = useState(false);
+
   useEffect(() => {
-    // projectIds need to be in alphabetical order to compare
-    // setChecked(isEqual([...projectIds].sort(), pickedProjects));
     setChecked(projectIds.every((id) => pickedProjects.includes(id)));
   }, [projectIds, pickedProjects]);
 

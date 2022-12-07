@@ -7,13 +7,20 @@ import { CoreState } from "../../reducers";
 import {
   fetchGdcAnnotations,
   fetchGdcCases,
-  GdcApiRequest,
   Pagination,
   AnnotationDefaults,
+  SortBy,
 } from "../gdcapi/gdcapi";
 import { CoreDispatch } from "src/store";
 import { groupBy } from "lodash";
 import { caseSummaryDefaults } from "./types";
+import {
+  convertFilterToGqlFilter,
+  Intersection,
+  Union,
+} from "../gdcapi/filters";
+import { FilterSet, filterSetToOperation } from "../cohort";
+import { appendFilterToOperation } from "../genomic/utils";
 
 interface CaseSliceResponseData {
   case_id: string;
@@ -59,14 +66,66 @@ interface CasesResponse {
   readonly data: readonly CaseResponseData[];
 }
 
+export const buildCasesTableSearchFilters = (
+  term?: string,
+): Union | undefined => {
+  if (term !== undefined) {
+    return {
+      operator: "or",
+      operands: [
+        {
+          operator: "includes",
+          field: "cases.case_id", // case insensitive
+          operands: [`*${term}*`],
+        },
+        {
+          operator: "includes",
+          field: "cases.submitter_id", // case sensitive
+          operands: [`*${term}*`],
+        },
+      ],
+    };
+  }
+  return undefined;
+};
+
+interface FetchAllCasesRequestProps {
+  filters?: FilterSet;
+  fields?: ReadonlyArray<string>;
+  readonly size?: number;
+  readonly from?: number;
+  readonly sortBy?: ReadonlyArray<SortBy>;
+  searchTerm: string;
+}
 export const fetchAllCases = createAsyncThunk<
   CasesResponse,
-  GdcApiRequest,
+  FetchAllCasesRequestProps,
   { dispatch: CoreDispatch; state: CoreState }
 >(
   "cases/fetchAllCases",
-  async (request: GdcApiRequest): Promise<CasesResponse> => {
-    const casesResponse = await fetchGdcCases(request);
+  async ({
+    fields,
+    size,
+    filters,
+    from,
+    sortBy,
+    searchTerm,
+  }: FetchAllCasesRequestProps): Promise<CasesResponse> => {
+    const searchFilters = buildCasesTableSearchFilters(searchTerm);
+    const combinedFilters = convertFilterToGqlFilter(
+      appendFilterToOperation(
+        filterSetToOperation(filters) as Union | Intersection | undefined,
+        searchFilters,
+      ),
+    );
+
+    const casesResponse = await fetchGdcCases({
+      fields,
+      size,
+      filters: combinedFilters,
+      from,
+      sortBy,
+    });
     const case_ids = casesResponse.data.hits.map((d) => d.id);
     const parsedCasesResponse: Record<string, any> =
       casesResponse.data.hits.reduce(

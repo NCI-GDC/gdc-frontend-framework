@@ -6,8 +6,6 @@ import {
   selectSelectedCases,
   useAllCases,
   SortBy,
-  buildCohortGqlOperator,
-  joinFilters,
 } from "@gff/core";
 import { Button, createStyles, Menu } from "@mantine/core";
 import { useMemo, useState } from "react";
@@ -101,28 +99,10 @@ export const ContextualCasesView: React.FC = () => {
       "files.data_type",
     ],
     size: pageSize,
-    filters:
-      searchTerm.length > 0
-        ? buildCohortGqlOperator(
-            joinFilters(cohortFilters, {
-              mode: "or",
-              root: {
-                submitter_id: {
-                  operator: "includes",
-                  field: "submitter_id",
-                  operands: [`*${searchTerm}*`],
-                },
-                case_id: {
-                  operator: "includes",
-                  field: "case_id",
-                  operands: [`*${searchTerm}*`],
-                },
-              },
-            }),
-          )
-        : buildCohortGqlOperator(cohortFilters),
+    filters: cohortFilters,
     from: offset * pageSize,
     sortBy: sortBy,
+    searchTerm,
   });
 
   const cases = useMemo(
@@ -311,7 +291,7 @@ export const ContextualCasesView: React.FC = () => {
         break;
       case "newSearch":
         setOffset(0);
-        setSearchTerm(obj.newSearch.toLowerCase());
+        setSearchTerm(obj.newSearch);
         break;
     }
   };
