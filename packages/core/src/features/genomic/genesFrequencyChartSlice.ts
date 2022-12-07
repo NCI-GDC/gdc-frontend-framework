@@ -10,8 +10,10 @@ import { CoreState } from "../../reducers";
 import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
 import { mergeGenomicAndCohortFilters } from "./genomicFilters";
 import { GenomicTableProps } from "./types";
-import { buildCohortGqlOperator } from "../cohort";
-import { selectCurrentCohortFiltersGQL } from "../cohort/availableCohortsSlice";
+import {
+  buildCohortGqlOperator,
+  selectCurrentCohortFilterSet,
+} from "../cohort";
 
 const GeneMutationFrequencyQuery = `
     query GeneMutationFrequencyChart (
@@ -159,5 +161,5 @@ export const selectGeneFrequencyChartData = (
 export const useGeneFrequencyChart = createUseFiltersCoreDataHook(
   fetchGeneFrequencies,
   selectGeneFrequencyChartData,
-  selectCurrentCohortFiltersGQL,
+  selectCurrentCohortFilterSet,
 );

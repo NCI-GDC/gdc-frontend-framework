@@ -22,10 +22,10 @@ export type CoreStartListening = TypedStartListening<CoreState, CoreDispatch>;
 export const startCoreListening =
   caseSetListenerMiddleware.startListening as CoreStartListening;
 
+// TODO add clearCaseSet handler to remove caseSet from BE
 startCoreListening({
   matcher: isAnyOf(updateCohortFilter, removeCohortFilter, setCurrentCohortId),
   effect: async (_, listenerApi) => {
-    console.log("listener");
     // dispatch updateCohortFilter or removeCohortFilter executed
     const cohort = cohortSelectors.selectById(
       listenerApi.getState(),

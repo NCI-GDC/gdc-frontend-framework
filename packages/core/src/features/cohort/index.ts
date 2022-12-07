@@ -42,6 +42,7 @@ import {
   discardCohortChanges,
   setCohortMessage,
   selectCurrentCohortFilterSet,
+  useCurrentCohortFilters,
 } from "./availableCohortsSlice";
 
 import {
@@ -124,4 +125,5 @@ export {
   discardCohortChanges,
   setCohortMessage,
   selectCurrentCohortFilterSet,
+  useCurrentCohortFilters,
 };

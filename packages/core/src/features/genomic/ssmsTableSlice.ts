@@ -13,6 +13,7 @@ import {
   buildCohortGqlOperator,
   filterSetToOperation,
   selectCurrentCohortFilters,
+  selectCurrentCohortFilterSet,
 } from "../cohort";
 import {
   convertFilterToGqlFilter,
@@ -21,7 +22,6 @@ import {
 } from "../gdcapi/filters";
 import { appendFilterToOperation } from "./utils";
 import { GenomicTableProps } from "./types";
-import { selectCurrentCohortFiltersGQL } from "../cohort/availableCohortsSlice";
 import { joinFilters } from "../cohort";
 
 const SSMSTableGraphQLQuery = `query SsmsTable(
@@ -392,5 +392,5 @@ export const selectSsmsTableData = (
 export const useSsmsTable = createUseFiltersCoreDataHook(
   fetchSsmsTable,
   selectSsmsTableData,
-  selectCurrentCohortFiltersGQL,
+  selectCurrentCohortFilterSet, // used only to trigger a fetch
 );

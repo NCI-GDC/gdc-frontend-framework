@@ -10,7 +10,11 @@ import { CoreState } from "../../reducers";
 import { fetchSmsAggregations } from "./smsAggregationsApi";
 import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
 import { GenomicTableProps } from "./types";
-import { buildCohortGqlOperator, filterSetToOperation } from "../cohort";
+import {
+  buildCohortGqlOperator,
+  filterSetToOperation,
+  selectCurrentCohortFilterSet,
+} from "../cohort";
 import { mergeGenomicAndCohortFilters } from "./genomicFilters";
 import { selectCurrentCohortFilters } from "../cohort";
 import {
@@ -19,7 +23,6 @@ import {
   Union,
 } from "../gdcapi/filters";
 import { appendFilterToOperation } from "./utils";
-import { selectCurrentCohortFiltersGQL } from "../cohort/availableCohortsSlice";
 
 const GenesTableGraphQLQuery = `
           query GenesTable(
@@ -439,5 +442,5 @@ export const selectGenesTableData = (
 export const useGenesTable = createUseFiltersCoreDataHook(
   fetchGenesTable,
   selectGenesTableData,
-  selectCurrentCohortFiltersGQL,
+  selectCurrentCohortFilterSet,
 );

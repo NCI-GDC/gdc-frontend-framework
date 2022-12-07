@@ -9,8 +9,11 @@ import {
 } from "../../dataAccess";
 import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
 import { mergeGenomicAndCohortFilters } from "./genomicFilters";
-import { buildCohortGqlOperator, FilterSet } from "../cohort";
-import { selectCurrentCohortFiltersGQL } from "../cohort/availableCohortsSlice";
+import {
+  buildCohortGqlOperator,
+  FilterSet,
+  selectCurrentCohortFilterSet,
+} from "../cohort";
 
 const TopGeneFrequencyQuery = `
 query TopGeneQuery (
@@ -278,5 +281,5 @@ export const selectTopGeneData = (
 export const useTopGene = createUseFiltersCoreDataHook(
   fetchTopGene,
   selectTopGeneData,
-  selectCurrentCohortFiltersGQL,
+  selectCurrentCohortFilterSet, // used only to trigger a fetch
 );

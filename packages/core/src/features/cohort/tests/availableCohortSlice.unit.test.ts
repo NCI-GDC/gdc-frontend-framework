@@ -792,7 +792,7 @@ describe("caseSet creation", () => {
       cohortFilters,
       REQUIRES_CASE_SET_FILTERS,
     );
-    const { query, variables } = buildCaseSetGQLQueryAndVariables(
+    const { query, parameters, variables } = buildCaseSetGQLQueryAndVariables(
       dividedFilters.withPrefix,
       "2394944y3",
     );
@@ -816,6 +816,7 @@ describe("caseSet creation", () => {
           ],
           op: "and",
         },
+        set_id: "2394944y3-g",
       },
       inputssms: {
         filters: {
@@ -830,15 +831,15 @@ describe("caseSet creation", () => {
           ],
           op: "and",
         },
+        set_id: "2394944y3-s",
       },
-      set_id: "2394944y3-s",
     };
 
     expect(variables).toEqual(expected);
-    const graphQL = buildCaseSetMutationQuery(query);
+    const graphQL = buildCaseSetMutationQuery(parameters, query);
     expect(graphQL).toEqual(`
 mutation mutationsCreateRepositoryCaseSetMutation(
-  $input: CreateSetInput
+   $inputgenes: CreateSetInput, $inputssms: CreateSetInput
 ) {
   sets {
     create {
@@ -846,6 +847,7 @@ mutation mutationsCreateRepositoryCaseSetMutation(
        genesCases : case (input: $inputgenes) { set_id size },ssmsCases : case (input: $inputssms) { set_id size }
     }
   }
+ }
 }`);
   });
 });
