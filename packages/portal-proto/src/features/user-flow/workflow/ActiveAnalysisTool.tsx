@@ -26,14 +26,17 @@ const ActiveAnalysisTool: React.FC<AnalysisToolInfo> = ({
 }: AnalysisToolInfo) => {
   const [analysisApp, setAnalysisApp] = useState(undefined);
   const [cohortSelectionOpen, setCohortSelectionOpen] = useState(false);
+  const [showCohortSelection, setShowCohortSelection] = useState(false);
   const router = useRouter();
   const appInfo = REGISTERED_APPS.find((a) => a.id === appId);
 
   useEffect(() => {
-    if (inTransitionState) {
-      return;
+    if (!inTransitionState) {
+      setShowCohortSelection(cohortSelectionOpen);
     }
+  }, [cohortSelectionOpen, inTransitionState]);
 
+  useEffect(() => {
     if (appInfo?.selectAdditionalCohort) {
       setCohortSelectionOpen(true);
     } else {
@@ -60,22 +63,24 @@ const ActiveAnalysisTool: React.FC<AnalysisToolInfo> = ({
         </div>
       }
     >
-      <AnalysisBreadcrumbs
-        currentApp={appId}
-        setCohortSelectionOpen={setCohortSelectionOpen}
-        cohortSelectionOpen={cohortSelectionOpen}
-        setActiveApp={handleAppSelected}
-        rightComponent={appId === "CohortBuilder" ? <SearchInput /> : null}
-      />
-      {cohortSelectionOpen ? (
-        <AdditionalCohortSelection
-          app={appId}
-          setOpen={setCohortSelectionOpen}
+      <div>
+        <AnalysisBreadcrumbs
+          currentApp={appId}
+          setCohortSelectionOpen={setCohortSelectionOpen}
+          cohortSelectionOpen={cohortSelectionOpen}
           setActiveApp={handleAppSelected}
+          rightComponent={appId === "CohortBuilder" ? <SearchInput /> : null}
         />
-      ) : (
-        <div className="mx-2">{analysisApp}</div>
-      )}
+        {showCohortSelection ? (
+          <AdditionalCohortSelection
+            app={appId}
+            setOpen={setCohortSelectionOpen}
+            setActiveApp={handleAppSelected}
+          />
+        ) : (
+          <div className="mx-2">{analysisApp}</div>
+        )}
+      </div>
     </Suspense>
   );
 };

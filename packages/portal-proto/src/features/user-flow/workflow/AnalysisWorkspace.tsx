@@ -305,14 +305,11 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
           <div
             className={
               {
-                entering:
-                  "transition-transform scale-y-100 origin-top 50000ms ease ",
-
+                entering: "h-full",
                 entered:
-                  "transition-transform scale-y-0 origin-top 50000ms ease h-0",
-                exiting:
-                  "transition-transform scale-y-100 origin-top 50000ms ease ",
-                exited: "h-full",
+                  "transition-transform duration-700 scale-y-0 origin-top h-0",
+                exiting: "scale-y-0 h-0",
+                exited: "transition-transform duration-700 origin-top h-full",
               }[state]
             }
           >
@@ -323,7 +320,8 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
       <CSSTransition
         in={app !== undefined}
         timeout={0}
-        onEntering={() => setInTransitionState(true)}
+        onEnter={() => setInTransitionState(true)}
+        onExit={() => setInTransitionState(true)}
         onEntered={() => setInTransitionState(false)}
         onExited={() => setInTransitionState(false)}
       >
@@ -331,13 +329,12 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
           <div
             className={
               {
-                entering:
-                  "transition-transform scale-y-0 origin-bottom 50000ms ease",
+                entering: "scale-y-0",
                 entered:
-                  "transition-transform scale-y-100 origin-bottom 50000ms ease flex flex-col flex-grow",
-                exiting:
-                  "transition-transform scale-y-100 origin-bottom 50000ms ease",
-                exited: "scale-y-0 hidden",
+                  "transition-transform duration-700 scale-y-100 origin-bottom",
+                exiting: "h-full scale-y-100",
+                exited:
+                  "transition-transform duration-700 origin-bottom scale-y-0 h-0",
               }[state]
             }
           >
