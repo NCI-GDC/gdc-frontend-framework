@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
 import { capitalize } from "lodash";
 import fileSize from "filesize";
-import { VerticalTable, HandleChangeInput } from "../shared/VerticalTable";
+import {
+  VerticalTable,
+  HandleChangeInput,
+  Columns,
+  filterColumnCells,
+} from "../shared/VerticalTable";
 import { downloadTSV } from "../shared/TableUtils";
 import { SingleItemAddToCartButton } from "../cart/updateCart";
 import Link from "next/link";
@@ -27,7 +32,7 @@ import { FileAccessBadge } from "@/components/FileAccessBadge";
 import { useUpdateRepositoryFacetFilter } from "@/features/repositoryApp/hooks";
 
 const FilesTables: React.FC = () => {
-  const columnListOrder = [
+  const columnListOrder: Columns[] = [
     {
       id: "cart",
       columnName: "Cart",
@@ -57,8 +62,10 @@ const FilesTables: React.FC = () => {
       disableSortBy: true,
     },
   ];
-
-  const [columnCells, setColumnCells] = useState([]);
+  const [columns, setColumns] = useState(columnListOrder);
+  const [columnCells, setColumnCells] = useState(
+    filterColumnCells(columnListOrder),
+  );
 
   let formattedTableData = [],
     tempPagination = {
@@ -219,7 +226,8 @@ const FilesTables: React.FC = () => {
         newSearchActions(obj.newSearch);
         break;
       case "newHeadings":
-        setColumnCells(obj.newHeadings);
+        setColumnCells(filterColumnCells(obj.newHeadings));
+        setColumns(obj.newHeadings);
         break;
     }
   };
@@ -326,7 +334,7 @@ const FilesTables: React.FC = () => {
         </div>
       }
       tableData={formattedTableData}
-      columns={columnListOrder}
+      columns={columns}
       columnSorting={"manual"}
       selectableRow={false}
       pagination={{

@@ -118,7 +118,7 @@ export const fetchAllCases = createAsyncThunk<
         searchFilters,
       ),
     );
-
+    console.log({ combinedFilters });
     const casesResponse = await fetchGdcCases({
       fields,
       size,

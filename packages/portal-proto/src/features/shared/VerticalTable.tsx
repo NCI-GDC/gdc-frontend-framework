@@ -43,6 +43,35 @@ export interface PaginationOptions {
   label?: string;
 }
 
+export interface Columns {
+  /**
+   * Id that matches tableData
+   */
+  id: string;
+  /**
+   * HTML that user will see at top of column
+   */
+  columnName: JSX.Element | string | ((value: any) => JSX.Element);
+  /**
+   * Flag to show / hide column
+   */
+  visible: boolean;
+  /**
+   * Flag to activate or disable sorting feature of column sorting
+   * @defaultValue false
+   */
+  disableSortBy?: boolean;
+  /**
+   * Flag to activate or disable ability to rearrange column order
+   * @defaultValue true
+   */
+  arrangeable?: boolean;
+  /**
+   * Allows a data cell to have a custom function attached to it that will be run on the data in that cell
+   */
+  Cell?: (value: any) => JSX.Element;
+}
+
 interface VerticalTableProps {
   /**
    * array of data to go in the table
@@ -51,34 +80,7 @@ interface VerticalTableProps {
   /**
    * list of columns in default order they appear and a number of properties
    */
-  columns: {
-    /**
-     * Id that matches tableData
-     */
-    id: string;
-    /**
-     * HTML that user will see at top of column
-     */
-    columnName: JSX.Element | string | ((value: any) => JSX.Element);
-    /**
-     * Flag to show / hide column
-     */
-    visible: boolean;
-    /**
-     * Flag to activate or disable sorting feature of column sorting
-     * @defaultValue false
-     */
-    disableSortBy?: boolean;
-    /**
-     * Flag to activate or disable ability to rearrange column order
-     * @defaultValue true
-     */
-    arrangeable?: boolean;
-    /**
-     * Allows a data cell to have a custom function attached to it that will be run on the data in that cell
-     */
-    Cell?: (value: any) => JSX.Element;
-  }[];
+  columns: Columns[];
   /**
    * ???
    */
@@ -176,7 +178,7 @@ export interface HandleChangeInput {
   /**
    * headings change
    */
-  newHeadings?: Column[];
+  newHeadings?: Columns[];
 }
 
 export interface Column {
@@ -191,6 +193,23 @@ interface TableProps {
   columns: Column[];
   data: any[];
 }
+
+export const filterColumnCells = (newList: Columns[]): Column[] => {
+  return newList.reduce((filtered, obj) => {
+    if (obj.visible) {
+      const colObj: Column = {
+        Header: obj.columnName,
+        accessor: obj.id,
+        disableSortBy: obj.disableSortBy || false,
+      };
+      if (obj.Cell) {
+        colObj.Cell = obj.Cell;
+      }
+      filtered.push(colObj);
+    }
+    return filtered;
+  }, []);
+};
 
 /**
  * Returns a vertical table with many optional features
@@ -223,30 +242,15 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   search,
   initialSort = [],
 }: VerticalTableProps) => {
-  const filterColumnCells = (newList) =>
-    newList.reduce((filtered, obj) => {
-      if (obj.visible) {
-        const colObj: Column = {
-          Header: obj.columnName,
-          accessor: obj.id,
-          disableSortBy: obj.disableSortBy || false,
-        };
-        if (obj.Cell) {
-          colObj.Cell = obj.Cell;
-        }
-        if (obj.width) {
-          colObj.width = obj.width;
-        }
-        filtered.push(colObj);
-      }
-      return filtered;
-    }, []);
-
   const [table, setTable] = useState([]);
   const [headings, setHeadings] = useState(filterColumnCells(columns));
   const [showColumnMenu, setShowColumnMenu] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [showLoading, setShowLoading] = useState(true);
+
+  useEffect(() => {
+    setHeadings(filterColumnCells(columns));
+  }, [columns]);
 
   useEffect(() => {
     if (status === "fulfilled") {
@@ -255,12 +259,8 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     setShowLoading(status === "pending" || status === "uninitialized");
   }, [status, tableData]);
 
-  useEffect(() => {
-    handleChange({ newHeadings: headings });
-  }, [headings, handleChange]);
-
-  const handleColumnChange = (update) => {
-    setHeadings(filterColumnCells(update));
+  const handleColumnChange = (update: Columns[]) => {
+    handleChange({ newHeadings: update });
   };
 
   const tableAction = (action) => {
@@ -572,7 +572,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                     <div className={`mr-0 ml-auto`}>
                       <DndProvider backend={HTML5Backend}>
                         <DragDrop
-                          listOptions={columns}
+                          listOptions={columns} // here....
                           handleColumnChange={handleColumnChange}
                           columnSearchTerm={""}
                         />

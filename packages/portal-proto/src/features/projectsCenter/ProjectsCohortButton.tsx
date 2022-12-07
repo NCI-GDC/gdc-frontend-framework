@@ -92,9 +92,7 @@ const ProjectsCohortButton = (): JSX.Element => {
             {" "}
             {pickedProjects.length}{" "}
           </CountsIcon>
-        ) : (
-          <CountsIcon />
-        )
+        ) : null
       }
       onClick={() => createCohortFromProjects()}
     >

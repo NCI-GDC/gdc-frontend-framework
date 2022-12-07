@@ -1,4 +1,5 @@
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
+import { Columns } from "@/features/shared/VerticalTable";
 import { AnnotationDefaults } from "@gff/core";
 import { Row, TableInstance } from "react-table";
 import tw from "tailwind-styled-components";
@@ -9,7 +10,7 @@ interface CellProps {
   row: Row;
 }
 
-export const columnListOrder = [
+export const columnListOrder: Columns[] = [
   {
     id: "selected",
     visible: true,

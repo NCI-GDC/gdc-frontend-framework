@@ -64,6 +64,7 @@ export const ContextualCasesView: React.FC = () => {
   const [offset, setOffset] = useState(0);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [sortBy, setSortBy] = useState<SortBy[]>([]);
+  const [columns, setColumns] = useState(columnListOrder);
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilterSet(state),
   );
@@ -293,6 +294,9 @@ export const ContextualCasesView: React.FC = () => {
         setOffset(0);
         setSearchTerm(obj.newSearch);
         break;
+      case "newHeadings":
+        setColumns(obj.newHeadings);
+        break;
     }
   };
 
@@ -300,7 +304,7 @@ export const ContextualCasesView: React.FC = () => {
     <div className="flex flex-col m-auto w-10/12">
       <VerticalTable
         tableData={cases || []}
-        columns={columnListOrder}
+        columns={columns}
         pagination={{ ...pagination, label: "cases" }}
         handleChange={handleChange}
         additionalControls={

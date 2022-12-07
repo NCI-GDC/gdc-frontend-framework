@@ -1,5 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { VerticalTable, HandleChangeInput } from "../shared/VerticalTable";
+import {
+  VerticalTable,
+  HandleChangeInput,
+  Columns,
+} from "../shared/VerticalTable";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import { Row, TableInstance } from "react-table";
 import Link from "next/link";
@@ -70,7 +74,7 @@ const ProjectsTable: React.FC = () => {
     sortBy: sortBy,
   });
 
-  const columnListOrder = [
+  const columnListOrder: Columns[] = [
     {
       id: "selected",
       visible: true,
@@ -156,7 +160,7 @@ const ProjectsTable: React.FC = () => {
       },
     },
   ];
-
+  const [columns, setColumns] = useState(columnListOrder);
   useEffect(() => setActivePage(1), [projectFilters]);
 
   const sortByActions = (sortByObj) => {
@@ -245,8 +249,11 @@ const ProjectsTable: React.FC = () => {
         setActivePage(obj.newPageNumber);
         break;
       case "newSearch":
-        setSearchTerm(obj.newSearch.toLowerCase());
+        setSearchTerm(obj.newSearch);
         setActivePage(1);
+        break;
+      case "newHeadings":
+        setColumns(obj.newHeadings);
         break;
     }
   };
@@ -296,7 +303,7 @@ const ProjectsTable: React.FC = () => {
         </div>
       }
       tableData={formattedTableData}
-      columns={columnListOrder}
+      columns={columns}
       columnSorting={"manual"}
       selectableRow={false}
       showControls={true}
