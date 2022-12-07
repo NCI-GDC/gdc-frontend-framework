@@ -25,6 +25,7 @@ export const startCoreListening =
 startCoreListening({
   matcher: isAnyOf(updateCohortFilter, removeCohortFilter, setCurrentCohortId),
   effect: async (_, listenerApi) => {
+    console.log("listener");
     // dispatch updateCohortFilter or removeCohortFilter executed
     const cohort = cohortSelectors.selectById(
       listenerApi.getState(),

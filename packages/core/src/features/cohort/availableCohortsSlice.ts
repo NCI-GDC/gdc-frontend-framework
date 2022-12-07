@@ -36,36 +36,59 @@ export interface Cohort {
   readonly saved?: boolean; // flag indicating if cohort has been saved.
 }
 
+const buildCaseSetGQLQueryAndVariables = (filters: FilterSet, id: string) => {
+  const prefix = Object.keys(filters.root).map((x) => x.split(".")[0]);
+  return {
+    query: prefix
+      .map(
+        (name) =>
+          `case${name}(input: $input${name}) {
+    set_id
+    size
+    }
+  `,
+      )
+      .join(","),
+    variables: prefix
+      .map(
+        (name) => `
+  input${name} : {
+   filters: ${buildCohortGqlOperator({
+     mode: "and",
+     root: { [name]: filters.root[name] },
+   })},
+   "set_id" : ${id}-${name[0]}
+   }`,
+      )
+      .join(","),
+  };
+};
+
 /*
  A start at handling how to seamlessly create cohorts that can bridge explore
  and repository indexes. The slice creates a case set id using the defined filters
 */
-const buildCaseSetMutationQuery = () =>
-  `
+const buildCaseSetMutationQuery = (query: string) => `
  mutation mutationsCreateRepositoryCaseSetMutation(
   $input: CreateSetInput
 ) {
   sets {
     create {
       explore {
-        case(input: $input) {
-          set_id
-          size
-        }
-      }
+       ${query}
     }
   }
 }`;
 
 export interface CreateCaseSetProps {
-  readonly caseSetId?: string; // pass a caseSetId to use
+  readonly caseSetId: string; // pass a caseSetId to use
 }
 
 export const createCaseSet = createAsyncThunk<
   GraphQLApiResponse<Record<string, any>>,
   CreateCaseSetProps,
   { dispatch: CoreDispatch; state: CoreState }
->("cohort/createCaseSet", async ({ caseSetId = undefined }, thunkAPI) => {
+>("cohort/createCaseSet", async ({ caseSetId }, thunkAPI) => {
   const cohort = cohortSelectors.selectById(
     thunkAPI.getState(),
     thunkAPI.getState().cohort.availableCohorts.currentCohort,
@@ -77,17 +100,23 @@ export const createCaseSet = createAsyncThunk<
     filters,
     REQUIRES_CASE_SET_FILTERS,
   );
-  const graphQL = buildCaseSetMutationQuery();
 
-  const filtersGQL = {
-    input: {
-      filters: dividedFilters?.withPrefix
-        ? buildCohortGqlOperator(dividedFilters.withPrefix)
-        : {},
-      set_id: `${caseSetId}`,
-    },
-  };
-  return graphqlAPI(graphQL, filtersGQL);
+  const { query, variables } = buildCaseSetGQLQueryAndVariables(
+    dividedFilters.withPrefix,
+    caseSetId,
+  );
+
+  const graphQL = buildCaseSetMutationQuery(query);
+
+  // const filtersGQL = {
+  //   input: {
+  //     filters: dividedFilters?.withPrefix
+  //       ? buildCohortGqlOperator(dividedFilters.withPrefix)
+  //       : {},
+  //     set_id: `${caseSetId}`,
+  //   },
+  // };
+  return graphqlAPI(graphQL, variables);
 });
 
 export const DEFAULT_COHORT_ID = "ALL-GDC-COHORT";
@@ -447,7 +476,8 @@ const slice = createSlice({
         const additionalFilters =
           filters === undefined
             ? {}
-            : divideFilterSetByPrefix(filters, ["genes."]).withoutPrefix.root;
+            : divideFilterSetByPrefix(filters, ["genes.", "ssms."])
+                .withoutPrefix.root;
         const caseSetFilter: FilterSet = {
           mode: "and",
           root: {
