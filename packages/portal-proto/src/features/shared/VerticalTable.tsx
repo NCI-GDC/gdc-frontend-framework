@@ -487,7 +487,9 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   const ShowingCount: FC = () => {
     let outputString = " --";
     if (!isNaN(pagination.from) && status === "fulfilled") {
-      outputString = ` ${pagination.from ? pagination.from + 1 : 0} - `;
+      outputString = ` ${
+        pagination?.from !== undefined ? pagination.from + 1 : 0
+      } - `;
 
       const paginationTo = pagination.from + pageSize;
       if (paginationTo < pagination.total) {

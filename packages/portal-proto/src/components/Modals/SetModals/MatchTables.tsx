@@ -45,6 +45,7 @@ const MatchTables: React.FC<MatchTablesProps> = ({
         columnName: "Mapped To",
         id: "mapped_to",
         visible: true,
+        disableSortBy: true,
         columns: uniqueMappedToFields.map((f) => ({
           columnName: fieldDisplay[f],
           id: `mapped_${f.replaceAll(".", "_")}`,
@@ -55,6 +56,7 @@ const MatchTables: React.FC<MatchTablesProps> = ({
         columnName: `Submitted ${upperFirst(identifier)} Identifier`,
         id: "submitted_id",
         visible: true,
+        disableSortBy: true,
         columns: uniqueGivenIdentifierFields.map((f) => ({
           columnName: fieldDisplay[f],
           id: `given_${f.replaceAll(".", "_")}`,
@@ -191,6 +193,7 @@ const MatchTables: React.FC<MatchTablesProps> = ({
                     label: `${identifier}s`,
                   }}
                   handleChange={handleMatchedTableChange}
+                  columnSorting={"enable"}
                 />
               )}
             </div>
@@ -220,6 +223,7 @@ const MatchTables: React.FC<MatchTablesProps> = ({
                     label: `${identifier}s`,
                   }}
                   handleChange={handleUnmatchedTableChange}
+                  columnSorting={"enable"}
                 />
               )}
             </div>
