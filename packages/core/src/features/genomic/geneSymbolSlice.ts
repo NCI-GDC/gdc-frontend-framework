@@ -7,6 +7,10 @@ import { castDraft } from "immer";
 import { useCoreDispatch, useCoreSelector } from "../../hooks";
 import { useEffect } from "react";
 
+/**
+ * Slice used to retrieve and cache GeneIds -> Gene Symbols.
+ */
+
 const GeneSymbolQuery = `
           query GeneSymbol(
             $filters: FiltersArgument

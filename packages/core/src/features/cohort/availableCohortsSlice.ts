@@ -36,31 +36,31 @@ export interface Cohort {
   readonly saved?: boolean; // flag indicating if cohort has been saved.
 }
 
-const buildCaseSetGQLQueryAndVariables = (filters: FilterSet, id: string) => {
+export const buildCaseSetGQLQueryAndVariables = (
+  filters: FilterSet,
+  id: string,
+) => {
   const prefix = Object.keys(filters.root).map((x) => x.split(".")[0]);
   return {
     query: prefix
       .map(
-        (name) =>
-          `case${name}(input: $input${name}) {
-    set_id
-    size
-    }
-  `,
+        (name) => `${name}Cases : case (input: $input${name}) { set_id size }`,
       )
       .join(","),
-    variables: prefix
-      .map(
-        (name) => `
-  input${name} : {
-   filters: ${buildCohortGqlOperator({
-     mode: "and",
-     root: { [name]: filters.root[name] },
-   })},
-   "set_id" : ${id}-${name[0]}
-   }`,
-      )
-      .join(","),
+
+    variables: Object.keys(filters.root).reduce(
+      (obj, name, index) => ({
+        ...obj,
+        set_id: `${id}-${prefix[index][0]}`,
+        [`input${prefix[index]}`]: {
+          filters: buildCohortGqlOperator({
+            mode: "and",
+            root: { [name]: filters.root[name] },
+          }),
+        },
+      }),
+      {},
+    ),
   };
 };
 
@@ -68,8 +68,8 @@ const buildCaseSetGQLQueryAndVariables = (filters: FilterSet, id: string) => {
  A start at handling how to seamlessly create cohorts that can bridge explore
  and repository indexes. The slice creates a case set id using the defined filters
 */
-const buildCaseSetMutationQuery = (query: string) => `
- mutation mutationsCreateRepositoryCaseSetMutation(
+export const buildCaseSetMutationQuery = (query: string) => `
+mutation mutationsCreateRepositoryCaseSetMutation(
   $input: CreateSetInput
 ) {
   sets {
@@ -107,20 +107,11 @@ export const createCaseSet = createAsyncThunk<
   );
 
   const graphQL = buildCaseSetMutationQuery(query);
-
-  // const filtersGQL = {
-  //   input: {
-  //     filters: dividedFilters?.withPrefix
-  //       ? buildCohortGqlOperator(dividedFilters.withPrefix)
-  //       : {},
-  //     set_id: `${caseSetId}`,
-  //   },
-  // };
   return graphqlAPI(graphQL, variables);
 });
 
 export const DEFAULT_COHORT_ID = "ALL-GDC-COHORT";
-const REQUIRES_CASE_SET_FILTERS = ["genes.", "ssms."];
+export const REQUIRES_CASE_SET_FILTERS = ["genes.", "ssms."];
 
 const cohortsAdapter = createEntityAdapter<Cohort>({
   sortComparer: (a, b) => {
@@ -274,7 +265,7 @@ const slice = createSlice({
       );
 
       // TODO: this will be removed after cohort id issue is fixed in the BE
-      // This is just a hack to remove cohort without trigerring notification and changing the cohort to the default
+      // This is just a hack to remove cohort without triggering notification and changing the cohort to the default
       if (action?.payload?.shouldShowMessage) {
         state.message = `deleteCohort|${removedCohort?.name}|${state.currentCohort}`;
         state.currentCohort = DEFAULT_COHORT_ID;
@@ -624,7 +615,7 @@ interface SplitFilterSet {
   withoutPrefix: FilterSet;
 }
 
-const divideFilterSetByPrefix = (
+export const divideFilterSetByPrefix = (
   filters: FilterSet,
   prefixes: string[],
 ): SplitFilterSet => {
