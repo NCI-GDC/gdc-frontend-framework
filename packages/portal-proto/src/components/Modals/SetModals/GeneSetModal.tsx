@@ -38,7 +38,7 @@ const GeneSetModal: React.FC<GeneSetModalProps> = ({
           <InputSet
             inputInstructions={inputInstructions}
             textInputPlaceholder="e.g. ENSG00000141510, TP53, 7273, HGNC:11998, 191170, P04637"
-            identifier="gene"
+            entity="gene"
             identifierToolTip={
               <div>
                 <p>

@@ -22,7 +22,7 @@ interface InputSetProps {
   readonly inputInstructions: string;
   readonly identifierToolTip: React.ReactNode;
   readonly textInputPlaceholder: string;
-  readonly identifier: string;
+  readonly entity: string;
   readonly mappedToFields: string[];
   readonly matchAgainstIdentifiers: string[];
   readonly dataHook: UseQuery<QueryDefinition<any, any, any, any, any>>;
@@ -34,7 +34,7 @@ const InputSet: React.FC<InputSetProps> = ({
   inputInstructions,
   identifierToolTip,
   textInputPlaceholder,
-  identifier,
+  entity,
   mappedToFields,
   matchAgainstIdentifiers,
   dataHook,
@@ -89,12 +89,12 @@ const InputSet: React.FC<InputSetProps> = ({
       setScreenReaderMessage(
         `${
           matched.length
-        } matches found. A maximum of ${MATCH_LIMIT.toLocaleString()} ${identifier}s can be applied at one time.`,
+        } matches found. A maximum of ${MATCH_LIMIT.toLocaleString()} ${entity}s can be applied at one time.`,
       );
 
       inputRef.current.focus();
     }
-  }, [matched, identifier]);
+  }, [matched, entity]);
 
   return (
     <>
@@ -103,7 +103,7 @@ const InputSet: React.FC<InputSetProps> = ({
           <p className="mb-2 text-sm">{inputInstructions}</p>
           <div className="flex items-center justify-between w-full">
             <label className="font-bold text-sm" htmlFor="indentifier-input">
-              Type or copy-and-paste a list of {identifier} identifiers
+              Type or copy-and-paste a list of {entity} identifiers
             </label>
             <Tooltip
               label={identifierToolTip}
@@ -164,7 +164,7 @@ const InputSet: React.FC<InputSetProps> = ({
           <MatchTables
             matched={matched}
             unmatched={unmatched}
-            identifier={identifier}
+            entity={entity}
             fieldDisplay={fieldDisplay}
           />
         )}

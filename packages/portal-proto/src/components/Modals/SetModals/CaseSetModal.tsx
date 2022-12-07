@@ -38,7 +38,7 @@ const CaseSetModal: React.FC = () => {
         textInputPlaceholder={
           "e.g. TCGA-DD-AAVP, TCGA-DD-AAVP-10A-01D-A40U-10, 0004d251-3f70-4395-b175-c94c2f5b1b81"
         }
-        identifier="case"
+        entity="case"
         mappedToFields={["submitter_id", "project.project_id"]}
         matchAgainstIdentifiers={[
           "case_id",

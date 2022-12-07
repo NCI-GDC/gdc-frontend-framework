@@ -38,7 +38,7 @@ const MutationSetModal: React.FC<MutationSetModalProps> = ({
           <InputSet
             inputInstructions={inputInstructions}
             textInputPlaceholder="e.g. chr3:g.179234297A>G, 92b75ae1-8d4d-52c2-8658-9c981eef0e57"
-            identifier="mutation"
+            entity="mutation"
             identifierToolTip={
               <div>
                 <p>
