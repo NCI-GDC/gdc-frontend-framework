@@ -22,7 +22,7 @@ jest.mock("@stjude/proteinpaint-client", () => ({
 test("SSM lolliplot arguments", () => {
   userDetails = { data: { username: "test" } };
   filter = { abc: "xyz" };
-  const { unmount } = render(<ProteinPaintWrapper track="lolliplot" />);
+  const { unmount } = render(<ProteinPaintWrapper track="lollipop" />);
   expect(typeof runpparg).toBe("object");
   expect(typeof runpparg.host).toBe("string");
   expect(runpparg.noheader).toEqual(true);
