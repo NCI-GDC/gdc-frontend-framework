@@ -47,8 +47,8 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
       }
 
       const data =
-        props.track == "lolliplot"
-          ? getLolliplotTrack(props, filter0)
+        props.track == "lollipop"
+          ? getLollipopTrack(props, filter0)
           : props.track == "bam" && userDetails?.username
           ? getBamTrack(props, filter0)
           : props.track == "matrix"
@@ -68,7 +68,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
 
       if (ppRef.current) {
         ppRef.current.update(arg);
-      } else if (userDetails?.username) {
+      } else if (props.track != "bam" || userDetails?.username) {
         const pp_holder = rootElem.querySelector(".sja_root_holder");
         if (pp_holder) pp_holder.remove();
         runproteinpaint(arg).then((pp) => {
@@ -116,7 +116,7 @@ interface PpApi {
   update(arg: any): null;
 }
 
-function getLolliplotTrack(props: PpProps, filter0: any) {
+function getLollipopTrack(props: PpProps, filter0: any) {
   // host in gdc is just a relative url path,
   // using the same domain as the GDC portal where PP is embedded
   const arg: Mds3Arg = {
