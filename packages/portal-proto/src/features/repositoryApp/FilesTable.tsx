@@ -328,7 +328,7 @@ const FilesTables: React.FC = () => {
             <div className="">
               Total of{" "}
               <strong>{tempPagination?.total?.toLocaleString() || "--"}</strong>{" "}
-              Files
+              {tempPagination?.total > 1 ? "Files" : "File"}
             </div>
           </div>
         </div>

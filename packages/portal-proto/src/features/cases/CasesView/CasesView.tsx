@@ -362,7 +362,9 @@ export const ContextualCasesView: React.FC = () => {
             </Button>
           </div>
         }
-        tableTitle={`Total of ${pagination?.total} cases`}
+        tableTitle={`Total of ${pagination?.total?.toLocaleString()} ${
+          pagination?.total > 1 ? "Cases" : "Case"
+        }`}
         showControls={true}
         columnSorting={"manual"}
         selectableRow={false}

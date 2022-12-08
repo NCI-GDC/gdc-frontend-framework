@@ -14,6 +14,7 @@ const selectedCasesSlice = createSlice({
   name: "cases/selectedCases",
   initialState: selectedCasesAdapter.getInitialState(),
   reducers: {
+    resetSelectedCases: () => selectedCasesAdapter.getInitialState(),
     addCase: selectedCasesAdapter.addOne,
     addCases: selectedCasesAdapter.addMany,
     removeCase: selectedCasesAdapter.removeOne,
@@ -22,8 +23,13 @@ const selectedCasesSlice = createSlice({
 });
 
 export const selectedCasesReducer = selectedCasesSlice.reducer;
-export const { addCase, addCases, removeCase, removeCases } =
-  selectedCasesSlice.actions;
+export const {
+  addCase,
+  addCases,
+  removeCase,
+  removeCases,
+  resetSelectedCases,
+} = selectedCasesSlice.actions;
 
 const selectedCasesSelectors = selectedCasesAdapter.getSelectors<CoreState>(
   (state) => state.selectedCases,

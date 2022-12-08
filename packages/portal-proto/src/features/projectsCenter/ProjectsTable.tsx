@@ -294,7 +294,9 @@ const ProjectsTable: React.FC = () => {
   //update everything that uses table component
   return (
     <VerticalTable
-      tableTitle={`Total of ${tempPagination?.total} projects`}
+      tableTitle={`Total of ${tempPagination?.total?.toLocaleString()} ${
+        tempPagination?.total > 1 ? "Projects" : "Project"
+      }`}
       additionalControls={
         <div className="flex gap-2">
           <ProjectsCohortButton />
