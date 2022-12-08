@@ -1,11 +1,18 @@
 import React, { useCallback, useState } from "react";
-import { LoadingOverlay, Select } from "@mantine/core";
+import {
+  LoadingOverlay,
+  Select,
+  //TODO uncomment to show set modals menu
+  // Menu
+} from "@mantine/core";
 import {
   MdAdd as AddIcon,
   MdDelete as DeleteIcon,
   MdFileDownload as DownloadIcon,
   MdFileUpload as UploadIcon,
   MdSave as SaveIcon,
+  //TODO uncomment to show set modals menu
+  // MdFilterAlt as CohortFilterIcon,
 } from "react-icons/md";
 import {
   FaCaretDown as DownArrowIcon,
@@ -34,11 +41,18 @@ import {
   buildCohortGqlOperator,
   useAddCohortMutation,
   resetSelectedCases,
+  //TODO uncomment to show set modals menu
+  // showModal,
+  Modals,
+  selectCurrentModal,
 } from "@gff/core";
 import { useCohortFacetFilters } from "./CohortGroup";
 import CountButton from "./CountButton";
 import { SavingCohortModal } from "./Modals/SavingCohortModal";
 import { GenericCohortModal } from "./Modals/GenericCohortModal";
+import CaseSetModal from "@/components/Modals/SetModals/CaseSetModal";
+import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
+import MutationSetModal from "@/components/Modals/SetModals/MutationSetModal";
 
 interface CohortGroupButtonProps {
   $buttonDisabled?: boolean;
@@ -125,6 +139,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   const [showDiscard, setShowDiscard] = useState(false);
   const [showSaveCohort, setShowSaveCohort] = useState(false);
   const [showUpdateCohort, setShowUpdateCohort] = useState(false);
+  const modal = useCoreSelector((state) => selectCurrentModal(state));
 
   const menu_items = [
     { value: cohorts[0].id, label: cohorts[0].name },
@@ -266,6 +281,21 @@ const CohortManager: React.FC<CohortManagerProps> = ({
         }}
         onSaveCohort={onSaveCohort}
       />
+      {modal === Modals.CaseSetModal && <CaseSetModal />}
+      {modal === Modals.GeneSetModal && (
+        <GeneSetModal
+          modalTitle="Filter Current Cohort by Genes"
+          inputInstructions="Enter one or more gene identifiers in the field below or upload a file to filter your cohort."
+          selectSetInstructions="Select one or more sets below to filter your cohort."
+        />
+      )}
+      {modal === Modals.MutationSetModal && (
+        <MutationSetModal
+          modalTitle="Filter Current Cohort by Mutations"
+          inputInstructions="Enter one or more mutation identifiers in the field below or upload a file to filter your cohort."
+          selectSetInstructions="Select one or more sets below to filter your cohort."
+        />
+      )}
       {/*  Modals End   */}
 
       <div className="border-opacity-0">
@@ -291,7 +321,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                   onSelectionChanged(x);
                 }}
                 classNames={{
-                  root: "border-base-light w-80 p-0 z-10 pt-5",
+                  root: "border-base-light w-80 p-0 z-[1050] pt-5",
                   input:
                     "text-heading font-medium text-primary-darkest rounded-l-none h-10",
                   item: "text-heading font-normal text-primary-darkest data-selected:bg-primary-lighter first:border-b-2 first:rounded-none first:border-primary",
@@ -352,11 +382,48 @@ const CohortManager: React.FC<CohortManagerProps> = ({
             <CohortGroupButton data-testid="downloadButton">
               <DownloadIcon size="1.5em" aria-label="Download cohort" />
             </CohortGroupButton>
+            {/* Uncomment to test set modals */}
+            {/*
+            <Menu>
+              <Menu.Target>
+                <CohortGroupButton>
+                  <CohortFilterIcon
+                    size="1.5rem"
+                    aria-label="Custom cohort filters"
+                  />
+                </CohortGroupButton>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Item
+                  onClick={() =>
+                    coreDispatch(showModal({ modal: Modals.CaseSetModal }))
+                  }
+                >
+                  cases
+                </Menu.Item>
+                <Menu.Item
+                  onClick={() =>
+                    coreDispatch(showModal({ modal: Modals.GeneSetModal }))
+                  }
+                >
+                  genes
+                </Menu.Item>
+                <Menu.Item
+                  onClick={() =>
+                    coreDispatch(showModal({ modal: Modals.MutationSetModal }))
+                  }
+                >
+                  mutations
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+            */}
           </>
         ) : (
           <div />
         )
       }
+
       <CountButton
         countName="casesMax"
         label="CASES"
