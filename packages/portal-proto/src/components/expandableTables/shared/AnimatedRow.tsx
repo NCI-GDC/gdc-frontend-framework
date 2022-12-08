@@ -1,5 +1,4 @@
 import React from "react";
-import { animated, useSpring, config } from "@react-spring/web";
 import { flexRender } from "@tanstack/react-table";
 
 interface AnimatedRowProps {
@@ -24,19 +23,18 @@ const AnimatedRow: React.FC<AnimatedRowProps> = ({
   selected,
   subrow,
 }: AnimatedRowProps) => {
-  const rowDelay = (index: number) => {
-    return index < 20 ? index * 60 : 1200;
-  };
-  const unitSpring = useSpring({
-    from: { opacity: 0, transform: "translate3D(0px, -150px, 0px)" },
-    to: { opacity: 1, transform: "translate3D(0px, 0px, 0px)" },
-    config: config.gentle,
-    delay: rowDelay(index),
-  });
+  // const rowDelay = (index: number) => {
+  //   return index < 20 ? index * 60 : 1200;
+  // };
+  // const unitSpring = useSpring({
+  //   from: { opacity: 0, transform: "translate3D(0px, -150px, 0px)" },
+  //   to: { opacity: 1, transform: "translate3D(0px, 0px, 0px)" },
+  //   config: config.gentle,
+  //   delay: rowDelay(index),
+  // });
 
   return (
-    <animated.tr
-      style={unitSpring}
+    <tr
       key={row.id}
       className={`border-2 ${
         selected
@@ -46,13 +44,13 @@ const AnimatedRow: React.FC<AnimatedRowProps> = ({
     >
       {row.getVisibleCells().map((cell, cellIdx) => {
         return (
-          <animated.td key={cell.id}>
+          <td key={cell.id}>
             {flexRender(cell.column.columnDef.cell, cell.getContext())}
             {row.id.includes(".") && cellIdx === 0 && subrow}
-          </animated.td>
+          </td>
         );
       })}
-    </animated.tr>
+    </tr>
   );
 };
 

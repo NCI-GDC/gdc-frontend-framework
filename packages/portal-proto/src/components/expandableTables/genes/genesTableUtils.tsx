@@ -3,7 +3,7 @@ import ToggleSpring from "../shared/ToggleSpring";
 import { Tooltip } from "@mantine/core";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import CheckboxSpring from "../shared/CheckboxSpring";
-import SwitchSpring from "../shared/SwitchSpring";
+import { default as SwitchSpring } from "../shared/SwitchMantine";
 import RatioSpring from "../shared/RatioSpring";
 import { SelectedReducer, TableColumnDefinition } from "../shared/types";
 import { AnnotationsIcon } from "../shared/sharedTableUtils";
@@ -73,7 +73,7 @@ export const createTableColumn = (
               <TableHeader
                 title={startCase(accessor)}
                 tooltip={""}
-                className="mx-3"
+                className="mr-3"
               />
             ),
             cell: ({ row }) => {
@@ -82,7 +82,7 @@ export const createTableColumn = (
                   {row.getCanExpand() && (
                     <SwitchSpring
                       isActive={toggledGenes.includes(row.original?.geneID)}
-                      margin={`my-0.5 ml-0`}
+                      margin="ml-0`"
                       icon={
                         <Image
                           src={"/user-flow/icons/cohort-dna.svg"}

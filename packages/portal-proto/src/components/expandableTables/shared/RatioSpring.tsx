@@ -1,5 +1,4 @@
 import React from "react";
-import { animated, useSpring } from "@react-spring/web";
 
 interface Item {
   project?: string | undefined;
@@ -18,12 +17,6 @@ const RatioSpring: React.FC<RatioSpringProps> = ({
   index,
   orientation,
 }: RatioSpringProps) => {
-  const staggeredSpring = useSpring({
-    from: { opacity: 0 },
-    to: { opacity: 1 },
-    immediate: true,
-  });
-
   const { numerator, denominator, project } = item;
   const [n, d] = [
     denominator === 0 ? 0 : numerator,
@@ -31,7 +24,7 @@ const RatioSpring: React.FC<RatioSpringProps> = ({
   ];
   return (
     <>
-      <animated.ul style={staggeredSpring} className={`p-1 text-xs`}>
+      <ul className={`p-1 text-xs`}>
         {numerator === 0 ? (
           orientation === "vertical" && <div className={`w-max m-auto`}>0</div>
         ) : (
@@ -58,7 +51,7 @@ const RatioSpring: React.FC<RatioSpringProps> = ({
             )}
           </li>
         )}
-      </animated.ul>
+      </ul>
     </>
   );
 };

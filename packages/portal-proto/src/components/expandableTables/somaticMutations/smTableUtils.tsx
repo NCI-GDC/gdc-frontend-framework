@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction } from "react";
 import ToggleSpring from "../shared/ToggleSpring";
-import SwitchSpring from "../shared/SwitchSpring";
+import { default as SwitchSpring } from "../shared/SwitchMantine";
 import RatioSpring from "../shared/RatioSpring";
 import ToggledCheck from "@/components/expandableTables/shared/ToggledCheck";
 import { MdKeyboardArrowDown } from "react-icons/md";
@@ -81,7 +81,7 @@ export const createTableColumn = (
               <TableHeader
                 title={startCase(accessor)}
                 tooltip={""}
-                className="flex justify-start w-12"
+                className="flex justify-start w-12 ml-3"
               />
             ),
             cell: ({ row }) => {
@@ -90,12 +90,12 @@ export const createTableColumn = (
                   {row.getCanExpand() && (
                     <SwitchSpring
                       isActive={toggledSsms.includes(row.original?.mutationID)}
-                      margin={`my-0.5 ml-0`}
+                      margin={`ml-3`}
                       icon={
                         <Image
                           src={"/user-flow/icons/cohort-dna.svg"}
-                          width={16}
-                          height={16}
+                          width={24}
+                          height={24}
                         />
                       }
                       selected={row.original["cohort"]}
