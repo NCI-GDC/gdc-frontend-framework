@@ -40,7 +40,7 @@ test("SSM lolliplot arguments", () => {
 test("Sequence Read arguments - logged in", () => {
   userDetails = { data: { username: "test" } };
   filter = { test: 1 };
-  const { unmount, queryByText } = render(<ProteinPaintWrapper track="bam" />);
+  const { unmount, container } = render(<ProteinPaintWrapper track="bam" />);
   expect(typeof runpparg).toBe("object");
   expect(typeof runpparg.host).toBe("string");
   expect(runpparg.noheader).toEqual(true);
@@ -49,7 +49,12 @@ test("Sequence Read arguments - logged in", () => {
   expect(runpparg.holder instanceof HTMLElement).toBe(true);
   expect(runpparg.gdcbamslice).toEqual({ hideTokenInput: true });
   expect(runpparg.filter0).toEqual({ test: 1 });
-  expect(queryByText("Access alert")).not.toBeInTheDocument();
+  expect(container.querySelector(".sjpp-wrapper-alert-div")).toHaveStyle(
+    `display: none`,
+  );
+  expect(container.querySelector(".sjpp-wrapper-root-div")).toHaveStyle(
+    `display: block`,
+  );
   unmount();
 });
 
@@ -57,7 +62,12 @@ test("Sequence Read arguments - logged in", () => {
 test("Sequence Read arguments - not logged in", () => {
   userDetails = { data: { username: null } };
   filter = { test: 1 };
-  const { unmount, queryByText } = render(<ProteinPaintWrapper track="bam" />);
-  expect(queryByText("Access alert")).toBeInTheDocument();
+  const { unmount, container } = render(<ProteinPaintWrapper track="bam" />);
+  expect(container.querySelector(".sjpp-wrapper-alert-div")).toHaveStyle(
+    `display: block`,
+  );
+  expect(container.querySelector(".sjpp-wrapper-root-div")).toHaveStyle(
+    `display: none`,
+  );
   unmount();
 });
