@@ -504,7 +504,7 @@ const RangeInputWithPrefixedRanges: React.FC<
   const totalBuckets = Object.keys(rangeLabelsAndValues).length;
   const bucketsToShow = isGroupExpanded ? totalBuckets : DEFAULT_VISIBLE_ITEMS;
   const remainingValues = totalBuckets - bucketsToShow;
-  const numberOfBarsToDisplay = Object.keys(chartData).length;
+  const numberOfBarsToDisplay = bucketsToShow;
 
   const onShowModeChanged = () => {
     setIsGroupExpanded(!isGroupExpanded);
@@ -590,13 +590,14 @@ const RangeInputWithPrefixedRanges: React.FC<
                 valueLabel={valueLabel}
                 maxBins={numberOfBarsToDisplay}
                 height={
-                  numberOfBarsToDisplay == 1
+                  (numberOfBarsToDisplay == 1
                     ? 150
                     : numberOfBarsToDisplay == 2
                     ? 220
                     : numberOfBarsToDisplay == 3
                     ? 240
-                    : numberOfBarsToDisplay * 65 + 10
+                    : numberOfBarsToDisplay * 65 + 10) -
+                  (isGroupExpanded ? 15 : 0)
                 }
               />
             )}
