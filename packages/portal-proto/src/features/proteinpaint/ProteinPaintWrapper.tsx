@@ -34,19 +34,22 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
   useEffect(
     () => {
       const rootElem = divRef.current as HTMLElement;
+      const loginPrompt =
+        "Please login to access the Sequence Read visualization tool.";
       if (props.track == "bam") {
         if (!userDetails.username) {
-          rootElem.innerHTML = `<div style='margin: 32px'><b>Access alert</b><hr><p>Please login to access the Sequence Read visualization tool.</p></div>`;
+          rootElem.innerHTML = `<div style='margin: 32px'><b>Access alert</b><hr><p>${loginPrompt}</p></div>`;
+          ppRef.current = null;
           return;
-        } else if (!ppRef.current) {
+        } else if (rootElem.innerHTML.includes(loginPrompt)) {
           rootElem.innerHTML = "";
         }
       }
 
       const data =
-        props.track == "lolliplot"
-          ? getLolliplotTrack(props, filter0)
-          : props.track == "bam"
+        props.track == "lollipop"
+          ? getLollipopTrack(props, filter0)
+          : props.track == "bam" && userDetails?.username
           ? getBamTrack(props, filter0)
           : props.track == "matrix"
           ? getMatrixTrack(props, filter0)
@@ -65,7 +68,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
 
       if (ppRef.current) {
         ppRef.current.update(arg);
-      } else {
+      } else if (props.track != "bam" || userDetails?.username) {
         const pp_holder = rootElem.querySelector(".sja_root_holder");
         if (pp_holder) pp_holder.remove();
         runproteinpaint(arg).then((pp) => {
@@ -113,7 +116,7 @@ interface PpApi {
   update(arg: any): null;
 }
 
-function getLolliplotTrack(props: PpProps, filter0: any) {
+function getLollipopTrack(props: PpProps, filter0: any) {
   // host in gdc is just a relative url path,
   // using the same domain as the GDC portal where PP is embedded
   const arg: Mds3Arg = {

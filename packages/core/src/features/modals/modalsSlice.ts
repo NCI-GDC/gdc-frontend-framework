@@ -12,6 +12,9 @@ export enum Modals {
   "CartDownloadModal" = "CartDownloadModal",
   "AgreementModal" = " AgreementModal",
   "GeneralErrorModal" = " GeneralErrorModal",
+  "CaseSetModal" = "CaseSetModal",
+  "GeneSetModal" = "GeneSetModal",
+  "MutationSetModal" = "MutationSetModal",
 }
 
 export interface ModalState {
