@@ -1,4 +1,4 @@
-import { GDC_API } from "@gff/core";
+import { GDC_AUTH } from "@gff/core";
 import { Badge, Card } from "@mantine/core";
 
 interface SlidesProps {
@@ -43,7 +43,7 @@ export const Slides: React.FC<SlidesProps> = ({
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           alt={`thumbnail of ${submitter_id}`}
-          src={`${GDC_API}/tile/${file_id}?level=7&x=0&y=0`}
+          src={`${GDC_AUTH}/api/tile/${file_id}?level=7&x=0&y=0`}
           className="max-w-[200px] max-h-[90px]"
         />
       </Card>

@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import getConfig from "next/config";
 import OpenSeadragon from "openseadragon";
-import { useImageDetails } from "@gff/core";
+import { GDC_AUTH, useImageDetails } from "@gff/core";
 import { LoadingOverlay } from "@mantine/core";
 import { toggleFullScreen } from "../utils";
 import { SlideDetailButton } from "./SlideDetailButton";
 import { HorizontalTableProps } from "./HorizontalTable";
-import { GDC_API } from "@gff/core";
+
 export interface ImageViewerProp extends HorizontalTableProps {
   imageId: string;
 }
@@ -76,7 +76,7 @@ const ImageViewer = ({ imageId, tableData }: ImageViewerProp): JSX.Element => {
           tileSize: Number(imageDetails.TileSize),
           tileOverlap: Number(imageDetails.Overlap),
           getTileUrl: (level, x, y) => {
-            return `${GDC_API}/tile/${imageId}?level=${level}&x=${x}&y=${y}`;
+            return `${GDC_AUTH}/api/tile/${imageId}?level=${level}&x=${x}&y=${y}`;
           },
         });
       }
