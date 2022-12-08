@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, ReactNode } from "react";
 import { ActionIcon, Radio, Loader, Menu, Tooltip } from "@mantine/core";
 import { MdDownload as DownloadIcon } from "react-icons/md";
 import tailwindConfig from "tailwind.config";
@@ -38,6 +38,7 @@ interface HistogramProps {
   readonly fieldName: string;
   readonly continuous: boolean;
   readonly customBinnedData?: CategoricalBins;
+  readonly toolbar: ReactNode;
 }
 
 const CDaveHistogram: React.FC<HistogramProps> = ({
@@ -47,6 +48,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
   field,
   continuous,
   noData,
+  toolbar,
   customBinnedData = null,
 }: HistogramProps) => {
   const [displayPercent, setDisplayPercent] = useState(false);
@@ -56,7 +58,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
     displayPercent,
     continuous,
   );
-
+  console.log("toolbar", toolbar);
   const color =
     tailwindConfig.theme.extend.colors[COLOR_MAP[field.split(".").at(-2)]]
       ?.DEFAULT;
@@ -73,6 +75,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
       ) : (
         <>
           <div className="flex justify-between p-2">
+            {toolbar}
             <Radio.Group
               size="sm"
               className="p-2"

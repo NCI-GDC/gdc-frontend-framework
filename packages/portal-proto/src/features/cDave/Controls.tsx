@@ -179,7 +179,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
           </Highlight>
         </>
       ) : (
-        <div className="flex justify-between cursor-pointer bg-none">
+        <div className="flex justify-between items-center cursor-pointer bg-none">
           <Tooltip
             label={field?.description || "No description available"}
             withArrow
