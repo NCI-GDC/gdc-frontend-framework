@@ -199,6 +199,8 @@ const ContextBar: React.FC = () => {
 
   const filters = useCohortFacetFilters();
 
+  console.log("cohort bar filters", filters);
+
   const CohortBarWithProps = () => (
     <CohortManager
       // TODO: need to connect to cohort persistence

@@ -484,6 +484,7 @@ const slice = createSlice({
           console.error(
             "trying to create a case set with no pending filters",
             cohort.id,
+            action.meta,
           );
         }
         if (response.errors && Object.keys(response.errors).length > 0) {
@@ -636,12 +637,14 @@ export const selectAvailableCohortByName = (
  * Returns the current cohort filters as a FilterSet
  * @param state
  */
-export const selectCurrentCohortFilterSet = (state: CoreState): FilterSet => {
+export const selectCurrentCohortFilterSet = (
+  state: CoreState,
+): FilterSet | undefined => {
   const cohort = cohortSelectors.selectById(
     state,
     state.cohort.availableCohorts.currentCohort,
   );
-  return cohort?.filters ?? { mode: "and", root: {} };
+  return cohort?.filters;
 };
 
 interface SplitFilterSet {
@@ -789,6 +792,6 @@ export const selectCurrentCohortCaseSet = (
   return { ...cohort.caseSet };
 };
 
-export const useCurrentCohortFilters = (): FilterSet => {
+export const useCurrentCohortFilters = (): FilterSet | undefined => {
   return useCoreSelector((state) => selectCurrentCohortFilterSet(state));
 };

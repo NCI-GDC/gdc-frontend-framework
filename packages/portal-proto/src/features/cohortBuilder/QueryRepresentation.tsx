@@ -197,16 +197,6 @@ const IncludeExcludeQueryElement: React.FC<
                 rightSection={<RemoveButton value={x.toString()} />}
                 onClick={() => {
                   const newOperands = operands.filter((o) => o !== x);
-                  dispatch(
-                    updateCohortFilter({
-                      field,
-                      operation: {
-                        operator,
-                        field,
-                        operands: newOperands,
-                      },
-                    }),
-                  );
                   if (newOperands.length === 0) {
                     setQueryExpressionsExpanded({
                       type: "clear",
@@ -214,7 +204,17 @@ const IncludeExcludeQueryElement: React.FC<
                       field,
                     });
                     dispatch(removeCohortFilter(field));
-                  }
+                  } else
+                    dispatch(
+                      updateCohortFilter({
+                        field,
+                        operation: {
+                          operator,
+                          field,
+                          operands: newOperands,
+                        },
+                      }),
+                    );
                 }}
               >
                 <OverflowTooltippedLabel label={x.toString()}>
