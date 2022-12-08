@@ -2,6 +2,7 @@ import {
   buildRangeOperator,
   extractRangeValues,
   buildRangeBuckets,
+  adjustAgeRange,
 } from "./utils";
 
 describe("Build Range Tests for Numeric Ranges", () => {
@@ -496,5 +497,15 @@ describe("Build Bucket Range Test", () => {
     const [bucketRanges, ranges] = buildRangeBuckets(19, "days", -32872.5);
     expect(bucketRanges).toEqual(expectedBucketRanges);
     expect(ranges).toEqual(expectedRanges);
+  });
+});
+
+describe("test adjust age range", () => {
+  test("testing all age ranges", () => {
+    expect(adjustAgeRange("<", 14974, "years")).toEqual(14610);
+    expect(adjustAgeRange("<=", 14974, "years")).toEqual(14974);
+    expect(adjustAgeRange("<=", 7305, "years")).toEqual(7305);
+    expect(adjustAgeRange(">", 7305, "years")).toEqual(7305);
+    expect(adjustAgeRange(">=", 6940, "years")).toEqual(6940);
   });
 });

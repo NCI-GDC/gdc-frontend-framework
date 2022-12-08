@@ -276,3 +276,21 @@ export const buildRangeBuckets = (
   });
   return [bucketEntries, r];
 };
+
+export const adjustAgeRange = (
+  op: ">" | ">=" | "<" | "<=",
+  value: number,
+  units: string,
+): number => {
+  if (units !== "years") return value;
+  switch (op) {
+    case ">":
+      return getUpperAgeFromYears(Math.floor(value / DAYS_IN_YEAR));
+    case ">=":
+      return Math.floor(value / DAYS_IN_YEAR) * DAYS_IN_YEAR;
+    case "<":
+      return Math.floor(value / DAYS_IN_YEAR) * DAYS_IN_YEAR;
+    case "<=":
+      return getUpperAgeFromYears(Math.floor(value / DAYS_IN_YEAR));
+  }
+};
