@@ -19,7 +19,7 @@ import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton
 import FunctionButton from "@/components/FunctionButton";
 import { getMatchedIdentifiers } from "./utils";
 import MatchTables from "./MatchTables";
-import SaveSetButtton from "./SaveSetButton";
+import SaveSetButton from "./SaveSetButton";
 import { ButtonContainer } from "./styles";
 
 export const MATCH_LIMIT = 50000;
@@ -184,7 +184,7 @@ const InputSet: React.FC<InputSetProps> = ({
       </div>
       <ButtonContainer>
         {createSetHook && (
-          <SaveSetButtton
+          <SaveSetButton
             disabled={matched.length === 0}
             setValues={matched.map(
               (match) =>

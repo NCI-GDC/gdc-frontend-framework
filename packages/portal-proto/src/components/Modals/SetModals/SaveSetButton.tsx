@@ -19,7 +19,7 @@ interface SaveSetButttonProps {
   readonly setType: SetTypes;
 }
 
-const SaveSetButtton: React.FC<SaveSetButttonProps> = ({
+const SaveSetButton: React.FC<SaveSetButttonProps> = ({
   disabled,
   setValues,
   createSetHook,
@@ -73,4 +73,4 @@ const SaveSetButtton: React.FC<SaveSetButttonProps> = ({
   );
 };
 
-export default SaveSetButtton;
+export default SaveSetButton;
