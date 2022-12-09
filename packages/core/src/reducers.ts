@@ -45,6 +45,7 @@ import {
   endpointReducer,
   endpointSliceReducerPath,
 } from "./features/gdcapi/gdcapi";
+import { setsReducer } from "./features/sets";
 
 export const reducers = combineReducers({
   cohort: cohortReducers,
@@ -81,6 +82,7 @@ export const reducers = combineReducers({
   [graphqlAPISliceReducerPath]: graphqlAPIReducer,
   [endpointSliceReducerPath]: endpointReducer,
   versionInfo: versionInfoReducer,
+  sets: setsReducer,
 });
 
 export type CoreState = ReturnType<typeof reducers>;

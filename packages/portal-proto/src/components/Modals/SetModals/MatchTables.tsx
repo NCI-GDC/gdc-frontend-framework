@@ -19,14 +19,14 @@ interface MatchTablesProps {
     givenIdentifiers: { field: string; value: string }[];
   }[];
   readonly unmatched: string[];
-  readonly entity: string;
+  readonly setTypeLabel: string;
   readonly fieldDisplay: Record<string, string>;
 }
 
 const MatchTables: React.FC<MatchTablesProps> = ({
   matched,
   unmatched,
-  entity,
+  setTypeLabel,
   fieldDisplay,
 }: MatchTablesProps) => {
   const [activeTab, setActiveTab] = useState("matched");
@@ -53,7 +53,7 @@ const MatchTables: React.FC<MatchTablesProps> = ({
         })),
       },
       {
-        columnName: `Submitted ${upperFirst(entity)} Identifier`,
+        columnName: `Submitted ${upperFirst(setTypeLabel)} Identifier`,
         id: "submitted_id",
         visible: true,
         disableSortBy: true,
@@ -64,7 +64,7 @@ const MatchTables: React.FC<MatchTablesProps> = ({
         })),
       },
     ];
-  }, [matched, fieldDisplay, entity]);
+  }, [matched, fieldDisplay, setTypeLabel]);
 
   const matchedTableData = useMemo(() => {
     return matched.map((d) => ({
@@ -177,9 +177,9 @@ const MatchTables: React.FC<MatchTablesProps> = ({
           <Tabs.Panel value="matched">
             <div className="m-4">
               <p className="text-sm mb-2">
-                {numMatched} submitted {entity} identifier
+                {numMatched} submitted {setTypeLabel} identifier
                 {numMatched !== 1 && "s"} mapped to {matched.length} unique GDC{" "}
-                {entity}
+                {setTypeLabel}
                 {matched.length !== 1 && "s"}{" "}
               </p>
               {matched.length > 0 && (
@@ -190,7 +190,7 @@ const MatchTables: React.FC<MatchTablesProps> = ({
                   showControls={false}
                   pagination={{
                     ...matchPaginationProps,
-                    label: `${entity}s`,
+                    label: `${setTypeLabel}s`,
                   }}
                   handleChange={handleMatchedTableChange}
                   columnSorting={"enable"}
@@ -201,7 +201,7 @@ const MatchTables: React.FC<MatchTablesProps> = ({
           <Tabs.Panel value="unmatched">
             <div className="m-4">
               <p className="text-sm mb-2">
-                {unmatched.length} submitted {entity} identifier
+                {unmatched.length} submitted {setTypeLabel} identifier
                 {unmatched.length !== 1 && "s"} not recognized
               </p>
               {unmatched.length > 0 && (
@@ -209,7 +209,9 @@ const MatchTables: React.FC<MatchTablesProps> = ({
                   tableData={displayedUnmatchedData}
                   columns={[
                     {
-                      columnName: `Submitted ${upperFirst(entity)} Identifier`,
+                      columnName: `Submitted ${upperFirst(
+                        setTypeLabel,
+                      )} Identifier`,
                       id: "id",
                       visible: true,
                     },
@@ -218,7 +220,7 @@ const MatchTables: React.FC<MatchTablesProps> = ({
                   showControls={false}
                   pagination={{
                     ...unmatchedPaginationProps,
-                    label: `${entity}s`,
+                    label: `${setTypeLabel}s`,
                   }}
                   handleChange={handleUnmatchedTableChange}
                   columnSorting={"enable"}

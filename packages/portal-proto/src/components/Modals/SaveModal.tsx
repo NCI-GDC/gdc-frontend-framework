@@ -1,19 +1,24 @@
+import { upperFirst } from "lodash";
 import { Box, Button, Group, Modal, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { RiErrorWarningFill as WarningIcon } from "react-icons/ri";
 
-export const SavingCohortModal = ({
+export const SaveModal = ({
+  entity,
   initialName,
   opened,
   onClose,
   onSaveClick,
-  onSaveCohort,
+  onNameChange,
+  additionalDuplicateMessage,
 }: {
+  entity: string;
   initialName: string;
   opened: boolean;
   onClose: () => void;
   onSaveClick: (name: string) => void;
-  onSaveCohort: (name: string) => boolean;
+  onNameChange: (name: string) => boolean;
+  additionalDuplicateMessage?: string;
 }): JSX.Element => {
   const form = useForm({
     initialValues: {
@@ -33,7 +38,7 @@ export const SavingCohortModal = ({
 
   const description =
     Object.keys(form.errors).length === 0 &&
-    (!onSaveCohort(form.values.name) ? (
+    (!onNameChange(form.values.name) ? (
       <span style={{ color: "#976F21" }}>
         <WarningIcon
           style={{
@@ -42,7 +47,8 @@ export const SavingCohortModal = ({
             marginRight: "2px",
           }}
         />
-        A cohort with the same name already exists.
+        A {entity} with the same name already exists.{" "}
+        {additionalDuplicateMessage && additionalDuplicateMessage}
       </span>
     ) : (
       <span>Maximum 100 characters</span>
@@ -50,7 +56,7 @@ export const SavingCohortModal = ({
 
   return (
     <Modal
-      title="Save Cohort"
+      title={`Save ${upperFirst(entity)}`}
       opened={opened}
       padding={0}
       radius="md"
@@ -87,8 +93,8 @@ export const SavingCohortModal = ({
         <TextInput
           withAsterisk
           label="Name"
-          placeholder="New Cohort Name"
-          aria-label="Input field for new cohort name"
+          placeholder={`New ${upperFirst(entity)} Name`}
+          aria-label={`Input field for new ${entity} name`}
           description={description}
           styles={() => ({
             description: {
@@ -129,7 +135,7 @@ export const SavingCohortModal = ({
           <Button
             variant={"filled"}
             color="primary.8"
-            aria-label="Save button to add a cohort"
+            aria-label={`Save button to add a ${entity}`}
             onClick={() => {
               if (form.validate().hasErrors) return;
               onSaveClick(form.values.name);

@@ -1,5 +1,8 @@
 import React, { useEffect, useState, useRef, useMemo } from "react";
-import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
+import {
+  UseMutation,
+  UseQuery,
+} from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
 import {
   Textarea,
@@ -11,10 +14,12 @@ import {
 import { flatten } from "lodash";
 import { RiFile3Fill as FileIcon } from "react-icons/ri";
 import { MdInfo as InfoIcon } from "react-icons/md";
+import { SetTypes, useCoreDispatch, hideModal } from "@gff/core";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
-import SetModalButtons from "./SetModalButtons";
+import FunctionButton from "@/components/FunctionButton";
 import { getMatchedIdentifiers } from "./utils";
 import MatchTables from "./MatchTables";
+import SaveSetButtton from "./SaveSetButton";
 
 export const MATCH_LIMIT = 50000;
 
@@ -22,24 +27,28 @@ interface InputSetProps {
   readonly inputInstructions: string;
   readonly identifierToolTip: React.ReactNode;
   readonly textInputPlaceholder: string;
-  readonly entity: string;
+  readonly setType: SetTypes;
+  readonly setTypeLabel: string;
   readonly mappedToFields: string[];
   readonly matchAgainstIdentifiers: string[];
   readonly dataHook: UseQuery<QueryDefinition<any, any, any, any, any>>;
   readonly searchField: string;
   readonly fieldDisplay: Record<string, string>;
+  readonly createSetHook?: UseMutation<any>;
 }
 
 const InputSet: React.FC<InputSetProps> = ({
   inputInstructions,
   identifierToolTip,
   textInputPlaceholder,
-  entity,
+  setType,
+  setTypeLabel,
   mappedToFields,
   matchAgainstIdentifiers,
   dataHook,
   searchField,
   fieldDisplay,
+  createSetHook,
 }: InputSetProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [processingFile, setProcessingFile] = useState(false);
@@ -47,6 +56,7 @@ const InputSet: React.FC<InputSetProps> = ({
   const [tokens, setTokens] = useState<string[]>([]);
   const [screenReaderMessage, setScreenReaderMessage] = useState("");
   const inputRef = useRef(null);
+  const dispatch = useCoreDispatch();
 
   const { data, isSuccess } = dataHook({
     filters: {
@@ -89,12 +99,12 @@ const InputSet: React.FC<InputSetProps> = ({
       setScreenReaderMessage(
         `${
           matched.length
-        } matches found. A maximum of ${MATCH_LIMIT.toLocaleString()} ${entity}s can be applied at one time.`,
+        } matches found. A maximum of ${MATCH_LIMIT.toLocaleString()} ${setTypeLabel}s can be applied at one time.`,
       );
 
       inputRef.current.focus();
     }
-  }, [matched, entity]);
+  }, [matched, setTypeLabel]);
 
   return (
     <>
@@ -103,7 +113,7 @@ const InputSet: React.FC<InputSetProps> = ({
           <p className="mb-2 text-sm">{inputInstructions}</p>
           <div className="flex items-center justify-between w-full">
             <label className="font-bold text-sm" htmlFor="indentifier-input">
-              Type or copy-and-paste a list of {entity} identifiers
+              Type or copy-and-paste a list of {setTypeLabel} identifiers
             </label>
             <Tooltip
               label={identifierToolTip}
@@ -164,22 +174,36 @@ const InputSet: React.FC<InputSetProps> = ({
           <MatchTables
             matched={matched}
             unmatched={unmatched}
-            entity={entity}
+            setTypeLabel={setTypeLabel}
             fieldDisplay={fieldDisplay}
           />
         )}
       </div>
-      <SetModalButtons
-        saveButtonDisabled
-        clearButtonDisabled={input === ""}
-        submitButtonDisabled
-        onClearCallback={() => {
-          setInput("");
-          setFile(null);
-          setScreenReaderMessage("");
-          setTokens([]);
-        }}
-      />
+      <div className="bg-base-lightest flex p-4 gap-4 justify-end mt-4 rounded-b-lg sticky">
+        {createSetHook && (
+          <SaveSetButtton
+            disabled={matched.length === 0}
+            setValues={matchedIds}
+            setType={setType}
+            createSetHook={createSetHook}
+          />
+        )}
+        <FunctionButton onClick={() => dispatch(hideModal())}>
+          Cancel
+        </FunctionButton>
+        <DarkFunctionButton
+          disabled={input === ""}
+          onClick={() => {
+            setInput("");
+            setFile(null);
+            setScreenReaderMessage("");
+            setTokens([]);
+          }}
+        >
+          Clear
+        </DarkFunctionButton>
+        <DarkFunctionButton disabled>Submit</DarkFunctionButton>
+      </div>
     </>
   );
 };
