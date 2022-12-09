@@ -213,7 +213,7 @@ const asExperimentalStrategy = (
 };
 
 export interface GdcFile {
-  readonly id?: string;
+  readonly id: string;
   readonly submitterId: string;
   readonly access: AccessType;
   readonly acl: ReadonlyArray<string>;
