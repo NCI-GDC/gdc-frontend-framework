@@ -1,4 +1,4 @@
-import { useState, ReactNode } from "react";
+import { useState } from "react";
 import { ActionIcon, Radio, Loader, Menu, Tooltip } from "@mantine/core";
 import { MdDownload as DownloadIcon } from "react-icons/md";
 import tailwindConfig from "tailwind.config";
@@ -38,7 +38,6 @@ interface HistogramProps {
   readonly fieldName: string;
   readonly continuous: boolean;
   readonly customBinnedData?: CategoricalBins;
-  readonly toolbar: ReactNode;
 }
 
 const CDaveHistogram: React.FC<HistogramProps> = ({
@@ -48,7 +47,6 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
   field,
   continuous,
   noData,
-  toolbar,
   customBinnedData = null,
 }: HistogramProps) => {
   const [displayPercent, setDisplayPercent] = useState(false);
@@ -58,7 +56,6 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
     displayPercent,
     continuous,
   );
-  console.log("toolbar", toolbar);
   const color =
     tailwindConfig.theme.extend.colors[COLOR_MAP[field.split(".").at(-2)]]
       ?.DEFAULT;
@@ -69,21 +66,30 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
       {isFetching ? (
         <Loader />
       ) : noData ? (
-        <div className="h-full w-full flex">
+        <div className="font-heading h-full w-full flex">
           <p className="m-auto">No data for this property</p>
         </div>
       ) : (
         <>
           <div className="flex justify-between p-2">
-            {toolbar}
             <Radio.Group
               size="sm"
-              className="p-2"
+              className="p-0"
               onChange={(value) => setDisplayPercent(value === "percent")}
               defaultValue={"counts"}
             >
-              <Radio value="counts" label="# of Cases" color="nci-blue" />
-              <Radio value="percent" label="% of Cases" color="nci-blue" />
+              <Radio
+                value="counts"
+                label="# of Cases"
+                color="primary"
+                classNames={{ label: "font-heading pl-1" }}
+              />
+              <Radio
+                value="percent"
+                label="% of Cases"
+                color="primary"
+                classNames={{ label: "font-heading pl-1" }}
+              />
             </Radio.Group>
             <Menu>
               <Menu.Target>

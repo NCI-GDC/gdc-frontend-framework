@@ -55,8 +55,56 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
 
   return (
     <Card shadow="sm" radius="md" ref={(ref) => (targetRef.current = ref)}>
-      <div className="flex justify-between mb-1">
+      <div className="font-heading flex justify-between mb-1 mr-2">
         <h2>{fieldName}</h2>
+        <div className="flex w-100 justify-end gap-1">
+          <Tooltip
+            label="Histogram"
+            position="bottom-end"
+            withArrow
+            arrowSize={7}
+          >
+            <ActionIcon
+              variant="outline"
+              className={
+                chartType === "histogram" && !noData
+                  ? "bg-primary-darkest text-primary-contrast-darkest"
+                  : "border-primary-darkest text-primary-content-darkest"
+              }
+              onClick={() => setChartType("histogram")}
+              disabled={noData}
+            >
+              <BarChartIcon />
+            </ActionIcon>
+          </Tooltip>
+          <Tooltip label="Survival Plot" withArrow arrowSize={7}>
+            <ActionIcon
+              variant="outline"
+              className={
+                chartType === "survival"
+                  ? "bg-primary-darkest text-primary-contrast-darkest"
+                  : "border-primary-darkest text-primary-content-darkest"
+              }
+              onClick={() => setChartType("survival")}
+              disabled={noData}
+            >
+              <SurvivalChartIcon />
+            </ActionIcon>
+          </Tooltip>
+          <Tooltip
+            label="Remove Card"
+            position="bottom-end"
+            withArrow
+            arrowSize={7}
+          >
+            <ActionIcon
+              onClick={() => updateFields(field)}
+              className="border-primary-darkest text-primary-content-darkest"
+            >
+              <CloseIcon />
+            </ActionIcon>
+          </Tooltip>
+        </div>
       </div>
       {continuous ? (
         <ContinuousData
@@ -65,56 +113,6 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
           fieldName={fieldName}
           chartType={chartType}
           noData={noData}
-          toolbar={
-            <div className="flex gap-1">
-              <Tooltip
-                label={"Histogram"}
-                position="bottom-end"
-                withArrow
-                arrowSize={7}
-              >
-                <ActionIcon
-                  variant="outline"
-                  className={
-                    chartType === "histogram" && !noData
-                      ? "bg-primary-darkest text-primary-contrast-darkest"
-                      : "border-primary-darkest text-primary-content-darkest"
-                  }
-                  onClick={() => setChartType("histogram")}
-                  disabled={noData}
-                >
-                  <BarChartIcon />
-                </ActionIcon>
-              </Tooltip>
-              <Tooltip label={"Survival Plot"} withArrow arrowSize={7}>
-                <ActionIcon
-                  variant="outline"
-                  className={
-                    chartType === "survival"
-                      ? "bg-primary-darkest text-primary-contrast-darkest"
-                      : "border-primary-darkest text-primary-content-darkest"
-                  }
-                  onClick={() => setChartType("survival")}
-                  disabled={noData}
-                >
-                  <SurvivalChartIcon />
-                </ActionIcon>
-              </Tooltip>
-              <Tooltip
-                label={"Remove Card"}
-                position="bottom-end"
-                withArrow
-                arrowSize={7}
-              >
-                <ActionIcon
-                  onClick={() => updateFields(field)}
-                  className="border-primary-darkest text-primary-content-darkest"
-                >
-                  <CloseIcon />
-                </ActionIcon>
-              </Tooltip>
-            </div>
-          }
         />
       ) : (
         <CategoricalData

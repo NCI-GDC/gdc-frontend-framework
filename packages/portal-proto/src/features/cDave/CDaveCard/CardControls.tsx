@@ -55,7 +55,7 @@ const CardControls: React.FC<CardControlsProps> = ({
               </Menu.Item>
             </Menu.Dropdown>
           </Menu>
-          <Button className="bg-base-max text-base-content-darker border-base border-base-lighter ml-2">
+          <Button className="font-heading bg-base-max text-base-content-darker border-base border-base-lighter ml-2">
             TSV
           </Button>
         </div>

@@ -486,14 +486,14 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
               )
             }
           >
-            <div className="text-xs">
+            <div className="font-content text-xs">
               {isNumber(pValue) &&
                 `Log-Rank Test P-Value = ${pValue.toExponential(2)}`}
             </div>
           </Tooltip>
         </div>
         <div
-          className={`flex flex-row w-full justify-end text-xs mr-8 text-primary-content no-print`}
+          className={`flex flex-row w-full justify-end text-xs mr-8 font-content text-primary-content no-print`}
         >
           drag to zoom
         </div>
@@ -509,7 +509,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
       </div>
       <div className="fixed top-0 -translate-y-full w-[700px] h-[500px]">
         <div ref={downloadRef}>
-          <h2 className="text-montserrat text-center text-lg text-primary-content-dark">
+          <h2 className="font-title text-center text-lg text-primary-content-dark">
             {title}
           </h2>
           <div className="flex flex-col items-center ">

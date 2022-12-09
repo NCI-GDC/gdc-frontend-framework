@@ -215,6 +215,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
               },
             })}
             classNames={{
+              root: "mb-4",
               input: "bg-none rounded-lg",
             }}
             checked={checked}

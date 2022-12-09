@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, ReactNode } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { mapKeys } from "lodash";
 import { Statistics } from "@gff/core";
 import { useRangeFacet } from "../../facets/hooks";
@@ -40,7 +40,6 @@ interface ContinuousDataProps {
   readonly fieldName: string;
   readonly chartType: ChartTypes;
   readonly noData: boolean;
-  readonly toolbar: ReactNode;
 }
 
 const ContinuousData: React.FC<ContinuousDataProps> = ({
@@ -49,7 +48,6 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
   fieldName,
   chartType,
   noData,
-  toolbar,
 }: ContinuousDataProps) => {
   const [customBinnedData, setCustomBinnedData] = useState<
     CustomInterval | NamedFromTo[]
@@ -109,7 +107,6 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
           isFetching={isFetching}
           continuous={true}
           noData={noData}
-          toolbar={toolbar}
         />
       ) : (
         <ClinicalSurvivalPlot
