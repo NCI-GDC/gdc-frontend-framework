@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from "react";
-import { Checkbox } from "@mantine/core";
 import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
 import { upperFirst } from "lodash";
@@ -18,6 +17,7 @@ import {
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import FunctionButton from "@/components/FunctionButton";
 import useStandardPagination from "@/hooks/useStandardPagination";
+import { ButtonContainer } from "./styles";
 
 const CountCell = ({ countHook, setId }) => {
   const { data, isSuccess } = countHook({ setId });
@@ -44,11 +44,11 @@ const SavedSets: React.FC<SavedSetsProps> = ({
   const dispatch = useCoreDispatch();
 
   const tableData = useMemo(() => {
-    return Object.entries(sets).map(([setId, name]) => ({
+    return Object.entries(sets).map(([name, setId]) => ({
       name,
       count: <CountCell countHook={countHook} setId={setId} />,
     }));
-  }, [sets]);
+  }, [sets, countHook]);
 
   const columns = useMemo(() => {
     return [
@@ -60,7 +60,7 @@ const SavedSets: React.FC<SavedSetsProps> = ({
         visible: true,
       },
     ];
-  }, []);
+  }, [setTypeLabel]);
 
   const {
     displayedData,
@@ -107,7 +107,7 @@ const SavedSets: React.FC<SavedSetsProps> = ({
           </>
         )}
       </div>
-      <div className="bg-base-lightest flex p-4 gap-4 justify-end mt-4 rounded-b-lg sticky">
+      <ButtonContainer>
         <DarkFunctionButton className="mr-auto" disabled>
           Save Set
         </DarkFunctionButton>
@@ -121,7 +121,7 @@ const SavedSets: React.FC<SavedSetsProps> = ({
           Clear
         </DarkFunctionButton>
         <DarkFunctionButton disabled>Submit</DarkFunctionButton>
-      </div>
+      </ButtonContainer>
     </>
   );
 };

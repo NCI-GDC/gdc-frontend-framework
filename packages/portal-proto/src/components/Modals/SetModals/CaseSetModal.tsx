@@ -1,6 +1,6 @@
 import { useCoreDispatch, hideModal, useGetCasesQuery } from "@gff/core";
 import { Modal } from "@mantine/core";
-import { modalStyles } from "./constants";
+import { modalStyles } from "./styles";
 import InputSet from "./InputSet";
 
 const CaseSetModal: React.FC = () => {

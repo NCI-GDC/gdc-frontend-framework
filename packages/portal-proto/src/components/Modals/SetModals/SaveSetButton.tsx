@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { UseMutation } from "@reduxjs/toolkit/dist/query/react/buildHooks";
+import { MutationDefinition } from "@reduxjs/toolkit/dist/query";
 import {
-  selectSetExists,
+  selectSets,
   useCoreDispatch,
   useCoreSelector,
   addSet,
-  useCreateGeneSetMutation,
   SetTypes,
 } from "@gff/core";
 import { showNotification } from "@mantine/notifications";
@@ -15,7 +15,7 @@ import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton
 interface SaveSetButttonProps {
   readonly disabled: boolean;
   readonly setValues: string[];
-  readonly createSetHook: UseMutation<any>;
+  readonly createSetHook: UseMutation<MutationDefinition<any, any, any, any>>;
   readonly setType: SetTypes;
 }
 
@@ -29,16 +29,24 @@ const SaveSetButtton: React.FC<SaveSetButttonProps> = ({
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [createSet, response] = createSetHook();
   const [setName, setSetName] = useState(null);
+  const sets = useCoreSelector((state) => selectSets(state, setType));
 
   useEffect(() => {
     if (response.isSuccess && setName) {
-      dispatch(addSet({ setType, newSet: { [response.data]: setName } }));
+      dispatch(addSet({ setType, newSet: { [setName]: response.data } }));
       showNotification({ message: "Set has been saved." });
       setSetName(null);
     } else if (response.isError) {
       showNotification({ message: "Problem saving set.", color: "red" });
     }
-  }, [response.isSuccess, response.isError, setName]);
+  }, [
+    response.isSuccess,
+    response.isError,
+    response.data,
+    setName,
+    dispatch,
+    setType,
+  ]);
 
   return (
     <>
@@ -51,9 +59,7 @@ const SaveSetButtton: React.FC<SaveSetButttonProps> = ({
           setSetName(name);
           await createSet({ values: setValues });
         }}
-        onNameChange={(name) =>
-          useCoreSelector((state) => !selectSetExists(state, "gene", name))
-        }
+        onNameChange={(name) => !Object.values(sets).includes(name)}
         additionalDuplicateMessage={"This will overwrite it."}
       />
       <DarkFunctionButton

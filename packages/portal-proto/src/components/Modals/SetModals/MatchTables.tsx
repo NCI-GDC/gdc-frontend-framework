@@ -11,7 +11,7 @@ import {
 } from "@/features/shared/VerticalTable";
 import { createKeyboardAccessibleFunction } from "src/utils";
 import useStandardPagination from "@/hooks/useStandardPagination";
-import { tabStyles } from "./constants";
+import { tabStyles } from "./styles";
 
 interface MatchTablesProps {
   readonly matched: {

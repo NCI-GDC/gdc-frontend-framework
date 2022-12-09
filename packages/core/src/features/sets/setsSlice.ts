@@ -36,11 +36,6 @@ const slice = createSlice({
 
 export const setsReducer = slice.reducer;
 export const { addSet } = slice.actions;
-export const selectSetExists = (
-  state: CoreState,
-  setType: SetTypes,
-  name: string,
-): boolean => Object.values(state.sets[setType]).includes(name);
 
 export const selectSets = (
   state: CoreState,

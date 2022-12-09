@@ -10,7 +10,7 @@ import {
 } from "@gff/core";
 import InputSet from "./InputSet";
 import SavedSets from "./SavedSets";
-import { modalStyles, tabStyles } from "./constants";
+import { modalStyles, tabStyles } from "./styles";
 
 interface MutationSetModalProps {
   readonly modalTitle: string;
