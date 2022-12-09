@@ -91,7 +91,7 @@ const RepositoryApp = () => {
             <DownloadIcon size={"1rem"} />
             Manifest
           </FunctionButton>
-          <Link href="/user-flow/workbench/MultipleImageViewerPage">
+          <Link href="/image-viewer/MultipleImageViewerPage">
             <FunctionButton component="a">View Images</FunctionButton>
           </Link>
           <FunctionButton

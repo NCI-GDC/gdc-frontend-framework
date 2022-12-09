@@ -71,6 +71,8 @@ export const REGISTERED_APPS = [
       "Display the survival analysis of your cohorts and compare characteristics such as gender, vital status and age at diagnosis.",
     selectAdditionalCohort: true,
   },
+  // TODO uncomment to show gene expression card
+  /*
   {
     name: "Gene Expression",
     icon: "gene-expression.png",
@@ -83,6 +85,7 @@ export const REGISTERED_APPS = [
     noDataTooltip:
       "Current cohort does not have gene expression data available for visualization.",
   },
+  */
   {
     name: "Set Operations",
     icon: "icons/apps/setOps.svg",
@@ -115,6 +118,8 @@ export const REGISTERED_APPS = [
     description:
       "Visualize sequencing reads for a given gene, position, SNP, or variant.",
     id: "SequenceReadApp",
+    noDataTooltip:
+      "Current cohort does not have available BAMs for visualization.",
     optimizeRules: ["data format = BAM"],
   },
   {
@@ -152,10 +157,11 @@ export const APPTAGS = [
   { value: "clinicalAnalysis", name: "Clinical Analysis" },
   { value: "generalUtility", name: "General Utility" },
   { value: "variantAnalysis", name: "Variant Analysis" },
-  { value: "geneExpression", name: "Gene Expression" },
+  // TODO uncomment to show gene expression tag
+  // { value: "geneExpression", name: "Gene Expression" },
   { value: "sequenceAnalysis", name: "Sequence Analysis" },
-  { value: "cnv", name: "cnv" },
-  { value: "ssm", name: "ssm" },
+  { value: "cnv", name: "CNV" },
+  { value: "ssm", name: "SSM" },
 ];
 
 export const RECOMMENDED_APPS = ["Projects", "CohortBuilder", "Downloads"];

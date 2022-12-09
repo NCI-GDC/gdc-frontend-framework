@@ -15,21 +15,23 @@ const CountButton: React.FC<CountButtonProp> = ({
   bold = false,
 }: CountButtonProp) => {
   const cohortCounts = useFilteredCohortCounts();
+  const adjustedLabel =
+    cohortCounts.data[countName] !== 1 ? label : label.slice(0, -1);
   return (
     <div className={className}>
-      <div className="flex flex-row flex-nowrap items-center">
+      <div className="flex flex-row flex-nowrap items-center font-heading">
         {cohortCounts.isSuccess ? (
           <>
             <span className={`${bold ? "font-bold pr-1" : "pr-1"}`}>
               {cohortCounts.data[countName].toLocaleString()}
             </span>{" "}
             <span className={`${bold ? "font-medium pr-1" : "pr-1"}`}>
-              {label}
+              {adjustedLabel}
             </span>
           </>
         ) : (
           <>
-            <Loader color="gray" size="xs" className="mr-2" /> {label}{" "}
+            <Loader color="gray" size="xs" className="mr-2" /> {adjustedLabel}{" "}
           </>
         )}
       </div>
