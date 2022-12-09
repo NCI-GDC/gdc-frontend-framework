@@ -76,7 +76,9 @@ const InputSet: React.FC<InputSetProps> = ({
   const matchedIds = flatten(
     matched.map((m) => m.givenIdentifiers.map((i) => i.value)),
   ).map((id) => id.toLowerCase());
-  const unmatched = tokens.filter((t) => !matchedIds.includes(t.toLowerCase()));
+  const unmatched = tokens
+    .filter((t) => !matchedIds.includes(t.toLowerCase()))
+    .map((t) => t.toUpperCase());
 
   useEffect(() => {
     if (input !== "") {

@@ -32,23 +32,26 @@ const MatchTables: React.FC<MatchTablesProps> = ({
   const [activeTab, setActiveTab] = useState("matched");
   const [showTable, setShowTable] = useState(true);
 
-  const matchedColumns = useMemo(() => {
-    const uniqueMappedToFields = uniq(
-      flatten(matched.map((m) => m.mappedTo.map((v) => v.field))),
-    );
-    const uniqueGivenIdentifierFields = uniq(
-      flatten(matched.map((m) => m.givenIdentifiers.map((v) => v.field))),
-    );
+  const uniqueMappedToFields = useMemo(
+    () => uniq(flatten(matched.map((m) => m.mappedTo.map((v) => v.field)))),
+    [matched],
+  );
+  const uniqueGivenIdentifierFields = useMemo(
+    () =>
+      uniq(flatten(matched.map((m) => m.givenIdentifiers.map((v) => v.field)))),
+    [matched],
+  );
 
+  const matchedColumns = useMemo(() => {
     return [
       {
         columnName: "Mapped To",
         id: "mapped_to",
         visible: true,
         disableSortBy: true,
-        columns: uniqueMappedToFields.map((f) => ({
-          columnName: fieldDisplay[f],
-          id: `mapped_${f.replaceAll(".", "_")}`,
+        columns: uniqueMappedToFields.map((id) => ({
+          columnName: fieldDisplay[id],
+          id: `mapped_${id.replaceAll(".", "_")}`,
           visible: true,
         })),
       },
@@ -57,21 +60,39 @@ const MatchTables: React.FC<MatchTablesProps> = ({
         id: "submitted_id",
         visible: true,
         disableSortBy: true,
-        columns: uniqueGivenIdentifierFields.map((f) => ({
-          columnName: fieldDisplay[f],
-          id: `given_${f.replaceAll(".", "_")}`,
+        columns: uniqueGivenIdentifierFields.map((id) => ({
+          columnName: fieldDisplay[id],
+          id: `given_${id.replaceAll(".", "_")}`,
           visible: true,
         })),
       },
     ];
-  }, [matched, fieldDisplay, entity]);
+  }, [
+    matched,
+    fieldDisplay,
+    entity,
+    uniqueMappedToFields,
+    uniqueGivenIdentifierFields,
+  ]);
 
   const matchedTableData = useMemo(() => {
     return matched.map((d) => ({
       ...Object.fromEntries(
+        uniqueMappedToFields.map((id) => [
+          `mapped_${id.replaceAll(".", "_")}`,
+          "--",
+        ]),
+      ),
+      ...Object.fromEntries(
         d.mappedTo.map((v) => [
           `mapped_${v.field.replaceAll(".", "_")}`,
           v.value,
+        ]),
+      ),
+      ...Object.fromEntries(
+        uniqueGivenIdentifierFields.map((id) => [
+          `given_${id.replaceAll(".", "_")}`,
+          "--",
         ]),
       ),
       ...Object.fromEntries(
@@ -81,7 +102,7 @@ const MatchTables: React.FC<MatchTablesProps> = ({
         ]),
       ),
     }));
-  }, [matched]);
+  }, [matched, uniqueMappedToFields, uniqueGivenIdentifierFields]);
 
   const unmatchedTableData = useMemo(
     () => unmatched.map((id) => ({ id })),
