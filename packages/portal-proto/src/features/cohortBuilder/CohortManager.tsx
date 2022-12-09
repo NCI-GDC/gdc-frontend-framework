@@ -40,6 +40,7 @@ import {
   buildGqlOperationToFilterSet,
   buildCohortGqlOperator,
   useAddCohortMutation,
+  resetSelectedCases,
   //TODO uncomment to show set modals menu
   // showModal,
   Modals,
@@ -108,6 +109,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
 
   // Cohort specific actions
   const newCohort = useCallback(() => {
+    coreDispatch(resetSelectedCases());
     coreDispatch(addNewCohort());
   }, [coreDispatch]);
 
@@ -119,6 +121,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   );
 
   const deleteCohort = () => {
+    coreDispatch(resetSelectedCases());
     coreDispatch(removeCohort({ shouldShowMessage: true }));
   };
 
@@ -318,7 +321,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                   onSelectionChanged(x);
                 }}
                 classNames={{
-                  root: "border-base-light w-80 p-0 z-10 pt-5",
+                  root: "border-base-light w-80 p-0 z-[1050] pt-5",
                   input:
                     "text-heading font-medium text-primary-darkest rounded-l-none h-10",
                   item: "text-heading font-normal text-primary-darkest data-selected:bg-primary-lighter first:border-b-2 first:rounded-none first:border-primary",

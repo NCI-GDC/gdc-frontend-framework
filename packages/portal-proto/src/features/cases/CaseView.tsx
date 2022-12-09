@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from "react";
 import { Image } from "@/components/Image";
-import { Case } from "./CasesView";
 import ReactModal from "react-modal";
+import { Case } from "../user-flow/all-apps/baseExploration";
 
 export interface CaseViewProps {
   readonly patient?: Case;

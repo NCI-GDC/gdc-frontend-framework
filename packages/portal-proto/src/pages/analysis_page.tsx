@@ -13,9 +13,7 @@ const SingleAppsPage: NextPage = () => {
   } = router;
 
   return (
-    <UserFlowVariedPages
-      {...{ indexPath: "/user-flow/workbench", headerElements }}
-    >
+    <UserFlowVariedPages {...{ indexPath: "/", headerElements }}>
       <Head>
         <title>GDC Analysis Center</title>
         <meta

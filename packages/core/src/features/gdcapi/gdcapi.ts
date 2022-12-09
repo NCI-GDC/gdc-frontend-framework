@@ -4,6 +4,7 @@ import { GqlOperation } from "./filters";
 import "isomorphic-fetch";
 import { GDC_API, GDC_APP_API_AUTH } from "../../constants";
 import { coreCreateApi } from "src/coreCreateApi";
+import { caseSummaryDefaults } from "../cases/types";
 
 export type UnknownJson = Record<string, unknown>;
 export interface GdcApiResponse<H = UnknownJson> {
@@ -191,7 +192,7 @@ export interface CaseDefaults {
 
 export const fetchGdcCases = async (
   request?: GdcApiRequest,
-): Promise<GdcApiResponse<CaseDefaults>> => {
+): Promise<GdcApiResponse<caseSummaryDefaults>> => {
   return fetchGdcEntities("cases", request);
 };
 

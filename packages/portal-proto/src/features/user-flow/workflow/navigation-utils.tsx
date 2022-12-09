@@ -32,7 +32,7 @@ export const headerElements = [
       unstyled
       component={NextLink}
       href={{
-        pathname: "/user-flow/workbench/analysis_page",
+        pathname: "/analysis_page",
         query: { app: undefined },
       }}
       className=" "
@@ -61,7 +61,7 @@ export const headerElements = [
       unstyled
       component={NextLink}
       href={{
-        pathname: "/user-flow/workbench/analysis_page",
+        pathname: "/analysis_page",
         query: { app: "Projects" },
       }}
       data-testid="projectsButton"
@@ -89,7 +89,7 @@ export const headerElements = [
       unstyled
       component={NextLink}
       href={{
-        pathname: "/user-flow/workbench/analysis_page",
+        pathname: "/analysis_page",
         query: { app: "CohortBuilder" },
       }}
       data-testid="cohortButton"
@@ -117,7 +117,7 @@ export const headerElements = [
       unstyled
       component={NextLink}
       href={{
-        pathname: "/user-flow/workbench/analysis_page",
+        pathname: "/analysis_page",
         query: { app: "Downloads" },
       }}
       data-testid="downloadsButton"

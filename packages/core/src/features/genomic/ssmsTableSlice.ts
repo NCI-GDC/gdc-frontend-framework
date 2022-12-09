@@ -18,6 +18,7 @@ import {
 } from "./genomicFilters";
 import {
   buildCohortGqlOperator,
+  FilterSet,
   filterSetToOperation,
   selectCurrentCohortFilters,
 } from "../cohort";
@@ -27,7 +28,6 @@ import {
   Union,
 } from "../gdcapi/filters";
 import { appendFilterToOperation } from "./utils";
-import { joinFilters } from "../cohort";
 
 const SSMSTableGraphQLQuery = `query SsmsTable_relayQuery(
   $ssmTested: FiltersArgument
@@ -182,30 +182,24 @@ export const fetchSsmsTable = createAsyncThunk<
     thunkAPI,
   ): Promise<GraphQLApiResponse> => {
     const cohortFilters = buildCohortGqlOperator(
-      geneSymbol
-        ? joinFilters(
-            selectCurrentCohortFilters(thunkAPI.getState()) ?? {
-              mode: "and",
-              root: {},
-            },
-            {
-              mode: "and",
-              root: {
-                "genes.symbol": {
-                  field: "genes.symbol",
-                  operator: "includes",
-                  operands: [geneSymbol],
-                },
+      geneSymbol // if gene symbol use all GDC
+        ? {
+            mode: "and",
+            root: {
+              "genes.symbol": {
+                field: "genes.symbol",
+                operator: "includes",
+                operands: [geneSymbol],
               },
             },
-          )
+          }
         : selectCurrentCohortFilters(thunkAPI.getState()),
     );
     const cohortFiltersContent = cohortFilters?.content
       ? Object(cohortFilters?.content)
       : [];
     const geneAndCohortFilters = geneSymbol
-      ? joinFilters(selectGenomicAndCohortFilters(thunkAPI.getState()), {
+      ? ({
           mode: "and",
           root: {
             "genes.symbol": {
@@ -214,7 +208,7 @@ export const fetchSsmsTable = createAsyncThunk<
               operands: [geneSymbol],
             },
           },
-        })
+        } as FilterSet)
       : selectGenomicAndCohortFilters(thunkAPI.getState());
 
     const searchFilters = buildSSMSTableSearchFilters(searchTerm);
