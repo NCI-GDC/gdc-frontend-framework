@@ -4,6 +4,8 @@ import {
   PayloadAction,
   nanoid,
   createAsyncThunk,
+  ThunkAction,
+  AnyAction,
 } from "@reduxjs/toolkit";
 import { CoreState } from "../../reducers";
 import {
@@ -92,33 +94,37 @@ mutation mutationsCreateRepositoryCaseSetMutation(
 
 export interface CreateCaseSetProps {
   readonly caseSetId: string; // pass a caseSetId to use
+  readonly pendingFilters?: FilterSet;
 }
 
 export const createCaseSet = createAsyncThunk<
   GraphQLApiResponse<Record<string, any>>,
   CreateCaseSetProps,
   { dispatch: CoreDispatch; state: CoreState }
->("cohort/createCaseSet", async ({ caseSetId }, thunkAPI) => {
-  const cohort = cohortSelectors.selectById(
-    thunkAPI.getState(),
-    thunkAPI.getState().cohort.availableCohorts.currentCohort,
-  );
-  const filters = cohort?.caseSet?.pendingFilters
-    ? cohort.caseSet.pendingFilters
-    : { mode: "and", root: {} };
-  const dividedFilters = divideFilterSetByPrefix(
-    filters,
-    REQUIRES_CASE_SET_FILTERS,
-  );
+>(
+  "cohort/createCaseSet",
+  async ({ caseSetId, pendingFilters = undefined }, thunkAPI) => {
+    const cohort = cohortSelectors.selectById(
+      thunkAPI.getState(),
+      thunkAPI.getState().cohort.availableCohorts.currentCohort,
+    );
+    if (cohort === undefined || pendingFilters === undefined)
+      return thunkAPI.rejectWithValue({ error: "No cohort or filters" });
 
-  const { query, parameters, variables } = buildCaseSetGQLQueryAndVariables(
-    dividedFilters.withPrefix,
-    caseSetId,
-  );
+    const dividedFilters = divideFilterSetByPrefix(
+      pendingFilters,
+      REQUIRES_CASE_SET_FILTERS,
+    );
 
-  const graphQL = buildCaseSetMutationQuery(parameters, query);
-  return graphqlAPI(graphQL, variables);
-});
+    const { query, parameters, variables } = buildCaseSetGQLQueryAndVariables(
+      dividedFilters.withPrefix,
+      caseSetId,
+    );
+
+    const graphQL = buildCaseSetMutationQuery(parameters, query);
+    return graphqlAPI(graphQL, variables);
+  },
+);
 
 export const DEFAULT_COHORT_ID = "ALL-GDC-COHORT";
 export const REQUIRES_CASE_SET_FILTERS = ["genes.", "ssms."];
@@ -318,18 +324,22 @@ const slice = createSlice({
         },
       };
 
-      const requiresCaseSet = willRequireCaseSet(filters);
+      // const requiresCaseSet = willRequireCaseSet(filters);
 
       if (state.currentCohort === DEFAULT_COHORT_ID) {
         // create a new cohort and add it
         // as the GDC All Cohort is immutable
+        /* ---
         const cohort = requiresCaseSet
           ? newCohort({ mode: "and", root: {} }, true, filters)
           : newCohort(filters, true);
+          --- */
+        const cohort = newCohort(filters, true);
         cohortsAdapter.addOne(state, cohort);
         state.currentCohort = cohort.id;
         state.message = `newCohort|${cohort.name}|${cohort.id}`;
       } else {
+        /* ----
         if (requiresCaseSet) {
           const cohortCaseSetFilters =
             state.entities[state.currentCohort]?.caseSet?.caseSetId;
@@ -350,14 +360,15 @@ const slice = createSlice({
             },
           });
         } else
-          cohortsAdapter.updateOne(state, {
-            id: state.currentCohort,
-            changes: {
-              filters: filters,
-              modified: true,
-              modified_datetime: new Date().toISOString(),
-            },
-          });
+         --- */
+        cohortsAdapter.updateOne(state, {
+          id: state.currentCohort,
+          changes: {
+            filters: filters,
+            modified: true,
+            modified_datetime: new Date().toISOString(),
+          },
+        });
       }
     },
     removeCohortFilter: (state, action: PayloadAction<string>) => {
@@ -479,8 +490,9 @@ const slice = createSlice({
     builder
       .addCase(createCaseSet.fulfilled, (state, action) => {
         const response = action.payload;
+        const pendingFilters = action.meta.arg.pendingFilters;
         const cohort = state.entities[state.currentCohort] as Cohort;
-        if (cohort?.caseSet?.pendingFilters === undefined) {
+        if (pendingFilters === undefined) {
           console.error(
             "trying to create a case set with no pending filters",
             cohort.id,
@@ -488,11 +500,12 @@ const slice = createSlice({
           );
         }
         if (response.errors && Object.keys(response.errors).length > 0) {
-          // get pending filter and set them as the cohort filters
+          // reject the current cohort by setting status to rejected
+          // keep the filters for error reporting.
           cohortsAdapter.updateOne(state, {
             id: state.currentCohort,
             changes: {
-              filters: cohort?.caseSet?.pendingFilters,
+              filters: pendingFilters,
               caseSet: {
                 caseSetId: { mode: "and", root: {} },
                 status: "rejected",
@@ -502,7 +515,7 @@ const slice = createSlice({
           });
         }
         const data = response.data.sets.create.explore;
-        const filters = cohort?.caseSet?.pendingFilters;
+        const filters = pendingFilters;
         const additionalFilters =
           filters === undefined
             ? {}
@@ -517,10 +530,14 @@ const slice = createSlice({
             ...additionalFilters,
           },
         };
+        // TODO add case if creating new cohort
+
+        // update the current cohort with the all the filters (for query expression and cohort persistence)
+        // caseSet is assigned the caseSet filters + the filters not represented by the caseSets.
         cohortsAdapter.updateOne(state, {
           id: state.currentCohort,
           changes: {
-            filters: cohort?.caseSet?.pendingFilters,
+            filters: pendingFilters,
             caseSet: {
               caseSetId: caseSetFilter,
               status: "fulfilled",
@@ -529,27 +546,28 @@ const slice = createSlice({
           },
         });
       })
-      .addCase(createCaseSet.pending, (state) => {
+      .addCase(createCaseSet.pending, (state, action) => {
         const cohort = state.entities[state.currentCohort] as Cohort;
+        const pendingFilters = action.meta.arg.pendingFilters;
         cohortsAdapter.updateOne(state, {
           id: state.currentCohort,
           changes: {
             caseSet: {
-              pendingFilters: cohort?.caseSet?.pendingFilters,
+              pendingFilters: pendingFilters,
               caseSetId: cohort?.caseSet.caseSetId,
               status: "pending",
             },
           },
         });
       })
-      .addCase(createCaseSet.rejected, (state) => {
-        const cohort = state.entities[state.currentCohort] as Cohort;
+      .addCase(createCaseSet.rejected, (state, action) => {
+        const pendingFilters = action.meta.arg.pendingFilters;
         cohortsAdapter.updateOne(state, {
           id: state.currentCohort,
           changes: {
             caseSet: {
               caseSetId: { mode: "and", root: {} },
-              pendingFilters: cohort?.caseSet?.pendingFilters,
+              pendingFilters: pendingFilters,
               status: "rejected",
             },
           },
@@ -795,3 +813,39 @@ export const selectCurrentCohortCaseSet = (
 export const useCurrentCohortFilters = (): FilterSet | undefined => {
   return useCoreSelector((state) => selectCurrentCohortFilterSet(state));
 };
+
+export const updateCurrentCohortFilter =
+  ({
+    field,
+    operation,
+  }: UpdateFilterParams): ThunkAction<void, CoreState, undefined, AnyAction> =>
+  async (dispatch: CoreDispatch, getState) => {
+    // check if we need a case set
+    // case is needed if field is gene/ssm
+    const requiresCaseSet = willRequireCaseSet({
+      mode: "and",
+      root: { [field]: operation },
+    });
+
+    if (requiresCaseSet) {
+      // need a caseset or the caseset needs updating
+
+      const cohortId = selectCurrentCohortId(getState());
+      if (cohortId) {
+        const currentFilters = selectCurrentCohortFilterSet(getState());
+        const updatedFilters = {
+          mode: "and",
+          root: {
+            ...currentFilters?.root,
+            [field]: operation,
+          },
+        };
+        dispatch(
+          createCaseSet({
+            caseSetId: cohortId,
+            pendingFilters: updatedFilters,
+          }),
+        );
+      }
+    } else dispatch(updateCohortFilter({ field, operation }));
+  };

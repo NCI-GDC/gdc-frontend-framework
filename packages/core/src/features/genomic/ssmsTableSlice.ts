@@ -11,7 +11,6 @@ import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
 import { mergeGenomicAndCohortFilters } from "./genomicFilters";
 import {
   buildCohortGqlOperator,
-  FilterSet,
   filterSetToOperation,
   selectCurrentCohortFilters,
   selectCurrentCohortFilterSet,
