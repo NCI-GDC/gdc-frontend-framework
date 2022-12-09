@@ -67,6 +67,7 @@ const MutationSetModal: React.FC<MutationSetModalProps> = ({
               genomic_dna_change: "DNA Change",
             }}
             createSetHook={useCreateSsmsSetMutation}
+            createSetField="ssm_id"
           />
         </Tabs.Panel>
         <Tabs.Panel value="saved">

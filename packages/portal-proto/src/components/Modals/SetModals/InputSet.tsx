@@ -36,6 +36,7 @@ interface InputSetProps {
   readonly searchField: string;
   readonly fieldDisplay: Record<string, string>;
   readonly createSetHook?: UseMutation<any>;
+  readonly createSetField?: string;
 }
 
 const InputSet: React.FC<InputSetProps> = ({
@@ -50,6 +51,7 @@ const InputSet: React.FC<InputSetProps> = ({
   searchField,
   fieldDisplay,
   createSetHook,
+  createSetField,
 }: InputSetProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [processingFile, setProcessingFile] = useState(false);
@@ -184,7 +186,10 @@ const InputSet: React.FC<InputSetProps> = ({
         {createSetHook && (
           <SaveSetButtton
             disabled={matched.length === 0}
-            setValues={matchedIds}
+            setValues={matched.map(
+              (match) =>
+                match.mappedTo.find((m) => m.field === createSetField).value,
+            )}
             setType={setType}
             createSetHook={createSetHook}
           />

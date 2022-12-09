@@ -55,11 +55,11 @@ const SaveSetButtton: React.FC<SaveSetButttonProps> = ({
         initialName=""
         opened={showSaveModal}
         onClose={() => setShowSaveModal(false)}
-        onSaveClick={async (name: string) => {
+        onSaveClick={(name: string) => {
           setSetName(name);
-          await createSet({ values: setValues });
+          createSet({ values: setValues });
         }}
-        onNameChange={(name) => !Object.values(sets).includes(name)}
+        onNameChange={(name) => !Object.keys(sets).includes(name)}
         additionalDuplicateMessage={"This will overwrite it."}
       />
       <DarkFunctionButton

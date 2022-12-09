@@ -79,6 +79,7 @@ const GeneSetModal: React.FC<GeneSetModalProps> = ({
               "external_db_ids.omim_gene": "OMIM",
             }}
             createSetHook={useCreateGeneSetMutation}
+            createSetField={"gene_id"}
           />
         </Tabs.Panel>
         <Tabs.Panel value="saved">
