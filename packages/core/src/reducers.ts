@@ -41,6 +41,7 @@ import {
   graphqlAPISliceReducerPath,
   graphqlAPIReducer,
 } from "./features/gdcapi/gdcgraphql";
+import { selectedCasesReducer } from "./features/cases/selectedCasesSlice";
 
 export const reducers = combineReducers({
   cohort: cohortReducers,
@@ -76,6 +77,7 @@ export const reducers = combineReducers({
   [survivalApiSliceReducerPath]: survivalApiReducer,
   [graphqlAPISliceReducerPath]: graphqlAPIReducer,
   versionInfo: versionInfoReducer,
+  selectedCases: selectedCasesReducer,
 });
 
 export type CoreState = ReturnType<typeof reducers>;

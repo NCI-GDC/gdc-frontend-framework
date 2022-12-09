@@ -33,16 +33,15 @@ export interface SMTableContainerProps {
 }
 
 export const SMTableContainer: React.FC<SMTableContainerProps> = ({
-  selectedSurvivalPlot = {},
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  handleSurvivalPlotToggled = (_1: string, _2: string, _3: string) => null,
+  selectedSurvivalPlot,
+  handleSurvivalPlotToggled,
   columnsList = DEFAULT_SMTABLE_ORDER,
   geneSymbol = undefined,
 }: SMTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
-  const [deboucedSearchTern] = useDebouncedValue(searchTerm, 400);
+  const [debouncedSearchTern] = useDebouncedValue(searchTerm, 400);
   const [ref, { width }] = useMeasure();
   const [columnListOrder, setColumnListOrder] = useState(columnsList);
   const [visibleColumns, setVisibleColumns] = useState(
@@ -121,7 +120,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const { data } = useSsmsTable({
     pageSize: pageSize,
     offset: pageSize * page,
-    searchTerm: deboucedSearchTern.length > 0 ? deboucedSearchTern : undefined,
+    searchTerm:
+      debouncedSearchTern.length > 0 ? debouncedSearchTern : undefined,
     geneSymbol: geneSymbol,
   });
 
