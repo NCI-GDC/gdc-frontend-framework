@@ -194,3 +194,8 @@ export const ageDisplay = (
     .join(" ")
     .trim();
 };
+
+export const extractToArray = (
+  data: ReadonlyArray<Record<string, number | string>>,
+  nodeKey: string,
+): (string | number)[] => data?.map((x) => x[nodeKey]);

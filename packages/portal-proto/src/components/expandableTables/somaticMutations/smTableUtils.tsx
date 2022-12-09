@@ -258,7 +258,7 @@ export const createTableColumn = (
                    in ${geneSymbol ? geneSymbol : "Cohort"}`}
                 className="flex justify-start"
                 tooltip={`# Cases where Mutation is observed in ${
-                  geneSymbol ? geneSymbol : "Cohort"
+                  geneSymbol ?? "Cohort"
                 } / # Cases tested for Simple Somatic Mutations in Cohort`}
               />
             ),

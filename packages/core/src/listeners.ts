@@ -9,6 +9,7 @@ import {
   cohortSelectors,
 } from "./features/cohort/availableCohortsSlice";
 import { createCaseSet } from "./features/cohort/availableCohortsSlice";
+import { resetSelectedCases } from "./features/cases/selectedCasesSlice";
 
 /**
  * Defines coreListeners for adding middleware.
@@ -27,6 +28,7 @@ startCoreListening({
   matcher: isAnyOf(updateCohortFilter, removeCohortFilter, setCurrentCohortId),
   effect: async (_, listenerApi) => {
     // dispatch updateCohortFilter or removeCohortFilter executed
+    listenerApi.dispatch(resetSelectedCases());
     const cohort = cohortSelectors.selectById(
       listenerApi.getState(),
       listenerApi.getState().cohort.availableCohorts.currentCohort,
