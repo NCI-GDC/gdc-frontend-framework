@@ -118,6 +118,8 @@ export const REGISTERED_APPS = [
     description:
       "Visualize sequencing reads for a given gene, position, SNP, or variant.",
     id: "SequenceReadApp",
+    noDataTooltip:
+      "Current cohort does not have available BAMs for visualization.",
     optimizeRules: ["data format = BAM"],
   },
   {
