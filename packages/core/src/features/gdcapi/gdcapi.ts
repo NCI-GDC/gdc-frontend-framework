@@ -284,7 +284,7 @@ export interface HistoryDefaults {
 }
 
 export interface FileDefaults {
-  readonly id: string;
+  readonly id?: string;
   readonly submitter_id: string;
   readonly access: string;
   readonly acl: ReadonlyArray<string>;

@@ -21,7 +21,7 @@ export const fetchAllFiles = createAsyncThunk<
 >("files/fetchAllFiles", async (filters?: GqlOperation) => {
   const request: GdcApiRequest = {
     filters: filters,
-    fields: ["file_size"],
+    fields: ["file_id"],
     size: 10001, //set one over max add to cart function allows
   };
   return await fetchGdcFiles(request);
@@ -50,7 +50,9 @@ const slice = createSlice({
           state.status = "rejected";
           state.error = Object.values(response.warnings)[0]; // TODO add better errors parsing
         } else {
-          state.files = response.data.hits.map((obj: FileDefaults) => obj.id); // only return arry of file ids
+          state.files = response.data.hits.map(
+            (obj: FileDefaults) => obj.file_id,
+          ); // only return arry of file ids
           state.status = "fulfilled";
           state.error = undefined;
         }
