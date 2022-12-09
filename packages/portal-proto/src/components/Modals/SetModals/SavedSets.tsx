@@ -67,7 +67,7 @@ const SavedSets: React.FC<SavedSetsProps> = ({
     handlePageChange,
     handlePageSizeChange,
     ...paginationProps
-  } = useStandardPagination(tableData, 5);
+  } = useStandardPagination(tableData);
 
   const handleTableChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
