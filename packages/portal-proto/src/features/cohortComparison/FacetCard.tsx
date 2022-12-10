@@ -118,7 +118,7 @@ export const FacetCard: React.FC<FacetCardProps> = ({
 
   return (
     <Paper p="md">
-      <h2 className="text-lg font-semibold">{fieldLabel}</h2>
+      <h2 className="font-heading text-lg font-semibold">{fieldLabel}</h2>
       <div className="h-[400px]">
         <BarChart
           data={{
@@ -133,12 +133,12 @@ export const FacetCard: React.FC<FacetCardProps> = ({
           variant="default"
           onClick={downloadTSVFile}
           aria-label="Download TSV File"
-          className="bg-base-lightest text-base-contrast-lightest"
+          className="font-content bg-primary text-bg-primary-contrast"
         >
           TSV
         </Button>
       </div>
-      <table className="bg-base-lightest w-full text-left text-primary-content-darker">
+      <table className="font-heading bg-base-lightest w-full text-left text-primary-content-darker">
         <thead>
           <tr className="bg-base-lightest">
             <th>{fieldLabel}</th>
