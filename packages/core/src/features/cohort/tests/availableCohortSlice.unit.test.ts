@@ -435,10 +435,6 @@ describe("add, update, and remove cohort", () => {
             filters: { mode: "and", root: {} },
             id: "000-000-000-1",
             caseSet: {
-              caseSetId: {
-                mode: "and",
-                root: {},
-              },
               status: "uninitialized",
             },
             modified: false,
@@ -519,10 +515,6 @@ describe("add, update, and remove cohort", () => {
             filters: { mode: "and", root: {} },
             id: "000-000-000-1",
             caseSet: {
-              caseSetId: {
-                mode: "and",
-                root: {},
-              },
               status: "uninitialized",
             },
             modified: false,
@@ -582,10 +574,6 @@ describe("add, update, and remove cohort", () => {
             filters: { mode: "and", root: {} },
             id: "000-000-000-1",
             caseSet: {
-              caseSetId: {
-                mode: "and",
-                root: {},
-              },
               status: "uninitialized",
             },
             modified: false,
@@ -630,10 +618,6 @@ describe("add, update, and remove cohort", () => {
             filters: { mode: "and", root: {} },
             id: "ALL-GDC-COHORT",
             caseSet: {
-              caseSetId: {
-                mode: "and",
-                root: {},
-              },
               status: "uninitialized",
             },
             modified: false,
@@ -644,10 +628,6 @@ describe("add, update, and remove cohort", () => {
             filters: { mode: "and", root: {} },
             id: "000-000-000-2",
             caseSet: {
-              caseSetId: {
-                mode: "and",
-                root: {},
-              },
               status: "uninitialized",
             },
             modified: false,

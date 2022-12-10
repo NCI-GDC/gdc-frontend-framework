@@ -8,11 +8,7 @@ import {
   AnyAction,
 } from "@reduxjs/toolkit";
 import { CoreState } from "../../reducers";
-import {
-  buildCohortGqlOperator,
-  FilterSet,
-  isFilterSetRootEmpty,
-} from "./filters";
+import { buildCohortGqlOperator, FilterSet } from "./filters";
 import { COHORTS } from "./cohortFixture";
 import { GqlOperation, Operation } from "../gdcapi/filters";
 import { CoreDataSelectorResponse, DataStatus } from "../../dataAccess";
@@ -23,8 +19,8 @@ import { useCoreSelector } from "../../hooks";
 export interface CaseSetDataAndStatus {
   readonly status: DataStatus; // status of create caseSet
   readonly error?: string; // any error message
-  readonly caseSetId: FilterSet; // A filter set containing the caseID and additional Filters
-  readonly pendingFilters?: FilterSet; // Filters that require creation of a internal/hidden case set
+  readonly caseSetIds?: Record<string, string>; // prefix mapped caseSetIds
+  readonly filters?: FilterSet; // FilterSet that contains combination of CaseSets + filters
   // TODO this could also hold the cohort
   //  id for query by cohort
 }
@@ -64,7 +60,7 @@ export const buildCaseSetGQLQueryAndVariables = (
             mode: "and",
             root: { [name]: filters.root[name] },
           }),
-          set_id: `${id}-${prefix[index][0]}`,
+          set_id: `${prefix}-${id}}`,
         },
       }),
       {},
@@ -168,32 +164,44 @@ const willRequireCaseSet = (
   );
 };
 
-const processCaseSetResponse = (
-  data: Record<string, any>,
-): Record<string, Operation> | undefined => {
-  if (Object.keys(data).length == 1) {
+const buildCaseSetFilters = (
+  data: Record<string, string>,
+): Record<string, Operation> => {
+  if (Object.values(data).length == 1) {
     return {
-      "cases.case_id": {
+      internalCaseSet: {
         field: "cases.case_id",
         operator: "includes",
-        operands: [`set_id:${Object.values(data)[0].set_id}`],
+        operands: [`set_id:${Object.values(data)[0]}`],
       },
     };
   }
   if (Object.keys(data).length > 1) {
     // build composite of the two case sets
     return {
-      internalCaseset: {
+      internalCaseSet: {
         operator: "and",
         operands: Object.values(data).map((caseSet) => ({
           field: "cases.case_id",
           operator: "includes",
-          operands: [`set_id:${caseSet.set_id}`],
+          operands: [`set_id:${caseSet}`],
         })),
       },
     };
   }
-  return undefined;
+  return {};
+};
+
+const processCaseSetResponse = (
+  data: Record<string, any>,
+): Record<string, string> => {
+  return Object.values(data).reduce((newObj, caseSet) => {
+    const prefix = caseSet.set_id.split("-")[0];
+    return {
+      ...newObj,
+      [prefix]: caseSet.set_id,
+    };
+  }, {});
 };
 
 const newCohort = (
@@ -212,9 +220,9 @@ const newCohort = (
     name: newName,
     id: newId,
     caseSet: {
-      caseSetId: { mode: "and", root: {} },
+      caseSetIds: undefined,
       status: "uninitialized" as DataStatus,
-      pendingFilters: pendingFilters,
+      filters: pendingFilters,
     },
     filters: filters,
     modified: modified,
@@ -324,8 +332,6 @@ const slice = createSlice({
         },
       };
 
-      // const requiresCaseSet = willRequireCaseSet(filters);
-
       if (state.currentCohort === DEFAULT_COHORT_ID) {
         // create a new cohort and add it
         // as the GDC All Cohort is immutable
@@ -361,14 +367,46 @@ const slice = createSlice({
           });
         } else
          --- */
-        cohortsAdapter.updateOne(state, {
-          id: state.currentCohort,
-          changes: {
-            filters: filters,
-            modified: true,
-            modified_datetime: new Date().toISOString(),
-          },
-        });
+        const caseSetIds =
+          state.entities[state.currentCohort]?.caseSet?.caseSetIds;
+        if (caseSetIds) {
+          // using a caseSet
+          const dividedFilters = divideFilterSetByPrefix(
+            filters,
+            REQUIRES_CASE_SET_FILTERS,
+          );
+
+          const caseSetIntersection = buildCaseSetFilters(caseSetIds);
+          const caseSetFilters: FilterSet = {
+            mode: "and",
+            root: {
+              ...caseSetIntersection,
+              ...dividedFilters.withoutPrefix.root,
+            },
+          };
+
+          cohortsAdapter.updateOne(state, {
+            id: state.currentCohort,
+            changes: {
+              filters: filters,
+              modified: true,
+              modified_datetime: new Date().toISOString(),
+              caseSet: {
+                filters: caseSetFilters,
+                caseSetIds: caseSetIds,
+                status: "fulfilled",
+              },
+            },
+          });
+        } else
+          cohortsAdapter.updateOne(state, {
+            id: state.currentCohort,
+            changes: {
+              filters: filters,
+              modified: true,
+              modified_datetime: new Date().toISOString(),
+            },
+          });
       }
     },
     removeCohortFilter: (state, action: PayloadAction<string>) => {
@@ -378,27 +416,47 @@ const slice = createSlice({
         return;
       }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { [action.payload]: _, ...updated } = root;
+      const { [action.payload]: _a, ...updated } = root;
 
-      const requiresCaseSet = willRequireCaseSet({
+      const filterPrefix = action.payload.split(".");
+      const cohortCaseSetIds =
+        state.entities[state.currentCohort]?.caseSet?.caseSetIds;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [filterPrefix[0]]: _b, ...updatedCaseIds } =
+        cohortCaseSetIds ?? {};
+
+      const updatedFilters = {
         mode: "and",
         root: updated,
-      });
+      };
 
-      if (requiresCaseSet) {
-        const cohortCaseSetFilters =
-          state.entities[state.currentCohort]?.caseSet?.caseSetId;
+      if (Object.keys(updatedCaseIds).length) {
+        // still require a case set
+        // update caseSet
+
+        const caseSetIntersection = buildCaseSetFilters(updatedCaseIds);
+        const additionalFilters =
+          updatedFilters === undefined
+            ? {}
+            : divideFilterSetByPrefix(updatedFilters, REQUIRES_CASE_SET_FILTERS)
+                .withoutPrefix.root;
+
+        const caseSetFilters: FilterSet = {
+          mode: "and",
+          root: {
+            ...caseSetIntersection,
+            ...additionalFilters,
+          },
+        };
         cohortsAdapter.updateOne(state, {
           id: state.currentCohort,
           changes: {
+            filters: { mode: "and", root: updated },
             modified: true,
             modified_datetime: new Date().toISOString(),
             caseSet: {
-              pendingFilters: { mode: "and", root: updated },
-              caseSetId:
-                cohortCaseSetFilters === undefined
-                  ? { mode: "and", root: {} }
-                  : cohortCaseSetFilters,
+              filters: caseSetFilters,
+              caseSetIds: updatedCaseIds,
               status: "uninitialized",
             },
           },
@@ -411,8 +469,8 @@ const slice = createSlice({
             modified: true,
             modified_datetime: new Date().toISOString(),
             caseSet: {
-              pendingFilters: undefined,
-              caseSetId: { mode: "and", root: {} },
+              filters: undefined,
+              caseSetIds: undefined,
               status: "uninitialized",
             },
           },
@@ -426,8 +484,8 @@ const slice = createSlice({
           modified: true,
           modified_datetime: new Date().toISOString(),
           caseSet: {
-            pendingFilters: undefined,
-            caseSetId: { mode: "and", root: {} },
+            filters: undefined,
+            caseSetIds: undefined,
             status: "uninitialized",
           },
         },
@@ -455,13 +513,14 @@ const slice = createSlice({
       state.currentCohort = action.payload; // todo create pending caseSet if needed
       if (cohort && willRequireCaseSet(cohort.filters)) {
         cohortsAdapter.updateOne(state, {
+          // todo remove
           id: action.payload,
           changes: {
             filters: currentCohort?.filters,
             caseSet: {
               status: "uninitialized",
-              caseSetId: { mode: "and", root: {} },
-              pendingFilters: cohort.filters,
+              caseSetIds: undefined,
+              filters: undefined,
             },
           },
         });
@@ -479,8 +538,8 @@ const slice = createSlice({
         changes: {
           caseSet: {
             status: "uninitialized",
-            caseSetId: { mode: "and", root: {} },
-            pendingFilters: undefined,
+            caseSetIds: undefined,
+            filters: undefined,
           },
         },
       });
@@ -501,13 +560,13 @@ const slice = createSlice({
         }
         if (response.errors && Object.keys(response.errors).length > 0) {
           // reject the current cohort by setting status to rejected
-          // keep the filters for error reporting.
           cohortsAdapter.updateOne(state, {
             id: state.currentCohort,
             changes: {
               filters: pendingFilters,
               caseSet: {
-                caseSetId: { mode: "and", root: {} },
+                caseSetIds: undefined,
+                filters: undefined,
                 status: "rejected",
                 error: response.errors.sets,
               },
@@ -519,11 +578,12 @@ const slice = createSlice({
         const additionalFilters =
           filters === undefined
             ? {}
-            : divideFilterSetByPrefix(filters, ["genes.", "ssms."])
+            : divideFilterSetByPrefix(filters, REQUIRES_CASE_SET_FILTERS)
                 .withoutPrefix.root;
 
-        const caseSetIntersection = processCaseSetResponse(data);
-        const caseSetFilter: FilterSet = {
+        const caseSetIds = processCaseSetResponse(data);
+        const caseSetIntersection = buildCaseSetFilters(caseSetIds);
+        const caseSetFilters: FilterSet = {
           mode: "and",
           root: {
             ...caseSetIntersection,
@@ -539,35 +599,32 @@ const slice = createSlice({
           changes: {
             filters: pendingFilters,
             caseSet: {
-              caseSetId: caseSetFilter,
+              filters: caseSetFilters,
               status: "fulfilled",
-              pendingFilters: undefined,
+              caseSetIds: caseSetIds,
             },
           },
         });
       })
-      .addCase(createCaseSet.pending, (state, action) => {
-        const cohort = state.entities[state.currentCohort] as Cohort;
-        const pendingFilters = action.meta.arg.pendingFilters;
+      .addCase(createCaseSet.pending, (state) => {
         cohortsAdapter.updateOne(state, {
           id: state.currentCohort,
           changes: {
             caseSet: {
-              pendingFilters: pendingFilters,
-              caseSetId: cohort?.caseSet.caseSetId,
+              filters: undefined,
+              caseSetIds: undefined,
               status: "pending",
             },
           },
         });
       })
-      .addCase(createCaseSet.rejected, (state, action) => {
-        const pendingFilters = action.meta.arg.pendingFilters;
+      .addCase(createCaseSet.rejected, (state) => {
         cohortsAdapter.updateOne(state, {
           id: state.currentCohort,
           changes: {
             caseSet: {
-              caseSetId: { mode: "and", root: {} },
-              pendingFilters: pendingFilters,
+              caseSetIds: undefined,
+              filters: undefined,
               status: "rejected",
             },
           },
@@ -748,12 +805,7 @@ export const selectCurrentCohortFilterOrCaseSet = (
   );
   if (cohort === undefined) return { mode: "and", root: {} };
 
-  if (!isFilterSetRootEmpty(cohort?.caseSet.caseSetId)) {
-    // we are using caseSet
-    return cohort?.caseSet.caseSetId;
-  } else {
-    return cohort.filters;
-  }
+  return cohort?.caseSet.filters ?? cohort.filters;
 };
 
 /**
