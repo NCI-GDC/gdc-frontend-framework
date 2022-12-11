@@ -3,18 +3,16 @@ import ToggleSpring from "../shared/ToggleSpring";
 import { Tooltip } from "@mantine/core";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import CheckboxSpring from "../shared/CheckboxSpring";
-import { default as SwitchSpring } from "../shared/SwitchMantine";
+import SwitchSpring from "../shared/SwitchSpring";
 import RatioSpring from "../shared/RatioSpring";
 import { SelectedReducer, TableColumnDefinition } from "../shared/types";
-import { AnnotationsIcon } from "../shared/sharedTableUtils";
+import { SurvivalIcon, AnnotationsIcon } from "../shared/sharedTableUtils";
 import { TableCell, TableHeader } from "../shared/sharedTableCells";
 import { Genes, SingleGene, Gene, GeneToggledHandler } from "./types";
 import { SelectReducerAction } from "../shared/types";
 import { Image } from "@/components/Image";
 import { startCase } from "lodash";
 import Link from "next/link";
-import ToggledCheck from "@/components/expandableTables/shared/ToggledCheck";
-import { IoMdTrendingDown as SurvivalIcon } from "react-icons/io";
 
 export const createTableColumn = (
   accessor: string,
@@ -26,7 +24,6 @@ export const createTableColumn = (
     field: string,
   ) => void,
   handleGeneToggled: GeneToggledHandler,
-  toggledGenes: ReadonlyArray<string>,
   setGeneID: Dispatch<SetStateAction<string>>,
 ): TableColumnDefinition => {
   switch (accessor) {
@@ -62,7 +59,7 @@ export const createTableColumn = (
           },
         ],
       };
-    case "cohort": // adds/removes a gene to the current cohort.
+    case "cohort":
       return {
         header: " ",
         footer: (props) => props.column.id,
@@ -73,7 +70,7 @@ export const createTableColumn = (
               <TableHeader
                 title={startCase(accessor)}
                 tooltip={""}
-                className="mr-3"
+                className="mx-3"
               />
             ),
             cell: ({ row }) => {
@@ -91,12 +88,7 @@ export const createTableColumn = (
                         />
                       }
                       selected={row.original["cohort"]}
-                      handleSwitch={() =>
-                        handleGeneToggled({
-                          geneID: row.original?.geneID,
-                          symbol: row.original?.symbol,
-                        })
-                      }
+                      handleSwitch={handleGeneToggled} // handleCohortSwitch
                       tooltip={""}
                     />
                   )}
@@ -117,17 +109,17 @@ export const createTableColumn = (
               <TableHeader
                 title={startCase(accessor)}
                 tooltip={""}
-                className="flex flex-row justify-start w-14"
+                className="mx-3"
               />
             ),
             cell: ({ row }) => {
               return (
                 <>
                   {row.getCanExpand() && (
-                    <ToggledCheck
-                      margin="mt-[0.42em] ml-0.5"
+                    <SwitchSpring
+                      margin="mt-1 ml-0.5"
                       isActive={row.original["survival"].checked}
-                      icon={<SurvivalIcon size={24} />}
+                      icon={<SurvivalIcon />}
                       selected={row.original["survival"]}
                       handleSwitch={handleSurvivalPlotToggled}
                       survivalProps={{ plot: "gene.symbol" }}
@@ -409,7 +401,7 @@ export const createTableColumn = (
             cell: ({ row }) => {
               return (
                 <Link href={`/genes/${row.original[accessor]}`}>
-                  <a className="text-utility-link underline text-sm">
+                  <a className="text-utility-link underline">
                     {row.original[`${accessor}`]
                       ? row.original[`${accessor}`]
                       : ""}
