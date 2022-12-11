@@ -22,6 +22,7 @@ import { startCase } from "lodash";
 import { AnchorLink } from "@/components/AnchorLink";
 import { externalLinks } from "../../../utils";
 import Link from "next/link";
+import ToggledCheck from "@/components/expandableTables/shared/ToggledCheck";
 
 export const createTableColumn = (
   accessor: string,
@@ -131,7 +132,7 @@ export const createTableColumn = (
               return (
                 <div className="flex justify-start">
                   {row.getCanExpand() && (
-                    <SwitchSpring
+                    <ToggledCheck
                       margin={`mt-1 ml-0.5`}
                       isActive={row.original["survival"].checked}
                       icon={<SurvivalIcon />}
