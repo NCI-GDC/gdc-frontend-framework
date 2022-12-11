@@ -69,8 +69,8 @@ const ContextBar: React.FC = () => {
           status: "fulfilled" as DataStatus,
         },
       }));
-      console.log("updating active Cohort list");
       coreDispatch(setActiveCohortList(updatedList)); // will create caseSet if needed
+      // TODO determine if setActiveCohortList is really needed
     } else if ((getCohortError as Error)?.status === 400) {
       const noGdcContext =
         ((getCohortError as Error)?.data.message as string) ===
@@ -86,7 +86,6 @@ const ContextBar: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(DEFAULT_COHORT_ID);
 
   const setCohort = (id: string) => {
-    console.log("set active cohort", id);
     coreDispatch(setActiveCohort(id));
   };
   const handleCohortSelection = (idx: string) => {
