@@ -8,16 +8,14 @@ import { castDraft } from "immer";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import { fetchSmsAggregations } from "./smsAggregationsApi";
+import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
+import { GenomicTableProps } from "./types";
 import {
-  GraphQLApiResponse,
-  graphqlAPI,
-  TablePageOffsetProps,
-} from "../gdcapi/gdcgraphql";
-import { buildCohortGqlOperator, filterSetToOperation } from "../cohort";
-import {
-  selectGenomicAndCohortFilters,
-  selectGenomicAndCohortGqlFilters,
-} from "./genomicFilters";
+  buildCohortGqlOperator,
+  filterSetToOperation,
+  selectCurrentCohortFilterSet,
+} from "../cohort";
+import { mergeGenomicAndCohortFilters } from "./genomicFilters";
 import { selectCurrentCohortFilters } from "../cohort";
 import {
   convertFilterToGqlFilter,
@@ -27,7 +25,7 @@ import {
 import { appendFilterToOperation } from "./utils";
 
 const GenesTableGraphQLQuery = `
-          query GenesTable_relayQuery(
+          query GenesTable(
             $genesTable_filters: FiltersArgument
             $genesTable_size: Int
             $genesTable_offset: Int
@@ -160,13 +158,13 @@ export const buildGeneTableSearchFilters = (
 
 export const fetchGenesTable = createAsyncThunk<
   GraphQLApiResponse,
-  TablePageOffsetProps,
+  GenomicTableProps,
   { dispatch: CoreDispatch; state: CoreState }
 >(
   "genes/genesTable",
   async (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    { pageSize, offset, searchTerm }: TablePageOffsetProps,
+    { pageSize, offset, searchTerm, genomicFilters }: GenomicTableProps,
     thunkAPI,
   ): Promise<GraphQLApiResponse> => {
     const cohortFilters = buildCohortGqlOperator(
@@ -175,8 +173,9 @@ export const fetchGenesTable = createAsyncThunk<
     const cohortFiltersContent = cohortFilters?.content
       ? Object(cohortFilters?.content)
       : [];
-    const geneAndCohortFilters = selectGenomicAndCohortFilters(
+    const geneAndCohortFilters = mergeGenomicAndCohortFilters(
       thunkAPI.getState(),
+      genomicFilters,
     );
     const filters = buildCohortGqlOperator(geneAndCohortFilters);
     const filterContents = filters?.content ? Object(filters?.content) : [];
@@ -443,5 +442,5 @@ export const selectGenesTableData = (
 export const useGenesTable = createUseFiltersCoreDataHook(
   fetchGenesTable,
   selectGenesTableData,
-  selectGenomicAndCohortGqlFilters,
+  selectCurrentCohortFilterSet,
 );

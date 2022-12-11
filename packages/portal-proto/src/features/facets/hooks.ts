@@ -21,6 +21,7 @@ import {
   selectFacetByDocTypeAndField,
   usePrevious,
   selectTotalCountsByName,
+  useCurrentCohortFilters,
 } from "@gff/core";
 import { useEffect } from "react";
 import isEqual from "lodash/isEqual";
@@ -71,14 +72,15 @@ export const useEnumFacet = (
   );
 
   const enumValues = useCohortFacetFilterByName(field);
+  const currentCohortFilters = useCurrentCohortFilters();
   const cohortFilters = useCohortFacetFilter();
-  const prevCohortFilters = usePrevious(cohortFilters);
+  const prevCohortFilters = usePrevious(currentCohortFilters);
   const prevEnumValues = usePrevious(enumValues);
 
   useEffect(() => {
     if (
       !facet ||
-      !isEqual(prevCohortFilters, cohortFilters) ||
+      !isEqual(prevCohortFilters, currentCohortFilters) ||
       !isEqual(prevEnumValues, enumValues)
     ) {
       coreDispatch(
@@ -99,6 +101,7 @@ export const useEnumFacet = (
     prevCohortFilters,
     prevEnumValues,
     enumValues,
+    currentCohortFilters,
   ]);
 
   return {

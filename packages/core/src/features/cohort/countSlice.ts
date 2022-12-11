@@ -37,7 +37,7 @@ export interface CountsState {
 }
 
 const CountsGraphQLQuery = `
-  query countsQuery($filters: FiltersArgument, 
+  query countsQuery($filters: FiltersArgument,
   $ssmCaseFilter: FiltersArgument,
   $sequenceReadsCaseFilter: FiltersArgument) {
   viewer {

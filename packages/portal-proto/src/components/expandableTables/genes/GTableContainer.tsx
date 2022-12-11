@@ -1,4 +1,4 @@
-import { GDCGenesTable, useGenesTable } from "@gff/core";
+import { GDCGenesTable, useGenesTable, FilterSet } from "@gff/core";
 import { createContext, useEffect, useReducer, useState } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
 import { GenesTable } from "./GenesTable";
@@ -26,17 +26,21 @@ export interface GTableContainerProps {
     field: string,
   ) => void;
   handleGeneToggled: GeneToggledHandler;
+  genomicFilters?: FilterSet;
+  toggledGenes?: ReadonlyArray<string>;
 }
 
 export const GTableContainer: React.FC<GTableContainerProps> = ({
   selectedSurvivalPlot,
   handleSurvivalPlotToggled,
   handleGeneToggled,
+  genomicFilters,
+  toggledGenes = [],
 }: GTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
-  const [deboucedSearchTern] = useDebouncedValue(searchTerm, 400);
+  const [debouncedSearchTerm] = useDebouncedValue(searchTerm, 400);
   const [ref, { width }] = useMeasure();
   const [columnListOrder, setColumnListOrder] = useState(DEFAULT_GTABLE_ORDER);
   const [visibleColumns, setVisibleColumns] = useState(
@@ -115,7 +119,9 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const { data } = useGenesTable({
     pageSize: pageSize,
     offset: page * pageSize,
-    searchTerm: deboucedSearchTern.length > 0 ? deboucedSearchTern : undefined,
+    searchTerm:
+      debouncedSearchTerm.length > 0 ? debouncedSearchTerm : undefined,
+    genomicFilters: genomicFilters,
   });
 
   useEffect(() => {
@@ -202,6 +208,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 width={width}
                 pageSize={pageSize}
                 page={page}
+                toggledGenes={toggledGenes}
                 selectedGenes={selectedGenes}
                 setSelectedGenes={setSelectedGenes}
                 handleGTotal={setGTotal}
