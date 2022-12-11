@@ -4,12 +4,12 @@ import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { coreCreateApi } from "../../coreCreateApi";
 import type { Middleware, Reducer } from "@reduxjs/toolkit";
 import { CohortModel, CohortAdd, CohortUpdate } from "./cohortApiTypes";
-import { GDC_AUTH } from "../../constants";
+import { GDC_API } from "../../constants";
 
 export const cohortApiSlice = coreCreateApi({
   reducerPath: "cohortApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: `${GDC_AUTH}/api`,
+    baseUrl: `${GDC_API}`,
     credentials: "include",
   }),
   tagTypes: ["Cohort"],

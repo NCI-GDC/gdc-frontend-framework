@@ -31,6 +31,7 @@ import {
   discardCohortChanges,
   useDeleteCohortMutation,
   selectCurrentCohortId,
+  setCurrentCohortId,
   selectCurrentCohort,
   useUpdateCohortMutation,
   setCohortMessage,
@@ -44,7 +45,6 @@ import {
   // showModal,
   Modals,
   selectCurrentModal,
-  setActiveCohort,
 } from "@gff/core";
 import { useCohortFacetFilters } from "./CohortGroup";
 import CountButton from "./CountButton";
@@ -265,7 +265,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
           await addCohort(addBody)
             .unwrap()
             .then((payload) => {
-              coreDispatch(setActiveCohort(payload.id));
+              coreDispatch(setCurrentCohortId(payload.id));
               coreDispatch(
                 setCohortMessage(`savedCohort|${newName}|${payload.id}`),
               );

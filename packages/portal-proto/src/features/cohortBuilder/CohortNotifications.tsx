@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "@mantine/core";
-import { setActiveCohort, useCoreDispatch } from "@gff/core";
+import { setCurrentCohortId, useCoreDispatch } from "@gff/core";
 import { cleanNotifications } from "@mantine/notifications";
 
 export interface CohortNotificationProps {
@@ -34,7 +34,7 @@ export const NewCohortNotificationWithSetAsCurrent: React.FC<
         <Button
           variant="white"
           onClick={() => {
-            coreDispatch(setActiveCohort(cohortId));
+            coreDispatch(setCurrentCohortId(cohortId));
             cleanNotifications();
           }}
         >
