@@ -45,6 +45,7 @@ import {
   // showModal,
   Modals,
   selectCurrentModal,
+  setActiveCohort,
 } from "@gff/core";
 import { useCohortFacetFilters } from "./CohortGroup";
 import CountButton from "./CountButton";

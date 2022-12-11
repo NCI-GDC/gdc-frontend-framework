@@ -335,38 +335,11 @@ const slice = createSlice({
       if (state.currentCohort === DEFAULT_COHORT_ID) {
         // create a new cohort and add it
         // as the GDC All Cohort is immutable
-        /* ---
-        const cohort = requiresCaseSet
-          ? newCohort({ mode: "and", root: {} }, true, filters)
-          : newCohort(filters, true);
-          --- */
         const cohort = newCohort(filters, true);
         cohortsAdapter.addOne(state, cohort);
         state.currentCohort = cohort.id;
         state.message = `newCohort|${cohort.name}|${cohort.id}`;
       } else {
-        /* ----
-        if (requiresCaseSet) {
-          const cohortCaseSetFilters =
-            state.entities[state.currentCohort]?.caseSet?.caseSetId;
-          // don't update the filter as they will be updated when the caseSet is created
-          cohortsAdapter.updateOne(state, {
-            id: state.currentCohort,
-            changes: {
-              modified: true,
-              modified_datetime: new Date().toISOString(),
-              caseSet: {
-                pendingFilters: filters,
-                caseSetId:
-                  cohortCaseSetFilters === undefined
-                    ? { mode: "and", root: {} }
-                    : cohortCaseSetFilters,
-                status: "uninitialized",
-              },
-            },
-          });
-        } else
-         --- */
         const caseSetIds =
           state.entities[state.currentCohort]?.caseSet?.caseSetIds;
         if (caseSetIds) {
@@ -505,9 +478,7 @@ const slice = createSlice({
       }|${state.currentCohort}`;
     },
     setCurrentCohortId: (state, action: PayloadAction<string>) => {
-      // const currentCohort = state.entities[state.currentCohort];
-      // const cohort = state.entities[action.payload];
-      state.currentCohort = action.payload; // todo create pending caseSet if needed
+      state.currentCohort = action.payload;
     },
     clearCohortMessage: (state) => {
       state.message = undefined;
