@@ -23,7 +23,7 @@ import {
   useCoreSelector,
   selectCurrentCohortId,
   useGeneSymbol,
-  updateCurrentCohortFilter,
+  updateActiveCohortFilter,
 } from "@gff/core";
 import { ActionIcon, Badge, Divider, Group } from "@mantine/core";
 import {
@@ -206,7 +206,7 @@ const IncludeExcludeQueryElement: React.FC<
                     dispatch(removeCohortFilter(field));
                   } else
                     dispatch(
-                      updateCurrentCohortFilter({
+                      updateActiveCohortFilter({
                         field,
                         operation: {
                           operator,
@@ -241,7 +241,7 @@ const ComparisonElement: React.FC<ComparisonElementProps> = ({
   const coreDispatch = useCoreDispatch();
   const handleKeepMember = (keep: ValueOperation) => {
     coreDispatch(
-      updateCurrentCohortFilter({ field: keep.field, operation: keep }),
+      updateActiveCohortFilter({ field: keep.field, operation: keep }),
     );
   };
 

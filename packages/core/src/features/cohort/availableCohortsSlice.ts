@@ -425,21 +425,18 @@ const slice = createSlice({
       const { [filterPrefix[0]]: _b, ...updatedCaseIds } =
         cohortCaseSetIds ?? {};
 
-      const updatedFilters = {
-        mode: "and",
-        root: updated,
-      };
-
       if (Object.keys(updatedCaseIds).length) {
         // still require a case set
         // update caseSet
 
         const caseSetIntersection = buildCaseSetFilters(updatedCaseIds);
-        const additionalFilters =
-          updatedFilters === undefined
-            ? {}
-            : divideFilterSetByPrefix(updatedFilters, REQUIRES_CASE_SET_FILTERS)
-                .withoutPrefix.root;
+        const additionalFilters = divideFilterSetByPrefix(
+          {
+            mode: "and",
+            root: updated,
+          },
+          REQUIRES_CASE_SET_FILTERS,
+        ).withoutPrefix.root;
 
         const caseSetFilters: FilterSet = {
           mode: "and",
@@ -891,7 +888,7 @@ export const useCurrentCohortFilters = (): FilterSet | undefined => {
  * @param field
  * @param operation
  */
-export const updateCurrentCohortFilter =
+export const updateActiveCohortFilter =
   ({
     field,
     operation,
@@ -934,7 +931,9 @@ export const updateCurrentCohortFilter =
 export const setActiveCohort =
   (cohortId: string): ThunkAction<void, CoreState, undefined, AnyAction> =>
   async (dispatch: CoreDispatch, getState) => {
-    const cohort = getState().entities[cohortId];
+    const cohort = getState().cohort.availableCohorts.entities[cohortId];
+
+    if (cohort === undefined) return;
 
     const requiresCaseSet = willRequireCaseSet(cohort.filters);
     if (cohort.caseSet.caseSetIds === undefined && requiresCaseSet) {
@@ -947,4 +946,21 @@ export const setActiveCohort =
       );
     }
     dispatch(setCurrentCohortId(cohortId));
+  };
+
+export const discardActiveCohortChanges =
+  (filters: FilterSet): ThunkAction<void, CoreState, undefined, AnyAction> =>
+  async (dispatch: CoreDispatch, getState) => {
+    const cohortId = selectCurrentCohortId(getState());
+    if (cohortId === undefined) {
+      // TODO better error message handling
+      console.error("discardActiveCohort without a cohortId");
+      return;
+    }
+    if (willRequireCaseSet(filters)) {
+      createCaseSet({
+        caseSetId: cohortId,
+        pendingFilters: filters,
+      });
+    } else dispatch(discardCohortChanges(filters));
   };

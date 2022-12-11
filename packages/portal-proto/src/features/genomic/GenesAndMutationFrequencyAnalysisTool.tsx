@@ -12,9 +12,8 @@ import {
   buildCohortGqlOperator,
   useTopGene,
   useCoreDispatch,
-  updateCohortFilter,
   removeCohortFilter,
-  updateCurrentCohortFilter,
+  updateActiveCohortFilter,
 } from "@gff/core";
 import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
 import { GTableContainer } from "@/components/expandableTables/genes/GTableContainer";
@@ -155,7 +154,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
         const update = cohortStatus.filter((x) => x != payload[idField]);
         if (update.length > 0)
           coreDispatch(
-            updateCurrentCohortFilter({
+            updateActiveCohortFilter({
               field: field,
               operation: {
                 field: field,
@@ -167,7 +166,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
         else coreDispatch(removeCohortFilter(field));
       } else
         coreDispatch(
-          updateCurrentCohortFilter({
+          updateActiveCohortFilter({
             field: field,
             operation: {
               field: field,
