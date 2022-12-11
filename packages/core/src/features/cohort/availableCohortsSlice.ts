@@ -91,6 +91,7 @@ mutation mutationsCreateRepositoryCaseSetMutation(
 export interface CreateCaseSetProps {
   readonly caseSetId: string; // pass a caseSetId to use
   readonly pendingFilters?: FilterSet;
+  modified?: boolean; // to control cohort modification flag
 }
 
 export const createCaseSet = createAsyncThunk<
@@ -99,6 +100,8 @@ export const createCaseSet = createAsyncThunk<
   { dispatch: CoreDispatch; state: CoreState }
 >(
   "cohort/createCaseSet",
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async ({ caseSetId, pendingFilters = undefined }, thunkAPI) => {
     const cohort = cohortSelectors.selectById(
       thunkAPI.getState(),
@@ -236,6 +239,11 @@ interface NewCohortParams {
   message?: string;
 }
 
+interface CopyCohortParams {
+  sourceId: string;
+  destId: string;
+}
+
 /**
  * A Cohort Management Slice which allow cohort to be created and updated.
  * this uses redux-toolkit entity adapter to manage the cohorts
@@ -252,6 +260,7 @@ interface NewCohortParams {
  * setCohortList() - set saved cohort to the adapter that comes from the server
  * addNewCohort() - create a new cohort
  * addNewCohortWithFilterAndMessage - create a cohort with the passed filters and message id
+ * copyCohort - create a copy of the cohort with sourceId to a new cohort with destId
  * updateCohortName(name:string): changes the current cohort's name
  * updateCohortFilter(filters: FilterSet): update the filters for this cohort
  * removeCohortFilter(filter:string): removes the filter from the cohort
@@ -293,6 +302,16 @@ const slice = createSlice({
       const cohort = newCohort(action.payload.filters);
       cohortsAdapter.addOne(state, cohort); // Note: does not set the current cohort
       state.message = `${action.payload.message}|${cohort.name}|${cohort.id}`;
+    },
+    copyCohort: (state, action: PayloadAction<CopyCohortParams>) => {
+      const sourceCohort = state.entities[action.payload.sourceId];
+      if (sourceCohort) {
+        const destCohort = {
+          ...sourceCohort,
+          id: action.payload.destId,
+        };
+        cohortsAdapter.addOne(state, destCohort);
+      }
     },
     updateCohortName: (state, action: PayloadAction<string>) => {
       cohortsAdapter.updateOne(state, {
@@ -567,6 +586,8 @@ const slice = createSlice({
             id: state.currentCohort,
             changes: {
               filters: pendingFilters,
+              modified: action.meta.arg.modified,
+              modified_datetime: new Date().toISOString(),
               caseSet: {
                 filters: caseSetFilters,
                 status: "fulfilled",
@@ -616,6 +637,7 @@ export const {
   clearCaseSet,
   clearCohortMessage,
   setCohortList,
+  copyCohort,
   discardCohortChanges,
   setCohortMessage,
 } = slice.actions;
@@ -872,6 +894,7 @@ export const updateActiveCohortFilter =
           createCaseSet({
             caseSetId: cohortId,
             pendingFilters: updatedFilters,
+            modified: true,
           }),
         );
       }
@@ -887,15 +910,17 @@ export const setActiveCohort =
   (cohortId: string): ThunkAction<void, CoreState, undefined, AnyAction> =>
   async (dispatch: CoreDispatch, getState) => {
     const cohort = getState().cohort.availableCohorts.entities[cohortId];
-
     if (cohort) {
-      const requiresCaseSet = willRequireCaseSet(cohort.filters);
-      if (cohort.caseSet.caseSetIds === undefined && requiresCaseSet) {
+      if (
+        willRequireCaseSet(cohort.filters) &&
+        cohort.caseSet.caseSetIds === undefined
+      ) {
         // switched to a cohort without a case set
         await dispatch(
           createCaseSet({
             caseSetId: cohortId,
             pendingFilters: cohort.filters,
+            modified: cohort.modified,
           }),
         );
       }
@@ -907,15 +932,32 @@ export const discardActiveCohortChanges =
   (filters: FilterSet): ThunkAction<void, CoreState, undefined, AnyAction> =>
   async (dispatch: CoreDispatch, getState) => {
     const cohortId = selectCurrentCohortId(getState());
-    if (cohortId === undefined) {
-      // TODO better error message handling
-      console.error("discardActiveCohort without a cohortId");
-      return;
-    }
-    if (willRequireCaseSet(filters)) {
+    if (cohortId && willRequireCaseSet(filters)) {
       createCaseSet({
         caseSetId: cohortId,
         pendingFilters: filters,
+        modified: false,
       });
     } else dispatch(discardCohortChanges(filters));
+  };
+
+export const setActiveCohortList =
+  (cohorts: Cohort[]): ThunkAction<void, CoreState, undefined, AnyAction> =>
+  async (dispatch: CoreDispatch, getState) => {
+    // set the list of all coborts
+    await dispatch(setCohortList(cohorts));
+    const cohortId = selectCurrentCohortId(getState());
+    const cohort = selectCurrentCohort(getState());
+
+    if (!cohort) return;
+    if (cohortId === DEFAULT_COHORT_ID) return;
+    if (cohortId && willRequireCaseSet(cohort.filters)) {
+      dispatch(
+        createCaseSet({
+          caseSetId: cohortId,
+          pendingFilters: cohort.filters,
+          modified: false,
+        }),
+      );
+    }
   };
