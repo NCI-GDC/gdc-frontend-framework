@@ -145,10 +145,12 @@ const OncoGridWrapper: React.FC = () => {
     setTimeout(() => setIsLoading(false), 1000);
   };
 
+  const backgroundColor = "bg-base-max";
+
   const handleDownloadSVG = () => {
     if (downloadContainer.current) {
       const dom = gridContainer.current.cloneNode(true);
-      dom.classList.remove("bg-base-lightest");
+      dom.classList.remove(backgroundColor);
       downloadContainer.current.insertBefore(
         dom,
         downloadContainer.current.children[1],
@@ -166,7 +168,7 @@ const OncoGridWrapper: React.FC = () => {
   const handleDownloadPNG = async () => {
     if (downloadContainer.current) {
       const dom = gridContainer.current.cloneNode(true);
-      dom.classList.remove("bg-base-lightest");
+      dom.classList.remove(backgroundColor);
       dom
         .querySelectorAll("foreignObject")
         .forEach((foreignObject) => foreignObject.remove());
@@ -213,12 +215,16 @@ const OncoGridWrapper: React.FC = () => {
   return (
     <div
       ref={(ref) => (fullOncoGridContainer.current = ref)}
-      className={`bg-base-lightest p-16  ${
+      className={`${backgroundColor} p-16  ${
         isFullscreen ? "overflow-scroll" : ""
       }`}
     >
       <div className="flex pb-8">
-        <div className="basis-1/2">{`${donors.length} Most Mutated Cases and Top ${genes.length} Mutated Genes by SSM`}</div>
+        <div className="basis-1/2">
+          <h2 className="text-montserrat text-center text-lg text-primary-content-dark mb-3">
+            {`${donors.length} Most Mutated Cases and Top ${genes.length} Mutated Genes by SSM`}
+          </h2>
+        </div>
         <div className="flex basis-1/2 justify-end">
           <Tooltip
             position="top"
@@ -412,7 +418,7 @@ const OncoGridWrapper: React.FC = () => {
         )}
         <div
           ref={(ref) => (gridContainer.current = ref)}
-          className={`oncogrid-wrapper bg-base-lightest ${
+          className={`oncogrid-wrapper ${backgroundColor} ${
             consequenceTypeFilters.length === 0 || isLoading
               ? "invisible"
               : "visible"

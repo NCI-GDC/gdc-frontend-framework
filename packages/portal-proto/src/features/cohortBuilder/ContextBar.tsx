@@ -179,7 +179,7 @@ const ContextBar: React.FC = () => {
     },
     {
       field: "cases.project.program.name",
-      name: "Program Name",
+      name: "Program",
       docType: "cases",
       indexType: "repository",
     },

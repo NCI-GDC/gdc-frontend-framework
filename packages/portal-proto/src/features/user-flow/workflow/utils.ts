@@ -12,6 +12,7 @@ export interface AppRegistrationEntry {
   readonly id?: string;
   readonly description?: string;
   readonly iconSize?: IconSize;
+  readonly countsField?: string;
   readonly caseCounts?: number; // Added for MR Demo TODO: Compute real values
   readonly hideCounts?: boolean;
   readonly optimizeRules?: ReadonlyArray<string>;
