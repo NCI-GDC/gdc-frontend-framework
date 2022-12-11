@@ -10,10 +10,7 @@ import { buildCohortGqlOperator, joinFilters } from "./filters";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
-import {
-  selectCurrentCohortFilters,
-  selectCurrentCohortFilterSet,
-} from "./availableCohortsSlice";
+import { selectCurrentCohortFilterSet } from "./availableCohortsSlice";
 
 export interface CountsState {
   readonly counts: Record<string, number>;
