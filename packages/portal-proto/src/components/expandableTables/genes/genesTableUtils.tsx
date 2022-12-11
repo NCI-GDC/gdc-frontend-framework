@@ -60,7 +60,7 @@ export const createTableColumn = (
           },
         ],
       };
-    case "cohort":
+    case "cohort": // adds/removes a gene to the current cohort.
       return {
         header: " ",
         footer: (props) => props.column.id,
@@ -94,7 +94,7 @@ export const createTableColumn = (
                           geneID: row.original?.geneID,
                           symbol: row.original?.symbol,
                         })
-                      } // handleCohortSwitch
+                      }
                       tooltip={""}
                     />
                   )}

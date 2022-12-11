@@ -29,18 +29,5 @@ startCoreListening({
   effect: async (_, listenerApi) => {
     // dispatch updateCohortFilter or removeCohortFilter executed
     listenerApi.dispatch(resetSelectedCases());
-    // const cohort = cohortSelectors.selectById(
-    //   listenerApi.getState(),
-    //   listenerApi.getState().cohort.availableCohorts.currentCohort,
-    // );
-    // if (cohort === undefined) return; // there is no cohort so return
-    // if (cohort.caseSet.pendingFilters != undefined)
-    //   // there are filters which require a caseSet so create a caseSet
-    //   await listenerApi.dispatch(
-    //     createCaseSet({
-    //       caseSetId:
-    //         listenerApi.getState().cohort.availableCohorts.currentCohort,
-    //     }),
-    //   );
   },
 });

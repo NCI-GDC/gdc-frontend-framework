@@ -508,22 +508,6 @@ const slice = createSlice({
       // const currentCohort = state.entities[state.currentCohort];
       // const cohort = state.entities[action.payload];
       state.currentCohort = action.payload; // todo create pending caseSet if needed
-      /*----
-      if (cohort && willRequireCaseSet(cohort.filters)) {
-        cohortsAdapter.updateOne(state, {
-          // todo remove
-          id: action.payload,
-          changes: {
-            filters: currentCohort?.filters,
-            caseSet: {
-              status: "uninitialized",
-              caseSetIds: undefined,
-              filters: undefined,
-            },
-          },
-        });
-      }
-       */
     },
     clearCohortMessage: (state) => {
       state.message = undefined;

@@ -69,7 +69,7 @@ export const createTableColumn = (
           },
         ],
       };
-    case "cohort":
+    case "cohort": // adds/removes a gene to the current cohort.
       return {
         header: " ",
         footer: (props) => props.column.id,
@@ -103,7 +103,7 @@ export const createTableColumn = (
                           mutationID: row.original?.mutationID,
                           symbol: row.original?.DNAChange,
                         })
-                      } // handleCohortSwitch
+                      }
                       tooltip={""}
                     />
                   )}
