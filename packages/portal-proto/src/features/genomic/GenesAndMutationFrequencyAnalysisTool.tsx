@@ -12,8 +12,8 @@ import {
   buildCohortGqlOperator,
   useTopGene,
   useCoreDispatch,
-  updateCohortFilter,
   removeCohortFilter,
+  updateActiveCohortFilter,
 } from "@gff/core";
 import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
 import { GTableContainer } from "@/components/expandableTables/genes/GTableContainer";
@@ -78,7 +78,7 @@ const buildGeneHaveAndHaveNotFilters = (
 type AppModeState = "genes" | "ssms";
 
 const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
-  const coreDipatch = useCoreDispatch();
+  const coreDispatch = useCoreDispatch();
   const appDispatch = useAppDispatch();
   const [comparativeSurvival, setComparativeSurvival] = useState(undefined);
   const [appMode, setAppMode] = useState<AppModeState>("genes");
@@ -150,22 +150,23 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
       payload: Record<string, any>,
     ) => {
       if (cohortStatus.includes(payload[idField])) {
+        // remove the id from the cohort
         const update = cohortStatus.filter((x) => x != payload[idField]);
         if (update.length > 0)
-          coreDipatch(
-            updateCohortFilter({
+          coreDispatch(
+            updateActiveCohortFilter({
               field: field,
               operation: {
                 field: field,
                 operator: "includes",
-                operands: cohortStatus.filter((x) => x != payload[idField]),
+                operands: update,
               },
             }),
           );
-        else coreDipatch(removeCohortFilter(field));
+        else coreDispatch(removeCohortFilter(field));
       } else
-        coreDipatch(
-          updateCohortFilter({
+        coreDispatch(
+          updateActiveCohortFilter({
             field: field,
             operation: {
               field: field,
@@ -175,7 +176,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
           }),
         );
     },
-    [coreDipatch],
+    [coreDispatch],
   );
 
   /**

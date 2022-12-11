@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { showNotification } from "@mantine/notifications";
 import { CollapsibleContainer } from "@/components/CollapsibleContainer";
 import { Menu, Tabs } from "@mantine/core";
-import { ContextualCasesView } from "../cases/CasesView";
+import { ContextualCasesView } from "../cases/CasesView/CasesView";
 import CountButton from "./CountButton";
 import { useCohortFacetFilters } from "./CohortGroup";
 import CohortManager from "./CohortManager";
@@ -15,11 +15,11 @@ import {
 } from "@/features/cohortBuilder/CohortNotifications";
 import {
   useCoreDispatch,
-  setCurrentCohortId,
   useCoreSelector,
   selectAvailableCohorts,
   DEFAULT_COHORT_ID,
   selectCurrentCohortId,
+  setActiveCohort,
   selectCohortMessage,
   selectCurrentCohortName,
   clearCohortMessage,
@@ -83,7 +83,7 @@ const ContextBar: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(DEFAULT_COHORT_ID);
 
   const setCohort = (id: string) => {
-    coreDispatch(setCurrentCohortId(id));
+    coreDispatch(setActiveCohort(id));
   };
   const handleCohortSelection = (idx: string) => {
     setCohort(idx);
@@ -179,7 +179,7 @@ const ContextBar: React.FC = () => {
     },
     {
       field: "cases.project.program.name",
-      name: "Program Name",
+      name: "Program",
       docType: "cases",
       indexType: "repository",
     },
@@ -282,9 +282,9 @@ const ContextBar: React.FC = () => {
                 </Tabs.Tab>
               </Tabs.List>
               <Tabs.Panel value="summary">
-                <SummaryFacets fields={summaryFields} />{" "}
+                <SummaryFacets fields={summaryFields} />
               </Tabs.Panel>
-              <Tabs.Panel value={"table"}>
+              <Tabs.Panel value="table">
                 <ContextualCasesView />
               </Tabs.Panel>
             </Tabs>

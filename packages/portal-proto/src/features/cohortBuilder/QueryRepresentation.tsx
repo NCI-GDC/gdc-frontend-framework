@@ -16,7 +16,6 @@ import {
   NotEquals,
   Operation,
   OperationHandler,
-  updateCohortFilter,
   removeCohortFilter,
   Union,
   useCoreDispatch,
@@ -24,6 +23,7 @@ import {
   useCoreSelector,
   selectCurrentCohortId,
   useGeneSymbol,
+  updateActiveCohortFilter,
 } from "@gff/core";
 import { ActionIcon, Badge, Divider, Group } from "@mantine/core";
 import {
@@ -197,16 +197,6 @@ const IncludeExcludeQueryElement: React.FC<
                 rightSection={<RemoveButton value={x.toString()} />}
                 onClick={() => {
                   const newOperands = operands.filter((o) => o !== x);
-                  dispatch(
-                    updateCohortFilter({
-                      field,
-                      operation: {
-                        operator,
-                        field,
-                        operands: newOperands,
-                      },
-                    }),
-                  );
                   if (newOperands.length === 0) {
                     setQueryExpressionsExpanded({
                       type: "clear",
@@ -214,7 +204,17 @@ const IncludeExcludeQueryElement: React.FC<
                       field,
                     });
                     dispatch(removeCohortFilter(field));
-                  }
+                  } else
+                    dispatch(
+                      updateActiveCohortFilter({
+                        field,
+                        operation: {
+                          operator,
+                          field,
+                          operands: newOperands,
+                        },
+                      }),
+                    );
                 }}
               >
                 <OverflowTooltippedLabel label={x.toString()}>
@@ -240,7 +240,9 @@ const ComparisonElement: React.FC<ComparisonElementProps> = ({
 }: ComparisonElementProps) => {
   const coreDispatch = useCoreDispatch();
   const handleKeepMember = (keep: ValueOperation) => {
-    coreDispatch(updateCohortFilter({ field: keep.field, operation: keep }));
+    coreDispatch(
+      updateActiveCohortFilter({ field: keep.field, operation: keep }),
+    );
   };
 
   return (

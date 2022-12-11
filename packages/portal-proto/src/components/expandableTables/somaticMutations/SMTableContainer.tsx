@@ -40,9 +40,8 @@ export interface SMTableContainerProps {
 }
 
 export const SMTableContainer: React.FC<SMTableContainerProps> = ({
-  selectedSurvivalPlot = {},
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  handleSurvivalPlotToggled = (_1: string, _2: string, _3: string) => null,
+  selectedSurvivalPlot,
+  handleSurvivalPlotToggled,
   columnsList = DEFAULT_SMTABLE_ORDER,
   geneSymbol = undefined,
   genomicFilters = { mode: "and", root: {} },

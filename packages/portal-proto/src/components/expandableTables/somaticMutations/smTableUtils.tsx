@@ -70,7 +70,7 @@ export const createTableColumn = (
           },
         ],
       };
-    case "cohort":
+    case "cohort": // adds/removes a gene to the current cohort.
       return {
         header: " ",
         footer: (props) => props.column.id,
@@ -104,7 +104,7 @@ export const createTableColumn = (
                           mutationID: row.original?.mutationID,
                           symbol: row.original?.DNAChange,
                         })
-                      } // handleCohortSwitch
+                      }
                       tooltip={""}
                     />
                   )}
@@ -259,7 +259,7 @@ export const createTableColumn = (
                    in ${geneSymbol ? geneSymbol : "Cohort"}`}
                 className="flex justify-start"
                 tooltip={`# Cases where Mutation is observed in ${
-                  geneSymbol ? geneSymbol : "Cohort"
+                  geneSymbol ?? "Cohort"
                 } / # Cases tested for Simple Somatic Mutations in Cohort`}
               />
             ),

@@ -6,9 +6,10 @@ import {
   updateCohortFilter,
   removeCohortFilter,
   setCurrentCohortId,
-  cohortSelectors,
+  //cohortSelectors,
 } from "./features/cohort/availableCohortsSlice";
-import { createCaseSet } from "./features/cohort/availableCohortsSlice";
+//import { createCaseSet } from "./features/cohort/availableCohortsSlice";
+import { resetSelectedCases } from "./features/cases/selectedCasesSlice";
 
 /**
  * Defines coreListeners for adding middleware.
@@ -27,18 +28,6 @@ startCoreListening({
   matcher: isAnyOf(updateCohortFilter, removeCohortFilter, setCurrentCohortId),
   effect: async (_, listenerApi) => {
     // dispatch updateCohortFilter or removeCohortFilter executed
-    const cohort = cohortSelectors.selectById(
-      listenerApi.getState(),
-      listenerApi.getState().cohort.availableCohorts.currentCohort,
-    );
-    if (cohort === undefined) return; // there is no cohort so return
-    if (cohort.caseSet.pendingFilters != undefined)
-      // there are filters which require a caseSet so create a caseSet
-      await listenerApi.dispatch(
-        createCaseSet({
-          caseSetId:
-            listenerApi.getState().cohort.availableCohorts.currentCohort,
-        }),
-      );
+    listenerApi.dispatch(resetSelectedCases());
   },
 });
