@@ -31,7 +31,6 @@ import {
   discardCohortChanges,
   useDeleteCohortMutation,
   selectCurrentCohortId,
-  setCurrentCohortId,
   selectCurrentCohort,
   useUpdateCohortMutation,
   setCohortMessage,
@@ -266,7 +265,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
           await addCohort(addBody)
             .unwrap()
             .then((payload) => {
-              coreDispatch(setCurrentCohortId(payload.id));
+              coreDispatch(setActiveCohort(payload.id));
               coreDispatch(
                 setCohortMessage(`savedCohort|${newName}|${payload.id}`),
               );

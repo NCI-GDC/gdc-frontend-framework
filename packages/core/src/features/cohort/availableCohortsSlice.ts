@@ -888,17 +888,17 @@ export const setActiveCohort =
   async (dispatch: CoreDispatch, getState) => {
     const cohort = getState().cohort.availableCohorts.entities[cohortId];
 
-    if (cohort === undefined) return;
-
-    const requiresCaseSet = willRequireCaseSet(cohort.filters);
-    if (cohort.caseSet.caseSetIds === undefined && requiresCaseSet) {
-      // switched to a cohort without a case set
-      await dispatch(
-        createCaseSet({
-          caseSetId: cohortId,
-          pendingFilters: cohort.filters,
-        }),
-      );
+    if (cohort) {
+      const requiresCaseSet = willRequireCaseSet(cohort.filters);
+      if (cohort.caseSet.caseSetIds === undefined && requiresCaseSet) {
+        // switched to a cohort without a case set
+        await dispatch(
+          createCaseSet({
+            caseSetId: cohortId,
+            pendingFilters: cohort.filters,
+          }),
+        );
+      }
     }
     dispatch(setCurrentCohortId(cohortId));
   };
