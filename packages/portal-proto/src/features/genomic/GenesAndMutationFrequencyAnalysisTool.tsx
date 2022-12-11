@@ -151,7 +151,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     ) => {
       if (cohortStatus.includes(payload[idField])) {
         // remove the id from the cohort
-        const update = cohortStatus.filter((x) => x != payload[idField]);
+        const update = cohortStatus.filter((x) => x !== payload[idField]);
         if (update.length > 0)
           coreDispatch(
             updateActiveCohortFilter({
