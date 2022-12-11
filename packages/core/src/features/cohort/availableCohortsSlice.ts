@@ -60,7 +60,7 @@ export const buildCaseSetGQLQueryAndVariables = (
             mode: "and",
             root: { [name]: filters.root[name] },
           }),
-          set_id: `${prefix}-${id}}`,
+          set_id: `${prefix[index]}-${id}`,
         },
       }),
       {},
@@ -192,7 +192,7 @@ const buildCaseSetFilters = (
   return {};
 };
 
-const processCaseSetResponse = (
+export const processCaseSetResponse = (
   data: Record<string, any>,
 ): Record<string, string> => {
   return Object.values(data).reduce((newObj, caseSet) => {
@@ -508,9 +508,10 @@ const slice = createSlice({
       }|${state.currentCohort}`;
     },
     setCurrentCohortId: (state, action: PayloadAction<string>) => {
-      const currentCohort = state.entities[state.currentCohort];
-      const cohort = state.entities[action.payload];
+      // const currentCohort = state.entities[state.currentCohort];
+      // const cohort = state.entities[action.payload];
       state.currentCohort = action.payload; // todo create pending caseSet if needed
+      /*----
       if (cohort && willRequireCaseSet(cohort.filters)) {
         cohortsAdapter.updateOne(state, {
           // todo remove
@@ -525,6 +526,7 @@ const slice = createSlice({
           },
         });
       }
+       */
     },
     clearCohortMessage: (state) => {
       state.message = undefined;
@@ -590,21 +592,36 @@ const slice = createSlice({
             ...additionalFilters,
           },
         };
-        // TODO add case if creating new cohort
 
-        // update the current cohort with the all the filters (for query expression and cohort persistence)
-        // caseSet is assigned the caseSet filters + the filters not represented by the caseSets.
-        cohortsAdapter.updateOne(state, {
-          id: state.currentCohort,
-          changes: {
-            filters: pendingFilters,
+        if (state.currentCohort === DEFAULT_COHORT_ID) {
+          // create a new cohort and add it
+          // as the GDC All Cohort is immutable
+          const cohort = newCohort(filters, true);
+          cohortsAdapter.addOne(state, {
+            ...cohort,
             caseSet: {
               filters: caseSetFilters,
               status: "fulfilled",
               caseSetIds: caseSetIds,
             },
-          },
-        });
+          });
+          state.currentCohort = cohort.id;
+          state.message = `newCohort|${cohort.name}|${cohort.id}`;
+        }
+        // update the current cohort with the all the filters (for query expression and cohort persistence)
+        // caseSet is assigned the caseSet filters + the filters not represented by the caseSets.
+        else
+          cohortsAdapter.updateOne(state, {
+            id: state.currentCohort,
+            changes: {
+              filters: pendingFilters,
+              caseSet: {
+                filters: caseSetFilters,
+                status: "fulfilled",
+                caseSetIds: caseSetIds,
+              },
+            },
+          });
       })
       .addCase(createCaseSet.pending, (state) => {
         cohortsAdapter.updateOne(state, {
@@ -866,6 +883,14 @@ export const useCurrentCohortFilters = (): FilterSet | undefined => {
   return useCoreSelector((state) => selectCurrentCohortFilterSet(state));
 };
 
+/**
+ * A thunk to create a case set when adding filter that require them
+ * This primary used to handle gene and ssms applications
+ * and is also called from the query expression to handle removing
+ * genes and ssms from the expression
+ * @param field
+ * @param operation
+ */
 export const updateCurrentCohortFilter =
   ({
     field,
@@ -881,7 +906,6 @@ export const updateCurrentCohortFilter =
 
     if (requiresCaseSet) {
       // need a caseset or the caseset needs updating
-
       const cohortId = selectCurrentCohortId(getState());
       if (cohortId) {
         const currentFilters = selectCurrentCohortFilterSet(getState());
@@ -900,4 +924,27 @@ export const updateCurrentCohortFilter =
         );
       }
     } else dispatch(updateCohortFilter({ field, operation }));
+  };
+
+/**
+ * a thunk to optional create a caseSet when switching cohorts.
+ * Note the assumption if the caseset member has ids then the caseset has previously been created.
+ * @param cohortId
+ */
+export const setActiveCohort =
+  (cohortId: string): ThunkAction<void, CoreState, undefined, AnyAction> =>
+  async (dispatch: CoreDispatch, getState) => {
+    const cohort = getState().entities[cohortId];
+
+    const requiresCaseSet = willRequireCaseSet(cohort.filters);
+    if (cohort.caseSet.caseSetIds === undefined && requiresCaseSet) {
+      // switched to a cohort without a case set
+      await dispatch(
+        createCaseSet({
+          caseSetId: cohortId,
+          pendingFilters: cohort.filters,
+        }),
+      );
+    }
+    dispatch(setCurrentCohortId(cohortId));
   };

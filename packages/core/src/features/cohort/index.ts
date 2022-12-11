@@ -44,6 +44,7 @@ import {
   selectCurrentCohortFilterSet,
   useCurrentCohortFilters,
   updateCurrentCohortFilter,
+  setActiveCohort,
 } from "./availableCohortsSlice";
 
 import {
@@ -128,4 +129,5 @@ export {
   selectCurrentCohortFilterSet,
   useCurrentCohortFilters,
   updateCurrentCohortFilter,
+  setActiveCohort,
 };

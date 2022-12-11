@@ -16,6 +16,7 @@ import {
   buildCaseSetGQLQueryAndVariables,
   buildCaseSetMutationQuery,
   REQUIRES_CASE_SET_FILTERS,
+  processCaseSetResponse,
 } from "../availableCohortsSlice";
 import * as cohortSlice from "../availableCohortsSlice";
 import { Dictionary, EntityState } from "@reduxjs/toolkit";
@@ -409,10 +410,6 @@ describe("add, update, and remove cohort", () => {
           filters: { mode: "and", root: {} },
           id: "000-000-000-1",
           caseSet: {
-            caseSetId: {
-              mode: "and",
-              root: {},
-            },
             status: "uninitialized",
           },
           modified_datetime: "2020-11-01T00:00:00.000Z",
@@ -466,10 +463,6 @@ describe("add, update, and remove cohort", () => {
           filters: { mode: "and", root: {} },
           id: "000-000-000-1",
           caseSet: {
-            caseSetId: {
-              mode: "and",
-              root: {},
-            },
             status: "uninitialized",
           },
           modified: false,
@@ -488,10 +481,6 @@ describe("add, update, and remove cohort", () => {
           },
           id: "000-000-000-2",
           caseSet: {
-            caseSetId: {
-              mode: "and",
-              root: {},
-            },
             status: "uninitialized",
           },
           modified: false,
@@ -534,10 +523,6 @@ describe("add, update, and remove cohort", () => {
           filters: { mode: "and", root: {} },
           id: "000-000-000-1",
           caseSet: {
-            caseSetId: {
-              mode: "and",
-              root: {},
-            },
             status: "uninitialized",
           },
           modified: false,
@@ -547,10 +532,6 @@ describe("add, update, and remove cohort", () => {
           filters: { mode: "and", root: {} },
           id: "000-000-000-3",
           caseSet: {
-            caseSetId: {
-              mode: "and",
-              root: {},
-            },
             status: "uninitialized",
           },
           modified: false,
@@ -592,10 +573,6 @@ describe("add, update, and remove cohort", () => {
           filters: { mode: "and", root: {} },
           id: "000-000-000-1",
           caseSet: {
-            caseSetId: {
-              mode: "and",
-              root: {},
-            },
             status: "uninitialized",
           },
           modified: false,
@@ -647,10 +624,6 @@ describe("add, update, and remove cohort", () => {
           filters: { mode: "and", root: {} },
           id: "ALL-GDC-COHORT",
           caseSet: {
-            caseSetId: {
-              mode: "and",
-              root: {},
-            },
             status: "uninitialized",
           },
           modified: false,
@@ -796,7 +769,7 @@ describe("caseSet creation", () => {
           ],
           op: "and",
         },
-        set_id: "2394944y3-g",
+        set_id: "genes-2394944y3",
       },
       inputssms: {
         filters: {
@@ -811,7 +784,7 @@ describe("caseSet creation", () => {
           ],
           op: "and",
         },
-        set_id: "2394944y3-s",
+        set_id: "ssms-2394944y3",
       },
     };
 
@@ -829,5 +802,18 @@ mutation mutationsCreateRepositoryCaseSetMutation(
   }
  }
 }`);
+  });
+
+  test("extract caseset response", () => {
+    const data = {
+      genesCases: { set_id: "genes-4kaetNCo-HlpwBloLEcRy}", size: 4941 },
+      ssmsCases: { set_id: "ssms-4kaetNCo-HlpwBloLEcRy}", size: 389 },
+    };
+
+    const results = processCaseSetResponse(data);
+    expect(results).toEqual({
+      genes: "genes-4kaetNCo-HlpwBloLEcRy}",
+      ssms: "ssms-4kaetNCo-HlpwBloLEcRy}",
+    });
   });
 });
