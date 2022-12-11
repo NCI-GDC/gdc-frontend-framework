@@ -24,6 +24,7 @@ export const createTableColumn = (
     field: string,
   ) => void,
   handleGeneToggled: GeneToggledHandler,
+  toggledGenes: ReadonlyArray<string>,
   setGeneID: Dispatch<SetStateAction<string>>,
 ): TableColumnDefinition => {
   switch (accessor) {
@@ -59,7 +60,7 @@ export const createTableColumn = (
           },
         ],
       };
-    case "cohort":
+    case "cohort": // adds/removes a gene to the current cohort.
       return {
         header: " ",
         footer: (props) => props.column.id,
@@ -79,7 +80,7 @@ export const createTableColumn = (
                   {row.getCanExpand() && (
                     <SwitchSpring
                       isActive={toggledGenes.includes(row.original?.geneID)}
-                      margin="ml-0`"
+                      margin={`my-0.5 ml-0`}
                       icon={
                         <Image
                           src={"/user-flow/icons/cohort-dna.svg"}
@@ -88,7 +89,12 @@ export const createTableColumn = (
                         />
                       }
                       selected={row.original["cohort"]}
-                      handleSwitch={handleGeneToggled} // handleCohortSwitch
+                      handleSwitch={() =>
+                        handleGeneToggled({
+                          geneID: row.original?.geneID,
+                          symbol: row.original?.symbol,
+                        })
+                      }
                       tooltip={""}
                     />
                   )}
@@ -401,7 +407,7 @@ export const createTableColumn = (
             cell: ({ row }) => {
               return (
                 <Link href={`/genes/${row.original[accessor]}`}>
-                  <a className="text-utility-link underline">
+                  <a className="text-utility-link underline text-sm">
                     {row.original[`${accessor}`]
                       ? row.original[`${accessor}`]
                       : ""}
