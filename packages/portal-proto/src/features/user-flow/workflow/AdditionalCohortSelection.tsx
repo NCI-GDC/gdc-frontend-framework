@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Button, Grid } from "@mantine/core";
+import { Button } from "@mantine/core";
 import {
   useCoreSelector,
   selectCurrentCohortName,
@@ -104,52 +104,54 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
   };
 
   return (
-    <div className="bg-base-lightest flex flex-col flex-grow h-full ">
-      <Grid className={`flex-grow p-2 m-2`}>
-        <Grid.Col span={3} className="p-4 text-primary-content-darkest">
+    <div className="bg-base-max flex flex-col flex-grow h-full ">
+      <div className="flex flex-row no-wrap items-center pr-4">
+        <div className="p-4 font-heading font-semibold text-primary-content-darkest">
           <p>Select a cohort to compare with {primaryCohortName}</p>
-        </Grid.Col>
-        <Grid.Col span={9}>
-          <VerticalTable
-            tableData={displayedData}
-            columns={columns}
-            selectableRow={false}
-            showControls={false}
-            pagination={{
-              page,
-              pages,
-              size,
-              from,
-              total,
-              label: "cohorts",
-            }}
-            handleChange={handleChange}
-          />
-        </Grid.Col>
-      </Grid>
-      <div className={`p-4 bg-base-lightest w-full justify-between flex`}>
-        <Button
-          onClick={() => {
-            setActiveApp(`${currentApp.id}Demo`);
-            closeCohortSelection();
-          }}
-          className="bg-base-lightest border-primary-darkest text-primary-content-darkest"
-        >
-          Demo
-        </Button>
-        <div>
+        </div>
+        <div className="flex flex-row ml-auto">
           <Button
-            disabled={selectedCohort === null}
             variant={"filled"}
-            className="bg-primary-darkest hover:bg-primary"
             onClick={() => {
-              dispatch(setComparisonCohorts([selectedCohort]));
+              setActiveApp(`${currentApp.id}Demo`);
               closeCohortSelection();
             }}
+            className="bg-primary border-primary-darkest text-primary-contrast hover:bg-primary-lighter mx-2"
           >
-            Run
+            Demo
           </Button>
+          <div>
+            <Button
+              disabled={selectedCohort === null}
+              variant={"filled"}
+              className="bg-primary border-primary-darkest disabled:text-opacity-80 disabled:bg-base bg-primary text-primary-contrast hover:bg-primary-lighter"
+              onClick={() => {
+                dispatch(setComparisonCohorts([selectedCohort]));
+                closeCohortSelection();
+              }}
+            >
+              Run
+            </Button>
+          </div>
         </div>
+      </div>
+
+      <div className="pl-2">
+        <VerticalTable
+          tableData={displayedData}
+          columns={columns}
+          selectableRow={false}
+          showControls={false}
+          pagination={{
+            page,
+            pages,
+            size,
+            from,
+            total,
+            label: "cohorts",
+          }}
+          handleChange={handleChange}
+        />
       </div>
     </div>
   );
