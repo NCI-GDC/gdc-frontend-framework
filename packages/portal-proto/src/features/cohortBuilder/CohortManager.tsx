@@ -47,7 +47,7 @@ import {
 } from "@gff/core";
 import { useCohortFacetFilters } from "./CohortGroup";
 import CountButton from "./CountButton";
-import { SavingCohortModal } from "./Modals/SavingCohortModal";
+import { SaveModal } from "@/components/Modals/SaveModal";
 import { GenericCohortModal } from "./Modals/GenericCohortModal";
 import CaseSetModal from "@/components/Modals/SetModals/CaseSetModal";
 import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
@@ -244,8 +244,9 @@ const CohortManager: React.FC<CohortManagerProps> = ({
             .catch(() => coreDispatch(setCohortMessage("error|saving|allId")));
         }}
       />
-      <SavingCohortModal
+      <SaveModal
         initialName={cohortName}
+        entity="cohort"
         opened={showSaveCohort}
         onClose={() => setShowSaveCohort(false)}
         onSaveClick={async (newName: string) => {
@@ -276,7 +277,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
             })
             .catch(() => coreDispatch(setCohortMessage("error|saving|allId")));
         }}
-        onSaveCohort={onSaveCohort}
+        onNameChange={onSaveCohort}
       />
       {modal === Modals.CaseSetModal && <CaseSetModal />}
       {modal === Modals.GeneSetModal && (
