@@ -81,13 +81,13 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
           ) : (
             <SurvivalPlot data={data} hideLegend />
           )}
-          <div className="mt-[1.5rem]">
-            <table className="bg-base-lightest w-full text-left text-primary-content-darker">
+          <div className="font-heading mt-[1.5rem]">
+            <table className="bg-base-max w-full text-left text-base-contrast-max border-base-light border-1">
               <thead>
-                <tr className="bg-accent-warm-lightest">
+                <tr className="bg-base-lightest border-b-base-light border-b-2">
                   <th>
                     <Tooltip label={tooltipLabel}>
-                      <span className="underline decoration-dashed">
+                      <span className="underline decoration-dashed pl-2">
                         {"Cases included in Analysis"}
                       </span>
                     </Tooltip>
@@ -102,9 +102,9 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
                   <th>%</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="font-content text-md">
                 <tr>
-                  <td>Overall Survival Analysis</td>
+                  <td className="pl-2">Overall Survival Analysis</td>
                   <td>{cohort1Count.toLocaleString()}</td>
                   <td>{((cohort1Count / counts[0]) * 100).toFixed(0)}%</td>
                   <td>{cohort2Count.toLocaleString()}</td>

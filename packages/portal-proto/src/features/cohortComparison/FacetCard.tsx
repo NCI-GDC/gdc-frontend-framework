@@ -3,9 +3,9 @@ import { Paper } from "@mantine/core";
 import { CohortFacetDoc, DAYS_IN_YEAR } from "@gff/core";
 import BarChart from "../charts/BarChart";
 import PValue from "./PValue";
-import { Button } from "@mantine/core";
 import saveAs from "file-saver";
 import { calculatePercentageAsNumber, humanify } from "src/utils";
+import FunctionButton from "@/components/FunctionButton";
 
 interface FacetCardProps {
   readonly data: { buckets: CohortFacetDoc[] }[];
@@ -117,7 +117,7 @@ export const FacetCard: React.FC<FacetCardProps> = ({
   };
 
   return (
-    <Paper p="md">
+    <Paper p="md" shadow="xs">
       <h2 className="font-heading text-lg font-semibold">{fieldLabel}</h2>
       <div className="h-[400px]">
         <BarChart
@@ -129,19 +129,17 @@ export const FacetCard: React.FC<FacetCardProps> = ({
         />
       </div>
       <div className="mb-3 float-right">
-        <Button
-          variant="default"
+        <FunctionButton
           onClick={downloadTSVFile}
           aria-label="Download TSV File"
-          className="font-content bg-primary text-bg-primary-contrast"
         >
           TSV
-        </Button>
+        </FunctionButton>
       </div>
-      <table className="font-heading bg-base-lightest w-full text-left text-primary-content-darker">
+      <table className="bg-base-max w-full text-left text-base-contrast-max border-base-light border-1">
         <thead>
-          <tr className="bg-base-lightest">
-            <th>{fieldLabel}</th>
+          <tr className="bg-base-max border-b-base-light border-b-2 font-heading text-bold">
+            <th className="pl-2">{fieldLabel}</th>
             <th>
               # Cases S<sub>1</sub>
             </th>
@@ -152,16 +150,16 @@ export const FacetCard: React.FC<FacetCardProps> = ({
             <th>%</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="font-content text-sm text-semibold">
           {uniqueValues.map((value, idx) => {
             const cohort1Value = formattedData[0][idx].count;
             const cohort2Value = formattedData[1][idx].count;
             return (
               <tr
-                className={idx % 2 ? null : "bg-accent-warm-lightest"}
+                className={idx % 2 ? null : "bg-base-lightest"}
                 key={`${field}_${value}`}
               >
-                <td>{value}</td>
+                <td className="pl-2">{value}</td>
                 <td>{cohort1Value?.toLocaleString() || "--"}</td>
                 <td>
                   {(((cohort1Value || 0) / counts[0]) * 100).toFixed(2)} %
