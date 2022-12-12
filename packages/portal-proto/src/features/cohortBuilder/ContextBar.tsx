@@ -26,6 +26,7 @@ import {
   setCohortList,
   useGetCohortsByContextIdQuery,
   buildGqlOperationToFilterSet,
+  setActiveCohortList,
   DataStatus,
 } from "@gff/core";
 
@@ -68,13 +69,14 @@ const ContextBar: React.FC = () => {
           status: "fulfilled" as DataStatus,
         },
       }));
-      coreDispatch(setCohortList(updatedList));
+      coreDispatch(setActiveCohortList(updatedList)); // will create caseSet if needed
+      // TODO determine if setActiveCohortList is really needed
     } else if ((getCohortError as Error)?.status === 400) {
       const noGdcContext =
         ((getCohortError as Error)?.data.message as string) ===
         "Bad Request: [400] - Context id not provided.";
       if (noGdcContext) {
-        coreDispatch(setCohortList(undefined));
+        coreDispatch(setCohortList(undefined)); // setting to undefined will not require caseSet
       }
     }
   }, [getCohortError, coreDispatch, cohortsListData]);

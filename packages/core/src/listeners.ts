@@ -6,9 +6,7 @@ import {
   updateCohortFilter,
   removeCohortFilter,
   setCurrentCohortId,
-  //cohortSelectors,
 } from "./features/cohort/availableCohortsSlice";
-//import { createCaseSet } from "./features/cohort/availableCohortsSlice";
 import { resetSelectedCases } from "./features/cases/selectedCasesSlice";
 
 /**

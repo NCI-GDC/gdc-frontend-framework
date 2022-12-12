@@ -24,6 +24,7 @@ import {
   DEFAULT_COHORT_ID,
   addNewCohort,
   removeCohort,
+  copyCohort,
   selectCurrentCohortName,
   selectCurrentCohortModified,
   useCoreDispatch,
@@ -31,7 +32,6 @@ import {
   discardCohortChanges,
   useDeleteCohortMutation,
   selectCurrentCohortId,
-  setCurrentCohortId,
   selectCurrentCohort,
   useUpdateCohortMutation,
   setCohortMessage,
@@ -45,6 +45,7 @@ import {
   // showModal,
   Modals,
   selectCurrentModal,
+  setCurrentCohortId,
 } from "@gff/core";
 import { useCohortFacetFilters } from "./CohortGroup";
 import CountButton from "./CountButton";
@@ -265,6 +266,13 @@ const CohortManager: React.FC<CohortManagerProps> = ({
           await addCohort(addBody)
             .unwrap()
             .then((payload) => {
+              coreDispatch(
+                copyCohort({ sourceId: prevCohort, destId: payload.id }),
+              );
+              // NOTE: the current cohort can not be undefined. Setting the id to a cohort
+              // which does not exist will cause this
+              // Therefore, copy the unsaved cohort to the new cohort id received from
+              // the BE.
               coreDispatch(setCurrentCohortId(payload.id));
               coreDispatch(
                 setCohortMessage(`savedCohort|${newName}|${payload.id}`),
