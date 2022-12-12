@@ -62,11 +62,11 @@ bg-base-lightest w-full text-base-contrast-lighter mt-4
 `;
 
 const TitleText = tw.h2`
-text-lg text-accent uppercase tracking-wide font-medium mx-4 ml-2 
+text-lg text-accent uppercase tracking-wide font-medium mx-4 ml-2
 `;
 
 const TitleHeader = tw.div`
-bg-base-lightest text-base-contrast-lighter 
+bg-base-lightest text-base-contrast-lighter
 `;
 
 const getAnnotationsLinkParams = (
