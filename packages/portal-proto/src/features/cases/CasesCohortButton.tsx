@@ -2,6 +2,7 @@ import React from "react";
 import { Button } from "@mantine/core";
 import { useCoreSelector, selectSelectedCases } from "@gff/core";
 import tw from "tailwind-styled-components";
+import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 
 interface CountsIconProps {
   $count?: number;
@@ -27,20 +28,22 @@ export const CasesCohortButton = (): JSX.Element => {
   );
 
   return (
-    <Button
-      variant="outline"
-      color="primary"
-      disabled={pickedCases.length == 0}
-      leftIcon={
-        pickedCases.length ? (
-          <CountsIcon $count={pickedCases.length}>
-            {" "}
-            {pickedCases.length}{" "}
-          </CountsIcon>
-        ) : null
-      }
-    >
-      Create New Cohort
-    </Button>
+    <ButtonTooltip label=" " comingSoon={true}>
+      <Button
+        variant="outline"
+        color="primary"
+        disabled={pickedCases.length == 0}
+        leftIcon={
+          pickedCases.length ? (
+            <CountsIcon $count={pickedCases.length}>
+              {" "}
+              {pickedCases.length}{" "}
+            </CountsIcon>
+          ) : null
+        }
+      >
+        Create New Cohort
+      </Button>
+    </ButtonTooltip>
   );
 };
