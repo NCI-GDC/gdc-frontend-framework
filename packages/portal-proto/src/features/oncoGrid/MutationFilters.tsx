@@ -95,7 +95,7 @@ const MutationFilters: React.FC<MutationFiltersProps> = ({
                     updateConsequenceTypeFilters(event.target.value)
                   }
                   style={{
-                    color: heatmapMode
+                    accentColor: heatmapMode
                       ? heatMapColor
                       : colorMap.mutation[value],
                   }}
@@ -134,7 +134,7 @@ const MutationFilters: React.FC<MutationFiltersProps> = ({
                   id={`cnv_filter_${value}`}
                   checked={cnvFilters.includes(value)}
                   onChange={(event) => updateCnvFilters(event.target.value)}
-                  style={{ color: colorMap.cnv[value] }}
+                  style={{ accentColor: colorMap.cnv[value] }}
                 ></input>
                 <label
                   className="px-2 align-middle"
