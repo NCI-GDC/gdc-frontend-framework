@@ -76,7 +76,6 @@ const ContextBar: React.FC = () => {
         ((getCohortError as Error)?.data.message as string) ===
         "Bad Request: [400] - Context id not provided.";
       if (noGdcContext) {
-        //
         coreDispatch(setCohortList(undefined)); // setting to undefined will not require caseSet
       }
     }
