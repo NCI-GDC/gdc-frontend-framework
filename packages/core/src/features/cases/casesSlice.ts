@@ -11,7 +11,7 @@ import {
   AnnotationDefaults,
   SortBy,
 } from "../gdcapi/gdcapi";
-import { CoreDispatch } from "src/store";
+import { CoreDispatch } from "../../store";
 import { groupBy } from "lodash";
 import { caseSummaryDefaults } from "./types";
 import {

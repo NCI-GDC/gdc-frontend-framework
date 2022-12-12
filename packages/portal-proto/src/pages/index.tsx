@@ -61,7 +61,7 @@ const ActionButtonBar = () => {
       </div>
       <div className="flex flex-grow flex-row justify-center  align-center pb-4 text-sm ">
         <Tooltip
-          label="View the Studies available within the GDC and select them for further exploration and analysis."
+          label="View the Projects available within the GDC and select them for further exploration and analysis."
           classNames={{
             tooltip: "shadow-lg bg-base-lightest text-base-contrast-lightest",
           }}
@@ -74,7 +74,7 @@ const ActionButtonBar = () => {
             component={NextLink}
             href={{
               pathname: "/analysis_page",
-              query: { app: "Studies" },
+              query: { app: "Projects" },
             }}
             data-testid="studiesHomePageButton"
           >
@@ -149,9 +149,7 @@ const ActionButtonBar = () => {
 
 const IndexPage: NextPage = () => {
   return (
-    <UserFlowVariedPages
-      {...{ indexPath: "/user-flow/single-page", headerElements }}
-    >
+    <UserFlowVariedPages {...{ indexPath: "/", headerElements }}>
       <Head>
         <title>GDC Data Portal Homepage</title>
         <meta

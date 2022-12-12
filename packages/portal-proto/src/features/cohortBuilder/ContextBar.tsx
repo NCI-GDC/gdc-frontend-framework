@@ -15,11 +15,11 @@ import {
 } from "@/features/cohortBuilder/CohortNotifications";
 import {
   useCoreDispatch,
-  setCurrentCohortId,
   useCoreSelector,
   selectAvailableCohorts,
   DEFAULT_COHORT_ID,
   selectCurrentCohortId,
+  setActiveCohort,
   selectCohortMessage,
   selectCurrentCohortName,
   clearCohortMessage,
@@ -83,7 +83,7 @@ const ContextBar: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(DEFAULT_COHORT_ID);
 
   const setCohort = (id: string) => {
-    coreDispatch(setCurrentCohortId(id));
+    coreDispatch(setActiveCohort(id));
   };
   const handleCohortSelection = (idx: string) => {
     setCohort(idx);
@@ -179,7 +179,7 @@ const ContextBar: React.FC = () => {
     },
     {
       field: "cases.project.program.name",
-      name: "Program Name",
+      name: "Program",
       docType: "cases",
       indexType: "repository",
     },
