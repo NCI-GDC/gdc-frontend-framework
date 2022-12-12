@@ -27,6 +27,7 @@ import ProjectsCohortButton from "./ProjectsCohortButton";
 import download from "src/utils/download";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 import { extractToArray } from "src/utils";
+import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 
 interface CellProps {
   value: string[];
@@ -301,7 +302,9 @@ const ProjectsTable: React.FC = () => {
         <div className="flex gap-2">
           <ProjectsCohortButton />
           <FunctionButton onClick={handleDownloadJSON}>JSON</FunctionButton>
-          <FunctionButton>TSV</FunctionButton>
+          <ButtonTooltip label="Save as TSX" comingSoon={true}>
+            <FunctionButton>TSV</FunctionButton>
+          </ButtonTooltip>
         </div>
       }
       tableData={formattedTableData}
