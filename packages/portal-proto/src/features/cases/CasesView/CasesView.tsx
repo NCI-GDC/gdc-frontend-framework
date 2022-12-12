@@ -24,6 +24,7 @@ import {
   getCasesTableAnnotationsLinkParams,
   SlideCountsIcon,
 } from "./utils";
+import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 
 const useStyles = createStyles((theme) => ({
   item: {
@@ -127,7 +128,7 @@ export const ContextualCasesView: React.FC = () => {
           selected: datum.case_uuid,
           slides: (
             <Link
-              href={`/user-flow/workbench/MultipleImageViewerPage?caseId=${datum.case_uuid}`}
+              href={`/image-viewer/MultipleImageViewerPage?caseId=${datum.case_uuid}`}
             >
               <Button
                 compact
@@ -328,8 +329,8 @@ export const ContextualCasesView: React.FC = () => {
                 </Button>
               </Menu.Target>
               <Menu.Dropdown>
-                <Menu.Item>JSON</Menu.Item>
-                <Menu.Item>TSV</Menu.Item>
+                <Menu.Item>JSON (Coming Soon)</Menu.Item>
+                <Menu.Item>TSV (Coming Soon)</Menu.Item>
               </Menu.Dropdown>
             </Menu>
             <Menu width="target" classNames={classes}>
@@ -350,16 +351,20 @@ export const ContextualCasesView: React.FC = () => {
                 </Button>
               </Menu.Target>
               <Menu.Dropdown>
-                <Menu.Item>JSON</Menu.Item>
-                <Menu.Item>TSV</Menu.Item>
+                <Menu.Item>JSON (Coming Soon)</Menu.Item>
+                <Menu.Item>TSV (Coming Soon)</Menu.Item>
               </Menu.Dropdown>
             </Menu>
-            <Button variant="outline" color="primary">
-              JSON
-            </Button>
-            <Button variant="outline" color="primary">
-              TSV
-            </Button>
+            <ButtonTooltip label="" comingSoon={true}>
+              <Button variant="outline" color="primary">
+                JSON
+              </Button>
+            </ButtonTooltip>
+            <ButtonTooltip label="" comingSoon={true}>
+              <Button variant="outline" color="primary">
+                TSV
+              </Button>
+            </ButtonTooltip>
           </div>
         }
         tableTitle={`Total of ${pagination?.total?.toLocaleString()} ${

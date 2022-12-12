@@ -84,8 +84,12 @@ export const ClinicalSummary = ({
             </Button>
           </Menu.Target>
           <Menu.Dropdown>
-            <Menu.Item icon={<DownloadIcon size="1.25em" />}>TSV</Menu.Item>
-            <Menu.Item icon={<DownloadIcon size="1.25em" />}>JSON</Menu.Item>
+            <Menu.Item icon={<DownloadIcon size="1.25em" />}>
+              TSV (Coming soon)
+            </Menu.Item>
+            <Menu.Item icon={<DownloadIcon size="1.25em" />}>
+              JSON (Coming soon)
+            </Menu.Item>
           </Menu.Dropdown>
         </Menu>
       </div>

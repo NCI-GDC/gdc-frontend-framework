@@ -46,6 +46,7 @@ const fileTypes = [
   "masked_methylation_array",
   "protein_expression",
   "pathology_report",
+  "submitted_genotyping_array",
 ] as const;
 
 export type FileType = typeof fileTypes[number];
@@ -114,6 +115,7 @@ const dataFormats = [
   "PDF",
   "BAI",
   "TBI",
+  "CEL",
 ] as const;
 
 export type DataFormat = typeof dataFormats[number];
@@ -149,6 +151,7 @@ const dataTypes = [
   "Methylation Beta Value",
   "Protein Expression Quantification",
   "Raw CGI Variant",
+  "Raw Intensities",
   "Raw Simple Somatic Mutation",
   "Single Cell Analysis",
   "Slide Image",

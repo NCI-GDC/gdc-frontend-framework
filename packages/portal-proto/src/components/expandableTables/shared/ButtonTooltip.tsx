@@ -4,6 +4,7 @@ import { Text, Tooltip } from "@mantine/core";
 interface ButtonTooltipPros {
   label: string;
   width?: number | "auto";
+  comingSoon?: boolean;
 }
 
 /**
@@ -11,15 +12,21 @@ interface ButtonTooltipPros {
  * @param children - child component to wrap tooltip with
  * @param label - the text label
  * @param width - width of the tooltip. Default: "auto"
+ * @param comingSoon - temporary flag to indicate button's functionality is pending
  */
 export const ButtonTooltip: React.FC<ButtonTooltipPros> = ({
   children,
   label,
   width = "auto",
+  comingSoon = false,
 }: PropsWithChildren<ButtonTooltipPros>) => {
   return (
     <Tooltip
-      label={<Text className="text-xs whitespace-pre-line">{label}</Text>}
+      label={
+        <Text className="text-xs whitespace-pre-line">
+          {comingSoon ? "Coming soon" : label}
+        </Text>
+      }
       disabled={!label?.length}
       width={width}
       withArrow
