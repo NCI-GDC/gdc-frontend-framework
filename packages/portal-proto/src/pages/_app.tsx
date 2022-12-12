@@ -9,8 +9,9 @@ import { CoreProvider } from "@gff/core";
 import { useLocalStorage } from "@mantine/hooks";
 import { MantineProvider, createEmotionCache } from "@mantine/core";
 import { NotificationsProvider } from "@mantine/notifications";
-import { TourProvider } from "@reactour/tour";
-import { CustomBadge as Badge } from "../features/tour/CustomBadge";
+// TODO: uncomment during PEAR-845
+// import { TourProvider } from "@reactour/tour";
+// import { CustomBadge as Badge } from "../features/tour/CustomBadge";
 import store from "../app/store";
 import tailwindConfig from "../../tailwind.config";
 
@@ -119,13 +120,14 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
           >
             <URLContext.Provider value={{ prevPath, currentPath }}>
               <NotificationsProvider position="top-center" zIndex={1160}>
-                <TourProvider steps={[]} components={{ Badge }}>
-                  <Component {...pageProps} />
-                  <Script
-                    src="https://static.cancer.gov/webanalytics/wa_gdc_pageload.js"
-                    strategy="afterInteractive"
-                  />
-                </TourProvider>
+                {/* TODO: uncomment during PEAR-845 */}
+                {/* <TourProvider steps={[]} components={{ Badge }}> */}
+                <Component {...pageProps} />
+                <Script
+                  src="https://static.cancer.gov/webanalytics/wa_gdc_pageload.js"
+                  strategy="afterInteractive"
+                />
+                {/* </TourProvider> */}
               </NotificationsProvider>
             </URLContext.Provider>
           </div>

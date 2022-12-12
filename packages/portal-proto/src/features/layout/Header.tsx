@@ -13,7 +13,8 @@ import {
 } from "@gff/core";
 import { Button, LoadingOverlay, Menu } from "@mantine/core";
 import { NextLink } from "@mantine/next";
-import { useTour } from "@reactour/tour";
+// TODO: uncomment during PEAR-845
+// import { useTour } from "@reactour/tour";
 import { ReactNode, useEffect, useState } from "react";
 import { Image } from "@/components/Image";
 import { useCookies } from "react-cookie";
@@ -21,7 +22,8 @@ import {
   MdShoppingCart as CartIcon,
   MdOutlineApps as AppsIcon,
   MdSearch as SearchIcon,
-  MdOutlineTour as TourIcon,
+  // TODO: uncomment during PEAR-845
+  // MdOutlineTour as TourIcon,
   MdLogout as LogoutIcon,
   MdArrowDropDown as ArrowDropDownIcon,
 } from "react-icons/md";
@@ -33,7 +35,8 @@ import { LoginButton } from "@/components/LoginButton";
 import Link from "next/link";
 import { UserProfileModal } from "@/components/Modals/UserProfileModal";
 import { SessionExpireModal } from "@/components/Modals/SessionExpireModal";
-import { useLocalStorage } from "@mantine/hooks";
+// TODO: uncomment during PEAR-845
+// import { useLocalStorage } from "@mantine/hooks";
 import { FirstTimeModal } from "@/components/Modals/FirstTimeModal";
 import { NoAccessModal } from "@/components/Modals/NoAccessModal";
 import { theme } from "tailwind.config";
@@ -45,14 +48,16 @@ interface HeaderProps {
   readonly Options?: React.FC<unknown>;
 }
 
-const V2Themes = ["default", "invert-primary", "pastel"];
+// TODO: uncomment during PEAR-845
+// const V2Themes = ["default", "invert-primary", "pastel"];
 
 export const Header: React.FC<HeaderProps> = ({
   headerElements,
   indexPath,
   Options = () => <div />,
 }: HeaderProps) => {
-  const { setIsOpen } = useTour();
+  // TODO: uncomment during PEAR-845
+  // const { setIsOpen } = useTour();
   const dispatch = useCoreDispatch();
 
   const userInfo = useCoreSelector((state) => selectUserDetailsInfo(state));
@@ -60,10 +65,12 @@ export const Header: React.FC<HeaderProps> = ({
   const modal = useCoreSelector((state) => selectCurrentModal(state));
   const { isSuccess: totalSuccess } = useTotalCounts(); // request total counts and facet dictionary
   const { isSuccess: dictSuccess } = useFacetDictionary();
-  const [, setTheme] = useLocalStorage({
-    key: "color-scheme",
-    defaultValue: "default",
-  });
+
+  // TODO: uncomment during PEAR-845
+  // const [, setTheme] = useLocalStorage({
+  //   key: "color-scheme",
+  //   defaultValue: "default",
+  // });
   const [performSearch, setPerformSearch] = useState(false);
   const [cookie] = useCookies(["NCI-Warning"]);
 
@@ -270,14 +277,18 @@ export const Header: React.FC<HeaderProps> = ({
                   </button>
                 </Menu.Target>
                 <Menu.Dropdown>
-                  <Menu.Item
+                  <Menu.Item>Coming Soon</Menu.Item>
+                  {/* TODO: uncomment this once we have proper theme in place */}
+                  {/* https://jira.opensciencedatacloud.org/browse/PEAR-845 */}
+                  {/* <Menu.Item
                     onClick={() => setIsOpen(true)}
                     data-testid="tourMenuItem"
                   >
                     <TourIcon size="2.5em" />
                     <div className="text-center text-sm pt-1">{"Tour"}</div>
-                  </Menu.Item>
-                  <Menu.Divider />
+                  </Menu.Item> */}
+
+                  {/* <Menu.Divider />
                   <Menu.Label>Themes</Menu.Label>
                   {V2Themes.map((theme) => (
                     <Menu.Item
@@ -289,7 +300,7 @@ export const Header: React.FC<HeaderProps> = ({
                         {theme}
                       </div>
                     </Menu.Item>
-                  ))}
+                  ))} */}
                 </Menu.Dropdown>
               </Menu>
             </>

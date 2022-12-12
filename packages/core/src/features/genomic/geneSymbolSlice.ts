@@ -152,7 +152,16 @@ export const selectGeneSymbol = (
   };
 };
 
-export const useGeneSymbol = (geneIds: string[]) => {
+export const useGeneSymbol = (
+  geneIds: string[],
+): {
+  data: Record<string, string> | undefined;
+  error: string | undefined;
+  isUninitialized: boolean;
+  isFetching: boolean;
+  isSuccess: boolean;
+  isError: boolean;
+} => {
   const coreDispatch = useCoreDispatch();
   const { data, status, error } = useCoreSelector(selectGeneSymbol);
 
