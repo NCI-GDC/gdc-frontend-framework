@@ -153,7 +153,10 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               ]}
               additionalControls={
                 <div className="flex flex-row gap-2">
-                  <ButtonTooltip label="Export All Except #Cases and #Mutations">
+                  <ButtonTooltip
+                    label="Export All Except #Cases and #Mutations"
+                    comingSoon={true}
+                  >
                     <Button
                       className={
                         "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
@@ -162,7 +165,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                       JSON
                     </Button>
                   </ButtonTooltip>
-                  <ButtonTooltip label="Export current view">
+                  <ButtonTooltip label="Export current view" comingSoon={true}>
                     <Button
                       className={
                         "bg-white text-activeColor border border-0.5 border-activeColor text-xs"

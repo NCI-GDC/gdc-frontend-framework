@@ -24,7 +24,7 @@ import {
   getCasesTableAnnotationsLinkParams,
   SlideCountsIcon,
 } from "./utils";
-import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
+import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 
 const useStyles = createStyles((theme) => ({
   item: {
@@ -210,23 +210,9 @@ export const ContextualCasesView: React.FC = () => {
               </Menu.Dropdown>
             </Menu>
           ),
-          case_id: (
-            <OverflowTooltippedLabel label={datum.case_id}>
-              <Link href={`/cases/${datum.case_uuid}`}>
-                <a className="text-utility-link underline">{datum.case_id}</a>
-              </Link>
-            </OverflowTooltippedLabel>
-          ),
+          case_id: datum.case_id,
           case_uuid: datum.case_uuid,
-          project_id: (
-            <OverflowTooltippedLabel label={datum.project_id}>
-              <Link href={`/projects/${datum.project_id}`}>
-                <a className="text-utility-link underline">
-                  {datum.project_id}
-                </a>
-              </Link>
-            </OverflowTooltippedLabel>
-          ),
+          project_id: datum.project_id,
           program: datum.program,
           primary_site: datum.primary_site,
           disease_type: datum.disease_type ?? "--",
@@ -316,7 +302,7 @@ export const ContextualCasesView: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col w-full ml-2 mr-8">
+    <div className="flex flex-col m-auto w-10/12">
       <VerticalTable
         tableData={cases || []}
         columns={columns}

@@ -297,7 +297,7 @@ export const CaseSummary = ({
           <Tooltip label="View Slide Image">
             <div>
               <Link
-                href={`/user-flow/workbench/MultipleImageViewerPage?caseId=${case_id}`}
+                href={`/image-viewer/MultipleImageViewerPage?caseId=${case_id}`}
               >
                 <a className="flex gap-1 cursor-pointer text-primary">
                   <FaMicroscope className="mt-0.5" />

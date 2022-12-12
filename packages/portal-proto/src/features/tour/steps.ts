@@ -52,7 +52,7 @@ export default {
         "Explore data by utilizing various case, genes and mutation filters",
     },
   ],
-  "/user-flow/workbench/analysis_page": [
+  "/analysis_page": [
     {
       selector: '[data_tour="full_page_content"]',
       content:

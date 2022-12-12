@@ -7,7 +7,7 @@ import {
   useClearGenomicFilters,
   useGenesFacet,
   useUpdateGenomicEnumFacetFilter,
-} from "@/features/genomic/hooks";
+} from "@/features/oncoGrid/hooks";
 import {
   useTotalCounts,
   FacetDocTypeToCountsIndexMap,
