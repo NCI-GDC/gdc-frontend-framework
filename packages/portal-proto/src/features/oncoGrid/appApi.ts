@@ -18,7 +18,7 @@ const reducers = combineReducers({
 export const { id, AppStore, AppContext, useAppSelector, useAppDispatch } =
   createAppStore({
     reducers: persistReducer(persistConfig, reducers),
-    name: "MutationFrequency",
+    name: "OncoGrid",
     version: "0.0.1",
   });
 
