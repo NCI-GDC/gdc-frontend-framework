@@ -77,13 +77,11 @@ const InputSet: React.FC<InputSetProps> = ({
     matched.map((m) => m.givenIdentifiers.map((i) => i.value)),
   ).map((id) => id.toLowerCase());
   const unmatched = tokens
-    .filter((t) => !matchedIds.includes(t.toLowerCase()))
+    .filter((t) => !matchedIds.includes(t.toLowerCase()) && t.length !== 0)
     .map((t) => t.toUpperCase());
 
   useEffect(() => {
-    if (input !== "") {
-      setTokens(input.trim().split(/[\s,]+/));
-    }
+    setTokens(input.trim().split(/[\s,]+/));
   }, [input]);
 
   useEffect(() => {
@@ -173,7 +171,7 @@ const InputSet: React.FC<InputSetProps> = ({
       </div>
       <SetModalButtons
         saveButtonDisabled
-        clearButtonDisabled={input === ""}
+        clearButtonDisabled={input === "" && file === null}
         submitButtonDisabled
         onClearCallback={() => {
           setInput("");
