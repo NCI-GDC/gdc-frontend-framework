@@ -214,7 +214,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   }, [appMode, comparativeSurvival, topGeneSSMS, topGeneSSMSSuccess]);
 
   return (
-    <div className="flex flex-row">
+    <div className="flex flex-row w-100">
       <GeneAndSSMFilterPanel />
       <Tabs
         value={appMode}
@@ -222,7 +222,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
         classNames={{
           tab: SecondaryTabStyle,
           tabsList: "px-2 mt-2 border-0",
-          root: "bg-base-max border-0",
+          root: "bg-base-max border-0 w-full",
         }}
         onTabChange={handleTabChanged}
       >
@@ -231,38 +231,34 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
           <Tabs.Tab value="ssms">Mutations</Tabs.Tab>
         </Tabs.List>
         <Tabs.Panel value="genes" pt="xs">
-          <div className="flex flex-row mt-3">
-            <div className="flex flex-col w-screen">
-              <Grid className="mx-2  bg-base-max w-9/12">
-                <Grid.Col span={6}>
-                  <GeneFrequencyChart
-                    marginBottom={95}
-                    genomicFilters={genomicFilters}
-                  />
-                </Grid.Col>
-                <Grid.Col span={6} className="relative">
-                  <LoadingOverlay
-                    visible={!survivalPlotReady && !topGeneSSMSSuccess}
-                  />
-                  <SurvivalPlot
-                    plotType={SurvivalPlotTypes.overall}
-                    data={
-                      survivalPlotReady &&
-                      survivalPlotData.survivalData.length > 1
-                        ? survivalPlotData
-                        : emptySurvivalPlot
-                    }
-                    names={
-                      survivalPlotReady && comparativeSurvival
-                        ? [comparativeSurvival.symbol]
-                        : []
-                    }
-                  />
-                </Grid.Col>
-              </Grid>
-            </div>
-          </div>
-          <div className={`flex flex-col w-screen`}>
+          <div className="flex flex-col w-100 mx-6">
+            <Grid className="mx-2 bg-base-max">
+              <Grid.Col span={6}>
+                <GeneFrequencyChart
+                  marginBottom={95}
+                  genomicFilters={genomicFilters}
+                />
+              </Grid.Col>
+              <Grid.Col span={6} className="relative">
+                <LoadingOverlay
+                  visible={!survivalPlotReady && !topGeneSSMSSuccess}
+                />
+                <SurvivalPlot
+                  plotType={SurvivalPlotTypes.overall}
+                  data={
+                    survivalPlotReady &&
+                    survivalPlotData.survivalData.length > 1
+                      ? survivalPlotData
+                      : emptySurvivalPlot
+                  }
+                  names={
+                    survivalPlotReady && comparativeSurvival
+                      ? [comparativeSurvival.symbol]
+                      : []
+                  }
+                />
+              </Grid.Col>
+            </Grid>
             <GTableContainer
               selectedSurvivalPlot={comparativeSurvival}
               handleSurvivalPlotToggled={handleSurvivalPlotToggled}
@@ -278,44 +274,40 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
           </div>
         </Tabs.Panel>
         <Tabs.Panel value="ssms" pt="xs">
-          <div className="flex flex-row">
-            <div className="flex flex-col w-screen">
-              <div className="bg-base-max  w-2/5">
-                <LoadingOverlay
-                  visible={!survivalPlotReady && !topGeneSSMSSuccess}
-                />
-                <SurvivalPlot
-                  plotType={SurvivalPlotTypes.overall}
-                  data={
-                    survivalPlotReady &&
-                    comparativeSurvival &&
-                    survivalPlotData.survivalData.length > 1
-                      ? survivalPlotData
-                      : emptySurvivalPlot
-                  }
-                  names={
-                    survivalPlotReady && comparativeSurvival
-                      ? [comparativeSurvival.name]
-                      : []
-                  }
-                />
-              </div>
+          <div className="flex flex-col w-100 mx-6">
+            <div className="bg-base-max">
+              <LoadingOverlay
+                visible={!survivalPlotReady && !topGeneSSMSSuccess}
+              />
+              <SurvivalPlot
+                plotType={SurvivalPlotTypes.overall}
+                data={
+                  survivalPlotReady &&
+                  comparativeSurvival &&
+                  survivalPlotData.survivalData.length > 1
+                    ? survivalPlotData
+                    : emptySurvivalPlot
+                }
+                names={
+                  survivalPlotReady && comparativeSurvival
+                    ? [comparativeSurvival.name]
+                    : []
+                }
+              />
             </div>
           </div>
-          <div className={`flex flex-col w-screen`}>
-            <SMTableContainer
-              selectedSurvivalPlot={comparativeSurvival}
-              handleSurvivalPlotToggled={handleSurvivalPlotToggled}
-              genomicFilters={genomicFilters}
-              handleSsmToggled={partial(
-                handleGeneAndSSmToggled,
-                currentMutations,
-                "ssms.ssm_id",
-                "mutationID",
-              )}
-              toggledSsms={currentMutations}
-            />
-          </div>
+          <SMTableContainer
+            selectedSurvivalPlot={comparativeSurvival}
+            handleSurvivalPlotToggled={handleSurvivalPlotToggled}
+            genomicFilters={genomicFilters}
+            handleSsmToggled={partial(
+              handleGeneAndSSmToggled,
+              currentMutations,
+              "ssms.ssm_id",
+              "mutationID",
+            )}
+            toggledSsms={currentMutations}
+          />
         </Tabs.Panel>
       </Tabs>
     </div>

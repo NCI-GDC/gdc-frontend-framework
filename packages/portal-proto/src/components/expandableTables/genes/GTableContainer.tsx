@@ -139,7 +139,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   return (
     <>
       <SelectedRowContext.Provider value={[selectedGenes, setSelectedGenes]}>
-        <div className="flex flex-row justify-between items-center flex-nowrap w-[80%]">
+        <div className="flex flex-row justify-between items-center flex-nowrap w-100">
           <div className="flex flex-row ml-2 mb-4">
             <TableControls
               total={gTotal}
@@ -191,7 +191,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             />
           </div>
         </div>
-        <div className="h-full w-[90%]">
+        <div className="h-full w-fit">
           {!visibleColumns.length ? (
             <TablePlaceholder
               cellWidth="w-24"
@@ -201,7 +201,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               content={<span>No columns selected</span>}
             />
           ) : (
-            <div ref={ref} className="h-full w-[90%]">
+            <div ref={ref}>
               <GenesTable
                 status={status}
                 initialData={tableData}
@@ -223,13 +223,15 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           )}
         </div>
         {visibleColumns.length ? (
-          <div className="flex flex-row w-9/12 ml-2 mt-0 m-auto">
-            <div className="flex flex-row items-center m-auto ml-0">
-              <span className="my-auto mx-1 text-xs">Show</span>
-              <PageSize pageSize={pageSize} handlePageSize={setPageSize} />
-              <span className="my-auto mx-1 text-xs">Entries</span>
+          <div className="flex flex-row w-100 ml-2 mt-0 font-heading items-center">
+            <div className={"grow-0"}>
+              <div className="flex flex-row items-center text-sm  ml-0">
+                <span className="my-auto mx-1 ">Show</span>
+                <PageSize pageSize={pageSize} handlePageSize={setPageSize} />
+                <span className="my-auto mx-1 ">Entries</span>
+              </div>
             </div>
-            <div className={`m-auto text-sm`}>
+            <div className="flex flex-row items-center justify-center grow text-sm">
               <span>
                 Showing
                 <span className="font-bold">{` ${(
@@ -250,7 +252,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 genes
               </span>
             </div>
-            <div className="m-auto mr-0">
+            <div className="grow-0 mr-0">
               <PageStepper
                 page={page}
                 totalPages={Math.ceil(gTotal / pageSize)}

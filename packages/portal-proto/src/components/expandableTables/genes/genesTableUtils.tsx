@@ -150,7 +150,7 @@ export const createTableColumn = (
             ),
             cell: ({ row }) => {
               return (
-                <div className={`w-max mx-auto`}>
+                <div>
                   {row.getCanExpand() && (
                     <Tooltip label={"Cancer Gene Census"}>
                       <div className={`block m-auto w-max`}>
@@ -175,7 +175,7 @@ export const createTableColumn = (
               <TableHeader
                 title={`# SSM Affected Cases
                in Cohort`}
-                className="flex flex-row justify-start w-36 mr-2 "
+                className="flex flex-row justify-start mr-2 "
                 tooltip={`Breakdown of Affected Cases in Cohort:
                 # Cases where Gene is mutated / # Cases tested for Simple Somatic Mutations`}
               />
@@ -210,7 +210,7 @@ export const createTableColumn = (
               <TableHeader
                 title={`# SSM Affected Cases
                  Across the GDC`}
-                className="flex flex-row justify-start mx-4 w-36"
+                className="flex flex-row justify-start mx-4"
                 tooltip={`# Cases where Gene contains Simple Somatic Mutations / # Cases tested for Simple Somatic Mutations portal wide.
                 Expand to see breakdown by project`}
               />
@@ -266,7 +266,7 @@ export const createTableColumn = (
             header: () => (
               <TableHeader
                 title={`# ${startCase(accessor)}`}
-                className="flex flex-row justify-start mr-8 w-20"
+                className="flex flex-row justify-start mr-8"
                 tooltip={
                   "# Cases where CNV gain events are observed in Gene / # Cases tested for Copy Number Alterations in Gene"
                 }
@@ -299,7 +299,7 @@ export const createTableColumn = (
             header: () => (
               <TableHeader
                 title={`# ${startCase(accessor)}`}
-                className="flex flex-row justify-start mr-2 w-24"
+                className="flex flex-row justify-start mr-2"
                 tooltip={
                   "# Cases where CNV loss events are observed in Gene / # Cases tested for Copy Number Alterations in Gene"
                 }
@@ -372,7 +372,7 @@ export const createTableColumn = (
                 tooltip={
                   "# Unique Simple Somatic Mutations in the Gene in Cohort"
                 }
-                className="w-20 mx-4 whitespace-nowrap"
+                className="w-20"
               />
             ),
             cell: ({ row }) => {
@@ -429,7 +429,7 @@ export const createTableColumn = (
               <TableHeader
                 title="Name"
                 tooltip=""
-                className="flex flex-row justify-start"
+                className="flex flex-row justify-start lg:w-100 md:w-32 sm:w-16"
               />
             ),
             cell: ({ row }) => {
