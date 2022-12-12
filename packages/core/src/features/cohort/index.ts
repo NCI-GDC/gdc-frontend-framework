@@ -24,6 +24,7 @@ import {
   removeCohortFilter,
   clearCohortFilters,
   clearCaseSet,
+  copyCohort,
   selectAvailableCohorts,
   selectCurrentCohortId,
   selectCurrentCohortName,
@@ -46,6 +47,7 @@ import {
   updateActiveCohortFilter,
   setActiveCohort,
   discardActiveCohortChanges,
+  setActiveCohortList,
 } from "./availableCohortsSlice";
 
 import {
@@ -123,6 +125,7 @@ export {
   clearCohortMessage,
   selectCurrentCohort,
   setCohortList,
+  copyCohort,
   buildGqlOperationToFilterSet,
   selectCurrentCohortSaved,
   discardCohortChanges,
@@ -132,4 +135,5 @@ export {
   updateActiveCohortFilter,
   setActiveCohort,
   discardActiveCohortChanges,
+  setActiveCohortList,
 };
