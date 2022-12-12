@@ -1,6 +1,5 @@
 import {
   createGdcAppWithOwnStore,
-  selectCart,
   useCoreDispatch,
   useCoreSelector,
   selectCurrentCohortFilters,
@@ -10,18 +9,16 @@ import {
   joinFilters,
   usePrevious,
 } from "@gff/core";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { AppStore, id, AppContext, useAppSelector } from "./appApi";
 import {
   MdDownload as DownloadIcon,
   MdShoppingCart as CartIcon,
 } from "react-icons/md";
 import { VscTrash } from "react-icons/vsc";
-import { addToCart, removeFromCart } from "@/features/cart/updateCart";
 import Link from "next/link";
 import { FileFacetPanel } from "./FileFacetPanel";
 import { FilesView } from "@/features/files/FilesView";
-import { mapGdcFileToCartFile } from "../files/utils";
 import { selectFilters } from "@/features/repositoryApp/repositoryFiltersSlice";
 import { isEqual } from "lodash";
 import FunctionButton from "@/components/FunctionButton";
@@ -60,11 +57,7 @@ const useCohortCentricFiles = () => {
 };
 
 const RepositoryApp = () => {
-  const currentCart = useCoreSelector((state) => selectCart(state));
-  const dispatch = useCoreDispatch();
   useCohortCentricFiles();
-
-  const [allFilesLoading, setAllFilesLoading] = useState(false);
 
   //const fileSizeSliceData = useAllFiles(cohortGqlOperator);
 
@@ -72,16 +65,6 @@ const RepositoryApp = () => {
     getFileSizeSliceData, // This is the mutation trigger
     { isLoading: isUpdating }, // This is the destructured mutation result
   ] = useAllFilesMutation();*/
-
-  //console.log(fileSizeSliceData);
-
-  const getAllSelectedFiles = () => {
-    // console.log("test"); TODO make work
-    // mark as in progress
-    setAllFilesLoading(true);
-
-    return mapGdcFileToCartFile([]);
-  };
 
   return (
     <div className="flex flex-col mt-4 ">
@@ -96,20 +79,17 @@ const RepositoryApp = () => {
           </Link>
           <FunctionButton
             leftIcon={<CartIcon size={"1rem"} />}
-            loading={allFilesLoading}
             onClick={() => {
-              addToCart(getAllSelectedFiles(), currentCart, dispatch);
-              //setAddToCartLoading(false);
+              alert("Coming soon!");
             }}
           >
             Add All Files to Cart
           </FunctionButton>
           <FunctionButtonRemove
             leftIcon={<VscTrash size={"1rem"} />}
-            loading={allFilesLoading}
-            onClick={() =>
-              removeFromCart(getAllSelectedFiles(), currentCart, dispatch)
-            }
+            onClick={() => {
+              alert("Coming soon!");
+            }}
           >
             Remove All From Cart
           </FunctionButtonRemove>
