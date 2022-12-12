@@ -8,7 +8,7 @@ import {
   SortBy,
 } from "@gff/core";
 import { Button, createStyles, Menu } from "@mantine/core";
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { VerticalTable, HandleChangeInput } from "../../shared/VerticalTable";
 import { ageDisplay, allFilesInCart, extractToArray } from "src/utils";
 import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
@@ -24,7 +24,6 @@ import {
   getCasesTableAnnotationsLinkParams,
   SlideCountsIcon,
 } from "./utils";
-import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 
 const useStyles = createStyles((theme) => ({
   item: {
@@ -128,7 +127,7 @@ export const ContextualCasesView: React.FC = () => {
           selected: datum.case_uuid,
           slides: (
             <Link
-              href={`/image-viewer/MultipleImageViewerPage?caseId=${datum.case_uuid}`}
+              href={`/user-flow/workbench/MultipleImageViewerPage?caseId=${datum.case_uuid}`}
             >
               <Button
                 compact
@@ -329,8 +328,8 @@ export const ContextualCasesView: React.FC = () => {
                 </Button>
               </Menu.Target>
               <Menu.Dropdown>
-                <Menu.Item>JSON (Coming Soon)</Menu.Item>
-                <Menu.Item>TSV (Coming Soon)</Menu.Item>
+                <Menu.Item>JSON</Menu.Item>
+                <Menu.Item>TSV</Menu.Item>
               </Menu.Dropdown>
             </Menu>
             <Menu width="target" classNames={classes}>
@@ -351,20 +350,16 @@ export const ContextualCasesView: React.FC = () => {
                 </Button>
               </Menu.Target>
               <Menu.Dropdown>
-                <Menu.Item>JSON (Coming Soon)</Menu.Item>
-                <Menu.Item>TSV (Coming Soon)</Menu.Item>
+                <Menu.Item>JSON</Menu.Item>
+                <Menu.Item>TSV</Menu.Item>
               </Menu.Dropdown>
             </Menu>
-            <ButtonTooltip label="" comingSoon={true}>
-              <Button variant="outline" color="primary">
-                JSON
-              </Button>
-            </ButtonTooltip>
-            <ButtonTooltip label="" comingSoon={true}>
-              <Button variant="outline" color="primary">
-                TSV
-              </Button>
-            </ButtonTooltip>
+            <Button variant="outline" color="primary">
+              JSON
+            </Button>
+            <Button variant="outline" color="primary">
+              TSV
+            </Button>
           </div>
         }
         tableTitle={`Total of ${pagination?.total?.toLocaleString()} ${

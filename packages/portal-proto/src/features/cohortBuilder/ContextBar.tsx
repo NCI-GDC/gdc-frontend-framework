@@ -191,12 +191,6 @@ const ContextBar: React.FC = () => {
       docType: "cases",
       indexType: "repository",
     },
-    {
-      field: "cases.demographic.race",
-      name: "Race",
-      docType: "cases",
-      indexType: "repository",
-    },
   ] as ReadonlyArray<SummaryFacetInfo>);
 
   const filters = useCohortFacetFilters();
@@ -213,7 +207,7 @@ const ContextBar: React.FC = () => {
 
   return (
     <div
-      className="font-heading bg-base-lightest flex flex-col"
+      className="font-heading bg-base-max flex flex-col"
       data-tour="context_bar"
     >
       <CollapsibleContainer
