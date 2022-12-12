@@ -944,7 +944,7 @@ export const discardActiveCohortChanges =
 export const setActiveCohortList =
   (cohorts: Cohort[]): ThunkAction<void, CoreState, undefined, AnyAction> =>
   async (dispatch: CoreDispatch, getState) => {
-    // set the list of all coborts
+    // set the list of all cohorts
     await dispatch(setCohortList(cohorts));
     const cohortId = selectCurrentCohortId(getState());
     const cohort = selectCurrentCohort(getState());
