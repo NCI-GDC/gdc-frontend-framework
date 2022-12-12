@@ -1,5 +1,6 @@
 import { PropsWithChildren, ReactNode, useEffect } from "react";
-import { useRouter } from "next/router";
+// TODO: uncomment during PEAR-845
+// import { useRouter } from "next/router";
 import {
   isString,
   useCoreSelector,
@@ -12,8 +13,9 @@ import {
 } from "@gff/core";
 import Banner from "@/components/Banner";
 import { Button } from "@mantine/core";
-import { useTour } from "@reactour/tour";
-import steps from "../../features/tour/steps";
+// TODO: uncomment during PEAR-845
+// import { useTour } from "@reactour/tour";
+// import steps from "../../features/tour/steps";
 import { Header } from "./Header";
 import { GeneralErrorModal } from "@/components/Modals/GeneraErrorModal";
 import { Footer } from "./Footer";
@@ -30,13 +32,15 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
   Options,
   children,
 }: PropsWithChildren<UserFlowVariedPagesProps>) => {
-  const { setSteps } = useTour();
-  const router = useRouter();
+  // TODO: uncomment during PEAR-845
+  // const { setSteps } = useTour();
+  // const router = useRouter();
   const dispatch = useCoreDispatch();
   const modal = useCoreSelector((state) => selectCurrentModal(state));
 
   useEffect(() => {
-    setSteps(steps[router.pathname]);
+    // TODO: uncomment during PEAR-845
+    // setSteps(steps[router.pathname]);
     dispatch(fetchUserDetails());
     dispatch(fetchNotifications());
     // eslint-disable-next-line react-hooks/exhaustive-deps
