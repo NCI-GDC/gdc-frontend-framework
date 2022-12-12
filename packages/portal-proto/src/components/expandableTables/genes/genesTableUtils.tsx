@@ -406,7 +406,7 @@ export const createTableColumn = (
             ),
             cell: ({ row }) => {
               return (
-                <Link href={`/genes/${row.original[accessor]}`}>
+                <Link href={`/genes/${row.original?.geneID}`}>
                   <a className="text-utility-link underline text-sm">
                     {row.original[`${accessor}`]
                       ? row.original[`${accessor}`]

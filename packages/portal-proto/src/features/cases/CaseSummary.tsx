@@ -8,6 +8,8 @@ import {
   useAnnotations,
   AnnotationDefaults,
   mapFileData,
+  caseFileType,
+  Demographic,
 } from "@gff/core";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
 import SummaryCount from "@/components/Summary/SummaryCount";
@@ -38,7 +40,6 @@ import {
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 import { CategoryTableSummary } from "@/components/Summary/CategoryTableSummary";
 import { ClinicalSummary } from "./ClinicalSummary/ClinicalSummary";
-import { caseFileType, Demographic } from "@gff/core/dist/features/cases/types";
 import fileSize from "filesize";
 import { TempTable } from "../files/FileView";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
@@ -528,7 +529,7 @@ export const CaseSummary = ({
             {clinicalFilteredFiles?.length > 0 && (
               <div className="my-5">
                 <div className="flex gap-2 bg-base-lightest text-primary-content p-2">
-                  <h2 className="text-lg font-medium">
+                  <h2 className="text-lg text-accent uppercase tracking-wide font-medium">
                     Clinical Supplement File
                   </h2>
                 </div>
@@ -542,7 +543,7 @@ export const CaseSummary = ({
             {biospecimenFilteredFiles?.length > 0 && (
               <div className="my-5">
                 <div className="flex gap-2 bg-base-lightest text-primary-content p-2">
-                  <h2 className="text-lg font-medium">
+                  <h2 className="text-lg text-accent uppercase tracking-wide font-medium">
                     Biospecimen Supplement File
                   </h2>
                 </div>
