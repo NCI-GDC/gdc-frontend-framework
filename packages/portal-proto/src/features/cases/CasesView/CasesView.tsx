@@ -8,7 +8,7 @@ import {
   SortBy,
 } from "@gff/core";
 import { Button, createStyles, Menu } from "@mantine/core";
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { VerticalTable, HandleChangeInput } from "../../shared/VerticalTable";
 import { ageDisplay, allFilesInCart, extractToArray } from "src/utils";
 import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
@@ -24,6 +24,7 @@ import {
   getCasesTableAnnotationsLinkParams,
   SlideCountsIcon,
 } from "./utils";
+import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 
 const useStyles = createStyles((theme) => ({
   item: {
@@ -209,9 +210,23 @@ export const ContextualCasesView: React.FC = () => {
               </Menu.Dropdown>
             </Menu>
           ),
-          case_id: datum.case_id,
+          case_id: (
+            <OverflowTooltippedLabel label={datum.case_id}>
+              <Link href={`/cases/${datum.case_uuid}`}>
+                <a className="text-utility-link underline">{datum.case_id}</a>
+              </Link>
+            </OverflowTooltippedLabel>
+          ),
           case_uuid: datum.case_uuid,
-          project_id: datum.project_id,
+          project_id: (
+            <OverflowTooltippedLabel label={datum.project_id}>
+              <Link href={`/projects/${datum.project_id}`}>
+                <a className="text-utility-link underline">
+                  {datum.project_id}
+                </a>
+              </Link>
+            </OverflowTooltippedLabel>
+          ),
           program: datum.program,
           primary_site: datum.primary_site,
           disease_type: datum.disease_type ?? "--",
@@ -301,7 +316,7 @@ export const ContextualCasesView: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col m-auto w-10/12">
+    <div className="flex flex-col w-full ml-2 mr-8">
       <VerticalTable
         tableData={cases || []}
         columns={columns}
