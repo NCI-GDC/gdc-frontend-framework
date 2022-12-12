@@ -24,7 +24,6 @@ import {
   getCasesTableAnnotationsLinkParams,
   SlideCountsIcon,
 } from "./utils";
-import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 
 const useStyles = createStyles((theme) => ({
   item: {
