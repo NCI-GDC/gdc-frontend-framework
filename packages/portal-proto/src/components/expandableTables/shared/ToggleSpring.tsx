@@ -11,7 +11,7 @@ const ToggleSpring: React.FC<ToggleSpringProps> = ({
   icon,
 }: ToggleSpringProps) => {
   const polarSpring = useSpring({
-    transform: isExpanded ? "rotate(0deg)" : "rotate(180deg)",
+    transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
   });
 
   return (
