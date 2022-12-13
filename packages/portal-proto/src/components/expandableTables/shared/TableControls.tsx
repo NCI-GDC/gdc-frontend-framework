@@ -48,7 +48,7 @@ export const TableControls: React.FC<TableControlsProps> = ({
     <>
       <div className={`w-80 h-10 mx-auto my-0 justify-between mt-3`}>
         <button
-          className={`h-10 rounded border border-1 border-activeColor`}
+          className={`h-10 rounded border border-activeColor`}
           onClick={() => setIsMenuOpen((m) => !m)}
         >
           <div className={`flex flex-row w-80 justify-between`}>
@@ -91,7 +91,7 @@ export const TableControls: React.FC<TableControlsProps> = ({
                   </span>
                 </animated.div>
                 <animated.ul
-                  className={`list-none rounded-b-md text-activeColor border border-1 border-activeColor`}
+                  className={`list-none rounded-b-md text-activeColor border border-activeColor`}
                 >
                   {options
                     .filter(({ value }) => value !== selectedOption.value)

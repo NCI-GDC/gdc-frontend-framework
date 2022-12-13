@@ -47,13 +47,13 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
   return (
     <>
       {demoMode && (
-        <span className="italic px-2 py-1">
+        <span className="font-heading italic px-2 py-4 mt-4">
           {
             "Demo showing cases with pancreatic cancer with and without mutations in the gene KRAS."
           }
         </span>
       )}
-      <div className="flex gap-4 pt-2 bg-base-lightest">
+      <div className="flex gap-4 pt-2">
         <div className="p-1 flex basis-7/12 flex-col gap-4">
           {isFetching || isUninitialized ? (
             <div className="min-w-[600px] min-h-[400px] relative">

@@ -9,6 +9,7 @@ import {
   useCoreSelector,
   useCoreDispatch,
   addNewCohortWithFilterAndMessage,
+  resetSelectedCases,
 } from "@gff/core";
 import { showNotification } from "@mantine/notifications";
 import { NewCohortNotificationWithSetAsCurrent } from "@/features/cohortBuilder/CohortNotifications";
@@ -50,6 +51,7 @@ const ProjectsCohortButton = (): JSX.Element => {
         },
       },
     };
+    coreDispatch(resetSelectedCases());
     coreDispatch(
       addNewCohortWithFilterAndMessage({
         filters: filters,
@@ -92,9 +94,7 @@ const ProjectsCohortButton = (): JSX.Element => {
             {" "}
             {pickedProjects.length}{" "}
           </CountsIcon>
-        ) : (
-          <CountsIcon />
-        )
+        ) : null
       }
       onClick={() => createCohortFromProjects()}
     >

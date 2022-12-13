@@ -78,15 +78,13 @@ const CollapsibleRow = ({
     }));
   };
 
-  if (value.length === 0) {
+  if (value?.length === 0 || !value) {
     return <div className="text-left mr-6 w-48">--</div>;
   }
 
-  if (value.length === 1) {
+  if (value?.length === 1) {
     return (
-      <div className="flex flex-row justify-start mr-6  w-48 mr-6">
-        {value[0]}
-      </div>
+      <div className="flex flex-row justify-start mr-6  w-48">{value[0]}</div>
     );
   } else {
     return (
@@ -103,7 +101,7 @@ const CollapsibleRow = ({
             className="flex flex-row items-center justify-between text-primary cursor-pointer w-full mr-6"
           >
             <span className="whitespace-nowrap">
-              {value.length.toLocaleString().padStart(6)} {label}
+              {value?.length.toLocaleString().padStart(6)} {label}
             </span>
             <DownIcon size="1.25em" className="text-secondary-light" />
           </div>

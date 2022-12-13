@@ -89,12 +89,12 @@ const InputSet: React.FC<InputSetProps> = ({
   const matchedIds = flatten(
     matched.map((m) => m.givenIdentifiers.map((i) => i.value)),
   ).map((id) => id.toLowerCase());
-  const unmatched = tokens.filter((t) => !matchedIds.includes(t.toLowerCase()));
+  const unmatched = tokens
+    .filter((t) => !matchedIds.includes(t.toLowerCase()) && t.length !== 0)
+    .map((t) => t.toUpperCase());
 
   useEffect(() => {
-    if (input !== "") {
-      setTokens(input.trim().split(/[\s,]+/));
-    }
+    setTokens(input.trim().split(/[\s,]+/));
   }, [input]);
 
   useEffect(() => {
@@ -111,7 +111,7 @@ const InputSet: React.FC<InputSetProps> = ({
 
   return (
     <>
-      <div className="max-h-[550px] overflow-y-auto">
+      <div className="max-h-96 overflow-y-auto">
         <div className="px-4">
           <p className="mb-2 text-sm">{inputInstructions}</p>
           <div className="flex items-center justify-between w-full">

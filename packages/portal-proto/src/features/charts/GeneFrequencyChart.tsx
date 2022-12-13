@@ -2,7 +2,11 @@ import React from "react";
 import { LoadingOverlay } from "@mantine/core";
 
 import dynamic from "next/dynamic";
-import { GenesFrequencyChart, useGeneFrequencyChart } from "@gff/core";
+import {
+  GenesFrequencyChart,
+  useGeneFrequencyChart,
+  FilterSet,
+} from "@gff/core";
 
 import ChartTitleBar from "./ChartTitleBar";
 import { BarChartData } from "./BarChart";
@@ -60,6 +64,7 @@ const processChartData = (
 };
 
 interface GeneFrequencyChartProps {
+  readonly genomicFilters?: FilterSet;
   readonly height?: number;
   readonly marginBottom?: number;
   readonly showXLabels?: boolean;
@@ -69,6 +74,7 @@ interface GeneFrequencyChartProps {
 }
 
 export const GeneFrequencyChart: React.FC<GeneFrequencyChartProps> = ({
+  genomicFilters = undefined,
   height = undefined,
   marginBottom = 100,
   title = "Distribution of Most Frequently Mutated Genes",
@@ -78,6 +84,7 @@ export const GeneFrequencyChart: React.FC<GeneFrequencyChartProps> = ({
   const { data, isSuccess } = useGeneFrequencyChart({
     pageSize: maxBins,
     offset: 0,
+    genomicFilters: genomicFilters,
   });
 
   return (

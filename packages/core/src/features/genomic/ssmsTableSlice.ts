@@ -7,19 +7,13 @@ import {
 import { castDraft } from "immer";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
-import {
-  GraphQLApiResponse,
-  graphqlAPI,
-  TablePageOffsetProps,
-} from "../gdcapi/gdcgraphql";
-import {
-  selectGenomicAndCohortFilters,
-  selectGenomicAndCohortGqlFilters,
-} from "./genomicFilters";
+import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
+import { mergeGenomicAndCohortFilters } from "./genomicFilters";
 import {
   buildCohortGqlOperator,
   filterSetToOperation,
   selectCurrentCohortFilters,
+  selectCurrentCohortFilterSet,
 } from "../cohort";
 import {
   convertFilterToGqlFilter,
@@ -27,9 +21,10 @@ import {
   Union,
 } from "../gdcapi/filters";
 import { appendFilterToOperation } from "./utils";
+import { GenomicTableProps } from "./types";
 import { joinFilters } from "../cohort";
 
-const SSMSTableGraphQLQuery = `query SsmsTable_relayQuery(
+const SSMSTableGraphQLQuery = `query SsmsTable(
   $ssmTested: FiltersArgument
 $ssmCaseFilter: FiltersArgument
 $ssmsTable_size: Int
@@ -167,7 +162,7 @@ export const buildSSMSTableSearchFilters = (
   return undefined;
 };
 
-export interface SsmsTableRequestParameters extends TablePageOffsetProps {
+export interface SsmsTableRequestParameters extends GenomicTableProps {
   readonly geneSymbol?: string;
 }
 
@@ -178,34 +173,40 @@ export const fetchSsmsTable = createAsyncThunk<
 >(
   "genomic/ssmsTable",
   async (
-    { pageSize, offset, searchTerm, geneSymbol }: SsmsTableRequestParameters,
+    {
+      pageSize,
+      offset,
+      searchTerm,
+      genomicFilters,
+      geneSymbol,
+    }: SsmsTableRequestParameters,
     thunkAPI,
   ): Promise<GraphQLApiResponse> => {
     const cohortFilters = buildCohortGqlOperator(
-      geneSymbol
-        ? joinFilters(
-            selectCurrentCohortFilters(thunkAPI.getState()) ?? {
-              mode: "and",
-              root: {},
-            },
-            {
-              mode: "and",
-              root: {
-                "genes.symbol": {
-                  field: "genes.symbol",
-                  operator: "includes",
-                  operands: [geneSymbol],
-                },
+      geneSymbol // if gene symbol use all GDC
+        ? {
+            mode: "and",
+            root: {
+              "genes.symbol": {
+                field: "genes.symbol",
+                operator: "includes",
+                operands: [geneSymbol],
               },
             },
-          )
+          }
         : selectCurrentCohortFilters(thunkAPI.getState()),
     );
     const cohortFiltersContent = cohortFilters?.content
       ? Object(cohortFilters?.content)
       : [];
+
+    const localPlusCohortFilters = mergeGenomicAndCohortFilters(
+      thunkAPI.getState(),
+      genomicFilters,
+    );
+
     const geneAndCohortFilters = geneSymbol
-      ? joinFilters(selectGenomicAndCohortFilters(thunkAPI.getState()), {
+      ? joinFilters(localPlusCohortFilters, {
           mode: "and",
           root: {
             "genes.symbol": {
@@ -215,7 +216,7 @@ export const fetchSsmsTable = createAsyncThunk<
             },
           },
         })
-      : selectGenomicAndCohortFilters(thunkAPI.getState());
+      : localPlusCohortFilters;
 
     const searchFilters = buildSSMSTableSearchFilters(searchTerm);
     const tableFilters = convertFilterToGqlFilter(
@@ -385,5 +386,5 @@ export const selectSsmsTableData = (
 export const useSsmsTable = createUseFiltersCoreDataHook(
   fetchSsmsTable,
   selectSsmsTableData,
-  selectGenomicAndCohortGqlFilters,
+  selectCurrentCohortFilterSet, // used only to trigger a fetch
 );

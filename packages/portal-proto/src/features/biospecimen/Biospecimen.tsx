@@ -5,7 +5,7 @@ import {
   MdFileDownload,
   MdOutlineClear,
 } from "react-icons/md";
-import { Button, Input, LoadingOverlay, Menu, Text } from "@mantine/core";
+import { Button, Input, LoadingOverlay, Menu } from "@mantine/core";
 import {
   entityType,
   useBiospecimenData,
@@ -118,9 +118,9 @@ export const Biospecimen = ({
         selectedType !== undefined ? (
         <>
           <div className="flex justify-between">
-            <Text size="xl" weight={500}>
+            <h2 className="text-lg text-accent tracking-wide uppercase font-medium">
               Biospecimen
-            </Text>
+            </h2>
             <Menu width="target">
               <Menu.Target>
                 <Button className="px-1.5 min-h-7 w-28 border-base-lightest border rounded text-primary-content-lightest bg-primary hover:bg-primary-darker">
