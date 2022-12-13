@@ -3,7 +3,7 @@ interface Match {
   readonly value: string;
 }
 
-/** 
+/**
   Parses through the API response to figure out what fields our matched values correspond to
   @param data: API response for the matches
   @param mappedToFields: fields we mapped to, will be used to create set
