@@ -13,7 +13,9 @@ export const SummaryHeader = ({
       <div className="rounded-full flex flex-row items-center p-1 px-2">
         <TypeIcon iconText={iconText} />
       </div>
-      <span className="text-2xl text-base-contrast-max">{headerTitle}</span>
+      <span className="text-lg text-accent uppercase tracking-wide font-medium">
+        {headerTitle}
+      </span>
     </header>
   );
 };

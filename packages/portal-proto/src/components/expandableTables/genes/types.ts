@@ -74,6 +74,7 @@ export interface GenesTableProps {
     field: string,
   ) => void;
   handleGeneToggled: GeneToggledHandler;
+  toggledGenes: ReadonlyArray<string>;
   pageSize: number;
   page: number;
   selectedGenes: Record<string, Row<Genes>>;
@@ -107,4 +108,4 @@ export const DEFAULT_GTABLE_ORDER = [
   { id: "CNVLoss", columnName: "# CNV Loss", visible: true },
   { id: "mutations", columnName: "# Mutations", visible: true },
   { id: "annotations", columnName: "Annotations", visible: true },
-];
+] as Column[];

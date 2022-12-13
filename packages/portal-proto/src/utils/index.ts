@@ -87,8 +87,7 @@ export const externalLinks = {
     `http://cancer.sanger.ac.uk/cosmic/mutation/overview?id=${id}`,
   cosn: (id: string): string =>
     `http://cancer.sanger.ac.uk/cosmic/ncv/overview?id=${id}`,
-  dbsnp: (id: string): string =>
-    `https://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs=${id}`,
+  dbsnp: (id: string): string => `https://www.ncbi.nlm.nih.gov/snp/${id}`,
   ensembl: (id: string): string =>
     `http://nov2020.archive.ensembl.org/Homo_sapiens/Gene/Summary?db=core;g=${id}`,
   entrez_gene: (id: string): string => `http://www.ncbi.nlm.nih.gov/gene/${id}`,
@@ -195,3 +194,8 @@ export const ageDisplay = (
     .join(" ")
     .trim();
 };
+
+export const extractToArray = (
+  data: ReadonlyArray<Record<string, number | string>>,
+  nodeKey: string,
+): (string | number)[] => data?.map((x) => x[nodeKey]);
