@@ -206,7 +206,8 @@ const FilesTables: React.FC = () => {
   const updateFilter = useUpdateRepositoryFacetFilter();
   const newSearchActions = (searchTerm: string) => {
     //TODO if lots of calls fast last call might not be displayed
-    updateFilter("files", buildSearchFilters(searchTerm));
+    if (searchTerm.length > 0)
+      updateFilter("files", buildSearchFilters(searchTerm));
   };
 
   const handleChange = (obj: HandleChangeInput) => {

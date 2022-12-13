@@ -40,6 +40,14 @@ describe("<QueryExpressionSection />", () => {
   });
 
   it("Non-default cohort with filters shows cohort name and controls", () => {
+    jest.spyOn(core, "useGeneSymbol").mockReturnValue({
+      data: {},
+      isError: false,
+      isFetching: false,
+      isUninitialized: false,
+      isSuccess: true,
+      error: undefined,
+    });
     const { getByText, getByRole } = render(
       <QueryExpressionSection
         filters={{

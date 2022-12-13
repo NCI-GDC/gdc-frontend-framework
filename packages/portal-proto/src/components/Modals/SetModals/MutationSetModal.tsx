@@ -69,10 +69,7 @@ const MutationSetModal: React.FC<MutationSetModalProps> = ({
               <p>
                 Mutation sets can be created from the <b>Enter Mutation tabs</b>
                 , or from the{" "}
-                <Link
-                  href="/user-flow/workbench/analysis_page?app=MutationFrequencyApp"
-                  passHref
-                >
+                <Link href="/analysis_page?app=MutationFrequencyApp" passHref>
                   <a>
                     <button
                       className="text-utility-link underline"

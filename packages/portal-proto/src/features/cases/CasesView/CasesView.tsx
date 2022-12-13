@@ -1,14 +1,14 @@
 import {
-  selectCurrentCohortFilterSet,
   useCoreSelector,
   selectCart,
   useCoreDispatch,
   selectSelectedCases,
   useAllCases,
   SortBy,
+  selectCurrentCohortFilters,
 } from "@gff/core";
 import { Button, createStyles, Menu } from "@mantine/core";
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { VerticalTable, HandleChangeInput } from "../../shared/VerticalTable";
 import { ageDisplay, allFilesInCart, extractToArray } from "src/utils";
 import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
@@ -24,6 +24,8 @@ import {
   getCasesTableAnnotationsLinkParams,
   SlideCountsIcon,
 } from "./utils";
+import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
+import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 
 const useStyles = createStyles((theme) => ({
   item: {
@@ -66,7 +68,7 @@ export const ContextualCasesView: React.FC = () => {
   const [sortBy, setSortBy] = useState<SortBy[]>([]);
   const [columns, setColumns] = useState(columnListOrder);
   const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilterSet(state),
+    selectCurrentCohortFilters(state),
   );
   const pickedCases = useCoreSelector((state) => selectSelectedCases(state));
   const currentCart = useCoreSelector((state) => selectCart(state));
@@ -127,7 +129,7 @@ export const ContextualCasesView: React.FC = () => {
           selected: datum.case_uuid,
           slides: (
             <Link
-              href={`/user-flow/workbench/MultipleImageViewerPage?caseId=${datum.case_uuid}`}
+              href={`/image-viewer/MultipleImageViewerPage?caseId=${datum.case_uuid}`}
             >
               <Button
                 compact
@@ -209,9 +211,23 @@ export const ContextualCasesView: React.FC = () => {
               </Menu.Dropdown>
             </Menu>
           ),
-          case_id: datum.case_id,
+          case_id: (
+            <OverflowTooltippedLabel label={datum.case_id}>
+              <Link href={`/cases/${datum.case_uuid}`}>
+                <a className="text-utility-link underline">{datum.case_id}</a>
+              </Link>
+            </OverflowTooltippedLabel>
+          ),
           case_uuid: datum.case_uuid,
-          project_id: datum.project_id,
+          project_id: (
+            <OverflowTooltippedLabel label={datum.project_id}>
+              <Link href={`/projects/${datum.project_id}`}>
+                <a className="text-utility-link underline">
+                  {datum.project_id}
+                </a>
+              </Link>
+            </OverflowTooltippedLabel>
+          ),
           program: datum.program,
           primary_site: datum.primary_site,
           disease_type: datum.disease_type ?? "--",
@@ -301,7 +317,7 @@ export const ContextualCasesView: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col m-auto w-10/12">
+    <div className="flex flex-col w-full ml-2 mr-8">
       <VerticalTable
         tableData={cases || []}
         columns={columns}
@@ -328,8 +344,8 @@ export const ContextualCasesView: React.FC = () => {
                 </Button>
               </Menu.Target>
               <Menu.Dropdown>
-                <Menu.Item>JSON</Menu.Item>
-                <Menu.Item>TSV</Menu.Item>
+                <Menu.Item>JSON (Coming Soon)</Menu.Item>
+                <Menu.Item>TSV (Coming Soon)</Menu.Item>
               </Menu.Dropdown>
             </Menu>
             <Menu width="target" classNames={classes}>
@@ -350,16 +366,20 @@ export const ContextualCasesView: React.FC = () => {
                 </Button>
               </Menu.Target>
               <Menu.Dropdown>
-                <Menu.Item>JSON</Menu.Item>
-                <Menu.Item>TSV</Menu.Item>
+                <Menu.Item>JSON (Coming soon)</Menu.Item>
+                <Menu.Item>TSV (Coming soon) </Menu.Item>
               </Menu.Dropdown>
             </Menu>
-            <Button variant="outline" color="primary">
-              JSON
-            </Button>
-            <Button variant="outline" color="primary">
-              TSV
-            </Button>
+            <ButtonTooltip label=" " comingSoon={true}>
+              <Button variant="outline" color="primary">
+                JSON
+              </Button>
+            </ButtonTooltip>
+            <ButtonTooltip label=" " comingSoon={true}>
+              <Button variant="outline" color="primary">
+                TSV
+              </Button>
+            </ButtonTooltip>
           </div>
         }
         tableTitle={`Total of ${pagination?.total?.toLocaleString()} ${

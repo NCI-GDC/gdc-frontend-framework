@@ -6,18 +6,19 @@ import { GdcApiData } from "../gdcapi/gdcapi";
 import {
   CoreDataSelectorResponse,
   DataStatus,
-  createUseFiltersCoreDataHook,
+  createUseCoreDataHook,
 } from "../../dataAccess";
 import { fetchGenes } from "./genesApi";
+import { FilterSet, buildCohortGqlOperator } from "../cohort";
 import { fetchSSMOccurrences } from "./ssmOccurrencesApi";
 import { fetchCNVOccurrences } from "./cnvOccurrencesApi";
 import { fetchCases } from "./casesApi";
 import { Gene, OncoGridDonor, CNVOccurrence, SSMOccurrence } from "./types";
-import { selectGenomicAndCohortGqlFilters } from "../genomic/genomicFilters";
 
 interface OncoGridParams {
   readonly consequenceTypeFilters: string[];
   readonly cnvFilters: string[];
+  readonly cohortAndGenomicFilters: FilterSet;
 }
 
 interface OncoGridResponse {
@@ -34,13 +35,12 @@ export const fetchOncoGrid = createAsyncThunk<
   { dispatch: CoreDispatch; state: CoreState }
 >(
   "oncogrid/fetchAll",
-  async (
-    { consequenceTypeFilters, cnvFilters }: OncoGridParams,
-    thunkAPI,
-  ): Promise<OncoGridResponse> => {
-    const contextFilters = selectGenomicAndCohortGqlFilters(
-      thunkAPI.getState(),
-    );
+  async ({
+    consequenceTypeFilters,
+    cnvFilters,
+    cohortAndGenomicFilters,
+  }: OncoGridParams): Promise<OncoGridResponse> => {
+    const contextFilters = buildCohortGqlOperator(cohortAndGenomicFilters);
     const geneResponse = await fetchGenes(
       consequenceTypeFilters,
       contextFilters,
@@ -159,8 +159,7 @@ export const selectOncoGridData = (
 
 export const oncoGridReducer = slice.reducer;
 
-export const useOncoGrid = createUseFiltersCoreDataHook(
+export const useOncoGrid = createUseCoreDataHook(
   fetchOncoGrid,
   selectOncoGridData,
-  selectGenomicAndCohortGqlFilters,
 );

@@ -1,8 +1,13 @@
-import { FC } from "react";
-import OncoGridAnalysisTool from "../oncoGrid/OncoGridAnalysisTool";
+import React, { FC } from "react";
+import { selectGdcAppById, useCoreSelector } from "@gff/core";
+import { OncoGridAppId } from "@/features/oncoGrid/registerApp";
 
 const OncoGridApp: FC = () => {
-  return <OncoGridAnalysisTool />;
+  const GdcApp = useCoreSelector(() =>
+    selectGdcAppById(OncoGridAppId),
+  ) as React.ElementType;
+
+  return <>{GdcApp && <GdcApp></GdcApp>}</>;
 };
 
 export default OncoGridApp;
