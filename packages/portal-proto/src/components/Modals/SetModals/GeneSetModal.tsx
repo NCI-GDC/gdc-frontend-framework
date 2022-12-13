@@ -88,7 +88,7 @@ const GeneSetModal: React.FC<GeneSetModalProps> = ({
             setTypeLabel="gene"
             createSetsInstructions={
               <p>
-                Gene sets can be created from the <b>Enter Genes tabs</b>, or
+                Gene sets can be created from the <b>Enter Genes tab</b>, or
                 from the{" "}
                 <Link href="/analysis_page?app=MutationFrequencyApp" passHref>
                   <a>

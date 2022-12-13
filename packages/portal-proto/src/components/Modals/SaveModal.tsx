@@ -139,6 +139,7 @@ export const SaveModal = ({
             onClick={() => {
               if (form.validate().hasErrors) return;
               onSaveClick(form.values.name);
+              form.reset();
               onClose();
             }}
           >
