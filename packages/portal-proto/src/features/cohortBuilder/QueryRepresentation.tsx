@@ -16,13 +16,14 @@ import {
   NotEquals,
   Operation,
   OperationHandler,
-  updateCohortFilter,
   removeCohortFilter,
   Union,
   useCoreDispatch,
   fieldNameToTitle,
   useCoreSelector,
   selectCurrentCohortId,
+  useGeneSymbol,
+  updateActiveCohortFilter,
 } from "@gff/core";
 import { ActionIcon, Badge, Divider, Group } from "@mantine/core";
 import {
@@ -125,9 +126,20 @@ const IncludeExcludeQueryElement: React.FC<
   ]);
 
   const expanded = get(queryExpressionsExpanded, field, true);
-  const fieldName = fieldNameToTitle(field);
+  const fieldName =
+    field === "genes.gene_id" ? "GENE" : fieldNameToTitle(field);
   const operands =
     typeof operandsProp === "string" ? [operandsProp] : operandsProp;
+
+  const { data: geneSymbolDict, isSuccess } = useGeneSymbol(
+    field === "genes.gene_id" ? operands.map((x) => x.toString()) : [],
+  );
+  const labels =
+    field === "genes.gene_id"
+      ? operands.map((x) =>
+          isSuccess ? geneSymbolDict[x.toString()] ?? "..." : "...",
+        )
+      : operands;
 
   const RemoveButton = ({ value }: { value: string }) => (
     <ActionIcon
@@ -185,16 +197,6 @@ const IncludeExcludeQueryElement: React.FC<
                 rightSection={<RemoveButton value={x.toString()} />}
                 onClick={() => {
                   const newOperands = operands.filter((o) => o !== x);
-                  dispatch(
-                    updateCohortFilter({
-                      field,
-                      operation: {
-                        operator,
-                        field,
-                        operands: newOperands,
-                      },
-                    }),
-                  );
                   if (newOperands.length === 0) {
                     setQueryExpressionsExpanded({
                       type: "clear",
@@ -202,11 +204,21 @@ const IncludeExcludeQueryElement: React.FC<
                       field,
                     });
                     dispatch(removeCohortFilter(field));
-                  }
+                  } else
+                    dispatch(
+                      updateActiveCohortFilter({
+                        field,
+                        operation: {
+                          operator,
+                          field,
+                          operands: newOperands,
+                        },
+                      }),
+                    );
                 }}
               >
                 <OverflowTooltippedLabel label={x.toString()}>
-                  {x}
+                  {labels[i]}
                 </OverflowTooltippedLabel>
               </Badge>
             ))}
@@ -228,7 +240,9 @@ const ComparisonElement: React.FC<ComparisonElementProps> = ({
 }: ComparisonElementProps) => {
   const coreDispatch = useCoreDispatch();
   const handleKeepMember = (keep: ValueOperation) => {
-    coreDispatch(updateCohortFilter({ field: keep.field, operation: keep }));
+    coreDispatch(
+      updateActiveCohortFilter({ field: keep.field, operation: keep }),
+    );
   };
 
   return (

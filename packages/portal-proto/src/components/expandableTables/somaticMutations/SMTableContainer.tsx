@@ -1,4 +1,4 @@
-import { useSsmsTable, GDCSsmsTable } from "@gff/core";
+import { useSsmsTable, GDCSsmsTable, FilterSet } from "@gff/core";
 import { useEffect, useState, useReducer, createContext } from "react";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
 import { useMeasure } from "react-use";
@@ -7,7 +7,11 @@ import { default as PageStepper } from "../shared/PageStepperMantine";
 import { default as PageSize } from "../shared/PageSizeMantine";
 import { default as TableControls } from "../shared/TableControlsMantine";
 import TablePlaceholder from "../shared/TablePlaceholder";
-import { SomaticMutations, DEFAULT_SMTABLE_ORDER } from "./types";
+import {
+  SomaticMutations,
+  DEFAULT_SMTABLE_ORDER,
+  SsmToggledHandler,
+} from "./types";
 import { Column, SelectedReducer, SelectReducerAction } from "../shared/types";
 import { default as TableFilters } from "../shared/TableFiltersMantine";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
@@ -28,15 +32,22 @@ export interface SMTableContainerProps {
     name: string,
     field: string,
   ) => void;
+  genomicFilters?: FilterSet;
+  handleSsmToggled?: SsmToggledHandler;
+  toggledSsms?: ReadonlyArray<string>;
   columnsList?: Array<Column>;
   geneSymbol?: string;
 }
 
 export const SMTableContainer: React.FC<SMTableContainerProps> = ({
-  selectedSurvivalPlot,
-  handleSurvivalPlotToggled,
+  selectedSurvivalPlot = {},
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  handleSurvivalPlotToggled = (_1: string, _2: string, _3: string) => null,
   columnsList = DEFAULT_SMTABLE_ORDER,
   geneSymbol = undefined,
+  genomicFilters = { mode: "and", root: {} },
+  handleSsmToggled = () => null,
+  toggledSsms = [],
 }: SMTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
@@ -122,6 +133,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     offset: pageSize * page,
     searchTerm:
       debouncedSearchTern.length > 0 ? debouncedSearchTern : undefined,
+    genomicFilters: genomicFilters,
     geneSymbol: geneSymbol,
   });
 
@@ -215,20 +227,25 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 columnListOrder={columnListOrder}
                 visibleColumns={visibleColumns}
                 searchTerm={searchTerm}
-                geneSymbol={geneSymbol}
+                handleSsmToggled={handleSsmToggled}
+                toggledSsms={toggledSsms}
               />
             </div>
           )}
         </div>
         {visibleColumns.length ? (
-          <div className={`flex flex-row ml-2 m-auto w-9/12 mb-2`}>
+          <div
+            className={`flex flex-row w-100 ml-2 mt-0 font-heading items-center`}
+          >
             <div className="flex flex-row flex-nowrap items-center m-auto ml-0">
-              <span className=" mx-1 text-xs">Show</span>
-              <PageSize pageSize={pageSize} handlePageSize={setPageSize} />
-              <span className="my-auto mx-1 text-xs">Entries</span>
+              <div className={"grow-0"}>
+                <span className=" mx-1 text-xs">Show</span>
+                <PageSize pageSize={pageSize} handlePageSize={setPageSize} />
+                <span className="my-auto mx-1 text-xs">Entries</span>
+              </div>
             </div>
             <div
-              className={`flex flex-row justify-between items-center  text-sm`}
+              className={`flex flex-row justify-between items-center text-sm`}
             >
               <span>
                 Showing

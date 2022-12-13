@@ -192,10 +192,10 @@ const CartHeader: React.FC<CartHeaderProps> = ({
             </Button>
           </Menu.Target>
           <Menu.Dropdown>
-            <Menu.Item>Clinical: TSV</Menu.Item>
-            <Menu.Item>Clinical: JSON</Menu.Item>
-            <Menu.Item>Biospecimen: TSV</Menu.Item>
-            <Menu.Item>Biospecimen: JSON</Menu.Item>
+            <Menu.Item>Clinical: TSV (Coming soon)</Menu.Item>
+            <Menu.Item>Clinical: JSON (Coming soon)</Menu.Item>
+            <Menu.Item>Biospecimen: TSV (Coming soon)</Menu.Item>
+            <Menu.Item>Biospecimen: JSON (Coming soon)</Menu.Item>
             <Menu.Item
               component={DownloadButton}
               classNames={{ inner: "font-normal" }}

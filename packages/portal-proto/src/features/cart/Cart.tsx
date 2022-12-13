@@ -18,16 +18,16 @@ const H2 = tw.h2`
   uppercase
   text-primary-content-darkest
   font-montserrat
-  text-xl
-  font-medium
+  text-md
+  font-semibold
   pb-2
 `;
 
 const H3 = tw.h3`
   text-primary-content-darkest
   font-montserrat
-  text-xl
-  font-normal
+  text-md
+  font-medium
 `;
 
 const P = tw.p`
@@ -35,6 +35,7 @@ const P = tw.p`
   pb-4
   font-montserrat
   text-primary-content-darkest
+  font-normal
 `;
 
 const Cart: React.FC = () => {

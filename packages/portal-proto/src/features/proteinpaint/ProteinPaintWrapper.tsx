@@ -8,6 +8,7 @@ import {
   PROTEINPAINT_API,
   useUserDetails,
 } from "@gff/core";
+import { isEqual } from "lodash";
 
 const basepath = PROTEINPAINT_API;
 
@@ -32,6 +33,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
 
   // to track reusable instance for mds3 skewer track
   const ppRef = useRef<PpApi>();
+  const prevArg = useRef<any>();
 
   useEffect(
     () => {
@@ -51,6 +53,9 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
           : null;
 
       if (!data) return;
+      console.log(55, isEqual(prevArg.current, data), prevArg.current, data);
+      if (isEqual(prevArg.current, data)) return;
+      prevArg.current = data;
 
       const toolContainer = rootElem.parentNode.parentNode
         .parentNode as HTMLElement;
@@ -96,7 +101,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
       </div>
       <div
         ref={divRef}
-        style={{ display: `${rootDisplay}` }}
+        style={{ margin: "32px", display: `${rootDisplay}` }}
         className="sjpp-wrapper-root-div"
       ></div>
     </div>
