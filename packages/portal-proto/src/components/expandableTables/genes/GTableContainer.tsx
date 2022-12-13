@@ -191,7 +191,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             />
           </div>
         </div>
-        <div className="h-full w-fit">
+        <div ref={ref}>
           {!visibleColumns.length ? (
             <TablePlaceholder
               cellWidth="w-24"
