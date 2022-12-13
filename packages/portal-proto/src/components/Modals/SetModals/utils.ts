@@ -24,13 +24,7 @@ export const getMatchedIdentifiers = (
     findAllIdentifiers(d, mappedToFields, undefined, "", mappedTo);
 
     const givenIdentifiers: Match[] = [];
-    findAllIdentifiers(
-      d,
-      givenIdentifierFields,
-      tokens.map((t) => t.toLowerCase()),
-      "",
-      givenIdentifiers,
-    );
+    findAllIdentifiers(d, givenIdentifierFields, tokens, "", givenIdentifiers);
 
     if (givenIdentifiers.length > 0) {
       matchedData.push({
@@ -70,7 +64,8 @@ const findAllIdentifiers = (
       object[k].forEach((v) => {
         if (
           searchFields.includes(fullPath) &&
-          (tokens === undefined || tokens.includes(v.toLowerCase()))
+          (tokens === undefined ||
+            tokens.map((t) => t.toLowerCase()).includes(v.toLowerCase()))
         ) {
           results.push({
             field: fullPath,
@@ -83,7 +78,8 @@ const findAllIdentifiers = (
     } else {
       if (
         searchFields.includes(fullPath) &&
-        (tokens === undefined || tokens.includes(object[k].toLowerCase()))
+        (tokens === undefined ||
+          tokens.map((t) => t.toLowerCase()).includes(object[k].toLowerCase()))
       ) {
         results.push({
           field: fullPath,

@@ -98,7 +98,7 @@ const InputSet: React.FC<InputSetProps> = ({
 
   return (
     <>
-      <div className="max-h-[550px] overflow-y-auto">
+      <div className="max-h-96 overflow-y-auto">
         <div className="px-4">
           <p className="mb-2 text-sm">{inputInstructions}</p>
           <div className="flex items-center justify-between w-full">
