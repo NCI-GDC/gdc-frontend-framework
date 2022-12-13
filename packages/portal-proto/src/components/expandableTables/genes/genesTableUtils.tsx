@@ -117,7 +117,7 @@ export const createTableColumn = (
               <TableHeader
                 title={startCase(accessor)}
                 tooltip={""}
-                className="mx-3"
+                className="mr-3"
               />
             ),
             cell: ({ row }) => {
