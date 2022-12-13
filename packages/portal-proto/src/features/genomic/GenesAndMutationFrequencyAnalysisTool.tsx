@@ -27,6 +27,7 @@ import {
 } from "@/features/genomic/geneAndSSMFiltersSlice";
 import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot";
 import GeneAndSSMFilterPanel from "@/features/genomic/FilterPanel";
+import { ContextualCasesView } from "@/features/cases/CasesView/CasesView";
 
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
   ssr: false,
@@ -75,7 +76,7 @@ const buildGeneHaveAndHaveNotFilters = (
 };
 
 // Persist which tab is active
-type AppModeState = "genes" | "ssms";
+type AppModeState = "genes" | "ssms" | "cases";
 
 const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const coreDispatch = useCoreDispatch();
@@ -89,12 +90,30 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const genomicFilters: FilterSet = useAppSelector((state) =>
     selectGeneAndSSMFilters(state),
   );
-
   /**
    * Get genes in cohort
    */
   const currentGenes = useSelectFilterContent("genes.gene_id");
   const currentMutations = useSelectFilterContent("ssms.ssm_id");
+
+  // const selectedGenesAndSSMSFilters = useMemo( () => {
+  //     return {
+  //       mode: "and",
+  //       root: {
+  //          "genes.gene_id": {
+  //           op: "in",
+  //           field: "genes.gene_id",
+  //           operands: currentGenes
+  //         },
+  //         "ssms.ssm_id": {
+  //           op: "in",
+  //           field: "ssms.ssm_id",
+  //           operands: currentMutations
+  //         }
+  //       }
+  //     }
+  //   }
+  // , [currentGenes, currentMutations]);
 
   const filters = useMemo(
     () => buildCohortGqlOperator(joinFilters(cohortFilters, genomicFilters)),
@@ -204,7 +223,11 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
    *  which will update the survival plot
    */
   useEffect(() => {
-    if (topGeneSSMSSuccess && comparativeSurvival === undefined) {
+    if (
+      appMode !== "cases" &&
+      topGeneSSMSSuccess &&
+      comparativeSurvival === undefined
+    ) {
       setComparativeSurvival({
         symbol: topGeneSSMS[0][appMode].symbol,
         name: topGeneSSMS[0][appMode].name,
@@ -213,6 +236,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     }
   }, [appMode, comparativeSurvival, topGeneSSMS, topGeneSSMSSuccess]);
 
+  console.log("render");
   return (
     <div className="flex flex-row w-100">
       <GeneAndSSMFilterPanel />
@@ -225,10 +249,12 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
           root: "bg-base-max border-0 w-full",
         }}
         onTabChange={handleTabChanged}
+        keepMounted={false}
       >
         <Tabs.List>
           <Tabs.Tab value="genes">Genes</Tabs.Tab>
           <Tabs.Tab value="ssms">Mutations</Tabs.Tab>
+          <Tabs.Tab value="cases">Cases</Tabs.Tab>
         </Tabs.List>
         <Tabs.Panel value="genes" pt="xs">
           <div className="flex flex-col w-100 mx-6">
@@ -308,6 +334,13 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
             )}
             toggledSsms={currentMutations}
           />
+        </Tabs.Panel>
+        <Tabs.Panel value="cases" pt="xs">
+          <div className="flex flex-col w-100 mx-6">
+            <div className="bg-base-max">
+              <ContextualCasesView appFilters={filters} />
+            </div>
+          </div>
         </Tabs.Panel>
       </Tabs>
     </div>

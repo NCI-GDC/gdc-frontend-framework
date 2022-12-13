@@ -6,6 +6,7 @@ import {
   useAllCases,
   SortBy,
   selectCurrentCohortFilters,
+  FilterSet,
 } from "@gff/core";
 import { Button, createStyles, Menu } from "@mantine/core";
 import React, { useMemo, useState } from "react";
@@ -59,7 +60,13 @@ const getSlideCountFromCaseSummary = (
   );
 };
 
-export const ContextualCasesView: React.FC = () => {
+interface ContextualCasesViewProps {
+  appFilters?: FilterSet;
+}
+
+export const ContextualCasesView: React.FC<ContextualCasesViewProps> = ({
+  appFilters = undefined,
+}: ContextualCasesViewProps) => {
   const dispatch = useCoreDispatch();
   const { classes } = useStyles();
   const [pageSize, setPageSize] = useState(10);
@@ -70,8 +77,11 @@ export const ContextualCasesView: React.FC = () => {
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilters(state),
   );
+
   const pickedCases = useCoreSelector((state) => selectSelectedCases(state));
   const currentCart = useCoreSelector((state) => selectCart(state));
+
+  console.log("appLocalFilters", appFilters ? appFilters : cohortFilters);
 
   const { data, isFetching, isSuccess, isError, pagination } = useAllCases({
     fields: [
@@ -102,7 +112,7 @@ export const ContextualCasesView: React.FC = () => {
       "files.data_type",
     ],
     size: pageSize,
-    filters: cohortFilters,
+    filters: appFilters ? appFilters : cohortFilters,
     from: offset * pageSize,
     sortBy: sortBy,
     searchTerm,
