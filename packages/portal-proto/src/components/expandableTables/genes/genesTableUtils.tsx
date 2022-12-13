@@ -113,17 +113,29 @@ export const createTableColumn = (
               />
             ),
             cell: ({ row }) => {
+              const { numerator } = row?.original[
+                "SSMSAffectedCasesInCohort"
+              ] ?? { numerator: 0 };
+              const disabled = numerator < 10;
+              const selected = row.original["survival"];
+              const isActive = selected.checked;
+              const tooltip = disabled
+                ? `Not enough data`
+                : isActive
+                ? `Click to remove ${selected.symbol} from plot`
+                : `Click to plot ${selected.symbol}`;
               return (
                 <>
                   {row.getCanExpand() && (
                     <SwitchSpring
                       margin="mt-1 ml-0.5"
-                      isActive={row.original["survival"].checked}
+                      isActive={isActive}
                       icon={<SurvivalIcon />}
-                      selected={row.original["survival"]}
+                      selected={selected}
+                      disabled={disabled}
                       handleSwitch={handleSurvivalPlotToggled}
                       survivalProps={{ plot: "gene.symbol" }}
-                      tooltip={`Click icon to plot ${row.original["survival"].symbol}`}
+                      tooltip={tooltip}
                     />
                   )}
                 </>

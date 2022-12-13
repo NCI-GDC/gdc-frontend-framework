@@ -116,17 +116,29 @@ export const createTableColumn = (
               />
             ),
             cell: ({ row }) => {
+              const { numerator } = row?.original["affectedCasesInCohort"] ?? {
+                numerator: 0,
+              };
+              const disabled = numerator < 10;
+              const selected = row.original["survival"];
+              const isActive = selected.checked;
+              const tooltip = disabled
+                ? `Not enough data`
+                : isActive
+                ? `Click to remove ${selected.name} from plot`
+                : `Click to plot ${selected.name}`;
               return (
                 <div className="flex justify-start">
                   {row.getCanExpand() && (
                     <SwitchSpring
                       margin={`mt-1 ml-0.5`}
-                      isActive={row.original["survival"].checked}
+                      isActive={isActive}
                       icon={<SurvivalIcon />}
                       survivalProps={{ plot: "gene.ssm.ssm_id" }}
-                      selected={row.original["survival"]}
+                      selected={selected}
+                      disabled={disabled}
                       handleSwitch={handleSurvivalPlotToggled}
-                      tooltip={`Click icon to plot ${row.original["survival"].symbol}`}
+                      tooltip={tooltip}
                     />
                   )}
                 </div>
