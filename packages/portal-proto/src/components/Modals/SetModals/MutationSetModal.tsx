@@ -7,6 +7,7 @@ import {
   useGetSsmsQuery,
   useCreateSsmsSetMutation,
   useSsmSetCountQuery,
+  Operation,
 } from "@gff/core";
 import InputSet from "./InputSet";
 import SavedSets from "./SavedSets";
@@ -16,12 +17,17 @@ interface MutationSetModalProps {
   readonly modalTitle: string;
   readonly inputInstructions: string;
   readonly selectSetInstructions: string;
+  readonly useUpdateFilters: () => (
+    field: string,
+    operation: Operation,
+  ) => void;
 }
 
 const MutationSetModal: React.FC<MutationSetModalProps> = ({
   modalTitle,
   inputInstructions,
   selectSetInstructions,
+  useUpdateFilters,
 }) => {
   const dispatch = useCoreDispatch();
 
@@ -58,7 +64,6 @@ const MutationSetModal: React.FC<MutationSetModalProps> = ({
                 <p>- File formats accepted: .txt, .csv, .tsv</p>
               </div>
             }
-            dataHook={useGetSsmsQuery}
             searchField={"ssm_autocomplete.lowercase"}
             mappedToFields={["ssm_id"]}
             matchAgainstIdentifiers={["ssm_id", "genomic_dna_change"]}
@@ -66,8 +71,13 @@ const MutationSetModal: React.FC<MutationSetModalProps> = ({
               ssm_id: "Mutation UUID",
               genomic_dna_change: "DNA Change",
             }}
-            createSetHook={useCreateSsmsSetMutation}
             createSetField="ssm_id"
+            facetField="ssms.ssm_id"
+            hooks={{
+              query: useGetSsmsQuery,
+              createSet: useCreateSsmsSetMutation,
+              updateFilters: useUpdateFilters,
+            }}
           />
         </Tabs.Panel>
         <Tabs.Panel value="saved">
@@ -94,7 +104,9 @@ const MutationSetModal: React.FC<MutationSetModalProps> = ({
               </p>
             }
             selectSetInstructions={selectSetInstructions}
+            facetField="ssms.ssm_id"
             countHook={useSsmSetCountQuery}
+            updateFilters={useUpdateFilters}
           />
         </Tabs.Panel>
       </Tabs>

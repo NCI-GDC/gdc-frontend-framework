@@ -2,6 +2,8 @@ import React, { useEffect, useState, useMemo } from "react";
 import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
 import { GTableContainer } from "@/components/expandableTables/genes/GTableContainer";
 import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMTableContainer";
+import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
+import MutationSetModal from "@/components/Modals/SetModals/MutationSetModal";
 import { Grid, Tabs, LoadingOverlay } from "@mantine/core";
 import EnumFacet from "@/features/facets/EnumFacet";
 import ToggleFacet from "@/features/facets/ToggleFacet";
@@ -18,6 +20,8 @@ import {
   selectGenomicFilters,
   buildCohortGqlOperator,
   useTopGene,
+  Modals,
+  selectCurrentModal,
 } from "@gff/core";
 
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
@@ -32,7 +36,9 @@ import {
   useClearGenomicFilters,
   useGenesFacet,
   useUpdateGenomicEnumFacetFilter,
+  useGenomicFilterByName,
 } from "./hooks";
+import SetFacet from "../facets/SetFacet";
 
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
   ssr: false,
@@ -94,6 +100,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const genomicFilters = useCoreSelector((state) =>
     selectGenomicFilters(state),
   );
+  const modal = useCoreSelector((state) => selectCurrentModal(state));
 
   const filters = useMemo(
     () => buildCohortGqlOperator(joinFilters(cohortFilters, genomicFilters)),
@@ -185,6 +192,22 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
 
   return (
     <div className="flex flex-row">
+      {modal === Modals.GeneSetModal && (
+        <GeneSetModal
+          modalTitle="Filter Mutation Frequency by Genes"
+          inputInstructions="Enter one or more gene identifiers in the field below or upload a file to filter Mutation Frequency."
+          selectSetInstructions="Select one or more sets below to filter Mutation Frequency."
+          useUpdateFilters={useUpdateGenomicEnumFacetFilter}
+        />
+      )}
+      {modal === Modals.MutationSetModal && (
+        <MutationSetModal
+          modalTitle="Filter Mutation Frequency by Mutations"
+          inputInstructions="Enter one or more mutation identifiers in the field below or upload a file to filter Mutation Frequency."
+          selectSetInstructions="Select one or more sets below to filter Mutation Frequency."
+          useUpdateFilters={useUpdateGenomicEnumFacetFilter}
+        />
+      )}
       <div className="flex flex-col gap-y-4 mr-3 mt-12 w-min-64 w-max-64">
         {FilterFacets.genes.map((x, index) => {
           if (x.type == "toggle") {
@@ -207,6 +230,20 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                 hideIfEmpty={false}
                 description={x.description}
                 width="w-64"
+              />
+            );
+          } else if (x.type === "set") {
+            return (
+              <SetFacet
+                facetName={x.name}
+                field={x.facet_filter}
+                width="w-64"
+                hooks={{
+                  useGetFacetData: partial(useGenesFacet, "genes", "explore"),
+                  useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
+                  useClearFilter: useClearGenomicFilters,
+                  useGetFacetFilters: useGenomicFilterByName,
+                }}
               />
             );
           }
@@ -233,6 +270,22 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
           );
         })}
         {FilterFacets.ssms.map((x, index) => {
+          if (x.type === "set") {
+            return (
+              <SetFacet
+                facetName={x.name}
+                field={x.facet_filter}
+                width="w-64"
+                hooks={{
+                  useGetFacetData: partial(useGenesFacet, "ssms", "explore"),
+                  useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
+                  useClearFilter: useClearGenomicFilters,
+                  useGetFacetFilters: useGenomicFilterByName,
+                }}
+              />
+            );
+          }
+
           return (
             <EnumFacet
               key={`genes-mutations-app-${x.facet_filter}-${index}`}

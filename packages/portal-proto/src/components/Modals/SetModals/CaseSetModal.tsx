@@ -1,9 +1,23 @@
-import { useCoreDispatch, hideModal, useGetCasesQuery } from "@gff/core";
+import {
+  useCoreDispatch,
+  hideModal,
+  useGetCasesQuery,
+  Operation,
+} from "@gff/core";
 import { Modal } from "@mantine/core";
 import { modalStyles } from "./styles";
 import InputSet from "./InputSet";
 
-const CaseSetModal: React.FC = () => {
+interface CaseSetModalProps {
+  readonly useUpdateFilters: () => (
+    field: string,
+    operation: Operation,
+  ) => void;
+}
+
+const CaseSetModal: React.FC<CaseSetModalProps> = ({
+  useUpdateFilters,
+}: CaseSetModalProps) => {
   const dispatch = useCoreDispatch();
 
   return (
@@ -55,7 +69,6 @@ const CaseSetModal: React.FC = () => {
           "samples.portions.slides.slide_id",
           "samples.portions.slides.submitter_id",
         ]}
-        dataHook={useGetCasesQuery}
         searchField="case_autocomplete.lowercase"
         fieldDisplay={{
           case_id: "Case UUID",
@@ -72,6 +85,11 @@ const CaseSetModal: React.FC = () => {
           "samples.portions.analytes.aliquots.aliquot_id": "Aliquot UUID",
           "samples.portions.analytes.aliquots.submitter_id": "Aliquot ID",
         }}
+        hooks={{
+          query: useGetCasesQuery,
+          updateFilters: useUpdateFilters,
+        }}
+        facetField="case.case_id"
       />
     </Modal>
   );

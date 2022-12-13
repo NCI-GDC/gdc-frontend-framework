@@ -33,7 +33,7 @@ const SaveSetButton: React.FC<SaveSetButttonProps> = ({
 
   useEffect(() => {
     if (response.isSuccess && setName) {
-      dispatch(addSet({ setType, newSet: { [setName]: response.data } }));
+      dispatch(addSet({ setType, newSet: { setName, setId: response.data } }));
       showNotification({ message: "Set has been saved." });
       setSetName(null);
     } else if (response.isError) {

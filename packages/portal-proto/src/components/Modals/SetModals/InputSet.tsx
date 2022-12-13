@@ -14,7 +14,7 @@ import {
 import { flatten } from "lodash";
 import { RiFile3Fill as FileIcon } from "react-icons/ri";
 import { MdInfo as InfoIcon } from "react-icons/md";
-import { SetTypes, useCoreDispatch, hideModal } from "@gff/core";
+import { SetTypes, useCoreDispatch, hideModal, Operation } from "@gff/core";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import FunctionButton from "@/components/FunctionButton";
 import { getMatchedIdentifiers } from "./utils";
@@ -32,10 +32,14 @@ interface InputSetProps {
   readonly setTypeLabel: string;
   readonly mappedToFields: string[];
   readonly matchAgainstIdentifiers: string[];
-  readonly dataHook: UseQuery<QueryDefinition<any, any, any, any, any>>;
   readonly searchField: string;
   readonly fieldDisplay: Record<string, string>;
-  readonly createSetHook?: UseMutation<any>;
+  readonly facetField: string;
+  readonly hooks: {
+    readonly query: UseQuery<QueryDefinition<any, any, any, any, any>>;
+    readonly updateFilters: () => (field: string, op: Operation) => void;
+    readonly createSet?: UseMutation<any>;
+  };
   readonly createSetField?: string;
 }
 
@@ -47,11 +51,11 @@ const InputSet: React.FC<InputSetProps> = ({
   setTypeLabel,
   mappedToFields,
   matchAgainstIdentifiers,
-  dataHook,
   searchField,
   fieldDisplay,
-  createSetHook,
   createSetField,
+  facetField,
+  hooks,
 }: InputSetProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [processingFile, setProcessingFile] = useState(false);
@@ -60,8 +64,9 @@ const InputSet: React.FC<InputSetProps> = ({
   const [screenReaderMessage, setScreenReaderMessage] = useState("");
   const inputRef = useRef(null);
   const dispatch = useCoreDispatch();
+  const applyFilters = hooks.updateFilters();
 
-  const { data, isSuccess } = dataHook({
+  const { data, isSuccess } = hooks.query({
     filters: {
       op: "in",
       content: {
@@ -90,6 +95,9 @@ const InputSet: React.FC<InputSetProps> = ({
     matched.map((m) => m.givenIdentifiers.map((i) => i.value)),
   ).map((id) => id.toLowerCase());
   const unmatched = tokens.filter((t) => !matchedIds.includes(t.toLowerCase()));
+  const createSetIds = matched.map(
+    (match) => match.mappedTo.find((m) => m.field === createSetField).value,
+  );
 
   useEffect(() => {
     if (input !== "") {
@@ -183,15 +191,12 @@ const InputSet: React.FC<InputSetProps> = ({
         )}
       </div>
       <ButtonContainer>
-        {createSetHook && (
+        {hooks.createSet && (
           <SaveSetButton
             disabled={matched.length === 0}
-            setValues={matched.map(
-              (match) =>
-                match.mappedTo.find((m) => m.field === createSetField).value,
-            )}
+            setValues={createSetIds}
             setType={setType}
-            createSetHook={createSetHook}
+            createSetHook={hooks.createSet}
           />
         )}
         <FunctionButton onClick={() => dispatch(hideModal())}>
@@ -208,7 +213,19 @@ const InputSet: React.FC<InputSetProps> = ({
         >
           Clear
         </DarkFunctionButton>
-        <DarkFunctionButton disabled>Submit</DarkFunctionButton>
+        <DarkFunctionButton
+          disabled={matched.length === 0}
+          onClick={() => {
+            applyFilters(facetField, {
+              field: facetField,
+              operator: "includes",
+              operands: createSetIds,
+            });
+            dispatch(hideModal());
+          }}
+        >
+          Submit
+        </DarkFunctionButton>
       </ButtonContainer>
     </>
   );

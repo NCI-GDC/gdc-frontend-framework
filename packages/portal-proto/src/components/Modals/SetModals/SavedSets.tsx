@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
 import { upperFirst } from "lodash";
+import { Checkbox } from "@mantine/core";
 import { AiOutlineFileAdd as FileAddIcon } from "react-icons/ai";
 import {
   useCoreSelector,
@@ -9,6 +10,7 @@ import {
   useCoreDispatch,
   hideModal,
   SetTypes,
+  Operation,
 } from "@gff/core";
 import {
   VerticalTable,
@@ -30,6 +32,8 @@ interface SavedSetsProps {
   readonly createSetsInstructions: React.ReactNode;
   readonly selectSetInstructions: string;
   readonly countHook: UseQuery<QueryDefinition<any, any, any, any, any>>;
+  readonly updateFilters: () => (field: string, op: Operation) => void;
+  readonly facetField: string;
 }
 
 const SavedSets: React.FC<SavedSetsProps> = ({
@@ -38,17 +42,31 @@ const SavedSets: React.FC<SavedSetsProps> = ({
   createSetsInstructions,
   selectSetInstructions,
   countHook,
+  updateFilters,
+  facetField,
 }: SavedSetsProps) => {
-  const [selectedSets, setSelectedSets] = useState([]);
+  const [selectedSets, setSelectedSets] = useState<string[]>([]);
   const sets = useCoreSelector((state) => selectSets(state, setType));
   const dispatch = useCoreDispatch();
+  const applyFilters = updateFilters();
 
   const tableData = useMemo(() => {
-    return Object.entries(sets).map(([name, setId]) => ({
+    return Object.entries(sets).map(([setId, name]) => ({
+      select: (
+        <Checkbox
+          value={setId}
+          checked={selectedSets.includes(setId)}
+          onChange={() =>
+            selectedSets.includes(setId)
+              ? setSelectedSets(selectedSets.filter((id) => id !== setId))
+              : setSelectedSets([...selectedSets, setId])
+          }
+        />
+      ),
       name,
       count: <CountCell countHook={countHook} setId={setId} />,
     }));
-  }, [sets, countHook]);
+  }, [sets, countHook, selectedSets]);
 
   const columns = useMemo(() => {
     return [
@@ -120,7 +138,19 @@ const SavedSets: React.FC<SavedSetsProps> = ({
         >
           Clear
         </DarkFunctionButton>
-        <DarkFunctionButton disabled>Submit</DarkFunctionButton>
+        <DarkFunctionButton
+          disabled={selectedSets.length === 0}
+          onClick={() => {
+            applyFilters(facetField, {
+              field: facetField,
+              operator: "includes",
+              operands: selectedSets.map((id) => `set_id:${id}`),
+            });
+            dispatch(hideModal());
+          }}
+        >
+          Submit
+        </DarkFunctionButton>
       </ButtonContainer>
     </>
   );

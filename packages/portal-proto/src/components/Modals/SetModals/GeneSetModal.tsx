@@ -7,6 +7,7 @@ import {
   useGetGenesQuery,
   useCreateGeneSetMutation,
   useGeneSetCountQuery,
+  Operation,
 } from "@gff/core";
 import InputSet from "./InputSet";
 import SavedSets from "./SavedSets";
@@ -16,12 +17,17 @@ interface GeneSetModalProps {
   readonly modalTitle: string;
   readonly inputInstructions: string;
   readonly selectSetInstructions: string;
+  readonly useUpdateFilters: () => (
+    field: string,
+    operation: Operation,
+  ) => void;
 }
 
 const GeneSetModal: React.FC<GeneSetModalProps> = ({
   modalTitle,
   inputInstructions,
   selectSetInstructions,
+  useUpdateFilters,
 }: GeneSetModalProps) => {
   const dispatch = useCoreDispatch();
 
@@ -59,7 +65,6 @@ const GeneSetModal: React.FC<GeneSetModalProps> = ({
                 <p>- File formats accepted: .txt, .csv, .tsv</p>
               </div>
             }
-            dataHook={useGetGenesQuery}
             searchField="gene_autocomplete.lowercase"
             mappedToFields={["gene_id", "symbol"]}
             matchAgainstIdentifiers={[
@@ -78,8 +83,13 @@ const GeneSetModal: React.FC<GeneSetModalProps> = ({
               "external_db_ids.uniprotkb_swissprot": "UniProtKB/Swiss-Prot",
               "external_db_ids.omim_gene": "OMIM",
             }}
-            createSetHook={useCreateGeneSetMutation}
             createSetField={"gene_id"}
+            facetField={"genes.gene_id"}
+            hooks={{
+              query: useGetGenesQuery,
+              createSet: useCreateGeneSetMutation,
+              updateFilters: useUpdateFilters,
+            }}
           />
         </Tabs.Panel>
         <Tabs.Panel value="saved">
@@ -107,6 +117,8 @@ const GeneSetModal: React.FC<GeneSetModalProps> = ({
             }
             selectSetInstructions={selectSetInstructions}
             countHook={useGeneSetCountQuery}
+            updateFilters={useUpdateFilters}
+            facetField={"genes.gene_id"}
           />
         </Tabs.Panel>
       </Tabs>

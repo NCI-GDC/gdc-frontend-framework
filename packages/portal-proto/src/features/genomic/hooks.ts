@@ -50,7 +50,7 @@ export const useClearGenomicFilters = (): ClearFacetFunction => {
   };
 };
 
-const useGenomicFilterByName = (field: string): OperandValue => {
+export const useGenomicFilterByName = (field: string): OperandValue => {
   const enumFilters: Operation = useCoreSelector((state) =>
     selectGenomicFiltersByName(state, field),
   );

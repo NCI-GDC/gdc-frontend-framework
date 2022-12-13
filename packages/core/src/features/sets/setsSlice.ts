@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { castDraft } from "immer";
+import { produce } from "immer";
 import { CoreState } from "../../reducers";
 
 export type SetTypes = "case" | "gene" | "ssm";
@@ -18,15 +18,19 @@ const slice = createSlice({
       state,
       action: PayloadAction<{
         setType: SetTypes;
-        newSet: Record<string, string>;
+        newSet: { setName: string; setId: string };
       }>,
     ) => {
-      state = castDraft({
-        ...state,
-        [action.payload.setType]: {
-          ...state[action.payload.setType],
-          ...action.payload.newSet,
-        },
+      state = produce(state, (draft) => {
+        const existingSet = Object.entries(state[action.payload.setType]).find(
+          ([, name]) => name === action.payload.newSet.setName,
+        );
+        // Replace existing set with the same name
+        if (existingSet) {
+          delete draft[action.payload.setType][existingSet[0]];
+        }
+        draft[action.payload.setType][action.payload.newSet.setId] =
+          action.payload.newSet.setName;
       });
       return state;
     },

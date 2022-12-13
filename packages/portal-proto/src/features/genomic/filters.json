@@ -11,6 +11,11 @@
       "name": "Is Cancer Gene Census",
       "description": "No description",
       "type": "toggle"
+    },
+    {
+      "facet_filter": "genes.gene_id",
+      "name": "Custom Gene Filters",
+      "type": "set"
     }
   ],
   "ssms": [
@@ -38,6 +43,11 @@
       "facet_filter": "ssms.mutation_subtype",
       "name": "Type",
       "type": "enum"
+    },
+    {
+      "facet_filter": "ssms.ssm_id",
+      "name": "Custom Mutation Filters",
+      "type": "set"
     }
   ]
 }
